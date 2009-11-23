@@ -1,16 +1,18 @@
-Received: from smtp.seznam.cz ([77.75.72.43])
+Received: from mail-fx0-f211.google.com ([209.85.220.211])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCKaI-0003Cz-2q
-	for linux-mtd@lists.infradead.org; Sun, 22 Nov 2009 22:07:10 +0000
-Date: Mon, 23 Nov 2009 00:06:50 +0100
-From: Ladislav Michl <Ladislav.Michl@seznam.cz>
-To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH] fix M29W800D dev_id and uaddr
-Message-ID: <20091122230649.GA29911@localhost.localdomain>
+	id 1NCNS8-0002rk-14
+	for linux-mtd@lists.infradead.org; Mon, 23 Nov 2009 01:10:56 +0000
+Received: by fxm3 with SMTP id 3so5487354fxm.4
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 22 Nov 2009 17:10:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Reply-To: Ladislav Michl <ladis@linux-mips.org>
+Date: Mon, 23 Nov 2009 02:10:49 +0100
+Message-ID: <b8e9195f0911221710x5587429eve175bf6bfb2e360f@mail.gmail.com>
+Subject: [MTD] CHIPS: add support for switching old SST chips into QRY mode
+	(tested with 39VF3201)
+From: Guillaume LECERF <foxcore@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary=001485f6d4840350f70478ff7fa8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This one sits in my tree for more than two years...
-Using device code found on page 12 (http://www.btdesigner.com/pdfs/M29W800D.pdf)
-and unlock address from page 15 MTD subsytem happily detects ST M29W800DB
-in 16-bit mode. I do believe original author used only 8-bit mode and thus
-didn't hit this bug.
+--001485f6d4840350f70478ff7fa8
+Content-Type: text/plain; charset=UTF-8
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Hi,
 
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-index 736a3be..1bec5e1 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -142,8 +142,8 @@
- 
- /* ST - www.st.com */
- #define M29F800AB	0x0058
--#define M29W800DT	0x00D7
--#define M29W800DB	0x005B
-+#define M29W800DT	0x22D7
-+#define M29W800DB	0x225B
- #define M29W400DT	0x00EE
- #define M29W400DB	0x00EF
- #define M29W160DT	0x22C4
-@@ -1575,7 +1575,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		.dev_id		= M29W800DT,
- 		.name		= "ST M29W800DT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
--		.uaddr		= MTD_UADDR_0x5555_0x2AAA,	/* ???? */
-+		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
- 		.dev_size	= SIZE_1MiB,
- 		.cmd_set	= P_ID_AMD_STD,
- 		.nr_regions	= 4,
-@@ -1590,7 +1590,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		.dev_id		= M29W800DB,
- 		.name		= "ST M29W800DB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
--		.uaddr		= MTD_UADDR_0x5555_0x2AAA,	/* ???? */
-+		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
- 		.dev_size	= SIZE_1MiB,
- 		.cmd_set	= P_ID_AMD_STD,
- 		.nr_regions	= 4,
+SST 39VF160x/39VF320x and some old SST chips need a special command
+sequence to enter CFI QueRY mode [1].
+This patch adds the relevant sequence to cfi_qry_mode_on().
+
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+
+
+[1] http://www.sst.com/dotAsset/40479.pdf / Table 6 : Software Command Sequence
+
+-- 
+Guillaume LECERF
+
+--001485f6d4840350f70478ff7fa8
+Content-Type: text/x-patch; charset=US-ASCII; name="old_sst_query_on.diff"
+Content-Disposition: attachment; filename="old_sst_query_on.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g2cjeuje0
+
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV91dGlsLmMgYi9kcml2ZXJzL210ZC9j
+aGlwcy9jZmlfdXRpbC5jCmluZGV4IGM1YTg0ZmQuLmNhNTg0ZDAgMTAwNzU1Ci0tLSBhL2RyaXZl
+cnMvbXRkL2NoaXBzL2NmaV91dGlsLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX3V0aWwu
+YwpAQCAtNzEsNiArNzEsMTMgQEAgaW50IF9feGlwcmFtIGNmaV9xcnlfbW9kZV9vbih1aW50MzJf
+dCBiYXNlLCBzdHJ1Y3QgbWFwX2luZm8gKm1hcCwKIAljZmlfc2VuZF9nZW5fY21kKDB4OTgsIDB4
+NTU1LCBiYXNlLCBtYXAsIGNmaSwgY2ZpLT5kZXZpY2VfdHlwZSwgTlVMTCk7CiAJaWYgKGNmaV9x
+cnlfcHJlc2VudChtYXAsIGJhc2UsIGNmaSkpCiAJCXJldHVybiAxOworCS8qIHNvbWUgb2xkIFNT
+VCBjaGlwcywgZS5nLiAzOVZGMTYweC8zOVZGMzIweCAqLworCWNmaV9zZW5kX2dlbl9jbWQoMHhG
+MCwgMCwgYmFzZSwgbWFwLCBjZmksIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOworCWNmaV9zZW5k
+X2dlbl9jbWQoMHhBQSwgMHg1NTU1LCBiYXNlLCBtYXAsIGNmaSwgY2ZpLT5kZXZpY2VfdHlwZSwg
+TlVMTCk7CisJY2ZpX3NlbmRfZ2VuX2NtZCgweDU1LCAweDJBQUEsIGJhc2UsIG1hcCwgY2ZpLCBj
+ZmktPmRldmljZV90eXBlLCBOVUxMKTsKKwljZmlfc2VuZF9nZW5fY21kKDB4OTgsIDB4NTU1NSwg
+YmFzZSwgbWFwLCBjZmksIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOworCWlmIChjZmlfcXJ5X3By
+ZXNlbnQobWFwLCBiYXNlLCBjZmkpKQorCQlyZXR1cm4gMTsKIAkvKiBRUlkgbm90IGZvdW5kICov
+CiAJcmV0dXJuIDA7CiB9Cg==
+--001485f6d4840350f70478ff7fa8--
