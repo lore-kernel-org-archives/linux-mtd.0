@@ -1,24 +1,16 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCf6v-0002Qj-So
-	for linux-mtd@lists.infradead.org; Mon, 23 Nov 2009 20:02:14 +0000
-Message-ID: <4B0AEA33.3010306@nokia.com>
-Date: Mon, 23 Nov 2009 22:01:55 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-Subject: Re: [PATCH 4/7] nandsim: Don't use PF_MEMALLOC
-References: <20091117161551.3DD4.A69D9226@jp.fujitsu.com>	
-	<20091117161843.3DE0.A69D9226@jp.fujitsu.com>
-	<1258988417.18407.44.camel@localhost>
-In-Reply-To: <1258988417.18407.44.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date: Mon, 23 Nov 2009 12:24:03 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: dedekind1@gmail.com
+Subject: Re: [patch 4/4] mtd/nand: fix multi-chip suspend problem
+Message-Id: <20091123122403.d9073471.akpm@linux-foundation.org>
+In-Reply-To: <1258989544.18407.48.camel@localhost>
+References: <200911172245.nAHMjnss001994@imap1.linux-foundation.org>
+	<1258989544.18407.48.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
+Cc: b24347@freescale.com, leoli@freescale.com, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,95 +20,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bityutskiy Artem (Nokia-D/Helsinki) wrote:
-> On Tue, 2009-11-17 at 16:19 +0900, KOSAKI Motohiro wrote:
->> Non MM subsystem must not use PF_MEMALLOC. Memory reclaim need few
->> memory, anyone must not prevent it. Otherwise the system cause
->> mysterious hang-up and/or OOM Killer invokation.
->>
->> Cc: David Woodhouse <David.Woodhouse@intel.com>
->> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
->> Cc: linux-mtd@lists.infradead.org
->> Signed-off-by: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
->> ---
->>  drivers/mtd/nand/nandsim.c |   22 ++--------------------
->>  1 files changed, 2 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
->> index cd0711b..97a8bbb 100644
->> --- a/drivers/mtd/nand/nandsim.c
->> +++ b/drivers/mtd/nand/nandsim.c
->> @@ -1322,34 +1322,18 @@ static int get_pages(struct nandsim *ns, struct file *file, size_t count, loff_t
->>  	return 0;
->>  }
->>  
->> -static int set_memalloc(void)
->> -{
->> -	if (current->flags & PF_MEMALLOC)
->> -		return 0;
->> -	current->flags |= PF_MEMALLOC;
->> -	return 1;
->> -}
->> -
->> -static void clear_memalloc(int memalloc)
->> -{
->> -	if (memalloc)
->> -		current->flags &= ~PF_MEMALLOC;
->> -}
->> -
->>  static ssize_t read_file(struct nandsim *ns, struct file *file, void *buf, size_t count, loff_t *pos)
->>  {
->>  	mm_segment_t old_fs;
->>  	ssize_t tx;
->> -	int err, memalloc;
->> +	int err;
->>  
->>  	err = get_pages(ns, file, count, *pos);
->>  	if (err)
->>  		return err;
->>  	old_fs = get_fs();
->>  	set_fs(get_ds());
->> -	memalloc = set_memalloc();
->>  	tx = vfs_read(file, (char __user *)buf, count, pos);
->> -	clear_memalloc(memalloc);
->>  	set_fs(old_fs);
->>  	put_pages(ns);
->>  	return tx;
->> @@ -1359,16 +1343,14 @@ static ssize_t write_file(struct nandsim *ns, struct file *file, void *buf, size
->>  {
->>  	mm_segment_t old_fs;
->>  	ssize_t tx;
->> -	int err, memalloc;
->> +	int err;
->>  
->>  	err = get_pages(ns, file, count, *pos);
->>  	if (err)
->>  		return err;
->>  	old_fs = get_fs();
->>  	set_fs(get_ds());
->> -	memalloc = set_memalloc();
->>  	tx = vfs_write(file, (char __user *)buf, count, pos);
->> -	clear_memalloc(memalloc);
->>  	set_fs(old_fs);
->>  	put_pages(ns);
->>  	return tx;PF_MEMALLOC,
+On Mon, 23 Nov 2009 17:19:04 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+
+> On Tue, 2009-11-17 at 14:45 -0800, akpm@linux-foundation.org wrote:
+> > From: Li Yang <leoli@freescale.com>
+> > 
+> > Symptom:
+> > device_suspend(): mtd_cls_suspend+0x0/0x58 returns -11
+> > PM: Device mtd14 failed to suspend: error -11
+> > PM: Some devices failed to suspend
+> > 
+> > This patch enables other chips to be suspended if the active chip of
+> > the controller has been suspended.
+> > 
+> > Signed-off-by: Jin Qing <b24347@freescale.com>
+> > Signed-off-by: Li Yang <leoli@freescale.com>
+> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > ---
+> > 
+> >  drivers/mtd/nand/nand_base.c |   14 ++++++++++----
+> >  1 file changed, 10 insertions(+), 4 deletions(-)
+> > 
+> > diff -puN drivers/mtd/nand/nand_base.c~mtd-nand-fix-multi-chip-suspend-problem drivers/mtd/nand/nand_base.c
+> > --- a/drivers/mtd/nand/nand_base.c~mtd-nand-fix-multi-chip-suspend-problem
+> > +++ a/drivers/mtd/nand/nand_base.c
+> > @@ -697,10 +697,16 @@ nand_get_device(struct nand_chip *chip, 
+> >  		spin_unlock(lock);
+> >  		return 0;
+> >  	}
+> > -	if (new_state == FL_PM_SUSPENDED) {
+> > -		spin_unlock(lock);
+> > -		return (chip->state == FL_PM_SUSPENDED) ? 0 : -EAGAIN;
+> > -	}
+> > +	if (new_state == FL_PM_SUSPENDED)
+> > +		if (chip->controller->active->state == FL_PM_SUSPENDED) {
+> > +			chip->state = FL_PM_SUSPENDED;
+> > +			spin_unlock(lock);
+> > +			return 0;
+> > +		} else {
+> > +			spin_unlock(lock);
+> > +			return -EAGAIN;
+> > +		}
+> > +
+> >  	set_current_state(TASK_UNINTERRUPTIBLE);
+> >  	add_wait_queue(wq, &wait);
+> >  	spin_unlock(lock);
 > 
-> I vaguely remember Adrian (CCed) did this on purpose. This is for the
-> case when nandsim emulates NAND flash on top of a file. So there are 2
-> file-systems involved: one sits on top of nandsim (e.g. UBIFS) and the
-> other owns the file which nandsim uses (e.g., ext3).
+> This patch casing the following gcc warning:
 > 
-> And I really cannot remember off the top of my head why he needed
-> PF_MEMALLOC, but I think Adrian wanted to prevent the direct reclaim
-> path to re-enter, say UBIFS, and cause deadlock. But I'd thing that all
-> the allocations in vfs_read()/vfs_write() should be GFP_NOFS, so that
-> should not be a probelm?
+> drivers/mtd/nand/nand_base.c: In function ___nand_get_device___:
+> drivers/mtd/nand/nand_base.c:700: warning: suggest explicit braces to
+> avoid ambiguous ___else___
 > 
 
-Yes it needs PF_MEMALLOC to prevent deadlock because there can be a
-file system on top of nandsim which, in this case, is on top of another
-file system.
+Stupid gcc.
 
-I do not see how mempools will help here.
-
-Please offer an alternative solution.
+--- a/drivers/mtd/nand/nand_base.c~mtd-nand-fix-multi-chip-suspend-problem-fix
++++ a/drivers/mtd/nand/nand_base.c
+@@ -697,7 +697,7 @@ nand_get_device(struct nand_chip *chip, 
+ 		spin_unlock(lock);
+ 		return 0;
+ 	}
+-	if (new_state == FL_PM_SUSPENDED)
++	if (new_state == FL_PM_SUSPENDED) {
+ 		if (chip->controller->active->state == FL_PM_SUSPENDED) {
+ 			chip->state = FL_PM_SUSPENDED;
+ 			spin_unlock(lock);
+@@ -706,7 +706,7 @@ nand_get_device(struct nand_chip *chip, 
+ 			spin_unlock(lock);
+ 			return -EAGAIN;
+ 		}
+-
++	}
+ 	set_current_state(TASK_UNINTERRUPTIBLE);
+ 	add_wait_queue(wq, &wait);
+ 	spin_unlock(lock);
+_
