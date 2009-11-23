@@ -1,17 +1,28 @@
-Subject: [PATCH] jffs2: Fix memory corruption in jffs2_read_inode_range()
-From: David Woodhouse <dwmw2@infradead.org>
-To: torvalds@linux-foundation.org, Anton Vorontsov <avorontsov@ru.mvista.com>,
-	stable@kernel.org
-In-Reply-To: <20091120194532.GA9455@oksana.dev.rtsoft.ru>
-References: <20091120194532.GA9455@oksana.dev.rtsoft.ru>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 23 Nov 2009 13:47:53 +0000
-Message-ID: <1258984073.29729.256.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from protonic.xs4all.nl ([213.84.116.84] helo=protonic.prtnl)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NCZca-0003Na-Os
+	for linux-mtd@lists.infradead.org; Mon, 23 Nov 2009 14:10:32 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by protonic.prtnl (Postfix) with ESMTP id 303DC28067
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 Nov 2009 15:08:59 +0100 (CET)
+Received: from protonic.prtnl ([127.0.0.1])
+	by localhost (protonic [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 01664-08 for <linux-mtd@lists.infradead.org>;
+	Mon, 23 Nov 2009 15:08:59 +0100 (CET)
+Received: from archvile.localnet (archvile.prtnl [192.168.1.153])
+	by protonic.prtnl (Postfix) with ESMTP id E343B2803B
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 Nov 2009 15:08:58 +0100 (CET)
+From: David Jander <david.jander@protonic.nl>
+To: linux-mtd@lists.infradead.org
+Subject: UBIFS on kernel 2.6.24?
+Date: Mon, 23 Nov 2009 15:10:40 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: Neil Brown <neilb@suse.de>, Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-Id: <200911231510.40294.david.jander@protonic.nl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,80 +32,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In 2.6.23 kernel, commit a32ea1e1f925399e0d81ca3f7394a44a6dafa12c
-("Fix read/truncate race") fixed a race in the generic code, and as a
-side effect, now do_generic_file_read() can ask us to readpage() past
-the i_size. This seems to be correctly handled by the block routines
-(e.g. block_read_full_page() fills the page with zeroes in case if
-somebody is trying to read past the last inode's block).
 
-JFFS2 doesn't handle this; it assumes that it won't be asked to read
-pages which don't exist -- and thus that there will be at least _one_
-valid 'frag' on the page it's being asked to read. It will fill any
-holes with the following memset:
+Hi all,
 
-  memset(buf, 0, min(end, frag->ofs + frag->size) - offset);
+I am forced to use this ancient kernel (2.6.24), but I also need UBIFS. 
+Our boards have 1GiB NAND flash chips with 2k pages.
+Until now I have been testing with vanilla MTD/UBI/UBIFS from that kernel, 
+and (not entirely unexpected) now errors start to appear, which look like this:
 
-When the 'closest smaller match' returned by jffs2_lookup_node_frag() is
-actually on a previous page and ends before 'offset', that results in:
+$ cd /etc
+$ ls -l
+ls: reading directory .: Structure needs cleaning
 
-  memset(buf, 0, <huge unsigned negative>);
+And the kernel messages look like this:
 
-Hopefully, in most cases the corruption is fatal, and quickly causing
-random oopses, like this:
+[10871.725906] UBIFS error (pid 10801): ubifs_check_node: bad magic 0x38f2aa8b, expected 0x6101831
+[10871.736785] UBIFS error (pid 10801): ubifs_check_node: bad node at LEB 6259:66568
+[10871.745344] UBIFS error (pid 10801): ubifs_read_node: expected node type 2
+[10871.753209] UBIFS error (pid 10801): ubifs_readdir: cannot find next direntry, error -117
 
-  root@10.0.0.4:~/ltp-fs-20090531# ./testcases/kernel/fs/ftest/ftest01
-  Unable to handle kernel paging request for data at address 0x00000008
-  Faulting instruction address: 0xc01cd980
-  Oops: Kernel access of bad area, sig: 11 [#1]
-  [...]
-  NIP [c01cd980] rb_insert_color+0x38/0x184
-  LR [c0043978] enqueue_hrtimer+0x88/0xc4
-  Call Trace:
-  [c6c63b60] [c004f9a8] tick_sched_timer+0xa0/0xe4 (unreliable)
-  [c6c63b80] [c0043978] enqueue_hrtimer+0x88/0xc4
-  [c6c63b90] [c0043a48] __run_hrtimer+0x94/0xbc
-  [c6c63bb0] [c0044628] hrtimer_interrupt+0x140/0x2b8
-  [c6c63c10] [c000f8e8] timer_interrupt+0x13c/0x254
-  [c6c63c30] [c001352c] ret_from_except+0x0/0x14
-  --- Exception: 901 at memset+0x38/0x5c
-      LR = jffs2_read_inode_range+0x144/0x17c
-  [c6c63cf0] [00000000] (null) (unreliable)
 
-This patch fixes the issue, plus fixes all LTP tests on NAND/UBI with
-JFFS2 filesystem that were failing since 2.6.23 (seems like the bug
-above also broke the truncation).
+I did not bother turning on more debug messages yet, since I think I am most probably missing some important bugfixes in my version of 
+MTD/UBI/UBIFS. Btw, is there some sort of version number in some file somewhere, so I can check wich version I am actually using?
 
-Reported-By: Anton Vorontsov <avorontsov@ru.mvista.com>
-Tested-By: Anton Vorontsov <avorontsov@ru.mvista.com>
-Signed-off-by: David Woodhouse <David.Woodhouse@intel.com>
-Cc: stable@kernel.org
+I am aware of this git repository:
+http://git.infradead.org/users/dedekind/ubifs-v2.6.24.git
 
-diff --git a/fs/jffs2/read.c b/fs/jffs2/read.c
-index cfe05c1..3f39be1 100644
---- a/fs/jffs2/read.c
-+++ b/fs/jffs2/read.c
-@@ -164,12 +164,15 @@ int jffs2_read_inode_range(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 
- 	/* XXX FIXME: Where a single physical node actually shows up in two
- 	   frags, we read it twice. Don't do that. */
--	/* Now we're pointing at the first frag which overlaps our page */
-+	/* Now we're pointing at the first frag which overlaps our page
-+	 * (or perhaps is before it, if we've been asked to read off the
-+	 * end of the file). */
- 	while(offset < end) {
- 		D2(printk(KERN_DEBUG "jffs2_read_inode_range: offset %d, end %d\n", offset, end));
--		if (unlikely(!frag || frag->ofs > offset)) {
-+		if (unlikely(!frag || frag->ofs > offset ||
-+			     frag->ofs + frag->size <= offset)) {
- 			uint32_t holesize = end - offset;
--			if (frag) {
-+			if (frag && frag->ofs > offset) {
- 				D1(printk(KERN_NOTICE "Eep. Hole in ino #%u fraglist. frag->ofs = 0x%08x, offset = 0x%08x\n", f->inocache->ino, frag->ofs, offset));
- 				holesize = min(holesize, frag->ofs - offset);
- 			}
+But I'd like to know how I can get this version into my kernel. Will it work if I just copy the relevant files?
+Is there a patch against 2.6.24 that I can download somewhere?
+Do I need only UBIFS, or do I also need all of MTD?
+I have a custom NAND-flash driver, do I likely need to change it, or should it just work with the new version of MTD?
 
+Thanks for any advice.
+
+Best regards,
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+David Jander
+Protonic Holland.
