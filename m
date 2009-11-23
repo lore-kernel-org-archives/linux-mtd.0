@@ -1,18 +1,23 @@
-Received: from mail-fx0-f211.google.com ([209.85.220.211])
+Received: from mail-ew0-f223.google.com ([209.85.219.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCNS8-0002rk-14
-	for linux-mtd@lists.infradead.org; Mon, 23 Nov 2009 01:10:56 +0000
-Received: by fxm3 with SMTP id 3so5487354fxm.4
+	id 1NCWvf-0003Qh-T4
+	for linux-mtd@lists.infradead.org; Mon, 23 Nov 2009 11:18:04 +0000
+Received: by ewy23 with SMTP id 23so1235409ewy.4
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 22 Nov 2009 17:10:49 -0800 (PST)
+	Mon, 23 Nov 2009 03:17:58 -0800 (PST)
+Date: Mon, 23 Nov 2009 13:17:44 +0200
+From: Dan Carpenter <error27@gmail.com>
+To: Joern Engel <joern@logfs.org>
+Subject: Re: [PATCH 5/17] [LogFS] dir.c
+Message-ID: <20091123111744.GA17527@bicker>
+References: <20091120181113.GA2159@logfs.org>
+	<E1NBZIP-0003g2-0r@longford.logfs.org>
 MIME-Version: 1.0
-Date: Mon, 23 Nov 2009 02:10:49 +0100
-Message-ID: <b8e9195f0911221710x5587429eve175bf6bfb2e360f@mail.gmail.com>
-Subject: [MTD] CHIPS: add support for switching old SST chips into QRY mode
-	(tested with 39VF3201)
-From: Guillaume LECERF <foxcore@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=001485f6d4840350f70478ff7fa8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1NBZIP-0003g2-0r@longford.logfs.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001485f6d4840350f70478ff7fa8
-Content-Type: text/plain; charset=UTF-8
+On Fri, Nov 20, 2009 at 08:37:29PM +0100, Joern Engel wrote:
+> +static int logfs_unlink(struct inode *dir, struct dentry *dentry)
+> +{
+> +	struct logfs_super *super = logfs_super(dir->i_sb);
+> +	struct inode *inode = dentry->d_inode;
+> +	struct logfs_transaction *ta;
+> +	struct page *page;
+> +	pgoff_t index;
+> +	int ret;
+> +
+> +	ta = kzalloc(sizeof(*ta), GFP_KERNEL);
+> +	if (!ta)
+> +		return -ENOMEM;
+> +
+> +	ta->state = UNLINK_1;
+> +	ta->ino = inode->i_ino;
+> +
+> +	inode->i_ctime = dir->i_ctime = dir->i_mtime = CURRENT_TIME;
+> +
+> +	page = logfs_get_dd_page(dir, dentry);
+> +	if (!page)
 
-Hi,
+kfree(ta);
 
-SST 39VF160x/39VF320x and some old SST chips need a special command
-sequence to enter CFI QueRY mode [1].
-This patch adds the relevant sequence to cfi_qry_mode_on().
+> +		return -ENOENT;
+> +	if (IS_ERR(page))
 
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+kfree(ta);
 
+> +		return PTR_ERR(page);
 
-[1] http://www.sst.com/dotAsset/40479.pdf / Table 6 : Software Command Sequence
-
--- 
-Guillaume LECERF
-
---001485f6d4840350f70478ff7fa8
-Content-Type: text/x-patch; charset=US-ASCII; name="old_sst_query_on.diff"
-Content-Disposition: attachment; filename="old_sst_query_on.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g2cjeuje0
-
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV91dGlsLmMgYi9kcml2ZXJzL210ZC9j
-aGlwcy9jZmlfdXRpbC5jCmluZGV4IGM1YTg0ZmQuLmNhNTg0ZDAgMTAwNzU1Ci0tLSBhL2RyaXZl
-cnMvbXRkL2NoaXBzL2NmaV91dGlsLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX3V0aWwu
-YwpAQCAtNzEsNiArNzEsMTMgQEAgaW50IF9feGlwcmFtIGNmaV9xcnlfbW9kZV9vbih1aW50MzJf
-dCBiYXNlLCBzdHJ1Y3QgbWFwX2luZm8gKm1hcCwKIAljZmlfc2VuZF9nZW5fY21kKDB4OTgsIDB4
-NTU1LCBiYXNlLCBtYXAsIGNmaSwgY2ZpLT5kZXZpY2VfdHlwZSwgTlVMTCk7CiAJaWYgKGNmaV9x
-cnlfcHJlc2VudChtYXAsIGJhc2UsIGNmaSkpCiAJCXJldHVybiAxOworCS8qIHNvbWUgb2xkIFNT
-VCBjaGlwcywgZS5nLiAzOVZGMTYweC8zOVZGMzIweCAqLworCWNmaV9zZW5kX2dlbl9jbWQoMHhG
-MCwgMCwgYmFzZSwgbWFwLCBjZmksIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOworCWNmaV9zZW5k
-X2dlbl9jbWQoMHhBQSwgMHg1NTU1LCBiYXNlLCBtYXAsIGNmaSwgY2ZpLT5kZXZpY2VfdHlwZSwg
-TlVMTCk7CisJY2ZpX3NlbmRfZ2VuX2NtZCgweDU1LCAweDJBQUEsIGJhc2UsIG1hcCwgY2ZpLCBj
-ZmktPmRldmljZV90eXBlLCBOVUxMKTsKKwljZmlfc2VuZF9nZW5fY21kKDB4OTgsIDB4NTU1NSwg
-YmFzZSwgbWFwLCBjZmksIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOworCWlmIChjZmlfcXJ5X3By
-ZXNlbnQobWFwLCBiYXNlLCBjZmkpKQorCQlyZXR1cm4gMTsKIAkvKiBRUlkgbm90IGZvdW5kICov
-CiAJcmV0dXJuIDA7CiB9Cg==
---001485f6d4840350f70478ff7fa8--
+regards,
+dan carpenter
