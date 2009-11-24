@@ -1,21 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCrvf-0002uq-G4
-	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 09:43:28 +0000
-Subject: Re: [PATCH] enable erase-suspend-program for CFI cmdset_0002
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-In-Reply-To: <4B0BA26F.2020707@aimvalley.nl>
-References: <200911191101.nAJB1wwH000784@linpc062.aimsys.nl>
-	<alpine.LFD.2.00.0911221243070.2059@xanadu.home>
-	<4B0BA26F.2020707@aimvalley.nl>
+Received: from fgwmail6.fujitsu.co.jp ([192.51.44.36])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NCsvT-00060H-88
+	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 10:47:20 +0000
+Date: Tue, 24 Nov 2009 19:46:25 +0900 (JST)
+From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Subject: Re: [PATCH 4/7] nandsim: Don't use PF_MEMALLOC
+In-Reply-To: <4B0AEA33.3010306@nokia.com>
+References: <1258988417.18407.44.camel@localhost> <4B0AEA33.3010306@nokia.com>
+Message-Id: <20091124194532.AFC2.A69D9226@jp.fujitsu.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 Nov 2009 11:42:53 +0200
-Message-Id: <1259055773.18407.69.camel@localhost>
-Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Nicolas Pitre <nico@fluxnic.net>
-Reply-To: dedekind1@gmail.com
+Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	kosaki.motohiro@jp.fujitsu.com, Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-11-24 at 10:07 +0100, Norbert van Bolhuis wrote:
-> Nicolas Pitre wrote:
-> > On Thu, 19 Nov 2009, Norbert van Bolhuis wrote:
+Hi
+
+Thank you for this useful comments.
+
+> > I vaguely remember Adrian (CCed) did this on purpose. This is for the
+> > case when nandsim emulates NAND flash on top of a file. So there are 2
+> > file-systems involved: one sits on top of nandsim (e.g. UBIFS) and the
+> > other owns the file which nandsim uses (e.g., ext3).
 > > 
-> >> erase-suspend for writing is required to avoid blocking applications that wish
-> >> to write some data (to a NOR block other than the one being erased).
-> >> Particularly, it solves some huge delays that an application (which writes to a
-> >> UBIFS) will experience if UBI attaches to empty NOR flash. In this case the
-> >> UBI background thread will erase a lot of blocks and the application can be blocked
-> >> for minutes because of the "MTD/CFI chip lock".
-> >> This feature has been disabled for years. Maybe this was because the old code
-> >> turned it on for erase-suspend read-only chips also (cfip->EraseSuspend & 0x1).
-> >> This is wrong and corrected now.
-> >> I tested this patch and it seems to work fine.
-> >>
-> >> Signed-off-by: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-> > 
-> > FYI: I have no experience with non-Intel parts and no good knowledge of 
-> > the cmdset_0002 code.  So I can't review this.
+> > And I really cannot remember off the top of my head why he needed
+> > PF_MEMALLOC, but I think Adrian wanted to prevent the direct reclaim
+> > path to re-enter, say UBIFS, and cause deadlock. But I'd thing that all
+> > the allocations in vfs_read()/vfs_write() should be GFP_NOFS, so that
+> > should not be a probelm?
 > > 
 > 
-> OK.
+> Yes it needs PF_MEMALLOC to prevent deadlock because there can be a
+> file system on top of nandsim which, in this case, is on top of another
+> file system.
 > 
-> so, who's approving/reviewing patches for cmdset_0002. Nobody ?
+> I do not see how mempools will help here.
+> 
+> Please offer an alternative solution.
 
-I think we can just take it, since you tested it and confirm it works
-and solves a real problem. I'll put it to my l2 tree later, do not have
-time right now.
+I have few questions.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Can you please explain more detail? Another stackable filesystam
+(e.g. ecryptfs) don't have such problem. Why nandsim have its issue?
+What lock cause deadlock?
