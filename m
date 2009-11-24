@@ -1,23 +1,19 @@
 Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCu0r-0006dj-3w
-	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 11:56:58 +0000
-Message-ID: <4B0BC9E3.6070504@nokia.com>
-Date: Tue, 24 Nov 2009 13:56:19 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: ext KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-Subject: Re: [PATCH 4/7] nandsim: Don't use PF_MEMALLOC
-References: <1258988417.18407.44.camel@localhost> <4B0AEA33.3010306@nokia.com>
-	<20091124194532.AFC2.A69D9226@jp.fujitsu.com>
-In-Reply-To: <20091124194532.AFC2.A69D9226@jp.fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
+	id 1NCwWt-0008U0-CA
+	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 14:38:12 +0000
+Subject: Re: [PATCH] enable erase-suspend-program for CFI cmdset_0002
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+In-Reply-To: <200911191101.nAJB1wwH000784@linpc062.aimsys.nl>
+References: <200911191101.nAJB1wwH000784@linpc062.aimsys.nl>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 24 Nov 2009 16:36:46 +0200
+Message-Id: <1259073406.29118.17.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: nico@cam.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext KOSAKI Motohiro wrote:
-> Hi
+On Thu, 2009-11-19 at 12:01 +0100, Norbert van Bolhuis wrote:
+> erase-suspend for writing is required to avoid blocking applications that wish
+> to write some data (to a NOR block other than the one being erased).
+> Particularly, it solves some huge delays that an application (which writes to a
+> UBIFS) will experience if UBI attaches to empty NOR flash. In this case the
+> UBI background thread will erase a lot of blocks and the application can be blocked
+> for minutes because of the "MTD/CFI chip lock".
+> This feature has been disabled for years. Maybe this was because the old code
+> turned it on for erase-suspend read-only chips also (cfip->EraseSuspend & 0x1).
+> This is wrong and corrected now.
+> I tested this patch and it seems to work fine.
 > 
-> Thank you for this useful comments.
-> 
->>> I vaguely remember Adrian (CCed) did this on purpose. This is for the
->>> case when nandsim emulates NAND flash on top of a file. So there are 2
->>> file-systems involved: one sits on top of nandsim (e.g. UBIFS) and the
->>> other owns the file which nandsim uses (e.g., ext3).
->>>
->>> And I really cannot remember off the top of my head why he needed
->>> PF_MEMALLOC, but I think Adrian wanted to prevent the direct reclaim
->>> path to re-enter, say UBIFS, and cause deadlock. But I'd thing that all
->>> the allocations in vfs_read()/vfs_write() should be GFP_NOFS, so that
->>> should not be a probelm?
->>>
->> Yes it needs PF_MEMALLOC to prevent deadlock because there can be a
->> file system on top of nandsim which, in this case, is on top of another
->> file system.
->>
->> I do not see how mempools will help here.
->>
->> Please offer an alternative solution.
-> 
-> I have few questions.
-> 
-> Can you please explain more detail? Another stackable filesystam
-> (e.g. ecryptfs) don't have such problem. Why nandsim have its issue?
-> What lock cause deadlock?
-> 
-> 
-> 
+> Signed-off-by: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 
-The file systems are not stacked.  One is over nandsim, which nandsim
-does not know about because it is just a lowly NAND device, and, with
-the file cache option, one file system below to provide the file cache.
+I did not follow the patch conversation too closely - but should you be
+the patch author or Joakim? If you took it as it is - then it is Joakim.
+If you modified it, then at least Joakim's name should be in the commit
+log.
 
-The deadlock is the kernel writing out dirty pages to the top file system
-which writes to nandsim which writes to the bottom file system which
-allocates memory which causes dirty pages to be written out to the top
-file system, which tries to write to nandsim => deadlock.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
