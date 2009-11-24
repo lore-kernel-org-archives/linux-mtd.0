@@ -1,19 +1,26 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NCwwV-0006e1-4G
-	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 15:04:39 +0000
-Subject: Re: [PATCH] add FAQ entry for "task pdflush:110 blocked for more
-	than 120 seconds"
+	id 1NCwyD-0007RM-Ho
+	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 15:06:26 +0000
+Subject: Re: [PATCH-v6 0/4] OMAP: Adding flash support to SDP, ZOOM2 and
+	LDP boards
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-In-Reply-To: <200911181323.nAIDNf94012115@linpc062.aimsys.nl>
-References: <200911181323.nAIDNf94012115@linpc062.aimsys.nl>
+To: Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <ce9ab5790911190608r5b7e8226j3546714957ce70e6@mail.gmail.com>
+References: <63751.192.168.10.88.1252582264.squirrel@dbdmail.itg.ti.com>
+	<ce9ab5790909251957t5598e4efq765f86420426392e@mail.gmail.com>
+	<ce9ab5790910260507y2d0067dk1c12f0439c6fe5d7@mail.gmail.com>
+	<ce9ab5790911040328p215dede2v37db38a966a5bbd5@mail.gmail.com>
+	<20091109205250.GB23952@atomide.com>
+	<ce9ab5790911100201j6b1ef5e1g43a992b00e69ade4@mail.gmail.com>
+	<ce9ab5790911190608r5b7e8226j3546714957ce70e6@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 Nov 2009 17:03:28 +0200
-Message-Id: <1259075008.29118.19.camel@localhost>
+Date: Tue, 24 Nov 2009 17:06:13 +0200
+Message-Id: <1259075173.29118.20.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+	Linux MTD <linux-mtd@lists.infradead.org>, vimal singh <vimalsingh@ti.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,14 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-11-18 at 14:23 +0100, Norbert van Bolhuis wrote:
-> This FAQ entry explains the possible relationship with the
-> warning "INFO: task pdflush:110 blocked for more than 120 seconds" and the
-> UBI background thread.
+On Thu, 2009-11-19 at 19:38 +0530, Vimal Singh wrote:
+> Here is the v6 of this patch series. I am cc'ing mtd list too this time.
 > 
-> Signed-off-by: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+> 
+> From 8bc97108cf9c78216f1ea5407ccbd900e6b63dc2 Mon Sep 17 00:00:00 2001
+> From: Vimal Singh <vimalsingh@ti.com>
+> Date: Thu, 19 Nov 2009 19:28:11 +0530
+> 
+> This patch series adds flash support for NAND (in sdp, zoom and ldp),
+> OneNAND and NOR (in sdp)
+> 
+> Tested on Zoom2 and 3430SDP
+> 
+> Vimal Singh (4):
+> [PATCH-v6 1/4] OMAP2/3: Add support for flash on SDP boards
+> [PATCH-v6 2/4] OMAP3: Add support for NAND on ZOOM/LDP boards
+> [PATCH-v6 3/4] OMAP: Zoom2: Enable NAND and JFFS2 support in defconfig
+> [PATCH-v6 4/4] OMAP: 3430SDP: Enable NAND in defconfig
 
-Tweaked and pushed to mtd-www, thanks.
+Is it possible to separate the MTD and OMAP parts?
 
 -- 
 Best Regards,
