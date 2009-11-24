@@ -1,30 +1,21 @@
-Received: from isilmar.linta.de ([213.133.102.198] helo=linta.de)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1N6jKC-00032h-QD
-	for linux-mtd@lists.infradead.org; Sat, 07 Nov 2009 11:19:25 +0000
-From: Dominik Brodowski <linux@dominikbrodowski.net>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
-	Pep Talens <pep.talens@f1-connecting.com>
-Subject: pcmciamtd -- what's broken, who needs it?
-Message-ID: <20091107110259.GA1173@comet.dominikbrodowski.net>
-References: <200911041120.25305.pep.talens@f1-connecting.com>
-	<20091024194219.GA19546@comet.dominikbrodowski.net>
-	<1256413386-20501-14-git-send-email-linux@dominikbrodowski.net>
-	<1256539331.29885.360.camel@localhost>
-	<20091026071352.GA26980@isilmar.linta.de>
-	<1256541991.29885.376.camel@localhost>
-	<20091026101909.271c109e@lxorguk.ukuu.org.uk>
-	<1256552337.29885.419.camel@localhost>
-	<1257237433.21596.60.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+	id 1NCpL5-00072U-PQ
+	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 06:57:32 +0000
+Subject: Re: Ubiformat --erase-counter not always used
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Darwin Rambo <drambo@broadcom.com>
+In-Reply-To: <B125D8217ABC4B43826503DE00A2D44910DF852EF3@SJEXCHCCR01.corp.ad.broadcom.com>
+References: <200911172245.nAHMjnss001994@imap1.linux-foundation.org>
+	<1258989544.18407.48.camel@localhost>
+	<B125D8217ABC4B43826503DE00A2D44910DF852EF3@SJEXCHCCR01.corp.ad.broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 24 Nov 2009 08:57:11 +0200
+Message-Id: <1259045831.18407.54.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200911041120.25305.pep.talens@f1-connecting.com>
-	<1257237433.21596.60.camel@localhost>
-Cc: 'David Woodhouse' <dwmw2@infradead.org>, linux-pcmcia@lists.infradead.org,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,20 +24,47 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Sat, 07 Nov 2009 11:19:25 -0000
 
-Hey,
+On Mon, 2009-11-23 at 10:57 -0800, Darwin Rambo wrote:
+> Hello Artem, 
+> 
+> This is not a bug report, just an observation on ubiformat. It only seems to take the --erase-counter parameter in certain situations. If you have alien data it seems to take it. If the blocks are FF erased or previously formatted correctly it seems to ignore the --erase-counter argument, even though it says it is using it (see below).
+> 
+> Should we add something in the online help or documentation to explain this better and maybe say in the ubiformat tool itself when the switch is getting used or ignored and why?
+> 
+> # ./ubiformat /dev/mtd4 -n --erase-counter=1234 -v -y
+> ubiformat: mtd4 (NAND), size 2097152 bytes (2.0 MiB), 524288 eraseblocks of 524288 bytes (512.0 KiB), min. I/O size 4096 bytes
+> libscan: start scanning eraseblocks 0-4
+> libscan: scanning eraseblock 0: alien
+> libscan: scanning eraseblock 1: alien
+> libscan: scanning eraseblock 2: alien
+> libscan: scanning eraseblock 3: alien
+> libscan: finished, mean EC 0, 0 OK, 0 corrupted, 0 empty, 4 alien, bad 0
+> ubiformat: warning!: 4 of 4 eraseblocks contain non-ubifs data
+> ubiformat: use erase counter 1234 for all eraseblocks
+> ubiformat: eraseblock 0: erase, write EC 1234
+> ubiformat: eraseblock 1: erase, write EC 1234
+> ubiformat: eraseblock 2: erase, write EC 1234
+> ubiformat: eraseblock 3: erase, write EC 1234
+> 192.168.1.105 # ./ubiformat /dev/mtd4 -n --erase-counter=5432 -v -y
+> ubiformat: mtd4 (NAND), size 2097152 bytes (2.0 MiB), 524288 eraseblocks of 524288 bytes (512.0 KiB), min. I/O size 4096 bytes
+> libscan: start scanning eraseblocks 0-4
+> libscan: scanning eraseblock 0: OK, erase counter 1234
+> libscan: scanning eraseblock 1: OK, erase counter 1234
+> libscan: scanning eraseblock 2: OK, erase counter 1234
+> libscan: scanning eraseblock 3: OK, erase counter 1234
+> libscan: finished, mean EC 1234, 4 OK, 0 corrupted, 0 empty, 0 alien, bad 0
+> ubiformat: 4 eraseblocks have valid erase counter, mean value is 1234
+> ubiformat: use erase counter 5432 for all eraseblocks    <------------------ Didn't take this value
+> ubiformat: eraseblock 0: erase, write EC 1235
+> ubiformat: eraseblock 1: erase, write EC 1235
+> ubiformat: eraseblock 2: erase, write EC 1235
+> ubiformat: eraseblock 3: erase, write EC 1235 
 
-it seems that just as we were preparing to move pcmciamtd to staging, an
-user who still tries to use it has appeared:
+Looks like a bug to me. I think it should take the EC you ask it in all
+cases. I'll look at this when I have a bit more time, thanks for the
+report.
 
-> ATTR{modalias}=="pcmcia:m0000c0000f00fn00pfn00paEBF91155pb805360CApc00000000pd00000000"
-> † † ATTR{prod_id2}==" †2MB SRAM CARD"
-> † † ATTR{prod_id1}=="PRETEC"
-> † † ATTR{pm_state}=="on"
-> † † ATTR{function}=="0x00"
-
-So, what is actually BROKEN with pcmciamtd.c ?
-
-Best,
-	Dominik
+-- 
+Best Regards,
+Artem Bityutskiy (–ê—Ä—Ç—ë–º –ë–∏—Ç—é—Ü–∫–∏–π)
