@@ -1,7 +1,7 @@
 From: vimalsingh@ti.com (Vimal Singh)
 Date: Wed, 25 Nov 2009 18:23:15 +0530
 Subject: [PATCH] Introducing 'gpmc-nand.c' for GPMC specific NAND init
-Message-ID: <mailman.64.1259849230.2170.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.65.1259931915.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
@@ -13,10 +13,10 @@ to 'gpmc-nand.c'.
 Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 ---
  arch/arm/mach-omap2/Makefile           |    3 +
- arch/arm/mach-omap2/gpmc-nand.c        |  141 ++++++++++++++++++++++++++++++++
+ arch/arm/mach-omap2/gpmc-nand.c        |  142 ++++++++++++++++++++++++++++++++
  arch/arm/plat-omap/include/plat/nand.h |    6 ++
  drivers/mtd/nand/omap2.c               |   26 +-----
- 4 files changed, 153 insertions(+), 23 deletions(-)
+ 4 files changed, 154 insertions(+), 23 deletions(-)
  create mode 100644 arch/arm/mach-omap2/gpmc-nand.c
 
 diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
@@ -34,10 +34,10 @@ index 59b0ccc..0dfe27a 100644
  obj-y					+= $(smc91x-m) $(smc91x-y)
 diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
 new file mode 100644
-index 0000000..d92abdf
+index 0000000..0621e39
 --- /dev/null
 +++ b/arch/arm/mach-omap2/gpmc-nand.c
-@@ -0,0 +1,141 @@
+@@ -0,0 +1,142 @@
 +/*
 + * gpmc-nand.c
 + *
@@ -151,7 +151,8 @@ index 0000000..d92abdf
 +	gpmc_nand_data->nand_setup = gpmc_nand_setup;
 +	gpmc_nand_device.dev.platform_data = gpmc_nand_data;
 +
-+	err = gpmc_nand_setup((void __iomem *)&gpmc_nand_data->start);
++	err = gpmc_nand_setup((void __iomem *)
++					&gpmc_nand_data->gpmc_cs_baseaddr);
 +	if (err < 0) {
 +		dev_err(dev, "NAND platform setup failed: %d\n", err);
 +		return err;
