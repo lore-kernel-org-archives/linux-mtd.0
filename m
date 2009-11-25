@@ -1,43 +1,24 @@
-Received: from fgwmail6.fujitsu.co.jp ([192.51.44.36])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1ND5xe-000809-H2
-	for linux-mtd@lists.infradead.org; Wed, 25 Nov 2009 00:42:27 +0000
-Received: from m4.gw.fujitsu.co.jp ([10.0.50.74])
-	by fgwmail6.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	nAP0gIeI001866 for <linux-mtd@lists.infradead.org> (envelope-from
-	kosaki.motohiro@jp.fujitsu.com); Wed, 25 Nov 2009 09:42:18 +0900
-Received: from smail (m4 [127.0.0.1])
-	by outgoing.m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 6CEA945DE70
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Nov 2009 09:42:18 +0900 (JST)
-Received: from s4.gw.fujitsu.co.jp (s4.gw.fujitsu.co.jp [10.0.50.94])
-	by m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 4CD1545DE60
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Nov 2009 09:42:18 +0900 (JST)
-Received: from s4.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id 29F781DB8037
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Nov 2009 09:42:18 +0900 (JST)
-Received: from m108.s.css.fujitsu.com (m108.s.css.fujitsu.com [10.249.87.108])
-	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id CD6E3E18003
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Nov 2009 09:42:17 +0900 (JST)
-From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NDC4W-0003sh-Mv
+	for linux-mtd@lists.infradead.org; Wed, 25 Nov 2009 07:13:57 +0000
+Message-ID: <4B0CD912.7090002@nokia.com>
+Date: Wed, 25 Nov 2009 09:13:22 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
 Subject: Re: [PATCH 4/7] nandsim: Don't use PF_MEMALLOC
-In-Reply-To: <4B0BC9E3.6070504@nokia.com>
 References: <20091124194532.AFC2.A69D9226@jp.fujitsu.com>
 	<4B0BC9E3.6070504@nokia.com>
-Message-Id: <20091125084630.AFC5.A69D9226@jp.fujitsu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Date: Wed, 25 Nov 2009 09:42:16 +0900 (JST)
+	<20091125084630.AFC5.A69D9226@jp.fujitsu.com>
+In-Reply-To: <20091125084630.AFC5.A69D9226@jp.fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
 	David Woodhouse <David.Woodhouse@intel.com>,
 	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	kosaki.motohiro@jp.fujitsu.com, Andrew Morton <akpm@linux-foundation.org>
+	Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,44 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> ext KOSAKI Motohiro wrote:
-> > Hi
-> > 
-> > Thank you for this useful comments.
-> > 
-> >>> I vaguely remember Adrian (CCed) did this on purpose. This is for the
-> >>> case when nandsim emulates NAND flash on top of a file. So there are 2
-> >>> file-systems involved: one sits on top of nandsim (e.g. UBIFS) and the
-> >>> other owns the file which nandsim uses (e.g., ext3).
-> >>>
-> >>> And I really cannot remember off the top of my head why he needed
-> >>> PF_MEMALLOC, but I think Adrian wanted to prevent the direct reclaim
-> >>> path to re-enter, say UBIFS, and cause deadlock. But I'd thing that all
-> >>> the allocations in vfs_read()/vfs_write() should be GFP_NOFS, so that
-> >>> should not be a probelm?
-> >>>
-> >> Yes it needs PF_MEMALLOC to prevent deadlock because there can be a
-> >> file system on top of nandsim which, in this case, is on top of another
-> >> file system.
-> >>
-> >> I do not see how mempools will help here.
-> >>
-> >> Please offer an alternative solution.
-> > 
-> > I have few questions.
-> > 
-> > Can you please explain more detail? Another stackable filesystam
-> > (e.g. ecryptfs) don't have such problem. Why nandsim have its issue?
-> > What lock cause deadlock?
+KOSAKI Motohiro wrote:
+>> KOSAKI Motohiro wrote:
+>>> Hi
+>>>
+>>> Thank you for this useful comments.
+>>>
+>>>>> I vaguely remember Adrian (CCed) did this on purpose. This is for the
+>>>>> case when nandsim emulates NAND flash on top of a file. So there are 2
+>>>>> file-systems involved: one sits on top of nandsim (e.g. UBIFS) and the
+>>>>> other owns the file which nandsim uses (e.g., ext3).
+>>>>>
+>>>>> And I really cannot remember off the top of my head why he needed
+>>>>> PF_MEMALLOC, but I think Adrian wanted to prevent the direct reclaim
+>>>>> path to re-enter, say UBIFS, and cause deadlock. But I'd thing that all
+>>>>> the allocations in vfs_read()/vfs_write() should be GFP_NOFS, so that
+>>>>> should not be a probelm?
+>>>>>
+>>>> Yes it needs PF_MEMALLOC to prevent deadlock because there can be a
+>>>> file system on top of nandsim which, in this case, is on top of another
+>>>> file system.
+>>>>
+>>>> I do not see how mempools will help here.
+>>>>
+>>>> Please offer an alternative solution.
+>>> I have few questions.
+>>>
+>>> Can you please explain more detail? Another stackable filesystam
+>>> (e.g. ecryptfs) don't have such problem. Why nandsim have its issue?
+>>> What lock cause deadlock?
+>> The file systems are not stacked.  One is over nandsim, which nandsim
+>> does not know about because it is just a lowly NAND device, and, with
+>> the file cache option, one file system below to provide the file cache.
+>>
+>> The deadlock is the kernel writing out dirty pages to the top file system
+>> which writes to nandsim which writes to the bottom file system which
+>> allocates memory which causes dirty pages to be written out to the top
+>> file system, which tries to write to nandsim => deadlock.
 > 
-> The file systems are not stacked.  One is over nandsim, which nandsim
-> does not know about because it is just a lowly NAND device, and, with
-> the file cache option, one file system below to provide the file cache.
-> 
-> The deadlock is the kernel writing out dirty pages to the top file system
-> which writes to nandsim which writes to the bottom file system which
-> allocates memory which causes dirty pages to be written out to the top
-> file system, which tries to write to nandsim => deadlock.
+> You mean you want to prevent pageout() instead reclaim itself?
 
-You mean you want to prevent pageout() instead reclaim itself?
-Dropping filecache seems don't make recursive call, right?
+Yes
+
+> Dropping filecache seems don't make recursive call, right?
+
+Yes
