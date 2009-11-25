@@ -1,35 +1,43 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1ND2dS-0003eC-Su
-	for linux-mtd@lists.infradead.org; Tue, 24 Nov 2009 21:09:21 +0000
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 13/38] don't use __exit_p to wrap mxcnd_remove
-Date: Tue, 24 Nov 2009 22:07:08 +0100
-Message-Id: <1259096853-18909-13-git-send-email-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <1259096853-18909-12-git-send-email-u.kleine-koenig@pengutronix.de>
-References: <1259096853-18909-1-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-2-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-3-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-4-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-5-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-6-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-7-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-8-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-9-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-10-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-11-git-send-email-u.kleine-koenig@pengutronix.de>
-	<1259096853-18909-12-git-send-email-u.kleine-koenig@pengutronix.de>
+Received: from fgwmail6.fujitsu.co.jp ([192.51.44.36])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1ND5xe-000809-H2
+	for linux-mtd@lists.infradead.org; Wed, 25 Nov 2009 00:42:27 +0000
+Received: from m4.gw.fujitsu.co.jp ([10.0.50.74])
+	by fgwmail6.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
+	nAP0gIeI001866 for <linux-mtd@lists.infradead.org> (envelope-from
+	kosaki.motohiro@jp.fujitsu.com); Wed, 25 Nov 2009 09:42:18 +0900
+Received: from smail (m4 [127.0.0.1])
+	by outgoing.m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 6CEA945DE70
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 Nov 2009 09:42:18 +0900 (JST)
+Received: from s4.gw.fujitsu.co.jp (s4.gw.fujitsu.co.jp [10.0.50.94])
+	by m4.gw.fujitsu.co.jp (Postfix) with ESMTP id 4CD1545DE60
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 Nov 2009 09:42:18 +0900 (JST)
+Received: from s4.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
+	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id 29F781DB8037
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 Nov 2009 09:42:18 +0900 (JST)
+Received: from m108.s.css.fujitsu.com (m108.s.css.fujitsu.com [10.249.87.108])
+	by s4.gw.fujitsu.co.jp (Postfix) with ESMTP id CD6E3E18003
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 Nov 2009 09:42:17 +0900 (JST)
+From: KOSAKI Motohiro <kosaki.motohiro@jp.fujitsu.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Subject: Re: [PATCH 4/7] nandsim: Don't use PF_MEMALLOC
+In-Reply-To: <4B0BC9E3.6070504@nokia.com>
+References: <20091124194532.AFC2.A69D9226@jp.fujitsu.com>
+	<4B0BC9E3.6070504@nokia.com>
+Message-Id: <20091125084630.AFC5.A69D9226@jp.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+Date: Wed, 25 Nov 2009 09:42:16 +0900 (JST)
+Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
 	David Woodhouse <David.Woodhouse@intel.com>,
-	Vladimir Barinov <vbarinov@embeddedalley.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
-	Vladimir Barinov <vova.barinov@gmail.com>,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	David Woodhouse <dwmw2@infradead.org>
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	kosaki.motohiro@jp.fujitsu.com, Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,35 +47,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The function mxcnd_remove is defined using __devexit, so don't use
-__exit_p but __devexit_p to wrap it.
+> ext KOSAKI Motohiro wrote:
+> > Hi
+> > 
+> > Thank you for this useful comments.
+> > 
+> >>> I vaguely remember Adrian (CCed) did this on purpose. This is for the
+> >>> case when nandsim emulates NAND flash on top of a file. So there are 2
+> >>> file-systems involved: one sits on top of nandsim (e.g. UBIFS) and the
+> >>> other owns the file which nandsim uses (e.g., ext3).
+> >>>
+> >>> And I really cannot remember off the top of my head why he needed
+> >>> PF_MEMALLOC, but I think Adrian wanted to prevent the direct reclaim
+> >>> path to re-enter, say UBIFS, and cause deadlock. But I'd thing that all
+> >>> the allocations in vfs_read()/vfs_write() should be GFP_NOFS, so that
+> >>> should not be a probelm?
+> >>>
+> >> Yes it needs PF_MEMALLOC to prevent deadlock because there can be a
+> >> file system on top of nandsim which, in this case, is on top of another
+> >> file system.
+> >>
+> >> I do not see how mempools will help here.
+> >>
+> >> Please offer an alternative solution.
+> > 
+> > I have few questions.
+> > 
+> > Can you please explain more detail? Another stackable filesystam
+> > (e.g. ecryptfs) don't have such problem. Why nandsim have its issue?
+> > What lock cause deadlock?
+> 
+> The file systems are not stacked.  One is over nandsim, which nandsim
+> does not know about because it is just a lowly NAND device, and, with
+> the file cache option, one file system below to provide the file cache.
+> 
+> The deadlock is the kernel writing out dirty pages to the top file system
+> which writes to nandsim which writes to the bottom file system which
+> allocates memory which causes dirty pages to be written out to the top
+> file system, which tries to write to nandsim => deadlock.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: David Woodhouse <David.Woodhouse@intel.com>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Vladimir Barinov <vova.barinov@gmail.com>
-Cc: Vladimir Barinov <vbarinov@embeddedalley.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Eric Benard <ebenard@eukrea.com>
----
- drivers/mtd/nand/mxc_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 65b26d5..661d46a 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -1113,7 +1113,7 @@ static struct platform_driver mxcnd_driver = {
- 	.driver = {
- 		   .name = DRIVER_NAME,
- 		   },
--	.remove = __exit_p(mxcnd_remove),
-+	.remove = __devexit_p(mxcnd_remove),
- 	.suspend = mxcnd_suspend,
- 	.resume = mxcnd_resume,
- };
--- 
-1.6.5.2
+You mean you want to prevent pageout() instead reclaim itself?
+Dropping filecache seems don't make recursive call, right?
