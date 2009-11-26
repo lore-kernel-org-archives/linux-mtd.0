@@ -1,21 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NDaqf-00088Z-IW
-	for linux-mtd@lists.infradead.org; Thu, 26 Nov 2009 09:41:18 +0000
-Subject: Re: Ubiformat --erase-counter not always used
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Darwin Rambo <drambo@broadcom.com>
-In-Reply-To: <B125D8217ABC4B43826503DE00A2D44910DF852EF3@SJEXCHCCR01.corp.ad.broadcom.com>
-References: <200911172245.nAHMjnss001994@imap1.linux-foundation.org>
-	<1258989544.18407.48.camel@localhost>
-	<B125D8217ABC4B43826503DE00A2D44910DF852EF3@SJEXCHCCR01.corp.ad.broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 26 Nov 2009 11:41:04 +0200
-Message-Id: <1259228464.29118.60.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	id 1NDeO6-0006tl-R1
+	for linux-mtd@lists.infradead.org; Thu, 26 Nov 2009 13:28:03 +0000
+Message-ID: <4B0E824A.7030207@nokia.com>
+Date: Thu, 26 Nov 2009 15:27:38 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: "Korhonen Mika.2 (EXT-Ardites/Oulu)" <ext-mika.2.korhonen@nokia.com>
+Subject: Re: [PATCH] MTD OneNAND OMAP2/3: allow giving partition layout as
+	module parameter
+References: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>	<1257230422.21596.37.camel@localhost>
+	<4AEFFAE3.1080200@nokia.com>
+In-Reply-To: <4AEFFAE3.1080200@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-11-23 at 10:57 -0800, Darwin Rambo wrote:
-> Hello Artem, 
-> 
-> This is not a bug report, just an observation on ubiformat. It only seems to take the --erase-counter parameter in certain situations. If you have alien data it seems to take it. If the blocks are FF erased or previously formatted correctly it seems to ignore the --erase-counter argument, even though it says it is using it (see below).
-> 
-> Should we add something in the online help or documentation to explain this better and maybe say in the ubiformat tool itself when the switch is getting used or ignored and why?
+Korhonen Mika.2 (EXT-Ardites/Oulu) wrote:
+> Artem Bityutskiy wrote:
+>> On Thu, 2009-09-03 at 14:15 +0300, Mika Korhonen wrote:
+>>   
+>>> Add module parameter "parts" to omap2-onenand driver. Parameter format is
+>>> the same as for cmdlinepart except mtd-id must not be specified - it
+>>> gets prepended by the driver, i.e.: parts=<partdef>[,<partdef>]*
+>>>
+>>> This allows one to repartition the OneNAND chip and is useful for flashing
+>>> applications that do the partitioning from scratch or want to backup and
+>>> update the partitioning.
+>>>
+>>> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
+>>> ---
+>>>  drivers/mtd/cmdlinepart.c   |   35 +++++++++++++++++++++++++++++------
+>>>  drivers/mtd/onenand/omap2.c |   29 +++++++++++++++++++++++++++++
+>>>  2 files changed, 58 insertions(+), 6 deletions(-)
+>>>     
+>> This should not be onenand module parameters actually. This
+>> re-partitioning should be done via an mtd device ioctl instead.
+>>
+>> Could you try to introduce a new mtd ioctl?
+>>
+>> I know the partitioning in mtd is ugly, so you may hit some challenges.
+>> E.g., all these special cases like
+>>
+>> #ifdef CONFIG_MTD_PARTITIONS
+>>         /* Deregister partitions */
+>>         del_mtd_partitions (mtd);
+>> #endif
+>>         /* Deregister the device */
+>>         del_mtd_device (mtd);
+>>
+>> make no sense and should die. We should always have partitioning support
+>> instead. So the mtdpart module should also die and partitioning support
+>> should become part of mtdcore.
+>>
+>>   
+> I agree, actually my first intention to was to make it more generic but 
+> the framework indeed would have needed non-minor rework, so I took the 
+> easy route to get started.
 
-Should be fixed in the mtd-utils repository now, thanks.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Could we just have the cmdlinepart change for now and make re-partitioning
+a separate issue?
