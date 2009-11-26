@@ -1,21 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NDeO6-0006tl-R1
-	for linux-mtd@lists.infradead.org; Thu, 26 Nov 2009 13:28:03 +0000
-Message-ID: <4B0E824A.7030207@nokia.com>
-Date: Thu, 26 Nov 2009 15:27:38 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NDgKk-0006Av-CR
+	for linux-mtd@lists.infradead.org; Thu, 26 Nov 2009 15:32:42 +0000
+Received: by pwi12 with SMTP id 12so583433pwi.2
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Nov 2009 07:32:36 -0800 (PST)
 MIME-Version: 1.0
-To: "Korhonen Mika.2 (EXT-Ardites/Oulu)" <ext-mika.2.korhonen@nokia.com>
-Subject: Re: [PATCH] MTD OneNAND OMAP2/3: allow giving partition layout as
-	module parameter
-References: <1251976558-13463-1-git-send-email-ext-mika.2.korhonen@nokia.com>	<1257230422.21596.37.camel@localhost>
-	<4AEFFAE3.1080200@nokia.com>
-In-Reply-To: <4AEFFAE3.1080200@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <1259220777.29118.56.camel@localhost>
+References: <d970ff420911250403w6a81308v89f3f0faf47a9ee0@mail.gmail.com>
+	<1259220777.29118.56.camel@localhost>
+Date: Thu, 26 Nov 2009 13:32:36 -0200
+Message-ID: <d970ff420911260732m400e7605u63fe597aa82d8bcc@mail.gmail.com>
+Subject: Re: UBIFS: problems writing to the partition
+From: Alemao <xcarandiru@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Korhonen Mika.2 (EXT-Ardites/Oulu) wrote:
-> Artem Bityutskiy wrote:
->> On Thu, 2009-09-03 at 14:15 +0300, Mika Korhonen wrote:
->>   
->>> Add module parameter "parts" to omap2-onenand driver. Parameter format is
->>> the same as for cmdlinepart except mtd-id must not be specified - it
->>> gets prepended by the driver, i.e.: parts=<partdef>[,<partdef>]*
->>>
->>> This allows one to repartition the OneNAND chip and is useful for flashing
->>> applications that do the partitioning from scratch or want to backup and
->>> update the partitioning.
->>>
->>> Signed-off-by: Mika Korhonen <ext-mika.2.korhonen@nokia.com>
->>> ---
->>>  drivers/mtd/cmdlinepart.c   |   35 +++++++++++++++++++++++++++++------
->>>  drivers/mtd/onenand/omap2.c |   29 +++++++++++++++++++++++++++++
->>>  2 files changed, 58 insertions(+), 6 deletions(-)
->>>     
->> This should not be onenand module parameters actually. This
->> re-partitioning should be done via an mtd device ioctl instead.
+On Thu, Nov 26, 2009 at 5:32 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2009-11-25 at 10:03 -0200, Alemao wrote:
+>> Hi all,
 >>
->> Could you try to introduce a new mtd ioctl?
+>> I have de following scenario:
 >>
->> I know the partitioning in mtd is ugly, so you may hit some challenges.
->> E.g., all these special cases like
+>> - Freescale MPC8541
+>> - U-Boot-2009.03
+>> - Linux-2.6.26
+>> - NAND flash 512Mbit (64MB), page: 512 bytes, erase block: 16KB
 >>
->> #ifdef CONFIG_MTD_PARTITIONS
->>         /* Deregister partitions */
->>         del_mtd_partitions (mtd);
->> #endif
->>         /* Deregister the device */
->>         del_mtd_device (mtd);
 >>
->> make no sense and should die. We should always have partitioning support
->> instead. So the mtdpart module should also die and partitioning support
->> should become part of mtdcore.
+>> And Im creating UBI image with this parameters:
 >>
->>   
-> I agree, actually my first intention to was to make it more generic but 
-> the framework indeed would have needed non-minor rework, so I took the 
-> easy route to get started.
+>> mkfs.ubifs -r rootfs/ -m 512 -c 3897 -e 15872 -o ubi.temp
+>> ubinize -o rootfs.ubifs -m 512 -p 16384 -s 256 ubinize.cfg
+>
+> Please, start with validating your NAND flash/driver using the mtd
+> tests:
+> http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
 
-Could we just have the cmdlinepart change for now and make re-partitioning
-a separate issue?
+
+Im using JFFS2 with no problem. My NAND driver is OK.
