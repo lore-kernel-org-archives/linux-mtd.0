@@ -1,23 +1,35 @@
-Received: from smtp-out113.alice.it ([85.37.17.113])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NDaYN-0004WI-VG
-	for linux-mtd@lists.infradead.org; Thu, 26 Nov 2009 09:22:24 +0000
-Date: Thu, 26 Nov 2009 10:22:08 +0100
-From: Antonio Ospite <ospite@studenti.unina.it>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] MTD: add missing put_chip() in cfi_intelext_reset()
-Message-Id: <20091126102208.4392e7d3.ospite@studenti.unina.it>
-In-Reply-To: <1259218878.29118.39.camel@localhost>
-References: <20091023000533.57893593.ospite@studenti.unina.it>
-	<alpine.LFD.2.00.0910231559320.21460@xanadu.home>
-	<20091120111435.d28c19bf.ospite@studenti.unina.it>
-	<1259218878.29118.39.camel@localhost>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Thu__26_Nov_2009_10_22_08_+0100_zJEhz5er+blk1wt1"
-Cc: openezx-devel@lists.openezx.org, linux-mtd@lists.infradead.org,
-	Nicolas Pitre <nico@fluxnic.net>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NDamj-0007Kt-EB
+	for linux-mtd@lists.infradead.org; Thu, 26 Nov 2009 09:37:14 +0000
+Date: Thu, 26 Nov 2009 10:36:58 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses and
+	panics
+Message-ID: <20091126093657.GA25430@logfs.org>
+References: <20091012122023.GA19365@elte.hu>
+	<20091012150650.51a4b4dc@marrow.netinsight.se>
+	<20091012131528.GC25464@elte.hu>
+	<20091012153937.0dcd73e5@marrow.netinsight.se>
+	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
+	<20091012182346.GH17138@elte.hu>
+	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+	<20091013151751.59e217a7@marrow.netinsight.se>
+	<20091013152235.188059d2@marrow.netinsight.se>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20091013152235.188059d2@marrow.netinsight.se>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Ingo Molnar <mingo@elte.hu>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +39,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Thu__26_Nov_2009_10_22_08_+0100_zJEhz5er+blk1wt1
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just stumbled across this patch.
 
-On Thu, 26 Nov 2009 09:01:18 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Tue, 13 October 2009 15:22:35 +0200, Simon Kagstrom wrote:
+> +void dump_kmsg(int panic)
+> +{
+> +	unsigned long len = ACCESS_ONCE(log_end);
+> +	struct dump_device *dump;
+> +	const char *s1, *s2;
+> +	unsigned long l1, l2;
+> +
+> +	s1 = "";
+> +	l1 = 0;
+> +	s2 = log_buf;
+> +	l2 = len;
+> +
+> +	/* Have we rotated around the circular buffer? */
+> +	if (len > log_buf_len) {
 
-> On Fri, 2009-11-20 at 11:14 +0100, Antonio Ospite wrote:
-> > On Fri, 23 Oct 2009 16:02:42 -0400 (EDT)
-> > Nicolas Pitre <nico@fluxnic.net> wrote:
-> >=20
-> > >=20
-> > > Signed-off-by: Nicolas Pitre <nico@fluxnic.net>
-> > >
-> >=20
-> > Hi, has this fix been submitted yet?
-> > I can't see it in 2.6.32-rc8.
->=20
-> The current situation indicates it is not going to be there.
->=20
-> This patch is in my l2-mtd tree, though.
->
+I believe this bit is wrong.  log_end is an unsigned int, so it can
+wrap relatively quickly.  If log_end just wrapped to 0 and dump_kmsg is
+called, the amount of printk buffer stored appears to be 0 as well.
 
-Ok, thanks, I just want to be sure this will find its way to
-mainline, I don't care which path it takes :)
+To avoid this case one could either declare log_end and len as u64,
+causing extra computational costs.  Or one could just use the
+conditional code below unconditionally.  That could write random or
+zeroed printk buffer directly after bootup, but would never miss
+information.
 
-> --=20
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->=20
+> +		unsigned long pos = (len & LOG_BUF_MASK);
+> +
+> +		s1 = log_buf + pos;
+> +		l1 = log_buf_len - pos;
+> +
+> +		s2 = log_buf;
+> +		l2 = pos;
+> +	}
+> +
+> +	list_for_each_entry(dump, &dump_list, list) {
+> +		if (panic && dump->panic)
+> +			dump->panic(dump, s1, l1, s2, l2);
+> +		else if (!panic && dump->oops)
+> +			dump->oops(dump, s1, l1, s2, l2);
+> +	}
+> +}
+> -- 
+> 1.6.0.4
 
-Regards,
-   Antonio
+Jörn
 
---=20
-Antonio Ospite
-http://ao2.it
-
-PGP public key ID: 0x4553B001
-
-A: Because it messes up the order in which people normally read text.
-   See http://en.wikipedia.org/wiki/Posting_style
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing in e-mail?
-
---Signature=_Thu__26_Nov_2009_10_22_08_+0100_zJEhz5er+blk1wt1
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAksOSMAACgkQ5xr2akVTsAF6ZgCgrt58Kog3DGO0c0COhwYyJbBg
-+4MAn2DQj5WwIVlfF1oMiQqKoe/If8Mr
-=PRbo
------END PGP SIGNATURE-----
-
---Signature=_Thu__26_Nov_2009_10_22_08_+0100_zJEhz5er+blk1wt1--
+-- 
+Everything should be made as simple as possible, but not simpler.
+-- Albert Einstein
