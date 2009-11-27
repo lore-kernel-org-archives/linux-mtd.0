@@ -1,24 +1,29 @@
-Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NDsOM-0005LZ-8C
-	for linux-mtd@lists.infradead.org; Fri, 27 Nov 2009 04:25:15 +0000
-Date: Fri, 27 Nov 2009 15:24:59 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: =?UTF-8?B?IkrDtnJuIEVuZ2VsIg==?= <joern@logfs.org>
-Subject: Re: [PATCH 0/17] [LogFS] New flash filesystem
-Message-Id: <20091127152459.b427f4e5.sfr@canb.auug.org.au>
-In-Reply-To: <20091126083614.GI10944@logfs.org>
-References: <20091120181113.GA2159@logfs.org>
-	<200911231318.39685.arnd@arndb.de>
-	<20091125155510.GE10944@logfs.org>
-	<20091126105103.4b2b4408.sfr@canb.auug.org.au>
-	<20091126083614.GI10944@logfs.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NDvOX-0008J8-8F
+	for linux-mtd@lists.infradead.org; Fri, 27 Nov 2009 07:37:38 +0000
+Subject: Re: [PATCH-v6 0/4] OMAP: Adding flash support to SDP, ZOOM2 and
+	LDP boards
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <ce9ab5790911240725x29b8bd6eq9f9c7a8b21c6786e@mail.gmail.com>
+References: <63751.192.168.10.88.1252582264.squirrel@dbdmail.itg.ti.com>
+	<ce9ab5790909251957t5598e4efq765f86420426392e@mail.gmail.com>
+	<ce9ab5790910260507y2d0067dk1c12f0439c6fe5d7@mail.gmail.com>
+	<ce9ab5790911040328p215dede2v37db38a966a5bbd5@mail.gmail.com>
+	<20091109205250.GB23952@atomide.com>
+	<ce9ab5790911100201j6b1ef5e1g43a992b00e69ade4@mail.gmail.com>
+	<ce9ab5790911190608r5b7e8226j3546714957ce70e6@mail.gmail.com>
+	<1259075173.29118.20.camel@localhost>
+	<ce9ab5790911240725x29b8bd6eq9f9c7a8b21c6786e@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 27 Nov 2009 09:37:21 +0200
+Message-Id: <1259307441.7518.6.camel@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3"
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Content-Transfer-Encoding: 8bit
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+	Linux MTD <linux-mtd@lists.infradead.org>, vimal singh <vimalsingh@ti.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,73 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2009-11-24 at 20:55 +0530, Vimal Singh wrote:
+> On Tue, Nov 24, 2009 at 8:36 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Thu, 2009-11-19 at 19:38 +0530, Vimal Singh wrote:
+> >> Here is the v6 of this patch series. I am cc'ing mtd list too this time.
+> >>
+> >>
+> >> From 8bc97108cf9c78216f1ea5407ccbd900e6b63dc2 Mon Sep 17 00:00:00 2001
+> >> From: Vimal Singh <vimalsingh@ti.com>
+> >> Date: Thu, 19 Nov 2009 19:28:11 +0530
+> >>
+> >> This patch series adds flash support for NAND (in sdp, zoom and ldp),
+> >> OneNAND and NOR (in sdp)
+> >>
+> >> Tested on Zoom2 and 3430SDP
+> >>
+> >> Vimal Singh (4):
+> >> [PATCH-v6 1/4] OMAP2/3: Add support for flash on SDP boards
+> >> [PATCH-v6 2/4] OMAP3: Add support for NAND on ZOOM/LDP boards
+> >> [PATCH-v6 3/4] OMAP: Zoom2: Enable NAND and JFFS2 support in defconfig
+> >> [PATCH-v6 4/4] OMAP: 3430SDP: Enable NAND in defconfig
+> >
+> > Is it possible to separate the MTD and OMAP parts?
+> 
+> 1st patch does migration of gpmc low level calls from omap2.c to gpmc-nand.c.
+> I am not sure how we can have separate patches for this.
 
-Hi J=C3=B6rn,
+Ok. It looks like you intend to merge this stuff via linux-omap, which
+seems right.
 
-On Thu, 26 Nov 2009 09:36:15 +0100 J=C3=B6rn Engel <joern@logfs.org> wrote:
->
-> Being of sound state of mind, I hereby request that you add
-
-:-)
-
-> git://git.kernel.org/pub/scm/linux/kernel/git/joern/logfs.git
-> to linux-next.
->=20
-> Something like that?  Or would you doubt my state of mind if I willing
-> accept the risk of breaking others' compile and suffering the angry
-> emails that inevitably follow?
-
-Sometimes I question my own state of mind :-)
-
-I have added the master branch of the above tree from today.
-
-Thanks for adding your subsystem tree as a participant of linux-next.  As
-you may know, this is not a judgment of your code.  The purpose of
-linux-next is for integration testing and to lower the impact of
-conflicts between subsystems in the next merge window.=20
-
-You will need to ensure that the patches/commits in your tree/series have
-been:
-     * submitted under GPL v2 (or later) and include the Contributor's
-	Signed-off-by,
-     * posted to the relevant mailing list,
-     * reviewed by you (or another maintainer of your subsystem tree),
-     * successfully unit tested, and=20
-     * destined for the current or next Linux merge window.
-
-Basically, this should be just what you would send to Linus (or ask him
-to fetch).  It is allowed to be rebased if you deem it necessary.
-
---=20
-Cheers,
-Stephen Rothwell=20
-sfr@canb.auug.org.au
-
-Legal Stuff:
-By participating in linux-next, your subsystem tree contributions are
-public and will be included in the linux-next trees.  You may be sent
-e-mail messages indicating errors or other issues when the
-patches/commits from your subsystem tree are merged and tested in
-linux-next.  These messages may also be cross-posted to the linux-next
-mailing list, the linux-kernel mailing list, etc.  The linux-next tree
-project and IBM (my employer) make no warranties regarding the linux-next
-project, the testing procedures, the results, the e-mails, etc.  If you
-don't agree to these ground rules, let me know and I'll remove your tree
-from participation in linux-next.
-
---Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAksPVJsACgkQjjKRsyhoI8wE3QCeI5fTGMzx0gwKQOOHylhfDDSq
-jWEAoI0Dvvay+hd4Dae1JBnF4hyzSYWd
-=W0VY
------END PGP SIGNATURE-----
-
---Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3--
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
