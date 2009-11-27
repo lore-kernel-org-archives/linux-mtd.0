@@ -1,21 +1,24 @@
-Received: from yorgi.telenet-ops.be ([195.130.133.69])
+Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NDlYP-0005Te-DL
-	for linux-mtd@lists.infradead.org; Thu, 26 Nov 2009 21:07:09 +0000
-Received: from georges.telenet-ops.be (georges.telenet-ops.be [195.130.137.68])
-	by yorgi.telenet-ops.be (Postfix) with ESMTP id EED7758832C
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Nov 2009 22:07:03 +0100 (CET)
-From: "Ronny Dierckx" <ronny.dierckx@telenet.be>
-To: <linux-mtd@lists.infradead.org>
-Subject: UBIFS synchronisation questions about file create/delete
-Date: Thu, 26 Nov 2009 22:06:51 +0100
-Message-ID: <001301ca6edc$5fc49660$1f4dc320$@dierckx@telenet.be>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: nl-be
+	id 1NDsOM-0005LZ-8C
+	for linux-mtd@lists.infradead.org; Fri, 27 Nov 2009 04:25:15 +0000
+Date: Fri, 27 Nov 2009 15:24:59 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: =?UTF-8?B?IkrDtnJuIEVuZ2VsIg==?= <joern@logfs.org>
+Subject: Re: [PATCH 0/17] [LogFS] New flash filesystem
+Message-Id: <20091127152459.b427f4e5.sfr@canb.auug.org.au>
+In-Reply-To: <20091126083614.GI10944@logfs.org>
+References: <20091120181113.GA2159@logfs.org>
+	<200911231318.39685.arnd@arndb.de>
+	<20091125155510.GE10944@logfs.org>
+	<20091126105103.4b2b4408.sfr@canb.auug.org.au>
+	<20091126083614.GI10944@logfs.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+	micalg="PGP-SHA1";
+	boundary="Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3"
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +28,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+--Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm using UBIFS (git://git.infradead.org/~dedekind/ubifs-v2.6.27.git)
-on an ARM device with OneNAND flash.
+Hi J=C3=B6rn,
 
-I've been reading the documentation, FAQ, ... about sync/fsync/fdatasync and
-the
-write-back buffers, but there are still some things I don't understand.
+On Thu, 26 Nov 2009 09:36:15 +0100 J=C3=B6rn Engel <joern@logfs.org> wrote:
+>
+> Being of sound state of mind, I hereby request that you add
 
-I create a file with vi, write some data in it, close it, don't call sync.
-Then 
-after waiting 10 minutes I cut the power. When the system is restarted, the
-file is
-not there anymore?! Is this normal behavior? Shouldn't there be at least
-a file of 0 bytes because "UBIFS operations which change directory entries
-are synchronous"?
-Doesn't this mean that creating or deleting a file entry doesn't require a
-sync ?
+:-)
 
-Thanks,
+> git://git.kernel.org/pub/scm/linux/kernel/git/joern/logfs.git
+> to linux-next.
+>=20
+> Something like that?  Or would you doubt my state of mind if I willing
+> accept the risk of breaking others' compile and suffering the angry
+> emails that inevitably follow?
 
-Ronny Dierckx
+Sometimes I question my own state of mind :-)
+
+I have added the master branch of the above tree from today.
+
+Thanks for adding your subsystem tree as a participant of linux-next.  As
+you may know, this is not a judgment of your code.  The purpose of
+linux-next is for integration testing and to lower the impact of
+conflicts between subsystems in the next merge window.=20
+
+You will need to ensure that the patches/commits in your tree/series have
+been:
+     * submitted under GPL v2 (or later) and include the Contributor's
+	Signed-off-by,
+     * posted to the relevant mailing list,
+     * reviewed by you (or another maintainer of your subsystem tree),
+     * successfully unit tested, and=20
+     * destined for the current or next Linux merge window.
+
+Basically, this should be just what you would send to Linus (or ask him
+to fetch).  It is allowed to be rebased if you deem it necessary.
+
+--=20
+Cheers,
+Stephen Rothwell=20
+sfr@canb.auug.org.au
+
+Legal Stuff:
+By participating in linux-next, your subsystem tree contributions are
+public and will be included in the linux-next trees.  You may be sent
+e-mail messages indicating errors or other issues when the
+patches/commits from your subsystem tree are merged and tested in
+linux-next.  These messages may also be cross-posted to the linux-next
+mailing list, the linux-kernel mailing list, etc.  The linux-next tree
+project and IBM (my employer) make no warranties regarding the linux-next
+project, the testing procedures, the results, the e-mails, etc.  If you
+don't agree to these ground rules, let me know and I'll remove your tree
+from participation in linux-next.
+
+--Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAksPVJsACgkQjjKRsyhoI8wE3QCeI5fTGMzx0gwKQOOHylhfDDSq
+jWEAoI0Dvvay+hd4Dae1JBnF4hyzSYWd
+=W0VY
+-----END PGP SIGNATURE-----
+
+--Signature=_Fri__27_Nov_2009_15_24_59_+1100_1bjiS9.ZWTkPl0y3--
