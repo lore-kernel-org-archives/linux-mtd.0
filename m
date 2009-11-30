@@ -1,15 +1,36 @@
-Received: from openfortress.nl ([213.189.19.244] helo=fame.vanrein.org)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF1ni-0006vf-J3
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 08:40:10 +0000
-Date: Mon, 30 Nov 2009 08:40:04 +0000
-From: Rick van Rein <rick@groengemak.nl>
-To: linux-mtd@lists.infradead.org
-Subject: Flash I/O not enabled in MSR_DIVIL_BALL_OPTS
-Message-ID: <20091130084004.GE23351@phantom.vanrein.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NF1zt-0008Sr-9z
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 08:52:45 +0000
+Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses
+	and panics
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20091130074603.GA30911@logfs.org>
+References: <20091012131528.GC25464@elte.hu>
+	<20091012153937.0dcd73e5@marrow.netinsight.se>
+	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
+	<20091012182346.GH17138@elte.hu>
+	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+	<20091013151751.59e217a7@marrow.netinsight.se>
+	<20091013152235.188059d2@marrow.netinsight.se>
+	<20091126093657.GA25430@logfs.org> <1259566071.7518.48.camel@localhost>
+	<20091130074603.GA30911@logfs.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 30 Nov 2009 10:51:58 +0200
+Message-Id: <1259571118.7518.56.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
+	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Simon Kagstrom <simon.kagstrom@netinsight.net>,
+	Ingo Molnar <mingo@elte.hu>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,45 +40,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, 2009-11-30 at 08:46 +0100, Jörn Engel wrote:
+> On Mon, 30 November 2009 09:27:51 +0200, Artem Bityutskiy wrote:
+> > 
+> > To me it looks like 'log_end' is not supposed to wrap. What makes you
+> > think it can? In which cases it can?
+> 
+> It is a 32bit variable.  Would do you expect happens once you reach
+> 0xffffffff and add 1?
 
-Thanks a lot for the detailed FAQ + documentation on the Linux MTD
-subsystem.  It brought me from a novice on the Linux implementation
-to someone who feels in control.
+Yes, now I see log_end is an ever increasing variable.
 
-I am working to get a modest Linux distro going on what originally was
-a 7 Watt thin client running Win XPe.  Since IDE is amazingly slow (it
-consumes 80% CPU time in IRQ handlers) I wanted to try direct access
-through JFFS2 to the NAND chips.
+How about this patch on top of the existing one (untested):
 
-Processor:	Geode GX
-Chipset:	Geode CS5535
-NAND flash:	Toshiba TC58DVM92A1FT00 (512 MB x8, a 3 to 5 of them)
-Controller:	If there's a CompactFlash ctlr it is concealed from me
-Linux kernel:	2.6.31.6 without IDE but with CS553x NAND and JFFS2
+diff --git a/kernel/printk.c b/kernel/printk.c
+index f711b99..66995ca 100644
+--- a/kernel/printk.c
++++ b/kernel/printk.c
+@@ -1486,28 +1486,27 @@ static const char *kmsg_to_str(enum kmsg_dump_reason reason)
+  */
+ void kmsg_dump(enum kmsg_dump_reason reason)
+ {
+-	unsigned long len = ACCESS_ONCE(log_end);
++	unsigned long end = ACCESS_ONCE(log_end) & LOG_BUF_MASK;
+ 	struct kmsg_dumper *dumper;
+ 	const char *s1, *s2;
+ 	unsigned long l1, l2;
+ 	unsigned long flags;
+ 
+-	s1 = "";
+-	l1 = 0;
+-	s2 = log_buf;
+-	l2 = len;
+-
+-	/* Have we rotated around the circular buffer? */
+-	if (len > log_buf_len) {
+-		unsigned long pos = len & LOG_BUF_MASK;
+-
+-		s1 = log_buf + pos;
+-		l1 = log_buf_len - pos;
+-
+-		s2 = log_buf;
+-		l2 = pos;
++	/*
++	 * Have we ever rotated around the circular buffer? If we never did,
++	 * we have to have zeroes at the end.
++	 */
++	if (log_buf[end]) {
++		s1 = log_buf + end;
++		l1 = log_buf_len - end;
++	} else {
++		s1 = "";
++		l1 = 0;
+ 	}
+ 
++	s2 = log_buf;
++	l2 = end;
++
+ 	if (!spin_trylock_irqsave(&dump_list_lock, flags)) {
+ 		printk(KERN_ERR "dump_kmsg: dump list lock is held during %s, skipping dump\n",
+ 				kmsg_to_str(reason));
 
-When I boot this setup (over PXE), it reports:
 
-CS553x NAND controller: Flash I/O not enabled in MSR_DIVIL_BALL_OPTS
+Then the whole function will look like this:
 
-Tracing this back in the code, this refers to an either-IDE-or-flash
-setting in the MSR that was either setup by RESET or the BIOS.  The
-hardware works like that, the pins for IDE and NAND flash are multiplexed.
-I am not sure in XPe would see this, so if this flag is meaningful...?
+/**
+ * kmsg_dump - dump kernel log to kernel message dumpers.
+ * @reason: the reason (oops, panic etc) for dumping
+ *
+ * Iterate through each of the dump devices and call the oops/panic
+ * callbacks with the log buffer.
+ */
+void kmsg_dump(enum kmsg_dump_reason reason)
+{
+        unsigned long end = ACCESS_ONCE(log_end) & LOG_BUF_MASK;
+        struct kmsg_dumper *dumper;
+        const char *s1, *s2;
+        unsigned long l1, l2;
+        unsigned long flags;
 
-What surprised me was that the kernel contained no ways of setting this
-value to inform the NAND driver that it can play freely; is this because
-the hardware is wired purely for IDE operation?  Or does the slow IDE
-responsiveness indicate that it is in fact flash, but not properly setup?
+        /*
+         * Have we ever rotated around the circular buffer? If we never did,
+         * we have to have zeroes at the end.
+         */
+        if (log_buf[end]) {
+                s1 = log_buf + end;
+                l1 = log_buf_len - end;
+        } else {
+                s1 = "";
+                l1 = 0;
+        }
 
-Is there a proper way of setting this flag without patching the kernel?
+        s2 = log_buf;
+        l2 = end;
 
+        if (!spin_trylock_irqsave(&dump_list_lock, flags)) {
+                printk(KERN_ERR "dump_kmsg: dump list lock is held during %s, skipping dump\n",
+                                kmsg_to_str(reason));
+                return;
+        }
+        list_for_each_entry(dumper, &dump_list, list)
+                dumper->dump(dumper, reason, s1, l1, s2, l2);
+        spin_unlock_irqrestore(&dump_list_lock, flags);
+}
 
-Thanks for any help you care to give,
-
-
-Cheers,
-
-Rick van Rein
-GroenGemak
-http://groengemak.nl/en/
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
