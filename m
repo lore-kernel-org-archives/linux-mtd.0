@@ -1,28 +1,26 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF2ff-0001F0-Tw
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 09:35:56 +0000
-Date: Mon, 30 Nov 2009 10:35:41 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses and
-	panics
-Message-ID: <20091130093541.GA14254@logfs.org>
+	id 1NF2lK-0002tX-0r
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 09:41:46 +0000
+Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses
+	and panics
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20091130093541.GA14254@logfs.org>
 References: <alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
 	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
 	<20091012182346.GH17138@elte.hu>
 	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
 	<20091013151751.59e217a7@marrow.netinsight.se>
 	<20091013152235.188059d2@marrow.netinsight.se>
-	<20091126093657.GA25430@logfs.org>
-	<1259566071.7518.48.camel@localhost>
-	<20091130074603.GA30911@logfs.org>
-	<1259571118.7518.56.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+	<20091126093657.GA25430@logfs.org> <1259566071.7518.48.camel@localhost>
+	<20091130074603.GA30911@logfs.org> <1259571118.7518.56.camel@localhost>
+	<20091130093541.GA14254@logfs.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 30 Nov 2009 11:40:55 +0200
+Message-Id: <1259574055.7518.80.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1259571118.7518.56.camel@localhost>
 Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
@@ -31,6 +29,7 @@ Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,32 +39,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 November 2009 10:51:58 +0200, Artem Bityutskiy wrote:
+On Mon, 2009-11-30 at 10:35 +0100, Jörn Engel wrote:
+> On Mon, 30 November 2009 10:51:58 +0200, Artem Bityutskiy wrote:
+> > 
+> > How about this patch on top of the existing one (untested):
+> > 
+> > +	/*
+> > +	 * Have we ever rotated around the circular buffer? If we never did,
+> > +	 * we have to have zeroes at the end.
+> > +	 */
+> > +	if (log_buf[end]) {
+> > +		s1 = log_buf + end;
+> > +		l1 = log_buf_len - end;
+> > +	} else {
+> > +		s1 = "";
+> > +		l1 = 0;
 > 
-> How about this patch on top of the existing one (untested):
-> 
-> +	/*
-> +	 * Have we ever rotated around the circular buffer? If we never did,
-> +	 * we have to have zeroes at the end.
-> +	 */
-> +	if (log_buf[end]) {
-> +		s1 = log_buf + end;
-> +		l1 = log_buf_len - end;
-> +	} else {
-> +		s1 = "";
-> +		l1 = 0;
+> So now you are assuming that a) the buffer is initially zeroed and b)
+> noone ever writes NUL to it.  Is that correct?
 
-So now you are assuming that a) the buffer is initially zeroed and b)
-noone ever writes NUL to it.  Is that correct?
+a) seems to be true because the buffer is either a static array or a
+bootmem alloc, which seems to memzero the buffers it returns, at least
+AFAICS. But I did not test this.
 
-I'm not sure whether those assumptions are valid.  If they are, then
-this will obviously work.  Otherwise we can just always assume the
-wrapped case.
+vs b). well, the printk ring buffer should contain ASCII, so I assumed
+binary zeroes should not be possible there.
 
-Jörn
+> I'm not sure whether those assumptions are valid.  If they are, then
+> this will obviously work.  Otherwise we can just always assume the
+> wrapped case.
+
+Of course someone who has more knowlege about the printk buffer should
+comment on this.
+
+The other alternative I was thinking about was to introduce a boolean
+flag, and set it to one as soon as 'lon_end' becomes larger than
+'log_buf_len'.
 
 -- 
-Write programs that do one thing and do it well. Write programs to work
-together. Write programs to handle text streams, because that is a
-universal interface.
--- Doug MacIlroy
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
