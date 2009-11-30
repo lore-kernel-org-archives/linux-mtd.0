@@ -1,21 +1,36 @@
-Subject: Re: [RFC] mxc nand controller updates
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Received: from ernst.netinsight.se ([194.16.221.21])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NF4zA-0001UU-7N
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 12:04:13 +0000
+Date: Mon, 30 Nov 2009 13:03:59 +0100
+From: Simon Kagstrom <simon.kagstrom@netinsight.net>
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1259580031.19465.378.camel@macbook.infradead.org>
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1257925792.21596.858.camel@localhost>
-	<20091112073630.GV30179@pengutronix.de>
-	<1258101131.21596.1189.camel@localhost>
-	<1259580031.19465.378.camel@macbook.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Nov 2009 13:41:03 +0200
-Message-Id: <1259581263.7518.94.camel@localhost>
+Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses and
+	panics
+Message-ID: <20091130130359.04b89967@marrow.netinsight.se>
+In-Reply-To: <1259582202.19465.388.camel@macbook.infradead.org>
+References: <alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
+	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
+	<20091012182346.GH17138@elte.hu>
+	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
+	<20091013151751.59e217a7@marrow.netinsight.se>
+	<20091013152235.188059d2@marrow.netinsight.se>
+	<20091126093657.GA25430@logfs.org>
+	<1259566071.7518.48.camel@localhost>
+	<20091130074603.GA30911@logfs.org>
+	<1259571118.7518.56.camel@localhost>
+	<20091130093541.GA14254@logfs.org>
+	<1259574055.7518.80.camel@localhost>
+	<20091130105331.1e9e6c08@marrow.netinsight.se>
+	<1259580207.19465.379.camel@macbook.infradead.org>
+	<20091130123752.39727115@marrow.netinsight.se>
+	<1259582202.19465.388.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
-	Vladimir Barinov <vova.barinov@gmail.com>,
-	mathieu.berland@eads.com, jbe@pengutronix.de, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +40,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-11-30 at 11:20 +0000, David Woodhouse wrote:
-> On Fri, 2009-11-13 at 10:32 +0200, Artem Bityutskiy wrote:
-> > 
-> > I've pulled your stuff to my l2-mtd-2.6 tree to the dunno branch, so
-> > there are less chances your pull request will be missed.
+On Mon, 30 Nov 2009 11:56:42 +0000
+David Woodhouse <dwmw2@infradead.org> wrote:
+
+> On Mon, 2009-11-30 at 12:37 +0100, Simon Kagstrom wrote:
+> > I'm a bit worried about taking the lock here - can't we end up with a
+> > deadlock if we happen to crash in the wrong place? 
 > 
-> Was there a pull request? I only see the [RFC].
+> Um, yes -- just as the existing version can end up with a deadlock if we
+> happen to crash while adding or removing a dumper and holding _that_
+> lock. Try calling kmsg_dump_unregister(NULL), or putting a dumper in a
+> module and then unloading that module without deregistering it, etc.
 
-Right, only RFC.
+Well, actually we've thought of that:
 
-> Please could you fix up the commit message for the reversion. It should
-> contain the subject of the original commit as well as its commit-id, and
-> it should say _why_.
+	if (!spin_trylock_irqsave(&dump_list_lock, flags)) {
+		printk(KERN_ERR "dump_kmsg: dump list lock is held during %s, skipping dump\n",
+				kmsg_to_str(reason));
+		return;
+	}
+	list_for_each_entry(dumper, &dump_list, list)
+		dumper->dump(dumper, reason, s1, l1, s2, l2);
+	spin_unlock_irqrestore(&dump_list_lock, flags);
 
-Yeah.
+Anyway, I'm happy with the explanation, so keep the lock in.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+// Simon
