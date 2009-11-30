@@ -1,36 +1,24 @@
-Received: from ernst.netinsight.se ([194.16.221.21])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF4zA-0001UU-7N
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 12:04:13 +0000
-Date: Mon, 30 Nov 2009 13:03:59 +0100
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NF5NU-000868-JJ
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 12:29:17 +0000
+Date: Mon, 30 Nov 2009 13:29:03 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses and
-	panics
-Message-ID: <20091130130359.04b89967@marrow.netinsight.se>
-In-Reply-To: <1259582202.19465.388.camel@macbook.infradead.org>
-References: <alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
-	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
-	<20091012182346.GH17138@elte.hu>
-	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
-	<20091013151751.59e217a7@marrow.netinsight.se>
-	<20091013152235.188059d2@marrow.netinsight.se>
-	<20091126093657.GA25430@logfs.org>
-	<1259566071.7518.48.camel@localhost>
-	<20091130074603.GA30911@logfs.org>
-	<1259571118.7518.56.camel@localhost>
-	<20091130093541.GA14254@logfs.org>
-	<1259574055.7518.80.camel@localhost>
-	<20091130105331.1e9e6c08@marrow.netinsight.se>
-	<1259580207.19465.379.camel@macbook.infradead.org>
-	<20091130123752.39727115@marrow.netinsight.se>
-	<1259582202.19465.388.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [RFC] mxc nand controller updates
+Message-ID: <20091130122903.GO27548@pengutronix.de>
+References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
+	<1257925792.21596.858.camel@localhost>
+	<20091112073630.GV30179@pengutronix.de>
+	<1258101131.21596.1189.camel@localhost>
+	<1259580031.19465.378.camel@macbook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1259580031.19465.378.camel@macbook.infradead.org>
+Cc: dedekind1@gmail.com, Eric Benard <ebenard@eukrea.com>,
+	Vladimir Barinov <vova.barinov@gmail.com>,
+	mathieu.berland@eads.com, jbe@pengutronix.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,29 +28,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 Nov 2009 11:56:42 +0000
-David Woodhouse <dwmw2@infradead.org> wrote:
-
-> On Mon, 2009-11-30 at 12:37 +0100, Simon Kagstrom wrote:
-> > I'm a bit worried about taking the lock here - can't we end up with a
-> > deadlock if we happen to crash in the wrong place? 
+On Mon, Nov 30, 2009 at 11:20:31AM +0000, David Woodhouse wrote:
+> On Fri, 2009-11-13 at 10:32 +0200, Artem Bityutskiy wrote:
+> > 
+> > I've pulled your stuff to my l2-mtd-2.6 tree to the dunno branch, so
+> > there are less chances your pull request will be missed.
 > 
-> Um, yes -- just as the existing version can end up with a deadlock if we
-> happen to crash while adding or removing a dumper and holding _that_
-> lock. Try calling kmsg_dump_unregister(NULL), or putting a dumper in a
-> module and then unloading that module without deregistering it, etc.
+> Was there a pull request? I only see the [RFC].
 
-Well, actually we've thought of that:
+I should have sent a pull request afterwards, sorry.
 
-	if (!spin_trylock_irqsave(&dump_list_lock, flags)) {
-		printk(KERN_ERR "dump_kmsg: dump list lock is held during %s, skipping dump\n",
-				kmsg_to_str(reason));
-		return;
-	}
-	list_for_each_entry(dumper, &dump_list, list)
-		dumper->dump(dumper, reason, s1, l1, s2, l2);
-	spin_unlock_irqrestore(&dump_list_lock, flags);
+> 
+> Please could you fix up the commit message for the reversion. It should
+> contain the subject of the original commit as well as its commit-id, and
+> it should say _why_.
 
-Anyway, I'm happy with the explanation, so keep the lock in.
+This revert is already in the mtd master tree as
+1cc523999e0acd0c21f83bf89b7a44b4ab6f7bd8 along with a correct commit
+message, so this patch got dropped when I rebased my tree onto mtd
+master.
 
-// Simon
+So please pull from the following address if you haven't done already
+from Artems branch.
+
+Sascha
+
+
+The following changes since commit
+8ce110ac19bc88b82e3feacfbb3a2ee08a07fe22:
+  H Hartley Sweeten (1):
+        mtd: Fix compile failure and error path in physmap.c
+
+are available in the git repository at:
+
+  git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
+
+Sascha Hauer (18):
+      mxc_nand: cleanup eccoob descriptions
+      mxc_nand: cleanup initialization
+      mxc_nand: merge send_read_page and send_prog_page
+      mxc_nand: introduce mxc_do_addr_cycle
+      mxc nand: remove debug param
+      mxc nand: remove dead code
+      mxc nand: use resource_size()
+      mxc nand: use buffers
+      mxc nand: simplify command processing
+      mxc nand: modify send_page to send all pages, not only one
+      mxc_nand: remove unused defines
+      mxc_nand: Make main/spare areas runtime configurable
+      mxc_nand: Get rid of pagesize_2k flag
+      mxc_nand: Add NFC V2 support
+      mxc_nand: disable sp_en bit only once
+      mxc_nand: Allow flash based bbt
+      mxc_nand: remove TROP_US_DELAY
+      mxc_nand: use DRIVER_NAME where appropriate
+
+ arch/arm/plat-mxc/include/mach/mxc_nand.h |    3 +-
+ drivers/mtd/nand/mxc_nand.c               |  773 +++++++++++------------------
+ 2 files changed, 300 insertions(+), 476 deletions(-)
+
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
