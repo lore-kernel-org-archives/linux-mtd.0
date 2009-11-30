@@ -1,24 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF5NU-000868-JJ
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 12:29:17 +0000
-Date: Mon, 30 Nov 2009 13:29:03 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC] mxc nand controller updates
-Message-ID: <20091130122903.GO27548@pengutronix.de>
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1257925792.21596.858.camel@localhost>
-	<20091112073630.GV30179@pengutronix.de>
-	<1258101131.21596.1189.camel@localhost>
-	<1259580031.19465.378.camel@macbook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1259580031.19465.378.camel@macbook.infradead.org>
-Cc: dedekind1@gmail.com, Eric Benard <ebenard@eukrea.com>,
-	Vladimir Barinov <vova.barinov@gmail.com>,
-	mathieu.berland@eads.com, jbe@pengutronix.de, linux-mtd@lists.infradead.org
+	id 1NF5jT-0006Fc-UX
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 12:52:04 +0000
+Subject: Re: [RFC / PATCH] mtd/ubi: flush wl before clearing update marker
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+In-Reply-To: <20091129184602.GB30617@Chamillionaire.breakpoint.cc>
+References: <20091129184602.GB30617@Chamillionaire.breakpoint.cc>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 30 Nov 2009 14:51:37 +0200
+Message-Id: <1259585497.7518.108.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,69 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 30, 2009 at 11:20:31AM +0000, David Woodhouse wrote:
-> On Fri, 2009-11-13 at 10:32 +0200, Artem Bityutskiy wrote:
-> > 
-> > I've pulled your stuff to my l2-mtd-2.6 tree to the dunno branch, so
-> > there are less chances your pull request will be missed.
+On Sun, 2009-11-29 at 19:46 +0100, Sebastian Andrzej Siewior wrote:
+> ubiupdatevol -t does the following:
+> - ubi_start_update()
+>   - set_update_marker()
+>   - for all LEBs ubi_eba_unmap_leb()
+>   - clear_update_marker()
+>   - ubi_wl_flush()
 > 
-> Was there a pull request? I only see the [RFC].
+> ubi_wl_flush() physically erases all PEB, once it returns all PEBs are
+> empty. clear_update_marker() has the update marker written after return.
+> If there is a power cut between the last two functions then the UBI
+> volume has no longer the "update" marker set and may have some valid
+> LEBs while some of them may be gone.
+> If that volume in question happens to be a UBIFS volume, then mount
+> will fail with
 
-I should have sent a pull request afterwards, sorry.
-
-> 
-> Please could you fix up the commit message for the reversion. It should
-> contain the subject of the original commit as well as its commit-id, and
-> it should say _why_.
-
-This revert is already in the mtd master tree as
-1cc523999e0acd0c21f83bf89b7a44b4ab6f7bd8 along with a correct commit
-message, so this patch got dropped when I rebased my tree onto mtd
-master.
-
-So please pull from the following address if you haven't done already
-from Artems branch.
-
-Sascha
-
-
-The following changes since commit
-8ce110ac19bc88b82e3feacfbb3a2ee08a07fe22:
-  H Hartley Sweeten (1):
-        mtd: Fix compile failure and error path in physmap.c
-
-are available in the git repository at:
-
-  git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
-
-Sascha Hauer (18):
-      mxc_nand: cleanup eccoob descriptions
-      mxc_nand: cleanup initialization
-      mxc_nand: merge send_read_page and send_prog_page
-      mxc_nand: introduce mxc_do_addr_cycle
-      mxc nand: remove debug param
-      mxc nand: remove dead code
-      mxc nand: use resource_size()
-      mxc nand: use buffers
-      mxc nand: simplify command processing
-      mxc nand: modify send_page to send all pages, not only one
-      mxc_nand: remove unused defines
-      mxc_nand: Make main/spare areas runtime configurable
-      mxc_nand: Get rid of pagesize_2k flag
-      mxc_nand: Add NFC V2 support
-      mxc_nand: disable sp_en bit only once
-      mxc_nand: Allow flash based bbt
-      mxc_nand: remove TROP_US_DELAY
-      mxc_nand: use DRIVER_NAME where appropriate
-
- arch/arm/plat-mxc/include/mach/mxc_nand.h |    3 +-
- drivers/mtd/nand/mxc_nand.c               |  773 +++++++++++------------------
- 2 files changed, 300 insertions(+), 476 deletions(-)
-
-
+This bug fix deserves being sent to Linus now, but it is now so late
+that I'm really not sure I should do this, because if this causes any
+regression, it will be too late to fix it for 2.6.32. So I think I'll
+merge it to 2.6.33, is this OK with you?
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
