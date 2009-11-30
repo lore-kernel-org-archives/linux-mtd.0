@@ -1,20 +1,15 @@
-Date: Mon, 30 Nov 2009 02:51:05 -0500
-Message-Id: <200911300751.nAU7p53e022740@agora.fsl.cs.sunysb.edu>
-From: Erez Zadok <ezk@cs.sunysb.edu>
-To: Valerie Aurora <vaurora@redhat.com>
-Subject: Re: [PATCH 16/41] whiteout: jffs2 whiteout support 
-In-reply-to: Your message of "Wed, 21 Oct 2009 12:19:14 PDT."
-	<1256152779-10054-17-git-send-email-vaurora@redhat.com>
-Cc: Scott James Remnant <scott@canonical.com>, Felix Fietkau <nbd@openwrt.org>,
-	"J. R. Okajima" <hooanon05@yahoo.co.jp>,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
-	Sandu Popa Marius <sandupopamarius@gmail.com>,
-	linux-mtd@lists.infradead.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-	Andy Whitcroft <apw@canonical.com>,
-	Vladimir Dronnikov <dronnikov@gmail.com>, Jan Blunck <jblunck@suse.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Jan Rekorajski <baggins@sith.mimuw.edu.pl>
+Received: from openfortress.nl ([213.189.19.244] helo=fame.vanrein.org)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NF1ni-0006vf-J3
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 08:40:10 +0000
+Date: Mon, 30 Nov 2009 08:40:04 +0000
+From: Rick van Rein <rick@groengemak.nl>
+To: linux-mtd@lists.infradead.org
+Subject: Flash I/O not enabled in MSR_DIVIL_BALL_OPTS
+Message-ID: <20091130084004.GE23351@phantom.vanrein.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,72 +19,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <1256152779-10054-17-git-send-email-vaurora@redhat.com>, Valerie Aurora writes:
-> From: Felix Fietkau <nbd@openwrt.org>
-> 
-> Add support for whiteout dentries to jffs2.
-> 
-> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-> Signed-off-by: Valerie Aurora <vaurora@redhat.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: linux-mtd@lists.infradead.org
-> ---
->  fs/jffs2/dir.c        |   77 +++++++++++++++++++++++++++++++++++++++++++++++-
->  fs/jffs2/fs.c         |    4 ++
->  fs/jffs2/super.c      |    2 +-
->  include/linux/jffs2.h |    2 +
->  4 files changed, 82 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-> index 6f60cc9..46a2e1b 100644
-> --- a/fs/jffs2/dir.c
-> +++ b/fs/jffs2/dir.c
-> @@ -34,6 +34,8 @@ static int jffs2_mknod (struct inode *,struct dentry *,int,dev_t);
->  static int jffs2_rename (struct inode *, struct dentry *,
->  			 struct inode *, struct dentry *);
->  
-> +static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
-> +
->  const struct file_operations jffs2_dir_operations =
->  {
->  	.read =		generic_read_dir,
-> @@ -55,6 +57,7 @@ const struct inode_operations jffs2_dir_inode_operations =
->  	.rmdir =	jffs2_rmdir,
->  	.mknod =	jffs2_mknod,
->  	.rename =	jffs2_rename,
-> +	.whiteout =     jffs2_whiteout,
->  	.permission =	jffs2_permission,
->  	.setattr =	jffs2_setattr,
->  	.setxattr =	jffs2_setxattr,
-> @@ -98,8 +101,18 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
->  			fd = fd_list;
->  		}
->  	}
-> -	if (fd)
-> -		ino = fd->ino;
-> +	if (fd) {
-> +		spin_lock(&target->d_lock);
-> +		switch(fd->type) {
-> +		case DT_WHT:
-> +			target->d_flags |= DCACHE_WHITEOUT;
-> +			break;
-> +		default:
-> +			ino = fd->ino;
-> +			break;
-> +		}
-> +		spin_unlock(&target->d_lock);
-> +	}
+Hello,
 
-The switch statement above should be simplified into this:
+Thanks a lot for the detailed FAQ + documentation on the Linux MTD
+subsystem.  It brought me from a novice on the Linux implementation
+to someone who feels in control.
 
- if (fd->type == DT_WHT)
-	target->d_flags |= DCACHE_WHITEOUT;
- else
-	ino = fd->ino;
+I am working to get a modest Linux distro going on what originally was
+a 7 Watt thin client running Win XPe.  Since IDE is amazingly slow (it
+consumes 80% CPU time in IRQ handlers) I wanted to try direct access
+through JFFS2 to the NAND chips.
 
-> +	/* If it's a directory, then check whether it is really empty
-> +	 */
+Processor:	Geode GX
+Chipset:	Geode CS5535
+NAND flash:	Toshiba TC58DVM92A1FT00 (512 MB x8, a 3 to 5 of them)
+Controller:	If there's a CompactFlash ctlr it is concealed from me
+Linux kernel:	2.6.31.6 without IDE but with CS553x NAND and JFFS2
 
-Format above comment on one line.
+When I boot this setup (over PXE), it reports:
 
-Erez.
+CS553x NAND controller: Flash I/O not enabled in MSR_DIVIL_BALL_OPTS
+
+Tracing this back in the code, this refers to an either-IDE-or-flash
+setting in the MSR that was either setup by RESET or the BIOS.  The
+hardware works like that, the pins for IDE and NAND flash are multiplexed.
+I am not sure in XPe would see this, so if this flag is meaningful...?
+
+What surprised me was that the kernel contained no ways of setting this
+value to inform the NAND driver that it can play freely; is this because
+the hardware is wired purely for IDE operation?  Or does the slow IDE
+responsiveness indicate that it is in fact flash, but not properly setup?
+
+Is there a proper way of setting this flag without patching the kernel?
+
+
+Thanks for any help you care to give,
+
+
+Cheers,
+
+Rick van Rein
+GroenGemak
+http://groengemak.nl/en/
