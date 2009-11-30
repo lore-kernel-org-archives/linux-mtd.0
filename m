@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF5jT-0006Fc-UX
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 12:52:04 +0000
+	id 1NF5z8-0002Sh-Ok
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 13:08:15 +0000
 Subject: Re: [RFC / PATCH] mtd/ubi: flush wl before clearing update marker
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
 In-Reply-To: <20091129184602.GB30617@Chamillionaire.breakpoint.cc>
 References: <20091129184602.GB30617@Chamillionaire.breakpoint.cc>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Nov 2009 14:51:37 +0200
-Message-Id: <1259585497.7518.108.camel@localhost>
+Date: Mon, 30 Nov 2009 14:50:16 +0200
+Message-Id: <1259585416.7518.106.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -39,10 +39,31 @@ On Sun, 2009-11-29 at 19:46 +0100, Sebastian Andrzej Siewior wrote:
 > If that volume in question happens to be a UBIFS volume, then mount
 > will fail with
 
-This bug fix deserves being sent to Linus now, but it is now so late
-that I'm really not sure I should do this, because if this causes any
-regression, it will be too late to fix it for 2.6.32. So I think I'll
-merge it to 2.6.33, is this OK with you?
+Very good catch, thanks. Pushed to the ubi-2.6.git tree, although I've
+
+[snip]
+
+>  	if (bytes == 0) {
+> +
+Removed this junk newline
+> +		err = ubi_wl_flush(ubi);
+> +		if (err)
+> +			return err;
+
+[snip]
+
+>  	vol->upd_buf = vmalloc(ubi->leb_size);
+> @@ -362,16 +365,17 @@ int ubi_more_update_data(struct ubi_device *ubi, struct ubi_volume *vol,
+>  
+>  	ubi_assert(vol->upd_received <= vol->upd_bytes);
+>  	if (vol->upd_received == vol->upd_bytes) {
+> +
+And this.
+> +		err = ubi_wl_flush(ubi);
+> +		if (err)
+> +			return err;
+
+[snip]
 
 -- 
 Best Regards,
