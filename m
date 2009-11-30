@@ -1,19 +1,14 @@
-Subject: Re: [RFC] mxc nand controller updates
+Subject: Re: [patch 1/4] mtd-nand: davinci: Correct 4-bit error correction
 From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind1@gmail.com
-In-Reply-To: <1258101131.21596.1189.camel@localhost>
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1257925792.21596.858.camel@localhost>
-	<20091112073630.GV30179@pengutronix.de>
-	<1258101131.21596.1189.camel@localhost>
+To: akpm@linux-foundation.org
+In-Reply-To: <200911172245.nAHMjk8X001820@imap1.linux-foundation.org>
+References: <200911172245.nAHMjk8X001820@imap1.linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Nov 2009 11:20:31 +0000
-Message-ID: <1259580031.19465.378.camel@macbook.infradead.org>
+Date: Mon, 30 Nov 2009 11:38:04 +0000
+Message-ID: <1259581084.19465.381.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, Eric Benard <ebenard@eukrea.com>,
-	Vladimir Barinov <vova.barinov@gmail.com>,
-	mathieu.berland@eads.com, jbe@pengutronix.de, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, sudhakar.raj@ti.com, nsnehaprabha@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2009-11-13 at 10:32 +0200, Artem Bityutskiy wrote:
-> 
-> I've pulled your stuff to my l2-mtd-2.6 tree to the dunno branch, so
-> there are less chances your pull request will be missed.
+On Tue, 2009-11-17 at 14:45 -0800, akpm@linux-foundation.org wrote:
+> +       /*
+> +        * ECC_STATE field reads 0x3 (Error correction complete) immediately
+> +        * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
+> +        * begin trying to poll for the state, you may fall right out of your
+> +        * loop without any of the correction calculations having taken place.
+> +        * The recommendation from the hardware team is to wait till ECC_STATE
+> +        * reads less than 4, which means ECC HW has entered correction state.
+> +        */
+> +       do {
+> +               ecc_state = (davinci_nand_readl(info,
+> +                               NANDFSR_OFFSET) >> 8) & 0x0f;
+> +               cpu_relax();
+> +       } while (ecc_state < 4); 
 
-Was there a pull request? I only see the [RFC].
-
-Please could you fix up the commit message for the reversion. It should
-contain the subject of the original commit as well as its commit-id, and
-it should say _why_.
+Please can this have a timeout. Infinite loops waiting for hardware are
+generally a bad idea.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
