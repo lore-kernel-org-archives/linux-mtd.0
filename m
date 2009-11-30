@@ -1,36 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF0xd-00054d-HA
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 07:46:22 +0000
-Date: Mon, 30 Nov 2009 08:46:03 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses and
-	panics
-Message-ID: <20091130074603.GA30911@logfs.org>
-References: <20091012131528.GC25464@elte.hu>
-	<20091012153937.0dcd73e5@marrow.netinsight.se>
-	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
-	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
-	<20091012182346.GH17138@elte.hu>
-	<alpine.LFD.2.01.0910121130190.3438@localhost.localdomain>
-	<20091013151751.59e217a7@marrow.netinsight.se>
-	<20091013152235.188059d2@marrow.netinsight.se>
-	<20091126093657.GA25430@logfs.org>
-	<1259566071.7518.48.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1259566071.7518.48.camel@localhost>
-Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
-	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Simon Kagstrom <simon.kagstrom@netinsight.net>,
-	Ingo Molnar <mingo@elte.hu>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alan Cox <alan@lxorguk.ukuu.org.uk>
+Date: Mon, 30 Nov 2009 02:51:05 -0500
+Message-Id: <200911300751.nAU7p53e022740@agora.fsl.cs.sunysb.edu>
+From: Erez Zadok <ezk@cs.sunysb.edu>
+To: Valerie Aurora <vaurora@redhat.com>
+Subject: Re: [PATCH 16/41] whiteout: jffs2 whiteout support 
+In-reply-to: Your message of "Wed, 21 Oct 2009 12:19:14 PDT."
+	<1256152779-10054-17-git-send-email-vaurora@redhat.com>
+Cc: Scott James Remnant <scott@canonical.com>, Felix Fietkau <nbd@openwrt.org>,
+	"J. R. Okajima" <hooanon05@yahoo.co.jp>,
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
+	Sandu Popa Marius <sandupopamarius@gmail.com>,
+	linux-mtd@lists.infradead.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+	Andy Whitcroft <apw@canonical.com>,
+	Vladimir Dronnikov <dronnikov@gmail.com>, Jan Blunck <jblunck@suse.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Jan Rekorajski <baggins@sith.mimuw.edu.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,16 +24,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 30 November 2009 09:27:51 +0200, Artem Bityutskiy wrote:
+In message <1256152779-10054-17-git-send-email-vaurora@redhat.com>, Valerie Aurora writes:
+> From: Felix Fietkau <nbd@openwrt.org>
 > 
-> To me it looks like 'log_end' is not supposed to wrap. What makes you
-> think it can? In which cases it can?
+> Add support for whiteout dentries to jffs2.
+> 
+> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+> Signed-off-by: Valerie Aurora <vaurora@redhat.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linux-mtd@lists.infradead.org
+> ---
+>  fs/jffs2/dir.c        |   77 +++++++++++++++++++++++++++++++++++++++++++++++-
+>  fs/jffs2/fs.c         |    4 ++
+>  fs/jffs2/super.c      |    2 +-
+>  include/linux/jffs2.h |    2 +
+>  4 files changed, 82 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+> index 6f60cc9..46a2e1b 100644
+> --- a/fs/jffs2/dir.c
+> +++ b/fs/jffs2/dir.c
+> @@ -34,6 +34,8 @@ static int jffs2_mknod (struct inode *,struct dentry *,int,dev_t);
+>  static int jffs2_rename (struct inode *, struct dentry *,
+>  			 struct inode *, struct dentry *);
+>  
+> +static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
+> +
+>  const struct file_operations jffs2_dir_operations =
+>  {
+>  	.read =		generic_read_dir,
+> @@ -55,6 +57,7 @@ const struct inode_operations jffs2_dir_inode_operations =
+>  	.rmdir =	jffs2_rmdir,
+>  	.mknod =	jffs2_mknod,
+>  	.rename =	jffs2_rename,
+> +	.whiteout =     jffs2_whiteout,
+>  	.permission =	jffs2_permission,
+>  	.setattr =	jffs2_setattr,
+>  	.setxattr =	jffs2_setxattr,
+> @@ -98,8 +101,18 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
+>  			fd = fd_list;
+>  		}
+>  	}
+> -	if (fd)
+> -		ino = fd->ino;
+> +	if (fd) {
+> +		spin_lock(&target->d_lock);
+> +		switch(fd->type) {
+> +		case DT_WHT:
+> +			target->d_flags |= DCACHE_WHITEOUT;
+> +			break;
+> +		default:
+> +			ino = fd->ino;
+> +			break;
+> +		}
+> +		spin_unlock(&target->d_lock);
+> +	}
 
-It is a 32bit variable.  Would do you expect happens once you reach
-0xffffffff and add 1?
+The switch statement above should be simplified into this:
 
-Jörn
+ if (fd->type == DT_WHT)
+	target->d_flags |= DCACHE_WHITEOUT;
+ else
+	ino = fd->ino;
 
--- 
-This above all: to thine own self be true.
--- Shakespeare
+> +	/* If it's a directory, then check whether it is really empty
+> +	 */
+
+Format above comment on one line.
+
+Erez.
