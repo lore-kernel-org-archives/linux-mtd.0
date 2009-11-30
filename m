@@ -1,15 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NF0ge-00082c-4M
-	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 07:28:48 +0000
-Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses
-	and panics
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20091126093657.GA25430@logfs.org>
-References: <20091012122023.GA19365@elte.hu>
-	<20091012150650.51a4b4dc@marrow.netinsight.se>
-	<20091012131528.GC25464@elte.hu>
+	id 1NF0xd-00054d-HA
+	for linux-mtd@lists.infradead.org; Mon, 30 Nov 2009 07:46:22 +0000
+Date: Mon, 30 Nov 2009 08:46:03 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH/RFC v5 4/5]: core: Add dump device to call on oopses and
+	panics
+Message-ID: <20091130074603.GA30911@logfs.org>
+References: <20091012131528.GC25464@elte.hu>
 	<20091012153937.0dcd73e5@marrow.netinsight.se>
 	<alpine.LFD.2.01.0910120828390.3438@localhost.localdomain>
 	<20091012110954.67d7d8d8.akpm@linux-foundation.org>
@@ -18,11 +17,12 @@ References: <20091012122023.GA19365@elte.hu>
 	<20091013151751.59e217a7@marrow.netinsight.se>
 	<20091013152235.188059d2@marrow.netinsight.se>
 	<20091126093657.GA25430@logfs.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Nov 2009 09:27:51 +0200
-Message-Id: <1259566071.7518.48.camel@localhost>
-Mime-Version: 1.0
+	<1259566071.7518.48.camel@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1259566071.7518.48.camel@localhost>
 Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
 	"Koskinen Aaro \(Nokia-D/Helsinki\)" <aaro.koskinen@nokia.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
@@ -31,7 +31,6 @@ Cc: David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Alan Cox <alan@lxorguk.ukuu.org.uk>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,32 +40,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-11-26 at 10:36 +0100, Jörn Engel wrote:
-> Just stumbled across this patch.
+On Mon, 30 November 2009 09:27:51 +0200, Artem Bityutskiy wrote:
 > 
-> On Tue, 13 October 2009 15:22:35 +0200, Simon Kagstrom wrote:
-> > +void dump_kmsg(int panic)
-> > +{
-> > +	unsigned long len = ACCESS_ONCE(log_end);
-> > +	struct dump_device *dump;
-> > +	const char *s1, *s2;
-> > +	unsigned long l1, l2;
-> > +
-> > +	s1 = "";
-> > +	l1 = 0;
-> > +	s2 = log_buf;
-> > +	l2 = len;
-> > +
-> > +	/* Have we rotated around the circular buffer? */
-> > +	if (len > log_buf_len) {
-> 
-> I believe this bit is wrong.  log_end is an unsigned int, so it can
-> wrap relatively quickly.  If log_end just wrapped to 0 and dump_kmsg is
-> called, the amount of printk buffer stored appears to be 0 as well.
+> To me it looks like 'log_end' is not supposed to wrap. What makes you
+> think it can? In which cases it can?
 
-To me it looks like 'log_end' is not supposed to wrap. What makes you
-think it can? In which cases it can?
+It is a 32bit variable.  Would do you expect happens once you reach
+0xffffffff and add 1?
+
+Jörn
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+This above all: to thine own self be true.
+-- Shakespeare
