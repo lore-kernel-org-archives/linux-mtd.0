@@ -1,18 +1,19 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NFqE0-0003qC-9G
-	for linux-mtd@lists.infradead.org; Wed, 02 Dec 2009 14:30:41 +0000
-Received: by bwz4 with SMTP id 4so221120bwz.2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 Dec 2009 06:30:35 -0800 (PST)
+Received: from mail3.farm.elogic.it ([213.92.102.240])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NFqGh-0004OI-LV
+	for linux-mtd@lists.infradead.org; Wed, 02 Dec 2009 14:33:28 +0000
+Received: from [192.168.0.126]
+	(host29-107-static.41-85-b.business.telecomitalia.it [85.41.107.29])
+	by mail4.farm.elogic.it (eLogic Mail Server) with ASMTP id JAG11143
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2009 15:30:43 +0100
+Message-ID: <4B167A11.6010407@imsitaly.com>
+Date: Wed, 02 Dec 2009 15:30:41 +0100
+From: Salvatore Frizzoli - IMS Italy <sfrizzoli@imsitaly.com>
 MIME-Version: 1.0
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 2 Dec 2009 20:00:14 +0530
-Message-ID: <ce9ab5790912020630s160fee35r340d02ae9f41bcfb@mail.gmail.com>
-Subject: [RFC] [PATCH] [MTD-UTILS]: flash_unlock: enhancing for unlocking of
-	specified number of blocks
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
+To: linux-mtd@lists.infradead.org
+Subject: get mtd name and manufacturer from high level app
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch enhances the flash_unlock utility to be able to do
-unlocking for specified blocks range.
-This patch also fixes calculation of 'length' as in previous patch.
+Hi all,
 
-Say there are 240 blocks present in the device. Then:
-offset starts from: 0x0
-and full size of device: 0x1E00000
+I am working on an application under a uClinux kernel.
+This application would read name, manufacturer and id of the mtd flash 
+device.
+I have seen that it is not possible to do this by ioctl, so I don't know 
+how to do.
+I have also seen the get_mtd_device function, but i cannot know how to 
+fill the
+mtd_info struct that get_mtd_device takes as input parameter.
 
-doing: 240 * 0x20000 gives -> 0x1E00000
-But last block address should be 0x1DE0000 (which spans for 0x20000
-bytes, adding up to size of 0x1E00000)
+Is there a way to get theese infos similar to ioctl?
 
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
----
+Thank you all.
+Bye.
+Salvatore
 
---- a/flash_unlock.c	2009-11-24 19:33:18.000000000 +0530
-+++ b/flash_unlock.c	2009-11-24 19:36:18.000000000 +0530
-@@ -21,13 +21,14 @@ int main(int argc, char *argv[])
- 	int fd;
- 	struct mtd_info_user mtdInfo;
- 	struct erase_info_user mtdLockInfo;
-+	int count;
+-- 
+Salvatore Frizzoli
 
- 	/*
- 	 * Parse command line options
- 	 */
--	if(argc != 2)
-+	if(argc < 2)
- 	{
--		fprintf(stderr, "USAGE: %s <mtd device>\n", argv[0]);
-+		fprintf(stderr, "USAGE: %s <mtd device> <offset in hex> <block
-count in decimal number>\n", argv[0]);
- 		exit(1);
- 	}
- 	else if(strncmp(argv[1], "/dev/mtd", 8) != 0)
-@@ -50,8 +51,18 @@ int main(int argc, char *argv[])
- 		exit(1);
- 	}
+Software Developer
 
--	mtdLockInfo.start = 0;
--	mtdLockInfo.length = mtdInfo.size;
-+	if (argc > 2)
-+		mtdLockInfo.start = strtol(argv[2], NULL, 0);
-+	else
-+		mtdLockInfo.start = 0;
-+
-+	if (argc > 3) {
-+		count = strtol(argv[3], NULL, 0);
-+		mtdLockInfo.length = mtdInfo.erasesize * count;
-+	} else {
-+		mtdLockInfo.length = mtdInfo.size - mtdInfo.erasesize;
-+	}
-+
- 	if(ioctl(fd, MEMUNLOCK, &mtdLockInfo))
- 	{
- 		fprintf(stderr, "Could not unlock MTD device: %s\n", argv[1]);
-@@ -61,4 +72,3 @@ int main(int argc, char *argv[])
+Research & Development Department
+IMS srl
 
- 	return 0;
- }
--
+Via Sagittario, 5
+Fraz. Pontecchio Marconi
+40037 Sasso Marconi (BO)
+Italy
+Tel. ++39 051 846851
+Fax ++39 051 846856 
+
+http://www.imsitaly.com
