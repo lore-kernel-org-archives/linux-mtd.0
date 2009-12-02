@@ -1,11 +1,11 @@
-Subject: Re: Flash I/O not enabled in MSR_DIVIL_BALL_OPTS
+Subject: Re: JFFS2: jffs2_symlink/jffs2_mkdir/jffs2_mknod bug?
 From: David Woodhouse <dwmw2@infradead.org>
-To: Rick van Rein <rick@groengemak.nl>
-In-Reply-To: <20091130084004.GE23351@phantom.vanrein.org>
-References: <20091130084004.GE23351@phantom.vanrein.org>
+To: Tao Huang <ulysses.huang@gmail.com>
+In-Reply-To: <6b6744400912011811r4cecda08hd0a2502bc3083fc3@mail.gmail.com>
+References: <6b6744400912011811r4cecda08hd0a2502bc3083fc3@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 02 Dec 2009 18:11:10 +0000
-Message-ID: <1259777470.3744.484.camel@macbook.infradead.org>
+Date: Wed, 02 Dec 2009 19:54:07 +0000
+Message-ID: <1259783647.3744.611.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -18,48 +18,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-11-30 at 08:40 +0000, Rick van Rein wrote:
-> Hello,
-> 
-> Thanks a lot for the detailed FAQ + documentation on the Linux MTD
-> subsystem.  It brought me from a novice on the Linux implementation
-> to someone who feels in control.
-> 
-> I am working to get a modest Linux distro going on what originally was
-> a 7 Watt thin client running Win XPe.  Since IDE is amazingly slow (it
-> consumes 80% CPU time in IRQ handlers) I wanted to try direct access
-> through JFFS2 to the NAND chips.
-> 
-> Processor:	Geode GX
-> Chipset:	Geode CS5535
-> NAND flash:	Toshiba TC58DVM92A1FT00 (512 MB x8, a 3 to 5 of them)
-> Controller:	If there's a CompactFlash ctlr it is concealed from me
-> Linux kernel:	2.6.31.6 without IDE but with CS553x NAND and JFFS2
-> 
-> When I boot this setup (over PXE), it reports:
-> 
-> CS553x NAND controller: Flash I/O not enabled in MSR_DIVIL_BALL_OPTS
-> 
-> Tracing this back in the code, this refers to an either-IDE-or-flash
-> setting in the MSR that was either setup by RESET or the BIOS.  The
-> hardware works like that, the pins for IDE and NAND flash are multiplexed.
-> I am not sure in XPe would see this, so if this flag is meaningful...?
-> 
-> What surprised me was that the kernel contained no ways of setting this
-> value to inform the NAND driver that it can play freely; is this because
-> the hardware is wired purely for IDE operation?  Or does the slow IDE
-> responsiveness indicate that it is in fact flash, but not properly setup?
-> 
-> Is there a proper way of setting this flag without patching the kernel?
+On Wed, 2009-12-02 at 10:11 +0800, Tao Huang wrote:
+> On jffs2_symlink/jffs2_mkdir/jffs2_mknod, after jffs2_write_dnode,
+> any call jffs2_clear_inode will no call jffs2_mark_node_obsolete
+> because pino_nlink is not zero.
 
-If you have the NAND hardware connected, then surely your firmware ought
-to be setting the MSRs appropriately?
+True, I think. Well spotted. Although it may actually turn out to be
+harmless, for reasons similar to those I outlined to Joakim earlier.
 
-See http://david.woodhou.se/olpc-enable-nand.c for an example of how to
-make it work if your firmware doesn't, though.
+At worst, it'll cause a space leak, because until the next reboot we'll
+think that the inode in question has a non-zero nlink and can't be
+removed.
 
-Of course, we didn't need that hack any more as soon as we switched to
-OpenFirmware.
+>  This will make kernel BUG on jffs2_garbage_collect_live.
+
+But this isn't true. In fact, there isn't even a BUG in
+jffs2_garbage_collect_live() -- you're seeing an Oops, not a BUG.
+And it's not related to the locking issue. It's this:
+
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 090c556..3b6f2fa 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -700,7 +700,8 @@ static int jffs2_garbage_collect_metadata(struct jffs2_sb_info *c, struct jffs2_
+ 	struct jffs2_raw_inode ri;
+ 	struct jffs2_node_frag *last_frag;
+ 	union jffs2_device_node dev;
+-	char *mdata = NULL, mdatalen = 0;
++	char *mdata = NULL;
++	int mdatalen = 0;
+ 	uint32_t alloclen, ilen;
+ 	int ret;
+ 
+It looks like garbage collecting any symlink with a target length of
+more than 128 characters, on a system where char is signed by default,
+was broken since February 2001 when jffs2_garbage_collect_metadata() was
+first (half-)written.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
