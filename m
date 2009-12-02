@@ -1,19 +1,20 @@
-Received: from mail3.farm.elogic.it ([213.92.102.240])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NFqGh-0004OI-LV
-	for linux-mtd@lists.infradead.org; Wed, 02 Dec 2009 14:33:28 +0000
-Received: from [192.168.0.126]
-	(host29-107-static.41-85-b.business.telecomitalia.it [85.41.107.29])
-	by mail4.farm.elogic.it (eLogic Mail Server) with ASMTP id JAG11143
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Dec 2009 15:30:43 +0100
-Message-ID: <4B167A11.6010407@imsitaly.com>
-Date: Wed, 02 Dec 2009 15:30:41 +0100
-From: Salvatore Frizzoli - IMS Italy <sfrizzoli@imsitaly.com>
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NFqHY-0004bA-VR
+	for linux-mtd@lists.infradead.org; Wed, 02 Dec 2009 14:34:21 +0000
+Received: by bwz4 with SMTP id 4so224918bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 02 Dec 2009 06:34:16 -0800 (PST)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: get mtd name and manufacturer from high level app
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <ce9ab5790912020628n5e91f811haa56b6380a71ab32@mail.gmail.com>
+References: <ce9ab5790912020628n5e91f811haa56b6380a71ab32@mail.gmail.com>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Wed, 2 Dec 2009 20:03:55 +0530
+Message-ID: <ce9ab5790912020633o24dbab61le9ab2d14e0b5177e@mail.gmail.com>
+Subject: Re: [RFC] [PATCH] [MTD-UTILS]: flash_lock: fix length being passed
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +24,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Wed, Dec 2, 2009 at 7:58 PM, Vimal Singh <vimal.newwork@gmail.com> wrote=
+:
+> This patch fixes the 'length' calculation.
+> Making it:
+> + =A0 =A0 =A0 mtdLockInfo.length =3D (num_sectors - 1) * mtdInfo.erasesiz=
+e;
+> Rather:
+> - =A0 =A0 =A0 mtdLockInfo.length =3D num_sectors * mtdInfo.erasesize;
+>
+> Say there are 240 blocks present in the device. Then:
+> offset starts from: 0x0
+> and full size of device: 0x1E00000
+>
+> doing: 240 * 0x20000 gives -> 0x1E00000
+> But last block address should be 0x1DE0000 (which spans for 0x20000
+> bytes, adding upto size of 0x1E00000)
+>
+> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+>
+> --- flash_lock.c.org =A0 =A02009-11-24 19:33:18.000000000 +0530
+> +++ flash_lock.c =A0 =A0 =A0 =A02009-11-24 19:33:13.000000000 +0530
 
-I am working on an application under a uClinux kernel.
-This application would read name, manufacturer and id of the mtd flash 
-device.
-I have seen that it is not possible to do this by ioctl, so I don't know 
-how to do.
-I have also seen the get_mtd_device function, but i cannot know how to 
-fill the
-mtd_info struct that get_mtd_device takes as input parameter.
+Sorry, this patch was generated using 'diff'. Below is the correct patch.
+-vimal
 
-Is there a way to get theese infos similar to ioctl?
+This patch fixes the 'length' calculation.
+Making it:
+       mtdLockInfo.length =3D (num_sectors - 1) * mtdInfo.erasesize;
+Rather:
+       mtdLockInfo.length =3D num_sectors * mtdInfo.erasesize;
 
-Thank you all.
-Bye.
-Salvatore
+Say there are 240 blocks present in the device. Then:
+offset starts from: 0x0
+and full size of device: 0x1E00000
 
--- 
-Salvatore Frizzoli
+doing: 240 * 0x20000 gives -> 0x1E00000
+But last block address should be 0x1DE0000 (which spans for 0x20000
+bytes, adding upto size of 0x1E00000)
 
-Software Developer
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+---
 
-Research & Development Department
-IMS srl
+--- a/flash_lock.c	2009-11-24 19:33:18.000000000 +0530
++++ b/flash_lock.c	2009-11-24 19:33:13.000000000 +0530
+@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
+ 	}
 
-Via Sagittario, 5
-Fraz. Pontecchio Marconi
-40037 Sasso Marconi (BO)
-Italy
-Tel. ++39 051 846851
-Fax ++39 051 846856 
+ 	mtdLockInfo.start =3D ofs;
+-	mtdLockInfo.length =3D num_sectors * mtdInfo.erasesize;
++	mtdLockInfo.length =3D (num_sectors - 1) * mtdInfo.erasesize;
+ 	if(ioctl(fd, MEMLOCK, &mtdLockInfo))
+ 	{
+ 		fprintf(stderr, "Could not lock MTD device: %s\n", argv[1]);
+@@ -81,4 +81,3 @@ int main(int argc, char *argv[])
 
-http://www.imsitaly.com
+ 	return 0;
+ }
+-
