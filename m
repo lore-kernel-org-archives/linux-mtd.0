@@ -1,14 +1,19 @@
-Subject: Re: JFFS2: jffs2_symlink/jffs2_mkdir/jffs2_mknod bug?
-From: David Woodhouse <dwmw2@infradead.org>
-To: Tao Huang <ulysses.huang@gmail.com>
-In-Reply-To: <6b6744400912011811r4cecda08hd0a2502bc3083fc3@mail.gmail.com>
-References: <6b6744400912011811r4cecda08hd0a2502bc3083fc3@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 02 Dec 2009 19:54:07 +0000
-Message-ID: <1259783647.3744.611.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from ipmail02.adl6.internode.on.net ([203.16.214.140])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NG3Cv-0000jS-1f
+	for linux-mtd@lists.infradead.org; Thu, 03 Dec 2009 04:22:25 +0000
+Received: from [192.168.14.33] ([192.168.14.33])
+	(authenticated user iwo@call-direct.com.au)
+	by mail.call-direct.com.au (Kerio MailServer 6.7.0)
+	for linux-mtd@lists.infradead.org; Thu, 3 Dec 2009 15:16:01 +1100
+Message-ID: <4B173CEB.5050103@call-direct.com.au>
+Date: Thu, 03 Dec 2009 15:22:03 +1100
+From: Iwo Mergler <iwo@call-direct.com.au>
+MIME-Version: 1.0
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Looks like a UBIFS bug...
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-12-02 at 10:11 +0800, Tao Huang wrote:
-> On jffs2_symlink/jffs2_mkdir/jffs2_mknod, after jffs2_write_dnode,
-> any call jffs2_clear_inode will no call jffs2_mark_node_obsolete
-> because pino_nlink is not zero.
+Hi all,
 
-True, I think. Well spotted. Although it may actually turn out to be
-harmless, for reasons similar to those I outlined to Joakim earlier.
+I've got some weird UBIFS-related behaviour. I'd welcome
+any suggestions.
 
-At worst, it'll cause a space leak, because until the next reboot we'll
-think that the inode in question has a non-zero nlink and can't be
-removed.
+This is an ARM927-based embedded system with NAND FLASH,
+Kernel 2.6.32-rc8 with a custom MTD NAND driver.
 
->  This will make kernel BUG on jffs2_garbage_collect_live.
+While attempting to write a file to a UBIFS volume, UBIFS claims 
 
-But this isn't true. In fact, there isn't even a BUG in
-jffs2_garbage_collect_live() -- you're seeing an Oops, not a BUG.
-And it's not related to the locking issue. It's this:
+UBIFS error (pid 866): check_lpt_type: invalid type (15) in LPT node type 0
 
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index 090c556..3b6f2fa 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -700,7 +700,8 @@ static int jffs2_garbage_collect_metadata(struct jffs2_sb_info *c, struct jffs2_
- 	struct jffs2_raw_inode ri;
- 	struct jffs2_node_frag *last_frag;
- 	union jffs2_device_node dev;
--	char *mdata = NULL, mdatalen = 0;
-+	char *mdata = NULL;
-+	int mdatalen = 0;
- 	uint32_t alloclen, ilen;
- 	int ret;
- 
-It looks like garbage collecting any symlink with a target length of
-more than 128 characters, on a system where char is signed by default,
-was broken since February 2001 when jffs2_garbage_collect_metadata() was
-first (half-)written.
+followed by "cannot reserve n bytes" messages every second or so.
+After this point the fs is read-only.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+I don't know how to trigger it reliably, but while experimenting
+with different mtd partition sizes and debug levels, I was able
+to catch it with debug level 2 enabled. The full log is attached.
+
+I tried to cut the problem down, disabling unrelated volumes and
+reducing the MTD partition size, but in that configuration I was
+not able to trigger the problem with UBIFS debug enabled. That is,
+enabling debug made the problem go away.
+
+Thus, the log shows two UBIFS partitions. /opt is the one with
+the problem:
+
+ubi0:usrl                65.2M     20.0k     61.8M   0% /usr/local
+ubi1:opt                109.0M      1.6M    102.6M   2% /opt
+
+Basically, starting from a fully erased MTD partition, I run
+
+ubiattach /dev/ubi_ctrl -m 6
+ubimkvol /dev/ubi1 -N opt -m
+mount -t ubifs ubi1:opt /opt
+
+After that I get the system to write a file into /opt. This is
+data streamed over Ethernet, so write units are probably odd sized
+blocks. I don't know if this is significant, but I wasn't able
+to trigger the problem any other way (e.g. dd if=/dev/urandom, or
+copying the exact same file via cp).
+
+
+Kind regards,
+
+Iwo
