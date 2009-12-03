@@ -1,14 +1,14 @@
-Received: from mail-qy0-f129.google.com ([209.85.221.129])
+Received: from mail-qy0-f204.google.com ([209.85.221.204])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NGFVM-0005Zh-9J
-	for linux-mtd@lists.infradead.org; Thu, 03 Dec 2009 17:30:17 +0000
-Received: by qyk35 with SMTP id 35so114073qyk.28
+	id 1NGFWW-0008QB-Oc
+	for linux-mtd@lists.infradead.org; Thu, 03 Dec 2009 17:31:29 +0000
+Received: by qyk42 with SMTP id 42so659911qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 03 Dec 2009 09:30:11 -0800 (PST)
+	Thu, 03 Dec 2009 09:31:24 -0800 (PST)
 MIME-Version: 1.0
-Date: Thu, 3 Dec 2009 12:30:11 -0500
-Message-ID: <dbdb2ea60912030930ncd06dcfjbb149545728fa5d6@mail.gmail.com>
-Subject: how to properly calculate max-leb-cnt and vol_size for ubifs
+Date: Thu, 3 Dec 2009 12:31:23 -0500
+Message-ID: <dbdb2ea60912030931j380a7702hc92d4fbe72341730@mail.gmail.com>
+Subject: ubifs wear leveling across entire device
 From: twebb <taliaferro62@gmail.com>
 To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
@@ -21,21 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm using ubifs for the first time and am confused about how to
-calculate two parameters:
+I'm confused about how wear leveling occurs across the entire device
+in the following example.  Could someone help me understand what I'm
+missing?
 
-"max-leb-cnt" for mkfs.ubifs
-"vol_size" for ubinize cfg file
+4 GiB flash device (nand MLC):
+4 MTD partitions defined:
+0 - "p1" - 0x00000000 - 0x00800000
+1 - "p2" - 0x00800000 - 0x10000000
+2 - "p3" - 0x10000000 - 0x80000000
+3 - "p4" - 0x80000000 - 0x100000000
 
-How should "max-leb-cnt" be calculated?  In the examples, how is "-c
-2047" determined?  Should the max-leb-cnt calculation somehow include
-the overhead calculated per the ubifs documentation page?  Should the
-reserved PEBs (1% default for NAND flash) be somehow taken into
-account?
+kernel args specify 3 ubi volumes:
+ubi.mtd=p1 ubi.mtd=p2 ubi.mtd=p3
+(p4 is reserved and no volumes or filesystems sit on top of it)
 
-How should "vol_size" be calculated?  Is it simply max-leb-cnt *
-LEB_size?  Should overhead somehow be included in this calculation
-also?
+The "vol_size" for each of the ubi volumes (as specified in the
+ubinize cfg file) is slightly less than the corresponding mtd
+partition size.  The volumes are specified as dynamic because they
+need to be RW.
 
-Thanks for the help,
+Thanks,
 twebb
