@@ -1,17 +1,29 @@
-Received: from mail-qy0-f204.google.com ([209.85.221.204])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NGFWW-0008QB-Oc
-	for linux-mtd@lists.infradead.org; Thu, 03 Dec 2009 17:31:29 +0000
-Received: by qyk42 with SMTP id 42so659911qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 03 Dec 2009 09:31:24 -0800 (PST)
+Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NGI8y-0002zl-O3
+	for linux-mtd@lists.infradead.org; Thu, 03 Dec 2009 20:19:21 +0000
+Date: Thu, 3 Dec 2009 12:19:11 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+Subject: Re: [PATCH-v6 0/4] OMAP: Adding flash support to SDP, ZOOM2 and
+	LDP boards
+Message-ID: <20091203201911.GC4348@atomide.com>
+References: <ce9ab5790909251957t5598e4efq765f86420426392e@mail.gmail.com>
+	<ce9ab5790910260507y2d0067dk1c12f0439c6fe5d7@mail.gmail.com>
+	<ce9ab5790911040328p215dede2v37db38a966a5bbd5@mail.gmail.com>
+	<20091109205250.GB23952@atomide.com>
+	<ce9ab5790911100201j6b1ef5e1g43a992b00e69ade4@mail.gmail.com>
+	<ce9ab5790911190608r5b7e8226j3546714957ce70e6@mail.gmail.com>
+	<1259075173.29118.20.camel@localhost>
+	<ce9ab5790911240725x29b8bd6eq9f9c7a8b21c6786e@mail.gmail.com>
+	<1259307441.7518.6.camel@localhost>
+	<ce9ab5790912020609i8af0444l54e695f85ea89ba2@mail.gmail.com>
 MIME-Version: 1.0
-Date: Thu, 3 Dec 2009 12:31:23 -0500
-Message-ID: <dbdb2ea60912030931j380a7702hc92d4fbe72341730@mail.gmail.com>
-Subject: ubifs wear leveling across entire device
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce9ab5790912020609i8af0444l54e695f85ea89ba2@mail.gmail.com>
+Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>,
+	vimal singh <vimalsingh@ti.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +33,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm confused about how wear leveling occurs across the entire device
-in the following example.  Could someone help me understand what I'm
-missing?
+* Vimal Singh <vimal.newwork@gmail.com> [091202 06:09]:
+> >> >> From 8bc97108cf9c78216f1ea5407ccbd900e6b63dc2 Mon Sep 17 00:00:00 2001
+> >> >> From: Vimal Singh <vimalsingh@ti.com>
+> >> >> Date: Thu, 19 Nov 2009 19:28:11 +0530
+> >> >>
+> >> >> This patch series adds flash support for NAND (in sdp, zoom and ldp),
+> >> >> OneNAND and NOR (in sdp)
+> >> >>
+> >> >> Tested on Zoom2 and 3430SDP
+> >> >>
+> >> >> Vimal Singh (4):
+> >> >> [PATCH-v6 1/4] OMAP2/3: Add support for flash on SDP boards
+> >> >> [PATCH-v6 2/4] OMAP3: Add support for NAND on ZOOM/LDP boards
+> >> >> [PATCH-v6 3/4] OMAP: Zoom2: Enable NAND and JFFS2 support in defconfig
+> >> >> [PATCH-v6 4/4] OMAP: 3430SDP: Enable NAND in defconfig
+> >> >
+> 
+> I am going to re-post this patch series again and this time I have
+> divided this into 3 (for more convenience in reviewing) . Something
+> like this:
+> 
+> 1st series:
+> This patch series will introduce generic gpmc-nand.c for nand device
+> related gpmc init.
+> 
+> 2nd series:
+> This patch series will introduce 'board-sdp-flash.c', for flash
+> devices init on SDP
+> boards. And will give an example of using 'gpmc-nand.c' and
+> 'board-sdp-flash.c' by
+> adding flash support to 3430SDP board.
+> 
+> 3rd:
+> This series introduces 'board-zoom-flash.c' for NAND init in ZOOM boards.
+> Other patches will add NAND support for ZOOM2, ZOOM3 and LDP.
+> 
+> Tony,
+> Is it ok with you?
 
-4 GiB flash device (nand MLC):
-4 MTD partitions defined:
-0 - "p1" - 0x00000000 - 0x00800000
-1 - "p2" - 0x00800000 - 0x10000000
-2 - "p3" - 0x10000000 - 0x80000000
-3 - "p4" - 0x80000000 - 0x100000000
+Sounds pretty good to me. Also the patches you just posted look
+nice to me, will take a closer look. Thanks for doing the generic
+gpmc-nand.c, that should make it a lot easier to bring up new
+omap boards.
 
-kernel args specify 3 ubi volumes:
-ubi.mtd=p1 ubi.mtd=p2 ubi.mtd=p3
-(p4 is reserved and no volumes or filesystems sit on top of it)
+Regards,
 
-The "vol_size" for each of the ubi volumes (as specified in the
-ubinize cfg file) is slightly less than the corresponding mtd
-partition size.  The volumes are specified as dynamic because they
-need to be RW.
-
-Thanks,
-twebb
+Tony
