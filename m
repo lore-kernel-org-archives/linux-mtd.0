@@ -1,17 +1,20 @@
-Received: from qw-out-1920.google.com ([74.125.92.148])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NGLPY-0002be-LX
-	for linux-mtd@lists.infradead.org; Thu, 03 Dec 2009 23:48:41 +0000
-Received: by qw-out-1920.google.com with SMTP id 5so143357qwc.24
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 03 Dec 2009 15:48:35 -0800 (PST)
-MIME-Version: 1.0
-Date: Thu, 3 Dec 2009 18:48:35 -0500
-Message-ID: <dbdb2ea60912031548u32f1700fp8fd105ea8e0ff937@mail.gmail.com>
-Subject: ubifs attach error
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NGQyq-00051F-QG
+	for linux-mtd@lists.infradead.org; Fri, 04 Dec 2009 05:45:28 +0000
+Subject: Re: [Intel Turbo Memory] Can I use Memory Technology Device (MTD)
+	driver  for turning on my Intel Turbo Memory?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: palmax@gmail.com
+In-Reply-To: <209499a0912030814n77ebc711o843701d77bed2bf2@mail.gmail.com>
+References: <209499a0912030814n77ebc711o843701d77bed2bf2@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 04 Dec 2009 07:45:10 +0200
+Message-Id: <1259905510.8673.2.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm getting the following error running ubifs on an ARM system running
-linux-2.6.28:
+On Thu, 2009-12-03 at 17:14 +0100, palmax@gmail.com wrote:
+> Hello
+> 
+> I have an "Intel Turbo Memory" device (aka Robson),
+> http://www.intel.com/support/chipsets/itm/index.htm , and I want to
+> ask you if I could turn it on with your Memory Technology Device (MTD)
+> driver.
+> 
+> I will attach the info of my Intel Turbo Memory Controller, because it
+> could help you to give me a good reply :D
 
-[    6.658441] UBI: attaching mtd6 to ubi3
-[    6.662463] UBI: physical eraseblock size:   524288 bytes (512 KiB)
-[    6.668733] UBI: logical eraseblock size:    516096 bytes
-[    6.674166] UBI: smallest flash I/O unit:    4096
-[    6.678872] UBI: VID header offset:          4096 (aligned 4096)
-[    6.684912] UBI: data offset:                8192
-[   11.091011] UBI error: vtbl_check: too large reserved_pebs 3121,
-good PEBs 3072
-[   11.098331] UBI error: vtbl_check: volume table check failed:
-record 0, error 9
-[   11.106979] UBI error: ubi_attach_mtd_dev: failed to attach by
-scanning, error -22
-[   11.115048] UBI error: ubi_init: cannot attach mtd6
-[   11.121599] UBI: mtd3 is detached from ubi0
-[   11.127121] UBI: mtd4 is detached from ubi1
-[   11.132691] UBI: mtd5 is detached from ubi2
-[   11.137316] UBI error: ubi_init: UBI error: cannot initialize UBI, error -22
+The best way to solve the problem is to buy flash from a company which
+supports Linux.
 
-Could anyone offer any input on this error?
-
-Thanks,
-twebb
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
