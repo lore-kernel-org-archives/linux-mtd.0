@@ -1,25 +1,22 @@
-Received: from mail-qy0-f204.google.com ([209.85.221.204])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NGYFH-0007oa-Kf
-	for linux-mtd@lists.infradead.org; Fri, 04 Dec 2009 13:30:56 +0000
-Received: by qyk42 with SMTP id 42so1031085qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 Dec 2009 05:30:48 -0800 (PST)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NGb2f-00042j-DQ
+	for linux-mtd@lists.infradead.org; Fri, 04 Dec 2009 16:30:06 +0000
+Received: from themisto.ext.pengutronix.de ([92.198.50.58]
+	helo=jupiter.intranet.kreuzholzen.de)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.69)
+	(envelope-from <jbe@pengutronix.de>) id 1NGb2a-0007q6-W8
+	for linux-mtd@lists.infradead.org; Fri, 04 Dec 2009 17:29:58 +0100
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 4 Dec 2009 17:29:55 +0100
 MIME-Version: 1.0
-In-Reply-To: <ce9ab5790912040514n238fd080g722f42b426bb6b1b@mail.gmail.com>
-References: <ce9ab5790912030606u38ff19bdy536c1931a5fb63f0@mail.gmail.com>
-	<ce9ab5790912040504q5ad01329haa80f5814407a991@mail.gmail.com>
-	<ce9ab5790912040514n238fd080g722f42b426bb6b1b@mail.gmail.com>
-Date: Fri, 4 Dec 2009 19:00:48 +0530
-Message-ID: <d6a0f7aa0912040530o72d16979m4c785c2f9cda150c@mail.gmail.com>
-Subject: Re: [PATCH 2/2]: Introducing 'gpmc-nand.c' for GPMC specific NAND
-	init
-From: Govindraj <govindraj.ti@gmail.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
-	Linux MTD <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200912041729.55259.jbe@pengutronix.de>
+Subject: Strange jffs2 behaviour
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,330 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch got line wrapped.
+Hi,
 
---=20
----
-Regards,
-Govindraj.R
+I'm using a 2.6.31.6 kernel here to work on an S3C2410 based CPU card and
+three partitions in my 32 MiB NAND flash. Flash can be programmed by the boot
+loader (root filesystem in one partition) or erased (the other two partitions
+are currently empty).
 
+System comes up with the root filesystem in the first partition and mounts the
+other two partitions from some init scripts.
 
-On Fri, Dec 4, 2009 at 6:44 PM, Vimal Singh <vimal.newwork@gmail.com> wrote=
-:
-> Ahh.. this is my bad.
->
-> [...]
->> + =A0 =A0 =A0 err =3D gpmc_nand_setup((void __iomem *)
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 &gpmc_nand_data->gpmc_cs_baseaddr);
-> we just do not need casting here.
->
-> Apologies for making noise and confusion.
-> Please take this one.
->
-> -vimal
->
-> From e024a2e6aa2051259ad904daff13bdac73b3b1b8 Mon Sep 17 00:00:00 2001
-> From: Vimal Singh <vimalsingh@ti.com>
-> Date: Wed, 25 Nov 2009 18:23:15 +0530
-> Subject: [PATCH] Introducing 'gpmc-nand.c' for GPMC specific NAND init
->
-> Introducing 'gpmc-nand.c' for GPMC specific NAND init.
-> For example: GPMC timing parameters and all.
-> This patch also migrates gpmc related calls from 'nand/omap2.c'
-> to 'gpmc-nand.c'.
->
-> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> ---
-> =A0arch/arm/mach-omap2/Makefile =A0 =A0 =A0 =A0 =A0 | =A0 =A03 +
-> =A0arch/arm/mach-omap2/gpmc-nand.c =A0 =A0 =A0 =A0| =A0141 ++++++++++++++=
-++++++++++++++++++
-> =A0arch/arm/plat-omap/include/plat/nand.h | =A0 =A06 ++
-> =A0drivers/mtd/nand/omap2.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 26 +-----
-> =A04 files changed, 153 insertions(+), 23 deletions(-)
-> =A0create mode 100644 arch/arm/mach-omap2/gpmc-nand.c
->
-> diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-> index 59b0ccc..0dfe27a 100644
-> --- a/arch/arm/mach-omap2/Makefile
-> +++ b/arch/arm/mach-omap2/Makefile
-> @@ -103,5 +103,8 @@ obj-y =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 +=3D usb-ehci.o
-> =A0onenand-$(CONFIG_MTD_ONENAND_OMAP2) =A0 =A0:=3D gpmc-onenand.o
-> =A0obj-y =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0+=3D $(onenand-m) $(onenand-y)
->
-> +nand-$(CONFIG_MTD_NAND_OMAP2) =A0 =A0 =A0 =A0 =A0:=3D gpmc-nand.o
-> +obj-y =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0+=3D $(nand-m) $(nand-y)
-> +
-> =A0smc91x-$(CONFIG_SMC91X) =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0:=3D gpmc-smc91x.o
-> =A0obj-y =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0+=3D $(smc91x-m) $(smc91x-y)
-> diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-n=
-and.c
-> new file mode 100644
-> index 0000000..0621e39
-> --- /dev/null
-> +++ b/arch/arm/mach-omap2/gpmc-nand.c
-> @@ -0,0 +1,141 @@
-> +/*
-> + * gpmc-nand.c
-> + *
-> + * Copyright (C) 2009 Texas Instruments
-> + * Vimal Singh <vimalsingh@ti.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/io.h>
-> +
-> +#include <asm/mach/flash.h>
-> +
-> +#include <plat/nand.h>
-> +#include <plat/board.h>
-> +#include <plat/gpmc.h>
-> +
-> +#define WR_RD_PIN_MONITORING =A0 0x00600000
-> +
-> +static struct omap_nand_platform_data *gpmc_nand_data;
-> +
-> +static struct resource gpmc_nand_resource =3D {
-> + =A0 =A0 =A0 .flags =A0 =A0 =A0 =A0 =A0=3D IORESOURCE_MEM,
-> +};
-> +
-> +static struct platform_device gpmc_nand_device =3D {
-> + =A0 =A0 =A0 .name =A0 =A0 =A0 =A0 =A0 =3D "omap2-nand",
-> + =A0 =A0 =A0 .id =A0 =A0 =A0 =A0 =A0 =A0 =3D 0,
-> + =A0 =A0 =A0 .num_resources =A0=3D 1,
-> + =A0 =A0 =A0 .resource =A0 =A0 =A0 =3D &gpmc_nand_resource,
-> +};
-> +
-> +static int omap2_nand_gpmc_config(int cs, void __iomem *nand_base)
-> +{
-> + =A0 =A0 =A0 struct gpmc_timings t;
-> + =A0 =A0 =A0 int err;
-> +
-> + =A0 =A0 =A0 const int cs_rd_off =3D 36;
-> + =A0 =A0 =A0 const int cs_wr_off =3D 36;
-> + =A0 =A0 =A0 const int adv_on =3D 6;
-> + =A0 =A0 =A0 const int adv_rd_off =3D 24;
-> + =A0 =A0 =A0 const int adv_wr_off =3D 36;
-> + =A0 =A0 =A0 const int oe_off =3D 48;
-> + =A0 =A0 =A0 const int we_off =3D 30;
-> + =A0 =A0 =A0 const int rd_cycle =3D 72;
-> + =A0 =A0 =A0 const int wr_cycle =3D 72;
-> + =A0 =A0 =A0 const int access =3D 54;
-> + =A0 =A0 =A0 const int wr_data_mux_bus =3D 8;
-> + =A0 =A0 =A0 const int wr_access =3D 30;
-> +
-> + =A0 =A0 =A0 memset(&t, 0, sizeof(t));
-> + =A0 =A0 =A0 t.sync_clk =3D 0;
-> + =A0 =A0 =A0 t.cs_on =3D 0;
-> + =A0 =A0 =A0 t.adv_on =3D gpmc_round_ns_to_ticks(adv_on);
-> +
-> + =A0 =A0 =A0 /* Read */
-> + =A0 =A0 =A0 t.adv_rd_off =3D gpmc_round_ns_to_ticks(adv_rd_off);
-> + =A0 =A0 =A0 t.oe_on =A0=3D t.adv_on;
-> + =A0 =A0 =A0 t.access =3D gpmc_round_ns_to_ticks(access);
-> + =A0 =A0 =A0 t.oe_off =3D gpmc_round_ns_to_ticks(oe_off);
-> + =A0 =A0 =A0 t.cs_rd_off =3D gpmc_round_ns_to_ticks(cs_rd_off);
-> + =A0 =A0 =A0 t.rd_cycle =A0=3D gpmc_round_ns_to_ticks(rd_cycle);
-> +
-> + =A0 =A0 =A0 /* Write */
-> + =A0 =A0 =A0 t.adv_wr_off =3D gpmc_round_ns_to_ticks(adv_wr_off);
-> + =A0 =A0 =A0 t.we_on =A0=3D t.oe_on;
-> + =A0 =A0 =A0 if (cpu_is_omap34xx()) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 t.wr_data_mux_bus =3D gpmc_round_ns_to_tick=
-s(wr_data_mux_bus);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 t.wr_access =3D gpmc_round_ns_to_ticks(wr_a=
-ccess);
-> + =A0 =A0 =A0 }
-> + =A0 =A0 =A0 t.we_off =3D gpmc_round_ns_to_ticks(we_off);
-> + =A0 =A0 =A0 t.cs_wr_off =3D gpmc_round_ns_to_ticks(cs_wr_off);
-> + =A0 =A0 =A0 t.wr_cycle =A0=3D gpmc_round_ns_to_ticks(wr_cycle);
-> +
-> + =A0 =A0 =A0 /* Configure GPMC */
-> + =A0 =A0 =A0 gpmc_cs_write_reg(cs, GPMC_CS_CONFIG1,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 GPMC_CONFIG1_DEVICESIZE(gpm=
-c_nand_data->devsize) |
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 GPMC_CONFIG1_DEVICETYPE_NAN=
-D);
-> +
-> + =A0 =A0 =A0 err =3D gpmc_cs_set_timings(cs, &t);
-> + =A0 =A0 =A0 if (err)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return err;
-> +
-> + =A0 =A0 =A0 return 0;
-> +}
-> +
-> +static int gpmc_nand_setup(void __iomem *nand_base)
-> +{
-> + =A0 =A0 =A0 struct device *dev =3D &gpmc_nand_device.dev;
-> +
-> + =A0 =A0 =A0 /* Set timings in GPMC */
-> + =A0 =A0 =A0 if (omap2_nand_gpmc_config(gpmc_nand_data->cs, nand_base) <=
- 0) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(dev, "Unable to set gpmc timings\n"=
-);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 return 0;
-> +}
-> +
-> +int __init gpmc_nand_init(struct omap_nand_platform_data *_nand_data)
-> +{
-> + =A0 =A0 =A0 unsigned int val;
-> + =A0 =A0 =A0 int err =3D 0;
-> + =A0 =A0 =A0 struct device *dev =3D &gpmc_nand_device.dev;
-> +
-> + =A0 =A0 =A0 gpmc_nand_data =3D _nand_data;
-> + =A0 =A0 =A0 gpmc_nand_data->nand_setup =3D gpmc_nand_setup;
-> + =A0 =A0 =A0 gpmc_nand_device.dev.platform_data =3D gpmc_nand_data;
-> +
-> + =A0 =A0 =A0 err =3D gpmc_nand_setup(gpmc_nand_data->gpmc_cs_baseaddr);
-> + =A0 =A0 =A0 if (err < 0) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(dev, "NAND platform setup failed: %=
-d\n", err);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return err;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 /* Enable RD PIN Monitoring Reg */
-> + =A0 =A0 =A0 if (gpmc_nand_data->dev_ready) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 val =A0=3D gpmc_cs_read_reg(gpmc_nand_data-=
->cs,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0GPMC_CS_CONFIG1);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 val |=3D WR_RD_PIN_MONITORING;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_cs_write_reg(gpmc_nand_data->cs,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 GPMC_CS_CONFIG1, val);
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 val =A0=3D gpmc_cs_read_reg(gpmc_nand_data->cs, GPMC_CS_CON=
-FIG7);
-> + =A0 =A0 =A0 val &=3D ~(0xf << 8);
-> + =A0 =A0 =A0 val |=3D =A0(0xc & 0xf) << 8;
-> + =A0 =A0 =A0 gpmc_cs_write_reg(gpmc_nand_data->cs, GPMC_CS_CONFIG7, val)=
-;
-> +
-> + =A0 =A0 =A0 err =3D platform_device_register(&gpmc_nand_device);
-> + =A0 =A0 =A0 if (err < 0) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(dev, "Unable to register NAND devic=
-e\n");
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return err;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 return 0;
-> +}
-> diff --git a/arch/arm/plat-omap/include/plat/nand.h
-> b/arch/arm/plat-omap/include/plat/nand.h
-> index 631a7be..2ba9842 100644
-> --- a/arch/arm/plat-omap/include/plat/nand.h
-> +++ b/arch/arm/plat-omap/include/plat/nand.h
-> @@ -21,4 +21,10 @@ struct omap_nand_platform_data {
-> =A0 =A0 =A0 =A0int =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 dma_channel;
-> =A0 =A0 =A0 =A0void __iomem =A0 =A0 =A0 =A0 =A0 =A0*gpmc_cs_baseaddr;
-> =A0 =A0 =A0 =A0void __iomem =A0 =A0 =A0 =A0 =A0 =A0*gpmc_baseaddr;
-> + =A0 =A0 =A0 int =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 devsize;
-> =A0};
-> +
-> +/* size (4 KiB) for IO mapping */
-> +#define =A0 =A0 =A0 =A0NAND_IO_SIZE =A0 =A0SZ_4K
-> +
-> +extern int gpmc_nand_init(struct omap_nand_platform_data *d);
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 1bb799f..aaef170 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -30,12 +30,8 @@
->
-> =A0#define =A0 =A0 =A0 =A0DRIVER_NAME =A0 =A0 "omap2-nand"
->
-> -/* size (4 KiB) for IO mapping */
-> -#define =A0 =A0 =A0 =A0NAND_IO_SIZE =A0 =A0SZ_4K
-> -
-> =A0#define =A0 =A0 =A0 =A0NAND_WP_OFF =A0 =A0 0
-> =A0#define NAND_WP_BIT =A0 =A00x00000010
-> -#define WR_RD_PIN_MONITORING =A0 0x00600000
->
-> =A0#define =A0 =A0 =A0 =A0GPMC_BUF_FULL =A0 0x00000001
-> =A0#define =A0 =A0 =A0 =A0GPMC_BUF_EMPTY =A00x00000000
-> @@ -882,8 +878,6 @@ static int __devinit omap_nand_probe(struct
-> platform_device *pdev)
-> =A0 =A0 =A0 =A0struct omap_nand_info =A0 =A0 =A0 =A0 =A0 *info;
-> =A0 =A0 =A0 =A0struct omap_nand_platform_data =A0*pdata;
-> =A0 =A0 =A0 =A0int =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 err;
-> - =A0 =A0 =A0 unsigned long =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 val;
-> -
->
-> =A0 =A0 =A0 =A0pdata =3D pdev->dev.platform_data;
-> =A0 =A0 =A0 =A0if (pdata =3D=3D NULL) {
-> @@ -910,24 +904,15 @@ static int __devinit omap_nand_probe(struct
-> platform_device *pdev)
-> =A0 =A0 =A0 =A0info->mtd.name =A0 =A0 =A0 =A0 =A0=3D dev_name(&pdev->dev)=
-;
-> =A0 =A0 =A0 =A0info->mtd.owner =A0 =A0 =A0 =A0 =3D THIS_MODULE;
->
-> + =A0 =A0 =A0 info->nand.options =A0 =A0 =A0|=3D pdata->devsize ? NAND_BU=
-SWIDTH_16 : 0;
-> + =A0 =A0 =A0 info->nand.options =A0 =A0 =A0|=3D NAND_SKIP_BBTSCAN;
-> +
-> =A0 =A0 =A0 =A0err =3D gpmc_cs_request(info->gpmc_cs, NAND_IO_SIZE, &info=
-->phys_base);
-> =A0 =A0 =A0 =A0if (err < 0) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0dev_err(&pdev->dev, "Cannot request GPMC C=
-S\n");
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto out_free_info;
-> =A0 =A0 =A0 =A0}
->
-> - =A0 =A0 =A0 /* Enable RD PIN Monitoring Reg */
-> - =A0 =A0 =A0 if (pdata->dev_ready) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 val =A0=3D gpmc_cs_read_reg(info->gpmc_cs, =
-GPMC_CS_CONFIG1);
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 val |=3D WR_RD_PIN_MONITORING;
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CO=
-NFIG1, val);
-> - =A0 =A0 =A0 }
-> -
-> - =A0 =A0 =A0 val =A0=3D gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG7)=
-;
-> - =A0 =A0 =A0 val &=3D ~(0xf << 8);
-> - =A0 =A0 =A0 val |=3D =A0(0xc & 0xf) << 8;
-> - =A0 =A0 =A0 gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CONFIG7, val);
-> -
-> =A0 =A0 =A0 =A0/* NAND write protect off */
-> =A0 =A0 =A0 =A0omap_nand_wp(&info->mtd, NAND_WP_OFF);
->
-> @@ -963,11 +948,6 @@ static int __devinit omap_nand_probe(struct
-> platform_device *pdev)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0info->nand.chip_delay =3D 50;
-> =A0 =A0 =A0 =A0}
->
-> - =A0 =A0 =A0 info->nand.options =A0|=3D NAND_SKIP_BBTSCAN;
-> - =A0 =A0 =A0 if ((gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG1) & 0x3=
-000)
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =3D=3D 0x1000)
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 info->nand.options =A0|=3D NAND_BUSWIDTH_16=
-;
-> -
-> =A0 =A0 =A0 =A0if (use_prefetch) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* copy the virtual address of nand base f=
-or fifo access */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0info->nand_pref_fifo_add =3D info->nand.IO=
-_ADDR_R;
-> --
-> 1.5.5
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+$ mount
+rootfs on / type rootfs (rw)
+/dev/root on / type jffs2 (rw,relatime)
+[...]
+/dev/mtdblock3 on /mnt/applicat type jffs2 (rw,noatime)
+/dev/mtdblock4 on /mnt/data type jffs2 (rw,noatime)
+
+$ df 
+/dev/root                12416     12072       344  97% /
+[...]
+/dev/mtdblock3            8192       436      7756   5% /mnt/applicat
+/dev/mtdblock4           10240       480      9760   5% /mnt/data
+
+(the 5% in /dev/mtdblock3+4 are my sample files, to check if writing files
+is working)
+
+I can copy data from the root filesystem partition to the other two
+partitions, run a "sync" and reboot and all the files are still present.
+
+But when I simply unmount one of the two other partitions, I get:
+
+JFFS2 notice: (417) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1be9e0.
+JFFS2 warning: (417) jffs2_do_read_inode_internal: no data nodes found for ino #170
+iget() failed for ino #170
+JFFS2 warning: (417) jffs2_get_inode_nodes: Eep. No valid nodes for ino #170.
+JFFS2 warning: (417) jffs2_do_read_inode_internal: no data nodes found for ino #170
+
+And nothing else is working any more. E.g. any further access to any other
+partition ends with something like this:
+
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1be8d8.
+JFFS2 warning: (428) jffs2_do_read_inode_internal: no data nodes found for ino #168
+iget() failed for ino #168
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b4dd4.
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b4774.
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b4000.
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b3704.
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b300c.
+[...]
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1a18c8.
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1a108c.
+JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1a08e0.
+JFFS2 warning: (428) jffs2_do_read_inode_internal: no data nodes found for ino #164
+Erase at 0x001a4000 failed immediately: errno -5
+
+Any idea what can be wrong here?
+
+jbe
+
+-- 
+Pengutronix e.K.                              | Juergen Beisert             |
+Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
+Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
