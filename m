@@ -1,19 +1,16 @@
-Received: from smtp5-g21.free.fr ([212.27.42.5])
+Received: from ns39351.ovh.net ([91.121.21.191])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NGs6y-0008OX-HU
-	for linux-mtd@lists.infradead.org; Sat, 05 Dec 2009 10:43:41 +0000
-Message-ID: <4B1A394F.3060904@eukrea.com>
-Date: Sat, 05 Dec 2009 11:43:27 +0100
-From: =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
-MIME-Version: 1.0
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [RFC] mxc nand controller updates
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>	<1257925792.21596.858.camel@localhost>	<20091112073630.GV30179@pengutronix.de>	<1258101131.21596.1189.camel@localhost>	<1259580031.19465.378.camel@macbook.infradead.org>
-	<20091130122903.GO27548@pengutronix.de>
-In-Reply-To: <20091130122903.GO27548@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: mathieu.berland@eads.com, linux-mtd@lists.infradead.org
+	id 1NGvcB-0002Qp-PV
+	for linux-mtd@lists.infradead.org; Sat, 05 Dec 2009 14:28:08 +0000
+Received: from localhost (87-98-128-90.ovh.net [87.98.128.90])
+	by ns39351.ovh.net (Postfix) with ESMTPSA id C7B5D1D287
+	for <linux-mtd@lists.infradead.org>;
+	Sat,  5 Dec 2009 15:28:00 +0100 (CET)
+From: Simon Guinot <sguinot@lacie.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: m25p80: add support for Macronix MX25L4005A
+Date: Sat,  5 Dec 2009 15:28:00 +0100
+Message-Id: <1260023280-5224-1-git-send-email-sguinot@lacie.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha,
 
-Sascha Hauer a écrit :
->   git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
-> 
-> Sascha Hauer (18):
->       mxc_nand: cleanup eccoob descriptions
->       mxc_nand: cleanup initialization
->       mxc_nand: merge send_read_page and send_prog_page
->       mxc_nand: introduce mxc_do_addr_cycle
->       mxc nand: remove debug param
->       mxc nand: remove dead code
->       mxc nand: use resource_size()
->       mxc nand: use buffers
->       mxc nand: simplify command processing
->       mxc nand: modify send_page to send all pages, not only one
->       mxc_nand: remove unused defines
->       mxc_nand: Make main/spare areas runtime configurable
->       mxc_nand: Get rid of pagesize_2k flag
->       mxc_nand: Add NFC V2 support
->       mxc_nand: disable sp_en bit only once
->       mxc_nand: Allow flash based bbt
->       mxc_nand: remove TROP_US_DELAY
->       mxc_nand: use DRIVER_NAME where appropriate
-> 
-Tested-by: Eric Benard <eric@eukrea.com>
+Signed-off-by: Simon Guinot <sguinot@lacie.com>
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-it's a bit late but I can confirm this works fine on our i.MX27 platform 
-using : NAND device: Manufacturer ID: 0x2c, Chip ID: 0xac (Micron NAND 
-512MiB 1,8V 8-bit) (2k page size) with hw ecc & flash bbt.
-
-Eric
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 8f8c249..ae1bfb2 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -638,6 +638,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "at26df321",  INFO(0x1f4701, 0, 64 * 1024, 64, SECT_4K) },
+ 
+ 	/* Macronix */
++	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
+ 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+-- 
+1.6.3.1
