@@ -1,16 +1,19 @@
-Received: from ns39351.ovh.net ([91.121.21.191])
+Received: from openfortress.nl ([213.189.19.244] helo=fame.vanrein.org)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NGvcB-0002Qp-PV
-	for linux-mtd@lists.infradead.org; Sat, 05 Dec 2009 14:28:08 +0000
-Received: from localhost (87-98-128-90.ovh.net [87.98.128.90])
-	by ns39351.ovh.net (Postfix) with ESMTPSA id C7B5D1D287
-	for <linux-mtd@lists.infradead.org>;
-	Sat,  5 Dec 2009 15:28:00 +0100 (CET)
-From: Simon Guinot <sguinot@lacie.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: m25p80: add support for Macronix MX25L4005A
-Date: Sat,  5 Dec 2009 15:28:00 +0100
-Message-Id: <1260023280-5224-1-git-send-email-sguinot@lacie.com>
+	id 1NGyip-0008AL-5E
+	for linux-mtd@lists.infradead.org; Sat, 05 Dec 2009 17:47:11 +0000
+Date: Sat, 5 Dec 2009 17:47:02 +0000
+From: Rick van Rein <rick@groengemak.nl>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Flash I/O not enabled in MSR_DIVIL_BALL_OPTS
+Message-ID: <20091205174702.GA3240@phantom.vanrein.org>
+References: <20091130084004.GE23351@phantom.vanrein.org>
+	<1259777470.3744.484.camel@macbook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1259777470.3744.484.camel@macbook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, Rick van Rein <rick@groengemak.nl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+David,
 
-Signed-off-by: Simon Guinot <sguinot@lacie.com>
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+> If you have the NAND hardware connected, then surely your firmware ought
+> to be setting the MSRs appropriately?
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 8f8c249..ae1bfb2 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -638,6 +638,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "at26df321",  INFO(0x1f4701, 0, 64 * 1024, 64, SECT_4K) },
- 
- 	/* Macronix */
-+	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
- 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
- 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
- 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
--- 
-1.6.3.1
+I broken open a bit more hardware and found an ATA-to-flash interface
+between companion chip and flashes.  Sigh, instead of 100 MB/s I am now
+limited to 2.4 MB/s and cannot employ this wonderful direct-NAND-stuff.
+
+Thanks for responding though!
+
+-Rick
