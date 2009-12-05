@@ -1,22 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NGb2f-00042j-DQ
-	for linux-mtd@lists.infradead.org; Fri, 04 Dec 2009 16:30:06 +0000
-Received: from themisto.ext.pengutronix.de ([92.198.50.58]
-	helo=jupiter.intranet.kreuzholzen.de)
-	by metis.ext.pengutronix.de with esmtp (Exim 4.69)
-	(envelope-from <jbe@pengutronix.de>) id 1NGb2a-0007q6-W8
-	for linux-mtd@lists.infradead.org; Fri, 04 Dec 2009 17:29:58 +0100
-From: Juergen Beisert <jbe@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 4 Dec 2009 17:29:55 +0100
+Received: from smtp5-g21.free.fr ([212.27.42.5])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NGs6y-0008OX-HU
+	for linux-mtd@lists.infradead.org; Sat, 05 Dec 2009 10:43:41 +0000
+Message-ID: <4B1A394F.3060904@eukrea.com>
+Date: Sat, 05 Dec 2009 11:43:27 +0100
+From: =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200912041729.55259.jbe@pengutronix.de>
-Subject: Strange jffs2 behaviour
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [RFC] mxc nand controller updates
+References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>	<1257925792.21596.858.camel@localhost>	<20091112073630.GV30179@pengutronix.de>	<1258101131.21596.1189.camel@localhost>	<1259580031.19465.378.camel@macbook.infradead.org>
+	<20091130122903.GO27548@pengutronix.de>
+In-Reply-To: <20091130122903.GO27548@pengutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: mathieu.berland@eads.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,67 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Sascha,
 
-I'm using a 2.6.31.6 kernel here to work on an S3C2410 based CPU card and
-three partitions in my 32 MiB NAND flash. Flash can be programmed by the boot
-loader (root filesystem in one partition) or erased (the other two partitions
-are currently empty).
+Sascha Hauer a écrit :
+>   git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
+> 
+> Sascha Hauer (18):
+>       mxc_nand: cleanup eccoob descriptions
+>       mxc_nand: cleanup initialization
+>       mxc_nand: merge send_read_page and send_prog_page
+>       mxc_nand: introduce mxc_do_addr_cycle
+>       mxc nand: remove debug param
+>       mxc nand: remove dead code
+>       mxc nand: use resource_size()
+>       mxc nand: use buffers
+>       mxc nand: simplify command processing
+>       mxc nand: modify send_page to send all pages, not only one
+>       mxc_nand: remove unused defines
+>       mxc_nand: Make main/spare areas runtime configurable
+>       mxc_nand: Get rid of pagesize_2k flag
+>       mxc_nand: Add NFC V2 support
+>       mxc_nand: disable sp_en bit only once
+>       mxc_nand: Allow flash based bbt
+>       mxc_nand: remove TROP_US_DELAY
+>       mxc_nand: use DRIVER_NAME where appropriate
+> 
+Tested-by: Eric Benard <eric@eukrea.com>
 
-System comes up with the root filesystem in the first partition and mounts the
-other two partitions from some init scripts.
+it's a bit late but I can confirm this works fine on our i.MX27 platform 
+using : NAND device: Manufacturer ID: 0x2c, Chip ID: 0xac (Micron NAND 
+512MiB 1,8V 8-bit) (2k page size) with hw ecc & flash bbt.
 
-$ mount
-rootfs on / type rootfs (rw)
-/dev/root on / type jffs2 (rw,relatime)
-[...]
-/dev/mtdblock3 on /mnt/applicat type jffs2 (rw,noatime)
-/dev/mtdblock4 on /mnt/data type jffs2 (rw,noatime)
-
-$ df 
-/dev/root                12416     12072       344  97% /
-[...]
-/dev/mtdblock3            8192       436      7756   5% /mnt/applicat
-/dev/mtdblock4           10240       480      9760   5% /mnt/data
-
-(the 5% in /dev/mtdblock3+4 are my sample files, to check if writing files
-is working)
-
-I can copy data from the root filesystem partition to the other two
-partitions, run a "sync" and reboot and all the files are still present.
-
-But when I simply unmount one of the two other partitions, I get:
-
-JFFS2 notice: (417) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1be9e0.
-JFFS2 warning: (417) jffs2_do_read_inode_internal: no data nodes found for ino #170
-iget() failed for ino #170
-JFFS2 warning: (417) jffs2_get_inode_nodes: Eep. No valid nodes for ino #170.
-JFFS2 warning: (417) jffs2_do_read_inode_internal: no data nodes found for ino #170
-
-And nothing else is working any more. E.g. any further access to any other
-partition ends with something like this:
-
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1be8d8.
-JFFS2 warning: (428) jffs2_do_read_inode_internal: no data nodes found for ino #168
-iget() failed for ino #168
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b4dd4.
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b4774.
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b4000.
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b3704.
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1b300c.
-[...]
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1a18c8.
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1a108c.
-JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at 0x1a08e0.
-JFFS2 warning: (428) jffs2_do_read_inode_internal: no data nodes found for ino #164
-Erase at 0x001a4000 failed immediately: errno -5
-
-Any idea what can be wrong here?
-
-jbe
-
--- 
-Pengutronix e.K.                              | Juergen Beisert             |
-Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
-Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
+Eric
