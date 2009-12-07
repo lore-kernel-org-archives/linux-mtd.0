@@ -1,19 +1,24 @@
-Received: from smtp5-g21.free.fr ([212.27.42.5])
+Received: from qw-out-1920.google.com ([74.125.92.148])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHlew-0007Yf-7O
-	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 22:02:27 +0000
-Message-ID: <4B1D7B67.5010900@eukrea.com>
-Date: Mon, 07 Dec 2009 23:02:15 +0100
-From: =?ISO-8859-1?Q?Eric_B=E9nard?= <eric@eukrea.com>
+	id 1NHmJh-00014y-H3
+	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 22:44:34 +0000
+Received: by qw-out-1920.google.com with SMTP id 5so751612qwc.24
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 07 Dec 2009 14:44:28 -0800 (PST)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mxc_nand : add RESET command support
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>	<1257925792.21596.858.camel@localhost>	<20091112073630.GV30179@pengutronix.de>	<1258101131.21596.1189.camel@localhost>	<1259580031.19465.378.camel@macbook.infradead.org>	<20091130122903.GO27548@pengutronix.de>
-	<4B1A394F.3060904@eukrea.com>
-In-Reply-To: <4B1A394F.3060904@eukrea.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
+In-Reply-To: <4B1D600A.10507@nokia.com>
+References: <dbdb2ea60912030931j380a7702hc92d4fbe72341730@mail.gmail.com>
+	<4B18F300.7080006@nokia.com>
+	<dbdb2ea60912070741l7a0dde1dt49ba0f5413accf61@mail.gmail.com>
+	<4B1D600A.10507@nokia.com>
+Date: Mon, 7 Dec 2009 17:44:27 -0500
+Message-ID: <dbdb2ea60912071444y149c536bt3106a5ad1da9b221@mail.gmail.com>
+Subject: Re: ubifs wear leveling across entire device
+From: twebb <taliaferro62@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mxc_nand driver must support the RESET Command in order to support 
-Micron NAND which need a reset before any other command.
+>
+> Wear-levelling occurs within a single UBI device which is generally
+> a single MTD partition.
+>
+> You need 1 MTD partition and 1 UBI device with 3 volumes. =A0Make the
+> 3 volumes total less than the whole UBI device and you can add a 4th
+> volume later.
+>
 
-Signed-off-by: Eric Benard <eric@eukrea.com>
---
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index d5445cd..0207525 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -638,6 +638,7 @@ static void mxc_nand_command(struct mtd_info *mtd, 
-unsigned command
+If I make 1 MTD partition and 1 corresponding UBI device, should (can)
+it include areas that will never be accessed via UBI-aware tools?  For
+example, is it safe to have on a 4GB physical device a single 4GB MTD
+partition with a single corresponding UBI device, but only 3GB of the
+4GB device contain N UBI volumes only accessed via appropriate UBI
+user-space (or u-boot) tools while the remaining 1GB of the 4GB is
+accessed with mtd-utils?
 
-         case NAND_CMD_ERASE1:
-         case NAND_CMD_ERASE2:
-+       case NAND_CMD_RESET:
-                 send_cmd(host, command, false);
-                 mxc_do_addr_cycle(mtd, column, page_addr);
+There are two reasons for this approach:
+1 - to (hopefully) get the benefits of wear leveling across the entire
+physical device (though I think this may not work in the scenario I've
+described)
+2 - to allow access to a portion of the flash by non-UBI aware code
+
+I assume the alternative (w/o the benefit of wear leveling across the
+entire device) is to define 2 MTD partitions: 1 for "non-UBI" access
+and 1 for a single UBI device with multiple UBI volumes?
+
+Thanks,
+twebb
