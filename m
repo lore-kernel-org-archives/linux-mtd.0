@@ -1,17 +1,21 @@
-Received: from mail-pz0-f193.google.com ([209.85.222.193])
+Received: from mail-fx0-f211.google.com ([209.85.220.211])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHc0J-00008A-Tx
-	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 11:43:53 +0000
-Received: by pzk31 with SMTP id 31so3827266pzk.28
+	id 1NHdW4-0001wU-Rv
+	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 13:20:45 +0000
+Received: by fxm3 with SMTP id 3so4691139fxm.4
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Dec 2009 03:43:45 -0800 (PST)
+	Mon, 07 Dec 2009 05:20:38 -0800 (PST)
+Message-ID: <4B1D0169.3040507@gmail.com>
+Date: Mon, 07 Dec 2009 14:21:45 +0100
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-Date: Mon, 7 Dec 2009 20:43:45 +0900
-Message-ID: <2014bcab0912070343l12c9392v514b858b7a8f1a97@mail.gmail.com>
-Subject: BUG? a suspected race bug due to the absence of memory barrier
-From: =?UTF-8?B?7ZmN7IugIHNoaW4gaG9uZw==?= <hongshin@gmail.com>
-To: linux-mtd@lists.infradead.org
+To: Artem Bityutskiy <dedekind@infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>,
+	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] UBIFS: PTR_ERR return of wrong pointer in check_leaf()
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi. I am reporting a type of suspected bugs
-due the absence of proper memory barrier.
+Return the PTR_ERR of the correct pointer.
 
-Please examine this issue of the possibility of occurring
-error in real executions. This report is not from real errors
-but from my code inspection so that it might be faulty.
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+ fs/ubifs/debug.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-We often allocate an object, initialize it,
-and then link it to a data structure so that any thread can access the object.
-
-For this pattern of programming, it seems to be necessary that
-memory barrier should confirm that the initializations and the linking
-to global data structures are not disordered by CPU or compilers.
-
-For example, add_to_list() at ubi/scan.c of Linux 2.6.32
-has the following code:
-
-	86         seb = kmalloc(sizeof(struct ubi_scan_leb), GFP_KERNEL);
-	87         if (!seb)
-	88                 return -ENOMEM;
-	90         seb->pnum = pnum;
-	91         seb->ec = ec;
-	92         list_add_tail(&seb->u.list, list);
-
-By compilers and CPU, 92 might be executed earlier than 90 or 91.
-In that situation, if there is other concurrent thread which iterates
-the list might read uninitialized value on the newly linked objects.
-
-Please examine this issue and let me know your opinions.
-Thank you.
-
-Sincerely
-Shin Hong
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index dbc093a..8a771c5 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2014,7 +2014,7 @@ static int check_leaf(struct ubifs_info *c, struct ubifs_zbranch *zbr,
+ 		inum = key_inum_flash(c, &dent->key);
+ 		fscki1 = read_add_inode(c, priv, inum);
+ 		if (IS_ERR(fscki1)) {
+-			err = PTR_ERR(fscki);
++			err = PTR_ERR(fscki1);
+ 			ubifs_err("error %d while processing entry node and "
+ 				  "trying to find parent inode node %lu",
+ 				  err, (unsigned long)inum);
