@@ -1,21 +1,22 @@
-Received: from mail-fx0-f211.google.com ([209.85.220.211])
+Received: from mail-qy0-f204.google.com ([209.85.221.204])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHdW4-0001wU-Rv
-	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 13:20:45 +0000
-Received: by fxm3 with SMTP id 3so4691139fxm.4
+	id 1NHfi2-0000OL-2O
+	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 15:41:16 +0000
+Received: by qyk42 with SMTP id 42so1999622qyk.28
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Dec 2009 05:20:38 -0800 (PST)
-Message-ID: <4B1D0169.3040507@gmail.com>
-Date: Mon, 07 Dec 2009 14:21:45 +0100
-From: Roel Kluin <roel.kluin@gmail.com>
+	Mon, 07 Dec 2009 07:41:08 -0800 (PST)
 MIME-Version: 1.0
-To: Artem Bityutskiy <dedekind@infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: [PATCH] UBIFS: PTR_ERR return of wrong pointer in check_leaf()
+In-Reply-To: <4B18F300.7080006@nokia.com>
+References: <dbdb2ea60912030931j380a7702hc92d4fbe72341730@mail.gmail.com>
+	<4B18F300.7080006@nokia.com>
+Date: Mon, 7 Dec 2009 10:41:08 -0500
+Message-ID: <dbdb2ea60912070741l7a0dde1dt49ba0f5413accf61@mail.gmail.com>
+Subject: Re: ubifs wear leveling across entire device
+From: twebb <taliaferro62@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Return the PTR_ERR of the correct pointer.
+>>
+>> I'm confused about how wear leveling occurs across the entire device
+>> in the following example. =A0Could someone help me understand what I'm
+>> missing?
+>>
+>> 4 GiB flash device (nand MLC):
+>> 4 MTD partitions defined:
+>> 0 - "p1" - 0x00000000 - 0x00800000
+>> 1 - "p2" - 0x00800000 - 0x10000000
+>> 2 - "p3" - 0x10000000 - 0x80000000
+>> 3 - "p4" - 0x80000000 - 0x100000000
+>>
+>> kernel args specify 3 ubi volumes:
+>> ubi.mtd=3Dp1 ubi.mtd=3Dp2 ubi.mtd=3Dp3
+>> (p4 is reserved and no volumes or filesystems sit on top of it)
+>
+> That is 3 UBI devices not 3 UBI volumes
+>
 
-Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
----
- fs/ubifs/debug.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Excuse me.  I'm new to using UBI and UBIFS and am not completely
+familiar with the terminology.  I think what I described in the
+example is 3 UBI devices, with a single volume associated with each
+device.  I had neglected to show that each UBI device had a single
+volume.
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index dbc093a..8a771c5 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2014,7 +2014,7 @@ static int check_leaf(struct ubifs_info *c, struct ubifs_zbranch *zbr,
- 		inum = key_inum_flash(c, &dent->key);
- 		fscki1 = read_add_inode(c, priv, inum);
- 		if (IS_ERR(fscki1)) {
--			err = PTR_ERR(fscki);
-+			err = PTR_ERR(fscki1);
- 			ubifs_err("error %d while processing entry node and "
- 				  "trying to find parent inode node %lu",
- 				  err, (unsigned long)inum);
+Maybe there's a better way to word my question.  Does UBI wear
+leveling occur independently across each MTD device (p1, p2, and p3
+only in example above) or does it somehow occur over the entire
+physical device (p1-p4 inclusive)?
+
+I'm trying to understand this so I can determine how to partition the
+physical device to provide the best wear leveling, while still
+allowing a portion of the physical device (p4) to exist outside of any
+UBI device or volume.
+
+Thanks,
+twebb
