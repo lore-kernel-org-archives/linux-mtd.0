@@ -1,19 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHZjO-0005wT-Dw
-	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 09:18:11 +0000
-Date: Mon, 7 Dec 2009 10:18:03 +0100
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: David Woodhouse <David.Woodhouse@intel.com>
-Subject: please drop or revert "mtd: move mxcnd_remove to .exit.text"
-Message-ID: <20091207091803.GA13932@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+	id 1NHZuJ-0006Gb-NB
+	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 09:29:32 +0000
+Subject: Re: [RFC][PATCH] Add NAND lock/unlock routines
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <ce9ab5790912062248i41e2f7bh996064518e043369@mail.gmail.com>
+References: <ce9ab5790912020624k28bc1e63le0f7e713f70d78a8@mail.gmail.com>
+	<1259915925.8673.9.camel@localhost>
+	<ce9ab5790912062248i41e2f7bh996064518e043369@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 07 Dec 2009 11:29:13 +0200
+Message-Id: <1260178153.25784.28.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
-	Robert Schwebel <r.schwebel@pengutronix.de>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello David,
+On Mon, 2009-12-07 at 12:18 +0530, Vimal Singh wrote:
+> On Fri, Dec 4, 2009 at 2:08 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > Hi, some cosmetic comments:
+> >
+> > On Wed, 2009-12-02 at 19:54 +0530, Vimal Singh wrote:
+> >> I am not sure how useful it will be, but still here is a patch for review.
+> >> -vimal
+> >>
+> >> From: Vimal Singh <vimalsingh@ti.com>
+> >> Date: Tue, 24 Nov 2009 18:26:43 +0530
+> >> Subject: [PATCH] Add NAND lock/unlock routines
+> >>
+> >> At least 'Micron' NAND parts have lock/unlock feature.
+> >> Adding routines for this.
+> >>
+> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> >> ---
+> >>  drivers/mtd/nand/nand_base.c |  217 +++++++++++++++++++++++++++++++++++++++++-
+> >>  include/linux/mtd/nand.h     |    6 +
+> >>  2 files changed, 221 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> >> index 2957cc7..e447c24 100644
+> >> --- a/drivers/mtd/nand/nand_base.c
+> >> +++ b/drivers/mtd/nand/nand_base.c
+> >> @@ -757,6 +757,218 @@ static int nand_wait(struct mtd_info *mtd,
+> >> struct nand_chip *chip)
+> >>  }
+> >>
+> >>  /**
+> >> + * __nand_unlock - [REPLACABLE] unlocks specified locked blockes
+> >> + *
+> >> + * @param mtd - mtd info
+> >> + * @param ofs - offset to start unlock from
+> >> + * @param len - length to unlock
+> >> + * @invert -  when = 0, unlock the range of blocks within the lower and
+> >> + *                      upper boundary address
+> >> + *            whne = 1, unlock the range of blocks outside the boundaries
+> >> + *                      of the lower and upper boundary address
+> >> + *
+> >> + * @return - unlock status
+> >> + */
+> >> +static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
+> >> +                                     uint64_t len, int invert)
+> >> +{
+> >> +     int ret = 0;
+> >> +     int status, page;
+> >> +     struct nand_chip *chip = mtd->priv;
+> >> +
+> >> +     DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
+> >> +                     __func__, (unsigned long long)ofs, len);
+> >> +
+> >> +     /* Submit address of first page to unlock */
+> >> +     page = (int)(ofs >> chip->page_shift);
+> >
+> > The compiler will automatically cast the result to int I believe.
+> 
+> I just copied this line from erase functions.
+> I believe its better to cast here as otherwise we may see compiler warnings.
 
-you took two different fixes for the same problem from me.  Probably I
-oversaw you took the first and resent a new version.
-
-	82613b0 (mtd: move mxcnd_remove to .exit.text)
-	daa0f15 (mtd: don't use __exit_p to wrap mxcnd_remove)
-
-Can you please drop or revert 82613b0 as not having a remove callback
-breaks rebinding because resources are not freed on remove.
-
-Sorry for the inconvenience.
-
-Best regards
-Uwe
-
-
-
+Good point. Could you please create a validation checking helper instead
+of duplicating code?
 
 -- 
-Pengutronix e.K.                              | Uwe Kleine-K�nig            |
-Industrial Linux Solutions                    | http://www.pengutronix.de/  |
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
