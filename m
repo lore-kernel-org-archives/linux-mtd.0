@@ -1,20 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHjqC-0000q1-97
-	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 20:05:57 +0000
-Message-ID: <4B1D600A.10507@nokia.com>
-Date: Mon, 07 Dec 2009 22:05:30 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
+Received: from scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NHkcY-0001UM-S7
+	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 20:55:55 +0000
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Subject: Re: What filesystem for NAND flash with OOB 218
+Date: Tue, 8 Dec 2009 09:55:43 +1300
+References: <4B1C682D.1020603@theptrgroup.com>
+	<200912071619.56623.manningc2@actrix.gen.nz>
+In-Reply-To: <200912071619.56623.manningc2@actrix.gen.nz>
 MIME-Version: 1.0
-To: twebb <taliaferro62@gmail.com>
-Subject: Re: ubifs wear leveling across entire device
-References: <dbdb2ea60912030931j380a7702hc92d4fbe72341730@mail.gmail.com>	
-	<4B18F300.7080006@nokia.com>
-	<dbdb2ea60912070741l7a0dde1dt49ba0f5413accf61@mail.gmail.com>
-In-Reply-To: <dbdb2ea60912070741l7a0dde1dt49ba0f5413accf61@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
+Message-Id: <200912080955.43335.manningc2@actrix.gen.nz>
+Cc: Jeff Angielski <jeff@theptrgroup.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-twebb wrote:
->>> I'm confused about how wear leveling occurs across the entire device
->>> in the following example.  Could someone help me understand what I'm
->>> missing?
->>>
->>> 4 GiB flash device (nand MLC):
->>> 4 MTD partitions defined:
->>> 0 - "p1" - 0x00000000 - 0x00800000
->>> 1 - "p2" - 0x00800000 - 0x10000000
->>> 2 - "p3" - 0x10000000 - 0x80000000
->>> 3 - "p4" - 0x80000000 - 0x100000000
->>>
->>> kernel args specify 3 ubi volumes:
->>> ubi.mtd=p1 ubi.mtd=p2 ubi.mtd=p3
->>> (p4 is reserved and no volumes or filesystems sit on top of it)
->> That is 3 UBI devices not 3 UBI volumes
->>
-> 
-> Excuse me.  I'm new to using UBI and UBIFS and am not completely
-> familiar with the terminology.  I think what I described in the
-> example is 3 UBI devices, with a single volume associated with each
-> device.  I had neglected to show that each UBI device had a single
-> volume.
-> 
-> Maybe there's a better way to word my question.  Does UBI wear
-> leveling occur independently across each MTD device (p1, p2, and p3
-> only in example above) or does it somehow occur over the entire
-> physical device (p1-p4 inclusive)?
-> 
-> I'm trying to understand this so I can determine how to partition the
-> physical device to provide the best wear leveling, while still
-> allowing a portion of the physical device (p4) to exist outside of any
-> UBI device or volume.
+On Monday 07 December 2009 16:19:56 Charles Manning wrote:
+> On Monday 07 December 2009 15:27:57 Jeff Angielski wrote:
+> > I was wondering what type of filesystem everybody is using for the newer
+> >   NAND flash with OOB>=128 bytes.  For me, this is the Micron
+> > MT29F8G08AAA which has an OOB=218.
+> >
+> > It seems that the JFFS2 tools are out of date and don't work with
+> > anything less than or equal to 64bytes of OOB.
+> >
+> > YAFFS2 does not compile in the latest kernel source trees (2.6.31 in the
+> > DENX linux-2.6-denx git tree).  Is this filesystem dead?
+>
+> Far from it.
+> I'll take a look at why it does not compile.
 
-Wear-levelling occurs within a single UBI device which is generally
-a single MTD partition.
+I just compiled yaffs2 in 2.6.29, 2.6.30, 2.6.31, 2.6.32 from kernel.org. No 
+problems.
+I didn't try denx.
+I would suggest you'd get further trying to sort this out in the denx or yaffs 
+lists.
 
-You need 1 MTD partition and 1 UBI device with 3 volumes.  Make the
-3 volumes total less than the whole UBI device and you can add a 4th
-volume later.
+
+>
+> > As far as I can tell, that only leaves UBIFS.  Is UBIFS ready to
+> > deployed in the field?
+
+> >
+> > Is there any other choice for these parts?
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
