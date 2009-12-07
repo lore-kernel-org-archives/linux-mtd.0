@@ -1,22 +1,20 @@
-Received: from mail-qy0-f204.google.com ([209.85.221.204])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHfi2-0000OL-2O
-	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 15:41:16 +0000
-Received: by qyk42 with SMTP id 42so1999622qyk.28
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Dec 2009 07:41:08 -0800 (PST)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NHi0A-0005K7-QV
+	for linux-mtd@lists.infradead.org; Mon, 07 Dec 2009 18:08:07 +0000
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Ben Dooks <ben-linux@fluff.org>
+Date: Mon, 7 Dec 2009 19:07:53 +0100
+References: <200912041729.55259.jbe@pengutronix.de>
+In-Reply-To: <200912041729.55259.jbe@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <4B18F300.7080006@nokia.com>
-References: <dbdb2ea60912030931j380a7702hc92d4fbe72341730@mail.gmail.com>
-	<4B18F300.7080006@nokia.com>
-Date: Mon, 7 Dec 2009 10:41:08 -0500
-Message-ID: <dbdb2ea60912070741l7a0dde1dt49ba0f5413accf61@mail.gmail.com>
-Subject: Re: ubifs wear leveling across entire device
-From: twebb <taliaferro62@gmail.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200912071907.53507.jbe@pengutronix.de>
+Subject: Re: Strange jffs2 behaviour
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +24,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>
->> I'm confused about how wear leveling occurs across the entire device
->> in the following example. =A0Could someone help me understand what I'm
->> missing?
->>
->> 4 GiB flash device (nand MLC):
->> 4 MTD partitions defined:
->> 0 - "p1" - 0x00000000 - 0x00800000
->> 1 - "p2" - 0x00800000 - 0x10000000
->> 2 - "p3" - 0x10000000 - 0x80000000
->> 3 - "p4" - 0x80000000 - 0x100000000
->>
->> kernel args specify 3 ubi volumes:
->> ubi.mtd=3Dp1 ubi.mtd=3Dp2 ubi.mtd=3Dp3
->> (p4 is reserved and no volumes or filesystems sit on top of it)
+On Freitag, 4. Dezember 2009, Juergen Beisert wrote:
+> Hi,
 >
-> That is 3 UBI devices not 3 UBI volumes
+> I'm using a 2.6.31.6 kernel here to work on an S3C2410 based CPU card and
+> three partitions in my 32 MiB NAND flash. Flash can be programmed by the
+> boot loader (root filesystem in one partition) or erased (the other two
+> partitions are currently empty).
 >
+> System comes up with the root filesystem in the first partition and mounts
+> the other two partitions from some init scripts.
+>
+> $ mount
+> rootfs on / type rootfs (rw)
+> /dev/root on / type jffs2 (rw,relatime)
+> [...]
+> /dev/mtdblock3 on /mnt/applicat type jffs2 (rw,noatime)
+> /dev/mtdblock4 on /mnt/data type jffs2 (rw,noatime)
+>
+> $ df
+> /dev/root                12416     12072       344  97% /
+> [...]
+> /dev/mtdblock3            8192       436      7756   5% /mnt/applicat
+> /dev/mtdblock4           10240       480      9760   5% /mnt/data
+>
+> (the 5% in /dev/mtdblock3+4 are my sample files, to check if writing files
+> is working)
+>
+> I can copy data from the root filesystem partition to the other two
+> partitions, run a "sync" and reboot and all the files are still present.
+>
+> But when I simply unmount one of the two other partitions, I get:
+>
+> JFFS2 notice: (417) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in
+> node header at 0x1be9e0. JFFS2 warning: (417) jffs2_do_read_inode_internal:
+> no data nodes found for ino #170 iget() failed for ino #170
+> JFFS2 warning: (417) jffs2_get_inode_nodes: Eep. No valid nodes for ino
+> #170. JFFS2 warning: (417) jffs2_do_read_inode_internal: no data nodes
+> found for ino #170
+>
+> And nothing else is working any more. E.g. any further access to any other
+> partition ends with something like this:
+>
+> JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in
+> node header at 0x1be8d8. JFFS2 warning: (428) jffs2_do_read_inode_internal:
+> no data nodes found for ino #168 iget() failed for ino #168
+> JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in
+> node header at 0x1b4dd4. JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong
+> magic bitmask 0x0000 in node header at 0x1b4774. JFFS2 notice: (428)
+> jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at
+> 0x1b4000. JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask
+> 0x0000 in node header at 0x1b3704. JFFS2 notice: (428)
+> jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at
+> 0x1b300c. [...]
+> JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in
+> node header at 0x1a18c8. JFFS2 notice: (428) jffs2_get_inode_nodes: Wrong
+> magic bitmask 0x0000 in node header at 0x1a108c. JFFS2 notice: (428)
+> jffs2_get_inode_nodes: Wrong magic bitmask 0x0000 in node header at
+> 0x1a08e0. JFFS2 warning: (428) jffs2_do_read_inode_internal: no data nodes
+> found for ino #164 Erase at 0x001a4000 failed immediately: errno -5
+>
+> Any idea what can be wrong here?
 
-Excuse me.  I'm new to using UBI and UBIFS and am not completely
-familiar with the terminology.  I think what I described in the
-example is 3 UBI devices, with a single volume associated with each
-device.  I had neglected to show that each UBI device had a single
-volume.
+For the records: The S3C2410 NFC driver disables the clock for the NFC unit 
+when the NAND is IDLE and "MTD_NAND_S3C2410_CLKSTOP=y". And if one unmounts a 
+NAND partition it seems to disable the clock for ever. So, all further 
+accesses to the NAND device are failing...
 
-Maybe there's a better way to word my question.  Does UBI wear
-leveling occur independently across each MTD device (p1, p2, and p3
-only in example above) or does it somehow occur over the entire
-physical device (p1-p4 inclusive)?
+With "MTD_NAND_S3C2410_CLKSTOP=n" the system works as expected (also on 
+2.6.32).
 
-I'm trying to understand this so I can determine how to partition the
-physical device to provide the best wear leveling, while still
-allowing a portion of the physical device (p4) to exist outside of any
-UBI device or volume.
+jbe
 
-Thanks,
-twebb
+-- 
+Pengutronix e.K.                              | Juergen Beisert             |
+Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
+Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
