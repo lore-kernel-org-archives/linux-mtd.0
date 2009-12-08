@@ -1,20 +1,15 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHxDr-0002ss-CS
-	for linux-mtd@lists.infradead.org; Tue, 08 Dec 2009 10:23:15 +0000
-From: Juergen Beisert <jbe@pengutronix.de>
+Received: from smtp3.nedap.com ([87.249.123.12] helo=smtp.nedap.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NHxSf-0004JO-Db
+	for linux-mtd@lists.infradead.org; Tue, 08 Dec 2009 10:38:33 +0000
+Subject: kernel panics ubifs and at91sam9263ek
+From: Jaap de Jong <jaap.dejong@nedap.com>
 To: linux-mtd@lists.infradead.org
-Date: Tue, 8 Dec 2009 11:23:06 +0100
-References: <200912081056.40210.jbe@pengutronix.de>
-In-Reply-To: <200912081056.40210.jbe@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 08 Dec 2009 11:38:23 +0100
+Message-ID: <1260268703.15086.6.camel@nvc1511>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200912081123.06630.jbe@pengutronix.de>
-Subject: Re: [PATCH] [NAND] S3C2410: Fix NFC clock enable/disable imbalance
-Cc: linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +19,245 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi 
 
-ups, forget this patch, does't work as expected (thanks Wolfram!). Will try 
-again later...
+I would appreciate some help on this...
+My setup is an at91sam9263ek board. I'm using openembedded to build everything.
+When copying files to the nandflash I always get kernel panics...
 
-Juergen Beisert wrote:
-> When unmounting an mtd filesystem the s3c2410_nand_select_chip() function
-> gets called again with "chip == -1". In this case the current code disables
-> the NFC clock at least a second time, so it does not work anymore.
-> Clock disabling should only happen if it was really enabled.
->
-> Signed-off-by: Juergen Beisert <jbe@pengutronix.de>
->
-> ---
->  drivers/mtd/nand/s3c2410.c |    8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> Index: linux-2.6.32/drivers/mtd/nand/s3c2410.c
-> ===================================================================
-> --- linux-2.6.32.orig/drivers/mtd/nand/s3c2410.c
-> +++ linux-2.6.32/drivers/mtd/nand/s3c2410.c
-> @@ -329,12 +329,16 @@ static void s3c2410_nand_select_chip(str
->  	struct s3c2410_nand_mtd *nmtd;
->  	struct nand_chip *this = mtd->priv;
->  	unsigned long cur;
-> +	int clock_enabled;
->
->  	nmtd = this->priv;
->  	info = nmtd->info;
->
-> -	if (chip != -1 && allow_clk_stop(info))
-> +	if (chip != -1 && allow_clk_stop(info)) {
->  		clk_enable(info->clk);
-> +		clock_enabled = 1;
-> +	} else
-> +		clock_enabled = 0;
->
->  	cur = readl(info->sel_reg);
->
-> @@ -356,7 +360,7 @@ static void s3c2410_nand_select_chip(str
->
->  	writel(cur, info->sel_reg);
->
-> -	if (chip == -1 && allow_clk_stop(info))
-> +	if (chip == -1 && allow_clk_stop(info) && clock_enabled != 0)
->  		clk_disable(info->clk);
->  }
+I've followed the example at http://www.linux-mtd.infradead.org/faq/ubifs.html
 
-Juergen
+	# uname -a
+	Linux at91sam9263ek 2.6.32 #1 PREEMPT Mon Dec 7 09:54:06 CET 2009 armv5tejl unknown
 
--- 
-Pengutronix e.K.                              | Juergen Beisert             |
-Linux Solutions for Science and Industry      | Phone: +49-8766-939 228     |
-Vertretung Sued/Muenchen, Germany             | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686              | http://www.pengutronix.de/  |
+	# cat /proc/mtd
+	dev:    size   erasesize  name
+	mtd0: 00020000 00020000 "bootstrap"
+	mtd1: 00040000 00020000 "u-boot"
+	mtd2: 00040000 00020000 "u-boot-env"
+	mtd3: 00360000 00020000 "kernel"
+	mtd4: 0fc00000 00020000 "rootfs"
+
+	# mtd_debug info /dev/mtd4
+	mtd.type = MTD_NANDFLASH
+	mtd.flags = MTD_CAP_NANDFLASH
+	mtd.size = 264241152 (252M)
+	mtd.erasesize = 131072 (128K)
+	mtd.writesize = 2048 (2K)
+	mtd.oobsize = 64
+	regions = 0
+
+	# flash_eraseall /dev/mtd4
+	Erasing 128 Kibyte @ 1ee0000 -- 12 % complete.
+	Skipping bad block at 0x01f00000
+	Erasing 128 Kibyte @ 2ea0000 -- 18 % complete.
+	Skipping bad block at 0x02ec0000
+	Erasing 128 Kibyte @ ada0000 -- 68 % complete.
+	Skipping bad block at 0x0adc0000
+	Erasing 128 Kibyte @ b4a0000 -- 71 % complete.
+	Skipping bad block at 0x0b4c0000
+	Erasing 128 Kibyte @ fc00000 -- 100 % complete.
+
+
+Had to add '-s 512' to ubiformat because otherwise ubiattach complained with:
+UBI error: validate_ec_hdr: bad VID header offset 2048, expected 512
+UBI error: validate_ec_hdr: bad EC header
+UBI error: ubi_io_read_ec_hdr: validation failed for PEB 0
+
+	# ubiformat /dev/mtd4 -s 512
+	ubiformat: mtd4 (NAND), size 264241152 bytes (252.0 MiB), 131072 eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+	libscan: scanning eraseblock 2015 -- 100 % complete
+	ubiformat: 2012 eraseblocks are supposedly empty
+	ubiformat: bad eraseblocks: 248, 374, 1390, 1446
+	ubiformat: formatting eraseblock 2015 -- 100 % complete
+
+	# ubiattach /dev/ubi_ctrl -m 4
+	UBI device number 0, total 2012 LEBs (259596288 bytes, 247.6 MiB), available 1988 LEBs (256499712 bytes, 244.6 MiB), LEB size 129024 bytes (126.0 KiB)
+
+	# ubimkvol /dev/ubi0 -N rootfs -s 240MiB
+	Volume ID 0, size 1951 LEBs (251725824 bytes, 240.1 MiB), LEB size 129024 bytes (126.0 KiB), dynamic, name "rootfs", alignment 1
+
+	# mkdir /mnt/ubifs
+	# mount -t ubifs ubi0:rootfs /mnt/ubifs
+
+
+Ok, so far so good! 
+Let stress it a bit
+
+	# for i in 0 1 2 3 4 5 6 7 8 9 ; do echo $i ; cp bigfile /mnt/ubifs/bigfile.$i ; done
+	0
+	1
+	2
+	3
+	4
+	5
+	[  830.860000] Unable to handle kernel paging request at virtual address 5b5b5b5a
+	[  830.870000] pgd = c3b78000
+	[  830.870000] [5b5b5b5a] *pgd=00000000
+	[  830.880000] Internal error: Oops: 80000005 [#1] PREEMPT
+	[  830.880000] last sysfs file: /sys/devices/virtual/ubi/ubi0/ubi0_0/name
+	[  830.880000] Modules linked in:
+	[  830.880000] CPU: 0    Not tainted  (2.6.32 #1)
+	[  830.880000] PC is at 0x5b5b5b5a
+	[  830.880000] LR is at nand_write_page_raw+0x34/0x3c
+	[  830.880000] pc : [<5b5b5b5a>]    lr : [<c02133b4>]    psr: 40000033
+	[  830.880000] sp : c3be59a8  ip : 0000005b  fp : 5b5b5b5b
+	[  830.880000] r10: 00000800  r9 : 00000000  r8 : 00005df7
+	[  830.880000] r7 : 00005df7  r6 : c3b87800  r5 : c39fe520  r4 : c39fe400
+	[  830.880000] r3 : 000000cf  r2 : fffffff0  r1 : c3806940  r0 : c5000000
+	[  830.880000] Flags: nZcv  IRQs on  FIQs on  Mode SVC_32  ISA Thumb  Segment user
+	[  830.880000] Control: 0005317f  Table: 23b78000  DAC: 00000015
+	[  830.880000] Process cp (pid: 922, stack limit = 0xc3be4270)
+	[  830.880000] Stack: (0xc3be59a8 to 0xc3be6000)
+	[  830.880000] 59a0:                   5b5b5b5b 5b5b5b5b 00000800 00000800 c39fe400 00000000
+	[  830.880000] 59c0: c3b87800 c0214874 00000000 00000000 00000000 00005df7 0000003f 00000000
+	[  830.880000] 59e0: 00000000 c3b87800 00000000 c39fe400 c39fe520 02efb800 00000000 00000800
+	[  830.880000] 5a00: c3a4a800 00000000 00000157 c0214a60 c39fe4ec c0035a14 02afb800 00000000
+	[  830.880000] 5a20: c3970a00 00000800 00000003 c020d450 00000800 c3be5a64 c3b87800 00000000
+	[  830.880000] 5a40: c39aaea0 00000157 0001b800 c0220344 00000800 c3be5a64 c3b87800 0000015a
+	[  830.880000] 5a60: 00000800 c39aaea0 0000015a c39aaea0 0000015a 00000800 00000000 c021e948
+	[  830.880000] 5a80: 00000800 c0035a14 00000000 c3be5a98 c0035784 c3b9201c c3011360 00000017
+	[  830.880000] 5aa0: 00000000 c3b73520 c3be5af4 c3be5ab8 00000000 c3be5ac0 c3b87800 0000015a
+	[  830.880000] 5ac0: c386a400 00000568 22222222 22222222 c032a0dc c39aaea0 0000015a 00000800
+	[  830.880000] 5ae0: c3b87800 00000003 c3a7a000 00000510 c30c8000 c021db4c 0001b000 00000800
+	[  830.880000] 5b00: 00000003 00000fe0 c3ae1160 00000fe0 00000000 00000fd9 c3a7a000 c016d4c0
+	[  830.880000] 5b20: 00000800 00000003 00000000 00000000 00000fd9 00000000 c3be5b70 c3ae1160
+	[  830.880000] 5b40: c30c8000 00000000 00000fd9 c3a7a000 0001b000 00000510 0000015a c0162f80
+	[  830.880000] 5b60: c3be5b74 c0035a14 c04f5660 c3be5ba8 00000fa9 00000001 00000004 00001000
+	[  830.880000] 5b80: c04f5660 c34ca8a8 c3a7a000 c3a7a008 c34ca950 00000000 00000004 c0165330
+	[  830.880000] 5ba0: 00001000 c34ca950 00000046 2000027a 00000080 c34ca950 00000001 c3be5ce0
+	[  830.880000] 5bc0: 00000080 c00909ec c04f5660 c0090ec4 0000000e 000200da 00000001 ffffffff
+	[  830.880000] 5be0: c34ca950 c00909d8 00000000 00000000 0000000e ffffffff 0000027b c3be5c14
+	[  830.880000] 5c00: 00000000 0000000e 00000000 c04f50c0 c04f50e0 c04f5100 c04f5120 c04f5660
+	[  830.880000] 5c20: c04f5640 c04f5620 c04f5600 c04f55e0 c04f55c0 c04f55a0 c04f5580 c04f5560
+	[  830.880000] 5c40: c04f5540 00000284 00000010 c34ca8a8 00000007 00000000 c3adda40 c3be5ce0
+	[  830.880000] 5c60: c3a7a088 c34ca950 c3a7a090 c00d4b6c c3a7a090 00000000 c34ca8a8 c3a7a068
+	[  830.880000] 5c80: c3adda40 c3be5ce0 c3be4000 c00d5508 00000000 00000000 0000cddd 00000000
+	[  830.880000] 5ca0: c3be5d18 c3be5ca4 c3be5ca4 c3adda00 00001b59 c3a7a008 0000099d 00000001
+	[  830.880000] 5cc0: c34ca950 c049542c 000002fa c3be4000 00000001 c00915a4 c0495444 00000000
+	[  830.880000] 5ce0: c3a7a008 00000000 00000000 00000000 000002fa 00000000 00000000 00000000
+	[  830.880000] 5d00: 00000000 00000000 00000030 00000000 c34ca8a8 00000804 00000a98 0000054c
+	[  830.880000] 5d20: 004d9000 00001000 00000000 004d8000 00000000 00000000 c34ca950 00000000
+	[  830.880000] 5d40: 00001000 c008aabc 00001000 00001000 c04ea280 c0035784 c3833820 c34ca950
+	[  830.880000] 5d60: 00001000 00000000 c0339164 c3be4000 c3be5f40 00000001 00001000 00000000
+	[  830.880000] 5d80: c0035784 c04ea280 c3011360 004d9000 00000000 004d8000 00000000 c34ca8a8
+	[  830.880000] 5da0: 00000000 00000000 c3833820 c008b1f8 004d8000 00000000 c3be5f00 00001000
+	[  830.880000] 5dc0: 00000000 c3be5dd0 c3be5f00 c3be5f40 c3be5eb0 c3833820 c34ca950 00001000
+	[  830.880000] 5de0: c0329180 00000001 22222222 22222222 22222222 22222222 c008b6ec 00001000
+	[  830.880000] 5e00: 00000000 c34ca918 00000000 c3be5eb0 c3be5f40 004d8000 00000000 00000001
+	[  830.880000] 5e20: c3833820 c008b2a8 00001000 00000000 0001244c 004d8000 00000000 c34ca8a8
+	[  830.880000] 5e40: c3a7a000 c3be5eb0 c3be5f40 00000001 be8728a8 c01646e0 004d8000 00000000
+	[  830.880000] 5e60: 000004d8 00000001 00000000 00001000 00000000 be8738a8 00000000 00001000
+	[  830.880000] 5e80: 00000002 c3be5eb0 c3be5eb0 c3833820 c3be5eb0 c3be5f40 c3be5f88 c3be4000
+	[  830.880000] 5ea0: fffffdee c00b722c 004d8000 00000000 00000000 c3b73520 00000000 00000001
+	[  830.880000] 5ec0: ffffffff c3833820 00000000 00000000 00000000 00000000 c3011360 c3be4000
+	[  830.880000] 5ee0: 00000000 00000000 00000001 c3011360 c00588a8 c3be5ef4 c3be5ef4 c3be5f08
+	[  830.880000] 5f00: 004d8000 00000000 c002707c ffffffff be8728a8 c3be5f20 00001000 c0327f24
+	[  830.880000] 5f20: 00001000 c3be5f48 004bc000 00000000 c3833420 00000000 00000002 c00b741c
+	[  830.880000] 5f40: be8728a8 00001000 00000000 c3833820 be8728a8 c3be5f88 00000004 00001000
+	[  830.880000] 5f60: 00000003 c00b7b04 00000000 00000000 004d8000 00000000 c3833820 00000004
+	[  830.880000] 5f80: c0028064 c00b80bc 004d8000 00000000 be873f10 00000000 00000004 be8728a8
+	[  830.880000] 5fa0: 00001000 c0027ee0 00000004 be8728a8 00000004 be8728a8 00001000 00000004
+	[  830.880000] 5fc0: 00000004 be8728a8 00001000 00000004 00000001 00000004 00000003 be8728a8
+	[  830.880000] 5fe0: 00000004 be872878 000132af 4017572c 40000010 00000004 00000000 00000000
+	[  830.880000] Code: bad PC value
+	[  832.740000] ---[ end trace 41c7c00bf69addd9 ]---
+	Segmentation fault
+	6
+
+
+Have to press the resetbutton.
+After a reboot check the results
+
+	# dmesg | grep UBI
+	[   23.770000] UBIFS error (pid 884): ubifs_get_sb: cannot open "ubi0:rootfs", error -19
+	[   33.610000] UBI: attaching mtd4 to ubi0
+	[   33.610000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+	[   33.610000] UBI: logical eraseblock size:    129024 bytes
+	[   33.610000] UBI: smallest flash I/O unit:    2048
+	[   33.610000] UBI: sub-page size:              512
+	[   33.610000] UBI: VID header offset:          512 (aligned 512)
+	[   33.610000] UBI: data offset:                2048
+	[   34.040000] UBI: attached mtd4 to ubi0
+	[   34.040000] UBI: MTD device name:            "rootfs"
+	[   34.040000] UBI: MTD device size:            252 MiB
+	[   34.040000] UBI: number of good PEBs:        2012
+	[   34.040000] UBI: number of bad PEBs:         4
+	[   34.040000] UBI: max. allowed volumes:       128
+	[   34.040000] UBI: wear-leveling threshold:    4096
+	[   34.040000] UBI: number of internal volumes: 1
+	[   34.040000] UBI: number of user volumes:     1
+	[   34.040000] UBI: available PEBs:             37
+	[   34.040000] UBI: total number of reserved PEBs: 1975
+	[   34.040000] UBI: number of PEBs reserved for bad PEB handling: 20
+	[   34.040000] UBI: max/mean erase counter: 1/0
+	[   34.040000] UBI: image sequence number: 0
+	[   34.060000] UBI: background thread "ubi_bgt0d" started, PID 888
+	[   36.560000] UBIFS: recovery needed
+	[   37.470000] UBIFS: recovery completed
+	[   37.470000] UBIFS: mounted UBI device 0, volume 0, name "rootfs"
+	[   37.470000] UBIFS: file system size:   250177536 bytes (244314 KiB, 238 MiB, 1939 LEBs)
+	[   37.470000] UBIFS: journal size:       12515328 bytes (12222 KiB, 11 MiB, 97 LEBs)
+	[   37.470000] UBIFS: media format:       w4/r0 (latest is w4/r0)
+	[   37.470000] UBIFS: default compressor: lzo
+	[   37.470000] UBIFS: reserved for root:  4952683 bytes (4836 KiB)
+
+	# ubiattach /dev/ubi_ctrl -m 4
+	UBI device number 0, total 2012 LEBs (259596288 bytes, 247.6 MiB), available 37 LEBs (4773888 bytes, 4.6 MiB), LEB size 129024 bytes (126.0 KiB)
+
+	# mount -t ubifs ubi0:rootfs /mnt/ubifs
+
+	# ls -l /mnt/ubifs/
+	-rw-r--r--    1 root     root      8388608 Dec  8 11:11 bigfile.0
+	-rw-r--r--    1 root     root      8388608 Dec  8 11:11 bigfile.1
+	-rw-r--r--    1 root     root      8388608 Dec  8 11:11 bigfile.2
+	-rw-r--r--    1 root     root      8388608 Dec  8 11:11 bigfile.3
+	-rw-r--r--    1 root     root      7229440 Dec  8 11:11 bigfile.4
+	-rw-r--r--    1 root     root      5083136 Dec  8 11:11 bigfile.5
+
+
+I've seen more kernel panics at random places...
+
+	# ubiformat /dev/mtd4 -s 512
+	ubiformat: mtd4 (NAND), size 264241152 bytes (252.0 MiB), 131072 eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+	libscan: scanning eraseblock 2015 -- 100 % complete
+	ubiformat: 2012 eraseblocks have valid erase counter, mean value is 0
+	ubiformat: bad eraseblocks: 248, 374, 1390, 1446
+	ubiformat: formatting eras[  592.270000] Unable to handle kernel paging request at virtual address 56b50000
+	e[  592.270000] pgd = c3098000
+	ubiformat: [  592.280000] [56b50000] *pgd=00000000formatting erasebloc
+	k [  592.290000] Internal error: Oops: 80000005 [#1] PREEMPT
+	[  592.290000] last sysfs file: /sys/class/ubi/version
+	[  592.290000] Modules linked in:
+	[  592.290000] CPU: 0    Not tainted  (2.6.32 #1)
+	[  592.290000] PC is at 0x56b50000
+	[  592.290000] LR is at nand_write_page+0x78/0xc8
+	[  592.290000] pc : [<56b50000>]    lr : [<c02138c0>]    psr: 40000013
+	[  592.290000] sp : c3b37e58  ip : 000000ff  fp : c39fe520
+	[  592.290000] r10: 00000200  r9 : 00000000  r8 : 00003f00
+	[  592.290000] r7 : 00003f00  r6 : c3806100  r5 : c39fe520  r4 : c39fe400
+	[  592.290000] r3 : ffffffff  r2 : ffffffff  r1 : 00000010  r0 : c39fe520
+	[  592.290000] Flags: nZcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+	[  592.290000] Control: 0005317f  Table: 23098000  DAC: 00000015
+	[  592.290000] Process ubiformat (pid: 912, stack limit = 0xc3b36270)
+	[  592.290000] Stack: (0xc3b37e58 to 0xc3b38000)
+	[  592.290000] 7e40:                                                       00000000 c39fe400
+	[  592.290000] 7e60: fffff800 00000200 c39fe400 00000000 c3806100 c0214874 00000000 00000000
+	[  592.290000] 7e80: 00000000 00003f00 0000003f 00000000 00000000 c3ad2c00 00000000 c39fe400
+	[  592.290000] 7ea0: c39fe520 01f80000 00000000 00000200 0001dfc8 c3944a00 c3b37f88 c0214a60
+	[  592.290000] 7ec0: c39fe4ec 00000001 01b80000 00000000 c3944a00 c3b36000 00000200 c020d450
+	[  592.290000] 7ee0: 00000200 c3b37f3c c3ad2c00 c3ad2c00 00000200 00000000 c3ad2c00 c020f300
+	[  592.290000] 7f00: 00000200 c3b37f3c c3ad2c00 c0035a14 c39aae20 00000000 c30076c0 c3a877a0
+	[  592.290000] 7f20: 40084d02 c00c56f4 c002707c c0035a14 c01d9908 ffffffff fefff000 c00b741c
+	[  592.290000] 7f40: 00000003 c30076c0 0001dfc8 c3b37f88 00000004 00000200 c3b36000 0001dfc8
+	[  592.290000] 7f60: 0001bee8 c00b7b04 00000000 c00b6e3c 01b80000 00000000 c30076c0 00000004
+	[  592.290000] 7f80: c0028064 c00b80bc 01b80000 00000000 00000001 00000000 bef71c38 000000dc
+	[  592.290000] 7fa0: 00000000 c0027ee0 bef71c38 000000dc 00000003 0001dfc8 00000200 00000200
+	[  592.290000] 7fc0: bef71c38 000000dc 00000000 00000004 00000200 00000000 0001dfc8 0001bee8
+	[  592.290000] 7fe0: 01b80000 bef71b98 0000d8e4 400e172c 60000010 00000003 00000000 00000000
+	[  592.290000] Code: bad PC value
+	ubiformat: formatting eraseblock 210 -- 10 % c[  592.890000] ---[ end trace 0c735e4f06680d81 ]---
+	ubiformat: formatting eraseblock 220 -- 10 % complete
+
+Thanks for reading!
+Jaap
