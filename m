@@ -1,15 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHz3D-0001Kn-Ll
-	for linux-mtd@lists.infradead.org; Tue, 08 Dec 2009 12:20:24 +0000
-Subject: Re: [RFC] [PATCH] [MTD-UTILS]: flash_lock: fix length being passed
+	id 1NHz3n-0001YS-V9
+	for linux-mtd@lists.infradead.org; Tue, 08 Dec 2009 12:21:00 +0000
+Subject: Re: [RFC] [PATCH] [MTD-UTILS]: flash_unlock: enhancing for
+	unlocking of  specified number of blocks
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <ce9ab5790912020628n5e91f811haa56b6380a71ab32@mail.gmail.com>
-References: <ce9ab5790912020628n5e91f811haa56b6380a71ab32@mail.gmail.com>
+In-Reply-To: <ce9ab5790912020630s160fee35r340d02ae9f41bcfb@mail.gmail.com>
+References: <ce9ab5790912020630s160fee35r340d02ae9f41bcfb@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 08 Dec 2009 14:19:51 +0200
-Message-Id: <1260274791.19669.48.camel@localhost>
+Date: Tue, 08 Dec 2009 14:20:41 +0200
+Message-Id: <1260274841.19669.51.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
@@ -23,12 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-12-02 at 19:58 +0530, Vimal Singh wrote:
-> This patch fixes the 'length' calculation.
-> Making it:
-> +       mtdLockInfo.length = (num_sectors - 1) * mtdInfo.erasesize;
-> Rather:
-> -       mtdLockInfo.length = num_sectors * mtdInfo.erasesize;
+On Wed, 2009-12-02 at 20:00 +0530, Vimal Singh wrote:
+> This patch enhances the flash_unlock utility to be able to do
+> unlocking for specified blocks range.
+> This patch also fixes calculation of 'length' as in previous patch.
 > 
 > Say there are 240 blocks present in the device. Then:
 > offset starts from: 0x0
@@ -36,11 +35,30 @@ On Wed, 2009-12-02 at 19:58 +0530, Vimal Singh wrote:
 > 
 > doing: 240 * 0x20000 gives -> 0x1E00000
 > But last block address should be 0x1DE0000 (which spans for 0x20000
-> bytes, adding upto size of 0x1E00000)
+> bytes, adding up to size of 0x1E00000)
 > 
 > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+> 
+> --- a/flash_unlock.c	2009-11-24 19:33:18.000000000 +0530
+> +++ b/flash_unlock.c	2009-11-24 19:36:18.000000000 +0530
+> @@ -21,13 +21,14 @@ int main(int argc, char *argv[])
+>  	int fd;
+>  	struct mtd_info_user mtdInfo;
+>  	struct erase_info_user mtdLockInfo;
+> +	int count;
+> 
+>  	/*
+>  	 * Parse command line options
+>  	 */
+> -	if(argc != 2)
+> +	if(argc < 2)
+>  	{
+> -		fprintf(stderr, "USAGE: %s <mtd device>\n", argv[0]);
+> +		fprintf(stderr, "USAGE: %s <mtd device> <offset in hex> <block
 
-Pushed, thanks!
+The patch looks fine for me, except that you should instead make these
+to be some command line options.
 
 -- 
 Best Regards,
