@@ -1,25 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHyrJ-0004Rj-S9
-	for linux-mtd@lists.infradead.org; Tue, 08 Dec 2009 12:08:06 +0000
-Subject: Re: [RFC] mxc nand controller updates
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
-In-Reply-To: <4B1A394F.3060904@eukrea.com>
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1257925792.21596.858.camel@localhost>
-	<20091112073630.GV30179@pengutronix.de>
-	<1258101131.21596.1189.camel@localhost>
-	<1259580031.19465.378.camel@macbook.infradead.org>
-	<20091130122903.GO27548@pengutronix.de> <4B1A394F.3060904@eukrea.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 08 Dec 2009 14:07:37 +0200
-Message-Id: <1260274057.19669.45.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: mathieu.berland@eads.com, Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Date: Tue, 8 Dec 2009 12:16:08 +0000
+From: Ben Dooks <ben-linux@fluff.org>
+To: Juergen Beisert <jbe@pengutronix.de>
+Subject: Re: [PATCH] [NAND] S3C2410: Fix NFC clock enable/disable imbalance
+Message-ID: <20091208121607.GA20364@trinity.fluff.org>
+References: <200912081056.40210.jbe@pengutronix.de>
+	<4B1E3815.9020901@ru.mvista.com>
+	<200912081307.17955.jbe@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200912081307.17955.jbe@pengutronix.de>
+Cc: Sergei Shtylyov <sshtylyov@ru.mvista.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,40 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2009-12-05 at 11:43 +0100, Eric Bénard wrote:
-> Hi Sascha,
+On Tue, Dec 08, 2009 at 01:07:17PM +0100, Juergen Beisert wrote:
+> On Dienstag, 8. Dezember 2009, Sergei Shtylyov wrote:
+> > Hello.
+> >
+> > Juergen Beisert wrote:
+> > > When unmounting an mtd filesystem the s3c2410_nand_select_chip() function
+> > > gets called again with "chip == -1". In this case the current code
+> > > disables the NFC clock at least a second time, so it does not work
+> > > anymore. Clock disabling should only happen if it was really enabled.
+> > >
+> > > Signed-off-by: Juergen Beisert <jbe@pengutronix.de>
+> > >
+> > > ---
+> > >  drivers/mtd/nand/s3c2410.c |    8 ++++++--
+> > >  1 file changed, 6 insertions(+), 2 deletions(-)
+> > >
+> > > Index: linux-2.6.32/drivers/mtd/nand/s3c2410.c
+> > > ===================================================================
+> > > --- linux-2.6.32.orig/drivers/mtd/nand/s3c2410.c
+> > > +++ linux-2.6.32/drivers/mtd/nand/s3c2410.c
+> > > @@ -329,12 +329,16 @@ static void s3c2410_nand_select_chip(str
+> > >  	struct s3c2410_nand_mtd *nmtd;
+> > >  	struct nand_chip *this = mtd->priv;
+> > >  	unsigned long cur;
+> > > +	int clock_enabled;
+> >
+> >    Could be *bool*...
 > 
-> Sascha Hauer a écrit :
-> >   git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand
-> > 
-> > Sascha Hauer (18):
-> >       mxc_nand: cleanup eccoob descriptions
-> >       mxc_nand: cleanup initialization
-> >       mxc_nand: merge send_read_page and send_prog_page
-> >       mxc_nand: introduce mxc_do_addr_cycle
-> >       mxc nand: remove debug param
-> >       mxc nand: remove dead code
-> >       mxc nand: use resource_size()
-> >       mxc nand: use buffers
-> >       mxc nand: simplify command processing
-> >       mxc nand: modify send_page to send all pages, not only one
-> >       mxc_nand: remove unused defines
-> >       mxc_nand: Make main/spare areas runtime configurable
-> >       mxc_nand: Get rid of pagesize_2k flag
-> >       mxc_nand: Add NFC V2 support
-> >       mxc_nand: disable sp_en bit only once
-> >       mxc_nand: Allow flash based bbt
-> >       mxc_nand: remove TROP_US_DELAY
-> >       mxc_nand: use DRIVER_NAME where appropriate
-> > 
-> Tested-by: Eric Benard <eric@eukrea.com>
-> 
-> it's a bit late but I can confirm this works fine on our i.MX27 platform 
-> using : NAND device: Manufacturer ID: 0x2c, Chip ID: 0xac (Micron NAND 
-> 512MiB 1,8V 8-bit) (2k page size) with hw ecc & flash bbt.
+> I'm not sure. When this function is called more than once to disable a NAND 
+> device chip select, who knows if it might be called more than once to enable 
+> it? Just an idea.
 
-This was already pulled.
+it might be worth tracking the clock state, not only in these case but to
+ensure that things like suspend/resume cycles don't cause problems too.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Ben
+
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
