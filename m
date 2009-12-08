@@ -1,19 +1,24 @@
-Received: from mail.theptrgroup.com ([71.178.251.9])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NHqwI-00064t-SZ
-	for linux-mtd@lists.infradead.org; Tue, 08 Dec 2009 03:40:43 +0000
-Message-ID: <4B1DCAB0.8060507@theptrgroup.com>
-Date: Mon, 07 Dec 2009 22:40:32 -0500
-From: Jeff Angielski <jeff@theptrgroup.com>
-MIME-Version: 1.0
-To: Charles Manning <manningc2@actrix.gen.nz>
-Subject: Re: What filesystem for NAND flash with OOB 218
-References: <4B1C682D.1020603@theptrgroup.com>	<200912071619.56623.manningc2@actrix.gen.nz>
-	<200912080955.43335.manningc2@actrix.gen.nz>
-In-Reply-To: <200912080955.43335.manningc2@actrix.gen.nz>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NHthC-00082W-Px
+	for linux-mtd@lists.infradead.org; Tue, 08 Dec 2009 06:37:19 +0000
+Subject: Re: ubifs wear leveling across entire device
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: twebb <taliaferro62@gmail.com>
+In-Reply-To: <dbdb2ea60912071444y149c536bt3106a5ad1da9b221@mail.gmail.com>
+References: <dbdb2ea60912030931j380a7702hc92d4fbe72341730@mail.gmail.com>
+	<4B18F300.7080006@nokia.com>
+	<dbdb2ea60912070741l7a0dde1dt49ba0f5413accf61@mail.gmail.com>
+	<4B1D600A.10507@nokia.com>
+	<dbdb2ea60912071444y149c536bt3106a5ad1da9b221@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 08 Dec 2009 08:36:47 +0200
+Message-Id: <1260254207.19669.8.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Charles Manning wrote:
-> On Monday 07 December 2009 16:19:56 Charles Manning wrote:
->> On Monday 07 December 2009 15:27:57 Jeff Angielski wrote:
->>> I was wondering what type of filesystem everybody is using for the newer
->>>   NAND flash with OOB>=128 bytes.  For me, this is the Micron
->>> MT29F8G08AAA which has an OOB=218.
->>>
->>> It seems that the JFFS2 tools are out of date and don't work with
->>> anything less than or equal to 64bytes of OOB.
->>>
->>> YAFFS2 does not compile in the latest kernel source trees (2.6.31 in the
->>> DENX linux-2.6-denx git tree).  Is this filesystem dead?
->> Far from it.
->> I'll take a look at why it does not compile.
+On Mon, 2009-12-07 at 17:44 -0500, twebb wrote:
+> >
+> > Wear-levelling occurs within a single UBI device which is generally
+> > a single MTD partition.
+> >
+> > You need 1 MTD partition and 1 UBI device with 3 volumes.  Make the
+> > 3 volumes total less than the whole UBI device and you can add a 4th
+> > volume later.
+> >
 > 
-> I just compiled yaffs2 in 2.6.29, 2.6.30, 2.6.31, 2.6.32 from kernel.org. No 
-> problems.
-> I didn't try denx.
-> I would suggest you'd get further trying to sort this out in the denx or yaffs 
-> lists.
+> If I make 1 MTD partition and 1 corresponding UBI device, should (can)
+> it include areas that will never be accessed via UBI-aware tools?  For
+> example, is it safe to have on a 4GB physical device a single 4GB MTD
+> partition with a single corresponding UBI device, but only 3GB of the
+> 4GB device contain N UBI volumes only accessed via appropriate UBI
+> user-space (or u-boot) tools while the remaining 1GB of the 4GB is
+> accessed with mtd-utils?
 
-It would appear that the yaffs2 code in DENX kernel is out of date.  I 
-had assumed that since it was in the git tree, it was being maintained 
-and ready for use.  Especially since they keep a close tie with the 
-kernel.org tree.
+This contradicts to what you originally asked for. "Give me
+wear-levelling across whole device, but do not touch this 1GiB".
 
-Once I wiped it out and patched it with the latest yaffs code from CVS 
-the fs/yaffs2 compiled.  The problem most likely comes from the fact 
-that yaffs2 is maintained outside the kernel and requires the patch-ker.sh.
+> There are two reasons for this approach:
+> 1 - to (hopefully) get the benefits of wear leveling across the entire
+> physical device (though I think this may not work in the scenario I've
+> described)
 
+If you want untouched 1 GiB, make 3GiB + 1GiB partitions, give 3GiB to
+UBI.
+
+> 2 - to allow access to a portion of the flash by non-UBI aware code
+> 
+> I assume the alternative (w/o the benefit of wear leveling across the
+> entire device) is to define 2 MTD partitions: 1 for "non-UBI" access
+> and 1 for a single UBI device with multiple UBI volumes?
+
+Yes.
+
+Also, you can emulate MTD devices on top of UBI volumes, so you can use
+many of the MTD tools in linux.
 
 -- 
-Jeff Angielski
-The PTR Group
-www.theptrgroup.com
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
