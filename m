@@ -1,15 +1,20 @@
-Received: from smtp23.services.sfr.fr ([93.17.128.20])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIKTg-0002aD-KU
-	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 11:13:09 +0000
-From: Eric Benard <eric@eukrea.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] mxc_nand : add RESET command support
-Date: Wed,  9 Dec 2009 12:12:43 +0100
-Message-Id: <1260357163-5367-1-git-send-email-eric@eukrea.com>
-In-Reply-To: <1260347150.19669.1206.camel@localhost>
-References: <1260347150.19669.1206.camel@localhost>
-Cc: s.hauer@pengutronix.de, dedekind1@gmail.com
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NINbs-0007yM-G0
+	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 14:33:49 +0000
+Subject: Re: UBIFS on Atmel Dataflash
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
+In-Reply-To: <1260348786.19669.1231.camel@localhost>
+References: <hfnn6u$ah1$1@ger.gmane.org>
+	<1260348786.19669.1231.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 09 Dec 2009 16:33:08 +0200
+Message-Id: <1260369188.5408.24.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mxc_nand driver must support the RESET Command in order to support
-Micron NAND which need a reset before any other command.
+On Wed, 2009-12-09 at 10:53 +0200, Artem Bityutskiy wrote:
+> > Any comments on this are highly appreciated.
+> 
+> Yeah, I need to make ubiformat nicely return error instead of dying.
 
-Signed-off-by: Eric Benard <eric@eukrea.com>
----
- drivers/mtd/nand/mxc_nand.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Just pushed a fix. It should now gracefully refuse your flash, instead
+of dying. Did not test, though.
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index d5445cd..0207525 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -638,6 +638,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 
- 	case NAND_CMD_ERASE1:
- 	case NAND_CMD_ERASE2:
-+	case NAND_CMD_RESET:
- 		send_cmd(host, command, false);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
- 
 -- 
-1.6.3.3
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
