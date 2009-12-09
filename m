@@ -1,20 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIJSL-0008Uo-4z
-	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 10:07:41 +0000
-Subject: Re: [PATCH 0/2] OMAP: use physmap-flash
+	id 1NIJb8-0003O1-BN
+	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 10:16:46 +0000
+Subject: Re: UBIFS read-only rootfs needs 1 or more eraseblocks to mount
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-In-Reply-To: <20091208183320.GV24013@atomide.com>
-References: <20091208192111.GA32268@localhost.localdomain>
-	<20091208183320.GV24013@atomide.com>
+To: Darwin Rambo <drambo@broadcom.com>
+In-Reply-To: <B125D8217ABC4B43826503DE00A2D44910DFAAE18A@SJEXCHCCR01.corp.ad.broadcom.com>
+References: <B125D8217ABC4B43826503DE00A2D44910DFAAE18A@SJEXCHCCR01.corp.ad.broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 09 Dec 2009 12:07:17 +0200
-Message-Id: <1260353237.19669.1258.camel@localhost>
+Date: Wed, 09 Dec 2009 12:16:28 +0200
+Message-Id: <1260353788.19669.1265.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: 'David Woodhouse' <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
-	Ladislav Michl <ladis@linux-mips.org>, linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,39 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-12-08 at 10:33 -0800, Tony Lindgren wrote:
-> * Ladislav Michl <Ladislav.Michl@seznam.cz> [091208 10:20]:
-> > There is nothing special on omapflash driver, so it can be replaced with
-> > physmap-flash. First patch in serie does exactly this and second one removes
-> > drivers/mtd/maps/omap_nor.c and associated Kconfig option. I'd like to have
-> > either ack or merge into mtd git tree by mtd maintainers for that second part.
+On Tue, 2009-12-08 at 16:09 -0800, Darwin Rambo wrote:
+> On a read-only UBIFS rootfs, why do you need at least 1 eraseblock?
+>  There is nothing to replace since nothing is ever written to this
+> partition on the fly and a block that goes bad cannot be recovered
+> anyways?
 > 
-> Nice work! Ack from me to merge all this via the MTD tree.
-> 
-> Acked-by: Tony Lindgren <tony@atomide.com>
->  
-> >  arch/arm/mach-omap1/flash.c                          |   33 ++
-> >  arch/arm/plat-omap/include/plat/flash.h              |   16 +
-> >  arch/arm/mach-omap1/Makefile                         |    2 
-> >  arch/arm/mach-omap1/board-fsample.c                  |    9 
-> >  arch/arm/mach-omap1/board-h2.c                       |    9 
-> >  arch/arm/mach-omap1/board-h3.c                       |    9 
-> >  arch/arm/mach-omap1/board-innovator.c                |    9 
-> >  arch/arm/mach-omap1/board-osk.c                      |    9 
-> >  arch/arm/mach-omap1/board-palmte.c                   |    9 
-> >  arch/arm/mach-omap1/board-palmtt.c                   |    9 
-> >  arch/arm/mach-omap1/board-palmz71.c                  |   10 
-> >  arch/arm/mach-omap1/board-perseus2.c                 |    9 
-> >  arch/arm/mach-omap1/board-sx1.c                      |   11 
-> >  arch/arm/mach-omap1/board-voiceblue.c                |    9 
-> >  arch/arm/mach-omap2/board-2430sdp.c                  |    7 
-> >  arch/arm/mach-omap2/board-h4.c                       |    7 
-> >  drivers/mtd/maps/Kconfig                             |    9 
-> >  drivers/mtd/maps/Makefile                            |    1 
-> >  drivers/mtd/maps/omap_nor.c                          |  188 -----------------
-> >  19 files changed, 112 insertions(+), 253 deletions(-)
+> UBI error: ubi_eba_init_scan: no enough physical eraseblocks (0, need
+> 1)
+> UBI error: ubi_init: cannot attach mtd6
+> UBI error: ubi_init: UBI error: cannot initialize UBI, error -28
 
-I think this should be merged via the omap tree, not mtd (CCed dwmw2).
+This is UBI error, not UBIFS. UBI does not really have a notion of
+read-only UBI device, so it always reserves some amount of eraseblocks.
+
+There is a compile-time option about amount of eraseblocks to reserve,
+in percent. You can make it 0%, then UBI will not reserve anything.
+Probably it will not work out of the box (I never tried that), and
+you'll need to do some small investigation / fixing.
+
+> Note that adding room for a single bad block PEB allows the mount to
+> work, and you get a warning like this:
+> "UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad
+> PEB handling, reserved 0, need 19"
+
+This is again UBI warning, not UBIFS.
+
+> It looks like the normal read/write code is reserving/requiring blocks
+> that the read-only mode doesn't actually use?
+
+R/O stuff is on UBIFS level, you get warning at UBI level, and UBI does
+assumes everything is R/W.
+
+>  All this is probably just a future suggestion to support read-only
+> mode a little bit better with less block wastage.
+
+Ok, you might as well just come up with a patch or patches!
 
 -- 
 Best Regards,
