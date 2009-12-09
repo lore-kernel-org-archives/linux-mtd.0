@@ -1,15 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIHxg-0004QO-M0
-	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 08:31:57 +0000
-Subject: Re: kernel panics ubifs and at91sam9263ek
+	id 1NII7g-0007Ec-8U
+	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 08:42:17 +0000
+Subject: Re: UBIFS on kernel 2.6.24?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jaap de Jong <jaap.dejong@nedap.com>
-In-Reply-To: <1260268703.15086.6.camel@nvc1511>
-References: <1260268703.15086.6.camel@nvc1511>
+To: David Jander <david.jander@protonic.nl>
+In-Reply-To: <200912081745.03588.david.jander@protonic.nl>
+References: <200911231510.40294.david.jander@protonic.nl>
+	<1259220221.29118.55.camel@localhost>
+	<200912081745.03588.david.jander@protonic.nl>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 09 Dec 2009 10:31:46 +0200
-Message-Id: <1260347506.19669.1211.camel@localhost>
+Date: Wed, 09 Dec 2009 10:41:48 +0200
+Message-Id: <1260348108.19669.1220.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,139 +25,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2009-12-08 at 11:38 +0100, Jaap de Jong wrote:
-> 	# for i in 0 1 2 3 4 5 6 7 8 9 ; do echo $i ; cp bigfile /mnt/ubifs/bigfile.$i ; done
-> 	0
-> 	1
-> 	2
-> 	3
-> 	4
-> 	5
-> 	[  830.860000] Unable to handle kernel paging request at virtual address 5b5b5b5a
-> 	[  830.870000] pgd = c3b78000
-> 	[  830.870000] [5b5b5b5a] *pgd=00000000
-> 	[  830.880000] Internal error: Oops: 80000005 [#1] PREEMPT
-> 	[  830.880000] last sysfs file: /sys/devices/virtual/ubi/ubi0/ubi0_0/name
-> 	[  830.880000] Modules linked in:
-> 	[  830.880000] CPU: 0    Not tainted  (2.6.32 #1)
-> 	[  830.880000] PC is at 0x5b5b5b5a
-> 	[  830.880000] LR is at nand_write_page_raw+0x34/0x3c
-> 	[  830.880000] pc : [<5b5b5b5a>]    lr : [<c02133b4>]    psr: 40000033
-> 	[  830.880000] sp : c3be59a8  ip : 0000005b  fp : 5b5b5b5b
-> 	[  830.880000] r10: 00000800  r9 : 00000000  r8 : 00005df7
-> 	[  830.880000] r7 : 00005df7  r6 : c3b87800  r5 : c39fe520  r4 : c39fe400
-> 	[  830.880000] r3 : 000000cf  r2 : fffffff0  r1 : c3806940  r0 : c5000000
-> 	[  830.880000] Flags: nZcv  IRQs on  FIQs on  Mode SVC_32  ISA Thumb  Segment user
-> 	[  830.880000] Control: 0005317f  Table: 23b78000  DAC: 00000015
-> 	[  830.880000] Process cp (pid: 922, stack limit = 0xc3be4270)
-> 	[  830.880000] Stack: (0xc3be59a8 to 0xc3be6000)
-> 	[  830.880000] 59a0:                   5b5b5b5b 5b5b5b5b 00000800 00000800 c39fe400 00000000
-> 	[  830.880000] 59c0: c3b87800 c0214874 00000000 00000000 00000000 00005df7 0000003f 00000000
-> 	[  830.880000] 59e0: 00000000 c3b87800 00000000 c39fe400 c39fe520 02efb800 00000000 00000800
-> 	[  830.880000] 5a00: c3a4a800 00000000 00000157 c0214a60 c39fe4ec c0035a14 02afb800 00000000
-> 	[  830.880000] 5a20: c3970a00 00000800 00000003 c020d450 00000800 c3be5a64 c3b87800 00000000
-> 	[  830.880000] 5a40: c39aaea0 00000157 0001b800 c0220344 00000800 c3be5a64 c3b87800 0000015a
-> 	[  830.880000] 5a60: 00000800 c39aaea0 0000015a c39aaea0 0000015a 00000800 00000000 c021e948
-> 	[  830.880000] 5a80: 00000800 c0035a14 00000000 c3be5a98 c0035784 c3b9201c c3011360 00000017
-> 	[  830.880000] 5aa0: 00000000 c3b73520 c3be5af4 c3be5ab8 00000000 c3be5ac0 c3b87800 0000015a
-> 	[  830.880000] 5ac0: c386a400 00000568 22222222 22222222 c032a0dc c39aaea0 0000015a 00000800
-> 	[  830.880000] 5ae0: c3b87800 00000003 c3a7a000 00000510 c30c8000 c021db4c 0001b000 00000800
-> 	[  830.880000] 5b00: 00000003 00000fe0 c3ae1160 00000fe0 00000000 00000fd9 c3a7a000 c016d4c0
-> 	[  830.880000] 5b20: 00000800 00000003 00000000 00000000 00000fd9 00000000 c3be5b70 c3ae1160
-> 	[  830.880000] 5b40: c30c8000 00000000 00000fd9 c3a7a000 0001b000 00000510 0000015a c0162f80
-> 	[  830.880000] 5b60: c3be5b74 c0035a14 c04f5660 c3be5ba8 00000fa9 00000001 00000004 00001000
-> 	[  830.880000] 5b80: c04f5660 c34ca8a8 c3a7a000 c3a7a008 c34ca950 00000000 00000004 c0165330
-> 	[  830.880000] 5ba0: 00001000 c34ca950 00000046 2000027a 00000080 c34ca950 00000001 c3be5ce0
-> 	[  830.880000] 5bc0: 00000080 c00909ec c04f5660 c0090ec4 0000000e 000200da 00000001 ffffffff
-> 	[  830.880000] 5be0: c34ca950 c00909d8 00000000 00000000 0000000e ffffffff 0000027b c3be5c14
-> 	[  830.880000] 5c00: 00000000 0000000e 00000000 c04f50c0 c04f50e0 c04f5100 c04f5120 c04f5660
-> 	[  830.880000] 5c20: c04f5640 c04f5620 c04f5600 c04f55e0 c04f55c0 c04f55a0 c04f5580 c04f5560
-> 	[  830.880000] 5c40: c04f5540 00000284 00000010 c34ca8a8 00000007 00000000 c3adda40 c3be5ce0
-> 	[  830.880000] 5c60: c3a7a088 c34ca950 c3a7a090 c00d4b6c c3a7a090 00000000 c34ca8a8 c3a7a068
-> 	[  830.880000] 5c80: c3adda40 c3be5ce0 c3be4000 c00d5508 00000000 00000000 0000cddd 00000000
-> 	[  830.880000] 5ca0: c3be5d18 c3be5ca4 c3be5ca4 c3adda00 00001b59 c3a7a008 0000099d 00000001
-> 	[  830.880000] 5cc0: c34ca950 c049542c 000002fa c3be4000 00000001 c00915a4 c0495444 00000000
-> 	[  830.880000] 5ce0: c3a7a008 00000000 00000000 00000000 000002fa 00000000 00000000 00000000
-> 	[  830.880000] 5d00: 00000000 00000000 00000030 00000000 c34ca8a8 00000804 00000a98 0000054c
-> 	[  830.880000] 5d20: 004d9000 00001000 00000000 004d8000 00000000 00000000 c34ca950 00000000
-> 	[  830.880000] 5d40: 00001000 c008aabc 00001000 00001000 c04ea280 c0035784 c3833820 c34ca950
-> 	[  830.880000] 5d60: 00001000 00000000 c0339164 c3be4000 c3be5f40 00000001 00001000 00000000
-> 	[  830.880000] 5d80: c0035784 c04ea280 c3011360 004d9000 00000000 004d8000 00000000 c34ca8a8
-> 	[  830.880000] 5da0: 00000000 00000000 c3833820 c008b1f8 004d8000 00000000 c3be5f00 00001000
-> 	[  830.880000] 5dc0: 00000000 c3be5dd0 c3be5f00 c3be5f40 c3be5eb0 c3833820 c34ca950 00001000
-> 	[  830.880000] 5de0: c0329180 00000001 22222222 22222222 22222222 22222222 c008b6ec 00001000
-> 	[  830.880000] 5e00: 00000000 c34ca918 00000000 c3be5eb0 c3be5f40 004d8000 00000000 00000001
-> 	[  830.880000] 5e20: c3833820 c008b2a8 00001000 00000000 0001244c 004d8000 00000000 c34ca8a8
-> 	[  830.880000] 5e40: c3a7a000 c3be5eb0 c3be5f40 00000001 be8728a8 c01646e0 004d8000 00000000
-> 	[  830.880000] 5e60: 000004d8 00000001 00000000 00001000 00000000 be8738a8 00000000 00001000
-> 	[  830.880000] 5e80: 00000002 c3be5eb0 c3be5eb0 c3833820 c3be5eb0 c3be5f40 c3be5f88 c3be4000
-> 	[  830.880000] 5ea0: fffffdee c00b722c 004d8000 00000000 00000000 c3b73520 00000000 00000001
-> 	[  830.880000] 5ec0: ffffffff c3833820 00000000 00000000 00000000 00000000 c3011360 c3be4000
-> 	[  830.880000] 5ee0: 00000000 00000000 00000001 c3011360 c00588a8 c3be5ef4 c3be5ef4 c3be5f08
-> 	[  830.880000] 5f00: 004d8000 00000000 c002707c ffffffff be8728a8 c3be5f20 00001000 c0327f24
-> 	[  830.880000] 5f20: 00001000 c3be5f48 004bc000 00000000 c3833420 00000000 00000002 c00b741c
-> 	[  830.880000] 5f40: be8728a8 00001000 00000000 c3833820 be8728a8 c3be5f88 00000004 00001000
-> 	[  830.880000] 5f60: 00000003 c00b7b04 00000000 00000000 004d8000 00000000 c3833820 00000004
-> 	[  830.880000] 5f80: c0028064 c00b80bc 004d8000 00000000 be873f10 00000000 00000004 be8728a8
-> 	[  830.880000] 5fa0: 00001000 c0027ee0 00000004 be8728a8 00000004 be8728a8 00001000 00000004
-> 	[  830.880000] 5fc0: 00000004 be8728a8 00001000 00000004 00000001 00000004 00000003 be8728a8
-> 	[  830.880000] 5fe0: 00000004 be872878 000132af 4017572c 40000010 00000004 00000000 00000000
-> 	[  830.880000] Code: bad PC value
-> 	[  832.740000] ---[ end trace 41c7c00bf69addd9 ]---
-> 	Segmentation fault
-> 	6
-
-I'm sure this is not UBIFS-related. Probably you have broken NAND
-driver? Start with testing your NAND using MTD tests:
-
-http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
-
-> I've seen more kernel panics at random places...
+On Tue, 2009-12-08 at 17:45 +0100, David Jander wrote:
+> I have downloaded those tools, and started playing with them.
+> I started with speedtest :-), oobtest, scantest and pagetest. Those al ran 
+> without problems, but subpagetest stopped with an error:
 > 
-> 	# ubiformat /dev/mtd4 -s 512
-> 	ubiformat: mtd4 (NAND), size 264241152 bytes (252.0 MiB), 131072 eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
-> 	libscan: scanning eraseblock 2015 -- 100 % complete
-> 	ubiformat: 2012 eraseblocks have valid erase counter, mean value is 0
-> 	ubiformat: bad eraseblocks: 248, 374, 1390, 1446
-> 	ubiformat: formatting eras[  592.270000] Unable to handle kernel paging request at virtual address 56b50000
-> 	e[  592.270000] pgd = c3098000
-> 	ubiformat: [  592.280000] [56b50000] *pgd=00000000formatting erasebloc
-> 	k [  592.290000] Internal error: Oops: 80000005 [#1] PREEMPT
-> 	[  592.290000] last sysfs file: /sys/class/ubi/version
-> 	[  592.290000] Modules linked in:
-> 	[  592.290000] CPU: 0    Not tainted  (2.6.32 #1)
-> 	[  592.290000] PC is at 0x56b50000
-> 	[  592.290000] LR is at nand_write_page+0x78/0xc8
-> 	[  592.290000] pc : [<56b50000>]    lr : [<c02138c0>]    psr: 40000013
-> 	[  592.290000] sp : c3b37e58  ip : 000000ff  fp : c39fe520
-> 	[  592.290000] r10: 00000200  r9 : 00000000  r8 : 00003f00
-> 	[  592.290000] r7 : 00003f00  r6 : c3806100  r5 : c39fe520  r4 : c39fe400
-> 	[  592.290000] r3 : ffffffff  r2 : ffffffff  r1 : 00000010  r0 : c39fe520
-> 	[  592.290000] Flags: nZcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
-> 	[  592.290000] Control: 0005317f  Table: 23098000  DAC: 00000015
-> 	[  592.290000] Process ubiformat (pid: 912, stack limit = 0xc3b36270)
-> 	[  592.290000] Stack: (0xc3b37e58 to 0xc3b38000)
-> 	[  592.290000] 7e40:                                                       00000000 c39fe400
-> 	[  592.290000] 7e60: fffff800 00000200 c39fe400 00000000 c3806100 c0214874 00000000 00000000
-> 	[  592.290000] 7e80: 00000000 00003f00 0000003f 00000000 00000000 c3ad2c00 00000000 c39fe400
-> 	[  592.290000] 7ea0: c39fe520 01f80000 00000000 00000200 0001dfc8 c3944a00 c3b37f88 c0214a60
-> 	[  592.290000] 7ec0: c39fe4ec 00000001 01b80000 00000000 c3944a00 c3b36000 00000200 c020d450
-> 	[  592.290000] 7ee0: 00000200 c3b37f3c c3ad2c00 c3ad2c00 00000200 00000000 c3ad2c00 c020f300
-> 	[  592.290000] 7f00: 00000200 c3b37f3c c3ad2c00 c0035a14 c39aae20 00000000 c30076c0 c3a877a0
-> 	[  592.290000] 7f20: 40084d02 c00c56f4 c002707c c0035a14 c01d9908 ffffffff fefff000 c00b741c
-> 	[  592.290000] 7f40: 00000003 c30076c0 0001dfc8 c3b37f88 00000004 00000200 c3b36000 0001dfc8
-> 	[  592.290000] 7f60: 0001bee8 c00b7b04 00000000 c00b6e3c 01b80000 00000000 c30076c0 00000004
-> 	[  592.290000] 7f80: c0028064 c00b80bc 01b80000 00000000 00000001 00000000 bef71c38 000000dc
-> 	[  592.290000] 7fa0: 00000000 c0027ee0 bef71c38 000000dc 00000003 0001dfc8 00000200 00000200
-> 	[  592.290000] 7fc0: bef71c38 000000dc 00000000 00000004 00000200 00000000 0001dfc8 0001bee8
-> 	[  592.290000] 7fe0: 01b80000 bef71b98 0000d8e4 400e172c 60000010 00000003 00000000 00000000
-> 	[  592.290000] Code: bad PC value
-> 	ubiformat: formatting eraseblock 210 -- 10 % c[  592.890000] ---[ end trace 0c735e4f06680d81 ]---
-> 	ubiformat: formatting eraseblock 220 -- 10 % complete
+> [...]
+> [14083.422527] subpagetest: erasing                                                                                                                                                 
+> [14083.432654] subpagetest: erased 0                                                                                                                                                
+> [14083.815876] subpagetest: erased 256                                                                                                                                              
+> [14084.190646] subpagetest: erased 512                                                                                                                                              
+> [14084.573346] subpagetest: erased 768                                                                                                                                              
+> [14084.956378] subpagetest: erased 1024                                                                                                                                             
+> [14085.339424] subpagetest: erased 1280                                                                                                                                             
+> [14085.716865] subpagetest: erased 1536                                                                                                                                             
+> [14086.099616] subpagetest: erased 1792                                                                                                                                             
+> [14086.482645] subpagetest: erased 2048                                                                                                                                             
+> [14086.496965] subpagetest: error -5 while erasing EB 2052                                                                                                                          
+> [14086.507507] subpagetest: error -5 occurred                                                                                                                                       
+> 
+> If I repeat this test I get an error on the same EB.
+> If I repeat pagetest now, I also get the same error on the same EB.
+> If I run flash_eraseall on the device, I get this:
+> 
+> $ flash_eraseall /dev/mtd1
+> Erasing 128 Kibyte @ 3980000 --  5 % complete.
+> Skipping bad block at 0x039a0000
+> Erasing 128 Kibyte @ 3f80000 --  6 % complete.
+> Skipping bad block at 0x03fa0000
+> Erasing 128 Kibyte @ 10080000 -- 25 % complete.
+> /usr/local/sbin/flash_eraseall: /dev/mtd1: MTD Erase failure: Input/output 
+> error
+> Erasing 128 Kibyte @ 18760000 -- 38 % complete.
+> Skipping bad block at 0x18780000
+> Erasing 128 Kibyte @ 3ff60000 -- 99 % complete.
+> Skipping bad block at 0x3ff80000
+> Skipping bad block at 0x3ffa0000
+> Skipping bad block at 0x3ffc0000
+> Skipping bad block at 0x3ffe0000
+> Erasing 128 Kibyte @ 40000000 -- 100 % complete.
+> 
+> Did this test kill my nand-flash chip?
 
-You need to debug this. This is not UBIFS, it is something else. This
-particular oops is in nand_write_page(), but it may be caused by memory
-corruptions.
+Probably a bad block, which is normal on NAND. This is one of the
+reasons why NAND-aware software is not-so-simple.
+
+I think ubiformat would suggest you to mark this faulty eraseblock as
+bad.
+
+> > > But I'd like to know how I can get this version into my kernel. Will
+> > > it work if I just copy the relevant files?
+> > 
+> > No. This is git, and what you should do is to merge ubifs-v2.6.24.git to
+> > your tree.
+> 
+> I thought so. Well, I guess I'll have to do some more git manual studying 
+> *sigh*.
+
+'git pull' should do the trick.
+
+> > > Is there a patch against 2.6.24 that I can download somewhere?
+> > 
+> > This is git, and you can create patches yourself. Clone
+> > ubifs-v2.6.24.git and do something like:
+> > 
+> > git format-patch v2.6.24
+> 
+> Thanks for the tip, that seems safe to try.
+
+To apply those patches to another tree, you can use 'git am'.
+
+> > You will get all patches. Then you can merge them if you want, but this
+> > is a bad idea, IMHO.
+> 
+> Hmmmm.... If you know how to do it the right way with git, why don't you just 
+> take the little trouble of putting into the web-page? A lot of people would 
+> learn from it (me included).
+
+It is about git basics, there are many good tutorials. This is just
+about doing the basic operation - 'git pull'.
 
 -- 
 Best Regards,
