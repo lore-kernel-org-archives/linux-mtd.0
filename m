@@ -1,25 +1,25 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIHsK-00037x-SF
-	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 08:26:25 +0000
-Subject: Re: [PATCH] mxc_nand : add RESET command support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
-In-Reply-To: <4B1D7B67.5010900@eukrea.com>
-References: <1256134406-25251-1-git-send-email-s.hauer@pengutronix.de>
-	<1257925792.21596.858.camel@localhost>
-	<20091112073630.GV30179@pengutronix.de>
-	<1258101131.21596.1189.camel@localhost>
-	<1259580031.19465.378.camel@macbook.infradead.org>
-	<20091130122903.GO27548@pengutronix.de> <4B1A394F.3060904@eukrea.com>
-	<4B1D7B67.5010900@eukrea.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 09 Dec 2009 10:25:50 +0200
-Message-Id: <1260347150.19669.1206.camel@localhost>
+	id 1NIHwa-0004Da-2P
+	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 08:30:48 +0000
+Received: from list by lo.gmane.org with local (Exim 4.50) id 1NIHwV-0008JO-Ix
+	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 09:30:39 +0100
+Received: from vpn8.rz.tu-ilmenau.de ([141.24.172.8])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2009 09:30:39 +0100
+Received: from andre.puschmann by vpn8.rz.tu-ilmenau.de with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 09 Dec 2009 09:30:39 +0100
+To: linux-mtd@lists.infradead.org
+From: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
+Subject: UBIFS on Atmel Dataflash
+Date: Wed, 09 Dec 2009 09:30:22 +0100
+Message-ID: <hfnn6u$ah1$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +29,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-12-07 at 23:02 +0100, Eric Bénard wrote:
-> mxc_nand driver must support the RESET Command in order to support 
-> Micron NAND which need a reset before any other command.
-> 
-> Signed-off-by: Eric Benard <eric@eukrea.com>
-> --
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index d5445cd..0207525 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -638,6 +638,7 @@ static void mxc_nand_command(struct mtd_info *mtd, 
-> unsigned command
-> 
->          case NAND_CMD_ERASE1:
->          case NAND_CMD_ERASE2:
-> +       case NAND_CMD_RESET:
->                  send_cmd(host, command, false);
->                  mxc_do_addr_cycle(mtd, column, page_addr);
+Hi guys,
 
-Please, send a non-line-wrapped patch.
+this is my very first try to get UBIFS working. My target is an Atmel
+AT91RM9200 cpu which has a 8MB Atmel Dataflash AT45DB642x. Pagesize is
+1056 Bytes.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+I cross-compiled the ubi tools and my first try to attach was not
+successful:
+
+$ ./ubiattach /dev/ubi_ctrl -m 6
+UBI: attaching mtd6 to ubi0
+UBI error: io_init: min. I/O unit (1056) is not power of 2
+
+My question is if it's possible (in general) to get a working version of
+UBIFS on this kind of flash (with no power of two pagesize)? Anybody
+ever tried this?
+
+I also tried ubiformat which raises a segfault:
+
+$ ./ubiformat /dev/mtd6
+ubiformat: warning!: your MTD system is old and it is impossible to
+detect sub-page size. Use -s to get rid of this warning
+ubiformat: assume sub-page to be 1056
+ubiformat: mtd6 (dataflash), size 4815360 bytes (4.6 MiB), 4560
+eraseblocks of 1056 bytes (1.0 KiB), min. I/O size 1056 bytes
+libscan: scanning eraseblock 4559 -- 100 % complete
+ubiformat: 4554 eraseblocks are supposedly empty
+ubiformat: warning!: 6 of 4560 eraseblocks contain non-ubifs data
+ubiformat: continue? (yes/no)  yes
+ubiformat: warning!: only 0 of 4560 eraseblocks have valid erase counter
+ubiformat: erase counter 0 will be used for all eraseblocks
+ubiformat: note, arbitrary erase counter value may be specified using -e
+option
+ubiformat: continue? (yes/no)  yes
+ubiformat: use erase counter 0 for all eraseblocks
+ubiformat: formatting eraseblock 4559 -- 100 % complete
+Segmentation fault
+
+Any comments on this are highly appreciated.
+
+Best regards,
+
+Andre
