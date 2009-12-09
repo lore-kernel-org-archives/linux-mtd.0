@@ -1,20 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIJIU-0005WZ-VM
-	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 09:57:32 +0000
-Subject: Re: UBIFS on Atmel Dataflash
+	id 1NIJSL-0008Uo-4z
+	for linux-mtd@lists.infradead.org; Wed, 09 Dec 2009 10:07:41 +0000
+Subject: Re: [PATCH 0/2] OMAP: use physmap-flash
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
-In-Reply-To: <4B1F7427.10002@stud.tu-ilmenau.de>
-References: <hfnn6u$ah1$1@ger.gmane.org>
-	<1260348786.19669.1231.camel@localhost>
-	<4B1F7427.10002@stud.tu-ilmenau.de>
+To: Tony Lindgren <tony@atomide.com>
+In-Reply-To: <20091208183320.GV24013@atomide.com>
+References: <20091208192111.GA32268@localhost.localdomain>
+	<20091208183320.GV24013@atomide.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 09 Dec 2009 11:57:18 +0200
-Message-Id: <1260352638.19669.1251.camel@localhost>
+Date: Wed, 09 Dec 2009 12:07:17 +0200
+Message-Id: <1260353237.19669.1258.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: 'David Woodhouse' <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
+	Ladislav Michl <ladis@linux-mips.org>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,30 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2009-12-09 at 10:55 +0100, Andre Puschmann wrote:
-> Hi Artem,
+On Tue, 2009-12-08 at 10:33 -0800, Tony Lindgren wrote:
+> * Ladislav Michl <Ladislav.Michl@seznam.cz> [091208 10:20]:
+> > There is nothing special on omapflash driver, so it can be replaced with
+> > physmap-flash. First patch in serie does exactly this and second one removes
+> > drivers/mtd/maps/omap_nor.c and associated Kconfig option. I'd like to have
+> > either ack or merge into mtd git tree by mtd maintainers for that second part.
 > 
-> thanks for your prompt reply.
+> Nice work! Ack from me to merge all this via the MTD tree.
 > 
-> Artem Bityutskiy wrote:
-> > Yeah, I had a feeling we should not have assumed power of 2. But it was
-> > so appealing, because we can avoid (slow) divisions when aligning data
-> > to min. I/O unit boundary. I knew about DataFlash, but it is usually so
-> > small that I did not expect anyone using UBIFS there.
-> >
-> > Are you sure you want ubifs on such a tiny flash? We were really
-> > targeting to larger ones, say, starting from 64MiB at least.
-> >   
-> Mmh, the idea to run UBIFS came up due to a problem with JFFS2 on this
-> device. So I wanted to use another writeable flash fs to  find out
-> whether its a fs-problem or a mtd/dataflash one.
-> 
-> So you suggest to stick with JFFS2 in this case?
+> Acked-by: Tony Lindgren <tony@atomide.com>
+>  
+> >  arch/arm/mach-omap1/flash.c                          |   33 ++
+> >  arch/arm/plat-omap/include/plat/flash.h              |   16 +
+> >  arch/arm/mach-omap1/Makefile                         |    2 
+> >  arch/arm/mach-omap1/board-fsample.c                  |    9 
+> >  arch/arm/mach-omap1/board-h2.c                       |    9 
+> >  arch/arm/mach-omap1/board-h3.c                       |    9 
+> >  arch/arm/mach-omap1/board-innovator.c                |    9 
+> >  arch/arm/mach-omap1/board-osk.c                      |    9 
+> >  arch/arm/mach-omap1/board-palmte.c                   |    9 
+> >  arch/arm/mach-omap1/board-palmtt.c                   |    9 
+> >  arch/arm/mach-omap1/board-palmz71.c                  |   10 
+> >  arch/arm/mach-omap1/board-perseus2.c                 |    9 
+> >  arch/arm/mach-omap1/board-sx1.c                      |   11 
+> >  arch/arm/mach-omap1/board-voiceblue.c                |    9 
+> >  arch/arm/mach-omap2/board-2430sdp.c                  |    7 
+> >  arch/arm/mach-omap2/board-h4.c                       |    7 
+> >  drivers/mtd/maps/Kconfig                             |    9 
+> >  drivers/mtd/maps/Makefile                            |    1 
+> >  drivers/mtd/maps/omap_nor.c                          |  188 -----------------
+> >  19 files changed, 112 insertions(+), 253 deletions(-)
 
-Yes, UBI/UBIFS flash overhead is higher, and it is not very appropriate
-for small flashes because of this.
-
-JFFS2 is better for small flashes.
+I think this should be merged via the omap tree, not mtd (CCed dwmw2).
 
 -- 
 Best Regards,
