@@ -1,14 +1,14 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from smtp.mujha-vel.cz ([81.30.225.246])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIfkX-0007Wq-3E
-	for linux-mtd@lists.infradead.org; Thu, 10 Dec 2009 09:55:57 +0000
-From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd-nand: davinci: Correct 4-bit error correction
-Date: Thu, 10 Dec 2009 15:06:17 +0530
-Message-Id: <1260437777-4793-1-git-send-email-sudhakar.raj@ti.com>
-Cc: akpm@linux-foundation.org, Sudhakar Rajashekhara <sudhakar.raj@ti.com>,
-	nsnehaprabha@ti.com, davinci-linux-open-source@linux.davincidsp.com
+	id 1NIj00-00084l-IQ
+	for linux-mtd@lists.infradead.org; Thu, 10 Dec 2009 13:24:09 +0000
+From: Jiri Slaby <jslaby@suse.cz>
+To: dwmw2@infradead.org
+Subject: [PATCH 1/1] MTD: cfi chip, fix lock imbalance
+Date: Thu, 10 Dec 2009 14:23:57 +0100
+Message-Id: <1260451437-29645-1-git-send-email-jslaby@suse.cz>
+Cc: linux-mtd@lists.infradead.org, jirislaby@gmail.com,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,60 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after
-setting the 4BITECC_ADD_CALC_START bit in the NAND Flash
-control register to 1 and before waiting for the NAND Flash
-status register to be equal to 1, 2 or 3, we have to wait
-till the ECC HW goes to correction state. Without this wait,
-ECC correction calculations will not be proper.
+Stanse found a double unlock in get_chip. get_chip is called with
+chip->mutex held and caller is responsible for unlocking it too.
 
-This has been tested on DA830/OMAP-L137, DA850/OMAP-L138,
-DM355 and DM365 EVMs.
+Do not unlock the lock in get_chip on a fail path. This would mean
+a double unlock.
 
-Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- From the previous version, timeout has been added to come out
- of the infinite loop.
+ drivers/mtd/chips/cfi_cmdset_0002.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
- drivers/mtd/nand/davinci_nand.c |   17 +++++++++++++++++
- 1 files changed, 17 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index f13f5b9..89f0a0f 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -310,7 +310,9 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
- 	unsigned short ecc10[8];
- 	unsigned short *ecc16;
- 	u32 syndrome[4];
-+	u32 ecc_state;
- 	unsigned num_errors, corrected;
-+	unsigned long timeo = jiffies + msecs_to_jiffies(100);
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 1d49e18..f3600e8 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -569,7 +569,6 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
  
- 	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
- 	for (i = 0; i < 10; i++) {
-@@ -360,6 +362,21 @@ compare:
- 	 */
- 	davinci_nand_writel(info, NANDFCR_OFFSET,
- 			davinci_nand_readl(info, NANDFCR_OFFSET) | BIT(13));
-+
-+	/*
-+	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
-+	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
-+	 * begin trying to poll for the state, you may fall right out of your
-+	 * loop without any of the correction calculations having taken place.
-+	 * The recommendation from the hardware team is to wait till ECC_STATE
-+	 * reads less than 4, which means ECC HW has entered correction state.
-+	 */
-+	do {
-+		ecc_state = (davinci_nand_readl(info,
-+				NANDFSR_OFFSET) >> 8) & 0x0f;
-+		cpu_relax();
-+	} while ((ecc_state < 4) && time_before(jiffies, timeo));
-+
- 	for (;;) {
- 		u32	fsr = davinci_nand_readl(info, NANDFSR_OFFSET);
- 
+ 			if (time_after(jiffies, timeo)) {
+ 				printk(KERN_ERR "Waiting for chip to be ready timed out.\n");
+-				spin_unlock(chip->mutex);
+ 				return -EIO;
+ 			}
+ 			spin_unlock(chip->mutex);
 -- 
-1.5.6
+1.6.5.5
