@@ -1,22 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIfFa-0001dl-31
-	for linux-mtd@lists.infradead.org; Thu, 10 Dec 2009 09:23:58 +0000
-Subject: Re: UBIFS on kernel 2.6.24?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Jander <david.jander@protonic.nl>
-In-Reply-To: <200912101019.45873.david.jander@protonic.nl>
-References: <200911231510.40294.david.jander@protonic.nl>
-	<200912091140.03345.david.jander@protonic.nl>
-	<1260356109.19669.1289.camel@localhost>
-	<200912101019.45873.david.jander@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 10 Dec 2009 11:23:26 +0200
-Message-Id: <1260437006.12346.46.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1NIfkX-0007Wq-3E
+	for linux-mtd@lists.infradead.org; Thu, 10 Dec 2009 09:55:57 +0000
+From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd-nand: davinci: Correct 4-bit error correction
+Date: Thu, 10 Dec 2009 15:06:17 +0530
+Message-Id: <1260437777-4793-1-git-send-email-sudhakar.raj@ti.com>
+Cc: akpm@linux-foundation.org, Sudhakar Rajashekhara <sudhakar.raj@ti.com>,
+	nsnehaprabha@ti.com, davinci-linux-open-source@linux.davincidsp.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +18,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-12-10 at 10:19 +0100, David Jander wrote:
-> > What I can say for sure is that I personally is not very interested in
-> > solving problems for too old UBIFS code-base. Well, problems I can
-> > reproduce here, in my setup, are OK, but subtle problems which I cannot
-> > reproduce here are not OK - I really want to be sure UBI/UBIFS are
-> > up-to-date and this is not something we already fixed.
-> 
-> I understand. All I wanted is to see if someone would jump up and say 
-> something like: "Oh, no, this old version is known to be broken, you need some 
-> important bug-fixes that went into the updates". That obviously didn't happen, 
-> so I know what I am facing: Update to the latest version, test it thoroughly, 
-> and hope for the best :-(
+On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after
+setting the 4BITECC_ADD_CALC_START bit in the NAND Flash
+control register to 1 and before waiting for the NAND Flash
+status register to be equal to 1, 2 or 3, we have to wait
+till the ECC HW goes to correction state. Without this wait,
+ECC correction calculations will not be proper.
 
-I'd put it this way: pull the back-port tree, try to reproduce the
-problem, and come back if it is still there. This will be faster than
-lengthy e-mail exchange :-)
+This has been tested on DA830/OMAP-L137, DA850/OMAP-L138,
+DM355 and DM365 EVMs.
 
+Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+---
+ From the previous version, timeout has been added to come out
+ of the infinite loop.
+
+ drivers/mtd/nand/davinci_nand.c |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index f13f5b9..89f0a0f 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -310,7 +310,9 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
+ 	unsigned short ecc10[8];
+ 	unsigned short *ecc16;
+ 	u32 syndrome[4];
++	u32 ecc_state;
+ 	unsigned num_errors, corrected;
++	unsigned long timeo = jiffies + msecs_to_jiffies(100);
+ 
+ 	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
+ 	for (i = 0; i < 10; i++) {
+@@ -360,6 +362,21 @@ compare:
+ 	 */
+ 	davinci_nand_writel(info, NANDFCR_OFFSET,
+ 			davinci_nand_readl(info, NANDFCR_OFFSET) | BIT(13));
++
++	/*
++	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
++	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
++	 * begin trying to poll for the state, you may fall right out of your
++	 * loop without any of the correction calculations having taken place.
++	 * The recommendation from the hardware team is to wait till ECC_STATE
++	 * reads less than 4, which means ECC HW has entered correction state.
++	 */
++	do {
++		ecc_state = (davinci_nand_readl(info,
++				NANDFSR_OFFSET) >> 8) & 0x0f;
++		cpu_relax();
++	} while ((ecc_state < 4) && time_before(jiffies, timeo));
++
+ 	for (;;) {
+ 		u32	fsr = davinci_nand_readl(info, NANDFSR_OFFSET);
+ 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.5.6
