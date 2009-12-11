@@ -1,14 +1,21 @@
-Received: from smtp.mujha-vel.cz ([81.30.225.246])
+Received: from cs120.vk.com ([93.186.224.120] helo=vk.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NIj00-00084l-IQ
-	for linux-mtd@lists.infradead.org; Thu, 10 Dec 2009 13:24:09 +0000
-From: Jiri Slaby <jslaby@suse.cz>
-To: dwmw2@infradead.org
-Subject: [PATCH 1/1] MTD: cfi chip, fix lock imbalance
-Date: Thu, 10 Dec 2009 14:23:57 +0100
-Message-Id: <1260451437-29645-1-git-send-email-jslaby@suse.cz>
-Cc: linux-mtd@lists.infradead.org, jirislaby@gmail.com,
-	linux-kernel@vger.kernel.org
+	id 1NIz0E-0006D4-MI
+	for linux-mtd@lists.infradead.org; Fri, 11 Dec 2009 06:29:27 +0000
+Received: from localhost
+	([127.0.0.1] helo=localhost.localdomain ident=www-data)
+	by vk.com with esmtp (Exim 4.69) (envelope-from <noreply@vk.com>)
+	id 1NIyIb-0004Mt-BX
+	for linux-mtd@lists.infradead.org; Fri, 11 Dec 2009 08:44:17 +0300
+Date: Fri, 11 Dec 2009 08:44:17 +0300
+To: Hello <linux-mtd@lists.infradead.org>
+From: VK <noreply@vk.com>
+Subject: Vadim Blinov has added you as a friend on the website VK.com
+Message-ID: <ab52ed7018669dd952c7968a30399158@localhost.localdomain>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Reply-To: VK <noreply@vk.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stanse found a double unlock in get_chip. get_chip is called with
-chip->mutex held and caller is responsible for unlocking it too.
+Hello,
 
-Do not unlock the lock in get_chip on a fail path. This would mean
-a double unlock.
+Vadim Blinov has added you as a friend on the website VK.com
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+You can log in and view your friends` pages using your email and automatically created password: plgNb0W8
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 1d49e18..f3600e8 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -569,7 +569,6 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
- 
- 			if (time_after(jiffies, timeo)) {
- 				printk(KERN_ERR "Waiting for chip to be ready timed out.\n");
--				spin_unlock(chip->mutex);
- 				return -EIO;
- 			}
- 			spin_unlock(chip->mutex);
--- 
-1.6.5.5
+VK.com is a website that helps dozens of millions of people find their old friends, share photos and events and always stay in touch.
+
+To log in, please follow this link:
+http://vk.com/login.php?regemail=linux-mtd@lists.infradead.org#plgNb0W8
+
+You can change your password in Settings.
+
+Attention: If you ignore this invitation, your registration will not be activated.
+
+Good luck!
