@@ -1,19 +1,19 @@
-Received: from ns2.tcar.co.kr ([61.109.245.123])
+Received: from colin-baker-v0.ics.uci.edu ([128.195.1.153])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NJ8ED-0001pW-Rh
-	for linux-mtd@lists.infradead.org; Fri, 11 Dec 2009 16:20:31 +0000
-Received: from ns2.tcar.co.kr (localhost.localdomain [127.0.0.1])
-	by ns2.tcar.co.kr (8.13.1/8.13.1) with ESMTP id nBBGKMRk019583
-	for <linux-mtd@lists.infradead.org>; Sat, 12 Dec 2009 01:20:22 +0900
-Date: Sat, 12 Dec 2009 01:20:22 +0900
-Message-Id: <200912111620.nBBGKMaf019582@ns2.tcar.co.kr>
+	id 1NJAEg-0005Zv-N6
+	for linux-mtd@lists.infradead.org; Fri, 11 Dec 2009 18:29:06 +0000
+Received: from webmail.ics.uci.edu (susan-foreman.ics.uci.edu [128.195.1.134])
+	by colin-baker-v0.ics.uci.edu (8.13.8/8.13.8) with ESMTP id
+	nBBISseF023232
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Dec 2009 10:28:55 -0800
+Message-ID: <ba9f10a6e8ef14a2d032fba7f1686df9.squirrel@webmail.ics.uci.edu>
+Date: Fri, 11 Dec 2009 10:28:55 -0800
+Subject: ubifs mount failure upon power cycle
+From: sid@ics.uci.edu
 To: linux-mtd@lists.infradead.org
-Subject: The  Director British finance monitoring unit'''
-From: BRITISH FINANCE MONITORING UNIT  <noticenotice49@yahoo.com.hk>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Reply-To: petermarriott65@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-THE BRITISH FINANCE MONITORING UNIT LONDON, 
-ENGLAND.
-TELEPHONE: +44-704-5755-352
->From the Desk Of Peter Marriott
-Office Of The  Director British finance 
-monitoring unit
+Hi,
 
+I'm trying to use UBIFS (linux 2.6.31) on a MIPS based platform, 128 MB
+SLC (2k page) NAND flash as rootfs. After erasing the flash and mounting
+ubifs as rootfs, I do a large amount of file copies from NFS. However, if
+there is an abrupt power cycle, upon reboot the rootfs mount fails with
+the following error messages:
 
-In agreement with the United Nation (UN) concerning all overdue/pending payment on Contracts/ Inheritance/ Winning funds we are contacting you that we the British Finance Monitoring Unit (BFMU), in collaboration with our affilited Bank we had agreed to effect your payment installment.  
+UBIFS: recovery needed
+UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB 6:43008
+UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 6:43008
+UBIFS error (pid 1): ubifs_scan: LEB 6 scanning failed
+UBIFS error (pid 1): ubifs_recover_leb: corrupt empty space LEB 6:24576,
+corruption starts at 18432
+UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 6:18432
+UBIFS error (pid 1): ubifs_recover_leb: LEB 6 scanning failed
+VFS: Cannot open root device "ubi0:rootfs" or unknown-block(8,1)
 
-Note: That for security reason, your fund is placed in an Escrow/Bond account with our affiliated Bank London pending when your present a clear and good evidence of fund ownership, for further verification you are to confirm the following: FULL NAME, HOME ADDRESS, PHONE/FAX NUMBERS, IDENTIFICATION AND ACCOUNT DETAILS.
+I searched the list for similar messages. There was a similar thread
+(http://lists.infradead.org/pipermail/linux-mtd/2009-April/025229.html)
+for NOR flash. However, the fixes to recovery.c from that thread are
+already in the current sources.
 
-We are expecting to hear from with the verification of the information.
+Any suggestions/pointers on how to debug/fix would be greatly appreciated.
 
-Thanks
-PETER MARRIOTT
-DIRECTOR BRITISH FINANCE MONITORING UNIT
+thanks in advance,
+-sid
