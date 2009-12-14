@@ -1,15 +1,15 @@
-Received: from exprod6og101.obsmtp.com ([64.18.1.181])
+Received: from exprod6ob109.obsmtp.com ([64.18.1.22] helo=psmtp.com)
 	by bombadil.infradead.org with smtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NKIar-0000yv-Hv
-	for linux-mtd@lists.infradead.org; Mon, 14 Dec 2009 21:36:42 +0000
+	id 1NKImQ-0002yC-Pl
+	for linux-mtd@lists.infradead.org; Mon, 14 Dec 2009 21:48:39 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] nomadik_nand.c: use resource_size()
-Date: Mon, 14 Dec 2009 16:36:37 -0500
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090200EA5D@mi8nycmail19.Mi8.com>
+Subject: [PATCH] orion_nand.c: add error handling and use resource_size()
+Date: Mon, 14 Dec 2009 16:48:34 -0500
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090200EA65@mi8nycmail19.Mi8.com>
 From: "H Hartley Sweeten" <hartleys@visionengravers.com>
 To: "kernel list" <linux-kernel@vger.kernel.org>,
 	<linux-mtd@lists.infradead.org>
@@ -23,43 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use resource_size().
+Use platform_get_resource() to fetch the memory resource and
+add error handling for when it is missing. Use resource_size()
+for the ioremap().
 
 Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 
 ---
 
-diff --git a/drivers/mtd/nand/nomadik_nand.c =
-b/drivers/mtd/nand/nomadik_nand.c
-index 7c302d5..ed966c0 100644
---- a/drivers/mtd/nand/nomadik_nand.c
-+++ b/drivers/mtd/nand/nomadik_nand.c
-@@ -104,21 +104,21 @@ static int nomadik_nand_probe(struct =
+diff --git a/drivers/mtd/nand/orion_nand.c =
+b/drivers/mtd/nand/orion_nand.c
+index f59c074..9903460 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -74,6 +74,7 @@ static int __init orion_nand_probe(struct =
 platform_device *pdev)
- 		ret =3D -EIO;
- 		goto err_unmap;
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *nc;
+ 	struct orion_nand_data *board;
++	struct resource *res;
+ 	void __iomem *io_base;
+ 	int ret =3D 0;
+ #ifdef CONFIG_MTD_PARTITIONS
+@@ -89,8 +90,13 @@ static int __init orion_nand_probe(struct =
+platform_device *pdev)
  	}
--	host->addr_va =3D ioremap(res->start, res->end - res->start + 1);
-+	host->addr_va =3D ioremap(res->start, resource_size(res));
+ 	mtd =3D (struct mtd_info *)(nc + 1);
 =20
- 	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
-"nand_data");
- 	if (!res) {
- 		ret =3D -EIO;
- 		goto err_unmap;
- 	}
--	host->data_va =3D ioremap(res->start, res->end - res->start + 1);
-+	host->data_va =3D ioremap(res->start, resource_size(res));
-=20
- 	res =3D platform_get_resource_byname(pdev, IORESOURCE_MEM, =
-"nand_cmd");
- 	if (!res) {
- 		ret =3D -EIO;
- 		goto err_unmap;
- 	}
--	host->cmd_va =3D ioremap(res->start, res->end - res->start + 1);
-+	host->cmd_va =3D ioremap(res->start, resource_size(res));
-=20
- 	if (!host->addr_va || !host->data_va || !host->cmd_va) {
- 		ret =3D -ENOMEM;=20
+-	io_base =3D ioremap(pdev->resource[0].start,
+-			pdev->resource[0].end - pdev->resource[0].start + 1);
++	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		err =3D -ENODEV;
++		goto no_res;
++	}
++
++	io_base =3D ioremap(res->start, resource_size(res));
+ 	if (!io_base) {
+ 		printk(KERN_ERR "orion_nand: ioremap failed\n");
+ 		ret =3D -EIO;=20
