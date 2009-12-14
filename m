@@ -1,22 +1,19 @@
-Received: from ey-out-1920.google.com ([74.125.78.145])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NKALo-0005bo-5S
-	for linux-mtd@lists.infradead.org; Mon, 14 Dec 2009 12:48:36 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so703475eyg.26
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Dec 2009 04:48:30 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: Daniel Mack <daniel@caiaq.de>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NKAXp-0002LP-Dk
+	for linux-mtd@lists.infradead.org; Mon, 14 Dec 2009 13:01:02 +0000
 Subject: Re: New mtd-utils release?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Daniel Mack <daniel@caiaq.de>
+In-Reply-To: <20091214121439.GC28375@buzzloop.caiaq.de>
 References: <20091214121439.GC28375@buzzloop.caiaq.de>
-Date: Mon, 14 Dec 2009 13:48:27 +0100
-In-Reply-To: <20091214121439.GC28375@buzzloop.caiaq.de> (Daniel Mack's message
-	of "Mon, 14 Dec 2009 20:14:40 +0800")
-Message-ID: <87d42hsov8.fsf@macbook.be.48ers.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 14 Dec 2009 15:00:33 +0200
+Message-Id: <1260795633.11112.49.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Daniel" == Daniel Mack <daniel@caiaq.de> writes:
+On Mon, 2009-12-14 at 20:14 +0800, Daniel Mack wrote:
+> Hi,
+> 
+> we're building mtd-utils with buildroot, and as we need a recent version
+> of it to get the ubi features, we currently check out a git snapshot as
+> tarball. Last week, for some reason the SHA1 ID we used (e783e75e0)
+> disappeared from the repository. (Just out of curiosity: what happened?
+> Was the tree rebased or filtered?).
 
-Hi,
+Dunno, but it must be me how made this crew-up, sorry. I cannot say
+exactly how it happened, but it was non-intentional. Probably pushed one
+patch version, then later amended it, and pushed it with --force. This
+should never be done, sorry.
 
- Daniel> we're building mtd-utils with buildroot, and as we need a
- Daniel> recent version of it to get the ubi features, we currently
- Daniel> check out a git snapshot as tarball. Last week, for some reason
- Daniel> the SHA1 ID we used (e783e75e0) disappeared from the
- Daniel> repository. (Just out of curiosity: what happened?  Was the
- Daniel> tree rebased or filtered?).
+> However, this approach is somewhat hackish anyway, and we would much
+> more like to check out a version that is officially tagged.
 
-FYI, the e783e SHA1 must be a local change. We have been using
-fcb52ccc996 since April 2008. What did change recently though was that
-the git installation on infradead got updated recently, and gitweb >=
-1.6.6-rc1 uses a slightly different snapshot tarball format than before
-(it appends the 7 first chars of SHA1 to directory name).
+OK, I can tag them at the beginning of the next year. I'm having
+holydays in 10 min.
 
- Daniel> However, this approach is somewhat hackish anyway, and we would much
- Daniel> more like to check out a version that is officially tagged. Seeing the
- Daniel> last tag has been done ~17 month ago, I wonder whether there is any
- Daniel> change to get a new one soon?
+>  Seeing the
+> last tag has been done ~17 month ago, I wonder whether there is any
+> change to get a new one soon?
 
-Me too - It would be very good to see a stable release with ubi support.
+We usually use the master branch. And there is simply no one who cares
+about tags. But I can do this. You'll get a new tag when I come back
+from holydays, unless someone else tag it earlier.
 
 -- 
-Bye, Peter Korsgaard
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
