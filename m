@@ -1,19 +1,19 @@
-Received: from exprod6ob114.obsmtp.com ([64.18.1.32] helo=psmtp.com)
+Received: from exprod6ob111.obsmtp.com ([64.18.1.26] helo=psmtp.com)
 	by bombadil.infradead.org with smtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NKIty-0007ca-UD
-	for linux-mtd@lists.infradead.org; Mon, 14 Dec 2009 21:56:27 +0000
+	id 1NKIwy-0003BE-43
+	for linux-mtd@lists.infradead.org; Mon, 14 Dec 2009 21:59:34 +0000
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] drivers/mtd/nand/s3c2410.c: use resource_size()
-Date: Mon, 14 Dec 2009 16:56:22 -0500
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090200EA66@mi8nycmail19.Mi8.com>
+Subject: [PATCH] drivers/mtd/nand/sh_flctl.c: use resource_size()
+Date: Mon, 14 Dec 2009 16:59:27 -0500
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE19090200EA68@mi8nycmail19.Mi8.com>
 From: "H Hartley Sweeten" <hartleys@visionengravers.com>
 To: "kernel list" <linux-kernel@vger.kernel.org>,
 	<linux-mtd@lists.infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Ben Dooks <ben-linux@fluff.org>
+Cc: shimoda.yoshihiro@renesas.com, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +27,21 @@ Use resource_size().
 
 Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
 
 ---
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 68b5b3a..3b5a8cc 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -957,7 +957,7 @@ static int s3c24xx_nand_probe(struct platform_device =
+diff --git a/drivers/mtd/nand/sh_flctl.c b/drivers/mtd/nand/sh_flctl.c
+index 02bef21..4260ab7 100644
+--- a/drivers/mtd/nand/sh_flctl.c
++++ b/drivers/mtd/nand/sh_flctl.c
+@@ -797,7 +797,7 @@ static int __init flctl_probe(struct platform_device =
 *pdev)
+ 		goto err;
+ 	}
 =20
- 	/* currently we assume we have the one resource */
- 	res  =3D pdev->resource;
--	size =3D res->end - res->start + 1;
-+	size =3D resource_size(res);
-=20
- 	info->area =3D request_mem_region(res->start, size, pdev->name);
- =20
+-	flctl->reg =3D ioremap(res->start, res->end - res->start + 1);
++	flctl->reg =3D ioremap(res->start, resource_size(res));
+ 	if (flctl->reg =3D=3D NULL) {
+ 		printk(KERN_ERR "%s: ioremap error.\n", __func__);
+ 		ret =3D -ENOMEM;=20
