@@ -1,14 +1,19 @@
-Subject: Re: Garbage Collection Questions?
-From: David Woodhouse <dwmw2@infradead.org>
-To: John Harbold <harbold@glimmerglass.com>
-In-Reply-To: <CF3B33450CAA7449920664A1B6F11E6B03C29610@postak.glimmerglassnet.com>
-References: <CF3B33450CAA7449920664A1B6F11E6B03C29610@postak.glimmerglassnet.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 15 Dec 2009 03:04:43 +0000
-Message-ID: <1260846283.21426.104.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NKZc2-0003DF-68
+	for linux-mtd@lists.infradead.org; Tue, 15 Dec 2009 15:47:03 +0000
+Received: by bwz4 with SMTP id 4so2975249bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Dec 2009 07:46:55 -0800 (PST)
+MIME-Version: 1.0
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Tue, 15 Dec 2009 21:16:35 +0530
+Message-ID: <ce9ab5790912150746t29be1640g817ab883b16860a3@mail.gmail.com>
+Subject: [PATCH] OMAP: NAND: Adding config option to enable/disable HW ECC
+	mode
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-omap@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,34 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2009-12-14 at 17:57 -0800, John Harbold wrote:
-> 
-> 
->             I have some questions on some JFFS2 scenarios running
-> Linux kernel 2.6.10. 
+OMAP NAND driver got HW ECC implemented.
 
-There have been serious bugs fixed since then. Update.
+>From d5e28c9fdbc6b0a95c1259fac7add207f9c294d7 Mon Sep 17 00:00:00 2001
+From: Vimal Singh <vimalsingh@ti.com>
+Date: Tue, 15 Dec 2009 21:10:54 +0530
+Subject: [PATCH] OMAP: NAND: Adding config option to enable/disable HW ECC mode
 
->  These scenarios have to do with the state of a JFFS2 partition while
-> its associated garbage collection kernel thread is running:
-> 
->         * What would happen to a JFFS2 partition after a power failure
-> when,    before the power failure happened, the garbage collection
-> thread was    obsoleting nodes?
+This patch adds config option to select/deselect HW ECC feature
+on OMAP NAND driver. This is a feature provided by OMAP GPMC for
+NAND devices.
 
-Nodes are only marked as obsolete _after_ a suitable replacement for
-them has actually been written out. So the only problem that could occur
-here is that you write out a new node, but crash before you manage to
-mark the old one obsolete. And we cope with that just fine, marking the
-old one obsolete when we remount.
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+---
+ drivers/mtd/nand/Kconfig |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
->         * What would happen to a JFFS2 partition if while the
-> garbage   collection thread was active and the partition was marked as
-> read-      only?  Would the obsolete nodes be obliterated?
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 34598e9..6c4b27c 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -97,6 +97,16 @@ config MTD_NAND_OMAP_PREFETCH_DMA
+ 	 or in DMA interrupt mode.
+ 	 Say y for DMA mode or MPU mode will be used
 
-We kill the GC thread on remounting read-only. No garbage collection
-happens on a read-only file system.
-
++config MTD_NAND_OMAP_HWECC
++	bool "The Hardware ECC support"
++	depends on MTD_NAND && MTD_NAND_OMAP2
++	default n
++	help
++	 The ECC compuatation for the data to be written/read can be either by
++	 software or omap has Hw ecc engine which calculates it.
++	 MTD_NAND_OMAP_HWECC = y which enables the hw ecc
++	 MTD_NAND_OMAP_HWECC = n enables software ecc
++
+ config MTD_NAND_TS7250
+ 	tristate "NAND Flash device on TS-7250 board"
+ 	depends on MACH_TS72XX
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+1.5.5
