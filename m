@@ -1,25 +1,19 @@
-Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
-	by bombadil.infradead.org with smtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NKbje-0002qQ-Kr
-	for linux-mtd@lists.infradead.org; Tue, 15 Dec 2009 18:03:05 +0000
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6C0CD12D
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NKfS8-0005ao-GX
+	for linux-mtd@lists.infradead.org; Tue, 15 Dec 2009 22:01:12 +0000
+Received: by fxm22 with SMTP id 22so383970fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Dec 2009 18:02:50 +0000 (GMT)
-Received: from mail1.bri.st.com (mail1.bri.st.com [10.65.7.198])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2FB9CCDF
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Dec 2009 18:02:50 +0000 (GMT)
-From: David MCKAY <david.mckay@st.com>
-To: linux-mtd@lists.infradead.org
-Subject: vmalloc used for BBT scanning
-Date: Tue, 15 Dec 2009 18:02:48 +0000
+	Tue, 15 Dec 2009 14:01:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200912151802.49153.david.mckay@st.com>
+Sender: foxcore@gmail.com
+Date: Tue, 15 Dec 2009 23:01:06 +0100
+Message-ID: <b8e9195f0912151401y8d3b122l7ab514762959154@mail.gmail.com>
+Subject: [PATCH] mtd: move more manufacturers to the common cfi.h header file
+From: Guillaume LECERF <glecerf@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary=001485f6d016d7e40c047acb8653
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,54 +23,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+--001485f6d016d7e40c047acb8653
+Content-Type: text/plain; charset=UTF-8
 
-I'm having some problems with BBT support.  Commit
-c3f8abf481c2d2b221b028f7369bc6dd39a9590e changed the BBT scanning code
-to use vmalloc() rather than kmalloc() to scan for the BBT.
+Move MANUFACTURER_MACRONIX and MANUFACTURER_SST definitions to the
+include/linux/mtd/cfi.h header file and rename them to CFI_MFR_MACRONIX and
+CFI_MFR_SST.
 
-The hardware I'm working on uses a DMA engine, My driver expects to
-be able to do DMA on the buffers it is given. It's not very happy if
-you pass it a vmalloc address.
+All references in drivers/mtd/chips/cfi_cmdset_0002.c are updated to reflect
+this.
 
-It's very similar to the issue with the JFFS2 Summary blocks, which
-was fixed by b7600dba6d4fbf3897e517b322d006986cce831a. I fell over
-that one too:-)
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
 
-If I change it back to a kmalloc() all is well, but since this is 128K
-erase block + OOB , that is really too big  for kmalloc() hence the
-original patch.
+-- 
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
 
-I see there has been some discussion of this and related issues a few
-months ago on the list, it appears that ubi also uses vmalloc() in a
-similar sort of way. 
+--001485f6d016d7e40c047acb8653
+Content-Type: text/x-diff; charset=US-ASCII; name="move_mfr_sst_def.patch"
+Content-Disposition: attachment; filename="move_mfr_sst_def.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_g397s4uh0
 
-Most of the usage in ubi at least is of the sort 
-
-{
-	vmalloc(erase_block_size);
-	do something with it()
-	vfree()
-}
-
-
-One solution I could think of is to use a special mtd specific
-allocator for this style of usage, with the memory coming from a
-pre-allocated chunk rather than vmalloc(). I think something like this
-could be done without too much effort or massive code changes, as it
-could default to vmalloc(). It's not terribly elegant however.
-
-Another way is to do what the omap onenand driver does and detect that
-a vmalloc() address is being passed in and do something. However, I'm
-not convinced that the driver is the right place to be doing this sort
-of thing. Also, as Russell King has pointed out that code won't work
-on many arches as it doesn't take any account of aliasing. I guess the
-OMAP2 platform doesn't have aliasing.
-
-Or come up with something more clever in the higher levels.
-
-Anyway, I'm wondering if anybody is actively looking at this area, I
-suspect that DMA engines are going to become increasingly common for
-driving NAND.
-
-Thanks!
+Y29tbWl0IGIzZGNlMTAyZjczY2U0MWY5NjI4ODIwYjdlYWRiOTM5ODEwMTI4YzkKQXV0aG9yOiBH
+dWlsbGF1bWUgTEVDRVJGIDxnbGVjZXJmQGdtYWlsLmNvbT4KRGF0ZTogICBUdWUgRGVjIDE1IDIy
+OjU0OjI4IDIwMDkgKzAxMDAKCiAgICBbUEFUQ0hdIG10ZDogbW92ZSBtb3JlIG1hbnVmYWN0dXJl
+cnMgdG8gdGhlIGNvbW1vbiBjZmkuaCBoZWFkZXIgZmlsZQogICAgCiAgICBNb3ZlIE1BTlVGQUNU
+VVJFUl9NQUNST05JWCBhbmQgTUFOVUZBQ1RVUkVSX1NTVCBkZWZpbml0aW9ucyB0byB0aGUKICAg
+IGluY2x1ZGUvbGludXgvbXRkL2NmaS5oIGhlYWRlciBmaWxlIGFuZCByZW5hbWUgdGhlbSB0byBD
+RklfTUZSX01BQ1JPTklYIGFuZAogICAgQ0ZJX01GUl9TU1QuCiAgICAKICAgIEFsbCByZWZlcmVu
+Y2VzIGluIGRyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGFyZSB1cGRhdGVkIHRv
+IHJlZmxlY3QKICAgIHRoaXMuCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IEd1aWxsYXVtZSBMRUNF
+UkYgPGdsZWNlcmZAZ21haWwuY29tPgoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2Nm
+aV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKaW5k
+ZXggZjM2MDBlOC4uM2RmNjA1NiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2Nt
+ZHNldF8wMDAyLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKQEAg
+LTQzLDEwICs0Myw2IEBACiAKICNkZWZpbmUgTUFYX1dPUkRfUkVUUklFUyAzCiAKLSNkZWZpbmUg
+TUFOVUZBQ1RVUkVSX0FNRAkweDAwMDEKLSNkZWZpbmUgTUFOVUZBQ1RVUkVSX0FUTUVMCTB4MDAx
+RgotI2RlZmluZSBNQU5VRkFDVFVSRVJfTUFDUk9OSVgJMHgwMEMyCi0jZGVmaW5lIE1BTlVGQUNU
+VVJFUl9TU1QJMHgwMEJGCiAjZGVmaW5lIFNTVDQ5TEYwMDRCCSAgICAgICAgMHgwMDYwCiAjZGVm
+aW5lIFNTVDQ5TEYwNDBCCSAgICAgICAgMHgwMDUwCiAjZGVmaW5lIFNTVDQ5TEYwMDhBCQkweDAw
+NWEKQEAgLTE2OCw3ICsxNjQsNyBAQCBzdGF0aWMgdm9pZCBmaXh1cF9hbWRfYm9vdGJsb2NrKHN0
+cnVjdCBtdGRfaW5mbyAqbXRkLCB2b2lkKiBwYXJhbSkKIAkJCSAqIFRoaXMgcmVkdWNlcyB0aGUg
+cmlzayBvZiBmYWxzZSBkZXRlY3Rpb24gZHVlIHRvCiAJCQkgKiB0aGUgOC1iaXQgZGV2aWNlIElE
+LgogCQkJICovCi0JCQkoY2ZpLT5tZnIgPT0gTUFOVUZBQ1RVUkVSX01BQ1JPTklYKSkgeworCQkJ
+KGNmaS0+bWZyID09IENGSV9NRlJfTUFDUk9OSVgpKSB7CiAJCQlERUJVRyhNVERfREVCVUdfTEVW
+RUwxLAogCQkJCSIlczogTWFjcm9uaXggTVgyOUxWNDAwQyB3aXRoIGJvdHRvbSBib290IGJsb2Nr
+IgogCQkJCSIgZGV0ZWN0ZWRcbiIsIG1hcC0+bmFtZSk7CkBAIC0yODYsNyArMjgyLDcgQEAgc3Rh
+dGljIHN0cnVjdCBjZmlfZml4dXAgY2ZpX2ZpeHVwX3RhYmxlW10gPSB7CiAJeyBDRklfTUZSX0FU
+TUVMLCBDRklfSURfQU5ZLCBmaXh1cF9jb252ZXJ0X2F0bWVsX3ByaSwgTlVMTCB9LAogI2lmZGVm
+IEFNRF9CT09UTE9DX0JVRwogCXsgQ0ZJX01GUl9BTUQsIENGSV9JRF9BTlksIGZpeHVwX2FtZF9i
+b290YmxvY2ssIE5VTEwgfSwKLQl7IE1BTlVGQUNUVVJFUl9NQUNST05JWCwgQ0ZJX0lEX0FOWSwg
+Zml4dXBfYW1kX2Jvb3RibG9jaywgTlVMTCB9LAorCXsgQ0ZJX01GUl9NQUNST05JWCwgQ0ZJX0lE
+X0FOWSwgZml4dXBfYW1kX2Jvb3RibG9jaywgTlVMTCB9LAogI2VuZGlmCiAJeyBDRklfTUZSX0FN
+RCwgMHgwMDUwLCBmaXh1cF91c2Vfc2Vjc2ksIE5VTEwsIH0sCiAJeyBDRklfTUZSX0FNRCwgMHgw
+MDUzLCBmaXh1cF91c2Vfc2Vjc2ksIE5VTEwsIH0sCkBAIC0zMDQsOSArMzAwLDkgQEAgc3RhdGlj
+IHN0cnVjdCBjZmlfZml4dXAgY2ZpX2ZpeHVwX3RhYmxlW10gPSB7CiAJeyAwLCAwLCBOVUxMLCBO
+VUxMIH0KIH07CiBzdGF0aWMgc3RydWN0IGNmaV9maXh1cCBqZWRlY19maXh1cF90YWJsZVtdID0g
+ewotCXsgTUFOVUZBQ1RVUkVSX1NTVCwgU1NUNDlMRjAwNEIsIGZpeHVwX3VzZV9md2hfbG9jaywg
+TlVMTCwgfSwKLQl7IE1BTlVGQUNUVVJFUl9TU1QsIFNTVDQ5TEYwNDBCLCBmaXh1cF91c2VfZndo
+X2xvY2ssIE5VTEwsIH0sCi0JeyBNQU5VRkFDVFVSRVJfU1NULCBTU1Q0OUxGMDA4QSwgZml4dXBf
+dXNlX2Z3aF9sb2NrLCBOVUxMLCB9LAorCXsgQ0ZJX01GUl9TU1QsIFNTVDQ5TEYwMDRCLCBmaXh1
+cF91c2VfZndoX2xvY2ssIE5VTEwsIH0sCisJeyBDRklfTUZSX1NTVCwgU1NUNDlMRjA0MEIsIGZp
+eHVwX3VzZV9md2hfbG9jaywgTlVMTCwgfSwKKwl7IENGSV9NRlJfU1NULCBTU1Q0OUxGMDA4QSwg
+Zml4dXBfdXNlX2Z3aF9sb2NrLCBOVUxMLCB9LAogCXsgMCwgMCwgTlVMTCwgTlVMTCB9CiB9Owog
+CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9jZmkuaCBiL2luY2x1ZGUvbGludXgvbXRk
+L2NmaS5oCmluZGV4IGRmODlmNDIuLjZjYjNlN2IgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgv
+bXRkL2NmaS5oCisrKyBiL2luY2x1ZGUvbGludXgvbXRkL2NmaS5oCkBAIC01MTgsMTEgKzUxOCwx
+MyBAQCBzdHJ1Y3QgY2ZpX2ZpeHVwIHsKICNkZWZpbmUgQ0ZJX01GUl9BTlkgMHhmZmZmCiAjZGVm
+aW5lIENGSV9JRF9BTlkgIDB4ZmZmZgogCi0jZGVmaW5lIENGSV9NRlJfQU1ECTB4MDAwMQotI2Rl
+ZmluZSBDRklfTUZSX0lOVEVMCTB4MDA4OQotI2RlZmluZSBDRklfTUZSX0FUTUVMCTB4MDAxRgot
+I2RlZmluZSBDRklfTUZSX1NBTVNVTkcJMHgwMEVDCi0jZGVmaW5lIENGSV9NRlJfU1QJMHgwMDIw
+IC8qIFNUTWljcm9lbGVjdHJvbmljcyAqLworI2RlZmluZSBDRklfTUZSX0FNRAkJMHgwMDAxCisj
+ZGVmaW5lIENGSV9NRlJfQVRNRUwJCTB4MDAxRgorI2RlZmluZSBDRklfTUZSX0lOVEVMCQkweDAw
+ODkKKyNkZWZpbmUgQ0ZJX01GUl9NQUNST05JWAkweDAwQzIKKyNkZWZpbmUgQ0ZJX01GUl9TQU1T
+VU5HCQkweDAwRUMKKyNkZWZpbmUgQ0ZJX01GUl9TU1QJCTB4MDBCRgorI2RlZmluZSBDRklfTUZS
+X1NUCQkweDAwMjAgLyogU1RNaWNyb2VsZWN0cm9uaWNzICovCiAKIHZvaWQgY2ZpX2ZpeHVwKHN0
+cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgY2ZpX2ZpeHVwKiBmaXh1cHMpOwogCg==
+--001485f6d016d7e40c047acb8653--
