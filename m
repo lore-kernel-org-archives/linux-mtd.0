@@ -1,21 +1,39 @@
 From: vimalsingh@ti.com (Vimal Singh)
-Date: Thu, 3 Dec 2009 18:35:23 +0530
-Subject: [PATCH] OMAP: Introducing gpmc-nand.c
-Message-ID: <mailman.62.1259849065.2170.linux-mtd@lists.infradead.org>
+Date: Tue, 15 Dec 2009 21:10:54 +0530
+Subject: [PATCH] OMAP: NAND: Adding config option to enable/disable HW ECC mode
+Message-ID: <mailman.94.1260892023.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-This patch series introduces generic gpmc-nand.c for nand device
-related gpmc init.
+This patch adds config option to select/deselect HW ECC feature
+on OMAP NAND driver. This is a feature provided by OMAP GPMC for
+NAND devices.
 
-Vimal Singh (2):
-  Correcting GPMC_CONFIG1_DEVICETYPE_NAND
-  Introducing 'gpmc-nand.c' for GPMC specific NAND init
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+---
+ drivers/mtd/nand/Kconfig |   10 ++++++++++
+ 1 files changed, 10 insertions(+), 0 deletions(-)
 
- arch/arm/mach-omap2/Makefile           |    3 +
- arch/arm/mach-omap2/gpmc-nand.c        |  141 ++++++++++++++++++++++++++++++++
- arch/arm/plat-omap/include/plat/gpmc.h |    2 +-
- arch/arm/plat-omap/include/plat/nand.h |    6 ++
- drivers/mtd/nand/omap2.c               |   26 +-----
- 5 files changed, 154 insertions(+), 24 deletions(-)
- create mode 100644 arch/arm/mach-omap2/gpmc-nand.c
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 34598e9..6c4b27c 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -97,6 +97,16 @@ config MTD_NAND_OMAP_PREFETCH_DMA
+ 	 or in DMA interrupt mode.
+ 	 Say y for DMA mode or MPU mode will be used
+
++config MTD_NAND_OMAP_HWECC
++	bool "The Hardware ECC support"
++	depends on MTD_NAND && MTD_NAND_OMAP2
++	default n
++	help
++	 The ECC compuatation for the data to be written/read can be either by
++	 software or omap has Hw ecc engine which calculates it.
++	 MTD_NAND_OMAP_HWECC = y which enables the hw ecc
++	 MTD_NAND_OMAP_HWECC = n enables software ecc
++
+ config MTD_NAND_TS7250
+ 	tristate "NAND Flash device on TS-7250 board"
+ 	depends on MACH_TS72XX
+-- 
+1.5.5
