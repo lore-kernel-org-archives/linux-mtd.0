@@ -1,23 +1,20 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NKm4f-0005x5-Nd
-	for linux-mtd@lists.infradead.org; Wed, 16 Dec 2009 05:05:26 +0000
-Received: by bwz4 with SMTP id 4so478323bwz.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Dec 2009 21:05:20 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20091215173510.GH4575@atomide.com>
-References: <ce9ab5790912150746t29be1640g817ab883b16860a3@mail.gmail.com>
-	<20091215173510.GH4575@atomide.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 16 Dec 2009 10:35:00 +0530
-Message-ID: <ce9ab5790912152105v6e44860en57a1b2416a4d7e77@mail.gmail.com>
-Subject: Re: [PATCH] OMAP: NAND: Adding config option to enable/disable HW ECC
-	mode
-To: Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from cluster-a.mailcontrol.com ([85.115.52.190])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NKtsK-0000Qc-Te
+	for linux-mtd@lists.infradead.org; Wed, 16 Dec 2009 13:25:13 +0000
+Received: from mail.mta.it (mail.mta.it [89.96.171.250])
+	by rly19a.srv.mailcontrol.com (MailControl) with ESMTP id
+	nBGDP5JL019058
+	for <linux-mtd@lists.infradead.org>; Wed, 16 Dec 2009 13:25:05 GMT
+From: Bosi Daniele <Daniele.Bosi@mta.it>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 16 Dec 2009 14:25:03 +0100
+Subject: [UBIFS] issue with ubiattach
+Message-ID: <531B6536C9F737458807DF75064873C831EB83DE20@mta-digimail.MTA.INT>
+Content-Language: it-IT
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +24,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 15, 2009 at 11:05 PM, Tony Lindgren <tony@atomide.com> wrote:
-> * Vimal Singh <vimal.newwork@gmail.com> [091215 07:45]:
->> OMAP NAND driver got HW ECC implemented.
->>
->> From d5e28c9fdbc6b0a95c1259fac7add207f9c294d7 Mon Sep 17 00:00:00 2001
->> From: Vimal Singh <vimalsingh@ti.com>
->> Date: Tue, 15 Dec 2009 21:10:54 +0530
->> Subject: [PATCH] OMAP: NAND: Adding config option to enable/disable HW E=
-CC mode
->>
->> This patch adds config option to select/deselect HW ECC feature
->> on OMAP NAND driver. This is a feature provided by OMAP GPMC for
->> NAND devices.
->>
->> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
->> ---
->> =A0drivers/mtd/nand/Kconfig | =A0 10 ++++++++++
->> =A01 files changed, 10 insertions(+), 0 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
->> index 34598e9..6c4b27c 100644
->> --- a/drivers/mtd/nand/Kconfig
->> +++ b/drivers/mtd/nand/Kconfig
->> @@ -97,6 +97,16 @@ config MTD_NAND_OMAP_PREFETCH_DMA
->> =A0 =A0 =A0 =A0or in DMA interrupt mode.
->> =A0 =A0 =A0 =A0Say y for DMA mode or MPU mode will be used
->>
->> +config MTD_NAND_OMAP_HWECC
->> + =A0 =A0 bool "The Hardware ECC support"
->> + =A0 =A0 depends on MTD_NAND && MTD_NAND_OMAP2
->> + =A0 =A0 default n
->> + =A0 =A0 help
->> + =A0 =A0 =A0The ECC compuatation for the data to be written/read can be=
- either by
->> + =A0 =A0 =A0software or omap has Hw ecc engine which calculates it.
->> + =A0 =A0 =A0MTD_NAND_OMAP_HWECC =3D y which enables the hw ecc
->> + =A0 =A0 =A0MTD_NAND_OMAP_HWECC =3D n enables software ecc
->> +
->> =A0config MTD_NAND_TS7250
->> =A0 =A0 =A0 tristate "NAND Flash device on TS-7250 board"
->> =A0 =A0 =A0 depends on MACH_TS72XX
->
-> This sounds like it should be an option passed from the board-*.c
-> files as platform_data rather than a Kconfig option.
+Hello,
+I'm working on a linux 2.6.24.6 for powerpc MPC5121 with latest ubi patches=
+ installed.
+With the latest patch from the official repository I run in the following e=
+rror when I try to prepare my UBI partitions on a NOR flash
+I did this steps:
 
-ACK. I'll do it once flash support patches get merged.
+1. flash_eraseall /dev/mtd2;
+2. ubiformat /dev/mtd2;
+3. ubiattach /dev/ubi_ctrl -m 2;
+4. ubimkvol /dev/ubi0 -N fredubifsCFG -s 4MiB;
+5. ubimkvol /dev/ubi0 -N fredubifsRW -m;
+
+The output of step 3 is:
+
+[   33.815099] UBI: attaching mtd2 to ubi0
+[   33.819451] UBI: physical eraseblock size:   131072 bytes (128 KiB)
+[   33.826203] UBI: logical eraseblock size:    130944 bytes
+[   33.832033] UBI: smallest flash I/O unit:    1
+[   33.836912] UBI: VID header offset:          64 (aligned 64)
+[   33.843018] UBI: data offset:                128
+[   33.867213] UBI: attached mtd2 to ubi0
+[   33.874851] UBI: MTD device name:            "filesystemNOR"
+[   33.882135] UBI: MTD device size:            47 MiB
+[   33.888384] UBI: number of good PEBs:        376
+[   33.893514] UBI: number of bad PEBs:         0
+[   33.898388] UBI: max. allowed volumes:       128
+[   33.903474] UBI: wear-leveling threshold:    4096
+[   33.908597] UBI: number of internal volumes: 1
+[   33.913458] UBI: number of user volumes:     0
+[   33.918342] UBI: available PEBs:             372
+[   33.923381] UBI: total number of reserved PEBs: 4
+[   33.928503] UBI: number of PEBs reserved for bad PEB handling: 0
+[   33.934976] UBI: max/mean erase counter: 3/1
+[   33.939663] UBI: image sequence number: 0
+[   33.944101] UBI: background thread "ubi_bgt0d" started, PID 424
+UBI device number 0, total 376 LEBs (49234944 bytes, 47.0 MiB), available 3=
+72 LEBs (48711168 bytes, 46.5 MiB), LEB size 130944 bytes (127.9 KiB)
+
+But after step 3 I found under the directory "/dev" a device node like this=
+:
+
+root@devece:~# ls -l /dev/ubi*
+brw-rw----    1 root     root     251,   0 Dec 15 17:48 /dev/ubi0
+crw-rw----    1 root     root      10,  63 Jan  1  1970 /dev/ubi_ctrl
+
+As you can see there's an error on "/dev/ubi0" that should be a char device=
+ instead of a block device.
+Then I get stucked on step 4 with the following output:
+
+libubi: error!: "/dev/ubi0" is not a character device
+ubimkvol: error!: error while probing "/dev/ubi0"
+          error 22 (Invalid argument)
+
+BTW the mtd partitions on the device are like this:
+
+root@device:~# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00040000 00020000 "protected"
+mtd1: 00c00000 00020000 "rootfsRO"
+mtd2: 02f00000 00020000 "filesystemNOR"
+mtd3: 00380000 00020000 "kernel"
+mtd4: 00040000 00020000 "device-tree"
+mtd5: 00100000 00020000 "u-boot"
+mtd6: 04000000 00020000 "flash1"
+mtd7: 04000000 00020000 "flash2"
+mtd8: 04000000 00020000 "flash3"
+mtd9: 40000000 00020000 "nand"
+
+So my questions are:
+Do somebody knows why the device node is wrong after the ubiattach?
+Who's the device node creator (because I've seen that the device is created=
+ after the ubiattach operation)?
+Is it mdev / udev or the ubiattach (I didn't find any evidence of this in t=
+he ubiattach srcs)?
+
+Any comments and any answer will be very welcome,
+Thanks in advance
 
 
---=20
-Regards,
-Vimal Singh
+ Bye Daniele Bosi
