@@ -1,19 +1,20 @@
-Received: from mail-fx0-f222.google.com ([209.85.220.222])
+Received: from mail-ew0-f221.google.com ([209.85.219.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NKfS8-0005ao-GX
-	for linux-mtd@lists.infradead.org; Tue, 15 Dec 2009 22:01:12 +0000
-Received: by fxm22 with SMTP id 22so383970fxm.2
+	id 1NKhrV-0003av-61
+	for linux-mtd@lists.infradead.org; Wed, 16 Dec 2009 00:35:33 +0000
+Received: by ewy21 with SMTP id 21so538992ewy.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Dec 2009 14:01:06 -0800 (PST)
+	Tue, 15 Dec 2009 16:35:26 -0800 (PST)
+Message-ID: <4B282BBD.4050106@gmail.com>
+Date: Wed, 16 Dec 2009 01:37:17 +0100
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-Sender: foxcore@gmail.com
-Date: Tue, 15 Dec 2009 23:01:06 +0100
-Message-ID: <b8e9195f0912151401y8d3b122l7ab514762959154@mail.gmail.com>
-Subject: [PATCH] mtd: move more manufacturers to the common cfi.h header file
-From: Guillaume LECERF <glecerf@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=001485f6d016d7e40c047acb8653
-Cc: David Woodhouse <dwmw2@infradead.org>
+To: Kyungmin Park <kyungmin.park@samsung.com>,
+	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] OneNAND: Fix test of unsigned in onenand_otp_walk()
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,81 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001485f6d016d7e40c047acb8653
-Content-Type: text/plain; charset=UTF-8
+mtd->writesize and len are unsigned so the test does not work.
 
-Move MANUFACTURER_MACRONIX and MANUFACTURER_SST definitions to the
-include/linux/mtd/cfi.h header file and rename them to CFI_MFR_MACRONIX and
-CFI_MFR_SST.
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+you can test this with:
 
-All references in drivers/mtd/chips/cfi_cmdset_0002.c are updated to reflect
-this.
+#include <stdio.h>
 
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+int main()
+{
+        int c = 1, d = 1;
+        unsigned a = 30;
+        unsigned b = 10;
 
--- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+        if ((b * c) - (d + a) < 0)
+                printf("good\n");
+        else
+                printf("bad\n");
+        return 0;
+}
 
---001485f6d016d7e40c047acb8653
-Content-Type: text/x-diff; charset=US-ASCII; name="move_mfr_sst_def.patch"
-Content-Disposition: attachment; filename="move_mfr_sst_def.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g397s4uh0
 
-Y29tbWl0IGIzZGNlMTAyZjczY2U0MWY5NjI4ODIwYjdlYWRiOTM5ODEwMTI4YzkKQXV0aG9yOiBH
-dWlsbGF1bWUgTEVDRVJGIDxnbGVjZXJmQGdtYWlsLmNvbT4KRGF0ZTogICBUdWUgRGVjIDE1IDIy
-OjU0OjI4IDIwMDkgKzAxMDAKCiAgICBbUEFUQ0hdIG10ZDogbW92ZSBtb3JlIG1hbnVmYWN0dXJl
-cnMgdG8gdGhlIGNvbW1vbiBjZmkuaCBoZWFkZXIgZmlsZQogICAgCiAgICBNb3ZlIE1BTlVGQUNU
-VVJFUl9NQUNST05JWCBhbmQgTUFOVUZBQ1RVUkVSX1NTVCBkZWZpbml0aW9ucyB0byB0aGUKICAg
-IGluY2x1ZGUvbGludXgvbXRkL2NmaS5oIGhlYWRlciBmaWxlIGFuZCByZW5hbWUgdGhlbSB0byBD
-RklfTUZSX01BQ1JPTklYIGFuZAogICAgQ0ZJX01GUl9TU1QuCiAgICAKICAgIEFsbCByZWZlcmVu
-Y2VzIGluIGRyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGFyZSB1cGRhdGVkIHRv
-IHJlZmxlY3QKICAgIHRoaXMuCiAgICAKICAgIFNpZ25lZC1vZmYtYnk6IEd1aWxsYXVtZSBMRUNF
-UkYgPGdsZWNlcmZAZ21haWwuY29tPgoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL2NoaXBzL2Nm
-aV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKaW5k
-ZXggZjM2MDBlOC4uM2RmNjA1NiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2Nt
-ZHNldF8wMDAyLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKQEAg
-LTQzLDEwICs0Myw2IEBACiAKICNkZWZpbmUgTUFYX1dPUkRfUkVUUklFUyAzCiAKLSNkZWZpbmUg
-TUFOVUZBQ1RVUkVSX0FNRAkweDAwMDEKLSNkZWZpbmUgTUFOVUZBQ1RVUkVSX0FUTUVMCTB4MDAx
-RgotI2RlZmluZSBNQU5VRkFDVFVSRVJfTUFDUk9OSVgJMHgwMEMyCi0jZGVmaW5lIE1BTlVGQUNU
-VVJFUl9TU1QJMHgwMEJGCiAjZGVmaW5lIFNTVDQ5TEYwMDRCCSAgICAgICAgMHgwMDYwCiAjZGVm
-aW5lIFNTVDQ5TEYwNDBCCSAgICAgICAgMHgwMDUwCiAjZGVmaW5lIFNTVDQ5TEYwMDhBCQkweDAw
-NWEKQEAgLTE2OCw3ICsxNjQsNyBAQCBzdGF0aWMgdm9pZCBmaXh1cF9hbWRfYm9vdGJsb2NrKHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLCB2b2lkKiBwYXJhbSkKIAkJCSAqIFRoaXMgcmVkdWNlcyB0aGUg
-cmlzayBvZiBmYWxzZSBkZXRlY3Rpb24gZHVlIHRvCiAJCQkgKiB0aGUgOC1iaXQgZGV2aWNlIElE
-LgogCQkJICovCi0JCQkoY2ZpLT5tZnIgPT0gTUFOVUZBQ1RVUkVSX01BQ1JPTklYKSkgeworCQkJ
-KGNmaS0+bWZyID09IENGSV9NRlJfTUFDUk9OSVgpKSB7CiAJCQlERUJVRyhNVERfREVCVUdfTEVW
-RUwxLAogCQkJCSIlczogTWFjcm9uaXggTVgyOUxWNDAwQyB3aXRoIGJvdHRvbSBib290IGJsb2Nr
-IgogCQkJCSIgZGV0ZWN0ZWRcbiIsIG1hcC0+bmFtZSk7CkBAIC0yODYsNyArMjgyLDcgQEAgc3Rh
-dGljIHN0cnVjdCBjZmlfZml4dXAgY2ZpX2ZpeHVwX3RhYmxlW10gPSB7CiAJeyBDRklfTUZSX0FU
-TUVMLCBDRklfSURfQU5ZLCBmaXh1cF9jb252ZXJ0X2F0bWVsX3ByaSwgTlVMTCB9LAogI2lmZGVm
-IEFNRF9CT09UTE9DX0JVRwogCXsgQ0ZJX01GUl9BTUQsIENGSV9JRF9BTlksIGZpeHVwX2FtZF9i
-b290YmxvY2ssIE5VTEwgfSwKLQl7IE1BTlVGQUNUVVJFUl9NQUNST05JWCwgQ0ZJX0lEX0FOWSwg
-Zml4dXBfYW1kX2Jvb3RibG9jaywgTlVMTCB9LAorCXsgQ0ZJX01GUl9NQUNST05JWCwgQ0ZJX0lE
-X0FOWSwgZml4dXBfYW1kX2Jvb3RibG9jaywgTlVMTCB9LAogI2VuZGlmCiAJeyBDRklfTUZSX0FN
-RCwgMHgwMDUwLCBmaXh1cF91c2Vfc2Vjc2ksIE5VTEwsIH0sCiAJeyBDRklfTUZSX0FNRCwgMHgw
-MDUzLCBmaXh1cF91c2Vfc2Vjc2ksIE5VTEwsIH0sCkBAIC0zMDQsOSArMzAwLDkgQEAgc3RhdGlj
-IHN0cnVjdCBjZmlfZml4dXAgY2ZpX2ZpeHVwX3RhYmxlW10gPSB7CiAJeyAwLCAwLCBOVUxMLCBO
-VUxMIH0KIH07CiBzdGF0aWMgc3RydWN0IGNmaV9maXh1cCBqZWRlY19maXh1cF90YWJsZVtdID0g
-ewotCXsgTUFOVUZBQ1RVUkVSX1NTVCwgU1NUNDlMRjAwNEIsIGZpeHVwX3VzZV9md2hfbG9jaywg
-TlVMTCwgfSwKLQl7IE1BTlVGQUNUVVJFUl9TU1QsIFNTVDQ5TEYwNDBCLCBmaXh1cF91c2VfZndo
-X2xvY2ssIE5VTEwsIH0sCi0JeyBNQU5VRkFDVFVSRVJfU1NULCBTU1Q0OUxGMDA4QSwgZml4dXBf
-dXNlX2Z3aF9sb2NrLCBOVUxMLCB9LAorCXsgQ0ZJX01GUl9TU1QsIFNTVDQ5TEYwMDRCLCBmaXh1
-cF91c2VfZndoX2xvY2ssIE5VTEwsIH0sCisJeyBDRklfTUZSX1NTVCwgU1NUNDlMRjA0MEIsIGZp
-eHVwX3VzZV9md2hfbG9jaywgTlVMTCwgfSwKKwl7IENGSV9NRlJfU1NULCBTU1Q0OUxGMDA4QSwg
-Zml4dXBfdXNlX2Z3aF9sb2NrLCBOVUxMLCB9LAogCXsgMCwgMCwgTlVMTCwgTlVMTCB9CiB9Owog
-CmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9jZmkuaCBiL2luY2x1ZGUvbGludXgvbXRk
-L2NmaS5oCmluZGV4IGRmODlmNDIuLjZjYjNlN2IgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGludXgv
-bXRkL2NmaS5oCisrKyBiL2luY2x1ZGUvbGludXgvbXRkL2NmaS5oCkBAIC01MTgsMTEgKzUxOCwx
-MyBAQCBzdHJ1Y3QgY2ZpX2ZpeHVwIHsKICNkZWZpbmUgQ0ZJX01GUl9BTlkgMHhmZmZmCiAjZGVm
-aW5lIENGSV9JRF9BTlkgIDB4ZmZmZgogCi0jZGVmaW5lIENGSV9NRlJfQU1ECTB4MDAwMQotI2Rl
-ZmluZSBDRklfTUZSX0lOVEVMCTB4MDA4OQotI2RlZmluZSBDRklfTUZSX0FUTUVMCTB4MDAxRgot
-I2RlZmluZSBDRklfTUZSX1NBTVNVTkcJMHgwMEVDCi0jZGVmaW5lIENGSV9NRlJfU1QJMHgwMDIw
-IC8qIFNUTWljcm9lbGVjdHJvbmljcyAqLworI2RlZmluZSBDRklfTUZSX0FNRAkJMHgwMDAxCisj
-ZGVmaW5lIENGSV9NRlJfQVRNRUwJCTB4MDAxRgorI2RlZmluZSBDRklfTUZSX0lOVEVMCQkweDAw
-ODkKKyNkZWZpbmUgQ0ZJX01GUl9NQUNST05JWAkweDAwQzIKKyNkZWZpbmUgQ0ZJX01GUl9TQU1T
-VU5HCQkweDAwRUMKKyNkZWZpbmUgQ0ZJX01GUl9TU1QJCTB4MDBCRgorI2RlZmluZSBDRklfTUZS
-X1NUCQkweDAwMjAgLyogU1RNaWNyb2VsZWN0cm9uaWNzICovCiAKIHZvaWQgY2ZpX2ZpeHVwKHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLCBzdHJ1Y3QgY2ZpX2ZpeHVwKiBmaXh1cHMpOwogCg==
---001485f6d016d7e40c047acb8653--
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index ff66e43..cbe2711 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -2725,7 +2725,7 @@ static int onenand_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
+ 	}
+ 
+ 	/* Check User/Factory boundary */
+-	if (((mtd->writesize * otp_pages) - (from + len)) < 0)
++	if (mtd->writesize * otp_pages < from + len)
+ 		return 0;
+ 
+ 	onenand_get_device(mtd, FL_OTPING);
