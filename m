@@ -1,18 +1,28 @@
-Received: from mail-fx0-f222.google.com ([209.85.220.222])
+Received: from [213.84.116.84] (helo=protonic.prtnl)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NLOWv-0007gA-0z
-	for linux-mtd@lists.infradead.org; Thu, 17 Dec 2009 22:09:09 +0000
-Received: by fxm22 with SMTP id 22so2430142fxm.2
+	id 1NLY94-0000yJ-Ez
+	for linux-mtd@lists.infradead.org; Fri, 18 Dec 2009 08:25:11 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by protonic.prtnl (Postfix) with ESMTP id 3715928067
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 Dec 2009 14:09:03 -0800 (PST)
-Subject: Few problems in mtd system
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 18 Dec 2009 00:08:47 +0200
-Message-ID: <1261087727.3311.50.camel@maxim-laptop>
-Mime-Version: 1.0
+	Fri, 18 Dec 2009 08:58:01 +0100 (CET)
+Received: from protonic.prtnl ([127.0.0.1])
+	by localhost (protonic [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 05471-08 for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Dec 2009 08:58:01 +0100 (CET)
+Received: from archvile.localnet (archvile.prtnl [192.168.1.153])
+	by protonic.prtnl (Postfix) with ESMTP id EF2142803B
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Dec 2009 08:58:00 +0100 (CET)
+From: David Jander <david.jander@protonic.nl>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: Good stress test for UBIFS?
+Date: Fri, 18 Dec 2009 09:00:51 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Message-Id: <200912180900.51332.david.jander@protonic.nl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,105 +32,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I am writing a driver for an xD controller found in my notebook.
-xD card is 99.9% nand chip, and the controller fits into the nand
-subsystem nicely.
+Hi all,
 
-However I face few problems, out of which about half is due to that
-'99.9' and rest I believe  are bugs in the nand/mtd system.
+What would be a good stress-test for the whole ubifs stack: ubifs, ubi, mtd, 
+nand-flash-driver?
 
-First of all I design a two layer driver.
-First layer is mtd driver which plugs into nand system.
-Second layer is xD specific FTL that already exists (and works) in R/O
-form in mtd/ssfdc.c
-(Of course you are free to use another FTL or UBI on top of mtd driver,
-but you won't be able to read the card in xd readers)
+I have gone through this:
+- Forced to use 2.6.24 which is provided by the chip manufacturer with some 
+unknown version of mtd/ubi/ubifs, which is not the latest and not the one that 
+originally shipped with 2.6.24. The git history is gone.
+- Used this version for a time when suddenly some boards had a corrupt 
+filesystem (unreadable /etc).
+- Used mtd tests to check hardware and driver, and everything seems fine.
+- Updated to latest ubi/ubifs for 2.6.24 from ubifs-v2.6.24.git
 
-I am using 2.6.32 vanilla, so maybe something was already fixed.
+And now I need to accomplish two things:
 
-First, the biggest problem is that del_mtd_device fails if the mtd
-device is open. 
+1. Be able come up with a fairly reliable method to reproduce the corruption 
+on the original version of ubi/ubifs.
+2. Check that this problem indeed does not occur on the latest version, and if 
+it does post a bug report here.
 
-However the user can pull the card out of the slot anytime, so this has
-to be handled gracefully.
-Currently I can't even test for that condition, because nand_release
-discards the return value.
+For 1. I am looking for some kind of tool or method to stress-test ubi/ubifs 
+preferably including also the nand-flash driver and hardware (you never know).
 
-
-Secondary, the hardware I deal with supports hardware ecc, and will
-return error bit location if correctable error found.
-Thus I use the 'syndrome' set of ecc functions.
-
-However, the nand_write_oob_syndrome is broken. It uses NAND_CMD_READ0
-with ecc step size offset (this is 512 or minimum 256 in common cases),
-but this offset can't even be sent over 8 bit bus.
-
-
-
-Another problem I discovered recently is that bad block handling other
-that using bad block table is broken.
-Maybe I should use it too, but scan of whole device takes some
-significant time (~1 sec) and I don't like that.
-
-However, when I attempt to implement custom .block_bad/.block_markbad, I
-run into trouble about how to read oob from hardware.
-Default functions use lots of static helpers, and only way to to that in
-standard way is to use mtd->read_oob, but that leads to deadlock when
-doing the erase.
-nand_erase_nand does nand_get_device and it tests for bad block which
-end in mtd->read_oob (implemented as nand_read_oob and it does
-nand_get_device too...)
-
-Or I can use very low level functions, but this skips taking locks, and
-could lead to races.
-
-Note that although maybe I could avoid the deadlock by using the bad
-block table, I still need these functions to determine/write the bad
-status because there is no bad block table on the flash.
-
-
-
-Yet another problem I found is inside add_mtd_blktrans_dev.
-This function takes mtd_table_mutex but never releases it.
-This sounds fishy, and deadlocks when it calls 'add_disk(gd);'
-This function (I think in case partitions are detected on device) opens
-block device, and this takes that lock too
-(blktrans_open->get_mtd_device)
-
-
-
-And lastly, here are problems due to slight incompatibilities:
-
-First, its possible to use small page nand (256 bytes/page), but then
-unfortunately oob contents of every odd and even page are 'related'
-(odd page contains ecc of both pages).
-This is very hard to support, and since it only present in SmartMedia,
-and to read such old card you need an adapter (which I not sure is
-possible to buy), I'll skip it.
-
-
-Another problem is that chip does report correct ID, but doesn't report
-valid settings in extended ID, thus chips > 128 MB aren't detected.
-Also there is whole class of mask rom devices, and they have non nand
-IDs.
-Not sure its valuable to support mask roms (it is also smartmedia only
-feature too), but erasesize/pagesize have to be hardcoded. 
-I think that best solution it to allow to pass custom list of device IDs
-to nand_scan.
-
-
-Last problem I discovered recently is that the chip always reports via
-status command that it is write protected. This is maybe a card bug.
-Small workaround for that in the nand system isn't a problem.
-I will test if that report is really bogus though.
-The hardware has seperate register to check write-protect status, and
-card I suspect has a write-protect seal.
-
-
-Currently, with workarounds to above problems, my driver does read the
-xD card (using ssfdc.c)
+I thought of running something like bonnie++ while power-cycling the board at 
+random times for a few days, or something similar, but since IMHO this must be 
+a recurring issue for many here, I'd like to know about what others have come 
+up with, or if there is some comprehensive stress-test-tool.
 
 Best regards,
-Maxim Levitsky
+
+-- 
+David Jander
+Protonic Holland.
