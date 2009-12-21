@@ -1,28 +1,19 @@
-Received: from mail-px0-f183.google.com ([209.85.216.183])
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NMgl0-0001mY-Ji
-	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 11:49:03 +0000
-Received: by pxi13 with SMTP id 13so3531998pxi.24
+	id 1NMgrl-0004U0-Ka
+	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 11:56:02 +0000
+Received: by pwj11 with SMTP id 11so3412355pwj.2
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 21 Dec 2009 03:48:57 -0800 (PST)
-Message-ID: <4B2F6171.4090108@gmail.com>
-Date: Mon, 21 Dec 2009 19:52:17 +0800
+	Mon, 21 Dec 2009 03:55:56 -0800 (PST)
+Message-ID: <4B2F631F.4070303@gmail.com>
+Date: Mon, 21 Dec 2009 19:59:27 +0800
 From: Liuwenyi <qingshenlwy@gmail.com>
 MIME-Version: 1.0
-To: chris.mason@oracle.com, viro@zeniv.linux.org.uk, 
- joel.becker@oracle.com, cjb@laptop.org, jmorris@namei.org, 
- serue@us.ibm.com, hch@lst.de, akpm@linux-foundation.org, 
- adilger@sun.com, jack@suse.cz, tytso@mit.edu, dwmw2@infradead.org、, 
- swhiteho@redhat.com, bfields@fieldses.org, neilb@suse.de, 
- ffilzlnx@us.ibm.com, bharrosh@panasas.com, mfasheh@suse.com, 
- tiger.yang@oracle.com, jeffm@suse.com, aelder@sgi.com, 
- sandeen@sandeen.net, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, 
- reiserfs-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com, 
- linux-nfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- linux-kernel@vger.kernel.org, cluster-devel@redhat.com, 
- linux-mtd@lists.infradead.org, strongzgy@gmail.com, onlyflyer@gmail.com
-Subject: [PATCHv2 01/12]posix_acl: Add the check items
+To: dwmw2@infradead.org, viro@zeniv.linux.org.uk, jmorris@namei.org,
+	akpm@linux-foundation.org, joel.becker@oracle.com, serue@us.ibm.com,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	onlyflyer@gmail.com, strongzgy@gmail.com
+Subject: [PATCHv2 08/12]posix_acl: Add the check items
 Content-Type: text/plain; charset=GB2312
 Content-Transfer-Encoding: 7bit
 Reply-To: qingshenlwy@gmail.com
@@ -35,65 +26,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add the acl validation check-items
-to fix the null pointer error and PTR_ERR error.
-
-Thanks for Matthew Wilcox's sguuestion.
+move the ACL validation check in to fs/posix_acl.c.
+Including nullpointer check and PTR_ERR check.
 
 ---
 Signed-off-by: Liuwenyi <qingshenlwy@gmail.com>
-Cc: Chris Mason <chris.mason@oracle.com>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Joel Becker <joel.becker@oracle.com>
-Cc: Chris Ball <cjb@laptop.org>
-Cc: James Morris <jmorris@namei.org>
-Cc: Serge Hallyn <serue@us.ibm.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andreas Dilger <adilger@sun.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Steven Whitehouse <swhiteho@redhat.com>
-Cc: J. Bruce Fields <bfields@fieldses.org>
-Cc: Neil Brown <neilb@suse.de>
-Cc: Frank Filz <ffilzlnx@us.ibm.com>
-Cc: Boaz Harrosh <bharrosh@panasas.com>
-Cc: Mark Fasheh <mfasheh@suse.com>
-Cc: Tiger Yang <tiger.yang@oracle.com>
-Cc: Jeff Mahoney <jeffm@suse.com>
-Cc: Alex Elder <aelder@sgi.com>
-Cc: Eric Sandeen <sandeen@sandeen.net>
-Cc: xfs-masters@oss.sgi.com
-Cc: xfs@oss.sgi.com
-Cc: reiserfs-devel@vger.kernel.org
-Cc: ocfs2-devel@oss.oracle.com
-Cc: linux-nfs@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: cluster-devel@redhat.com
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: James Morris <jmorris@namei.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Joel Becker <joel.becker@oracle.com>
+Cc: Serge Hallyn <serue@us.ibm.com>
 Cc: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
---
-diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-index 39df95a..d4bacb9 100644
---- a/fs/posix_acl.c
-+++ b/fs/posix_acl.c
-@@ -76,6 +76,12 @@ posix_acl_valid(const struct posix_acl *acl)
-unsigned int id = 0; /* keep gcc happy */
-int needs_mask = 0;
+---
+diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+index 7cdc319..1eb4726 100644
+--- a/fs/jffs2/acl.c
++++ b/fs/jffs2/acl.c
+@@ -403,13 +403,10 @@ static int jffs2_acl_setxattr(struct dentry
+*dentry, const char *name,
 
-+ if (!acl)
-+ return -EINVAL;
+if (value) {
+acl = posix_acl_from_xattr(value, size);
+- if (IS_ERR(acl))
+- return PTR_ERR(acl);
+- if (acl) {
+- rc = posix_acl_valid(acl);
+- if (rc)
+- goto out;
+- }
++ rc = posix_acl_valid(acl);
++ if (rc)
++ goto out;
 +
-+ if (IS_ERR(acl))
-+ return PTR_ERR(acl);
-+
-FOREACH_ACL_ENTRY(pa, acl, pe) {
-if (pa->e_perm & ~(ACL_READ|ACL_WRITE|ACL_EXECUTE))
-return -EINVAL;
+} else {
+acl = NULL;
+}
 
 -- 
 Best Regards,
