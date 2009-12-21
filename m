@@ -1,22 +1,21 @@
-Received: from mail-pw0-f43.google.com ([209.85.160.43])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NMgrl-0004U0-Ka
-	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 11:56:02 +0000
-Received: by pwj11 with SMTP id 11so3412355pwj.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 21 Dec 2009 03:55:56 -0800 (PST)
-Message-ID: <4B2F631F.4070303@gmail.com>
-Date: Mon, 21 Dec 2009 19:59:27 +0800
-From: Liuwenyi <qingshenlwy@gmail.com>
+Received: from [212.112.238.170] (helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NMioj-00089c-S7
+	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 14:01:02 +0000
+Date: Mon, 21 Dec 2009 15:00:03 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: Few problems in mtd system
+Message-ID: <20091221140003.GA13316@logfs.org>
+References: <290458.39840.qm@web37604.mail.mud.yahoo.com>
+	<1261342795.4798.14.camel@maxim-laptop>
 MIME-Version: 1.0
-To: dwmw2@infradead.org, viro@zeniv.linux.org.uk, jmorris@namei.org,
-	akpm@linux-foundation.org, joel.becker@oracle.com, serue@us.ibm.com,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	onlyflyer@gmail.com, strongzgy@gmail.com
-Subject: [PATCHv2 08/12]posix_acl: Add the check items
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
-Reply-To: qingshenlwy@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1261342795.4798.14.camel@maxim-laptop>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, arnd <arnd@arndb.de>,
+	Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-move the ACL validation check in to fs/posix_acl.c.
-Including nullpointer check and PTR_ERR check.
+On Sun, 20 December 2009 22:59:55 +0200, Maxim Levitsky wrote:
+> 
+> I suspect that older non type M cards didn't have such emulation, but
+> were real nand chips, bacause there are some references on the web about
+> using XD card as a nand chip replacement.
+> Such card as I have will really will make very poor nand replacement...
 
----
-Signed-off-by: Liuwenyi <qingshenlwy@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: James Morris <jmorris@namei.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Joel Becker <joel.becker@oracle.com>
-Cc: Serge Hallyn <serue@us.ibm.com>
-Cc: linux-mtd@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
+If you want to know whether the cards or the readers are to blame, you
+can try to buy an old alauda reader on ebay.  It is too slow to be
+useful for most purposes, but I believe it did give me full access with
+my cards.
 
----
-diff --git a/fs/jffs2/acl.c b/fs/jffs2/acl.c
-index 7cdc319..1eb4726 100644
---- a/fs/jffs2/acl.c
-+++ b/fs/jffs2/acl.c
-@@ -403,13 +403,10 @@ static int jffs2_acl_setxattr(struct dentry
-*dentry, const char *name,
+> Folks, could you review my other questions about bugs in mtd core, and
+> tell your opinion?
 
-if (value) {
-acl = posix_acl_from_xattr(value, size);
-- if (IS_ERR(acl))
-- return PTR_ERR(acl);
-- if (acl) {
-- rc = posix_acl_valid(acl);
-- if (rc)
-- goto out;
-- }
-+ rc = posix_acl_valid(acl);
-+ if (rc)
-+ goto out;
-+
-} else {
-acl = NULL;
-}
+I didn't quite understand the 32bit DMA question and am next to clueless
+wrt. hotplug.  Sorry.
+
+Jörn
 
 -- 
-Best Regards,
-Liuwenyi
+Joern's library part 6:
+http://www.gzip.org/zlib/feldspar.html
