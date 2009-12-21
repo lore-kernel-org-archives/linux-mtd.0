@@ -1,22 +1,19 @@
-Received: from mail-ew0-f223.google.com ([209.85.219.223])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NMkgJ-0006lF-V0
-	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 16:00:27 +0000
-Received: by ewy23 with SMTP id 23so4508462ewy.4
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 21 Dec 2009 08:00:21 -0800 (PST)
+Received: from [213.115.205.20] (helo=gw1.transmode.se)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NMlEU-0007gS-PT
+	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 16:35:47 +0000
+In-Reply-To: <OF63BC8AF9.696ABE45-ON65257693.00540662-65257693.00577600@lntemsys.com>
+References: <OF63BC8AF9.696ABE45-ON65257693.00540662-65257693.00577600@lntemsys.com>
+Subject: Re: Trying to reduce booting time with JFFS2 summary.
+To: Dhinakaran K <Dhinakaran.K@Lntemsys.com>
+Message-ID: <OFD91999A2.82AB1C2B-ONC1257693.005A58BD-C1257693.005AEF17@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Mon, 21 Dec 2009 17:33:14 +0100
 MIME-Version: 1.0
-In-Reply-To: <4B18F4B7.9050709@nokia.com>
-References: <dbdb2ea60912030930ncd06dcfjbb149545728fa5d6@mail.gmail.com>
-	<4B18F4B7.9050709@nokia.com>
-Date: Mon, 21 Dec 2009 11:00:21 -0500
-Message-ID: <dbdb2ea60912210800p79f9da15p4a369c8fb7a69c6@mail.gmail.com>
-Subject: Re: how to properly calculate max-leb-cnt and vol_size for ubifs
-From: twebb <taliaferro62@gmail.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-type: text/plain; charset=US-ASCII
+Cc: Prashant Alange <Prashant.Alange@Lntemsys.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Dhinakaran K <Dhinakaran.K@Lntemsys.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>
->> I'm using ubifs for the first time and am confused about how to
->> calculate two parameters:
->>
->> "max-leb-cnt" for mkfs.ubifs
->> "vol_size" for ubinize cfg file
->>
->> How should "max-leb-cnt" be calculated? =A0In the examples, how is "-c
->> 2047" determined? =A0Should the max-leb-cnt calculation somehow include
->> the overhead calculated per the ubifs documentation page? =A0Should the
->> reserved PEBs (1% default for NAND flash) be somehow taken into
->> account?
->>
->> How should "vol_size" be calculated? =A0Is it simply max-leb-cnt *
->> LEB_size? =A0Should overhead somehow be included in this calculation
->> also?
 >
-> Have you read:
+> Hi ALL,
+>         I'm trying to reduce linux booting time, using JFFS2 block summary
+> option, but unfortunately unable to do so. Below is description of my
+> setup and test procedure. Please comment / suggest.
 >
-> http://linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
->
-> http://linux-mtd.infradead.org/faq/ubi.html#L_ubi_mkimg
->
-> http://linux-mtd.infradead.org/doc/ubi.html#L_autoresize
->
->
+> SETUP:
+>         Processor       :       MPC8313e
+>         OS              :       linux-2.6.20  (Freescale-LTIB
 
-I have, and I'm still pretty confused.  I just posted some additional
-questions I'm hoping perhaps you or someone else may be able to help
-with.
+You probably got too old kernel, I submitted an optimisation some time ago
+that optimised scanning of empty blocks. Before that optimisation it was
+slower to mount an nearly empty FS than it was to mount a almost full FS.
 
-Thanks,
-twebb
+Summary didn't help me either and summary might slow your
+mount down as it cannot make nodes obsolete on flash.
+
+    Jocke
