@@ -1,22 +1,31 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NMSsk-00018g-DO
-	for linux-mtd@lists.infradead.org; Sun, 20 Dec 2009 21:00:06 +0000
-Received: by bwz4 with SMTP id 4so3173950bwz.2
+	id 1NMgkV-0001br-UN
+	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 11:48:32 +0000
+Received: by pwj11 with SMTP id 11so3409261pwj.2
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 20 Dec 2009 13:00:00 -0800 (PST)
-Subject: Re: Few problems in mtd system
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Alex Dubov <oakad@yahoo.com>
-In-Reply-To: <290458.39840.qm@web37604.mail.mud.yahoo.com>
-References: <290458.39840.qm@web37604.mail.mud.yahoo.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 20 Dec 2009 22:59:55 +0200
-Message-ID: <1261342795.4798.14.camel@maxim-laptop>
-Mime-Version: 1.0
+	Mon, 21 Dec 2009 03:48:25 -0800 (PST)
+Message-ID: <4B2F6153.8010609@gmail.com>
+Date: Mon, 21 Dec 2009 19:51:47 +0800
+From: Liuwenyi <qingshenlwy@gmail.com>
+MIME-Version: 1.0
+To: chris.mason@oracle.com, viro@zeniv.linux.org.uk, 
+ joel.becker@oracle.com, cjb@laptop.org, jmorris@namei.org, 
+ serue@us.ibm.com, hch@lst.de, akpm@linux-foundation.org, 
+ adilger@sun.com, jack@suse.cz, tytso@mit.edu, dwmw2@infradead.org、, 
+ swhiteho@redhat.com, bfields@fieldses.org, neilb@suse.de, 
+ ffilzlnx@us.ibm.com, bharrosh@panasas.com, mfasheh@suse.com, 
+ tiger.yang@oracle.com, jeffm@suse.com, aelder@sgi.com, 
+ sandeen@sandeen.net, xfs-masters@oss.sgi.com, xfs@oss.sgi.com, 
+ reiserfs-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com, 
+ linux-nfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, cluster-devel@redhat.com, 
+ linux-mtd@lists.infradead.org, strongzgy@gmail.com, onlyflyer@gmail.com
+Subject: [PATCHv2 00/12]posix_acl: Add the check items
+Content-Type: text/plain; charset=GB2312
 Content-Transfer-Encoding: 7bit
-Cc: joern <joern@logfs.org>, linux-mtd <linux-mtd@lists.infradead.org>,
-	arnd <arnd@arndb.de>
+Reply-To: qingshenlwy@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +35,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now it all clear.
-Here is the stupid emulated nand interface of the olympus 1 GB card:
+Hi all:
+This patch is moving the acl check(Null pointer and PTR_ERR) into
+fs/posix_acl.c.
 
+Thanks for Matthew Wilcox's sguuestion.
 
--> page read returns sector contents + cooked oob which includes LBA and
-'always correct ecc'
+---
+Signed-off-by: Liuwenyi <qingshenlwy@gmail.com>
+Cc: Chris Mason <chris.mason@oracle.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Joel Becker <joel.becker@oracle.com>
+Cc: Chris Ball <cjb@laptop.org>
+Cc: James Morris <jmorris@namei.org>
+Cc: Serge Hallyn <serue@us.ibm.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Andreas Dilger <adilger@sun.com>
+Cc: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Steven Whitehouse <swhiteho@redhat.com>
+Cc: J. Bruce Fields <bfields@fieldses.org>
+Cc: Neil Brown <neilb@suse.de>
+Cc: Frank Filz <ffilzlnx@us.ibm.com>
+Cc: Boaz Harrosh <bharrosh@panasas.com>
+Cc: Mark Fasheh <mfasheh@suse.com>
+Cc: Tiger Yang <tiger.yang@oracle.com>
+Cc: Jeff Mahoney <jeffm@suse.com>
+Cc: Alex Elder <aelder@sgi.com>
+Cc: Eric Sandeen <sandeen@sandeen.net>
+Cc: xfs-masters@oss.sgi.com
+Cc: xfs@oss.sgi.com
+Cc: reiserfs-devel@vger.kernel.org
+Cc: ocfs2-devel@oss.oracle.com
+Cc: linux-nfs@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: cluster-devel@redhat.com
+Cc: linux-mtd@lists.infradead.org
 
--> oob read (0x50 ....) returns only LBA. ecc is set 0xFFFFF.
-Only LBA in fact is returned.
-
-
--> erase is faked. It does put 0xFFs into erase block, but actual flash
-isn't touched at all.
-
-
--> page write only works if LBA is set to correct number in the oob.
-Nothing else matters. If invalid ecc is written, page writes correctly
-and returns 'correct' ecc. In other words XD's ecc is not used.
-Of course it possible to do many page writes, without doing erases,
-writing arbitrary data.
-
-
--> oob write doesn't do anything but confuses the card. It returns
-garbage on following reads, but flash isn't touched ether.
-
-
-Writing different physical sector with same LBA makes other one magicly
-disappear...
-Of course you understand why....
-
-However, individual page writes do work correctly.
-
-I suspect that older non type M cards didn't have such emulation, but
-were real nand chips, bacause there are some references on the web about
-using XD card as a nand chip replacement.
-Such card as I have will really will make very poor nand replacement...
-
-
-Folks, could you review my other questions about bugs in mtd core, and
-tell your opinion?
-
-
-Best regards,
-Maxim Levitsky
+-- 
+Best Regards,
+Liuwenyi
