@@ -1,23 +1,19 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NMrQR-0003j4-8S
-	for linux-mtd@lists.infradead.org; Mon, 21 Dec 2009 23:12:32 +0000
-From: "Darwin Rambo" <drambo@broadcom.com>
-To: twebb <taliaferro62@gmail.com>
-Date: Mon, 21 Dec 2009 15:12:20 -0800
-Subject: RE: UBI - exclude bootloader blocks from wear levelling
-Message-ID: <B125D8217ABC4B43826503DE00A2D44910DFC175CF@SJEXCHCCR01.corp.ad.broadcom.com>
+Received: from [88.191.21.22] (helo=island.wyplay.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NMzr9-0004n2-Tv
+	for linux-mtd@lists.infradead.org; Tue, 22 Dec 2009 08:12:40 +0000
+Message-ID: <4B307E68.90901@wyplay.com>
+Date: Tue, 22 Dec 2009 09:08:08 +0100
+From: Lauren Del Giudice <lauren@wyplay.com>
+MIME-Version: 1.0
+To: Darwin Rambo <drambo@broadcom.com>
+Subject: Re: UBI - exclude bootloader blocks from wear levelling
 References: <4B2FA658.6010407@wyplay.com>
 	<B125D8217ABC4B43826503DE00A2D44910DFC17584@SJEXCHCCR01.corp.ad.broadcom.com>
-	<dbdb2ea60912211451vda39800t803891a2acf9528a@mail.gmail.com>
-In-Reply-To: <dbdb2ea60912211451vda39800t803891a2acf9528a@mail.gmail.com>
-Content-Language: en-US
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Lauren Del Giudice <lauren@wyplay.com>
+In-Reply-To: <B125D8217ABC4B43826503DE00A2D44910DFC17584@SJEXCHCCR01.corp.ad.broadcom.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,57 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-My understanding is that wear levelling occurs across each ubi device, and =
-if there were 4 volumes on it, then the wear levelling would be spread effi=
-ciently over the single large device. Then you probably get better wear lev=
-elling than if you had 4 smaller devices and 4 volumes.=20
+Good news, thank you Darwin. May I suggest then to change the
+sentence in the (excellent) documentation from:
 
-I'm guessing that statistically it is better to wear level across as large =
-a device as possible, since the wearing would be shared among many more blo=
-cks and all logical volumes reap the benefit.
+"you may continuously write/erase only one logical eraseblock of an
+UBI volume, but UBI will spread this to all physical eraseblocks of
+the flash chip"
+<http://www.linux-mtd.infradead.org/doc/ubi.html#L_overview>
 
-A small device/volume with heavy activity would wear itself out quicker tha=
-n if it were part of a larger management scheme.
+to something more explicit/accurate?
 
-Of course, having separate mtd partitions may make sense for other reasons.
+Lauren.
 
-Darwin
-
------Original Message-----
-From: twebb [mailto:taliaferro62@gmail.com]=20
-Sent: Monday, December 21, 2009 2:52 PM
-To: Darwin Rambo
-Cc: Lauren Del Giudice; linux-mtd@lists.infradead.org
-Subject: Re: UBI - exclude bootloader blocks from wear levelling
-
-> Wear levelling is done across a "ubi device" (not the whole nand device) =
-which is associated with a mtd partition. Your bootloader and kernel mtd pa=
-rtitions will not be wear levelled, only your ubi file system partitions. i=
-.e. ubi doesn't know about non-ubi mtd partitions.
->
+Darwin Rambo wrote:
+> Wear levelling is done across a "ubi device" (not the whole nand device) which is associated with a mtd partition. Your bootloader and kernel mtd partitions will not be wear levelled, only your ubi file system partitions. i.e. ubi doesn't know about non-ubi mtd partitions.
+> 
 > I think that's the gist of it.
->
+> 
 > Darwin
->
+> 
+> 
+> 
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Lauren Del Giudice
+> Sent: Monday, December 21, 2009 8:46 AM
+> To: linux-mtd@lists.infradead.org
+> Subject: UBI - exclude bootloader blocks from wear levelling
+> 
+> I'm new to UBI... I understood that static wear levelling is applied
+> accross the whole device (a NAND device in my case); If so, how can
+> I exclude blocks reserved for the bootloader from wear levelling?
+> 
+> Thanks for your help,
+> Lauren.
+> ----
+> This message contains confidential information and may contain information that is legally privileged.  If you have received this message by mistake, please immediately notify us and delete the original message. Thank you.  
+> 
+> Ce message contient des informations confidentielles.  S'il vous est parvenu par erreur, merci de bien vouloir nous en aviser par retour, de n'en faire aucun usage et de n'en garder aucune copie.
+> ----
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
+----
+This message contains confidential information and may contain information that is legally privileged.  If you have received this message by mistake, please immediately notify us and delete the original message. Thank you.  
 
-That's my understanding also.
-
-Could you maybe clarify another point?  If I wanted to exclude some
-blocks that contain boot code (like Lauren's question), and the
-leftover space on the NAND device was ultimately going to be used for
-four different volumes, does it make the most sense to...
-
-a) define one MTD partition that includes all NAND space (except the
-blocks reserved for boot code); and then define one UBI device that
-attaches to the MTD device and includes the four volumes (ubi0_0,
-ubi0_1, ubi0_2, ubi0_3)
-
-OR
-
-b) define four MTD partitions that include all NAND space (except the
-blocks reserved for boot code); and then define four UBI devices that
-attach to the MTD devices and each UBI device has one volume
-associated with it (ubi0_0, ubi1_0, ubi2_0, ubi3_0)?
-
-Thanks,
-twebb
+Ce message contient des informations confidentielles.  S'il vous est parvenu par erreur, merci de bien vouloir nous en aviser par retour, de n'en faire aucun usage et de n'en garder aucune copie.
+----
