@@ -1,22 +1,17 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mail-ew0-f221.google.com ([209.85.219.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NN5LC-000652-Oz
-	for linux-mtd@lists.infradead.org; Tue, 22 Dec 2009 14:04:02 +0000
-From: "Darwin Rambo" <drambo@broadcom.com>
-To: "Lauren Del Giudice" <lauren@wyplay.com>
-Date: Tue, 22 Dec 2009 06:03:42 -0800
-Subject: RE: UBI - exclude bootloader blocks from wear levelling
-Message-ID: <B125D8217ABC4B43826503DE00A2D44910DFC176A0@SJEXCHCCR01.corp.ad.broadcom.com>
-References: <4B2FA658.6010407@wyplay.com>
-	<B125D8217ABC4B43826503DE00A2D44910DFC17584@SJEXCHCCR01.corp.ad.broadcom.com>
-	<4B307E68.90901@wyplay.com>
-In-Reply-To: <4B307E68.90901@wyplay.com>
-Content-Language: en-US
+	id 1NN5Vm-00077h-Uj
+	for linux-mtd@lists.infradead.org; Tue, 22 Dec 2009 14:14:59 +0000
+Received: by ewy21 with SMTP id 21so6505197ewy.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Dec 2009 06:14:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 22 Dec 2009 09:14:50 -0500
+Message-ID: <dbdb2ea60912220614r656df531sae2be73e8f7f8163@mail.gmail.com>
+Subject: ubiattach taking very long time
+From: twebb <taliaferro62@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,77 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem is on holidays, I'm sure he'll get around to it when he returns. Good=
- suggestion.
+Does it make any sense that a ubiattach would take > 20 secs?  The
+flash I'm using is Samsung 4GiB MLC NAND flash.  I'm running 2.6.28
+kernel.  Here's the capture...
 
-Darwin=20
-
------Original Message-----
-From: Lauren Del Giudice [mailto:lauren@wyplay.com]=20
-Sent: Tuesday, December 22, 2009 12:08 AM
-To: Darwin Rambo
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBI - exclude bootloader blocks from wear levelling
-
-Good news, thank you Darwin. May I suggest then to change the
-sentence in the (excellent) documentation from:
-
-"you may continuously write/erase only one logical eraseblock of an
-UBI volume, but UBI will spread this to all physical eraseblocks of
-the flash chip"
-<http://www.linux-mtd.infradead.org/doc/ubi.html#L_overview>
-
-to something more explicit/accurate?
-
-Lauren.
-
-Darwin Rambo wrote:
-> Wear levelling is done across a "ubi device" (not the whole nand device) =
-which is associated with a mtd partition. Your bootloader and kernel mtd pa=
-rtitions will not be wear levelled, only your ubi file system partitions. i=
-.e. ubi doesn't know about non-ubi mtd partitions.
->=20
-> I think that's the gist of it.
->=20
-> Darwin
->=20
->=20
->=20
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lis=
-ts.infradead.org] On Behalf Of Lauren Del Giudice
-> Sent: Monday, December 21, 2009 8:46 AM
-> To: linux-mtd@lists.infradead.org
-> Subject: UBI - exclude bootloader blocks from wear levelling
->=20
-> I'm new to UBI... I understood that static wear levelling is applied
-> accross the whole device (a NAND device in my case); If so, how can
-> I exclude blocks reserved for the bootloader from wear levelling?
->=20
-> Thanks for your help,
-> Lauren.
-> ----
-> This message contains confidential information and may contain informatio=
-n that is legally privileged.  If you have received this message by mistake=
-, please immediately notify us and delete the original message. Thank you. =
-=20
->=20
-> Ce message contient des informations confidentielles.  S'il vous est parv=
-enu par erreur, merci de bien vouloir nous en aviser par retour, de n'en fa=
-ire aucun usage et de n'en garder aucune copie.
-> ----
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
->=20
-----
-This message contains confidential information and may contain information =
-that is legally privileged.  If you have received this message by mistake, =
-please immediately notify us and delete the original message. Thank you. =20
-
-Ce message contient des informations confidentielles.  S'il vous est parven=
-u par erreur, merci de bien vouloir nous en aviser par retour, de n'en fair=
-e aucun usage et de n'en garder aucune copie.
-----
+[    1.753280] Creating 6 MTD partitions on "Samsung 32Gibx8":
+[    1.758855] 0x000000000000-0x000000080000 : "bootloader-alt"
+[    1.765676] 0x000000080000-0x000000100000 : "environment-alt"
+[    1.772290] 0x000000100000-0x000000400000 : "kernel-alt"
+[    1.778403] 0x000000400000-0x000000800000 : "kernelrecovery-alt"
+[    1.785252] 0x000000800000-0x000004000000 : "maintenance"
+[    1.791577] 0x000004000000-0x000100000000 : "system"
+[    1.799725] UBI: attaching mtd5 to ubi0
+[    1.803630] UBI: physical eraseblock size:   524288 bytes (512 KiB)
+[    1.809901] UBI: logical eraseblock size:    516096 bytes
+[    1.815365] UBI: smallest flash I/O unit:    4096
+[    1.820067] UBI: VID header offset:          4096 (aligned 4096)
+[    1.826109] UBI: data offset:                8192
+[   23.124750] UBI: attached mtd5 to ubi0
+[   23.128505] UBI: MTD device name:            "system"
+[   23.133702] UBI: MTD device size:            4032 MiB
+[   23.138757] UBI: number of good PEBs:        8064
+[   23.143495] UBI: number of bad PEBs:         0
+[   23.147945] UBI: max. allowed volumes:       128
+[   23.152592] UBI: wear-leveling threshold:    256
+[   23.157211] UBI: number of internal volumes: 1
+[   23.161689] UBI: number of user volumes:     4
+[   23.166135] UBI: available PEBs:             4
+[   23.170612] UBI: total number of reserved PEBs: 8060
+[   23.175584] UBI: number of PEBs reserved for bad PEB handling: 80
+[   23.181715] UBI: max/mean erase counter: 2/0
+[   23.186120] UBI: background thread "ubi_bgt0d" started, PID 421
