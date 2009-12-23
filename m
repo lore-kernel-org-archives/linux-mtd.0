@@ -1,15 +1,20 @@
-Date: Wed, 23 Dec 2009 09:44:29 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-Subject: Re: Issue in oamp nand driver with 32-bit reads in prefetch mode
-Message-ID: <20091223174429.GD3512@atomide.com>
-References: <ce9ab5790912230133wae2c4dcw73051221b66cb40f@mail.gmail.com>
+Received: from [88.191.21.22] (helo=island.wyplay.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NNYVe-0006lY-1m
+	for linux-mtd@lists.infradead.org; Wed, 23 Dec 2009 21:12:46 +0000
+Message-ID: <4B3286BC.2070704@wyplay.com>
+Date: Wed, 23 Dec 2009 22:08:12 +0100
+From: Lauren Del Giudice <lauren@wyplay.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce9ab5790912230133wae2c4dcw73051221b66cb40f@mail.gmail.com>
-Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>,
-	linux-arm-kernel@lists.infradead.org
+To: Darwin Rambo <drambo@broadcom.com>
+Subject: Re: UBI - exclude bootloader blocks from wear levelling
+References: <4B2FA658.6010407@wyplay.com>
+	<20091223063242.B63923F6EF@gemini.denx.de>
+	<B125D8217ABC4B43826503DE00A2D44910DFC17927@SJEXCHCCR01.corp.ad.broadcom.com>
+In-Reply-To: <B125D8217ABC4B43826503DE00A2D44910DFC17927@SJEXCHCCR01.corp.ad.broadcom.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,80 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Vimal Singh <vimal.newwork@gmail.com> [091223 01:32]:
-> In omap nand driver we used to do 32-bit reads (in function
-> omap_read_buf_pref, using 'ioread32_rep' i.e.: __raw_readsl), and it
-> was working fine till some time back. But now, somehow, this has got
-> some problem. Reads are not being done successfully, and driver gives
-> lots for error reprot like below:
-> 
-> td->read(0x604 bytes from 0x1fc) returned ECC error
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> mtd->read(0x520 bytes from 0x2e0) returned ECC error
-> 
-> While if we change 32-bit reads to 16-bit reads (using 'ioread16_rep'
-> i.e.: __raw_readwl) makes it working fine. (A patch to do this is
-> listed below at the bottom of this mail.)
-> 
-> I have not seen any change in routine '__raw_readsl'.
-> So, could someone help me find out the root cause the issue?
-> 
-> Thanks for any input.
+Yes, this is my use case. So I would be in trouble if bootloader (a
+first stage loader) does no longer reside at 0.
+Thanks, anyway.
 
-Maybe an issue with the GPMC timings?
+Lauren.
 
-Regards,
-
-Tony
-
+Darwin Rambo wrote:
+> I think Lauren must have been referring to a bootloader that lives outside the kernel and file system context. For example, a small, standalone bootloader downloaded from a serial port to it's own partition, would not be known to the kernel, as it is used to launch the kernel or later stage bootloaders. In this case it runs standalone and can't sit on UBI or be launched by a linux app. If this small bootloader was only a block or two in size, and since it is typically burned once for production and then becomes read-only for each bootup after that, wear levelling is not required or possible.
 > 
-> -- 
-> Regards,
-> Vimal Singh
+> Flash data retention periods are usually specified in years, and flash write/erases are in cycles. MLC and SLC flashes typically mention 10 year lifetimes in their data sheets, and the program/erase cycles are typically 100K-1M for SLC, and 10K-100K for MLC. As such I don't see an issue wrt boot loader integrity on factory burning or years of subsequent bootups. 
 > 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index aaef170..dc493f5 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -288,14 +288,14 @@ static void omap_read_buf_pref(struct mtd_info
->  						struct omap_nand_info, mtd);
->  	uint32_t pfpw_status = 0, r_count = 0;
->  	int ret = 0;
-> -	u32 *p = (u32 *)buf;
-> +	u16 *p = (u16 *)buf;
+> Hope this helps a bit. 
 > 
->  	/* take care of subpage reads */
-> -	for (; len % 4 != 0; ) {
-> +	for (; len % 2 != 0; ) {
->  		*buf++ = __raw_readb(info->nand.IO_ADDR_R);
->  		len--;
->  	}
-> -	p = (u32 *) buf;
-> +	p = (u16 *) buf;
+> Darwin
 > 
->  	/* configure and start prefetch transfer */
->  	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
-> @@ -308,10 +308,10 @@ static void omap_read_buf_pref(struct mtd_info
-> *mtd, u_char *buf, int len)
->  	} else {
->  		do {
->  			pfpw_status = gpmc_prefetch_status();
-> -			r_count = ((pfpw_status >> 24) & 0x7F) >> 2;
-> -			ioread32_rep(info->nand_pref_fifo_add, p, r_count);
-> +			r_count = ((pfpw_status >> 24) & 0x7F) >> 1;
-> +			ioread16_rep(info->nand_pref_fifo_add, p, r_count);
->  			p += r_count;
-> -			len -= r_count << 2;
-> +			len -= r_count << 1;
->  		} while (len);
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Wolfgang Denk
+> Sent: Tuesday, December 22, 2009 10:33 PM
+> To: Lauren Del Giudice
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re: UBI - exclude bootloader blocks from wear levelling
 > 
->  		/* disable and stop the PFPW engine */
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Dear Lauren Del Giudice,
+> 
+> In message <4B2FA658.6010407@wyplay.com> you wrote:
+>> I'm new to UBI... I understood that static wear levelling is applied
+>> accross the whole device (a NAND device in my case); If so, how can
+>> I exclude blocks reserved for the bootloader from wear levelling?
+> 
+> Why would you want to do that? You should be happy that UBI also
+> applies wear levelling to the bootloader storage, as this prevents
+> your device from bricking when read errors develop there. Keep in mind
+> that NAND blocks will develop read errors even if you only read them
+> (i. e. there is not only a limit on the number of erase cycles of such
+> a device, but also on the number of read cycles).
+> 
+> It is a great benefit if your boot loader gets loaded from a UBI
+> partition instead of raw NAND.
+> 
+> Best regards,
+> 
+> Wolfgang Denk
+> 
