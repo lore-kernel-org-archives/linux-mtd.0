@@ -1,15 +1,16 @@
-Received: from mgw1.diku.dk ([130.225.96.91])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NPhXW-0006dC-L1
-	for linux-mtd@lists.infradead.org; Tue, 29 Dec 2009 19:15:34 +0000
-Date: Tue, 29 Dec 2009 20:15:23 +0100 (CET)
-From: Julia Lawall <julia@diku.dk>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 1/5] drivers/mtd : Correct the size argument to kzalloc
-Message-ID: <Pine.LNX.4.64.0912292015001.4001@ask.diku.dk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20091223174429.GD3512@atomide.com>
+References: <ce9ab5790912230133wae2c4dcw73051221b66cb40f@mail.gmail.com>
+	<20091223174429.GD3512@atomide.com>
+Date: Tue, 29 Dec 2009 12:38:48 -0800
+Message-ID: <5e088bd90912291238t1f2aba64na94887b2f864454d@mail.gmail.com>
+Subject: Re: Issue in oamp nand driver with 32-bit reads in prefetch mode
+From: Steve Sakoman <sakoman@gmail.com>
+To: Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux MTD <linux-mtd@lists.infradead.org>, linux-omap@vger.kernel.org,
+	Vimal Singh <vimal.newwork@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +20,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+On Wed, Dec 23, 2009 at 9:44 AM, Tony Lindgren <tony@atomide.com> wrote:
+> * Vimal Singh <vimal.newwork@gmail.com> [091223 01:32]:
+>> In omap nand driver we used to do 32-bit reads (in function
+>> omap_read_buf_pref, using 'ioread32_rep' i.e.: __raw_readsl), and it
+>> was working fine till some time back. But now, somehow, this has got
+>> some problem. Reads are not being done successfully, and driver gives
+>> lots for error reprot like below:
+>>
+>> td->read(0x604 bytes from 0x1fc) returned ECC error
+>> uncorrectable error :
+>> uncorrectable error :
+>> uncorrectable error :
+>> uncorrectable error :
+>> uncorrectable error :
+>> uncorrectable error :
+>> mtd->read(0x520 bytes from 0x2e0) returned ECC error
+>>
+>> While if we change 32-bit reads to 16-bit reads (using 'ioread16_rep'
+>> i.e.: __raw_readwl) makes it working fine. (A patch to do this is
+>> listed below at the bottom of this mail.)
+>>
+>> I have not seen any change in routine '__raw_readsl'.
+>> So, could someone help me find out the root cause the issue?
+>>
+>> Thanks for any input.
+>
+> Maybe an issue with the GPMC timings?
 
-mtd_list has type struct mtd_info **, not struct mtd_info *, so the
-elements of the array should have pointer type, not structure type.
+I can confirm that this issue exists on Overo too.  Sadly, switching
+to 16 bit reads does not fix the issue for me.  I'll start digging to
+see if I can find what's broken.
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+Steve
 
-// <smpl>
-@disable sizeof_type_expr@
-type T;
-T **x;
-@@
 
-  x =
-  <+...sizeof(
-- T
-+ *x
-  )...+>
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/maps/physmap_of.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff -u -p a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -217,7 +217,7 @@ static int __devinit of_flash_probe(stru
- 
- 	dev_set_drvdata(&dev->dev, info);
- 
--	mtd_list = kzalloc(sizeof(struct mtd_info) * count, GFP_KERNEL);
-+	mtd_list = kzalloc(sizeof(*mtd_list) * count, GFP_KERNEL);
- 	if (!mtd_list)
- 		goto err_flash_remove;
- 
+> Regards,
+>
+> Tony
+>
+>>
+>> --
+>> Regards,
+>> Vimal Singh
+>>
+>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>> index aaef170..dc493f5 100644
+>> --- a/drivers/mtd/nand/omap2.c
+>> +++ b/drivers/mtd/nand/omap2.c
+>> @@ -288,14 +288,14 @@ static void omap_read_buf_pref(struct mtd_info
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 struct omap_nand_info, mtd);
+>> =A0 =A0 =A0 uint32_t pfpw_status =3D 0, r_count =3D 0;
+>> =A0 =A0 =A0 int ret =3D 0;
+>> - =A0 =A0 u32 *p =3D (u32 *)buf;
+>> + =A0 =A0 u16 *p =3D (u16 *)buf;
+>>
+>> =A0 =A0 =A0 /* take care of subpage reads */
+>> - =A0 =A0 for (; len % 4 !=3D 0; ) {
+>> + =A0 =A0 for (; len % 2 !=3D 0; ) {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 *buf++ =3D __raw_readb(info->nand.IO_ADDR_R)=
+;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 len--;
+>> =A0 =A0 =A0 }
+>> - =A0 =A0 p =3D (u32 *) buf;
+>> + =A0 =A0 p =3D (u16 *) buf;
+>>
+>> =A0 =A0 =A0 /* configure and start prefetch transfer */
+>> =A0 =A0 =A0 ret =3D gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
+>> @@ -308,10 +308,10 @@ static void omap_read_buf_pref(struct mtd_info
+>> *mtd, u_char *buf, int len)
+>> =A0 =A0 =A0 } else {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 do {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pfpw_status =3D gpmc_prefetc=
+h_status();
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 r_count =3D ((pfpw_status >> 2=
+4) & 0x7F) >> 2;
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ioread32_rep(info->nand_pref_f=
+ifo_add, p, r_count);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 r_count =3D ((pfpw_status >> 2=
+4) & 0x7F) >> 1;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ioread16_rep(info->nand_pref_f=
+ifo_add, p, r_count);
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 p +=3D r_count;
+>> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 len -=3D r_count << 2;
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 len -=3D r_count << 1;
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 } while (len);
+>>
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* disable and stop the PFPW engine */
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
