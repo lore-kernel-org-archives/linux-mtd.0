@@ -1,39 +1,93 @@
-From: vimalsingh@ti.com (Vimal Singh)
-Date: Tue, 15 Dec 2009 21:10:54 +0530
-Subject: [PATCH] OMAP: NAND: Adding config option to enable/disable HW ECC mode
-Message-ID: <mailman.94.1260892023.2170.linux-mtd@lists.infradead.org>
+From: adrian.hunter@nokia.com (Adrian Hunter)
+Date: Wed, 30 Dec 2009 07:40:16 +0100
+Subject: [PATCH 1/7] mtd: OneNAND: OMAP2/3: add support for command line partitioning
+Message-ID: <mailman.50.1292242384.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-This patch adds config option to select/deselect HW ECC feature
-on OMAP NAND driver. This is a feature provided by OMAP GPMC for
-NAND devices.
+Add the ability to parse MTD partition information from the
+kernel command line.
 
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+Note that a pointless BUG_ON is removed, as are redundant
+calls to 'del_mtd_partitions()' and 'del_mtd_device()'
+because they are also done by 'onenand_release()'.
+
+Finally note that 'add_mtd_device()' returns 1 on failure
+so the error condition was incorrect.
+
+Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 ---
- drivers/mtd/nand/Kconfig |   10 ++++++++++
- 1 files changed, 10 insertions(+), 0 deletions(-)
+ drivers/mtd/onenand/omap2.c |   27 ++++++++++++---------------
+ 1 files changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 34598e9..6c4b27c 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -97,6 +97,16 @@ config MTD_NAND_OMAP_PREFETCH_DMA
- 	 or in DMA interrupt mode.
- 	 Say y for DMA mode or MPU mode will be used
-
-+config MTD_NAND_OMAP_HWECC
-+	bool "The Hardware ECC support"
-+	depends on MTD_NAND && MTD_NAND_OMAP2
-+	default n
-+	help
-+	 The ECC compuatation for the data to be written/read can be either by
-+	 software or omap has Hw ecc engine which calculates it.
-+	 MTD_NAND_OMAP_HWECC = y which enables the hw ecc
-+	 MTD_NAND_OMAP_HWECC = n enables software ecc
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index da25a90..324402f 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -65,6 +65,10 @@ struct omap2_onenand {
+ 	int (*setup)(void __iomem *base, int freq);
+ };
+ 
++#ifdef CONFIG_MTD_PARTITIONS
++static const char *part_probes[] = { "cmdlinepart", NULL,  };
++#endif
 +
- config MTD_NAND_TS7250
- 	tristate "NAND Flash device on TS-7250 board"
- 	depends on MACH_TS72XX
+ static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
+ {
+ 	struct omap2_onenand *c = data;
+@@ -730,13 +734,15 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 	}
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+-	if (pdata->parts != NULL)
+-		r = add_mtd_partitions(&c->mtd, pdata->parts,
+-				       pdata->nr_parts);
++	r = parse_mtd_partitions(&c->mtd, part_probes, &c->parts, 0);
++	if (r > 0)
++		r = add_mtd_partitions(&c->mtd, c->parts, r);
++	else if (pdata->parts != NULL)
++		r = add_mtd_partitions(&c->mtd, pdata->parts, pdata->nr_parts);
+ 	else
+ #endif
+ 		r = add_mtd_device(&c->mtd);
+-	if (r < 0)
++	if (r)
+ 		goto err_release_onenand;
+ 
+ 	platform_set_drvdata(pdev, c);
+@@ -760,6 +766,7 @@ err_release_mem_region:
+ err_free_cs:
+ 	gpmc_cs_free(c->gpmc_cs);
+ err_kfree:
++	kfree(c->parts);
+ 	kfree(c);
+ 
+ 	return r;
+@@ -769,17 +776,6 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+ {
+ 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
+ 
+-	BUG_ON(c == NULL);
+-
+-#ifdef CONFIG_MTD_PARTITIONS
+-	if (c->parts)
+-		del_mtd_partitions(&c->mtd);
+-	else
+-		del_mtd_device(&c->mtd);
+-#else
+-	del_mtd_device(&c->mtd);
+-#endif
+-
+ 	onenand_release(&c->mtd);
+ 	if (c->dma_channel != -1)
+ 		omap_free_dma(c->dma_channel);
+@@ -792,6 +788,7 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+ 	iounmap(c->onenand.base);
+ 	release_mem_region(c->phys_base, ONENAND_IO_SIZE);
+ 	gpmc_cs_free(c->gpmc_cs);
++	kfree(c->parts);
+ 	kfree(c);
+ 
+ 	return 0;
 -- 
-1.5.5
+1.7.0.4
