@@ -1,7 +1,7 @@
 From: adrian.hunter@nokia.com (Adrian Hunter)
 Date: Wed, 30 Dec 2009 07:40:16 +0100
 Subject: [PATCH 1/7] mtd: OneNAND: OMAP2/3: add support for command line partitioning
-Message-ID: <mailman.50.1292242384.1530.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.54.1292242888.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
