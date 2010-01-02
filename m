@@ -1,14 +1,20 @@
-Subject: Re: Can ID the NAND chip, but every erase block is bad?
-From: David Woodhouse <dwmw2@infradead.org>
-To: Bill Gatliff <bgat@billgatliff.com>
-In-Reply-To: <4B3ED430.5040607@billgatliff.com>
-References: <4B3ED430.5040607@billgatliff.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 02 Jan 2010 10:03:42 +0000
-Message-ID: <1262426622.3181.5832.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+In-Reply-To: <ce9ab5790912310420h20beb04csba060b3f5cfeee92@mail.gmail.com>
+References: <ce9ab5790912230133wae2c4dcw73051221b66cb40f@mail.gmail.com>
+	<20091223174429.GD3512@atomide.com>
+	<5e088bd90912291238t1f2aba64na94887b2f864454d@mail.gmail.com>
+	<5e088bd90912291347j370ab30cid7c6cfc558c2ed18@mail.gmail.com>
+	<ce9ab5790912310420h20beb04csba060b3f5cfeee92@mail.gmail.com>
+Date: Sat, 2 Jan 2010 07:02:36 -0800
+Message-ID: <5e088bd91001020702q3021cea2ve5d71ffff7fc1c62@mail.gmail.com>
+Subject: Re: Issue in oamp nand driver with 32-bit reads in prefetch mode
+From: Steve Sakoman <sakoman@gmail.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+	Linux MTD <linux-mtd@lists.infradead.org>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +24,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-01-01 at 23:05 -0600, Bill Gatliff wrote:
-> 
-> I have a platform with an ancient Linux kernel that I'm updating, and
-> I'm having some problems.  The platform has a Freescale MPC5200, a
-> Samsung K9 NAND flash chip, and it all works fine under 2.6.20, I'm
-> trying to bring it up to 2.6.32.
-> 
-> Simply put, when I register the gen_nand device for this chip under
-> 2.6.32, it successfully identifies the chip but then says that every
-> single eraseblock in the chip is bad.  When I reboot to the 2.6.20
-> kernel, I don't get any complaints there.  I see the same problem both
-> with and without CONFIG_MTD_NAND_ECC_SMC.
-> 
-> Anyone have any ideas on where I should look for the problem?  Thanks!
+On Thu, Dec 31, 2009 at 4:20 AM, Vimal Singh <vimal.newwork@gmail.com> wrot=
+e:
+> On Wed, Dec 30, 2009 at 3:17 AM, Steve Sakoman <sakoman@gmail.com> wrote:
+>> On Tue, Dec 29, 2009 at 12:38 PM, Steve Sakoman <sakoman@gmail.com> wrot=
+e:
+>>
+>>> I can confirm that this issue exists on Overo too. =A0Sadly, switching
+>>> to 16 bit reads does not fix the issue for me. =A0I'll start digging to
+>>> see if I can find what's broken.
+>>
+>> I can also confirm that there are days when I am not even capable of
+>> applying a patch properly :-(
+>>
+>> Switching to 16 bit read accesses does indeed fix the ECC issue on Overo=
+ too.
+>>
+>> Which still leaves us needing to find the root cause of the breakage . .=
+ .
+>
+> There is a bug in nand prefetch read routine, which comes into effect
+> only if nand device is a 16-bit device (as we have in zoom boards).
+> This bug is effective only with below combination of conditions:
+> 1. nand deivce, in use, is a 16 bit device
+> 2. nand driver supports 'subpage' read
+> 3. SW ECC is in use
+>
+> This was not seen old =A0kernel (ex: .23), because when, in early days,
+> we tested this (nand prefetch read in LDP boards) there was no
+> 'subpage read' support.
+> Later when we had subpage read in (.27) kernel, we had hw ecc enabled
+> always in our internal tree. So, we missed this bug.
+>
+> Here is a patch to fix this issue:
+>
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 1bb799f..75004fe 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -295,11 +295,14 @@ static void omap_read_buf_pref(struct
+> =A0 =A0 =A0 =A0u32 *p =3D (u32 *)buf;
+>
+> =A0 =A0 =A0 =A0/* take care of subpage reads */
+> - =A0 =A0 =A0 for (; len % 4 !=3D 0; ) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 *buf++ =3D __raw_readb(info->nand.IO_ADDR_R=
+);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 len--;
+> + =A0 =A0 =A0 if (len % 4) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (info->nand.options & NAND_BUSWIDTH_16)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_read_buf16(mtd, buf, l=
+en % 4);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 else
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_read_buf8(mtd, buf, le=
+n % 4);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 p =3D (u32 *) (buf + len % 4);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 len -=3D len % 4;
+> =A0 =A0 =A0 =A0}
+> - =A0 =A0 =A0 p =3D (u32 *) buf;
+>
+> =A0 =A0 =A0 =A0/* configure and start prefetch transfer */
+> =A0 =A0 =A0 =A0ret =3D gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0)=
+;
 
-Take a closer look at how bad blocks were detected under 2.6.20.
+I tested this on Overo and can confirm that it fixes the issue.
 
-A virgin chip will use a certain byte in the spare area of each
-eraseblock to mark that block as bad. But often we reclaim those bytes
-and transcribe the information into a bad block table elsewhere on the
-flash.
-
-Booting a kernel which ignores the bad block table and looks for the bad
-block markers in the original location will have fairly much the effect
-you describe.
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Steve
