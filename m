@@ -1,23 +1,16 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NRSd5-00046P-Vt
-	for linux-mtd@lists.infradead.org; Sun, 03 Jan 2010 15:44:36 +0000
-From: "Darwin Rambo" <drambo@broadcom.com>
-To: "Bill Gatliff" <bgat@billgatliff.com>,
-	"David Woodhouse" <dwmw2@infradead.org>
-Date: Sun, 3 Jan 2010 07:44:19 -0800
-Subject: RE: Can ID the NAND chip, but every erase block is bad?
-Message-ID: <B125D8217ABC4B43826503DE00A2D44910DFC17E79@SJEXCHCCR01.corp.ad.broadcom.com>
+Subject: Re: Can ID the NAND chip, but every erase block is bad?
+From: David Woodhouse <dwmw2@infradead.org>
+To: Bill Gatliff <bgat@billgatliff.com>
+In-Reply-To: <4B40A27A.30804@billgatliff.com>
 References: <4B3ED430.5040607@billgatliff.com>
 	<1262426622.3181.5832.camel@macbook.infradead.org>
 	<4B40A27A.30804@billgatliff.com>
-In-Reply-To: <4B40A27A.30804@billgatliff.com>
-Content-Language: en-US
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 03 Jan 2010 15:55:15 +0000
+Message-ID: <1262534115.3181.5851.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
+On Sun, 2010-01-03 at 07:58 -0600, Bill Gatliff wrote:
+> 
+> 
+> Ok, I'll take a look into that code.
+> 
 > Is there any way to instruct MTD to discard any previous bad block
 > information, and reconstruct the bad block table from scratch?
 
-You can use the config option that leaves the bad block markers alone in th=
-e oob=20
-and have linux quickly build the bad block table in RAM on bootup instead o=
-f flash.=20
-I think that it's risky to corrupt the bad block markers in the oob of the =
-bad
-block itself since a single accidental erasure can lose _all_ the bad block=
- markers
-in one fell swoop and they can't be reconstructed without detailed knowledg=
-e of the
-factory testing algorithms and environmental test parameters. You could pos=
-sibly
-have redundant blocks for bad block tables in flash to handle this. If you =
-need more=20
-space for strong bch/reed solomon ecc bytes, you can truncate the 8 byte cl=
-eanmarker=20
-down to a byte or two using a custom oob layout map, and the multi-byte ecc=
- can skip
-over the bad block marker.
+In general, it's not possible to reconstruct the bad block table from
+scratch. Don't lose the previous bad block table. That's why we
+generally write two copies of it...
 
-Darwin
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
