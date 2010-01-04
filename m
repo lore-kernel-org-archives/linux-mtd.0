@@ -1,18 +1,24 @@
-Received: from [193.13.178.8] (helo=miranda.se.axis.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NRk1G-0000hD-5J
-	for linux-mtd@lists.infradead.org; Mon, 04 Jan 2010 10:18:42 +0000
-Date: Mon, 4 Jan 2010 11:17:59 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Arno Steffen <arno.steffen@web.de>
-Subject: Re: Empty flash at ... / check_node_data: wrong data CRC 
-In-Reply-To: <1123501046@web.de>
-Message-ID: <Pine.LNX.4.64.1001041113280.5028@lnxricardw.se.axis.com>
-References: <1123501046@web.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from [81.103.221.47] (helo=mtaout01-winn.ispmail.ntl.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NRrlO-0004e0-Rz
+	for linux-mtd@lists.infradead.org; Mon, 04 Jan 2010 18:34:51 +0000
+Received: from aamtaout02-winn.ispmail.ntl.com ([81.103.221.35])
+	by mtaout01-winn.ispmail.ntl.com
+	(InterMail vM.7.08.04.00 201-2186-134-20080326) with ESMTP id
+	<20100104183407.XQPS17029.mtaout01-winn.ispmail.ntl.com@aamtaout02-winn.ispmail.ntl.com>
+	for <linux-mtd@lists.infradead.org>; Mon, 4 Jan 2010 18:34:07 +0000
+Received: from Parkytowers.ntlworld.com ([86.30.40.23])
+	by aamtaout02-winn.ispmail.ntl.com
+	(InterMail vG.2.02.00.01 201-2161-120-102-20060912) with ESMTP id
+	<20100104183407.NJYA21638.aamtaout02-winn.ispmail.ntl.com@Parkytowers.ntlworld.com>
+	for <linux-mtd@lists.infradead.org>; Mon, 4 Jan 2010 18:34:07 +0000
+Date: Mon, 04 Jan 2010 18:33:52 +0000
+To: linux-mtd@lists.infradead.org
+From: David Parkinson <parky_dw@ntlworld.com>
+Subject: M-systems DOC 2000
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Message-Id: <20100104183407.NJYA21638.aamtaout02-winn.ispmail.ntl.com@Parkytowers.ntlworld.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Mon, 4 Jan 2010, Arno Steffen wrote:
+I've been doing stuff with some old GEODE-based thin clients (circa 
+2003) and have Linux running off CF cards on the IDE interface.  A 
+couple of them (Neoware Capio and Relisys RWT200EM) have DOC 2000s on 
+them (32Mb and 16Mb respectively) which hold the original WinCE 
+firmware and I thought it would be interesting to try and utilise 
+these - however Google has not been my friend here.
 
-> I do have a system which is not used with a controlled shutdown, but
-> with a cold heartless poweroff only.
->
-> I am using a jffs2 filesystem as it should be journalling and robust
-> agains power loss.
->
-> But while boot I get  messages like:
->
-> Empty flash at 0x00963864 ends at 0x00964000
->
-> And after finishing boot:
->
-> [root@EEE ]# JFFS2 notice: (181) check_node_data: wrong data CRC in
-> data node at 0x01f8b55c: read 0xa7496669, calculated 0x5aea21d5.
-> JFFS2 notice: (181) check_node_data: wrong data CRC in data node at
-> 0x01f88d3c: read 0xc5d341c, calculated 0x3f0d9534.
->
-> This sound seroius to me. How to prevent this if I can't use "halt" or
-> other controlled shutdown?
+Currently I'm using Tiny Core and have rebuilt the kernel and 
+included MTD support along with the drivers for the DOC 2000.  I've 
+got as far as getting the message "No DiskOnChip devices found" in 
+the start-up messages.  I did wonder whether the M-systems DOS-based 
+tool set (v5.1.4.0?) would help me get a grip on things, but all the 
+"download from here" links that Google found link to the m-systems 
+website that I believe vanished some time ago.  How-to's that I've 
+found are all 4-5 years old and generally refer to M-systems drivers 
+and/or require ancient kernels and specific compilers....  (I have 
+however managed to locate and download the device datasheets!)
 
-On the surface of it, it looks alarming, but generally it isn't serious. Se=
-e:
-http://www.linux-mtd.infradead.org/faq/jffs2.html#L_messages .
+I'd appreciate any pointers to any documentation or tools that would 
+help me with my quest.
 
-In my own experience I get this question a lot, but so for no one has been=
-=20
-able to show any ill effects such as files disappearing or getting=20
-mangled. That would be reason for worry.
+Regards
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+David
