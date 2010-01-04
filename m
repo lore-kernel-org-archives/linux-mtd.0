@@ -1,26 +1,21 @@
-Received: from ey-out-1920.google.com ([74.125.78.148])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NRh44-00044n-GL
-	for linux-mtd@lists.infradead.org; Mon, 04 Jan 2010 07:09:24 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so2140770eyg.26
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 03 Jan 2010 23:09:18 -0800 (PST)
-Sender: Florian Fainelli <f.fainelli@gmail.com>
-From: Florian Fainelli <florian@openwrt.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 4/4] MTD: include ar7part in the list of partitions parsers
-Date: Mon, 4 Jan 2010 08:09:12 +0100
-References: <201001032117.37459.florian@openwrt.org>
-	<1262552177.3181.5891.camel@macbook.infradead.org>
-In-Reply-To: <1262552177.3181.5891.camel@macbook.infradead.org>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201001040809.14480.florian@openwrt.org>
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
-	ralf@linux-mips.org
-Reply-To: Florian Fainelli <florian@openwrt.org>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NRhaY-0002sZ-4e
+	for linux-mtd@lists.infradead.org; Mon, 04 Jan 2010 07:42:58 +0000
+Subject: Re: New mtd-utils release?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+In-Reply-To: <874ontso69.fsf@macbook.be.48ers.dk>
+References: <20091214121439.GC28375@buzzloop.caiaq.de>
+	<1260795633.11112.49.camel@localhost>
+	<874ontso69.fsf@macbook.be.48ers.dk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 04 Jan 2010 09:42:15 +0200
+Message-Id: <1262590935.4512.3.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Daniel Mack <daniel@caiaq.de>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+On Mon, 2009-12-14 at 14:03 +0100, Peter Korsgaard wrote:
+> >>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
+> 
+> Hi,
+> 
+>  >> However, this approach is somewhat hackish anyway, and we would much
+>  >> more like to check out a version that is officially tagged.
+> 
+>  Artem> OK, I can tag them at the beginning of the next year. I'm having
+>  Artem> holydays in 10 min.
+> 
+> Thanks - Enjoy your holidays!
 
-Le dimanche 3 janvier 2010 21:56:17, David Woodhouse a =C3=A9crit :
-> On Sun, 2010-01-03 at 21:17 +0100, Florian Fainelli wrote:
-> > This patch modifies the physmap-flash driver to include
-> > the ar7part partition parser in the list of parsers to
-> > use when a physmap-flash driver is registered. This is
-> > required for AR7 to create partitions correctly.
->=20
-> Hrm, perhaps we'd do better to allow the probe types to be specified in
-> the platform physmap_flash_data?
+I've tagged the current head with v1.3.0. I did not carefully write the
+change-log, though, because I was not prepared for doing the tagging.
+Anyway, I'll try to keep this in mind in the future and provide new tags
+one there is a major change, as well as better change-log.
 
-I guess so, will cook a patch which does that. Thanks!
-=2D-=20
-Best regards, Florian Fainelli
-Email: florian@openwrt.org
-Web: http://openwrt.org
-IRC: [florian] on irc.freenode.net
-=2D------------------------------
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
