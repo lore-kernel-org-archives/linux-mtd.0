@@ -1,17 +1,23 @@
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NRxc1-0006hs-7P
-	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 00:49:34 +0000
-Received: by pxi38 with SMTP id 38so5000842pxi.28
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 04 Jan 2010 16:49:27 -0800 (PST)
-MIME-Version: 1.0
-Date: Tue, 5 Jan 2010 11:49:27 +1100
-Message-ID: <a64f67eb1001041649u500f3a6bx40d443c4a3415f1b@mail.gmail.com>
-Subject: JFFS2 - speed up while booting
-From: linux newbie <linux.newbie79@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NS2ne-0002KL-QJ
+	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 06:21:54 +0000
+Subject: Re: New mtd-utils release?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Robert Schwebel <r.schwebel@pengutronix.de>
+In-Reply-To: <20100104212543.GO17262@pengutronix.de>
+References: <20091214121439.GC28375@buzzloop.caiaq.de>
+	<1260795633.11112.49.camel@localhost>
+	<874ontso69.fsf@macbook.be.48ers.dk>
+	<1262590935.4512.3.camel@localhost>
+	<20100104212543.GO17262@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 05 Jan 2010 08:21:29 +0200
+Message-Id: <1262672489.4512.46.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Daniel Mack <daniel@caiaq.de>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2010-01-04 at 22:25 +0100, Robert Schwebel wrote:
+> Artem,
+> 
+> On Mon, Jan 04, 2010 at 09:42:15AM +0200, Artem Bityutskiy wrote:
+> > I've tagged the current head with v1.3.0. I did not carefully write the
+> > change-log, though, because I was not prepared for doing the tagging.
+> > Anyway, I'll try to keep this in mind in the future and provide new tags
+> > one there is a major change, as well as better change-log.
+> 
+> Could you upload a tarball into ftp://ftp.infradead.org/pub/mtd-utils/?
+> It would make the life of the distribution people easier.
 
-I am using linux version (linux.2.6.31) on my embedded ARM based target.
+No sorry, I do not have access there, and I also think distributions can
+easily fetch from git trees, which is not a problem at all.
 
-We are using JFFS2 filesystem to read/write data to NAND flash
-(32MBytes) and our root file system resides in it.
-
-It takes long time during kernel booting, if we have root file system
-in NAND, but its very fast if we place our file system in SDRAM.
-
-Is there any way to speed up the booting process?
-
-Eagerly waiting for your valuable suggestion.
-
-Thanking You
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
