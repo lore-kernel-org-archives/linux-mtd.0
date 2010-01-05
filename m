@@ -1,30 +1,20 @@
-Received: from ey-out-1920.google.com ([74.125.78.150])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NS57Y-0007C7-SZ
-	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 08:50:36 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so2375040eyg.26
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Jan 2010 00:50:31 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: dedekind1@gmail.com
-Subject: Re: New mtd-utils release?
-References: <20091214121439.GC28375@buzzloop.caiaq.de>
-	<1260795633.11112.49.camel@localhost>
-	<874ontso69.fsf@macbook.be.48ers.dk>
-	<1262590935.4512.3.camel@localhost>
-	<20100104212543.GO17262@pengutronix.de>
-	<1262672489.4512.46.camel@localhost>
-	<87pr5plzfp.fsf@macbook.be.48ers.dk>
-	<1262681059.4263.2.camel@localhost>
-Date: Tue, 05 Jan 2010 09:50:29 +0100
-In-Reply-To: <1262681059.4263.2.camel@localhost> (Artem Bityutskiy's message
-	of "Tue, 05 Jan 2010 10:44:19 +0200")
-Message-ID: <87ljgdlyui.fsf@macbook.be.48ers.dk>
+Received: from [193.13.178.10] (helo=krynn.se.axis.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NS5e7-0007T0-SE
+	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 09:24:17 +0000
+Date: Tue, 5 Jan 2010 10:23:32 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: linux newbie <linux.newbie79@gmail.com>
+Subject: Re: JFFS2 - speed up while booting
+In-Reply-To: <a64f67eb1001050013wd122746iab32bdfc93ba1aee@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.1001051016020.5028@lnxricardw.se.axis.com>
+References: <a64f67eb1001041649u500f3a6bx40d443c4a3415f1b@mail.gmail.com>
+	<Pine.LNX.4.64.1001050905071.5028@lnxricardw.se.axis.com>
+	<a64f67eb1001050013wd122746iab32bdfc93ba1aee@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: dwmw2@infradead.org, Robert Schwebel <r.schwebel@pengutronix.de>,
-	linux-mtd@lists.infradead.org, Daniel Mack <daniel@caiaq.de>
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-Hi,
+On Tue, 5 Jan 2010, linux newbie wrote:
 
- >> I DO think normal tarballs is a lot nicer than a tag somewhere in
- >> $VCS. For meta distributions like ptxdist, OE or buildroot tarballs are
- >> easier to use and mirror, and if nothing else it stops people from
- >> missing the new release when they browse
- >> ftp://ftp.infradead.org/pub/mtd-utils/.
+> Hi,
+>
+> It is slow during every boot. Seems it is scanning for bad blocks (If
+> I enable the debug message. Usually debug is OFF).
 
- Artem> May be.
+During mount, JFFS2 will scan for cleanmarkers in the OOB area of each=20
+block, indicating that the block has been erased and can be used for=20
+storage. If cleanmarkers can not be found in blocks that appear to be=20
+empty (=3D all FFh), it puts the blocks on the erase queue for subsequent=
+=20
+erasure. The erase process takes time and during erasure the flash cannot=
+=20
+be read from which can account for slow booting. However, this should only=
+=20
+happen the first time after mounting a newly flashed file system.=20
+Subsequent mounts should detect the cleanmarkers, and no erase will be=20
+performed. It can take a few minutes to complete the erase procedure=20
+though; if you do a 'top' on your system you'll see the pdflush task at=20
+the top while it is in progress, so if you reboot your system several=20
+times in succession JFFS2 might not have time to complete the erase of all=
+=20
+unused blocks.
 
- Artem> However, I do not want to be impolite, but I just do not want to do
- Artem> that. I someone else wants - no problem. I just do not volunteer to
- Artem> maintain the FTP directory with the tarballs, I only volunteer to
- Artem> provide the tags. Apologies.
+I don't know if this has been addressed recently, but the odd thing is=20
+that if you for instance implement separate erase sequence for instance in=
+=20
+your flash driver, the total erase+boot time is much less than if you let=
+=20
+JFFS2 handle it via the pdflush task.
 
-Ok, I see that someone (David?) already uploaded a tarball.
+Another option is to write cleanmarkers to empty blocks while writing your=
+=20
+file system image. I don't think nandwrite has an option for that though.
 
-Thanks, both.
+But at any rate, you should only see this slowdown after first mount.=20
+Subsequent mounts should find the cleanmarkers in place and no erasure=20
+should be necessary. So I'm not convinced this is actually your problem.
 
--- 
-Bye, Peter Korsgaard
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
