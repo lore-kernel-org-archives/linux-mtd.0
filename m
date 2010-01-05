@@ -1,25 +1,16 @@
-Received: from [80.68.89.115] (helo=mail2.shareable.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NS7oi-0006hw-Eo
-	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 11:43:20 +0000
-Date: Tue, 5 Jan 2010 11:42:32 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Peter Korsgaard <jacmet@sunsite.dk>
-Subject: Re: New mtd-utils release?
-Message-ID: <20100105114232.GA4603@shareable.org>
-References: <20091214121439.GC28375@buzzloop.caiaq.de>
-	<1260795633.11112.49.camel@localhost>
-	<874ontso69.fsf@macbook.be.48ers.dk>
-	<1262590935.4512.3.camel@localhost>
-	<20100104212543.GO17262@pengutronix.de>
-	<1262672489.4512.46.camel@localhost>
-	<87pr5plzfp.fsf@macbook.be.48ers.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pr5plzfp.fsf@macbook.be.48ers.dk>
-Cc: linux-mtd@lists.infradead.org, Robert Schwebel <r.schwebel@pengutronix.de>,
-	dwmw2@infradead.org, Daniel Mack <daniel@caiaq.de>, dedekind1@gmail.com
+Received: from exchange.solarflare.com ([216.237.3.220])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NSBBj-00035M-UC
+	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 15:19:20 +0000
+Subject: [PATCH 0/6] mtd: Dynamic allocation of device numbers
+From: Ben Hutchings <bhutchings@solarflare.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Date: Tue, 05 Jan 2010 15:19:09 +0000
+Message-Id: <1262704750.2837.3.camel@achroite.uk.solarflarecom.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Peter Korsgaard wrote:
-> missing the new release when they browse
-> ftp://ftp.infradead.org/pub/mtd-utils/.
+This patch series removes the static array of MTD device pointers from
+mtdcore and replaces it with an idr structure for dynamic allocation of
+device numbers.  It removes MAX_MTD_DEVICES, which is now meaningless.
 
-Fwiw, I'm one of those people who browsers the FTP directory
-occasionally to get whatever appears to be the latest version, and
-would not have known to pick up the new release without the new tarball.
+Ben.
 
-That's because my package build scripts, much like other distros
-(Ptxdist, OE, uClinux etc.), include a URL to the original source they
-are using, and to update the distro, it's natural to look in the same
-place for new versions.
+Ben Hutchings (6):
+  mtd: Introduce and use iteration macro for reading the MTD device
+    table
+  mtd: Use get_mtd_device_nm() to find named device in get_sb_mtd()
+  nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use it instead of
+    MAX_MTD_DEVICES
+  mtd: Remove unnecessary comparisons with MAX_MTD_DEVICES
+  mtdblock: Replace array of block cache info with pointers in struct
+    mtd_info
+  mtd: Replace static array of devices with an idr structure
 
-If an FTP/HTTP directory _was_ apparently the primary location of some
-package, and then ceases to be kept up to date because it's moved or
-because git has taken over, at least please put a README or similar on
-the old site saying that the primary location has moved elsewhere.
+ drivers/mtd/devices/pmc551.c |    4 +-
+ drivers/mtd/mtd_blkdevs.c    |   10 +-
+ drivers/mtd/mtdblock.c       |   22 ++---
+ drivers/mtd/mtdchar.c        |    3 -
+ drivers/mtd/mtdcore.c        |  205 +++++++++++++++++++++--------------------
+ drivers/mtd/mtdcore.h        |    7 ++-
+ drivers/mtd/mtdoops.c        |    5 -
+ drivers/mtd/mtdsuper.c       |   18 ++---
+ drivers/mtd/nand/nandsim.c   |    7 +-
+ include/linux/mtd/mtd.h      |    5 +-
+ 10 files changed, 143 insertions(+), 143 deletions(-)
 
-However, in this case it appears that the FTP directory is still being
-kept up to date, so there is no need.
-
-Thanks a lot,
--- Jamie
+-- 
+Ben Hutchings, Senior Software Engineer, Solarflare Communications
+Not speaking for my employer; that's the marketing department's job.
+They asked us to note that Solarflare product names are trademarked.
