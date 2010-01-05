@@ -1,19 +1,25 @@
-Received: from [81.174.226.42] (helo=numbat.localnet)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NS7Wq-00023Z-Np
-	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 11:24:53 +0000
-Received: from turtle.localnet (turtle.localnet [172.16.1.38])
-	by numbat.localnet (Postfix) with ESMTP id 1516FE3980
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  5 Jan 2010 11:14:37 +0000 (GMT)
-Date: Tue, 5 Jan 2010 11:14:36 +0000
-From: Peter Horton <zero@colonel-panic.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] UBI fails to initialise in kernel update marker
-Message-ID: <20100105111436.GA2046@turtle.localnet>
+Received: from [80.68.89.115] (helo=mail2.shareable.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NS7oi-0006hw-Eo
+	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 11:43:20 +0000
+Date: Tue, 5 Jan 2010 11:42:32 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+Subject: Re: New mtd-utils release?
+Message-ID: <20100105114232.GA4603@shareable.org>
+References: <20091214121439.GC28375@buzzloop.caiaq.de>
+	<1260795633.11112.49.camel@localhost>
+	<874ontso69.fsf@macbook.be.48ers.dk>
+	<1262590935.4512.3.camel@localhost>
+	<20100104212543.GO17262@pengutronix.de>
+	<1262672489.4512.46.camel@localhost>
+	<87pr5plzfp.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <87pr5plzfp.fsf@macbook.be.48ers.dk>
+Cc: linux-mtd@lists.infradead.org, Robert Schwebel <r.schwebel@pengutronix.de>,
+	dwmw2@infradead.org, Daniel Mack <daniel@caiaq.de>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The in kernel copy of a volume's update marker is not initialised from the
-volume table.
+Peter Korsgaard wrote:
+> missing the new release when they browse
+> ftp://ftp.infradead.org/pub/mtd-utils/.
 
-Signed-off-by: Peter Horton <zero@colonel-panic.org>
+Fwiw, I'm one of those people who browsers the FTP directory
+occasionally to get whatever appears to be the latest version, and
+would not have known to pick up the new release without the new tarball.
 
---- linux-2.6.32.orig/drivers/mtd/ubi/vtbl.c	2010-01-05 10:56:13.000000000 +0000
-+++ linux-2.6.32/drivers/mtd/ubi/vtbl.c	2010-01-05 10:57:03.000000000 +0000
-@@ -566,6 +566,7 @@
- 		vol->reserved_pebs = be32_to_cpu(vtbl[i].reserved_pebs);
- 		vol->alignment = be32_to_cpu(vtbl[i].alignment);
- 		vol->data_pad = be32_to_cpu(vtbl[i].data_pad);
-+		vol->upd_marker = vtbl[i].upd_marker;
- 		vol->vol_type = vtbl[i].vol_type == UBI_VID_DYNAMIC ?
- 					UBI_DYNAMIC_VOLUME : UBI_STATIC_VOLUME;
- 		vol->name_len = be16_to_cpu(vtbl[i].name_len);
+That's because my package build scripts, much like other distros
+(Ptxdist, OE, uClinux etc.), include a URL to the original source they
+are using, and to update the distro, it's natural to look in the same
+place for new versions.
+
+If an FTP/HTTP directory _was_ apparently the primary location of some
+package, and then ceases to be kept up to date because it's moved or
+because git has taken over, at least please put a README or similar on
+the old site saying that the primary location has moved elsewhere.
+
+However, in this case it appears that the FTP directory is still being
+kept up to date, so there is no need.
+
+Thanks a lot,
+-- Jamie
