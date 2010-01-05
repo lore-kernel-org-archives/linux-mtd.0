@@ -1,21 +1,28 @@
-Received: from mail-px0-f200.google.com ([209.85.216.200])
+Received: from mail-ew0-f221.google.com ([209.85.219.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NS4Y2-00078y-HA
-	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 08:13:54 +0000
-Received: by pxi38 with SMTP id 38so5279568pxi.28
+	id 1NS4vI-0003Lt-Tr
+	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 08:37:57 +0000
+Received: by ewy21 with SMTP id 21so8456111ewy.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Jan 2010 00:13:48 -0800 (PST)
+	Tue, 05 Jan 2010 00:37:50 -0800 (PST)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: dedekind1@gmail.com
+Subject: Re: New mtd-utils release?
+References: <20091214121439.GC28375@buzzloop.caiaq.de>
+	<1260795633.11112.49.camel@localhost>
+	<874ontso69.fsf@macbook.be.48ers.dk>
+	<1262590935.4512.3.camel@localhost>
+	<20100104212543.GO17262@pengutronix.de>
+	<1262672489.4512.46.camel@localhost>
+Date: Tue, 05 Jan 2010 09:37:46 +0100
+In-Reply-To: <1262672489.4512.46.camel@localhost> (Artem Bityutskiy's message
+	of "Tue, 05 Jan 2010 08:21:29 +0200")
+Message-ID: <87pr5plzfp.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1001050905071.5028@lnxricardw.se.axis.com>
-References: <a64f67eb1001041649u500f3a6bx40d443c4a3415f1b@mail.gmail.com>
-	<Pine.LNX.4.64.1001050905071.5028@lnxricardw.se.axis.com>
-Date: Tue, 5 Jan 2010 19:13:48 +1100
-Message-ID: <a64f67eb1001050013wd122746iab32bdfc93ba1aee@mail.gmail.com>
-Subject: Re: JFFS2 - speed up while booting
-From: linux newbie <linux.newbie79@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Cc: dwmw2@infradead.org, Robert Schwebel <r.schwebel@pengutronix.de>,
+	linux-mtd@lists.infradead.org, Daniel Mack <daniel@caiaq.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +32,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+>>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-It is slow during every boot. Seems it is scanning for bad blocks (If
-I enable the debug message. Usually debug is OFF).
+ >> Could you upload a tarball into ftp://ftp.infradead.org/pub/mtd-utils/?
+ >> It would make the life of the distribution people easier.
 
-Thanks
+ Artem> No sorry, I do not have access there, and I also think distributions can
+ Artem> easily fetch from git trees, which is not a problem at all.
 
-On Tue, Jan 5, 2010 at 7:06 PM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> On Tue, 5 Jan 2010, linux newbie wrote:
->
->> Hi,
->>
->> I am using linux version (linux.2.6.31) on my embedded ARM based target.
->>
->> We are using JFFS2 filesystem to read/write data to NAND flash
->> (32MBytes) and our root file system resides in it.
->>
->> It takes long time during kernel booting, if we have root file system
->> in NAND, but its very fast if we place our file system in SDRAM.
->>
->> Is there any way to speed up the booting process?
->>
->> Eagerly waiting for your valuable suggestion.
->
-> Is it slow during every boot or just the first after you've written your
-> file system image to the flash?
->
-> /Ricard
-> --
-> Ricard Wolf Wanderl=F6f =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden =A0 =A0 =A0 =A0 =A0 =A0www.axis.com
-> Phone +46 46 272 2016 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- Fax +46 46 13 61 30
->
+Who does, David?
+
+I DO think normal tarballs is a lot nicer than a tag somewhere in
+$VCS. For meta distributions like ptxdist, OE or buildroot tarballs are
+easier to use and mirror, and if nothing else it stops people from
+missing the new release when they browse
+ftp://ftp.infradead.org/pub/mtd-utils/.
+
+-- 
+Bye, Peter Korsgaard
