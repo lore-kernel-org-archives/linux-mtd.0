@@ -1,16 +1,15 @@
-Subject: RE: [PATCH] drivers/mtd/nand/gpio.c: use resource_size()
-From: David Woodhouse <dwmw2@infradead.org>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE190902089250@mi8nycmail19.Mi8.com>
-References: <BD79186B4FD85F4B8E60E381CAEE19090200EA54@mi8nycmail19.Mi8.com>
-	<1262292881.3181.5632.camel@macbook.infradead.org>
-	<BD79186B4FD85F4B8E60E381CAEE190902089250@mi8nycmail19.Mi8.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Jan 2010 18:35:25 +0000
-Message-ID: <1262716525.3181.7222.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
+Received: from [213.165.64.20] (helo=mail.gmx.net)
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NSFG2-0000XL-SR
+	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 19:40:03 +0000
+From: Andreas Fenkart <andreas.fenkart@streamunlimited.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/1] mtd: m25p80: Add erase timer to status polling.
+Date: Tue,  5 Jan 2010 20:40:01 +0100
+Message-Id: <1262720401-23480-2-git-send-email-andreas.fenkart@streamunlimited.com>
+In-Reply-To: <1262720401-23480-1-git-send-email-andreas.fenkart@streamunlimited.com>
+References: <1262720401-23480-1-git-send-email-andreas.fenkart@streamunlimited.com>
+Cc: andreas.fenkart@streamunlimited.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +19,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-01-05 at 11:09 -0500, H Hartley Sweeten wrote:
-> On Thursday, December 31, 2009 1:55 PM, David Woodhouse wrote:
-> > On Mon, 2009-12-14 at 16:30 -0500, H Hartley Sweeten wrote:
-> >> 
-> >> -       release_mem_region(res0->start, res0->end - res0->start + 1);
-> >> +       release_mem_region(res0->start, resouce_size(res0)); 
-> >
-> > That's not going to compile. I fixed it up.
-> 
-> Oops.. Sorry about that. Thanks for fixing.
-> 
-> > Every patch in this batch failed to apply cleanly with git-am, too --
-> > there was something odd about the whitespace at the end of each one.
-> 
-> I had the same issue with some patches I sent to David Miller.  I think
-> it's finally resolved.  My mailer was screwing with the last line in the
-> message.  Sorry about that.
-> 
-> Do you need me to resubmit the series?
 
-No, I have them. Thanks.
+Signed-off-by: Andreas Fenkart <andreas.fenkart@streamunlimited.com>
+---
+ drivers/mtd/devices/m25p80.c |   39 +++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 39 insertions(+), 0 deletions(-)
 
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index f3f4768..42925cc 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -80,6 +80,9 @@ struct m25p {
+ 	u16			addr_width;
+ 	u8			erase_opcode;
+ 	u8			*command;
++	int			erase_running;
++	unsigned long		erase_start;
++	int			erase_delay;
+ };
+ 
+ static inline struct m25p *mtd_to_m25p(struct mtd_info *mtd)
+@@ -159,6 +162,39 @@ static int wait_till_ready(struct m25p *flash)
+ 
+ 	deadline = jiffies + MAX_READY_WAIT_JIFFIES;
+ 
++	if (flash->erase_running) {
++		unsigned long erase_expires;
++		int idle;
++
++		flash->erase_running = 0;
++
++		if (flash->erase_delay < 0)
++			flash->erase_delay = HZ / 4; /* 250 ms */
++
++		erase_expires = flash->erase_start + flash->erase_delay;
++
++		if (time_before(jiffies, erase_expires)) {
++			set_current_state(TASK_INTERRUPTIBLE);
++			schedule_timeout(erase_expires - jiffies);
++		}
++
++		if (time_before(jiffies, erase_expires + 2)) {
++			sr = read_sr(flash);
++			if (sr < 0)
++				return 1;
++
++			idle = !(sr & SR_WIP);
++			if (idle)
++				/* favor flash latency/throughput over cpu */
++				flash->erase_delay -= HZ / 20; /* 50 ms */
++			else
++				flash->erase_delay += HZ / 100; /* 10 ms */
++
++			if (idle)
++				return 0;
++		}
++	}
++
+ 	do {
+ 		if ((sr = read_sr(flash)) < 0)
+ 			break;
+@@ -234,6 +270,8 @@ static int erase_sector(struct m25p *flash, u32 offset)
+ 	flash->command[0] = flash->erase_opcode;
+ 	m25p_addr2cmd(flash, offset, flash->command);
+ 
++	flash->erase_running = 1;
++	flash->erase_start = jiffies;
+ 	spi_write(flash->spi, flash->command, m25p_cmdsz(flash));
+ 
+ 	return 0;
+@@ -821,6 +859,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	}
+ 
+ 	flash->spi = spi;
++	flash->erase_delay = HZ / 4; /* 250 ms */
+ 	mutex_init(&flash->lock);
+ 	dev_set_drvdata(&spi->dev, flash);
+ 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+1.6.5.7
