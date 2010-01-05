@@ -1,5 +1,5 @@
 Subject: Re: New mtd-utils release?
-From: David Woodhouse <dwmw2@infradead.org>
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Peter Korsgaard <jacmet@sunsite.dk>
 In-Reply-To: <87pr5plzfp.fsf@macbook.be.48ers.dk>
 References: <20091214121439.GC28375@buzzloop.caiaq.de>
@@ -10,12 +10,13 @@ References: <20091214121439.GC28375@buzzloop.caiaq.de>
 	<1262672489.4512.46.camel@localhost>
 	<87pr5plzfp.fsf@macbook.be.48ers.dk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Jan 2010 08:43:40 +0000
-Message-ID: <1262681020.3181.7176.camel@macbook.infradead.org>
+Date: Tue, 05 Jan 2010 10:44:19 +0200
+Message-Id: <1262681059.4263.2.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Robert Schwebel <r.schwebel@pengutronix.de>, linux-mtd@lists.infradead.org,
-	Daniel Mack <daniel@caiaq.de>, dedekind1@gmail.com
+Content-Transfer-Encoding: 8bit
+Cc: dwmw2@infradead.org, Robert Schwebel <r.schwebel@pengutronix.de>,
+	linux-mtd@lists.infradead.org, Daniel Mack <daniel@caiaq.de>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,7 +37,7 @@ On Tue, 2010-01-05 at 09:37 +0100, Peter Korsgaard wrote:
 > 
 > Who does, David?
 
-Artem, Thomas, Josh and myself.
+Dunno.
 
 > I DO think normal tarballs is a lot nicer than a tag somewhere in
 > $VCS. For meta distributions like ptxdist, OE or buildroot tarballs are
@@ -44,8 +45,13 @@ Artem, Thomas, Josh and myself.
 > missing the new release when they browse
 > ftp://ftp.infradead.org/pub/mtd-utils/.
 
-Yeah, I agree.
+May be.
+
+However, I do not want to be impolite, but I just do not want to do
+that. I someone else wants - no problem. I just do not volunteer to
+maintain the FTP directory with the tarballs, I only volunteer to
+provide the tags. Apologies.
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
