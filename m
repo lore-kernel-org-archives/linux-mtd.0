@@ -1,14 +1,15 @@
 Received: from mail.solarflare.com ([216.237.3.220]
 	helo=exchange.solarflare.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSBDR-0006rG-SR
-	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 15:21:06 +0000
-Subject: [PATCH 4/6] mtd: Remove unnecessary comparisons with MAX_MTD_DEVICES
+	id 1NSBEx-0001J1-U3
+	for linux-mtd@lists.infradead.org; Tue, 05 Jan 2010 15:22:40 +0000
+Subject: [PATCH 5/6] mtdblock: Replace array of block cache info with
+	pointers in struct mtd_info
 From: Ben Hutchings <bhutchings@solarflare.com>
 To: David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain
-Date: Tue, 05 Jan 2010 15:20:57 +0000
-Message-Id: <1262704857.2837.11.camel@achroite.uk.solarflarecom.com>
+Date: Tue, 05 Jan 2010 15:22:31 +0000
+Message-Id: <1262704951.2837.14.camel@achroite.uk.solarflarecom.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
@@ -21,67 +22,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MAX_MTD_DEVICES is about to be removed.
+This is preparation for removing the static limit on the number of MTD
+devices.
 
 Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
 ---
- drivers/mtd/devices/pmc551.c |    4 ++--
- drivers/mtd/mtdchar.c        |    3 ---
- drivers/mtd/mtdoops.c        |    5 -----
- 3 files changed, 2 insertions(+), 10 deletions(-)
+This isn't terribly clean but I couldn't think of a better way to do it.
+Are there any lifetime issues with this?
 
-diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-index d2fd550..fc8ea0a 100644
---- a/drivers/mtd/devices/pmc551.c
-+++ b/drivers/mtd/devices/pmc551.c
-@@ -668,7 +668,7 @@ static int __init init_pmc551(void)
- {
- 	struct pci_dev *PCI_Device = NULL;
- 	struct mypriv *priv;
--	int count, found = 0;
-+	int found = 0;
+Ben.
+
+ drivers/mtd/mtdblock.c  |   22 ++++++++++------------
+ include/linux/mtd/mtd.h |    4 ++++
+ 2 files changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index 9f41b1a..d680468 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -19,7 +19,7 @@
+ #include <linux/mutex.h>
+ 
+
+-static struct mtdblk_dev {
++struct mtdblk_dev {
  	struct mtd_info *mtd;
- 	u32 length = 0;
+ 	int count;
+ 	struct mutex cache_mutex;
+@@ -27,7 +27,7 @@ static struct mtdblk_dev {
+ 	unsigned long cache_offset;
+ 	unsigned int cache_size;
+ 	enum { STATE_EMPTY, STATE_CLEAN, STATE_DIRTY } cache_state;
+-} *mtdblks[MAX_MTD_DEVICES];
++};
  
-@@ -695,7 +695,7 @@ static int __init init_pmc551(void)
- 	/*
- 	 * PCU-bus chipset probe.
+ static struct mutex mtdblks_lock;
+ 
+@@ -244,14 +244,14 @@ static int do_cached_read (struct mtdblk_dev *mtdblk, unsigned long pos,
+ static int mtdblock_readsect(struct mtd_blktrans_dev *dev,
+ 			      unsigned long block, char *buf)
+ {
+-	struct mtdblk_dev *mtdblk = mtdblks[dev->devnum];
++	struct mtdblk_dev *mtdblk = dev->mtd->blk_dev;
+ 	return do_cached_read(mtdblk, block<<9, 512, buf);
+ }
+ 
+ static int mtdblock_writesect(struct mtd_blktrans_dev *dev,
+ 			      unsigned long block, char *buf)
+ {
+-	struct mtdblk_dev *mtdblk = mtdblks[dev->devnum];
++	struct mtdblk_dev *mtdblk = dev->mtd->blk_dev;
+ 	if (unlikely(!mtdblk->cache_data && mtdblk->cache_size)) {
+ 		mtdblk->cache_data = vmalloc(mtdblk->mtd->erasesize);
+ 		if (!mtdblk->cache_data)
+@@ -268,13 +268,12 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
+ {
+ 	struct mtdblk_dev *mtdblk;
+ 	struct mtd_info *mtd = mbd->mtd;
+-	int dev = mbd->devnum;
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL1,"mtdblock_open\n");
+ 
+ 	mutex_lock(&mtdblks_lock);
+-	if (mtdblks[dev]) {
+-		mtdblks[dev]->count++;
++	if (mtd->blk_dev) {
++		mtd->blk_dev->count++;
+ 		mutex_unlock(&mtdblks_lock);
+ 		return 0;
+ 	}
+@@ -296,7 +295,7 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
+ 		mtdblk->cache_data = NULL;
+ 	}
+ 
+-	mtdblks[dev] = mtdblk;
++	mtd->blk_dev = mtdblk;
+ 	mutex_unlock(&mtdblks_lock);
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL1, "ok\n");
+@@ -306,8 +305,7 @@ static int mtdblock_open(struct mtd_blktrans_dev *mbd)
+ 
+ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
+ {
+-	int dev = mbd->devnum;
+-	struct mtdblk_dev *mtdblk = mtdblks[dev];
++	struct mtdblk_dev *mtdblk = mbd->mtd->blk_dev;
+ 
+    	DEBUG(MTD_DEBUG_LEVEL1, "mtdblock_release\n");
+ 
+@@ -319,7 +317,7 @@ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
+ 
+ 	if (!--mtdblk->count) {
+ 		/* It was the last usage. Free the device */
+-		mtdblks[dev] = NULL;
++		mtdblk->mtd->blk_dev = NULL;
+ 		if (mtdblk->mtd->sync)
+ 			mtdblk->mtd->sync(mtdblk->mtd);
+ 		vfree(mtdblk->cache_data);
+@@ -335,7 +333,7 @@ static int mtdblock_release(struct mtd_blktrans_dev *mbd)
+ 
+ static int mtdblock_flush(struct mtd_blktrans_dev *dev)
+ {
+-	struct mtdblk_dev *mtdblk = mtdblks[dev->devnum];
++	struct mtdblk_dev *mtdblk = dev->mtd->blk_dev;
+ 
+ 	mutex_lock(&mtdblk->cache_mutex);
+ 	write_cached_data(mtdblk);
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 0f32a9b..5c1b1ac 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -177,6 +177,10 @@ struct mtd_info {
  	 */
--	for (count = 0; count < MAX_MTD_DEVICES; count++) {
-+	for (;;) {
+ 	struct backing_dev_info *backing_dev_info;
  
- 		if ((PCI_Device = pci_get_device(PCI_VENDOR_ID_V3_SEMI,
- 						  PCI_DEVICE_ID_V3_SEMI_V370PDC,
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 5b081cb..04fd7e5 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -67,9 +67,6 @@ static int mtd_open(struct inode *inode, struct file *file)
++#if defined(CONFIG_MTD_BLOCK) || defined(CONFIG_MTD_BLOCK_MODULE)
++	/* Block device state */
++	struct mtdblk_dev *blk_dev;
++#endif
  
- 	DEBUG(MTD_DEBUG_LEVEL0, "MTD_open\n");
- 
--	if (devnum >= MAX_MTD_DEVICES)
--		return -ENODEV;
--
- 	/* You can't open the RO devices RW */
- 	if ((file->f_mode & FMODE_WRITE) && (minor & 1))
- 		return -EACCES;
-diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 92e12df..328313c 100644
---- a/drivers/mtd/mtdoops.c
-+++ b/drivers/mtd/mtdoops.c
-@@ -429,11 +429,6 @@ static int __init mtdoops_init(void)
- 	mtd_index = simple_strtoul(mtddev, &endp, 0);
- 	if (*endp == '\0')
- 		cxt->mtd_index = mtd_index;
--	if (cxt->mtd_index > MAX_MTD_DEVICES) {
--		printk(KERN_ERR "mtdoops: invalid mtd device number (%u) given\n",
--				mtd_index);
--		return -EINVAL;
--	}
- 
- 	cxt->oops_buf = vmalloc(record_size);
- 	if (!cxt->oops_buf) {
+ 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
+ 	int (*write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
 -- 
 1.5.5
 
