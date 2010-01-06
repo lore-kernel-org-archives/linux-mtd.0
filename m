@@ -1,16 +1,17 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSXJQ-0005my-Sm
-	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 14:56:45 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
+	id 1NSXJu-0005wo-Sv
+	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 14:57:15 +0000
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
 	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o06EspOT013908
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Jan 2010 08:56:39 -0600
+	o06EtpCG014800
+	for <linux-mtd@lists.infradead.org>; Wed, 6 Jan 2010 08:57:10 -0600
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/3] UBI: mark few variables as __initdata
-Date: Wed,  6 Jan 2010 16:56:25 +0200
-Message-Id: <1262789785-32520-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 1/3] UBI: add more checks to chdev open
+Date: Wed,  6 Jan 2010 16:56:19 +0200
+Message-Id: <1262789779-31354-1-git-send-email-dedekind1@gmail.com>
 Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,27 +24,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
+When opening UBI volumes by their character device names, make
+sure we are opening character devices, not block devices or any
+other inode type.
+
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/build.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/ubi/kapi.c |   15 +++++++--------
+ 1 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index 14cec04..eb8f19f 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -59,10 +59,10 @@ struct mtd_dev_param {
- };
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 277786e..1361574 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -291,8 +291,7 @@ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
+  */
+ struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
+ {
+-	int error, ubi_num, vol_id;
+-	struct ubi_volume_desc *ret;
++	int error, ubi_num, vol_id, mod;
+ 	struct inode *inode;
+ 	struct path path;
  
- /* Numbers of elements set in the @mtd_dev_param array */
--static int mtd_devs;
-+static int __initdata mtd_devs;
+@@ -306,16 +305,16 @@ struct ubi_volume_desc *ubi_open_volume_path(const char *pathname, int mode)
+ 		return ERR_PTR(error);
  
- /* MTD devices specification parameters */
--static struct mtd_dev_param mtd_dev_param[UBI_MAX_DEVICES];
-+static struct mtd_dev_param __initdata mtd_dev_param[UBI_MAX_DEVICES];
+ 	inode = path.dentry->d_inode;
++	mod = inode->i_mode;
+ 	ubi_num = ubi_major2num(imajor(inode));
+ 	vol_id = iminor(inode) - 1;
++	path_put(&path);
  
- /* Root UBI "class" object (corresponds to '/<sysfs>/class/ubi/') */
- struct class *ubi_class;
++	if (!S_ISCHR(mod))
++		return ERR_PTR(-EINVAL);
+ 	if (vol_id >= 0 && ubi_num >= 0)
+-		ret = ubi_open_volume(ubi_num, vol_id, mode);
+-	else
+-		ret = ERR_PTR(-ENODEV);
+-
+-	path_put(&path);
+-	return ret;
++		return ubi_open_volume(ubi_num, vol_id, mode);
++	return ERR_PTR(-ENODEV);
+ }
+ EXPORT_SYMBOL_GPL(ubi_open_volume_path);
+ 
 -- 
 1.6.2.5
