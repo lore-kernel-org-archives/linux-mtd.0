@@ -1,17 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSXJv-0005wq-S6
-	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 14:57:16 +0000
-Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
-	by mgw-mx03.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o06Ev4HA017631
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Jan 2010 16:57:09 +0200
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] UBI: support attaching by MTD character device name
-Date: Wed,  6 Jan 2010 16:56:31 +0200
-Message-Id: <1262789791-1232-1-git-send-email-dedekind1@gmail.com>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: [PATCH 2/2] Remove now-defunct ts7250 nand driver
+Date: Wed, 6 Jan 2010 12:26:23 -0500
+Message-ID: <BD79186B4FD85F4B8E60E381CAEE1909020893C9@mi8nycmail19.Mi8.com>
+In-Reply-To: <1262784693.3181.8034.camel@macbook.infradead.org>
+References: <201001051459.58621.hartleys@visionengravers.com>
+	<1262784693.3181.8034.camel@macbook.infradead.org>
+From: "H Hartley Sweeten" <hartleys@visionengravers.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: joff@embeddedarm.com, mcrapet@gmail.com,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	ARM Kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,128 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-
-This patch adds a capability to attach MTD devices by their character
-device paths. For example, one can do:
-
-$ modprobe ubi mtd=/dev/mtd0
-
-to attach /dev/mtd0.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/build.c |   66 +++++++++++++++++++++++++++++++++++++++--------
- 1 files changed, 55 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index eb8f19f..99ff57d 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -37,6 +37,7 @@
- #include <linux/module.h>
- #include <linux/moduleparam.h>
- #include <linux/stringify.h>
-+#include <linux/namei.h>
- #include <linux/stat.h>
- #include <linux/miscdevice.h>
- #include <linux/log2.h>
-@@ -50,7 +51,8 @@
- 
- /**
-  * struct mtd_dev_param - MTD device parameter description data structure.
-- * @name: MTD device name or number string
-+ * @name: MTD character device node path, MTD device name, or MTD device number
-+ *        string
-  * @vid_hdr_offs: VID header offset
-  */
- struct mtd_dev_param {
-@@ -1116,13 +1118,50 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
- }
- 
- /**
-- * find_mtd_device - open an MTD device by its name or number.
-- * @mtd_dev: name or number of the device
-+ * open_mtd_by_chdev - open an MTD device by its character device node path.
-+ * @mtd_dev: MTD character device node path
-+ *
-+ * This helper function opens an MTD device by its character node device path.
-+ * Returns MTD device description object in case of success and a negative
-+ * error code in case of failure.
-+ */
-+static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
-+{
-+	int err, major, minor, mode;
-+	struct path path;
-+
-+	/* Probably this is an MTD character device node path */
-+	err = kern_path(mtd_dev, LOOKUP_FOLLOW, &path);
-+	if (err)
-+		return ERR_PTR(err);
-+
-+	/* MTD device number is defined by the major / minor numbers */
-+	major = imajor(path.dentry->d_inode);
-+	minor = iminor(path.dentry->d_inode);
-+	mode = path.dentry->d_inode->i_mode;
-+	path_put(&path);
-+	if (major != MTD_CHAR_MAJOR || !S_ISCHR(mode))
-+		return ERR_PTR(-EINVAL);
-+
-+	if (minor & 1)
-+		/*
-+		 * Just do not think the "/dev/mtdrX" devices support is need,
-+		 * so do not support them to avoid doing extra work.
-+		 */
-+		return ERR_PTR(-EINVAL);
-+
-+	return get_mtd_device(NULL, minor / 2);
-+}
-+
-+/**
-+ * open_mtd_device - open MTD device by name, character device path, or number.
-+ * @mtd_dev: name, character device node path, or MTD device device number
-  *
-  * This function tries to open and MTD device described by @mtd_dev string,
-- * which is first treated as an ASCII number, and if it is not true, it is
-- * treated as MTD device name. Returns MTD device description object in case of
-- * success and a negative error code in case of failure.
-+ * which is first treated as ASCII MTD device number, and if it is not true, it
-+ * is treated as MTD device name, and if that is also not true, it is treated
-+ * as MTD character device node path. Returns MTD device description object in
-+ * case of success and a negative error code in case of failure.
-  */
- static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
- {
-@@ -1137,6 +1176,9 @@ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
- 		 * MTD device name.
- 		 */
- 		mtd = get_mtd_device_nm(mtd_dev);
-+		if (IS_ERR(mtd) && PTR_ERR(mtd) == -ENODEV)
-+			/* Probably this is an MTD character device node path */
-+			mtd = open_mtd_by_chdev(mtd_dev);
- 	} else
- 		mtd = get_mtd_device(NULL, mtd_num);
- 
-@@ -1352,13 +1394,15 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
- 
- module_param_call(mtd, ubi_mtd_param_parse, NULL, NULL, 000);
- MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: "
--		      "mtd=<name|num>[,<vid_hdr_offs>].\n"
-+		      "mtd=<name|num|path>[,<vid_hdr_offs>].\n"
- 		      "Multiple \"mtd\" parameters may be specified.\n"
--		      "MTD devices may be specified by their number or name.\n"
-+		      "MTD devices may be specified by their number, name, or "
-+		      "path to the MTD character device node.\n"
- 		      "Optional \"vid_hdr_offs\" parameter specifies UBI VID "
--		      "header position and data starting position to be used "
--		      "by UBI.\n"
--		      "Example: mtd=content,1984 mtd=4 - attach MTD device"
-+		      "header position to be used by UBI.\n"
-+		      "Example 1: mtd=/dev/mtd0 - attach MTD device "
-+		      "/dev/mtd0.\n"
-+		      "Example 2: mtd=content,1984 mtd=4 - attach MTD device "
- 		      "with name \"content\" using VID header offset 1984, and "
- 		      "MTD device number 4 with default VID header offset.");
- 
--- 
-1.6.2.5
+T24gV2VkbmVzZGF5LCBKYW51YXJ5IDA2LCAyMDEwIDY6MzIgQU0sIERhdmlkIFdvb2Rob3VzZSB3
+cm90ZToNCj4gT24gVHVlLCAyMDEwLTAxLTA1IGF0IDE0OjU5IC0wNzAwLCBIIEhhcnRsZXkgU3dl
+ZXRlbiB3cm90ZToNCj4+IFRoZSB0czcyeHggcGxhdGZvcm0gaGFzIGJlZW4gdXBkYXRlZCB0byB1
+c2UgdGhlIGdlbmVyaWMgcGxhdGZvcm0gbmFuZA0KPj4gZHJpdmVyIChwbGF0X25hbmQuYykuICBU
+aGlzIHJlbW92ZXMgdGhlIG5vdy1kZWZ1bmN0IHRzNzI1MC5jIG5hbmQgZHJpdmVyLg0KPj4gDQo+
+PiBTaWduZWQtb2ZmLWJ5OiBIIEhhcnRsZXkgU3dlZXRlbiA8aHN3ZWV0ZW5AdmlzaW9uZW5ncmF2
+ZXJzLmNvbT4NCj4+IENjOiBNYXR0aGlldSBDcmFwZXQgPG1jcmFwZXRAZ21haWwuY29tPg0KPj4g
+Q2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4NCj4+IENjOiBKZXNzZSBP
+ZmYgPGpvZmZAZW1iZWRkZWRBUk0uY29tPg0KPg0KPglBcHBseWluZzogbXRkOiBSZW1vdmUgbm93
+LWRlZnVuY3QgdHM3MjUwIG5hbmQgZHJpdmVyDQo+CWVycm9yOiBwYXRjaCBmYWlsZWQ6IGRyaXZl
+cnMvbXRkL25hbmQvdHM3MjUwLmM6MQ0KPgllcnJvcjogZHJpdmVycy9tdGQvbmFuZC90czcyNTAu
+YzogcGF0Y2ggZG9lcyBub3QgYXBwbHkNCj4JUGF0Y2ggZmFpbGVkIGF0IDAwMDEgbXRkOiBSZW1v
+dmUgbm93LWRlZnVuY3QgdHM3MjUwIG5hbmQgZHJpdmVyDQo+DQo+IEl0IGxvb2tzIGxpa2UgeW91
+ciBwYXRjaCBoYXMgbGVnYWN5IGdhcmJhZ2UgaW4gaXQ6DQo+DQo+PiAtICogICBDb3B5cmlnaHQg
+KEMpIDIwMDQgTWFyaXVzIEdyPEY2PmdlciAobWFnQHN5c2dvLmRlKQ0KPg0KPiBJdCBmYWlscyB0
+byBhcHBseSBiZWNhdXNlIHRoZSDDtiAoY29ycmVjdGx5IHJlcHJlc2VudGVkIGFzIDB4YzMgMHhi
+NikgaGFzDQo+IGJlZW4gY29udmVydGVkIGludG8gYSBzaW5nbGUgYnl0ZSAweGY2IGluIHNvbWUg
+bGVnYWN5IGNoYXJhY3RlciBzZXQuDQo+DQo+IFdoZW4gYXBwbHlpbmcgcGF0Y2hlcywgZ2l0LWFt
+IGRvZXMgbG9vayBhdCB0aGUgQ29udGVudC1UeXBlOiBoZWFkZXIgYW5kDQo+IGNvbnZlcnQgbGVn
+YWN5IGNyYXAgaW50byBVVEYtOCBmb3IgdGhlIGNoYW5nZWxvZywgYnV0IGl0IGxlYXZlcyB0aGUN
+Cj4gcGF0Y2ggaXRzZWxmIGFsb25lLg0KPg0KPiBDYXJlIHRvIGpvaW4gdXMgaW4gdGhlIDIxc3Qg
+Y2VudHVyeT8NCg0KSGVsbG8gRGF2aWQsDQoNCk9rLCB0aGF0J3MgcmVhbGx5IHN0cmFuZ2UuICBJ
+IGp1c3QgbG9va2VkIGF0IHRoZSBlbWFpbCBJIHNlbnQgYW5kIHRoYXQgbGluZQ0KaXM6DQoNCi0g
+KiDCoCBDb3B5cmlnaHQgKEMpIDIwMDQgTWFyaXVzIEdyw7ZnZXIgKG1hZ0BzeXNnby5kZSkNCg0K
+VGhlIGNoYXJhY3RlciBtdXN0IGhhdmUgYmVlbiBjb252ZXJ0ZWQgYXMgdGhlIG1lc3NhZ2UgbGVm
+dCBteSBvdXRib3guDQoNCkhtbW1tLi4gV2hhdCBzaG91bGQgbXkgZGVmYXVsdCBjaGFyYWN0ZXIg
+c2V0IGJlPyAgSXQgbG9va3MgbGlrZSBteSBtYWlsZXIgaXMNCnNldHVwIHRvIHVzZSB0aGVzZSAo
+aW4gdGhpcyBvcmRlcik6DQoNCnVzLWFzY2lpDQppc28tODg1OS0xDQp1dGYtOCAobG9jYWxlKQ0K
+dXRmLTgNCg0KU29ycnkgZm9yIHRoZSB0cm91YmxlLg0KDQpSZWdhcmRzLA0KSGFydGxleQ0K
