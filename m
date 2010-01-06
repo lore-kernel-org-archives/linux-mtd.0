@@ -1,29 +1,20 @@
-Received: from [213.115.205.20] (helo=gw1.transmode.se)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSdRe-0005Ad-EW
-	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 21:29:38 +0000
-In-Reply-To: <2daf59621001061316g1c12353dye941d7d0105bbed1@mail.gmail.com>
-References: <a64f67eb1001041649u500f3a6bx40d443c4a3415f1b@mail.gmail.com>	
-	<Pine.LNX.4.64.1001050905071.5028@lnxricardw.se.axis.com>
-	<a64f67eb1001050013wd122746iab32bdfc93ba1aee@mail.gmail.com>	
-	<Pine.LNX.4.64.1001051016020.5028@lnxricardw.se.axis.com>
-	<B125D8217ABC4B43826503DE00A2D44910DFCE341F@SJEXCHCCR01.corp.ad.broadcom.com>
-	<OF8A2BBBA0.AB41AC26-ONC12576A2.005C2B63-C12576A2.005D212F@transmode.se>
-	<Pine.LNX.4.64.1001062048090.26184@lnxricardw.se.axis.com>	
-	<OFD9B736EF.C149F307-ONC12576A3.00730471-C12576A3.00734942@transmode.se>
-	<2daf59621001061316g1c12353dye941d7d0105bbed1@mail.gmail.com>
-Subject: Re: JFFS2 - speed up while booting
-To: hedwin <hedwin.koning@gmail.com>
-Message-ID: <OF364FF516.C1F08E54-ONC12576A3.007532A4-C12576A3.0075A038@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Wed, 6 Jan 2010 22:24:47 +0100
-MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-15
-Content-transfer-encoding: quoted-printable
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	linux newbie <linux.newbie79@gmail.com>,
-	Darwin Rambo <drambo@broadcom.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NSdfK-000530-Rw
+	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 21:43:48 +0000
+Received: by fxm22 with SMTP id 22so20323409fxm.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 06 Jan 2010 13:43:40 -0800 (PST)
+Subject: RFC: [PATCH 0/9 Integration of SmartMedia/xD into mtd subsystem
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 06 Jan 2010 23:43:36 +0200
+Message-ID: <1262814216.14552.22.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: joern <joern@logfs.org>, linux-mtd <linux-mtd@lists.infradead.org>,
+	Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,70 +24,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Here is the result of my work of supporting an xD card reader that I
+have on my notebook.
+
+I had to fix few problems in mtd translation layer, add few workarounds.
+This is by no way a final version of the patches, there is still lot of
+cleanup to do.
+The patches weren't tested with checkpatch.pl for example.
+
+I can now read and write an xD card, and I have no crashes.
+Still following issues remain:
+
+1 - Write speed IS very SLOW, just about 200 Kbytes/s
+In fact a reader in my printer gives me about 330 Kbytes/s, thus
+partially card is to blame.
+Also, hardware doesn't support interrupts to test when card is ready,
+thus writes consume 100% of one cpu.
+
+2 - I rely on mtd driver to have empty oob layout so I can read both oob
+and data using ->read_oob  with MTD_OOB_PLACE.
+I thinking to add new mode to allow to read whole oob + data and check
+ecc, or I will have to do pointless copying of data from 'censored' oob
+to normal structure. (This applies to FTL driver I also include in this
+patchset)
+
+3 - Using the mtd device directly with anything but supplied FTL or
+SSFDC, on 'modern' xD cards just doesn't. These cards implement a fake
+nand command set, thus don't have a real oob.
+It was disappointing for me too.
+I suspect that all 'Type M' cards are of this fake type, but older cards
+are OK.
 
 
-hedwin <hedwin.koning@gmail.com> wrote on 06/01/2010 22:16:27:
->
-> Interesting, when was this added to JFFS2? Need to catch up a bit I g=
-uess.
->
-Please don't top post.
+4 - Suspend/resume support works, but relies on all mtd users not to
+suspend in middle of card access, bacause in this case its very
+difficult/impossible to know card state.
+Driver will refuse suspend in that case.
+Access via all block devices is safe.
 
-This isn't in JFFS2(yes). Basically the empty check need to be move to =
-the chip driver.
-Then the driver knows if the chip has a blank check command and use tha=
-t or fall
-back to old method.
 
-Alternatively one could export a Blank Check command from the driver an=
-d
-test for it in JFFS2.
+5 - And of course there are bugs, thus I warn you now that this driver
+has high probability to erase data from your card.
+Thus DON'T USE THIS DRIVER IF ANYTHING IMPORTANT IS STORED ON THE CARD.
 
-> On Wed, Jan 6, 2010 at 9:59 PM, Joakim Tjernlund <joakim.tjernlund@tr=
-ansmode.se> wrote:
-> Ricard Wanderlof <ricard.wanderlof@axis.com> wrote on 06/01/2010 20:5=
-4:58:
-> >
-> >
-> > On Tue, 5 Jan 2010, Joakim Tjernlund wrote:
-> >
-> > >> The real reason for the long delay is not the erase time, but th=
-e time to
-> > >> validate that the erase actually worked and that all the data is=
- 0xff.
-> > >> If you comment out the jffs2_block_check_erase function below
-> > >> as shown, then in my case, the 4.5 minute pdflush delay dropped =
-to 2-3
-> > >> seconds! I was using a 16Gbit large page flash for this test.
-> > >
-> > > Ah, that make sense. Some new NOR parts form Numonyx has a new CF=
-I command,
-> > > Blank Check, that indicates if it is all ones or not. That could =
-be handy
-> > > to use in this case. You could even use that instead of erasing e=
-mpty
-> > > block because they miss a clean marker.
-> >
-> > It is my understanding that the reason the blocks are erased when n=
-o
-> > cleanmarker is found, is that a potentially uncompleted previous er=
-ase may
-> > have left the block in an appearantly erased state, making future
-> > programming unreliable unless the block is erased properly. So the =
-blocks
-> > would still have to be erased, but of course the checking function =
-(which
-> > seems to be the main reason for the delay) could be considerably
-> > optimized.
 
-> I know but from a quick reading of the blank check feature, you don't=
- have to.
-> The blank check is reliable w.r.t power loss and such. Seems like it
-> was designed for this purpose.
->
-> =A0Jocke
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/=
+6 - driver only detects PCI ID of my notebook, so it might not load on
+compatable chips with different ID.
+
+
+7 - patches developed against stable 2.6.32, and won't compile against
+latest git due to changes in kfifo api.
+
+
+Feedback is welcome, flames too :-)
+
+
+Best regards,
+Maxim Levitsky
