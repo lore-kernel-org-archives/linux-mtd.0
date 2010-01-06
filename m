@@ -1,16 +1,19 @@
-Subject: Re: [PATCH v7 5/5]: mtdoops: refactor as a kmsg_dumper
-From: David Woodhouse <dwmw2@infradead.org>
-To: Simon Kagstrom <simon.kagstrom@netinsight.net>
-In-Reply-To: <20091015094815.36f5872c@marrow.netinsight.se>
-References: <20091015094057.7298e0d7@marrow.netinsight.se>
-	<20091015094815.36f5872c@marrow.netinsight.se>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NSWxO-0008SO-7K
+	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 14:33:58 +0000
+Subject: Re: ubifs mount failure upon power cycle
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: sid@ics.uci.edu
+In-Reply-To: <ba9f10a6e8ef14a2d032fba7f1686df9.squirrel@webmail.ics.uci.edu>
+References: <ba9f10a6e8ef14a2d032fba7f1686df9.squirrel@webmail.ics.uci.edu>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 06 Jan 2010 14:33:16 +0000
-Message-ID: <1262788396.3181.8153.camel@macbook.infradead.org>
+Date: Wed, 06 Jan 2010 16:32:44 +0200
+Message-Id: <1262788364.3177.13.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hmmm.
+Hello,
 
-On Thu, 2009-10-15 at 09:48 +0200, Simon Kagstrom wrote:
-> +	/* Panics must be written immediately */
-> +	if (reason == kmsg_dump_panic) {
-> +		if (!cxt->mtd->panic_write)
-> +			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
-> +		else
-> +			mtdoops_write(cxt, 1);
-> +		return;
-> +	}
-> +
+On Fri, 2009-12-11 at 10:28 -0800, sid@ics.uci.edu wrote:
+> I'm trying to use UBIFS (linux 2.6.31) on a MIPS based platform, 128 MB
+> SLC (2k page) NAND flash as rootfs. After erasing the flash and mounting
+> ubifs as rootfs, I do a large amount of file copies from NFS. However, if
+> there is an abrupt power cycle, upon reboot the rootfs mount fails with
+> the following error messages:
+> 
+> UBIFS: recovery needed
+> UBIFS error (pid 1): ubifs_scan: corrupt empty space at LEB 6:43008
+> UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 6:43008
+> UBIFS error (pid 1): ubifs_scan: LEB 6 scanning failed
+> UBIFS error (pid 1): ubifs_recover_leb: corrupt empty space LEB 6:24576,
+> corruption starts at 18432
+> UBIFS error (pid 1): ubifs_scanned_corruption: corruption at LEB 6:18432
+> UBIFS error (pid 1): ubifs_recover_leb: LEB 6 scanning failed
+> VFS: Cannot open root device "ubi0:rootfs" or unknown-block(8,1)
+> 
+> I searched the list for similar messages. There was a similar thread
+> (http://lists.infradead.org/pipermail/linux-mtd/2009-April/025229.html)
+> for NOR flash. However, the fixes to recovery.c from that thread are
+> already in the current sources.
+> 
+> Any suggestions/pointers on how to debug/fix would be greatly appreciated.
 
-...replaces...
+No idea why this could happen. Did you try do narrow down the problem to
+a simpler use-case?
 
-> -	if (mtd->panic_write && (in_interrupt() || panic_on_oops))
-> -		/* Interrupt context, we're going to panic so try and log */
-> -		mtdoops_write(cxt, 1);
-> -	else
-> -		schedule_work(&cxt->work_write);
-> -}
+That thread was about NOR, that should not happen on NAND. This looks
+like you have issues on NAND flash driver or HW level, not in UBI/UBIFS.
 
-So in the case where the device driver doesn't provide a ->panic_oops()
-function, we now don't even bother with a best-effort attempt to dump;
-we just give up.
+Please, start from running MTD tests and validate you NAND:
+http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
 
-Would there be any harm in scheduling the work_write function _anyway_,
-just in case it manages to run?
-
-The bug report at http://bugzilla.kernel.org/show_bug.cgi?id=14102 seems
-to be suggesting that sometimes it _did_ manage to work, with a bit of
-luck and a following wind.
-
-Also, it looks like in the (in_interrupt() || panic_on_oops) case we end
-up calling kmsg_dump(KMSG_DUMP_OOPS) from oops_exit(), almost
-immediately followed by kmsg_dump(KMSG_DUMP_PANIC). Is that going to do
-the right thing?
+And next time please try to follow these bug-report suggestions:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
