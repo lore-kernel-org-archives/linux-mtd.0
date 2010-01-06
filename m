@@ -1,16 +1,15 @@
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
 Subject: RE: [PATCH 2/2] Remove now-defunct ts7250 nand driver
-Date: Wed, 6 Jan 2010 12:26:23 -0500
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE1909020893C9@mi8nycmail19.Mi8.com>
-In-Reply-To: <1262784693.3181.8034.camel@macbook.infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE1909020893C9@mi8nycmail19.Mi8.com>
 References: <201001051459.58621.hartleys@visionengravers.com>
 	<1262784693.3181.8034.camel@macbook.infradead.org>
-From: "H Hartley Sweeten" <hartleys@visionengravers.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
+	<BD79186B4FD85F4B8E60E381CAEE1909020893C9@mi8nycmail19.Mi8.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 06 Jan 2010 17:42:17 +0000
+Message-ID: <1262799737.3181.8388.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: joff@embeddedarm.com, mcrapet@gmail.com,
 	linux-mtd <linux-mtd@lists.infradead.org>,
 	ARM Kernel <linux-arm-kernel@lists.infradead.org>
@@ -23,32 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gV2VkbmVzZGF5LCBKYW51YXJ5IDA2LCAyMDEwIDY6MzIgQU0sIERhdmlkIFdvb2Rob3VzZSB3
-cm90ZToNCj4gT24gVHVlLCAyMDEwLTAxLTA1IGF0IDE0OjU5IC0wNzAwLCBIIEhhcnRsZXkgU3dl
-ZXRlbiB3cm90ZToNCj4+IFRoZSB0czcyeHggcGxhdGZvcm0gaGFzIGJlZW4gdXBkYXRlZCB0byB1
-c2UgdGhlIGdlbmVyaWMgcGxhdGZvcm0gbmFuZA0KPj4gZHJpdmVyIChwbGF0X25hbmQuYykuICBU
-aGlzIHJlbW92ZXMgdGhlIG5vdy1kZWZ1bmN0IHRzNzI1MC5jIG5hbmQgZHJpdmVyLg0KPj4gDQo+
-PiBTaWduZWQtb2ZmLWJ5OiBIIEhhcnRsZXkgU3dlZXRlbiA8aHN3ZWV0ZW5AdmlzaW9uZW5ncmF2
-ZXJzLmNvbT4NCj4+IENjOiBNYXR0aGlldSBDcmFwZXQgPG1jcmFwZXRAZ21haWwuY29tPg0KPj4g
-Q2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4NCj4+IENjOiBKZXNzZSBP
-ZmYgPGpvZmZAZW1iZWRkZWRBUk0uY29tPg0KPg0KPglBcHBseWluZzogbXRkOiBSZW1vdmUgbm93
-LWRlZnVuY3QgdHM3MjUwIG5hbmQgZHJpdmVyDQo+CWVycm9yOiBwYXRjaCBmYWlsZWQ6IGRyaXZl
-cnMvbXRkL25hbmQvdHM3MjUwLmM6MQ0KPgllcnJvcjogZHJpdmVycy9tdGQvbmFuZC90czcyNTAu
-YzogcGF0Y2ggZG9lcyBub3QgYXBwbHkNCj4JUGF0Y2ggZmFpbGVkIGF0IDAwMDEgbXRkOiBSZW1v
-dmUgbm93LWRlZnVuY3QgdHM3MjUwIG5hbmQgZHJpdmVyDQo+DQo+IEl0IGxvb2tzIGxpa2UgeW91
-ciBwYXRjaCBoYXMgbGVnYWN5IGdhcmJhZ2UgaW4gaXQ6DQo+DQo+PiAtICogICBDb3B5cmlnaHQg
-KEMpIDIwMDQgTWFyaXVzIEdyPEY2PmdlciAobWFnQHN5c2dvLmRlKQ0KPg0KPiBJdCBmYWlscyB0
-byBhcHBseSBiZWNhdXNlIHRoZSDDtiAoY29ycmVjdGx5IHJlcHJlc2VudGVkIGFzIDB4YzMgMHhi
-NikgaGFzDQo+IGJlZW4gY29udmVydGVkIGludG8gYSBzaW5nbGUgYnl0ZSAweGY2IGluIHNvbWUg
-bGVnYWN5IGNoYXJhY3RlciBzZXQuDQo+DQo+IFdoZW4gYXBwbHlpbmcgcGF0Y2hlcywgZ2l0LWFt
-IGRvZXMgbG9vayBhdCB0aGUgQ29udGVudC1UeXBlOiBoZWFkZXIgYW5kDQo+IGNvbnZlcnQgbGVn
-YWN5IGNyYXAgaW50byBVVEYtOCBmb3IgdGhlIGNoYW5nZWxvZywgYnV0IGl0IGxlYXZlcyB0aGUN
-Cj4gcGF0Y2ggaXRzZWxmIGFsb25lLg0KPg0KPiBDYXJlIHRvIGpvaW4gdXMgaW4gdGhlIDIxc3Qg
-Y2VudHVyeT8NCg0KSGVsbG8gRGF2aWQsDQoNCk9rLCB0aGF0J3MgcmVhbGx5IHN0cmFuZ2UuICBJ
-IGp1c3QgbG9va2VkIGF0IHRoZSBlbWFpbCBJIHNlbnQgYW5kIHRoYXQgbGluZQ0KaXM6DQoNCi0g
-KiDCoCBDb3B5cmlnaHQgKEMpIDIwMDQgTWFyaXVzIEdyw7ZnZXIgKG1hZ0BzeXNnby5kZSkNCg0K
-VGhlIGNoYXJhY3RlciBtdXN0IGhhdmUgYmVlbiBjb252ZXJ0ZWQgYXMgdGhlIG1lc3NhZ2UgbGVm
-dCBteSBvdXRib3guDQoNCkhtbW1tLi4gV2hhdCBzaG91bGQgbXkgZGVmYXVsdCBjaGFyYWN0ZXIg
-c2V0IGJlPyAgSXQgbG9va3MgbGlrZSBteSBtYWlsZXIgaXMNCnNldHVwIHRvIHVzZSB0aGVzZSAo
-aW4gdGhpcyBvcmRlcik6DQoNCnVzLWFzY2lpDQppc28tODg1OS0xDQp1dGYtOCAobG9jYWxlKQ0K
-dXRmLTgNCg0KU29ycnkgZm9yIHRoZSB0cm91YmxlLg0KDQpSZWdhcmRzLA0KSGFydGxleQ0K
+On Wed, 2010-01-06 at 12:26 -0500, H Hartley Sweeten wrote:
+> Ok, that's really strange.  I just looked at the email I sent and that line
+> is:
+> 
+> - *   Copyright (C) 2004 Marius Gröger (mag@sysgo.de)
+
+Your previous email was in iso8859-1, a legacy charset that really has
+no business being used this century. You can see the charset in its
+Content-Type: header:
+	Content-type: text/plain; charset="iso-8859-1"
+
+The ö was therefore encoded as a single byte 0xf6. When we save the mail
+to disk and apply it as a patch, that 0xf6 doesn't actually match what's
+in the file you were patching -- and thus the patch didn't apply.
+
+> The character must have been converted as the message left my outbox.
+
+Probably, yes.
+
+> Hmmmm.. What should my default character set be?  It looks like my mailer is
+> setup to use these (in this order):
+
+Did you change anything already? Although your older mail was iso8859-1,
+the mail to which I'm replying now is different. It's:
+	Content-type: text/plain; charset="utf-8"
+
+So this time the ö is encoded as two bytes (0xc3, 0xb6) and _does_ match
+what's in the kernel source files. If you'd included the patch in _this_
+mail, it would have applied.
+
+> us-ascii
+> iso-8859-1
+> utf-8 (locale)
+> utf-8
+
+It's iso-8859-1 which is causing the problem. Because your mail only
+used characters which can be represented in iso8859-1, it got converted
+to that. Drop iso8859-1 and it should be fine. ASCII is fine because
+it's a subset of UTF-8. Any ASCII text is also valid UTF-8.
+
+-- 
+dwmw2
