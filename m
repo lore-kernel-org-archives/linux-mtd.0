@@ -1,20 +1,16 @@
-Received: from [213.84.116.84] (helo=protonic.prtnl)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSTam-0003W5-Gq
-	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 10:58:25 +0000
-From: David Jander <david.jander@protonic.nl>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Subject: Re: Good stress test for UBIFS?
-Date: Wed, 6 Jan 2010 11:59:59 +0100
-References: <200912180900.51332.david.jander@protonic.nl>
-	<4B388B2B.5080906@nokia.com>
-In-Reply-To: <4B388B2B.5080906@nokia.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201001061159.59875.david.jander@protonic.nl>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 2/2] Remove now-defunct ts7250 nand driver
+From: David Woodhouse <dwmw2@infradead.org>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+In-Reply-To: <201001051459.58621.hartleys@visionengravers.com>
+References: <201001051459.58621.hartleys@visionengravers.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 06 Jan 2010 13:31:33 +0000
+Message-ID: <1262784693.3181.8034.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: joff@embeddedarm.com, mcrapet@gmail.com,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	ARM Kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 28 December 2009 11:40:43 am Adrian Hunter wrote:
->[...]
-> Generally we test with debugging checks turned on because they will spot an
-> error the instant it happens.  On the other hand, you must also test the
->  actual configuration you will deploy.
+On Tue, 2010-01-05 at 14:59 -0700, H Hartley Sweeten wrote:
+> The ts72xx platform has been updated to use the generic platform nand
+> driver (plat_nand.c).  This removes the now-defunct ts7250.c nand driver.
 > 
-> There are two approaches.  We use both of them.  They are:
-> 
-> 1. Set up a desktop machine with your kernel and test on nandsim.  This has
->  the advantage that it can do very many more operations than a small
->  device.
-> 
-> You can simulate power-off-recovery by using UBIFS "failure mode".  Set
->  UBIFS debugging module parameter debug_tsts to 4.  There is a script I
->  have used for that below.
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: Matthieu Crapet <mcrapet@gmail.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Jesse Off <joff@embeddedARM.com>
 
-Yes, but I did not consider this option, because it is a completely different 
-processor architecture (little-endian vs. big-endian), also it won't test the 
-hardware-driver, nor the nand-chip and interface which can potentially also be 
-(part of) the problem. Here I am trying to reproduce a situation that has 
-already occurred a few times in "real life", and I need to be sure it won't 
-happen ever again with the latest ubi/ubifs.
+	Applying: mtd: Remove now-defunct ts7250 nand driver
+	error: patch failed: drivers/mtd/nand/ts7250.c:1
+	error: drivers/mtd/nand/ts7250.c: patch does not apply
+	Patch failed at 0001 mtd: Remove now-defunct ts7250 nand driver
 
-> 2. Run tests on the device.  There are tests in mtd-utils/tests/fs-tests
->  but LTP's fsstress is good for stressing the file system during
->  power-off-recovery testing.
+It looks like your patch has legacy garbage in it:
 
-Thanks a lot. I will try fsstress.
-I had already written my own test script, mimicking some suspicious scenarios, 
-in the hope it would reproduce what had happend on three of our boards 
-(corrupt fs), and eventually succeded, but it took several days running.
-Now I am re-running the test with latest UBI/UBIFS to see if it's gone.
-Hopefully fsstress will yield results more quickly.
+> - *   Copyright (C) 2004 Marius Gr<F6>ger (mag@sysgo.de)
 
-Best regards,
+It fails to apply because the ö (correctly represented as 0xc3 0xb6) has
+been converted into a single byte 0xf6 in some legacy character set.
+
+When applying patches, git-am does look at the Content-Type: header and
+convert legacy crap into UTF-8 for the changelog, but it leaves the
+patch itself alone.
+
+Care to join us in the 21st century?
 
 -- 
-David Jander
-Protonic Holland.
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
