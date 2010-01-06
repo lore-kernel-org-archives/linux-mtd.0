@@ -1,27 +1,29 @@
-Received: from [80.91.229.12] (helo=lo.gmane.org)
+Received: from [213.115.205.20] (helo=gw1.transmode.se)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSd9R-0000GA-Uf
-	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 21:10:50 +0000
-Received: from list by lo.gmane.org with local (Exim 4.50) id 1NSd8n-0008Go-VW
-	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 22:10:05 +0100
-Received: from chipmunk.wormnet.eu ([195.195.131.226])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2010 22:10:05 +0100
-Received: from alex by chipmunk.wormnet.eu with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jan 2010 22:10:05 +0100
-To: linux-mtd@lists.infradead.org
-From: Alexander Clouter <alex@digriz.org.uk>
-Subject: Re: [PATCH 4/4] MTD: include ar7part in the list of partitions parsers
-Date: Wed, 6 Jan 2010 20:28:10 +0000
-Message-ID: <qb8f17-41q.ln1@chipmunk.wormnet.eu>
-References: <201001032117.37459.florian@openwrt.org>
-	<1262552177.3181.5891.camel@macbook.infradead.org>
-	<2ve717-7pt.ln1@chipmunk.wormnet.eu>
-	<201001050941.42161.florian@openwrt.org>
-Sender: news <news@ger.gmane.org>
-Cc: linux-mips@linux-mips.org
+	id 1NSdRe-0005Ad-EW
+	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 21:29:38 +0000
+In-Reply-To: <2daf59621001061316g1c12353dye941d7d0105bbed1@mail.gmail.com>
+References: <a64f67eb1001041649u500f3a6bx40d443c4a3415f1b@mail.gmail.com>	
+	<Pine.LNX.4.64.1001050905071.5028@lnxricardw.se.axis.com>
+	<a64f67eb1001050013wd122746iab32bdfc93ba1aee@mail.gmail.com>	
+	<Pine.LNX.4.64.1001051016020.5028@lnxricardw.se.axis.com>
+	<B125D8217ABC4B43826503DE00A2D44910DFCE341F@SJEXCHCCR01.corp.ad.broadcom.com>
+	<OF8A2BBBA0.AB41AC26-ONC12576A2.005C2B63-C12576A2.005D212F@transmode.se>
+	<Pine.LNX.4.64.1001062048090.26184@lnxricardw.se.axis.com>	
+	<OFD9B736EF.C149F307-ONC12576A3.00730471-C12576A3.00734942@transmode.se>
+	<2daf59621001061316g1c12353dye941d7d0105bbed1@mail.gmail.com>
+Subject: Re: JFFS2 - speed up while booting
+To: hedwin <hedwin.koning@gmail.com>
+Message-ID: <OF364FF516.C1F08E54-ONC12576A3.007532A4-C12576A3.0075A038@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Wed, 6 Jan 2010 22:24:47 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=ISO-8859-15
+Content-transfer-encoding: quoted-printable
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	linux newbie <linux.newbie79@gmail.com>,
+	Darwin Rambo <drambo@broadcom.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,64 +33,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In gmane.linux.ports.mips.general Florian Fainelli <florian@openwrt.org> wrote:
+
+
+hedwin <hedwin.koning@gmail.com> wrote on 06/01/2010 22:16:27:
 >
->> [snipped]
->> 
->> It simply pulls apart the 'PROM' (aka ADAM2) config and uses that to
->> build the partition table.
-> 
-> This is indeed simple but if I recall right the rationale behind ar7part was 
-> to create a sane partition layout no matter if the bootloader was ADAM2 or 
-> PSPBoot and the root filesystem type. JFFS2 and squashfs do not have the same 
-> erase-block size alignment constraints, ar7part deals with that too.
-> 
-I am not convinced that is a good idea, one main reason is ar7part.c has 
-gotten terribly wrong the partition table ('loader' is too small[1] and 
-'rootfs' overlaps with the 'linux' partition').
+> Interesting, when was this added to JFFS2? Need to catch up a bit I g=
+uess.
+>
+Please don't top post.
 
-This is what I have from ADAM2's perspective:
-----
-Adam2_AR7WRD > printenv
-[snipped]
-mtd0                  0x900e0000,0x903f0000 <-- rootfs
-mtd1                  0x90020000,0x900e0000 <-- kernel
-mtd2                  0x90000000,0x90020000 <-- adam2 bootloader
-mtd3                  0x903f0000,0x90400000 <-- configuration
-mtd4                  0x90020000,0x903f0000 <-- kernel + rootfs
-----
+This isn't in JFFS2(yes). Basically the empty check need to be move to =
+the chip driver.
+Then the driver knows if the chip has a blank check command and use tha=
+t or fall
+back to old method.
 
-Linux spits out:
-----
-physmap platform flash device: 00800000 at 10000000
-physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
- Amd/Fujitsu Extended Query Table at 0x0040
-physmap-flash.0: Swapping erase regions for broken CFI table.
-number of CFI chips: 1
-cmdlinepart partition parsing not available
-RedBoot partition parsing not available
-4 ar7part partitions found on MTD device physmap-flash.0
-Creating 4 MTD partitions on "physmap-flash.0":
-0x000000000000-0x000000010000 : "loader"
-0x0000003f0000-0x000000400000 : "config"
-0x000000020000-0x0000003f0000 : "linux"
-0x0000000d0000-0x0000003f0000 : "rootfs"
-----
+Alternatively one could export a Blank Check command from the driver an=
+d
+test for it in JFFS2.
 
-My patch munched on whatever prom_getenv() returned, which from what I 
-can tell looking at arch/mips/ar7/prom.c will work for both PSPBoot and 
-ADAM2?
+> On Wed, Jan 6, 2010 at 9:59 PM, Joakim Tjernlund <joakim.tjernlund@tr=
+ansmode.se> wrote:
+> Ricard Wanderlof <ricard.wanderlof@axis.com> wrote on 06/01/2010 20:5=
+4:58:
+> >
+> >
+> > On Tue, 5 Jan 2010, Joakim Tjernlund wrote:
+> >
+> > >> The real reason for the long delay is not the erase time, but th=
+e time to
+> > >> validate that the erase actually worked and that all the data is=
+ 0xff.
+> > >> If you comment out the jffs2_block_check_erase function below
+> > >> as shown, then in my case, the 4.5 minute pdflush delay dropped =
+to 2-3
+> > >> seconds! I was using a 16Gbit large page flash for this test.
+> > >
+> > > Ah, that make sense. Some new NOR parts form Numonyx has a new CF=
+I command,
+> > > Blank Check, that indicates if it is all ones or not. That could =
+be handy
+> > > to use in this case. You could even use that instead of erasing e=
+mpty
+> > > block because they miss a clean marker.
+> >
+> > It is my understanding that the reason the blocks are erased when n=
+o
+> > cleanmarker is found, is that a potentially uncompleted previous er=
+ase may
+> > have left the block in an appearantly erased state, making future
+> > programming unreliable unless the block is erased properly. So the =
+blocks
+> > would still have to be erased, but of course the checking function =
+(which
+> > seems to be the main reason for the delay) could be considerably
+> > optimized.
 
-Are there some strange mtd environment variables I am yet to see out in 
-the wild or does my patch simply not work for PSPBoot primed kit?  If 
-not can you give me some 'spiel' to play around with?
-
-Cheers
-
-[1] okay, ADAM2 weighs in at less than 64kiB however it is not outside 
-	the realm of possibility someone will port u-boot to AR7 which 
-	would benefit from the full 128kiB of space?
-
--- 
-Alexander Clouter
-.sigmonster says: A man who turns green has eschewed protein.
+> I know but from a quick reading of the blank check feature, you don't=
+ have to.
+> The blank check is reliable w.r.t power loss and such. Seems like it
+> was designed for this purpose.
+>
+> =A0Jocke
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/=
