@@ -1,16 +1,15 @@
 Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSWRG-0007x1-1g
-	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 14:00:46 +0000
-Received: by bwz4 with SMTP id 4so10828757bwz.2
+	id 1NSWVw-0007v6-O5
+	for linux-mtd@lists.infradead.org; Wed, 06 Jan 2010 14:05:37 +0000
+Received: by bwz4 with SMTP id 4so10832053bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 06 Jan 2010 06:00:41 -0800 (PST)
+	Wed, 06 Jan 2010 06:05:31 -0800 (PST)
 MIME-Version: 1.0
 From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 6 Jan 2010 19:30:21 +0530
-Message-ID: <ce9ab5791001060600q1bef6ff5x602519e7db9e145@mail.gmail.com>
-Subject: [PATCH 1/3][NAND][OMAP]: Fixing compilation warning for
-	'nand/omap2.c'
+Date: Wed, 6 Jan 2010 19:35:11 +0530
+Message-ID: <ce9ab5791001060605j7a424203lcb90f3d79d0ddfae@mail.gmail.com>
+Subject: [PATCH 2/3][NAND][OMAP]: correct 'info' pointer in 'omap_nand_remove'
 To: Linux MTD <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: linux-omap@vger.kernel.org
@@ -23,33 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 3e856346f93afaf3f519dffe7987e4bbf56a136d Mon Sep 17 00:00:00 2001
+>From bf5256c8c29100c3a55e29a8a5d6718ba5817519 Mon Sep 17 00:00:00 2001
 From: Vimal Singh <vimalsingh@ti.com>
-Date: Tue, 5 Jan 2010 12:49:24 +0530
-Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
+Date: Tue, 5 Jan 2010 16:01:08 +0530
+Subject: [PATCH] NAND: OMAP: correct 'info' pointer in 'omap_nand_remove'
 
-Fixing below warning in compilation:
-drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
-drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
-'omap_nand_dma_transfer' discards qualifiers from pointer target type
+Removing OMAP NAND driver, when loaded as a module, gives error and
+does not get success. This fixes this and makes driver loadable and
+removable run time.
 
 Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 ---
- drivers/mtd/nand/omap2.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/omap2.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 1bb799f..4eea97c 100644
+index 4eea97c..16120e2 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -505,7 +505,7 @@ static void omap_write_buf_dma_pref(struct mtd_info *mtd,
- 		omap_write_buf_pref(mtd, buf, len);
- 	else
- 		/* start transfer in DMA mode */
--		omap_nand_dma_transfer(mtd, buf, len, 0x1);
-+		omap_nand_dma_transfer(mtd, (u_char *) buf, len, 0x1);
- }
+@@ -1054,7 +1054,8 @@ out_free_info:
+ static int omap_nand_remove(struct platform_device *pdev)
+ {
+ 	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct omap_nand_info *info = mtd->priv;
++	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
++							mtd);
 
- /**
+ 	platform_set_drvdata(pdev, NULL);
+ 	if (use_dma)
 -- 
 1.5.5
