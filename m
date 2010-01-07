@@ -1,24 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSmG1-0008VC-I7
-	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 06:54:14 +0000
-Subject: Re: [RFC][PATCH] Add NAND lock/unlock routines
+	id 1NSmIG-0001Lh-Hp
+	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 06:56:33 +0000
+Subject: Re: [PATCH] nandsim: (trivial) fix spelling
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <ce9ab5790912170141s557342d5l4fced74a46a96e5c@mail.gmail.com>
-References: <ce9ab5790912020624k28bc1e63le0f7e713f70d78a8@mail.gmail.com>
-	<1259915925.8673.9.camel@localhost>
-	<ce9ab5790912062248i41e2f7bh996064518e043369@mail.gmail.com>
-	<1260178153.25784.28.camel@localhost>
-	<ce9ab5790912070306l1a973445vc4eab91b0e2d2ebb@mail.gmail.com>
-	<1260185336.3047.0.camel@localhost>
-	<ce9ab5790912170141s557342d5l4fced74a46a96e5c@mail.gmail.com>
+To: Andrey Yurovsky <yurovsky@gmail.com>
+In-Reply-To: <1261081880-18183-1-git-send-email-yurovsky@gmail.com>
+References: <1261081880-18183-1-git-send-email-yurovsky@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 07 Jan 2010 08:53:40 +0200
-Message-Id: <1262847220.21915.27.camel@localhost>
+Date: Thu, 07 Jan 2010 08:56:07 +0200
+Message-Id: <1262847367.21915.28.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,104 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2009-12-17 at 15:11 +0530, Vimal Singh wrote:
-> On Mon, Dec 7, 2009 at 4:58 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Mon, 2009-12-07 at 16:36 +0530, Vimal Singh wrote:
-> >> On Mon, Dec 7, 2009 at 2:59 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> >> > On Mon, 2009-12-07 at 12:18 +0530, Vimal Singh wrote:
-> >> >> On Fri, Dec 4, 2009 at 2:08 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> >> >> > Hi, some cosmetic comments:
-> >> >> >
-> >> >> > On Wed, 2009-12-02 at 19:54 +0530, Vimal Singh wrote:
-> >> >> >> I am not sure how useful it will be, but still here is a patch for review.
-> >> >> >> -vimal
-> >> >> >>
-> >> >> >> From: Vimal Singh <vimalsingh@ti.com>
-> >> >> >> Date: Tue, 24 Nov 2009 18:26:43 +0530
-> >> >> >> Subject: [PATCH] Add NAND lock/unlock routines
-> >> >> >>
-> >> >> >> At least 'Micron' NAND parts have lock/unlock feature.
-> >> >> >> Adding routines for this.
-> >> >> >>
-> >> >> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> >> >> >> ---
-> >> >> >>  drivers/mtd/nand/nand_base.c |  217 +++++++++++++++++++++++++++++++++++++++++-
-> >> >> >>  include/linux/mtd/nand.h     |    6 +
-> >> >> >>  2 files changed, 221 insertions(+), 2 deletions(-)
-> >> >> >>
-> >> >> >> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> >> >> >> index 2957cc7..e447c24 100644
-> >> >> >> --- a/drivers/mtd/nand/nand_base.c
-> >> >> >> +++ b/drivers/mtd/nand/nand_base.c
-> >> >> >> @@ -757,6 +757,218 @@ static int nand_wait(struct mtd_info *mtd,
-> >> >> >> struct nand_chip *chip)
-> >> >> >>  }
-> >> >> >>
-> >> >> >>  /**
-> >> >> >> + * __nand_unlock - [REPLACABLE] unlocks specified locked blockes
-> >> >> >> + *
-> >> >> >> + * @param mtd - mtd info
-> >> >> >> + * @param ofs - offset to start unlock from
-> >> >> >> + * @param len - length to unlock
-> >> >> >> + * @invert -  when = 0, unlock the range of blocks within the lower and
-> >> >> >> + *                      upper boundary address
-> >> >> >> + *            whne = 1, unlock the range of blocks outside the boundaries
-> >> >> >> + *                      of the lower and upper boundary address
-> >> >> >> + *
-> >> >> >> + * @return - unlock status
-> >> >> >> + */
-> >> >> >> +static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
-> >> >> >> +                                     uint64_t len, int invert)
-> >> >> >> +{
-> >> >> >> +     int ret = 0;
-> >> >> >> +     int status, page;
-> >> >> >> +     struct nand_chip *chip = mtd->priv;
-> >> >> >> +
-> >> >> >> +     DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
-> >> >> >> +                     __func__, (unsigned long long)ofs, len);
-> >> >> >> +
-> >> >> >> +     /* Submit address of first page to unlock */
-> >> >> >> +     page = (int)(ofs >> chip->page_shift);
-> >> >> >
-> >> >> > The compiler will automatically cast the result to int I believe.
-> >> >>
-> >> >> I just copied this line from erase functions.
-> >> >> I believe its better to cast here as otherwise we may see compiler warnings.
-> >> >
-> >> > Good point. Could you please create a validation checking helper instead
-> >> > of duplicating code?
-> >>
-> >> IMHO that should be done in a separate patch.
-> >
-> > Right, you can first send this as a separate patch, and then the rest as
-> > a follow up one.
+On Thu, 2009-12-17 at 12:31 -0800, Andrey Yurovsky wrote:
+> From: Andrey Yurovsky <andrey@slug.(none)>
 > 
-> when I went back on validation checking's I notice:
+> s/nanodeconds/nanoseconds
 > 
-> -nand_read: does validation for access to past end of the device
-> -nand_do_read_oob: does it for access to past oob and device.
-> -nand_read_oob: does for access to past end of the device
-> 
-> -nand_write: does it for access to past end of the device
-> -nand_do_write_ops: does it for page alignment
-> -nand_do_write_oob: does it for access to past oob and device and page
-> alignment
-> -panic_nand_write: does it for access to past end of the device
-> 
-> -nand_erase_nand: does it for access to past end of the device and
-> block alignment 'lock/unlock' routines are doing same validations as
-> 'nand_erase_nand' does.
-> 
-> There is no consistancy in validation checks other than between
-> 'erase' and 'lock/unlock'.
-> Now since currently only 'erase' function does those validations. We
-> can have patch for separate validation functions only after
-> 'lock/unlock' patch.
-> 
-> Any comment or suggestions?
+> Signed-off-by: Andrey Yurovsky <yurovsky@gmail.com>
+> ---
+>  drivers/mtd/nand/nandsim.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 
-Well, of course my suggestion is to make that as consistent as possible,
-and send a series of patches.
+Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
 -- 
 Best Regards,
