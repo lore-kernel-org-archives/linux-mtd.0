@@ -1,25 +1,19 @@
-Received: from [2001:6f8:1178:4:290:27ff:fe1d:cc33]
-	(helo=metis.ext.pengutronix.de)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSnsn-0007Ue-IA
-	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 08:38:18 +0000
-Date: Thu, 7 Jan 2010 09:37:29 +0100
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: Re: [PATCH] mtd/nand: Fix build failure caused by typo
-Message-ID: <20100107083729.GB7413@pengutronix.de>
-References: <201001070301.58260.PeterHuewe@gmx.de>
-	<BD79186B4FD85F4B8E60E381CAEE1909020894AF@mi8nycmail19.Mi8.com>
+Received: from [217.72.192.243] (helo=fmmailgate05.web.de)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NSoPW-00080P-23
+	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 09:12:10 +0000
+Received: from web.de
+	by fmmailgate05.web.de (Postfix) with SMTP id 9B72A5D0096B
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  7 Jan 2010 10:11:29 +0100 (CET)
+Date: Thu, 07 Jan 2010 10:11:27 +0100
+Message-Id: <1128464590@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE1909020894AF@mi8nycmail19.Mi8.com>
-Cc: Nicolas Pitre <nico@marvell.com>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Peter =?iso-8859-1?Q?H=FCwe?= <PeterHuewe@gmx.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
+From: Arno Steffen <arno.steffen@web.de>
+To: linux-mtd@lists.infradead.org
+Subject: References: JFFS2 - speed up while booting
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,20 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+> -----Urspr=FCngliche Nachricht-----
+> Von: "linux newbie" <linux.newbie79@gmail.com>
+> Gesendet: 05.01.10 01:56:42
+> An: linux-mtd@lists.infradead.org
+> Betreff: JFFS2 - speed up while booting
 
-> > This patch fixes a build failure[1] introduced by the patch
-> >     mtd: orion_nand.c: add error handling and use resource_size()
-> >     by H Hartley Sweeten [2]
-> > The patch assigns something to a undeclared variable 'err', whereas the
-> > rest of the code uses 'ret' for this task.
-> > 
-> > This patch fixes this typo and thus removes the build failure.
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-Thanks
-Uwe
+I would expect that a ramdisk will take longer to boot.
+It has to copy all content of rootfs from flash to RAM.
 
--- 
-Pengutronix e.K.                              | Uwe Kleine-König            |
-Industrial Linux Solutions                    | http://www.pengutronix.de/  |
+In opposite the flashfs only copies the files it really needs for booting =
+to RAM.
+
+Reading flash is slow - that has been the reason for me to switch to jffs2=
+ as
+filesystem. Am I wrong=3F
+
+So where is the boot process slow=3F
+How does your rootfs comes into SDRAM if you compare this booth=3F
+
+Regards
+Arno
+
+=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
+Preisknaller: WEB.DE DSL Flatrate f=FCr nur 16,99 Euro/mtl.!=20
+http://produkte.web.de/go/02/
