@@ -1,23 +1,31 @@
-Received: from exprod6og104.obsmtp.com ([64.18.1.187])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NShvS-0008K8-16
-	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 02:16:42 +0000
-Content-class: urn:content-classes:message
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NSkkL-00014i-OR
+	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 05:17:26 +0000
+Received: by bwz4 with SMTP id 4so11341239bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 06 Jan 2010 21:17:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+In-Reply-To: <1262788497.3177.14.camel@localhost>
+References: <64662.192.168.10.89.1259933932.squirrel@dbdmail.itg.ti.com>
+	<20091204220138.GJ24013@atomide.com>
+	<ce9ab5790912062229xae89bb3m6965b4f4465f11c3@mail.gmail.com>
+	<ce9ab5790912070529h1143355du691ce6a23f5ddb56@mail.gmail.com>
+	<20091207175644.GA24013@atomide.com>
+	<20091208235725.GA24013@atomide.com>
+	<ce9ab5790912132226n6480c029ve93def5ebec1e2c9@mail.gmail.com>
+	<ce9ab5790912140147v23e3705aucf6d25c56aaaab31@mail.gmail.com>
+	<1262788497.3177.14.camel@localhost>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Thu, 7 Jan 2010 10:47:00 +0530
+Message-ID: <ce9ab5791001062117s712bd3c2j950316e80eb5abcb@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2]: Introducing 'gpmc-nand.c' for GPMC specific NAND
+	init
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH] mtd/nand: Fix build failure caused by typo
-Date: Wed, 6 Jan 2010 21:16:35 -0500
-Message-ID: <BD79186B4FD85F4B8E60E381CAEE1909020894AF@mi8nycmail19.Mi8.com>
-In-Reply-To: <201001070301.58260.PeterHuewe@gmx.de>
-References: <201001070301.58260.PeterHuewe@gmx.de>
-From: "H Hartley Sweeten" <hartleys@visionengravers.com>
-To: =?iso-8859-1?Q?Peter_H=FCwe?= <PeterHuewe@gmx.de>,
-	"David Woodhouse" <dwmw2@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Nicolas Pitre <nico@marvell.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	=?iso-8859-1?Q?Uwe__Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Tony Lindgren <tony@atomide.com>, "Govindraj.R" <govindraj.raja@ti.com>,
+	linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +35,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday, January 06, 2010 7:02 PM, Peter H=FCwe wrote:
-> From: Peter Huewe <peterhuewe@gmx.de>
-> Date: Thu, 7 Jan 2010 02:51:13 +0100
->=20
-> This patch fixes a build failure[1] introduced by the patch
->     mtd: orion_nand.c: add error handling and use resource_size()
->     by H Hartley Sweeten [2]
-> The patch assigns something to a undeclared variable 'err', whereas =
-the
-> rest of the code uses 'ret' for this task.
->=20
-> This patch fixes this typo and thus removes the build failure.
->=20
-> References:
-> [1] http://kisskb.ellerman.id.au/kisskb/buildresult/1983354/
-> [2] =
-http://git.kernel.org/?p=3Dlinux/kernel/git/sfr/linux-next.git;a=3Dcommit=
-diff;h=3De99030609e27abff7e1a868cb56384c678b09984
->=20
-> Patch against linux-next of Do 7. Jan 02:58:41 CET 2010
->=20
-> Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
-> ---
->  drivers/mtd/nand/orion_nand.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/orion_nand.c =
-b/drivers/mtd/nand/orion_nand.c
-> index 9903460..f16050c 100644
-> --- a/drivers/mtd/nand/orion_nand.c
-> +++ b/drivers/mtd/nand/orion_nand.c
-> @@ -92,7 +92,7 @@ static int __init orion_nand_probe(struct =
-platform_device *pdev)
-> =20
->  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
->  	if (!res) {
-> -		err =3D -ENODEV;
-> +		ret =3D -ENODEV;
->  		goto no_res;
->  	}
+On Wed, Jan 6, 2010 at 8:04 PM, Artem Bityutskiy <dedekind1@gmail.com> wrot=
+e:
+> On Mon, 2009-12-14 at 15:17 +0530, Vimal Singh wrote:
+>> From 6170aa1c63c49a3f09e76258f400230b742fdd6f Mon Sep 17 00:00:00 2001
+>> From: Vimal Singh <vimalsingh@ti.com>
+>> Date: Wed, 25 Nov 2009 18:23:15 +0530
+>> Subject: [PATCH] Introducing 'gpmc-nand.c' for GPMC specific NAND init
+>>
+>> Introducing 'gpmc-nand.c' for GPMC specific NAND init.
+>> For example: GPMC timing parameters and all.
+>> This patch also migrates gpmc related calls from 'nand/omap2.c'
+>> to 'gpmc-nand.c'.
+>>
+>> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> ---
+>> =A0arch/arm/mach-omap2/Makefile =A0 =A0 =A0 =A0 =A0 | =A0 =A03 +
+>> =A0arch/arm/mach-omap2/gpmc-nand.c =A0 =A0 =A0 =A0| =A0137 +++++++++++++=
++++++++++++++++++++
+>> =A0arch/arm/plat-omap/include/plat/nand.h | =A0 =A06 ++
+>> =A0drivers/mtd/nand/omap2.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0 26 +------
+>> =A04 files changed, 149 insertions(+), 23 deletions(-)
+>> =A0create mode 100644 arch/arm/mach-omap2/gpmc-nand.c
+>
+> I assume this is material for Tony and the omap tree.
+>
+Yes, it is.
 
-Sorry about that.
-
-Reviewed-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+--=20
+Regards,
+Vimal Singh
