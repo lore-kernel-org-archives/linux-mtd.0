@@ -1,21 +1,24 @@
-Received: from [194.16.221.21] (helo=ernst.netinsight.se)
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSmA4-0002sS-T2
-	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 06:48:05 +0000
-Date: Thu, 7 Jan 2010 07:47:17 +0100
-From: Simon Kagstrom <simon.kagstrom@netinsight.net>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v7 5/5]: mtdoops: refactor as a kmsg_dumper
-Message-ID: <20100107074717.7dcbb50c@marrow.netinsight.se>
-In-Reply-To: <1262788396.3181.8153.camel@macbook.infradead.org>
-References: <20091015094057.7298e0d7@marrow.netinsight.se>
-	<20091015094815.36f5872c@marrow.netinsight.se>
-	<1262788396.3181.8153.camel@macbook.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NSmBL-0005jU-9M
+	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 06:49:23 +0000
+Subject: Re: OMAP2 issue  while compiling the latest  mtd-2.6 git kernel
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Tadimarri Sarath Babu <sarath.babu@samsung.com>
+In-Reply-To: <B7CE3954677D49918AFD7F04C26CF882@sisodomain.com>
+References: <20091214121439.GC28375@buzzloop.caiaq.de>
+	<1260795633.11112.49.camel@localhost>
+	<20091214135614.GC16448@hansolo.jdub.homelinux.org>
+	<87zl5lr525.fsf@macbook.be.48ers.dk>
+	<20091214155947.GD16448@hansolo.jdub.homelinux.org>
+	<B7CE3954677D49918AFD7F04C26CF882@sisodomain.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 07 Jan 2010 08:47:57 +0200
+Message-Id: <1262846877.21915.24.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 06 Jan 2010 14:33:16 +0000
-David Woodhouse <dwmw2@infradead.org> wrote:
-
-> > +	/* Panics must be written immediately */
-> > +	if (reason == kmsg_dump_panic) {
-> > +		if (!cxt->mtd->panic_write)
-> > +			printk(KERN_ERR "mtdoops: Cannot write from panic without panic_write\n");
-> > +		else
-> > +			mtdoops_write(cxt, 1);
-> > +		return;
+On Wed, 2009-12-16 at 17:22 +0530, Tadimarri Sarath Babu wrote:
+> Hi ,
 > 
-> Would there be any harm in scheduling the work_write function _anyway_,
-> just in case it manages to run?
+> I am facing the following problem while compiling the mtd2.6 git kernel .
+> I used the arch/arm/configs/omap_apollon_2420_defconfig  as the config file
+> and used the arm-2009q1/arm-none-linux-gnueabi- compiler for compiling.
 > 
-> The bug report at http://bugzilla.kernel.org/show_bug.cgi?id=14102 seems
-> to be suggesting that sometimes it _did_ manage to work, with a bit of
-> luck and a following wind.
+> Log :
+> # make
+>   CHK     include/linux/version.h
+> make[1]: `include/asm-arm/mach-types.h' is up to date.
+>   CHK     include/linux/utsrelease.h
+>   SYMLINK include/asm -> include/asm-arm
+>   CALL    scripts/checksyscalls.sh
+> <stdin>:1351:2: warning: #warning syscall migrate_pages not implemented
+>   CHK     include/linux/compile.h
+>   CC      arch/arm/mach-omap2/devices.o
+> arch/arm/mach-omap2/devices.c: In function 'omap_init_mcspi':
+> arch/arm/mach-omap2/devices.c:365: error: 'omap2_mcspi3_resources' undeclared (first use in this 
+> function)
+> arch/arm/mach-omap2/devices.c:365: error: (Each undeclared identifier is reported only once
+> arch/arm/mach-omap2/devices.c:365: error: for each function it appears in.)
+> arch/arm/mach-omap2/devices.c:367: error: 'omap2_mcspi4_resources' undeclared (first use in this 
+> function)
+> make[1]: *** [arch/arm/mach-omap2/devices.o] Error 1
+> make: *** [arch/arm/mach-omap2] Error 2
 
-In my tests, I never got it to write out anything when using scheduled
-work on panics. I did the tests on a uniprocessor though, maybe that
-could be a reason.
+You should CC the OMAP mailing list and the OMAP maintainer. See the
+MAINTAINERS file.
 
-But you are right, probably it doesn't hurt anyway. 
-
-> Also, it looks like in the (in_interrupt() || panic_on_oops) case we end
-> up calling kmsg_dump(KMSG_DUMP_OOPS) from oops_exit(), almost
-> immediately followed by kmsg_dump(KMSG_DUMP_PANIC). Is that going to do
-> the right thing?
-
-Well, since I never got it to dump anything with the work queue, the
-dump will be done when KMSG_DUMP_PANIC is called. The work queue never
-gets to run, so I never saw double dumps with this approach.
-
-Anyway, perhaps one could do a cancel_work() when running the panic
-handler to avoid situations when both are written (since it apparently
-is possible as above).
-
-// Simon
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
