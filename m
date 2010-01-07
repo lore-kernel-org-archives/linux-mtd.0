@@ -1,22 +1,25 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from [2001:6f8:1178:4:290:27ff:fe1d:cc33]
+	(helo=metis.ext.pengutronix.de)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NSmcd-0006Yn-8Q
-	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 07:17:35 +0000
-Subject: Re: Good stress test for UBIFS?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Jander <david.jander@protonic.nl>
-In-Reply-To: <201001061159.59875.david.jander@protonic.nl>
-References: <200912180900.51332.david.jander@protonic.nl>
-	<4B388B2B.5080906@nokia.com>
-	<201001061159.59875.david.jander@protonic.nl>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 07 Jan 2010 09:17:03 +0200
-Message-Id: <1262848623.21915.45.camel@localhost>
-Mime-Version: 1.0
+	id 1NSnsn-0007Ue-IA
+	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 08:38:18 +0000
+Date: Thu, 7 Jan 2010 09:37:29 +0100
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: Re: [PATCH] mtd/nand: Fix build failure caused by typo
+Message-ID: <20100107083729.GB7413@pengutronix.de>
+References: <201001070301.58260.PeterHuewe@gmx.de>
+	<BD79186B4FD85F4B8E60E381CAEE1909020894AF@mi8nycmail19.Mi8.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE1909020894AF@mi8nycmail19.Mi8.com>
+Cc: Nicolas Pitre <nico@marvell.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	Peter =?iso-8859-1?Q?H=FCwe?= <PeterHuewe@gmx.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-01-06 at 11:59 +0100, David Jander wrote:
-> On Monday 28 December 2009 11:40:43 am Adrian Hunter wrote:
-> >[...]
-> > Generally we test with debugging checks turned on because they will spot an
-> > error the instant it happens.  On the other hand, you must also test the
-> >  actual configuration you will deploy.
-> > 
-> > There are two approaches.  We use both of them.  They are:
-> > 
-> > 1. Set up a desktop machine with your kernel and test on nandsim.  This has
-> >  the advantage that it can do very many more operations than a small
-> >  device.
-> > 
-> > You can simulate power-off-recovery by using UBIFS "failure mode".  Set
-> >  UBIFS debugging module parameter debug_tsts to 4.  There is a script I
-> >  have used for that below.
-> 
-> Yes, but I did not consider this option, because it is a completely different 
-> processor architecture (little-endian vs. big-endian), also it won't test the 
-> hardware-driver, nor the nand-chip and interface which can potentially also be 
-> (part of) the problem. Here I am trying to reproduce a situation that has 
-> already occurred a few times in "real life", and I need to be sure it won't 
-> happen ever again with the latest ubi/ubifs.
-> 
-> > 2. Run tests on the device.  There are tests in mtd-utils/tests/fs-tests
-> >  but LTP's fsstress is good for stressing the file system during
-> >  power-off-recovery testing.
-> 
-> Thanks a lot. I will try fsstress.
-> I had already written my own test script, mimicking some suspicious scenarios, 
-> in the hope it would reproduce what had happend on three of our boards 
-> (corrupt fs), and eventually succeded, but it took several days running.
-> Now I am re-running the test with latest UBI/UBIFS to see if it's gone.
-> Hopefully fsstress will yield results more quickly.
+Hello,
 
-Also, take a look at the MTD tests:
+> > This patch fixes a build failure[1] introduced by the patch
+> >     mtd: orion_nand.c: add error handling and use resource_size()
+> >     by H Hartley Sweeten [2]
+> > The patch assigns something to a undeclared variable 'err', whereas the
+> > rest of the code uses 'ret' for this task.
+> > 
+> > This patch fixes this typo and thus removes the build failure.
+Acked-by: Uwe Kleine-K�nig <u.kleine-koenig@pengutronix.de>
 
-http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
-
-E.g., by running the torture test for a week we once found a very rare
-and subtle problem in our OneNAND driver related to the DMA transfers.
-Also, it is nice to run this test for few months and see how your NAND
-HW behaves when you try to wear few of their blocks out. Also, if you
-manage to make real faulty blocks, you can test how UBI handles them.
+Thanks
+Uwe
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Pengutronix e.K.                              | Uwe Kleine-K�nig            |
+Industrial Linux Solutions                    | http://www.pengutronix.de/  |
