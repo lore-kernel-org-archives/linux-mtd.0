@@ -1,24 +1,21 @@
-Subject: Re: Sending UTF-8 patches (was: [PATCH 2/2] Remove now-defunct
-	ts7250 nand driver)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20100106232711.GF24250@shareable.org>
-References: <201001051459.58621.hartleys@visionengravers.com>
-	<1262784693.3181.8034.camel@macbook.infradead.org>
-	<20100106180705.GC11773@shareable.org>
-	<alpine.LFD.2.00.1001061342240.21025@xanadu.home>
-	<20100106230546.GD24250@shareable.org>
-	<1262819289.3181.8784.camel@macbook.infradead.org>
-	<20100106232711.GF24250@shareable.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 06 Jan 2010 23:50:41 +0000
-Message-ID: <1262821841.3181.8848.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from [213.165.64.20] (helo=mail.gmx.net)
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NShhu-0004bs-Cg
+	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 02:02:42 +0000
+From: Peter =?iso-8859-1?q?H=FCwe?= <PeterHuewe@gmx.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd/nand: Fix build failure caused by typo
+Date: Thu, 7 Jan 2010 03:01:58 +0100
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: joff@embeddedarm.com, Nicolas Pitre <nico@fluxnic.net>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	H Hartley Sweeten <hartleys@visionengravers.com>, mcrapet@gmail.com,
-	ARM Kernel <linux-arm-kernel@lists.infradead.org>
+Message-Id: <201001070301.58260.PeterHuewe@gmx.de>
+Cc: Nicolas Pitre <nico@marvell.com>, linux-kernel@vger.kernel.org,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	linux-mtd@lists.infradead.org, Uwe
+	=?iso-8859-1?q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-01-06 at 23:27 +0000, Jamie Lokier wrote:
-> I suggest mutt users put this in .muttrc to work around git's
-> inconsistency:
-> 
->    set send_charset="us-ascii:utf-8"
+From: Peter Huewe <peterhuewe@gmx.de>
+Date: Thu, 7 Jan 2010 02:51:13 +0100
 
-I would also suggest that mutt users do that. And if it isn't the
-default on the distribution you're using, then file a bug.
+This patch fixes a build failure[1] introduced by the patch
+    mtd: orion_nand.c: add error handling and use resource_size()
+    by H Hartley Sweeten [2]
+The patch assigns something to a undeclared variable 'err', whereas the
+rest of the code uses 'ret' for this task.
 
+This patch fixes this typo and thus removes the build failure.
+
+References:
+[1] http://kisskb.ellerman.id.au/kisskb/buildresult/1983354/
+[2] http://git.kernel.org/?p=linux/kernel/git/sfr/linux-next.git;a=commitdiff;h=e99030609e27abff7e1a868cb56384c678b09984
+
+Patch against linux-next of Do 7. Jan 02:58:41 CET 2010
+
+Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
+---
+ drivers/mtd/nand/orion_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index 9903460..f16050c 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -92,7 +92,7 @@ static int __init orion_nand_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!res) {
+-		err = -ENODEV;
++		ret = -ENODEV;
+ 		goto no_res;
+ 	}
+ 
 -- 
-dwmw2
+1.6.4.4
