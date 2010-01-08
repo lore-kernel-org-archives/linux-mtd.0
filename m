@@ -1,18 +1,21 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTHJz-0003p0-PL
-	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 16:04:24 +0000
-Date: Fri, 8 Jan 2010 17:04:04 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NTIpB-0000ku-C2
+	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 17:40:41 +0000
+Received: by bwz4 with SMTP id 4so12464903bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 08 Jan 2010 09:40:35 -0800 (PST)
 Subject: Re: RFC: [PATCH V2 0/9 Integration of SmartMedia/xD into mtd subsystem
-Message-ID: <20100108160404.GE31872@logfs.org>
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20100108160404.GE31872@logfs.org>
 References: <1262963092.12577.14.camel@maxim-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+	<20100108160404.GE31872@logfs.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 08 Jan 2010 19:40:29 +0200
+Message-ID: <1262972429.20060.4.camel@maxim-laptop>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1262963092.12577.14.camel@maxim-laptop>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,28 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 8 January 2010 17:04:52 +0200, Maxim Levitsky wrote:
+On Fri, 2010-01-08 at 17:04 +0100, Jörn Engel wrote: 
+> On Fri, 8 January 2010 17:04:52 +0200, Maxim Levitsky wrote:
+> > 
+> > * Write speed is of course still very low, but like I said, it might be
+> > hardware problem.
 > 
-> * Write speed is of course still very low, but like I said, it might be
-> hardware problem.
+> Iirc the alauda could do about 400kB/s.  Speed didn't change noticeably
+> between 16M and 256M cards.  My conclusion back then was to blame the
+> alauda chip.  If you get even less, the problem likely isn't in the
+> cards but in the reader and/or your driver.
+Who knows...
+Like I said, I get around 330 Kbytes/s in card reader integrated in
+printer. It is still much higher that what I get with this driver....
 
-Iirc the alauda could do about 400kB/s.  Speed didn't change noticeably
-between 16M and 256M cards.  My conclusion back then was to blame the
-alauda chip.  If you get even less, the problem likely isn't in the
-cards but in the reader and/or your driver.
+I will figure that out sooner or later.
 
-> * No support for 256 byte SmartMedia in the FTL. I don't have the
-> hardware to test that, and I think for now there is not much need for
-> that.
-> (It only applies to 1MB and 2MB SmartMedia devices anyway...)
+Btw, your cards aren't Type M, right?
+However I use here a Type M card, and its likely to include an FTL
+inside, thus, it might explain the low speeds I get there partially...
 
-Fair enough.  If either of the two people who still use such cards
-cares... ;)
-
-Jörn
-
--- 
-I've never met a human being who would want to read 17,000 pages of
-documentation, and if there was, I'd kill him to get him out of the
-gene pool.
--- Joseph Costello
+Best regards,
+Maxim Levitsky
