@@ -1,23 +1,24 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTGoC-0002Km-Gl
-	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 15:31:33 +0000
-Date: Fri, 8 Jan 2010 16:31:15 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [PATCH 2/9] MTD: create lockless versions of {get, put}_mtd_device
-Message-ID: <20100108153114.GD31872@logfs.org>
-References: <1262963092.12577.14.camel@maxim-laptop>
-	<1262963198.12577.16.camel@maxim-laptop>
-	<20100108152119.GB31872@logfs.org>
-	<1262964444.12577.29.camel@maxim-laptop>
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NTGre-0000jE-Ip
+	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 15:35:06 +0000
+Received: by bwz4 with SMTP id 4so12357618bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 08 Jan 2010 07:35:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1262964444.12577.29.camel@maxim-laptop>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
+In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59301E1EB4063@dbde02.ent.ti.com>
+References: <ce9ab5791001060600q1bef6ff5x602519e7db9e145@mail.gmail.com>
+	<B85A65D85D7EB246BE421B3FB0FBB59301E1EB4063@dbde02.ent.ti.com>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Fri, 8 Jan 2010 21:04:41 +0530
+Message-ID: <ce9ab5791001080734y31a0a48cya64e7fa8a6527e30@mail.gmail.com>
+Subject: Re: [PATCH 1/3][NAND][OMAP]: Fixing compilation warning for
+	'nand/omap2.c'
+To: "Premi, Sanjeev" <premi@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +28,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 8 January 2010 17:27:24 +0200, Maxim Levitsky wrote:
-> 
-> Yep, you miss this:
-> 
-> +extern int __get_mtd_device(struct mtd_info *mtd);
-> +extern void __put_mtd_device(struct mtd_info *mtd);
-> 
-> I put that into the header, so these functions can be used outside.
-> 
-> When I compiled the kernel, there were no warnings.
+On Fri, Jan 8, 2010 at 8:31 PM, Premi, Sanjeev <premi@ti.com> wrote:
+>> -----Original Message-----
+>> From: linux-omap-owner@vger.kernel.org
+>> [mailto:linux-omap-owner@vger.kernel.org] On Behalf Of Vimal Singh
+>> Sent: Wednesday, January 06, 2010 7:30 PM
+>> To: Linux MTD
+>> Cc: linux-omap@vger.kernel.org
+>> Subject: [PATCH 1/3][NAND][OMAP]: Fixing compilation warning
+>> for 'nand/omap2.c'
+>>
+>> From 3e856346f93afaf3f519dffe7987e4bbf56a136d Mon Sep 17 00:00:00 2001
+>> From: Vimal Singh <vimalsingh@ti.com>
+>> Date: Tue, 5 Jan 2010 12:49:24 +0530
+>> Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
+>>
+>> Fixing below warning in compilation:
+>> drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
+>> drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
+>> 'omap_nand_dma_transfer' discards qualifiers from pointer target type
+>>
+>> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> ---
+>> =A0drivers/mtd/nand/omap2.c | =A0 =A02 +-
+>> =A01 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>> index 1bb799f..4eea97c 100644
+>> --- a/drivers/mtd/nand/omap2.c
+>> +++ b/drivers/mtd/nand/omap2.c
+>> @@ -505,7 +505,7 @@ static void
+>> omap_write_buf_dma_pref(struct mtd_info *mtd,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_write_buf_pref(mtd, buf, len);
+>> =A0 =A0 =A0 else
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* start transfer in DMA mode */
+>> - =A0 =A0 =A0 =A0 =A0 =A0 omap_nand_dma_transfer(mtd, buf, len, 0x1);
+>> + =A0 =A0 =A0 =A0 =A0 =A0 omap_nand_dma_transfer(mtd, (u_char *) buf, le=
+n, 0x1);
+>> =A0}
+>
+> Vimal,
+>
+> I had posted the fix in DEC. Did you miss it?
+> http://lists.infradead.org/pipermail/linux-mtd/2009-December/028373.html
+>
 
-Maxim: 1
-Joern: 0
+I did. But I wanted to have all of these together. In fact I had
+posted a patch for this sometime back, which was handling this quite
+differently.
+http://patchwork.kernel.org/patch/57235/
 
-Jörn
 
--- 
-But this is not to say that the main benefit of Linux and other GPL
-software is lower-cost. Control is the main benefit--cost is secondary.
--- Bruce Perens
+--=20
+Regards,
+Vimal Singh
