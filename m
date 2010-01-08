@@ -1,24 +1,24 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTGre-0000jE-Ip
-	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 15:35:06 +0000
-Received: by bwz4 with SMTP id 4so12357618bwz.2
+	id 1NTGsC-0002fE-Ke
+	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 15:35:41 +0000
+Received: by fxm22 with SMTP id 22so21953798fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 08 Jan 2010 07:35:01 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB59301E1EB4063@dbde02.ent.ti.com>
-References: <ce9ab5791001060600q1bef6ff5x602519e7db9e145@mail.gmail.com>
-	<B85A65D85D7EB246BE421B3FB0FBB59301E1EB4063@dbde02.ent.ti.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Fri, 8 Jan 2010 21:04:41 +0530
-Message-ID: <ce9ab5791001080734y31a0a48cya64e7fa8a6527e30@mail.gmail.com>
-Subject: Re: [PATCH 1/3][NAND][OMAP]: Fixing compilation warning for
-	'nand/omap2.c'
-To: "Premi, Sanjeev" <premi@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	Linux MTD <linux-mtd@lists.infradead.org>
+	Fri, 08 Jan 2010 07:35:35 -0800 (PST)
+Subject: Re: [PATCH 9/9] mtd: Add new SmartMedia/xD FTL
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20100108152945.GC31872@logfs.org>
+References: <1262963092.12577.14.camel@maxim-laptop>
+	<1262963524.12577.23.camel@maxim-laptop>
+	<20100108152945.GC31872@logfs.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 08 Jan 2010 17:35:31 +0200
+Message-ID: <1262964931.12577.34.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 8, 2010 at 8:31 PM, Premi, Sanjeev <premi@ti.com> wrote:
->> -----Original Message-----
->> From: linux-omap-owner@vger.kernel.org
->> [mailto:linux-omap-owner@vger.kernel.org] On Behalf Of Vimal Singh
->> Sent: Wednesday, January 06, 2010 7:30 PM
->> To: Linux MTD
->> Cc: linux-omap@vger.kernel.org
->> Subject: [PATCH 1/3][NAND][OMAP]: Fixing compilation warning
->> for 'nand/omap2.c'
->>
->> From 3e856346f93afaf3f519dffe7987e4bbf56a136d Mon Sep 17 00:00:00 2001
->> From: Vimal Singh <vimalsingh@ti.com>
->> Date: Tue, 5 Jan 2010 12:49:24 +0530
->> Subject: [PATCH] Fixing compilation warning for 'nand/omap2.c'
->>
->> Fixing below warning in compilation:
->> drivers/mtd/nand/omap2.c: In function 'omap_write_buf_dma_pref':
->> drivers/mtd/nand/omap2.c:508: warning: passing argument 2 of
->> 'omap_nand_dma_transfer' discards qualifiers from pointer target type
->>
->> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
->> ---
->> =A0drivers/mtd/nand/omap2.c | =A0 =A02 +-
->> =A01 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
->> index 1bb799f..4eea97c 100644
->> --- a/drivers/mtd/nand/omap2.c
->> +++ b/drivers/mtd/nand/omap2.c
->> @@ -505,7 +505,7 @@ static void
->> omap_write_buf_dma_pref(struct mtd_info *mtd,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_write_buf_pref(mtd, buf, len);
->> =A0 =A0 =A0 else
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* start transfer in DMA mode */
->> - =A0 =A0 =A0 =A0 =A0 =A0 omap_nand_dma_transfer(mtd, buf, len, 0x1);
->> + =A0 =A0 =A0 =A0 =A0 =A0 omap_nand_dma_transfer(mtd, (u_char *) buf, le=
-n, 0x1);
->> =A0}
->
-> Vimal,
->
-> I had posted the fix in DEC. Did you miss it?
-> http://lists.infradead.org/pipermail/linux-mtd/2009-December/028373.html
->
+On Fri, 2010-01-08 at 16:29 +0100, Jörn Engel wrote: 
+> On Fri, 8 January 2010 17:12:04 +0200, Maxim Levitsky wrote:
+> > 
+> > This implements new readwrite SmartMedia/xd FTL.
+> > 
+> > It depends on nand driver to define proper oob layout that excludes
+> > all ecc areas and nothing more.
+> > 
+> > Support for very old 256 byte/page devices is not yet enabled/complete.
+> > For these devices, all ecc handling will be done inside this FTL
+> > due to wierd oob layout.
+> > 
+> > Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+> > ---
+> >  drivers/mtd/Kconfig  |   12 +
+> >  drivers/mtd/Makefile |    1 +
+> >  drivers/mtd/sm_ftl.c | 1043 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  drivers/mtd/sm_ftl.h |   75 ++++
+> 
+> sm_ftl is certainly nicer than ssfdc.c - at least I can decrypt the
+> acronym.  But I am missing a reason why ssfdc is not sufficient and we
+> need yet another implementation of the same ftl.
+ssfdc is readonly, and bulk of the hard work is the write part.
+Also ssfdc creates one big table by reading oob of whole device and this
+takes about 1 second here.
+I instead defer this by doing it one per zone.
 
-I did. But I wanted to have all of these together. In fact I had
-posted a patch for this sometime back, which was handling this quite
-differently.
-http://patchwork.kernel.org/patch/57235/
+Ideally ssfdc can be deprecated/removed, since my driver is its
+superset.
+However if one needs only R/O support he can use the smaller and safer
+ssfdc.c
 
+I also though about patching the ssfdc.c, but really there will be
+nothing old left after doing that.
 
---=20
-Regards,
-Vimal Singh
+Best regards,
+Maxim Levitsky
