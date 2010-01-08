@@ -1,19 +1,22 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTGem-0005Ps-LE
-	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 15:21:49 +0000
-Date: Fri, 8 Jan 2010 16:21:22 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [PATCH 2/9] MTD: create lockless versions of {get, put}_mtd_device
-Message-ID: <20100108152119.GB31872@logfs.org>
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NTGkL-0007Cq-0J
+	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 15:27:33 +0000
+Received: by fxm22 with SMTP id 22so21944935fxm.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 08 Jan 2010 07:27:28 -0800 (PST)
+Subject: Re: [PATCH 2/9] MTD: create lockless versions of {get,put}_mtd_device
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20100108152119.GB31872@logfs.org>
 References: <1262963092.12577.14.camel@maxim-laptop>
 	<1262963198.12577.16.camel@maxim-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+	<20100108152119.GB31872@logfs.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 08 Jan 2010 17:27:24 +0200
+Message-ID: <1262964444.12577.29.camel@maxim-laptop>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1262963198.12577.16.camel@maxim-laptop>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,20 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 8 January 2010 17:06:38 +0200, Maxim Levitsky wrote:
->
-> +	err = __get_mtd_device(ret);
+On Fri, 2010-01-08 at 16:21 +0100, Jörn Engel wrote: 
+> On Fri, 8 January 2010 17:06:38 +0200, Maxim Levitsky wrote:
+> >
+> > +	err = __get_mtd_device(ret);
+> 
+> Function is called here, afaics not declared and defined...
+> 
+> > [...]
+> > +int __get_mtd_device(struct mtd_info *mtd)
+> 
+> ...further below.  Didn't gcc complain about this?  Or am I missing
+> something?
+> 
+> Jörn
+> 
 
-Function is called here, afaics not declared and defined...
+Yep, you miss this:
 
-> [...]
-> +int __get_mtd_device(struct mtd_info *mtd)
++extern int __get_mtd_device(struct mtd_info *mtd);
++extern void __put_mtd_device(struct mtd_info *mtd);
 
-...further below.  Didn't gcc complain about this?  Or am I missing
-something?
+I put that into the header, so these functions can be used outside.
 
-Jörn
+When I compiled the kernel, there were no warnings.
 
--- 
-Luck is when opportunity meets good preparation.
--- Chinese proverb
+Best regards,
+Maxim Levitsky
