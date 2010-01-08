@@ -1,19 +1,23 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NT0g0-000747-9Q
-	for linux-mtd@lists.infradead.org; Thu, 07 Jan 2010 22:18:00 +0000
-Received: by bwz4 with SMTP id 4so11970423bwz.2
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Jan 2010 14:17:55 -0800 (PST)
-Message-ID: <4B465DA1.6010300@googlemail.com>
-Date: Thu, 07 Jan 2010 23:18:09 +0100
-From: =?ISO-8859-1?Q?Ren=E9_Bolldorf?= <xsecute@googlemail.com>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NT8AZ-0003pt-MS
+	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 06:18:04 +0000
+Date: Fri, 8 Jan 2010 07:17:35 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: Few problems in mtd system
+Message-ID: <20100108061735.GA27087@logfs.org>
+References: <290458.39840.qm@web37604.mail.mud.yahoo.com>
+	<1261342795.4798.14.camel@maxim-laptop>
+	<1262848281.21915.42.camel@localhost>
+	<1262880963.17166.1.camel@maxim-laptop>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH]drivers/mtd/chips/cfi_probe.c:18 remove unneeded comment
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1262880963.17166.1.camel@maxim-laptop>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, arnd <arnd@arndb.de>,
+	Alex Dubov <oakad@yahoo.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---- ./drivers/mtd/chips/cfi_probe.c     2009-12-28 21:09:46.638828686 +0100
-+++ ./drivers/mtd/chips/cfi_probe.c     2010-01-04 22:38:31.536678726 +0100
-@@ -18,8 +18,6 @@
-  #include <linux/mtd/cfi.h>
-  #include <linux/mtd/gen_probe.h>
+On Thu, 7 January 2010 18:16:03 +0200, Maxim Levitsky wrote:
+> 
+> I have recently posted a pathset that fixes everything, especially
+> hotplug.
+> 
+> Will be glad to hear feedback.
 
--//#define DEBUG_CFI
--
-  #ifdef DEBUG_CFI
-  static void print_cfi_ident(struct cfi_ident *);
-  #endif
+Sadly, this is a bit naive wrt. mtd.  The current state of affair seems
+to be that you either provide a perfect patch that gets merged or you
+get ignored.  Feedback has become a rarety.
+
+I'm currently on vacation, so I haven't given you patches more than a
+cursory glance.  Certainly useful, but not perfect yet.  Apart from the
+obvious checkpatch, sending obviously useful (for everyone else but you)
+patches first might help.
+
+Jörn
+
+-- 
+Joern's library part 2:
+http://www.art.net/~hopkins/Don/unix-haters/tirix/embarrassing-memo.html
