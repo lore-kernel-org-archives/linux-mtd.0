@@ -1,22 +1,18 @@
-Received: from mail-fx0-f222.google.com ([209.85.220.222])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTGsC-0002fE-Ke
-	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 15:35:41 +0000
-Received: by fxm22 with SMTP id 22so21953798fxm.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 08 Jan 2010 07:35:35 -0800 (PST)
-Subject: Re: [PATCH 9/9] mtd: Add new SmartMedia/xD FTL
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20100108152945.GC31872@logfs.org>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NTHJz-0003p0-PL
+	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 16:04:24 +0000
+Date: Fri, 8 Jan 2010 17:04:04 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: RFC: [PATCH V2 0/9 Integration of SmartMedia/xD into mtd subsystem
+Message-ID: <20100108160404.GE31872@logfs.org>
 References: <1262963092.12577.14.camel@maxim-laptop>
-	<1262963524.12577.23.camel@maxim-laptop>
-	<20100108152945.GC31872@logfs.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 08 Jan 2010 17:35:31 +0200
-Message-ID: <1262964931.12577.34.camel@maxim-laptop>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1262963092.12577.14.camel@maxim-laptop>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,40 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-01-08 at 16:29 +0100, Jörn Engel wrote: 
-> On Fri, 8 January 2010 17:12:04 +0200, Maxim Levitsky wrote:
-> > 
-> > This implements new readwrite SmartMedia/xd FTL.
-> > 
-> > It depends on nand driver to define proper oob layout that excludes
-> > all ecc areas and nothing more.
-> > 
-> > Support for very old 256 byte/page devices is not yet enabled/complete.
-> > For these devices, all ecc handling will be done inside this FTL
-> > due to wierd oob layout.
-> > 
-> > Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
-> > ---
-> >  drivers/mtd/Kconfig  |   12 +
-> >  drivers/mtd/Makefile |    1 +
-> >  drivers/mtd/sm_ftl.c | 1043 ++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  drivers/mtd/sm_ftl.h |   75 ++++
+On Fri, 8 January 2010 17:04:52 +0200, Maxim Levitsky wrote:
 > 
-> sm_ftl is certainly nicer than ssfdc.c - at least I can decrypt the
-> acronym.  But I am missing a reason why ssfdc is not sufficient and we
-> need yet another implementation of the same ftl.
-ssfdc is readonly, and bulk of the hard work is the write part.
-Also ssfdc creates one big table by reading oob of whole device and this
-takes about 1 second here.
-I instead defer this by doing it one per zone.
+> * Write speed is of course still very low, but like I said, it might be
+> hardware problem.
 
-Ideally ssfdc can be deprecated/removed, since my driver is its
-superset.
-However if one needs only R/O support he can use the smaller and safer
-ssfdc.c
+Iirc the alauda could do about 400kB/s.  Speed didn't change noticeably
+between 16M and 256M cards.  My conclusion back then was to blame the
+alauda chip.  If you get even less, the problem likely isn't in the
+cards but in the reader and/or your driver.
 
-I also though about patching the ssfdc.c, but really there will be
-nothing old left after doing that.
+> * No support for 256 byte SmartMedia in the FTL. I don't have the
+> hardware to test that, and I think for now there is not much need for
+> that.
+> (It only applies to 1MB and 2MB SmartMedia devices anyway...)
 
-Best regards,
-Maxim Levitsky
+Fair enough.  If either of the two people who still use such cards
+cares... ;)
+
+Jörn
+
+-- 
+I've never met a human being who would want to read 17,000 pages of
+documentation, and if there was, I'd kill him to get him out of the
+gene pool.
+-- Joseph Costello
