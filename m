@@ -1,15 +1,18 @@
-Received: from ipmail03.adl6.internode.on.net ([203.16.214.141])
+Received: from mail-px0-f200.google.com ([209.85.216.200])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTCEz-0004x0-7B
-	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 10:38:53 +0000
-Message-ID: <4B470B30.6060202@elphinstone.net>
-Date: Fri, 08 Jan 2010 21:38:40 +1100
-From: Mark Ware <mware@elphinstone.net>
+	id 1NTCar-0005WC-Rk
+	for linux-mtd@lists.infradead.org; Fri, 08 Jan 2010 11:01:30 +0000
+Received: by pxi38 with SMTP id 38so8099244pxi.28
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 08 Jan 2010 03:01:24 -0800 (PST)
 MIME-Version: 1.0
+From: Shweta Shetty <shyamashweta@gmail.com>
+Date: Fri, 8 Jan 2010 16:31:04 +0530
+Message-ID: <c58fcbf21001080301h4847f425u2fdecd9085fafbe@mail.gmail.com>
+Subject: ubi2- a proposed design for reducing mount time of ubi
 To: linux-mtd@lists.infradead.org
-Subject: DiskOnChip recursive lock problem
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,71 +22,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi!
 
-I am trying to update an old powerpc based board from 2.4.18 to something modern (2.6.31) and I'm having some issues with the diskonchip device (64Mb DOC2000).  After forcing the use of the generic nand_read/write_oob_std functions from nand_base.c instead of nand_read/write_syndrome (as suggested in [1]) the device is detected correctly.
+We are 4 computer engineering students who are working on ubi2 as our
+final year computer project.
+We are focusing on reducing the mount time by writing the header data
+in a contiguous format on flash itself.
+We present the following design for your consideration and would be
+grateful for any constructive comments.
 
-My main problem is a deadlock caused by an attempt to obtain the mtd_table_mutex twice.  I have attached the boot messages, including lockdep output and backtrace below.
+Overview:
 
-The regression appears to be caused by 8022c13c27b822cf22f13df10b42aae89cd56bf0 - "mtd: blkdevs: do not forget to get MTD devices".  Once reverted, the boot is able to continue and the device *appears* to work correctly.  The above commit fixes a real problem though and I'm not familiar enough with the MTD code to know how best to resolve this locking problem.
+MEB =96 A PEB that contains only header data.
 
-Any help/suggestions would be appreciated.
+1)For each individual PEB, the following header data will be stored
+Pnum (Physical block number)
+Lnum (Logical block number)
+Ec(Erase count)
+Sequence number(For versioning)
+Vid =96 Volume id to which the leb belongs
+Scrub info
+(This is basically the information stored in the rb trees in Ram)
 
-Regards,
-Mark
+2) This data will be stored consecutively within each MEB. This
+information requires 34 bytes . Thus 1 MEB can contain metadata for
+(Size of PEB/34) number of PEBs. We can thus compute the total no of
+MEBs required from the total number of physical blocks in flash.
 
-[1] http://www.infradead.org/pipermail/linux-mtd/2007-February/017354.html
+3) The different MEBs will be maintained as a singly linked closed
+hash bucket. Reason for this is given later.
 
-DOC related boot log:
+4)1 PEB will act as a header to this bucket.
 
-Using configured DiskOnChip probe address 0xf02c0000
-DiskOnChip found at 0xf02c0000
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x75 (Samsung NAND 32MiB 3,3V 8-bit)
-2 NAND chips detected
-Found DiskOnChip ANAND Media Header at 0xc000
-Found DiskOnChip ANAND Media Header at 0x10000
-    DataOrgID        = ANAND
-    NumEraseUnits    = 4093
-    FirstPhysicalEUN = 3
-    FormattedSize    = 65683456
-    UnitSizeFactor   = 255
-NFTL: cannot calculate a geometry to match size of 0x1f520.
-NFTL: using C:1002 H:16 S:8 (== 0x1f500 sects)
+5)2 PEBs (say PEB 0 and PEB 1) are reserved as anchor blocks.
 
-=============================================
-[ INFO: possible recursive locking detected ]
-2.6.31 #124
----------------------------------------------
-swapper/1 is trying to acquire lock:
- (mtd_table_mutex){+.+.+.}, at: [<c0185b10>] get_mtd_device+0x2c/0x144
+6) 1 PEB is present as a chain block. Anchor blocks will contain a
+pointer to chain block which will contain a pointer to the header
+block.
 
-but task is already holding lock:
- (mtd_table_mutex){+.+.+.}, at: [<c0185ec8>] add_mtd_device+0x84/0x2b0
+7) The anchor blocks CANNOT be wear-levelled. The chain block, header
+block and all MEBs may be wear-levelled by the existing UBI
+wear-levelling subsystem. The chain block and header block are present
+to guarantee that by the time the anchor blocks go bad, the entire
+flash will have gone bad.
 
-other info that might help us debug this:
-2 locks held by swapper/1:
- #0:  (mtd_table_mutex){+.+.+.}, at: [<c0185ec8>] add_mtd_device+0x84/0x2b0
- #1:  (&bdev->bd_mutex){+.+...}, at: [<c00ad264>] __blkdev_get+0x50/0x32c
+8)The anchor blocks, chain block and header block will be handled by
+dividing them into sectors. This is the same as the anchor block
+concept given in the JFFS3 design document by Artem Bityutskiy. It is
+mentioned briefly below:
 
-stack backtrace:
-Call Trace:
-[c3829c80] [c00088cc] show_stack+0x4c/0x14c (unreliable)
-[c3829cc0] [c0046b40] __lock_acquire+0x14b0/0x156c
-[c3829d20] [c0046c78] lock_acquire+0x7c/0x98
-[c3829d50] [c028b754] mutex_lock_nested+0x54/0x2b0
-[c3829db0] [c0185b10] get_mtd_device+0x2c/0x144
-[c3829dc0] [c0189c9c] blktrans_open+0x30/0xd4
-[c3829de0] [c00ad2c0] __blkdev_get+0xac/0x32c
-[c3829e20] [c00cba5c] register_disk+0xec/0x16c
-[c3829e50] [c012c550] add_disk+0xd0/0x120
-[c3829e80] [c0189bdc] add_mtd_blktrans_dev+0x270/0x290
-[c3829ea0] [c018a87c] nftl_add_mtd+0x17c/0x1b0
-[c3829ec0] [c0189268] blktrans_notify_add+0x40/0x80
-[c3829ee0] [c018608c] add_mtd_device+0x248/0x2b0
-[c3829f00] [c036f128] nftl_scan_bbt+0x37c/0x3b4
-[c3829f70] [c019d524] nand_scan_tail+0x594/0x5a8
-[c3829f90] [c036ead0] doc_probe+0x60c/0x660
-[c3829fb0] [c036eba4] init_nanddoc+0x80/0xe8
-[c3829fc0] [c000391c] do_one_initcall+0x64/0x1fc
-[c3829fe0] [c035e1d4] kernel_init+0xb4/0x124
-[c3829ff0] [c0010e80] kernel_thread+0x4c/0x68
+9) The anchor blocks, chain block and header block will be divided
+into sectors of size min i/o units. Initially the 1st sector will
+contain valid pointers to next block. If the location of the next
+block changes, then the next sector will be written to, without
+erasing the entire block. The valid sector can be determined by
+reading the block into a buffer and finding the first sector before
+0xFF data starts. The entire block needs to be erased only if first
+sector needs to be re-written.
+
+10)The MEB hash bucket is maintained as follows:
+=09
+1)We will be assigning a logical volume for all of the above blocks.
+2)We will be mapping required no of blocks i.e required no. of MEBs +
+4 to this volume.
+3)Each PEB=92s header data will then be mapped to its corresponding MEB
+by hash function. The hash function will give the logical number of
+the MEB. The data will then be written to the corresponding physical
+MEB.
+4) During use of flash, whenever header data is updated, we can
+directly obtain the corresponding MEB using the hash function and
+update it too.
+
+11)Construction of these blocks on flash will be done only on first
+use of flash by ubi2. At all other mounts only the MEBs will be read
+for constructing the rb trees.
+
+We would be grateful for any suggestions.
+
+--
+Shweta Shetty
+http://shweta-kaleidoscope.blogspot.com/
+Humility is a strange thing. The minute you know you have got it you
+have lost it.
