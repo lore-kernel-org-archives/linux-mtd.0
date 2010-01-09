@@ -1,22 +1,17 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTP9l-0001wW-2z
-	for linux-mtd@lists.infradead.org; Sat, 09 Jan 2010 00:26:21 +0000
-Date: Sat, 9 Jan 2010 01:26:01 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: RFC: [PATCH V2 0/9 Integration of SmartMedia/xD into mtd subsystem
-Message-ID: <20100109002600.GA3258@logfs.org>
-References: <1262963092.12577.14.camel@maxim-laptop>
-	<20100108160404.GE31872@logfs.org>
-	<1262972429.20060.4.camel@maxim-laptop>
+Received: from mail02d.mail.t-online.hu ([84.2.42.7])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NTc22-0008Kw-Un
+	for linux-mtd@lists.infradead.org; Sat, 09 Jan 2010 14:11:16 +0000
+Message-ID: <4B488E5A.6060505@freemail.hu>
+Date: Sat, 09 Jan 2010 15:10:34 +0100
+From: =?UTF-8?B?TsOpbWV0aCBNw6FydG9u?= <nm127@freemail.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 1/3] nand: make PCI device id constant
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1262972429.20060.4.camel@maxim-laptop>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
+Cc: Julia Lawall <julia@diku.dk>, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>, cocci@diku.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 8 January 2010 19:40:29 +0200, Maxim Levitsky wrote:
-> 
-> Btw, your cards aren't Type M, right?
-> However I use here a Type M card, and its likely to include an FTL
-> inside, thus, it might explain the low speeds I get there partially...
+From: Márton Németh <nm127@freemail.hu>
 
-No, mine were the old ones before marketing invented the two types.
+The id_table field of the struct pci_driver is constant in <linux/pci.h>
+so it is worth to make cafe_nand_tbl also constant.
 
-Jörn
+The semantic match that finds this kind of pattern is as follows:
+(http://coccinelle.lip6.fr/)
 
--- 
-Fancy algorithms are buggier than simple ones, and they're much harder
-to implement. Use simple algorithms as well as simple data structures.
--- Rob Pike
+// <smpl>
+@r@
+disable decl_init,const_decl_init;
+identifier I1, I2, x;
+@@
+	struct I1 {
+	  ...
+	  const struct I2 *x;
+	  ...
+	};
+@s@
+identifier r.I1, y;
+identifier r.x, E;
+@@
+	struct I1 y = {
+	  .x = E,
+	};
+@c@
+identifier r.I2;
+identifier s.E;
+@@
+	const struct I2 E[] = ... ;
+@depends on !c@
+identifier r.I2;
+identifier s.E;
+@@
++	const
+	struct I2 E[] = ...;
+// </smpl>
+
+Signed-off-by: Márton Németh <nm127@freemail.hu>
+Cc: Julia Lawall <julia@diku.dk>
+Cc: cocci@diku.dk
+---
+diff -u -p a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
+--- a/drivers/mtd/nand/cafe_nand.c 2009-12-03 04:51:21.000000000 +0100
++++ b/drivers/mtd/nand/cafe_nand.c 2010-01-08 04:27:58.000000000 +0100
+@@ -848,7 +848,7 @@ static void __devexit cafe_nand_remove(s
+ 	kfree(mtd);
+ }
+
+-static struct pci_device_id cafe_nand_tbl[] = {
++static const struct pci_device_id cafe_nand_tbl[] = {
+ 	{ PCI_VENDOR_ID_MARVELL, PCI_DEVICE_ID_MARVELL_88ALP01_NAND,
+ 	  PCI_ANY_ID, PCI_ANY_ID },
+ 	{ }
