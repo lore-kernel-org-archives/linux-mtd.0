@@ -1,24 +1,18 @@
-Received: from mail-fx0-f210.google.com ([209.85.220.210])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTv9a-00076C-6g
-	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 10:36:18 +0000
-Received: by mail-fx0-f210.google.com with SMTP id 2so18211663fxm.5
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 10 Jan 2010 02:36:13 -0800 (PST)
-Subject: Re: [PATCH 4/6] mtd: Remove unnecessary comparisons with
-	MAX_MTD_DEVICES
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Hutchings <bhutchings@solarflare.com>
-In-Reply-To: <1262704857.2837.11.camel@achroite.uk.solarflarecom.com>
-References: <1262704857.2837.11.camel@achroite.uk.solarflarecom.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 10 Jan 2010 12:36:11 +0200
-Message-Id: <1263119771.7315.160.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from astoria.ccjclearline.com ([64.235.106.9])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NTvU7-0003Ty-Ge
+	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 10:57:31 +0000
+Date: Sun, 10 Jan 2010 05:56:40 -0500 (EST)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: what's with CONFIG_MTD_PISMO?
+In-Reply-To: <1263114340.7315.135.camel@localhost.localdomain>
+Message-ID: <alpine.LFD.2.00.1001100555580.7717@localhost>
+References: <alpine.LFD.2.00.1001030716270.13494@localhost>
+	<1263114340.7315.135.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-01-05 at 15:20 +0000, Ben Hutchings wrote:
-> MAX_MTD_DEVICES is about to be removed.
-> 
-> Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
-> ---
->  drivers/mtd/devices/pmc551.c |    4 ++--
->  drivers/mtd/mtdchar.c        |    3 ---
->  drivers/mtd/mtdoops.c        |    5 -----
->  3 files changed, 2 insertions(+), 10 deletions(-)
+On Sun, 10 Jan 2010, Artem Bityutskiy wrote:
 
-Reviewed-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> On Sun, 2010-01-03 at 07:18 -0500, Robert P. J. Day wrote:
+> > at the moment, there is a Makefile reference to a non-existent
+> > Kconfig variable:
+> >
+> > ./drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_PISMO)    += pismo.o
+> >
+> >   but there is no definition of Kconfig variable MTD_PISMO.  should
+> > this be defined in a Kconfig file somewhere?
+>
+> Yeah, the driver and Kconfig part were forgotten somehow. They are
+> simply absent.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+  so should i just submit a patch to remove the superfluous bit until
+such time as that driver is added in its entirety?
+
+rday
+--
+
+========================================================================
+Robert P. J. Day                               Waterloo, Ontario, CANADA
+
+            Linux Consulting, Training and Kernel Pedantry.
+
+Web page:                                          http://crashcourse.ca
+Twitter:                                       http://twitter.com/rpjday
+========================================================================
