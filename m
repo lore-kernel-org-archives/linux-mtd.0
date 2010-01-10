@@ -1,18 +1,22 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTvU7-0003Ty-Ge
-	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 10:57:31 +0000
-Date: Sun, 10 Jan 2010 05:56:40 -0500 (EST)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: what's with CONFIG_MTD_PISMO?
-In-Reply-To: <1263114340.7315.135.camel@localhost.localdomain>
-Message-ID: <alpine.LFD.2.00.1001100555580.7717@localhost>
-References: <alpine.LFD.2.00.1001030716270.13494@localhost>
-	<1263114340.7315.135.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NTw4K-0001hw-59
+	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 11:34:56 +0000
+Received: by fxm22 with SMTP id 22so23147316fxm.2
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 10 Jan 2010 03:34:50 -0800 (PST)
+Subject: Re: ubi attach failure
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: twebb <taliaferro62@gmail.com>
+In-Reply-To: <dbdb2ea61001051516n4eb50374m809720d68c214cba@mail.gmail.com>
+References: <dbdb2ea61001051516n4eb50374m809720d68c214cba@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 10 Jan 2010 13:34:44 +0200
+Message-Id: <1263123284.30988.5.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 10 Jan 2010, Artem Bityutskiy wrote:
+On Tue, 2010-01-05 at 18:16 -0500, twebb wrote:
+> I get the error shown below when attempting to attach to an mtd device
+> on a Marvell PXA-based platform.  The flash is MLC NAND from Samsung
+> K9LBG08U0D (4G x 8-bit).
+> 
+> I don't know if it's related, but one thing that stands out is that I
+> only see the error on two platforms whose bad block table has >28
+> entries (other tested boards have approx. 2-8 bad blocks).
+> 
+> Any suggestion as to what would cause error and whether it may be
+> related to the high number of bad blocks?
 
-> On Sun, 2010-01-03 at 07:18 -0500, Robert P. J. Day wrote:
-> > at the moment, there is a Makefile reference to a non-existent
-> > Kconfig variable:
-> >
-> > ./drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_PISMO)    += pismo.o
-> >
-> >   but there is no definition of Kconfig variable MTD_PISMO.  should
-> > this be defined in a Kconfig file somewhere?
->
-> Yeah, the driver and Kconfig part were forgotten somehow. They are
-> simply absent.
+What did you use to flash your image? It looks like it was not flashed
+properly.
 
-  so should i just submit a patch to remove the superfluous bit until
-such time as that driver is added in its entirety?
-
-rday
---
-
-========================================================================
-Robert P. J. Day                               Waterloo, Ontario, CANADA
-
-            Linux Consulting, Training and Kernel Pedantry.
-
-Web page:                                          http://crashcourse.ca
-Twitter:                                       http://twitter.com/rpjday
-========================================================================
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
