@@ -1,19 +1,19 @@
 Received: from mail-fx0-f210.google.com ([209.85.220.210])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTv8y-00076C-26
-	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 10:35:40 +0000
+	id 1NTv9J-00076C-OZ
+	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 10:36:02 +0000
 Received: by mail-fx0-f210.google.com with SMTP id 2so18211663fxm.5
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 10 Jan 2010 02:35:35 -0800 (PST)
-Subject: Re: [PATCH 2/6] mtd: Use get_mtd_device_nm() to find named device
-	in get_sb_mtd()
+	Sun, 10 Jan 2010 02:35:57 -0800 (PST)
+Subject: Re: [PATCH 3/6] nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use
+	it instead of MAX_MTD_DEVICES
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ben Hutchings <bhutchings@solarflare.com>
-In-Reply-To: <1262704813.2837.7.camel@achroite.uk.solarflarecom.com>
-References: <1262704813.2837.7.camel@achroite.uk.solarflarecom.com>
+In-Reply-To: <1262704837.2837.9.camel@achroite.uk.solarflarecom.com>
+References: <1262704837.2837.9.camel@achroite.uk.solarflarecom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 10 Jan 2010 12:35:34 +0200
-Message-Id: <1263119734.7315.158.camel@localhost.localdomain>
+Date: Sun, 10 Jan 2010 12:35:55 +0200
+Message-Id: <1263119755.7315.159.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
@@ -29,12 +29,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2010-01-05 at 15:20 +0000, Ben Hutchings wrote:
-> This removes the need to know the number of MTD devices.
+> MAX_MTD_DEVICES is about to be removed.
 > 
 > Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
 > ---
->  drivers/mtd/mtdsuper.c |   18 ++++++------------
->  1 files changed, 6 insertions(+), 12 deletions(-)
+>  drivers/mtd/nand/nandsim.c |    7 +++++--
+>  1 files changed, 5 insertions(+), 2 deletions(-)
 
 Reviewed-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
