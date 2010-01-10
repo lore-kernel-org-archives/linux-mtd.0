@@ -1,19 +1,18 @@
 Received: from mail-fx0-f222.google.com ([209.85.220.222])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NTtz2-0000Ps-Uz
-	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 09:21:21 +0000
-Received: by fxm22 with SMTP id 22so23095050fxm.2
+	id 1NTuJL-0007QT-EG
+	for linux-mtd@lists.infradead.org; Sun, 10 Jan 2010 09:42:19 +0000
+Received: by fxm22 with SMTP id 22so23102645fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 10 Jan 2010 01:21:15 -0800 (PST)
-Subject: Re: [PATCH] [MTD] WWW: Spelling correction in UBI FAQ
+	Sun, 10 Jan 2010 01:42:14 -0800 (PST)
+Subject: Re: [PATCH] UBI fails to initialise in kernel update marker
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lee Amirev <lee.amirev@gmail.com>
-In-Reply-To: <e14c53d91001031611i736c54eev8636321d43f3f831@mail.gmail.com>
-References: <e14c53d91001031603h694291c1y5b008e86283d5a2d@mail.gmail.com>
-	<e14c53d91001031611i736c54eev8636321d43f3f831@mail.gmail.com>
+To: Peter Horton <zero@colonel-panic.org>
+In-Reply-To: <20100105111436.GA2046@turtle.localnet>
+References: <20100105111436.GA2046@turtle.localnet>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 10 Jan 2010 11:21:13 +0200
-Message-Id: <1263115273.7315.138.camel@localhost.localdomain>
+Date: Sun, 10 Jan 2010 11:42:11 +0200
+Message-Id: <1263116531.7315.143.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,26 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-01-03 at 19:11 -0500, Lee Amirev wrote:
-> diff --git a/faq/ubi.xml b/faq/ubi.xml
-> index 3a9c255..76ad9d9 100644
-> --- a/faq/ubi.xml
-> +++ b/faq/ubi.xml
-> @@ -707,7 +707,7 @@ $ modprobe nandsim second_id_byte=0x36
->  <p>See <a href="nand.html#L_nand_nandsim">here</a> for more
-> information about
->  the NAND simulator.</p>
->  
-> -<p>To ensure that you have fake MTD devices, run
-> "<code>cat /prof/mtd</code>".
-> +<p>To ensure that you have fake MTD devices, run
-> "<code>cat /proc/mtd</code>".
->  It should print something like</p>
+On Tue, 2010-01-05 at 11:14 +0000, Peter Horton wrote:
+> The in kernel copy of a volume's update marker is not initialised from the
+> volume table.
+> 
+> Signed-off-by: Peter Horton <zero@colonel-panic.org>
+> 
+> --- linux-2.6.32.orig/drivers/mtd/ubi/vtbl.c	2010-01-05 10:56:13.000000000 +0000
+> +++ linux-2.6.32/drivers/mtd/ubi/vtbl.c	2010-01-05 10:57:03.000000000 +0000
+> @@ -566,6 +566,7 @@
+>  		vol->reserved_pebs = be32_to_cpu(vtbl[i].reserved_pebs);
+>  		vol->alignment = be32_to_cpu(vtbl[i].alignment);
+>  		vol->data_pad = be32_to_cpu(vtbl[i].data_pad);
+> +		vol->upd_marker = vtbl[i].upd_marker;
+>  		vol->vol_type = vtbl[i].vol_type == UBI_VID_DYNAMIC ?
+>  					UBI_DYNAMIC_VOLUME : UBI_STATIC_VOLUME;
+>  		vol->name_len = be16_to_cpu(vtbl[i].name_len);
 
-Although the patch is not in proper format and is not applicable with
-git am, I've pushed it with some manual work.
-
-Thank you! 
+Am I right that this means that whole "forbid using volume with
+unfinished update" functionality has not worked properly? Or I miss
+something? Looks like I should send this patch to -stable as well.
 
 -- 
 Best Regards,
