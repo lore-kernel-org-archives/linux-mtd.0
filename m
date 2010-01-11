@@ -1,23 +1,25 @@
-Received: from mail.solarflare.com ([216.237.3.220]
-	helo=exchange.solarflare.com)
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NUR8e-0002xC-VF
-	for linux-mtd@lists.infradead.org; Mon, 11 Jan 2010 20:45:29 +0000
-Subject: Re: [PATCH 5/6] mtdblock: Replace array of block cache info with
-	pointers in struct mtd_info
-From: Ben Hutchings <bhutchings@solarflare.com>
-To: dedekind1@gmail.com
-In-Reply-To: <1263231716.2781.29.camel@achroite.uk.solarflarecom.com>
-References: <1262704951.2837.14.camel@achroite.uk.solarflarecom.com>
-	<1263119681.7315.156.camel@localhost.localdomain>
-	<1263231716.2781.29.camel@achroite.uk.solarflarecom.com>
-Content-Type: text/plain
-Date: Mon, 11 Jan 2010 20:45:20 +0000
-Message-Id: <1263242720.2781.44.camel@achroite.uk.solarflarecom.com>
+	id 1NUSgl-0004k0-1g
+	for linux-mtd@lists.infradead.org; Mon, 11 Jan 2010 22:24:47 +0000
+Received: by bwz4 with SMTP id 4so14197361bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Jan 2010 14:24:35 -0800 (PST)
+Subject: Re: RFC: [PATCH V2 0/9 Integration of SmartMedia/xD into mtd subsystem
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20100109002600.GA3258@logfs.org>
+References: <1262963092.12577.14.camel@maxim-laptop>
+	<20100108160404.GE31872@logfs.org>
+	<1262972429.20060.4.camel@maxim-laptop>
+	<20100109002600.GA3258@logfs.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 12 Jan 2010 00:24:31 +0200
+Message-ID: <1263248671.24201.7.camel@maxim-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-01-11 at 17:41 +0000, Ben Hutchings wrote:
-> On Sun, 2010-01-10 at 12:34 +0200, Artem Bityutskiy wrote:
-> > On Tue, 2010-01-05 at 15:22 +0000, Ben Hutchings wrote:
-> > >  	mutex_lock(&mtdblk->cache_mutex);
-> > >  	write_cached_data(mtdblk);
-> > > diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> > > index 0f32a9b..5c1b1ac 100644
-> > > --- a/include/linux/mtd/mtd.h
-> > > +++ b/include/linux/mtd/mtd.h
-> > > @@ -177,6 +177,10 @@ struct mtd_info {
-> > >  	 */
-> > >  	struct backing_dev_info *backing_dev_info;
-> > >  
-> > > +#if defined(CONFIG_MTD_BLOCK) || defined(CONFIG_MTD_BLOCK_MODULE)
-> > > +	/* Block device state */
-> > > +	struct mtdblk_dev *blk_dev;
-> > > +#endif
+On Sat, 2010-01-09 at 01:26 +0100, Jörn Engel wrote: 
+> On Fri, 8 January 2010 19:40:29 +0200, Maxim Levitsky wrote:
 > > 
-> > I think injecting this to mtd_info is conceptually very wrong. It breaks
-> > layering. Block devices sit on top of MTD devices, not vice-versa. Lower
-> > layer (MTD) should not know anything about the higher layer (block).
+> > Btw, your cards aren't Type M, right?
+> > However I use here a Type M card, and its likely to include an FTL
+> > inside, thus, it might explain the low speeds I get there partially...
 > 
-> I agree in principle, but it already does know about block and char
-> devices.
-[...]
+> No, mine were the old ones before marketing invented the two types.
+> 
+> Jörn
+> 
 
-It looks like this is actually quite easy to do cleanly.  Based on the
-original mtdblock code I thought that the cache structures (struct
-mtdblk_dev) could be shared between multiple block translation devices
-(struct mtd_blktrans_dev).  However, instances of each type have to be
-uniquely identified by MTD index, so this cannot happen.  It should be
-possible to embed struct mtd_blktrans_dev in struct mtdblk_dev and then
-look up the latter with container_of().  Right?
+I finally located the source of slowdown.
+It appears to be caused by too large caching I did (5 erase blocks).
+If I cache one block, write speed nears 1 MB/s.
+As a bonus that makes the FTL much simplified.
 
-Ben.
+Another small flaw that currently exists in my FTL is that it ignores
+the underlying badblock support from mtd driver and requeres it to
+expose the two bad block bytes in the oob layout, I think I can avoid
+that after all.
 
--- 
-Ben Hutchings, Senior Software Engineer, Solarflare Communications
-Not speaking for my employer; that's the marketing department's job.
-They asked us to note that Solarflare product names are trademarked.
+Other that that, everything is just perfect.
+
+I post updated patchset soon.
+
+Best regards,
+Maxim Levitsky
