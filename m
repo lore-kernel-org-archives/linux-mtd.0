@@ -1,24 +1,22 @@
 Received: from mail-fx0-f211.google.com ([209.85.220.211])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NUCDo-0002WU-1i
-	for linux-mtd@lists.infradead.org; Mon, 11 Jan 2010 04:49:48 +0000
-Received: by fxm3 with SMTP id 3so11517637fxm.4
+	id 1NUDSf-0007No-9H
+	for linux-mtd@lists.infradead.org; Mon, 11 Jan 2010 06:09:13 +0000
+Received: by fxm3 with SMTP id 3so11547026fxm.4
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 10 Jan 2010 20:49:41 -0800 (PST)
-Subject: Re: [PATCH] [MTD] WWW: Spelling correction in UBI FAQ
+	Sun, 10 Jan 2010 22:09:07 -0800 (PST)
+Subject: Re: Question on partition wise ECC support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lee Amirev <lee.amirev@gmail.com>
-In-Reply-To: <e14c53d91001100826v5ebe0811l6650b72afe973d62@mail.gmail.com>
-References: <e14c53d91001031603h694291c1y5b008e86283d5a2d@mail.gmail.com>
-	<e14c53d91001031611i736c54eev8636321d43f3f831@mail.gmail.com>
-	<1263115273.7315.138.camel@localhost.localdomain>
-	<e14c53d91001100826v5ebe0811l6650b72afe973d62@mail.gmail.com>
+To: Nishanth Menon <menon.nishanth@gmail.com>
+In-Reply-To: <782515bb1001060642v78e1c482we6612d8cb8ac041c@mail.gmail.com>
+References: <782515bb1001060642v78e1c482we6612d8cb8ac041c@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 11 Jan 2010 06:49:40 +0200
-Message-Id: <1263185380.30988.12.camel@localhost.localdomain>
+Date: Mon, 11 Jan 2010 08:09:04 +0200
+Message-Id: <1263190144.30988.25.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Vimal Singh <vimal.newwork@gmail.com>,
+	Linux MTD <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,14 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-01-10 at 11:26 -0500, Lee Amirev wrote:
-> For future reference, how do I generate the proper format?  I just
-> used git diff.
+On Wed, 2010-01-06 at 08:42 -0600, Nishanth Menon wrote:
+> Hi,
+> Just a generic question: for NAND devices, each ECC strategy such as
+> 256byte/512byte ecc has tradeoff b/w reliability Vs performance. I
+> wonder if we have some mechanism if we can maintain different ECC
+> strategy per partition.
 
-git format-patch
-
-You should also have a "Signed-off-by:". Like this:
-http://git.infradead.org/mtd-www.git/commit/1e58f6b030255925912b3f1c8c08074cf1649aff
+I do not think it is possible.
 
 -- 
 Best Regards,
