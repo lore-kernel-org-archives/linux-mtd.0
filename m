@@ -1,25 +1,20 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
+Received: from mail-ew0-f223.google.com ([209.85.219.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NUSgl-0004k0-1g
-	for linux-mtd@lists.infradead.org; Mon, 11 Jan 2010 22:24:47 +0000
-Received: by bwz4 with SMTP id 4so14197361bwz.2
+	id 1NUUUc-0007Pk-OU
+	for linux-mtd@lists.infradead.org; Tue, 12 Jan 2010 00:20:23 +0000
+Received: by ewy23 with SMTP id 23so23667ewy.4
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 11 Jan 2010 14:24:35 -0800 (PST)
-Subject: Re: RFC: [PATCH V2 0/9 Integration of SmartMedia/xD into mtd subsystem
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20100109002600.GA3258@logfs.org>
-References: <1262963092.12577.14.camel@maxim-laptop>
-	<20100108160404.GE31872@logfs.org>
-	<1262972429.20060.4.camel@maxim-laptop>
-	<20100109002600.GA3258@logfs.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 12 Jan 2010 00:24:31 +0200
-Message-ID: <1263248671.24201.7.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
+	Mon, 11 Jan 2010 16:20:17 -0800 (PST)
+MIME-Version: 1.0
+Sender: jonringle@gmail.com
+In-Reply-To: <152584231001111056n2d174f8fmef6641c4fee99781@mail.gmail.com>
+References: <152584231001111056n2d174f8fmef6641c4fee99781@mail.gmail.com>
+Date: Mon, 11 Jan 2010 19:20:16 -0500
+Message-ID: <152584231001111620i6b397f43n49733caa8f92f472@mail.gmail.com>
+Subject: Re: Fail to mount ubifs
+From: Jon Ringle <jon@ringle.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +24,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-01-09 at 01:26 +0100, Jörn Engel wrote: 
-> On Fri, 8 January 2010 19:40:29 +0200, Maxim Levitsky wrote:
-> > 
-> > Btw, your cards aren't Type M, right?
-> > However I use here a Type M card, and its likely to include an FTL
-> > inside, thus, it might explain the low speeds I get there partially...
-> 
-> No, mine were the old ones before marketing invented the two types.
-> 
-> Jörn
-> 
+I should be able to mount an empty ubi volume as ubifs right?
+But I get this on a freshly made volume:
+UBIFS error (pid 1493): check_lpt_crc: invalid crc in LPT node: crc
+cbcb calc cbfb
 
-I finally located the source of slowdown.
-It appears to be caused by too large caching I did (5 erase blocks).
-If I cache one block, write speed nears 1 MB/s.
-As a bonus that makes the FTL much simplified.
+I'm not sure what to try now...
 
-Another small flaw that currently exists in my FTL is that it ignores
-the underlying badblock support from mtd driver and requeres it to
-expose the two bad block bytes in the oob layout, I think I can avoid
-that after all.
+Jon
 
-Other that that, everything is just perfect.
+(initramfs) ubinfo -a
+UBI version:                    1
+Count of UBI devices:           1
+UBI control device major/minor: 10:60
+Present UBI devices:            ubi0
 
-I post updated patchset soon.
+ubi0
+Volumes count:                           2
+Logical eraseblock size:                 130944 bytes, f KiB
+Total amount of logical eraseblocks:     249 (32605056 bytes, f MiB)
+Amount of available logical eraseblocks: 112 (14665728 bytes, f MiB)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       0
+Count of reserved physical eraseblocks:  0
+Current maximum erase counter value:     72
+Minimum input/output unit size:          1 byte
+Character device major/minor:            253:0
+Present volumes:                         0, 1
 
-Best regards,
-Maxim Levitsky
+Volume ID:   0 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        27 LEBs (3535488 bytes, f MiB)
+Data bytes:  3481728 bytes (f MiB)
+State:       OK
+Name:        kernel
+Character device major/minor: 253:1
+-----------------------------------
+Volume ID:   1 (on ubi0)
+Type:        static
+Alignment:   1
+Size:        106 LEBs (13880064 bytes, f MiB)
+Data bytes:  13844480 bytes (f MiB)
+State:       OK
+Name:        squashfs
+Character device major/minor: 253:2
+(initramfs)
+(initramfs) ubimkvol -m -N ubifs /dev/ubi0
+Set volume size to 14665728
+Volume ID 2, size 112 LEBs (14665728 bytes, f MiB), LEB size 130944
+bytes (f KiB), dynamic, name "ubifs", alignment 1
+(initramfs)
+(initramfs) mkdir /mnt
+(initramfs) mount -t ubifs ubi0:ubifs /mnt
+[  277.900000] UBIFS: default file-system created
+[  277.980000] UBIFS DBG (pid 1497): ubifs_bg_thread: background
+thread "ubifs_bgt0_2" started, PID 1497
+[  278.260000] UBIFS error (pid 1493): check_lpt_crc: invalid crc in
+LPT node: crc cbcb calc cbfb
+[  278.260000] [<c01822bc>] (unwind_backtrace+0x0/0x160) from
+[<bf071a34>] (check_lpt_crc+0x9c/0xb0 [ubifs])
+[  278.270000] [<bf071a34>] (check_lpt_crc+0x9c/0xb0 [ubifs]) from
+[<bf071b24>] (unpack_pnode+0xdc/0xfc [ubifs])
+[  278.280000] [<bf071b24>] (unpack_pnode+0xdc/0xfc [ubifs]) from
+[<bf071d8c>] (scan_get_pnode+0x248/0x2ec [ubifs])
+[  278.300000] [<bf071d8c>] (scan_get_pnode+0x248/0x2ec [ubifs]) from
+[<bf072738>] (ubifs_lpt_scan_nolock+0x3f8/0x518 [ubifs])
+[  278.310000] [<bf072738>] (ubifs_lpt_scan_nolock+0x3f8/0x518
+[ubifs]) from [<bf0754b8>] (dbg_check_lprops+0xf8/0x2e4 [ubifs])
+[  278.320000] [<bf0754b8>] (dbg_check_lprops+0xf8/0x2e4 [ubifs]) from
+[<bf051ff4>] (mount_ubifs+0x6a4/0x1620 [ubifs])
+[  278.330000] [<bf051ff4>] (mount_ubifs+0x6a4/0x1620 [ubifs]) from
+[<bf053d20>] (ubifs_fill_super+0x318/0x42c [ubifs])
+[  278.340000] [<bf053d20>] (ubifs_fill_super+0x318/0x42c [ubifs])
+from [<bf053f0c>] (ubifs_get_sb+0xd8/0x22c [ubifs])
+[  278.350000] [<bf053f0c>] (ubifs_get_sb+0xd8/0x22c [ubifs]) from
+[<c01f5360>] (vfs_kern_mount+0x68/0x12c)
+[  278.360000] [<c01f5360>] (vfs_kern_mount+0x68/0x12c) from
+[<c01f5468>] (do_kern_mount+0x34/0xdc)
+[  278.370000] [<c01f5468>] (do_kern_mount+0x34/0xdc) from
+[<c020dad0>] (do_mount+0x210/0x244)
+[  278.380000] [<c020dad0>] (do_mount+0x210/0x244) from [<c020dba0>]
+(sys_mount+0x9c/0xd0)
+[  278.390000] [<c020dba0>] (sys_mount+0x9c/0xd0) from [<c017c9e0>]
+(ret_fast_syscall+0x0/0x2c)
+[  278.400000] UBIFS DBG (pid 1497): ubifs_bg_thread: background
+thread "ubifs_bgt0_2" stops
+mount: Invalid argument
