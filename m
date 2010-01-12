@@ -1,14 +1,14 @@
 Received: from exchange.solarflare.com ([216.237.3.220])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NUpqt-0006L1-8Y
-	for linux-mtd@lists.infradead.org; Tue, 12 Jan 2010 23:08:48 +0000
-Subject: [PATCHv2 2/7] mtd: Use get_mtd_device_nm() to find named device in
-	get_sb_mtd()
+	id 1NUpqz-0006Z1-J6
+	for linux-mtd@lists.infradead.org; Tue, 12 Jan 2010 23:08:54 +0000
+Subject: [PATCHv2 3/7] nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use it
+	instead of MAX_MTD_DEVICES
 From: Ben Hutchings <bhutchings@solarflare.com>
 To: David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain
-Date: Tue, 12 Jan 2010 23:08:39 +0000
-Message-Id: <1263337719.3011.18.camel@achroite.uk.solarflarecom.com>
+Date: Tue, 12 Jan 2010 23:08:46 +0000
+Message-Id: <1263337726.3011.20.camel@achroite.uk.solarflarecom.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-net-drivers@solarflare.com, linux-mtd@lists.infradead.org
@@ -21,42 +21,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This removes the need to know the number of MTD devices.
+MAX_MTD_DEVICES is about to be removed.
 
 Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
 ---
- drivers/mtd/mtdsuper.c |   18 ++++++------------
- 1 files changed, 6 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/nandsim.c |    7 +++++--
+ 1 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index af8b42e..d257052 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -150,18 +150,12 @@ int get_sb_mtd(struct file_system_type *fs_type, int flags,
- 			DEBUG(1, "MTDSB: mtd:%%s, name \"%s\"\n",
- 			      dev_name + 4);
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index 7281000..58c255e 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -80,6 +80,9 @@
+ #ifndef CONFIG_NANDSIM_DBG
+ #define CONFIG_NANDSIM_DBG        0
+ #endif
++#ifndef CONFIG_NANDSIM_MAX_PARTS
++#define CONFIG_NANDSIM_MAX_PARTS  32
++#endif
  
--			for (mtdnr = 0; mtdnr < MAX_MTD_DEVICES; mtdnr++) {
--				mtd = get_mtd_device(NULL, mtdnr);
--				if (!IS_ERR(mtd)) {
--					if (!strcmp(mtd->name, dev_name + 4))
--						return get_sb_mtd_aux(
--							fs_type, flags,
--							dev_name, data, mtd,
--							fill_super, mnt);
--
--					put_mtd_device(mtd);
--				}
--			}
-+			mtd = get_mtd_device_nm(dev_name + 4);
-+			if (!IS_ERR(mtd))
-+				return get_sb_mtd_aux(
-+					fs_type, flags,
-+					dev_name, data, mtd,
-+					fill_super, mnt);
+ static uint first_id_byte  = CONFIG_NANDSIM_FIRST_ID_BYTE;
+ static uint second_id_byte = CONFIG_NANDSIM_SECOND_ID_BYTE;
+@@ -94,7 +97,7 @@ static uint bus_width      = CONFIG_NANDSIM_BUS_WIDTH;
+ static uint do_delays      = CONFIG_NANDSIM_DO_DELAYS;
+ static uint log            = CONFIG_NANDSIM_LOG;
+ static uint dbg            = CONFIG_NANDSIM_DBG;
+-static unsigned long parts[MAX_MTD_DEVICES];
++static unsigned long parts[CONFIG_NANDSIM_MAX_PARTS];
+ static unsigned int parts_num;
+ static char *badblocks = NULL;
+ static char *weakblocks = NULL;
+@@ -288,7 +291,7 @@ union ns_mem {
+  * The structure which describes all the internal simulator data.
+  */
+ struct nandsim {
+-	struct mtd_partition partitions[MAX_MTD_DEVICES];
++	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
+ 	unsigned int nbparts;
  
- 			printk(KERN_NOTICE "MTD:"
- 			       " MTD device with name \"%s\" not found.\n",
+ 	uint busw;              /* flash chip bus width (8 or 16) */
 -- 
 1.5.5
 
