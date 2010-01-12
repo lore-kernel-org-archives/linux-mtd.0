@@ -1,20 +1,20 @@
-Received: from mail-ew0-f223.google.com ([209.85.219.223])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NUUUc-0007Pk-OU
-	for linux-mtd@lists.infradead.org; Tue, 12 Jan 2010 00:20:23 +0000
-Received: by ewy23 with SMTP id 23so23667ewy.4
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 11 Jan 2010 16:20:17 -0800 (PST)
+Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NUV8g-0007fO-5v
+	for linux-mtd@lists.infradead.org; Tue, 12 Jan 2010 01:01:46 +0000
+Date: Mon, 11 Jan 2010 17:01:45 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+Subject: Re: [PATCH v3]: Introducing 'gpmc-nand.c' for GPMC specific NAND init
+Message-ID: <20100112010145.GJ5055@atomide.com>
+References: <ce9ab5791001110240p6c74497eg128cb726ed4fe4d0@mail.gmail.com>
+	<ce9ab5791001110249n65b303f5g9192395a883eb604@mail.gmail.com>
 MIME-Version: 1.0
-Sender: jonringle@gmail.com
-In-Reply-To: <152584231001111056n2d174f8fmef6641c4fee99781@mail.gmail.com>
-References: <152584231001111056n2d174f8fmef6641c4fee99781@mail.gmail.com>
-Date: Mon, 11 Jan 2010 19:20:16 -0500
-Message-ID: <152584231001111620i6b397f43n49733caa8f92f472@mail.gmail.com>
-Subject: Re: Fail to mount ubifs
-From: Jon Ringle <jon@ringle.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce9ab5791001110249n65b303f5g9192395a883eb604@mail.gmail.com>
+Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,90 +24,308 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I should be able to mount an empty ubi volume as ubifs right?
-But I get this on a freshly made volume:
-UBIFS error (pid 1493): check_lpt_crc: invalid crc in LPT node: crc
-cbcb calc cbfb
+Hi,
 
-I'm not sure what to try now...
+Few more comments below.
 
-Jon
+* Vimal Singh <vimal.newwork@gmail.com> [100111 02:47]:
+> On Mon, Jan 11, 2010 at 4:10 PM, Vimal Singh <vimal.newwork@gmail.com> wrote:
+> > Re-summiting this patch. After re-basing on LO master.
+> >
+> > -vimal
+> >
+> >
+> > From a7ea8851fe96690c9322393eb35a344853992166 Mon Sep 17 00:00:00 2001
+> > From: Vimal Singh <vimalsingh@ti.com>
+> > Date: Mon, 11 Jan 2010 16:01:29 +0530
+> > Subject: [PATCH] Introducing 'gpmc-nand.c' for GPMC specific NAND init
+> >
+> > Introducing 'gpmc-nand.c' for GPMC specific NAND init.
+> > For example: GPMC timing parameters and all.
+> > This patch also migrates gpmc related calls from 'nand/omap2.c'
+> > to 'gpmc-nand.c'.
+> >
+> > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> > ---
+> >  arch/arm/mach-omap2/Makefile           |    3 +
+> >  arch/arm/mach-omap2/gpmc-nand.c        |  136 ++++++++++++++++++++++++++++++++
+> >  arch/arm/plat-omap/include/plat/nand.h |    6 ++
+> >  drivers/mtd/nand/omap2.c               |   26 +------
+> >  4 files changed, 148 insertions(+), 23 deletions(-)
+> >  create mode 100644 arch/arm/mach-omap2/gpmc-nand.c
+> 
+> 
+> Patch got line wrapped. Corrected it below.
+> 
+> From a7ea8851fe96690c9322393eb35a344853992166 Mon Sep 17 00:00:00 2001
+> From: Vimal Singh <vimalsingh@ti.com>
+> Date: Mon, 11 Jan 2010 16:01:29 +0530
+> Subject: [PATCH] Introducing 'gpmc-nand.c' for GPMC specific NAND init
+> 
+> Introducing 'gpmc-nand.c' for GPMC specific NAND init.
+> For example: GPMC timing parameters and all.
+> This patch also migrates gpmc related calls from 'nand/omap2.c'
+> to 'gpmc-nand.c'.
+> 
+> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+>  arch/arm/mach-omap2/Makefile           |    3 +
+>  arch/arm/mach-omap2/gpmc-nand.c        |  136 ++++++++++++++++++++++++++++++++
+>  arch/arm/plat-omap/include/plat/nand.h |    6 ++
+>  drivers/mtd/nand/omap2.c               |   26 +------
+>  4 files changed, 148 insertions(+), 23 deletions(-)
+>  create mode 100644 arch/arm/mach-omap2/gpmc-nand.c
+> 
+> diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+> index b32678b..247438b 100644
+> --- a/arch/arm/mach-omap2/Makefile
+> +++ b/arch/arm/mach-omap2/Makefile
+> @@ -119,5 +119,8 @@ obj-y					+= usb-ehci.o
+>  onenand-$(CONFIG_MTD_ONENAND_OMAP2)	:= gpmc-onenand.o
+>  obj-y					+= $(onenand-m) $(onenand-y)
+> 
+> +nand-$(CONFIG_MTD_NAND_OMAP2)		:= gpmc-nand.o
+> +obj-y					+= $(nand-m) $(nand-y)
+> +
+>  smc91x-$(CONFIG_SMC91X)			:= gpmc-smc91x.o
+>  obj-y					+= $(smc91x-m) $(smc91x-y)
+> diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+> new file mode 100644
+> index 0000000..822ba82
+> --- /dev/null
+> +++ b/arch/arm/mach-omap2/gpmc-nand.c
+> @@ -0,0 +1,136 @@
+> +/*
+> + * gpmc-nand.c
+> + *
+> + * Copyright (C) 2009 Texas Instruments
+> + * Vimal Singh <vimalsingh@ti.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/io.h>
+> +
+> +#include <asm/mach/flash.h>
+> +
+> +#include <plat/nand.h>
+> +#include <plat/board.h>
+> +#include <plat/gpmc.h>
+> +
+> +#define WR_RD_PIN_MONITORING	0x00600000
+> +
+> +static struct omap_nand_platform_data *gpmc_nand_data;
+> +
+> +static struct resource gpmc_nand_resource = {
+> +	.flags		= IORESOURCE_MEM,
+> +};
+> +
+> +static struct platform_device gpmc_nand_device = {
+> +	.name		= "omap2-nand",
+> +	.id		= 0,
+> +	.num_resources	= 1,
+> +	.resource	= &gpmc_nand_resource,
+> +};
+> +
+> +static int omap2_nand_gpmc_config(int cs, void __iomem *nand_base)
+> +{
+> +	struct gpmc_timings t;
+> +	int err;
+> +
+> +	const int cs_rd_off = 36;
+> +	const int cs_wr_off = 36;
+> +	const int adv_on = 6;
+> +	const int adv_rd_off = 24;
+> +	const int adv_wr_off = 36;
+> +	const int oe_off = 48;
+> +	const int we_off = 30;
+> +	const int rd_cycle = 72;
+> +	const int wr_cycle = 72;
+> +	const int access = 54;
+> +	const int wr_data_mux_bus = 0;
+> +	const int wr_access = 30;
+> +
+> +	memset(&t, 0, sizeof(t));
+> +	t.sync_clk = 0;
+> +	t.cs_on = 0;
+> +	t.adv_on = gpmc_round_ns_to_ticks(adv_on);
+> +
+> +	/* Read */
+> +	t.adv_rd_off = gpmc_round_ns_to_ticks(adv_rd_off);
+> +	t.oe_on  = t.adv_on;
+> +	t.access = gpmc_round_ns_to_ticks(access);
+> +	t.oe_off = gpmc_round_ns_to_ticks(oe_off);
+> +	t.cs_rd_off = gpmc_round_ns_to_ticks(cs_rd_off);
+> +	t.rd_cycle  = gpmc_round_ns_to_ticks(rd_cycle);
+> +
+> +	/* Write */
+> +	t.adv_wr_off = gpmc_round_ns_to_ticks(adv_wr_off);
+> +	t.we_on  = t.oe_on;
+> +	if (cpu_is_omap34xx()) {
+> +		t.wr_data_mux_bus = gpmc_round_ns_to_ticks(wr_data_mux_bus);
+> +		t.wr_access = gpmc_round_ns_to_ticks(wr_access);
+> +	}
+> +	t.we_off = gpmc_round_ns_to_ticks(we_off);
+> +	t.cs_wr_off = gpmc_round_ns_to_ticks(cs_wr_off);
+> +	t.wr_cycle  = gpmc_round_ns_to_ticks(wr_cycle);
+> +
+> +	/* Configure GPMC */
+> +	gpmc_cs_write_reg(cs, GPMC_CS_CONFIG1,
+> +			GPMC_CONFIG1_DEVICESIZE(gpmc_nand_data->devsize) |
+> +			GPMC_CONFIG1_DEVICETYPE_NAND);
+> +
+> +	err = gpmc_cs_set_timings(cs, &t);
+> +	if (err)
+> +		return err;
+> +
+> +	return 0;
+> +}
 
-(initramfs) ubinfo -a
-UBI version:                    1
-Count of UBI devices:           1
-UBI control device major/minor: 10:60
-Present UBI devices:            ubi0
+How about allow passing timings from board-*.c file? This most likely will
+work with only one type of NAND chip.
 
-ubi0
-Volumes count:                           2
-Logical eraseblock size:                 130944 bytes, f KiB
-Total amount of logical eraseblocks:     249 (32605056 bytes, f MiB)
-Amount of available logical eraseblocks: 112 (14665728 bytes, f MiB)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  0
-Current maximum erase counter value:     72
-Minimum input/output unit size:          1 byte
-Character device major/minor:            253:0
-Present volumes:                         0, 1
+> +static int gpmc_nand_setup(void __iomem *nand_base)
+> +{
+> +	struct device *dev = &gpmc_nand_device.dev;
+> +
+> +	/* Set timings in GPMC */
+> +	if (omap2_nand_gpmc_config(gpmc_nand_data->cs, nand_base) < 0) {
+> +		dev_err(dev, "Unable to set gpmc timings\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int __init gpmc_nand_init(struct omap_nand_platform_data *_nand_data)
+> +{
+> +	unsigned int val;
+> +	int err	= 0;
+> +	struct device *dev = &gpmc_nand_device.dev;
+> +
+> +	gpmc_nand_data = _nand_data;
+> +	gpmc_nand_data->nand_setup = gpmc_nand_setup;
+> +	gpmc_nand_device.dev.platform_data = gpmc_nand_data;
+> +
+> +	err = gpmc_nand_setup(gpmc_nand_data->gpmc_cs_baseaddr);
+> +	if (err < 0) {
+> +		dev_err(dev, "NAND platform setup failed: %d\n", err);
+> +		return err;
+> +	}
+> +
+> +	/* Enable RD PIN Monitoring Reg */
+> +	if (gpmc_nand_data->dev_ready) {
+> +		val  = gpmc_cs_read_reg(gpmc_nand_data->cs,
+> +						 GPMC_CS_CONFIG1);
+> +		val |= WR_RD_PIN_MONITORING;
+> +		gpmc_cs_write_reg(gpmc_nand_data->cs,
+> +						GPMC_CS_CONFIG1, val);
+> +	}
+> +
+> +	err = platform_device_register(&gpmc_nand_device);
+> +	if (err < 0) {
+> +		dev_err(dev, "Unable to register NAND device\n");
+> +		return err;
+> +	}
+> +
+> +	return 0;
+> +}
 
-Volume ID:   0 (on ubi0)
-Type:        static
-Alignment:   1
-Size:        27 LEBs (3535488 bytes, f MiB)
-Data bytes:  3481728 bytes (f MiB)
-State:       OK
-Name:        kernel
-Character device major/minor: 253:1
------------------------------------
-Volume ID:   1 (on ubi0)
-Type:        static
-Alignment:   1
-Size:        106 LEBs (13880064 bytes, f MiB)
-Data bytes:  13844480 bytes (f MiB)
-State:       OK
-Name:        squashfs
-Character device major/minor: 253:2
-(initramfs)
-(initramfs) ubimkvol -m -N ubifs /dev/ubi0
-Set volume size to 14665728
-Volume ID 2, size 112 LEBs (14665728 bytes, f MiB), LEB size 130944
-bytes (f KiB), dynamic, name "ubifs", alignment 1
-(initramfs)
-(initramfs) mkdir /mnt
-(initramfs) mount -t ubifs ubi0:ubifs /mnt
-[  277.900000] UBIFS: default file-system created
-[  277.980000] UBIFS DBG (pid 1497): ubifs_bg_thread: background
-thread "ubifs_bgt0_2" started, PID 1497
-[  278.260000] UBIFS error (pid 1493): check_lpt_crc: invalid crc in
-LPT node: crc cbcb calc cbfb
-[  278.260000] [<c01822bc>] (unwind_backtrace+0x0/0x160) from
-[<bf071a34>] (check_lpt_crc+0x9c/0xb0 [ubifs])
-[  278.270000] [<bf071a34>] (check_lpt_crc+0x9c/0xb0 [ubifs]) from
-[<bf071b24>] (unpack_pnode+0xdc/0xfc [ubifs])
-[  278.280000] [<bf071b24>] (unpack_pnode+0xdc/0xfc [ubifs]) from
-[<bf071d8c>] (scan_get_pnode+0x248/0x2ec [ubifs])
-[  278.300000] [<bf071d8c>] (scan_get_pnode+0x248/0x2ec [ubifs]) from
-[<bf072738>] (ubifs_lpt_scan_nolock+0x3f8/0x518 [ubifs])
-[  278.310000] [<bf072738>] (ubifs_lpt_scan_nolock+0x3f8/0x518
-[ubifs]) from [<bf0754b8>] (dbg_check_lprops+0xf8/0x2e4 [ubifs])
-[  278.320000] [<bf0754b8>] (dbg_check_lprops+0xf8/0x2e4 [ubifs]) from
-[<bf051ff4>] (mount_ubifs+0x6a4/0x1620 [ubifs])
-[  278.330000] [<bf051ff4>] (mount_ubifs+0x6a4/0x1620 [ubifs]) from
-[<bf053d20>] (ubifs_fill_super+0x318/0x42c [ubifs])
-[  278.340000] [<bf053d20>] (ubifs_fill_super+0x318/0x42c [ubifs])
-from [<bf053f0c>] (ubifs_get_sb+0xd8/0x22c [ubifs])
-[  278.350000] [<bf053f0c>] (ubifs_get_sb+0xd8/0x22c [ubifs]) from
-[<c01f5360>] (vfs_kern_mount+0x68/0x12c)
-[  278.360000] [<c01f5360>] (vfs_kern_mount+0x68/0x12c) from
-[<c01f5468>] (do_kern_mount+0x34/0xdc)
-[  278.370000] [<c01f5468>] (do_kern_mount+0x34/0xdc) from
-[<c020dad0>] (do_mount+0x210/0x244)
-[  278.380000] [<c020dad0>] (do_mount+0x210/0x244) from [<c020dba0>]
-(sys_mount+0x9c/0xd0)
-[  278.390000] [<c020dba0>] (sys_mount+0x9c/0xd0) from [<c017c9e0>]
-(ret_fast_syscall+0x0/0x2c)
-[  278.400000] UBIFS DBG (pid 1497): ubifs_bg_thread: background
-thread "ubifs_bgt0_2" stops
-mount: Invalid argument
+Looks like nothing is calling gpmc_nand_init. Please provide patches to
+convert the users to call gpmc_nand_init.
+
+And while at it, please fix the driver to call gpmc_cs_request.
+
+Regards,
+
+Tony
+
+
+> diff --git a/arch/arm/plat-omap/include/plat/nand.h
+> b/arch/arm/plat-omap/include/plat/nand.h
+> index 631a7be..2ba9842 100644
+> --- a/arch/arm/plat-omap/include/plat/nand.h
+> +++ b/arch/arm/plat-omap/include/plat/nand.h
+> @@ -21,4 +21,10 @@ struct omap_nand_platform_data {
+>  	int			dma_channel;
+>  	void __iomem		*gpmc_cs_baseaddr;
+>  	void __iomem		*gpmc_baseaddr;
+> +	int			devsize;
+>  };
+> +
+> +/* size (4 KiB) for IO mapping */
+> +#define	NAND_IO_SIZE	SZ_4K
+> +
+> +extern int gpmc_nand_init(struct omap_nand_platform_data *d);
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 7df303a..af028f7 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -30,12 +30,8 @@
+> 
+>  #define	DRIVER_NAME	"omap2-nand"
+> 
+> -/* size (4 KiB) for IO mapping */
+> -#define	NAND_IO_SIZE	SZ_4K
+> -
+>  #define	NAND_WP_OFF	0
+>  #define NAND_WP_BIT	0x00000010
+> -#define WR_RD_PIN_MONITORING	0x00600000
+> 
+>  #define	GPMC_BUF_FULL	0x00000001
+>  #define	GPMC_BUF_EMPTY	0x00000000
+> @@ -885,8 +881,6 @@ static int __devinit omap_nand_probe(struct
+>  	struct omap_nand_info		*info;
+>  	struct omap_nand_platform_data	*pdata;
+>  	int				err;
+> -	unsigned long 			val;
+> -
+> 
+>  	pdata = pdev->dev.platform_data;
+>  	if (pdata == NULL) {
+> @@ -913,24 +907,15 @@ static int __devinit omap_nand_probe(struct
+>  	info->mtd.name		= dev_name(&pdev->dev);
+>  	info->mtd.owner		= THIS_MODULE;
+> 
+> +	info->nand.options	|= pdata->devsize ? NAND_BUSWIDTH_16 : 0;
+> +	info->nand.options	|= NAND_SKIP_BBTSCAN;
+> +
+>  	err = gpmc_cs_request(info->gpmc_cs, NAND_IO_SIZE, &info->phys_base);
+>  	if (err < 0) {
+>  		dev_err(&pdev->dev, "Cannot request GPMC CS\n");
+>  		goto out_free_info;
+>  	}
+> 
+> -	/* Enable RD PIN Monitoring Reg */
+> -	if (pdata->dev_ready) {
+> -		val  = gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG1);
+> -		val |= WR_RD_PIN_MONITORING;
+> -		gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CONFIG1, val);
+> -	}
+> -
+> -	val  = gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG7);
+> -	val &= ~(0xf << 8);
+> -	val |=  (0xc & 0xf) << 8;
+> -	gpmc_cs_write_reg(info->gpmc_cs, GPMC_CS_CONFIG7, val);
+> -
+>  	/* NAND write protect off */
+>  	omap_nand_wp(&info->mtd, NAND_WP_OFF);
+> 
+> @@ -966,11 +951,6 @@ static int __devinit omap_nand_probe(struct
+>  		info->nand.chip_delay = 50;
+>  	}
+> 
+> -	info->nand.options  |= NAND_SKIP_BBTSCAN;
+> -	if ((gpmc_cs_read_reg(info->gpmc_cs, GPMC_CS_CONFIG1) & 0x3000)
+> -								== 0x1000)
+> -		info->nand.options  |= NAND_BUSWIDTH_16;
+> -
+>  	if (use_prefetch) {
+>  		/* copy the virtual address of nand base for fifo access */
+>  		info->nand_pref_fifo_add = info->nand.IO_ADDR_R;
+> -- 
+> 1.5.5
