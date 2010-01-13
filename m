@@ -1,14 +1,19 @@
-Received: from [63.146.191.166] (helo=mail0.vertical.com)
+Received: from fg-out-1718.google.com ([72.14.220.157])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NV4Ya-0001fa-E6
-	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 14:50:53 +0000
-From: Jon Ringle <jon@ringle.org>
-To: linux-mtd@lists.infradead.org,
-	dsaxena@mvista.com
-Subject: [PATCH] [MTD] maps/ixp4xx: Fix reading from half-word boundary
-Date: Wed, 13 Jan 2010 09:36:10 -0500
-Message-Id: <1263393370-3561-1-git-send-email-jon@ringle.org>
-Cc: Jon Ringle <jon@ringle.org>, dedekind1@gmail.com
+	id 1NV5aR-0006us-OV
+	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 15:56:51 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so613057fga.0
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Jan 2010 07:56:46 -0800 (PST)
+Message-ID: <4B4DED3D.9060609@gmail.com>
+Date: Wed, 13 Jan 2010 16:56:45 +0100
+From: Jiri Slaby <jirislaby@gmail.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: l440gx: weird PCI refcounting
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 7bit
+Cc: linux-pci@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ixp4xx updates:
-  - Fix handling of reads that don't start on a half-word boundary.
+Hi,
 
+stanse found two PCI device double puts in l440gx code.
 
-Signed-off-by: Jon Ringle <jon@ringle.org>
----
- drivers/mtd/maps/ixp4xx.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+init_l440gx looks like:
+dev = pci_get_device(PCI_VENDOR_ID_INTEL,...);
+pm_dev = pci_get_device(PCI_VENDOR_ID_INTEL,...);
 
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index 7214b87..6b540a5 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -107,8 +107,8 @@ static void ixp4xx_copy_from(struct map_info *map, void *to,
- 		return;
- 
- 	if (from & 1) {
--		*dest++ = BYTE1(flash_read16(src));
--                src++;
-+		*dest++ = BYTE1(flash_read16(src-1));
-+		src++;
- 		--len;
- 	}
- 
+pci_dev_put(dev); // first
+...
+if (!(pm_iobase->flags & IORESOURCE_IO)) {
+  ...
+  pci_dev_put(pm_dev); // first
+  ...
+  if (pci_assign_resource(pm_dev, PIIXE_IOBASE_RESOURCE) != 0) {
+    pci_dev_put(dev); // second
+    pci_dev_put(pm_dev); // second
+    return -ENXIO;
+  }
+}
+
+I would fix it, but I don't see from that, what the code should do.
+pm_dev is used after it's put. And to add, cleanup_l440gx doesn't
+contain any puts at all.
+
+Any ideas?
+
+References:
+http://decibel.fi.muni.cz/~xslaby/stanse/error.cgi?db=33-rc&id=635#l84
+http://decibel.fi.muni.cz/~xslaby/stanse/error.cgi?db=33-rc&id=636#l48
+
 -- 
-1.6.5.rc2
+js
