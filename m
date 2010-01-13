@@ -1,24 +1,29 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
+Received: from mail-ew0-f223.google.com ([209.85.219.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NV3QC-0004eu-Mr
-	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 13:38:09 +0000
-Received: by bwz4 with SMTP id 4so15534525bwz.2
+	id 1NV44q-0000vk-IL
+	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 14:20:09 +0000
+Received: by ewy23 with SMTP id 23so77222ewy.4
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Jan 2010 05:38:03 -0800 (PST)
+	Wed, 13 Jan 2010 06:20:03 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <ce9ab5791001130529l6f2ef9d5k79b6329a98baed54@mail.gmail.com>
-References: <ce9ab5791001130453md91ad46ld84f9d51ccd96e87@mail.gmail.com>
-	<ce9ab5791001130506g28bb330dm79225c688839323d@mail.gmail.com>
-	<ce9ab5791001130520u6cbf0d9cx1f3fd16df31354d@mail.gmail.com>
-	<ce9ab5791001130529l6f2ef9d5k79b6329a98baed54@mail.gmail.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 13 Jan 2010 19:07:43 +0530
-Message-ID: <ce9ab5791001130537w550bb291rfdec614cd53b79ff@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] Creating helper func for block alignment
-	verfication
-To: Linux MTD <linux-mtd@lists.infradead.org>
+Sender: jonringle@gmail.com
+In-Reply-To: <1263370012.2917.9.camel@localhost>
+References: <152584231001111056n2d174f8fmef6641c4fee99781@mail.gmail.com>
+	<152584231001111620i6b397f43n49733caa8f92f472@mail.gmail.com>
+	<1263271808.30988.38.camel@localhost.localdomain>
+	<152584231001121223q123b5b2flbdd9fcde370c3105@mail.gmail.com>
+	<1263331836.3445.4.camel@localhost.localdomain>
+	<152584231001121615h2b52b7ddv33980c9c4a88f37b@mail.gmail.com>
+	<152584231001122303g66f776bdo57f6f08307f77dd0@mail.gmail.com>
+	<1263369336.2917.6.camel@localhost>
+	<1263370012.2917.9.camel@localhost>
+Date: Wed, 13 Jan 2010 09:20:01 -0500
+Message-ID: <152584231001130620y36fe8a4atcdc7ac356d79df23@mail.gmail.com>
+Subject: Re: Fail to mount ubifs
+From: Jon Ringle <jon@ringle.org>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Deepak Saxena <dsaxena@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,167 +33,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 13, 2010 at 6:59 PM, Vimal Singh <vimal.newwork@gmail.com> wrote:
-> From 310f7faa8f319bd9384512f7d5a7f13dcfbeebc8 Mon Sep 17 00:00:00 2001
-> From: Vimal Singh <vimalsingh@ti.com>
-> Date: Wed, 13 Jan 2010 18:11:47 +0530
-> Subject: [PATCH] Creating helper func for block alignment verfication
+On Wed, Jan 13, 2010 at 3:06 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2010-01-13 at 09:55 +0200, Artem Bityutskiy wrote:
+>> On Wed, 2010-01-13 at 02:03 -0500, Jon Ringle wrote:
+>> > Looking into drivers/mtd/maps/ixp4xx.c I see that the read function is
+>> > ixp4xx_read16(). It seems to me that there is an alignment problem.
+>> > The read starts at offset 545 which in unaligned with a 16-bit read
+>> > that is done by ixp4xx_read16().
+>>
+>> Yeah, most probably. Too bad we do not have a test for this. Care to
+>> extend MTD tests?
 >
-> These checks are fairly common in 'nand_erase_nand', 'nand_lock'
-> and 'nand_unlock' functions.
->
+> I mean, add an 'mtd_align', and verify reading from various unaligned
+> addresses. This will help you to verify your flash, and help the
+> community as well.
 
+I fixed the issue in the ixp4xx map driver. I will look into creating
+a mtd_aligntest as time permits.
 
-There is something seriously wrong with me... I posted old patch again. :(
-I am sorry for this. Below is the correct patch. No more confusion this time.
-
--vimal
-
->From 7516e73f22b8822552f28d50bb104d888c5385b3 Mon Sep 17 00:00:00 2001
-From: Vimal Singh <vimalsingh@ti.com>
-Date: Wed, 13 Jan 2010 18:11:47 +0530
-Subject: [PATCH] Creating helper func for block alignment verfication
-
-These checks are fairly common in 'nand_erase_nand', 'nand_lock'
-and 'nand_unlock' fucntions.
-
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
----
- drivers/mtd/nand/nand_base.c |   98 +++++++++++++++---------------------------
- 1 files changed, 35 insertions(+), 63 deletions(-)
-
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 4e27426..63ee49e 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -108,6 +108,38 @@ static int nand_do_write_oob(struct
-  */
- DEFINE_LED_TRIGGER(nand_led_trigger);
-
-+static int block_alignment_verification(struct mtd_info *mtd,
-+					loff_t ofs, uint64_t len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int ret = 0;
-+
-+	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
-+			__func__, (unsigned long long)ofs, len);
-+
-+	/* Start address must align on block boundary */
-+	if (ofs & ((1 << chip->phys_erase_shift) - 1)) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
-+		ret = -EINVAL;
-+	}
-+
-+	/* Length must align on block boundary */
-+	if (len & ((1 << chip->phys_erase_shift) - 1)) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
-+					__func__);
-+		ret = -EINVAL;
-+	}
-+
-+	/* Do not allow past end of device */
-+	if (ofs + len > mtd->size) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: Past end of device\n",
-+					__func__);
-+		ret = -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+
- /**
-  * nand_release_device - [GENERIC] release chip
-  * @mtd:	MTD device structure
-@@ -894,28 +926,8 @@ int nand_unlock(struct mtd_info
- 	int chipnr;
- 	struct nand_chip *chip = mtd->priv;
-
--	/* Start address must align on block boundary */
--	if (ofs & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
--		ret = -EINVAL;
--		goto out;
--	}
--
--	/* Length must align on block boundary */
--	if (len & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
--					__func__);
--		ret = -EINVAL;
--		goto out;
--	}
--
--	/* Do not allow past end of device */
--	if (ofs + len > mtd->size) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Past end of device\n",
--					__func__);
--		ret = -EINVAL;
-+	if (block_alignment_verification(mtd, ofs, len))
- 		goto out;
--	}
-
- 	/* Align to last block address if size addresses end of the device */
- 	if (ofs + len == mtd->size)
-@@ -968,31 +980,8 @@ int nand_lock(struct mtd_info
- 	int chipnr, status, page;
- 	struct nand_chip *chip = mtd->priv;
-
--	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
--			__func__, (unsigned long long)ofs, len);
--
--	/* Start address must align on block boundary */
--	if (ofs & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
--		ret = -EINVAL;
--		goto out;
--	}
--
--	/* Length must align on block boundary */
--	if (len & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
--					__func__);
--		ret = -EINVAL;
--		goto out;
--	}
--
--	/* Do not allow past end of device */
--	if (ofs + len > mtd->size) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Past end of device\n",
--					__func__);
--		ret = -EINVAL;
-+	if (block_alignment_verification(mtd, ofs, len))
- 		goto out;
--	}
-
- 	nand_get_device(chip, mtd, FL_LOCKING);
-
-@@ -2495,25 +2484,8 @@ int nand_erase_nand(struct
- 				__func__, (unsigned long long)instr->addr,
- 				(unsigned long long)instr->len);
-
--	/* Start address must align on block boundary */
--	if (instr->addr & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
--		return -EINVAL;
--	}
--
--	/* Length must align on block boundary */
--	if (instr->len & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
--					__func__);
-+	if (block_alignment_verification(mtd, instr->addr, instr->len))
- 		return -EINVAL;
--	}
--
--	/* Do not allow erase past end of device */
--	if ((instr->len + instr->addr) > mtd->size) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Erase past end of device\n",
--					__func__);
--		return -EINVAL;
--	}
-
- 	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
-
--- 
-1.5.5
+Jon
