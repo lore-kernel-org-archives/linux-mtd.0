@@ -1,7 +1,7 @@
 From: vimalsingh@ti.com (Vimal Singh)
 Date: Wed, 13 Jan 2010 18:11:47 +0530
 Subject: [PATCH] Creating helper func for block alignment verfication
-Message-ID: <mailman.147.1263387999.2170.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.148.1263389387.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
