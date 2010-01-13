@@ -1,15 +1,17 @@
 Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NV2jt-0007uH-GP
-	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 12:54:26 +0000
-Received: by bwz4 with SMTP id 4so15501603bwz.2
+	id 1NV2vh-0001qY-FL
+	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 13:06:38 +0000
+Received: by bwz4 with SMTP id 4so15510672bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Jan 2010 04:54:20 -0800 (PST)
+	Wed, 13 Jan 2010 05:06:32 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <ce9ab5791001130453md91ad46ld84f9d51ccd96e87@mail.gmail.com>
+References: <ce9ab5791001130453md91ad46ld84f9d51ccd96e87@mail.gmail.com>
 From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 13 Jan 2010 18:23:59 +0530
-Message-ID: <ce9ab5791001130453md91ad46ld84f9d51ccd96e87@mail.gmail.com>
-Subject: [PATCH 2/2] Creating helper func for block alignment verfication
+Date: Wed, 13 Jan 2010 18:36:12 +0530
+Message-ID: <ce9ab5791001130506g28bb330dm79225c688839323d@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Creating helper func for block alignment verfication
 To: Linux MTD <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
@@ -22,29 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From cde21be80002b49fb8baeb341e8ae5a1a2394cb6 Mon Sep 17 00:00:00 2001
+On Wed, Jan 13, 2010 at 6:23 PM, Vimal Singh <vimal.newwork@gmail.com> wrote:
+> From cde21be80002b49fb8baeb341e8ae5a1a2394cb6 Mon Sep 17 00:00:00 2001
+> From: Vimal Singh <vimalsingh@ti.com>
+> Date: Wed, 13 Jan 2010 18:11:47 +0530
+> Subject: [PATCH] Creating helper func for block alignment verfication
+>
+> These checks are fairly common in 'nand_erase_nand', 'nand_lock'
+> and 'nand_unlock' fucntions.
+>
+
+I just ran checkpatch.pl and this patch had an error.
+Corrected patch is below.
+
+-vimal
+
+>From 310f7faa8f319bd9384512f7d5a7f13dcfbeebc8 Mon Sep 17 00:00:00 2001
 From: Vimal Singh <vimalsingh@ti.com>
 Date: Wed, 13 Jan 2010 18:11:47 +0530
 Subject: [PATCH] Creating helper func for block alignment verfication
 
 These checks are fairly common in 'nand_erase_nand', 'nand_lock'
-and 'nand_unlock' fucntions.
+and 'nand_unlock' functions.
 
 Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 ---
- drivers/mtd/nand/nand_base.c |   96 ++++++++++++++---------------------------
- 1 files changed, 33 insertions(+), 63 deletions(-)
+ drivers/mtd/nand/nand_base.c |   97 +++++++++++++++---------------------------
+ 1 files changed, 34 insertions(+), 63 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 4e27426..0bd3092 100644
+index 4e27426..c80cec5 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -108,6 +108,36 @@ static int nand_do_write_oob(struct
+@@ -108,6 +108,37 @@ static int nand_do_write_oob(struct
   */
  DEFINE_LED_TRIGGER(nand_led_trigger);
 
-+static int block_alignment_verification(struct mtd_info *mtd, loff_t
-ofs, uint64_t len)
++static int block_alignment_verification(struct mtd_info *mtd,
++					loff_t ofs, uint64_t len)
 +{
 +	struct nand_chip *chip = mtd->priv;
 +
@@ -77,7 +94,7 @@ ofs, uint64_t len)
  /**
   * nand_release_device - [GENERIC] release chip
   * @mtd:	MTD device structure
-@@ -894,28 +924,8 @@ int nand_unlock(struct mtd_info
+@@ -894,28 +925,8 @@ int nand_unlock(struct mtd_info
  	int chipnr;
  	struct nand_chip *chip = mtd->priv;
 
@@ -107,7 +124,7 @@ ofs, uint64_t len)
 
  	/* Align to last block address if size addresses end of the device */
  	if (ofs + len == mtd->size)
-@@ -968,31 +978,8 @@ int nand_lock(struct mtd_info
+@@ -968,31 +979,8 @@ int nand_lock(struct mtd_info
  	int chipnr, status, page;
  	struct nand_chip *chip = mtd->priv;
 
@@ -140,7 +157,7 @@ ofs, uint64_t len)
 
  	nand_get_device(chip, mtd, FL_LOCKING);
 
-@@ -2495,25 +2482,8 @@ int nand_erase_nand(struct
+@@ -2495,25 +2483,8 @@ int nand_erase_nand(struct
  				__func__, (unsigned long long)instr->addr,
  				(unsigned long long)instr->len);
 
