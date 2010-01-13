@@ -1,29 +1,17 @@
-Received: from mail-ew0-f223.google.com ([209.85.219.223])
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NV44q-0000vk-IL
-	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 14:20:09 +0000
-Received: by ewy23 with SMTP id 23so77222ewy.4
+	id 1NV4DU-0003GP-P7
+	for linux-mtd@lists.infradead.org; Wed, 13 Jan 2010 14:29:05 +0000
+Received: by bwz4 with SMTP id 4so15585890bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Jan 2010 06:20:03 -0800 (PST)
+	Wed, 13 Jan 2010 06:28:59 -0800 (PST)
 MIME-Version: 1.0
-Sender: jonringle@gmail.com
-In-Reply-To: <1263370012.2917.9.camel@localhost>
-References: <152584231001111056n2d174f8fmef6641c4fee99781@mail.gmail.com>
-	<152584231001111620i6b397f43n49733caa8f92f472@mail.gmail.com>
-	<1263271808.30988.38.camel@localhost.localdomain>
-	<152584231001121223q123b5b2flbdd9fcde370c3105@mail.gmail.com>
-	<1263331836.3445.4.camel@localhost.localdomain>
-	<152584231001121615h2b52b7ddv33980c9c4a88f37b@mail.gmail.com>
-	<152584231001122303g66f776bdo57f6f08307f77dd0@mail.gmail.com>
-	<1263369336.2917.6.camel@localhost>
-	<1263370012.2917.9.camel@localhost>
-Date: Wed, 13 Jan 2010 09:20:01 -0500
-Message-ID: <152584231001130620y36fe8a4atcdc7ac356d79df23@mail.gmail.com>
-Subject: Re: Fail to mount ubifs
-From: Jon Ringle <jon@ringle.org>
-To: dedekind1@gmail.com
+Date: Wed, 13 Jan 2010 15:28:58 +0100
+Message-ID: <a328840c1001130628h4bb0f03auad84dd1564fc08a7@mail.gmail.com>
+Subject: Memory leak on UBI volume truncating
+From: Marek Skuczynski <mareksk7@gmail.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Deepak Saxena <dsaxena@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,22 +21,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 13, 2010 at 3:06 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Wed, 2010-01-13 at 09:55 +0200, Artem Bityutskiy wrote:
->> On Wed, 2010-01-13 at 02:03 -0500, Jon Ringle wrote:
->> > Looking into drivers/mtd/maps/ixp4xx.c I see that the read function is
->> > ixp4xx_read16(). It seems to me that there is an alignment problem.
->> > The read starts at offset 545 which in unaligned with a 16-bit read
->> > that is done by ixp4xx_read16().
->>
->> Yeah, most probably. Too bad we do not have a test for this. Care to
->> extend MTD tests?
->
-> I mean, add an 'mtd_align', and verify reading from various unaligned
-> addresses. This will help you to verify your flash, and help the
-> community as well.
+Hello,
+  I have prepare a simple volume update stress test (see test code below).
+  This test has been run for kernel 2.6.23 with some updates from 2.6.28,
+  and always after a few minutes the OOM killer was launched.
 
-I fixed the issue in the ixp4xx map driver. I will look into creating
-a mtd_aligntest as time permits.
+  What i found it that each an UBI volume truncate operation with
+ubiupdatevol tool
+  causes memory leak. I think this happens because:
 
-Jon
+  - ubi_start_update()  param "bytes" is equal 0
+
+  - vol->updating flag is re-set to 0
+
+  - vol->upd_buf is allocated regardless of vol->updating flag,
+     but not released on device close by vol_cdev_release()
+
+  I never run the test on a newer kernel version, so I cannot confirm
+that this problem still exists.
+
+  Please confirm, whether my findings are correct or not, thanks.
+
+Regards,
+  Marek
+
+
+int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+    long long bytes)
+   /* ... */
+   vol->updating = 1;
+
+   if (bytes == 0) {
+        /* ... */
+        vol->updating = 0;
+   }
+
+   vol->upd_buf = vmalloc(ubi->leb_size);
+   /* ... */
+}
+
+static int vol_cdev_release(struct inode *inode, struct file *file)
+{
+  /* ... */
+   if (vol->updating) {
+      /* ... */
+      vol->updating = 0;
+      vfree(vol->upd_buf);
+   }
+   /* ... */
+}
+
+[--- TEST BODY ----]
+while [ true ]
+do
+   echo "Truncating #1"
+   /tmp/ubiupdatevol /dev/ubi0_3 -t
+   echo "Writing #1"
+   cat /dev/zero  | /tmp/ubiupdatevol /dev/ubi0_3 -s 4206 -
+   echo "Truncating #2"
+   /tmp/ubiupdatevol /dev/ubi0_3 -t
+   echo "Writing #2"
+   cat /dev/urandom  | /tmp/ubiupdatevol /dev/ubi0_3 -s 4206 -
+done
