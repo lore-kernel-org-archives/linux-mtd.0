@@ -1,12 +1,19 @@
-From: Baruch Siach <baruch@tkos.co.il>
-To: Sascha Hauer <kernel@pengutronix.de>
-Subject: [PATCH 1/3] mtd: mxc_nand: add MX25 to Kconfig
-Date: Thu, 14 Jan 2010 11:24:13 +0200
-Message-Id: <7f6094e5c907194486d288691db041455dd77eac.1263460321.git.baruch@tkos.co.il>
-In-Reply-To: <cover.1263460321.git.baruch@tkos.co.il>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NVMt1-0001kn-Gt
+	for linux-mtd@lists.infradead.org; Thu, 14 Jan 2010 10:25:07 +0000
+Date: Thu, 14 Jan 2010 11:24:40 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH 0/3] mx25: NAND support
+Message-ID: <20100114102440.GE23110@pengutronix.de>
 References: <cover.1263460321.git.baruch@tkos.co.il>
-Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1263460321.git.baruch@tkos.co.il>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sascha Hauer <kernel@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,23 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- drivers/mtd/nand/Kconfig |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+On Thu, Jan 14, 2010 at 11:24:12AM +0200, Baruch Siach wrote:
+> This patch series add support for NAND chips on the i.MX25 platform, using the 
+> recently merged support for this platform in the mxc_nand driver.
+> 
+> I tested this code on the i.MX25 PDK platform.
+> 
+> Baruch Siach (3):
+>   mtd: mxc_nand: add MX25 to Kconfig
+>   mx25: add NAND support
+>   mx25pdk: add NAND device support
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 677cd53..4f99274 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -444,7 +444,7 @@ config MTD_NAND_FSL_UPM
- 
- config MTD_NAND_MXC
- 	tristate "MXC NAND support"
--	depends on ARCH_MX2 || ARCH_MX3
-+	depends on ARCH_MX2 || ARCH_MX25 || ARCH_MX3
- 	help
- 	  This enables the driver for the NAND flash controller on the
- 	  MXC processors.
+Ok, added to mxc-master.
+
+Sascha
+
+
 -- 
-1.6.5
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
