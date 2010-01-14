@@ -1,19 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NVMt1-0001kn-Gt
-	for linux-mtd@lists.infradead.org; Thu, 14 Jan 2010 10:25:07 +0000
-Date: Thu, 14 Jan 2010 11:24:40 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Baruch Siach <baruch@tkos.co.il>
-Subject: Re: [PATCH 0/3] mx25: NAND support
-Message-ID: <20100114102440.GE23110@pengutronix.de>
-References: <cover.1263460321.git.baruch@tkos.co.il>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1263460321.git.baruch@tkos.co.il>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Sascha Hauer <kernel@pengutronix.de>
+Received: from mail.solarflare.com ([216.237.3.220]
+	helo=exchange.solarflare.com)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NVVEG-0004Ww-Ul
+	for linux-mtd@lists.infradead.org; Thu, 14 Jan 2010 19:19:41 +0000
+Subject: Re: [PATCHv2 7/7] mtd: Raise limit on block device minor numbers
+From: Ben Hutchings <bhutchings@solarflare.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1263337846.3011.28.camel@achroite.uk.solarflarecom.com>
+References: <1263337846.3011.28.camel@achroite.uk.solarflarecom.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 14 Jan 2010 19:19:29 +0000
+Message-ID: <1263496769.17815.77.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-net-drivers@solarflare.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 14, 2010 at 11:24:12AM +0200, Baruch Siach wrote:
-> This patch series add support for NAND chips on the i.MX25 platform, using the 
-> recently merged support for this platform in the mxc_nand driver.
+On Tue, 2010-01-12 at 23:10 +0000, Ben Hutchings wrote:
+> add_mtd_blktrans_dev() imposes a maximum of 257 devices per block
+> translator.  This was presumably meant to prevent overflow back in the
+> days of 8-bit minor numbers.  Since we now have 20-bit minor numbers
+> and can have more than 32 MTDs, change the maximum to MINORMASK.
 > 
-> I tested this code on the i.MX25 PDK platform.
+> Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
+> ---
+>  drivers/mtd/mtd_blkdevs.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> Baruch Siach (3):
->   mtd: mxc_nand: add MX25 to Kconfig
->   mx25: add NAND support
->   mx25pdk: add NAND device support
+> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+> index 85a52b3..5e88b49 100644
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -242,7 +242,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+>  	if (new->devnum == -1)
+>  		new->devnum = last_devnum+1;
+>  
+> -	if ((new->devnum << tr->part_bits) > 256) {
+> +	if ((new->devnum << tr->part_bits) > MINORMASK) {
 
-Ok, added to mxc-master.
+Actually this still has a boundary error.  I think the correct condition
+is:
 
-Sascha
+	new->devnum > (MINORMASK >> tr->part_bits)
 
+Ben.
+
+>  		return -EBUSY;
+>  	}
+>  
+> -- 
+> 1.5.5
+> 
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Ben Hutchings, Senior Software Engineer, Solarflare Communications
+Not speaking for my employer; that's the marketing department's job.
+They asked us to note that Solarflare product names are trademarked.
