@@ -1,22 +1,18 @@
-Received: from fg-out-1718.google.com ([72.14.220.158])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NVZ64-00010n-Fi
-	for linux-mtd@lists.infradead.org; Thu, 14 Jan 2010 23:27:29 +0000
-Received: by fg-out-1718.google.com with SMTP id 16so12887fgg.0
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 14 Jan 2010 15:27:22 -0800 (PST)
+Received: from web37605.mail.mud.yahoo.com ([209.191.87.88])
+	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NVbUt-0000Iy-3I
+	for linux-mtd@lists.infradead.org; Fri, 15 Jan 2010 02:01:15 +0000
+Message-ID: <507734.29595.qm@web37605.mail.mud.yahoo.com>
+Date: Thu, 14 Jan 2010 18:01:08 -0800 (PST)
+From: Alex Dubov <oakad@yahoo.com>
 Subject: Re: RFC: [PATCH V3 0/9 Integration of SmartMedia/xD into mtd subsystem
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: linux-kernel <linux-kernel@vger.kernel.org>
-In-Reply-To: <1263324518.6236.18.camel@maxim-laptop>
-References: <1263324518.6236.18.camel@maxim-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 Jan 2010 01:27:17 +0200
-Message-ID: <1263511637.4780.4.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: joern <joern@logfs.org>, linux-mtd <linux-mtd@lists.infradead.org>,
-	Alex Dubov <oakad@yahoo.com>
+To: linux-kernel <linux-kernel@vger.kernel.org>,
+	Maxim Levitsky <maximlevitsky@gmail.com>
+In-Reply-To: <1263511637.4780.4.camel@maxim-laptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: joern <joern@logfs.org>, linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +22,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-01-12 at 21:28 +0200, Maxim Levitsky wrote: 
-> This is third version of my patches.
-> 
-> Changes since V2:
-> 
-> * Resolved write speed problem, now write speed is around 1 MB/s
-> more that twice the speed of windows driver.
-> 
-> * Made the FTL less dependent on mtd driver.
-> It now uses standard mtd functions for bad block handling.
-> Also made initial device scan be safer against damaged media.
-> 
-> * FTL doesn't depend on common module any more.
-> This makes Kconfig much cleaner, and makes it possible to use the FTl
-> without enabling the nand support.
-> Common module is cleaned up a lot.
-> 
-> Now, everything works, everything is fast (except maybe initial zone
-> scan which takes around 2 seconds...)
-> 
-> Still bear in mind that FTL can destroy data, especially if your flash
-> card is worn out.
-> 
-> I consider this version to be merge worthy.
-> 
-> Best regards,
-> Maxim Levitsky
-
-
-Now that everything works fine, what shall I do next to get that merged?
-
-Best regards,
-Maxim Levitsky
+> > =0A> > Still bear in mind that FTL can destroy data,=0A> especially if =
+your flash=0A> > card is worn out.=0A=0AI sort of worry about this particul=
+ar issue.=0A=0AWhen I was doing my FTL, handling of bad blocks was one=0Aof=
+ the major (if not the primary) implementation problems.=0A=0A=0A=0A      _=
+___________________________________________________________________________=
+______=0ASee what's on at the movies in your area. Find out now: http://au.=
+movies.yahoo.com/session-times/
