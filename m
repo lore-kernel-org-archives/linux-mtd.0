@@ -1,18 +1,21 @@
-Received: from [206.15.93.42] (helo=visionfs1.visionengravers.com)
+Received: from mail-iw0-f187.google.com ([209.85.223.187])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NVqrf-0002Pz-R5
-	for linux-mtd@lists.infradead.org; Fri, 15 Jan 2010 18:25:48 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: Linux Kernel <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtdchar.c: fix different address space noise
-Date: Fri, 15 Jan 2010 11:25:38 -0700
+	id 1NVrKz-0000og-1C
+	for linux-mtd@lists.infradead.org; Fri, 15 Jan 2010 18:56:05 +0000
+Received: by iwn17 with SMTP id 17so764687iwn.25
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 15 Jan 2010 10:55:59 -0800 (PST)
+Date: Fri, 15 Jan 2010 13:55:50 -0500
+From: Josh Boyer <jwboyer@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: mtd-utils v1.3.1
+Message-ID: <20100115185550.GC10348@hansolo.jdub.homelinux.org>
+References: <1263575825.2969.3.camel@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <201001151125.39100.hartleys@visionengravers.com>
-Cc: dwmw2@infradead.org
+In-Reply-To: <1263575825.2969.3.camel@localhost>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtdchar.c: fix different address space noise
+On Fri, Jan 15, 2010 at 07:17:05PM +0200, Artem Bityutskiy wrote:
+>Hi,
+>
+>I've just tagged mtd-utils v1.3.1. There was a serious bugfix form the
+>ubiformat utility. Basically, ubiformat in 1.3.0 is broken, and 1.3.1
+>fixes that. The fix is:
+>
+>http://git.infradead.org/mtd-utils.git/commit/2caf2c6fda66f1f09502245229230743dc20295b
 
-In mtd_ioctl MEMGETREGIONINFO the region_user_info pointer ur
-is cast in __kernel space. This produces a number of sparse warnings
-like:
+See.  This is why I don't do releases.  ;)
 
-warning: cast removes address space of expression
-warning: incorrect type in initializer (different address spaces)
-   expected unsigned int const [noderef] <asn:1>*register __p
-   got unsigned int *<noident>
+(I am, of course, kidding.)
 
-Since argp is already a void __user * just use it dirrectly without
-the cast and make ur a __user *.
-
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-
----
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 5b081cb..0a85085 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -482,7 +482,7 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
- 	{
- 		uint32_t ur_idx;
- 		struct mtd_erase_region_info *kr;
--		struct region_info_user *ur = (struct region_info_user *) argp;
-+		struct region_info_user __user *ur = argp;
- 
- 		if (get_user(ur_idx, &(ur->regionindex)))
- 			return -EFAULT;
+josh
