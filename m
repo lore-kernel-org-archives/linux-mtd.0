@@ -1,15 +1,25 @@
-Received: from mail.umwb.edu.pl ([212.33.76.5])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NW8Vs-0006iD-Qt
-	for linux-mtd@lists.infradead.org; Sat, 16 Jan 2010 13:16:29 +0000
-Date: Sat, 16 Jan 2010 14:03:24 +0100
-From: w.pet53@gmail.com
-Subject: 
-Message-ID: <e6c16c6aa8175d3324887a7fc67a9a06@umwb.edu.pl>
+Received: from mail-ew0-f221.google.com ([209.85.219.221])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NW8bU-0007kj-8f
+	for linux-mtd@lists.infradead.org; Sat, 16 Jan 2010 13:22:16 +0000
+Received: by ewy21 with SMTP id 21so2590303ewy.2
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 16 Jan 2010 05:22:10 -0800 (PST)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: dedekind1@gmail.com, dwmw2@infradead.org
+Subject: Re: ubiattach fails with "bad image sequence number"
+References: <4B2FF7CF.7040401@theptrgroup.com>
+	<1263081089.7315.119.camel@localhost.localdomain>
+	<1263081191.7315.121.camel@localhost.localdomain>
+	<4B4D3D61.2020305@theptrgroup.com> <1263575708.2969.1.camel@localhost>
+Date: Sat, 16 Jan 2010 14:22:00 +0100
+In-Reply-To: <1263575708.2969.1.camel@localhost> (Artem Bityutskiy's message
+	of "Fri, 15 Jan 2010 19:15:08 +0200")
+Message-ID: <874ommp4lj.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Reply-To: w.pet53@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Cc: Jeff Angielski <jeff@theptrgroup.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,4 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am Mr Peter Wong,I've a business to transact with you. Reply me for more details on Email: w.pet53@gmail.com
+>>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
+
+Hi,
+
+ >> > P.S. when we fix this, we'll have to tag a new mtd-utils version, since
+ >> > this is a very bad bug.
+ >> 
+ >> This patch worked for me.
+
+ Artem> Ok, pushed them.
+
+David, could we have a 1.3.1 tarball on
+ftp://ftp.infradead.org/pub/mtd-utils/ as well?
+
+Thanks.
+
+-- 
+Bye, Peter Korsgaard
