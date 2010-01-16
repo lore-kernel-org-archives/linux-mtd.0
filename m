@@ -1,21 +1,24 @@
-Received: from mail-iw0-f187.google.com ([209.85.223.187])
+Received: from mail-yx0-f177.google.com ([209.85.210.177])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NVrKz-0000og-1C
-	for linux-mtd@lists.infradead.org; Fri, 15 Jan 2010 18:56:05 +0000
-Received: by iwn17 with SMTP id 17so764687iwn.25
+	id 1NW2GR-0008OG-9D
+	for linux-mtd@lists.infradead.org; Sat, 16 Jan 2010 06:36:08 +0000
+Received: by yxe7 with SMTP id 7so1053643yxe.25
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Jan 2010 10:55:59 -0800 (PST)
-Date: Fri, 15 Jan 2010 13:55:50 -0500
-From: Josh Boyer <jwboyer@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: mtd-utils v1.3.1
-Message-ID: <20100115185550.GC10348@hansolo.jdub.homelinux.org>
-References: <1263575825.2969.3.camel@localhost>
+	Fri, 15 Jan 2010 22:35:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1263575825.2969.3.camel@localhost>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <8bd0f97a1001150234u1080572bx89a34221770bb93c@mail.gmail.com>
+References: <1263541814-6642-1-git-send-email-21cnbao@gmail.com>
+	<1263551364.26767.4.camel@macbook.infradead.org>
+	<8bd0f97a1001150234u1080572bx89a34221770bb93c@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Sat, 16 Jan 2010 14:35:36 +0800
+Message-ID: <3c17e3571001152235o2a77d5b5i8300ce888df3515@mail.gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 1/2] let MTD_XIP depend on XIP_KERNEL
+	or ROMKERNEL
+To: Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: uclinux-dist-devel@blackfin.uclinux.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jan 15, 2010 at 07:17:05PM +0200, Artem Bityutskiy wrote:
->Hi,
+On Fri, Jan 15, 2010 at 6:34 PM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> On Fri, Jan 15, 2010 at 05:29, David Woodhouse wrote:
+>> On Fri, 2010-01-15 at 15:50 +0800, Barry Song wrote:
+>>> Some architectures like blackfin,h8300,m68k use ROMKERNEL to describe
+>>> kernel XIP, not like arm which uses XIP_KERNEL
+>>
+>> Surely the appropriate response to that realisation is to _fix_ the
+>> inconsistency, not just work around it?
 >
->I've just tagged mtd-utils v1.3.1. There was a serious bugfix form the
->ubiformat utility. Basically, ubiformat in 1.3.0 is broken, and 1.3.1
->fixes that. The fix is:
+> agree, but this is a lot easier than trying to tell RMK to change all
+> the ARM references ;)
+Yes. It will be really difficult to ask the related architectures to change.
 >
->http://git.infradead.org/mtd-utils.git/commit/2caf2c6fda66f1f09502245229230743dc20295b
-
-See.  This is why I don't do releases.  ;)
-
-(I am, of course, kidding.)
-
-josh
+> this is the only place outside of the respective arch/$ARCH/ where
+> either XIP_KERNEL or ROMKERNEL is utilized ...
+> -mike
+>
