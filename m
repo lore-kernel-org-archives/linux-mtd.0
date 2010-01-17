@@ -1,23 +1,14 @@
-Received: from mail-fx0-f211.google.com ([209.85.220.211])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NWSbD-0007tb-2H
-	for linux-mtd@lists.infradead.org; Sun, 17 Jan 2010 10:43:19 +0000
-Received: by fxm3 with SMTP id 3so1434546fxm.4
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 Jan 2010 02:43:14 -0800 (PST)
-Subject: Re: Memory leak on UBI volume truncating
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marek Skuczynski <mareksk7@gmail.com>
-In-Reply-To: <1263724633.8276.135.camel@localhost.localdomain>
-References: <a328840c1001130628h4bb0f03auad84dd1564fc08a7@mail.gmail.com>
-	<1263724633.8276.135.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 17 Jan 2010 12:43:12 +0200
-Message-Id: <1263724992.8276.140.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NWXQi-0001xP-3i
+	for linux-mtd@lists.infradead.org; Sun, 17 Jan 2010 15:52:48 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: maps: Blackfin async: rename local funcs to avoid common
+	clashes
+Date: Sun, 17 Jan 2010 10:52:46 -0500
+Message-Id: <1263743566-26986-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +18,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-01-17 at 12:37 +0200, Artem Bityutskiy wrote:
-> Hi,
-> 
-> On Wed, 2010-01-13 at 15:28 +0100, Marek Skuczynski wrote:
-> > Hello,
-> >   I have prepare a simple volume update stress test (see test code below).
-> >   This test has been run for kernel 2.6.23 with some updates from 2.6.28,
-> >   and always after a few minutes the OOM killer was launched.
-> > 
-> >   What i found it that each an UBI volume truncate operation with
-> > ubiupdatevol tool
-> >   causes memory leak. I think this happens because:
-> > 
-> >   - ubi_start_update()  param "bytes" is equal 0
-> > 
-> >   - vol->updating flag is re-set to 0
-> > 
-> >   - vol->upd_buf is allocated regardless of vol->updating flag,
-> >      but not released on device close by vol_cdev_release()
-> > 
-> >   I never run the test on a newer kernel version, so I cannot confirm
-> > that this problem still exists.
-> > 
-> >   Please confirm, whether my findings are correct or not, thanks.
-> 
-> thanks for this finding. Looks like your analysis is right. Does this
-> simple patch help?
+There are new Blackfin MMR helper functions that use the same name as some
+of the local functions in this driver, so have the driver use more specific
+names to avoid the issue.
 
-Actually this even simpler patch should fix the issue. Could you please
-test it and let me know if it helps.
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ drivers/mtd/maps/bfin-async-flash.c |   18 ++++++++++--------
+ 1 files changed, 10 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
-index c1d7b88..425bf5a 100644
---- a/drivers/mtd/ubi/upd.c
-+++ b/drivers/mtd/ubi/upd.c
-@@ -155,6 +155,7 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
-                if (err)
-                        return err;
-                vol->updating = 0;
-+               return 0;
-        }
-
-        vol->upd_buf = vmalloc(ubi->leb_size);
-
+diff --git a/drivers/mtd/maps/bfin-async-flash.c b/drivers/mtd/maps/bfin-async-flash.c
+index a7c808b..2cb7421 100644
+--- a/drivers/mtd/maps/bfin-async-flash.c
++++ b/drivers/mtd/maps/bfin-async-flash.c
+@@ -69,7 +69,7 @@ static void switch_back(struct async_state *state)
+ 	local_irq_restore(state->irq_flags);
+ }
+ 
+-static map_word bfin_read(struct map_info *map, unsigned long ofs)
++static map_word bfin_flash_read(struct map_info *map, unsigned long ofs)
+ {
+ 	struct async_state *state = (struct async_state *)map->map_priv_1;
+ 	uint16_t word;
+@@ -85,7 +85,7 @@ static map_word bfin_read(struct map_info *map, unsigned long ofs)
+ 	return test;
+ }
+ 
+-static void bfin_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
++static void bfin_flash_copy_from(struct map_info *map, void *to, unsigned long from, ssize_t len)
+ {
+ 	struct async_state *state = (struct async_state *)map->map_priv_1;
+ 
+@@ -96,7 +96,7 @@ static void bfin_copy_from(struct map_info *map, void *to, unsigned long from, s
+ 	switch_back(state);
+ }
+ 
+-static void bfin_write(struct map_info *map, map_word d1, unsigned long ofs)
++static void bfin_flash_write(struct map_info *map, map_word d1, unsigned long ofs)
+ {
+ 	struct async_state *state = (struct async_state *)map->map_priv_1;
+ 	uint16_t d;
+@@ -111,7 +111,7 @@ static void bfin_write(struct map_info *map, map_word d1, unsigned long ofs)
+ 	switch_back(state);
+ }
+ 
+-static void bfin_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
++static void bfin_flash_copy_to(struct map_info *map, unsigned long to, const void *from, ssize_t len)
+ {
+ 	struct async_state *state = (struct async_state *)map->map_priv_1;
+ 
+@@ -140,10 +140,12 @@ static int __devinit bfin_flash_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 
+ 	state->map.name       = DRIVER_NAME;
+-	state->map.read       = bfin_read;
+-	state->map.copy_from  = bfin_copy_from;
+-	state->map.write      = bfin_write;
+-	state->map.copy_to    = bfin_copy_to;
++#ifdef CONFIG_MTD_COMPLEX_MAPPINGS
++	state->map.read       = bfin_flash_read;
++	state->map.copy_from  = bfin_flash_copy_from;
++	state->map.write      = bfin_flash_write;
++	state->map.copy_to    = bfin_flash_copy_to;
++#endif
+ 	state->map.bankwidth  = pdata->width;
+ 	state->map.size       = memory->end - memory->start + 1;
+ 	state->map.virt       = (void __iomem *)memory->start;
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.6
