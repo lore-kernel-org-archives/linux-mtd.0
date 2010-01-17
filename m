@@ -1,18 +1,19 @@
-Received: from fg-out-1718.google.com ([72.14.220.156])
+Received: from mail-fx0-f211.google.com ([209.85.220.211])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NWSYI-0007aW-60
-	for linux-mtd@lists.infradead.org; Sun, 17 Jan 2010 10:40:18 +0000
-Received: by fg-out-1718.google.com with SMTP id 22so176304fge.0
+	id 1NWSbD-0007tb-2H
+	for linux-mtd@lists.infradead.org; Sun, 17 Jan 2010 10:43:19 +0000
+Received: by fxm3 with SMTP id 3so1434546fxm.4
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 Jan 2010 02:40:12 -0800 (PST)
-Subject: Re: shrinking ubifs?
+	Sun, 17 Jan 2010 02:43:14 -0800 (PST)
+Subject: Re: Memory leak on UBI volume truncating
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Ringle <jon@ringle.org>
-In-Reply-To: <152584231001141415x2086fed9rd8566b6609a87b7e@mail.gmail.com>
-References: <152584231001141415x2086fed9rd8566b6609a87b7e@mail.gmail.com>
+To: Marek Skuczynski <mareksk7@gmail.com>
+In-Reply-To: <1263724633.8276.135.camel@localhost.localdomain>
+References: <a328840c1001130628h4bb0f03auad84dd1564fc08a7@mail.gmail.com>
+	<1263724633.8276.135.camel@localhost.localdomain>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 17 Jan 2010 12:40:03 +0200
-Message-Id: <1263724803.8276.138.camel@localhost.localdomain>
+Date: Sun, 17 Jan 2010 12:43:12 +0200
+Message-Id: <1263724992.8276.140.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,29 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-01-14 at 17:15 -0500, Jon Ringle wrote:
-> On ubi0, I have 3 volumes:
-> ubi0_0 kernel (static volume)
-> ubi0_1 squashfs (static volume)
-> ubi0_2 ubifs (dynamic volume)
+On Sun, 2010-01-17 at 12:37 +0200, Artem Bityutskiy wrote:
+> Hi,
 > 
-> When I create the volumes, the static volumes are created first and
-> then the ubifs volume is created with whatever LEBs are left over. I
-> am using the squashfs and ubifs in a aufs2 union fs. When I need to
-> reflash either of the static volumes for an upgrade, and the new
-> images don't fit the space available in the LEBs reserved in the
-> corresponding static volume, I remove the ubifs volume to create space
-> and then recreate the ubifs volume again with what is remaining. This
-> is sub-optimal as this means that and data on the ubifs is now lost.
+> On Wed, 2010-01-13 at 15:28 +0100, Marek Skuczynski wrote:
+> > Hello,
+> >   I have prepare a simple volume update stress test (see test code below).
+> >   This test has been run for kernel 2.6.23 with some updates from 2.6.28,
+> >   and always after a few minutes the OOM killer was launched.
+> > 
+> >   What i found it that each an UBI volume truncate operation with
+> > ubiupdatevol tool
+> >   causes memory leak. I think this happens because:
+> > 
+> >   - ubi_start_update()  param "bytes" is equal 0
+> > 
+> >   - vol->updating flag is re-set to 0
+> > 
+> >   - vol->upd_buf is allocated regardless of vol->updating flag,
+> >      but not released on device close by vol_cdev_release()
+> > 
+> >   I never run the test on a newer kernel version, so I cannot confirm
+> > that this problem still exists.
+> > 
+> >   Please confirm, whether my findings are correct or not, thanks.
+> 
+> thanks for this finding. Looks like your analysis is right. Does this
+> simple patch help?
 
-Yes, this is not optimal. However, ubifs shrinking is not implemented.
-One could UBIFS ioctl to shring the FS, though, it should not be
-extremely difficult. It is about garbage-collecting the last LEBs to
-somewhere else, and amending the master block.
+Actually this even simpler patch should fix the issue. Could you please
+test it and let me know if it helps.
 
-> Is there a way to shrink a UBIFS if there are unused LEBs in the UBIFS?
+diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
+index c1d7b88..425bf5a 100644
+--- a/drivers/mtd/ubi/upd.c
++++ b/drivers/mtd/ubi/upd.c
+@@ -155,6 +155,7 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+                if (err)
+                        return err;
+                vol->updating = 0;
++               return 0;
+        }
 
-Not at the moment, this would need some development.
+        vol->upd_buf = vmalloc(ubi->leb_size);
 
 -- 
 Best Regards,
