@@ -1,23 +1,21 @@
-Received: from mail-bw0-f221.google.com ([209.85.218.221])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NWn6H-0004fc-6Y
-	for linux-mtd@lists.infradead.org; Mon, 18 Jan 2010 08:36:46 +0000
-Received: by bwz21 with SMTP id 21so606639bwz.4
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Jan 2010 00:36:39 -0800 (PST)
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NWnkM-0006Ur-4L
+	for linux-mtd@lists.infradead.org; Mon, 18 Jan 2010 09:18:11 +0000
+In-Reply-To: <cb9ecdfa1001180026q5856b170t3f4c71191a7b99d8@mail.gmail.com>
+References: <cb9ecdfa1001172304q132d5324qa963d0d5cdfb7806@mail.gmail.com>	
+	<OF593A1F75.3C3C7D18-ONC12576AF.002B1239-C12576AF.002BB30A@transmode.se>
+	<cb9ecdfa1001180026q5856b170t3f4c71191a7b99d8@mail.gmail.com>
+Subject: Re: jffs2_gcd_mtdx thread and umount problem.
+To: Johnny Hung <johnny.hacking@gmail.com>
+Message-ID: <OF4F0C58C2.1BF896BC-ONC12576AF.0031AB45-C12576AF.0032B052@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Mon, 18 Jan 2010 10:13:39 +0100
 MIME-Version: 1.0
-In-Reply-To: <a328840c1001180034n7fd1c3e9m420afef60f7c97ab@mail.gmail.com>
-References: <a328840c1001130628h4bb0f03auad84dd1564fc08a7@mail.gmail.com>
-	<1263724633.8276.135.camel@localhost.localdomain>
-	<1263724992.8276.140.camel@localhost.localdomain>
-	<a328840c1001180034n7fd1c3e9m420afef60f7c97ab@mail.gmail.com>
-Date: Mon, 18 Jan 2010 09:36:38 +0100
-Message-ID: <a328840c1001180036j771339a7t780960627e742c9b@mail.gmail.com>
-Subject: Re: Memory leak on UBI volume truncating
-From: Marek Skuczynski <mareksk7@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-type: text/plain; charset=ISO-8859-15
+Content-transfer-encoding: quoted-printable
+Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+	linux-embedded@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,60 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Artem,
-> On Sun, Jan 17, 2010 at 11:43 AM, Artem Bityutskiy <dedekind1@gmail.com> =
-wrote:
->> On Sun, 2010-01-17 at 12:37 +0200, Artem Bityutskiy wrote:
->>> Hi,
->>>
->>> On Wed, 2010-01-13 at 15:28 +0100, Marek Skuczynski wrote:
->>> > Hello,
->>> > =A0 I have prepare a simple volume update stress test (see test code =
-below).
->>> > =A0 This test has been run for kernel 2.6.23 with some updates from 2=
-.6.28,
->>> > =A0 and always after a few minutes the OOM killer was launched.
->>> >
->>> > =A0 What i found it that each an UBI volume truncate operation with
->>> > ubiupdatevol tool
->>> > =A0 causes memory leak. I think this happens because:
->>> >
->>> > =A0 - ubi_start_update() =A0param "bytes" is equal 0
->>> >
->>> > =A0 - vol->updating flag is re-set to 0
->>> >
->>> > =A0 - vol->upd_buf is allocated regardless of vol->updating flag,
->>> > =A0 =A0 =A0but not released on device close by vol_cdev_release()
->>> >
->>> > =A0 I never run the test on a newer kernel version, so I cannot confi=
-rm
->>> > that this problem still exists.
->>> >
->>> > =A0 Please confirm, whether my findings are correct or not, thanks.
->>>
->>> thanks for this finding. Looks like your analysis is right. Does this
->>> simple patch help?
->>
->> Actually this even simpler patch should fix the issue. Could you please
->> test it and let me know if it helps.
->>
->> diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
->> index c1d7b88..425bf5a 100644
->> --- a/drivers/mtd/ubi/upd.c
->> +++ b/drivers/mtd/ubi/upd.c
->> @@ -155,6 +155,7 @@ int ubi_start_update(struct ubi_device *ubi, struct =
-ubi_volume *vol,
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (err)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return err;
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0vol->updating =3D 0;
->> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
->> =A0 =A0 =A0 =A0}
->>
->> =A0 =A0 =A0 =A0vol->upd_buf =3D vmalloc(ubi->leb_size);
->>
->> --
+Johnny Hung <johnny.hacking@gmail.com> wrote on 18/01/2010 09:26:26:
+>
+Please don't top post.
 
-Thanks for you reply. It seems the fix solve the issue.
+> Yes, umount / reboot command doesn't hang after first boot + wait for=
 
-Regards,
-=A0Marek
+> 20 minutes. The jffs2_gcd_mtdx will re-erase empty blocks but how do =
+I
+> know it is finished?
+
+You don't or just monitor jffs2_gcd_mtdx until it is finished.
+
+>
+> BTW, why jffs2_gcd_mtd need to re-erase empty blocks and it will caus=
+e
+> some command cannot work if erase block is necessary. I mean many
+> pepple could meet this problem if it is need to erase empty block and=
+
+> how do they overcome or workaround it.
+
+Because it might not be completely erased due to power failure in the
+middle of an erase. You get random bit flips if that happens.
+
+You can avoid this by writing clean markers in every empty block when y=
+ou
+install it, a bit messy though and it won't solve the general problem: =
+Try
+removing a few big files and then reboot, you will have to wait then to=
+o.
+If you don't use JFFS2 as a module and unload it, you can my old patch =
+which will
+solve both problems.
+
+    Jocke
+>
+> Thank you so much, Jocke
+> BRs, H. Johnny
+>
+> > I guess this is the first reboot after mounting a new JFFS2 FS?
+> > Then JFFS2 is reerasing empty blocks and you will have to wait
+> > until it is done.
+> >
+> > I posted a patch long ago for this, but it was racy w.r.t JFSS2 mod=
+ule unload so
+> > it didn't make it into the repo. Search the list for
+> > "[JFFS2] Stop erasing blocks when rebooting." to find my old patch
+> >
+> > =A0Jocke
+> >
+> >
+>=
