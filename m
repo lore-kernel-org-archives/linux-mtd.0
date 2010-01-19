@@ -1,27 +1,17 @@
-Received: from relay1-v.mail.gandi.net ([217.70.178.75])
+Received: from ey-out-1920.google.com ([74.125.78.147])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXEnD-0000XY-KA
-	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 14:10:56 +0000
-Date: Tue, 19 Jan 2010 15:06:00 +0100
-From: Matthias Kaehlcke <matthias@kaehlcke.net>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
-Message-ID: <20100119140600.GH16182@darwin>
-References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
-	<20100119095024.GD16182@darwin>
-	<cb9ecdfa1001190213u69469505k9c42142bdc17f750@mail.gmail.com>
-	<20100119102026.GF16182@darwin>
-	<cb9ecdfa1001190403v433d839dy6ba2bc018024ce15@mail.gmail.com>
-	<Pine.LNX.4.64.1001191414090.32263@lnxricardw.se.axis.com>
+	id 1NXFHA-0008Gu-Vs
+	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 14:41:53 +0000
+Received: by ey-out-1920.google.com with SMTP id 26so720995eyw.26
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jan 2010 06:41:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001191414090.32263@lnxricardw.se.axis.com>
-Cc: Johnny Hung <johnny.hacking@gmail.com>,
-	kernelnewbies <kernelnewbies@nl.linux.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>
+Date: Tue, 19 Jan 2010 09:41:46 -0500
+Message-ID: <dbdb2ea61001190641l14a0603kfe9b45f52576da60@mail.gmail.com>
+Subject: static vs. dynamic UBI volume
+From: twebb <taliaferro62@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-El Tue, Jan 19, 2010 at 02:17:22PM +0100 Ricard Wanderlof ha dit:
+Can a UBI volume be declared vol_type=static, but mounted with "ro"?
+Conversely, if a volume is declared vol_type=dynamic, is it acceptable
+to mount "ro" or "rw"?  I'm trying to understand if there are
+dependencies between the two.
 
-> On Tue, 19 Jan 2010, Johnny Hung wrote:
->
->> Okay, I think the steps is below if my rootfs is ramdisk and configure
->> files in jffs2,
->>
->> 1. cp /etc/* /mnt/mtd/etc/    (/mnt/mtd is my jffs2 fs)
->> 2. rm -rf /etc/*
->> 3. make symbolic links from all /etc/xx to /mnt/mtd/etc/xxx
->> 4. remake ramdisk rootfs
->>
->> It seems all files in ramdisk rootfs /etc all links to /mnt/mtd/etc/
->> and try to modify these files is effective after reboot.
->> But is this a common way in embedded linux ?
->
-> In principle, but it is easier (and cleaner) to make a symbolic link from 
-> (say) /etc -> /mnt/mtd/etc without linking every individual file and  
-> directory.
+I'm seeing a very occasional problem on a volume that is
+vol_type=dynamic, and is mounted "rw" during startup, then finally
+"ro".  The ubiattach works fine, but when trying to initially mount
+(as "rw"), I've seen...
 
-i totally agree with ricard when you want to move the entire directory
-to jffs2 and not only some selected files
+[   12.887251] UBI error: ubi_io_read: error -74 while reading 516096
+bytes from PEB 4:8192, read 516096 bytes
+[   12.897619] UBIFS error (pid 1): ubifs_scan: corrupt empty space at
+LEB 2:268135
+[   12.905060] UBIFS error (pid 1): ubifs_scanned_corruption:
+corruption at LEB 2:268135
+[   12.922940] UBIFS error (pid 1): ubifs_scan: LEB 2 scanning failed
+[   13.048269] UBI error: ubi_io_read: error -74 while reading 516096
+bytes from PEB 4:8192, read 516096 bytes
+[   13.058549] UBIFS error (pid 1): ubifs_recover_master_node: failed
+to recover master node
 
-> You could also use a jffs2 file system in flash for your rootfs, that way 
-> you wouldn't need a ramdisk at all.
 
-i'd also recommend you to consider if you really need the
-ramdisk. when using a ram disk its entire content is loaded to the RAM
-occupying space, even if you don't use certain files (or part of
-them). other filesystems are more efficient in this aspect.
-if the main purpose is to have a read only rootfs, i'd suggest a look
-at squashfs.
+Not sure if this is corruption within NAND or something else.
 
--- 
-Matthias Kaehlcke
-Embedded Linux Developer
-Barcelona
-
-              La posibilidad de realizar un suenyo es lo
-                 que hace que la vida sea interesante
-                                                                 .''`.
-    using free software / Debian GNU/Linux | http://debian.org  : :'  :
-                                                                `. `'`
-gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
+twebb
