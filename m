@@ -1,30 +1,17 @@
-Received: from ey-out-1920.google.com ([74.125.78.145])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXFSM-0003Jz-Vu
-	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 14:53:27 +0000
-Received: by ey-out-1920.google.com with SMTP id 26so723389eyw.26
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jan 2010 06:53:21 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: New mtd-utils release?
-References: <20091214121439.GC28375@buzzloop.caiaq.de>
-	<1260795633.11112.49.camel@localhost>
-	<874ontso69.fsf@macbook.be.48ers.dk>
-	<1262590935.4512.3.camel@localhost>
-	<20100104212543.GO17262@pengutronix.de>
-	<1262672489.4512.46.camel@localhost>
-	<87pr5plzfp.fsf@macbook.be.48ers.dk>
-	<1262681020.3181.7176.camel@macbook.infradead.org>
-Date: Tue, 19 Jan 2010 15:53:15 +0100
-In-Reply-To: <1262681020.3181.7176.camel@macbook.infradead.org> (David
-	Woodhouse's message of "Tue, 05 Jan 2010 08:43:40 +0000")
-Message-ID: <87vdeym9ic.fsf@macbook.be.48ers.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Robert Schwebel <r.schwebel@pengutronix.de>, linux-mtd@lists.infradead.org,
-	Daniel Mack <daniel@caiaq.de>, dedekind1@gmail.com
+	id 1NXKch-0004FX-LL
+	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 20:24:30 +0000
+From: Anatolij Gustschin <agust@denx.de>
+To: linuxppc-dev@ozlabs.org
+Subject: [PATCH 0/11] Update support for MPC512x
+Date: Tue, 19 Jan 2010 21:24:02 +0100
+Message-Id: <1263932653-3634-1-git-send-email-agust@denx.de>
+Cc: John Rigby <jcrigby@gmail.com>, dzu@denx.de, netdev@vger.kernel.org,
+	linux-usb@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+	linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+	rtc-linux@googlegroups.com, Dan Williams <dan.j.williams@intel.com>,
+	Anatolij Gustschin <agust@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +21,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "David" == David Woodhouse <dwmw2@infradead.org> writes:
+The following patch series brings support for the Freescale MPC512x
+processsors up to date:
 
-Hi,
+[PATCH 01/11] fs_enet: Add support for MPC512x to fs_enet driver
+[PATCH 02/11] fs_enet: Add FEC TX Alignment workaround for MPC5121
+[PATCH 03/11] powerpc/mpc5121: Add machine restart support
+[PATCH 04/11] i2c-mpc: Add MPC5121 I2C bus support
+[PATCH 05/11] rtc: Add MPC5121 Real time clock driver
+[PATCH 06/11] mtd: Add NAND Flash Controller driver
+[PATCH 07/11] dma: Add MPC512x DMA driver
+[PATCH 08/11] powerpc/mpc5121: add USB host support
+[PATCH 09/11] powerpc/mpc512x: shared DIU framebuffer support
+[PATCH 10/11] powerpc/mpc5121: update mpc5121ads DTS
+[PATCH 11/11] powerpc/mpc5121: Add default config for MPC5121ADS
 
- >> >> Could you upload a tarball into ftp://ftp.infradead.org/pub/mtd-utils/?
- >> >> It would make the life of the distribution people easier.
- >> 
- Artem> No sorry, I do not have access there, and I also think distributions can
- Artem> easily fetch from git trees, which is not a problem at all.
- >> 
- >> Who does, David?
+The patches are based on v2.6.33-rc4 and cover the following
+items:
 
- David> Artem, Thomas, Josh and myself.
+- platform, DTS
+- DMA
+- FEC Ethernet
+- UART (without h/w flow control)
+- I2C
+- NAND
+- RTC
 
-It would be good if one of you guys could put 1.3.1 there as well.
+The code has been tested on the Freescale/STX "MPC5121ADS" board
+(board rev. 4) with a MPC5121e Rev. 2. No attempt was made to provide
+backward compatibility to older silicon revisions or older revisions
+of the board.
 
--- 
-Bye, Peter Korsgaard
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: John Rigby <jcrigby@gmail.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: <netdev@vger.kernel.org>
+Cc: <linux-i2c@vger.kernel.org>
+Cc: <rtc-linux@googlegroups.com>
+Cc: <linux-mtd@lists.infradead.org>
+Cc: <linux-usb@vger.kernel.org>
+---
+ Documentation/powerpc/dts-bindings/fsl/usb.txt |    8 +
+ arch/powerpc/boot/dts/mpc5121ads.dts           |   35 +-
+ arch/powerpc/configs/512x/mpc5121ads_defconfig | 1662 ++++++++++++++++++++++++
+ arch/powerpc/include/asm/mpc5xxx.h             |   14 +-
+ arch/powerpc/platforms/512x/Kconfig            |    6 +
+ arch/powerpc/platforms/512x/Makefile           |    2 +-
+ arch/powerpc/platforms/512x/mpc5121_ads.c      |    9 +
+ arch/powerpc/platforms/512x/mpc5121_generic.c  |   13 +
+ arch/powerpc/platforms/512x/mpc5121_usb.c      |  117 ++
+ arch/powerpc/platforms/512x/mpc512x.h          |    5 +
+ arch/powerpc/platforms/512x/mpc512x_shared.c   |  320 +++++-
+ arch/powerpc/sysdev/fsl_soc.c                  |   10 +
+ arch/powerpc/sysdev/fsl_soc.h                  |   10 +
+ drivers/dma/Kconfig                            |    7 +
+ drivers/dma/Makefile                           |    1 +
+ drivers/dma/mpc512x_dma.c                      |  636 +++++++++
+ drivers/dma/mpc512x_dma.h                      |  192 +++
+ drivers/i2c/busses/Kconfig                     |    9 +-
+ drivers/i2c/busses/i2c-mpc.c                   |   23 +
+ drivers/mtd/nand/Kconfig                       |    7 +
+ drivers/mtd/nand/Makefile                      |    1 +
+ drivers/mtd/nand/mpc5121_nfc.c                 |  916 +++++++++++++
+ drivers/net/fs_enet/Kconfig                    |   10 +-
+ drivers/net/fs_enet/fs_enet-main.c             |   43 +
+ drivers/net/fs_enet/fs_enet.h                  |   40 +-
+ drivers/net/fs_enet/mac-fec.c                  |  132 ++-
+ drivers/net/fs_enet/mii-fec.c                  |   55 +-
+ drivers/net/fs_enet/mpc5121_fec.h              |   64 +
+ drivers/net/fs_enet/mpc8xx_fec.h               |   37 +
+ drivers/rtc/Kconfig                            |   10 +
+ drivers/rtc/Makefile                           |    1 +
+ drivers/rtc/rtc-mpc5121.c                      |  408 ++++++
+ drivers/usb/host/ehci-fsl.c                    |  213 +++-
+ drivers/usb/host/ehci-fsl.h                    |   19 +-
+ drivers/usb/host/ehci-mem.c                    |    2 +-
+ drivers/video/fsl-diu-fb.c                     |   40 +-
+ drivers/video/fsl-diu-fb.h                     |  223 ----
+ include/linux/fsl-diu-fb.h                     |  223 ++++
+ include/linux/fsl_devices.h                    |   10 +
+ 39 files changed, 5193 insertions(+), 340 deletions(-)
