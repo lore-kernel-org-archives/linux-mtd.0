@@ -1,21 +1,25 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXCOd-0002hg-OY
-	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 11:37:24 +0000
-Subject: Re: one time programmable flash (OTP)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Arno Steffen <arno.steffen@googlemail.com>
-In-Reply-To: <804f0d21001190311ja482318ucbe64df52f66ac93@mail.gmail.com>
-References: <804f0d21001190234t3d576efdi2b915b97df379f65@mail.gmail.com>
-	<1263898721.2891.0.camel@localhost>
-	<804f0d21001190311ja482318ucbe64df52f66ac93@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 19 Jan 2010 13:36:55 +0200
-Message-Id: <1263901015.2891.5.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NXCnq-0008Q2-EG
+	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 12:03:27 +0000
+Received: by pwj11 with SMTP id 11so2617262pwj.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jan 2010 04:03:19 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20100119102026.GF16182@darwin>
+References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
+	<20100119095024.GD16182@darwin>
+	<cb9ecdfa1001190213u69469505k9c42142bdc17f750@mail.gmail.com>
+	<20100119102026.GF16182@darwin>
+Date: Tue, 19 Jan 2010 20:03:19 +0800
+Message-ID: <cb9ecdfa1001190403v433d839dy6ba2bc018024ce15@mail.gmail.com>
+Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
+From: Johnny Hung <johnny.hacking@gmail.com>
+To: Matthias Kaehlcke <matthias@kaehlcke.net>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: kernelnewbies <kernelnewbies@nl.linux.org>, linux-mtd@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, linux-embedded@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +29,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-01-19 at 12:11 +0100, Arno Steffen wrote:
-> 2010/1/19 Artem Bityutskiy <dedekind1@gmail.com>:
-> > On Tue, 2010-01-19 at 11:34 +0100, Arno Steffen wrote:
-> >> Is there any support by kernel to have access (write/read) to that OPT area?
-> >> The flash (MT29F1G) on my omap board has OTP blocks.
-> >> What do I have to do to get it and how to use?
-> >> I've been searching a lot in the net, but hasn't been succesful with
-> >> that, except for Blackfin's build-in OTP.
-> >
-> > OneNAND has, and there is some support in the kernel.
-> >
-> > --
-> > Best Regards,
-> > Artem Bityutskiy (Артём Битюцкий)
-> 
-> Unfortunatly I use a Micron NAND. So no chance for me?
+2010/1/19 Matthias Kaehlcke <matthias@kaehlcke.net>:
+> El Tue, Jan 19, 2010 at 06:13:07PM +0800 Johnny Hung ha dit:
+>
+>> 2010/1/19 Matthias Kaehlcke <matthias@kaehlcke.net>:
+>> > El Tue, Jan 19, 2010 at 05:20:53PM +0800 Johnny Hung ha dit:
+>> >
+>> >> I have build an embedded Linux system and rootfs is a ramdisk. Ramdis=
+k
+>> >> rootfs resides in memory so modify files is non-effective after a
+>> >> reboot. Some directories in rootfs, like /etc, /usr, ... are contain
+>> >> many application configuration files and I want to mount it to jffs2
+>> >> flash filesysyem so it will take effect after a reboot. Is it
+>> >> possible?
+>> >
+>> How to do it? The ramdisk rootfs is ext2 filesystem and I try,
+>> mount /mnt/mtd/etc /etc
+>>
+>> Try to modify /etc/ files is not works.
+>
+> ok, i understood you want to substitute the ramdisk rootfs by jffs2
+> based one
+>
+> mounting the ramdisk as writable with the flash as backing storage
+> isn't possible AFAIK. and even if it was possible it wouldn't be
+> recommended as ext2 doesn't care about flash wear out, in consequence
+> you would write the same blocks over and over again.
+>
+>> > yes, this is possible
+>> >
+>> >> I know the flash has write times limited so the log files
+>> >> (syslogd/klogd) should not store in flash. In general, how to deploy
+>> >> root file system for embedded linux with flash storage?
+>> >
+>> > - add jffs2 support to your kernel
+>> > - create your image using mkfs.jffs2 from mtd-utils
+>> > - flash the image
+>> > - specify the rootfs partition and type in the bootargs of the kernel
+>> The above procedure is to create a jffs2 rootfs image but I =A0prefer to
+>> use ramdisk rootfs.
+>> I think the rootfs is build as ramdisk and some configurable file is
+>> store in jffs2 flash.
+>
 
-I do not really know. I thought you would look at the onenand driver,
-and implement the support similarly, if you do not have it.
+Okay, I think the steps is below if my rootfs is ramdisk and configure
+files in jffs2,
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1. cp /etc/* /mnt/mtd/etc/    (/mnt/mtd is my jffs2 fs)
+2. rm -rf /etc/*
+3. make symbolic links from all /etc/xx to /mnt/mtd/etc/xxx
+4. remake ramdisk rootfs
+
+It seems all files in ramdisk rootfs /etc all links to /mnt/mtd/etc/
+and try to modify these files is effective after reboot.
+But is this a common way in embedded linux ?
+
+I also have another idea, keep ramdisk rootfs /etc files and add a shell sc=
+ript.
+
+1. The shell script execute when system boot up.
+2. Check /mnt/mtd/etc/xxx if is exist. If yes, remove /etc/xxx file
+and make a symbolic link to /mnt/mtd/etc/xxx. If no, keep /etc/xxx
+file.
+3. repeat 2 for all /etc files
+
+Any suggestion?
+
+Thank your help.
+BRs, H. Johnny
+
+> in this case follow the above steps, except the last one about the
+> bootargs and mount the jffs2 partition from your init script. you
+> could use symlinks from your ramdisk to the files on jffs2 to
+> integrate them in your rootfs
+>
+> --
+> Matthias Kaehlcke
+> Embedded Linux Developer
+> Barcelona
+>
+> =A0 =A0 =A0Anyone who has never made a mistake has never tried anything n=
+ew
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(Albert Einstein)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 .''`.
+> =A0 =A0using free software / Debian GNU/Linux | http://debian.org =A0: :'=
+ =A0:
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0`. `'`
+> gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0`-
+>
