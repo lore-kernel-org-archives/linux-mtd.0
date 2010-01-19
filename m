@@ -1,17 +1,30 @@
-Received: from ey-out-1920.google.com ([74.125.78.147])
+Received: from ey-out-1920.google.com ([74.125.78.145])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXFHA-0008Gu-Vs
-	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 14:41:53 +0000
-Received: by ey-out-1920.google.com with SMTP id 26so720995eyw.26
+	id 1NXFSM-0003Jz-Vu
+	for linux-mtd@lists.infradead.org; Tue, 19 Jan 2010 14:53:27 +0000
+Received: by ey-out-1920.google.com with SMTP id 26so723389eyw.26
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jan 2010 06:41:46 -0800 (PST)
+	Tue, 19 Jan 2010 06:53:21 -0800 (PST)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: New mtd-utils release?
+References: <20091214121439.GC28375@buzzloop.caiaq.de>
+	<1260795633.11112.49.camel@localhost>
+	<874ontso69.fsf@macbook.be.48ers.dk>
+	<1262590935.4512.3.camel@localhost>
+	<20100104212543.GO17262@pengutronix.de>
+	<1262672489.4512.46.camel@localhost>
+	<87pr5plzfp.fsf@macbook.be.48ers.dk>
+	<1262681020.3181.7176.camel@macbook.infradead.org>
+Date: Tue, 19 Jan 2010 15:53:15 +0100
+In-Reply-To: <1262681020.3181.7176.camel@macbook.infradead.org> (David
+	Woodhouse's message of "Tue, 05 Jan 2010 08:43:40 +0000")
+Message-ID: <87vdeym9ic.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-Date: Tue, 19 Jan 2010 09:41:46 -0500
-Message-ID: <dbdb2ea61001190641l14a0603kfe9b45f52576da60@mail.gmail.com>
-Subject: static vs. dynamic UBI volume
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Cc: Robert Schwebel <r.schwebel@pengutronix.de>, linux-mtd@lists.infradead.org,
+	Daniel Mack <daniel@caiaq.de>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +34,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Can a UBI volume be declared vol_type=static, but mounted with "ro"?
-Conversely, if a volume is declared vol_type=dynamic, is it acceptable
-to mount "ro" or "rw"?  I'm trying to understand if there are
-dependencies between the two.
+>>>>> "David" == David Woodhouse <dwmw2@infradead.org> writes:
 
-I'm seeing a very occasional problem on a volume that is
-vol_type=dynamic, and is mounted "rw" during startup, then finally
-"ro".  The ubiattach works fine, but when trying to initially mount
-(as "rw"), I've seen...
+Hi,
 
-[   12.887251] UBI error: ubi_io_read: error -74 while reading 516096
-bytes from PEB 4:8192, read 516096 bytes
-[   12.897619] UBIFS error (pid 1): ubifs_scan: corrupt empty space at
-LEB 2:268135
-[   12.905060] UBIFS error (pid 1): ubifs_scanned_corruption:
-corruption at LEB 2:268135
-[   12.922940] UBIFS error (pid 1): ubifs_scan: LEB 2 scanning failed
-[   13.048269] UBI error: ubi_io_read: error -74 while reading 516096
-bytes from PEB 4:8192, read 516096 bytes
-[   13.058549] UBIFS error (pid 1): ubifs_recover_master_node: failed
-to recover master node
+ >> >> Could you upload a tarball into ftp://ftp.infradead.org/pub/mtd-utils/?
+ >> >> It would make the life of the distribution people easier.
+ >> 
+ Artem> No sorry, I do not have access there, and I also think distributions can
+ Artem> easily fetch from git trees, which is not a problem at all.
+ >> 
+ >> Who does, David?
 
+ David> Artem, Thomas, Josh and myself.
 
-Not sure if this is corruption within NAND or something else.
+It would be good if one of you guys could put 1.3.1 there as well.
 
-twebb
+-- 
+Bye, Peter Korsgaard
