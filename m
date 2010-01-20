@@ -1,23 +1,25 @@
-Received: from mail-pz0-f195.google.com ([209.85.222.195])
+Received: from mail-px0-f200.google.com ([209.85.216.200])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXbC7-0007zt-9i
-	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 14:06:08 +0000
-Received: by pzk33 with SMTP id 33so911783pzk.2
+	id 1NXbV5-0000rY-AN
+	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 14:25:44 +0000
+Received: by pxi38 with SMTP id 38so1730199pxi.28
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jan 2010 06:06:02 -0800 (PST)
+	Wed, 20 Jan 2010 06:25:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1263995903.3046.2.camel@localhost>
+In-Reply-To: <20100120133315.GB30789@shareable.org>
 References: <2c3b11251001200158w56bf5cb8l9a27ade9ec3524f2@mail.gmail.com>
-	<20100120134142.GE30789@shareable.org>
-	<1263995903.3046.2.camel@localhost>
-Date: Wed, 20 Jan 2010 22:06:01 +0800
-Message-ID: <2c3b11251001200606l6351d5efs7803242d85a2aa1d@mail.gmail.com>
+	<Pine.LNX.4.64.1001201111550.32263@lnxricardw.se.axis.com>
+	<2c3b11251001200511x549f7285if75806e92300818b@mail.gmail.com>
+	<20100120133315.GB30789@shareable.org>
+Date: Wed, 20 Jan 2010 22:25:36 +0800
+Message-ID: <2c3b11251001200625l4f4ee64emcfe43045913954c@mail.gmail.com>
 Subject: Re: Is it an atomic operation for writing a page in NAND flash
 From: Liu Hui <onlyflyer@gmail.com>
-To: dedekind1@gmail.com
+To: Jamie Lokier <jamie@shareable.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Jamie Lokier <jamie@shareable.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +29,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I didn't see this e-mail of Theo and I also can't find it in my
-fs-devel mail list, could you please share it with us?
+Ok, In fact, I am a soft developer, I want to find a way to design a
+power-cut safe FTL. I can't control the design of hardware, so I have
+to find a common way to ensure atomic operation.
 
-much appreciated!
+> There is no need for an interrupt, if you have a fast GPIO that you
+> can read before each write command that tells if the input power has
+> not dropped.
+This is no good for performance.
 
-2010/1/20 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Wed, 2010-01-20 at 13:41 +0000, Jamie Lokier wrote:
->> Liu Hui wrote:
->> > This is a question confused me for a long time. As I know, writing a
->> > sector for a hard disk is atomic. That is to say, when we are writing
->> > a sector to hard disk and power failure happen, the sector will be
->> > written completely or not at all.
+> It's good, but not perfect: In principle a power-failed write could
+> successfully store the correct bits including ECC so they read back
+> correctly, but with the cell charges not completely stable. =C2=A0But I
+> guess that's rare enough that it is just included in the normal NAND
+> bad block possibilities.
+Ok, ECC can detect partial write but can't detect unstable cell
+charges, I think this is enough since NAND flash is unstable media.
+
+Thanks for your information!
+Hui
+
+
+
+2010/1/20 Jamie Lokier <jamie@shareable.org>:
+> Liu Hui wrote:
+>> Richard,
 >>
->> Are you sure about that?
->> I have never seen a reliable confirmation of it.
+>> Thank you for your confirmation and good idea.
+>>
+>> I also think about your idea before, that is, when power failure
+>> happens, generate an interrupt and blocks any other write requests in
+>> interrupt handler. But this is a little complex.
 >
-> Theo sent a longish e-mail some time ago to fs-devel or lkml, explaining
-> why this almost never true in practice.
+> Ideally, you would design the hardware so that power failure can be
+> detected early near the power input, but with enough on-board power
+> retention (i.e. capacitor) that there is guaranteed enough continuous
+> power for the CPU to react and the NAND chip to have enough stable
+> power to complete the write reliably.
 >
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
+> There is no need for an interrupt, if you have a fast GPIO that you
+> can read before each write command that tells if the input power has
+> not dropped.
 >
+>> Now, I think I can use ECC to check the partial write, if a write was
+>> not finished, the ECC should be wrong, so we can detect this partial
+>> write and discard this write. Do you think this is a good idea?
+>
+> It's good, but not perfect: In principle a power-failed write could
+> successfully store the correct bits including ECC so they read back
+> correctly, but with the cell charges not completely stable. =C2=A0But I
+> guess that's rare enough that it is just included in the normal NAND
+> bad block possibilities.
+>
+> -- Jamie
 >
 
 
