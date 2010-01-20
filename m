@@ -1,34 +1,22 @@
-Received: from ey-out-1920.google.com ([74.125.78.146])
+Received: from mail-pw0-f43.google.com ([209.85.160.43])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXZ8d-0001ti-De
-	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 11:54:24 +0000
-Received: by ey-out-1920.google.com with SMTP id 26so927340eyw.26
+	id 1NXaLX-0001Kd-8v
+	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 13:11:47 +0000
+Received: by pwj11 with SMTP id 11so3491180pwj.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jan 2010 03:54:16 -0800 (PST)
+	Wed, 20 Jan 2010 05:11:41 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20100120102145.GV16182@darwin>
-References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
-	<20100119095024.GD16182@darwin>
-	<cb9ecdfa1001190213u69469505k9c42142bdc17f750@mail.gmail.com>
-	<20100119102026.GF16182@darwin>
-	<cb9ecdfa1001190403v433d839dy6ba2bc018024ce15@mail.gmail.com>
-	<Pine.LNX.4.64.1001191414090.32263@lnxricardw.se.axis.com>
-	<20100119140600.GH16182@darwin>
-	<cb9ecdfa1001191832k28961740qa825a8c8d5e631f2@mail.gmail.com>
-	<2ea1731b1001192357r72d627e2gb36d71f23fd69b2e@mail.gmail.com>
-	<20100120102145.GV16182@darwin>
-Date: Wed, 20 Jan 2010 12:54:16 +0100
-Message-ID: <2ea1731b1001200354t5ed29458h6fc98c49c1a555d5@mail.gmail.com>
-Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
-From: Marco Stornelli <marco.stornelli@gmail.com>
-To: Matthias Kaehlcke <matthias@kaehlcke.net>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
-	kernelnewbies <kernelnewbies@nl.linux.org>,
-	Johnny Hung <johnny.hacking@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+In-Reply-To: <Pine.LNX.4.64.1001201111550.32263@lnxricardw.se.axis.com>
+References: <2c3b11251001200158w56bf5cb8l9a27ade9ec3524f2@mail.gmail.com>
+	<Pine.LNX.4.64.1001201111550.32263@lnxricardw.se.axis.com>
+Date: Wed, 20 Jan 2010 21:11:41 +0800
+Message-ID: <2c3b11251001200511x549f7285if75806e92300818b@mail.gmail.com>
+Subject: Re: Is it an atomic operation for writing a page in NAND flash
+From: Liu Hui <onlyflyer@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,35 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/1/20 Matthias Kaehlcke <matthias@kaehlcke.net>:
-> El Wed, Jan 20, 2010 at 08:57:44AM +0100 Marco Stornelli ha dit:
+Richard,
+
+Thank you for your confirmation and good idea.
+
+I also think about your idea before, that is, when power failure
+happens, generate an interrupt and blocks any other write requests in
+interrupt handler. But this is a little complex.
+
+Now, I think I can use ECC to check the partial write, if a write was
+not finished, the ECC should be wrong, so we can detect this partial
+write and discard this write. Do you think this is a good idea?
+
+Thanks,
+Hui
+
+2010/1/20 Ricard Wanderlof <ricard.wanderlof@axis.com>:
 >
->> 2010/1/20 Johnny Hung <johnny.hacking@gmail.com>:
->> > 2010/1/19 Matthias Kaehlcke <matthias@kaehlcke.net>:
->> >> El Tue, Jan 19, 2010 at 02:17:22PM +0100 Ricard Wanderlof ha dit:
->> >>
->> > I consider to use ramdisk as rootfs because worry about wrong
->> > operation in rootfs (is use jffs2 rootfs) and it will cause system
->> > boot up failed.
->> > Another query, does the syslogd/klogd log files also store in jffs2
->> > rootfs? Write to jffs2 frequently will reduce flash life cycle.
->> >
->> > BRs, H. Johnny
->> >>
->> >> --
+> On Wed, 20 Jan 2010, Liu Hui wrote:
+>
+>> Hi guys,
 >>
->> In general a good splitting for rootfs could be: squashfs for rootfs,
->> tmpfs for volatile data (/tmp), ubifs (with a flash partition) for
->> "strong" permanent data (/etc, ....) and pramfs for "light" permanent
->> data (/var/log, .....).
+>> This is a question confused me for a long time. As I know, writing a
+>> sector for a hard disk is atomic. That is to say, when we are writing
+>> a sector to hard disk and power failure happen, the sector will be
+>> written completely or not at all.
+>>
+>> For NAND flash, I didn't see the atomic guarantee in any material.
+>> Could you please tell me if writing a page for NAND flash is atomic?
+>> This is very important for a transaction based file system.
 >
-> if ubifs is a good choice depends on the size of the partition, iirc
-> it has a significant overhead for very small partitions.
+> It is my understanding that if you get a power failure while the nand fla=
+sh
+> chip is writing the page the page could get partly written.
 >
-> once using ubi it could be interesting to set up the read-only rootfs
-> partition upon ubi in order to spread the wear out over a maximum of blocks.
+> The only way around something like this would be to monitor the power lin=
+e
+> prior to the supply regulator, and not start a write if it can be detecte=
+d
+> that a power failure has occurred and there is not enough power to comple=
+te
+> the write.
+>
+> /Ricard
+> --
+> Ricard Wolf Wanderl=C3=B6f =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ricardw(at)axis.com
+> Axis Communications AB, Lund, Sweden =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0www.axis.com
+> Phone +46 46 272 2016 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Fax +46 46 13 61 30
 >
 
-I don't know the size constraints of Johnny, so it can be useful to use jffs2.
 
-Marco
+
+--=20
+Thanks & Best Regards
+Liu Hui
+--
