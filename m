@@ -1,26 +1,23 @@
-Received: from mail-px0-f200.google.com ([209.85.216.200])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXbvQ-0006KB-14
-	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 14:52:56 +0000
-Received: by pxi38 with SMTP id 38so1747700pxi.28
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jan 2010 06:52:49 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1263998804.3134.1.camel@localhost>
-References: <2c3b11251001200158w56bf5cb8l9a27ade9ec3524f2@mail.gmail.com>
-	<20100120134142.GE30789@shareable.org>
-	<1263995903.3046.2.camel@localhost>
-	<2c3b11251001200606l6351d5efs7803242d85a2aa1d@mail.gmail.com>
-	<1263998324.3134.0.camel@localhost>
-	<1263998804.3134.1.camel@localhost>
-Date: Wed, 20 Jan 2010 22:52:49 +0800
-Message-ID: <2c3b11251001200652v2cb11f7buad88d938ed526b26@mail.gmail.com>
+Received: from krynn.se.axis.com ([193.13.178.10])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NXbxa-0006uJ-0K
+	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 14:55:10 +0000
+Date: Wed, 20 Jan 2010 15:54:55 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Liu Hui <onlyflyer@gmail.com>
 Subject: Re: Is it an atomic operation for writing a page in NAND flash
-From: Liu Hui <onlyflyer@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Jamie Lokier <jamie@shareable.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <2c3b11251001200625l4f4ee64emcfe43045913954c@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.1001201548170.32263@lnxricardw.se.axis.com>
+References: <2c3b11251001200158w56bf5cb8l9a27ade9ec3524f2@mail.gmail.com>
+	<Pine.LNX.4.64.1001201111550.32263@lnxricardw.se.axis.com>
+	<2c3b11251001200511x549f7285if75806e92300818b@mail.gmail.com>
+	<20100120133315.GB30789@shareable.org>
+	<2c3b11251001200625l4f4ee64emcfe43045913954c@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Jamie Lokier <jamie@shareable.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,36 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Great, so kind of you.
 
-Thanks,
-Hui
+On Wed, 20 Jan 2010, Liu Hui wrote:
 
-2010/1/20 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Wed, 2010-01-20 at 16:38 +0200, Artem Bityutskiy wrote:
->> On Wed, 2010-01-20 at 22:06 +0800, Liu Hui wrote:
->> > I didn't see this e-mail of Theo and I also can't find it in my
->> > fs-devel mail list, could you please share it with us?
->> >
->> > much appreciated!
->>
->> Found it on lkml. Enjoy. IMO, very good writing.
->
-> Sorry:
-> http://lkml.org/lkml/2009/8/24/156
->
-> (forgot to paste the link)
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+>> It's good, but not perfect: In principle a power-failed write could
+>> successfully store the correct bits including ECC so they read back
+>> correctly, but with the cell charges not completely stable. =A0But I
+>> guess that's rare enough that it is just included in the normal NAND
+>> bad block possibilities.
+> Ok, ECC can detect partial write but can't detect unstable cell
+> charges, I think this is enough since NAND flash is unstable media.
 
+ECC is designed to correct a small number of bits (1 bit for the software=
+=20
+ECC algorithm used by mtd) and detect failure if a couple of more bits are=
+=20
+bad (2 bits for the mtd algorithm). Beyond that, the results cannot be=20
+trusted. That means, that if there are, say, 16 incorrect bits in the=20
+data, the ECC algorithm will not necessarily indicate that there is a=20
+failure. It might very well indicate that there is a single bit that needs=
+=20
+correction, or that all bits are correct. It is not a CRC.
 
+The end result is that you can't say "if the ECC says it's ok, the data=20
+hasn't been corrupted" (which you could with a CRC). The only thing you=20
+can say (in the case of the mtd ECC algorithm) is "if there is a one-bit=20
+error in the data, the ECC will correct it" and "if there is a two-bit=20
+error in the data, the ECC will detect it".
 
+If you really need that kind of check for data integrity, I suppose you=20
+could add a CRC algorithm to the ECC calculations already being performed=
+=20
+by mtd, so that any change in the data would be flagged due to a=20
+mismatching CRC.
+
+/Ricard
 --=20
-Thanks & Best Regards
-Liu Hui
---
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
