@@ -1,12 +1,12 @@
-Received: from relay2-d.mail.gandi.net ([217.70.183.194])
+Received: from mail-ew0-f223.google.com ([209.85.219.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXUtV-0001IL-Kz
-	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 07:22:30 +0000
-Date: Wed, 20 Jan 2010 08:17:39 +0100
-From: Matthias Kaehlcke <matthias@kaehlcke.net>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
-Message-ID: <20100120071739.GS16182@darwin>
+	id 1NXVRi-0007mA-K3
+	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 07:57:51 +0000
+Received: by ewy23 with SMTP id 23so4134664ewy.4
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jan 2010 23:57:44 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <cb9ecdfa1001191832k28961740qa825a8c8d5e631f2@mail.gmail.com>
 References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
 	<20100119095024.GD16182@darwin>
 	<cb9ecdfa1001190213u69469505k9c42142bdc17f750@mail.gmail.com>
@@ -15,16 +15,18 @@ References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
 	<Pine.LNX.4.64.1001191414090.32263@lnxricardw.se.axis.com>
 	<20100119140600.GH16182@darwin>
 	<cb9ecdfa1001191832k28961740qa825a8c8d5e631f2@mail.gmail.com>
-	<Pine.LNX.4.64.1001200809550.32263@lnxricardw.se.axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1001200809550.32263@lnxricardw.se.axis.com>
-Cc: Johnny Hung <johnny.hacking@gmail.com>,
+Date: Wed, 20 Jan 2010 08:57:44 +0100
+Message-ID: <2ea1731b1001192357r72d627e2gb36d71f23fd69b2e@mail.gmail.com>
+Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
+From: Marco Stornelli <marco.stornelli@gmail.com>
+To: Johnny Hung <johnny.hacking@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
 	kernelnewbies <kernelnewbies@nl.linux.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>
+	Matthias Kaehlcke <matthias@kaehlcke.net>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,49 +36,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-El Wed, Jan 20, 2010 at 08:15:01AM +0100 Ricard Wanderlof ha dit:
-
-> On Wed, 20 Jan 2010, Johnny Hung wrote:
->
->>> i'd also recommend you to consider if you really need the
->>> ramdisk. when using a ram disk its entire content is loaded to the RAM
->>> occupying space, even if you don't use certain files (or part of
->>> them). other filesystems are more efficient in this aspect.
->>> if the main purpose is to have a read only rootfs, i'd suggest a look
->>> at squashfs.
+2010/1/20 Johnny Hung <johnny.hacking@gmail.com>:
+> 2010/1/19 Matthias Kaehlcke <matthias@kaehlcke.net>:
+>> El Tue, Jan 19, 2010 at 02:17:22PM +0100 Ricard Wanderlof ha dit:
 >>
->> I consider to use ramdisk as rootfs because worry about wrong
->> operation in rootfs (is use jffs2 rootfs) and it will cause system
->> boot up failed.
+> I consider to use ramdisk as rootfs because worry about wrong
+> operation in rootfs (is use jffs2 rootfs) and it will cause system
+> boot up failed.
+> Another query, does the syslogd/klogd log files also store in jffs2
+> rootfs? Write to jffs2 frequently will reduce flash life cycle.
 >
-> You have a point, however, you could do two things to help:
->
-> a) Mount the root file system as read-only. That way you can never write  
-> to it, unless you remount it read-write. But you can still reflash that  
-> partition if you need to upgrade.
->
-> b) Register the mtd partition holding the root file system as read-only.
-> This is even more seecure as remounting the file system won't permit  
-> writes. However, it also means you can't write to it for upgrading. (I
-> don't think the mtd core permits changing an already registered mtd  
-> partition from readonly to writable, but I could be wrong.)
+> BRs, H. Johnny
+>>
+>> --
 
-AFAIK the mtd core doesn't permit changing a partition from ro to
-rw. but if you happen to need to reflash the partition anyway, you can
-load a tiny kernel modules that changes the flag indicating if a
-partition is writable.
+In general a good splitting for rootfs could be: squashfs for rootfs,
+tmpfs for volatile data (/tmp), ubifs (with a flash partition) for
+"strong" permanent data (/etc, ....) and pramfs for "light" permanent
+data (/var/log, .....).
+I think you should "split" your rootfs. Ramdisk is an old approach
+with some drawbacks.
 
-i once had to recurr to this solution and it works ;)
-
--- 
-Matthias Kaehlcke
-Embedded Linux Developer
-Barcelona
-
-    Tant qu'il y aura sur terre des hommes pour qui existe un concept
-    d' 'honneur national', la menace d'une nouvelle guerre subsistera
-                              (B. Traven)
-                                                                 .''`.
-    using free software / Debian GNU/Linux | http://debian.org  : :'  :
-                                                                `. `'`
-gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
+Marco
