@@ -1,31 +1,21 @@
-Received: from relay4-v.mail.gandi.net ([217.70.178.78])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXXlg-00016V-A5
-	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 10:26:37 +0000
-Date: Wed, 20 Jan 2010 11:21:45 +0100
-From: Matthias Kaehlcke <matthias@kaehlcke.net>
-To: Marco Stornelli <marco.stornelli@gmail.com>
-Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
-Message-ID: <20100120102145.GV16182@darwin>
-References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
-	<20100119095024.GD16182@darwin>
-	<cb9ecdfa1001190213u69469505k9c42142bdc17f750@mail.gmail.com>
-	<20100119102026.GF16182@darwin>
-	<cb9ecdfa1001190403v433d839dy6ba2bc018024ce15@mail.gmail.com>
-	<Pine.LNX.4.64.1001191414090.32263@lnxricardw.se.axis.com>
-	<20100119140600.GH16182@darwin>
-	<cb9ecdfa1001191832k28961740qa825a8c8d5e631f2@mail.gmail.com>
-	<2ea1731b1001192357r72d627e2gb36d71f23fd69b2e@mail.gmail.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NXY7o-0005K5-Ol
+	for linux-mtd@lists.infradead.org; Wed, 20 Jan 2010 10:49:25 +0000
+Date: Wed, 20 Jan 2010 11:49:15 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Anatolij Gustschin <agust@denx.de>
+Subject: Re: [PATCH 06/11] mtd: Add MPC5121 NAND Flash Controller driver
+Message-ID: <20100120104915.GB5041@pengutronix.de>
+References: <1263932653-3634-1-git-send-email-agust@denx.de>
+	<1263932653-3634-7-git-send-email-agust@denx.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RASg3xLB4tUQ4RcS"
 Content-Disposition: inline
-In-Reply-To: <2ea1731b1001192357r72d627e2gb36d71f23fd69b2e@mail.gmail.com>
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
-	kernelnewbies <kernelnewbies@nl.linux.org>,
-	Johnny Hung <johnny.hacking@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+In-Reply-To: <1263932653-3634-7-git-send-email-agust@denx.de>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org, dzu@denx.de,
+	Piotr Ziecik <kosmo@semihalf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,42 +25,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-El Wed, Jan 20, 2010 at 08:57:44AM +0100 Marco Stornelli ha dit:
 
-> 2010/1/20 Johnny Hung <johnny.hacking@gmail.com>:
-> > 2010/1/19 Matthias Kaehlcke <matthias@kaehlcke.net>:
-> >> El Tue, Jan 19, 2010 at 02:17:22PM +0100 Ricard Wanderlof ha dit:
-> >>
-> > I consider to use ramdisk as rootfs because worry about wrong
-> > operation in rootfs (is use jffs2 rootfs) and it will cause system
-> > boot up failed.
-> > Another query, does the syslogd/klogd log files also store in jffs2
-> > rootfs? Write to jffs2 frequently will reduce flash life cycle.
-> >
-> > BRs, H. Johnny
-> >>
-> >> --
-> 
-> In general a good splitting for rootfs could be: squashfs for rootfs,
-> tmpfs for volatile data (/tmp), ubifs (with a flash partition) for
-> "strong" permanent data (/etc, ....) and pramfs for "light" permanent
-> data (/var/log, .....).
+--RASg3xLB4tUQ4RcS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-if ubifs is a good choice depends on the size of the partition, iirc
-it has a significant overhead for very small partitions.
+On Tue, Jan 19, 2010 at 09:24:08PM +0100, Anatolij Gustschin wrote:
+> From: Piotr Ziecik <kosmo@semihalf.com>
+>=20
+> Adds NAND Flash Controller driver for MPC5121 Revision 2.
+> All device features, except hardware ECC and power management,
+> are supported.
+>=20
+> Signed-off-by: Piotr Ziecik <kosmo@semihalf.com>
+> Signed-off-by: Wolfgang Denk <wd@denx.de>
+> Signed-off-by: Anatolij Gustschin <agust@denx.de>
+> Cc: <linux-mtd@lists.infradead.org>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
+> Cc: John Rigby <jcrigby@gmail.com>
+> ---
 
-once using ubi it could be interesting to set up the read-only rootfs
-partition upon ubi in order to spread the wear out over a maximum of blocks.
+Please include a logfile with changes since the last version. This really
+helps.
 
--- 
-Matthias Kaehlcke
-Embedded Linux Developer
-Barcelona
+> +static int __init mpc5121_nfc_probe(struct of_device *op,
+> +					const struct of_device_id *match)
 
-            You can chain me, you can torture me, you can even
-          destroy this body, but you will never imprison my mind
-                            (Mahatma Gandhi)
-                                                                 .''`.
-    using free software / Debian GNU/Linux | http://debian.org  : :'  :
-                                                                `. `'`
-gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
+[...]
+
+> +{
+> +	/* Support external chip-select logic on ADS5121 board */
+> +	rootnode =3D of_find_node_by_path("/");
+> +	if (of_device_is_compatible(rootnode, "fsl,mpc5121ads")) {
+> +		retval =3D ads5121_chipselect_init(mtd);
+> +		if (retval) {
+> +			dev_err(dev, "Chipselect init error!\n");
+> +			of_node_put(rootnode);
+> +			return retval;
+> +		}
+> +
+> +		chip->select_chip =3D ads5121_select_chip;
+> +	}
+> +	of_node_put(rootnode);
+
+If we have to live with the platform-stuff being in the driver, maybe a tab=
+le
+having the compatible-string and an init-function pointer per entry will ma=
+ke
+it scale better with the number of boards?
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--RASg3xLB4tUQ4RcS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAktW36sACgkQD27XaX1/VRtA1wCgponKWU3rPA15UQtrVNd9DmWV
+U3gAnj7gLY4JGG8+nHsMWsTH5Oi3eXXf
+=UvF3
+-----END PGP SIGNATURE-----
+
+--RASg3xLB4tUQ4RcS--
