@@ -1,29 +1,22 @@
-Received: from mail-px0-f200.google.com ([209.85.216.200])
+Received: from mail-pz0-f195.google.com ([209.85.222.195])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NXlzW-0002XZ-Mc
-	for linux-mtd@lists.infradead.org; Thu, 21 Jan 2010 01:37:51 +0000
-Received: by pxi38 with SMTP id 38so2160861pxi.28
+	id 1NXw6H-00027m-Bv
+	for linux-mtd@lists.infradead.org; Thu, 21 Jan 2010 12:25:30 +0000
+Received: by pzk33 with SMTP id 33so1809648pzk.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jan 2010 17:37:44 -0800 (PST)
+	Thu, 21 Jan 2010 04:25:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1001201646400.32263@lnxricardw.se.axis.com>
-References: <2c3b11251001200158w56bf5cb8l9a27ade9ec3524f2@mail.gmail.com>
-	<Pine.LNX.4.64.1001201111550.32263@lnxricardw.se.axis.com>
-	<2c3b11251001200511x549f7285if75806e92300818b@mail.gmail.com>
-	<20100120133315.GB30789@shareable.org>
-	<2c3b11251001200625l4f4ee64emcfe43045913954c@mail.gmail.com>
-	<Pine.LNX.4.64.1001201548170.32263@lnxricardw.se.axis.com>
-	<2c3b11251001200711t7dce3b2fg24e17f60ac1078d@mail.gmail.com>
-	<Pine.LNX.4.64.1001201646400.32263@lnxricardw.se.axis.com>
-Date: Thu, 21 Jan 2010 09:37:43 +0800
-Message-ID: <2c3b11251001201737m2dadd594jc6dc2df2002ee62b@mail.gmail.com>
-Subject: Re: Is it an atomic operation for writing a page in NAND flash
-From: Liu Hui <onlyflyer@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <1263676480.8276.107.camel@localhost.localdomain>
+References: <c58fcbf21001080316j4ff51fe6wcb20eefd0d57e101@mail.gmail.com>
+	<1263676480.8276.107.camel@localhost.localdomain>
+From: Shweta Shetty <shyamashweta@gmail.com>
+Date: Thu, 21 Jan 2010 17:55:03 +0530
+Message-ID: <c58fcbf21001210425i3122677fw45f5628a2e36e89@mail.gmail.com>
+Subject: Re: Ubi2- using NandSim for simulating flash and mounting ubi.
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Jamie Lokier <jamie@shareable.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,121 +26,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Very informative, it expand my view. Thanks!
+Hi ,
+Thank you for your help.
+We had not tried the "ubinize" utility and hence were not able to
+mount ubi with the saved data.
+Having followed your instructions , we tried it and it works perfectly fine=
+ now.
+Thank you again !
 
-2010/1/21 Ricard Wanderlof <ricard.wanderlof@axis.com>:
+On Sun, Jan 17, 2010 at 2:44 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
 >
-> On Wed, 20 Jan 2010, Liu Hui wrote:
+> Hi,
 >
->> Thanks you very much, CRC is the real solution.
->>
->> But I don't understand, if a partial write happens, we use ECC to
->> correct the data, we will find the data can't be corrected, then
->> -EBADMSG will be returned(see nand_correct_data()), then we can know
->> this page are corrupted. IMHO, this works.
+> sorry, I am not sure understand the question.
 >
-> Assuming the ECC algorithm used by mtd, it only produces correct results =
-in
-> the case of 0, 1 or 2 bit errors in the data. For more bit errors than th=
-at,
-> the result is undefined.
+> On Fri, 2010-01-08 at 16:46 +0530, Shweta Shetty wrote:
+> > Hi,
+> >
+> > To test ubi2 we intend to use NANDSIM. However we are facing certain pr=
+oblems.
+> >
+> > From what we have understood, the method of using NANDSIM is :
+> > 1>create an empty flash device (By default this uses the ram memory
+> > but we can allocate other by the cache_file option)
+> > 2>mount ubi on it
+> > 3>mount ubifs on it
+> > =3D> (Here we can load the previously stored image)
 >
-> Let's assume a partial write occurs, which leads to 57 bit errors compare=
-d
-> to what was originally supposed to be there. Since there are more than 2 =
-bit
-> errors, the algorthm output is undefined; it may say that the data can't =
-be
-> corrected, or it may say that the data is ok, or it may say that the data
-> can be corrected; it's impossible to tell. As far as I understand, it is =
-not
-> uncommon for ECC to say the data is correct when it fact it isn't.
+> If you want to write some pre-created image (e.g., created with
+> mkfs.ubifs/ubinize) or previously saved image (e.g., you dumped
+> your /dev/mtdX to a file previously), then you have to do this _before_
+> attaching the MTD device to UBI. IOW, you have to do this between steps
+> 1 and 2.
 >
-> A slightly trivial case:
+> > 4>use it
+> > 5>while unmounting save the image on permanant storage
 >
-> Again assuming the ECC algorithm used by mtd, the ECC bytes for a chunk o=
-f
-> data where all the bytes have the same value is 0xFFFFFF, regardless of t=
-he
-> actual value. So, say you have a page full of 0xA3; the ECC is then
-> 0xFFFFFFF. Now, assuming a partial write causes bit 2 of all bit cells to
-> not change from 1 to 0 when programming. The result is a page full of 0xA=
-7,
-> in effect, 256 bit errors (assuming a page size of 256 bits, or at least,
-> assuming an ECC calculation encompassing that many bytes). But the ECC wi=
-ll
-> still be 0xFFFFFF, and the corresponding ECC calculation will say that th=
-e
-> data is correct. That is, as I mentioned before, because the result of an
-> ECC calculation on data with >2 bit errors is undefined.
+> After you have unmounted everything, you can save it, yes.
 >
-> Note that there are other ECC algorithms which can correct more error bit=
-s.
-> For MLC flash it is recommended to use an algorithm which corrects 4 bit
-> errors rather than a single bit error in a block of data. Such algorithms
-> require more ECC bits though.
+> > So as we can see, though NANDSIM can be effectively used for
+> > simulating flash , it is of limited use in our project for testing
+> > mount time as every time only the empty device is mounted.
 >
-> One has a tendency to think of ECC as a checking algorithm. It is not. It
-> corrects and detects bit errors under certain circumstances. Outside thos=
-e
-> circumstances it is worthless. For the case of the software algorithm use=
-d
-> in mtd, it is worthless if there are more than 2 bit errors. A failed wri=
-te
-> could cause any number of bit errors, so it is worthless to check the res=
-ult
-> using the ECC algorithm. The normal failure mode of a nand flash chip is
-> random single random bit errors with low probability. ECC handles this
-> elegantly.
+> No. You can write your contents there before mounting.
 >
+> > From the ubi code that we have now studied , there is a flag set for
+> > an empty device and in such case , all the system does is that it
+> > initialises all its data structures.
 >
-> Elaborating on this slightly, a devil's advocate would considere ECC
-> worthless as a correction algorithm for a flash chip. Assume one bit erro=
-r
-> occurs, which is corrected by ECC. Then another bit error occurs in the s=
-ame
-> page. ECC then detects a failure. Then another bit error occurrs. The ECC
-> algorithm is now worthless, it may detect the error, it may say that the
-> data is correct, or it may even try to correct it (erroneously).
+> It does this _only_ if you feed it an empty flash. Do not feed it an
+> empty flash, feed it a formatted flash, then it will not initialize it.
 >
-> The reason that all this works in practice is that the probability of a b=
-it
-> error occurring is so low that the probability of two bit errors occurrin=
-g
-> in the same page is very low, in some respect lower than other failure mo=
-des
-> in the system, so that we don't have to worry about it. (For example: Wha=
-t
-> about bit errors occurring in RAM chips from cosmic radiation? It is a re=
-al
-> risk, but so small that most systems don't have to worry about it.)
+> > Hence we cannot show the
+> > performance of our project on NANDSIM.
 >
-> It can be a real concern though, and that is why things like UBI provide
-> so-called bit scrubbing: whenever it detects that ECC has done a bit
-> correction in a block, it erases that block and rewrites the data [lots o=
-f
-> details omitted here] so that the chance of two bit errors ever occurring=
- in
-> the same page will be very small indeed.
+> Well, of course in any case, performance is better shown on a real
+> device.
 >
-> Especially in these days of larger and larger flash chips resulting from
-> shrinking chip geometries this is problem that is getting worse and worse=
-.
-> It also tends to vary hugely among manufacturers.
+> > Our we missing some crucial point?
+> > We would be grateful for clarification.
 >
-> /Ricard
+> Not sure I clarified, because I did not really understand the question,
+> but HTH.
+>
 > --
-> Ricard Wolf Wanderl=C3=B6f =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0www.axis.com
-> Phone +46 46 272 2016 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Fax +46 46 13 61 30
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
 >
 
 
 
---=20
-Thanks & Best Regards
-Liu Hui
 --
+Shweta Shetty
+http://shweta-kaleidoscope.blogspot.com/
+Humility is a strange thing. The minute you know you have got it you
+have lost it.
