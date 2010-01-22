@@ -1,19 +1,16 @@
-Received: from mail-fx0-f222.google.com ([209.85.220.222])
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYLy2-00015q-LK
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 16:02:43 +0000
-Received: by fxm22 with SMTP id 22so1353512fxm.2
+	id 1NYM7w-00053x-8k
+	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 16:12:56 +0000
+Received: by bwz4 with SMTP id 4so1312997bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 08:02:37 -0800 (PST)
-Subject: [PATCH 6/6] MTD: add few workarounds to nand system for
-	SmartMedia/xD chips.
+	Fri, 22 Jan 2010 08:12:51 -0800 (PST)
+Subject: [PATCH 0/2] Smartmedia/xD support
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1264175781.24012.42.camel@maxim-laptop>
-References: <1264175781.24012.42.camel@maxim-laptop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 22 Jan 2010 18:02:32 +0200
-Message-ID: <1264176152.24012.49.camel@maxim-laptop>
+Date: Fri, 22 Jan 2010 18:12:45 +0200
+Message-ID: <1264176765.24012.59.camel@maxim-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Thomas Gleixner <tglx@linutronix.de>, joern <joern@logfs.org>,
@@ -28,171 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 6693342c25548d1f345d2dc359a38df0ee22e863 Mon Sep 17 00:00:00 2001
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Fri, 22 Jan 2010 16:41:34 +0200
-Subject: [PATCH 6/6] MTD: add few workarounds to nand system for SmartMedia/xD chips.
+Hello,
 
-* Add an option NAND_SMARTMEDIA that can be set by nand driver
- If set, it will cause separate ID table to be used, which includes
- mask rom devices and new xD cards
+This is final patch series that depends on two former series and consist
+of two patches.
 
-* Workaround for wrong write protect status on some xD cards
+First adds a driver for my xD card reader. Patch is almost unchanged
+from previous submission.
+I fixed few problems with suspend/resume. Device just works now.
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/nand/nand_base.c |   30 ++++++++++++++++++++++--------
- drivers/mtd/nand/nand_ids.c  |   39 +++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h     |   11 +++++++++++
- 3 files changed, 72 insertions(+), 8 deletions(-)
+Second patch, is a new SmartMedia/xD FTL support.
+This version reverts many things I did in last version.
+Driver again doesn't use mtd badblock handling.
+Due to all kinds of problems I deciced it will be better to do it here.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e433103..4ede90b 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -397,9 +397,18 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- static int nand_check_wp(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd->priv;
-+	int wp;
-+
-+	/* broken xD cards report WP despite beeing writable */
-+	if (chip->options & NAND_BROKEN_XD)
-+		return 0;
-+
- 	/* Check the WP bit */
- 	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
--	return (chip->read_byte(mtd) & NAND_STATUS_WP) ? 0 : 1;
-+	wp = (chip->read_byte(mtd) & NAND_STATUS_WP) ? 0 : 1;
-+
-+
-+	return wp;
- }
- 
- /**
-@@ -2625,14 +2634,18 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 	}
- 
- 	/* Lookup the flash id */
--	for (i = 0; nand_flash_ids[i].name != NULL; i++) {
--		if (dev_id == nand_flash_ids[i].id) {
--			type =  &nand_flash_ids[i];
-+#ifdef CONFIG_MTD_NAND_SMARTMEDIA
-+	if (chip->options & NAND_SMARTMEDIA)
-+		type = nand_smartmedia_flash_ids;
-+	else
-+#endif
-+		type = nand_flash_ids;
-+
-+	for (i = 0; type->name != NULL; type++)
-+		if (dev_id == type->id)
- 			break;
--		}
--	}
- 
--	if (!type)
-+	if (!type->name)
- 		return ERR_PTR(-ENODEV);
- 
- 	if (!mtd->name)
-@@ -2989,7 +3002,8 @@ int nand_scan_tail(struct mtd_info *mtd)
- 
- 	/* Fill in remaining MTD driver data */
- 	mtd->type = MTD_NANDFLASH;
--	mtd->flags = MTD_CAP_NANDFLASH;
-+	mtd->flags = chip->options & NAND_ROM ? MTD_CAP_ROM :
-+							MTD_CAP_NANDFLASH;
- 	mtd->erase = nand_erase;
- 	mtd->point = NULL;
- 	mtd->unpoint = NULL;
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 69ee2c9..f9e72d5 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -127,6 +127,45 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{NULL,}
- };
- 
-+#ifdef CONFIG_MTD_NAND_SMARTMEDIA
-+struct nand_flash_dev nand_smartmedia_flash_ids[] = {
-+
-+	/* SmartMedia */
-+	{"SmartMedia 1MiB 5V",		0x6e, 256, 1, 0x1000, 0},
-+	{"SmartMedia 1MiB 3,3V",	0xe8, 256, 1, 0x1000, 0},
-+	{"SmartMedia 1MiB 3,3V",	0xec, 256, 1, 0x1000, 0},
-+	{"SmartMedia 2MiB 3,3V",	0xea, 256, 2, 0x1000, 0},
-+	{"SmartMedia 2MiB 5V",		0x64, 256, 2, 0x1000, 0},
-+	{"SmartMedia 2MiB 3,3V ROM",	0x5d, 512, 2, 0x2000, NAND_ROM},
-+	{"SmartMedia 4MiB 3,3V",	0xe3, 512, 4, 0x2000, 0},
-+	{"SmartMedia 4MiB 3,3/5V",	0xe5, 512, 4, 0x2000, 0},
-+	{"SmartMedia 4MiB 5V",		0x6b, 512, 4, 0x2000, 0},
-+	{"SmartMedia 4MiB 3,3V ROM",	0xd5, 512, 4, 0x2000, NAND_ROM},
-+	{"SmartMedia 8MiB 3,3V",	0xe6, 512, 8, 0x2000, 0},
-+	{"SmartMedia 8MiB 3,3V ROM",	0xd6, 512, 8, 0x2000, NAND_ROM},
-+
-+#define XD_TYPEM	(NAND_NO_AUTOINCR | NAND_BROKEN_XD)
-+	/* xD / SmartMedia */
-+	{"SmartMedia/xD 16MiB 3,3V",	0x73, 512, 16, 0x4000, 0},
-+	{"SmartMedia 16MiB 3,3V ROM",	0x57, 512, 16, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 32MiB 3,3V",	0x75, 512, 32, 0x4000, 0},
-+	{"SmartMedia 32MiB 3,3V ROM",	0x58, 512, 32, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 64MiB 3,3V",	0x76, 512, 64, 0x4000, 0},
-+	{"SmartMedia 64MiB 3,3V ROM",	0xd9, 512, 64, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 128MiB 3,3V",	0x79, 512, 128, 0x4000, 0},
-+	{"SmartMedia 128MiB 3,3V ROM",	0xda, 512, 128, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 256MiB 3,3V",	0x71, 512, 256, 0x4000, XD_TYPEM},
-+	{"SmartMedia 256MiB 3,3V ROM",	0x5b, 512, 256, 0x4000, NAND_ROM},
-+
-+	/* xD only */
-+	{"xD 512MiB 3,3V",		0xDC, 512, 512, 0x4000, XD_TYPEM},
-+	{"xD 1GiB 3,3V",		0xD3, 512, 1024, 0x4000, XD_TYPEM},
-+	{"xD 2GiB 3,3V",		0xD5, 512, 2048, 0x4000, XD_TYPEM},
-+	{NULL,}
-+};
-+EXPORT_SYMBOL(nand_smartmedia_flash_ids);
-+#endif
-+
- /*
- *	Manufacturer ID list
- */
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 8c2333a..bb25cd8 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -170,6 +170,12 @@ typedef enum {
- /* Chip does not allow subpage writes */
- #define NAND_NO_SUBPAGE_WRITE	0x00000200
- 
-+/* Device is one of 'new' xD cards that expose fake nand command set */
-+#define NAND_BROKEN_XD		0x00000400
-+
-+/* Device behaves just like nand, but is readonly */
-+#define NAND_ROM		0x00000800
-+
- /* Options valid for Samsung large page devices */
- #define NAND_SAMSUNG_LP_OPTIONS \
- 	(NAND_NO_PADDING | NAND_CACHEPRG | NAND_COPYBACK)
-@@ -195,9 +201,13 @@ typedef enum {
- /* This option is defined if the board driver allocates its own buffers
-    (e.g. because it needs them DMA-coherent */
- #define NAND_OWN_BUFFERS	0x00040000
-+
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00080000
- 
-+/* controller supports only xD/SmartMedia cards*/
-+#define NAND_SMARTMEDIA		0x00100000
-+
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
- #define NAND_CONTROLLER_ALLOC	0x80000000
-@@ -458,6 +468,7 @@ struct nand_manufacturers {
- };
- 
- extern struct nand_flash_dev nand_flash_ids[];
-+extern struct nand_flash_dev nand_smartmedia_flash_ids[];
- extern struct nand_manufacturers nand_manuf_ids[];
- 
- extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
--- 
-1.6.3.3
+I added support for 256 byte nand devices, thus now the FTL covers
+everything. This is tested with nandsim.
+
+I added lots of error checking. Driver is now very carefull and not
+erase happy as it was. I decided that repairing the card should be done
+by fsck like utility and not the driver.
+
+Driver does some checks for device fails, by rereading the CIS.
+
+Everything works now, and I think ready for use.
+
+Best regards,
+Maxim Levitsky
