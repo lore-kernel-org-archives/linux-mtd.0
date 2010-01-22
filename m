@@ -1,23 +1,23 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYLvu-0007uW-15
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 16:00:30 +0000
-Subject: Re: [PATCH 3/4] MTD: blkdevs: make hotplug work
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-In-Reply-To: <1264174506.24012.21.camel@maxim-laptop>
-References: <1264174316.24012.17.camel@maxim-laptop>
-	<1264174506.24012.21.camel@maxim-laptop>
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NYLvv-0000Kp-FA
+	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 16:00:32 +0000
+Received: by bwz4 with SMTP id 4so1299172bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Jan 2010 08:00:26 -0800 (PST)
+Subject: [PATCH 4/6] MTD: export few functions from nand_base.c
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1264175781.24012.42.camel@maxim-laptop>
+References: <1264175781.24012.42.camel@maxim-laptop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 22 Jan 2010 17:59:34 +0200
-Message-ID: <1264175974.4494.4.camel@localhost>
+Date: Fri, 22 Jan 2010 18:00:20 +0200
+Message-ID: <1264176020.24012.46.camel@maxim-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Alex Dubov <oakad@yahoo.com>, joern <joern@logfs.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
+Content-Transfer-Encoding: 7bit
+Cc: Thomas Gleixner <tglx@linutronix.de>, joern <joern@logfs.org>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +27,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-01-22 at 17:35 +0200, Maxim Levitsky wrote:
-> >From 368127067f4d39ba89096e4a5cb3be2dee361bad Mon Sep 17 00:00:00 2001
-> From: Maxim Levitsky <maximlevitsky@gmail.com>
-> Date: Fri, 22 Jan 2010 15:00:55 +0200
-> Subject: [PATCH 3/4] MTD: blkdevs: make hotplug work
-> 
-> This changes the blkdev common module for translation layers
-> to survive when underlying mtd device disappears.
-> 
-> To do so the following conceptual changes were made:
-> 
-> * disk queue and thread are now one per mtd device
->  This was it is easy to flush and destroy the queue
-> 
-> * the struct mtd_blktrans_dev will now be freed automaticly when last user
->  of the device quits.
->  All existing translation layers are adjusted
-> 
-> * ->open and release function of the translation layer will never be called
->  twise or more in the row.
->  This makes code simplier.
->  Also the ->release will be called just before mtd device disappears
->  This and above is the only visable changes on the outside.
-> 
-> Tested with mtdblock, ssfdc and my own sm_ftl on top of physicly hotplugable
-> nand card.
-> 
-> Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+>From 682591265a03966b495f21ff6b77dfb5fadcbefa Mon Sep 17 00:00:00 2001
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Date: Fri, 22 Jan 2010 16:41:34 +0200
+Subject: [PATCH 4/6] MTD: export few functions from nand_base.c
 
-I'll try to find some time to review this later - I'm really busy
-lately. But please, split this huge patch on smaller pieces - this will
-help the reviewers a lot.
+This exports:
 
+nand_do_read_oob
+nand_do_write_oob
+nand_get_device
+nand_put_device
+
+This functions will be used to implement custom oob based
+bad block handling in upcoming smartmedia common module
+
+Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |   18 +++++++++---------
+ include/linux/mtd/nand.h     |   12 ++++++++++++
+ 2 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 29e986e..e433103 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -96,11 +96,6 @@ static struct nand_ecclayout nand_oob_128 = {
+ 		 .length = 78}}
+ };
+ 
+-static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
+-			   int new_state);
+-
+-static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+-			     struct mtd_oob_ops *ops);
+ 
+ /*
+  * For devices which display every fart in the system on a separate LED. Is
+@@ -114,7 +109,7 @@ DEFINE_LED_TRIGGER(nand_led_trigger);
+  *
+  * Deselect, release chip lock and wake up anyone waiting on the device
+  */
+-static void nand_release_device(struct mtd_info *mtd)
++void nand_release_device(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 
+@@ -128,6 +123,7 @@ static void nand_release_device(struct mtd_info *mtd)
+ 	wake_up(&chip->controller->wq);
+ 	spin_unlock(&chip->controller->lock);
+ }
++EXPORT_SYMBOL_GPL(nand_release_device);
+ 
+ /**
+  * nand_read_byte - [DEFAULT] read one byte from the chip
+@@ -721,7 +717,7 @@ static void panic_nand_get_device(struct nand_chip *chip,
+  *
+  * Get the device and lock it for exclusive access
+  */
+-static int
++int
+ nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
+ {
+ 	spinlock_t *lock = &chip->controller->lock;
+@@ -756,6 +752,7 @@ nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
+ 	remove_wait_queue(wq, &wait);
+ 	goto retry;
+ }
++EXPORT_SYMBOL_GPL(nand_get_device);
+ 
+ /**
+  * panic_nand_wait - [GENERIC]  wait until the command is done
+@@ -1535,7 +1532,7 @@ static int nand_write_oob_syndrome(struct mtd_info *mtd,
+  *
+  * NAND read out-of-band data from the spare area
+  */
+-static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
++int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 			    struct mtd_oob_ops *ops)
+ {
+ 	int page, realpage, chipnr, sndcmd = 1;
+@@ -1619,6 +1616,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 	ops->oobretlen = ops->ooblen;
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(nand_do_read_oob);
+ 
+ /**
+  * nand_read_oob - [MTD Interface] NAND read data and/or out-of-band
+@@ -2111,7 +2109,7 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+  *
+  * NAND write out-of-band
+  */
+-static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
++int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 			     struct mtd_oob_ops *ops)
+ {
+ 	int chipnr, page, status, len;
+@@ -2182,6 +2180,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(nand_do_write_oob);
+ 
+ /**
+  * nand_write_oob - [MTD Interface] NAND write data and/or out-of-band
+@@ -3083,6 +3082,7 @@ EXPORT_SYMBOL_GPL(nand_scan_ident);
+ EXPORT_SYMBOL_GPL(nand_scan_tail);
+ EXPORT_SYMBOL_GPL(nand_release);
+ 
++
+ static int __init nand_base_init(void)
+ {
+ 	led_trigger_register_simple("nand-disk", &nand_led_trigger);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index ccab9df..8c2333a 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -469,6 +469,18 @@ extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			size_t * retlen, uint8_t * buf);
+ 
++extern int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
++			    struct mtd_oob_ops *ops);
++
++extern int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
++			     struct mtd_oob_ops *ops);
++
++extern int nand_get_device(struct nand_chip *chip,
++			struct mtd_info *mtd, int new_state);
++
++extern void nand_release_device(struct mtd_info *mtd);
++
++
+ /**
+  * struct platform_nand_chip - chip level device structure
+  * @nr_chips:		max. number of chips to scan for
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.3.3
