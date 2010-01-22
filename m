@@ -1,34 +1,21 @@
-Received: from mail-ew0-f220.google.com ([209.85.219.220])
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYEfQ-0002qp-7Z
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 08:15:01 +0000
-Received: by ewy20 with SMTP id 20so163914ewy.20
+	id 1NYLUX-0008QS-BO
+	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 15:32:13 +0000
+Received: by fxm22 with SMTP id 22so1320128fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 00:14:54 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <cb9ecdfa1001211907u37415485tf3e1d2c443a506f7@mail.gmail.com>
-References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
-	<20100119095024.GD16182@darwin>
-	<cb9ecdfa1001190213u69469505k9c42142bdc17f750@mail.gmail.com>
-	<20100119102026.GF16182@darwin>
-	<cb9ecdfa1001190403v433d839dy6ba2bc018024ce15@mail.gmail.com>
-	<Pine.LNX.4.64.1001191414090.32263@lnxricardw.se.axis.com>
-	<20100119140600.GH16182@darwin>
-	<cb9ecdfa1001191832k28961740qa825a8c8d5e631f2@mail.gmail.com>
-	<2ea1731b1001192357r72d627e2gb36d71f23fd69b2e@mail.gmail.com>
-	<cb9ecdfa1001211907u37415485tf3e1d2c443a506f7@mail.gmail.com>
-Date: Fri, 22 Jan 2010 09:14:54 +0100
-Message-ID: <2ea1731b1001220014v59ea7767m6e1a8547d41c6afb@mail.gmail.com>
-Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
-From: Marco Stornelli <marco.stornelli@gmail.com>
-To: Johnny Hung <johnny.hacking@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
-	kernelnewbies <kernelnewbies@nl.linux.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthias Kaehlcke <matthias@kaehlcke.net>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+	Fri, 22 Jan 2010 07:32:07 -0800 (PST)
+Subject: [PATCH 0/4] Cleanups for mtd translation layer
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 22 Jan 2010 17:31:56 +0200
+Message-ID: <1264174316.24012.17.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Thomas Gleixner <tglx@linutronix.de>, joern <joern@logfs.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>, Alex Dubov <oakad@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,35 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/1/22 Johnny Hung <johnny.hacking@gmail.com>:
-> 2010/1/20 Marco Stornelli <marco.stornelli@gmail.com>:
->> 2010/1/20 Johnny Hung <johnny.hacking@gmail.com>:
->>> 2010/1/19 Matthias Kaehlcke <matthias@kaehlcke.net>:
->>>> El Tue, Jan 19, 2010 at 02:17:22PM +0100 Ricard Wanderlof ha dit:
->>>>
->>> I consider to use ramdisk as rootfs because worry about wrong
->>> operation in rootfs (is use jffs2 rootfs) and it will cause system
->>> boot up failed.
->>> Another query, does the syslogd/klogd log files also store in jffs2
->>> rootfs? Write to jffs2 frequently will reduce flash life cycle.
->>>
->>> BRs, H. Johnny
->>>>
->>>> --
->>
->
-> It seems there are a lot of file-systems I have to study :P. The same
-> question is
-> how to split my rootfs? Re-mount /etc, /var to another file-sysyem mtd part when
-> system boot up?
->
+Hello,
 
-Simply, you can mount each mount point with the fstab file and a
-script, same approach of every linux distribution, nothing more. Even
-in the pc world you can mount your /home on a partition with ext3,
-/var in a partition with ext4, and so on. A very simple approach to
-setup the system, it is to start with NFS for example with "whole" fs,
-copy what you need in the right place, setup the start-up script and
-reboot.
+I have broken up the patch series that I created for proper
+SmartMedia/xD support.
 
-Marco
+This patch series contain patches that fix hotplug & suspend/resume in
+mtd translation layer.
+
+Patches are (almost) unmodified from last submission, and well tested on
+real hotplugable card.
+I can say that for a long time (even before last submission) I had no
+issues regarding hotplug and/or suspend resume even in exterme cases.
+(like suspending the system while doing 'dd if=/dev/zero of=/dev/smblka'
+or yanking the card out while read or write is performed)
+
+First two patches, prepare ground for real work and don't add new
+functionality.
+
+Third patch adds everything needed to common translation layer to make
+the hotplug work.
+
+Last patch makes suspend/resume work much better by allowing to freeze
+the IO thread, thus avoiding situation you suspend in middle of IO.
+
+
+Best regards,
+Maxim Levitsky
