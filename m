@@ -1,19 +1,34 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYEcv-0006Ry-UP
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 08:12:22 +0000
-Date: Fri, 22 Jan 2010 09:12:14 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Eric Benard <eric@eukrea.com>
-Subject: Re: [PATCH 1/1] mxc_nand : add RESET command support
-Message-ID: <20100122081214.GV7200@pengutronix.de>
-References: <1260347150.19669.1206.camel@localhost>
-	<1260357163-5367-1-git-send-email-eric@eukrea.com>
+Received: from mail-ew0-f220.google.com ([209.85.219.220])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NYEfQ-0002qp-7Z
+	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 08:15:01 +0000
+Received: by ewy20 with SMTP id 20so163914ewy.20
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Jan 2010 00:14:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1260357163-5367-1-git-send-email-eric@eukrea.com>
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <cb9ecdfa1001211907u37415485tf3e1d2c443a506f7@mail.gmail.com>
+References: <cb9ecdfa1001190120r593f7799sf566df5a855b8a54@mail.gmail.com>
+	<20100119095024.GD16182@darwin>
+	<cb9ecdfa1001190213u69469505k9c42142bdc17f750@mail.gmail.com>
+	<20100119102026.GF16182@darwin>
+	<cb9ecdfa1001190403v433d839dy6ba2bc018024ce15@mail.gmail.com>
+	<Pine.LNX.4.64.1001191414090.32263@lnxricardw.se.axis.com>
+	<20100119140600.GH16182@darwin>
+	<cb9ecdfa1001191832k28961740qa825a8c8d5e631f2@mail.gmail.com>
+	<2ea1731b1001192357r72d627e2gb36d71f23fd69b2e@mail.gmail.com>
+	<cb9ecdfa1001211907u37415485tf3e1d2c443a506f7@mail.gmail.com>
+Date: Fri, 22 Jan 2010 09:14:54 +0100
+Message-ID: <2ea1731b1001220014v59ea7767m6e1a8547d41c6afb@mail.gmail.com>
+Subject: Re: mount ramdisk rootfs /etc directory to jffs2 filesystem.
+From: Marco Stornelli <marco.stornelli@gmail.com>
+To: Johnny Hung <johnny.hacking@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	"linux-embedded@vger.kernel.org" <linux-embedded@vger.kernel.org>,
+	kernelnewbies <kernelnewbies@nl.linux.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthias Kaehlcke <matthias@kaehlcke.net>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +38,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem, can you take this patch, please?
+2010/1/22 Johnny Hung <johnny.hacking@gmail.com>:
+> 2010/1/20 Marco Stornelli <marco.stornelli@gmail.com>:
+>> 2010/1/20 Johnny Hung <johnny.hacking@gmail.com>:
+>>> 2010/1/19 Matthias Kaehlcke <matthias@kaehlcke.net>:
+>>>> El Tue, Jan 19, 2010 at 02:17:22PM +0100 Ricard Wanderlof ha dit:
+>>>>
+>>> I consider to use ramdisk as rootfs because worry about wrong
+>>> operation in rootfs (is use jffs2 rootfs) and it will cause system
+>>> boot up failed.
+>>> Another query, does the syslogd/klogd log files also store in jffs2
+>>> rootfs? Write to jffs2 frequently will reduce flash life cycle.
+>>>
+>>> BRs, H. Johnny
+>>>>
+>>>> --
+>>
+>
+> It seems there are a lot of file-systems I have to study :P. The same
+> question is
+> how to split my rootfs? Re-mount /etc, /var to another file-sysyem mtd part when
+> system boot up?
+>
 
-If your ok with it, I could take patches only affecting the mxc_nand
-driver also via my i.MX tree.
+Simply, you can mount each mount point with the fstab file and a
+script, same approach of every linux distribution, nothing more. Even
+in the pc world you can mount your /home on a partition with ext3,
+/var in a partition with ext4, and so on. A very simple approach to
+setup the system, it is to start with NFS for example with "whole" fs,
+copy what you need in the right place, setup the start-up script and
+reboot.
 
-Sascha
-
-On Wed, Dec 09, 2009 at 12:12:43PM +0100, Eric Benard wrote:
-> mxc_nand driver must support the RESET Command in order to support
-> Micron NAND which need a reset before any other command.
-> 
-> Signed-off-by: Eric Benard <eric@eukrea.com>
-
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
-
-> ---
->  drivers/mtd/nand/mxc_nand.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index d5445cd..0207525 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -638,6 +638,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
->  
->  	case NAND_CMD_ERASE1:
->  	case NAND_CMD_ERASE2:
-> +	case NAND_CMD_RESET:
->  		send_cmd(host, command, false);
->  		mxc_do_addr_cycle(mtd, column, page_addr);
->  
-> -- 
-> 1.6.3.3
-> 
-> 
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Marco
