@@ -1,17 +1,18 @@
 Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYLs4-00077s-JX
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 15:56:33 +0000
-Received: by bwz4 with SMTP id 4so1294739bwz.2
+	id 1NYLtC-0007LE-1n
+	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 15:57:45 +0000
+Received: by bwz4 with SMTP id 4so1296002bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 07:56:27 -0800 (PST)
-Subject: [PATCH 0/6] MTD: Many fixes and preparation for SmartMedia support
-	in nand subsystem
+	Fri, 22 Jan 2010 07:57:37 -0800 (PST)
+Subject: [PATCH 1/6] MTD: nand: make MTD_OOB_PLACE work correctly.
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1264175781.24012.42.camel@maxim-laptop>
+References: <1264175781.24012.42.camel@maxim-laptop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 22 Jan 2010 17:56:21 +0200
-Message-ID: <1264175781.24012.42.camel@maxim-laptop>
+Date: Fri, 22 Jan 2010 17:57:31 +0200
+Message-ID: <1264175851.24012.43.camel@maxim-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Thomas Gleixner <tglx@linutronix.de>, joern <joern@logfs.org>,
@@ -26,48 +27,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+>From 53cc4bab741b55c02ee726eed40b876209aa3e91 Mon Sep 17 00:00:00 2001
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+Date: Fri, 22 Jan 2010 16:41:33 +0200
+Subject: [PATCH 1/6] MTD: nand: make MTD_OOB_PLACE work correctly.
 
-This patch series add few fixes and changes to nand subsystem.
+MTD_OOB_PLACE is supposed to read/write raw oob data similiar to MTD_OOB_RAW
+however due to a bug, currently its not possible to read more data that
+specified in oob 'free' regions
 
-First patch, fixes the MTD_OOB_PLACE support in nand.
-I want to use ->read_oob to read both raw oob and data and use ecc.
-MTD_OOB_PLACE should do that, but due to a wrong check it will refuse to
-work.
+Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-Second patch, probably the most important patch in this series.
-I changed behavier of MTD_OOB_RAW to match the one of MTD_OOB_PLACE
-minus ecc validation.
-This way it is easy to use both modes in same code.
-This mode is only used in one place, in scan_read_raw in nand_bbt.c
-I edited this function to achieve exactly same effect as was before.
-
-Third patch is another bugfix that I need to be able to write several
-pages in one go. ->write_oob should do that, but it was incorrectly
-implemented.
-I need this and former patch to add support for 256 byte nand chips in
-the smartmedia FTL very elegantly.
-
-Fourth patch exports few functions from nand_base.c, so one can write
-custom ->block_mark_bad, and ->block_is_bad functions.
-I use these functions in next patch.
-
-Fifth patch, adds small helper module for nand drivers for SmartMedia/xD
-readers. It contains bad block handlers and ecc layer.
-
-And last patch, adds some workarounds to nand core to make xD work with
-it.
-
-It adds new ID table (which is similiar to current ID table, but
-dfferent in that it has IDS for readonly SmartMedia devices, and it has
-special settings for new xD cards that share ID with regular nand
-devices, but unfortunely don't report proper information in READ ID
-command, and have other problems.)
-
-It also adds a workaround for broken writeprotect status.
-Older smartmedia devices had a special seal for writeprotect, aka a
-additional connector. This should be handled by nand driver itself.
-Newer xD cards have no write protect support at all.
-
-Best regards,
-Maxim Levitsky
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8f2958f..405c538 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1232,6 +1232,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	int ret = 0;
+ 	uint32_t readlen = ops->len;
+ 	uint32_t oobreadlen = ops->ooblen;
++	uint32_t max_oobsize = ops->mode == MTD_OOB_AUTO ?
++		mtd->oobavail : mtd->oobsize;
++
+ 	uint8_t *bufpoi, *oob, *buf;
+ 
+ 	stats = mtd->ecc_stats;
+@@ -1282,10 +1285,11 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			buf += bytes;
+ 
+ 			if (unlikely(oob)) {
++
+ 				/* Raw mode does data:oob:data:oob */
+ 				if (ops->mode != MTD_OOB_RAW) {
+ 					int toread = min(oobreadlen,
+-						chip->ecc.layout->oobavail);
++								max_oobsize);
+ 					if (toread) {
+ 						oob = nand_transfer_oob(chip,
+ 							oob, ops, toread);
+-- 
+1.6.3.3
