@@ -1,26 +1,23 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYRPY-0003Tg-1r
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 21:51:28 +0000
-Received: by bwz4 with SMTP id 4so1588780bwz.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 13:51:22 -0800 (PST)
-Subject: Re: [PATCH 3/4] MTD: blkdevs: make hotplug work
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: dedekind1@gmail.com
-In-Reply-To: <1264175974.4494.4.camel@localhost>
-References: <1264174316.24012.17.camel@maxim-laptop>
-	<1264174506.24012.21.camel@maxim-laptop>
-	<1264175974.4494.4.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 22 Jan 2010 23:51:17 +0200
-Message-ID: <1264197077.2824.8.camel@maxim-laptop>
-Mime-Version: 1.0
+	id 1NYRcC-0007GA-Br
+	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 22:04:33 +0000
+Date: Fri, 22 Jan 2010 14:04:10 -0800
+From: "Leo (Hao) Chen" <leochen@broadcom.com>
+To: "Roel Kluin" <roel.kluin@gmail.com>
+Subject: Re: [PATCH] mtd: hot spin and code duplication in
+	nand_bcm_umi_bch_read_oobEcc()
+Message-ID: <20100122220410.GN12439@broadcom.com>
+References: <4B5A172C.2010609@gmail.com>
+MIME-Version: 1.0
+In-Reply-To: <4B5A172C.2010609@gmail.com>
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
-Cc: Alex Dubov <oakad@yahoo.com>, joern <joern@logfs.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,53 +27,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-01-22 at 17:59 +0200, Artem Bityutskiy wrote: 
-> On Fri, 2010-01-22 at 17:35 +0200, Maxim Levitsky wrote:
-> > >From 368127067f4d39ba89096e4a5cb3be2dee361bad Mon Sep 17 00:00:00 2001
-> > From: Maxim Levitsky <maximlevitsky@gmail.com>
-> > Date: Fri, 22 Jan 2010 15:00:55 +0200
-> > Subject: [PATCH 3/4] MTD: blkdevs: make hotplug work
-> > 
-> > This changes the blkdev common module for translation layers
-> > to survive when underlying mtd device disappears.
-> > 
-> > To do so the following conceptual changes were made:
-> > 
-> > * disk queue and thread are now one per mtd device
-> >  This was it is easy to flush and destroy the queue
-> > 
-> > * the struct mtd_blktrans_dev will now be freed automaticly when last user
-> >  of the device quits.
-> >  All existing translation layers are adjusted
-> > 
-> > * ->open and release function of the translation layer will never be called
-> >  twise or more in the row.
-> >  This makes code simplier.
-> >  Also the ->release will be called just before mtd device disappears
-> >  This and above is the only visable changes on the outside.
-> > 
-> > Tested with mtdblock, ssfdc and my own sm_ftl on top of physicly hotplugable
-> > nand card.
-> > 
-> > Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+Thanks for identifying the NumToRead bug.
+Tested on board. Works.
+
+Acked-by: Leo Chen <leochen@broadcom.com>
+
+On Fri, Jan 22, 2010 at 01:22:52PM -0800, Roel Kluin wrote:
+> In the branch where pagesize equalled NAND_DATA_ACCESS_SIZE, NumToRead
+> wasn't decremented in the `while (numToRead > 11)' loop.
+> Also the first and last while loops were duplicated in both branches.
 > 
-> I'll try to find some time to review this later - I'm really busy
-> lately. But please, split this huge patch on smaller pieces - this will
-> help the reviewers a lot.
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_bcm_umi.h |   71 ++++++++++++++-------------------------
+>  1 files changed, 25 insertions(+), 46 deletions(-)
 > 
-Sure, but I afraid this won't be easy. To split the patch I will need
-effectively to redo all the work from the beginning.
-Isn't it possible just to review the mtd_blkdevs.c and blktrans.h as
-if it was new driver?
+> diff --git a/drivers/mtd/nand/nand_bcm_umi.h b/drivers/mtd/nand/nand_bcm_umi.h
+> index 7cec2cd..198b304 100644
+> --- a/drivers/mtd/nand/nand_bcm_umi.h
+> +++ b/drivers/mtd/nand/nand_bcm_umi.h
+> @@ -167,18 +167,27 @@ static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
+>  	int numToRead = 16;	/* There are 16 bytes per sector in the OOB */
+>  
+>  	/* ECC is already paused when this function is called */
+> +	if (pageSize != NAND_DATA_ACCESS_SIZE) {
+> +		/* skip BI */
+> +#if defined(__KERNEL__) && !defined(STANDALONE)
+> +		*oobp++ = REG_NAND_DATA8;
+> +#else
+> +		REG_NAND_DATA8;
+> +#endif
+> +		numToRead--;
+> +	}
+>  
+> -	if (pageSize == NAND_DATA_ACCESS_SIZE) {
+> -		while (numToRead > numEccBytes) {
+> -			/* skip free oob region */
+> +	while (numToRead > numEccBytes) {
+> +		/* skip free oob region */
+>  #if defined(__KERNEL__) && !defined(STANDALONE)
+> -			*oobp++ = REG_NAND_DATA8;
+> +		*oobp++ = REG_NAND_DATA8;
+>  #else
+> -			REG_NAND_DATA8;
+> +		REG_NAND_DATA8;
+>  #endif
+> -			numToRead--;
+> -		}
+> +		numToRead--;
+> +	}
+>  
+> +	if (pageSize == NAND_DATA_ACCESS_SIZE) {
+>  		/* read ECC bytes before BI */
+>  		nand_bcm_umi_bch_resume_read_ecc_calc();
+>  
+> @@ -190,6 +199,7 @@ static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
+>  #else
+>  			eccCalc[eccPos++] = REG_NAND_DATA8;
+>  #endif
+> +			numToRead--;
+>  		}
+>  
+>  		nand_bcm_umi_bch_pause_read_ecc_calc();
+> @@ -204,49 +214,18 @@ static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
+>  			numToRead--;
+>  		}
+>  
+> -		/* read ECC bytes */
+> -		nand_bcm_umi_bch_resume_read_ecc_calc();
+> -		while (numToRead) {
+> -#if defined(__KERNEL__) && !defined(STANDALONE)
+> -			*oobp = REG_NAND_DATA8;
+> -			eccCalc[eccPos++] = *oobp;
+> -			oobp++;
+> -#else
+> -			eccCalc[eccPos++] = REG_NAND_DATA8;
+> -#endif
+> -			numToRead--;
+> -		}
+> -	} else {
+> -		/* skip BI */
+> +	}
+> +	/* read ECC bytes */
+> +	nand_bcm_umi_bch_resume_read_ecc_calc();
+> +	while (numToRead) {
+>  #if defined(__KERNEL__) && !defined(STANDALONE)
+> -		*oobp++ = REG_NAND_DATA8;
+> +		*oobp = REG_NAND_DATA8;
+> +		eccCalc[eccPos++] = *oobp;
+> +		oobp++;
+>  #else
+> -		REG_NAND_DATA8;
+> +		eccCalc[eccPos++] = REG_NAND_DATA8;
+>  #endif
+>  		numToRead--;
+> -
+> -		while (numToRead > numEccBytes) {
+> -			/* skip free oob region */
+> -#if defined(__KERNEL__) && !defined(STANDALONE)
+> -			*oobp++ = REG_NAND_DATA8;
+> -#else
+> -			REG_NAND_DATA8;
+> -#endif
+> -			numToRead--;
+> -		}
+> -
+> -		/* read ECC bytes */
+> -		nand_bcm_umi_bch_resume_read_ecc_calc();
+> -		while (numToRead) {
+> -#if defined(__KERNEL__) && !defined(STANDALONE)
+> -			*oobp = REG_NAND_DATA8;
+> -			eccCalc[eccPos++] = *oobp;
+> -			oobp++;
+> -#else
+> -			eccCalc[eccPos++] = REG_NAND_DATA8;
+> -#endif
+> -			numToRead--;
+> -		}
+>  	}
+>  }
+>  
+> 
 
-This patch does touch all ftl drivers, but only removes the final free
-of structure that holds or embeds the 'struct mtd_blktrans_dev'
+-- 
 
-Change in drivers/mtd/mtdcore.c is my mistake, this slipped from
-previous patch, sorry.
+Leo Hao Chen
 
-Do you think its real to merge my work into 2.6.34 ?
-What else should I do besides splitting this patch?
-
-Best regards,
-Maxim Levitsky
+------------------------
+Life is short, run long.
