@@ -1,18 +1,17 @@
-Received: from fg-out-1718.google.com ([72.14.220.159])
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYLYM-0001mW-K6
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 15:36:11 +0000
-Received: by fg-out-1718.google.com with SMTP id 16so531158fgg.0
+	id 1NYLs4-00077s-JX
+	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 15:56:33 +0000
+Received: by bwz4 with SMTP id 4so1294739bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 07:36:05 -0800 (PST)
-Subject: [PATCH 4/4] MTD: make mtdtrans thread freezeable.
+	Fri, 22 Jan 2010 07:56:27 -0800 (PST)
+Subject: [PATCH 0/6] MTD: Many fixes and preparation for SmartMedia support
+	in nand subsystem
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1264174316.24012.17.camel@maxim-laptop>
-References: <1264174316.24012.17.camel@maxim-laptop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 22 Jan 2010 17:36:00 +0200
-Message-ID: <1264174560.24012.22.camel@maxim-laptop>
+Date: Fri, 22 Jan 2010 17:56:21 +0200
+Message-ID: <1264175781.24012.42.camel@maxim-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Thomas Gleixner <tglx@linutronix.de>, joern <joern@logfs.org>,
@@ -27,75 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 0904b692e95b22564a570e03956e89911a5e56b3 Mon Sep 17 00:00:00 2001
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Fri, 22 Jan 2010 15:00:55 +0200
-Subject: [PATCH 4/4] MTD: make mtdtrans thread freezeable.
+Hello,
 
-This makes the mtd blktrans thread enter the freezer in between accesses
-to nand device.
-This will ensure that we aren't suspening the system in the middle
-of page read/write and even worse erase, which is a bad idea.
+This patch series add few fixes and changes to nand subsystem.
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/mtd_blkdevs.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+First patch, fixes the MTD_OOB_PLACE support in nand.
+I want to use ->read_oob to read both raw oob and data and use ecc.
+MTD_OOB_PLACE should do that, but due to a wrong check it will refuse to
+work.
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 04a875f..db996d6 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -20,6 +20,7 @@
- #include <linux/init.h>
- #include <linux/mutex.h>
- #include <linux/kthread.h>
-+#include <linux/freezer.h>
- #include <asm/uaccess.h>
- 
- #include "mtdcore.h"
-@@ -79,36 +80,35 @@ static int mtd_blktrans_thread(void *arg)
- 	struct request_queue *rq = dev->rq;
- 	struct request *req = NULL;
- 
--	spin_lock_irq(rq->queue_lock);
-+	set_freezable();
- 
- 	while (!kthread_should_stop()) {
- 		int res;
- 
-+		try_to_freeze();
-+
-+		spin_lock_irq(rq->queue_lock);
- 		if (!req && !(req = blk_fetch_request(rq))) {
- 			set_current_state(TASK_INTERRUPTIBLE);
- 			spin_unlock_irq(rq->queue_lock);
- 			schedule();
--			spin_lock_irq(rq->queue_lock);
- 			continue;
- 		}
--
- 		spin_unlock_irq(rq->queue_lock);
- 
-+
- 		mutex_lock(&dev->lock);
- 		res = do_blktrans_request(dev->tr, dev, req);
- 		mutex_unlock(&dev->lock);
- 
- 		spin_lock_irq(rq->queue_lock);
--
- 		if (!__blk_end_request_cur(req, res))
- 			req = NULL;
-+		spin_unlock_irq(rq->queue_lock);
- 	}
- 
- 	if (req)
- 		__blk_end_request_all(req, -EIO);
--
--	spin_unlock_irq(rq->queue_lock);
--
- 	return 0;
- }
- 
--- 
-1.6.3.3
+Second patch, probably the most important patch in this series.
+I changed behavier of MTD_OOB_RAW to match the one of MTD_OOB_PLACE
+minus ecc validation.
+This way it is easy to use both modes in same code.
+This mode is only used in one place, in scan_read_raw in nand_bbt.c
+I edited this function to achieve exactly same effect as was before.
+
+Third patch is another bugfix that I need to be able to write several
+pages in one go. ->write_oob should do that, but it was incorrectly
+implemented.
+I need this and former patch to add support for 256 byte nand chips in
+the smartmedia FTL very elegantly.
+
+Fourth patch exports few functions from nand_base.c, so one can write
+custom ->block_mark_bad, and ->block_is_bad functions.
+I use these functions in next patch.
+
+Fifth patch, adds small helper module for nand drivers for SmartMedia/xD
+readers. It contains bad block handlers and ecc layer.
+
+And last patch, adds some workarounds to nand core to make xD work with
+it.
+
+It adds new ID table (which is similiar to current ID table, but
+dfferent in that it has IDS for readonly SmartMedia devices, and it has
+special settings for new xD cards that share ID with regular nand
+devices, but unfortunely don't report proper information in READ ID
+command, and have other problems.)
+
+It also adds a workaround for broken writeprotect status.
+Older smartmedia devices had a special seal for writeprotect, aka a
+additional connector. This should be handled by nand driver itself.
+Newer xD cards have no write protect support at all.
+
+Best regards,
+Maxim Levitsky
