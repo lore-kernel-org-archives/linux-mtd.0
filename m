@@ -1,18 +1,19 @@
 Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYTkv-0004Op-99
-	for linux-mtd@lists.infradead.org; Sat, 23 Jan 2010 00:21:41 +0000
-Received: by bwz4 with SMTP id 4so1645250bwz.2
+	id 1NYTmW-0004wt-Rf
+	for linux-mtd@lists.infradead.org; Sat, 23 Jan 2010 00:23:21 +0000
+Received: by bwz4 with SMTP id 4so1645704bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 16:21:36 -0800 (PST)
-Subject: [PATCH 2/8] blktrans: track open and close calls.
+	Fri, 22 Jan 2010 16:23:16 -0800 (PST)
+Subject: [PATCH 3/8] blktrans: don't free mtd_blktrans_dev, core will do
+	that for you
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
 In-Reply-To: <1264205925.31827.3.camel@maxim-laptop>
 References: <1264205925.31827.3.camel@maxim-laptop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 23 Jan 2010 02:21:32 +0200
-Message-ID: <1264206092.31827.6.camel@maxim-laptop>
+Date: Sat, 23 Jan 2010 02:23:12 +0200
+Message-ID: <1264206192.31827.7.camel@maxim-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Alex Dubov <oakad@yahoo.com>, joern <joern@logfs.org>,
@@ -28,85 +29,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 1ed89e9f7355284eaebbacb1d083e3bbd54aa3bc Mon Sep 17 00:00:00 2001
+>From 926e8cf37572691246011945e3266ca140319b41 Mon Sep 17 00:00:00 2001
 From: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Sat, 23 Jan 2010 02:03:13 +0200
-Subject: [PATCH 2/8] blktrans: track open and close calls.
+Date: Sat, 23 Jan 2010 02:04:32 +0200
+Subject: [PATCH 3/8] blktrans: don't free mtd_blktrans_dev, core will do that for you
 
-This patch adds tracking for open and close calls.
-Now trans ->open and ->release are never called twise in a row
-->release is also called once before mtd device disappers
-
-Proper locking will be added in follow up patch
+We need that structure till last user exits, and that might be years after
+mtd device disappered.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtd_blkdevs.c    |   19 +++++++++++++++++++
+ drivers/mtd/ftl.c            |    1 -
+ drivers/mtd/inftlcore.c      |    1 -
+ drivers/mtd/mtd_blkdevs.c    |   16 +++++++++++++++-
+ drivers/mtd/mtdblock.c       |    1 -
+ drivers/mtd/mtdblock_ro.c    |    1 -
+ drivers/mtd/nftlcore.c       |    1 -
+ drivers/mtd/rfd_ftl.c        |    1 -
+ drivers/mtd/ssfdc.c          |    1 -
  include/linux/mtd/blktrans.h |    1 +
- 2 files changed, 20 insertions(+), 0 deletions(-)
+ 9 files changed, 16 insertions(+), 8 deletions(-)
 
+diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index e56d6b4..62da9eb 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -1082,7 +1082,6 @@ static void ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	del_mtd_blktrans_dev(dev);
+ 	ftl_freepart((partition_t *)dev);
+-	kfree(dev);
+ }
+ 
+ static struct mtd_blktrans_ops ftl_tr = {
+diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
+index 8aca552..015a7fe 100755
+--- a/drivers/mtd/inftlcore.c
++++ b/drivers/mtd/inftlcore.c
+@@ -139,7 +139,6 @@ static void inftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 
+ 	kfree(inftl->PUtable);
+ 	kfree(inftl->VUtable);
+-	kfree(inftl);
+ }
+ 
+ /*
 diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 3d9802e..c2d97a0 100644
+index c2d97a0..c95e1ff 100644
 --- a/drivers/mtd/mtd_blkdevs.c
 +++ b/drivers/mtd/mtd_blkdevs.c
-@@ -128,6 +128,9 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
- 	if (!get_mtd_device(NULL, dev->mtd->index))
+@@ -129,7 +129,11 @@ static int blktrans_open(struct block_device *bdev, fmode_t mode)
  		goto out;
  
-+	if (dev->open++)
-+ 		goto out;
+ 	if (dev->open++)
+- 		goto out;
++		goto out;
 +
++	if (dev->deleted)
++		goto out;
++
+ 
  	if (!try_module_get(tr->owner))
  		goto out_tr;
+@@ -169,6 +173,14 @@ static int blktrans_release(struct gendisk *disk, fmode_t mode)
+ 		module_put(tr->owner);
+ 	}
  
-@@ -153,6 +156,10 @@ static int blktrans_release(struct gendisk *disk, fmode_t mode)
- 	struct mtd_blktrans_ops *tr = dev->tr;
- 	int ret = 0;
- 
-+	dev->open--;
-+	if (dev->open)
++	/* Free the private data */
++	if (dev->deleted) {
++		module_put(tr->owner);
++		mutex_unlock(&dev->lock);
++		kfree(dev);
 +		return 0;
-+
- 	if (tr->release)
- 		ret = tr->release(dev);
- 
-@@ -304,6 +311,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	if (new->readonly)
- 		set_disk_ro(gd, 1);
- 
-+	new->open = 0;
- 	add_disk(gd);
- 
- 	return 0;
-@@ -332,6 +340,17 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 
- 	/* Stop the thread */
- 	kthread_stop(old->thread);
-+
-+	if (old->open) {
-+		if (old->tr->release)
-+			old->tr->release(old);
-+		put_mtd_device(old->mtd);
 +	}
 +
-+	/* From now on, no calls into trans can be made */
-+	/* Mtd device will be gone real soon now */
-+	old->mtd = NULL;
+ 	return ret;
+ }
+ 
+@@ -338,6 +350,8 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 	/* stop new requests to arrive */
+ 	del_gendisk(old->disk);
+ 
++	old->deleted = 1;
 +
-  
- 	blk_cleanup_queue(old->rq);
- 	return 0;
+ 	/* Stop the thread */
+ 	kthread_stop(old->thread);
+ 
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index 9f41b1a..d8322cc 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -368,7 +368,6 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ static void mtdblock_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	del_mtd_blktrans_dev(dev);
+-	kfree(dev);
+ }
+ 
+ static struct mtd_blktrans_ops mtdblock_tr = {
+diff --git a/drivers/mtd/mtdblock_ro.c b/drivers/mtd/mtdblock_ro.c
+index 852165f..54ff288 100644
+--- a/drivers/mtd/mtdblock_ro.c
++++ b/drivers/mtd/mtdblock_ro.c
+@@ -49,7 +49,6 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ static void mtdblock_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	del_mtd_blktrans_dev(dev);
+-	kfree(dev);
+ }
+ 
+ static struct mtd_blktrans_ops mtdblock_tr = {
+diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
+index 1002e18..a4578bf 100644
+--- a/drivers/mtd/nftlcore.c
++++ b/drivers/mtd/nftlcore.c
+@@ -126,7 +126,6 @@ static void nftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 	del_mtd_blktrans_dev(dev);
+ 	kfree(nftl->ReplUnitTable);
+ 	kfree(nftl->EUNtable);
+-	kfree(nftl);
+ }
+ 
+ /*
+diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
+index d2aa9c4..63b83c0 100644
+--- a/drivers/mtd/rfd_ftl.c
++++ b/drivers/mtd/rfd_ftl.c
+@@ -817,7 +817,6 @@ static void rfd_ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 	vfree(part->sector_map);
+ 	kfree(part->header_cache);
+ 	kfree(part->blocks);
+-	kfree(part);
+ }
+ 
+ static struct mtd_blktrans_ops rfd_ftl_tr = {
+diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+index 3f67e00..81c4ecd 100644
+--- a/drivers/mtd/ssfdc.c
++++ b/drivers/mtd/ssfdc.c
+@@ -375,7 +375,6 @@ static void ssfdcr_remove_dev(struct mtd_blktrans_dev *dev)
+ 
+ 	del_mtd_blktrans_dev(dev);
+ 	kfree(ssfdc->logic_block_map);
+-	kfree(ssfdc);
+ }
+ 
+ static int ssfdcr_readsect(struct mtd_blktrans_dev *dev,
 diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index a4b3928..507f7b2 100644
+index 507f7b2..e276aca 100644
 --- a/include/linux/mtd/blktrans.h
 +++ b/include/linux/mtd/blktrans.h
 @@ -24,6 +24,7 @@ struct mtd_blktrans_dev {
  	int devnum;
  	unsigned long size;
  	int readonly;
-+	int open;
++	int deleted;
+ 	int open;
  	struct gendisk *disk;
  	struct task_struct *thread;
- 	struct request_queue *rq;
 -- 
 1.6.3.3
