@@ -1,24 +1,17 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
+Received: from mail-ew0-f223.google.com ([209.85.219.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYTpL-0005j0-Ge
-	for linux-mtd@lists.infradead.org; Sat, 23 Jan 2010 00:26:16 +0000
-Received: by mail-bw0-f212.google.com with SMTP id 4so1646175bwz.2
+	id 1NYcee-0005ZF-F7
+	for linux-mtd@lists.infradead.org; Sat, 23 Jan 2010 09:51:49 +0000
+Received: by ewy23 with SMTP id 23so2337868ewy.4
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 16:26:11 -0800 (PST)
-Subject: [PATCH 8/8] MTD: make mtdtrans thread freezeable.
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-In-Reply-To: <1264205925.31827.3.camel@maxim-laptop>
-References: <1264205925.31827.3.camel@maxim-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 23 Jan 2010 02:26:07 +0200
-Message-ID: <1264206367.31827.12.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Alex Dubov <oakad@yahoo.com>, joern <joern@logfs.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+	Sat, 23 Jan 2010 01:51:42 -0800 (PST)
+MIME-Version: 1.0
+Date: Sat, 23 Jan 2010 17:51:42 +0800
+Message-ID: <791c381001230151t45f3003dh1cc5b24bf0a1783f@mail.gmail.com>
+Subject: Dose linux-mtd really support mlc nand flash?
+From: liulunzuo <liulunzuo@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,75 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From ebc69b9819f963a17574aa42e93f409368acdfaa Mon Sep 17 00:00:00 2001
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Sat, 23 Jan 2010 02:09:33 +0200
-Subject: [PATCH 8/8] MTD: make mtdtrans thread freezeable.
+Hi:
+  Mlc nand flash should be write only once per write operation(NOP=1),
+  but i found when i use mtd-utils to write a mtdchar device with oob ,
+  it write a page twice: page and oob zone wrote separately,
+  and mtdchar.c support no way to write a page and oob zone to the mlc
+nand flash at the same time.
 
-This makes the mtd blktrans thread enter the freezer in between accesses
-to nand device.
-This will ensure that we aren't suspening the system in the middle
-of page read/write and even worse erase, which is a bad idea.
+  And when a writing or eraseing operation fail, yaffs2 fs will mark
+the block as bad block,
+  but the function "markbad" will only write oob area neither use a
+bad block scan first nor not.
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/mtd_blkdevs.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
+  it seems a real problem when i use mlc nand flash under yaffs2.
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 33bdef1..ed82396 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -20,6 +20,7 @@
- #include <linux/init.h>
- #include <linux/mutex.h>
- #include <linux/kthread.h>
-+#include <linux/freezer.h>
- #include <asm/uaccess.h>
- 
- #include "mtdcore.h"
-@@ -79,36 +80,35 @@ static int mtd_blktrans_thread(void *arg)
- 	struct request_queue *rq = dev->rq;
- 	struct request *req = NULL;
- 
--	spin_lock_irq(rq->queue_lock);
-+	set_freezable();
- 
- 	while (!kthread_should_stop()) {
- 		int res;
- 
-+		try_to_freeze();
-+
-+		spin_lock_irq(rq->queue_lock);
- 		if (!req && !(req = blk_fetch_request(rq))) {
- 			set_current_state(TASK_INTERRUPTIBLE);
- 			spin_unlock_irq(rq->queue_lock);
- 			schedule();
--			spin_lock_irq(rq->queue_lock);
- 			continue;
- 		}
--
- 		spin_unlock_irq(rq->queue_lock);
- 
-+
- 		mutex_lock(&dev->lock);
- 		res = do_blktrans_request(dev->tr, dev, req);
- 		mutex_unlock(&dev->lock);
- 
- 		spin_lock_irq(rq->queue_lock);
--
- 		if (!__blk_end_request_cur(req, res))
- 			req = NULL;
-+		spin_unlock_irq(rq->queue_lock);
- 	}
- 
- 	if (req)
- 		__blk_end_request_all(req, -EIO);
--
--	spin_unlock_irq(rq->queue_lock);
--
- 	return 0;
- }
- 
--- 
-1.6.3.3
+  My English is so poor, could you know what i mean?
+
+Thanks.
+
+Best Regards!
