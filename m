@@ -1,18 +1,18 @@
 Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYTon-0005j0-Gr
-	for linux-mtd@lists.infradead.org; Sat, 23 Jan 2010 00:25:42 +0000
+	id 1NYTpL-0005j0-Ge
+	for linux-mtd@lists.infradead.org; Sat, 23 Jan 2010 00:26:16 +0000
 Received: by mail-bw0-f212.google.com with SMTP id 4so1646175bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jan 2010 16:25:37 -0800 (PST)
-Subject: [PATCH 7/8] MTD: call remove notifiers before removing the device
+	Fri, 22 Jan 2010 16:26:11 -0800 (PST)
+Subject: [PATCH 8/8] MTD: make mtdtrans thread freezeable.
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>
 In-Reply-To: <1264205925.31827.3.camel@maxim-laptop>
 References: <1264205925.31827.3.camel@maxim-laptop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 23 Jan 2010 02:25:33 +0200
-Message-ID: <1264206333.31827.11.camel@maxim-laptop>
+Date: Sat, 23 Jan 2010 02:26:07 +0200
+Message-ID: <1264206367.31827.12.camel@maxim-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Alex Dubov <oakad@yahoo.com>, joern <joern@logfs.org>,
@@ -28,66 +28,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 6ab6770f8a575441dfb42095f72f34d77727fa0c Mon Sep 17 00:00:00 2001
+>From ebc69b9819f963a17574aa42e93f409368acdfaa Mon Sep 17 00:00:00 2001
 From: Maxim Levitsky <maximlevitsky@gmail.com>
-Date: Sat, 23 Jan 2010 02:09:31 +0200
-Subject: [PATCH 7/8] MTD: call remove notifiers before removing the device
+Date: Sat, 23 Jan 2010 02:09:33 +0200
+Subject: [PATCH 8/8] MTD: make mtdtrans thread freezeable.
 
-This is first step in implementing proper hotplug support.
-Now all users of the mtd device have a chance to put the mtd device
-when they are notified to do so, and they have to do so to make hotplug work.
+This makes the mtd blktrans thread enter the freezer in between accesses
+to nand device.
+This will ensure that we aren't suspening the system in the middle
+of page read/write and even worse erase, which is a bad idea.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtdcore.c |   21 +++++++++++----------
- 1 files changed, 11 insertions(+), 10 deletions(-)
+ drivers/mtd/mtd_blkdevs.c |   14 +++++++-------
+ 1 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 3bdb7e8..0e86208 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -341,31 +341,32 @@ int add_mtd_device(struct mtd_info *mtd)
- int del_mtd_device (struct mtd_info *mtd)
- {
- 	int ret;
-+	struct mtd_notifier *not;
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 33bdef1..ed82396 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -20,6 +20,7 @@
+ #include <linux/init.h>
+ #include <linux/mutex.h>
+ #include <linux/kthread.h>
++#include <linux/freezer.h>
+ #include <asm/uaccess.h>
  
- 	mutex_lock(&mtd_table_mutex);
+ #include "mtdcore.h"
+@@ -79,36 +80,35 @@ static int mtd_blktrans_thread(void *arg)
+ 	struct request_queue *rq = dev->rq;
+ 	struct request *req = NULL;
  
- 	if (mtd_table[mtd->index] != mtd) {
- 		ret = -ENODEV;
--	} else if (mtd->usecount) {
-+		goto out_error;
-+	}
+-	spin_lock_irq(rq->queue_lock);
++	set_freezable();
+ 
+ 	while (!kthread_should_stop()) {
+ 		int res;
+ 
++		try_to_freeze();
 +
-+	/* No need to get a refcount on the module containing
-+		the notifier, since we hold the mtd_table_mutex */
-+	list_for_each_entry(not, &mtd_notifiers, list)
-+		not->remove(mtd);
++		spin_lock_irq(rq->queue_lock);
+ 		if (!req && !(req = blk_fetch_request(rq))) {
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 			spin_unlock_irq(rq->queue_lock);
+ 			schedule();
+-			spin_lock_irq(rq->queue_lock);
+ 			continue;
+ 		}
+-
+ 		spin_unlock_irq(rq->queue_lock);
+ 
 +
-+	if (mtd->usecount) {
- 		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
--		struct mtd_notifier *not;
+ 		mutex_lock(&dev->lock);
+ 		res = do_blktrans_request(dev->tr, dev, req);
+ 		mutex_unlock(&dev->lock);
+ 
+ 		spin_lock_irq(rq->queue_lock);
 -
- 		device_unregister(&mtd->dev);
--
--		/* No need to get a refcount on the module containing
--		   the notifier, since we hold the mtd_table_mutex */
--		list_for_each_entry(not, &mtd_notifiers, list)
--			not->remove(mtd);
--
- 		mtd_table[mtd->index] = NULL;
--
- 		module_put(THIS_MODULE);
- 		ret = 0;
+ 		if (!__blk_end_request_cur(req, res))
+ 			req = NULL;
++		spin_unlock_irq(rq->queue_lock);
  	}
  
-+out_error:
- 	mutex_unlock(&mtd_table_mutex);
- 	return ret;
+ 	if (req)
+ 		__blk_end_request_all(req, -EIO);
+-
+-	spin_unlock_irq(rq->queue_lock);
+-
+ 	return 0;
  }
+ 
 -- 
 1.6.3.3
