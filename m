@@ -1,23 +1,22 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NYRcC-0007GA-Br
-	for linux-mtd@lists.infradead.org; Fri, 22 Jan 2010 22:04:33 +0000
-Date: Fri, 22 Jan 2010 14:04:10 -0800
-From: "Leo (Hao) Chen" <leochen@broadcom.com>
-To: "Roel Kluin" <roel.kluin@gmail.com>
-Subject: Re: [PATCH] mtd: hot spin and code duplication in
-	nand_bcm_umi_bch_read_oobEcc()
-Message-ID: <20100122220410.GN12439@broadcom.com>
-References: <4B5A172C.2010609@gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <4B5A172C.2010609@gmail.com>
-Content-Type: text/plain;
- charset=us-ascii
-Content-Disposition: inline
+	id 1NYTiF-00035K-Ee
+	for linux-mtd@lists.infradead.org; Sat, 23 Jan 2010 00:18:55 +0000
+Received: by bwz4 with SMTP id 4so1644470bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Jan 2010 16:18:49 -0800 (PST)
+Subject: [PATCH 0/8] Cleanups for mtd translation layer (broken up)
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 23 Jan 2010 02:18:45 +0200
+Message-ID: <1264205925.31827.3.camel@maxim-laptop>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
+Cc: Alex Dubov <oakad@yahoo.com>, joern <joern@logfs.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,131 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for identifying the NumToRead bug.
-Tested on board. Works.
+Hi,
 
-Acked-by: Leo Chen <leochen@broadcom.com>
+This patch series is identical to series I posted very recently, but I
+have broken up the patch #3 into smaller pieces.
+Note that I want to merge it in kernel as a single patch, to avoid
+bisect failures. This is for review.
 
-On Fri, Jan 22, 2010 at 01:22:52PM -0800, Roel Kluin wrote:
-> In the branch where pagesize equalled NAND_DATA_ACCESS_SIZE, NumToRead
-> wasn't decremented in the `while (numToRead > 11)' loop.
-> Also the first and last while loops were duplicated in both branches.
-> 
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> ---
->  drivers/mtd/nand/nand_bcm_umi.h |   71 ++++++++++++++-------------------------
->  1 files changed, 25 insertions(+), 46 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/nand_bcm_umi.h b/drivers/mtd/nand/nand_bcm_umi.h
-> index 7cec2cd..198b304 100644
-> --- a/drivers/mtd/nand/nand_bcm_umi.h
-> +++ b/drivers/mtd/nand/nand_bcm_umi.h
-> @@ -167,18 +167,27 @@ static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
->  	int numToRead = 16;	/* There are 16 bytes per sector in the OOB */
->  
->  	/* ECC is already paused when this function is called */
-> +	if (pageSize != NAND_DATA_ACCESS_SIZE) {
-> +		/* skip BI */
-> +#if defined(__KERNEL__) && !defined(STANDALONE)
-> +		*oobp++ = REG_NAND_DATA8;
-> +#else
-> +		REG_NAND_DATA8;
-> +#endif
-> +		numToRead--;
-> +	}
->  
-> -	if (pageSize == NAND_DATA_ACCESS_SIZE) {
-> -		while (numToRead > numEccBytes) {
-> -			/* skip free oob region */
-> +	while (numToRead > numEccBytes) {
-> +		/* skip free oob region */
->  #if defined(__KERNEL__) && !defined(STANDALONE)
-> -			*oobp++ = REG_NAND_DATA8;
-> +		*oobp++ = REG_NAND_DATA8;
->  #else
-> -			REG_NAND_DATA8;
-> +		REG_NAND_DATA8;
->  #endif
-> -			numToRead--;
-> -		}
-> +		numToRead--;
-> +	}
->  
-> +	if (pageSize == NAND_DATA_ACCESS_SIZE) {
->  		/* read ECC bytes before BI */
->  		nand_bcm_umi_bch_resume_read_ecc_calc();
->  
-> @@ -190,6 +199,7 @@ static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
->  #else
->  			eccCalc[eccPos++] = REG_NAND_DATA8;
->  #endif
-> +			numToRead--;
->  		}
->  
->  		nand_bcm_umi_bch_pause_read_ecc_calc();
-> @@ -204,49 +214,18 @@ static inline void nand_bcm_umi_bch_read_oobEcc(uint32_t pageSize,
->  			numToRead--;
->  		}
->  
-> -		/* read ECC bytes */
-> -		nand_bcm_umi_bch_resume_read_ecc_calc();
-> -		while (numToRead) {
-> -#if defined(__KERNEL__) && !defined(STANDALONE)
-> -			*oobp = REG_NAND_DATA8;
-> -			eccCalc[eccPos++] = *oobp;
-> -			oobp++;
-> -#else
-> -			eccCalc[eccPos++] = REG_NAND_DATA8;
-> -#endif
-> -			numToRead--;
-> -		}
-> -	} else {
-> -		/* skip BI */
-> +	}
-> +	/* read ECC bytes */
-> +	nand_bcm_umi_bch_resume_read_ecc_calc();
-> +	while (numToRead) {
->  #if defined(__KERNEL__) && !defined(STANDALONE)
-> -		*oobp++ = REG_NAND_DATA8;
-> +		*oobp = REG_NAND_DATA8;
-> +		eccCalc[eccPos++] = *oobp;
-> +		oobp++;
->  #else
-> -		REG_NAND_DATA8;
-> +		eccCalc[eccPos++] = REG_NAND_DATA8;
->  #endif
->  		numToRead--;
-> -
-> -		while (numToRead > numEccBytes) {
-> -			/* skip free oob region */
-> -#if defined(__KERNEL__) && !defined(STANDALONE)
-> -			*oobp++ = REG_NAND_DATA8;
-> -#else
-> -			REG_NAND_DATA8;
-> -#endif
-> -			numToRead--;
-> -		}
-> -
-> -		/* read ECC bytes */
-> -		nand_bcm_umi_bch_resume_read_ecc_calc();
-> -		while (numToRead) {
-> -#if defined(__KERNEL__) && !defined(STANDALONE)
-> -			*oobp = REG_NAND_DATA8;
-> -			eccCalc[eccPos++] = *oobp;
-> -			oobp++;
-> -#else
-> -			eccCalc[eccPos++] = REG_NAND_DATA8;
-> -#endif
-> -			numToRead--;
-> -		}
->  	}
->  }
->  
-> 
-
--- 
-
-Leo Hao Chen
-
-------------------------
-Life is short, run long.
+Best regards,
+Maxim Levitsky
