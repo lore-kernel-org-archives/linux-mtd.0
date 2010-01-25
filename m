@@ -1,17 +1,22 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NZQy0-0000AV-UK
-	for linux-mtd@lists.infradead.org; Mon, 25 Jan 2010 15:35:09 +0000
-In-Reply-To: <OF0B5BF9CC.0D78D861-ONC12576B6.005059A9-C12576B6.00529164@phytec.de>
-References: <OF0B5BF9CC.0D78D861-ONC12576B6.005059A9-C12576B6.00529164@phytec.de>
-Subject: Re: JFFS2 problems with  NumonyxTM StrataFlash P33 256-Mbit 65nm
-To: PHYTEC Mailinglists <mailinglists@phytec.de>
-Message-ID: <OF94E9B7A1.FCB5F2C9-ONC12576B6.00550443-C12576B6.00556D0B@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Mon, 25 Jan 2010 16:33:04 +0100
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NZRIz-00066G-1s
+	for linux-mtd@lists.infradead.org; Mon, 25 Jan 2010 15:56:49 +0000
+Date: Mon, 25 Jan 2010 16:56:24 +0100
+From: Anatolij Gustschin <agust@denx.de>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 06/11] mtd: Add MPC5121 NAND Flash Controller driver
+Message-ID: <20100125165624.1e567a95@wker>
+In-Reply-To: <20100120104915.GB5041@pengutronix.de>
+References: <1263932653-3634-1-git-send-email-agust@denx.de>
+	<1263932653-3634-7-git-send-email-agust@denx.de>
+	<20100120104915.GB5041@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: dzu@denx.de, Grant Likely <grant.likely@secretlab.ca>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Piotr Ziecik <kosmo@semihalf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +26,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> After switching to the shrunk flashes 256P33F (NumonyxTM StrataFlash P33
-> 256-Mbit), we run in this problems:
->
-> JFFS2 notice: (377) jffs2_get_inode_nodes: Node header CRC failed at
-> 0xaccfcc. {1545,e001,00000057,d657036c}
-> JFFS2 warning: (377) jffs2_do_read_inode_internal: no data nodes found for
-> ino #584
-> Returned error for crccheck of ino #584. Expect badness...
-> JFFS2 notice: (377) jffs2_get_inode_nodes: Node header CRC failed at
-> 0xba1270. {1945,d002,00000072,3bf57266}
-> JFFS2 warning: (377) jffs2_do_read_inode_internal: Truncating ino #618 to
-> 254168 bytes failed because it only had 253952 bytes to start with!
-> JFFS2 notice: (377) jffs2_get_inode_nodes: Node header CRC failed at
-> 0xc129dc. {1985,d002,00000056,62e76405}
-> JFFS2 warning: (377) jffs2_do_read_inode_internal: no data nodes found for
-> ino #632
-> Returned error for crccheck of ino #632. Expect badness...
-> JFFS2 notice: (377) jffs2_get_inode_nodes: Node header CRC failed at
-> 0xc36b54. {1945,e002,00000059,3a44745f}
-> JFFS2 warning: (377) jffs2_do_read_inode_internal: no data nodes found for
-> ino #648
-> Returned error for crccheck of ino #648. Expect badness...
->
-> The problem occurs while booting the image the first time after flashing.
-> After reflashing other inodes are damaged. We run the 2.6.31.6 kernel on
-> an i.MX35 and i.MX31
-> With the older Intel 256P33B flashes it works fine.
->
-> The image was build with mtd-utils 1.3 using
-> mkfs.jffs2  -d root/ --eraseblock=131072 -o root.jffs2
->
-> Because the program buffer size is increased from 64 to 1024, I also
-> tested without any buffer support. But with the same results.
-> Any idea?
+Hi Wolfram,
 
-Just one, make sure you don't have bad/old sample chips. We experienced
-something similar and it was due to bad samples that were old
-and had an errata.
+Wolfram Sang <w.sang@pengutronix.de> wrote:
 
-Oh, one more thing. The WAIT signal is probably inverted (our was)
-so if you have it connected you will have to reprogram the WAIT polarity.
+> Please include a logfile with changes since the last version. This really
+> helps.
 
-         Jocke
+Ok.
+
+> > +static int __init mpc5121_nfc_probe(struct of_device *op,
+> > +					const struct of_device_id *match)
+> 
+> [...]
+> 
+> > +{
+> > +	/* Support external chip-select logic on ADS5121 board */
+> > +	rootnode = of_find_node_by_path("/");
+> > +	if (of_device_is_compatible(rootnode, "fsl,mpc5121ads")) {
+> > +		retval = ads5121_chipselect_init(mtd);
+> > +		if (retval) {
+> > +			dev_err(dev, "Chipselect init error!\n");
+> > +			of_node_put(rootnode);
+> > +			return retval;
+> > +		}
+> > +
+> > +		chip->select_chip = ads5121_select_chip;
+> > +	}
+> > +	of_node_put(rootnode);
+> 
+> If we have to live with the platform-stuff being in the driver, maybe a table
+> having the compatible-string and an init-function pointer per entry will make
+> it scale better with the number of boards?
+
+Maybe something like in the patch below can be accepted?
+
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 2980eb1..6807e72 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -127,6 +127,10 @@ struct mpc5121_nfc_prv {
+ 	struct device		*dev;
+ };
+ 
++struct mpc5121_nfc_match_data {
++	int (*init)(struct mtd_info *);
++};
++
+ static void mpc5121_nfc_done(struct mtd_info *mtd);
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+@@ -279,6 +283,26 @@ static void mpc5121_nfc_select_chip(struct mtd_info *mtd, int chip)
+ 	nfc_set(mtd, NFC_CONFIG1, NFC_CE);
+ }
+ 
++/* Control chips select signal on ADS5121 board */
++static void ads5121_select_chip(struct mtd_info *mtd, int chip)
++{
++	struct nand_chip *nand = mtd->priv;
++	struct mpc5121_nfc_prv *prv = nand->priv;
++	u8 v;
++
++	/* CPLD Register 9 controls NAND /CE Lines */
++	v = in_8(prv->csreg + 9);
++	v |= 0x0F;
++
++	if (chip >= 0) {
++		mpc5121_nfc_select_chip(mtd, 0);
++		v &= ~(1 << chip);
++	} else
++		mpc5121_nfc_select_chip(mtd, -1);
++
++	out_8(prv->csreg + 9, v);
++}
++
+ /* Init external chip select logic on ADS5121 board */
+ static int ads5121_chipselect_init(struct mtd_info *mtd)
+ {
+@@ -293,33 +317,13 @@ static int ads5121_chipselect_init(struct mtd_info *mtd)
+ 		if (!prv->csreg)
+ 			return -ENOMEM;
+ 
+-		/* CPLD Register 9 controls NAND /CE Lines */
+-		prv->csreg += 9;
++		chip->select_chip = ads5121_select_chip;
+ 		return 0;
+ 	}
+ 
+ 	return -EINVAL;
+ }
+ 
+-/* Control chips select signal on ADS5121 board */
+-static void ads5121_select_chip(struct mtd_info *mtd, int chip)
+-{
+-	struct nand_chip *nand = mtd->priv;
+-	struct mpc5121_nfc_prv *prv = nand->priv;
+-	u8 v;
+-
+-	v = in_8(prv->csreg);
+-	v |= 0x0F;
+-
+-	if (chip >= 0) {
+-		mpc5121_nfc_select_chip(mtd, 0);
+-		v &= ~(1 << chip);
+-	} else
+-		mpc5121_nfc_select_chip(mtd, -1);
+-
+-	out_8(prv->csreg, v);
+-}
+-
+ /* Read NAND Ready/Busy signal */
+ static int mpc5121_nfc_dev_ready(struct mtd_info *mtd)
+ {
+@@ -649,7 +653,7 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
+ static int __init mpc5121_nfc_probe(struct of_device *op,
+ 					const struct of_device_id *match)
+ {
+-	struct device_node *rootnode, *dn = op->node;
++	struct device_node *dn = op->node;
+ 	struct device *dev = &op->dev;
+ 	struct mpc5121_nfc_prv *prv;
+ 	struct resource res;
+@@ -663,6 +667,7 @@ static int __init mpc5121_nfc_probe(struct of_device *op,
+ 	int resettime = 0;
+ 	int retval = 0;
+ 	int rev, len;
++	struct mpc5121_nfc_match_data *data = match->data;
+ 
+ 	/*
+ 	 * Check SoC revision. This driver supports only NFC
+@@ -738,19 +743,13 @@ static int __init mpc5121_nfc_probe(struct of_device *op,
+ 	chip->options = NAND_NO_AUTOINCR | NAND_USE_FLASH_BBT;
+ 	chip->ecc.mode = NAND_ECC_SOFT;
+ 
+-	/* Support external chip-select logic on ADS5121 board */
+-	rootnode = of_find_node_by_path("/");
+-	if (of_device_is_compatible(rootnode, "fsl,mpc5121ads")) {
+-		retval = ads5121_chipselect_init(mtd);
++	if (data && data->init) {
++		retval = data->init(mtd);
+ 		if (retval) {
+ 			dev_err(dev, "Chipselect init error!\n");
+-			of_node_put(rootnode);
+-			return retval;
++			goto error;
+ 		}
+-
+-		chip->select_chip = ads5121_select_chip;
+ 	}
+-	of_node_put(rootnode);
+ 
+ 	/* Enable NFC clock */
+ 	prv->clk = clk_get(dev, "nfc_clk");
+@@ -884,6 +883,11 @@ static int __exit mpc5121_nfc_remove(struct of_device *op)
+ 
+ static struct of_device_id mpc5121_nfc_match[] = {
+ 	{ .compatible = "fsl,mpc5121-nfc", },
++	{ .compatible = "fsl,mpc5121ads-nfc",
++	  .data = &(struct mpc5121_nfc_match_data) {
++			.init = ads5121_chipselect_init,
++		},
++	},
+ 	{},
+ };
+ 
