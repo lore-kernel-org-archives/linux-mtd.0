@@ -1,21 +1,23 @@
-Received: from waste.org ([173.11.57.241])
+Received: from mail-out.m-online.net ([212.18.0.10])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NZeIJ-0007QA-AP
-	for linux-mtd@lists.infradead.org; Tue, 26 Jan 2010 05:48:59 +0000
-Subject: Re: UBIFS assert failed in ubifs_dirty_inode
-From: Matt Mackall <mpm@selenic.com>
-To: dedekind1@gmail.com
-In-Reply-To: <1264480808.2401.78.camel@localhost.localdomain>
-References: <4B591573.60602@theptrgroup.com>
-	<1264480808.2401.78.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 Jan 2010 23:48:48 -0600
-Message-ID: <1264484928.3536.1017.camel@calx>
+	id 1NZgRd-0001fs-Fi
+	for linux-mtd@lists.infradead.org; Tue, 26 Jan 2010 08:06:46 +0000
+Date: Tue, 26 Jan 2010 09:06:33 +0100
+From: Anatolij Gustschin <agust@denx.de>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH 0/11] Update support for MPC512x
+Message-ID: <20100126090633.74257b1a@wker>
+In-Reply-To: <20100120112232.GD5041@pengutronix.de>
+References: <1263932653-3634-1-git-send-email-agust@denx.de>
+	<20100120112232.GD5041@pengutronix.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Jeff Angielski <jeff@theptrgroup.com>, linux-mtd@lists.infradead.org,
-	LKML <linux-kernel@vger.kernel.org>,
-	Herbert Xu <herbert@gondor.apana.org.au>
+Cc: John Rigby <jcrigby@gmail.com>, dzu@denx.de, netdev@vger.kernel.org,
+	linux-usb@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	linux-i2c@vger.kernel.org, rtc-linux@googlegroups.com,
+	Dan Williams <dan.j.williams@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,121 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-01-26 at 06:40 +0200, Artem Bityutskiy wrote:
-> On Thu, 2010-01-21 at 22:03 -0500, Jeff Angielski wrote:
-> > I am trying use an UBIFS root filesystem on my PowerPC MPC8544 but I am 
-> > seeing some intermitent problems with "UBIFS assert failed in 
-> > ubifs_dirty_inode" errors.
-> > 
-> > On the first boot after I program the NAND with a fresh UBI image, 
-> > everything seems to work ok.
-> > 
-> > After that, on subsequent powercycles or reboots, I sometimes see a boot 
-> > with the following error:
-> > 
-> > [    5.984232] UBIFS assert failed in ubifs_dirty_inode at 377 (pid 1011)
-> 
-> Interesting.
-> 
-> The stack trace for this assertion is:
-> 
-> [   42.724193] [df121e60] [c00070f8] show_stack+0x3c/0x17c (unreliable)
-> [   42.730566] [df121ea0] [c017e754] ubifs_dirty_inode+0xe0/0xe4
-> [   42.736325] [df121eb0] [c00c6fbc] __mark_inode_dirty+0x3c/0x16c
-> [   42.742260] [df121ec0] [c01f9034] random_write+0x8c/0xa4
-> [   42.747584] [df121ef0] [c00a4d2c] vfs_write+0xb4/0x184
-> [   42.752730] [df121f10] [c00a53e8] sys_write+0x4c/0x90
-> [   42.757795] [df121f40] [c000fd48] ret_from_syscall+0x0/0x3c
-> 
-> Which leads us to
-> 
-> ~/git/linux-2.6/drivers/char/random.c, where we can find this code:
-> 
->         inode->i_mtime = current_fs_time(inode->i_sb);
->         mark_inode_dirty(inode);
->         return (ssize_t)count;
-> 
-> which is the reason for the assertion and for the further budgeting
-> screw-up.
-> 
-> The thing is that UBIFS has to allocate budget every-time a clean inode
-> is made dirty. But the 'random' driver bypasses UBIFS budget allocation,
-> and instead, changes mtime directly and marks the inode as dirty
-> directly.
-> 
-> The driver should instead call the ->setattr() method of the inode,
-> which should do the right thing. IOW, something like this is needed:
-> 
-> diff --git a/drivers/char/random.c b/drivers/char/random.c
-> index 8258982..f911781 100644
-> --- a/drivers/char/random.c
-> +++ b/drivers/char/random.c
-> @@ -1108,6 +1108,7 @@ static ssize_t random_write(struct file *file,
-> const char __user *buffer,
->  {
->         size_t ret;
->         struct inode *inode = file->f_path.dentry->d_inode;
-> +       struct iattr;
-> 
->         ret = write_pool(&blocking_pool, buffer, count);
->         if (ret)
-> @@ -1116,8 +1117,11 @@ static ssize_t random_write(struct file *file,
-> const char __user *buffer,
->         if (ret)
->                 return ret;
-> 
-> -       inode->i_mtime = current_fs_time(inode->i_sb);
-> -       mark_inode_dirty(inode);
-> +       iattr->i_mtime = current_fs_time(inode->i_sb);
-> +       iattr->ia_valid = ATTR_ATIME;
-> +       ret = inode_setattr(inode, &attr);
-> +       if (ret)
-> +               return ret;
->         return (ssize_t)count;
->  }
-> 
-> Note - I did not even compile-test this. Would you try that please :-)
+On Wed, 20 Jan 2010 12:22:32 +0100
+Wolfram Sang <w.sang@pengutronix.de> wrote:
 
-Hmm. I'd just as soon drop it entirely. Here's a patch. Herbert, you
-want to send this through your crypto tree?
+> 
+> > The patches are based on v2.6.33-rc4 and cover the following
+> > items:
+> 
+> The USB-patch needs two patches from linux-next. For convenience, don't you
+> have a git-tree somewhere? :)
 
+No, I don't have a git tree for this now, sorry.
 
-random: drop weird m_time/a_time manipulation
-
-No other driver does anything remotely like this that I know of except
-for the tty drivers, and I can't see any reason for random/urandom to do
-it. In fact, it's a (trivial, harmless) timing information leak. And
-obviously, it generates power- and flash-cycle wasting I/O, especially
-if combined with something like hwrngd. Also, it breaks ubifs's
-expectations.
-
-Signed-off-by: Matt Mackall <mpm@selenic.com>
-
-diff -r 29db0c391ce8 drivers/char/random.c
---- a/drivers/char/random.c	Sun Jan 17 11:01:16 2010 -0800
-+++ b/drivers/char/random.c	Mon Jan 25 23:32:00 2010 -0600
-@@ -1051,12 +1051,6 @@
- 				/* like a named pipe */
- 	}
- 
--	/*
--	 * If we gave the user some bytes, update the access time.
--	 */
--	if (count)
--		file_accessed(file);
--
- 	return (count ? count : retval);
- }
- 
-@@ -1116,8 +1110,6 @@
- 	if (ret)
- 		return ret;
- 
--	inode->i_mtime = current_fs_time(inode->i_sb);
--	mark_inode_dirty(inode);
- 	return (ssize_t)count;
- }
- 
-
--- 
-http://selenic.com : development and support for Mercurial and Linux
+Anatolij
