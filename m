@@ -1,24 +1,19 @@
-Date: Tue, 26 Jan 2010 14:52:09 -0500
-From: Valerie Aurora <vaurora@redhat.com>
-To: Erez Zadok <ezk@cs.sunysb.edu>
-Subject: Re: [PATCH 16/41] whiteout: jffs2 whiteout support
-Message-ID: <20100126195208.GC32353@shell>
-References: <1256152779-10054-17-git-send-email-vaurora@redhat.com>
-	<200911300751.nAU7p53e022740@agora.fsl.cs.sunysb.edu>
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NZtCc-0005Ek-Kr
+	for linux-mtd@lists.infradead.org; Tue, 26 Jan 2010 21:44:07 +0000
+Received: by bwz4 with SMTP id 4so4634842bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Jan 2010 13:44:00 -0800 (PST)
+Subject: Legacy memstick support + FTL questions
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: Alex Dubov <oakad@yahoo.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 26 Jan 2010 23:43:57 +0200
+Message-ID: <1264542237.15306.14.camel@maxim-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200911300751.nAU7p53e022740@agora.fsl.cs.sunysb.edu>
-Cc: Scott James Remnant <scott@canonical.com>, Felix Fietkau <nbd@openwrt.org>,
-	"J. R. Okajima" <hooanon05@yahoo.co.jp>,
-	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>, linux-fsdevel@vger.kernel.org,
-	Sandu Popa Marius <sandupopamarius@gmail.com>,
-	linux-mtd@lists.infradead.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-	Andy Whitcroft <apw@canonical.com>,
-	Vladimir Dronnikov <dronnikov@gmail.com>, Jan Blunck <jblunck@suse.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Jan Rekorajski <baggins@sith.mimuw.edu.pl>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 30, 2009 at 02:51:05AM -0500, Erez Zadok wrote:
-> In message <1256152779-10054-17-git-send-email-vaurora@redhat.com>, Valerie Aurora writes:
-> > From: Felix Fietkau <nbd@openwrt.org>
-> > 
-> > Add support for whiteout dentries to jffs2.
-> > 
-> > Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-> > Signed-off-by: Valerie Aurora <vaurora@redhat.com>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Cc: linux-mtd@lists.infradead.org
-> > ---
-> >  fs/jffs2/dir.c        |   77 +++++++++++++++++++++++++++++++++++++++++++++++-
-> >  fs/jffs2/fs.c         |    4 ++
-> >  fs/jffs2/super.c      |    2 +-
-> >  include/linux/jffs2.h |    2 +
-> >  4 files changed, 82 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-> > index 6f60cc9..46a2e1b 100644
-> > --- a/fs/jffs2/dir.c
-> > +++ b/fs/jffs2/dir.c
-> > @@ -34,6 +34,8 @@ static int jffs2_mknod (struct inode *,struct dentry *,int,dev_t);
-> >  static int jffs2_rename (struct inode *, struct dentry *,
-> >  			 struct inode *, struct dentry *);
-> >  
-> > +static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
-> > +
-> >  const struct file_operations jffs2_dir_operations =
-> >  {
-> >  	.read =		generic_read_dir,
-> > @@ -55,6 +57,7 @@ const struct inode_operations jffs2_dir_inode_operations =
-> >  	.rmdir =	jffs2_rmdir,
-> >  	.mknod =	jffs2_mknod,
-> >  	.rename =	jffs2_rename,
-> > +	.whiteout =     jffs2_whiteout,
-> >  	.permission =	jffs2_permission,
-> >  	.setattr =	jffs2_setattr,
-> >  	.setxattr =	jffs2_setxattr,
-> > @@ -98,8 +101,18 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
-> >  			fd = fd_list;
-> >  		}
-> >  	}
-> > -	if (fd)
-> > -		ino = fd->ino;
-> > +	if (fd) {
-> > +		spin_lock(&target->d_lock);
-> > +		switch(fd->type) {
-> > +		case DT_WHT:
-> > +			target->d_flags |= DCACHE_WHITEOUT;
-> > +			break;
-> > +		default:
-> > +			ino = fd->ino;
-> > +			break;
-> > +		}
-> > +		spin_unlock(&target->d_lock);
-> > +	}
-> 
-> The switch statement above should be simplified into this:
-> 
->  if (fd->type == DT_WHT)
-> 	target->d_flags |= DCACHE_WHITEOUT;
->  else
-> 	ino = fd->ino;
+Hi,
 
-This is because later we add a third case for fallthrus, at which
-point a switch statement is easier to read.  But it is confusing and
-distracting by itself in this patch, so I changed it as you suggested.
+Since my xD/SmartMedia support is done (will send small update
+tomorrow), I am switching focus to MemStick conteroller.
 
+Since I am a perfectionist (at lest still am...) I want to have support
+for both MemStick and MemStick pro.
 
-> > +	/* If it's a directory, then check whether it is really empty
-> > +	 */
-> 
-> Format above comment on one line.
+Alex, I see that your PRO support is in kernel, not legacy support
+isn't. Why?
 
-Fixxed, thanks.
+Legacy MemSticks also are barebone like XD and thus need an FTL.
+However, they don't have NAND interface.
 
--VAL
+My current goal is to take your ms_block.c, understand it, port to
+latest kernel, and attempt a merge.
+
+Its also possible to do the same I did with XD, write an MTD driver and
+another FTL.
+
+Since legacy memsticks are rare. I would like not to write mtd driver.
+
+Also, any information, about memsticks is welcome. It would help me a
+lot.
+
+I assume that both Memstick, and Memstick Duo are similiar on hardware
+level, (both bare flash).
+
+Same for, Memstick PRO and MemStick PRO Duo.
+
+Best regards,
+Maxim Levitsky
