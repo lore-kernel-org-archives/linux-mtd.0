@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Na9fv-00041a-Ev
-	for linux-mtd@lists.infradead.org; Wed, 27 Jan 2010 15:19:27 +0000
-Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
-	[10.160.244.31])
+	id 1Na9g4-00043X-RA
+	for linux-mtd@lists.infradead.org; Wed, 27 Jan 2010 15:19:37 +0000
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
 	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o0RFJECQ015807
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2010 09:19:22 -0600
+	o0RFIsZP015424
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Jan 2010 09:19:32 -0600
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 5/5] UBI: add write checking
-Date: Wed, 27 Jan 2010 17:19:00 +0200
-Message-Id: <1264605540-13144-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 2/5] UBI: support attaching by MTD character device name
+Date: Wed, 27 Jan 2010 17:18:57 +0200
+Message-Id: <1264605540-13144-3-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1264605540-13144-1-git-send-email-dedekind1@gmail.com>
 References: <1264605540-13144-1-git-send-email-dedekind1@gmail.com>
 Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
@@ -26,129 +26,126 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Add an extra debugging check function which validates writes.
-After every write it reads the data back, compares it with the
-original data, and complains if they mismatch.
+This patch adds a capability to attach MTD devices by their character
+device paths. For example, one can do:
 
-Useful for debugging. No-op if extra debugging checks are disabled.
+$ modprobe ubi mtd=/dev/mtd0
+
+to attach /dev/mtd0.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/debug.h |    4 +++
- drivers/mtd/ubi/io.c    |   70 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 74 insertions(+), 0 deletions(-)
+ drivers/mtd/ubi/build.c |   66 +++++++++++++++++++++++++++++++++++++++--------
+ 1 files changed, 55 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index f30bcb3..17a1071 100644
---- a/drivers/mtd/ubi/debug.h
-+++ b/drivers/mtd/ubi/debug.h
-@@ -96,8 +96,11 @@ void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len);
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index eb8f19f..99ff57d 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -37,6 +37,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/stringify.h>
++#include <linux/namei.h>
+ #include <linux/stat.h>
+ #include <linux/miscdevice.h>
+ #include <linux/log2.h>
+@@ -50,7 +51,8 @@
  
- #ifdef CONFIG_MTD_UBI_DEBUG_PARANOID
- int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len);
-+int ubi_dbg_check_write(struct ubi_device *ubi, const void *buf, int pnum,
-+			int offset, int len);
- #else
- #define ubi_dbg_check_all_ff(ubi, pnum, offset, len) 0
-+#define ubi_dbg_check_write(ubi, buf, pnum, offset, len) 0
- #endif
- 
- #ifdef CONFIG_MTD_UBI_DEBUG_DISABLE_BGT
-@@ -176,6 +179,7 @@ static inline int ubi_dbg_is_erase_failure(void)
- #define ubi_dbg_is_write_failure() 0
- #define ubi_dbg_is_erase_failure() 0
- #define ubi_dbg_check_all_ff(ubi, pnum, offset, len) 0
-+#define ubi_dbg_check_write(ubi, buf, pnum, offset, len) 0
- 
- #endif /* !CONFIG_MTD_UBI_DEBUG */
- #endif /* !__UBI_DEBUG_H__ */
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index a250129..b4ecc84 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -273,6 +273,21 @@ int ubi_io_write(struct ubi_device *ubi, const void *buf, int pnum, int offset,
- 	} else
- 		ubi_assert(written == len);
- 
-+	if (!err) {
-+		err = ubi_dbg_check_write(ubi, buf, pnum, offset, len);
-+		if (err)
-+			return err;
-+
-+		/*
-+		 * Since we always write sequentially, the rest of the PEB has
-+		 * to contain only 0xFF bytes.
-+		 */
-+		offset += len;
-+		len = ubi->peb_size - offset;
-+		if (len)
-+			err = ubi_dbg_check_all_ff(ubi, pnum, offset, len);
-+	}
-+
- 	return err;
- }
- 
-@@ -1282,6 +1297,61 @@ exit:
+ /**
+  * struct mtd_dev_param - MTD device parameter description data structure.
+- * @name: MTD device name or number string
++ * @name: MTD character device node path, MTD device name, or MTD device number
++ *        string
+  * @vid_hdr_offs: VID header offset
+  */
+ struct mtd_dev_param {
+@@ -1116,13 +1118,50 @@ int ubi_detach_mtd_dev(int ubi_num, int anyway)
  }
  
  /**
-+ * ubi_dbg_check_write - make sure write succeeded.
-+ * @ubi: UBI device description object
-+ * @buf: buffer with data which were written
-+ * @pnum: physical eraseblock number the data were written to
-+ * @offset: offset within the physical eraseblock the data were written to
-+ * @len: how many bytes were written
+- * find_mtd_device - open an MTD device by its name or number.
+- * @mtd_dev: name or number of the device
++ * open_mtd_by_chdev - open an MTD device by its character device node path.
++ * @mtd_dev: MTD character device node path
 + *
-+ * This functions reads data which were recently written and compares it with
-+ * the original data buffer - the data have to match. Returns zero if the data
-+ * match and a negative error code if not or in case of failure.
++ * This helper function opens an MTD device by its character node device path.
++ * Returns MTD device description object in case of success and a negative
++ * error code in case of failure.
 + */
-+int ubi_dbg_check_write(struct ubi_device *ubi, const void *buf, int pnum,
-+			int offset, int len)
++static struct mtd_info * __init open_mtd_by_chdev(const char *mtd_dev)
 +{
-+	int err, i;
++	int err, major, minor, mode;
++	struct path path;
 +
-+	mutex_lock(&ubi->dbg_buf_mutex);
-+	err = ubi_io_read(ubi, ubi->dbg_peb_buf, pnum, offset, len);
++	/* Probably this is an MTD character device node path */
++	err = kern_path(mtd_dev, LOOKUP_FOLLOW, &path);
 +	if (err)
-+		goto out_unlock;
++		return ERR_PTR(err);
 +
-+	for (i = 0; i < len; i++) {
-+		uint8_t c = ((uint8_t *)buf)[i];
-+		uint8_t c1 = ((uint8_t *)ubi->dbg_peb_buf)[i];
-+		int dump_len;
++	/* MTD device number is defined by the major / minor numbers */
++	major = imajor(path.dentry->d_inode);
++	minor = iminor(path.dentry->d_inode);
++	mode = path.dentry->d_inode->i_mode;
++	path_put(&path);
++	if (major != MTD_CHAR_MAJOR || !S_ISCHR(mode))
++		return ERR_PTR(-EINVAL);
 +
-+		if (c == c1)
-+			continue;
++	if (minor & 1)
++		/*
++		 * Just do not think the "/dev/mtdrX" devices support is need,
++		 * so do not support them to avoid doing extra work.
++		 */
++		return ERR_PTR(-EINVAL);
 +
-+		ubi_err("paranoid check failed for PEB %d:%d, len %d",
-+			pnum, offset, len);
-+		ubi_msg("data differ at position %d", i);
-+		dump_len = max_t(int, 128, len - i);
-+		ubi_msg("hex dump of the original buffer from %d to %d",
-+			i, i + dump_len);
-+		print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1,
-+			       buf + i, dump_len, 1);
-+		ubi_msg("hex dump of the read buffer from %d to %d",
-+			i, i + dump_len);
-+		print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1,
-+			       ubi->dbg_peb_buf + i, dump_len, 1);
-+		ubi_dbg_dump_stack();
-+		err = -EINVAL;
-+		goto out_unlock;
-+	}
-+	mutex_unlock(&ubi->dbg_buf_mutex);
-+
-+	return 0;
-+
-+out_unlock:
-+	mutex_unlock(&ubi->dbg_buf_mutex);
-+	return err;
++	return get_mtd_device(NULL, minor / 2);
 +}
 +
 +/**
-  * ubi_dbg_check_all_ff - check that a region of flash is empty.
-  * @ubi: UBI device description object
-  * @pnum: the physical eraseblock number to check
++ * open_mtd_device - open MTD device by name, character device path, or number.
++ * @mtd_dev: name, character device node path, or MTD device device number
+  *
+  * This function tries to open and MTD device described by @mtd_dev string,
+- * which is first treated as an ASCII number, and if it is not true, it is
+- * treated as MTD device name. Returns MTD device description object in case of
+- * success and a negative error code in case of failure.
++ * which is first treated as ASCII MTD device number, and if it is not true, it
++ * is treated as MTD device name, and if that is also not true, it is treated
++ * as MTD character device node path. Returns MTD device description object in
++ * case of success and a negative error code in case of failure.
+  */
+ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+ {
+@@ -1137,6 +1176,9 @@ static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
+ 		 * MTD device name.
+ 		 */
+ 		mtd = get_mtd_device_nm(mtd_dev);
++		if (IS_ERR(mtd) && PTR_ERR(mtd) == -ENODEV)
++			/* Probably this is an MTD character device node path */
++			mtd = open_mtd_by_chdev(mtd_dev);
+ 	} else
+ 		mtd = get_mtd_device(NULL, mtd_num);
+ 
+@@ -1352,13 +1394,15 @@ static int __init ubi_mtd_param_parse(const char *val, struct kernel_param *kp)
+ 
+ module_param_call(mtd, ubi_mtd_param_parse, NULL, NULL, 000);
+ MODULE_PARM_DESC(mtd, "MTD devices to attach. Parameter format: "
+-		      "mtd=<name|num>[,<vid_hdr_offs>].\n"
++		      "mtd=<name|num|path>[,<vid_hdr_offs>].\n"
+ 		      "Multiple \"mtd\" parameters may be specified.\n"
+-		      "MTD devices may be specified by their number or name.\n"
++		      "MTD devices may be specified by their number, name, or "
++		      "path to the MTD character device node.\n"
+ 		      "Optional \"vid_hdr_offs\" parameter specifies UBI VID "
+-		      "header position and data starting position to be used "
+-		      "by UBI.\n"
+-		      "Example: mtd=content,1984 mtd=4 - attach MTD device"
++		      "header position to be used by UBI.\n"
++		      "Example 1: mtd=/dev/mtd0 - attach MTD device "
++		      "/dev/mtd0.\n"
++		      "Example 2: mtd=content,1984 mtd=4 - attach MTD device "
+ 		      "with name \"content\" using VID header offset 1984, and "
+ 		      "MTD device number 4 with default VID header offset.");
+ 
 -- 
 1.6.6
