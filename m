@@ -1,15 +1,15 @@
-Received: from mail-yx0-f177.google.com ([209.85.210.177])
+Received: from mail-gx0-f223.google.com ([209.85.217.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Na424-0006PR-1C
-	for linux-mtd@lists.infradead.org; Wed, 27 Jan 2010 09:17:56 +0000
-Received: by yxe7 with SMTP id 7so4448487yxe.25
+	id 1Na47q-0007t1-Ei
+	for linux-mtd@lists.infradead.org; Wed, 27 Jan 2010 09:23:54 +0000
+Received: by gxk23 with SMTP id 23so6456389gxk.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Jan 2010 01:17:49 -0800 (PST)
+	Wed, 27 Jan 2010 01:23:48 -0800 (PST)
 From: Magnus Damm <magnus.damm@gmail.com>
 To: linux-mtd@lists.infradead.org
-Date: Wed, 27 Jan 2010 18:11:20 +0900
-Message-Id: <20100127091120.21312.77488.sendpatchset@rxone.opensource.se>
-Subject: [PATCH] mtd: trivial sh_flctl changes
+Date: Wed, 27 Jan 2010 18:17:21 +0900
+Message-Id: <20100127091721.21320.90312.sendpatchset@rxone.opensource.se>
+Subject: [PATCH] mtd: sh_flctl SHBUSSEL and SEL_16BIT support
 Cc: Magnus Damm <magnus.damm@gmail.com>, lethal@linux-sh.org,
 	shimoda.yoshihiro@renesas.com, dwmw2@infradead.org,
 	linux-sh@vger.kernel.org
@@ -24,178 +24,103 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Magnus Damm <damm@opensource.se>
 
-This patch contains a few changes for the sh_flctl driver:
- - not sh7723-only driver - get rid of kconfig dependency
- - use dev_err() instead of printk()
- - use __devinit and __devexit for probe()/remove()
- - fix probe() return values
+This patch extends the sh_flctl driver with support
+for 16-bit bus configuration using SEL_16BIT and
+support for multiplexed pins using SHBUSSEL.
 
 Signed-off-by: Magnus Damm <damm@opensource.se>
 ---
 
- drivers/mtd/nand/Kconfig     |    4 ++--
- drivers/mtd/nand/sh_flctl.c  |   40 ++++++++++++++++++++++------------------
- include/linux/mtd/sh_flctl.h |    1 +
- 3 files changed, 25 insertions(+), 20 deletions(-)
+ drivers/mtd/nand/sh_flctl.c  |   27 ++++++++++++++++++++++++++-
+ include/linux/mtd/sh_flctl.h |    2 ++
+ 2 files changed, 28 insertions(+), 1 deletion(-)
 
---- 0001/drivers/mtd/nand/Kconfig
-+++ work/drivers/mtd/nand/Kconfig	2010-01-26 22:11:20.000000000 +0900
-@@ -451,10 +451,10 @@ config MTD_NAND_NOMADIK
+--- 0015/drivers/mtd/nand/sh_flctl.c
++++ work/drivers/mtd/nand/sh_flctl.c	2010-01-26 23:25:33.000000000 +0900
+@@ -105,6 +105,8 @@ static void set_addr(struct mtd_info *mt
+ 		addr = page_addr;	/* ERASE1 */
+ 	} else if (page_addr != -1) {
+ 		/* SEQIN, READ0, etc.. */
++		if (flctl->chip.options & NAND_BUSWIDTH_16)
++			column >>= 1;
+ 		if (flctl->page_size) {
+ 			addr = column & 0x0FFF;
+ 			addr |= (page_addr & 0xff) << 16;
+@@ -280,7 +282,7 @@ static void write_fiforeg(struct sh_flct
+ static void set_cmd_regs(struct mtd_info *mtd, uint32_t cmd, uint32_t flcmcdr_val)
+ {
+ 	struct sh_flctl *flctl = mtd_to_flctl(mtd);
+-	uint32_t flcmncr_val = readl(FLCMNCR(flctl));
++	uint32_t flcmncr_val = readl(FLCMNCR(flctl)) & ~SEL_16BIT;
+ 	uint32_t flcmdcr_val, addr_len_bytes = 0;
  
- config MTD_NAND_SH_FLCTL
- 	tristate "Support for NAND on Renesas SuperH FLCTL"
--	depends on MTD_NAND && SUPERH && CPU_SUBTYPE_SH7723
-+	depends on MTD_NAND && SUPERH
- 	help
- 	  Several Renesas SuperH CPU has FLCTL. This option enables support
--	  for NAND Flash using FLCTL. This driver support SH7723.
-+	  for NAND Flash using FLCTL.
+ 	/* Set SNAND bit if page size is 2048byte */
+@@ -302,6 +304,8 @@ static void set_cmd_regs(struct mtd_info
+ 	case NAND_CMD_READOOB:
+ 		addr_len_bytes = flctl->rw_ADRCNT;
+ 		flcmdcr_val |= CDSRC_E;
++		if (flctl->chip.options & NAND_BUSWIDTH_16)
++			flcmncr_val |= SEL_16BIT;
+ 		break;
+ 	case NAND_CMD_SEQIN:
+ 		/* This case is that cmd is READ0 or READ1 or READ00 */
+@@ -310,6 +314,8 @@ static void set_cmd_regs(struct mtd_info
+ 	case NAND_CMD_PAGEPROG:
+ 		addr_len_bytes = flctl->rw_ADRCNT;
+ 		flcmdcr_val |= DOCMD2_E | CDSRC_E | SELRW;
++		if (flctl->chip.options & NAND_BUSWIDTH_16)
++			flcmncr_val |= SEL_16BIT;
+ 		break;
+ 	case NAND_CMD_READID:
+ 		flcmncr_val &= ~SNAND_E;
+@@ -528,6 +534,8 @@ static void flctl_cmdfunc(struct mtd_inf
+ 		set_addr(mtd, 0, page_addr);
  
- config MTD_NAND_DAVINCI
-         tristate "Support NAND on DaVinci SoC"
---- 0001/drivers/mtd/nand/sh_flctl.c
-+++ work/drivers/mtd/nand/sh_flctl.c	2010-01-27 17:43:42.000000000 +0900
-@@ -1,10 +1,10 @@
- /*
-  * SuperH FLCTL nand controller
-  *
-- * Copyright © 2008 Renesas Solutions Corp.
-- * Copyright © 2008 Atom Create Engineering Co., Ltd.
-+ * Copyright (c) 2008 Renesas Solutions Corp.
-+ * Copyright (c) 2008 Atom Create Engineering Co., Ltd.
-  *
-- * Based on fsl_elbc_nand.c, Copyright © 2006-2007 Freescale Semiconductor
-+ * Based on fsl_elbc_nand.c, Copyright (c) 2006-2007 Freescale Semiconductor
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -75,6 +75,11 @@ static void start_translation(struct sh_
- 	writeb(TRSTRT, FLTRCR(flctl));
+ 		flctl->read_bytes = mtd->writesize + mtd->oobsize;
++		if (flctl->chip.options & NAND_BUSWIDTH_16)
++			column >>= 1;
+ 		flctl->index += column;
+ 		goto read_normal_exit;
+ 
+@@ -691,6 +699,18 @@ static uint8_t flctl_read_byte(struct mt
+ 	return data;
  }
  
-+static void timeout_error(struct sh_flctl *flctl, const char *str)
++static uint16_t flctl_read_word(struct mtd_info *mtd)
 +{
-+	dev_err(&flctl->pdev->dev, "Timeout occured in %s\n", str);
++       struct sh_flctl *flctl = mtd_to_flctl(mtd);
++       int index = flctl->index;
++       uint16_t data;
++       uint16_t *buf = (uint16_t *)&flctl->done_buff[index];
++
++       data = *buf;
++       flctl->index += 2;
++       return data;
 +}
 +
- static void wait_completion(struct sh_flctl *flctl)
+ static void flctl_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
  {
- 	uint32_t timeout = LOOP_TIMEOUT_MAX;
-@@ -87,7 +92,7 @@ static void wait_completion(struct sh_fl
- 		udelay(1);
- 	}
+ 	int i;
+@@ -829,6 +849,11 @@ static int __devinit flctl_probe(struct 
+ 	nand->select_chip = flctl_select_chip;
+ 	nand->cmdfunc = flctl_cmdfunc;
  
--	printk(KERN_ERR "wait_completion(): Timeout occured \n");
-+	timeout_error(flctl, __func__);
- 	writeb(0x0, FLTRCR(flctl));
- }
- 
-@@ -132,7 +137,7 @@ static void wait_rfifo_ready(struct sh_f
- 			return;
- 		udelay(1);
- 	}
--	printk(KERN_ERR "wait_rfifo_ready(): Timeout occured \n");
-+	timeout_error(flctl, __func__);
- }
- 
- static void wait_wfifo_ready(struct sh_flctl *flctl)
-@@ -146,7 +151,7 @@ static void wait_wfifo_ready(struct sh_f
- 			return;
- 		udelay(1);
- 	}
--	printk(KERN_ERR "wait_wfifo_ready(): Timeout occured \n");
-+	timeout_error(flctl, __func__);
- }
- 
- static int wait_recfifo_ready(struct sh_flctl *flctl, int sector_number)
-@@ -198,7 +203,7 @@ static int wait_recfifo_ready(struct sh_
- 		writel(0, FL4ECCCR(flctl));
- 	}
- 
--	printk(KERN_ERR "wait_recfifo_ready(): Timeout occured \n");
-+	timeout_error(flctl, __func__);
- 	return 1;	/* timeout */
- }
- 
-@@ -214,7 +219,7 @@ static void wait_wecfifo_ready(struct sh
- 			return;
- 		udelay(1);
- 	}
--	printk(KERN_ERR "wait_wecfifo_ready(): Timeout occured \n");
-+	timeout_error(flctl, __func__);
- }
- 
- static void read_datareg(struct sh_flctl *flctl, int offset)
-@@ -769,38 +774,36 @@ static int flctl_chip_init_tail(struct m
- 	return 0;
- }
- 
--static int __init flctl_probe(struct platform_device *pdev)
-+static int __devinit flctl_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
- 	struct sh_flctl *flctl;
- 	struct mtd_info *flctl_mtd;
- 	struct nand_chip *nand;
- 	struct sh_flctl_platform_data *pdata;
--	int ret;
-+	int ret = -ENXIO;
- 
- 	pdata = pdev->dev.platform_data;
- 	if (pdata == NULL) {
--		printk(KERN_ERR "sh_flctl platform_data not found.\n");
--		return -ENODEV;
-+		dev_err(&pdev->dev, "no platform data defined\n");
-+		return -EINVAL;
- 	}
- 
- 	flctl = kzalloc(sizeof(struct sh_flctl), GFP_KERNEL);
- 	if (!flctl) {
--		printk(KERN_ERR "Unable to allocate NAND MTD dev structure.\n");
-+		dev_err(&pdev->dev, "failed to allocate driver data\n");
- 		return -ENOMEM;
- 	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	if (!res) {
--		printk(KERN_ERR "%s: resource not found.\n", __func__);
--		ret = -ENODEV;
-+		dev_err(&pdev->dev, "failed to get I/O memory\n");
++	if (pdata->flcmncr_val & SEL_16BIT) {
++		nand->options |= NAND_BUSWIDTH_16;
++		nand->read_word = flctl_read_word;
++	}
++
+ 	ret = nand_scan_ident(flctl_mtd, 1);
+ 	if (ret)
  		goto err;
- 	}
- 
- 	flctl->reg = ioremap(res->start, resource_size(res));
- 	if (flctl->reg == NULL) {
--		printk(KERN_ERR "%s: ioremap error.\n", __func__);
--		ret = -ENOMEM;
-+		dev_err(&pdev->dev, "failed to remap I/O memory\n");
- 		goto err;
- 	}
- 
-@@ -808,6 +811,7 @@ static int __init flctl_probe(struct pla
- 	flctl_mtd = &flctl->mtd;
- 	nand = &flctl->chip;
- 	flctl_mtd->priv = nand;
-+	flctl->pdev = pdev;
- 	flctl->hwecc = pdata->has_hwecc;
- 
- 	flctl_register_init(flctl, pdata->flcmncr_val);
-@@ -846,7 +850,7 @@ err:
- 	return ret;
- }
- 
--static int __exit flctl_remove(struct platform_device *pdev)
-+static int __devexit flctl_remove(struct platform_device *pdev)
- {
- 	struct sh_flctl *flctl = platform_get_drvdata(pdev);
- 
---- 0001/include/linux/mtd/sh_flctl.h
-+++ work/include/linux/mtd/sh_flctl.h	2010-01-26 22:11:20.000000000 +0900
-@@ -96,6 +96,7 @@
- struct sh_flctl {
- 	struct mtd_info		mtd;
- 	struct nand_chip	chip;
-+	struct platform_device	*pdev;
- 	void __iomem		*reg;
- 
- 	uint8_t	done_buff[2048 + 64];	/* max size 2048 + 64 */
+--- 0015/include/linux/mtd/sh_flctl.h
++++ work/include/linux/mtd/sh_flctl.h	2010-01-26 22:54:42.000000000 +0900
+@@ -51,6 +51,8 @@
+ #define _4ECCCNTEN	(0x1 << 24)
+ #define _4ECCEN		(0x1 << 23)
+ #define _4ECCCORRECT	(0x1 << 22)
++#define SHBUSSEL	(0x1 << 20)
++#define SEL_16BIT	(0x1 << 19)
+ #define SNAND_E		(0x1 << 18)	/* SNAND (0=512 1=2048)*/
+ #define QTSEL_E		(0x1 << 17)
+ #define ENDIAN		(0x1 << 16)	/* 1 = little endian */
