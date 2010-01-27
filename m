@@ -1,23 +1,24 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NaAsX-0000RI-Mg
-	for linux-mtd@lists.infradead.org; Wed, 27 Jan 2010 16:36:34 +0000
-Subject: Re: shrinking ubifs?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Ringle <jon@ringle.org>
-In-Reply-To: <152584231001270834l49147b4di6c825acd42a76f8d@mail.gmail.com>
-References: <152584231001141415x2086fed9rd8566b6609a87b7e@mail.gmail.com>
-	<1263724803.8276.138.camel@localhost.localdomain>
-	<152584231001221121u2ffc1816o18d71e6099f8fc6@mail.gmail.com>
-	<1264609500.1973.42.camel@localhost>
-	<152584231001270834l49147b4di6c825acd42a76f8d@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 Jan 2010 18:35:55 +0200
-Message-ID: <1264610155.1973.46.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-yw0-f198.google.com ([209.85.211.198])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NaB05-0003OR-R3
+	for linux-mtd@lists.infradead.org; Wed, 27 Jan 2010 16:44:22 +0000
+Received: by ywh36 with SMTP id 36so65731ywh.15
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 27 Jan 2010 08:44:16 -0800 (PST)
+MIME-Version: 1.0
+Sender: glikely@secretlab.ca
+In-Reply-To: <1264594052-20317-4-git-send-email-agust@denx.de>
+References: <1264594052-20317-1-git-send-email-agust@denx.de>
+	<1264594052-20317-4-git-send-email-agust@denx.de>
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Wed, 27 Jan 2010 09:43:56 -0700
+Message-ID: <fa686aa41001270843u3b4e9687k699ad579de4460d4@mail.gmail.com>
+Subject: Re: [PATCH 3/8 v2] mtd: Add MPC5121 NAND Flash Controller driver
+To: Anatolij Gustschin <agust@denx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: John Rigby <jcrigby@gmail.com>, dzu@denx.de, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org, Piotr Ziecik <kosmo@semihalf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +28,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-01-27 at 11:34 -0500, Jon Ringle wrote:
-> On Wed, Jan 27, 2010 at 11:25 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Fri, 2010-01-22 at 14:21 -0500, Jon Ringle wrote:
-> >> How about the opposite. If the static volumes became smaller freeing
-> >> up some LEBs. Can the UBIFS be expanded to make use of the freed LEBs?
-> >
-> > That works automatically. UBIFS expands automatically, but up to the
-> > size which you specified with the '-c' mkfs.ubifs option.
-> 
-> Can the same thing be done using ubimkvol?
-> ubimkvol -m -N ubifs /dev/ubi0
+On Wed, Jan 27, 2010 at 5:07 AM, Anatolij Gustschin <agust@denx.de> wrote:
+> From: Piotr Ziecik <kosmo@semihalf.com>
 
-Sorry, I don't understand the question...
+Again, it is appropriate for you to claim patch ownership now as long
+as you preserve the signed-off-by history.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+>
+> Adds NAND Flash Controller driver for MPC5121 Revision 2.
+> All device features, except hardware ECC and power management,
+> are supported.
+
+A few comments below.
+
+> diff --git a/arch/powerpc/platforms/512x/mpc512x_shared.c b/arch/powerpc/=
+platforms/512x/mpc512x_shared.c
+> index 4745028..6b8314c 100644
+> --- a/arch/powerpc/platforms/512x/mpc512x_shared.c
+> +++ b/arch/powerpc/platforms/512x/mpc512x_shared.c
+> @@ -82,6 +82,7 @@ void __init mpc512x_init_IRQ(void)
+> =A0static struct of_device_id __initdata of_bus_ids[] =3D {
+> =A0 =A0 =A0 =A0{ .compatible =3D "fsl,mpc5121-immr", },
+> =A0 =A0 =A0 =A0{ .compatible =3D "fsl,mpc5121-localbus", },
+> + =A0 =A0 =A0 { .compatible =3D "fsl,mpc5121-nfc", },
+> =A0 =A0 =A0 =A0{},
+> =A0};
+
+This hunk shouldn't be in this patch since it touches arch code.  Keep
+the NAND and arch bits in separate patches.
+
+Also, this is probably not what you really want.  Doing it this way
+means that each of the child nodes also get registered as of_platform
+devices.  You want the platform code to only register the nfc@40000000
+node.
+
+> +static int __init mpc5121_nfc_probe(struct of_device *op,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 const struct of_device_id *match)
+
+__devinit
+
+> +{
+> + =A0 =A0 =A0 struct device_node *rootnode, *dn =3D op->node;
+> + =A0 =A0 =A0 struct device *dev =3D &op->dev;
+> + =A0 =A0 =A0 struct mpc5121_nfc_prv *prv;
+> + =A0 =A0 =A0 struct resource res;
+> + =A0 =A0 =A0 struct mtd_info *mtd;
+> +#ifdef CONFIG_MTD_PARTITIONS
+> + =A0 =A0 =A0 struct mtd_partition *parts;
+> +#endif
+> + =A0 =A0 =A0 struct nand_chip *chip;
+> + =A0 =A0 =A0 unsigned long regs_paddr, regs_size;
+> + =A0 =A0 =A0 const uint *chips_no;
+> + =A0 =A0 =A0 int resettime =3D 0;
+> + =A0 =A0 =A0 int retval =3D 0;
+> + =A0 =A0 =A0 int rev, len;
+> +
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* Check SoC revision. This driver supports only NFC
+> + =A0 =A0 =A0 =A0* in MPC5121 revision 2.
+> + =A0 =A0 =A0 =A0*/
+> + =A0 =A0 =A0 rev =3D (mfspr(SPRN_SVR) >> 4) & 0xF;
+> + =A0 =A0 =A0 if (rev !=3D 2) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_err(dev, "SoC revision %u is not suppor=
+ted!\n", rev);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -ENXIO;
+> + =A0 =A0 =A0 }
+
+*Only* revision 2?  Are future revisions of silicon assumed to be broken th=
+en?
+
+> +static int __exit mpc5121_nfc_remove(struct of_device *op)
+
+__devexit
+
+> +static struct of_device_id mpc5121_nfc_match[] =3D {
+
+...match[] __devinitdata =3D {
+
+> + =A0 =A0 =A0 { .compatible =3D "fsl,mpc5121-nfc", },
+> + =A0 =A0 =A0 {},
+> +};
+> +
+> +static struct of_platform_driver mpc5121_nfc_driver =3D {
+> + =A0 =A0 =A0 .match_table =A0 =A0=3D mpc5121_nfc_match,
+> + =A0 =A0 =A0 .probe =A0 =A0 =A0 =A0 =A0=3D mpc5121_nfc_probe,
+> + =A0 =A0 =A0 .remove =A0 =A0 =A0 =A0 =3D __exit_p(mpc5121_nfc_remove),
+
+__devexit_p()
+
+g.
+
+--=20
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
