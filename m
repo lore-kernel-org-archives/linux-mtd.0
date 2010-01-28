@@ -1,18 +1,18 @@
-Subject: Re: [PATCHv2 3/7] nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use
-	it instead of MAX_MTD_DEVICES
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NaXzC-0000z0-ON
+	for linux-mtd@lists.infradead.org; Thu, 28 Jan 2010 17:16:59 +0000
+Subject: Re: UBIFS log replay error
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Hutchings <bhutchings@solarflare.com>
-In-Reply-To: <1264695741.2783.6.camel@achroite.uk.solarflarecom.com>
-References: <1263337726.3011.20.camel@achroite.uk.solarflarecom.com>
-	<1264695182.1973.149.camel@localhost>
-	<1264695741.2783.6.camel@achroite.uk.solarflarecom.com>
+To: Brian Niebuhr <BNiebuhr@efjohnson.com>
+In-Reply-To: <A117B9F753B6EB4580D381ED91D0FED00174D955@transmail01.transcrypt.local>
+References: <A117B9F753B6EB4580D381ED91D0FED00174D955@transmail01.transcrypt.local>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 Jan 2010 18:38:14 +0200
-Message-ID: <1264696694.1973.154.camel@localhost>
+Date: Thu, 28 Jan 2010 19:15:16 +0200
+Message-ID: <1264698916.1973.157.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-net-drivers@solarflare.com,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,36 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-01-28 at 16:22 +0000, Ben Hutchings wrote:
-> On Thu, 2010-01-28 at 18:13 +0200, Artem Bityutskiy wrote:
-> > On Tue, 2010-01-12 at 23:08 +0000, Ben Hutchings wrote:
-> > > MAX_MTD_DEVICES is about to be removed.
-> > > 
-> > > Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
-> > > ---
-> > >  drivers/mtd/nand/nandsim.c |    7 +++++--
-> > >  1 files changed, 5 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> > > index 7281000..58c255e 100644
-> > > --- a/drivers/mtd/nand/nandsim.c
-> > > +++ b/drivers/mtd/nand/nandsim.c
-> > > @@ -80,6 +80,9 @@
-> > >  #ifndef CONFIG_NANDSIM_DBG
-> > >  #define CONFIG_NANDSIM_DBG        0
-> > >  #endif
-> > > +#ifndef CONFIG_NANDSIM_MAX_PARTS
-> > > +#define CONFIG_NANDSIM_MAX_PARTS  32
-> > > +#endif
-> > 
-> > Since this is not a Kconfig option, please, remove the CONFIG_ prefix.
+On Wed, 2010-01-27 at 17:04 -0600, Brian Niebuhr wrote:
+> All - 
 > 
-> While I understand that CONFIG_* should be reserved to Kconfig, this is
-> consistent with the existing build-time options in this file.
+> I am bringing up a custom board with an UBIFS root file system.  The
+> board appears to boot fine and I am able to access files in the file
+> system.  I have been debugging other issues and in the process I have
+> been powering off the board abruptly (i.e. turning off the power
+> supply), and hence the filesystem doesn't get unmounted correctly.  The
+> filesystem recovers most of the time, but on multiple occasions I've got
+> the following error:
+> 
+> UBIFS: recovery needed
+> UBIFS error (pid 1): validate_ref: bud at LEB 31:93848 was already
+> referred
+> UBIFS error (pid 1): replay_log_leb: log error detected while replaying
+> the log at LEB 5:32
+> 
+> Obviously the filesystem wouldn't mount and my only option was
+> re-flashing the filesystem.
+> 
+> Can anyone tell me what might be happening, and how I can correct it?
+> The filesystem is being stored in Numonyx P30 NOR flash.  The dmesg
+> output is as follows:
 
-You are right. I remember long time ago that all were config options.
-Now this is not the case anymore, and that stuff needs some clean up. So
-I agree, it is fine to name it consistently.
+Which kernel version? How old UBIFS code base is? Please, follow this
+guide:
+
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
 
 -- 
 Best Regards,
