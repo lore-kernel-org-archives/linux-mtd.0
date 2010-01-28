@@ -1,22 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NaVyN-0003dk-Pm
-	for linux-mtd@lists.infradead.org; Thu, 28 Jan 2010 15:08:00 +0000
-Subject: Re: Memory leak on UBI volume truncating
+Subject: Re: [PATCHv2 0/7] mtd: Dynamic allocation of device numbers
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marek Skuczynski <mareksk7@gmail.com>
-In-Reply-To: <a328840c1001180036j771339a7t780960627e742c9b@mail.gmail.com>
-References: <a328840c1001130628h4bb0f03auad84dd1564fc08a7@mail.gmail.com>
-	<1263724633.8276.135.camel@localhost.localdomain>
-	<1263724992.8276.140.camel@localhost.localdomain>
-	<a328840c1001180034n7fd1c3e9m420afef60f7c97ab@mail.gmail.com>
-	<a328840c1001180036j771339a7t780960627e742c9b@mail.gmail.com>
+To: Ben Hutchings <bhutchings@solarflare.com>
+In-Reply-To: <1263337693.3011.14.camel@achroite.uk.solarflarecom.com>
+References: <1263337693.3011.14.camel@achroite.uk.solarflarecom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 Jan 2010 17:07:18 +0200
-Message-ID: <1264691238.1973.139.camel@localhost>
+Date: Thu, 28 Jan 2010 18:12:21 +0200
+Message-ID: <1264695141.1973.148.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-net-drivers@solarflare.com,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,27 +20,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-01-18 at 09:36 +0100, Marek Skuczynski wrote:
-> >> diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
-> >> index c1d7b88..425bf5a 100644
-> >> --- a/drivers/mtd/ubi/upd.c
-> >> +++ b/drivers/mtd/ubi/upd.c
-> >> @@ -155,6 +155,7 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
-> >>                if (err)
-> >>                        return err;
-> >>                vol->updating = 0;
-> >> +               return 0;
-> >>        }
-> >>
-> >>        vol->upd_buf = vmalloc(ubi->leb_size);
-> >>
-> >> --
+On Tue, 2010-01-12 at 23:08 +0000, Ben Hutchings wrote:
+> ﻿This patch series removes the static array of MTD device pointers from
+> mtdcore and replaces it with an idr structure for dynamic allocation of
+> device numbers.  It removes MAX_MTD_DEVICES, which is now meaningless.
 > 
-> Thanks for you reply. It seems the fix solve the issue.
+> Patches 1-4 are unchanged from the first version.
+> Patch 5 was completely replaced.
+> ﻿Patch 6 is unchanged from the first version.
+> Patch 7 is new and raises the limit on block translation devices.
+> 
+> Ben.
+> 
+> Ben Hutchings (7):
+>   mtd: Introduce and use iteration macro for reading the MTD device
+>     table
+>   mtd: Use get_mtd_device_nm() to find named device in get_sb_mtd()
+>   nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use it instead of
+>     MAX_MTD_DEVICES
+>   mtd: Remove unnecessary comparisons with MAX_MTD_DEVICES
+>   mtdblock: Dynamically allocate cache info structures
+>   mtd: Replace static array of devices with an idr structure
+>   mtd: Raise limit on block device minor numbers
+> 
+>  drivers/mtd/devices/pmc551.c |    4 +-
+>  drivers/mtd/mtd_blkdevs.c    |   12 ++--
+>  drivers/mtd/mtdblock.c       |   74 +++++++---------
+>  drivers/mtd/mtdchar.c        |    3 -
+>  drivers/mtd/mtdcore.c        |  205 +++++++++++++++++++++--------------------
+>  drivers/mtd/mtdcore.h        |    7 ++-
+>  drivers/mtd/mtdoops.c        |    5 -
+>  drivers/mtd/mtdsuper.c       |   18 ++---
+>  drivers/mtd/nand/nandsim.c   |    7 +-
+>  include/linux/mtd/mtd.h      |    1 -
+>  10 files changed, 161 insertions(+), 175 deletions(-)
 
-FYI, the fix is merged to the Linus's tree.
+When I apply your patches and compile, I get:
 
-Thanks.
+make[2]: `scripts/unifdef' is up to date.
+  Building modules, stage 2.
+Kernel: arch/x86/boot/bzImage is ready  (#4)
+  MODPOST 150 modules
+ERROR: "idr_get_next" [drivers/mtd/mtd.ko] undefined!
+make[1]: *** [__modpost] Error 1
+make: *** [modules] Error 2
+
+Indeed, it is not exported.
 
 -- 
 Best Regards,
