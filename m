@@ -1,16 +1,18 @@
-Subject: Re: [PATCHv2 3/7] nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use
-	it instead of MAX_MTD_DEVICES
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NaX6D-0002As-Pg
+	for linux-mtd@lists.infradead.org; Thu, 28 Jan 2010 16:20:10 +0000
+Subject: Re: [PATCH] [MTD] maps/ixp4xx: Fix reading from half-word boundary
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Hutchings <bhutchings@solarflare.com>
-In-Reply-To: <1263337726.3011.20.camel@achroite.uk.solarflarecom.com>
-References: <1263337726.3011.20.camel@achroite.uk.solarflarecom.com>
+To: Jon Ringle <jon@ringle.org>
+In-Reply-To: <1263393370-3561-1-git-send-email-jon@ringle.org>
+References: <1263393370-3561-1-git-send-email-jon@ringle.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 Jan 2010 18:13:02 +0200
-Message-ID: <1264695182.1973.149.camel@localhost>
+Date: Thu, 28 Jan 2010 18:19:21 +0200
+Message-ID: <1264695561.1973.150.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-net-drivers@solarflare.com,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, dsaxena@mvista.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,28 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-01-12 at 23:08 +0000, Ben Hutchings wrote:
-> MAX_MTD_DEVICES is about to be removed.
+On Wed, 2010-01-13 at 09:36 -0500, Jon Ringle wrote:
+> ixp4xx updates:
+>   - Fix handling of reads that don't start on a half-word boundary.
 > 
-> Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
-> ---
->  drivers/mtd/nand/nandsim.c |    7 +++++--
->  1 files changed, 5 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> index 7281000..58c255e 100644
-> --- a/drivers/mtd/nand/nandsim.c
-> +++ b/drivers/mtd/nand/nandsim.c
-> @@ -80,6 +80,9 @@
->  #ifndef CONFIG_NANDSIM_DBG
->  #define CONFIG_NANDSIM_DBG        0
->  #endif
-> +#ifndef CONFIG_NANDSIM_MAX_PARTS
-> +#define CONFIG_NANDSIM_MAX_PARTS  32
-> +#endif
+> Signed-off-by: Jon Ringle <jon@ringle.org>
 
-Since this is not a Kconfig option, please, remove the CONFIG_ prefix.
-
+I've pushed this patch to my l2-mtd-2.6.git/master tree
 
 -- 
 Best Regards,
