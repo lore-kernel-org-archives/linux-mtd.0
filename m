@@ -1,11 +1,12 @@
-Subject: Re: [PATCHv2 0/7] mtd: Dynamic allocation of device numbers
+Subject: Re: [PATCHv2 3/7] nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use
+	it instead of MAX_MTD_DEVICES
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ben Hutchings <bhutchings@solarflare.com>
-In-Reply-To: <1263337693.3011.14.camel@achroite.uk.solarflarecom.com>
-References: <1263337693.3011.14.camel@achroite.uk.solarflarecom.com>
+In-Reply-To: <1263337726.3011.20.camel@achroite.uk.solarflarecom.com>
+References: <1263337726.3011.20.camel@achroite.uk.solarflarecom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 Jan 2010 18:12:21 +0200
-Message-ID: <1264695141.1973.148.camel@localhost>
+Date: Thu, 28 Jan 2010 18:13:02 +0200
+Message-ID: <1264695182.1973.149.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, linux-net-drivers@solarflare.com,
@@ -21,51 +22,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2010-01-12 at 23:08 +0000, Ben Hutchings wrote:
-> ﻿This patch series removes the static array of MTD device pointers from
-> mtdcore and replaces it with an idr structure for dynamic allocation of
-> device numbers.  It removes MAX_MTD_DEVICES, which is now meaningless.
+> MAX_MTD_DEVICES is about to be removed.
 > 
-> Patches 1-4 are unchanged from the first version.
-> Patch 5 was completely replaced.
-> ﻿Patch 6 is unchanged from the first version.
-> Patch 7 is new and raises the limit on block translation devices.
+> Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
+> ---
+>  drivers/mtd/nand/nandsim.c |    7 +++++--
+>  1 files changed, 5 insertions(+), 2 deletions(-)
 > 
-> Ben.
-> 
-> Ben Hutchings (7):
->   mtd: Introduce and use iteration macro for reading the MTD device
->     table
->   mtd: Use get_mtd_device_nm() to find named device in get_sb_mtd()
->   nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use it instead of
->     MAX_MTD_DEVICES
->   mtd: Remove unnecessary comparisons with MAX_MTD_DEVICES
->   mtdblock: Dynamically allocate cache info structures
->   mtd: Replace static array of devices with an idr structure
->   mtd: Raise limit on block device minor numbers
-> 
->  drivers/mtd/devices/pmc551.c |    4 +-
->  drivers/mtd/mtd_blkdevs.c    |   12 ++--
->  drivers/mtd/mtdblock.c       |   74 +++++++---------
->  drivers/mtd/mtdchar.c        |    3 -
->  drivers/mtd/mtdcore.c        |  205 +++++++++++++++++++++--------------------
->  drivers/mtd/mtdcore.h        |    7 ++-
->  drivers/mtd/mtdoops.c        |    5 -
->  drivers/mtd/mtdsuper.c       |   18 ++---
->  drivers/mtd/nand/nandsim.c   |    7 +-
->  include/linux/mtd/mtd.h      |    1 -
->  10 files changed, 161 insertions(+), 175 deletions(-)
+> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+> index 7281000..58c255e 100644
+> --- a/drivers/mtd/nand/nandsim.c
+> +++ b/drivers/mtd/nand/nandsim.c
+> @@ -80,6 +80,9 @@
+>  #ifndef CONFIG_NANDSIM_DBG
+>  #define CONFIG_NANDSIM_DBG        0
+>  #endif
+> +#ifndef CONFIG_NANDSIM_MAX_PARTS
+> +#define CONFIG_NANDSIM_MAX_PARTS  32
+> +#endif
 
-When I apply your patches and compile, I get:
+Since this is not a Kconfig option, please, remove the CONFIG_ prefix.
 
-make[2]: `scripts/unifdef' is up to date.
-  Building modules, stage 2.
-Kernel: arch/x86/boot/bzImage is ready  (#4)
-  MODPOST 150 modules
-ERROR: "idr_get_next" [drivers/mtd/mtd.ko] undefined!
-make[1]: *** [__modpost] Error 1
-make: *** [modules] Error 2
-
-Indeed, it is not exported.
 
 -- 
 Best Regards,
