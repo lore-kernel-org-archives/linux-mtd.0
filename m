@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NaXzC-0000z0-ON
-	for linux-mtd@lists.infradead.org; Thu, 28 Jan 2010 17:16:59 +0000
-Subject: Re: UBIFS log replay error
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Niebuhr <BNiebuhr@efjohnson.com>
-In-Reply-To: <A117B9F753B6EB4580D381ED91D0FED00174D955@transmail01.transcrypt.local>
-References: <A117B9F753B6EB4580D381ED91D0FED00174D955@transmail01.transcrypt.local>
+Subject: Re: ubiattach fails with "bad image sequence number"
+From: David Woodhouse <dwmw2@infradead.org>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+In-Reply-To: <87iqapqjsm.fsf@macbook.be.48ers.dk>
+References: <4B2FF7CF.7040401@theptrgroup.com>
+	<1263081089.7315.119.camel@localhost.localdomain>
+	<1263081191.7315.121.camel@localhost.localdomain>
+	<4B4D3D61.2020305@theptrgroup.com> <1263575708.2969.1.camel@localhost>
+	<874ommp4lj.fsf@macbook.be.48ers.dk>
+	<87iqapqjsm.fsf@macbook.be.48ers.dk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 Jan 2010 19:15:16 +0200
-Message-ID: <1264698916.1973.157.camel@localhost>
+Date: Fri, 29 Jan 2010 07:56:27 +1300
+Message-ID: <1264704987.9059.1049.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Jeff Angielski <jeff@theptrgroup.com>, linux-mtd@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-01-27 at 17:04 -0600, Brian Niebuhr wrote:
-> All - 
+On Tue, 2010-01-26 at 10:47 +0100, Peter Korsgaard wrote:
+> >>>>> "Peter" == Peter Korsgaard <jacmet@sunsite.dk> writes:
 > 
-> I am bringing up a custom board with an UBIFS root file system.  The
-> board appears to boot fine and I am able to access files in the file
-> system.  I have been debugging other issues and in the process I have
-> been powering off the board abruptly (i.e. turning off the power
-> supply), and hence the filesystem doesn't get unmounted correctly.  The
-> filesystem recovers most of the time, but on multiple occasions I've got
-> the following error:
+> Hi,
 > 
-> UBIFS: recovery needed
-> UBIFS error (pid 1): validate_ref: bud at LEB 31:93848 was already
-> referred
-> UBIFS error (pid 1): replay_log_leb: log error detected while replaying
-> the log at LEB 5:32
+>  >>> > P.S. when we fix this, we'll have to tag a new mtd-utils version, since
+>  >>> > this is a very bad bug.
+>  >>> 
+>  >>> This patch worked for me.
 > 
-> Obviously the filesystem wouldn't mount and my only option was
-> re-flashing the filesystem.
+>  Artem> Ok, pushed them.
 > 
-> Can anyone tell me what might be happening, and how I can correct it?
-> The filesystem is being stored in Numonyx P30 NOR flash.  The dmesg
-> output is as follows:
+>  Peter> David, could we have a 1.3.1 tarball on
+>  Peter> ftp://ftp.infradead.org/pub/mtd-utils/ as well?
+> 
+>  Peter> Thanks.
+> 
+> Ping?
 
-Which kernel version? How old UBIFS code base is? Please, follow this
-guide:
-
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+Done.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+dwmw2
