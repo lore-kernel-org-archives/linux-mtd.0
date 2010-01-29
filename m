@@ -1,15 +1,15 @@
 Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NasBz-00011c-AV
-	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 14:51:32 +0000
-Received: by bwz4 with SMTP id 4so1893203bwz.2
+	id 1NasC0-000127-S2
+	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 14:51:33 +0000
+Received: by bwz4 with SMTP id 4so1893226bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Jan 2010 06:51:26 -0800 (PST)
+	Fri, 29 Jan 2010 06:51:28 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH 07/16] MTD: call remove notifiers before removing the device
-Date: Fri, 29 Jan 2010 16:50:54 +0200
-Message-Id: <1264776663-7042-8-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 08/16] MTD: nand: make MTD_OOB_PLACE work correctly.
+Date: Fri, 29 Jan 2010 16:50:55 +0200
+Message-Id: <1264776663-7042-9-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1264776663-7042-1-git-send-email-maximlevitsky@gmail.com>
 References: <1264776663-7042-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>
@@ -22,61 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that mtd block common layer is prepared for proper hotplug support, enable it here
-Now all users of the mtd device have a chance to put the mtd device
-when they are notified to do so, and they have to do so to make hotplug work.
+MTD_OOB_PLACE is supposed to read/write raw oob data similiar to MTD_OOB_RAW
+however due to a bug, currently its not possible to read more data that
+specified in oob 'free' regions
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtdcore.c |   21 +++++++++++----------
- 1 files changed, 11 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/nand_base.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 3bdb7e8..0e86208 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -341,31 +341,32 @@ int add_mtd_device(struct mtd_info *mtd)
- int del_mtd_device (struct mtd_info *mtd)
- {
- 	int ret;
-+	struct mtd_notifier *not;
- 
- 	mutex_lock(&mtd_table_mutex);
- 
- 	if (mtd_table[mtd->index] != mtd) {
- 		ret = -ENODEV;
--	} else if (mtd->usecount) {
-+		goto out_error;
-+	}
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8f2958f..405c538 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1232,6 +1232,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	int ret = 0;
+ 	uint32_t readlen = ops->len;
+ 	uint32_t oobreadlen = ops->ooblen;
++	uint32_t max_oobsize = ops->mode == MTD_OOB_AUTO ?
++		mtd->oobavail : mtd->oobsize;
 +
-+	/* No need to get a refcount on the module containing
-+		the notifier, since we hold the mtd_table_mutex */
-+	list_for_each_entry(not, &mtd_notifiers, list)
-+		not->remove(mtd);
-+
-+	if (mtd->usecount) {
- 		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
--		struct mtd_notifier *not;
--
- 		device_unregister(&mtd->dev);
--
--		/* No need to get a refcount on the module containing
--		   the notifier, since we hold the mtd_table_mutex */
--		list_for_each_entry(not, &mtd_notifiers, list)
--			not->remove(mtd);
--
- 		mtd_table[mtd->index] = NULL;
--
- 		module_put(THIS_MODULE);
- 		ret = 0;
- 	}
+ 	uint8_t *bufpoi, *oob, *buf;
  
-+out_error:
- 	mutex_unlock(&mtd_table_mutex);
- 	return ret;
- }
+ 	stats = mtd->ecc_stats;
+@@ -1282,10 +1285,11 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			buf += bytes;
+ 
+ 			if (unlikely(oob)) {
++
+ 				/* Raw mode does data:oob:data:oob */
+ 				if (ops->mode != MTD_OOB_RAW) {
+ 					int toread = min(oobreadlen,
+-						chip->ecc.layout->oobavail);
++								max_oobsize);
+ 					if (toread) {
+ 						oob = nand_transfer_oob(chip,
+ 							oob, ops, toread);
 -- 
 1.6.3.3
