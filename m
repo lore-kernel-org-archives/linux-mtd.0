@@ -1,16 +1,15 @@
 Received: from exchange.solarflare.com ([216.237.3.220])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Naxuu-0007e6-1A
-	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 20:58:16 +0000
-Subject: [PATCHv3 3/9] nandsim: Define CONFIG_NANDSIM_MAX_PARTS and use it
-	instead of MAX_MTD_DEVICES
+	id 1Naxv8-0007kV-PD
+	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 20:58:33 +0000
+Subject: [PATCHv3 4/9] mtd: Remove unnecessary comparisons with MAX_MTD_DEVICES
 From: Ben Hutchings <bhutchings@solarflare.com>
 To: David Woodhouse <dwmw2@infradead.org>
 In-Reply-To: <1264798537.2785.25.camel@achroite.uk.solarflarecom.com>
 References: <1264798537.2785.25.camel@achroite.uk.solarflarecom.com>
 Content-Type: text/plain
-Date: Fri, 29 Jan 2010 20:58:08 +0000
-Message-Id: <1264798688.2785.30.camel@achroite.uk.solarflarecom.com>
+Date: Fri, 29 Jan 2010 20:58:23 +0000
+Message-Id: <1264798703.2785.32.camel@achroite.uk.solarflarecom.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-net-drivers@solarflare.com, linux-mtd@lists.infradead.org
@@ -27,46 +26,63 @@ MAX_MTD_DEVICES is about to be removed.
 
 Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
 ---
-This shouldn't really be named CONFIG_anything, but it is consistent
-with the other compile-time settings in this driver.
+ drivers/mtd/devices/pmc551.c |    4 ++--
+ drivers/mtd/mtdchar.c        |    3 ---
+ drivers/mtd/mtdoops.c        |    5 -----
+ 3 files changed, 2 insertions(+), 10 deletions(-)
 
-Ben.
-
- drivers/mtd/nand/nandsim.c |    7 +++++--
- 1 files changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 7281000..58c255e 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -80,6 +80,9 @@
- #ifndef CONFIG_NANDSIM_DBG
- #define CONFIG_NANDSIM_DBG        0
- #endif
-+#ifndef CONFIG_NANDSIM_MAX_PARTS
-+#define CONFIG_NANDSIM_MAX_PARTS  32
-+#endif
+diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
+index d2fd550..fc8ea0a 100644
+--- a/drivers/mtd/devices/pmc551.c
++++ b/drivers/mtd/devices/pmc551.c
+@@ -668,7 +668,7 @@ static int __init init_pmc551(void)
+ {
+ 	struct pci_dev *PCI_Device = NULL;
+ 	struct mypriv *priv;
+-	int count, found = 0;
++	int found = 0;
+ 	struct mtd_info *mtd;
+ 	u32 length = 0;
  
- static uint first_id_byte  = CONFIG_NANDSIM_FIRST_ID_BYTE;
- static uint second_id_byte = CONFIG_NANDSIM_SECOND_ID_BYTE;
-@@ -94,7 +97,7 @@ static uint bus_width      = CONFIG_NANDSIM_BUS_WIDTH;
- static uint do_delays      = CONFIG_NANDSIM_DO_DELAYS;
- static uint log            = CONFIG_NANDSIM_LOG;
- static uint dbg            = CONFIG_NANDSIM_DBG;
--static unsigned long parts[MAX_MTD_DEVICES];
-+static unsigned long parts[CONFIG_NANDSIM_MAX_PARTS];
- static unsigned int parts_num;
- static char *badblocks = NULL;
- static char *weakblocks = NULL;
-@@ -288,7 +291,7 @@ union ns_mem {
-  * The structure which describes all the internal simulator data.
-  */
- struct nandsim {
--	struct mtd_partition partitions[MAX_MTD_DEVICES];
-+	struct mtd_partition partitions[CONFIG_NANDSIM_MAX_PARTS];
- 	unsigned int nbparts;
+@@ -695,7 +695,7 @@ static int __init init_pmc551(void)
+ 	/*
+ 	 * PCU-bus chipset probe.
+ 	 */
+-	for (count = 0; count < MAX_MTD_DEVICES; count++) {
++	for (;;) {
  
- 	uint busw;              /* flash chip bus width (8 or 16) */
+ 		if ((PCI_Device = pci_get_device(PCI_VENDOR_ID_V3_SEMI,
+ 						  PCI_DEVICE_ID_V3_SEMI_V370PDC,
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 5b081cb..04fd7e5 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -67,9 +67,6 @@ static int mtd_open(struct inode *inode, struct file *file)
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL0, "MTD_open\n");
+ 
+-	if (devnum >= MAX_MTD_DEVICES)
+-		return -ENODEV;
+-
+ 	/* You can't open the RO devices RW */
+ 	if ((file->f_mode & FMODE_WRITE) && (minor & 1))
+ 		return -EACCES;
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 92e12df..328313c 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -429,11 +429,6 @@ static int __init mtdoops_init(void)
+ 	mtd_index = simple_strtoul(mtddev, &endp, 0);
+ 	if (*endp == '\0')
+ 		cxt->mtd_index = mtd_index;
+-	if (cxt->mtd_index > MAX_MTD_DEVICES) {
+-		printk(KERN_ERR "mtdoops: invalid mtd device number (%u) given\n",
+-				mtd_index);
+-		return -EINVAL;
+-	}
+ 
+ 	cxt->oops_buf = vmalloc(record_size);
+ 	if (!cxt->oops_buf) {
 -- 
 1.5.5
 
