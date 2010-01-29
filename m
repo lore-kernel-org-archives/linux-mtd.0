@@ -1,42 +1,26 @@
-Received: from fgwmail7.fujitsu.co.jp ([192.51.44.37])
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NaeGo-0004zk-PT
-	for linux-mtd@lists.infradead.org; Thu, 28 Jan 2010 23:59:35 +0000
-Received: from m5.gw.fujitsu.co.jp ([10.0.50.75])
-	by fgwmail7.fujitsu.co.jp (Fujitsu Gateway) with ESMTP id
-	o0SNxPMh010603 for <linux-mtd@lists.infradead.org> (envelope-from
-	kamezawa.hiroyu@jp.fujitsu.com); Fri, 29 Jan 2010 08:59:25 +0900
-Received: from smail (m5 [127.0.0.1])
-	by outgoing.m5.gw.fujitsu.co.jp (Postfix) with ESMTP id 3DB6345DE4F
+	id 1NaiKu-0004Ln-KS
+	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 04:20:05 +0000
+Received: by bwz4 with SMTP id 4so1564407bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Jan 2010 08:59:25 +0900 (JST)
-Received: from s5.gw.fujitsu.co.jp (s5.gw.fujitsu.co.jp [10.0.50.95])
-	by m5.gw.fujitsu.co.jp (Postfix) with ESMTP id 1B78645DE53
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Jan 2010 08:59:25 +0900 (JST)
-Received: from s5.gw.fujitsu.co.jp (localhost.localdomain [127.0.0.1])
-	by s5.gw.fujitsu.co.jp (Postfix) with ESMTP id F09221DB8040
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Jan 2010 08:59:24 +0900 (JST)
-Received: from m107.s.css.fujitsu.com (m107.s.css.fujitsu.com [10.249.87.107])
-	by s5.gw.fujitsu.co.jp (Postfix) with ESMTP id A4BF8E18001
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Jan 2010 08:59:24 +0900 (JST)
-Date: Fri, 29 Jan 2010 08:56:02 +0900
-From: KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujitsu.com>
-To: Ben Hutchings <bhutchings@solarflare.com>
-Subject: Re: [PATCHv2 0/7] mtd: Dynamic allocation of device numbers
-Message-Id: <20100129085602.19cbf5e1.kamezawa.hiroyu@jp.fujitsu.com>
-In-Reply-To: <1264695638.2783.3.camel@achroite.uk.solarflarecom.com>
-References: <1263337693.3011.14.camel@achroite.uk.solarflarecom.com>
-	<1264695141.1973.148.camel@localhost>
-	<1264695638.2783.3.camel@achroite.uk.solarflarecom.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-net-drivers@solarflare.com,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	Thu, 28 Jan 2010 20:19:58 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1264690003.1973.138.camel@localhost>
+References: <ce9ab5791001130453md91ad46ld84f9d51ccd96e87@mail.gmail.com>
+	<ce9ab5791001130506g28bb330dm79225c688839323d@mail.gmail.com>
+	<ce9ab5791001130520u6cbf0d9cx1f3fd16df31354d@mail.gmail.com>
+	<ce9ab5791001130529l6f2ef9d5k79b6329a98baed54@mail.gmail.com>
+	<1264690003.1973.138.camel@localhost>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Fri, 29 Jan 2010 09:49:38 +0530
+Message-ID: <ce9ab5791001282019w79ed389av6dfe45226af4ee7a@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Creating helper func for block alignment
+	verfication
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -46,38 +30,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 28 Jan 2010 16:20:38 +0000
-Ben Hutchings <bhutchings@solarflare.com> wrote:
+On Thu, Jan 28, 2010 at 8:16 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> Hi,
+>
+> On Wed, 2010-01-13 at 18:59 +0530, Vimal Singh wrote:
+>> From 310f7faa8f319bd9384512f7d5a7f13dcfbeebc8 Mon Sep 17 00:00:00 2001
+>> From: Vimal Singh <vimalsingh@ti.com>
+>> Date: Wed, 13 Jan 2010 18:11:47 +0530
+>> Subject: [PATCH] Creating helper func for block alignment verfication
+>>
+>> These checks are fairly common in 'nand_erase_nand', 'nand_lock'
+>> and 'nand_unlock' functions.
+>>
+>> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> ---
+>> =A0drivers/mtd/nand/nand_base.c | =A0 97 +++++++++++++++----------------=
+-----------
+>> =A01 files changed, 34 insertions(+), 63 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>> index 4e27426..c80cec5 100644
+>> --- a/drivers/mtd/nand/nand_base.c
+>> +++ b/drivers/mtd/nand/nand_base.c
+>> @@ -108,6 +108,37 @@ static int nand_do_write_oob(struct
+>> =A0 */
+>> =A0DEFINE_LED_TRIGGER(nand_led_trigger);
+>>
+>> +static int block_alignment_verification(struct mtd_info *mtd,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 loff_t ofs, uint64_t len)
+>> +{
+>
+> This function checks not only alignment, so the name is bad. I suggest
+> check_offs_len() - it at least does not lie about what it does :-)
 
-> On Thu, 2010-01-28 at 18:12 +0200, Artem Bityutskiy wrote:
-> [...]
-> > When I apply your patches and compile, I get:
-> > 
-> > make[2]: `scripts/unifdef' is up to date.
-> >   Building modules, stage 2.
-> > Kernel: arch/x86/boot/bzImage is ready  (#4)
-> >   MODPOST 150 modules
-> > ERROR: "idr_get_next" [drivers/mtd/mtd.ko] undefined!
-> > make[1]: *** [__modpost] Error 1
-> > make: *** [modules] Error 2
-> > 
-> > Indeed, it is not exported.
-> 
-> This looks like an oversight from when idr_get_next() was introduced.
-> Is there any reason not to export it?  If not, I'll add that to the
-> patch series.
-> 
+OK, no problem.
 
-Ah, sorry. plz add export.
+>
+>> + =A0 =A0 struct nand_chip *chip =3D mtd->priv;
+>> +
+>> + =A0 =A0 DEBUG(MTD_DEBUG_LEVEL3, "%s: start =3D 0x%012llx, len =3D %llu=
+\n",
+>> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, (unsigned long long)=
+ofs, len);
+>
+> No, you should keep the DEBUG part in the caller. Because of __func__.
 
+Agree.
+
+>
+> Also please, introduce the helper in the _first_ patch, and then use it
+> in your functions in the second patch. This is more logical.
+
+Before 1st patch this helper will be called by just one function
+"nand_erase_nand". And then in that creating helper function does not
+makes sense to me.
+To me doing this in 2nd patch looks more logical.
+
+Either way we will achieve same goal only number of lines in patches will d=
+efer.
+So, if you still insist I can make it 1st patch.
+
+--=20
 Regards,
--Kame
-
-> Ben.
-> 
-> -- 
-> Ben Hutchings, Senior Software Engineer, Solarflare Communications
-> Not speaking for my employer; that's the marketing department's job.
-> They asked us to note that Solarflare product names are trademarked.
-> 
-> 
+Vimal Singh
