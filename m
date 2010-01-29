@@ -1,18 +1,25 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
+Received: from rhun.apana.org.au ([64.62.148.172] helo=arnor.apana.org.au)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NaoRl-0000jl-DU
-	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 10:51:33 +0000
-Date: Fri, 29 Jan 2010 11:51:06 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Marco Donadio <mdonadio@gmv.com>
-Subject: Re: JFFS2 error messages
-In-Reply-To: <7FAAF01335A90841B8C1098FB08222A6908DFCB01F@GMVMAIL6.gmv.es>
-Message-ID: <Pine.LNX.4.64.1001291147400.32263@lnxricardw.se.axis.com>
-References: <7FAAF01335A90841B8C1098FB08222A6908DFCB01F@GMVMAIL6.gmv.es>
+	id 1Nap1N-0005O8-1M
+	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 11:28:21 +0000
+Date: Fri, 29 Jan 2010 22:27:57 +1100
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBIFS assert failed in ubifs_dirty_inode
+Message-ID: <20100129112757.GA1309@gondor.apana.org.au>
+References: <4B591573.60602@theptrgroup.com>
+	<1264480808.2401.78.camel@localhost.localdomain>
+	<1264484928.3536.1017.camel@calx>
+	<1264500214.3867.21.camel@localhost>
+	<4B5F9A78.7080000@theptrgroup.com>
+	<1264558433.3536.1543.camel@calx> <4B5FADE8.30803@theptrgroup.com>
+	<1264566010.2401.143.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1264566010.2401.143.camel@localhost.localdomain>
+Cc: Jeff Angielski <jeff@theptrgroup.com>, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>, Matt Mackall <mpm@selenic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Fri, 29 Jan 2010, Marco Donadio wrote:
-
-> Hi,
+On Wed, Jan 27, 2010 at 06:20:10AM +0200, Artem Bityutskiy wrote:
 >
-> I'm designing a board based on MPC5121 PowerPc.
->
-> I have some problems about linux start-up:
->
-> an error messages appears and sometimes Linux starts and sometimes not (I=
- attached capture of errors).
+> Thanks for testing. So, who would bring Matt's patch upstream then, hmm?
 
-The 'Empty flash at ... ends at ...' usually indicates some sort of=20
-mismatch between the sector or block size of the flash and the erasesize=20
-used when making the image. It could be harmless, or could indicate a more=
-=20
-serious configuration problem.
-
-> I read FAQ about JFFS2 error messages and I have a question:
->
-> There is some trick to distinguish between node corruptions cause by=20
-> unclean reboots and by real media corruptions?
-
-Experience perhaps? I think the thing is that JFFS2 doesn't know how=20
-serious it is, all it can do is log the errors it finds.
-
-The 'Truncating ...' messages in your dump look severe to me. Actually,=20
-I've never seen those warnings produced (but then again my experience=20
-across various Linux platforms is limited).
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+I've got it in crypto-2.6.  Thanks!
+-- 
+Visit Openswan at http://www.openswan.org/
+Email: Herbert Xu ~{PmV>HI~} <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
