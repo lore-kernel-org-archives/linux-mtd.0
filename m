@@ -1,15 +1,15 @@
-Received: from fg-out-1718.google.com ([72.14.220.158])
+Received: from fg-out-1718.google.com ([72.14.220.155])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NbEqu-0006Ex-W0
+	id 1NbEqz-0006MR-MX
 	for linux-mtd@lists.infradead.org; Sat, 30 Jan 2010 15:03:23 +0000
-Received: by fg-out-1718.google.com with SMTP id 16so49893fgg.0
+Received: by fg-out-1718.google.com with SMTP id 16so49897fgg.0
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 30 Jan 2010 07:03:12 -0800 (PST)
+	Sat, 30 Jan 2010 07:03:17 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 06/17] blktrans: flush all requests before we remove the device
-Date: Sat, 30 Jan 2010 17:02:37 +0200
-Message-Id: <1264863768-27606-7-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 09/17] MTD: nand: make MTD_OOB_PLACE work correctly.
+Date: Sat, 30 Jan 2010 17:02:40 +0200
+Message-Id: <1264863768-27606-10-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1264863768-27606-1-git-send-email-maximlevitsky@gmail.com>
 References: <1264863768-27606-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -26,53 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Flush all requests, so we can be sure we don't deadlock the system later
-when we remove the disk queue.
+MTD_OOB_PLACE is supposed to read/write raw oob data similiar to MTD_OOB_RAW
+however due to a bug, currently its not possible to read more data that
+specified in oob 'free' regions
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtd_blkdevs.c |   14 +++++++++++++-
- 1 files changed, 13 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/nand_base.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 841c6ae..a65eb07 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -115,7 +115,13 @@ static int mtd_blktrans_thread(void *arg)
- static void mtd_blktrans_request(struct request_queue *rq)
- {
- 	struct mtd_blktrans_dev *dev = rq->queuedata;
--	wake_up_process(dev->thread);
-+	struct request *req = NULL;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8f2958f..405c538 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1232,6 +1232,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	int ret = 0;
+ 	uint32_t readlen = ops->len;
+ 	uint32_t oobreadlen = ops->ooblen;
++	uint32_t max_oobsize = ops->mode == MTD_OOB_AUTO ?
++		mtd->oobavail : mtd->oobsize;
 +
-+	if (dev->deleted)
-+		while ((req = blk_fetch_request(rq)) != NULL)
-+			__blk_end_request_all(req, -ENODEV);
-+	else
-+		wake_up_process(dev->thread);
- }
+ 	uint8_t *bufpoi, *oob, *buf;
  
+ 	stats = mtd->ecc_stats;
+@@ -1282,10 +1285,11 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			buf += bytes;
  
-@@ -358,6 +364,8 @@ error1:
- 
- int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- {
-+	unsigned long flags;
+ 			if (unlikely(oob)) {
 +
- 	if (mutex_trylock(&mtd_table_mutex)) {
- 		mutex_unlock(&mtd_table_mutex);
- 		BUG();
-@@ -368,7 +376,11 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 	/* stop new requests to arrive */
- 	del_gendisk(old->disk);
- 
-+	/* flush current requests */
-+	spin_lock_irqsave(&old->queue_lock, flags);
- 	old->deleted = 1;
-+	blk_start_queue(old->rq);
-+	spin_unlock_irqrestore(&old->queue_lock, flags);
- 
- 	/* Stop the thread */
- 	kthread_stop(old->thread);
+ 				/* Raw mode does data:oob:data:oob */
+ 				if (ops->mode != MTD_OOB_RAW) {
+ 					int toread = min(oobreadlen,
+-						chip->ecc.layout->oobavail);
++								max_oobsize);
+ 					if (toread) {
+ 						oob = nand_transfer_oob(chip,
+ 							oob, ops, toread);
 -- 
 1.6.3.3
