@@ -1,17 +1,17 @@
-Received: from mail-fx0-f222.google.com ([209.85.220.222])
+Received: from mail-bw0-f212.google.com ([209.85.218.212])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NbErF-0006qp-00
-	for linux-mtd@lists.infradead.org; Sat, 30 Jan 2010 15:03:37 +0000
-Received: by mail-fx0-f222.google.com with SMTP id 22so1373920fxm.2
+	id 1NbFCO-0008Ka-Iz
+	for linux-mtd@lists.infradead.org; Sat, 30 Jan 2010 15:25:30 +0000
+Received: by bwz4 with SMTP id 4so2521213bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 30 Jan 2010 07:03:32 -0800 (PST)
+	Sat, 30 Jan 2010 07:25:22 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 17/17] MTD: Add new SmartMedia/xD FTL
-Date: Sat, 30 Jan 2010 17:02:48 +0200
-Message-Id: <1264863768-27606-18-git-send-email-maximlevitsky@gmail.com>
-In-Reply-To: <1264863768-27606-1-git-send-email-maximlevitsky@gmail.com>
-References: <1264863768-27606-1-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH] MTD: Add new SmartMedia/xD FTL
+Date: Sat, 30 Jan 2010 17:25:00 +0200
+Message-Id: <1264865100-29347-1-git-send-email-maximlevitsky@gmail.com>
+In-Reply-To: <1264863768-27606-18-git-send-email-maximlevitsky@gmail.com>
+References: <1264863768-27606-18-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
 	Artem Bityutskiy <dedekind1@gmail.com>, joern <joern@logfs.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>,
@@ -26,6 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Drat... forgot to compile....
+This is an updated version
+(This time compile and run tested with xd card)
+
+---
 This implements new readwrite SmartMedia/xd FTL.
 
 mtd driver must have support proper ECC and badblock vertification
@@ -38,9 +43,9 @@ Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
  drivers/mtd/Kconfig  |   21 +
  drivers/mtd/Makefile |    1 +
- drivers/mtd/sm_ftl.c | 1260 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/sm_ftl.c | 1258 ++++++++++++++++++++++++++++++++++++++++++++++++++
  drivers/mtd/sm_ftl.h |   92 ++++
- 4 files changed, 1374 insertions(+), 0 deletions(-)
+ 4 files changed, 1372 insertions(+), 0 deletions(-)
  create mode 100644 drivers/mtd/sm_ftl.c
  create mode 100644 drivers/mtd/sm_ftl.h
 
@@ -90,10 +95,10 @@ index 82d1e4d..d53357b 100644
  nftl-objs		:= nftlcore.o nftlmount.o
 diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
 new file mode 100644
-index 0000000..107c1de
+index 0000000..87cc604
 --- /dev/null
 +++ b/drivers/mtd/sm_ftl.c
-@@ -0,0 +1,1260 @@
+@@ -0,0 +1,1258 @@
 +/*
 + * Copyright (C) 2009 - Maxim Levitsky
 + * SmartMedia/xD translation layer
@@ -194,7 +199,7 @@ index 0000000..107c1de
 +			container_of(dev_attr,
 +				struct sm_sysfs_attribute, dev_attr);
 +
-+		kfree(sm_atrr->data);
++		kfree(sm_attr->data);
 +		kfree(sm_attr);
 +	}
 +
@@ -1254,10 +1259,8 @@ index 0000000..107c1de
 +
 +	trans->disk_attributes = sm_create_sysfs_attributes(ftl);
 +
-+	sm_printk("Found %d MiB %s FTL on mtd%d",
-+		(int)(mtd->size / (1024 * 1024)),
-+		mtd->technology == MTD_TECHNOLOGY_XD ? "xD" : "SmartMedia",
-+								mtd->index);
++	sm_printk("Found %d MiB xD/SmartMedia FTL on mtd%d",
++		(int)(mtd->size / (1024 * 1024)), mtd->index);
 +
 +	dbg("FTL layout:");
 +	dbg("%d zone(s), each consists of %d blocks (+%d spares)",
