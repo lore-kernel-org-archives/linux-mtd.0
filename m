@@ -1,18 +1,19 @@
-Received: from exchange.solarflare.com ([216.237.3.220])
+Received: from fg-out-1718.google.com ([72.14.220.158])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Naxwl-0000UP-GF
-	for linux-mtd@lists.infradead.org; Fri, 29 Jan 2010 21:00:12 +0000
-Subject: [PATCHv3 9/9] mtdchar: Register the full range of minor numbers
-From: Ben Hutchings <bhutchings@solarflare.com>
+	id 1NbEqn-0006Ex-Pi
+	for linux-mtd@lists.infradead.org; Sat, 30 Jan 2010 15:03:10 +0000
+Received: by fg-out-1718.google.com with SMTP id 16so49893fgg.0
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 30 Jan 2010 07:03:03 -0800 (PST)
+From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1264798537.2785.25.camel@achroite.uk.solarflarecom.com>
-References: <1264798537.2785.25.camel@achroite.uk.solarflarecom.com>
-Content-Type: text/plain
-Date: Fri, 29 Jan 2010 21:00:04 +0000
-Message-Id: <1264798804.2785.42.camel@achroite.uk.solarflarecom.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-net-drivers@solarflare.com, linux-mtd@lists.infradead.org
+Subject: [PATCH V5] Work to enable SmartMedia/xD support
+Date: Sat, 30 Jan 2010 17:02:31 +0200
+Message-Id: <1264863768-27606-1-git-send-email-maximlevitsky@gmail.com>
+Cc: Alex Dubov <oakad@yahoo.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	joern <joern@logfs.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-register_chrdev() registers minor numbers up to 255, but we can now
-potentially have much larger numbers.
+Hi,
 
-Signed-off-by: Ben Hutchings <bhutchings@solarflare.com>
----
- drivers/mtd/mtdchar.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+Here is another minor revision of my work.
+In this version I added few (two) sysfs attributes for udev rules
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 04fd7e5..09b0ab5 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -955,7 +955,8 @@ static int __init init_mtdchar(void)
- {
- 	int status;
- 
--	status = register_chrdev(MTD_CHAR_MAJOR, "mtd", &mtd_fops);
-+	status = __register_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS,
-+				   "mtd", &mtd_fops);
- 	if (status < 0) {
- 		printk(KERN_NOTICE "Can't allocate major number %d for Memory Technology Devices.\n",
- 		       MTD_CHAR_MAJOR);
-@@ -966,7 +967,7 @@ static int __init init_mtdchar(void)
- 
- static void __exit cleanup_mtdchar(void)
- {
--	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
-+	__unregister_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS, "mtd");
- }
- 
- module_init(init_mtdchar);
--- 
-1.5.5
+One attribute is exported my mtd driver, and specifies if this is smartmedia or
+xd card (its called "media_type")
 
--- 
-Ben Hutchings, Senior Software Engineer, Solarflare Communications
-Not speaking for my employer; that's the marketing department's job.
-They asked us to note that Solarflare product names are trademarked.
+Another attribute is exported by FTL, and it is extracted vendor name from the card CIS.
+I added short common code to translation layer to allow such thing.
+
+Tested this again on 256 byte/page nandsim device, and everything works as usual.
+I don't think I will need to change anything major from now on.
+
+Best regards,
+	Maxim Levitsky
