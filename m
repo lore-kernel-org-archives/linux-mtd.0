@@ -1,22 +1,25 @@
-Received: from ey-out-1920.google.com ([74.125.78.146])
+Received: from mail-ew0-f220.google.com ([209.85.219.220])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NbkUb-0006jk-U9
-	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 00:50:22 +0000
-Received: by ey-out-1920.google.com with SMTP id 26so773191eyw.26
+	id 1NbnTq-0002jo-7b
+	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 04:01:47 +0000
+Received: by ewy20 with SMTP id 20so4700389ewy.20
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 31 Jan 2010 16:50:16 -0800 (PST)
+	Sun, 31 Jan 2010 20:01:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <dbdb2ea61001311517o730595b3j1c32bc8327908f43@mail.gmail.com>
-References: <dbdb2ea61001291118v78722d73gee24345e61e41766@mail.gmail.com>
-	<1264796505.21418.3.camel@localhost.localdomain>
-	<dbdb2ea61001311517o730595b3j1c32bc8327908f43@mail.gmail.com>
-Date: Sun, 31 Jan 2010 19:50:16 -0500
-Message-ID: <dbdb2ea61001311650v136a002v3a8e261e91d4a457@mail.gmail.com>
-Subject: Re: ubiformat image verification
-From: twebb <taliaferro62@gmail.com>
+Sender: jonringle@gmail.com
+In-Reply-To: <1264610155.1973.46.camel@localhost>
+References: <152584231001141415x2086fed9rd8566b6609a87b7e@mail.gmail.com>
+	<1263724803.8276.138.camel@localhost.localdomain>
+	<152584231001221121u2ffc1816o18d71e6099f8fc6@mail.gmail.com>
+	<1264609500.1973.42.camel@localhost>
+	<152584231001270834l49147b4di6c825acd42a76f8d@mail.gmail.com>
+	<1264610155.1973.46.camel@localhost>
+Date: Sun, 31 Jan 2010 23:01:40 -0500
+Message-ID: <152584231001312001s51aa46c3y8c992d7f14c69f1a@mail.gmail.com>
+Subject: Re: shrinking ubifs?
+From: Jon Ringle <jon@ringle.org>
 To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,24 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>> Can the image that is written to NAND using ubiformat be read back
->>> (using nanddump) and compared identically to the original image file?
->>> I want to somehow verify that the image was written error-free to NAND
->>> flash.
+On Wed, Jan 27, 2010 at 11:35 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> On Wed, 2010-01-27 at 11:34 -0500, Jon Ringle wrote:
+>> On Wed, Jan 27, 2010 at 11:25 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>> > On Fri, 2010-01-22 at 14:21 -0500, Jon Ringle wrote:
+>> >> How about the opposite. If the static volumes became smaller freeing
+>> >> up some LEBs. Can the UBIFS be expanded to make use of the freed LEBs?
+>> >
+>> > That works automatically. UBIFS expands automatically, but up to the
+>> > size which you specified with the '-c' mkfs.ubifs option.
 >>
->> It can. But it is simpler to add a --check option to ubiformat and teach
->> it to read stuff back and verify.
->>
+>> Can the same thing be done using ubimkvol?
+>> ubimkvol -m -N ubifs /dev/ubi0
 >
-> Yes, a --check or --verify option would be nice. =A0Does it matter
-> whether the underlying NAND flash is erased or not prior to the
-> ubiformat?
->
+> Sorry, I don't understand the question...
 
-I'm finding that it does matter whether the NAND is erased or not
-first.  If erased, the comparison after read back is successful.  If
-not erased in advance, the comparison fails.  Can you confirm that
-this is accurate?
+I create my ubi volumes from an initramfs environment that is compiled
+against klibc. So far, I haven't been able to build mkfs.ubifs against
+klibc, so I create my ubifs volume by using ubimkvol and then mounting
+it as ubifs.
 
-Thanks,
-twebb
+Jon
