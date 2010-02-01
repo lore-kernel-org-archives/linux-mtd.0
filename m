@@ -1,18 +1,18 @@
-Received: from mail-bw0-f212.google.com ([209.85.218.212])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nbyxp-00058g-5b
-	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 16:17:30 +0000
-Received: by bwz4 with SMTP id 4so3643499bwz.2
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nc2bE-0007a9-43
+	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 20:10:25 +0000
+Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
+	by gw1.transmode.se (Postfix) with ESMTP id D7A63259870
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 01 Feb 2010 08:17:24 -0800 (PST)
-MIME-Version: 1.0
-Sender: jonringle@gmail.com
-Date: Mon, 1 Feb 2010 11:17:23 -0500
-Message-ID: <152584231002010817n765ffd96j7f628d1f23a84b7c@mail.gmail.com>
-Subject: fsck.ubifs?
-From: Jon Ringle <jon@ringle.org>
+	Mon,  1 Feb 2010 21:10:09 +0100 (CET)
+Subject: lock_super twice?
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Message-ID: <OFBAF6655B.16A56429-ONC12576BD.006E37E2-C12576BD.006E950A@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Mon, 1 Feb 2010 21:07:51 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +22,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have my ubi0 partitioned with two static volumes: kernel and
-squashfs, and one dynamic volume: ubifs.
-One of the tests that I do to test for recovery from corruption is
-perform a flash_erase on random blocks on the mtd device that ubi0 is
-on and reboot. During bootup, I am able to easily detect corruption in
-the static ubi volumes with the crc checksum and these images are
-automatically reflashed.
-However, if there is corruption in the ubifs, quite often ubifs mounts
-successfully and only when trying to access files are problems being
-reported. Is there any kind of fsck.ubifs type of utility that can be
-used to help with this problem?
 
-Thanks,
-Jon
+I am looking at jffs2_write_super() on how to make erase stop when you umount
+the root FS and I don't get the locking here. Both fs/super.c and
+jffs_write_super take do lock_super(sb). How does that work?
+
+ Jocke
