@@ -1,24 +1,21 @@
 Received: from mail-ew0-f218.google.com ([209.85.219.218])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nbnvw-000810-IY
-	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 04:30:49 +0000
-Received: by ewy10 with SMTP id 10so2662596ewy.31
+	id 1Nbnye-0008Ka-Oj
+	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 04:33:37 +0000
+Received: by ewy10 with SMTP id 10so2664443ewy.31
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 31 Jan 2010 20:30:40 -0800 (PST)
-Subject: Re: shrinking ubifs?
+	Sun, 31 Jan 2010 20:33:31 -0800 (PST)
+Subject: Re: ubiformat image verification
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Ringle <jon@ringle.org>
-In-Reply-To: <152584231001312001s51aa46c3y8c992d7f14c69f1a@mail.gmail.com>
-References: <152584231001141415x2086fed9rd8566b6609a87b7e@mail.gmail.com>
-	<1263724803.8276.138.camel@localhost.localdomain>
-	<152584231001221121u2ffc1816o18d71e6099f8fc6@mail.gmail.com>
-	<1264609500.1973.42.camel@localhost>
-	<152584231001270834l49147b4di6c825acd42a76f8d@mail.gmail.com>
-	<1264610155.1973.46.camel@localhost>
-	<152584231001312001s51aa46c3y8c992d7f14c69f1a@mail.gmail.com>
+To: twebb <taliaferro62@gmail.com>
+In-Reply-To: <dbdb2ea61001311650v136a002v3a8e261e91d4a457@mail.gmail.com>
+References: <dbdb2ea61001291118v78722d73gee24345e61e41766@mail.gmail.com>
+	<1264796505.21418.3.camel@localhost.localdomain>
+	<dbdb2ea61001311517o730595b3j1c32bc8327908f43@mail.gmail.com>
+	<dbdb2ea61001311650v136a002v3a8e261e91d4a457@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 01 Feb 2010 06:30:37 +0200
-Message-Id: <1264998637.2517.4.camel@localhost.localdomain>
+Date: Mon, 01 Feb 2010 06:33:29 +0200
+Message-Id: <1264998809.2517.7.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -32,30 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-01-31 at 23:01 -0500, Jon Ringle wrote:
-> On Wed, Jan 27, 2010 at 11:35 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Wed, 2010-01-27 at 11:34 -0500, Jon Ringle wrote:
-> >> On Wed, Jan 27, 2010 at 11:25 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> >> > On Fri, 2010-01-22 at 14:21 -0500, Jon Ringle wrote:
-> >> >> How about the opposite. If the static volumes became smaller freeing
-> >> >> up some LEBs. Can the UBIFS be expanded to make use of the freed LEBs?
-> >> >
-> >> > That works automatically. UBIFS expands automatically, but up to the
-> >> > size which you specified with the '-c' mkfs.ubifs option.
+On Sun, 2010-01-31 at 19:50 -0500, twebb wrote:
+> >>> Can the image that is written to NAND using ubiformat be read back
+> >>> (using nanddump) and compared identically to the original image file?
+> >>> I want to somehow verify that the image was written error-free to NAND
+> >>> flash.
 > >>
-> >> Can the same thing be done using ubimkvol?
-> >> ubimkvol -m -N ubifs /dev/ubi0
+> >> It can. But it is simpler to add a --check option to ubiformat and teach
+> >> it to read stuff back and verify.
+> >>
 > >
-> > Sorry, I don't understand the question...
+> > Yes, a --check or --verify option would be nice.  Does it matter
+> > whether the underlying NAND flash is erased or not prior to the
+> > ubiformat?
+> >
 > 
-> I create my ubi volumes from an initramfs environment that is compiled
-> against klibc. So far, I haven't been able to build mkfs.ubifs against
-> klibc, so I create my ubifs volume by using ubimkvol and then mounting
-> it as ubifs.
+> I'm finding that it does matter whether the NAND is erased or not
+> first.  If erased, the comparison after read back is successful.  If
+> not erased in advance, the comparison fails.  Can you confirm that
+> this is accurate?
 
-I see. Well, that is about UBIFS, about the default formatting code,
-when UBIFS formats empty volume. That code should be hacked and the
-maximum FS size should be increased to the value you need.
+ubiformat works correctly without any prior erase. It erases everything
+itself, you do not need to do this. Erasing is bad because you loose
+erase counters.
+
+You cannot verify things by reading back, because ubiformat changes
+erase counters, so they are not the same as in input UBI the image.
+
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
