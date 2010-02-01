@@ -1,16 +1,20 @@
-Received: from blu0-omc3-s10.blu0.hotmail.com ([65.55.116.85])
+Received: from mail.renesas.com ([202.234.163.13] helo=mail03.idc.renesas.com)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NbtUC-0002NE-IK
-	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 10:26:32 +0000
-Message-ID: <BLU108-W25DE0DC220AD6F99A8C5879C580@phx.gbl>
-From: d binderman <dcb314@hotmail.com>
-To: <dwmw2@infradead.org>
-Subject: mtd/maps/ceiva.c: possibly uninitialised local variable nr
-Date: Mon, 1 Feb 2010 10:26:26 +0000
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
+	id 1Nbu0g-00082W-Hz
+	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 11:00:07 +0000
+Date: Mon, 01 Feb 2010 19:59:40 +0900
+From: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+Subject: Re: [PATCH] mtd: trivial sh_flctl changes
+In-reply-to: <20100127091120.21312.77488.sendpatchset@rxone.opensource.se>
+Sender: shimoda.yoshihiro@renesas.com
+To: Magnus Damm <magnus.damm@gmail.com>
+Message-id: <4B66B41C.4020904@renesas.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-2022-JP
+Content-transfer-encoding: 7bit
+References: <20100127091120.21312.77488.sendpatchset@rxone.opensource.se>
+Cc: dwmw2@infradead.org, lethal@linux-sh.org, linux-mtd@lists.infradead.org,
+	linux-sh@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,74 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Magnus Damm wrote:
+> From: Magnus Damm <damm@opensource.se>
+> 
+> This patch contains a few changes for the sh_flctl driver:
+>  - not sh7723-only driver - get rid of kconfig dependency
+>  - use dev_err() instead of printk()
+>  - use __devinit and __devexit for probe()/remove()
+>  - fix probe() return values
+> 
 
+Thank you for your patch.
 
-Hello there=2C
+Acked-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
 
-I just ran the sourceforge tool cppcheck over the source code of the
-new Linux kernel 2.6.33-rc6
-
-It said
-
-[./mtd/maps/ceiva.c:269]: (error) Uninitialized variable: nr
-
-The source code is
-
-static int __init clps_setup_flash(void)
-{
-=A0=A0=A0=A0=A0=A0=A0 int nr=3B
-
-#ifdef CONFIG_ARCH_CEIVA
-=A0=A0=A0=A0=A0=A0=A0 if (machine_is_ceiva()) {
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[0].base =3D CS0_PHYS_BAS=
-E=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[0].size =3D SZ_32M=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[0].width =3D CEIVA_FLASH=
-_WIDTH=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[1].base =3D CS1_PHYS_BAS=
-E=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[1].size =3D SZ_32M=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[1].width =3D CEIVA_FLASH=
-_WIDTH=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 nr =3D 2=3B
-=A0=A0=A0=A0=A0=A0=A0 }
-#endif
-=A0=A0=A0=A0=A0=A0=A0 return nr=3B
-}
-
-There is no code to cope with the case that function machine_is_ceiva() ret=
-urns 0
-or that CONFIG_ARCH_CEIVA is undefined.
-
-Suggest new belt'n'braces code
-
-static int __init clps_setup_flash(void)
-{
-=A0=A0=A0=A0=A0=A0=A0 int nr =3D 0=3B
-
-#ifdef CONFIG_ARCH_CEIVA
-=A0=A0=A0=A0=A0=A0=A0 if (machine_is_ceiva()) {
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[0].base =3D CS0_PHYS_BAS=
-E=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[0].size =3D SZ_32M=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[0].width =3D CEIVA_FLASH=
-_WIDTH=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[1].base =3D CS1_PHYS_BAS=
-E=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[1].size =3D SZ_32M=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info[1].width =3D CEIVA_FLASH=
-_WIDTH=3B
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 nr =3D 2=3B
-=A0=A0=A0=A0=A0=A0=A0 }
-#endif
-=A0=A0=A0=A0=A0=A0=A0 return nr=3B
-}
-
-Regards
-
-David Binderman
-
- 		 	   		 =20
-_________________________________________________________________
-Tell us your greatest=2C weirdest and funniest Hotmail stories
-http://clk.atdmt.com/UKM/go/195013117/direct/01/=
+Thanks,
+Yoshihiro Shimoda
