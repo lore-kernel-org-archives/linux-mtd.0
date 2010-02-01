@@ -1,20 +1,20 @@
-Received: from be1ssnxpe2.nxp.com ([57.67.164.70])
+Received: from krynn.se.axis.com ([193.13.178.10])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nbobs-0005hi-DW
-	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 05:14:08 +0000
-Received: from EU1RDCRDC1VW025.exi.nxp.com ([134.27.176.170])
-	by be1ssnxpe2.nxp.com (8.14.3/8.14.3) with ESMTP id o115E1ie029447
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Mon, 1 Feb 2010 06:14:01 +0100
-From: Deven Balani <deven.balani@nxp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 1 Feb 2010 06:13:55 +0100
-Subject: flash_eraseall -j and refusing to mount jffs2 on NAND flash partition
-Message-ID: <BD9D98B4D828E1499D717DBA564A1F2717C04459CC@eu1rdcrdc1wx031.exi.nxp.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1Nbqzl-0005BP-M2
+	for linux-mtd@lists.infradead.org; Mon, 01 Feb 2010 07:46:57 +0000
+Date: Mon, 1 Feb 2010 08:46:44 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: [PATCH 03/17] blktrans: track open and close calls.
+In-Reply-To: <1264863768-27606-4-git-send-email-maximlevitsky@gmail.com>
+Message-ID: <Pine.LNX.4.64.1002010845040.13031@lnxricardw.se.axis.com>
+References: <1264863768-27606-1-git-send-email-maximlevitsky@gmail.com>
+	<1264863768-27606-4-git-send-email-maximlevitsky@gmail.com>
 MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,81 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-I'm using linux kernel 2.6.28.9 and flash_eraseall -j from mtd-utils-1.2.0 =
-to install jffs2 cleanmarker on a NAND flash partition.=20
+On Sat, 30 Jan 2010, Maxim Levitsky wrote:
 
-Doing so I ran into two problems?
+> This patch adds tracking for open and close calls.
+> Now trans ->open and ->release are never called twise in a row
+> ->release is also called once before mtd device disappers
+> ...
 
-1. When I attempted to install jffs2 cleanmarker using flash_eraseall -j, I=
- got following error -
-
-flash_eraseall:/dev/mtd6: unable to get NAND oobinfo
-
-I did some debugging to find that MEMGETOOBSEL ioctl is returning -ENOTTY i=
-n flash_eraseall.c. Debugged further to find that there is a size mismatch =
-between "struct nand_oobinfo" defined in mtd-utils-1.2.0/include/mtd/mtd-ab=
-i.h=20
-
-struct nand_oobinfo {
-   uint32_t useecc;
-   uint32_t eccbytes;
-   uint32_t oobfree[8][2];
-   uint32_t eccpos[32];
-};
-
-Whereas in linux-2.6.28.9/include/mtd/mtd-abi.h it is defined as -
-struct nand_oobinfo {
-   uint32_t useecc;
-   uint32_t eccbytes;
-   uint32_t oobfree[8][2];
-   uint32_t eccpos[64];
-};
-
-I was able to get around this problem by changing the size of eccpos[] to 6=
-4 in mtd-utils-1.2.0/include/mtd/mtd-abi.h.
-
-2. Then I tried flash_eraseall -j /dev/mtd6 on NAND partition, it completed=
- successfully but subsequent mount -t jffs2 failed -
-
-# mount -t jffs2 /dev/mtdblock6 /mnt
-Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
-empty_blocks 0, bad_blocks 0, c->nr_blocks 320
-mount: Mounting /dev/mtdblock6 on /mnt failed: Input/output error
-
-I google'd and found that there has been some discussion on this long back =
-and following was the last post.
-
-> Re: Flash_eraseall -j and cowardly refusing to mount
+> --- a/drivers/mtd/mtd_blkdevs.c
+> +++ b/drivers/mtd/mtd_blkdevs.c
+> @@ -128,6 +128,9 @@ static int blktrans_open(struct block_device *bdev, f=
+mode_t mode)
+> =09if (!get_mtd_device(NULL, dev->mtd->index))
+> =09=09goto out;
 >
-> Jeff Hane jhane at mobilygen.com
-> Mon Jan 7 13:39:19 EST 2008
+> +=09if (dev->open++)
+> +=09=09goto out;
+> +
+> =09if (!try_module_get(tr->owner))
+> =09=09goto out_tr;
 >
-> But doesn't this only fix the case where you have contiguous 8 bytes to
-> write the cleanmarker?  flash_eraseall -j uses MTD_PLACE to write the
-> cleanmarker BUT jffs2 uses MTD_AUTO to read the cleanmarker.
-> For example, if your oob area has byte 0 as the bad block indicator and
-> bytes 8-10 have ecc, there are only 7 consecutive free bytes.
-> flash_eraseall -j will only write 7 bytes so jffs2 will fail when
-> mounting the filesystem because it will read 8 bytes.  The 8th byte,
-> which will be byte 12, will still be FF.
->  It seems there should be an ioctl that would allow one to read/write
-> the oob area using MTD_AUTO???
+> @@ -153,6 +156,10 @@ static int blktrans_release(struct gendisk *disk, fm=
+ode_t mode)
+> =09struct mtd_blktrans_ops *tr =3D dev->tr;
+> =09int ret =3D 0;
+>
+> +=09dev->open--;
+> +=09if (dev->open)
+> +=09=09return 0;
+> +
 
-> jeff
+Just a very minor quibble: if you use if (dev->open++) in one function,=20
+why not use if (--dev->open) in the other? Or separate the=20
+increment/decrement from the test, depending on you style preferences.
 
-I still see that mtd-utils still don't support this feature. Are there any =
-plans to support this feature in mtd-utils?
-
-I can get around this problem, if I do just flash_eraseall without -j optio=
-n and then using "mount -t jffs2 -rw" so that jffs2 cleanmarkers are instal=
-led during mount time.
-
-I'm not blocked by these problems anyways just thought to bring it to the n=
-otice of community.=20
-
-Comments and suggestions are welcome.
-
-Thanks,
-Deven
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
