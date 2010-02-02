@@ -1,14 +1,13 @@
-Message-Id: <201002022243.o12MhA38019179@imap1.linux-foundation.org>
-Subject: [patch 2/5] jffs2: avoid using C++ keyword `new' in userspace-visible
-	header
+Message-Id: <201002022243.o12Mh9er019176@imap1.linux-foundation.org>
+Subject: [patch 1/5] jffs2: fix memory corruption in jffs2_read_inode_range()
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Tue, 02 Feb 2010 14:43:10 -0800
+Date: Tue, 02 Feb 2010 14:43:09 -0800
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
-	rdiezmail-kernelbugzilla@yahoo.de
+Cc: neilb@suse.de, akpm@linux-foundation.org, avorontsov@ru.mvista.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,79 +17,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Andrew Morton <akpm@linux-foundation.org>
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
 
-Addresses http://bugzilla.kernel.org/show_bug.cgi?id=14995
+In 2.6.23 kernel, commit a32ea1e1f925399e0d81ca3f7394a44a6dafa12c ("Fix
+read/truncate race") fixed a race in the generic code, and as a side
+effect, now do_generic_file_read() can ask us to readpage() past the
+i_size, which seems to be correctly handled by the block routines (e.g. 
+block_read_full_page() fills the page with zeroes in case if somebody is
+trying to read past the last inode's block).
 
-Reported-by: R. Diez <rdiezmail-kernelbugzilla@yahoo.de>
+JFFS2 doesn't handle this, instead jffs2_read_inode_range() is trying to
+lookup the fragments which do not belong to anything, and
+jffs2_lookup_node_frag() happily returns "the closest smaller match" which
+is OK for most cases (I guess), but in our case there wasn't anything
+meaningful to lookup in the first place.
+
+After we found the bogus fragment, the code can branch to 'Filling frag
+hole' case that does
+
+  memset(buf, 0, min(end, frag->ofs + frag->size) - offset);
+
+and since 'frag' is bogus, its ofs + size can be smaller than the real
+'offset' (i.e.  index << PAGE_CACHE_SHIFT), and so the code turns into
+
+  memset(buf, 0, <huge unsigned negative>);
+
+Hopefully, in most cases the corruption is fatal, and quickly causing
+random oopses, like this:
+
+  root@10.0.0.4:~/ltp-fs-20090531# ./testcases/kernel/fs/ftest/ftest01
+  Unable to handle kernel paging request for data at address 0x00000008
+  Faulting instruction address: 0xc01cd980
+  Oops: Kernel access of bad area, sig: 11 [#1]
+  [...]
+  NIP [c01cd980] rb_insert_color+0x38/0x184
+  LR [c0043978] enqueue_hrtimer+0x88/0xc4
+  Call Trace:
+  [c6c63b60] [c004f9a8] tick_sched_timer+0xa0/0xe4 (unreliable)
+  [c6c63b80] [c0043978] enqueue_hrtimer+0x88/0xc4
+  [c6c63b90] [c0043a48] __run_hrtimer+0x94/0xbc
+  [c6c63bb0] [c0044628] hrtimer_interrupt+0x140/0x2b8
+  [c6c63c10] [c000f8e8] timer_interrupt+0x13c/0x254
+  [c6c63c30] [c001352c] ret_from_except+0x0/0x14
+  --- Exception: 901 at memset+0x38/0x5c
+      LR = jffs2_read_inode_range+0x144/0x17c
+  [c6c63cf0] [00000000] (null) (unreliable)
+
+This patch fixes the issue, plus fixes all LTP tests on NAND/UBI with
+JFFS2 filesystem that were failing since 2.6.23 (seems like the bug above
+also broke the truncation).
+
+Note that the bug is only reproducible with write-buffered MTD devices
+(e.g.  NAND, UBI), which is a mystery to me (though I didn't look close
+enough, possibly there is a race between gc and wbuf code, but I don't see
+it and obviously it isn't that fatal).
+
+Signed-off-by: Anton Vorontsov <avorontsov@ru.mvista.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Neil Brown <neilb@suse.de>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/jffs2/fs.c         |   10 +++++-----
- fs/jffs2/nodelist.h   |    8 ++++----
- include/linux/jffs2.h |    4 ++--
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ fs/jffs2/file.c |    8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff -puN fs/jffs2/fs.c~jffs2-avoid-using-c-keyword-new-in-userspace-visible-header fs/jffs2/fs.c
---- a/fs/jffs2/fs.c~jffs2-avoid-using-c-keyword-new-in-userspace-visible-header
-+++ a/fs/jffs2/fs.c
-@@ -313,8 +313,8 @@ struct inode *jffs2_iget(struct super_bl
- 	case S_IFBLK:
- 	case S_IFCHR:
- 		/* Read the device numbers from the media */
--		if (f->metadata->size != sizeof(jdev.old) &&
--		    f->metadata->size != sizeof(jdev.new)) {
-+		if (f->metadata->size != sizeof(jdev.old_id) &&
-+		    f->metadata->size != sizeof(jdev.new_id)) {
- 			printk(KERN_NOTICE "Device node has strange size %d\n", f->metadata->size);
- 			goto error_io;
- 		}
-@@ -325,10 +325,10 @@ struct inode *jffs2_iget(struct super_bl
- 			printk(KERN_NOTICE "Read device numbers for inode %lu failed\n", (unsigned long)inode->i_ino);
- 			goto error;
- 		}
--		if (f->metadata->size == sizeof(jdev.old))
--			rdev = old_decode_dev(je16_to_cpu(jdev.old));
-+		if (f->metadata->size == sizeof(jdev.old_id))
-+			rdev = old_decode_dev(je16_to_cpu(jdev.old_id));
- 		else
--			rdev = new_decode_dev(je32_to_cpu(jdev.new));
-+			rdev = new_decode_dev(je32_to_cpu(jdev.new_id));
+diff -puN fs/jffs2/file.c~jffs2-fix-memory-corruption-in-jffs2_read_inode_range fs/jffs2/file.c
+--- a/fs/jffs2/file.c~jffs2-fix-memory-corruption-in-jffs2_read_inode_range
++++ a/fs/jffs2/file.c
+@@ -85,7 +85,13 @@ static int jffs2_do_readpage_nolock (str
+ 	pg_buf = kmap(pg);
+ 	/* FIXME: Can kmap fail? */
  
- 	case S_IFSOCK:
- 	case S_IFIFO:
-diff -puN fs/jffs2/nodelist.h~jffs2-avoid-using-c-keyword-new-in-userspace-visible-header fs/jffs2/nodelist.h
---- a/fs/jffs2/nodelist.h~jffs2-avoid-using-c-keyword-new-in-userspace-visible-header
-+++ a/fs/jffs2/nodelist.h
-@@ -312,11 +312,11 @@ static inline int jffs2_blocks_use_vmall
- static inline int jffs2_encode_dev(union jffs2_device_node *jdev, dev_t rdev)
- {
- 	if (old_valid_dev(rdev)) {
--		jdev->old = cpu_to_je16(old_encode_dev(rdev));
--		return sizeof(jdev->old);
-+		jdev->old_id = cpu_to_je16(old_encode_dev(rdev));
-+		return sizeof(jdev->old_id);
- 	} else {
--		jdev->new = cpu_to_je32(new_encode_dev(rdev));
--		return sizeof(jdev->new);
-+		jdev->new_id = cpu_to_je32(new_encode_dev(rdev));
-+		return sizeof(jdev->new_id);
- 	}
- }
+-	ret = jffs2_read_inode_range(c, f, pg_buf, pg->index << PAGE_CACHE_SHIFT, PAGE_CACHE_SIZE);
++	if (pg->index > ((i_size_read(inode) - 1) >> PAGE_CACHE_SHIFT)) {
++		ret = 0;
++		memset(pg_buf, 0, PAGE_CACHE_SIZE);
++	} else {
++		ret = jffs2_read_inode_range(c, f, pg_buf,
++			pg->index << PAGE_CACHE_SHIFT, PAGE_CACHE_SIZE);
++	}
  
-diff -puN include/linux/jffs2.h~jffs2-avoid-using-c-keyword-new-in-userspace-visible-header include/linux/jffs2.h
---- a/include/linux/jffs2.h~jffs2-avoid-using-c-keyword-new-in-userspace-visible-header
-+++ a/include/linux/jffs2.h
-@@ -215,8 +215,8 @@ union jffs2_node_union
- 
- /* Data payload for device nodes. */
- union jffs2_device_node {
--	jint16_t old;
--	jint32_t new;
-+	jint16_t old_id;
-+	jint32_t new_id;
- };
- 
- #endif /* __LINUX_JFFS2_H__ */
+ 	if (ret) {
+ 		ClearPageUptodate(pg);
 _
