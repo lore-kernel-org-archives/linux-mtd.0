@@ -1,22 +1,19 @@
-Received: from mail-fx0-f209.google.com ([209.85.220.209])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NcCK3-0005yv-2m
-	for linux-mtd@lists.infradead.org; Tue, 02 Feb 2010 06:33:20 +0000
-Received: by fxm1 with SMTP id 1so2181079fxm.4
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 01 Feb 2010 22:33:13 -0800 (PST)
-Subject: Re: UBIFS bad superblock error
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: dballman <pnetrisk@gmail.com>
-In-Reply-To: <30e5226d1001200051o5cd62e18p7020e6bc8a734032@mail.gmail.com>
-References: <30e5226d1001200051o5cd62e18p7020e6bc8a734032@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 02 Feb 2010 08:33:11 +0200
-Message-Id: <1265092391.2517.36.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail.windriver.com ([147.11.1.11])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NcCKf-00060q-Tm
+	for linux-mtd@lists.infradead.org; Tue, 02 Feb 2010 06:33:57 +0000
+Message-ID: <4B67C8B9.202@windriver.com>
+Date: Tue, 02 Feb 2010 14:39:53 +0800
+From: "stanley.miao" <stanley.miao@windriver.com>
+MIME-Version: 1.0
+To: Deven Balani <deven.balani@nxp.com>
+Subject: Re: flash_eraseall -j and refusing to mount jffs2 on NAND flash
+	partition
+References: <BD9D98B4D828E1499D717DBA564A1F2717C04459CC@eu1rdcrdc1wx031.exi.nxp.com>
+In-Reply-To: <BD9D98B4D828E1499D717DBA564A1F2717C04459CC@eu1rdcrdc1wx031.exi.nxp.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,71 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-01-20 at 09:51 +0100, dballman wrote:
-> Hello,
-> 
-> By generating a busybox image with these commands:
-> 
-> mkfs.ubifs -U -x favor_lzo -m 1 -e 130944 -c 100 -r _install/ -o
-> busybox-ubifs.img
-> ubinize -o busybox-ubiimg.bin -p 128KiB -m 1 ubinize.ini
-> 
-> ubinize.ini content:
-> 
-> [rootfs-volume]
-> mode=ubi
-> image=busybox-ubifs.img
-> vol_id=0
-> vol_size=50MiB
-> vol_type=dynamic
-> vol_name=rootfs
-> vol_alignment=1
-> vol_flags=autoresize
-> 
-> Then I put the .bin file on the address for the second mtd partition
-> on a custom made board with NOR flash and it gives the following
-> error:
-> (Only relevant information is shown)
-> 
-> ...
-> [    0.000000] Kernel command line: mem=64M console=ttyS0,115200 ubi.mtd=1
-> root=ubi0:rootfs rw rootfstype=ubifs
-> mtdparts=physmap-flash.0:4096k(boot),-(root_rw)
-> ...
-> [    0.690000] 2 cmdlinepart partitions found on MTD device physmap-flash.0
-> [    0.700000] Creating 2 MTD partitions on "physmap-flash.0":
-> [    0.700000] 0x000000000000-0x000000400000 : "boot"
-> [    0.710000] 0x000000400000-0x000004000000 : "root_rw"
-> ...
-> [    0.760000] UBI: attaching mtd1 to ubi0
-> [    0.760000] UBI: physical eraseblock size:    131072 bytes (128 KiB)
-> [    0.770000] UBI: logical eraseblock size:    130944 bytes
-> [    0.770000] UBI: smallest flash I/O unit:    1
-> [    0.780000] UBI: VID header offset:          64 (aligned 64)
-> [    0.780000] UBI: data offset:                128
-> [    0.830000] UBI: attached mtd1 to ubi0
-> [    0.840000] UBI: MTD device name:            "root_rw"
-> [    0.840000] UBI: MTD device size:            60 MiB
-> [    0.850000] UBI: number of good PEBs:        480
-> [    0.850000] UBI: number of bad PEBs:         0
-> [    0.860000] UBI: max. allowed volumes:       128
-> [    0.860000] UBI: wear-leveling threshold:    4096
-> [    0.870000] UBI: number of internal volumes: 1
-> [    0.870000] UBI: number of user volumes:     1
-> [    0.870000] UBI: available PEBs:             0
-> [    0.880000] UBI: total number of reserved PEBs: 480
-> [    0.880000] UBI: number of PEBs reserved for bad PEB handling: 0
-> [    0.890000] UBI: max/mean erase counter: 1/0
-> ...
-> [    0.900000] UBI: background thread "ubi_bgt0d" started, PID 284
-> ...
-> [    1.010000] UBIFS error (pid 1): validate_sb: min. I/O unit
-> mismatch: 64 in superblock, 8 real
+I encountered the same problem.
+I wrote several patch to mtd-utils and I will post them here later.
 
-Looks like a bug in mkfs.ubifs. I'll look at this. But could you please
-reproduce this on mtdram? mtdram is a test module which emulates NOR
-flash.
+Stanley.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Deven Balani wrote:
+> Hi all,
+>
+> I'm using linux kernel 2.6.28.9 and flash_eraseall -j from mtd-utils-1.2.0 to install jffs2 cleanmarker on a NAND flash partition. 
+>
+> Doing so I ran into two problems?
+>
+> 1. When I attempted to install jffs2 cleanmarker using flash_eraseall -j, I got following error -
+>
+> flash_eraseall:/dev/mtd6: unable to get NAND oobinfo
+>
+> I did some debugging to find that MEMGETOOBSEL ioctl is returning -ENOTTY in flash_eraseall.c. Debugged further to find that there is a size mismatch between "struct nand_oobinfo" defined in mtd-utils-1.2.0/include/mtd/mtd-abi.h 
+>
+> struct nand_oobinfo {
+>    uint32_t useecc;
+>    uint32_t eccbytes;
+>    uint32_t oobfree[8][2];
+>    uint32_t eccpos[32];
+> };
+>
+> Whereas in linux-2.6.28.9/include/mtd/mtd-abi.h it is defined as -
+> struct nand_oobinfo {
+>    uint32_t useecc;
+>    uint32_t eccbytes;
+>    uint32_t oobfree[8][2];
+>    uint32_t eccpos[64];
+> };
+>
+> I was able to get around this problem by changing the size of eccpos[] to 64 in mtd-utils-1.2.0/include/mtd/mtd-abi.h.
+>
+> 2. Then I tried flash_eraseall -j /dev/mtd6 on NAND partition, it completed successfully but subsequent mount -t jffs2 failed -
+>
+> # mount -t jffs2 /dev/mtdblock6 /mnt
+> Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+> empty_blocks 0, bad_blocks 0, c->nr_blocks 320
+> mount: Mounting /dev/mtdblock6 on /mnt failed: Input/output error
+>
+> I google'd and found that there has been some discussion on this long back and following was the last post.
+>
+>   
+>> Re: Flash_eraseall -j and cowardly refusing to mount
+>>
+>> Jeff Hane jhane at mobilygen.com
+>> Mon Jan 7 13:39:19 EST 2008
+>>
+>> But doesn't this only fix the case where you have contiguous 8 bytes to
+>> write the cleanmarker?  flash_eraseall -j uses MTD_PLACE to write the
+>> cleanmarker BUT jffs2 uses MTD_AUTO to read the cleanmarker.
+>> For example, if your oob area has byte 0 as the bad block indicator and
+>> bytes 8-10 have ecc, there are only 7 consecutive free bytes.
+>> flash_eraseall -j will only write 7 bytes so jffs2 will fail when
+>> mounting the filesystem because it will read 8 bytes.  The 8th byte,
+>> which will be byte 12, will still be FF.
+>>  It seems there should be an ioctl that would allow one to read/write
+>> the oob area using MTD_AUTO???
+>>     
+>
+>   
+>> jeff
+>>     
+>
+> I still see that mtd-utils still don't support this feature. Are there any plans to support this feature in mtd-utils?
+>
+> I can get around this problem, if I do just flash_eraseall without -j option and then using "mount -t jffs2 -rw" so that jffs2 cleanmarkers are installed during mount time.
+>
+> I'm not blocked by these problems anyways just thought to bring it to the notice of community. 
+>
+> Comments and suggestions are welcome.
+>
+> Thanks,
+> Deven
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>   
