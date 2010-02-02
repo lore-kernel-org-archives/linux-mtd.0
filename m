@@ -1,23 +1,23 @@
-Received: from 124x34x33x190.ap124.ftth.ucom.ne.jp ([124.34.33.190]
-	helo=master.linux-sh.org)
+Received: from mail-fx0-f209.google.com ([209.85.220.209])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NcA06-00005E-3i
-	for linux-mtd@lists.infradead.org; Tue, 02 Feb 2010 04:04:35 +0000
-Date: Tue, 2 Feb 2010 13:04:20 +0900
-From: Paul Mundt <lethal@linux-sh.org>
-To: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
-Subject: Re: [PATCH] mtd: trivial sh_flctl changes
-Message-ID: <20100202040420.GF13428@linux-sh.org>
-References: <20100127091721.21320.90312.sendpatchset@rxone.opensource.se>
-	<4B66B44C.3060305@renesas.com>
-	<20100127091120.21312.77488.sendpatchset@rxone.opensource.se>
-	<4B66B41C.4020904@renesas.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4B66B44C.3060305@renesas.com> <4B66B41C.4020904@renesas.com>
-Cc: linux-mtd@lists.infradead.org, Magnus Damm <magnus.damm@gmail.com>,
-	dwmw2@infradead.org, linux-sh@vger.kernel.org
+	id 1NcBcf-00055z-7p
+	for linux-mtd@lists.infradead.org; Tue, 02 Feb 2010 05:48:29 +0000
+Received: by fxm1 with SMTP id 1so2156151fxm.4
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 01 Feb 2010 21:48:21 -0800 (PST)
+Subject: Re: [PATCH 1/2] let MTD_XIP depend on XIP_KERNEL or ROMKERNEL
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Barry Song <21cnbao@gmail.com>
+In-Reply-To: <1263541814-6642-1-git-send-email-21cnbao@gmail.com>
+References: <1263541814-6642-1-git-send-email-21cnbao@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 02 Feb 2010 07:48:17 +0200
+Message-Id: <1265089697.2517.12.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: uclinux-dist-devel@blackfin.uclinux.org, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 01, 2010 at 07:59:40PM +0900, Yoshihiro Shimoda wrote:
-> Magnus Damm wrote:
-> > This patch contains a few changes for the sh_flctl driver:
-> >  - not sh7723-only driver - get rid of kconfig dependency
-> >  - use dev_err() instead of printk()
-> >  - use __devinit and __devexit for probe()/remove()
-> >  - fix probe() return values
+On Fri, 2010-01-15 at 15:50 +0800, Barry Song wrote:
+> Some architectures like blackfin,h8300,m68k use ROMKERNEL to describe
+> kernel XIP, not like arm which uses XIP_KERNEL
 > 
-> Thank you for your patch.
-> 
-> Acked-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+> Signed-off-by: Barry Song <21cnbao@gmail.com>
 
-On Mon, Feb 01, 2010 at 08:00:28PM +0900, Yoshihiro Shimoda wrote:
-> Magnus Damm wrote:
-> > This patch extends the sh_flctl driver with support
-> > for 16-bit bus configuration using SEL_16BIT and
-> > support for multiplexed pins using SHBUSSEL.
-> 
-> Thank you very much for your patch again!
-> 
-> Acked-by: Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
+I've pushed these 2 patches to my l2-mtd-2.6 / dunno
 
-I've applied both of these, thanks.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
