@@ -1,23 +1,23 @@
 Received: from mail-fx0-f209.google.com ([209.85.220.209])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NcBpG-0007pB-9b
-	for linux-mtd@lists.infradead.org; Tue, 02 Feb 2010 06:01:30 +0000
-Received: by fxm1 with SMTP id 1so2162971fxm.4
+	id 1NcBtD-0000NG-W1
+	for linux-mtd@lists.infradead.org; Tue, 02 Feb 2010 06:05:36 +0000
+Received: by fxm1 with SMTP id 1so2165322fxm.4
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 01 Feb 2010 22:01:25 -0800 (PST)
-Subject: Re: [PATCH] mtd: maps: Blackfin async: rename local funcs to avoid
-	common clashes
+	Mon, 01 Feb 2010 22:05:30 -0800 (PST)
+Subject: Re: [PATCH] [JFFS2] Readpages using Read-While-Load feature
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1263743566-26986-1-git-send-email-vapier@gentoo.org>
-References: <1263743566-26986-1-git-send-email-vapier@gentoo.org>
+To: Amul Kumar Saha <amul.saha@samsung.com>
+In-Reply-To: <A71F4C904C9343EB9DA2088AEF89D2E3@sisodomain.com>
+References: <A71F4C904C9343EB9DA2088AEF89D2E3@sisodomain.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 02 Feb 2010 08:01:23 +0200
-Message-Id: <1265090483.2517.15.camel@localhost.localdomain>
+Date: Tue, 02 Feb 2010 08:05:24 +0200
+Message-Id: <1265090724.2517.16.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-01-17 at 10:52 -0500, Mike Frysinger wrote:
-> There are new Blackfin MMR helper functions that use the same name as some
-> of the local functions in this driver, so have the driver use more specific
-> names to avoid the issue.
+On Tue, 2010-01-19 at 09:58 +0530, Amul Kumar Saha wrote:
+> JFFS2-Readpages patch makes use of the Read-While-Load support
+> present on OneNAND variant devices. There is an increase
+> in the read-speed by ~13% upon usage of the readpages patch.
 > 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> Signed-off-by: Rajshekar Hanumantappa Payagond <rajshekar.hp@samsung.com>
+> Signed-off-by: Amul Kumar Saha <amul.saha@samsung.com>
+> ---
+>  file.c     |   89 ++++++++++++++++
+>  nodelist.h |    9 +
+>  read.c     |  333 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 431 insertions(+)
 
-Pushed this to my l2-mtd-2.6 / master
+Pushed your patch to my l2-mtd-2.6.git / dunno
 
 -- 
 Best Regards,
