@@ -1,17 +1,20 @@
-Received: from ey-out-1920.google.com ([74.125.78.150])
+Received: from mail-bw0-f221.google.com ([209.85.218.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NcbO4-0005fX-SR
-	for linux-mtd@lists.infradead.org; Wed, 03 Feb 2010 09:19:09 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so195672eyg.26
+	id 1NchR2-0007Rw-MV
+	for linux-mtd@lists.infradead.org; Wed, 03 Feb 2010 15:46:37 +0000
+Received: by bwz21 with SMTP id 21so1142866bwz.4
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 03 Feb 2010 01:19:02 -0800 (PST)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: linux-mtd@lists.infradead.org,
-	dedekind1@gmail.com
-Subject: [PATCH] mtd-utils: add option to not force largefile support
-Date: Wed,  3 Feb 2010 10:18:46 +0100
-Message-Id: <1265188726-23746-1-git-send-email-jacmet@sunsite.dk>
+	Wed, 03 Feb 2010 07:46:30 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <ce9ab5791001130448x40a78141u27668f72965cae95@mail.gmail.com>
+References: <ce9ab5791001130448x40a78141u27668f72965cae95@mail.gmail.com>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Wed, 3 Feb 2010 21:16:10 +0530
+Message-ID: <ce9ab5791002030746m1c25ed47rdea5efb3efb3c86@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] Adding NAND lock / unlock routines
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Not all systems have largefile support (E.G. uClibc depending on config),
-so unconditionally enforcing largefile breaks the build.
+>From a28c230f3bd8fa765f78c0be91370f146e71f670 Mon Sep 17 00:00:00 2001
+From: Vimal Singh <vimalsingh@ti.com>
+Date: Wed, 3 Feb 2010 14:33:48 +0530
+Subject: [PATCH v2 0/2] Adding NAND lock / unlock routines
 
-Work around it by adding a WITHOUT_LARGEFILE flag, similar to the existing
-WITHOUT_XATTR.
+This patch set adds nand lock/unlock routines.
 
-Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
----
- common.mk |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+In 2nd version: (As requested by Artem)
+ - I have renamed 'block_alignment_verification' to 'check_offs_len'
+ - I have changed the sequence of patches
 
-diff --git a/common.mk b/common.mk
-index 5e92b07..d704b44 100644
---- a/common.mk
-+++ b/common.mk
-@@ -12,7 +12,10 @@ WFLAGS := -Wall \
- 	$(call cc-option,-Wwrite-strings) \
- 	$(call cc-option,-Wno-sign-compare)
- CFLAGS += $(WFLAGS)
--CPPFLAGS += -D_FILE_OFFSET_BITS=64
-+
-+ifneq ($(WITHOUT_LARGEFILE), 1)
-+  CPPFLAGS += -D_FILE_OFFSET_BITS=64
-+endif
- 
- DESTDIR ?= /usr/local
- PREFIX=/usr
--- 
-1.6.5
+Vimal Singh (2):
+  Creating helper func for 'ofs' and 'len' verification for
+    'nand_erase_nand'
+  Adding nand lock/unlock routines.
+
+ drivers/mtd/nand/nand_base.c |  212 ++++++++++++++++++++++++++++++++++++++----
+ include/linux/mtd/nand.h     |   10 ++
+ 2 files changed, 204 insertions(+), 18 deletions(-)
