@@ -1,7 +1,7 @@
 From: vimalsingh@ti.com (Vimal Singh)
 Date: Wed, 3 Feb 2010 14:32:06 +0530
 Subject: [PATCH 2/2] Adding nand lock/unlock routines.
-Message-ID: <mailman.190.1265212303.2170.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.197.1265624481.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
@@ -18,7 +18,7 @@ diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
 index 2dfeb4b..a2dddca 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -864,6 +864,168 @@ static int nand_wait(struct
+@@ -864,6 +864,168 @@ static int nand_wait(struct mtd_info
  }
 
  /**
@@ -81,7 +81,7 @@ index 2dfeb4b..a2dddca 100644
 +	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
 +			__func__, (unsigned long long)ofs, len);
 +
-+	if (check_offs_len(mtd, instr->addr, instr->len))
++	if (check_offs_len(mtd, ofs, len))
 +		ret = -EINVAL;
 +
 +	/* Align to last block address if size addresses end of the device */
@@ -138,7 +138,7 @@ index 2dfeb4b..a2dddca 100644
 +	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
 +			__func__, (unsigned long long)ofs, len);
 +
-+	if (check_offs_len(mtd, instr->addr, instr->len))
++	if (check_offs_len(mtd, ofs, len))
 +		ret = -EINVAL;
 +
 +	nand_get_device(chip, mtd, FL_LOCKING);
@@ -187,7 +187,7 @@ index 2dfeb4b..a2dddca 100644
   * nand_read_page_raw - [Intern] read raw page data without ecc
   * @mtd:	mtd info structure
   * @chip:	nand chip info structure
-@@ -3089,6 +3251,8 @@ void nand_release(struct
+@@ -3089,6 +3251,8 @@ void nand_release(struct mtd_info
  		kfree(chip->buffers);
  }
 
@@ -200,7 +200,7 @@ diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
 index ccab9df..48bc2c5 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -38,6 +38,12 @@ extern void nand_release (struct
+@@ -38,6 +38,12 @@ extern void nand_release (struct mtd_info
  /* Internal helper for board drivers which need to override command function */
  extern void nand_wait_ready(struct mtd_info *mtd);
 
@@ -213,7 +213,7 @@ index ccab9df..48bc2c5 100644
  /* The maximum number of NAND chips in an array */
  #define NAND_MAX_CHIPS		8
 
-@@ -82,6 +88,10 @@ extern void nand_wait_ready(struct
+@@ -82,6 +88,10 @@ extern void nand_wait_ready(struct mtd_info
  #define NAND_CMD_ERASE2		0xd0
  #define NAND_CMD_RESET		0xff
 
