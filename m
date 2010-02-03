@@ -1,16 +1,15 @@
 Received: from mail-bw0-f221.google.com ([209.85.218.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NchVB-00008v-Bj
-	for linux-mtd@lists.infradead.org; Wed, 03 Feb 2010 15:50:54 +0000
-Received: by bwz21 with SMTP id 21so1147942bwz.4
+	id 1NchVw-0000LF-74
+	for linux-mtd@lists.infradead.org; Wed, 03 Feb 2010 15:51:41 +0000
+Received: by bwz21 with SMTP id 21so1149043bwz.4
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 03 Feb 2010 07:50:42 -0800 (PST)
+	Wed, 03 Feb 2010 07:51:35 -0800 (PST)
 MIME-Version: 1.0
 From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 3 Feb 2010 21:18:46 +0530
-Message-ID: <ce9ab5791002030748j64401674u76285aade0f6365d@mail.gmail.com>
-Subject: [PATCH v2 1/2] Creating helper func for 'ofs' and 'len' verification
-	for 'nand_erase_nand'
+Date: Wed, 3 Feb 2010 21:21:15 +0530
+Message-ID: <ce9ab5791002030751q21cd9759nb776fa06e89cad46@mail.gmail.com>
+Subject: [PATCH v2 2/2] Adding nand lock/unlock routines.
 To: Linux MTD <linux-mtd@lists.infradead.org>
 Content-Type: text/plain; charset=ISO-8859-1
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
@@ -23,87 +22,229 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 288857587cc64c6d223cce6a4f49826ccf9ff0a9 Mon Sep 17 00:00:00 2001
+>From a28c230f3bd8fa765f78c0be91370f146e71f670 Mon Sep 17 00:00:00 2001
 From: Vimal Singh <vimalsingh@ti.com>
-Date: Wed, 3 Feb 2010 14:12:24 +0530
-Subject: [PATCH 1/2] Creating helper func for 'ofs' and 'len'
-verification for 'nand_erase_nand'
+Date: Wed, 3 Feb 2010 14:32:06 +0530
+Subject: [PATCH 2/2] Adding nand lock/unlock routines.
 
-These checks are expected to be used by 'nand_lock' and 'nand_unlock'
-routines too. As all these three are block aligned operations.
-So, creating a helper function for this makes sense.
+Adding nand lock / unlock routines. At least 'micron' parts
+support this.
 
 Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 ---
- drivers/mtd/nand/nand_base.c |   48 ++++++++++++++++++++++++++---------------
- 1 files changed, 30 insertions(+), 18 deletions(-)
+ drivers/mtd/nand/nand_base.c |  164 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |   10 +++
+ 2 files changed, 174 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8f2958f..2dfeb4b 100644
+index 2dfeb4b..a2dddca 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -108,6 +108,35 @@ static int nand_do_write_oob(struct
-  */
- DEFINE_LED_TRIGGER(nand_led_trigger);
+@@ -864,6 +864,168 @@ static int nand_wait(struct
+ }
 
-+static int check_offs_len(struct mtd_info *mtd,
-+					loff_t ofs, uint64_t len)
+ /**
++ * __nand_unlock - [REPLACABLE] unlocks specified locked blockes
++ *
++ * @param mtd - mtd info
++ * @param ofs - offset to start unlock from
++ * @param len - length to unlock
++ * @invert -  when = 0, unlock the range of blocks within the lower and
++ *                      upper boundary address
++ *            whne = 1, unlock the range of blocks outside the boundaries
++ *                      of the lower and upper boundary address
++ *
++ * @return - unlock status
++ */
++static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
++					uint64_t len, int invert)
 +{
-+	struct nand_chip *chip = mtd->priv;
 +	int ret = 0;
++	int status, page;
++	struct nand_chip *chip = mtd->priv;
 +
-+	/* Start address must align on block boundary */
-+	if (ofs & ((1 << chip->phys_erase_shift) - 1)) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
-+		ret = -EINVAL;
-+	}
++	/* Submit address of first page to unlock */
++	page = ofs >> chip->page_shift;
++	chip->cmdfunc(mtd, NAND_CMD_UNLOCK1, -1, page & chip->pagemask);
 +
-+	/* Length must align on block boundary */
-+	if (len & ((1 << chip->phys_erase_shift) - 1)) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
-+					__func__);
-+		ret = -EINVAL;
-+	}
++	/* Submit address of last page to unlock */
++	page = (ofs + len) >> chip->page_shift;
++	chip->cmdfunc(mtd, NAND_CMD_UNLOCK2, -1,
++				(page | invert) & chip->pagemask);
 +
-+	/* Do not allow past end of device */
-+	if (ofs + len > mtd->size) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: Past end of device\n",
-+					__func__);
-+		ret = -EINVAL;
++	/* Call wait ready function */
++	status = chip->waitfunc(mtd, chip);
++	udelay(1000);
++	/* See if device thinks it succeeded */
++	if (status & 0x01) {
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
++					__func__, status);
++		ret = -EIO;
 +	}
 +
 +	return ret;
 +}
 +
- /**
-  * nand_release_device - [GENERIC] release chip
-  * @mtd:	MTD device structure
-@@ -2293,25 +2322,8 @@ int nand_erase_nand(struct
- 				__func__, (unsigned long long)instr->addr,
- 				(unsigned long long)instr->len);
-
--	/* Start address must align on block boundary */
--	if (instr->addr & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Unaligned address\n", __func__);
--		return -EINVAL;
--	}
--
--	/* Length must align on block boundary */
--	if (instr->len & ((1 << chip->phys_erase_shift) - 1)) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Length not block aligned\n",
--					__func__);
--		return -EINVAL;
--	}
--
--	/* Do not allow erase past end of device */
--	if ((instr->len + instr->addr) > mtd->size) {
--		DEBUG(MTD_DEBUG_LEVEL0, "%s: Erase past end of device\n",
--					__func__);
++/**
++ * nand_unlock - [REPLACABLE] unlocks specified locked blockes
++ *
++ * @param mtd - mtd info
++ * @param ofs - offset to start unlock from
++ * @param len - length to unlock
++ *
++ * @return - unlock status
++ */
++int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	int ret = 0;
++	int chipnr;
++	struct nand_chip *chip = mtd->priv;
++
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
++			__func__, (unsigned long long)ofs, len);
++
 +	if (check_offs_len(mtd, instr->addr, instr->len))
- 		return -EINVAL;
--	}
++		ret = -EINVAL;
++
++	/* Align to last block address if size addresses end of the device */
++	if (ofs + len == mtd->size)
++		len -= mtd->erasesize;
++
++	nand_get_device(chip, mtd, FL_UNLOCKING);
++
++	/* Shift to get chip number */
++	chipnr = ofs >> chip->chip_shift;
++
++	chip->select_chip(mtd, chipnr);
++
++	/* Check, if it is write protected */
++	if (nand_check_wp(mtd)) {
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
++					__func__);
++		ret = -EIO;
++		goto out;
++	}
++
++	ret = __nand_unlock(mtd, ofs, len, 0);
++
++out:
++	/* de-select the NAND device */
++	chip->select_chip(mtd, -1);
++
++	nand_release_device(mtd);
++
++	return ret;
++}
++
++/**
++ * nand_lock - [REPLACABLE] locks all blockes present in the device
++ *
++ * @param mtd - mtd info
++ * @param ofs - offset to start unlock from
++ * @param len - length to unlock
++ *
++ * @return - lock status
++ *
++ * This feature is not support in many NAND parts. 'Micron' NAND parts
++ * do have this feature, but it allows only to lock all blocks not for
++ * specified range for block.
++ *
++ * Implementing 'lock' feature by making use of 'unlock', for now.
++ */
++int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
++{
++	int ret = 0;
++	int chipnr, status, page;
++	struct nand_chip *chip = mtd->priv;
++
++	DEBUG(MTD_DEBUG_LEVEL3, "%s: start = 0x%012llx, len = %llu\n",
++			__func__, (unsigned long long)ofs, len);
++
++	if (check_offs_len(mtd, instr->addr, instr->len))
++		ret = -EINVAL;
++
++	nand_get_device(chip, mtd, FL_LOCKING);
++
++	/* Shift to get chip number */
++	chipnr = ofs >> chip->chip_shift;
++
++	chip->select_chip(mtd, chipnr);
++
++	/* Check, if it is write protected */
++	if (nand_check_wp(mtd)) {
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Device is write protected!!!\n",
++					__func__);
++		status = MTD_ERASE_FAILED;
++		ret = -EIO;
++		goto out;
++	}
++
++	/* Submit address of first page to lock */
++	page = ofs >> chip->page_shift;
++	chip->cmdfunc(mtd, NAND_CMD_LOCK, -1, page & chip->pagemask);
++
++	/* Call wait ready function */
++	status = chip->waitfunc(mtd, chip);
++	udelay(1000);
++	/* See if device thinks it succeeded */
++	if (status & 0x01) {
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
++					__func__, status);
++		ret = -EIO;
++		goto out;
++	}
++
++	ret = __nand_unlock(mtd, ofs, len, 0x1);
++
++out:
++	/* de-select the NAND device */
++	chip->select_chip(mtd, -1);
++
++	nand_release_device(mtd);
++
++	return ret;
++}
++
++/**
+  * nand_read_page_raw - [Intern] read raw page data without ecc
+  * @mtd:	mtd info structure
+  * @chip:	nand chip info structure
+@@ -3089,6 +3251,8 @@ void nand_release(struct
+ 		kfree(chip->buffers);
+ }
 
- 	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
++EXPORT_SYMBOL_GPL(nand_lock);
++EXPORT_SYMBOL_GPL(nand_unlock);
+ EXPORT_SYMBOL_GPL(nand_scan);
+ EXPORT_SYMBOL_GPL(nand_scan_ident);
+ EXPORT_SYMBOL_GPL(nand_scan_tail);
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index ccab9df..48bc2c5 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -38,6 +38,12 @@ extern void nand_release (struct
+ /* Internal helper for board drivers which need to override command function */
+ extern void nand_wait_ready(struct mtd_info *mtd);
 
++/* locks all blockes present in the device */
++extern int nand_lock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
++
++/* unlocks specified locked blockes */
++extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
++
+ /* The maximum number of NAND chips in an array */
+ #define NAND_MAX_CHIPS		8
+
+@@ -82,6 +88,10 @@ extern void nand_wait_ready(struct
+ #define NAND_CMD_ERASE2		0xd0
+ #define NAND_CMD_RESET		0xff
+
++#define NAND_CMD_LOCK		0x2a
++#define NAND_CMD_UNLOCK1	0x23
++#define NAND_CMD_UNLOCK2	0x24
++
+ /* Extended commands for large page devices */
+ #define NAND_CMD_READSTART	0x30
+ #define NAND_CMD_RNDOUTSTART	0xE0
 -- 
 1.6.3.3
