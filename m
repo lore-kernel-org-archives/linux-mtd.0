@@ -1,15 +1,16 @@
-Received: from fg-out-1718.google.com ([72.14.220.157])
+Received: from mail-fx0-f228.google.com ([209.85.220.228])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NdBAg-0007EK-WA
-	for linux-mtd@lists.infradead.org; Thu, 04 Feb 2010 23:31:50 +0000
-Received: by fg-out-1718.google.com with SMTP id e12so19568fga.0
+	id 1NdBAk-00074k-O8
+	for linux-mtd@lists.infradead.org; Thu, 04 Feb 2010 23:31:51 +0000
+Received: by mail-fx0-f228.google.com with SMTP id 28so3537637fxm.20
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 Feb 2010 15:31:38 -0800 (PST)
+	Thu, 04 Feb 2010 15:31:42 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 13/17] MTD: export few functions from nand_base.c
-Date: Fri,  5 Feb 2010 01:30:53 +0200
-Message-Id: <1265326257-4446-14-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 15/17] MTD: add few workarounds to nand system for
+	SmartMedia/xD chips.
+Date: Fri,  5 Feb 2010 01:30:55 +0200
+Message-Id: <1265326257-4446-16-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1265326257-4446-1-git-send-email-maximlevitsky@gmail.com>
 References: <1265326257-4446-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -26,136 +27,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This exports:
+* Add an option NAND_SMARTMEDIA that can be set by nand driver
+ If set, it will cause separate ID table to be used, which includes
+ mask rom devices and new xD cards
 
-nand_do_read_oob
-nand_do_write_oob
-nand_get_device
-nand_put_device
-
-This functions will be used to implement custom oob based
-bad block handling in upcoming smartmedia common module
+* Workaround for wrong write protect status on some xD cards
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |   18 +++++++++---------
- include/linux/mtd/nand.h     |   12 ++++++++++++
- 2 files changed, 21 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/nand_base.c |   30 ++++++++++++++++++++++--------
+ drivers/mtd/nand/nand_ids.c  |   39 +++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |   11 +++++++++++
+ 3 files changed, 72 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 961c98f..3949d8c 100644
+index 3949d8c..093b868 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -96,11 +96,6 @@ static struct nand_ecclayout nand_oob_128 = {
- 		 .length = 78}}
- };
- 
--static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
--			   int new_state);
--
--static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
--			     struct mtd_oob_ops *ops);
- 
- /*
-  * For devices which display every fart in the system on a separate LED. Is
-@@ -114,7 +109,7 @@ DEFINE_LED_TRIGGER(nand_led_trigger);
-  *
-  * Deselect, release chip lock and wake up anyone waiting on the device
-  */
--static void nand_release_device(struct mtd_info *mtd)
-+void nand_release_device(struct mtd_info *mtd)
+@@ -397,9 +397,18 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ static int nand_check_wp(struct mtd_info *mtd)
  {
  	struct nand_chip *chip = mtd->priv;
- 
-@@ -128,6 +123,7 @@ static void nand_release_device(struct mtd_info *mtd)
- 	wake_up(&chip->controller->wq);
- 	spin_unlock(&chip->controller->lock);
- }
-+EXPORT_SYMBOL_GPL(nand_release_device);
- 
- /**
-  * nand_read_byte - [DEFAULT] read one byte from the chip
-@@ -721,7 +717,7 @@ static void panic_nand_get_device(struct nand_chip *chip,
-  *
-  * Get the device and lock it for exclusive access
-  */
--static int
-+int
- nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
- {
- 	spinlock_t *lock = &chip->controller->lock;
-@@ -753,6 +749,7 @@ nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
- 	remove_wait_queue(wq, &wait);
- 	goto retry;
- }
-+EXPORT_SYMBOL_GPL(nand_get_device);
- 
- /**
-  * panic_nand_wait - [GENERIC]  wait until the command is done
-@@ -1532,7 +1529,7 @@ static int nand_write_oob_syndrome(struct mtd_info *mtd,
-  *
-  * NAND read out-of-band data from the spare area
-  */
--static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
-+int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 			    struct mtd_oob_ops *ops)
- {
- 	int page, realpage, chipnr, sndcmd = 1;
-@@ -1616,6 +1613,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	ops->oobretlen = ops->ooblen;
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(nand_do_read_oob);
- 
- /**
-  * nand_read_oob - [MTD Interface] NAND read data and/or out-of-band
-@@ -2108,7 +2106,7 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
-  *
-  * NAND write out-of-band
-  */
--static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
-+int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 			     struct mtd_oob_ops *ops)
- {
- 	int chipnr, page, status, len;
-@@ -2179,6 +2177,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(nand_do_write_oob);
- 
- /**
-  * nand_write_oob - [MTD Interface] NAND write data and/or out-of-band
-@@ -3080,6 +3079,7 @@ EXPORT_SYMBOL_GPL(nand_scan_ident);
- EXPORT_SYMBOL_GPL(nand_scan_tail);
- EXPORT_SYMBOL_GPL(nand_release);
- 
++	int wp;
 +
- static int __init nand_base_init(void)
- {
- 	led_trigger_register_simple("nand-disk", &nand_led_trigger);
++	/* broken xD cards report WP despite beeing writable */
++	if (chip->options & NAND_BROKEN_XD)
++		return 0;
++
+ 	/* Check the WP bit */
+ 	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
+-	return (chip->read_byte(mtd) & NAND_STATUS_WP) ? 0 : 1;
++	wp = (chip->read_byte(mtd) & NAND_STATUS_WP) ? 0 : 1;
++
++
++	return wp;
+ }
+ 
+ /**
+@@ -2622,14 +2631,18 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 	}
+ 
+ 	/* Lookup the flash id */
+-	for (i = 0; nand_flash_ids[i].name != NULL; i++) {
+-		if (dev_id == nand_flash_ids[i].id) {
+-			type =  &nand_flash_ids[i];
++#ifdef CONFIG_MTD_NAND_SMARTMEDIA
++	if (chip->options & NAND_SMARTMEDIA)
++		type = nand_smartmedia_flash_ids;
++	else
++#endif
++		type = nand_flash_ids;
++
++	for (i = 0; type->name != NULL; type++)
++		if (dev_id == type->id)
+ 			break;
+-		}
+-	}
+ 
+-	if (!type)
++	if (!type->name)
+ 		return ERR_PTR(-ENODEV);
+ 
+ 	if (!mtd->name)
+@@ -2986,7 +2999,8 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 
+ 	/* Fill in remaining MTD driver data */
+ 	mtd->type = MTD_NANDFLASH;
+-	mtd->flags = MTD_CAP_NANDFLASH;
++	mtd->flags = chip->options & NAND_ROM ? MTD_CAP_ROM :
++							MTD_CAP_NANDFLASH;
+ 	mtd->erase = nand_erase;
+ 	mtd->point = NULL;
+ 	mtd->unpoint = NULL;
+diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+index 69ee2c9..f9e72d5 100644
+--- a/drivers/mtd/nand/nand_ids.c
++++ b/drivers/mtd/nand/nand_ids.c
+@@ -127,6 +127,45 @@ struct nand_flash_dev nand_flash_ids[] = {
+ 	{NULL,}
+ };
+ 
++#ifdef CONFIG_MTD_NAND_SMARTMEDIA
++struct nand_flash_dev nand_smartmedia_flash_ids[] = {
++
++	/* SmartMedia */
++	{"SmartMedia 1MiB 5V",		0x6e, 256, 1, 0x1000, 0},
++	{"SmartMedia 1MiB 3,3V",	0xe8, 256, 1, 0x1000, 0},
++	{"SmartMedia 1MiB 3,3V",	0xec, 256, 1, 0x1000, 0},
++	{"SmartMedia 2MiB 3,3V",	0xea, 256, 2, 0x1000, 0},
++	{"SmartMedia 2MiB 5V",		0x64, 256, 2, 0x1000, 0},
++	{"SmartMedia 2MiB 3,3V ROM",	0x5d, 512, 2, 0x2000, NAND_ROM},
++	{"SmartMedia 4MiB 3,3V",	0xe3, 512, 4, 0x2000, 0},
++	{"SmartMedia 4MiB 3,3/5V",	0xe5, 512, 4, 0x2000, 0},
++	{"SmartMedia 4MiB 5V",		0x6b, 512, 4, 0x2000, 0},
++	{"SmartMedia 4MiB 3,3V ROM",	0xd5, 512, 4, 0x2000, NAND_ROM},
++	{"SmartMedia 8MiB 3,3V",	0xe6, 512, 8, 0x2000, 0},
++	{"SmartMedia 8MiB 3,3V ROM",	0xd6, 512, 8, 0x2000, NAND_ROM},
++
++#define XD_TYPEM	(NAND_NO_AUTOINCR | NAND_BROKEN_XD)
++	/* xD / SmartMedia */
++	{"SmartMedia/xD 16MiB 3,3V",	0x73, 512, 16, 0x4000, 0},
++	{"SmartMedia 16MiB 3,3V ROM",	0x57, 512, 16, 0x4000, NAND_ROM},
++	{"SmartMedia/xD 32MiB 3,3V",	0x75, 512, 32, 0x4000, 0},
++	{"SmartMedia 32MiB 3,3V ROM",	0x58, 512, 32, 0x4000, NAND_ROM},
++	{"SmartMedia/xD 64MiB 3,3V",	0x76, 512, 64, 0x4000, 0},
++	{"SmartMedia 64MiB 3,3V ROM",	0xd9, 512, 64, 0x4000, NAND_ROM},
++	{"SmartMedia/xD 128MiB 3,3V",	0x79, 512, 128, 0x4000, 0},
++	{"SmartMedia 128MiB 3,3V ROM",	0xda, 512, 128, 0x4000, NAND_ROM},
++	{"SmartMedia/xD 256MiB 3,3V",	0x71, 512, 256, 0x4000, XD_TYPEM},
++	{"SmartMedia 256MiB 3,3V ROM",	0x5b, 512, 256, 0x4000, NAND_ROM},
++
++	/* xD only */
++	{"xD 512MiB 3,3V",		0xDC, 512, 512, 0x4000, XD_TYPEM},
++	{"xD 1GiB 3,3V",		0xD3, 512, 1024, 0x4000, XD_TYPEM},
++	{"xD 2GiB 3,3V",		0xD5, 512, 2048, 0x4000, XD_TYPEM},
++	{NULL,}
++};
++EXPORT_SYMBOL(nand_smartmedia_flash_ids);
++#endif
++
+ /*
+ *	Manufacturer ID list
+ */
 diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index ccab9df..8c2333a 100644
+index 8c2333a..bb25cd8 100644
 --- a/include/linux/mtd/nand.h
 +++ b/include/linux/mtd/nand.h
-@@ -469,6 +469,18 @@ extern int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- extern int nand_do_read(struct mtd_info *mtd, loff_t from, size_t len,
- 			size_t * retlen, uint8_t * buf);
+@@ -170,6 +170,12 @@ typedef enum {
+ /* Chip does not allow subpage writes */
+ #define NAND_NO_SUBPAGE_WRITE	0x00000200
  
-+extern int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
-+			    struct mtd_oob_ops *ops);
++/* Device is one of 'new' xD cards that expose fake nand command set */
++#define NAND_BROKEN_XD		0x00000400
 +
-+extern int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
-+			     struct mtd_oob_ops *ops);
++/* Device behaves just like nand, but is readonly */
++#define NAND_ROM		0x00000800
 +
-+extern int nand_get_device(struct nand_chip *chip,
-+			struct mtd_info *mtd, int new_state);
+ /* Options valid for Samsung large page devices */
+ #define NAND_SAMSUNG_LP_OPTIONS \
+ 	(NAND_NO_PADDING | NAND_CACHEPRG | NAND_COPYBACK)
+@@ -195,9 +201,13 @@ typedef enum {
+ /* This option is defined if the board driver allocates its own buffers
+    (e.g. because it needs them DMA-coherent */
+ #define NAND_OWN_BUFFERS	0x00040000
 +
-+extern void nand_release_device(struct mtd_info *mtd);
+ /* Chip may not exist, so silence any errors in scan */
+ #define NAND_SCAN_SILENT_NODEV	0x00080000
+ 
++/* controller supports only xD/SmartMedia cards*/
++#define NAND_SMARTMEDIA		0x00100000
 +
-+
- /**
-  * struct platform_nand_chip - chip level device structure
-  * @nr_chips:		max. number of chips to scan for
+ /* Options set by nand scan */
+ /* Nand scan has allocated controller struct */
+ #define NAND_CONTROLLER_ALLOC	0x80000000
+@@ -458,6 +468,7 @@ struct nand_manufacturers {
+ };
+ 
+ extern struct nand_flash_dev nand_flash_ids[];
++extern struct nand_flash_dev nand_smartmedia_flash_ids[];
+ extern struct nand_manufacturers nand_manuf_ids[];
+ 
+ extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
 -- 
 1.6.3.3
