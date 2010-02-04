@@ -1,20 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nci2b-0005Vo-38
-	for linux-mtd@lists.infradead.org; Wed, 03 Feb 2010 16:25:25 +0000
-Subject: Re: [PATCH] mtd: hot spin and code duplication in
-	nand_bcm_umi_bch_read_oobEcc()
+Received: from mail-fx0-f222.google.com ([209.85.220.222])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ncty7-0000Q3-92
+	for linux-mtd@lists.infradead.org; Thu, 04 Feb 2010 05:09:35 +0000
+Received: by fxm22 with SMTP id 22so4832602fxm.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 03 Feb 2010 21:09:29 -0800 (PST)
+Subject: Re: To remove UBI Control Device . . .
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roel Kluin <roel.kluin@gmail.com>
-In-Reply-To: <4B5A172C.2010609@gmail.com>
-References: <4B5A172C.2010609@gmail.com>
+To: Lee Amirev <lee.amirev@gmail.com>
+In-Reply-To: <e14c53d91001251215k5e7074d4lb579d43df530b94a@mail.gmail.com>
+References: <e14c53d91001251215k5e7074d4lb579d43df530b94a@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 03 Feb 2010 18:22:55 +0200
-Message-ID: <1265214175.7343.108.camel@localhost>
+Date: Thu, 04 Feb 2010 07:09:25 +0200
+Message-Id: <1265260166.2517.39.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
-	Leo Chen <leochen@broadcom.com>, LKML <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,17 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-01-22 at 22:22 +0100, Roel Kluin wrote:
-> In the branch where pagesize equalled NAND_DATA_ACCESS_SIZE, NumToRead
-> wasn't decremented in the `while (numToRead > 11)' loop.
-> Also the first and last while loops were duplicated in both branches.
-> 
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> ---
->  drivers/mtd/nand/nand_bcm_umi.h |   71 ++++++++++++++-------------------------
->  1 files changed, 25 insertions(+), 46 deletions(-)
+On Mon, 2010-01-25 at 15:15 -0500, Lee Amirev wrote:
+> My system does not need to dynamically attach or detach MTD devices to
+> UBI.  We can just attach all that we need through boot or module
+> parameters.  Therefore, we don't need the UBI control device
+> (/dev/ubi_ctrl).   In order to prevent the device from existing, I
+> could simply comment out the misc_register and misc_deregister calls
+> in ubi_init or ubi_exit in /drivers/mtd/ubi/build.c.  Is this
+> sufficient?  Are there any unintended consequences in removing the
+> control device?
 
-Taken to l2-mtd-2.6.git / dunno
+It should be fine. But I do not think it is nice solution. I think the
+proper solution is to amend your udev rules.
 
 -- 
 Best Regards,
