@@ -1,15 +1,15 @@
-Received: from mail-fx0-f228.google.com ([209.85.220.228])
+Received: from fg-out-1718.google.com ([72.14.220.157])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NdBAU-00071Q-OU
-	for linux-mtd@lists.infradead.org; Thu, 04 Feb 2010 23:31:32 +0000
-Received: by mail-fx0-f228.google.com with SMTP id 28so3537500fxm.20
+	id 1NdBAW-00078M-EV
+	for linux-mtd@lists.infradead.org; Thu, 04 Feb 2010 23:31:35 +0000
+Received: by fg-out-1718.google.com with SMTP id 22so15525fge.0
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 Feb 2010 15:31:26 -0800 (PST)
+	Thu, 04 Feb 2010 15:31:27 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 06/17] blktrans: flush all requests before we remove the device
-Date: Fri,  5 Feb 2010 01:30:46 +0200
-Message-Id: <1265326257-4446-7-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 07/17] blktrans: allow FTL drivers to export sysfs attributes
+Date: Fri,  5 Feb 2010 01:30:47 +0200
+Message-Id: <1265326257-4446-8-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1265326257-4446-1-git-send-email-maximlevitsky@gmail.com>
 References: <1265326257-4446-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -26,53 +26,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Flush all requests, so we can be sure we don't deadlock the system later
-when we remove the disk queue.
+This patch add ability to export sysfs attributes below
+block disk device.
+This can be used to pass UDEV information about the FTL
+and could include vendor, serial, version, etc...
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtd_blkdevs.c |   14 +++++++++++++-
- 1 files changed, 13 insertions(+), 1 deletions(-)
+ drivers/mtd/mtd_blkdevs.c    |   11 ++++++++++-
+ include/linux/mtd/blktrans.h |    2 ++
+ 2 files changed, 12 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 082969c..9992b2d 100644
+index 9992b2d..ac9d3f5 100644
 --- a/drivers/mtd/mtd_blkdevs.c
 +++ b/drivers/mtd/mtd_blkdevs.c
-@@ -115,7 +115,13 @@ static int mtd_blktrans_thread(void *arg)
- static void mtd_blktrans_request(struct request_queue *rq)
- {
- 	struct mtd_blktrans_dev *dev = rq->queuedata;
--	wake_up_process(dev->thread);
-+	struct request *req = NULL;
+@@ -316,7 +316,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 
+ 	set_capacity(gd, (new->size * tr->blksize) >> 9);
+ 
+-
+ 	/* Create the request queue */
+ 	spin_lock_init(&new->queue_lock);
+ 	new->rq = blk_init_queue(mtd_blktrans_request, &new->queue_lock);
+@@ -349,6 +348,11 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	new->open = 0;
+ 	add_disk(gd);
+ 
++	if (new->disk_attributes)
++		sysfs_create_group(&disk_to_dev(gd)->kobj,
++					new->disk_attributes);
 +
-+	if (dev->deleted)
-+		while ((req = blk_fetch_request(rq)) != NULL)
-+			__blk_end_request_all(req, -ENODEV);
-+	else
-+		wake_up_process(dev->thread);
- }
- 
- 
-@@ -357,6 +363,8 @@ error1:
- 
- int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- {
-+	unsigned long flags;
 +
- 	if (mutex_trylock(&mtd_table_mutex)) {
- 		mutex_unlock(&mtd_table_mutex);
- 		BUG();
-@@ -367,7 +375,11 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 	return 0;
+ error4:
+ 	blk_cleanup_queue(new->rq);
+@@ -375,6 +379,11 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
  	/* stop new requests to arrive */
  	del_gendisk(old->disk);
  
-+	/* flush current requests */
-+	spin_lock_irqsave(&old->queue_lock, flags);
++
++	if (old->disk_attributes)
++		sysfs_remove_group(&disk_to_dev(old->disk)->kobj,
++						old->disk_attributes);
++
+ 	/* flush current requests */
+ 	spin_lock_irqsave(&old->queue_lock, flags);
  	old->deleted = 1;
-+	blk_start_queue(old->rq);
-+	spin_unlock_irqrestore(&old->queue_lock, flags);
+diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
+index e276aca..faf1e54 100644
+--- a/include/linux/mtd/blktrans.h
++++ b/include/linux/mtd/blktrans.h
+@@ -9,6 +9,7 @@
+ #define __MTD_TRANS_H__
  
- 	/* Stop the thread */
- 	kthread_stop(old->thread);
+ #include <linux/mutex.h>
++#include <linux/sysfs.h>
+ 
+ struct hd_geometry;
+ struct mtd_info;
+@@ -27,6 +28,7 @@ struct mtd_blktrans_dev {
+ 	int deleted;
+ 	int open;
+ 	struct gendisk *disk;
++	struct attribute_group *disk_attributes;
+ 	struct task_struct *thread;
+ 	struct request_queue *rq;
+ 	spinlock_t queue_lock;
 -- 
 1.6.3.3
