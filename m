@@ -1,21 +1,27 @@
 Received: from mail-bw0-f221.google.com ([209.85.218.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NdKPY-0000mQ-V2
-	for linux-mtd@lists.infradead.org; Fri, 05 Feb 2010 09:23:41 +0000
-Received: by bwz21 with SMTP id 21so2999159bwz.4
+	id 1NdKR0-0001PN-9s
+	for linux-mtd@lists.infradead.org; Fri, 05 Feb 2010 09:25:10 +0000
+Received: by bwz21 with SMTP id 21so3000016bwz.4
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 05 Feb 2010 01:23:35 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <4B6B221E.2060409@gmail.com>
-References: <a328840c1002040902ic5c17a8p5262e482b4fced01@mail.gmail.com>
-	<1265304794.7343.135.camel@localhost> <4B6B221E.2060409@gmail.com>
-Date: Fri, 5 Feb 2010 10:23:35 +0100
-Message-ID: <a328840c1002050123u15be6d75s1c6f27fca6452137@mail.gmail.com>
-Subject: Re: Emulated write failures cause block marking as bad
-From: Marek Skuczynski <mareksk7@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=0015174c1972855083047ed7013d
-Cc: dedekind1@gmail.com
+	Fri, 05 Feb 2010 01:25:05 -0800 (PST)
+Subject: Re: [PATCH 10/17] MTD: nand: make reads using MTD_OOB_RAW affect
+	only  ECC validation
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: Vitaly Wool <vitalywool@gmail.com>
+In-Reply-To: <acd2a5931002050056l119844f5s30c30ccfc1a15596@mail.gmail.com>
+References: <1265326257-4446-1-git-send-email-maximlevitsky@gmail.com>
+	<1265326257-4446-11-git-send-email-maximlevitsky@gmail.com>
+	<acd2a5931002050056l119844f5s30c30ccfc1a15596@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 05 Feb 2010 11:25:01 +0200
+Message-ID: <1265361901.15383.9.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Alex Dubov <oakad@yahoo.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	joern <joern@logfs.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,94 +31,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0015174c1972855083047ed7013d
-Content-Type: text/plain; charset=ISO-8859-1
+On Fri, 2010-02-05 at 09:56 +0100, Vitaly Wool wrote: 
+> On Fri, Feb 5, 2010 at 12:30 AM, Maxim Levitsky <maximlevitsky@gmail.com> wrote:
+> > This changes the behavier of MTD_OOB_RAW. It used to read both OOB and data
+> > to the data buffer, however you would still need to specify the dummy oob buffer.
+> >
+> > This is only used in one place, but makes it hard to read data+oob without ECC
+> > test, thus I removed that behavier, and fixed the user.
+> >
+> > Now MTD_OOB_RAW behaves like MTD_OOB_PLACE, but doesn't do ECC validation
+> >
+> > Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+> > ---
+> >  drivers/mtd/nand/nand_base.c |    5 -----
+> >  drivers/mtd/nand/nand_bbt.c  |   26 ++++++++++++++++++++++----
+> >  include/linux/mtd/mtd.h      |    4 +---
+> >  3 files changed, 23 insertions(+), 12 deletions(-)
+> 
+> Could you please provide a clearer description of why you think this
+> is necessary?
 
-> Okay, maybe my case is isolated because of tested system configuration,
-> I will try manage this case myself.
->
-I have prepared a patch, maybe someone will find it useful.
+Sure.
 
---0015174c1972855083047ed7013d
-Content-Type: text/x-patch; charset=US-ASCII; name="safe_erase.patch"
-Content-Disposition: attachment; filename="safe_erase.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g5arn87c0
+I have two distinct buffers. One holds the data and is 512 bytes long,
+other is the oob and is 16 bytes long.
 
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL3ViaS9LY29uZmlnLmRlYnVnIGIvZHJpdmVycy9tdGQv
-dWJpL0tjb25maWcuZGVidWcKaW5kZXggMWUyZWUyMi4uZmExYTkyYyAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9tdGQvdWJpL0tjb25maWcuZGVidWcKKysrIGIvZHJpdmVycy9tdGQvdWJpL0tjb25maWcu
-ZGVidWcKQEAgLTU5LDYgKzU5LDE0IEBAIGNvbmZpZyBNVERfVUJJX0RFQlVHX0VNVUxBVEVfV1JJ
-VEVfRkFJTFVSRVMKIAkgIFRoaXMgb3B0aW9uIGVtdWxhdGVzIHdyaXRlIGZhaWx1cmVzIHdpdGgg
-cHJvYmFiaWxpdHkgMS8xMDAuIFVzZWZ1bCBmb3IKIAkgIGRlYnVnZ2luZyBhbmQgdGVzdGluZyBo
-b3cgVUJJIGhhbmRsaW5lcyBlcnJvcnMuCiAKK2NvbmZpZyBNVERfVUJJX0RFQlVHX0VNVUxBVEVf
-V1JJVEVfRkFJTFVSRVNfU0FGRV9FUkFTRQorCWJvb2wgIlByZXZlbnQgd3JpdGUgZmFpbHVyZSBk
-dXJpbmcgdGhlIHN5bmMgZXJhc2UiCisJZGVwZW5kcyBvbiBNVERfVUJJX0RFQlVHX0VNVUxBVEVf
-V1JJVEVfRkFJTFVSRVMKKwlkZWZhdWx0IG4KKwloZWxwCisJICBUaGlzIG9wdGlvbiBwcmV2ZW50
-cyB3cml0ZSBmYWlsdXJlcyBkdXJpbmcgdGhlIHN5bmMgZXJhc2UgdGhhdCBtYXkKKwkgIGNhdXNl
-IG1hcmtpbmcgdGhlIGJsb2NrIGFzIGJhZC4KKwogY29uZmlnIE1URF9VQklfREVCVUdfRU1VTEFU
-RV9FUkFTRV9GQUlMVVJFUwogCWJvb2wgIkVtdWxhdGUgZmxhc2ggZXJhc2UgZmFpbHVyZXMiCiAJ
-ZGVwZW5kcyBvbiBNVERfVUJJX0RFQlVHCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvZGVi
-dWcuYyBiL2RyaXZlcnMvbXRkL3ViaS9kZWJ1Zy5jCmluZGV4IGM5NDljYjQuLjhmZjBkNmEgMTAw
-NjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3ViaS9kZWJ1Zy5jCisrKyBiL2RyaXZlcnMvbXRkL3ViaS9k
-ZWJ1Zy5jCkBAIC0xOTQsNiArMTk0LDIzIEBAIHZvaWQgdWJpX2RiZ19kdW1wX21rdm9sX3JlcShj
-b25zdCBzdHJ1Y3QgdWJpX21rdm9sX3JlcSAqcmVxKQogCXByaW50ayhLRVJOX0RFQlVHICJcdDFz
-dCAxNiBjaGFyYWN0ZXJzIG9mIG5hbWU6ICVzXG4iLCBubSk7CiB9CiAKKyNpZmRlZiBDT05GSUdf
-TVREX1VCSV9ERUJVR19FTVVMQVRFX1dSSVRFX0ZBSUxVUkVTCisvKioKKyAqIHViaV9kYmdfaXNf
-d3JpdGVfZmFpbHVyZSAtIGlmIGl0IGlzIHRpbWUgdG8gZW11bGF0ZSBhIHdyaXRlIGZhaWx1cmUu
-CisgKgorICogUmV0dXJucyBub24temVybyBpZiBhIHdyaXRlIGZhaWx1cmUgc2hvdWxkIGJlIGVt
-dWxhdGVkLCBvdGhlcndpc2UgcmV0dXJucworICogemVyby4KKyAqLworaW50IHViaV9kYmdfaXNf
-d3JpdGVfZmFpbHVyZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpKQoreworI2lmZGVmIENPTkZJR19N
-VERfVUJJX0RFQlVHX0VNVUxBVEVfV1JJVEVfRkFJTFVSRVNfU0FGRV9FUkFTRQorCXJldHVybiAo
-IXViaS0+d3JpdGVfZmFpbHVyZV9tYXNrZWQgJiYgIShyYW5kb20zMigpICUgNTAwKSk7CisjZWxz
-ZQorCXJldHVybiAhKHJhbmRvbTMyKCkgJSA1MDApOworI2VuZGlmCit9CisjZW5kaWYKKwogI2Vu
-ZGlmIC8qIENPTkZJR19NVERfVUJJX0RFQlVHICovCiAKIC8qCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L210ZC91YmkvZGVidWcuaCBiL2RyaXZlcnMvbXRkL3ViaS9kZWJ1Zy5oCmluZGV4IGZhNGNmZmUu
-LmZmNzdhMjYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL3ViaS9kZWJ1Zy5oCisrKyBiL2RyaXZl
-cnMvbXRkL3ViaS9kZWJ1Zy5oCkBAIC0xMTQsMTggKzExNCw5IEBAIHN0YXRpYyBpbmxpbmUgaW50
-IHViaV9kYmdfaXNfYml0ZmxpcCh2b2lkKQogI2VuZGlmCiAKICNpZmRlZiBDT05GSUdfTVREX1VC
-SV9ERUJVR19FTVVMQVRFX1dSSVRFX0ZBSUxVUkVTCi0vKioKLSAqIHViaV9kYmdfaXNfd3JpdGVf
-ZmFpbHVyZSAtIGlmIGl0IGlzIHRpbWUgdG8gZW11bGF0ZSBhIHdyaXRlIGZhaWx1cmUuCi0gKgot
-ICogUmV0dXJucyBub24temVybyBpZiBhIHdyaXRlIGZhaWx1cmUgc2hvdWxkIGJlIGVtdWxhdGVk
-LCBvdGhlcndpc2UgcmV0dXJucwotICogemVyby4KLSAqLwotc3RhdGljIGlubGluZSBpbnQgdWJp
-X2RiZ19pc193cml0ZV9mYWlsdXJlKHZvaWQpCi17Ci0JcmV0dXJuICEocmFuZG9tMzIoKSAlIDUw
-MCk7Ci19CitpbnQgdWJpX2RiZ19pc193cml0ZV9mYWlsdXJlKHN0cnVjdCB1YmlfZGV2aWNlICp1
-YmkpOwogI2Vsc2UKLSNkZWZpbmUgdWJpX2RiZ19pc193cml0ZV9mYWlsdXJlKCkgMAorI2RlZmlu
-ZSB1YmlfZGJnX2lzX3dyaXRlX2ZhaWx1cmUodWJpKSAwCiAjZW5kaWYKIAogI2lmZGVmIENPTkZJ
-R19NVERfVUJJX0RFQlVHX0VNVUxBVEVfRVJBU0VfRkFJTFVSRVMKQEAgLTE2NSw3ICsxNTYsNyBA
-QCBzdGF0aWMgaW5saW5lIGludCB1YmlfZGJnX2lzX2VyYXNlX2ZhaWx1cmUodm9pZCkKICNkZWZp
-bmUgVUJJX0lPX0RFQlVHICAgICAgICAgICAgICAgMAogI2RlZmluZSBEQkdfRElTQUJMRV9CR1Qg
-ICAgICAgICAgICAwCiAjZGVmaW5lIHViaV9kYmdfaXNfYml0ZmxpcCgpICAgICAgIDAKLSNkZWZp
-bmUgdWJpX2RiZ19pc193cml0ZV9mYWlsdXJlKCkgMAorI2RlZmluZSB1YmlfZGJnX2lzX3dyaXRl
-X2ZhaWx1cmUodWJpKSAwCiAjZGVmaW5lIHViaV9kYmdfaXNfZXJhc2VfZmFpbHVyZSgpIDAKIAog
-I2VuZGlmIC8qICFDT05GSUdfTVREX1VCSV9ERUJVRyAqLwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9t
-dGQvdWJpL2lvLmMgYi9kcml2ZXJzL210ZC91YmkvaW8uYwppbmRleCAyOTA0OTkxLi5jMTY0Mjk5
-IDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC91YmkvaW8uYworKysgYi9kcml2ZXJzL210ZC91Ymkv
-aW8uYwpAQCAtMjU5LDcgKzI1OSw3IEBAIGludCB1YmlfaW9fd3JpdGUoc3RydWN0IHViaV9kZXZp
-Y2UgKnViaSwgY29uc3Qgdm9pZCAqYnVmLCBpbnQgcG51bSwgaW50IG9mZnNldCwKIAkJCXJldHVy
-biBlcnIgPiAwID8gLUVJTlZBTCA6IGVycjsKIAl9CiAKLQlpZiAodWJpX2RiZ19pc193cml0ZV9m
-YWlsdXJlKCkpIHsKKwlpZiAodWJpX2RiZ19pc193cml0ZV9mYWlsdXJlKHViaSkpIHsKIAkJZGJn
-X2VycigiY2Fubm90IHdyaXRlICVkIGJ5dGVzIHRvIFBFQiAlZDolZCAiCiAJCQkiKGVtdWxhdGVk
-KSIsIGxlbiwgcG51bSwgb2Zmc2V0KTsKIAkJdWJpX2RiZ19kdW1wX3N0YWNrKCk7CmRpZmYgLS1n
-aXQgYS9kcml2ZXJzL210ZC91YmkvdWJpLmggYi9kcml2ZXJzL210ZC91YmkvdWJpLmgKaW5kZXgg
-ZDhmNTkxNS4uMTE5NDU0OSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvdWJpL3ViaS5oCisrKyBi
-L2RyaXZlcnMvbXRkL3ViaS91YmkuaApAQCAtNDM4LDYgKzQzOCw5IEBAIHN0cnVjdCB1YmlfZGV2
-aWNlIHsKICNpZmRlZiBDT05GSUdfTVREX1VCSV9ERUJVRwogCXZvaWQgKmRiZ19wZWJfYnVmOwog
-CXN0cnVjdCBtdXRleCBkYmdfYnVmX211dGV4OworI2lmZGVmIENPTkZJR19NVERfVUJJX0RFQlVH
-X0VNVUxBVEVfV1JJVEVfRkFJTFVSRVNfU0FGRV9FUkFTRQorCWludCAgd3JpdGVfZmFpbHVyZV9t
-YXNrZWQ7CisjZW5kaWYKICNlbmRpZgogfTsKIApkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvdWJp
-L3dsLmMgYi9kcml2ZXJzL210ZC91Ymkvd2wuYwppbmRleCBkYzM4ZmM1Li42Nzk5YzI1IDEwMDY0
-NAotLS0gYS9kcml2ZXJzL210ZC91Ymkvd2wuYworKysgYi9kcml2ZXJzL210ZC91Ymkvd2wuYwpA
-QCAtNjE1LDEwICs2MTUsMTUgQEAgc3RhdGljIGludCBzeW5jX2VyYXNlKHN0cnVjdCB1YmlfZGV2
-aWNlICp1YmksIHN0cnVjdCB1Ymlfd2xfZW50cnkgKmUsCiAKIAllY19oZHItPmVjID0gY3B1X3Rv
-X2JlNjQoZWMpOwogCisjaWZkZWYgQ09ORklHX01URF9VQklfREVCVUdfRU1VTEFURV9XUklURV9G
-QUlMVVJFU19TQUZFX0VSQVNFCisJdWJpLT53cml0ZV9mYWlsdXJlX21hc2tlZCA9IDE7CisjZW5k
-aWYKKwogCWVyciA9IHViaV9pb193cml0ZV9lY19oZHIodWJpLCBlLT5wbnVtLCBlY19oZHIpOwog
-CWlmIChlcnIpCiAJCWdvdG8gb3V0X2ZyZWU7CiAKKwogCWUtPmVjID0gZWM7CiAJc3Bpbl9sb2Nr
-KCZ1YmktPndsX2xvY2spOwogCWlmIChlLT5lYyA+IHViaS0+bWF4X2VjKQpAQCAtNjI2LDYgKzYz
-MSw5IEBAIHN0YXRpYyBpbnQgc3luY19lcmFzZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBzdHJ1
-Y3QgdWJpX3dsX2VudHJ5ICplLAogCXNwaW5fdW5sb2NrKCZ1YmktPndsX2xvY2spOwogCiBvdXRf
-ZnJlZToKKyNpZmRlZiBDT05GSUdfTVREX1VCSV9ERUJVR19FTVVMQVRFX1dSSVRFX0ZBSUxVUkVT
-X1NBRkVfRVJBU0UKKwl1YmktPndyaXRlX2ZhaWx1cmVfbWFza2VkID0gMDsKKyNlbmRpZgogCWtm
-cmVlKGVjX2hkcik7CiAJcmV0dXJuIGVycjsKIH0K
---0015174c1972855083047ed7013d--
+I want to write these buffers to flash but without ECC
+
+Currently I would have to allocate new buffer and copy both buffers
+there.
+
+Why I need it?
+
+To make my SmartMedia FTL complete I need to add support for 256 byte
+nands. These have 256 bytes per page and 8 bytes of oob.
+However, pages are always written in pairs, forming 512 bytes sector.
+Combined oob of first and second page is identical to the one that is
+written to 512 byte page, thus its layout depends on page number.
+Also I want the nand driver to have as little as possible smartmedia
+dependencies, thus allow it to be used with any FTL, UBI, jffs2, etc..
+Therefore I decided to make nand driver use standard oob layout and ECC
+in case of 256 byte flash, but make my FTL bypass it.
+It also happens to work with nandsim unmodified... :-)
+
+Also, this makes the interface more orthogonal.
+This feature is used in just one place too.
+
+Best regards,
+Maxim Levitsky
