@@ -1,26 +1,20 @@
-Received: from mail-fx0-f210.google.com ([209.85.220.210])
+Received: from mail-bw0-f221.google.com ([209.85.218.221])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NdRcD-0002wc-OA
-	for linux-mtd@lists.infradead.org; Fri, 05 Feb 2010 17:05:14 +0000
-Received: by fxm2 with SMTP id 2so1274486fxm.31
+	id 1NdXRQ-00040u-CN
+	for linux-mtd@lists.infradead.org; Fri, 05 Feb 2010 23:18:29 +0000
+Received: by bwz21 with SMTP id 21so3708825bwz.4
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 05 Feb 2010 09:05:07 -0800 (PST)
-Subject: Re: [PATCH 13/17] MTD: export few functions from nand_base.c
+	Fri, 05 Feb 2010 15:18:21 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: "stanley.miao" <stanley.miao@windriver.com>
-In-Reply-To: <4B6B8338.5060608@windriver.com>
-References: <1265326257-4446-1-git-send-email-maximlevitsky@gmail.com>
-	<1265326257-4446-14-git-send-email-maximlevitsky@gmail.com>
-	<4B6B8338.5060608@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 05 Feb 2010 19:05:04 +0200
-Message-ID: <1265389504.18186.4.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Alex Dubov <oakad@yahoo.com>, Artem Bityutskiy <dedekind1@gmail.com>,
-	joern <joern@logfs.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: NAND: fixes
+Date: Sat,  6 Feb 2010 01:18:03 +0200
+Message-Id: <1265411890-9156-1-git-send-email-maximlevitsky@gmail.com>
+Cc: "stanley.miao" <stanley.miao@windriver.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	Vitaly Wool <vitalywool@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-02-05 at 10:32 +0800, stanley.miao wrote: 
-> Maxim Levitsky wrote:
-> > This exports:
-> >
-> > nand_do_read_oob
-> > nand_do_write_oob
-> >   
-> 
-> nand_do_read_oob and nand_do_write_oob can't be exported. They are internal
-> functions in NAND subsystem. If you want use them, please use mtd->read_oob
-> and mtd->write_oob.
-> 
-> Stanley.
-> 
-> > nand_get_device
-> > nand_put_device
-> >
-> > This functions will be used to implement custom oob based
-> > bad block handling in upcoming smartmedia common module
-> >
+This is part of my patcheset that touches the nand subsystem
 
-Actually I don't like this patch ether.
+Stanley, patch #2 should now cover attempts to write outside the oob.
 
-The problem is that nand_erase_nand first takes the lock, and then calls
-the ->block_bad.
+Also I did another (don't know if less or more evil) approach to bad block testing.
+Now check_bad always takes the controller locks and selects the chip. Thus it is
+possible to use read_oob/write_oob.
+This however changes behavier of the nand_erase_nand to deny erases if any block within
+the range is bad. Also it selects/releases the chip once per erase block.
+This is done in patch #5. Patch #6 is ported to that change.
 
-I could make the ->block_bad always take the lock (and this will allow
-using ->read_oob) by first checking that all erase blocks are good, and
-then doing the erase.
-This would change the behavior slightly (Now if you attempt to erase
-several erase blocks and one of them is marked as bad, erase stops at
-first bad block. With the change, erase will fail completely.
-Is this ok?
+Patches 1-3 are pure fixes.
 
 Best regards,
-Maxim Levitsky
+	Maxim Levitsky
