@@ -1,27 +1,16 @@
-Received: from mail-bw0-f221.google.com ([209.85.218.221])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NdKjk-0004vw-Nc
-	for linux-mtd@lists.infradead.org; Fri, 05 Feb 2010 09:44:33 +0000
-Received: by bwz21 with SMTP id 21so3012056bwz.4
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 05 Feb 2010 01:44:27 -0800 (PST)
-Subject: Re: [PATCH 11/17] MTD: nand: fix bug that prevented write of more
-	that	one page by ->write_oob
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: "stanley.miao" <stanley.miao@windriver.com>
-In-Reply-To: <4B6B81AD.40704@windriver.com>
-References: <1265326257-4446-1-git-send-email-maximlevitsky@gmail.com>
-	<1265326257-4446-12-git-send-email-maximlevitsky@gmail.com>
-	<4B6B81AD.40704@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 05 Feb 2010 11:44:23 +0200
-Message-ID: <1265363063.15383.27.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Alex Dubov <oakad@yahoo.com>, Artem Bityutskiy <dedekind1@gmail.com>,
-	joern <joern@logfs.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+	id 1NdOTM-0000hs-Ud
+	for linux-mtd@lists.infradead.org; Fri, 05 Feb 2010 13:43:53 +0000
+From: Anatolij Gustschin <agust@denx.de>
+To: linuxppc-dev@ozlabs.org
+Subject: [PATCH v3 00/11] Update support for MPC512x
+Date: Fri,  5 Feb 2010 14:42:46 +0100
+Message-Id: <1265377377-29327-1-git-send-email-agust@denx.de>
+Cc: jcrigby@gmail.com, dzu@denx.de, linux-usb@vger.kernel.org,
+	grant.likely@secretlab.ca, linux-mtd@lists.infradead.org,
+	rtc-linux@googlegroups.com, Dan Williams <dan.j.williams@intel.com>,
+	Anatolij Gustschin <agust@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,111 +20,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-02-05 at 10:25 +0800, stanley.miao wrote: 
-> ops->ooblen is the oob bytes to write, you add a argument for 
-> nand_fill_oob to do this,
-> it is redundant.
-No its not.
-ops->ooblen can be legitimately larger that mtd->oobsize because user
-might want to write two or more pages in a row.
+The patches are based on v2.6.33-rc6 and cover the following
+items:
 
-I want to be able to write two pages + two oobs in same time.
+- platform, DTS
+- DMA
+- DIU
+- UART (without h/w flow control)
+- I2C
+- NAND
+- RTC
+
+The code has been tested on the Freescale/STX "MPC5121ADS" board
+(board rev. 4) with a MPC5121e Rev. 2. No attempt was made to provide
+backward compatibility to older silicon revisions or older revisions
+of the board.
+
+Changes since v2:
+ - New cleanup patch added to avoid usage of platform specific
+   clock init on non-5121 platforms
+ - Comments to v2 patches addressed, detailed changelog is added
+   to related patches. As a result there are 11 patches now as
+   NAND and USB patches were split.
+
+Changes since v1:
+ - MPC5121 FEC support patches are removed from this patch series
+   as these were not accepted
+ - I2C support path is also removed, the I2C support is addressed
+   by another patch series from Wolfgang Grandegger:
+       i2c-mpc: add support for the Freescale MPC512x and other fixes
+   Appropriate fixes for MPC5121ADS DTS are addressed by DTS patch in
+   this patch series
+ - Detailed changelog is added to each patch of the series
 
 
+Anatolij Gustschin (10):
+  powerpc/mpc5121: avoid using arch_initcall for clock init
+  powerpc/mpc5121: Add machine restart support
+  rtc: Add MPC5121 Real time clock driver
+  mtd: Add MPC5121 NAND Flash Controller driver
+  powerpc/mpc5121: create and register NFC device
+  powerpc/fsl_soc.c: prepare for addition of mpc5121 USB code
+  powerpc/mpc5121: add USB host support
+  powerpc/mpc5121: shared DIU framebuffer support
+  powerpc/mpc5121: update mpc5121ads DTS
+  powerpc/mpc5121: Add default config for MPC5121
 
-> 
-> I know the bug you want to fix, the ops->ooblen may be illegal. But this 
-> patch can't this
-> problem. If (ops->offset + ops->ooblen) > mtd->oobsize, it still will 
-> write beyond a page.
-This is true, I just didn't use the ops->offset....
+Piotr Ziecik (1):
+  dma: Add MPC512x DMA driver
 
+ Documentation/powerpc/dts-bindings/fsl/usb.txt |   22 +
+ arch/powerpc/boot/dts/mpc5121ads.dts           |   55 +-
+ arch/powerpc/configs/mpc512x_defconfig         | 1694 ++++++++++++++++++++++++
+ arch/powerpc/include/asm/mpc5xxx.h             |   14 +-
+ arch/powerpc/platforms/512x/Kconfig            |    3 +
+ arch/powerpc/platforms/512x/Makefile           |    2 +-
+ arch/powerpc/platforms/512x/clock.c            |    5 +-
+ arch/powerpc/platforms/512x/mpc5121_ads.c      |   10 +-
+ arch/powerpc/platforms/512x/mpc5121_generic.c  |   15 +-
+ arch/powerpc/platforms/512x/mpc5121_usb.c      |  138 ++
+ arch/powerpc/platforms/512x/mpc512x.h          |    7 +
+ arch/powerpc/platforms/512x/mpc512x_shared.c   |  331 +++++
+ arch/powerpc/sysdev/fsl_soc.c                  |  230 ++--
+ arch/powerpc/sysdev/fsl_soc.h                  |   10 +
+ drivers/dma/Kconfig                            |    7 +
+ drivers/dma/Makefile                           |    1 +
+ drivers/dma/mpc512x_dma.c                      |  800 +++++++++++
+ drivers/mtd/nand/Kconfig                       |    7 +
+ drivers/mtd/nand/Makefile                      |    1 +
+ drivers/mtd/nand/mpc5121_nfc.c                 |  916 +++++++++++++
+ drivers/rtc/Kconfig                            |   10 +
+ drivers/rtc/Makefile                           |    1 +
+ drivers/rtc/rtc-mpc5121.c                      |  387 ++++++
+ drivers/usb/host/ehci-fsl.c                    |  111 ++-
+ drivers/usb/host/ehci-fsl.h                    |   19 +-
+ drivers/usb/host/ehci-mem.c                    |    2 +-
+ drivers/video/fsl-diu-fb.c                     |   40 +-
+ {drivers/video => include/linux}/fsl-diu-fb.h  |    0
+ include/linux/fsl_devices.h                    |   10 +
+ 29 files changed, 4661 insertions(+), 187 deletions(-)
+ create mode 100644 arch/powerpc/configs/mpc512x_defconfig
+ create mode 100644 arch/powerpc/platforms/512x/mpc5121_usb.c
+ create mode 100644 drivers/dma/mpc512x_dma.c
+ create mode 100644 drivers/mtd/nand/mpc5121_nfc.c
+ create mode 100644 drivers/rtc/rtc-mpc5121.c
+ rename {drivers/video => include/linux}/fsl-diu-fb.h (100%)
 
-> 
-> I think the right method is that nand_do_write_ops do the check like 
-> nand_do_write_oob,
-> I have the patch yesterday.
-> 
-> http://patchwork.ozlabs.org/patch/44450/
-This again won't work for multipage writes I have in mind.
-However if ops->ooboffs is set, I think multipage write shouldn't be
-allowed
-
-This is:
-
-if (ops->ooboffs && (ops->ooboffs + ops->ooblen) > len))
-
-Also check for 'ops->ooboffs >= len' is almost redundant.
-Only case it would trigger is when 'ops->ooblen == 0'
-But this probably can be dealt with, without error.
-
-Best regards,
-Maxim Levitsky
-
-> 
-> Stanley.
-> 
-> Maxim Levitsky wrote:
-> > Although nand_do_write_ops intends to allow such mode, it fails do do so
-> > Probably this was never tested
-> >
-> > Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
-> > ---
-> >  drivers/mtd/nand/nand_base.c |   16 +++++++++-------
-> >  1 files changed, 9 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index 8ff36be..29e986e 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -1879,11 +1879,9 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-> >   * @oob:	oob data buffer
-> >   * @ops:	oob ops structure
-> >   */
-> > -static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob,
-> > -				  struct mtd_oob_ops *ops)
-> > +static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
-> > +						struct mtd_oob_ops *ops)
-> >   
-> 
-> ops->ooblen is the oob bytes to write, you add a prara
-> 
-> >  {
-> > -	size_t len = ops->ooblen;
-> > -
-> >  	switch(ops->mode) {
-> >  
-> >  	case MTD_OOB_PLACE:
-> > @@ -1938,6 +1936,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
-> >  	int chipnr, realpage, page, blockmask, column;
-> >  	struct nand_chip *chip = mtd->priv;
-> >  	uint32_t writelen = ops->len;
-> > +	uint32_t oobwritelen = ops->ooblen;
-> >  	uint8_t *oob = ops->oobbuf;
-> >  	uint8_t *buf = ops->datbuf;
-> >  	int ret, subpage;
-> > @@ -1994,8 +1993,11 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
-> >  			wbuf = chip->buffers->databuf;
-> >  		}
-> >  
-> > -		if (unlikely(oob))
-> > -			oob = nand_fill_oob(chip, oob, ops);
-> > +		if (unlikely(oob)) {
-> > +			size_t len = min(oobwritelen, mtd->oobsize);
-> > +			oob = nand_fill_oob(chip, oob, len, ops);
-> > +			oobwritelen -= len;
-> > +		}
-> >  
-> >  		ret = chip->write_page(mtd, chip, wbuf, page, cached,
-> >  				       (ops->mode == MTD_OOB_RAW));
-> > @@ -2169,7 +2171,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
-> >  		chip->pagebuf = -1;
-> >  
-> >  	memset(chip->oob_poi, 0xff, mtd->oobsize);
-> > -	nand_fill_oob(chip, ops->oobbuf, ops);
-> > +	nand_fill_oob(chip, ops->oobbuf, ops->ooblen, ops);
-> >  	status = chip->ecc.write_oob(mtd, chip, page & chip->pagemask);
-> >  	memset(chip->oob_poi, 0xff, mtd->oobsize);
-> >  
-> >   
-> 
+Cc: Grant Likely <grant.likely@secretlab.ca>
+Cc: John Rigby <jcrigby@gmail.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: <rtc-linux@googlegroups.com>
+Cc: <linux-mtd@lists.infradead.org>
+Cc: <linux-usb@vger.kernel.org>
