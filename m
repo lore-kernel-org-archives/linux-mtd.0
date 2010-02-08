@@ -1,23 +1,22 @@
-Received: from mail-bw0-f221.google.com ([209.85.218.221])
+Received: from mail-fx0-f210.google.com ([209.85.220.210])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NdXRf-00040u-3h
-	for linux-mtd@lists.infradead.org; Fri, 05 Feb 2010 23:18:46 +0000
-Received: by mail-bw0-f221.google.com with SMTP id 21so3708825bwz.4
+	id 1NePBR-0007qc-2O
+	for linux-mtd@lists.infradead.org; Mon, 08 Feb 2010 08:41:34 +0000
+Received: by fxm2 with SMTP id 2so207115fxm.31
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 05 Feb 2010 15:18:38 -0800 (PST)
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 7/7] MTD: add few workarounds to nand system for SmartMedia/xD
-	chips.
-Date: Sat,  6 Feb 2010 01:18:10 +0200
-Message-Id: <1265411890-9156-8-git-send-email-maximlevitsky@gmail.com>
-In-Reply-To: <1265411890-9156-1-git-send-email-maximlevitsky@gmail.com>
-References: <1265411890-9156-1-git-send-email-maximlevitsky@gmail.com>
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>, Vitaly Wool <vitalywool@gmail.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	"stanley.miao" <stanley.miao@windriver.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+	Mon, 08 Feb 2010 00:41:25 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <ce9ab5791002080039t4e818aedr7d0ecdf3bb8af845@mail.gmail.com>
+References: <ce9ab5791002030751q21cd9759nb776fa06e89cad46@mail.gmail.com>
+	<ce9ab5791002080039t4e818aedr7d0ecdf3bb8af845@mail.gmail.com>
+Date: Mon, 8 Feb 2010 14:11:24 +0530
+Message-ID: <7f9d1ffb1002080041j5f60729cu6090d27f4d3cdeb9@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Adding nand lock/unlock routines.
+From: kishore kadiyala <kishorek.kadiyala@gmail.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,166 +26,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Add an option NAND_SMARTMEDIA that can be set by nand driver
- If set, it will cause separate ID table to be used, which includes
- mask rom devices and new xD cards
+On Mon, Feb 8, 2010 at 2:09 PM, Vimal Singh <vimal.newwork@gmail.com> wrote=
+:
+> From a28c230f3bd8fa765f78c0be91370f146e71f670 Mon Sep 17 00:00:00 2001
+> From: Vimal Singh <vimalsingh@ti.com>
+> Date: Wed, 3 Feb 2010 14:32:06 +0530
+> Subject: [PATCH 2/2] Adding nand lock/unlock routines.
+>
+> Adding nand lock / unlock routines. At least 'micron' parts
+> support this.
+>
+> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> ---
+> =A0drivers/mtd/nand/nand_base.c | =A0164 ++++++++++++++++++++++++++++++++=
+++++++++++
+> =A0include/linux/mtd/nand.h =A0 =A0 | =A0 10 +++
+> =A02 files changed, 174 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 2dfeb4b..a2dddca 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -864,6 +864,168 @@ static int nand_wait(struct
+> =A0}
+>
+> =A0/**
+> + * __nand_unlock - [REPLACABLE] unlocks specified locked blockes
+> + *
+> + * @param mtd - mtd info
+> + * @param ofs - offset to start unlock from
+> + * @param len - length to unlock
+> + * @invert - =A0when =3D 0, unlock the range of blocks within the lower =
+and
+> + * =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0upper boundary address
+> + * =A0 =A0 =A0 =A0 =A0 =A0whne =3D 1, unlock the range of blocks outside=
+ the boundaries
+> + * =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0of the lower and upper bou=
+ndary address
+> + *
+> + * @return - unlock status
+> + */
+> +static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 uint64_t len, int invert)
+> +{
+> + =A0 =A0 =A0 int ret =3D 0;
+> + =A0 =A0 =A0 int status, page;
+> + =A0 =A0 =A0 struct nand_chip *chip =3D mtd->priv;
+> +
+> + =A0 =A0 =A0 /* Submit address of first page to unlock */
+> + =A0 =A0 =A0 page =3D ofs >> chip->page_shift;
+> + =A0 =A0 =A0 chip->cmdfunc(mtd, NAND_CMD_UNLOCK1, -1, page & chip->pagem=
+ask);
+> +
+> + =A0 =A0 =A0 /* Submit address of last page to unlock */
+> + =A0 =A0 =A0 page =3D (ofs + len) >> chip->page_shift;
+> + =A0 =A0 =A0 chip->cmdfunc(mtd, NAND_CMD_UNLOCK2, -1,
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (page | inv=
+ert) & chip->pagemask);
+> +
+> + =A0 =A0 =A0 /* Call wait ready function */
+> + =A0 =A0 =A0 status =3D chip->waitfunc(mtd, chip);
+> + =A0 =A0 =A0 udelay(1000);
+> + =A0 =A0 =A0 /* See if device thinks it succeeded */
+> + =A0 =A0 =A0 if (status & 0x01) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status =
+=3D 0x%08x\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 __func__, status);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -EIO;
+> + =A0 =A0 =A0 }
+> +
+> + =A0 =A0 =A0 return ret;
+> +}
+> +
+> +/**
+> + * nand_unlock - [REPLACABLE] unlocks specified locked blockes
+> + *
+> + * @param mtd - mtd info
+> + * @param ofs - offset to start unlock from
+> + * @param len - length to unlock
+> + *
+> + * @return - unlock status
+> + */
+> +int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+> +{
+> + =A0 =A0 =A0 int ret =3D 0;
+> + =A0 =A0 =A0 int chipnr;
+> + =A0 =A0 =A0 struct nand_chip *chip =3D mtd->priv;
+> +
+> + =A0 =A0 =A0 DEBUG(MTD_DEBUG_LEVEL3, "%s: start =3D 0x%012llx, len =3D %=
+llu\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, (unsigned long lo=
+ng)ofs, len);
+> +
+> + =A0 =A0 =A0 if (check_offs_len(mtd, instr->addr, instr->len))
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D -EINVAL;
 
-* Workaround for wrong write protect status on some xD cards
+This patch breaks the compilation. See below:
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/nand/nand_base.c |   30 ++++++++++++++++++++++--------
- drivers/mtd/nand/nand_ids.c  |   39 +++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h     |   11 +++++++++++
- 3 files changed, 72 insertions(+), 8 deletions(-)
+drivers/mtd/nand/nand_base.c: In function 'nand_unlock':
+drivers/mtd/nand/nand_base.c:926: error: 'instr' undeclared (first use
+in this function)
+drivers/mtd/nand/nand_base.c:926: error: (Each undeclared identifier
+is reported only once
+drivers/mtd/nand/nand_base.c:926: error: for each function it appears in.)
+drivers/mtd/nand/nand_base.c: In function 'nand_lock':
+drivers/mtd/nand/nand_base.c:983: error: 'instr' undeclared (first use
+in this function)
+make[3]: *** [drivers/mtd/nand/nand_base.o] Error 1
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 86fa40a..09d1433 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -395,9 +395,18 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- static int nand_check_wp(struct mtd_info *mtd)
- {
- 	struct nand_chip *chip = mtd->priv;
-+	int wp;
-+
-+	/* broken xD cards report WP despite beeing writable */
-+	if (chip->options & NAND_BROKEN_XD)
-+		return 0;
-+
- 	/* Check the WP bit */
- 	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
--	return (chip->read_byte(mtd) & NAND_STATUS_WP) ? 0 : 1;
-+	wp = (chip->read_byte(mtd) & NAND_STATUS_WP) ? 0 : 1;
-+
-+
-+	return wp;
- }
- 
- /**
-@@ -2651,14 +2660,18 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 	}
- 
- 	/* Lookup the flash id */
--	for (i = 0; nand_flash_ids[i].name != NULL; i++) {
--		if (dev_id == nand_flash_ids[i].id) {
--			type =  &nand_flash_ids[i];
-+#ifdef CONFIG_MTD_NAND_SMARTMEDIA
-+	if (chip->options & NAND_SMARTMEDIA)
-+		type = nand_smartmedia_flash_ids;
-+	else
-+#endif
-+		type = nand_flash_ids;
-+
-+	for (i = 0; type->name != NULL; type++)
-+		if (dev_id == type->id)
- 			break;
--		}
--	}
- 
--	if (!type)
-+	if (!type->name)
- 		return ERR_PTR(-ENODEV);
- 
- 	if (!mtd->name)
-@@ -3015,7 +3028,8 @@ int nand_scan_tail(struct mtd_info *mtd)
- 
- 	/* Fill in remaining MTD driver data */
- 	mtd->type = MTD_NANDFLASH;
--	mtd->flags = MTD_CAP_NANDFLASH;
-+	mtd->flags = chip->options & NAND_ROM ? MTD_CAP_ROM :
-+							MTD_CAP_NANDFLASH;
- 	mtd->erase = nand_erase;
- 	mtd->point = NULL;
- 	mtd->unpoint = NULL;
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 69ee2c9..f9e72d5 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -127,6 +127,45 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	{NULL,}
- };
- 
-+#ifdef CONFIG_MTD_NAND_SMARTMEDIA
-+struct nand_flash_dev nand_smartmedia_flash_ids[] = {
-+
-+	/* SmartMedia */
-+	{"SmartMedia 1MiB 5V",		0x6e, 256, 1, 0x1000, 0},
-+	{"SmartMedia 1MiB 3,3V",	0xe8, 256, 1, 0x1000, 0},
-+	{"SmartMedia 1MiB 3,3V",	0xec, 256, 1, 0x1000, 0},
-+	{"SmartMedia 2MiB 3,3V",	0xea, 256, 2, 0x1000, 0},
-+	{"SmartMedia 2MiB 5V",		0x64, 256, 2, 0x1000, 0},
-+	{"SmartMedia 2MiB 3,3V ROM",	0x5d, 512, 2, 0x2000, NAND_ROM},
-+	{"SmartMedia 4MiB 3,3V",	0xe3, 512, 4, 0x2000, 0},
-+	{"SmartMedia 4MiB 3,3/5V",	0xe5, 512, 4, 0x2000, 0},
-+	{"SmartMedia 4MiB 5V",		0x6b, 512, 4, 0x2000, 0},
-+	{"SmartMedia 4MiB 3,3V ROM",	0xd5, 512, 4, 0x2000, NAND_ROM},
-+	{"SmartMedia 8MiB 3,3V",	0xe6, 512, 8, 0x2000, 0},
-+	{"SmartMedia 8MiB 3,3V ROM",	0xd6, 512, 8, 0x2000, NAND_ROM},
-+
-+#define XD_TYPEM	(NAND_NO_AUTOINCR | NAND_BROKEN_XD)
-+	/* xD / SmartMedia */
-+	{"SmartMedia/xD 16MiB 3,3V",	0x73, 512, 16, 0x4000, 0},
-+	{"SmartMedia 16MiB 3,3V ROM",	0x57, 512, 16, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 32MiB 3,3V",	0x75, 512, 32, 0x4000, 0},
-+	{"SmartMedia 32MiB 3,3V ROM",	0x58, 512, 32, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 64MiB 3,3V",	0x76, 512, 64, 0x4000, 0},
-+	{"SmartMedia 64MiB 3,3V ROM",	0xd9, 512, 64, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 128MiB 3,3V",	0x79, 512, 128, 0x4000, 0},
-+	{"SmartMedia 128MiB 3,3V ROM",	0xda, 512, 128, 0x4000, NAND_ROM},
-+	{"SmartMedia/xD 256MiB 3,3V",	0x71, 512, 256, 0x4000, XD_TYPEM},
-+	{"SmartMedia 256MiB 3,3V ROM",	0x5b, 512, 256, 0x4000, NAND_ROM},
-+
-+	/* xD only */
-+	{"xD 512MiB 3,3V",		0xDC, 512, 512, 0x4000, XD_TYPEM},
-+	{"xD 1GiB 3,3V",		0xD3, 512, 1024, 0x4000, XD_TYPEM},
-+	{"xD 2GiB 3,3V",		0xD5, 512, 2048, 0x4000, XD_TYPEM},
-+	{NULL,}
-+};
-+EXPORT_SYMBOL(nand_smartmedia_flash_ids);
-+#endif
-+
- /*
- *	Manufacturer ID list
- */
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 921f24b..3fe8d9e 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -170,6 +170,12 @@ typedef enum {
- /* Chip does not allow subpage writes */
- #define NAND_NO_SUBPAGE_WRITE	0x00000200
- 
-+/* Device is one of 'new' xD cards that expose fake nand command set */
-+#define NAND_BROKEN_XD		0x00000400
-+
-+/* Device behaves just like nand, but is readonly */
-+#define NAND_ROM		0x00000800
-+
- /* Options valid for Samsung large page devices */
- #define NAND_SAMSUNG_LP_OPTIONS \
- 	(NAND_NO_PADDING | NAND_CACHEPRG | NAND_COPYBACK)
-@@ -195,9 +201,13 @@ typedef enum {
- /* This option is defined if the board driver allocates its own buffers
-    (e.g. because it needs them DMA-coherent */
- #define NAND_OWN_BUFFERS	0x00040000
-+
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00080000
- 
-+/* controller supports only xD/SmartMedia cards*/
-+#define NAND_SMARTMEDIA		0x00100000
-+
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
- #define NAND_CONTROLLER_ALLOC	0x80000000
-@@ -458,6 +468,7 @@ struct nand_manufacturers {
- };
- 
- extern struct nand_flash_dev nand_flash_ids[];
-+extern struct nand_flash_dev nand_smartmedia_flash_ids[];
- extern struct nand_manufacturers nand_manuf_ids[];
- 
- extern int nand_scan_bbt(struct mtd_info *mtd, struct nand_bbt_descr *bd);
--- 
-1.6.3.3
+Regards,
+Kishore
