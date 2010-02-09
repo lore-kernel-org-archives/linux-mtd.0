@@ -1,16 +1,22 @@
-Date: Tue, 9 Feb 2010 09:00:59 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: dedekind1@gmail.com
-Subject: Re: [patch for 2.6.33? 1/1] mtd/nand: fix build failure caused by typo
-Message-Id: <20100209090059.b8a2e5b3.akpm@linux-foundation.org>
-In-Reply-To: <1265717589.2006.147.camel@localhost>
-References: <201002022212.o12MC2HT017477@imap1.linux-foundation.org>
-	<1265717589.2006.147.camel@localhost>
+Subject: Re: [PATCH 01/17] MTD: create lockless versions of
+	{get,put}_mtd_device This will be used to resolve deadlock in block
+	translation layer.
+From: Peter Zijlstra <peterz@infradead.org>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+In-Reply-To: <1265734665-22656-2-git-send-email-maximlevitsky@gmail.com>
+References: <1265734665-22656-1-git-send-email-maximlevitsky@gmail.com>
+	<1265734665-22656-2-git-send-email-maximlevitsky@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 09 Feb 2010 18:14:53 +0100
+Message-ID: <1265735693.11509.253.camel@laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: hsweeten@visionengravers.com, peterhuewe@gmx.de, dwmw2@infradead.org,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de
+Cc: Alex Dubov <oakad@yahoo.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	joern <joern@logfs.org>, Vitaly Wool <vitalywool@gmail.com>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	"stanley.miao" <stanley.miao@windriver.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 09 Feb 2010 14:13:09 +0200 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-
-> On Tue, 2010-02-02 at 14:12 -0800, akpm@linux-foundation.org wrote:
-> > From: Peter Huewe <peterhuewe@gmx.de>
-> > 
-> > Fix a build failure introduced by the patch
-> > 
-> >     mtd: orion_nand.c: add error handling and use resource_size()
-> > 
-> > The patch assigns something to a undeclared variable 'err', whereas the
-> > rest of the code uses 'ret' for this task.
+On Tue, 2010-02-09 at 18:57 +0200, Maxim Levitsky wrote:
+> These functions can be used as long as we don't need access to global mtd table, but have
+> a pointer to the mtd device.
 > 
-> Andrew,
-> 
-> I think you should send this fix to Linus, since this is a build fix.
-> dwmw2 seem to bu unavailable now.
+> Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+> ---
+>  drivers/mtd/mtdcore.c   |   60 ++++++++++++++++++++++++++++++----------------
+>  include/linux/mtd/mtd.h |    3 +-
+>  2 files changed, 41 insertions(+), 22 deletions(-)
 
-OK, no probs, thanks.
+> +int __get_mtd_device(struct mtd_info *mtd)
+> +{
+> +	int err;
+> +
+> +	if (!try_module_get(mtd->owner))
+> +		return -ENODEV;
+> +
+> +	if (mtd->get_device) {
+> +
+> +		err = mtd->get_device(mtd);
+> +
+> +		if (err) {
+> +			module_put(mtd->owner);
+> +			return err;
+> +		}
+> +	}
+> +	mtd->usecount++;
+> +	return 0;
+>  }
+
+> +void __put_mtd_device(struct mtd_info *mtd)
+> +{
+> +	--mtd->usecount;
+> +	BUG_ON(mtd->usecount < 0);
+> +
+>  	if (mtd->put_device)
+>  		mtd->put_device(mtd);
+>  
+>  	module_put(mtd->owner);
+>  }
+
+That's racy, use kref.
