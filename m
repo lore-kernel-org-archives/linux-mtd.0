@@ -1,15 +1,15 @@
 Received: from mail-bw0-f220.google.com ([209.85.218.220])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NetPz-00032k-US
-	for linux-mtd@lists.infradead.org; Tue, 09 Feb 2010 16:58:37 +0000
-Received: by mail-bw0-f220.google.com with SMTP id 20so2398515bwz.20
+	id 1NetQ5-000349-KG
+	for linux-mtd@lists.infradead.org; Tue, 09 Feb 2010 16:58:42 +0000
+Received: by mail-bw0-f220.google.com with SMTP id 20so2398565bwz.20
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 09 Feb 2010 08:58:31 -0800 (PST)
+	Tue, 09 Feb 2010 08:58:37 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 13/17] NAND: make ->check_bad more user friendly
-Date: Tue,  9 Feb 2010 18:57:41 +0200
-Message-Id: <1265734665-22656-14-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 14/17] MTD: common module for smartmedia/xD support
+Date: Tue,  9 Feb 2010 18:57:42 +0200
+Message-Id: <1265734665-22656-15-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1265734665-22656-1-git-send-email-maximlevitsky@gmail.com>
 References: <1265734665-22656-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -28,202 +28,244 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Currently to implement a custom ->check_bad one need to call
-nand_get_device, nand_release_device.
-Also it not possible to use mtd->read_oob because they call
-nand_get_device too.
-Refactor the code, so check_bad now always has to do nand_get_device
-Thus it can use plain mtd->read_oob
+This small module implements few helpers that are usefull
+for nand drivers for SmartMedia/xD card readers.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/nand/cafe_nand.c  |    2 +-
- drivers/mtd/nand/diskonchip.c |    2 +-
- drivers/mtd/nand/nand_base.c  |   74 ++++++++++++++++++++++++++---------------
- include/linux/mtd/nand.h      |    2 +-
- 4 files changed, 50 insertions(+), 30 deletions(-)
+ drivers/mtd/nand/Kconfig     |    9 +++
+ drivers/mtd/nand/Makefile    |    1 +
+ drivers/mtd/nand/sm_common.c |  114 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/sm_common.h |   61 ++++++++++++++++++++++
+ 4 files changed, 185 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/sm_common.c
+ create mode 100644 drivers/mtd/nand/sm_common.h
 
-diff --git a/drivers/mtd/nand/cafe_nand.c b/drivers/mtd/nand/cafe_nand.c
-index c828d9a..8211197 100644
---- a/drivers/mtd/nand/cafe_nand.c
-+++ b/drivers/mtd/nand/cafe_nand.c
-@@ -577,7 +577,7 @@ static int cafe_nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
- 	return 0;
- }
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 677cd53..13c1fb2 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -18,6 +18,10 @@ config MTD_NAND_VERIFY_WRITE
+ 	  device thinks the write was successful, a bit could have been
+ 	  flipped accidentally due to device wear or something else.
  
--static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-+static int cafe_nand_block_bad(struct mtd_info *mtd, loff_t ofs)
- {
- 	return 0;
- }
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index b126cf8..ea3a3c9 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -854,7 +854,7 @@ static int doc200x_dev_ready(struct mtd_info *mtd)
- 	}
- }
++config MTD_NAND_SMARTMEDIA
++	boolean
++	default n
++
+ config MTD_NAND_ECC_SMC
+ 	bool "NAND ECC Smart Media byte order"
+ 	default n
+@@ -25,6 +29,11 @@ config MTD_NAND_ECC_SMC
+ 	  Software ECC according to the Smart Media Specification.
+ 	  The original Linux implementation had byte 0 and 1 swapped.
  
--static int doc200x_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-+static int doc200x_block_bad(struct mtd_info *mtd, loff_t ofs)
- {
- 	/* This is our last resort if we couldn't find or create a BBT.  Just
- 	   pretend all blocks are good. */
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c393df3..86fa40a 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -312,22 +312,18 @@ static int nand_verify_buf16(struct mtd_info *mtd, const uint8_t *buf, int len)
-  *
-  * Check, if the block is bad.
-  */
--static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-+static int nand_block_bad(struct mtd_info *mtd, loff_t ofs)
- {
- 	int page, chipnr, res = 0;
- 	struct nand_chip *chip = mtd->priv;
- 	u16 bad;
++config MTD_SM_COMMON
++	select MTD_NAND_SMARTMEDIA
++	tristate
++	default n
++
+ config MTD_NAND_MUSEUM_IDS
+ 	bool "Enable chip ids for obsolete ancient NAND devices"
+ 	depends on MTD_NAND
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 1407bd1..09891f6 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -4,6 +4,7 @@
  
- 	page = (int)(ofs >> chip->page_shift) & chip->pagemask;
-+	chipnr = (int)(ofs >> chip->chip_shift);
-+	nand_get_device(chip, mtd, FL_READING);
+ obj-$(CONFIG_MTD_NAND)			+= nand.o nand_ecc.o
+ obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
++obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
  
--	if (getchip) {
--		chipnr = (int)(ofs >> chip->chip_shift);
--
--		nand_get_device(chip, mtd, FL_READING);
--
--		/* Select the NAND device */
--		chip->select_chip(mtd, chipnr);
--	}
-+	/* Select the NAND device */
-+	chip->select_chip(mtd, chipnr);
- 
- 	if (chip->options & NAND_BUSWIDTH_16) {
- 		chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos & 0xFE,
-@@ -343,9 +339,7 @@ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
- 			res = 1;
- 	}
- 
--	if (getchip)
--		nand_release_device(mtd);
--
-+	nand_release_device(mtd);
- 	return res;
- }
- 
-@@ -410,19 +404,17 @@ static int nand_check_wp(struct mtd_info *mtd)
-  * nand_block_checkbad - [GENERIC] Check if a block is marked bad
-  * @mtd:	MTD device structure
-  * @ofs:	offset from device start
-- * @getchip:	0, if the chip is already selected
-  * @allowbbt:	1, if its allowed to access the bbt area
-  *
-  * Check, if the block is bad. Either by reading the bad block table or
-  * calling of the scan function.
-  */
--static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int getchip,
--			       int allowbbt)
-+static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int allowbbt)
- {
- 	struct nand_chip *chip = mtd->priv;
- 
- 	if (!chip->bbt)
--		return chip->block_bad(mtd, ofs, getchip);
-+		return chip->block_bad(mtd, ofs);
- 
- 	/* Return info from the table */
- 	return nand_isbad_bbt(mtd, ofs, allowbbt);
-@@ -2277,6 +2269,40 @@ static int nand_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	return nand_erase_nand(mtd, instr, 0);
- }
- 
-+/**
-+ * nand_erase_nand - [Internal] check to see if range contains bad blocks
-+ * @mtd:	MTD device structure
-+ * @offs:	start offset
-+ * @len:	length of the range
-+ * @allowbbt:	allow access to bbt
+ obj-$(CONFIG_MTD_NAND_CAFE)		+= cafe_nand.o
+ obj-$(CONFIG_MTD_NAND_SPIA)		+= spia.o
+diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/sm_common.c
+new file mode 100644
+index 0000000..64d8ee0
+--- /dev/null
++++ b/drivers/mtd/nand/sm_common.c
+@@ -0,0 +1,114 @@
++/*
++ * Copyright (C) 2009 - Maxim Levitsky
++ * Common routines & support for xD format
 + *
-+ * Sanity check before doing the erase
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
-+static int nand_check_range(struct mtd_info *mtd, loff_t offs, loff_t len,
-+			int allow_bbt)
++#include <linux/kernel.h>
++#include <linux/mtd/nand.h>
++#include "sm_common.h"
++
++static struct nand_ecclayout nand_oob_sm = {
++	.eccbytes = 6,
++	.eccpos = {8, 9, 10, 13, 14, 15},
++	.oobfree = {
++		{.offset = 0 , .length = 4}, /* reserved */
++		{.offset = 6 , .length = 2}, /* LBA1 */
++		{.offset = 11, .length = 2}  /* LBA2 */
++	}
++};
++
++/* Tests if block (more correctly page) is bad */
++static int sm_block_bad(struct mtd_info *mtd, loff_t ofs)
 +{
-+	struct nand_chip *chip = mtd->priv;
-+	int page = offs >> chip->page_shift;
-+	int mask = (1 << chip->page_shift) - 1;
++	struct mtd_oob_ops ops;
++	struct sm_oob oob;
++	int ret;
 +
-+	if (len & mask || offs & mask) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s Unaligned access\n", __func__);
-+		return -EINVAL;
-+	}
++	ops.mode = MTD_OOB_PLACE;
++	ops.ooboffs = 0;
++	ops.ooblen = SM_OOB_SIZE;
++	ops.oobbuf = (void *)&oob;
++	ops.datbuf = NULL;
 +
-+	while (offs < len) {
-+		if (nand_block_checkbad(mtd, offs, allow_bbt)) {
-+			printk(KERN_WARNING "%s: attempt to erase a bad block "
-+					"at page 0x%08x\n", __func__, page);
-+				return -EIO;
-+		}
++	ret = mtd->read_oob(mtd, ofs, &ops);
 +
-+		offs += (1 < chip->page_shift);
-+		page++;
-+	}
++	/* We can just assume that read error means bad block... */
++	if (ret < 0 || ops.oobretlen != SM_OOB_SIZE)
++		return 0;
++
++	if (!sm_sector_valid(&oob) || !sm_block_valid(&oob))
++		return 1;
++
 +	return 0;
 +}
 +
- #define BBT_PAGE_MASK	0xffffff3f
- /**
-  * nand_erase_nand - [Internal] erase block(s)
-@@ -2321,6 +2347,10 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 
- 	instr->fail_addr = MTD_FAIL_ADDR_UNKNOWN;
- 
-+	/* See if we were asked to erase bad blocks */
-+	if (nand_check_range(mtd, instr->addr, instr->len, allowbbt))
-+		return -EINVAL;
++/* Marks block as bad */
++static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
++{
++	struct mtd_oob_ops ops;
++	struct sm_oob oob;
++	int ret, error = 0;
 +
- 	/* Grab the lock and see if the device is available */
- 	nand_get_device(chip, mtd, FL_ERASING);
- 
-@@ -2357,16 +2387,6 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
- 	instr->state = MTD_ERASING;
- 
- 	while (len) {
--		/*
--		 * heck if we have a bad block, we do not erase bad blocks !
--		 */
--		if (nand_block_checkbad(mtd, ((loff_t) page) <<
--					chip->page_shift, 0, allowbbt)) {
--			printk(KERN_WARNING "%s: attempt to erase a bad block "
--					"at page 0x%08x\n", __func__, page);
--			instr->state = MTD_ERASE_FAILED;
--			goto erase_exit;
--		}
- 
- 		/*
- 		 * Invalidate the page cache, if we erase the block which
-@@ -2490,7 +2510,7 @@ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
- 	if (offs > mtd->size)
- 		return -EINVAL;
- 
--	return nand_block_checkbad(mtd, offs, 1, 0);
-+	return nand_block_checkbad(mtd, offs, 0);
- }
- 
- /**
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index ccab9df..921f24b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -364,7 +364,7 @@ struct nand_chip {
- 	void		(*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
- 	int		(*verify_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
- 	void		(*select_chip)(struct mtd_info *mtd, int chip);
--	int		(*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
-+	int		(*block_bad)(struct mtd_info *mtd, loff_t ofs);
- 	int		(*block_markbad)(struct mtd_info *mtd, loff_t ofs);
- 	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
- 				    unsigned int ctrl);
++	memset(&oob, -1, SM_OOB_SIZE);
++	oob.data_status = 0;
++
++	ops.mode = MTD_OOB_PLACE;
++	ops.ooboffs = 0;
++	ops.ooblen = SM_OOB_SIZE;
++	ops.oobbuf = (void *)&oob;
++	ops.datbuf = NULL;
++
++
++	ret = mtd->write_oob(mtd, ofs, &ops);
++	if (ret < 0 || ops.oobretlen != SM_OOB_SIZE) {
++		printk(KERN_NOTICE
++			"sm_common: can't mark sector at %i as bad\n",
++								(int)ofs);
++		error = -EIO;
++	} else
++		mtd->ecc_stats.badblocks++;
++
++	return error;
++}
++
++int sm_register_device(struct mtd_info *mtd)
++{
++	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
++	int ret;
++
++	chip->options |= NAND_SKIP_BBTSCAN | NAND_SMARTMEDIA;
++
++	/* Scan for card properties */
++	ret = nand_scan_ident(mtd, 1);
++
++	if (ret)
++		return ret;
++
++	/* Set oob handling functions. */
++	if (mtd->writesize == SM_SECTOR_SIZE) {
++		chip->block_bad = sm_block_bad;
++		chip->block_markbad = sm_block_markbad;
++		chip->ecc.layout = &nand_oob_sm;
++
++	/* SmartMedia on small page nand, has page depedent oob layout,
++		thus let FTL do that hard job */
++	} else if (mtd->writesize != SM_SMALL_PAGE)
++		return -ENODEV;
++
++	ret = nand_scan_tail(mtd);
++	if (ret)
++		return ret;
++
++	ret = add_mtd_device(mtd);
++	if (ret)
++		return ret;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(sm_register_device);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Maxim Levitsky <maximlevitsky@gmail.com>");
++MODULE_DESCRIPTION("Common SmartMedia/xD functions");
+diff --git a/drivers/mtd/nand/sm_common.h b/drivers/mtd/nand/sm_common.h
+new file mode 100644
+index 0000000..2e6b517
+--- /dev/null
++++ b/drivers/mtd/nand/sm_common.h
+@@ -0,0 +1,61 @@
++/*
++ * Copyright (C) 2009 - Maxim Levitsky
++ * Common routines & support for SmartMedia/xD format
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#include <linux/bitops.h>
++#include <linux/mtd/mtd.h>
++
++/* Full oob structure as written on the flash */
++struct sm_oob {
++	u32 reserved;
++	u8  data_status;
++	u8  block_status;
++	u8 lba_copy1[2];
++	u8  ecc2[3];
++	u8 lba_copy2[2];
++	u8  ecc1[3];
++} __attribute__((packed));
++
++
++/* one sector is always 512 bytes, but it can consist of two nand pages */
++#define SM_SECTOR_SIZE		512
++
++/* oob area is also 16 bytes, but might be from two pages */
++#define SM_OOB_SIZE		16
++
++/* This is maximum zone size, and all devices that have more that one zone
++   have this size */
++#define SM_MAX_ZONE_SIZE 	1024
++
++/* support for small page nand */
++#define SM_SMALL_PAGE 		256
++#define SM_SMALL_OOB_SIZE	8
++
++
++extern int sm_register_device(struct mtd_info *mtd);
++
++
++inline int sm_sector_valid(struct sm_oob *oob)
++{
++	return hweight16(oob->data_status) >= 5;
++}
++
++inline int sm_block_valid(struct sm_oob *oob)
++{
++	return hweight16(oob->block_status) >= 7;
++}
++
++inline int sm_block_erased(struct sm_oob *oob)
++{
++	static const u32 erased_pattern[4] = {
++		0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
++
++	/* First test for erased block */
++	if (!memcmp(oob, erased_pattern, sizeof(*oob)))
++		return 1;
++	return 0;
++}
 -- 
 1.6.3.3
