@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Neot7-0008DA-KD
-	for linux-mtd@lists.infradead.org; Tue, 09 Feb 2010 12:08:22 +0000
-Subject: Re: [PATCH] JFFS2: Erase max 3 EB's in jffs2_write_super()
+	id 1NeozG-0001Gr-RP
+	for linux-mtd@lists.infradead.org; Tue, 09 Feb 2010 12:14:43 +0000
+Subject: Re: [patch for 2.6.33? 1/1] mtd/nand: fix build failure caused by typo
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <OF04B03B42.0D1C9BA8-ONC12576BE.00355ACE-C12576BE.00357DE9@transmode.se>
-References: <1265103600-32522-1-git-send-email-Joakim.Tjernlund@transmode.se>
-	<OF04B03B42.0D1C9BA8-ONC12576BE.00355ACE-C12576BE.00357DE9@transmode.se>
+To: akpm@linux-foundation.org
+In-Reply-To: <201002022212.o12MC2HT017477@imap1.linux-foundation.org>
+References: <201002022212.o12MC2HT017477@imap1.linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 09 Feb 2010 14:07:21 +0200
-Message-ID: <1265717241.2006.144.camel@localhost>
+Date: Tue, 09 Feb 2010 14:13:09 +0200
+Message-ID: <1265717589.2006.147.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: hsweeten@visionengravers.com, peterhuewe@gmx.de, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,35 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-02-02 at 10:44 +0100, Joakim Tjernlund wrote:
-> Joakim Tjernlund <Joakim.Tjernlund@transmode.se> wrote on 2010/02/02 10:40:00:
-> >
-> > Deleting big files in a JFFS2 root FS and the rebooting makes
-> > the system hang until all freed EB's has been erased which
-> > can take several minutes.
-> > Fix the hanging by making jffs2_write_super() erase max 3 EB's
-> > at a time. If there are more EB's to erase afterwards, reset the
-> > s_dirty flag.
-> >
-> > Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> > ---
-> >
-> >  I hope the list_empty calls doesn't need locking. If
-> >  so, it can easily be added.
-> >
-> >  fs/jffs2/super.c |    5 ++++-
-> >  1 files changed, 4 insertions(+), 1 deletions(-)
-> >
-> > diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-> > index 9a80e8e..10393e0 100644
-> > --- a/fs/jffs2/super.c
-> > +++ b/fs/jffs2/super.c
-> > @@ -64,7 +64,10 @@ static void jffs2_write_super(struct super_block *sb)
-> >     if (!(sb->s_flags & MS_RDONLY)) {
+On Tue, 2010-02-02 at 14:12 -0800, akpm@linux-foundation.org wrote:
+> From: Peter Huewe <peterhuewe@gmx.de>
 > 
-> I wonder if not MS_ACTIVE should be included in the above test too?
+> Fix a build failure introduced by the patch
+> 
+>     mtd: orion_nand.c: add error handling and use resource_size()
+> 
+> The patch assigns something to a undeclared variable 'err', whereas the
+> rest of the code uses 'ret' for this task.
 
-If this function is called with MS_ACTIVE flag, I'd say this is a bug.
+Andrew,
+
+I think you should send this fix to Linus, since this is a build fix.
+dwmw2 seem to bu unavailable now.
 
 -- 
 Best Regards,
