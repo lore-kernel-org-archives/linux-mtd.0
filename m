@@ -1,17 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NfFyn-0002OY-BL
-	for linux-mtd@lists.infradead.org; Wed, 10 Feb 2010 17:04:02 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx03.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o1AH1pIK023853
-	for <linux-mtd@lists.infradead.org>; Wed, 10 Feb 2010 19:01:56 +0200
-From: Aaro.Koskinen@nokia.com
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] OneNAND: OMAP: do not use DMA if oops in progress
-Date: Wed, 10 Feb 2010 19:03:19 +0200
-Message-Id: <1265821399-29940-1-git-send-email-Aaro.Koskinen@nokia.com>
-Cc: Artem.Bityutskiy@nokia.com, adrian.hunter@nokia.com
+Subject: Re: [patch for 2.6.33? 1/1] mtd/nand: fix build failure caused by typo
+From: David Woodhouse <dwmw2@infradead.org>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20100203080725.GA11354@pengutronix.de>
+References: <201002022212.o12MC2HT017477@imap1.linux-foundation.org>
+	<20100203080725.GA11354@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 10 Feb 2010 18:15:55 +0000
+Message-ID: <1265825755.2529.2125.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: hsweeten@visionengravers.com, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org, peterhuewe@gmx.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Aaro Koskinen <aaro.koskinen@nokia.com>
+On Wed, 2010-02-03 at 09:07 +0100, Uwe Kleine-König wrote:
+> Hello Andrew,
+> 
+> > From: Peter Huewe <peterhuewe@gmx.de>
+> > 
+> > Fix a build failure introduced by the patch
+> > 
+> >     mtd: orion_nand.c: add error handling and use resource_size()
+> > 
+> > The patch assigns something to a undeclared variable 'err', whereas the
+> > rest of the code uses 'ret' for this task.
+>
+> why did you add a ? to the subject?  IMHO it should go in 2.6.33 as
+> it's an obvious build fix. 
 
-Otherwise we may hang if we are called from panic() through mtdoops.
+The build error isn't in 2.6.33 though -- it's only in linux-next.
 
-Signed-off-by: Aaro Koskinen <aaro.koskinen@nokia.com>
----
- drivers/mtd/onenand/omap2.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+Patch applied; thanks.
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 75f38b9..dfbab6c 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -308,7 +308,7 @@ static int omap3_onenand_read_bufferram(struct mtd_info *mtd, int area,
- 		goto out_copy;
- 
- 	/* panic_write() may be in an interrupt context */
--	if (in_interrupt())
-+	if (in_interrupt() || oops_in_progress)
- 		goto out_copy;
- 
- 	if (buf >= high_memory) {
-@@ -385,7 +385,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
- 		goto out_copy;
- 
- 	/* panic_write() may be in an interrupt context */
--	if (in_interrupt())
-+	if (in_interrupt() || oops_in_progress)
- 		goto out_copy;
- 
- 	if (buf >= high_memory) {
 -- 
-1.5.6.5
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
