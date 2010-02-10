@@ -1,26 +1,32 @@
-Received: from fg-out-1718.google.com ([72.14.220.152])
+Received: from mail-fx0-f223.google.com ([209.85.220.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NfI98-0002aY-TF
-	for linux-mtd@lists.infradead.org; Wed, 10 Feb 2010 19:22:51 +0000
-Received: by fg-out-1718.google.com with SMTP id 22so22999fge.0
+	id 1NfK3Q-0000fZ-H6
+	for linux-mtd@lists.infradead.org; Wed, 10 Feb 2010 21:25:05 +0000
+Received: by fxm23 with SMTP id 23so495857fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Feb 2010 11:22:44 -0800 (PST)
-Subject: Re: [patch for 2.6.33? 1/1] mtd/nand: fix build failure caused by typo
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1265825755.2529.2125.camel@macbook.infradead.org>
-References: <201002022212.o12MC2HT017477@imap1.linux-foundation.org>
-	<20100203080725.GA11354@pengutronix.de>
-	<1265825755.2529.2125.camel@macbook.infradead.org>
+	Wed, 10 Feb 2010 13:24:58 -0800 (PST)
+Subject: Re: [PATCH 01/17] MTD: create lockless versions of
+	{get,put}_mtd_device This will be used to resolve deadlock in block
+	translation layer.
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: Peter Zijlstra <peterz@infradead.org>
+In-Reply-To: <1265737574.9195.16.camel@maxim-laptop>
+References: <1265734665-22656-1-git-send-email-maximlevitsky@gmail.com>
+	<1265734665-22656-2-git-send-email-maximlevitsky@gmail.com>
+	<1265735693.11509.253.camel@laptop>
+	<1265736206.9195.4.camel@maxim-laptop>
+	<1265737574.9195.16.camel@maxim-laptop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 10 Feb 2010 21:22:25 +0200
-Message-Id: <1265829745.21361.2.camel@localhost.localdomain>
+Date: Wed, 10 Feb 2010 23:22:33 +0200
+Message-ID: <1265836953.8276.9.camel@maxim-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: hsweeten@visionengravers.com, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org, peterhuewe@gmx.de,
-	Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Alex Dubov <oakad@yahoo.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	joern <joern@logfs.org>, Vitaly Wool <vitalywool@gmail.com>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	"stanley.miao" <stanley.miao@windriver.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +36,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-02-10 at 18:15 +0000, David Woodhouse wrote:
-> On Wed, 2010-02-03 at 09:07 +0100, Uwe Kleine-König wrote:
-> > Hello Andrew,
-> > 
-> > > From: Peter Huewe <peterhuewe@gmx.de>
-> > > 
-> > > Fix a build failure introduced by the patch
-> > > 
-> > >     mtd: orion_nand.c: add error handling and use resource_size()
-> > > 
-> > > The patch assigns something to a undeclared variable 'err', whereas the
-> > > rest of the code uses 'ret' for this task.
-> >
-> > why did you add a ? to the subject?  IMHO it should go in 2.6.33 as
-> > it's an obvious build fix. 
-> 
-> The build error isn't in 2.6.33 though -- it's only in linux-next.
-> 
-> Patch applied; thanks.
+On Tue, 2010-02-09 at 19:46 +0200, Maxim Levitsky wrote: 
+> On Tue, 2010-02-09 at 19:23 +0200, Maxim Levitsky wrote: 
+> > On Tue, 2010-02-09 at 18:14 +0100, Peter Zijlstra wrote: 
+> > > On Tue, 2010-02-09 at 18:57 +0200, Maxim Levitsky wrote:
+> > > > These functions can be used as long as we don't need access to global mtd table, but have
+> > > > a pointer to the mtd device.
+> > > > 
+> > > > Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+> > > > ---
 
-Oh, right. We were all confused :-) The problem is solved now.
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+David, I just got a great idea how to resolve the same issue in much
+cleaner way.
+
+Why not to drop the mtd table lock before calling the add notifers?
+If we assume no add_mtd_device/del_mtd_device running concurrently this
+should be ok. After all mtd table lock should protect only the mtd
+table.
+And the table only purpose it to locate an mtd device by number or name.
+This purpose will always be useful, be it a static table or not.
+
+I also remove all that mtd table junk from mtd_blktrans.c
+
+Best regards,
+Maxim Levitsky
