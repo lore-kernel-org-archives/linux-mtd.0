@@ -1,16 +1,21 @@
-Subject: Re: JFFS2 mount fail & crash on 2.4.26 kernel
-From: David Woodhouse <dwmw2@infradead.org>
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NfgvN-0000UW-Ij
+	for linux-mtd@lists.infradead.org; Thu, 11 Feb 2010 21:50:18 +0000
+Date: Thu, 11 Feb 2010 21:50:00 +0000
+From: Jamie Lokier <jamie@shareable.org>
 To: Amol Lad <amol.lad@gmail.com>
-In-Reply-To: <8c675e9b1002111222ibfe32b6p4c513262a10ac518@mail.gmail.com>
+Subject: Re: JFFS2 mount fail & crash on 2.4.26 kernel
+Message-ID: <20100211215000.GD407@shareable.org>
 References: <8c675e9b1002102157p33e4e7fg3239c62642bc008e@mail.gmail.com>
 	<1265872946.2529.3770.camel@macbook.infradead.org>
 	<8c675e9b1002111222ibfe32b6p4c513262a10ac518@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 11 Feb 2010 20:33:52 +0000
-Message-ID: <1265920432.2529.5500.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8c675e9b1002111222ibfe32b6p4c513262a10ac518@mail.gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-02-12 at 09:22 +1300, Amol Lad wrote:
-> Sorry for non giving enough information. The devices are in the field
-> since last 5 years and never showed problems. (This shows the
-> robustness of jffs2 fs). Recently only some devices are approaching
-> 90% usage and this problem showed up....
+Another amazing coincidence...
 
-OK, if it's really been in the field for 5 years then perhaps you're not
-_quite_ as insane as I thought you were for using a 2.4 kernel -- so
-maybe I was a little harsh in my initial response. But only a little --
-even by 2005, deploying a 2.4 kernel was a strange thing to do.
+My work is using JFFS2 on 2.4.26-uc0 kernels too.  The devices have
+been in the field for about 5 years and are still very much in use -
+we're still shipping new ones, and I'm still doing some development
+work on those devices - and still write patches occasionally for those
+ancient kernels.  Binary patches sometimes to fix bugs without
+reflashing the kernel.  No joke :-)
 
-Did you get a proper backtrace?
+Sure, 2.4.26 was old even 5 years ago, but it wasn't old when the
+upstream chip supplier produced their SDK, from which the shipped SDK
+was a "stable" branch presumably, and it wasn't economic to follow the
+2.6 cycle, as the CPU architecture wasn't well supported in 2.6 even
+1 year ago (no-MMU ARM).
 
-> It will be completely unfair to ask for any fix on such an old kernel.
-> So any ideas on recovery will help before I push RED button (i.e. call
-> the devices back to factory and re-flash jffs2 image..)
-> 
-> Do we have any tool like fsck that can be used for recovery? (I tried
-> mounting the device after these errors and crash, but mount hangs and
-> never returns. "ps" shows mount in "D" state)
+Back to JFFS2 and 90% full.
 
-Does this crash every time you mount the file system? That makes it nice
-and simple, in some ways.
+In our case, we found that on a 1MB JFFS2 filesytem, with 64k erase
+blocks, 90% is simply too much.  All sorts of problems ensue, like the
+GC thread running for 5 minutes or more occasionally, writes sometimes
+being very slow (but sometimes quick), can't predict when "disk full"
+will occur.  Sometimes they linger near full for a long time without
+problems, and then suddenly it's a problem.  We've had many devices
+crash (without a panic message) and go into weird bootup states where
+they don't boot properly and their watchdogs get stuck.  I suspect a
+kernel bug is responsible for triggering the weird bootup state.
 
-Can you take an image and try mounting it with a 2.6.3x kernel -- I
-assume it'll be fine, but if it _does_ fail, then you magically get us
-to care.
+Limiting fullness to 60% appears to have solved all those problems.
 
-And if it does work, then you get to look through the commits between
-then and now and work out how we fixed it...
+Amol, the amount you can get away with will depend on erase block size
+and filesystem size.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+-- Jamie
