@@ -1,17 +1,18 @@
-Received: from mail-yx0-f223.google.com ([209.85.210.223])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NfsUM-0002ZU-HN
-	for linux-mtd@lists.infradead.org; Fri, 12 Feb 2010 10:11:10 +0000
-Received: by yxe20 with SMTP id 20so3179900yxe.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 Feb 2010 02:11:04 -0800 (PST)
-MIME-Version: 1.0
-Message-ID: <0016e64642283af653047f647cd3@google.com>
-Date: Fri, 12 Feb 2010 10:11:04 +0000
-Subject: Sonia added you as a friend on eYari
-From: eYari <invite@eyari.com>
+Received: from host.loveselect.org ([67.222.18.66])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NfsZK-0003VD-OQ
+	for linux-mtd@lists.infradead.org; Fri, 12 Feb 2010 10:16:19 +0000
+Received: from nobody by host.loveselect.org with local (Exim 4.69)
+	(envelope-from <nobody@host.loveselect.org>) id 1NfsZF-0005iw-Hn
+	for linux-mtd@lists.infradead.org; Fri, 12 Feb 2010 05:16:09 -0500
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed; delsp=yes
+Subject: [eYari] New message from Sonia Gupta
+Date: Fri, 12 Feb 2010 05:16:09 -0500
+From: eYari <noreply@www.eyari.com>
+Message-ID: <aeb878a38adfbe46801d405b012852ca@www.eyari.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,17 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sonia Gupta sent you a new message:
 
-Hi,
-You are receiving this email because Sonia wants to tell you about this  
-website which will analyze your horoscope and answer your Astrology  
-questions free.
+Subject: Hello
 
+"Hello, I would like to be your friend. Please tell me about yourself. What kind of things do you like to do?  - Sonia"
 
-Please click on the link below or copy and paste the URL into your browser:
-http://www.eyari.com/signup/?emailaddress=linux-mtd@lists.infradead.org&cid=7
+To view the message: http://www.eyari.com/linux-mtd/messages/view/52222
 
-
-
-To unsubscribe, click this link:
-http://www.eyari.com/unsubscribe/?emailaddress=linux-mtd@lists.infradead.org&cid=7
+---------------------
+To disable these notifications please log in and go to: http://www.eyari.com/linux-mtd/settings/notifications
