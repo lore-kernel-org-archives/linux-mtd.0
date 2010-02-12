@@ -1,17 +1,17 @@
-Received: from mx1.auerswald.de ([212.185.163.234] helo=mail.auerswald.de)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NfwRJ-0005Jg-7V
-	for linux-mtd@lists.infradead.org; Fri, 12 Feb 2010 14:24:18 +0000
-From: "Kai-Uwe Bloem" <kai-uwe.bloem@auerswald.de>
-Subject: Re-2: Why erase_pending_blocks in write_super? (was: [PATCH]
-	JFFS2: Erase max 3 EB's in ...)
-To: linux-mtd@lists.infradead.org
-Date: Fri, 12 Feb 2010 14:24:12 +0000
-Message-ID: <DIIE.000014D400244569@mail.auerswald.de>
+Date: Fri, 12 Feb 2010 15:20:32 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Subject: Re: [PATCHv2] MTD: Add UBI reboot notifier
+In-Reply-To: <4B755B72.9060805@aimvalley.nl>
+Message-ID: <alpine.LFD.2.00.1002121517440.23383@dwoodhou-mobl2.ger.corp.intel.com>
+References: <1244550775.5847.385.camel@localhost.localdomain>
+	<f5be75d5abc1acd236bedf36c55a860e@localhost>
+	<1265980392.29027.12.camel@localhost>
+	<4B755B72.9060805@aimvalley.nl>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,11 +21,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiA+IFNvLCBjYW4geW91IA0KPiBwbGVhc2UgZW5saWdodGVuIG1lPyBXaGF0J3MgdGhlIGFkdmFu
-dGFnZSBvZiBoYXZpbmcgdGhlIHBlbmRpbmcNCj4gPiBsaXN0IA0KPiA+IGVyYXNlZCBpbiB3cml0
-ZV9zdXBlcj8gQ2FuIEkgcG9zc2libHkgcmVtb3ZlIGl0IHdpdGhvdXQgZXhwZXJpZW5jaW5nDQoN
-Cj4gSSBiZWxpZXZlIHRoZXJlIGlzIG5vIHJlYXNvbi4gDQo+IFRoaXMgaXMgd2h5IEkgc3VnZ2Vz
-dGVkIHRvIG1vdmUgaXQgdG8gdGhlIEJHVC4NCg0KVGhlcmUncyBhbHJlYWR5IGEgR0MgdHJpZ2dl
-ciBpbiB3cml0ZV9zdXBlci4NCg0KDQpUbzogZGVkZWtpbmQxQGdtYWlsLmNvbQ0KICAgIGpvYWtp
-bS50amVybmx1bmRAdHJhbnNtb2RlLnNlDQpDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5v
-cmcNCg==
+On Fri, 12 Feb 2010, Norbert van Bolhuis wrote:
+
+> so, how to solve this properly ?
+
+In hardware.
+
+Anything we do in software will be unreliable, and by masking the problem 
+we do a disservice to anyone who actually tests their prototype hardware, 
+because we might hide the problem from them until it's too late for 
+them to fix it.
+
+-- 
+dwmw2
