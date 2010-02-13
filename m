@@ -1,15 +1,16 @@
 Received: from mail-fx0-f223.google.com ([209.85.220.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NgHeo-0001cN-I8
-	for linux-mtd@lists.infradead.org; Sat, 13 Feb 2010 13:03:40 +0000
-Received: by mail-fx0-f223.google.com with SMTP id 23so3374239fxm.2
+	id 1NgHes-0001dt-2Z
+	for linux-mtd@lists.infradead.org; Sat, 13 Feb 2010 13:03:42 +0000
+Received: by mail-fx0-f223.google.com with SMTP id 23so3374278fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 13 Feb 2010 05:03:34 -0800 (PST)
+	Sat, 13 Feb 2010 05:03:37 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 05/14] blktrans: allow FTL drivers to export sysfs attributes
-Date: Sat, 13 Feb 2010 15:03:04 +0200
-Message-Id: <1266066193-17625-6-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 06/14] MTD: nand: make suspend work if device is accessed by
+	kernel threads.
+Date: Sat, 13 Feb 2010 15:03:05 +0200
+Message-Id: <1266066193-17625-7-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266066193-17625-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266066193-17625-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -28,64 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds an ability to export sysfs attributes below
-the block disk device.
+Since all userspace threads are frozen at the time the nand_suspend is called,
+they aren't inside any nand function.
 
-This can be used to pass the udev an information about the FTL
-and could include the vendor, serial, version, etc...
+We don't call try_to_freeze in nand ether. Thus the only user that can be inside
+the nand functions is an non freezeable kernel thread.
+Thus we can safely wait for it to finish.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtd_blkdevs.c    |    9 +++++++++
- include/linux/mtd/blktrans.h |    2 ++
- 2 files changed, 11 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/nand_base.c |    3 ---
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index 1bc9c76..6850091 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -359,6 +359,11 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 
- 	add_disk(gd);
- 
-+	if (new->disk_attributes)
-+		sysfs_create_group(&disk_to_dev(gd)->kobj,
-+					new->disk_attributes);
-+
-+
- 	return 0;
- error4:
- 	module_put(tr->owner);
-@@ -387,6 +392,10 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 	/* Stop new requests to arrive */
- 	del_gendisk(old->disk);
- 
-+	if (old->disk_attributes)
-+		sysfs_remove_group(&disk_to_dev(old->disk)->kobj,
-+						old->disk_attributes);
-+
- 	/* Stop the thread */
- 	kthread_stop(old->thread);
- 
-diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index d89b8fb..b481ccd 100644
---- a/include/linux/mtd/blktrans.h
-+++ b/include/linux/mtd/blktrans.h
-@@ -10,6 +10,7 @@
- 
- #include <linux/mutex.h>
- #include <linux/kref.h>
-+#include <linux/sysfs.h>
- 
- struct hd_geometry;
- struct mtd_info;
-@@ -28,6 +29,7 @@ struct mtd_blktrans_dev {
- 	int open;
- 	struct kref ref;
- 	struct gendisk *disk;
-+	struct attribute_group *disk_attributes;
- 	struct task_struct *thread;
- 	struct request_queue *rq;
- 	spinlock_t queue_lock;
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8f2958f..279b960 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -744,9 +744,6 @@ nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
+ 			chip->state = FL_PM_SUSPENDED;
+ 			spin_unlock(lock);
+ 			return 0;
+-		} else {
+-			spin_unlock(lock);
+-			return -EAGAIN;
+ 		}
+ 	}
+ 	set_current_state(TASK_UNINTERRUPTIBLE);
 -- 
 1.6.3.3
