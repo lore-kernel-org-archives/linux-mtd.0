@@ -1,16 +1,15 @@
-Received: from fg-out-1718.google.com ([72.14.220.154])
+Received: from mail-fx0-f223.google.com ([209.85.220.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NgHej-0001dE-Iy
-	for linux-mtd@lists.infradead.org; Sat, 13 Feb 2010 13:03:36 +0000
-Received: by fg-out-1718.google.com with SMTP id 16so213372fgg.0
+	id 1NgHek-0001dt-TX
+	for linux-mtd@lists.infradead.org; Sat, 13 Feb 2010 13:03:37 +0000
+Received: by fxm23 with SMTP id 23so3374278fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 13 Feb 2010 05:03:28 -0800 (PST)
+	Sat, 13 Feb 2010 05:03:30 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 02/14] blktrans: remove mtd_blkcore_priv and switch to per
-	device queue and thread
-Date: Sat, 13 Feb 2010 15:03:01 +0200
-Message-Id: <1266066193-17625-3-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 03/14] blktrans: Hotplug fixes
+Date: Sat, 13 Feb 2010 15:03:02 +0200
+Message-Id: <1266066193-17625-4-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266066193-17625-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266066193-17625-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -29,318 +28,430 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is the biggest change. To make hotplug possible, and this layer clean,
-the mtd_blktrans_dev now contains everything for a single mtd block translation device.
-Also removed some very old leftovers
+* Add locking where it was missing.
+* Don't do a get_mtd_device in blktrans_open because it would lead to a deadlock
+  instead do that in add_mtd_blktrans_dev.
+
+* Only free the mtd_blktrans_dev structure when the last user exits.
+
+* Flush request queue on device removal.
+
+* Track users, and call tr->release in del_mtd_blktrans_dev
+  Due to that ->open and release aren't called more that once.
+
+Now it is safe to call del_mtd_blktrans_dev while the device is still in use.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtd_blkdevs.c    |  126 ++++++++++++++++++++----------------------
- include/linux/mtd/blktrans.h |   10 ++--
- 2 files changed, 64 insertions(+), 72 deletions(-)
+ drivers/mtd/ftl.c            |    1 -
+ drivers/mtd/inftlcore.c      |    1 -
+ drivers/mtd/mtd_blkdevs.c    |  183 ++++++++++++++++++++++++++++++------------
+ drivers/mtd/mtdblock.c       |    1 -
+ drivers/mtd/mtdblock_ro.c    |    1 -
+ drivers/mtd/nftlcore.c       |    1 -
+ drivers/mtd/rfd_ftl.c        |    1 -
+ drivers/mtd/ssfdc.c          |    1 -
+ include/linux/mtd/blktrans.h |    3 +
+ 9 files changed, 134 insertions(+), 59 deletions(-)
 
+diff --git a/drivers/mtd/ftl.c b/drivers/mtd/ftl.c
+index e56d6b4..62da9eb 100644
+--- a/drivers/mtd/ftl.c
++++ b/drivers/mtd/ftl.c
+@@ -1082,7 +1082,6 @@ static void ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	del_mtd_blktrans_dev(dev);
+ 	ftl_freepart((partition_t *)dev);
+-	kfree(dev);
+ }
+ 
+ static struct mtd_blktrans_ops ftl_tr = {
+diff --git a/drivers/mtd/inftlcore.c b/drivers/mtd/inftlcore.c
+index 8aca552..015a7fe 100755
+--- a/drivers/mtd/inftlcore.c
++++ b/drivers/mtd/inftlcore.c
+@@ -139,7 +139,6 @@ static void inftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 
+ 	kfree(inftl->PUtable);
+ 	kfree(inftl->VUtable);
+-	kfree(inftl);
+ }
+ 
+ /*
 diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index c82e09b..bbdb26d 100644
+index bbdb26d..1bc9c76 100644
 --- a/drivers/mtd/mtd_blkdevs.c
 +++ b/drivers/mtd/mtd_blkdevs.c
-@@ -14,7 +14,6 @@
- #include <linux/mtd/mtd.h>
- #include <linux/blkdev.h>
- #include <linux/blkpg.h>
--#include <linux/freezer.h>
- #include <linux/spinlock.h>
- #include <linux/hdreg.h>
- #include <linux/init.h>
-@@ -26,11 +25,6 @@
+@@ -24,6 +24,39 @@
+ #include "mtdcore.h"
  
  static LIST_HEAD(blktrans_majors);
++static DEFINE_MUTEX(blktrans_ref_mutex);
++
++void blktrans_dev_release(struct kref *kref)
++{
++	struct mtd_blktrans_dev *dev =
++		container_of(kref, struct mtd_blktrans_dev, ref);
++
++	dev->disk->private_data = NULL;
++	put_disk(dev->disk);
++	kfree(dev);
++}
++
++static struct mtd_blktrans_dev *blktrans_dev_get(struct gendisk *disk)
++{
++	struct mtd_blktrans_dev *dev;
++
++	mutex_lock(&blktrans_ref_mutex);
++	dev = disk->private_data;
++
++	if (!dev)
++		goto unlock;
++	kref_get(&dev->ref);
++unlock:
++	mutex_unlock(&blktrans_ref_mutex);
++	return dev;
++}
++
++void blktrans_dev_put(struct mtd_blktrans_dev *dev)
++{
++	mutex_lock(&blktrans_ref_mutex);
++	kref_put(&dev->ref, blktrans_dev_release);
++	mutex_unlock(&blktrans_ref_mutex);
++}
  
--struct mtd_blkcore_priv {
--	struct task_struct *thread;
--	struct request_queue *rq;
--	spinlock_t queue_lock;
--};
  
  static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 			       struct mtd_blktrans_dev *dev,
-@@ -61,7 +55,6 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 				return -EIO;
- 		rq_flush_dcache_pages(req);
- 		return 0;
--
- 	case WRITE:
- 		if (!tr->writesect)
- 			return -EIO;
-@@ -71,7 +64,6 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 			if (tr->writesect(dev, block, buf))
- 				return -EIO;
- 		return 0;
--
- 	default:
- 		printk(KERN_NOTICE "Unknown request %u\n", rq_data_dir(req));
- 		return -EIO;
-@@ -80,14 +72,13 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
- 
- static int mtd_blktrans_thread(void *arg)
- {
--	struct mtd_blktrans_ops *tr = arg;
--	struct request_queue *rq = tr->blkcore_priv->rq;
-+	struct mtd_blktrans_dev *dev = arg;
-+	struct request_queue *rq = dev->rq;
- 	struct request *req = NULL;
- 
- 	spin_lock_irq(rq->queue_lock);
- 
- 	while (!kthread_should_stop()) {
--		struct mtd_blktrans_dev *dev;
- 		int res;
- 
- 		if (!req && !(req = blk_fetch_request(rq))) {
-@@ -98,13 +89,10 @@ static int mtd_blktrans_thread(void *arg)
- 			continue;
- 		}
- 
--		dev = req->rq_disk->private_data;
--		tr = dev->tr;
--
- 		spin_unlock_irq(rq->queue_lock);
- 
- 		mutex_lock(&dev->lock);
--		res = do_blktrans_request(tr, dev, req);
-+		res = do_blktrans_request(dev->tr, dev, req);
- 		mutex_unlock(&dev->lock);
- 
- 		spin_lock_irq(rq->queue_lock);
-@@ -123,8 +111,8 @@ static int mtd_blktrans_thread(void *arg)
+@@ -111,81 +144,102 @@ static int mtd_blktrans_thread(void *arg)
  
  static void mtd_blktrans_request(struct request_queue *rq)
  {
--	struct mtd_blktrans_ops *tr = rq->queuedata;
--	wake_up_process(tr->blkcore_priv->thread);
-+	struct mtd_blktrans_dev *dev = rq->queuedata;
-+	wake_up_process(dev->thread);
+-	struct mtd_blktrans_dev *dev = rq->queuedata;
+-	wake_up_process(dev->thread);
+-}
++	struct mtd_blktrans_dev *dev;
++	struct request *req = NULL;
++
++	dev = rq->queuedata;
+ 
++	if (!dev)
++		while ((req = blk_fetch_request(rq)) != NULL)
++			__blk_end_request_all(req, -ENODEV);
++	else
++		wake_up_process(dev->thread);
++}
+ 
+ static int blktrans_open(struct block_device *bdev, fmode_t mode)
+ {
+-	struct mtd_blktrans_dev *dev = bdev->bd_disk->private_data;
+-	struct mtd_blktrans_ops *tr = dev->tr;
+-	int ret = -ENODEV;
+-
+-	if (!get_mtd_device(NULL, dev->mtd->index))
+-		goto out;
+-
+-	if (!try_module_get(tr->owner))
+-		goto out_tr;
+-
+-	/* FIXME: Locking. A hot pluggable device can go away
+-	   (del_mtd_device can be called for it) without its module
+-	   being unloaded. */
+-	dev->mtd->usecount++;
+-
+-	ret = 0;
+-	if (tr->open && (ret = tr->open(dev))) {
+-		dev->mtd->usecount--;
+-		put_mtd_device(dev->mtd);
+-	out_tr:
+-		module_put(tr->owner);
+-	}
+- out:
++	struct mtd_blktrans_dev *dev = blktrans_dev_get(bdev->bd_disk);
++	int ret = -ENXIO;
++
++	if (!dev)
++		return ret;
++
++	mutex_lock(&dev->lock);
++
++	if (!dev->mtd)
++		goto unlock;
++
++	ret = !dev->open++ && dev->tr->open ? dev->tr->open(dev) : 0;
++unlock:
++	mutex_unlock(&dev->lock);
++	blktrans_dev_put(dev);
+ 	return ret;
  }
  
- 
-@@ -214,6 +202,7 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	struct mtd_blktrans_dev *d;
- 	int last_devnum = -1;
- 	struct gendisk *gd;
-+	int ret;
- 
- 	if (mutex_trylock(&mtd_table_mutex)) {
- 		mutex_unlock(&mtd_table_mutex);
-@@ -239,12 +228,13 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 		}
- 		last_devnum = d->devnum;
- 	}
+ static int blktrans_release(struct gendisk *disk, fmode_t mode)
+ {
+-	struct mtd_blktrans_dev *dev = disk->private_data;
+-	struct mtd_blktrans_ops *tr = dev->tr;
+-	int ret = 0;
++	struct mtd_blktrans_dev *dev = blktrans_dev_get(disk);
++	int ret = -ENXIO;
 +
-+	ret = -EBUSY;
- 	if (new->devnum == -1)
- 		new->devnum = last_devnum+1;
++	if (!dev)
++		return ret;
  
--	if ((new->devnum << tr->part_bits) > 256) {
--		return -EBUSY;
+-	if (tr->release)
+-		ret = tr->release(dev);
++	mutex_lock(&dev->lock);
+ 
+-	if (!ret) {
+-		dev->mtd->usecount--;
+-		put_mtd_device(dev->mtd);
+-		module_put(tr->owner);
 -	}
-+	if ((new->devnum << tr->part_bits) > 256)
-+		goto error1;
++	if (!dev->mtd)
++		goto unlock;
  
- 	list_add_tail(&new->list, &tr->devs);
-  added:
-@@ -252,11 +242,16 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	if (!tr->writesect)
- 		new->readonly = 1;
++	ret = !--dev->open && dev->tr->release ? dev->tr->release(dev) : 0;
++unlock:
++	mutex_unlock(&dev->lock);
++	blktrans_dev_put(dev);
+ 	return ret;
+ }
  
+ static int blktrans_getgeo(struct block_device *bdev, struct hd_geometry *geo)
+ {
+-	struct mtd_blktrans_dev *dev = bdev->bd_disk->private_data;
++	struct mtd_blktrans_dev *dev = blktrans_dev_get(bdev->bd_disk);
++	int ret = -ENXIO;
 +
-+	/* Create gendisk */
-+	ret = -ENOMEM;
- 	gd = alloc_disk(1 << tr->part_bits);
--	if (!gd) {
--		list_del(&new->list);
--		return -ENOMEM;
--	}
++	if (!dev)
++		return ret;
 +
-+	if (!gd)
-+		goto error2;
++	mutex_lock(&dev->lock);
 +
-+	new->disk = gd;
-+	gd->private_data = new;
- 	gd->major = tr->major;
- 	gd->first_minor = (new->devnum) << tr->part_bits;
- 	gd->fops = &mtd_blktrans_ops;
-@@ -274,13 +269,33 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 		snprintf(gd->disk_name, sizeof(gd->disk_name),
- 			 "%s%d", tr->name, new->devnum);
++	if (!dev->mtd)
++		goto unlock;
  
--	/* 2.5 has capacity in units of 512 bytes while still
--	   having BLOCK_SIZE_BITS set to 10. Just to keep us amused. */
- 	set_capacity(gd, (new->size * tr->blksize) >> 9);
- 
--	gd->private_data = new;
--	new->blkcore_priv = gd;
--	gd->queue = tr->blkcore_priv->rq;
-+
-+	/* Create the request queue */
-+	spin_lock_init(&new->queue_lock);
-+	new->rq = blk_init_queue(mtd_blktrans_request, &new->queue_lock);
-+
-+	if (!new->rq)
-+		goto error3;
-+
-+	new->rq->queuedata = new;
-+	blk_queue_logical_block_size(new->rq, tr->blksize);
-+
-+	if (tr->discard)
-+		queue_flag_set_unlocked(QUEUE_FLAG_DISCARD,
-+					new->rq);
-+
-+	gd->queue = new->rq;
-+
-+	/* Create processing thread */
-+	/* TODO: workqueue ? */
-+	new->thread = kthread_run(mtd_blktrans_thread, new,
-+			"%s%d", tr->name, new->mtd->index);
-+	if (IS_ERR(new->thread)) {
-+		ret = PTR_ERR(new->thread);
-+		goto error4;
-+	}
- 	gd->driverfs_dev = &new->mtd->dev;
- 
- 	if (new->readonly)
-@@ -289,6 +304,15 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 	add_disk(gd);
- 
- 	return 0;
-+error4:
-+	blk_cleanup_queue(new->rq);
-+error3:
-+	put_disk(new->disk);
-+error2:
-+	list_del(&new->list);
-+error1:
-+	kfree(new);
+-	if (dev->tr->getgeo)
+-		return dev->tr->getgeo(dev, geo);
+-	return -ENOTTY;
++	ret = dev->tr->getgeo ? dev->tr->getgeo(dev, geo) : 0;
++unlock:
++	mutex_unlock(&dev->lock);
++	blktrans_dev_put(dev);
 +	return ret;
  }
  
+ static int blktrans_ioctl(struct block_device *bdev, fmode_t mode,
+ 			      unsigned int cmd, unsigned long arg)
+ {
+-	struct mtd_blktrans_dev *dev = bdev->bd_disk->private_data;
+-	struct mtd_blktrans_ops *tr = dev->tr;
++	struct mtd_blktrans_dev *dev = blktrans_dev_get(bdev->bd_disk);
++	int ret = -ENXIO;
++
++	if (!dev)
++		return ret;
++
++	mutex_lock(&dev->lock);
++
++	if (!dev->mtd)
++		goto unlock;
+ 
+ 	switch (cmd) {
+ 	case BLKFLSBUF:
+-		if (tr->flush)
+-			return tr->flush(dev);
+-		/* The core code did the work, we had nothing to do. */
+-		return 0;
++		ret = dev->tr->flush ? dev->tr->flush(dev) : 0;
+ 	default:
+-		return -ENOTTY;
++		ret = -ENOTTY;
+ 	}
++unlock:
++	mutex_unlock(&dev->lock);
++	blktrans_dev_put(dev);
++	return ret;
+ }
+ 
+ static const struct block_device_operations mtd_blktrans_ops = {
+@@ -239,10 +293,10 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 	list_add_tail(&new->list, &tr->devs);
+  added:
+ 	mutex_init(&new->lock);
++	kref_init(&new->ref);
+ 	if (!tr->writesect)
+ 		new->readonly = 1;
+ 
+-
+ 	/* Create gendisk */
+ 	ret = -ENOMEM;
+ 	gd = alloc_disk(1 << tr->part_bits);
+@@ -271,7 +325,6 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 
+ 	set_capacity(gd, (new->size * tr->blksize) >> 9);
+ 
+-
+ 	/* Create the request queue */
+ 	spin_lock_init(&new->queue_lock);
+ 	new->rq = blk_init_queue(mtd_blktrans_request, &new->queue_lock);
+@@ -288,6 +341,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 
+ 	gd->queue = new->rq;
+ 
++	__get_mtd_device(new->mtd);
++	__module_get(tr->owner);
++
+ 	/* Create processing thread */
+ 	/* TODO: workqueue ? */
+ 	new->thread = kthread_run(mtd_blktrans_thread, new,
+@@ -305,6 +361,8 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 
+ 	return 0;
+ error4:
++	module_put(tr->owner);
++	__put_mtd_device(new->mtd);
+ 	blk_cleanup_queue(new->rq);
+ error3:
+ 	put_disk(new->disk);
+@@ -317,6 +375,8 @@ error1:
+ 
  int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
-@@ -300,9 +324,13 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ {
++	unsigned long flags;
++
+ 	if (mutex_trylock(&mtd_table_mutex)) {
+ 		mutex_unlock(&mtd_table_mutex);
+ 		BUG();
+@@ -324,13 +384,34 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
  
  	list_del(&old->list);
  
--	del_gendisk(old->blkcore_priv);
--	put_disk(old->blkcore_priv);
-+	/* stop new requests to arrive */
-+	del_gendisk(old->disk);
-+
-+	/* Stop the thread */
-+	kthread_stop(old->thread);
+-	/* stop new requests to arrive */
++	/* Stop new requests to arrive */
+ 	del_gendisk(old->disk);
  
-+	blk_cleanup_queue(old->rq);
+ 	/* Stop the thread */
+ 	kthread_stop(old->thread);
+ 
++	/* Kill current requests */
++	spin_lock_irqsave(&old->queue_lock, flags);
++	old->rq->queuedata = NULL;
++	blk_start_queue(old->rq);
++	spin_unlock_irqrestore(&old->queue_lock, flags);
+ 	blk_cleanup_queue(old->rq);
++
++	/* Ask trans driver for release to the mtd device */
++	mutex_lock(&old->lock);
++	if (old->open && old->tr->release) {
++		old->tr->release(old);
++		old->open = 0;
++	}
++
++	__put_mtd_device(old->mtd);
++	module_put(old->tr->owner);
++
++	/* At that point, we don't touch the mtd anymore */
++	old->mtd = NULL;
++
++	mutex_unlock(&old->lock);
++	blktrans_dev_put(old);
  	return 0;
  }
  
-@@ -343,9 +371,6 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
- 	if (!blktrans_notifier.list.next)
- 		register_mtd_user(&blktrans_notifier);
- 
--	tr->blkcore_priv = kzalloc(sizeof(*tr->blkcore_priv), GFP_KERNEL);
--	if (!tr->blkcore_priv)
--		return -ENOMEM;
- 
- 	mutex_lock(&mtd_table_mutex);
- 
-@@ -353,39 +378,12 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
- 	if (ret) {
- 		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
- 		       tr->name, tr->major, ret);
--		kfree(tr->blkcore_priv);
- 		mutex_unlock(&mtd_table_mutex);
- 		return ret;
+@@ -393,7 +474,6 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
  	}
--	spin_lock_init(&tr->blkcore_priv->queue_lock);
--
--	tr->blkcore_priv->rq = blk_init_queue(mtd_blktrans_request, &tr->blkcore_priv->queue_lock);
--	if (!tr->blkcore_priv->rq) {
--		unregister_blkdev(tr->major, tr->name);
--		kfree(tr->blkcore_priv);
--		mutex_unlock(&mtd_table_mutex);
--		return -ENOMEM;
--	}
--
--	tr->blkcore_priv->rq->queuedata = tr;
--	blk_queue_logical_block_size(tr->blkcore_priv->rq, tr->blksize);
--	if (tr->discard)
--		queue_flag_set_unlocked(QUEUE_FLAG_DISCARD,
--					tr->blkcore_priv->rq);
  
- 	tr->blkshift = ffs(tr->blksize) - 1;
- 
--	tr->blkcore_priv->thread = kthread_run(mtd_blktrans_thread, tr,
--			"%sd", tr->name);
--	if (IS_ERR(tr->blkcore_priv->thread)) {
--		ret = PTR_ERR(tr->blkcore_priv->thread);
--		blk_cleanup_queue(tr->blkcore_priv->rq);
--		unregister_blkdev(tr->major, tr->name);
--		kfree(tr->blkcore_priv);
--		mutex_unlock(&mtd_table_mutex);
--		return ret;
--	}
+ 	mutex_unlock(&mtd_table_mutex);
 -
- 	INIT_LIST_HEAD(&tr->devs);
- 	list_add(&tr->list, &blktrans_majors);
+ 	return 0;
+ }
  
-@@ -405,8 +403,6 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
+@@ -403,7 +483,6 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
  
  	mutex_lock(&mtd_table_mutex);
  
--	/* Clean up the kernel thread */
--	kthread_stop(tr->blkcore_priv->thread);
- 
+-
  	/* Remove it from the list of active majors */
  	list_del(&tr->list);
-@@ -414,13 +410,9 @@ int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr)
- 	list_for_each_entry_safe(dev, next, &tr->devs, list)
- 		tr->remove_dev(dev);
  
--	blk_cleanup_queue(tr->blkcore_priv->rq);
- 	unregister_blkdev(tr->major, tr->name);
--
- 	mutex_unlock(&mtd_table_mutex);
- 
--	kfree(tr->blkcore_priv);
--
- 	BUG_ON(!list_empty(&tr->devs));
- 	return 0;
+diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
+index 9f41b1a..d8322cc 100644
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -368,7 +368,6 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ static void mtdblock_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	del_mtd_blktrans_dev(dev);
+-	kfree(dev);
  }
+ 
+ static struct mtd_blktrans_ops mtdblock_tr = {
+diff --git a/drivers/mtd/mtdblock_ro.c b/drivers/mtd/mtdblock_ro.c
+index 852165f..54ff288 100644
+--- a/drivers/mtd/mtdblock_ro.c
++++ b/drivers/mtd/mtdblock_ro.c
+@@ -49,7 +49,6 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ static void mtdblock_remove_dev(struct mtd_blktrans_dev *dev)
+ {
+ 	del_mtd_blktrans_dev(dev);
+-	kfree(dev);
+ }
+ 
+ static struct mtd_blktrans_ops mtdblock_tr = {
+diff --git a/drivers/mtd/nftlcore.c b/drivers/mtd/nftlcore.c
+index 1002e18..a4578bf 100644
+--- a/drivers/mtd/nftlcore.c
++++ b/drivers/mtd/nftlcore.c
+@@ -126,7 +126,6 @@ static void nftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 	del_mtd_blktrans_dev(dev);
+ 	kfree(nftl->ReplUnitTable);
+ 	kfree(nftl->EUNtable);
+-	kfree(nftl);
+ }
+ 
+ /*
+diff --git a/drivers/mtd/rfd_ftl.c b/drivers/mtd/rfd_ftl.c
+index d2aa9c4..63b83c0 100644
+--- a/drivers/mtd/rfd_ftl.c
++++ b/drivers/mtd/rfd_ftl.c
+@@ -817,7 +817,6 @@ static void rfd_ftl_remove_dev(struct mtd_blktrans_dev *dev)
+ 	vfree(part->sector_map);
+ 	kfree(part->header_cache);
+ 	kfree(part->blocks);
+-	kfree(part);
+ }
+ 
+ static struct mtd_blktrans_ops rfd_ftl_tr = {
+diff --git a/drivers/mtd/ssfdc.c b/drivers/mtd/ssfdc.c
+index 3f67e00..81c4ecd 100644
+--- a/drivers/mtd/ssfdc.c
++++ b/drivers/mtd/ssfdc.c
+@@ -375,7 +375,6 @@ static void ssfdcr_remove_dev(struct mtd_blktrans_dev *dev)
+ 
+ 	del_mtd_blktrans_dev(dev);
+ 	kfree(ssfdc->logic_block_map);
+-	kfree(ssfdc);
+ }
+ 
+ static int ssfdcr_readsect(struct mtd_blktrans_dev *dev,
 diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index 8b4aa05..a4b3928 100644
+index a4b3928..d89b8fb 100644
 --- a/include/linux/mtd/blktrans.h
 +++ b/include/linux/mtd/blktrans.h
-@@ -24,11 +24,13 @@ struct mtd_blktrans_dev {
+@@ -9,6 +9,7 @@
+ #define __MTD_TRANS_H__
+ 
+ #include <linux/mutex.h>
++#include <linux/kref.h>
+ 
+ struct hd_geometry;
+ struct mtd_info;
+@@ -24,6 +25,8 @@ struct mtd_blktrans_dev {
  	int devnum;
  	unsigned long size;
  	int readonly;
--	void *blkcore_priv; /* gendisk in 2.5, devfs_handle in 2.4 */
-+	struct gendisk *disk;
-+	struct task_struct *thread;
-+	struct request_queue *rq;
-+	spinlock_t queue_lock;
-+	void *priv;
- };
- 
--struct blkcore_priv; /* Differs for 2.4 and 2.5 kernels; private */
--
- struct mtd_blktrans_ops {
- 	char *name;
- 	int major;
-@@ -60,8 +62,6 @@ struct mtd_blktrans_ops {
- 	struct list_head devs;
- 	struct list_head list;
- 	struct module *owner;
--
--	struct mtd_blkcore_priv *blkcore_priv;
- };
- 
- extern int register_mtd_blktrans(struct mtd_blktrans_ops *tr);
++	int open;
++	struct kref ref;
+ 	struct gendisk *disk;
+ 	struct task_struct *thread;
+ 	struct request_queue *rq;
 -- 
 1.6.3.3
