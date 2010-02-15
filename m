@@ -1,16 +1,19 @@
 Received: from gw1.transmode.se ([213.115.205.20])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nh3Ph-0006Kw-Lx
-	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 16:03:14 +0000
+	id 1Nh3Ph-0006L9-Lx
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 16:03:15 +0000
 Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
-	by gw1.transmode.se (Postfix) with ESMTP id 76F47650002
+	by gw1.transmode.se (Postfix) with ESMTP id 4CD39650001
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Feb 2010 17:03:04 +0100 (CET)
+	Mon, 15 Feb 2010 17:03:05 +0100 (CET)
 From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] jffs:2 Move erasing from write_super to GC.
-Date: Mon, 15 Feb 2010 17:03:00 +0100
-Message-Id: <1266249781-27970-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Subject: [PATCH 2/2]
+	s/jffs2_erase_pending_trigger/jffs2_garbage_collect_trigger/
+Date: Mon, 15 Feb 2010 17:03:01 +0100
+Message-Id: <1266249781-27970-2-git-send-email-Joakim.Tjernlund@transmode.se>
+In-Reply-To: <1266249781-27970-1-git-send-email-Joakim.Tjernlund@transmode.se>
+References: <1266249781-27970-1-git-send-email-Joakim.Tjernlund@transmode.se>
 Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,75 +24,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Erasing blocks is a form of GC and therefor it should live in the
-GC task. By moving it there two problems will be solved:
-1) umounting will not hang until all pending blocks has
-   been erased.
-2) Erasing can be paused by sending a SIGSTOP to the GC thread which
-   allowes for time critical tasks work in peace.
+Since erasing is done in GC now, trigger GC instead.
+jffs2_erase_pending_trigger() renamed to jffs2_dirty_trigger() and
+used by wbuf. Remove call jffs2_garbage_collect_trigger() in
+write_super()
 
 Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 ---
- fs/jffs2/background.c |    1 +
- fs/jffs2/erase.c      |    5 +++++
- fs/jffs2/nodemgmt.c   |    4 ++++
- fs/jffs2/super.c      |    1 -
- 4 files changed, 10 insertions(+), 1 deletions(-)
+ fs/jffs2/erase.c    |    4 +---
+ fs/jffs2/gc.c       |    2 +-
+ fs/jffs2/nodemgmt.c |    4 ++--
+ fs/jffs2/os-linux.h |    2 +-
+ fs/jffs2/scan.c     |    2 +-
+ fs/jffs2/super.c    |    1 -
+ fs/jffs2/wbuf.c     |    8 ++++----
+ 7 files changed, 10 insertions(+), 13 deletions(-)
 
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index 3ff50da..a8e0140 100644
---- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -146,6 +146,7 @@ static int jffs2_garbage_collect_thread(void *_c)
- 		disallow_signal(SIGHUP);
- 
- 		D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): pass\n"));
-+		jffs2_erase_pending_blocks(c, 0);
- 		if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
- 			printk(KERN_NOTICE "No space for garbage collection. Aborting GC thread\n");
- 			goto die;
 diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index b47679b..1ca2559 100644
+index 1ca2559..fdf9418 100644
 --- a/fs/jffs2/erase.c
 +++ b/fs/jffs2/erase.c
-@@ -114,6 +114,11 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
- 	while (!list_empty(&c->erase_complete_list) ||
- 	       !list_empty(&c->erase_pending_list)) {
+@@ -172,8 +172,6 @@ static void jffs2_erase_succeeded(struct jffs2_sb_info *c, struct jffs2_eraseblo
+ 	list_move_tail(&jeb->list, &c->erase_complete_list);
+ 	spin_unlock(&c->erase_completion_lock);
+ 	mutex_unlock(&c->erase_free_sem);
+-	/* Ensure that kupdated calls us again to mark them clean */
+-	jffs2_erase_pending_trigger(c);
+ }
  
-+		if (signal_pending(current)) {
-+			spin_unlock(&c->erase_completion_lock);
-+			mutex_unlock(&c->erase_free_sem);
-+			goto done;
-+		}
- 		if (!list_empty(&c->erase_complete_list)) {
- 			jeb = list_entry(c->erase_complete_list.next, struct jffs2_eraseblock, list);
- 			list_move(&jeb->list, &c->erase_checking_list);
+ static void jffs2_erase_failed(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb, uint32_t bad_offset)
+@@ -492,7 +490,7 @@ filebad:
+ 
+ refile:
+ 	/* Stick it back on the list from whence it came and come back later */
+-	jffs2_erase_pending_trigger(c);
++	jffs2_garbage_collect_trigger(c);
+ 	mutex_lock(&c->erase_free_sem);
+ 	spin_lock(&c->erase_completion_lock);
+ 	list_move(&jeb->list, &c->erase_complete_list);
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 3b6f2fa..005659f 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -435,7 +435,7 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
+ 		list_add_tail(&c->gcblock->list, &c->erase_pending_list);
+ 		c->gcblock = NULL;
+ 		c->nr_erasing_blocks++;
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+ 	spin_unlock(&c->erase_completion_lock);
+ 
 diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-index 21a0529..155fd63 100644
+index 155fd63..190b5ce 100644
 --- a/fs/jffs2/nodemgmt.c
 +++ b/fs/jffs2/nodemgmt.c
-@@ -733,6 +733,10 @@ int jffs2_thread_should_wake(struct jffs2_sb_info *c)
- 	int nr_very_dirty = 0;
- 	struct jffs2_eraseblock *jeb;
+@@ -218,7 +218,7 @@ static int jffs2_find_nextblock(struct jffs2_sb_info *c)
+ 			ejeb = list_entry(c->erasable_list.next, struct jffs2_eraseblock, list);
+ 			list_move_tail(&ejeb->list, &c->erase_pending_list);
+ 			c->nr_erasing_blocks++;
+-			jffs2_erase_pending_trigger(c);
++			jffs2_garbage_collect_trigger(c);
+ 			D1(printk(KERN_DEBUG "jffs2_find_nextblock: Triggering erase of erasable block at 0x%08x\n",
+ 				  ejeb->offset));
+ 		}
+@@ -612,7 +612,7 @@ void jffs2_mark_node_obsolete(struct jffs2_sb_info *c, struct jffs2_raw_node_ref
+ 				D1(printk(KERN_DEBUG "...and adding to erase_pending_list\n"));
+ 				list_add_tail(&jeb->list, &c->erase_pending_list);
+ 				c->nr_erasing_blocks++;
+-				jffs2_erase_pending_trigger(c);
++				jffs2_garbage_collect_trigger(c);
+ 			} else {
+ 				/* Sometimes, however, we leave it elsewhere so it doesn't get
+ 				   immediately reused, and we spread the load a bit. */
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index a7f03b7..4d03ce0 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -141,7 +141,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
+ #endif /* WRITEBUFFER */
  
-+	if (!list_empty(&c->erase_complete_list) ||
-+	    !list_empty(&c->erase_pending_list))
-+		return 1;
-+
- 	if (c->unchecked_size) {
- 		D1(printk(KERN_DEBUG "jffs2_thread_should_wake(): unchecked_size %d, checked_ino #%d\n",
- 			  c->unchecked_size, c->checked_ino));
+ /* erase.c */
+-static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
++static inline void jffs2_dirty_trigger(struct jffs2_sb_info *c)
+ {
+ 	OFNI_BS_2SFFJ(c)->s_dirt = 1;
+ }
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 2a0681b..d6bdcfc 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -260,7 +260,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 			ret = -EIO;
+ 			goto out;
+ 		}
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+ 	ret = 0;
+  out:
 diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 9a80e8e..5162329 100644
+index 5162329..511e2d6 100644
 --- a/fs/jffs2/super.c
 +++ b/fs/jffs2/super.c
-@@ -64,7 +64,6 @@ static void jffs2_write_super(struct super_block *sb)
+@@ -63,7 +63,6 @@ static void jffs2_write_super(struct super_block *sb)
+ 
  	if (!(sb->s_flags & MS_RDONLY)) {
  		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
- 		jffs2_garbage_collect_trigger(c);
--		jffs2_erase_pending_blocks(c, 0);
+-		jffs2_garbage_collect_trigger(c);
  		jffs2_flush_wbuf_gc(c, 0);
  	}
  
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 5ef7bac..07ee154 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -84,7 +84,7 @@ static void jffs2_wbuf_dirties_inode(struct jffs2_sb_info *c, uint32_t ino)
+ 	struct jffs2_inodirty *new;
+ 
+ 	/* Mark the superblock dirty so that kupdated will flush... */
+-	jffs2_erase_pending_trigger(c);
++	jffs2_dirty_trigger(c);
+ 
+ 	if (jffs2_wbuf_pending_for_ino(c, ino))
+ 		return;
+@@ -121,7 +121,7 @@ static inline void jffs2_refile_wbuf_blocks(struct jffs2_sb_info *c)
+ 			D1(printk(KERN_DEBUG "...and adding to erase_pending_list\n"));
+ 			list_add_tail(&jeb->list, &c->erase_pending_list);
+ 			c->nr_erasing_blocks++;
+-			jffs2_erase_pending_trigger(c);
++			jffs2_garbage_collect_trigger(c);
+ 		} else {
+ 			/* Sometimes, however, we leave it elsewhere so it doesn't get
+ 			   immediately reused, and we spread the load a bit. */
+@@ -152,7 +152,7 @@ static void jffs2_block_refile(struct jffs2_sb_info *c, struct jffs2_eraseblock
+ 		D1(printk("Refiling block at %08x to erase_pending_list\n", jeb->offset));
+ 		list_add(&jeb->list, &c->erase_pending_list);
+ 		c->nr_erasing_blocks++;
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+ 
+ 	if (!jffs2_prealloc_raw_node_refs(c, jeb, 1)) {
+@@ -543,7 +543,7 @@ static void jffs2_wbuf_recover(struct jffs2_sb_info *c)
+ 		D1(printk(KERN_DEBUG "Failing block at %08x is now empty. Moving to erase_pending_list\n", jeb->offset));
+ 		list_move(&jeb->list, &c->erase_pending_list);
+ 		c->nr_erasing_blocks++;
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+ 
+ 	jffs2_dbg_acct_sanity_check_nolock(c, jeb);
 -- 
 1.6.4.4
