@@ -1,15 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nh1EV-0002hH-Vh
-	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 13:43:32 +0000
-Subject: Re: [PATCH] mtd-utils: add option to not force largefile support
+	id 1Nh1cQ-00029S-D5
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 14:08:15 +0000
+Subject: Re: [PATCH 1/1] mtd: nand: move the checking the validity of oob
+	into nand_write_oob
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Peter Korsgaard <jacmet@sunsite.dk>
-In-Reply-To: <1265188726-23746-1-git-send-email-jacmet@sunsite.dk>
-References: <1265188726-23746-1-git-send-email-jacmet@sunsite.dk>
+To: "Stanley.Miao" <stanley.miao@windriver.com>
+In-Reply-To: <1265267917-2487-2-git-send-email-stanley.miao@windriver.com>
+References: <1265267917-2487-1-git-send-email-stanley.miao@windriver.com>
+	<1265267917-2487-2-git-send-email-stanley.miao@windriver.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 15 Feb 2010 15:42:22 +0200
-Message-ID: <1266241342.11659.91.camel@localhost>
+Date: Mon, 15 Feb 2010 16:07:02 +0200
+Message-ID: <1266242822.11659.96.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,16 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-02-03 at 10:18 +0100, Peter Korsgaard wrote:
-> Not all systems have largefile support (E.G. uClibc depending on config),
-> so unconditionally enforcing largefile breaks the build.
+On Thu, 2010-02-04 at 15:18 +0800, Stanley.Miao wrote:
+> nand_write_oob will invoke nand_do_write_oob or nand_do_write_ops depending
+> on if ops->datbuf is NULL. nand_do_write_oob checked the validity of oob
+> but nand_do_write_ops didn't. Now move the check into nand_write_oob to
+> ensure the validity of oobbuf.
 > 
-> Work around it by adding a WITHOUT_LARGEFILE flag, similar to the existing
-> WITHOUT_XATTR.
+> Signed-off-by: Stanley.Miao <stanley.miao@windriver.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |   69 ++++++++++++++++++++++-------------------
+>  1 files changed, 37 insertions(+), 32 deletions(-)
 > 
-> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 8f2958f..29e2a06 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -2113,40 +2113,9 @@ static int nand_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+>  			     struct mtd_oob_ops *ops)
+>  {
 
-Pushed to mtd-utils.git, thanks!
+...
+
+> @@ -2203,6 +2172,42 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (ops->oobbuf) {
+> +		int len;
+> +		DEBUG(MTD_DEBUG_LEVEL3, "%s: to = 0x%08x, ooblen = %i\n",
+> +				__func__, (unsigned int)to, (int)ops->ooblen);
+
+Why this check is not done for !obs->oobbuf cas as well?
+
 
 -- 
 Best Regards,
