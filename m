@@ -1,21 +1,18 @@
-Received: from mail-bw0-f209.google.com ([209.85.218.209])
+Received: from mail-pz0-f179.google.com ([209.85.222.179])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NgjlD-0007Jz-8W
-	for linux-mtd@lists.infradead.org; Sun, 14 Feb 2010 19:04:07 +0000
-Received: by bwz1 with SMTP id 1so3349935bwz.32
+	id 1Ngwhu-0005N9-UA
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 08:53:35 +0000
+Received: by pzk9 with SMTP id 9so2988282pzk.28
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 14 Feb 2010 11:04:00 -0800 (PST)
-Subject: Re: Legacy memstick support + FTL questions
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Alex Dubov <oakad@yahoo.com>
-In-Reply-To: <559624.1287.qm@web37604.mail.mud.yahoo.com>
-References: <559624.1287.qm@web37604.mail.mud.yahoo.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 14 Feb 2010 21:03:55 +0200
-Message-ID: <1266174235.3451.107.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+	Mon, 15 Feb 2010 00:53:28 -0800 (PST)
+MIME-Version: 1.0
+Date: Mon, 15 Feb 2010 00:53:28 -0800
+Message-ID: <cf70f0211002150053w29f690bj542c4f7c3e9dc626@mail.gmail.com>
+Subject: ubifs errors for BeagleBoard
+From: Shivdas Gujare <shivdas.tech@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: beagleboard@googlegroups.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,312 +22,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-02-14 at 07:06 -0800, Alex Dubov wrote: 
-> > 
-> > 
-> > I would like to know more about the registers.
-> > 
-> > 
-> > struct ms_status_register {
-> >     unsigned char reserved;
-> >     unsigned char interrupt;
-> 
-> * command can not be executed
-> > #define MEMSTICK_INT_CMDNAK 0x01
-> 
-> * MS IO stuff. Probably superseded by Pro IO protocol.
-> > #define MEMSTICK_INT_IOREQ  0x08
-> > #define MEMSTICK_INT_IOBREQ 0x10
-> 
-> * card is ready for data transfer (actual read/write block data)
-> > #define MEMSTICK_INT_BREQ   0x20
-> 
-> * some error occured
-> > #define MEMSTICK_INT_ERR    0x40
-> 
-> * command completed (either successfully or erroneously)
-> > #define MEMSTICK_INT_CED    0x80
-> > 
-> >     unsigned char status0;
-> 
-> * media is write protected
-> > #define MEMSTICK_STATUS0_WP  0x01
-> 
-> * media is sleeping (not very useful, as far as I can see)
-> > #define MEMSTICK_STATUS0_SL  0x02
-> 
-> * media buffer full (used when reading)
-> > #define MEMSTICK_STATUS0_BF  0x10
-> 
-> * media buffer empty (used when writing)
-> > #define MEMSTICK_STATUS0_BE  0x20
-> 
-> * flash busy
-> > #define MEMSTICK_STATUS0_FB0 0x40
-> 
-> * media busy (applies to built-in controller)
-> > #define MEMSTICK_STATUS0_MB  0x80
-> > 
-> >     unsigned char status1;
-> 
-> 
-> * uncorrectable flag error
-> > #define MEMSTICK_STATUS1_UCFG 0x01
-> 
-> * flag error (applies to "overwrite flag" field in extra data)
-> > #define MEMSTICK_STATUS1_FGER 0x02
-> 
-> * uncorrectable extra data error
-> > #define MEMSTICK_STATUS1_UCEX 0x04
-> 
-> * extra data (oob) error
-> > #define MEMSTICK_STATUS1_EXER 0x08
-> 
-> * uncorrectable data error (single bit errors are correctable)
-> > #define MEMSTICK_STATUS1_UCDT 0x10
-> 
-> * data error
-> > #define MEMSTICK_STATUS1_DTER 0x20
-> 
-> * flash busy (if media is busy, FB1 is not set, but FB0 is, the stick is
-> in invalid state)
-> > #define MEMSTICK_STATUS1_FB1  0x40
-> 
-> * media busy (same meaning as in status0)
-> > #define MEMSTICK_STATUS1_MB   0x80
-> > } __attribute__((packed));
-> > 
-> > Could you explain meaning of these flags?
-> > I understand some but not all.
-> 
-> > 
-> > Hardware register #16 (on my reader) seems to hold some
-> > status flags as well,
-> > It is interesting that there are many status flags, and
-> > they don't seem
-> > to fit nether jmicron nor TI flag register
-> > This register is polled to wait after an TPC, but several
-> > different bits are polled
-> > I thought that there is a relation between it and memstick
-> > status register.
-> 
-> It is quite possible. Some controllers will automatically retrieve an
-> "interrupt" field from the status register on each media access (in fact,
-> this behavior is mandated in parallel mode). Check if the bits fit "inter-
-> rupt" register bits.
-Doesn't seem to map to anything.
+Hi All,
 
+I am trying to use UBIFS on Omap3 BeagleBoard (kernel version 2.6.33)
+I am quite new to flash filesystems & ubifs.
 
+currently for ubiattach I am getting following error,
 
+uncorrectable error :
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB
+198:512, read 512 bytes
+[<c002e444>] (unwind_backtrace+0x0/0xdc) from [<c0217ddc>]
+(ubi_io_read+0x20c/0x2ec)
+[<c0217ddc>] (ubi_io_read+0x20c/0x2ec) from [<c0218048>]
+(ubi_io_read_vid_hdr+0x94/0x294)
+[<c0218048>] (ubi_io_read_vid_hdr+0x94/0x294) from [<c021cbf4>]
+(ubi_scan+0xa50/0x1094)
+[<c021cbf4>] (ubi_scan+0xa50/0x1094) from [<c02122f4>]
+(ubi_attach_mtd_dev+0x624/0xd6c)
+[<c02122f4>] (ubi_attach_mtd_dev+0x624/0xd6c) from [<c0212cd8>]
+(ctrl_cdev_ioctl+0xe8/0x1a4)
+[<c0212cd8>] (ctrl_cdev_ioctl+0xe8/0x1a4) from [<c00aa590>]
+(vfs_ioctl+0x2c/0x70)
+[<c00aa590>] (vfs_ioctl+0x2c/0x70) from [<c00aacc4>] (do_vfs_ioctl+0x518/0x55c)
+[<c00aacc4>] (do_vfs_ioctl+0x518/0x55c) from [<c00aad3c>] (sys_ioctl+0x34/0x54)
+[<c00aad3c>] (sys_ioctl+0x34/0x54) from [<c0028de0>] (ret_fast_syscall+0x0/0x2c)
 
-0x10 is polled on register writes
-0x20 is polled on command writes, and then 0x10 is polled
-0x50 (0x40 | 0x10) if polled after MS_TPC_GET_INT and only it
+and for "mount -t ubifs /dev/ubi0_0 /mnt" it gives following error,
 
-0x03 is mask for error detection, if found in any of above polls, error
-out.
+uncorrectable error :
+UBI error: ubi_io_read: error -74 while reading 188 bytes from PEB
+220:8304, read 188 bytes
+[<c002e444>] (unwind_backtrace+0x0/0xdc) from [<c0217ddc>]
+(ubi_io_read+0x20c/0x2ec)
+[<c0217ddc>] (ubi_io_read+0x20c/0x2ec) from [<c0216fd4>]
+(ubi_eba_read_leb+0x2e4/0x3e8)
+[<c0216fd4>] (ubi_eba_read_leb+0x2e4/0x3e8) from [<c0214c24>]
+(ubi_leb_read+0x100/0x15c)
+[<c0214c24>] (ubi_leb_read+0x100/0x15c) from [<c015d604>]
+(ubifs_read_node+0x1b4/0x340)
+[<c015d604>] (ubifs_read_node+0x1b4/0x340) from [<c017d9b0>]
+(ubifs_load_znode+0xd0/0x5c0)
+[<c017d9b0>] (ubifs_load_znode+0xd0/0x5c0) from [<c016136c>]
+(ubifs_lookup_level0+0x114/0x2dc)
+[<c016136c>] (ubifs_lookup_level0+0x114/0x2dc) from [<c0162e74>]
+(ubifs_tnc_locate+0x40/0x170)
+[<c0162e74>] (ubifs_tnc_locate+0x40/0x170) from [<c0158d00>]
+(ubifs_iget+0xb0/0x7e4)
+[<c0158d00>] (ubifs_iget+0xb0/0x7e4) from [<c015aa08>]
+(ubifs_fill_super+0x15d4/0x1664)
+[<c015aa08>] (ubifs_fill_super+0x15d4/0x1664) from [<c015ad20>]
+(ubifs_get_sb+0x288/0x2fc)
+[<c015ad20>] (ubifs_get_sb+0x288/0x2fc) from [<c009fd24>]
+(vfs_kern_mount+0x4c/0xd0)
+[<c009fd24>] (vfs_kern_mount+0x4c/0xd0) from [<c009fdec>]
+(do_kern_mount+0x34/0xd8)
+[<c009fdec>] (do_kern_mount+0x34/0xd8) from [<c00b4640>] (do_mount+0x5ec/0x64c)
+[<c00b4640>] (do_mount+0x5ec/0x64c) from [<c00b4724>] (sys_mount+0x84/0xc4)
+[<c00b4724>] (sys_mount+0x84/0xc4) from [<c0028de0>] (ret_fast_syscall+0x0/0x2c)
 
-The above was for register #19 (0xXX000000) 
+Does anyone encountered similar kind of error?
+Also would like to know, does user space - ubitools read only 64 bytes
+each from mtd drivers(while scan or format)
 
-after the MS_TPC_READ_LONG_DATA, 0x40 is polled, and register #18 is
-polled for 0x20 clear. These are all bits that are accessed.
+Thanks lot for all your helps.
 
-You try to tell me that controller itself issues TPCs, reads their
-responses, and puts that in registers, right? This is very interesting.
-
-Bus is half duplex, and there is a line that indicates who sends data.
-
-I currently understand that host sends an TPC, then card sends a
-response. Is it another TPC?
-
-
-
-
-> 
-> > 
-> > struct ms_id_register {
-> >     unsigned char type;
-> >     unsigned char if_mode;
-> >     unsigned char category;
-> >     unsigned char class;
-> > } __attribute__((packed));
-> > 
-> > This register set is used to determine all kinds of
-> > things,
-> > could you explain its meaning?
-> 
-> This is an informal media id register. The mess you can see with its field
-> values is caused purely by Sony's inability to make its mind.
-> You can use it to differentiate between legacy, Pro and IO devices, but
-> that's roughly it.
-> 
-> > 
-> > 
-> > struct ms_param_register {
-> >     unsigned char system;
-> 
-> * 0 - serial, 1 - parallel mode
-> > #define MEMSTICK_SYS_PAM  0x08
-> 
-> * always 1 on legacy sticks
-> > #define MEMSTICK_SYS_BAMD 0x80
-> 
-> > These correspond to parallel and serial modes, right?
-> > There seems to be a large dance around switching these
-> > modes.
-> > You seem to mention 8 bit serial mode. How that could be
-> > possible?
-> > 
-> 
-> MS Pro HG sticks have 8bit capability as well as extended address space.
-> Each of the data pads on such sticks is split in two.
-> 
-> * physical block address 
-> >     unsigned char block_address[3];
-> 
-> * block access mode modifier
-> >     unsigned char cp;
-> 
-> * read/write data + extra data and autoincrement page address pointer
-> > #define MEMSTICK_CP_BLOCK     0x00
-> 
-> * read/write data + extra data and stay at the same page
-> > #define MEMSTICK_CP_PAGE      0x20
-> 
-> * read/write extra data only and stay at the same page
-> > #define MEMSTICK_CP_EXTRA     0x40
-> 
-> * read/write flag area and stay at the same page
-> > #define MEMSTICK_CP_OVERWRITE 0x80
-> > I have rough idea what that means, but an explanation won't
-> > hurt.
-> > Especially MEMSTICK_CP_OVERWRITE
-> 
-> The idea is that "overwrite flag" field in the extra data area can be
-> accessed separately, has its own error correction logic and otherwise
-> behaves as a separate entity (it even has dedicated bits in the status1
-> register). This field is used by software to store advisory information
-> and to aid recovery from interrupted flash operations.
-> 
-> * page address within block
-> >     unsigned char page_address;
-> > } __attribute__((packed));
-> > 
-> > 
-> > struct ms_extra_data_register {
-> >     unsigned char  overwrite_flag;
-> 
-> * 1 - block is stable, 0 - block is being updated
-> This bit can be reset on blocks which are scheduled for relocation/update.
-> If operation in question is abruptly terminated, information in this bit
-> should assist in subsequent restoration of media's logical integrity.
-> > #define MEMSTICK_OVERWRITE_UDST  0x10
-> 
-> * 3 - page is ok, 2/1 - page should not be accessed, 0 - page can be
-> accessed, but its data integrity can not be assured
-> > #define MEMSTICK_OVERWRITE_PGST1 0x20
-> > #define MEMSTICK_OVERWRITE_PGST0 0x40
-> 
-> * 1 - block is ok, 0 - block should not be accessed
-> > #define MEMSTICK_OVERWRITE_BKST  0x80
-> > 
-> 
-> * This register does not seem to be very useful. It is used to specify
-> that page in question has special meaning, which mostly applies to DRM
-> implementations (superseded by MS Pro) or severely RAM restricted systems.
-> >     unsigned char  management_flag;
-> 
-> * page is used for system purposes (?)
-> > #define MEMSTICK_MANAGEMENT_SYSFLG 0x04
-> 
-> * page is used to store temporary physical to logical mapping table
-> > #define MEMSTICK_MANAGEMENT_ATFLG  0x08
-> 
-> * DRM crap
-> > #define MEMSTICK_MANAGEMENT_SCMS1  0x10
-> > #define MEMSTICK_MANAGEMENT_SCMS0  0x20
-> > 
-> 
-> * logical address of the block (must obey zoning restrictions)
-> Each zone has 512 physical blocks.
-> The very first zone is only allowed 494 logical blocks, all other have
-> 496 logical blocks. The rest of the physical blocks in each zone are used
-> as spares and must be reused within the zone boundaries.
-> >     unsigned short logical_address;
-> > } __attribute__((packed));
-> > 
-> > Same here, mangement flag seems to be used often by
-> > driver.
-> 
-> Management flag should not be used at all. The only possible use for it
-> (apart from DRM) is to mark volatile pages which can be used to store the
-> block look-up table. If there's enough RAM, no such tricks are necessary.
-> Default value for the unused flags is 0xff and it better be set.
-> 
-> On the other hand, overwrite flag should be used quite extensively.
-> 
-> 
-> > 
-> > 
-> > struct ms_register {
-> >     struct ms_status_register 
-> >    status;
-> >     struct ms_id_register   
-> >      id;
-> >     unsigned char       
-> >          reserved0[8];
-> >     struct ms_param_register   
-> >   param;
-> >     struct ms_extra_data_register
-> > extra_data;
-> >     unsigned char       
-> >          reserved1[2]; /* pad
-> > to word boundary */
-> > }
-> > I guess that first two fields of ms_extra_data_register
-> > should belong to 
-> > ms_param_register, for alignment.
-> 
-> No. They are separate hardware registers on the media side, and the
-> offsets are like this.
-> 
-> > Also, I don't get why status register has so many flags.
-> > As I understand it, TPCs are send in both directions, and
-> > nothing more.
-> > There are no dedicated lines, or something like that.
-> 
-> TPC means "transport protocol command" and it is only send from host to
-> media. Generally speaking, the whole thing works like this (each point
-> is a TPC):
-> 
-> 1. Host selects media register access window.
-> 2. Host modifies media register values.
-> 3. Host invokes media command.
-> 4. Host reads media registers.
-> 5. Host moves data around.
-> 6. Lather, rinse, repeat.
-
-> 
-> > 
-> > So status should be a content of the answer TPC or
-> > something like that.
-> 
-> It is not.
-> 
-> > 
-> > 
-> > I wish I had the memstick spec (original not pro)
-> > 
-> 
-> There's an email address on Sony's website.
-And the chances they give me the specs without NDA and a lump of money
-are higher that winning a lottery?
-
-It is very sad to see these proprietary devices and protocols.
-
-I actually did pay for all the licence costs, because I did buy the
-device, and a driver....
-
-
-Best regards,
-Maxim Levitsky
+Thanks and Regards,
+Shivdas Gujare
