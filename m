@@ -1,21 +1,17 @@
-Received: from mail-fx0-f209.google.com ([209.85.220.209])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nh2HU-0003Pd-6N
-	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 14:50:41 +0000
-Received: by fxm1 with SMTP id 1so5126672fxm.4
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nh3Ph-0006Kw-Lx
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 16:03:14 +0000
+Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
+	by gw1.transmode.se (Postfix) with ESMTP id 76F47650002
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Feb 2010 06:50:34 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1266244528.11659.108.camel@localhost>
-References: <ce9ab5791002080220n51cd6611iafe09df6370d8dc2@mail.gmail.com>
-	<1266244528.11659.108.camel@localhost>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Mon, 15 Feb 2010 20:20:14 +0530
-Message-ID: <ce9ab5791002150650x79e40747w7aa345c115356d06@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] Adding nand lock/unlock routines.
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: kishorek.kadiyala@gmail.com, Linux MTD <linux-mtd@lists.infradead.org>
+	Mon, 15 Feb 2010 17:03:04 +0100 (CET)
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] jffs:2 Move erasing from write_super to GC.
+Date: Mon, 15 Feb 2010 17:03:00 +0100
+Message-Id: <1266249781-27970-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +21,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 15, 2010 at 8:05 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2010-02-08 at 15:50 +0530, Vimal Singh wrote:
->> This version fixes the compilation break reported by Kishore. 1st
->> patch in this series remains untouched.
->>
->> -vimal
->>
->> From a28c230f3bd8fa765f78c0be91370f146e71f670 Mon Sep 17 00:00:00 2001
->> From: Vimal Singh <vimalsingh@ti.com>
->> Date: Wed, 3 Feb 2010 14:32:06 +0530
->> Subject: [PATCH 2/2] Adding nand lock/unlock routines.
->>
->> Adding nand lock / unlock routines. At least 'micron' parts
->> support this.
->>
->> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
->
-> These look OK to me, except the part where you export them. Why they
-> should be exported?
+Erasing blocks is a form of GC and therefor it should live in the
+GC task. By moving it there two problems will be solved:
+1) umounting will not hang until all pending blocks has
+   been erased.
+2) Erasing can be paused by sending a SIGSTOP to the GC thread which
+   allowes for time critical tasks work in peace.
 
-There was an earlier comment (in 1st RFC version of the patch), where
-you said probably it is not safer to assign mtd lock and unlock
-pointers in 'nand_scan_tail', as not all flashes have this feature.
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+ fs/jffs2/background.c |    1 +
+ fs/jffs2/erase.c      |    5 +++++
+ fs/jffs2/nodemgmt.c   |    4 ++++
+ fs/jffs2/super.c      |    1 -
+ 4 files changed, 10 insertions(+), 1 deletions(-)
 
-So, I exported these so that a driver can use these by overwriting mtd
-lock and unlock pointers in its probe.
-
-
-
+diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+index 3ff50da..a8e0140 100644
+--- a/fs/jffs2/background.c
++++ b/fs/jffs2/background.c
+@@ -146,6 +146,7 @@ static int jffs2_garbage_collect_thread(void *_c)
+ 		disallow_signal(SIGHUP);
+ 
+ 		D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): pass\n"));
++		jffs2_erase_pending_blocks(c, 0);
+ 		if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
+ 			printk(KERN_NOTICE "No space for garbage collection. Aborting GC thread\n");
+ 			goto die;
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index b47679b..1ca2559 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -114,6 +114,11 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
+ 	while (!list_empty(&c->erase_complete_list) ||
+ 	       !list_empty(&c->erase_pending_list)) {
+ 
++		if (signal_pending(current)) {
++			spin_unlock(&c->erase_completion_lock);
++			mutex_unlock(&c->erase_free_sem);
++			goto done;
++		}
+ 		if (!list_empty(&c->erase_complete_list)) {
+ 			jeb = list_entry(c->erase_complete_list.next, struct jffs2_eraseblock, list);
+ 			list_move(&jeb->list, &c->erase_checking_list);
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 21a0529..155fd63 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -733,6 +733,10 @@ int jffs2_thread_should_wake(struct jffs2_sb_info *c)
+ 	int nr_very_dirty = 0;
+ 	struct jffs2_eraseblock *jeb;
+ 
++	if (!list_empty(&c->erase_complete_list) ||
++	    !list_empty(&c->erase_pending_list))
++		return 1;
++
+ 	if (c->unchecked_size) {
+ 		D1(printk(KERN_DEBUG "jffs2_thread_should_wake(): unchecked_size %d, checked_ino #%d\n",
+ 			  c->unchecked_size, c->checked_ino));
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 9a80e8e..5162329 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -64,7 +64,6 @@ static void jffs2_write_super(struct super_block *sb)
+ 	if (!(sb->s_flags & MS_RDONLY)) {
+ 		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
+ 		jffs2_garbage_collect_trigger(c);
+-		jffs2_erase_pending_blocks(c, 0);
+ 		jffs2_flush_wbuf_gc(c, 0);
+ 	}
+ 
 -- 
-Regards,
-Vimal Singh
+1.6.4.4
