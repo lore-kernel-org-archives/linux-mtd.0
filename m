@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nh19U-0001oC-0h
-	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 13:38:20 +0000
-Subject: Re: Fix mtd-utils bugs
+	id 1Nh1EV-0002hH-Vh
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 13:43:32 +0000
+Subject: Re: [PATCH] mtd-utils: add option to not force largefile support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Stanley.Miao" <stanley.miao@windriver.com>
-In-Reply-To: <1265172354-26682-1-git-send-email-stanley.miao@windriver.com>
-References: <1265172354-26682-1-git-send-email-stanley.miao@windriver.com>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+In-Reply-To: <1265188726-23746-1-git-send-email-jacmet@sunsite.dk>
+References: <1265188726-23746-1-git-send-email-jacmet@sunsite.dk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 15 Feb 2010 15:36:52 +0200
-Message-ID: <1266241012.11659.90.camel@localhost>
+Date: Mon, 15 Feb 2010 15:42:22 +0200
+Message-ID: <1266241342.11659.91.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,25 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-02-03 at 12:45 +0800, Stanley.Miao wrote:
-> (Re-send it because the previous one don't have a subject.)
+On Wed, 2010-02-03 at 10:18 +0100, Peter Korsgaard wrote:
+> Not all systems have largefile support (E.G. uClibc depending on config),
+> so unconditionally enforcing largefile breaks the build.
 > 
-> During some BSP development process, I found some tools in mtd-utils
-> contain legacy interfaces and it is not suitable with the current linux
-> kernel. I post my patches here in case somebody else need them.
+> Work around it by adding a WITHOUT_LARGEFILE flag, similar to the existing
+> WITHOUT_XATTR.
+> 
+> Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
 
-In general, I really support your "let's kick ancient crap out"
-approach.
-
-But could you please be a bit more verbose, and sell your patchset a bit
-better. E.g., write about who will suffer - which kernel versions? Why
-you think we should not care about them suffering?
-
-Please, write a good explanation. Then I'll try to bug dwmw2 to ack or
-nack this. And then I can push it.
-
-Although I have push rights to the mtd-utils, but I am a bit usure about
-pushing your stuff.
+Pushed to mtd-utils.git, thanks!
 
 -- 
 Best Regards,
