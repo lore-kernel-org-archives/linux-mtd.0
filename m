@@ -1,18 +1,20 @@
-Received: from mail-fx0-f209.google.com ([209.85.220.209])
+Received: from mail-ew0-f223.google.com ([209.85.219.223])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nh8BP-0005zP-OA
-	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 21:08:49 +0000
-Received: by fxm1 with SMTP id 1so5589691fxm.4
+	id 1Nh8pZ-0001SE-Dj
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 21:50:18 +0000
+Received: by ewy23 with SMTP id 23so429686ewy.4
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Feb 2010 13:08:40 -0800 (PST)
+	Mon, 15 Feb 2010 13:50:01 -0800 (PST)
+Message-ID: <4B79C344.60908@gmail.com>
+Date: Mon, 15 Feb 2010 22:57:24 +0100
+From: Roel Kluin <roel.kluin@gmail.com>
 MIME-Version: 1.0
-Date: Mon, 15 Feb 2010 22:08:40 +0100
-Message-ID: <fcf894b71002151308i1a091f76rc6703734a0ea2164@mail.gmail.com>
-Subject: Filesystem advice
-From: =?UTF-8?Q?Volker_A=C3=9Fmann?= <volker.assmann@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: misplaced parenthesis in find_boot_record()
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+The parenthesis was misplaced, upon error a one was shown.
 
-Sorry if this post is a bit off-topic for this mailing list, but this
-seams to be the best place to ask. We are currently using an embedded
-linux system with a compact flash drive and ext3 as a filesystem. Due
-to frequent power failures, we are often experiencing filesystem
-corruption problems, and thus want to replace this setup with a better
-option. My options / questions:
-
-1. Replace ext3 with UBIFS or JFFS2 using the MTD-Blockdevice
-emulation layer. Would this setup improve the reliability of our
-system with respect to power failures, and if yes which is better
-suited? Of course this approach would not improve the wear leveling,
-but would it make it worse / probably confuse the integrated flash
-controller?
-
-2. Replace the Compact Flash module with an MTD device - this option
-poses the problem that we can only deploy new hardware which is
-connected through USB or the Compact Flash interface. I didn't find
-any hardware which would support this setup - does something like this
-exist?
-
-3. In case both solutions are not viable, could you give an educated
-guess on which traditional filesystem would be better suited for this
-use case than ext3?
-
-Thanks in advance and cheers,
-
-
-      Volker A=C3=9Fmann
+Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+---
+diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+index 32e82ae..a269c62 100644
+--- a/drivers/mtd/inftlmount.c
++++ b/drivers/mtd/inftlmount.c
+@@ -102,7 +102,7 @@ static int find_boot_record(struct INFTLrecord *inftl)
+ 		/* To be safer with BIOS, also use erase mark as discriminant */
+ 		if ((ret = inftl_read_oob(mtd, block * inftl->EraseSize +
+ 					  SECTORSIZE + 8, 8, &retlen,
+-					  (char *)&h1) < 0)) {
++					  (char *)&h1)) < 0) {
+ 			printk(KERN_WARNING "INFTL: ANAND header found at "
+ 				"0x%x in mtd%d, but OOB data read failed "
+ 				"(err %d)\n", block * inftl->EraseSize,
