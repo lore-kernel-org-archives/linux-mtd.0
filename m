@@ -1,18 +1,21 @@
-Received: from mail-pz0-f179.google.com ([209.85.222.179])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ngwhu-0005N9-UA
-	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 08:53:35 +0000
-Received: by pzk9 with SMTP id 9so2988282pzk.28
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Feb 2010 00:53:28 -0800 (PST)
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ngxk6-0001wK-MI
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 09:59:55 +0000
+In-Reply-To: <OFB070621F.38B903A2-ONC12576C9.004A7C7A-C12576C9.004A9FC9@LocalDomain>
+References: <DIIE.00001DD8002443BF@mail.auerswald.de>	
+	<OF36A0B5DE.926C06F6-ONC12576C8.004392D1-C12576C8.0044B7AA@transmode.se>
+	<1265979582.29027.5.camel@localhost>
+	<OFB070621F.38B903A2-ONC12576C9.004A7C7A-C12576C9.004A9FC9@LocalDomain>
+Subject: Re: Why erase_pending_blocks in write_super? (was: [PATCH] JFFS2:
+	Erase max 3 EB's in ...)
+Message-ID: <OF31A7A7A1.E667331A-ONC12576CB.003684CC-C12576CB.0036C19A@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Mon, 15 Feb 2010 10:58:05 +0100
 MIME-Version: 1.0
-Date: Mon, 15 Feb 2010 00:53:28 -0800
-Message-ID: <cf70f0211002150053w29f690bj542c4f7c3e9dc626@mail.gmail.com>
-Subject: ubifs errors for BeagleBoard
-From: Shivdas Gujare <shivdas.tech@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: beagleboard@googlegroups.com
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, Kai-Uwe Bloem <kai-uwe.bloem@auerswald.de>,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,70 +25,179 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Joakim Tjernlund/Transmode wrote on 2010/02/13 14:35:05:
+>
+> Artem Bityutskiy <dedekind1@gmail.com> wrote on 2010/02/12 13:59:42:
+> >
+> > On Fri, 2010-02-12 at 13:30 +0100, Joakim Tjernlund wrote:
+> > > > So, can you please enlighten me? What's the advantage of having the pending
+> > > > list erased in write_super? Can I possibly remove it without experiencing
+> > > > other problems?
+> > >
+> > > Me too wants to know :)
+> >
+> > I believe there is no reason. This is why I suggested to move it to the
+> > BGT.
 
-I am trying to use UBIFS on Omap3 BeagleBoard (kernel version 2.6.33)
-I am quite new to flash filesystems & ubifs.
+> This is a fist pass. Seems to work but probably need more work.
+> What do you think?
 
-currently for ubiattach I am getting following error,
+Here is the second pass ontop, just to show what I am
+doing. I will wrap it up into one patch one we agree.
 
-uncorrectable error :
-UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB
-198:512, read 512 bytes
-[<c002e444>] (unwind_backtrace+0x0/0xdc) from [<c0217ddc>]
-(ubi_io_read+0x20c/0x2ec)
-[<c0217ddc>] (ubi_io_read+0x20c/0x2ec) from [<c0218048>]
-(ubi_io_read_vid_hdr+0x94/0x294)
-[<c0218048>] (ubi_io_read_vid_hdr+0x94/0x294) from [<c021cbf4>]
-(ubi_scan+0xa50/0x1094)
-[<c021cbf4>] (ubi_scan+0xa50/0x1094) from [<c02122f4>]
-(ubi_attach_mtd_dev+0x624/0xd6c)
-[<c02122f4>] (ubi_attach_mtd_dev+0x624/0xd6c) from [<c0212cd8>]
-(ctrl_cdev_ioctl+0xe8/0x1a4)
-[<c0212cd8>] (ctrl_cdev_ioctl+0xe8/0x1a4) from [<c00aa590>]
-(vfs_ioctl+0x2c/0x70)
-[<c00aa590>] (vfs_ioctl+0x2c/0x70) from [<c00aacc4>] (do_vfs_ioctl+0x518/0x55c)
-[<c00aacc4>] (do_vfs_ioctl+0x518/0x55c) from [<c00aad3c>] (sys_ioctl+0x34/0x54)
-[<c00aad3c>] (sys_ioctl+0x34/0x54) from [<c0028de0>] (ret_fast_syscall+0x0/0x2c)
+>From f8b82929c5e9a3d18f7d38a5a6a48127646d7ac9 Mon Sep 17 00:00:00 2001
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Date: Mon, 15 Feb 2010 09:08:48 +0100
+Subject: [PATCH] s/jffs2_erase_pending_trigger/jffs2_garbage_collect_trigger/
 
-and for "mount -t ubifs /dev/ubi0_0 /mnt" it gives following error,
+Since erasing is done in GC now, trigger GC instead.
+jffs2_erase_pending_trigger() renamed to jffs2_dirty_trigger() and
+used by wbuf. Remove call jffs2_garbage_collect_trigger() in
+write_super()
+---
+ fs/jffs2/erase.c    |    4 +---
+ fs/jffs2/gc.c       |    2 +-
+ fs/jffs2/nodemgmt.c |    4 ++--
+ fs/jffs2/os-linux.h |    2 +-
+ fs/jffs2/scan.c     |    2 +-
+ fs/jffs2/super.c    |    1 -
+ fs/jffs2/wbuf.c     |    8 ++++----
+ 7 files changed, 10 insertions(+), 13 deletions(-)
 
-uncorrectable error :
-UBI error: ubi_io_read: error -74 while reading 188 bytes from PEB
-220:8304, read 188 bytes
-[<c002e444>] (unwind_backtrace+0x0/0xdc) from [<c0217ddc>]
-(ubi_io_read+0x20c/0x2ec)
-[<c0217ddc>] (ubi_io_read+0x20c/0x2ec) from [<c0216fd4>]
-(ubi_eba_read_leb+0x2e4/0x3e8)
-[<c0216fd4>] (ubi_eba_read_leb+0x2e4/0x3e8) from [<c0214c24>]
-(ubi_leb_read+0x100/0x15c)
-[<c0214c24>] (ubi_leb_read+0x100/0x15c) from [<c015d604>]
-(ubifs_read_node+0x1b4/0x340)
-[<c015d604>] (ubifs_read_node+0x1b4/0x340) from [<c017d9b0>]
-(ubifs_load_znode+0xd0/0x5c0)
-[<c017d9b0>] (ubifs_load_znode+0xd0/0x5c0) from [<c016136c>]
-(ubifs_lookup_level0+0x114/0x2dc)
-[<c016136c>] (ubifs_lookup_level0+0x114/0x2dc) from [<c0162e74>]
-(ubifs_tnc_locate+0x40/0x170)
-[<c0162e74>] (ubifs_tnc_locate+0x40/0x170) from [<c0158d00>]
-(ubifs_iget+0xb0/0x7e4)
-[<c0158d00>] (ubifs_iget+0xb0/0x7e4) from [<c015aa08>]
-(ubifs_fill_super+0x15d4/0x1664)
-[<c015aa08>] (ubifs_fill_super+0x15d4/0x1664) from [<c015ad20>]
-(ubifs_get_sb+0x288/0x2fc)
-[<c015ad20>] (ubifs_get_sb+0x288/0x2fc) from [<c009fd24>]
-(vfs_kern_mount+0x4c/0xd0)
-[<c009fd24>] (vfs_kern_mount+0x4c/0xd0) from [<c009fdec>]
-(do_kern_mount+0x34/0xd8)
-[<c009fdec>] (do_kern_mount+0x34/0xd8) from [<c00b4640>] (do_mount+0x5ec/0x64c)
-[<c00b4640>] (do_mount+0x5ec/0x64c) from [<c00b4724>] (sys_mount+0x84/0xc4)
-[<c00b4724>] (sys_mount+0x84/0xc4) from [<c0028de0>] (ret_fast_syscall+0x0/0x2c)
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index 1ca2559..fdf9418 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -172,8 +172,6 @@ static void jffs2_erase_succeeded(struct jffs2_sb_info *c, struct jffs2_eraseblo
+ 	list_move_tail(&jeb->list, &c->erase_complete_list);
+ 	spin_unlock(&c->erase_completion_lock);
+ 	mutex_unlock(&c->erase_free_sem);
+-	/* Ensure that kupdated calls us again to mark them clean */
+-	jffs2_erase_pending_trigger(c);
+ }
 
-Does anyone encountered similar kind of error?
-Also would like to know, does user space - ubitools read only 64 bytes
-each from mtd drivers(while scan or format)
+ static void jffs2_erase_failed(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb, uint32_t bad_offset)
+@@ -492,7 +490,7 @@ filebad:
 
-Thanks lot for all your helps.
+ refile:
+ 	/* Stick it back on the list from whence it came and come back later */
+-	jffs2_erase_pending_trigger(c);
++	jffs2_garbage_collect_trigger(c);
+ 	mutex_lock(&c->erase_free_sem);
+ 	spin_lock(&c->erase_completion_lock);
+ 	list_move(&jeb->list, &c->erase_complete_list);
+diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+index 3b6f2fa..005659f 100644
+--- a/fs/jffs2/gc.c
++++ b/fs/jffs2/gc.c
+@@ -435,7 +435,7 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
+ 		list_add_tail(&c->gcblock->list, &c->erase_pending_list);
+ 		c->gcblock = NULL;
+ 		c->nr_erasing_blocks++;
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+ 	spin_unlock(&c->erase_completion_lock);
 
-Thanks and Regards,
-Shivdas Gujare
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 155fd63..190b5ce 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -218,7 +218,7 @@ static int jffs2_find_nextblock(struct jffs2_sb_info *c)
+ 			ejeb = list_entry(c->erasable_list.next, struct jffs2_eraseblock, list);
+ 			list_move_tail(&ejeb->list, &c->erase_pending_list);
+ 			c->nr_erasing_blocks++;
+-			jffs2_erase_pending_trigger(c);
++			jffs2_garbage_collect_trigger(c);
+ 			D1(printk(KERN_DEBUG "jffs2_find_nextblock: Triggering erase of erasable block at 0x%08x\n",
+ 				  ejeb->offset));
+ 		}
+@@ -612,7 +612,7 @@ void jffs2_mark_node_obsolete(struct jffs2_sb_info *c, struct jffs2_raw_node_ref
+ 				D1(printk(KERN_DEBUG "...and adding to erase_pending_list\n"));
+ 				list_add_tail(&jeb->list, &c->erase_pending_list);
+ 				c->nr_erasing_blocks++;
+-				jffs2_erase_pending_trigger(c);
++				jffs2_garbage_collect_trigger(c);
+ 			} else {
+ 				/* Sometimes, however, we leave it elsewhere so it doesn't get
+ 				   immediately reused, and we spread the load a bit. */
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index a7f03b7..4d03ce0 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -141,7 +141,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
+ #endif /* WRITEBUFFER */
+
+ /* erase.c */
+-static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
++static inline void jffs2_dirty_trigger(struct jffs2_sb_info *c)
+ {
+ 	OFNI_BS_2SFFJ(c)->s_dirt = 1;
+ }
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 2a0681b..d6bdcfc 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -260,7 +260,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 			ret = -EIO;
+ 			goto out;
+ 		}
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+ 	ret = 0;
+  out:
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 5162329..511e2d6 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -63,7 +63,6 @@ static void jffs2_write_super(struct super_block *sb)
+
+ 	if (!(sb->s_flags & MS_RDONLY)) {
+ 		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
+-		jffs2_garbage_collect_trigger(c);
+ 		jffs2_flush_wbuf_gc(c, 0);
+ 	}
+
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 5ef7bac..07ee154 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -84,7 +84,7 @@ static void jffs2_wbuf_dirties_inode(struct jffs2_sb_info *c, uint32_t ino)
+ 	struct jffs2_inodirty *new;
+
+ 	/* Mark the superblock dirty so that kupdated will flush... */
+-	jffs2_erase_pending_trigger(c);
++	jffs2_dirty_trigger(c);
+
+ 	if (jffs2_wbuf_pending_for_ino(c, ino))
+ 		return;
+@@ -121,7 +121,7 @@ static inline void jffs2_refile_wbuf_blocks(struct jffs2_sb_info *c)
+ 			D1(printk(KERN_DEBUG "...and adding to erase_pending_list\n"));
+ 			list_add_tail(&jeb->list, &c->erase_pending_list);
+ 			c->nr_erasing_blocks++;
+-			jffs2_erase_pending_trigger(c);
++			jffs2_garbage_collect_trigger(c);
+ 		} else {
+ 			/* Sometimes, however, we leave it elsewhere so it doesn't get
+ 			   immediately reused, and we spread the load a bit. */
+@@ -152,7 +152,7 @@ static void jffs2_block_refile(struct jffs2_sb_info *c, struct jffs2_eraseblock
+ 		D1(printk("Refiling block at %08x to erase_pending_list\n", jeb->offset));
+ 		list_add(&jeb->list, &c->erase_pending_list);
+ 		c->nr_erasing_blocks++;
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+
+ 	if (!jffs2_prealloc_raw_node_refs(c, jeb, 1)) {
+@@ -543,7 +543,7 @@ static void jffs2_wbuf_recover(struct jffs2_sb_info *c)
+ 		D1(printk(KERN_DEBUG "Failing block at %08x is now empty. Moving to erase_pending_list\n", jeb->offset));
+ 		list_move(&jeb->list, &c->erase_pending_list);
+ 		c->nr_erasing_blocks++;
+-		jffs2_erase_pending_trigger(c);
++		jffs2_garbage_collect_trigger(c);
+ 	}
+
+ 	jffs2_dbg_acct_sanity_check_nolock(c, jeb);
+--
+1.6.4.4
