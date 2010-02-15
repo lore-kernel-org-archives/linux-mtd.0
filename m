@@ -1,20 +1,19 @@
-Received: from gw1.transmode.se ([213.115.205.20])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nh09k-0006gv-31
-	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 12:34:32 +0000
-Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
-	by gw1.transmode.se (Postfix) with ESMTP id 427E425989F
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 15 Feb 2010 13:34:26 +0100 (CET)
-In-Reply-To: <OF8328EA8B.384612F6-ONC12576C5.0061F0C9-C12576C5.00626376@LocalDomain>
-References: <OF8328EA8B.384612F6-ONC12576C5.0061F0C9-C12576C5.00626376@LocalDomain>
-Subject: Re: JFFS2 on NAND and when is file on media?
+	id 1Nh19U-0001oC-0h
+	for linux-mtd@lists.infradead.org; Mon, 15 Feb 2010 13:38:20 +0000
+Subject: Re: Fix mtd-utils bugs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Stanley.Miao" <stanley.miao@windriver.com>
+In-Reply-To: <1265172354-26682-1-git-send-email-stanley.miao@windriver.com>
+References: <1265172354-26682-1-git-send-email-stanley.miao@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 15 Feb 2010 15:36:52 +0200
+Message-ID: <1266241012.11659.90.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Message-ID: <OF4B25913E.44D637F1-ONC12576CB.0044FF12-C12576CB.00450DD1@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Mon, 15 Feb 2010 13:34:15 +0100
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ping? Pretty please :)
+On Wed, 2010-02-03 at 12:45 +0800, Stanley.Miao wrote:
+> (Re-send it because the previous one don't have a subject.)
+> 
+> During some BSP development process, I found some tools in mtd-utils
+> contain legacy interfaces and it is not suitable with the current linux
+> kernel. I post my patches here in case somebody else need them.
 
-Joakim Tjernlund/Transmode wrote on 2010/02/09 18:54:39:
-> I have been using JFFS2 for many years on NOR flash but never on NAND.
-> I wonder if NAND has the same guaranties as NOR as to when one
-> can expect file contents to be safely on media so one can pull the power
-> without loss of data?
-> Is the the whole file safe once close(2) returns? If not, what do
-> I have to do flush all outstanding data to media?
->
->  Jocke
+In general, I really support your "let's kick ancient crap out"
+approach.
+
+But could you please be a bit more verbose, and sell your patchset a bit
+better. E.g., write about who will suffer - which kernel versions? Why
+you think we should not care about them suffering?
+
+Please, write a good explanation. Then I'll try to bug dwmw2 to ack or
+nack this. And then I can push it.
+
+Although I have push rights to the mtd-utils, but I am a bit usure about
+pushing your stuff.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
