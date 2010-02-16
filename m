@@ -1,23 +1,19 @@
-Received: from mail-bw0-f220.google.com ([209.85.218.220])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NhJDi-0001sc-PQ
-	for linux-mtd@lists.infradead.org; Tue, 16 Feb 2010 08:55:55 +0000
-Received: by bwz20 with SMTP id 20so7946bwz.20
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Feb 2010 00:55:49 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1266308291.11659.179.camel@localhost>
-References: <ce9ab5791002080220n51cd6611iafe09df6370d8dc2@mail.gmail.com>
-	<1266244528.11659.108.camel@localhost>
-	<ce9ab5791002150650x79e40747w7aa345c115356d06@mail.gmail.com>
-	<1266308291.11659.179.camel@localhost>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Tue, 16 Feb 2010 14:25:29 +0530
-Message-ID: <ce9ab5791002160055y7cfffe17tf93500430ee6512f@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] Adding nand lock/unlock routines.
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: kishorek.kadiyala@gmail.com, Linux MTD <linux-mtd@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NhJGv-0002Y9-9K
+	for linux-mtd@lists.infradead.org; Tue, 16 Feb 2010 08:59:14 +0000
+Subject: Re: [PATCH 1/2] jffs:2 Move erasing from write_super to GC.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+In-Reply-To: <1266249781-27970-1-git-send-email-Joakim.Tjernlund@transmode.se>
+References: <1266249781-27970-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 16 Feb 2010 10:57:52 +0200
+Message-ID: <1266310672.11659.197.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 16, 2010 at 1:48 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Mon, 2010-02-15 at 20:20 +0530, Vimal Singh wrote:
->> On Mon, Feb 15, 2010 at 8:05 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->> > On Mon, 2010-02-08 at 15:50 +0530, Vimal Singh wrote:
->> >> This version fixes the compilation break reported by Kishore. 1st
->> >> patch in this series remains untouched.
->> >>
->> >> -vimal
->> >>
->> >> From a28c230f3bd8fa765f78c0be91370f146e71f670 Mon Sep 17 00:00:00 2001
->> >> From: Vimal Singh <vimalsingh@ti.com>
->> >> Date: Wed, 3 Feb 2010 14:32:06 +0530
->> >> Subject: [PATCH 2/2] Adding nand lock/unlock routines.
->> >>
->> >> Adding nand lock / unlock routines. At least 'micron' parts
->> >> support this.
->> >>
->> >> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
->> >
->> > These look OK to me, except the part where you export them. Why they
->> > should be exported?
->>
->> There was an earlier comment (in 1st RFC version of the patch), where
->> you said probably it is not safer to assign mtd lock and unlock
->> pointers in 'nand_scan_tail', as not all flashes have this feature.
->>
->> So, I exported these so that a driver can use these by overwriting mtd
->> lock and unlock pointers in its probe.
->
-> OK, push to my l2-mtd-2.6.git / master
+On Mon, 2010-02-15 at 17:03 +0100, Joakim Tjernlund wrote:
+> Erasing blocks is a form of GC and therefor it should live in the
+> GC task. By moving it there two problems will be solved:
+> 1) umounting will not hang until all pending blocks has
+>    been erased.
+> 2) Erasing can be paused by sending a SIGSTOP to the GC thread which
+>    allowes for time critical tasks work in peace.
+> 
+> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> ---
+>  fs/jffs2/background.c |    1 +
+>  fs/jffs2/erase.c      |    5 +++++
+>  fs/jffs2/nodemgmt.c   |    4 ++++
+>  fs/jffs2/super.c      |    1 -
+>  4 files changed, 10 insertions(+), 1 deletions(-)
+> 
+> diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+> index 3ff50da..a8e0140 100644
+> --- a/fs/jffs2/background.c
+> +++ b/fs/jffs2/background.c
+> @@ -146,6 +146,7 @@ static int jffs2_garbage_collect_thread(void *_c)
+>  		disallow_signal(SIGHUP);
+>  
+>  		D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): pass\n"));
+> +		jffs2_erase_pending_blocks(c, 0);
+>  		if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
+>  			printk(KERN_NOTICE "No space for garbage collection. Aborting GC thread\n");
+>  			goto die;
+> diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+> index b47679b..1ca2559 100644
+> --- a/fs/jffs2/erase.c
+> +++ b/fs/jffs2/erase.c
+> @@ -114,6 +114,11 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
+>  	while (!list_empty(&c->erase_complete_list) ||
+>  	       !list_empty(&c->erase_pending_list)) {
+>  
+> +		if (signal_pending(current)) {
+> +			spin_unlock(&c->erase_completion_lock);
+> +			mutex_unlock(&c->erase_free_sem);
+> +			goto done;
+> +		}
 
-Thanks.
+I think this is not very good split of functionality.
+'jffs2_erase_pending_blocks()' should be stupid, it should just erase as
+many EBs as it was asked to. It should have zero knowledge about
+signals.
+
+I think you should remove the signals checking from here and move that
+to the GC thread.
+
+Also, I think you should call it with count = 1, so that you would erase
+only one EB at one iteration. This way you will let the GC thread do
+other things with less latency as well.
 
 -- 
-Regards,
-Vimal Singh
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
