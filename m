@@ -1,18 +1,23 @@
-Subject: Re: [PATCH v4 04/11] mtd: Add MPC5121 NAND Flash Controller driver
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NhIZJ-0000o9-G0
+	for linux-mtd@lists.infradead.org; Tue, 16 Feb 2010 08:14:10 +0000
+Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
+	[10.160.244.31])
+	by mgw-mx06.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	o1G8DjP2003555
+	for <linux-mtd@lists.infradead.org>; Tue, 16 Feb 2010 10:14:02 +0200
+Subject: Re: [PATCH] OneNAND: OMAP: do not use DMA if oops in progress
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Anatolij Gustschin <agust@denx.de>
-In-Reply-To: <1266255305-29224-1-git-send-email-agust@denx.de>
-References: <1265377377-29327-5-git-send-email-agust@denx.de>
-	<1266255305-29224-1-git-send-email-agust@denx.de>
+To: Aaro.Koskinen@nokia.com
+In-Reply-To: <1265821399-29940-1-git-send-email-Aaro.Koskinen@nokia.com>
+References: <1265821399-29940-1-git-send-email-Aaro.Koskinen@nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 16 Feb 2010 10:11:08 +0200
-Message-ID: <1266307868.11659.177.camel@localhost>
+Date: Tue, 16 Feb 2010 10:12:58 +0200
+Message-ID: <1266307978.11659.178.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: John Rigby <jcrigby@gmail.com>, Piotr Ziecik <kosmo@semihalf.com>,
-	Detlev Zundel <dzu@denx.de>, Grant Likely <grant.likely@secretlab.ca>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,53 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-02-15 at 18:35 +0100, Anatolij Gustschin wrote:
-> Adds NAND Flash Controller driver for MPC5121 Revision 2.
-> All device features, except hardware ECC and power management,
-> are supported.
+On Wed, 2010-02-10 at 19:03 +0200, Aaro.Koskinen@nokia.com wrote:
+> From: Aaro Koskinen <aaro.koskinen@nokia.com>
 > 
-> Signed-off-by: Piotr Ziecik <kosmo@semihalf.com>
-> Signed-off-by: Wolfgang Denk <wd@denx.de>
-> Signed-off-by: Anatolij Gustschin <agust@denx.de>
-> Acked-by: Grant Likely <grant.likely@secretlab.ca>
-> Cc: <linux-mtd@lists.infradead.org>
-> Cc: Grant Likely <grant.likely@secretlab.ca>
-> Cc: John Rigby <jcrigby@gmail.com>
-> ---
-> Changes since v3:
->  - include 'asm/mpc5121.h' header instead of 'asm/mpc5xxx.h'.
->    This change is needed because arch patch adding reset
->    module definition was reworked and doesn't add mpc5121
->    specific definitions to common header for mpc52xx/mpc5121.
+> Otherwise we may hang if we are called from panic() through mtdoops.
 > 
-> Changes since v2:
->  - move the arch bits into separate patch
->    (it is the next patch in this series now)
->  - use __devinit/__devexit/__devexit_p and __devinitdata
-> 
-> Changes since v1:
->  - add logfile with changes since previous version 
-> 
-> Changes since the patch version submitted in May 2009:
-> 
->  - move mpc5121_nfc.h to the driver .c as there is only one user
->  - remove DRV_VERSION macro
->  - replace printk() by dev_*()
->  - drop unnecessary .suspend and .resume initializations
->  - remove duplicate .name/.owner settings
->  - fix mpc5121_nfc_init() to "return of_register_platform_driver(&mpc5121_nfc_driver);"
->  - move module_init() to just below the init function
->  - remove MODULE_VERSION
->  - use "mtd: Add MPC5121 NAND Flash Controller driver" as the subject,
->    previously it was "mpc5121: Added NAND Flash Controller driver.
-> 
->  drivers/mtd/nand/Kconfig       |    7 +
->  drivers/mtd/nand/Makefile      |    1 +
->  drivers/mtd/nand/mpc5121_nfc.c |  916 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 924 insertions(+), 0 deletions(-)
->  create mode 100644 drivers/mtd/nand/mpc5121_nfc.c
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@nokia.com>
 
-Pushed to my l2-mtd-2.6.git / dunno.
+Pushed to my l2-mtd-2.6.git / master.
 
 -- 
 Best Regards,
