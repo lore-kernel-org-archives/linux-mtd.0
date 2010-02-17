@@ -1,16 +1,15 @@
-Received: from mail-fx0-f209.google.com ([209.85.220.209])
+Received: from fg-out-1718.google.com ([72.14.220.159])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NhrmF-0005RK-KE
-	for linux-mtd@lists.infradead.org; Wed, 17 Feb 2010 21:49:56 +0000
-Received: by fxm1 with SMTP id 1so8377503fxm.4
+	id 1NhrmH-0005JD-OM
+	for linux-mtd@lists.infradead.org; Wed, 17 Feb 2010 21:49:57 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so180894fga.0
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Feb 2010 13:49:47 -0800 (PST)
+	Wed, 17 Feb 2010 13:49:49 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 06/14] MTD: nand: make suspend work if device is accessed by
-	kernel threads.
-Date: Wed, 17 Feb 2010 23:49:16 +0200
-Message-Id: <1266443364-4538-7-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 07/14] MTD: nand: make MTD_OOB_PLACE work correctly.
+Date: Wed, 17 Feb 2010 23:49:17 +0200
+Message-Id: <1266443364-4538-8-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266443364-4538-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266443364-4538-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -29,31 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since all userspace threads are frozen at the time the nand_suspend is called,
-they aren't inside any nand function.
-
-We don't call try_to_freeze in nand ether. Thus the only user that can be inside
-the nand functions is an non freezeable kernel thread.
-Thus we can safely wait for it to finish.
+MTD_OOB_PLACE is supposed to read/write the raw oob data similiar to the MTD_OOB_RAW
+however due to a bug, currently it is not possible to read more data that
+is specified by the oob 'free' regions.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/nand_base.c |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 8f2958f..279b960 100644
+index 279b960..53c1e04 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -744,9 +744,6 @@ nand_get_device(struct nand_chip *chip, struct mtd_info *mtd, int new_state)
- 			chip->state = FL_PM_SUSPENDED;
- 			spin_unlock(lock);
- 			return 0;
--		} else {
--			spin_unlock(lock);
--			return -EAGAIN;
- 		}
- 	}
- 	set_current_state(TASK_UNINTERRUPTIBLE);
+@@ -1229,6 +1229,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	int ret = 0;
+ 	uint32_t readlen = ops->len;
+ 	uint32_t oobreadlen = ops->ooblen;
++	uint32_t max_oobsize = ops->mode == MTD_OOB_AUTO ?
++		mtd->oobavail : mtd->oobsize;
++
+ 	uint8_t *bufpoi, *oob, *buf;
+ 
+ 	stats = mtd->ecc_stats;
+@@ -1279,10 +1282,11 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 			buf += bytes;
+ 
+ 			if (unlikely(oob)) {
++
+ 				/* Raw mode does data:oob:data:oob */
+ 				if (ops->mode != MTD_OOB_RAW) {
+ 					int toread = min(oobreadlen,
+-						chip->ecc.layout->oobavail);
++								max_oobsize);
+ 					if (toread) {
+ 						oob = nand_transfer_oob(chip,
+ 							oob, ops, toread);
 -- 
 1.6.3.3
