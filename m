@@ -1,15 +1,15 @@
-Received: from fg-out-1718.google.com ([72.14.220.159])
+Received: from mail-fx0-f209.google.com ([209.85.220.209])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NhrmH-0005JD-OM
-	for linux-mtd@lists.infradead.org; Wed, 17 Feb 2010 21:49:57 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so180894fga.0
+	id 1NhrmK-0005Mt-3A
+	for linux-mtd@lists.infradead.org; Wed, 17 Feb 2010 21:50:00 +0000
+Received: by mail-fx0-f209.google.com with SMTP id 1so8377331fxm.4
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Feb 2010 13:49:49 -0800 (PST)
+	Wed, 17 Feb 2010 13:49:51 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 07/14] MTD: nand: make MTD_OOB_PLACE work correctly.
-Date: Wed, 17 Feb 2010 23:49:17 +0200
-Message-Id: <1266443364-4538-8-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 08/14] MTD: nand: cleanup the nand_do_write_ops
+Date: Wed, 17 Feb 2010 23:49:18 +0200
+Message-Id: <1266443364-4538-9-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266443364-4538-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266443364-4538-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -28,41 +28,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD_OOB_PLACE is supposed to read/write the raw oob data similiar to the MTD_OOB_RAW
-however due to a bug, currently it is not possible to read more data that
-is specified by the oob 'free' regions.
+nand_do_write_ops have broken in regard to writing several pages,
+ each with its own oob.
+
+Although nand_do_write_ops intends to allow such mode, it fails do do so
+Probably this was never tested.
+
+Also add missing checks for attemts to write at illegal offsets.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/nand_base.c |   24 +++++++++++++++++-------
+ 1 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 279b960..53c1e04 100644
+index 53c1e04..2ff9c02 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -1229,6 +1229,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	int ret = 0;
- 	uint32_t readlen = ops->len;
- 	uint32_t oobreadlen = ops->ooblen;
-+	uint32_t max_oobsize = ops->mode == MTD_OOB_AUTO ?
-+		mtd->oobavail : mtd->oobsize;
-+
- 	uint8_t *bufpoi, *oob, *buf;
+@@ -1881,11 +1881,9 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+  * @oob:	oob data buffer
+  * @ops:	oob ops structure
+  */
+-static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob,
+-				  struct mtd_oob_ops *ops)
++static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
++						struct mtd_oob_ops *ops)
+ {
+-	size_t len = ops->ooblen;
+-
+ 	switch(ops->mode) {
  
- 	stats = mtd->ecc_stats;
-@@ -1279,10 +1282,11 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 			buf += bytes;
- 
- 			if (unlikely(oob)) {
+ 	case MTD_OOB_PLACE:
+@@ -1940,6 +1938,11 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 	int chipnr, realpage, page, blockmask, column;
+ 	struct nand_chip *chip = mtd->priv;
+ 	uint32_t writelen = ops->len;
 +
- 				/* Raw mode does data:oob:data:oob */
- 				if (ops->mode != MTD_OOB_RAW) {
- 					int toread = min(oobreadlen,
--						chip->ecc.layout->oobavail);
-+								max_oobsize);
- 					if (toread) {
- 						oob = nand_transfer_oob(chip,
- 							oob, ops, toread);
++	uint32_t oobwritelen = ops->ooblen;
++	uint32_t oobmaxlen = ops->mode == MTD_OOB_AUTO ?
++				mtd->oobavail : mtd->oobsize;
++
+ 	uint8_t *oob = ops->oobbuf;
+ 	uint8_t *buf = ops->datbuf;
+ 	int ret, subpage;
+@@ -1981,6 +1984,10 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 	if (likely(!oob))
+ 		memset(chip->oob_poi, 0xff, mtd->oobsize);
+ 
++	/* Don't allow multipage oob writes with offset */
++	if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
++		return -EINVAL;
++
+ 	while(1) {
+ 		int bytes = mtd->writesize;
+ 		int cached = writelen > bytes && page != blockmask;
+@@ -1996,8 +2003,11 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 			wbuf = chip->buffers->databuf;
+ 		}
+ 
+-		if (unlikely(oob))
+-			oob = nand_fill_oob(chip, oob, ops);
++		if (unlikely(oob)) {
++			size_t len = min(oobwritelen, oobmaxlen);
++			oob = nand_fill_oob(chip, oob, len, ops);
++			oobwritelen -= len;
++		}
+ 
+ 		ret = chip->write_page(mtd, chip, wbuf, page, cached,
+ 				       (ops->mode == MTD_OOB_RAW));
+@@ -2171,7 +2181,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 		chip->pagebuf = -1;
+ 
+ 	memset(chip->oob_poi, 0xff, mtd->oobsize);
+-	nand_fill_oob(chip, ops->oobbuf, ops);
++	nand_fill_oob(chip, ops->oobbuf, ops->ooblen, ops);
+ 	status = chip->ecc.write_oob(mtd, chip, page & chip->pagemask);
+ 	memset(chip->oob_poi, 0xff, mtd->oobsize);
+ 
 -- 
 1.6.3.3
