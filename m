@@ -1,20 +1,26 @@
 Received: from gw1.transmode.se ([213.115.205.20])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nhf5F-00032a-LK
-	for linux-mtd@lists.infradead.org; Wed, 17 Feb 2010 08:16:41 +0000
-Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
-	by gw1.transmode.se (Postfix) with ESMTP id A41C12597EB
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Feb 2010 09:16:32 +0100 (CET)
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] jffs2: Make jffs2_erase_pending_trigger() initiate GC.
-Date: Wed, 17 Feb 2010 09:16:21 +0100
-Message-Id: <1266394581-32450-3-git-send-email-Joakim.Tjernlund@transmode.se>
-In-Reply-To: <1266394581-32450-2-git-send-email-Joakim.Tjernlund@transmode.se>
-References: <1266394581-32450-1-git-send-email-Joakim.Tjernlund@transmode.se>
-	<1266394581-32450-2-git-send-email-Joakim.Tjernlund@transmode.se>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+	id 1NhfBp-0004ia-MI
+	for linux-mtd@lists.infradead.org; Wed, 17 Feb 2010 08:23:26 +0000
+In-Reply-To: <1266394066.11659.368.camel@localhost>
+References: <1266249781-27970-1-git-send-email-Joakim.Tjernlund@transmode.se>	
+	<1266249781-27970-2-git-send-email-Joakim.Tjernlund@transmode.se>
+	<1266310789.11659.199.camel@localhost>	
+	<OFACBFB4CF.DBE14C44-ONC12576CC.004F427F-C12576CC.004F68EA@transmode.se>
+	<1266391103.11659.356.camel@localhost>	
+	<OF1172D855.9E2C6532-ONC12576CD.0028F2FE-C12576CD.0029AD61@transmode.se>
+	<1266392908.11659.359.camel@localhost>	
+	<OF86F4BB72.5166B23C-ONC12576CD.002B5CD0-C12576CD.002B8ED4@transmode.se>
+	<1266394066.11659.368.camel@localhost>
+Subject: Re: [PATCH 2/2]
+	s/jffs2_erase_pending_trigger/jffs2_garbage_collect_trigger/
+To: dedekind1@gmail.com
+Message-ID: <OFED866EE7.2A1268BA-ONC12576CD.002D778F-C12576CD.002DB4C5@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Wed, 17 Feb 2010 09:19:13 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since erasing is now in the GC thread, erases should trigger
-the GC task instead.
-wbuf.c still wants to flush its buffer via write_super so
-invent jffs2_dirty_trigger() and use that in wbuf.
-Remove surplus call to jffs2_erase_pending_trigger() in erase.c
-and remove jffs2_garbage_collect_trigger() from write_super as
-of now write_super() should only commit dirty data to disk.
+Artem Bityutskiy <dedekind1@gmail.com> wrote on 2010/02/17 09:07:46:
+>
+> On Wed, 2010-02-17 at 08:55 +0100, Joakim Tjernlund wrote:
+> > > OK. I expect you will send the final version of your 2 patches, then
+> > > I'll put them to my l2 tree, right?
+> >
+> > OK, will do shortly. What is your l2 tree?
+>
+> It is just my own tree where I collect random mtd stuff, and then dwmw2
+> picks stuff from there to his tree. It is just some help I provide him.
+>
+> >  I figured you would
+> > push this to the mtd tree.
+>
+> No, I do not maintain mtd, and only David can push stuff there. My tree
+> is only to help him.
 
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
- fs/jffs2/erase.c    |    2 --
- fs/jffs2/os-linux.h |    9 +++++++--
- fs/jffs2/super.c    |    1 -
- fs/jffs2/wbuf.c     |    2 +-
- 4 files changed, 8 insertions(+), 6 deletions(-)
+I see, seems David is busy these days as I have not seen any mails from him.
+David, are you following this?
 
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index 1ca2559..5616658 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -172,8 +172,6 @@ static void jffs2_erase_succeeded(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 	list_move_tail(&jeb->list, &c->erase_complete_list);
- 	spin_unlock(&c->erase_completion_lock);
- 	mutex_unlock(&c->erase_free_sem);
--	/* Ensure that kupdated calls us again to mark them clean */
--	jffs2_erase_pending_trigger(c);
- }
- 
- static void jffs2_erase_failed(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb, uint32_t bad_offset)
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index a7f03b7..5d26362 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -140,8 +140,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
- 
- #endif /* WRITEBUFFER */
- 
--/* erase.c */
--static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
-+static inline void jffs2_dirty_trigger(struct jffs2_sb_info *c)
- {
- 	OFNI_BS_2SFFJ(c)->s_dirt = 1;
- }
-@@ -151,6 +150,12 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c);
- void jffs2_stop_garbage_collect_thread(struct jffs2_sb_info *c);
- void jffs2_garbage_collect_trigger(struct jffs2_sb_info *c);
- 
-+/* erase.c */
-+static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
-+{
-+	jffs2_garbage_collect_trigger(c);
-+}
-+
- /* dir.c */
- extern const struct file_operations jffs2_dir_operations;
- extern const struct inode_operations jffs2_dir_inode_operations;
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 5162329..511e2d6 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -63,7 +63,6 @@ static void jffs2_write_super(struct super_block *sb)
- 
- 	if (!(sb->s_flags & MS_RDONLY)) {
- 		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
--		jffs2_garbage_collect_trigger(c);
- 		jffs2_flush_wbuf_gc(c, 0);
- 	}
- 
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 5ef7bac..f319efc 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -84,7 +84,7 @@ static void jffs2_wbuf_dirties_inode(struct jffs2_sb_info *c, uint32_t ino)
- 	struct jffs2_inodirty *new;
- 
- 	/* Mark the superblock dirty so that kupdated will flush... */
--	jffs2_erase_pending_trigger(c);
-+	jffs2_dirty_trigger(c);
- 
- 	if (jffs2_wbuf_pending_for_ino(c, ino))
- 		return;
--- 
-1.6.4.4
+Anyhow, I just sent my two patches in its final form to the list.
+
+   Jocke
