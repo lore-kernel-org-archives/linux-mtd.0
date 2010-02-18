@@ -1,12 +1,12 @@
-Received: from sdcmail02.amcc.com ([198.137.200.90])
+Received: from sdcmail01.amcc.com ([198.137.200.72])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NiFWB-0007C6-6u
-	for linux-mtd@lists.infradead.org; Thu, 18 Feb 2010 23:10:52 +0000
+	id 1NiFX9-0007J9-Ri
+	for linux-mtd@lists.infradead.org; Thu, 18 Feb 2010 23:11:52 +0000
 From: Feng Kan <fkan@amcc.com>
-To: linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
+To: linux-mtd@lists.infradead.org, linuxppc-dev@ozlabs.org
 Subject: [PATCH 1/1] NDFC: add support for alternate ECC format for ndfc
-Date: Thu, 18 Feb 2010 15:10:43 -0800
-Message-Id: <1266534643-30261-1-git-send-email-fkan@amcc.com>
+Date: Thu, 18 Feb 2010 15:11:18 -0800
+Message-Id: <1266534678-30293-1-git-send-email-fkan@amcc.com>
 Cc: Feng Kan <fkan@amcc.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
