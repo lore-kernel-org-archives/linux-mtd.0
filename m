@@ -1,16 +1,19 @@
-Received: from mx1.auerswald.de ([212.185.163.234] helo=mail.auerswald.de)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ni5gk-0003dK-6K
-	for linux-mtd@lists.infradead.org; Thu, 18 Feb 2010 12:41:07 +0000
-From: "Kai-Uwe Bloem" <kai-uwe.bloem@auerswald.de>
-Subject: Re-2: [PATCH 1/2] jffs2: Move erasing from write_super to GC.
-To: linux-mtd@lists.infradead.org
-Date: Thu, 18 Feb 2010 12:41:02 +0000
-Message-ID: <DIIE.00002B5100245E92@mail.auerswald.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ni66L-0001Pe-Ue
+	for linux-mtd@lists.infradead.org; Thu, 18 Feb 2010 13:07:34 +0000
+Subject: Re: Re-2: [PATCH 1/2] jffs2: Move erasing from write_super to GC.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kai-Uwe Bloem <kai-uwe.bloem@auerswald.de>
+In-Reply-To: <DIIE.00002B5100245E92@mail.auerswald.de>
+References: <DIIE.00002B5100245E92@mail.auerswald.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 18 Feb 2010 15:06:00 +0200
+Message-ID: <1266498360.16891.40.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,12 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBSaWdodC4gWW91IGNhbiBtb3ZlIHRoZSBzaWduYWwgY2hlY2sgdG8gdGhlIEJHVCwgYW5kIGRv
-IDEtMyBlcmFzZXMgYXQgYQ0KPiB0aW1lIGJ5IHBhc3NpbmcgY250ID0gMS0zLiBJIHRoaW5rIGl0
-IGlzIGNsZWFuZXIuDQoNClNlY29uZGVkLiBJIHdvdWxkIHJlc3RyaWN0IHRoZSBjb3VudCB0byAx
-LCBzaW5jZSBzb21lIE5PUiBmbGFzaGVzIG1pZ2h0IG5lZWQgdXAgdG8gNCBzZWNvbmRzIGZvciBv
-bmUgZXJhc2Ugb3BlcmF0aW9uLiBPVE9ILCB0aGUgY291bnQgcGFyYW1ldGVyIHdvdWxkIGJlIHN1
-cGVyZmx1b3VzIGluIHRoYXQgY2FzZSwgc2luY2UgYWxsIHRoZSBvdGhlciBpbnZvY2F0aW9ucyBl
-cmFzZSBvbmx5IG9uZSBibG9jayBhcyB3ZWxsLg0KLS0NCg0KDQpUbzogZGVkZWtpbmQxQGdtYWls
-LmNvbQ0KICAgIGpvYWtpbS50amVybmx1bmRAdHJhbnNtb2RlLnNlDQpDYzogbGludXgtbXRkQGxp
-c3RzLmluZnJhZGVhZC5vcmcNCg==
+On Thu, 2010-02-18 at 12:41 +0000, Kai-Uwe Bloem wrote:
+> > Right. You can move the signal check to the BGT, and do 1-3 erases at a
+> > time by passing cnt = 1-3. I think it is cleaner.
+> 
+> Seconded. I would restrict the count to 1, since some NOR flashes
+> might need up to 4 seconds for one erase operation. OTOH, the count
+> parameter would be superfluous in that case, since all the other
+> invocations erase only one block as well.
+
+It might be superfluous, but it is not necessary to remove it.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
