@@ -1,19 +1,14 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Ni66L-0001Pe-Ue
-	for linux-mtd@lists.infradead.org; Thu, 18 Feb 2010 13:07:34 +0000
-Subject: Re: Re-2: [PATCH 1/2] jffs2: Move erasing from write_super to GC.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kai-Uwe Bloem <kai-uwe.bloem@auerswald.de>
-In-Reply-To: <DIIE.00002B5100245E92@mail.auerswald.de>
-References: <DIIE.00002B5100245E92@mail.auerswald.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 18 Feb 2010 15:06:00 +0200
-Message-ID: <1266498360.16891.40.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <f17812d71002180439p1585ea08l37b6d55327c53364@mail.gmail.com>
+References: <62fd715d1002180406y1181bbe9y83ba3cd0277989c4@mail.gmail.com>
+	<f17812d71002180439p1585ea08l37b6d55327c53364@mail.gmail.com>
+Date: Thu, 18 Feb 2010 14:11:48 +0100
+Message-ID: <62fd715d1002180511n34c7ace8o6bb58fd413fd8335@mail.gmail.com>
+Subject: Re: NDCBx registers in PXA3XX MTD driver
+From: Romain Bornet <bornet.romain@gmail.com>
+To: Eric Miao <eric.y.miao@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +18,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-02-18 at 12:41 +0000, Kai-Uwe Bloem wrote:
-> > Right. You can move the signal check to the BGT, and do 1-3 erases at a
-> > time by passing cnt = 1-3. I think it is cleaner.
-> 
-> Seconded. I would restrict the count to 1, since some NOR flashes
-> might need up to 4 seconds for one erase operation. OTOH, the count
-> parameter would be superfluous in that case, since all the other
-> invocations erase only one block as well.
+Hi Eric
 
-It might be superfluous, but it is not necessary to remove it.
+In fact I didn't pay attention to the note at the beginning of the
+chapter and to the fact that NDCB1 and 2 are specified read-only!
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thanks for the clarification and the quick reply!
+
+Have a nice day.
+    Romain
+
+On Thu, Feb 18, 2010 at 1:39 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
+> On Thu, Feb 18, 2010 at 8:06 PM, Romain Bornet <bornet.romain@gmail.com> wrote:
+>> Hi folks,
+>>
+>> I'm rather new in the ARM / Linux world and currently working on a
+>> PXA168-based board.
+>>
+>> I'm trying to understand the implementation of the pxa3xx_nand.c
+>> driver and came across 3 lines of code I cannot understand.
+>>
+>> The 3 lines in question are the one where the NDCB0/1/2 registers are
+>> written in write_cmd()
+>> ---
+>> nand_writel(info, NDCB0, info->ndcb0);
+>> nand_writel(info, NDCB0, info->ndcb1);
+>> nand_writel(info, NDCB0, info->ndcb2);
+>> ---
+>>
+>> see here for context...
+>> http://lxr.linux.no/#linux+v2.6.32/drivers/mtd/nand/pxa3xx_nand.c#L459
+>>
+>> Why are all 3 values (ndcb0, ndcb1, ndcb2) written to the same
+>> register NDCB0 whereas the PXA3xx and PXA168 have different offsets
+>> (0x48, 0x4C and 0x50) for these 3 registers as documented in
+>> PXA3xx_DM_Vol_II in chapter "3.8.10 NAND Controller Command Buffers
+>> (NDCBx)" (available from Marvell @
+>> http://www.marvell.com/products/processors/applications/pxa_3xx/PXA3xx_Developers_Manual.zip
+>> )
+>>
+>> I first thought about a possible hardware Errata but couldn't find any
+>> hint in this direction.
+>>
+>> I would have expected
+>>
+>> nand_writel(info, NDCB0, info->ndcb0);
+>> nand_writel(info, NDCB1, info->ndcb1);
+>> nand_writel(info, NDCB2, info->ndcb2);
+>>
+>
+> If you read the documentation a little bit more carefully, you'll know why.
+>
+> Basically, the write is to NDCB0 _only_ and in turn writing to 0, 1, 2
+> respectively, reading of NDCB1 and NDCB2 is however, doable, which
+> will show you what you've written.
+>
