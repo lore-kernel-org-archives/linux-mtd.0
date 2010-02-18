@@ -1,13 +1,16 @@
+Received: from mx1.auerswald.de ([212.185.163.234] helo=mail.auerswald.de)
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ni5gk-0003dK-6K
+	for linux-mtd@lists.infradead.org; Thu, 18 Feb 2010 12:41:07 +0000
+From: "Kai-Uwe Bloem" <kai-uwe.bloem@auerswald.de>
+Subject: Re-2: [PATCH 1/2] jffs2: Move erasing from write_super to GC.
+To: linux-mtd@lists.infradead.org
+Date: Thu, 18 Feb 2010 12:41:02 +0000
+Message-ID: <DIIE.00002B5100245E92@mail.auerswald.de>
 MIME-Version: 1.0
-In-Reply-To: <62fd715d1002180406y1181bbe9y83ba3cd0277989c4@mail.gmail.com>
-References: <62fd715d1002180406y1181bbe9y83ba3cd0277989c4@mail.gmail.com>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Thu, 18 Feb 2010 20:39:59 +0800
-Message-ID: <f17812d71002180439p1585ea08l37b6d55327c53364@mail.gmail.com>
-Subject: Re: NDCBx registers in PXA3XX MTD driver
-To: Romain Bornet <bornet.romain@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain;
+ charset="utf-8"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,46 +20,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 18, 2010 at 8:06 PM, Romain Bornet <bornet.romain@gmail.com> wrote:
-> Hi folks,
->
-> I'm rather new in the ARM / Linux world and currently working on a
-> PXA168-based board.
->
-> I'm trying to understand the implementation of the pxa3xx_nand.c
-> driver and came across 3 lines of code I cannot understand.
->
-> The 3 lines in question are the one where the NDCB0/1/2 registers are
-> written in write_cmd()
-> ---
-> nand_writel(info, NDCB0, info->ndcb0);
-> nand_writel(info, NDCB0, info->ndcb1);
-> nand_writel(info, NDCB0, info->ndcb2);
-> ---
->
-> see here for context...
-> http://lxr.linux.no/#linux+v2.6.32/drivers/mtd/nand/pxa3xx_nand.c#L459
->
-> Why are all 3 values (ndcb0, ndcb1, ndcb2) written to the same
-> register NDCB0 whereas the PXA3xx and PXA168 have different offsets
-> (0x48, 0x4C and 0x50) for these 3 registers as documented in
-> PXA3xx_DM_Vol_II in chapter "3.8.10 NAND Controller Command Buffers
-> (NDCBx)" (available from Marvell @
-> http://www.marvell.com/products/processors/applications/pxa_3xx/PXA3xx_Developers_Manual.zip
-> )
->
-> I first thought about a possible hardware Errata but couldn't find any
-> hint in this direction.
->
-> I would have expected
->
-> nand_writel(info, NDCB0, info->ndcb0);
-> nand_writel(info, NDCB1, info->ndcb1);
-> nand_writel(info, NDCB2, info->ndcb2);
->
-
-If you read the documentation a little bit more carefully, you'll know why.
-
-Basically, the write is to NDCB0 _only_ and in turn writing to 0, 1, 2
-respectively, reading of NDCB1 and NDCB2 is however, doable, which
-will show you what you've written.
+PiBSaWdodC4gWW91IGNhbiBtb3ZlIHRoZSBzaWduYWwgY2hlY2sgdG8gdGhlIEJHVCwgYW5kIGRv
+IDEtMyBlcmFzZXMgYXQgYQ0KPiB0aW1lIGJ5IHBhc3NpbmcgY250ID0gMS0zLiBJIHRoaW5rIGl0
+IGlzIGNsZWFuZXIuDQoNClNlY29uZGVkLiBJIHdvdWxkIHJlc3RyaWN0IHRoZSBjb3VudCB0byAx
+LCBzaW5jZSBzb21lIE5PUiBmbGFzaGVzIG1pZ2h0IG5lZWQgdXAgdG8gNCBzZWNvbmRzIGZvciBv
+bmUgZXJhc2Ugb3BlcmF0aW9uLiBPVE9ILCB0aGUgY291bnQgcGFyYW1ldGVyIHdvdWxkIGJlIHN1
+cGVyZmx1b3VzIGluIHRoYXQgY2FzZSwgc2luY2UgYWxsIHRoZSBvdGhlciBpbnZvY2F0aW9ucyBl
+cmFzZSBvbmx5IG9uZSBibG9jayBhcyB3ZWxsLg0KLS0NCg0KDQpUbzogZGVkZWtpbmQxQGdtYWls
+LmNvbQ0KICAgIGpvYWtpbS50amVybmx1bmRAdHJhbnNtb2RlLnNlDQpDYzogbGludXgtbXRkQGxp
+c3RzLmluZnJhZGVhZC5vcmcNCg==
