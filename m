@@ -1,13 +1,13 @@
 Received: from smtp6-g21.free.fr ([212.27.42.6])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Niosq-0003tI-I8
-	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 12:56:39 +0000
-Subject: [PATCH 2/6] mtd: cfi_cmdset_0002: rename MANUFACTURER_* definitions
-	to CFI_MFR_* and move them to cfi.h with similar definitions
+	id 1Niosw-00040J-0h
+	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 12:56:42 +0000
+Subject: [PATCH 3/6] mtd: cfi_probe: enable Auto Select Mode for
+	SST39VF160x/39VF320x chips
 To: David Woodhouse <dwmw2@infradead.org>
 From: Guillaume LECERF <glecerf@gmail.com>
-Date: Sat, 20 Feb 2010 13:57:54 +0100
-Message-ID: <20100220125754.14843.76613.stgit@shiryu.yomgui.biz>
+Date: Sat, 20 Feb 2010 13:57:59 +0100
+Message-ID: <20100220125759.14843.46780.stgit@shiryu.yomgui.biz>
 In-Reply-To: <20100220125748.14843.70415.stgit@shiryu.yomgui.biz>
 References: <20100220125748.14843.70415.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
@@ -23,79 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rename MANUFACTURER_MACRONIX and MANUFACTURER_SST definitions to CFI_MFR_{MACRONIX,SST} and
-move them to include/linux/mtd/cfi.h, with similar definitions.
+SST 39VF160x/39VF320x chips differ from the CFI specifications, they need
+the 0xAA / 0x55 / 0x90 sequence to be sent to 0x5555 / 0x2AAA / 0x5555 to
+enter Auto Select Mode.
+Trying this sequence and testing for (cfi->mfr != CFI_MFR_SST) then fallback
+to the standard sequence seems to work and to add no regressions.
 
 Signed-off-by: Guillaume Lecerf <glecerf@gmail.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c |   12 +++++-------
- include/linux/mtd/cfi.h             |   12 +++++++-----
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ drivers/mtd/chips/cfi_probe.c |   25 ++++++++++++++++++++++---
+ 1 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 1fe27ea..3df6056 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -43,8 +43,6 @@
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index e63e674..05207f7 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -189,12 +189,31 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	 * back into Read Mode, which is a nop in this case).
+ 	 */
+ 	cfi_send_gen_cmd(0xf0,     0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xaa, 0x555, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
++
++	/* SST 39VF160x/39VF320x chips differ from the CFI specifications, they need
++	 * the 0xAA / 0x55 / 0x90 sequence to be sent to 0x5555 / 0x2AAA / 0x5555 to
++	 * enter Auto Select Mode.
++	 * Trying this sequence and testing for (cfi->mfr != CFI_MFR_SST) then fallback
++	 * to the standard sequence seems to work and to add no regressions.
++	 */
++	cfi_send_gen_cmd(0xAA, 0x5555, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, 0x2AAA, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x90, 0x5555, base, map, cfi, cfi->device_type, NULL);
++
+ 	cfi->mfr = cfi_read_query16(map, base);
+ 	cfi->id = cfi_read_query16(map, base + ofs_factor);
  
- #define MAX_WORD_RETRIES 3
- 
--#define MANUFACTURER_MACRONIX	0x00C2
--#define MANUFACTURER_SST	0x00BF
- #define SST49LF004B	        0x0060
- #define SST49LF040B	        0x0050
- #define SST49LF008A		0x005a
-@@ -166,7 +164,7 @@ static void fixup_amd_bootblock(struct mtd_info *mtd, void* param)
- 			 * This reduces the risk of false detection due to
- 			 * the 8-bit device ID.
- 			 */
--			(cfi->mfr == MANUFACTURER_MACRONIX)) {
-+			(cfi->mfr == CFI_MFR_MACRONIX)) {
- 			DEBUG(MTD_DEBUG_LEVEL1,
- 				"%s: Macronix MX29LV400C with bottom boot block"
- 				" detected\n", map->name);
-@@ -284,7 +282,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
- 	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
- #ifdef AMD_BOOTLOC_BUG
- 	{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock, NULL },
--	{ MANUFACTURER_MACRONIX, CFI_ID_ANY, fixup_amd_bootblock, NULL },
-+	{ CFI_MFR_MACRONIX, CFI_ID_ANY, fixup_amd_bootblock, NULL },
- #endif
- 	{ CFI_MFR_AMD, 0x0050, fixup_use_secsi, NULL, },
- 	{ CFI_MFR_AMD, 0x0053, fixup_use_secsi, NULL, },
-@@ -302,9 +300,9 @@ static struct cfi_fixup cfi_fixup_table[] = {
- 	{ 0, 0, NULL, NULL }
- };
- static struct cfi_fixup jedec_fixup_table[] = {
--	{ MANUFACTURER_SST, SST49LF004B, fixup_use_fwh_lock, NULL, },
--	{ MANUFACTURER_SST, SST49LF040B, fixup_use_fwh_lock, NULL, },
--	{ MANUFACTURER_SST, SST49LF008A, fixup_use_fwh_lock, NULL, },
-+	{ CFI_MFR_SST, SST49LF004B, fixup_use_fwh_lock, NULL, },
-+	{ CFI_MFR_SST, SST49LF040B, fixup_use_fwh_lock, NULL, },
-+	{ CFI_MFR_SST, SST49LF008A, fixup_use_fwh_lock, NULL, },
- 	{ 0, 0, NULL, NULL }
- };
- 
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index df89f42..6cb3e7b 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -518,11 +518,13 @@ struct cfi_fixup {
- #define CFI_MFR_ANY 0xffff
- #define CFI_ID_ANY  0xffff
- 
--#define CFI_MFR_AMD	0x0001
--#define CFI_MFR_INTEL	0x0089
--#define CFI_MFR_ATMEL	0x001F
--#define CFI_MFR_SAMSUNG	0x00EC
--#define CFI_MFR_ST	0x0020 /* STMicroelectronics */
-+#define CFI_MFR_AMD		0x0001
-+#define CFI_MFR_ATMEL		0x001F
-+#define CFI_MFR_INTEL		0x0089
-+#define CFI_MFR_MACRONIX	0x00C2
-+#define CFI_MFR_SAMSUNG		0x00EC
-+#define CFI_MFR_SST		0x00BF
-+#define CFI_MFR_ST		0x0020 /* STMicroelectronics */
- 
- void cfi_fixup(struct mtd_info *mtd, struct cfi_fixup* fixups);
- 
++	if(cfi->mfr != CFI_MFR_SST) {
++		cfi_send_gen_cmd(0xF0,     0, base, map, cfi, cfi->device_type, NULL);
++
++		cfi_send_gen_cmd(0xaa, 0x555, base, map, cfi, cfi->device_type, NULL);
++		cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
++		cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
++
++		cfi->mfr = cfi_read_query16(map, base);
++		cfi->id = cfi_read_query16(map, base + ofs_factor);
++	}
++
+ 	/* Get AMD/Spansion extended JEDEC ID */
+ 	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
+ 		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
