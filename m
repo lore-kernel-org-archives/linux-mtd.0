@@ -1,16 +1,26 @@
-Received: from smtp6-g21.free.fr ([212.27.42.6])
+Received: from mail-fx0-f214.google.com ([209.85.220.214])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NisYG-0003Cu-DO
-	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 16:51:37 +0000
-Subject: [PATCH] mtd: cfi_cmdset_0002: add CFI detection for SST 39VF3201 chips
+	id 1Nivv3-0003rH-O1
+	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 20:27:22 +0000
+Received: by fxm6 with SMTP id 6so1207496fxm.2
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 20 Feb 2010 12:27:16 -0800 (PST)
+Subject: Re: [PATCH 0/14 V9] Work to enable SmartMedia/xD support in mtd
+From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Sat, 20 Feb 2010 17:52:52 +0100
-Message-ID: <20100220165252.11347.54609.stgit@shiryu.yomgui.biz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1266443364-4538-1-git-send-email-maximlevitsky@gmail.com>
+References: <1266443364-4538-1-git-send-email-maximlevitsky@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 20 Feb 2010 22:27:10 +0200
+Message-ID: <1266697630.4152.0.camel@maxim-laptop>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Alex Dubov <oakad@yahoo.com>, Artem Bityutskiy <dedekind1@gmail.com>,
+	joern <joern@logfs.org>, Vitaly Wool <vitalywool@gmail.com>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	"stanley.miao" <stanley.miao@windriver.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,87 +30,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SST 39VF0201 chips use the 0x0701 command set, fully compatible with the AMD one.
-This patch adds support for detecting them in CFI mode.
+On Wed, 2010-02-17 at 23:49 +0200, Maxim Levitsky wrote: 
+> This is slightly updated version of my patchset.
+> Now I can tell you for sure that hotplug works.
+> It was used/abused for long time.
+> I did some changes in richoh card reader driver, to work better after resume
+> and renamed it to r852.
+> 
+> I kindly ask you to merge this patchset to 2.6.34.
+> If I/users find other bugs they can be addressed by follow up patches.
+> 
+> Best regards,
+> 	Maxim Levitsky
+> 
+> 
+> 
+Should I expect at least some response on that?
+Or not?
 
-Signed-off-by: Guillaume Lecerf <glecerf@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   24 ++++++++++++++++++++++++
- drivers/mtd/chips/gen_probe.c       |    1 +
- 2 files changed, 25 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 3df6056..94452c1 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -43,6 +43,7 @@
- 
- #define MAX_WORD_RETRIES 3
- 
-+#define SST39VF3201		0x235b
- #define SST49LF004B	        0x0060
- #define SST49LF040B	        0x0050
- #define SST49LF008A		0x005a
-@@ -246,6 +247,19 @@ static void fixup_use_erase_chip(struct mtd_info *mtd, void *param)
- }
- 
- /*
-+ * SST 39VF3201 chips report 2 erase regions while they actually
-+ * only have 1. Patch this on the fly.
-+ */
-+static void fixup_sst39vf3201_erase_regions(struct mtd_info *mtd, void *param)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+
-+	cfi->cfiq->NumEraseRegions = 1;
-+	pr_warning("%s: Bad SST39VF3201 CFI data, adjust from 2 to 1 erase region\n", mtd->name);
-+}
-+
-+/*
-  * Some Atmel chips (e.g. the AT49BV6416) power-up with all sectors
-  * locked by default.
-  */
-@@ -314,6 +328,7 @@ static struct cfi_fixup fixup_table[] = {
- 	 */
- 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_erase_chip, NULL },
- 	{ CFI_MFR_ATMEL, AT49BV6416, fixup_use_atmel_lock, NULL },
-+	{ CFI_MFR_SST, SST39VF3201, fixup_sst39vf3201_erase_regions, NULL },
- 	{ 0, 0, NULL, NULL }
- };
- 
-@@ -352,6 +367,14 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 	mtd->writesize = 1;
- 
- 	if (cfi->cfi_mode==CFI_MODE_CFI){
-+	    /*
-+	     * SST 39VF3201 chips do not have a real PRI.
-+	     */
-+	    if (cfi->mfr == CFI_MFR_SST && cfi->id == SST39VF3201) {
-+		cfi->addr_unlock1 = 0x5555;
-+		cfi->addr_unlock2 = 0x2AAA;
-+	    }
-+	    else {
- 		unsigned char bootloc;
- 		/*
- 		 * It's a real CFI chip, not one for which the probe
-@@ -412,6 +435,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 		/* Set the default CFI lock/unlock addresses */
- 		cfi->addr_unlock1 = 0x555;
- 		cfi->addr_unlock2 = 0x2aa;
-+	    }
- 
- 	} /* CFI mode */
- 	else if (cfi->cfi_mode == CFI_MODE_JEDEC) {
-diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
-index 991c457..599c259 100644
---- a/drivers/mtd/chips/gen_probe.c
-+++ b/drivers/mtd/chips/gen_probe.c
-@@ -249,6 +249,7 @@ static struct mtd_info *check_cmd_set(struct map_info *map, int primary)
- #endif
- #ifdef CONFIG_MTD_CFI_AMDSTD
- 	case P_ID_AMD_STD:
-+	case P_ID_SST_OLD:
- 		return cfi_cmdset_0002(map, primary);
- #endif
- #ifdef CONFIG_MTD_CFI_STAA
+Best regards,
+Maxim Levitsky
