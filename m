@@ -1,15 +1,12 @@
 Received: from smtp6-g21.free.fr ([212.27.42.6])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NiotB-0004l0-CS
-	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 12:56:58 +0000
-Subject: [PATCH 6/6] mtd: cfi_cmdset_0002: add CFI detection for SST 39VF3201
-	chips
+	id 1NisYG-0003Cu-DO
+	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 16:51:37 +0000
+Subject: [PATCH] mtd: cfi_cmdset_0002: add CFI detection for SST 39VF3201 chips
 To: David Woodhouse <dwmw2@infradead.org>
 From: Guillaume LECERF <glecerf@gmail.com>
-Date: Sat, 20 Feb 2010 13:58:15 +0100
-Message-ID: <20100220125814.14843.41936.stgit@shiryu.yomgui.biz>
-In-Reply-To: <20100220125748.14843.70415.stgit@shiryu.yomgui.biz>
-References: <20100220125748.14843.70415.stgit@shiryu.yomgui.biz>
+Date: Sat, 20 Feb 2010 17:52:52 +0100
+Message-ID: <20100220165252.11347.54609.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -33,7 +30,7 @@ Signed-off-by: Guillaume Lecerf <glecerf@gmail.com>
  2 files changed, 25 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 3df6056..ad5271b 100644
+index 3df6056..94452c1 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
 @@ -43,6 +43,7 @@
@@ -48,10 +45,10 @@ index 3df6056..ad5271b 100644
  }
  
  /*
-+ * SST 32VF3201 chips report 2 erase zones while they actually
++ * SST 39VF3201 chips report 2 erase regions while they actually
 + * only have 1. Patch this on the fly.
 + */
-+static void fixup_sst39vf3201_erase_zones(struct mtd_info *mtd, void *param)
++static void fixup_sst39vf3201_erase_regions(struct mtd_info *mtd, void *param)
 +{
 +	struct map_info *map = mtd->priv;
 +	struct cfi_private *cfi = map->fldrv_priv;
@@ -64,11 +61,11 @@ index 3df6056..ad5271b 100644
   * Some Atmel chips (e.g. the AT49BV6416) power-up with all sectors
   * locked by default.
   */
-@@ -303,6 +317,7 @@ static struct cfi_fixup jedec_fixup_table[] = {
- 	{ CFI_MFR_SST, SST49LF004B, fixup_use_fwh_lock, NULL, },
- 	{ CFI_MFR_SST, SST49LF040B, fixup_use_fwh_lock, NULL, },
- 	{ CFI_MFR_SST, SST49LF008A, fixup_use_fwh_lock, NULL, },
-+	{ CFI_MFR_SST, SST39VF3201, fixup_sst39vf3201_erase_zones, NULL },
+@@ -314,6 +328,7 @@ static struct cfi_fixup fixup_table[] = {
+ 	 */
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_erase_chip, NULL },
+ 	{ CFI_MFR_ATMEL, AT49BV6416, fixup_use_atmel_lock, NULL },
++	{ CFI_MFR_SST, SST39VF3201, fixup_sst39vf3201_erase_regions, NULL },
  	{ 0, 0, NULL, NULL }
  };
  
