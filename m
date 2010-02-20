@@ -1,13 +1,12 @@
 Received: from smtp6-g21.free.fr ([212.27.42.6])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Niosw-00040J-0h
-	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 12:56:42 +0000
-Subject: [PATCH 3/6] mtd: cfi_probe: enable Auto Select Mode for
-	SST39VF160x/39VF320x chips
+	id 1Niot1-00046J-1G
+	for linux-mtd@lists.infradead.org; Sat, 20 Feb 2010 12:56:47 +0000
+Subject: [PATCH 4/6] mtd: cfi_probe: add support for SST 0x0701 vendorname
 To: David Woodhouse <dwmw2@infradead.org>
 From: Guillaume LECERF <glecerf@gmail.com>
-Date: Sat, 20 Feb 2010 13:57:59 +0100
-Message-ID: <20100220125759.14843.46780.stgit@shiryu.yomgui.biz>
+Date: Sat, 20 Feb 2010 13:58:04 +0100
+Message-ID: <20100220125804.14843.90313.stgit@shiryu.yomgui.biz>
 In-Reply-To: <20100220125748.14843.70415.stgit@shiryu.yomgui.biz>
 References: <20100220125748.14843.70415.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
@@ -23,53 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SST 39VF160x/39VF320x chips differ from the CFI specifications, they need
-the 0xAA / 0x55 / 0x90 sequence to be sent to 0x5555 / 0x2AAA / 0x5555 to
-enter Auto Select Mode.
-Trying this sequence and testing for (cfi->mfr != CFI_MFR_SST) then fallback
-to the standard sequence seems to work and to add no regressions.
+SST 39VF160x and 39VF320x chips use vendorname id 0x0701. Add support for them
+in cfi_probe.c.
 
 Signed-off-by: Guillaume Lecerf <glecerf@gmail.com>
 ---
- drivers/mtd/chips/cfi_probe.c |   25 ++++++++++++++++++++++---
- 1 files changed, 22 insertions(+), 3 deletions(-)
+ drivers/mtd/chips/cfi_probe.c |    3 +++
+ include/linux/mtd/cfi.h       |    1 +
+ 2 files changed, 4 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-index e63e674..05207f7 100644
+index 05207f7..9015b86 100644
 --- a/drivers/mtd/chips/cfi_probe.c
 +++ b/drivers/mtd/chips/cfi_probe.c
-@@ -189,12 +189,31 @@ static int __xipram cfi_chip_setup(struct map_info *map,
- 	 * back into Read Mode, which is a nop in this case).
- 	 */
- 	cfi_send_gen_cmd(0xf0,     0, base, map, cfi, cfi->device_type, NULL);
--	cfi_send_gen_cmd(0xaa, 0x555, base, map, cfi, cfi->device_type, NULL);
--	cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
--	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
-+
-+	/* SST 39VF160x/39VF320x chips differ from the CFI specifications, they need
-+	 * the 0xAA / 0x55 / 0x90 sequence to be sent to 0x5555 / 0x2AAA / 0x5555 to
-+	 * enter Auto Select Mode.
-+	 * Trying this sequence and testing for (cfi->mfr != CFI_MFR_SST) then fallback
-+	 * to the standard sequence seems to work and to add no regressions.
-+	 */
-+	cfi_send_gen_cmd(0xAA, 0x5555, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x55, 0x2AAA, base, map, cfi, cfi->device_type, NULL);
-+	cfi_send_gen_cmd(0x90, 0x5555, base, map, cfi, cfi->device_type, NULL);
-+
- 	cfi->mfr = cfi_read_query16(map, base);
- 	cfi->id = cfi_read_query16(map, base + ofs_factor);
+@@ -288,6 +288,9 @@ static char *vendorname(__u16 vendor)
+ 	case P_ID_SST_PAGE:
+ 		return "SST Page Write";
  
-+	if(cfi->mfr != CFI_MFR_SST) {
-+		cfi_send_gen_cmd(0xF0,     0, base, map, cfi, cfi->device_type, NULL);
++	case P_ID_SST_OLD:
++		return "SST 39VF160x/39VF320x";
 +
-+		cfi_send_gen_cmd(0xaa, 0x555, base, map, cfi, cfi->device_type, NULL);
-+		cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
-+		cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
-+
-+		cfi->mfr = cfi_read_query16(map, base);
-+		cfi->id = cfi_read_query16(map, base + ofs_factor);
-+	}
-+
- 	/* Get AMD/Spansion extended JEDEC ID */
- 	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
- 		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
+ 	case P_ID_INTEL_PERFORMANCE:
+ 		return "Intel Performance Code";
+ 
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index 6cb3e7b..70de0d7 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -253,6 +253,7 @@ struct cfi_bri_query {
+ #define P_ID_MITSUBISHI_STD     0x0100
+ #define P_ID_MITSUBISHI_EXT     0x0101
+ #define P_ID_SST_PAGE           0x0102
++#define P_ID_SST_OLD            0x0701
+ #define P_ID_INTEL_PERFORMANCE  0x0200
+ #define P_ID_INTEL_DATA         0x0210
+ #define P_ID_RESERVED           0xffff
