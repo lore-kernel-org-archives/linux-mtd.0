@@ -1,16 +1,16 @@
 Received: from mail-fx0-f214.google.com ([209.85.220.214])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjdCN-0004EO-1c
-	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:09 +0000
-Received: by fxm6 with SMTP id 6so5097143fxm.2
+	id 1NjdCP-000450-IN
+	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:13 +0000
+Received: by mail-fx0-f214.google.com with SMTP id 6so5097024fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Feb 2010 10:40:02 -0800 (PST)
+	Mon, 22 Feb 2010 10:40:05 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 04/15] MTD: mtdblock: test return value of
-	add_mtd_blktrans_dev, because if can fail
-Date: Mon, 22 Feb 2010 20:39:31 +0200
-Message-Id: <1266863982-5258-5-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 05/15] MTD: call the remove notifiers before assuming it is in
+	use
+Date: Mon, 22 Feb 2010 20:39:32 +0200
+Message-Id: <1266863982-5258-6-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -27,41 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This prevents a memory leak
+Now that mtd block common layer is prepared for proper hotplug support,
+enable it here
+
+Now all users of the mtd device have a chance to put the mtd device
+when they are notified to do so, and they have to do so to make hotplug work.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtdblock.c    |    3 ++-
- drivers/mtd/mtdblock_ro.c |    3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/mtd/mtdcore.c |   19 +++++++++++--------
+ 1 files changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/mtdblock.c b/drivers/mtd/mtdblock.c
-index 8e5da1e..7ce30a2 100644
---- a/drivers/mtd/mtdblock.c
-+++ b/drivers/mtd/mtdblock.c
-@@ -348,7 +348,8 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	if (!(mtd->flags & MTD_WRITEABLE))
- 		dev->mbd.readonly = 1;
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 67669a7..70a7858 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -350,31 +350,34 @@ fail_locked:
+ int del_mtd_device (struct mtd_info *mtd)
+ {
+ 	int ret;
++	struct mtd_notifier *not;
  
--	add_mtd_blktrans_dev(&dev->mbd);
-+	if (add_mtd_blktrans_dev(&dev->mbd))
-+		kfree(dev);
+ 	mutex_lock(&mtd_table_mutex);
+ 
+ 	if (idr_find(&mtd_idr, mtd->index) != mtd) {
+ 		ret = -ENODEV;
+-	} else if (mtd->usecount) {
++		goto out_error;
++	}
++
++	/* No need to get a refcount on the module containing
++		the notifier, since we hold the mtd_table_mutex */
++	list_for_each_entry(not, &mtd_notifiers, list)
++		not->remove(mtd);
++
++	if (mtd->usecount) {
+ 		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
+ 		       mtd->index, mtd->name, mtd->usecount);
+ 		ret = -EBUSY;
+ 	} else {
+-		struct mtd_notifier *not;
+-
+ 		device_unregister(&mtd->dev);
+ 
+-		/* No need to get a refcount on the module containing
+-		   the notifier, since we hold the mtd_table_mutex */
+-		list_for_each_entry(not, &mtd_notifiers, list)
+-			not->remove(mtd);
+-
+ 		idr_remove(&mtd_idr, mtd->index);
+ 
+ 		module_put(THIS_MODULE);
+ 		ret = 0;
+ 	}
+ 
++out_error:
+ 	mutex_unlock(&mtd_table_mutex);
+ 	return ret;
  }
- 
- static void mtdblock_remove_dev(struct mtd_blktrans_dev *dev)
-diff --git a/drivers/mtd/mtdblock_ro.c b/drivers/mtd/mtdblock_ro.c
-index 54ff288..d0d3f79 100644
---- a/drivers/mtd/mtdblock_ro.c
-+++ b/drivers/mtd/mtdblock_ro.c
-@@ -43,7 +43,8 @@ static void mtdblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	dev->tr = tr;
- 	dev->readonly = 1;
- 
--	add_mtd_blktrans_dev(dev);
-+	if (add_mtd_blktrans_dev(dev))
-+		kfree(dev);
- }
- 
- static void mtdblock_remove_dev(struct mtd_blktrans_dev *dev)
 -- 
 1.6.3.3
