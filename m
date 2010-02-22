@@ -1,15 +1,16 @@
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
+Received: from fg-out-1718.google.com ([72.14.220.158])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjdCX-00044P-Ti
-	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:18 +0000
-Received: by mail-fx0-f214.google.com with SMTP id 6so5096986fxm.2
+	id 1NjdCd-0004lg-NW
+	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:27 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so1143920fga.0
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Feb 2010 10:40:13 -0800 (PST)
+	Mon, 22 Feb 2010 10:40:18 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 08/15] MTD: nand: make MTD_OOB_PLACE work correctly.
-Date: Mon, 22 Feb 2010 20:39:35 +0200
-Message-Id: <1266863982-5258-9-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 10/15] MTD: nand: make reads using MTD_OOB_RAW affect only ECC
+	validation
+Date: Mon, 22 Feb 2010 20:39:37 +0200
+Message-Id: <1266863982-5258-11-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -26,41 +27,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD_OOB_PLACE is supposed to read/write the raw oob data similiar to the MTD_OOB_RAW
-however due to a bug, currently it is not possible to read more data that
-is specified by the oob 'free' regions.
+This changes the behavier of MTD_OOB_RAW. It used to read both OOB and data
+to the data buffer, however you would still need to specify the dummy oob buffer.
+
+This is only used in one place, but makes it hard to read data+oob without ECC
+test, thus I removed that behavier, and fixed the user.
+
+Now MTD_OOB_RAW behaves just like MTD_OOB_PLACE, but doesn't do ECC validation
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/nand/nand_base.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/nand_base.c |   19 +++++++------------
+ drivers/mtd/nand/nand_bbt.c  |   26 ++++++++++++++++++++++----
+ include/linux/mtd/mtd.h      |    4 +---
+ 3 files changed, 30 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 7442b3a..cada4cf 100644
+index 1386741..51dfea1 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -1420,6 +1420,9 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 	int ret = 0;
- 	uint32_t readlen = ops->len;
- 	uint32_t oobreadlen = ops->ooblen;
-+	uint32_t max_oobsize = ops->mode == MTD_OOB_AUTO ?
-+		mtd->oobavail : mtd->oobsize;
-+
- 	uint8_t *bufpoi, *oob, *buf;
- 
- 	stats = mtd->ecc_stats;
-@@ -1470,10 +1473,11 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
- 			buf += bytes;
+@@ -1474,18 +1474,13 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
  
  			if (unlikely(oob)) {
+ 
+-				/* Raw mode does data:oob:data:oob */
+-				if (ops->mode != MTD_OOB_RAW) {
+-					int toread = min(oobreadlen,
+-								max_oobsize);
+-					if (toread) {
+-						oob = nand_transfer_oob(chip,
+-							oob, ops, toread);
+-						oobreadlen -= toread;
+-					}
+-				} else
+-					buf = nand_transfer_oob(chip,
+-						buf, ops, mtd->oobsize);
++				int toread = min(oobreadlen, max_oobsize);
 +
- 				/* Raw mode does data:oob:data:oob */
- 				if (ops->mode != MTD_OOB_RAW) {
- 					int toread = min(oobreadlen,
--						chip->ecc.layout->oobavail);
-+								max_oobsize);
- 					if (toread) {
- 						oob = nand_transfer_oob(chip,
- 							oob, ops, toread);
++				if (toread) {
++					oob = nand_transfer_oob(chip,
++						oob, ops, toread);
++					oobreadlen -= toread;
++				}
+ 			}
+ 
+ 			if (!(chip->options & NAND_NO_READRDY)) {
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 55c23e5..387c45c 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -237,15 +237,33 @@ static int scan_read_raw(struct mtd_info *mtd, uint8_t *buf, loff_t offs,
+ 			 size_t len)
+ {
+ 	struct mtd_oob_ops ops;
++	int res;
+ 
+ 	ops.mode = MTD_OOB_RAW;
+ 	ops.ooboffs = 0;
+ 	ops.ooblen = mtd->oobsize;
+-	ops.oobbuf = buf;
+-	ops.datbuf = buf;
+-	ops.len = len;
+ 
+-	return mtd->read_oob(mtd, offs, &ops);
++
++	while (len > 0) {
++		if (len <= mtd->writesize) {
++			ops.oobbuf = buf + len;
++			ops.datbuf = buf;
++			ops.len = len;
++			return mtd->read_oob(mtd, offs, &ops);
++		} else {
++			ops.oobbuf = buf + mtd->writesize;
++			ops.datbuf = buf;
++			ops.len = mtd->writesize;
++			res = mtd->read_oob(mtd, offs, &ops);
++
++			if (res)
++				return res;
++		}
++
++		buf += mtd->oobsize + mtd->writesize;
++		len -= mtd->writesize;
++	}
++	return 0;
+ }
+ 
+ /*
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 11d8e68..5326435 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -60,9 +60,7 @@ struct mtd_erase_region_info {
+  * MTD_OOB_PLACE:	oob data are placed at the given offset
+  * MTD_OOB_AUTO:	oob data are automatically placed at the free areas
+  *			which are defined by the ecclayout
+- * MTD_OOB_RAW:		mode to read raw data+oob in one chunk. The oob data
+- *			is inserted into the data. Thats a raw image of the
+- *			flash contents.
++ * MTD_OOB_RAW:		mode to read oob and data without doing ECC checking
+  */
+ typedef enum {
+ 	MTD_OOB_PLACE,
 -- 
 1.6.3.3
