@@ -1,12 +1,12 @@
-Date: Mon, 22 Feb 2010 22:20:58 +0100 (CET)
+Date: Mon, 22 Feb 2010 22:25:49 +0100 (CET)
 From: Thomas Gleixner <tglx@linutronix.de>
 To: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: [PATCH 10/15] MTD: nand: make reads using MTD_OOB_RAW affect
-	only ECC validation
-In-Reply-To: <1266863982-5258-11-git-send-email-maximlevitsky@gmail.com>
-Message-ID: <alpine.LFD.2.00.1002222219430.4136@localhost.localdomain>
+Subject: Re: [PATCH 13/15] MTD: add few workarounds to nand system for
+	SmartMedia/xD chips.
+In-Reply-To: <1266863982-5258-14-git-send-email-maximlevitsky@gmail.com>
+Message-ID: <alpine.LFD.2.00.1002222223090.4136@localhost.localdomain>
 References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
-	<1266863982-5258-11-git-send-email-maximlevitsky@gmail.com>
+	<1266863982-5258-14-git-send-email-maximlevitsky@gmail.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: Alex Dubov <oakad@yahoo.com>, Vitaly Wool <vitalywool@gmail.com>,
@@ -24,18 +24,13 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Mon, 22 Feb 2010, Maxim Levitsky wrote:
 
-> This changes the behavier of MTD_OOB_RAW. It used to read both OOB and data
-> to the data buffer, however you would still need to specify the dummy oob buffer.
-> 
-> This is only used in one place, but makes it hard to read data+oob without ECC
-> test, thus I removed that behavier, and fixed the user.
-> 
-> Now MTD_OOB_RAW behaves just like MTD_OOB_PLACE, but doesn't do ECC validation
+> * Add an option NAND_SMARTMEDIA that can be set by nand driver
+>  If set, it will cause separate ID table to be used, which includes
+>  mask rom devices and new xD cards
 
-Is this tested against existing user space tools like nanddump ? Can I
-still get the raw data from flash ?
-
+Why that option ? We can just extend the existing ids table and be
+done. No extra magic needed.
+ 
 Thanks,
 
 	tglx
- 
