@@ -1,15 +1,15 @@
 Received: from mail-fx0-f214.google.com ([209.85.220.214])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjdCo-00044P-Af
-	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:38 +0000
-Received: by mail-fx0-f214.google.com with SMTP id 6so5096986fxm.2
+	id 1NjdCq-0004rZ-Ns
+	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:39 +0000
+Received: by fxm6 with SMTP id 6so5097754fxm.2
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Feb 2010 10:40:30 -0800 (PST)
+	Mon, 22 Feb 2010 10:40:32 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 14/15] MTD: Add new SmartMedia/xD FTL
-Date: Mon, 22 Feb 2010 20:39:41 +0200
-Message-Id: <1266863982-5258-15-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 15/15] MTD: Add nand driver for Ricoh xD/SmartMedia reader
+Date: Mon, 22 Feb 2010 20:39:42 +0200
+Message-Id: <1266863982-5258-16-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -26,77 +26,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This implements new readwrite SmartMedia/xd FTL.
+This adds a driver for Ricoh R5C852 xD card reader.
 
-mtd driver must have support proper ECC and badblock vertification
-based on oob parts for 512 bytes nand.
+This reader is a part of larger mulifunction chip
+and found at least in R5C832
 
-Also mtd driver must define read_oob and write_oob, which are used
-to read and write both data and oob together.
+Driver is complete, but bewere of the fact that some
+(probably only type M) xD cards are 'fake' which means that
+they have an on board CPU and expose emulated nand command set
+
+These cards don't even store the  oob area on the flash,
+but generate it on the fly from something else.
+
+Thus they demand to have proper values written in the oob area,
+and therefore only useful with SmartMedia FTL.
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/Kconfig  |   21 +
- drivers/mtd/Makefile |    1 +
- drivers/mtd/sm_ftl.c | 1284 ++++++++++++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/sm_ftl.h |   94 ++++
- 4 files changed, 1400 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/sm_ftl.c
- create mode 100644 drivers/mtd/sm_ftl.h
+ MAINTAINERS               |    6 +
+ drivers/mtd/nand/Kconfig  |   11 +
+ drivers/mtd/nand/Makefile |    1 +
+ drivers/mtd/nand/r852.c   | 1117 +++++++++++++++++++++++++++++++++++++++++++++
+ drivers/mtd/nand/r852.h   |  163 +++++++
+ include/linux/pci_ids.h   |    2 +
+ 6 files changed, 1300 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/r852.c
+ create mode 100644 drivers/mtd/nand/r852.h
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index ecf90f5..0105ae0 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -304,6 +304,27 @@ config SSFDC
- 	  This enables read only access to SmartMedia formatted NAND
- 	  flash. You can mount it with FAT file system.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1b0f053..1723c54 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4577,6 +4577,12 @@ S:	Maintained
+ F:	Documentation/rfkill.txt
+ F:	net/rfkill/
  
++RICOH SMARTMEDIA/XD DRIVER
++M:	Maxim Levitsky <maximlevitsky@gmail.com>
++S:	Maintained
++F:	drivers/mtd/nand/r822.c
++F:	drivers/mtd/nand/r822.h
 +
-+config SM_FTL
-+	tristate "SmartMedia/xD new translation layer"
-+	depends on EXPERIMENTAL && BLOCK
-+	select MTD_BLKDEVS
-+	help
-+	  This enables new and very EXPERMENTAL support for SmartMedia/xD
-+	  FTL (Flash tanslation layer)
-+	  Write support isn't yet well tested, therefore this code IS likely to
-+	  eat your card, so please don't use it together with valuable data.
-+	  Use readonly driver (CONFIG_SSFDC) instead.
-+
-+config SM_FTL_MUSEUM
-+	boolean "Additional Support for 1MB and 2MB SmartMedia cards"
-+	depends on SM_FTL && MTD_NAND
-+	select MTD_NAND_ECC_SMC
-+	help
-+	  Very old SmartMedia cards need ECC to be caluculated in the FTL
-+	  Such cards are very rare, thus enabling this option is mostly useless
-+	  Also this support is completely UNTESTED.
-+
- config MTD_OOPS
- 	tristate "Log panic/oops to an MTD buffer"
- 	depends on MTD
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 82d1e4d..d53357b 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -24,6 +24,7 @@ obj-$(CONFIG_NFTL)		+= nftl.o
- obj-$(CONFIG_INFTL)		+= inftl.o
- obj-$(CONFIG_RFD_FTL)		+= rfd_ftl.o
- obj-$(CONFIG_SSFDC)		+= ssfdc.o
-+obj-$(CONFIG_SM_FTL)		+= sm_ftl.o
- obj-$(CONFIG_MTD_OOPS)		+= mtdoops.o
+ RISCOM8 DRIVER
+ S:	Orphan
+ F:	Documentation/serial/riscom8.txt
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 31273c7..4ab2551 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -107,6 +107,17 @@ config MTD_NAND_OMAP_PREFETCH_DMA
+ config MTD_NAND_IDS
+ 	tristate
  
- nftl-objs		:= nftlcore.o nftlmount.o
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
++config MTD_NAND_RICOH
++	tristate "Ricoh xD card reader"
++	default n
++	select MTD_SM_COMMON
++	help
++	  Enable support for Ricoh R5C852 xD card reader
++	  You also need to enable ether
++	  NAND SSFDC (SmartMedia) read only translation layer' or new
++	  expermental, readwrite
++	  'SmartMedia/xD new translation layer'
++
+ config MTD_NAND_AU1550
+ 	tristate "Au1550/1200 NAND support"
+ 	depends on SOC_AU1200 || SOC_AU1550
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index e699bef..1d5797d 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -42,5 +42,6 @@ obj-$(CONFIG_MTD_NAND_TXX9NDFMC)	+= txx9ndfmc.o
+ obj-$(CONFIG_MTD_NAND_NUC900)		+= nuc900_nand.o
+ obj-$(CONFIG_MTD_NAND_NOMADIK)		+= nomadik_nand.o
+ obj-$(CONFIG_MTD_NAND_BCM_UMI)		+= bcm_umi_nand.o nand_bcm_umi.o
++obj-$(CONFIG_MTD_NAND_RICOH)		+= r852.o
+ 
+ nand-objs := nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
 new file mode 100644
-index 0000000..c2a409f
+index 0000000..5c718ff
 --- /dev/null
-+++ b/drivers/mtd/sm_ftl.c
-@@ -0,0 +1,1284 @@
++++ b/drivers/mtd/nand/r852.c
+@@ -0,0 +1,1117 @@
 +/*
 + * Copyright (C) 2009 - Maxim Levitsky
-+ * SmartMedia/xD translation layer
++ * driver for Ricoh xD readers
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
@@ -105,1378 +120,1293 @@ index 0000000..c2a409f
 +
 +#include <linux/kernel.h>
 +#include <linux/module.h>
-+#include <linux/random.h>
-+#include <linux/hdreg.h>
-+#include <linux/kthread.h>
-+#include <linux/freezer.h>
-+#include <linux/sysfs.h>
-+#include <linux/bitops.h>
-+#include "nand/sm_common.h"
-+#include "sm_ftl.h"
-+
-+#ifdef CONFIG_SM_FTL_MUSEUM
-+#include <linux/mtd/nand_ecc.h>
-+#endif
++#include <linux/jiffies.h>
++#include <linux/workqueue.h>
++#include <linux/interrupt.h>
++#include <linux/pci_ids.h>
++#include <asm/byteorder.h>
++#include <linux/sched.h>
++#include "sm_common.h"
++#include "r852.h"
 +
 +
-+struct workqueue_struct *cache_flush_workqueue;
-+
-+static int cache_timeout = 1000;
-+module_param(cache_timeout, bool, S_IRUGO);
-+MODULE_PARM_DESC(cache_timeout,
-+	"Timeout (in ms) for cache flush (1000 ms default");
++static int enable_dma = 1;
++module_param(enable_dma, bool, S_IRUGO);
++MODULE_PARM_DESC(enable_dma, "Enable usage of the DMA (default)");
 +
 +static int debug;
 +module_param(debug, int, S_IRUGO | S_IWUSR);
 +MODULE_PARM_DESC(debug, "Debug level (0-2)");
 +
-+
-+/* ------------------- sysfs attributtes ---------------------------------- */
-+struct sm_sysfs_attribute {
-+	struct device_attribute dev_attr;
-+	char *data;
-+	int len;
-+};
-+
-+ssize_t sm_attr_show(struct device *dev, struct device_attribute *attr,
-+			char *buf)
++/* read register */
++static inline u8 r852_read_reg(struct r852_device *dev, int address)
 +{
-+	struct sm_sysfs_attribute *sm_attr =
-+		container_of(attr, struct sm_sysfs_attribute, dev_attr);
++	u8 reg = readb(dev->mmio + address);
++	return reg;
++}
 +
-+	strncpy(buf, sm_attr->data, sm_attr->len);
-+	return sm_attr->len;
++/* write register */
++static inline void r852_write_reg(struct r852_device *dev,
++						int address, u8 value)
++{
++	writeb(value, dev->mmio + address);
++	mmiowb();
 +}
 +
 +
-+#define NUM_ATTRIBUTES 1
-+#define SM_CIS_VENDOR_OFFSET 0x59
-+struct attribute_group *sm_create_sysfs_attributes(struct sm_ftl *ftl)
++/* read dword sized register */
++static inline u32 r852_read_reg_dword(struct r852_device *dev, int address)
 +{
-+	struct attribute_group *attr_group;
-+	struct attribute **attributes;
-+	struct sm_sysfs_attribute *vendor_attribute;
-+
-+	int vendor_len = strnlen(ftl->cis_buffer + SM_CIS_VENDOR_OFFSET,
-+					SM_SMALL_PAGE - SM_CIS_VENDOR_OFFSET);
-+
-+	char *vendor = kmalloc(vendor_len, GFP_KERNEL);
-+	memcpy(vendor, ftl->cis_buffer + SM_CIS_VENDOR_OFFSET, vendor_len);
-+	vendor[vendor_len] = 0;
-+
-+	/* Initialize sysfs attributes */
-+	vendor_attribute =
-+		kzalloc(sizeof(struct sm_sysfs_attribute), GFP_KERNEL);
-+
-+	vendor_attribute->data = vendor;
-+	vendor_attribute->len = vendor_len;
-+	vendor_attribute->dev_attr.attr.name = "vendor";
-+	vendor_attribute->dev_attr.attr.mode = S_IRUGO;
-+	vendor_attribute->dev_attr.show = sm_attr_show;
-+
-+
-+	/* Create array of pointers to the attributes */
-+	attributes = kzalloc(sizeof(struct attribute *) * (NUM_ATTRIBUTES + 1),
-+								GFP_KERNEL);
-+	attributes[0] = &vendor_attribute->dev_attr.attr;
-+
-+	/* Finally create the attribute group */
-+	attr_group = kzalloc(sizeof(struct attribute_group), GFP_KERNEL);
-+	attr_group->attrs = attributes;
-+	return attr_group;
++	u32 reg = le32_to_cpu(readl(dev->mmio + address));
++	return reg;
 +}
 +
-+void sm_delete_sysfs_attributes(struct sm_ftl *ftl)
++/* write dword sized register */
++static inline void r852_write_reg_dword(struct r852_device *dev,
++							int address, u32 value)
 +{
-+	struct attribute **attributes = ftl->disk_attributes->attrs;
-+	int i;
++	writel(cpu_to_le32(value), dev->mmio + address);
++	mmiowb();
++}
 +
-+	for (i = 0; attributes[i] ; i++) {
++/* returns pointer to our private structure */
++static inline struct r852_device *r852_get_dev(struct mtd_info *mtd)
++{
++	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
++	return (struct r852_device *)chip->priv;
++}
 +
-+		struct device_attribute *dev_attr = container_of(attributes[i],
-+			struct device_attribute, attr);
 +
-+		struct sm_sysfs_attribute *sm_attr =
-+			container_of(dev_attr,
-+				struct sm_sysfs_attribute, dev_attr);
++/* check if controller supports dma */
++static void r852_dma_test(struct r852_device *dev)
++{
++	dev->dma_usable = (r852_read_reg(dev, R852_DMA_CAP) &
++		(R852_DMA1 | R852_DMA2)) == (R852_DMA1 | R852_DMA2);
 +
-+		kfree(sm_attr->data);
-+		kfree(sm_attr);
++	if (!dev->dma_usable)
++		message("Non dma capable device detected, dma disabled");
++
++	if (!enable_dma) {
++		message("disabling dma on user request");
++		dev->dma_usable = 0;
 +	}
-+
-+	kfree(ftl->disk_attributes->attrs);
-+	kfree(ftl->disk_attributes);
-+}
-+
-+
-+/* ----------------------- oob helpers -------------------------------------- */
-+
-+static int sm_get_lba(u8 *lba)
-+{
-+	/* check fixed bits */
-+	if ((lba[0] & 0xF8) != 0x10)
-+		return -2;
-+
-+	/* check parity - endianess doesn't matter */
-+	if (hweight16(*(u16 *)lba) & 1)
-+		return -2;
-+
-+	return (lba[1] >> 1) | ((lba[0] & 0x07) << 7);
-+}
-+
-+
-+/*
-+ * Read LBA asscociated with block
-+ * returns -1, if block is erased
-+ * returns -2 if error happens
-+ */
-+static int sm_read_lba(struct sm_oob *oob)
-+{
-+	static const u32 erased_pattern[4] = {
-+		0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
-+
-+	u16 lba_test;
-+	int lba;
-+
-+	/* First test for erased block */
-+	if (!memcmp(oob, erased_pattern, SM_OOB_SIZE))
-+		return -1;
-+
-+	/* Now check is both copies of the LBA differ too much */
-+	lba_test = *(u16 *)oob->lba_copy1 ^ *(u16*)oob->lba_copy2;
-+	if (lba_test && !is_power_of_2(lba_test))
-+		return -2;
-+
-+	/* And read it */
-+	lba = sm_get_lba(oob->lba_copy1);
-+
-+	if (lba == -2)
-+		lba = sm_get_lba(oob->lba_copy2);
-+
-+	return lba;
-+}
-+
-+static void sm_write_lba(struct sm_oob *oob, u16 lba)
-+{
-+	u8 tmp[2];
-+
-+	WARN_ON(lba >= 1000);
-+
-+	tmp[0] = 0x10 | ((lba >> 7) & 0x07);
-+	tmp[1] = (lba << 1) & 0xFF;
-+
-+	if (hweight16(*(u16 *)tmp) & 0x01)
-+		tmp[1] |= 1;
-+
-+	oob->lba_copy1[0] = oob->lba_copy2[0] = tmp[0];
-+	oob->lba_copy1[1] = oob->lba_copy2[1] = tmp[1];
-+}
-+
-+
-+/* Make offset from parts */
-+static loff_t sm_mkoffset(struct sm_ftl *ftl, int zone, int block, int boffset)
-+{
-+	WARN_ON(boffset & (SM_SECTOR_SIZE - 1));
-+	WARN_ON(zone < 0 || zone >= ftl->zone_count);
-+	WARN_ON(block >= ftl->zone_size);
-+	WARN_ON(boffset >= ftl->block_size);
-+
-+	if (block == -1)
-+		return -1;
-+
-+	return (zone * SM_MAX_ZONE_SIZE + block) * ftl->block_size + boffset;
-+}
-+
-+/* Breaks offset into parts */
-+static void sm_break_offset(struct sm_ftl *ftl, loff_t offset,
-+					int *zone, int *block, int *boffset)
-+{
-+	*boffset = do_div(offset, ftl->block_size);
-+	*block = do_div(offset, ftl->max_lba);
-+	*zone = offset >= ftl->zone_count ? -1 : offset;
-+}
-+
-+/* ---------------------- low level IO ------------------------------------- */
-+
-+static int sm_correct_sector(u8 *buffer, struct sm_oob *oob)
-+{
-+#ifdef CONFIG_SM_FTL_MUSEUM
-+	u8 ecc[3];
-+
-+	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
-+	if (__nand_correct_data(buffer, ecc, oob->ecc1, SM_SMALL_PAGE) < 0)
-+		return -EIO;
-+
-+	buffer += SM_SMALL_PAGE;
-+
-+	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
-+	if (__nand_correct_data(buffer, ecc, oob->ecc2, SM_SMALL_PAGE) < 0)
-+		return -EIO;
-+#endif
-+	return 0;
-+}
-+
-+/* Reads a sector + oob*/
-+static int sm_read_sector(struct sm_ftl *ftl,
-+			int zone, int block, int boffset,
-+					u8 *buffer, struct sm_oob *oob)
-+{
-+	struct mtd_info *mtd = ftl->trans->mtd;
-+	struct mtd_oob_ops ops;
-+	struct sm_oob tmp_oob;
-+	int ret;
-+	int try = 0;
-+
-+	/* FTL can contain -1 entries that are by default filled with bits */
-+	if (block == -1) {
-+		memset(buffer, 0xFF, SM_SECTOR_SIZE);
-+		return 0;
-+	}
-+
-+	/* User might not need the oob, but we do for data vertification */
-+	if (!oob)
-+		oob = &tmp_oob;
-+
-+	ops.mode = ftl->smallpagenand ? MTD_OOB_RAW : MTD_OOB_PLACE;
-+	ops.ooboffs = 0;
-+	ops.ooblen = SM_OOB_SIZE;
-+	ops.oobbuf = (void *)oob;
-+	ops.len = SM_SECTOR_SIZE;
-+	ops.datbuf = buffer;
-+
-+again:
-+	if (try++) {
-+		/* Avoid infinite recursion on CIS reads, sm_recheck_media
-+			won't help anyway */
-+		if (zone == 0 && block == ftl->cis_block && boffset ==
-+			ftl->cis_boffset)
-+			return ret;
-+
-+		/* Test if media is stable */
-+		if (try == 3 || sm_recheck_media(ftl))
-+			return ret;
-+	}
-+
-+	/* Unfortunelly, oob read will _always_ succeed,
-+		despite card removal..... */
-+	ret = mtd->read_oob(mtd, sm_mkoffset(ftl, zone, block, boffset), &ops);
-+
-+	/* Test for unknown errors */
-+	if (ret != 0 && ret != -EUCLEAN && ret != -EBADMSG) {
-+		dbg("read of block %d at zone %d, failed due to error (%d)",
-+			block, zone, ret);
-+		goto again;
-+	}
-+
-+	/* Do a basic test on the oob, to guard against returned garbage */
-+	if (oob->reserved != 0xFFFFFFFF && !is_power_of_2(~oob->reserved))
-+		goto again;
-+
-+	/* This should never happen, unless there is a bug in the mtd driver */
-+	WARN_ON(ops.oobretlen != SM_OOB_SIZE);
-+	WARN_ON(buffer && ops.retlen != SM_SECTOR_SIZE);
-+
-+	if (!buffer)
-+		return 0;
-+
-+	/* Test if sector marked as bad */
-+	if (!sm_sector_valid(oob)) {
-+		dbg("read of block %d at zone %d, failed because it is marked"
-+			" as bad" , block, zone);
-+		goto again;
-+	}
-+
-+	/* Test ECC*/
-+	if (ret == -EBADMSG ||
-+		(ftl->smallpagenand && sm_correct_sector(buffer, oob))) {
-+
-+		dbg("read of block %d at zone %d, failed due to ECC error",
-+			block, zone);
-+		goto again;
-+	}
-+
-+	return 0;
-+}
-+
-+/* Writes a sector to media */
-+static int sm_write_sector(struct sm_ftl *ftl,
-+			int zone, int block, int boffset,
-+					u8 *buffer, struct sm_oob *oob)
-+{
-+	struct mtd_oob_ops ops;
-+	struct mtd_info *mtd = ftl->trans->mtd;
-+	int ret;
-+
-+	BUG_ON(ftl->readonly);
-+
-+	if (zone == 0 && (block == ftl->cis_block || block == 0)) {
-+		dbg("attempted to write the CIS!");
-+		return -EIO;
-+	}
-+
-+	if (ftl->unstable)
-+		return -EIO;
-+
-+	ops.mode = ftl->smallpagenand ? MTD_OOB_RAW : MTD_OOB_PLACE;
-+	ops.len = SM_SECTOR_SIZE;
-+	ops.datbuf = buffer;
-+	ops.ooboffs = 0;
-+	ops.ooblen = SM_OOB_SIZE;
-+	ops.oobbuf = (void *)oob;
-+
-+	ret = mtd->write_oob(mtd, sm_mkoffset(ftl, zone, block, boffset), &ops);
-+
-+	/* Now we assume that hardware will catch write bitflip errors */
-+	/* If you are paranoid, use CONFIG_MTD_NAND_VERIFY_WRITE */
-+
-+	if (ret) {
-+		dbg("write to block %d at zone %d, failed with error %d",
-+			block, zone, ret);
-+
-+		sm_recheck_media(ftl);
-+		return ret;
-+	}
-+
-+	/* This should never happen, unless there is a bug in the driver */
-+	WARN_ON(ops.oobretlen != SM_OOB_SIZE);
-+	WARN_ON(buffer && ops.retlen != SM_SECTOR_SIZE);
-+
-+	return 0;
-+}
-+
-+/* ------------------------ block IO ------------------------------------- */
-+
-+/* Write a block using data and lba, and invalid sector bitmap */
-+static int sm_write_block(struct sm_ftl *ftl, u8 *buf,
-+				int zone, int block, int lba,
-+						unsigned long invalid_bitmap)
-+{
-+	struct sm_oob oob;
-+	int boffset;
-+	int retry = 0;
-+
-+	/* Initialize the oob with requested values */
-+	memset(&oob, 0xFF, SM_OOB_SIZE);
-+	sm_write_lba(&oob, lba);
-+restart:
-+	if (ftl->unstable)
-+		return -EIO;
-+
-+	for (boffset = 0; boffset < ftl->block_size;
-+				boffset += SM_SECTOR_SIZE) {
-+
-+		oob.data_status = 0xFF;
-+
-+		if (test_bit(boffset / SM_SECTOR_SIZE, &invalid_bitmap)) {
-+
-+			sm_printk("sector %d of block at LBA %d of zone %d"
-+				" coudn't be read, marking it as invalid",
-+				boffset / SM_SECTOR_SIZE, lba, zone);
-+
-+			oob.data_status = 0;
-+		}
-+
-+#ifdef CONFIG_SM_FTL_MUSEUM
-+		if (ftl->smallpagenand) {
-+			__nand_calculate_ecc(buf + boffset,
-+						SM_SMALL_PAGE, oob.ecc1);
-+
-+			__nand_calculate_ecc(buf + boffset + SM_SMALL_PAGE,
-+						SM_SMALL_PAGE, oob.ecc2);
-+		}
-+#endif
-+		if (!sm_write_sector(ftl, zone, block, boffset,
-+							buf + boffset, &oob))
-+			continue;
-+
-+		if (!retry) {
-+
-+			/* If write fails. try to erase the block */
-+			/* This is safe, because we never write in blocks
-+				that contain valuable data.
-+			This is intended to repair block that are marked
-+			as erased, but that isn't fully erased*/
-+
-+			if (sm_erase_block(ftl, zone, block, 0))
-+				return -EIO;
-+
-+			retry = 1;
-+			goto restart;
-+		} else {
-+			sm_mark_block_bad(ftl, zone, block);
-+			return -EIO;
-+		}
-+	}
-+	return 0;
-+}
-+
-+
-+/* Mark whole block at offset 'offs' as bad. */
-+static void sm_mark_block_bad(struct sm_ftl *ftl, int zone, int block)
-+{
-+	struct sm_oob oob;
-+	int boffset;
-+
-+	memset(&oob, 0xFF, SM_OOB_SIZE);
-+	oob.block_status = 0xF0;
-+
-+	if (ftl->unstable)
-+		return;
-+
-+	if (sm_recheck_media(ftl))
-+		return;
-+
-+	sm_printk("marking block %d of zone %d as bad", block, zone);
-+
-+	/* We aren't checking the return value, because we don't care */
-+	/* This also fails on fake xD cards, but I guess these won't expose
-+		any bad blocks till fail completly */
-+	for (boffset = 0; boffset < ftl->block_size; boffset += SM_SECTOR_SIZE)
-+		sm_write_sector(ftl, zone, block, boffset, NULL, &oob);
 +}
 +
 +/*
-+ * Erase a block within a zone
-+ * If erase succedes, it updates free block fifo, otherwise marks block as bad
++ * Enable dma. Enables ether first or second stage of the DMA,
++ * Expects dev->dma_dir and dev->dma_state be set
 + */
-+static int sm_erase_block(struct sm_ftl *ftl, int zone_num, u16 block,
-+								int put_free)
++static void r852_dma_enable(struct r852_device *dev)
 +{
-+	struct ftl_zone *zone = &ftl->zones[zone_num];
-+	struct mtd_info *mtd = ftl->trans->mtd;
-+	struct erase_info erase;
++	u8 dma_reg, dma_irq_reg;
 +
-+	erase.mtd = mtd;
-+	erase.callback = sm_erase_callback;
-+	erase.addr = sm_mkoffset(ftl, zone_num, block, 0);
-+	erase.len = ftl->block_size;
-+	erase.priv = (u_long)ftl;
++	/* Set up dma settings */
++	dma_reg = r852_read_reg_dword(dev, R852_DMA_SETTINGS);
++	dma_reg &= ~(R852_DMA_READ | R852_DMA_INTERNAL | R852_DMA_MEMORY);
 +
-+	if (ftl->unstable)
-+		return -EIO;
++	if (dev->dma_dir)
++		dma_reg |= R852_DMA_READ;
 +
-+	BUG_ON(ftl->readonly);
-+
-+	if (zone_num == 0 && (block == ftl->cis_block || block == 0)) {
-+		sm_printk("attempted to erase the CIS!");
-+		return -EIO;
++	if (dev->dma_state == DMA_INTERNAL)
++		dma_reg |= R852_DMA_INTERNAL;
++	else {
++		dma_reg |= R852_DMA_MEMORY;
++		r852_write_reg_dword(dev, R852_DMA_ADDR,
++			cpu_to_le32(dev->phys_dma_addr));
 +	}
 +
-+	if (mtd->erase(mtd, &erase)) {
-+		sm_printk("erase of block %d in zone %d failed",
-+							block, zone_num);
-+		goto error;
-+	}
++	r852_write_reg_dword(dev, R852_DMA_SETTINGS, dma_reg);
 +
-+	if (erase.state == MTD_ERASE_PENDING)
-+		wait_for_completion(&ftl->erase_completion);
-+
-+	if (erase.state != MTD_ERASE_DONE) {
-+		sm_printk("erase of block %d in zone %d failed after wait",
-+			block, zone_num);
-+		goto error;
-+	}
-+
-+	if (put_free)
-+		kfifo_in(&zone->free_sectors,
-+			(const unsigned char *)&block, sizeof(block));
-+
-+	return 0;
-+error:
-+	sm_mark_block_bad(ftl, zone_num, block);
-+	return -EIO;
++	/* Set dma irq */
++	dma_irq_reg = r852_read_reg_dword(dev, R852_DMA_IRQ_ENABLE);
++	r852_write_reg_dword(dev, R852_DMA_IRQ_ENABLE,
++		dma_irq_reg |
++		R852_DMA_IRQ_INTERNAL |
++		R852_DMA_IRQ_ERROR |
++		R852_DMA_IRQ_MEMORY);
 +}
 +
-+static void sm_erase_callback(struct erase_info *self)
++/*
++ * Disable dma, called from the interrupt handler, which specifies
++ * success of the operation via 'error' argument
++ */
++static void r852_dma_done(struct r852_device *dev, int error)
 +{
-+	struct sm_ftl *ftl = (struct sm_ftl *)self->priv;
-+	complete(&ftl->erase_completion);
++	WARN_ON(dev->dma_stage == 0);
++
++	r852_write_reg_dword(dev, R852_DMA_IRQ_STA,
++			r852_read_reg_dword(dev, R852_DMA_IRQ_STA));
++
++	r852_write_reg_dword(dev, R852_DMA_SETTINGS, 0);
++	r852_write_reg_dword(dev, R852_DMA_IRQ_ENABLE, 0);
++
++	dev->dma_error = error;
++	dev->dma_stage = 0;
++
++	if (dev->phys_dma_addr && dev->phys_dma_addr != dev->phys_bounce_buffer)
++		pci_unmap_single(dev->pci_dev, dev->phys_dma_addr, R852_DMA_LEN,
++			dev->dma_dir ? PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE);
++	complete(&dev->dma_done);
 +}
 +
-+/* Throughtly test that block is valid. */
-+static int sm_check_block(struct sm_ftl *ftl, int zone, int block)
++/*
++ * Wait, till dma is done, which includes both phases of it
++ */
++static int r852_dma_wait(struct r852_device *dev)
 +{
-+	int boffset;
-+	struct sm_oob oob;
-+	int lbas[] = { -3, 0, 0, 0 };
-+	int i = 0;
-+	int test_lba;
-+
-+
-+	/* First just check that block doesn't look fishy */
-+	/* Only blocks that are valid or are sliced in two parts, are
-+		accepted */
-+	for (boffset = 0; boffset < ftl->block_size;
-+					boffset += SM_SECTOR_SIZE) {
-+
-+		/* This shoudn't happen anyway */
-+		if (sm_read_sector(ftl, zone, block, boffset, NULL, &oob))
-+			return -2;
-+
-+		test_lba = sm_read_lba(&oob);
-+
-+		if (lbas[i] != test_lba)
-+			lbas[++i] = test_lba;
-+
-+		/* If we found three different LBAs, something is fishy */
-+		if (i == 3)
-+			return -EIO;
-+	}
-+
-+	/* If the block is sliced (partialy erased usually) erase it */
-+	if (i == 2) {
-+		sm_erase_block(ftl, zone, block, 1);
-+		return 1;
++	long timeout = wait_for_completion_timeout(&dev->dma_done,
++				msecs_to_jiffies(1000));
++	if (!timeout) {
++		dbg("timeout waiting for DMA interrupt");
++		return -ETIMEDOUT;
 +	}
 +
 +	return 0;
 +}
 +
-+/* ----------------- media scanning --------------------------------- */
-+static const struct chs_entry chs_table[] = {
-+	{ 1,    125,  4,  4  },
-+	{ 2,    125,  4,  8  },
-+	{ 4,    250,  4,  8  },
-+	{ 8,    250,  4,  16 },
-+	{ 16,   500,  4,  16 },
-+	{ 32,   500,  8,  16 },
-+	{ 64,   500,  8,  32 },
-+	{ 128,  500,  16, 32 },
-+	{ 256,  1000, 16, 32 },
-+	{ 512,  1015, 32, 63 },
-+	{ 1024, 985,  33, 63 },
-+	{ 2048, 985,  33, 63 },
-+	{ 0 },
-+};
-+
-+
-+static const u8 cis_signature[] = {
-+	0x01, 0x03, 0xD9, 0x01, 0xFF, 0x18, 0x02, 0xDF, 0x01, 0x20
-+};
-+/* Find out media parameters.
-+ * This ideally has to be based on nand id, but for now device size is enough */
-+int sm_get_media_info(struct sm_ftl *ftl, struct mtd_info *mtd)
++/*
++ * Read/Write one page using dma. Only pages can be read (512 bytes)
++*/
++static void r852_do_dma(struct r852_device *dev, uint8_t *buf, int do_read)
 +{
-+	int i;
-+	int size_in_megs = mtd->size / (1024 * 1024);
-+
-+	ftl->readonly = mtd->type == MTD_ROM;
-+
-+	/* Manual settings for very old devices */
-+	ftl->zone_count = 1;
-+	ftl->smallpagenand = 0;
-+
-+	switch (size_in_megs) {
-+	case 1:
-+		/* 1 Mb flash/rom SmartMedia card (256 byte pages)*/
-+		ftl->zone_size = 256;
-+		ftl->max_lba = 250;
-+		ftl->block_size = 8 * SM_SECTOR_SIZE;
-+		ftl->smallpagenand = 1;
-+
-+		break;
-+	case 2:
-+		/* 2 Mb flash SmartMedia (256 byte pages)*/
-+		if (mtd->writesize == SM_SMALL_PAGE) {
-+			ftl->zone_size = 512;
-+			ftl->max_lba = 500;
-+			ftl->block_size = 8 * SM_SECTOR_SIZE;
-+			ftl->smallpagenand = 1;
-+		/* 2 Mb rom SmartMedia */
-+		} else {
-+
-+			if (!ftl->readonly)
-+				return -ENODEV;
-+
-+			ftl->zone_size = 256;
-+			ftl->max_lba = 250;
-+			ftl->block_size = 16 * SM_SECTOR_SIZE;
-+		}
-+		break;
-+	case 4:
-+		/* 4 Mb flash/rom SmartMedia device */
-+		ftl->zone_size = 512;
-+		ftl->max_lba = 500;
-+		ftl->block_size = 16 * SM_SECTOR_SIZE;
-+		break;
-+	case 8:
-+		/* 8 Mb flash/rom SmartMedia device */
-+		ftl->zone_size = 1024;
-+		ftl->max_lba = 1000;
-+		ftl->block_size = 16 * SM_SECTOR_SIZE;
-+	}
-+
-+	/* Minimum xD size is 16M. Also, all xD cards have standard zone
-+	   sizes. SmartMedia cards exist up to 128 Mb and have same layout*/
-+	if (size_in_megs >= 16) {
-+		ftl->zone_count = size_in_megs / 16;
-+		ftl->zone_size = 1024;
-+		ftl->max_lba = 1000;
-+		ftl->block_size = 32 * SM_SECTOR_SIZE;
-+	}
-+
-+	/* Test for proper write,erase and oob sizes */
-+	if (mtd->erasesize > ftl->block_size)
-+		return -ENODEV;
-+
-+	if (mtd->writesize > SM_SECTOR_SIZE)
-+		return -ENODEV;
-+
-+	if (ftl->smallpagenand && mtd->oobsize < SM_SMALL_OOB_SIZE)
-+		return -ENODEV;
-+
-+	if (!ftl->smallpagenand && mtd->oobsize < SM_OOB_SIZE)
-+		return -ENODEV;
-+
-+	/* We use these functions for IO */
-+	if (!mtd->read_oob || !mtd->write_oob)
-+		return -ENODEV;
-+
-+	/* Find geometry information */
-+	for (i = 0 ; i < ARRAY_SIZE(chs_table) ; i++) {
-+		if (chs_table[i].size == size_in_megs) {
-+			ftl->cylinders = chs_table[i].cyl;
-+			ftl->heads = chs_table[i].head;
-+			ftl->sectors = chs_table[i].sec;
-+			return 0;
-+		}
-+	}
-+
-+	sm_printk("media has unknown size : %dMiB", size_in_megs);
-+	ftl->cylinders = 985;
-+	ftl->heads =  33;
-+	ftl->sectors = 63;
-+	return 0;
-+}
-+
-+/* Validate the CIS */
-+static int sm_read_cis(struct sm_ftl *ftl)
-+{
-+	struct sm_oob oob;
-+
-+	if (sm_read_sector(ftl,
-+		0, ftl->cis_block, ftl->cis_boffset, ftl->cis_buffer, &oob))
-+			return -EIO;
-+
-+	if (!sm_sector_valid(&oob) || !sm_block_valid(&oob))
-+		return -EIO;
-+
-+	if (!memcmp(ftl->cis_buffer + ftl->cis_page_offset,
-+			cis_signature, sizeof(cis_signature))) {
-+		return 0;
-+	}
-+
-+	return -EIO;
-+}
-+
-+/* Scan the media for the CIS */
-+static int sm_find_cis(struct sm_ftl *ftl)
-+{
-+	struct sm_oob oob;
-+	int block, boffset;
-+	int block_found = 0;
-+	int cis_found = 0;
-+
-+	/* Search for first valid block */
-+	for (block = 0 ; block < ftl->zone_size - ftl->max_lba ; block++) {
-+
-+		if (sm_read_sector(ftl, 0, block, 0, NULL, &oob))
-+			continue;
-+
-+		if (!sm_block_valid(&oob))
-+			continue;
-+		block_found = 1;
-+		break;
-+	}
-+
-+	if (!block_found)
-+		return -EIO;
-+
-+	/* Search for first valid sector in this block */
-+	for (boffset = 0 ; boffset < ftl->block_size;
-+						boffset += SM_SECTOR_SIZE) {
-+
-+		if (sm_read_sector(ftl, 0, block, boffset, NULL, &oob))
-+			continue;
-+
-+		if (!sm_sector_valid(&oob))
-+			continue;
-+		break;
-+	}
-+
-+	if (boffset == ftl->block_size)
-+		return -EIO;
-+
-+	ftl->cis_block = block;
-+	ftl->cis_boffset = boffset;
-+	ftl->cis_page_offset = 0;
-+
-+	cis_found = !sm_read_cis(ftl);
-+
-+	if (!cis_found) {
-+		ftl->cis_page_offset = SM_SMALL_PAGE;
-+		cis_found = !sm_read_cis(ftl);
-+	}
-+
-+	if (cis_found) {
-+		dbg("CIS block found at offset %x",
-+			block * ftl->block_size +
-+				boffset + ftl->cis_page_offset);
-+		return 0;
-+	}
-+	return -EIO;
-+}
-+
-+/* Basic test to determine if underlying mtd device if functional */
-+static int sm_recheck_media(struct sm_ftl *ftl)
-+{
-+	if (sm_read_cis(ftl)) {
-+
-+		if (!ftl->unstable) {
-+			sm_printk("media unstable, not allowing writes");
-+			ftl->unstable = 1;
-+		}
-+		return -EIO;
-+	}
-+	return 0;
-+}
-+
-+/* Initialize a FTL zone */
-+static int sm_init_zone(struct sm_ftl *ftl, int zone_num)
-+{
-+	struct ftl_zone *zone = &ftl->zones[zone_num];
-+	struct sm_oob oob;
-+	u16 block;
-+	int lba;
-+	int i = 0;
-+
-+	dbg("initializing zone %d", zone_num);
-+
-+	/* Allocate memory for FTL table */
-+	zone->lba_to_phys_table = kmalloc(ftl->max_lba * 2, GFP_KERNEL);
-+
-+	if (!zone->lba_to_phys_table)
-+		return -ENOMEM;
-+	memset(zone->lba_to_phys_table, -1, ftl->max_lba * 2);
-+
-+
-+	/* Allocate memory for free sectors FIFO */
-+	if (kfifo_alloc(&zone->free_sectors, ftl->zone_size * 2, GFP_KERNEL)) {
-+		kfree(zone->lba_to_phys_table);
-+		return -ENOMEM;
-+	}
-+
-+	/* Now scan the zone */
-+	for (block = 0 ; block < ftl->zone_size ; block++) {
-+
-+		/* Skip blocks till the CIS (including) */
-+		if (zone_num == 0 && block <= ftl->cis_block)
-+			continue;
-+
-+		/* Read the oob of first sector */
-+		if (sm_read_sector(ftl, zone_num, block, 0, NULL, &oob))
-+			return -EIO;
-+
-+		/* Test to see if block is erased. It is enough to test
-+			first sector, because erase happens in one shot */
-+		if (sm_block_erased(&oob)) {
-+			kfifo_in(&zone->free_sectors,
-+				(unsigned char *)&block, 2);
-+			continue;
-+		}
-+
-+		/* If block is marked as bad, skip it */
-+		/* This assumes we can trust first sector*/
-+		/* However the way the block valid status is defined, ensures
-+			very low probability of failure here */
-+		if (!sm_block_valid(&oob)) {
-+			dbg("PH %04d <-> <marked bad>", block);
-+			continue;
-+		}
-+
-+
-+		lba = sm_read_lba(&oob);
-+
-+		/* Invalid LBA means that block is damaged. */
-+		/* We can try to erase it, or mark it as bad, but
-+			lets leave that to recovery application */
-+		if (lba == -2 || lba >= ftl->max_lba) {
-+			dbg("PH %04d <-> LBA %04d(bad)", block, lba);
-+			continue;
-+		}
-+
-+
-+		/* If there is no collision,
-+			just put the sector in the FTL table */
-+		if (zone->lba_to_phys_table[lba] < 0) {
-+			dbg_verbose("PH %04d <-> LBA %04d", block, lba);
-+			zone->lba_to_phys_table[lba] = block;
-+			continue;
-+		}
-+
-+		sm_printk("collision"
-+			" of LBA %d between blocks %d and %d in zone %d",
-+			lba, zone->lba_to_phys_table[lba], block, zone_num);
-+
-+		/* Test that this block is valid*/
-+		if (sm_check_block(ftl, zone_num, block))
-+			continue;
-+
-+		/* Test now the old block */
-+		if (sm_check_block(ftl, zone_num,
-+					zone->lba_to_phys_table[lba])) {
-+			zone->lba_to_phys_table[lba] = block;
-+			continue;
-+		}
-+
-+		/* If both blocks are valid and share same LBA, it means that
-+			they hold different versions of same data. It not
-+			known which is more recent, thus just erase one of them
-+		*/
-+		sm_printk("both blocks are valid, erasing the later");
-+		sm_erase_block(ftl, zone_num, block, 1);
-+	}
-+
-+	dbg("zone initialized");
-+	zone->initialized = 1;
-+
-+	/* No free sectors, means that the zone is heavily damaged, write won't
-+		work, but it can still can be (partially) read */
-+	if (!kfifo_len(&zone->free_sectors)) {
-+		sm_printk("no free blocks in zone %d", zone_num);
-+		return 0;
-+	}
-+
-+	/* Randomize first block we write to */
-+	get_random_bytes(&i, 2);
-+	i %= (kfifo_len(&zone->free_sectors) / 2);
-+
-+	while (i--) {
-+		kfifo_out(&zone->free_sectors, (unsigned char *)&block, 2);
-+		kfifo_in(&zone->free_sectors, (const unsigned char *)&block, 2);
-+	}
-+	return 0;
-+}
-+
-+/* Get and automaticly initialize an FTL mapping for one zone */
-+struct ftl_zone *sm_get_zone(struct sm_ftl *ftl, int zone_num)
-+{
-+	struct ftl_zone *zone;
++	int bounce = 0;
++	unsigned long flags;
 +	int error;
 +
-+	BUG_ON(zone_num >= ftl->zone_count);
-+	zone = &ftl->zones[zone_num];
++	dev->dma_error = 0;
 +
-+	if (!zone->initialized) {
-+		error = sm_init_zone(ftl, zone_num);
++	/* Set dma direction */
++	dev->dma_dir = do_read;
++	dev->dma_stage = 1;
 +
-+		if (error)
-+			return ERR_PTR(error);
++	dbg_verbose("doing dma %s ", do_read ? "read" : "write");
++
++	/* Set intial dma state: for reading first fill on board buffer,
++	  from device, for writes first fill the buffer  from memory*/
++	dev->dma_state = do_read ? DMA_INTERNAL : DMA_MEMORY;
++
++	/* if incoming buffer is not page aligned, we should do bounce */
++	if ((unsigned long)buf & (R852_DMA_LEN-1))
++		bounce = 1;
++
++	if (!bounce) {
++		dev->phys_dma_addr = pci_map_single(dev->pci_dev, (void *)buf,
++			R852_DMA_LEN,
++			(do_read ? PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE));
++
++		if (dev->phys_dma_addr == DMA_ERROR_CODE)
++			bounce = 1;
 +	}
-+	return zone;
++
++	if (bounce) {
++		dbg_verbose("dma: using bounce buffer");
++		dev->phys_dma_addr = dev->phys_bounce_buffer;
++		if (!do_read)
++			memcpy(dev->bounce_buffer, buf, R852_DMA_LEN);
++	}
++
++	/* Enable DMA */
++	spin_lock_irqsave(&dev->irqlock, flags);
++	r852_dma_enable(dev);
++	spin_unlock_irqrestore(&dev->irqlock, flags);
++
++	/* Wait till complete */
++	error = r852_dma_wait(dev);
++
++	if (error) {
++		r852_dma_done(dev, error);
++		return;
++	}
++
++	if (do_read && bounce)
++		memcpy((void *)buf, dev->bounce_buffer, R852_DMA_LEN);
 +}
 +
-+
-+/* ----------------- cache handling ------------------------------------------*/
-+
-+/* Initialize the one block cache */
-+void sm_cache_init(struct sm_ftl *ftl)
++/*
++ * Program data lines of the nand chip to send data to it
++ */
++void r852_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
 +{
-+	ftl->cache_data_invalid_bitmap = 0xFFFFFFFF;
-+	ftl->cache_clean = 1;
-+	ftl->cache_zone = -1;
-+	ftl->cache_block = -1;
-+	/*memset(ftl->cache_data, 0xAA, ftl->block_size);*/
++	struct r852_device *dev = r852_get_dev(mtd);
++	u32 reg;
++
++	/* Don't allow any access to hardware if we suspect card removal */
++	if (dev->card_unstable)
++		return;
++
++	/* Special case for whole sector read */
++	if (len == R852_DMA_LEN && dev->dma_usable) {
++		r852_do_dma(dev, (uint8_t *)buf, 0);
++		return;
++	}
++
++	/* write DWORD chinks - faster */
++	while (len) {
++		reg = buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
++		r852_write_reg_dword(dev, R852_DATALINE, reg);
++		buf += 4;
++		len -= 4;
++
++	}
++
++	/* write rest */
++	while (len)
++		r852_write_reg(dev, R852_DATALINE, *buf++);
 +}
 +
-+/* Put sector in one block cache */
-+void sm_cache_put(struct sm_ftl *ftl, char *buffer, int boffset)
++/*
++ * Read data lines of the nand chip to retrieve data
++ */
++void r852_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
 +{
-+	memcpy(ftl->cache_data + boffset, buffer, SM_SECTOR_SIZE);
-+	clear_bit(boffset / SM_SECTOR_SIZE, &ftl->cache_data_invalid_bitmap);
-+	ftl->cache_clean = 0;
++	struct r852_device *dev = r852_get_dev(mtd);
++	u32 reg;
++
++	if (dev->card_unstable) {
++		/* since we can't signal error here, at least, return
++			predictable buffer */
++		memset(buf, 0, len);
++		return;
++	}
++
++	/* special case for whole sector read */
++	if (len == R852_DMA_LEN && dev->dma_usable) {
++		r852_do_dma(dev, buf, 1);
++		return;
++	}
++
++	/* read in dword sized chunks */
++	while (len >= 4) {
++
++		reg = r852_read_reg_dword(dev, R852_DATALINE);
++		*buf++ = reg & 0xFF;
++		*buf++ = (reg >> 8) & 0xFF;
++		*buf++ = (reg >> 16) & 0xFF;
++		*buf++ = (reg >> 24) & 0xFF;
++		len -= 4;
++	}
++
++	/* read the reset by bytes */
++	while (len--)
++		*buf++ = r852_read_reg(dev, R852_DATALINE);
 +}
 +
-+/* Read a sector from the cache */
-+int sm_cache_get(struct sm_ftl *ftl, char *buffer, int boffset)
++/*
++ * Read one byte from nand chip
++ */
++static uint8_t r852_read_byte(struct mtd_info *mtd)
 +{
-+	if (test_bit(boffset / SM_SECTOR_SIZE,
-+		&ftl->cache_data_invalid_bitmap))
-+			return -1;
++	struct r852_device *dev = r852_get_dev(mtd);
 +
-+	memcpy(buffer, ftl->cache_data + boffset, SM_SECTOR_SIZE);
-+	return 0;
-+}
-+
-+/* Write the cache to hardware */
-+int sm_cache_flush(struct sm_ftl *ftl)
-+{
-+	struct ftl_zone *zone;
-+
-+	int sector_num;
-+	u16 write_sector;
-+	int zone_num = ftl->cache_zone;
-+	int block_num;
-+
-+	if (ftl->cache_clean)
++	/* Same problem as in r852_read_buf.... */
++	if (dev->card_unstable)
 +		return 0;
 +
-+	if (ftl->unstable)
-+		return -EIO;
-+
-+	BUG_ON(zone_num < 0);
-+	zone = &ftl->zones[zone_num];
-+	block_num = zone->lba_to_phys_table[ftl->cache_block];
++	return r852_read_reg(dev, R852_DATALINE);
++}
 +
 +
-+	/* Try to read all unread areas of the cache block*/
-+	for_each_bit(sector_num, &ftl->cache_data_invalid_bitmap,
-+		ftl->block_size / SM_SECTOR_SIZE) {
++/*
++ * Readback the buffer to verify it
++ */
++int r852_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
++{
++	struct r852_device *dev = r852_get_dev(mtd);
 +
-+		if (!sm_read_sector(ftl,
-+			zone_num, block_num, sector_num * SM_SECTOR_SIZE,
-+			ftl->cache_data + sector_num * SM_SECTOR_SIZE, NULL))
-+				clear_bit(sector_num,
-+					&ftl->cache_data_invalid_bitmap);
++	/* We can't be sure about anything here... */
++	if (dev->card_unstable)
++		return -1;
++
++	/* This will never happen, unless you wired up a nand chip
++		with > 512 bytes page size to the reader */
++	if (len > SM_SECTOR_SIZE)
++		return 0;
++
++	r852_read_buf(mtd, dev->tmp_buffer, len);
++	return memcmp(buf, dev->tmp_buffer, len);
++}
++
++/*
++ * Control several chip lines & send commands
++ */
++void r852_cmdctl(struct mtd_info *mtd, int dat, unsigned int ctrl)
++{
++	struct r852_device *dev = r852_get_dev(mtd);
++
++	if (dev->card_unstable)
++		return;
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++
++		dev->ctlreg &= ~(R852_CTL_DATA | R852_CTL_COMMAND |
++				 R852_CTL_ON | R852_CTL_CARDENABLE);
++
++		if (ctrl & NAND_ALE)
++			dev->ctlreg |= R852_CTL_DATA;
++
++		if (ctrl & NAND_CLE)
++			dev->ctlreg |= R852_CTL_COMMAND;
++
++		if (ctrl & NAND_NCE)
++			dev->ctlreg |= (R852_CTL_CARDENABLE | R852_CTL_ON);
++		else
++			dev->ctlreg &= ~R852_CTL_WRITE;
++
++		/* when write is stareted, enable write access */
++		if (dat == NAND_CMD_ERASE1)
++			dev->ctlreg |= R852_CTL_WRITE;
++
++		r852_write_reg(dev, R852_CTL, dev->ctlreg);
 +	}
-+restart:
 +
-+	if (ftl->unstable)
-+		return -EIO;
-+	/* No spare blocks */
-+	/* We could still continue by erasing the current block,
-+		but for such worn out media it doesn't worth the trouble,
-+			and the dangers */
-+
-+	if (!kfifo_len(&zone->free_sectors)) {
-+		dbg("no free sectors for write!");
-+		return -EIO;
++	 /* HACK: NAND_CMD_SEQIN is called without NAND_CTRL_CHANGE, but we need
++		to set write mode */
++	if (dat == NAND_CMD_SEQIN && (dev->ctlreg & R852_CTL_COMMAND)) {
++		dev->ctlreg |= R852_CTL_WRITE;
++		r852_write_reg(dev, R852_CTL, dev->ctlreg);
 +	}
 +
-+	kfifo_out(&zone->free_sectors, (unsigned char *)&write_sector, 2);
++	if (dat != NAND_CMD_NONE)
++		r852_write_reg(dev, R852_DATALINE, dat);
++}
 +
-+	if (sm_write_block(ftl, ftl->cache_data, zone_num, write_sector,
-+		ftl->cache_block, ftl->cache_data_invalid_bitmap))
-+			goto restart;
++/*
++ * Wait till card is ready.
++ * based on nand_wait, but returns errors on DMA error
++ */
++int r852_wait(struct mtd_info *mtd, struct nand_chip *chip)
++{
++	struct r852_device *dev = (struct r852_device *)chip->priv;
 +
-+	/* Update the FTL table */
-+	zone->lba_to_phys_table[ftl->cache_block] = write_sector;
++	unsigned long timeout;
++	int status;
 +
-+	/* Write succesfull, so erase and free the old block */
-+	if (block_num > 0)
-+		sm_erase_block(ftl, zone_num, block_num, 1);
++	timeout = jiffies + (chip->state == FL_ERASING ?
++		msecs_to_jiffies(400) : msecs_to_jiffies(20));
 +
-+	sm_cache_init(ftl);
++	while (time_before(jiffies, timeout))
++		if (chip->dev_ready(mtd))
++			break;
++
++	chip->cmdfunc(mtd, NAND_CMD_STATUS, -1, -1);
++	status = (int)chip->read_byte(mtd);
++
++	/* Unfortunelly, no way to send detailed error status... */
++	if (dev->dma_error) {
++		status |= NAND_STATUS_FAIL;
++		dev->dma_error = 0;
++	}
++	return status;
++}
++
++/*
++ * Check if card is ready
++ */
++
++int r852_ready(struct mtd_info *mtd)
++{
++	struct r852_device *dev = r852_get_dev(mtd);
++	return !(r852_read_reg(dev, R852_CARD_STA) & R852_CARD_STA_BUSY);
++}
++
++
++/*
++ * Set ECC engine mode
++*/
++
++void r852_ecc_hwctl(struct mtd_info *mtd, int mode)
++{
++	struct r852_device *dev = r852_get_dev(mtd);
++
++	if (dev->card_unstable)
++		return;
++
++	switch (mode) {
++	case NAND_ECC_READ:
++	case NAND_ECC_WRITE:
++		/* enable ecc generation/check*/
++		dev->ctlreg |= R852_CTL_ECC_ENABLE;
++
++		/* flush ecc buffer */
++		r852_write_reg(dev, R852_CTL,
++			dev->ctlreg | R852_CTL_ECC_ACCESS);
++
++		r852_read_reg_dword(dev, R852_DATALINE);
++		r852_write_reg(dev, R852_CTL, dev->ctlreg);
++		return;
++
++	case NAND_ECC_READSYN:
++		/* disable ecc generation */
++		dev->ctlreg &= ~R852_CTL_ECC_ENABLE;
++		r852_write_reg(dev, R852_CTL, dev->ctlreg);
++	}
++}
++
++/*
++ * Calculate ECC, only used for writes
++ */
++
++int r852_ecc_calculate(struct mtd_info *mtd, const uint8_t *dat,
++							uint8_t *ecc_code)
++{
++	struct r852_device *dev = r852_get_dev(mtd);
++	struct sm_oob *oob = (struct sm_oob *)ecc_code;
++	u32 ecc1, ecc2;
++
++	if (dev->card_unstable)
++		return 0;
++
++	dev->ctlreg &= ~R852_CTL_ECC_ENABLE;
++	r852_write_reg(dev, R852_CTL, dev->ctlreg | R852_CTL_ECC_ACCESS);
++
++	ecc1 = r852_read_reg_dword(dev, R852_DATALINE);
++	ecc2 = r852_read_reg_dword(dev, R852_DATALINE);
++
++	oob->ecc1[0] = (ecc1) & 0xFF;
++	oob->ecc1[1] = (ecc1 >> 8) & 0xFF;
++	oob->ecc1[2] = (ecc1 >> 16) & 0xFF;
++
++	oob->ecc2[0] = (ecc2) & 0xFF;
++	oob->ecc2[1] = (ecc2 >> 8) & 0xFF;
++	oob->ecc2[2] = (ecc2 >> 16) & 0xFF;
++
++	r852_write_reg(dev, R852_CTL, dev->ctlreg);
 +	return 0;
 +}
 +
++/*
++ * Correct the data using ECC, hw did almost everything for us
++ */
 +
-+/* flush timer, runs a second after last write */
-+static void sm_cache_flush_timer(unsigned long data)
++int r852_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
++				uint8_t *read_ecc, uint8_t *calc_ecc)
 +{
-+	struct sm_ftl *ftl = (struct sm_ftl *)data;
-+	queue_work(cache_flush_workqueue, &ftl->flush_work);
-+}
++	u16 ecc_reg;
++	u8 ecc_status, err_byte;
++	int i, error = 0;
 +
-+/* cache flush work, kicked by timer */
-+static void sm_cache_flush_work(struct work_struct *work)
-+{
-+	struct sm_ftl *ftl = container_of(work, struct sm_ftl, flush_work);
-+	mutex_lock(&ftl->mutex);
-+	sm_cache_flush(ftl);
-+	mutex_unlock(&ftl->mutex);
-+	return;
-+}
++	struct r852_device *dev = r852_get_dev(mtd);
 +
-+/* ---------------- outside interface -------------------------------------- */
++	if (dev->card_unstable)
++		return 0;
 +
-+/* outside interface: read a sector */
-+static int sm_read(struct mtd_blktrans_dev *dev,
-+				unsigned long sect_no, char *buf)
-+{
-+	struct sm_ftl *ftl = dev->priv;
-+	struct ftl_zone *zone;
-+	int error = 0, in_cache = 0;
-+	int zone_num, block, boffset;
++	r852_write_reg(dev, R852_CTL, dev->ctlreg | R852_CTL_ECC_ACCESS);
++	ecc_reg = r852_read_reg_dword(dev, R852_DATALINE);
++	r852_write_reg(dev, R852_CTL, dev->ctlreg);
 +
-+	sm_break_offset(ftl, sect_no << 9, &zone_num, &block, &boffset);
-+	mutex_lock(&ftl->mutex);
++	for (i = 0 ; i <= 1 ; i++) {
 +
++		ecc_status = (ecc_reg >> 8) & 0xFF;
 +
-+	zone = sm_get_zone(ftl, zone_num);
-+	if (IS_ERR(zone)) {
-+		error = PTR_ERR(zone);
-+		goto unlock;
++		/* ecc uncorrectable error */
++		if (ecc_status & R852_ECC_FAIL) {
++			dbg("ecc: unrecoverable error, in half %d", i);
++			error = -1;
++			goto exit;
++		}
++
++		/* correctable error */
++		if (ecc_status & R852_ECC_CORRECTABLE) {
++
++			err_byte = ecc_reg & 0xFF;
++			dbg("ecc: recoverable error, "
++				"in half %d, byte %d, bit %d", i,
++				err_byte, ecc_status & R852_ECC_ERR_BIT_MSK);
++
++			dat[err_byte] ^=
++				1 << (ecc_status & R852_ECC_ERR_BIT_MSK);
++			error++;
++		}
++
++		dat += 256;
++		ecc_reg >>= 16;
 +	}
-+
-+	/* Have to look at cache first */
-+	if (ftl->cache_zone == zone_num && ftl->cache_block == block) {
-+		in_cache = 1;
-+		if (!sm_cache_get(ftl, buf, boffset))
-+			goto unlock;
-+	}
-+
-+	/* Translate the block and return if doesn't exist in the table */
-+	block = zone->lba_to_phys_table[block];
-+
-+	if (block == -1) {
-+		memset(buf, 0xFF, SM_SECTOR_SIZE);
-+		goto unlock;
-+	}
-+
-+	if (sm_read_sector(ftl, zone_num, block, boffset, buf, NULL)) {
-+		error = -EIO;
-+		goto unlock;
-+	}
-+
-+	if (in_cache)
-+		sm_cache_put(ftl, buf, boffset);
-+unlock:
-+	mutex_unlock(&ftl->mutex);
++exit:
 +	return error;
 +}
 +
-+/* outside interface: write a sector */
-+static int sm_write(struct mtd_blktrans_dev *dev,
-+				unsigned long sec_no, char *buf)
++/*
++ * This is copy of nand_read_oob_std
++ * nand_read_oob_syndrome assumes we can send column address - we can't
++ */
++static int r852_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
++			     int page, int sndcmd)
 +{
-+	struct sm_ftl *ftl = dev->priv;
-+	struct ftl_zone *zone;
-+	int error, zone_num, block, boffset;
++	if (sndcmd) {
++		chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
++		sndcmd = 0;
++	}
++	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++	return sndcmd;
++}
 +
-+	BUG_ON(ftl->readonly);
-+	sm_break_offset(ftl, sec_no << 9, &zone_num, &block, &boffset);
++/*
++ * Start the nand engine
++ */
 +
-+	/* No need in flush thread running now */
-+	del_timer(&ftl->timer);
-+	mutex_lock(&ftl->mutex);
++void r852_engine_enable(struct r852_device *dev)
++{
++	if (r852_read_reg_dword(dev, R852_HW) & R852_HW_UNKNOWN) {
++		r852_write_reg(dev, R852_CTL, R852_CTL_RESET | R852_CTL_ON);
++		r852_write_reg_dword(dev, R852_HW, R852_HW_ENABLED);
++	} else {
++		r852_write_reg_dword(dev, R852_HW, R852_HW_ENABLED);
++		r852_write_reg(dev, R852_CTL, R852_CTL_RESET | R852_CTL_ON);
++	}
++	msleep(300);
++	r852_write_reg(dev, R852_CTL, 0);
++}
 +
-+	zone = sm_get_zone(ftl, zone_num);
-+	if (IS_ERR(zone)) {
-+		error = PTR_ERR(zone);
-+		goto unlock;
++
++/*
++ * Stop the nand engine
++ */
++
++void r852_engine_disable(struct r852_device *dev)
++{
++	r852_write_reg_dword(dev, R852_HW, 0);
++	r852_write_reg(dev, R852_CTL, R852_CTL_RESET);
++}
++
++/*
++ * Test if card is present
++ */
++
++void r852_card_update_present(struct r852_device *dev)
++{
++	unsigned long flags;
++	u8 reg;
++
++	spin_lock_irqsave(&dev->irqlock, flags);
++	reg = r852_read_reg(dev, R852_CARD_STA);
++	dev->card_detected = !!(reg & R852_CARD_STA_PRESENT);
++	spin_unlock_irqrestore(&dev->irqlock, flags);
++}
++
++/*
++ * Update card detection IRQ state according to current card state
++ * which is read in r852_card_update_present
++ */
++void r852_update_card_detect(struct r852_device *dev)
++{
++	int card_detect_reg = r852_read_reg(dev, R852_CARD_IRQ_ENABLE);
++
++	card_detect_reg &= ~(R852_CARD_IRQ_REMOVE | R852_CARD_IRQ_INSERT);
++	card_detect_reg |= R852_CARD_IRQ_GENABLE;
++
++	card_detect_reg |= dev->card_detected ?
++		R852_CARD_IRQ_REMOVE : R852_CARD_IRQ_INSERT;
++
++	r852_write_reg(dev, R852_CARD_IRQ_ENABLE, card_detect_reg);
++}
++
++ssize_t r852_media_type_show(struct device *sys_dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = container_of(sys_dev, struct mtd_info, dev);
++	struct r852_device *dev = r852_get_dev(mtd);
++	char *data = dev->sm ? "smartmedia" : "xd";
++
++	strcpy(buf, data);
++	return strlen(data);
++}
++
++DEVICE_ATTR(media_type, S_IRUGO, r852_media_type_show, NULL);
++
++
++/* Detect properties of card in slot */
++void r852_update_media_status(struct r852_device *dev)
++{
++	u8 reg;
++	unsigned long flags;
++	int readonly;
++
++	spin_lock_irqsave(&dev->irqlock, flags);
++	if (!dev->card_detected) {
++		message("card removed");
++		spin_unlock_irqrestore(&dev->irqlock, flags);
++		return ;
 +	}
 +
-+	/* If entry is not in cache, flush it */
-+	if (ftl->cache_block != block || ftl->cache_zone != zone_num) {
++	readonly  = r852_read_reg(dev, R852_CARD_STA) & R852_CARD_STA_RO;
++	reg = r852_read_reg(dev, R852_DMA_CAP);
++	dev->sm = (reg & (R852_DMA1 | R852_DMA2)) && (reg & R852_SMBIT);
 +
-+		error = sm_cache_flush(ftl);
-+		if (error)
-+			goto unlock;
++	message("detected %s %s card in slot",
++		dev->sm ? "SmartMedia" : "xD",
++		readonly ? "readonly" : "writeable");
 +
-+		ftl->cache_block = block;
-+		ftl->cache_zone = zone_num;
-+	}
-+
-+	sm_cache_put(ftl, buf, boffset);
-+unlock:
-+	mod_timer(&ftl->timer, jiffies + msecs_to_jiffies(cache_timeout));
-+	mutex_unlock(&ftl->mutex);
-+	return error;
++	dev->readonly = readonly;
++	spin_unlock_irqrestore(&dev->irqlock, flags);
 +}
 +
-+/* outside interface: flush everything */
-+static int sm_flush(struct mtd_blktrans_dev *dev)
++/*
++ * Register the nand device
++ * Called when the card is detected
++ */
++int r852_register_nand_device(struct r852_device *dev)
 +{
-+	struct sm_ftl *ftl = dev->priv;
-+	int retval;
++	dev->mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
 +
-+	mutex_lock(&ftl->mutex);
-+	retval =  sm_cache_flush(ftl);
-+	mutex_unlock(&ftl->mutex);
-+	return retval;
-+}
-+
-+/* outside interface: device is released */
-+static int sm_release(struct mtd_blktrans_dev *dev)
-+{
-+	struct sm_ftl *ftl = dev->priv;
-+
-+	mutex_lock(&ftl->mutex);
-+	del_timer_sync(&ftl->timer);
-+	cancel_work_sync(&ftl->flush_work);
-+	sm_cache_flush(ftl);
-+	mutex_unlock(&ftl->mutex);
-+	return 0;
-+}
-+
-+/* outside interface: get geometry */
-+static int sm_getgeo(struct mtd_blktrans_dev *dev, struct hd_geometry *geo)
-+{
-+	struct sm_ftl *ftl = dev->priv;
-+	geo->heads = ftl->heads;
-+	geo->sectors = ftl->sectors;
-+	geo->cylinders = ftl->cylinders;
-+	return 0;
-+}
-+
-+/* external interface: main initialization function */
-+static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
-+{
-+	struct mtd_blktrans_dev *trans;
-+	struct sm_ftl *ftl;
-+
-+	/* Allocate & initialize our private structure */
-+	ftl = kzalloc(sizeof(struct sm_ftl), GFP_KERNEL);
-+	if (!ftl)
++	if (!dev->mtd)
 +		goto error1;
 +
++	WARN_ON(dev->card_registred);
 +
-+	mutex_init(&ftl->mutex);
-+	setup_timer(&ftl->timer, sm_cache_flush_timer, (unsigned long)ftl);
-+	INIT_WORK(&ftl->flush_work, sm_cache_flush_work);
-+	init_completion(&ftl->erase_completion);
++	dev->mtd->owner = THIS_MODULE;
++	dev->mtd->priv = dev->chip;
++	dev->mtd->dev.parent = &dev->pci_dev->dev;
 +
-+	/* Read media information */
-+	if (sm_get_media_info(ftl, mtd)) {
-+		dbg("found unsupported mtd device, aborting");
++	if (dev->readonly)
++		dev->chip->options |= NAND_ROM;
++
++	r852_engine_enable(dev);
++
++	if (sm_register_device(dev->mtd))
 +		goto error2;
++
++	device_create_file(&dev->mtd->dev, &dev_attr_media_type);
++	dev->card_registred = 1;
++	return 0;
++error2:
++	kfree(dev->mtd);
++error1:
++	/* Force card redetect */
++	dev->card_detected = 0;
++	return -1;
++}
++
++/*
++ * Unregister the card
++ */
++
++void r852_unregister_nand_device(struct r852_device *dev)
++{
++	if (!dev->card_registred)
++		return;
++
++	device_remove_file(&dev->mtd->dev, &dev_attr_media_type);
++	nand_release(dev->mtd);
++	r852_engine_disable(dev);
++	dev->card_registred = 0;
++	kfree(dev->mtd);
++	dev->mtd = NULL;
++}
++
++/* Card state updater */
++void r852_card_detect_work(struct work_struct *work)
++{
++	struct r852_device *dev =
++		container_of(work, struct r852_device, card_detect_work.work);
++
++	r852_update_card_detect(dev);
++	dev->card_unstable = 0;
++
++	/* false alarm */
++	if (dev->card_detected == dev->card_registred)
++		goto exit;
++
++	/* Read media properties */
++	r852_update_media_status(dev);
++
++	/* Register the card */
++	if (dev->card_detected)
++		r852_register_nand_device(dev);
++	else
++		r852_unregister_nand_device(dev);
++exit:
++	/* Update detection logic */
++	r852_update_card_detect(dev);
++}
++
++/* Ack + disable IRQ generation */
++static void r852_disable_irqs(struct r852_device *dev)
++{
++	u8 reg;
++	reg = r852_read_reg(dev, R852_CARD_IRQ_ENABLE);
++	r852_write_reg(dev, R852_CARD_IRQ_ENABLE, reg & ~R852_CARD_IRQ_MASK);
++
++	reg = r852_read_reg_dword(dev, R852_DMA_IRQ_ENABLE);
++	r852_write_reg_dword(dev, R852_DMA_IRQ_ENABLE,
++					reg & ~R852_DMA_IRQ_MASK);
++
++	r852_write_reg(dev, R852_CARD_IRQ_STA, R852_CARD_IRQ_MASK);
++	r852_write_reg_dword(dev, R852_DMA_IRQ_STA, R852_DMA_IRQ_MASK);
++}
++
++/* Interrupt handler */
++static irqreturn_t r852_irq(int irq, void *data)
++{
++	struct r852_device *dev = (struct r852_device *)data;
++
++	u8 card_status, dma_status;
++	unsigned long flags;
++	irqreturn_t ret = IRQ_NONE;
++
++	spin_lock_irqsave(&dev->irqlock, flags);
++
++	/* We can recieve shared interrupt while pci is suspended
++		in that case reads will return 0xFFFFFFFF.... */
++	if (dev->insuspend)
++		goto out;
++
++	/* handle card detection interrupts first */
++	card_status = r852_read_reg(dev, R852_CARD_IRQ_STA);
++	r852_write_reg(dev, R852_CARD_IRQ_STA, card_status);
++
++	if (card_status & (R852_CARD_IRQ_INSERT|R852_CARD_IRQ_REMOVE)) {
++
++		ret = IRQ_HANDLED;
++		dev->card_detected = !!(card_status & R852_CARD_IRQ_INSERT);
++
++		/* we shouldn't recieve any interrupts if we wait for card
++			to settle */
++		WARN_ON(dev->card_unstable);
++
++		/* disable irqs while card is unstable */
++		/* this will timeout DMA if active, but better that garbage */
++		r852_disable_irqs(dev);
++
++		if (dev->card_unstable)
++			goto out;
++
++		/* let, card state to settle a bit, and then do the work */
++		dev->card_unstable = 1;
++		queue_delayed_work(dev->card_workqueue,
++			&dev->card_detect_work, msecs_to_jiffies(100));
++		goto out;
 +	}
 +
 +
-+	/* Allocate temporary CIS buffer for read retry support */
-+	ftl->cis_buffer = kzalloc(SM_SECTOR_SIZE, GFP_KERNEL);
-+	if (!ftl->cis_buffer)
++	/* Handle dma interrupts */
++	dma_status = r852_read_reg_dword(dev, R852_DMA_IRQ_STA);
++	r852_write_reg_dword(dev, R852_DMA_IRQ_STA, dma_status);
++
++	if (dma_status & R852_DMA_IRQ_MASK) {
++
++		ret = IRQ_HANDLED;
++
++		if (dma_status & R852_DMA_IRQ_ERROR) {
++			dbg("recieved dma error IRQ");
++			r852_dma_done(dev, -EIO);
++			goto out;
++		}
++
++		/* recieved DMA interrupt out of nowhere? */
++		WARN_ON_ONCE(dev->dma_stage == 0);
++
++		if (dev->dma_stage == 0)
++			goto out;
++
++		/* done device access */
++		if (dev->dma_state == DMA_INTERNAL &&
++				(dma_status & R852_DMA_IRQ_INTERNAL)) {
++
++			dev->dma_state = DMA_MEMORY;
++			dev->dma_stage++;
++		}
++
++		/* done memory DMA */
++		if (dev->dma_state == DMA_MEMORY &&
++				(dma_status & R852_DMA_IRQ_MEMORY)) {
++			dev->dma_state = DMA_INTERNAL;
++			dev->dma_stage++;
++		}
++
++		/* Enable 2nd half of dma dance */
++		if (dev->dma_stage == 2)
++			r852_dma_enable(dev);
++
++		/* Operation done */
++		if (dev->dma_stage == 3)
++			r852_dma_done(dev, 0);
++		goto out;
++	}
++
++	/* Handle unknown interrupts */
++	if (dma_status)
++		dbg("bad dma IRQ status = %x", dma_status);
++
++	if (card_status & ~R852_CARD_STA_CD)
++		dbg("strange card status = %x", card_status);
++
++out:
++	spin_unlock_irqrestore(&dev->irqlock, flags);
++	return ret;
++}
++
++int  r852_probe(struct pci_dev *pci_dev, const struct pci_device_id *id)
++{
++	int error;
++	struct nand_chip *chip;
++	struct r852_device *dev;
++
++	/* pci initialization */
++	error = pci_enable_device(pci_dev);
++
++	if (error)
++		goto error1;
++
++	pci_set_master(pci_dev);
++
++	error = pci_set_dma_mask(pci_dev, DMA_32BIT_MASK);
++	if (error)
 +		goto error2;
 +
-+	/* Allocate zone array, it will be initialized on demand */
-+	ftl->zones = kzalloc(sizeof(struct ftl_zone) * ftl->zone_count,
-+								GFP_KERNEL);
-+	if (!ftl->zones)
++	error = pci_request_regions(pci_dev, DRV_NAME);
++
++	if (error)
 +		goto error3;
 +
-+	/* Allocate the cache*/
-+	ftl->cache_data = kzalloc(ftl->block_size, GFP_KERNEL);
++	error = -ENOMEM;
 +
-+	if (!ftl->cache_data)
++	/* init nand chip, but register it only on card insert */
++	chip = kzalloc(sizeof(struct nand_chip), GFP_KERNEL);
++
++	if (!chip)
 +		goto error4;
 +
-+	sm_cache_init(ftl);
++	/* commands */
++	chip->cmd_ctrl = r852_cmdctl;
++	chip->waitfunc = r852_wait;
++	chip->dev_ready = r852_ready;
 +
++	/* I/O */
++	chip->read_byte = r852_read_byte;
++	chip->read_buf = r852_read_buf;
++	chip->write_buf = r852_write_buf;
++	chip->verify_buf = r852_verify_buf;
 +
-+	/* Allocate upper layer structure and initialize it */
-+	trans = kzalloc(sizeof(struct mtd_blktrans_dev), GFP_KERNEL);
-+	if (!trans)
++	/* ecc */
++	chip->ecc.mode = NAND_ECC_HW_SYNDROME;
++	chip->ecc.size = R852_DMA_LEN;
++	chip->ecc.bytes = SM_OOB_SIZE;
++	chip->ecc.hwctl = r852_ecc_hwctl;
++	chip->ecc.calculate = r852_ecc_calculate;
++	chip->ecc.correct = r852_ecc_correct;
++
++	/* TODO: hack */
++	chip->ecc.read_oob = r852_read_oob;
++
++	/* init our device structure */
++	dev = kzalloc(sizeof(struct r852_device), GFP_KERNEL);
++
++	if (!dev)
 +		goto error5;
 +
-+	ftl->trans = trans;
-+	trans->priv = ftl;
++	chip->priv = dev;
++	dev->chip = chip;
++	dev->pci_dev = pci_dev;
++	pci_set_drvdata(pci_dev, dev);
 +
-+	trans->tr = tr;
-+	trans->mtd = mtd;
-+	trans->devnum = -1;
-+	trans->size = (ftl->block_size * ftl->max_lba * ftl->zone_count) >> 9;
-+	trans->readonly = ftl->readonly;
++	dev->bounce_buffer = pci_alloc_consistent(pci_dev, R852_DMA_LEN,
++		&dev->phys_bounce_buffer);
 +
-+	if (sm_find_cis(ftl)) {
-+		dbg("CIS not found on mtd device, aborting");
++	if (!dev->bounce_buffer)
 +		goto error6;
-+	}
-+
-+	ftl->disk_attributes = sm_create_sysfs_attributes(ftl);
-+	trans->disk_attributes = ftl->disk_attributes;
-+
-+	sm_printk("Found %d MiB xD/SmartMedia FTL on mtd%d",
-+		(int)(mtd->size / (1024 * 1024)), mtd->index);
-+
-+	dbg("FTL layout:");
-+	dbg("%d zone(s), each consists of %d blocks (+%d spares)",
-+		ftl->zone_count, ftl->max_lba,
-+		ftl->zone_size - ftl->max_lba);
-+	dbg("each block consists of %d bytes",
-+		ftl->block_size);
 +
 +
-+	/* Register device*/
-+	if (add_mtd_blktrans_dev(trans)) {
-+		dbg("error in mtdblktrans layer");
-+		goto error6;
-+	}
-+	return;
++	error = -ENODEV;
++	dev->mmio = pci_ioremap_bar(pci_dev, 0);
++
++	if (!dev->mmio)
++		goto error7;
++
++	error = -ENOMEM;
++	dev->tmp_buffer = kzalloc(SM_SECTOR_SIZE, GFP_KERNEL);
++
++	if (!dev->tmp_buffer)
++		goto error8;
++
++	init_completion(&dev->dma_done);
++
++	dev->card_workqueue = create_freezeable_workqueue(DRV_NAME);
++
++	if (!dev->card_workqueue)
++		goto error9;
++
++	INIT_DELAYED_WORK(&dev->card_detect_work, r852_card_detect_work);
++
++	/* shutdown everything - precation */
++	r852_engine_disable(dev);
++	r852_disable_irqs(dev);
++
++	r852_dma_test(dev);
++
++	/*register irq handler*/
++	error = -ENODEV;
++	if (request_irq(pci_dev->irq, &r852_irq, IRQF_SHARED,
++			  DRV_NAME, dev))
++		goto error10;
++
++	dev->irq = pci_dev->irq;
++	spin_lock_init(&dev->irqlock);
++
++	/* kick initial present test */
++	dev->card_detected = 0;
++	r852_card_update_present(dev);
++	queue_delayed_work(dev->card_workqueue,
++		&dev->card_detect_work, 0);
++
++
++	printk(KERN_NOTICE DRV_NAME ": driver loaded succesfully\n");
++	return 0;
++
++error10:
++	destroy_workqueue(dev->card_workqueue);
++error9:
++	kfree(dev->tmp_buffer);
++error8:
++	pci_iounmap(pci_dev, dev->mmio);
++error7:
++	pci_free_consistent(pci_dev, R852_DMA_LEN,
++		dev->bounce_buffer, dev->phys_bounce_buffer);
 +error6:
-+	kfree(trans);
++	kfree(dev);
 +error5:
-+	kfree(ftl->cache_data);
++	kfree(chip);
 +error4:
-+	kfree(ftl->zones);
++	pci_release_regions(pci_dev);
 +error3:
-+	kfree(ftl->cis_buffer);
 +error2:
-+	kfree(ftl);
++	pci_disable_device(pci_dev);
 +error1:
-+	return;
++	return error;
 +}
 +
-+/* main interface: device {surprise,} removal */
-+static void sm_remove_dev(struct mtd_blktrans_dev *dev)
++void r852_remove(struct pci_dev *pci_dev)
 +{
-+	struct sm_ftl *ftl = dev->priv;
-+	int i;
++	struct r852_device *dev = pci_get_drvdata(pci_dev);
 +
-+	del_mtd_blktrans_dev(dev);
-+	ftl->trans = NULL;
++	/* Stop detect workqueue -
++		we are going to unregister the device anyway*/
++	cancel_delayed_work_sync(&dev->card_detect_work);
++	destroy_workqueue(dev->card_workqueue);
 +
-+	for (i = 0 ; i < ftl->zone_count; i++) {
++	/* Unregister the device, this might make more IO */
++	r852_unregister_nand_device(dev);
 +
-+		if (!ftl->zones[i].initialized)
-+			continue;
++	/* Stop interrupts */
++	r852_disable_irqs(dev);
++	synchronize_irq(dev->irq);
++	free_irq(dev->irq, dev);
 +
-+		kfree(ftl->zones[i].lba_to_phys_table);
-+		kfifo_free(&ftl->zones[i].free_sectors);
++	/* Cleanup */
++	kfree(dev->tmp_buffer);
++	pci_iounmap(pci_dev, dev->mmio);
++	pci_free_consistent(pci_dev, R852_DMA_LEN,
++		dev->bounce_buffer, dev->phys_bounce_buffer);
++
++	kfree(dev->chip);
++	kfree(dev);
++
++	/* Shutdown the PCI device */
++	pci_release_regions(pci_dev);
++	pci_disable_device(pci_dev);
++}
++
++void r852_shutdown(struct pci_dev *pci_dev)
++{
++	struct r852_device *dev = pci_get_drvdata(pci_dev);
++
++	cancel_delayed_work_sync(&dev->card_detect_work);
++	r852_disable_irqs(dev);
++	synchronize_irq(dev->irq);
++	pci_disable_device(pci_dev);
++}
++
++int r852_suspend(struct device *device)
++{
++	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
++	unsigned long flags;
++
++	if (dev->ctlreg & R852_CTL_CARDENABLE)
++		return -EBUSY;
++
++	/* First make sure the detect work is gone */
++	cancel_delayed_work_sync(&dev->card_detect_work);
++
++	/* Turn off the interrupts and stop the device */
++	r852_disable_irqs(dev);
++	r852_engine_disable(dev);
++
++	spin_lock_irqsave(&dev->irqlock, flags);
++	dev->insuspend = 1;
++	spin_unlock_irqrestore(&dev->irqlock, flags);
++
++	/* At that point, even if interrupt handler is running, it will quit */
++	/* So wait for this to happen explictly */
++	synchronize_irq(dev->irq);
++
++	/* If card was pulled off just during the suspend, which is very
++		unlikely, we will remove it on resume, it too late now
++		anyway... */
++	dev->card_unstable = 0;
++
++	pci_save_state(to_pci_dev(device));
++	return pci_prepare_to_sleep(to_pci_dev(device));
++}
++
++int r852_resume(struct device *device)
++{
++	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
++	unsigned long flags;
++
++	/* Turn on the hardware */
++	pci_back_from_sleep(to_pci_dev(device));
++	pci_restore_state(to_pci_dev(device));
++
++	r852_disable_irqs(dev);
++	r852_card_update_present(dev);
++	r852_engine_disable(dev);
++
++
++	/* Now its safe for IRQ to run */
++	spin_lock_irqsave(&dev->irqlock, flags);
++	dev->insuspend = 0;
++	spin_unlock_irqrestore(&dev->irqlock, flags);
++
++
++	/* If card status changed, just do the work */
++	if (dev->card_detected != dev->card_registred) {
++		dbg("card was %s during low power state",
++			dev->card_detected ? "added" : "removed");
++
++		queue_delayed_work(dev->card_workqueue,
++		&dev->card_detect_work, 1000);
++		return 0;
 +	}
 +
-+	sm_delete_sysfs_attributes(ftl);
-+	kfree(ftl->cis_buffer);
-+	kfree(ftl->zones);
-+	kfree(ftl->cache_data);
-+	kfree(ftl);
++	/* Otherwise, initialize the card */
++	if (dev->card_registred) {
++		r852_engine_enable(dev);
++		dev->chip->select_chip(dev->mtd, 0);
++		dev->chip->cmdfunc(dev->mtd, NAND_CMD_RESET, -1, -1);
++		dev->chip->select_chip(dev->mtd, -1);
++	}
++
++	/* Program card detection IRQ */
++	r852_update_card_detect(dev);
++	return 0;
 +}
 +
-+static struct mtd_blktrans_ops sm_ftl_ops = {
-+	.name		= "smblk",
-+	.major		= -1,
-+	.part_bits	= SM_FTL_PARTN_BITS,
-+	.blksize	= SM_SECTOR_SIZE,
-+	.getgeo		= sm_getgeo,
++static const struct pci_device_id r852_pci_id_tbl[] = {
 +
-+	.add_mtd	= sm_add_mtd,
-+	.remove_dev	= sm_remove_dev,
-+
-+	.readsect	= sm_read,
-+	.writesect	= sm_write,
-+
-+	.flush		= sm_flush,
-+	.release	= sm_release,
-+
-+	.owner		= THIS_MODULE,
++	{ PCI_VDEVICE(RICOH, PCI_DEVICE_ID_RICOH_R5C852), },
++	{ },
 +};
 +
-+static __init int sm_module_init(void)
++MODULE_DEVICE_TABLE(pci, r852_pci_id_tbl);
++
++SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
++
++
++static struct pci_driver r852_pci_driver = {
++	.name		= DRV_NAME,
++	.id_table	= r852_pci_id_tbl,
++	.probe		= r852_probe,
++	.remove		= r852_remove,
++	.shutdown	= r852_shutdown,
++	.driver.pm	= &r852_pm_ops,
++};
++
++static __init int r852_module_init(void)
 +{
-+	int error = 0;
-+	cache_flush_workqueue = create_freezeable_workqueue("smflush");
-+
-+	if (IS_ERR(cache_flush_workqueue))
-+		return PTR_ERR(cache_flush_workqueue);
-+
-+	error = register_mtd_blktrans(&sm_ftl_ops);
-+	if (error)
-+		destroy_workqueue(cache_flush_workqueue);
-+	return error;
-+
++	return pci_register_driver(&r852_pci_driver);
 +}
 +
-+static void __exit sm_module_exit(void)
++static void __exit r852_module_exit(void)
 +{
-+	destroy_workqueue(cache_flush_workqueue);
-+	deregister_mtd_blktrans(&sm_ftl_ops);
++	pci_unregister_driver(&r852_pci_driver);
 +}
 +
-+module_init(sm_module_init);
-+module_exit(sm_module_exit);
++module_init(r852_module_init);
++module_exit(r852_module_exit);
 +
 +MODULE_LICENSE("GPL");
 +MODULE_AUTHOR("Maxim Levitsky <maximlevitsky@gmail.com>");
-+MODULE_DESCRIPTION("Smartmedia/xD mtd translation layer");
-diff --git a/drivers/mtd/sm_ftl.h b/drivers/mtd/sm_ftl.h
++MODULE_DESCRIPTION("Ricoh 85xx xD/smartmedia card reader driver");
+diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
 new file mode 100644
-index 0000000..519e2e1
+index 0000000..e05e795
 --- /dev/null
-+++ b/drivers/mtd/sm_ftl.h
-@@ -0,0 +1,94 @@
++++ b/drivers/mtd/nand/r852.h
+@@ -0,0 +1,163 @@
 +/*
 + * Copyright (C) 2009 - Maxim Levitsky
-+ * SmartMedia/xD translation layer
-+ *
-+ * Based loosly on ssfdc.c which is
-+ *  (c) 2005 Eptar srl
-+ *  Author: Claudio Lanconelli <lanconelli.claudio@eptar.com>
++ * driver for Ricoh xD readers
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
 + * published by the Free Software Foundation.
 + */
 +
-+#include <linux/mtd/blktrans.h>
-+#include <linux/kfifo.h>
-+#include <linux/sched.h>
++#include <linux/pci.h>
 +#include <linux/completion.h>
-+#include <linux/mtd/mtd.h>
++#include <linux/workqueue.h>
++#include <linux/mtd/nand.h>
++#include <linux/spinlock.h>
++
++
++/* nand interface + ecc
++   byte write/read does one cycle on nand data lines.
++   dword write/read does 4 cycles
++   if R852_CTL_ECC_ACCESS is set in R852_CTL, then dword read reads
++   results of ecc correction, if DMA read was done before.
++   If write was done two dword reads read generated ecc checksums
++*/
++#define	R852_DATALINE		0x00
++
++/* control register */
++#define R852_CTL		0x04
++#define R852_CTL_COMMAND 	0x01	/* send command (#CLE)*/
++#define R852_CTL_DATA		0x02	/* read/write data (#ALE)*/
++#define R852_CTL_ON		0x04	/* only seem to controls the hd led, */
++					/* but has to be set on start...*/
++#define R852_CTL_RESET		0x08	/* unknown, set only on start once*/
++#define R852_CTL_CARDENABLE	0x10	/* probably (#CE) - always set*/
++#define R852_CTL_ECC_ENABLE	0x20	/* enable ecc engine */
++#define R852_CTL_ECC_ACCESS	0x40	/* read/write ecc via reg #0*/
++#define R852_CTL_WRITE		0x80	/* set when performing writes (#WP) */
++
++/* card detection status */
++#define R852_CARD_STA		0x05
++
++#define R852_CARD_STA_CD	0x01	/* state of #CD line, same as 0x04 */
++#define R852_CARD_STA_RO	0x02	/* card is readonly */
++#define R852_CARD_STA_PRESENT	0x04	/* card is present (#CD) */
++#define R852_CARD_STA_ABSENT	0x08	/* card is absent */
++#define R852_CARD_STA_BUSY	0x80	/* card is busy - (#R/B) */
++
++/* card detection irq status & enable*/
++#define R852_CARD_IRQ_STA	0x06	/* IRQ status */
++#define R852_CARD_IRQ_ENABLE	0x07	/* IRQ enable */
++
++#define R852_CARD_IRQ_CD	0x01	/* fire when #CD lights, same as 0x04*/
++#define R852_CARD_IRQ_REMOVE	0x04	/* detect card removal */
++#define R852_CARD_IRQ_INSERT	0x08	/* detect card insert */
++#define R852_CARD_IRQ_UNK1	0x10	/* unknown */
++#define R852_CARD_IRQ_GENABLE	0x80	/* general enable */
++#define R852_CARD_IRQ_MASK	0x1D
 +
 +
 +
-+struct ftl_zone {
-+	int initialized;
-+	s16 *lba_to_phys_table;		/* LBA to physical table */
-+	struct kfifo free_sectors;	/* queue of free sectors */
++/* hardware enable */
++#define R852_HW			0x08
++#define R852_HW_ENABLED		0x01	/* hw enabled */
++#define R852_HW_UNKNOWN		0x80
++
++
++/* dma capabilities */
++#define R852_DMA_CAP		0x09
++#define R852_SMBIT		0x20	/* if set with bit #6 or bit #7, then */
++					/* hw is smartmedia */
++#define R852_DMA1		0x40	/* if set w/bit #7, dma is supported */
++#define R852_DMA2		0x80	/* if set w/bit #6, dma is supported */
++
++
++/* physical DMA address - 32 bit value*/
++#define R852_DMA_ADDR		0x0C
++
++
++/* dma settings */
++#define R852_DMA_SETTINGS	0x10
++#define R852_DMA_MEMORY		0x01	/* (memory <-> internal hw buffer) */
++#define R852_DMA_READ		0x02	/* 0 = write, 1 = read */
++#define R852_DMA_INTERNAL	0x04	/* (internal hw buffer <-> card) */
++
++/* dma IRQ status */
++#define R852_DMA_IRQ_STA		0x14
++
++/* dma IRQ enable */
++#define R852_DMA_IRQ_ENABLE	0x18
++
++#define R852_DMA_IRQ_MEMORY	0x01	/* (memory <-> internal hw buffer) */
++#define R852_DMA_IRQ_ERROR	0x02	/* error did happen */
++#define R852_DMA_IRQ_INTERNAL	0x04	/* (internal hw buffer <-> card) */
++#define R852_DMA_IRQ_MASK	0x07	/* mask of all IRQ bits */
++
++
++/* ECC syndrome format - read from reg #0 will return two copies of these for
++   each half of the page.
++   first byte is error byte location, and second, bit location + flags */
++#define R852_ECC_ERR_BIT_MSK	0x07	/* error bit location */
++#define R852_ECC_CORRECT		0x10	/* no errors - (guessed) */
++#define R852_ECC_CORRECTABLE	0x20	/* correctable error exist */
++#define R852_ECC_FAIL		0x40	/* non correctable error detected */
++
++#define R852_DMA_LEN		512
++
++#define DMA_INTERNAL	0
++#define DMA_MEMORY	1
++
++struct r852_device {
++	void __iomem *mmio;		/* mmio */
++	struct mtd_info *mtd;		/* mtd backpointer */
++	struct nand_chip *chip;		/* nand chip backpointer */
++	struct pci_dev *pci_dev;	/* pci backpointer */
++
++	/* dma area */
++	dma_addr_t phys_dma_addr;	/* bus address of buffer*/
++	struct completion dma_done;	/* data transfer done */
++
++	dma_addr_t phys_bounce_buffer;	/* bus address of bounce buffer */
++	u8 *bounce_buffer;		/* virtual address of bounce buffer */
++
++	int dma_dir;			/* 1 = read, 0 = write */
++	int dma_stage;			/* 0 - idle, 1 - first step,
++					   2 - second step */
++
++	int dma_state;			/* 0 = internal, 1 = memory */
++	int dma_error;			/* dma errors */
++	int dma_usable;			/* is it possible to use dma */
++
++	/* card status area */
++	struct delayed_work card_detect_work;
++	struct workqueue_struct *card_workqueue;
++	int card_registred;		/* card registered with mtd */
++	int card_detected;		/* card detected in slot */
++	int card_unstable;		/* whenever the card is inserted,
++					   is not known yet */
++	int readonly;			/* card is readonly */
++	int sm;				/* Is card smartmedia */
++
++	/* interrupt handling */
++	spinlock_t irqlock;		/* IRQ protecting lock */
++	int irq;			/* irq num */
++	int insuspend;			/* device is suspended */
++
++	/* misc */
++	void *tmp_buffer;		/* temporary buffer */
++	u8 ctlreg;			/* cached contents of control reg */
 +};
 +
-+struct sm_ftl {
-+	struct mtd_blktrans_dev *trans;
++#define DRV_NAME "r852"
 +
-+	struct mutex mutex;		/* protects the structure */
-+	struct ftl_zone *zones;		/* FTL tables for each zone */
-+
-+	/* Media information */
-+	int block_size;			/* block size in bytes */
-+	int zone_size;			/* zone size in blocks */
-+	int zone_count;			/* number of zones */
-+	int max_lba;			/* maximum lba in a zone */
-+	int smallpagenand;		/* 256 bytes/page nand */
-+	int readonly;			/* is FS readonly */
-+	int unstable;
-+	int cis_block;			/* CIS block location */
-+	int cis_boffset;		/* CIS offset in the block */
-+	int cis_page_offset;		/* CIS offset in the page */
-+	void *cis_buffer;		/* tmp buffer for cis reads */
-+
-+	/* Cache */
-+	int cache_block;		/* block number of cached block */
-+	int cache_zone;			/* zone of cached block */
-+	unsigned char *cache_data;	/* cached block data */
-+	long unsigned int cache_data_invalid_bitmap;
-+	int cache_clean;
-+	struct work_struct flush_work;
-+	struct timer_list timer;
-+
-+	/* Async erase stuff */
-+	struct completion erase_completion;
-+
-+	/* Geometry stuff */
-+	int heads;
-+	int sectors;
-+	int cylinders;
-+
-+	struct attribute_group *disk_attributes;
-+};
-+
-+struct chs_entry {
-+	unsigned long size;
-+	unsigned short cyl;
-+	unsigned char head;
-+	unsigned char sec;
-+};
-+
-+
-+#define SM_FTL_PARTN_BITS	3
-+
-+#define sm_printk(format, ...) \
-+	printk(KERN_WARNING "sm_ftl" ": " format "\n", ## __VA_ARGS__)
 +
 +#define dbg(format, ...) \
 +	if (debug) \
-+		printk(KERN_DEBUG "sm_ftl" ": " format "\n", ## __VA_ARGS__)
++		printk(KERN_DEBUG DRV_NAME ": " format "\n", ## __VA_ARGS__)
 +
 +#define dbg_verbose(format, ...) \
 +	if (debug > 1) \
-+		printk(KERN_DEBUG "sm_ftl" ": " format "\n", ## __VA_ARGS__)
++		printk(KERN_DEBUG DRV_NAME ": " format "\n", ## __VA_ARGS__)
 +
 +
-+static void sm_erase_callback(struct erase_info *self);
-+static int sm_erase_block(struct sm_ftl *ftl, int zone_num, u16 block,
-+								int put_free);
-+static void sm_mark_block_bad(struct sm_ftl *ftl, int zone_num, int block);
++#define message(format, ...) \
++	printk(KERN_INFO DRV_NAME ": " format "\n", ## __VA_ARGS__)
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index cca8a04..cef49f2 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -1523,6 +1523,8 @@
+ #define PCI_DEVICE_ID_RICOH_R5C822	0x0822
+ #define PCI_DEVICE_ID_RICOH_R5C832	0x0832
+ #define PCI_DEVICE_ID_RICOH_R5C843	0x0843
++#define PCI_DEVICE_ID_RICOH_R5C852	0x0852
 +
-+static int sm_recheck_media(struct sm_ftl *ftl);
+ 
+ #define PCI_VENDOR_ID_DLINK		0x1186
+ #define PCI_DEVICE_ID_DLINK_DGE510T	0x4c00
 -- 
 1.6.3.3
