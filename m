@@ -1,22 +1,17 @@
-Received: from mail-fx0-f217.google.com ([209.85.220.217])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjKVi-000525-LG
-	for linux-mtd@lists.infradead.org; Sun, 21 Feb 2010 22:42:51 +0000
-Received: by fxm9 with SMTP id 9so2017310fxm.4
+	id 1NjVZF-0008Ks-FH
+	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 10:31:15 +0000
+Received: by vws3 with SMTP id 3so549562vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 21 Feb 2010 14:42:43 -0800 (PST)
-Subject: Re: Legacy memstick support + FTL questions
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Alex Dubov <oakad@yahoo.com>
-In-Reply-To: <1266449977.4185.0.camel@maxim-laptop>
-References: <849744.7095.qm@web37607.mail.mud.yahoo.com>
-	<1266449977.4185.0.camel@maxim-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 22 Feb 2010 00:42:39 +0200
-Message-ID: <1266792159.3445.9.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+	Mon, 22 Feb 2010 02:31:08 -0800 (PST)
+MIME-Version: 1.0
+Date: Mon, 22 Feb 2010 18:31:07 +0800
+Message-ID: <3a00f25a1002220231j6d2bc954hfd953a94e338e3a6@mail.gmail.com>
+Subject: pagetest failed - How to Debug
+From: Brian Wang <brian.wang.0721@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +21,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-02-18 at 01:39 +0200, Maxim Levitsky wrote: 
-> On Tue, 2010-02-16 at 18:26 -0800, Alex Dubov wrote: 
-> > > I  mean when controller reads the 'int status' it does
-> > > send a TPC?
-> > > (I am sure that it does)
-> > > 
-> > > However mine can't do that and int status is read normally
-> > > (yay...)
-> > > 
-> > 
-> > There are two things to know:
-> > 1. In serial mode, some controllers issue GET_INT TPC automatically
-> > after each command, but only if certain configuration bit is set.
-> > 
-> > 2. In parallel mode, the meaningful bits of the interrupt register
-> > are exposed on the DIO pins of the media at the end of command execution
-> > and can be latched by the controller (this is a suggested behavior).
-> > 
-> > If you want to write a generic legacy MS support, you must take into
-> > account that this behavior is not there for granted.
-> > 
-> 
-> Thank you very very much.
-> This clears this issue for good.
-In fact I found out that these 'meaningful bits of the interrupt
-register' are indeed exposed as a part of reg #16, but at different
-place.
+Hello all,
 
-Alex, could you explain how a single TPC is performed?
+I'm using UBIFS on my device and found some nodes are corrupted.  I
+then tested with nand-test tools.
+oobtest, speedtest and scantest seem good without errors.
+However, pagetest and subpagetest finish with errors.
+Some of the error locations are consistent but some are random (seems to be).
+What do the errors suggest?  How can I narrow down the scope of the problem?
+I can even boot with rootfs on NAND (4KB-page MLC).
 
-I currently first send MS_TPC_SET_RW_REG_ADRS, and then MS_TPC_READ_REG
+Thanks in advance.
 
-When I send the TPC I specify both the tpc number and its len. Is the
-len transmitted?
+Below is the log of pagetest:
 
-I see that if I set addr.r_length != MS_TPC_READ_REG len, I get errors
-in reg #16, but different errors depending if i set it lower or higher.
+$ insmod ./pagetest.ko dev=4
+[10193.290000]
+[10193.290000] =========================================================================================
+[10193.295000] pagetest: dev = 4
+[10193.300000] pagetest: scanning for bad blocks
+[10193.305000] pagetest: scanned 0
+[10193.310000] pagetest: Block 204 is bad
+[10193.310000] pagetest: Block 226 is bad
+[10193.315000] pagetest: scanned 256
+[10193.315000] pagetest: scanned 512
+[10193.320000] pagetest: erasing
+[10193.325000] pagetest: erased 0
+[10193.665000] pagetest: erased 256
+[10194.015000] pagetest: erased 512
+[10194.015000] pagetest: writing
+[10194.250000] pagetest: written 0
+[10254.920000] pagetest: written 256
+[10315.685000] pagetest: written 512
+[10315.685000] pagetest: verifying
+[10316.270000] pagetest: verified 0
+[10467.455000] pagetest: verified 256
+[10523.350000] pagetest: error: verify failed at 0x0af70000
+[10523.355000] pagetest: error: verify failed at 0x0af71000
+[10585.475000] pagetest: error: verify failed at 0x0e396000
+[10585.480000] pagetest: error: verify failed at 0x0e397000
+[10614.945000] pagetest: error: verify failed at 0x0fc5e000
+[10614.950000] pagetest: error: verify failed at 0x0fc5f000
+[10619.265000] pagetest: verified 512
+[10619.265000] pagetest: crosstest
+[10619.265000] pagetest: reading page at 0x00000000
+[10619.270000] pagetest: reading page at 0x0ffff000
+[10619.275000] pagetest: reading page at 0x00000000
+[10619.280000] pagetest: verifying pages read at 0x00000000 match
+[10619.285000] pagetest: crosstest ok
+[10619.290000] pagetest: erasecrosstest
+[10619.290000] pagetest: erasing block 0
+[10619.295000] pagetest: writing 1st page of block 0
+[10619.300000] pagetest: reading 1st page of block 0
+[10619.305000] pagetest: verifying 1st page of block 0
+[10619.310000] pagetest: erasing block 0
+[10619.315000] pagetest: writing 1st page of block 0
+[10619.320000] pagetest: erasing block 511
+[10619.325000] pagetest: reading 1st page of block 0
+[10619.330000] pagetest: verifying 1st page of block 0
+[10619.330000] pagetest: erasecrosstest ok
+[10619.335000] pagetest: erasetest
+[10619.340000] pagetest: erasing block 0
+[10619.345000] pagetest: writing 1st page of block 0
+[10619.350000] pagetest: erasing block 0
+[10619.350000] pagetest: reading 1st page of block 0
+[10619.355000] pagetest: verifying 1st page of block 0 is all 0xff
+[10619.360000] pagetest: erasetest ok
+[10619.365000] pagetest: pagetest finished with 6 errors
+[10619.370000] =========================================================================================
+insmod: can't insert './pagetest.ko': Operation not permitted
 
-Currently I think that a level change on the #SDIO is the signal for
-host to start reading, but who sets the #BS to high? Host or card.
 
-Does card signal end of transmission?
+-- 
+brian
+------------------
 
-Also it seems that if I write to 'param' register, I can't read it back
-(maybe I do something wrong). Is this register write only?
+Cool-Karaoke - The smallest recording studio, in your palm, open-sourced
+http://cool-idea.com.tw/
 
-Best regards,
-Maxim Levitsky
+iMaGiNaTiOn iS mOrE iMpOrTaNt tHaN kNoWlEdGe
