@@ -1,16 +1,15 @@
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
+Received: from fg-out-1718.google.com ([72.14.220.155])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjdCP-000450-IN
-	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:13 +0000
-Received: by mail-fx0-f214.google.com with SMTP id 6so5097024fxm.2
+	id 1NjdCU-0004fy-7q
+	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:40:14 +0000
+Received: by fg-out-1718.google.com with SMTP id e12so378440fga.0
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Feb 2010 10:40:05 -0800 (PST)
+	Mon, 22 Feb 2010 10:40:08 -0800 (PST)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 05/15] MTD: call the remove notifiers before assuming it is in
-	use
-Date: Mon, 22 Feb 2010 20:39:32 +0200
-Message-Id: <1266863982-5258-6-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 06/15] blktrans: allow FTL drivers to export sysfs attributes
+Date: Mon, 22 Feb 2010 20:39:33 +0200
+Message-Id: <1266863982-5258-7-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
 Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
@@ -27,63 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that mtd block common layer is prepared for proper hotplug support,
-enable it here
+This patch adds an ability to export sysfs attributes below
+the block disk device.
 
-Now all users of the mtd device have a chance to put the mtd device
-when they are notified to do so, and they have to do so to make hotplug work.
+This can be used to pass the udev an information about the FTL
+and could include the vendor, serial, version, etc...
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/mtdcore.c |   19 +++++++++++--------
- 1 files changed, 11 insertions(+), 8 deletions(-)
+ drivers/mtd/mtd_blkdevs.c    |    8 ++++++++
+ include/linux/mtd/blktrans.h |    2 ++
+ 2 files changed, 10 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 67669a7..70a7858 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -350,31 +350,34 @@ fail_locked:
- int del_mtd_device (struct mtd_info *mtd)
- {
- 	int ret;
-+	struct mtd_notifier *not;
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index 646cc84..9dd23d6 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -379,6 +379,10 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
+ 		set_disk_ro(gd, 1);
  
- 	mutex_lock(&mtd_table_mutex);
- 
- 	if (idr_find(&mtd_idr, mtd->index) != mtd) {
- 		ret = -ENODEV;
--	} else if (mtd->usecount) {
-+		goto out_error;
-+	}
+ 	add_disk(gd);
 +
-+	/* No need to get a refcount on the module containing
-+		the notifier, since we hold the mtd_table_mutex */
-+	list_for_each_entry(not, &mtd_notifiers, list)
-+		not->remove(mtd);
++	if (new->disk_attributes)
++		sysfs_create_group(&disk_to_dev(gd)->kobj,
++					new->disk_attributes);
+ 	return 0;
+ error4:
+ 	module_put(tr->owner);
+@@ -405,6 +409,10 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
+ 	/* Stop new requests to arrive */
+ 	del_gendisk(old->disk);
+ 
++	if (old->disk_attributes)
++		sysfs_remove_group(&disk_to_dev(old->disk)->kobj,
++						old->disk_attributes);
 +
-+	if (mtd->usecount) {
- 		printk(KERN_NOTICE "Removing MTD device #%d (%s) with use count %d\n",
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
--		struct mtd_notifier *not;
--
- 		device_unregister(&mtd->dev);
+ 	/* Stop the thread */
+ 	kthread_stop(old->thread);
  
--		/* No need to get a refcount on the module containing
--		   the notifier, since we hold the mtd_table_mutex */
--		list_for_each_entry(not, &mtd_notifiers, list)
--			not->remove(mtd);
--
- 		idr_remove(&mtd_idr, mtd->index);
+diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
+index d89b8fb..b481ccd 100644
+--- a/include/linux/mtd/blktrans.h
++++ b/include/linux/mtd/blktrans.h
+@@ -10,6 +10,7 @@
  
- 		module_put(THIS_MODULE);
- 		ret = 0;
- 	}
+ #include <linux/mutex.h>
+ #include <linux/kref.h>
++#include <linux/sysfs.h>
  
-+out_error:
- 	mutex_unlock(&mtd_table_mutex);
- 	return ret;
- }
+ struct hd_geometry;
+ struct mtd_info;
+@@ -28,6 +29,7 @@ struct mtd_blktrans_dev {
+ 	int open;
+ 	struct kref ref;
+ 	struct gendisk *disk;
++	struct attribute_group *disk_attributes;
+ 	struct task_struct *thread;
+ 	struct request_queue *rq;
+ 	spinlock_t queue_lock;
 -- 
 1.6.3.3
