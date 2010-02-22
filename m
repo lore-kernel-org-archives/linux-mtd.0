@@ -1,22 +1,25 @@
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjdDP-00045i-0h
-	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:41:16 +0000
-Received: by mail-fx0-f214.google.com with SMTP id 6so5097065fxm.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Feb 2010 10:41:06 -0800 (PST)
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 09/15] MTD: nand: cleanup the nand_do_write_ops
-Date: Mon, 22 Feb 2010 20:39:36 +0200
-Message-Id: <1266863982-5258-10-git-send-email-maximlevitsky@gmail.com>
-In-Reply-To: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
-References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>, Alex Dubov <oakad@yahoo.com>,
-	Vitaly Wool <vitalywool@gmail.com>, joern <joern@logfs.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>, stanley.miao@windriver.com,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>
+	id 1NjdHK-0000az-1q
+	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 18:45:14 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1NjdHF-0005lI-1s
+	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 19:45:05 +0100
+Received: from gate-ca119.motorola.com ([144.189.100.25])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2010 19:45:05 +0100
+Received: from dave+gmane by gate-ca119.motorola.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 22 Feb 2010 19:45:05 +0100
+To: linux-mtd@lists.infradead.org
+From: David Wuertele <dave+gmane@wuertele.com>
+Subject: Improving JFFS2 write latency
+Date: Mon, 22 Feb 2010 18:36:03 +0000 (UTC)
+Message-ID: <loom.20100222T192132-297@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,82 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_do_write_ops have broken in regard to writing several pages,
- each with its own oob.
+My linux-2.6.18 system has a 45MB JFFS2 partition which must store two 15MB
+files and hundreds of small (<64kB) files.  The files are written often and
+deleted often, so even though the filesystem is nowhere near full there tend to
+be very few free blocks available.  I am trying to improve the maximum latency
+of writing the small files.  I am willing to sacrifice some capacity of my
+partition.
 
-Although nand_do_write_ops intends to allow such mode, it fails do do so
-Probably this was never tested.
+Normally, small file writes complete in under a second, but sometimes when there
+is garbage collection to be done, the writes take over ten seconds.  I would
+like to tune JFFS2 in such a way that small files always write in under one
+second.
 
-Also add missing checks for attemts to write at illegal offsets.
+It appears to me that the values in c->resv_blocks_write and
+c->resv_blocks_gctrigger should affect the maximum latency of a write that does
+GC.  If resv_blocks_write is a large percentage of the partition size, then
+there should always be lots of free blocks around in which to do GC, so GC
+should be easier.  If (resv_blocks_gctrigger-resv_blocks_write) is large, then
+GC should be triggered by writes long before GC is really needed, so the GC that
+the write does should be minimal.
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/nand/nand_base.c |   24 +++++++++++++++++-------
- 1 files changed, 17 insertions(+), 7 deletions(-)
+Is this logic correct?  Are there any other ways that I can improve the write
+latency for small files, especially given that I'm willing to sacrifice some
+capacity of my partition?
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index cada4cf..1386741 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2072,11 +2072,9 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
-  * @oob:	oob data buffer
-  * @ops:	oob ops structure
-  */
--static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob,
--				  struct mtd_oob_ops *ops)
-+static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
-+						struct mtd_oob_ops *ops)
- {
--	size_t len = ops->ooblen;
--
- 	switch(ops->mode) {
- 
- 	case MTD_OOB_PLACE:
-@@ -2131,6 +2129,11 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 	int chipnr, realpage, page, blockmask, column;
- 	struct nand_chip *chip = mtd->priv;
- 	uint32_t writelen = ops->len;
-+
-+	uint32_t oobwritelen = ops->ooblen;
-+	uint32_t oobmaxlen = ops->mode == MTD_OOB_AUTO ?
-+				mtd->oobavail : mtd->oobsize;
-+
- 	uint8_t *oob = ops->oobbuf;
- 	uint8_t *buf = ops->datbuf;
- 	int ret, subpage;
-@@ -2172,6 +2175,10 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 	if (likely(!oob))
- 		memset(chip->oob_poi, 0xff, mtd->oobsize);
- 
-+	/* Don't allow multipage oob writes with offset */
-+	if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
-+		return -EINVAL;
-+
- 	while(1) {
- 		int bytes = mtd->writesize;
- 		int cached = writelen > bytes && page != blockmask;
-@@ -2187,8 +2194,11 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
- 			wbuf = chip->buffers->databuf;
- 		}
- 
--		if (unlikely(oob))
--			oob = nand_fill_oob(chip, oob, ops);
-+		if (unlikely(oob)) {
-+			size_t len = min(oobwritelen, oobmaxlen);
-+			oob = nand_fill_oob(chip, oob, len, ops);
-+			oobwritelen -= len;
-+		}
- 
- 		ret = chip->write_page(mtd, chip, wbuf, page, cached,
- 				       (ops->mode == MTD_OOB_RAW));
-@@ -2362,7 +2372,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 		chip->pagebuf = -1;
- 
- 	memset(chip->oob_poi, 0xff, mtd->oobsize);
--	nand_fill_oob(chip, ops->oobbuf, ops);
-+	nand_fill_oob(chip, ops->oobbuf, ops->ooblen, ops);
- 	status = chip->ecc.write_oob(mtd, chip, page & chip->pagemask);
- 	memset(chip->oob_poi, 0xff, mtd->oobsize);
- 
--- 
-1.6.3.3
+Thanks,
+Dave
