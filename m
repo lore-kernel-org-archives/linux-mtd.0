@@ -1,17 +1,22 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Njrpm-0002lp-9Q
-	for linux-mtd@lists.infradead.org; Tue, 23 Feb 2010 10:17:47 +0000
-Received: by gwj21 with SMTP id 21so890735gwj.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Feb 2010 02:17:40 -0800 (PST)
+Received: from mail.mymarel.com ([213.167.134.75] helo=mail.marel.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Njx5M-00070T-IX
+	for linux-mtd@lists.infradead.org; Tue, 23 Feb 2010 15:54:13 +0000
+Message-ID: <4B83FA1C.8000902@marel.com>
+Date: Tue, 23 Feb 2010 15:54:04 +0000
+From: =?UTF-8?B?S8OhcmkgRGF2w63DsHNzb24=?= <kari.davidsson@marel.com>
 MIME-Version: 1.0
-Date: Tue, 23 Feb 2010 12:17:40 +0200
-Message-ID: <c70ff3ad1002230217x1393c41che316e24a47f577ff@mail.gmail.com>
-Subject: suspend to disk hangs when running from ubifs
-From: saeed bishara <saeed.bishara@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: [PATCH v4 04/11] mtd: Add MPC5121 NAND Flash Controller driver
+References: <1265377377-29327-5-git-send-email-agust@denx.de>	<1266255305-29224-1-git-send-email-agust@denx.de>
+	<1266307868.11659.177.camel@localhost>
+In-Reply-To: <1266307868.11659.177.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Piotr Ziecik <kosmo@semihalf.com>, Detlev Zundel <dzu@denx.de>,
+	"linuxppc-dev@ozlabs.org" <linuxppc-dev@ozlabs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Anatolij Gustschin <agust@denx.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,135 +26,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I've installed my rootfs on nand flash with ubifs, when trying to
-syspend to disk (swap on sata HDD), the system hangs after saving the
-image, after two minutes I got the message below, if I manually reset
-the system, it succeeds to resume.
-please note that the page offset is 0x80000000.
+Any special reason this in MPC5121 Revision 2 only?
+I did not see anything that contradicted the rev 3 manual in the code.
 
-INFO: task echo:612 blocked for more than 120 seconds.
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-echo          D 8045baa8     0   612    609 0x00020000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8045bcc4>]
-(schedule_timeout+0x1c/0x21c)
-[<8045bcc4>] (schedule_timeout+0x1c/0x21c) from [<8045b6b0>]
-(wait_for_common+0xcc/0x15c)
-[<8045b6b0>] (wait_for_common+0xcc/0x15c) from [<800897e4>]
-(kthread_stop+0x7c/0xec)
-[<800897e4>] (kthread_stop+0x7c/0xec) from [<802d5d88>]
-(ubi_reboot_notifier+0x20/0x34)
-[<802d5d88>] (ubi_reboot_notifier+0x20/0x34) from [<8008de04>]
-(notifier_call_chain+0x2c/0x74)
-[<8008de04>] (notifier_call_chain+0x2c/0x74) from [<8008e10c>]
-(__blocking_notifier_call_chain+0x4c/0x68)
-[<8008e10c>] (__blocking_notifier_call_chain+0x4c/0x68) from
-[<8008e140>] (blocking_notifier_call_chain+0x18/0x24)
-[<8008e140>] (blocking_notifier_call_chain+0x18/0x24) from
-[<80083084>] (kernel_shutdown_prepare+0x20/0x38)
-[<80083084>] (kernel_shutdown_prepare+0x20/0x38) from [<800830ac>]
-(kernel_power_off+0x10/0x44)
-[<800830ac>] (kernel_power_off+0x10/0x44) from [<800a0bac>]
-(hibernate+0x128/0x1a4)
-[<800a0bac>] (hibernate+0x128/0x1a4) from [<8009f54c>] (state_store+0x50/0xc4)
-[<8009f54c>] (state_store+0x50/0xc4) from [<8021d244>]
-(kobj_attr_store+0x1c/0x28)
-[<8021d244>] (kobj_attr_store+0x1c/0x28) from [<801265a0>]
-(sysfs_write_file+0x104/0x13c)
-[<801265a0>] (sysfs_write_file+0x104/0x13c) from [<800e4e0c>]
-(vfs_write+0xb0/0x160)
-[<800e4e0c>] (vfs_write+0xb0/0x160) from [<800e5314>] (sys_write+0x3c/0x6c)
-[<800e5314>] (sys_write+0x3c/0x6c) from [<80035e40>] (ret_fast_syscall+0x0/0x2c)
+But there is one harmless bug (since the NFC_CMD_FAIL symbol is never used), i.e.
 
-here are the states of all the tasks:
-SysRq : Show Blocked State
-  task                PC stack   pid father
-init          D 8045baa8     0     1      0 0x00020000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<80038750>]
-(do_notify_resume+0x48/0x614)
-[<80038750>] (do_notify_resume+0x48/0x614) from [<80035e8c>]
-(work_pending+0x1c/0x20)
-bdi-default   D 8045baa8     0   214      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<800cfa64>]
-(bdi_forker_task+0x198/0x294)
-[<800cfa64>] (bdi_forker_task+0x198/0x294) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-ksuspend_usbd D 8045baa8     0   229      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<800869bc>]
-(worker_thread+0xcc/0x200)
-[<800869bc>] (worker_thread+0xcc/0x200) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-khubd         D 8045baa8     0   234      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<80319a10>] (hub_thread+0xcc4/0xd5c)
-[<80319a10>] (hub_thread+0xcc4/0xd5c) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-kswapd0       D 8045baa8     0   274      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<800c7a74>] (kswapd+0x120/0x4c4)
-[<800c7a74>] (kswapd+0x120/0x4c4) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-ubi_bgt0d     D 8045baa8     0   484      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<802dc64c>] (ubi_thread+0x68/0x138)
-[<802dc64c>] (ubi_thread+0x68/0x138) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-usbhid_resume D 8045baa8     0   569      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<800869bc>]
-(worker_thread+0xcc/0x200)
-[<800869bc>] (worker_thread+0xcc/0x200) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-ubifs_bgt0_0  D 8045baa8     0   601      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<801d3118>]
-(ubifs_bg_thread+0x58/0x108)
-[<801d3118>] (ubifs_bg_thread+0x58/0x108) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-sh            D 8045baa8     0   609      1 0x00020000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<80038750>]
-(do_notify_resume+0x48/0x614)
-[<80038750>] (do_notify_resume+0x48/0x614) from [<80035e8c>]
-(work_pending+0x1c/0x20)
-flush-ubifs_0 D 8045baa8     0   610      2 0x00000000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8008ffc0>] (refrigerator+0x9c/0xc8)
-[<8008ffc0>] (refrigerator+0x9c/0xc8) from [<800ff454>]
-(bdi_writeback_task+0x94/0xbc)
-[<800ff454>] (bdi_writeback_task+0x94/0xbc) from [<800cf6c0>]
-(bdi_start_fn+0x64/0xb8)
-[<800cf6c0>] (bdi_start_fn+0x64/0xb8) from [<80089a78>] (kthread+0x78/0x80)
-[<80089a78>] (kthread+0x78/0x80) from [<80036e0c>] (kernel_thread_exit+0x0/0x8)
-echo          D 8045baa8     0   612    609 0x00020000
-[<8045baa8>] (schedule+0x2e0/0x328) from [<8045bcc4>]
-(schedule_timeout+0x1c/0x21c)
-[<8045bcc4>] (schedule_timeout+0x1c/0x21c) from [<8045b6b0>]
-(wait_for_common+0xcc/0x15c)
-[<8045b6b0>] (wait_for_common+0xcc/0x15c) from [<800897e4>]
-(kthread_stop+0x7c/0xec)
-[<800897e4>] (kthread_stop+0x7c/0xec) from [<802d5d88>]
-(ubi_reboot_notifier+0x20/0x34)
-[<802d5d88>] (ubi_reboot_notifier+0x20/0x34) from [<8008de04>]
-(notifier_call_chain+0x2c/0x74)
-[<8008de04>] (notifier_call_chain+0x2c/0x74) from [<8008e10c>]
-(__blocking_notifier_call_chain+0x4c/0x68)
-[<8008e10c>] (__blocking_notifier_call_chain+0x4c/0x68) from
-[<8008e140>] (blocking_notifier_call_chain+0x18/0x24)
-[<8008e140>] (blocking_notifier_call_chain+0x18/0x24) from
-[<80083084>] (kernel_shutdown_prepare+0x20/0x38)
-[<80083084>] (kernel_shutdown_prepare+0x20/0x38) from [<800830ac>]
-(kernel_power_off+0x10/0x44)
-[<800830ac>] (kernel_power_off+0x10/0x44) from [<800a0bac>]
-(hibernate+0x128/0x1a4)
-[<800a0bac>] (hibernate+0x128/0x1a4) from [<8009f54c>] (state_store+0x50/0xc4)
-[<8009f54c>] (state_store+0x50/0xc4) from [<8021d244>]
-(kobj_attr_store+0x1c/0x28)
-[<8021d244>] (kobj_attr_store+0x1c/0x28) from [<801265a0>]
-(sysfs_write_file+0x104/0x13c)
-[<801265a0>] (sysfs_write_file+0x104/0x13c) from [<800e4e0c>]
-(vfs_write+0xb0/0x160)
-[<800e4e0c>] (vfs_write+0xb0/0x160) from [<800e5314>] (sys_write+0x3c/0x6c)
-[<800e5314>] (sys_write+0x3c/0x6c) from [<80035e40>] (ret_fast_syscall+0x0/0x2c)
+git diff
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 191bf99..38a99ef 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -100,7 +100,7 @@
+  #define NFC_OUTPUT             (1 << 3)
+  #define NFC_ID                 (1 << 4)
+  #define NFC_STATUS             (1 << 5)
+-#define NFC_CMD_FAIL           (1 << 15)
++#define NFC_CMD_FAIL           (1 << 14)
+  #define NFC_INT                        (1 << 15)
+
+  /* Bit Definitions: NFC_WRPROT */
+
+The NAND chip is is detected (given that I disable the Revison check),
+but the /dev7mtd0 is not accessable as block device. Is that normal?
+The UBIFS also gives up I am assuming because the /dev/mtd0 is not block device.
+
+rg
+kd
+
+On 02/16/2010 08:11 AM, Artem Bityutskiy wrote:
+> On Mon, 2010-02-15 at 18:35 +0100, Anatolij Gustschin wrote:
+>> Adds NAND Flash Controller driver for MPC5121 Revision 2.
+>> All device features, except hardware ECC and power management,
+>> are supported.
+>>
+>> Signed-off-by: Piotr Ziecik<kosmo@semihalf.com>
+>> Signed-off-by: Wolfgang Denk<wd@denx.de>
+>> Signed-off-by: Anatolij Gustschin<agust@denx.de>
+>> Acked-by: Grant Likely<grant.likely@secretlab.ca>
+>> Cc:<linux-mtd@lists.infradead.org>
+>> Cc: Grant Likely<grant.likely@secretlab.ca>
+>> Cc: John Rigby<jcrigby@gmail.com>
+>> ---
+>> Changes since v3:
+>>   - include 'asm/mpc5121.h' header instead of 'asm/mpc5xxx.h'.
+>>     This change is needed because arch patch adding reset
+>>     module definition was reworked and doesn't add mpc5121
+>>     specific definitions to common header for mpc52xx/mpc5121.
+>>
+>> Changes since v2:
+>>   - move the arch bits into separate patch
+>>     (it is the next patch in this series now)
+>>   - use __devinit/__devexit/__devexit_p and __devinitdata
+>>
+>> Changes since v1:
+>>   - add logfile with changes since previous version
+>>
+>> Changes since the patch version submitted in May 2009:
+>>
+>>   - move mpc5121_nfc.h to the driver .c as there is only one user
+>>   - remove DRV_VERSION macro
+>>   - replace printk() by dev_*()
+>>   - drop unnecessary .suspend and .resume initializations
+>>   - remove duplicate .name/.owner settings
+>>   - fix mpc5121_nfc_init() to "return of_register_platform_driver(&mpc5121_nfc_driver);"
+>>   - move module_init() to just below the init function
+>>   - remove MODULE_VERSION
+>>   - use "mtd: Add MPC5121 NAND Flash Controller driver" as the subject,
+>>     previously it was "mpc5121: Added NAND Flash Controller driver.
+>>
+>>   drivers/mtd/nand/Kconfig       |    7 +
+>>   drivers/mtd/nand/Makefile      |    1 +
+>>   drivers/mtd/nand/mpc5121_nfc.c |  916 ++++++++++++++++++++++++++++++++++++++++
+>>   3 files changed, 924 insertions(+), 0 deletions(-)
+>>   create mode 100644 drivers/mtd/nand/mpc5121_nfc.c
+>
+> Pushed to my l2-mtd-2.6.git / dunno.
+>
