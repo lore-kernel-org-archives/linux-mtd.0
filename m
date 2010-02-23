@@ -1,21 +1,18 @@
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjhR5-00070S-DL
-	for linux-mtd@lists.infradead.org; Mon, 22 Feb 2010 23:11:35 +0000
-Received: by fxm6 with SMTP id 6so5373716fxm.2
+	id 1NjiCO-0001Qi-TI
+	for linux-mtd@lists.infradead.org; Tue, 23 Feb 2010 00:00:29 +0000
+Received: by pva18 with SMTP id 18so187605pva.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Feb 2010 15:11:28 -0800 (PST)
-Subject: Re: Legacy memstick support + FTL questions
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Alex Dubov <oakad@yahoo.com>
-In-Reply-To: <597490.7198.qm@web37607.mail.mud.yahoo.com>
-References: <597490.7198.qm@web37607.mail.mud.yahoo.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 23 Feb 2010 01:11:23 +0200
-Message-ID: <1266880283.32669.8.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+	Mon, 22 Feb 2010 16:00:19 -0800 (PST)
+MIME-Version: 1.0
+Date: Mon, 22 Feb 2010 16:00:19 -0800
+Message-ID: <cf70f0211002221600p1de3b271uba65cda8dbcf6b94@mail.gmail.com>
+Subject: read error with 64 byte erase counter header & 2048 Byte
+	mtd->writesize
+From: Shivdas Gujare <shivdas.tech@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,81 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-02-22 at 06:04 -0800, Alex Dubov wrote: 
-> > 
-> > Alex, could you explain how a single TPC is performed?
-> > 
-> > I currently first send MS_TPC_SET_RW_REG_ADRS, and then
-> > MS_TPC_READ_REG
-> > 
-> > When I send the TPC I specify both the tpc number and its
-> > len. Is the
-> > len transmitted?
-> 
-> Of course, it is. How otherwise media would know how many bits to sample
-> in?
-By watching the #BS?
-Every clock cycle media reads 1 or 4 bits, when #BS goes low it stops
-reading...
-Why otherwise one would need the #BS line?
+Hi all,
+I am trying to use ubifs, but currently I am facing an issue as follows,
+
+1) I tries to format a mtd device as, "ubiformat /dev/mtd0 -s 2048 -f
+./ubi.img" while it return with an error of
+
+ubiformat: mtd0 (nand), size 164757504 bytes (157.1 MiB), 1257
+eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+libscan: scanning eraseblock 0 --  0 % complete  libmtd: error!:
+cannot read 64 bytes from mtd0 (eraseblock 0, offset 0)
+        error 22 (Invalid argument)
+ubiformat: error!: failed to scan mtd0 (/dev/mtd0)
+
+I tried to understand what it is and came to know that, "ret =
+mtd_read(mtd, fd, eb, 0, &hdr, sizeof(struct ubi_ec_hdr));" from
+"ubi-utils/src/libscan.c"
+tried to read 64 byte "struct ubi_ec_hdr - UBI erase counter header"
+while our MTD driver has set "mtd->writesize = 2048"
+So this mismatch between 64 Byte "erase counter header" and 2048 Byte
+"mtd->writesize" returns with an error.
+
+I would like to know, Is this a real issue or am I missing any layer
+between ubifs & mtd driver which interfaces this 64 & 2048 Byte
+differences.
+
+Thanks a lot for any help.
+
+Thanks and Regards,
+Shivdas Gujare
 
 
-Thanks for explanation.
-
-
-
-
-> 
-> > 
-> > I see that if I set addr.r_length != MS_TPC_READ_REG len, I
-> > get errors
-> > in reg #16, but different errors depending if i set it
-> > lower or higher.
-> 
-> This is an undefined behavior. You're confusing the state machine on the
-> media side. By the way, left over bytes from the incorrectly ordered
-> or formatted TPC can spill into block data buffer (this will cause an
-> apparent data corruption - I've seen this happen).
-I know that it is undefined, but I try to understand the meaning of
-status flags, thats why I try it. Now it is much clearer to me.
-
-Just one more question, when the host say reads the data buffer (512
-bytes), it does so in one run, or it reads it in packets, or it reads it
-in 8 byte packets, then  waits for some condition (#SDIO maybe)?
-
-> 
-> > 
-> > Currently I think that a level change on the #SDIO is the
-> > signal for
-> > host to start reading, but who sets the #BS to high? Host
-> > or card.
-> 
-> BS line is always mastered by host.
-Thanks for explanation.
-
-> 
-> > 
-> > Does card signal end of transmission?
-> > 
-> 
-> Yes, on a data line (there's CRC as well, which must be handled by the host
-> transparently).
-I have seen on some datasheet that crc is involved. It is handled
-transparently.
-
-
-> 
-> > Also it seems that if I write to 'param' register, I can't
-> > read it back
-> > (maybe I do something wrong). Is this register write only?
-> > 
-> 
-> There are no write only registers in the MS spec. Moreover, you need to 
-> read the param register if you're doing multi-page transfer (page address
-> will be updated during the transfer to point to the last accessed page).
-Very interesting, probably I do that wrong then.
-
-
-Thanks a lot,
-Best regards,
-Maxim Levitsky
+2)
