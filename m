@@ -1,22 +1,29 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjxKX-0003Nn-36
-	for linux-mtd@lists.infradead.org; Tue, 23 Feb 2010 16:09:53 +0000
-From: "Paulraj, Sandeep" <s-paulraj@ti.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Date: Tue, 23 Feb 2010 10:09:38 -0600
-Subject: RE: MLC nand driver for linux
-Message-ID: <0554BEF07D437848AF01B9C9B5F0BC5D9BC47926@dlee01.ent.ti.com>
-References: <aecf5e531002221936q70f06a23j62046b180f490d60@mail.gmail.com>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9BB7DEBC@dlee01.ent.ti.com>
-	<Pine.LNX.4.64.1002230947110.29303@lnxricardw.se.axis.com>
-In-Reply-To: <Pine.LNX.4.64.1002230947110.29303@lnxricardw.se.axis.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Sasa Sasa <sasak.1983@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from fg-out-1718.google.com ([72.14.220.153])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NjzYt-0003cN-8X
+	for linux-mtd@lists.infradead.org; Tue, 23 Feb 2010 18:32:51 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so1531359fga.0
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Feb 2010 10:32:46 -0800 (PST)
+Subject: Re: [PATCH 10/15] MTD: nand: make reads using MTD_OOB_RAW affect
+	only ECC validation
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <alpine.LFD.2.00.1002222229091.4136@localhost.localdomain>
+References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
+	<1266863982-5258-11-git-send-email-maximlevitsky@gmail.com>
+	<alpine.LFD.2.00.1002222219430.4136@localhost.localdomain>
+	<1266874087.4971.4.camel@maxim-laptop>
+	<alpine.LFD.2.00.1002222229091.4136@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 23 Feb 2010 20:32:40 +0200
+Message-ID: <1266949960.8145.1.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Alex Dubov <oakad@yahoo.com>, Vitaly Wool <vitalywool@gmail.com>,
+	joern <joern@logfs.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+	stanley.miao@windriver.com, linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +33,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2010-02-22 at 22:29 +0100, Thomas Gleixner wrote: 
+> On Mon, 22 Feb 2010, Maxim Levitsky wrote:
+> > On Mon, 2010-02-22 at 22:20 +0100, Thomas Gleixner wrote: 
+> > > On Mon, 22 Feb 2010, Maxim Levitsky wrote:
+> > > 
+> > > > This changes the behavier of MTD_OOB_RAW. It used to read both OOB and data
+> > > > to the data buffer, however you would still need to specify the dummy oob buffer.
+> > > > 
+> > > > This is only used in one place, but makes it hard to read data+oob without ECC
+> > > > test, thus I removed that behavier, and fixed the user.
+> > > > 
+> > > > Now MTD_OOB_RAW behaves just like MTD_OOB_PLACE, but doesn't do ECC validation
+> > > 
+> > > Is this tested against existing user space tools like nanddump ? Can I
+> > > still get the raw data from flash ?
+> > 
+> > Thats the point.
+> > Userspace doesn't/can't use that mode.
+> > It is not exposed through mtdchar.
+> > Userspace reads the page, and then reads the oob.
+> > 
+> > It does use MTD_OOB_RAW, but without data buffer, and this path I don't
+> > change.
+> > 
+> > The only user of this, is the nand itself, when it reads bad block
+> > table.
+> > 
+> > I confess that I didn't run test that I ported this code correctly.
+> > But I did logically verified many times that the new code works just
+> > like old one.
+> 
+> Well, then it's about time to run the tests :)
+> 
+> Thanks,
 
+Just to be sure, I tested jffs2 and nanddump.
 
->=20
->=20
-> On Tue, 23 Feb 2010, Paulraj, Sandeep wrote:
->=20
-> > I've used MICRON and SAMSUNG MLC NAND's without any problems.
-> >
-> > The MICRON NAND's were ONFI devices and even they worked well.
->=20
-> What do you do about ECC for these devices? As I understand MLC flash
-> requires stronger ECC algorithms than the 1 bit / 256 byte algorithm whic=
-h
-> is by default implemented in software by mtd. Do the flash chips or the
-> system you are using have hardware ECC?
+Works just fine.
 
-The TI DaVinci NAND controller can do 4 bit ECC for every 512 bytes of data=
-.
-
-But most new devices need atleast 8 bit ECC and above=20
+Best regards,
+Maxim Levitsky
