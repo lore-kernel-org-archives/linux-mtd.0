@@ -1,26 +1,28 @@
-Received: from mail-bw0-f218.google.com ([209.85.218.218])
+Received: from filtteri5.pp.htv.fi ([213.243.153.188])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NkEee-0002d4-79
-	for linux-mtd@lists.infradead.org; Wed, 24 Feb 2010 10:39:49 +0000
-Received: by bwz10 with SMTP id 10so3403209bwz.2
+	id 1NkHKj-0001gX-CU
+	for linux-mtd@lists.infradead.org; Wed, 24 Feb 2010 13:31:25 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by filtteri5.pp.htv.fi (Postfix) with ESMTP id 111BD5A60E7
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 24 Feb 2010 02:39:35 -0800 (PST)
+	Wed, 24 Feb 2010 15:31:20 +0200 (EET)
+Received: from smtp4.welho.com ([213.243.153.38])
+	by localhost (filtteri5.pp.htv.fi [213.243.153.188]) (amavisd-new,
+	port 10024)
+	with ESMTP id NFeiCo6QBpAv for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Feb 2010 15:31:19 +0200 (EET)
+Received: from localhost.pp.htv.fi (cs181201061.pp.htv.fi [82.181.201.61])
+	by smtp4.welho.com (Postfix) with ESMTP id 977C75BC005
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Feb 2010 15:31:19 +0200 (EET)
+Date: Wed, 24 Feb 2010 15:32:29 +0200
+From: Adrian Bunk <bunk@kernel.org>
+To: linux-mtd@lists.infradead.org
+Subject: [mtd-utils patch] mkfs.jffs2: fix --enable-compressor
+Message-ID: <20100224133229.GA23442@localhost.pp.htv.fi>
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1002241000170.29303@lnxricardw.se.axis.com>
-References: <aecf5e531002221936q70f06a23j62046b180f490d60@mail.gmail.com>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9BB7DEBC@dlee01.ent.ti.com>
-	<aecf5e531002222042g2eb3ee79g53d05261054e07ee@mail.gmail.com>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9BC47920@dlee01.ent.ti.com>
-	<Pine.LNX.4.64.1002241000170.29303@lnxricardw.se.axis.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 24 Feb 2010 16:09:15 +0530
-Message-ID: <ce9ab5791002240239o36795009p6bcccc8884c05d21@mail.gmail.com>
-Subject: Re: MLC nand driver for linux
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Sasa Sasa <sasak.1983@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Paulraj, Sandeep" <s-paulraj@ti.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Feb 24, 2010 at 2:31 PM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> On Tue, 23 Feb 2010, Paulraj, Sandeep wrote:
->
->>>
->>> I am also using micron mlc nand device.(4k page size)
->>>
->>> Just for ref, could I refer your driver from mainline linux kernel if
->>> available, i think it would be same for SLC and MLC.
->>
->> Drivers/mtd/nand/davinci_nand.c
->
-> Note that this driver is dependent on hardware ECC generation of TI DaVinci
-> microcontrollers. The equivalent hardware may exist on other systems, but as
-> far as I can tell there is no built in software ECC algorithm apart from the
-> standard 1 bit / 256 bytes algorithm in mtd.
->
+The short option -X was working, but the documented long option
+--enable-compressor was missing.
 
-Linux kernel supports Reed-Solomon library. You can use that if more
-number of bit correction is required.
-One can take help from 'nand/diskonchip.c' driver about uses of this library.
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
+---
+ mkfs.jffs2.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index 23a8cf8..64cafb6 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -1468,6 +1468,7 @@ static struct option long_options[] = {
+ 	{"devtable", 1, NULL, 'D'},
+ 	{"compression-mode", 1, NULL, 'm'},
+ 	{"disable-compressor", 1, NULL, 'x'},
++	{"enable-compressor", 1, NULL, 'X'},
+ 	{"test-compression", 0, NULL, 't'},
+ 	{"compressor-priority", 1, NULL, 'y'},
+ 	{"incremental", 1, NULL, 'i'},
 -- 
-Regards,
-Vimal Singh
+1.7.0
