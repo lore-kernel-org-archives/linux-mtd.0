@@ -1,29 +1,21 @@
-Received: from fg-out-1718.google.com ([72.14.220.153])
+Received: from mail-bw0-f218.google.com ([209.85.218.218])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NjzYt-0003cN-8X
-	for linux-mtd@lists.infradead.org; Tue, 23 Feb 2010 18:32:51 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so1531359fga.0
+	id 1Nk5le-00061Y-4z
+	for linux-mtd@lists.infradead.org; Wed, 24 Feb 2010 01:10:26 +0000
+Received: by bwz10 with SMTP id 10so3185606bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Feb 2010 10:32:46 -0800 (PST)
-Subject: Re: [PATCH 10/15] MTD: nand: make reads using MTD_OOB_RAW affect
-	only ECC validation
+	Tue, 23 Feb 2010 17:10:19 -0800 (PST)
+Subject: Re: Legacy memstick support + FTL questions
 From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-In-Reply-To: <alpine.LFD.2.00.1002222229091.4136@localhost.localdomain>
-References: <1266863982-5258-1-git-send-email-maximlevitsky@gmail.com>
-	<1266863982-5258-11-git-send-email-maximlevitsky@gmail.com>
-	<alpine.LFD.2.00.1002222219430.4136@localhost.localdomain>
-	<1266874087.4971.4.camel@maxim-laptop>
-	<alpine.LFD.2.00.1002222229091.4136@localhost.localdomain>
+To: Alex Dubov <oakad@yahoo.com>
+In-Reply-To: <75802.83415.qm@web37603.mail.mud.yahoo.com>
+References: <75802.83415.qm@web37603.mail.mud.yahoo.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 23 Feb 2010 20:32:40 +0200
-Message-ID: <1266949960.8145.1.camel@maxim-laptop>
+Date: Wed, 24 Feb 2010 03:10:15 +0200
+Message-ID: <1266973815.5068.8.camel@maxim-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Alex Dubov <oakad@yahoo.com>, Vitaly Wool <vitalywool@gmail.com>,
-	joern <joern@logfs.org>, linux-kernel <linux-kernel@vger.kernel.org>,
-	stanley.miao@windriver.com, linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,44 +25,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-02-22 at 22:29 +0100, Thomas Gleixner wrote: 
-> On Mon, 22 Feb 2010, Maxim Levitsky wrote:
-> > On Mon, 2010-02-22 at 22:20 +0100, Thomas Gleixner wrote: 
-> > > On Mon, 22 Feb 2010, Maxim Levitsky wrote:
-> > > 
-> > > > This changes the behavier of MTD_OOB_RAW. It used to read both OOB and data
-> > > > to the data buffer, however you would still need to specify the dummy oob buffer.
+On Tue, 2010-02-23 at 01:01 -0800, Alex Dubov wrote: 
+> > > > Alex, could you explain how a single TPC is
+> > performed?
 > > > > 
-> > > > This is only used in one place, but makes it hard to read data+oob without ECC
-> > > > test, thus I removed that behavier, and fixed the user.
+> > > > I currently first send MS_TPC_SET_RW_REG_ADRS,
+> > and then
+> > > > MS_TPC_READ_REG
 > > > > 
-> > > > Now MTD_OOB_RAW behaves just like MTD_OOB_PLACE, but doesn't do ECC validation
+> > > > When I send the TPC I specify both the tpc number
+> > and its
+> > > > len. Is the
+> > > > len transmitted?
 > > > 
-> > > Is this tested against existing user space tools like nanddump ? Can I
-> > > still get the raw data from flash ?
-> > 
-> > Thats the point.
-> > Userspace doesn't/can't use that mode.
-> > It is not exposed through mtdchar.
-> > Userspace reads the page, and then reads the oob.
-> > 
-> > It does use MTD_OOB_RAW, but without data buffer, and this path I don't
-> > change.
-> > 
-> > The only user of this, is the nand itself, when it reads bad block
-> > table.
-> > 
-> > I confess that I didn't run test that I ported this code correctly.
-> > But I did logically verified many times that the new code works just
-> > like old one.
+> > > Of course, it is. How otherwise media would know how
+> > many bits to sample
+> > > in?
+> > By watching the #BS?
+> > Every clock cycle media reads 1 or 4 bits, when #BS goes
+> > low it stops
+> > reading...
+> > Why otherwise one would need the #BS line?
 > 
-> Well, then it's about time to run the tests :)
-> 
-> Thanks,
+> It is so and not so.
+> It appears, length is not transmitted as part of actual TPC payload.
+> However, number of data payload bytes is always determined by the media
+> register values. If this condition is not maintained all sorts of bad
+> things may happen.
+It is finally clear to me.
+While googling I found that in fact the CRC is transmitted after data in
+both directions
+(ieeexplore.ieee.org/iel5/40/18745/00865865.pdf?arnumber=865865)
 
-Just to be sure, I tested jffs2 and nanddump.
+So, if host transmits too much or little that media expects, it will
+treat wrong bytes as the CRC, and vise versa. thus both ends have to
+know exactly how many bytes to expect.
 
-Works just fine.
+One last thing that I probably will accepts as is. It appears that card
+has some special way to tell the host that command if complete
+regardless or serial/parallel mode, since there is special hw register
+(bit 29 of register 16) that is polled only after commands, and I
+verified that it takes significant time to turn that bit on, thus I
+suspect that card can somehow inform the host that it not only accepted
+the TPC, but actually done with the command.
+
+Other that that, I have no more questions, thanks you again very much.
 
 Best regards,
 Maxim Levitsky
