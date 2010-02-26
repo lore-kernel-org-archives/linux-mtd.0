@@ -1,23 +1,21 @@
-Subject: Re: [PATCH - V2] Add NAND lock/unlock routines
-From: David Woodhouse <dwmw2@infradead.org>
-To: Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <ce9ab5791001130125ka4bfa26s906758545e679792@mail.gmail.com>
-References: <ce9ab5790912020624k28bc1e63le0f7e713f70d78a8@mail.gmail.com>
-	<1259915925.8673.9.camel@localhost>
-	<ce9ab5790912062248i41e2f7bh996064518e043369@mail.gmail.com>
-	<1260178153.25784.28.camel@localhost>
-	<ce9ab5790912070306l1a973445vc4eab91b0e2d2ebb@mail.gmail.com>
-	<1260185336.3047.0.camel@localhost>
-	<ce9ab5790912170141s557342d5l4fced74a46a96e5c@mail.gmail.com>
-	<ce9ab5791001060548g6075dcd5tb15bcd18c9a4b458@mail.gmail.com>
-	<1263372005.2917.21.camel@localhost>
-	<ce9ab5791001130125ka4bfa26s906758545e679792@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Feb 2010 12:47:40 +0000
-Message-ID: <1267188460.30247.10811.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>, dedekind1@gmail.com
+Received: from mail-qy0-f181.google.com ([209.85.221.181])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nkzm5-0007zj-H9
+	for linux-mtd@lists.infradead.org; Fri, 26 Feb 2010 12:58:37 +0000
+Received: by qyk11 with SMTP id 11so17872qyk.24
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Feb 2010 04:58:32 -0800 (PST)
+MIME-Version: 1.0
+Sender: brijesh.s.singh@gmail.com
+Date: Fri, 26 Feb 2010 18:28:32 +0530
+Message-ID: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
+Subject: Release of UBIL: ubi with log
+From: Brijesh Singh <brij.singh@samsung.com>
+To: David Woodhouse <dwmw2@infradead.org>, Artem.Bityutskiy@nokia.com,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: brijesh.s.singh@gmail.com, rohitvdongre@gmail.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-01-13 at 14:55 +0530, Vimal Singh wrote:
-> 
-> >> @@ -2999,8 +3211,8 @@ int nand_scan_tail(struct mtd_info *mtd)
-> >>       mtd->read_oob = nand_read_oob;
-> >>       mtd->write_oob = nand_write_oob;
-> >>       mtd->sync = nand_sync;
-> >> -     mtd->lock = NULL;
-> >> -     mtd->unlock = NULL;
-> >> +     mtd->lock = nand_lock;
-> >> +     mtd->unlock = nand_unlock;
-> >
-> > What makes you believe it is safe to assign these call-backs here?
-> >
-> > AFAICS, this means it will be done for all flashes. Do all of them
-> > support lock/unlock? I did not investigate this, but I think that
-> > probably not.
-> 
-> OK. In that case I'll rather not do it here and do it in my specific
-> driver.
+Hi,
+ It gives me great pleasure in sharing UBIL: ubi with log.  We have
+added logging functionality to ubi for reducing mount time.
+UBIL uses the "same source base of UBI". The logging functionality can
+be added or removed at compile time using "make menuconfig option".
 
-Hm, I'm not sure that's the best approach. It's a function of the NAND
-chip, not the controller. We should detect the presence of the feature
-from the chip ID, if at all possible.
+We have seen mount time reduction of 50% in 1GB NAND. We are expecting
+even better results for larger flash memories.
 
-I'm happy with your first two patches as part of a three-patch set
-though. Thanks.
+The source code of UBIL can be found in the following git tree:
+http://git.infradead.org/users/brijesh/ubi-2.6.git
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+We have tested ubil for samsung nand and onenand. The test results can
+be found in the following git tree:
+http://git.infradead.org/users/brijesh/ubil_results
+
+We are working on utilities and design document of UBIL. I will share
+those as soon as possible.
+
+If someone wants to try, please follow the instructions:
+make menuconfig
+         select ubi as module
+         select ubil feature.
+compile ubi module.
+
+1) First mount of ubil is little different than ubi.
+
+insmod ubi mtd=1,ubinize.
+ (Second parameter "ubinize" is introduced to avoid accidental loss of data.)
+insmod ubifs
+mount ubifs
+
+2)For next mounts:
+insmod ubi mtd=1
+insmod ubifs
+mount ubifs
+
+Though UBIL is functionally complete,there is a lot of scope for
+optimizations. All the help is very much appreciated.
+
+
+Thanks and Regards,
+Brijesh
