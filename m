@@ -1,13 +1,23 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NkwNI-0002gT-S5
-	for linux-mtd@lists.infradead.org; Fri, 26 Feb 2010 09:20:50 +0000
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] jffs2: Move erasing from write_super to GC.
-Date: Fri, 26 Feb 2010 10:19:59 +0100
-Message-Id: <1267175999-29872-1-git-send-email-Joakim.Tjernlund@transmode.se>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Subject: Re: [PATCH - V2] Add NAND lock/unlock routines
+From: David Woodhouse <dwmw2@infradead.org>
+To: Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <ce9ab5791001130125ka4bfa26s906758545e679792@mail.gmail.com>
+References: <ce9ab5790912020624k28bc1e63le0f7e713f70d78a8@mail.gmail.com>
+	<1259915925.8673.9.camel@localhost>
+	<ce9ab5790912062248i41e2f7bh996064518e043369@mail.gmail.com>
+	<1260178153.25784.28.camel@localhost>
+	<ce9ab5790912070306l1a973445vc4eab91b0e2d2ebb@mail.gmail.com>
+	<1260185336.3047.0.camel@localhost>
+	<ce9ab5790912170141s557342d5l4fced74a46a96e5c@mail.gmail.com>
+	<ce9ab5791001060548g6075dcd5tb15bcd18c9a4b458@mail.gmail.com>
+	<1263372005.2917.21.camel@localhost>
+	<ce9ab5791001130125ka4bfa26s906758545e679792@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 26 Feb 2010 12:47:40 +0000
+Message-ID: <1267188460.30247.10811.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,158 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Erasing blocks is a form of GC and therefore it should live in the
-GC task. By moving it there two problems will be solved:
-1) unmounting will not hang until all pending blocks has
-   been erased.
-2) Erasing can be paused by sending a SIGSTOP to the GC thread which
-   allowes for time critical tasks to work in peace.
+On Wed, 2010-01-13 at 14:55 +0530, Vimal Singh wrote:
+> 
+> >> @@ -2999,8 +3211,8 @@ int nand_scan_tail(struct mtd_info *mtd)
+> >>       mtd->read_oob = nand_read_oob;
+> >>       mtd->write_oob = nand_write_oob;
+> >>       mtd->sync = nand_sync;
+> >> -     mtd->lock = NULL;
+> >> -     mtd->unlock = NULL;
+> >> +     mtd->lock = nand_lock;
+> >> +     mtd->unlock = nand_unlock;
+> >
+> > What makes you believe it is safe to assign these call-backs here?
+> >
+> > AFAICS, this means it will be done for all flashes. Do all of them
+> > support lock/unlock? I did not investigate this, but I think that
+> > probably not.
+> 
+> OK. In that case I'll rather not do it here and do it in my specific
+> driver.
 
-Since erasing now is in the GC thread, erases should trigger
-the GC task instead.
-wbuf.c still wants to flush its buffer via write_super so
-invent jffs2_dirty_trigger() and use that in wbuf.
-Remove surplus call to jffs2_erase_pending_trigger() in erase.c
-and remove jffs2_garbage_collect_trigger() from write_super as
-of now write_super() should only commit dirty data to disk.
+Hm, I'm not sure that's the best approach. It's a function of the NAND
+chip, not the controller. We should detect the presence of the feature
+from the chip ID, if at all possible.
 
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
- fs/jffs2/background.c |    4 +++-
- fs/jffs2/erase.c      |    6 +++---
- fs/jffs2/nodelist.h   |    2 +-
- fs/jffs2/nodemgmt.c   |    4 ++++
- fs/jffs2/os-linux.h   |    9 +++++++--
- fs/jffs2/super.c      |    2 --
- fs/jffs2/wbuf.c       |    2 +-
- 7 files changed, 19 insertions(+), 10 deletions(-)
+I'm happy with your first two patches as part of a three-patch set
+though. Thanks.
 
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index 3ff50da..6cc014c 100644
---- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -146,7 +146,9 @@ static int jffs2_garbage_collect_thread(void *_c)
- 		disallow_signal(SIGHUP);
- 
- 		D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): pass\n"));
--		if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
-+		if (jffs2_erase_pending_blocks(c, 1))
-+			/* Nothing more to do ATM */;
-+		else if (jffs2_garbage_collect_pass(c) == -ENOSPC) {
- 			printk(KERN_NOTICE "No space for garbage collection. Aborting GC thread\n");
- 			goto die;
- 		}
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index b47679b..be6b2b8 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -103,7 +103,7 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
- 	jffs2_erase_failed(c, jeb, bad_offset);
- }
- 
--void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
-+int jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
- {
- 	struct jffs2_eraseblock *jeb;
- 
-@@ -157,6 +157,8 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
- 	mutex_unlock(&c->erase_free_sem);
-  done:
- 	D1(printk(KERN_DEBUG "jffs2_erase_pending_blocks completed\n"));
-+	return !list_empty(&c->erase_complete_list) ||
-+		!list_empty(&c->erase_pending_list);
- }
- 
- static void jffs2_erase_succeeded(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
-@@ -167,8 +169,6 @@ static void jffs2_erase_succeeded(struct jffs2_sb_info *c, struct jffs2_eraseblo
- 	list_move_tail(&jeb->list, &c->erase_complete_list);
- 	spin_unlock(&c->erase_completion_lock);
- 	mutex_unlock(&c->erase_free_sem);
--	/* Ensure that kupdated calls us again to mark them clean */
--	jffs2_erase_pending_trigger(c);
- }
- 
- static void jffs2_erase_failed(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb, uint32_t bad_offset)
-diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-index 507ed6e..4b1848c 100644
---- a/fs/jffs2/nodelist.h
-+++ b/fs/jffs2/nodelist.h
-@@ -464,7 +464,7 @@ int jffs2_scan_dirty_space(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb
- int jffs2_do_mount_fs(struct jffs2_sb_info *c);
- 
- /* erase.c */
--void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count);
-+int jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count);
- void jffs2_free_jeb_node_refs(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb);
- 
- #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
-diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-index 21a0529..155fd63 100644
---- a/fs/jffs2/nodemgmt.c
-+++ b/fs/jffs2/nodemgmt.c
-@@ -733,6 +733,10 @@ int jffs2_thread_should_wake(struct jffs2_sb_info *c)
- 	int nr_very_dirty = 0;
- 	struct jffs2_eraseblock *jeb;
- 
-+	if (!list_empty(&c->erase_complete_list) ||
-+	    !list_empty(&c->erase_pending_list))
-+		return 1;
-+
- 	if (c->unchecked_size) {
- 		D1(printk(KERN_DEBUG "jffs2_thread_should_wake(): unchecked_size %d, checked_ino #%d\n",
- 			  c->unchecked_size, c->checked_ino));
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
-index a7f03b7..5d26362 100644
---- a/fs/jffs2/os-linux.h
-+++ b/fs/jffs2/os-linux.h
-@@ -140,8 +140,7 @@ void jffs2_nor_wbuf_flash_cleanup(struct jffs2_sb_info *c);
- 
- #endif /* WRITEBUFFER */
- 
--/* erase.c */
--static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
-+static inline void jffs2_dirty_trigger(struct jffs2_sb_info *c)
- {
- 	OFNI_BS_2SFFJ(c)->s_dirt = 1;
- }
-@@ -151,6 +150,12 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c);
- void jffs2_stop_garbage_collect_thread(struct jffs2_sb_info *c);
- void jffs2_garbage_collect_trigger(struct jffs2_sb_info *c);
- 
-+/* erase.c */
-+static inline void jffs2_erase_pending_trigger(struct jffs2_sb_info *c)
-+{
-+	jffs2_garbage_collect_trigger(c);
-+}
-+
- /* dir.c */
- extern const struct file_operations jffs2_dir_operations;
- extern const struct inode_operations jffs2_dir_inode_operations;
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index 9a80e8e..511e2d6 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -63,8 +63,6 @@ static void jffs2_write_super(struct super_block *sb)
- 
- 	if (!(sb->s_flags & MS_RDONLY)) {
- 		D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
--		jffs2_garbage_collect_trigger(c);
--		jffs2_erase_pending_blocks(c, 0);
- 		jffs2_flush_wbuf_gc(c, 0);
- 	}
- 
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 5ef7bac..f319efc 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -84,7 +84,7 @@ static void jffs2_wbuf_dirties_inode(struct jffs2_sb_info *c, uint32_t ino)
- 	struct jffs2_inodirty *new;
- 
- 	/* Mark the superblock dirty so that kupdated will flush... */
--	jffs2_erase_pending_trigger(c);
-+	jffs2_dirty_trigger(c);
- 
- 	if (jffs2_wbuf_pending_for_ino(c, ino))
- 		return;
 -- 
-1.6.4.4
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
