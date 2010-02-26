@@ -1,21 +1,15 @@
-Received: from mail-qy0-f181.google.com ([209.85.221.181])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nkzm5-0007zj-H9
-	for linux-mtd@lists.infradead.org; Fri, 26 Feb 2010 12:58:37 +0000
-Received: by qyk11 with SMTP id 11so17872qyk.24
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Feb 2010 04:58:32 -0800 (PST)
-MIME-Version: 1.0
-Sender: brijesh.s.singh@gmail.com
-Date: Fri, 26 Feb 2010 18:28:32 +0530
-Message-ID: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
-Subject: Release of UBIL: ubi with log
-From: Brijesh Singh <brij.singh@samsung.com>
-To: David Woodhouse <dwmw2@infradead.org>, Artem.Bityutskiy@nokia.com,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: brijesh.s.singh@gmail.com, rohitvdongre@gmail.com,
-	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: misplaced parenthesis in find_boot_record()
+From: David Woodhouse <dwmw2@infradead.org>
+To: Roel Kluin <roel.kluin@gmail.com>
+In-Reply-To: <4B79C344.60908@gmail.com>
+References: <4B79C344.60908@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 26 Feb 2010 13:08:40 +0000
+Message-ID: <1267189720.30247.10867.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
- It gives me great pleasure in sharing UBIL: ubi with log.  We have
-added logging functionality to ubi for reducing mount time.
-UBIL uses the "same source base of UBI". The logging functionality can
-be added or removed at compile time using "make menuconfig option".
+On Mon, 2010-02-15 at 22:57 +0100, Roel Kluin wrote:
+> The parenthesis was misplaced, upon error a one was shown.
+> 
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
 
-We have seen mount time reduction of 50% in 1GB NAND. We are expecting
-even better results for larger flash memories.
+> ---
+> diff --git a/drivers/mtd/inftlmount.c b/drivers/mtd/inftlmount.c
+> index 32e82ae..a269c62 100644
+> --- a/drivers/mtd/inftlmount.c
+> +++ b/drivers/mtd/inftlmount.c
+> @@ -102,7 +102,7 @@ static int find_boot_record(struct INFTLrecord *inftl)
+>  		/* To be safer with BIOS, also use erase mark as discriminant */
+>  		if ((ret = inftl_read_oob(mtd, block * inftl->EraseSize +
+>  					  SECTORSIZE + 8, 8, &retlen,
+> -					  (char *)&h1) < 0)) {
+> +					  (char *)&h1)) < 0) {
 
-The source code of UBIL can be found in the following git tree:
-http://git.infradead.org/users/brijesh/ubi-2.6.git
+Ick.
 
-We have tested ubil for samsung nand and onenand. The test results can
-be found in the following git tree:
-http://git.infradead.org/users/brijesh/ubil_results
+This code is broken because it's fugly. You can see the causality just
+by looking at it.
 
-We are working on utilities and design document of UBIL. I will share
-those as soon as possible.
+Why on earth would you fix the bug but not fix the fugliness which
+caused it?
 
-If someone wants to try, please follow the instructions:
-make menuconfig
-         select ubi as module
-         select ubil feature.
-compile ubi module.
-
-1) First mount of ubil is little different than ubi.
-
-insmod ubi mtd=1,ubinize.
- (Second parameter "ubinize" is introduced to avoid accidental loss of data.)
-insmod ubifs
-mount ubifs
-
-2)For next mounts:
-insmod ubi mtd=1
-insmod ubifs
-mount ubifs
-
-Though UBIL is functionally complete,there is a lot of scope for
-optimizations. All the help is very much appreciated.
+   ret = inftl_read_oob(...);
+   if (ret < 0) {
 
 
-Thanks and Regards,
-Brijesh
+
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
