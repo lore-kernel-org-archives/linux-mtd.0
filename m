@@ -1,54 +1,64 @@
-From: adrian.hunter@nokia.com (Adrian Hunter)
-Date: Fri, 19 Feb 2010 15:39:52 +0100
-Subject: [PATCH 2/7] mtd: OneNAND: add enable / disable methods to onenand_chip
-Message-ID: <mailman.56.1292242895.1530.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Message-ID: <4B8C378B.2090400@oracle.com>
+Date: Mon, 01 Mar 2010 13:54:19 -0800
+From: Randy Dunlap <randy.dunlap@oracle.com>
+MIME-Version: 1.0
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH -next] mtd/nand/r852: fix build for CONFIG_PM=n
+References: <20100301210210.c6f465e6.sfr@canb.auug.org.au>
+In-Reply-To: <20100301210210.c6f465e6.sfr@canb.auug.org.au>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"Rafael J. Wysocki" <rjw@sisk.pl>, linux-next@vger.kernel.org,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add enable / disable methods called from get_device() / release_device().
-These can be used, for example, to allow the driver to prevent the voltage
-regulator from being put to sleep while OneNAND is in use.
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
+Fix r852 build for the case of CONFIG_PM=n.
+
+drivers/mtd/nand/r852.c:1039: error: implicit declaration of function 'pci_prepare_to_sleep'
+drivers/mtd/nand/r852.c:1048: error: implicit declaration of function 'pci_back_from_sleep'
+
+This patch leaves r852_pm_ops untouched.
+
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+Cc: "Rafael J. Wysocki" <rjw@sisk.pl>
+Cc: David Woodhouse <dwmw2@infradead.org>
 ---
- drivers/mtd/onenand/onenand_base.c |    4 ++++
- include/linux/mtd/onenand.h        |    2 ++
- 2 files changed, 6 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/r852.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index c38bf9c..bde274f 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -948,6 +948,8 @@ static int onenand_get_device(struct mtd_info *mtd, int new_state)
- 		if (this->state == FL_READY) {
- 			this->state = new_state;
- 			spin_unlock(&this->chip_lock);
-+			if (this->enable)
-+				this->enable(mtd);
- 			break;
- 		}
- 		if (new_state == FL_PM_SUSPENDED) {
-@@ -974,6 +976,8 @@ static void onenand_release_device(struct mtd_info *mtd)
+--- linux-next-20100301.orig/drivers/mtd/nand/r852.c
++++ linux-next-20100301/drivers/mtd/nand/r852.c
+@@ -1007,6 +1007,7 @@ void r852_shutdown(struct pci_dev *pci_d
+ 	pci_disable_device(pci_dev);
+ }
+ 
++#ifdef CONFIG_PM
+ int r852_suspend(struct device *device)
  {
- 	struct onenand_chip *this = mtd->priv;
+ 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
+@@ -1081,6 +1082,10 @@ int r852_resume(struct device *device)
+ 	r852_update_card_detect(dev);
+ 	return 0;
+ }
++#else
++#define r852_suspend	NULL
++#define r852_resume	NULL
++#endif
  
-+	if (this->state != FL_PM_SUSPENDED && this->disable)
-+		this->disable(mtd);
- 	/* Release the chip */
- 	spin_lock(&this->chip_lock);
- 	this->state = FL_READY;
-diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-index 6da3fe3..ae418e4 100644
---- a/include/linux/mtd/onenand.h
-+++ b/include/linux/mtd/onenand.h
-@@ -118,6 +118,8 @@ struct onenand_chip {
- 	int (*chip_probe)(struct mtd_info *mtd);
- 	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
- 	int (*scan_bbt)(struct mtd_info *mtd);
-+	int (*enable)(struct mtd_info *mtd);
-+	int (*disable)(struct mtd_info *mtd);
+ static const struct pci_device_id r852_pci_id_tbl[] = {
  
- 	struct completion	complete;
- 	int			irq;
+
 -- 
-1.7.0.4
+~Randy
