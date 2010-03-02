@@ -1,17 +1,17 @@
-Message-ID: <4B8C378B.2090400@oracle.com>
-Date: Mon, 01 Mar 2010 13:54:19 -0800
-From: Randy Dunlap <randy.dunlap@oracle.com>
+Received: from mail-pz0-f184.google.com ([209.85.222.184])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NmHQ7-0003Ml-Og
+	for linux-mtd@lists.infradead.org; Tue, 02 Mar 2010 02:01:16 +0000
+Received: by pzk14 with SMTP id 14so4189389pzk.28
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 01 Mar 2010 18:01:09 -0800 (PST)
 MIME-Version: 1.0
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH -next] mtd/nand/r852: fix build for CONFIG_PM=n
-References: <20100301210210.c6f465e6.sfr@canb.auug.org.au>
-In-Reply-To: <20100301210210.c6f465e6.sfr@canb.auug.org.au>
+Date: Mon, 1 Mar 2010 18:01:08 -0800
+Message-ID: <cf70f0211003011801r33027ec8s78c9326f9d058c46@mail.gmail.com>
+Subject: Disadvantage of using yaffs checkpointing ?
+From: Shivdas Gujare <shivdas.tech@gmail.com>
+To: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	"Rafael J. Wysocki" <rjw@sisk.pl>, linux-next@vger.kernel.org,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+Hi All,
 
-Fix r852 build for the case of CONFIG_PM=n.
+I am very new to mtd & yaffs and working on boottime optimization and
+found that yaffs checkpointing helps to mount
+yaffs2 very quickly. I tried it, and was able to save almost 4sec for
+128MB partitioned nand.
 
-drivers/mtd/nand/r852.c:1039: error: implicit declaration of function 'pci_prepare_to_sleep'
-drivers/mtd/nand/r852.c:1048: error: implicit declaration of function 'pci_back_from_sleep'
+Since everything looks very good If I use yaffs checkpointing feature
+but have a doubt, are there any disadvantage of using check-pointing
+by default in final product?
 
-This patch leaves r852_pm_ops untouched.
+I understood that, check-pointing only disables boot time nand block
+scanning & marking it bad if found,
+and takes "system snapshot" while using "umount /dev/mtdblockN" which
+it use in next boot.
+So, If I decided to use "checkpointing" with "umount" while powering
+off the device in final product,
+are there going to be any problems I will face avoiding block scanning?
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>
-Cc: "Rafael J. Wysocki" <rjw@sisk.pl>
-Cc: David Woodhouse <dwmw2@infradead.org>
----
- drivers/mtd/nand/r852.c |    5 +++++
- 1 file changed, 5 insertions(+)
+Thanks lot for any help.
 
---- linux-next-20100301.orig/drivers/mtd/nand/r852.c
-+++ linux-next-20100301/drivers/mtd/nand/r852.c
-@@ -1007,6 +1007,7 @@ void r852_shutdown(struct pci_dev *pci_d
- 	pci_disable_device(pci_dev);
- }
- 
-+#ifdef CONFIG_PM
- int r852_suspend(struct device *device)
- {
- 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
-@@ -1081,6 +1082,10 @@ int r852_resume(struct device *device)
- 	r852_update_card_detect(dev);
- 	return 0;
- }
-+#else
-+#define r852_suspend	NULL
-+#define r852_resume	NULL
-+#endif
- 
- static const struct pci_device_id r852_pci_id_tbl[] = {
- 
-
--- 
-~Randy
+Thanks and Regards,
+Shivdas Gujare
