@@ -1,21 +1,21 @@
-Received: from mail.nethra.us.com ([74.85.3.131])
+Received: from aa012msr.fastwebnet.it ([85.18.95.72])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nnf90-0001kV-TD
-	for linux-mtd@lists.infradead.org; Fri, 05 Mar 2010 21:33:19 +0000
-Message-ID: <4B917881.9000600@nethra.us.com>
-Date: Fri, 05 Mar 2010 13:32:49 -0800
-From: Blair Barnett <bbarnett@nethra.us.com>
+	id 1Nnf96-0001lQ-U3
+	for linux-mtd@lists.infradead.org; Fri, 05 Mar 2010 21:33:25 +0000
+Received: from aurio02.aurion-tech.com (39.225.70.39) by
+	aa012msr.fastwebnet.it (8.5.016.6)
+	id 4B869E1101404B96 for linux-mtd@lists.infradead.org;
+	Fri, 5 Mar 2010 22:33:19 +0100
+From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Hi All,  problem with SST39VF6401B70
+Date: Fri, 5 Mar 2010 22:34:47 +0100
 MIME-Version: 1.0
-To: "Paulraj, Sandeep" <s-paulraj@ti.com>
-Subject: Re: ONFI 4GB and beyond NAND support
-References: <4B907BC1.4030907@nethra.us.com>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9C10DBEB@dlee01.ent.ti.com>
-	<4B916483.9040900@nethra.us.com>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9C18C4EC@dlee01.ent.ti.com>
-In-Reply-To: <0554BEF07D437848AF01B9C9B5F0BC5D9C18C4EC@dlee01.ent.ti.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
+Message-Id: <201003052234.47983.fabio.giovagnini@aurion-tech.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi All.
+This is my problem
+I'musing SST39VF6401B70 as a boot NOR flash; when gen_probe module 
+check_cmd_set function is called detect my flash as an AMDSTD and this 
+because of CFI Query struct bytes 13H and 14H  (Primary OEM commad set) is 
+0002H, 0000H as an AMD standard; but CFI Query struct bytes 15H and 16H 
+(Address for Primary Extended Table) is 0000H (no table); this is not conform 
+to ADMSTD. How can I solve the problem? Do I have to implement a different 
+driver and if yes where can I find the road map?
 
->> It appears a simple fix for the erasesize is to use 0x7 as the mask, but
->> the oobsize is a little more problematic.
->>     
->
-> I had similar concerns.
-> What we did was to just assume that the OOB size was 128 instead of 224.
-> We just don't use and our driver sis not concerned about the other 96 bytes.
->   
->> The code
->> mtd->oobsize = (8 << (extid & 0x01)) * (mtd->writesize >> 9);
->>
->> doesn't really work to create a 224 byte oobsize value, not to mention I
->> don't know where to look to create the ECC structure required.
->>     
-> As I said above just assume that the OOB is 128 bytes
->
->   
-O.K., thanks for the feedback. I thought the bigger OOB size is there 
-for allowing more ECC bytes, since the page size is much bigger than 
-before and will require more error correction bytes.
+Thanks a lot
 
-I'll work on an ONFI implementation and get it out to the list in the 
-next few weeks.
+-- 
+Fabio Giovagnini
 
--blair
+Aurion s.r.l.
+CF e P.IVA 00885711200
+Tel. +39.051.594.78.24
+Cell. +39.335.8350919
+
+www.aurion-tech.com
+
+account telefono VoIP skype (www.skype.com):
+aurion.giovagnini
