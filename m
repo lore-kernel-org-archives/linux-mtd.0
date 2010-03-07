@@ -1,60 +1,26 @@
-MIME-Version: 1.0
-In-Reply-To: <577FAEEB8540FB4F9C91B6BB262576755905DC@XVS-DCFR-22.europe.corp.altran.com>
-References: <AcrQ47RPeBz4nhRMR9ORyzmB2isxaQ==>
-	<577FAEEB8540FB4F9C91B6BB262576755905DC@XVS-DCFR-22.europe.corp.altran.com>
-Date: Thu, 1 Apr 2010 01:34:24 +0200
-Message-ID: <x2y63386a3d1003311634l71486234n95f60e506b776948@mail.gmail.com>
-Subject: Re: [PATCH] Arm nomadik : Vendor tool compatibility
-From: Linus Walleij <linus.ml.walleij@gmail.com>
-To: Lemetayer Jean Marie <jeanmarie.lemetayer@altran.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-arm-kernel@lists.infradead.org, dwmw2@infradead.org,
-	linux@arm.linux.org.uk, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: brian@Brian-Ubuntu-Laptop. (Brian (none))
+Date: Sat, 6 Mar 2010 17:12:40 -0800
+Subject: [PATCH 2/2] Spelling error of "write-through cache" in jffs2 FAQ
+Message-ID: <mailman.226.1267924677.2170.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-2010/3/31 Lemetayer Jean Marie <jeanmarie.lemetayer@altran.com>:
+---
+ faq/jffs2.xml |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-> +#ifdef CONFIG_VENDOR_TOOL_COMPATIBILITY
-> +static struct nand_ecclayout nomadik_ecc_layout =3D {
-> +=A0=A0=A0=A0=A0=A0 .eccbytes =3D 3 * 4,
-> +=A0=A0=A0=A0=A0=A0 .eccpos =3D {
-> +=A0=A0=A0=A0=A0=A0 =A0=A0=A0=A0=A0=A0=A0 0x28, 0x29, 0x2A,
-> +=A0=A0=A0=A0=A0=A0 =A0=A0=A0=A0=A0=A0=A0 0x2B, 0x2C, 0x2D,
-> +=A0=A0=A0=A0=A0=A0 =A0=A0=A0=A0=A0=A0=A0 0x2E, 0x2F, 0x30,
-> +=A0=A0=A0=A0=A0=A0 =A0=A0=A0=A0=A0=A0=A0 0x31, 0x32, 0x33},
-> +=A0=A0=A0=A0=A0=A0 .oobfree =3D {{0x02, 0x26}, {0x34, 0x0C} },
-> +};
-> +#else
-> =A0static struct nand_ecclayout nomadik_ecc_layout =3D {
-> =A0=A0=A0=A0=A0=A0=A0 .eccbytes =3D 3 * 4,
-> =A0=A0=A0=A0=A0=A0=A0 .eccpos =3D { /* each subpage has 16 bytes: pos 2,3=
-,4 hosts ECC */
-> @@ -54,6 +65,7 @@ static struct nand_ecclayout nomadik_ecc_layout =3D {
-> =A0=A0=A0=A0=A0=A0=A0 /* let's keep bytes 5,6,7 for us, just in case we c=
-hange ECC algo */
-> =A0=A0=A0=A0=A0=A0=A0 .oobfree =3D { {0x08, 0x08}, {0x18, 0x08}, {0x28, 0=
-x08}, {0x38, 0x08}
-> },
-> =A0};
-> +#endif
-
-Acked-by: Linus Walleij <linus.walleij@stericsson.com>
-
-I don't think any of this layout belongs in the driver itself frankly speak=
-ing,
-I am facing the need to use this in U300 and we use yet *another*
-ECC layout with the FSMC, so we have to add yet another #ifdef.
-However I can fix that up with a patch on top of this one after it's
-queued.
-
-Yours,
-Linus Walleij
+diff --git a/faq/jffs2.xml b/faq/jffs2.xml
+index 0e58398..f94efa1 100644
+--- a/faq/jffs2.xml
++++ b/faq/jffs2.xml
+@@ -134,7 +134,7 @@ Owing to peculiarities of flash devices, JFFS2 is very different to
+ conventional HDD-oriented file system. And one of its drawbacks is that mount
+ time as well as memory consumption grow linearly with growing flash size. So
+ beware you may end up with tremendous amount memory eaten and huge mount time if
+-your block device is very large. Also, JFFS2 implements only write-trough
++your block device is very large. Also, JFFS2 implements only write-through
+ caching (while convectional FS-es have write-back) and does many thing which are
+ not really needed in case of hard drives.
+ </P>
+-- 
+1.6.3.3
