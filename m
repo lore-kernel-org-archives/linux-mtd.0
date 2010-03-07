@@ -1,12 +1,16 @@
-Received: from web83905.mail.sp1.yahoo.com ([69.147.92.105])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1No57v-0004bI-PI
-	for linux-mtd@lists.infradead.org; Sun, 07 Mar 2010 01:17:56 +0000
-Message-ID: <829395.51053.qm@web83905.mail.sp1.yahoo.com>
-Date: Sat, 6 Mar 2010 17:17:49 -0800 (PST)
-From: Brian <elrond_14@yahoo.com>
-Subject: JFFS2 FAQ - Spelling Error
+Received: from tac.ki.iif.hu ([2001:738:0:401:20c:6eff:fe71:b2db])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NoNpl-0005KZ-5C
+	for linux-mtd@lists.infradead.org; Sun, 07 Mar 2010 21:16:21 +0000
+Received: from wferi by tac.ki.iif.hu with local (Exim 4.69)
+	(envelope-from <wferi@tac.ki.iif.hu>) id 1NoNpO-0007Dl-4c
+	for linux-mtd@lists.infradead.org; Sun, 07 Mar 2010 22:15:58 +0100
+From: Ferenc Wagner <wferi@niif.hu>
 To: linux-mtd@lists.infradead.org
+Subject: [PATCH, mtd-utils] creat(2) expects a creation mode parameter,
+	not an open flag
+Date: Sun, 07 Mar 2010 22:15:58 +0100
+Message-ID: <87sk8bzvch.fsf@tac.ki.iif.hu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,29 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm sorry, apparently it doesn't accept the attachment properly. Here's a quick spelling fix.
-
->From daa6039bd96dec5ac191b4067cd1e46420a907d7 Mon Sep 17 00:00:00 2001
-From: Brian <brian@Brian-Ubuntu-Laptop.(none)>
-Date: Sat, 6 Mar 2010 17:12:40 -0800
-Subject: [PATCH 2/2] Spelling error of "write-through cache" in jffs2 FAQ
-
+Signed-off-by: Ferenc Wagner <wferi@niif.hu>
 ---
- faq/jffs2.xml |    2 +-
+ mtd_debug.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/faq/jffs2.xml b/faq/jffs2.xml
-index 0e58398..f94efa1 100644
---- a/faq/jffs2.xml
-+++ b/faq/jffs2.xml
-@@ -134,7 +134,7 @@ Owing to peculiarities of flash devices, JFFS2 is very different to
- conventional HDD-oriented file system. And one of its drawbacks is that mount
- time as well as memory consumption grow linearly with growing flash size. So
- beware you may end up with tremendous amount memory eaten and huge mount time if
--your block device is very large. Also, JFFS2 implements only write-trough
-+your block device is very large. Also, JFFS2 implements only write-through
- caching (while convectional FS-es have write-back) and does many thing which are
- not really needed in case of hard drives.
- </P>
+diff --git a/mtd_debug.c b/mtd_debug.c
+index 85d48e9..49a4567 100644
+--- a/mtd_debug.c
++++ b/mtd_debug.c
+@@ -110,7 +110,7 @@ int flash_to_file (int fd,u_int32_t offset,size_t len,const char *filename)
+ 		perror ("lseek()");
+ 		goto err0;
+ 	}
+-	outfd = creat (filename,O_WRONLY);
++	outfd = creat (filename,0666);
+ 	if (outfd < 0)
+ 	{
+ 		perror ("creat()");
 -- 
-1.6.3.3
+1.5.6.5
