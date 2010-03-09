@@ -1,14 +1,17 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from quartz.orcorp.ca ([139.142.54.143])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Np1tE-0005UN-En
-	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2010 16:02:41 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: Blackfin NFC: localize MMR bit masks
-Date: Tue,  9 Mar 2010 11:05:48 -0500
-Message-Id: <1268150748-27499-1-git-send-email-vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org
+	id 1Np565-0003BL-AT
+	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2010 19:28:10 +0000
+Date: Tue, 9 Mar 2010 12:27:56 -0700
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: Extend physmap_of to let the device tree specify the
+	parition probe
+Message-ID: <20100309192756.GC30462@obsidianresearch.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,78 +21,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Convert all magic numbers into appropriate defines, and move the defines
-out of the global namespace and into this one driver.  No other driver
-needs to care about the MMR layout anyways.
+This is to support custom partitioning schemes for embedded PPC. To use
+define your own mtd_part_parser and then add something like:
+   linux,part-probe = "my_probe", "cmdlinepart";
+To the board's dts file.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+If linux,part-probe is not specified then this behaves the same as before.
+
+Signed-off-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
 ---
-note: this can be merged for 2.6.34 or 2.6.35
+ drivers/mtd/maps/physmap_of.c |   53 +++++++++++++++++++++++++++++++++++++----
+ 1 files changed, 48 insertions(+), 5 deletions(-)
 
- drivers/mtd/nand/bf5xx_nand.c |   29 +++++++++++++++++++++++++----
- 1 files changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 8506e7e..2974995 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -68,6 +68,27 @@
- #define DRV_AUTHOR	"Bryan Wu <bryan.wu@analog.com>"
- #define DRV_DESC	"BF5xx on-chip NAND FLash Controller Driver"
- 
-+/* NFC_STAT Masks */
-+#define NBUSY       0x01  /* Not Busy */
-+#define WB_FULL     0x02  /* Write Buffer Full */
-+#define PG_WR_STAT  0x04  /* Page Write Pending */
-+#define PG_RD_STAT  0x08  /* Page Read Pending */
-+#define WB_EMPTY    0x10  /* Write Buffer Empty */
-+
-+/* NFC_IRQSTAT Masks */
-+#define NBUSYIRQ    0x01  /* Not Busy IRQ */
-+#define WB_OVF      0x02  /* Write Buffer Overflow */
-+#define WB_EDGE     0x04  /* Write Buffer Edge Detect */
-+#define RD_RDY      0x08  /* Read Data Ready */
-+#define WR_DONE     0x10  /* Page Write Done */
-+
-+/* NFC_RST Masks */
-+#define ECC_RST     0x01  /* ECC (and NFC counters) Reset */
-+
-+/* NFC_PGCTL Masks */
-+#define PG_RD_START 0x01  /* Page Read Start */
-+#define PG_WR_START 0x02  /* Page Write Start */
-+
- #ifdef CONFIG_MTD_NAND_BF5XX_HWECC
- static int hardware_ecc = 1;
- #else
-@@ -487,7 +508,7 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
- 	 * transferred to generate the correct ECC register
- 	 * values.
- 	 */
--	bfin_write_NFC_RST(0x1);
-+	bfin_write_NFC_RST(ECC_RST);
- 	SSYNC();
- 
- 	disable_dma(CH_NFC);
-@@ -497,7 +518,7 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
- 	set_dma_config(CH_NFC, 0x0);
- 	set_dma_start_addr(CH_NFC, (unsigned long) buf);
- 
--/* The DMAs have different size on BF52x and BF54x */
-+	/* The DMAs have different size on BF52x and BF54x */
- #ifdef CONFIG_BF52x
- 	set_dma_x_count(CH_NFC, (page_size >> 1));
- 	set_dma_x_modify(CH_NFC, 2);
-@@ -517,9 +538,9 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
- 
- 	/* Start PAGE read/write operation */
- 	if (is_read)
--		bfin_write_NFC_PGCTL(0x1);
-+		bfin_write_NFC_PGCTL(PG_RD_START);
- 	else
--		bfin_write_NFC_PGCTL(0x2);
-+		bfin_write_NFC_PGCTL(PG_WR_START);
- 	wait_for_completion(&info->dma_completion);
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 61e4eb4..fe4438c 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -172,12 +172,53 @@ static struct mtd_info * __devinit obsolete_probe(struct of_device *dev,
+ 	}
  }
  
++#ifdef CONFIG_MTD_PARTITIONS
++/* When partitions are set we look for a linux,part-probe property which
++   specifies the list of partition probers to use. If none is given then the
++   default is use. These take precedence over other device tree
++   information. */
++static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot", NULL };
++static const char ** __devinit of_get_probes(struct device_node *dp)
++{
++	const char *cp;
++	int cplen;
++	unsigned int l;
++	unsigned int count;
++	const char **res;
++
++	cp = of_get_property(dp, "linux,part-probe", &cplen);
++	if (cp == NULL)
++		return part_probe_types_def;
++
++	count = 0;
++	for (l = 0; l != cplen; l++)
++		if (cp[l] == 0)
++			count++;
++
++	res = kzalloc((count + 1)*sizeof(*res), GFP_KERNEL);
++	count = 0;
++	while (cplen > 0) {
++		res[count] = cp;
++		l = strlen(cp) + 1;
++		cp += l;
++		cplen -= l;
++		count++;
++	}
++	return res;
++}
++
++static void __devinit of_free_probes(const char **probes)
++{
++	if (probes != part_probe_types_def)
++		kfree(probes);
++}
++#endif
++
+ static int __devinit of_flash_probe(struct of_device *dev,
+ 				    const struct of_device_id *match)
+ {
+ #ifdef CONFIG_MTD_PARTITIONS
+-	static const char *part_probe_types[]
+-		= { "cmdlinepart", "RedBoot", NULL };
++	const char **part_probe_types;
+ #endif
+ 	struct device_node *dp = dev->node;
+ 	struct resource res;
+@@ -306,12 +347,14 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 		goto err_out;
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+-	/* First look for RedBoot table or partitions on the command
+-	 * line, these take precedence over device tree information */
++	part_probe_types = of_get_probes(dp);
+ 	err = parse_mtd_partitions(info->cmtd, part_probe_types,
+ 				   &info->parts, 0);
+-	if (err < 0)
++	if (err < 0) {
++		of_free_probes(part_probe_types);
+ 		return err;
++	}
++	of_free_probes(part_probe_types);
+ 
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (err == 0) {
 -- 
-1.7.0.2
+1.5.4.2
