@@ -1,23 +1,17 @@
-Received: from mail-bw0-f215.google.com ([209.85.218.215])
+Received: from mail.haslerrail.com ([212.103.73.117])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NovD2-0006BM-Ax
-	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2010 08:54:41 +0000
-Received: by bwz7 with SMTP id 7so5285091bwz.4
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 09 Mar 2010 00:54:34 -0800 (PST)
+	id 1NovfV-00013B-BT
+	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2010 09:24:06 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <804f0d21003090023h1787eebds8106b4fea1b0e7b4@mail.gmail.com>
-References: <804f0d21003080735q49fb834bo3369987059b17208@mail.gmail.com>
-	<ce9ab5791003082107r43df18by8cbcd8a9f589c326@mail.gmail.com>
-	<804f0d21003090023h1787eebds8106b4fea1b0e7b4@mail.gmail.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Tue, 9 Mar 2010 14:24:14 +0530
-Message-ID: <ce9ab5791003090054k386d4cbejf40875e43a1c9584@mail.gmail.com>
-Subject: Re: flashcp failed (bad block)?
-To: Arno Steffen <arno.steffen@googlemail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: difference between JFFS2 for NAND and NOR
+Date: Tue, 9 Mar 2010 10:24:27 +0100
+Message-ID: <2888BF8AC9A0304E907A7CB9D0CA06DC019E9EE0@hrsrv03.haslerrail.net>
+From: "Hoefle Marco" <Marco.Hoefle@haslerrail.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Thanks. That's true, mtd6 doesn't have bad blocks
-> I did a
-> "flash_eraseall -j /dev/mtd5" =A0 =A0and
-> "nandwrite -amp /dev/mtd5 /tmp/rootfs.jffs2"
->
-> ( I tried the =A0some options but get
-> nandwrite -ajmp /dev/mtd5 /tmp/rootfs.jffs2
-> Autoplacement is not possible for legacy -j/-y options
-> [root@SPV ]# nandwrite -jmp /dev/mtd5 /tmp/rootfs.jffs2
-> MEMSETOOBSEL: Inappropriate ioctl for device )
+Good day,
+We have an imx35 board from Phytec which ships with a 32MByte NOR flash
+and a 1GByte NAND flash (Samsung K9WAG08U1A)
+Our root filesystem generated with=20
+mkfs.jffs2 -r ROOTFS_DIR -o jffs.img -e 128 -l -n
+works well on the NOR flash.
 
-You need not to specify '-aj' options. I use to give only '-p' option.
+When we put it into the NAND it boots fine the first time. However,
+after a reboot we get
 
+Jffs_scan_inode(): CRC failed on node .... Failures
 
---=20
-Regards,
-Vimal Singh
+=20
+Each time a reboot causes more of those failures.
+According to the NAND datasheet a block has 64 Pages (128K + 4k) Byte
+
+1 Page =3D (2K + 64) Bytes
+1 Block =3D (2K + 64)B x 64 Pages =3D (128K + 4K) Bytes
+1 Device =3D (2K + 64)B x 64 Pages x8192 Blocks =3D 8,448 Mbits
+
+Am I generating the jffs2 image wrong for this NAND type?
+
+Normally we do not write on the rootfs, /var/log,  /var/lock /var/run
+are mapped to another partition (ext3 on the same flash).
+
+Any hints a very appreciated,
+
+Marco
+=20
