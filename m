@@ -1,17 +1,14 @@
-Received: from mail.haslerrail.com ([212.103.73.117])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NovfV-00013B-BT
-	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2010 09:24:06 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: difference between JFFS2 for NAND and NOR
-Date: Tue, 9 Mar 2010 10:24:27 +0100
-Message-ID: <2888BF8AC9A0304E907A7CB9D0CA06DC019E9EE0@hrsrv03.haslerrail.net>
-From: "Hoefle Marco" <Marco.Hoefle@haslerrail.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Np1tE-0005UN-En
+	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2010 16:02:41 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: Blackfin NFC: localize MMR bit masks
+Date: Tue,  9 Mar 2010 11:05:48 -0500
+Message-Id: <1268150748-27499-1-git-send-email-vapier@gentoo.org>
+Cc: uclinux-dist-devel@blackfin.uclinux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +18,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Good day,
-We have an imx35 board from Phytec which ships with a 32MByte NOR flash
-and a 1GByte NAND flash (Samsung K9WAG08U1A)
-Our root filesystem generated with=20
-mkfs.jffs2 -r ROOTFS_DIR -o jffs.img -e 128 -l -n
-works well on the NOR flash.
+Convert all magic numbers into appropriate defines, and move the defines
+out of the global namespace and into this one driver.  No other driver
+needs to care about the MMR layout anyways.
 
-When we put it into the NAND it boots fine the first time. However,
-after a reboot we get
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+note: this can be merged for 2.6.34 or 2.6.35
 
-Jffs_scan_inode(): CRC failed on node .... Failures
+ drivers/mtd/nand/bf5xx_nand.c |   29 +++++++++++++++++++++++++----
+ 1 files changed, 25 insertions(+), 4 deletions(-)
 
-=20
-Each time a reboot causes more of those failures.
-According to the NAND datasheet a block has 64 Pages (128K + 4k) Byte
-
-1 Page =3D (2K + 64) Bytes
-1 Block =3D (2K + 64)B x 64 Pages =3D (128K + 4K) Bytes
-1 Device =3D (2K + 64)B x 64 Pages x8192 Blocks =3D 8,448 Mbits
-
-Am I generating the jffs2 image wrong for this NAND type?
-
-Normally we do not write on the rootfs, /var/log,  /var/lock /var/run
-are mapped to another partition (ext3 on the same flash).
-
-Any hints a very appreciated,
-
-Marco
-=20
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index 8506e7e..2974995 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -68,6 +68,27 @@
+ #define DRV_AUTHOR	"Bryan Wu <bryan.wu@analog.com>"
+ #define DRV_DESC	"BF5xx on-chip NAND FLash Controller Driver"
+ 
++/* NFC_STAT Masks */
++#define NBUSY       0x01  /* Not Busy */
++#define WB_FULL     0x02  /* Write Buffer Full */
++#define PG_WR_STAT  0x04  /* Page Write Pending */
++#define PG_RD_STAT  0x08  /* Page Read Pending */
++#define WB_EMPTY    0x10  /* Write Buffer Empty */
++
++/* NFC_IRQSTAT Masks */
++#define NBUSYIRQ    0x01  /* Not Busy IRQ */
++#define WB_OVF      0x02  /* Write Buffer Overflow */
++#define WB_EDGE     0x04  /* Write Buffer Edge Detect */
++#define RD_RDY      0x08  /* Read Data Ready */
++#define WR_DONE     0x10  /* Page Write Done */
++
++/* NFC_RST Masks */
++#define ECC_RST     0x01  /* ECC (and NFC counters) Reset */
++
++/* NFC_PGCTL Masks */
++#define PG_RD_START 0x01  /* Page Read Start */
++#define PG_WR_START 0x02  /* Page Write Start */
++
+ #ifdef CONFIG_MTD_NAND_BF5XX_HWECC
+ static int hardware_ecc = 1;
+ #else
+@@ -487,7 +508,7 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
+ 	 * transferred to generate the correct ECC register
+ 	 * values.
+ 	 */
+-	bfin_write_NFC_RST(0x1);
++	bfin_write_NFC_RST(ECC_RST);
+ 	SSYNC();
+ 
+ 	disable_dma(CH_NFC);
+@@ -497,7 +518,7 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
+ 	set_dma_config(CH_NFC, 0x0);
+ 	set_dma_start_addr(CH_NFC, (unsigned long) buf);
+ 
+-/* The DMAs have different size on BF52x and BF54x */
++	/* The DMAs have different size on BF52x and BF54x */
+ #ifdef CONFIG_BF52x
+ 	set_dma_x_count(CH_NFC, (page_size >> 1));
+ 	set_dma_x_modify(CH_NFC, 2);
+@@ -517,9 +538,9 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
+ 
+ 	/* Start PAGE read/write operation */
+ 	if (is_read)
+-		bfin_write_NFC_PGCTL(0x1);
++		bfin_write_NFC_PGCTL(PG_RD_START);
+ 	else
+-		bfin_write_NFC_PGCTL(0x2);
++		bfin_write_NFC_PGCTL(PG_WR_START);
+ 	wait_for_completion(&info->dma_completion);
+ }
+ 
+-- 
+1.7.0.2
