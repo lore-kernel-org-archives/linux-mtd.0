@@ -1,17 +1,16 @@
-Received: from quartz.orcorp.ca ([139.142.54.143])
+Received: from mgw2.diku.dk ([130.225.96.92])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Np565-0003BL-AT
-	for linux-mtd@lists.infradead.org; Tue, 09 Mar 2010 19:28:10 +0000
-Date: Tue, 9 Mar 2010 12:27:56 -0700
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Extend physmap_of to let the device tree specify the
-	parition probe
-Message-ID: <20100309192756.GC30462@obsidianresearch.com>
+	id 1NpTFW-00083F-1W
+	for linux-mtd@lists.infradead.org; Wed, 10 Mar 2010 21:15:29 +0000
+Date: Wed, 10 Mar 2010 22:15:19 +0100 (CET)
+From: Julia Lawall <julia@diku.dk>
+To: Joern Engel <joern@lazybastard.org>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH 2/6] drivers/mtd: Use kasprintf
+Message-ID: <Pine.LNX.4.64.1003102215020.1672@ask.diku.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,95 +20,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is to support custom partitioning schemes for embedded PPC. To use
-define your own mtd_part_parser and then add something like:
-   linux,part-probe = "my_probe", "cmdlinepart";
-To the board's dts file.
+From: Julia Lawall <julia@diku.dk>
 
-If linux,part-probe is not specified then this behaves the same as before.
+kasprintf combines kmalloc and sprintf, and takes care of the size
+calculation itself.
 
-Signed-off-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+expression a,flag;
+expression list args;
+statement S;
+@@
+
+  a =
+-  \(kmalloc\|kzalloc\)(...,flag)
++  kasprintf(flag,args)
+  <... when != a
+  if (a == NULL || ...) S
+  ...>
+- sprintf(a,args);
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
 ---
- drivers/mtd/maps/physmap_of.c |   53 +++++++++++++++++++++++++++++++++++++----
- 1 files changed, 48 insertions(+), 5 deletions(-)
+ drivers/mtd/devices/block2mtd.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 61e4eb4..fe4438c 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -172,12 +172,53 @@ static struct mtd_info * __devinit obsolete_probe(struct of_device *dev,
- 	}
- }
+diff -u -p a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -275,12 +275,10 @@ static struct block2mtd_dev *add_device(
  
-+#ifdef CONFIG_MTD_PARTITIONS
-+/* When partitions are set we look for a linux,part-probe property which
-+   specifies the list of partition probers to use. If none is given then the
-+   default is use. These take precedence over other device tree
-+   information. */
-+static const char *part_probe_types_def[] = { "cmdlinepart", "RedBoot", NULL };
-+static const char ** __devinit of_get_probes(struct device_node *dp)
-+{
-+	const char *cp;
-+	int cplen;
-+	unsigned int l;
-+	unsigned int count;
-+	const char **res;
-+
-+	cp = of_get_property(dp, "linux,part-probe", &cplen);
-+	if (cp == NULL)
-+		return part_probe_types_def;
-+
-+	count = 0;
-+	for (l = 0; l != cplen; l++)
-+		if (cp[l] == 0)
-+			count++;
-+
-+	res = kzalloc((count + 1)*sizeof(*res), GFP_KERNEL);
-+	count = 0;
-+	while (cplen > 0) {
-+		res[count] = cp;
-+		l = strlen(cp) + 1;
-+		cp += l;
-+		cplen -= l;
-+		count++;
-+	}
-+	return res;
-+}
-+
-+static void __devinit of_free_probes(const char **probes)
-+{
-+	if (probes != part_probe_types_def)
-+		kfree(probes);
-+}
-+#endif
-+
- static int __devinit of_flash_probe(struct of_device *dev,
- 				    const struct of_device_id *match)
- {
- #ifdef CONFIG_MTD_PARTITIONS
--	static const char *part_probe_types[]
--		= { "cmdlinepart", "RedBoot", NULL };
-+	const char **part_probe_types;
- #endif
- 	struct device_node *dp = dev->node;
- 	struct resource res;
-@@ -306,12 +347,14 @@ static int __devinit of_flash_probe(struct of_device *dev,
- 		goto err_out;
+ 	/* Setup the MTD structure */
+ 	/* make the name contain the block device in */
+-	name = kmalloc(sizeof("block2mtd: ") + strlen(devname) + 1,
+-			GFP_KERNEL);
++	name = kasprintf(GFP_KERNEL, "block2mtd: %s", devname);
+ 	if (!name)
+ 		goto devinit_err;
  
- #ifdef CONFIG_MTD_PARTITIONS
--	/* First look for RedBoot table or partitions on the command
--	 * line, these take precedence over device tree information */
-+	part_probe_types = of_get_probes(dp);
- 	err = parse_mtd_partitions(info->cmtd, part_probe_types,
- 				   &info->parts, 0);
--	if (err < 0)
-+	if (err < 0) {
-+		of_free_probes(part_probe_types);
- 		return err;
-+	}
-+	of_free_probes(part_probe_types);
+-	sprintf(name, "block2mtd: %s", devname);
+ 	dev->mtd.name = name;
  
- #ifdef CONFIG_MTD_OF_PARTS
- 	if (err == 0) {
--- 
-1.5.4.2
+ 	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
