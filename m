@@ -1,18 +1,25 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Npd3k-0006qy-Ff
-	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2010 07:44:01 +0000
-Received: by wwd20 with SMTP id 20so692019wwd.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Mar 2010 23:43:54 -0800 (PST)
+Received: from cluster-a.mailcontrol.com ([85.115.52.190])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NpfzE-00022b-1N
+	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2010 10:51:32 +0000
+Received: from rly13a.srv.mailcontrol.com (localhost.localdomain [127.0.0.1])
+	by rly13a.srv.mailcontrol.com (MailControl) with ESMTP id
+	o2BAo6HV019705
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Mar 2010 10:51:14 GMT
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by rly13a.srv.mailcontrol.com (MailControl) id o2BAn8H1010604
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Mar 2010 10:49:08 GMT
+From: Bosi Daniele <Daniele.Bosi@mta.it>
+To: "'???'" <okpalin@gmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+Date: Thu, 11 Mar 2010 11:48:51 +0100
+Subject: R: Can not mount UBIFS
+Message-ID: <531B6536C9F737458807DF75064873C8BE5EB0382C@mta-digimail.MTA.INT>
+In-Reply-To: <a145ef951003102343h58c7f78bh5c2ed3357fe0fe4e@mail.gmail.com>
+Content-Language: it-IT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date: Thu, 11 Mar 2010 15:43:54 +0800
-Message-ID: <a145ef951003102343h58c7f78bh5c2ed3357fe0fe4e@mail.gmail.com>
-Subject: Can not mount UBIFS
-From: =?Big5?B?qkykX65t?= <okpalin@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: okpalin@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,10 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+It seems like you have your first problem with the Linux "mount" command. P=
+lease try to be sure that your kernel supports ubi file systems. To check s=
+imply if this is true do on your device a
+cat /proc/filesystem
+and verify that "ubi" is present
+
+If it's not, you have to enable ubi options into your kernel
+
+Bye Daniele
+
+
+-----Messaggio originale-----
+Da: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.i=
+nfradead.org] Per conto di okpalin@gmail.com
+Inviato: gioved=EC 11 marzo 2010 8.44
+A: linux-mtd@lists.infradead.org
+Cc: okpalin@gmail.com
+Oggetto: Can not mount UBIFS
+
 Dear all,
 
 I am trying UBIFS on android on nVidia Tegra T20.
-I add a new MTD partition, flash_eraseall, ubiattach, ubimkvol, and mount it.
+I add a new MTD partition, flash_eraseall, ubiattach, ubimkvol, and mount i=
+t.
 Error occurs when mount it.
 
 The total command I enter is:
@@ -585,14 +612,15 @@ VID header to PEB 2
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 2:2048
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xb4c0800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xb4c0800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 2:4096
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xb4c1000 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xb4c1000 len=3D0x800
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: space_bits 14
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: space_bi=
+ts 14
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt:
 lpt_lnum_bits 2
@@ -603,23 +631,32 @@ lpt_offs_bits 17
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt:
 lpt_spc_bits 17
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: pcnt_bits 6
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: pcnt_bit=
+s 6
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lnum_bits 8
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lnum_bit=
+s 8
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: pnode_sz 17
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: pnode_sz=
+ 17
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: nnode_sz 12
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: nnode_sz=
+ 12
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: ltab_sz 11
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: ltab_sz =
+11
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lsave_sz 259
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lsave_sz=
+ 259
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lsave_cnt 256
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lsave_cn=
+t 256
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lpt_hght 3
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: lpt_hght=
+ 3
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: big_lpt 0
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: big_lpt =
+0
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_create_dflt_lpt: LPT
 root is at 6:1248
@@ -653,12 +690,12 @@ VID header to PEB 1
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 1:2048
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xb4a0800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xb4a0800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 4096
 bytes to PEB 1:4096
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xb4a1000 len=0x1000
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xb4a1000 len=3D0x1000
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): create_default_filesystem:
 default superblock created at LEB 0:0
@@ -683,12 +720,12 @@ VID header to PEB 129
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 129:2048
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4a0800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4a0800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 129:4096
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4a1000 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4a1000 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_write_node: LEB 2:0,
 master node, length 512 (aligned 2048)
@@ -710,12 +747,12 @@ VID header to PEB 130
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 130:2048
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4c0800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4c0800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 130:4096
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4c1000 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4c1000 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): create_default_filesystem:
 default master node created at LEB 1:0
@@ -740,12 +777,12 @@ VID header to PEB 131
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 131:2048
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4e0800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4e0800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 131:4096
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4e1000 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4e1000 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): create_default_filesystem:
 default root indexing node created LEB 10:0
@@ -770,12 +807,12 @@ VID header to PEB 132
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 132:2048
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc500800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc500800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 132:4096
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc501000 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc501000 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): create_default_filesystem:
 root inode created at LEB 11:0
@@ -800,12 +837,12 @@ VID header to PEB 133
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 133:2048
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc520800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc520800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 133:4096
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc521000 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc521000 len=3D0x800
 
 I/PrintK  ( 1151): <5>UBIFS: default file-system created
 
@@ -853,7 +890,8 @@ bytes padded, offset now 2048
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_scan: look at LEB
 1:2048 (124928 bytes left)
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_scan_a_node: hit empty space
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_scan_a_node: hit empty sp=
+ace
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_end_scan: stop
 scanning LEB 1 at offset 2048
@@ -887,7 +925,8 @@ bytes padded, offset now 2048
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_scan: look at LEB
 2:2048 (124928 bytes left)
 
-V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_scan_a_node: hit empty space
+V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_scan_a_node: hit empty sp=
+ace
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_end_scan: stop
 scanning LEB 2 at offset 2048
@@ -916,7 +955,7 @@ V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_eba_write_leb: write
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 129:6144
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4a1800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4a1800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBIFS DBG (pid 1151): ubifs_write_node: LEB
 2:2048, master node, length 512 (aligned 2048)
@@ -930,7 +969,7 @@ V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_eba_write_leb: write
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_io_write: write 2048
 bytes to PEB 130:6144
 
-D/PrintK  ( 1151): <6>tegra_nand_write: write: to=0xc4c1800 len=0x800
+D/PrintK  ( 1151): <6>tegra_nand_write: write: to=3D0xc4c1800 len=3D0x800
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_leb_read: read 11 bytes
 from LEB 0:6:1260
@@ -1088,3 +1127,7 @@ volume 0, mode 2
 
 V/PrintK  ( 1151): <7>UBI DBG (pid 1151): ubi_close_volume: close
 volume 0, mode 1
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
