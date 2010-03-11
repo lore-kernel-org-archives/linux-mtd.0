@@ -1,21 +1,19 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Npl6z-0005S4-Vg
-	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2010 16:19:54 +0000
-Received: by gwj21 with SMTP id 21so114903gwj.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 11 Mar 2010 08:19:47 -0800 (PST)
+Message-ID: <4B991A6F.1080006@oracle.com>
+Date: Thu, 11 Mar 2010 08:29:35 -0800
+From: Randy Dunlap <randy.dunlap@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <fcda838a1003110703p30377bfcjf6d65d3a474ab42d@mail.gmail.com>
-References: <fcda838a1003110703p30377bfcjf6d65d3a474ab42d@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 11 Mar 2010 11:19:27 -0500
-Message-ID: <8bd0f97a1003110819w42d81c12yc5b2df74d5762b2@mail.gmail.com>
-Subject: Re: physmap shutdown
-To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: [PATCH -next] mtd/nand/r852: fix build for CONFIG_PM=n
+References: <20100301210210.c6f465e6.sfr@canb.auug.org.au>	
+	<4B8C378B.2090400@oracle.com>
+	<1267531329.10734.1.camel@maxim-laptop>
+In-Reply-To: <1267531329.10734.1.camel@maxim-laptop>
 Content-Type: text/plain; charset=UTF-8
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>
+Content-Transfer-Encoding: 7bit
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"Rafael J. Wysocki" <rjw@sisk.pl>, linux-next@vger.kernel.org,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 11, 2010 at 10:03, Vladimir Zapolskiy wrote:
-> recently I have encountered a problem with Intel I28F160C3B NOR flash
-> on a board where RP# pin is not connected to CPU RESET#, and after
-> software reboot it is not in "Read Array" status.
->
-> This flash is mapped by physmap driver, and Intel Extended Vendor
-> Command Set (0x0001) is used to operate with it, CONFIG_PM kernel
-> option is enabled, MTD_POWERUP_LOCK flag is set in mtd->flags.
->
-> On reboot cfi_intelext_reboot() is called properly by reboot notifier
-> to change the flash state to "Read Array", but after this call
-> physmap_flash_shutdown() initiates sequent cfi_intelext_suspend() and
-> cfi_intelext_resume() calls, the latter one restores block locks, but
-> the flash remains in "Read Status" state.
->
-> Making a fix is not a problem, but I would like to be sure in the best
-> solution in joint opinion:
-> * remove physmap_flash_shutdown() method completely (is it safe?)
-> * be aware of FL_SHUTDOWN chip state in cfi_intelext_suspend()
-> * restore "Read Array" state in cfi_intelext_resume()
-> * ...
+On 03/02/10 04:02, Maxim Levitsky wrote:
+> On Mon, 2010-03-01 at 13:54 -0800, Randy Dunlap wrote: 
+>> From: Randy Dunlap <randy.dunlap@oracle.com>
+>>
+>> Fix r852 build for the case of CONFIG_PM=n.
+>>
+>> drivers/mtd/nand/r852.c:1039: error: implicit declaration of function 'pci_prepare_to_sleep'
+>> drivers/mtd/nand/r852.c:1048: error: implicit declaration of function 'pci_back_from_sleep'
+>>
+>> This patch leaves r852_pm_ops untouched.
+>>
+>> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+>> Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+>> Cc: "Rafael J. Wysocki" <rjw@sisk.pl>
+>> Cc: David Woodhouse <dwmw2@infradead.org>
+>> ---
+>>  drivers/mtd/nand/r852.c |    5 +++++
+>>  1 file changed, 5 insertions(+)
+>>
+>> --- linux-next-20100301.orig/drivers/mtd/nand/r852.c
+>> +++ linux-next-20100301/drivers/mtd/nand/r852.c
+>> @@ -1007,6 +1007,7 @@ void r852_shutdown(struct pci_dev *pci_d
+>>  	pci_disable_device(pci_dev);
+>>  }
+>>  
+>> +#ifdef CONFIG_PM
+>>  int r852_suspend(struct device *device)
+>>  {
+>>  	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
+>> @@ -1081,6 +1082,10 @@ int r852_resume(struct device *device)
+>>  	r852_update_card_detect(dev);
+>>  	return 0;
+>>  }
+>> +#else
+>> +#define r852_suspend	NULL
+>> +#define r852_resume	NULL
+>> +#endif
+>>  
+>>  static const struct pci_device_id r852_pci_id_tbl[] = {
+>>  
+>>
+> oops, I forgot about that case again..
+> Acked-by: Maxim Levitsky <maximlevitsky@gmail.com>
 
-sounds like the issue i have:
-http://thread.gmane.org/gmane.linux.drivers.mtd/25452/focus=25896
--mike
+Ping.  can we get this added to linux-next, please?
+
+
+-- 
+~Randy
