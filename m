@@ -1,27 +1,17 @@
-Received: from mail-fx0-f217.google.com ([209.85.220.217])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NppTj-00050h-1I
-	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2010 20:59:39 +0000
-Received: by fxm9 with SMTP id 9so586098fxm.4
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 11 Mar 2010 12:59:32 -0800 (PST)
-Subject: Re: [PATCH -next] mtd/nand/r852: fix build for CONFIG_PCI disabled
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Randy Dunlap <randy.dunlap@oracle.com>
-In-Reply-To: <4B992408.7040608@oracle.com>
-References: <20100301210210.c6f465e6.sfr@canb.auug.org.au>
-	<4B8C378B.2090400@oracle.com> <1267531329.10734.1.camel@maxim-laptop>
-	<4B991A6F.1080006@oracle.com> <4B991B9B.8070809@oracle.com>
-	<4B992408.7040608@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 11 Mar 2010 22:59:29 +0200
-Message-ID: <1268341169.9708.6.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
-	LKML <linux-kernel@vger.kernel.org>,
-	"Rafael J. Wysocki" <rjw@sisk.pl>, linux-next@vger.kernel.org,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NpqVn-0003PP-2B
+	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2010 22:05:51 +0000
+Message-Id: <201003112205.o2BM5bFt013302@imap1.linux-foundation.org>
+Subject: [patch 1/2] jffs2: fix up rb_root initializations to use RB_ROOT
+To: dwmw2@infradead.org
+From: akpm@linux-foundation.org
+Date: Thu, 11 Mar 2010 14:05:36 -0800
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org, eparis@redhat.com,
+	venkatesh.pallipadi@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-03-11 at 09:10 -0800, Randy Dunlap wrote:
-> > 
-> > Sorry, it's there, but there are still build errors.
-> > I will look at those...
-> > 
-> 
-> 
-> From: Randy Dunlap <randy.dunlap@oracle.com>
-> 
-> r852 fails to build when CONFIG_PCI is not enabled since it uses
-> pci_*() calls and is a PCI driver, so it should depend on PCI
-> to prevent build errors.
-> It should also #include <linux/pci.h>.
+From: venkatesh.pallipadi@intel.com
 
+jffs2 uses rb_node = NULL; to zero rb_root.
 
-Folks, sorry for Kconfig mess, I didn't test it well enough it seems...
+The problem with this is that 17d9ddc72fb8bba0d4f678 ("rbtree: Add support
+for augmented rbtrees") in the linux-next tree adds a new field to that
+struct which needs to be NULLas well.  This patch uses RB_ROOT as the
+intializer so all of the relevant fields will be NULL'd.
 
-However, I #include the <linux/pci.h> in r852.h, so I don't think it is
-necessary here.
+Signed-off-by: Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
+Cc: Eric Paris <eparis@redhat.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
 
+ fs/jffs2/readinode.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also, I disagree with the unconditional dependency on nand in sm_ftl.
-The purpose of CONFIG_SM_FTL_MUSEUM is solely to make it independent of
-nand. I'll look at how to fix that properly.
-
-
-
-Best regards,
-	Maxim Levitsky
+diff -puN fs/jffs2/readinode.c~jffs2-fixup-rb_root-initializations-to-use-rb_root fs/jffs2/readinode.c
+--- a/fs/jffs2/readinode.c~jffs2-fixup-rb_root-initializations-to-use-rb_root
++++ a/fs/jffs2/readinode.c
+@@ -567,7 +567,7 @@ static void jffs2_free_tmp_dnode_info_li
+ 			else BUG();
+ 		}
+ 	}
+-	list->rb_node = NULL;
++	*list = RB_ROOT;
+ }
+ 
+ static void jffs2_free_full_dirent_list(struct jffs2_full_dirent *fd)
+_
