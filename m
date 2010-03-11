@@ -1,17 +1,14 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NpqVn-0003PP-2B
-	for linux-mtd@lists.infradead.org; Thu, 11 Mar 2010 22:05:51 +0000
-Message-Id: <201003112205.o2BM5bFt013302@imap1.linux-foundation.org>
-Subject: [patch 1/2] jffs2: fix up rb_root initializations to use RB_ROOT
+Message-Id: <201003112205.o2BM5bN3013306@imap1.linux-foundation.org>
+Subject: [patch 2/2] bitops: rename for_each_bit() to for_each_set_bit(): mtd
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Thu, 11 Mar 2010 14:05:36 -0800
+Date: Thu, 11 Mar 2010 14:05:37 -0800
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org, eparis@redhat.com,
-	venkatesh.pallipadi@intel.com
+Cc: sfr@canb.auug.org.au, dedekind@infradead.org, akinobu.mita@gmail.com,
+	adobriyan@gmail.com, linux-mtd@lists.infradead.org,
+	akpm@linux-foundation.org, davem@davemloft.net, rmk@arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: venkatesh.pallipadi@intel.com
+From: Akinobu Mita <akinobu.mita@gmail.com>
 
-jffs2 uses rb_node = NULL; to zero rb_root.
+Rename for_each_bit to for_each_set_bit in the kernel source tree.  To
+permit for_each_clear_bit(), should that ever be added.
 
-The problem with this is that 17d9ddc72fb8bba0d4f678 ("rbtree: Add support
-for augmented rbtrees") in the linux-next tree adds a new field to that
-struct which needs to be NULLas well.  This patch uses RB_ROOT as the
-intializer so all of the relevant fields will be NULL'd.
-
-Signed-off-by: Venkatesh Pallipadi <venkatesh.pallipadi@intel.com>
-Cc: Eric Paris <eparis@redhat.com>
+Suggested-by: Alexey Dobriyan <adobriyan@gmail.com>
+Suggested-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Russell King <rmk@arm.linux.org.uk>
 Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <dedekind@infradead.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/jffs2/readinode.c |    2 +-
+ drivers/mtd/sm_ftl.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff -puN fs/jffs2/readinode.c~jffs2-fixup-rb_root-initializations-to-use-rb_root fs/jffs2/readinode.c
---- a/fs/jffs2/readinode.c~jffs2-fixup-rb_root-initializations-to-use-rb_root
-+++ a/fs/jffs2/readinode.c
-@@ -567,7 +567,7 @@ static void jffs2_free_tmp_dnode_info_li
- 			else BUG();
- 		}
- 	}
--	list->rb_node = NULL;
-+	*list = RB_ROOT;
- }
+diff -puN drivers/mtd/sm_ftl.c~bitops-rename-for_each_bit-to-for_each_set_bit-mtd drivers/mtd/sm_ftl.c
+--- a/drivers/mtd/sm_ftl.c~bitops-rename-for_each_bit-to-for_each_set_bit-mtd
++++ a/drivers/mtd/sm_ftl.c
+@@ -937,7 +937,7 @@ int sm_cache_flush(struct sm_ftl *ftl)
  
- static void jffs2_free_full_dirent_list(struct jffs2_full_dirent *fd)
+ 
+ 	/* Try to read all unread areas of the cache block*/
+-	for_each_bit(sector_num, &ftl->cache_data_invalid_bitmap,
++	for_each_set_bit(sector_num, &ftl->cache_data_invalid_bitmap,
+ 		ftl->block_size / SM_SECTOR_SIZE) {
+ 
+ 		if (!sm_read_sector(ftl,
 _
