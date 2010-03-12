@@ -1,27 +1,20 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from ey-out-1920.google.com ([74.125.78.146])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nq1Rc-0001A6-5K
-	for linux-mtd@lists.infradead.org; Fri, 12 Mar 2010 09:46:16 +0000
-Received: by pwj2 with SMTP id 2so580017pwj.36
+	id 1Nq4si-0003VK-9v
+	for linux-mtd@lists.infradead.org; Fri, 12 Mar 2010 13:26:28 +0000
+Received: by ey-out-1920.google.com with SMTP id 3so94847eyh.26
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 Mar 2010 01:46:10 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <3D9B2D7685E0734592024DD0F3028AE6B2AEB6@zch01exm23.fsl.freescale.net>
-References: <aecf5e531002221936q70f06a23j62046b180f490d60@mail.gmail.com>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9BB7DEBC@dlee01.ent.ti.com>
-	<62cbdcd91003041227i5af7e246u381e1bf7802a8cb@mail.gmail.com>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9C10D43E@dlee01.ent.ti.com>
-	<aecf5e531003120119rde30668o2827d2e6f638b149@mail.gmail.com>
-	<3D9B2D7685E0734592024DD0F3028AE6B2AEB6@zch01exm23.fsl.freescale.net>
-Date: Fri, 12 Mar 2010 15:16:10 +0530
-Message-ID: <aecf5e531003120146q24f365d4rdd3c6ebad548481@mail.gmail.com>
-Subject: Re: MLC nand driver for linux
-From: Sasa Sasa <sasak.1983@gmail.com>
-To: Liu Hui-R64343 <r64343@freescale.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: massimo cirillo <maxcir@gmail.com>, linux-mtd@lists.infradead.org, "Paulraj,
-	Sandeep" <s-paulraj@ti.com>
+	Fri, 12 Mar 2010 05:26:22 -0800 (PST)
+From: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] physmap: remove physmap_flash_shutdown() method.
+Date: Fri, 12 Mar 2010 16:26:06 +0300
+Message-Id: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Lennert Buytenhek <buytenh@wantstofly.org>,
+	Vladimir Zapolskiy <vzapolskiy@gmail.com>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,85 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+physmap driver operates with cfi, jedec, qinfo and map_rom compliant
+chips. None of interface drivers for all these chips uses actual
+suspend and resume chip operations, but correspondent two methods only
+change flash chip state in drivers' internal state machines, and for
+Intel chips save/restore block locks is done.
 
-Only first time it is working.
-i.e cat file > /dev/mtd0; hexdump /dev/mtd0 > k; cat file >
-/dev/mtd0;hexdump /dev/mtd0 >k1. This time data will get corrupted i.e
-k and k1 are different.
+To operate with boards with Intel flash chips where RP# pin is not
+asserted on reset there is an already implemented mechanism of reboot
+notifiers, and on reboot the flash moves into defined "read array"
+state.
 
-yes umount is safe.(No power cut.)
+If CONFIG_PM kernel option is enabled, then physmap_flash_shutdown()
+method is called after reboot notifier work, and save/restore block
+locks operations disturb the chip from default "read array" state,
+thus if the flash is a bootable one, board cann't be booted from it
+after reset.
 
-Regards
-Sasa
+Signed-off-by: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>
+Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+---
+ drivers/mtd/maps/physmap.c |   16 ----------------
+ 1 files changed, 0 insertions(+), 16 deletions(-)
 
-
-2010/3/12 Liu Hui-R64343 <r64343@freescale.com>:
->
->
->> -----Original Message-----
->> From: linux-mtd-bounces@lists.infradead.org
->> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Sasa Sasa
->> Sent: 2010=E5=B9=B43=E6=9C=8812=E6=97=A5 17:19
->> To: Paulraj, Sandeep
->> Cc: linux-mtd@lists.infradead.org; massimo cirillo
->> Subject: Re: MLC nand driver for linux
->>
->> Hi Paulraj,
->>
->> Thanks for your help.
->>
->> I am able to bring basic mlc nand. But have some queries:-
->> 1) Right now I am using no ECC. Can we write same data to
->> same page without erasing it in mlc nand which is possible for SLC.
->> i.e writing "cat file > /dev/mtd0" =C2=A0will corrupt mlc nand
->> while writing it multiple times.
-> MLC nand flash does not support mulple program without erasing, which
-> Is different with SLC(tipically, it can program 4 times without erasing)
->
->>
->>
->> 2) In jffs2 data gets corrupted while mounting and remounting
->> it again. and got the following error
->> JFFS2 notice: (542) read_dnode: wrong data CRC in data node at
->> 0x02109184: read 0x419fcf65, calculated 0x6e3d71b3.
-> Did you safely umount it? Imean not do the power cut without umount it.
->
->>
->> Do you have any idea that these issues might be related to
->> timing programming for mlc nand. or any specific changes
->> would be done in mlc nand driver?
->>
->> Regards
->> Sasa
->>
->> On Fri, Mar 5, 2010 at 3:16 AM, Paulraj, Sandeep
->> <s-paulraj@ti.com> wrote:
->> >
->> >
->> >> Hi,
->> >> Sorry my earlier message was rejected because of suspicious header.
->> >>
->> >> Hi Paulraj,
->> >> I'm interested in testing Numonyx MLC Nand devices.
->> >> So, what kind of tests have you done with MLC NAND ?
->> > The ones we get in mtd-utils
->> >> File system level ?
->> > We load jffs and yaffs2
->> >> Driver level ?
->> > We check if ECC correction actually takes place
->> >> Have you modified in any part the nand_base.c file ?
->> > No.
->> >> And what kernel version ?
->> > The latest 2.6.33.. I have been working on it since 2.6.28.
->> >> thanks
->> >>
->> >
->> >
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->>
->
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index d9603f7..dea81d7 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -193,25 +193,9 @@ err_out:
+ 	return err;
+ }
+ 
+-#ifdef CONFIG_PM
+-static void physmap_flash_shutdown(struct platform_device *dev)
+-{
+-	struct physmap_flash_info *info = platform_get_drvdata(dev);
+-	int i;
+-
+-	for (i = 0; i < MAX_RESOURCES && info->mtd[i]; i++)
+-		if (info->mtd[i]->suspend && info->mtd[i]->resume)
+-			if (info->mtd[i]->suspend(info->mtd[i]) == 0)
+-				info->mtd[i]->resume(info->mtd[i]);
+-}
+-#else
+-#define physmap_flash_shutdown NULL
+-#endif
+-
+ static struct platform_driver physmap_flash_driver = {
+ 	.probe		= physmap_flash_probe,
+ 	.remove		= physmap_flash_remove,
+-	.shutdown	= physmap_flash_shutdown,
+ 	.driver		= {
+ 		.name	= "physmap-flash",
+ 		.owner	= THIS_MODULE,
+-- 
+1.6.6
