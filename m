@@ -1,23 +1,23 @@
-Received: from www84.your-server.de ([213.133.104.84])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NqUhP-0004TY-1L
-	for linux-mtd@lists.infradead.org; Sat, 13 Mar 2010 17:00:31 +0000
-Subject: Re: [Patch] fix MTD CFI/LPDDR flash driver huge latency bug
-From: Stefani Seibold <stefani@seibold.net>
-To: Andrew Morton <akpm@linux-foundation.org>
-In-Reply-To: <20100313062553.2bdec297.akpm@linux-foundation.org>
-References: <1267894137.18869.0.camel@wall-e>
-	<20100312142344.174bd46f.akpm@linux-foundation.org>
-	<1268483490.6339.21.camel@wall-e>
-	<20100313062553.2bdec297.akpm@linux-foundation.org>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Sat, 13 Mar 2010 18:00:44 +0100
-Message-ID: <1268499644.27883.94.camel@wall-e>
+Received: from mail-fx0-f217.google.com ([209.85.220.217])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NqkV5-0000J7-TA
+	for linux-mtd@lists.infradead.org; Sun, 14 Mar 2010 09:52:55 +0000
+Received: by fxm9 with SMTP id 9so2648303fxm.4
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 14 Mar 2010 01:52:43 -0800 (PST)
+Subject: Re: read error with 64 byte erase counter header & 2048 Byte
+	mtd->writesize
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shivdas Gujare <shivdas.tech@gmail.com>
+In-Reply-To: <cf70f0211002221600p1de3b271uba65cda8dbcf6b94@mail.gmail.com>
+References: <cf70f0211002221600p1de3b271uba65cda8dbcf6b94@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 14 Mar 2010 11:50:35 +0200
+Message-Id: <1268560235.2399.5.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, "Kreuzer,
-	Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>,
-	linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Samstag, den 13.03.2010, 06:25 -0500 schrieb Andrew Morton:
-> On Sat, 13 Mar 2010 13:31:30 +0100 Stefani Seibold <stefani@seibold.net> wrote:
+Hi,
+
+On Mon, 2010-02-22 at 16:00 -0800, Shivdas Gujare wrote:
+> Hi all,
+> I am trying to use ubifs, but currently I am facing an issue as follows,
 > 
-> > Am Freitag, den 12.03.2010, 14:23 -0800 schrieb Andrew Morton:
-> > > On Sat, 06 Mar 2010 17:48:57 +0100
-> > > Stefani Seibold <stefani@seibold.net> wrote:
-> > > 
-> > > The patch change all the use of spin_lock operations for xxxx->mutex
-> > > > into mutex operations, which is exact what the name says and means. 
-> > > > 
-> > > > There is no performance regression since the mutex is normally not
-> > > > acquired.
-> > > 
-> > > hm, big scary patch.  Are you sure this mutex is never taken from
-> > > atomic or irq contexts?  Is it ully tested with all relevant debug options
-> > > and lockdep enabled?
-> > > 
-> > > 
-> > 
-> > I have analyzed this drivers and IMHO i don't think there will be used
-> > from irq or atomic contexts. There is no request interrupt and there are
-> > a lot msleep and add_wait_queues/schedule calls during holding the
-> > mutex, which are not very useful in a irq or atomic context. But i don't
-> > know the whole mtd stack. 
-> > 
-> > I tested the patch with the following kernel debug options:
-> > 
-> > CONFIG_DEBUG_KERNEL=y
-> > CONFIG_DETECT_SOFTLOCKUP=y
-> > CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC_VALUE=0
-> > CONFIG_SCHED_DEBUG=y
-> > CONFIG_SCHEDSTATS=y
-> > CONFIG_TIMER_STATS=y
-> > CONFIG_DEBUG_MUTEXES=y
-> > CONFIG_DEBUG_SPINLOCK_SLEEP=y
-> > 
+> 1) I tries to format a mtd device as, "ubiformat /dev/mtd0 -s 2048 -f
+> ./ubi.img" while it return with an error of
 > 
-> Neato.  As was mentioned, one thing to check is the mtdoops path. 
-> oopses can happen with locks held, from IRQ context, etc.
-> 
+> ubiformat: mtd0 (nand), size 164757504 bytes (157.1 MiB), 1257
+> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
+> libscan: scanning eraseblock 0 --  0 % complete  libmtd: error!:
+> cannot read 64 bytes from mtd0 (eraseblock 0, offset 0)
+>         error 22 (Invalid argument)
+> ubiformat: error!: failed to scan mtd0 (/dev/mtd0)
 
-Okay, i didn't checked that case. But the old code has also a dead lock,
-if the oops occurred during the spinlock(xxx->mutex) was held. With the
-new mutex solution the change is bigger to run into that deadlock due
-the possible preemption. 
+Most probably your NAND driver is broken and is unable to read 64 bytes.
 
-But i did a "grep" at the whole mtd code and there is no panic_write
-function assigned to mtd_info struct for the CFI flash chips. So this
-problem will currently never occure.
+> I tried to understand what it is and came to know that, "ret =
+> mtd_read(mtd, fd, eb, 0, &hdr, sizeof(struct ubi_ec_hdr));" from
+> "ubi-utils/src/libscan.c"
+> tried to read 64 byte "struct ubi_ec_hdr - UBI erase counter header"
+> while our MTD driver has set "mtd->writesize = 2048"
+> So this mismatch between 64 Byte "erase counter header" and 2048 Byte
+> "mtd->writesize" returns with an error.
 
-> If we're trying to take that mutex in oops context then I guess that's
-> fixable by just not taking it and hoping for the best.  Or, better,
-> mutex_trylock() and conditional mutex_unlock() to try to be nice to
-> possible concurrent activity on other CPUs.
-> 
+Your min. I/O unit is indeed 2048 bytes. However, MTD drivers are
+supposed to be able to read any amount of bytes. In this case, your
+driver should read 2048 bytes, then copy the requested 64 bytes to the
+output buffer.
 
-Concurrent access are dangerous and in most cases are not possible,
-that's why the spinlock(xxxx->mutex) was for.
+> I would like to know, Is this a real issue or am I missing any layer
+> between ubifs & mtd driver which interfaces this 64 & 2048 Byte
+> differences.
 
-I also did some concurrency checks like:
+UBI/UBIFS write only in min. I/O size aligned units, but read in
+arbitrary aligned units.
 
-cat /dev/zero >/flash/aa & cat /dev/zero >/flash/bb
+You should debug fix your driver.
 
-without and side effects.
+And validate it with the mtd tests, just like it is requested here:
+
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
