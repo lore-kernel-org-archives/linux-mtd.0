@@ -1,23 +1,24 @@
-Received: from mail-fx0-f217.google.com ([209.85.220.217])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NqkV5-0000J7-TA
-	for linux-mtd@lists.infradead.org; Sun, 14 Mar 2010 09:52:55 +0000
-Received: by fxm9 with SMTP id 9so2648303fxm.4
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 14 Mar 2010 01:52:43 -0800 (PST)
-Subject: Re: read error with 64 byte erase counter header & 2048 Byte
-	mtd->writesize
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shivdas Gujare <shivdas.tech@gmail.com>
-In-Reply-To: <cf70f0211002221600p1de3b271uba65cda8dbcf6b94@mail.gmail.com>
-References: <cf70f0211002221600p1de3b271uba65cda8dbcf6b94@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 14 Mar 2010 11:50:35 +0200
-Message-Id: <1268560235.2399.5.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nr0b6-0007su-FD
+	for linux-mtd@lists.infradead.org; Mon, 15 Mar 2010 03:04:09 +0000
+Date: Mon, 15 Mar 2010 03:03:38 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: Stefani Seibold <stefani@seibold.net>
+Subject: Re: [Patch] fix MTD CFI/LPDDR flash driver huge latency bug
+Message-ID: <20100315030338.GR6491@shareable.org>
+References: <1267894137.18869.0.camel@wall-e>
+	<20100312142344.174bd46f.akpm@linux-foundation.org>
+	<20100312233820.GH6491@shareable.org>
+	<1268483744.6339.25.camel@wall-e>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1268483744.6339.25.camel@wall-e>
+Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, "Kreuzer,
+	Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>,
+	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,50 +28,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Mon, 2010-02-22 at 16:00 -0800, Shivdas Gujare wrote:
-> Hi all,
-> I am trying to use ubifs, but currently I am facing an issue as follows,
+Stefani Seibold wrote:
+> Am Freitag, den 12.03.2010, 23:38 +0000 schrieb Jamie Lokier:
+> > Andrew Morton wrote:
+> > > On Sat, 06 Mar 2010 17:48:57 +0100
+> > > Stefani Seibold <stefani@seibold.net> wrote:
+> > > 
 > 
-> 1) I tries to format a mtd device as, "ubiformat /dev/mtd0 -s 2048 -f
-> ./ubi.img" while it return with an error of
 > 
-> ubiformat: mtd0 (nand), size 164757504 bytes (157.1 MiB), 1257
-> eraseblocks of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
-> libscan: scanning eraseblock 0 --  0 % complete  libmtd: error!:
-> cannot read 64 bytes from mtd0 (eraseblock 0, offset 0)
->         error 22 (Invalid argument)
-> ubiformat: error!: failed to scan mtd0 (/dev/mtd0)
+> > > > The patch change all the use of spin_lock operations for xxxx->mutex
+> > > > into mutex operations, which is exact what the name says and means.
+> > 
+> > It would be even better if it also split the critical sections into
+> > smaller ones with cond_resched() between, so that non-preemptible
+> > kernels benefit too.
+> 
+> The problem is the memcpy operation which is very slow. A cond_resched
+> wouldn't help, since the cpu bus is blocked during the transfer of the
+> word.
 
-Most probably your NAND driver is broken and is unable to read 64 bytes.
+I mean split the memcpy into multiple smaller memcpys, so that the
+total time in each memcpy is limited to something reasonable.
 
-> I tried to understand what it is and came to know that, "ret =
-> mtd_read(mtd, fd, eb, 0, &hdr, sizeof(struct ubi_ec_hdr));" from
-> "ubi-utils/src/libscan.c"
-> tried to read 64 byte "struct ubi_ec_hdr - UBI erase counter header"
-> while our MTD driver has set "mtd->writesize = 2048"
-> So this mismatch between 64 Byte "erase counter header" and 2048 Byte
-> "mtd->writesize" returns with an error.
+The check in cond_resched() is fast, especially once cached.  memcpy
+speed depends a lot on the attached flash and how everything's
+configured, varying from 2.5MB/s up to hundreds of MB/s.  So how about
+doing cond_resched() every 256 bytes?
 
-Your min. I/O unit is indeed 2048 bytes. However, MTD drivers are
-supposed to be able to read any amount of bytes. In this case, your
-driver should read 2048 bytes, then copy the requested 64 bytes to the
-output buffer.
-
-> I would like to know, Is this a real issue or am I missing any layer
-> between ubifs & mtd driver which interfaces this 64 & 2048 Byte
-> differences.
-
-UBI/UBIFS write only in min. I/O size aligned units, but read in
-arbitrary aligned units.
-
-You should debug fix your driver.
-
-And validate it with the mtd tests, just like it is requested here:
-
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+-- Jamie
