@@ -1,26 +1,16 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NrBDq-00061f-0r
-	for linux-mtd@lists.infradead.org; Mon, 15 Mar 2010 14:24:50 +0000
-Date: Mon, 15 Mar 2010 14:24:21 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Stefani Seibold <stefani@seibold.net>
-Subject: Re: [Patch] fix MTD CFI/LPDDR flash driver huge latency bug
-Message-ID: <20100315142421.GB15133@shareable.org>
-References: <1267894137.18869.0.camel@wall-e>
-	<20100312142344.174bd46f.akpm@linux-foundation.org>
-	<20100312233820.GH6491@shareable.org>
-	<1268483744.6339.25.camel@wall-e>
-	<20100315030338.GR6491@shareable.org>
-	<1268633754.6012.4.camel@wall-e.seibold.net>
+Received: from darkstar.wilibox.com ([195.14.175.138])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NrBz8-0000ZK-UU
+	for linux-mtd@lists.infradead.org; Mon, 15 Mar 2010 15:13:43 +0000
+Message-ID: <4B9E4E9C.9070704@gmail.com>
+Date: Mon, 15 Mar 2010 17:13:32 +0200
+From: Paulius Zaleckas <paulius.zaleckas@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1268633754.6012.4.camel@wall-e.seibold.net>
-Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, "Kreuzer,
-	Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>
+To: nico@cam.org, simon.kagstrom@netinsight.net
+Subject: Orion NAND fails to compile with OABI(?)
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stefani Seibold wrote:
-> Am Montag, den 15.03.2010, 03:03 +0000 schrieb Jamie Lokier:
-> > Stefani Seibold wrote:
-> > > Am Freitag, den 12.03.2010, 23:38 +0000 schrieb Jamie Lokier:
-> > > > Andrew Morton wrote:
-> > > > > On Sat, 06 Mar 2010 17:48:57 +0100
-> > > > > Stefani Seibold <stefani@seibold.net> wrote:
-> > > > > 
-> > > 
-> > > 
-> > > > > > The patch change all the use of spin_lock operations for xxxx->mutex
-> > > > > > into mutex operations, which is exact what the name says and means.
-> > > > 
-> > > > It would be even better if it also split the critical sections into
-> > > > smaller ones with cond_resched() between, so that non-preemptible
-> > > > kernels benefit too.
-> > > 
-> > > The problem is the memcpy operation which is very slow. A cond_resched
-> > > wouldn't help, since the cpu bus is blocked during the transfer of the
-> > > word.
-> > 
-> > I mean split the memcpy into multiple smaller memcpys, so that the
-> > total time in each memcpy is limited to something reasonable.
-> > 
-> > The check in cond_resched() is fast, especially once cached.  memcpy
-> > speed depends a lot on the attached flash and how everything's
-> > configured, varying from 2.5MB/s up to hundreds of MB/s.  So how about
-> > doing cond_resched() every 256 bytes?
-> > 
-> > -- Jamie
-> 
-> I thoght about this aporoach and i don't like this idea. Why not using a
-> preemptible kernel?
+Hi,
 
-Because it introduces too many risks to enable CONFIG_PREEMPT in a
-stable rolled out device which isn't using it already.  Especially on
-devices where it's not well tested by other people, and with drivers
-that nobody ever used with CONFIG_PREEMPT before.
+Here is what I get when compiling:
 
-And because CONFIG_PREEMPT isn't always better.  (Why do you think
-it's a config option?)
+   CC      drivers/mtd/nand/orion_nand.o
+/tmp/ccMkwOCs.s: Assembler messages:
+/tmp/ccMkwOCs.s:63: Error: first destination register must be even -- 
+`ldrd r3,[ip]'
+make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
 
-As a bug fix for observed high scheduling latency when a flash I/O is
-occurring, splitting the memcpys is a good choice.  I will be trying
-it on my kernels, even if it doesn't get mainlined.  Thanks for the idea ;-)
+When EABI was selected everything compiles OK.
+My GCC is 4.2.1, binutils 2.18
 
--- Jamie
+BR,
+Paulius Zaleckas
