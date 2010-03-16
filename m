@@ -1,17 +1,24 @@
-Received: from mail-qy0-f181.google.com ([209.85.221.181])
+Received: from mail-bw0-f215.google.com ([209.85.218.215])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NrX1c-0005Fz-Ho
-	for linux-mtd@lists.infradead.org; Tue, 16 Mar 2010 13:41:41 +0000
-Received: by qyk11 with SMTP id 11so3071915qyk.24
+	id 1NrXjC-0001Eg-2f
+	for linux-mtd@lists.infradead.org; Tue, 16 Mar 2010 14:26:42 +0000
+Received: by bwz7 with SMTP id 7so4114848bwz.4
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Mar 2010 06:41:34 -0700 (PDT)
+	Tue, 16 Mar 2010 07:26:36 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: Ferenc Wagner <wferi@niif.hu>
+Subject: Re: RFC: direct MTD support for SquashFS
+References: <87vdcwv139.fsf@tac.ki.iif.hu>
+Date: Tue, 16 Mar 2010 15:26:33 +0100
+In-Reply-To: <87vdcwv139.fsf@tac.ki.iif.hu> (Ferenc Wagner's message of "Tue,
+	16 Mar 2010 14:38:02 +0100")
+Message-ID: <87ljdsibqe.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-Date: Tue, 16 Mar 2010 09:41:32 -0400
-Message-ID: <dbdb2ea61003160641s5b083daepf6fa726908ffc5f9@mail.gmail.com>
-Subject: umount of ubifs
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Cc: Phillip Lougher <phillip@lougher.demon.co.uk>,
+	linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-embedded@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am seeing behavior related to my filesystem that I don't understand.
- I'm running 2.6.29 and using UBIFS.  The root filesystem is a
-ramdisk.  Code manually mounts 4 UBI volumes at startup (not
-automatically through an fstab file).  One of the volumes, "system",
-is mounted RO (though the underlying UBI volume is dynamic).  On
-system shutdown, code umounts all the mounted volumes, and often the
-umount of "system" fails.  Can someone explain how umounting a RO
-filesystem could fail?  (I don't think this is a UBIFS issue - I'm
-guessing it may be common to all filesystems.)
+>>>>> "Ferenc" == Ferenc Wagner <wferi@niif.hu> writes:
 
-Thanks,
-twebb
+ Ferenc> Hi,
+
+ Ferenc> In embedded systems, SquashFS over MTD would be a considerable
+ Ferenc> win, as that would permit configuring without CONFIG_BLOCK.
+ Ferenc> Please find attached a naive patch against 2.6.33 for this.  It
+ Ferenc> does not handle bad MTD blocks, that could be handled by gluebi
+ Ferenc> (once you're willing to take the UBI overhead), or by a custom
+ Ferenc> solution later.
+
+ Ferenc> For now, 2.6.34 gained pluggable decompressors, so this patch
+ Ferenc> does not apply anymore, though the main idea holds.  My
+ Ferenc> questions: is the community interested in integrating something
+ Ferenc> like this, should this patch transformed into something
+ Ferenc> acceptable, or am I a total lunatic?  I don't know a thing
+ Ferenc> about filesystem development, but willing to learn and
+ Ferenc> refactor.  Comments welcome.
+
+Nice, I have been thinking about that as well. What kind of size savings
+are you getting with this?
+
+CC'ing linux-embedded as this might be of interest there as well.
+
+-- 
+Bye, Peter Korsgaard
