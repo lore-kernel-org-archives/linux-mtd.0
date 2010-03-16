@@ -1,16 +1,17 @@
-Received: from darkstar.wilibox.com ([195.14.175.138])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NrBz8-0000ZK-UU
-	for linux-mtd@lists.infradead.org; Mon, 15 Mar 2010 15:13:43 +0000
-Message-ID: <4B9E4E9C.9070704@gmail.com>
-Date: Mon, 15 Mar 2010 17:13:32 +0200
-From: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+	id 1NrQKT-0000qG-Em
+	for linux-mtd@lists.infradead.org; Tue, 16 Mar 2010 06:32:42 +0000
+Received: by pwj2 with SMTP id 2so2481547pwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 Mar 2010 23:32:36 -0700 (PDT)
 MIME-Version: 1.0
-To: nico@cam.org, simon.kagstrom@netinsight.net
-Subject: Orion NAND fails to compile with OABI(?)
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Date: Tue, 16 Mar 2010 12:02:36 +0530
+Message-ID: <630851df1003152332v69c49385g10e9202a0b5c0147@mail.gmail.com>
+Subject: running mtd_stresstest
+From: Murali N <nalajala.murali@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,17 +22,18 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
+I am trying to run 'mtd_stresstest' on my nand driver.But it is
+failing currently.
+I have a query that what is the size of the "len" that is being
+request while read/write data in this test case?
+As far my understanding it is not generating the 'len' ( rand_len() )
+as multiple of underlying flash page size!!!
+My driver assumes/expected the 'len' field as multiple size of pages?
+To make it run the "mtd_stresstest" on my driver do i need tweak the code?
+Is test should pass ( without making any modifications ) on nand
+driver which is compliance to the MTD specification?
 
-Here is what I get when compiling:
+can anyone clarify my doubts
 
-   CC      drivers/mtd/nand/orion_nand.o
-/tmp/ccMkwOCs.s: Assembler messages:
-/tmp/ccMkwOCs.s:63: Error: first destination register must be even -- 
-`ldrd r3,[ip]'
-make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
-
-When EABI was selected everything compiles OK.
-My GCC is 4.2.1, binutils 2.18
-
-BR,
-Paulius Zaleckas
+Regards,
+Murali N
