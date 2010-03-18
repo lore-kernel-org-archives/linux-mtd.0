@@ -1,23 +1,19 @@
-Received: from mail-yw0-f199.google.com ([209.85.211.199])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NsAdh-0001cd-He
-	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2010 07:59:38 +0000
-Received: by ywh37 with SMTP id 37so1010970ywh.2
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Mar 2010 00:59:31 -0700 (PDT)
+Received: from tac.ki.iif.hu ([2001:738:0:401:20c:6eff:fe71:b2db])
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NsIT3-0004M7-69
+	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2010 16:21:06 +0000
+From: Ferenc Wagner <wferi@niif.hu>
+To: dedekind1@gmail.com
+Subject: Re: CONFIG_MTD_DEBUG vs generic DEBUG support in kernel.h
+References: <878w9swhlv.fsf@tac.ki.iif.hu>
+	<1268744759.20017.58.camel@localhost>
+Date: Thu, 18 Mar 2010 17:20:31 +0100
+In-Reply-To: <1268744759.20017.58.camel@localhost> (Artem Bityutskiy's message
+	of "Tue, 16 Mar 2010 15:05:59 +0200")
+Message-ID: <87vdctzjn4.fsf@tac.ki.iif.hu>
 MIME-Version: 1.0
-In-Reply-To: <1268898847.3013.340.camel@macbook.infradead.org>
-References: <20100127091120.21312.77488.sendpatchset@rxone.opensource.se>
-	<1268898847.3013.340.camel@macbook.infradead.org>
-Date: Thu, 18 Mar 2010 16:59:31 +0900
-Message-ID: <aec7e5c31003180059ke58f281o71a60b627442c882@mail.gmail.com>
-Subject: Re: [PATCH] mtd: trivial sh_flctl changes
-From: Magnus Damm <magnus.damm@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: shimoda.yoshihiro@renesas.com, lethal@linux-sh.org,
-	linux-mtd@lists.infradead.org, linux-sh@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 18, 2010 at 4:54 PM, David Woodhouse <dwmw2@infradead.org> wrot=
-e:
-> On Wed, 2010-01-27 at 18:11 +0900, Magnus Damm wrote:
->> - * Copyright =A9 2008 Renesas Solutions Corp.
->> - * Copyright =A9 2008 Atom Create Engineering Co., Ltd.
->> + * Copyright (c) 2008 Renesas Solutions Corp.
->> + * Copyright (c) 2008 Atom Create Engineering Co., Ltd.
+Artem Bityutskiy <dedekind1@gmail.com> writes:
+
+> On Tue, 2010-03-16 at 13:55 +0100, Ferenc Wagner wrote:
+> 
+>> include/linux/mtd/mtd.h contains the following snippet:
+>> 
+>> #ifdef CONFIG_MTD_DEBUG
+>> #define DEBUG(n, args...)                               \
+>>         do {                                            \
+>>                 if (n <= CONFIG_MTD_DEBUG_VERBOSE)      \
+>>                         printk(KERN_INFO args);         \
+>>         } while(0)
+>> 
+>> which conflicts with the generic debugging support in
+>> include/linux/kernel.h:
+>> 
+>> #ifdef DEBUG
+>> #define pr_devel(fmt, ...) \
+>>         printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+>> 
+>> (that is, gcc emits redefinition warnings on modules which
+>> #define DEBUG on their own and also include mtd.h)
+>> Unfortunately, the DEBUG macro is used rather heavily under
+>> drivers/mtd.  Should we resolve this somehow or is it better
+>> to just live with it?
 >
-> Um, why?
+> IMO, this MTD debug stuff is not very useful and could be just killed.
 
-Why not? You can keep them if you'd like. =3D)
-
-/ magnus
+Well, I found the mtdcore debugging somewhat useful.  But anyway,
+killing it would be about as much work as renaming the macro, or using
+something standard as dev_(v)dbg or pr_debug/devel (btw. what's the
+difference?) instead.  I'm willing to do some mechanical work on either
+one if you wish.
+-- 
+Regards,
+Feri.
