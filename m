@@ -1,55 +1,40 @@
 From: wferi@niif.hu (Ferenc Wagner)
 Date: Thu, 18 Mar 2010 03:12:01 +0100
 Subject: [PATCH] squashfs: add backend plugin framework
-Message-ID: <mailman.245.1268930347.2170.linux-mtd@lists.infradead.org>
+Message-ID: <mailman.261.1269344143.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
 ---
- fs/squashfs/Kconfig          |    2 +-
- fs/squashfs/Makefile         |    4 +-
- fs/squashfs/backend.c        |   27 ++++++++++
- fs/squashfs/backend.h        |   22 +++++++++
- fs/squashfs/bdev.c           |  108 ++++++++++++++++++++++++++++++++++++++++++
- fs/squashfs/mtd.c            |   82 ++++++++++++++++++++++++++++++++
- fs/squashfs/squashfs.h       |   12 ++++-
+ fs/squashfs/Makefile         |    3 +-
+ fs/squashfs/backend.c        |   24 +++++++++
+ fs/squashfs/backend.h        |   22 ++++++++
+ fs/squashfs/bdev.c           |  109 ++++++++++++++++++++++++++++++++++++++++++
+ fs/squashfs/squashfs.h       |    9 +++-
  fs/squashfs/squashfs_fs_sb.h |    2 +
- 8 files changed, 256 insertions(+), 3 deletions(-)
+ 6 files changed, 167 insertions(+), 2 deletions(-)
  create mode 100644 fs/squashfs/backend.c
  create mode 100644 fs/squashfs/backend.h
  create mode 100644 fs/squashfs/bdev.c
- create mode 100644 fs/squashfs/mtd.c
 
-diff --git a/fs/squashfs/Kconfig b/fs/squashfs/Kconfig
-index 25a00d1..5a0de30 100644
---- a/fs/squashfs/Kconfig
-+++ b/fs/squashfs/Kconfig
-@@ -1,6 +1,6 @@
- config SQUASHFS
- 	tristate "SquashFS 4.0 - Squashed file system support"
--	depends on BLOCK
-+	depends on BLOCK || MTD
- 	select ZLIB_INFLATE
- 	help
- 	  Saying Y here includes support for SquashFS 4.0 (a Compressed
 diff --git a/fs/squashfs/Makefile b/fs/squashfs/Makefile
-index df8a19e..49230e3 100644
+index 45aaefd..0f02891 100644
 --- a/fs/squashfs/Makefile
 +++ b/fs/squashfs/Makefile
-@@ -4,4 +4,6 @@
+@@ -4,5 +4,6 @@
  
  obj-$(CONFIG_SQUASHFS) += squashfs.o
  squashfs-y += block.o cache.o dir.o export.o file.o fragment.o id.o inode.o
 -squashfs-y += namei.o super.o symlink.o zlib_wrapper.o decompressor.o
 +squashfs-y += namei.o super.o symlink.o zlib_wrapper.o decompressor.o backend.o
+ squashfs-$(CONFIG_SQUASHFS_LZMA) += lzma_wrapper.o
 +squashfs-$(CONFIG_BLOCK) += bdev.o
-+squashfs-$(CONFIG_MTD) += mtd.o
 diff --git a/fs/squashfs/backend.c b/fs/squashfs/backend.c
 new file mode 100644
-index 0000000..1b197c8
+index 0000000..4411c60
 --- /dev/null
 +++ b/fs/squashfs/backend.c
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,24 @@
 +#include <linux/fs.h>
 +
 +#include "squashfs_fs_i.h"
@@ -59,9 +44,6 @@ index 0000000..1b197c8
 +const struct squashfs_backend *backends[] = {
 +#ifdef CONFIG_BLOCK
 +	&squashfs_bdev_ops,
-+#endif
-+#ifdef CONFIG_MTD
-+	&squashfs_mtd_ops,
 +#endif
 +	NULL
 +};
@@ -79,7 +61,7 @@ index 0000000..1b197c8
 +}
 diff --git a/fs/squashfs/backend.h b/fs/squashfs/backend.h
 new file mode 100644
-index 0000000..58c3476
+index 0000000..ca3ffe1
 --- /dev/null
 +++ b/fs/squashfs/backend.h
 @@ -0,0 +1,22 @@
@@ -101,16 +83,16 @@ index 0000000..58c3476
 +
 +/* Dummy, until the original is nuked */
 +static inline int squashfs_fill_super2(struct super_block *sb, void *data,
-+				int silent, const struct squashfs_backend *ops)
++				int silent, int (*add_bend)(struct super_block *))
 +{
 +	return -1;
 +}
 diff --git a/fs/squashfs/bdev.c b/fs/squashfs/bdev.c
 new file mode 100644
-index 0000000..8ba2322
+index 0000000..fcc3b83
 --- /dev/null
 +++ b/fs/squashfs/bdev.c
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,109 @@
 +#include <linux/fs.h>
 +#include <linux/buffer_head.h>
 +
@@ -135,7 +117,7 @@ index 0000000..8ba2322
 +	struct squashfs_bdev *bdev = msblk->backend_data;
 +	struct buffer_head *bh;
 +
-+	bh = kcalloc((msblk->block_size >> bdev->devblksize_log2) + 1,
++	bh = kcalloc((max(msblk->block_size, METADATA_SIZE) >> bdev->devblksize_log2) + 1,
 +			sizeof(*bh), GFP_KERNEL);
 +	if (!bh)
 +		goto nomem;
@@ -163,24 +145,25 @@ index 0000000..8ba2322
 +	return -ENOSYS;
 +}
 +
-+static int fill_bdev_super(struct super_block *sb, void *data, int silent)
++static int add_bdev_backend(struct super_block *sb)
 +{
-+	struct squashfs_sb_info *msblk;
-+	struct squashfs_bdev *bdev;
-+	int err = squashfs_fill_super2(sb, data, silent, &squashfs_bdev_ops);
-+	if (err)
-+		return err;
++	struct squashfs_sb_info *msblk = sb->s_fs_info;
++	struct squashfs_bdev *bdev = kzalloc(sizeof(*bdev), GFP_KERNEL);
 +
-+	bdev = kzalloc(sizeof(*bdev), GFP_KERNEL);
 +	if (!bdev)
 +		return -ENOMEM;
 +
 +	bdev->devblksize = sb_min_blocksize(sb, BLOCK_SIZE);
 +	bdev->devblksize_log2 = ffz(~bdev->devblksize);
 +
-+	msblk = sb->s_fs_info;
++	msblk->backend = &squashfs_bdev_ops;
 +	msblk->backend_data = bdev;
 +	return 0;
++}
++
++static int fill_bdev_super(struct super_block *sb, void *data, int silent)
++{
++	return squashfs_fill_super2(sb, data, silent, add_bdev_backend);
 +}
 +
 +static int bdev_probe(struct file_system_type *fs_type, int flags,
@@ -219,96 +202,8 @@ index 0000000..8ba2322
 +	.size	= bdev_size,
 +	.devname= bdev_devname
 +};
-diff --git a/fs/squashfs/mtd.c b/fs/squashfs/mtd.c
-new file mode 100644
-index 0000000..c63b4f8
---- /dev/null
-+++ b/fs/squashfs/mtd.c
-@@ -0,0 +1,82 @@
-+#include <linux/fs.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/super.h>
-+
-+#include "squashfs_fs_i.h"
-+#include "squashfs.h"
-+#include "backend.h"
-+
-+struct squashfs_mtd {
-+	size_t bytes_left;
-+};
-+
-+/* A backend is initialized for each SquashFS block read operation,
-+ * making further sequential reads possible from the block.
-+ */
-+static void *mtd_init(struct squashfs_sb_info *msblk, u64 index, size_t length)
-+{
-+	struct squashfs_mtd *mtd = msblk->backend_data;
-+
-+	mtd->bytes_left = length;
-+	return mtd;
-+}
-+
-+static void mtd_free(struct squashfs_sb_info *msblk)
-+{
-+}
-+
-+static ssize_t mtd_read(struct squashfs_sb_info *msblk, void **buf, size_t len)
-+{
-+	return -ENOSYS;
-+}
-+
-+static int fill_mtd_super(struct super_block *sb, void *data, int silent)
-+{
-+	struct squashfs_sb_info *msblk;
-+	struct squashfs_mtd *mtd;
-+	int err = squashfs_fill_super2(sb, data, silent, &squashfs_mtd_ops);
-+	if (err)
-+		return err;
-+
-+	mtd = kzalloc(sizeof(*mtd), GFP_KERNEL);
-+	if (!mtd)
-+		return -ENOMEM;
-+
-+	msblk = sb->s_fs_info;
-+	msblk->backend_data = mtd;
-+	return 0;
-+}
-+
-+static int mtd_probe(struct file_system_type *fs_type, int flags,
-+			const char *dev_name, void *data,
-+			struct vfsmount *mnt)
-+{
-+	return get_sb_mtd(fs_type, flags, dev_name, data,
-+				fill_mtd_super, mnt);
-+}
-+
-+static void mtd_kill(struct squashfs_sb_info *msblk)
-+{
-+	kfree(msblk->backend_data);
-+}
-+
-+static loff_t mtd_size(const struct super_block *sb)
-+{
-+	return sb->s_mtd->size;
-+}
-+
-+static const char *mtd_devname(const struct super_block *sb, char *buffer)
-+{
-+	snprintf(buffer, BDEVNAME_SIZE, "MTD%d", sb->s_mtd->index);
-+	return buffer;
-+}
-+
-+const struct squashfs_backend squashfs_mtd_ops = {
-+	.init	= mtd_init,
-+	.free	= mtd_free,
-+	.read	= mtd_read,
-+	.probe	= mtd_probe,
-+	.kill	= mtd_kill,
-+	.size	= mtd_size,
-+	.devname= mtd_devname
-+};
 diff --git a/fs/squashfs/squashfs.h b/fs/squashfs/squashfs.h
-index fe2587a..3efa18f 100644
+index d094886..0e74175 100644
 --- a/fs/squashfs/squashfs.h
 +++ b/fs/squashfs/squashfs.h
 @@ -73,8 +73,12 @@ extern struct inode *squashfs_iget(struct super_block *, long long,
@@ -325,18 +220,15 @@ index fe2587a..3efa18f 100644
   */
  
  /* dir.c */
-@@ -94,3 +98,9 @@ extern const struct address_space_operations squashfs_symlink_aops;
+@@ -97,3 +101,6 @@ extern const struct squashfs_decompressor squashfs_zlib_comp_ops;
  
- /* zlib_wrapper.c */
- extern const struct squashfs_decompressor squashfs_zlib_comp_ops;
+ /* lzma wrapper.c */
+ extern const struct squashfs_decompressor squashfs_lzma_comp_ops;
 +
 +/* bdev.c */
 +extern const struct squashfs_backend squashfs_bdev_ops;
-+
-+/* mtd.c */
-+extern const struct squashfs_backend squashfs_mtd_ops;
 diff --git a/fs/squashfs/squashfs_fs_sb.h b/fs/squashfs/squashfs_fs_sb.h
-index 2e77dc5..378b0ad 100644
+index 7533350..5662d9b 100644
 --- a/fs/squashfs/squashfs_fs_sb.h
 +++ b/fs/squashfs/squashfs_fs_sb.h
 @@ -53,6 +53,8 @@ struct squashfs_cache_entry {
@@ -350,6 +242,3 @@ index 2e77dc5..378b0ad 100644
  	struct squashfs_cache			*block_cache;
 -- 
 1.5.6.5
-
-
---=-=-=--
