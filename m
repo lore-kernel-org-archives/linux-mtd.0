@@ -1,16 +1,24 @@
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nsaxp-0003GQ-Hx
-	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 12:06:10 +0000
-Received: by fxm6 with SMTP id 6so645496fxm.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Mar 2010 05:06:03 -0700 (PDT)
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] MTD: SM_FTL: remove CONFIG_SM_FTL_MUSEUM and make it always on
-Date: Fri, 19 Mar 2010 14:05:51 +0200
-Message-Id: <1269000351-12023-1-git-send-email-maximlevitsky@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Maxim Levitsky <maximlevitsky@gmail.com>
+Received: from tac.ki.iif.hu ([2001:738:0:401:20c:6eff:fe71:b2db])
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nscwd-0001BJ-S5
+	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 14:13:01 +0000
+From: Ferenc Wagner <wferi@niif.hu>
+To: Phillip Lougher <phillip.lougher@gmail.com>
+Subject: Re: RFC: direct MTD support for SquashFS
+References: <87vdcwv139.fsf@tac.ki.iif.hu>
+	<87ljdsibqe.fsf@macbook.be.48ers.dk> <87r5nhziss.fsf@tac.ki.iif.hu>
+	<bffbecbb1003181440kc78f4dbvd25d4e2ea17b52e5@mail.gmail.com>
+	<87d3z1unm9.fsf@tac.ki.iif.hu>
+	<bffbecbb1003190030x4236abere54649131408cacc@mail.gmail.com>
+Date: Fri, 19 Mar 2010 15:12:44 +0100
+In-Reply-To: <bffbecbb1003190030x4236abere54649131408cacc@mail.gmail.com>
+	(Phillip Lougher's message of "Fri, 19 Mar 2010 07:30:47 +0000")
+Message-ID: <87aau4tn6r.fsf@tac.ki.iif.hu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, linux-embedded@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +28,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The sole purpose of this settings was to avoid depedency
-on MTD_NAND. It seems that such configuration isn't well
-supported by Kconfig/is ugly to implement/I don't know how to do.
+Phillip Lougher <phillip.lougher@gmail.com> writes:
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/Kconfig  |    9 ---------
- drivers/mtd/sm_ftl.c |    8 +-------
- 2 files changed, 1 insertions(+), 16 deletions(-)
+> On Fri, Mar 19, 2010 at 1:05 AM, Ferenc Wagner <wferi@niif.hu> wrote:
+>
+>> Ferenc Wagner <wferi@niif.hu> writes:
+>>
+>>> Phillip Lougher <phillip.lougher@gmail.com> writes:
+>>>
+>>>> On Thu, Mar 18, 2010 at 4:38 PM, Ferenc Wagner <wferi@niif.hu> wrote:
+>>>>
+>>>> +static int fill_bdev_super(struct super_block *sb, void *data, int si=
+lent)
+>>>> +{
+>>>> + =C2=A0 =C2=A0struct squashfs_sb_info *msblk;
+>>>> + =C2=A0 =C2=A0struct squashfs_bdev *bdev;
+>>>> + =C2=A0 =C2=A0int err =3D squashfs_fill_super2(sb, data, silent, &squ=
+ashfs_bdev_ops);
+>>>> + =C2=A0 =C2=A0if (err)
+>>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return err;
+>>>> +
+>>>> + =C2=A0 =C2=A0bdev =3D kzalloc(sizeof(*bdev), GFP_KERNEL);
+>>>> + =C2=A0 =C2=A0if (!bdev)
+>>>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENOMEM;
+>>>> +
+>>>> + =C2=A0 =C2=A0bdev->devblksize =3D sb_min_blocksize(sb, BLOCK_SIZE);
+>>>> + =C2=A0 =C2=A0bdev->devblksize_log2 =3D ffz(~bdev->devblksize);
+>>>> +
+>>>> + =C2=A0 =C2=A0msblk =3D sb->s_fs_info;
+>>>> + =C2=A0 =C2=A0msblk->backend_data =3D bdev;
+>>>> + =C2=A0 =C2=A0return 0;
+>>>> +}
+>>>>
+>>>> This function looks rather 'back-to-front' to me. =C2=A0I'm assuming t=
+hat
+>>>> squashfs_fill_super2() will be the current fill superblock function?
+>>>
+>>> Yes, with the extra parameter added.
+>>>
+>>>> This function wants to read data off the filesystem through the
+>>>> backend, and yet the backend (bdev, mblk->backend_data) hasn't been
+>>>> initialised when it's called...
+>>>
+>>> It can't be, because msblk =3D sb->s_fs_info is allocated by
+>>> squashfs_fill_super(). =C2=A0Now it will be passed the ops, so after
+>>> allocating msblk it can also fill out the ops. =C2=A0After that it can =
+read,
+>>> and squashfs_read_data() will call the init, read and free operations of
+>>> the backend.
+>>
+>> And here we indeed have a rather fundamental problem. =C2=A0This isn't
+>> specific to the discussed plugin system at all. =C2=A0Even in the current
+>> code, to set msblk->block_size squashfs_fill_super() calls
+>> squashfs_read_table() to read the superblock, which in turn calls
+>> squashfs_read_data(), which uses msblk->block_size to allocate enough
+>> buffer heads, but msblk->block_size just can't be set at this point.
+>> msblk->bytes_used is preset with a dummy value to make the read
+>> possible, but msblk->block_size is not. =C2=A0Fortunately, one buffer he=
+ad is
+>> allocated each time nevertheless. =C2=A0I wonder what a correct solution
+>> would look like..
+>
+> Block_size is known to be zero (the structure has been zeroed out at
+> alloc), and so it is known that the one block alloced in this case
+> will be correct.
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index dbee14d..d90652f 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -316,15 +316,6 @@ config SM_FTL
- 	  eat your card, so please don't use it together with valuable data.
- 	  Use readonly driver (CONFIG_SSFDC) instead.
- 
--config SM_FTL_MUSEUM
--	boolean "Additional Support for 1MiB and 2MiB SmartMedia cards"
--	depends on SM_FTL
--	select MTD_NAND_ECC_SMC
--	help
--	  Very old SmartMedia cards need ECC to be calculated in the FTL.
--	  Such cards are very rare, thus enabling this option is mostly useless.
--	  Also this support is completely UNTESTED.
--
- config MTD_OOPS
- 	tristate "Log panic/oops to an MTD buffer"
- 	depends on MTD
-diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-index 9fb56c7..812e212 100644
---- a/drivers/mtd/sm_ftl.c
-+++ b/drivers/mtd/sm_ftl.c
-@@ -15,12 +15,10 @@
- #include <linux/freezer.h>
- #include <linux/sysfs.h>
- #include <linux/bitops.h>
-+#include <linux/mtd/nand_ecc.h>
- #include "nand/sm_common.h"
- #include "sm_ftl.h"
- 
--#ifdef CONFIG_SM_FTL_MUSEUM
--#include <linux/mtd/nand_ecc.h>
--#endif
- 
- 
- struct workqueue_struct *cache_flush_workqueue;
-@@ -204,7 +202,6 @@ static void sm_break_offset(struct sm_ftl *ftl, loff_t offset,
- 
- static int sm_correct_sector(uint8_t *buffer, struct sm_oob *oob)
- {
--#ifdef CONFIG_SM_FTL_MUSEUM
- 	uint8_t ecc[3];
- 
- 	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
-@@ -216,7 +213,6 @@ static int sm_correct_sector(uint8_t *buffer, struct sm_oob *oob)
- 	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
- 	if (__nand_correct_data(buffer, ecc, oob->ecc2, SM_SMALL_PAGE) < 0)
- 		return -EIO;
--#endif
- 	return 0;
- }
- 
-@@ -380,7 +376,6 @@ restart:
- 			oob.data_status = 0;
- 		}
- 
--#ifdef CONFIG_SM_FTL_MUSEUM
- 		if (ftl->smallpagenand) {
- 			__nand_calculate_ecc(buf + boffset,
- 						SM_SMALL_PAGE, oob.ecc1);
-@@ -388,7 +383,6 @@ restart:
- 			__nand_calculate_ecc(buf + boffset + SM_SMALL_PAGE,
- 						SM_SMALL_PAGE, oob.ecc2);
- 		}
--#endif
- 		if (!sm_write_sector(ftl, zone, block, boffset,
- 							buf + boffset, &oob))
- 			continue;
--- 
-1.6.3.3
+If block_size=3D0 is always a good dummy value for this single call,
+that's great.  Fixing this in a general way in the backend framework
+might require allocating and partly initializing squashfs_sb_info in the
+backend specific fill_super() function, before calling squashfs_fill_super()
+for finalizing it.  Even though it may be possible to work around this
+for the bdev or mtd backends, it probably isn't worth it.
+
+> Congratulations you've managed to really piss me off in your third or
+> so email.
+
+Sorry, I'm not sure I understand.  If you mean that I made an ass of
+myself by my questions, that's OK, I'm certainly a newbie and I
+admittedly have no idea what I'm fiddling with.  Please feel free to
+ignore stupid questions.  On the other hand, if you mean that I hurt
+your feelings in any way, I'd like to apologize: it certainly wasn't my
+intention, but I might have chosen inappropriate terms.  Sorry for that.
+--=20
+Cheers,
+Feri.
