@@ -1,22 +1,22 @@
-Received: from tac.ki.iif.hu ([2001:738:0:401:20c:6eff:fe71:b2db])
-	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NsOaI-0003Lo-Sy
-	for linux-mtd@lists.infradead.org; Thu, 18 Mar 2010 22:53:00 +0000
-From: Ferenc Wagner <wferi@niif.hu>
-To: Phillip Lougher <phillip.lougher@gmail.com>
-Subject: Re: RFC: direct MTD support for SquashFS
-References: <87vdcwv139.fsf@tac.ki.iif.hu>
-	<87ljdsibqe.fsf@macbook.be.48ers.dk> <87r5nhziss.fsf@tac.ki.iif.hu>
-	<bffbecbb1003181440kc78f4dbvd25d4e2ea17b52e5@mail.gmail.com>
-Date: Thu, 18 Mar 2010 23:52:43 +0100
-In-Reply-To: <bffbecbb1003181440kc78f4dbvd25d4e2ea17b52e5@mail.gmail.com>
-	(Phillip Lougher's message of "Thu, 18 Mar 2010 21:40:45 +0000")
-Message-ID: <87tysduts4.fsf@tac.ki.iif.hu>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NsQCt-0000CS-9p
+	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 00:36:56 +0000
+Date: Fri, 19 Mar 2010 01:36:22 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Ferenc Wagner <wferi@niif.hu>
+Subject: Re: CONFIG_MTD_DEBUG vs generic DEBUG support in kernel.h
+Message-ID: <20100319003622.GB12348@pengutronix.de>
+References: <878w9swhlv.fsf@tac.ki.iif.hu>
+	<1268744759.20017.58.camel@localhost>
+	<87vdctzjn4.fsf@tac.ki.iif.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-embedded@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="Pd0ReVV5GZGQvF3a"
+Content-Disposition: inline
+In-Reply-To: <87vdctzjn4.fsf@tac.ki.iif.hu>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,97 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Phillip Lougher <phillip.lougher@gmail.com> writes:
 
-> On Thu, Mar 18, 2010 at 4:38 PM, Ferenc Wagner <wferi@niif.hu> wrote:
->
->> I could only compare apples to oranges before porting the patch to the
->> LZMA variant. =C2=A0So I refrain from that for a couple of days yet. =C2=
-=A0But
->> meanwhile I started adding a pluggable backend framework to SquashFS,
->> and would much appreciate some comments about the applicability of this
->> idea. =C2=A0The patch is (intended to be) a no-op, applies on top of cur=
-rent
->> git (a3d3203e4bb40f253b1541e310dc0f9305be7c84).
->
-> This looks promising, making the backend pluggable (like the new
-> compressor framework) is far better and cleaner than scattering the
-> code full of #ifdef's.  Far better than the previous patch :-)
+--Pd0ReVV5GZGQvF3a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yeah, the previous patch was only a little bit more than a proof that I
-can make SquashFS work on an MTD device.  The MTD access part is
-probably the only thing to criticize there: maybe it would be better
-done in blocks of some particular size, via a different interface.
+> something standard as dev_(v)dbg or pr_debug/devel (btw. what's the
+> difference?) instead.
 
-> +static void *bdev_init(struct squashfs_sb_info *msblk, u64 index,
-> size_t length)
-> +{
-> +	struct squashfs_bdev *bdev =3D msblk->backend_data;
-> +	struct buffer_head *bh;
-> +
-> +	bh =3D kcalloc((msblk->block_size >> bdev->devblksize_log2) + 1,
-> +			sizeof(*bh), GFP_KERNEL);
->
-> You should alloc against the larger of msblk->block_size and
-> METADATA_SIZE (8 Kbytes).  Block_size could be 4 Kbytes only.
+pr_devel will never produce code if !DEBUG. For pr_debug, it may be differe=
+nt
+as we have DYNAMIC_DEBUG meanwhile (see kernel.h)
 
-Hmm, okay.  Though this code is a verbatim copy of that in block.c.
-
-> +static int fill_bdev_super(struct super_block *sb, void *data, int silen=
-t)
-> +{
-> +	struct squashfs_sb_info *msblk;
-> +	struct squashfs_bdev *bdev;
-> +	int err =3D squashfs_fill_super2(sb, data, silent, &squashfs_bdev_ops);
-> +	if (err)
-> +		return err;
-> +
-> +	bdev =3D kzalloc(sizeof(*bdev), GFP_KERNEL);
-> +	if (!bdev)
-> +		return -ENOMEM;
-> +
-> +	bdev->devblksize =3D sb_min_blocksize(sb, BLOCK_SIZE);
-> +	bdev->devblksize_log2 =3D ffz(~bdev->devblksize);
-> +
-> +	msblk =3D sb->s_fs_info;
-> +	msblk->backend_data =3D bdev;
-> +	return 0;
-> +}
->
-> This function looks rather 'back-to-front' to me.  I'm assuming that
-> squashfs_fill_super2() will be the current fill superblock function?
-
-Yes, with the extra parameter added.
-
-> This function wants to read data off the filesystem through the
-> backend, and yet the backend (bdev, mblk->backend_data) hasn't been
-> initialised when it's called...
-
-It can't be, because msblk =3D sb->s_fs_info is allocated by
-squashfs_fill_super().  Now it will be passed the ops, so after
-allocating msblk it can also fill out the ops.  After that it can read,
-and squashfs_read_data() will call the init, read and free operations of
-the backend.  The backend itself has no persistent state between calls
-to squashfs_read_data().  Btw. struct super_block has fields named
-s_blocksize and s_blocksize_bits, aren't those the same as devblksize
-and devblksize_log in squashfs_sb_info?  (They are being moved into
-backend_data by the above.) If yes, shouldn't they be used instead?
-
-While we're at it: is it really worth submitting all the buffer heads
-at the beginning, instead of submitting them one at a time as needed by
-the decompression process and letting the IO scheduler do readahead and
-request coalescing as it sees fit?  At the very least, that would
-require less memory, while possibly not hurting performance too much.
-
-On the other hand, would it be possible to avoid the memory copy of
-uncompressed blocks by doing a straight (DMA) transfer from the device
-into the page cache?
-
-LZMA support is not in mainline yet, but I saw that unlzma is done in a
-single step, which requires block-sized input and output buffers.  Is
-there any particular reason it's done this way, not chunk-by-chunk as
-inflate?  This easily costs hundreds of kilobytes of virtual memory,
-which isn't negligible on embedded systems.
 --=20
-Thanks for your comments,
-Feri.
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--Pd0ReVV5GZGQvF3a
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkuixwYACgkQD27XaX1/VRu8RwCeNoUG6JOT2m94FO7TzVz/sDDq
+VHgAn0d4YWYUblMZUGdPUf/mkRmIYPuv
+=msme
+-----END PGP SIGNATURE-----
+
+--Pd0ReVV5GZGQvF3a--
