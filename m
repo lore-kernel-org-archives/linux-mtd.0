@@ -1,28 +1,16 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NsXlf-0006aY-Nm
-	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 08:41:24 +0000
-Date: Fri, 19 Mar 2010 08:40:48 +0000
-From: Jamie Lokier <jamie@shareable.org>
+Received: from mail-fx0-f214.google.com ([209.85.220.214])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nsaxp-0003GQ-Hx
+	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 12:06:10 +0000
+Received: by fxm6 with SMTP id 6so645496fxm.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Mar 2010 05:06:03 -0700 (PDT)
+From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [Patch] fix MTD CFI/LPDDR flash driver huge latency bug
-Message-ID: <20100319084048.GA1670@shareable.org>
-References: <1267894137.18869.0.camel@wall-e>
-	<20100312142344.174bd46f.akpm@linux-foundation.org>
-	<20100312233820.GH6491@shareable.org>
-	<1268483744.6339.25.camel@wall-e>
-	<20100315030338.GR6491@shareable.org>
-	<1268633754.6012.4.camel@wall-e.seibold.net>
-	<20100315142421.GB15133@shareable.org>
-	<1268987355.4028.33.camel@macbook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1268987355.4028.33.camel@macbook.infradead.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>,
-	Stefani Seibold <stefani@seibold.net>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>, "Kreuzer,
-	Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>
+Subject: [PATCH] MTD: SM_FTL: remove CONFIG_SM_FTL_MUSEUM and make it always on
+Date: Fri, 19 Mar 2010 14:05:51 +0200
+Message-Id: <1269000351-12023-1-git-send-email-maximlevitsky@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +20,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> Rather than pulling a number our of our posterior like "every 256 bytes"
-> which might _really_ screw up performance of some architectures' memcpy
-> routines, I suspect we might want the platform to provide an optimised
-> "sleepable_memcpy" function which does it at whatever interval is
-> appropriate for the memcpy routine in use. Or magically makes it
-> preemptable. Or uses a DMA engine. Or whatever.
->
-> I wonder where else we could use such a function...
+The sole purpose of this settings was to avoid depedency
+on MTD_NAND. It seems that such configuration isn't well
+supported by Kconfig/is ugly to implement/I don't know how to do.
 
-The posterior number isn't great, although I don't see how it would
-really harm memcpy performance to check current->need_resched even
-quite often.
+Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+---
+ drivers/mtd/Kconfig  |    9 ---------
+ drivers/mtd/sm_ftl.c |    8 +-------
+ 2 files changed, 1 insertions(+), 16 deletions(-)
 
-In this instance, the speed depends on the flash which can be as much
-as 100x slower than RAM - that's the particular situation where it
-might be most useful to split the copies.
-
-Other uses of sleepable_memcpy you may be thinking of could be
-operating on RAM only, so the number should be 100x larger for them.
-
-In other words, "whatever interval is appropriate for memcpy" does not
-exist, and could not be hard-coded into sleepable_memcpy.  It's
-whatever interval is appropriate for the particular memory being
-copied, so it would have to be a parameter.
-
--- Jamie
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index dbee14d..d90652f 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -316,15 +316,6 @@ config SM_FTL
+ 	  eat your card, so please don't use it together with valuable data.
+ 	  Use readonly driver (CONFIG_SSFDC) instead.
+ 
+-config SM_FTL_MUSEUM
+-	boolean "Additional Support for 1MiB and 2MiB SmartMedia cards"
+-	depends on SM_FTL
+-	select MTD_NAND_ECC_SMC
+-	help
+-	  Very old SmartMedia cards need ECC to be calculated in the FTL.
+-	  Such cards are very rare, thus enabling this option is mostly useless.
+-	  Also this support is completely UNTESTED.
+-
+ config MTD_OOPS
+ 	tristate "Log panic/oops to an MTD buffer"
+ 	depends on MTD
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index 9fb56c7..812e212 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -15,12 +15,10 @@
+ #include <linux/freezer.h>
+ #include <linux/sysfs.h>
+ #include <linux/bitops.h>
++#include <linux/mtd/nand_ecc.h>
+ #include "nand/sm_common.h"
+ #include "sm_ftl.h"
+ 
+-#ifdef CONFIG_SM_FTL_MUSEUM
+-#include <linux/mtd/nand_ecc.h>
+-#endif
+ 
+ 
+ struct workqueue_struct *cache_flush_workqueue;
+@@ -204,7 +202,6 @@ static void sm_break_offset(struct sm_ftl *ftl, loff_t offset,
+ 
+ static int sm_correct_sector(uint8_t *buffer, struct sm_oob *oob)
+ {
+-#ifdef CONFIG_SM_FTL_MUSEUM
+ 	uint8_t ecc[3];
+ 
+ 	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
+@@ -216,7 +213,6 @@ static int sm_correct_sector(uint8_t *buffer, struct sm_oob *oob)
+ 	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
+ 	if (__nand_correct_data(buffer, ecc, oob->ecc2, SM_SMALL_PAGE) < 0)
+ 		return -EIO;
+-#endif
+ 	return 0;
+ }
+ 
+@@ -380,7 +376,6 @@ restart:
+ 			oob.data_status = 0;
+ 		}
+ 
+-#ifdef CONFIG_SM_FTL_MUSEUM
+ 		if (ftl->smallpagenand) {
+ 			__nand_calculate_ecc(buf + boffset,
+ 						SM_SMALL_PAGE, oob.ecc1);
+@@ -388,7 +383,6 @@ restart:
+ 			__nand_calculate_ecc(buf + boffset + SM_SMALL_PAGE,
+ 						SM_SMALL_PAGE, oob.ecc2);
+ 		}
+-#endif
+ 		if (!sm_write_sector(ftl, zone, block, boffset,
+ 							buf + boffset, &oob))
+ 			continue;
+-- 
+1.6.3.3
