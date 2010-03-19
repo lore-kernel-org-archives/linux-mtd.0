@@ -1,18 +1,18 @@
-Received: from mail-fx0-f214.google.com ([209.85.220.214])
+Received: from havoc.gtf.org ([69.61.125.42])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nse2X-0008WS-A4
-	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 15:23:14 +0000
-Received: by fxm6 with SMTP id 6so861360fxm.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Mar 2010 08:23:08 -0700 (PDT)
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 2/2] MTD: NAND: split out ECC module
-Date: Fri, 19 Mar 2010 17:22:54 +0200
-Message-Id: <1269012174-5375-2-git-send-email-maximlevitsky@gmail.com>
-In-Reply-To: <1269000351-12023-1-git-send-email-maximlevitsky@gmail.com>
-References: <1269000351-12023-1-git-send-email-maximlevitsky@gmail.com>
-Cc: linux-mtd@lists.infradead.org, Maxim Levitsky <maximlevitsky@gmail.com>
+	id 1Nsgwg-0002hL-GU
+	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 18:29:23 +0000
+Date: Fri, 19 Mar 2010 14:29:15 -0400
+From: Jeff Garzik <jeff@garzik.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [git patch] Delete zero-length MTD file
+Message-ID: <20100319182915.GA9772@havoc.gtf.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: tony@atomide.com, ladis@linux-mips.org, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This way drivers could use ecc routines without depedency on whole nand
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/Kconfig       |    3 ++-
- drivers/mtd/nand/Kconfig  |    4 ++++
- drivers/mtd/nand/Makefile |    3 ++-
- 3 files changed, 8 insertions(+), 2 deletions(-)
+Please pull from 'zerolen' branch of
+master.kernel.org:/pub/scm/linux/kernel/git/jgarzik/misc-2.6.git zerolen
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index d90652f..f8210bf 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -307,8 +307,9 @@ config SSFDC
- 
- config SM_FTL
- 	tristate "SmartMedia/xD new translation layer"
--	depends on EXPERIMENTAL && BLOCK && MTD_NAND
-+	depends on EXPERIMENTAL && BLOCK
- 	select MTD_BLKDEVS
-+	select MTD_NAND_ECC
- 	help
- 	  This enables new and very EXPERMENTAL support for SmartMedia/xD
- 	  FTL (Flash translation layer).
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 983a641..dfde30b 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -2,6 +2,7 @@ menuconfig MTD_NAND
- 	tristate "NAND Device Support"
- 	depends on MTD
- 	select MTD_NAND_IDS
-+	select MTD_NAND_ECC
- 	help
- 	  This enables support for accessing all type of NAND flash
- 	  devices. For further information see
-@@ -102,6 +103,9 @@ config MTD_NAND_OMAP_PREFETCH_DMA
- config MTD_NAND_IDS
- 	tristate
- 
-+config MTD_NAND_ECC
-+	tristate
-+
- config MTD_NAND_RICOH
- 	tristate "Ricoh xD card reader"
- 	default n
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index 5fbd1f8..04bccf9 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -2,7 +2,8 @@
- # linux/drivers/nand/Makefile
- #
- 
--obj-$(CONFIG_MTD_NAND)			+= nand.o nand_ecc.o
-+obj-$(CONFIG_MTD_NAND)			+= nand.o
-+obj-$(CONFIG_MTD_NAND_ECC)		+= nand_ecc.o
- obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
- obj-$(CONFIG_MTD_SM_COMMON) 		+= sm_common.o
- 
--- 
-1.6.3.3
+to receive the following updates:
+
+ 0 files changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 drivers/mtd/maps/omap_nor.c
+
+commit 17cf4442497cb2551eae1dedee638515db47c23e
+Author: Jeff Garzik <jeff@garzik.org>
+Date:   Fri Mar 19 14:25:45 2010 -0400
+
+    Delete zero-length file drivers/mtd/maps/omap_nor.c
+    
+    The content was deleted in cc87edb173effdf74e680ee6d622a935ff0c1d6f,
+    but the file remained as a zero-length file.
+    
+    Signed-off-by: Jeff Garzik <jgarzik@redhat.com>
+
+diff --git a/drivers/mtd/maps/omap_nor.c b/drivers/mtd/maps/omap_nor.c
+deleted file mode 100644
+index e69de29..0000000
