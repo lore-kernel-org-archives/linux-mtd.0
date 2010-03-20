@@ -1,18 +1,15 @@
-Received: from havoc.gtf.org ([69.61.125.42])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nsgwg-0002hL-GU
-	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2010 18:29:23 +0000
-Date: Fri, 19 Mar 2010 14:29:15 -0400
-From: Jeff Garzik <jeff@garzik.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [git patch] Delete zero-length MTD file
-Message-ID: <20100319182915.GA9772@havoc.gtf.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: tony@atomide.com, ladis@linux-mips.org, linux-mtd@lists.infradead.org,
-	LKML <linux-kernel@vger.kernel.org>
+From: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+Subject: [PATCH] MTD: Fix Orion NAND driver compilation with ARM OABI
+To: dwmw2@infradead.org
+Date: Sat, 20 Mar 2010 10:55:07 +0200
+Message-ID: <20100320085507.4038.96426.stgit@pauliusz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: nico@fluxnic.net, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
+	simon.kagstrom@netinsight.net, akpm@linux-foundation.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+We must tell GCC to use even register for variable passed
+to ldrd instruction. Without this patch GCC 4.2.1 puts this
+variable to r2/r3 on EABI and r3/r4 on OABI, so force it to
+r2/r3. This does not change anything when EABI and OABI
+compilation works OK.
 
-Please pull from 'zerolen' branch of
-master.kernel.org:/pub/scm/linux/kernel/git/jgarzik/misc-2.6.git zerolen
+Without this patch and with OABI I get:
+  CC      drivers/mtd/nand/orion_nand.o
+/tmp/ccMkwOCs.s: Assembler messages:
+/tmp/ccMkwOCs.s:63: Error: first destination register must be even -- `ldrd r3,[ip]'
+make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
 
-to receive the following updates:
+Signed-off-by: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+---
 
- 0 files changed, 0 insertions(+), 0 deletions(-)
- delete mode 100644 drivers/mtd/maps/omap_nor.c
+ drivers/mtd/nand/orion_nand.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
 
-commit 17cf4442497cb2551eae1dedee638515db47c23e
-Author: Jeff Garzik <jeff@garzik.org>
-Date:   Fri Mar 19 14:25:45 2010 -0400
-
-    Delete zero-length file drivers/mtd/maps/omap_nor.c
-    
-    The content was deleted in cc87edb173effdf74e680ee6d622a935ff0c1d6f,
-    but the file remained as a zero-length file.
-    
-    Signed-off-by: Jeff Garzik <jgarzik@redhat.com>
-
-diff --git a/drivers/mtd/maps/omap_nor.c b/drivers/mtd/maps/omap_nor.c
-deleted file mode 100644
-index e69de29..0000000
+diff --git a/drivers/mtd/nand/orion_nand.c b/drivers/mtd/nand/orion_nand.c
+index f59c074..cb5175e 100644
+--- a/drivers/mtd/nand/orion_nand.c
++++ b/drivers/mtd/nand/orion_nand.c
+@@ -60,7 +60,12 @@ static void orion_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 	}
+ 	buf64 = (uint64_t *)buf;
+ 	while (i < len/8) {
+-		uint64_t x;
++		/*
++		 * force x variable to r2/r3 registers since ldrd instruction
++		 * requires first register to be even.
++		 */
++		register uint64_t x asm ("r2");
++
+ 		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
+ 		buf64[i++] = x;
+ 	}
