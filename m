@@ -1,21 +1,23 @@
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nt0eY-0003aA-UN
+	for linux-mtd@lists.infradead.org; Sat, 20 Mar 2010 15:31:56 +0000
+Date: Sat, 20 Mar 2010 16:31:46 +0100
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: Re: [PATCH 01/24] mtd/maps/pismo: remove dangling pointer and a leak
+Message-ID: <20100320153146.GB5515@pengutronix.de>
+References: <1269094385-16114-1-git-send-email-w.sang@pengutronix.de>
+	<1269094385-16114-2-git-send-email-w.sang@pengutronix.de>
+	<20100320145729.GA5399@flint.arm.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Message-ID: <19364.58488.817538.692599@pilspetsen.it.uu.se>
-Date: Sat, 20 Mar 2010 16:06:32 +0100
-From: Mikael Pettersson <mikpe@it.uu.se>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] MTD: Fix Orion NAND driver compilation with ARM OABI
-In-Reply-To: <1269086286.4028.6039.camel@macbook.infradead.org>
-References: <20100320085507.4038.96426.stgit@pauliusz>
-	<1269078083.4028.5586.camel@macbook.infradead.org>
-	<badfd5ba1003200420xc0680c1h8b4cccd02a8fdaba@mail.gmail.com>
-	<1269086286.4028.6039.camel@macbook.infradead.org>
-Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, nico@fluxnic.net,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
-	akpm@linux-foundation.org, nico@cam.org,
-	linux-arm-kernel@lists.infradead.org, rth@twiddle.net
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="QTprm0S8XgL7H0Dt"
+Content-Disposition: inline
+In-Reply-To: <20100320145729.GA5399@flint.arm.linux.org.uk>
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +27,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse writes:
- > On Sat, 2010-03-20 at 13:20 +0200, Paulius Zaleckas wrote:
- > > On Sat, Mar 20, 2010 at 11:41 AM, David Woodhouse <dwmw2@infradead.org> wrote:
- > > > On Sat, 2010-03-20 at 10:55 +0200, Paulius Zaleckas wrote:
- > > >> -             uint64_t x;
- > > >> +             /*
- > > >> +              * force x variable to r2/r3 registers since ldrd instruction
- > > >> +              * requires first register to be even.
- > > >> +              */
- > > >> +             register uint64_t x asm ("r2");
- > > >> +
- > > >>               asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
- > > >
- > > > Hm, isn't there an asm constraint which will force it into an
- > > > appropriate register pair?
- > > 
- > > Not that I know of...
- > > 
- > > > Failing that, "=&r2,r4,r6,r8" ought to work.
- > > 
- > > No, fails with error: matching constraint not valid in output operand
- > 
- > Hm, crap -- GCC on ARM doesn't let you give specific registers, so that
- > trick doesn't work.
 
-I missed the start of this thread, but looking at orion_nand.c I fail to
-see why you'd need to mess with inline asm for reading a sequence of u64
-values from an I/O location to an array.
+--QTprm0S8XgL7H0Dt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Rewriting that to proper C generates a nice ldrd;strd loop with my gcc-4.4.3.
+On Sat, Mar 20, 2010 at 02:57:30PM +0000, Russell King wrote:
+> On Sat, Mar 20, 2010 at 03:12:42PM +0100, Wolfram Sang wrote:
+> > + exit_free:
+> > +	i2c_set_clientdata(client, NULL);
+> > +	kfree(prismo);
+>=20
+> And this is a compile error...
+
+[grabbing some brown paper bags]
+
+I'm sorry. That was one of the manually adapted ones :(
+Here is the typo corrected:
+
+Subject: [PATCH V2] mtd/maps/pismo: remove dangling pointer and a leak
+
+While looking for drivers which forgot to clear i2c_clientdata before freei=
+ng
+the data structure it points to, I found that the pismo driver even has a l=
+eak
+on the probe error path.
+
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+---
+ drivers/mtd/maps/pismo.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/maps/pismo.c b/drivers/mtd/maps/pismo.c
+index 30e12c8..f021018 100644
+--- a/drivers/mtd/maps/pismo.c
++++ b/drivers/mtd/maps/pismo.c
+@@ -233,6 +233,7 @@ static int __devexit pismo_remove(struct i2c_client *cl=
+ient)
+ 	/* FIXME: set_vpp needs saner arguments */
+ 	pismo_setvpp_remove_fix(pismo);
+=20
++	i2c_set_clientdata(client, NULL);
+ 	kfree(pismo);
+=20
+ 	return 0;
+@@ -271,7 +272,7 @@ static int __devinit pismo_probe(struct i2c_client *cli=
+ent,
+ 	ret =3D pismo_eeprom_read(client, &eeprom, 0, sizeof(eeprom));
+ 	if (ret < 0) {
+ 		dev_err(&client->dev, "error reading EEPROM: %d\n", ret);
+-		return ret;
++		goto exit_free;
+ 	}
+=20
+ 	dev_info(&client->dev, "%.15s board found\n", eeprom.board);
+@@ -282,6 +283,11 @@ static int __devinit pismo_probe(struct i2c_client *cl=
+ient,
+ 				      pdata->cs_addrs[i]);
+=20
+ 	return 0;
++
++ exit_free:
++	i2c_set_clientdata(client, NULL);
++	kfree(pismo);
++	return ret;
+ }
+=20
+ static const struct i2c_device_id pismo_id[] =3D {
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--QTprm0S8XgL7H0Dt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkuk6mIACgkQD27XaX1/VRtWIgCgkU0LmGX9twrvrsTf1Qu7lavx
+31oAoLJuDs3Kba8eewfOC6ViHvkhmkri
+=P9pj
+-----END PGP SIGNATURE-----
+
+--QTprm0S8XgL7H0Dt--
