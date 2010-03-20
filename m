@@ -1,245 +1,250 @@
 From: wferi@niif.hu (Ferenc Wagner)
-Date: Thu, 18 Mar 2010 03:12:01 +0100
-Subject: [PATCH] squashfs: add backend plugin framework
-Message-ID: <mailman.266.1269377282.2170.linux-mtd@lists.infradead.org>
+Date: Sat, 20 Mar 2010 15:58:21 +0100
+Subject: [PATCH] squashfs: thread initialization through the backend framework
+Message-ID: <mailman.267.1269377282.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
+This necessitated introducing the killsb callback.
+The read path is still untouched.
 ---
- fs/squashfs/Makefile         |    3 +-
- fs/squashfs/backend.c        |   24 +++++++++
- fs/squashfs/backend.h        |   22 ++++++++
- fs/squashfs/bdev.c           |  110 ++++++++++++++++++++++++++++++++++++++++++
- fs/squashfs/squashfs.h       |    9 +++-
- fs/squashfs/squashfs_fs_sb.h |    2 +
- 6 files changed, 168 insertions(+), 2 deletions(-)
- create mode 100644 fs/squashfs/backend.c
- create mode 100644 fs/squashfs/backend.h
- create mode 100644 fs/squashfs/bdev.c
+ fs/squashfs/backend.c  |   22 +++++++++++++++-----
+ fs/squashfs/backend.h  |   11 ++++-----
+ fs/squashfs/bdev.c     |    3 +-
+ fs/squashfs/squashfs.h |    6 ++--
+ fs/squashfs/super.c    |   49 +++++++++++++++++++++--------------------------
+ 5 files changed, 48 insertions(+), 43 deletions(-)
 
-diff --git a/fs/squashfs/Makefile b/fs/squashfs/Makefile
-index 45aaefd..0f02891 100644
---- a/fs/squashfs/Makefile
-+++ b/fs/squashfs/Makefile
-@@ -4,5 +4,6 @@
- 
- obj-$(CONFIG_SQUASHFS) += squashfs.o
- squashfs-y += block.o cache.o dir.o export.o file.o fragment.o id.o inode.o
--squashfs-y += namei.o super.o symlink.o zlib_wrapper.o decompressor.o
-+squashfs-y += namei.o super.o symlink.o zlib_wrapper.o decompressor.o backend.o
- squashfs-$(CONFIG_SQUASHFS_LZMA) += lzma_wrapper.o
-+squashfs-$(CONFIG_BLOCK) += bdev.o
 diff --git a/fs/squashfs/backend.c b/fs/squashfs/backend.c
-new file mode 100644
-index 0000000..4411c60
---- /dev/null
+index 4411c60..49fa6fa 100644
+--- a/fs/squashfs/backend.c
 +++ b/fs/squashfs/backend.c
-@@ -0,0 +1,24 @@
-+#include <linux/fs.h>
-+
-+#include "squashfs_fs_i.h"
-+#include "squashfs.h"
-+#include "backend.h"
-+
-+const struct squashfs_backend *backends[] = {
-+#ifdef CONFIG_BLOCK
-+	&squashfs_bdev_ops,
-+#endif
-+	NULL
-+};
-+
-+const struct squashfs_backend *
-+squashfs_find_backend(struct file_system_type *fs_type, int flags,
-+			const char *dev_name, void *data, struct vfsmount *mnt)
-+{
-+	const struct squashfs_backend **b;
-+
-+	for (b = backends; *b; b++)
-+		if (!(*b)->probe(fs_type, flags, dev_name, data, mnt))
-+			break;
-+	return *b;
-+}
-diff --git a/fs/squashfs/backend.h b/fs/squashfs/backend.h
-new file mode 100644
-index 0000000..ca3ffe1
---- /dev/null
-+++ b/fs/squashfs/backend.h
-@@ -0,0 +1,22 @@
-+#include <linux/fs.h>
-+#include <linux/vfs.h>
-+
-+#include "squashfs_fs_sb.h"
-+
-+struct squashfs_backend {
-+	void	*(*init)(struct squashfs_sb_info *, u64, size_t);
-+	void	(*free)(struct squashfs_sb_info *);
-+	ssize_t	(*read)(struct squashfs_sb_info *, void **, size_t);
-+	int	(*probe)(struct file_system_type *, int, const char *,
-+				void*, struct vfsmount *);
-+	void	(*kill)(struct squashfs_sb_info *);
-+	loff_t  (*size)(const struct super_block *);
-+	const char *(*devname)(const struct super_block *, char *);
-+};
-+
-+/* Dummy, until the original is nuked */
-+static inline int squashfs_fill_super2(struct super_block *sb, void *data,
-+				int silent, int (*add_bend)(struct super_block *))
-+{
-+	return -1;
-+}
-diff --git a/fs/squashfs/bdev.c b/fs/squashfs/bdev.c
-new file mode 100644
-index 0000000..c1d4389
---- /dev/null
-+++ b/fs/squashfs/bdev.c
-@@ -0,0 +1,110 @@
-+#include <linux/fs.h>
-+#include <linux/buffer_head.h>
-+
-+#include "squashfs_fs_i.h"
-+#include "squashfs.h"
-+#include "backend.h"
-+
-+struct squashfs_bdev {
-+	int devblksize;			/* FIXME: == s->s_blocksize(_bits)? */
-+	unsigned short devblksize_log2;
-+	size_t bytes_left;
-+	struct buffer_head **bh;
-+	int bh_index;			/* number of consumed buffer_heads */
-+	int offset;			/* offset of next byte in buffer_head */
-+};
-+
-+/* A backend is initialized for each SquashFS block read operation,
-+ * making further sequential reads possible from the block.
-+ */
-+static void *bdev_init(struct squashfs_sb_info *msblk, u64 index, size_t length)
-+{
-+	struct squashfs_bdev *bdev = msblk->backend_data;
-+	struct buffer_head *bh;
-+
-+	bh = kcalloc((max_t(int, msblk->block_size, SQUASHFS_METADATA_SIZE)
-+		      >> bdev->devblksize_log2) + 1,
-+		     sizeof(*bh), GFP_KERNEL);
-+	if (!bh)
-+		goto nomem;
-+
-+	/* different preread for data blocks and metadata blocks */
-+
-+	bdev->bh_index = 0;
-+	bdev->bytes_left = length;
-+	return bdev;
-+
-+nomem:
-+	ERROR("failed to allocate buffer_heads\n");
-+	return NULL;
+@@ -11,14 +11,24 @@ const struct squashfs_backend *backends[] = {
+ 	NULL
+ };
+ 
+-const struct squashfs_backend *
+-squashfs_find_backend(struct file_system_type *fs_type, int flags,
++int squashfs_find_backend(struct file_system_type *fs_type, int flags,
+ 			const char *dev_name, void *data, struct vfsmount *mnt)
+ {
+ 	const struct squashfs_backend **b;
++	int err;
+ 
+-	for (b = backends; *b; b++)
+-		if (!(*b)->probe(fs_type, flags, dev_name, data, mnt))
+-			break;
+-	return *b;
++	for (b = backends; *b; b++) {
++		err = (*b)->probe(fs_type, flags, dev_name, data, mnt);
++		if (!err)
++			return 0;
++	}
++	ERROR("No suitable backend found\n");
++	return -ENODEV;
 +}
 +
-+static void bdev_free(struct squashfs_sb_info *msblk)
-+{
-+	struct squashfs_bdev *bdev = msblk->backend_data;
-+	kfree(bdev->bh);
-+	bdev->bh = 0; /* FIXME: to make bdev_kill universal (see there) */
-+}
-+
-+static ssize_t bdev_read(struct squashfs_sb_info *msblk, void **buf, size_t len)
-+{
-+	return -ENOSYS;
-+}
-+
-+static int add_bdev_backend(struct super_block *sb)
++void squashfs_kill_super(struct super_block *sb)
 +{
 +	struct squashfs_sb_info *msblk = sb->s_fs_info;
-+	struct squashfs_bdev *bdev = kzalloc(sizeof(*bdev), GFP_KERNEL);
 +
-+	if (!bdev)
-+		return -ENOMEM;
++	msblk->backend->killsb(sb);
+ }
+diff --git a/fs/squashfs/backend.h b/fs/squashfs/backend.h
+index ca3ffe1..02c4bcd 100644
+--- a/fs/squashfs/backend.h
++++ b/fs/squashfs/backend.h
+@@ -9,14 +9,13 @@ struct squashfs_backend {
+ 	ssize_t	(*read)(struct squashfs_sb_info *, void **, size_t);
+ 	int	(*probe)(struct file_system_type *, int, const char *,
+ 				void*, struct vfsmount *);
++	void    (*killsb)(struct super_block *);
+ 	void	(*kill)(struct squashfs_sb_info *);
+ 	loff_t  (*size)(const struct super_block *);
+ 	const char *(*devname)(const struct super_block *, char *);
+ };
+ 
+-/* Dummy, until the original is nuked */
+-static inline int squashfs_fill_super2(struct super_block *sb, void *data,
+-				int silent, int (*add_bend)(struct super_block *))
+-{
+-	return -1;
+-}
++int squashfs_find_backend(struct file_system_type *, int,
++			const char *, void *, struct vfsmount *);
 +
-+	bdev->devblksize = sb_min_blocksize(sb, BLOCK_SIZE);
-+	bdev->devblksize_log2 = ffz(~bdev->devblksize);
-+
-+	msblk->backend = &squashfs_bdev_ops;
-+	msblk->backend_data = bdev;
-+	return 0;
-+}
-+
-+static int fill_bdev_super(struct super_block *sb, void *data, int silent)
-+{
-+	return squashfs_fill_super2(sb, data, silent, add_bdev_backend);
-+}
-+
-+static int bdev_probe(struct file_system_type *fs_type, int flags,
-+			const char *dev_name, void *data,
-+			struct vfsmount *mnt)
-+{
-+	return get_sb_bdev(fs_type, flags, dev_name, data,
-+				fill_bdev_super, mnt);
-+}
-+
-+static void bdev_kill(struct squashfs_sb_info *msblk)
-+{
-+	struct squashfs_bdev *bdev = msblk->backend_data;
-+	if (bdev) {
-+		kfree(bdev->bh); /* FIXME: can this be nonzero? cf. bdev_free */
-+		kfree(bdev);
-+	}
-+}
-+
-+static loff_t bdev_size(const struct super_block *sb)
-+{
-+	return i_size_read(sb->s_bdev->bd_inode);
-+}
-+
-+static const char *bdev_devname(const struct super_block *sb, char *buffer)
-+{
-+	return bdevname(sb->s_bdev, buffer);
-+}
-+
-+const struct squashfs_backend squashfs_bdev_ops = {
-+	.init	= bdev_init,
-+	.free	= bdev_free,
-+	.read	= bdev_read,
-+	.probe	= bdev_probe,
-+	.kill	= bdev_kill,
-+	.size	= bdev_size,
-+	.devname= bdev_devname
-+};
++void squashfs_kill_super(struct super_block *);
+diff --git a/fs/squashfs/bdev.c b/fs/squashfs/bdev.c
+index c1d4389..0ee09f8 100644
+--- a/fs/squashfs/bdev.c
++++ b/fs/squashfs/bdev.c
+@@ -69,7 +69,7 @@ static int add_bdev_backend(struct super_block *sb)
+ 
+ static int fill_bdev_super(struct super_block *sb, void *data, int silent)
+ {
+-	return squashfs_fill_super2(sb, data, silent, add_bdev_backend);
++	return squashfs_fill_super(sb, data, silent, add_bdev_backend);
+ }
+ 
+ static int bdev_probe(struct file_system_type *fs_type, int flags,
+@@ -104,6 +104,7 @@ const struct squashfs_backend squashfs_bdev_ops = {
+ 	.free	= bdev_free,
+ 	.read	= bdev_read,
+ 	.probe	= bdev_probe,
++	.killsb	= kill_block_super,
+ 	.kill	= bdev_kill,
+ 	.size	= bdev_size,
+ 	.devname= bdev_devname
 diff --git a/fs/squashfs/squashfs.h b/fs/squashfs/squashfs.h
-index d094886..0e74175 100644
+index 0e74175..24c4b9e 100644
 --- a/fs/squashfs/squashfs.h
 +++ b/fs/squashfs/squashfs.h
-@@ -73,8 +73,12 @@ extern struct inode *squashfs_iget(struct super_block *, long long,
+@@ -73,10 +73,10 @@ extern struct inode *squashfs_iget(struct super_block *, long long,
  				unsigned int);
  extern int squashfs_read_inode(struct inode *, long long);
  
-+/* super.c
-+int squashfs_fill_super(struct super_block *, void *, int,
-+                        struct squashfs_backend *);
-+*/
- /*
-- * Inodes, files and decompressor operations
-+ * Inodes, files, backend and decompressor operations
-  */
- 
- /* dir.c */
-@@ -97,3 +101,6 @@ extern const struct squashfs_decompressor squashfs_zlib_comp_ops;
- 
- /* lzma wrapper.c */
- extern const struct squashfs_decompressor squashfs_lzma_comp_ops;
+-/* super.c
++/* super.c */
+ int squashfs_fill_super(struct super_block *, void *, int,
+-                        struct squashfs_backend *);
+-*/
++                        int (*)(struct super_block *));
 +
-+/* bdev.c */
-+extern const struct squashfs_backend squashfs_bdev_ops;
-diff --git a/fs/squashfs/squashfs_fs_sb.h b/fs/squashfs/squashfs_fs_sb.h
-index 7533350..5662d9b 100644
---- a/fs/squashfs/squashfs_fs_sb.h
-+++ b/fs/squashfs/squashfs_fs_sb.h
-@@ -53,6 +53,8 @@ struct squashfs_cache_entry {
+ /*
+  * Inodes, files, backend and decompressor operations
+  */
+diff --git a/fs/squashfs/super.c b/fs/squashfs/super.c
+index 3550aec..710179f 100644
+--- a/fs/squashfs/super.c
++++ b/fs/squashfs/super.c
+@@ -42,6 +42,7 @@
+ #include "squashfs_fs_i.h"
+ #include "squashfs.h"
+ #include "decompressor.h"
++#include "backend.h"
  
- struct squashfs_sb_info {
- 	const struct squashfs_decompressor	*decompressor;
-+	const struct squashfs_backend		*backend;
-+	void					*backend_data;
- 	int					devblksize;
- 	int					devblksize_log2;
- 	struct squashfs_cache			*block_cache;
+ static struct file_system_type squashfs_fs_type;
+ static const struct super_operations squashfs_super_ops;
+@@ -73,7 +74,8 @@ static const struct squashfs_decompressor *supported_squashfs_filesystem(short
+ }
+ 
+ 
+-static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
++int squashfs_fill_super(struct super_block *sb, void *data, int silent,
++			int (*add_backend)(struct super_block *))
+ {
+ 	struct squashfs_sb_info *msblk;
+ 	struct squashfs_super_block *sblk = NULL;
+@@ -97,11 +99,15 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	sblk = kzalloc(sizeof(*sblk), GFP_KERNEL);
+ 	if (sblk == NULL) {
+ 		ERROR("Failed to allocate squashfs_super_block\n");
+-		goto failure;
++		err = -ENOMEM;
++		goto free_msblk;
+ 	}
+ 
+ 	msblk->devblksize = sb_min_blocksize(sb, BLOCK_SIZE);
+ 	msblk->devblksize_log2 = ffz(~msblk->devblksize);
++	err = add_backend(sb);
++	if (err)
++		goto free_sblk;
+ 
+ 	mutex_init(&msblk->read_data_mutex);
+ 	mutex_init(&msblk->meta_index_mutex);
+@@ -127,7 +133,7 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (sb->s_magic != SQUASHFS_MAGIC) {
+ 		if (!silent)
+ 			ERROR("Can't find a SQUASHFS superblock on %s\n",
+-						bdevname(sb->s_bdev, b));
++					msblk->backend->devname(sb, b));
+ 		goto failed_mount;
+ 	}
+ 
+@@ -146,11 +152,10 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (le64_to_cpu(sblk->xattr_table_start) != SQUASHFS_INVALID_BLK)
+ 		ERROR("Xattrs in filesystem, these will be ignored\n");
+ 
+-	/* Check the filesystem does not extend beyond the end of the
+-	   block device */
++	/* Check the filesystem does not extend beyond the end of the device */
+ 	msblk->bytes_used = le64_to_cpu(sblk->bytes_used);
+ 	if (msblk->bytes_used < 0 || msblk->bytes_used >
+-			i_size_read(sb->s_bdev->bd_inode))
++			msblk->backend->size(sb))
+ 		goto failed_mount;
+ 
+ 	/* Check block size for sanity */
+@@ -182,7 +187,7 @@ static int squashfs_fill_super(struct super_block *sb, void *data, int silent)
+ 	msblk->inodes = le32_to_cpu(sblk->inodes);
+ 	flags = le16_to_cpu(sblk->flags);
+ 
+-	TRACE("Found valid superblock on %s\n", bdevname(sb->s_bdev, b));
++	TRACE("Found valid superblock on %s\n", msblk->backend->devname(sb, b));
+ 	TRACE("Inodes are %scompressed\n", SQUASHFS_UNCOMPRESSED_INODES(flags)
+ 				? "un" : "");
+ 	TRACE("Data is %scompressed\n", SQUASHFS_UNCOMPRESSED_DATA(flags)
+@@ -297,18 +302,16 @@ failed_mount:
+ 	squashfs_cache_delete(msblk->fragment_cache);
+ 	squashfs_cache_delete(msblk->read_page);
+ 	squashfs_decompressor_free(msblk, msblk->stream);
+-	kfree(msblk->inode_lookup_table);
++	kfree(msblk->inode_lookup_table); /* FIXME: squashfs_put_super has meta_index instead */
+ 	kfree(msblk->fragment_index);
+ 	kfree(msblk->id_table);
+-	kfree(sb->s_fs_info);
+-	sb->s_fs_info = NULL;
++	msblk->backend->kill(msblk);
++free_sblk:
+ 	kfree(sblk);
+-	return err;
+-
+-failure:
+-	kfree(sb->s_fs_info);
++free_msblk:
++	kfree(msblk);
+ 	sb->s_fs_info = NULL;
+-	return -ENOMEM;
++	return err;
+ }
+ 
+ 
+@@ -353,7 +356,8 @@ static void squashfs_put_super(struct super_block *sb)
+ 		kfree(sbi->id_table);
+ 		kfree(sbi->fragment_index);
+ 		kfree(sbi->meta_index);
+-		kfree(sb->s_fs_info);
++		sbi->backend->kill(sbi);
++		kfree(sbi);
+ 		sb->s_fs_info = NULL;
+ 	}
+ 
+@@ -361,15 +365,6 @@ static void squashfs_put_super(struct super_block *sb)
+ }
+ 
+ 
+-static int squashfs_get_sb(struct file_system_type *fs_type, int flags,
+-				const char *dev_name, void *data,
+-				struct vfsmount *mnt)
+-{
+-	return get_sb_bdev(fs_type, flags, dev_name, data, squashfs_fill_super,
+-				mnt);
+-}
+-
+-
+ static struct kmem_cache *squashfs_inode_cachep;
+ 
+ 
+@@ -442,8 +437,8 @@ static void squashfs_destroy_inode(struct inode *inode)
+ static struct file_system_type squashfs_fs_type = {
+ 	.owner = THIS_MODULE,
+ 	.name = "squashfs",
+-	.get_sb = squashfs_get_sb,
+-	.kill_sb = kill_block_super,
++	.get_sb = squashfs_find_backend,
++	.kill_sb = squashfs_kill_super,
+ 	.fs_flags = FS_REQUIRES_DEV
+ };
+ 
 -- 
 1.5.6.5
