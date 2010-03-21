@@ -1,22 +1,21 @@
-Subject: Re: [PATCH 01/24] mtd/maps/pismo: remove dangling pointer and a leak
-From: David Woodhouse <dwmw2@infradead.org>
-To: Russell King <rmk+lkml@arm.linux.org.uk>
-In-Reply-To: <20100320154113.GB14470@flint.arm.linux.org.uk>
-References: <1269094385-16114-1-git-send-email-w.sang@pengutronix.de>
-	<1269094385-16114-2-git-send-email-w.sang@pengutronix.de>
-	<20100320145729.GA5399@flint.arm.linux.org.uk>
-	<20100320153146.GB5515@pengutronix.de>
-	<20100320154113.GB14470@flint.arm.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 21 Mar 2010 08:30:41 +0000
-Message-ID: <1269160241.4028.9777.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>
+Date: Sun, 21 Mar 2010 17:16:34 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] MTD: Fix Orion NAND driver compilation with ARM OABI
+Message-ID: <20100321171634.GB4174@shareable.org>
+References: <20100320085507.4038.96426.stgit@pauliusz>
+	<1269078083.4028.5586.camel@macbook.infradead.org>
+	<badfd5ba1003200420xc0680c1h8b4cccd02a8fdaba@mail.gmail.com>
+	<1269086286.4028.6039.camel@macbook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1269086286.4028.6039.camel@macbook.infradead.org>
+Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, nico@fluxnic.net,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
+	akpm@linux-foundation.org, nico@cam.org,
+	linux-arm-kernel@lists.infradead.org, rth@twiddle.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +25,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-03-20 at 15:41 +0000, Russell King wrote:
-> 
-> Thanks.
-> 
-> Acked-by: Russell King <rmk+kernel@arm.linux.org.uk>
-> 
-> David, are you going to pick this up? 
+David Woodhouse wrote:
+> Strictly speaking, I think your version is wrong -- although you force
+> the variable 'x' to be stored in r2/r3, you don't actually force GCC to
+> use r2/r3 as the output registers for the asm statement -- it could
+> happily use other registers, then move their contents into r2/r3
+> afterwards.
 
-http://git.infradead.org/mtd-2.6.git/commitdiff/395b2288
+We used to do that a lot in the syscall macros in <asm/unistd.h>, on a
+lot of architectures.  Were they all broken?
 
-Thanks.
+> Obviously it _won't_ do that most of the time, but it _could_. GCC PR
+> #15089 was filed for the fact that sometimes it does, but I think Nico
+> was missing the point -- GCC is _allowed_ to do that, and if it makes
+> you sad then you should be asking for better assembly constraints which
+> would allow you to tell it not to.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+>From the GCC info documentation:
+
+    Sometimes you need to make an `asm' operand be a specific register,
+    but there's no matching constraint letter for that register _by
+    itself_.  To force the operand into that register, use a local variable
+    for the operand and specify the register in the variable declaration.
+    *Note Explicit Reg Vars::.  Then for the `asm' operand, use any
+    register constraint letter that matches the register:
+
+         register int *p1 asm ("r0") = ...;
+         register int *p2 asm ("r1") = ...;
+         register int *result asm ("r0");
+         asm ("sysint" : "=r" (result) : "0" (p1), "r" (p2));
+
+Fwiw, that note is present in GCC-4.0.1, but not GCC-3.3.6.  But we've
+depended on that behaviour for a long time.
+
+Note that we've depended on GCC not copying values with a dereferenced
+memory location for a long time too: E.g. "+m" (*ptr) is used a lot in
+spinlocks.
+
+I'm sure I've read email confirmation (on these very lists) that GCC
+will always work with a memory constraint used in that way, without
+copying the value to/from a different location such as a stack slot.
+
+But suprisingly, the GCC documentation says:
+
+    Extended asm supports input-output or read-write operands.  Use
+    the constraint character `+' to indicate such an operand and list
+    it with the output operands.  You should only use read-write
+    operands when the constraints for the operand (or the operand in
+    which only some of the bits are to be changed) allow a register.
+                                                   ^^^^^^^^^^^^^^^^
+
+Maybe we're relying on undefined GCC behaviour for the "+m" constraint?
+
+> See the __asmeq() macro in <asm/system.h> for a dirty hack which will
+> check which registers are used and abort at compile time, although your
+> compilation is going to fail anyway so I'm not sure it makes much of a
+> difference in this particular case.
+> 
+> The real fix here is to add an asm constraint to GCC which allows you to
+> specify "any even GPR" (or whatever's most suitable for the ldrd
+> instruction). Being able to give specific registers, like you can on
+> other architectures, would be useful too.
+
+See above GCC documentation for using register variables to designate
+specific registers.  Many supported architectures don't have asm
+letter constraints for each register - hence so many of the old
+_syscallN macros in <asm/unistd.h> having to use register variables.
+
+I am surprised GCC doesn't have a constraint for "any even register
+suitable for ldrd" on ARM, but I've just checked gcc-4.4.3 and it doesn't.
+
+However, if I'm reading the source correctly, if not compiling for
+Thumb-1, and GCC believes the target machine supports ldrd, then all
+doubleword values are constrained to an even register pair anyway.
+That's why GCC itself does not need an even-register constraint letter.
+
+...Which is I guess why it throws up only with OABI, or with pre-arm5e
+archs: GCC doesn't consider OABI targets to support ldrd.  (It's
+actually some more obscure condition, let's not go there).
+
+Something else from the lovely GCC source:
+
+    mfix-cortex-m3-ldrd
+    Target Report Var(fix_cm3_ldrd) Init(2)
+    Avoid overlapping destination and address registers on LDRD instructions
+    that may trigger Cortex-M3 errata.
+
+In other words, the "=&" earlyclobber *is* needed on Cortex-M3.
+
+Enjoy!
+-- Jamie
