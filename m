@@ -1,30 +1,20 @@
-Received: from mail-ew0-f210.google.com ([209.85.219.210])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NtjFy-0007pC-Jb
-	for linux-mtd@lists.infradead.org; Mon, 22 Mar 2010 15:09:34 +0000
-Received: by ewy2 with SMTP id 2so1074936ewy.20
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Mar 2010 08:09:26 -0700 (PDT)
+Received: from a2s40.a2hosting.com ([74.126.24.200])
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Ntkwj-0006Ck-Qt
+	for linux-mtd@lists.infradead.org; Mon, 22 Mar 2010 16:57:50 +0000
+Received: from [207.35.173.122] (helo=[192.168.220.108])
+	by a2s40.a2hosting.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <psanchez@fosstel.com>)
+	id 1Ntkwd-0003h1-TA
+	for linux-mtd@lists.infradead.org; Mon, 22 Mar 2010 12:57:39 -0400
+Message-ID: <4BA7A183.7040206@fosstel.com>
+Date: Mon, 22 Mar 2010 12:57:39 -0400
+From: "Pedro I. Sanchez" <psanchez@fosstel.com>
 MIME-Version: 1.0
-In-Reply-To: <ce9ab5791003090048v5b1108b5oc38ee3618fe76d89@mail.gmail.com>
-References: <7FAAF01335A90841B8C1098FB08222A6908DFCB01F@GMVMAIL6.gmv.es>
-	<Pine.LNX.4.64.1001291147400.32263@lnxricardw.se.axis.com>
-	<804f0d21003080602m4adabf28p62ca7cf5d09c274b@mail.gmail.com>
-	<ce9ab5791003080638v604412fcy7761482892c0d787@mail.gmail.com>
-	<804f0d21003080823x730204feg70ea4e9a617b6378@mail.gmail.com>
-	<ce9ab5791003082059y7268cc03jb09b550b9008bab1@mail.gmail.com>
-	<804f0d21003082348m27adcf0exf1d928a53a84655b@mail.gmail.com>
-	<ce9ab5791003090048v5b1108b5oc38ee3618fe76d89@mail.gmail.com>
-Date: Mon, 22 Mar 2010 16:09:26 +0100
-Message-ID: <804f0d21003220809h6fa04a1qe1867177650df926@mail.gmail.com>
-Subject: Re: JFFS2 error messages
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Marco Donadio <mdonadio@gmv.com>,
-	Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: linux-mtd@lists.infradead.org
+Subject: UBIFS and MLC NAND Flash
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,38 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/3/9 Vimal Singh <vimal.newwork@gmail.com>:
->> =A0-s, --pagesize=3DSIZE =A0 =A0 Use page size (max data node size) SIZE
->> (default: 4KiB)
->> =A0-e, --eraseblock=3DSIZE =A0 Use erase block size SIZE (default: 64KiB=
-)
->> =A0-c, --cleanmarker=3DSIZE =A0Size of cleanmarker (default 12)
->>
->> As "-s 4096" gives same result as without "-s" I assume the size is in b=
-yte ?!
->> Just to be sure - I have to use 2048 instead of 2112 ?
->
-> Yes that's correct. You need to use 2048.
->
-> --
-> Regards,
-> Vimal Singh
->
-It seems not to work. I am at a loss.
+Hello,
 
-I don't get rid of this messages like
-"Empty flash at 0x009e0f6c ends at 0x009e1000"
-after changing something in fs, even when shutdown with halt.
+I have a few questions regarding this topic.
 
-I tested with:
-mkfs.jffs2 -lqnp -s 2048 -e 131072 -r /opt/rootfs -o
-/mnt/hgfs/share/spv/rootfs.jffs2
+1. The UBIFS FAQ has a summary of the state of the support for MLC NAND 
+flash here:
 
-My flash is has page sizes of 2112 bytes (2048-byte data). Also the
-erasesize given with cat /proc/mtd is
-20000 (which is 131072 bytes).
+  http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc
 
-Might this be a mdt driver or configuration problem in my kernel?
+The question is, is this still the case? Does the FAQ reflect the 
+current state of affairs?
 
-Regards
-Arno
+2. I have several boards with MLC NAND flash running the Linux kernel 
+2.6.29 and UBIFS. I am seeing a fairly large rate of file "corruption" 
+errors, files that all of a sudden become unreadable. Curiously enough, 
+they have been read-only files in all cases, program executables and 
+shared libraries.
+
+Would upgrading to a more recent kernel, or back porting the latest 
+UBIFS code, help? Shall I expect better support for MLC NAND flash in 
+the latest UBIFS code?
+
+3. I am also seeing other errors where it is the U-Boot or the Kernel 
+partitions that become corrupted. UBIFS is not involved there directly 
+since these partitions are at the mtd level and outside the UBI layer.
+
+More specifically, my flash is partitioned as mtd0, mtd1, mtd2, mtd3, 
+mtd4. Only mtd4 has UBI/UBIFS on top. Is it possible that some flash 
+handling problems in UBIFS (mtd4) "spill over" other non-UBIFS mtd 
+partitions?
+
+4. Other than minimizing flash writes, is there any other suggestion on 
+what to do to improve on the failure rate I see in the file system?
+
+Thank you in advance, I would very much appreciate you answers.
+
+-- 
+Pedro
