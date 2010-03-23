@@ -1,13 +1,13 @@
 Received: from tac.ki.iif.hu ([2001:738:0:401:20c:6eff:fe71:b2db])
 	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nu7az-00050z-PV
-	for linux-mtd@lists.infradead.org; Tue, 23 Mar 2010 17:08:51 +0000
+	id 1Nu7bQ-00051T-6s
+	for linux-mtd@lists.infradead.org; Tue, 23 Mar 2010 17:09:24 +0000
 From: Ferenc Wagner <wferi@niif.hu>
 To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Replace the dangerous to_fsl_upm_nand macro with an
-	inline function
-Date: Tue, 23 Mar 2010 18:08:16 +0100
-Message-ID: <87iq8n0xvj.fsf@tac.ki.iif.hu>
+Subject: [PATCH] mtd: Replace the dangerous mtd_to_flctl macro with an inline
+	function
+Date: Tue, 23 Mar 2010 18:09:09 +0100
+Message-ID: <87eijb0xu2.fsf@tac.ki.iif.hu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,24 +25,24 @@ a more type-safe replacement is preferred.
 
 Signed-off-by: Ferenc Wagner <wferi@niif.hu>
 ---
- drivers/mtd/nand/fsl_upm.c |    5 ++++-
+ include/linux/mtd/sh_flctl.h |    5 ++++-
  1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 071a60c..02d1688 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -48,7 +48,10 @@ struct fsl_upm_nand {
- 	uint32_t wait_flags;
- };
+diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
+index ab77609..1278465 100644
+--- a/include/linux/mtd/sh_flctl.h
++++ b/include/linux/mtd/sh_flctl.h
+@@ -93,7 +93,10 @@
+ #define INIT_FL4ECCRESULT_VAL	0x03FF03FF
+ #define LOOP_TIMEOUT_MAX	0x00010000
  
--#define to_fsl_upm_nand(mtd) container_of(mtd, struct fsl_upm_nand, mtd)
-+inline struct fsl_upm_nand *to_fsl_upm_nand(struct mtd_info *mtdinfo)
+-#define mtd_to_flctl(mtd)	container_of(mtd, struct sh_flctl, mtd)
++inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
 +{
-+	return container_of(mtdinfo, struct fsl_upm_nand, mtd);
++	return container_of(mtdinfo, struct sh_flctl, mtd);
 +}
  
- static int fun_chip_ready(struct mtd_info *mtd)
- {
+ struct sh_flctl {
+ 	struct mtd_info		mtd;
 -- 
 1.5.6.5
