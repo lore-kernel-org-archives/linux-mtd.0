@@ -1,16 +1,17 @@
-Message-ID: <4BA8C513.3070308@nokia.com>
-Date: Tue, 23 Mar 2010 15:41:39 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: "Westerberg Mika.1 (EXT-Nixu/Helsinki)" <ext-mika.1.westerberg@nokia.com>
-Subject: Re: [PATCH] mtd: OneNAND: OMAP3: unmap correct DMA buffer
-References: <1269351224-10637-1-git-send-email-ext-mika.1.westerberg@nokia.com>
-In-Reply-To: <1269351224-10637-1-git-send-email-ext-mika.1.westerberg@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from gv-out-0910.google.com ([216.239.58.186])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nu5qo-0004oS-FM
+	for linux-mtd@lists.infradead.org; Tue, 23 Mar 2010 15:17:07 +0000
+Received: by gv-out-0910.google.com with SMTP id n29so81442gve.5
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Mar 2010 08:17:00 -0700 (PDT)
+Sender: Jon Ringle <jonringle@gmail.com>
+From: Jon Ringle <jon@ringle.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [ubinfo] Add -N option to get info by name of ubi volume
+Date: Tue, 23 Mar 2010 11:16:12 -0400
+Message-Id: <1269357372-24497-1-git-send-email-jon@ringle.org>
+Cc: Jon Ringle <jon@ringle.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +21,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Westerberg Mika.1 (EXT-Nixu/Helsinki) wrote:
-> Function omap3_onenand_write_bufferram() maps the write buffer and stores the
-> returned handle in dma_src. However, when it does the DMA unmap, it uses wrong
-> DMA handle (dma_dst).
-> 
-> This patch fixes it to use the correct DMA handle.
-> 
-> Signed-off-by: Mika Westerberg <ext-mika.1.westerberg@nokia.com>
-> ---
->  drivers/mtd/onenand/omap2.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index 75f38b9..2d81a3a 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -402,7 +402,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
->  
->  	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
->  	dma_dst = c->phys_base + bram_offset;
-> -	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
-> +	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
->  		dev_err(&c->pdev->dev,
->  			"Couldn't DMA map a %d byte buffer\n",
->  			count);
-> @@ -425,7 +425,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
->  		if (*done)
->  			break;
->  
-> -	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_TO_DEVICE);
-> +	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
->  
->  	if (!*done) {
->  		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+Signed-off-by: Jon Ringle <jon@ringle.org>
+---
+ ubi-utils/src/ubinfo.c |   28 +++++++++++++++++++++++++++-
+ 1 files changed, 27 insertions(+), 1 deletions(-)
 
-What about omap2_onenand_write_bufferram()
+diff --git a/ubi-utils/src/ubinfo.c b/ubi-utils/src/ubinfo.c
+index 8c5a1a9..cd011c5 100644
+--- a/ubi-utils/src/ubinfo.c
++++ b/ubi-utils/src/ubinfo.c
+@@ -39,6 +39,7 @@ struct args {
+ 	int vol_id;
+ 	int all;
+ 	const char *node;
++	const char *vol_name;
+ };
+ 
+ static struct args args = {
+@@ -46,6 +47,7 @@ static struct args args = {
+ 	.devn = -1,
+ 	.all = 0,
+ 	.node = NULL,
++	.vol_name = NULL,
+ };
+ 
+ static const char *doc = PROGRAM_NAME " version " PROGRAM_VERSION
+@@ -87,7 +89,7 @@ static int parse_opt(int argc, char * const argv[])
+ 		int key;
+ 		char *endp;
+ 
+-		key = getopt_long(argc, argv, "an:d:hV", long_options, NULL);
++		key = getopt_long(argc, argv, "an:N:d:hV", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -102,6 +104,10 @@ static int parse_opt(int argc, char * const argv[])
+ 				return errmsg("bad volume ID: " "\"%s\"", optarg);
+ 			break;
+ 
++		case 'N':
++			args.vol_name = optarg;
++			break;
++
+ 		case 'd':
+ 			args.devn = strtoul(optarg, &endp, 0);
+ 			if (*endp != '\0' || endp == optarg || args.devn < 0)
+@@ -174,6 +180,20 @@ static int translate_dev(libubi_t libubi, const char *node)
+ 	return 0;
+ }
+ 
++static int get_vol_id_by_name(libubi_t libubi, int dev_num, const char *name)
++{
++	int err;
++	struct ubi_vol_info vol_info;
++
++	err = ubi_get_vol_info1_nm(libubi, dev_num, name, &vol_info);
++	if (err)
++		return sys_errmsg("cannot get information about volume \"%s\" on ubi%d\n", name, dev_num);
++
++	args.vol_id = vol_info.vol_id;
++
++	return 0;
++}
++
+ static int print_vol_info(libubi_t libubi, int dev_num, int vol_id)
+ {
+ 	int err;
+@@ -377,6 +397,12 @@ int main(int argc, char * const argv[])
+ 			goto out_libubi;
+ 	}
+ 
++	if (args.vol_name) {
++		err = get_vol_id_by_name(libubi, args.devn, args.vol_name);
++		if (err)
++			goto out_libubi;
++	}
++
+ 	if (args.vol_id != -1 && args.devn == -1) {
+ 		errmsg("volume ID is specified, but UBI device number is not "
+ 		       "(use -h for help)\n");
+-- 
+1.7.0.2.182.ge007
