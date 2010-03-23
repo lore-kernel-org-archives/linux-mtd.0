@@ -1,17 +1,15 @@
-Received: from gv-out-0910.google.com ([216.239.58.186])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nu5qo-0004oS-FM
-	for linux-mtd@lists.infradead.org; Tue, 23 Mar 2010 15:17:07 +0000
-Received: by gv-out-0910.google.com with SMTP id n29so81442gve.5
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Mar 2010 08:17:00 -0700 (PDT)
-Sender: Jon Ringle <jonringle@gmail.com>
-From: Jon Ringle <jon@ringle.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [ubinfo] Add -N option to get info by name of ubi volume
-Date: Tue, 23 Mar 2010 11:16:12 -0400
-Message-Id: <1269357372-24497-1-git-send-email-jon@ringle.org>
-Cc: Jon Ringle <jon@ringle.org>
+Received: from tac.ki.iif.hu ([2001:738:0:401:20c:6eff:fe71:b2db])
+	by casper.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nu7az-00050z-PV
+	for linux-mtd@lists.infradead.org; Tue, 23 Mar 2010 17:08:51 +0000
+From: Ferenc Wagner <wferi@niif.hu>
+To: linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: Replace the dangerous to_fsl_upm_nand macro with an
+	inline function
+Date: Tue, 23 Mar 2010 18:08:16 +0100
+Message-ID: <87iq8n0xvj.fsf@tac.ki.iif.hu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,84 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Jon Ringle <jon@ringle.org>
----
- ubi-utils/src/ubinfo.c |   28 +++++++++++++++++++++++++++-
- 1 files changed, 27 insertions(+), 1 deletions(-)
+The original macro worked only when applied to variables named 'mtd'.
+While this could have been fixed by simply renaming the macro argument,
+a more type-safe replacement is preferred.
 
-diff --git a/ubi-utils/src/ubinfo.c b/ubi-utils/src/ubinfo.c
-index 8c5a1a9..cd011c5 100644
---- a/ubi-utils/src/ubinfo.c
-+++ b/ubi-utils/src/ubinfo.c
-@@ -39,6 +39,7 @@ struct args {
- 	int vol_id;
- 	int all;
- 	const char *node;
-+	const char *vol_name;
+Signed-off-by: Ferenc Wagner <wferi@niif.hu>
+---
+ drivers/mtd/nand/fsl_upm.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
+index 071a60c..02d1688 100644
+--- a/drivers/mtd/nand/fsl_upm.c
++++ b/drivers/mtd/nand/fsl_upm.c
+@@ -48,7 +48,10 @@ struct fsl_upm_nand {
+ 	uint32_t wait_flags;
  };
  
- static struct args args = {
-@@ -46,6 +47,7 @@ static struct args args = {
- 	.devn = -1,
- 	.all = 0,
- 	.node = NULL,
-+	.vol_name = NULL,
- };
- 
- static const char *doc = PROGRAM_NAME " version " PROGRAM_VERSION
-@@ -87,7 +89,7 @@ static int parse_opt(int argc, char * const argv[])
- 		int key;
- 		char *endp;
- 
--		key = getopt_long(argc, argv, "an:d:hV", long_options, NULL);
-+		key = getopt_long(argc, argv, "an:N:d:hV", long_options, NULL);
- 		if (key == -1)
- 			break;
- 
-@@ -102,6 +104,10 @@ static int parse_opt(int argc, char * const argv[])
- 				return errmsg("bad volume ID: " "\"%s\"", optarg);
- 			break;
- 
-+		case 'N':
-+			args.vol_name = optarg;
-+			break;
-+
- 		case 'd':
- 			args.devn = strtoul(optarg, &endp, 0);
- 			if (*endp != '\0' || endp == optarg || args.devn < 0)
-@@ -174,6 +180,20 @@ static int translate_dev(libubi_t libubi, const char *node)
- 	return 0;
- }
- 
-+static int get_vol_id_by_name(libubi_t libubi, int dev_num, const char *name)
+-#define to_fsl_upm_nand(mtd) container_of(mtd, struct fsl_upm_nand, mtd)
++inline struct fsl_upm_nand *to_fsl_upm_nand(struct mtd_info *mtdinfo)
 +{
-+	int err;
-+	struct ubi_vol_info vol_info;
-+
-+	err = ubi_get_vol_info1_nm(libubi, dev_num, name, &vol_info);
-+	if (err)
-+		return sys_errmsg("cannot get information about volume \"%s\" on ubi%d\n", name, dev_num);
-+
-+	args.vol_id = vol_info.vol_id;
-+
-+	return 0;
++	return container_of(mtdinfo, struct fsl_upm_nand, mtd);
 +}
-+
- static int print_vol_info(libubi_t libubi, int dev_num, int vol_id)
- {
- 	int err;
-@@ -377,6 +397,12 @@ int main(int argc, char * const argv[])
- 			goto out_libubi;
- 	}
  
-+	if (args.vol_name) {
-+		err = get_vol_id_by_name(libubi, args.devn, args.vol_name);
-+		if (err)
-+			goto out_libubi;
-+	}
-+
- 	if (args.vol_id != -1 && args.devn == -1) {
- 		errmsg("volume ID is specified, but UBI device number is not "
- 		       "(use -h for help)\n");
+ static int fun_chip_ready(struct mtd_info *mtd)
+ {
 -- 
-1.7.0.2.182.ge007
+1.5.6.5
