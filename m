@@ -1,241 +1,240 @@
 From: wferi@niif.hu (Ferenc Wagner)
-Date: Sun, 21 Mar 2010 22:38:00 +0100
-Subject: [PATCH] squashfs: move the decompressors to the backend framework
-Message-ID: <mailman.264.1269344143.2170.linux-mtd@lists.infradead.org>
+Date: Tue, 23 Mar 2010 02:21:27 +0100
+Subject: [PATCH] squashfs: add mtd backend
+Message-ID: <mailman.265.1269344143.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
 ---
- fs/squashfs/block.c        |   17 +----------------
- fs/squashfs/decompressor.h |   12 +++++-------
- fs/squashfs/lzma_wrapper.c |   27 +++++++++------------------
- fs/squashfs/zlib_wrapper.c |   44 ++++++++++++++++++--------------------------
- 4 files changed, 33 insertions(+), 67 deletions(-)
+ fs/squashfs/Kconfig    |    2 +-
+ fs/squashfs/Makefile   |    1 +
+ fs/squashfs/backend.c  |    3 +
+ fs/squashfs/mtd.c      |  167 ++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/squashfs/squashfs.h |    3 +
+ 5 files changed, 175 insertions(+), 1 deletions(-)
+ create mode 100644 fs/squashfs/mtd.c
 
-diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
-index 8787aac..1c85063 100644
---- a/fs/squashfs/block.c
-+++ b/fs/squashfs/block.c
-@@ -39,18 +39,6 @@
- #include "decompressor.h"
- #include "backend.h"
- 
--/* FIXME: here for a temporary cheat only */
--struct squashfs_bdev {
--	int devblksize;			/* FIXME: == s->s_blocksize(_bits)? */
--	unsigned short devblksize_log2;
--	int length;
--	int bytes_read;
--	struct buffer_head **bh;
--	int bh_index;			/* number of consumed buffer_heads */
--	int offset;			/* offset of next byte in buffer_head */
--	int b;				/* total number of buffer heads */
--};
--
- /*
-  * Read and decompress a metadata block or datablock.  Length is non-zero
-  * if a datablock is being read (the size is stored elsewhere in the
-@@ -71,10 +59,7 @@ int squashfs_read_data(struct super_block *sb, void **buffer, u64 index,
- 		return length;
- 
- 	if (compressed) {
--		struct squashfs_bdev *bdev = msblk->backend_data;
--		length = squashfs_decompress(msblk, buffer, bdev->bh, bdev->b,
--				bdev->offset, length, srclength, pages);
--		bdev->bh_index = bdev->b; /* temporary hack to avoid double free */
-+		length = squashfs_decompress(sb, buffer, length, pages);
- 		if (length < 0)
- 			goto read_failure;
- 	} else {
-diff --git a/fs/squashfs/decompressor.h b/fs/squashfs/decompressor.h
-index 7425f80..06b4233 100644
---- a/fs/squashfs/decompressor.h
-+++ b/fs/squashfs/decompressor.h
-@@ -26,8 +26,7 @@
- struct squashfs_decompressor {
- 	void	*(*init)(struct squashfs_sb_info *);
- 	void	(*free)(void *);
--	int	(*decompress)(struct squashfs_sb_info *, void **,
--		struct buffer_head **, int, int, int, int, int);
-+	int	(*decompress)(struct super_block *, void **, int, int);
- 	int	id;
- 	char	*name;
- 	int	supported;
-@@ -45,11 +44,10 @@ static inline void squashfs_decompressor_free(struct squashfs_sb_info *msblk,
- 		msblk->decompressor->free(s);
- }
- 
--static inline int squashfs_decompress(struct squashfs_sb_info *msblk,
--	void **buffer, struct buffer_head **bh, int b, int offset, int length,
--	int srclength, int pages)
-+static inline int squashfs_decompress(struct super_block *sb,
-+	void **buffer, int length, int pages)
- {
--	return msblk->decompressor->decompress(msblk, buffer, bh, b, offset,
--		length, srclength, pages);
-+	struct squashfs_sb_info *msblk = sb->s_fs_info;
-+	return msblk->decompressor->decompress(sb, buffer, length, pages);
- }
+diff --git a/fs/squashfs/Kconfig b/fs/squashfs/Kconfig
+index 7ec5d7e..6849e70 100644
+--- a/fs/squashfs/Kconfig
++++ b/fs/squashfs/Kconfig
+@@ -1,6 +1,6 @@
+ config SQUASHFS
+ 	tristate "SquashFS 4.0 - Squashed file system support"
+-	depends on BLOCK
++	depends on BLOCK || MTD
+ 	select ZLIB_INFLATE
+ 	help
+ 	  Saying Y here includes support for SquashFS 4.0 (a Compressed
+diff --git a/fs/squashfs/Makefile b/fs/squashfs/Makefile
+index 0f02891..b6dd60e 100644
+--- a/fs/squashfs/Makefile
++++ b/fs/squashfs/Makefile
+@@ -7,3 +7,4 @@ squashfs-y += block.o cache.o dir.o export.o file.o fragment.o id.o inode.o
+ squashfs-y += namei.o super.o symlink.o zlib_wrapper.o decompressor.o backend.o
+ squashfs-$(CONFIG_SQUASHFS_LZMA) += lzma_wrapper.o
+ squashfs-$(CONFIG_BLOCK) += bdev.o
++squashfs-$(CONFIG_MTD) += mtd.o
+diff --git a/fs/squashfs/backend.c b/fs/squashfs/backend.c
+index 49fa6fa..56037e3 100644
+--- a/fs/squashfs/backend.c
++++ b/fs/squashfs/backend.c
+@@ -8,6 +8,9 @@ const struct squashfs_backend *backends[] = {
+ #ifdef CONFIG_BLOCK
+ 	&squashfs_bdev_ops,
  #endif
-diff --git a/fs/squashfs/lzma_wrapper.c b/fs/squashfs/lzma_wrapper.c
-index 439798f..da571ce 100644
---- a/fs/squashfs/lzma_wrapper.c
-+++ b/fs/squashfs/lzma_wrapper.c
-@@ -32,6 +32,7 @@
- #include "squashfs_fs_i.h"
- #include "squashfs.h"
- #include "decompressor.h"
-+#include "backend.h"
++#ifdef CONFIG_MTD
++	&squashfs_mtd_ops,
++#endif
+ 	NULL
+ };
  
- struct squashfs_lzma {
- 	void	*input;
-@@ -86,29 +87,23 @@ static void lzma_free(void *strm)
- }
- 
- 
--static int lzma_uncompress(struct squashfs_sb_info *msblk, void **buffer,
--	struct buffer_head **bh, int b, int offset, int length, int srclength,
--	int pages)
-+static int lzma_uncompress(struct super_block *sb, void **buffer,
-+			   int length, int pages)
- {
-+	struct squashfs_sb_info *msblk = sb->s_fs_info;
- 	struct squashfs_lzma *stream = msblk->stream;
- 	void *buff = stream->input;
- 	int avail, i, bytes = length, res;
- 
--	TRACE("lzma_uncompress: bh=%p, b=%d, offset=%d, length=%d, srclength=%d,"
--		" pages=%d\n", bh, b, offset, length, srclength, pages);
-+	TRACE("lzma_uncompress: length=%d, pages=%d\n", length, pages);
- 	mutex_lock(&lzma_mutex);
- 
--	for (i = 0; i < b; i++) {
--		wait_on_buffer(bh[i]);
--		if (!buffer_uptodate(bh[i]))
--			goto block_release;
--
--		avail = min(bytes, msblk->devblksize - offset);
--		memcpy(buff, bh[i]->b_data + offset, avail);
-+	while ((avail = msblk->backend->read(sb, buff, length))) {
-+		if (avail < 0)
-+			goto failed;
-+		TRACE("read %d bytes\n", avail);
- 		buff += avail;
- 		bytes -= avail;
--		offset = 0;
--		put_bh(bh[i]);
- 	}
- 
- 	lzma_error = 0;
-@@ -131,10 +126,6 @@ static int lzma_uncompress(struct squashfs_sb_info *msblk, void **buffer,
- 	mutex_unlock(&lzma_mutex);
- 	return res;
- 
--block_release:
--	for (; i < b; i++)
--		put_bh(bh[i]);
--
- failed:
- 	mutex_unlock(&lzma_mutex);
- 
-diff --git a/fs/squashfs/zlib_wrapper.c b/fs/squashfs/zlib_wrapper.c
-index 4dd70e0..70c7571 100644
---- a/fs/squashfs/zlib_wrapper.c
-+++ b/fs/squashfs/zlib_wrapper.c
-@@ -31,6 +31,7 @@
- #include "squashfs_fs_i.h"
- #include "squashfs.h"
- #include "decompressor.h"
-+#include "backend.h"
- 
- static void *zlib_init(struct squashfs_sb_info *dummy)
- {
-@@ -61,13 +62,18 @@ static void zlib_free(void *strm)
- }
- 
- 
--static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
--	struct buffer_head **bh, int b, int offset, int length, int srclength,
--	int pages)
-+static int zlib_uncompress(struct super_block *sb, void **buffer,
-+	int length, int pages)
- {
-+	struct squashfs_sb_info *msblk = sb->s_fs_info;
- 	int zlib_err = 0, zlib_init = 0;
--	int avail, bytes, k = 0, page = 0;
-+	int bytes, page = 0;
- 	z_stream *stream = msblk->stream;
-+	/* Copying is required by the backend interface for now. */
-+	void *input = kmalloc (PAGE_CACHE_SIZE, GFP_KERNEL);
+diff --git a/fs/squashfs/mtd.c b/fs/squashfs/mtd.c
+new file mode 100644
+index 0000000..c9ba361
+--- /dev/null
++++ b/fs/squashfs/mtd.c
+@@ -0,0 +1,167 @@
++#include <linux/fs.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/super.h>
 +
-+	if (!input)
++#include "squashfs_fs_i.h"
++#include "squashfs.h"
++#include "backend.h"
++
++struct squashfs_mtd {
++	u64 index;
++	int length;
++	int bytes_read;
++};
++
++static int checked_mtd_read(struct super_block *sb, u64 index, int length,
++			    void *buf)
++{
++	struct mtd_info *mi = sb->s_mtd;
++	int ret, retlen;
++
++	TRACE("Entering checked_mtd_read: index=0x%llx, length=%d\n",
++	      index, length);
++	ret = mi->read(mi, index, length, &retlen, buf);
++	if (ret) {
++		if (ret != -EUCLEAN && ret != -EBADMSG) {
++			ERROR("checked_mtd_read(index=0x%llx, length=%d): %d\n",
++			      index, length, ret);
++			return ret;
++		} else
++			WARNING("checked_mtd_read(index=0x%llx, length=%d): "
++				"recoverable error %d\n", index, length, ret);
++	}
++	if (retlen != length) {
++		ERROR("checked_mtd_read(index=0x%llx, length=%d) short read: %d\n",
++		      index, length, retlen);
++		return -EIO;
++	}
++	return 0;
++}
++
++static int mtd_init(struct super_block *sb, u64 index, int length,
++		    int srclength, u64 *next_index, int *compressed)
++{
++	struct squashfs_sb_info *msblk = sb->s_fs_info;
++	struct squashfs_mtd *mtd = msblk->backend_data;
++
++	TRACE("Entering mtd_init: index=0x%llx, length=0x%x, srclength=%d\n",
++		index, length, srclength);
++
++	if (length) { /* datablock */
++		*compressed = SQUASHFS_COMPRESSED_BLOCK(length);
++		length = SQUASHFS_COMPRESSED_SIZE_BLOCK(length);
++		if (next_index)
++			*next_index = index + length;
++		TRACE("Block @ 0x%llx, %scompressed size %d, src size %d\n",
++			index, *compressed ? "" : "un", length, srclength);
++	} else { /* metadata block */
++		u16 metalen;
++		if ((index + 2) > msblk->bytes_used)
++			goto read_failure;
++		if (checked_mtd_read(sb, index, 2, &metalen))
++			goto read_failure;
++		length = le16_to_cpu(metalen);
++		*compressed = SQUASHFS_COMPRESSED(length);
++		length = SQUASHFS_COMPRESSED_SIZE(length);
++		if (next_index)
++			*next_index = index + length + 2;
++		TRACE("Block @ 0x%llx, %scompressed size %d\n", index,
++				*compressed ? "" : "un", length);
++		index += 2;
++	}
++	if (length < 0 || length > srclength ||
++			(index + length) > msblk->bytes_used)
++		goto read_failure;
++
++	mtd->index = index;
++	mtd->length = length;
++	mtd->bytes_read = 0;
++	return length;
++
++read_failure:
++	ERROR("mtd_init failed to read block 0x%llx\n",
++					(unsigned long long) index);
++	return -EIO;
++}
++
++static void mtd_free(struct squashfs_sb_info *msblk)
++{
++	TRACE("mtd_free: no op\n");
++}
++
++static int mtd_read(struct super_block *sb, void *buf, int len)
++{
++	struct squashfs_sb_info *msblk = sb->s_fs_info;
++	struct squashfs_mtd *mtd = msblk->backend_data;
++	int err;
++
++	TRACE("mtd_read: buf=%p, len=%d, length=%d, bytes_read=%d\n",
++	      buf, len, mtd->length, mtd->bytes_read);
++
++	if (mtd->bytes_read == mtd->length) /* EOF */
++		return 0;
++	if (mtd->bytes_read + len > mtd->length)
++		len = mtd->length - mtd->bytes_read;
++	TRACE("mtd_read: copying %d bytes", len);
++	err = checked_mtd_read(sb, mtd->index + mtd->bytes_read, len, buf);
++	if (err)
++		return err;
++	mtd->bytes_read += len;
++	return len;
++}
++
++static int add_mtd_backend(struct super_block *sb)
++{
++	struct squashfs_sb_info *msblk = sb->s_fs_info;
++	struct squashfs_mtd *mtd = kzalloc(sizeof(*mtd), GFP_KERNEL);
++
++	TRACE("add_mtd_backend\n");
++	if (!mtd)
 +		return -ENOMEM;
++
++	msblk->backend = &squashfs_mtd_ops;
++	msblk->backend_data = mtd;
++	return 0;
++}
++
++static int fill_mtd_super(struct super_block *sb, void *data, int silent)
++{
++	return squashfs_fill_super(sb, data, silent, add_mtd_backend);
++}
++
++static int mtd_probe(struct file_system_type *fs_type, int flags,
++			const char *dev_name, void *data,
++			struct vfsmount *mnt)
++{
++	return get_sb_mtd(fs_type, flags, dev_name, data,
++				fill_mtd_super, mnt);
++}
++
++static void mtd_kill(struct squashfs_sb_info *msblk)
++{
++	TRACE("mtd_kill: mtd=%p\n", msblk->backend_data);
++	mtd_free(msblk);
++	kfree(msblk->backend_data);
++}
++
++static loff_t mtd_size(const struct super_block *sb)
++{
++	return sb->s_mtd->size;
++}
++
++static const char *mtd_devname(const struct super_block *sb, char *buffer)
++{
++	snprintf(buffer, BDEVNAME_SIZE, "MTD%d", sb->s_mtd->index);
++	return buffer;
++}
++
++const struct squashfs_backend squashfs_mtd_ops = {
++	.init	= mtd_init,
++	.free	= mtd_free,
++	.read	= mtd_read,
++	.probe	= mtd_probe,
++	.killsb = kill_mtd_super,
++	.kill	= mtd_kill,
++	.size	= mtd_size,
++	.devname= mtd_devname
++};
+diff --git a/fs/squashfs/squashfs.h b/fs/squashfs/squashfs.h
+index 24c4b9e..fc3a57a 100644
+--- a/fs/squashfs/squashfs.h
++++ b/fs/squashfs/squashfs.h
+@@ -104,3 +104,6 @@ extern const struct squashfs_decompressor squashfs_lzma_comp_ops;
  
- 	mutex_lock(&msblk->read_data_mutex);
- 
-@@ -76,22 +82,13 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
- 
- 	bytes = length;
- 	do {
--		if (stream->avail_in == 0 && k < b) {
--			avail = min(bytes, msblk->devblksize - offset);
--			bytes -= avail;
--			wait_on_buffer(bh[k]);
--			if (!buffer_uptodate(bh[k]))
-+		if (stream->avail_in == 0) {
-+			stream->avail_in = msblk->backend->read(sb, input, PAGE_CACHE_SIZE);
-+			if (!stream->avail_in) {
-+				ERROR("unexpected end of input\n");
- 				goto release_mutex;
--
--			if (avail == 0) {
--				offset = 0;
--				put_bh(bh[k++]);
--				continue;
- 			}
--
--			stream->next_in = bh[k]->b_data + offset;
--			stream->avail_in = avail;
--			offset = 0;
-+			stream->next_in = input;
- 		}
- 
- 		if (stream->avail_out == 0 && page < pages) {
-@@ -103,8 +100,7 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
- 			zlib_err = zlib_inflateInit(stream);
- 			if (zlib_err != Z_OK) {
- 				ERROR("zlib_inflateInit returned unexpected "
--					"result 0x%x, srclength %d\n",
--					zlib_err, srclength);
-+					"result 0x%x\n", zlib_err);
- 				goto release_mutex;
- 			}
- 			zlib_init = 1;
-@@ -112,8 +108,6 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
- 
- 		zlib_err = zlib_inflate(stream, Z_SYNC_FLUSH);
- 
--		if (stream->avail_in == 0 && k < b)
--			put_bh(bh[k++]);
- 	} while (zlib_err == Z_OK);
- 
- 	if (zlib_err != Z_STREAM_END) {
-@@ -128,14 +122,12 @@ static int zlib_uncompress(struct squashfs_sb_info *msblk, void **buffer,
- 	}
- 
- 	mutex_unlock(&msblk->read_data_mutex);
-+	kfree(input);
- 	return stream->total_out;
- 
- release_mutex:
- 	mutex_unlock(&msblk->read_data_mutex);
--
--	for (; k < b; k++)
--		put_bh(bh[k]);
--
-+	kfree(input);
- 	return -EIO;
- }
- 
+ /* bdev.c */
+ extern const struct squashfs_backend squashfs_bdev_ops;
++
++/* mtd.c */
++extern const struct squashfs_backend squashfs_mtd_ops;
 -- 
 1.5.6.5
+
+
+--=-=-=--
