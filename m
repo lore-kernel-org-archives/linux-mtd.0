@@ -1,22 +1,24 @@
-Received: from ey-out-1920.google.com ([74.125.78.147])
+Received: from s87.loopia.se ([194.9.95.115])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NuPHz-0006S4-JM
-	for linux-mtd@lists.infradead.org; Wed, 24 Mar 2010 12:02:28 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so625574eyg.26
+	id 1NuQWj-0007Bd-P5
+	for linux-mtd@lists.infradead.org; Wed, 24 Mar 2010 13:21:46 +0000
+Received: from s57.loopia.se (s34.loopia.se [194.9.94.70])
+	by s87.loopia.se (Postfix) with ESMTP id B6B1F300060
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 24 Mar 2010 05:02:17 -0700 (PDT)
-Subject: Re: [PATCH] MTD: SM_FTL: remove CONFIG_SM_FTL_MUSEUM and make it
-	always on
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1269000351-12023-1-git-send-email-maximlevitsky@gmail.com>
-References: <1269000351-12023-1-git-send-email-maximlevitsky@gmail.com>
-Content-Type: text/plain
-Date: Wed, 24 Mar 2010 14:02:14 +0200
-Message-Id: <1269432134.14515.14.camel@dell21>
-Mime-Version: 1.0
+	Wed, 24 Mar 2010 14:21:41 +0100 (CET)
+Received: from 212-162-171-110.skbbip.com (HELO [172.16.1.206])
+	(leo.barnes@algotrim.com@[212.162.171.110])
+	(envelope-sender <leo.barnes@algotrim.com>)
+	by s57.loopia.se (qmail-ldap-1.03) with AES256-SHA encrypted SMTP
+	for <linux-mtd@lists.infradead.org>; 24 Mar 2010 13:21:37 -0000
+Message-ID: <4BAA11DF.3060306@algotrim.com>
+Date: Wed, 24 Mar 2010 14:21:35 +0100
+From: Leo Barnes <leo.barnes@algotrim.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Enabling D-cache for OneNAND bufferram
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,87 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-03-19 at 14:05 +0200, Maxim Levitsky wrote:
-> The sole purpose of this settings was to avoid depedency
-> on MTD_NAND. It seems that such configuration isn't well
-> supported by Kconfig/is ugly to implement/I don't know how to do.
-> 
-> Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
-> ---
->  drivers/mtd/Kconfig  |    9 ---------
->  drivers/mtd/sm_ftl.c |    8 +-------
->  2 files changed, 1 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-> index dbee14d..d90652f 100644
-> --- a/drivers/mtd/Kconfig
-> +++ b/drivers/mtd/Kconfig
-> @@ -316,15 +316,6 @@ config SM_FTL
->  	  eat your card, so please don't use it together with valuable data.
->  	  Use readonly driver (CONFIG_SSFDC) instead.
->  
-> -config SM_FTL_MUSEUM
-> -	boolean "Additional Support for 1MiB and 2MiB SmartMedia cards"
-> -	depends on SM_FTL
-> -	select MTD_NAND_ECC_SMC
-> -	help
-> -	  Very old SmartMedia cards need ECC to be calculated in the FTL.
-> -	  Such cards are very rare, thus enabling this option is mostly useless.
-> -	  Also this support is completely UNTESTED.
-> -
->  config MTD_OOPS
->  	tristate "Log panic/oops to an MTD buffer"
->  	depends on MTD
-> diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
-> index 9fb56c7..812e212 100644
-> --- a/drivers/mtd/sm_ftl.c
-> +++ b/drivers/mtd/sm_ftl.c
-> @@ -15,12 +15,10 @@
->  #include <linux/freezer.h>
->  #include <linux/sysfs.h>
->  #include <linux/bitops.h>
-> +#include <linux/mtd/nand_ecc.h>
->  #include "nand/sm_common.h"
->  #include "sm_ftl.h"
->  
-> -#ifdef CONFIG_SM_FTL_MUSEUM
-> -#include <linux/mtd/nand_ecc.h>
-> -#endif
->  
-> 
->  struct workqueue_struct *cache_flush_workqueue;
-> @@ -204,7 +202,6 @@ static void sm_break_offset(struct sm_ftl *ftl, loff_t offset,
->  
->  static int sm_correct_sector(uint8_t *buffer, struct sm_oob *oob)
->  {
-> -#ifdef CONFIG_SM_FTL_MUSEUM
->  	uint8_t ecc[3];
->  
->  	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
-> @@ -216,7 +213,6 @@ static int sm_correct_sector(uint8_t *buffer, struct sm_oob *oob)
->  	__nand_calculate_ecc(buffer, SM_SMALL_PAGE, ecc);
->  	if (__nand_correct_data(buffer, ecc, oob->ecc2, SM_SMALL_PAGE) < 0)
->  		return -EIO;
-> -#endif
->  	return 0;
->  }
->  
-> @@ -380,7 +376,6 @@ restart:
->  			oob.data_status = 0;
->  		}
->  
-> -#ifdef CONFIG_SM_FTL_MUSEUM
->  		if (ftl->smallpagenand) {
->  			__nand_calculate_ecc(buf + boffset,
->  						SM_SMALL_PAGE, oob.ecc1);
-> @@ -388,7 +383,6 @@ restart:
->  			__nand_calculate_ecc(buf + boffset + SM_SMALL_PAGE,
->  						SM_SMALL_PAGE, oob.ecc2);
->  		}
-> -#endif
->  		if (!sm_write_sector(ftl, zone, block, boffset,
->  							buf + boffset, &oob))
->  			continue;
+Hello!
 
+I am currently writing a piece of software that takes advantage of the 
+fact that OneNAND supports read-while-loading. What I am doing is trying 
+to achieve higher efficiency when decoding data from the OneNAND by 
+decoding data that is available in the OneNAND bufferram directly 
+instead of copying it to normal RAM and decoding there. So far, I have 
+gotten quite poor results due to the fact that the bufferrams are not 
+cached (for good reason since it is Device memory). My software will be 
+used on ARM devices of different types, with my testrigs being a Nokia 
+N810 and a N900.
 
-Ping?
+I have exclusive access to the OneNAND chip, and as such know exactly 
+what information is stored in the bufferrams at all times. If I could 
+only enable the D-cache for the bufferrams, I could therefore make sure 
+to invalidate the cache whenever I reprogram the OneNAND chip.
+
+ From what I have read so far, it seems that the only way to enable 
+cacheing of the bufferrams would be to somehow change how the memory 
+attributes for the memory region in the MMU. I have however not found 
+any easy way of doing this. Any tips? I dont really have very much 
+experience when it comes to how the MMU works.
+
+Best regards,
+Leo
