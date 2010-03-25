@@ -1,23 +1,17 @@
-Received: from mail-iw0-f201.google.com ([209.85.223.201])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nuq4V-00070J-L6
-	for linux-mtd@lists.infradead.org; Thu, 25 Mar 2010 16:38:20 +0000
-Received: by iwn39 with SMTP id 39so6534801iwn.2
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Mar 2010 09:38:13 -0700 (PDT)
+Date: Thu, 25 Mar 2010 20:46:19 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
+Message-ID: <20100325204619.GC19308@shareable.org>
+References: <20100325152505.17612.40158.stgit@pauliusz>
 MIME-Version: 1.0
-In-Reply-To: <OF3A2BD3B7.06165486-ONC12576F1.003DEF5F-C12576F1.003E8F26@transmode.se>
-References: <4BAA11DF.3060306@algotrim.com>
-	<OF34D80617.67587BAB-ONC12576F0.00554519-C12576F0.005583EF@transmode.se>
-	<4BAB4186.5080805@algotrim.com>
-	<OF3A2BD3B7.06165486-ONC12576F1.003DEF5F-C12576F1.003E8F26@transmode.se>
-Date: Thu, 25 Mar 2010 17:38:12 +0100
-Message-ID: <62cbdcd91003250938j40f1aab5v89e56d4eff6179df@mail.gmail.com>
-Subject: Re: Enabling D-cache for OneNAND bufferram
-From: massimo cirillo <maxcir@gmail.com>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Content-Type: multipart/mixed; boundary=000e0cd311ec3d8c670482a2ac75
-Cc: linux-mtd@lists.infradead.org, Leo Barnes <leo.barnes@algotrim.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20100325152505.17612.40158.stgit@pauliusz>
+Cc: nico@fluxnic.net, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
+	simon.kagstrom@netinsight.net, akpm@linux-foundation.org,
+	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, rth@twiddle.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,282 +21,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---000e0cd311ec3d8c670482a2ac75
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Paulius Zaleckas wrote:
+> Signed-off-by: Paulius Zaleckas <paulius.zaleckas@gmail.com>
 
-Hi all,
-Some time ago I used cache for buffer ram of Numonyx OneNand
-successfully, getting big improvement of the performance (also thanks
-to the burst access).
-The platform was based on StrongARM processor. I've attached the
-patch I used. Note that the patch was for 2.6.27 kernel; I've rid it of
-changes not related to the cache feature, so I think you should apply it
-"by hands". I've removed also the burst enabling because strictly
-depending on the platform.
-Massimo
+It's probably worth including the people who weighed in on the
+discussion with 'Cc:' headers.
 
-2010/3/25 Joakim Tjernlund <joakim.tjernlund@transmode.se>:
->>
->> Joakim Tjernlund wrote:
->> >> Hello!
->> >>
->> >> I am currently writing a piece of software that takes advantage of th=
-e
->> >> fact that OneNAND supports read-while-loading. What I am doing is try=
-ing
->> >> to achieve higher efficiency when decoding data from the OneNAND by
->> >> decoding data that is available in the OneNAND bufferram directly
->> >> instead of copying it to normal RAM and decoding there. So far, I hav=
-e
->> >> gotten quite poor results due to the fact that the bufferrams are not
->> >> cached (for good reason since it is Device memory). My software will =
-be
->> >> used on ARM devices of different types, with my testrigs being a Noki=
-a
->> >> N810 and a N900.
->> >>
->> >> I have exclusive access to the OneNAND chip, and as such know exactly
->> >> what information is stored in the bufferrams at all times. If I could
->> >> only enable the D-cache for the bufferrams, I could therefore make su=
-re
->> >> to invalidate the cache whenever I reprogram the OneNAND chip.
->> >>
->> >> =A0From what I have read so far, it seems that the only way to enable
->> >> cacheing of the bufferrams would be to somehow change how the memory
->> >> attributes for the memory region in the MMU. I have however not found
->> >> any easy way of doing this. Any tips? I dont really have very much
->> >> experience when it comes to how the MMU works.
->> >>
->> >
->> > Have a look at ioremap_cached(). Seems to be availabe on ARM
->> > Basically you need to create a second virtual address mapping of the d=
-evices
->> > RAM which is cached.
->> >
->> > =A0 =A0 Jocke
->> >
->> >
->> Thanks for the suggestion, but I am having some trouble getting it to
->> work. This is how I tried to use ioremap_cached, along with the problems
->> I got:
->>
->> Given a pointer to the first byte in the bufferram, I did:
->> unsigned long int phys_addr =3D virt_to_phys(bufaddr);
->> void *rmap =3D ioremap_cached(phys_addr, 2048);
->> /* Read from rmap */
->> iounmap(rmap);
->>
->> This would not compile however since L_PTE_CACHEABLE was not defined.
->> After scanning through the kernel source, I found that L_PTE_CACHEABLE
->> was usually defined as (1 << 3) for arm. With this defined,
->> ioremap_cached returned a new virtual address, but gave a segmentation
->> fault along with "Unhandled fault: external abort on non-linefetch
->> (0x008) at 0xc8accc00" in /proc/kmsg when trying to do a read. Am I
->> using ioremap correctly? Does ioremap change the old mapping, or simply
->> add a second one? If it creates a second one without changing the first,
->> this is illegal on ARM IIRC since two mappings cannot have differing
->> memory attributes...
->>
->> Any other ideas?
->
-> ioremap returns a *second* mapping to the same RAM so you first original =
-mapping
-> should be fine.
->
-> I have used ioremap in 2.4 to access NOR flash in cached mode and it work=
-ed
-> fine. one just have to rember to invalidate the cache when needed. This w=
-as on
-> PPC and I knonw nothing about ARM.
->
->
-> I can think of two things:
-> =A01) check that virt_to_phys(bufaddr) returns
-> =A0 =A0the correct physical address for your NAND.
-> =A02) have a look at __ioremap instead of ioremap_cached
->
-> Perhaps you need to talk to the ARM people, it may very well be
-> a bug in ARM arch code.
->
-> =A0Jocke
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+> -		uint64_t x;
+> +		/*
+> +		 * Since GCC has no proper constraint (PR 43518)
+> +		 * force x variable to r2/r3 registers as ldrd instruction
+> +		 * requires first register to be even.
+> +		 */
+> +		register uint64_t x asm ("r2");
+> +
+>  		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
+>  		buf64[i++] = x;
 
---000e0cd311ec3d8c670482a2ac75
-Content-Type: application/octet-stream; name="onenand_patch.diff"
-Content-Disposition: attachment; filename="onenand_patch.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_g77sdc1m0
+The "register...asm" looks fine, but it occurs to me the constraints
+are too weak (and they were before), so GCC could optimise that to the
+wrong behaviour.
 
-ZGlmZiAtdXByTiBkcml2ZXJzL210ZC9vbmVuYW5kL2dlbmVyaWMuYyAvaG9tZS9jaXJpbGxvbS9z
-cmMvbGludXgtMi42LjI3LW9uZW5hbmQvZHJpdmVycy9tdGQvb25lbmFuZC9nZW5lcmljLmMKLS0t
-IGRyaXZlcnMvbXRkL29uZW5hbmQvZ2VuZXJpYy5jCTIwMTAtMDMtMjUgMTY6MzU6NTAuMDAwMDAw
-MDAwICswMTAwCisrKyAvaG9tZS9jaXJpbGxvbS9zcmMvbGludXgtMi42LjI3LW9uZW5hbmQvZHJp
-dmVycy9tdGQvb25lbmFuZC9nZW5lcmljLmMJMjAwOS0xMS0yNiAxMTozNjo0NC4wMDAwMDAwMDAg
-KzAxMDAKQEAgLTI1LDE3ICsyNSwxMjAgQEAKIAogI2RlZmluZSBEUklWRVJfTkFNRQkib25lbmFu
-ZCIKKyNkZWZpbmUgTUFYQ0lSX09ORU5BTkRfQ0FDSEUKKyNkZWZpbmUgT05FTkFORF9QSFlTTUFQ
-QUREUgorI2RlZmluZSBPTkVOQU5EX1NJWkUKK3N0YXRpYyBzdHJ1Y3QgZmxhc2hfcGxhdGZvcm1f
-ZGF0YSBtc3Rfb25lbmFuZF9kYXRhID0geworCS5ucl9wYXJ0cwk9IDAsCit9OworCitzdGF0aWMg
-c3RydWN0IHJlc291cmNlIG1zdF9vbmVuYW5kX3Jlc291cmNlW10gPSB7CisJWzBdID0geworCQku
-ZmxhZ3MJPSBJT1JFU09VUkNFX0lPLAorCQkuc3RhcnQJPSAweDA0MDAwMDAwLAorCQkuZW5kCT0g
-MHgwNDAwMDAwMCArIFNaXzEyOEsgLSAxLAorCX0sCit9OworCitzdGF0aWMgc3RydWN0IHBsYXRm
-b3JtX2RldmljZSBtc3Rfb25lbmFuZF9kZXZpY2UgPSB7CisJLm5hbWUJCT0gIm9uZW5hbmQiLAor
-CS5pZAkJPSAtMSwKKwkuZGV2CQk9IHsKKwkJLnBsYXRmb3JtX2RhdGEJPSAmbXN0X29uZW5hbmRf
-ZGF0YSwKKwl9LAorCS5udW1fcmVzb3VyY2VzCT0gQVJSQVlfU0laRShtc3Rfb25lbmFuZF9yZXNv
-dXJjZSksCisJLnJlc291cmNlCT0gbXN0X29uZW5hbmRfcmVzb3VyY2UsCit9OworCisjZW5kaWYK
-KworI2VuZGlmCiAKICNpZmRlZiBDT05GSUdfTVREX1BBUlRJVElPTlMKIHN0YXRpYyBjb25zdCBj
-aGFyICpwYXJ0X3Byb2Jlc1tdID0geyAiY21kbGluZXBhcnQiLCBOVUxMLCAgfTsKICNlbmRpZgog
-CiBzdHJ1Y3Qgb25lbmFuZF9pbmZvIHsKIAlzdHJ1Y3QgbXRkX2luZm8JCW10ZDsKIAlzdHJ1Y3Qg
-bXRkX3BhcnRpdGlvbgkqcGFydHM7CiAJc3RydWN0IG9uZW5hbmRfY2hpcAlvbmVuYW5kOwogfTsK
-IAorI2lmZGVmIE1BWENJUl9PTkVOQU5EX0NBQ0hFCisjaW5jbHVkZSA8YXNtL2NhY2hlZmx1c2gu
-aD4KK3N0YXRpYyB2b2lkIG9uX2ludmFsX2NhY2hlX3JhbmdlIChzdHJ1Y3Qgb25lbmFuZF9jaGlw
-ICppbmZvLCB1bnNpZ25lZCBsb25nIG9mZnNldCwgc3NpemVfdCBsZW4pIHsKKyAgICBmbHVzaF9p
-b3JlbWFwX3JlZ2lvbihOVUxMLCBpbmZvLT5jYWNoZWRfcmFtYnVmZiwgb2Zmc2V0LCBsZW4pOwor
-fQorI2VuZGlmCisKQEAgLTYwLDI1ICsxNjMsNjcgQEAgc3RhdGljIGludCBfX2RldmluaXQgZ2Vu
-ZXJpY19vbmVuYW5kX3BybwogCQlnb3RvIG91dF9yZWxlYXNlX21lbV9yZWdpb247CiAJfQogCi0J
-aW5mby0+b25lbmFuZC5tbWNvbnRyb2wgPSBwZGF0YS0+bW1jb250cm9sOworI2lmZGVmIE1BWENJ
-Ul9PTkVOQU5EX0NBQ0hFCisgICAgaW5mby0+b25lbmFuZC5jYWNoZWRfcmFtYnVmZiA9IGlvcmVt
-YXBfY2FjaGVkKHJlcy0+c3RhcnQrT05FTkFORF9EQVRBUkFNLCAyKnJlYWR3KGluZm8tPm9uZW5h
-bmQuYmFzZSArIE9ORU5BTkRfUkVHX0RBVEFfQlVGRkVSX1NJWkUpKTsKKyAgICBwcmludGsoIlxu
-ICMjIFBoeXMuIGFkZHJlc3M6IDB4JVgiLHJlcy0+c3RhcnQrT05FTkFORF9EQVRBUkFNKTsgICAg
-CisgICAgcHJpbnRrKCJcbiAjIyBWaXJ0LiBhZGRyZXNzOiAweCVYIiwoaW50KShpbmZvLT5vbmVu
-YW5kLmJhc2UrMHg0MDApKTsgICAgCisgICAgcHJpbnRrKCJcbiAjIyBDYWNoZSBhZGRyZXNzOiAw
-eCVYIiwoaW50KShpbmZvLT5vbmVuYW5kLmNhY2hlZF9yYW1idWZmKSk7ICAgIAorICAgIHByaW50
-aygiXG4gIyMgQ2FjaGVkIHJhbmdlIHNpemU6ICVkIGJ5dGVzXG4iLDIqcmVhZHcoaW5mby0+b25l
-bmFuZC5iYXNlICsgT05FTkFORF9SRUdfREFUQV9CVUZGRVJfU0laRSkpOyAgICAKKyAgICBpbmZv
-LT5vbmVuYW5kLmludmFsX2NhY2hlID0gb25faW52YWxfY2FjaGVfcmFuZ2U7CisjZW5kaWYKKwog
-ICAgaW5mby0+b25lbmFuZC5tbWNvbnRyb2wgPSBwZGF0YS0+bW1jb250cm9sOwogCWluZm8tPm9u
-ZW5hbmQuaXJxID0gcGxhdGZvcm1fZ2V0X2lycShwZGV2LCAwKTsKIAogCWluZm8tPm10ZC5uYW1l
-ID0gcGRldi0+ZGV2LmJ1c19pZDsKIAlpbmZvLT5tdGQucHJpdiA9ICZpbmZvLT5vbmVuYW5kOwog
-CWluZm8tPm10ZC5vd25lciA9IFRISVNfTU9EVUxFOwogCi0JaWYgKG9uZW5hbmRfc2NhbigmaW5m
-by0+bXRkLCAxKSkgeworICAgIGlmIChvbmVuYW5kX3NjYW4oJmluZm8tPm10ZCwgMSkpIHsKIAkJ
-ZXJyID0gLUVOWElPOwogCQlnb3RvIG91dF9pb3VubWFwOwogCX0KIAogI2lmZGVmIENPTkZJR19N
-VERfUEFSVElUSU9OUwogCWVyciA9IHBhcnNlX210ZF9wYXJ0aXRpb25zKCZpbmZvLT5tdGQsIHBh
-cnRfcHJvYmVzLCAmaW5mby0+cGFydHMsIDApOwogCWlmIChlcnIgPiAwKQogCQlhZGRfbXRkX3Bh
-cnRpdGlvbnMoJmluZm8tPm10ZCwgaW5mby0+cGFydHMsIGVycik7CiAJZWxzZSBpZiAoZXJyIDw9
-IDAgJiYgcGRhdGEtPnBhcnRzKQogCQlhZGRfbXRkX3BhcnRpdGlvbnMoJmluZm8tPm10ZCwgcGRh
-dGEtPnBhcnRzLCBwZGF0YS0+bnJfcGFydHMpOwogCWVsc2UKICNlbmRpZgogCQllcnIgPSBhZGRf
-bXRkX2RldmljZSgmaW5mby0+bXRkKTsKIApAQCAtMTE0LDYgKzI1OSwxMCBAQCBzdGF0aWMgaW50
-IF9fZGV2ZXhpdCBnZW5lcmljX29uZW5hbmRfcmVtCiAJCW9uZW5hbmRfcmVsZWFzZSgmaW5mby0+
-bXRkKTsKIAkJcmVsZWFzZV9tZW1fcmVnaW9uKHJlcy0+c3RhcnQsIHNpemUpOwogCQlpb3VubWFw
-KGluZm8tPm9uZW5hbmQuYmFzZSk7CisjaWZkZWYgTUFYQ0lSX09ORU5BTkRfQ0FDSEUKKyAgICAg
-ICAgaWYgKGluZm8tPm9uZW5hbmQuY2FjaGVkX3JhbWJ1ZmYgIT0gTlVMTCkKKyAgICAgICAgICAg
-IGlvdW5tYXAoaW5mby0+b25lbmFuZC5jYWNoZWRfcmFtYnVmZik7CisjZW5kaWYgICAgICAgIAog
-CQlrZnJlZShpbmZvKTsKIAl9CmRpZmYgLXVwck4gZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5k
-X2Jhc2UuYyAvaG9tZS9jaXJpbGxvbS9zcmMvbGludXgtMi42LjI3LW9uZW5hbmQvZHJpdmVycy9t
-dGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYwotLS0gZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5k
-X2Jhc2UuYwkyMDEwLTAzLTI1IDE2OjM1OjUwLjAwMDAwMDAwMCArMDEwMAorKysgL2hvbWUvY2ly
-aWxsb20vc3JjL2xpbnV4LTIuNi4yNy1vbmVuYW5kL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFu
-ZF9iYXNlLmMJMjAwOS0xMS0yNSAxNzozMToxNC4wMDAwMDAwMDAgKzAxMDAKICAqCiAgKiBHZXQg
-T25lTkFORCBkZW5zaXR5IGZyb20gZGV2aWNlIElECiAgKi8KKyAvKiBSaXRvcm5hIHVuIG51bWVy
-byB4IChjb21wcmVzbyBmcmEgMCBlIDUpIHRhbGUgY2hlOiBjaGlwX3NpemUgPSAxNk1CICogMl54
-ID0gMl4oMjQreClCCisgKi8KIHN0YXRpYyBpbmxpbmUgaW50IG9uZW5hbmRfZ2V0X2RlbnNpdHko
-aW50IGRldl9pZCkKIHsKIAlpbnQgZGVuc2l0eSA9IGRldl9pZCA+PiBPTkVOQU5EX0RFVklDRV9E
-RU5TSVRZX1NISUZUOwpAQCAtNDk2LDEwICs1MjIsMzEgQEAgc3RhdGljIGludCBvbmVuYW5kX3Jl
-YWRfYnVmZmVycmFtKHN0cnVjdAogewogCXN0cnVjdCBvbmVuYW5kX2NoaXAgKnRoaXMgPSBtdGQt
-PnByaXY7CiAJdm9pZCBfX2lvbWVtICpidWZmZXJyYW07CisjaWZkZWYgTUFYQ0lSX09ORU5BTkRf
-Q0FDSEUKKyAgICBpbnQgYnVmZmVyUmFtU2hpZnQgPSBvbmVuYW5kX2J1ZmZlcnJhbV9vZmZzZXQo
-bXRkLCBhcmVhKTsKKyNlbmRpZiAgICAgICAgCiAKLQlidWZmZXJyYW0gPSB0aGlzLT5iYXNlICsg
-YXJlYTsKIAotCWJ1ZmZlcnJhbSArPSBvbmVuYW5kX2J1ZmZlcnJhbV9vZmZzZXQobXRkLCBhcmVh
-KTsKKyNpZmRlZiBNQVhDSVJfT05FTkFORF9DQUNIRQorICAgIGlmICgodGhpcy0+Y2FjaGVkX3Jh
-bWJ1ZmYgIT0gTlVMTCkgJiYoYXJlYT09T05FTkFORF9EQVRBUkFNKSkgeworICAgICAgICB0aGlz
-LT5pbnZhbF9jYWNoZSh0aGlzLGJ1ZmZlclJhbVNoaWZ0K29mZnNldCxjb3VudCk7ICAgIC8qIGlu
-dmFsaWRhdGUgdGhlIGNhY2hlIGxpbmVzIGFzc29jaWF0ZWQgdG8gdGhlIG9uZW5hbmQgcmFtIGJ1
-ZmZlcnMgKi8KKyAgICAgICAgYnVmZmVycmFtID0gdGhpcy0+Y2FjaGVkX3JhbWJ1ZmY7ICAgIC8q
-IG5vIG5lZWQgdG8gYWRkIGFyZWEgc2luY2UgY2FjaGVkX3JhbWJ1ZmYgaXMgYWxyZWFkeSB0aGUg
-Y2FjaGVkIHJhbSBidWZmZXIgKi8KKyAgICB9IGVsc2UKKwkgICAgYnVmZmVycmFtID0gdGhpcy0+
-YmFzZSArIGFyZWE7ICAgICAgCisKKwlidWZmZXJyYW0gKz0gYnVmZmVyUmFtU2hpZnQ7ICAgCisj
-ZWxzZSAgICAgICAgCisJYnVmZmVycmFtID0gdGhpcy0+YmFzZSArIGFyZWE7ICAgICAgIC8qIGFn
-Z2l1bmdlIGFsbCdpbmRpcml6em8gYmFzZSBsbyBzaGlmdCBvcHBvcnR1bm8gcGVyIGJvb3RyYW0s
-IGRhdGFyYW0sIHNwYXJlcmFtICovCisKKwlidWZmZXJyYW0gKz0gb25lbmFuZF9idWZmZXJyYW1f
-b2Zmc2V0KG10ZCwgYXJlYSk7ICAgICAvKiBhZ2dpdW5nZSBsJ29vcG9ydHVubyBzaGlmdCBuZWwg
-Y2FzbyBpbCBidWZmZXIgY29ycmVudGUgc2lhIGRhdGFSQU0yICovCisjZW5kaWYKIAogCWlmIChP
-TkVOQU5EX0NIRUNLX0JZVEVfQUNDRVNTKGNvdW50KSkgewogCQl1bnNpZ25lZCBzaG9ydCB3b3Jk
-OwpAQCAtOTk5LDcgKzEwNzksMTIgQEAgc3RhdGljIGludCBvbmVuYW5kX3JlYWRfb29iX25vbG9j
-ayhzdHJ1YwogCQl0aGlzbGVuID0gb29ic2l6ZSAtIGNvbHVtbjsKIAkJdGhpc2xlbiA9IG1pbl90
-KGludCwgdGhpc2xlbiwgbGVuKTsKIAotCQl0aGlzLT5jb21tYW5kKG10ZCwgT05FTkFORF9DTURf
-UkVBRE9PQiwgZnJvbSwgbXRkLT5vb2JzaXplKTsKKyAgICAgICAgLyogRml4IGh3IGJ1ZyBpbiBT
-VCBPbmVOYW5kIDFHIGFuZCAyRyByZXYuQSAqLworICAgICAgICBpZiAoKHRoaXMtPm1hbnVmYWN0
-dXJlcl9pZCA9PSBPTkVOQU5EX01GUl9OVU1PTllYKSAmJiAKKyAgICAgICAgICAgICgodGhpcy0+
-ZGV2aWNlX2lkID09IDB4MDAzMCkgfHwgKCh0aGlzLT5kZXZpY2VfaWQgPT0gMHgwMDQwKSAmJiAo
-dGhpcy0+dmVyc2lvbl9pZCA9PSAweDAwM0UpKSkpCisgICAgCQl0aGlzLT5jb21tYW5kKG10ZCwg
-T05FTkFORF9DTURfUkVBRCwgZnJvbSwgbXRkLT5vb2JzaXplKTsKKyAgICAgICAgZWxzZQorICAg
-IAkJdGhpcy0+Y29tbWFuZChtdGQsIE9ORU5BTkRfQ01EX1JFQURPT0IsIGZyb20sIG10ZC0+b29i
-c2l6ZSk7ICAgICAgICAgICAgCiAKIAkJb25lbmFuZF91cGRhdGVfYnVmZmVycmFtKG10ZCwgZnJv
-bSwgMCk7CkBAIC0xMTg5LDcgKzEyNzQsMTIgQEAgaW50IG9uZW5hbmRfYmJ0X3JlYWRfb29iKHN0
-cnVjdCBtdGRfaW5mbwogCQl0aGlzbGVuID0gbXRkLT5vb2JzaXplIC0gY29sdW1uOwogCQl0aGlz
-bGVuID0gbWluX3QoaW50LCB0aGlzbGVuLCBsZW4pOwogCi0JCXRoaXMtPmNvbW1hbmQobXRkLCBP
-TkVOQU5EX0NNRF9SRUFET09CLCBmcm9tLCBtdGQtPm9vYnNpemUpOworICAgICAgICAvKiBGaXgg
-aHcgYnVnIGluIFNUIE9uZU5hbmQgMUcgYW5kIDJHIHJldi5BICovCisgICAgICAgIGlmICgodGhp
-cy0+bWFudWZhY3R1cmVyX2lkID09IE9ORU5BTkRfTUZSX05VTU9OWVgpICYmIAorICAgICAgICAg
-ICAgKCh0aGlzLT5kZXZpY2VfaWQgPT0gMHgwMDMwKSB8fCAoKHRoaXMtPmRldmljZV9pZCA9PSAw
-eDAwNDApICYmICh0aGlzLT52ZXJzaW9uX2lkID09IDB4MDAzRSkpKSkgCisgICAgCQl0aGlzLT5j
-b21tYW5kKG10ZCwgT05FTkFORF9DTURfUkVBRCwgZnJvbSwgbXRkLT5vb2JzaXplKTsKKyAgICAg
-ICAgZWxzZQorICAgIAkJdGhpcy0+Y29tbWFuZChtdGQsIE9ORU5BTkRfQ01EX1JFQURPT0IsIGZy
-b20sIG10ZC0+b29ic2l6ZSk7ICAgICAgICAgICAgCiAKIAkJb25lbmFuZF91cGRhdGVfYnVmZmVy
-cmFtKG10ZCwgZnJvbSwgMCk7CkBAIC0xMjMyLDcgKzEzMjIsMTIgQEAgc3RhdGljIGludCBvbmVu
-YW5kX3ZlcmlmeV9vb2Ioc3RydWN0IG10ZAogCXVfY2hhciAqb29iX2J1ZiA9IHRoaXMtPm9vYl9i
-dWY7CiAJaW50IHN0YXR1cywgaTsKIAotCXRoaXMtPmNvbW1hbmQobXRkLCBPTkVOQU5EX0NNRF9S
-RUFET09CLCB0bywgbXRkLT5vb2JzaXplKTsKKyAgICAvKiBGaXggaHcgYnVnIGluIFNUIE9uZU5h
-bmQgMUcgYW5kIDJHIHJldi5BICovCisgICAgaWYgKCh0aGlzLT5tYW51ZmFjdHVyZXJfaWQgPT0g
-T05FTkFORF9NRlJfTlVNT05ZWCkgJiYgCisgICAgICAgICgodGhpcy0+ZGV2aWNlX2lkID09IDB4
-MDAzMCkgfHwgKCh0aGlzLT5kZXZpY2VfaWQgPT0gMHgwMDQwKSAmJiAodGhpcy0+dmVyc2lvbl9p
-ZCA9PSAweDAwM0UpKSkpCisJCXRoaXMtPmNvbW1hbmQobXRkLCBPTkVOQU5EX0NNRF9SRUFELCB0
-bywgbXRkLT5vb2JzaXplKTsKKyAgICBlbHNlCisJCXRoaXMtPmNvbW1hbmQobXRkLCBPTkVOQU5E
-X0NNRF9SRUFET09CLCB0bywgbXRkLT5vb2JzaXplKTsgICAgICAgICAgICAKIAlvbmVuYW5kX3Vw
-ZGF0ZV9idWZmZXJyYW0obXRkLCB0bywgMCk7CiAJc3RhdHVzID0gdGhpcy0+d2FpdChtdGQsIEZM
-X1JFQURJTkcpOwogCWlmIChzdGF0dXMpCkBAIC0xMjc2LDEzICsxMzcxLDMxIEBAIHN0YXRpYyBp
-bnQgb25lbmFuZF92ZXJpZnkoc3RydWN0IG10ZF9pbmYKIAogCQlvbmVuYW5kX3VwZGF0ZV9idWZm
-ZXJyYW0obXRkLCBhZGRyLCAxKTsKIAorI2lmZGVmIE1BWENJUl9PTkVOQU5EX0NBQ0hFCisgICAg
-ICAgIGRhdGFyYW09dGhpcy0+Y2FjaGVkX3JhbWJ1ZmYhPU5VTEwgPyB0aGlzLT5jYWNoZWRfcmFt
-YnVmZiA6ICh0aGlzLT5iYXNlICsgT05FTkFORF9EQVRBUkFNKTsgCisjZWxzZSAgICAgICAgCiAJ
-CWRhdGFyYW0gPSB0aGlzLT5iYXNlICsgT05FTkFORF9EQVRBUkFNOworI2VuZGlmCisKIAkJZGF0
-YXJhbSArPSBvbmVuYW5kX2J1ZmZlcnJhbV9vZmZzZXQobXRkLCBPTkVOQU5EX0RBVEFSQU0pOwog
-Ci0JCWlmIChtZW1jbXAoYnVmLCBkYXRhcmFtICsgY29sdW1uLCB0aGlzbGVuKSkKLQkJCXJldHVy
-biAtRUJBRE1TRzsKKyNpZmRlZiBNQVhDSVJfT05FTkFORF9DQUNIRQorICAgICAgICBpZiAodGhp
-cy0+Y2FjaGVkX3JhbWJ1ZmYhPU5VTEwpCisgICAgICAgICAgICB0aGlzLT5pbnZhbF9jYWNoZSh0
-aGlzLG9uZW5hbmRfYnVmZmVycmFtX29mZnNldChtdGQsIE9ORU5BTkRfREFUQVJBTSkrY29sdW1u
-LHRoaXNsZW4pOyAgICAvKiBpbnZhbGlkYXRlIHRoZSBjYWNoZSBsaW5lcyBhc3NvY2lhdGVkIHRv
-IHRoZSBvbmVuYW5kIHJhbSBidWZmZXJzICovCisjZW5kaWYKKyAgICAgICAgaWYgKG1lbWNtcChi
-dWYsIGRhdGFyYW0gKyBjb2x1bW4sIHRoaXNsZW4pKQorICAgICAgICAJcmV0dXJuIC1FQkFETVNH
-OwogCgkJbGVuIC09IHRoaXNsZW47CiAJCWJ1ZiArPSB0aGlzbGVuOwogCQlhZGRyICs9IHRoaXNs
-ZW47CiAJfQpAQCAtMjUyOSw2ICsyNjgwLDcgQEAgc3RhdGljIHZvaWQgb25lbmFuZF9wcmludF9k
-ZXZpY2VfaW5mbyhpbgogCiBzdGF0aWMgY29uc3Qgc3RydWN0IG9uZW5hbmRfbWFudWZhY3R1cmVy
-cyBvbmVuYW5kX21hbnVmX2lkc1tdID0gewogICAgICAgICB7T05FTkFORF9NRlJfU0FNU1VORywg
-IlNhbXN1bmcifSwKKyAgICAgICAge09ORU5BTkRfTUZSX05VTU9OWVgsICJOdW1vbnl4In0sCiB9
-OwogCiAvKioKZGlmZiAtdXByTiBpbmNsdWRlL2xpbnV4L210ZC9vbmVuYW5kLmggL2hvbWUvY2ly
-aWxsb20vc3JjL2xpbnV4LTIuNi4yNy1vbmVuYW5kL2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQu
-aAkKLS0tIGluY2x1ZGUvbGludXgvbXRkL29uZW5hbmQuaAkyMDEwLTAzLTI1IDE2OjM1OjU1LjAw
-MDAwMDAwMCArMDEwMAorKysgL2hvbWUvY2lyaWxsb20vc3JjL2xpbnV4LTIuNi4yNy1vbmVuYW5k
-L2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQuaAkyMDA5LTExLTIwIDEyOjQxOjEzLjAwMDAwMDAw
-MCArMDEwMApAQCAtMTIsNiArMTIsMTEgQEAKICNpZm5kZWYgX19MSU5VWF9NVERfT05FTkFORF9I
-CiAjZGVmaW5lIF9fTElOVVhfTVREX09ORU5BTkRfSAogCisjZGVmaW5lIE1BWENJUl9PTkVOQU5E
-X0NBQ0hFCisKICNpbmNsdWRlIDxsaW51eC9zcGlubG9jay5oPgogI2luY2x1ZGUgPGxpbnV4L2Nv
-bXBsZXRpb24uaD4KICNpbmNsdWRlIDxsaW51eC9tdGQvb25lbmFuZF9yZWdzLmg+CkBAIC05NSw2
-ICsxMDAsNyBAQCBzdHJ1Y3Qgb25lbmFuZF9jaGlwIHsKIAl1bnNpZ25lZCBpbnQJCWNoaXBzaXpl
-OwogCXVuc2lnbmVkIGludAkJZGV2aWNlX2lkOwogCXVuc2lnbmVkIGludAkJdmVyc2lvbl9pZDsK
-KyAgICB1bnNpZ25lZCBpbnQgICAgICAgIG1hbnVmYWN0dXJlcl9pZDsKIAl1bnNpZ25lZCBpbnQJ
-CWRlbnNpdHlfbWFzazsKIAl1bnNpZ25lZCBpbnQJCW9wdGlvbnM7CiAKQEAgLTEzMyw2ICsxMzks
-MTcgQEAgc3RydWN0IG9uZW5hbmRfY2hpcCB7CiAJdm9pZAkJCSpiYm07CiAKIAl2b2lkCQkJKnBy
-aXY7CisjaWZkZWYgTUFYQ0lSX09ORU5BTkRfQ0FDSEUKKyAgICAvKiBjYWNoZWQgYWRkcmVzcyBm
-b3IgcmFtIGJ1ZmZlciAqLworICAgIHZvaWQgKmNhY2hlZF9yYW1idWZmOworCS8qIEl0J3MgcG9z
-c2libGUgZm9yIHRoZSBtYXAgZHJpdmVyIHRvIHVzZSBjYWNoZWQgbWVtb3J5IGluIGl0cworCSAg
-IGNvcHlfZnJvbSBpbXBsZW1lbnRhdGlvbiAoYW5kIF9vbmx5XyB3aXRoIGNvcHlfZnJvbSkuICBI
-b3dldmVyLAorCSAgIHdoZW4gdGhlIGNoaXAgZHJpdmVyIGtub3dzIHNvbWUgZmxhc2ggYXJlYSBo
-YXMgY2hhbmdlZCBjb250ZW50cywKKwkgICBpdCB3aWxsIHNpZ25hbCBpdCB0byB0aGUgbWFwIGRy
-aXZlciB0aHJvdWdoIHRoaXMgcm91dGluZSB0byBsZXQKKwkgICB0aGUgbWFwIGRyaXZlciBpbnZh
-bGlkYXRlIHRoZSBjb3JyZXNwb25kaW5nIGNhY2hlIGFzIG5lZWRlZC4KKwkgICBJZiB0aGVyZSBp
-cyBubyBjYWNoZSB0byBjYXJlIGFib3V0IHRoaXMgY2FuIGJlIHNldCB0byBOVUxMLiAqLworCXZv
-aWQgKCppbnZhbF9jYWNoZSkoc3RydWN0IG9uZW5hbmRfY2hpcCosIHVuc2lnbmVkIGxvbmcsIHNz
-aXplX3QpOworI2VuZGlmCiB9OwogCiAvKgpAQCAtMTc2LDYgKzE5Myw3IEBAIHN0cnVjdCBvbmVu
-YW5kX2NoaXAgewogICogT25lTkFORCBGbGFzaCBNYW51ZmFjdHVyZXIgSUQgQ29kZXMKICAqLwog
-I2RlZmluZSBPTkVOQU5EX01GUl9TQU1TVU5HCTB4ZWMKKyNkZWZpbmUgT05FTkFORF9NRlJfTlVN
-T05ZWAkweDIwCiAKIC8qKgogICogc3RydWN0IG9uZW5hbmRfbWFudWZhY3R1cmVycyAtIE5BTkQg
-Rmxhc2ggTWFudWZhY3R1cmVyIElEIFN0cnVjdHVyZQo=
---000e0cd311ec3d8c670482a2ac75--
+The "volatile" prevents GCC deleting the asm if it's output isn't
+used, but it doesn't stop GCC from reordering the asms, for example if
+it decides to unroll the loop.  It probably won't reorder in that
+case, but it could.  The result would be out of order values stored
+into buf[].  It could even move the ldrd earlier than the prior byte
+accesses, or after the later byte accesses.
+
+Any one of these should fix it:
+
+   - Make io_base a pointer-to-volatile-u64 or cast it in the asm, and
+     make sure to dereference it and use an "m" constraint (or
+     tighter, such as "Q", if ldrd needs it).  It must be u64, not
+     pointer-to-void, to tell GCC the size.  That tells GCC which memory
+     the asm accesses, and the volatile dereference should tell GCC
+     not to reorder them in principle (but the GCC manual doesn't
+     make a specific promise about this for asms).
+
+     With a proper memory input with the correct size, in principle
+     "asm volatile" can be changed to just "asm", but I'm not entirely
+     convinced GCC will honour the volatile on the pointer, so I'd
+     leave it on the asm too.
+
+   - Add "memory" to the asm's clobbers.  Although it doesn't write,
+     it does change the visible memory that *io_base sees, and anyway
+     GCC's manual says to use "memory" clobber when the asm does
+     unpredictable memory reads too.  With that added, you still need
+     the volatile keyword after asm, because the memory is not listed
+     in the inputs or outputs (only the address is).  The GCC manual
+     explains that "asm volatile" is needed in that case.
+
+     This is slightly less good because it'd prevent reordering writes
+     to buf[i++] if GCC unrolled the loop.
+
+   - Put barrier() before and after the asm, which is equivalent to
+     adding a "memory" clobber (least good).
+
+You aren't supposed to dereference pointers used with read{b,w,l}
+anyway.  It doesn't matter in this driver because we "know" it's only
+used on an SoC where read{b,w,l} don't do any address translation.
+But will that always be true?  I suppose the cleanest approach is to
+define readq, the 64-bit analogue of readl, and use that here.  x86
+already defines readq, so it's got precedent.
+
+-- Jamie
