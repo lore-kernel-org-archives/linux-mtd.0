@@ -1,17 +1,21 @@
-Date: Thu, 25 Mar 2010 20:46:19 +0000
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NuzSI-0000QQ-Ux
+	for linux-mtd@lists.infradead.org; Fri, 26 Mar 2010 02:39:31 +0000
+Date: Fri, 26 Mar 2010 02:39:22 +0000
 From: Jamie Lokier <jamie@shareable.org>
-To: Paulius Zaleckas <paulius.zaleckas@gmail.com>
-Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
-Message-ID: <20100325204619.GC19308@shareable.org>
-References: <20100325152505.17612.40158.stgit@pauliusz>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Subject: Re: Enabling D-cache for OneNAND bufferram
+Message-ID: <20100326023922.GM19308@shareable.org>
+References: <4BAA11DF.3060306@algotrim.com>
+	<OF34D80617.67587BAB-ONC12576F0.00554519-C12576F0.005583EF@transmode.se>
+	<4BAB4186.5080805@algotrim.com>
+	<OF3A2BD3B7.06165486-ONC12576F1.003DEF5F-C12576F1.003E8F26@transmode.se>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20100325152505.17612.40158.stgit@pauliusz>
-Cc: nico@fluxnic.net, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	simon.kagstrom@netinsight.net, akpm@linux-foundation.org,
-	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, rth@twiddle.net
+In-Reply-To: <OF3A2BD3B7.06165486-ONC12576F1.003DEF5F-C12576F1.003E8F26@transmode.se>
+Cc: linux-mtd@lists.infradead.org, Leo Barnes <leo.barnes@algotrim.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Paulius Zaleckas wrote:
-> Signed-off-by: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+Joakim Tjernlund wrote:
+> ioremap returns a *second* mapping to the same RAM so you first
+> original mapping should be fine.
 
-It's probably worth including the people who weighed in on the
-discussion with 'Cc:' headers.
+Note that having two mappings with different attributes to the same
+address is architecturally prohibited on (at least) some ARMs.
+I.e. it may not behave correctly.
 
-> -		uint64_t x;
-> +		/*
-> +		 * Since GCC has no proper constraint (PR 43518)
-> +		 * force x variable to r2/r3 registers as ldrd instruction
-> +		 * requires first register to be even.
-> +		 */
-> +		register uint64_t x asm ("r2");
-> +
->  		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
->  		buf64[i++] = x;
-
-The "register...asm" looks fine, but it occurs to me the constraints
-are too weak (and they were before), so GCC could optimise that to the
-wrong behaviour.
-
-The "volatile" prevents GCC deleting the asm if it's output isn't
-used, but it doesn't stop GCC from reordering the asms, for example if
-it decides to unroll the loop.  It probably won't reorder in that
-case, but it could.  The result would be out of order values stored
-into buf[].  It could even move the ldrd earlier than the prior byte
-accesses, or after the later byte accesses.
-
-Any one of these should fix it:
-
-   - Make io_base a pointer-to-volatile-u64 or cast it in the asm, and
-     make sure to dereference it and use an "m" constraint (or
-     tighter, such as "Q", if ldrd needs it).  It must be u64, not
-     pointer-to-void, to tell GCC the size.  That tells GCC which memory
-     the asm accesses, and the volatile dereference should tell GCC
-     not to reorder them in principle (but the GCC manual doesn't
-     make a specific promise about this for asms).
-
-     With a proper memory input with the correct size, in principle
-     "asm volatile" can be changed to just "asm", but I'm not entirely
-     convinced GCC will honour the volatile on the pointer, so I'd
-     leave it on the asm too.
-
-   - Add "memory" to the asm's clobbers.  Although it doesn't write,
-     it does change the visible memory that *io_base sees, and anyway
-     GCC's manual says to use "memory" clobber when the asm does
-     unpredictable memory reads too.  With that added, you still need
-     the volatile keyword after asm, because the memory is not listed
-     in the inputs or outputs (only the address is).  The GCC manual
-     explains that "asm volatile" is needed in that case.
-
-     This is slightly less good because it'd prevent reordering writes
-     to buf[i++] if GCC unrolled the loop.
-
-   - Put barrier() before and after the asm, which is equivalent to
-     adding a "memory" clobber (least good).
-
-You aren't supposed to dereference pointers used with read{b,w,l}
-anyway.  It doesn't matter in this driver because we "know" it's only
-used on an SoC where read{b,w,l} don't do any address translation.
-But will that always be true?  I suppose the cleanest approach is to
-define readq, the 64-bit analogue of readl, and use that here.  x86
-already defines readq, so it's got precedent.
+Then again, dma_alloc_coherent has to do it.  But be careful!
+Remember to flush the cache before unmapping the cached area
+if the driver has an exit function.
 
 -- Jamie
