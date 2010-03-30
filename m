@@ -1,12 +1,13 @@
 Received: from smtp6-g21.free.fr ([212.27.42.6])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NwbcB-0004de-MA
-	for linux-mtd@lists.infradead.org; Tue, 30 Mar 2010 13:36:24 +0000
-Subject: [PATCH v2 3/7] mtd: cfi_probe: add support for SST 0x0701 vendorname
+	id 1NwbcG-0004gb-K1
+	for linux-mtd@lists.infradead.org; Tue, 30 Mar 2010 13:36:29 +0000
+Subject: [PATCH v2 4/7] mtd: cfi_probe: use P_ID_* definitions instead of
+	hardcoded values
 To: linux-mtd <linux-mtd@lists.infradead.org>
 From: Guillaume LECERF <glecerf@gmail.com>
-Date: Tue, 30 Mar 2010 15:34:58 +0200
-Message-ID: <20100330133458.20107.48734.stgit@shiryu.yomgui.biz>
+Date: Tue, 30 Mar 2010 15:35:03 +0200
+Message-ID: <20100330133503.20107.3938.stgit@shiryu.yomgui.biz>
 In-Reply-To: <20100330133448.20107.1077.stgit@shiryu.yomgui.biz>
 References: <20100330133448.20107.1077.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
@@ -23,51 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SST 39VF160x and 39VF320x chips use vendorname id 0x0701 and alternative
-unlock addresses. Add support for them in cfi_probe.c.
+Use P_ID_* definitions already in include/linux/mtd/cfi.h instead of the
+hardcoded values. Make the code more readable.
 
 Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
 ---
- drivers/mtd/chips/cfi_probe.c |    9 +++++++++
- include/linux/mtd/cfi.h       |    1 +
- 2 files changed, 10 insertions(+), 0 deletions(-)
+ drivers/mtd/chips/gen_probe.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-index a28659d..f931e94 100644
---- a/drivers/mtd/chips/cfi_probe.c
-+++ b/drivers/mtd/chips/cfi_probe.c
-@@ -214,6 +214,12 @@ static int __xipram cfi_chip_setup(struct map_info *map,
- 	 * back into Read Mode, which is a nop in this case).
- 	 */
- 	cfi_send_gen_cmd(0xf0,     0, base, map, cfi, cfi->device_type, NULL);
-+
-+	if (cfi->cfiq->P_ID == P_ID_SST_OLD) {
-+		addr_unlock1 = 0x5555;
-+		addr_unlock2 = 0x2AAA;
-+	}
-+
- 	cfi_send_gen_cmd(0xaa, addr_unlock1, base, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x55, addr_unlock2, base, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x90, addr_unlock1, base, map, cfi, cfi->device_type, NULL);
-@@ -270,6 +276,9 @@ static char *vendorname(__u16 vendor)
- 	case P_ID_SST_PAGE:
- 		return "SST Page Write";
- 
-+	case P_ID_SST_OLD:
-+		return "SST 39VF160x/39VF320x";
-+
- 	case P_ID_INTEL_PERFORMANCE:
- 		return "Intel Performance Code";
- 
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index cee05b1..5716fc7 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -253,6 +253,7 @@ struct cfi_bri_query {
- #define P_ID_MITSUBISHI_STD     0x0100
- #define P_ID_MITSUBISHI_EXT     0x0101
- #define P_ID_SST_PAGE           0x0102
-+#define P_ID_SST_OLD            0x0701
- #define P_ID_INTEL_PERFORMANCE  0x0200
- #define P_ID_INTEL_DATA         0x0210
- #define P_ID_RESERVED           0xffff
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index e2dc964..991c457 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -242,17 +242,17 @@ static struct mtd_info *check_cmd_set(struct map_info *map, int primary)
+ 		/* We need these for the !CONFIG_MODULES case,
+ 		   because symbol_get() doesn't work there */
+ #ifdef CONFIG_MTD_CFI_INTELEXT
+-	case 0x0001:
+-	case 0x0003:
+-	case 0x0200:
++	case P_ID_INTEL_EXT:
++	case P_ID_INTEL_STD:
++	case P_ID_INTEL_PERFORMANCE:
+ 		return cfi_cmdset_0001(map, primary);
+ #endif
+ #ifdef CONFIG_MTD_CFI_AMDSTD
+-	case 0x0002:
++	case P_ID_AMD_STD:
+ 		return cfi_cmdset_0002(map, primary);
+ #endif
+ #ifdef CONFIG_MTD_CFI_STAA
+-        case 0x0020:
++        case P_ID_ST_ADV:
+ 		return cfi_cmdset_0020(map, primary);
+ #endif
+ 	default:
