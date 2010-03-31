@@ -1,22 +1,32 @@
-Subject: Re: Release of UBIL: ubi with log
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Corentin Chary <corentin.chary@gmail.com>
-In-Reply-To: <t2q71cd59b01003310557v3c2b0775o6e90af812067e726@mail.gmail.com>
-References: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
-	<1267559131.1883.1.camel@localhost.localdomain>
-	<t2q71cd59b01003310557v3c2b0775o6e90af812067e726@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 31 Mar 2010 15:59:08 +0300
-Message-ID: <1270040348.15073.8.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Brijesh Singh <brij.singh@samsung.com>,
-	"brijesh.s.singh@gmail.com" <brijesh.s.singh@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"rohitvdongre@gmail.com" <rohitvdongre@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"Hunter Adrian \(Nokia-D/Helsinki\)" <adrian.hunter@nokia.com>
-Reply-To: Artem.Bityutskiy@nokia.com
+Received: from mail-gx0-f221.google.com ([209.85.217.221])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NwxeA-00070x-Qm
+	for linux-mtd@lists.infradead.org; Wed, 31 Mar 2010 13:07:51 +0000
+Received: by gxk21 with SMTP id 21so57486gxk.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 31 Mar 2010 06:07:49 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <E19B9A1D84D0455981E564D51B3C641F@sisodomain.com>
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<2AF67696C6634054B7CFDF7A9C19865D@sisodomain.com>
+	<1244803363.5847.446.camel@localhost.localdomain>
+	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
+	<1244808209.5847.447.camel@localhost.localdomain>
+	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
+	<1244813557.3511.1272.camel@macbook.infradead.org>
+	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
+	<1245698113.25547.229.camel@macbook.infradead.org>
+	<E19B9A1D84D0455981E564D51B3C641F@sisodomain.com>
+Date: Wed, 31 Mar 2010 15:07:48 +0200
+Message-ID: <p2r62cbdcd91003310607g3507fb29gd8ecddf3d3a3dfaa@mail.gmail.com>
+Subject: Re: MLC Support in JFFS2
+From: massimo cirillo <maxcir@gmail.com>
+To: Amul Kumar Saha <amul.saha@samsung.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>, dedekind@infradead.org,
+	apgmoorthy <moorthy.apg@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, raghav.gupta@samsung.com,
+	v.dalal@samsung.com, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,41 +36,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-03-31 at 14:57 +0200, ext Corentin Chary wrote:
-> On Tue, Mar 2, 2010 at 8:45 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Fri, 2010-02-26 at 18:28 +0530, Brijesh Singh wrote:
-> >> Hi,
-> >>  It gives me great pleasure in sharing UBIL: ubi with log.  We have
-> >> added logging functionality to ubi for reducing mount time.
-> >> UBIL uses the "same source base of UBI". The logging functionality can
-> >> be added or removed at compile time using "make menuconfig option".
-> >>
-> >> We have seen mount time reduction of 50% in 1GB NAND. We are expecting
-> >> even better results for larger flash memories.
-> >>
-> >> The source code of UBIL can be found in the following git tree:
-> >> http://git.infradead.org/users/brijesh/ubi-2.6.git
-> >>
-> >
-> > Sounds interesting! However, I'm out of office till end of March, and
-> > won't be able to look closely at this. But hopefully others will try it.
-> >
-> 
-> Hi,
-> Didn't took the time  to read the code, I'll try to do so soon.
-> Could you tell us more about what you did and how it works ?
-> Is it similar to yaffs checkpoints ? When are the log written ?
-> What will happen if you try to mount something that used UBIL with a
-> kernel without UBIL support ?
-> Thanks,
+Hi Amul,
 
-Right. 
+> 3. Write the TOKEN_BLOCK's MAGIC_NUMBER in the OOB Area alongwith the
+>  ready_to_use info, in the Main Area.
+I think you should protect each ready_to_use block info in the TOKEN_BLOCK
+with a CRC - as it was a node of JFFS2 - against power loss corruption.
 
-And Brijesh, just go ahead, split your stuff on patches, and submit them
-to the MTD ML. Send your docs/URL to docs there as well.
-
-Please, do not wait, just go ahead and start pushing it out.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> 4. On next update, ask GC to provide a fresh block.
+What do you mean ? Each time a block is erased do you
+update the TOKEN_BLOCK by using a new one ?
