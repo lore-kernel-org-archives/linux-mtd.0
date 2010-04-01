@@ -1,15 +1,15 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NxJWo-0006Yr-5b
-	for linux-mtd@lists.infradead.org; Thu, 01 Apr 2010 12:29:43 +0000
-Subject: Re: [PATCH] [mtd, nandsim] Fix typo: struct nandsin_geometry
+	id 1NxJm4-0001Yg-3b
+	for linux-mtd@lists.infradead.org; Thu, 01 Apr 2010 12:45:28 +0000
+Subject: Re: [PATCH] [mtd, nand] Remove stray endchoice from help text
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ferenc Wagner <wferi@niif.hu>
-In-Reply-To: <87aaul1d67.fsf@tac.ki.iif.hu>
-References: <87aaul1d67.fsf@tac.ki.iif.hu>
+In-Reply-To: <8763591d3w.fsf@tac.ki.iif.hu>
+References: <8763591d3w.fsf@tac.ki.iif.hu>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 01 Apr 2010 15:27:22 +0300
-Message-ID: <1270124842.15073.61.camel@localhost>
+Date: Thu, 01 Apr 2010 15:43:00 +0300
+Message-ID: <1270125780.15073.62.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -23,34 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-03-06 at 20:08 +0100, Ferenc Wagner wrote:
-> Actually, this embedded struct (together with nandsim_regs) could as well
-> remain nameless...
-> 
+On Sat, 2010-03-06 at 20:09 +0100, Ferenc Wagner wrote:
 > Signed-off-by: Ferenc Wagner <wferi@niif.hu>
 > ---
->  drivers/mtd/nand/nandsim.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
+>  drivers/mtd/nand/Kconfig |    2 --
+>  1 files changed, 0 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> index 7281000..803ae12 100644
-> --- a/drivers/mtd/nand/nandsim.c
-> +++ b/drivers/mtd/nand/nandsim.c
-> @@ -312,7 +312,7 @@ struct nandsim {
->  	union ns_mem buf;
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 677cd53..d68bd6e 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -358,8 +358,6 @@ config MTD_NAND_ATMEL_ECC_NONE
 >  
->  	/* NAND flash "geometry" */
-> -	struct nandsin_geometry {
-> +	struct nandsim_geometry {
->  		uint64_t totsz;     /* total flash size, bytes */
->  		uint32_t secsz;     /* flash sector (erase block) size, bytes */
->  		uint pgsz;          /* NAND flash page size, bytes */
+>  	  If unsure, say N
+>  
+> -	  endchoice
+> -
+>  endchoice
+>  
+>  config MTD_NAND_PXA3xx
 
-Instead of taking your patch, I've made this structure anonymous as well
-as few other structures. See
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/833ba5e74a8b141ea7d7b318d6ac8c112659efa6
-
-I've referred you as the person who suggested the change.
+Pushed to l2-mtd-2.6.git / master, thanks.
 
 -- 
 Best Regards,
