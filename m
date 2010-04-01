@@ -1,22 +1,26 @@
-Received: from mail-fx0-f217.google.com ([209.85.220.217])
+Received: from mail-qy0-f191.google.com ([209.85.221.191])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NxG2c-0007qi-K6
-	for linux-mtd@lists.infradead.org; Thu, 01 Apr 2010 08:46:20 +0000
-Received: by fxm9 with SMTP id 9so784811fxm.4
+	id 1NxIMD-0005e5-IX
+	for linux-mtd@lists.infradead.org; Thu, 01 Apr 2010 11:14:42 +0000
+Received: by qyk29 with SMTP id 29so1084550qyk.2
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 01 Apr 2010 01:46:15 -0700 (PDT)
+	Thu, 01 Apr 2010 04:14:40 -0700 (PDT)
 MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <201003052234.47983.fabio.giovagnini@aurion-tech.com>
-References: <201003052234.47983.fabio.giovagnini@aurion-tech.com>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Thu, 1 Apr 2010 10:45:54 +0200
-Message-ID: <y2kb8e9195f1004010145iae8bd95t3b5066c747d363b6@mail.gmail.com>
-Subject: Re: Hi All, problem with SST39VF6401B70
-To: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <t2q71cd59b01003310557v3c2b0775o6e90af812067e726@mail.gmail.com>
+References: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
+	<1267559131.1883.1.camel@localhost.localdomain>
+	<t2q71cd59b01003310557v3c2b0775o6e90af812067e726@mail.gmail.com>
+Date: Thu, 1 Apr 2010 16:44:39 +0530
+Message-ID: <k2h6b5362aa1004010414j1ce57f33w27ee1debe9cb7a68@mail.gmail.com>
+Subject: Re: Release of UBIL: ubi with log
+From: Brijesh Singh <brijesh.s.singh@gmail.com>
+To: Corentin Chary <corentin.chary@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Artem.Bityutskiy@nokia.com, dedekind1@gmail.com,
+	linux-mtd@lists.infradead.org, rohitvdongre@gmail.com,
+	David Woodhouse <dwmw2@infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +30,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/3/5 Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>:
-> Hi All.
-> This is my problem
-> I'musing SST39VF6401B70 as a boot NOR flash; when gen_probe module
-> check_cmd_set function is called detect my flash as an AMDSTD and this
-> because of CFI Query struct bytes 13H and 14H =C2=A0(Primary OEM commad s=
-et) is
-> 0002H, 0000H as an AMD standard; but CFI Query struct bytes 15H and 16H
-> (Address for Primary Extended Table) is 0000H (no table); this is not con=
-form
-> to ADMSTD. How can I solve the problem? Do I have to implement a differen=
-t
-> driver and if yes where can I find the road map?
+Hi,
 
-Hi.
+On Wed, Mar 31, 2010 at 6:27 PM, Corentin Chary
+<corentin.chary@gmail.com> wrote:
+> On Tue, Mar 2, 2010 at 8:45 PM, Artem Bityutskiy <dedekind1@gmail.com> wr=
+ote:
+>> On Fri, 2010-02-26 at 18:28 +0530, Brijesh Singh wrote:
+>>> Hi,
+>>> =A0It gives me great pleasure in sharing UBIL: ubi with log. =A0We have
+>>> added logging functionality to ubi for reducing mount time.
+>>> UBIL uses the "same source base of UBI". The logging functionality can
+>>> be added or removed at compile time using "make menuconfig option".
+>>>
+>>> We have seen mount time reduction of 50% in 1GB NAND. We are expecting
+>>> even better results for larger flash memories.
+>>>
+>>> The source code of UBIL can be found in the following git tree:
+>>> http://git.infradead.org/users/brijesh/ubi-2.6.git
+>>>
+>>
+>> Sounds interesting! However, I'm out of office till end of March, and
+>> won't be able to look closely at this. But hopefully others will try it.
+>>
+>
+> Hi,
+> Didn't took the time =A0to read the code, I'll try to do so soon.
+> Could you tell us more about what you did and how it works ?
+> Is it similar to yaffs checkpoints ? When are the log written ?
+Not sure with yaffs checkpoints. But commit writes only valid log entries.
+Log is written when an eba mapping is changed or when ec of peb is changed.
 
-I created a patch series that could address your issue :
+> What will happen if you try to mount something that used UBIL with a
+> kernel without UBIL support ?
+It won't work.
 
-http://lists.infradead.org/pipermail/linux-mtd/2010-March/029461.html
 
-Feel free to try it and send me some report back.
-
---=20
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+Thanks
+Brijesh
