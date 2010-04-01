@@ -1,7 +1,7 @@
 From: leiwen@marvell.com (Lei Wen)
 Date: Thu, 1 Apr 2010 15:12:09 +0800
-Subject: [PATCH] pxa3xx_nand: fix power management support
-Message-ID: <mailman.400.1273137337.2170.linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: pxa3xx_nand: fix power management support
+Message-ID: <mailman.446.1273818404.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
