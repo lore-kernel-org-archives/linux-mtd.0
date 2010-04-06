@@ -1,23 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nz603-0004cE-6i
-	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2010 10:27:16 +0000
-Subject: Re: [PATCH] [MTD] physmap: remove physmap_flash_shutdown() method.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
-In-Reply-To: <n2yfcda838a1004060311r46058f53p87628435ad3fb067@mail.gmail.com>
-References: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
-	<1270544324.6754.14.camel@localhost>
-	<n2yfcda838a1004060311r46058f53p87628435ad3fb067@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 06 Apr 2010 13:25:34 +0300
-Message-ID: <1270549534.6754.17.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
-	Lennert Buytenhek <buytenh@wantstofly.org>,
-	David Woodhouse <David.Woodhouse@intel.com>
-Reply-To: dedekind1@gmail.com
+Received: from mail-fx0-f221.google.com ([209.85.220.221])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nz8wy-0001IT-0h
+	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2010 13:36:16 +0000
+Received: by fxm21 with SMTP id 21so2018097fxm.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 06 Apr 2010 06:36:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <804f0d21003300551h225f4bdfp66e9072115d0ad69@mail.gmail.com>
+References: <804f0d21003300551h225f4bdfp66e9072115d0ad69@mail.gmail.com>
+Date: Tue, 6 Apr 2010 14:36:12 +0100
+Message-ID: <w2w804f0d21004060636zee222ad3j1c3f90afdc82e65d@mail.gmail.com>
+Subject: Re: uncorrectable error : mtd->read(0x1fc bytes from 0x9e0e04)
+	returned ECC error
+From: Arno Steffen <arno.steffen@googlemail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-04-06 at 14:11 +0400, Vladimir Zapolskiy wrote:
-> Hello Artem,
-> 
-> >
-> > Taken to my l2-mtd-2.6.git / dunno, thanks.
-> >
-> 
-> thank you, but please consider this change as a bugfix.
+Does nobody has an idea what is the reason for this errors, that
+occurs when I want to mount
+(mount -t jffs2 /dev/mtdblock5 /tmp) a jffs2 partition?
 
-Should be done by the maintainer, I can't do that.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+2010/3/30 Arno Steffen <arno.steffen@googlemail.com>:
+> I changed to a new kernel and did probably something wrong in setup
+> the mtd partitions ord mtd driver.
+> With the same flash file system I don't have trouble with my old
+> kernel, with the new (2.6.33) I get tons of messages like above.
+> But at the end (after some minutes) I =A0could access it.
+> I can do a "touch test" and get back
+> uncorrectable error :
+> mtd->read(0x6ad bytes from 0x2226fc) returned ECC error
+> but touch is now in filesystem.
+> Does someone ones what I missed in configure/setup the kernel?
+>
