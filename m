@@ -1,18 +1,21 @@
-Message-ID: <4BBAF6E6.20902@nokia.com>
-Date: Tue, 06 Apr 2010 11:55:02 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: OneNAND: OMAP3: unmap correct DMA buffer
-References: <1269351224-10637-1-git-send-email-ext-mika.1.westerberg@nokia.com>
-	<874ojpdnb2.fsf@small.ssi.corp>
-In-Reply-To: <874ojpdnb2.fsf@small.ssi.corp>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
-	Arnaud Ebalard <arno@natisbad.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Westerberg Mika.1 \(EXT-Nixu/Helsinki\)" <ext-mika.1.westerberg@nokia.com>
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nz4eJ-0005lY-2b
+	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2010 09:00:43 +0000
+Subject: Re: [PATCH] [MTD] physmap: remove physmap_flash_shutdown() method.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+In-Reply-To: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
+References: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 06 Apr 2010 11:58:44 +0300
+Message-ID: <1270544324.6754.14.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
+	Lennert Buytenhek <buytenh@wantstofly.org>,
+	David Woodhouse <David.Woodhouse@intel.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Arnaud Ebalard wrote:
-> Hi,
+On Fri, 2010-03-12 at 16:26 +0300, Vladimir Zapolskiy wrote:
+> physmap driver operates with cfi, jedec, qinfo and map_rom compliant
+> chips. None of interface drivers for all these chips uses actual
+> suspend and resume chip operations, but correspondent two methods only
+> change flash chip state in drivers' internal state machines, and for
+> Intel chips save/restore block locks is done.
 > 
-> Mika Westerberg <ext-mika.1.westerberg@nokia.com> writes:
+> To operate with boards with Intel flash chips where RP# pin is not
+> asserted on reset there is an already implemented mechanism of reboot
+> notifiers, and on reboot the flash moves into defined "read array"
+> state.
 > 
->> Function omap3_onenand_write_bufferram() maps the write buffer and stores the
->> returned handle in dma_src. However, when it does the DMA unmap, it uses wrong
->> DMA handle (dma_dst).
->>
->> This patch fixes it to use the correct DMA handle.
->>
->> Signed-off-by: Mika Westerberg <ext-mika.1.westerberg@nokia.com>
->> ---
->>  drivers/mtd/onenand/omap2.c |    4 ++--
->>  1 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
->> index 75f38b9..2d81a3a 100644
->> --- a/drivers/mtd/onenand/omap2.c
->> +++ b/drivers/mtd/onenand/omap2.c
->> @@ -402,7 +402,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
->>  
->>  	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
->>  	dma_dst = c->phys_base + bram_offset;
->> -	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
->> +	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
->>  		dev_err(&c->pdev->dev,
->>  			"Couldn't DMA map a %d byte buffer\n",
->>  			count);
->> @@ -425,7 +425,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
->>  		if (*done)
->>  			break;
->>  
->> -	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_TO_DEVICE);
->> +	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
->>  
->>  	if (!*done) {
->>  		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+> If CONFIG_PM kernel option is enabled, then physmap_flash_shutdown()
+> method is called after reboot notifier work, and save/restore block
+> locks operations disturb the chip from default "read array" state,
+> thus if the flash is a bootable one, board cann't be booted from it
+> after reset.
 > 
-> That patch removes the kernel panic I get when booting current l-o
-> kernel on my N900.
-> 
-> Tested-by: Arnaud Ebalard <arno@natisbad.org>
-> 
-> Cheers,
-> 
-> a+
-> 
+> Signed-off-by: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+> Cc: David Woodhouse <David.Woodhouse@intel.com>
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Cc: Mike Frysinger <vapier.adi@gmail.com>
+> Cc: Lennert Buytenhek <buytenh@wantstofly.org>
+> ---
+>  drivers/mtd/maps/physmap.c |   16 ----------------
+>  1 files changed, 0 insertions(+), 16 deletions(-)
 
-Acked-by: Adrian Hunter <adrian.hunter@nokia.com>
+Taken to my l2-mtd-2.6.git / dunno, thanks.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
