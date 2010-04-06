@@ -1,21 +1,11 @@
-Received: from mail-fx0-f221.google.com ([209.85.220.221])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nz8wy-0001IT-0h
-	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2010 13:36:16 +0000
-Received: by fxm21 with SMTP id 21so2018097fxm.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Apr 2010 06:36:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <804f0d21003300551h225f4bdfp66e9072115d0ad69@mail.gmail.com>
-References: <804f0d21003300551h225f4bdfp66e9072115d0ad69@mail.gmail.com>
-Date: Tue, 6 Apr 2010 14:36:12 +0100
-Message-ID: <w2w804f0d21004060636zee222ad3j1c3f90afdc82e65d@mail.gmail.com>
-Subject: Re: uncorrectable error : mtd->read(0x1fc bytes from 0x9e0e04)
-	returned ECC error
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 6 Apr 2010 15:52:23 +0200
+Message-ID: <q2tba216b431004060652jeb9df33eqd141836e46980f00@mail.gmail.com>
+Subject: [PATCH] ARM: MXC: mxc_nand: support i.MX21
+From: Ivo Clarysse <ivo.clarysse@gmail.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +15,167 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Does nobody has an idea what is the reason for this errors, that
-occurs when I want to mount
-(mount -t jffs2 /dev/mtdblock5 /tmp) a jffs2 partition?
+Allow mxc_nand.c to function on i.MX21 SoCs, since:
 
+1) On i.MX21, if the NFC_INT_MASK bit in NFC_CONFIG1 is set, the NFC_INT
+  bit of NFC_CONFIG2 always reads out zero, even if an operation is
+  completed.
 
-2010/3/30 Arno Steffen <arno.steffen@googlemail.com>:
-> I changed to a new kernel and did probably something wrong in setup
-> the mtd partitions ord mtd driver.
-> With the same flash file system I don't have trouble with my old
-> kernel, with the new (2.6.33) I get tons of messages like above.
-> But at the end (after some minutes) I =A0could access it.
-> I can do a "touch test" and get back
-> uncorrectable error :
-> mtd->read(0x6ad bytes from 0x2226fc) returned ECC error
-> but touch is now in filesystem.
-> Does someone ones what I missed in configure/setup the kernel?
->
+2) On i.MX21, sending a RESET command to the NAND flash controller does
+  not trigger an interrupt, nor does it cause the NFC_INT bit of
+  NFC_CONFIG2 to get set.
+
+To accommodate for this, I modified the interrupt handler to use
+completions instead of a wait queue, and check the value of NFC_CONFIG2
+in the interrupt handler instead of after wait_event(..)
+
+To allow polling for a basic NFC operation to complete, I leave
+the interrupt handler disabled using disable_irq(..) and only enable it
+for interrupt-based basic operations.
+
+Signed-off-by: Ivo Clarysse <ivo.clarysse@gmail.com>
+---
+diff -u -r -N linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c
+linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c
+--- linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c	2010-04-02
+01:02:33.000000000 +0200
++++ linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c	2010-04-06
+15:40:55.000000000 +0200
+@@ -38,7 +38,7 @@
+ #define DRIVER_NAME "mxc_nand"
+
+ #define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
+-#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27())
++#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
+
+ /* Addresses for NFC registers */
+ #define NFC_BUF_SIZE		0xE00
+@@ -111,7 +111,7 @@
+ 	int			clk_act;
+ 	int			irq;
+
+-	wait_queue_head_t	irq_waitq;
++	struct completion	op_completion;
+
+ 	uint8_t			*data_buf;
+ 	unsigned int		buf_start;
+@@ -168,13 +168,21 @@
+ {
+ 	struct mxc_nand_host *host = dev_id;
+
+-	uint16_t tmp;
++	uint16_t tmp, config2;
++
++	/* On i.MX21, setting NFC_INT_MSK of NFC_CONFIG2
++	 * will clear NFC_INT in NFC_CONFIG1, so we read
++	 * NFC_CONFIG2 first.
++	 */
++	config2 = readw(host->regs + NFC_CONFIG2);
+
+ 	tmp = readw(host->regs + NFC_CONFIG1);
+ 	tmp |= NFC_INT_MSK; /* Disable interrupt */
+ 	writew(tmp, host->regs + NFC_CONFIG1);
+
+-	wake_up(&host->irq_waitq);
++	if (config2 & NFC_INT) {
++		complete(&host->op_completion);
++	}
+
+ 	return IRQ_HANDLED;
+ }
+@@ -185,7 +193,7 @@
+ static void wait_op_done(struct mxc_nand_host *host, int useirq)
+ {
+ 	uint32_t tmp;
+-	int max_retries = 2000;
++	int max_retries = 8000;
+
+ 	if (useirq) {
+ 		if ((readw(host->regs + NFC_CONFIG2) & NFC_INT) == 0) {
+@@ -194,14 +202,28 @@
+ 			tmp  &= ~NFC_INT_MSK;	/* Enable interrupt */
+ 			writew(tmp, host->regs + NFC_CONFIG1);
+
+-			wait_event(host->irq_waitq,
+-				readw(host->regs + NFC_CONFIG2) & NFC_INT);
++			INIT_COMPLETION(host->op_completion);
++
++			if (cpu_is_mx21()) {
++				enable_irq(host->irq);
++			}
++
++			wait_for_completion(&host->op_completion);
++
++			if (cpu_is_mx21()) {
++				disable_irq(host->irq);
++			}
+
+ 			tmp = readw(host->regs + NFC_CONFIG2);
+ 			tmp  &= ~NFC_INT;
+ 			writew(tmp, host->regs + NFC_CONFIG2);
+ 		}
+ 	} else {
++		if (cpu_is_mx21()) {
++			tmp = readw(host->regs + NFC_CONFIG1);
++			tmp  &= ~NFC_INT_MSK;	/* Enable interrupt */
++			writew(tmp, host->regs + NFC_CONFIG1);
++		}
+ 		while (max_retries-- > 0) {
+ 			if (readw(host->regs + NFC_CONFIG2) & NFC_INT) {
+ 				tmp = readw(host->regs + NFC_CONFIG2);
+@@ -211,6 +233,11 @@
+ 			}
+ 			udelay(1);
+ 		}
++		if (cpu_is_mx21()) {
++			tmp = readw(host->regs + NFC_CONFIG1);
++			tmp  |= NFC_INT_MSK;
++			writew(tmp, host->regs + NFC_CONFIG1);
++		}
+ 		if (max_retries < 0)
+ 			DEBUG(MTD_DEBUG_LEVEL0, "%s: INT not set\n",
+ 			      __func__);
+@@ -559,6 +586,24 @@
+
+ 	/* Command pre-processing step */
+ 	switch (command) {
++	case NAND_CMD_RESET:
++		if (cpu_is_mx21()) {
++			int max_retries = 100;
++			writew(command, host->regs + NFC_FLASH_CMD);
++			writew(NFC_CMD, host->regs + NFC_CONFIG2);
++			/* Reset completion is indicated by NFC_CONFIG2 */
++			/* being set to 0 */
++			while (max_retries-- > 0) {
++				if (readw(host->regs + NFC_CONFIG2) == 0) {
++					break;
++				}
++				udelay(1);
++			}
++			if (max_retries < 0)
++				DEBUG(MTD_DEBUG_LEVEL0, "%s: RESET failed\n",
++				      __func__);
++		}
++		break;
+
+ 	case NAND_CMD_STATUS:
+ 		host->buf_start = 0;
+@@ -758,7 +803,7 @@
+ 	tmp &= ~NFC_SP_EN;
+ 	writew(tmp, host->regs + NFC_CONFIG1);
+
+-	init_waitqueue_head(&host->irq_waitq);
++	init_completion(&host->op_completion);
+
+ 	host->irq = platform_get_irq(pdev, 0);
+
+@@ -766,6 +811,10 @@
+ 	if (err)
+ 		goto eirq;
+
++	if (cpu_is_mx21()) {
++		disable_irq(host->irq);
++	}
++
+ 	/* Reset NAND */
+ 	this->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
