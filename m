@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nz4UA-0003kU-Dc
-	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2010 08:50:15 +0000
-Subject: Re: Can not mount UBIFS
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?=E6=9E=97=E4=BA=8E=E5=B3=BB?= <okpalin@gmail.com>
-In-Reply-To: <a145ef951003102343h58c7f78bh5c2ed3357fe0fe4e@mail.gmail.com>
-References: <a145ef951003102343h58c7f78bh5c2ed3357fe0fe4e@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 06 Apr 2010 11:48:36 +0300
-Message-ID: <1270543716.6754.13.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-ID: <4BBAF6E6.20902@nokia.com>
+Date: Tue, 06 Apr 2010 11:55:02 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>
+Subject: Re: [PATCH] mtd: OneNAND: OMAP3: unmap correct DMA buffer
+References: <1269351224-10637-1-git-send-email-ext-mika.1.westerberg@nokia.com>
+	<874ojpdnb2.fsf@small.ssi.corp>
+In-Reply-To: <874ojpdnb2.fsf@small.ssi.corp>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+	Arnaud Ebalard <arno@natisbad.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"Westerberg Mika.1 \(EXT-Nixu/Helsinki\)" <ext-mika.1.westerberg@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Thu, 2010-03-11 at 15:43 +0800, 林于峻 wrote:
-> Dear all,
+ext Arnaud Ebalard wrote:
+> Hi,
 > 
-> I am trying UBIFS on android on nVidia Tegra T20.
-> I add a new MTD partition, flash_eraseall, ubiattach, ubimkvol, and mount it.
-> Error occurs when mount it.
+> Mika Westerberg <ext-mika.1.westerberg@nokia.com> writes:
 > 
-> The total command I enter is:
->     # ubidetach /dev/ubi_ctrl -d 0
->     ubidetach /dev/ubi_ctrl -d 0
->     # flash_eraseall /dev/mtd/mtd4
->     flash_eraseall /dev/mtd/mtd4
-
-Better use ubiformat instead of flash_eraseall:
-
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_ubierase
-
->     Erasing 128 Kibyte @ 2000000 -- 100 % complete.
->     # ubiattach /dev/ubi_ctrl -m 4
->     ubiattach /dev/ubi_ctrl -m 4
->     UBI device number 0, total 256 LEBs (32505856 bytes, 31.0 MiB),
-> available 250 LEBs (31744000 bytes, 30.3 MiB), LEB size 126976 bytes
-> (124.0 KiB)
->     # ubimkvol /dev/ubi0 -m -N rootfs
->     ubimkvol /dev/ubi0 -m -N rootfs
->     Set volume size to 31744000
->     Volume ID 0, size 250 LEBs (31744000 bytes, 30.3 MiB), LEB size
-> 126976 bytes (124.0 KiB), dynamic, name "rootfs", alignment 1
->     # mount -t ubifs ubi0:rootfs /sdcard
->     mount -t ubifs ubi0:rootfs /sdcard
->     mount: Invalid argument
+>> Function omap3_onenand_write_bufferram() maps the write buffer and stores the
+>> returned handle in dma_src. However, when it does the DMA unmap, it uses wrong
+>> DMA handle (dma_dst).
+>>
+>> This patch fixes it to use the correct DMA handle.
+>>
+>> Signed-off-by: Mika Westerberg <ext-mika.1.westerberg@nokia.com>
+>> ---
+>>  drivers/mtd/onenand/omap2.c |    4 ++--
+>>  1 files changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+>> index 75f38b9..2d81a3a 100644
+>> --- a/drivers/mtd/onenand/omap2.c
+>> +++ b/drivers/mtd/onenand/omap2.c
+>> @@ -402,7 +402,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
+>>  
+>>  	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
+>>  	dma_dst = c->phys_base + bram_offset;
+>> -	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
+>> +	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
+>>  		dev_err(&c->pdev->dev,
+>>  			"Couldn't DMA map a %d byte buffer\n",
+>>  			count);
+>> @@ -425,7 +425,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
+>>  		if (*done)
+>>  			break;
+>>  
+>> -	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_TO_DEVICE);
+>> +	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
+>>  
+>>  	if (!*done) {
+>>  		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
 > 
-> The NAND flash is HY27UF084G2B.
+> That patch removes the kernel panic I get when booting current l-o
+> kernel on my N900.
+> 
+> Tested-by: Arnaud Ebalard <arno@natisbad.org>
+> 
+> Cheers,
+> 
+> a+
+> 
 
-Could you please first validate your flash with nandtests? Take the
-tests from the latest kernel.
-
-http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Acked-by: Adrian Hunter <adrian.hunter@nokia.com>
