@@ -1,17 +1,17 @@
-Received: from copper.chdir.org ([88.191.97.87])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nz3gI-0002p9-Qb
-	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2010 07:58:43 +0000
-From: arno@natisbad.org (Arnaud Ebalard)
-To: Mika Westerberg <ext-mika.1.westerberg@nokia.com>
-Subject: Re: [PATCH] mtd: OneNAND: OMAP3: unmap correct DMA buffer
-References: <1269351224-10637-1-git-send-email-ext-mika.1.westerberg@nokia.com>
-Date: Tue, 06 Apr 2010 09:58:57 +0200
-Message-ID: <874ojpdnb2.fsf@small.ssi.corp>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: dwmw2@infradead.org, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Subject: Re: Release of UBIL: ubi with log
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brijesh Singh <brij.singh@samsung.com>
+In-Reply-To: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
+References: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 06 Apr 2010 11:31:38 +0300
+Message-ID: <1270542698.6754.7.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: brijesh.s.singh@gmail.com, rohitvdongre@gmail.com,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 2010-02-26 at 18:28 +0530, Brijesh Singh wrote:
+> Hi,
+>  It gives me great pleasure in sharing UBIL: ubi with log.  We have
+> added logging functionality to ubi for reducing mount time.
+> UBIL uses the "same source base of UBI". The logging functionality can
+> be added or removed at compile time using "make menuconfig option".
+> 
+> We have seen mount time reduction of 50% in 1GB NAND. We are expecting
+> even better results for larger flash memories.
+> 
+> The source code of UBIL can be found in the following git tree:
+> http://git.infradead.org/users/brijesh/ubi-2.6.git
+> 
+> We have tested ubil for samsung nand and onenand. The test results can
+> be found in the following git tree:
+> http://git.infradead.org/users/brijesh/ubil_results
+> 
+> We are working on utilities and design document of UBIL. I will share
+> those as soon as possible.
 
-Mika Westerberg <ext-mika.1.westerberg@nokia.com> writes:
+Is there any doc available?
 
-> Function omap3_onenand_write_bufferram() maps the write buffer and stores the
-> returned handle in dma_src. However, when it does the DMA unmap, it uses wrong
-> DMA handle (dma_dst).
->
-> This patch fixes it to use the correct DMA handle.
->
-> Signed-off-by: Mika Westerberg <ext-mika.1.westerberg@nokia.com>
-> ---
->  drivers/mtd/onenand/omap2.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-> index 75f38b9..2d81a3a 100644
-> --- a/drivers/mtd/onenand/omap2.c
-> +++ b/drivers/mtd/onenand/omap2.c
-> @@ -402,7 +402,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
->  
->  	dma_src = dma_map_single(&c->pdev->dev, buf, count, DMA_TO_DEVICE);
->  	dma_dst = c->phys_base + bram_offset;
-> -	if (dma_mapping_error(&c->pdev->dev, dma_dst)) {
-> +	if (dma_mapping_error(&c->pdev->dev, dma_src)) {
->  		dev_err(&c->pdev->dev,
->  			"Couldn't DMA map a %d byte buffer\n",
->  			count);
-> @@ -425,7 +425,7 @@ static int omap3_onenand_write_bufferram(struct mtd_info *mtd, int area,
->  		if (*done)
->  			break;
->  
-> -	dma_unmap_single(&c->pdev->dev, dma_dst, count, DMA_TO_DEVICE);
-> +	dma_unmap_single(&c->pdev->dev, dma_src, count, DMA_TO_DEVICE);
->  
->  	if (!*done) {
->  		dev_err(&c->pdev->dev, "timeout waiting for DMA\n");
+I've briefly looked at the source code, and found out that:
 
-That patch removes the kernel panic I get when booting current l-o
-kernel on my N900.
+1. It looks like code from UBIFS, but tweaked and transformed, is this
+right?
+2. Various small coding style things which do not correspond to UBI
+coding style. I usually want contributors to use the same style to keep
+the UBI code uniform and consistent.
+3. A design document would be cool.
 
-Tested-by: Arnaud Ebalard <arno@natisbad.org>
-
-Cheers,
-
-a+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
