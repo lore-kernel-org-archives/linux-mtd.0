@@ -1,16 +1,19 @@
-Subject: Re: Release of UBIL: ubi with log
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nz4HJ-00016u-4v
+	for linux-mtd@lists.infradead.org; Tue, 06 Apr 2010 08:36:58 +0000
+Subject: Re: mkfs.ubifs: double free or corruption, while trying to create
+	bigger image than -c allow
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brijesh Singh <brij.singh@samsung.com>
-In-Reply-To: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
-References: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
+To: Martin Jansa <martin.jansa@gmail.com>
+In-Reply-To: <20100302141158.GE3206@jama>
+References: <20100302141158.GE3206@jama>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 06 Apr 2010 11:31:38 +0300
-Message-ID: <1270542698.6754.7.camel@localhost>
+Date: Tue, 06 Apr 2010 11:35:14 +0300
+Message-ID: <1270542914.6754.8.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: brijesh.s.singh@gmail.com, rohitvdongre@gmail.com,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,36 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-02-26 at 18:28 +0530, Brijesh Singh wrote:
+On Tue, 2010-03-02 at 15:11 +0100, Martin Jansa wrote:
 > Hi,
->  It gives me great pleasure in sharing UBIL: ubi with log.  We have
-> added logging functionality to ubi for reducing mount time.
-> UBIL uses the "same source base of UBI". The logging functionality can
-> be added or removed at compile time using "make menuconfig option".
 > 
-> We have seen mount time reduction of 50% in 1GB NAND. We are expecting
-> even better results for larger flash memories.
+> when I run mkfs.ubifs and the rootfs directory is bigger and needs more
+> LEBs than -c parameter, then it says right message, but then fails with
+> "double free or corruption" and shows backtrace.
 > 
-> The source code of UBIL can be found in the following git tree:
-> http://git.infradead.org/users/brijesh/ubi-2.6.git
+> But the backtrace is shown only for some bigger counts (or so it seems), 
+> in some cases is only the Error about LEBs count shown and no backtrace.
 > 
-> We have tested ubil for samsung nand and onenand. The test results can
-> be found in the following git tree:
-> http://git.infradead.org/users/brijesh/ubil_results
+> But those error messages also doesn't seem right:
 > 
-> We are working on utilities and design document of UBIL. I will share
-> those as soon as possible.
+> (gdb) set args  -r /home/projects/OE/tmpdir-dev-shr/rootfs/shr-lite-image/ -o image.ubifs -m 2048 -e 126976 -c 2
+> Error: too low max. count of LEBs, minimum is 17
+> (gdb) set args  -r /home/projects/OE/tmpdir-dev-shr/rootfs/shr-lite-image/ -o image.ubifs -m 2048 -e 126976 -c 17
+> Error: too many log LEBs, maximum is 0
+> (gdb) set args  -r /home/projects/OE/tmpdir-dev-shr/rootfs/shr-lite-image/ -o image.ubifs -m 2048 -e 126976 -c 18
+> Error: too many log LEBs, maximum is 1
+> 
+> Build arch is x86_64, gcc-4.4.3, glibc-2.11, latest gentoo.
 
-Is there any doc available?
-
-I've briefly looked at the source code, and found out that:
-
-1. It looks like code from UBIFS, but tweaked and transformed, is this
-right?
-2. Various small coding style things which do not correspond to UBI
-coding style. I usually want contributors to use the same style to keep
-the UBI code uniform and consistent.
-3. A design document would be cool.
+Hi, yes, I saw this problem, but never had time to fix it. Would be nice
+to have a patch from someone :-)
 
 -- 
 Best Regards,
