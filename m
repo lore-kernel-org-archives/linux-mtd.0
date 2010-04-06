@@ -1,14 +1,16 @@
-Subject: Re: [PATCH] mtd: Blackfin NFC: localize MMR bit masks
+Subject: Re: [PATCH] mtd: Extend physmap_of to let the device tree specify
+	the parition probe
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1268150748-27499-1-git-send-email-vapier@gentoo.org>
-References: <1268150748-27499-1-git-send-email-vapier@gentoo.org>
+To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+In-Reply-To: <20100309192756.GC30462@obsidianresearch.com>
+References: <20100309192756.GC30462@obsidianresearch.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 06 Apr 2010 11:41:10 +0300
-Message-ID: <1270543270.6754.9.camel@localhost>
+Date: Tue, 06 Apr 2010 11:44:38 +0300
+Message-ID: <1270543478.6754.10.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,14 +21,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-03-09 at 11:05 -0500, Mike Frysinger wrote:
-> Convert all magic numbers into appropriate defines, and move the defines
-> out of the global namespace and into this one driver.  No other driver
-> needs to care about the MMR layout anyways.
+On Tue, 2010-03-09 at 12:27 -0700, Jason Gunthorpe wrote:
+> This is to support custom partitioning schemes for embedded PPC. To use
+> define your own mtd_part_parser and then add something like:
+>    linux,part-probe = "my_probe", "cmdlinepart";
+> To the board's dts file.
 > 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> If linux,part-probe is not specified then this behaves the same as before.
+> 
+> Signed-off-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
 
-Pushed to my l2-mtd-2.6.git / master, thanks.
+Taken to my l2-mtd-2.6.git / dunno
 
 -- 
 Best Regards,
