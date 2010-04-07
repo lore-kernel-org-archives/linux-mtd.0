@@ -1,11 +1,24 @@
+Received: from mail-qy0-f183.google.com ([209.85.221.183])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1NzQyu-0000fp-Q1
+	for linux-mtd@lists.infradead.org; Wed, 07 Apr 2010 08:51:29 +0000
+Received: by mail-qy0-f183.google.com with SMTP id 13so948761qyk.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 Apr 2010 01:51:28 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 6 Apr 2010 15:52:23 +0200
-Message-ID: <q2tba216b431004060652jeb9df33eqd141836e46980f00@mail.gmail.com>
-Subject: [PATCH] ARM: MXC: mxc_nand: support i.MX21
-From: Ivo Clarysse <ivo.clarysse@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
+In-Reply-To: <1270542698.6754.7.camel@localhost>
+References: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
+	<1270542698.6754.7.camel@localhost>
+Date: Wed, 7 Apr 2010 14:21:27 +0530
+Message-ID: <m2u6b5362aa1004070151u60fa27f1k3ba409017b2a7d45@mail.gmail.com>
+Subject: Re: Release of UBIL: ubi with log
+From: Brijesh Singh <brijesh.s.singh@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, rohitvdongre@gmail.com,
+	David Woodhouse <dwmw2@infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,167 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Allow mxc_nand.c to function on i.MX21 SoCs, since:
+Hi,
+On Tue, Apr 6, 2010 at 2:01 PM, Artem Bityutskiy <dedekind1@gmail.com> wrot=
+e:
+> On Fri, 2010-02-26 at 18:28 +0530, Brijesh Singh wrote:
+>> Hi,
+>> =A0It gives me great pleasure in sharing UBIL: ubi with log. =A0We have
+>> added logging functionality to ubi for reducing mount time.
+>> UBIL uses the "same source base of UBI". The logging functionality can
+>> be added or removed at compile time using "make menuconfig option".
+>>
+>> We have seen mount time reduction of 50% in 1GB NAND. We are expecting
+>> even better results for larger flash memories.
+>>
+>> The source code of UBIL can be found in the following git tree:
+>> http://git.infradead.org/users/brijesh/ubi-2.6.git
+>>
+>> We have tested ubil for samsung nand and onenand. The test results can
+>> be found in the following git tree:
+>> http://git.infradead.org/users/brijesh/ubil_results
+>>
+>> We are working on utilities and design document of UBIL. I will share
+>> those as soon as possible.
+>
+> Is there any doc available?
+Working on it.
+> I've briefly looked at the source code, and found out that:
+>
+> 1. It looks like code from UBIFS, but tweaked and transformed, is this
+> right?
+Yes,some parts like compression.
+> 2. Various small coding style things which do not correspond to UBI
+> coding style. I usually want contributors to use the same style to keep
+> the UBI code uniform and consistent.
+We have tried to do this as much as possible. If there is anything
+missing, I will fix it.
+> 3. A design document would be cool.
+Working on it. I will send the patches earliest possible.
 
-1) On i.MX21, if the NFC_INT_MASK bit in NFC_CONFIG1 is set, the NFC_INT
-  bit of NFC_CONFIG2 always reads out zero, even if an operation is
-  completed.
-
-2) On i.MX21, sending a RESET command to the NAND flash controller does
-  not trigger an interrupt, nor does it cause the NFC_INT bit of
-  NFC_CONFIG2 to get set.
-
-To accommodate for this, I modified the interrupt handler to use
-completions instead of a wait queue, and check the value of NFC_CONFIG2
-in the interrupt handler instead of after wait_event(..)
-
-To allow polling for a basic NFC operation to complete, I leave
-the interrupt handler disabled using disable_irq(..) and only enable it
-for interrupt-based basic operations.
-
-Signed-off-by: Ivo Clarysse <ivo.clarysse@gmail.com>
----
-diff -u -r -N linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c
-linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c
---- linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c	2010-04-02
-01:02:33.000000000 +0200
-+++ linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c	2010-04-06
-15:40:55.000000000 +0200
-@@ -38,7 +38,7 @@
- #define DRIVER_NAME "mxc_nand"
-
- #define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
--#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27())
-+#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
-
- /* Addresses for NFC registers */
- #define NFC_BUF_SIZE		0xE00
-@@ -111,7 +111,7 @@
- 	int			clk_act;
- 	int			irq;
-
--	wait_queue_head_t	irq_waitq;
-+	struct completion	op_completion;
-
- 	uint8_t			*data_buf;
- 	unsigned int		buf_start;
-@@ -168,13 +168,21 @@
- {
- 	struct mxc_nand_host *host = dev_id;
-
--	uint16_t tmp;
-+	uint16_t tmp, config2;
-+
-+	/* On i.MX21, setting NFC_INT_MSK of NFC_CONFIG2
-+	 * will clear NFC_INT in NFC_CONFIG1, so we read
-+	 * NFC_CONFIG2 first.
-+	 */
-+	config2 = readw(host->regs + NFC_CONFIG2);
-
- 	tmp = readw(host->regs + NFC_CONFIG1);
- 	tmp |= NFC_INT_MSK; /* Disable interrupt */
- 	writew(tmp, host->regs + NFC_CONFIG1);
-
--	wake_up(&host->irq_waitq);
-+	if (config2 & NFC_INT) {
-+		complete(&host->op_completion);
-+	}
-
- 	return IRQ_HANDLED;
- }
-@@ -185,7 +193,7 @@
- static void wait_op_done(struct mxc_nand_host *host, int useirq)
- {
- 	uint32_t tmp;
--	int max_retries = 2000;
-+	int max_retries = 8000;
-
- 	if (useirq) {
- 		if ((readw(host->regs + NFC_CONFIG2) & NFC_INT) == 0) {
-@@ -194,14 +202,28 @@
- 			tmp  &= ~NFC_INT_MSK;	/* Enable interrupt */
- 			writew(tmp, host->regs + NFC_CONFIG1);
-
--			wait_event(host->irq_waitq,
--				readw(host->regs + NFC_CONFIG2) & NFC_INT);
-+			INIT_COMPLETION(host->op_completion);
-+
-+			if (cpu_is_mx21()) {
-+				enable_irq(host->irq);
-+			}
-+
-+			wait_for_completion(&host->op_completion);
-+
-+			if (cpu_is_mx21()) {
-+				disable_irq(host->irq);
-+			}
-
- 			tmp = readw(host->regs + NFC_CONFIG2);
- 			tmp  &= ~NFC_INT;
- 			writew(tmp, host->regs + NFC_CONFIG2);
- 		}
- 	} else {
-+		if (cpu_is_mx21()) {
-+			tmp = readw(host->regs + NFC_CONFIG1);
-+			tmp  &= ~NFC_INT_MSK;	/* Enable interrupt */
-+			writew(tmp, host->regs + NFC_CONFIG1);
-+		}
- 		while (max_retries-- > 0) {
- 			if (readw(host->regs + NFC_CONFIG2) & NFC_INT) {
- 				tmp = readw(host->regs + NFC_CONFIG2);
-@@ -211,6 +233,11 @@
- 			}
- 			udelay(1);
- 		}
-+		if (cpu_is_mx21()) {
-+			tmp = readw(host->regs + NFC_CONFIG1);
-+			tmp  |= NFC_INT_MSK;
-+			writew(tmp, host->regs + NFC_CONFIG1);
-+		}
- 		if (max_retries < 0)
- 			DEBUG(MTD_DEBUG_LEVEL0, "%s: INT not set\n",
- 			      __func__);
-@@ -559,6 +586,24 @@
-
- 	/* Command pre-processing step */
- 	switch (command) {
-+	case NAND_CMD_RESET:
-+		if (cpu_is_mx21()) {
-+			int max_retries = 100;
-+			writew(command, host->regs + NFC_FLASH_CMD);
-+			writew(NFC_CMD, host->regs + NFC_CONFIG2);
-+			/* Reset completion is indicated by NFC_CONFIG2 */
-+			/* being set to 0 */
-+			while (max_retries-- > 0) {
-+				if (readw(host->regs + NFC_CONFIG2) == 0) {
-+					break;
-+				}
-+				udelay(1);
-+			}
-+			if (max_retries < 0)
-+				DEBUG(MTD_DEBUG_LEVEL0, "%s: RESET failed\n",
-+				      __func__);
-+		}
-+		break;
-
- 	case NAND_CMD_STATUS:
- 		host->buf_start = 0;
-@@ -758,7 +803,7 @@
- 	tmp &= ~NFC_SP_EN;
- 	writew(tmp, host->regs + NFC_CONFIG1);
-
--	init_waitqueue_head(&host->irq_waitq);
-+	init_completion(&host->op_completion);
-
- 	host->irq = platform_get_irq(pdev, 0);
-
-@@ -766,6 +811,10 @@
- 	if (err)
- 		goto eirq;
-
-+	if (cpu_is_mx21()) {
-+		disable_irq(host->irq);
-+	}
-+
- 	/* Reset NAND */
- 	this->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+Thanks and Regards,
+Brijesh
