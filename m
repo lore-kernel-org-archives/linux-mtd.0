@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nzly4-0002ZG-3D
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 07:16:01 +0000
-Subject: Re: [PATCH] [ubifs] add update vfs super block infomation when
-	remount to ro mode.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: ZhangJieJing <kzjeef@gmail.com>
-In-Reply-To: <r2icf7b913c1004080000t3f7c8c15yb6cea17f0d0496b1@mail.gmail.com>
-References: <r2icf7b913c1004080000t3f7c8c15yb6cea17f0d0496b1@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Apr 2010 10:13:11 +0300
-Message-ID: <1270710791.6754.92.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nzm2l-0004uS-W3
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 07:20:52 +0000
+Received: by pvc30 with SMTP id 30so886324pvc.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 08 Apr 2010 00:20:50 -0700 (PDT)
+MIME-Version: 1.0
+Date: Thu, 8 Apr 2010 15:20:50 +0800
+Message-ID: <j2hcf7b913c1004080020j3161fc72ya4af9f4be666b2e9@mail.gmail.com>
+Subject: [ubifs] add update vfs super block infomation when remount to ro
+	mode.
+From: ZhangJieJing <kzjeef@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-fsdevel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+If some read/write error happens(eg.CRC error), ubifs make self a read
+only mode,
+but the vfs infomation still not update.
+This patch add this also make /proc/mounts update.
 
-On Thu, 2010-04-08 at 15:00 +0800, ZhangJieJing wrote:
-> If some read/write error happens(eg.CRC error), ubifs make self a read
-> only mode,
-> but the vfs infomation still not update.
-> This patch add this also make /proc/mounts update.
-> 
-> Signed-off-by: zhangjiejing <kzjeef@gmail.com>
-> 
-> Change-Id: I709ada21d1f6168d2e785eac389510e2b5edb2a4
-> ---
->  fs/ubifs/io.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+Signed-off-by: zhangjiejing <kzjeef@gmail.com>
 
-Could you please re-send this patch with CC to
-linux-fsdevel@vger.kernel.org
+Change-Id: I709ada21d1f6168d2e785eac389510e2b5edb2a4
+---
+ fs/ubifs/io.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 0168271..d33c233 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -63,6 +63,7 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
+        if (!c->ro_media) {
+                c->ro_media = 1;
+                c->no_chk_data_crc = 0;
++                c->vfs_sb->s_flags |= MS_RDONLY;
+                ubifs_warn("switched to read-only mode, error %d", err);
+                dbg_dump_stack();
+        }
+--
+1.6.3.3
+---
+Best regards,
+Zhang Jiejing
