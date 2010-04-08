@@ -1,11 +1,23 @@
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1NztY4-0004ES-T6
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 15:21:42 +0000
+Date: Thu, 8 Apr 2010 17:21:38 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Guillaume LECERF <glecerf@gmail.com>
+Subject: Re: [PATCH v2 6/7] mtd: cfi_cmdset_0002: add CFI detection for SST
+	39VF{16, 32}xx chips
+Message-ID: <20100408152138.GA13059@pengutronix.de>
+References: <20100330133448.20107.1077.stgit@shiryu.yomgui.biz>
+	<20100330133513.20107.72328.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
-Date: Thu, 8 Apr 2010 16:16:51 +0200
-Message-ID: <p2gba216b431004080716na31c9a27re2dc8621679401ba@mail.gmail.com>
-Subject: [PATCH v3 2/2] MXC: mxc_nand: support i.MX21
-From: Ivo Clarysse <ivo.clarysse@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="zYM0uCDKw75PZbzx"
+Content-Disposition: inline
+In-Reply-To: <20100330133513.20107.72328.stgit@shiryu.yomgui.biz>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,109 +27,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On i.MX21 SoCs, if the NFC_CONFIG1:NFC_INT_MASK bit is set,
-NFC_CONFIG2:NFC_INT always reads out zero, even if an
-operation is completed.  This patch uses enable_irq and
-disable_irq_nosync instead of NFC_CONFIG1:NFC_INT_MASK to
-mask NFC interrupts.  This allows NFC_CONFIG2:NFC_INT to also
-be used to detect operation completion on i.MX21.
 
-The i.MX21 NFC does not signal reset completion using
-NFC_CONFIG1:NFC_INT_MASK, so instead reset completion is
-tested by checking if NFC_CONFIG2 becomes 0.
+--zYM0uCDKw75PZbzx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Ivo Clarysse <ivo.clarysse@gmail.com>
----
-diff -u -r -N linux-2.6.33.2-reset/drivers/mtd/nand/mxc_nand.c
-linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c
---- linux-2.6.33.2-reset/drivers/mtd/nand/mxc_nand.c	2010-04-08
-15:54:10.000000000 +0200
-+++ linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c	2010-04-08
-14:01:58.000000000 +0200
-@@ -38,7 +38,7 @@
- #define DRIVER_NAME "mxc_nand"
+On Tue, Mar 30, 2010 at 03:35:13PM +0200, Guillaume LECERF wrote:
+> SST 39VF{16,32}xx chips use the 0x0701 command set, fully compatible
+> with the AMD one. This patch adds support for detecting them in CFI
+> mode.
+>=20
+> Based on a patch by Peter Turczaki [1].
+>=20
+> [1] http://www.mail-archive.com/uclinux-dev@uclinux.org/msg05737.html
+>=20
+> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c |   41 +++++++++++++++++++++++++++++=
+++++++
+>  drivers/mtd/chips/gen_probe.c       |    1 +
+>  2 files changed, 42 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_=
+cmdset_0002.c
+> index de1b4ba..e3e4a94 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -256,6 +256,36 @@ static void fixup_use_atmel_lock(struct mtd_info *mt=
+d, void *param)
+>  	mtd->flags |=3D MTD_POWERUP_LOCK;
+>  }
+> =20
+> +/** While reporting a mostly-correct CFI-Information block
+> +  * the eraseblock-region information is severely damaged in SST
+> +  * parts at least those of the 39VF{16,32,64}xxB series.
+> +  **/
+> +static void fixup_old_sst_eraseregion(struct mtd_info *mtd)
+> +{
+> +	struct map_info *map =3D mtd->priv;
+> +	struct cfi_private *cfi =3D map->fldrv_priv;
+> +
+> +	/** Although the part claims to have two eraseblock-regions
+> +	  * these refer to the same region within the flash-array.
+> +	  * Because a really CFI-Compliant part may only return
+> +	  * one eraseblock-length per physical memory region
+> +	  * we pretend the part said it had just one region ;)
+> +	  **/
+> +	cfi->cfiq->NumEraseRegions =3D 1;
+> +	cfi->cfiq->EraseRegionInfo[0] =3D cfi->cfiq->EraseRegionInfo[1];
+> +}
+> +
+> +static void fixup_sst39vf(struct mtd_info *mtd, void *param)
+> +{
+> +	struct map_info *map =3D mtd->priv;
+> +	struct cfi_private *cfi =3D map->fldrv_priv;
+> +
+> +	fixup_old_sst_eraseregion(mtd);
+> +
+> +	cfi->addr_unlock1 =3D 0x5555;
+> +	cfi->addr_unlock2 =3D 0x2AAA;
+> +}
+> +
+>  static void fixup_s29gl064n_sectors(struct mtd_info *mtd, void *param)
+>  {
+>  	struct map_info *map =3D mtd->priv;
+> @@ -278,6 +308,16 @@ static void fixup_s29gl032n_sectors(struct mtd_info =
+*mtd, void *param)
+>  	}
+>  }
+> =20
+> +/* Used to fix CFI-Tables of chips without Extended Query Tables
+> + */
+> +static struct cfi_fixup cfi_nopri_fixup_table[] =3D {
+> +	{ CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, // SST39VF1602
 
- #define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
--#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27())
-+#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
+I got a build error. CFI_MFR_SST is missing.
 
- /* Addresses for NFC registers */
- #define NFC_BUF_SIZE		0xE00
-@@ -168,11 +168,7 @@
- {
- 	struct mxc_nand_host *host = dev_id;
+> +	{ CFI_MFR_SST, 0x234B, fixup_sst39vf, NULL, }, // SST39VF1601
+> +	{ CFI_MFR_SST, 0x235A, fixup_sst39vf, NULL, }, // SST39VF3202
+> +	{ CFI_MFR_SST, 0x235B, fixup_sst39vf, NULL, }, // SST39VF3201
+> +	{ 0, 0, NULL, NULL }
+> +};
+> +
+>  static struct cfi_fixup cfi_fixup_table[] =3D {
+>  	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+>  #ifdef AMD_BOOTLOC_BUG
+> @@ -408,6 +448,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map=
+, int primary)
+>  			cfi->addr_unlock1 =3D 0x555;
+>  			cfi->addr_unlock2 =3D 0x2aa;
+>  		}
+> +		cfi_fixup(mtd, cfi_nopri_fixup_table);
+> =20
+>  		if (!cfi->addr_unlock1 || !cfi->addr_unlock2) {
+>  			kfree(mtd);
+> diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+> index 991c457..599c259 100644
+> --- a/drivers/mtd/chips/gen_probe.c
+> +++ b/drivers/mtd/chips/gen_probe.c
+> @@ -249,6 +249,7 @@ static struct mtd_info *check_cmd_set(struct map_info=
+ *map, int primary)
+>  #endif
+>  #ifdef CONFIG_MTD_CFI_AMDSTD
+>  	case P_ID_AMD_STD:
+> +	case P_ID_SST_OLD:
+>  		return cfi_cmdset_0002(map, primary);
+>  #endif
+>  #ifdef CONFIG_MTD_CFI_STAA
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
--	uint16_t tmp;
--
--	tmp = readw(host->regs + NFC_CONFIG1);
--	tmp |= NFC_INT_MSK; /* Disable interrupt */
--	writew(tmp, host->regs + NFC_CONFIG1);
-+	disable_irq_nosync(irq);
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
- 	wake_up(&host->irq_waitq);
+--zYM0uCDKw75PZbzx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-@@ -184,15 +180,13 @@
-  */
- static void wait_op_done(struct mxc_nand_host *host, int useirq)
- {
--	uint32_t tmp;
--	int max_retries = 2000;
-+	uint16_t tmp;
-+	int max_retries = 8000;
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
- 	if (useirq) {
- 		if ((readw(host->regs + NFC_CONFIG2) & NFC_INT) == 0) {
+iEYEARECAAYFAku99IIACgkQD27XaX1/VRt4SACfQ3gcMxz6xuitDycQTYwfmBWZ
+ZLcAn0XV9g7dnmpao3jEg8FoInAYByh7
+=81zy
+-----END PGP SIGNATURE-----
 
--			tmp = readw(host->regs + NFC_CONFIG1);
--			tmp  &= ~NFC_INT_MSK;	/* Enable interrupt */
--			writew(tmp, host->regs + NFC_CONFIG1);
-+			enable_irq(host->irq);
-
- 			wait_event(host->irq_waitq,
- 				readw(host->regs + NFC_CONFIG2) & NFC_INT);
-@@ -226,8 +220,23 @@
- 	writew(cmd, host->regs + NFC_FLASH_CMD);
- 	writew(NFC_CMD, host->regs + NFC_CONFIG2);
-
--	/* Wait for operation to complete */
--	wait_op_done(host, useirq);
-+	if (cpu_is_mx21() && (cmd == NAND_CMD_RESET)) {
-+		int max_retries = 100;
-+		/* Reset completion is indicated by NFC_CONFIG2 */
-+		/* being set to 0 */
-+		while (max_retries-- > 0) {
-+			if (readw(host->regs + NFC_CONFIG2) == 0) {
-+				break;
-+			}
-+			udelay(1);
-+		}
-+		if (max_retries < 0)
-+			DEBUG(MTD_DEBUG_LEVEL0, "%s: RESET failed\n",
-+			      __func__);
-+	} else {
-+		/* Wait for operation to complete */
-+		wait_op_done(host, useirq);
-+	}
- }
-
- /* This function sends an address (or partial address) to the
-@@ -548,9 +557,9 @@
- 	struct mxc_nand_host *host = nand_chip->priv;
- 	uint16_t tmp;
-
--	/* disable interrupt, disable spare enable */
-+	/* enable interrupt, disable spare enable */
- 	tmp = readw(host->regs + NFC_CONFIG1);
--	tmp |= NFC_INT_MSK;
-+	tmp &= ~NFC_INT_MSK;
- 	tmp &= ~NFC_SP_EN;
- 	if (nand_chip->ecc.mode == NAND_ECC_HW) {
- 		tmp |= NFC_ECC_EN;
-@@ -819,7 +828,7 @@
-
- 	host->irq = platform_get_irq(pdev, 0);
-
--	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
-+	err = request_irq(host->irq, mxc_nfc_irq, IRQF_DISABLED, DRIVER_NAME, host);
- 	if (err)
- 		goto eirq;
+--zYM0uCDKw75PZbzx--
