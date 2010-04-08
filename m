@@ -1,19 +1,20 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nzm2l-0004uS-W3
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 07:20:52 +0000
-Received: by pvc30 with SMTP id 30so886324pvc.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Apr 2010 00:20:50 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 8 Apr 2010 15:20:50 +0800
-Message-ID: <j2hcf7b913c1004080020j3161fc72ya4af9f4be666b2e9@mail.gmail.com>
-Subject: [ubifs] add update vfs super block infomation when remount to ro
-	mode.
-From: ZhangJieJing <kzjeef@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-fsdevel@vger.kernel.org, dedekind1@gmail.com
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nzmma-0002I6-7b
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 08:08:13 +0000
+Subject: Re: CONFIG_MTD_DEBUG vs generic DEBUG support in kernel.h
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ferenc Wagner <wferi@niif.hu>
+In-Reply-To: <87vdctzjn4.fsf@tac.ki.iif.hu>
+References: <878w9swhlv.fsf@tac.ki.iif.hu>
+	<1268744759.20017.58.camel@localhost>  <87vdctzjn4.fsf@tac.ki.iif.hu>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 08 Apr 2010 11:06:20 +0300
+Message-ID: <1270713980.6754.94.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If some read/write error happens(eg.CRC error), ubifs make self a read
-only mode,
-but the vfs infomation still not update.
-This patch add this also make /proc/mounts update.
+On Thu, 2010-03-18 at 17:20 +0100, Ferenc Wagner wrote:
+> Artem Bityutskiy <dedekind1@gmail.com> writes:
+> 
+> > On Tue, 2010-03-16 at 13:55 +0100, Ferenc Wagner wrote:
+> > 
+> >> include/linux/mtd/mtd.h contains the following snippet:
+> >> 
+> >> #ifdef CONFIG_MTD_DEBUG
+> >> #define DEBUG(n, args...)                               \
+> >>         do {                                            \
+> >>                 if (n <= CONFIG_MTD_DEBUG_VERBOSE)      \
+> >>                         printk(KERN_INFO args);         \
+> >>         } while(0)
+> >> 
+> >> which conflicts with the generic debugging support in
+> >> include/linux/kernel.h:
+> >> 
+> >> #ifdef DEBUG
+> >> #define pr_devel(fmt, ...) \
+> >>         printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
+> >> 
+> >> (that is, gcc emits redefinition warnings on modules which
+> >> #define DEBUG on their own and also include mtd.h)
+> >> Unfortunately, the DEBUG macro is used rather heavily under
+> >> drivers/mtd.  Should we resolve this somehow or is it better
+> >> to just live with it?
+> >
+> > IMO, this MTD debug stuff is not very useful and could be just killed.
+> 
+> Well, I found the mtdcore debugging somewhat useful.  But anyway,
+> killing it would be about as much work as renaming the macro, or using
+> something standard as dev_(v)dbg or pr_debug/devel (btw. what's the
+> difference?) instead.  I'm willing to do some mechanical work on either
+> one if you wish.
 
-Signed-off-by: zhangjiejing <kzjeef@gmail.com>
+Yeah, probalby you can transform them to dev_dbg. But the "levels" do
+not seem to be available with dev_dbg, so I guess you could nuke some
+higher level messages?
 
-Change-Id: I709ada21d1f6168d2e785eac389510e2b5edb2a4
----
- fs/ubifs/io.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
-
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 0168271..d33c233 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -63,6 +63,7 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
-        if (!c->ro_media) {
-                c->ro_media = 1;
-                c->no_chk_data_crc = 0;
-+                c->vfs_sb->s_flags |= MS_RDONLY;
-                ubifs_warn("switched to read-only mode, error %d", err);
-                dbg_dump_stack();
-        }
---
-1.6.3.3
----
-Best regards,
-Zhang Jiejing
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
