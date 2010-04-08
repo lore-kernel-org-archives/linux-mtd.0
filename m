@@ -1,21 +1,23 @@
-Received: from mail-qy0-f183.google.com ([209.85.221.183])
+Received: from mail-bw0-f218.google.com ([209.85.218.218])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NzuE1-0007LK-Eb
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 16:05:02 +0000
-Received: by qyk13 with SMTP id 13so2738972qyk.18
+	id 1NzuE3-0007LZ-GL
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 16:05:07 +0000
+Received: by bwz10 with SMTP id 10so1877416bwz.2
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Apr 2010 09:04:58 -0700 (PDT)
+	Thu, 08 Apr 2010 09:05:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ce9ab5791001060558u362f17baj5ee90e9b4adb72a7@mail.gmail.com>
-References: <ce9ab5791001060558u362f17baj5ee90e9b4adb72a7@mail.gmail.com>
-Date: Thu, 8 Apr 2010 08:58:00 -0700
-Message-ID: <l2v5e088bd91004080858ub5dd068ci711a5399098ba0ee@mail.gmail.com>
-Subject: Re: [PATCH 0/3][NAND][OMAP]: fixing omap nand driver issues
-From: Steve Sakoman <sakoman@gmail.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <1270717452-8993-2-git-send-email-dedekind1@gmail.com>
+References: <1270717452-8993-1-git-send-email-dedekind1@gmail.com>
+	<1270717452-8993-2-git-send-email-dedekind1@gmail.com>
+Date: Thu, 8 Apr 2010 18:05:00 +0200
+Message-ID: <v2j71cd59b01004080905kc6a59315qbab3e3c6f4f2996b@mail.gmail.com>
+Subject: Re: [PATCH 2/4] UBI: sync ubi-user.h with the lates kernel verion
+From: Corentin Chary <corentin.chary@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org,
+	Mika Westerberg <ext-mika.1.westerberg@nokia.com>,
+	Jon Ringle <jon@ringle.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 6, 2010 at 5:58 AM, Vimal Singh <vimal.newwork@gmail.com> wrote=
-:
-> From 3700088e8da8c890d9e4c6eb626e18287d149b97 Mon Sep 17 00:00:00 2001
-> From: Vimal Singh <vimalsingh@ti.com>
-> Date: Tue, 5 Jan 2010 16:43:08 +0530
-> Subject: [PATCH] fixing omap nand driver issues
->
-> fixing omap nand driver issues.
->
-> Vimal Singh (3):
-> =A0Fixing compilation warning for 'nand/omap2.c'
-> =A0NAND: OMAP: correct 'info' pointer in 'omap_nand_remove'
-> =A0NAND: OMAP: Fixing issue in oamp nand driver in prefetch mode read
+> + * UBI can attach block and MTD devices. To attach a block device, @bdev_major
+> + * and @bdev_minor have to contain block device major an minor numbers. And
+> + * @mtd_num and @vid_hdr_offset have to contain zeroes. Note, the major number
+> + * cannot be zero. To attach an MTD device, @bdev_major and @bdev_minor have to
+> + * contain zeroes, while @mtd_num has to contain the MTD device number to
+> + * attach.
 
-What is the status of this patch series?
+I can't find anything about UBI being able to attach block devices in
+http://git.infradead.org/ubi-2.6.git,
+did I miss something ?
+Thanks
 
-I've been testing them on Overo and Beagle and they do indeed solve
-the prefetch issue.  So if they are queued waiting an ack:
-
-Acked-by: Steve Sakoman <steve@sakoman.com>
+-- 
+Corentin Chary
+http://xf.iksaif.net
