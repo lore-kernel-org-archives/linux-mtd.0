@@ -1,27 +1,21 @@
-Received: from fg-out-1718.google.com ([72.14.220.152])
+Received: from mail-qy0-f183.google.com ([209.85.221.183])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1NztiY-0006cl-CC
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 15:32:31 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so879119fga.0
+	id 1NzuE1-0007LK-Eb
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 16:05:02 +0000
+Received: by qyk13 with SMTP id 13so2738972qyk.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Apr 2010 08:32:28 -0700 (PDT)
+	Thu, 08 Apr 2010 09:04:58 -0700 (PDT)
 MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <20100408152138.GA13059@pengutronix.de>
-References: <20100330133448.20107.1077.stgit@shiryu.yomgui.biz>
-	<20100330133513.20107.72328.stgit@shiryu.yomgui.biz>
-	<20100408152138.GA13059@pengutronix.de>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Thu, 8 Apr 2010 17:32:08 +0200
-Message-ID: <r2hb8e9195f1004080832v76cc8f20x941d6d2eb697850f@mail.gmail.com>
-Subject: Re: [PATCH v2 6/7] mtd: cfi_cmdset_0002: add CFI detection for SST
-	39VF{16, 32}xx chips
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <ce9ab5791001060558u362f17baj5ee90e9b4adb72a7@mail.gmail.com>
+References: <ce9ab5791001060558u362f17baj5ee90e9b4adb72a7@mail.gmail.com>
+Date: Thu, 8 Apr 2010 08:58:00 -0700
+Message-ID: <l2v5e088bd91004080858ub5dd068ci711a5399098ba0ee@mail.gmail.com>
+Subject: Re: [PATCH 0/3][NAND][OMAP]: fixing omap nand driver issues
+From: Steve Sakoman <sakoman@gmail.com>
+To: Vimal Singh <vimal.newwork@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-omap@vger.kernel.org, Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/4/8 Wolfram Sang <w.sang@pengutronix.de>:
->> +/* Used to fix CFI-Tables of chips without Extended Query Tables
->> + */
->> +static struct cfi_fixup cfi_nopri_fixup_table[] =3D {
->> + =C2=A0 =C2=A0 { CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, // SST39V=
-F1602
+On Wed, Jan 6, 2010 at 5:58 AM, Vimal Singh <vimal.newwork@gmail.com> wrote=
+:
+> From 3700088e8da8c890d9e4c6eb626e18287d149b97 Mon Sep 17 00:00:00 2001
+> From: Vimal Singh <vimalsingh@ti.com>
+> Date: Tue, 5 Jan 2010 16:43:08 +0530
+> Subject: [PATCH] fixing omap nand driver issues
 >
-> I got a build error. CFI_MFR_SST is missing.
+> fixing omap nand driver issues.
+>
+> Vimal Singh (3):
+> =A0Fixing compilation warning for 'nand/omap2.c'
+> =A0NAND: OMAP: correct 'info' pointer in 'omap_nand_remove'
+> =A0NAND: OMAP: Fixing issue in oamp nand driver in prefetch mode read
 
-This patch depends on this commit
-http://git.infradead.org/mtd-2.6.git/commit/f3e69c6584be2db1ccd5292d6a1d7c5=
-66d265701.
-Your personnal repo must be outdated.
+What is the status of this patch series?
 
+I've been testing them on Overo and Beagle and they do indeed solve
+the prefetch issue.  So if they are queued waiting an ack:
 
---=20
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+Acked-by: Steve Sakoman <steve@sakoman.com>
