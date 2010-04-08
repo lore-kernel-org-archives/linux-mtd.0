@@ -1,18 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1NzVUn-0005il-TQ
-	for linux-mtd@lists.infradead.org; Wed, 07 Apr 2010 13:40:44 +0000
-Date: Wed, 7 Apr 2010 15:40:39 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Ivo Clarysse <ivo.clarysse@gmail.com>
-Subject: Re: [PATCH] ARM: MXC: mxc_nand: support i.MX21
-Message-ID: <20100407134039.GE3688@pengutronix.de>
-References: <q2tba216b431004060652jeb9df33eqd141836e46980f00@mail.gmail.com>
+Received: from mail-pz0-f182.google.com ([209.85.222.182])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1Nzlit-0002MD-Il
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 07:00:20 +0000
+Received: by pzk12 with SMTP id 12so1680243pzk.28
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 08 Apr 2010 00:00:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <q2tba216b431004060652jeb9df33eqd141836e46980f00@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Date: Thu, 8 Apr 2010 15:00:16 +0800
+Message-ID: <r2icf7b913c1004080000t3f7c8c15yb6cea17f0d0496b1@mail.gmail.com>
+Subject: [PATCH] [ubifs] add update vfs super block infomation when remount to
+	ro mode.
+From: ZhangJieJing <kzjeef@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,197 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 06, 2010 at 03:52:23PM +0200, Ivo Clarysse wrote:
-> Allow mxc_nand.c to function on i.MX21 SoCs, since:
-> 
-> 1) On i.MX21, if the NFC_INT_MASK bit in NFC_CONFIG1 is set, the NFC_INT
->   bit of NFC_CONFIG2 always reads out zero, even if an operation is
->   completed.
-> 
-> 2) On i.MX21, sending a RESET command to the NAND flash controller does
->   not trigger an interrupt, nor does it cause the NFC_INT bit of
->   NFC_CONFIG2 to get set.
-> 
-> To accommodate for this, I modified the interrupt handler to use
-> completions instead of a wait queue, and check the value of NFC_CONFIG2
-> in the interrupt handler instead of after wait_event(..)
-> 
-> To allow polling for a basic NFC operation to complete, I leave
-> the interrupt handler disabled using disable_irq(..) and only enable it
-> for interrupt-based basic operations.
-> 
-> Signed-off-by: Ivo Clarysse <ivo.clarysse@gmail.com>
-> ---
-> diff -u -r -N linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c
-> linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c
-> --- linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c	2010-04-02
-> 01:02:33.000000000 +0200
-> +++ linux-2.6.33.2-mine/drivers/mtd/nand/mxc_nand.c	2010-04-06
-> 15:40:55.000000000 +0200
-> @@ -38,7 +38,7 @@
->  #define DRIVER_NAME "mxc_nand"
-> 
->  #define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
-> -#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27())
-> +#define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
-> 
->  /* Addresses for NFC registers */
->  #define NFC_BUF_SIZE		0xE00
-> @@ -111,7 +111,7 @@
->  	int			clk_act;
->  	int			irq;
-> 
-> -	wait_queue_head_t	irq_waitq;
-> +	struct completion	op_completion;
-> 
->  	uint8_t			*data_buf;
->  	unsigned int		buf_start;
-> @@ -168,13 +168,21 @@
->  {
->  	struct mxc_nand_host *host = dev_id;
-> 
-> -	uint16_t tmp;
-> +	uint16_t tmp, config2;
-> +
-> +	/* On i.MX21, setting NFC_INT_MSK of NFC_CONFIG2
-> +	 * will clear NFC_INT in NFC_CONFIG1, so we read
-> +	 * NFC_CONFIG2 first.
-> +	 */
-> +	config2 = readw(host->regs + NFC_CONFIG2);
-> 
->  	tmp = readw(host->regs + NFC_CONFIG1);
->  	tmp |= NFC_INT_MSK; /* Disable interrupt */
->  	writew(tmp, host->regs + NFC_CONFIG1);
-> 
-> -	wake_up(&host->irq_waitq);
-> +	if (config2 & NFC_INT) {
-> +		complete(&host->op_completion);
-> +	}
+If some read/write error happens(eg.CRC error), ubifs make self a read
+only mode,
+but the vfs infomation still not update.
+This patch add this also make /proc/mounts update.
 
-Why do we need the check for NFC_INT? This is no shared interrupt so we
-can be sure the nfc actually has an interrupt.
-What's wrong with the current waitqueue approach?
+Signed-off-by: zhangjiejing <kzjeef@gmail.com>
 
-> 
->  	return IRQ_HANDLED;
->  }
-> @@ -185,7 +193,7 @@
->  static void wait_op_done(struct mxc_nand_host *host, int useirq)
->  {
->  	uint32_t tmp;
-> -	int max_retries = 2000;
-> +	int max_retries = 8000;
-> 
->  	if (useirq) {
->  		if ((readw(host->regs + NFC_CONFIG2) & NFC_INT) == 0) {
-> @@ -194,14 +202,28 @@
->  			tmp  &= ~NFC_INT_MSK;	/* Enable interrupt */
->  			writew(tmp, host->regs + NFC_CONFIG1);
-> 
-> -			wait_event(host->irq_waitq,
-> -				readw(host->regs + NFC_CONFIG2) & NFC_INT);
-> +			INIT_COMPLETION(host->op_completion);
+Change-Id: I709ada21d1f6168d2e785eac389510e2b5edb2a4
+---
+=A0fs/ubifs/io.c |=A0=A0=A0 1 +
+=A01 files changed, 1 insertions(+), 0 deletions(-)
 
-This does not work. You have to call INIT_COMPLETION before enabling the
-interrupt, otherwise we get stuck when the interrupt comes between
-enabling it and initialising the completion.
-
-> +
-> +			if (cpu_is_mx21()) {
-> +				enable_irq(host->irq);
-> +			}
-> +
-> +			wait_for_completion(&host->op_completion);
-> +
-> +			if (cpu_is_mx21()) {
-> +				disable_irq(host->irq);
-> +			}
-> 
->  			tmp = readw(host->regs + NFC_CONFIG2);
->  			tmp  &= ~NFC_INT;
->  			writew(tmp, host->regs + NFC_CONFIG2);
->  		}
->  	} else {
-> +		if (cpu_is_mx21()) {
-> +			tmp = readw(host->regs + NFC_CONFIG1);
-> +			tmp  &= ~NFC_INT_MSK;	/* Enable interrupt */
-> +			writew(tmp, host->regs + NFC_CONFIG1);
-> +		}
->  		while (max_retries-- > 0) {
->  			if (readw(host->regs + NFC_CONFIG2) & NFC_INT) {
->  				tmp = readw(host->regs + NFC_CONFIG2);
-> @@ -211,6 +233,11 @@
->  			}
->  			udelay(1);
->  		}
-> +		if (cpu_is_mx21()) {
-> +			tmp = readw(host->regs + NFC_CONFIG1);
-> +			tmp  |= NFC_INT_MSK;
-> +			writew(tmp, host->regs + NFC_CONFIG1);
-> +		}
->  		if (max_retries < 0)
->  			DEBUG(MTD_DEBUG_LEVEL0, "%s: INT not set\n",
->  			      __func__);
-> @@ -559,6 +586,24 @@
-> 
->  	/* Command pre-processing step */
->  	switch (command) {
-> +	case NAND_CMD_RESET:
-> +		if (cpu_is_mx21()) {
-> +			int max_retries = 100;
-> +			writew(command, host->regs + NFC_FLASH_CMD);
-> +			writew(NFC_CMD, host->regs + NFC_CONFIG2);
-
-I just realized that the original driver does not handle the reset
-command at all. Maybe we should fix this first, like this:
-
-	case NAND_CMD_RESET:
-		writew(command, host->regs + NFC_FLASH_CMD);
-		writew(NFC_CMD, host->regs + NFC_CONFIG2);
-		if (cpu_is_mx21()){
-			...
-		} else
-			wait_op_done(host, 0);
-
-> +			/* Reset completion is indicated by NFC_CONFIG2 */
-> +			/* being set to 0 */
-> +			while (max_retries-- > 0) {
-> +				if (readw(host->regs + NFC_CONFIG2) == 0) {
-> +					break;
-> +				}
-> +				udelay(1);
-> +			}
-> +			if (max_retries < 0)
-> +				DEBUG(MTD_DEBUG_LEVEL0, "%s: RESET failed\n",
-> +				      __func__);
-> +		}
-> +		break;
-> 
->  	case NAND_CMD_STATUS:
->  		host->buf_start = 0;
-> @@ -758,7 +803,7 @@
->  	tmp &= ~NFC_SP_EN;
->  	writew(tmp, host->regs + NFC_CONFIG1);
-> 
-> -	init_waitqueue_head(&host->irq_waitq);
-> +	init_completion(&host->op_completion);
-> 
->  	host->irq = platform_get_irq(pdev, 0);
-> 
-> @@ -766,6 +811,10 @@
->  	if (err)
->  		goto eirq;
-> 
-> +	if (cpu_is_mx21()) {
-> +		disable_irq(host->irq);
-> +	}
-> +
->  	/* Reset NAND */
->  	this->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index 0168271..d33c233 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -63,6 +63,7 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
+=A0=A0=A0=A0=A0=A0=A0=A0if (!c->ro_media) {
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0c->ro_media =3D 1;
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0c->no_chk_data_crc =3D 0;
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 c->vfs_sb->s_flags |=3D MS_R=
+DONLY;
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0ubifs_warn("switched to rea=
+d-only mode, error %d", err);
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0dbg_dump_stack();
+=A0=A0=A0=A0=A0=A0=A0=A0}
+--
+1.6.3.3
