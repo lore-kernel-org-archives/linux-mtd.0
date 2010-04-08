@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nzn2U-0006Dq-A8
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 08:24:39 +0000
-Subject: Re: UBIFS and MLC NAND Flash
+	id 1Nzn3b-0006qu-8Z
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 08:25:48 +0000
+Subject: Re: ubiattach error!
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Pedro I. Sanchez" <psanchez@fosstel.com>
-In-Reply-To: <4BA7A183.7040206@fosstel.com>
-References: <4BA7A183.7040206@fosstel.com>
+To: jerry <jerrydreaming@gmail.com>
+In-Reply-To: <71103bce1003230226q7fce2443vad3853d7c6d6d947@mail.gmail.com>
+References: <71103bce1003230226q7fce2443vad3853d7c6d6d947@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Apr 2010 11:22:41 +0300
-Message-ID: <1270714961.6754.107.camel@localhost>
+Date: Thu, 08 Apr 2010 11:23:52 +0300
+Message-ID: <1270715032.6754.108.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,68 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Mon, 2010-03-22 at 12:57 -0400, Pedro I. Sanchez wrote:
-> Hello,
+On Tue, 2010-03-23 at 17:26 +0800, jerry wrote:
+> hi all,
+> I am trying to use ubi to attach mtd3(3.9G),but there are some
+> question.the mlc is SAMSUNG K9LBG080D,the kernel version is 2.6.28
+> # flash_erase  /dev/mtd3;
 > 
-> I have a few questions regarding this topic.
+> # ubiattach /dev/ubi_ctrl -m 3
+> UBI: attaching mtd3 to ubi0
+> UBI: physical eraseblock size:   524288 bytes (512 KiB)
+> UBI: logical eraseblock size:    516096 bytes
+> UBI: smallest flash I/O unit:    4096
+> UBI: VID header offset:          4096 (aligned 4096)
+> UBI: data offset:                8192
+> UBI: empty MTD device detected
+> UBI: create volume table (copy #1)
+> UBI: create volume table (copy #2)
+> UBI: attached mtd3 to ubi0
+> UBI: MTD device name:            "Filesys partition"
+> UBI: MTD device size:            4078 MiB
+> UBI: number of good PEBs:        8156
+> UBI: number of bad PEBs:         0
+> UBI: max. allowed volumes:       128
+> UBI: wear-leveling threshold:    4096
+> UBI: number of internal volumes: 1
+> UBI: number of user volumes:     0
+> UBI: available PEBs:             8071
+> UBI: total number of reserved PEBs: 85
+> UBI: number of PEBs reserved for bad PEB handling: 81
+> UBI: max/mean erase counter: 0/0
+> UBI: background thread "ubi_bgt0d" started, PID 452
+> UBI device number 0, total 8156 LEBs (fae48000 bytes, 3.9 GiB),
+> available 8071 LEBs (f8472000 bytes, 3.9 GiB), LEB size 7e000 bytes
+> (504.0 KiB)
 > 
-> 1. The UBIFS FAQ has a summary of the state of the support for MLC NAND 
-> flash here:
+> # ubimkvol /dev/ubi0 -n 0 -N uu -s 100MiB;
+> Volume ID 0, size 204 LEBs (105283584 bytes, 100.4 MiB), LEB size
+> 516096 bytes (504.0 KiB), dynamic, name "uu", alignment 1
 > 
->   http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc
+> # ubidetach /dev/ubi_ctrl -m 3
+> UBI: mtd3 is detached from ubi0
 > 
-> The question is, is this still the case? Does the FAQ reflect the 
-> current state of affairs?
+> # ubiattach /dev/ubi_ctrl -m 3
+> UBI: attaching mtd3 to ubi0
+> UBI: physical eraseblock size:   524288 bytes (512 KiB)
+> UBI: logical eraseblock size:    516096 bytes
+> UBI: smallest flash I/O unit:    4096
+> UBI: VID header offset:          4096 (aligned 4096)
+> UBI: data offset:                8192
+> UBI error: ubi_scan_add_used: two LEBs with same sequence number 4
+> ubiattach: error!: cannot attach mtd3
+>           error 22 (Invalid argument)
 
-I think so.
-
-> 2. I have several boards with MLC NAND flash running the Linux kernel 
-> 2.6.29 and UBIFS. I am seeing a fairly large rate of file "corruption" 
-> errors, files that all of a sudden become unreadable. Curiously enough, 
-> they have been read-only files in all cases, program executables and 
-> shared libraries.
-
-Hmm. Do you do unclean power cuts?
-
-> Would upgrading to a more recent kernel, or back porting the latest 
-> UBIFS code, help? Shall I expect better support for MLC NAND flash in 
-> the latest UBIFS code?
-
-You did not specify whether you pulled the ubifs-v2.6.29.git tree. If
-you did this, then your UBI/UBIFS should be the same as in the latest
-kernels. Please, do this, although this will probably not solve your
-corruption problems, but you'll have other bug-fixes we have made since
-2.6.29 times.
-
-Please, take a look here as well:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
-
-Did you run MTD tests? If no, run them. You may have issues on driver/HW
-levels.
-
-Vs. "Shall I expect better support" - not as far as I know, because I
-have not heard if anyone is working on this. But you could do that and
-contribute.
-
-> 3. I am also seeing other errors where it is the U-Boot or the Kernel 
-> partitions that become corrupted. UBIFS is not involved there directly 
-> since these partitions are at the mtd level and outside the UBI layer.
-> 
-> More specifically, my flash is partitioned as mtd0, mtd1, mtd2, mtd3, 
-> mtd4. Only mtd4 has UBI/UBIFS on top. Is it possible that some flash 
-> handling problems in UBIFS (mtd4) "spill over" other non-UBIFS mtd 
-> partitions?
-
-May be. Start with validating your MTD driver using MTD tests. This may
-help you to narrow down the problem.
-
-> 4. Other than minimizing flash writes, is there any other suggestion on 
-> what to do to improve on the failure rate I see in the file system?
-
-Not sure. You should carefully investigate you problems and find out the
-nature of the failures, and then we can discuss that.
+Looks weird, is this reproducible with nandsim?
 
 -- 
 Best Regards,
