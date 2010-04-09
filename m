@@ -1,23 +1,24 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1Nzuk2-0001Ej-Pu
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2010 16:38:07 +0000
-Subject: Re: [PATCH 2/4] UBI: sync ubi-user.h with the lates kernel verion
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Corentin Chary <corentin.chary@gmail.com>
-In-Reply-To: <v2j71cd59b01004080905kc6a59315qbab3e3c6f4f2996b@mail.gmail.com>
-References: <1270717452-8993-1-git-send-email-dedekind1@gmail.com>
-	<1270717452-8993-2-git-send-email-dedekind1@gmail.com>
-	<v2j71cd59b01004080905kc6a59315qbab3e3c6f4f2996b@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Apr 2010 19:36:02 +0300
-Message-ID: <1270744562.9120.22.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
-	Mika Westerberg <ext-mika.1.westerberg@nokia.com>,
-	Jon Ringle <jon@ringle.org>
-Reply-To: dedekind1@gmail.com
+	id 1O07Qt-0006hw-6U
+	for linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 06:11:11 +0000
+Received: from dbdp20.itg.ti.com ([172.24.170.38])
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id o396B5gj024692
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Apr 2010 01:11:07 -0500
+Received: from dbde70.ent.ti.com (localhost [127.0.0.1])
+	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id o396B3km001709
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 9 Apr 2010 11:41:04 +0530 (IST)
+From: "Kumar, Satish" <x0124230@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Fri, 9 Apr 2010 11:45:06 +0530
+Subject: Subscription to MTD Drivers
+Message-ID: <FCCFB4CDC6E5564B9182F639FC3560870304A65630@dbde02.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +28,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-04-08 at 18:05 +0200, Corentin Chary wrote:
-> > + * UBI can attach block and MTD devices. To attach a block device, @bdev_major
-> > + * and @bdev_minor have to contain block device major an minor numbers. And
-> > + * @mtd_num and @vid_hdr_offset have to contain zeroes. Note, the major number
-> > + * cannot be zero. To attach an MTD device, @bdev_major and @bdev_minor have to
-> > + * contain zeroes, while @mtd_num has to contain the MTD device number to
-> > + * attach.
-> 
-> I can't find anything about UBI being able to attach block devices in
-> http://git.infradead.org/ubi-2.6.git,
-> did I miss something ?
 
-Oh, right. This is wrong patch, sorry, it is not needed. The other are
-fine.
+Please Subscribe to MTD Drivers list.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thank you
+Regards
+Satish.G
