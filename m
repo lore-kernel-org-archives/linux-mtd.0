@@ -1,24 +1,12 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O07Qt-0006hw-6U
-	for linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 06:11:11 +0000
-Received: from dbdp20.itg.ti.com ([172.24.170.38])
-	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id o396B5gj024692
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Fri, 9 Apr 2010 01:11:07 -0500
-Received: from dbde70.ent.ti.com (localhost [127.0.0.1])
-	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id o396B3km001709
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 9 Apr 2010 11:41:04 +0530 (IST)
-From: "Kumar, Satish" <x0124230@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Fri, 9 Apr 2010 11:45:06 +0530
-Subject: Subscription to MTD Drivers
-Message-ID: <FCCFB4CDC6E5564B9182F639FC3560870304A65630@dbde02.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN
+Date: Fri, 09 Apr 2010 08:57:41 +0200
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH] Add support for Samsung SoC OneNAND controllers
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Message-id: <1270796266-8272-1-git-send-email-m.szyprowski@samsung.com>
+Cc: kyungmin.park@samsung.com, ben-linux@fluff.org, m.szyprowski@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,9 +16,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch series add support for Samsung SoC OneNAND controllers found
+on S3C64xx, S5PC100 and S5PC110 chips. A few extensions to OneNAND core
+were required to make the driver working properly on all supported SoCs.
 
-Please Subscribe to MTD Drivers list.
+The required platform setup code has been posted to relevant mailing
+list (ARM Kernel: "[PATCH] ARM: Samsung: Add platform support code for
+OneNAND controller" thread).
 
-Thank you
-Regards
-Satish.G
+This patch series includes:
+
+[PATCH 1/5] drivers: mtd: onenand: add support for chips with 4KB page size
+[PATCH 2/5] drivers: mtd: onenand: allocate verify buffer in the core
+[PATCH 3/5] drivers: mtd: onenand: add new callback for bufferram read
+[PATCH 4/5] drivers: mtd: onenand: add workaround for SYNC_WRITE mode
+[PATCH 5/5] drivers: mtd: add Samsung SoC OneNAND driver
