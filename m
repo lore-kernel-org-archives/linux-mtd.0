@@ -1,37 +1,16 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O0AOf-00035c-Lc
-	for linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 09:21:06 +0000
-Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0L0L004M4RB0CS@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 18:21:01 +0900 (KST)
-Received: from amulsaha ([107.108.214.58])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L0L00KP6RAYGB@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 18:21:00 +0900 (KST)
-Date: Fri, 09 Apr 2010 14:51:25 +0530
-From: Amul Kumar Saha <amul.saha@samsung.com>
-Subject: Re: MLC Support in JFFS2
-To: massimo cirillo <maxcir@gmail.com>
-Message-id: <980E75202FF04069AAE27686AB103C09@sisodomain.com>
-Content-transfer-encoding: 7BIT
-References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
-	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
-	<1244808209.5847.447.camel@localhost.localdomain>
-	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
-	<1244813557.3511.1272.camel@macbook.infradead.org>
-	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
-	<1245698113.25547.229.camel@macbook.infradead.org>
-	<E19B9A1D84D0455981E564D51B3C641F@sisodomain.com>
-	<p2r62cbdcd91003310607g3507fb29gd8ecddf3d3a3dfaa@mail.gmail.com>
-	<04513CE719AF46EDACC26900E39ED2F2@sisodomain.com>
-	<h2u62cbdcd91004050452o6c30aa38tee35c2a41b7f4bd5@mail.gmail.com>
-Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>, dedekind@infradead.org,
-	apgmoorthy <moorthy.apg@samsung.com>, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, raghav.gupta@samsung.com,
-	v.dalal@samsung.com, David Woodhouse <dwmw2@infradead.org>
+Received: from [69.28.251.93] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O0NR7-0006Pd-2k
+	for linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 23:16:29 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Fri, 9 Apr 2010 15:45:38 -0700
+To: <dwmw2@infradead.org>
+Subject: [PATCH] MTD: Suppress warnings in inline_map_read()
+Message-Id: <fb80b9139bec21ac8bd4ddcec0abeb9c1ad39ad5@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,28 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+With gcc 4.4.3 -O2 on MIPS32:
 
+drivers/mtd/chips/cfi_util.c: In function 'cfi_qry_present':
+include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
+include/linux/mtd/map.h:375: note: 'r' was declared here
+include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
+include/linux/mtd/map.h:375: note: 'r' was declared here
 
->Ok,
->but at the remount how do you verify if the TOKEN_BLOCK
->is updated or not (in case of power loss) ? I suggest using
->a commit mark (one page wasted) at the end of the update
->procedure.
->So you'll have in the TOKEN_BLOCK the following layout:
->
->MAGIC_NUMBER of the TOKEN_BLOCK
->ready_to_use info
->commit mark
->
->What do you think ?
->
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ include/linux/mtd/map.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Yes.
-However, the TOKEN_BLOCK update would then
-only be limited to mount and unmount.
-As writing a commit mark while the system is still running,
-would validate an invalid block on abrupt power-off.
-
-Regards,
-Amul 
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index b981b87..74f0277 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -372,7 +372,7 @@ static inline map_word map_word_ff(struct map_info *map)
+ 
+ static inline map_word inline_map_read(struct map_info *map, unsigned long ofs)
+ {
+-	map_word r;
++	map_word r = { { 0 } };
+ 
+ 	if (map_bankwidth_is_1(map))
+ 		r.x[0] = __raw_readb(map->virt + ofs);
+-- 
+1.6.3.1
