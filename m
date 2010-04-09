@@ -1,25 +1,37 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O0A0F-0004Fu-Rk
-	for linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 08:55:53 +0000
-Date: Fri, 9 Apr 2010 10:55:48 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Guillaume LECERF <glecerf@gmail.com>
-Subject: Re: [PATCH v2 6/7] mtd: cfi_cmdset_0002: add CFI detection for SST
-	39VF{16, 32}xx chips
-Message-ID: <20100409085548.GF14430@pengutronix.de>
-References: <20100330133448.20107.1077.stgit@shiryu.yomgui.biz>
-	<20100330133513.20107.72328.stgit@shiryu.yomgui.biz>
-	<20100408152138.GA13059@pengutronix.de>
-	<r2hb8e9195f1004080832v76cc8f20x941d6d2eb697850f@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="+jhVVhN62yS6hEJ8"
-Content-Disposition: inline
-In-Reply-To: <r2hb8e9195f1004080832v76cc8f20x941d6d2eb697850f@mail.gmail.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O0AOf-00035c-Lc
+	for linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 09:21:06 +0000
+Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0L0L004M4RB0CS@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 18:21:01 +0900 (KST)
+Received: from amulsaha ([107.108.214.58])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L0L00KP6RAYGB@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 09 Apr 2010 18:21:00 +0900 (KST)
+Date: Fri, 09 Apr 2010 14:51:25 +0530
+From: Amul Kumar Saha <amul.saha@samsung.com>
+Subject: Re: MLC Support in JFFS2
+To: massimo cirillo <maxcir@gmail.com>
+Message-id: <980E75202FF04069AAE27686AB103C09@sisodomain.com>
+Content-transfer-encoding: 7BIT
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<3E83C7DF574149B78FFE8D12094FAF6D@sisodomain.com>
+	<1244808209.5847.447.camel@localhost.localdomain>
+	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
+	<1244813557.3511.1272.camel@macbook.infradead.org>
+	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
+	<1245698113.25547.229.camel@macbook.infradead.org>
+	<E19B9A1D84D0455981E564D51B3C641F@sisodomain.com>
+	<p2r62cbdcd91003310607g3507fb29gd8ecddf3d3a3dfaa@mail.gmail.com>
+	<04513CE719AF46EDACC26900E39ED2F2@sisodomain.com>
+	<h2u62cbdcd91004050452o6c30aa38tee35c2a41b7f4bd5@mail.gmail.com>
+Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>, dedekind@infradead.org,
+	apgmoorthy <moorthy.apg@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, raghav.gupta@samsung.com,
+	v.dalal@samsung.com, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +41,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
---+jhVVhN62yS6hEJ8
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 08, 2010 at 05:32:08PM +0200, Guillaume LECERF wrote:
-> 2010/4/8 Wolfram Sang <w.sang@pengutronix.de>:
-> >> +/* Used to fix CFI-Tables of chips without Extended Query Tables
-> >> + */
-> >> +static struct cfi_fixup cfi_nopri_fixup_table[] =3D {
-> >> + =A0 =A0 { CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, // SST39VF1602
-> >
-> > I got a build error. CFI_MFR_SST is missing.
->=20
-> This patch depends on this commit
-> http://git.infradead.org/mtd-2.6.git/commit/f3e69c6584be2db1ccd5292d6a1d7=
-c566d265701.
-> Your personnal repo must be outdated.
+>Ok,
+>but at the remount how do you verify if the TOKEN_BLOCK
+>is updated or not (in case of power loss) ? I suggest using
+>a commit mark (one page wasted) at the end of the update
+>procedure.
+>So you'll have in the TOKEN_BLOCK the following layout:
+>
+>MAGIC_NUMBER of the TOKEN_BLOCK
+>ready_to_use info
+>commit mark
+>
+>What do you think ?
+>
 
-Thanks. I was unaware that there are pending patches below the v2.6.34-rc2 =
-tag.
+Yes.
+However, the TOKEN_BLOCK update would then
+only be limited to mount and unmount.
+As writing a commit mark while the system is still running,
+would validate an invalid block on abrupt power-off.
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---+jhVVhN62yS6hEJ8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAku+65QACgkQD27XaX1/VRu/VgCeOB0kxs9rCBb6MN8UlO2Eyn5B
-DmIAn0/LBpNBMF65g6nqpUSP/9vQ5ubL
-=3Cwo
------END PGP SIGNATURE-----
-
---+jhVVhN62yS6hEJ8--
+Regards,
+Amul 
