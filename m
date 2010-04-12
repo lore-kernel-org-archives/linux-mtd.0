@@ -1,14 +1,14 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O1F8C-0005GV-6l
+	id 1O1F8C-0005HU-G1
 	for linux-mtd@lists.infradead.org; Mon, 12 Apr 2010 08:36:33 +0000
-Received: by mail-pw0-f49.google.com with SMTP id 4so487987pwj.36
+Received: by pvc30 with SMTP id 30so2685200pvc.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Apr 2010 01:36:22 -0700 (PDT)
+	Mon, 12 Apr 2010 01:36:28 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 12 Apr 2010 14:06:22 +0530
-Message-ID: <x2k6b5362aa1004120136ub7b320c9re54413ff6a6e35da@mail.gmail.com>
-Subject: PATCH 5/7] ubi: logging feature for ubi
+Date: Mon, 12 Apr 2010 14:06:28 +0530
+Message-ID: <n2u6b5362aa1004120136sced49f64x55bd57f11245d130@mail.gmail.com>
+Subject: PATCH 6/7] ubi: logging feature for ubi
 From: Brijesh Singh <brijesh.s.singh@gmail.com>
 To: Artem.Bityutskiy@nokia.com
 Content-Type: text/plain; charset=ISO-8859-1
@@ -24,69 +24,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Note: debug functions for logging feature
+Note: kconfig for logging feature
 
 Signed-off-by: Rohit Dongre <rohit.dongre@samsung.com>
 ---
---- ubi_old/drivers/mtd/ubi/debug.h	2010-04-09 21:54:13.955581334 +0530
-+++ ubi_new/drivers/mtd/ubi/debug.h	2010-04-09 21:54:02.635580892 +0530
-@@ -94,6 +94,28 @@
- #define UBI_IO_DEBUG 0
- #endif
+--- ubi_old/drivers/mtd/ubi/Kconfig	2010-04-09 21:54:13.955581334 +0530
++++ ubi_new/drivers/mtd/ubi/Kconfig	2010-04-09 21:54:02.635580892 +0530
+@@ -57,6 +57,26 @@
+ 	   volume. This is handy to make MTD-oriented software (like JFFS2)
+ 	   work on top of UBI. Do not enable this unless you use legacy
+ 	   software.
++menu "UBI with Log (UBIL)"
++config MTD_UBI_LOGGED
++	bool "UBI with logging (UBIL)"
++	default n
++	depends on MTD_UBI
++	help
++	   This option enables logging in UBI. This is in development stage.
++	   UBI log is maintained on device to reduce attach time of UBI.
++	   It includeds super block, commit, eba log sub-modules.
++
++config MTD_UBIL_COMPR
++	bool "UBIL Meta-data compression in Log"
++	default n
++	depends on MTD_UBI_LOGGED
++	select CRYPTO
++	select CRYPTO_LZO
++	help
++	   This option enables compression of meta-data in UBIL.
++
++endmenu
 
+ source "drivers/mtd/ubi/Kconfig.debug"
+ endmenu
+--- ubi_old/drivers/mtd/ubi/Kconfig.debug	2010-04-09 21:54:13.955581334 +0530
++++ ubi_new/drivers/mtd/ubi/Kconfig.debug	2010-04-09 21:54:02.635580892 +0530
+@@ -91,4 +91,31 @@
+ 	help
+ 	  This option enables debugging messages from the UBI input/output unit.
+
++config MTD_UBI_DEBUG_MSG_SB
++	bool "UBI with log sb messages"
++	default n
++	depends on MTD_UBI_DEBUG
++	depends on MTD_UBI_LOGGED
++	help
++	  This option enables debugging messages from sn modules of the UBI
++	  with log.
 +
-+#ifdef CONFIG_MTD_UBI_DEBUG_MSG_SB
-+/* Messages from sb module of UBI with log */
-+#define dbg_sb(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
-+#else
-+#define dbg_sb(fmt, ...) ({})
-+#endif
++config MTD_UBI_DEBUG_MSG_CMT
++	bool "UBI with log commit messages"
++	default n
++	depends on MTD_UBI_DEBUG
++	depends on MTD_UBI_LOGGED
++	help
++	  This option enables debugging messages from commit modules of the UBI
++	  with log.
 +
-+#ifdef CONFIG_MTD_UBI_DEBUG_MSG_CMT
-+/* Messages from commit module of UBI with log */
-+#define dbg_cmt(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
-+#else
-+#define dbg_cmt(fmt, ...) ({})
-+#endif
++config MTD_UBI_DEBUG_MSG_EL
++	bool "UBI with log el messages"
++	default n
++	depends on MTD_UBI_DEBUG
++	depends on MTD_UBI_LOGGED
++	help
++	  This option enables debugging messages from el modules of the UBI
++	  with log.
 +
-+#ifdef CONFIG_MTD_UBI_DEBUG_MSG_EL
-+/* Messages from el module of UBI with log */
-+#define dbg_el(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
-+#else
-+#define dbg_el(fmt, ...) ({})
-+#endif
-+
- #ifdef CONFIG_MTD_UBI_DEBUG_PARANOID
- int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int
-offset, int len);
- int ubi_dbg_check_write(struct ubi_device *ubi, const void *buf, int pnum,
-@@ -163,6 +185,9 @@
- #define dbg_wl(fmt, ...)                 ({})
- #define dbg_io(fmt, ...)                 ({})
- #define dbg_bld(fmt, ...)                ({})
-+#define dbg_sb(fmt, ...)                 ({})
-+#define dbg_cmt(fmt, ...)                ({})
-+#define dbg_el(fmt, ...)                 ({})
- #define ubi_dbg_dump_stack()             ({})
- #define ubi_dbg_dump_ec_hdr(ec_hdr)      ({})
- #define ubi_dbg_dump_vid_hdr(vid_hdr)    ({})
---- ubi_old/drivers/mtd/ubi/scan.h	2010-04-09 21:54:13.955581334 +0530
-+++ ubi_new/drivers/mtd/ubi/scan.h	2010-04-09 21:54:02.645580870 +0530
-@@ -89,6 +89,7 @@
-  * @corr: list of corrupted physical eraseblocks
-  * @free: list of free physical eraseblocks
-  * @erase: list of physical eraseblocks which have to be erased
-+ * @resvd: list of physical eraseblocks which are resrvd for special use
-  * @alien: list of physical eraseblocks which should not be used by UBI (e.g.,
-  *         those belonging to "preserve"-compatible internal volumes)
-  * @bad_peb_count: count of bad physical eraseblocks
-@@ -113,6 +114,9 @@
- 	struct list_head corr;
- 	struct list_head free;
- 	struct list_head erase;
-+#ifdef CONFIG_MTD_UBI_LOGGED
-+	struct list_head resvd;
-+#endif
- 	struct list_head alien;
- 	int bad_peb_count;
- 	int vols_found;
+ endmenu # UBI debugging messages
+--- ubi_old/drivers/mtd/ubi/Makefile	2010-04-09 21:54:13.955581334 +0530
++++ ubi_new/drivers/mtd/ubi/Makefile	2010-04-09 21:54:02.645580870 +0530
+@@ -1,7 +1,7 @@
+ obj-$(CONFIG_MTD_UBI) += ubi.o
+
+ ubi-y += vtbl.o vmt.o upd.o build.o cdev.o kapi.o eba.o io.o wl.o scan.o
+-ubi-y += misc.o
++ubi-y += misc.o sb.o el.o commit.o
+
+ ubi-$(CONFIG_MTD_UBI_DEBUG) += debug.o
+ obj-$(CONFIG_MTD_UBI_GLUEBI) += gluebi.o
