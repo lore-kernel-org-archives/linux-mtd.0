@@ -1,13 +1,24 @@
-Date: Mon, 12 Apr 2010 19:51:12 +0400 (MSD)
-From: Alexander Kurz <linux@blala.de>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Magnus Damm <damm@opensource.se>, Karsten Keil <keil@b1-systems.de>
-Subject: [PATCH 2/2] drivers/mtd/maps/pcmciamtd.c: coding style cleanups
-Message-ID: <alpine.DEB.1.10.1004121949570.7438@blala.de>
+Received: from aa011msr.fastwebnet.it ([85.18.95.71])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O1MVD-00043T-Uw
+	for linux-mtd@lists.infradead.org; Mon, 12 Apr 2010 16:28:50 +0000
+From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 6/7] mtd: cfi_cmdset_0002: add CFI detection for SST
+	39VF{16, 32}xx chips
+Date: Mon, 12 Apr 2010 18:28:38 +0200
+References: <20100330133448.20107.1077.stgit@shiryu.yomgui.biz>
+	<20100408091215.GD21805@pengutronix.de>
+	<20100412022458.GB3274@pengutronix.de>
+In-Reply-To: <20100412022458.GB3274@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-pcmcia@lists.infradead.org, linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201004121828.38560.fabio.giovagnini@aurion-tech.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Guillaume LECERF <glecerf@gmail.com>,
+	Wolfram Sang <w.sang@pengutronix.de>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,187 +28,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From df0e6529165643058e87595f40258a08bc01fec5 Mon Sep 17 00:00:00 2001
-From: Alexander Kurz <linux@kbdbabel.org>
-Date: Sun, 11 Apr 2010 23:07:19 +0200
-Subject: [PATCH 2/2] drivers/mtd/maps/pcmciamtd.c: coding style cleanups
+Hi guys,
+I'm very interested to use such a patch; which kernel version Do I need to =
+use=20
+for appling it successfully?
 
-Signed-off-by: Alexander Kurz <linux@kbdbabel.org>
----
- drivers/mtd/maps/pcmciamtd.c |   55 +++++++++++++++++++++++++----------------
- 1 files changed, 33 insertions(+), 22 deletions(-)
+Regards
 
-diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
-index 2dbe939..0db1ac4 100644
---- a/drivers/mtd/maps/pcmciamtd.c
-+++ b/drivers/mtd/maps/pcmciamtd.c
-@@ -40,10 +40,7 @@ MODULE_PARM_DESC(debug, "Set Debug Level 0=quiet, 5=noisy");
- static const int debug = 0;
- #endif
- 
--#define err(format, arg...) printk(KERN_ERR "pcmciamtd: " format "\n" , ## arg)
- #define info(format, arg...) printk(KERN_INFO "pcmciamtd: " format "\n" , ## arg)
--#define warn(format, arg...) printk(KERN_WARNING "pcmciamtd: " format "\n" , ## arg)
--
- 
- #define DRIVER_DESC	"PCMCIA Flash memory card driver"
- 
-@@ -100,7 +97,9 @@ module_param(mem_type, int, 0);
- MODULE_PARM_DESC(mem_type, "Set Memory type (0=Flash, 1=RAM, 2=ROM, default=0)");
- 
- 
--/* read/write{8,16} copy_{from,to} routines with window remapping to access whole card */
-+/* read/write{8,16} copy_{from,to} routines with window remapping
-+ * to access whole card
-+ */
- static caddr_t remap_window(struct map_info *map, unsigned long to)
- {
- 	struct pcmciamtd_dev *dev = (struct pcmciamtd_dev *)map->map_priv_1;
-@@ -245,7 +244,8 @@ static map_word pcmcia_read8(struct map_info *map, unsigned long ofs)
- 		return d;
- 
- 	d.x[0] = readb(win_base + ofs);
--	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx", ofs, win_base + ofs, d.x[0]);
-+	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx",
-+	      ofs, win_base + ofs, d.x[0]);
- 	return d;
- }
- 
-@@ -259,7 +259,8 @@ static map_word pcmcia_read16(struct map_info *map, unsigned long ofs)
- 		return d;
- 
- 	d.x[0] = readw(win_base + ofs);
--	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx", ofs, win_base + ofs, d.x[0]);
-+	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx",
-+	      ofs, win_base + ofs, d.x[0]);
- 	return d;
- }
- 
-@@ -283,7 +284,8 @@ static void pcmcia_write8(struct map_info *map, map_word d, unsigned long adr)
- 	if(DEV_REMOVED(map))
- 		return;
- 
--	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx", adr, win_base + adr, d.x[0]);
-+	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx",
-+	      adr, win_base + adr, d.x[0]);
- 	writeb(d.x[0], win_base + adr);
- }
- 
-@@ -295,7 +297,8 @@ static void pcmcia_write16(struct map_info *map, map_word d, unsigned long adr)
- 	if(DEV_REMOVED(map))
- 		return;
- 
--	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx", adr, win_base + adr, d.x[0]);
-+	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx",
-+	      adr, win_base + adr, d.x[0]);
- 	writew(d.x[0], win_base + adr);
- }
- 
-@@ -376,7 +379,8 @@ static int pcmciamtd_cistpl_jedec(struct pcmcia_device *p_dev,
- 	if (!pcmcia_parse_tuple(tuple, &parse)) {
- 		cistpl_jedec_t *t = &parse.jedec;
- 		for (i = 0; i < t->nid; i++)
--			DEBUG(2, "JEDEC: 0x%02x 0x%02x", t->id[i].mfr, t->id[i].info);
-+			DEBUG(2, "JEDEC: 0x%02x 0x%02x",
-+			      t->id[i].mfr, t->id[i].info);
- 	}
- 	return -ENOSPC;
- }
-@@ -477,7 +481,8 @@ static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *p_dev
- 	}
- 
- 	DEBUG(1, "Device: Size: %lu Width:%d Name: %s",
--	      dev->pcmcia_map.size, dev->pcmcia_map.bankwidth << 3, dev->mtd_name);
-+	      dev->pcmcia_map.size,
-+	      dev->pcmcia_map.bankwidth << 3, dev->mtd_name);
- }
- 
- 
-@@ -513,9 +518,11 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	if(setvpp == 1)
- 		dev->pcmcia_map.set_vpp = pcmciamtd_set_vpp;
- 
--	/* Request a memory window for PCMCIA. Some architeures can map windows upto the maximum
--	   that PCMCIA can support (64MiB) - this is ideal and we aim for a window the size of the
--	   whole card - otherwise we try smaller windows until we succeed */
-+	/* Request a memory window for PCMCIA. Some architeures can map windows
-+	 * upto the maximum that PCMCIA can support (64MiB) - this is ideal and
-+	 * we aim for a window the size of the whole card - otherwise we try
-+	 * smaller windows until we succeed
-+	 */
- 
- 	req.Attributes =  WIN_MEMORY_TYPE_CM | WIN_ENABLE;
- 	req.Attributes |= (dev->pcmcia_map.bankwidth == 1) ? WIN_DATA_WIDTH_8 : WIN_DATA_WIDTH_16;
-@@ -543,7 +550,7 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	DEBUG(2, "dev->win_size = %d", dev->win_size);
- 
- 	if(!dev->win_size) {
--		err("Cant allocate memory window");
-+		dev_err(&dev->p_dev->dev, "Cannot allocate memory window\n");
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
-@@ -553,7 +560,8 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	DEBUG(2, "window handle = 0x%8.8lx", (unsigned long)link->win);
- 	dev->win_base = ioremap(req.Base, req.Size);
- 	if(!dev->win_base) {
--		err("ioremap(%lu, %u) failed", req.Base, req.Size);
-+		dev_err(&dev->p_dev->dev, "ioremap(%lu, %u) failed\n",
-+			req.Base, req.Size);
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
-@@ -600,7 +608,7 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	}
- 
- 	if(!mtd) {
--		DEBUG(1, "Cant find an MTD");
-+		DEBUG(1, "Can not find an MTD");
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
-@@ -611,8 +619,9 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	if(new_name) {
- 		int size = 0;
- 		char unit = ' ';
--		/* Since we are using a default name, make it better by adding in the
--		   size */
-+		/* Since we are using a default name, make it better by adding
-+		 * in the size
-+		 */
- 		if(mtd->size < 1048576) { /* <1MiB in size, show size in KiB */
- 			size = mtd->size >> 10;
- 			unit = 'K';
-@@ -642,16 +651,17 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	if(add_mtd_device(mtd)) {
- 		map_destroy(mtd);
- 		dev->mtd_info = NULL;
--		err("Couldnt register MTD device");
-+		dev_err(&dev->p_dev->dev,
-+			"Could not register the MTD device\n");
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
- 	snprintf(dev->node.dev_name, sizeof(dev->node.dev_name), "mtd%d", mtd->index);
--	info("mtd%d: %s", mtd->index, mtd->name);
-+	dev_info(&dev->p_dev->dev, "mtd%d: %s\n", mtd->index, mtd->name);
- 	link->dev_node = &dev->node;
- 	return 0;
- 
--	err("CS Error, exiting");
-+	dev_err(&dev->p_dev->dev, "CS Error, exiting\n");
- 	pcmciamtd_release(link);
- 	return -ENODEV;
- }
-@@ -691,7 +701,8 @@ static void pcmciamtd_detach(struct pcmcia_device *link)
- 	if(dev->mtd_info) {
- 		del_mtd_device(dev->mtd_info);
- 		map_destroy(dev->mtd_info);
--		info("mtd%d: Removed", dev->mtd_info->index);
-+		dev_info(&dev->p_dev->dev, "mtd%d: Removed\n",
-+			 dev->mtd_info->index);
- 	}
- 
- 	pcmciamtd_release(link);
--- 
-1.7.0
+
+In data luned=C3=AC 12 aprile 2010 04:24:58, Wolfram Sang ha scritto:
+: > On Thu, Apr 08, 2010 at 11:12:15AM +0200, Wolfram Sang wrote:
+> > On Tue, Mar 30, 2010 at 03:35:13PM +0200, Guillaume LECERF wrote:
+> > > SST 39VF{16,32}xx chips use the 0x0701 command set, fully compatible
+> > > with the AMD one. This patch adds support for detecting them in CFI
+> > > mode.
+> > >
+> > > Based on a patch by Peter Turczaki [1].
+> > >
+> > > [1] http://www.mail-archive.com/uclinux-dev@uclinux.org/msg05737.html
+> > >
+> > > Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+> > > ---
+> > >  drivers/mtd/chips/cfi_cmdset_0002.c |   41
+> > > +++++++++++++++++++++++++++++++++++ drivers/mtd/chips/gen_probe.c    =
+ =20
+> > > |    1 +
+> > >  2 files changed, 42 insertions(+), 0 deletions(-)
+> > >
+> > > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > b/drivers/mtd/chips/cfi_cmdset_0002.c index de1b4ba..e3e4a94 100644
+> > > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > > @@ -256,6 +256,36 @@ static void fixup_use_atmel_lock(struct mtd_info
+> > > *mtd, void *param) mtd->flags |=3D MTD_POWERUP_LOCK;
+> > >  }
+> > >
+> > > +/** While reporting a mostly-correct CFI-Information block
+> > > +  * the eraseblock-region information is severely damaged in SST
+> > > +  * parts at least those of the 39VF{16,32,64}xxB series.
+> > > +  **/
+> >
+> > Kernel mulit line comments, please.
+> >
+> > > +static void fixup_old_sst_eraseregion(struct mtd_info *mtd)
+> > > +{
+> > > +	struct map_info *map =3D mtd->priv;
+> > > +	struct cfi_private *cfi =3D map->fldrv_priv;
+> > > +
+> > > +	/** Although the part claims to have two eraseblock-regions
+> > > +	  * these refer to the same region within the flash-array.
+> > > +	  * Because a really CFI-Compliant part may only return
+> >
+> > s/Compliant/compliant/?
+> >
+> > > +	  * one eraseblock-length per physical memory region
+> > > +	  * we pretend the part said it had just one region ;)
+> > > +	  **/
+> > > +	cfi->cfiq->NumEraseRegions =3D 1;
+> > > +	cfi->cfiq->EraseRegionInfo[0] =3D cfi->cfiq->EraseRegionInfo[1];
+> >
+> > Why is this last line needed? The comment says they are the same?
+>=20
+> Okay, my remark was rubbish, yet the comment in the source was a bit
+>  confusing, too. It is correct, though maybe the term 'region' is a bit
+>  overloaded. What about replacing both comments with something a bit
+>  simpler like this:
+>=20
+> /*
+>  * These flashes report two seperate eraseblock regions based on the
+>  * sector_erase-size and block_erase-size, although they both operate on
+>  the * same memory. This is not allowed according to CFI, so we just pick
+>  the * sector_erase-size.
+>  */
+>=20
+> This is according to the datasheets. You pick the block-data size here
+> (ususally using command 0x50). Why is that? I tried sector_size on a
+> SST39WF1601 and it works fine so far, testing with mtd_stresstest.
+>  (Sidenote: I have to use JEDEC-probing though, as my flashes don't report
+>  0x701 but 0x002 (AMD standard) as their primary command set. But they
+>  still need their custom unlock address :( )
+>=20
+> > > +}
+> > > +
+> > > +static void fixup_sst39vf(struct mtd_info *mtd, void *param)
+> > > +{
+> > > +	struct map_info *map =3D mtd->priv;
+> > > +	struct cfi_private *cfi =3D map->fldrv_priv;
+> > > +
+> > > +	fixup_old_sst_eraseregion(mtd);
+> > > +
+> > > +	cfi->addr_unlock1 =3D 0x5555;
+> > > +	cfi->addr_unlock2 =3D 0x2AAA;
+> > > +}
+> > > +
+> > >  static void fixup_s29gl064n_sectors(struct mtd_info *mtd, void *para=
+m)
+> > >  {
+> > >  	struct map_info *map =3D mtd->priv;
+> > > @@ -278,6 +308,16 @@ static void fixup_s29gl032n_sectors(struct
+> > > mtd_info *mtd, void *param) }
+> > >  }
+> > >
+> > > +/* Used to fix CFI-Tables of chips without Extended Query Tables
+> > > + */
+> > > +static struct cfi_fixup cfi_nopri_fixup_table[] =3D {
+> > > +	{ CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, // SST39VF1602
+> > > +	{ CFI_MFR_SST, 0x234B, fixup_sst39vf, NULL, }, // SST39VF1601
+> > > +	{ CFI_MFR_SST, 0x235A, fixup_sst39vf, NULL, }, // SST39VF3202
+> > > +	{ CFI_MFR_SST, 0x235B, fixup_sst39vf, NULL, }, // SST39VF3201
+> > > +	{ 0, 0, NULL, NULL }
+> > > +};
+> > > +
+> > >  static struct cfi_fixup cfi_fixup_table[] =3D {
+> > >  	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+> > >  #ifdef AMD_BOOTLOC_BUG
+> > > @@ -408,6 +448,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info
+> > > *map, int primary) cfi->addr_unlock1 =3D 0x555;
+> > >  			cfi->addr_unlock2 =3D 0x2aa;
+> > >  		}
+> > > +		cfi_fixup(mtd, cfi_nopri_fixup_table);
+> > >
+> > >  		if (!cfi->addr_unlock1 || !cfi->addr_unlock2) {
+> > >  			kfree(mtd);
+> > > diff --git a/drivers/mtd/chips/gen_probe.c
+> > > b/drivers/mtd/chips/gen_probe.c index 991c457..599c259 100644
+> > > --- a/drivers/mtd/chips/gen_probe.c
+> > > +++ b/drivers/mtd/chips/gen_probe.c
+> > > @@ -249,6 +249,7 @@ static struct mtd_info *check_cmd_set(struct
+> > > map_info *map, int primary) #endif
+> > >  #ifdef CONFIG_MTD_CFI_AMDSTD
+> > >  	case P_ID_AMD_STD:
+> > > +	case P_ID_SST_OLD:
+> > >  		return cfi_cmdset_0002(map, primary);
+> > >  #endif
+> > >  #ifdef CONFIG_MTD_CFI_STAA
+> > >
+> > >
+> > > ______________________________________________________
+> > > Linux MTD discussion mailing list
+> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>=20
+
+=2D-=20
+=46abio Giovagnini
+
+Aurion s.r.l.
+P.I e C.F.
+00885711200
+Tel. +39.051.594.78.24
+Cell. +39.335.83.50.919
