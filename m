@@ -1,14 +1,10 @@
-Received: from [220.194.54.130] (helo=iaserver.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O1rrJ-0004j0-1b
-	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2010 01:57:44 +0000
 From: "Christina Wiggert"<znakowlub@op.pl>
 Subject: {12.04.2010} - Reminder
-Date: Tue, 13 Apr 2010 10:08:06 +0100
+Date: Mon, 12 Apr 2010 16:02:50 +0100
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_00BB_01C2A9A6.53FF12FC"
-Message-Id: <201004131706578.SM01156@User>
+	boundary="----=_NextPart_000_0106_01C2A9A6.0D3A559A"
+Message-Id: <201004122300777.SM00308@User>
 Reply-To: globalsponsornetwrks@i12.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,7 +17,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_00BB_01C2A9A6.53FF12FC
+------=_NextPart_000_0106_01C2A9A6.0D3A559A
 Content-Type: text/html;
 	charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
@@ -45,7 +41,7 @@ Content-Transfer-Encoding: 7bit
 </FONT>
 </BODY></HTML>
 
-------=_NextPart_000_00BB_01C2A9A6.53FF12FC
+------=_NextPart_000_0106_01C2A9A6.0D3A559A
 Content-Type: application/octet-stream;
 	name="INSTRUCTION LETTER.pdf"
 Content-Transfer-Encoding: base64
@@ -2173,4 +2169,4 @@ MDA5MTI5MyAwMDAwMCBuDQowMDAwMDkxMzE2IDAwMDAwIG4NCjAwMDAwOTEz
 NjYgMDAwMDAgbg0KMDAwMDA5NDk4NSAwMDAwMCBuDQp0cmFpbGVyDQo8PC9T
 aXplIDY+Pg0Kc3RhcnR4cmVmDQoxMTYNCiUlRU9GDQo=
 
-------=_NextPart_000_00BB_01C2A9A6.53FF12FC--
+------=_NextPart_000_0106_01C2A9A6.0D3A559A--
