@@ -1,32 +1,21 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from de01.mail.all-tld.net ([195.140.232.8])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O1cgm-0001zZ-6Y
-	for linux-mtd@lists.infradead.org; Tue, 13 Apr 2010 09:45:49 +0000
-Received: by gyb11 with SMTP id 11so3528473gyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Apr 2010 02:45:44 -0700 (PDT)
+	id 1O1eLf-00043Y-RD
+	for linux-mtd@lists.infradead.org; Tue, 13 Apr 2010 11:32:08 +0000
+Date: Tue, 13 Apr 2010 13:31:55 +0200
+From: Anders Larsen <al@alarsen.net>
+Subject: [PATCH] Fix Oops with Atmel SPI
+To: linux-mtd@lists.infradead.org
+Message-Id: <1271158315l.25331l.9l@i-dmzi_al.realan.de>
 MIME-Version: 1.0
-In-Reply-To: <980E75202FF04069AAE27686AB103C09@sisodomain.com>
-References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
-	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
-	<1244813557.3511.1272.camel@macbook.infradead.org>
-	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
-	<1245698113.25547.229.camel@macbook.infradead.org>
-	<E19B9A1D84D0455981E564D51B3C641F@sisodomain.com>
-	<p2r62cbdcd91003310607g3507fb29gd8ecddf3d3a3dfaa@mail.gmail.com>
-	<04513CE719AF46EDACC26900E39ED2F2@sisodomain.com>
-	<h2u62cbdcd91004050452o6c30aa38tee35c2a41b7f4bd5@mail.gmail.com>
-	<980E75202FF04069AAE27686AB103C09@sisodomain.com>
-Date: Tue, 13 Apr 2010 11:45:43 +0200
-Message-ID: <l2w62cbdcd91004130245v66efcb00ud03ca5a72b3e9384@mail.gmail.com>
-Subject: Re: MLC Support in JFFS2
-From: massimo cirillo <maxcir@gmail.com>
-To: Amul Kumar Saha <amul.saha@samsung.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>, dedekind@infradead.org,
-	apgmoorthy <moorthy.apg@samsung.com>, kyungmin.park@samsung.com,
-	linux-mtd@lists.infradead.org, raghav.gupta@samsung.com,
-	v.dalal@samsung.com, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Ian McDonnell <ian@brightstareng.com>,
+	Nicolas Pitre <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
+	Matthias Kaehlcke <matthias@kaehlcke.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,59 +25,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I agree with you, and the following is my thinking.
-Let's suppose we have a flash with 2KB page, 128KB block,
-4096 blocks (512MB as size of the flash).
-The cleanmarker would take one page for every block, so the
-wasted space is 2KB*4096=8MB. Instead if we put the erased
-info in a single block (TOKEN_BLOCK) we waste only 128KB.
-But we need to consider the overhead in the management of
-such a block. We need to store information for 4096 blocks,
-for example an array of 4096 bit (1=erased, 0=not erased),
-protected by ECC (against read error) and CRC (against
-power loss in writing the array on the block). We need 2 pages
-for each instance of the array. The question is: how often do we
-need to update this array? If we choose to update each time it is
-needed (that is when a block is  just erased and just before a block
-is taken from the free list), at the 32nd update we should erase the
-TOKEN_BLOCK and allocate a new one. IMO this overhead is
-unacceptable in terms of time performance. So we update the info
-only at the unmount and when the system is idle.
-Moreover, there is the problem of power loss between two updates:
-how to recognize at the mount that the array info is updated? In my
-opinion the solution is to write an invalidation mark (one page with
-all zeros) just after the instance of the array when the instance
-becomes invalid.
+Tweak MTD's cache allocation to make it work with the atmel DMA'ed SPI.
+Substitute kmalloc for vmalloc so the cache buffer is mappable as per
+the Atmel SPI driver's requirements, otherwise an Oops would occur.
 
-Bye
+The original patch by Ian McDonnell <ian@brightstareng.com> was found here:
+http://lists.infradead.org/pipermail/linux-mtd/2007-December/020184.html
 
-2010/4/9 Amul Kumar Saha <amul.saha@samsung.com>:
-> Hi,
->
->
->>Ok,
->>but at the remount how do you verify if the TOKEN_BLOCK
->>is updated or not (in case of power loss) ? I suggest using
->>a commit mark (one page wasted) at the end of the update
->>procedure.
->>So you'll have in the TOKEN_BLOCK the following layout:
->>
->>MAGIC_NUMBER of the TOKEN_BLOCK
->>ready_to_use info
->>commit mark
->>
->>What do you think ?
->>
->
-> Yes.
-> However, the TOKEN_BLOCK update would then
-> only be limited to mount and unmount.
-> As writing a commit mark while the system is still running,
-> would validate an invalid block on abrupt power-off.
->
-> Regards,
-> Amul
->
->
->
+Signed-off-by: Anders Larsen <al@alarsen.net>
+Cc: Ian McDonnell <ian@brightstareng.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Matthias Kaehlcke <matthias@kaehlcke.net>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: Nicolas Pitre <nico@fluxnic.net>
+---
+ drivers/mtd/mtdblock.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+Index: b/drivers/mtd/mtdblock.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- a/drivers/mtd/mtdblock.c
++++ b/drivers/mtd/mtdblock.c
+@@ -253,7 +253,11 @@ static int mtdblock_writesect(struct mtd
+ {
+ 	struct mtdblk_dev *mtdblk =3D mtdblks[dev->devnum];
+ 	if (unlikely(!mtdblk->cache_data && mtdblk->cache_size)) {
++#ifdef CONFIG_SPI_ATMEL
++		mtdblk->cache_data =3D kmalloc(mtdblk->mtd->erasesize, GFP_KERNEL);
++#else
+ 		mtdblk->cache_data =3D vmalloc(mtdblk->mtd->erasesize);
++#endif
+ 		if (!mtdblk->cache_data)
+ 			return -EINTR;
+ 		/* -EINTR is not really correct, but it is the best match
+@@ -322,7 +326,11 @@ static int mtdblock_release(struct mtd_b
+ 		mtdblks[dev] =3D NULL;
+ 		if (mtdblk->mtd->sync)
+ 			mtdblk->mtd->sync(mtdblk->mtd);
++#ifdef CONFIG_SPI_ATMEL
++		kfree(mtdblk->cache_data);
++#else
+ 		vfree(mtdblk->cache_data);
++#endif
+ 		kfree(mtdblk);
+ 	}
+=20
