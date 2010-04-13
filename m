@@ -1,22 +1,32 @@
-Received: from metis.ext.pengutronix.de ([92.198.50.35])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O1UaA-0000P9-8k
-	for linux-mtd@lists.infradead.org; Tue, 13 Apr 2010 01:06:27 +0000
-Date: Tue, 13 Apr 2010 03:06:17 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Alexander Kurz <linux@blala.de>
-Subject: Re: [PATCH 2/2] drivers/mtd/maps/pcmciamtd.c: coding style cleanups
-Message-ID: <20100413010617.GD8978@pengutronix.de>
-References: <alpine.DEB.1.10.1004121949570.7438@blala.de>
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O1cgm-0001zZ-6Y
+	for linux-mtd@lists.infradead.org; Tue, 13 Apr 2010 09:45:49 +0000
+Received: by gyb11 with SMTP id 11so3528473gyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Apr 2010 02:45:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="hoZxPH4CaxYzWscb"
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.1.10.1004121949570.7438@blala.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-pcmcia@lists.infradead.org,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Magnus Damm <damm@opensource.se>, linux-mtd@lists.infradead.org,
-	Karsten Keil <keil@b1-systems.de>
+In-Reply-To: <980E75202FF04069AAE27686AB103C09@sisodomain.com>
+References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
+	<5156D5DBD34A4A5984AE3F3840C0452F@sisodomain.com>
+	<1244813557.3511.1272.camel@macbook.infradead.org>
+	<42F6638D897B4BA7B729CBC244D9F6E4@sisodomain.com>
+	<1245698113.25547.229.camel@macbook.infradead.org>
+	<E19B9A1D84D0455981E564D51B3C641F@sisodomain.com>
+	<p2r62cbdcd91003310607g3507fb29gd8ecddf3d3a3dfaa@mail.gmail.com>
+	<04513CE719AF46EDACC26900E39ED2F2@sisodomain.com>
+	<h2u62cbdcd91004050452o6c30aa38tee35c2a41b7f4bd5@mail.gmail.com>
+	<980E75202FF04069AAE27686AB103C09@sisodomain.com>
+Date: Tue, 13 Apr 2010 11:45:43 +0200
+Message-ID: <l2w62cbdcd91004130245v66efcb00ud03ca5a72b3e9384@mail.gmail.com>
+Subject: Re: MLC Support in JFFS2
+From: massimo cirillo <maxcir@gmail.com>
+To: Amul Kumar Saha <amul.saha@samsung.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>, dedekind@infradead.org,
+	apgmoorthy <moorthy.apg@samsung.com>, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org, raghav.gupta@samsung.com,
+	v.dalal@samsung.com, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,80 +36,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+I agree with you, and the following is my thinking.
+Let's suppose we have a flash with 2KB page, 128KB block,
+4096 blocks (512MB as size of the flash).
+The cleanmarker would take one page for every block, so the
+wasted space is 2KB*4096=8MB. Instead if we put the erased
+info in a single block (TOKEN_BLOCK) we waste only 128KB.
+But we need to consider the overhead in the management of
+such a block. We need to store information for 4096 blocks,
+for example an array of 4096 bit (1=erased, 0=not erased),
+protected by ECC (against read error) and CRC (against
+power loss in writing the array on the block). We need 2 pages
+for each instance of the array. The question is: how often do we
+need to update this array? If we choose to update each time it is
+needed (that is when a block is  just erased and just before a block
+is taken from the free list), at the 32nd update we should erase the
+TOKEN_BLOCK and allocate a new one. IMO this overhead is
+unacceptable in terms of time performance. So we update the info
+only at the unmount and when the system is idle.
+Moreover, there is the problem of power loss between two updates:
+how to recognize at the mount that the array info is updated? In my
+opinion the solution is to write an invalidation mark (one page with
+all zeros) just after the instance of the array when the instance
+becomes invalid.
 
---hoZxPH4CaxYzWscb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Bye
 
-On Mon, Apr 12, 2010 at 07:51:12PM +0400, Alexander Kurz wrote:
-> From df0e6529165643058e87595f40258a08bc01fec5 Mon Sep 17 00:00:00 2001
-> From: Alexander Kurz <linux@kbdbabel.org>
-> Date: Sun, 11 Apr 2010 23:07:19 +0200
-> Subject: [PATCH 2/2] drivers/mtd/maps/pcmciamtd.c: coding style cleanups
->=20
-> Signed-off-by: Alexander Kurz <linux@kbdbabel.org>
-> ---
->  drivers/mtd/maps/pcmciamtd.c |   55 +++++++++++++++++++++++++-----------=
------
->  1 files changed, 33 insertions(+), 22 deletions(-)
->=20
-> diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
-> index 2dbe939..0db1ac4 100644
-> --- a/drivers/mtd/maps/pcmciamtd.c
-> +++ b/drivers/mtd/maps/pcmciamtd.c
-> @@ -40,10 +40,7 @@ MODULE_PARM_DESC(debug, "Set Debug Level 0=3Dquiet, 5=
-=3Dnoisy");
->  static const int debug =3D 0;
->  #endif
-> =20
-> -#define err(format, arg...) printk(KERN_ERR "pcmciamtd: " format "\n" , =
-## arg)
->  #define info(format, arg...) printk(KERN_INFO "pcmciamtd: " format "\n" =
-, ## arg)
-> -#define warn(format, arg...) printk(KERN_WARNING "pcmciamtd: " format "\=
-n" , ## arg)
-> -
-> =20
->  #define DRIVER_DESC	"PCMCIA Flash memory card driver"
-> =20
-> @@ -100,7 +97,9 @@ module_param(mem_type, int, 0);
->  MODULE_PARM_DESC(mem_type, "Set Memory type (0=3DFlash, 1=3DRAM, 2=3DROM=
-, default=3D0)");
-> =20
-> =20
-> -/* read/write{8,16} copy_{from,to} routines with window remapping to acc=
-ess whole card */
-> +/* read/write{8,16} copy_{from,to} routines with window remapping
-> + * to access whole card
-> + */
-
-When you are touching these anyway: CodingStyle suggests
-
-	/*
-	 * Multi
-	 * line comment
-	 */
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---hoZxPH4CaxYzWscb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkvDw4kACgkQD27XaX1/VRu3HACgmSx86r6pvW8FntkOYfkwO3ik
-xKIAn34oAvWRtQPvPqI/fXYRzx/xxJZu
-=Fl2x
------END PGP SIGNATURE-----
-
---hoZxPH4CaxYzWscb--
+2010/4/9 Amul Kumar Saha <amul.saha@samsung.com>:
+> Hi,
+>
+>
+>>Ok,
+>>but at the remount how do you verify if the TOKEN_BLOCK
+>>is updated or not (in case of power loss) ? I suggest using
+>>a commit mark (one page wasted) at the end of the update
+>>procedure.
+>>So you'll have in the TOKEN_BLOCK the following layout:
+>>
+>>MAGIC_NUMBER of the TOKEN_BLOCK
+>>ready_to_use info
+>>commit mark
+>>
+>>What do you think ?
+>>
+>
+> Yes.
+> However, the TOKEN_BLOCK update would then
+> only be limited to mount and unmount.
+> As writing a commit mark while the system is still running,
+> would validate an invalid block on abrupt power-off.
+>
+> Regards,
+> Amul
+>
+>
+>
