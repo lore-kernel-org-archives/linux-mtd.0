@@ -1,19 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O1mWN-0000HD-QW
-	for linux-mtd@lists.infradead.org; Tue, 13 Apr 2010 20:15:44 +0000
-Received: by wwg30 with SMTP id 30so3020408wwg.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Apr 2010 13:15:40 -0700 (PDT)
+Received: from [69.28.251.93] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O1mvu-0004jW-Mh
+	for linux-mtd@lists.infradead.org; Tue, 13 Apr 2010 20:42:07 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Tue, 13 Apr 2010 13:30:08 -0700
+Subject: [PATCH 0/2] MTD: Move reboot notifier from UBI to cfi_cmdset_0002
+Message-Id: <4ccec90e21edfa387822b2cb71c886217c48b4e3@localhost.localdomain>
+To: <dwmw2@infradead.org>, <dedekind1@gmail.com>
 MIME-Version: 1.0
-Sender: jonringle@gmail.com
-Date: Tue, 13 Apr 2010 16:15:40 -0400
-Message-ID: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-Subject: Erase race?
-From: Jon Ringle <jon@ringle.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, saeed.bishara@gmail.com,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +21,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I have a few machines that have UBI and UBIFS on NOR flash that are
-undergoing continuous reboot testing.
-One of them just caught the following failure:
+During the last filesystem sync prior to rebooting, UBI/UBIFS typically
+schedules a flash erase operation.  It is important to ensure that this
+operation completes before restarting the system, for the following
+reasons:
 
-[=A0=A0 51.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
-[=A0=A0 51.250000] UBI error: ubi_io_write: error -22 while writing 64
-bytes to PEB 226:0, written 0 bytes
-[=A0=A0 51.270000] UBI error: erase_worker: failed to erase PEB 226, error =
--22
-[=A0=A0 51.270000] UBI warning: ubi_ro_mode: switch to read-only mode
-[=A0=A0 51.290000] UBI error: do_work: work failed with error code -22
-[=A0=A0 51.290000] UBI error: ubi_thread: ubi_bgt0d: work failed with error=
- code -22
+1) Some systems do not toggle the flash reset pin upon rebooting, so if
+the flash is stuck in erase/program mode the bootloader will not come
+back up.  This is especially likely on NOR flash devices since the erase
+time can be 1-2 seconds.
 
-Looking at this it appears that the failure might have been caused due
-to the erase_worker and ubi_io_write occurring out of order... since
-it looks like ubi_io_write was trying to write at offset 0 of the PEB,
-which I imagine would have to be the EC header, which should happen
-after the block is erased. But it doesn't seem to be the case here.
+2) While UBI is able to recover gracefully from partial erasures, that
+doesn't mean it is a good idea to intentionally allow them to happen on
+a regular basis.  At the minimum it will cause another unnecessary
+erasure when the system comes back up.
 
-Jon
+3) It's not very polite to leave the hardware in an unclean state.
+
+A reboot notifier was previously added to UBI to handle this condition,
+but it caused problems with hibernation and does not handle the general
+case of "flash operation in progress during reboot."  Some background
+information can be found here:
+
+http://lists.infradead.org/pipermail/linux-mtd/2010-March/029477.html
+
+http://lkml.org/lkml/2009/6/9/16
+
+http://lkml.org/lkml/2010/2/12/114
+
+http://lkml.org/lkml/2010/2/12/144
+
+Note that the bootloader cannot even begin execution if the NOR flash is
+not in read array mode.  There is only one NOR flash chip on this system
+and it contains both the bootloader and the Linux filesystems.  This is
+not a bug in the bootloader.  Similar problems have been seen on other
+boards:
+
+http://www.mail-archive.com/davinci-linux-open-source@linux.davincidsp.com/msg14071.html
+
+http://www.mail-archive.com/bk-commits-head@vger.kernel.org/msg06294.html
+
+This set of patches adds a new reboot notifier to the AMD flash driver,
+then removes the UBI reboot notifier.  I have verified that the new
+scheme is equally effective in solving the original problem.
