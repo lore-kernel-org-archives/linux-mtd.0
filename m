@@ -1,21 +1,18 @@
-Received: from quartz.orcorp.ca ([139.142.54.143])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O1R3I-0003j7-9X
-	for linux-mtd@lists.infradead.org; Mon, 12 Apr 2010 21:20:18 +0000
-Date: Mon, 12 Apr 2010 15:20:05 -0600
-From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd: Extend physmap_of to let the device tree specify
-	the parition probe
-Message-ID: <20100412212005.GX15629@obsidianresearch.com>
-References: <20100309192756.GC30462@obsidianresearch.com>
-	<1270543478.6754.10.camel@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1270543478.6754.10.camel@localhost>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+In-Reply-To: <y2l8cad0aa1004121229o894a17f0w9045882c214bd090@mail.gmail.com>
+References: <577FAEEB8540FB4F9C91B6BB262576755905DC@XVS-DCFR-22.europe.corp.altran.com>
+	<x2y63386a3d1003311634l71486234n95f60e506b776948@mail.gmail.com>
+	<y2l8cad0aa1004121229o894a17f0w9045882c214bd090@mail.gmail.com>
+Date: Tue, 13 Apr 2010 02:26:36 +0200
+Message-ID: <t2m63386a3d1004121726nb6afdad1q2d75ebba34caefa3@mail.gmail.com>
+Subject: Re: [PATCH] Arm nomadik : Vendor tool compatibility
+From: Linus Walleij <linus.ml.walleij@gmail.com>
+To: Jean-Michel Hautbois <jhautbois@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux@arm.linux.org.uk, linux-kernel@vger.kernel.org,
+	Lemetayer Jean Marie <jeanmarie.lemetayer@altran.com>,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 06, 2010 at 11:44:38AM +0300, Artem Bityutskiy wrote:
-> On Tue, 2010-03-09 at 12:27 -0700, Jason Gunthorpe wrote:
-> > This is to support custom partitioning schemes for embedded PPC. To use
-> > define your own mtd_part_parser and then add something like:
-> >    linux,part-probe = "my_probe", "cmdlinepart";
-> > To the board's dts file.
-> > 
-> > If linux,part-probe is not specified then this behaves the same as before.
-> > 
-> > Signed-off-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-> 
-> Taken to my l2-mtd-2.6.git / dunno
+2010/4/12 Jean-Michel Hautbois <jhautbois@gmail.com>:
 
-Thanks Artem, not sure what that means? Do you need anything
-additional from me?
+> What king of modification would you do ?
 
-Jason
+Instead of coding the ECC layout into the driver I would move it to the
+machine config in arch/arm/mach-* and pass it in as platform data
+to the driver.
+
+> Do you think it shall be queued before your submission ?
+
+I will fix it for all users the day I have time, please queue this
+as it is now.
+
+Yours,
+Linus Walleij
