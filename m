@@ -1,24 +1,18 @@
-Received: from aa012msr.fastwebnet.it ([85.18.95.72])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O1vE0-0007Mq-UC
-	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2010 05:33:24 +0000
-From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
-To: linux-mtd@lists.infradead.org,
- dedekind1@gmail.com
-Subject: Re: [PATCH 1/2] MTD: cfi_cmdset_0002: Add reboot notifier for AMD
-	flashes
-Date: Wed, 14 Apr 2010 07:33:12 +0200
-References: <4ccec90e21edfa387822b2cb71c886217c48b4e3@localhost.localdomain>
-	<bb2e763d69a8cc1576fd58fbde424ff5f688c409@localhost.localdomain>
-	<1271221078.2532.5.camel@localhost.localdomain>
-In-Reply-To: <1271221078.2532.5.camel@localhost.localdomain>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O1wbi-0005o8-3k
+	for linux-mtd@lists.infradead.org; Wed, 14 Apr 2010 07:02:07 +0000
+Date: Wed, 14 Apr 2010 09:01:51 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Ivo Clarysse <ivo.clarysse@gmail.com>
+Subject: Re: [PATCH v3 1/2] MXC: mxc_nand: set NFC registers after reset
+Message-ID: <20100414070151.GF7882@pengutronix.de>
+References: <u2uba216b431004080714hc8f8dfcaz5c8eeca56efe44f8@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201004140733.12708.fabio.giovagnini@aurion-tech.com>
-Cc: dwmw2@infradead.org, Kevin Cernekee <cernekee@gmail.com>,
-	saeed.bishara@gmail.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <u2uba216b431004080714hc8f8dfcaz5c8eeca56efe44f8@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +22,178 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Exactly!!!!
-Why this is requested?
-Is it necessary for the best proper woring mode?
+On Thu, Apr 08, 2010 at 04:14:44PM +0200, Ivo Clarysse wrote:
+> This patch allows the mxc_nand driver to reset the NAND
+> flash controller.  NFC registers are (re-)set after
+> completion of the reset, as a reset will have reverted
+> the NFC registers to their default values.
+> 
+> Signed-off-by: Ivo Clarysse <ivo.clarysse@gmail.com>
 
-Thanks a lot
+Both applied to mxc-master.
+
+I usually prefer pushing these patches via the mtd tree but they too
+often get stuck somewhere. I found several mxc-nand related patches in
+mtd-master, one of them fixing the not implemented reset command.
+
+Sascha
 
 
-In data mercoled=C3=AC 14 aprile 2010 06:57:58, Artem Bityutskiy ha scritto:
-: > On Tue, 2010-04-13 at 13:30 -0700, Kevin Cernekee wrote:
-> > +static int cfi_amdstd_reset(struct mtd_info *mtd)
-> > +{
-> > +	struct map_info *map =3D mtd->priv;
-> > +	struct cfi_private *cfi =3D map->fldrv_priv;
-> > +	int i, ret;
-> > +	struct flchip *chip;
-> > +
-> > +	for (i =3D 0; i < cfi->numchips; i++) {
-> > +
-> > +		chip =3D &cfi->chips[i];
-> > +
-> > +		spin_lock(chip->mutex);
-> > +
-> > +		ret =3D get_chip(map, chip, chip->start, FL_SHUTDOWN);
-> > +		if (!ret) {
-> > +			map_write(map, CMD(0xF0), chip->start);
-> > +			chip->state =3D FL_SHUTDOWN;
-> > +			put_chip(map, chip, chip->start);
-> > +		}
-> > +
-> > +		spin_unlock(chip->mutex);
-> > +	}
-> > +
-> > +	return 0;
-> > +}
->=20
-> Kevin, I'd suggest to document why you do this in the code, just for the
-> next generation, or for the archaeologists who will dig MTD code in the
-> future.
->=20
+> ---
+> diff -u -r -N linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c
+> linux-2.6.33.2-reset/drivers/mtd/nand/mxc_nand.c
+> --- linux-2.6.33.2/drivers/mtd/nand/mxc_nand.c	2010-04-02
+> 01:02:33.000000000 +0200
+> +++ linux-2.6.33.2-reset/drivers/mtd/nand/mxc_nand.c	2010-04-08
+> 15:54:10.000000000 +0200
+> @@ -542,6 +542,41 @@
+>  	}
+>  }
+> 
+> +static void preset(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *nand_chip = mtd->priv;
+> +	struct mxc_nand_host *host = nand_chip->priv;
+> +	uint16_t tmp;
+> +
+> +	/* disable interrupt, disable spare enable */
+> +	tmp = readw(host->regs + NFC_CONFIG1);
+> +	tmp |= NFC_INT_MSK;
+> +	tmp &= ~NFC_SP_EN;
+> +	if (nand_chip->ecc.mode == NAND_ECC_HW) {
+> +		tmp |= NFC_ECC_EN;
+> +	} else {
+> +		tmp &= ~NFC_ECC_EN;
+> +	}
+> +	writew(tmp, host->regs + NFC_CONFIG1);
+> +	/* preset operation */
+> +
+> +	/* Unlock the internal RAM Buffer */
+> +	writew(0x2, host->regs + NFC_CONFIG);
+> +
+> +	/* Blocks to be unlocked */
+> +	if (nfc_is_v21()) {
+> +		writew(0x0, host->regs + NFC_V21_UNLOCKSTART_BLKADDR);
+> +		writew(0xffff, host->regs + NFC_V21_UNLOCKEND_BLKADDR);
+> +	} else if (nfc_is_v1()) {
+> +		writew(0x0, host->regs + NFC_V1_UNLOCKSTART_BLKADDR);
+> +		writew(0x4000, host->regs + NFC_V1_UNLOCKEND_BLKADDR);
+> +	} else
+> +		BUG();
+> +
+> +	/* Unlock Block Command for given address range */
+> +	writew(0x4, host->regs + NFC_WRPROT);
+> +}
+> +
+>  /* Used by the upper layer to write command to NAND Flash for
+>   * different operations to be carried out on NAND Flash */
+>  static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+> @@ -559,6 +594,10 @@
+> 
+>  	/* Command pre-processing step */
+>  	switch (command) {
+> +	case NAND_CMD_RESET:
+> +		send_cmd(host, command, false);
+> +		preset(mtd);
+> +		break;
+> 
+>  	case NAND_CMD_STATUS:
+>  		host->buf_start = 0;
+> @@ -679,7 +718,6 @@
+>  	struct mxc_nand_platform_data *pdata = pdev->dev.platform_data;
+>  	struct mxc_nand_host *host;
+>  	struct resource *res;
+> -	uint16_t tmp;
+>  	int err = 0, nr_parts = 0;
+>  	struct nand_ecclayout *oob_smallpage, *oob_largepage;
+> 
+> @@ -743,51 +781,17 @@
+>  		host->spare_len = 64;
+>  		oob_smallpage = &nandv2_hw_eccoob_smallpage;
+>  		oob_largepage = &nandv2_hw_eccoob_largepage;
+> +		this->ecc.bytes = 9;
+>  	} else if (nfc_is_v1()) {
+>  		host->regs = host->base;
+>  		host->spare0 = host->base + 0x800;
+>  		host->spare_len = 16;
+>  		oob_smallpage = &nandv1_hw_eccoob_smallpage;
+>  		oob_largepage = &nandv1_hw_eccoob_largepage;
+> -	} else
+> -		BUG();
+> -
+> -	/* disable interrupt and spare enable */
+> -	tmp = readw(host->regs + NFC_CONFIG1);
+> -	tmp |= NFC_INT_MSK;
+> -	tmp &= ~NFC_SP_EN;
+> -	writew(tmp, host->regs + NFC_CONFIG1);
+> -
+> -	init_waitqueue_head(&host->irq_waitq);
+> -
+> -	host->irq = platform_get_irq(pdev, 0);
+> -
+> -	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
+> -	if (err)
+> -		goto eirq;
+> -
+> -	/* Reset NAND */
+> -	this->cmdfunc(mtd, NAND_CMD_RESET, -1, -1);
+> -
+> -	/* preset operation */
+> -	/* Unlock the internal RAM Buffer */
+> -	writew(0x2, host->regs + NFC_CONFIG);
+> -
+> -	/* Blocks to be unlocked */
+> -	if (nfc_is_v21()) {
+> -		writew(0x0, host->regs + NFC_V21_UNLOCKSTART_BLKADDR);
+> -	        writew(0xffff, host->regs + NFC_V21_UNLOCKEND_BLKADDR);
+> -		this->ecc.bytes = 9;
+> -	} else if (nfc_is_v1()) {
+> -		writew(0x0, host->regs + NFC_V1_UNLOCKSTART_BLKADDR);
+> -	        writew(0x4000, host->regs + NFC_V1_UNLOCKEND_BLKADDR);
+>  		this->ecc.bytes = 3;
+>  	} else
+>  		BUG();
+> 
+> -	/* Unlock Block Command for given address range */
+> -	writew(0x4, host->regs + NFC_WRPROT);
+> -
+>  	this->ecc.size = 512;
+>  	this->ecc.layout = oob_smallpage;
+> 
+> @@ -796,14 +800,8 @@
+>  		this->ecc.hwctl = mxc_nand_enable_hwecc;
+>  		this->ecc.correct = mxc_nand_correct_data;
+>  		this->ecc.mode = NAND_ECC_HW;
+> -		tmp = readw(host->regs + NFC_CONFIG1);
+> -		tmp |= NFC_ECC_EN;
+> -		writew(tmp, host->regs + NFC_CONFIG1);
+>  	} else {
+>  		this->ecc.mode = NAND_ECC_SOFT;
+> -		tmp = readw(host->regs + NFC_CONFIG1);
+> -		tmp &= ~NFC_ECC_EN;
+> -		writew(tmp, host->regs + NFC_CONFIG1);
+>  	}
+> 
+>  	/* NAND bus width determines access funtions used by upper layer */
+> @@ -817,6 +815,14 @@
+>  		this->options |= NAND_USE_FLASH_BBT;
+>  	}
+> 
+> +	init_waitqueue_head(&host->irq_waitq);
+> +
+> +	host->irq = platform_get_irq(pdev, 0);
+> +
+> +	err = request_irq(host->irq, mxc_nfc_irq, 0, DRIVER_NAME, host);
+> +	if (err)
+> +		goto eirq;
+> +
+>  	/* first scan to find the device and get the page size */
+>  	if (nand_scan_ident(mtd, 1)) {
+>  		err = -ENXIO;
+> 
 
-=2D-=20
-=46abio Giovagnini
-
-Aurion s.r.l.
-P.I e C.F.
-00885711200
-Tel. +39.051.594.78.24
-Cell. +39.335.83.50.919
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
