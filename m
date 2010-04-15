@@ -1,22 +1,17 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O2FCn-00064n-Qc
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2010 02:53:26 +0000
-Date: Thu, 15 Apr 2010 04:53:21 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: [PATCHv2 1/2] MTD: cfi_cmdset_0002: Add reboot notifier for
-	AMD flashes
-Message-ID: <20100415025321.GB14954@pengutronix.de>
-References: <1271221078.2532.5.camel@localhost.localdomain>
-	<a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
+Received: from mail2.aviatnet.com ([192.147.115.134])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O2Glp-0000Vm-Uo
+	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2010 04:33:43 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
-Content-Disposition: inline
-In-Reply-To: <a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, saeed.bishara@gmail.com, dedekind1@gmail.com
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: selecting UBI boot partition on startup
+Date: Wed, 14 Apr 2010 21:32:58 -0700
+Message-ID: <0687C69BF96AF349833719247B11C1CE76ED6C@exchtxus2.HSTX.global.vpn>
+From: "Deon Carr" <Deon.Carr@Aviatnet.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,=20
 
---98e8jtXdkpgskNou
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am designing a high availability system that requires two copies of
+the system software with uboot booting the kernel / rootfs of the most
+recent software.=20
 
-On Wed, Apr 14, 2010 at 05:57:33PM -0700, Kevin Cernekee wrote:
-> Ensure that the flash device is in a quiescent state before rebooting.
-> The implementation is closely modeled after the cfe_cmdset_0001 reboot
-> notifier, commit 963a6fb0a0d336d0513083b7e4b5c3ff9d6d2061 .
->=20
-> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+My intended nand flash arrangement is along the lines of:
 
-Yes, if this is present for Intel, it should be present for AMD, IMHO.
+MTD0       MTD1
+--------------------
+UBOOT | UBI Layer
+--------------------
 
-Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+The UBI layer will have two UBI volumes which will be formatted for
+UBIFS. The intention is to package the kernel / rootfs and application
+all in the single volume.=20
 
-Still, the correct solution is to wire the correct reset-line to the flashe=
-s.
-Above patch will not help if a watchdog kicks in. Been there :(
 
-Regards,
+What is the best method of selecting UBI volume to boot from in uboot?
 
-   Wolfram
+I could store a boot flag in each UBIFS along with the kernel, however
+this will require reading both volumes in uboot to determine which one
+to boot from. An alternative is to create a third smaller UBI volume
+which instructs which UBI volume to boot from.
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Is there a better way of handling this? Is it possible to reorder the
+UBI volumes dynamically? If this were possible I could have uboot always
+boot UBI0 and just rearrange UBI0, UBI1 whenever I need change the
+volume to boot from.=20
 
---98e8jtXdkpgskNou
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
 
-iEYEARECAAYFAkvGf6EACgkQD27XaX1/VRuxvACdGIp8CjRPZTaXtOm7sFBP+5uL
-fFsAn1p7OC/twVIhzbn+tMW3MG1EDyPJ
-=9H/B
------END PGP SIGNATURE-----
+Thanks in advance.
 
---98e8jtXdkpgskNou--
+Deon
