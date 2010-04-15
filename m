@@ -1,20 +1,22 @@
-Received: from [69.28.251.93] (helo=b32.net)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O2DUk-0005VD-51
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2010 01:03:51 +0000
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 14 Apr 2010 17:57:33 -0700
-Subject: [PATCHv2 1/2] MTD: cfi_cmdset_0002: Add reboot notifier for AMD
-	flashes
-Message-Id: <a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
-In-Reply-To: <1271221078.2532.5.camel@localhost.localdomain>
+	id 1O2FCn-00064n-Qc
+	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2010 02:53:26 +0000
+Date: Thu, 15 Apr 2010 04:53:21 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Kevin Cernekee <cernekee@gmail.com>
+Subject: Re: [PATCHv2 1/2] MTD: cfi_cmdset_0002: Add reboot notifier for
+	AMD flashes
+Message-ID: <20100415025321.GB14954@pengutronix.de>
 References: <1271221078.2532.5.camel@localhost.localdomain>
-To: <dwmw2@infradead.org>, <dedekind1@gmail.com>
+	<a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, saeed.bishara@gmail.com,
-	linux-kernel@vger.kernel.org
+In-Reply-To: <a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, saeed.bishara@gmail.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,121 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ensure that the flash device is in a quiescent state before rebooting.
-The implementation is closely modeled after the cfe_cmdset_0001 reboot
-notifier, commit 963a6fb0a0d336d0513083b7e4b5c3ff9d6d2061 .
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   56 +++++++++++++++++++++++++++++++++++
- 1 files changed, 56 insertions(+), 0 deletions(-)
+--98e8jtXdkpgskNou
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index ea2a7f6..f40d308 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -32,6 +32,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
-+#include <linux/reboot.h>
- #include <linux/mtd/compatmac.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/mtd.h>
-@@ -56,6 +57,7 @@ static int cfi_amdstd_erase_varsize(struct mtd_info *, struct erase_info *);
- static void cfi_amdstd_sync (struct mtd_info *);
- static int cfi_amdstd_suspend (struct mtd_info *);
- static void cfi_amdstd_resume (struct mtd_info *);
-+static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
- static int cfi_amdstd_secsi_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- 
- static void cfi_amdstd_destroy(struct mtd_info *);
-@@ -351,6 +353,8 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 	mtd->name    = map->name;
- 	mtd->writesize = 1;
- 
-+	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
-+
- 	if (cfi->cfi_mode==CFI_MODE_CFI){
- 		unsigned char bootloc;
- 		/*
-@@ -487,6 +491,7 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
- #endif
- 
- 	__module_get(THIS_MODULE);
-+	register_reboot_notifier(&mtd->reboot_notifier);
- 	return mtd;
- 
-  setup_err:
-@@ -628,6 +633,10 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
- 		chip->state = FL_READY;
- 		return 0;
- 
-+	case FL_SHUTDOWN:
-+		/* The machine is rebooting */
-+		return -EIO;
-+
- 	case FL_POINT:
- 		/* Only if there's no operation suspended... */
- 		if (mode == FL_READY && chip->oldstate == FL_READY)
-@@ -1918,11 +1927,58 @@ static void cfi_amdstd_resume(struct mtd_info *mtd)
- 	}
- }
- 
-+
-+/*
-+ * Ensure that the flash device is put back into read array mode before
-+ * unloading the driver or rebooting.  On some systems, rebooting while
-+ * the flash is in query/program/erase mode will prevent the CPU from
-+ * fetching the bootloader code, requiring a hard reset or power cycle.
-+ */
-+static int cfi_amdstd_reset(struct mtd_info *mtd)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	int i, ret;
-+	struct flchip *chip;
-+
-+	for (i = 0; i < cfi->numchips; i++) {
-+
-+		chip = &cfi->chips[i];
-+
-+		spin_lock(chip->mutex);
-+
-+		ret = get_chip(map, chip, chip->start, FL_SHUTDOWN);
-+		if (!ret) {
-+			map_write(map, CMD(0xF0), chip->start);
-+			chip->state = FL_SHUTDOWN;
-+			put_chip(map, chip, chip->start);
-+		}
-+
-+		spin_unlock(chip->mutex);
-+	}
-+
-+	return 0;
-+}
-+
-+
-+static int cfi_amdstd_reboot(struct notifier_block *nb, unsigned long val,
-+			       void *v)
-+{
-+	struct mtd_info *mtd;
-+
-+	mtd = container_of(nb, struct mtd_info, reboot_notifier);
-+	cfi_amdstd_reset(mtd);
-+	return NOTIFY_DONE;
-+}
-+
-+
- static void cfi_amdstd_destroy(struct mtd_info *mtd)
- {
- 	struct map_info *map = mtd->priv;
- 	struct cfi_private *cfi = map->fldrv_priv;
- 
-+	cfi_amdstd_reset(mtd);
-+	unregister_reboot_notifier(&mtd->reboot_notifier);
- 	kfree(cfi->cmdset_priv);
- 	kfree(cfi->cfiq);
- 	kfree(cfi);
--- 
-1.6.3.1
+On Wed, Apr 14, 2010 at 05:57:33PM -0700, Kevin Cernekee wrote:
+> Ensure that the flash device is in a quiescent state before rebooting.
+> The implementation is closely modeled after the cfe_cmdset_0001 reboot
+> notifier, commit 963a6fb0a0d336d0513083b7e4b5c3ff9d6d2061 .
+>=20
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+
+Yes, if this is present for Intel, it should be present for AMD, IMHO.
+
+Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+
+Still, the correct solution is to wire the correct reset-line to the flashe=
+s.
+Above patch will not help if a watchdog kicks in. Been there :(
+
+Regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--98e8jtXdkpgskNou
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkvGf6EACgkQD27XaX1/VRuxvACdGIp8CjRPZTaXtOm7sFBP+5uL
+fFsAn1p7OC/twVIhzbn+tMW3MG1EDyPJ
+=9H/B
+-----END PGP SIGNATURE-----
+
+--98e8jtXdkpgskNou--
