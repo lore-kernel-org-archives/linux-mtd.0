@@ -1,20 +1,23 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O2IPh-0004Xg-Vp
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2010 06:18:59 +0000
-To: "Deon Carr" <Deon.Carr@Aviatnet.com>
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: selecting UBI boot partition on startup
+	id 1O2JYs-0003AP-V0
+	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2010 07:32:31 +0000
+Message-ID: <4BC6C0FE.1000701@call-direct.com.au>
+Date: Thu, 15 Apr 2010 17:32:14 +1000
+From: Iwo Mergler <iwo@call-direct.com.au>
 MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: <0687C69BF96AF349833719247B11C1CE76ED80@exchtxus2.HSTX.global.vpn>
-References: <0687C69BF96AF349833719247B11C1CE76ED6C@exchtxus2.HSTX.global.vpn>
-	<20100415052950.5224CEEE8D8@gemini.denx.de>
-	<0687C69BF96AF349833719247B11C1CE76ED80@exchtxus2.HSTX.global.vpn>
-Date: Thu, 15 Apr 2010 08:18:54 +0200
-Message-Id: <20100415061854.B7757EEE8D8@gemini.denx.de>
-Cc: linux-mtd@lists.infradead.org
+To: Anders Larsen <al@alarsen.net>
+Subject: Re: [PATCH] Fix Oops with Atmel SPI
+References: <4BC56F21.6040909@call-direct.com.au>
+	<1271231840l.5270l.0l@i-dmzi_al.realan.de>
+In-Reply-To: <1271231840l.5270l.0l@i-dmzi_al.realan.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Ian McDonnell <ian@brightstareng.com>,
+	Nicolas Pitre <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Matthias Kaehlcke <matthias@kaehlcke.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,39 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear "Deon Carr",
+Hi Anders,
 
-please jkeep the mailing list on Cc: - others might be interested in
-the answers as well.
-
-In message <0687C69BF96AF349833719247B11C1CE76ED80@exchtxus2.HSTX.global.vpn> you wrote:
+Anders Larsen wrote:
+> Hi Iwo,
 > 
-> >> What is the best method of selecting UBI volume to boot from in
-> >> uboot?
+> On 2010-04-14 09:30:41, Iwo Mergler wrote:
+>> I wouldn't recommend that. MTD erase blocks are 64K or more. In a typical
+>> embedded system you will not be able to kmalloc that much memory after
+>> a few day's of operation - the page pool gets fragmented.
 > 
-> >Store the information in U-Boot environment variables.
+> the original problem occurs with SPI flashes, which typically have a much
+> smaller erase block size (and it only occurs when they are driven by an Atmel
+> SoC SPI controller, hence the #ifdefs)
 > 
-> This was my initial thought however I was put off by the chance of the
-> environment variables getting corrupted due to power loss while writing
-> to U-Boot. I guess its possible to mirror the environment variables to
-> another part of flash and restore it if the crc32 check fails on
-> start-up.
+>> A possibly better approach is to arrange for that memory to get allocated
+>> at driver start time.
+> 
+> The buffer in question is indeed allocated _once_ (at the first write
+> operation to the device) and only deallocated when the device is unmounted,
+> so allocating it at driver load time wouldn't make much difference IMHO.
+> 
 
-Redundant environment is a standard feature in U-Boot. It covers
-exactly the issue you have in mind - if you have a reset or power loss
-while writing the environment, U-Boot will automatically fall back to
-the redudant copy and use the previously used settings.
+I'm sorry, I thought you were somewhere else in the MTD source.
+The bad block handling code for NAND also has a full erase block
+allocation, which happens during runtime. 
 
-All you have to do is to enable this feature in your board config
-file.
+You are correct in that the mount time allocation should be
+safe, for most systems.
 
 Best regards,
 
-Wolfgang Denk
-
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-They say a little knowledge is a dangerous thing,  but it is not  one
-half so bad as a lot of ignorance.   - Terry Pratchett, _Equal Rites_
+Iwo
