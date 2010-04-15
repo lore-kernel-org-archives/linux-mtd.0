@@ -1,34 +1,23 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O2WaH-0006uJ-HK
-	for linux-mtd@lists.infradead.org; Thu, 15 Apr 2010 21:26:50 +0000
-Received: by gyb11 with SMTP id 11so968269gyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Apr 2010 14:26:48 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <r2w62cbdcd91004151403l657c17b3r48b5e8de42a862f@mail.gmail.com>
-References: <5205AB2678D945D194F6372BE9297942@sisodomain.com>
-	<1245698113.25547.229.camel@macbook.infradead.org>
-	<E19B9A1D84D0455981E564D51B3C641F@sisodomain.com>
-	<p2r62cbdcd91003310607g3507fb29gd8ecddf3d3a3dfaa@mail.gmail.com>
-	<04513CE719AF46EDACC26900E39ED2F2@sisodomain.com>
-	<h2u62cbdcd91004050452o6c30aa38tee35c2a41b7f4bd5@mail.gmail.com>
-	<980E75202FF04069AAE27686AB103C09@sisodomain.com>
-	<l2w62cbdcd91004130245v66efcb00ud03ca5a72b3e9384@mail.gmail.com>
-	<D4189C368A9B4BD986B7B98A0F05953B@sisodomain.com>
-	<r2w62cbdcd91004151403l657c17b3r48b5e8de42a862f@mail.gmail.com>
-Date: Thu, 15 Apr 2010 23:26:48 +0200
-Message-ID: <v2h62cbdcd91004151426gf17eb844m43736101f3f6a3c8@mail.gmail.com>
-Subject: Re: MLC Support in JFFS2
-From: massimo cirillo <maxcir@gmail.com>
-To: Raghav Gupta <raghav.gupta@partner.samsung.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Amit Kumar Sharma <amitsharma.9@samsung.com>, dedekind@infradead.org,
-	apgmoorthy <moorthy.apg@samsung.com>,
-	Amul Kumar Saha <amul.saha@samsung.com>,
-	kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
-	raghav.gupta@samsung.com, v.dalal@samsung.com,
+From: Valerie Aurora <vaurora@redhat.com>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 11/35] whiteout: jffs2 whiteout support
+Date: Thu, 15 Apr 2010 16:04:18 -0700
+Message-Id: <1271372682-21225-12-git-send-email-vaurora@redhat.com>
+In-Reply-To: <1271372682-21225-11-git-send-email-vaurora@redhat.com>
+References: <1271372682-21225-1-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-2-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-3-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-4-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-5-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-6-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-7-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-8-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-9-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-10-git-send-email-vaurora@redhat.com>
+	<1271372682-21225-11-git-send-email-vaurora@redhat.com>
+Cc: Felix Fietkau <nbd@openwrt.org>, linux-kernel@vger.kernel.org,
+	Valerie Aurora <vaurora@redhat.com>,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
 	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,58 +28,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Resending the message due to a Mail Delivery
-error returned by raghav.gupta@partner.samsung.com.
+From: Felix Fietkau <nbd@openwrt.org>
 
-2010/4/15 massimo cirillo <maxcir@gmail.com>:
-> yes,
-> the update only at the unmount and the usage of the commit
-> mark are ok for me.
->
-> 2010/4/15 Raghav Gupta <raghav.gupta@partner.samsung.com>:
->> Resending it due to formatting issues. My bad.
->>
->> Hi,
->>
->>> I agree with you, and the following is my thinking.
->>> Let's suppose we have a flash with 2KB page, 128KB block,
->>> 4096 blocks (512MB as size of the flash).
->>> The cleanmarker would take one page for every block, so the
->>> wasted space is 2KB*4096=3D8MB. Instead if we put the erased
->>> info in a single block (TOKEN_BLOCK) we waste only 128KB.
->>> But we need to consider the overhead in the management of
->>> such a block. We need to store information for 4096 blocks,
->>> for example an array of 4096 bit (1=3Derased, 0=3Dnot erased),
->>> protected by ECC (against read error) and CRC (against
->>> power loss in writing the array on the block). We need 2 pages
->>> for each instance of the array. The question is: how often do we
->>> need to update this array? If we choose to update each time it is
->>> needed (that is when a block is =A0just erased and just before a block
->>> is taken from the free list), at the 32nd update we should erase the
->>> TOKEN_BLOCK and allocate a new one. IMO this overhead is
->>> unacceptable in terms of time performance. So we update the info
->>> only at the unmount and when the system is idle.
->>> Moreover, there is the problem of power loss between two updates:
->>> how to recognize at the mount that the array info is updated? In my
->>> opinion the solution is to write an invalidation mark (one page with
->>> all zeros) just after the instance of the array when the instance
->>> becomes invalid.
->>
->>
->> Yes, I agree with you. The overhead involved in updating the token block
->> on every change in the "ready_to_use" list is unacceptable.
->> So, we can update the TOKEN_BLOCK only at unmount.
->>
->> Also we can authenticate that the TOKEN_BLOCK as valid
->> by using a "valid/invalid flag"(commit mark)
->>
->> And to guard against reading of an older version of
->> a TOKEN_BLOCK (on power failure) as valid by immediately
->> deleting the block on retrieval of the 'ready_to_use' list.
->>
->> Regards,
->> Raghav Gupta
->>
->>
->>
->
+Add support for whiteout dentries to jffs2.
+
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+Signed-off-by: Valerie Aurora <vaurora@redhat.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/jffs2/dir.c        |   72 +++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/jffs2/fs.c         |    4 +++
+ fs/jffs2/super.c      |    2 +-
+ include/linux/jffs2.h |    2 +
+ 4 files changed, 77 insertions(+), 3 deletions(-)
+
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index 7aa4417..c259193 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -34,6 +34,8 @@ static int jffs2_mknod (struct inode *,struct dentry *,int,dev_t);
+ static int jffs2_rename (struct inode *, struct dentry *,
+ 			 struct inode *, struct dentry *);
+ 
++static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
++
+ const struct file_operations jffs2_dir_operations =
+ {
+ 	.read =		generic_read_dir,
+@@ -56,6 +58,7 @@ const struct inode_operations jffs2_dir_inode_operations =
+ 	.mknod =	jffs2_mknod,
+ 	.rename =	jffs2_rename,
+ 	.check_acl =	jffs2_check_acl,
++	.whiteout =     jffs2_whiteout,
+ 	.setattr =	jffs2_setattr,
+ 	.setxattr =	jffs2_setxattr,
+ 	.getxattr =	jffs2_getxattr,
+@@ -98,8 +101,14 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
+ 			fd = fd_list;
+ 		}
+ 	}
+-	if (fd)
+-		ino = fd->ino;
++	if (fd) {
++		spin_lock(&target->d_lock);
++		if (fd->type == DT_WHT)
++			target->d_flags |= DCACHE_WHITEOUT;
++		else
++			ino = fd->ino;
++		spin_unlock(&target->d_lock);
++	}
+ 	mutex_unlock(&dir_f->sem);
+ 	if (ino) {
+ 		inode = jffs2_iget(dir_i->i_sb, ino);
+@@ -498,6 +507,11 @@ static int jffs2_mkdir (struct inode *dir_i, struct dentry *dentry, int mode)
+ 		return PTR_ERR(inode);
+ 	}
+ 
++	if (dentry->d_flags & DCACHE_WHITEOUT) {
++		inode->i_flags |= S_OPAQUE;
++		ri->flags = cpu_to_je16(JFFS2_INO_FLAG_OPAQUE);
++	}
++
+ 	inode->i_op = &jffs2_dir_inode_operations;
+ 	inode->i_fop = &jffs2_dir_operations;
+ 
+@@ -779,6 +793,60 @@ static int jffs2_mknod (struct inode *dir_i, struct dentry *dentry, int mode, de
+ 	return 0;
+ }
+ 
++static int jffs2_whiteout (struct inode *dir, struct dentry *old_dentry,
++			   struct dentry *new_dentry)
++{
++	struct jffs2_sb_info *c = JFFS2_SB_INFO(dir->i_sb);
++	struct jffs2_inode_info *victim_f = NULL;
++	uint32_t now;
++	int ret;
++
++	/* If it's a directory, then check whether it is really empty */
++	if (new_dentry->d_inode) {
++		victim_f = JFFS2_INODE_INFO(old_dentry->d_inode);
++		if (S_ISDIR(old_dentry->d_inode->i_mode)) {
++			struct jffs2_full_dirent *fd;
++
++			mutex_lock(&victim_f->sem);
++			for (fd = victim_f->dents; fd; fd = fd->next) {
++				if (fd->ino) {
++					mutex_unlock(&victim_f->sem);
++					return -ENOTEMPTY;
++				}
++			}
++			mutex_unlock(&victim_f->sem);
++		}
++	}
++
++	now = get_seconds();
++	ret = jffs2_do_link(c, JFFS2_INODE_INFO(dir), 0, DT_WHT,
++			    new_dentry->d_name.name, new_dentry->d_name.len, now);
++	if (ret)
++		return ret;
++
++	spin_lock(&new_dentry->d_lock);
++	new_dentry->d_flags |= DCACHE_WHITEOUT;
++	spin_unlock(&new_dentry->d_lock);
++	d_add(new_dentry, NULL);
++
++	if (victim_f) {
++		/* There was a victim. Kill it off nicely */
++		drop_nlink(old_dentry->d_inode);
++		/* Don't oops if the victim was a dirent pointing to an
++		   inode which didn't exist. */
++		if (victim_f->inocache) {
++			mutex_lock(&victim_f->sem);
++			if (S_ISDIR(old_dentry->d_inode->i_mode))
++				victim_f->inocache->pino_nlink = 0;
++			else
++				victim_f->inocache->pino_nlink--;
++			mutex_unlock(&victim_f->sem);
++		}
++	}
++
++	return 0;
++}
++
+ static int jffs2_rename (struct inode *old_dir_i, struct dentry *old_dentry,
+ 			 struct inode *new_dir_i, struct dentry *new_dentry)
+ {
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 3451a81..c1e333c 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -301,6 +301,10 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
+ 
+ 		inode->i_op = &jffs2_dir_inode_operations;
+ 		inode->i_fop = &jffs2_dir_operations;
++
++		if (je16_to_cpu(latest_node.flags) & JFFS2_INO_FLAG_OPAQUE)
++			inode->i_flags |= S_OPAQUE;
++
+ 		break;
+ 	}
+ 	case S_IFREG:
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 9a80e8e..c12cd1c 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -172,7 +172,7 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	sb->s_op = &jffs2_super_operations;
+ 	sb->s_export_op = &jffs2_export_ops;
+-	sb->s_flags = sb->s_flags | MS_NOATIME;
++	sb->s_flags = sb->s_flags | MS_NOATIME | MS_WHITEOUT;
+ 	sb->s_xattr = jffs2_xattr_handlers;
+ #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+ 	sb->s_flags |= MS_POSIXACL;
+diff --git a/include/linux/jffs2.h b/include/linux/jffs2.h
+index 2b32d63..65533bb 100644
+--- a/include/linux/jffs2.h
++++ b/include/linux/jffs2.h
+@@ -87,6 +87,8 @@
+ #define JFFS2_INO_FLAG_USERCOMPR  2	/* User has requested a specific
+ 					   compression type */
+ 
++#define JFFS2_INO_FLAG_OPAQUE     4	/* Directory is opaque (for union mounts) */
++
+ 
+ /* These can go once we've made sure we've caught all uses without
+    byteswapping */
+-- 
+1.6.3.3
