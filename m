@@ -1,15 +1,23 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from fg-out-1718.google.com ([72.14.220.156])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O2ng4-0000vu-3x
-	for linux-mtd@lists.infradead.org; Fri, 16 Apr 2010 15:41:57 +0000
-From: Anatolij Gustschin <agust@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtdchar: allow mmap() on MTD RAM/ROM char devices
-Date: Fri, 16 Apr 2010 17:41:47 +0200
-Message-Id: <1271432507-4280-1-git-send-email-agust@denx.de>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Anatolij Gustschin <agust@denx.de>, David Woodhouse <dwmw2@infradead.org>,
-	Detlev Zundel <dzu@denx.de>
+	id 1O2qvq-0005wD-7F
+	for linux-mtd@lists.infradead.org; Fri, 16 Apr 2010 19:10:27 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so445173fga.0
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 16 Apr 2010 12:10:23 -0700 (PDT)
+Subject: Re: [PATCH] ubifs: add update vfs super block infomation when
+	remount to  ro mode
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: ZhangJieJing <kzjeef@gmail.com>
+In-Reply-To: <i2ncf7b913c1004152036t3b23af53h339b16092ecdd812@mail.gmail.com>
+References: <i2ncf7b913c1004152036t3b23af53h339b16092ecdd812@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 16 Apr 2010 22:10:19 +0300
+Message-Id: <1271445019.2532.729.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Anatolij Gustschin <agust@denx.de>
----
- drivers/mtd/mtdchar.c |   29 ++++++++++++++++++++++++++++-
- 1 files changed, 28 insertions(+), 1 deletions(-)
+On Fri, 2010-04-16 at 11:36 +0800, ZhangJieJing wrote:
+> If some read/write error happens(eg.CRC error), ubifs make self a read
+> only mode,
+> but the vfs infomation still not update.
+> This patch add this also make /proc/mounts update.
+> 
+> Signed-off-by: Zhang Jiejing <kzjeef@gmail.com>
+> ---
+>  fs/ubifs/io.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+> index 0168271..d33c233 100644
+> --- a/fs/ubifs/io.c
+> +++ b/fs/ubifs/io.c
+> @@ -63,6 +63,7 @@ void ubifs_ro_mode(struct ubifs_info *c, int err)
+>        if (!c->ro_media) {
+>                c->ro_media = 1;
+>                c->no_chk_data_crc = 0;
+> +              c->vfs_sb->s_flags |= MS_RDONLY;
+>                ubifs_warn("switched to read-only mode, error %d", err);
+>                dbg_dump_stack();
+>        }
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index c355491..416f6eb 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -17,6 +17,7 @@
- #include <linux/compat.h>
- 
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
- #include <linux/mtd/compatmac.h>
- 
- #include <asm/uaccess.h>
-@@ -925,9 +926,35 @@ static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
- #ifdef CONFIG_MMU
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-+	struct map_info *map = mtd->priv;
-+	unsigned long start;
-+	unsigned long off;
-+	u32 len;
-+
-+	if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
-+		if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT))
-+			return -EINVAL;
-+		off = vma->vm_pgoff << PAGE_SHIFT;
-+		start = map->phys;
-+		len = PAGE_ALIGN((start & ~PAGE_MASK) + map->size);
-+		start &= PAGE_MASK;
-+		if ((vma->vm_end - vma->vm_start + off) > len)
-+			return -EINVAL;
-+
-+		off += start;
-+		vma->vm_pgoff = off >> PAGE_SHIFT;
-+		vma->vm_flags |= VM_IO | VM_RESERVED;
-+		vma->vm_page_prot =
-+			phys_mem_access_prot(file, off >> PAGE_SHIFT,
-+					     vma->vm_end - vma->vm_start,
-+					     vma->vm_page_prot);
-+		if (io_remap_pfn_range(vma, vma->vm_start, off >> PAGE_SHIFT,
-+				       vma->vm_end - vma->vm_start,
-+				       vma->vm_page_prot))
-+			return -EAGAIN;
- 
--	if (mtd->type == MTD_RAM || mtd->type == MTD_ROM)
- 		return 0;
-+	}
- 	return -ENOSYS;
- #else
- 	return vma->vm_flags & VM_SHARED ? 0 : -ENOSYS;
+Looks ok for me, thanks, I'll take it to the ubifs-2.6.git tree as soon
+as I return to my work office (in 2 weeks).
+
 -- 
-1.6.3.3
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
