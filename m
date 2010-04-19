@@ -1,22 +1,23 @@
-Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O3o67-0005i5-Lb
-	for linux-mtd@lists.infradead.org; Mon, 19 Apr 2010 10:21:00 +0000
-Date: Mon, 19 Apr 2010 12:20:56 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+	id 1O3pKe-0005JZ-6D
+	for linux-mtd@lists.infradead.org; Mon, 19 Apr 2010 11:40:05 +0000
+Date: Mon, 19 Apr 2010 13:39:53 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH] [MTD] Fix JFFS2 sync silent failure
-Message-ID: <20100419102056.GS27497@kernel.dk>
+Message-ID: <20100419113952.GB4145@logfs.org>
 References: <20100417184016.GA17345@logfs.org>
 	<20100419073843.GN27497@kernel.dk>
 	<20100419101559.GA4145@logfs.org>
+	<20100419102056.GS27497@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20100419101559.GA4145@logfs.org>
+In-Reply-To: <20100419102056.GS27497@kernel.dk>
 Cc: Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+	linux-kernel@vger.kernel.org, Jens Axboe <jens.axboe@oracle.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 19 2010, Jörn Engel wrote:
-> On Mon, 19 April 2010 09:38:44 +0200, Jens Axboe wrote:
-> > On Sat, Apr 17 2010, Jörn Engel wrote:
-> > > Moin David,
-> > > 
-> > > if I read the code correctly, JFFS2 will happily perform a NOP on
-> > > sys_sync() again.  And this time it appears to be Jens' fault.
-> > > 
-> > > JFFS2 does not appear to set s_bdi anywhere.  And as of 32a88aa1,
-> > > __sync_filesystem() will return 0 if s_bdi is not set.  As a result,
-> > > sync_fs() is never called for jffs2 and whatever remains in the wbuf
-> > > will not make it to the device.
-> > > 
-> > > The patch also adds a BUG_ON to catch this problem in any remaining or
-> > > future offenders.  I am not sure about network filesystems, but at
-> > > least bdev- and mtd-based ones should be caught.
-> > > 
-> > > Opinions?
-> > 
-> > I think that BUG_ON() would be a lot better as a printk() and fail mount
-> > instead. There's really little point in killing the kernel for something
-> > you could easily warn about and recover nicely.
+On Mon, 19 April 2010 12:20:56 +0200, Jens Axboe wrote:
 > 
-> *shrug*
-> The BUG_ON directly above is not qualitatively different.  In both cases
-> the only solution is to find and fix the bug in some other file,
-> recompile and try again.  But ultimately I don't care, as long as we
-> catch the bug before people lose their data.
-> 
-> Feel free to respin this patch.  You caused the problem in the first
-> place. ;)
-> 
-> For the record, while I consider the two-liner that causes this mess a
-> real turd, the rest of your patch was brilliant.  A shame I didn't catch
-> this earlier.
+> Care to send your jffs2 patch separately to David? Then I'll commit a
+> modified variant for complaining about missing ->s_bdi on mount.
 
-Thanks, we definitely should have put a debug statement to catch this in
-from day 1, good debugging should be an important part of any new
-infrastructure.
+Sure.
 
-Care to send your jffs2 patch separately to David? Then I'll commit a
-modified variant for complaining about missing ->s_bdi on mount.
+David, this patch is untested.  It looks trivially correct and fixes a
+nasty bug, but I don't test jffs2 and only noticed the problem in
+passing.
+
+JÃ¶rn
 
 -- 
-Jens Axboe
+Maintenance in other professions and of other articles is concerned with
+the return of the item to its original state; in Software, maintenance
+is concerned with moving an item away from its original state.
+-- Les Belady
+
+diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+index af8b42e..7c00319 100644
+--- a/drivers/mtd/mtdsuper.c
++++ b/drivers/mtd/mtdsuper.c
+@@ -44,6 +45,7 @@ static int get_sb_mtd_set(struct super_block *sb, void *_mtd)
+ 
+ 	sb->s_mtd = mtd;
+ 	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
++	sb->s_bdi = mtd->backing_dev_info;
+ 	return 0;
+ }
+ 
