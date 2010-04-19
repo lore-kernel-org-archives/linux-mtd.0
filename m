@@ -1,25 +1,16 @@
-Date: Mon, 19 Apr 2010 10:26:43 -0400
-From: Valerie Aurora <vaurora@redhat.com>
+Received: from fg-out-1718.google.com ([72.14.220.153])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O3smp-0007gI-2O
+	for linux-mtd@lists.infradead.org; Mon, 19 Apr 2010 15:21:24 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so2666547fga.0
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Apr 2010 08:21:19 -0700 (PDT)
+From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 11/35] whiteout: jffs2 whiteout support
-Message-ID: <20100419142642.GB2688@shell>
-References: <1271372682-21225-4-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-5-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-6-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-7-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-8-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-9-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-10-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-11-git-send-email-vaurora@redhat.com>
-	<1271372682-21225-12-git-send-email-vaurora@redhat.com>
-	<1271682207.14748.719.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1271682207.14748.719.camel@macbook.infradead.org>
-Cc: linux-fsdevel@vger.kernel.org, Felix Fietkau <nbd@openwrt.org>,
-	linux-mtd@lists.infradead.org, Alexander Viro <viro@zeniv.linux.org.uk>,
-	linux-kernel@vger.kernel.org
+Subject: [PATCH] MTD: sm_common: split smartmedia and xD table
+Date: Mon, 19 Apr 2010 18:20:41 +0300
+Message-Id: <1271690441-25088-1-git-send-email-maximlevitsky@gmail.com>
+Cc: linux-mtd@lists.infradead.org, Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,121 +20,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 19, 2010 at 02:03:27PM +0100, David Woodhouse wrote:
-> On Thu, 2010-04-15 at 16:04 -0700, Valerie Aurora wrote:
-> > From: Felix Fietkau <nbd@openwrt.org>
-> > 
-> > Add support for whiteout dentries to jffs2. 
-> 
-> This doesn't seem to have incorporated my feedback from the attached...
+2GB xD card, and 4MB SmartMedia ROM card share same ID, so to make both work
+split xD and smartmedia ID tables.
 
-Hm, I'm not sure whether I lost the patch in a rebase or didn't have
-time to test it or what.  I was hoping someone who actually knows
-JFFS2 like Felix or you would get to it first - in general, I'd like
-the underlying file system maintainers to implement whiteouts and
-fallthrus since they know them best.  Felix, if you implemented it and
-I lost the patch, my apologies to you.
+Hardware driver must be able to know which type it handles (and probably just one).
 
-Thanks David,
+Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+---
+ drivers/mtd/nand/r852.c      |    2 +-
+ drivers/mtd/nand/sm_common.c |   37 +++++++++++++++++++++----------------
+ drivers/mtd/nand/sm_common.h |    2 +-
+ 3 files changed, 23 insertions(+), 18 deletions(-)
 
--VAL
-
-
-> -- 
-> David Woodhouse                            Open Source Technology Centre
-> David.Woodhouse@intel.com                              Intel Corporation
-
-Content-Description: Attached message - Re: [PATCH 16/41] whiteout: jffs2 whiteout support
-> From: David Woodhouse <dwmw2@infradead.org>
-> To: Valerie Aurora <vaurora@redhat.com>
-> Cc: Jan Blunck <jblunck@suse.de>, Alexander Viro <viro@zeniv.linux.org.uk>,  Christoph Hellwig <hch@infradead.org>, Andy Whitcroft <apw@canonical.com>, Scott James Remnant <scott@canonical.com>, Sandu Popa Marius <sandupopamarius@gmail.com>, Jan Rekorajski <baggins@sith.mimuw.edu.pl>, "J. R. Okajima" <hooanon05@yahoo.co.jp>, Arnd Bergmann <arnd@arndb.de>, Vladimir Dronnikov <dronnikov@gmail.com>, Felix Fietkau <nbd@openwrt.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,  linux-mtd@lists.infradead.org
-> Date: Thu, 22 Oct 2009 07:50:58 +0900
-> Subject: Re: [PATCH 16/41] whiteout: jffs2 whiteout support
-> 
-> On Wed, 2009-10-21 at 12:19 -0700, Valerie Aurora wrote:
-> > From: Felix Fietkau <nbd@openwrt.org>
-> > 
-> > Add support for whiteout dentries to jffs2.
-> 
-> As discussed, there are a few places where JFFS2 will assume that a
-> dirent with fd->ino == 0 is a deletion dirent -- a kind of whiteout of
-> its own, used internally because it's a log-structured file system and
-> it needs to mark previously existing dirents as having been unlinked.
-> 
-> You're breaking that assumption. So, for example, your whiteouts are
-> going to get lost when the eraseblock containing them is garbage
-> collected -- because they'll be treated like deletion dirents, which
-> only need to remain on the medium for as long as the _real_ dirents
-> which they exist to kill.
-> 
-> This completely untested patch addresses some of it.
-> 
-> The other thing to verify is the three places in dir.c which check
-> whether whiteout/rmdir/rename should return -ENOTEMPTY. Those all do so
-> by checking whether the directory in question has any dirents with
-> fd->ino != 0 -- i.e. does it contain any _real_ dirents, or only the
-> deletion markers for dead stuff.
-> 
-> So that will now be _allowing_ you to remove a directory which contains
-> whiteouts, since you haven't changed the test. Is that intentional? It
-> seems sane at first glance.
-> 
-> diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
-> index c5e1450..4dc883f 100644
-> --- a/fs/jffs2/build.c
-> +++ b/fs/jffs2/build.c
-> @@ -217,8 +217,9 @@ static void jffs2_build_remove_unlinked_inode(struct jffs2_sb_info *c,
->  			ic->scan_dents = fd->next;
->  
->  			if (!fd->ino) {
-> -				/* It's a deletion dirent. Ignore it */
-> -				dbg_fsbuild("child \"%s\" is a deletion dirent, skipping...\n", fd->name);
-> +				dbg_fsbuild("child \"%s\" is a %s, skipping...\n",
-> +					    fd->name,
-> +					    (fd->type == DT_WHT)?"whiteout":"deletion dirent");
->  				jffs2_free_full_dirent(fd);
->  				continue;
->  			}
-> diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-> index 090c556..7f5afbb 100644
-> --- a/fs/jffs2/gc.c
-> +++ b/fs/jffs2/gc.c
-> @@ -516,7 +516,7 @@ static int jffs2_garbage_collect_live(struct jffs2_sb_info *c,  struct jffs2_era
->  			break;
->  	}
->  
-> -	if (fd && fd->ino) {
-> +	if (fd && (fd->ino || fd->type == DT_WHT)) {
->  		ret = jffs2_garbage_collect_dirent(c, jeb, f, fd);
->  	} else if (fd) {
->  		ret = jffs2_garbage_collect_deletion_dirent(c, jeb, f, fd);
-> @@ -895,7 +895,7 @@ static int jffs2_garbage_collect_deletion_dirent(struct jffs2_sb_info *c, struct
->  				continue;
->  
->  			/* If the name length doesn't match, or it's another deletion dirent, skip */
-> -			if (rd->nsize != name_len || !je32_to_cpu(rd->ino))
-> +			if (rd->nsize != name_len || (!je32_to_cpu(rd->ino) && rd->type != DT_WHT))
->  				continue;
->  
->  			/* OK, check the actual name now */
-> diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
-> index ca29440..bcd4b86 100644
-> --- a/fs/jffs2/write.c
-> +++ b/fs/jffs2/write.c
-> @@ -629,8 +629,9 @@ int jffs2_do_unlink(struct jffs2_sb_info *c, struct jffs2_inode_info *dir_f,
->  					printk(KERN_WARNING "Deleting inode #%u with active dentry \"%s\"->ino #%u\n",
->  					       dead_f->inocache->ino, fd->name, fd->ino);
->  				} else {
-> -					D1(printk(KERN_DEBUG "Removing deletion dirent for \"%s\" from dir ino #%u\n",
-> -						fd->name, dead_f->inocache->ino));
-> +					D1(printk(KERN_DEBUG "Removing %s for \"%s\" from dir ino #%u\n",
-> +						  (fd->type == DT_WHT)?"whiteout":"deletion dirent",
-> +						  fd->name, dead_f->inocache->ino));
->  				}
->  				if (fd->raw)
->  					jffs2_mark_node_obsolete(c, fd->raw);
-> 
-> 
-> -- 
-> David Woodhouse                            Open Source Technology Centre
-> David.Woodhouse@intel.com                              Intel Corporation
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+index 96bfbd8..6dfbb47 100644
+--- a/drivers/mtd/nand/r852.c
++++ b/drivers/mtd/nand/r852.c
+@@ -666,7 +666,7 @@ int r852_register_nand_device(struct r852_device *dev)
+ 
+ 	r852_engine_enable(dev);
+ 
+-	if (sm_register_device(dev->mtd))
++	if (sm_register_device(dev->mtd, dev->sm))
+ 		goto error2;
+ 
+ 	if (device_create_file(&dev->mtd->dev, &dev_attr_media_type))
+diff --git a/drivers/mtd/nand/sm_common.c b/drivers/mtd/nand/sm_common.c
+index aae0b9a..ac80fb3 100644
+--- a/drivers/mtd/nand/sm_common.c
++++ b/drivers/mtd/nand/sm_common.c
+@@ -68,8 +68,6 @@ static int sm_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 
+ 
+ static struct nand_flash_dev nand_smartmedia_flash_ids[] = {
+-
+-	/* SmartMedia */
+ 	{"SmartMedia 1MiB 5V",          0x6e, 256, 1, 0x1000, 0},
+ 	{"SmartMedia 1MiB 3,3V",        0xe8, 256, 1, 0x1000, 0},
+ 	{"SmartMedia 1MiB 3,3V",        0xec, 256, 1, 0x1000, 0},
+@@ -82,28 +80,34 @@ static struct nand_flash_dev nand_smartmedia_flash_ids[] = {
+ 	{"SmartMedia 4MiB 3,3V ROM",    0xd5, 512, 4, 0x2000, NAND_ROM},
+ 	{"SmartMedia 8MiB 3,3V",        0xe6, 512, 8, 0x2000, 0},
+ 	{"SmartMedia 8MiB 3,3V ROM",    0xd6, 512, 8, 0x2000, NAND_ROM},
+-
+-#define XD_TYPEM       (NAND_NO_AUTOINCR | NAND_BROKEN_XD)
+-	/* xD / SmartMedia */
+-	{"SmartMedia/xD 16MiB 3,3V",    0x73, 512, 16, 0x4000, 0},
++	{"SmartMedia 16MiB 3,3V",       0x73, 512, 16, 0x4000, 0},
+ 	{"SmartMedia 16MiB 3,3V ROM",   0x57, 512, 16, 0x4000, NAND_ROM},
+-	{"SmartMedia/xD 32MiB 3,3V",    0x75, 512, 32, 0x4000, 0},
++	{"SmartMedia 32MiB 3,3V",       0x75, 512, 32, 0x4000, 0},
+ 	{"SmartMedia 32MiB 3,3V ROM",   0x58, 512, 32, 0x4000, NAND_ROM},
+-	{"SmartMedia/xD 64MiB 3,3V",    0x76, 512, 64, 0x4000, 0},
++	{"SmartMedia 64MiB 3,3V",       0x76, 512, 64, 0x4000, 0},
+ 	{"SmartMedia 64MiB 3,3V ROM",   0xd9, 512, 64, 0x4000, NAND_ROM},
+-	{"SmartMedia/xD 128MiB 3,3V",   0x79, 512, 128, 0x4000, 0},
++	{"SmartMedia 128MiB 3,3V",      0x79, 512, 128, 0x4000, 0},
+ 	{"SmartMedia 128MiB 3,3V ROM",  0xda, 512, 128, 0x4000, NAND_ROM},
+-	{"SmartMedia/xD 256MiB 3,3V",   0x71, 512, 256, 0x4000, XD_TYPEM},
++	{"SmartMedia 256MiB 3,3V",      0x71, 512, 256, 0x4000 },
+ 	{"SmartMedia 256MiB 3,3V ROM",  0x5b, 512, 256, 0x4000, NAND_ROM},
++	{NULL,}
++};
+ 
+-	/* xD only */
+-	{"xD 512MiB 3,3V",              0xDC, 512, 512, 0x4000, XD_TYPEM},
+-	{"xD 1GiB 3,3V",                0xD3, 512, 1024, 0x4000, XD_TYPEM},
+-	{"xD 2GiB 3,3V",                0xD5, 512, 2048, 0x4000, XD_TYPEM},
++#define XD_TYPEM       (NAND_NO_AUTOINCR | NAND_BROKEN_XD)
++static struct nand_flash_dev nand_xd_flash_ids[] = {
++
++	{"xD 16MiB 3,3V",    0x73, 512, 16, 0x4000, 0},
++	{"xD 32MiB 3,3V",    0x75, 512, 32, 0x4000, 0},
++	{"xD 64MiB 3,3V",    0x76, 512, 64, 0x4000, 0},
++	{"xD 128MiB 3,3V",   0x79, 512, 128, 0x4000, 0},
++	{"xD 256MiB 3,3V",   0x71, 512, 256, 0x4000, XD_TYPEM},
++	{"xD 512MiB 3,3V",   0xdc, 512, 512, 0x4000, XD_TYPEM},
++	{"xD 1GiB 3,3V",     0xd3, 512, 1024, 0x4000, XD_TYPEM},
++	{"xD 2GiB 3,3V",     0xd5, 512, 2048, 0x4000, XD_TYPEM},
+ 	{NULL,}
+ };
+ 
+-int sm_register_device(struct mtd_info *mtd)
++int sm_register_device(struct mtd_info *mtd, int smartmedia)
+ {
+ 	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
+ 	int ret;
+@@ -111,7 +115,8 @@ int sm_register_device(struct mtd_info *mtd)
+ 	chip->options |= NAND_SKIP_BBTSCAN;
+ 
+ 	/* Scan for card properties */
+-	ret = nand_scan_ident(mtd, 1, nand_smartmedia_flash_ids);
++	ret = nand_scan_ident(mtd, 1, smartmedia ?
++		nand_smartmedia_flash_ids : nand_xd_flash_ids);
+ 
+ 	if (ret)
+ 		return ret;
+diff --git a/drivers/mtd/nand/sm_common.h b/drivers/mtd/nand/sm_common.h
+index 18284f5..00f4a83 100644
+--- a/drivers/mtd/nand/sm_common.h
++++ b/drivers/mtd/nand/sm_common.h
+@@ -36,7 +36,7 @@ struct sm_oob {
+ #define SM_SMALL_OOB_SIZE	8
+ 
+ 
+-extern int sm_register_device(struct mtd_info *mtd);
++extern int sm_register_device(struct mtd_info *mtd, int smartmedia);
+ 
+ 
+ static inline int sm_sector_valid(struct sm_oob *oob)
+-- 
+1.7.0.4
