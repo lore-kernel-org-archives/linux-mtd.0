@@ -1,22 +1,20 @@
-Received: from fg-out-1718.google.com ([72.14.220.152])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4MWi-0006cY-P7
-	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2010 23:06:45 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so3386961fga.0
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Apr 2010 16:06:23 -0700 (PDT)
-Subject: Re: Erase race?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Ringle <jon@ringle.org>
-In-Reply-To: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Apr 2010 02:04:00 +0300
-Message-Id: <1271804640.11751.1363.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from p01c12o144.mxlogic.net ([208.65.145.67])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O4MhB-0000fg-Tj
+	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2010 23:17:34 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: Linux Kernel <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 20 Apr 2010 18:17:32 -0500
+Subject: [PATCH] sst25l.c: simplify reading the device ManID/DevID
+Message-ID: <0D753D10438DA54287A00B0270842697636D85BD7C@AUSP01VMBX24.collaborationhost.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "ryan@bluewatersys.com" <ryan@bluewatersys.com>,
+	"andre@bluewatersys.com" <andre@bluewatersys.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-04-13 at 16:15 -0400, Jon Ringle wrote:
-> Hi,
-> I have a few machines that have UBI and UBIFS on NOR flash that are
-> undergoing continuous reboot testing.
-> One of them just caught the following failure:
-> 
-> [   51.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
-> [   51.250000] UBI error: ubi_io_write: error -22 while writing 64
-> bytes to PEB 226:0, written 0 bytes
-> [   51.270000] UBI error: erase_worker: failed to erase PEB 226, error -22
-> [   51.270000] UBI warning: ubi_ro_mode: switch to read-only mode
-> [   51.290000] UBI error: do_work: work failed with error code -22
-> [   51.290000] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -22
-> 
-> Looking at this it appears that the failure might have been caused due
-> to the erase_worker and ubi_io_write occurring out of order... since
-> it looks like ubi_io_write was trying to write at offset 0 of the PEB,
-> which I imagine would have to be the EC header, which should happen
-> after the block is erased. But it doesn't seem to be the case here.
-
-I'm out of office and have a long queue of unanswered mails, so please,
-do not wait for help from me soon, and just debug this.
-
-The erase_worker function writes the EC header after the eraseblock is
-erased. IOW, I think erase_worker calls ubi_io_write, which fails with
--EINVAL for some reasons, and you see these prints. So this does not
-look like a race, at least not an UBI race. If you had UBI debugging
-enabled (which is a good idea), you'd have few more info and a stackdump
-printed.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+VGhlIFJlYWQtSUQgY29tbWFuZCB3aWxsIGNvbnRpbnVvdXNseSBvdXRwdXQgdGhlIE1hbnVmYWN0
+dXJlIElEIGFuZCBEZXZpY2UgSUQNCnVudGlsIHRoZSBjb21tYW5kIGlzIHRlcm1pbmF0ZWQgYnkg
+YSBsb3cgdG8gaGlnaCB0cmFuc2l0aW9uIG9uIHRoZSBDRSMgcGluLg0KV2UgY2FuIHRha2UgYWR2
+YW50YWdlIG9mIHRoaXMgaW4gdGhlIHNzdDI1bF9tYXRjaF9kZXZpY2Ugcm91dGluZSBieSByZWFk
+aW5nDQpib3RoIGJ5dGVzIGluIG9uZSBzcGlfd3JpdGVfdGhlbl9yZWFkIHRyYW5zYWN0aW9uLg0K
+DQpTaWduZWQtb2ZmLWJ5OiBIIEhhcnRsZXkgU3dlZXRlbiA8aHN3ZWV0ZW5AdmlzaW9uZW5ncmF2
+ZXJzLmNvbT4NCkNjOiBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+DQpDYzog
+QW5kcmUgUmVuYXVkIDxhbmRyZUBibHVld2F0ZXJzeXMuY29tPg0KQ2M6IFJ5YW4gTWFsbG9uIDxy
+eWFuQGJsdWV3YXRlcnN5cy5jb20+DQoNCi0tLQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
+ZGV2aWNlcy9zc3QyNWwuYyBiL2RyaXZlcnMvbXRkL2RldmljZXMvc3N0MjVsLmMNCmluZGV4IGZl
+MTcwNTQuLmIxM2NhNzUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC9kZXZpY2VzL3NzdDI1bC5j
+DQorKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3NzdDI1bC5jDQpAQCAtMzI4LDcgKzMyOCw3IEBA
+IG91dDoNCiBzdGF0aWMgc3RydWN0IGZsYXNoX2luZm8gKl9faW5pdCBzc3QyNWxfbWF0Y2hfZGV2
+aWNlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpDQogew0KIAlzdHJ1Y3QgZmxhc2hfaW5mbyAqZmxh
+c2hfaW5mbyA9IE5VTEw7DQotCXVuc2lnbmVkIGNoYXIgY29tbWFuZFs0XSwgcmVzcG9uc2U7DQor
+CXVuc2lnbmVkIGNoYXIgY29tbWFuZFs0XSwgcmVzcG9uc2VbMl07DQogCWludCBpLCBlcnI7DQog
+CXVpbnQxNl90IGlkOw0KIA0KQEAgLTMzNiwyNSArMzM2LDE0IEBAIHN0YXRpYyBzdHJ1Y3QgZmxh
+c2hfaW5mbyAqX19pbml0IHNzdDI1bF9tYXRjaF9kZXZpY2Uoc3RydWN0IHNwaV9kZXZpY2UgKnNw
+aSkNCiAJY29tbWFuZFsxXSA9IDA7DQogCWNvbW1hbmRbMl0gPSAwOw0KIAljb21tYW5kWzNdID0g
+MDsNCi0JZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVhZChzcGksIGNvbW1hbmQsIHNpemVvZihjb21t
+YW5kKSwgJnJlc3BvbnNlLCAxKTsNCisJZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVhZChzcGksIGNv
+bW1hbmQsIHNpemVvZihjb21tYW5kKSwNCisJCQkJICAgICAgIHJlc3BvbnNlLCBzaXplb2YocmVz
+cG9uc2UpKTsNCiAJaWYgKGVyciA8IDApIHsNCiAJCWRldl9lcnIoJnNwaS0+ZGV2LCAiZXJyb3Ig
+cmVhZGluZyBkZXZpY2UgaWQgbXNiXG4iKTsNCiAJCXJldHVybiBOVUxMOw0KIAl9DQogDQotCWlk
+ID0gcmVzcG9uc2UgPDwgODsNCi0NCi0JY29tbWFuZFswXSA9IFNTVDI1TF9DTURfUkVBRF9JRDsN
+Ci0JY29tbWFuZFsxXSA9IDA7DQotCWNvbW1hbmRbMl0gPSAwOw0KLQljb21tYW5kWzNdID0gMTsN
+Ci0JZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVhZChzcGksIGNvbW1hbmQsIHNpemVvZihjb21tYW5k
+KSwgJnJlc3BvbnNlLCAxKTsNCi0JaWYgKGVyciA8IDApIHsNCi0JCWRldl9lcnIoJnNwaS0+ZGV2
+LCAiZXJyb3IgcmVhZGluZyBkZXZpY2UgaWQgbHNiXG4iKTsNCi0JCXJldHVybiBOVUxMOw0KLQl9
+DQotDQotCWlkIHw9IHJlc3BvbnNlOw0KKwlpZCA9IChyZXNwb25zZVswXSA8PCA4KSB8IHJlc3Bv
+bnNlWzFdOw0KIA0KIAlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShzc3QyNWxfZmxhc2hfaW5m
+byk7IGkrKykNCiAJCWlmIChzc3QyNWxfZmxhc2hfaW5mb1tpXS5kZXZpY2VfaWQgPT0gaWQpDQo=
