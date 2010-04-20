@@ -1,15 +1,15 @@
 Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O49aR-0006QJ-Qg
+	id 1O49aR-0006QK-Qn
 	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2010 09:17:44 +0000
-Message-Id: <20100420091739.753775065@fluff.org.uk>
-Date: Tue, 20 Apr 2010 10:14:08 +0100
+Message-Id: <20100420091739.880009118@fluff.org.uk>
+Date: Tue, 20 Apr 2010 10:14:09 +0100
 From: Ben Dooks <ben@simtec.co.uk>
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: [[PATCH] 1/4] orion/kirkwood: add RnB line support to orion mtd driver
+Subject: [[PATCH] 2/4] kirkwood: allow machines to register RnB callback
 References: <20100420091407.379013348@fluff.org.uk>
 Content-Disposition: inline;
-	filename=slinux/arm/kirkwood/mtd-ready-not-busy-support.patch
+	filename=slinux/arm/kirkwood/allow-mtd-ready-not-busy-registration.patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +19,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for a board to register a callback to get the state of the
-RnB line if it has it attached.
+Add a kirkwood_nand_init_rnb() call to allow boards which
+have RnB line detection to register this instead of a
+static delay.
 
 Signed-off-by: Ben Dooks <ben@simtec.co.uk>
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
 
-Index: linux-2.6-2.6.32.9/arch/arm/plat-orion/include/plat/orion_nand.h
+Index: linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.c
 ===================================================================
---- linux-2.6-2.6.32.9.orig/arch/arm/plat-orion/include/plat/orion_nand.h	2010-02-23 15:38:51.%N +0000
-+++ linux-2.6-2.6.32.9/arch/arm/plat-orion/include/plat/orion_nand.h	2010-03-11 13:24:27.%N +0000
-@@ -14,6 +14,7 @@
-  */
- struct orion_nand_data {
- 	struct mtd_partition *parts;
-+	int (*dev_ready)(struct mtd_info *mtd);
- 	u32 nr_parts;
- 	u8 ale;		/* address line number connected to ALE */
- 	u8 cle;		/* address line number connected to CLE */
-Index: linux-2.6-2.6.32.9/drivers/mtd/nand/orion_nand.c
+--- linux-2.6-2.6.32.9.orig/arch/arm/mach-kirkwood/common.c	2010-02-23 15:38:51.%N +0000
++++ linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.c	2010-03-11 13:25:01.%N +0000
+@@ -305,6 +305,15 @@
+ 	platform_device_register(&kirkwood_nand_flash);
+ }
+ 
++void __init kirkwood_nand_init_rnb(struct mtd_partition *parts, int nr_parts,
++				   int (*dev_ready)(struct mtd_info *))
++{
++	kirkwood_clk_ctrl |= CGC_RUNIT;
++	kirkwood_nand_data.parts = parts;
++	kirkwood_nand_data.nr_parts = nr_parts;
++	kirkwood_nand_data.dev_ready = dev_ready;
++	platform_device_register(&kirkwood_nand_flash);
++}
+ 
+ /*****************************************************************************
+  * SoC RTC
+Index: linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.h
 ===================================================================
---- linux-2.6-2.6.32.9.orig/drivers/mtd/nand/orion_nand.c	2010-02-23 15:38:51.%N +0000
-+++ linux-2.6-2.6.32.9/drivers/mtd/nand/orion_nand.c	2010-03-11 13:24:27.%N +0000
-@@ -114,6 +114,9 @@
- 	if (board->width == 16)
- 		nc->options |= NAND_BUSWIDTH_16;
+--- linux-2.6-2.6.32.9.orig/arch/arm/mach-kirkwood/common.h	2010-02-23 15:38:51.%N +0000
++++ linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.h	2010-03-11 13:25:01.%N +0000
+@@ -16,6 +16,7 @@
+ struct mv_sata_platform_data;
+ struct mvsdio_platform_data;
+ struct mtd_partition;
++struct mtd_info;
  
-+	if (board->dev_ready)
-+		nc->dev_ready = board->dev_ready;
-+
- 	platform_set_drvdata(pdev, mtd);
+ /*
+  * Basic Kirkwood init functions used early by machine-setup.
+@@ -41,6 +42,7 @@
+ void kirkwood_uart0_init(void);
+ void kirkwood_uart1_init(void);
+ void kirkwood_nand_init(struct mtd_partition *parts, int nr_parts, int delay);
++void kirkwood_nand_init_rnb(struct mtd_partition *parts, int nr_parts, int (*dev_ready)(struct mtd_info *));
  
- 	if (nand_scan(mtd, 1)) {
+ extern int kirkwood_tclk;
+ extern struct sys_timer kirkwood_timer;
