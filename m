@@ -1,20 +1,18 @@
-Received: from a2s40.a2hosting.com ([74.126.24.200])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O40lr-0007iD-OT
-	for linux-mtd@lists.infradead.org; Mon, 19 Apr 2010 23:52:56 +0000
-Message-ID: <4BCCECC7.8000006@fosstel.com>
-Date: Mon, 19 Apr 2010 19:52:39 -0400
-From: "Pedro I. Sanchez" <psanchez@fosstel.com>
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O41i4-0003TK-0H
+	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2010 00:53:04 +0000
+From: "Darwin Rambo" <drambo@broadcom.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Mon, 19 Apr 2010 17:52:52 -0700
+Subject: UBI - disable subpage verify and use
+	CONFIG_MTD_NAND_VERIFY_WRITE possible?
+Message-ID: <B125D8217ABC4B43826503DE00A2D44910FDDFB4E6@SJEXCHCCR01.corp.ad.broadcom.com>
+Content-Language: en-US
 MIME-Version: 1.0
-To: twebb <taliaferro62@gmail.com>
-Subject: Re: UBIFS and MLC NAND Flash
-References: <4BA7A183.7040206@fosstel.com>	
-	<1270714961.6754.107.camel@localhost>
-	<i2odbdb2ea61004191457s58e5b816i1efdf694a1e2a24@mail.gmail.com>
-In-Reply-To: <i2odbdb2ea61004191457s58e5b816i1efdf694a1e2a24@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain;
+ charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,87 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-twebb wrote:
->>> 2. I have several boards with MLC NAND flash running the Linux kernel
->>> 2.6.29 and UBIFS. I am seeing a fairly large rate of file "corruption"
->>> errors, files that all of a sudden become unreadable. Curiously enough,
->>> they have been read-only files in all cases, program executables and
->>> shared libraries.
->> Hmm. Do you do unclean power cuts?
->>
->>> Would upgrading to a more recent kernel, or back porting the latest
->>> UBIFS code, help? Shall I expect better support for MLC NAND flash in
->>> the latest UBIFS code?
->> You did not specify whether you pulled the ubifs-v2.6.29.git tree. If
->> you did this, then your UBI/UBIFS should be the same as in the latest
->> kernels. Please, do this, although this will probably not solve your
->> corruption problems, but you'll have other bug-fixes we have made since
->> 2.6.29 times.
->>
->>
-> 
-> Pedro,
-> I'm seeing very similar issues with MLC+UBIFS, though not only with
-> read-only files.  Have you made any progress in your investigation or
-> while trying Artem's suggestions?  I'm about to start digging into
-> this and would be interested to hear about any issues you may have
-> come across.  Do you have any opinion on whether this "corruption" is
-> related to the information posted on the linux-mtd site at...
-> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc ?
-> 
-> A few notes:
-> - I do occasionally have power cuts, but my understanding was that
-> UBI/UBIFS was very tolerant of that condition.
-> - I use CONFIG_MTD_UBI_WL_THRESHOLD=256
-> - I'm using linux-2.6.29
-> 
-> Thanks,
-> twebb
+Hello Artem,
 
-I haven't had the opportunity to use 2.6.29 with the ubifs backport yet. 
-However, I run my devices over an extended operational test and couldn't 
-reproduce the errors. In this test I avoided any power cuts on purpose 
-because I wanted to verify that the boards' software was not at fault 
-during normal conditions.
+Can you please clarify something for me?
 
-I still see the errors in the deployed boards and these ones are subject 
-to random power cuts. After analyzing the logs I conclude that there is 
-a strong correlation between the power cuts and the corruption errors. 
-The typical scenario is a board running fine for two months without 
-interruption, then a power cut, and then upon reboot a myriad of UBIFS 
-error messages show up (see sample following my signature)
+http://www.linux-mtd.infradead.org/faq/ubi.html#L_subpage_verify_fail=20
 
-I'm almost convinced now that power cuts are the culprit. I will be 
-conducting test in the next few days to fully verify this. I'll post my 
-results.
+I read this note and still, CONFIG_MTD_NAND_VERIFY_WRITE is very useful for=
+ me. The question is, if I don't mind wasting a bit of flash, and configure=
+ UBI to not do subpage writes and put the EC and VID headers on separate pa=
+ges (for example ubi.mtd=3D6,4096), does UBI then always do page writes and=
+ would CONFIG_MTD_NAND_VERIFY_WRITE then work reliably for me? Or are there=
+ other places in the code that might do subpage writes? So far it seems to =
+work well for me with the verify on and no subpages for the headers.=20
 
-Thanks,
+By the way, the standard nand_verify_buf() function in nand_base.c uses rea=
+db(chip->IO_ADDR_R) and doesn't use something like chip->ecc.read_page() to=
+ correct the data so this sounds like a bug to me. But I override this to d=
+o corrected reads anyways, which works better for SLC/MLC flash which can s=
+how one or more bit errors in a page read.
 
--- 
-Pedro
+I apologize in advance if this is already documented somewhere.
+
+Thanks.
+
+Best regards,
+Darwin
 
 
-Mar 16 00:58:22 blazepoint kernel: uncorrectable error : <3>UBI error: 
-ubi_io_re
-ad: error -74 while reading 2560 bytes from PEB 376:213720, read 2560 bytes
-Mar 16 00:58:22 blazepoint kernel: UBIFS error (pid 1507): 
-try_read_node: cannot
-  read node type 1 from LEB 322:209624, error -74
-Mar 16 00:58:22 blazepoint kernel: uncorrectable error : <3>UBI error: 
-ubi_io_re
-ad: error -74 while reading 2560 bytes from PEB 376:213720, read 2560 bytes
-Mar 16 00:58:22 blazepoint kernel: UBIFS error (pid 1507): 
-ubifs_check_node: bad
-  CRC: calculated 0x5edaa128, read 0xacfe20eb
-Mar 16 00:58:22 blazepoint kernel: UBIFS error (pid 1507): 
-ubifs_check_node: bad
-  node at LEB 322:209624
-Mar 16 00:58:22 blazepoint kernel: UBIFS error (pid 1507): 
-ubifs_read_node: expe
-cted node type 1
-Mar 16 00:58:22 blazepoint kernel: UBIFS error (pid 1507): do_readpage: 
-cannot r
-ead page 261 of inode 3463, error -117
-Mar 16 00:58:22 blazepoint kernel: uncorrectable error : <3>UBI error: 
-ubi_io_re
-ad: error -74 while reading 2560 bytes from PEB 376:213720, read 2560 bytes
+Disclaimer - Any views or opinions presented in this e-mail are solely thos=
+e of the author=20
+and do not necessarily represent those of the company.=20
