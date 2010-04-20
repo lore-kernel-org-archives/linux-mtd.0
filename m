@@ -1,18 +1,23 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O41i4-0003TK-0H
-	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2010 00:53:04 +0000
-From: "Darwin Rambo" <drambo@broadcom.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 19 Apr 2010 17:52:52 -0700
-Subject: UBI - disable subpage verify and use
-	CONFIG_MTD_NAND_VERIFY_WRITE possible?
-Message-ID: <B125D8217ABC4B43826503DE00A2D44910FDDFB4E6@SJEXCHCCR01.corp.ad.broadcom.com>
-Content-Language: en-US
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O45SU-0005oG-3m
+	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2010 04:53:15 +0000
+Date: Tue, 20 Apr 2010 06:53:01 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: [Bug #15729] BUG: physmap modprobe & rmmod
+Message-ID: <20100420045301.GF19957@pengutronix.de>
+References: <deuQKFRcc0B.A.3EG.BRSzLB@tosh> <YeFfFNFyTSF.A.MFH.fRSzLB@tosh>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TU+u6i6jrDPzmlWF"
+Content-Disposition: inline
+In-Reply-To: <YeFfFNFyTSF.A.MFH.fRSzLB@tosh>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	hsweeten@visionengravers.com, linux-mtd@lists.infradead.org,
+	Kernel Testers List <kernel-testers@vger.kernel.org>,
+	dwmw2@infradead.org, Maciej Rutecki <maciej.rutecki@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +27,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Artem,
 
-Can you please clarify something for me?
+--TU+u6i6jrDPzmlWF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-http://www.linux-mtd.infradead.org/faq/ubi.html#L_subpage_verify_fail=20
+On Tue, Apr 20, 2010 at 05:19:23AM +0200, Rafael J. Wysocki wrote:
+> This message has been generated automatically as a part of a summary repo=
+rt
+> of recent regressions.
+>=20
+> The following bug entry is on the current list of known regressions
+> from 2.6.33.  Please verify if it still should be listed and let the trac=
+king team
+> know (either way).
+>=20
+>=20
+> Bug-Entry	: http://bugzilla.kernel.org/show_bug.cgi?id=3D15729
+> Subject		: BUG: physmap modprobe & rmmod
+> Submitter	: Randy Dunlap <randy.dunlap@oracle.com>
+> Date		: 2010-04-02 20:40 (18 days old)
+> Message-ID	: <20100402134058.c4682716.randy.dunlap@oracle.com>
+> References	: http://marc.info/?l=3Dlinux-kernel&m=3D127024096210230&w=3D2
 
-I read this note and still, CONFIG_MTD_NAND_VERIFY_WRITE is very useful for=
- me. The question is, if I don't mind wasting a bit of flash, and configure=
- UBI to not do subpage writes and put the EC and VID headers on separate pa=
-ges (for example ubi.mtd=3D6,4096), does UBI then always do page writes and=
- would CONFIG_MTD_NAND_VERIFY_WRITE then work reliably for me? Or are there=
- other places in the code that might do subpage writes? So far it seems to =
-work well for me with the verify on and no subpages for the headers.=20
+Patch is here:
 
-By the way, the standard nand_verify_buf() function in nand_base.c uses rea=
-db(chip->IO_ADDR_R) and doesn't use something like chip->ecc.read_page() to=
- correct the data so this sounds like a bug to me. But I override this to d=
-o corrected reads anyways, which works better for SLC/MLC flash which can s=
-how one or more bit errors in a page read.
+	https://patchwork.kernel.org/patch/90497/
 
-I apologize in advance if this is already documented somewhere.
+I'd ack it if I still had the original mail :)
 
-Thanks.
+CCing linux-mtd and some more people, so it can get picked up.
 
-Best regards,
-Darwin
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
+--TU+u6i6jrDPzmlWF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-Disclaimer - Any views or opinions presented in this e-mail are solely thos=
-e of the author=20
-and do not necessarily represent those of the company.=20
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkvNMy0ACgkQD27XaX1/VRvOjwCfR5BTbMlc8HV5GK2pT0/fk2cx
+m0MAoIBhg7erLShmPhpufA/BiydjkyeX
+=IKW4
+-----END PGP SIGNATURE-----
+
+--TU+u6i6jrDPzmlWF--
