@@ -1,17 +1,12 @@
-Subject: Re: Can PYSMAP_COMPAT go?
-From: David Woodhouse <dwmw2@infradead.org>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <20100420090408.GM19957@pengutronix.de>
-References: <20100420063547.GH19957@pengutronix.de>
-	<20100420073503.GL4586@mail.wantstofly.org>
-	<1271750733.14748.1580.camel@macbook.infradead.org>
-	<20100420090408.GM19957@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 20 Apr 2010 10:20:56 +0100
-Message-ID: <1271755256.14748.1583.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Lennert Buytenhek <buytenh@wantstofly.org>
+Message-Id: <20100420092725.436746990@fluff.org.uk>
+Date: Tue, 20 Apr 2010 10:26:19 +0100
+From: Ben Dooks <ben@simtec.co.uk>
+To: linux-arm-kernel@lists.infradead.org
+Subject: [patch 2/4] kirkwood: allow machines to register RnB callback
+References: <20100420092617.075835456@fluff.org.uk>
+Content-Disposition: inline;
+	filename=slinux/arm/kirkwood/allow-mtd-ready-not-busy-registration.patch
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,20 +16,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-04-20 at 11:04 +0200, Wolfram Sang wrote:
-> Okay, so unless i386 gets device-tree support ;), how about at least
-> this?
+Add a kirkwood_nand_init_rnb() call to allow boards which
+have RnB line detection to register this instead of a
+static delay.
 
-I'd love to see i386 get device-tree support. OLPC could benefit from it
-immediately, and we could start using it on the embedded toys which are
-coming out now.
+Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 
-I really don't think 0x4000000 is a 'sensible' default. Zero was better
--- at least the user has to set it to something else. With Hartley's
-patch applied, the kernel will no longer crash if it tries to register a
-device with zero length (and perhaps it could bail out even sooner if
-the length is zero, rather than waiting and noticing the error?).
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Index: linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.c
+===================================================================
+--- linux-2.6-2.6.32.9.orig/arch/arm/mach-kirkwood/common.c	2010-02-23 15:38:51.%N +0000
++++ linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.c	2010-03-11 13:25:01.%N +0000
+@@ -305,6 +305,15 @@
+ 	platform_device_register(&kirkwood_nand_flash);
+ }
+ 
++void __init kirkwood_nand_init_rnb(struct mtd_partition *parts, int nr_parts,
++				   int (*dev_ready)(struct mtd_info *))
++{
++	kirkwood_clk_ctrl |= CGC_RUNIT;
++	kirkwood_nand_data.parts = parts;
++	kirkwood_nand_data.nr_parts = nr_parts;
++	kirkwood_nand_data.dev_ready = dev_ready;
++	platform_device_register(&kirkwood_nand_flash);
++}
+ 
+ /*****************************************************************************
+  * SoC RTC
+Index: linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.h
+===================================================================
+--- linux-2.6-2.6.32.9.orig/arch/arm/mach-kirkwood/common.h	2010-02-23 15:38:51.%N +0000
++++ linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.h	2010-03-11 13:25:01.%N +0000
+@@ -16,6 +16,7 @@
+ struct mv_sata_platform_data;
+ struct mvsdio_platform_data;
+ struct mtd_partition;
++struct mtd_info;
+ 
+ /*
+  * Basic Kirkwood init functions used early by machine-setup.
+@@ -41,6 +42,7 @@
+ void kirkwood_uart0_init(void);
+ void kirkwood_uart1_init(void);
+ void kirkwood_nand_init(struct mtd_partition *parts, int nr_parts, int delay);
++void kirkwood_nand_init_rnb(struct mtd_partition *parts, int nr_parts, int (*dev_ready)(struct mtd_info *));
+ 
+ extern int kirkwood_tclk;
+ extern struct sys_timer kirkwood_timer;
