@@ -1,22 +1,18 @@
-Received: from fg-out-1718.google.com ([72.14.220.155])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4Q1o-0001G5-NG
-	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 02:51:05 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so3458911fga.0
+	id 1O4TkR-0008M5-OA
+	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 06:49:24 +0000
+Received: by gyb11 with SMTP id 11so3773737gyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Apr 2010 19:51:02 -0700 (PDT)
-Subject: Re: attaching UBI while getting read errors from NAND driver fails.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-In-Reply-To: <20100420184412.GA19928@Chamillionaire.breakpoint.cc>
-References: <20100420184412.GA19928@Chamillionaire.breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Apr 2010 05:50:57 +0300
-Message-Id: <1271818257.11751.1372.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Tue, 20 Apr 2010 23:49:22 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 21 Apr 2010 08:49:21 +0200
+Message-ID: <y2na57e67db1004202349ya937fa60v70ac540cfd60d076@mail.gmail.com>
+Subject: m25p80 and mkfs.jffs2
+From: Jernej Turnsek <jernej.turnsek@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,120 +22,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-04-20 at 20:44 +0200, Sebastian Andrzej Siewior wrote:
-> Attaching empty nand with a block which contains a RS-Error which can't
-> be fixed:
-> 
-> | UBI: attaching mtd9 to ubi0
-> | UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> | UBI: logical eraseblock size:    129024 bytes
-> | UBI: smallest flash I/O unit:    2048
-> | UBI: sub-page size:              512
-> | UBI: VID header offset:          512 (aligned 512)
-> | UBI: data offset:                2048
-> | UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
-> | Call Trace:
-> | [cfbd5c60] [c0008558] show_stack+0x48/0x19c (unreliable)
-> | [cfbd5ca0] [c01a71e8] ubi_io_read+0x188/0x288
-> | [cfbd5cf0] [c01a76e8] ubi_io_read_ec_hdr+0x74/0x2a4
-> | [cfbd5d20] [c01abe9c] ubi_scan+0x178/0x10b4
-> | [cfbd5d80] [c01a1464] ubi_attach_mtd_dev+0x67c/0xe44
-> | [cfbd5e80] [c01a1fc8] ctrl_cdev_ioctl+0x178/0x210
-> | [cfbd5ec0] [c008711c] do_ioctl+0x3c/0xc4
-> | [cfbd5ee0] [c0087224] vfs_ioctl+0x80/0x448
-> | [cfbd5f10] [c008762c] sys_ioctl+0x40/0x88
-> | [cfbd5f40] [c000f960] ret_from_syscall+0x0/0x38
-> | UBI error: ubi_read_volume_table: the layout volume was not found
-> | UBI error: ubi_attach_mtd_dev: failed to attach by scanning, error -22
-> 
-> ubi_io_read() calls ubi->mtd->read() which ends in nand_do_read_ops() at
-> some point. The NAND controller was not able to read the page and
-> incremented mtd->ecc_stats.failed. The tail of nand_do_read_ops():
-> 
-> |      if (mtd->ecc_stats.failed - stats.failed)
-> |                return -EBADMSG;
-> 
-> So we return with -EBADMSG as you can see in the error message. This
-> error is then converted by ubi_io_read() into -EIO:
-> |                /*
-> |                 * The driver should never return -EBADMSG if it failed to read
-> |                 * all the requested data. But some buggy drivers might do
-> |                 * this, so we change it to -EIO.
-> |                 */
-> |                if (read != len && err == -EBADMSG) {
-> |                        ubi_assert(0);
-> |                        err = -EIO;
-> |                }
-> 
-> At this point we leave ubi_scan() and the mtd partition remains
-> unattached. No really sure how we ended up with -EINVAL in
-> ubi_attach_mtd_dev().
-> 
-> I guess this is not wanted, is it?
-> 
-> The following patch led to:
-> | UBI: empty MTD device detected
-> | UBI: create volume table (copy #1)
-> | UBI: create volume table (copy #2)
-> | UBI: attached mtd9 to ubi0
-> | UBI: MTD device name:            "ubi"
-> | UBI: MTD device size:            512 MiB
-> | UBI: number of good PEBs:        4092
-> | UBI: number of bad PEBs:         4
-> | UBI: max. allowed volumes:       128
-> | UBI: wear-leveling threshold:    4096
-> | UBI: number of internal volumes: 1
-> | UBI: number of user volumes:     0
-> | UBI: available PEBs:             4048
-> | UBI: total number of reserved PEBs: 44
-> | UBI: number of PEBs reserved for bad PEB handling: 40
-> | UBI: max/mean erase counter: 0/0
-> | UBI: image sequence number: 0
-> | UBI: background thread "ubi_bgt0d" started, PID 1986
-> 
-> ubimkvol gave me:
-> | UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
-> | nand_erase: Failed erase, page 0x000751c0
-> | nand_erase: Failed erase, page 0x000751c0
-> | nand_erase: Failed erase, page 0x000751c0
-> | nand_erase: Failed erase, page 0x000751c0
-> | UBI error: do_sync_erase: cannot erase PEB 3399, error -5
-> | UBI error: erase_worker: failed to erase PEB 3399, error -5
-> | UBI: mark PEB 3399 as bad
-> | UBI: 39 PEBs left in the reserve
-> 
-> This looks good so far I guess. Is there much I break with patch? Should
-> this case be handled at another level?
+Hi,
 
-Well, I think the idea was that the MTD layer tries to read all the
-requested data despite of a possible unrecoverable ECC error in the
-middle. So if it returns -EBADMSG, we know that the read buffer contains
-all the data anyway, even though some of the data may be incorrect.
+I am developing the platform with i.MX25 CPU, 128MB of RAM and 8MB of
+AT25DF641 Flash.
+I would like to set the rootfs on 6MB jffs2 partition in Flash memory.
+Rootfs was built with the
+OpenEmbedded and the following settings:
 
-So, I'd suggest changing MTD and making it return read == len in that
-case.
+EXTRA_IMAGECMD_jffs2 =3D "--little-endian --eraseblock=3D0x1000 -n \
+=A0=A0=A0 --pad ; sumtool --eraseblock=3D0x1000 -n \
+=A0=A0=A0 --littleendian --pad \
+=A0=A0=A0 -i ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
+=A0=A0=A0 -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2.summary"
 
-> @@ -756,7 +756,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
->  		bitflips = 1;
->  	}
->  
-> -	si->is_empty = 0;
-> +	if (err != UBI_IO_BAD_EC_HDR)
-> +		si->is_empty = 0;
->  
->  	if (!ec_corr) {
->  		int image_seq;
-> @@ -827,6 +828,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
->  			return err;
->  		goto adjust_mean_ec;
->  	}
-> +	si->is_empty = 0;
->  
->  	vol_id = be32_to_cpu(vidh->vol_id);
->  	if (vol_id > UBI_MAX_VOLUMES && vol_id != UBI_LAYOUT_VOLUME_ID) {
+The problem is the provided erase size of 4096 bytes, because the tool
+mkfs.jffs2 automatically
+increases erasesize to 8KiB. The driver M25P80 in the Linux kernel has
+a lookup table where the
+erase size for the AT25DF641 is set to 4KB:
 
-This part looks right.
+{ "at25df641",=A0 INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+If I am not mistaken, the jffs2 fs takes the provided erase size from
+the mtd, which is 4KB, but
+mkfs.jffs2 packs the image with 8KB, thus after boot up I get errors
+in the mounting process.
+
+My options are to set 0 instead of SECT_4K and live with the default
+64KB sectors, or patch the
+driver to set the erasesize to 8KiB instead of 4KB.
+
+I would prefer not to change anything in the m25p80 driver. Is there
+another way to fix the problem?
+
+Thanks,
+
+Jernej
