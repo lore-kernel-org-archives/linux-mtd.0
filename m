@@ -1,18 +1,19 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4TkR-0008M5-OA
-	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 06:49:24 +0000
-Received: by gyb11 with SMTP id 11so3773737gyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Apr 2010 23:49:22 -0700 (PDT)
+Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O4W0F-00054x-2W
+	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 09:13:52 +0000
+Date: Wed, 21 Apr 2010 11:13:48 +0200
+From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: attaching UBI while getting read errors from NAND driver fails.
+Message-ID: <20100421091348.GC31506@Chamillionaire.breakpoint.cc>
+References: <20100420184412.GA19928@Chamillionaire.breakpoint.cc>
+	<1271818257.11751.1372.camel@localhost.localdomain>
 MIME-Version: 1.0
-Date: Wed, 21 Apr 2010 08:49:21 +0200
-Message-ID: <y2na57e67db1004202349ya937fa60v70ac540cfd60d076@mail.gmail.com>
-Subject: m25p80 and mkfs.jffs2
-From: Jernej Turnsek <jernej.turnsek@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <1271818257.11751.1372.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+* Artem Bityutskiy | 2010-04-21 05:50:57 [+0300]:
 
-I am developing the platform with i.MX25 CPU, 128MB of RAM and 8MB of
-AT25DF641 Flash.
-I would like to set the rootfs on 6MB jffs2 partition in Flash memory.
-Rootfs was built with the
-OpenEmbedded and the following settings:
+>On Tue, 2010-04-20 at 20:44 +0200, Sebastian Andrzej Siewior wrote:
+>> | UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
+>> So we return with -EBADMSG as you can see in the error message. This
+>> error is then converted by ubi_io_read() into -EIO:
+>> |                /*
+>> |                 * The driver should never return -EBADMSG if it failed to read
+>> |                 * all the requested data. But some buggy drivers might do
+>> |                 * this, so we change it to -EIO.
+>> |                 */
+>> |                if (read != len && err == -EBADMSG) {
+>> |                        ubi_assert(0);
+>> |                        err = -EIO;
+>> |                }
+>> 
+>Well, I think the idea was that the MTD layer tries to read all the
+>requested data despite of a possible unrecoverable ECC error in the
+>middle. So if it returns -EBADMSG, we know that the read buffer contains
+>all the data anyway, even though some of the data may be incorrect.
+>
+>So, I'd suggest changing MTD and making it return read == len in that
+>case.
 
-EXTRA_IMAGECMD_jffs2 =3D "--little-endian --eraseblock=3D0x1000 -n \
-=A0=A0=A0 --pad ; sumtool --eraseblock=3D0x1000 -n \
-=A0=A0=A0 --littleendian --pad \
-=A0=A0=A0 -i ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2 \
-=A0=A0=A0 -o ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.jffs2.summary"
+Wait. According to the error message, I had read == len (both 64). So I
+think it never got changed to -EIO, my mistake.
 
-The problem is the provided erase size of 4096 bytes, because the tool
-mkfs.jffs2 automatically
-increases erasesize to 8KiB. The driver M25P80 in the Linux kernel has
-a lookup table where the
-erase size for the AT25DF641 is set to 4KB:
+>> @@ -756,7 +756,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+>>  		bitflips = 1;
+>>  	}
+>>  
+>> -	si->is_empty = 0;
+>> +	if (err != UBI_IO_BAD_EC_HDR)
+>> +		si->is_empty = 0;
+>>  
+>>  	if (!ec_corr) {
+>>  		int image_seq;
+>> @@ -827,6 +828,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+>>  			return err;
+>>  		goto adjust_mean_ec;
+>>  	}
+>> +	si->is_empty = 0;
+>>  
+>>  	vol_id = be32_to_cpu(vidh->vol_id);
+>>  	if (vol_id > UBI_MAX_VOLUMES && vol_id != UBI_LAYOUT_VOLUME_ID) {
+>
+>This part looks right.
 
-{ "at25df641",=A0 INFO(0x1f4800, 0, 64 * 1024, 128, SECT_4K) },
+Do you want me to resend this part as the fix?
 
-If I am not mistaken, the jffs2 fs takes the provided erase size from
-the mtd, which is 4KB, but
-mkfs.jffs2 packs the image with 8KB, thus after boot up I get errors
-in the mounting process.
-
-My options are to set 0 instead of SECT_4K and live with the default
-64KB sectors, or patch the
-driver to set the erasesize to 8KiB instead of 4KB.
-
-I would prefer not to change anything in the m25p80 driver. Is there
-another way to fix the problem?
-
-Thanks,
-
-Jernej
+Sebastian
