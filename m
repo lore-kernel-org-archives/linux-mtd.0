@@ -1,20 +1,24 @@
-Received: from p01c12o144.mxlogic.net ([208.65.145.67])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4MhB-0000fg-Tj
-	for linux-mtd@lists.infradead.org; Tue, 20 Apr 2010 23:17:34 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: Linux Kernel <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Tue, 20 Apr 2010 18:17:32 -0500
-Subject: [PATCH] sst25l.c: simplify reading the device ManID/DevID
-Message-ID: <0D753D10438DA54287A00B0270842697636D85BD7C@AUSP01VMBX24.collaborationhost.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "ryan@bluewatersys.com" <ryan@bluewatersys.com>,
-	"andre@bluewatersys.com" <andre@bluewatersys.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from fg-out-1718.google.com ([72.14.220.158])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O4Pvj-0007VS-7X
+	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 02:44:48 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so3456745fga.0
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Apr 2010 19:44:44 -0700 (PDT)
+Subject: Re: PATCH 1/7] ubi: logging feature for ubi
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brijesh Singh <brij.singh@samsung.com>
+In-Reply-To: <q2p6b5362aa1004120135l28e57df1kc51c284620ca0033@mail.gmail.com>
+References: <q2p6b5362aa1004120135l28e57df1kc51c284620ca0033@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 21 Apr 2010 05:44:41 +0300
+Message-Id: <1271817881.11751.1366.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Artem.Bityutskiy@nokia.com, rohit.dongre@samsung.com,
+	brijesh.s.singh@gmail.com, linux-mtd@lists.infradead.org,
+	rohitvdongre@gmail.com, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhlIFJlYWQtSUQgY29tbWFuZCB3aWxsIGNvbnRpbnVvdXNseSBvdXRwdXQgdGhlIE1hbnVmYWN0
-dXJlIElEIGFuZCBEZXZpY2UgSUQNCnVudGlsIHRoZSBjb21tYW5kIGlzIHRlcm1pbmF0ZWQgYnkg
-YSBsb3cgdG8gaGlnaCB0cmFuc2l0aW9uIG9uIHRoZSBDRSMgcGluLg0KV2UgY2FuIHRha2UgYWR2
-YW50YWdlIG9mIHRoaXMgaW4gdGhlIHNzdDI1bF9tYXRjaF9kZXZpY2Ugcm91dGluZSBieSByZWFk
-aW5nDQpib3RoIGJ5dGVzIGluIG9uZSBzcGlfd3JpdGVfdGhlbl9yZWFkIHRyYW5zYWN0aW9uLg0K
-DQpTaWduZWQtb2ZmLWJ5OiBIIEhhcnRsZXkgU3dlZXRlbiA8aHN3ZWV0ZW5AdmlzaW9uZW5ncmF2
-ZXJzLmNvbT4NCkNjOiBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+DQpDYzog
-QW5kcmUgUmVuYXVkIDxhbmRyZUBibHVld2F0ZXJzeXMuY29tPg0KQ2M6IFJ5YW4gTWFsbG9uIDxy
-eWFuQGJsdWV3YXRlcnN5cy5jb20+DQoNCi0tLQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQv
-ZGV2aWNlcy9zc3QyNWwuYyBiL2RyaXZlcnMvbXRkL2RldmljZXMvc3N0MjVsLmMNCmluZGV4IGZl
-MTcwNTQuLmIxM2NhNzUgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC9kZXZpY2VzL3NzdDI1bC5j
-DQorKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3NzdDI1bC5jDQpAQCAtMzI4LDcgKzMyOCw3IEBA
-IG91dDoNCiBzdGF0aWMgc3RydWN0IGZsYXNoX2luZm8gKl9faW5pdCBzc3QyNWxfbWF0Y2hfZGV2
-aWNlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkpDQogew0KIAlzdHJ1Y3QgZmxhc2hfaW5mbyAqZmxh
-c2hfaW5mbyA9IE5VTEw7DQotCXVuc2lnbmVkIGNoYXIgY29tbWFuZFs0XSwgcmVzcG9uc2U7DQor
-CXVuc2lnbmVkIGNoYXIgY29tbWFuZFs0XSwgcmVzcG9uc2VbMl07DQogCWludCBpLCBlcnI7DQog
-CXVpbnQxNl90IGlkOw0KIA0KQEAgLTMzNiwyNSArMzM2LDE0IEBAIHN0YXRpYyBzdHJ1Y3QgZmxh
-c2hfaW5mbyAqX19pbml0IHNzdDI1bF9tYXRjaF9kZXZpY2Uoc3RydWN0IHNwaV9kZXZpY2UgKnNw
-aSkNCiAJY29tbWFuZFsxXSA9IDA7DQogCWNvbW1hbmRbMl0gPSAwOw0KIAljb21tYW5kWzNdID0g
-MDsNCi0JZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVhZChzcGksIGNvbW1hbmQsIHNpemVvZihjb21t
-YW5kKSwgJnJlc3BvbnNlLCAxKTsNCisJZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVhZChzcGksIGNv
-bW1hbmQsIHNpemVvZihjb21tYW5kKSwNCisJCQkJICAgICAgIHJlc3BvbnNlLCBzaXplb2YocmVz
-cG9uc2UpKTsNCiAJaWYgKGVyciA8IDApIHsNCiAJCWRldl9lcnIoJnNwaS0+ZGV2LCAiZXJyb3Ig
-cmVhZGluZyBkZXZpY2UgaWQgbXNiXG4iKTsNCiAJCXJldHVybiBOVUxMOw0KIAl9DQogDQotCWlk
-ID0gcmVzcG9uc2UgPDwgODsNCi0NCi0JY29tbWFuZFswXSA9IFNTVDI1TF9DTURfUkVBRF9JRDsN
-Ci0JY29tbWFuZFsxXSA9IDA7DQotCWNvbW1hbmRbMl0gPSAwOw0KLQljb21tYW5kWzNdID0gMTsN
-Ci0JZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVhZChzcGksIGNvbW1hbmQsIHNpemVvZihjb21tYW5k
-KSwgJnJlc3BvbnNlLCAxKTsNCi0JaWYgKGVyciA8IDApIHsNCi0JCWRldl9lcnIoJnNwaS0+ZGV2
-LCAiZXJyb3IgcmVhZGluZyBkZXZpY2UgaWQgbHNiXG4iKTsNCi0JCXJldHVybiBOVUxMOw0KLQl9
-DQotDQotCWlkIHw9IHJlc3BvbnNlOw0KKwlpZCA9IChyZXNwb25zZVswXSA8PCA4KSB8IHJlc3Bv
-bnNlWzFdOw0KIA0KIAlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShzc3QyNWxfZmxhc2hfaW5m
-byk7IGkrKykNCiAJCWlmIChzc3QyNWxfZmxhc2hfaW5mb1tpXS5kZXZpY2VfaWQgPT0gaWQpDQo=
+On Mon, 2010-04-12 at 14:05 +0530, Brijesh Singh wrote:
+> Hi,
+>     I am sending the patches that add logging support to UBI.
+> 
+
+Very quick comments.
+
+1. I think UBIL should not be under #ifdef's, why do we need so many
+   ifdefs around?
+2. This is a lot of code, and a short doc what you do is really needed.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
