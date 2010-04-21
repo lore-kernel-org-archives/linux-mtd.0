@@ -1,19 +1,23 @@
-Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4W0F-00054x-2W
-	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 09:13:52 +0000
-Date: Wed, 21 Apr 2010 11:13:48 +0200
-From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: attaching UBI while getting read errors from NAND driver fails.
-Message-ID: <20100421091348.GC31506@Chamillionaire.breakpoint.cc>
-References: <20100420184412.GA19928@Chamillionaire.breakpoint.cc>
-	<1271818257.11751.1372.camel@localhost.localdomain>
+	id 1O4W5y-0006Un-RB
+	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 09:19:55 +0000
+Date: Wed, 21 Apr 2010 11:19:42 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Can PYSMAP_COMPAT go?
+Message-ID: <20100421091942.GC16543@pengutronix.de>
+References: <20100420063547.GH19957@pengutronix.de>
+	<20100420073503.GL4586@mail.wantstofly.org>
+	<1271750733.14748.1580.camel@macbook.infradead.org>
+	<20100420090408.GM19957@pengutronix.de>
+	<1271755256.14748.1583.camel@macbook.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="96YOpH+ONegL0A3E"
 Content-Disposition: inline
-In-Reply-To: <1271818257.11751.1372.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <1271755256.14748.1583.camel@macbook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Artem Bityutskiy | 2010-04-21 05:50:57 [+0300]:
 
->On Tue, 2010-04-20 at 20:44 +0200, Sebastian Andrzej Siewior wrote:
->> | UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
->> So we return with -EBADMSG as you can see in the error message. This
->> error is then converted by ubi_io_read() into -EIO:
->> |                /*
->> |                 * The driver should never return -EBADMSG if it failed to read
->> |                 * all the requested data. But some buggy drivers might do
->> |                 * this, so we change it to -EIO.
->> |                 */
->> |                if (read != len && err == -EBADMSG) {
->> |                        ubi_assert(0);
->> |                        err = -EIO;
->> |                }
->> 
->Well, I think the idea was that the MTD layer tries to read all the
->requested data despite of a possible unrecoverable ECC error in the
->middle. So if it returns -EBADMSG, we know that the read buffer contains
->all the data anyway, even though some of the data may be incorrect.
->
->So, I'd suggest changing MTD and making it return read == len in that
->case.
+--96YOpH+ONegL0A3E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Wait. According to the error message, I had read == len (both 64). So I
-think it never got changed to -EIO, my mistake.
+> -- at least the user has to set it to something else. With Hartley's
+> patch applied, the kernel will no longer crash if it tries to register a
 
->> @@ -756,7 +756,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
->>  		bitflips = 1;
->>  	}
->>  
->> -	si->is_empty = 0;
->> +	if (err != UBI_IO_BAD_EC_HDR)
->> +		si->is_empty = 0;
->>  
->>  	if (!ec_corr) {
->>  		int image_seq;
->> @@ -827,6 +828,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
->>  			return err;
->>  		goto adjust_mean_ec;
->>  	}
->> +	si->is_empty = 0;
->>  
->>  	vol_id = be32_to_cpu(vidh->vol_id);
->>  	if (vol_id > UBI_MAX_VOLUMES && vol_id != UBI_LAYOUT_VOLUME_ID) {
->
->This part looks right.
+BTW will you pick it up or who should do?
 
-Do you want me to resend this part as the fix?
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-Sebastian
+--96YOpH+ONegL0A3E
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkvOwy4ACgkQD27XaX1/VRsJcACfUVA6cxZgcbq/L7RbfFHUrhF1
+F1QAn2n/WGWVXJp3xVlyHG9CcjZMFyC9
+=/RMo
+-----END PGP SIGNATURE-----
+
+--96YOpH+ONegL0A3E--
