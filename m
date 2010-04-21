@@ -1,39 +1,47 @@
-From: mkl@pengutronix.de (Marc Kleine-Budde)
-Date: Fri, 23 Apr 2010 10:43:42 +0200
-Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
-Message-ID: <mailman.315.1272057983.2170.linux-mtd@lists.infradead.org>
+From: t.stanislaws@samsung.com (Tomasz Stanislawski)
+Date: Wed, 21 Apr 2010 14:59:33 +0200
+Subject: [PATCH] changed kmalloc to vmalloc to fix fragmentation problem
+Message-ID: <mailman.318.1272289168.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-The pxa32xx_nand driver doesn't support partition tables from the
-command line. This patch adds support for it.
-
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/mtd/nand/pxa3xx_nand.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ fs/ubifs/journal.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 5d55152..e02fa4f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1320,6 +1320,17 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 		goto fail_free_irq;
- 	}
+diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
+index 64b5f3a..29d3db1 100644
+--- a/fs/ubifs/journal.c
++++ b/fs/ubifs/journal.c
+@@ -694,7 +694,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 		DBGKEY(key));
+ 	ubifs_assert(len <= UBIFS_BLOCK_SIZE);
  
-+	if (mtd_has_cmdlinepart()) {
-+		static const char *probes[] = { "cmdlinepart", NULL };
-+		struct mtd_partition *parts;
-+		int nr_parts;
-+
-+		nr_parts = parse_mtd_partitions(mtd, probes, &parts, 0);
-+
-+		if (nr_parts)
-+			return add_mtd_partitions(mtd, parts, nr_parts);
-+	}
-+
- 	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+-	data = kmalloc(dlen, GFP_NOFS);
++	data = vmalloc(dlen);
+ 	if (!data)
+ 		return -ENOMEM;
  
- fail_free_irq:
+@@ -732,7 +732,7 @@ int ubifs_jnl_write_data(struct ubifs_info *c, const struct inode *inode,
+ 		goto out_ro;
+ 
+ 	finish_reservation(c);
+-	kfree(data);
++	vfree(data);
+ 	return 0;
+ 
+ out_release:
+@@ -741,7 +741,7 @@ out_ro:
+ 	ubifs_ro_mode(c, err);
+ 	finish_reservation(c);
+ out_free:
+-	kfree(data);
++	vfree(data);
+ 	return err;
+ }
+ 
 -- 
-1.7.0.4
+1.6.3.3
+
+
+--Boundary_(ID_dxXn63fyCtaNjH/oHfaX3Q)--
