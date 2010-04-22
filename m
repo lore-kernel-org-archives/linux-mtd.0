@@ -1,25 +1,20 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
+Received: from mail.windriver.com ([147.11.1.11])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4iLb-0007Tw-Fq
-	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2010 22:24:44 +0000
-Date: Wed, 21 Apr 2010 15:24:10 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Anders Larsen <al@alarsen.net>
-Subject: Re: [PATCH] Fix Oops with Atmel SPI
-Message-Id: <20100421152410.0fea5e12.akpm@linux-foundation.org>
-In-Reply-To: <1271231840l.5270l.0l@i-dmzi_al.realan.de>
-References: <4BC56F21.6040909@call-direct.com.au>
-	<1271231840l.5270l.0l@i-dmzi_al.realan.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1O4mkm-00042H-9F
+	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 03:07:01 +0000
+Message-ID: <4BCFBF5A.9090102@windriver.com>
+Date: Thu, 22 Apr 2010 11:15:38 +0800
+From: "stanley.miao" <stanley.miao@windriver.com>
+MIME-Version: 1.0
+To: Charles Manning <manningc2@actrix.gen.nz>
+Subject: Re: [Yaffs] Problems with mkyaffs2image.c v1.5
+References: <l2mb249ed931004191643n679c074bs6c03c5ab4cd8fd26@mail.gmail.com>
+	<201004201304.34429.manningc2@actrix.gen.nz>
+In-Reply-To: <201004201304.34429.manningc2@actrix.gen.nz>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Ian McDonnell <ian@brightstareng.com>,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Nicolas Pitre <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
-	Iwo Mergler <iwo@call-direct.com.au>, linux-mtd@lists.infradead.org,
-	Matthias Kaehlcke <matthias@kaehlcke.net>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: "linux-mtd@lists.infradead.org >> \"linux-mtd@lists.infradead.org\""
+	<linux-mtd@lists.infradead.org>, yaffs@lists.aleph1.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,50 +24,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Apr 2010 09:57:20 +0200
-Anders Larsen <al@alarsen.net> wrote:
+Charles Manning wrote:
+> We should put this in an FAQ...
+>
+>
+> On Tuesday 20 April 2010 11:43:52 Guy Lancaster wrote:
+>   
+>> I built a file system image using mkyaffs2image v1.5 but but won't
+>>     
+>
+> mkyaffsimage (the yaffs1 version) worked reasonably well because yaffs1 
+> tends/tended to be used with a single straight-forward flash format.
+>
+> With yaffs2, the actual binary layout is defered to the flash driver (mtd in 
+> the case of Linux). This varies from device to device.
+>
+> As a result, the current mkyaffs2image is really a bit of a mess and needs to 
+> be whittled and sandpapered to fit with your flash.
+>   
 
-> On 2010-04-14 09:30:41, Iwo Mergler wrote:
-> > I wouldn't recommend that. MTD erase blocks are 64K or more. In a typical
-> > embedded system you will not be able to kmalloc that much memory after
-> > a few day's of operation - the page pool gets fragmented.
-> 
-> the original problem occurs with SPI flashes, which typically have a much
-> smaller erase block size (and it only occurs when they are driven by an Atmel
-> SoC SPI controller, hence the #ifdefs)
-> 
-> > A possibly better approach is to arrange for that memory to get allocated
-> > at driver start time.
-> 
-> The buffer in question is indeed allocated _once_ (at the first write
-> operation to the device) and only deallocated when the device is unmounted,
-> so allocating it at driver load time wouldn't make much difference IMHO.
-> 
-> I realize that my patch also affects e.g. parallel NOR flash on the system,
-> but unless an MTD device is unmounted/remounted over and over again, I don't
-> see a problem.
+Yes, The NAND oob layout varies from device to device, mkyaffs2image 
+can't know
+the layout. So we should leave this job to nandwrite.
 
-Attempting the allocation at mtdblock_writesect()-time is the least
-reliable approach.
+This is the patch for it.
 
-It would be much more reliable to perform the allocation at boot-time
-or modprobe-time.
-
-It would be 100% reliable to perform the allocation at compile time
-too!  If that's possible.  A statically allocated buffer with
-appropriate locking around it to prevent it from getting scribbled on. 
-Of course, this assumes that the buffer is shared between different
-devices and it won't work at all if cache_data is really a "cache".
-
-Ho-hum.  Anyway, please do try to find a way to make this allocation
-more reliable.  It'd be pretty bad to have an embedded device go crump
-when the user tries to save his data.
-
-Also, the mdtblock code has changed a lot in this very area in the
-linux-next tree (mtdblks[] has gone away).  So please redo any patch
-against linux-next.
+http://lists.infradead.org/pipermail/linux-mtd/2010-February/028923.html
 
 
-Finally..  Wouldn't it be better to just fix the atmel SPI driver so
-that it doesn't barf when handed vmalloc'ed memory?  Who do we ridicule
-about that?  <checks, adds cc>
+Stanley.
+
+>   
+>> load.  Without modifications I get numerous errors of the form:
+>>     
+>>> yaffs tragedy: Bad object type, 2 != 3, for object 1059 at chunk 8242
+>>> during scan
+>>>       
+>> I'm using a Linux 2.6.33.2 kernel with what I believe is the latest
+>> YAFFS source installed (specifically yaffs_fs.c,v 1.102) for a Samsung
+>> S3C2440 Arm target with 128MB NAND Flash (Samsung K9F1G08X0A).
+>>
+>> When I compile mkyaffs2image I get numerous warnings including a set
+>>
+>> of the form:
+>>     
+>>> mkyaffs2image.c:249: warning: array subscript is above array bounds
+>>>       
+>> When I enable a number of the trace flags I get:
+>>     
+>>> yaffs_ScanBackwards starts intstartblk 1 intendblk 1005...
+>>> block is bad seq 0 state 3
+>>> Block scanning block 1 state 3 seq 0
+>>> Block empty
+>>> block is bad seq 0 state 3
+>>>       
+>> ...
+>>
+>> I'm wondering if the problem is that the mkyaffs2image.c needs to be
+>> configured for the MTD layout but I don't know how to find out what
+>> that layout is.
+>>     
+>
+> Yes, that is the problem. The easiest is to just look at the driver and see 
+> what flash layout it provides.
+>
+> -- Charles
+>
+>
+> _______________________________________________
+> yaffs mailing list
+> yaffs@lists.aleph1.co.uk
+> http://lists.aleph1.co.uk/cgi-bin/mailman/listinfo/yaffs
+>
+>   
