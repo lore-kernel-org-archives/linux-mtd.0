@@ -1,25 +1,18 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4ps6-0000aj-5W
-	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 06:26:46 +0000
-Date: Thu, 22 Apr 2010 08:26:31 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] [MTD] Fix JFFS2 sync silent failure
-Message-ID: <20100422062631.GC27309@logfs.org>
-References: <20100417184016.GA17345@logfs.org>
-	<20100419073843.GN27497@kernel.dk>
-	<20100419101559.GA4145@logfs.org>
-	<20100419102056.GS27497@kernel.dk>
-	<20100422055448.GA27309@logfs.org>
+Received: from smtp2-g21.free.fr ([212.27.42.2])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O4rxN-0002WU-Vz
+	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 08:40:23 +0000
+Subject: [PATCH v3 1/8] mtd: cfi_probe: enter Auto Select Mode after filling
+	cfi->cfiq members
+To: linux-mtd <linux-mtd@lists.infradead.org>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Thu, 22 Apr 2010 10:35:45 +0200
+Message-ID: <20100422083545.17166.17822.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20100422055448.GA27309@logfs.org>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, Jens Axboe <jens.axboe@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, Wolfram Sang <w.sang@pengutronix.de>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,67 +22,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus,
+Move the code to enter Auto Select Mode down to be able to use cfi->cfiq
+members to add support for chips using alternative sequence / unlock
+addresses.
 
-I think this is bad enough that you should be involved.  32a88aa1 broke
-a number of filesystems in a way that sync() would return 0 without
-doing any work.  Even politicians are better at keeping the promises.
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+---
+ drivers/mtd/chips/cfi_probe.c |   47 +++++++++++++++++++++--------------------
+ 1 files changed, 24 insertions(+), 23 deletions(-)
 
-This is caused by the two-liner in __sync_filesystem:
-	if (!sb->s_bdi)
-		return 0;
-s_bdi is set implicitly for all filesystems using set_bdev_super(), so
-most block device based filesystems are safe.  There are, however, a
-number of odd-balls around:
-
-On Thu, 22 April 2010 07:54:48 +0200, Jörn Engel wrote:
-> 
-> 9p	no s_bdi
-> afs	no s_bdi
-> ceph	creates its own s_bdi
-> cifs	no s_bdi
-> coda	no s_bdi
-> ecryptfs no s_bdi
-> exofs	no s_bdi
-> fuse	creates its own s_bdi?
-> gfs2	creates its own s_bdi?
-> jffs2	patch exists
-> logfs	fixed now
-> ncpfs	no s_bdi
-> nfs	creates its own s_bdi
-> ocfs2	no s_bdi
-> smbfs	no s_bdi
-> ubifs	creates its own s_bdi
-
-Obviously this list should get checked and all affected filesystems get
-repaired.  Additionally we should add an assertion and BUG() or refuse
-to mount or something.  My original patch to that extend was this:
-
-diff --git a/fs/super.c b/fs/super.c
-index f35ac60..e8af253 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -954,6 +954,8 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void
- 	if (error < 0)
- 		goto out_free_secdata;
- 	BUG_ON(!mnt->mnt_sb);
-+	BUG_ON(!mnt->mnt_sb->s_bdi &&
-+			(mnt->mnt_sb->s_bdev || mnt->mnt_sb->s_mtd));
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index e63e674..f657d16 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -181,29 +181,6 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	for (i=0; i<(sizeof(struct cfi_ident) + num_erase_regions * 4); i++)
+ 		((unsigned char *)cfi->cfiq)[i] = cfi_read_query(map,base + (0x10 + i)*ofs_factor);
  
-  	error = security_sb_kern_mount(mnt->mnt_sb, flags, secdata);
-  	if (error)
-  		goto out_sb;
-
-The real problem is finding a condition that has neither false positives
-nor false negatives.  The "(mnt->mnt_sb->s_bdev || mnt->mnt_sb->s_mtd)"
-part takes care of false positives like tmpfs, but it would catch none
-of the network filesystems.  Should we instead annotate tmpfs and friends
-with something like sb->s_dont_need_bdi?  It is the only way I can think
-of not to miss something.
-
-Jörn
-
--- 
-People will accept your ideas much more readily if you tell them
-that Benjamin Franklin said it first.
--- unknown
+-	/* Note we put the device back into Read Mode BEFORE going into Auto
+-	 * Select Mode, as some devices support nesting of modes, others
+-	 * don't. This way should always work.
+-	 * On cmdset 0001 the writes of 0xaa and 0x55 are not needed, and
+-	 * so should be treated as nops or illegal (and so put the device
+-	 * back into Read Mode, which is a nop in this case).
+-	 */
+-	cfi_send_gen_cmd(0xf0,     0, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0xaa, 0x555, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
+-	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
+-	cfi->mfr = cfi_read_query16(map, base);
+-	cfi->id = cfi_read_query16(map, base + ofs_factor);
+-
+-	/* Get AMD/Spansion extended JEDEC ID */
+-	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
+-		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
+-			  cfi_read_query(map, base + 0xf * ofs_factor);
+-
+-	/* Put it back into Read Mode */
+-	cfi_qry_mode_off(base, map, cfi);
+-	xip_allowed(base, map);
+-
+ 	/* Do any necessary byteswapping */
+ 	cfi->cfiq->P_ID = le16_to_cpu(cfi->cfiq->P_ID);
+ 
+@@ -228,6 +205,30 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ #endif
+ 	}
+ 
++	/*
++	 * Note we put the device back into Read Mode BEFORE going into Auto
++	 * Select Mode, as some devices support nesting of modes, others
++	 * don't. This way should always work.
++	 * On cmdset 0001 the writes of 0xaa and 0x55 are not needed, and
++	 * so should be treated as nops or illegal (and so put the device
++	 * back into Read Mode, which is a nop in this case).
++	 */
++	cfi_send_gen_cmd(0xf0,     0, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xaa, 0x555, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
++	cfi->mfr = cfi_read_query16(map, base);
++	cfi->id = cfi_read_query16(map, base + ofs_factor);
++
++	/* Get AMD/Spansion extended JEDEC ID */
++	if (cfi->mfr == CFI_MFR_AMD && (cfi->id & 0xff) == 0x7e)
++		cfi->id = cfi_read_query(map, base + 0xe * ofs_factor) << 8 |
++			  cfi_read_query(map, base + 0xf * ofs_factor);
++
++	/* Put it back into Read Mode */
++	cfi_qry_mode_off(base, map, cfi);
++	xip_allowed(base, map);
++
+ 	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
+ 	       map->name, cfi->interleave, cfi->device_type*8, base,
+ 	       map->bankwidth*8);
