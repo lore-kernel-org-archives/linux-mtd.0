@@ -1,25 +1,19 @@
-Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4tp6-0007sp-3g
-	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 10:39:56 +0000
-Date: Thu, 22 Apr 2010 12:39:53 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
 Subject: Re: [PATCH] [MTD] Fix JFFS2 sync silent failure
-Message-ID: <20100422103953.GB27497@kernel.dk>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Jens Axboe <jens.axboe@oracle.com>
+In-Reply-To: <20100422103953.GB27497@kernel.dk>
 References: <20100417184016.GA17345@logfs.org>
-	<20100419073843.GN27497@kernel.dk>
-	<20100419101559.GA4145@logfs.org>
-	<20100419102056.GS27497@kernel.dk>
-	<20100422055448.GA27309@logfs.org>
-	<20100422090303.GA27497@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+	<20100419073843.GN27497@kernel.dk> <20100419101559.GA4145@logfs.org>
+	<20100419102056.GS27497@kernel.dk> <20100422055448.GA27309@logfs.org>
+	<20100422090303.GA27497@kernel.dk> <20100422103953.GB27497@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 22 Apr 2010 11:58:11 +0100
+Message-ID: <1271933891.11751.1508.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20100422090303.GA27497@kernel.dk>
-Cc: Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Cc: Christoph Hellwig <hch@infradead.org>,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,58 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 22 2010, Jens Axboe wrote:
-> On Thu, Apr 22 2010, Jörn Engel wrote:
-> > On Mon, 19 April 2010 12:20:56 +0200, Jens Axboe wrote:
-> > > 
-> > > Thanks, we definitely should have put a debug statement to catch this in
-> > > from day 1, good debugging should be an important part of any new
-> > > infrastructure.
-> > 
-> > Woke up early and had another look at this.  Looks like a much more
-> > widespread problem.  Based on a quick grep an uncaffeinated brain:
-> > 
-> > 9p	no s_bdi
-> > afs	no s_bdi
-> > ceph	creates its own s_bdi
-> > cifs	no s_bdi
-> > coda	no s_bdi
-> > ecryptfs no s_bdi
-> > exofs	no s_bdi
-> > fuse	creates its own s_bdi?
-> > gfs2	creates its own s_bdi?
-> > jffs2	patch exists
-> > logfs	fixed now
-> > ncpfs	no s_bdi
-> > nfs	creates its own s_bdi
-> > ocfs2	no s_bdi
-> > smbfs	no s_bdi
-> > ubifs	creates its own s_bdi
-> > 
-> > I excluded all filesystems that appear to be read-only, block device
-> > based or lack any sort of backing store.  So there is a chance I have
-> > missed some as well.
+On Thu, 2010-04-22 at 12:39 +0200, Jens Axboe wrote:
 > 
-> It's funky, I was pretty sure there was/is code to set a default bdi for
-> non-bdev file systems. It appears to be missing, that's not good. So
-> options include:
+> Here's a series for fixing these. At this point they are totally
+> untested except that I did compile them. Note that your analysis
+> appeared correct for all cases but ocfs2, which does use get_sb_bdev()
+> and hence gets ->s_bdi assigned.
 > 
-> - Add the appropriate per-sb bdi for these file systems (right fix), or
-> - Pre-fill default_backing_dev_info as a fallback ->s_bdi to at least
->   ensure that data gets flushed (quick fix)
+> You can see them here, I'll post the series soon:
 > 
-> I'll slap together a set of fixes for this.
+> http://git.kernel.dk/?p=linux-2.6-block.git;a=shortlog;h=refs/heads/for-linus
+> 
+> The first patch is a helper addition, the rest are per-fs fixups.
 
-Here's a series for fixing these. At this point they are totally
-untested except that I did compile them. Note that your analysis
-appeared correct for all cases but ocfs2, which does use get_sb_bdev()
-and hence gets ->s_bdi assigned.
-
-You can see them here, I'll post the series soon:
-
-http://git.kernel.dk/?p=linux-2.6-block.git;a=shortlog;h=refs/heads/for-linus
-
-The first patch is a helper addition, the rest are per-fs fixups.
+Do you want to include JÃ¶rn's addition of same to get_sb_mtd_set(), with
+my Acked-By: David Woodhouse <David.Woodhouse@intel.com> ? 
 
 -- 
-Jens Axboe
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
