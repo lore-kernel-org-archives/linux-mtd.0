@@ -1,28 +1,18 @@
-Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4uEC-0004UW-Mz
-	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 11:05:53 +0000
-Date: Thu, 22 Apr 2010 13:05:51 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] [MTD] Fix JFFS2 sync silent failure
-Message-ID: <20100422110551.GD27497@kernel.dk>
-References: <20100417184016.GA17345@logfs.org>
-	<20100419073843.GN27497@kernel.dk>
-	<20100419101559.GA4145@logfs.org>
-	<20100419102056.GS27497@kernel.dk>
-	<20100422055448.GA27309@logfs.org>
-	<20100422090303.GA27497@kernel.dk>
-	<20100422103953.GB27497@kernel.dk>
-	<1271933891.11751.1508.camel@macbook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1271933891.11751.1508.camel@macbook.infradead.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mtd: Do not corrupt backing device for inode
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+In-Reply-To: <1271863269-5423-1-git-send-email-kirill@shutemov.name>
+References: <20100415172300.GF3561@quack.suse.cz>
+	<1271863269-5423-1-git-send-email-kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 22 Apr 2010 12:08:55 +0100
+Message-ID: <1271934535.11751.1550.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
+	David Howells <dhowells@redhat.com>,
+	Alexander Shishkin <virtuoso@slind.org>, linux-mtd@lists.infradead.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 22 2010, David Woodhouse wrote:
-> On Thu, 2010-04-22 at 12:39 +0200, Jens Axboe wrote:
-> > 
-> > Here's a series for fixing these. At this point they are totally
-> > untested except that I did compile them. Note that your analysis
-> > appeared correct for all cases but ocfs2, which does use get_sb_bdev()
-> > and hence gets ->s_bdi assigned.
-> > 
-> > You can see them here, I'll post the series soon:
-> > 
-> > http://git.kernel.dk/?p=linux-2.6-block.git;a=shortlog;h=refs/heads/for-linus
-> > 
-> > The first patch is a helper addition, the rest are per-fs fixups.
-> 
-> Do you want to include Jörn's addition of same to get_sb_mtd_set(), with
-> my Acked-By: David Woodhouse <David.Woodhouse@intel.com> ? 
+On Wed, 2010-04-21 at 18:21 +0300, Kirill A. Shutemov wrote:
+> +		/*
+> +		 * We cannot modify file->f_mapping->backing_dev_info directly,
+> +		 * because it will corrupt backing device for inode, since
+> +		 * inode->i_mapping is equal to file->f_mapping. So we have to
+> +		 * copy f_mapping first.
+> +		 */
+> +		file->f_mapping = kmalloc(sizeof(*file->f_mapping), GFP_KERNEL);
+> +		memcpy(file->f_mapping, inode->i_mapping,
+> +				sizeof(*file->f_mapping));
+>  		file->f_mapping->backing_dev_info = mtd->backing_dev_info;
+> +	}
 
-Yeah will do. I also really wanted to provide a WARN and mount fail if
-we get it wrong, but I don't see an easy way to do that. Basically I'd
-want to check whether the storage backing is volatile or not.
+Ick. What about the rest of file->f_mapping? That'll still be inherited.
+
+Jan pointed at drivers/char/raw.c as an example, but that doesn't do
+anything as ugly as this -- that sets file->f_mapping to point at
+bdev->bd_inode->i_mapping instead.
+
+I suspect we should do something similar -- have an inode for the MTD
+device, with a valid i_data of its own.
 
 -- 
-Jens Axboe
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
