@@ -1,18 +1,26 @@
-Subject: Re: [PATCH] mtd: Do not corrupt backing device for inode
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-In-Reply-To: <1271863269-5423-1-git-send-email-kirill@shutemov.name>
-References: <20100415172300.GF3561@quack.suse.cz>
-	<1271863269-5423-1-git-send-email-kirill@shutemov.name>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 22 Apr 2010 12:08:55 +0100
-Message-ID: <1271934535.11751.1550.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-	David Howells <dhowells@redhat.com>,
-	Alexander Shishkin <virtuoso@slind.org>, linux-mtd@lists.infradead.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O4v0W-0006Q4-R9
+	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 11:55:49 +0000
+Date: Thu, 22 Apr 2010 13:55:39 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jens Axboe <jens.axboe@oracle.com>
+Subject: Re: [PATCH] [MTD] Fix JFFS2 sync silent failure
+Message-ID: <20100422115539.GE27309@logfs.org>
+References: <20100417184016.GA17345@logfs.org>
+	<20100419073843.GN27497@kernel.dk>
+	<20100419101559.GA4145@logfs.org>
+	<20100419102056.GS27497@kernel.dk>
+	<20100422055448.GA27309@logfs.org>
+	<20100422090303.GA27497@kernel.dk>
+	<20100422103953.GB27497@kernel.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20100422103953.GB27497@kernel.dk>
+Cc: Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-04-21 at 18:21 +0300, Kirill A. Shutemov wrote:
-> +		/*
-> +		 * We cannot modify file->f_mapping->backing_dev_info directly,
-> +		 * because it will corrupt backing device for inode, since
-> +		 * inode->i_mapping is equal to file->f_mapping. So we have to
-> +		 * copy f_mapping first.
-> +		 */
-> +		file->f_mapping = kmalloc(sizeof(*file->f_mapping), GFP_KERNEL);
-> +		memcpy(file->f_mapping, inode->i_mapping,
-> +				sizeof(*file->f_mapping));
->  		file->f_mapping->backing_dev_info = mtd->backing_dev_info;
-> +	}
+On Thu, 22 April 2010 12:39:53 +0200, Jens Axboe wrote:
+> 
+> Here's a series for fixing these. At this point they are totally
+> untested except that I did compile them. Note that your analysis
+> appeared correct for all cases but ocfs2, which does use get_sb_bdev()
+> and hence gets ->s_bdi assigned.
+> 
+> You can see them here, I'll post the series soon:
+> 
+> http://git.kernel.dk/?p=linux-2.6-block.git;a=shortlog;h=refs/heads/for-linus
+> 
+> The first patch is a helper addition, the rest are per-fs fixups.
 
-Ick. What about the rest of file->f_mapping? That'll still be inherited.
+Looks good at a cursory glance.  What's still missing is some sort of
+assertion.  You are a smart person and missed this problem, twice even.
+Even if you hadn't, a not so smart person can add a new filesystem and
+miss s_bdi, like I did.  We want some automatism to catch this.
 
-Jan pointed at drivers/char/raw.c as an example, but that doesn't do
-anything as ugly as this -- that sets file->f_mapping to point at
-bdev->bd_inode->i_mapping instead.
-
-I suspect we should do something similar -- have an inode for the MTD
-device, with a valid i_data of its own.
+Jörn
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+"Security vulnerabilities are here to stay."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
