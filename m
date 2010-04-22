@@ -1,13 +1,13 @@
 Received: from smtp2-g21.free.fr ([212.27.42.2])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O4rxl-0002hP-Fs
-	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 08:40:46 +0000
-Subject: [PATCH v3 6/8] mtd: cfi_cmdset_0002: add CFI detection for SST
-	39VF{16, 32}xx chips
+	id 1O4rxq-0002jG-Hk
+	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2010 08:40:51 +0000
+Subject: [PATCH v3 7/8] mtd: cfi_cmdset_0002: add CFI detection for SST
+	39VF{32, 64}xxB chips
 To: linux-mtd <linux-mtd@lists.infradead.org>
 From: Guillaume LECERF <glecerf@gmail.com>
-Date: Thu, 22 Apr 2010 10:36:11 +0200
-Message-ID: <20100422083611.17166.34150.stgit@shiryu.yomgui.biz>
+Date: Thu, 22 Apr 2010 10:36:16 +0200
+Message-ID: <20100422083616.17166.44918.stgit@shiryu.yomgui.biz>
 In-Reply-To: <20100422083545.17166.17822.stgit@shiryu.yomgui.biz>
 References: <20100422083545.17166.17822.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
@@ -24,85 +24,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SST 39VF{16,32}xx chips use the 0x0701 command set, fully compatible
-with the AMD one. This patch adds support for detecting them in CFI
-mode.
+This patch adds support for detecting SST 39VF32xxB and 39VF64xxB
+chips in CFI mode.
 
 Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c |   35 +++++++++++++++++++++++++++++++++++
- drivers/mtd/chips/gen_probe.c       |    1 +
- 2 files changed, 36 insertions(+), 0 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index de1b4ba..0e91dce 100644
+index 0e91dce..66e5586 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -256,6 +256,31 @@ static void fixup_use_atmel_lock(struct mtd_info *mtd, void *param)
- 	mtd->flags |= MTD_POWERUP_LOCK;
+@@ -281,6 +281,17 @@ static void fixup_sst39vf(struct mtd_info *mtd, void *param)
+ 	cfi->addr_unlock2 = 0x2AAA;
  }
  
-+static void fixup_old_sst_eraseregion(struct mtd_info *mtd)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+
-+	/*
-+	 * These flashes report two seperate eraseblock regions based on the
-+	 * sector_erase-size and block_erase-size, although they both operate on the
-+	 * same memory. This is not allowed according to CFI, so we just pick the
-+	 * sector_erase-size.
-+	 */
-+	cfi->cfiq->NumEraseRegions = 1;
-+}
-+
-+static void fixup_sst39vf(struct mtd_info *mtd, void *param)
++static void fixup_sst39vf_rev_b(struct mtd_info *mtd, void *param)
 +{
 +	struct map_info *map = mtd->priv;
 +	struct cfi_private *cfi = map->fldrv_priv;
 +
 +	fixup_old_sst_eraseregion(mtd);
 +
-+	cfi->addr_unlock1 = 0x5555;
-+	cfi->addr_unlock2 = 0x2AAA;
++	cfi->addr_unlock1 = 0x555;
++	cfi->addr_unlock2 = 0x2AA;
 +}
 +
  static void fixup_s29gl064n_sectors(struct mtd_info *mtd, void *param)
  {
  	struct map_info *map = mtd->priv;
-@@ -278,6 +303,15 @@ static void fixup_s29gl032n_sectors(struct mtd_info *mtd, void *param)
- 	}
- }
+@@ -309,6 +320,10 @@ static struct cfi_fixup cfi_nopri_fixup_table[] = {
+ 	{ CFI_MFR_SST, 0x234B, fixup_sst39vf, NULL, }, // SST39VF1601
+ 	{ CFI_MFR_SST, 0x235A, fixup_sst39vf, NULL, }, // SST39VF3202
+ 	{ CFI_MFR_SST, 0x235B, fixup_sst39vf, NULL, }, // SST39VF3201
++	{ CFI_MFR_SST, 0x235C, fixup_sst39vf_rev_b, NULL, }, // SST39VF3202B
++	{ CFI_MFR_SST, 0x235D, fixup_sst39vf_rev_b, NULL, }, // SST39VF3201B
++	{ CFI_MFR_SST, 0x236C, fixup_sst39vf_rev_b, NULL, }, // SST39VF6402B
++	{ CFI_MFR_SST, 0x236D, fixup_sst39vf_rev_b, NULL, }, // SST39VF6401B
+ 	{ 0, 0, NULL, NULL }
+ };
  
-+/* Used to fix CFI-Tables of chips without Extended Query Tables */
-+static struct cfi_fixup cfi_nopri_fixup_table[] = {
-+	{ CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, // SST39VF1602
-+	{ CFI_MFR_SST, 0x234B, fixup_sst39vf, NULL, }, // SST39VF1601
-+	{ CFI_MFR_SST, 0x235A, fixup_sst39vf, NULL, }, // SST39VF3202
-+	{ CFI_MFR_SST, 0x235B, fixup_sst39vf, NULL, }, // SST39VF3201
-+	{ 0, 0, NULL, NULL }
-+};
-+
- static struct cfi_fixup cfi_fixup_table[] = {
- 	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
- #ifdef AMD_BOOTLOC_BUG
-@@ -408,6 +442,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 			cfi->addr_unlock1 = 0x555;
- 			cfi->addr_unlock2 = 0x2aa;
- 		}
-+		cfi_fixup(mtd, cfi_nopri_fixup_table);
- 
- 		if (!cfi->addr_unlock1 || !cfi->addr_unlock2) {
- 			kfree(mtd);
-diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
-index 991c457..599c259 100644
---- a/drivers/mtd/chips/gen_probe.c
-+++ b/drivers/mtd/chips/gen_probe.c
-@@ -249,6 +249,7 @@ static struct mtd_info *check_cmd_set(struct map_info *map, int primary)
- #endif
- #ifdef CONFIG_MTD_CFI_AMDSTD
- 	case P_ID_AMD_STD:
-+	case P_ID_SST_OLD:
- 		return cfi_cmdset_0002(map, primary);
- #endif
- #ifdef CONFIG_MTD_CFI_STAA
