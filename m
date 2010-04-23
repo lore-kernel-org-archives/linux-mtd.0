@@ -1,31 +1,14 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5PuS-00066v-U3
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 20:55:37 +0000
-Date: Fri, 23 Apr 2010 22:55:19 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jens Axboe <jens.axboe@oracle.com>
-Subject: Re: [Patch] Catch filesystems lacking s_bdi
-Message-ID: <20100423205518.GB7008@logfs.org>
-References: <20100419073843.GN27497@kernel.dk>
-	<20100419101559.GA4145@logfs.org>
-	<20100419102056.GS27497@kernel.dk>
-	<20100422055448.GA27309@logfs.org>
-	<20100422062631.GC27309@logfs.org>
-	<alpine.LFD.2.00.1004220724170.9086@i5.linux-foundation.org>
-	<alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
-	<20100422162709.GJ27497@kernel.dk>
-	<20100422203358.GB30749@logfs.org>
-	<20100423100532.GN27497@kernel.dk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20100423100532.GN27497@kernel.dk>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+	id 1O5QOC-0005Yn-UJ
+	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 21:26:22 +0000
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 23 Apr 2010 23:25:44 +0200
+Message-Id: <1272057944-19380-1-git-send-email-mkl@pengutronix.de>
+Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,23 +18,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 April 2010 12:05:32 +0200, Jens Axboe wrote:
-> 
-> So it's probably safe and good enough as-is, I'll add it. Thanks!
+The pxa32xx_nand driver doesn't support partition tables from the
+command line. This patch adds support for it.
 
-I cannot see this patch in your tree yet.  Could be the weekend or a
-deliberate decision not to send this for 2.6.34-rc anymore.
+Please review and consider to apply.
 
-In case it was a deliberate decision, can we please make it explicit?  I
-don't like the idea of adding a BUG_ON() that potentially triggers for
-thousands of people this late in the stabilization process - but it is
-better than having people lose data.  Even if we already ran two stable
-kernels that way.
+cheers, Marc
 
-Damned if you do, damned if you don't. :(
 
-Jörn
+>From a2caa92b08351511ee60bd94bf735be5f3a6fb65 Mon Sep 17 00:00:00 2001
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Fri, 23 Apr 2010 10:43:42 +0200
+Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
 
+The pxa32xx_nand driver doesn't support partition tables from the
+command line. This patch adds support for it.
+
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 5d55152..e02fa4f 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1320,6 +1320,17 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 		goto fail_free_irq;
+ 	}
+ 
++	if (mtd_has_cmdlinepart()) {
++		static const char *probes[] = { "cmdlinepart", NULL };
++		struct mtd_partition *parts;
++		int nr_parts;
++
++		nr_parts = parse_mtd_partitions(mtd, probes, &parts, 0);
++
++		if (nr_parts)
++			return add_mtd_partitions(mtd, parts, nr_parts);
++	}
++
+ 	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+ 
+ fail_free_irq:
 -- 
-Time? What's that? Time is only worth what you do with it.
--- Theo de Raadt
+1.7.0.4
