@@ -1,17 +1,23 @@
-Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5Mfv-00013K-4N
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 17:28:24 +0000
-Date: Fri, 23 Apr 2010 19:28:19 +0200
-From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; CHARSET=US-ASCII
+Date: Fri, 23 Apr 2010 13:50:10 -0400 (EDT)
+From: Nicolas Pitre <nico@fluxnic.net>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] mtd/ubi: recognize empty flash with errors as empty
-Message-ID: <20100423172819.GA29224@Chamillionaire.breakpoint.cc>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1271818257.11751.1372.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
+In-reply-to: <1272035596.11751.1437.camel@localhost.localdomain>
+Message-id: <alpine.LFD.2.00.1004231308300.7232@xanadu.home>
+References: <20100325152505.17612.40158.stgit@pauliusz>
+	<alpine.LFD.2.00.1003251225500.694@xanadu.home>
+	<4BB33988.9070608@gmail.com> <1272023778.6917.6.camel@localhost>
+	<alpine.LFD.2.00.1004230853230.7232@xanadu.home>
+	<1272035596.11751.1437.camel@localhost.localdomain>
+Content-id: <alpine.LFD.2.00.1004231344241.7232@xanadu.home>
+Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, jamie@shareable.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Fri, 23 Apr 2010, Artem Bityutskiy wrote:
 
-Attaching empty nand with a block which contains a RS-Error which can't
-be fixed resulted in:
+> On Fri, 2010-04-23 at 08:54 -0400, Nicolas Pitre wrote:
+> > On Fri, 23 Apr 2010, Artem Bityutskiy wrote:
+> > 
+> > > On Wed, 2010-03-31 at 15:01 +0300, Paulius Zaleckas wrote:
+> > > > On 03/25/2010 06:26 PM, Nicolas Pitre wrote:
+> > > > > On Thu, 25 Mar 2010, Paulius Zaleckas wrote:
+> > > > >
+> > > > >> We must tell GCC to use even register for variable passed
+> > > > >> to ldrd instruction. Without this patch GCC 4.2.1 puts this
+> > > > >> variable to r2/r3 on EABI and r3/r4 on OABI, so force it to
+> > > > >> r2/r3. This does not change anything when EABI and OABI
+> > > > >> compilation works OK.
+> > > > >>
+> > > > >> Without this patch and with OABI I get:
+> > > > >>    CC      drivers/mtd/nand/orion_nand.o
+> > > > >> /tmp/ccMkwOCs.s: Assembler messages:
+> > > > >> /tmp/ccMkwOCs.s:63: Error: first destination register must be even -- `ldrd r3,[ip]'
+> > > > >> make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
+> > > > >>
+> > > > >> Signed-off-by: Paulius Zaleckas<paulius.zaleckas@gmail.com>
+> > > > >
+> > > > > Acked-by: Nicolas Pitre<nico@fluxnic.net>
+> > > > 
+> > > > David,
+> > > > 
+> > > > Will you take this patch?
+> > > > Or you are waiting till I will add all Cc as Jamie suggested?
+> > > 
+> > > Meanwhile, I've pushed your patch to my l2-mtd-2.6.git / dunno.
+> > 
+> > I think it should go to mainline.  It is not perfect, but still better 
+> > than the current situation.
+> 
+> Fine with me, but not up to me. But I guess Andrew could merge it.
 
-| UBI: attaching mtd9 to ubi0
-| UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
-| Call Trace:
-| [cfbd5c60] [c0008558] show_stack+0x48/0x19c (unreliable)
-| [cfbd5ca0] [c01a71e8] ubi_io_read+0x188/0x288
-| [cfbd5cf0] [c01a76e8] ubi_io_read_ec_hdr+0x74/0x2a4
-| [cfbd5d20] [c01abe9c] ubi_scan+0x178/0x10b4
-| [cfbd5d80] [c01a1464] ubi_attach_mtd_dev+0x67c/0xe44
-| [cfbd5e80] [c01a1fc8] ctrl_cdev_ioctl+0x178/0x210
-| [cfbd5ec0] [c008711c] do_ioctl+0x3c/0xc4
-| [cfbd5ee0] [c0087224] vfs_ioctl+0x80/0x448
-| [cfbd5f10] [c008762c] sys_ioctl+0x40/0x88
-| [cfbd5f40] [c000f960] ret_from_syscall+0x0/0x38
-| UBI error: ubi_read_volume_table: the layout volume was not found
-| UBI error: ubi_attach_mtd_dev: failed to attach by scanning, error -22
+The patch is providing a fix to my own code, and I acked it already. The 
+root of the problem is a defficiency in gcc, and dwmw2 asked that a PR 
+be filled for that and a reference to it added to the patch.  This has 
+been done.
 
-Assuming that blocks which can only be read with errors are empty will let
-the volume attach. Another access to the block in question resulted here
-in:
 
-| UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
-| nand_erase: Failed erase, page 0x000751c0
-| nand_erase: Failed erase, page 0x000751c0
-| nand_erase: Failed erase, page 0x000751c0
-| nand_erase: Failed erase, page 0x000751c0
-| UBI error: do_sync_erase: cannot erase PEB 3399, error -5
-| UBI error: erase_worker: failed to erase PEB 3399, error -5
-| UBI: mark PEB 3399 as bad
-| UBI: 39 PEBs left in the reserve
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/mtd/ubi/scan.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index dc5f688..7529d46 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -756,7 +756,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		bitflips = 1;
- 	}
- 
--	si->is_empty = 0;
-+	if (err != UBI_IO_BAD_EC_HDR)
-+		si->is_empty = 0;
- 
- 	if (!ec_corr) {
- 		int image_seq;
-@@ -827,6 +828,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			return err;
- 		goto adjust_mean_ec;
- 	}
-+	si->is_empty = 0;
- 
- 	vol_id = be32_to_cpu(vidh->vol_id);
- 	if (vol_id > UBI_MAX_VOLUMES && vol_id != UBI_LAYOUT_VOLUME_ID) {
--- 
-1.6.6.1
+Nicolas
