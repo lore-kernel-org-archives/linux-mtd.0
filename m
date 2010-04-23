@@ -1,27 +1,22 @@
-Received: from ey-out-1920.google.com ([74.125.78.144])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5JPG-0000GU-JE
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 13:58:59 +0000
-Received: by ey-out-1920.google.com with SMTP id 4so678530eyg.26
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Apr 2010 06:58:56 -0700 (PDT)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <4BD12FCC.2070307@free.fr>
-References: <20100422083545.17166.17822.stgit@shiryu.yomgui.biz>
-	<20100422083606.17166.52192.stgit@shiryu.yomgui.biz>
-	<4BD12FCC.2070307@free.fr>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Fri, 23 Apr 2010 15:58:36 +0200
-Message-ID: <l2nb8e9195f1004230658kb3ec4b95v60f59b4258e02612@mail.gmail.com>
-Subject: Re: [PATCH v3 5/8] mtd: cfi_cmdset_0002: do not fail on no extended
-	query table as they are both optional
-To: Chris Moore <moore@free.fr>
-Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Nicolas Pitre <nico@fluxnic.net>
+In-Reply-To: <alpine.LFD.2.00.1004230853230.7232@xanadu.home>
+References: <20100325152505.17612.40158.stgit@pauliusz>
+	<alpine.LFD.2.00.1003251225500.694@xanadu.home>
+	<4BB33988.9070608@gmail.com> <1272023778.6917.6.camel@localhost>
+	<alpine.LFD.2.00.1004230853230.7232@xanadu.home>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 23 Apr 2010 18:13:16 +0300
+Message-Id: <1272035596.11751.1437.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, jamie@shareable.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Chris,
+On Fri, 2010-04-23 at 08:54 -0400, Nicolas Pitre wrote:
+> On Fri, 23 Apr 2010, Artem Bityutskiy wrote:
+> 
+> > On Wed, 2010-03-31 at 15:01 +0300, Paulius Zaleckas wrote:
+> > > On 03/25/2010 06:26 PM, Nicolas Pitre wrote:
+> > > > On Thu, 25 Mar 2010, Paulius Zaleckas wrote:
+> > > >
+> > > >> We must tell GCC to use even register for variable passed
+> > > >> to ldrd instruction. Without this patch GCC 4.2.1 puts this
+> > > >> variable to r2/r3 on EABI and r3/r4 on OABI, so force it to
+> > > >> r2/r3. This does not change anything when EABI and OABI
+> > > >> compilation works OK.
+> > > >>
+> > > >> Without this patch and with OABI I get:
+> > > >>    CC      drivers/mtd/nand/orion_nand.o
+> > > >> /tmp/ccMkwOCs.s: Assembler messages:
+> > > >> /tmp/ccMkwOCs.s:63: Error: first destination register must be even -- `ldrd r3,[ip]'
+> > > >> make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
+> > > >>
+> > > >> Signed-off-by: Paulius Zaleckas<paulius.zaleckas@gmail.com>
+> > > >
+> > > > Acked-by: Nicolas Pitre<nico@fluxnic.net>
+> > > 
+> > > David,
+> > > 
+> > > Will you take this patch?
+> > > Or you are waiting till I will add all Cc as Jamie suggested?
+> > 
+> > Meanwhile, I've pushed your patch to my l2-mtd-2.6.git / dunno.
+> 
+> I think it should go to mainline.  It is not perfect, but still better 
+> than the current situation.
 
-2010/4/23 Chris Moore <moore@free.fr>:
-> It is not your fault, Guillaume, but this whole "Assuming top" stuff is
-> completely bogus :(
-> (The most obvious, but not the only, bug is that it actually sets bootloc to
-> 2 which is bottom :( )
->
-> Uwe Kleine-Koenig submitted a patch for this ages ago which I tried to ping.
-> See these threads :
-> http://thread.gmane.org/gmane.linux.drivers.mtd/22176
-> http://thread.gmane.org/gmane.linux.drivers.mtd/22266
->
-> *Please*, David, could we get this cleaned up?
-
-I've resent Uwe's patch, and re-based mine as v4.
+Fine with me, but not up to me. But I guess Andrew could merge it.
 
 -- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
