@@ -1,17 +1,31 @@
-Received: from smtp2-g21.free.fr ([212.27.42.2])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5Fff-0008IR-Kk
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 09:59:40 +0000
-Subject: [PATCH v3] mtd: cfi_util: do not printk if no extended query table
-To: linux-mtd <linux-mtd@lists.infradead.org>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Fri, 23 Apr 2010 11:54:54 +0200
-Message-ID: <20100423095454.24377.45034.stgit@shiryu.yomgui.biz>
+Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O5FlR-0001kG-Oz
+	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 10:05:38 +0000
+Date: Fri, 23 Apr 2010 12:05:32 +0200
+From: Jens Axboe <jens.axboe@oracle.com>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Subject: Re: [Patch] Catch filesystems lacking s_bdi
+Message-ID: <20100423100532.GN27497@kernel.dk>
+References: <20100417184016.GA17345@logfs.org>
+	<20100419073843.GN27497@kernel.dk>
+	<20100419101559.GA4145@logfs.org>
+	<20100419102056.GS27497@kernel.dk>
+	<20100422055448.GA27309@logfs.org>
+	<20100422062631.GC27309@logfs.org>
+	<alpine.LFD.2.00.1004220724170.9086@i5.linux-foundation.org>
+	<alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
+	<20100422162709.GJ27497@kernel.dk>
+	<20100422203358.GB30749@logfs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Wolfram Sang <w.sang@pengutronix.de>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20100422203358.GB30749@logfs.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +35,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
----
- drivers/mtd/chips/cfi_util.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+On Thu, Apr 22 2010, Jörn Engel wrote:
+> On Thu, 22 April 2010 18:27:10 +0200, Jens Axboe wrote:
+> > 
+> > > Jens - please help fix this up.
+> > 
+> > Of course, I already posted a series of patches to fix this up. I want
+> > to test them a bit, and I'll send them in tomorrow.
+> 
+> How about something like this to catch future cases?  It compiles and
+> survived a test boot, so it does seem to work for the common cases like
+> tmpfs, procfs, etc.
+> 
+> Jens, you know the bdi code 10x better than me, would this work?
 
-diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-index ca584d0..d7c2c67 100644
---- a/drivers/mtd/chips/cfi_util.c
-+++ b/drivers/mtd/chips/cfi_util.c
-@@ -104,10 +104,11 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
- 	int i;
- 	struct cfi_extquery *extp = NULL;
- 
--	printk(" %s Extended Query Table at 0x%4.4X\n", name, adr);
- 	if (!adr)
- 		goto out;
- 
-+	printk(KERN_INFO "%s Extended Query Table at 0x%4.4X\n", name, adr);
-+
- 	extp = kmalloc(size, GFP_KERNEL);
- 	if (!extp) {
- 		printk(KERN_ERR "Failed to allocate memory\n");
+Looks sane, it's a good start. I think we should augment that with a
+check to ensure that we don't ever add dirty inodes to this bdi, since
+it's not going to be flushed.
+
+Something like a:
+
+        WARN_ON(bdi == &noop_backing_dev_info);
+
+to __mark_inode_dirty(). Looking at the code it should already trigger a
+warning, since it'll check for BDI_CAP_NO_WRITEBACK (which isn't set
+for noop_backing_dev_info) and the fact that noop-bdi isn't registered
+to begin with.
+
+So it's probably safe and good enough as-is, I'll add it. Thanks!
+
+-- 
+Jens Axboe
