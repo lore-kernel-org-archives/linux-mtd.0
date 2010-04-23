@@ -1,20 +1,21 @@
-Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O5Her-0002Ig-Cm
+	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 12:06:58 +0000
+Subject: Re: [PATCH] Fix a huge latency problem in the MTD CFI and LPDDR
+	flash drivers.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paulius Zaleckas <paulius.zaleckas@gmail.com>
-In-Reply-To: <4BB33988.9070608@gmail.com>
-References: <20100325152505.17612.40158.stgit@pauliusz>
-	<alpine.LFD.2.00.1003251225500.694@xanadu.home>
-	<4BB33988.9070608@gmail.com>
+To: Stefani Seibold <stefani@seibold.net>
+In-Reply-To: <1271623604.7050.0.camel@wall-e.seibold.net>
+References: <1271623604.7050.0.camel@wall-e.seibold.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 23 Apr 2010 14:56:18 +0300
-Message-ID: <1272023778.6917.6.camel@localhost>
+Date: Fri, 23 Apr 2010 15:03:24 +0300
+Message-ID: <1272024204.6917.9.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Nicolas Pitre <nico@fluxnic.net>, jamie@shareable.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
-	akpm@linux-foundation.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Cc: nico@fluxnic.net, michael.kreuzer@nsn.com, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,32 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-03-31 at 15:01 +0300, Paulius Zaleckas wrote:
-> On 03/25/2010 06:26 PM, Nicolas Pitre wrote:
-> > On Thu, 25 Mar 2010, Paulius Zaleckas wrote:
-> >
-> >> We must tell GCC to use even register for variable passed
-> >> to ldrd instruction. Without this patch GCC 4.2.1 puts this
-> >> variable to r2/r3 on EABI and r3/r4 on OABI, so force it to
-> >> r2/r3. This does not change anything when EABI and OABI
-> >> compilation works OK.
-> >>
-> >> Without this patch and with OABI I get:
-> >>    CC      drivers/mtd/nand/orion_nand.o
-> >> /tmp/ccMkwOCs.s: Assembler messages:
-> >> /tmp/ccMkwOCs.s:63: Error: first destination register must be even -- `ldrd r3,[ip]'
-> >> make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
-> >>
-> >> Signed-off-by: Paulius Zaleckas<paulius.zaleckas@gmail.com>
-> >
-> > Acked-by: Nicolas Pitre<nico@fluxnic.net>
+On Sun, 2010-04-18 at 22:46 +0200, Stefani Seibold wrote:
+> From: Stefani Seibold <stefani@seibold.net>
 > 
-> David,
+> The use of a memcpy() during a spinlock operation will cause very long
+> thread context switch delays if the flash chip bandwidth is low and the
+> data to be copied large, because a spinlock will disable preemption.
 > 
-> Will you take this patch?
-> Or you are waiting till I will add all Cc as Jamie suggested?
+> For example: A flash with 6,5 MB/s bandwidth will cause under ubifs,
+> which request sometimes 128 KB (the flash erase size), a preemption delay of
+> 20 milliseconds. High priority threads will not be served during this
+> time, regardless whether this threads access the flash or not. This behavior
+> breaks real time.
+> 
+> The patch changes all the use of spin_lock operations for xxxx->mutex
+> into mutex operations, which is exact what the name says and means.
+> 
+> I have checked the code of the drivers and there is no use of atomic
+> pathes like interrupt or timers. The mtdoops facility will also not be used
+> by this drivers. So it is dave to replace the spin_lock against mutex.
+> 
+> There is no performance regression since the mutex is normally not
+> acquired.
+> 
+> Changelog:
+>  06.03.2010 First release
+>  26.03.2010 Fix mutex[1] issue and tested it for compile failure
+> 
+> Signed-off-by: Stefani Seibold <stefani@seibold.net>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c |  131 +++++++++++++++++-----------------
+>  drivers/mtd/chips/cfi_cmdset_0002.c |  122 ++++++++++++++++----------------
+>  drivers/mtd/chips/cfi_cmdset_0020.c |  136 +++++++++++++++++-----------------
+>  drivers/mtd/chips/fwh_lock.h        |    6 +-
+>  drivers/mtd/chips/gen_probe.c       |    3 +-
+>  drivers/mtd/lpddr/lpddr_cmds.c      |   79 ++++++++++----------
+>  include/linux/mtd/flashchip.h       |    4 +-
+>  7 files changed, 239 insertions(+), 242 deletions(-)
 
-Meanwhile, I've pushed your patch to my l2-mtd-2.6.git / dunno.
+Pushed to l2-mtd-2.6.git / master.
 
 -- 
 Best Regards,
