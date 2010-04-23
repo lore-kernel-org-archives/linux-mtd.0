@@ -1,22 +1,20 @@
-Subject: Re: Release of UBIL: ubi with log
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <k2q6b5362aa1004011206n1a0fb72due64fa6e3da749796@mail.gmail.com>
-References: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
-	<1267559131.1883.1.camel@localhost.localdomain>
-	<t2q71cd59b01003310557v3c2b0775o6e90af812067e726@mail.gmail.com>
-	<k2h6b5362aa1004010414j1ce57f33w27ee1debe9cb7a68@mail.gmail.com>
-	<z2l71cd59b01004010459k91abccd8x9479276db49d3fd1@mail.gmail.com>
-	<k2q6b5362aa1004011206n1a0fb72due64fa6e3da749796@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 23 Apr 2010 15:11:50 +0300
-Message-ID: <1272024710.6917.11.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, rohitvdongre@gmail.com,
-	linux-mtd@lists.infradead.org, Corentin Chary <corentin.chary@gmail.com>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Date: Fri, 23 Apr 2010 08:54:16 -0400 (EDT)
+From: Nicolas Pitre <nico@fluxnic.net>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
+In-reply-to: <1272023778.6917.6.camel@localhost>
+Message-id: <alpine.LFD.2.00.1004230853230.7232@xanadu.home>
+References: <20100325152505.17612.40158.stgit@pauliusz>
+	<alpine.LFD.2.00.1003251225500.694@xanadu.home>
+	<4BB33988.9070608@gmail.com> <1272023778.6917.6.camel@localhost>
+Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, jamie@shareable.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-04-02 at 00:36 +0530, Brijesh Singh wrote:
-> On Thu, Apr 1, 2010 at 5:29 PM, Corentin Chary <corentin.chary@gmail.com> wrote:
-> > On Thu, Apr 1, 2010 at 1:14 PM, Brijesh Singh <brijesh.s.singh@gmail.com> wrote:
-> >> Hi,
-> >>
-> >> On Wed, Mar 31, 2010 at 6:27 PM, Corentin Chary
-> >> <corentin.chary@gmail.com> wrote:
-> >>> On Tue, Mar 2, 2010 at 8:45 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> >>>> On Fri, 2010-02-26 at 18:28 +0530, Brijesh Singh wrote:
-> >>>>> Hi,
-> >>>>>  It gives me great pleasure in sharing UBIL: ubi with log.  We have
-> >>>>> added logging functionality to ubi for reducing mount time.
-> >>>>> UBIL uses the "same source base of UBI". The logging functionality can
-> >>>>> be added or removed at compile time using "make menuconfig option".
-> >>>>>
-> >>>>> We have seen mount time reduction of 50% in 1GB NAND. We are expecting
-> >>>>> even better results for larger flash memories.
-> >>>>>
-> >>>>> The source code of UBIL can be found in the following git tree:
-> >>>>> http://git.infradead.org/users/brijesh/ubi-2.6.git
-> >>>>>
-> >>>>
-> >>>> Sounds interesting! However, I'm out of office till end of March, and
-> >>>> won't be able to look closely at this. But hopefully others will try it.
-> >>>>
-> >>>
-> >>> Hi,
-> >>> Didn't took the time  to read the code, I'll try to do so soon.
-> >>> Could you tell us more about what you did and how it works ?
-> >>> Is it similar to yaffs checkpoints ? When are the log written ?
-> >> Not sure with yaffs checkpoints.
-> >
-> > Yaffs works by writting it's internal memory representation on the
-> > nand while unmounting, so it seems to be different.
+On Fri, 23 Apr 2010, Artem Bityutskiy wrote:
+
+> On Wed, 2010-03-31 at 15:01 +0300, Paulius Zaleckas wrote:
+> > On 03/25/2010 06:26 PM, Nicolas Pitre wrote:
+> > > On Thu, 25 Mar 2010, Paulius Zaleckas wrote:
+> > >
+> > >> We must tell GCC to use even register for variable passed
+> > >> to ldrd instruction. Without this patch GCC 4.2.1 puts this
+> > >> variable to r2/r3 on EABI and r3/r4 on OABI, so force it to
+> > >> r2/r3. This does not change anything when EABI and OABI
+> > >> compilation works OK.
+> > >>
+> > >> Without this patch and with OABI I get:
+> > >>    CC      drivers/mtd/nand/orion_nand.o
+> > >> /tmp/ccMkwOCs.s: Assembler messages:
+> > >> /tmp/ccMkwOCs.s:63: Error: first destination register must be even -- `ldrd r3,[ip]'
+> > >> make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
+> > >>
+> > >> Signed-off-by: Paulius Zaleckas<paulius.zaleckas@gmail.com>
+> > >
+> > > Acked-by: Nicolas Pitre<nico@fluxnic.net>
+> > 
+> > David,
+> > 
+> > Will you take this patch?
+> > Or you are waiting till I will add all Cc as Jamie suggested?
 > 
-> Right now, all the valid log is kept in buffer. This is written at
-> umount/ when log is full.
+> Meanwhile, I've pushed your patch to my l2-mtd-2.6.git / dunno.
 
-So do you mean that in case of a power-cut, the log is lost and UBI will
-have to do scanning?
+I think it should go to mainline.  It is not perfect, but still better 
+than the current situation.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+
+Nicolas
