@@ -1,31 +1,21 @@
-Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5FlR-0001kG-Oz
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 10:05:38 +0000
-Date: Fri, 23 Apr 2010 12:05:32 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Subject: Re: [Patch] Catch filesystems lacking s_bdi
-Message-ID: <20100423100532.GN27497@kernel.dk>
-References: <20100417184016.GA17345@logfs.org>
-	<20100419073843.GN27497@kernel.dk>
-	<20100419101559.GA4145@logfs.org>
-	<20100419102056.GS27497@kernel.dk>
-	<20100422055448.GA27309@logfs.org>
-	<20100422062631.GC27309@logfs.org>
-	<alpine.LFD.2.00.1004220724170.9086@i5.linux-foundation.org>
-	<alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
-	<20100422162709.GJ27497@kernel.dk>
-	<20100422203358.GB30749@logfs.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Paulius Zaleckas <paulius.zaleckas@gmail.com>
+In-Reply-To: <4BB33988.9070608@gmail.com>
+References: <20100325152505.17612.40158.stgit@pauliusz>
+	<alpine.LFD.2.00.1003251225500.694@xanadu.home>
+	<4BB33988.9070608@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 23 Apr 2010 14:56:18 +0300
+Message-ID: <1272023778.6917.6.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20100422203358.GB30749@logfs.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: Nicolas Pitre <nico@fluxnic.net>, jamie@shareable.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,34 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 22 2010, J�rn Engel wrote:
-> On Thu, 22 April 2010 18:27:10 +0200, Jens Axboe wrote:
-> > 
-> > > Jens - please help fix this up.
-> > 
-> > Of course, I already posted a series of patches to fix this up. I want
-> > to test them a bit, and I'll send them in tomorrow.
+On Wed, 2010-03-31 at 15:01 +0300, Paulius Zaleckas wrote:
+> On 03/25/2010 06:26 PM, Nicolas Pitre wrote:
+> > On Thu, 25 Mar 2010, Paulius Zaleckas wrote:
+> >
+> >> We must tell GCC to use even register for variable passed
+> >> to ldrd instruction. Without this patch GCC 4.2.1 puts this
+> >> variable to r2/r3 on EABI and r3/r4 on OABI, so force it to
+> >> r2/r3. This does not change anything when EABI and OABI
+> >> compilation works OK.
+> >>
+> >> Without this patch and with OABI I get:
+> >>    CC      drivers/mtd/nand/orion_nand.o
+> >> /tmp/ccMkwOCs.s: Assembler messages:
+> >> /tmp/ccMkwOCs.s:63: Error: first destination register must be even -- `ldrd r3,[ip]'
+> >> make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
+> >>
+> >> Signed-off-by: Paulius Zaleckas<paulius.zaleckas@gmail.com>
+> >
+> > Acked-by: Nicolas Pitre<nico@fluxnic.net>
 > 
-> How about something like this to catch future cases?  It compiles and
-> survived a test boot, so it does seem to work for the common cases like
-> tmpfs, procfs, etc.
+> David,
 > 
-> Jens, you know the bdi code 10x better than me, would this work?
+> Will you take this patch?
+> Or you are waiting till I will add all Cc as Jamie suggested?
 
-Looks sane, it's a good start. I think we should augment that with a
-check to ensure that we don't ever add dirty inodes to this bdi, since
-it's not going to be flushed.
-
-Something like a:
-
-        WARN_ON(bdi == &noop_backing_dev_info);
-
-to __mark_inode_dirty(). Looking at the code it should already trigger a
-warning, since it'll check for BDI_CAP_NO_WRITEBACK (which isn't set
-for noop_backing_dev_info) and the fact that noop-bdi isn't registered
-to begin with.
-
-So it's probably safe and good enough as-is, I'll add it. Thanks!
+Meanwhile, I've pushed your patch to my l2-mtd-2.6.git / dunno.
 
 -- 
-Jens Axboe
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
