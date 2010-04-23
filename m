@@ -1,20 +1,18 @@
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Date: Fri, 23 Apr 2010 08:54:16 -0400 (EDT)
-From: Nicolas Pitre <nico@fluxnic.net>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
-In-reply-to: <1272023778.6917.6.camel@localhost>
-Message-id: <alpine.LFD.2.00.1004230853230.7232@xanadu.home>
-References: <20100325152505.17612.40158.stgit@pauliusz>
-	<alpine.LFD.2.00.1003251225500.694@xanadu.home>
-	<4BB33988.9070608@gmail.com> <1272023778.6917.6.camel@localhost>
-Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, jamie@shareable.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
-	akpm@linux-foundation.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Received: from smtp2-g21.free.fr ([212.27.42.2])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O5J5V-00057s-Ck
+	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 13:38:34 +0000
+Subject: [PATCH v4 1/2] [MTD] remove bogus warning about missing boot
+	bank	location
+To: linux-mtd <linux-mtd@lists.infradead.org>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Fri, 23 Apr 2010 15:33:47 +0200
+Message-ID: <20100423133347.27001.99171.stgit@shiryu.yomgui.biz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Cc: Wolfram Sang <w.sang@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>,
+	Chris Moore <moore@free.fr>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Apr 2010, Artem Bityutskiy wrote:
+From: Uwe Kleine-König <Uwe.Kleine-Koenigi@digi.com>
 
-> On Wed, 2010-03-31 at 15:01 +0300, Paulius Zaleckas wrote:
-> > On 03/25/2010 06:26 PM, Nicolas Pitre wrote:
-> > > On Thu, 25 Mar 2010, Paulius Zaleckas wrote:
-> > >
-> > >> We must tell GCC to use even register for variable passed
-> > >> to ldrd instruction. Without this patch GCC 4.2.1 puts this
-> > >> variable to r2/r3 on EABI and r3/r4 on OABI, so force it to
-> > >> r2/r3. This does not change anything when EABI and OABI
-> > >> compilation works OK.
-> > >>
-> > >> Without this patch and with OABI I get:
-> > >>    CC      drivers/mtd/nand/orion_nand.o
-> > >> /tmp/ccMkwOCs.s: Assembler messages:
-> > >> /tmp/ccMkwOCs.s:63: Error: first destination register must be even -- `ldrd r3,[ip]'
-> > >> make[5]: *** [drivers/mtd/nand/orion_nand.o] Error 1
-> > >>
-> > >> Signed-off-by: Paulius Zaleckas<paulius.zaleckas@gmail.com>
-> > >
-> > > Acked-by: Nicolas Pitre<nico@fluxnic.net>
-> > 
-> > David,
-> > 
-> > Will you take this patch?
-> > Or you are waiting till I will add all Cc as Jamie suggested?
-> 
-> Meanwhile, I've pushed your patch to my l2-mtd-2.6.git / dunno.
+After the deleted block bootloc is only used once as follows:
 
-I think it should go to mainline.  It is not perfect, but still better 
-than the current situation.
+	if (bootloc == 3 && something_else) {
+		...
 
+So setting bootloc = 2 doesn't change anything.  Taking that the warning is
+wrong and missleading.
 
-Nicolas
+Signed-off-by: Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index ea2a7f6..8da8655 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -391,11 +391,6 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ #endif
+ 
+ 		bootloc = extp->TopBottom;
+-		if ((bootloc != 2) && (bootloc != 3)) {
+-			printk(KERN_WARNING "%s: CFI does not contain boot "
+-			       "bank location. Assuming top.\n", map->name);
+-			bootloc = 2;
+-		}
+ 
+ 		if (bootloc == 3 && cfi->cfiq->NumEraseRegions > 1) {
+ 			printk(KERN_WARNING "%s: Swapping erase regions for broken CFI table.\n", map->name);
