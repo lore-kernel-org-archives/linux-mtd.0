@@ -1,24 +1,18 @@
 MIME-version: 1.0
 Content-transfer-encoding: 7BIT
 Content-type: TEXT/PLAIN; charset=US-ASCII
-Date: Fri, 23 Apr 2010 14:22:01 -0400 (EDT)
+Date: Fri, 23 Apr 2010 15:06:03 -0400 (EDT)
 From: Nicolas Pitre <nico@fluxnic.net>
-To: Andrew Morton <akpm@linux-foundation.org>
+To: Jamie Lokier <jamie@shareable.org>
 Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
-In-reply-to: <20100423110037.f8790476.akpm@linux-foundation.org>
-Message-id: <alpine.LFD.2.00.1004231421130.7232@xanadu.home>
+In-reply-to: <20100325204619.GC19308@shareable.org>
+Message-id: <alpine.LFD.2.00.1004231443340.7232@xanadu.home>
 References: <20100325152505.17612.40158.stgit@pauliusz>
-	<alpine.LFD.2.00.1003251225500.694@xanadu.home>
-	<4BB33988.9070608@gmail.com> <1272023778.6917.6.camel@localhost>
-	<alpine.LFD.2.00.1004230853230.7232@xanadu.home>
-	<1272035596.11751.1437.camel@localhost.localdomain>
-	<alpine.LFD.2.00.1004231308300.7232@xanadu.home>
-	<20100423110037.f8790476.akpm@linux-foundation.org>
-Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>, jamie@shareable.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de, simon.kagstrom@netinsight.net,
-	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+	<20100325204619.GC19308@shareable.org>
+Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
+	simon.kagstrom@netinsight.net, akpm@linux-foundation.org,
+	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, rth@twiddle.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Apr 2010, Andrew Morton wrote:
+On Thu, 25 Mar 2010, Jamie Lokier wrote:
 
-> On Fri, 23 Apr 2010 13:50:10 -0400 (EDT)
-> Nicolas Pitre <nico@fluxnic.net> wrote:
+> Paulius Zaleckas wrote:
+> > Signed-off-by: Paulius Zaleckas <paulius.zaleckas@gmail.com>
 > 
-> > > Fine with me, but not up to me. But I guess Andrew could merge it.
-> > 
-> > The patch is providing a fix to my own code, and I acked it already. The 
-> > root of the problem is a defficiency in gcc, and dwmw2 asked that a PR 
-> > be filled for that and a reference to it added to the patch.  This has 
-> > been done.
+> It's probably worth including the people who weighed in on the
+> discussion with 'Cc:' headers.
 > 
-> Well, I merged it and can send it upstream.  But Jamie's observations
-> give me pause?
+> > -		uint64_t x;
+> > +		/*
+> > +		 * Since GCC has no proper constraint (PR 43518)
+> > +		 * force x variable to r2/r3 registers as ldrd instruction
+> > +		 * requires first register to be even.
+> > +		 */
+> > +		register uint64_t x asm ("r2");
+> > +
+> >  		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
+> >  		buf64[i++] = x;
+> 
+> The "register...asm" looks fine, but it occurs to me the constraints
+> are too weak (and they were before), so GCC could optimise that to the
+> wrong behaviour.
+> 
+> The "volatile" prevents GCC deleting the asm if it's output isn't
+> used, but it doesn't stop GCC from reordering the asms, for example if
+> it decides to unroll the loop.  It probably won't reorder in that
+> case, but it could.  The result would be out of order values stored
+> into buf[].  It could even move the ldrd earlier than the prior byte
+> accesses, or after the later byte accesses.
 
-What observation?  Let me find that.
+I don't see how that could happen.  The store into buf[] puts a 
+dependency on the output constraint of the inline asm statement.  And by 
+vertue of being volatile, gcc cannot cache the result of the output from 
+the asm as if it was a pure function.
+
+> Any one of these should fix it:
+> 
+>    - Make io_base a pointer-to-volatile-u64 or cast it in the asm, and
+>      make sure to dereference it and use an "m" constraint (or
+>      tighter, such as "Q", if ldrd needs it).  It must be u64, not
+>      pointer-to-void, to tell GCC the size.  That tells GCC which memory
+>      the asm accesses, and the volatile dereference should tell GCC
+>      not to reorder them in principle (but the GCC manual doesn't
+>      make a specific promise about this for asms).
+
+The LDRD has special range constraints on its addressing mode which is 
+not expressable with any of the available gcc memory constraints.
+
+> You aren't supposed to dereference pointers used with read{b,w,l}
+> anyway.  It doesn't matter in this driver because we "know" it's only
+> used on an SoC where read{b,w,l} don't do any address translation.
+> But will that always be true?  I suppose the cleanest approach is to
+> define readq, the 64-bit analogue of readl, and use that here.  x86
+> already defines readq, so it's got precedent.
+
+But yet it is not all ARM variants that can do 64-bit accesses.  
+Anything pre ARMv5 doesn't have the LDRD instruction, and the equivalent 
+LDM is not a possible substitute with regard to memory bus access 
+either.
+
+So I'd prefer to keep it as an obvious local exception that happens to 
+exploit some specifics of the actual hardware implementation rather than 
+something that was architecturally defined.
 
 
 Nicolas
