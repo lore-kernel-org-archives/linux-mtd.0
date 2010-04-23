@@ -1,18 +1,17 @@
-Date: Thu, 22 Apr 2010 23:07:37 -0400
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Stefani Seibold <stefani@seibold.net>
-Subject: Re: [PATCH] Fix a huge latency problem in the MTD CFI and LPDDR
-	flash drivers.
-Message-Id: <20100422230737.95e441ef.akpm@linux-foundation.org>
-In-Reply-To: <1272002584.5347.2.camel@wall-e.seibold.net>
-References: <1271623604.7050.0.camel@wall-e.seibold.net>
-	<1271787391.16051.4.camel@wall-e.seibold.net>
-	<1272002584.5347.2.camel@wall-e.seibold.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O5DR7-0000ps-Tj
+	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 07:36:30 +0000
+Date: Fri, 23 Apr 2010 09:36:25 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: mxc-nand duplicate case value in -next
+Message-ID: <20100423073625.GY7882@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: David Woodhouse <David.Woodhouse@intel.com>,
+	Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,13 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Apr 2010 08:03:04 +0200 Stefani Seibold <stefani@seibold.net> wrote:
+Hi,
 
-> David did not respond to my request since more than a month. Can u apply
-> the patch to linux next?
+Currently we have a duplicate case value in the mxc-nand driver in -next.
+This is because of to different patches adding reset command support to
+the driver, one from Eric (coming via the mtd master tree) and one from
+Ivo (coming from the mxc master tree).
+As I see it we should take Ivos patch as it adds i.MX21 support along
+the way, so David, can you please drop Erics patch?
 
-The patch is rather too fundamental for there to be benefit in me
-carrying it.
+Sascha
 
-Hopefully Artem can look at it soon, although he's somewhat busy with
-real-life things at present.
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
