@@ -1,21 +1,18 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5Her-0002Ig-Cm
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 12:06:58 +0000
-Subject: Re: [PATCH] Fix a huge latency problem in the MTD CFI and LPDDR
-	flash drivers.
+	id 1O5HhW-0002if-NE
+	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 12:09:43 +0000
+Subject: Re: simplifying the linux MTD Kconfig/Makefile structure
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefani Seibold <stefani@seibold.net>
-In-Reply-To: <1271623604.7050.0.camel@wall-e.seibold.net>
-References: <1271623604.7050.0.camel@wall-e.seibold.net>
+To: "Robert P. J. Day" <rpjday@crashcourse.ca>
+In-Reply-To: <alpine.LFD.2.00.1003300824320.6061@localhost>
+References: <alpine.LFD.2.00.1003300824320.6061@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 23 Apr 2010 15:03:24 +0300
-Message-ID: <1272024204.6917.9.camel@localhost>
+Date: Fri, 23 Apr 2010 15:05:46 +0300
+Message-ID: <1272024346.6917.10.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: nico@fluxnic.net, michael.kreuzer@nsn.com, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	dwmw2@infradead.org
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,45 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-04-18 at 22:46 +0200, Stefani Seibold wrote:
-> From: Stefani Seibold <stefani@seibold.net>
+On Tue, 2010-03-30 at 08:29 -0400, Robert P. J. Day wrote:
+> it seems like the various Kconfigs and Makefiles related to MTD
+> could be tightened up a bit.  for instance, in drivers/mtd/Makefile:
 > 
-> The use of a memcpy() during a spinlock operation will cause very long
-> thread context switch delays if the flash chip bandwidth is low and the
-> data to be copied large, because a spinlock will disable preemption.
+>   obj-$(CONFIG_MTD_UBI)           += ubi/
 > 
-> For example: A flash with 6,5 MB/s bandwidth will cause under ubifs,
-> which request sometimes 128 KB (the flash erase size), a preemption delay of
-> 20 milliseconds. High priority threads will not be served during this
-> time, regardless whether this threads access the flash or not. This behavior
-> breaks real time.
+> but given that selection, it's kind of redundant to then have
+> drivers/mtd/ubi/Makefile start with:
 > 
-> The patch changes all the use of spin_lock operations for xxxx->mutex
-> into mutex operations, which is exact what the name says and means.
+>   obj-$(CONFIG_MTD_UBI) += ubi.o
 > 
-> I have checked the code of the drivers and there is no use of atomic
-> pathes like interrupt or timers. The mtdoops facility will also not be used
-> by this drivers. So it is dave to replace the spin_lock against mutex.
+> is it not?  why not just "obj-y"?
 > 
-> There is no performance regression since the mutex is normally not
-> acquired.
+>   along those lines, again from drivers/mtd/Makefile:
 > 
-> Changelog:
->  06.03.2010 First release
->  26.03.2010 Fix mutex[1] issue and tested it for compile failure
+> obj-y           += chips/ lpddr/ maps/ devices/ nand/ onenand/ tests/
 > 
-> Signed-off-by: Stefani Seibold <stefani@seibold.net>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c |  131 +++++++++++++++++-----------------
->  drivers/mtd/chips/cfi_cmdset_0002.c |  122 ++++++++++++++++----------------
->  drivers/mtd/chips/cfi_cmdset_0020.c |  136 +++++++++++++++++-----------------
->  drivers/mtd/chips/fwh_lock.h        |    6 +-
->  drivers/mtd/chips/gen_probe.c       |    3 +-
->  drivers/mtd/lpddr/lpddr_cmds.c      |   79 ++++++++++----------
->  include/linux/mtd/flashchip.h       |    4 +-
->  7 files changed, 239 insertions(+), 242 deletions(-)
+> obj-$(CONFIG_MTD_UBI)           += ubi/
+> 
+>   why not be consistent and have:
+> 
+> obj-y           += chips/ lpddr/ maps/ devices/ nand/ onenand/
+> 
+> obj-$(CONFIG_MTD_UBI)           += ubi/
+> obj-$(CONFIG_MTD_TESTS)         += tests/
+> 
+> which would *massively* simplify drivers/mtd/tests/Makefile, would it
+> not?
+> 
+>   i can submit some patches if there's any interest.  i suspect some
+> of the other directories could be similarly tidied up.
 
-Pushed to l2-mtd-2.6.git / master.
+Sounds like a reasonable clean-up to me.
 
 -- 
 Best Regards,
