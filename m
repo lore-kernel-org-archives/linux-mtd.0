@@ -1,26 +1,39 @@
-From: www@genome.wi.mit.edu (www at genome.wi.mit.edu)
-Date: Fri, 23 Apr 2010 13:04:56 +0800
-Subject: Mail System Error - Returned Mail
-Message-ID: <mailman.312.1271912120.2170.linux-mtd@lists.infradead.org>
+From: mkl@pengutronix.de (Marc Kleine-Budde)
+Date: Fri, 23 Apr 2010 10:43:42 +0200
+Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
+Message-ID: <mailman.315.1272057983.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-The message was undeliverable due to the following reason(s):
+The pxa32xx_nand driver doesn't support partition tables from the
+command line. This patch adds support for it.
 
-Your message was not delivered because the destination server was
-not reachable within the allowed queue period. The amount of time
-a message is queued before it is returned depends on local configura-
-tion parameters.
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
-Most likely there is a network problem that prevented delivery, but
-it is also possible that the computer is turned off, or does not
-have a mail system running right now.
-
-Your message could not be delivered within 3 days:
-Server 113.254.242.41 is not responding.
-
-The following recipients could not receive this message:
-<linux-mtd@lists.infradead.org>
-
-Please reply to postmaster at genome.wi.mit.edu
-if you feel this message to be in error.
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 5d55152..e02fa4f 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1320,6 +1320,17 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 		goto fail_free_irq;
+ 	}
+ 
++	if (mtd_has_cmdlinepart()) {
++		static const char *probes[] = { "cmdlinepart", NULL };
++		struct mtd_partition *parts;
++		int nr_parts;
++
++		nr_parts = parse_mtd_partitions(mtd, probes, &parts, 0);
++
++		if (nr_parts)
++			return add_mtd_partitions(mtd, parts, nr_parts);
++	}
++
+ 	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+ 
+ fail_free_irq:
+-- 
+1.7.0.4
