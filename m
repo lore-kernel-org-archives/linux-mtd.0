@@ -1,20 +1,22 @@
-Date: Sat, 24 Apr 2010 04:04:11 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Nicolas Pitre <nico@fluxnic.net>
-Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
-Message-ID: <20100424030411.GK15349@shareable.org>
-References: <20100325152505.17612.40158.stgit@pauliusz>
-	<20100325204619.GC19308@shareable.org>
-	<alpine.LFD.2.00.1004231443340.7232@xanadu.home>
-	<20100424025858.GJ15349@shareable.org>
+Received: from smtp4-g21.free.fr ([212.27.42.4])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O5Xfy-0005hY-Jx
+	for linux-mtd@lists.infradead.org; Sat, 24 Apr 2010 05:13:12 +0000
+Message-ID: <4BD27DDC.8070903@free.fr>
+Date: Sat, 24 Apr 2010 07:13:00 +0200
+From: Chris Moore <moore@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20100424025858.GJ15349@shareable.org>
-Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
-	simon.kagstrom@netinsight.net, akpm@linux-foundation.org,
-	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, rth@twiddle.net
+To: Guillaume LECERF <glecerf@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH v4 1/2] [MTD] remove bogus warning about missing boot
+	bank	location
+References: <20100423133347.27001.99171.stgit@shiryu.yomgui.biz>
+In-Reply-To: <20100423133347.27001.99171.stgit@shiryu.yomgui.biz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Wolfram Sang <w.sang@pengutronix.de>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jamie Lokier wrote:
-> Nicolas Pitre wrote:
-> > On Thu, 25 Mar 2010, Jamie Lokier wrote:
-> > > Any one of these should fix it:
-> > > 
-> > >    - Make io_base a pointer-to-volatile-u64 or cast it in the asm, and
-> > >      make sure to dereference it and use an "m" constraint (or
-> > >      tighter, such as "Q", if ldrd needs it).  It must be u64, not
-> > >      pointer-to-void, to tell GCC the size.  That tells GCC which memory
-> > >      the asm accesses, and the volatile dereference should tell GCC
-> > >      not to reorder them in principle (but the GCC manual doesn't
-> > >      make a specific promise about this for asms).
-> > 
-> > The LDRD has special range constraints on its addressing mode which is 
-> > not expressable with any of the available gcc memory constraints.
-> 
->     'Q'
->           A memory reference where the exact address is in a single
->           register (''m'' is preferable for 'asm' statements)
-> 
-> If 'r' is good enough for io_base, 'Q' should be good enough for *io_base.
+Le 23/04/2010 15:33, Guillaume LECERF a écrit :
+> From: Uwe Kleine-König<Uwe.Kleine-Koenigi@digi.com>
+>
+> After the deleted block bootloc is only used once as follows:
+>
+> 	if (bootloc == 3&&  something_else) {
+> 		...
+>
+> So setting bootloc = 2 doesn't change anything.  Taking that the warning is
+> wrong and missleading.
+>
+> Signed-off-by: Uwe Kleine-König<Uwe.Kleine-Koenig@digi.com>
+> ---
+>   drivers/mtd/chips/cfi_cmdset_0002.c |    5 -----
+>   1 files changed, 0 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index ea2a7f6..8da8655 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -391,11 +391,6 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+>   #endif
+>
+>   		bootloc = extp->TopBottom;
+> -		if ((bootloc != 2)&&  (bootloc != 3)) {
+> -			printk(KERN_WARNING "%s: CFI does not contain boot "
+> -			       "bank location. Assuming top.\n", map->name);
+> -			bootloc = 2;
+> -		}
+>
+>   		if (bootloc == 3&&  cfi->cfiq->NumEraseRegions>  1) {
+>   			printk(KERN_WARNING "%s: Swapping erase regions for broken CFI table.\n", map->name);
+>
+>    
 
-And if that doesn't work, it's possible to pass both the pointer, and
-the dereference, as separate input operands, and only use the pointer
-in the asm template.  GCC will still treat the dereference input as a
-dependency.
-
--- Jamie
+FWIW:-
+Acked-by Christopher Moore <moore@free.fr>
