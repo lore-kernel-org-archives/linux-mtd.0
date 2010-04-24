@@ -1,13 +1,13 @@
 Received: from smtp2-g21.free.fr ([212.27.42.2])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5hp0-0006JE-EA
-	for linux-mtd@lists.infradead.org; Sat, 24 Apr 2010 16:03:12 +0000
-Subject: [PATCH v5 6/9] mtd: cfi_cmdset_0002: do not fail on no extended query
-	table as they are both optional
+	id 1O5hp5-0006Ko-GA
+	for linux-mtd@lists.infradead.org; Sat, 24 Apr 2010 16:03:16 +0000
+Subject: [PATCH v5 7/9] mtd: cfi_cmdset_0002: add CFI detection for SST
+	39VF{16, 32}xx chips
 To: linux-mtd <linux-mtd@lists.infradead.org>
 From: Guillaume LECERF <glecerf@gmail.com>
-Date: Sat, 24 Apr 2010 17:58:17 +0200
-Message-ID: <20100424155817.14723.16617.stgit@shiryu.yomgui.biz>
+Date: Sat, 24 Apr 2010 17:58:22 +0200
+Message-ID: <20100424155822.14723.21170.stgit@shiryu.yomgui.biz>
 In-Reply-To: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
 References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
 MIME-Version: 1.0
@@ -24,127 +24,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After looking at AMD's CFI specification [1], both of the extended query
-tables are optional. Thus, it looks like relying that at least one of
-those tables exist is a bug in cfi_cmdset_0002.
-
-This patch inverts the logic and checks for unlock function pointers before
-exiting on error. This approach leaves place to add a call to a fixup
-function to try to handle chips compatible with the early AMD specification
-from 1995 [2].
-
-
-[1] http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf
-[2] http://noel.feld.cvut.cz/hw/amd/20158a.pdf
+SST 39VF{16,32}xx chips use the 0x0701 command set, fully compatible
+with the AMD one. This patch adds support for detecting them in CFI
+mode.
 
 Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
 Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
 ---
- drivers/mtd/chips/cfi_cmdset_0002.c |   79 ++++++++++++++++++-----------------
- 1 files changed, 40 insertions(+), 39 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0002.c |   35 +++++++++++++++++++++++++++++++++++
+ drivers/mtd/chips/gen_probe.c       |    1 +
+ 2 files changed, 36 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 8da8655..23114ab 100644
+index 23114ab..c5837d0 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -353,60 +353,61 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+@@ -256,6 +256,31 @@ static void fixup_use_atmel_lock(struct mtd_info *mtd, void *param)
+ 	mtd->flags |= MTD_POWERUP_LOCK;
+ }
  
- 	if (cfi->cfi_mode==CFI_MODE_CFI){
- 		unsigned char bootloc;
--		/*
--		 * It's a real CFI chip, not one for which the probe
--		 * routine faked a CFI structure. So we read the feature
--		 * table from it.
--		 */
- 		__u16 adr = primary?cfi->cfiq->P_ADR:cfi->cfiq->A_ADR;
- 		struct cfi_pri_amdstd *extp;
- 
- 		extp = (struct cfi_pri_amdstd*)cfi_read_pri(map, adr, sizeof(*extp), "Amd/Fujitsu");
--		if (!extp) {
--			kfree(mtd);
--			return NULL;
--		}
--
--		cfi_fixup_major_minor(cfi, extp);
--
--		if (extp->MajorVersion != '1' ||
--		    (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
--			printk(KERN_ERR "  Unknown Amd/Fujitsu Extended Query "
--			       "version %c.%c.\n",  extp->MajorVersion,
--			       extp->MinorVersion);
--			kfree(extp);
--			kfree(mtd);
--			return NULL;
--		}
-+		if (extp) {
-+			/*
-+			 * It's a real CFI chip, not one for which the probe
-+			 * routine faked a CFI structure.
-+			 */
-+			cfi_fixup_major_minor(cfi, extp);
++static void fixup_old_sst_eraseregion(struct mtd_info *mtd)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
 +
-+			if (extp->MajorVersion != '1' ||
-+			    (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
-+				printk(KERN_ERR "  Unknown Amd/Fujitsu Extended Query "
-+				       "version %c.%c.\n",  extp->MajorVersion,
-+				       extp->MinorVersion);
-+				kfree(extp);
-+				kfree(mtd);
-+				return NULL;
-+			}
- 
--		/* Install our own private info structure */
--		cfi->cmdset_priv = extp;
-+			/* Install our own private info structure */
-+			cfi->cmdset_priv = extp;
- 
--		/* Apply cfi device specific fixups */
--		cfi_fixup(mtd, cfi_fixup_table);
-+			/* Apply cfi device specific fixups */
-+			cfi_fixup(mtd, cfi_fixup_table);
- 
- #ifdef DEBUG_CFI_FEATURES
--		/* Tell the user about it in lots of lovely detail */
--		cfi_tell_features(extp);
-+			/* Tell the user about it in lots of lovely detail */
-+			cfi_tell_features(extp);
- #endif
- 
--		bootloc = extp->TopBottom;
-+			bootloc = extp->TopBottom;
- 
--		if (bootloc == 3 && cfi->cfiq->NumEraseRegions > 1) {
--			printk(KERN_WARNING "%s: Swapping erase regions for broken CFI table.\n", map->name);
-+			if (bootloc == 3 && cfi->cfiq->NumEraseRegions > 1) {
-+				printk(KERN_WARNING "%s: Swapping erase regions for broken CFI table.\n", map->name);
- 
--			for (i=0; i<cfi->cfiq->NumEraseRegions / 2; i++) {
--				int j = (cfi->cfiq->NumEraseRegions-1)-i;
--				__u32 swap;
-+				for (i=0; i<cfi->cfiq->NumEraseRegions / 2; i++) {
-+					int j = (cfi->cfiq->NumEraseRegions-1)-i;
-+					__u32 swap;
- 
--				swap = cfi->cfiq->EraseRegionInfo[i];
--				cfi->cfiq->EraseRegionInfo[i] = cfi->cfiq->EraseRegionInfo[j];
--				cfi->cfiq->EraseRegionInfo[j] = swap;
-+					swap = cfi->cfiq->EraseRegionInfo[i];
-+					cfi->cfiq->EraseRegionInfo[i] = cfi->cfiq->EraseRegionInfo[j];
-+					cfi->cfiq->EraseRegionInfo[j] = swap;
-+				}
- 			}
-+			/* Set the default CFI lock/unlock addresses */
-+			cfi->addr_unlock1 = 0x555;
-+			cfi->addr_unlock2 = 0x2aa;
-+		}
++	/*
++	 * These flashes report two seperate eraseblock regions based on the
++	 * sector_erase-size and block_erase-size, although they both operate on the
++	 * same memory. This is not allowed according to CFI, so we just pick the
++	 * sector_erase-size.
++	 */
++	cfi->cfiq->NumEraseRegions = 1;
++}
 +
-+		if (!cfi->addr_unlock1 || !cfi->addr_unlock2) {
-+			kfree(mtd);
-+			return NULL;
++static void fixup_sst39vf(struct mtd_info *mtd, void *param)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++
++	fixup_old_sst_eraseregion(mtd);
++
++	cfi->addr_unlock1 = 0x5555;
++	cfi->addr_unlock2 = 0x2AAA;
++}
++
+ static void fixup_s29gl064n_sectors(struct mtd_info *mtd, void *param)
+ {
+ 	struct map_info *map = mtd->priv;
+@@ -278,6 +303,15 @@ static void fixup_s29gl032n_sectors(struct mtd_info *mtd, void *param)
+ 	}
+ }
+ 
++/* Used to fix CFI-Tables of chips without Extended Query Tables */
++static struct cfi_fixup cfi_nopri_fixup_table[] = {
++	{ CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, // SST39VF1602
++	{ CFI_MFR_SST, 0x234B, fixup_sst39vf, NULL, }, // SST39VF1601
++	{ CFI_MFR_SST, 0x235A, fixup_sst39vf, NULL, }, // SST39VF3202
++	{ CFI_MFR_SST, 0x235B, fixup_sst39vf, NULL, }, // SST39VF3201
++	{ 0, 0, NULL, NULL }
++};
++
+ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+ #ifdef AMD_BOOTLOC_BUG
+@@ -403,6 +437,7 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 			cfi->addr_unlock1 = 0x555;
+ 			cfi->addr_unlock2 = 0x2aa;
  		}
--		/* Set the default CFI lock/unlock addresses */
--		cfi->addr_unlock1 = 0x555;
--		cfi->addr_unlock2 = 0x2aa;
++		cfi_fixup(mtd, cfi_nopri_fixup_table);
  
- 	} /* CFI mode */
- 	else if (cfi->cfi_mode == CFI_MODE_JEDEC) {
+ 		if (!cfi->addr_unlock1 || !cfi->addr_unlock2) {
+ 			kfree(mtd);
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 991c457..599c259 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -249,6 +249,7 @@ static struct mtd_info *check_cmd_set(struct map_info *map, int primary)
+ #endif
+ #ifdef CONFIG_MTD_CFI_AMDSTD
+ 	case P_ID_AMD_STD:
++	case P_ID_SST_OLD:
+ 		return cfi_cmdset_0002(map, primary);
+ #endif
+ #ifdef CONFIG_MTD_CFI_STAA
