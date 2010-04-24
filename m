@@ -1,22 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5bm2-0005kJ-Hy
-	for linux-mtd@lists.infradead.org; Sat, 24 Apr 2010 09:35:43 +0000
-Date: Sat, 24 Apr 2010 11:35:35 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Guillaume LECERF <glecerf@gmail.com>
-Subject: Re: [PATCH v4 1/2] [MTD] remove bogus warning about missing boot
-	bank location
-Message-ID: <20100424093535.GA7199@pengutronix.de>
-References: <20100423133347.27001.99171.stgit@shiryu.yomgui.biz>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="mYCpIKhGyMATD0i+"
-Content-Disposition: inline
-In-Reply-To: <20100423133347.27001.99171.stgit@shiryu.yomgui.biz>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Chris Moore <moore@free.fr>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from fg-out-1718.google.com ([72.14.220.158])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O5dSx-0007TV-GP
+	for linux-mtd@lists.infradead.org; Sat, 24 Apr 2010 11:24:08 +0000
+Received: by fg-out-1718.google.com with SMTP id 19so677710fgg.0
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 24 Apr 2010 04:24:06 -0700 (PDT)
+Subject: Re: [PATCH] mtd/ubi: recognize empty flash with errors as empty
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+In-Reply-To: <20100423172819.GA29224@Chamillionaire.breakpoint.cc>
+References: <20100423172819.GA29224@Chamillionaire.breakpoint.cc>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 24 Apr 2010 14:24:01 +0300
+Message-Id: <1272108241.11751.1635.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,54 +26,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2010-04-23 at 19:28 +0200, Sebastian Andrzej Siewior wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> 
+> Attaching empty nand with a block which contains a RS-Error which can't
+> be fixed resulted in:
+> 
+> | UBI: attaching mtd9 to ubi0
+> | UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
+> | Call Trace:
+> | [cfbd5c60] [c0008558] show_stack+0x48/0x19c (unreliable)
+> | [cfbd5ca0] [c01a71e8] ubi_io_read+0x188/0x288
+> | [cfbd5cf0] [c01a76e8] ubi_io_read_ec_hdr+0x74/0x2a4
+> | [cfbd5d20] [c01abe9c] ubi_scan+0x178/0x10b4
+> | [cfbd5d80] [c01a1464] ubi_attach_mtd_dev+0x67c/0xe44
+> | [cfbd5e80] [c01a1fc8] ctrl_cdev_ioctl+0x178/0x210
+> | [cfbd5ec0] [c008711c] do_ioctl+0x3c/0xc4
+> | [cfbd5ee0] [c0087224] vfs_ioctl+0x80/0x448
+> | [cfbd5f10] [c008762c] sys_ioctl+0x40/0x88
+> | [cfbd5f40] [c000f960] ret_from_syscall+0x0/0x38
+> | UBI error: ubi_read_volume_table: the layout volume was not found
+> | UBI error: ubi_attach_mtd_dev: failed to attach by scanning, error -22
+> 
+> Assuming that blocks which can only be read with errors are empty will let
+> the volume attach. Another access to the block in question resulted here
+> in:
+> 
+> | UBI error: ubi_io_read: error -74 while reading 64 bytes from PEB 3399:0, read 64 bytes
+> | nand_erase: Failed erase, page 0x000751c0
+> | nand_erase: Failed erase, page 0x000751c0
+> | nand_erase: Failed erase, page 0x000751c0
+> | nand_erase: Failed erase, page 0x000751c0
+> | UBI error: do_sync_erase: cannot erase PEB 3399, error -5
+> | UBI error: erase_worker: failed to erase PEB 3399, error -5
+> | UBI: mark PEB 3399 as bad
+> | UBI: 39 PEBs left in the reserve
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
+>  drivers/mtd/ubi/scan.c |    4 +++-
+>  1 files changed, 3 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+> index dc5f688..7529d46 100644
+> --- a/drivers/mtd/ubi/scan.c
+> +++ b/drivers/mtd/ubi/scan.c
+> @@ -756,7 +756,8 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+>  		bitflips = 1;
+>  	}
+>  
+> -	si->is_empty = 0;
+> +	if (err != UBI_IO_BAD_EC_HDR)
+> +		si->is_empty = 0;
+>  
+>  	if (!ec_corr) {
+>  		int image_seq;
+> @@ -827,6 +828,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+>  			return err;
+>  		goto adjust_mean_ec;
+>  	}
+> +	si->is_empty = 0;
+>  
+>  	vol_id = be32_to_cpu(vidh->vol_id);
+>  	if (vol_id > UBI_MAX_VOLUMES && vol_id != UBI_LAYOUT_VOLUME_ID) {
 
---mYCpIKhGyMATD0i+
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks, pushed to ubi-2.6.git / master with the following minor tweak,
+please check:
 
-On Fri, Apr 23, 2010 at 03:33:47PM +0200, Guillaume LECERF wrote:
-> From: Uwe Kleine-K=F6nig <Uwe.Kleine-Koenigi@digi.com>
->=20
-> After the deleted block bootloc is only used once as follows:
->=20
-> 	if (bootloc =3D=3D 3 && something_else) {
-> 		...
->=20
-> So setting bootloc =3D 2 doesn't change anything.  Taking that the warnin=
-g is
-> wrong and missleading.
->=20
-> Signed-off-by: Uwe Kleine-K=F6nig <Uwe.Kleine-Koenig@digi.com>
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index 7529d46..48e570c 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -756,12 +756,12 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+                bitflips = 1;
+        }
+ 
+-       if (err != UBI_IO_BAD_EC_HDR)
+-               si->is_empty = 0;
+-
+        if (!ec_corr) {
+                int image_seq;
+ 
++               /* There is an EC header, so the flash is not empty */
++               si->is_empty = 0;
++
+                /* Make sure UBI version is OK */
+                if (ech->version != UBI_VERSION) {
+                        ubi_err("this UBI version is %d, image version is %d",
 
-I think you need to sign it off as well (as you are sending it upstream).
-
-And although I am not the one picking the patches up, I could imagine it he=
-lps
-David if you respin the whole patch-series with all the latest updates and
-adding all the Acked-by and Reviewed-by tags you got. This should speed thi=
-ngs
-up and help merging.
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---mYCpIKhGyMATD0i+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkvSu2cACgkQD27XaX1/VRuI/ACbBfFPKY1LNCOXvj6HMD4C7zfT
-NvAAmwU1s/O+mNUH8810mwwK9bkIWzsz
-=Tod6
------END PGP SIGNATURE-----
-
---mYCpIKhGyMATD0i+--
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
