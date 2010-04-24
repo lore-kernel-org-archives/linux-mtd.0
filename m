@@ -1,14 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5QOC-0005Yn-UJ
-	for linux-mtd@lists.infradead.org; Fri, 23 Apr 2010 21:26:22 +0000
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 23 Apr 2010 23:25:44 +0200
-Message-Id: <1272057944-19380-1-git-send-email-mkl@pengutronix.de>
-Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Date: Sat, 24 Apr 2010 03:58:58 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: [PATCH v2] MTD: Fix Orion NAND driver compilation with ARM OABI
+Message-ID: <20100424025858.GJ15349@shareable.org>
+References: <20100325152505.17612.40158.stgit@pauliusz>
+	<20100325204619.GC19308@shareable.org>
+	<alpine.LFD.2.00.1004231443340.7232@xanadu.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.00.1004231443340.7232@xanadu.home>
+Cc: Paulius Zaleckas <paulius.zaleckas@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, u.kleine-koenig@pengutronix.de,
+	simon.kagstrom@netinsight.net, akpm@linux-foundation.org,
+	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, rth@twiddle.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,48 +23,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The pxa32xx_nand driver doesn't support partition tables from the
-command line. This patch adds support for it.
+Nicolas Pitre wrote:
+> On Thu, 25 Mar 2010, Jamie Lokier wrote:
+> > >  		asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
+> > >  		buf64[i++] = x;
+> > 
+> > The "register...asm" looks fine, but it occurs to me the constraints
+> > are too weak (and they were before), so GCC could optimise that to the
+> > wrong behaviour.
+> > 
+> > The "volatile" prevents GCC deleting the asm if it's output isn't
+> > used, but it doesn't stop GCC from reordering the asms, for example if
+> > it decides to unroll the loop.  It probably won't reorder in that
+> > case, but it could.  The result would be out of order values stored
+> > into buf[].  It could even move the ldrd earlier than the prior byte
+> > accesses, or after the later byte accesses.
+> 
+> I don't see how that could happen.  The store into buf[] puts a 
+> dependency on the output constraint of the inline asm statement.  And by 
+> vertue of being volatile, gcc cannot cache the result of the output from 
+> the asm as if it was a pure function.
 
-Please review and consider to apply.
+The store into buf[] dependency doesn't stop this, after unrolling:
 
-cheers, Marc
+    asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
+    buf64[i++] = x;
+    asm volatile ("ldrd\t%0, [%1]" : "=&r" (x) : "r" (io_base));
+    buf64[i++] = x;
 
+from being reordered as this
 
->From a2caa92b08351511ee60bd94bf735be5f3a6fb65 Mon Sep 17 00:00:00 2001
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 23 Apr 2010 10:43:42 +0200
-Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
+    asm volatile ("ldrd\t%0, [%1]" : "=&r" (x2) : "r" (io_base));
+    asm volatile ("ldrd\t%0, [%1]" : "=&r" (x1) : "r" (io_base));
+    buf64[i++] = x1;
+    buf64[i++] = x2;
 
-The pxa32xx_nand driver doesn't support partition tables from the
-command line. This patch adds support for it.
+because the asm doesn't depend on memory, just register inputs and
+outputs;
 
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/mtd/nand/pxa3xx_nand.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+I'm not sure what you mean about the volatile stopping gcc from
+treating the asm as a pure function.  Is that meaning of volatile in
+the asm documentation?  (volatile on asm doesn't mean the same as
+volatile on a function, or volatile on a pointer).
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 5d55152..e02fa4f 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1320,6 +1320,17 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 		goto fail_free_irq;
- 	}
- 
-+	if (mtd_has_cmdlinepart()) {
-+		static const char *probes[] = { "cmdlinepart", NULL };
-+		struct mtd_partition *parts;
-+		int nr_parts;
-+
-+		nr_parts = parse_mtd_partitions(mtd, probes, &parts, 0);
-+
-+		if (nr_parts)
-+			return add_mtd_partitions(mtd, parts, nr_parts);
-+	}
-+
- 	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
- 
- fail_free_irq:
--- 
-1.7.0.4
+> > Any one of these should fix it:
+> > 
+> >    - Make io_base a pointer-to-volatile-u64 or cast it in the asm, and
+> >      make sure to dereference it and use an "m" constraint (or
+> >      tighter, such as "Q", if ldrd needs it).  It must be u64, not
+> >      pointer-to-void, to tell GCC the size.  That tells GCC which memory
+> >      the asm accesses, and the volatile dereference should tell GCC
+> >      not to reorder them in principle (but the GCC manual doesn't
+> >      make a specific promise about this for asms).
+> 
+> The LDRD has special range constraints on its addressing mode which is 
+> not expressable with any of the available gcc memory constraints.
+
+    'Q'
+          A memory reference where the exact address is in a single
+          register (''m'' is preferable for 'asm' statements)
+
+If 'r' is good enough for io_base, 'Q' should be good enough for *io_base.
+
+-- Jamie
