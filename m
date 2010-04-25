@@ -1,19 +1,19 @@
-Received: from smtp2-g21.free.fr ([212.27.42.2])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O5hpF-0006Pe-K5
-	for linux-mtd@lists.infradead.org; Sat, 24 Apr 2010 16:03:26 +0000
-Subject: [PATCH v5 9/9] mtd: cfi_util: do not printk if no extended query table
-To: linux-mtd <linux-mtd@lists.infradead.org>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Sat, 24 Apr 2010 17:58:32 +0200
-Message-ID: <20100424155832.14723.26868.stgit@shiryu.yomgui.biz>
-In-Reply-To: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
-References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
+Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O695C-0006ku-A7
+	for linux-mtd@lists.infradead.org; Sun, 25 Apr 2010 21:09:43 +0000
+Date: Sun, 25 Apr 2010 23:09:38 +0200
+From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd/ubi: recognize empty flash with errors as empty
+Message-ID: <20100425210938.GA15192@Chamillionaire.breakpoint.cc>
+References: <20100423172819.GA29224@Chamillionaire.breakpoint.cc>
+	<1272108241.11751.1635.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: Wolfram Sang <w.sang@pengutronix.de>, David Woodhouse <dwmw2@infradead.org>,
-	Chris Moore <moore@free.fr>, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <1272108241.11751.1635.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
-Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
----
- drivers/mtd/chips/cfi_util.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+* Artem Bityutskiy | 2010-04-24 14:24:01 [+0300]:
 
-diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
-index ca584d0..d7c2c67 100644
---- a/drivers/mtd/chips/cfi_util.c
-+++ b/drivers/mtd/chips/cfi_util.c
-@@ -104,10 +104,11 @@ __xipram cfi_read_pri(struct map_info *map, __u16 adr, __u16 size, const char* n
- 	int i;
- 	struct cfi_extquery *extp = NULL;
- 
--	printk(" %s Extended Query Table at 0x%4.4X\n", name, adr);
- 	if (!adr)
- 		goto out;
- 
-+	printk(KERN_INFO "%s Extended Query Table at 0x%4.4X\n", name, adr);
-+
- 	extp = kmalloc(size, GFP_KERNEL);
- 	if (!extp) {
- 		printk(KERN_ERR "Failed to allocate memory\n");
+>Thanks, pushed to ubi-2.6.git / master with the following minor tweak,
+>please check:
+>
+>diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+>index 7529d46..48e570c 100644
+>--- a/drivers/mtd/ubi/scan.c
+>+++ b/drivers/mtd/ubi/scan.c
+>@@ -756,12 +756,12 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+>                bitflips = 1;
+>        }
+> 
+>-       if (err != UBI_IO_BAD_EC_HDR)
+>-               si->is_empty = 0;
+>-
+>        if (!ec_corr) {
+>                int image_seq;
+> 
+>+               /* There is an EC header, so the flash is not empty */
+>+               si->is_empty = 0;
+>+
+>                /* Make sure UBI version is OK */
+>                if (ech->version != UBI_VERSION) {
+>                        ubi_err("this UBI version is %d, image version is %d",
+>
+
+I guess that's okay. What are the chances that you can't read the EC
+header but you can somehow read the VID header. AND if there is a valid
+VID header then there is more, and si->is_empty will be set later on,
+right?
+
+Sebastian
