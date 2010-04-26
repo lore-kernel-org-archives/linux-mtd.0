@@ -1,12 +1,12 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
+Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6RDe-00055q-K3
-	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2010 16:31:39 +0000
-Date: Mon, 26 Apr 2010 18:31:27 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jens Axboe <jens.axboe@oracle.com>
-Subject: [PATCH 2/2] [MTD] Call bdi_init() and bdi_register()
-Message-ID: <20100426163126.GD4364@logfs.org>
+	id 1O6RgZ-0003sI-Ht
+	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2010 17:01:32 +0000
+Date: Mon, 26 Apr 2010 19:01:28 +0200
+From: Jens Axboe <jens.axboe@oracle.com>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Subject: Re: [PATCH 1/2] [MTD] Move mtd_bdi_*mappable to mtdcore.c
+Message-ID: <20100426170128.GO27497@kernel.dk>
 References: <alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
 	<20100422162709.GJ27497@kernel.dk>
 	<20100422203358.GB30749@logfs.org>
@@ -18,8 +18,9 @@ References: <alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
 	<20100426144532.GN27497@kernel.dk>
 	<20100426163050.GC4364@logfs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <20100426163050.GC4364@logfs.org>
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
@@ -34,54 +35,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Otherwise we hit a BUG_ON in bdi_queue_work().
+On Mon, Apr 26 2010, Jörn Engel wrote:
+> On Mon, 26 April 2010 16:45:32 +0200, Jens Axboe wrote:
+> > 
+> > Took a quick look, and you want bdi_setup_and_register() for the three
+> > bdis listed in mtdbdi.c in mtdcore.c:init_mtd(). Or manual bdi_init()
+> > and bdi_register(). I'll take a look post-dinner. Either is workable,
+> > but since the flags are already setup, the latter may be cleaner.
+> 
+> Ok, here are two patches that appear to solve the problem for me.
+> 
+> diff --git a/drivers/mtd/devices/drais.c b/drivers/mtd/devices/drais.c
+> index b93ff3f..6f81b28 100644
+> --- a/drivers/mtd/devices/drais.c
+> +++ b/drivers/mtd/devices/drais.c
+> @@ -33,7 +33,7 @@
+>  #include <linux/sched.h>
+>  #include "drais.h"
+>  
+> -#undef DEBUG_ERASE
+> +#define DEBUG_ERASE
 
-Signed-off-by: Joern Engel <joern@logfs.org>
----
- drivers/mtd/mtdcore.c |   17 ++++++++++++++++-
- 1 files changed, 16 insertions(+), 1 deletions(-)
+Leftover debugging?
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index cb4858b..8dd3e46 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -299,7 +299,7 @@ static struct device_type mtd_devtype = {
- 
- int add_mtd_device(struct mtd_info *mtd)
- {
--	int i;
-+	int i, err;
- 
- 	if (!mtd->backing_dev_info) {
- 		switch (mtd->type) {
-@@ -322,6 +322,12 @@ int add_mtd_device(struct mtd_info *mtd)
- 		if (!mtd_table[i]) {
- 			struct mtd_notifier *not;
- 
-+			err = bdi_register(mtd->backing_dev_info, NULL, "mtd%d",
-+					i);
-+			if (err) {
-+				/* We lose the errno information :( */
-+				break;
-+			}
- 			mtd_table[i] = mtd;
- 			mtd->index = i;
- 			mtd->usecount = 0;
-@@ -692,6 +698,15 @@ static int __init init_mtd(void)
- 	int ret;
- 	ret = class_register(&mtd_class);
- 
-+	ret = bdi_init(&mtd_bdi_unmappable);
-+	if (ret)
-+		return ret;
-+	ret = bdi_init(&mtd_bdi_ro_mappable);
-+	if (ret)
-+		return ret;
-+	ret = bdi_init(&mtd_bdi_rw_mappable);
-+	if (ret)
-+		return ret;
- 	if (ret) {
- 		pr_err("Error registering mtd class: %d\n", ret);
- 		return ret;
 -- 
-1.6.2.1
+Jens Axboe
