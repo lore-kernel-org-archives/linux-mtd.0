@@ -1,21 +1,31 @@
-Received: from chamillionaire.breakpoint.cc ([85.10.199.196])
+Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6JgY-0004Dd-6c
-	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2010 08:28:58 +0000
-Date: Mon, 26 Apr 2010 10:28:55 +0200
-From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd/ubi: recognize empty flash with errors as empty
-Message-ID: <20100426082855.GA18811@Chamillionaire.breakpoint.cc>
-References: <20100423172819.GA29224@Chamillionaire.breakpoint.cc>
-	<1272108241.11751.1635.camel@localhost.localdomain>
-	<20100425210938.GA15192@Chamillionaire.breakpoint.cc>
-	<1272257990.17386.2.camel@localhost>
+	id 1O6KvI-0005vM-EG
+	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2010 09:48:17 +0000
+Date: Mon, 26 Apr 2010 11:48:11 +0200
+From: Jens Axboe <jens.axboe@oracle.com>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Subject: Re: [Patch] Catch filesystems lacking s_bdi
+Message-ID: <20100426094810.GE27497@kernel.dk>
+References: <20100419101559.GA4145@logfs.org>
+	<20100419102056.GS27497@kernel.dk>
+	<20100422055448.GA27309@logfs.org>
+	<20100422062631.GC27309@logfs.org>
+	<alpine.LFD.2.00.1004220724170.9086@i5.linux-foundation.org>
+	<alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
+	<20100422162709.GJ27497@kernel.dk>
+	<20100422203358.GB30749@logfs.org>
+	<20100423100532.GN27497@kernel.dk>
+	<20100423205518.GB7008@logfs.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1272257990.17386.2.camel@localhost>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20100423205518.GB7008@logfs.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Artem Bityutskiy | 2010-04-26 07:59:50 [+0300]:
+On Fri, Apr 23 2010, Jörn Engel wrote:
+> On Fri, 23 April 2010 12:05:32 +0200, Jens Axboe wrote:
+> > 
+> > So it's probably safe and good enough as-is, I'll add it. Thanks!
+> 
+> I cannot see this patch in your tree yet.  Could be the weekend or a
+> deliberate decision not to send this for 2.6.34-rc anymore.
 
->On Sun, 2010-04-25 at 23:09 +0200, Sebastian Andrzej Siewior wrote:
->> * Artem Bityutskiy | 2010-04-24 14:24:01 [+0300]:
->> 
->> >Thanks, pushed to ubi-2.6.git / master with the following minor tweak,
->> >please check:
->> >
->> >diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
->> >index 7529d46..48e570c 100644
->> >--- a/drivers/mtd/ubi/scan.c
->> >+++ b/drivers/mtd/ubi/scan.c
->> >@@ -756,12 +756,12 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
->> >                bitflips = 1;
->> >        }
->> > 
->> >-       if (err != UBI_IO_BAD_EC_HDR)
->> >-               si->is_empty = 0;
->> >-
->> >        if (!ec_corr) {
->> >                int image_seq;
->> > 
->> >+               /* There is an EC header, so the flash is not empty */
->> >+               si->is_empty = 0;
->> >+
->> >                /* Make sure UBI version is OK */
->> >                if (ech->version != UBI_VERSION) {
->> >                        ubi_err("this UBI version is %d, image version is %d",
->> >
->> 
->> I guess that's okay. What are the chances that you can't read the EC
->> header but you can somehow read the VID header. 
->
->When the VID header sits in the next NAND page, there are some changes,
->but I never observed such a situation in practice.
->
->> AND if there is a valid
->> VID header then there is more, and si->is_empty will be set later on,
->> right?
->
->Yes, AFAICS.
+It's there, I put it in yesterday. It's definitely 2.6.34-rc material, I
+hope to submit it tonight.
 
-Oh. UBI_IO_BAD_EC_HDR / UBI_IO_BAD_VID_HDR is returned when
-- the page page can not be read
-- the page contains non-ubi information
+> In case it was a deliberate decision, can we please make it explicit?  I
+> don't like the idea of adding a BUG_ON() that potentially triggers for
+> thousands of people this late in the stabilization process - but it is
+> better than having people lose data.  Even if we already ran two stable
+> kernels that way.
+> 
+> Damned if you do, damned if you don't. :(
 
-So I think the latter case is now broken. In fact I just copied some
-random things into my mtd partition and after attach & mkvol they were
-gone with no error.
+Yeah, it's a bad situation to be in. I changed that BUG_ON() to a
+WARN_ON(). I'm not too worried about that part, I'm more worried about
+the file system changed. OTOH, they do lack proper flushing now, so it's
+likely not a huge risk from that perspective.
 
-So in case we want to support something other than UBI then we should
-probably add another error code in order to distinguish between read
-error and not a vald EC / VID header.
-
-Sebastian
+-- 
+Jens Axboe
