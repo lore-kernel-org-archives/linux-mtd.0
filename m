@@ -1,20 +1,31 @@
-Received: from relay.ptn-ipout02.plus.net ([212.159.7.36])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6PEL-00050k-AF
-	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2010 14:24:13 +0000
-Message-ID: <09f0d0f0a023583f67e63708121e31c2.squirrel@webmail.plus.net>
-In-Reply-To: <1272286767.17386.8.camel@localhost>
-References: <afe027b8af6429f1eaf61baae36235d3.squirrel@webmail.plus.net>
-	<1272286767.17386.8.camel@localhost>
-Date: Mon, 26 Apr 2010 15:24:12 +0100
-Subject: Re: Obtaining start/end address of an MTD partition
-From: "Matthew Lear" <matt@bubblegen.co.uk>
-To: dedekind1@gmail.com
+	id 1O6PN4-0001kx-F0
+	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2010 14:33:15 +0000
+Date: Mon, 26 Apr 2010 16:32:53 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jens Axboe <jens.axboe@oracle.com>
+Subject: Re: [Patch] Catch filesystems lacking s_bdi
+Message-ID: <20100426143253.GB4364@logfs.org>
+References: <20100419102056.GS27497@kernel.dk>
+	<20100422055448.GA27309@logfs.org>
+	<20100422062631.GC27309@logfs.org>
+	<alpine.LFD.2.00.1004220724170.9086@i5.linux-foundation.org>
+	<alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
+	<20100422162709.GJ27497@kernel.dk>
+	<20100422203358.GB30749@logfs.org>
+	<20100423100532.GN27497@kernel.dk>
+	<20100423205518.GB7008@logfs.org>
+	<20100426094810.GE27497@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: matt@bubblegen.co.uk, linux-mtd@lists.infradead.org
-Reply-To: matt@bubblegen.co.uk
+In-Reply-To: <20100426094810.GE27497@kernel.dk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+	Paolo Minazzi <paolo.minazzi@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +35,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Mon, 2010-04-26 at 12:05 +0100, Matthew Lear wrote:
->> Hello all,
->>
->> Is it possible to obtain an MTD partition's starting address through
->> usage
->> of the MTD ioctls? I've had a very quick look and from what I can tell,
->> this doesn't seem to be possible.
->>
->> To be clear, I'd like to obtain the addresses below (displayed by Linux
->> when it detects the MTD partitions on boot).
->>
->> Creating 6 MTD partitions on "physmap-flash.0":
->> 0x00000000-0x00120000 : "RedBoot"
->> 0x00120000-0x01000000 : "foo"
->> 0x01000000-0x01400000 : "bar"
->
-> Did you try 'cat /proc/mtd' ?
+On Mon, 26 April 2010 11:48:11 +0200, Jens Axboe wrote:
+> On Fri, Apr 23 2010, Jörn Engel wrote:
+> > On Fri, 23 April 2010 12:05:32 +0200, Jens Axboe wrote:
+> > > 
+> > > So it's probably safe and good enough as-is, I'll add it. Thanks!
+> > 
+> > I cannot see this patch in your tree yet.  Could be the weekend or a
+> > deliberate decision not to send this for 2.6.34-rc anymore.
+> 
+> It's there, I put it in yesterday. It's definitely 2.6.34-rc material, I
+> hope to submit it tonight.
 
-Yes, of course but the only way I could easily obtain the start address of
-a particular partition using /proc/mtd would be to increment the sizes of
-each previous partition. It's doable but just seems clunky...
+Ok, thanks.
+
+> > In case it was a deliberate decision, can we please make it explicit?  I
+> > don't like the idea of adding a BUG_ON() that potentially triggers for
+> > thousands of people this late in the stabilization process - but it is
+> > better than having people lose data.  Even if we already ran two stable
+> > kernels that way.
+> > 
+> > Damned if you do, damned if you don't. :(
+> 
+> Yeah, it's a bad situation to be in. I changed that BUG_ON() to a
+> WARN_ON(). I'm not too worried about that part, I'm more worried about
+> the file system changed. OTOH, they do lack proper flushing now, so it's
+> likely not a huge risk from that perspective.
+
+It is worse still.  Using mtd->backing_dev_info results in 
+kernel BUG at fs/fs-writeback.c:157
+
+which is BUG_ON(!work->seen); in bdi_queue_work().  Logfs is affected
+and I bet jffs2 is as well.  So much for dwmw2 or me actually testing
+the fix. :(
+
+I did a hexdump to see what sb->s_bdi actually contained and the result
+was this:
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+04 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00 00 00 00 00 00 00 00                          ........
+
+Which should be mtd_bdi_unmappable.  And at this point I have to admit
+being clueless.  What exactly should a struct backing_dev_info contain
+and for what purposes?  And where is this documented?
+
+Jörn
+
+-- 
+He who knows others is wise.
+He who knows himself is enlightened.
+-- Lao Tsu
