@@ -1,19 +1,18 @@
-Subject: Re: [PATCH v3 0/2] ARM: MXC: mxc_nand: support i.MX21
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6fPq-000866-Ql
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 07:41:11 +0000
+Subject: Re: [PATCH 05/16] mtd: remove unused #include <linux/version.h>
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ivo Clarysse <ivo.clarysse@gmail.com>
-In-Reply-To: <o2qba216b431004080713n9a264511qc4066544cdac10aa@mail.gmail.com>
-References: <q2tba216b431004060652jeb9df33eqd141836e46980f00@mail.gmail.com>
-	<20100407134039.GE3688@pengutronix.de>
-	<o2oba216b431004080520u924ffafby3a88e18471b560b@mail.gmail.com>
-	<20100408133303.GK3688@pengutronix.de>
-	<o2qba216b431004080713n9a264511qc4066544cdac10aa@mail.gmail.com>
+To: Huang Weiyi <weiyi.huang@gmail.com>
+In-Reply-To: <1270727358-2388-1-git-send-email-weiyi.huang@gmail.com>
+References: <1270727358-2388-1-git-send-email-weiyi.huang@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 27 Apr 2010 10:29:36 +0300
-Message-ID: <1272353376.26036.2.camel@localhost>
+Date: Tue, 27 Apr 2010 10:36:54 +0300
+Message-ID: <1272353814.26036.3.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, leochen@broadcom.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,34 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-04-08 at 16:13 +0200, Ivo Clarysse wrote:
-> Allow mxc_nand.c to function on i.MX21 SoCs, since:
+On Thu, 2010-04-08 at 19:49 +0800, Huang Weiyi wrote:
+> Remove unused #include <linux/version.h>('s) in
+>   drivers/mtd/nand/bcm_umi_nand.c
 > 
-> 1) On i.MX21, if the NFC_INT_MASK bit in NFC_CONFIG1 is set, the NFC_INT
->  bit of NFC_CONFIG2 always reads out zero, even if an operation is
->  completed.
+> Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
+> ---
+>  drivers/mtd/nand/bcm_umi_nand.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
 > 
-> 2) On i.MX21, sending a RESET command to the NAND flash controller does
->  not trigger an interrupt, nor does it cause the NFC_INT bit of
->  NFC_CONFIG2 to get set.
-> 
-> 3) After reset is performed, NFC registers are again in their
->  default values.
-> 
-> This patch series:
-> 
-> - (Re-)sets all NFC registers after reset
-> 
-> - Uses enable_irq / disable_irq_nosync instead of NFC_INT_MASK
->   to mask NFC interrupts (allowing NFC_CONFIG2:NFC_INT to used on i.MX21)
+> diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
+> index c997f98..2427460 100644
+> --- a/drivers/mtd/nand/bcm_umi_nand.c
+> +++ b/drivers/mtd/nand/bcm_umi_nand.c
+> @@ -13,7 +13,6 @@
+>  *****************************************************************************/
+>  
+>  /* ---- Include Files ---------------------------------------------------- */
+> -#include <linux/version.h>
+>  #include <linux/module.h>
+>  #include <linux/types.h>
+>  #include <linux/init.h>
 
-Pushed both patches to l2-mtd-2.6.git / dunno with
-
-Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
-
-See
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/shortlog/refs/heads/dunno
-
+Pushed to l2-mtd-2.6.git / master
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
