@@ -1,8 +1,8 @@
-Message-Id: <201004272114.o3RLEA5m020256@imap1.linux-foundation.org>
-Subject: [patch 1/2] mtd: nandsim: fix typo: struct nandsin_geometry
+Message-Id: <201004272114.o3RLEBKf020266@imap1.linux-foundation.org>
+Subject: [patch 2/2] mtd: nand: remove stray endchoice from Kconfig help text
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Tue, 27 Apr 2010 14:14:10 -0700
+Date: Tue, 27 Apr 2010 14:14:11 -0700
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
@@ -18,27 +18,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Ferenc Wagner <wferi@niif.hu>
 
-The name was spelled wrong.  We don't need an identifier on this struct
-anyway, so remove it altogether.
-
 Signed-off-by: Ferenc Wagner <wferi@niif.hu>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- drivers/mtd/nand/nandsim.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/Kconfig |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff -puN drivers/mtd/nand/nandsim.c~mtd-nandsim-fix-typo-struct-nandsin_geometry drivers/mtd/nand/nandsim.c
---- a/drivers/mtd/nand/nandsim.c~mtd-nandsim-fix-typo-struct-nandsin_geometry
-+++ a/drivers/mtd/nand/nandsim.c
-@@ -315,7 +315,7 @@ struct nandsim {
- 	union ns_mem buf;
+diff -puN drivers/mtd/nand/Kconfig~mtd-nand-remove-stray-endchoice-from-kconfig-help-text drivers/mtd/nand/Kconfig
+--- a/drivers/mtd/nand/Kconfig~mtd-nand-remove-stray-endchoice-from-kconfig-help-text
++++ a/drivers/mtd/nand/Kconfig
+@@ -373,8 +373,6 @@ config MTD_NAND_ATMEL_ECC_NONE
  
- 	/* NAND flash "geometry" */
--	struct nandsin_geometry {
-+	struct {
- 		uint64_t totsz;     /* total flash size, bytes */
- 		uint32_t secsz;     /* flash sector (erase block) size, bytes */
- 		uint pgsz;          /* NAND flash page size, bytes */
+ 	  If unsure, say N
+ 
+-	  endchoice
+-
+ endchoice
+ 
+ config MTD_NAND_PXA3xx
 _
