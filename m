@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6kRc-00055t-Tm
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 13:03:21 +0000
-Subject: Re: Erase race?
+Subject: Re: [PATCHv2 1/2] MTD: cfi_cmdset_0002: Add reboot notifier for
+	AMD flashes
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Ringle <jon@ringle.org>
-In-Reply-To: <z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
-References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-	<z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
+References: <1271221078.2532.5.camel@localhost.localdomain>
+	<a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 27 Apr 2010 15:59:02 +0300
-Message-ID: <1272373142.7750.5.camel@localhost>
+Date: Tue, 27 Apr 2010 16:07:34 +0300
+Message-ID: <1272373654.7750.7.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: saeed.bishara@gmail.com, dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,40 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-04-20 at 16:24 -0400, Jon Ringle wrote:
-> On Tue, Apr 13, 2010 at 4:15 PM, Jon Ringle <jon@ringle.org> wrote:
-> > Hi,
-> > I have a few machines that have UBI and UBIFS on NOR flash that are
-> > undergoing continuous reboot testing.
-> > One of them just caught the following failure:
-> >
-> > [   51.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
-> > [   51.250000] UBI error: ubi_io_write: error -22 while writing 64
-> > bytes to PEB 226:0, written 0 bytes
-> > [   51.270000] UBI error: erase_worker: failed to erase PEB 226, error -22
-> > [   51.270000] UBI warning: ubi_ro_mode: switch to read-only mode
-> > [   51.290000] UBI error: do_work: work failed with error code -22
-> > [   51.290000] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -22
-> >
-> > Looking at this it appears that the failure might have been caused due
-> > to the erase_worker and ubi_io_write occurring out of order... since
-> > it looks like ubi_io_write was trying to write at offset 0 of the PEB,
-> > which I imagine would have to be the EC header, which should happen
-> > after the block is erased. But it doesn't seem to be the case here.
+On Wed, 2010-04-14 at 17:57 -0700, Kevin Cernekee wrote:
+> Ensure that the flash device is in a quiescent state before rebooting.
+> The implementation is closely modeled after the cfe_cmdset_0001 reboot
+> notifier, commit 963a6fb0a0d336d0513083b7e4b5c3ff9d6d2061 .
 > 
-> I had this issue occur again on another system:
-> [   48.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
-> [   48.250000] UBI error: ubi_io_write: error -22 while writing 64
-> bytes to PEB 111:0, written 0 bytes
-> [   48.280000] UBI error: erase_worker: failed to erase PEB 111, error -22
-> [   48.280000] UBI warning: ubi_ro_mode: switch to read-only mode
-> [   48.310000] UBI error: do_work: work failed with error code -22
-> [   48.310000] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -22
-> 
-> Can anyone comment as to my theory that this is a race condition
-> between ubi_io_write and erase_worker occurring out of order?
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c |   56 +++++++++++++++++++++++++++++++++++
+>  1 files changed, 56 insertions(+), 0 deletions(-)
 
-Did you debug this further? Any new findings?
+This patch conflicts with the patch from Stefani, which is sitting in my
+l2-mtd-2.6.git tree
+(http://git.infradead.org/users/dedekind/l2-mtd-2.6.git). Could you
+please amend it and re-send?
+
+The conflicting patch is:
+
+Author: Stefani Seibold <stefani@seibold.net>
+Date:   Sun Apr 18 22:46:44 2010 +0200
+
+    mtd: fix a huge latency problem in the MTD CFI and LPDDR flash drivers.
+    
+    The use of a memcpy() during a spinlock operation will cause very long
+    thread context switch delays if the flash chip bandwidth is low and the
+    data to be copied large, because a spinlock will disable preemption.
+    
+    For example: A flash with 6,5 MB/s bandwidth will cause under ubifs,
+    which request sometimes 128 KB (the flash erase size), a preemption delay of
+    20 milliseconds. High priority threads will not be served during this
+    time, regardless whether this threads access the flash or not. This behavior
+    breaks real time.
+    
+    The patch changes all the use of spin_lock operations for xxxx->mutex
+    into mutex operations, which is exact what the name says and means.
+    
+    I have checked the code of the drivers and there is no use of atomic
+    pathes like interrupt or timers. The mtdoops facility will also not be used
+    by this drivers. So it is dave to replace the spin_lock against mutex.
+    
+    There is no performance regression since the mutex is normally not
+    acquired.
+    
+    Changelog:
+     06.03.2010 First release
+     26.03.2010 Fix mutex[1] issue and tested it for compile failure
+    
+    Signed-off-by: Stefani Seibold <stefani@seibold.net>
+    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
 
 -- 
 Best Regards,
