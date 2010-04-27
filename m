@@ -1,30 +1,19 @@
-Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6faq-0007w5-EA
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 07:52:33 +0000
-Date: Tue, 27 Apr 2010 09:52:29 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Subject: Re: [PATCH 2/2] [MTD] Call bdi_init() and bdi_register()
-Message-ID: <20100427075229.GB27497@kernel.dk>
-References: <20100423100532.GN27497@kernel.dk>
-	<20100423205518.GB7008@logfs.org>
-	<20100426094810.GE27497@kernel.dk>
-	<20100426143253.GB4364@logfs.org>
-	<20100426143803.GM27497@kernel.dk>
-	<20100426144532.GN27497@kernel.dk>
-	<20100426163050.GC4364@logfs.org> <20100426163126.GD4364@logfs.org>
-	<20100426170247.GP27497@kernel.dk>
-	<20100426171236.GG4364@logfs.org>
+	id 1O6fbX-0008Fj-Ra
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 07:53:17 +0000
+Date: Tue, 27 Apr 2010 09:53:10 +0200
+From: Robert Schwebel <r.schwebel@pengutronix.de>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: mxc-nand duplicate case value in -next
+Message-ID: <20100427075310.GM18567@pengutronix.de>
+References: <20100423073625.GY7882@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20100426171236.GG4364@logfs.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-	Paolo Minazzi <paolo.minazzi@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20100423073625.GY7882@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+	Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,61 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 26 2010, Jörn Engel wrote:
-> On Mon, 26 April 2010 19:02:48 +0200, Jens Axboe wrote:
-> > On Mon, Apr 26 2010, Jörn Engel wrote:
-> > > Otherwise we hit a BUG_ON in bdi_queue_work().
-> > > 
-> > > Signed-off-by: Joern Engel <joern@logfs.org>
-> > > ---
-> > >  drivers/mtd/mtdcore.c |   17 ++++++++++++++++-
-> > >  1 files changed, 16 insertions(+), 1 deletions(-)
-> > > 
-> > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-> > > index cb4858b..8dd3e46 100644
-> > > --- a/drivers/mtd/mtdcore.c
-> > > +++ b/drivers/mtd/mtdcore.c
-> > > @@ -322,6 +322,12 @@ int add_mtd_device(struct mtd_info *mtd)
-> > >  		if (!mtd_table[i]) {
-> > >  			struct mtd_notifier *not;
-> > >  
-> > > +			err = bdi_register(mtd->backing_dev_info, NULL, "mtd%d",
-> > > +					i);
-> > > +			if (err) {
-> > > +				/* We lose the errno information :( */
-> > > +				break;
-> > > +			}
-> > 
-> > This is not a good idea, even if it'll currently work.
-> > 
-> > > @@ -692,6 +698,15 @@ static int __init init_mtd(void)
-> > >  	int ret;
-> > >  	ret = class_register(&mtd_class);
-> > >  
-> > > +	ret = bdi_init(&mtd_bdi_unmappable);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +	ret = bdi_init(&mtd_bdi_ro_mappable);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +	ret = bdi_init(&mtd_bdi_rw_mappable);
-> > > +	if (ret)
-> > > +		return ret;
-> > 
-> > Do the bdi_register() here as well.
-> 
-> -ENOBRAIN
-> 
-> Initially I wanted to do just than.  Then I looked at the block layer
-> and thought we could create one backing_dev_info per mtd as well.  Not
-> necessarily a bad if I would actually _create_ them and not just reuse
-> the same ones over and over again.
+Hi,
 
-I cooked up that patch myself, here:
+On Fri, Apr 23, 2010 at 09:36:25AM +0200, Sascha Hauer wrote:
+> Currently we have a duplicate case value in the mxc-nand driver in
+> -next. This is because of to different patches adding reset command
+> support to the driver, one from Eric (coming via the mtd master tree)
+> and one from Ivo (coming from the mxc master tree). As I see it we
+> should take Ivos patch as it adds i.MX21 support along the way, so
+> David, can you please drop Erics patch?
 
-http://git.kernel.dk/?p=linux-2.6-block.git;a=commit;h=0661b1ac5d48eb47c8a5948c0554fea25e0895ab
+linux-next does still crash with
 
-Care to give it a quick spin?
+drivers/mtd/nand/mxc_nand.c: In function 'mxc_nand_command':
+drivers/mtd/nand/mxc_nand.c:689: error: duplicate case value
+drivers/mtd/nand/mxc_nand.c:606: error: previously used here
+drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_resume':
+drivers/mtd/nand/mxc_nand.c:921: warning: unused variable 'host'
+make[3]: *** [drivers/mtd/nand/mxc_nand.o] Error 1
 
+David, would dropping Eric's patch (like suggested by Sascha) be an
+acceptable solution?
+
+Thanks,
+rsc
 -- 
-Jens Axboe
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
