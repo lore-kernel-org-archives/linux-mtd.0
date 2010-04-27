@@ -1,30 +1,29 @@
-Received: from 0122700014.0.fullrate.dk ([95.166.99.235] helo=kernel.dk)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6fyC-0004tg-S3
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 08:16:42 +0000
-Date: Tue, 27 Apr 2010 10:16:37 +0200
-From: Jens Axboe <jens.axboe@oracle.com>
-To: Paolo Minazzi <paolo.minazzi@gmail.com>
-Subject: Re: [PATCH 2/2] [MTD] Call bdi_init() and bdi_register()
-Message-ID: <20100427081636.GD27497@kernel.dk>
-References: <20100426094810.GE27497@kernel.dk>
-	<20100426143253.GB4364@logfs.org>
-	<20100426143803.GM27497@kernel.dk>
-	<20100426144532.GN27497@kernel.dk>
-	<20100426163050.GC4364@logfs.org> <20100426163126.GD4364@logfs.org>
-	<20100426170247.GP27497@kernel.dk>
-	<20100426171236.GG4364@logfs.org>
-	<20100427075229.GB27497@kernel.dk>
-	<z2g4aa525de1004270111r8a9a475fna8715219551a889d@mail.gmail.com>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6gfB-0003v1-Vz
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 09:01:07 +0000
+Received: by wyg36 with SMTP id 36so2598175wyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Apr 2010 02:01:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <z2g4aa525de1004270111r8a9a475fna8715219551a889d@mail.gmail.com>
+In-Reply-To: <20100426163126.GD4364@logfs.org>
+References: <alpine.LFD.2.00.1004220730280.9086@i5.linux-foundation.org>
+	<20100422203358.GB30749@logfs.org> <20100423100532.GN27497@kernel.dk>
+	<20100423205518.GB7008@logfs.org> <20100426094810.GE27497@kernel.dk>
+	<20100426143253.GB4364@logfs.org> <20100426143803.GM27497@kernel.dk>
+	<20100426144532.GN27497@kernel.dk> <20100426163050.GC4364@logfs.org>
+	<20100426163126.GD4364@logfs.org>
+Date: Tue, 27 Apr 2010 11:01:04 +0200
+Message-ID: <x2v4aa525de1004270201t9f57f49fv1e9cfbb2d886e4ad@mail.gmail.com>
+Subject: Re: [PATCH 2/2] [MTD] Call bdi_init() and bdi_register()
+From: Paolo Minazzi <paolo.minazzi@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	=?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
 	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+	linux-mtd@lists.infradead.org, Jens Axboe <jens.axboe@oracle.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,244 +33,242 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 27 2010, Paolo Minazzi wrote:
-> I Jens,
-> I'm Paolo Minazzi and I have a problem with logfs and 2.6.34rc5.
-> Can I apply the patch to rc5 and make a test on my ARM board ?
-> Paolo
+I have tried this patch.
+I have enabled LOGFS, but not mounted partition with it.
+/dev/mtdblock1 is my romfs root partition and it is OK.
 
-Yes please do, below are the collected fixes for mtd in this area. It
-should apply to recent -git just fine.
+The problem is that init cannot mount my /dev/mtdblock1 romfs root.
 
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 82d1e4d..4521b1e 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -4,7 +4,7 @@
- 
- # Core functionality.
- obj-$(CONFIG_MTD)		+= mtd.o
--mtd-y				:= mtdcore.o mtdsuper.o mtdbdi.o
-+mtd-y				:= mtdcore.o mtdsuper.o
- mtd-$(CONFIG_MTD_PARTITIONS)	+= mtdpart.o
- 
- obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
-diff --git a/drivers/mtd/internal.h b/drivers/mtd/internal.h
-index c658fe7..e69de29 100644
---- a/drivers/mtd/internal.h
-+++ b/drivers/mtd/internal.h
-@@ -1,17 +0,0 @@
--/* Internal MTD definitions
-- *
-- * Copyright © 2006 Red Hat, Inc. All Rights Reserved.
-- * Written by David Howells (dhowells@redhat.com)
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * as published by the Free Software Foundation; either version
-- * 2 of the License, or (at your option) any later version.
-- */
--
--/*
-- * mtdbdi.c
-- */
--extern struct backing_dev_info mtd_bdi_unmappable;
--extern struct backing_dev_info mtd_bdi_ro_mappable;
--extern struct backing_dev_info mtd_bdi_rw_mappable;
-diff --git a/drivers/mtd/mtdbdi.c b/drivers/mtd/mtdbdi.c
-index 5ca5aed..e69de29 100644
---- a/drivers/mtd/mtdbdi.c
-+++ b/drivers/mtd/mtdbdi.c
-@@ -1,43 +0,0 @@
--/* MTD backing device capabilities
-- *
-- * Copyright © 2006 Red Hat, Inc. All Rights Reserved.
-- * Written by David Howells (dhowells@redhat.com)
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License
-- * as published by the Free Software Foundation; either version
-- * 2 of the License, or (at your option) any later version.
-- */
--
--#include <linux/backing-dev.h>
--#include <linux/mtd/mtd.h>
--#include "internal.h"
--
--/*
-- * backing device capabilities for non-mappable devices (such as NAND flash)
-- * - permits private mappings, copies are taken of the data
-- */
--struct backing_dev_info mtd_bdi_unmappable = {
--	.capabilities	= BDI_CAP_MAP_COPY,
--};
--
--/*
-- * backing device capabilities for R/O mappable devices (such as ROM)
-- * - permits private mappings, copies are taken of the data
-- * - permits non-writable shared mappings
-- */
--struct backing_dev_info mtd_bdi_ro_mappable = {
--	.capabilities	= (BDI_CAP_MAP_COPY | BDI_CAP_MAP_DIRECT |
--			   BDI_CAP_EXEC_MAP | BDI_CAP_READ_MAP),
--};
--
--/*
-- * backing device capabilities for writable mappable devices (such as RAM)
-- * - permits private mappings, copies are taken of the data
-- * - permits non-writable shared mappings
-- */
--struct backing_dev_info mtd_bdi_rw_mappable = {
--	.capabilities	= (BDI_CAP_MAP_COPY | BDI_CAP_MAP_DIRECT |
--			   BDI_CAP_EXEC_MAP | BDI_CAP_READ_MAP |
--			   BDI_CAP_WRITE_MAP),
--};
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 5b38b17..b177e75 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2,6 +2,9 @@
-  * Core registration and callback routines for MTD
-  * drivers and users.
-  *
-+ * bdi bits are:
-+ * Copyright © 2006 Red Hat, Inc. All Rights Reserved.
-+ * Written by David Howells (dhowells@redhat.com)
-  */
- 
- #include <linux/module.h>
-@@ -16,11 +19,39 @@
- #include <linux/init.h>
- #include <linux/mtd/compatmac.h>
- #include <linux/proc_fs.h>
-+#include <linux/backing-dev.h>
- 
- #include <linux/mtd/mtd.h>
--#include "internal.h"
- 
- #include "mtdcore.h"
-+/*
-+ * backing device capabilities for non-mappable devices (such as NAND flash)
-+ * - permits private mappings, copies are taken of the data
-+ */
-+struct backing_dev_info mtd_bdi_unmappable = {
-+	.capabilities	= BDI_CAP_MAP_COPY,
-+};
-+
-+/*
-+ * backing device capabilities for R/O mappable devices (such as ROM)
-+ * - permits private mappings, copies are taken of the data
-+ * - permits non-writable shared mappings
-+ */
-+struct backing_dev_info mtd_bdi_ro_mappable = {
-+	.capabilities	= (BDI_CAP_MAP_COPY | BDI_CAP_MAP_DIRECT |
-+			   BDI_CAP_EXEC_MAP | BDI_CAP_READ_MAP),
-+};
-+
-+/*
-+ * backing device capabilities for writable mappable devices (such as RAM)
-+ * - permits private mappings, copies are taken of the data
-+ * - permits non-writable shared mappings
-+ */
-+struct backing_dev_info mtd_bdi_rw_mappable = {
-+	.capabilities	= (BDI_CAP_MAP_COPY | BDI_CAP_MAP_DIRECT |
-+			   BDI_CAP_EXEC_MAP | BDI_CAP_READ_MAP |
-+			   BDI_CAP_WRITE_MAP),
-+};
- 
- static int mtd_cls_suspend(struct device *dev, pm_message_t state);
- static int mtd_cls_resume(struct device *dev);
-@@ -628,20 +659,55 @@ done:
- /*====================================================================*/
- /* Init code */
- 
-+static int __init mtd_bdi_init(struct backing_dev_info *bdi, const char *name)
-+{
-+	int ret;
-+
-+	ret = bdi_init(bdi);
-+	if (!ret)
-+		ret = bdi_register(bdi, NULL, name);
-+
-+	if (ret)
-+		bdi_destroy(bdi);
-+
-+	return ret;
-+}
-+
- static int __init init_mtd(void)
- {
- 	int ret;
-+
- 	ret = class_register(&mtd_class);
-+	if (ret)
-+		goto err_reg;
-+
-+	ret = mtd_bdi_init(&mtd_bdi_unmappable, "mtd-unmap");
-+	if (ret)
-+		goto err_bdi1;
-+
-+	ret = mtd_bdi_init(&mtd_bdi_ro_mappable, "mtd-romap");
-+	if (ret)
-+		goto err_bdi2;
-+
-+	ret = mtd_bdi_init(&mtd_bdi_rw_mappable, "mtd-rwmap");
-+	if (ret)
-+		goto err_bdi3;
- 
--	if (ret) {
--		pr_err("Error registering mtd class: %d\n", ret);
--		return ret;
--	}
- #ifdef CONFIG_PROC_FS
- 	if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
- 		proc_mtd->read_proc = mtd_read_proc;
- #endif /* CONFIG_PROC_FS */
- 	return 0;
-+
-+err_bdi3:
-+	bdi_destroy(&mtd_bdi_ro_mappable);
-+err_bdi2:
-+	bdi_destroy(&mtd_bdi_unmappable);
-+err_bdi1:
-+	class_unregister(&mtd_class);
-+err_reg:
-+	pr_err("Error registering mtd class or bdi: %d\n", ret);
-+	return ret;
- }
- 
- static void __exit cleanup_mtd(void)
-@@ -651,6 +717,9 @@ static void __exit cleanup_mtd(void)
- 		remove_proc_entry( "mtd", NULL);
- #endif /* CONFIG_PROC_FS */
- 	class_unregister(&mtd_class);
-+	bdi_destroy(&mtd_bdi_unmappable);
-+	bdi_destroy(&mtd_bdi_ro_mappable);
-+	bdi_destroy(&mtd_bdi_rw_mappable);
- }
- 
- module_init(init_mtd);
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index af8b42e..7c00319 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -13,6 +13,7 @@
- #include <linux/mtd/super.h>
- #include <linux/namei.h>
- #include <linux/ctype.h>
-+#include <linux/slab.h>
- 
- /*
-  * compare superblocks to see if they're equivalent
-@@ -44,6 +45,7 @@ static int get_sb_mtd_set(struct super_block *sb, void *_mtd)
- 
- 	sb->s_mtd = mtd;
- 	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
-+	sb->s_bdi = mtd->backing_dev_info;
- 	return 0;
- }
- 
+This is the fault :
+Platform: Cirrus Logic EDB9315A Board (ARM920T) Rev A
+Copyright (C) 2000, 2001, 2002, Red Hat, Inc.
+       |----------------------------------------------
+Raw file loaded 0x00080000-0x001dce6b, assumed entry at
+0x00080000-----------------------------------------------------------
+RedBoot> exec -s 0x00b00000 -r 0x00a00000 -c "root=3D/dev/mtdblock1
+console=3DttyAM console=3Dtty1"--------------------------------
+ENTRY=3D0xc0008000---------------------------------------------------------=
+----------------------------------------------------
+LENGTH=3D0x00300000--------------------------------------------------------=
+----------------------------------------------------
+BASE_ADDR=3D0x00080000-----------------------------------------------------=
+----------------------------------------------------
+Using base address 0x00080000 and length
+0x00300000-----------------------------------------------------------------=
+---------
+Uncompressing Linux... done, booting the kernel.
+Linux version 2.6.34-rc5 (root@darkstar) (gcc version 3.4.3) #18 Tue
+Apr 27 10:55:55 CEST 2010
+CPU: ARM920T [41129200] revision 0 (ARMv4T), cr=3Dc0007177
+CPU: VIVT data cache, VIVT instruction cache
+Machine: Cirrus Logic EDB9315A Evaluation Board
+Memory policy: ECC disabled, Data cache writeback
+Built 1 zonelists in Zone order, mobility grouping on.  Total pages: 32512
+Kernel command line: root=3D/dev/mtdblock1 console=3DttyAM console=3Dtty1
+PID hash table entries: 512 (order: -1, 2048 bytes)
+Dentry cache hash table entries: 16384 (order: 4, 65536 bytes)
+Inode-cache hash table entries: 8192 (order: 3, 32768 bytes)
+Memory: 128MB =3D 128MB total
+Memory: 126928k/126928k available, 4144k reserved, 0K highmem
+Virtual kernel memory layout:
+    vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+    fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+    DMA     : 0xffc00000 - 0xffe00000   (   2 MB)
+    vmalloc : 0xc8800000 - 0xfe800000   ( 864 MB)
+    lowmem  : 0xc0000000 - 0xc8000000   ( 128 MB)
+    modules : 0xbf000000 - 0xc0000000   (  16 MB)
+      .init : 0xc0008000 - 0xc0036000   ( 184 kB)
+      .text : 0xc0036000 - 0xc02ab000   (2516 kB)
+      .data : 0xc02ac000 - 0xc02c4e00   ( 100 kB)
+SLUB: Genslabs=3D11, HWalign=3D32, Order=3D0-3, MinObjects=3D0, CPUs=3D1, N=
+odes=3D1
+Hierarchical RCU implementation.
+NR_IRQS:120
+VIC @fefb0000: id 0x00041190, vendor 0x41
+VIC @fefc0000: id 0x00041190, vendor 0x41
+Console: colour dummy device 80x30
+console [tty1] enabled
+Calibrating delay loop... 99.73 BogoMIPS (lpj=3D498688)
+Mount-cache hash table entries: 512
+CPU: Testing write buffer coherency: ok
+NET: Registered protocol family 16
+ep93xx clock: PLL1 running at 200 MHz, PLL2 at 48 MHz
+ep93xx clock: FCLK 200 MHz, HCLK 100 MHz, PCLK 50 MHz
+ep93xx dma_m2p: M2P DMA subsystem initialized
+bio: create slab <bio-0> at 0
+SCSI subsystem initialized
+usbcore: registered new interface driver usbfs
+usbcore: registered new interface driver hub
+usbcore: registered new device driver usb
+NET: Registered protocol family 2
+IP route cache hash table entries: 1024 (order: 0, 4096 bytes)
+TCP established hash table entries: 4096 (order: 3, 32768 bytes)
+TCP bind hash table entries: 4096 (order: 2, 16384 bytes)
+TCP: Hash tables configured (established 4096 bind 4096)
+TCP reno registered
+UDP hash table entries: 256 (order: 0, 4096 bytes)
+UDP-Lite hash table entries: 256 (order: 0, 4096 bytes)
+NET: Registered protocol family 1
+JFFS2 version 2.2. (NAND) =C2=A9 2001-2006 Red Hat, Inc.
+***REGISTER LOGFS
+***REGISTER LOGFS DONE ret=3D0
+ROMFS MTD (C) 2007 Red Hat, Inc.
+msgmni has been set to 247
+io scheduler noop registered
+io scheduler deadline registered
+io scheduler cfq registered (default)
+Console: switching to colour frame buffer device 100x37
+graphics fb0: registered. Mode =3D 800x600-16
+Serial: AMBA driver
+apb:uart1: ttyAM0 at MMIO 0x808c0000 (irq =3D 52) is a AMBA
+console [ttyAM0] enabled
+apb:uart2: ttyAM1 at MMIO 0x808d0000 (irq =3D 54) is a AMBA
+apb:uart3: ttyAM2 at MMIO 0x808e0000 (irq =3D 55) is a AMBA
+dev->num_resources=3D1
+physmap platform flash device: 02000000 at 60000000
+physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
+physmap-flash.0: Found 1 x16 devices at 0x1000000 in 16-bit bank
+ Intel/Sharp Extended Query Table at 0x0031
+ Intel/Sharp Extended Query Table at 0x0031
+Using buffer write method
+cfi_cmdset_0001: Erase suspend on write enabled
+cmdlinepart partition parsing not available
+Searching for RedBoot partition table in physmap-flash.0 at offset 0x1fe000=
+0
+6 RedBoot partitions found on MTD device physmap-flash.0
+Creating 6 MTD partitions on "physmap-flash.0":
+0x000000000000-0x000000040000 : "RedBoot"
+0x000000040000-0x000000b40000 : "ramdisk"
+0x000000b40000-0x000000e40000 : "zImage"
+0x000000e40000-0x000001fc0000 : "jffs2"
+0x000001fc0000-0x000001fe0000 : "RedBoot config"
+0x000001fe0000-0x000002000000 : "FIS directory"
+PPP generic driver version 2.4.2
+PPP Deflate Compression module registered
+PPP BSD Compression module registered
+ep93xx-eth version 0.1 loading
+eth0: ep93xx on-chip ethernet, IRQ 39, 00:00:11:22:33:36
+ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+ep93xx-ohci ep93xx-ohci: EP93xx OHCI
+ep93xx-ohci ep93xx-ohci: new USB bus registered, assigned bus number 1
+ep93xx-ohci ep93xx-ohci: irq 56, io mem 0x80020000
+hub 1-0:1.0: USB hub found
+hub 1-0:1.0: 3 ports detected
+usbcore: registered new interface driver cdc_acm
+cdc_acm: v0.26:USB Abstract Control Model driver for USB modems and
+ISDN adapters
+Initializing USB Mass Storage driver...
+usbcore: registered new interface driver usb-storage
+USB Mass Storage support registered.
+ep93xx-rtc ep93xx-rtc: rtc core: registered ep93xx-rtc as rtc0
+usbcore: registered new interface driver usbhid
+usbhid: USB HID core driver
+TCP cubic registered
+NET: Registered protocol family 17
+Last power-down at UTC 08:47:16 on 27/04/2010
+ep93xx-rtc ep93xx-rtc: setting system clock to 2010-04-27 08:47:16 UTC
+(1272358036)
+VFS: Cannot open root device "mtdblock1" or unknown-block(31,1)
+Please append a correct "root=3D" boot option; here are the available parti=
+tions:
+1f00             256 mtdblock0 (driver?)
+1f01           11264 mtdblock1 (driver?)
+1f02            3072 mtdblock2 (driver?)
+1f03           17920 mtdblock3 (driver?)
+1f04             128 mtdblock4 (driver?)
+1f05             128 mtdblock5 (driver?)
+Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(3=
+1,1)
+Backtrace:
+[<c003a3dc>] (dump_backtrace+0x0/0x12c) from [<c003a520>] (dump_stack+0x18/=
+0x1c)
+ r7:c7c11000 r6:fffffffb r5:c7c11000 r4:00000000
+[<c003a508>] (dump_stack+0x0/0x1c) from [<c0046628>] (panic+0x3c/0xc4)
+[<c00465ec>] (panic+0x0/0xc4) from [<c0008d58>] (mount_block_root+0x110/0x2=
+e8)
+ r3:00000000 r2:20000013 r1:c7c27f58 r0:c0276b44
+[<c0008c48>] (mount_block_root+0x0/0x2e8) from [<c0008f84>]
+(mount_root+0x54/0x6c)
+[<c0008f30>] (mount_root+0x0/0x6c) from [<c0009094>]
+(prepare_namespace+0xf8/0x194)
+ r5:c001a56c r4:c001a570
+[<c0008f9c>] (prepare_namespace+0x0/0x194) from [<c0008aa4>]
+(kernel_init+0x114/0x15c)
+ r6:c0019b0c r5:c0019d5c r4:c02c4e18
+[<c0008990>] (kernel_init+0x0/0x15c) from [<c0048e98>] (do_exit+0x0/0x628)
+ r6:00000000 r5:00000000 r4:00000000
 
 
--- 
-Jens Axboe
+
+If I disable logfs, my root /dev/mtdblock1 is mounted correclty.
+
+Any ideas ?
+
+Paolo
+
+
+
+
+
+
+
+
+
+On Mon, Apr 26, 2010 at 6:31 PM, J=F6rn Engel <joern@logfs.org> wrote:
+> Otherwise we hit a BUG_ON in bdi_queue_work().
+>
+> Signed-off-by: Joern Engel <joern@logfs.org>
+> ---
+> =A0drivers/mtd/mtdcore.c | =A0 17 ++++++++++++++++-
+> =A01 files changed, 16 insertions(+), 1 deletions(-)
+>
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index cb4858b..8dd3e46 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -299,7 +299,7 @@ static struct device_type mtd_devtype =3D {
+>
+> =A0int add_mtd_device(struct mtd_info *mtd)
+> =A0{
+> - =A0 =A0 =A0 int i;
+> + =A0 =A0 =A0 int i, err;
+>
+> =A0 =A0 =A0 =A0if (!mtd->backing_dev_info) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0switch (mtd->type) {
+> @@ -322,6 +322,12 @@ int add_mtd_device(struct mtd_info *mtd)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (!mtd_table[i]) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0struct mtd_notifier *not;
+>
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D bdi_register(mtd->b=
+acking_dev_info, NULL, "mtd%d",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 i);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (err) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* We lose =
+the errno information :( */
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mtd_table[i] =3D mtd;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mtd->index =3D i;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mtd->usecount =3D 0;
+> @@ -692,6 +698,15 @@ static int __init init_mtd(void)
+> =A0 =A0 =A0 =A0int ret;
+> =A0 =A0 =A0 =A0ret =3D class_register(&mtd_class);
+>
+> + =A0 =A0 =A0 ret =3D bdi_init(&mtd_bdi_unmappable);
+> + =A0 =A0 =A0 if (ret)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> + =A0 =A0 =A0 ret =3D bdi_init(&mtd_bdi_ro_mappable);
+> + =A0 =A0 =A0 if (ret)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> + =A0 =A0 =A0 ret =3D bdi_init(&mtd_bdi_rw_mappable);
+> + =A0 =A0 =A0 if (ret)
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return ret;
+> =A0 =A0 =A0 =A0if (ret) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0pr_err("Error registering mtd class: %d\n"=
+, ret);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ret;
+> --
+> 1.6.2.1
+>
+>
