@@ -1,18 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6fPq-000866-Ql
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 07:41:11 +0000
-Subject: Re: [PATCH 05/16] mtd: remove unused #include <linux/version.h>
+Subject: Re: [PATCHv2] MTD: Suppress warnings in inline_map_read()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Huang Weiyi <weiyi.huang@gmail.com>
-In-Reply-To: <1270727358-2388-1-git-send-email-weiyi.huang@gmail.com>
-References: <1270727358-2388-1-git-send-email-weiyi.huang@gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <e970485f0e9f4c9e1cb6e594a45dd11308683197@localhost.localdomain>
+References: <1270891582.4704.102.camel@macbook.infradead.org>
+	<e970485f0e9f4c9e1cb6e594a45dd11308683197@localhost.localdomain>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 27 Apr 2010 10:36:54 +0300
-Message-ID: <1272353814.26036.3.camel@localhost>
+Date: Tue, 27 Apr 2010 10:46:28 +0300
+Message-ID: <1272354388.26036.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, leochen@broadcom.com
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,29 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-04-08 at 19:49 +0800, Huang Weiyi wrote:
-> Remove unused #include <linux/version.h>('s) in
->   drivers/mtd/nand/bcm_umi_nand.c
+On Sat, 2010-04-10 at 11:18 -0700, Kevin Cernekee wrote:
+> With gcc 4.4.3 -O2 on MIPS32:
 > 
-> Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
-> ---
->  drivers/mtd/nand/bcm_umi_nand.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
+> drivers/mtd/chips/cfi_util.c: In function 'cfi_qry_present':
+> include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
+> include/linux/mtd/map.h:375: note: 'r' was declared here
+> include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
+> include/linux/mtd/map.h:375: note: 'r' was declared here
 > 
-> diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-> index c997f98..2427460 100644
-> --- a/drivers/mtd/nand/bcm_umi_nand.c
-> +++ b/drivers/mtd/nand/bcm_umi_nand.c
-> @@ -13,7 +13,6 @@
->  *****************************************************************************/
->  
->  /* ---- Include Files ---------------------------------------------------- */
-> -#include <linux/version.h>
->  #include <linux/module.h>
->  #include <linux/types.h>
->  #include <linux/init.h>
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 
-Pushed to l2-mtd-2.6.git / master
+Pushed to l2-mtd-2.6 / dunno
+
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
