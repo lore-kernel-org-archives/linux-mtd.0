@@ -1,19 +1,20 @@
-Date: Tue, 27 Apr 2010 09:30:29 +0200
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: RE: [PATCH 5/5] drivers: mtd: add Samsung SoC OneNAND driver
-In-reply-to: <20100427051916.GI6684@trinity.fluff.org>
-To: 'Ben Dooks' <ben-linux@fluff.org>
-Message-id: <001201cae5db$85f1df20$91d59d60$%szyprowski@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-language: pl
-Content-transfer-encoding: 7BIT
-References: <1270796266-8272-1-git-send-email-m.szyprowski@samsung.com>
-	<1270796266-8272-6-git-send-email-m.szyprowski@samsung.com>
-	<20100427051916.GI6684@trinity.fluff.org>
-Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH v3 0/2] ARM: MXC: mxc_nand: support i.MX21
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ivo Clarysse <ivo.clarysse@gmail.com>
+In-Reply-To: <o2qba216b431004080713n9a264511qc4066544cdac10aa@mail.gmail.com>
+References: <q2tba216b431004060652jeb9df33eqd141836e46980f00@mail.gmail.com>
+	<20100407134039.GE3688@pengutronix.de>
+	<o2oba216b431004080520u924ffafby3a88e18471b560b@mail.gmail.com>
+	<20100408133303.GK3688@pengutronix.de>
+	<o2qba216b431004080713n9a264511qc4066544cdac10aa@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 27 Apr 2010 10:29:36 +0300
+Message-ID: <1272353376.26036.2.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-On Tuesday, April 27, 2010 7:19 AM Ben Dooks wrote:
-
-> ...
-
-> > +static int s3c_read_reg(int offset)
-> > +{
-> > +	return readl(onenand->base + offset);
-> > +}
-> > +
-> > +static void s3c_write_reg(int value, int offset)
-> > +{
-> > +	writel(value, onenand->base + offset);
-> > +}
+On Thu, 2010-04-08 at 16:13 +0200, Ivo Clarysse wrote:
+> Allow mxc_nand.c to function on i.MX21 SoCs, since:
 > 
-> I can sort of see why you've done this, it would be interesting to see
-> if the compiler is continually reloading onenand->base or not (currently
-> too lazy to try this myself).
-
-I will check this, but probably changing these functions to 'static inline' 
-would solve the problem for sure.
-
-> ...
-
-> > +	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +	if (!r) {
-> > +		dev_err(&pdev->dev, "no resource defined\n");
-> > +		return -ENXIO;
+> 1) On i.MX21, if the NFC_INT_MASK bit in NFC_CONFIG1 is set, the NFC_INT
+>  bit of NFC_CONFIG2 always reads out zero, even if an operation is
+>  completed.
 > 
-> If i rember correctly, -ENXIO will make the driver layer fail to report
-> any binding issue. However there seems to be a group of people who feel
-> that using filesystem errors such as -ENOENT inappropriate for drivers...
+> 2) On i.MX21, sending a RESET command to the NAND flash controller does
+>  not trigger an interrupt, nor does it cause the NFC_INT bit of
+>  NFC_CONFIG2 to get set.
 > 
-> Not sure what to recommend here, maybe just leave as is.
-
-I will change it to -ENOENT. Most the drivers returns it if get_resource()
-fails. I don't think that this really matters anyway...
-
-> ...
-
-> > +static int __init s3c_onenand_init(void)
-> > +{
-> > +	return platform_driver_register(&s3c_onenand_driver);
-> > +}
-> > +
-> > +static void __exit s3c_onenand_exit(void)
-> > +{
-> > +	platform_driver_unregister(&s3c_onenand_driver);
-> > +}
-> > +
-> > +module_init(s3c_onenand_init);
-> > +module_exit(s3c_onenand_exit);
-> > +
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_AUTHOR("Kyungmin Park <kyungmin.park@samsung.com>");
-> > +MODULE_DESCRIPTION("Samsung OneNAND controller support");
-> > +MODULE_ALIAS("platform:samsung-onenand");
+> 3) After reset is performed, NFC registers are again in their
+>  default values.
 > 
-> don't think you need a MODULE_ALIAS when you have a MODULE_DEVICE_TABLE
-> decleration, the module tools should support reading this table for use
-> with the autoloader.
+> This patch series:
+> 
+> - (Re-)sets all NFC registers after reset
+> 
+> - Uses enable_irq / disable_irq_nosync instead of NFC_INT_MASK
+>   to mask NFC interrupts (allowing NFC_CONFIG2:NFC_INT to used on i.MX21)
 
-Ok. Thanks for your hints.
+Pushed both patches to l2-mtd-2.6.git / dunno with
 
-> Don't see any show stopping problems with this. It would be nice to
-> sort out as many of the issues raised before final submission.
+Acked-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-I will do all required cleanup and send the new patch series soon. Thanks for
-your detailed review.
+See
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/shortlog/refs/heads/dunno
 
-Best regards
---
-Marek Szyprowski
-Samsung Poland R&D Center
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
