@@ -1,17 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6aP4-0002Zx-8C
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 02:20:05 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 27 Apr 2010 04:19:34 +0200
-Message-Id: <1272334774-17019-2-git-send-email-w.sang@pengutronix.de>
-In-Reply-To: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
-References: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
-Subject: [PATCH 2/2] mtd/chips: use common manufacturer codes in jedec_probe()
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	David Woodhouse <David.Woodhouse@intel.com>
+Date: Tue, 27 Apr 2010 06:19:17 +0100
+From: Ben Dooks <ben-linux@fluff.org>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH 5/5] drivers: mtd: add Samsung SoC OneNAND driver
+Message-ID: <20100427051916.GI6684@trinity.fluff.org>
+References: <1270796266-8272-1-git-send-email-m.szyprowski@samsung.com>
+	<1270796266-8272-6-git-send-email-m.szyprowski@samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1270796266-8272-6-git-send-email-m.szyprowski@samsung.com>
+Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
+	ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,1147 +20,1135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Factor out old manufacturers and use the generic ones from cfi.h
+On Fri, Apr 09, 2010 at 08:57:46AM +0200, Marek Szyprowski wrote:
+> From: Kyungmin Park <kyungmin.park@samsung.com>
+> 
+> This patch adds a driver for OneNAND controller on Samsung SoCs.
+> Following SoCs are supported: S3C6400, S3C6410, S5PC100 and S5PC110.
+> 
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> ---
+>  drivers/mtd/onenand/Kconfig   |    7 +
+>  drivers/mtd/onenand/Makefile  |    1 +
+>  drivers/mtd/onenand/samsung.c | 1019 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 1027 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/mtd/onenand/samsung.c
+> 
+> diff --git a/drivers/mtd/onenand/Kconfig b/drivers/mtd/onenand/Kconfig
+> index 3a9f157..9a49d68 100644
+> --- a/drivers/mtd/onenand/Kconfig
+> +++ b/drivers/mtd/onenand/Kconfig
+> @@ -30,6 +30,13 @@ config MTD_ONENAND_OMAP2
+>  	  Support for a OneNAND flash device connected to an OMAP2/OMAP3 CPU
+>  	  via the GPMC memory controller.
+>  
+> +config MTD_ONENAND_SAMSUNG
+> +        tristate "OneNAND on Samsung SOC controller support"
+> +        depends on MTD_ONENAND && (ARCH_S3C64XX || ARCH_S5PC100 || ARCH_S5PV210)
+> +        help
+> +          Support for a OneNAND flash device connected to an Samsung SOC
+> +          S3C64XX/S5PC1XX controller.
+> +
+>  config MTD_ONENAND_OTP
+>  	bool "OneNAND OTP Support"
+>  	select HAVE_MTD_OTP
+> diff --git a/drivers/mtd/onenand/Makefile b/drivers/mtd/onenand/Makefile
+> index 64b6cc6..2b7884c 100644
+> --- a/drivers/mtd/onenand/Makefile
+> +++ b/drivers/mtd/onenand/Makefile
+> @@ -8,6 +8,7 @@ obj-$(CONFIG_MTD_ONENAND)		+= onenand.o
+>  # Board specific.
+>  obj-$(CONFIG_MTD_ONENAND_GENERIC)	+= generic.o
+>  obj-$(CONFIG_MTD_ONENAND_OMAP2)		+= omap2.o
+> +obj-$(CONFIG_MTD_ONENAND_SAMSUNG)       += samsung.o
+>  
+>  # Simulator
+>  obj-$(CONFIG_MTD_ONENAND_SIM)		+= onenand_sim.o
+> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+> new file mode 100644
+> index 0000000..a902f2e
+> --- /dev/null
+> +++ b/drivers/mtd/onenand/samsung.c
+> @@ -0,0 +1,1019 @@
+> +/*
+> + * Samsung S3C64XX/S5PC1XX OneNAND driver
+> + *
+> + *  Copyright (C) 2008-2010 Samsung Electronics
+> + *  Kyungmin Park <kyungmin.park@samsung.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + *
+> + * Implementation:
+> + *	Emulate the pseudo BufferRAM
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/sched.h>
+> +#include <linux/slab.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/onenand.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/dma-mapping.h>
+> +
+> +#include <asm/mach/flash.h>
+> +#include <plat/regs-onenand.h>
+> +
+> +#include <linux/io.h>
+> +
+> +#ifdef SAMSUNG_DEBUG
+> +#define DPRINTK(format, args...)					      \
+> +do {									      \
+> +	printk(KERN_INFO "%s[%d]: " format "\n", __func__, __LINE__, ##args); \
+> +} while (0)
+> +#else
+> +#define DPRINTK(...)			do { } while (0)
+> +#endif
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: David Woodhouse <David.Woodhouse@intel.com>
----
- drivers/mtd/chips/jedec_probe.c |  256 ++++++++++++++++++---------------------
- include/linux/mtd/cfi.h         |   13 ++-
- 2 files changed, 130 insertions(+), 139 deletions(-)
+could you use dev_dbg() here instrad of DPRINTK?
 
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-index 6850b23..806b2c6 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -22,24 +22,6 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/gen_probe.h>
- 
--/* Manufacturers */
--#define MANUFACTURER_AMD	0x0001
--#define MANUFACTURER_ATMEL	0x001f
--#define MANUFACTURER_EON	0x001c
--#define MANUFACTURER_FUJITSU	0x0004
--#define MANUFACTURER_HYUNDAI	0x00AD
--#define MANUFACTURER_INTEL	0x0089
--#define MANUFACTURER_MACRONIX	0x00C2
--#define MANUFACTURER_NEC	0x0010
--#define MANUFACTURER_PMC	0x009D
--#define MANUFACTURER_SHARP	0x00b0
--#define MANUFACTURER_SST	0x00BF
--#define MANUFACTURER_ST		0x0020
--#define MANUFACTURER_TOSHIBA	0x0098
--#define MANUFACTURER_WINBOND	0x00da
--#define CONTINUATION_CODE	0x007f
--
--
- /* AMD */
- #define AM29DL800BB	0x22CB
- #define AM29DL800BT	0x224A
-@@ -311,7 +293,7 @@ struct amd_flash_info {
-  */
- static const struct amd_flash_info jedec_table[] = {
- 	{
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F032B,
- 		.name		= "AMD AM29F032B",
- 		.uaddr		= MTD_UADDR_0x0555_0x02AA,
-@@ -323,7 +305,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,64)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29LV160DT,
- 		.name		= "AMD AM29LV160DT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -338,7 +320,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29LV160DB,
- 		.name		= "AMD AM29LV160DB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -353,7 +335,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,31)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29LV400BB,
- 		.name		= "AMD AM29LV400BB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -368,7 +350,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,7)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29LV400BT,
- 		.name		= "AMD AM29LV400BT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -383,7 +365,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29LV800BB,
- 		.name		= "AMD AM29LV800BB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -399,7 +381,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		}
- 	}, {
- /* add DL */
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29DL800BB,
- 		.name		= "AMD AM29DL800BB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -416,7 +398,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,14)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29DL800BT,
- 		.name		= "AMD AM29DL800BT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -433,7 +415,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F800BB,
- 		.name		= "AMD AM29F800BB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -448,7 +430,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,15),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29LV800BT,
- 		.name		= "AMD AM29LV800BT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -463,7 +445,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F800BT,
- 		.name		= "AMD AM29F800BT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -478,7 +460,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F017D,
- 		.name		= "AMD AM29F017D",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -490,7 +472,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F016D,
- 		.name		= "AMD AM29F016D",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -502,7 +484,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F080,
- 		.name		= "AMD AM29F080",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -514,7 +496,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F040,
- 		.name		= "AMD AM29F040",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -526,7 +508,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29LV040B,
- 		.name		= "AMD AM29LV040B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -538,7 +520,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29F002T,
- 		.name		= "AMD AM29F002T",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -553,7 +535,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29SL800DT,
- 		.name		= "AMD AM29SL800DT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -568,7 +550,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_AMD,
-+		.mfr_id		= CFI_MFR_AMD,
- 		.dev_id		= AM29SL800DB,
- 		.name		= "AMD AM29SL800DB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -583,7 +565,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,15),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ATMEL,
-+		.mfr_id		= CFI_MFR_ATMEL,
- 		.dev_id		= AT49BV512,
- 		.name		= "Atmel AT49BV512",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -595,7 +577,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ATMEL,
-+		.mfr_id		= CFI_MFR_ATMEL,
- 		.dev_id		= AT29LV512,
- 		.name		= "Atmel AT29LV512",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -608,7 +590,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x80,256)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ATMEL,
-+		.mfr_id		= CFI_MFR_ATMEL,
- 		.dev_id		= AT49BV16X,
- 		.name		= "Atmel AT49BV16X",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -621,7 +603,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,31)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ATMEL,
-+		.mfr_id		= CFI_MFR_ATMEL,
- 		.dev_id		= AT49BV16XT,
- 		.name		= "Atmel AT49BV16XT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -634,7 +616,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000,8)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ATMEL,
-+		.mfr_id		= CFI_MFR_ATMEL,
- 		.dev_id		= AT49BV32X,
- 		.name		= "Atmel AT49BV32X",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -647,7 +629,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,63)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ATMEL,
-+		.mfr_id		= CFI_MFR_ATMEL,
- 		.dev_id		= AT49BV32XT,
- 		.name		= "Atmel AT49BV32XT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -660,7 +642,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000,8)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_EON,
-+		.mfr_id		= CFI_MFR_EON,
- 		.dev_id		= EN29SL800BT,
- 		.name		= "Eon EN29SL800BT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -675,7 +657,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_EON,
-+		.mfr_id		= CFI_MFR_EON,
- 		.dev_id		= EN29SL800BB,
- 		.name		= "Eon EN29SL800BB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -690,7 +672,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,15),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29F040C,
- 		.name		= "Fujitsu MBM29F040C",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -702,7 +684,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29F800BA,
- 		.name		= "Fujitsu MBM29F800BA",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -717,7 +699,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,15),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV650UE,
- 		.name		= "Fujitsu MBM29LV650UE",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -729,7 +711,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,128)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV320TE,
- 		.name		= "Fujitsu MBM29LV320TE",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -742,7 +724,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000,8)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV320BE,
- 		.name		= "Fujitsu MBM29LV320BE",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -755,7 +737,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,63)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV160TE,
- 		.name		= "Fujitsu MBM29LV160TE",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -770,7 +752,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV160BE,
- 		.name		= "Fujitsu MBM29LV160BE",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -785,7 +767,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,31)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV800BA,
- 		.name		= "Fujitsu MBM29LV800BA",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -800,7 +782,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,15)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV800TA,
- 		.name		= "Fujitsu MBM29LV800TA",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -815,7 +797,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV400BC,
- 		.name		= "Fujitsu MBM29LV400BC",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -830,7 +812,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,7)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_FUJITSU,
-+		.mfr_id		= CFI_MFR_FUJITSU,
- 		.dev_id		= MBM29LV400TC,
- 		.name		= "Fujitsu MBM29LV400TC",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -845,7 +827,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_HYUNDAI,
-+		.mfr_id		= CFI_MFR_HYUNDAI,
- 		.dev_id		= HY29F002T,
- 		.name		= "Hyundai HY29F002T",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -860,7 +842,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F004B3B,
- 		.name		= "Intel 28F004B3B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -873,7 +855,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 7),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F004B3T,
- 		.name		= "Intel 28F004B3T",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -886,7 +868,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F400B3B,
- 		.name		= "Intel 28F400B3B",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -899,7 +881,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 7),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F400B3T,
- 		.name		= "Intel 28F400B3T",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -912,7 +894,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F008B3B,
- 		.name		= "Intel 28F008B3B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -925,7 +907,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 15),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F008B3T,
- 		.name		= "Intel 28F008B3T",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -938,7 +920,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F008S5,
- 		.name		= "Intel 28F008S5",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -950,7 +932,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F016S5,
- 		.name		= "Intel 28F016S5",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -962,7 +944,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F008SA,
- 		.name		= "Intel 28F008SA",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -974,7 +956,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F800B3B,
- 		.name		= "Intel 28F800B3B",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -987,7 +969,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 15),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F800B3T,
- 		.name		= "Intel 28F800B3T",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1000,7 +982,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F016B3B,
- 		.name		= "Intel 28F016B3B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1013,7 +995,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 31),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F016S3,
- 		.name		= "Intel I28F016S3",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1025,7 +1007,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F016B3T,
- 		.name		= "Intel 28F016B3T",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1038,7 +1020,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F160B3B,
- 		.name		= "Intel 28F160B3B",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1051,7 +1033,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 31),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F160B3T,
- 		.name		= "Intel 28F160B3T",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1064,7 +1046,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F320B3B,
- 		.name		= "Intel 28F320B3B",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1077,7 +1059,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 63),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F320B3T,
- 		.name		= "Intel 28F320B3T",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1090,7 +1072,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F640B3B,
- 		.name		= "Intel 28F640B3B",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1103,7 +1085,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 127),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F640B3T,
- 		.name		= "Intel 28F640B3T",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1116,7 +1098,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000, 8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I28F640C3B,
- 		.name		= "Intel 28F640C3B",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1129,7 +1111,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000, 127),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I82802AB,
- 		.name		= "Intel 82802AB",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1141,7 +1123,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_INTEL,
-+		.mfr_id		= CFI_MFR_INTEL,
- 		.dev_id		= I82802AC,
- 		.name		= "Intel 82802AC",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1153,7 +1135,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29LV040C,
- 		.name		= "Macronix MX29LV040C",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1165,7 +1147,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29LV160T,
- 		.name		= "MXIC MX29LV160T",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1180,7 +1162,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_NEC,
-+		.mfr_id		= CFI_MFR_NEC,
- 		.dev_id		= UPD29F064115,
- 		.name		= "NEC uPD29F064115",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1194,7 +1176,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x2000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29LV160B,
- 		.name		= "MXIC MX29LV160B",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1209,7 +1191,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,31)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29F040,
- 		.name		= "Macronix MX29F040",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1221,7 +1203,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29F016,
- 		.name		= "Macronix MX29F016",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1233,7 +1215,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29F004T,
- 		.name		= "Macronix MX29F004T",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1248,7 +1230,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29F004B,
- 		.name		= "Macronix MX29F004B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1263,7 +1245,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,7),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_MACRONIX,
-+		.mfr_id		= CFI_MFR_MACRONIX,
- 		.dev_id		= MX29F002T,
- 		.name		= "Macronix MX29F002T",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1278,7 +1260,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_PMC,
-+		.mfr_id		= CFI_MFR_PMC,
- 		.dev_id		= PM49FL002,
- 		.name		= "PMC Pm49FL002",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1290,7 +1272,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO( 0x01000, 64 )
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_PMC,
-+		.mfr_id		= CFI_MFR_PMC,
- 		.dev_id		= PM49FL004,
- 		.name		= "PMC Pm49FL004",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1302,7 +1284,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO( 0x01000, 128 )
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_PMC,
-+		.mfr_id		= CFI_MFR_PMC,
- 		.dev_id		= PM49FL008,
- 		.name		= "PMC Pm49FL008",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1314,7 +1296,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO( 0x01000, 256 )
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SHARP,
-+		.mfr_id		= CFI_MFR_SHARP,
- 		.dev_id		= LH28F640BF,
- 		.name		= "LH28F640BF",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1326,7 +1308,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x40000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39LF512,
- 		.name		= "SST 39LF512",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1338,7 +1320,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39LF010,
- 		.name		= "SST 39LF010",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1350,7 +1332,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
-  		.dev_id 	= SST29EE020,
- 		.name		= "SST 29EE020",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1361,7 +1343,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		.regions = {ERASEINFO(0x01000,64),
- 		}
- 	}, {
-- 		.mfr_id		= MANUFACTURER_SST,
-+ 		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST29LE020,
-  		.name		= "SST 29LE020",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1372,7 +1354,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		.regions = {ERASEINFO(0x01000,64),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39LF020,
- 		.name		= "SST 39LF020",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1384,7 +1366,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,64),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39LF040,
- 		.name		= "SST 39LF040",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1396,7 +1378,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,128),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39SF010A,
- 		.name		= "SST 39SF010A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1408,7 +1390,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39SF020A,
- 		.name		= "SST 39SF020A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1420,7 +1402,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,64),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39SF040,
- 		.name		= "SST 39SF040",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1432,7 +1414,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,128),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST49LF040B,
- 		.name		= "SST 49LF040B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1445,7 +1427,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		}
- 	}, {
- 
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST49LF004B,
- 		.name		= "SST 49LF004B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1457,7 +1439,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,128),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST49LF008A,
- 		.name		= "SST 49LF008A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1469,7 +1451,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,256),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST49LF030A,
- 		.name		= "SST 49LF030A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1481,7 +1463,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,96),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST49LF040A,
- 		.name		= "SST 49LF040A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1493,7 +1475,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,128),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST49LF080A,
- 		.name		= "SST 49LF080A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1505,7 +1487,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x01000,256),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,     /* should be CFI */
-+		.mfr_id		= CFI_MFR_SST,     /* should be CFI */
- 		.dev_id		= SST39LF160,
- 		.name		= "SST 39LF160",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1518,7 +1500,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x1000,256)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,     /* should be CFI */
-+		.mfr_id		= CFI_MFR_SST,     /* should be CFI */
- 		.dev_id		= SST39VF1601,
- 		.name		= "SST 39VF1601",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1532,7 +1514,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		}
- 	}, {
- 		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39WF1601,
- 		.name		= "SST 39WF1601",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1546,7 +1528,7 @@ static const struct amd_flash_info jedec_table[] = {
- 		}
- 	}, {
- 		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST39WF1602,
- 		.name		= "SST 39WF1602",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1559,7 +1541,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x1000,256)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,     /* should be CFI */
-+		.mfr_id		= CFI_MFR_SST,     /* should be CFI */
- 		.dev_id		= SST39VF3201,
- 		.name		= "SST 39VF3201",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1574,7 +1556,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x1000,256)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_SST,
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST36VF3203,
- 		.name		= "SST 36VF3203",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1586,7 +1568,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,64),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M29F800AB,
- 		.name		= "ST M29F800AB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1601,7 +1583,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,15),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
-+		.mfr_id		= CFI_MFR_ST,	/* FIXME - CFI device? */
- 		.dev_id		= M29W800DT,
- 		.name		= "ST M29W800DT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1616,7 +1598,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
-+		.mfr_id		= CFI_MFR_ST,	/* FIXME - CFI device? */
- 		.dev_id		= M29W800DB,
- 		.name		= "ST M29W800DB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1631,7 +1613,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,15)
- 		}
- 	},  {
--		.mfr_id         = MANUFACTURER_ST,
-+		.mfr_id         = CFI_MFR_ST,
- 		.dev_id         = M29W400DT,
- 		.name           = "ST M29W400DT",
- 		.devtypes       = CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1646,7 +1628,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,1)
- 		}
- 	}, {
--		.mfr_id         = MANUFACTURER_ST,
-+		.mfr_id         = CFI_MFR_ST,
- 		.dev_id         = M29W400DB,
- 		.name           = "ST M29W400DB",
- 		.devtypes       = CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1661,7 +1643,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,7)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
-+		.mfr_id		= CFI_MFR_ST,	/* FIXME - CFI device? */
- 		.dev_id		= M29W160DT,
- 		.name		= "ST M29W160DT",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1676,7 +1658,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
-+		.mfr_id		= CFI_MFR_ST,	/* FIXME - CFI device? */
- 		.dev_id		= M29W160DB,
- 		.name		= "ST M29W160DB",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1691,7 +1673,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,31)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M29W040B,
- 		.name		= "ST M29W040B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1703,7 +1685,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M50FW040,
- 		.name		= "ST M50FW040",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1715,7 +1697,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,8),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M50FW080,
- 		.name		= "ST M50FW080",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1727,7 +1709,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M50FW016,
- 		.name		= "ST M50FW016",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1739,7 +1721,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,32),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M50LPW080,
- 		.name		= "ST M50LPW080",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1751,7 +1733,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,16),
- 		},
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M50FLW080A,
- 		.name		= "ST M50FLW080A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1766,7 +1748,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x1000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_ST,
-+		.mfr_id		= CFI_MFR_ST,
- 		.dev_id		= M50FLW080B,
- 		.name		= "ST M50FLW080B",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1781,7 +1763,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x1000,16),
- 		}
- 	}, {
--		.mfr_id		= 0xff00 | MANUFACTURER_ST,
-+		.mfr_id		= 0xff00 | CFI_MFR_ST,
- 		.dev_id		= 0xff00 | PSD4256G6V,
- 		.name		= "ST PSD4256G6V",
- 		.devtypes	= CFI_DEVICETYPE_X16,
-@@ -1793,7 +1775,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,16),
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_TOSHIBA,
-+		.mfr_id		= CFI_MFR_TOSHIBA,
- 		.dev_id		= TC58FVT160,
- 		.name		= "Toshiba TC58FVT160",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1808,7 +1790,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x04000,1)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_TOSHIBA,
-+		.mfr_id		= CFI_MFR_TOSHIBA,
- 		.dev_id		= TC58FVB160,
- 		.name		= "Toshiba TC58FVB160",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1823,7 +1805,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,31)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_TOSHIBA,
-+		.mfr_id		= CFI_MFR_TOSHIBA,
- 		.dev_id		= TC58FVB321,
- 		.name		= "Toshiba TC58FVB321",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1836,7 +1818,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,63)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_TOSHIBA,
-+		.mfr_id		= CFI_MFR_TOSHIBA,
- 		.dev_id		= TC58FVT321,
- 		.name		= "Toshiba TC58FVT321",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1849,7 +1831,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000,8)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_TOSHIBA,
-+		.mfr_id		= CFI_MFR_TOSHIBA,
- 		.dev_id		= TC58FVB641,
- 		.name		= "Toshiba TC58FVB641",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1862,7 +1844,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x10000,127)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_TOSHIBA,
-+		.mfr_id		= CFI_MFR_TOSHIBA,
- 		.dev_id		= TC58FVT641,
- 		.name		= "Toshiba TC58FVT641",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-@@ -1875,7 +1857,7 @@ static const struct amd_flash_info jedec_table[] = {
- 			ERASEINFO(0x02000,8)
- 		}
- 	}, {
--		.mfr_id		= MANUFACTURER_WINBOND,
-+		.mfr_id		= CFI_MFR_WINBOND,
- 		.dev_id		= W49V002A,
- 		.name		= "Winbond W49V002A",
- 		.devtypes	= CFI_DEVICETYPE_X8,
-@@ -1908,7 +1890,7 @@ static inline u32 jedec_read_mfr(struct map_info *map, uint32_t base,
- 		mask = (1 << (cfi->device_type * 8)) - 1;
- 		result = map_read(map, base + ofs);
- 		bank++;
--	} while ((result.x[0] & mask) == CONTINUATION_CODE);
-+	} while ((result.x[0] & mask) == CFI_MFR_CONTINUATION);
- 
- 	return result.x[0] & mask;
- }
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index cee05b1..c6e2190 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -515,16 +515,25 @@ struct cfi_fixup {
- 	void* param;
- };
- 
--#define CFI_MFR_ANY 0xffff
--#define CFI_ID_ANY  0xffff
-+#define CFI_MFR_ANY		0xFFFF
-+#define CFI_ID_ANY		0xFFFF
-+#define CFI_MFR_CONTINUATION	0x007F
- 
- #define CFI_MFR_AMD		0x0001
- #define CFI_MFR_ATMEL		0x001F
-+#define CFI_MFR_EON		0x001C
-+#define CFI_MFR_FUJITSU		0x0004
-+#define CFI_MFR_HYUNDAI		0x00AD
- #define CFI_MFR_INTEL		0x0089
- #define CFI_MFR_MACRONIX	0x00C2
-+#define CFI_MFR_NEC		0x0010
-+#define CFI_MFR_PMC		0x009D
- #define CFI_MFR_SAMSUNG		0x00EC
-+#define CFI_MFR_SHARP		0x00B0
- #define CFI_MFR_SST		0x00BF
- #define CFI_MFR_ST		0x0020 /* STMicroelectronics */
-+#define CFI_MFR_TOSHIBA		0x0098
-+#define CFI_MFR_WINBOND		0x00DA
- 
- void cfi_fixup(struct mtd_info *mtd, struct cfi_fixup* fixups);
- 
+> +enum soc_type {
+> +	TYPE_S3C6400,
+> +	TYPE_S3C6410,
+> +	TYPE_S5PC100,
+> +	TYPE_S5PC110,
+> +};
+> +
+> +#define S3C64XX_AHB_ADDR		0x20000000
+> +#define S5PC100_AHB_ADDR		0xB0000000
+
+could these be passed in via platform device resources?
+
+> +#define ONENAND_ERASE_STATUS		0x00
+> +#define ONENAND_MULTI_ERASE_SET		0x01
+> +#define ONENAND_ERASE_START		0x03
+> +#define ONENAND_UNLOCK_START		0x08
+> +#define ONENAND_UNLOCK_END		0x09
+> +#define ONENAND_LOCK_START		0x0A
+> +#define ONENAND_LOCK_END		0x0B
+> +#define ONENAND_LOCK_TIGHT_START	0x0C
+> +#define ONENAND_LOCK_TIGHT_END		0x0D
+> +#define ONENAND_UNLOCK_ALL		0x0E
+> +#define ONENAND_OTP_ACCESS		0x12
+> +#define ONENAND_SPARE_ACCESS_ONLY	0x13
+> +#define ONENAND_MAIN_ACCESS_ONLY	0x14
+> +#define ONENAND_ERASE_VERIFY		0x15
+> +#define ONENAND_MAIN_SPARE_ACCESS	0x16
+> +#define ONENAND_PIPELINE_READ		0x4000
+> +
+> +#if defined(CONFIG_ARCH_S3C64XX)
+> +#define MAP_00				(0x0 << 24)
+> +#define MAP_01				(0x1 << 24)
+> +#define MAP_10				(0x2 << 24)
+> +#define MAP_11				(0x3 << 24)
+> +#elif defined(CONFIG_ARCH_S5PC100) || defined(CONFIG_ARCH_S5PV210)
+> +#define MAP_00				(0x0 << 26)
+> +#define MAP_01				(0x1 << 26)
+> +#define MAP_10				(0x2 << 26)
+> +#define MAP_11				(0x3 << 26)
+> +#endif
+> +
+> +/* The 'addr' is byte address. It makes a 16-bit word */
+> +#define CMD_MAP_00(addr)		(MAP_00 | ((addr) << 1))
+> +#define CMD_MAP_01(mem_addr)		(MAP_01 | (mem_addr))
+> +#define CMD_MAP_10(mem_addr)		(MAP_10 | (mem_addr))
+> +#define CMD_MAP_11(addr)		(MAP_11 | ((addr) << 2))
+> +
+> +#define S3C6400_FBA_SHIFT		10
+> +#define S3C6400_FPA_SHIFT		4
+> +#define S3C6400_FSA_SHIFT		2
+> +
+> +#define S3C6410_FBA_SHIFT		12
+> +#define S3C6410_FPA_SHIFT		6
+> +#define S3C6410_FSA_SHIFT		4
+> +
+> +#define S5PC100_FBA_SHIFT		13
+> +#define S5PC100_FPA_SHIFT		7
+> +#define S5PC100_FSA_SHIFT		5
+> +
+> +/* S5PC110 specific definitions */
+> +#define S5PC110_DMA_OFFSET		0x600000
+> +#define S5PC110_DMA_SRC_ADDR		0x400
+> +#define S5PC110_DMA_SRC_CFG		0x404
+> +#define S5PC110_DMA_DST_ADDR		0x408
+> +#define S5PC110_DMA_DST_CFG		0x40C
+> +#define S5PC110_DMA_TRANS_SIZE		0x414
+> +#define S5PC110_DMA_TRANS_CMD		0x418
+> +#define S5PC110_DMA_TRANS_STATUS	0x41C
+> +#define S5PC110_DMA_TRANS_DIR		0x420
+> +
+> +#define S5PC110_DMA_CFG_SINGLE		(0x0 << 16)
+> +#define S5PC110_DMA_CFG_4BURST		(0x2 << 16)
+> +#define S5PC110_DMA_CFG_8BURST		(0x3 << 16)
+> +#define S5PC110_DMA_CFG_16BURST		(0x4 << 16)
+> +
+> +#define S5PC110_DMA_CFG_INC		(0x0 << 8)
+> +#define S5PC110_DMA_CFG_CNT		(0x1 << 8)
+> +
+> +#define S5PC110_DMA_CFG_8BIT		(0x0 << 0)
+> +#define S5PC110_DMA_CFG_16BIT		(0x1 << 0)
+> +#define S5PC110_DMA_CFG_32BIT		(0x2 << 0)
+> +
+> +#define S5PC110_DMA_SRC_CFG_READ	(S5PC110_DMA_CFG_16BURST | \
+> +					S5PC110_DMA_CFG_INC | \
+> +					S5PC110_DMA_CFG_16BIT)
+> +#define S5PC110_DMA_DST_CFG_READ	(S5PC110_DMA_CFG_16BURST | \
+> +					S5PC110_DMA_CFG_INC | \
+> +					S5PC110_DMA_CFG_32BIT)
+> +#define S5PC110_DMA_SRC_CFG_WRITE	(S5PC110_DMA_CFG_16BURST | \
+> +					S5PC110_DMA_CFG_INC | \
+> +					S5PC110_DMA_CFG_32BIT)
+> +#define S5PC110_DMA_DST_CFG_WRITE	(S5PC110_DMA_CFG_16BURST | \
+> +					S5PC110_DMA_CFG_INC | \
+> +					S5PC110_DMA_CFG_16BIT)
+> +
+> +#define S5PC110_DMA_TRANS_CMD_TDC	(0x1 << 18)
+> +#define S5PC110_DMA_TRANS_CMD_TEC	(0x1 << 16)
+> +#define S5PC110_DMA_TRANS_CMD_TR	(0x1 << 0)
+> +
+> +#define S5PC110_DMA_TRANS_STATUS_TD	(0x1 << 18)
+> +#define S5PC110_DMA_TRANS_STATUS_TB	(0x1 << 17)
+> +#define S5PC110_DMA_TRANS_STATUS_TE	(0x1 << 16)
+> +
+> +#define S5PC110_DMA_DIR_READ		0x0
+> +#define S5PC110_DMA_DIR_WRITE		0x1
+> +
+> +
+> +
+> +struct s3c_onenand {
+> +	struct mtd_info	*mtd;
+> +	struct platform_device	*pdev;
+> +	enum soc_type	type;
+> +	void __iomem	*base;
+> +	void __iomem	*ahb_addr;
+> +	int		bootram_command;
+> +	void __iomem	*page_buf;
+> +	void __iomem	*oob_buf;
+> +	unsigned int	(*mem_addr)(int fba, int fpa, int fsa);
+> +	void __iomem	*dma_addr;
+> +	unsigned long	phys_base;
+> +#ifdef CONFIG_MTD_PARTITIONS
+> +	struct mtd_partition *parts;
+> +#endif
+> +};
+> +
+> +static struct s3c_onenand *onenand;
+> +
+> +#ifdef CONFIG_MTD_PARTITIONS
+> +static const char *part_probes[] = { "cmdlinepart", NULL, };
+> +#endif
+> +
+> +static int s3c_read_reg(int offset)
+> +{
+> +	return readl(onenand->base + offset);
+> +}
+> +
+> +static void s3c_write_reg(int value, int offset)
+> +{
+> +	writel(value, onenand->base + offset);
+> +}
+
+I can sort of see why you've done this, it would be interesting to see
+if the compiler is continually reloading onenand->base or not (currently
+too lazy to try this myself).
+
+> +static int s3c_read_cmd(unsigned int cmd)
+> +{
+> +	return readl(onenand->ahb_addr + cmd);
+> +}
+> +
+> +static void s3c_write_cmd(int value, unsigned int cmd)
+> +{
+> +	writel(value, onenand->ahb_addr + cmd);
+> +}
+> +
+> +#ifdef SAMSUNG_DEBUG
+> +static void s3c_dump_reg(void)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < 0x400; i += 0x40) {
+> +		printk(KERN_INFO "0x%08X: 0x%08x 0x%08x 0x%08x 0x%08x\n",
+> +			(unsigned int) onenand->base + i,
+> +			s3c_read_reg(i), s3c_read_reg(i + 0x10),
+> +			s3c_read_reg(i + 0x20), s3c_read_reg(i + 0x30));
+> +	}
+> +}
+> +#endif
+> +
+> +static unsigned int s3c6400_mem_addr(int fba, int fpa, int fsa)
+> +{
+> +	return (fba << S3C6400_FBA_SHIFT) | (fpa << S3C6400_FPA_SHIFT) |
+> +		(fsa << S3C6400_FSA_SHIFT);
+> +}
+> +
+> +static unsigned int s3c6410_mem_addr(int fba, int fpa, int fsa)
+> +{
+> +	return (fba << S3C6410_FBA_SHIFT) | (fpa << S3C6410_FPA_SHIFT) |
+> +		(fsa << S3C6410_FSA_SHIFT);
+> +}
+> +
+> +static unsigned int s5pc100_mem_addr(int fba, int fpa, int fsa)
+> +{
+> +	return (fba << S5PC100_FBA_SHIFT) | (fpa << S5PC100_FPA_SHIFT) |
+> +		(fsa << S5PC100_FSA_SHIFT);
+> +}
+> +
+> +static void s3c_onenand_reset(void)
+> +{
+> +	unsigned long timeout = 0x10000;
+> +	int stat;
+> +
+> +	s3c_write_reg(ONENAND_MEM_RESET_COLD, MEM_RESET_OFFSET);
+> +	while (1 && timeout--) {
+> +		stat = s3c_read_reg(INT_ERR_STAT_OFFSET);
+> +		if (stat & RST_CMP)
+> +			break;
+> +	}
+> +	stat = s3c_read_reg(INT_ERR_STAT_OFFSET);
+> +	s3c_write_reg(stat, INT_ERR_ACK_OFFSET);
+> +
+> +	/* Clear interrupt */
+> +	s3c_write_reg(0x0, INT_ERR_ACK_OFFSET);
+> +	/* Clear the ECC status */
+> +	s3c_write_reg(0x0, ECC_ERR_STAT_OFFSET);
+> +}
+> +
+> +static unsigned short s3c_onenand_readw(void __iomem *addr)
+> +{
+> +	struct onenand_chip *this = onenand->mtd->priv;
+> +	int reg = addr - this->base;
+> +	int word_addr = reg >> 1;
+> +	int value;
+> +
+> +	/* It's used for probing time */
+> +	switch (reg) {
+> +	case ONENAND_REG_MANUFACTURER_ID:
+> +		return s3c_read_reg(MANUFACT_ID_OFFSET);
+> +	case ONENAND_REG_DEVICE_ID:
+> +		return s3c_read_reg(DEVICE_ID_OFFSET);
+> +	case ONENAND_REG_VERSION_ID:
+> +		return s3c_read_reg(FLASH_VER_ID_OFFSET);
+> +	case ONENAND_REG_DATA_BUFFER_SIZE:
+> +		return s3c_read_reg(DATA_BUF_SIZE_OFFSET);
+> +	case ONENAND_REG_TECHNOLOGY:
+> +		return s3c_read_reg(TECH_OFFSET);
+> +	case ONENAND_REG_SYS_CFG1:
+> +		return s3c_read_reg(MEM_CFG_OFFSET);
+> +
+> +	/* Used at unlock all status */
+> +	case ONENAND_REG_CTRL_STATUS:
+> +		return 0;
+> +
+> +	case ONENAND_REG_WP_STATUS:
+> +		return ONENAND_WP_US;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	/* BootRAM access control */
+> +	if ((unsigned int) addr < ONENAND_DATARAM && onenand->bootram_command) {
+> +		if (word_addr == 0)
+> +			return s3c_read_reg(MANUFACT_ID_OFFSET);
+> +		if (word_addr == 1)
+> +			return s3c_read_reg(DEVICE_ID_OFFSET);
+> +		if (word_addr == 2)
+> +			return s3c_read_reg(FLASH_VER_ID_OFFSET);
+> +	}
+> +
+> +	value = s3c_read_cmd(CMD_MAP_11(word_addr)) & 0xffff;
+> +	dev_info(&onenand->mtd->dev, "s3c_onenand_readw:  Illegal access"
+> +		" at reg 0x%x, value 0x%x\n", word_addr, value);
+> +	return value;
+> +}
+> +
+> +static void s3c_onenand_writew(unsigned short value, void __iomem *addr)
+> +{
+> +	struct onenand_chip *this = onenand->mtd->priv;
+> +	int reg = addr - this->base;
+> +	int word_addr = reg >> 1;
+
+is addr likely to ever be below base? if not, then could this be changed
+to an 'unsigned int' reg and avoid the typecasting below? or is this due
+to a compiler or sparse warning?
+
+> +	/* It's used for probing time */
+> +	switch (reg) {
+> +	case ONENAND_REG_SYS_CFG1:
+> +		s3c_write_reg(value, MEM_CFG_OFFSET);
+> +		return;
+> +
+> +	case ONENAND_REG_START_ADDRESS1:
+> +	case ONENAND_REG_START_ADDRESS2:
+> +		return;
+> +
+> +	/* Lock/lock-tight/unlock/unlock_all */
+> +	case ONENAND_REG_START_BLOCK_ADDRESS:
+> +		return;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	/* BootRAM access control */
+> +	if ((unsigned int) addr < ONENAND_DATARAM) {
+> +		if (value == ONENAND_CMD_READID) {
+> +			onenand->bootram_command = 1;
+> +			return;
+> +		}
+> +		if (value == ONENAND_CMD_RESET) {
+> +			s3c_write_reg(ONENAND_MEM_RESET_COLD, MEM_RESET_OFFSET);
+> +			onenand->bootram_command = 0;
+> +			return;
+> +		}
+> +	}
+> +
+> +	dev_info(&onenand->mtd->dev, "s3c_onenand_writew: Illegal access"
+> +		" at reg 0x%x, value 0x%x\n", word_addr, value);
+> +
+> +	s3c_write_cmd(value, CMD_MAP_11(word_addr));
+> +}
+> +
+> +static int s3c_onenand_wait(struct mtd_info *mtd, int state)
+> +{
+> +	unsigned int flags = INT_ACT;
+> +	unsigned int stat, ecc;
+> +	unsigned long timeout;
+> +
+> +	switch (state) {
+> +	case FL_READING:
+> +		flags |= BLK_RW_CMP | LOAD_CMP;
+> +		break;
+> +	case FL_WRITING:
+> +		flags |= BLK_RW_CMP | PGM_CMP;
+> +		break;
+> +	case FL_ERASING:
+> +		flags |= BLK_RW_CMP | ERS_CMP;
+> +		break;
+> +	case FL_LOCKING:
+> +		flags |= BLK_RW_CMP;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	/* The 20 msec is enough */
+> +	timeout = jiffies + msecs_to_jiffies(20);
+> +	while (time_before(jiffies, timeout)) {
+> +		stat = s3c_read_reg(INT_ERR_STAT_OFFSET);
+> +		if (stat & flags)
+> +			break;
+> +
+> +		if (state != FL_READING)
+> +			cond_resched();
+> +	}
+> +	/* To get correct interrupt status in timeout case */
+> +	stat = s3c_read_reg(INT_ERR_STAT_OFFSET);
+> +	s3c_write_reg(stat, INT_ERR_ACK_OFFSET);
+> +
+> +	/*
+> +	 * In the Spec. it checks the controller status first
+> +	 * However if you get the correct information in case of
+> +	 * power off recovery (POR) test, it should read ECC status first
+> +	 */
+> +	if (stat & LOAD_CMP) {
+> +		ecc = s3c_read_reg(ECC_ERR_STAT_OFFSET);
+> +		if (ecc & ONENAND_ECC_4BIT_UNCORRECTABLE) {
+> +			dev_info(&mtd->dev, "onenand_wait: ECC error"
+> +				 " = 0x%04x\n", ecc);
+
+This is a valid place for not wrapping the format string.
+
+I think you may also want to use %s: and make the first va-arg __func__
+see also all next usage of dev_. 
+
+> +			mtd->ecc_stats.failed++;
+> +			return -EBADMSG;
+> +		}
+> +	}
+> +
+> +	if (stat & (LOCKED_BLK | ERS_FAIL | PGM_FAIL | LD_FAIL_ECC_ERR)) {
+> +		dev_info(&mtd->dev, "onenand_wait: controller error = 0x%04x\n",
+> +			 stat);
+> +		if (stat & LOCKED_BLK)
+> +			dev_info(&mtd->dev, "onenand_wait: it's locked error"
+> +				 " = 0x%04x\n", stat);
+> +
+> +		return -EIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int s3c_onenand_command(struct mtd_info *mtd, int cmd, loff_t addr,
+> +			       size_t len)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	unsigned int *m, *s;
+> +	int fba, fpa, fsa = 0;
+> +	unsigned int mem_addr;
+> +	int i, mcount, scount;
+> +	int index;
+> +
+> +	fba = (int) (addr >> this->erase_shift);
+> +	fpa = (int) (addr >> this->page_shift);
+> +	fpa &= this->page_mask;
+> +
+> +	mem_addr = onenand->mem_addr(fba, fpa, fsa);
+> +
+> +	switch (cmd) {
+> +	case ONENAND_CMD_READ:
+> +	case ONENAND_CMD_READOOB:
+> +	case ONENAND_CMD_BUFFERRAM:
+> +		ONENAND_SET_NEXT_BUFFERRAM(this);
+> +	default:
+> +		break;
+> +	}
+> +
+> +	index = ONENAND_CURRENT_BUFFERRAM(this);
+> +
+> +	/*
+> +	 * Emulate Two BufferRAMs and access with 4 bytes pointer
+> +	 */
+> +	m = (unsigned int *) onenand->page_buf;
+> +	s = (unsigned int *) onenand->oob_buf;
+> +
+> +	if (index) {
+> +		m += (this->writesize >> 2);
+> +		s += (mtd->oobsize >> 2);
+> +	}
+> +
+> +	mcount = mtd->writesize >> 2;
+> +	scount = mtd->oobsize >> 2;
+> +
+> +	switch (cmd) {
+> +	case ONENAND_CMD_READ:
+> +		/* Main */
+> +		for (i = 0; i < mcount; i++)
+> +			*m++ = s3c_read_cmd(CMD_MAP_01(mem_addr));
+> +		return 0;
+> +
+> +	case ONENAND_CMD_READOOB:
+> +		s3c_write_reg(TSRF, TRANS_SPARE_OFFSET);
+> +		/* Main */
+> +		for (i = 0; i < mcount; i++)
+> +			*m++ = s3c_read_cmd(CMD_MAP_01(mem_addr));
+> +
+> +		/* Spare */
+> +		for (i = 0; i < scount; i++)
+> +			*s++ = s3c_read_cmd(CMD_MAP_01(mem_addr));
+> +
+> +		s3c_write_reg(0, TRANS_SPARE_OFFSET);
+> +		return 0;
+> +
+> +	case ONENAND_CMD_PROG:
+> +		/* Main */
+> +		for (i = 0; i < mcount; i++)
+> +			s3c_write_cmd(*m++, CMD_MAP_01(mem_addr));
+> +		return 0;
+> +
+> +	case ONENAND_CMD_PROGOOB:
+> +		s3c_write_reg(TSRF, TRANS_SPARE_OFFSET);
+> +
+> +		/* Main - dummy write */
+> +		for (i = 0; i < mcount; i++)
+> +			s3c_write_cmd(0xffffffff, CMD_MAP_01(mem_addr));
+> +
+> +		/* Spare */
+> +		for (i = 0; i < scount; i++)
+> +			s3c_write_cmd(*s++, CMD_MAP_01(mem_addr));
+> +
+> +		s3c_write_reg(0, TRANS_SPARE_OFFSET);
+> +		return 0;
+> +
+> +	case ONENAND_CMD_UNLOCK_ALL:
+> +		s3c_write_cmd(ONENAND_UNLOCK_ALL, CMD_MAP_10(mem_addr));
+> +		return 0;
+> +
+> +	case ONENAND_CMD_ERASE:
+> +		s3c_write_cmd(ONENAND_ERASE_START, CMD_MAP_10(mem_addr));
+> +		return 0;
+> +
+> +	default:
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static unsigned char *s3c_get_bufferram(struct mtd_info *mtd, int area)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	int index = ONENAND_CURRENT_BUFFERRAM(this);
+> +	unsigned char *p;
+> +
+> +	if (area == ONENAND_DATARAM) {
+> +		p = (unsigned char *) onenand->page_buf;
+> +		if (index == 1)
+> +			p += this->writesize;
+> +	} else {
+> +		p = (unsigned char *) onenand->oob_buf;
+> +		if (index == 1)
+> +			p += mtd->oobsize;
+> +	}
+> +
+> +	return p;
+> +}
+> +
+> +static int onenand_read_bufferram(struct mtd_info *mtd, int area,
+> +				  unsigned char *buffer, int offset,
+> +				  size_t count)
+> +{
+> +	unsigned char *p;
+> +
+> +	p = s3c_get_bufferram(mtd, area);
+> +	memcpy(buffer, p + offset, count);
+> +	return 0;
+> +}
+> +
+> +static int onenand_write_bufferram(struct mtd_info *mtd, int area,
+> +				   const unsigned char *buffer, int offset,
+> +				   size_t count)
+> +{
+> +	unsigned char *p;
+> +
+> +	p = s3c_get_bufferram(mtd, area);
+> +	memcpy(p + offset, buffer, count);
+> +	return 0;
+> +}
+> +
+> +static int s5pc110_dma_ops(void *dst, void *src, size_t count, int direction)
+> +{
+> +	void __iomem *base = onenand->dma_addr;
+> +	int status;
+> +
+> +	writel(src, base + S5PC110_DMA_SRC_ADDR);
+> +	writel(dst, base + S5PC110_DMA_DST_ADDR);
+> +
+> +	if (direction == S5PC110_DMA_DIR_READ) {
+> +		writel(S5PC110_DMA_SRC_CFG_READ, base + S5PC110_DMA_SRC_CFG);
+> +		writel(S5PC110_DMA_DST_CFG_READ, base + S5PC110_DMA_DST_CFG);
+> +	} else {
+> +		writel(S5PC110_DMA_SRC_CFG_WRITE, base + S5PC110_DMA_SRC_CFG);
+> +		writel(S5PC110_DMA_DST_CFG_WRITE, base + S5PC110_DMA_DST_CFG);
+> +	}
+> +
+> +	writel(count, base + S5PC110_DMA_TRANS_SIZE);
+> +	writel(direction, base + S5PC110_DMA_TRANS_DIR);
+> +
+> +	writel(S5PC110_DMA_TRANS_CMD_TR, base + S5PC110_DMA_TRANS_CMD);
+> +
+> +	do {
+> +		status = readl(base + S5PC110_DMA_TRANS_STATUS);
+> +	} while (!(status & S5PC110_DMA_TRANS_STATUS_TD));
+> +
+> +	if (status & S5PC110_DMA_TRANS_STATUS_TE) {
+> +		writel(S5PC110_DMA_TRANS_CMD_TEC, base + S5PC110_DMA_TRANS_CMD);
+> +		writel(S5PC110_DMA_TRANS_CMD_TDC, base + S5PC110_DMA_TRANS_CMD);
+> +		return -EIO;
+> +	}
+> +
+> +	writel(S5PC110_DMA_TRANS_CMD_TDC, base + S5PC110_DMA_TRANS_CMD);
+> +
+> +	return 0;
+> +}
+> +
+> +static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
+> +		unsigned char *buffer, int offset, size_t count)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	void __iomem *bufferram;
+> +	void __iomem *p;
+> +	void *buf = (void *) buffer;
+> +	dma_addr_t dma_src, dma_dst;
+> +	int err;
+> +
+> +	p = bufferram = this->base + area;
+> +	if (ONENAND_CURRENT_BUFFERRAM(this)) {
+> +		if (area == ONENAND_DATARAM)
+> +			p += this->writesize;
+> +		else
+> +			p += mtd->oobsize;
+> +	}
+> +
+> +	if (offset & 3 || (size_t) buf & 3 ||
+> +		!onenand->dma_addr || count != mtd->writesize)
+> +		goto normal;
+> +
+> +	/* Handle vmalloc address */
+> +	if (buf >= high_memory) {
+> +		struct page *page;
+> +
+> +		if (((size_t) buf & PAGE_MASK) !=
+> +		    ((size_t) (buf + count - 1) & PAGE_MASK))
+> +			goto normal;
+> +		page = vmalloc_to_page(buf);
+> +		if (!page)
+> +			goto normal;
+> +		buf = page_address(page) + ((size_t) buf & ~PAGE_MASK);
+> +	}
+> +
+> +	/* DMA routine */
+> +	dma_src = onenand->phys_base + (p - this->base);
+> +	dma_dst = dma_map_single(&onenand->pdev->dev,
+> +			buf, count, DMA_FROM_DEVICE);
+> +	if (dma_mapping_error(&onenand->pdev->dev, dma_dst)) {
+> +		dev_err(&onenand->pdev->dev,
+> +			"Couldn't DMA map a %d byte buffer\n", count);
+> +		goto normal;
+> +	}
+> +	err = s5pc110_dma_ops((void *) dma_dst, (void *) dma_src,
+> +			count, S5PC110_DMA_DIR_READ);
+> +	dma_unmap_single(&onenand->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+> +
+> +	if (!err)
+> +		return 0;
+> +
+> +normal:
+> +	if (count != mtd->writesize) {
+> +		/* Copy the bufferram to memory to prevent unaligned access */
+> +		memcpy(this->page_buf, bufferram, mtd->writesize);
+> +		p = this->page_buf + offset;
+> +	}
+> +
+> +	memcpy(buffer, p, count);
+> +
+> +	return 0;
+> +}
+> +
+> +static int s3c_onenand_bbt_wait(struct mtd_info *mtd, int state)
+> +{
+> +	unsigned int flags = INT_ACT | LOAD_CMP;
+> +	unsigned int stat;
+> +	unsigned long timeout;
+> +
+> +	/* The 20 msec is enough */
+> +	timeout = jiffies + msecs_to_jiffies(20);
+> +	while (time_before(jiffies, timeout)) {
+> +		stat = s3c_read_reg(INT_ERR_STAT_OFFSET);
+> +		if (stat & flags)
+> +			break;
+> +	}
+> +	/* To get correct interrupt status in timeout case */
+> +	stat = s3c_read_reg(INT_ERR_STAT_OFFSET);
+> +	s3c_write_reg(stat, INT_ERR_ACK_OFFSET);
+> +
+> +	if (stat & LD_FAIL_ECC_ERR) {
+> +		s3c_onenand_reset();
+> +		return ONENAND_BBT_READ_ERROR;
+> +	}
+> +
+> +	if (stat & LOAD_CMP) {
+> +		int ecc = s3c_read_reg(ECC_ERR_STAT_OFFSET);
+> +		if (ecc & ONENAND_ECC_4BIT_UNCORRECTABLE) {
+> +			s3c_onenand_reset();
+> +			return ONENAND_BBT_READ_ERROR;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void s3c_onenand_check_lock_status(struct mtd_info *mtd)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	unsigned int block, end;
+> +	int tmp;
+> +
+> +	end = this->chipsize >> this->erase_shift;
+> +
+> +	for (block = 0; block < end; block++) {
+> +		tmp = s3c_read_cmd(CMD_MAP_01(onenand->mem_addr(block, 0, 0)));
+> +
+> +		if (s3c_read_reg(INT_ERR_STAT_OFFSET) & LOCKED_BLK) {
+> +			dev_err(&mtd->dev, "block %d is write-protected!\n",
+> +				block);
+> +			s3c_write_reg(LOCKED_BLK, INT_ERR_ACK_OFFSET);
+> +		}
+> +	}
+> +}
+> +
+> +static void s3c_onenand_do_lock_cmd(struct mtd_info *mtd, loff_t ofs,
+> +				    size_t len, int cmd)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	int start, end, start_mem_addr, end_mem_addr;
+> +
+> +	start = ofs >> this->erase_shift;
+> +	start_mem_addr = onenand->mem_addr(start, 0, 0);
+> +	end = start + (len >> this->erase_shift) - 1;
+> +	end_mem_addr = onenand->mem_addr(end, 0, 0);
+> +
+> +	if (cmd == ONENAND_CMD_LOCK) {
+> +		s3c_write_cmd(ONENAND_LOCK_START, CMD_MAP_10(start_mem_addr));
+> +		s3c_write_cmd(ONENAND_LOCK_END, CMD_MAP_10(end_mem_addr));
+> +	} else {
+> +		s3c_write_cmd(ONENAND_UNLOCK_START, CMD_MAP_10(start_mem_addr));
+> +		s3c_write_cmd(ONENAND_UNLOCK_END, CMD_MAP_10(end_mem_addr));
+> +	}
+> +
+> +	this->wait(mtd, FL_LOCKING);
+> +}
+> +
+> +static void s3c_unlock_all(struct mtd_info *mtd)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	loff_t ofs = 0;
+> +	size_t len = this->chipsize;
+> +
+> +	if (this->options & ONENAND_HAS_UNLOCK_ALL) {
+> +		/* Write unlock command */
+> +		this->command(mtd, ONENAND_CMD_UNLOCK_ALL, 0, 0);
+> +
+> +		/* No need to check return value */
+> +		this->wait(mtd, FL_LOCKING);
+> +
+> +		/* Workaround for all block unlock in DDP */
+> +		if (!ONENAND_IS_DDP(this)) {
+> +			s3c_onenand_check_lock_status(mtd);
+> +			return;
+> +		}
+> +
+> +		/* All blocks on another chip */
+> +		ofs = this->chipsize >> 1;
+> +		len = this->chipsize >> 1;
+> +	}
+> +
+> +	s3c_onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_UNLOCK);
+> +
+> +	s3c_onenand_check_lock_status(mtd);
+> +}
+> +
+> +static void s3c_onenand_setup(struct mtd_info *mtd)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +
+> +	onenand->mtd = mtd;
+> +
+> +	if (onenand->type == TYPE_S3C6400)
+> +		onenand->mem_addr = s3c6400_mem_addr;
+> +	if (onenand->type == TYPE_S3C6410)
+> +		onenand->mem_addr = s3c6410_mem_addr;
+> +	if (onenand->type == TYPE_S5PC100)
+> +		onenand->mem_addr = s5pc100_mem_addr;
+> +	if (onenand->type == TYPE_S5PC110) {
+> +		/* Use generic onenand functions */
+> +		this->read_bufferram = s5pc110_read_bufferram;
+> +		return;
+> +	}
+> +
+> +	this->read_word = s3c_onenand_readw;
+> +	this->write_word = s3c_onenand_writew;
+> +
+> +	this->wait = s3c_onenand_wait;
+> +	this->bbt_wait = s3c_onenand_bbt_wait;
+> +	this->unlock_all = s3c_unlock_all;
+> +	this->command = s3c_onenand_command;
+> +
+> +	this->read_bufferram = onenand_read_bufferram;
+> +	this->write_bufferram = onenand_write_bufferram;
+> +}
+> +
+> +static int s3c_onenand_probe(struct platform_device *pdev)
+> +{
+> +	struct onenand_platform_data *pdata;
+> +	struct onenand_chip *this;
+> +	struct mtd_info *mtd;
+> +	struct resource *r;
+> +	int size, err;
+> +	unsigned long ahb_addr = 0, ahb_addr_size;
+> +	unsigned long onenand_ctrl_cfg = 0;
+> +
+> +	pdata = pdev->dev.platform_data;
+> +	/* No need to check pdata. the platform data is optional */
+> +
+> +	size = sizeof(struct mtd_info) + sizeof(struct onenand_chip);
+> +	mtd = kzalloc(size, GFP_KERNEL);
+> +	if (!mtd) {
+> +		dev_err(&pdev->dev, "failed to allocate memory\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	onenand = kzalloc(sizeof(struct s3c_onenand), GFP_KERNEL);
+> +	if (!onenand) {
+> +		err = -ENOMEM;
+> +		goto onenand_fail;
+> +	}
+> +
+> +	this = (struct onenand_chip *) &mtd[1];
+> +	mtd->priv = this;
+> +	mtd->dev.parent = &pdev->dev;
+> +	mtd->owner = THIS_MODULE;
+> +	onenand->pdev = pdev;
+> +	onenand->type = platform_get_device_id(pdev)->driver_data;
+> +
+> +	s3c_onenand_setup(mtd);
+> +
+> +	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!r) {
+> +		dev_err(&pdev->dev, "no resource defined\n");
+> +		return -ENXIO;
+
+If i rember correctly, -ENXIO will make the driver layer fail to report
+any binding issue. However there seems to be a group of people who feel
+that using filesystem errors such as -ENOENT inappropriate for drivers...
+
+Not sure what to recommend here, maybe just leave as is.
+
+> +		goto resource_failed;
+> +	}
+> +
+> +	r = request_mem_region(r->start, resource_size(r), pdev->name);
+> +	if (!r) {
+> +		dev_err(&pdev->dev, "failed to request memory resource\n");
+> +		err = -EBUSY;
+> +		goto request_failed;
+> +	}
+> +
+> +	onenand->base = ioremap(r->start, resource_size(r));
+> +	if (!onenand->base) {
+
+would be nice to have an error print here, but not essential.
+
+> +		err = -EFAULT;
+> +		goto ioremap_failed;
+> +	}
+> +	/* Set onenand_chip also */
+> +	this->base = onenand->base;
+> +
+> +	if (onenand->type == TYPE_S3C6400 || onenand->type == TYPE_S3C6410) {
+> +		ahb_addr = S3C64XX_AHB_ADDR;
+> +		ahb_addr_size = SZ_64M;
+> +	} else if (onenand->type == TYPE_S5PC100) {
+> +		ahb_addr = S5PC100_AHB_ADDR;
+> +		ahb_addr_size = SZ_256M - SZ_32M;
+> +	} else if (onenand->type == TYPE_S5PC110) {
+> +		onenand->dma_addr =
+> +			ioremap(r->start + S5PC110_DMA_OFFSET, 0x800);
+> +		if (!onenand->dma_addr)
+> +			onenand->dma_addr = 0;
+> +		onenand->phys_base = S5PC110_ONENAND_BASE;
+> +	}
+
+would be nice to have a
+
+      else {
+      	   BUG();
+      }
+
+to catch unhandled types.
+
+
+> +
+> +	/*
+> +	 * We only used as followings
+> +	 * S5PC100                              S3C64XX
+> +	 * MAP_01 0xB4000000 ~ 0xB4FFFFFF       0x21000000 ~ 0x21FFFFFF
+> +	 * MAP_10 0xB8000000 ~ 0xB8FFFFFF       0x22000000 ~ 0x22FFFFFF
+> +	 * MAP_11 0xBC000000 ~ 0xBCFFFFFF       0x23000000 ~ 0x23FFFFFF
+> +	 */
+> +	if (ahb_addr) {
+> +		/* We don't use last 32MiB */
+> +		onenand->ahb_addr = ioremap(ahb_addr, ahb_addr_size);
+> +		if (!onenand->ahb_addr) {
+> +			err = -EINVAL;
+> +			goto ahb_failed;
+> +		}
+
+I think I mentioned above that it would be nice to have these passed in as
+platform resources. Please look into this or provide a note in the driver
+as to why you can't do this.
+
+> +		/* Allocate 4KiB BufferRAM */
+> +		onenand->page_buf = kzalloc(SZ_4K * sizeof(char), GFP_KERNEL);
+> +		if (!onenand->page_buf) {
+> +			err = -ENOMEM;
+> +			goto page_buf_fail;
+> +		}
+
+don't really think you need sizeof(char) here.
+
+> +		/* Allocate 128 SpareRAM */
+> +		onenand->oob_buf = kzalloc(128 * sizeof(char), GFP_KERNEL);
+> +		if (!onenand->oob_buf) {
+> +			err = -ENOMEM;
+> +			goto oob_buf_fail;
+> +		}
+> +	}
+> +
+> +	/* Use runtime badblock check */
+> +	this->options |= ONENAND_SKIP_UNLOCK_CHECK;
+> +
+> +	if (onenand->type == TYPE_S5PC110) {
+> +		onenand_ctrl_cfg = readl(onenand->dma_addr + 0x100);
+> +		if ((onenand_ctrl_cfg & ONENAND_SYS_CFG1_SYNC_WRITE) &&
+> +		    onenand->dma_addr)
+> +			writel(onenand_ctrl_cfg & ~ONENAND_SYS_CFG1_SYNC_WRITE,
+> +					onenand->dma_addr + 0x100);
+> +		else
+> +			onenand_ctrl_cfg = 0;
+> +	}
+> +
+> +	if (onenand_scan(mtd, 1)) {
+> +		err = -EFAULT;
+> +		goto scan_failed;
+> +	}
+> +
+> +	if (onenand->type == TYPE_S5PC110) {
+> +		if (onenand_ctrl_cfg && onenand->dma_addr)
+> +			writel(onenand_ctrl_cfg, onenand->dma_addr + 0x100);
+> +	}
+> +
+> +	if (ahb_addr) {
+> +		/* S3C don't handle subpage write */
+  		       does not, or doesn't
+
+> +		mtd->subpage_sft = 0;
+> +		this->subpagesize = mtd->writesize;
+> +	}
+> +
+> +	if (s3c_read_reg(MEM_CFG_OFFSET) & ONENAND_SYS_CFG1_SYNC_READ)
+> +		dev_info(&mtd->dev, "OneNAND Sync. Burst Read enabled\n");
+> +
+> +#ifdef CONFIG_MTD_PARTITIONS
+> +	err = parse_mtd_partitions(mtd, part_probes, &onenand->parts, 0);
+> +	if (err > 0)
+> +		add_mtd_partitions(mtd, onenand->parts, err);
+> +	else if (err <= 0 && pdata && pdata->parts)
+> +		add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+> +	else
+> +#endif
+> +		err = add_mtd_device(mtd);
+> +
+> +	platform_set_drvdata(pdev, mtd);
+> +
+> +	return 0;
+> +scan_failed:
+> +	kfree(onenand->oob_buf);
+> +oob_buf_fail:
+> +	kfree(onenand->page_buf);
+> +page_buf_fail:
+> +	if (onenand->ahb_addr)
+> +		iounmap(onenand->ahb_addr);
+> +ahb_failed:
+> +	if (onenand->dma_addr)
+> +		iounmap(onenand->dma_addr);
+> +	iounmap(onenand->base);
+> +ioremap_failed:
+> +	release_mem_region(r->start, resource_size(r));
+> +request_failed:
+> +resource_failed:
+> +	kfree(onenand);
+> +onenand_fail:
+> +	kfree(mtd);
+> +	return err;
+> +}
+> +
+> +static int __devexit s3c_onenand_remove(struct platform_device *pdev)
+> +{
+> +	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> +
+> +	onenand_release(mtd);
+> +	if (onenand->ahb_addr)
+> +		iounmap(onenand->ahb_addr);
+> +	if (onenand->dma_addr)
+> +		iounmap(onenand->dma_addr);
+> +	iounmap(onenand->base);
+> +	platform_set_drvdata(pdev, NULL);
+> +	kfree(onenand->oob_buf);
+> +	kfree(onenand->page_buf);
+> +	kfree(onenand);
+> +	kfree(mtd);
+> +	return 0;
+> +}
+> +
+> +static int s3c_pm_ops_suspend(struct device *dev)
+> +{
+> +	struct platform_device *pdev = to_platform_device(dev);
+> +	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> +	struct onenand_chip *this = mtd->priv;
+> +
+> +	this->wait(mtd, FL_PM_SUSPENDED);
+> +	return mtd->suspend(mtd);
+> +}
+> +
+> +static  int s3c_pm_ops_resume(struct device *dev)
+> +{
+> +	struct platform_device *pdev = to_platform_device(dev);
+> +	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> +	struct onenand_chip *this = mtd->priv;
+> +
+> +	mtd->resume(mtd);
+> +	this->unlock_all(mtd);
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops s3c_pm_ops = {
+> +	.suspend	= s3c_pm_ops_suspend,
+> +	.resume		= s3c_pm_ops_resume,
+> +};
+> +
+> +static struct platform_device_id s3c_onenand_driver_ids[] = {
+> +	{
+> +		.name		= "s3c6400-onenand",
+> +		.driver_data	= TYPE_S3C6400,
+> +	}, {
+> +		.name		= "s3c6410-onenand",
+> +		.driver_data	= TYPE_S3C6410,
+> +	}, {
+> +		.name		= "s5pc100-onenand",
+> +		.driver_data	= TYPE_S5PC100,
+> +	}, {
+> +		.name		= "s5pc110-onenand",
+> +		.driver_data	= TYPE_S5PC110,
+> +	}, { },
+> +};
+> +MODULE_DEVICE_TABLE(platform, s3c_onenand_driver_ids);
+> +
+> +static struct platform_driver s3c_onenand_driver = {
+> +	.id_table	= s3c_onenand_driver_ids,
+> +	.driver         = {
+> +		.name	= "samsung-onenand",
+> +		.pm	= &s3c_pm_ops,
+> +	},
+> +	.probe          = s3c_onenand_probe,
+> +	.remove         = __devexit_p(s3c_onenand_remove),
+> +};
+
+would look nicer if .id_table after .driver, and also be in alphabetical
+order too.
+
+> +static int __init s3c_onenand_init(void)
+> +{
+> +	return platform_driver_register(&s3c_onenand_driver);
+> +}
+> +
+> +static void __exit s3c_onenand_exit(void)
+> +{
+> +	platform_driver_unregister(&s3c_onenand_driver);
+> +}
+> +
+> +module_init(s3c_onenand_init);
+> +module_exit(s3c_onenand_exit);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Kyungmin Park <kyungmin.park@samsung.com>");
+> +MODULE_DESCRIPTION("Samsung OneNAND controller support");
+> +MODULE_ALIAS("platform:samsung-onenand");
+
+don't think you need a MODULE_ALIAS when you have a MODULE_DEVICE_TABLE
+decleration, the module tools should support reading this table for use
+with the autoloader.
+
+Don't see any show stopping problems with this. It would be nice to
+sort out as many of the issues raised before final submission.
+
 -- 
-1.7.0
+Ben
+
+Q:      What's a light-year?
+A:      One-third less calories than a regular year.
