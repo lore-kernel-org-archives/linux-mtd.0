@@ -1,19 +1,29 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6fbX-0008Fj-Ra
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 07:53:17 +0000
-Date: Tue, 27 Apr 2010 09:53:10 +0200
-From: Robert Schwebel <r.schwebel@pengutronix.de>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: mxc-nand duplicate case value in -next
-Message-ID: <20100427075310.GM18567@pengutronix.de>
-References: <20100423073625.GY7882@pengutronix.de>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6ft3-0003r3-6u
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 08:11:22 +0000
+Received: by wwg30 with SMTP id 30so488668wwg.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Apr 2010 01:11:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20100423073625.GY7882@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
-	Ivo Clarysse <ivo.clarysse@gmail.com>
+In-Reply-To: <20100427075229.GB27497@kernel.dk>
+References: <20100423100532.GN27497@kernel.dk>
+	<20100426094810.GE27497@kernel.dk> <20100426143253.GB4364@logfs.org>
+	<20100426143803.GM27497@kernel.dk> <20100426144532.GN27497@kernel.dk>
+	<20100426163050.GC4364@logfs.org> <20100426163126.GD4364@logfs.org>
+	<20100426170247.GP27497@kernel.dk> <20100426171236.GG4364@logfs.org>
+	<20100427075229.GB27497@kernel.dk>
+Date: Tue, 27 Apr 2010 10:11:18 +0200
+Message-ID: <z2g4aa525de1004270111r8a9a475fna8715219551a889d@mail.gmail.com>
+Subject: Re: [PATCH 2/2] [MTD] Call bdi_init() and bdi_register()
+From: Paolo Minazzi <paolo.minazzi@gmail.com>
+To: Jens Axboe <jens.axboe@oracle.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +33,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+I Jens,
+I'm Paolo Minazzi and I have a problem with logfs and 2.6.34rc5.
+Can I apply the patch to rc5 and make a test on my ARM board ?
+Paolo
 
-On Fri, Apr 23, 2010 at 09:36:25AM +0200, Sascha Hauer wrote:
-> Currently we have a duplicate case value in the mxc-nand driver in
-> -next. This is because of to different patches adding reset command
-> support to the driver, one from Eric (coming via the mtd master tree)
-> and one from Ivo (coming from the mxc master tree). As I see it we
-> should take Ivos patch as it adds i.MX21 support along the way, so
-> David, can you please drop Erics patch?
 
-linux-next does still crash with
 
-drivers/mtd/nand/mxc_nand.c: In function 'mxc_nand_command':
-drivers/mtd/nand/mxc_nand.c:689: error: duplicate case value
-drivers/mtd/nand/mxc_nand.c:606: error: previously used here
-drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_resume':
-drivers/mtd/nand/mxc_nand.c:921: warning: unused variable 'host'
-make[3]: *** [drivers/mtd/nand/mxc_nand.o] Error 1
-
-David, would dropping Eric's patch (like suggested by Sascha) be an
-acceptable solution?
-
-Thanks,
-rsc
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+On Tue, Apr 27, 2010 at 9:52 AM, Jens Axboe <jens.axboe@oracle.com> wrote:
+> On Mon, Apr 26 2010, J=F6rn Engel wrote:
+>> On Mon, 26 April 2010 19:02:48 +0200, Jens Axboe wrote:
+>> > On Mon, Apr 26 2010, J=F6rn Engel wrote:
+>> > > Otherwise we hit a BUG_ON in bdi_queue_work().
+>> > >
+>> > > Signed-off-by: Joern Engel <joern@logfs.org>
+>> > > ---
+>> > > =A0drivers/mtd/mtdcore.c | =A0 17 ++++++++++++++++-
+>> > > =A01 files changed, 16 insertions(+), 1 deletions(-)
+>> > >
+>> > > diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+>> > > index cb4858b..8dd3e46 100644
+>> > > --- a/drivers/mtd/mtdcore.c
+>> > > +++ b/drivers/mtd/mtdcore.c
+>> > > @@ -322,6 +322,12 @@ int add_mtd_device(struct mtd_info *mtd)
+>> > > =A0 =A0 =A0 =A0 =A0 if (!mtd_table[i]) {
+>> > > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct mtd_notifier *not;
+>> > >
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 err =3D bdi_register(mtd->backing_=
+dev_info, NULL, "mtd%d",
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 i)=
+;
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (err) {
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* We lose the err=
+no information :( */
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
+>> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
+>> >
+>> > This is not a good idea, even if it'll currently work.
+>> >
+>> > > @@ -692,6 +698,15 @@ static int __init init_mtd(void)
+>> > > =A0 int ret;
+>> > > =A0 ret =3D class_register(&mtd_class);
+>> > >
+>> > > + ret =3D bdi_init(&mtd_bdi_unmappable);
+>> > > + if (ret)
+>> > > + =A0 =A0 =A0 =A0 return ret;
+>> > > + ret =3D bdi_init(&mtd_bdi_ro_mappable);
+>> > > + if (ret)
+>> > > + =A0 =A0 =A0 =A0 return ret;
+>> > > + ret =3D bdi_init(&mtd_bdi_rw_mappable);
+>> > > + if (ret)
+>> > > + =A0 =A0 =A0 =A0 return ret;
+>> >
+>> > Do the bdi_register() here as well.
+>>
+>> -ENOBRAIN
+>>
+>> Initially I wanted to do just than. =A0Then I looked at the block layer
+>> and thought we could create one backing_dev_info per mtd as well. =A0Not
+>> necessarily a bad if I would actually _create_ them and not just reuse
+>> the same ones over and over again.
+>
+> I cooked up that patch myself, here:
+>
+> http://git.kernel.dk/?p=3Dlinux-2.6-block.git;a=3Dcommit;h=3D0661b1ac5d48=
+eb47c8a5948c0554fea25e0895ab
+>
+> Care to give it a quick spin?
+>
+> --
+> Jens Axboe
+>
+>
