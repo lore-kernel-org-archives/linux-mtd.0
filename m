@@ -1,24 +1,16 @@
-Received: from fg-out-1718.google.com ([72.14.220.156])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6ej4-0002Ri-NE
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 06:56:59 +0000
-Received: by fg-out-1718.google.com with SMTP id e21so2680688fga.0
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 26 Apr 2010 23:56:56 -0700 (PDT)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <1272334774-17019-2-git-send-email-w.sang@pengutronix.de>
-References: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
-	<1272334774-17019-2-git-send-email-w.sang@pengutronix.de>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Tue, 27 Apr 2010 08:56:35 +0200
-Message-ID: <v2pb8e9195f1004262356s1cbd644fne77dcdc9cd353d66@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd/chips: use common manufacturer codes in
-	jedec_probe()
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>
+Subject: Re: [PATCH 2/3] drivers/mtd/maps: Eliminate use after free
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Julia Lawall <julia@diku.dk>
+In-Reply-To: <Pine.LNX.4.64.1004021447160.17695@ask.diku.dk>
+References: <Pine.LNX.4.64.1004021447160.17695@ask.diku.dk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 27 Apr 2010 10:19:36 +0300
+Message-ID: <1272352776.26036.0.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Wolfram,
+On Fri, 2010-04-02 at 14:47 +0200, Julia Lawall wrote:
+> From: Julia Lawall <julia@diku.dk>
+> 
+> Moved the debugging message before the call to map_destroy, which frees its
+> argument.  The message is also slightly changed to reflect its new
+> position.
+> 
+> A simplified version of the semantic patch that finds this problem is as
+> follows: (http://coccinelle.lip6.fr/)
 
-2010/4/27 Wolfram Sang <w.sang@pengutronix.de>:
-> Factor out old manufacturers and use the generic ones from cfi.h
->
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Cc: David Woodhouse <David.Woodhouse@intel.com>
-
-Acked-by: Guillaume LECERF <glecerf@gmail.com>
+Pushed to l2-mtd-2.6.git, thanks.
 
 -- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
