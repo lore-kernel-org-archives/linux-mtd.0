@@ -1,20 +1,15 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6Ti2-0002lu-TK
-	for linux-mtd@lists.infradead.org; Mon, 26 Apr 2010 19:11:11 +0000
-Date: Mon, 26 Apr 2010 12:11:00 -0700
-From: "Leo (Hao) Chen" <leochen@broadcom.com>
-To: "Huang Weiyi" <weiyi.huang@gmail.com>
-Subject: Re: [PATCH 05/16] mtd: remove unused #include <linux/version.h>
-Message-ID: <20100426191100.GJ18215@broadcom.com>
-References: <1270727358-2388-1-git-send-email-weiyi.huang@gmail.com>
-MIME-Version: 1.0
-In-Reply-To: <1270727358-2388-1-git-send-email-weiyi.huang@gmail.com>
-Content-Type: text/plain;
- charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6aOu-0002O0-3E
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 02:19:53 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 27 Apr 2010 04:19:33 +0200
+Message-Id: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
+Subject: [PATCH 1/2] mtd/chips: add SST39WF160x NOR-flashes
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Wolfram Sang <w.sang@pengutronix.de>,
+	David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +19,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Leo Chen <leochen@broadcom.com>
+Due to a broken CFI, they have to be added to jedec_probe.
 
-On Thu, Apr 08, 2010 at 04:49:18AM -0700, Huang Weiyi wrote:
-> Remove unused #include <linux/version.h>('s) in
->   drivers/mtd/nand/bcm_umi_nand.c
-> 
-> Signed-off-by: Huang Weiyi <weiyi.huang@gmail.com>
-> ---
->  drivers/mtd/nand/bcm_umi_nand.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-> index c997f98..2427460 100644
-> --- a/drivers/mtd/nand/bcm_umi_nand.c
-> +++ b/drivers/mtd/nand/bcm_umi_nand.c
-> @@ -13,7 +13,6 @@
->  *****************************************************************************/
->  
->  /* ---- Include Files ---------------------------------------------------- */
-> -#include <linux/version.h>
->  #include <linux/module.h>
->  #include <linux/types.h>
->  #include <linux/init.h>
-> -- 
-> 1.6.1.3
-> 
-> 
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+---
 
+Sadly, those two cannot be detected using Guillaume's SST-patchset.
+
+ drivers/mtd/chips/jedec_probe.c |   30 ++++++++++++++++++++++++++++++
+ 1 files changed, 30 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 8db1148..6850b23 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -166,6 +166,8 @@
+ #define SST39LF160	0x2782
+ #define SST39VF1601	0x234b
+ #define SST39VF3201	0x235b
++#define SST39WF1601	0x274b
++#define SST39WF1602	0x274a
+ #define SST39LF512	0x00D4
+ #define SST39LF010	0x00D5
+ #define SST39LF020	0x00D6
+@@ -1529,6 +1531,34 @@ static const struct amd_flash_info jedec_table[] = {
+ 			ERASEINFO(0x1000,256)
+ 		}
+ 	}, {
++		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
++		.mfr_id		= MANUFACTURER_SST,
++		.dev_id		= SST39WF1601,
++		.name		= "SST 39WF1601",
++		.devtypes	= CFI_DEVICETYPE_X16,
++		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
++		.dev_size	= SIZE_2MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 2,
++		.regions	= {
++			ERASEINFO(0x1000,256),
++			ERASEINFO(0x1000,256)
++		}
++	}, {
++		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
++		.mfr_id		= MANUFACTURER_SST,
++		.dev_id		= SST39WF1602,
++		.name		= "SST 39WF1602",
++		.devtypes	= CFI_DEVICETYPE_X16,
++		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
++		.dev_size	= SIZE_2MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 2,
++		.regions	= {
++			ERASEINFO(0x1000,256),
++			ERASEINFO(0x1000,256)
++		}
++	}, {
+ 		.mfr_id		= MANUFACTURER_SST,     /* should be CFI */
+ 		.dev_id		= SST39VF3201,
+ 		.name		= "SST 39VF3201",
 -- 
-
-Leo Hao Chen
-
-------------------------
-Life is short, run long.
+1.7.0
