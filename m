@@ -1,18 +1,21 @@
-Subject: Re: [PATCH] mtd: Extend physmap_of to let the device tree specify
-	the parition probe
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6kQI-0004tI-TC
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 13:01:59 +0000
+Subject: Re: [PATCH] Fix Oops with Atmel SPI
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-In-Reply-To: <20100412212005.GX15629@obsidianresearch.com>
-References: <20100309192756.GC30462@obsidianresearch.com>
-	<1270543478.6754.10.camel@localhost>
-	<20100412212005.GX15629@obsidianresearch.com>
+To: Anders Larsen <al@alarsen.net>
+In-Reply-To: <1271158315l.25331l.9l@i-dmzi_al.realan.de>
+References: <1271158315l.25331l.9l@i-dmzi_al.realan.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 27 Apr 2010 15:53:59 +0300
-Message-ID: <1272372839.7750.2.camel@localhost>
+Date: Tue, 27 Apr 2010 15:57:29 +0300
+Message-ID: <1272373049.7750.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Cc: Ian McDonnell <ian@brightstareng.com>, Nicolas Pitre <nico@fluxnic.net>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Matthias Kaehlcke <matthias@kaehlcke.net>,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,26 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-04-12 at 15:20 -0600, Jason Gunthorpe wrote:
-> On Tue, Apr 06, 2010 at 11:44:38AM +0300, Artem Bityutskiy wrote:
-> > On Tue, 2010-03-09 at 12:27 -0700, Jason Gunthorpe wrote:
-> > > This is to support custom partitioning schemes for embedded PPC. To use
-> > > define your own mtd_part_parser and then add something like:
-> > >    linux,part-probe = "my_probe", "cmdlinepart";
-> > > To the board's dts file.
-> > > 
-> > > If linux,part-probe is not specified then this behaves the same as before.
-> > > 
-> > > Signed-off-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
-> > 
-> > Taken to my l2-mtd-2.6.git / dunno
+On Tue, 2010-04-13 at 13:31 +0200, Anders Larsen wrote:
+> Tweak MTD's cache allocation to make it work with the atmel DMA'ed SPI.
+> Substitute kmalloc for vmalloc so the cache buffer is mappable as per
+> the Atmel SPI driver's requirements, otherwise an Oops would occur.
 > 
-> Thanks Artem, not sure what that means? Do you need anything
-> additional from me?
+> The original patch by Ian McDonnell <ian@brightstareng.com> was found here:
+> http://lists.infradead.org/pipermail/linux-mtd/2007-December/020184.html
+> 
+> Signed-off-by: Anders Larsen <al@alarsen.net>
+> Cc: Ian McDonnell <ian@brightstareng.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Matthias Kaehlcke <matthias@kaehlcke.net>
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Cc: Nicolas Pitre <nico@fluxnic.net>
+> ---
+>  drivers/mtd/mtdblock.c |    8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> Index: b/drivers/mtd/mtdblock.c
+> ===================================================================
+> --- a/drivers/mtd/mtdblock.c
+> +++ b/drivers/mtd/mtdblock.c
+> @@ -253,7 +253,11 @@ static int mtdblock_writesect(struct mtd
+>  {
+>  	struct mtdblk_dev *mtdblk = mtdblks[dev->devnum];
+>  	if (unlikely(!mtdblk->cache_data && mtdblk->cache_size)) {
+> +#ifdef CONFIG_SPI_ATMEL
+> +		mtdblk->cache_data = kmalloc(mtdblk->mtd->erasesize, GFP_KERNEL);
+> +#else
+>  		mtdblk->cache_data = vmalloc(mtdblk->mtd->erasesize);
+> +#endif
+>  		if (!mtdblk->cache_data)
+>  			return -EINTR;
+>  		/* -EINTR is not really correct, but it is the best match
+> @@ -322,7 +326,11 @@ static int mtdblock_release(struct mtd_b
+>  		mtdblks[dev] = NULL;
+>  		if (mtdblk->mtd->sync)
+>  			mtdblk->mtd->sync(mtdblk->mtd);
+> +#ifdef CONFIG_SPI_ATMEL
+> +		kfree(mtdblk->cache_data);
+> +#else
+>  		vfree(mtdblk->cache_data);
+> +#endif
+>  		kfree(mtdblk);
+>  	}
 
-This means that this patch will most probably not forgotten by David
-Woodhouse. So for nothing is required from you. But if you do not see
-your patch in 2.6.35, then you should probably sent a question.
+This is an old problem. Instead of doing this dirty hack, change the
+code and teach it to work with array of 1-4 pages , not with buffers.
 
 -- 
 Best Regards,
