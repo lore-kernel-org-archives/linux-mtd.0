@@ -1,26 +1,26 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.logfs.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O6jYG-0000Tf-QY
-	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 12:06:09 +0000
-Date: Tue, 27 Apr 2010 14:05:55 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Paolo Minazzi <paolo.minazzi@gmail.com>
-Subject: Re: [PATCH 2/2] [MTD] Call bdi_init() and bdi_register()
-Message-ID: <20100427120554.GG13859@logfs.org>
-References: <20100426143253.GB4364@logfs.org>
-	<20100426143803.GM27497@kernel.dk>
-	<20100426144532.GN27497@kernel.dk>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6kIF-0002u4-1p
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 12:53:39 +0000
+Received: by wyg36 with SMTP id 36so2726369wyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Apr 2010 05:53:37 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20100427114816.GE13859@logfs.org>
+References: <20100426094810.GE27497@kernel.dk>
+	<20100426143803.GM27497@kernel.dk> <20100426144532.GN27497@kernel.dk>
 	<20100426163050.GC4364@logfs.org> <20100426163126.GD4364@logfs.org>
 	<x2v4aa525de1004270201t9f57f49fv1e9cfbb2d886e4ad@mail.gmail.com>
 	<20100427111759.GA13859@logfs.org>
 	<h2h4aa525de1004270431hd98c271ag61462bdb778f7769@mail.gmail.com>
-	<20100427114004.GD13859@logfs.org>
-	<u2u4aa525de1004270454v4da1cb28ld5f2a3e54962f182@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <u2u4aa525de1004270454v4da1cb28ld5f2a3e54962f182@mail.gmail.com>
+	<20100427114004.GD13859@logfs.org> <20100427114816.GE13859@logfs.org>
+Date: Tue, 27 Apr 2010 14:53:37 +0200
+Message-ID: <r2h4aa525de1004270553t202fef74u3f4564f4187624c6@mail.gmail.com>
+Subject: Re: [PATCH] [LogFS] Return -EINVAL if filesystem image doesn't match
+From: Paolo Minazzi <paolo.minazzi@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
 	linux-mtd@lists.infradead.org, Jens Axboe <jens.axboe@oracle.com>,
@@ -34,21 +34,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 April 2010 13:54:09 +0200, Paolo Minazzi wrote:
-> 
-> Ok, now it is very better.
-> My problem now is that logfs does not save files in the following case:
-> 1) power-off, then power-on (without umount)
-> 2) sync, then power-off, then power-on (without umount)
+> Does the patch below solve the problem for you (without the explicit
+> "rootfstype=3Dromfs")?
+>
+> J=F6rn
+>
+> --
+> One of my most productive days was throwing away 1000 lines of code.
+> -- Ken Thompson.
+>
+>
+> Signed-off-by: Joern Engel <joern@logfs.org>
+> ---
+> =A0fs/logfs/super.c | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/fs/logfs/super.c b/fs/logfs/super.c
+> index 5866ee6..f649038 100644
+> --- a/fs/logfs/super.c
+> +++ b/fs/logfs/super.c
+> @@ -413,7 +413,7 @@ static int __logfs_read_sb(struct super_block *sb)
+>
+> =A0 =A0 =A0 =A0page =3D find_super_block(sb);
+> =A0 =A0 =A0 =A0if (!page)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EIO;
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+>
+> =A0 =A0 =A0 =A0ds =3D page_address(page);
+> =A0 =A0 =A0 =A0super->s_size =3D be64_to_cpu(ds->ds_filesystem_size);
 
-Ok, I'll have a look.
+The above patch solve the problem for me.
+Now I can mount root without rootfstype=3Dromfs
 
-Can we move this and any other logfs problems to a seperate thread?  I'd
-like to leave this one for the sync issues and not spam everyone on Cc:
-with unrelated bugs. :)
-
-Jörn
-
--- 
-Don't patch bad code, rewrite it.
--- Kernigham and Pike, according to Rusty
+Bye,
+Paolo
