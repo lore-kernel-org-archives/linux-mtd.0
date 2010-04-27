@@ -1,17 +1,24 @@
-Subject: Re: [PATCH 2/2] UBI: Remove reboot notifier
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <e5370484641ae54d637ece47f411bb0b0061cc54@localhost.localdomain>
-References: <4ccec90e21edfa387822b2cb71c886217c48b4e3@localhost.localdomain>
-	<e5370484641ae54d637ece47f411bb0b0061cc54@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 27 Apr 2010 16:25:15 +0300
-Message-ID: <1272374715.7750.8.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: saeed.bishara@gmail.com, dwmw2@infradead.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6l8V-0000s5-Tn
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 13:47:40 +0000
+Date: Tue, 27 Apr 2010 14:47:37 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCHv2 1/2] MTD: cfi_cmdset_0002: Add reboot notifier for AMD
+	flashes
+Message-ID: <20100427134737.GB25405@shareable.org>
+References: <1271221078.2532.5.camel@localhost.localdomain>
+	<a00f98bfcda7db841108605ebab8d07363f4aa8b@localhost.localdomain>
+	<20100415025321.GB14954@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20100415025321.GB14954@pengutronix.de>
+Cc: dedekind1@gmail.com, saeed.bishara@gmail.com,
+	Kevin Cernekee <cernekee@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-04-13 at 13:30 -0700, Kevin Cernekee wrote:
-> The UBI reboot notifier causes problems with hibernation.  Move this
-> functionality into the low-level MTD driver instead.
+Wolfram Sang wrote:
+> On Wed, Apr 14, 2010 at 05:57:33PM -0700, Kevin Cernekee wrote:
+> > Ensure that the flash device is in a quiescent state before rebooting.
+> > The implementation is closely modeled after the cfe_cmdset_0001 reboot
+> > notifier, commit 963a6fb0a0d336d0513083b7e4b5c3ff9d6d2061 .
+> > 
+> > Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 > 
-> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-> ---
->  drivers/mtd/ubi/build.c |   35 -----------------------------------
->  drivers/mtd/ubi/ubi.h   |    2 --
->  2 files changed, 0 insertions(+), 37 deletions(-)
+> Yes, if this is present for Intel, it should be present for AMD, IMHO.
 > 
+> Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+> 
+> Still, the correct solution is to wire the correct reset-line to the flashes.
+> Above patch will not help if a watchdog kicks in. Been there :(
 
-Pushed this patch to the ubi-2.6.git tree, thanks.
+Isn't the patch intended to handle _software_ resets where the hard reset
+line isn't toggled?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+-- Jamie
