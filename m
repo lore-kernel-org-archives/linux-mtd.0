@@ -1,16 +1,21 @@
-Subject: Re: [PATCHv2] MTD: Suppress warnings in inline_map_read()
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O6fag-0007lb-An
+	for linux-mtd@lists.infradead.org; Tue, 27 Apr 2010 07:52:22 +0000
+Subject: Re: suspend to disk hangs when running from ubifs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <e970485f0e9f4c9e1cb6e594a45dd11308683197@localhost.localdomain>
-References: <1270891582.4704.102.camel@macbook.infradead.org>
-	<e970485f0e9f4c9e1cb6e594a45dd11308683197@localhost.localdomain>
+To: saeed bishara <saeed.bishara@gmail.com>
+In-Reply-To: <r2ic70ff3ad1004120131h2127ece2o2fbb8256093c3b0b@mail.gmail.com>
+References: <c70ff3ad1002230217x1393c41che316e24a47f577ff@mail.gmail.com>
+	<1270042736.15073.28.camel@localhost>
+	<1270043508.15073.31.camel@localhost>
+	<r2ic70ff3ad1004120131h2127ece2o2fbb8256093c3b0b@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 27 Apr 2010 10:46:28 +0300
-Message-ID: <1272354388.26036.4.camel@localhost>
+Date: Tue, 27 Apr 2010 10:47:53 +0300
+Message-ID: <1272354473.26036.6.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,18 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-04-10 at 11:18 -0700, Kevin Cernekee wrote:
-> With gcc 4.4.3 -O2 on MIPS32:
-> 
-> drivers/mtd/chips/cfi_util.c: In function 'cfi_qry_present':
-> include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
-> include/linux/mtd/map.h:375: note: 'r' was declared here
-> include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
-> include/linux/mtd/map.h:375: note: 'r' was declared here
-> 
-> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+On Mon, 2010-04-12 at 11:31 +0300, saeed bishara wrote:
+> Thanks Artem, your suggestion fixed my issue.
+> saeed
 
-Pushed to l2-mtd-2.6 / dunno
+Thanks for testing. Kevin also sent a patch which removes the reboot
+notifiers and fix your issue. I'll merge the patches.
 
 -- 
 Best Regards,
