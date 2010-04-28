@@ -1,20 +1,20 @@
-Received: from relay.ptn-ipout02.plus.net ([212.159.7.36])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O78T5-0003IV-4Z
-	for linux-mtd@lists.infradead.org; Wed, 28 Apr 2010 14:42:27 +0000
-Message-ID: <4BD8494D.2010505@bubblegen.co.uk>
-Date: Wed, 28 Apr 2010 15:42:21 +0100
-From: Matthew Lear <matt@bubblegen.co.uk>
+	id 1O795e-0001rb-DN
+	for linux-mtd@lists.infradead.org; Wed, 28 Apr 2010 15:22:19 +0000
+Message-ID: <4BD85298.1000304@pengutronix.de>
+Date: Wed, 28 Apr 2010 17:22:00 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: Obtaining start/end address of an MTD partition
-References: <afe027b8af6429f1eaf61baae36235d3.squirrel@webmail.plus.net>
-	<1272286767.17386.8.camel@localhost>
-	<09f0d0f0a023583f67e63708121e31c2.squirrel@webmail.plus.net>
-In-Reply-To: <09f0d0f0a023583f67e63708121e31c2.squirrel@webmail.plus.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+References: <1272057944-19380-1-git-send-email-mkl@pengutronix.de>
+In-Reply-To: <1272057944-19380-1-git-send-email-mkl@pengutronix.de>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig9FF86D8D9E5CBC331B68E85A"
+Subject: Re: [PATCH] pxa32xx_nand: add support for partition table parsing
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +24,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/26/10 15:24, Matthew Lear wrote:
->> On Mon, 2010-04-26 at 12:05 +0100, Matthew Lear wrote:
->>> Hello all,
->>>
->>> Is it possible to obtain an MTD partition's starting address through
->>> usage
->>> of the MTD ioctls? I've had a very quick look and from what I can tell,
->>> this doesn't seem to be possible.
->>>
->>> To be clear, I'd like to obtain the addresses below (displayed by Linux
->>> when it detects the MTD partitions on boot).
->>>
->>> Creating 6 MTD partitions on "physmap-flash.0":
->>> 0x00000000-0x00120000 : "RedBoot"
->>> 0x00120000-0x01000000 : "foo"
->>> 0x01000000-0x01400000 : "bar"
->>
->> Did you try 'cat /proc/mtd' ?
-> 
-> Yes, of course but the only way I could easily obtain the start address of
-> a particular partition using /proc/mtd would be to increment the sizes of
-> each previous partition. It's doable but just seems clunky...
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig9FF86D8D9E5CBC331B68E85A
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Actually, it's worse than that. This will only work if each partition is
-adjacent. If there is any gap (ie unpartitioned space on the device)
-between partitions, this will not work at all.
+Marc Kleine-Budde wrote:
+> The pxa32xx_nand driver doesn't support partition tables from the
+> command line. This patch adds support for it.
+>=20
+> Please review and consider to apply.
 
-Surely, I'm not the first person to try to obtain this info from MTD?
+Can someone please have a look at this patch.
 
-Any help appreciated...
---  Matt
+Cheers, Marc
+
+>>From a2caa92b08351511ee60bd94bf735be5f3a6fb65 Mon Sep 17 00:00:00 2001
+> From: Marc Kleine-Budde <mkl@pengutronix.de>
+> Date: Fri, 23 Apr 2010 10:43:42 +0200
+> Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
+>=20
+> The pxa32xx_nand driver doesn't support partition tables from the
+> command line. This patch adds support for it.
+>=20
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c |   11 +++++++++++
+>  1 files changed, 11 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_n=
+and.c
+> index 5d55152..e02fa4f 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -1320,6 +1320,17 @@ static int pxa3xx_nand_probe(struct platform_dev=
+ice *pdev)
+>  		goto fail_free_irq;
+>  	}
+> =20
+> +	if (mtd_has_cmdlinepart()) {
+> +		static const char *probes[] =3D { "cmdlinepart", NULL };
+> +		struct mtd_partition *parts;
+> +		int nr_parts;
+> +
+> +		nr_parts =3D parse_mtd_partitions(mtd, probes, &parts, 0);
+> +
+> +		if (nr_parts)
+> +			return add_mtd_partitions(mtd, parts, nr_parts);
+> +	}
+> +
+>  	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+> =20
+>  fail_free_irq:
+
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig9FF86D8D9E5CBC331B68E85A
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iEYEARECAAYFAkvYUpgACgkQjTAFq1RaXHPc5gCfbdmfKLAYkENlXeuGQD4pYbnV
+Fu4An1b/4U0/i7soMxeSpyPEXVLDd9e5
+=917s
+-----END PGP SIGNATURE-----
+
+--------------enig9FF86D8D9E5CBC331B68E85A--
