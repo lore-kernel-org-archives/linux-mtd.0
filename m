@@ -1,20 +1,15 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O795e-0001rb-DN
-	for linux-mtd@lists.infradead.org; Wed, 28 Apr 2010 15:22:19 +0000
-Message-ID: <4BD85298.1000304@pengutronix.de>
-Date: Wed, 28 Apr 2010 17:22:00 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <1272057944-19380-1-git-send-email-mkl@pengutronix.de>
-In-Reply-To: <1272057944-19380-1-git-send-email-mkl@pengutronix.de>
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature";
-	boundary="------------enig9FF86D8D9E5CBC331B68E85A"
-Subject: Re: [PATCH] pxa32xx_nand: add support for partition table parsing
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org,
-	dedekind1@gmail.com
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN
+Date: Wed, 28 Apr 2010 17:46:45 +0200
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH 1/5] drivers: mtd: onenand: add support for chips with 4KB page
+	size
+In-reply-to: <1272469609-21876-1-git-send-email-m.szyprowski@samsung.com>
+To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Message-id: <1272469609-21876-2-git-send-email-m.szyprowski@samsung.com>
+References: <1272469609-21876-1-git-send-email-m.szyprowski@samsung.com>
+Cc: kyungmin.park@samsung.com, ben-linux@fluff.org, m.szyprowski@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,79 +19,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig9FF86D8D9E5CBC331B68E85A
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: Kyungmin Park <kyungmin.park@samsung.com>
 
-Marc Kleine-Budde wrote:
-> The pxa32xx_nand driver doesn't support partition tables from the
-> command line. This patch adds support for it.
->=20
-> Please review and consider to apply.
+This patch adds support for OneNAND chips that have 4KB page size.
 
-Can someone please have a look at this patch.
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+---
+ drivers/mtd/onenand/onenand_base.c |   32 +++++++++++++++++++-------------
+ include/linux/mtd/onenand.h        |    4 ++++
+ 2 files changed, 23 insertions(+), 13 deletions(-)
 
-Cheers, Marc
-
->>From a2caa92b08351511ee60bd94bf735be5f3a6fb65 Mon Sep 17 00:00:00 2001
-> From: Marc Kleine-Budde <mkl@pengutronix.de>
-> Date: Fri, 23 Apr 2010 10:43:42 +0200
-> Subject: [PATCH] pxa32xx_nand: add support for partition table parsing
->=20
-> The pxa32xx_nand driver doesn't support partition tables from the
-> command line. This patch adds support for it.
->=20
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> ---
->  drivers/mtd/nand/pxa3xx_nand.c |   11 +++++++++++
->  1 files changed, 11 insertions(+), 0 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_n=
-and.c
-> index 5d55152..e02fa4f 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -1320,6 +1320,17 @@ static int pxa3xx_nand_probe(struct platform_dev=
-ice *pdev)
->  		goto fail_free_irq;
->  	}
-> =20
-> +	if (mtd_has_cmdlinepart()) {
-> +		static const char *probes[] =3D { "cmdlinepart", NULL };
-> +		struct mtd_partition *parts;
-> +		int nr_parts;
-> +
-> +		nr_parts =3D parse_mtd_partitions(mtd, probes, &parts, 0);
-> +
-> +		if (nr_parts)
-> +			return add_mtd_partitions(mtd, parts, nr_parts);
-> +	}
-> +
->  	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
-> =20
->  fail_free_irq:
-
-
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
-
-
---------------enig9FF86D8D9E5CBC331B68E85A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iEYEARECAAYFAkvYUpgACgkQjTAFq1RaXHPc5gCfbdmfKLAYkENlXeuGQD4pYbnV
-Fu4An1b/4U0/i7soMxeSpyPEXVLDd9e5
-=917s
------END PGP SIGNATURE-----
-
---------------enig9FF86D8D9E5CBC331B68E85A--
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 32f0ed3..1b26f50 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -397,7 +397,8 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
+ 		value = onenand_bufferram_address(this, block);
+ 		this->write_word(value, this->base + ONENAND_REG_START_ADDRESS2);
+ 
+-		if (ONENAND_IS_MLC(this) || ONENAND_IS_2PLANE(this))
++		if (ONENAND_IS_MLC(this) || ONENAND_IS_2PLANE(this) ||
++		    ONENAND_IS_4KB_PAGE(this))
+ 			/* It is always BufferRAM0 */
+ 			ONENAND_SET_BUFFERRAM0(this);
+ 		else
+@@ -426,7 +427,7 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
+ 		case FLEXONENAND_CMD_RECOVER_LSB:
+ 		case ONENAND_CMD_READ:
+ 		case ONENAND_CMD_READOOB:
+-			if (ONENAND_IS_MLC(this))
++			if (ONENAND_IS_MLC(this) || ONENAND_IS_4KB_PAGE(this))
+ 				/* It is always BufferRAM0 */
+ 				dataram = ONENAND_SET_BUFFERRAM0(this);
+ 			else
+@@ -466,11 +467,11 @@ static inline int onenand_read_ecc(struct onenand_chip *this)
+ {
+ 	int ecc, i, result = 0;
+ 
+-	if (!FLEXONENAND(this))
++	if (!FLEXONENAND(this) && !ONENAND_IS_4KB_PAGE(this))
+ 		return this->read_word(this->base + ONENAND_REG_ECC_STATUS);
+ 
+ 	for (i = 0; i < 4; i++) {
+-		ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS + i);
++		ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS + i*2);
+ 		if (likely(!ecc))
+ 			continue;
+ 		if (ecc & FLEXONENAND_UNCORRECTABLE_ERROR)
+@@ -1425,7 +1426,7 @@ static int onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	int ret;
+ 
+ 	onenand_get_device(mtd, FL_READING);
+-	ret = ONENAND_IS_MLC(this) ?
++	ret = ONENAND_IS_MLC(this) || ONENAND_IS_4KB_PAGE(this) ?
+ 		onenand_mlc_read_ops_nolock(mtd, from, &ops) :
+ 		onenand_read_ops_nolock(mtd, from, &ops);
+ 	onenand_release_device(mtd);
+@@ -1460,7 +1461,7 @@ static int onenand_read_oob(struct mtd_info *mtd, loff_t from,
+ 
+ 	onenand_get_device(mtd, FL_READING);
+ 	if (ops->datbuf)
+-		ret = ONENAND_IS_MLC(this) ?
++		ret = ONENAND_IS_MLC(this) || ONENAND_IS_4KB_PAGE(this) ?
+ 			onenand_mlc_read_ops_nolock(mtd, from, ops) :
+ 			onenand_read_ops_nolock(mtd, from, ops);
+ 	else
+@@ -1926,7 +1927,7 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 		 * 2 PLANE, MLC, and Flex-OneNAND do not support
+ 		 * write-while-program feature.
+ 		 */
+-		if (!ONENAND_IS_2PLANE(this) && !first) {
++		if (!ONENAND_IS_2PLANE(this) && !ONENAND_IS_4KB_PAGE(this) && !first) {
+ 			ONENAND_SET_PREV_BUFFERRAM(this);
+ 
+ 			ret = this->wait(mtd, FL_WRITING);
+@@ -1957,7 +1958,7 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+ 		/*
+ 		 * 2 PLANE, MLC, and Flex-OneNAND wait here
+ 		 */
+-		if (ONENAND_IS_2PLANE(this)) {
++		if (ONENAND_IS_2PLANE(this) || ONENAND_IS_4KB_PAGE(this)) {
+ 			ret = this->wait(mtd, FL_WRITING);
+ 
+ 			/* In partial page write we don't update bufferram */
+@@ -2084,7 +2085,7 @@ static int onenand_write_oob_nolock(struct mtd_info *mtd, loff_t to,
+ 			memcpy(oobbuf + column, buf, thislen);
+ 		this->write_bufferram(mtd, ONENAND_SPARERAM, oobbuf, 0, mtd->oobsize);
+ 
+-		if (ONENAND_IS_MLC(this)) {
++		if (ONENAND_IS_MLC(this) || ONENAND_IS_4KB_PAGE(this)) {
+ 			/* Set main area of DataRAM to 0xff*/
+ 			memset(this->page_buf, 0xff, mtd->writesize);
+ 			this->write_bufferram(mtd, ONENAND_DATARAM,
+@@ -3027,7 +3028,7 @@ static int do_otp_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 	this->command(mtd, ONENAND_CMD_OTP_ACCESS, 0, 0);
+ 	this->wait(mtd, FL_OTPING);
+ 
+-	ret = ONENAND_IS_MLC(this) ?
++	ret = ONENAND_IS_MLC(this) || ONENAND_IS_4KB_PAGE(this) ?
+ 		onenand_mlc_read_ops_nolock(mtd, from, &ops) :
+ 		onenand_read_ops_nolock(mtd, from, &ops);
+ 
+@@ -3372,7 +3373,10 @@ static void onenand_check_features(struct mtd_info *mtd)
+ 	/* Lock scheme */
+ 	switch (density) {
+ 	case ONENAND_DEVICE_DENSITY_4Gb:
+-		this->options |= ONENAND_HAS_2PLANE;
++		if (ONENAND_IS_DDP(this))
++			this->options |= ONENAND_HAS_2PLANE;
++		else
++			this->options |= ONENAND_HAS_4KB_PAGE;
+ 
+ 	case ONENAND_DEVICE_DENSITY_2Gb:
+ 		/* 2Gb DDP does not have 2 plane */
+@@ -3393,7 +3397,7 @@ static void onenand_check_features(struct mtd_info *mtd)
+ 		break;
+ 	}
+ 
+-	if (ONENAND_IS_MLC(this))
++	if (ONENAND_IS_MLC(this) || ONENAND_IS_4KB_PAGE(this))
+ 		this->options &= ~ONENAND_HAS_2PLANE;
+ 
+ 	if (FLEXONENAND(this)) {
+@@ -3407,6 +3411,8 @@ static void onenand_check_features(struct mtd_info *mtd)
+ 		printk(KERN_DEBUG "Chip support all block unlock\n");
+ 	if (this->options & ONENAND_HAS_2PLANE)
+ 		printk(KERN_DEBUG "Chip has 2 plane\n");
++	if (this->options & ONENAND_HAS_4KB_PAGE)
++		printk(KERN_DEBUG "Chip has 4KiB pagesize\n");
+ }
+ 
+ /**
+@@ -3799,7 +3805,7 @@ static int onenand_probe(struct mtd_info *mtd)
+ 	/* The data buffer size is equal to page size */
+ 	mtd->writesize = this->read_word(this->base + ONENAND_REG_DATA_BUFFER_SIZE);
+ 	/* We use the full BufferRAM */
+-	if (ONENAND_IS_MLC(this))
++	if (ONENAND_IS_MLC(this) || ONENAND_IS_4KB_PAGE(this))
+ 		mtd->writesize <<= 1;
+ 
+ 	mtd->oobsize = mtd->writesize >> 5;
+diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
+index 5509eb0..c9a3c35 100644
+--- a/include/linux/mtd/onenand.h
++++ b/include/linux/mtd/onenand.h
+@@ -175,10 +175,14 @@ struct onenand_chip {
+ #define ONENAND_HAS_CONT_LOCK		(0x0001)
+ #define ONENAND_HAS_UNLOCK_ALL		(0x0002)
+ #define ONENAND_HAS_2PLANE		(0x0004)
++#define ONENAND_HAS_4KB_PAGE		(0x0008)
+ #define ONENAND_SKIP_UNLOCK_CHECK	(0x0100)
+ #define ONENAND_PAGEBUF_ALLOC		(0x1000)
+ #define ONENAND_OOBBUF_ALLOC		(0x2000)
+ 
++#define ONENAND_IS_4KB_PAGE(this)					\
++	(this->options & ONENAND_HAS_4KB_PAGE)
++
+ /*
+  * OneNAND Flash Manufacturer ID Codes
+  */
+-- 
+1.6.4
