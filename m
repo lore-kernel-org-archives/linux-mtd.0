@@ -1,20 +1,17 @@
-Received: from p01c11o149.mxlogic.net ([208.65.144.72])
+Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O7cbO-0004LG-1A
-	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 22:53:04 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, Linux
-	Kernel <linux-kernel@vger.kernel.org>
-Date: Thu, 29 Apr 2010 17:52:57 -0500
-Subject: [PATCH] sst25l.c: remove unnecessary MTD_DEBUG_LEVEL2 messages
-Message-ID: <0D753D10438DA54287A00B0270842697636E825604@AUSP01VMBX24.collaborationhost.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "ryan@bluewatersys.com" <ryan@bluewatersys.com>,
-	"andre@bluewatersys.com" <andre@bluewatersys.com>,
-	David Woodhouse <dwmw2@infradead.org>
+	id 1O7ctu-000701-Kt
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 23:12:12 +0000
+Message-Id: <20100429231204.169647403@fluff.org.uk>
+Date: Fri, 30 Apr 2010 00:11:37 +0100
+From: Ben Dooks <ben@simtec.co.uk>
+To: linux-arm-kernel@lists.arm.linux.org.uk
+Subject: [patch 1/2] kirkwood: allow machines to register RnB line with mtd
+	driver
+References: <20100429231136.086930268@fluff.org.uk>
+Content-Disposition: inline;
+	filename=slinux/arm/kirkwood/allow-mtd-ready-not-busy-registration.patch
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +21,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QWxsIHRoZSBTU1QyNUwgc2VyaWVzIGZsYXNoIHBhcnRzIGhhdmUgdW5pZm9ybSBlcmFzZSBzZWN0
-b3JzLiAgUmVtb3ZlDQp0aGUgZXh0cmEgTVREX0RFQlVHX0xFVkVMMiBtZXNzYWdlcyBzaG93aW5n
-IHRoZSBlcmFzZXJlZ2lvbnMgaW5mbw0Kc2luY2UgdGhleSBjb3VsZCBuZXZlciBiZSBzaG93bi4N
-Cg0KU2lnbmVkLW9mZi1ieTogSCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3Jh
-dmVycy5jb20+DQpDYzogRGF2aWQgV29vZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPg0KQ2M6
-IEFuZHJlIFJlbmF1ZCA8YW5kcmVAYmx1ZXdhdGVyc3lzLmNvbT4NCkNjOiBSeWFuIE1hbGxvbiA8
-cnlhbkBibHVld2F0ZXJzeXMuY29tPg0KDQotLS0NCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRk
-L2RldmljZXMvc3N0MjVsLmMgYi9kcml2ZXJzL210ZC9kZXZpY2VzL3NzdDI1bC5jDQppbmRleCBm
-ZTE3MDU0Li5iY2YwNDBiIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9tdGQvZGV2aWNlcy9zc3QyNWwu
-Yw0KKysrIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9zc3QyNWwuYw0KQEAgLTQxMSwxNyArNDExLDYg
-QEAgc3RhdGljIGludCBfX2luaXQgc3N0MjVsX3Byb2JlKHN0cnVjdCBzcGlfZGV2aWNlICpzcGkp
-DQogCSAgICAgIGZsYXNoLT5tdGQuZXJhc2VzaXplLCBmbGFzaC0+bXRkLmVyYXNlc2l6ZSAvIDEw
-MjQsDQogCSAgICAgIGZsYXNoLT5tdGQubnVtZXJhc2VyZWdpb25zKTsNCiANCi0JaWYgKGZsYXNo
-LT5tdGQubnVtZXJhc2VyZWdpb25zKQ0KLQkJZm9yIChpID0gMDsgaSA8IGZsYXNoLT5tdGQubnVt
-ZXJhc2VyZWdpb25zOyBpKyspDQotCQkJREVCVUcoTVREX0RFQlVHX0xFVkVMMiwNCi0JCQkgICAg
-ICAibXRkLmVyYXNlcmVnaW9uc1slZF0gPSB7IC5vZmZzZXQgPSAweCVsbHgsICINCi0JCQkgICAg
-ICAiLmVyYXNlc2l6ZSA9IDB4JS44eCAoJXVLaUIpLCAiDQotCQkJICAgICAgIi5udW1ibG9ja3Mg
-PSAlZCB9XG4iLA0KLQkJCSAgICAgIGksIChsb25nIGxvbmcpZmxhc2gtPm10ZC5lcmFzZXJlZ2lv
-bnNbaV0ub2Zmc2V0LA0KLQkJCSAgICAgIGZsYXNoLT5tdGQuZXJhc2VyZWdpb25zW2ldLmVyYXNl
-c2l6ZSwNCi0JCQkgICAgICBmbGFzaC0+bXRkLmVyYXNlcmVnaW9uc1tpXS5lcmFzZXNpemUgLyAx
-MDI0LA0KLQkJCSAgICAgIGZsYXNoLT5tdGQuZXJhc2VyZWdpb25zW2ldLm51bWJsb2Nrcyk7DQot
-DQogCWlmIChtdGRfaGFzX3BhcnRpdGlvbnMoKSkgew0KIAkJc3RydWN0IG10ZF9wYXJ0aXRpb24g
-KnBhcnRzID0gTlVMTDsNCiAJCWludCBucl9wYXJ0cyA9IDA7DQo=
+Add a kirkwood_nand_init_rnb() call to allow boards which
+have RnB line detection to register this instead of a
+static delay.
+
+Signed-off-by: Ben Dooks <ben@simtec.co.uk>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+
+Index: linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.c
+===================================================================
+--- linux-2.6-2.6.32.9.orig/arch/arm/mach-kirkwood/common.c	2010-02-23 15:38:51.%N +0000
++++ linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.c	2010-03-11 13:25:01.%N +0000
+@@ -305,6 +305,15 @@
+ 	platform_device_register(&kirkwood_nand_flash);
+ }
+ 
++void __init kirkwood_nand_init_rnb(struct mtd_partition *parts, int nr_parts,
++				   int (*dev_ready)(struct mtd_info *))
++{
++	kirkwood_clk_ctrl |= CGC_RUNIT;
++	kirkwood_nand_data.parts = parts;
++	kirkwood_nand_data.nr_parts = nr_parts;
++	kirkwood_nand_data.dev_ready = dev_ready;
++	platform_device_register(&kirkwood_nand_flash);
++}
+ 
+ /*****************************************************************************
+  * SoC RTC
+Index: linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.h
+===================================================================
+--- linux-2.6-2.6.32.9.orig/arch/arm/mach-kirkwood/common.h	2010-02-23 15:38:51.%N +0000
++++ linux-2.6-2.6.32.9/arch/arm/mach-kirkwood/common.h	2010-03-11 13:25:01.%N +0000
+@@ -16,6 +16,7 @@
+ struct mv_sata_platform_data;
+ struct mvsdio_platform_data;
+ struct mtd_partition;
++struct mtd_info;
+ 
+ /*
+  * Basic Kirkwood init functions used early by machine-setup.
+@@ -41,6 +42,7 @@
+ void kirkwood_uart0_init(void);
+ void kirkwood_uart1_init(void);
+ void kirkwood_nand_init(struct mtd_partition *parts, int nr_parts, int delay);
++void kirkwood_nand_init_rnb(struct mtd_partition *parts, int nr_parts, int (*dev_ready)(struct mtd_info *));
+ 
+ extern int kirkwood_tclk;
+ extern struct sys_timer kirkwood_timer;
