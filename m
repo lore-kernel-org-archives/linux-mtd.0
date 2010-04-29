@@ -1,19 +1,25 @@
-Subject: Re: [PATCH v5 5/9] [MTD] remove bogus warning about missing boot
-	bank	location
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Guillaume LECERF <glecerf@gmail.com>
-In-Reply-To: <20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
-References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
-	<20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 29 Apr 2010 08:57:35 +0300
-Message-ID: <1272520655.7750.74.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Chris Moore <moore@free.fr>,
-	Wolfram Sang <w.sang@pengutronix.de>
-Reply-To: dedekind1@gmail.com
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O7NMb-0004hm-1Z
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 06:36:46 +0000
+Received: by gyb11 with SMTP id 11so7874402gyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 28 Apr 2010 23:36:43 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1272512811.2593.2.camel@localhost.localdomain>
+References: <i2ncf7b913c1004152036t3b23af53h339b16092ecdd812@mail.gmail.com>
+	<1272439453.7750.20.camel@localhost>
+	<i2rcf7b913c1004281914kbe0c0c18xeee2e1bbcc375012@mail.gmail.com>
+	<1272512811.2593.2.camel@localhost.localdomain>
+Date: Thu, 29 Apr 2010 14:36:43 +0800
+Message-ID: <g2vcf7b913c1004282336re0598245v28a74882990074b8@mail.gmail.com>
+Subject: Re: [PATCH] ubifs: add update vfs super block infomation when remount
+	to ro mode
+From: Zhang JieJing <kzjeef@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-04-24 at 17:58 +0200, Guillaume LECERF wrote:
-> From: Uwe Kleine-König <Uwe.Kleine-Koenigi@digi.com>
-> 
-> After the deleted block bootloc is only used once as follows:
-> 
-> 	if (bootloc == 3 && something_else) {
-> 		...
-> 
-> So setting bootloc = 2 doesn't change anything.  Taking that the warning is
-> wrong and missleading.
-> 
-> Signed-off-by: Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
-> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
-> Acked-by: Christopher Moore <moore@free.fr>
+2010/4/29 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Thu, 2010-04-29 at 10:14 +0800, Zhang JieJing wrote:
+>> (resend since HTML mail rejected by linux-fsdevel.)
+>> Hi Artem,
+>>
+>> I just clone the =9Agit://git.infradead.org/ubifs-2.6.git, and git am my
+>> patch, It is very clean patched, so, maybe your git repo code is very
+>> new, so the patch can't cleaned apply.
+>>
+>> This is my first patch give back to upstream, even I read the kernel
+>> document 'how-to send patch' but still something leaked.
+>> If I did something wrong, Please show me the right way or something like=
+ that,
+>> Thanks for your time.
+>
+> Did you save your own mail _from the mailing_ list and apply it with git
+> am ?
 
-Pushed this v5 series to l2-mtd-2.6 / dunno. But please, if you re-send
-the series, use consistent "mtd: cfi_cmdset_0002:" prefix for this
-patch. Then I will be able to do git-am without manual work. Now I have
-to tweak this patch because git am removes [MTD].
+Really sorry for that, I tried use my mail sent to mailing list, I
+found it appear the same error,
+I learned this important lesson, never send patch by Rich formatting.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+I will send this patch by plain text after this mail, Maybe there is
+some way to send it in the same mail with patch and answer ?
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
+>
+>
