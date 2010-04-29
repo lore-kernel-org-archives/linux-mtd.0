@@ -1,17 +1,14 @@
-Received: from aeryn.fluff.org.uk ([87.194.8.8] helo=kira.home.fluff.org)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O7ctu-000701-Kt
-	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 23:12:12 +0000
-Message-Id: <20100429231204.169647403@fluff.org.uk>
-Date: Fri, 30 Apr 2010 00:11:37 +0100
+Message-Id: <20100429231313.519744154@fluff.org.uk>
+Date: Fri, 30 Apr 2010 00:12:54 +0100
 From: Ben Dooks <ben@simtec.co.uk>
-To: linux-arm-kernel@lists.arm.linux.org.uk
+To: linux-arm-kernel@lists.infradead.org
 Subject: [patch 1/2] kirkwood: allow machines to register RnB line with mtd
 	driver
-References: <20100429231136.086930268@fluff.org.uk>
+References: <20100429231253.465019575@fluff.org.uk>
 Content-Disposition: inline;
 	filename=slinux/arm/kirkwood/allow-mtd-ready-not-busy-registration.patch
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Cc: nico@marvell.com, Linux MTD <linux-mtd@lists.infradead.org>,
+	buytenh@marvell.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
