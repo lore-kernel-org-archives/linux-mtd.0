@@ -1,28 +1,21 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O7YEu-0005Jy-9R
-	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 18:13:33 +0000
-Received: by fxm17 with SMTP id 17so1254412fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 29 Apr 2010 11:13:30 -0700 (PDT)
-Subject: RE: [PATCH] sst25l.c: simplify reading the device ManID/DevID
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-In-Reply-To: <0D753D10438DA54287A00B0270842697636E305B2F@AUSP01VMBX24.collaborationhost.net>
-References: <0D753D10438DA54287A00B0270842697636D85BD7C@AUSP01VMBX24.collaborationhost.net>
-	<1272519398.7750.67.camel@localhost>
-	<0D753D10438DA54287A00B0270842697636E305B2F@AUSP01VMBX24.collaborationhost.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 29 Apr 2010 21:07:46 +0300
-Message-Id: <1272564466.2593.3.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"ryan@bluewatersys.com" <ryan@bluewatersys.com>,
+Received: from p01c12o148.mxlogic.net ([208.65.145.71])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O7YbA-00037c-F2
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 18:36:35 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: Linux Kernel <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Thu, 29 Apr 2010 13:34:24 -0500
+Subject: [PATCH] sst25l.c: fix multi-part messages with broken spi masters
+Message-ID: <0D753D10438DA54287A00B0270842697636E305D4A@AUSP01VMBX24.collaborationhost.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "ryan@bluewatersys.com" <ryan@bluewatersys.com>,
 	"andre@bluewatersys.com" <andre@bluewatersys.com>,
 	David Woodhouse <dwmw2@infradead.org>,
-	Linux Kernel <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,42 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-04-29 at 12:11 -0500, H Hartley Sweeten wrote:
-> On Wednesday, April 28, 2010 10:37 PM, Artem Bityutskiy wrote:
-> > On Tue, 2010-04-20 at 18:17 -0500, H Hartley Sweeten wrote:
-> >> The Read-ID command will continuously output the Manufacture ID and Device ID
-> >> until the command is terminated by a low to high transition on the CE# pin.
-> >> We can take advantage of this in the sst25l_match_device routine by reading
-> >> both bytes in one spi_write_then_read transaction.
-> >> 
-> >> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-> >> Cc: David Woodhouse <dwmw2@infradead.org>
-> >> Cc: Andre Renaud <andre@bluewatersys.com>
-> >> Cc: Ryan Mallon <ryan@bluewatersys.com>
-> >
-> > Pushed to l2-mtd-2.6.git / dunno.
-> 
-> Artem,
-> 
-> I have discovered that the Read-Status-Register command has the same problem.
-> With the SST25L SPI flash chips, if the chip enable is deasserted after sending
-> a command that command will get aborted.
-> 
-> I ran across this while testing a new spi master driver for the ep93xx on an
-> EDB9307A dev board.  That board uses the processors SFRMOUT signal as part of
-> the chip select logic.  Unfortunately the ep93xx only asserts the SFRMOUT
-> signal as long as the spi transmit fifo contains data.  As soon as the last
-> bit is clocked into the receive fifo it gets deasserted.  Many of the other
-> ep93xx based boards have that same issue.
-> 
-> I have an updated patch that changes both of these into one synchronous message
-> which fixes the sst25l_status and sst25l_match_device functions.  These changes
-> should be transparent to any users of this driver.
-> 
-> Could you drop the current patch and I will submit the updated one for review?
-
-Of course, just send it.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+U29tZSBTUEkgbWFzdGVycyAoZXA5M3h4KSBoYXZlIGxpbWl0YXRpb25zIHdoZW4gdXNpbmcgdGhl
+IFNGUk1PVVQNCnNpZ25hbCBmb3IgdGhlIHNwaSBkZXZpY2UgY2hpcCBzZWxlY3QuICBUaGUgU0ZS
+TU9VVCBzaWduYWwgaXMNCm9ubHkgYXNzZXJ0ZWQgYXMgbG9uZyBhcyB0aGUgc3BpIHRyYW5zbWl0
+IGZpZm8gY29udGFpbnMgZGF0YS4gIEFzDQpzb29uIGFzIHRoZSBsYXN0IGJpdCBpcyBjbG9ja2Vk
+IGludG8gdGhlIHJlY2VpdmUgZmlmbyBpdCBnZXRzDQpkZWFzc2VydGVkLg0KDQpUaGUgZnVuY3Rp
+b25zIHNzdDI1bF9zdGF0dXMgYW5kIHNzdDI1bF9tYXRjaF9kZXZpY2UgdXNlIHRoZSBBUEkNCmZ1
+bmN0aW9uIHNwaV93cml0ZV90aGVuX3JlYWQgdG8gd3JpdGUgYSBjb21tYW5kIHRvIHRoZSBmbGFz
+aCB0aGVuDQpyZWFkIHRoZSByZXNwb25zZSBiYWNrLiAgVGhpcyBBUEkgZnVuY3Rpb24gY3JlYXRl
+cyBhIHR3byBwYXJ0IHNwaQ0KbWVzc2FnZSBmb3IgdGhlIHdyaXRlIHRoZW4gcmVhZC4gIFdoZW4g
+dGhpcyBtZXNzYWdlIGlzIHRyYW5zZmVycmVkDQp0aGUgU0ZSTU9VVCBzaWduYWwgZW5kcyB1cCBn
+ZXR0aW5nIGRlYXNzZXJ0ZWQgYWZ0ZXIgdGhlIGNvbW1hbmQNCnBoYXNlLiAgVGhpcyBjYXVzZXMg
+dGhlIGNvbW1hbmQgdG8gZ2V0IGFib3J0ZWQgYnkgdGhlIGRldmljZSBzbw0KdGhlIHJlYWQgcGhh
+c2UgcmV0dXJucyBpbnZhbGlkIGRhdGEuDQoNCkJ5IGNoYW5naW5nIHNzdDI1bF9zdGF0dXMgYW5k
+IHNzdDI1bF9tYXRjaF9kZXZpY2UgdG8gdXNlIGEgc2luZ2xlDQp0cmFuc2ZlciBzeW5jaHJvbm91
+cyBtZXNzYWdlLCB0aGUgU0ZSTU9VVCBzaWduYWwgc3RheXMgYXNzZXJ0ZWQNCmR1cmluZyB0aGUg
+ZW50aXJlIG1lc3NhZ2Ugc28gdGhlIGNvcnJlY3QgZGF0YSBhbHdheXMgZ2V0cyByZXR1cm5lZC4N
+Cg0KVGhpcyBjaGFuZ2Ugd2lsbCBoYXZlIG5vIGVmZmVjdCBvbiBTUEkgbWFzdGVycyB3aGljaCB1
+c2UgYSBjaGlwDQpzZWxlY3QgbWVjaGFuaXNtIChHUElPJ3MsIGV0Yy4pIHdoaWNoIGRvZXMgc3Rh
+eSBhc3NlcnRlZCBjb3JyZWN0bHkuDQpBcyBhIGJvbnVzLCB0aGUgc2luZ2xlIHRyYW5zZmVyIHN5
+bmNocm9ub3VzIG1lc3NhZ2VzIGNvbXBsZXRlIGZhc3Rlcg0KdGhhbiBtdWx0aS1wYXJ0IG1lc3Nh
+Z2VzLg0KDQpTaWduZWQtb2ZmLWJ5OiBIIEhhcnRsZXkgU3dlZXRlbiA8aHN3ZWV0ZW5AdmlzaW9u
+ZW5ncmF2ZXJzLmNvbT4NCkNjOiBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+
+DQpDYzogQXJ0ZW0gQml0eXV0c2tpeSA8ZGVkZWtpbmQxQGdtYWlsLmNvbT4NCkNjOiBBbmRyZSBS
+ZW5hdWQgPGFuZHJlQGJsdWV3YXRlcnN5cy5jb20+DQpDYzogUnlhbiBNYWxsb24gPHJ5YW5AYmx1
+ZXdhdGVyc3lzLmNvbT4NCg0KLS0tDQoNClRoaXMgZHJpdmVyIGlzIG5lZWRlZCBvbiB0aGUgZXA5
+M3h4IGJhc2VkIEVEQjkzeHggZGV2IGJvYXJkcyB0bw0KYWNjZXNzIHRoZSBTUEkgZmxhc2guDQoN
+ClRoaXMgcGF0Y2ggcmVwbGFjZXMgInNzdDI1bC5jOiBzaW1wbGlmeSByZWFkaW5nIHRoZSBkZXZp
+Y2UgTWFuSUQvRGV2SUQiDQp3aGljaCB3YXMgcHJldmlvdXNseSBwb3N0ZWQuDQoNCmRpZmYgLS1n
+aXQgYS9kcml2ZXJzL210ZC9kZXZpY2VzL3NzdDI1bC5jIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9z
+c3QyNWwuYw0KaW5kZXggZmUxNzA1NC4uN2RlM2JlZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRk
+L2RldmljZXMvc3N0MjVsLmMNCisrKyBiL2RyaXZlcnMvbXRkL2RldmljZXMvc3N0MjVsLmMNCkBA
+IC03MywxNSArNzMsMjUgQEAgc3RhdGljIHN0cnVjdCBmbGFzaF9pbmZvIF9faW5pdGRhdGEgc3N0
+MjVsX2ZsYXNoX2luZm9bXSA9IHsNCiANCiBzdGF0aWMgaW50IHNzdDI1bF9zdGF0dXMoc3RydWN0
+IHNzdDI1bF9mbGFzaCAqZmxhc2gsIGludCAqc3RhdHVzKQ0KIHsNCi0JdW5zaWduZWQgY2hhciBj
+b21tYW5kLCByZXNwb25zZTsNCisJc3RydWN0IHNwaV9tZXNzYWdlIG07DQorCXN0cnVjdCBzcGlf
+dHJhbnNmZXIgdDsNCisJdW5zaWduZWQgY2hhciBjbWRfcmVzcFsyXTsNCiAJaW50IGVycjsNCiAN
+Ci0JY29tbWFuZCA9IFNTVDI1TF9DTURfUkRTUjsNCi0JZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVh
+ZChmbGFzaC0+c3BpLCAmY29tbWFuZCwgMSwgJnJlc3BvbnNlLCAxKTsNCisJc3BpX21lc3NhZ2Vf
+aW5pdCgmbSk7DQorCW1lbXNldCgmdCwgMCwgc2l6ZW9mKHN0cnVjdCBzcGlfdHJhbnNmZXIpKTsN
+CisNCisJY21kX3Jlc3BbMF0gPSBTU1QyNUxfQ01EX1JEU1I7DQorCWNtZF9yZXNwWzFdID0gMHhm
+ZjsNCisJdC50eF9idWYgPSBjbWRfcmVzcDsNCisJdC5yeF9idWYgPSBjbWRfcmVzcDsNCisJdC5s
+ZW4gPSBzaXplb2YoY21kX3Jlc3ApOw0KKwlzcGlfbWVzc2FnZV9hZGRfdGFpbCgmdCwgJm0pOw0K
+KwllcnIgPSBzcGlfc3luYyhmbGFzaC0+c3BpLCAmbSk7DQogCWlmIChlcnIgPCAwKQ0KIAkJcmV0
+dXJuIGVycjsNCiANCi0JKnN0YXR1cyA9IHJlc3BvbnNlOw0KKwkqc3RhdHVzID0gY21kX3Jlc3Bb
+MV07DQogCXJldHVybiAwOw0KIH0NCiANCkBAIC0zMjgsMzMgKzMzOCwzMiBAQCBvdXQ6DQogc3Rh
+dGljIHN0cnVjdCBmbGFzaF9pbmZvICpfX2luaXQgc3N0MjVsX21hdGNoX2RldmljZShzdHJ1Y3Qg
+c3BpX2RldmljZSAqc3BpKQ0KIHsNCiAJc3RydWN0IGZsYXNoX2luZm8gKmZsYXNoX2luZm8gPSBO
+VUxMOw0KLQl1bnNpZ25lZCBjaGFyIGNvbW1hbmRbNF0sIHJlc3BvbnNlOw0KKwlzdHJ1Y3Qgc3Bp
+X21lc3NhZ2UgbTsNCisJc3RydWN0IHNwaV90cmFuc2ZlciB0Ow0KKwl1bnNpZ25lZCBjaGFyIGNt
+ZF9yZXNwWzZdOw0KIAlpbnQgaSwgZXJyOw0KIAl1aW50MTZfdCBpZDsNCiANCi0JY29tbWFuZFsw
+XSA9IFNTVDI1TF9DTURfUkVBRF9JRDsNCi0JY29tbWFuZFsxXSA9IDA7DQotCWNvbW1hbmRbMl0g
+PSAwOw0KLQljb21tYW5kWzNdID0gMDsNCi0JZXJyID0gc3BpX3dyaXRlX3RoZW5fcmVhZChzcGks
+IGNvbW1hbmQsIHNpemVvZihjb21tYW5kKSwgJnJlc3BvbnNlLCAxKTsNCi0JaWYgKGVyciA8IDAp
+IHsNCi0JCWRldl9lcnIoJnNwaS0+ZGV2LCAiZXJyb3IgcmVhZGluZyBkZXZpY2UgaWQgbXNiXG4i
+KTsNCi0JCXJldHVybiBOVUxMOw0KLQl9DQotDQotCWlkID0gcmVzcG9uc2UgPDwgODsNCi0NCi0J
+Y29tbWFuZFswXSA9IFNTVDI1TF9DTURfUkVBRF9JRDsNCi0JY29tbWFuZFsxXSA9IDA7DQotCWNv
+bW1hbmRbMl0gPSAwOw0KLQljb21tYW5kWzNdID0gMTsNCi0JZXJyID0gc3BpX3dyaXRlX3RoZW5f
+cmVhZChzcGksIGNvbW1hbmQsIHNpemVvZihjb21tYW5kKSwgJnJlc3BvbnNlLCAxKTsNCisJc3Bp
+X21lc3NhZ2VfaW5pdCgmbSk7DQorCW1lbXNldCgmdCwgMCwgc2l6ZW9mKHN0cnVjdCBzcGlfdHJh
+bnNmZXIpKTsNCisNCisJY21kX3Jlc3BbMF0gPSBTU1QyNUxfQ01EX1JFQURfSUQ7DQorCWNtZF9y
+ZXNwWzFdID0gMDsNCisJY21kX3Jlc3BbMl0gPSAwOw0KKwljbWRfcmVzcFszXSA9IDA7DQorCWNt
+ZF9yZXNwWzRdID0gMHhmZjsNCisJY21kX3Jlc3BbNV0gPSAweGZmOw0KKwl0LnR4X2J1ZiA9IGNt
+ZF9yZXNwOw0KKwl0LnJ4X2J1ZiA9IGNtZF9yZXNwOw0KKwl0LmxlbiA9IHNpemVvZihjbWRfcmVz
+cCk7DQorCXNwaV9tZXNzYWdlX2FkZF90YWlsKCZ0LCAmbSk7DQorCWVyciA9IHNwaV9zeW5jKHNw
+aSwgJm0pOw0KIAlpZiAoZXJyIDwgMCkgew0KLQkJZGV2X2Vycigmc3BpLT5kZXYsICJlcnJvciBy
+ZWFkaW5nIGRldmljZSBpZCBsc2JcbiIpOw0KKwkJZGV2X2Vycigmc3BpLT5kZXYsICJlcnJvciBy
+ZWFkaW5nIGRldmljZSBpZFxuIik7DQogCQlyZXR1cm4gTlVMTDsNCiAJfQ0KIA0KLQlpZCB8PSBy
+ZXNwb25zZTsNCisJaWQgPSAoY21kX3Jlc3BbNF0gPDwgOCkgfCBjbWRfcmVzcFs1XTsNCiANCiAJ
+Zm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoc3N0MjVsX2ZsYXNoX2luZm8pOyBpKyspDQogCQlp
+ZiAoc3N0MjVsX2ZsYXNoX2luZm9baV0uZGV2aWNlX2lkID09IGlkKQ0K
