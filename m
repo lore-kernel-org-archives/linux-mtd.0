@@ -1,18 +1,28 @@
-Received: from [69.28.251.93] (helo=b32.net)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O7XaP-0002Wf-Q9
-	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 17:31:43 +0000
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Thu, 29 Apr 2010 10:26:56 -0700
-Subject: [PATCHv3] mtd: cfi_cmdset_0002: Add reboot notifier for AMD flashes
-Message-Id: <471a5dfa1495f2d33e41435e4d37852ad489b112@localhost.localdomain>
-In-Reply-To: <1272519262.7750.66.camel@localhost>
-References: <1272519262.7750.66.camel@localhost>
-To: <dwmw2@infradead.org>, <dedekind1@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O7YEu-0005Jy-9R
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 18:13:33 +0000
+Received: by fxm17 with SMTP id 17so1254412fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 29 Apr 2010 11:13:30 -0700 (PDT)
+Subject: RE: [PATCH] sst25l.c: simplify reading the device ManID/DevID
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+In-Reply-To: <0D753D10438DA54287A00B0270842697636E305B2F@AUSP01VMBX24.collaborationhost.net>
+References: <0D753D10438DA54287A00B0270842697636D85BD7C@AUSP01VMBX24.collaborationhost.net>
+	<1272519398.7750.67.camel@localhost>
+	<0D753D10438DA54287A00B0270842697636E305B2F@AUSP01VMBX24.collaborationhost.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 29 Apr 2010 21:07:46 +0300
+Message-Id: <1272564466.2593.3.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"ryan@bluewatersys.com" <ryan@bluewatersys.com>,
+	"andre@bluewatersys.com" <andre@bluewatersys.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,121 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ensure that the flash device is in a quiescent state before rebooting.
-The implementation is closely modeled after the cfi_cmdset_0001 reboot
-notifier, commit 963a6fb0a0d336d0513083b7e4b5c3ff9d6d2061 .
+On Thu, 2010-04-29 at 12:11 -0500, H Hartley Sweeten wrote:
+> On Wednesday, April 28, 2010 10:37 PM, Artem Bityutskiy wrote:
+> > On Tue, 2010-04-20 at 18:17 -0500, H Hartley Sweeten wrote:
+> >> The Read-ID command will continuously output the Manufacture ID and Device ID
+> >> until the command is terminated by a low to high transition on the CE# pin.
+> >> We can take advantage of this in the sst25l_match_device routine by reading
+> >> both bytes in one spi_write_then_read transaction.
+> >> 
+> >> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> >> Cc: David Woodhouse <dwmw2@infradead.org>
+> >> Cc: Andre Renaud <andre@bluewatersys.com>
+> >> Cc: Ryan Mallon <ryan@bluewatersys.com>
+> >
+> > Pushed to l2-mtd-2.6.git / dunno.
+> 
+> Artem,
+> 
+> I have discovered that the Read-Status-Register command has the same problem.
+> With the SST25L SPI flash chips, if the chip enable is deasserted after sending
+> a command that command will get aborted.
+> 
+> I ran across this while testing a new spi master driver for the ep93xx on an
+> EDB9307A dev board.  That board uses the processors SFRMOUT signal as part of
+> the chip select logic.  Unfortunately the ep93xx only asserts the SFRMOUT
+> signal as long as the spi transmit fifo contains data.  As soon as the last
+> bit is clocked into the receive fifo it gets deasserted.  Many of the other
+> ep93xx based boards have that same issue.
+> 
+> I have an updated patch that changes both of these into one synchronous message
+> which fixes the sst25l_status and sst25l_match_device functions.  These changes
+> should be transparent to any users of this driver.
+> 
+> Could you drop the current patch and I will submit the updated one for review?
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |   56 +++++++++++++++++++++++++++++++++++
- 1 files changed, 56 insertions(+), 0 deletions(-)
+Of course, just send it.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index c93e47d..c16b8ce 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -32,6 +32,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
-+#include <linux/reboot.h>
- #include <linux/mtd/compatmac.h>
- #include <linux/mtd/map.h>
- #include <linux/mtd/mtd.h>
-@@ -56,6 +57,7 @@ static int cfi_amdstd_erase_varsize(struct mtd_info *, struct erase_info *);
- static void cfi_amdstd_sync (struct mtd_info *);
- static int cfi_amdstd_suspend (struct mtd_info *);
- static void cfi_amdstd_resume (struct mtd_info *);
-+static int cfi_amdstd_reboot(struct notifier_block *, unsigned long, void *);
- static int cfi_amdstd_secsi_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- 
- static void cfi_amdstd_destroy(struct mtd_info *);
-@@ -351,6 +353,8 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 	mtd->name    = map->name;
- 	mtd->writesize = 1;
- 
-+	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
-+
- 	if (cfi->cfi_mode==CFI_MODE_CFI){
- 		unsigned char bootloc;
- 		/*
-@@ -487,6 +491,7 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
- #endif
- 
- 	__module_get(THIS_MODULE);
-+	register_reboot_notifier(&mtd->reboot_notifier);
- 	return mtd;
- 
-  setup_err:
-@@ -628,6 +633,10 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
- 		chip->state = FL_READY;
- 		return 0;
- 
-+	case FL_SHUTDOWN:
-+		/* The machine is rebooting */
-+		return -EIO;
-+
- 	case FL_POINT:
- 		/* Only if there's no operation suspended... */
- 		if (mode == FL_READY && chip->oldstate == FL_READY)
-@@ -1918,11 +1927,58 @@ static void cfi_amdstd_resume(struct mtd_info *mtd)
- 	}
- }
- 
-+
-+/*
-+ * Ensure that the flash device is put back into read array mode before
-+ * unloading the driver or rebooting.  On some systems, rebooting while
-+ * the flash is in query/program/erase mode will prevent the CPU from
-+ * fetching the bootloader code, requiring a hard reset or power cycle.
-+ */
-+static int cfi_amdstd_reset(struct mtd_info *mtd)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	int i, ret;
-+	struct flchip *chip;
-+
-+	for (i = 0; i < cfi->numchips; i++) {
-+
-+		chip = &cfi->chips[i];
-+
-+		mutex_lock(&chip->mutex);
-+
-+		ret = get_chip(map, chip, chip->start, FL_SHUTDOWN);
-+		if (!ret) {
-+			map_write(map, CMD(0xF0), chip->start);
-+			chip->state = FL_SHUTDOWN;
-+			put_chip(map, chip, chip->start);
-+		}
-+
-+		mutex_unlock(&chip->mutex);
-+	}
-+
-+	return 0;
-+}
-+
-+
-+static int cfi_amdstd_reboot(struct notifier_block *nb, unsigned long val,
-+			       void *v)
-+{
-+	struct mtd_info *mtd;
-+
-+	mtd = container_of(nb, struct mtd_info, reboot_notifier);
-+	cfi_amdstd_reset(mtd);
-+	return NOTIFY_DONE;
-+}
-+
-+
- static void cfi_amdstd_destroy(struct mtd_info *mtd)
- {
- 	struct map_info *map = mtd->priv;
- 	struct cfi_private *cfi = map->fldrv_priv;
- 
-+	cfi_amdstd_reset(mtd);
-+	unregister_reboot_notifier(&mtd->reboot_notifier);
- 	kfree(cfi->cmdset_priv);
- 	kfree(cfi->cfiq);
- 	kfree(cfi);
 -- 
-1.6.3.1
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
