@@ -1,14 +1,21 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Date: Thu, 29 Apr 2010 15:06:37 -0500
-Subject: Potential namespace problem for 'struct flash_platfrom_data'
-Message-ID: <0D753D10438DA54287A00B0270842697636E305F88@AUSP01VMBX24.collaborationhost.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O7aDR-0002J5-Cs
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 20:20:10 +0000
+Date: Thu, 29 Apr 2010 21:19:44 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: Re: Potential namespace problem for 'struct flash_platfrom_data'
+Message-ID: <20100429201944.GJ4877@n2100.arm.linux.org.uk>
+References: <0D753D10438DA54287A00B0270842697636E305F88@AUSP01VMBX24.collaborationhost.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0D753D10438DA54287A00B0270842697636E305F88@AUSP01VMBX24.collaborationhost.net>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gYWxsLA0KDQpJIHdhcyBsb29raW5nIGF0IGFuIGlzc3VlIHdpdGggYSBzcGkgZmxhc2gg
-ZGV2aWNlIGFuZCBub3RpY2VkIGENCnBvdGVudGlhbCBuYW1lc3BhY2UgcHJvYmxlbS4NCg0KYXJj
-aC9hcm0vaW5jbHVkZS9hc20vbWFjaC9mbGFzaC5oIGhhcyB0aGlzOg0KDQpzdHJ1Y3QgZmxhc2hf
-cGxhdGZvcm1fZGF0YSB7DQoJY29uc3QgY2hhcgkqbWFwX25hbWU7DQoJY29uc3QgY2hhcgkqbmFt
-ZTsNCgl1bnNpZ25lZCBpbnQJd2lkdGg7DQoJaW50CQkoKmluaXQpKHZvaWQpOw0KCXZvaWQJCSgq
-ZXhpdCkodm9pZCk7DQoJdm9pZAkJKCpzZXRfdnBwKShpbnQgb24pOw0KCXZvaWQJCSgqbW1jb250
-cm9sKShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHN5bmNfcmVhZCk7DQoJc3RydWN0IG10ZF9w
-YXJ0aXRpb24gKnBhcnRzOw0KCXVuc2lnbmVkIGludAlucl9wYXJ0czsNCn07DQoNCmFuZCBpbmNs
-dWRlL2xpbnV4L3NwaS9mbGFzaC5oIGhhcyB0aGlzOg0KDQpzdHJ1Y3QgZmxhc2hfcGxhdGZvcm1f
-ZGF0YSB7DQoJY2hhcgkJKm5hbWU7DQoJc3RydWN0IG10ZF9wYXJ0aXRpb24gKnBhcnRzOw0KCXVu
-c2lnbmVkIGludAlucl9wYXJ0czsNCg0KCWNoYXIJCSp0eXBlOw0KDQoJLyogd2UnbGwgbGlrZWx5
-IGFkZCBtb3JlIC4uLiB1c2UgSkVERUMgSURzLCBldGMgKi8NCn07DQoNClNob3VsZCBhbnl0aGlu
-ZyBiZSBkb25lPw0KDQpSZWdhcmRzLA0KSGFydGxleQ==
+On Thu, Apr 29, 2010 at 03:06:37PM -0500, H Hartley Sweeten wrote:
+> Hello all,
+> 
+> I was looking at an issue with a spi flash device and noticed a
+> potential namespace problem.
+> 
+> arch/arm/include/asm/mach/flash.h has this:
+> 
+> struct flash_platform_data {
+> 	const char	*map_name;
+> 	const char	*name;
+> 	unsigned int	width;
+> 	int		(*init)(void);
+> 	void		(*exit)(void);
+> 	void		(*set_vpp)(int on);
+> 	void		(*mmcontrol)(struct mtd_info *mtd, int sync_read);
+> 	struct mtd_partition *parts;
+> 	unsigned int	nr_parts;
+> };
+> 
+> and include/linux/spi/flash.h has this:
+> 
+> struct flash_platform_data {
+> 	char		*name;
+> 	struct mtd_partition *parts;
+> 	unsigned int	nr_parts;
+> 
+> 	char		*type;
+> 
+> 	/* we'll likely add more ... use JEDEC IDs, etc */
+> };
+> 
+> Should anything be done?
+
+How about unifying them both?
