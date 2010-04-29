@@ -1,20 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O7Oop-00072y-GD
-	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 08:10:00 +0000
-Date: Thu, 29 Apr 2010 10:09:54 +0200
-From: Robert Schwebel <r.schwebel@pengutronix.de>
-To: David Woodhouse <David.Woodhouse@intel.com>
-Subject: Re: mxc-nand duplicate case value in -next
-Message-ID: <20100429080954.GI6204@pengutronix.de>
-References: <20100423073625.GY7882@pengutronix.de>
-	<20100427075310.GM18567@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20100427075310.GM18567@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
-	Ivo Clarysse <ivo.clarysse@gmail.com>
+	id 1O7QLJ-0004nY-1L
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 09:47:37 +0000
+Subject: Re: [PATCH] mtd/ubi: recognize empty flash with errors as empty
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+In-Reply-To: <20100426082855.GA18811@Chamillionaire.breakpoint.cc>
+References: <20100423172819.GA29224@Chamillionaire.breakpoint.cc>
+	<1272108241.11751.1635.camel@localhost.localdomain>
+	<20100425210938.GA15192@Chamillionaire.breakpoint.cc>
+	<1272257990.17386.2.camel@localhost>
+	<20100426082855.GA18811@Chamillionaire.breakpoint.cc>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 29 Apr 2010 12:42:29 +0300
+Message-ID: <1272534149.7750.85.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +27,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
+On Mon, 2010-04-26 at 10:28 +0200, Sebastian Andrzej Siewior wrote:
+> * Artem Bityutskiy | 2010-04-26 07:59:50 [+0300]:
+> 
+> >On Sun, 2010-04-25 at 23:09 +0200, Sebastian Andrzej Siewior wrote:
+> >> * Artem Bityutskiy | 2010-04-24 14:24:01 [+0300]:
+> >> 
+> >> >Thanks, pushed to ubi-2.6.git / master with the following minor tweak,
+> >> >please check:
+> >> >
+> >> >diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+> >> >index 7529d46..48e570c 100644
+> >> >--- a/drivers/mtd/ubi/scan.c
+> >> >+++ b/drivers/mtd/ubi/scan.c
+> >> >@@ -756,12 +756,12 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+> >> >                bitflips = 1;
+> >> >        }
+> >> > 
+> >> >-       if (err != UBI_IO_BAD_EC_HDR)
+> >> >-               si->is_empty = 0;
+> >> >-
+> >> >        if (!ec_corr) {
+> >> >                int image_seq;
+> >> > 
+> >> >+               /* There is an EC header, so the flash is not empty */
+> >> >+               si->is_empty = 0;
+> >> >+
+> >> >                /* Make sure UBI version is OK */
+> >> >                if (ech->version != UBI_VERSION) {
+> >> >                        ubi_err("this UBI version is %d, image version is %d",
+> >> >
+> >> 
+> >> I guess that's okay. What are the chances that you can't read the EC
+> >> header but you can somehow read the VID header. 
+> >
+> >When the VID header sits in the next NAND page, there are some changes,
+> >but I never observed such a situation in practice.
+> >
+> >> AND if there is a valid
+> >> VID header then there is more, and si->is_empty will be set later on,
+> >> right?
+> >
+> >Yes, AFAICS.
+> 
+> Oh. UBI_IO_BAD_EC_HDR / UBI_IO_BAD_VID_HDR is returned when
+> - the page page can not be read
+> - the page contains non-ubi information
 
-On Tue, Apr 27, 2010 at 09:53:10AM +0200, Robert Schwebel wrote:
-> On Fri, Apr 23, 2010 at 09:36:25AM +0200, Sascha Hauer wrote:
-> > Currently we have a duplicate case value in the mxc-nand driver in
-> > -next. This is because of to different patches adding reset command
-> > support to the driver, one from Eric (coming via the mtd master tree)
-> > and one from Ivo (coming from the mxc master tree). As I see it we
-> > should take Ivos patch as it adds i.MX21 support along the way, so
-> > David, can you please drop Erics patch?
->
-> linux-next does still crash with
->
-> drivers/mtd/nand/mxc_nand.c: In function 'mxc_nand_command':
-> drivers/mtd/nand/mxc_nand.c:689: error: duplicate case value
-> drivers/mtd/nand/mxc_nand.c:606: error: previously used here
-> drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_resume':
-> drivers/mtd/nand/mxc_nand.c:921: warning: unused variable 'host'
-> make[3]: *** [drivers/mtd/nand/mxc_nand.o] Error 1
->
-> David, would dropping Eric's patch (like suggested by Sascha) be an
-> acceptable solution?
+Bear in mind that it is difficult to distinguish between non-UBI
+information and just very corrupted headers, so ATM, in case of CRC
+error, UBI assumes this is a corrupted header, although this could
+non-UBI stuff.
 
-ping
+> So I think the latter case is now broken. In fact I just copied some
+> random things into my mtd partition and after attach & mkvol they were
+> gone with no error.
 
-rsc
+You mean UBI just attached your device? What would you expect it to do
+when it sees that part of eraseblocks contain corrupted headers? ATM, it
+just formats those eraseblocks. What would be your expectation?
+
+> So in case we want to support something other than UBI then we should
+> probably add another error code in order to distinguish between read
+> error and not a vald EC / VID header.
+
+If you feed UBI flash with no valid UBI headers, it will be refused, I
+think.
+
+I actually do not really see what is the use-case or scenario you want
+UBI to handle better.
+
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
