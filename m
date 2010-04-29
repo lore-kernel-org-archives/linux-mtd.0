@@ -1,17 +1,24 @@
-Received: from vmhpv163058.ikoula.com ([94.125.163.58]
-	helo=www.betsnfriends.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O7XFZ-0005Kx-B9
-	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 17:10:09 +0000
-To: info@togofor-homes.com, usa-new-jersey_jobs@googlegroups.com,
-	relacionamento@cyrela.com.br, editor@pointlessplanet.com,
-	stephanielin74@gmail.com
-Subject: Credit Inquiries Database - 1 million Full Data Records all with
-	emails
-From: "syringe" <lisastevens@vmhpv163058.ikoula.com>
-Message-ID: <VMHPV163058IkyPzGNs000002c6@www.betsnfriends.com>
-Date: 29 Apr 2010 18:53:15 +0200
-Reply-To: lisastevens@vmhpv163058.ikoula.com
+Received: from p01c12o149.mxlogic.net ([208.65.145.72])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O7XHD-0005VN-0k
+	for linux-mtd@lists.infradead.org; Thu, 29 Apr 2010 17:11:52 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Thu, 29 Apr 2010 12:11:05 -0500
+Subject: RE: [PATCH] sst25l.c: simplify reading the device ManID/DevID
+Message-ID: <0D753D10438DA54287A00B0270842697636E305B2F@AUSP01VMBX24.collaborationhost.net>
+References: <0D753D10438DA54287A00B0270842697636D85BD7C@AUSP01VMBX24.collaborationhost.net>
+	<1272519398.7750.67.camel@localhost>
+In-Reply-To: <1272519398.7750.67.camel@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"ryan@bluewatersys.com" <ryan@bluewatersys.com>,
+	"andre@bluewatersys.com" <andre@bluewatersys.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +28,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here's a list package on sale this week only:
-
-Consumer List Package
-
-
-Credit Inquiries Database - 1 million Full Data Records all with emails
-American Consumer Database - 1,300,000 records all with emails
-American Homeowners - 1 million Full Data Records all with emails
-
-All complete lists above: $295
-
-
-There are more packages and not just for consumers. we also have lists for healthcare, business and more. Contact me here for more info or to get samples: Tammie.Christensen@goodlists.co.cc
-
-  
-
-
-to get off please email disappear@goodlists.co.cc
+T24gV2VkbmVzZGF5LCBBcHJpbCAyOCwgMjAxMCAxMDozNyBQTSwgQXJ0ZW0gQml0eXV0c2tpeSB3
+cm90ZToNCj4gT24gVHVlLCAyMDEwLTA0LTIwIGF0IDE4OjE3IC0wNTAwLCBIIEhhcnRsZXkgU3dl
+ZXRlbiB3cm90ZToNCj4+IFRoZSBSZWFkLUlEIGNvbW1hbmQgd2lsbCBjb250aW51b3VzbHkgb3V0
+cHV0IHRoZSBNYW51ZmFjdHVyZSBJRCBhbmQgRGV2aWNlIElEDQo+PiB1bnRpbCB0aGUgY29tbWFu
+ZCBpcyB0ZXJtaW5hdGVkIGJ5IGEgbG93IHRvIGhpZ2ggdHJhbnNpdGlvbiBvbiB0aGUgQ0UjIHBp
+bi4NCj4+IFdlIGNhbiB0YWtlIGFkdmFudGFnZSBvZiB0aGlzIGluIHRoZSBzc3QyNWxfbWF0Y2hf
+ZGV2aWNlIHJvdXRpbmUgYnkgcmVhZGluZw0KPj4gYm90aCBieXRlcyBpbiBvbmUgc3BpX3dyaXRl
+X3RoZW5fcmVhZCB0cmFuc2FjdGlvbi4NCj4+IA0KPj4gU2lnbmVkLW9mZi1ieTogSCBIYXJ0bGV5
+IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVycy5jb20+DQo+PiBDYzogRGF2aWQgV29v
+ZGhvdXNlIDxkd213MkBpbmZyYWRlYWQub3JnPg0KPj4gQ2M6IEFuZHJlIFJlbmF1ZCA8YW5kcmVA
+Ymx1ZXdhdGVyc3lzLmNvbT4NCj4+IENjOiBSeWFuIE1hbGxvbiA8cnlhbkBibHVld2F0ZXJzeXMu
+Y29tPg0KPg0KPiBQdXNoZWQgdG8gbDItbXRkLTIuNi5naXQgLyBkdW5uby4NCg0KQXJ0ZW0sDQoN
+CkkgaGF2ZSBkaXNjb3ZlcmVkIHRoYXQgdGhlIFJlYWQtU3RhdHVzLVJlZ2lzdGVyIGNvbW1hbmQg
+aGFzIHRoZSBzYW1lIHByb2JsZW0uDQpXaXRoIHRoZSBTU1QyNUwgU1BJIGZsYXNoIGNoaXBzLCBp
+ZiB0aGUgY2hpcCBlbmFibGUgaXMgZGVhc3NlcnRlZCBhZnRlciBzZW5kaW5nDQphIGNvbW1hbmQg
+dGhhdCBjb21tYW5kIHdpbGwgZ2V0IGFib3J0ZWQuDQoNCkkgcmFuIGFjcm9zcyB0aGlzIHdoaWxl
+IHRlc3RpbmcgYSBuZXcgc3BpIG1hc3RlciBkcml2ZXIgZm9yIHRoZSBlcDkzeHggb24gYW4NCkVE
+QjkzMDdBIGRldiBib2FyZC4gIFRoYXQgYm9hcmQgdXNlcyB0aGUgcHJvY2Vzc29ycyBTRlJNT1VU
+IHNpZ25hbCBhcyBwYXJ0IG9mDQp0aGUgY2hpcCBzZWxlY3QgbG9naWMuICBVbmZvcnR1bmF0ZWx5
+IHRoZSBlcDkzeHggb25seSBhc3NlcnRzIHRoZSBTRlJNT1VUDQpzaWduYWwgYXMgbG9uZyBhcyB0
+aGUgc3BpIHRyYW5zbWl0IGZpZm8gY29udGFpbnMgZGF0YS4gIEFzIHNvb24gYXMgdGhlIGxhc3QN
+CmJpdCBpcyBjbG9ja2VkIGludG8gdGhlIHJlY2VpdmUgZmlmbyBpdCBnZXRzIGRlYXNzZXJ0ZWQu
+ICBNYW55IG9mIHRoZSBvdGhlcg0KZXA5M3h4IGJhc2VkIGJvYXJkcyBoYXZlIHRoYXQgc2FtZSBp
+c3N1ZS4NCg0KSSBoYXZlIGFuIHVwZGF0ZWQgcGF0Y2ggdGhhdCBjaGFuZ2VzIGJvdGggb2YgdGhl
+c2UgaW50byBvbmUgc3luY2hyb25vdXMgbWVzc2FnZQ0Kd2hpY2ggZml4ZXMgdGhlIHNzdDI1bF9z
+dGF0dXMgYW5kIHNzdDI1bF9tYXRjaF9kZXZpY2UgZnVuY3Rpb25zLiAgVGhlc2UgY2hhbmdlcw0K
+c2hvdWxkIGJlIHRyYW5zcGFyZW50IHRvIGFueSB1c2VycyBvZiB0aGlzIGRyaXZlci4NCg0KQ291
+bGQgeW91IGRyb3AgdGhlIGN1cnJlbnQgcGF0Y2ggYW5kIEkgd2lsbCBzdWJtaXQgdGhlIHVwZGF0
+ZWQgb25lIGZvciByZXZpZXc/DQoNClJlZ2FyZHMsDQpIYXJ0bGV5DQo=
