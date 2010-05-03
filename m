@@ -1,17 +1,19 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O8vKw-0003Z8-TQ
-	for linux-mtd@lists.infradead.org; Mon, 03 May 2010 13:05:28 +0000
-From: Thorsten =?iso-8859-1?q?M=FChlfelder?= <muehlfelder@enertex.de>
-To: linux-mtd@lists.infradead.org
-Subject: Some questions on bit-flips and JFFS2
-Date: Mon, 3 May 2010 15:05:18 +0200
+Received: from a2s40.a2hosting.com ([74.126.24.200])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O8wwM-0001l6-Kb
+	for linux-mtd@lists.infradead.org; Mon, 03 May 2010 14:48:14 +0000
+Message-ID: <4BDEE226.80205@fosstel.com>
+Date: Mon, 03 May 2010 10:48:06 -0400
+From: "Pedro I. Sanchez" <psanchez@fosstel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBIFS and MLC NAND Flash
+References: <4BA7A183.7040206@fosstel.com>		<1270714961.6754.107.camel@localhost>	<i2odbdb2ea61004191457s58e5b816i1efdf694a1e2a24@mail.gmail.com>
+	<4BCCECC7.8000006@fosstel.com>
+In-Reply-To: <4BCCECC7.8000006@fosstel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201005031505.18604.muehlfelder@enertex.de>
+Cc: twebb <taliaferro62@gmail.com>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+Pedro I. Sanchez wrote:
+> twebb wrote:
+>>>> 2. I have several boards with MLC NAND flash running the Linux kernel
+>>>> 2.6.29 and UBIFS. I am seeing a fairly large rate of file "corruption"
+>>>> errors, files that all of a sudden become unreadable. Curiously enough,
+>>>> they have been read-only files in all cases, program executables and
+>>>> shared libraries.
+>>> Hmm. Do you do unclean power cuts?
+>>>
+>>>> Would upgrading to a more recent kernel, or back porting the latest
+>>>> UBIFS code, help? Shall I expect better support for MLC NAND flash in
+>>>> the latest UBIFS code?
+>>> You did not specify whether you pulled the ubifs-v2.6.29.git tree. If
+>>> you did this, then your UBI/UBIFS should be the same as in the latest
+>>> kernels. Please, do this, although this will probably not solve your
+>>> corruption problems, but you'll have other bug-fixes we have made since
+>>> 2.6.29 times.
+>>>
+>>>
+>>
+>> Pedro,
+>> I'm seeing very similar issues with MLC+UBIFS, though not only with
+>> read-only files.  Have you made any progress in your investigation or
+>> while trying Artem's suggestions?  I'm about to start digging into
+>> this and would be interested to hear about any issues you may have
+>> come across.  Do you have any opinion on whether this "corruption" is
+>> related to the information posted on the linux-mtd site at...
+>> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc ?
+>>
+>> A few notes:
+>> - I do occasionally have power cuts, but my understanding was that
+>> UBI/UBIFS was very tolerant of that condition.
+>> - I use CONFIG_MTD_UBI_WL_THRESHOLD=256
+>> - I'm using linux-2.6.29
+>>
+>> Thanks,
+>> twebb
+> 
+> I haven't had the opportunity to use 2.6.29 with the ubifs backport yet. 
+> However, I run my devices over an extended operational test and couldn't 
+> reproduce the errors. In this test I avoided any power cuts on purpose 
+> because I wanted to verify that the boards' software was not at fault 
+> during normal conditions.
+> 
+> I still see the errors in the deployed boards and these ones are subject 
+> to random power cuts. After analyzing the logs I conclude that there is 
+> a strong correlation between the power cuts and the corruption errors. 
+> The typical scenario is a board running fine for two months without 
+> interruption, then a power cut, and then upon reboot a myriad of UBIFS 
+> error messages show up (see sample following my signature)
+> 
+> I'm almost convinced now that power cuts are the culprit. I will be 
+> conducting test in the next few days to fully verify this. I'll post my 
+> results.
+> 
+> Thanks,
+> 
+My tests are done. I arrived to the following conclusions:
 
-I'm experiencing some problems with bit-flips on devices using NAND and JFFS2:
-NAND device: Manufacturer ID: 0x2c, Chip ID: 0xdc (Micron NAND 512MiB 3,3V 
-8-bit)
-Creating 2 MTD partitions on "NAND 512MiB 3,3V 8-bit":
-0x00000000-0x00a00000 : "Bootloader Area"
-0x00a00000-0x20000000 : "User Area"
+1. All errors, zero-size files and random corruption, are related to 
+power outages.
 
-In rare cases 1 or 2 bits in the bootloader area (kernel) flip, so that the 
-system won't boot anymore (kernel checksum error).
-As the bootloader image is not mounted at all I wonder if this may be caused 
-by these read disturbs I've heard of.
+2. I was not able to reproduce any corruption errors under stable 
+conditions (no sudden power cuts).
 
-I've found some statements from different people about it here on the ML:
+We are now making some hardware mods to better handle power outages, 
+basically holding the processor's reset line until power is stable.
 
-> We use JFFS2. As known JFFS2 detects and corrects single bit-flips
-> (per 256 byte subpage) but it doesn't physically correct them
-> on the NAND device itself.
+Item 2 above speaks well of the UBIFS layer anyway. Even though we have 
+MLC flash I couldn't replicate any corruption problems. However, we are 
+moving to SLC flash for our next round of boards anyway, just to be safe 
+(or safer!).
 
-and:
+Thanks,
 
-> AFAIK, jffs2 doesn't handle correctly bit flip on read: it won't try to
-> copy the data on another block while the data can still be recovered
-> by ecc.
-
-For me this means that data still is read correctly because of ECC but it 
-won't get moved to a new block if a bit-flip happens? And what happens if 
-this occours on the kernel partition?
-
-Furthermore:
-> > How about detection of ECC errors in read only partitions?
->
-> ECC should be done on both rw and read-only partitions. Sometimes NAND gets
-> read disturbs which would impact on read-only partitions. Also, write
-> disturbs from writes to one partition can still corrupt a read-only
-> partition on the same chip.
-
-So writing to my root partition may harm my kernel partition, too?
-
-PS: I could not reproduce the bit-flip problem. It just happens in rare cases. 
-Furthermore some of my devices are using Samsung NAND instead of the Micron 
-NAND and did not show any problems yet. So perhaps my problem are just some 
-bad NAND chip? But still I have to find a solution for the problem.
+-- 
+Pedro
