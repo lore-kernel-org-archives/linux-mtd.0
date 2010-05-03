@@ -1,19 +1,22 @@
-Received: from a2s40.a2hosting.com ([74.126.24.200])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O8wwM-0001l6-Kb
-	for linux-mtd@lists.infradead.org; Mon, 03 May 2010 14:48:14 +0000
-Message-ID: <4BDEE226.80205@fosstel.com>
-Date: Mon, 03 May 2010 10:48:06 -0400
-From: "Pedro I. Sanchez" <psanchez@fosstel.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: UBIFS and MLC NAND Flash
-References: <4BA7A183.7040206@fosstel.com>		<1270714961.6754.107.camel@localhost>	<i2odbdb2ea61004191457s58e5b816i1efdf694a1e2a24@mail.gmail.com>
-	<4BCCECC7.8000006@fosstel.com>
-In-Reply-To: <4BCCECC7.8000006@fosstel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: twebb <taliaferro62@gmail.com>, dedekind1@gmail.com
+Received: from mail-bw0-f209.google.com ([209.85.218.209])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O8yxE-0005Yy-1B
+	for linux-mtd@lists.infradead.org; Mon, 03 May 2010 16:57:13 +0000
+Received: by bwz1 with SMTP id 1so1432220bwz.2
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 03 May 2010 09:57:08 -0700 (PDT)
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: Do not corrupt backing device of device node inode
+Date: Mon,  3 May 2010 19:56:07 +0300
+Message-Id: <1272905767-4317-1-git-send-email-kirill@shutemov.name>
+In-Reply-To: <1271934535.11751.1550.camel@macbook.infradead.org>
+References: <1271934535.11751.1550.camel@macbook.infradead.org>
+Cc: Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
+	Alexander Shishkin <virtuoso@slind.org>, linux-mtd@lists.infradead.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+	"Kirill A. Shutemov" <kirill@shutemov.name>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +26,171 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pedro I. Sanchez wrote:
-> twebb wrote:
->>>> 2. I have several boards with MLC NAND flash running the Linux kernel
->>>> 2.6.29 and UBIFS. I am seeing a fairly large rate of file "corruption"
->>>> errors, files that all of a sudden become unreadable. Curiously enough,
->>>> they have been read-only files in all cases, program executables and
->>>> shared libraries.
->>> Hmm. Do you do unclean power cuts?
->>>
->>>> Would upgrading to a more recent kernel, or back porting the latest
->>>> UBIFS code, help? Shall I expect better support for MLC NAND flash in
->>>> the latest UBIFS code?
->>> You did not specify whether you pulled the ubifs-v2.6.29.git tree. If
->>> you did this, then your UBI/UBIFS should be the same as in the latest
->>> kernels. Please, do this, although this will probably not solve your
->>> corruption problems, but you'll have other bug-fixes we have made since
->>> 2.6.29 times.
->>>
->>>
->>
->> Pedro,
->> I'm seeing very similar issues with MLC+UBIFS, though not only with
->> read-only files.  Have you made any progress in your investigation or
->> while trying Artem's suggestions?  I'm about to start digging into
->> this and would be interested to hear about any issues you may have
->> come across.  Do you have any opinion on whether this "corruption" is
->> related to the information posted on the linux-mtd site at...
->> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc ?
->>
->> A few notes:
->> - I do occasionally have power cuts, but my understanding was that
->> UBI/UBIFS was very tolerant of that condition.
->> - I use CONFIG_MTD_UBI_WL_THRESHOLD=256
->> - I'm using linux-2.6.29
->>
->> Thanks,
->> twebb
-> 
-> I haven't had the opportunity to use 2.6.29 with the ubifs backport yet. 
-> However, I run my devices over an extended operational test and couldn't 
-> reproduce the errors. In this test I avoided any power cuts on purpose 
-> because I wanted to verify that the boards' software was not at fault 
-> during normal conditions.
-> 
-> I still see the errors in the deployed boards and these ones are subject 
-> to random power cuts. After analyzing the logs I conclude that there is 
-> a strong correlation between the power cuts and the corruption errors. 
-> The typical scenario is a board running fine for two months without 
-> interruption, then a power cut, and then upon reboot a myriad of UBIFS 
-> error messages show up (see sample following my signature)
-> 
-> I'm almost convinced now that power cuts are the culprit. I will be 
-> conducting test in the next few days to fully verify this. I'll post my 
-> results.
-> 
-> Thanks,
-> 
-My tests are done. I arrived to the following conclusions:
+We cannot modify file->f_mapping->backing_dev_info, because it will corrupt
+backing device of device node inode, since file->f_mapping is equal to
+inode->i_mapping (see __dentry_open() in fs/open.c).
 
-1. All errors, zero-size files and random corruption, are related to 
-power outages.
+Let's introduce separate inode for MTD device with appropriate backing
+device.
 
-2. I was not able to reproduce any corruption errors under stable 
-conditions (no sudden power cuts).
+Signed-off-by: Kirill A. Shutemov <kirill@shutemov.name>
+---
+ drivers/mtd/mtdchar.c   |   70 +++++++++++++++++++++++++++++++++++++++++-----
+ drivers/mtd/mtdcore.c   |    3 ++
+ include/linux/mtd/mtd.h |    3 ++
+ 3 files changed, 68 insertions(+), 8 deletions(-)
 
-We are now making some hardware mods to better handle power outages, 
-basically holding the processor's reset line until power is stable.
-
-Item 2 above speaks well of the UBIFS layer anyway. Even though we have 
-MLC flash I couldn't replicate any corruption problems. However, we are 
-moving to SLC flash for our next round of boards anyway, just to be safe 
-(or safer!).
-
-Thanks,
-
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 5b081cb..24ea34f 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -15,12 +15,15 @@
+ #include <linux/smp_lock.h>
+ #include <linux/backing-dev.h>
+ #include <linux/compat.h>
++#include <linux/mount.h>
+ 
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/compatmac.h>
+ 
+ #include <asm/uaccess.h>
+ 
++#define MTD_INODE_FS_MAGIC 0x11307854
++static struct vfsmount *mtd_inode_mnt __read_mostly;
+ 
+ /*
+  * Data structure to hold the pointer to the mtd device as well
+@@ -88,8 +91,21 @@ static int mtd_open(struct inode *inode, struct file *file)
+ 		goto out;
+ 	}
+ 
+-	if (mtd->backing_dev_info)
+-		file->f_mapping->backing_dev_info = mtd->backing_dev_info;
++	if (!mtd->inode) {
++		mtd->inode = new_inode(mtd_inode_mnt->mnt_sb);
++		mtd->inode->i_mode = S_IFCHR;
++		mtd->inode->i_rdev = inode->i_rdev;
++		if (mtd->backing_dev_info) {
++			mtd->inode->i_data.backing_dev_info =
++				mtd->backing_dev_info;
++		}
++	}
++
++	spin_lock(&inode_lock);
++	__iget(mtd->inode);
++	spin_unlock(&inode_lock);
++
++	file->f_mapping = mtd->inode->i_mapping;
+ 
+ 	/* You can't open it RW if it's not a writeable device */
+ 	if ((file->f_mode & FMODE_WRITE) && !(mtd->flags & MTD_WRITEABLE)) {
+@@ -125,6 +141,8 @@ static int mtd_close(struct inode *inode, struct file *file)
+ 	if ((file->f_mode & FMODE_WRITE) && mtd->sync)
+ 		mtd->sync(mtd);
+ 
++	iput(mtd->inode);
++
+ 	put_mtd_device(mtd);
+ 	file->private_data = NULL;
+ 	kfree(mfi);
+@@ -954,21 +972,57 @@ static const struct file_operations mtd_fops = {
+ #endif
+ };
+ 
++static int mtd_inodefs_get_sb(struct file_system_type *fs_type, int flags,
++                               const char *dev_name, void *data,
++                               struct vfsmount *mnt)
++{
++        return get_sb_pseudo(fs_type, "mtd_inode:", NULL, MTD_INODE_FS_MAGIC,
++                             mnt);
++}
++
++static struct file_system_type mtd_inodefs_type = {
++       .name = "mtd_inodefs",
++       .get_sb = mtd_inodefs_get_sb,
++       .kill_sb = kill_anon_super,
++};
++
+ static int __init init_mtdchar(void)
+ {
+-	int status;
++	int ret;
+ 
+-	status = register_chrdev(MTD_CHAR_MAJOR, "mtd", &mtd_fops);
+-	if (status < 0) {
+-		printk(KERN_NOTICE "Can't allocate major number %d for Memory Technology Devices.\n",
+-		       MTD_CHAR_MAJOR);
++	ret = register_chrdev(MTD_CHAR_MAJOR, "mtd", &mtd_fops);
++	if (ret < 0) {
++		pr_notice("Can't allocate major number %d for "
++				"Memory Technology Devices.\n", MTD_CHAR_MAJOR);
++		return ret;
++	}
++
++	ret = register_filesystem(&mtd_inodefs_type);
++	if (ret) {
++		pr_notice("Can't register mtd_inodefs filesystem: %d\n", ret);
++		goto err_unregister_chdev;
++	}
++
++	mtd_inode_mnt = kern_mount(&mtd_inodefs_type);
++	if (IS_ERR(mtd_inode_mnt)) {
++		ret = PTR_ERR(mtd_inode_mnt);
++		pr_notice("Error mounting mtd_inodefs filesystem: %d\n", ret);
++		goto err_unregister_filesystem;
+ 	}
+ 
+-	return status;
++	return ret;
++
++err_unregister_chdev:
++	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
++err_unregister_filesystem:
++	unregister_filesystem(&mtd_inodefs_type);
++	return ret;
+ }
+ 
+ static void __exit cleanup_mtdchar(void)
+ {
++	mntput(mtd_inode_mnt);
++	unregister_filesystem(&mtd_inodefs_type);
+ 	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
+ }
+ 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index b177e75..980919e 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -383,6 +383,9 @@ int del_mtd_device (struct mtd_info *mtd)
+ 	} else {
+ 		struct mtd_notifier *not;
+ 
++		if (mtd->inode)
++			iput(mtd->inode);
++
+ 		device_unregister(&mtd->dev);
+ 
+ 		/* No need to get a refcount on the module containing
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 0f32a9b..0589632 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -12,6 +12,7 @@
+ #include <linux/uio.h>
+ #include <linux/notifier.h>
+ #include <linux/device.h>
++#include <linux/fs.h>
+ 
+ #include <linux/mtd/compatmac.h>
+ #include <mtd/mtd-abi.h>
+@@ -177,6 +178,8 @@ struct mtd_info {
+ 	 */
+ 	struct backing_dev_info *backing_dev_info;
+ 
++	/* inode for mtd device */
++	struct inode *inode;
+ 
+ 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
+ 	int (*write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
 -- 
-Pedro
+1.7.0.4
