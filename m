@@ -1,12 +1,12 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O8sgu-0003Ys-QU
-	for linux-mtd@lists.infradead.org; Mon, 03 May 2010 10:15:58 +0000
+	id 1O8sh1-0003Zn-1Y
+	for linux-mtd@lists.infradead.org; Mon, 03 May 2010 10:16:04 +0000
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Subject: [PATCH 3/4] UBI: introduce eraseblock counter variables
-Date: Mon,  3 May 2010 13:13:01 +0300
-Message-Id: <1272881582-17196-4-git-send-email-Artem.Bityutskiy@nokia.com>
+Subject: [PATCH 1/4] UBI: simplify IO error codes - part 1
+Date: Mon,  3 May 2010 13:12:59 +0300
+Message-Id: <1272881582-17196-2-git-send-email-Artem.Bityutskiy@nokia.com>
 In-Reply-To: <1272881582-17196-1-git-send-email-Artem.Bityutskiy@nokia.com>
 References: <1272881582-17196-1-git-send-email-Artem.Bityutskiy@nokia.com>
 Cc: linux-mtd@lists.infradead.org
@@ -19,164 +19,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is just a preparation patch which introduces several
-'struct ubi_scan_info' fields which count eraseblocks of different
-types. This will be used later on to decide whether it is safe to
-format the flash or not. No functional changes so far.
+We do not really need 2 separate error codes for indicating bad VID
+and bad EC headers (UBI_IO_BAD_EC_HDR, UBI_IO_BAD_VID_HDR), it is
+enough to have only one UBI_IO_BAD_HDR return code.
+
+This patch does not introduce any functional change, only some
+code simplification.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/scan.c |   29 ++++++++++++++++++-----------
- drivers/mtd/ubi/scan.h |   19 ++++++++++++++-----
- 2 files changed, 32 insertions(+), 16 deletions(-)
+ drivers/mtd/ubi/eba.c  |    4 ++--
+ drivers/mtd/ubi/io.c   |   14 +++++++-------
+ drivers/mtd/ubi/scan.c |    4 ++--
+ drivers/mtd/ubi/ubi.h  |    7 ++-----
+ 4 files changed, 13 insertions(+), 16 deletions(-)
 
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 9f87c99..8e82267 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -418,7 +418,7 @@ retry:
+ 				 * may try to recover data. FIXME: but this is
+ 				 * not implemented.
+ 				 */
+-				if (err == UBI_IO_BAD_VID_HDR) {
++				if (err == UBI_IO_BAD_HDR) {
+ 					ubi_warn("corrupted VID header at PEB "
+ 						 "%d, LEB %d:%d", pnum, vol_id,
+ 						 lnum);
+@@ -961,7 +961,7 @@ write_error:
+  */
+ static int is_error_sane(int err)
+ {
+-	if (err == -EIO || err == -ENOMEM || err == UBI_IO_BAD_VID_HDR ||
++	if (err == -EIO || err == -ENOMEM || err == UBI_IO_BAD_HDR ||
+ 	    err == -ETIMEDOUT)
+ 		return 0;
+ 	return 1;
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index 533b1a4..6f5b087 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -515,7 +515,7 @@ static int nor_erase_prepare(struct ubi_device *ubi, int pnum)
+ 	 * In this case we probably anyway have garbage in this PEB.
+ 	 */
+ 	err1 = ubi_io_read_vid_hdr(ubi, pnum, &vid_hdr, 0);
+-	if (err1 == UBI_IO_BAD_VID_HDR)
++	if (err1 == UBI_IO_BAD_HDR)
+ 		/*
+ 		 * The VID header is corrupted, so we can safely erase this
+ 		 * PEB and not afraid that it will be treated as a valid PEB in
+@@ -709,7 +709,7 @@ bad:
+  * o %UBI_IO_BITFLIPS if the CRC is correct, but bit-flips were detected
+  *   and corrected by the flash driver; this is harmless but may indicate that
+  *   this eraseblock may become bad soon (but may be not);
+- * o %UBI_IO_BAD_EC_HDR if the erase counter header is corrupted (a CRC error);
++ * o %UBI_IO_BAD_HDR if the erase counter header is corrupted (a CRC error);
+  * o %UBI_IO_PEB_EMPTY if the physical eraseblock is empty;
+  * o a negative error code in case of failure.
+  */
+@@ -774,7 +774,7 @@ int ubi_io_read_ec_hdr(struct ubi_device *ubi, int pnum,
+ 		} else if (UBI_IO_DEBUG)
+ 			dbg_msg("bad magic number at PEB %d: %08x instead of "
+ 				"%08x", pnum, magic, UBI_EC_HDR_MAGIC);
+-		return UBI_IO_BAD_EC_HDR;
++		return UBI_IO_BAD_HDR;
+ 	}
+ 
+ 	crc = crc32(UBI_CRC32_INIT, ec_hdr, UBI_EC_HDR_SIZE_CRC);
+@@ -788,7 +788,7 @@ int ubi_io_read_ec_hdr(struct ubi_device *ubi, int pnum,
+ 		} else if (UBI_IO_DEBUG)
+ 			dbg_msg("bad EC header CRC at PEB %d, calculated "
+ 				"%#08x, read %#08x", pnum, crc, hdr_crc);
+-		return UBI_IO_BAD_EC_HDR;
++		return UBI_IO_BAD_HDR;
+ 	}
+ 
+ 	/* And of course validate what has just been read from the media */
+@@ -977,7 +977,7 @@ bad:
+  * o %UBI_IO_BITFLIPS if the CRC is correct, but bit-flips were detected
+  *   and corrected by the flash driver; this is harmless but may indicate that
+  *   this eraseblock may become bad soon;
+- * o %UBI_IO_BAD_VID_HDR if the volume identifier header is corrupted (a CRC
++ * o %UBI_IO_BAD_HDR if the volume identifier header is corrupted (a CRC
+  *   error detected);
+  * o %UBI_IO_PEB_FREE if the physical eraseblock is free (i.e., there is no VID
+  *   header there);
+@@ -1045,7 +1045,7 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
+ 		} else if (UBI_IO_DEBUG)
+ 			dbg_msg("bad magic number at PEB %d: %08x instead of "
+ 				"%08x", pnum, magic, UBI_VID_HDR_MAGIC);
+-		return UBI_IO_BAD_VID_HDR;
++		return UBI_IO_BAD_HDR;
+ 	}
+ 
+ 	crc = crc32(UBI_CRC32_INIT, vid_hdr, UBI_VID_HDR_SIZE_CRC);
+@@ -1059,7 +1059,7 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
+ 		} else if (UBI_IO_DEBUG)
+ 			dbg_msg("bad CRC at PEB %d, calculated %#08x, "
+ 				"read %#08x", pnum, crc, hdr_crc);
+-		return UBI_IO_BAD_VID_HDR;
++		return UBI_IO_BAD_HDR;
+ 	}
+ 
+ 	/* Validate the VID header that we have just read */
 diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 65d03b5..dc5e061 100644
+index dc5f688..f52adca 100644
 --- a/drivers/mtd/ubi/scan.c
 +++ b/drivers/mtd/ubi/scan.c
-@@ -72,16 +72,19 @@ static int add_to_list(struct ubi_scan_info *si, int pnum, int ec,
- {
- 	struct ubi_scan_leb *seb;
- 
--	if (list == &si->free)
-+	if (list == &si->free) {
- 		dbg_bld("add to free: PEB %d, EC %d", pnum, ec);
--	else if (list == &si->erase)
-+		si->free_peb_count += 1;
-+	} else if (list == &si->erase) {
- 		dbg_bld("add to erase: PEB %d, EC %d", pnum, ec);
--	else if (list == &si->corr) {
-+		si->erase_peb_count += 1;
-+	} else if (list == &si->corr) {
- 		dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
--		si->corr_count += 1;
--	} else if (list == &si->alien)
-+		si->corr_peb_count += 1;
-+	} else if (list == &si->alien) {
- 		dbg_bld("add to alien: PEB %d, EC %d", pnum, ec);
--	else
-+		si->alien_peb_count += 1;
-+	} else
- 		BUG();
- 
- 	seb = kmalloc(sizeof(struct ubi_scan_leb), GFP_KERNEL);
-@@ -517,6 +520,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
- 	sv->leb_count += 1;
- 	rb_link_node(&seb->u.rb, parent, p);
- 	rb_insert_color(&seb->u.rb, &sv->root);
-+	si->used_peb_count += 1;
- 	return 0;
- }
- 
-@@ -745,13 +749,13 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+@@ -745,7 +745,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
  		bitflips = 1;
  	else if (err == UBI_IO_PEB_EMPTY)
  		return add_to_list(si, pnum, UBI_SCAN_UNKNOWN_EC, &si->erase);
--	else if (err = UBI_IO_BAD_HDR_READ || err == UBI_IO_BAD_HDR) {
-+	else if (err == UBI_IO_BAD_HDR_READ || err == UBI_IO_BAD_HDR) {
+-	else if (err == UBI_IO_BAD_EC_HDR) {
++	else if (err == UBI_IO_BAD_HDR) {
  		/*
  		 * We have to also look at the VID header, possibly it is not
  		 * corrupted. Set %bitflips flag in order to make this PEB be
- 		 * moved and EC be re-created.
- 		 */
--		ec_corr = 1;
-+		ec_corr = err;
- 		ec = UBI_SCAN_UNKNOWN_EC;
+@@ -813,7 +813,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		return err;
+ 	else if (err == UBI_IO_BITFLIPS)
  		bitflips = 1;
- 	}
-@@ -816,6 +820,9 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 	else if (err == UBI_IO_BAD_HDR_READ || err == UBI_IO_BAD_HDR ||
+-	else if (err == UBI_IO_BAD_VID_HDR ||
++	else if (err == UBI_IO_BAD_HDR ||
  		 (err == UBI_IO_PEB_FREE && ec_corr)) {
  		/* VID header is corrupted */
-+		if (err == UBI_IO_BAD_HDR_READ ||
-+		    ec_corr == UBI_IO_BAD_HDR_READ)
-+			si->read_err_count += 1;
  		err = add_to_list(si, pnum, ec, &si->corr);
- 		if (err)
- 			return err;
-@@ -855,7 +862,6 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			err = add_to_list(si, pnum, ec, &si->alien);
- 			if (err)
- 				return err;
--			si->alien_peb_count += 1;
- 			return 0;
- 
- 		case UBI_COMPAT_REJECT:
-@@ -943,8 +949,9 @@ struct ubi_scan_info *ubi_scan(struct ubi_device *ubi)
- 	 * unclean reboots. However, many of them may indicate some problems
- 	 * with the flash HW or driver. Print a warning in this case.
- 	 */
--	if (si->corr_count >= 8 || si->corr_count >= ubi->peb_count / 4) {
--		ubi_warn("%d PEBs are corrupted", si->corr_count);
-+	if (si->corr_peb_count >= 8 ||
-+	    si->corr_peb_count >= ubi->peb_count / 4) {
-+		ubi_warn("%d PEBs are corrupted", si->corr_peb_count);
- 		printk(KERN_WARNING "corrupted PEBs are:");
- 		list_for_each_entry(seb, &si->corr, u.list)
- 			printk(KERN_CONT " %d", seb->pnum);
-diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
-index ff179ad..2576a8d 100644
---- a/drivers/mtd/ubi/scan.h
-+++ b/drivers/mtd/ubi/scan.h
-@@ -91,10 +91,16 @@ struct ubi_scan_volume {
-  * @erase: list of physical eraseblocks which have to be erased
-  * @alien: list of physical eraseblocks which should not be used by UBI (e.g.,
-  *         those belonging to "preserve"-compatible internal volumes)
-+ * @used_peb_count: count of used PEBs
-+ * @corr_peb_count: count of PEBs in the @corr list
-+ * @read_err_count: count of PEBs read with error (%UBI_IO_BAD_HDR_READ was
-+ *                  returned)
-+ * @free_peb_count: count of PEBs in the @free list
-+ * @erase_peb_count: count of PEBs in the @erase list
-+ * @alien_peb_count: count of PEBs in the @alien list
-  * @bad_peb_count: count of bad physical eraseblocks
-  * @vols_found: number of volumes found during scanning
-  * @highest_vol_id: highest volume ID
-- * @alien_peb_count: count of physical eraseblocks in the @alien list
-  * @is_empty: flag indicating whether the MTD device is empty or not
-  * @min_ec: lowest erase counter value
-  * @max_ec: highest erase counter value
-@@ -102,7 +108,6 @@ struct ubi_scan_volume {
-  * @mean_ec: mean erase counter value
-  * @ec_sum: a temporary variable used when calculating @mean_ec
-  * @ec_count: a temporary variable used when calculating @mean_ec
-- * @corr_count: count of corrupted PEBs
-  *
-  * This data structure contains the result of scanning and may be used by other
-  * UBI sub-systems to build final UBI data structures, further error-recovery
-@@ -114,10 +119,15 @@ struct ubi_scan_info {
- 	struct list_head free;
- 	struct list_head erase;
- 	struct list_head alien;
-+	int used_peb_count;
-+	int corr_peb_count;
-+	int read_err_count;
-+	int free_peb_count;
-+	int erase_peb_count;
-+	int alien_peb_count;
- 	int bad_peb_count;
- 	int vols_found;
- 	int highest_vol_id;
--	int alien_peb_count;
- 	int is_empty;
- 	int min_ec;
- 	int max_ec;
-@@ -125,7 +135,6 @@ struct ubi_scan_info {
- 	int mean_ec;
- 	uint64_t ec_sum;
- 	int ec_count;
--	int corr_count;
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index a637f02..539b3f6 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -89,16 +89,13 @@
+  *                   %0xFF bytes
+  * UBI_IO_PEB_FREE: the physical eraseblock is free, i.e. it contains only a
+  *                  valid erase counter header, and the rest are %0xFF bytes
+- * UBI_IO_BAD_EC_HDR: the erase counter header is corrupted (bad magic or CRC)
+- * UBI_IO_BAD_VID_HDR: the volume identifier header is corrupted (bad magic or
+- *                     CRC)
++ * UBI_IO_BAD_HDR: the EC or VID header is corrupted (bad magic or CRC)
+  * UBI_IO_BITFLIPS: bit-flips were detected and corrected
+  */
+ enum {
+ 	UBI_IO_PEB_EMPTY = 1,
+ 	UBI_IO_PEB_FREE,
+-	UBI_IO_BAD_EC_HDR,
+-	UBI_IO_BAD_VID_HDR,
++	UBI_IO_BAD_HDR,
+ 	UBI_IO_BITFLIPS
  };
  
- struct ubi_device;
-@@ -135,7 +144,7 @@ struct ubi_vid_hdr;
-  * ubi_scan_move_to_list - move a PEB from the volume tree to a list.
-  *
-  * @sv: volume scanning information
-- * @seb: scanning eraseblock infprmation
-+ * @seb: scanning eraseblock information
-  * @list: the list to move to
-  */
- static inline void ubi_scan_move_to_list(struct ubi_scan_volume *sv,
 -- 
 1.6.6.1
