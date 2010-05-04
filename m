@@ -1,22 +1,18 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9HFE-000746-1Y
-	for linux-mtd@lists.infradead.org; Tue, 04 May 2010 12:29:00 +0000
-Received: by vws8 with SMTP id 8so997661vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 04 May 2010 05:28:59 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1005041343380.16385@lnxricardw.se.axis.com>
-References: <t2q630851df1005040439hf116acd1ucd73738e90dc5731@mail.gmail.com>
-	<Pine.LNX.4.64.1005041343380.16385@lnxricardw.se.axis.com>
-Date: Tue, 4 May 2010 17:58:58 +0530
-Message-ID: <h2m630851df1005040528w501d89dctd8d3ac0fe91f9e3@mail.gmail.com>
-Subject: Re: unable to run "flash_eraseall" on ARM target!!!
-From: Murali N <nalajala.murali@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCHv2] MTD: Suppress warnings in inline_map_read()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <1272354388.26036.4.camel@localhost>
+References: <1270891582.4704.102.camel@macbook.infradead.org>
+	<e970485f0e9f4c9e1cb6e594a45dd11308683197@localhost.localdomain>
+	<1272354388.26036.4.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 04 May 2010 16:04:32 +0300
+Message-ID: <1272978272.3702.5.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-yes, permissions are clearly set.
+On Tue, 2010-04-27 at 10:46 +0300, Artem Bityutskiy wrote:
+> On Sat, 2010-04-10 at 11:18 -0700, Kevin Cernekee wrote:
+> > With gcc 4.4.3 -O2 on MIPS32:
+> > 
+> > drivers/mtd/chips/cfi_util.c: In function 'cfi_qry_present':
+> > include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
+> > include/linux/mtd/map.h:375: note: 'r' was declared here
+> > include/linux/mtd/map.h:390: warning: 'r' may be used uninitialized in this function
+> > include/linux/mtd/map.h:375: note: 'r' was declared here
+> > 
+> > Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+> 
+> Pushed to l2-mtd-2.6 / dunno
 
--rwxrwxrwx root     root   17189 2010-05-04 11:03 flash_eraseall
+Removed from my tree because this breaks compilation:
 
-On Tue, May 4, 2010 at 5:14 PM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
->
-> On Tue, 4 May 2010, Murali N wrote:
->
->> Hi,
->> i have compiled the mtd-utils for android using arm-eabi-4.4.0 tool chai=
-n.
->> I tried erasing the flash using "flash_eraseall" on target but i am
->> getting the below errors!!!
->>
->> # sh ./flash_eraseall
->> =C2=A0 =C2=A0sh ./flash_eraseall
->> =C2=A0 =C2=A0./flash_eraseall: 1: Syntax error: word unexpected (expecti=
-ng ")")
->> # ./flash_eraseall
->> =C2=A0 ./flash_eraseall
->> =C2=A0 ./flash_eraseall: not found
->> # sh /data/flash_eraseall
->> =C2=A0 sh /data/flash_eraseall
->> =C2=A0 /data/flash_eraseall: 1: Syntax error: word unexpected (expecting=
- ")")
->> #
->>
->> Why "flash_eraseall" was not found? i am running from the same
->> directory where i have copied.
->
-> Have you made flash_eraseall executable? Looks like you've just copied it
-> without doing =C2=A0 chmod +x flash_eraseall =C2=A0afterwards.
->
-> /Ricard
-> --
-> Ricard Wolf Wanderl=C3=B6f =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0www.axis.com
-> Phone +46 46 272 2016 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Fax +46 46 13 61 30
->
+[dedekind@eru l2-mtd-2.6]$ make  ARCH=arm O=/home/dedekind/tmp/l2-mtd-2.6-arm/
+  Using /home/dedekind/git/l2-mtd-2.6 as source for kernel
+  GEN     /home/dedekind/tmp/l2-mtd-2.6-arm/Makefile
+  CHK     include/linux/version.h
+  CHK     include/generated/utsrelease.h
+make[2]: `include/generated/mach-types.h' is up to date.
+  CALL    /home/dedekind/git/l2-mtd-2.6/scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CC [M]  drivers/mtd/lpddr/lpddr_cmds.o
+In file included from /home/dedekind/git/l2-mtd-2.6/include/linux/mtd/qinfo.h:4,
+                 from /home/dedekind/git/l2-mtd-2.6/include/linux/mtd/pfow.h:7,
+                 from /home/dedekind/git/l2-mtd-2.6/drivers/mtd/lpddr/lpddr_cmds.c:27:
+/home/dedekind/git/l2-mtd-2.6/include/linux/mtd/map.h: In function 'inline_map_read':
+/home/dedekind/git/l2-mtd-2.6/include/linux/mtd/map.h:390: error: implicit declaration of function 'BUG'
+make[4]: *** [drivers/mtd/lpddr/lpddr_cmds.o] Error 1
+make[3]: *** [drivers/mtd/lpddr] Error 2
+make[2]: *** [drivers/mtd] Error 2
+make[1]: *** [drivers] Error 2
+make: *** [sub-make] Error 2
+[dedekind@eru l2-mtd-2.6]$ git revert ae60e258dda8a9c575fcbd68f05ca034ad043a36^C
+[dedekind@eru l2-mtd-2.6]$ git log 
 
-
-
---=20
-Regards,
-Murali N
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
