@@ -1,15 +1,20 @@
-Subject: Re: [PATCH v2] Add support for Samsung SoC OneNAND controllers
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9IXi-00033L-S1
+	for linux-mtd@lists.infradead.org; Tue, 04 May 2010 13:52:12 +0000
+Subject: Re: [PATCH v2] mtdchar: allow mmap() on MTD RAM/ROM char devices
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <1272469609-21876-1-git-send-email-m.szyprowski@samsung.com>
-References: <1272469609-21876-1-git-send-email-m.szyprowski@samsung.com>
+To: Anatolij Gustschin <agust@denx.de>
+In-Reply-To: <20100429161320.3b179f6c@wker>
+References: <1272461518.7750.31.camel@localhost>
+	<1272471640-27073-1-git-send-email-agust@denx.de>
+	<20100429161320.3b179f6c@wker>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 04 May 2010 16:21:41 +0300
-Message-ID: <1272979301.3702.8.camel@localhost>
+Date: Tue, 04 May 2010 16:45:55 +0300
+Message-ID: <1272980755.3702.9.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
-	ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,31 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-04-28 at 17:46 +0200, Marek Szyprowski wrote:
-> This patch series add support for Samsung SoC OneNAND controllers found
-> on S3C64xx, S5PC100 and S5PC110 chips. A few extensions to OneNAND core
-> were required to make the driver working properly on all supported SoCs.
+On Thu, 2010-04-29 at 16:13 +0200, Anatolij Gustschin wrote:
+> Hi Artem,
 > 
-> The required platform setup code has been posted to relevant mailing
-> list (ARM Kernel: "[PATCH] ARM: Samsung: Add platform support code for
-> OneNAND controller" thread).
+> On Wed, 28 Apr 2010 18:20:40 +0200
+> Anatolij Gustschin <agust@denx.de> wrote:
 > 
-> Changes since v1:
-> * addressed all coding style issues reported by Ben Dooks
-> * moved all resource definitions to platform device resources
-> * moved all resource definitions for different SoCs from regs-onenand.h to
->   arch/arm/mach-{s3c64xx,s5pc100,s5pv210}/include/mach/map.h
-> * moved all #ifdef conditional code to separate functions
+> > Signed-off-by: Anatolij Gustschin <agust@denx.de>
+> > ---
+> > v1 -> v2:
+> >  - Fixed compilation breakage on x86_64 while compiling
+> >    as module, since on x86_64 phys_mem_access_prot() is
+> >    not exported. Sorry for the breakage.
+> > 
+> >  drivers/mtd/mtdchar.c |   30 +++++++++++++++++++++++++++++-
+> >  1 files changed, 29 insertions(+), 1 deletions(-)
 > 
-> This patch series includes:
-> 
-> [PATCH 1/5] drivers: mtd: onenand: add support for chips with 4KB page size
-> [PATCH 2/5] drivers: mtd: onenand: allocate verify buffer in the core
-> [PATCH 3/5] drivers: mtd: onenand: add new callback for bufferram read
-> [PATCH 4/5] drivers: mtd: onenand: add workaround for SYNC_WRITE mode
-> [PATCH 5/5] drivers: mtd: add Samsung SoC OneNAND driver
+> Is this patch ok now?
 
-Pushed this series to my l2-mtd-2.6.git / dunno
+Not sure, I did not really review it, but it compiles now and I've
+pushed it to my l2-mtd-2.6 / dunno tree.
 
 -- 
 Best Regards,
