@@ -1,16 +1,27 @@
-Received: from [69.28.251.93] (helo=b32.net)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O96PM-0000lk-7i
-	for linux-mtd@lists.infradead.org; Tue, 04 May 2010 00:54:45 +0000
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Mon, 3 May 2010 17:46:12 -0700
-Subject: [PATCH] mtd: nand_base: Extend NAND flash detection to new MLC chips
-Message-Id: <430ce15d6a65533b5c3677b02498e5ff2e41c78c@localhost.localdomain>
-To: <dwmw2@infradead.org>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O98gf-0008BM-HB
+	for linux-mtd@lists.infradead.org; Tue, 04 May 2010 03:20:49 +0000
+Received: by wyg36 with SMTP id 36so1762638wyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 03 May 2010 20:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1272888512.27729.46.camel@localhost>
+References: <a145ef951003110433k5fd6c3c0h23bbe73fdb39686f@mail.gmail.com>
+	<531B6536C9F737458807DF75064873C8BE5EB0382D@mta-digimail.MTA.INT>
+	<a145ef951003160113x7baea205i8deb13c14ba8e0de@mail.gmail.com>
+	<1270544458.6754.15.camel@localhost>
+	<r2va145ef951005030454ud5400ebao9ce886d0e86c7549@mail.gmail.com>
+	<1272888512.27729.46.camel@localhost>
+Date: Tue, 4 May 2010 11:20:43 +0800
+Message-ID: <i2sa145ef951005032020i17584946r95957f8a038efe23@mail.gmail.com>
+Subject: Re: Can not mount UBIFS
+From: =?Big5?B?qkykX65t?= <okpalin@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Bosi Daniele <Daniele.Bosi@mta.it>,
+	GUIDA Nicola <Nicola.GUIDA@numonyx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,118 +31,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some of the newer MLC devices have a 6-byte ID sequence in which
-several field definitions differ from older chips in a manner that is
-not backward compatible.  For instance:
+Dear all,
 
-Samsung K9GAG08U0M (5-byte sequence): ec d5 14 b6 74
-4th byte, bits 1:0 encode the page size: 0=1KiB, 1=2KiB, 2=4KiB, 3=8KiB
-4th byte, bits 5:4 encode the block size: 0=64KiB, 1=128KiB, ...
-4th byte, bit 6 encodes the OOB size: 0=8B/512B, 1=16B/512B
+I find the root cause: bootloader
 
-Samsung K9GAG08U0D (6-byte sequence): ec d5 94 29 34 41
-4th byte, bits 1:0 encode the page size: 0=2KiB, 1=4KiB, 3=8KiB, 4=rsvd
-4th byte, bits 7;5:4 encode the block size: 0=128KiB, 1=256KiB, ...
-4th byte, bits 6;3:2 encode the OOB size: 1=128B/page, 2=218B/page
+UBI image, written by bootloader, could not be mount.
+UBI image, written by ubiformat command, could be mount correctly.
 
-This patch uses the new 6-byte scheme if the ID code wraps around
-exactly at byte 6, and falls back to the old scheme otherwise.
+I guess that bootloader may not write ubi image correctly.
+I will port ubiformat in bootloader.
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- drivers/mtd/nand/nand_base.c |   60 ++++++++++++++++++++++++++++--------------
- 1 files changed, 40 insertions(+), 20 deletions(-)
+Thank you,
+Best regards,
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b9dc65c..2537ceb 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2774,8 +2774,8 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 						  int busw, int *maf_id,
- 						  struct nand_flash_dev *type)
- {
--	int dev_id, maf_idx;
--	int tmp_id, tmp_manf;
-+	int dev_id, maf_idx, i;
-+	u8 id_data[8];
- 
- 	/* Select the device */
- 	chip->select_chip(mtd, 0);
-@@ -2801,15 +2801,15 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 
- 	chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
- 
--	/* Read manufacturer and device IDs */
-+	/* Read entire ID string */
- 
--	tmp_manf = chip->read_byte(mtd);
--	tmp_id = chip->read_byte(mtd);
-+	for (i = 0; i < 8; i++)
-+		id_data[i] = chip->read_byte(mtd);
- 
--	if (tmp_manf != *maf_id || tmp_id != dev_id) {
-+	if (id_data[0] != *maf_id || id_data[1] != dev_id) {
- 		printk(KERN_INFO "%s: second ID read did not match "
- 		       "%02x,%02x against %02x,%02x\n", __func__,
--		       *maf_id, dev_id, tmp_manf, tmp_id);
-+		       *maf_id, dev_id, id_data[0], id_data[1]);
- 		return ERR_PTR(-ENODEV);
- 	}
- 
-@@ -2832,21 +2832,41 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 	if (!type->pagesize) {
- 		int extid;
- 		/* The 3rd id byte holds MLC / multichip data */
--		chip->cellinfo = chip->read_byte(mtd);
-+		chip->cellinfo = id_data[2];
- 		/* The 4th id byte is the important one */
--		extid = chip->read_byte(mtd);
--		/* Calc pagesize */
--		mtd->writesize = 1024 << (extid & 0x3);
--		extid >>= 2;
--		/* Calc oobsize */
--		mtd->oobsize = (8 << (extid & 0x01)) * (mtd->writesize >> 9);
--		extid >>= 2;
--		/* Calc blocksize. Blocksize is multiples of 64KiB */
--		mtd->erasesize = (64 * 1024) << (extid & 0x03);
--		extid >>= 2;
--		/* Get buswidth information */
--		busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
-+		extid = id_data[3];
- 
-+		/*
-+		 * Field definitions are in the following datasheets:
-+		 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
-+		 * New style   (6 byte ID): Samsung K9GAG08U0D (p.40)
-+		 * Check for wraparound at byte 6 to decide what to do.
-+		 */
-+		if (id_data[0] == id_data[6] && id_data[1] == id_data[7]) {
-+			/* Calc pagesize */
-+			mtd->writesize = 2048 << (extid & 0x03);
-+			extid >>= 2;
-+			/* Calc oobsize */
-+			mtd->oobsize = (extid & 0x03) == 0x01 ? 128 : 218;
-+			extid >>= 2;
-+			/* Calc blocksize */
-+			mtd->erasesize = (128 * 1024) <<
-+				(((extid >> 1) & 0x04) | (extid & 0x03));
-+			busw = 0;
-+		} else {
-+			/* Calc pagesize */
-+			mtd->writesize = 1024 << (extid & 0x03);
-+			extid >>= 2;
-+			/* Calc oobsize */
-+			mtd->oobsize = (8 << (extid & 0x01)) *
-+				(mtd->writesize >> 9);
-+			extid >>= 2;
-+			/* Calc blocksize. Blocksize is multiples of 64KiB */
-+			mtd->erasesize = (64 * 1024) << (extid & 0x03);
-+			extid >>= 2;
-+			/* Get buswidth information */
-+			busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
-+		}
- 	} else {
- 		/*
- 		 * Old devices have chip data hardcoded in the device id table
--- 
-1.6.3.1
+2010/5/3 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Mon, 2010-05-03 at 19:54 +0800, =C1=D6=D3=DA=BE=FE wrote:
+>> Dear all,
+>>
+>> Thank you for your support.
+>> I can mount UBIFS now after fixing mtd read function.
+>>
+>> However, if I enable the "extra checks" of UBI and UBIFS, then I can
+>> not mount UBIFS.
+>> What's the different after enable "extra checks" of UBI and UBIFS.
+>
+> Well, these are various self-checks. There are many of them and they are
+> different. E.g., in UBI some of them read flash before every writing and
+> make sure the area contains all 0xFF bytes. In UBIFS this can be walking
+> through the whole index tree and checks it. There are many of them and
+> they are different.
+>
+> If things stop working for you when you enable all checks, this either
+> means a bug in the debugging code or a real problem. Please, post your
+> error report. Use this guide:
+>
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=A7=A1=A7=E2=A7=E4=A7=D7=A7=DE =A7=A2=A7=DA=A7=E4=A7=F0=
+=A7=E8=A7=DC=A7=DA=A7=DB)
+>
+>
