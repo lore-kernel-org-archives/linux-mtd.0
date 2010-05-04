@@ -1,22 +1,22 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9J0N-0003xB-S7
-	for linux-mtd@lists.infradead.org; Tue, 04 May 2010 14:21:48 +0000
-Received: by vws8 with SMTP id 8so1112130vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 04 May 2010 07:21:46 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20100504132824.GM20932@elara.bln.innominate.local>
-References: <t2q630851df1005040439hf116acd1ucd73738e90dc5731@mail.gmail.com>
-	<20100504132824.GM20932@elara.bln.innominate.local>
-Date: Tue, 4 May 2010 19:51:43 +0530
-Message-ID: <x2t630851df1005040721i49a44970yfb3b0dd5e2f17d8e@mail.gmail.com>
-Subject: Re: unable to run "flash_eraseall" on ARM target!!!
-From: Murali N <nalajala.murali@gmail.com>
-To: Christian Hohnstaedt <chohnstaedt@innominate.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9J1y-00045K-1k
+	for linux-mtd@lists.infradead.org; Tue, 04 May 2010 14:23:27 +0000
+Subject: Re: UBIFS and MLC NAND Flash
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Pedro I. Sanchez" <psanchez@fosstel.com>
+In-Reply-To: <4BDEE226.80205@fosstel.com>
+References: <4BA7A183.7040206@fosstel.com>
+	<1270714961.6754.107.camel@localhost>
+	<i2odbdb2ea61004191457s58e5b816i1efdf694a1e2a24@mail.gmail.com>
+	<4BCCECC7.8000006@fosstel.com>  <4BDEE226.80205@fosstel.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 04 May 2010 17:17:07 +0300
+Message-ID: <1272982627.3702.15.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: twebb <taliaferro62@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +26,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-file flash_eraseall produce
-flash_eraseall: ELF 32-bit LSB executable, ARM, version 1 (SYSV),
-dynamically linked (uses shared libs), not stripped.
+On Mon, 2010-05-03 at 10:48 -0400, Pedro I. Sanchez wrote:
+> Pedro I. Sanchez wrote:
+> > twebb wrote:
+> >>>> 2. I have several boards with MLC NAND flash running the Linux kernel
+> >>>> 2.6.29 and UBIFS. I am seeing a fairly large rate of file "corruption"
+> >>>> errors, files that all of a sudden become unreadable. Curiously enough,
+> >>>> they have been read-only files in all cases, program executables and
+> >>>> shared libraries.
+> >>> Hmm. Do you do unclean power cuts?
+> >>>
+> >>>> Would upgrading to a more recent kernel, or back porting the latest
+> >>>> UBIFS code, help? Shall I expect better support for MLC NAND flash in
+> >>>> the latest UBIFS code?
+> >>> You did not specify whether you pulled the ubifs-v2.6.29.git tree. If
+> >>> you did this, then your UBI/UBIFS should be the same as in the latest
+> >>> kernels. Please, do this, although this will probably not solve your
+> >>> corruption problems, but you'll have other bug-fixes we have made since
+> >>> 2.6.29 times.
+> >>>
+> >>>
+> >>
+> >> Pedro,
+> >> I'm seeing very similar issues with MLC+UBIFS, though not only with
+> >> read-only files.  Have you made any progress in your investigation or
+> >> while trying Artem's suggestions?  I'm about to start digging into
+> >> this and would be interested to hear about any issues you may have
+> >> come across.  Do you have any opinion on whether this "corruption" is
+> >> related to the information posted on the linux-mtd site at...
+> >> http://www.linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc ?
+> >>
+> >> A few notes:
+> >> - I do occasionally have power cuts, but my understanding was that
+> >> UBI/UBIFS was very tolerant of that condition.
+> >> - I use CONFIG_MTD_UBI_WL_THRESHOLD=256
+> >> - I'm using linux-2.6.29
+> >>
+> >> Thanks,
+> >> twebb
+> > 
+> > I haven't had the opportunity to use 2.6.29 with the ubifs backport yet. 
+> > However, I run my devices over an extended operational test and couldn't 
+> > reproduce the errors. In this test I avoided any power cuts on purpose 
+> > because I wanted to verify that the boards' software was not at fault 
+> > during normal conditions.
+> > 
+> > I still see the errors in the deployed boards and these ones are subject 
+> > to random power cuts. After analyzing the logs I conclude that there is 
+> > a strong correlation between the power cuts and the corruption errors. 
+> > The typical scenario is a board running fine for two months without 
+> > interruption, then a power cut, and then upon reboot a myriad of UBIFS 
+> > error messages show up (see sample following my signature)
+> > 
+> > I'm almost convinced now that power cuts are the culprit. I will be 
+> > conducting test in the next few days to fully verify this. I'll post my 
+> > results.
+> > 
+> > Thanks,
+> > 
+> My tests are done. I arrived to the following conclusions:
+> 
+> 1. All errors, zero-size files and random corruption, are related to 
+> power outages.
 
-It is linked against bionic libc (android specific) library. Aslo i am
-able to see the libc.so under /system/lib/
+Well, on SLC we did huge amount of power-cut tests and were always able
+to mount the FS. Zero-files and zeroes in files are possible, and this
+is described here:
 
-On Tue, May 4, 2010 at 6:58 PM, Christian Hohnstaedt
-<chohnstaedt@innominate.com> wrote:
-> Hi,
->
-> On Tue, May 04, 2010 at 05:09:57PM +0530, Murali N wrote:
->> Hi,
->> i have compiled the mtd-utils for android using arm-eabi-4.4.0 tool chai=
-n.
->> I tried erasing the flash using "flash_eraseall" on target but i am
->> getting the below errors!!!
->>
->> # ./flash_eraseall
->> =C2=A0 =C2=A0 ./flash_eraseall
->> =C2=A0 =C2=A0 ./flash_eraseall: not found
->
-> This looks like a missing library loader.
-> Did you link dynamically ?
-> Do you have ld-linux.so (glibc) or ld-uClibc.so (ulibc) in /lib ?
->
->
-> Christian
->
-> --
-> Christian Hohnstaedt / Project Manager Hardware and Manufacturing
->
-> Innominate Security Technologies AG / protecting industrial networks
-> tel: +49.30.921028.208 / fax: +49.30.921028.020
-> Rudower Chaussee 13, D-12489 Berlin / http://www.innominate.com
->
-> Register Court: AG Charlottenburg, HR B 81603
-> Management Board: Dirk Seewald
-> Chairman of the Supervisory Board: Volker Bibelhausen
->
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_empty_file
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_end_hole
 
+Not sure what you mean by random corruption, but this is probably
+something which should not happen. But a better description would be
+interesting.
 
+Anyway, if you have problems, they are probably MLC-specific, and of
+course it would be nice if someone with the real HW would investigate
+and fix them...
 
---=20
-Regards,
-Murali N
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
