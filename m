@@ -1,19 +1,16 @@
-Received: from host2.bln.innominate.com ([77.245.32.75]
-	helo=home.innominate.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9IAm-0004wh-6A
-	for linux-mtd@lists.infradead.org; Tue, 04 May 2010 13:28:29 +0000
-Date: Tue, 4 May 2010 15:28:24 +0200
-From: Christian Hohnstaedt <chohnstaedt@innominate.com>
-To: Murali N <nalajala.murali@gmail.com>
-Subject: Re: unable to run "flash_eraseall" on ARM target!!!
-Message-ID: <20100504132824.GM20932@elara.bln.innominate.local>
-References: <t2q630851df1005040439hf116acd1ucd73738e90dc5731@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <t2q630851df1005040439hf116acd1ucd73738e90dc5731@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2] Add support for Samsung SoC OneNAND controllers
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <1272469609-21876-1-git-send-email-m.szyprowski@samsung.com>
+References: <1272469609-21876-1-git-send-email-m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 04 May 2010 16:21:41 +0300
+Message-ID: <1272979301.3702.8.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org,
+	ben-linux@fluff.org, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Tue, May 04, 2010 at 05:09:57PM +0530, Murali N wrote:
-> Hi,
-> i have compiled the mtd-utils for android using arm-eabi-4.4.0 tool chain.
-> I tried erasing the flash using "flash_eraseall" on target but i am
-> getting the below errors!!!
+On Wed, 2010-04-28 at 17:46 +0200, Marek Szyprowski wrote:
+> This patch series add support for Samsung SoC OneNAND controllers found
+> on S3C64xx, S5PC100 and S5PC110 chips. A few extensions to OneNAND core
+> were required to make the driver working properly on all supported SoCs.
 > 
-> # ./flash_eraseall
->     ./flash_eraseall
->     ./flash_eraseall: not found
+> The required platform setup code has been posted to relevant mailing
+> list (ARM Kernel: "[PATCH] ARM: Samsung: Add platform support code for
+> OneNAND controller" thread).
+> 
+> Changes since v1:
+> * addressed all coding style issues reported by Ben Dooks
+> * moved all resource definitions to platform device resources
+> * moved all resource definitions for different SoCs from regs-onenand.h to
+>   arch/arm/mach-{s3c64xx,s5pc100,s5pv210}/include/mach/map.h
+> * moved all #ifdef conditional code to separate functions
+> 
+> This patch series includes:
+> 
+> [PATCH 1/5] drivers: mtd: onenand: add support for chips with 4KB page size
+> [PATCH 2/5] drivers: mtd: onenand: allocate verify buffer in the core
+> [PATCH 3/5] drivers: mtd: onenand: add new callback for bufferram read
+> [PATCH 4/5] drivers: mtd: onenand: add workaround for SYNC_WRITE mode
+> [PATCH 5/5] drivers: mtd: add Samsung SoC OneNAND driver
 
-This looks like a missing library loader.
-Did you link dynamically ?
-Do you have ld-linux.so (glibc) or ld-uClibc.so (ulibc) in /lib ?
-
-
-Christian
+Pushed this series to my l2-mtd-2.6.git / dunno
 
 -- 
-Christian Hohnstaedt / Project Manager Hardware and Manufacturing
-
-Innominate Security Technologies AG / protecting industrial networks
-tel: +49.30.921028.208 / fax: +49.30.921028.020
-Rudower Chaussee 13, D-12489 Berlin / http://www.innominate.com
-
-Register Court: AG Charlottenburg, HR B 81603
-Management Board: Dirk Seewald
-Chairman of the Supervisory Board: Volker Bibelhausen
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
