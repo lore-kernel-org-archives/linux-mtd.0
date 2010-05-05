@@ -1,20 +1,20 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9ZrM-0001sN-N7
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 08:21:37 +0000
-Received: by fxm17 with SMTP id 17so3743843fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 05 May 2010 01:21:33 -0700 (PDT)
-From: "Kirill A. Shutemov" <kirill@shutemov.name>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH v3] mtd: Do not corrupt backing device of device node inode
-Date: Wed,  5 May 2010 11:21:28 +0300
-Message-Id: <1273047688-20947-1-git-send-email-kirill@shutemov.name>
-Cc: Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
-	linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-	Alexander Shishkin <virtuoso@slind.org>, linux-mtd@lists.infradead.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill@shutemov.name>
+Received: from mika.eatserver.nl ([195.20.9.75])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9a3g-0004BD-Ir
+	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 08:34:21 +0000
+Message-ID: <4BE12D86.2070605@aimvalley.nl>
+Date: Wed, 05 May 2010 10:34:14 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>
+Subject: Re: Some questions on bit-flips and JFFS2
+References: <201005031505.18604.muehlfelder@enertex.de>
+	<4BDFE8D6.1050704@aimvalley.nl>
+	<201005041659.26262.muehlfelder@enertex.de>
+In-Reply-To: <201005041659.26262.muehlfelder@enertex.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,198 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We cannot modify file->f_mapping->backing_dev_info, because it will corrupt
-backing device of device node inode, since file->f_mapping is equal to
-inode->i_mapping (see __dentry_open() in fs/open.c).
+Thorsten Mühlfelder wrote:
 
-Let's introduce separate inode for MTD device with appropriate backing
-device.
+.
+.
+.
 
-Signed-off-by: Kirill A. Shutemov <kirill@shutemov.name>
-Acked-by: Jan Kara <jack@suse.cz>
+>> Maybe, as said check/ask your hardware supplier.
+>> Maybe "refreshing" the block helps (that is saving the data, erasing the
+>> block(s) and reprogramming all data). You could try this.
+> 
+> I've already thought about something like this:
+> 1. After first succesful bootup dump a mtd0 image and calculate a md5sum of 
+> it:
+> nanddump -o -b -f mtd0.img /dev/mtd0
+> 2. Before each shutdown dump the image again and check if the md5sum has 
+> changed.
+> 3. If it has changed write the initial dump back:
+> flash_eraseall /dev/mtd0
+> nandwrite -p /dev/mtd0 mtd0.img
+> 
+> Would this be the right method?
+> 
 
----
-Changelog
- v2 -> v3:
-  - Rebase to mtd.git.
- v1 -> v2:
-  - Fix error handling based on comments by Jan Kara.
 
----
- drivers/mtd/mtdchar.c   |   77 ++++++++++++++++++++++++++++++++++++++++++-----
- drivers/mtd/mtdcore.c   |    3 ++
- include/linux/mtd/mtd.h |    3 ++
- 3 files changed, 75 insertions(+), 8 deletions(-)
+yes that's the idea, given that "refreshing" really helps to prevent
+(actually delay) future read disturbs.
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index c355491..a2bb3ce 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -15,12 +15,15 @@
- #include <linux/smp_lock.h>
- #include <linux/backing-dev.h>
- #include <linux/compat.h>
-+#include <linux/mount.h>
- 
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/compatmac.h>
- 
- #include <asm/uaccess.h>
- 
-+#define MTD_INODE_FS_MAGIC 0x11307854
-+static struct vfsmount *mtd_inode_mnt __read_mostly;
- 
- /*
-  * Data structure to hold the pointer to the mtd device as well
-@@ -85,11 +88,30 @@ static int mtd_open(struct inode *inode, struct file *file)
- 		goto out;
- 	}
- 
--	if (mtd->backing_dev_info)
--		file->f_mapping->backing_dev_info = mtd->backing_dev_info;
-+	if (!mtd->inode) {
-+		mtd->inode = new_inode(mtd_inode_mnt->mnt_sb);
-+		if (!mtd->inode) {
-+			put_mtd_device(mtd);
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		mtd->inode->i_mode = S_IFCHR;
-+		mtd->inode->i_rdev = inode->i_rdev;
-+		if (mtd->backing_dev_info) {
-+			mtd->inode->i_data.backing_dev_info =
-+				mtd->backing_dev_info;
-+		}
-+	}
-+
-+	spin_lock(&inode_lock);
-+	__iget(mtd->inode);
-+	spin_unlock(&inode_lock);
-+
-+	file->f_mapping = mtd->inode->i_mapping;
- 
- 	/* You can't open it RW if it's not a writeable device */
- 	if ((file->f_mode & FMODE_WRITE) && !(mtd->flags & MTD_WRITEABLE)) {
-+		iput(mtd->inode);
- 		put_mtd_device(mtd);
- 		ret = -EACCES;
- 		goto out;
-@@ -97,6 +119,7 @@ static int mtd_open(struct inode *inode, struct file *file)
- 
- 	mfi = kzalloc(sizeof(*mfi), GFP_KERNEL);
- 	if (!mfi) {
-+		iput(mtd->inode);
- 		put_mtd_device(mtd);
- 		ret = -ENOMEM;
- 		goto out;
-@@ -122,6 +145,8 @@ static int mtd_close(struct inode *inode, struct file *file)
- 	if ((file->f_mode & FMODE_WRITE) && mtd->sync)
- 		mtd->sync(mtd);
- 
-+	iput(mtd->inode);
-+
- 	put_mtd_device(mtd);
- 	file->private_data = NULL;
- 	kfree(mfi);
-@@ -951,22 +976,58 @@ static const struct file_operations mtd_fops = {
- #endif
- };
- 
-+static int mtd_inodefs_get_sb(struct file_system_type *fs_type, int flags,
-+                               const char *dev_name, void *data,
-+                               struct vfsmount *mnt)
-+{
-+        return get_sb_pseudo(fs_type, "mtd_inode:", NULL, MTD_INODE_FS_MAGIC,
-+                             mnt);
-+}
-+
-+static struct file_system_type mtd_inodefs_type = {
-+       .name = "mtd_inodefs",
-+       .get_sb = mtd_inodefs_get_sb,
-+       .kill_sb = kill_anon_super,
-+};
-+
- static int __init init_mtdchar(void)
- {
--	int status;
-+	int ret;
- 
--	status = __register_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS,
-+	ret = __register_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS,
- 				   "mtd", &mtd_fops);
--	if (status < 0) {
--		printk(KERN_NOTICE "Can't allocate major number %d for Memory Technology Devices.\n",
--		       MTD_CHAR_MAJOR);
-+	if (ret < 0) {
-+		pr_notice("Can't allocate major number %d for "
-+				"Memory Technology Devices.\n", MTD_CHAR_MAJOR);
-+		return ret;
-+	}
-+
-+	ret = register_filesystem(&mtd_inodefs_type);
-+	if (ret) {
-+		pr_notice("Can't register mtd_inodefs filesystem: %d\n", ret);
-+		goto err_unregister_chdev;
- 	}
- 
--	return status;
-+	mtd_inode_mnt = kern_mount(&mtd_inodefs_type);
-+	if (IS_ERR(mtd_inode_mnt)) {
-+		ret = PTR_ERR(mtd_inode_mnt);
-+		pr_notice("Error mounting mtd_inodefs filesystem: %d\n", ret);
-+		goto err_unregister_filesystem;
-+	}
-+
-+	return ret;
-+
-+err_unregister_filesystem:
-+	unregister_filesystem(&mtd_inodefs_type);
-+err_unregister_chdev:
-+	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
-+	return ret;
- }
- 
- static void __exit cleanup_mtdchar(void)
- {
-+	mntput(mtd_inode_mnt);
-+	unregister_filesystem(&mtd_inodefs_type);
- 	__unregister_chrdev(MTD_CHAR_MAJOR, 0, 1 << MINORBITS, "mtd");
- }
- 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 70a7858..fa424ad 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -369,6 +369,9 @@ int del_mtd_device (struct mtd_info *mtd)
- 		       mtd->index, mtd->name, mtd->usecount);
- 		ret = -EBUSY;
- 	} else {
-+		if (mtd->inode)
-+			iput(mtd->inode);
-+
- 		device_unregister(&mtd->dev);
- 
- 		idr_remove(&mtd_idr, mtd->index);
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 5326435..d66409a 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -12,6 +12,7 @@
- #include <linux/uio.h>
- #include <linux/notifier.h>
- #include <linux/device.h>
-+#include <linux/fs.h>
- 
- #include <linux/mtd/compatmac.h>
- #include <mtd/mtd-abi.h>
-@@ -174,6 +175,8 @@ struct mtd_info {
- 	 */
- 	struct backing_dev_info *backing_dev_info;
- 
-+	/* inode for mtd device */
-+	struct inode *inode;
- 
- 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
- 	int (*write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
--- 
-1.7.0.4
+But this won't work well. nanddump doesn't tell you the single=corrected
+bit errors.
+Only if there's an uncorrectable error (2 or more bits flip) a change will
+be detected and the data will be refreshed. A read disturb tends to be
+unstable though, meaning sometimes it's there and sometimes not.
+This means you may miss an uncorrectable error (2 bits flip).
+
+Another problem is a sudden reboot (e.g. crash or power-loss). There's no
+check then.
+
+It much more easier to let UBI/UBIFS deal with this suff. It's designed for
+this.
+u-boot support UBIFS (read-only). This means you can put a kernel image
+on UBIFS and make u-boot read/boot it.
+
+
+hth,
+Norbert van Bolhuis.
