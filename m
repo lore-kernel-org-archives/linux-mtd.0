@@ -1,17 +1,18 @@
-Subject: Re: [PATCHv3] mtd: cfi_cmdset_0002: Add reboot notifier for AMD
-	flashes
+Subject: Re: [PATCH] sst25l.c: fix multi-part messages with broken spi masters
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <471a5dfa1495f2d33e41435e4d37852ad489b112@localhost.localdomain>
-References: <1272519262.7750.66.camel@localhost>
-	<471a5dfa1495f2d33e41435e4d37852ad489b112@localhost.localdomain>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+In-Reply-To: <0D753D10438DA54287A00B0270842697636E305D4A@AUSP01VMBX24.collaborationhost.net>
+References: <0D753D10438DA54287A00B0270842697636E305D4A@AUSP01VMBX24.collaborationhost.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 05 May 2010 08:40:27 +0300
-Message-ID: <1273038027.3702.52.camel@localhost>
+Date: Wed, 05 May 2010 08:45:49 +0300
+Message-ID: <1273038349.3702.54.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	"ryan@bluewatersys.com" <ryan@bluewatersys.com>,
+	"andre@bluewatersys.com" <andre@bluewatersys.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,17 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-04-29 at 10:26 -0700, Kevin Cernekee wrote:
-> Ensure that the flash device is in a quiescent state before rebooting.
-> The implementation is closely modeled after the cfi_cmdset_0001 reboot
-> notifier, commit 963a6fb0a0d336d0513083b7e4b5c3ff9d6d2061 .
+On Thu, 2010-04-29 at 13:34 -0500, H Hartley Sweeten wrote:
+> Some SPI masters (ep93xx) have limitations when using the SFRMOUT
+> signal for the spi device chip select.  The SFRMOUT signal is
+> only asserted as long as the spi transmit fifo contains data.  As
+> soon as the last bit is clocked into the receive fifo it gets
+> deasserted.
 > 
-> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c |   56 +++++++++++++++++++++++++++++++++++
->  1 files changed, 56 insertions(+), 0 deletions(-)
+> The functions sst25l_status and sst25l_match_device use the API
+> function spi_write_then_read to write a command to the flash then
+> read the response back.  This API function creates a two part spi
+> message for the write then read.  When this message is transferred
+> the SFRMOUT signal ends up getting deasserted after the command
+> phase.  This causes the command to get aborted by the device so
+> the read phase returns invalid data.
+> 
+> By changing sst25l_status and sst25l_match_device to use a single
+> transfer synchronous message, the SFRMOUT signal stays asserted
+> during the entire message so the correct data always gets returned.
+> 
+> This change will have no effect on SPI masters which use a chip
+> select mechanism (GPIO's, etc.) which does stay asserted correctly.
+> As a bonus, the single transfer synchronous messages complete faster
+> than multi-part messages.
+> 
+> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: Artem Bityutskiy <dedekind1@gmail.com>
+> Cc: Andre Renaud <andre@bluewatersys.com>
+> Cc: Ryan Mallon <ryan@bluewatersys.com>
 
-Pushed to l2-mtd-2.6 / master, thanks.
+Pushed to l2-mtd-2.6 / dunno.
+
+But please, notice for future:
+1. It is much nicer to put something like [PATCH v2] when you re-send.
+2. In MTD we prefix everything with mtd:
 
 -- 
 Best Regards,
