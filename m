@@ -1,24 +1,26 @@
-Received: from cantor.suse.de ([195.135.220.2] helo=mx1.suse.de)
+Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9fZC-00045c-Nc
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 14:27:15 +0000
-Date: Wed, 5 May 2010 16:27:07 +0200
-From: Jan Kara <jack@suse.cz>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v3] mtd: Do not corrupt backing device of device node inode
-Message-ID: <20100505142707.GA3938@quack.suse.cz>
-References: <1273047688-20947-1-git-send-email-kirill@shutemov.name>
-	<1273069039.3702.188.camel@localhost>
+	id 1O9gFx-0007xR-4J
+	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 15:11:26 +0000
+Date: Wed, 5 May 2010 08:11:11 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Mike Rapoport <mike@compulab.co.il>
+Subject: Re: Upcoming merge window and omap NAND patches
+Message-ID: <20100505151111.GT29604@atomide.com>
+References: <20100504220803.GN29604@atomide.com>
+	<1273034943.3702.19.camel@localhost>
+	<l2wce9ab5791005042311lf1c1a15fu891457f4e0863d6@mail.gmail.com>
+	<2A3DCF3DA181AD40BDE86A3150B27B6B030D7DEB6B@dbde02.ent.ti.com>
+	<4BE16AB8.7010308@compulab.co.il>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1273069039.3702.188.camel@localhost>
-Cc: Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-	David Howells <dhowells@redhat.com>,
-	Alexander Shishkin <virtuoso@slind.org>, linux-mtd@lists.infradead.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
-	"Kirill A. Shutemov" <kirill@shutemov.name>,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <4BE16AB8.7010308@compulab.co.il>
+Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
+	Steve Sakoman <sakoman@gmail.com>,
+	Vimal Singh <vimal.newwork@gmail.com>, "Ghorai, Sukumar" <s-ghorai@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +30,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 05-05-10 17:17:19, Artem Bityutskiy wrote:
-> On Wed, 2010-05-05 at 11:21 +0300, Kirill A. Shutemov wrote:
-> > We cannot modify file->f_mapping->backing_dev_info, because it will corrupt
-> > backing device of device node inode, since file->f_mapping is equal to
-> > inode->i_mapping (see __dentry_open() in fs/open.c).
-> > 
-> > Let's introduce separate inode for MTD device with appropriate backing
-> > device.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill@shutemov.name>
-> > Acked-by: Jan Kara <jack@suse.cz>
+* Mike Rapoport <mike@compulab.co.il> [100505 05:51]:
+> Ghorai,
 > 
-> I get the following build error:
-> 
-> [dedekind@eru l2-mtd-2.6]$ make -j8
-> O=/home/dedekind/tmp/l2-mtd-2.6-x86_64/
->   GEN     /home/dedekind/tmp/l2-mtd-2.6-x86_64/Makefile
->   CHK     include/linux/version.h
->   CHK     include/generated/utsrelease.h
->   Using /home/dedekind/git/l2-mtd-2.6 as source for kernel
->   CALL    /home/dedekind/git/l2-mtd-2.6/scripts/checksyscalls.sh
->   CHK     include/generated/compile.h
->   CHK     include/linux/version.h
-> make[3]: `scripts/unifdef' is up to date.
->   Building modules, stage 2.
-> Kernel: arch/x86/boot/bzImage is ready  (#2)
->   MODPOST 146 modules
-> ERROR: "__iget" [drivers/mtd/mtdchar.ko] undefined!
-> ERROR: "inode_lock" [drivers/mtd/mtdchar.ko] undefined!
-> make[2]: *** [__modpost] Error 1
-> make[1]: *** [modules] Error 2
-> make: *** [sub-make] Error 2
-> 
-> __iget and inode_lock are not exported...
-  Ah, right. igrab() should be used instead of __iget inside the
-inode_lock.
+> Ghorai, Sukumar wrote:
+> >Tony,
+> >I understand your comment/input. And I will work on it.
 
-								Honza
+Great, good to hear.
 
--- 
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+> >All existing omap3 boards are using same old fashion. So let me see how many board I can test before post the patch. I will update this next week.
+> 
+> I'd be glad to test the patches on CM-T35 if you'd like to.
+
+For this merge window how about just getting rid of OMAP34XX_GPMC_VIRT
+in the board-*.c files and move that to gpmc-nand.c?
+
+This may allow adding more board-*.c NAND files without
+having to patch all of them later on again.
+
+However, if there are more changes needed to all the board-*.c
+files for the NAND platform data, then let's just fix the existing
+ones first before adding new ones.
+
+After that, looks like most of the work is to move some of the
+GPMC functions from omap2.c to gpmc.c.
+
+Or should they rather be in gpmc-nand.c if they are only used
+with NAND connected to GPMC?
+
+Regards,
+
+Tony
