@@ -1,25 +1,17 @@
-Received: from mika.eatserver.nl ([195.20.9.75])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9auu-0004lr-CB
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 09:29:21 +0000
-Message-ID: <4BE13A65.1020701@aimvalley.nl>
-Date: Wed, 05 May 2010 11:29:09 +0200
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: Some questions on bit-flips and JFFS2
-References: <201005031505.18604.muehlfelder@enertex.de>	
-	<4BDFE8D6.1050704@aimvalley.nl>
-	<201005041659.26262.muehlfelder@enertex.de>	
-	<4BE12D86.2070605@aimvalley.nl>	
-	<Pine.LNX.4.64.1005051039490.22753@lnxricardw.se.axis.com>
-	<1273049480.3702.129.camel@localhost>
-In-Reply-To: <1273049480.3702.129.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	=?UTF-8?B?VGhvcnN0ZW4gTQ==?= =?UTF-8?B?w7xobGZlbGRlcg==?=
-	<muehlfelder@enertex.de>, Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH] mtd: nand_base: Extend NAND flash detection to new MLC
+	chips
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <430ce15d6a65533b5c3677b02498e5ff2e41c78c@localhost.localdomain>
+References: <430ce15d6a65533b5c3677b02498e5ff2e41c78c@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 05 May 2010 14:18:46 +0300
+Message-ID: <1273058326.3702.174.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-
-.
-.
-.
-
+On Mon, 2010-05-03 at 17:46 -0700, Kevin Cernekee wrote:
+> Some of the newer MLC devices have a 6-byte ID sequence in which
+> several field definitions differ from older chips in a manner that is
+> not backward compatible.  For instance:
 > 
-> Unless you supply your device with an UPS :-)
+> Samsung K9GAG08U0M (5-byte sequence): ec d5 14 b6 74
+> 4th byte, bits 1:0 encode the page size: 0=1KiB, 1=2KiB, 2=4KiB, 3=8KiB
+> 4th byte, bits 5:4 encode the block size: 0=64KiB, 1=128KiB, ...
+> 4th byte, bit 6 encodes the OOB size: 0=8B/512B, 1=16B/512B
 > 
-> I did not really follow the discussion, so sorry if the following is
-> unrelated: I think it should not be too difficult to teach JFFS2 to
-> force GC on eraseblocks with bit-flips.
+> Samsung K9GAG08U0D (6-byte sequence): ec d5 94 29 34 41
+> 4th byte, bits 1:0 encode the page size: 0=2KiB, 1=4KiB, 3=8KiB, 4=rsvd
+> 4th byte, bits 7;5:4 encode the block size: 0=128KiB, 1=256KiB, ...
+> 4th byte, bits 6;3:2 encode the OOB size: 1=128B/page, 2=218B/page
 > 
+> This patch uses the new 6-byte scheme if the ID code wraps around
+> exactly at byte 6, and falls back to the old scheme otherwise.
+> 
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 
-I can confirm that ;-)
-we actually implemented this (for our ancient 2.4.25 kernel with JFFS2 version 2005)
-because we were seriously suffering from NAND bit flips on our Numonyx SLC NAND device.
-see:
-http://lists.infradead.org/pipermail/linux-mtd/2009-August/027080.html
+Pushed to l2-mtd-2.6 / master
 
-This would only benefit the OP if kernel image is kept on JFFS2 (too).
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
