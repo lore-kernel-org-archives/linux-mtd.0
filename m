@@ -1,24 +1,18 @@
-Received: from mail-qy0-f187.google.com ([209.85.221.187])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9Xpx-00050V-SG
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 06:12:03 +0000
-Received: by qyk17 with SMTP id 17so6719056qyk.21
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 04 May 2010 23:12:00 -0700 (PDT)
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9Ya9-0006xz-5y
+	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 06:59:46 +0000
+Date: Wed, 5 May 2010 08:59:37 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: =?iso-8859-1?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>
+Subject: Re: Some questions on bit-flips and JFFS2
+In-Reply-To: <201005031505.18604.muehlfelder@enertex.de>
+Message-ID: <Pine.LNX.4.64.1005050851070.22753@lnxricardw.se.axis.com>
+References: <201005031505.18604.muehlfelder@enertex.de>
 MIME-Version: 1.0
-In-Reply-To: <1273034943.3702.19.camel@localhost>
-References: <20100504220803.GN29604@atomide.com>
-	<1273034943.3702.19.camel@localhost>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Wed, 5 May 2010 11:41:39 +0530
-Message-ID: <l2wce9ab5791005042311lf1c1a15fu891457f4e0863d6@mail.gmail.com>
-Subject: Re: Upcoming merge window and omap NAND patches
-To: Artem.Bityutskiy@nokia.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Tony Lindgren <tony@atomide.com>, Sukumar Ghorai <s-ghorai@ti.com>,
-	Steve Sakoman <sakoman@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 5, 2010 at 10:19 AM, Artem Bityutskiy
-<Artem.Bityutskiy@nokia.com> wrote:
-> On Wed, 2010-05-05 at 00:08 +0200, ext Tony Lindgren wrote:
->> Hi all,
->>
->> There are several omap NAND patches pending, but some basic things
->> should be fixed first.
->>
->> 1. The NAND driver needs to stop tinkering with the GPMC registers
->>
->> The omap General Purpose Memory Controller (GPMC) registers are omap
->> specific, and not driver specific. Tinkering with these registers
->> can cause issues with the other devices on the GPMC.
->>
->> To find out what needs to disappear fomr the NAND driver, just do:
->>
->> $ grep baseaddr drivers/mtd/nand/omap2.c
->>
->> Any GPMC register tinkering needs to happen in arch/arm/mach-omap2/gpmc.c.
->> If there are not currently GPMC functions to do something in gpmc.c, then
->> let's add the necessary support there.
->>
->> 2. Passing hardcoded GPMC_CS0_BASE needs to go from the board files
->>
->> Passing hardcoded GPMC virtual addressess is sure way to mess up
->> things. This should all become unnecessary once the NAND drivers
->> stops messing with the GPMC registers directly.
->>
->> So, as a result, I'm not planning on pushing any omap NAND related
->> patches until these basic issues are fixed. I'll mark these patches
->> as "Changes requested" in patchwork.kernel.org even if these patches
->> don't have anything else wrong with them.
->>
->> Let's fix the basic things for good, and put the other patches on
->> hold for a while. Sorry if this causes problems!
->
-> Hi,
->
-> fair enough. I guess Vimal should address this, as he seems to be the TI
-> mr. NAND, right? :-)
 
-Hi All,
+On Mon, 3 May 2010, Thorsten M=FChlfelder wrote:
 
-Sorry again. I am no more with TI and I don't have any board with me
-too. So, I'm unable to fix these.  :(
-I hope someone else from TI can take care of it.
+> PS: I could not reproduce the bit-flip problem. It just happens in rare c=
+ases.
+> Furthermore some of my devices are using Samsung NAND instead of the Micr=
+on
+> NAND and did not show any problems yet. So perhaps my problem are just so=
+me
+> bad NAND chip? But still I have to find a solution for the problem.
 
--- 
-Regards,
-Vimal Singh
+In our experience, which is limited to 32 MiB and 128 MiB SLC flashes,=20
+Micron, Hynix and Numonyx have much worse bit read error rates that=20
+Samsung and Toshiba, even though the data sheets hint at the same level of=
+=20
+data integrity. We made some random tests, reading again and again from=20
+the same flash partition, and the first group above tended to show=20
+uncorrectable ECC errors already after less than a million reads, whereas=
+=20
+the second group showed only single-bit errors even after 20 or even 60=20
+million reads.
+
+Of course, reading that many times from a flash partition, especially a=20
+boot partition, is hardly realistic, but in our experience, it simulates=20
+quite well the situation of a having a seldom-read boot partition in a=20
+flash where there is activity going on in other parts of the flash, i.e.=20
+an embedded system where a single flash chip provides all non-volatile=20
+storage, over a long period of time.
+
+Of course these are random samples only, but they've been very consistent=
+=20
+so far. Lately a new batch of Numonyx 128 MiB flashes arrived which seem=20
+to have better error rates. One can speculate as to why but I'll leave=20
+that discussion off this mailing list.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
