@@ -1,18 +1,23 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9Ya9-0006xz-5y
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 06:59:46 +0000
-Date: Wed, 5 May 2010 08:59:37 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: =?iso-8859-1?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>
-Subject: Re: Some questions on bit-flips and JFFS2
-In-Reply-To: <201005031505.18604.muehlfelder@enertex.de>
-Message-ID: <Pine.LNX.4.64.1005050851070.22753@lnxricardw.se.axis.com>
-References: <201005031505.18604.muehlfelder@enertex.de>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9Z8K-0008Ef-A1
+	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 07:35:05 +0000
+Message-ID: <4BE11FA0.20703@parrot.com>
+Date: Wed, 5 May 2010 09:34:56 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: Kevin Cernekee <cernekee@gmail.com>
+Subject: Re: [PATCHv2 1/2] mtd: nand: Extend NAND flash detection to new MLC
+	chips
+References: <17c88de31cd52bb3794569c28cd2ae51996e6260@localhost.localdomain>
+	<10137ab89de6e6d229798d6f397688b0807024da@localhost.localdomain>
+In-Reply-To: <10137ab89de6e6d229798d6f397688b0807024da@localhost.localdomain>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Reuben.Dowle@navico.com" <Reuben.Dowle@navico.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Mon, 3 May 2010, Thorsten M=FChlfelder wrote:
+Kevin Cernekee a écrit :
+> Some of the newer MLC devices have a 6-byte ID sequence in which
+> several field definitions differ from older chips in a manner that is
+> not backward compatible.  For instance:
+> 
+Doesn't these nand support ONFI "Read Parameter Page" (cmd 0xec) ?
+If yes it will be a more generic way to detect new nand features.
 
-> PS: I could not reproduce the bit-flip problem. It just happens in rare c=
-ases.
-> Furthermore some of my devices are using Samsung NAND instead of the Micr=
-on
-> NAND and did not show any problems yet. So perhaps my problem are just so=
-me
-> bad NAND chip? But still I have to find a solution for the problem.
 
-In our experience, which is limited to 32 MiB and 128 MiB SLC flashes,=20
-Micron, Hynix and Numonyx have much worse bit read error rates that=20
-Samsung and Toshiba, even though the data sheets hint at the same level of=
-=20
-data integrity. We made some random tests, reading again and again from=20
-the same flash partition, and the first group above tended to show=20
-uncorrectable ECC errors already after less than a million reads, whereas=
-=20
-the second group showed only single-bit errors even after 20 or even 60=20
-million reads.
+Matthieu
 
-Of course, reading that many times from a flash partition, especially a=20
-boot partition, is hardly realistic, but in our experience, it simulates=20
-quite well the situation of a having a seldom-read boot partition in a=20
-flash where there is activity going on in other parts of the flash, i.e.=20
-an embedded system where a single flash chip provides all non-volatile=20
-storage, over a long period of time.
 
-Of course these are random samples only, but they've been very consistent=
-=20
-so far. Lately a new batch of Numonyx 128 MiB flashes arrived which seem=20
-to have better error rates. One can speculate as to why but I'll leave=20
-that discussion off this mailing list.
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+
+> Samsung K9GAG08U0M (5-byte sequence): ec d5 14 b6 74
+> 4th byte, bits 1:0 encode the page size: 0=1KiB, 1=2KiB, 2=4KiB, 3=8KiB
+> 4th byte, bits 5:4 encode the block size: 0=64KiB, 1=128KiB, ...
+> 4th byte, bit 6 encodes the OOB size: 0=8B/512B, 1=16B/512B
+> 
+> Samsung K9GAG08U0D (6-byte sequence): ec d5 94 29 34 41
+> 4th byte, bits 1:0 encode the page size: 0=2KiB, 1=4KiB, 3=8KiB, 4=rsvd
+> 4th byte, bits 7;5:4 encode the block size: 0=128KiB, 1=256KiB, ...
+> 4th byte, bits 6;3:2 encode the OOB size: 1=128B/page, 2=218B/page
+> 
+> This patch uses the new 6-byte scheme if the following conditions are
+> all true:
+> 
+> 1) The ID code wraps around after exactly 6 bytes
+> 
+> 2) Manufacturer is Samsung
+> 
+> 3) 6th byte is zero
+> 
+> The patch also extends the maximum OOB size from 128B to 256B.
+> 
