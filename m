@@ -1,22 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9Wdt-00010u-56
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 04:55:30 +0000
-Subject: Re: Upcoming merge window and omap NAND patches
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Tony Lindgren <tony@atomide.com>
-In-Reply-To: <20100504220803.GN29604@atomide.com>
-References: <20100504220803.GN29604@atomide.com>
+Subject: Re: [PATCH] ubi: init even if mtd device cannot be attached, if
+	built into kernel
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+In-Reply-To: <1272537664-21603-1-git-send-email-mkl@pengutronix.de>
+References: <1272537664-21603-1-git-send-email-mkl@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 05 May 2010 07:49:03 +0300
-Message-ID: <1273034943.3702.19.camel@localhost>
+Date: Wed, 05 May 2010 08:12:39 +0300
+Message-ID: <1273036359.3702.35.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Sukumar Ghorai <s-ghorai@ti.com>, Steve Sakoman <sakoman@gmail.com>,
-	Vimal Singh <vimal.newwork@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
-Reply-To: Artem.Bityutskiy@nokia.com
+Cc: Dmitry Pervushin <dpervushin@embeddedalley.com>,
+	Roel Kluin <roel.kluin@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-05-05 at 00:08 +0200, ext Tony Lindgren wrote:
-> Hi all,
+On Thu, 2010-04-29 at 12:41 +0200, Marc Kleine-Budde wrote:
+> Ubi can be built into the kernel or be compiled as a kernel module.
+> Further on the command line one can specify mtd devices to be attach to
+> ubi while loading. In the current implementation the ubi driver refuses
+> to load if one of the mtd devices cannot be attached.
 > 
-> There are several omap NAND patches pending, but some basic things
-> should be fixed first.
+> Consider:
+> 1) ubi compiled into the kernel and
+> 2) a mtd device specified on the command line and
+> 3) this mtd device contains bogus data (for whatever reason).
 > 
-> 1. The NAND driver needs to stop tinkering with the GPMC registers
+> During init ubi tries to attach the mtd device is this fails the whole
+> ubi subsystem isn't initialized. Later the userspace cannot attach any
+> mtd to ubi because ubi isn't loaded.
 > 
-> The omap General Purpose Memory Controller (GPMC) registers are omap
-> specific, and not driver specific. Tinkering with these registers
-> can cause issues with the other devices on the GPMC.
+> This patch keeps the current behaviour: if ubi is compiled as a module
+> and a mtd device cannot be attached the ubi module cannot be loaded,
+> but changes it for the ubi-is-built-into-the-kernel usecase.
 > 
-> To find out what needs to disappear fomr the NAND driver, just do:
+> If ubi is builtin, a not attachable mtd device doen't stop ubi from
+> initializing. This slightly modifies the behaviour if multiple mtd
+> devices are specified on the command line. Now every mtd device is
+> probed and, if possible, attached, i.e. a faulty mtd device doesn't
+> stop the others from being attached.
 > 
-> $ grep baseaddr drivers/mtd/nand/omap2.c
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/mtd/ubi/build.c |   12 ++++++++++--
+>  1 files changed, 10 insertions(+), 2 deletions(-)
 > 
-> Any GPMC register tinkering needs to happen in arch/arm/mach-omap2/gpmc.c.
-> If there are not currently GPMC functions to do something in gpmc.c, then
-> let's add the necessary support there.
-> 
-> 2. Passing hardcoded GPMC_CS0_BASE needs to go from the board files
-> 
-> Passing hardcoded GPMC virtual addressess is sure way to mess up
-> things. This should all become unnecessary once the NAND drivers
-> stops messing with the GPMC registers directly.
-> 
-> So, as a result, I'm not planning on pushing any omap NAND related
-> patches until these basic issues are fixed. I'll mark these patches
-> as "Changes requested" in patchwork.kernel.org even if these patches
-> don't have anything else wrong with them.
-> 
-> Let's fix the basic things for good, and put the other patches on
-> hold for a while. Sorry if this causes problems!
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index 14cec04..2f6f09f 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -123,6 +123,12 @@ static struct device_attribute dev_bgt_enabled =
+>  static struct device_attribute dev_mtd_num =
+>  	__ATTR(mtd_num, S_IRUGO, dev_attribute_show, NULL);
+>  
+> +#ifdef CONFIG_MTD_UBI_MODULE
+> +static inline int ubi_is_module(void) { return 1; }
+> +#else
+> +static inline int ubi_is_module(void) { return 0; }
+> +#endif
 
-Hi,
+I really hate these ifdefs. Dunno why, but they feel disgusting.
 
-fair enough. I guess Vimal should address this, as he seems to be the TI
-mr. NAND, right? :-)
+I understand your issue and agree that is should be fixed. And I cannot
+really see a better solution. So if no-one complains, I'll accept your
+patch.
+
+However, for consistency with other UBI code (see debug.h), please, do
+this like
+
+#ifdef CONFIG_MTD_UBI_MODULE
+#define ubi_is_module() 1
+#else
+#define ubi_is_module() 1
+#endif
+
+Not a big deal, just to be consistent and have uniform code style.
+
+Thanks... :-(
+
+> +
+>  /**
+>   * ubi_volume_notify - send a volume change notification.
+>   * @ubi: UBI device description object
+> @@ -1200,9 +1206,11 @@ static int __init ubi_init(void)
+>  					 p->vid_hdr_offs);
+>  		mutex_unlock(&ubi_devices_mutex);
+>  		if (err < 0) {
+> -			put_mtd_device(mtd);
+>  			ubi_err("cannot attach mtd%d", mtd->index);
+> -			goto out_detach;
+> +			if (ubi_is_module()) {
+> +				put_mtd_device(mtd);
+> +				goto out_detach;
+> +			}
+>  		}
+>  	}
+>  
 
 -- 
 Best Regards,
