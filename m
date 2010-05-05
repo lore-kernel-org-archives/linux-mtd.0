@@ -1,17 +1,17 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9VMk-0000zi-Km
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 03:33:43 +0000
-Received: by gwaa12 with SMTP id a12so1986469gwa.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 04 May 2010 20:33:41 -0700 (PDT)
+Received: from [69.28.251.93] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9VzO-0004DR-WF
+	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 04:13:40 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Tue, 4 May 2010 20:58:00 -0700
+Subject: [PATCHv2 0/2] mtd: nand: Extend MLC support
+Message-Id: <17c88de31cd52bb3794569c28cd2ae51996e6260@localhost.localdomain>
+To: <dwmw2@infradead.org>
 MIME-Version: 1.0
-Date: Tue, 4 May 2010 23:33:41 -0400
-Message-ID: <m2y771cded01005042033w12660100y983c4710b68b8fa3@mail.gmail.com>
-Subject: failue on compiling mtd tree
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-To: linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Reuben.Dowle@navico.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Part 1/2 is an improved version of my previous submission.  Additional
+checks were added to ensure that certain "5-byte" Micron and Samsung
+parts are not falsely detected as having 6-byte IDs.  I also rolled in
+the 256B NAND_MAX_OOBSIZE change.
 
-I fetched latest code from mtd-2.6 tree. Now I met an issue in below.
+Part 2/2 is a resubmission/rebase of Reuben Dowle's 2009/02/03 patch:
 
-  AS      arch/arm/boot/compressed/lib1funcs.o
-  AS      arch/arm/boot/compressed/piggy.gzip.o
-  LD      arch/arm/boot/compressed/vmlinux
-`.LANCHOR0' referenced in section `.text' of
-arch/arm/boot/compressed/misc.o: defined in discarded section `.data'
-of arch/arm/boot/compressed/misc.o
-`.LANCHOR0' referenced in section `.text' of
-arch/arm/boot/compressed/misc.o: defined in discarded section `.data'
-of arch/arm/boot/compressed/misc.o
-make[2]: *** [arch/arm/boot/compressed/vmlinux] Error 1
-make[1]: *** [arch/arm/boot/compressed/vmlinux] Error 2
-make: *** [zImage] Error 2
+http://lists.infradead.org/pipermail/linux-mtd/2009-February/024473.html
 
-I remember this issue is fixed in arm tree. Could mtd-2.6 tree be
-synced with latest code?
+I am trying to compile a table of NAND IDs to make sure the detection
+algorithm correctly handles all known cases.  If you could send me the
+following information for any NAND chips you have access to (via
+private email), it would be appreciated:
 
-Thanks
-Haojian
+1) Part number
+
+2) ID code (please read 8 bytes so I can see where it wraps around)
+
+3) Device size, block size, page size, OOB bytes per page, bus width,
+and bad block marker location
+
+4) Datasheet, if available
+
+Thanks.
