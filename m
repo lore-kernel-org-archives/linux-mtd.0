@@ -1,23 +1,24 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9Z8K-0008Ef-A1
-	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 07:35:05 +0000
-Message-ID: <4BE11FA0.20703@parrot.com>
-Date: Wed, 5 May 2010 09:34:56 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9ZW7-0004Tk-0n
+	for linux-mtd@lists.infradead.org; Wed, 05 May 2010 07:59:40 +0000
+Message-ID: <4BE1255E.2090109@pengutronix.de>
+Date: Wed, 05 May 2010 09:59:26 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 MIME-Version: 1.0
-To: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: [PATCHv2 1/2] mtd: nand: Extend NAND flash detection to new MLC
-	chips
-References: <17c88de31cd52bb3794569c28cd2ae51996e6260@localhost.localdomain>
-	<10137ab89de6e6d229798d6f397688b0807024da@localhost.localdomain>
-In-Reply-To: <10137ab89de6e6d229798d6f397688b0807024da@localhost.localdomain>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Reuben.Dowle@navico.com" <Reuben.Dowle@navico.com>
+To: dedekind1@gmail.com
+References: <1272537664-21603-1-git-send-email-mkl@pengutronix.de>	
+	<1273036359.3702.35.camel@localhost>
+	<1273036482.3702.37.camel@localhost>
+In-Reply-To: <1273036482.3702.37.camel@localhost>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig086463D8969395408A6E84BD"
+Subject: Re: [PATCH] ubi: init even if mtd device cannot be attached, if built
+	into kernel
+Cc: Roel Kluin <roel.kluin@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +28,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig086463D8969395408A6E84BD
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Kevin Cernekee a écrit :
-> Some of the newer MLC devices have a 6-byte ID sequence in which
-> several field definitions differ from older chips in a manner that is
-> not backward compatible.  For instance:
-> 
-Doesn't these nand support ONFI "Read Parameter Page" (cmd 0xec) ?
-If yes it will be a more generic way to detect new nand features.
+Artem Bityutskiy wrote:
+> On Wed, 2010-05-05 at 08:12 +0300, Artem Bityutskiy wrote:
+>>> +#ifdef CONFIG_MTD_UBI_MODULE
+>>> +static inline int ubi_is_module(void) { return 1; }
+>>> +#else
+>>> +static inline int ubi_is_module(void) { return 0; }
+>>> +#endif
+>> I really hate these ifdefs. Dunno why, but they feel disgusting.
+>>
+>> I understand your issue and agree that is should be fixed. And I canno=
+t
+>> really see a better solution. So if no-one complains, I'll accept your=
+
+>> patch.
+>>
+>> However, for consistency with other UBI code (see debug.h), please, do=
+
+>> this like
+>>
+>> #ifdef CONFIG_MTD_UBI_MODULE
+>> #define ubi_is_module() 1
+>> #else
+>> #define ubi_is_module() 1
+>> #endif
+>=20
+> Err, of course the second one should be 0, not 1. I can actually do thi=
+s
+> modification myself, or you can re-send your patch.
+
+I'll resend a patch.
+
+Cheers, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
 
 
-Matthieu
+--------------enig086463D8969395408A6E84BD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
+iEYEARECAAYFAkvhJWMACgkQjTAFq1RaXHPszwCfYk9/tt0FKmJ8REW2pCNBI2Zl
+C/gAoJeRJby4s/ZRtO3Wb6QCJWmoK4aY
+=/bA1
+-----END PGP SIGNATURE-----
 
-
-> Samsung K9GAG08U0M (5-byte sequence): ec d5 14 b6 74
-> 4th byte, bits 1:0 encode the page size: 0=1KiB, 1=2KiB, 2=4KiB, 3=8KiB
-> 4th byte, bits 5:4 encode the block size: 0=64KiB, 1=128KiB, ...
-> 4th byte, bit 6 encodes the OOB size: 0=8B/512B, 1=16B/512B
-> 
-> Samsung K9GAG08U0D (6-byte sequence): ec d5 94 29 34 41
-> 4th byte, bits 1:0 encode the page size: 0=2KiB, 1=4KiB, 3=8KiB, 4=rsvd
-> 4th byte, bits 7;5:4 encode the block size: 0=128KiB, 1=256KiB, ...
-> 4th byte, bits 6;3:2 encode the OOB size: 1=128B/page, 2=218B/page
-> 
-> This patch uses the new 6-byte scheme if the following conditions are
-> all true:
-> 
-> 1) The ID code wraps around after exactly 6 bytes
-> 
-> 2) Manufacturer is Samsung
-> 
-> 3) 6th byte is zero
-> 
-> The patch also extends the maximum OOB size from 128B to 256B.
-> 
+--------------enig086463D8969395408A6E84BD--
