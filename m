@@ -1,7 +1,8 @@
 MIME-Version: 1.0
-Date: Thu, 6 May 2010 05:13:22 -0400
-Message-ID: <h2s771cded01005060213gd74d5d9dt5fdb15e0b2dd691@mail.gmail.com>
-Subject: [PATCH 18/20] [ARM] mmp: refresh nand timing
+Date: Thu, 6 May 2010 05:14:41 -0400
+Message-ID: <k2p771cded01005060214o2c4408efy2f6710b5a2e5b26a@mail.gmail.com>
+Subject: [PATCH 19/20] pxa3xx_nand: reimplment read oob command to increase
+	performance
 From: Haojian Zhuang <haojian.zhuang@gmail.com>
 To: Eric Miao <eric.y.miao@gmail.com>,
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
@@ -16,190 +17,256 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 1636441982ba61e4bcf421398b7f9d696863c708 Mon Sep 17 00:00:00 2001
+>From 2c4d45810e13f70f682dd95376f23cdd84bafee4 Mon Sep 17 00:00:00 2001
 From: Lei Wen <leiwen@marvell.com>
-Date: Wed, 31 Mar 2010 14:57:48 +0800
-Subject: [PATCH] [ARM] mmp: refresh nand timing
+Date: Thu, 6 May 2010 10:43:57 +0800
+Subject: [PATCH] pxa3xx_nand: reimplment read oob command to increase
+performance
 
-Update the NAND clock of PXA168. And adjust the nand timing configuration.
+For read oob command only care about the spare area part, we truly
+need not to transfer all page data to the controller side.
+
+By random data out, we could do the naked read first to let one page
+data transfer
+from NAND chip to its internal ram. Then we use random data out
+command to change
+the offset to the start of oob part. After all this, we toggle only oob size of
+RE# to the controller side.
 
 Signed-off-by: Lei Wen <leiwen@marvell.com>
 Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- arch/arm/configs/pxa168_defconfig |   98 ++++++++++++++++++++++++++++++++++++-
- arch/arm/mach-mmp/pxa168.c        |    2 +-
- drivers/mtd/nand/pxa3xx_nand.c    |    5 +-
- 3 files changed, 99 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c |  122 ++++++++++++++++++++++++++++++----------
+ 1 files changed, 92 insertions(+), 30 deletions(-)
 
-diff --git a/arch/arm/configs/pxa168_defconfig
-b/arch/arm/configs/pxa168_defconfig
-index 113511f..909bbfa 100644
---- a/arch/arm/configs/pxa168_defconfig
-+++ b/arch/arm/configs/pxa168_defconfig
-@@ -301,7 +301,7 @@ CONFIG_ALIGNMENT_TRAP=y
- #
- CONFIG_ZBOOT_ROM_TEXT=0x0
- CONFIG_ZBOOT_ROM_BSS=0x0
--CONFIG_CMDLINE="root=/dev/nfs rootfstype=nfs
-nfsroot=192.168.2.100:/nfsroot/
-ip=192.168.2.101:192.168.2.100::255.255.255.0::eth0:on
-console=ttyS0,115200 mem=128M"
-+CONFIG_CMDLINE="root=/dev/mtdblock4 rootfstype=jffs2
-ip=192.168.2.101:192.168.2.100::255.255.255.0::eth0:on
-console=ttyS0,115200 mem=128M"
- # CONFIG_XIP_KERNEL is not set
- # CONFIG_KEXEC is not set
-
-@@ -438,7 +438,89 @@ CONFIG_EXTRA_FIRMWARE=""
- # CONFIG_DEBUG_DEVRES is not set
- # CONFIG_SYS_HYPERVISOR is not set
- # CONFIG_CONNECTOR is not set
--# CONFIG_MTD is not set
-+CONFIG_MTD=y
-+# CONFIG_MTD_DEBUG is not set
-+# CONFIG_MTD_TESTS is not set
-+# CONFIG_MTD_CONCAT is not set
-+CONFIG_MTD_PARTITIONS=y
-+# CONFIG_MTD_REDBOOT_PARTS is not set
-+CONFIG_MTD_CMDLINE_PARTS=y
-+# CONFIG_MTD_AFS_PARTS is not set
-+# CONFIG_MTD_AR7_PARTS is not set
-+
-+#
-+# User Modules And Translation Layers
-+#
-+CONFIG_MTD_CHAR=y
-+CONFIG_MTD_BLKDEVS=y
-+CONFIG_MTD_BLOCK=y
-+# CONFIG_FTL is not set
-+# CONFIG_NFTL is not set
-+# CONFIG_INFTL is not set
-+# CONFIG_RFD_FTL is not set
-+# CONFIG_SSFDC is not set
-+# CONFIG_MTD_OOPS is not set
-+
-+#
-+# RAM/ROM/Flash chip drivers
-+#
-+# CONFIG_MTD_CFI is not set
-+# CONFIG_MTD_JEDECPROBE is not set
-+CONFIG_MTD_MAP_BANK_WIDTH_1=y
-+CONFIG_MTD_MAP_BANK_WIDTH_2=y
-+CONFIG_MTD_MAP_BANK_WIDTH_4=y
-+# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
-+# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
-+# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
-+CONFIG_MTD_CFI_I1=y
-+CONFIG_MTD_CFI_I2=y
-+# CONFIG_MTD_CFI_I4 is not set
-+# CONFIG_MTD_CFI_I8 is not set
-+# CONFIG_MTD_RAM is not set
-+# CONFIG_MTD_ROM is not set
-+# CONFIG_MTD_ABSENT is not set
-+
-+#
-+# Mapping drivers for chip access
-+#
-+# CONFIG_MTD_COMPLEX_MAPPINGS is not set
-+# CONFIG_MTD_PLATRAM is not set
-+
-+#
-+# Self-contained MTD device drivers
-+#
-+# CONFIG_MTD_SLRAM is not set
-+# CONFIG_MTD_PHRAM is not set
-+# CONFIG_MTD_MTDRAM is not set
-+# CONFIG_MTD_BLOCK2MTD is not set
-+
-+#
-+# Disk-On-Chip Device Drivers
-+#
-+# CONFIG_MTD_DOC2000 is not set
-+# CONFIG_MTD_DOC2001 is not set
-+# CONFIG_MTD_DOC2001PLUS is not set
-+CONFIG_MTD_NAND=y
-+# CONFIG_MTD_NAND_VERIFY_WRITE is not set
-+# CONFIG_MTD_NAND_ECC_SMC is not set
-+# CONFIG_MTD_NAND_MUSEUM_IDS is not set
-+# CONFIG_MTD_NAND_GPIO is not set
-+CONFIG_MTD_NAND_IDS=y
-+# CONFIG_MTD_NAND_DISKONCHIP is not set
-+CONFIG_MTD_NAND_PXA3xx=y
-+# CONFIG_MTD_NAND_NANDSIM is not set
-+# CONFIG_MTD_NAND_PLATFORM is not set
-+# CONFIG_MTD_ONENAND is not set
-+
-+#
-+# LPDDR flash memory drivers
-+#
-+# CONFIG_MTD_LPDDR is not set
-+
-+#
-+# UBI - Unsorted block images
-+#
-+# CONFIG_MTD_UBI is not set
- # CONFIG_PARPORT is not set
- # CONFIG_BLK_DEV is not set
- # CONFIG_MISC_DEVICES is not set
-@@ -720,6 +802,18 @@ CONFIG_MISC_FILESYSTEMS=y
- # CONFIG_BEFS_FS is not set
- # CONFIG_BFS_FS is not set
- # CONFIG_EFS_FS is not set
-+CONFIG_JFFS2_FS=y
-+CONFIG_JFFS2_FS_DEBUG=0
-+CONFIG_JFFS2_FS_WRITEBUFFER=y
-+# CONFIG_JFFS2_FS_WBUF_VERIFY is not set
-+# CONFIG_JFFS2_SUMMARY is not set
-+# CONFIG_JFFS2_FS_XATTR is not set
-+# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
-+CONFIG_JFFS2_ZLIB=y
-+# CONFIG_JFFS2_LZO is not set
-+CONFIG_JFFS2_RTIME=y
-+# CONFIG_JFFS2_RUBIN is not set
-+# CONFIG_LOGFS is not set
- CONFIG_CRAMFS=y
- # CONFIG_SQUASHFS is not set
- # CONFIG_VXFS_FS is not set
-diff --git a/arch/arm/mach-mmp/pxa168.c b/arch/arm/mach-mmp/pxa168.c
-index 652ae66..722c9cf 100644
---- a/arch/arm/mach-mmp/pxa168.c
-+++ b/arch/arm/mach-mmp/pxa168.c
-@@ -78,7 +78,7 @@ static APBC_CLK(ssp3, PXA168_SSP3, 4, 0);
- static APBC_CLK(ssp4, PXA168_SSP4, 4, 0);
- static APBC_CLK(ssp5, PXA168_SSP5, 4, 0);
-
--static APMU_CLK(nand, NAND, 0x01db, 208000000);
-+static APMU_CLK(nand, NAND, 0x019b, 156000000);
-
- /* device and clock bindings */
- static struct clk_lookup pxa168_clkregs[] = {
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 793b64c..7c871af 100644
+index 7c871af..2e1c8b6 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -330,11 +330,11 @@ static struct pxa3xx_nand_flash __devinitdata
-builtin_flash_types[] = {
- { 0x46ec, 32, 512, 16, 16, ECC_HAMMIN, 4096, \
- 	{ 0, 10, 0, 20, 40, 30, 40, 11123, 0, 110, 10, }, },
- { 0xdaec, 64, 2048, 8, 8, ECC_HAMMIN, 2048, \
--	{ 0, 10, 0, 20, 40, 30, 40, 11123, 0, 110, 10, }, },
-+	{ 0, 10, 0, 20, 40, 30, 40, 25000, 0, 110, 10, }, },
- { 0xd3ec, 128, 2048, 8, 8, ECC_BCH, 4096, \
- 	{ 0, 10, 0, 20, 40, 30, 40, 11123, 0, 110, 10, }, },
- { 0xd7ec, 128, 4096, 8, 8, ECC_BCH, 8192, \
--	{ 0, 10, 0, 20, 40, 30, 40, 25000, 0, 110, 10, }, },
-+	{ 200, 10, 15, 10, 12, 10, 8, 60000, 20, 75, 10, }, },
- { 0xa12c, 64, 2048, 8, 8, ECC_HAMMIN, 1024, \
- 	{ 0, 10, 25, 15, 25, 15, 30, 25000, 0, 60, 10, }, },
- { 0xb12c, 64, 2048, 16, 16, ECC_HAMMIN, 1024, \
-@@ -509,7 +509,6 @@ static void pxa3xx_nand_set_timing(struct
-pxa3xx_nand_info *info,
- 		| NDTR1_tWHR(ns2cycle(t->tWHR, nand_clk))
- 		| NDTR1_tAR(ns2cycle(t->tAR, nand_clk));
+@@ -129,6 +129,7 @@
 
--
- 	nand_writel(nand, NDTR0CS0, ndtr0);
- 	nand_writel(nand, NDTR1CS0, ndtr1);
- 	nand_writel(nand, NDREDEL, 0x0);
+ #define NDCB0_CMD_XTYPE_MASK    (0x7 << 29)
+ #define NDCB0_CMD_XTYPE(x)      (((x) << 29) & NDCB0_CMD_XTYPE_MASK)
++#define NDCB0_LEN_OVRD		(0x1 << 28)
+ #define NDCB0_ST_ROW_EN         (0x1 << 26)
+ #define NDCB0_AUTO_RS		(0x1 << 25)
+ #define NDCB0_CSEL		(0x1 << 24)
+@@ -257,8 +258,9 @@ struct pxa3xx_nand_info {
+ 	uint8_t			total_cmds;
+ 	uint8_t			wait_ready[CMD_POOL_SIZE];
+ 	uint32_t		ndcb0[CMD_POOL_SIZE];
+-	uint32_t		ndcb1;
+-	uint32_t		ndcb2;
++	uint32_t		ndcb1[CMD_POOL_SIZE];
++	uint32_t		ndcb2[CMD_POOL_SIZE];
++	uint32_t		ndcb3[CMD_POOL_SIZE];
+ 	uint32_t		reg_ndcr;
+ 	uint32_t		ndtr0cs0;
+ 	uint32_t		ndtr1cs0;
+@@ -646,9 +648,9 @@ static void nand_error_dump(struct pxa3xx_nand *nand)
+ 	printk(KERN_ERR "Totally %d command for sending\n",
+ 			info->total_cmds);
+ 	for (i = 0; i < info->total_cmds; i ++)
+-		printk(KERN_ERR "NDCB0:%d: %x\n",
+-				i, info->ndcb0[i]);
+-	printk(KERN_ERR "NDCB1: %x; NDCB2 %x\n", info->ndcb1, info->ndcb2);
++		printk(KERN_ERR "==%d: NDCB0 %x, NDCB1 %x, NDCB2 %x, NDCB3 %x\n",
++				i, info->ndcb0[i], info->ndcb1[i],
++				info->ndcb2[i], info->ndcb3[i]);
+
+ 	printk(KERN_ERR "\nRegister DUMPing ##############\n");
+ 	printk(KERN_ERR "NDCR %x\n"
+@@ -775,7 +777,7 @@ static void pxa3xx_nand_data_dma_irq(int channel,
+void *data)
+ static int pxa3xx_nand_transaction(struct pxa3xx_nand *nand)
+ {
+ 	struct pxa3xx_nand_info *info;
+-	unsigned int status, is_completed = 0, cs, cmd_seqs, ndcb1, ndcb2;
++	unsigned int status, is_completed = 0, cs, cmd_seqs;
+ 	unsigned int ready, cmd_done, page_done, badblock_detect;
+
+ 	cs		= nand->chip_select;
+@@ -842,24 +844,20 @@ static int pxa3xx_nand_transaction(struct
+pxa3xx_nand *nand)
+
+ 		nand_writel(nand, NDSR, NDSR_WRCMDREQ);
+ 		if (cmd_seqs < info->total_cmds) {
+-			info->cmd_seqs ++;
+-			if (cmd_seqs == 0) {
+-				ndcb1 = info->ndcb1;
+-				ndcb2 = info->ndcb2;
+-			}
+-			else {
+-				ndcb1 = 0;
+-				ndcb2 = 0;
+-			}
++			info->cmd_seqs++;
+ 			nand->state &= ~STATE_MASK;
+ 			nand->state |= STATE_CMD_WAIT_DONE;
+ 			nand_writel(nand, NDCB0, info->ndcb0[cmd_seqs]);
+-			nand_writel(nand, NDCB0, ndcb1);
+-			nand_writel(nand, NDCB0, ndcb2);
+-			DBG_NAND(printk("\tndcb0 %x ndcb1 %x ndcb2 %x\n",
+-						info->ndcb0[cmd_seqs], ndcb1, ndcb2));
+-		}
+-		else
++			nand_writel(nand, NDCB0, info->ndcb1[cmd_seqs]);
++			nand_writel(nand, NDCB0, info->ndcb2[cmd_seqs]);
++			if (info->ndcb0[cmd_seqs] & NDCB0_LEN_OVRD)
++				nand_writel(nand, NDCB0, info->ndcb3[cmd_seqs]);
++			DBG_NAND(printk("\tndcb0 %x ndcb1 %x ndcb2 %x, ndcb3 %x\n",
++						info->ndcb0[cmd_seqs],
++						info->ndcb1[cmd_seqs],
++						info->ndcb2[cmd_seqs],
++						info->ndcb3[cmd_seqs]));
++		} else
+ 			is_completed = 1;
+ 	}
+
+@@ -938,6 +936,7 @@ static int prepare_command_pool(struct pxa3xx_nand
+*nand, int command,
+ 	case NAND_CMD_PAGEPROG:
+ 		nand->use_ecc = info->use_ecc;
+ 	case NAND_CMD_READOOB:
++	case NAND_CMD_RNDOUT:
+ 		pxa3xx_set_datasize(info);
+ 		nand->use_dma = use_dma;
+ 		chunks = info->page_size / nand->data_size;
+@@ -946,8 +945,8 @@ static int prepare_command_pool(struct pxa3xx_nand
+*nand, int command,
+ 		exec_cmd = 0;
+ 		break;
+ 	default:
+-		info->ndcb1 = 0;
+-		info->ndcb2 = 0;
++		info->ndcb1[0] = 0;
++		info->ndcb2[0] = 0;
+ 		break;
+ 	}
+
+@@ -1005,26 +1004,73 @@ static int prepare_command_pool(struct
+pxa3xx_nand *nand, int command,
+ 	case NAND_CMD_SEQIN:
+ 		/* small page addr setting */
+ 		if (unlikely(info->page_size < PAGE_CHUNK_SIZE)) {
+-			info->ndcb1 = ((page_addr & 0xFFFFFF) << 8)
++			info->ndcb1[0] = ((page_addr & 0xFFFFFF) << 8)
+ 					| (column & 0xFF);
+
+-			info->ndcb2 = 0;
++			info->ndcb2[0] = 0;
+ 		}
+ 		else {
+-			info->ndcb1 = ((page_addr & 0xFFFF) << 16)
++			info->ndcb1[0] = ((page_addr & 0xFFFF) << 16)
+ 					| (column & 0xFFFF);
+
+ 			if (page_addr & 0xFF0000)
+-				info->ndcb2 = (page_addr & 0xFF0000) >> 16;
++				info->ndcb2[0] = (page_addr & 0xFF0000) >> 16;
+ 			else
+-				info->ndcb2 = 0;
++				info->ndcb2[0] = 0;
+ 		}
+
++		for (i = 1; i <=chunks; i ++) {
++			info->ndcb1[i] = info->ndcb1[0];
++			info->ndcb2[i] = info->ndcb2[0];
++		}
+ 		info->buf_count = mtd->writesize + mtd->oobsize;
+ 		memset(info->data_buff, 0xFF, info->buf_count);
+
+ 		break;
+
++	case NAND_CMD_RNDOUT:
++		/* current RNDOUT only support 2k nand */
++		if (info->page_size > PAGE_CHUNK_SIZE)
++			BUG();
++
++		cmd  = cmdset.read1;
++		info->total_cmds = 3;
++		info->ndcb0[0] |= NDCB0_CMD_XTYPE(0x6)
++				| NDCB0_CMD_TYPE(0)
++				| NDCB0_DBC
++				| NDCB0_NC
++				| addr_cycle
++				| cmd;
++
++		info->ndcb0[1] |= NDCB0_CMD_XTYPE(0x6)
++				| NDCB0_CMD_TYPE(0)
++				| NDCB0_DBC
++				| NDCB0_NC
++				| NDCB0_ADDR_CYC(info->col_addr_cycles)
++				| (NAND_CMD_RNDOUTSTART << 8)
++				| NAND_CMD_RNDOUT;
++
++		info->ndcb0[2] |= NDCB0_CMD_XTYPE(0x5)
++				| NDCB0_LEN_OVRD;
++
++		info->ndcb1[0] = ((page_addr & 0xFFFF) << 16)
++				| (column & 0xFFFF);
++		info->ndcb1[1] = mtd->writesize;
++		info->ndcb1[2] = 0;
++
++		if (page_addr & 0xFF0000)
++			info->ndcb2[0] = (page_addr & 0xFF0000) >> 16;
++		else
++			info->ndcb2[0] = 0;
++		info->ndcb2[1] = info->ndcb2[2] = 0;
++		info->ndcb3[0] = info->ndcb3[1] = 0;
++		info->ndcb3[2] = mtd->oobsize;
++		info->buf_count = mtd->oobsize;
++		info->wait_ready[1] = 1;
++		nand->data_size = mtd->oobsize;
++		nand->oob_size = 0;
++		break;
++
+ 	case NAND_CMD_PAGEPROG:
+ 		if (is_buf_blank(info->data_buff, (mtd->writesize + mtd->oobsize))) {
+ 			exec_cmd = 0;
+@@ -1096,8 +1142,8 @@ static int prepare_command_pool(struct
+pxa3xx_nand *nand, int command,
+ 				| NDCB0_ADDR_CYC(3)
+ 				| NDCB0_DBC
+ 				| cmd;
+-		info->ndcb1 = page_addr;
+-		info->ndcb2 = 0;
++		info->ndcb1[0] = page_addr;
++		info->ndcb2[0] = 0;
+
+ 		break;
+ 	case NAND_CMD_RESET:
+@@ -1245,6 +1291,21 @@ static int pxa3xx_nand_waitfunc(struct mtd_info
+*mtd, struct nand_chip *this)
+ 	return 0;
+ }
+
++static int pxa3xx_nand_read_oob(struct mtd_info *mtd, struct nand_chip *chip,
++		int page, int sndcmd)
++{
++	struct pxa3xx_nand_info *info = (struct pxa3xx_nand_info *)chip;
++	if (sndcmd) {
++		if ((info->page_size <= PAGE_CHUNK_SIZE) && naked_cmd_support)
++			chip->cmdfunc(mtd, NAND_CMD_RNDOUT, 0, page);
++		else
++			chip->cmdfunc(mtd, NAND_CMD_READOOB, 0, page);
++		sndcmd = 0;
++	}
++	chip->read_buf(mtd, chip->oob_poi, mtd->oobsize);
++	return sndcmd;
++}
++
+ static void pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
+ 			    struct pxa3xx_nand_flash *f, int show_timing)
+ {
+@@ -1626,6 +1687,7 @@ static int alloc_nand_resource(struct
+platform_device *pdev)
+ 		chip->controller        = &nand->controller;
+ 		chip->ecc.read_page	= pxa3xx_nand_read_page_hwecc;
+ 		chip->ecc.write_page	= pxa3xx_nand_write_page_hwecc;
++		chip->ecc.read_oob      = pxa3xx_nand_read_oob;
+ 		chip->waitfunc		= pxa3xx_nand_waitfunc;
+ 		chip->select_chip	= pxa3xx_nand_select_chip;
+ 		chip->cmdfunc		= pxa3xx_nand_cmdfunc;
 -- 
 1.5.6.5
