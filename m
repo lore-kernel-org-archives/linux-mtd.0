@@ -1,121 +1,69 @@
 From: leiwen@marvell.com (Lei Wen)
-Date: Fri, 14 May 2010 13:30:21 +0800
-Subject: [PATCH] mmp: add nand support to mmp2
-Message-ID: <mailman.436.1273818146.2170.linux-mtd@lists.infradead.org>
+Date: Thu, 6 May 2010 10:42:13 +0800
+Subject: [PATCH] mtd: pxa3xx_nand: add cmdline part parser support
+Message-ID: <mailman.440.1273818249.2170.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
 Signed-off-by: Lei Wen <leiwen@marvell.com>
 Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- arch/arm/mach-mmp/include/mach/mmp2.h |    6 ++++
- arch/arm/mach-mmp/jasper.c            |   53 +++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c |   26 ++++++++++++++++++++++++--
+ 1 files changed, 24 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mach-mmp/include/mach/mmp2.h
-b/arch/arm/mach-mmp/include/mach/mmp2.h
-index 459f3be..5d706ed 100644
---- a/arch/arm/mach-mmp/include/mach/mmp2.h
-+++ b/arch/arm/mach-mmp/include/mach/mmp2.h
-@@ -4,6 +4,7 @@
- #include <linux/i2c.h>
- #include <mach/devices.h>
- #include <plat/i2c.h>
-+#include <plat/pxa3xx_nand.h>
-
- extern struct pxa_device_desc mmp2_device_uart1;
- extern struct pxa_device_desc mmp2_device_uart2;
-@@ -15,6 +16,7 @@ extern struct pxa_device_desc mmp2_device_twsi3;
- extern struct pxa_device_desc mmp2_device_twsi4;
- extern struct pxa_device_desc mmp2_device_twsi5;
- extern struct pxa_device_desc mmp2_device_twsi6;
-+extern struct pxa_device_desc mmp2_device_nand;
-
- static inline int mmp2_add_uart(int id)
- {
-@@ -56,5 +58,9 @@ static inline int mmp2_add_twsi(int id, struct
-i2c_pxa_platform_data *data,
- 	return pxa_register_device(d, data, sizeof(*data));
- }
-
-+static inline int mmp2_add_nand(struct pxa3xx_nand_platform_data *data)
-+{
-+	return pxa_register_device(&mmp2_device_nand, data, sizeof(*data));
-+}
- #endif /* __ASM_MACH_MMP2_H */
-
-diff --git a/arch/arm/mach-mmp/jasper.c b/arch/arm/mach-mmp/jasper.c
-index cfd4d66..80a571e 100644
---- a/arch/arm/mach-mmp/jasper.c
-+++ b/arch/arm/mach-mmp/jasper.c
-@@ -58,8 +58,60 @@ static unsigned long jasper_pin_config[] __initdata = {
- 	GPIO149_ND_CLE,
- 	GPIO112_ND_RDY0,
- 	GPIO160_ND_RDY1,
-+	GPIO154_SMC_IRQ,
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 2eebd20..793b64c 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -349,6 +349,9 @@ static struct pxa3xx_nand_flash __devinitdata
+builtin_flash_types[] = {
+ 	{ 0, 10, 35, 15, 25, 15, 25, 25000, 0, 60, 10, }, },
  };
 
-+static struct mtd_partition jasper_nand_partitions[] = {
-+	[0] = {
-+		.name		= "Bootloader",
-+		.offset		= 0,
-+		.size		= 0x100000,
-+		.mask_flags	= MTD_WRITEABLE,
-+	},
-+	[1] = {
-+		.name		= "Reserve",
-+		.offset		= 0x100000,
-+		.size		= 0x080000,
-+	},
-+	[2] = {
-+		.name		= "Reserve",
-+		.offset		= 0x180000,
-+		.size		= 0x800000,
-+		.mask_flags	= MTD_WRITEABLE,
-+	},
-+	[3] = {
-+		.name		= "Kernel",
-+		.offset		= 0x980000,
-+		.size		= 0x300000,
-+		.mask_flags	= MTD_WRITEABLE,
-+	},
-+	[4] = {
-+		.name		= "system",
-+		.offset		= 0x0c80000,
-+		.size		= 0x7000000,
-+	},
-+	[5] = {
-+		.name		= "userdata",
-+		.offset		= 0x7c80000,
-+		.size		= 0x7000000,
-+	},
-+	[6] = {
-+		.name		= "filesystem",
-+		.offset		= 0x0ec80000,
-+		.size		= MTDPART_SIZ_FULL,
-+	}
-+};
-+
-+static struct pxa3xx_nand_platform_data jasper_nand_info;
-+static void __init jasper_init_flash(void)
-+{
-+	jasper_nand_info.parts[0] = jasper_nand_partitions;
-+	jasper_nand_info.nr_parts[0] = ARRAY_SIZE(jasper_nand_partitions);
-+	jasper_nand_info.enable_arbiter = 1;
-+	jasper_nand_info.naked_cmd_support = 1;
-+	mmp2_add_nand(&jasper_nand_info);
-+}
-+
- static void __init jasper_init(void)
- {
- 	mfp_config(ARRAY_AND_SIZE(jasper_pin_config));
-@@ -67,6 +119,7 @@ static void __init jasper_init(void)
- 	/* on-chip devices */
- 	mmp2_add_uart(1);
- 	mmp2_add_uart(3);
-+	jasper_init_flash();
- }
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++static const char *part_probes[] = { "cmdlinepart", NULL };
++#endif
+ static const char *mtd_names[] = {"pxa3xx_nand-0", "pxa3xx_nand-1", NULL};
 
- MACHINE_START(MARVELL_JASPER, "Jasper Development Platform")
+ /* convert nano-seconds to nand flash controller clock cycles */
+@@ -1726,6 +1729,10 @@ static int __devinit pxa3xx_nand_probe(struct
+platform_device *pdev)
+ 	struct pxa3xx_nand *nand;
+ 	struct mtd_info *mtd;
+ 	int ret, cs, probe_success = 0;
++#ifdef CONFIG_MTD_PARTITIONS
++	struct mtd_partition *partitions = NULL;
++	int num_part = 0;
++#endif
+
+ 	pdata = pdev->dev.platform_data;
+ 	if (!pdata) {
+@@ -1747,8 +1754,23 @@ static int __devinit pxa3xx_nand_probe(struct
+platform_device *pdev)
+ 			dev_err(&pdev->dev, "failed to scan cs#%d nand\n", cs);
+ 			continue;
+ 		}
+-		ret = add_mtd_partitions(mtd, pdata->parts[cs],
+-				pdata->nr_parts[cs]);
++		mtd->name = mtd_names[cs];
++#ifdef CONFIG_MTD_PARTITIONS
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++		num_part = parse_mtd_partitions(mtd, part_probes, &partitions, 0);
++#endif
++		if (num_part <= 0) {
++			num_part = pdata->nr_parts[cs];
++			partitions = pdata->parts[cs];
++		}
++
++		if (partitions && num_part > 0)
++			ret = add_mtd_partitions(mtd, partitions, num_part);
++		else
++			ret = add_mtd_device(mtd);
++#else
++		ret = add_mtd_device(mtd);
++#endif
+ 		if (!ret)
+ 			probe_success = 1;
+ 	}
 -- 
 1.5.6.5
