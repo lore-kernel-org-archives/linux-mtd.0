@@ -1,16 +1,20 @@
-Received: from tyo201.gate.nec.co.jp ([202.32.8.193])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9yA1-0004AR-D5
-	for linux-mtd@lists.infradead.org; Thu, 06 May 2010 10:18:30 +0000
-Message-ID: <4BE29771.4050800@renesas.com>
-Date: Thu, 06 May 2010 19:18:25 +0900
-From: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
-MIME-Version: 1.0
-To: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
-Subject: A few cleanups against Linus' master (v2)
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Sender: shinya.kuribayashi.px@renesas.com
+	id 1O9yCO-0002YL-LL
+	for linux-mtd@lists.infradead.org; Thu, 06 May 2010 10:20:58 +0000
+Subject: Re: [PATCH] UBI: Remaining typos and comments cleanups
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
+In-Reply-To: <4BE28B46.40908@renesas.com>
+References: <4BE23A03.1030001@renesas.com> <4BE23A8D.7040106@renesas.com>
+	<4BE28B46.40908@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 06 May 2010 13:19:37 +0300
+Message-ID: <1273141177.3702.227.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-> Noticed and fixed while learning UBI subsystems.  As for comment fixes
-> a double-check by native speaker would be appricated.
+On Thu, 2010-05-06 at 18:26 +0900, Shinya Kuribayashi wrote:
+> Artem-san,
 > 
-> p.s. UBI fixes can be squashed into one at your option, thanks.
+> On 5/6/2010 12:42 PM, Shinya Kuribayashi wrote:
+> > diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+> > index 016ec13..cd0bf57 100644
+> > --- a/drivers/mtd/ubi/io.c
+> > +++ b/drivers/mtd/ubi/io.c
+> > @@ -64,7 +64,7 @@
+> >   * device, e.g., make @ubi->min_io_size = 512 in the example above?
+> >   *
+> >   * A: because when writing a sub-page, MTD still writes a full 2K page but the
+> > - * bytes which are no relevant to the sub-page are 0xFF. So, basically, writing
+> > + * bytes which are not relevant to the sub-page are 0xFF. So, basically, writing
+> >   * 4x512 sub-pages is 4 times slower than writing one 2KiB NAND page.  Thus, we
+> >   * prefer to use sub-pages only for EV and VID headers.
+> >   *                                 ^^^^
+> 
+> Looking at the last line, I think above 'EV' is a typo of 'EC', right?
+> I'll incorporate it in the next submission,
 
-v2:
-- Incorporate s/EV/EC/ typo fix, too
-- Drop 'mtd: Remove empty mtd/mtdbdi.c and mtd/internal.h files'
+Right
 
-
-Shinya Kuribayashi (2):
-      UBI: Fix s/then/than/ typos
-      UBI: Misc comment fixes
-
- drivers/mtd/ubi/Kconfig |    2 +-
- drivers/mtd/ubi/io.c    |    6 +++---
- drivers/mtd/ubi/kapi.c  |    6 +++---
- drivers/mtd/ubi/scan.c  |    4 ++--
- drivers/mtd/ubi/vtbl.c  |    4 ++--
- drivers/mtd/ubi/wl.c    |    2 +-
- 6 files changed, 12 insertions(+), 12 deletions(-)
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
