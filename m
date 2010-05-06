@@ -1,12 +1,19 @@
+Received: from tyo202.gate.nec.co.jp ([202.32.8.206])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1O9xLn-0002JV-FN
+	for linux-mtd@lists.infradead.org; Thu, 06 May 2010 09:26:37 +0000
+Message-ID: <4BE28B46.40908@renesas.com>
+Date: Thu, 06 May 2010 18:26:30 +0900
+From: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
 MIME-Version: 1.0
-Date: Thu, 6 May 2010 05:15:18 -0400
-Message-ID: <h2r771cded01005060215oed235aaavc5581c42c408587c@mail.gmail.com>
-Subject: [PATCH 20/20] pxa3xx_nand: fix power management support
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-To: Eric Miao <eric.y.miao@gmail.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	David Woodhouse <david.woodhouse@intel.com>, linux-mtd@lists.infradead.org
+To: Artem.Bityutskiy@nokia.com
+Subject: Re: [PATCH] UBI: Remaining typos and comments cleanups
+References: <4BE23A03.1030001@renesas.com> <4BE23A8D.7040106@renesas.com>
+In-Reply-To: <4BE23A8D.7040106@renesas.com>
 Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Sender: shinya.kuribayashi.px@renesas.com
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,87 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 19580f958929fe5901df8b41f04b23b855326330 Mon Sep 17 00:00:00 2001
-From: Lei Wen <leiwen@marvell.com>
-Date: Thu, 1 Apr 2010 15:12:09 +0800
-Subject: [PATCH] pxa3xx_nand: fix power management support
+Artem-san,
 
-Signed-off-by: Lei Wen <leiwen@marvell.com>
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |   48 +++++++++++++++++++++++++++++++--------
- 1 files changed, 38 insertions(+), 10 deletions(-)
+On 5/6/2010 12:42 PM, Shinya Kuribayashi wrote:
+> diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+> index 016ec13..cd0bf57 100644
+> --- a/drivers/mtd/ubi/io.c
+> +++ b/drivers/mtd/ubi/io.c
+> @@ -64,7 +64,7 @@
+>   * device, e.g., make @ubi->min_io_size = 512 in the example above?
+>   *
+>   * A: because when writing a sub-page, MTD still writes a full 2K page but the
+> - * bytes which are no relevant to the sub-page are 0xFF. So, basically, writing
+> + * bytes which are not relevant to the sub-page are 0xFF. So, basically, writing
+>   * 4x512 sub-pages is 4 times slower than writing one 2KiB NAND page.  Thus, we
+>   * prefer to use sub-pages only for EV and VID headers.
+>   *                                 ^^^^
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 2e1c8b6..15bc539 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1844,26 +1844,54 @@ static int __devinit pxa3xx_nand_probe(struct
-platform_device *pdev)
- #ifdef CONFIG_PM
- static int pxa3xx_nand_suspend(struct platform_device *pdev,
-pm_message_t state)
- {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = info->mtd;
-+	struct pxa3xx_nand *nand= platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info;
-+	struct mtd_info *mtd;
-+	int ret = 0;
-+	uint8_t cs;
-
--	if (info->state & STATE_CMD_PREPARED) {
--		dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
-+	if (nand->state & STATE_CMD_PREPARED) {
-+		dev_err(&pdev->dev, "driver busy, state = %d\n", nand->state);
- 		return -EAGAIN;
- 	}
-
--	return 0;
-+	for (cs = 0; cs < NUM_CHIP_SELECT; cs ++) {
-+		info = nand->info[cs];
-+		if (!info)
-+			continue;
-+		mtd = get_mtd_by_info(info);
-+		ret = mtd->suspend(mtd);
-+	}
-+
-+	return ret;
- }
-
- static int pxa3xx_nand_resume(struct platform_device *pdev)
- {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = info->mtd;
-+	struct pxa3xx_nand *nand= platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info;
-+	struct mtd_info *mtd;
-+	uint8_t cs;
-
--	nand_writel(info, NDTR0CS0, info->ndtr0cs0);
--	nand_writel(info, NDTR1CS0, info->ndtr1cs0);
--	clk_enable(info->clk);
-+	for (cs = 0; cs < NUM_CHIP_SELECT; cs ++) {
-+		info = nand->info[cs];
-+		if (!info)
-+			continue;
-+		nand_writel(nand, NDTR0CS0, info->ndtr0cs0);
-+		nand_writel(nand, NDTR1CS0, info->ndtr1cs0);
-+		nand->chip_select = cs;
-+		/* Sometimes nand chip would raise a ready interrupt
-+		 * when resume, reset the by start and stop to prevent
-+		 * it damage driver's state machine */
-+		pxa3xx_nand_start(nand);
-+		pxa3xx_nand_stop(nand);
-+		mtd = get_mtd_by_info(info);
-+		mtd->resume(mtd);
-+	}
-
-+	/* set the controller cs to a invalid num to let driver
-+	 * reconfigure the timing when it call the cmdfunc */
-+	nand->chip_select = 0xff;
- 	return 0;
- }
- #else
+Looking at the last line, I think above 'EV' is a typo of 'EC', right?
+I'll incorporate it in the next submission,
 -- 
-1.5.6.5
+Shinya Kuribayashi
+Renesas Electronics
