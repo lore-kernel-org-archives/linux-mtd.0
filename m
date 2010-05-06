@@ -1,7 +1,7 @@
 MIME-Version: 1.0
-Date: Thu, 6 May 2010 05:11:36 -0400
-Message-ID: <i2p771cded01005060211g851cf5btc737d7ffa9c10958@mail.gmail.com>
-Subject: [PATCH 15/20] [ARM] mmp: add nand support to mmp2
+Date: Thu, 6 May 2010 05:12:08 -0400
+Message-ID: <l2l771cded01005060212l9012e153g8b9f90552c99a068@mail.gmail.com>
+Subject: [PATCH 16/20] pxa3xx_nand: fix reset timeout on mmp2
 From: Haojian Zhuang <haojian.zhuang@gmail.com>
 To: Eric Miao <eric.y.miao@gmail.com>,
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
@@ -16,127 +16,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From b9eaf2113097d1ea53678aa6a1b290b627488ccd Mon Sep 17 00:00:00 2001
-From: Haojian Zhuang <haojian.zhuang@marvell.com>
-Date: Thu, 1 Apr 2010 09:36:25 -0400
-Subject: [PATCH] [ARM] mmp: add nand support to mmp2
+>From 9e68ac30228bd5841b8fed7a56739d401240916b Mon Sep 17 00:00:00 2001
+From: Lei Wen <leiwen@marvell.com>
+Date: Mon, 29 Mar 2010 17:35:45 +0800
+Subject: [PATCH] pxa3xx_nand: fix reset timeout on mmp2
+
+For mmp2 board, reset command would always have timeout when enable
+the IRQ processing. The command done would comes after exit the IRQ
+processing whatever the timeout value is set.
+
+Change reset command use polling mode fix the issue.
 
 Signed-off-by: Lei Wen <leiwen@marvell.com>
 Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- arch/arm/mach-mmp/include/mach/mmp2.h |    6 ++++
- arch/arm/mach-mmp/jasper.c            |   53 +++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/mach-mmp/include/mach/mmp2.h
-b/arch/arm/mach-mmp/include/mach/mmp2.h
-index fec220b..d68890b 100644
---- a/arch/arm/mach-mmp/include/mach/mmp2.h
-+++ b/arch/arm/mach-mmp/include/mach/mmp2.h
-@@ -4,6 +4,7 @@
- #include <linux/i2c.h>
- #include <mach/devices.h>
- #include <plat/i2c.h>
-+#include <plat/pxa3xx_nand.h>
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 31ebc78..2eebd20 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1099,6 +1099,10 @@ static int prepare_command_pool(struct
+pxa3xx_nand *nand, int command,
 
- extern struct pxa_device_desc mmp2_device_uart1;
- extern struct pxa_device_desc mmp2_device_uart2;
-@@ -15,6 +16,7 @@ extern struct pxa_device_desc mmp2_device_twsi3;
- extern struct pxa_device_desc mmp2_device_twsi4;
- extern struct pxa_device_desc mmp2_device_twsi5;
- extern struct pxa_device_desc mmp2_device_twsi6;
-+extern struct pxa_device_desc mmp2_device_nand;
-
- static inline int mmp2_add_uart(int id)
+ 		break;
+ 	case NAND_CMD_RESET:
++		/* on some platform, it is stranger that when issue reset command,
++		 * cmd done would not come till timeout cause irq exit.
++		 * Force polling mode for reset command*/
++		use_polling = 1;
+ 		cmd = cmdset.reset;
+ 		info->ndcb0[0] |= NDCB0_CMD_TYPE(5)
+ 				| cmd;
+@@ -1123,7 +1127,7 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info
+*mtd, unsigned command,
  {
-@@ -56,5 +58,9 @@ static inline int mmp2_add_twsi(int id, struct
-i2c_pxa_platform_data *data,
- 	return pxa_register_device(d, data, sizeof(*data));
+ 	struct pxa3xx_nand_info *info = mtd->priv;
+ 	struct pxa3xx_nand *nand = info->nand_data;
+-	int ret, exec_cmd;
++	int ret, exec_cmd, polling_mode;
+
+ 	/* if this is a x16 device ,then convert the input
+ 	 * "byte" address into a "word" address appropriate
+@@ -1140,6 +1144,7 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info
+*mtd, unsigned command,
+ 	}
+
+ 	DBG_NAND(printk("command %x, page %x\n", command, page_addr));
++	polling_mode = use_polling;
+ 	exec_cmd = prepare_command_pool(nand, command, column, page_addr);
+ 	if (exec_cmd) {
+ 		init_completion(&nand->cmd_complete);
+@@ -1160,6 +1165,7 @@ static void pxa3xx_nand_cmdfunc(struct mtd_info
+*mtd, unsigned command,
+ 		disable_int(nand, NDCR_INT_MASK);
+ 		nand->state &= ~STATE_CMD_PREPARED;
+ 	}
++	use_polling = polling_mode;
  }
 
-+static inline int mmp2_add_nand(struct pxa3xx_nand_platform_data *data)
-+{
-+	return pxa_register_device(&mmp2_device_nand, data, sizeof(*data));
-+}
- #endif /* __ASM_MACH_MMP2_H */
-
-diff --git a/arch/arm/mach-mmp/jasper.c b/arch/arm/mach-mmp/jasper.c
-index d77dd41..3d6534d 100644
---- a/arch/arm/mach-mmp/jasper.c
-+++ b/arch/arm/mach-mmp/jasper.c
-@@ -62,6 +62,7 @@ static unsigned long jasper_pin_config[] __initdata = {
- 	GPIO149_ND_CLE,
- 	GPIO112_ND_RDY0,
- 	GPIO160_ND_RDY1,
-+	GPIO154_SMC_IRQ,
-
- 	/* PMIC */
- 	PMIC_PMIC_INT | MFP_LPM_EDGE_FALL,
-@@ -121,6 +122,57 @@ static struct i2c_board_info jasper_twsi1_info[] = {
- 	},
- };
-
-+static struct mtd_partition jasper_nand_partitions[] = {
-+	[0] = {
-+		.name		= "Bootloader",
-+		.offset		= 0,
-+		.size		= 0x100000,
-+		.mask_flags	= MTD_WRITEABLE,
-+	},
-+	[1] = {
-+		.name		= "Reserve",
-+		.offset		= 0x100000,
-+		.size		= 0x080000,
-+	},
-+	[2] = {
-+		.name		= "Reserve",
-+		.offset		= 0x180000,
-+		.size		= 0x800000,
-+		.mask_flags	= MTD_WRITEABLE,
-+	},
-+	[3] = {
-+		.name		= "Kernel",
-+		.offset		= 0x980000,
-+		.size		= 0x300000,
-+		.mask_flags	= MTD_WRITEABLE,
-+	},
-+	[4] = {
-+		.name		= "system",
-+		.offset		= 0x0c80000,
-+		.size		= 0x7000000,
-+	},
-+	[5] = {
-+		.name		= "userdata",
-+		.offset		= 0x7c80000,
-+		.size		= 0x7000000,
-+	},
-+	[6] = {
-+		.name		= "filesystem",
-+		.offset		= 0x0ec80000,
-+		.size		= MTDPART_SIZ_FULL,
-+	}
-+};
-+
-+static struct pxa3xx_nand_platform_data jasper_nand_info;
-+static void __init jasper_init_flash(void)
-+{
-+	jasper_nand_info.parts[0] = jasper_nand_partitions;
-+	jasper_nand_info.nr_parts[0] = ARRAY_SIZE(jasper_nand_partitions);
-+	jasper_nand_info.enable_arbiter = 1;
-+	jasper_nand_info.naked_cmd_support = 1;
-+	mmp2_add_nand(&jasper_nand_info);
-+}
-+
- static void __init jasper_init(void)
- {
- 	mfp_config(ARRAY_AND_SIZE(jasper_pin_config));
-@@ -129,6 +181,7 @@ static void __init jasper_init(void)
- 	mmp2_add_uart(1);
- 	mmp2_add_uart(3);
- 	mmp2_add_twsi(1, NULL, ARRAY_AND_SIZE(jasper_twsi1_info));
-+	jasper_init_flash();
-
- 	regulator_has_full_constraints();
- }
+ static uint8_t pxa3xx_nand_read_byte(struct mtd_info *mtd)
 -- 
 1.5.6.5
