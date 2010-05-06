@@ -1,22 +1,20 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9s2N-0000zt-4p
-	for linux-mtd@lists.infradead.org; Thu, 06 May 2010 03:46:13 +0000
-Received: by vws17 with SMTP id 17so1128176vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 05 May 2010 20:46:10 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <u2v70c9a9111004300305n4c86774bm7ed70161ad72d830@mail.gmail.com>
-References: <u2v70c9a9111004300305n4c86774bm7ed70161ad72d830@mail.gmail.com>
-Date: Thu, 6 May 2010 12:46:10 +0900
-Message-ID: <z2p9c9fda241005052046j3fea69a4v91f3d5fd86648fac@mail.gmail.com>
-Subject: Re: Possible bug in onenand_base ?
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: =?ISO-8859-1?Q?Enric_Balletb=F2_i_Serra?= <eballetbo@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH V2] ubi: init even if mtd device cannot be attached, if
+	built into kernel
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+In-Reply-To: <1273047445-23411-1-git-send-email-mkl@pengutronix.de>
+References: <1273047445-23411-1-git-send-email-mkl@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 06 May 2010 09:15:25 +0300
+Message-ID: <1273126525.3702.196.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Andi Kleen <ak@linux.intel.com>,
+	Dmitry Pervushin <dpervushin@embeddedalley.com>,
+	Greg Kroah-Hartman <gregkh@suse.de>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,105 +24,161 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2010-05-05 at 10:17 +0200, Marc Kleine-Budde wrote:
+> Ubi can be built into the kernel or be compiled as a kernel module.
+> Further on the command line one can specify mtd devices to be attach to
+> ubi while loading. In the current implementation the ubi driver refuses
+> to load if one of the mtd devices cannot be attached.
+> 
+> Consider:
+> 1) ubi compiled into the kernel and
+> 2) a mtd device specified on the command line and
+> 3) this mtd device contains bogus data (for whatever reason).
+> 
+> During init ubi tries to attach the mtd device is this fails the whole
+> ubi subsystem isn't initialized. Later the userspace cannot attach any
+> mtd to ubi because ubi isn't loaded.
+> 
+> This patch keeps the current behaviour: if ubi is compiled as a module
+> and a mtd device cannot be attached the ubi module cannot be loaded,
+> but changes it for the ubi-is-built-into-the-kernel usecase.
+> 
+> If ubi is builtin, a not attachable mtd device doen't stop ubi from
+> initializing. This slightly modifies the behaviour if multiple mtd
+> devices are specified on the command line. Now every mtd device is
+> probed and, if possible, attached, i.e. a faulty mtd device doesn't
+> stop the others from being attached.
+> 
+> V2: integrated comments from Artem Bityutskiy:
+>     use defines instead of static inline functions
+> 
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> ---
+>  drivers/mtd/ubi/build.c |   12 ++++++++++--
+>  1 files changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+> index fad40aa..d0447a5 100644
+> --- a/drivers/mtd/ubi/build.c
+> +++ b/drivers/mtd/ubi/build.c
+> @@ -49,6 +49,12 @@
+>  /* Maximum length of the 'mtd=' parameter */
+>  #define MTD_PARAM_LEN_MAX 64
+>  
+> +#ifdef CONFIG_MTD_UBI_MODULE
+> +#define ubi_is_module() 1
+> +#else
+> +#define ubi_is_module() 0
+> +#endif
+> +
+>  /**
+>   * struct mtd_dev_param - MTD device parameter description data structure.
+>   * @name: MTD character device node path, MTD device name, or MTD device number
+> @@ -1240,9 +1246,11 @@ static int __init ubi_init(void)
+>  					 p->vid_hdr_offs);
+>  		mutex_unlock(&ubi_devices_mutex);
+>  		if (err < 0) {
+> -			put_mtd_device(mtd);
+>  			ubi_err("cannot attach mtd%d", mtd->index);
+> -			goto out_detach;
+> +			if (ubi_is_module()) {
+> +				put_mtd_device(mtd);
+We should put the MTD device even if we continue, because we did not
+attach it.
+> +				goto out_detach;
+> +			}
+>  		}
+>  	}
+>  
 
-Can you add this statement at below the code?
-printk("%s[%d] page %d, %d, %d\n", __func__, __LINE__, page, (int)
-onenand_addr(this, block), ((int) addr >> this->page_shift) &
-this->page_mask);
+I've added a comment and fixed your patch, and pushed to ubi-2.6.git.
+Please, check it.
 
-In my test environment, it displays the correct page number.
-(addr - onenand_addr(this, block) >> this->page_shift is same as
-'(addr >> this->page_shift) & this->page_mask'.
+>From af7ad7a0a6c0c1d8497a25b6b8b3b2ce9f52ff04 Mon Sep 17 00:00:00 2001
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Wed, 5 May 2010 10:17:25 +0200
+Subject: [PATCH] UBI: init even if MTD device cannot be attached, if built into kernel
 
-Thank you,
-Kyungmin Park
+UBI can be built into the kernel or be compiled as a kernel module.
+Further on the command line one can specify MTD devices to be attach to
+UBI while loading. In the current implementation the UBI driver refuses
+to load if one of the MTD devices cannot be attached.
 
-On Fri, Apr 30, 2010 at 7:05 PM, Enric Balletb=F2 i Serra
-<eballetbo@gmail.com> wrote:
-> Hello all,
->
-> After commit 5988af2319781bc8e0ce418affec4e09cfa77907 (mtd:
-> Flex-OneNAND support) the onenand support for my device is broken.
->
-> Before this commit when I run the nandtest program all is ok
-> ---
-> # nandtest /dev/mtd3
-> ECC corrections: 0
-> ECC failures =A0 : 0
-> Bad blocks =A0 =A0 : 0
-> BBT blocks =A0 =A0 : 0
-> 002c0000: checking...
-> Finished pass 1 successfully
-> --
->
-> Introduced commit 5988af2319781bc8e0ce418affec4e09cfa7790 the nandtest
-> fails with:
-> ---
-> # nandtest /dev/mtd3
-> ECC corrections: 0
-> ECC failures =A0 : 0
-> Bad blocks =A0 =A0 : 0
-> BBT blocks =A0 =A0 : 0
-> 00000000: reading...
-> [ =A0299.092041] onenand_wait: ECC error =3D 0x8488
-> =A0 =A0( ... lots of ECC errors ... )
-> [ =A0299.092041] onenand_wait: ECC error =3D 0x8488
-> ECC failed at 00000000
-> 00000000: checking...
-> compare failed. seed 1804289383
-> Byte 0x1 is 5a should be da
-> Byte 0x3 is 82 should be 92
-> Byte 0x4 is 10 should be 1a
-> =A0 =A0( ... )
-> ---
->
-> Investigating a little I see a significant difference introduced by
-> this patch. In line
->
-> 347: =A0 =A0 =A0 =A0page =3D (int) (addr - onenand_addr(this, block)) >>
-> this->page_shift; =A0 (patch applied)
->
-> instead of
->
-> 347: =A0 =A0 =A0 =A0page =3D (int) (addr >> this->page_shift); =A0(withou=
-t patch)
->
-> I applied commit 5988af2319781bc8e0ce418affec4e09cfa7790 and replaced
-> the line 347 and now works again. Fantastic, but I suspect this is not
-> the proper solution (probably this breaks other onenands devices, I
-> can't test).
->
-> I'm just introducing in OneNAND devices so anyone can help me to
-> understand and solve the problem ? Note that my device is a Numonyx
-> 4-Gbit DDP (DUAL DIE PLAN) OneNAND flash memory ( 2 dice of 2Gb, 2KB
-> page )
->
-> Thanks in advance,
->
-> ///:~Enric
->
-> ---
-> diff --git a/drivers/mtd/onenand/onenand_base.c
-> b/drivers/mtd/onenand/onenand_base.c
-> index 081f97d..b1d50a3 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -344,7 +344,7 @@ static int onenand_command(struct mtd_info *mtd,
-> int cmd, loff_t addr, size_t le
->
-> =A0 =A0 =A0 =A0default:
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0block =3D (int) onenand_block(this, addr);
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 page =3D (int) (addr - onenand_addr(this, b=
-lock)) >> this->page_shift;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 page =3D (int) (addr >> this->page_shift);
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ONENAND_IS_2PLANE(this)) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Make the even block num=
-ber */
-> ---
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Consider:
+1) UBI compiled into the kernel and
+2) a MTD device specified on the command line and
+3) this MTD device contains bogus data (for whatever reason).
+
+During init UBI tries to attach the MTD device is this fails the whole
+UBI subsystem isn't initialized. Later the userspace cannot attach any
+MTD to UBI because UBI isn't loaded.
+
+This patch keeps the current behaviour: if UBI is compiled as a module
+and a MTD device cannot be attached the UBI module cannot be loaded,
+but changes it for the UBI-is-built-into-the-kernel usecase.
+
+If UBI is builtin, a not attachable MTD device doen't stop UBI from
+initializing. This slightly modifies the behaviour if multiple MTD
+devices are specified on the command line. Now every MTD device is
+probed and, if possible, attached, i.e. a faulty MTD device doesn't
+stop the others from being attached.
+
+Artem: tweaked the patch
+
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/build.c |   25 +++++++++++++++++++++++--
+ 1 files changed, 23 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 3a59a1d..13b05cb 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -49,6 +49,12 @@
+ /* Maximum length of the 'mtd=' parameter */
+ #define MTD_PARAM_LEN_MAX 64
+ 
++#ifdef CONFIG_MTD_UBI_MODULE
++#define ubi_is_module() 1
++#else
++#define ubi_is_module() 0
++#endif
++
+ /**
+  * struct mtd_dev_param - MTD device parameter description data structure.
+  * @name: MTD character device node path, MTD device name, or MTD device number
+@@ -1206,9 +1212,24 @@ static int __init ubi_init(void)
+ 					 p->vid_hdr_offs);
+ 		mutex_unlock(&ubi_devices_mutex);
+ 		if (err < 0) {
+-			put_mtd_device(mtd);
+ 			ubi_err("cannot attach mtd%d", mtd->index);
+-			goto out_detach;
++			put_mtd_device(mtd);
++
++			/*
++			 * Originally UBI stopped initializing on any error.
++			 * However, later on it was found out that this
++			 * behavior is not very good when UBI is compiled into
++			 * the kernel and the MTD devices to attach are passed
++			 * through the command line. Indeed, UBI failure
++			 * stopped whole boot sequence.
++			 *
++			 * To fix this, we changed the behavior for the
++			 * non-module case, but preserved the old behavior for
++			 * the module case, just for compatibility. This is a
++			 * little inconsistent, though.
++			 */
++			if (ubi_is_module())
++				goto out_detach;
+ 		}
+ 	}
+ 
+-- 
+1.6.6.1
+
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
