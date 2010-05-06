@@ -1,20 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1O9unU-0006eK-SB
-	for linux-mtd@lists.infradead.org; Thu, 06 May 2010 06:43:01 +0000
-Subject: Re: [PATCH resend] mpc5121_nfc: Changed SVR check to allow MPC5123.
+	id 1O9usc-00081x-Nr
+	for linux-mtd@lists.infradead.org; Thu, 06 May 2010 06:48:19 +0000
+Subject: Re: [PATCH] UBI: Fix s/then/than/ typos
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Steve Deiters <SteveDeiters@BASLER.com>
-In-Reply-To: <181804936ABC2349BE503168465576460EA16F75@exchserver.basler.com>
-References: <181804936ABC2349BE503168465576460E95836C@exchserver.basler.com>
-	<1272980863.3702.10.camel@localhost>
-	<181804936ABC2349BE503168465576460EA16F75@exchserver.basler.com>
+To: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
+In-Reply-To: <4BE23A6F.1010406@renesas.com>
+References: <4BE23A03.1030001@renesas.com>  <4BE23A6F.1010406@renesas.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 06 May 2010 09:42:07 +0300
-Message-ID: <1273128127.3702.201.camel@localhost>
+Date: Thu, 06 May 2010 09:47:24 +0300
+Message-ID: <1273128444.3702.202.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,38 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-05-05 at 13:48 -0500, Steve Deiters wrote:
-> The revision in SVR for MPC5123 is 3.  The NFC is the same as MPC5121
-> revision 2.
-> 
-> Signed-off-by: Steve Deiters <SteveDeiters@basler.com>
+On Thu, 2010-05-06 at 12:41 +0900, Shinya Kuribayashi wrote:
+> Signed-off-by: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
 > ---
->  drivers/mtd/nand/mpc5121_nfc.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
+>   drivers/mtd/ubi/Kconfig |    2 +-
+>   drivers/mtd/ubi/io.c    |    2 +-
+>   drivers/mtd/ubi/kapi.c  |    6 +++---
+>   drivers/mtd/ubi/scan.c  |    4 ++--
+>   drivers/mtd/ubi/wl.c    |    2 +-
+>   5 files changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/mpc5121_nfc.c
-> b/drivers/mtd/nand/mpc5121_nfc.c
-> index 191bf99..dc04d74 100644
-> --- a/drivers/mtd/nand/mpc5121_nfc.c
-> +++ b/drivers/mtd/nand/mpc5121_nfc.c
-> @@ -666,10 +666,10 @@ static int __devinit mpc5121_nfc_probe(struct
-> of_device *op,
->  
->  	/*
->  	 * Check SoC revision. This driver supports only NFC
-> -	 * in MPC5121 revision 2.
-> +	 * in MPC5121 revision 2 and MPC5123 revision 3.
->  	 */
->  	rev = (mfspr(SPRN_SVR) >> 4) & 0xF;
-> -	if (rev != 2) {
-> +	if ((rev != 2) && (rev != 3)) {
->  		dev_err(dev, "SoC revision %u is not supported!\n",
-> rev);
->  		return -ENXIO;
->  	}
+> diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+> index 0a8c7ea..f702a16 100644
+> --- a/drivers/mtd/ubi/Kconfig
+> +++ b/drivers/mtd/ubi/Kconfig
+> @@ -27,7 +27,7 @@ config MTD_UBI_WL_THRESHOLD
+>   	  The default value should be OK for SLC NAND flashes, NOR flashes and
+>   	  other flashes which have eraseblock life-cycle 100000 or more.
+>   	  However, in case of MLC NAND flashes which typically have eraseblock
+> -	  life-cycle less then 10000, the threshold should be lessened (e.g.,
+> +	  life-cycle less than 10000, the threshold should be lessened (e.g.,
+>   	  to 128 or 256, although it does not have to be power of 2).
 
-Now your patch is line-wrapped. But I fixed it and pushed to
-l2-mtd-2.6.git / master.
+Thanks for the patches, but they really look corrupted. Could you please
+send applicable versions?
 
 -- 
 Best Regards,
