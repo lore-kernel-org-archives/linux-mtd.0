@@ -1,19 +1,19 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 6 May 2010 11:47:16 -0500
-Subject: RE: [PATCH 2/2] Remove now-defunct ts7250 nand driver
-Message-ID: <0D753D10438DA54287A00B0270842697636ECB4D36@AUSP01VMBX24.collaborationhost.net>
-References: <201001051459.58621.hartleys@visionengravers.com><1262784693.3181.8034.camel@macbook.infradead.org><BD79186B4FD85F4B8E60E381CAEE1909020893C9@mi8nycmail19.Mi8.com><1262799737.3181.8388.camel@macbook.infradead.org>
-	<BD79186B4FD85F4B8E60E381CAEE1909020893D4@mi8nycmail19.Mi8.com>
-In-Reply-To: <BD79186B4FD85F4B8E60E381CAEE1909020893D4@mi8nycmail19.Mi8.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "joff@embeddedarm.com" <joff@embeddedarm.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	"mcrapet@gmail.com" <mcrapet@gmail.com>,
-	ARM Kernel <linux-arm-kernel@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OAGE1-0004uv-H6
+	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 05:35:51 +0000
+Subject: Re: [PATCH 1/2] UBI: Fix s/then/than/ typos
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
+In-Reply-To: <4BE2983B.4090605@renesas.com>
+References: <4BE29771.4050800@renesas.com>  <4BE2983B.4090605@renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 07 May 2010 08:34:39 +0300
+Message-ID: <1273210479.2178.1.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gRGF2aWQsDQoNCkRvIHlvdSBrbm93IHRoZSBzdGF0dXMgb2YgdGhlc2UgdHdvIHBhdGNo
-ZXMgaW4gbGludXgtbmV4dDoNCg0KY29tbWl0IDc2MDM3NTc5OTNlN2NlM2U2M2IyMjgwY2NmNjFk
-ODA1OGI3YjI0MTQNCkF1dGhvcjogSCBIYXJ0bGV5IFN3ZWV0ZW4gPGhhcnRsZXlzQHZpc2lvbmVu
-Z3JhdmVycy5jb20+DQpEYXRlOiAgIFR1ZSBKYW4gNSAxNDo1OTo1OCAyMDEwIC0wNzAwDQoNCiAg
-ICBtdGQ6IFJlbW92ZSBub3ctZGVmdW5jdCB0czcyNTAgbmFuZCBkcml2ZXINCiAgICANCiAgICBU
-aGUgdHM3Mnh4IHBsYXRmb3JtIGhhcyBiZWVuIHVwZGF0ZWQgdG8gdXNlIHRoZSBnZW5lcmljIHBs
-YXRmb3JtIG5hbmQNCiAgICBkcml2ZXIgKHBsYXRfbmFuZC5jKS4gIFRoaXMgcmVtb3ZlcyB0aGUg
-bm93LWRlZnVuY3QgdHM3MjUwLmMgbmFuZCBkcml2ZXIuDQogICAgDQogICAgU2lnbmVkLW9mZi1i
-eTogSCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVycy5jb20+DQogICAg
-Q2M6IE1hdHRoaWV1IENyYXBldCA8bWNyYXBldEBnbWFpbC5jb20+DQogICAgQ2M6IEplc3NlIE9m
-ZiA8am9mZkBlbWJlZGRlZEFSTS5jb20+DQogICAgU2lnbmVkLW9mZi1ieTogRGF2aWQgV29vZGhv
-dXNlIDxEYXZpZC5Xb29kaG91c2VAaW50ZWwuY29tPg0KDQpjb21taXQgMDMwZDJkZDQ1MGE2Mjhi
-N2E4ZTMxZTk4MGFmM2QwNTg1NGY2OGVkYg0KQXV0aG9yOiBIIEhhcnRsZXkgU3dlZXRlbiA8aGFy
-dGxleXNAdmlzaW9uZW5ncmF2ZXJzLmNvbT4NCkRhdGU6ICAgVHVlIEphbiA1IDE0OjU5OjU2IDIw
-MTAgLTA3MDANCg0KICAgIG10ZDogVXBkYXRlIGVwOTN4eC90czcyeHggdG8gdXNlIGdlbmVyaWMg
-cGxhdGZvcm0gbmFuZCBkcml2ZXINCiAgICANCiAgICBVcGRhdGUgdGhlIHRzNzJ4eCBwbGF0Zm9y
-bSdzIG5hbmQgZHJpdmVyIHN1cHBvcnQuDQogICAgDQogICAgVGhpcyBjaGFuZ2VzIHRoZSB0czcy
-eHggcGxhdGZvcm0gZnJvbSB1c2luZyBhIGN1c3RvbSBuYW5kIGRyaXZlcg0KICAgICh0czcyNTAu
-YykgdG8gdGhlIGdlbmVyaWMgcGxhdGZvcm0gbmFuZCBkcml2ZXIgKHBsYXRfbmFuZC5jKS4NCiAg
-ICANCiAgICBUZXN0ZWQgb24gVFMtNzI1MCB3aXRoIDMyTWlCIE5BTkQuDQogICAgDQogICAgU2ln
-bmVkLW9mZi1ieTogSCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVycy5j
-b20+DQogICAgVGVzdGVkLWJ5OiBNYXR0aGlldSBDcmFwZXQgPG1jcmFwZXRAZ21haWwuY29tPg0K
-ICAgIENjOiBKZXNzZSBPZmYgPGpvZmZAZW1iZWRkZWRBUk0uY29tPg0KICAgIFNpZ25lZC1vZmYt
-Ynk6IERhdmlkIFdvb2Rob3VzZSA8RGF2aWQuV29vZGhvdXNlQGludGVsLmNvbT4NCg0KSSBoYXZl
-IHNvbWUgcGVuZGluZyBwYXRjaGVzIGZvciBhcmNoL2FybS9tYWNoLWVwOTN4eC90czcyeHguYyB0
-aGF0DQpkZXBlbmQgb24gdGhlc2UuDQoNClRoYW5rcywNCkhhcnRsZXk=
+On Thu, 2010-05-06 at 19:21 +0900, Shinya Kuribayashi wrote:
+> Signed-off-by: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
+> ---
+>  Nothing's changed, just resent with correcting Tb3's settings.
+> 
+>  drivers/mtd/ubi/Kconfig |    2 +-
+>  drivers/mtd/ubi/io.c    |    2 +-
+>  drivers/mtd/ubi/kapi.c  |    6 +++---
+>  drivers/mtd/ubi/scan.c  |    4 ++--
+>  drivers/mtd/ubi/wl.c    |    2 +-
+>  5 files changed, 8 insertions(+), 8 deletions(-)
+
+Pushed both patches to the ubi-2.6.git tree, thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
