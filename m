@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OAGaO-0000JN-Uz
-	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 05:58:58 +0000
-Subject: Re: [PATCH 0/4] UBI: improve empty flash handling
+Subject: RE: [PATCH 2/2] Remove now-defunct ts7250 nand driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-In-Reply-To: <20100506095218.GB15335@Chamillionaire.breakpoint.cc>
-References: <1272881582-17196-1-git-send-email-Artem.Bityutskiy@nokia.com>
-	<20100506095218.GB15335@Chamillionaire.breakpoint.cc>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+In-Reply-To: <0D753D10438DA54287A00B0270842697636ECB4D36@AUSP01VMBX24.collaborationhost.net>
+References: <201001051459.58621.hartleys@visionengravers.com>
+	<1262784693.3181.8034.camel@macbook.infradead.org>
+	<BD79186B4FD85F4B8E60E381CAEE1909020893C9@mi8nycmail19.Mi8.com>
+	<1262799737.3181.8388.camel@macbook.infradead.org>
+	<BD79186B4FD85F4B8E60E381CAEE1909020893D4@mi8nycmail19.Mi8.com>
+	<0D753D10438DA54287A00B0270842697636ECB4D36@AUSP01VMBX24.collaborationhost.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 07 May 2010 08:57:53 +0300
-Message-ID: <1273211873.2178.7.camel@localhost>
+Date: Fri, 07 May 2010 09:01:09 +0300
+Message-ID: <1273212069.2178.9.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: "joff@embeddedarm.com" <joff@embeddedarm.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	"mcrapet@gmail.com" <mcrapet@gmail.com>,
+	ARM Kernel <linux-arm-kernel@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,21 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-05-06 at 11:52 +0200, Sebastian Andrzej Siewior wrote:
-> * Artem Bityutskiy | 2010-05-03 13:12:58 [+0300]:
+On Thu, 2010-05-06 at 11:47 -0500, H Hartley Sweeten wrote:
+> Hello David,
 > 
-> >Hi Sebastian,
-> Hi Artem,
-> 
-> >Please, review and test the following series.
-> 
-> The code looks fine. I wiped the flash and the test resulted in:
+> Do you know the status of these two patches in linux-next:
 
-Pushed the patches to the master branch so far. If everything is
-allright, I'll push them to linux-next in few days. This is because I
-can amend patches which are in the master branch (i.e., rebase the git
-tree), but when they go to linux-next, I try hard to avoid any
-re-basing.
+I'm not David, but I think I know the answer. Last merge window was
+missed and the mtd tree was not merged, so the patches are waiting for
+the next merge window and will be merged.
+
+[snip]
+
+> I have some pending patches for arch/arm/mach-ep93xx/ts72xx.c that
+> depend on these.
+
+Just send your depending patches.
 
 -- 
 Best Regards,
