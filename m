@@ -1,22 +1,25 @@
-Received: from cassiel.sirena.org.uk ([80.68.93.111])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OAPwb-000389-VH
-	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 15:58:30 +0000
-Date: Fri, 7 May 2010 16:58:22 +0100
-From: Mark Brown <broonie@opensource.wolfsonmicro.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] UBI: Fix s/then/than/ typos
-Message-ID: <20100507155821.GB3425@sirena.org.uk>
-References: <4BE23A03.1030001@renesas.com> <4BE23A6F.1010406@renesas.com>
-	<1273128444.3702.202.camel@localhost>
-	<4BE26A87.4030206@renesas.com>
-	<1273130495.3702.205.camel@localhost>
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Fri, 7 May 2010 11:37:58 -0500
+Subject: RE: [PATCH 2/2] Remove now-defunct ts7250 nand driver
+Message-ID: <0D753D10438DA54287A00B0270842697636ED546A3@AUSP01VMBX24.collaborationhost.net>
+References: <201001051459.58621.hartleys@visionengravers.com>
+	<1262784693.3181.8034.camel@macbook.infradead.org>
+	<BD79186B4FD85F4B8E60E381CAEE1909020893C9@mi8nycmail19.Mi8.com>
+	<1262799737.3181.8388.camel@macbook.infradead.org>
+	<BD79186B4FD85F4B8E60E381CAEE1909020893D4@mi8nycmail19.Mi8.com>
+	<0D753D10438DA54287A00B0270842697636ECB4D36@AUSP01VMBX24.collaborationhost.net>
+	<1273212069.2178.9.camel@localhost>
+In-Reply-To: <1273212069.2178.9.camel@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1273130495.3702.205.camel@localhost>
-Cc: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>,
-	linux-mtd@lists.infradead.org
+Cc: "joff@embeddedarm.com" <joff@embeddedarm.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	"mcrapet@gmail.com" <mcrapet@gmail.com>,
+	ARM Kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 06, 2010 at 10:21:35AM +0300, Artem Bityutskiy wrote:
-
-> AFAIK, format=flowed is just about displaying quoted text, not changing
-> the contents.
-
-No, it affects all text - it allows the MUA to re-wrap text in
-paragraphs to fit within the display regardless of the original line
-wrapping.  It's very useful for human languages but unfortunate for
-patches.
+T24gVGh1cnNkYXksIE1heSAwNiwgMjAxMCAxMTowMSBQTSwgQXJ0ZW0gQml0eXV0c2tpeSB3cm90
+ZToNCj4gT24gVGh1LCAyMDEwLTA1LTA2IGF0IDExOjQ3IC0wNTAwLCBIIEhhcnRsZXkgU3dlZXRl
+biB3cm90ZToNCj4+IEhlbGxvIERhdmlkLA0KPj4gDQo+PiBEbyB5b3Uga25vdyB0aGUgc3RhdHVz
+IG9mIHRoZXNlIHR3byBwYXRjaGVzIGluIGxpbnV4LW5leHQ6DQo+DQo+IEknbSBub3QgRGF2aWQs
+IGJ1dCBJIHRoaW5rIEkga25vdyB0aGUgYW5zd2VyLiBMYXN0IG1lcmdlIHdpbmRvdyB3YXMNCj4g
+bWlzc2VkIGFuZCB0aGUgbXRkIHRyZWUgd2FzIG5vdCBtZXJnZWQsIHNvIHRoZSBwYXRjaGVzIGFy
+ZSB3YWl0aW5nIGZvcg0KPiB0aGUgbmV4dCBtZXJnZSB3aW5kb3cgYW5kIHdpbGwgYmUgbWVyZ2Vk
+Lg0KDQpIZWxsbyBBcnRlbSwNCg0KQWgsIHRob3VnaHQgdGhhdCB3YXMgdGhlIGlzc3VlLiAgSXQg
+ZGlkIGFwcGVhciB0aGF0IHRoZSBtdGQgdHJlZSBkaWRuJ3QNCmdldCBtZXJnZWQuDQoNCj4gW3Nu
+aXBdDQoNCj4+IEkgaGF2ZSBzb21lIHBlbmRpbmcgcGF0Y2hlcyBmb3IgYXJjaC9hcm0vbWFjaC1l
+cDkzeHgvdHM3Mnh4LmMgdGhhdA0KPj4gZGVwZW5kIG9uIHRoZXNlLg0KPg0KPiBKdXN0IHNlbmQg
+eW91ciBkZXBlbmRpbmcgcGF0Y2hlcy4NCg0KSSdsbCBob2xkIHVudGlsIHRoaXMgZ2V0cyBtZXJn
+ZWQgKG9yIGRyb3BwZWQgaWYgdGhhdCBoYXBwZW5zKS4NCg0KVGhlIHBhdGNoZXMgYXJlIGludGVu
+ZGVkIGZvciB0aGUgYXJtIHRyZWUgYW5kIEkgd2FudCB0byBhdm9pZCBhbnkNCm1lcmdlIGlzc3Vl
+cy4NCg0KVGhhbmtzIGZvciB0aGUgdXBkYXRlLA0KSGFydGxleQ0K
