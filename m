@@ -1,17 +1,16 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OAGHA-00057F-MJ
-	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 05:39:06 +0000
-Subject: Re: [PATCH 2/4] UBI: introduce a new IO return code
+	id 1OAGJE-0005vl-IE
+	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 05:41:13 +0000
+Subject: Re: [PATCH 0/4] UBI: improve empty flash handling
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-In-Reply-To: <20100506093440.GA15335@Chamillionaire.breakpoint.cc>
+In-Reply-To: <20100506095218.GB15335@Chamillionaire.breakpoint.cc>
 References: <1272881582-17196-1-git-send-email-Artem.Bityutskiy@nokia.com>
-	<1272881582-17196-3-git-send-email-Artem.Bityutskiy@nokia.com>
-	<20100506093440.GA15335@Chamillionaire.breakpoint.cc>
+	<20100506095218.GB15335@Chamillionaire.breakpoint.cc>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 07 May 2010 08:37:31 +0300
-Message-ID: <1273210651.2178.2.camel@localhost>
+Date: Fri, 07 May 2010 08:39:53 +0300
+Message-ID: <1273210793.2178.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -25,25 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-05-06 at 11:34 +0200, Sebastian Andrzej Siewior wrote:
-> * Artem Bityutskiy | 2010-05-03 13:13:00 [+0300]:
+On Thu, 2010-05-06 at 11:52 +0200, Sebastian Andrzej Siewior wrote:
+> * Artem Bityutskiy | 2010-05-03 13:12:58 [+0300]:
 > 
-> >diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-> >index f52adca..65d03b5 100644
-> >--- a/drivers/mtd/ubi/scan.c
-> >+++ b/drivers/mtd/ubi/scan.c
-> >@@ -745,7 +745,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
-> > 		bitflips = 1;
-> > 	else if (err == UBI_IO_PEB_EMPTY)
-> > 		return add_to_list(si, pnum, UBI_SCAN_UNKNOWN_EC, &si->erase);
-> >-	else if (err == UBI_IO_BAD_HDR) {
-> >+	else if (err = UBI_IO_BAD_HDR_READ || err == UBI_IO_BAD_HDR) {
+> >Hi Sebastian,
+> Hi Artem,
 > 
-> That part should be == and not = but you fix this in the next patch so I
-> guess it is okay.
+> >Please, review and test the following series.
+> 
+> The code looks fine. I wiped the flash and the test resulted in:
 
-Fixed this in the wrong patch, I'll amend them and make sure this typo
-goes away, thanks.
+Thanks, I'll push this to the ubi-2.6.git tree shortly. Will add
+
+Reviewed-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Tested-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+
+If you object, please, let me know and I'll amend the tags.
 
 -- 
 Best Regards,
