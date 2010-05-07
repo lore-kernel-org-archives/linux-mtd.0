@@ -1,21 +1,18 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OAK87-0006vQ-OC
-	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 09:46:00 +0000
-Received: by wwf26 with SMTP id 26so647476wwf.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 07 May 2010 02:45:58 -0700 (PDT)
+Date: Fri, 7 May 2010 12:20:22 +0200
+From: Daniel Mack <daniel@caiaq.de>
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: Re: [PATCH 01/20] pxa3xx_nand: refuse the flash definition get
+	from platform
+Message-ID: <20100507102022.GL30801@buzzloop.caiaq.de>
+References: <u2l771cded01005060201ifacea1f9h8f5f9a1c068b31b@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <B125D8217ABC4B43826503DE00A2D44910FDF51E19@SJEXCHCCR01.corp.ad.broadcom.com>
-References: <i2z804f0d21005060530qb2a65906j62e68c9f6f5e90bc@mail.gmail.com>
-	<B125D8217ABC4B43826503DE00A2D44910FDF51E19@SJEXCHCCR01.corp.ad.broadcom.com>
-Date: Fri, 7 May 2010 11:45:57 +0200
-Message-ID: <r2m804f0d21005070245p46f7ab7aoa182a1c5316f7b3f@mail.gmail.com>
-Subject: Re: <4>mtd->read(x bytes from y) returned ECC error / Node header CRC
-	failed / READ error
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: Darwin Rambo <drambo@broadcom.com>, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <u2l771cded01005060201ifacea1f9h8f5f9a1c068b31b@mail.gmail.com>
+Cc: Lei Wen <leiwen@marvell.com>, linux-mtd@lists.infradead.org,
+	Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <david.woodhouse@intel.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for this tip!
+Hi,
 
-For the first I have mounted the jffs2 (rootfs) as read only
-(confirmed by a "VFS: Mounted root (jffs2 filesystem) readonly
-message").
-The behaviour is still the same. So does it makes a difference to set
-WriteProtection?
-The other question - if this is some selfhealing issue (as messages
-dissapear in next boot), why it will not try to heal itself right on
-time? Is it possible to force this?
-I cound't found a fitting option in kernel config (at least not one I
-would understood).
+I'd like to test this, but ...
 
-Regards
-Arno
+On Thu, May 06, 2010 at 05:01:22AM -0400, Haojian Zhuang wrote:
+> From 135f6369a9c045e58d2cfa445c72bae2bbc645cd Mon Sep 17 00:00:00 2001
+> From: Lei Wen <leiwen@marvell.com>
+> Date: Sat, 20 Mar 2010 19:01:23 +0800
+> Subject: [PATCH] pxa3xx_nand: refuse the flash definition get from platform
+> 
+> For current usage, it is little reason to use a platform defined flash info
+> for the flash detection. Flash timing through platform should be the same.
+> And allow multiple platform to define the same flash chip would be a waste.
+> 
+> Also condense the flash definition way in the c file to simplify adding a
+> new chip.
+> 
+> Signed-off-by: Lei Wen <leiwen@marvell.com>
+> Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+> ---
+>  arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   40 ----
+>  drivers/mtd/nand/Kconfig                     |    7 -
+>  drivers/mtd/nand/pxa3xx_nand.c               |  251 ++++++--------------------
+>  3 files changed, 60 insertions(+), 238 deletions(-)
+> 
 
+[...]
 
-2010/5/6 Darwin Rambo <drambo@broadcom.com>:
-> Some flashes have write-protect (WP) pins that can be strapped to prevent writing as the power is being lost. This dramatically reduces flash corruption on power cycles.
->
-> Darwin
->
->> -----Original Message-----
->> From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-
->> bounces@lists.infradead.org] On Behalf Of Arno Steffen
->> Sent: Thursday, May 06, 2010 5:31 AM
->> To: linux-mtd@lists.infradead.org
->> Subject: <4>mtd->read(x bytes from y) returned ECC error / Node header
->> CRC failed / READ error
->>
->> After some powercycles I get sometimes messages like this:
->>
->> uncorrectable error : <3>uncorrectable error : <4>mtd->read(0x3f8
->> bytes from 0x25d8408) returned ECC error
->> JFFS2 notice: (220) jffs2_get_inode_nodes: Node header CRC failed at
->> 0x25d8408. {ffe0,ffe0,ffe0ffe0,ffe0ffe0}
->>
->> I do check a 30MB file wether it contains the original information,
->> but reading/compare give holes of 2048bytes which gives "0" instead of
->> its content.
->>
->> I don't access the jffs-fs with writes, just boot and read some files.
->>
->> In the next reboot everything is fine again. So what can I do, to
->> prevent this?
->>
->> Or who can I ask? I am lost.
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
->
+> +static struct pxa3xx_nand_flash __devinitdata builtin_flash_types[] = {
+> +{ 0x46ec, 32, 512, 16, 16, 4096, { 10, 0, 20, 40, 30, 40, 11123, 110, 10, }, },
+> +{ 0xdaec, 64, 2048, 8, 8, 2048, { 10, 0, 20, 40, 30, 40, 11123, 110, 10, }, },
+> +{ 0xd7ec, 128, 4096, 8, 8, 8192, { 10, 0, 20, 40, 30, 40, 11123, 110, 10, }, },
+> +{ 0xa12c, 64, 2048, 8, 8, 1024, { 10, 25, 15, 25, 15, 30, 25000, 60, 10, }, },
+> +{ 0xb12c, 64, 2048, 16, 16, 1024, { 10, 25, 15, 25, 15, 30, 25000,
+> 60, 10, }, },
+> +{ 0xdc2c, 64, 2048, 8, 8, 4096, { 10, 25, 15, 25, 15, 30, 25000, 60, 10, }, },
+> +{ 0xcc2c, 64, 2048, 16, 16, 4096, { 10, 25, 15, 25, 15, 30, 25000,
+> 60, 10, }, },
+
+That series is line-wrapped. Could you fix this and resend please?
+
+Daniel
