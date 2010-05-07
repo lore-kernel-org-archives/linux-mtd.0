@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OAPFD-00081o-E2
-	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 15:13:40 +0000
+	id 1OAPQC-0002TA-Em
+	for linux-mtd@lists.infradead.org; Fri, 07 May 2010 15:25:01 +0000
 Subject: Re: UBIFS: Oops while rebooting 2.6.34-rc6
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Daniel Mack <daniel@caiaq.de>
 In-Reply-To: <20100507131652.GT30801@buzzloop.caiaq.de>
 References: <20100507131652.GT30801@buzzloop.caiaq.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 07 May 2010 18:12:34 +0300
-Message-ID: <1273245154.4537.288.camel@localhost>
+Date: Fri, 07 May 2010 18:23:46 +0300
+Message-ID: <1273245826.4537.294.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Sven Neumann <s.neumann@raumfeld.com>, linux-mtd@lists.infradead.org,
@@ -24,9 +24,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Good Evening,
-
 On Fri, 2010-05-07 at 15:16 +0200, Daniel Mack wrote:
+> Hi,
+> 
 > We've had a kernel Oops today when rebooting an ARM PXA based machine
 > while file I/O via SSH was outstanding.
 > 
@@ -41,30 +41,23 @@ On Fri, 2010-05-07 at 15:16 +0200, Daniel Mack wrote:
 > [  672.097301] [000000ac] *pgd=00000000
 > [  672.100850] Internal error: Oops: 817 [#1]
 > [  672.104919] last sysfs file: /sys/devices/platform/spi_gpio.0/spi0.2/value
-> [  672.111741] Modules linked in: eeti_ts libertas_sdio libertas pxamci ds2760_battery w1_ds2760 wire
-> [  672.120641] CPU: 0    Tainted: G        W   (2.6.34-rc6 #154)
-> [  672.126376] PC is at mutex_lock+0x4/0x14
-> [  672.130291] LR is at make_reservation+0x74/0x328
 
-Hi,
+It's Firday, and I want to go home, so here is another quick idea for
+you where to dig.
 
-is this reproducible? It looks like this came from:
+When the system reboots it re-mounts the FS to RO mode, usually. And
+there is some emergency remount business (see do_emergency_remount()),
+which will re-mount the FS even if there are files opened for writing.
 
-journal.c:127:  mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
+So, if there is a UBIFS or VFS bug, and somehow one process is in
+make_reservation() and is about to write something, and another process
+managed to re-mount the FS to R/O mode, then we may ooops, because UBIFS
+frees these 'wbuf' objects when it is mounted to R/O (see
+ubifs_remount_ro()).
 
-May be memory corruption? Did you try to see where exectly was the oops,
-on which C statement?
+So, inject printks to ubifs_remount_ro() to check this theory.
 
-Do you have lockdep enabled? Can it be that lockdep somehow shutdown
-first? This is unlikely, though.
-
-May be the FS was somehow unmounted, so UBIFS freed its data structures,
-and now UBIFS accesses freed memory?
-
-Try to inject some printks to ubifs_umount() or just enable the general
-UBIFS messages (enable UBIFS debugging in menuconfig first, then enable
-the general messages via module parameters or sysfs, see
-Documentation/filesystems/ubifs.txt).
+Have a nice weekend and bughunting!
 
 -- 
 Best Regards,
