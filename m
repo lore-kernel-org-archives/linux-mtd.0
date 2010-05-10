@@ -1,13 +1,15 @@
 Subject: Re: Release of UBIL: ubi with log
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <h2h6b5362aa1005100203l7530e56eh1029efd4d1428b91@mail.gmail.com>
+In-Reply-To: <AANLkTil153m-e1GuxAyV5fAldq-Mr4NEgGjr0KrPH8jv@mail.gmail.com>
 References: <6b5362aa1002260458j571852cbl2f2d86130828333a@mail.gmail.com>
 	<1273474175.2209.61.camel@localhost>
 	<h2h6b5362aa1005100203l7530e56eh1029efd4d1428b91@mail.gmail.com>
+	<1273482467.2209.101.camel@localhost>
+	<AANLkTil153m-e1GuxAyV5fAldq-Mr4NEgGjr0KrPH8jv@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 10 May 2010 14:02:56 +0300
-Message-ID: <1273489376.2209.127.camel@localhost>
+Date: Mon, 10 May 2010 14:09:36 +0300
+Message-ID: <1273489776.2209.129.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, rohitvdongre@gmail.com,
@@ -23,42 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-05-10 at 14:33 +0530, Brijesh Singh wrote:
-> Hi,
-> 
-> On Mon, May 10, 2010 at 12:19 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Fri, 2010-02-26 at 18:28 +0530, Brijesh Singh wrote:
-> >> Hi,
-> >>  It gives me great pleasure in sharing UBIL: ubi with log.  We have
-> >> added logging functionality to ubi for reducing mount time.
-> >> UBIL uses the "same source base of UBI". The logging functionality can
-> >> be added or removed at compile time using "make menuconfig option".
+On Mon, 2010-05-10 at 15:51 +0530, Brijesh Singh wrote:
+> On Mon, May 10, 2010 at 2:37 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Mon, 2010-05-10 at 14:33 +0530, Brijesh Singh wrote:
+> >> >> insmod ubi mtd=1,ubinize.
+> >> >>  (Second parameter "ubinize" is introduced to avoid accidental loss of data.)
+> >> >> insmod ubifs
+> >> >> mount ubifs
+> >> >
+> >> > Why this ubinize parameter exists? Why you cannot detect empty media
+> >> > just like UBI?
 > >>
-> >> We have seen mount time reduction of 50% in 1GB NAND. We are expecting
-> >> even better results for larger flash memories.
+> >> The idea was not to accidentally ubinize mtd partition.
+> >> For example: the file system generally don't format empty partition on
+> >> it's own. It is forced.
 > >
-> > Was that SLC or MLC NAND?
-> 
-> It was SLC NAND.
-> 
-> >> The source code of UBIL can be found in the following git tree:
-> >> http://git.infradead.org/users/brijesh/ubi-2.6.git
-> >>
-> >> We have tested ubil for samsung nand and onenand. The test results can
-> >> be found in the following git tree:
-> >> http://git.infradead.org/users/brijesh/ubil_results
+> > File system just never formats the media, so of course they never
+> > corrupt anything. Utilities mkfs.ext3 and the like do this instead.
 > >
-> > Did you run any stress tests for UBIL? Which?
+> > In fact, you can thing of UBI the same way - it does not format, there
+> > is ubiformat tool for that. Then, there is one single exception - empty
+> > flash. It is just very handy to be able to attach it without ubiformat.
+> > You can consider this as an additional usefuls feature.
+> >
+> > And UBI does manage somehow to not corrupt anything. So the question was
+> > - why UBIL cannot?
 > 
-> We ran
-> 1) fsstress on UBIFS without power failure
-> 2) fsstress on UBIFS with power failure
+> Personally, I wasn't sure if it is nice idea to find empty flash and
+> then format it on it's own.
+> 
+> UBIL certainly can do this. I will add this, if you find it useful.
 
-Please, run also the integck test which you can find in the mtd-utils,
-it is a very good test, and I think it is better than fsstress even.
-
-If integck will work, this will mean UBIL is quite stable. Then let's
-make sure it does not regress when we introduce changes.
+Well, many people found it very useful. I found it very useful for
+development as well. And since it already exists and is used, it is nice
+to make UBIL consistent with it.
 
 -- 
 Best Regards,
