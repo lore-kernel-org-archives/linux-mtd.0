@@ -1,19 +1,21 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OBNEC-0005FN-Lr
-	for linux-mtd@lists.infradead.org; Mon, 10 May 2010 07:16:37 +0000
-Subject: Re: UBIL design doc
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <m2l6b5362aa1005081239ne9eea253jc66c61822c4c1502@mail.gmail.com>
-References: <m2l6b5362aa1005081239ne9eea253jc66c61822c4c1502@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 10 May 2010 10:15:36 +0300
-Message-ID: <1273475736.2209.88.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: rohitvdongre@gmail.com, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1OBNiE-0003XA-1x
+	for linux-mtd@lists.infradead.org; Mon, 10 May 2010 07:47:39 +0000
+Message-ID: <4BE7B9EE.8040806@nokia.com>
+Date: Mon, 10 May 2010 10:46:54 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Daniel Mack <daniel@caiaq.de>
+Subject: Re: UBIFS: Oops while rebooting 2.6.34-rc6
+References: <20100507131652.GT30801@buzzloop.caiaq.de>
+In-Reply-To: <20100507131652.GT30801@buzzloop.caiaq.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Sven Neumann <s.neumann@raumfeld.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +25,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-05-09 at 01:09 +0530, Brijesh Singh wrote:
+Daniel Mack wrote:
 > Hi,
->   I am forwarding you the design document for ubi with log. Please
-> find the ubil document at
-> http://git.infradead.org/users/brijesh/ubil_results/blob_plain/HEAD:/UBIL
-> design document.pdf
+> 
+> We've had a kernel Oops today when rebooting an ARM PXA based machine
+> while file I/O via SSH was outstanding.
 
-Hi guys,
+It could be that VFS un-mounting has been broken.  For example, it looks
+like perhaps writeback is being run by bdi_destroy after the file system has
+been unmounted?
 
-I've read the document. Looks very promising. Here some feed-back.
-
-1. SB PEB wear-out. What if the reaseblock lifetime is, say, 10000
-erease cycles? Won't the SB PEB wear out very quickly? Why you did not
-go for the chaining approach which I described in the old JFFS3 design
-doc?
-
-If we do not implement chaining, we should at least design it and make
-sure UBIL can be extended later so that SB chaining could be added.
-
-2. SB PEB at the end. I think this is a very bad idea. Imagine you have
-to do UBIL images for production on the factory. With your design you
-have the following bad drawbacks:
-
-  a. NAND flash has initial bad blocks, and you do not know how many,
-     and where they sit. These may be the last 8 eraseblocks. So, when
-     you prepare an image (say, with the ubinize user-space tool), where
-     will you put the second SB PEB?
-
-  b. Currently, UBI/UBIFS images are small. E.g., if you make an
-     UBI/UBIFS image for 1GiB flash, and you have just few KiB of files,
-     your image will be few megs - it will contain the files, and all
-     the needed UBI/UBIFS meta-data.
-
-     So now what will be image size for UBIL - 1GiB, and this is bad.
-     You then will transfer 1GiB of data to the devices during flashing
-     or you will have to invent ways to work around this. Do you need
-     these complexities?
-
-I think the second SB PEB should not be at the end.
-
-3. Backward-compatibility. In UBIL you removed EC anc VID headers in
-   PEBs. That's fine for optimization purposes. But it has draw-backs:
-
-   a. If any of the UBIL meta-data blocks like SB, CMT or log are
-      corrupted - that's it - we are screwed. You cannot anymore
-      re-consturct the data by scanning. The robustness goes down.
-
-   c. Backward compatibility - UBI will not be able to attach UBIL
-      images. This is not very nice.
-
-So, I think you should keep EC and VID headers in PEBs. And you should
-make the SB/CMT/log blocks to be a new type of UBI volume with
-UBI_COMPAT_DELETE or UBI_COMPAT_PRESERVE or UBI_COMPAT_RO type. In this
-case UBI will attach UBIL volumes just fine.
-
-Then, you can add an _option_ to have no EC/VID headers in PEBs. This
-then can be used for performance, if one wants to sacrifice robustness.
-But this should be the second step. In this case, you will just need to
-put a VID header with UBI_COMPAT_REJECT flag to the first PEB.
-
-I have some more notes, but these 3 are enough for now.
-
-What do you think?
-
-In any case, whatever you will try to change in UBIL, remember to make
-it stable as it is now first, then do all changes so that you do not
-break it.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> 
+> Daniel
+> 
+> # reboot
+> # [  671.190085] UBIFS: un-mount UBI device 0, volume 1
+> The system is going down NOW!
+> Sent SIGTERM to all processes
+> [  672.083833] Unable to handle kernel NULL pointer dereference at virtual address 000000ac
+> [  672.094587] pgd = c0004000
+> [  672.097301] [000000ac] *pgd=00000000
+> [  672.100850] Internal error: Oops: 817 [#1]
+> [  672.104919] last sysfs file: /sys/devices/platform/spi_gpio.0/spi0.2/value
+> [  672.111741] Modules linked in: eeti_ts libertas_sdio libertas pxamci ds2760_battery w1_ds2760 wire
+> [  672.120641] CPU: 0    Tainted: G        W   (2.6.34-rc6 #154)
+> [  672.126376] PC is at mutex_lock+0x4/0x14
+> [  672.130291] LR is at make_reservation+0x74/0x328
+> [  672.134880] pc : [<c035bec4>]    lr : [<c0142268>]    psr: 60000013
+> [  672.134890] sp : c775fd18  ip : 00000088  fp : 000000ac
+> [  672.146281] r10: 00000000  r9 : 00000000  r8 : c7eb8000
+> [  672.151469] r7 : 00000088  r6 : c7a68310  r5 : c7eb8000  r4 : 00000001
+> [  672.157947] r3 : 00000000  r2 : 00000000  r1 : 00000000  r0 : 000000ac
+> [  672.164429] Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment kernel
+> [  672.171691] Control: 0000397f  Table: a7f54018  DAC: 00000035
+> [  672.177394] Process flush-ubifs_0_0 (pid: 1289, stack limit = 0xc775e278)
+> [  672.184131] Stack: (0xc775fd18 to 0xc7760000)
+> [  672.188458] fd00:                                                       c7f5ea00 00000000
+> [  672.196588] fd20: 00000000 c775fde0 c7f6c000 000000a0 00000001 c7eb8144 00000000 c775e000
+> [  672.204721] fd40: 00000001 00000088 00000004 00000000 00000004 c7a68310 c7eb8000 c7a68310
+> [  672.212853] fd60: 00000000 000000a0 c6894180 00000000 00000000 c0143aa4 c775fde0 000006d0
+> [  672.220978] fd80: 0000a1e0 c7eb8000 c775fdb4 c015634c 00000001 00000080 c7a68310 00000001
+> [  672.229111] fda0: c7a68458 c7eb8000 00000000 00000000 00000063 c01489b0 c775fe74 c0085400
+> [  672.237245] fdc0: c775e000 c775e000 c7a68310 c0558b00 00000063 c014559c c7a683ac c7a683ac
+> [  672.245377] fde0: 00000001 c775fef0 00000400 00000000 ffffffff c775fe34 00000000 c008b2e4
+> [  672.253510] fe00: c0558b00 c008bb3c 0000000e c00865b4 00000007 ffffffff c7a683ac c008b2d0
+> [  672.261642] fe20: c7a683ac 00000001 00000001 00000001 c775fe5c 00000001 00000000 c0558b00
+> [  672.269767] fe40: c062cf40 c062cf60 c0629080 c06290a0 c06290c0 c06290e0 c062cd60 00000000
+> [  672.277900] fe60: c062d0a0 00006872 00000000 c775fef0 00000000 00000001 c04eb4f8 00000007
+> [  672.286034] fe80: c7a68310 c775fef0 c7eb8068 c7a683ac c04eb4f8 c775fef0 c7eb8088 c00c3f28
+> [  672.294166] fea0: 00000000 c7a68310 00000000 c7eb8068 c7e12600 c00c4b48 c0246d3c c7eb8090
+> [  672.302298] fec0: c7ac17b0 c7a68318 c7eb8068 00000000 c7eb8090 c0537a6c c775fef0 00000400
+> [  672.310431] fee0: c775ff60 00000000 c7eb8068 c00c4d98 c7eb8008 00000000 00000000 00000000
+> [  672.318555] ff00: 0000a277 00000400 00000000 00000000 00000000 00000000 ffffffff 7fffffff
+> [  672.326680] ff20: 00000000 00000000 c035b804 c0053aa8 c04f1f08 c04f1dbc c77a9f04 c68958c0
+> [  672.334813] ff40: c7eb8068 0000a270 c775ff60 00000000 00000000 c7eb80a8 00000001 c00c4f74
+> [  672.342944] ff60: 00000009 00000000 00000000 00000000 00000000 000001f4 c775e000 0000a270
+> [  672.351070] ff80: c7eb8068 c04eb4f8 c04f22b0 0000000a 00007530 c00c50e0 00000000 c7eb8008
+> [  672.359202] ffa0: c7eb8068 c7eb8068 c0095e18 00000000 00000000 00000000 00000000 c0095ec0
+> [  672.367328] ffc0: c775ffd4 c7c4bf2c c7eb8068 c006ac50 00000000 00000000 c775ffd8 c775ffd8
+> [  672.375459] ffe0: 00000000 00000000 00000000 00000000 00000000 c00458bc 5f455349 48504943
+> [  672.383609] [<c035bec4>] (mutex_lock+0x4/0x14) from [<c0142268>] (make_reservation+0x74/0x328)
+> [  672.392184] [<c0142268>] (make_reservation+0x74/0x328) from [<c0143aa4>] (ubifs_jnl_write_inode+0x80/0x1b8)
+> [  672.401871] [<c0143aa4>] (ubifs_jnl_write_inode+0x80/0x1b8) from [<c01489b0>] (ubifs_write_inode+0x64/0xc4)
+> [  672.411554] [<c01489b0>] (ubifs_write_inode+0x64/0xc4) from [<c014559c>] (ubifs_writepage+0x124/0x15c)
+> [  672.420830] [<c014559c>] (ubifs_writepage+0x124/0x15c) from [<c008b2e4>] (__writepage+0x14/0x64)
+> [  672.429572] [<c008b2e4>] (__writepage+0x14/0x64) from [<c008bb3c>] (write_cache_pages+0x1e4/0x2c0)
+> [  672.438498] [<c008bb3c>] (write_cache_pages+0x1e4/0x2c0) from [<c00c3f28>] (writeback_single_inode+0xd4/0x2b8)
+> [  672.448447] [<c00c3f28>] (writeback_single_inode+0xd4/0x2b8) from [<c00c4b48>] (writeback_inodes_wb+0x434/0x52c)
+> [  672.458568] [<c00c4b48>] (writeback_inodes_wb+0x434/0x52c) from [<c00c4d98>] (wb_writeback+0x158/0x1cc)
+> [  672.467907] [<c00c4d98>] (wb_writeback+0x158/0x1cc) from [<c00c4f74>] (wb_do_writeback+0x64/0x198)
+> [  672.476815] [<c00c4f74>] (wb_do_writeback+0x64/0x198) from [<c00c50e0>] (bdi_writeback_task+0x38/0xbc)
+> [  672.486084] [<c00c50e0>] (bdi_writeback_task+0x38/0xbc) from [<c0095ec0>] (bdi_start_fn+0xa8/0xf8)
+> [  672.495009] [<c0095ec0>] (bdi_start_fn+0xa8/0xf8) from [<c006ac50>] (kthread+0x78/0x80)
+> [  672.502992] [<c006ac50>] (kthread+0x78/0x80) from [<c00458bc>] (kernel_thread_exit+0x0/0x8)
+> [  672.511293] Code: 05843000 e28dd010 e8bd81f0 e3a02000 (e1001092) 
+> [  672.517534] ---[ end trace f5c79b7be5adbe31 ]---
+> Sent SIGKILL to all processes
+> Requesting system reboot[  674.543613] Restarting system.
+> 
