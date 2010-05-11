@@ -1,27 +1,24 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OBiHu-00006P-Md
-	for linux-mtd@lists.infradead.org; Tue, 11 May 2010 05:45:52 +0000
-Subject: Re: Can not mount UBIFS
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?UTF-8?Q?=E6=9E=97=E4=BA=8E=E5=B3=BB?= <okpalin@gmail.com>
-In-Reply-To: <AANLkTil-IPNGJdudKOjtHjc9Y2od0xM2-D7beVEV_HHI@mail.gmail.com>
-References: <a145ef951003110433k5fd6c3c0h23bbe73fdb39686f@mail.gmail.com>
-	<531B6536C9F737458807DF75064873C8BE5EB0382D@mta-digimail.MTA.INT>
-	<a145ef951003160113x7baea205i8deb13c14ba8e0de@mail.gmail.com>
-	<1270544458.6754.15.camel@localhost>
-	<r2va145ef951005030454ud5400ebao9ce886d0e86c7549@mail.gmail.com>
-	<1272888512.27729.46.camel@localhost>
-	<i2sa145ef951005032020i17584946r95957f8a038efe23@mail.gmail.com>
-	<AANLkTil-IPNGJdudKOjtHjc9Y2od0xM2-D7beVEV_HHI@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 11 May 2010 08:44:50 +0300
-Message-ID: <1273556690.2209.146.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Bosi Daniele <Daniele.Bosi@mta.it>,
-	GUIDA Nicola <Nicola.GUIDA@numonyx.com>
-Reply-To: dedekind1@gmail.com
+Received: from moutng.kundenserver.de ([212.227.17.8])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OBkNW-0002wy-RD
+	for linux-mtd@lists.infradead.org; Tue, 11 May 2010 07:59:47 +0000
+From: Thorsten =?iso-8859-1?q?M=FChlfelder?= <muehlfelder@enertex.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Some questions on bit-flips and JFFS2
+Date: Tue, 11 May 2010 09:59:35 +0200
+References: <201005031505.18604.muehlfelder@enertex.de>
+	<1273049480.3702.129.camel@localhost>
+	<Pine.LNX.4.64.1005051119100.22753@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.1005051119100.22753@lnxricardw.se.axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <201005110959.36213.muehlfelder@enertex.de>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,25 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-05-11 at 11:46 +0800, 林于峻 wrote:
-> Dear all,
-> 
-> I have modified bootloader to download image as ubiformat does.
-> However, I still can not mount it.
-> I also dump the content of mtd partition and compare.
-> (Ex: dd if=/dev/block/mtdblock5 of=/data/mtd5bak)
-> No difference between the content written by bootloader and written by
-> ubiformat.
-> 
-... snip ...
+Am Wednesday 05 May 2010 11:20:42 schrieb Ricard Wanderlof:
+> > I did not really follow the discussion, so sorry if the following is
+> > unrelated: I think it should not be too difficult to teach JFFS2 to
+> > force GC on eraseblocks with bit-flips.
+>
+> I think in this case the partition in question just held a raw Linux
+> kernel with no file system, so JFFS2 is out of the picture here.
+>
+> /Ricard
 
-> <3>UBI error: ubi_io_read: error -22 while reading 2048 bytes from PEB
-> 3:6144, read 0 bytes
+After investigating the problem I can tell you, that you are completly 
+right ;-)
+Atmel's flash tool Sam-ba 2.5 was used to flash the first NAND partition as 
+follows:
+1. Bootstrap
+2. U-Boot bootloader
+3. U-Boot environment variables
+4. uImage Linux kernel
+All these things are just written raw to predefined memory addresses and if 
+some bit in there will flip, the system won't boot anymore.
+So my idea was to create an image of that partition from within running Linux, 
+check if the partition changes and if so write it back before shutdown. At 
+least this may reduce the failing rate.
+But unfortunately the Sam-Ba 2.5 tool has a bug: it uses different bad block 
+table structure and Linux refuses to read/write every block, that was written 
+by Sam-Ba 2.5 because it recognizes them as bad blocks.
+So for now I have no idea what I can do to reduce the failing rate.
+At least there is still no board using Samsung flash that has failed and I 
+hope all problems are related to the Micron flash.
 
-Well, find out why your driver returns -EINVAL and read count 0 when you
-read 2048 bytes from PEB 3 on this partition, and offset 6144. Dig the
-driver.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Kind regards
+Thorsten
