@@ -1,26 +1,21 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OBl3m-0003Pp-D8
-	for linux-mtd@lists.infradead.org; Tue, 11 May 2010 08:43:27 +0000
-Received: by fxm17 with SMTP id 17so3208534fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 May 2010 01:43:24 -0700 (PDT)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <1272520655.7750.74.camel@localhost>
-References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
-	<20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
-	<1272520655.7750.74.camel@localhost>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Tue, 11 May 2010 10:43:04 +0200
-Message-ID: <q2gb8e9195f1005110143jb8d0d5b1v3eb92b595183e703@mail.gmail.com>
-Subject: Re: [PATCH v5 5/9] [MTD] remove bogus warning about missing boot bank
-	location
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>, Chris Moore <moore@free.fr>,
-	Wolfram Sang <w.sang@pengutronix.de>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OBl4X-0003Sl-0k
+	for linux-mtd@lists.infradead.org; Tue, 11 May 2010 08:44:13 +0000
+Subject: Re: [PATCHv4] mtd-utils: use new 64-bit ioctls + sysfs to support
+	>4GiB devices
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: saeed bishara <saeed.bishara@gmail.com>
+In-Reply-To: <AANLkTinZtqLjdmVyvo9F9uEnLb3YL0V2-n0Gt7vObpj5@mail.gmail.com>
+References: <a95a62fe0904031318q21bb727ft297aaa5edc18e2a@mail.gmail.com>
+	<AANLkTinZtqLjdmVyvo9F9uEnLb3YL0V2-n0Gt7vObpj5@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 11 May 2010 11:43:09 +0300
+Message-ID: <1273567389.2209.173.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi.
+On Tue, 2010-05-11 at 11:28 +0300, saeed bishara wrote:
+> hi,
+>    This patch is needed when using >4GiB nand partitions, any idea why
+> it has not been merged yet?
+> 
+> saeed
+> 
+> On Fri, Apr 3, 2009 at 11:18 PM, Kevin Cernekee <kpc.mtd@gmail.com> wrote:
+> > Use the new kernel ioctls to erase/lock/unlock/readoob/writeoob >4GiB
+> > flash devices.
+> >
+> > Use the new sysfs interface to query device info.
+> >
+> > Dependencies:
+> >
+> > "4GiB" extended ioctls:
+> > http://lists.infradead.org/pipermail/linux-mtd/2009-April/025122.html
+> >
+> > Driver model updates 1/2: http://lkml.org/lkml/2009/4/3/477
+> >
+> > Optional: Driver model updates 2/2:
+> > http://lists.infradead.org/pipermail/linux-mtd/2009-March/025011.html
+> >
 
-2010/4/29 Artem Bityutskiy <dedekind1@gmail.com>:
-> Pushed this v5 series to l2-mtd-2.6 / dunno. But please, if you re-send
-> the series, use consistent "mtd: cfi_cmdset_0002:" prefix for this
-> patch. Then I will be able to do git-am without manual work. Now I have
-> to tweak this patch because git am removes [MTD].
-
-David, could you please pick this series and push it to mtd-2.6.git
-before the merge window ?
-Thanks.
-
+Dunno, I did not follow these. Kevin, would you re-send your patches
+please?
 
 -- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
