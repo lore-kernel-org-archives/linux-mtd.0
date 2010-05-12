@@ -1,21 +1,16 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCK4v-00030U-C9
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 22:06:58 +0000
-From: Peter Huewe <PeterHuewe@gmx.de>
-To: David Woodhouse <dwmw2@infradead.org>,
- Ferenc Wagner <wferi@niif.hu>
-Subject: [PATCH] mtd: Move function mtd_to_flctl to fix build failure
-Date: Thu, 13 May 2010 00:06:54 +0200
+Received: from p01c12o148.mxlogic.net ([208.65.145.71])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OCL7x-00073t-TF
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 23:14:11 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Date: Wed, 12 May 2010 18:13:45 -0500
+Subject: Question about flash_info utility
+Message-ID: <0D753D10438DA54287A00B0270842697636EF69B4A@AUSP01VMBX24.collaborationhost.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201005130006.54616.PeterHuewe@gmx.de>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
-	Magnus Damm <damm@opensource.se>,
-	Paul Mundt <lethal@linux-sh.org>, linux-mtd@lists.infradead.org,
-	Yoshihiro Shimoda <shimoda.yoshihiro@renesas.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +20,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Peter Huewe <peterhuewe@gmx.de>
-
-This patch fixes a build failure[1] by simply moving the function mtd_to_flctl
-beneath the definition of sh_flctl which it uses.
-
-BF introduced by patch 
-'mtd/nand/sh_flctl: Replace the dangerous mtd_to_flctl macro' (67026418)
-
-Signed-off-by: Peter Huewe <peterhuewe@gmx.de>
----
-KernelVersion: linux-next of 20100512
-References:
-[1] http://kisskb.ellerman.id.au/kisskb/buildresult/2601986/
-
- include/linux/mtd/sh_flctl.h |   11 ++++++-----
- 1 files changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/mtd/sh_flctl.h b/include/linux/mtd/sh_flctl.h
-index 178b5c2..d7b686a 100644
---- a/include/linux/mtd/sh_flctl.h
-+++ b/include/linux/mtd/sh_flctl.h
-@@ -93,11 +93,6 @@
- #define INIT_FL4ECCRESULT_VAL	0x03FF03FF
- #define LOOP_TIMEOUT_MAX	0x00010000
- 
--static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
--{
--	return container_of(mtdinfo, struct sh_flctl, mtd);
--}
--
- struct sh_flctl {
- 	struct mtd_info		mtd;
- 	struct nand_chip	chip;
-@@ -128,4 +123,9 @@ struct sh_flctl_platform_data {
- 	unsigned has_hwecc:1;
- };
- 
-+static inline struct sh_flctl *mtd_to_flctl(struct mtd_info *mtdinfo)
-+{
-+	return container_of(mtdinfo, struct sh_flctl, mtd);
-+}
-+
- #endif	/* __SH_FLCTL_H__ */
--- 
-1.6.4.4
+SGVsbG8gYWxsLA0KDQpJJ20gdHJ5aW5nIHRvIGZpbmFsaXplIG15IGZsYXNoIG9uIGEgbmV3IHBy
+b2R1Y3QgYW5kIGhhdmUgYQ0KcXVlc3Rpb24gYWJvdXQgdGhlIG10ZCB1dGlsaXRpZXMsIHNwZWNp
+ZmljYWxseSB0aGUgJ2ZsYXNoX2luZm8nDQp1dGlsaXR5Lg0KDQpXaGVuIG15IHN5c3RlbSBib290
+cyBJIGdldCB0aGlzIGFzIHBhcnQgb2YgdGhlIGJvb3QgbWVzc2FnZXM6DQoNCnBoeXNtYXAgcGxh
+dGZvcm0gZmxhc2ggZGV2aWNlOiAwNDAwMDAwMCBhdCA2MDAwMDAwMA0KcGh5c21hcC1mbGFzaC4w
+OiBGb3VuZCAxIHgxNiBkZXZpY2VzIGF0IDB4MCBpbiAxNi1iaXQgYmFuaw0KcGh5c21hcC1mbGFz
+aC4wOiBGb3VuZCBhbiBhbGlhcyBhdCAweDIwMDAwMDAgZm9yIHRoZSBjaGlwIGF0IDB4MA0KIElu
+dGVsL1NoYXJwIEV4dGVuZGVkIFF1ZXJ5IFRhYmxlIGF0IDB4MDEwQQ0KIEludGVsL1NoYXJwIEV4
+dGVuZGVkIFF1ZXJ5IFRhYmxlIGF0IDB4MDEwQQ0KIEludGVsL1NoYXJwIEV4dGVuZGVkIFF1ZXJ5
+IFRhYmxlIGF0IDB4MDEwQQ0KIEludGVsL1NoYXJwIEV4dGVuZGVkIFF1ZXJ5IFRhYmxlIGF0IDB4
+MDEwQQ0KIEludGVsL1NoYXJwIEV4dGVuZGVkIFF1ZXJ5IFRhYmxlIGF0IDB4MDEwQQ0KVXNpbmcg
+YnVmZmVyIHdyaXRlIG1ldGhvZA0KVXNpbmcgYXV0by11bmxvY2sgb24gcG93ZXItdXAvcmVzdW1l
+DQpjZmlfY21kc2V0XzAwMDE6IEVyYXNlIHN1c3BlbmQgb24gd3JpdGUgZW5hYmxlZA0KZXJhc2Ug
+cmVnaW9uIDA6IG9mZnNldD0weDAsc2l6ZT0weDIwMDAwLGJsb2Nrcz0yNTUNCmVyYXNlIHJlZ2lv
+biAxOiBvZmZzZXQ9MHgxZmUwMDAwLHNpemU9MHg4MDAwLGJsb2Nrcz00DQpjbWRsaW5lcGFydCBw
+YXJ0aXRpb24gcGFyc2luZyBub3QgYXZhaWxhYmxlDQpTZWFyY2hpbmcgZm9yIFJlZEJvb3QgcGFy
+dGl0aW9uIHRhYmxlIGluIHBoeXNtYXAtZmxhc2guMCBhdCBvZmZzZXQgMHgxZmUwMDAwDQo0IFJl
+ZEJvb3QgcGFydGl0aW9ucyBmb3VuZCBvbiBNVEQgZGV2aWNlIHBoeXNtYXAtZmxhc2guMA0KQ3Jl
+YXRpbmcgNCBNVEQgcGFydGl0aW9ucyBvbiAicGh5c21hcC1mbGFzaC4wIjoNCjB4MDAwMDAwMDAw
+MDAwLTB4MDAwMDAwMDQwMDAwIDogIlJlZEJvb3QiDQoweDAwMDAwMDA0MDAwMC0weDAwMDAwMWZl
+MDAwMCA6ICJ1bmFsbG9jYXRlZCINCjB4MDAwMDAxZmUwMDAwLTB4MDAwMDAxZmY4MDAwIDogIkZJ
+UyBkaXJlY3RvcnkiDQoweDAwMDAwMWZmODAwMC0weDAwMDAwMjAwMDAwMCA6ICJSZWRCb290IGNv
+bmZpZyINCg0KQW5kIC9wcm9jL210ZCBzaG93czoNCg0KLyAjIGNhdCAvcHJvYy9tdGQNCmRldjog
+ICAgc2l6ZSAgIGVyYXNlc2l6ZSAgbmFtZQ0KbXRkMDogMDAwNDAwMDAgMDAwMjAwMDAgIlJlZEJv
+b3QiDQptdGQxOiAwMWZhMDAwMCAwMDAyMDAwMCAidW5hbGxvY2F0ZWQiDQptdGQyOiAwMDAxODAw
+MCAwMDAwODAwMCAiRklTIGRpcmVjdG9yeSINCm10ZDM6IDAwMDA4MDAwIDAwMDA4MDAwICJSZWRC
+b290IGNvbmZpZyINCg0KQnV0IHdoZW4gSSBydW4gdGhlICdmbGFzaF9pbmZvJyB1dGlsaXR5IG9u
+IG10ZFswLTNdIEkgZ2V0Og0KDQovICMgZmxhc2hfaW5mbyAvZGV2L210ZDANCkRldmljZSAvZGV2
+L210ZDAgaGFzIDAgZXJhc2UgcmVnaW9ucw0KLyAjIGZsYXNoX2luZm8gL2Rldi9tdGQxDQpEZXZp
+Y2UgL2Rldi9tdGQxIGhhcyAwIGVyYXNlIHJlZ2lvbnMNCi8gIyBmbGFzaF9pbmZvIC9kZXYvbXRk
+Mg0KRGV2aWNlIC9kZXYvbXRkMiBoYXMgMCBlcmFzZSByZWdpb25zDQovICMgZmxhc2hfaW5mbyAv
+ZGV2L210ZDMNCkRldmljZSAvZGV2L210ZDMgaGFzIDAgZXJhc2UgcmVnaW9ucw0KDQpCYXNlZCBv
+biB0aGUgZXJhc2VzaXplIHRoZXkgc2hvdWxkIGJlIDIsIDI1MywgMywgYW5kIDEuDQoNClRoZSAn
+bXRkX2RlYnVnJyB1dGlsaXR5IGRvZXMgYXBwZWFyIHRvIHNob3cgdGhlIGNvcnJlY3QNCmluZm9y
+bWF0aW9uOg0KDQovICMgbXRkX2RlYnVnIGluZm8gL2Rldi9tdGQwDQptdGQudHlwZSA9IE1URF9O
+T1JGTEFTSA0KbXRkLmZsYWdzID0gTVREX1dSSVRFQUJMRSB8IE1URF9CSVRfV1JJVEVBQkxFIHwg
+TVREX1NUVVBJRF9MT0NLDQptdGQuc2l6ZSA9IDI2MjE0NCAoMjU2SykNCm10ZC5lcmFzZXNpemUg
+PSAxMzEwNzIgKDEyOEspDQptdGQud3JpdGVzaXplID0gMQ0KbXRkLm9vYnNpemUgPSAwDQpyZWdp
+b25zID0gMA0KDQovICMgbXRkX2RlYnVnIGluZm8gL2Rldi9tdGQxDQptdGQudHlwZSA9IE1URF9O
+T1JGTEFTSA0KbXRkLmZsYWdzID0gTVREX1dSSVRFQUJMRSB8IE1URF9CSVRfV1JJVEVBQkxFIHwg
+TVREX1NUVVBJRF9MT0NLDQptdGQuc2l6ZSA9IDMzMTYxMjE2ICgzMU0pDQptdGQuZXJhc2VzaXpl
+ID0gMTMxMDcyICgxMjhLKQ0KbXRkLndyaXRlc2l6ZSA9IDENCm10ZC5vb2JzaXplID0gMA0KcmVn
+aW9ucyA9IDANCg0KLyAjIG10ZF9kZWJ1ZyBpbmZvIC9kZXYvbXRkMg0KbXRkLnR5cGUgPSBNVERf
+Tk9SRkxBU0gNCm10ZC5mbGFncyA9IE1URF9XUklURUFCTEUgfCBNVERfQklUX1dSSVRFQUJMRSB8
+IE1URF9TVFVQSURfTE9DSw0KbXRkLnNpemUgPSA5ODMwNCAoOTZLKQ0KbXRkLmVyYXNlc2l6ZSA9
+IDMyNzY4ICgzMkspDQptdGQud3JpdGVzaXplID0gMQ0KbXRkLm9vYnNpemUgPSAwDQpyZWdpb25z
+ID0gMA0KDQovICMgbXRkX2RlYnVnIGluZm8gL2Rldi9tdGQzDQptdGQudHlwZSA9IE1URF9OT1JG
+TEFTSA0KbXRkLmZsYWdzID0gTVREX1dSSVRFQUJMRSB8IE1URF9CSVRfV1JJVEVBQkxFIHwgTVRE
+X1NUVVBJRF9MT0NLDQptdGQuc2l6ZSA9IDMyNzY4ICgzMkspDQptdGQuZXJhc2VzaXplID0gMzI3
+NjggKDMySykNCm10ZC53cml0ZXNpemUgPSAxDQptdGQub29ic2l6ZSA9IDANCnJlZ2lvbnMgPSAw
+DQoNCkFueSBpZGVhcyB3aGF0J3Mgd3Jvbmc/DQoNClJlZ2FyZHMsDQpIYXJ0bGV5
