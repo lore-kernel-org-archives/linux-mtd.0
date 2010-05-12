@@ -1,22 +1,26 @@
-Received: from krynn.se.axis.com ([193.13.178.10])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCAxE-0000to-Vc
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 12:22:26 +0000
-Date: Wed, 12 May 2010 14:22:19 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: =?iso-8859-1?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>
-Subject: Re: Some questions on bit-flips and JFFS2
-In-Reply-To: <201005121321.07822.muehlfelder@enertex.de>
-Message-ID: <Pine.LNX.4.64.1005121416040.9058@lnxricardw.se.axis.com>
-References: <201005031505.18604.muehlfelder@enertex.de>
-	<201005110959.36213.muehlfelder@enertex.de>
-	<Pine.LNX.4.64.1005111131220.15631@lnxricardw.se.axis.com>
-	<201005121321.07822.muehlfelder@enertex.de>
+Received: from mail-gx0-f212.google.com ([209.85.217.212])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OCB5k-0003ha-GM
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 12:31:13 +0000
+Received: by gxk4 with SMTP id 4so14028gxk.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 May 2010 05:31:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+In-Reply-To: <AANLkTinbUzqx3hwbhB9vBUTvZqFJ5orIKDwSrKG6P5Mf@mail.gmail.com>
+References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
+	<z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
+	<1272373142.7750.5.camel@localhost>
+	<AANLkTinWOfcRRrfhgUO2tvBeVDu_PvnKeKa_0MQKbJtG@mail.gmail.com>
+	<1273635175.8881.3.camel@localhost.localdomain>
+	<AANLkTimjSxP9tCJM86hNRRgFKvj5MQLSYowOF5P-PpOe@mail.gmail.com>
+	<AANLkTinbUzqx3hwbhB9vBUTvZqFJ5orIKDwSrKG6P5Mf@mail.gmail.com>
+Date: Wed, 12 May 2010 14:31:10 +0200
+Message-ID: <AANLkTinD7cNOEhTKnmR9vCLkO4l3TLj5v_Q92QSQBnvZ@mail.gmail.com>
+Subject: Re: Erase race?
+From: massimo cirillo <maxcir@gmail.com>
+To: Jon Ringle <jon@ringle.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,77 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Have you any evidence of erase suspend occurrence ?
+Could you try to disable erase suspend from cfi_cmdset_0001.c ?
+To this end, uncomment
+#define CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE
+#define CMDSET0001_DISABLE_WRITE_SUSPEND
+(they must be defined) at the beginning of the file and repeat
+your test.
+Bye
 
-On Wed, 12 May 2010, Thorsten M=FChlfelder wrote:
-
->> I don't know if this is a good way, but you could patch your kernel so i=
-t
->> doesn't stop you from erasing/writing badblocks.
+2010/5/12 Jon Ringle <jon@ringle.org>:
+> On Wed, May 12, 2010 at 4:21 AM, massimo cirillo <maxcir@gmail.com> wrote:
+>> Hi Jon,
+>> I verified some particular error conditions regarding
+>> the erase suspend in some nor flash chip.
+>> Please tell me the part number of the flash you
+>> are using and I will check it.
 >
-> So the only way to get bad blocks erased (scrubbed) in Linux is to have a
-> patched kernel? This would be a problem, because I don't know any way of
-> getting a new kernel to already deployed systems without deleting the Sam=
--ba
-> bad blocks before.
-
-Another option would be to write a kernel module that bypasses mtd. But=20
-the mtd write routine is very adament about not erasing bad blocks.
-
-> So IMHO there are only 2 options:
-> - Within a running Linux remove/erase all bad blocks from beginning of ke=
-rnel
-> image to end of the partition, test the erased area with nandtest and mar=
-k
-> real bad blocks as bad, write the new kernel image to the right address a=
-gain
-
-Testing for bad blocks is something you can't do in practice on a device.=
-=20
-At the factory, AFAIK, they perform bad blocks tests while operating the=20
-chip at the limits of its specification, to try and catch all blocks which=
-=20
-are marginal. Testing if such a block is 'bad' in an existing system most=
-=20
-often doesn't give the expected result. On our development boards, it=20
-happens sometimes that someone manages to erase the whole flash including=
-=20
-bad block markers, we then routinely just assume all blocks are good which=
-=20
-works well enough in the lab, although I would never sell a product with a=
-=20
-flash that had been erased that way.
-
-> - Or write some tool, that can distinguish between real bad blocks and th=
-e
-> Sam-ba 2.5 created bad blocks, unmark the false bad blocks. But perhaps t=
-his
-> is not possible at all.
-
-It depends on how exactly Sam-ba 2.5 overwrites the existing bad block=20
-markers.
-
-> Perhaps somebody knows where I can find detailed information about
-> these "spare area bytes reserved to tag bad blocks"? As far as I understa=
-nd
-
-The nand flash data sheets from the manufacturers have information both on=
-=20
-the memory array layout and how the bad blocks are marked.
-
-> Is the OOB part of a page or does each page have an extra OOB (2048+64 by=
-tes)?
-
-The OOB (in this case) is an 'extra' 64 bytes per 2048 byte page.
-
-> Is the OOB located at the beginning or at the end of each page?
-
-Conceptually it is at the end, although it is normally accessed and read=20
-in a separate read operation. I think you can perform a sequential read on=
-=20
-a nand flash which will read the page + oob in succession.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+> Thanks. The boards that showed this failure have Intel JS28F256P30T95.
+> However, we are planning on switching to Numonyx JS28F256P30TF due to
+> upcoming obsolescence of the Intel part.
+>
+> Jon
+>
