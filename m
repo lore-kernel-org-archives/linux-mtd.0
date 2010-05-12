@@ -1,25 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-qy0-f199.google.com ([209.85.221.199])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OC2gu-0007Mb-Hs
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 03:33:01 +0000
-Received: by fxm17 with SMTP id 17so4277825fxm.36
+	id 1OC5yS-0003Kf-DT
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 07:03:22 +0000
+Received: by qyk37 with SMTP id 37so9181171qyk.22
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 May 2010 20:32:59 -0700 (PDT)
-Subject: Re: Erase race?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Ringle <jon@ringle.org>
-In-Reply-To: <AANLkTinWOfcRRrfhgUO2tvBeVDu_PvnKeKa_0MQKbJtG@mail.gmail.com>
-References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-	<z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
-	<1272373142.7750.5.camel@localhost>
-	<AANLkTinWOfcRRrfhgUO2tvBeVDu_PvnKeKa_0MQKbJtG@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 12 May 2010 06:32:55 +0300
-Message-Id: <1273635175.8881.3.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Wed, 12 May 2010 00:03:18 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <alpine.LFD.2.00.1005102011400.3401@localhost.localdomain>
+References: <m2l6b5362aa1005081239ne9eea253jc66c61822c4c1502@mail.gmail.com>
+	<1273475736.2209.88.camel@localhost>
+	<alpine.LFD.2.00.1005102011400.3401@localhost.localdomain>
+Date: Wed, 12 May 2010 12:33:18 +0530
+Message-ID: <AANLkTikbzOXYazQnxvgJNURHDD6pcc78YUt1hXU908pK@mail.gmail.com>
+Subject: Re: UBIL design doc
+From: Brijesh Singh <brijesh.s.singh@gmail.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: rohitvdongre@gmail.com, linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,72 +28,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-05-11 at 22:30 -0400, Jon Ringle wrote:
-> On Tue, Apr 27, 2010 at 8:59 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Tue, 2010-04-20 at 16:24 -0400, Jon Ringle wrote:
-> >> On Tue, Apr 13, 2010 at 4:15 PM, Jon Ringle <jon@ringle.org> wrote:
-> >> > Hi,
-> >> > I have a few machines that have UBI and UBIFS on NOR flash that are
-> >> > undergoing continuous reboot testing.
-> >> > One of them just caught the following failure:
-> >> >
-> >> > [   51.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
-> >> > [   51.250000] UBI error: ubi_io_write: error -22 while writing 64
-> >> > bytes to PEB 226:0, written 0 bytes
-> >> > [   51.270000] UBI error: erase_worker: failed to erase PEB 226, error -22
-> >> > [   51.270000] UBI warning: ubi_ro_mode: switch to read-only mode
-> >> > [   51.290000] UBI error: do_work: work failed with error code -22
-> >> > [   51.290000] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -22
-> >> >
-> >> > Looking at this it appears that the failure might have been caused due
-> >> > to the erase_worker and ubi_io_write occurring out of order... since
-> >> > it looks like ubi_io_write was trying to write at offset 0 of the PEB,
-> >> > which I imagine would have to be the EC header, which should happen
-> >> > after the block is erased. But it doesn't seem to be the case here.
-> >>
-> >> I had this issue occur again on another system:
-> >> [   48.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
-> >> [   48.250000] UBI error: ubi_io_write: error -22 while writing 64
-> >> bytes to PEB 111:0, written 0 bytes
-> >> [   48.280000] UBI error: erase_worker: failed to erase PEB 111, error -22
-> >> [   48.280000] UBI warning: ubi_ro_mode: switch to read-only mode
-> >> [   48.310000] UBI error: do_work: work failed with error code -22
-> >> [   48.310000] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -22
-> >>
-> >> Can anyone comment as to my theory that this is a race condition
-> >> between ubi_io_write and erase_worker occurring out of order?
-> >
-> > Did you debug this further? Any new findings?
-> 
-> I finally got a capture of this with CONFIG_MTD_UBI_DEBUG turned on:
-> 
-> [   61.710000] IXP4XX-Flash.0: buffer write error (status 0xd0)
-> [   61.710000] UBI error: ubi_io_write: error -22 while writing 64
-> bytes to PEB 136:0, written 0 bytes
-> [   61.740000] [<c011a240>] (unwind_backtrace+0x0/0x170) from
-> [<bf0157a8>] (ubi_io_write+0x1ec/0x214 [ubi])
-> [   61.770000] [<bf0157a8>] (ubi_io_write+0x1ec/0x214 [ubi]) from
-> [<bf01599c>] (ubi_io_write_vid_hdr+0x1cc/0x20c [ubi])
-> [   61.800000] [<bf01599c>] (ubi_io_write_vid_hdr+0x1cc/0x20c [ubi])
-> from [<bf016c50>] (sync_erase+0xd4/0x128 [ubi])
-> [   61.830000] [<bf016c50>] (sync_erase+0xd4/0x128 [ubi]) from
-> [<bf017344>] (erase_worker+0x28/0x2d8 [ubi])
-> [   61.860000] [<bf017344>] (erase_worker+0x28/0x2d8 [ubi]) from
-> [<bf0180e4>] (do_work+0x98/0x13c [ubi])
-> [   61.860000] [<bf0180e4>] (do_work+0x98/0x13c [ubi]) from
-> [<bf01824c>] (ubi_thread+0xc4/0x158 [ubi])
-> [   61.890000] [<bf01824c>] (ubi_thread+0xc4/0x158 [ubi]) from
-> [<c0142b84>] (kthread+0x7c/0x84)
-> [   61.890000] [<c0142b84>] (kthread+0x7c/0x84) from [<c0115378>]
-> (kernel_thread_exit+0x0/0x8)
-> [   61.920000] UBI error: erase_worker: failed to erase PEB 136, error -22
-> [   61.920000] UBI warning: ubi_ro_mode: switch to read-only mode
-> [   61.950000] UBI error: do_work: work failed with error code -22
-> [   61.950000] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -22
+Hi,
 
-So it is probably not a kind of race you assumed before. Your flash for
-some reasons encounters an error, dunno why.
+On Wed, May 12, 2010 at 12:47 AM, Thomas Gleixner <tglx@linutronix.de> wrot=
+e:
+> B1;2005;0cOn Mon, 10 May 2010, Artem Bityutskiy wrote:
+>
+>> On Sun, 2010-05-09 at 01:09 +0530, Brijesh Singh wrote:
+>> > Hi,
+>> > =A0 I am forwarding you the design document for ubi with log. Please
+>> > find the ubil document at
+>> > http://git.infradead.org/users/brijesh/ubil_results/blob_plain/HEAD:/U=
+BIL
+>> > design document.pdf
+>
+> @Brijesh, thanks for tackling this !
+>
+>> Hi guys,
+>>
+>> I've read the document. Looks very promising. Here some feed-back.
+>>
+>> 1. SB PEB wear-out. What if the reaseblock lifetime is, say, 10000
+>> erease cycles? Won't the SB PEB wear out very quickly? Why you did not
+>> go for the chaining approach which I described in the old JFFS3 design
+>> doc?
+>>
+>> If we do not implement chaining, we should at least design it and make
+>> sure UBIL can be extended later so that SB chaining could be added.
+>
+> The super block needs to be scanned for from the beginning of flash
+> anyway due to bad blocks. Putting it into a fixed position (first good
+> erase block) is a very bad design decision vs. wear leveling.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+This scan is minimal once the bad blocks are marked bad. Flash driver
+generally  returns error by reading oob area or in ram bbt table. In compar=
+ison,
+keeping super block in first few blocks may become question of availability=
+ or
+wear-leveling trade off. The scan time for super block itself will
+take lot of time.
+In fact, in that case we won't need the super block at all. Just scan
+to find first
+chained commit block. But this doesn't look like a very good idea.
+
+> The super block must be moveable like any other block, though we can
+> keep it as close to the start of flash as possible.
+
+The idea is to get rid of scanning. A fixed place super block can
+locate movable headers.
+
+> Also chaining has a tradeoff. The more chains you need to walk the
+> closer you get to the point where you are equally bad as a full scan.
+
+As artem suggested, chaining should help in minimizing writes to
+anchor block at fixed
+location. At first instance it looked promising. But this design also
+has single point of failure.
+
+>> 2. SB PEB at the end. I think this is a very bad idea. Imagine you have
+>> to do UBIL images for production on the factory. With your design you
+>> have the following bad drawbacks:
+>>
+>> =A0 a. NAND flash has initial bad blocks, and you do not know how many,
+>> =A0 =A0 =A0and where they sit. These may be the last 8 eraseblocks. So, =
+when
+>> =A0 =A0 =A0you prepare an image (say, with the ubinize user-space tool),=
+ where
+>> =A0 =A0 =A0will you put the second SB PEB?
+>>
+>> =A0 b. Currently, UBI/UBIFS images are small. E.g., if you make an
+>> =A0 =A0 =A0UBI/UBIFS image for 1GiB flash, and you have just few KiB of =
+files,
+>> =A0 =A0 =A0your image will be few megs - it will contain the files, and =
+all
+>> =A0 =A0 =A0the needed UBI/UBIFS meta-data.
+>>
+>> =A0 =A0 =A0So now what will be image size for UBIL - 1GiB, and this is b=
+ad.
+>> =A0 =A0 =A0You then will transfer 1GiB of data to the devices during fla=
+shing
+>> =A0 =A0 =A0or you will have to invent ways to work around this. Do you n=
+eed
+>> =A0 =A0 =A0these complexities?
+>>
+>> I think the second SB PEB should not be at the end.
+>
+> I think we do not need a second SB at all. UBI should not depend on
+> the super block in any way. The super block is an optimization for the
+> common case - nothing more.
+>
+>> 3. Backward-compatibility. In UBIL you removed EC anc VID headers in
+>> =A0 =A0PEBs. That's fine for optimization purposes. But it has draw-back=
+s:
+>>
+>> =A0 =A0a. If any of the UBIL meta-data blocks like SB, CMT or log are
+>> =A0 =A0 =A0 corrupted - that's it - we are screwed. You cannot anymore
+>> =A0 =A0 =A0 re-consturct the data by scanning. The robustness goes down.
+>>
+>> =A0 =A0c. Backward compatibility - UBI will not be able to attach UBIL
+>> =A0 =A0 =A0 images. This is not very nice.
+>>
+>> So, I think you should keep EC and VID headers in PEBs. And you should
+>> make the SB/CMT/log blocks to be a new type of UBI volume with
+>> UBI_COMPAT_DELETE or UBI_COMPAT_PRESERVE or UBI_COMPAT_RO type. In this
+>> case UBI will attach UBIL volumes just fine.
+>>
+>> Then, you can add an _option_ to have no EC/VID headers in PEBs. This
+>> then can be used for performance, if one wants to sacrifice robustness.
+>> But this should be the second step. In this case, you will just need to
+>> put a VID header with UBI_COMPAT_REJECT flag to the first PEB.
+>
+> I don't think it's a good idea to kill the EC/VID headers. It not only
+> violates the backwards compability it also fundamentally weakens UBIs
+> reliability for no good reason and I doubt that the performance win is
+> big enough to make it worth.
+>
+> The performance gain is at attach time by getting rid of the flash
+> scan, but not by getting rid of writing the EC/VID headers.
+
+These flash headers have some more problems. Like, space wastage in MLC.
+Alignment problem for byte addressable memory. Backward compatibility
+is a good idea.
+But it is possible to implement these features and higher performance
+by getting rid of them.
+It seemed a fair trade off to me. But I am open for any better solution.
+
+> The logging is a speed up / optimization for the common case, but it
+> needs to preserve full reconstruction via scanning all eraseblocks and
+> checking the EC/VID headers. That also allows retrofitting on existing
+> devices.
+>
+> I'd rather see the super block / log volume as a checkpointing
+> mechanism which provides a snapshot of the EC/VID headers at a given
+> point and a list of eraseblocks which need to be scanned at attach
+> time.
+>
+> That has two main advantages:
+> =A01) It limits the number of log writes
+> =A02) It allows full backward and forward compatibility
+>
+> Looking at
+> http://git.infradead.org/users/brijesh/ubil_results/blob/HEAD:/nand_mount=
+_time.pdf
+> I still see a linear - though less steep - attach time. For the 1GB
+> flash size it's still 0.8s which is nice progress vs. the 2s for the
+> non logging case. But that's surprising as one would expect that
+> logging would provide a more aggressive and non linear gain.
+>
+> Just doing the simple math:
+>
+> 1GB FLASH with erase block size 128K and page size 2k, that
+> translates to 8192 erase blocks
+>
+> So UBI scans 8192 erase block EC/VID headers in 2 seconds. That
+> equals to 8192 FLASH pages.
+>
+> UBIL needs 0.8 seconds. That means that UBIL still scans ~3236 FLASH
+> pages (or spends the equivivalent time) to achieve the same result.
+>
+> That looks wrong. Care to explain ?
+Very good point. The calculations are confusing me. :-) I need to check thi=
+s.
