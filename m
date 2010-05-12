@@ -1,26 +1,23 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCAcM-0003CB-3M
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 12:00:50 +0000
-Received: by wyj26 with SMTP id 26so2306854wyj.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 May 2010 05:00:49 -0700 (PDT)
-MIME-Version: 1.0
-Sender: jonringle@gmail.com
-In-Reply-To: <AANLkTimjSxP9tCJM86hNRRgFKvj5MQLSYowOF5P-PpOe@mail.gmail.com>
-References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-	<z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
-	<1272373142.7750.5.camel@localhost>
-	<AANLkTinWOfcRRrfhgUO2tvBeVDu_PvnKeKa_0MQKbJtG@mail.gmail.com>
-	<1273635175.8881.3.camel@localhost.localdomain>
-	<AANLkTimjSxP9tCJM86hNRRgFKvj5MQLSYowOF5P-PpOe@mail.gmail.com>
-Date: Wed, 12 May 2010 08:00:48 -0400
-Message-ID: <AANLkTinbUzqx3hwbhB9vBUTvZqFJ5orIKDwSrKG6P5Mf@mail.gmail.com>
-Subject: Re: Erase race?
-From: Jon Ringle <jon@ringle.org>
-To: massimo cirillo <maxcir@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OCAnl-0004ad-T1
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 12:12:38 +0000
+Subject: Re: [PATCHv4] mtd-utils: use new 64-bit ioctls + sysfs to support
+	>4GiB devices
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: saeed bishara <saeed.bishara@gmail.com>
+In-Reply-To: <AANLkTikr1Ukc3o0NgGS02cst2Wjkl74kw6OB8uzcK8L-@mail.gmail.com>
+References: <a95a62fe0904031318q21bb727ft297aaa5edc18e2a@mail.gmail.com>
+	<AANLkTinZtqLjdmVyvo9F9uEnLb3YL0V2-n0Gt7vObpj5@mail.gmail.com>
+	<1273567389.2209.173.camel@localhost>
+	<AANLkTikr1Ukc3o0NgGS02cst2Wjkl74kw6OB8uzcK8L-@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 12 May 2010 15:11:29 +0300
+Message-ID: <1273666289.22706.79.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Tawfic Bayyouk <tawficb@gmail.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 12, 2010 at 4:21 AM, massimo cirillo <maxcir@gmail.com> wrote:
-> Hi Jon,
-> I verified some particular error conditions regarding
-> the erase suspend in some nor flash chip.
-> Please tell me the part number of the flash you
-> are using and I will check it.
+On Wed, 2010-05-12 at 14:25 +0300, saeed bishara wrote:
+> attached updated version of the patch.
+> also, another patch added to make the ubi format use the 64bit erase ioctl.
 
-Thanks. The boards that showed this failure have Intel JS28F256P30T95.
-However, we are planning on switching to Numonyx JS28F256P30TF due to
-upcoming obsolescence of the Intel part.
+It is better get them from Kevin.
 
-Jon
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
