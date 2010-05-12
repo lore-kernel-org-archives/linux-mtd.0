@@ -1,19 +1,30 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OBuxM-0004GN-Ef
-	for linux-mtd@lists.infradead.org; Tue, 11 May 2010 19:17:29 +0000
-Date: Tue, 11 May 2010 21:17:20 +0200 (CEST)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: UBIL design doc
-In-Reply-To: <1273475736.2209.88.camel@localhost>
-Message-ID: <alpine.LFD.2.00.1005102011400.3401@localhost.localdomain>
-References: <m2l6b5362aa1005081239ne9eea253jc66c61822c4c1502@mail.gmail.com>
-	<1273475736.2209.88.camel@localhost>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OC0aP-0004wO-D8
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 01:18:10 +0000
+Received: by wwb22 with SMTP id 22so3119356wwb.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 11 May 2010 18:18:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Brijesh Singh <brijesh.s.singh@gmail.com>, rohitvdongre@gmail.com,
-	linux-mtd@lists.infradead.org
+In-Reply-To: <1273556690.2209.146.camel@localhost>
+References: <a145ef951003110433k5fd6c3c0h23bbe73fdb39686f@mail.gmail.com>
+	<531B6536C9F737458807DF75064873C8BE5EB0382D@mta-digimail.MTA.INT>
+	<a145ef951003160113x7baea205i8deb13c14ba8e0de@mail.gmail.com>
+	<1270544458.6754.15.camel@localhost>
+	<r2va145ef951005030454ud5400ebao9ce886d0e86c7549@mail.gmail.com>
+	<1272888512.27729.46.camel@localhost>
+	<i2sa145ef951005032020i17584946r95957f8a038efe23@mail.gmail.com>
+	<AANLkTil-IPNGJdudKOjtHjc9Y2od0xM2-D7beVEV_HHI@mail.gmail.com>
+	<1273556690.2209.146.camel@localhost>
+Date: Wed, 12 May 2010 09:18:05 +0800
+Message-ID: <AANLkTilpKdU3IrnoLCLnCqiW_E9a2VbyyREVoTpVRk-F@mail.gmail.com>
+Subject: Re: Can not mount UBIFS
+From: =?Big5?B?qkykX65t?= <okpalin@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Bosi Daniele <Daniele.Bosi@mta.it>,
+	GUIDA Nicola <Nicola.GUIDA@numonyx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,126 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-B1;2005;0cOn Mon, 10 May 2010, Artem Bityutskiy wrote:
+Dear Sir,
 
-> On Sun, 2010-05-09 at 01:09 +0530, Brijesh Singh wrote:
-> > Hi,
-> >   I am forwarding you the design document for ubi with log. Please
-> > find the ubil document at
-> > http://git.infradead.org/users/brijesh/ubil_results/blob_plain/HEAD:/UBIL
-> > design document.pdf
+I am very confused.
+If the driver has some problems, why images written by ubiformat can work w=
+ell?
+Images written by bootloader or ubiformat should have the same
+problem, if the driver is wrong.
 
-@Brijesh, thanks for tackling this !
- 
-> Hi guys,
-> 
-> I've read the document. Looks very promising. Here some feed-back.
-> 
-> 1. SB PEB wear-out. What if the reaseblock lifetime is, say, 10000
-> erease cycles? Won't the SB PEB wear out very quickly? Why you did not
-> go for the chaining approach which I described in the old JFFS3 design
-> doc?
-> 
-> If we do not implement chaining, we should at least design it and make
-> sure UBIL can be extended later so that SB chaining could be added.
+Thank you,
+Best regards,
 
-The super block needs to be scanned for from the beginning of flash
-anyway due to bad blocks. Putting it into a fixed position (first good
-erase block) is a very bad design decision vs. wear leveling.
-
-The super block must be moveable like any other block, though we can
-keep it as close to the start of flash as possible.
-
-Also chaining has a tradeoff. The more chains you need to walk the
-closer you get to the point where you are equally bad as a full scan.
-
-> 2. SB PEB at the end. I think this is a very bad idea. Imagine you have
-> to do UBIL images for production on the factory. With your design you
-> have the following bad drawbacks:
-> 
->   a. NAND flash has initial bad blocks, and you do not know how many,
->      and where they sit. These may be the last 8 eraseblocks. So, when
->      you prepare an image (say, with the ubinize user-space tool), where
->      will you put the second SB PEB?
-> 
->   b. Currently, UBI/UBIFS images are small. E.g., if you make an
->      UBI/UBIFS image for 1GiB flash, and you have just few KiB of files,
->      your image will be few megs - it will contain the files, and all
->      the needed UBI/UBIFS meta-data.
-> 
->      So now what will be image size for UBIL - 1GiB, and this is bad.
->      You then will transfer 1GiB of data to the devices during flashing
->      or you will have to invent ways to work around this. Do you need
->      these complexities?
-> 
-> I think the second SB PEB should not be at the end.
-
-I think we do not need a second SB at all. UBI should not depend on
-the super block in any way. The super block is an optimization for the
-common case - nothing more.
-
-> 3. Backward-compatibility. In UBIL you removed EC anc VID headers in
->    PEBs. That's fine for optimization purposes. But it has draw-backs:
-> 
->    a. If any of the UBIL meta-data blocks like SB, CMT or log are
->       corrupted - that's it - we are screwed. You cannot anymore
->       re-consturct the data by scanning. The robustness goes down.
-> 
->    c. Backward compatibility - UBI will not be able to attach UBIL
->       images. This is not very nice.
-> 
-> So, I think you should keep EC and VID headers in PEBs. And you should
-> make the SB/CMT/log blocks to be a new type of UBI volume with
-> UBI_COMPAT_DELETE or UBI_COMPAT_PRESERVE or UBI_COMPAT_RO type. In this
-> case UBI will attach UBIL volumes just fine.
-> 
-> Then, you can add an _option_ to have no EC/VID headers in PEBs. This
-> then can be used for performance, if one wants to sacrifice robustness.
-> But this should be the second step. In this case, you will just need to
-> put a VID header with UBI_COMPAT_REJECT flag to the first PEB.
-
-I don't think it's a good idea to kill the EC/VID headers. It not only
-violates the backwards compability it also fundamentally weakens UBIs
-reliability for no good reason and I doubt that the performance win is
-big enough to make it worth.
-
-The performance gain is at attach time by getting rid of the flash
-scan, but not by getting rid of writing the EC/VID headers.
-
-The logging is a speed up / optimization for the common case, but it
-needs to preserve full reconstruction via scanning all eraseblocks and
-checking the EC/VID headers. That also allows retrofitting on existing
-devices.
-
-I'd rather see the super block / log volume as a checkpointing
-mechanism which provides a snapshot of the EC/VID headers at a given
-point and a list of eraseblocks which need to be scanned at attach
-time. 
-
-That has two main advantages:
- 1) It limits the number of log writes
- 2) It allows full backward and forward compatibility
-
-Looking at
-http://git.infradead.org/users/brijesh/ubil_results/blob/HEAD:/nand_mount_time.pdf
-I still see a linear - though less steep - attach time. For the 1GB
-flash size it's still 0.8s which is nice progress vs. the 2s for the
-non logging case. But that's surprising as one would expect that
-logging would provide a more aggressive and non linear gain.
-
-Just doing the simple math:
-
-1GB FLASH with erase block size 128K and page size 2k, that
-translates to 8192 erase blocks
-
-So UBI scans 8192 erase block EC/VID headers in 2 seconds. That
-equals to 8192 FLASH pages.
-
-UBIL needs 0.8 seconds. That means that UBIL still scans ~3236 FLASH
-pages (or spends the equivivalent time) to achieve the same result.
-
-That looks wrong. Care to explain ?
-
-Thanks,
-
-	tglx
+2010/5/11 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Tue, 2010-05-11 at 11:46 +0800, =C1=D6=D3=DA=BE=FE wrote:
+>> Dear all,
+>>
+>> I have modified bootloader to download image as ubiformat does.
+>> However, I still can not mount it.
+>> I also dump the content of mtd partition and compare.
+>> (Ex: dd if=3D/dev/block/mtdblock5 of=3D/data/mtd5bak)
+>> No difference between the content written by bootloader and written by
+>> ubiformat.
+>>
+> ... snip ...
+>
+>> <3>UBI error: ubi_io_read: error -22 while reading 2048 bytes from PEB
+>> 3:6144, read 0 bytes
+>
+> Well, find out why your driver returns -EINVAL and read count 0 when you
+> read 2048 bytes from PEB 3 on this partition, and offset 6144. Dig the
+> driver.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=A7=A1=A7=E2=A7=E4=A7=D7=A7=DE =A7=A2=A7=DA=A7=E4=A7=F0=
+=A7=E8=A7=DC=A7=DA=A7=DB)
+>
+>
