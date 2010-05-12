@@ -1,15 +1,14 @@
 Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OC8Yi-0003HP-Qv
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 09:48:58 +0000
+	id 1OC8Yl-0003II-Ez
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 09:48:59 +0000
 From: Sukumar Ghorai <s-ghorai@ti.com>
 To: linux-omap@vger.kernel.org
-Subject: [PATCH 1/3] omap3: GPMC register definition at common location
-Date: Wed, 12 May 2010 15:18:36 +0530
-Message-Id: <1273657718-12517-2-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1273657718-12517-1-git-send-email-s-ghorai@ti.com>
+Subject: [PATCH 0/3] omap3 nand: cleanup exiting platform related code
+Date: Wed, 12 May 2010 15:18:35 +0530
+Message-Id: <1273657718-12517-1-git-send-email-s-ghorai@ti.com>
+In-Reply-To: <Sukumar Ghorai <s-ghorai@ti.com>
 References: <Sukumar Ghorai <s-ghorai@ti.com>
-	<1273657718-12517-1-git-send-email-s-ghorai@ti.com>
 Cc: Artem.Bityutskiy@nokia.com, tony@atomide.com, sakoman@gmail.com,
 	linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,180 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GPMC register definition move to common place in gpmc.h.
+   The following set of patches applies on top of master branch.
+	http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git
+   Patches verified on: omap3430-SDP, omap3630-sdp, zoom3 and beagle board
 
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
----
- arch/arm/mach-omap2/gpmc.c             |   38 +------------------------------
- arch/arm/plat-omap/include/plat/gpmc.h |   36 +++++++++++++++++++++++++++--
- drivers/mtd/nand/omap2.c               |   14 ++++-------
- 3 files changed, 40 insertions(+), 48 deletions(-)
+   And these are the patches required to address the following input -
+     1. The NAND driver needs to stop tinkering with the GPMC registers
+	The omap General Purpose Memory Controller (GPMC) registers are omap
+        specific, and not driver specific. Tinkering with these registers can
+        cause issues with the other devices on the GPMC.
 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 5bc3ca0..9c77af0
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -28,40 +28,6 @@
- 
- #include <plat/sdrc.h>
- 
--/* GPMC register offsets */
--#define GPMC_REVISION		0x00
--#define GPMC_SYSCONFIG		0x10
--#define GPMC_SYSSTATUS		0x14
--#define GPMC_IRQSTATUS		0x18
--#define GPMC_IRQENABLE		0x1c
--#define GPMC_TIMEOUT_CONTROL	0x40
--#define GPMC_ERR_ADDRESS	0x44
--#define GPMC_ERR_TYPE		0x48
--#define GPMC_CONFIG		0x50
--#define GPMC_STATUS		0x54
--#define GPMC_PREFETCH_CONFIG1	0x1e0
--#define GPMC_PREFETCH_CONFIG2	0x1e4
--#define GPMC_PREFETCH_CONTROL	0x1ec
--#define GPMC_PREFETCH_STATUS	0x1f0
--#define GPMC_ECC_CONFIG		0x1f4
--#define GPMC_ECC_CONTROL	0x1f8
--#define GPMC_ECC_SIZE_CONFIG	0x1fc
--
--#define GPMC_CS0		0x60
--#define GPMC_CS_SIZE		0x30
--
--#define GPMC_MEM_START		0x00000000
--#define GPMC_MEM_END		0x3FFFFFFF
--#define BOOT_ROM_SPACE		0x100000	/* 1MB */
--
--#define GPMC_CHUNK_SHIFT	24		/* 16 MB */
--#define GPMC_SECTION_SHIFT	28		/* 128 MB */
--
--#define PREFETCH_FIFOTHRESHOLD	(0x40 << 8)
--#define CS_NUM_SHIFT		24
--#define ENABLE_PREFETCH		(0x1 << 7)
--#define DMA_MPU_MODE		2
--
- /* Structure to save gpmc cs context */
- struct gpmc_cs_config {
- 	u32 config1;
-@@ -112,7 +78,7 @@ void gpmc_cs_write_reg(int cs, int idx, u32 val)
- {
- 	void __iomem *reg_addr;
- 
--	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
-+	reg_addr = gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
- 	__raw_writel(val, reg_addr);
- }
- 
-@@ -120,7 +86,7 @@ u32 gpmc_cs_read_reg(int cs, int idx)
- {
- 	void __iomem *reg_addr;
- 
--	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
-+	reg_addr = gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
- 	return __raw_readl(reg_addr);
- }
- 
-diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
-index 145838a..347d212 100644
---- a/arch/arm/plat-omap/include/plat/gpmc.h
-+++ b/arch/arm/plat-omap/include/plat/gpmc.h
-@@ -25,10 +25,40 @@
- #define GPMC_CS_NAND_ADDRESS	0x20
- #define GPMC_CS_NAND_DATA	0x24
- 
--#define GPMC_CONFIG		0x50
--#define GPMC_STATUS		0x54
-+/* GPMC register offsets */
-+#define GPMC_REVISION           0x00
-+#define GPMC_SYSCONFIG          0x10
-+#define GPMC_SYSSTATUS          0x14
-+#define GPMC_IRQSTATUS          0x18
-+#define GPMC_IRQENABLE          0x1c
-+#define GPMC_TIMEOUT_CONTROL    0x40
-+#define GPMC_ERR_ADDRESS        0x44
-+#define GPMC_ERR_TYPE           0x48
-+#define GPMC_CONFIG             0x50
-+#define GPMC_STATUS             0x54
-+#define GPMC_PREFETCH_CONFIG1   0x1e0
-+#define GPMC_PREFETCH_CONFIG2   0x1e4
-+#define GPMC_PREFETCH_CONTROL   0x1ec
-+#define GPMC_PREFETCH_STATUS    0x1f0
-+#define GPMC_ECC_CONFIG         0x1f4
-+#define GPMC_ECC_CONTROL        0x1f8
-+#define GPMC_ECC_SIZE_CONFIG    0x1fc
-+#define GPMC_ECC1_RESULT        0x200
-+
- #define GPMC_CS0_BASE		0x60
--#define GPMC_CS_SIZE		0x30
-+#define GPMC_CS_SIZE            0x30
-+
-+#define GPMC_MEM_START          0x00000000
-+#define GPMC_MEM_END            0x3FFFFFFF
-+#define BOOT_ROM_SPACE          0x100000        /* 1MB */
-+
-+#define GPMC_CHUNK_SHIFT        24              /* 16 MB */
-+#define GPMC_SECTION_SHIFT      28              /* 128 MB */
-+
-+#define PREFETCH_FIFOTHRESHOLD  (0x40 << 8)
-+#define CS_NUM_SHIFT            24
-+#define ENABLE_PREFETCH         (0x1 << 7)
-+#define DMA_MPU_MODE            2
- 
- #define GPMC_CONFIG1_WRAPBURST_SUPP     (1 << 31)
- #define GPMC_CONFIG1_READMULTIPLE_SUPP  (1 << 30)
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 7545568..258bf06
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -23,12 +23,6 @@
- #include <plat/gpmc.h>
- #include <plat/nand.h>
- 
--#define GPMC_IRQ_STATUS		0x18
--#define GPMC_ECC_CONFIG		0x1F4
--#define GPMC_ECC_CONTROL	0x1F8
--#define GPMC_ECC_SIZE_CONFIG	0x1FC
--#define GPMC_ECC1_RESULT	0x200
--
- #define	DRIVER_NAME	"omap2-nand"
- 
- #define	NAND_WP_OFF	0
-@@ -37,6 +31,7 @@
- #define	GPMC_BUF_FULL	0x00000001
- #define	GPMC_BUF_EMPTY	0x00000000
- 
-+#ifdef CONFIG_MTD_NAND_OMAP_HWECC
- #define NAND_Ecc_P1e		(1 << 0)
- #define NAND_Ecc_P2e		(1 << 1)
- #define NAND_Ecc_P4e		(1 << 2)
-@@ -103,6 +98,7 @@
- 
- #define P4e_s(a)	(TF(a & NAND_Ecc_P4e)		<< 0)
- #define P4o_s(a)	(TF(a & NAND_Ecc_P4o)		<< 1)
-+#endif /* CONFIG_MTD_NAND_OMAP_HWECC */
- 
- #ifdef CONFIG_MTD_PARTITIONS
- static const char *part_probes[] = { "cmdlinepart", NULL };
-@@ -854,20 +850,20 @@ static int omap_dev_ready(struct mtd_info *mtd)
- {
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 							mtd);
--	unsigned int val = __raw_readl(info->gpmc_baseaddr + GPMC_IRQ_STATUS);
-+	unsigned int val = __raw_readl(info->gpmc_baseaddr + GPMC_IRQSTATUS);
- 
- 	if ((val & 0x100) == 0x100) {
- 		/* Clear IRQ Interrupt */
- 		val |= 0x100;
- 		val &= ~(0x0);
--		__raw_writel(val, info->gpmc_baseaddr + GPMC_IRQ_STATUS);
-+		__raw_writel(val, info->gpmc_baseaddr + GPMC_IRQSTATUS);
- 	} else {
- 		unsigned int cnt = 0;
- 		while (cnt++ < 0x1FF) {
- 			if  ((val & 0x100) == 0x100)
- 				return 0;
- 			val = __raw_readl(info->gpmc_baseaddr +
--							GPMC_IRQ_STATUS);
-+							GPMC_IRQSTATUS);
- 		}
- 	}
- 
+     2. Passing hardcoded GPMC_CS0_BASE needs to go from the board files
+	Passing hardcoded GPMC virtual addressess is sure way to mess up things.
+        This should all become unnecessary once the NAND drivers stops messing
+        with the GPMC registers directly.
+
+Sukumar Ghorai (3):
+	omap3: GPMC register definition at common location
+	omap3 nand: cleanup for not to use GPMC virtual address
+	omap3 nand: fix issue in board file to detect the nand
+
+ arch/arm/mach-omap2/board-cm-t35.c         |   20 +----
+ arch/arm/mach-omap2/board-devkit8000.c     |   25 +------
+ arch/arm/mach-omap2/board-omap3beagle.c    |   24 +-----
+ arch/arm/mach-omap2/board-omap3touchbook.c |   25 +------
+ arch/arm/mach-omap2/board-overo.c          |   24 +-----
+ arch/arm/mach-omap2/gpmc.c                 |   67 +++++-----------
+ arch/arm/plat-omap/include/plat/gpmc.h     |   41 ++++++++-
+ arch/arm/plat-omap/include/plat/nand.h     |    6 +-
+ drivers/mtd/nand/omap2.c                   |  125 ++++++++++------------------
+ 9 files changed, 109 insertions(+), 248 deletions(-)
