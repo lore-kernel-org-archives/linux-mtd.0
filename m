@@ -1,25 +1,23 @@
-Received: from mail-yw0-f197.google.com ([209.85.211.197])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OC7Bq-0000yY-UU
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 08:21:16 +0000
-Received: by ywh35 with SMTP id 35so4556625ywh.24
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 May 2010 01:21:13 -0700 (PDT)
+Received: from compulab.co.il ([67.18.134.219])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OC7Km-0000RO-4v
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 08:30:29 +0000
+Message-ID: <4BEA6719.1050400@compulab.co.il>
+Date: Wed, 12 May 2010 11:30:17 +0300
+From: Mike Rapoport <mike@compulab.co.il>
 MIME-Version: 1.0
-In-Reply-To: <1273635175.8881.3.camel@localhost.localdomain>
-References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-	<z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
-	<1272373142.7750.5.camel@localhost>
-	<AANLkTinWOfcRRrfhgUO2tvBeVDu_PvnKeKa_0MQKbJtG@mail.gmail.com>
-	<1273635175.8881.3.camel@localhost.localdomain>
-Date: Wed, 12 May 2010 10:21:12 +0200
-Message-ID: <AANLkTimjSxP9tCJM86hNRRgFKvj5MQLSYowOF5P-PpOe@mail.gmail.com>
-Subject: Re: Erase race?
-From: massimo cirillo <maxcir@gmail.com>
-To: Jon Ringle <jon@ringle.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+To: Sukumar Ghorai <s-ghorai@ti.com>
+Subject: Re: [PATCH 3/3] omap3 nand: fix issue in board file to detect the nand
+References: <[Sukumar Ghorai <s-ghorai@ti.com>]>
+	<1273652243-6303-1-git-send-email-s-ghorai@ti.com>
+	<1273652243-6303-2-git-send-email-s-ghorai@ti.com>
+	<1273652243-6303-3-git-send-email-s-ghorai@ti.com>
+	<1273652243-6303-4-git-send-email-s-ghorai@ti.com>
+In-Reply-To: <1273652243-6303-4-git-send-email-s-ghorai@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: tony@atomide.com, sakoman@gmail.com, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,106 +27,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jon,
-I verified some particular error conditions regarding
-the erase suspend in some nor flash chip.
-Please tell me the part number of the flash you
-are using and I will check it.
+[Sukumar Ghorai wrote:
+> From: Sukumar Ghorai <s-ghorai@ti.com>
+> 
+> Board file modified to pass the GMPC phys_base address to nand driver. This is
+> required to adopt the _prob function as in omap2.c
+> 
+> Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+> ---
+>  arch/arm/mach-omap2/board-cm-t35.c         |   10 ++++++++++
+>  arch/arm/mach-omap2/board-devkit8000.c     |    9 +++++++++
+>  arch/arm/mach-omap2/board-omap3beagle.c    |    9 +++++++++
+>  arch/arm/mach-omap2/board-omap3touchbook.c |    9 +++++++++
+>  arch/arm/mach-omap2/board-overo.c          |    8 ++++++++
+>  5 files changed, 45 insertions(+), 0 deletions(-)
+> 
+> diff --git a/arch/arm/mach-omap2/board-cm-t35.c b/arch/arm/mach-omap2/board-cm-t35.c
+> index fb23122..73a32bd
+> --- a/arch/arm/mach-omap2/board-cm-t35.c
+> +++ b/arch/arm/mach-omap2/board-cm-t35.c
+> @@ -240,6 +240,16 @@ static struct platform_device cm_t35_nand_device = {
+>  
+>  static void __init cm_t35_init_nand(void)
+>  {
+> +	struct device *dev = &cm_t35_nand_device.dev;
+> +	int err = 0;
+> +
+> +	err = gpmc_cs_request(cm_t35_nand_data.cs,
+> +					NAND_IO_SIZE, &cm_t35_nand_data.phys_base);
+> +	if (err < 0) {
+> +		dev_err(dev, "Cannot request GPMC CS\n");
+> +		return;
+> +	}
+> +	
+>  	if (platform_device_register(&cm_t35_nand_device) < 0)
+>  		pr_err("CM-T35: Unable to register NAND device\n");
 
-Max
+Why won't you use gpmc_nand_init instead of platform_device_register? 
+With gpmc_nand_init there would be no need to request NAND CS in the 
+board files. Besides, if you convert the boards to use gpmc_nand_init at 
+the first place, it would simplify further patches.
 
-2010/5/12 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Tue, 2010-05-11 at 22:30 -0400, Jon Ringle wrote:
->> On Tue, Apr 27, 2010 at 8:59 AM, Artem Bityutskiy <dedekind1@gmail.com> =
-wrote:
->> > On Tue, 2010-04-20 at 16:24 -0400, Jon Ringle wrote:
->> >> On Tue, Apr 13, 2010 at 4:15 PM, Jon Ringle <jon@ringle.org> wrote:
->> >> > Hi,
->> >> > I have a few machines that have UBI and UBIFS on NOR flash that are
->> >> > undergoing continuous reboot testing.
->> >> > One of them just caught the following failure:
->> >> >
->> >> > [ =C2=A0 51.250000] IXP4XX-Flash.0: buffer write error (status 0xd0=
-)
->> >> > [ =C2=A0 51.250000] UBI error: ubi_io_write: error -22 while writin=
-g 64
->> >> > bytes to PEB 226:0, written 0 bytes
->> >> > [ =C2=A0 51.270000] UBI error: erase_worker: failed to erase PEB 22=
-6, error -22
->> >> > [ =C2=A0 51.270000] UBI warning: ubi_ro_mode: switch to read-only m=
-ode
->> >> > [ =C2=A0 51.290000] UBI error: do_work: work failed with error code=
- -22
->> >> > [ =C2=A0 51.290000] UBI error: ubi_thread: ubi_bgt0d: work failed w=
-ith error code -22
->> >> >
->> >> > Looking at this it appears that the failure might have been caused =
-due
->> >> > to the erase_worker and ubi_io_write occurring out of order... sinc=
-e
->> >> > it looks like ubi_io_write was trying to write at offset 0 of the P=
-EB,
->> >> > which I imagine would have to be the EC header, which should happen
->> >> > after the block is erased. But it doesn't seem to be the case here.
->> >>
->> >> I had this issue occur again on another system:
->> >> [ =C2=A0 48.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
->> >> [ =C2=A0 48.250000] UBI error: ubi_io_write: error -22 while writing =
-64
->> >> bytes to PEB 111:0, written 0 bytes
->> >> [ =C2=A0 48.280000] UBI error: erase_worker: failed to erase PEB 111,=
- error -22
->> >> [ =C2=A0 48.280000] UBI warning: ubi_ro_mode: switch to read-only mod=
-e
->> >> [ =C2=A0 48.310000] UBI error: do_work: work failed with error code -=
-22
->> >> [ =C2=A0 48.310000] UBI error: ubi_thread: ubi_bgt0d: work failed wit=
-h error code -22
->> >>
->> >> Can anyone comment as to my theory that this is a race condition
->> >> between ubi_io_write and erase_worker occurring out of order?
->> >
->> > Did you debug this further? Any new findings?
->>
->> I finally got a capture of this with CONFIG_MTD_UBI_DEBUG turned on:
->>
->> [ =C2=A0 61.710000] IXP4XX-Flash.0: buffer write error (status 0xd0)
->> [ =C2=A0 61.710000] UBI error: ubi_io_write: error -22 while writing 64
->> bytes to PEB 136:0, written 0 bytes
->> [ =C2=A0 61.740000] [<c011a240>] (unwind_backtrace+0x0/0x170) from
->> [<bf0157a8>] (ubi_io_write+0x1ec/0x214 [ubi])
->> [ =C2=A0 61.770000] [<bf0157a8>] (ubi_io_write+0x1ec/0x214 [ubi]) from
->> [<bf01599c>] (ubi_io_write_vid_hdr+0x1cc/0x20c [ubi])
->> [ =C2=A0 61.800000] [<bf01599c>] (ubi_io_write_vid_hdr+0x1cc/0x20c [ubi]=
-)
->> from [<bf016c50>] (sync_erase+0xd4/0x128 [ubi])
->> [ =C2=A0 61.830000] [<bf016c50>] (sync_erase+0xd4/0x128 [ubi]) from
->> [<bf017344>] (erase_worker+0x28/0x2d8 [ubi])
->> [ =C2=A0 61.860000] [<bf017344>] (erase_worker+0x28/0x2d8 [ubi]) from
->> [<bf0180e4>] (do_work+0x98/0x13c [ubi])
->> [ =C2=A0 61.860000] [<bf0180e4>] (do_work+0x98/0x13c [ubi]) from
->> [<bf01824c>] (ubi_thread+0xc4/0x158 [ubi])
->> [ =C2=A0 61.890000] [<bf01824c>] (ubi_thread+0xc4/0x158 [ubi]) from
->> [<c0142b84>] (kthread+0x7c/0x84)
->> [ =C2=A0 61.890000] [<c0142b84>] (kthread+0x7c/0x84) from [<c0115378>]
->> (kernel_thread_exit+0x0/0x8)
->> [ =C2=A0 61.920000] UBI error: erase_worker: failed to erase PEB 136, er=
-ror -22
->> [ =C2=A0 61.920000] UBI warning: ubi_ro_mode: switch to read-only mode
->> [ =C2=A0 61.950000] UBI error: do_work: work failed with error code -22
->> [ =C2=A0 61.950000] UBI error: ubi_thread: ubi_bgt0d: work failed with e=
-rror code -22
->
-> So it is probably not a kind of race you assumed before. Your flash for
-> some reasons encounters an error, dunno why.
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+>  }
+> diff --git a/arch/arm/mach-omap2/board-devkit8000.c b/arch/arm/mach-omap2/board-devkit8000.c
+> index be50d18..86358e3
+> --- a/arch/arm/mach-omap2/board-devkit8000.c
+> +++ b/arch/arm/mach-omap2/board-devkit8000.c
+> @@ -578,6 +578,9 @@ static void __init devkit8000_flash_init(void)
+>  	u8 cs = 0;
+>  	u8 nandcs = GPMC_CS_NUM + 1;
+>  
+> +	struct device *dev = &devkit8000_nand_device.dev;
+> +	int err = 0;
+> +
+>  	/* find out the chip-select on which NAND exists */
+>  	while (cs < GPMC_CS_NUM) {
+>  		u32 ret = 0;
+> @@ -599,6 +602,12 @@ static void __init devkit8000_flash_init(void)
+>  
+>  	if (nandcs < GPMC_CS_NUM) {
+>  		devkit8000_nand_data.cs = nandcs;
+> +		err = gpmc_cs_request(devkit8000_nand_data.cs,
+> +					NAND_IO_SIZE, &devkit8000_nand_data.phys_base);
+> +		if (err < 0) {
+> +			dev_err(dev, "Cannot request GPMC CS\n");
+> +			return;
+> +		}
+>  
+>  		printk(KERN_INFO "Registering NAND on CS%d\n", nandcs);
+>  		if (platform_device_register(&devkit8000_nand_device) < 0)
+> diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+> index becaebe..d54719d
+> --- a/arch/arm/mach-omap2/board-omap3beagle.c
+> +++ b/arch/arm/mach-omap2/board-omap3beagle.c
+> @@ -374,6 +374,9 @@ static void __init omap3beagle_flash_init(void)
+>  	u8 cs = 0;
+>  	u8 nandcs = GPMC_CS_NUM + 1;
+>  
+> +	struct device *dev = &omap3beagle_nand_device.dev;
+> +	int err = 0;
+> +
+>  	/* find out the chip-select on which NAND exists */
+>  	while (cs < GPMC_CS_NUM) {
+>  		u32 ret = 0;
+> @@ -395,6 +398,12 @@ static void __init omap3beagle_flash_init(void)
+>  
+>  	if (nandcs < GPMC_CS_NUM) {
+>  		omap3beagle_nand_data.cs = nandcs;
+> +		err = gpmc_cs_request(omap3beagle_nand_data.cs,
+> +						NAND_IO_SIZE, &omap3beagle_nand_data.phys_base);
+> +		if (err < 0) {
+> +			dev_err(dev, "Cannot request GPMC CS\n");
+> +			return;
+> +		}
+>  
+>  		printk(KERN_INFO "Registering NAND on CS%d\n", nandcs);
+>  		if (platform_device_register(&omap3beagle_nand_device) < 0)
+> diff --git a/arch/arm/mach-omap2/board-omap3touchbook.c b/arch/arm/mach-omap2/board-omap3touchbook.c
+> index d6f1b12..088a704
+> --- a/arch/arm/mach-omap2/board-omap3touchbook.c
+> +++ b/arch/arm/mach-omap2/board-omap3touchbook.c
+> @@ -456,6 +456,9 @@ static void __init omap3touchbook_flash_init(void)
+>  	u8 cs = 0;
+>  	u8 nandcs = GPMC_CS_NUM + 1;
+>  
+> +	struct device *dev = &omap3touchbook_nand_device.dev;
+> +	int err = 0;
+> +
+>  	/* find out the chip-select on which NAND exists */
+>  	while (cs < GPMC_CS_NUM) {
+>  		u32 ret = 0;
+> @@ -477,6 +480,12 @@ static void __init omap3touchbook_flash_init(void)
+>  
+>  	if (nandcs < GPMC_CS_NUM) {
+>  		omap3touchbook_nand_data.cs = nandcs;
+> +		err = gpmc_cs_request(omap3touchbook_nand_data.cs,
+> +					NAND_IO_SIZE, &omap3touchbook_nand_data.phys_base);
+> +		if (err < 0) {
+> +			dev_err(dev, "Cannot request GPMC CS\n");
+> +			return;
+> +		}
+>  
+>  		printk(KERN_INFO "Registering NAND on CS%d\n", nandcs);
+>  		if (platform_device_register(&omap3touchbook_nand_device) < 0)
+> diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
+> index d843a0a..d6658b5
+> --- a/arch/arm/mach-omap2/board-overo.c
+> +++ b/arch/arm/mach-omap2/board-overo.c
+> @@ -236,6 +236,8 @@ static void __init overo_flash_init(void)
+>  {
+>  	u8 cs = 0;
+>  	u8 nandcs = GPMC_CS_NUM + 1;
+> +	struct device *dev = &overo_nand_device.dev;
+> +	int err = 0;
+>  
+>  	/* find out the chip-select on which NAND exists */
+>  	while (cs < GPMC_CS_NUM) {
+> @@ -258,6 +260,12 @@ static void __init overo_flash_init(void)
+>  
+>  	if (nandcs < GPMC_CS_NUM) {
+>  		overo_nand_data.cs = nandcs;
+> +		err = gpmc_cs_request(overo_nand_data.cs,
+> +						NAND_IO_SIZE, &overo_nand_data.phys_base);
+> +		if (err < 0) {
+> +			dev_err(dev, "Cannot request GPMC CS\n");
+> +			return;
+> +		}
+>  
+>  		printk(KERN_INFO "Registering NAND on CS%d\n", nandcs);
+>  		if (platform_device_register(&overo_nand_device) < 0)
+
+
+-- 
+Sincerely yours,
+Mike.
