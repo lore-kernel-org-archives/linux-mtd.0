@@ -1,30 +1,24 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OC0aP-0004wO-D8
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 01:18:10 +0000
-Received: by wwb22 with SMTP id 22so3119356wwb.36
+	id 1OC1iy-0003Gf-M3
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 02:31:06 +0000
+Received: by wwb22 with SMTP id 22so3150961wwb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 May 2010 18:18:07 -0700 (PDT)
+	Tue, 11 May 2010 19:30:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1273556690.2209.146.camel@localhost>
-References: <a145ef951003110433k5fd6c3c0h23bbe73fdb39686f@mail.gmail.com>
-	<531B6536C9F737458807DF75064873C8BE5EB0382D@mta-digimail.MTA.INT>
-	<a145ef951003160113x7baea205i8deb13c14ba8e0de@mail.gmail.com>
-	<1270544458.6754.15.camel@localhost>
-	<r2va145ef951005030454ud5400ebao9ce886d0e86c7549@mail.gmail.com>
-	<1272888512.27729.46.camel@localhost>
-	<i2sa145ef951005032020i17584946r95957f8a038efe23@mail.gmail.com>
-	<AANLkTil-IPNGJdudKOjtHjc9Y2od0xM2-D7beVEV_HHI@mail.gmail.com>
-	<1273556690.2209.146.camel@localhost>
-Date: Wed, 12 May 2010 09:18:05 +0800
-Message-ID: <AANLkTilpKdU3IrnoLCLnCqiW_E9a2VbyyREVoTpVRk-F@mail.gmail.com>
-Subject: Re: Can not mount UBIFS
-From: =?Big5?B?qkykX65t?= <okpalin@gmail.com>
+Sender: jonringle@gmail.com
+In-Reply-To: <1272373142.7750.5.camel@localhost>
+References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
+	<z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
+	<1272373142.7750.5.camel@localhost>
+Date: Tue, 11 May 2010 22:30:56 -0400
+Message-ID: <AANLkTinWOfcRRrfhgUO2tvBeVDu_PvnKeKa_0MQKbJtG@mail.gmail.com>
+Subject: Re: Erase race?
+From: Jon Ringle <jon@ringle.org>
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=GB2312
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Bosi Daniele <Daniele.Bosi@mta.it>,
-	GUIDA Nicola <Nicola.GUIDA@numonyx.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,40 +28,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sir,
-
-I am very confused.
-If the driver has some problems, why images written by ubiformat can work w=
-ell?
-Images written by bootloader or ubiformat should have the same
-problem, if the driver is wrong.
-
-Thank you,
-Best regards,
-
-2010/5/11 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Tue, 2010-05-11 at 11:46 +0800, =C1=D6=D3=DA=BE=FE wrote:
->> Dear all,
+On Tue, Apr 27, 2010 at 8:59 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Tue, 2010-04-20 at 16:24 -0400, Jon Ringle wrote:
+>> On Tue, Apr 13, 2010 at 4:15 PM, Jon Ringle <jon@ringle.org> wrote:
+>> > Hi,
+>> > I have a few machines that have UBI and UBIFS on NOR flash that are
+>> > undergoing continuous reboot testing.
+>> > One of them just caught the following failure:
+>> >
+>> > [ =C2=A0 51.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
+>> > [ =C2=A0 51.250000] UBI error: ubi_io_write: error -22 while writing 6=
+4
+>> > bytes to PEB 226:0, written 0 bytes
+>> > [ =C2=A0 51.270000] UBI error: erase_worker: failed to erase PEB 226, =
+error -22
+>> > [ =C2=A0 51.270000] UBI warning: ubi_ro_mode: switch to read-only mode
+>> > [ =C2=A0 51.290000] UBI error: do_work: work failed with error code -2=
+2
+>> > [ =C2=A0 51.290000] UBI error: ubi_thread: ubi_bgt0d: work failed with=
+ error code -22
+>> >
+>> > Looking at this it appears that the failure might have been caused due
+>> > to the erase_worker and ubi_io_write occurring out of order... since
+>> > it looks like ubi_io_write was trying to write at offset 0 of the PEB,
+>> > which I imagine would have to be the EC header, which should happen
+>> > after the block is erased. But it doesn't seem to be the case here.
 >>
->> I have modified bootloader to download image as ubiformat does.
->> However, I still can not mount it.
->> I also dump the content of mtd partition and compare.
->> (Ex: dd if=3D/dev/block/mtdblock5 of=3D/data/mtd5bak)
->> No difference between the content written by bootloader and written by
->> ubiformat.
+>> I had this issue occur again on another system:
+>> [ =C2=A0 48.250000] IXP4XX-Flash.0: buffer write error (status 0xd0)
+>> [ =C2=A0 48.250000] UBI error: ubi_io_write: error -22 while writing 64
+>> bytes to PEB 111:0, written 0 bytes
+>> [ =C2=A0 48.280000] UBI error: erase_worker: failed to erase PEB 111, er=
+ror -22
+>> [ =C2=A0 48.280000] UBI warning: ubi_ro_mode: switch to read-only mode
+>> [ =C2=A0 48.310000] UBI error: do_work: work failed with error code -22
+>> [ =C2=A0 48.310000] UBI error: ubi_thread: ubi_bgt0d: work failed with e=
+rror code -22
 >>
-> ... snip ...
+>> Can anyone comment as to my theory that this is a race condition
+>> between ubi_io_write and erase_worker occurring out of order?
 >
->> <3>UBI error: ubi_io_read: error -22 while reading 2048 bytes from PEB
->> 3:6144, read 0 bytes
->
-> Well, find out why your driver returns -EINVAL and read count 0 when you
-> read 2048 bytes from PEB 3 on this partition, and offset 6144. Dig the
-> driver.
+> Did you debug this further? Any new findings?
+
+I finally got a capture of this with CONFIG_MTD_UBI_DEBUG turned on:
+
+[   61.710000] IXP4XX-Flash.0: buffer write error (status 0xd0)
+[   61.710000] UBI error: ubi_io_write: error -22 while writing 64
+bytes to PEB 136:0, written 0 bytes
+[   61.740000] [<c011a240>] (unwind_backtrace+0x0/0x170) from
+[<bf0157a8>] (ubi_io_write+0x1ec/0x214 [ubi])
+[   61.770000] [<bf0157a8>] (ubi_io_write+0x1ec/0x214 [ubi]) from
+[<bf01599c>] (ubi_io_write_vid_hdr+0x1cc/0x20c [ubi])
+[   61.800000] [<bf01599c>] (ubi_io_write_vid_hdr+0x1cc/0x20c [ubi])
+from [<bf016c50>] (sync_erase+0xd4/0x128 [ubi])
+[   61.830000] [<bf016c50>] (sync_erase+0xd4/0x128 [ubi]) from
+[<bf017344>] (erase_worker+0x28/0x2d8 [ubi])
+[   61.860000] [<bf017344>] (erase_worker+0x28/0x2d8 [ubi]) from
+[<bf0180e4>] (do_work+0x98/0x13c [ubi])
+[   61.860000] [<bf0180e4>] (do_work+0x98/0x13c [ubi]) from
+[<bf01824c>] (ubi_thread+0xc4/0x158 [ubi])
+[   61.890000] [<bf01824c>] (ubi_thread+0xc4/0x158 [ubi]) from
+[<c0142b84>] (kthread+0x7c/0x84)
+[   61.890000] [<c0142b84>] (kthread+0x7c/0x84) from [<c0115378>]
+(kernel_thread_exit+0x0/0x8)
+[   61.920000] UBI error: erase_worker: failed to erase PEB 136, error -22
+[   61.920000] UBI warning: ubi_ro_mode: switch to read-only mode
+[   61.950000] UBI error: do_work: work failed with error code -22
+[   61.950000] UBI error: ubi_thread: ubi_bgt0d: work failed with error cod=
+e -22
+
+
 >
 > --
 > Best Regards,
-> Artem Bityutskiy (=A7=A1=A7=E2=A7=E4=A7=D7=A7=DE =A7=A2=A7=DA=A7=E4=A7=F0=
-=A7=E8=A7=DC=A7=DA=A7=DB)
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
 >
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 >
