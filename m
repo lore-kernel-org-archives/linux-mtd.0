@@ -1,26 +1,17 @@
-Received: from mail-qy0-f199.google.com ([209.85.221.199])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OC8WL-0002sQ-VI
-	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 09:46:31 +0000
-Received: by qyk37 with SMTP id 37so9338492qyk.22
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 May 2010 02:46:28 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <alpine.LFD.2.00.1005121014200.3401@localhost.localdomain>
-References: <m2l6b5362aa1005081239ne9eea253jc66c61822c4c1502@mail.gmail.com>
-	<1273475736.2209.88.camel@localhost>
-	<alpine.LFD.2.00.1005102011400.3401@localhost.localdomain>
-	<AANLkTikbzOXYazQnxvgJNURHDD6pcc78YUt1hXU908pK@mail.gmail.com>
-	<alpine.LFD.2.00.1005121014200.3401@localhost.localdomain>
-Date: Wed, 12 May 2010 15:16:28 +0530
-Message-ID: <AANLkTik1TdyyBK-Q3TQkAu1a2Bx6VuFSap0hnuu9ztEd@mail.gmail.com>
-Subject: Re: UBIL design doc
-From: Brijesh Singh <brijesh.s.singh@gmail.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: rohitvdongre@gmail.com, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OC8Yi-0003HP-Qv
+	for linux-mtd@lists.infradead.org; Wed, 12 May 2010 09:48:58 +0000
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH 1/3] omap3: GPMC register definition at common location
+Date: Wed, 12 May 2010 15:18:36 +0530
+Message-Id: <1273657718-12517-2-git-send-email-s-ghorai@ti.com>
+In-Reply-To: <1273657718-12517-1-git-send-email-s-ghorai@ti.com>
+References: <Sukumar Ghorai <s-ghorai@ti.com>
+	<1273657718-12517-1-git-send-email-s-ghorai@ti.com>
+Cc: Artem.Bityutskiy@nokia.com, tony@atomide.com, sakoman@gmail.com,
+	linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,99 +21,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 12, 2010 at 2:32 PM, Thomas Gleixner <tglx@linutronix.de> wrote=
-:
-> Brijesh,
->
-> On Wed, 12 May 2010, Brijesh Singh wrote:
->> On Wed, May 12, 2010 at 12:47 AM, Thomas Gleixner <tglx@linutronix.de> w=
-rote:
->> > On Mon, 10 May 2010, Artem Bityutskiy wrote:
->> >> 1. SB PEB wear-out. What if the reaseblock lifetime is, say, 10000
->> >> erease cycles? Won't the SB PEB wear out very quickly? Why you did no=
-t
->> >> go for the chaining approach which I described in the old JFFS3 desig=
-n
->> >> doc?
->> >>
->> >> If we do not implement chaining, we should at least design it and mak=
-e
->> >> sure UBIL can be extended later so that SB chaining could be added.
->> >
->> > The super block needs to be scanned for from the beginning of flash
->> > anyway due to bad blocks. Putting it into a fixed position (first good
->> > erase block) is a very bad design decision vs. wear leveling.
->>
->> This scan is minimal once the bad blocks are marked bad. Flash driver
->> generally =A0returns error by reading oob area or in ram bbt table. In c=
-omparison,
->> keeping super block in first few blocks may become question of availabil=
-ity or
->> wear-leveling trade off. The scan time for super block itself will
->> take lot of time.
->> In fact, in that case we won't need the super block at all. Just scan
->> to find first
->> chained commit block. But this doesn't look like a very good idea.
->
-> Well, the super block is special. It links to the log block, so that
-> we can move the log block to any place in the flash. So it's going to
-> be a block which is not recycled too often depending on how the log
-> chain works.
->
-> I don't see why scanning for the super block will take so much
-> time. If we keep it inside of the first N blocks then it's a well
-> defined scan time limit. And you just need to read the first page to
-> find it.
->
->> > The super block must be moveable like any other block, though we can
->> > keep it as close to the start of flash as possible.
->>
->> The idea is to get rid of scanning. A fixed place super block can
->> locate movable headers.
->
-> Right, but there is a difference between scanning 8k blocks and
-> scanning a low number (16 or 32) blocks. That's in the single digit
-> milliseconds range. So forcing it to a fixed location is just an
-> overoptimization.
->
->> > Also chaining has a tradeoff. The more chains you need to walk the
->> > closer you get to the point where you are equally bad as a full scan.
->>
->> As artem suggested, chaining should help in minimizing writes to
->> anchor block at fixed
->> location. At first instance it looked promising. But this design also
->> has single point of failure.
->
-> Not if you make the super block movable. Then you can create the
-> replacement block before erasing the old super block. So in the worst
-> case you have two super blocks in that scan range and you need to
-> figure out which one is the valid one. No big deal.
->
->> > I don't think it's a good idea to kill the EC/VID headers. It not only
->> > violates the backwards compability it also fundamentally weakens UBIs
->> > reliability for no good reason and I doubt that the performance win is
->> > big enough to make it worth.
->> >
->> > The performance gain is at attach time by getting rid of the flash
->> > scan, but not by getting rid of writing the EC/VID headers.
->>
->> These flash headers have some more problems. Like, space wastage in MLC.
->> Alignment problem for byte addressable memory. Backward compatibility
->> is a good idea.
->> But it is possible to implement these features and higher performance
->> by getting rid of them.
->> It seemed a fair trade off to me. But I am open for any better solution.
->
-> Well. You can get rid of them, but that needs to be optional.
->
-> And if you remove them then your log needs to take care of the EC/VID
-> tracking.
->
-> That means you write at least ECC size long data to the log for every
-> single transaction. IOW, you move the space waste partially from the
-> data blocks to the loging blocks.
-Right now we are doing this. Writing ECC size long data to log for each upd=
-ate.
-But we removed EC,VID headers from block. Because they were not needed.
-Log has all the data.Now, I am trying to get EC,VID headers back as an opti=
-on.
+GPMC register definition move to common place in gpmc.h.
+
+Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+---
+ arch/arm/mach-omap2/gpmc.c             |   38 +------------------------------
+ arch/arm/plat-omap/include/plat/gpmc.h |   36 +++++++++++++++++++++++++++--
+ drivers/mtd/nand/omap2.c               |   14 ++++-------
+ 3 files changed, 40 insertions(+), 48 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 5bc3ca0..9c77af0
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -28,40 +28,6 @@
+ 
+ #include <plat/sdrc.h>
+ 
+-/* GPMC register offsets */
+-#define GPMC_REVISION		0x00
+-#define GPMC_SYSCONFIG		0x10
+-#define GPMC_SYSSTATUS		0x14
+-#define GPMC_IRQSTATUS		0x18
+-#define GPMC_IRQENABLE		0x1c
+-#define GPMC_TIMEOUT_CONTROL	0x40
+-#define GPMC_ERR_ADDRESS	0x44
+-#define GPMC_ERR_TYPE		0x48
+-#define GPMC_CONFIG		0x50
+-#define GPMC_STATUS		0x54
+-#define GPMC_PREFETCH_CONFIG1	0x1e0
+-#define GPMC_PREFETCH_CONFIG2	0x1e4
+-#define GPMC_PREFETCH_CONTROL	0x1ec
+-#define GPMC_PREFETCH_STATUS	0x1f0
+-#define GPMC_ECC_CONFIG		0x1f4
+-#define GPMC_ECC_CONTROL	0x1f8
+-#define GPMC_ECC_SIZE_CONFIG	0x1fc
+-
+-#define GPMC_CS0		0x60
+-#define GPMC_CS_SIZE		0x30
+-
+-#define GPMC_MEM_START		0x00000000
+-#define GPMC_MEM_END		0x3FFFFFFF
+-#define BOOT_ROM_SPACE		0x100000	/* 1MB */
+-
+-#define GPMC_CHUNK_SHIFT	24		/* 16 MB */
+-#define GPMC_SECTION_SHIFT	28		/* 128 MB */
+-
+-#define PREFETCH_FIFOTHRESHOLD	(0x40 << 8)
+-#define CS_NUM_SHIFT		24
+-#define ENABLE_PREFETCH		(0x1 << 7)
+-#define DMA_MPU_MODE		2
+-
+ /* Structure to save gpmc cs context */
+ struct gpmc_cs_config {
+ 	u32 config1;
+@@ -112,7 +78,7 @@ void gpmc_cs_write_reg(int cs, int idx, u32 val)
+ {
+ 	void __iomem *reg_addr;
+ 
+-	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
++	reg_addr = gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
+ 	__raw_writel(val, reg_addr);
+ }
+ 
+@@ -120,7 +86,7 @@ u32 gpmc_cs_read_reg(int cs, int idx)
+ {
+ 	void __iomem *reg_addr;
+ 
+-	reg_addr = gpmc_base + GPMC_CS0 + (cs * GPMC_CS_SIZE) + idx;
++	reg_addr = gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
+ 	return __raw_readl(reg_addr);
+ }
+ 
+diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
+index 145838a..347d212 100644
+--- a/arch/arm/plat-omap/include/plat/gpmc.h
++++ b/arch/arm/plat-omap/include/plat/gpmc.h
+@@ -25,10 +25,40 @@
+ #define GPMC_CS_NAND_ADDRESS	0x20
+ #define GPMC_CS_NAND_DATA	0x24
+ 
+-#define GPMC_CONFIG		0x50
+-#define GPMC_STATUS		0x54
++/* GPMC register offsets */
++#define GPMC_REVISION           0x00
++#define GPMC_SYSCONFIG          0x10
++#define GPMC_SYSSTATUS          0x14
++#define GPMC_IRQSTATUS          0x18
++#define GPMC_IRQENABLE          0x1c
++#define GPMC_TIMEOUT_CONTROL    0x40
++#define GPMC_ERR_ADDRESS        0x44
++#define GPMC_ERR_TYPE           0x48
++#define GPMC_CONFIG             0x50
++#define GPMC_STATUS             0x54
++#define GPMC_PREFETCH_CONFIG1   0x1e0
++#define GPMC_PREFETCH_CONFIG2   0x1e4
++#define GPMC_PREFETCH_CONTROL   0x1ec
++#define GPMC_PREFETCH_STATUS    0x1f0
++#define GPMC_ECC_CONFIG         0x1f4
++#define GPMC_ECC_CONTROL        0x1f8
++#define GPMC_ECC_SIZE_CONFIG    0x1fc
++#define GPMC_ECC1_RESULT        0x200
++
+ #define GPMC_CS0_BASE		0x60
+-#define GPMC_CS_SIZE		0x30
++#define GPMC_CS_SIZE            0x30
++
++#define GPMC_MEM_START          0x00000000
++#define GPMC_MEM_END            0x3FFFFFFF
++#define BOOT_ROM_SPACE          0x100000        /* 1MB */
++
++#define GPMC_CHUNK_SHIFT        24              /* 16 MB */
++#define GPMC_SECTION_SHIFT      28              /* 128 MB */
++
++#define PREFETCH_FIFOTHRESHOLD  (0x40 << 8)
++#define CS_NUM_SHIFT            24
++#define ENABLE_PREFETCH         (0x1 << 7)
++#define DMA_MPU_MODE            2
+ 
+ #define GPMC_CONFIG1_WRAPBURST_SUPP     (1 << 31)
+ #define GPMC_CONFIG1_READMULTIPLE_SUPP  (1 << 30)
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 7545568..258bf06
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -23,12 +23,6 @@
+ #include <plat/gpmc.h>
+ #include <plat/nand.h>
+ 
+-#define GPMC_IRQ_STATUS		0x18
+-#define GPMC_ECC_CONFIG		0x1F4
+-#define GPMC_ECC_CONTROL	0x1F8
+-#define GPMC_ECC_SIZE_CONFIG	0x1FC
+-#define GPMC_ECC1_RESULT	0x200
+-
+ #define	DRIVER_NAME	"omap2-nand"
+ 
+ #define	NAND_WP_OFF	0
+@@ -37,6 +31,7 @@
+ #define	GPMC_BUF_FULL	0x00000001
+ #define	GPMC_BUF_EMPTY	0x00000000
+ 
++#ifdef CONFIG_MTD_NAND_OMAP_HWECC
+ #define NAND_Ecc_P1e		(1 << 0)
+ #define NAND_Ecc_P2e		(1 << 1)
+ #define NAND_Ecc_P4e		(1 << 2)
+@@ -103,6 +98,7 @@
+ 
+ #define P4e_s(a)	(TF(a & NAND_Ecc_P4e)		<< 0)
+ #define P4o_s(a)	(TF(a & NAND_Ecc_P4o)		<< 1)
++#endif /* CONFIG_MTD_NAND_OMAP_HWECC */
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+ static const char *part_probes[] = { "cmdlinepart", NULL };
+@@ -854,20 +850,20 @@ static int omap_dev_ready(struct mtd_info *mtd)
+ {
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 							mtd);
+-	unsigned int val = __raw_readl(info->gpmc_baseaddr + GPMC_IRQ_STATUS);
++	unsigned int val = __raw_readl(info->gpmc_baseaddr + GPMC_IRQSTATUS);
+ 
+ 	if ((val & 0x100) == 0x100) {
+ 		/* Clear IRQ Interrupt */
+ 		val |= 0x100;
+ 		val &= ~(0x0);
+-		__raw_writel(val, info->gpmc_baseaddr + GPMC_IRQ_STATUS);
++		__raw_writel(val, info->gpmc_baseaddr + GPMC_IRQSTATUS);
+ 	} else {
+ 		unsigned int cnt = 0;
+ 		while (cnt++ < 0x1FF) {
+ 			if  ((val & 0x100) == 0x100)
+ 				return 0;
+ 			val = __raw_readl(info->gpmc_baseaddr +
+-							GPMC_IRQ_STATUS);
++							GPMC_IRQSTATUS);
+ 		}
+ 	}
+ 
