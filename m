@@ -1,28 +1,23 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCYNT-0006CX-LZ
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 13:23:04 +0000
-Received: by wwa36 with SMTP id 36so818025wwa.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 13 May 2010 06:23:01 -0700 (PDT)
+Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OCaX9-0003Gg-B6
+	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 15:41:12 +0000
+Date: Thu, 13 May 2010 08:41:03 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Sukumar Ghorai <s-ghorai@ti.com>
+Subject: Re: [PATCH 2/3] omap3 nand: cleanup for not to use GPMC virtual
+	address
+Message-ID: <20100513154103.GI29368@atomide.com>
+References: <s-ghorai@ti.com>
+	<1273657718-12517-1-git-send-email-s-ghorai@ti.com>
+	<1273657718-12517-2-git-send-email-s-ghorai@ti.com>
+	<1273657718-12517-3-git-send-email-s-ghorai@ti.com>
 MIME-Version: 1.0
-Sender: jonringle@gmail.com
-In-Reply-To: <AANLkTinD7cNOEhTKnmR9vCLkO4l3TLj5v_Q92QSQBnvZ@mail.gmail.com>
-References: <n2g152584231004131315ge1d824bfm6820ccb877a0fde6@mail.gmail.com>
-	<z2z152584231004201324tc69525a0hb86ff9fdeb679ca4@mail.gmail.com>
-	<1272373142.7750.5.camel@localhost>
-	<AANLkTinWOfcRRrfhgUO2tvBeVDu_PvnKeKa_0MQKbJtG@mail.gmail.com>
-	<1273635175.8881.3.camel@localhost.localdomain>
-	<AANLkTimjSxP9tCJM86hNRRgFKvj5MQLSYowOF5P-PpOe@mail.gmail.com>
-	<AANLkTinbUzqx3hwbhB9vBUTvZqFJ5orIKDwSrKG6P5Mf@mail.gmail.com>
-	<AANLkTinD7cNOEhTKnmR9vCLkO4l3TLj5v_Q92QSQBnvZ@mail.gmail.com>
-Date: Thu, 13 May 2010 09:23:01 -0400
-Message-ID: <AANLkTimd-_5jlWY39vg9CHfDVWuOjWRAS3KCS4lbT1Un@mail.gmail.com>
-Subject: Re: Erase race?
-From: Jon Ringle <jon@ringle.org>
-To: massimo cirillo <maxcir@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1273657718-12517-3-git-send-email-s-ghorai@ti.com>
+Cc: sakoman@gmail.com, Artem.Bityutskiy@nokia.com, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,19 +27,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 12, 2010 at 8:31 AM, massimo cirillo <maxcir@gmail.com> wrote:
-> Have you any evidence of erase suspend occurrence ?
-How do I know if erase suspend occurs?
+* Sukumar Ghorai <s-ghorai@ti.com> [100512 02:43]:
+> --- a/arch/arm/mach-omap2/gpmc.c
+> +++ b/arch/arm/mach-omap2/gpmc.c
+> @@ -64,16 +64,32 @@ static void __iomem *gpmc_base;
+>  
+>  static struct clk *gpmc_l3_clk;
+>  
+> -static void gpmc_write_reg(int idx, u32 val)
+> +void gpmc_write_reg(int idx, u32 val)
+>  {
+>  	__raw_writel(val, gpmc_base + idx);
+>  }
+>  
+> -static u32 gpmc_read_reg(int idx)
+> +u32 gpmc_read_reg(int idx)
+>  {
+>  	return __raw_readl(gpmc_base + idx);
+>  }
+>  
+> +void gpmc_cs_write_byte(int cs, int idx, u32 val)
+> +{
+> +	void __iomem *reg_addr;
+> +
+> +	reg_addr = gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
+> +	__raw_writeb(val, reg_addr);
+> +}
+> +
+> +u8 gpmc_cs_read_byte(int cs, int idx)
+> +{
+> +	void __iomem *reg_addr;
+> +
+> +	reg_addr = gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
+> +	return __raw_readb(reg_addr);
+> +}
+> +
 
-> Could you try to disable erase suspend from cfi_cmdset_0001.c ?
-> To this end, uncomment
-> #define CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE
-> #define CMDSET0001_DISABLE_WRITE_SUSPEND
-> (they must be defined) at the beginning of the file and repeat
-> your test.
+This will not improve the situation unfortunately.
+We for sure don't want to export functions to mess
+with the GPMC registers all over the place.
 
-Thanks. I will try this, however, since the problem is infrequent and
-I don't know how to make the problem happen more reliably, it will
-take some time to verify that this fixes the issue.
+> @@ -432,15 +448,6 @@ void gpmc_prefetch_reset(void)
+>  }
+>  EXPORT_SYMBOL(gpmc_prefetch_reset);
+>  
+> -/**
+> - * gpmc_prefetch_status - reads prefetch status of engine
+> - */
+> -int  gpmc_prefetch_status(void)
+> -{
+> -	return gpmc_read_reg(GPMC_PREFETCH_STATUS);
+> -}
+> -EXPORT_SYMBOL(gpmc_prefetch_status);
+> -
 
-Jon
+And we don't want to remove GPMC functions like this,
+instead we need to implement more functions like this
+for the platform init code to use.
+
+Regards,
+
+Tony
