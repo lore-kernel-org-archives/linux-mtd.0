@@ -1,20 +1,14 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCaaL-00042Y-Mz
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 15:44:30 +0000
-Date: Thu, 13 May 2010 08:44:23 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Sukumar Ghorai <s-ghorai@ti.com>
-Subject: Re: [PATCH 0/3] omap3 nand: cleanup exiting platform related code
-Message-ID: <20100513154423.GK29368@atomide.com>
-References: <s-ghorai@ti.com>
-	<1273657718-12517-1-git-send-email-s-ghorai@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1273657718-12517-1-git-send-email-s-ghorai@ti.com>
-Cc: sakoman@gmail.com, Artem.Bityutskiy@nokia.com, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2: Move erasing from write_super to GC.
+From: David Woodhouse <dwmw2@infradead.org>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+In-Reply-To: <1269079399-27087-1-git-send-email-Joakim.Tjernlund@transmode.se>
+References: <1269079399-27087-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 13 May 2010 18:16:58 +0100
+Message-ID: <1273771018.12840.7077.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Sukumar Ghorai <s-ghorai@ti.com> [100512 02:43]:
->    The following set of patches applies on top of master branch.
-> 	http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git
->    Patches verified on: omap3430-SDP, omap3630-sdp, zoom3 and beagle board
+On Sat, 2010-03-20 at 11:03 +0100, Joakim Tjernlund wrote:
+> Erasing blocks is a form of GC and therefore it should live in the
+> GC task. By moving it there two problems will be solved:
+> 1) unmounting will not hang until all pending blocks has
+>    been erased.
+> 2) Erasing can be paused by sending a SIGSTOP to the GC thread which
+>    allowes for time critical tasks to work in peace.
 > 
->    And these are the patches required to address the following input -
->      1. The NAND driver needs to stop tinkering with the GPMC registers
-> 	The omap General Purpose Memory Controller (GPMC) registers are omap
->         specific, and not driver specific. Tinkering with these registers can
->         cause issues with the other devices on the GPMC.
+> Since erasing now is in the GC thread, erases should trigger
+> the GC task instead.
+> wbuf.c still wants to flush its buffer via write_super so
+> invent jffs2_dirty_trigger() and use that in wbuf.
+> Remove surplus call to jffs2_erase_pending_trigger() in erase.c
+> and remove jffs2_garbage_collect_trigger() from write_super as
+> of now write_super() should only commit dirty data to disk.
 > 
->      2. Passing hardcoded GPMC_CS0_BASE needs to go from the board files
-> 	Passing hardcoded GPMC virtual addressess is sure way to mess up things.
->         This should all become unnecessary once the NAND drivers stops messing
->         with the GPMC registers directly.
+> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> ---
 
-Thanks for working on this. I've made some comments to you patches
-to do what's listed above.
+The only callers of jffs2_erase_pending_blocks() now call it with a
+'count' argument of 1. So perhaps it's now misnamed and the 's' and the
+extra argument should be dropped?
 
-Instead of exporting the GPMC registers, you should create new
-functions into gpmc.c for the nand platform init code to use.
+I don't much like the calculation you've added to the end of that
+function either, which really ought to be under locks (even though right
+now I suspect it doesn't hurt). Why recalculate that at all, though --
+why not keep a 'ret' variable which defaults to 0 but is set to 1 just
+before the 'goto done' which is the only way out of the function where
+the return value should be non-zero anyway?
 
-Regards,
+I've always been very careful to keep the GC thread as an
+_optimisation_. It looks like this will still work, because the actual
+erase will get done from jffs2_reserve_space()... but that'll only erase
+blocks immediately when we actually need them. Before, we were erasing
+them in advance. I suppose that's OK though.
 
-Tony
+-- 
+dwmw2
