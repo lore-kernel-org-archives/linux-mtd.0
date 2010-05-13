@@ -1,16 +1,15 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCetB-0003fb-Ut
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 20:20:15 +0000
-Date: Thu, 13 May 2010 22:03:15 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH 12/20] drivers/mtd: Use kzalloc
-Message-ID: <Pine.LNX.4.64.1005132202570.6282@ask.diku.dk>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: Re: [PATCH] mtd: cfi_cmdset_0001: Fix max timeout for locking
+	operations
+From: David Woodhouse <dwmw2@infradead.org>
+To: Anders =?ISO-8859-1?Q?Grafstr=F6m?= <anders.grafstrom@netinsight.net>
+In-Reply-To: <4B8834FB.2070004@netinsight.net>
+References: <4B8834FB.2070004@netinsight.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 14 May 2010 00:06:58 +0100
+Message-ID: <1273792018.9999.268.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,204 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+On Fri, 2010-02-26 at 21:54 +0100, Anders Grafström wrote:
+> The max timeout is currently too short for some flash chips.
+> This patch increases it to 10 seconds. The typical timeout
+> remains unchanged (the tick period, 1000000/HZ).
+> 
+> Specification change #11 in '5 Volt Intel StrataFlash Memory Specification Update'
+> (297848-15) specifies an increase of Clear Block Lock-Bit Time Max to 7 sec.
+> This is contradicted by the table in Specification Change #8 which says .70 sec
+> but a 10 sec timeout doesn't hurt so play it safe.
+> 
+> Signed-off-by: Anders Grafström <anders.grafstrom@netinsight.net>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index 9253043..83e4ae2 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -2077,7 +2077,7 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+>          */
+>         udelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1000000/HZ : 0;
+>  
+> -       ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * 100);
+> +       ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * HZ * 10); 
 
-Use kzalloc rather than the combination of kmalloc and memset.
+I don't see how this makes any sense. What is the _unit_ of the argument
+you're changing? Is it µs, is it ticks? You aren't just changing the
+value here; you're actually changing the units. The dimensional analysis
+doesn't make sense.
 
-The semantic patch that makes this change is as follows:
-(http://coccinelle.lip6.fr/)
+AFAICT this really is supposed to be µs, so multiplying by HZ has to be
+wrong.
 
-// <smpl>
-@@
-expression x,size,flags;
-statement S;
-@@
-
--x = kmalloc(size,flags);
-+x = kzalloc(size,flags);
- if (x == NULL) S
--memset(x, 0, size);
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/lpddr/qinfo_probe.c     |    7 ++-----
- drivers/mtd/maps/ixp2000.c          |    3 +--
- drivers/mtd/maps/ixp4xx.c           |    3 +--
- drivers/mtd/maps/pxa2xx-flash.c     |    3 +--
- drivers/mtd/tests/mtd_pagetest.c    |    3 +--
- drivers/mtd/tests/mtd_readtest.c    |    3 +--
- drivers/mtd/tests/mtd_speedtest.c   |    3 +--
- drivers/mtd/tests/mtd_stresstest.c  |    3 +--
- drivers/mtd/tests/mtd_subpagetest.c |    3 +--
- 9 files changed, 10 insertions(+), 21 deletions(-)
-
-diff -u -p a/drivers/mtd/lpddr/qinfo_probe.c b/drivers/mtd/lpddr/qinfo_probe.c
---- a/drivers/mtd/lpddr/qinfo_probe.c
-+++ b/drivers/mtd/lpddr/qinfo_probe.c
-@@ -134,13 +134,12 @@ out:
- static int lpddr_chip_setup(struct map_info *map, struct lpddr_private *lpddr)
- {
- 
--	lpddr->qinfo = kmalloc(sizeof(struct qinfo_chip), GFP_KERNEL);
-+	lpddr->qinfo = kzalloc(sizeof(struct qinfo_chip), GFP_KERNEL);
- 	if (!lpddr->qinfo) {
- 		printk(KERN_WARNING "%s: no memory for LPDDR qinfo structure\n",
- 				map->name);
- 		return 0;
- 	}
--	memset(lpddr->qinfo, 0, sizeof(struct qinfo_chip));
- 
- 	/* Get the ManuID */
- 	lpddr->ManufactId = CMDVAL(map_read(map, map->pfow_base + PFOW_MANUFACTURER_ID));
-@@ -185,13 +184,11 @@ static struct lpddr_private *lpddr_probe
- 	lpddr.numchips = 1;
- 
- 	numvirtchips = lpddr.numchips * lpddr.qinfo->HWPartsNum;
--	retlpddr = kmalloc(sizeof(struct lpddr_private) +
-+	retlpddr = kzalloc(sizeof(struct lpddr_private) +
- 			numvirtchips * sizeof(struct flchip), GFP_KERNEL);
- 	if (!retlpddr)
- 		return NULL;
- 
--	memset(retlpddr, 0, sizeof(struct lpddr_private) +
--				numvirtchips * sizeof(struct flchip));
- 	memcpy(retlpddr, &lpddr, sizeof(struct lpddr_private));
- 
- 	retlpddr->numchips = numvirtchips;
-diff -u -p a/drivers/mtd/maps/ixp2000.c b/drivers/mtd/maps/ixp2000.c
---- a/drivers/mtd/maps/ixp2000.c
-+++ b/drivers/mtd/maps/ixp2000.c
-@@ -165,12 +165,11 @@ static int ixp2000_flash_probe(struct pl
- 		return -EIO;
- 	}
- 
--	info = kmalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
-+	info = kzalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
- 	if(!info) {
- 		err = -ENOMEM;
- 		goto Error;
- 	}
--	memset(info, 0, sizeof(struct ixp2000_flash_info));
- 
- 	platform_set_drvdata(dev, info);
- 
-diff -u -p a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -196,12 +196,11 @@ static int ixp4xx_flash_probe(struct pla
- 			return err;
- 	}
- 
--	info = kmalloc(sizeof(struct ixp4xx_flash_info), GFP_KERNEL);
-+	info = kzalloc(sizeof(struct ixp4xx_flash_info), GFP_KERNEL);
- 	if(!info) {
- 		err = -ENOMEM;
- 		goto Error;
- 	}
--	memset(info, 0, sizeof(struct ixp4xx_flash_info));
- 
- 	platform_set_drvdata(dev, info);
- 
-diff -u -p a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
---- a/drivers/mtd/maps/pxa2xx-flash.c
-+++ b/drivers/mtd/maps/pxa2xx-flash.c
-@@ -63,11 +63,10 @@ static int __init pxa2xx_flash_probe(str
- 	if (!res)
- 		return -ENODEV;
- 
--	info = kmalloc(sizeof(struct pxa2xx_flash_info), GFP_KERNEL);
-+	info = kzalloc(sizeof(struct pxa2xx_flash_info), GFP_KERNEL);
- 	if (!info)
- 		return -ENOMEM;
- 
--	memset(info, 0, sizeof(struct pxa2xx_flash_info));
- 	info->map.name = (char *) flash->name;
- 	info->map.bankwidth = flash->width;
- 	info->map.phys = res->start;
-diff -u -p a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
---- a/drivers/mtd/tests/mtd_pagetest.c
-+++ b/drivers/mtd/tests/mtd_pagetest.c
-@@ -480,12 +480,11 @@ static int scan_for_bad_eraseblocks(void
- {
- 	int i, bad = 0;
- 
--	bbt = kmalloc(ebcnt, GFP_KERNEL);
-+	bbt = kzalloc(ebcnt, GFP_KERNEL);
- 	if (!bbt) {
- 		printk(PRINT_PREF "error: cannot allocate memory\n");
- 		return -ENOMEM;
- 	}
--	memset(bbt, 0 , ebcnt);
- 
- 	printk(PRINT_PREF "scanning for bad eraseblocks\n");
- 	for (i = 0; i < ebcnt; ++i) {
-diff -u -p a/drivers/mtd/tests/mtd_readtest.c b/drivers/mtd/tests/mtd_readtest.c
---- a/drivers/mtd/tests/mtd_readtest.c
-+++ b/drivers/mtd/tests/mtd_readtest.c
-@@ -141,12 +141,11 @@ static int scan_for_bad_eraseblocks(void
- {
- 	int i, bad = 0;
- 
--	bbt = kmalloc(ebcnt, GFP_KERNEL);
-+	bbt = kzalloc(ebcnt, GFP_KERNEL);
- 	if (!bbt) {
- 		printk(PRINT_PREF "error: cannot allocate memory\n");
- 		return -ENOMEM;
- 	}
--	memset(bbt, 0 , ebcnt);
- 
- 	/* NOR flash does not implement block_isbad */
- 	if (mtd->block_isbad == NULL)
-diff -u -p a/drivers/mtd/tests/mtd_speedtest.c b/drivers/mtd/tests/mtd_speedtest.c
---- a/drivers/mtd/tests/mtd_speedtest.c
-+++ b/drivers/mtd/tests/mtd_speedtest.c
-@@ -295,12 +295,11 @@ static int scan_for_bad_eraseblocks(void
- {
- 	int i, bad = 0;
- 
--	bbt = kmalloc(ebcnt, GFP_KERNEL);
-+	bbt = kzalloc(ebcnt, GFP_KERNEL);
- 	if (!bbt) {
- 		printk(PRINT_PREF "error: cannot allocate memory\n");
- 		return -ENOMEM;
- 	}
--	memset(bbt, 0 , ebcnt);
- 
- 	/* NOR flash does not implement block_isbad */
- 	if (mtd->block_isbad == NULL)
-diff -u -p a/drivers/mtd/tests/mtd_stresstest.c b/drivers/mtd/tests/mtd_stresstest.c
---- a/drivers/mtd/tests/mtd_stresstest.c
-+++ b/drivers/mtd/tests/mtd_stresstest.c
-@@ -221,12 +221,11 @@ static int scan_for_bad_eraseblocks(void
- {
- 	int i, bad = 0;
- 
--	bbt = kmalloc(ebcnt, GFP_KERNEL);
-+	bbt = kzalloc(ebcnt, GFP_KERNEL);
- 	if (!bbt) {
- 		printk(PRINT_PREF "error: cannot allocate memory\n");
- 		return -ENOMEM;
- 	}
--	memset(bbt, 0 , ebcnt);
- 
- 	/* NOR flash does not implement block_isbad */
- 	if (mtd->block_isbad == NULL)
-diff -u -p a/drivers/mtd/tests/mtd_subpagetest.c b/drivers/mtd/tests/mtd_subpagetest.c
---- a/drivers/mtd/tests/mtd_subpagetest.c
-+++ b/drivers/mtd/tests/mtd_subpagetest.c
-@@ -354,12 +354,11 @@ static int scan_for_bad_eraseblocks(void
- {
- 	int i, bad = 0;
- 
--	bbt = kmalloc(ebcnt, GFP_KERNEL);
-+	bbt = kzalloc(ebcnt, GFP_KERNEL);
- 	if (!bbt) {
- 		printk(PRINT_PREF "error: cannot allocate memory\n");
- 		return -ENOMEM;
- 	}
--	memset(bbt, 0 , ebcnt);
- 
- 	printk(PRINT_PREF "scanning for bad eraseblocks\n");
- 	for (i = 0; i < ebcnt; ++i) {
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
