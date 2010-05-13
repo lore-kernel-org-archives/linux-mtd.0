@@ -1,14 +1,14 @@
-Received: from mgw1.diku.dk ([130.225.96.91])
+Received: from mgw2.diku.dk ([130.225.96.92])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCehE-0004Ln-UT
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 20:07:53 +0000
-Date: Thu, 13 May 2010 22:07:46 +0200 (CEST)
+	id 1OCetB-0003fb-Ut
+	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 20:20:15 +0000
+Date: Thu, 13 May 2010 22:03:15 +0200 (CEST)
 From: Julia Lawall <julia@diku.dk>
-To: Vincent Sanders <support@simtec.co.uk>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 20/20] drivers/mtd/nand: Use kzalloc
-Message-ID: <Pine.LNX.4.64.1005132207300.6282@ask.diku.dk>
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH 12/20] drivers/mtd: Use kzalloc
+Message-ID: <Pine.LNX.4.64.1005132202570.6282@ask.diku.dk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -42,42 +42,182 @@ statement S;
 Signed-off-by: Julia Lawall <julia@diku.dk>
 
 ---
- drivers/mtd/nand/s3c2410.c |    7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ drivers/mtd/lpddr/qinfo_probe.c     |    7 ++-----
+ drivers/mtd/maps/ixp2000.c          |    3 +--
+ drivers/mtd/maps/ixp4xx.c           |    3 +--
+ drivers/mtd/maps/pxa2xx-flash.c     |    3 +--
+ drivers/mtd/tests/mtd_pagetest.c    |    3 +--
+ drivers/mtd/tests/mtd_readtest.c    |    3 +--
+ drivers/mtd/tests/mtd_speedtest.c   |    3 +--
+ drivers/mtd/tests/mtd_stresstest.c  |    3 +--
+ drivers/mtd/tests/mtd_subpagetest.c |    3 +--
+ 9 files changed, 10 insertions(+), 21 deletions(-)
 
-diff -u -p a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -929,14 +929,13 @@ static int s3c24xx_nand_probe(struct pla
+diff -u -p a/drivers/mtd/lpddr/qinfo_probe.c b/drivers/mtd/lpddr/qinfo_probe.c
+--- a/drivers/mtd/lpddr/qinfo_probe.c
++++ b/drivers/mtd/lpddr/qinfo_probe.c
+@@ -134,13 +134,12 @@ out:
+ static int lpddr_chip_setup(struct map_info *map, struct lpddr_private *lpddr)
+ {
  
- 	pr_debug("s3c2410_nand_probe(%p)\n", pdev);
+-	lpddr->qinfo = kmalloc(sizeof(struct qinfo_chip), GFP_KERNEL);
++	lpddr->qinfo = kzalloc(sizeof(struct qinfo_chip), GFP_KERNEL);
+ 	if (!lpddr->qinfo) {
+ 		printk(KERN_WARNING "%s: no memory for LPDDR qinfo structure\n",
+ 				map->name);
+ 		return 0;
+ 	}
+-	memset(lpddr->qinfo, 0, sizeof(struct qinfo_chip));
  
--	info = kmalloc(sizeof(*info), GFP_KERNEL);
-+	info = kzalloc(sizeof(*info), GFP_KERNEL);
- 	if (info == NULL) {
- 		dev_err(&pdev->dev, "no memory for flash info\n");
- 		err = -ENOMEM;
- 		goto exit_error;
+ 	/* Get the ManuID */
+ 	lpddr->ManufactId = CMDVAL(map_read(map, map->pfow_base + PFOW_MANUFACTURER_ID));
+@@ -185,13 +184,11 @@ static struct lpddr_private *lpddr_probe
+ 	lpddr.numchips = 1;
+ 
+ 	numvirtchips = lpddr.numchips * lpddr.qinfo->HWPartsNum;
+-	retlpddr = kmalloc(sizeof(struct lpddr_private) +
++	retlpddr = kzalloc(sizeof(struct lpddr_private) +
+ 			numvirtchips * sizeof(struct flchip), GFP_KERNEL);
+ 	if (!retlpddr)
+ 		return NULL;
+ 
+-	memset(retlpddr, 0, sizeof(struct lpddr_private) +
+-				numvirtchips * sizeof(struct flchip));
+ 	memcpy(retlpddr, &lpddr, sizeof(struct lpddr_private));
+ 
+ 	retlpddr->numchips = numvirtchips;
+diff -u -p a/drivers/mtd/maps/ixp2000.c b/drivers/mtd/maps/ixp2000.c
+--- a/drivers/mtd/maps/ixp2000.c
++++ b/drivers/mtd/maps/ixp2000.c
+@@ -165,12 +165,11 @@ static int ixp2000_flash_probe(struct pl
+ 		return -EIO;
  	}
  
--	memset(info, 0, sizeof(*info));
- 	platform_set_drvdata(pdev, info);
- 
- 	spin_lock_init(&info->controller.lock);
-@@ -994,15 +993,13 @@ static int s3c24xx_nand_probe(struct pla
- 	/* allocate our information */
- 
- 	size = nr_sets * sizeof(*info->mtds);
--	info->mtds = kmalloc(size, GFP_KERNEL);
-+	info->mtds = kzalloc(size, GFP_KERNEL);
- 	if (info->mtds == NULL) {
- 		dev_err(&pdev->dev, "failed to allocate mtd storage\n");
+-	info = kmalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
++	info = kzalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
+ 	if(!info) {
  		err = -ENOMEM;
- 		goto exit_error;
+ 		goto Error;
+ 	}
+-	memset(info, 0, sizeof(struct ixp2000_flash_info));
+ 
+ 	platform_set_drvdata(dev, info);
+ 
+diff -u -p a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
+--- a/drivers/mtd/maps/ixp4xx.c
++++ b/drivers/mtd/maps/ixp4xx.c
+@@ -196,12 +196,11 @@ static int ixp4xx_flash_probe(struct pla
+ 			return err;
  	}
  
--	memset(info->mtds, 0, size);
--
- 	/* initialise all possible chips */
+-	info = kmalloc(sizeof(struct ixp4xx_flash_info), GFP_KERNEL);
++	info = kzalloc(sizeof(struct ixp4xx_flash_info), GFP_KERNEL);
+ 	if(!info) {
+ 		err = -ENOMEM;
+ 		goto Error;
+ 	}
+-	memset(info, 0, sizeof(struct ixp4xx_flash_info));
  
- 	nmtd = info->mtds;
+ 	platform_set_drvdata(dev, info);
+ 
+diff -u -p a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -63,11 +63,10 @@ static int __init pxa2xx_flash_probe(str
+ 	if (!res)
+ 		return -ENODEV;
+ 
+-	info = kmalloc(sizeof(struct pxa2xx_flash_info), GFP_KERNEL);
++	info = kzalloc(sizeof(struct pxa2xx_flash_info), GFP_KERNEL);
+ 	if (!info)
+ 		return -ENOMEM;
+ 
+-	memset(info, 0, sizeof(struct pxa2xx_flash_info));
+ 	info->map.name = (char *) flash->name;
+ 	info->map.bankwidth = flash->width;
+ 	info->map.phys = res->start;
+diff -u -p a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
+--- a/drivers/mtd/tests/mtd_pagetest.c
++++ b/drivers/mtd/tests/mtd_pagetest.c
+@@ -480,12 +480,11 @@ static int scan_for_bad_eraseblocks(void
+ {
+ 	int i, bad = 0;
+ 
+-	bbt = kmalloc(ebcnt, GFP_KERNEL);
++	bbt = kzalloc(ebcnt, GFP_KERNEL);
+ 	if (!bbt) {
+ 		printk(PRINT_PREF "error: cannot allocate memory\n");
+ 		return -ENOMEM;
+ 	}
+-	memset(bbt, 0 , ebcnt);
+ 
+ 	printk(PRINT_PREF "scanning for bad eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
+diff -u -p a/drivers/mtd/tests/mtd_readtest.c b/drivers/mtd/tests/mtd_readtest.c
+--- a/drivers/mtd/tests/mtd_readtest.c
++++ b/drivers/mtd/tests/mtd_readtest.c
+@@ -141,12 +141,11 @@ static int scan_for_bad_eraseblocks(void
+ {
+ 	int i, bad = 0;
+ 
+-	bbt = kmalloc(ebcnt, GFP_KERNEL);
++	bbt = kzalloc(ebcnt, GFP_KERNEL);
+ 	if (!bbt) {
+ 		printk(PRINT_PREF "error: cannot allocate memory\n");
+ 		return -ENOMEM;
+ 	}
+-	memset(bbt, 0 , ebcnt);
+ 
+ 	/* NOR flash does not implement block_isbad */
+ 	if (mtd->block_isbad == NULL)
+diff -u -p a/drivers/mtd/tests/mtd_speedtest.c b/drivers/mtd/tests/mtd_speedtest.c
+--- a/drivers/mtd/tests/mtd_speedtest.c
++++ b/drivers/mtd/tests/mtd_speedtest.c
+@@ -295,12 +295,11 @@ static int scan_for_bad_eraseblocks(void
+ {
+ 	int i, bad = 0;
+ 
+-	bbt = kmalloc(ebcnt, GFP_KERNEL);
++	bbt = kzalloc(ebcnt, GFP_KERNEL);
+ 	if (!bbt) {
+ 		printk(PRINT_PREF "error: cannot allocate memory\n");
+ 		return -ENOMEM;
+ 	}
+-	memset(bbt, 0 , ebcnt);
+ 
+ 	/* NOR flash does not implement block_isbad */
+ 	if (mtd->block_isbad == NULL)
+diff -u -p a/drivers/mtd/tests/mtd_stresstest.c b/drivers/mtd/tests/mtd_stresstest.c
+--- a/drivers/mtd/tests/mtd_stresstest.c
++++ b/drivers/mtd/tests/mtd_stresstest.c
+@@ -221,12 +221,11 @@ static int scan_for_bad_eraseblocks(void
+ {
+ 	int i, bad = 0;
+ 
+-	bbt = kmalloc(ebcnt, GFP_KERNEL);
++	bbt = kzalloc(ebcnt, GFP_KERNEL);
+ 	if (!bbt) {
+ 		printk(PRINT_PREF "error: cannot allocate memory\n");
+ 		return -ENOMEM;
+ 	}
+-	memset(bbt, 0 , ebcnt);
+ 
+ 	/* NOR flash does not implement block_isbad */
+ 	if (mtd->block_isbad == NULL)
+diff -u -p a/drivers/mtd/tests/mtd_subpagetest.c b/drivers/mtd/tests/mtd_subpagetest.c
+--- a/drivers/mtd/tests/mtd_subpagetest.c
++++ b/drivers/mtd/tests/mtd_subpagetest.c
+@@ -354,12 +354,11 @@ static int scan_for_bad_eraseblocks(void
+ {
+ 	int i, bad = 0;
+ 
+-	bbt = kmalloc(ebcnt, GFP_KERNEL);
++	bbt = kzalloc(ebcnt, GFP_KERNEL);
+ 	if (!bbt) {
+ 		printk(PRINT_PREF "error: cannot allocate memory\n");
+ 		return -ENOMEM;
+ 	}
+-	memset(bbt, 0 , ebcnt);
+ 
+ 	printk(PRINT_PREF "scanning for bad eraseblocks\n");
+ 	for (i = 0; i < ebcnt; ++i) {
