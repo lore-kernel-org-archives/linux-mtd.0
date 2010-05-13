@@ -1,16 +1,17 @@
 Received: from isilmar-3.linta.de ([188.40.101.200] helo=linta.de)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCVDN-0003rc-6p
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 10:00:30 +0000
-Date: Thu, 13 May 2010 11:57:49 +0200
+	id 1OCVDN-0003rW-By
+	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 10:00:31 +0000
 From: Dominik Brodowski <linux@dominikbrodowski.net>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [git pull] pcmciamtd fixes
-Message-ID: <20100513095749.GA25909@comet.dominikbrodowski.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-pcmcia@lists.infradead.org, linux-mtd@lists.infradead.org
+To: <linux-pcmcia@lists.infradead.org>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/4] drivers/mtd/maps: Eliminate use after free
+Date: Thu, 13 May 2010 11:59:58 +0200
+Message-Id: <1273744801-26318-1-git-send-email-linux@dominikbrodowski.net>
+In-Reply-To: <20100513095749.GA25909@comet.dominikbrodowski.net>
+References: <20100513095749.GA25909@comet.dominikbrodowski.net>
+Cc: Julia Lawall <julia@diku.dk>,
+	Dominik Brodowski <linux@dominikbrodowski.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +21,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
+From: Julia Lawall <julia@diku.dk>
 
-Alexander Kurz spent quite some time to fix pcmciamtd to not only build
-again, but to actually work on some cards he owns. In addition, there are a
-few more PCMCIA IDs to report, and Julia Lawall reported and fixed an
-use-after-free bug in pcmciamtd. Could you pick up these patches and pull
-from 
+Moved the debugging message before the call to map_destroy, which frees its
+argument.  The message is also slightly changed to reflect its new
+position.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/brodo/pcmcia-2.6.git pcmciamtd
+A simplified version of the semantic patch that finds this problem is as
+follows: (http://coccinelle.lip6.fr/)
 
-please? Alteranatively, I can push these changes (post-2.6.34) upstream via
-PCMCIA, if you prefer me to take them.
+// <smpl>
+@@
+expression E,E2;
+@@
 
-I'll send the patches to the MTD and PCMCIA lists for a final(?) round of
-review.
+del_mtd_device(E)
+...
+(
+  E = E2
+|
+* E
+)
+// </smpl>
 
-Thanks & Best,
-	Dominik
+Signed-off-by: Julia Lawall <julia@diku.dk>
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+---
+ drivers/mtd/maps/pcmciamtd.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Alexander Kurz (2):
-      pcmciamtd: fixing obvious errors
-      pcmciamtd: coding style cleanups
-
-Dominik Brodowski (1):
-      pcmciamtd: add another ID
-
-Julia Lawall (1):
-      drivers/mtd/maps: Eliminate use after free
-
- drivers/mtd/maps/Kconfig     |    2 +-
- drivers/mtd/maps/pcmciamtd.c |   80 ++++++++++++++++++++++++------------------
- 2 files changed, 47 insertions(+), 35 deletions(-)
+diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
+index 689d6a7..81159d7 100644
+--- a/drivers/mtd/maps/pcmciamtd.c
++++ b/drivers/mtd/maps/pcmciamtd.c
+@@ -692,8 +692,8 @@ static void pcmciamtd_detach(struct pcmcia_device *link)
+ 
+ 	if(dev->mtd_info) {
+ 		del_mtd_device(dev->mtd_info);
++		info("mtd%d: Removing", dev->mtd_info->index);
+ 		map_destroy(dev->mtd_info);
+-		info("mtd%d: Removed", dev->mtd_info->index);
+ 	}
+ 
+ 	pcmciamtd_release(link);
+-- 
+1.6.3.3
