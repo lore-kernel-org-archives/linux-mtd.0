@@ -1,15 +1,16 @@
-Subject: Re: [PATCH] mtd: cfi_cmdset_0001: Fix max timeout for locking
-	operations
+Subject: Re: [PATCH] [MTD] physmap: remove physmap_flash_shutdown() method.
 From: David Woodhouse <dwmw2@infradead.org>
-To: Anders =?ISO-8859-1?Q?Grafstr=F6m?= <anders.grafstrom@netinsight.net>
-In-Reply-To: <4B8834FB.2070004@netinsight.net>
-References: <4B8834FB.2070004@netinsight.net>
+To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
+In-Reply-To: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
+References: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 May 2010 00:06:58 +0100
-Message-ID: <1273792018.9999.268.camel@macbook.infradead.org>
+Date: Fri, 14 May 2010 00:36:20 +0100
+Message-ID: <1273793780.9999.359.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
+	Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-02-26 at 21:54 +0100, Anders Grafström wrote:
-> The max timeout is currently too short for some flash chips.
-> This patch increases it to 10 seconds. The typical timeout
-> remains unchanged (the tick period, 1000000/HZ).
+On Fri, 2010-03-12 at 16:26 +0300, Vladimir Zapolskiy wrote:
+> physmap driver operates with cfi, jedec, qinfo and map_rom compliant
+> chips. None of interface drivers for all these chips uses actual
+> suspend and resume chip operations, but correspondent two methods only
+> change flash chip state in drivers' internal state machines, and for
+> Intel chips save/restore block locks is done.
 > 
-> Specification change #11 in '5 Volt Intel StrataFlash Memory Specification Update'
-> (297848-15) specifies an increase of Clear Block Lock-Bit Time Max to 7 sec.
-> This is contradicted by the table in Specification Change #8 which says .70 sec
-> but a 10 sec timeout doesn't hurt so play it safe.
+> To operate with boards with Intel flash chips where RP# pin is not
+> asserted on reset there is an already implemented mechanism of reboot
+> notifiers, and on reboot the flash moves into defined "read array"
+> state.
 > 
-> Signed-off-by: Anders Grafström <anders.grafstrom@netinsight.net>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 9253043..83e4ae2 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -2077,7 +2077,7 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
->          */
->         udelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1000000/HZ : 0;
->  
-> -       ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * 100);
-> +       ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * HZ * 10); 
+> If CONFIG_PM kernel option is enabled, then physmap_flash_shutdown()
+> method is called after reboot notifier work, and save/restore block
+> locks operations disturb the chip from default "read array" state,
+> thus if the flash is a bootable one, board cann't be booted from it
+> after reset. 
 
-I don't see how this makes any sense. What is the _unit_ of the argument
-you're changing? Is it µs, is it ticks? You aren't just changing the
-value here; you're actually changing the units. The dimensional analysis
-doesn't make sense.
+I think this is the wrong approach. We should instead remove the reboot
+notifier, and keep the shutdown() method called through the map driver,
+which is in the right place in the power management tree.
 
-AFAICT this really is supposed to be µs, so multiplying by HZ has to be
-wrong.
+I'd much rather see a patch which does that.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
