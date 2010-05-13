@@ -1,16 +1,20 @@
-Subject: Re: [PATCH] [MTD] physmap: remove physmap_flash_shutdown() method.
+Subject: Re: [PATCH 1/2] mtdpart: memory accessor interface for MTD layer
 From: David Woodhouse <dwmw2@infradead.org>
-To: Vladimir Zapolskiy <vzapolskiy@gmail.com>
-In-Reply-To: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
-References: <1268400366-14802-1-git-send-email-vzapolskiy@gmail.com>
+To: Kevin Hilman <khilman@deeprootsystems.com>
+In-Reply-To: <1268772081-6534-1-git-send-email-khilman@deeprootsystems.com>
+References: <1268772081-6534-1-git-send-email-khilman@deeprootsystems.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 May 2010 00:36:20 +0100
-Message-ID: <1273793780.9999.359.camel@macbook.infradead.org>
+Date: Fri, 14 May 2010 00:50:29 +0100
+Message-ID: <1273794629.9999.412.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>,
-	Lennert Buytenhek <buytenh@wantstofly.org>
+Cc: Bernd Schmidt <bernd.schmidt@analog.com>,
+	David Brownell <david-b@pacbell.net>,
+	Sudhakar Rajashekhara <sudhakar.raj@ti.com>,
+	Nicolas Pitre <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
+	David Howells <dhowells@redhat.com>,
+	David Brownell <dbrownell@users.sourceforge.net>,
+	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-03-12 at 16:26 +0300, Vladimir Zapolskiy wrote:
-> physmap driver operates with cfi, jedec, qinfo and map_rom compliant
-> chips. None of interface drivers for all these chips uses actual
-> suspend and resume chip operations, but correspondent two methods only
-> change flash chip state in drivers' internal state machines, and for
-> Intel chips save/restore block locks is done.
+On Tue, 2010-03-16 at 13:41 -0700, Kevin Hilman wrote:
+> From: Sudhakar Rajashekhara <sudhakar....@ti.com>
 > 
-> To operate with boards with Intel flash chips where RP# pin is not
-> asserted on reset there is an already implemented mechanism of reboot
-> notifiers, and on reboot the flash moves into defined "read array"
-> state.
+> This patch implements memory accessor interface in the MTD
+> layer which enables the kernel to access flash data.
 > 
-> If CONFIG_PM kernel option is enabled, then physmap_flash_shutdown()
-> method is called after reboot notifier work, and save/restore block
-> locks operations disturb the chip from default "read array" state,
-> thus if the flash is a bootable one, board cann't be booted from it
-> after reset. 
+> This patch adds two new members to the mtd_partition structure,
+> a function handler which will be called during setup of the
+> partition and an argument to be passed to this setup function.
 
-I think this is the wrong approach. We should instead remove the reboot
-notifier, and keep the shutdown() method called through the map driver,
-which is in the right place in the power management tree.
+Ick.
 
-I'd much rather see a patch which does that.
+I don't mind providing the mtd_macc_{read,write} helper functions,
+although they should work on generic MTD devices not just on partitions.
+But do we really have to do the callout to arbitrary functions from
+_within_ the core MTD code... why can't we do that in the board driver?
 
 -- 
 David Woodhouse                            Open Source Technology Centre
