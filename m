@@ -1,11 +1,13 @@
 Received: from [69.28.251.93] (helo=b32.net)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCOHi-00014k-Q4
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 02:36:28 +0000
+	id 1OCOHo-00015y-Aq
+	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 02:36:33 +0000
 From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 12 May 2010 19:22:57 -0700
-Subject: [PATCH v5 1/3] mtd-utils: update to latest mtd-abi.h from kernel.org
-Message-Id: <cd4bcbb843643dc463d2a2853766bcf57c23f546@localhost.localdomain>
+Date: Wed, 12 May 2010 19:24:30 -0700
+Subject: [PATCH v5 3/3] mtd-utils: clean up compiler warnings
+Message-Id: <4b38adf0a5ec5a3a1c7ef85f64585cfee66c1921@localhost.localdomain>
+References: <cd4bcbb843643dc463d2a2853766bcf57c23f546@localhost.localdomain>
+In-Reply-To: <cd4bcbb843643dc463d2a2853766bcf57c23f546@localhost.localdomain>
 To: <dedekind1@gmail.com>, <saeed.bishara@gmail.com>, <jwboyer@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -20,181 +22,165 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Seen on gcc 4.2.4 IA32:
+
+flashcp.c:255:2: warning: #warning "Check for smaller erase regions"
+nftl_format.c:214: warning: assignment discards qualifiers from pointer target type
+nftl_format.c:219: warning: assignment discards qualifiers from pointer target type
+serve_image.c:129: warning: format ‘%ld’ expects type ‘long int’, but argument 3 has type ‘__off64_t’
+fec.c:120: warning: initialization discards qualifiers from pointer target type
+<many more of these>
+fec.c:417: warning: passing argument 2 of ‘my_malloc’ discards qualifiers from pointer target type
+<many more of these>
+recv_image.c:164: warning: comparison of unsigned expression < 0 is always false
+recv_image.c:59: warning: ‘start_seq’ may be used uninitialized in this function
+recv_image.c:56: warning: ‘fec’ may be used uninitialized in this function
+recv_image.c:49: warning: ‘image_crc’ may be used uninitialized in this function
+sumtool.c:112: warning: initialization discards qualifiers from pointer target type
+sumtool.c:115: warning: initialization discards qualifiers from pointer target type
+mkfs.ubifs.c:1171: warning: format ‘%lu’ expects type ‘long unsigned int’, but argument 4 has type ‘ino_t’
+mkfs.ubifs.c:1171: warning: format ‘%lu’ expects type ‘long unsigned int’, but argument 6 has type ‘ino_t’
+
 Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
- include/mtd/mtd-abi.h |   89 ++++++++++++++++++++++++++++--------------------
- 1 files changed, 52 insertions(+), 37 deletions(-)
+ fec.c                   |    6 +++---
+ mkfs.ubifs/mkfs.ubifs.c |    4 ++--
+ nftl_format.c           |    3 ++-
+ recv_image.c            |    8 ++++----
+ serve_image.c           |    5 +++--
+ sumtool.c               |    4 ++--
+ 6 files changed, 16 insertions(+), 14 deletions(-)
 
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index 86defe1..c6954ed 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -1,23 +1,35 @@
- /*
-- * $Id: mtd-abi.h,v 1.13 2005/11/07 11:14:56 gleixner Exp $
-- *
-  * Portions of MTD ABI definition which are shared by kernel and user space
+diff --git a/fec.c b/fec.c
+index 6d9020f..bee371e 100644
+--- a/fec.c
++++ b/fec.c
+@@ -114,7 +114,7 @@ typedef unsigned short gf;
+  * Primitive polynomials - see Lin & Costello, Appendix A,
+  * and  Lee & Messerschmitt, p. 453.
   */
- 
- #ifndef __MTD_ABI_H__
- #define __MTD_ABI_H__
- 
-+#include <linux/types.h>
-+
- struct erase_info_user {
--	uint32_t start;
--	uint32_t length;
-+	__u32 start;
-+	__u32 length;
-+};
-+
-+struct erase_info_user64 {
-+	__u64 start;
-+	__u64 length;
- };
- 
- struct mtd_oob_buf {
--	uint32_t start;
--	uint32_t length;
-+	__u32 start;
-+	__u32 length;
- 	unsigned char *ptr;
- };
- 
-+struct mtd_oob_buf64 {
-+	__u64 start;
-+	__u32 pad;
-+	__u32 length;
-+	__u64 usr_ptr;
-+};
-+
- #define MTD_ABSENT		0
- #define MTD_RAM			1
- #define MTD_ROM			2
-@@ -29,7 +41,7 @@ struct mtd_oob_buf {
- #define MTD_WRITEABLE		0x400	/* Device is writeable */
- #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
- #define MTD_NO_ERASE		0x1000	/* No erase necessary */
--#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
-+#define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
- 
- // Some common devices / combinations of capabilities
- #define MTD_CAP_ROM		0
-@@ -50,30 +62,30 @@ struct mtd_oob_buf {
- #define MTD_OTP_USER		2
- 
- struct mtd_info_user {
--	uint8_t type;
--	uint32_t flags;
--	uint32_t size;	 // Total size of the MTD
--	uint32_t erasesize;
--	uint32_t writesize;
--	uint32_t oobsize;   // Amount of OOB data per block (e.g. 16)
-+	__u8 type;
-+	__u32 flags;
-+	__u32 size;	 // Total size of the MTD
-+	__u32 erasesize;
-+	__u32 writesize;
-+	__u32 oobsize;   // Amount of OOB data per block (e.g. 16)
- 	/* The below two fields are obsolete and broken, do not use them
- 	 * (TODO: remove at some point) */
--	uint32_t ecctype;
--	uint32_t eccsize;
-+	__u32 ecctype;
-+	__u32 eccsize;
- };
- 
- struct region_info_user {
--	uint32_t offset;		/* At which this region starts,
-+	__u32 offset;		/* At which this region starts,
- 					 * from the beginning of the MTD */
--	uint32_t erasesize;		/* For this region */
--	uint32_t numblocks;		/* Number of blocks in this region */
--	uint32_t regionindex;
-+	__u32 erasesize;		/* For this region */
-+	__u32 numblocks;		/* Number of blocks in this region */
-+	__u32 regionindex;
- };
- 
- struct otp_info {
--	uint32_t start;
--	uint32_t length;
--	uint32_t locked;
-+	__u32 start;
-+	__u32 length;
-+	__u32 locked;
- };
- 
- #define MEMGETINFO		_IOR('M', 1, struct mtd_info_user)
-@@ -86,8 +98,8 @@ struct otp_info {
- #define MEMGETREGIONINFO	_IOWR('M', 8, struct region_info_user)
- #define MEMSETOOBSEL		_IOW('M', 9, struct nand_oobinfo)
- #define MEMGETOOBSEL		_IOR('M', 10, struct nand_oobinfo)
--#define MEMGETBADBLOCK		_IOW('M', 11, loff_t)
--#define MEMSETBADBLOCK		_IOW('M', 12, loff_t)
-+#define MEMGETBADBLOCK		_IOW('M', 11, __kernel_loff_t)
-+#define MEMSETBADBLOCK		_IOW('M', 12, __kernel_loff_t)
- #define OTPSELECT		_IOR('M', 13, int)
- #define OTPGETREGIONCOUNT	_IOW('M', 14, int)
- #define OTPGETREGIONINFO	_IOW('M', 15, struct otp_info)
-@@ -95,21 +107,24 @@ struct otp_info {
- #define ECCGETLAYOUT		_IOR('M', 17, struct nand_ecclayout)
- #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
- #define MTDFILEMODE		_IO('M', 19)
-+#define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
-+#define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
-+#define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
- 
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
-  * interfaces
+-static char *allPp[] = {    /* GF_BITS	polynomial		*/
++static const char *allPp[] = {    /* GF_BITS	polynomial		*/
+     NULL,		    /*  0	no code			*/
+     NULL,		    /*  1	no code			*/
+     "111",		    /*  2	1+x+x^2			*/
+@@ -226,7 +226,7 @@ gf_mul(x,y)
+  * one place.
   */
- struct nand_oobinfo {
--	uint32_t useecc;
--	uint32_t eccbytes;
--	uint32_t oobfree[8][2];
--	uint32_t eccpos[32];
-+	__u32 useecc;
-+	__u32 eccbytes;
-+	__u32 oobfree[8][2];
-+	__u32 eccpos[32];
+ static void *
+-my_malloc(int sz, char *err_string)
++my_malloc(int sz, const char *err_string)
+ {
+     void *p = malloc( sz );
+     if (p == NULL) {
+@@ -247,7 +247,7 @@ generate_gf(void)
+ {
+     int i;
+     gf mask;
+-    char *Pp =  allPp[GF_BITS] ;
++    const char *Pp = allPp[GF_BITS] ;
+ 
+     mask = 1;	/* x ** 0 = 1 */
+     gf_exp[GF_BITS] = 0; /* will be updated at the end of the 1st loop */
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index e4b4e3c..4d1971c 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -1168,8 +1168,8 @@ static int add_dent_node(ino_t dir_inum, const char *name, ino_t inum,
+ 	char *kname;
+ 	int len;
+ 
+-	dbg_msg(3, "%s ino %lu type %u dir ino %lu", name, inum,
+-		(unsigned)type, dir_inum);
++	dbg_msg(3, "%s ino %lu type %u dir ino %lu", name, (unsigned long)inum,
++		(unsigned)type, (unsigned long)dir_inum);
+ 	memset(dent, 0, UBIFS_DENT_NODE_SZ);
+ 
+ 	dname.name = (void *)name;
+diff --git a/nftl_format.c b/nftl_format.c
+index 42949a0..167098a 100644
+--- a/nftl_format.c
++++ b/nftl_format.c
+@@ -202,7 +202,8 @@ int main(int argc, char **argv)
+ 	long MediaUnitOff1 = 0, MediaUnitOff2 = 0;
+ 	unsigned char oobbuf[16];
+ 	struct mtd_oob_buf oob = {0, 16, oobbuf};
+-	char *mtddevice, *nftl;
++	char *mtddevice;
++	const char *nftl;
+ 	int c, do_inftl = 0, do_bbt = 0;
+ 
+ 
+diff --git a/recv_image.c b/recv_image.c
+index d65aa2a..6ff0bce 100644
+--- a/recv_image.c
++++ b/recv_image.c
+@@ -39,24 +39,24 @@ int main(int argc, char **argv)
+ 	struct addrinfo *runp;
+ 	int ret;
+ 	int sock;
+-	size_t len;
++	ssize_t len;
+ 	int flfd;
+ 	struct mtd_info_user meminfo;
+ 	unsigned char *eb_buf, *decode_buf, **src_pkts;
+ 	int nr_blocks = 0;
+ 	int pkts_per_block;
+ 	int block_nr = -1;
+-	uint32_t image_crc;
++	uint32_t image_crc = 0;
+ 	int total_pkts = 0;
+ 	int ignored_pkts = 0;
+ 	loff_t mtdoffset = 0;
+ 	int badcrcs = 0;
+ 	int duplicates = 0;
+ 	int file_mode = 0;
+-	struct fec_parms *fec;
++	struct fec_parms *fec = NULL;
+ 	int i;
+ 	struct eraseblock *eraseblocks = NULL;
+-	uint32_t start_seq;
++	uint32_t start_seq = 0;
+ 	struct timeval start, now;
+ 	unsigned long fec_time = 0, flash_time = 0, crc_time = 0,
+ 		rflash_time = 0, erase_time = 0, net_time = 0;
+diff --git a/serve_image.c b/serve_image.c
+index adb4869..292e7f6 100644
+--- a/serve_image.c
++++ b/serve_image.c
+@@ -125,8 +125,9 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	if (st.st_size % erasesize) {
+-		fprintf(stderr, "Image size %ld bytes is not a multiple of erasesize %d bytes\n",
+-			st.st_size, erasesize);
++		fprintf(stderr, "Image size %lld bytes is not a multiple "
++			"of erasesize %d bytes\n",
++			(long long)st.st_size, erasesize);
+ 		exit(1);
+ 	}
+ 	image = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, rfd, 0);
+diff --git a/sumtool.c b/sumtool.c
+index 6bb7168..9a2029f 100644
+--- a/sumtool.c
++++ b/sumtool.c
+@@ -88,7 +88,7 @@ static struct option long_options[] = {
+ 	{NULL, 0, NULL, 0}
  };
  
- struct nand_oobfree {
--	uint32_t offset;
--	uint32_t length;
-+	__u32 offset;
-+	__u32 length;
- };
+-static char *helptext =
++static const char *helptext =
+ "Usage: sumtool [OPTIONS] -i inputfile -o outputfile\n\n"
+ "Convert the input JFFS2 image to a summarized JFFS2 image\n"
+ "Summary makes mounting faster - if summary support enabled in your kernel\n\n"
+@@ -112,7 +112,7 @@ static char *helptext =
+ "                            eraseblock\n\n";
  
- #define MTD_MAX_OOBFREE_ENTRIES	8
-@@ -118,9 +133,9 @@ struct nand_oobfree {
-  * diagnosis and to allow creation of raw images
-  */
- struct nand_ecclayout {
--	uint32_t eccbytes;
--	uint32_t eccpos[64];
--	uint32_t oobavail;
-+	__u32 eccbytes;
-+	__u32 eccpos[64];
-+	__u32 oobavail;
- 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
- };
  
-@@ -133,10 +148,10 @@ struct nand_ecclayout {
-  * @bbtblocks:	number of blocks reserved for bad block tables
-  */
- struct mtd_ecc_stats {
--	uint32_t corrected;
--	uint32_t failed;
--	uint32_t badblocks;
--	uint32_t bbtblocks;
-+	__u32 corrected;
-+	__u32 failed;
-+	__u32 badblocks;
-+	__u32 bbtblocks;
- };
+-static char *revtext = "$Revision: 1.9 $";
++static const char *revtext = "$Revision: 1.9 $";
  
- /*
+ static unsigned char ffbuf[16] = {
+ 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
 -- 
 1.6.5
