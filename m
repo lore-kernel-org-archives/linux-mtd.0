@@ -1,14 +1,18 @@
-Subject: Re: [PATCH] jffs2: Move erasing from write_super to GC.
-From: David Woodhouse <dwmw2@infradead.org>
-To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-In-Reply-To: <1269079399-27087-1-git-send-email-Joakim.Tjernlund@transmode.se>
-References: <1269079399-27087-1-git-send-email-Joakim.Tjernlund@transmode.se>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 13 May 2010 18:16:58 +0100
-Message-ID: <1273771018.12840.7077.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from astoria.ccjclearline.com ([64.235.106.9])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OCd8R-0005Rj-Ie
+	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 18:27:52 +0000
+Date: Thu, 13 May 2010 14:27:39 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: simplifying the linux MTD Kconfig/Makefile structure
+In-Reply-To: <1272024346.6917.10.camel@localhost>
+Message-ID: <alpine.DEB.2.00.1005131427050.6672@lynx>
+References: <alpine.LFD.2.00.1003300824320.6061@localhost>
+	<1272024346.6917.10.camel@localhost>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,41 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-03-20 at 11:03 +0100, Joakim Tjernlund wrote:
-> Erasing blocks is a form of GC and therefore it should live in the
-> GC task. By moving it there two problems will be solved:
-> 1) unmounting will not hang until all pending blocks has
->    been erased.
-> 2) Erasing can be paused by sending a SIGSTOP to the GC thread which
->    allowes for time critical tasks to work in peace.
-> 
-> Since erasing now is in the GC thread, erases should trigger
-> the GC task instead.
-> wbuf.c still wants to flush its buffer via write_super so
-> invent jffs2_dirty_trigger() and use that in wbuf.
-> Remove surplus call to jffs2_erase_pending_trigger() in erase.c
-> and remove jffs2_garbage_collect_trigger() from write_super as
-> of now write_super() should only commit dirty data to disk.
-> 
-> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> ---
+On Fri, 23 Apr 2010, Artem Bityutskiy wrote:
 
-The only callers of jffs2_erase_pending_blocks() now call it with a
-'count' argument of 1. So perhaps it's now misnamed and the 's' and the
-extra argument should be dropped?
+> On Tue, 2010-03-30 at 08:29 -0400, Robert P. J. Day wrote:
+> > it seems like the various Kconfigs and Makefiles related to MTD
+> > could be tightened up a bit.  for instance, in drivers/mtd/Makefile:
+> >
+> >   obj-$(CONFIG_MTD_UBI)           += ubi/
+> >
+> > but given that selection, it's kind of redundant to then have
+> > drivers/mtd/ubi/Makefile start with:
+> >
+> >   obj-$(CONFIG_MTD_UBI) += ubi.o
+> >
+> > is it not?  why not just "obj-y"?
+> >
+> >   along those lines, again from drivers/mtd/Makefile:
+> >
+> > obj-y           += chips/ lpddr/ maps/ devices/ nand/ onenand/ tests/
+> >
+> > obj-$(CONFIG_MTD_UBI)           += ubi/
+> >
+> >   why not be consistent and have:
+> >
+> > obj-y           += chips/ lpddr/ maps/ devices/ nand/ onenand/
+> >
+> > obj-$(CONFIG_MTD_UBI)           += ubi/
+> > obj-$(CONFIG_MTD_TESTS)         += tests/
+> >
+> > which would *massively* simplify drivers/mtd/tests/Makefile, would it
+> > not?
+> >
+> >   i can submit some patches if there's any interest.  i suspect some
+> > of the other directories could be similarly tidied up.
+>
+> Sounds like a reasonable clean-up to me.
 
-I don't much like the calculation you've added to the end of that
-function either, which really ought to be under locks (even though right
-now I suspect it doesn't hurt). Why recalculate that at all, though --
-why not keep a 'ret' variable which defaults to 0 but is set to 1 just
-before the 'goto done' which is the only way out of the function where
-the return value should be non-zero anyway?
+  sorry for the delay, either i or a local buddy will take care of
+this and submit patches to the list.
 
-I've always been very careful to keep the GC thread as an
-_optimisation_. It looks like this will still work, because the actual
-erase will get done from jffs2_reserve_space()... but that'll only erase
-blocks immediately when we actually need them. Before, we were erasing
-them in advance. I suppose that's OK though.
+rday
 
 -- 
-dwmw2
+
+========================================================================
+Robert P. J. Day                               Waterloo, Ontario, CANADA
+
+            Linux Consulting, Training and Kernel Pedantry.
+
+Web page:                                          http://crashcourse.ca
+Twitter:                                       http://twitter.com/rpjday
+========================================================================
