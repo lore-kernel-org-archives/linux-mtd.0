@@ -1,27 +1,16 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from mgw1.diku.dk ([130.225.96.91])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCdSL-0001uW-43
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 18:48:26 +0000
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Fri, 14 May 2010 00:18:13 +0530
-Subject: RE: [PATCH 2/3] omap3 nand: cleanup for not to use GPMC virtual
-	address
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030D8FB10F@dbde02.ent.ti.com>
-References: <s-ghorai@ti.com>
-	<1273657718-12517-1-git-send-email-s-ghorai@ti.com>
-	<1273657718-12517-2-git-send-email-s-ghorai@ti.com>
-	<1273657718-12517-3-git-send-email-s-ghorai@ti.com>
-	<20100513154103.GI29368@atomide.com>
-In-Reply-To: <20100513154103.GI29368@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1OCehE-0004Ln-UT
+	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 20:07:53 +0000
+Date: Thu, 13 May 2010 22:07:46 +0200 (CEST)
+From: Julia Lawall <julia@diku.dk>
+To: Vincent Sanders <support@simtec.co.uk>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH 20/20] drivers/mtd/nand: Use kzalloc
+Message-ID: <Pine.LNX.4.64.1005132207300.6282@ask.diku.dk>
 MIME-Version: 1.0
-Cc: "sakoman@gmail.com" <sakoman@gmail.com>,
-	"Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,98 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tony,
+From: Julia Lawall <julia@diku.dk>
 
-> -----Original Message-----
-> From: Tony Lindgren [mailto:tony@atomide.com]
-> Sent: 2010-05-13 21:11
-> To: Ghorai, Sukumar
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org;
-> sakoman@gmail.com; mike@compulab.co.il; Artem.Bityutskiy@nokia.com
-> Subject: Re: [PATCH 2/3] omap3 nand: cleanup for not to use GPMC virtual
-> address
->=20
-> * Sukumar Ghorai <s-ghorai@ti.com> [100512 02:43]:
-> > --- a/arch/arm/mach-omap2/gpmc.c
-> > +++ b/arch/arm/mach-omap2/gpmc.c
-> > @@ -64,16 +64,32 @@ static void __iomem *gpmc_base;
-> >
-> >  static struct clk *gpmc_l3_clk;
-> >
-> > -static void gpmc_write_reg(int idx, u32 val)
-> > +void gpmc_write_reg(int idx, u32 val)
-> >  {
-> >  	__raw_writel(val, gpmc_base + idx);
-> >  }
-> >
-> > -static u32 gpmc_read_reg(int idx)
-> > +u32 gpmc_read_reg(int idx)
-> >  {
-> >  	return __raw_readl(gpmc_base + idx);
-> >  }
-> >
-> > +void gpmc_cs_write_byte(int cs, int idx, u32 val)
-> > +{
-> > +	void __iomem *reg_addr;
-> > +
-> > +	reg_addr =3D gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
-> > +	__raw_writeb(val, reg_addr);
-> > +}
-> > +
-> > +u8 gpmc_cs_read_byte(int cs, int idx)
-> > +{
-> > +	void __iomem *reg_addr;
-> > +
-> > +	reg_addr =3D gpmc_base + GPMC_CS0_BASE + (cs * GPMC_CS_SIZE) + idx;
-> > +	return __raw_readb(reg_addr);
-> > +}
-> > +
->=20
-> This will not improve the situation unfortunately.
-> We for sure don't want to export functions to mess
-> with the GPMC registers all over the place.
->=20
-> > @@ -432,15 +448,6 @@ void gpmc_prefetch_reset(void)
-> >  }
-> >  EXPORT_SYMBOL(gpmc_prefetch_reset);
-> >
-> > -/**
-> > - * gpmc_prefetch_status - reads prefetch status of engine
-> > - */
-> > -int  gpmc_prefetch_status(void)
-> > -{
-> > -	return gpmc_read_reg(GPMC_PREFETCH_STATUS);
-> > -}
-> > -EXPORT_SYMBOL(gpmc_prefetch_status);
-> > -
->=20
-> And we don't want to remove GPMC functions like this,
-> instead we need to implement more functions like this
-> for the platform init code to use.
+Use kzalloc rather than the combination of kmalloc and memset.
 
-[Ghorai]=20
-1. NAND IO address needed by core NAND driver. So we can't move that access=
- to GMPC.
-2. And is it ok if we add functions as below and all need to be as EXPORT_S=
-YMBOL too?=20
-get_gpmc_status()
-get_gpmc_irq_status()
-set_gpmc_irq_status()
-set_gpmc_irq_enable()
-get_gpmc_config
-set_gpmc_config
-get_gpmc_status()
-get_gpmc_prefetch_config()
-gpmc_prefetch_status=20
-set_gpmc_ecc_config
-set_gpmc_ecc_contol
-set_gpmc_ecc_size
-get_gpmc_ecc_result
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
 
-Regards,
-Sukumar
+// <smpl>
+@@
+expression x,size,flags;
+statement S;
+@@
 
+-x = kmalloc(size,flags);
++x = kzalloc(size,flags);
+ if (x == NULL) S
+-memset(x, 0, size);
+// </smpl>
 
-> Regards,
->=20
-> Tony
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ drivers/mtd/nand/s3c2410.c |    7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff -u -p a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -929,14 +929,13 @@ static int s3c24xx_nand_probe(struct pla
+ 
+ 	pr_debug("s3c2410_nand_probe(%p)\n", pdev);
+ 
+-	info = kmalloc(sizeof(*info), GFP_KERNEL);
++	info = kzalloc(sizeof(*info), GFP_KERNEL);
+ 	if (info == NULL) {
+ 		dev_err(&pdev->dev, "no memory for flash info\n");
+ 		err = -ENOMEM;
+ 		goto exit_error;
+ 	}
+ 
+-	memset(info, 0, sizeof(*info));
+ 	platform_set_drvdata(pdev, info);
+ 
+ 	spin_lock_init(&info->controller.lock);
+@@ -994,15 +993,13 @@ static int s3c24xx_nand_probe(struct pla
+ 	/* allocate our information */
+ 
+ 	size = nr_sets * sizeof(*info->mtds);
+-	info->mtds = kmalloc(size, GFP_KERNEL);
++	info->mtds = kzalloc(size, GFP_KERNEL);
+ 	if (info->mtds == NULL) {
+ 		dev_err(&pdev->dev, "failed to allocate mtd storage\n");
+ 		err = -ENOMEM;
+ 		goto exit_error;
+ 	}
+ 
+-	memset(info->mtds, 0, size);
+-
+ 	/* initialise all possible chips */
+ 
+ 	nmtd = info->mtds;
