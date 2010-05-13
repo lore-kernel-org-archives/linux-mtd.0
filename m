@@ -1,13 +1,13 @@
 Received: from isilmar-3.linta.de ([188.40.101.200] helo=linta.de)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCVKQ-00069J-9f
-	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 10:07:43 +0000
+	id 1OCVKS-0006AJ-Bl
+	for linux-mtd@lists.infradead.org; Thu, 13 May 2010 10:07:45 +0000
 From: Dominik Brodowski <linux@dominikbrodowski.net>
 To: <linux-pcmcia@lists.infradead.org>,
 	<linux-mtd@lists.infradead.org>
-Subject: [PATCH 3/4] pcmciamtd: coding style cleanups
-Date: Thu, 13 May 2010 12:00:00 +0200
-Message-Id: <1273744801-26318-3-git-send-email-linux@dominikbrodowski.net>
+Subject: [PATCH 2/4] pcmciamtd: fixing obvious errors
+Date: Thu, 13 May 2010 11:59:59 +0200
+Message-Id: <1273744801-26318-2-git-send-email-linux@dominikbrodowski.net>
 In-Reply-To: <20100513095749.GA25909@comet.dominikbrodowski.net>
 References: <20100513095749.GA25909@comet.dominikbrodowski.net>
 Cc: Alexander Kurz <linux@blala.de>, Alexander Kurz <linux@kbdbabel.org>,
@@ -23,183 +23,169 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Alexander Kurz <linux@blala.de>
 
+After fixing the obvious errors, the driver will now compile
+again on v2.6.34-rc3. First tests with two 4MB flash cards including
+erase- and write test with one of the cards where successful.
+
+Also, add two new PCMCIA_DEVICE_PROD_IDs.
+
+[linux@dominikbrodowski.net: clean up commit message]
 Signed-off-by: Alexander Kurz <linux@kbdbabel.org>
 Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 ---
- drivers/mtd/maps/pcmciamtd.c |   55 +++++++++++++++++++++++++----------------
- 1 files changed, 33 insertions(+), 22 deletions(-)
+ drivers/mtd/maps/Kconfig     |    2 +-
+ drivers/mtd/maps/pcmciamtd.c |   32 ++++++++++++++++----------------
+ 2 files changed, 17 insertions(+), 17 deletions(-)
 
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index aa2807d..f22bc9f 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -435,7 +435,7 @@ config MTD_PCI
+ 
+ config MTD_PCMCIA
+ 	tristate "PCMCIA MTD driver"
+-	depends on PCMCIA && MTD_COMPLEX_MAPPINGS && BROKEN
++	depends on PCMCIA && MTD_COMPLEX_MAPPINGS
+ 	help
+ 	  Map driver for accessing PCMCIA linear flash memory cards. These
+ 	  cards are usually around 4-16MiB in size. This does not include
 diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
-index 915b64e..050aa8e 100644
+index 81159d7..915b64e 100644
 --- a/drivers/mtd/maps/pcmciamtd.c
 +++ b/drivers/mtd/maps/pcmciamtd.c
-@@ -40,10 +40,7 @@ MODULE_PARM_DESC(debug, "Set Debug Level 0=quiet, 5=noisy");
- static const int debug = 0;
- #endif
+@@ -137,7 +137,7 @@ static map_word pcmcia_read8_remap(struct map_info *map, unsigned long ofs)
+ 		return d;
  
--#define err(format, arg...) printk(KERN_ERR "pcmciamtd: " format "\n" , ## arg)
- #define info(format, arg...) printk(KERN_INFO "pcmciamtd: " format "\n" , ## arg)
--#define warn(format, arg...) printk(KERN_WARNING "pcmciamtd: " format "\n" , ## arg)
--
+ 	d.x[0] = readb(addr);
+-	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02x", ofs, addr, d.x[0]);
++	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx", ofs, addr, d.x[0]);
+ 	return d;
+ }
  
- #define DRIVER_DESC	"PCMCIA Flash memory card driver"
+@@ -152,7 +152,7 @@ static map_word pcmcia_read16_remap(struct map_info *map, unsigned long ofs)
+ 		return d;
  
-@@ -100,7 +97,9 @@ module_param(mem_type, int, 0);
- MODULE_PARM_DESC(mem_type, "Set Memory type (0=Flash, 1=RAM, 2=ROM, default=0)");
+ 	d.x[0] = readw(addr);
+-	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04x", ofs, addr, d.x[0]);
++	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx", ofs, addr, d.x[0]);
+ 	return d;
+ }
  
+@@ -190,7 +190,7 @@ static void pcmcia_write8_remap(struct map_info *map, map_word d, unsigned long
+ 	if(!addr)
+ 		return;
  
--/* read/write{8,16} copy_{from,to} routines with window remapping to access whole card */
-+/* read/write{8,16} copy_{from,to} routines with window remapping
-+ * to access whole card
-+ */
- static caddr_t remap_window(struct map_info *map, unsigned long to)
- {
- 	struct pcmciamtd_dev *dev = (struct pcmciamtd_dev *)map->map_priv_1;
-@@ -245,7 +244,8 @@ static map_word pcmcia_read8(struct map_info *map, unsigned long ofs)
+-	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02x", adr, addr, d.x[0]);
++	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx", adr, addr, d.x[0]);
+ 	writeb(d.x[0], addr);
+ }
+ 
+@@ -201,7 +201,7 @@ static void pcmcia_write16_remap(struct map_info *map, map_word d, unsigned long
+ 	if(!addr)
+ 		return;
+ 
+-	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04x", adr, addr, d.x[0]);
++	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx", adr, addr, d.x[0]);
+ 	writew(d.x[0], addr);
+ }
+ 
+@@ -245,7 +245,7 @@ static map_word pcmcia_read8(struct map_info *map, unsigned long ofs)
  		return d;
  
  	d.x[0] = readb(win_base + ofs);
--	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx", ofs, win_base + ofs, d.x[0]);
-+	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx",
-+	      ofs, win_base + ofs, d.x[0]);
+-	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02x", ofs, win_base + ofs, d.x[0]);
++	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%02lx", ofs, win_base + ofs, d.x[0]);
  	return d;
  }
  
-@@ -259,7 +259,8 @@ static map_word pcmcia_read16(struct map_info *map, unsigned long ofs)
+@@ -259,7 +259,7 @@ static map_word pcmcia_read16(struct map_info *map, unsigned long ofs)
  		return d;
  
  	d.x[0] = readw(win_base + ofs);
--	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx", ofs, win_base + ofs, d.x[0]);
-+	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx",
-+	      ofs, win_base + ofs, d.x[0]);
+-	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04x", ofs, win_base + ofs, d.x[0]);
++	DEBUG(3, "ofs = 0x%08lx (%p) data = 0x%04lx", ofs, win_base + ofs, d.x[0]);
  	return d;
  }
  
-@@ -283,7 +284,8 @@ static void pcmcia_write8(struct map_info *map, map_word d, unsigned long adr)
+@@ -276,27 +276,27 @@ static void pcmcia_copy_from(struct map_info *map, void *to, unsigned long from,
+ }
+ 
+ 
+-static void pcmcia_write8(struct map_info *map, u8 d, unsigned long adr)
++static void pcmcia_write8(struct map_info *map, map_word d, unsigned long adr)
+ {
+ 	caddr_t win_base = (caddr_t)map->map_priv_2;
+ 
  	if(DEV_REMOVED(map))
  		return;
  
--	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx", adr, win_base + adr, d.x[0]);
-+	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx",
-+	      adr, win_base + adr, d.x[0]);
- 	writeb(d.x[0], win_base + adr);
+-	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02x", adr, win_base + adr, d);
+-	writeb(d, win_base + adr);
++	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%02lx", adr, win_base + adr, d.x[0]);
++	writeb(d.x[0], win_base + adr);
  }
  
-@@ -295,7 +297,8 @@ static void pcmcia_write16(struct map_info *map, map_word d, unsigned long adr)
+ 
+-static void pcmcia_write16(struct map_info *map, u16 d, unsigned long adr)
++static void pcmcia_write16(struct map_info *map, map_word d, unsigned long adr)
+ {
+ 	caddr_t win_base = (caddr_t)map->map_priv_2;
+ 
  	if(DEV_REMOVED(map))
  		return;
  
--	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx", adr, win_base + adr, d.x[0]);
-+	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx",
-+	      adr, win_base + adr, d.x[0]);
- 	writew(d.x[0], win_base + adr);
- }
- 
-@@ -376,7 +379,8 @@ static int pcmciamtd_cistpl_jedec(struct pcmcia_device *p_dev,
- 	if (!pcmcia_parse_tuple(tuple, &parse)) {
- 		cistpl_jedec_t *t = &parse.jedec;
- 		for (i = 0; i < t->nid; i++)
--			DEBUG(2, "JEDEC: 0x%02x 0x%02x", t->id[i].mfr, t->id[i].info);
-+			DEBUG(2, "JEDEC: 0x%02x 0x%02x",
-+			      t->id[i].mfr, t->id[i].info);
- 	}
- 	return -ENOSPC;
- }
-@@ -477,7 +481,8 @@ static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *p_dev
- 	}
- 
- 	DEBUG(1, "Device: Size: %lu Width:%d Name: %s",
--	      dev->pcmcia_map.size, dev->pcmcia_map.bankwidth << 3, dev->mtd_name);
-+	      dev->pcmcia_map.size,
-+	      dev->pcmcia_map.bankwidth << 3, dev->mtd_name);
+-	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04x", adr, win_base + adr, d);
+-	writew(d, win_base + adr);
++	DEBUG(3, "adr = 0x%08lx (%p)  data = 0x%04lx", adr, win_base + adr, d.x[0]);
++	writew(d.x[0], win_base + adr);
  }
  
  
-@@ -513,9 +518,11 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	if(setvpp == 1)
- 		dev->pcmcia_map.set_vpp = pcmciamtd_set_vpp;
+@@ -432,7 +432,7 @@ static int pcmciamtd_cistpl_geo(struct pcmcia_device *p_dev,
+ }
  
--	/* Request a memory window for PCMCIA. Some architeures can map windows upto the maximum
--	   that PCMCIA can support (64MiB) - this is ideal and we aim for a window the size of the
--	   whole card - otherwise we try smaller windows until we succeed */
-+	/* Request a memory window for PCMCIA. Some architeures can map windows
-+	 * upto the maximum that PCMCIA can support (64MiB) - this is ideal and
-+	 * we aim for a window the size of the whole card - otherwise we try
-+	 * smaller windows until we succeed
-+	 */
  
- 	req.Attributes =  WIN_MEMORY_TYPE_CM | WIN_ENABLE;
- 	req.Attributes |= (dev->pcmcia_map.bankwidth == 1) ? WIN_DATA_WIDTH_8 : WIN_DATA_WIDTH_16;
-@@ -543,7 +550,7 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	DEBUG(2, "dev->win_size = %d", dev->win_size);
+-static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *link, int *new_name)
++static void card_settings(struct pcmciamtd_dev *dev, struct pcmcia_device *p_dev, int *new_name)
+ {
+ 	int i;
  
- 	if(!dev->win_size) {
--		err("Cant allocate memory window");
-+		dev_err(&dev->p_dev->dev, "Cannot allocate memory window\n");
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
-@@ -553,7 +560,8 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	DEBUG(2, "window handle = 0x%8.8lx", (unsigned long)link->win);
- 	dev->win_base = ioremap(req.Base, req.Size);
- 	if(!dev->win_base) {
--		err("ioremap(%lu, %u) failed", req.Base, req.Size);
-+		dev_err(&dev->p_dev->dev, "ioremap(%lu, %u) failed\n",
-+			req.Base, req.Size);
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
-@@ -600,7 +608,7 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	}
+@@ -490,7 +490,6 @@ static int pcmciamtd_config(struct pcmcia_device *link)
+ {
+ 	struct pcmciamtd_dev *dev = link->priv;
+ 	struct mtd_info *mtd = NULL;
+-	cs_status_t status;
+ 	win_req_t req;
+ 	int ret;
+ 	int i;
+@@ -565,7 +564,7 @@ static int pcmciamtd_config(struct pcmcia_device *link)
+ 	dev->pcmcia_map.map_priv_1 = (unsigned long)dev;
+ 	dev->pcmcia_map.map_priv_2 = (unsigned long)link->win;
  
- 	if(!mtd) {
--		DEBUG(1, "Cant find an MTD");
-+		DEBUG(1, "Can not find an MTD");
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
-@@ -611,8 +619,9 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	if(new_name) {
- 		int size = 0;
- 		char unit = ' ';
--		/* Since we are using a default name, make it better by adding in the
--		   size */
-+		/* Since we are using a default name, make it better by adding
-+		 * in the size
-+		 */
- 		if(mtd->size < 1048576) { /* <1MiB in size, show size in KiB */
- 			size = mtd->size >> 10;
- 			unit = 'K';
-@@ -642,16 +651,17 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	if(add_mtd_device(mtd)) {
- 		map_destroy(mtd);
- 		dev->mtd_info = NULL;
--		err("Couldnt register MTD device");
-+		dev_err(&dev->p_dev->dev,
-+			"Could not register the MTD device\n");
- 		pcmciamtd_release(link);
- 		return -ENODEV;
- 	}
- 	snprintf(dev->node.dev_name, sizeof(dev->node.dev_name), "mtd%d", mtd->index);
--	info("mtd%d: %s", mtd->index, mtd->name);
-+	dev_info(&dev->p_dev->dev, "mtd%d: %s\n", mtd->index, mtd->name);
+-	dev->vpp = (vpp) ? vpp : link->socket.socket.Vpp;
++	dev->vpp = (vpp) ? vpp : link->socket->socket.Vpp;
+ 	link->conf.Attributes = 0;
+ 	if(setvpp == 2) {
+ 		link->conf.Vpp = dev->vpp;
+@@ -652,7 +651,6 @@ static int pcmciamtd_config(struct pcmcia_device *link)
  	link->dev_node = &dev->node;
  	return 0;
  
--	err("CS Error, exiting");
-+	dev_err(&dev->p_dev->dev, "CS Error, exiting\n");
+- failed:
+ 	err("CS Error, exiting");
  	pcmciamtd_release(link);
  	return -ENODEV;
- }
-@@ -690,7 +700,8 @@ static void pcmciamtd_detach(struct pcmcia_device *link)
- 
- 	if(dev->mtd_info) {
- 		del_mtd_device(dev->mtd_info);
--		info("mtd%d: Removing", dev->mtd_info->index);
-+		dev_info(&dev->p_dev->dev, "mtd%d: Removing\n",
-+			 dev->mtd_info->index);
- 		map_destroy(dev->mtd_info);
- 	}
- 
+@@ -737,8 +735,10 @@ static struct pcmcia_device_id pcmciamtd_ids[] = {
+ 	PCMCIA_DEVICE_PROD_ID12("intel", "VALUE SERIES 100 ", 0x40ade711, 0xdf8506d8),
+ 	PCMCIA_DEVICE_PROD_ID12("KINGMAX TECHNOLOGY INC.", "SRAM 256K Bytes", 0x54d0c69c, 0xad12c29c),
+ 	PCMCIA_DEVICE_PROD_ID12("Maxtor", "MAXFL MobileMax Flash Memory Card", 0xb68968c8, 0x2dfb47b0),
++	PCMCIA_DEVICE_PROD_ID123("M-Systems", "M-SYS Flash Memory Card", "(c) M-Systems", 0x7ed2ad87, 0x675dc3fb, 0x7aef3965),
+ 	PCMCIA_DEVICE_PROD_ID12("SEIKO EPSON", "WWB101EN20", 0xf9876baf, 0xad0b207b),
+ 	PCMCIA_DEVICE_PROD_ID12("SEIKO EPSON", "WWB513EN20", 0xf9876baf, 0xe8d884ad),
++	PCMCIA_DEVICE_PROD_ID12("SMART Modular Technologies", " 4MB FLASH Card", 0x96fd8277, 0x737a5b05),
+ 	PCMCIA_DEVICE_PROD_ID12("Starfish, Inc.", "REX-3000", 0x05ddca47, 0xe7d67bca),
+ 	PCMCIA_DEVICE_PROD_ID12("Starfish, Inc.", "REX-4100", 0x05ddca47, 0x7bc32944),
+ 	/* the following was commented out in pcmcia-cs-3.2.7 */
 -- 
 1.6.3.3
