@@ -1,18 +1,15 @@
-Subject: Re: [PATCH v5 5/9] [MTD] remove bogus warning about missing boot
-	bank	location
+Subject: Re: [PATCH 1/2] mtd/chips: add SST39WF160x NOR-flashes
 From: David Woodhouse <dwmw2@infradead.org>
-To: Guillaume LECERF <glecerf@gmail.com>
-In-Reply-To: <20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
-References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
-	<20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
+References: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 May 2010 01:19:39 +0100
-Message-ID: <1273796379.9999.509.camel@macbook.infradead.org>
+Date: Fri, 14 May 2010 01:44:48 +0100
+Message-ID: <1273797888.9999.591.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Wolfram Sang <w.sang@pengutronix.de>, Chris Moore <moore@free.fr>
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Guillaume LECERF <glecerf@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +19,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-04-24 at 17:58 +0200, Guillaume LECERF wrote:
-> From: Uwe Kleine-König <Uwe.Kleine-Koenigi@digi.com>
+On Tue, 2010-04-27 at 04:19 +0200, Wolfram Sang wrote:
+> Due to a broken CFI, they have to be added to jedec_probe.
 > 
-> After the deleted block bootloc is only used once as follows:
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Cc: David Woodhouse <David.Woodhouse@intel.com>
+> ---
 > 
->         if (bootloc == 3 && something_else) {
->                 ...
-> 
-> So setting bootloc = 2 doesn't change anything.  Taking that the
-> warning is wrong and missleading.
-> 
-> Signed-off-by: Uwe Kleine-König <Uwe.Kleine-Koenig@digi.com>
-> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
-> Acked-by: Christopher Moore <moore@free.fr> 
+> Sadly, those two cannot be detected using Guillaume's SST-patchset.
 
-The warning should be preserved for invalid values, or values we don't
-support. I don't think it's correct to just remove it.
+Why not? Guillaume has patches which add quirks for specific SST chips;
+what is fundamentally different about these chips that means you can't
+take the same approach?
 
-Looking at the latest datasheet, it looks like values of 0x04 or 0x05
-are acceptable, meaning "Uniform, bottom WP protect" and "Uniform, top
-WP protect" respectively.
+>  drivers/mtd/chips/jedec_probe.c |   30 ++++++++++++++++++++++++++++++
+>  1 files changed, 30 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+> index 8db1148..6850b23 100644
+> --- a/drivers/mtd/chips/jedec_probe.c
+> +++ b/drivers/mtd/chips/jedec_probe.c
+> @@ -166,6 +166,8 @@
+>  #define SST39LF160	0x2782
+>  #define SST39VF1601	0x234b
+>  #define SST39VF3201	0x235b
+> +#define SST39WF1601	0x274b
+> +#define SST39WF1602	0x274a
+>  #define SST39LF512	0x00D4
+>  #define SST39LF010	0x00D5
+>  #define SST39LF020	0x00D6
+> @@ -1529,6 +1531,34 @@ static const struct amd_flash_info jedec_table[] = {
+>  			ERASEINFO(0x1000,256)
+>  		}
+>  	}, {
+> +		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
+> +		.mfr_id		= MANUFACTURER_SST,
+> +		.dev_id		= SST39WF1601,
+> +		.name		= "SST 39WF1601",
+> +		.devtypes	= CFI_DEVICETYPE_X16,
+> +		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
+> +		.dev_size	= SIZE_2MiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 2,
+> +		.regions	= {
+> +			ERASEINFO(0x1000,256),
+> +			ERASEINFO(0x1000,256)
+> +		}
+> +	}, {
+> +		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
+> +		.mfr_id		= MANUFACTURER_SST,
+> +		.dev_id		= SST39WF1602,
+> +		.name		= "SST 39WF1602",
+> +		.devtypes	= CFI_DEVICETYPE_X16,
+> +		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
+> +		.dev_size	= SIZE_2MiB,
+> +		.cmd_set	= P_ID_AMD_STD,
+> +		.nr_regions	= 2,
+> +		.regions	= {
+> +			ERASEINFO(0x1000,256),
+> +			ERASEINFO(0x1000,256)
+> +		}
+> +	}, {
+>  		.mfr_id		= MANUFACTURER_SST,     /* should be CFI */
+>  		.dev_id		= SST39VF3201,
+>  		.name		= "SST 39VF3201",
 
-Zero is acceptable only for pre-CFI 1.1 devices, and in that case it
-says "refer to device ID code for Top/Bottom boot version of AM29LV160
-or AM29LV116". But perhaps we should just probe such devices using the
-JEDEC mode anyway.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
