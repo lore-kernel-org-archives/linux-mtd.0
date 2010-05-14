@@ -1,17 +1,14 @@
-Subject: Re: [PATCH 1/2] mtd/chips: add SST39WF160x NOR-flashes
+Subject: Re: [git pull] pcmciamtd fixes
 From: David Woodhouse <dwmw2@infradead.org>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <20100514012023.GA30794@pengutronix.de>
-References: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
-	<1273797888.9999.591.camel@macbook.infradead.org>
-	<20100514012023.GA30794@pengutronix.de>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+In-Reply-To: <20100513095749.GA25909@comet.dominikbrodowski.net>
+References: <20100513095749.GA25909@comet.dominikbrodowski.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 May 2010 02:28:41 +0100
-Message-ID: <1273800521.9999.726.camel@macbook.infradead.org>
+Date: Fri, 14 May 2010 03:24:50 +0100
+Message-ID: <1273803890.9999.866.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Guillaume LECERF <glecerf@gmail.com>, linux-mtd@lists.infradead.org
+Cc: linux-pcmcia@lists.infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +18,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-05-14 at 03:20 +0200, Wolfram Sang wrote:
-> My flashes don't have P_ID_SST_OLD, sadly, but P_ID_AMD_STD. Still, unlike
-> other AMD_STD-flashes, my flashes need their custom unlock address. I couldn't
-> find a way to distinguish this from the standard case with the regular unlock
-> addresses. 
+On Thu, 2010-05-13 at 11:57 +0200, Dominik Brodowski wrote:
+> Alexander Kurz spent quite some time to fix pcmciamtd to not only build
+> again, but to actually work on some cards he owns. In addition, there are a
+> few more PCMCIA IDs to report, and Julia Lawall reported and fixed an
+> use-after-free bug in pcmciamtd. Could you pick up these patches and pull
+> from 
 
-Makes sense; thanks for the clarification.
+I already had Julia's patch; I've picked up the other three. Thanks.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
