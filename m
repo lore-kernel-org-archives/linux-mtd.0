@@ -1,14 +1,20 @@
-MIME-Version: 1.0
-Date: Fri, 14 May 2010 14:25:47 +0800
-Message-ID: <AANLkTilwUdzG52qPz2Q_xLEfnvdg4Q1pjX7BcHgptQIZ@mail.gmail.com>
-Subject: [PATCH 20/20] mtd: pxa3xx_nand: fix power management support
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	David Woodhouse <david.woodhouse@intel.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Eric Miao <eric.y.miao@gmail.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [PATCH v5 5/9] [MTD] remove bogus warning about missing boot
+	bank	location
+From: David Woodhouse <dwmw2@infradead.org>
+To: Chris Moore <moore@free.fr>
+In-Reply-To: <4BECEAE9.2030008@free.fr>
+References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
+	<20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
+	<1273796379.9999.509.camel@macbook.infradead.org>
+	<4BECEAE9.2030008@free.fr>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 14 May 2010 08:54:02 +0100
+Message-ID: <1273823642.9999.1528.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Guillaume LECERF <glecerf@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,87 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 90e374bdb162c2e77c6dfc3f38ca5a2e283c4730 Mon Sep 17 00:00:00 2001
-From: Lei Wen <leiwen@marvell.com>
-Date: Thu, 1 Apr 2010 15:12:09 +0800
-Subject: [PATCH] mtd: pxa3xx_nand: fix power management support
+On Fri, 2010-05-14 at 08:17 +0200, Chris Moore wrote:
+> Le 14/05/2010 02:19, David Woodhouse a écrit :
+> > On Sat, 2010-04-24 at 17:58 +0200, Guillaume LECERF wrote:
+> >    
+> >> From: Uwe Kleine-König<Uwe.Kleine-Koenigi@digi.com>
+> >>
+> >> After the deleted block bootloc is only used once as follows:
+> >>
+> >>          if (bootloc == 3&&  something_else) {
+> >>                  ...
+> >>
+> >> So setting bootloc = 2 doesn't change anything.  Taking that the
+> >> warning is wrong and missleading.
+> >>
+> >> Signed-off-by: Uwe Kleine-König<Uwe.Kleine-Koenig@digi.com>
+> >> Signed-off-by: Guillaume LECERF<glecerf@gmail.com>
+> >> Acked-by: Christopher Moore<moore@free.fr>
+> >>      
+> > The warning should be preserved for invalid values, or values we don't
+> > support. I don't think it's correct to just remove it.
+> >
+> >    
+> 
+> But, David, the only effect of this code is to print an *erroneous* message.
+> The message says "Assuming top" but sets bootloc to bottom (2) :(
+> See this thread: http://thread.gmane.org/gmane.linux.drivers.mtd/22176
+> Remark: this would be even clearer if the bootloc values were macros 
+> instead of 2, 3, ...
+> 
+> If you really want to keep the message then it must at least be changed 
+> to "Assuming bottom".
 
-Signed-off-by: Lei Wen <leiwen@marvell.com>
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |   48 +++++++++++++++++++++++++++++++--------
- 1 files changed, 38 insertions(+), 10 deletions(-)
+http://git.infradead.org/mtd-2.6.git/commitdiff/412da2f6
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 2e1c8b6..15bc539 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1844,26 +1844,54 @@ static int __devinit pxa3xx_nand_probe(struct
-platform_device *pdev)
- #ifdef CONFIG_PM
- static int pxa3xx_nand_suspend(struct platform_device *pdev,
-pm_message_t state)
- {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = info->mtd;
-+	struct pxa3xx_nand *nand= platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info;
-+	struct mtd_info *mtd;
-+	int ret = 0;
-+	uint8_t cs;
-
--	if (info->state & STATE_CMD_PREPARED) {
--		dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
-+	if (nand->state & STATE_CMD_PREPARED) {
-+		dev_err(&pdev->dev, "driver busy, state = %d\n", nand->state);
- 		return -EAGAIN;
- 	}
-
--	return 0;
-+	for (cs = 0; cs < NUM_CHIP_SELECT; cs ++) {
-+		info = nand->info[cs];
-+		if (!info)
-+			continue;
-+		mtd = get_mtd_by_info(info);
-+		ret = mtd->suspend(mtd);
-+	}
-+
-+	return ret;
- }
-
- static int pxa3xx_nand_resume(struct platform_device *pdev)
- {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = info->mtd;
-+	struct pxa3xx_nand *nand= platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info;
-+	struct mtd_info *mtd;
-+	uint8_t cs;
-
--	nand_writel(info, NDTR0CS0, info->ndtr0cs0);
--	nand_writel(info, NDTR1CS0, info->ndtr1cs0);
--	clk_enable(info->clk);
-+	for (cs = 0; cs < NUM_CHIP_SELECT; cs ++) {
-+		info = nand->info[cs];
-+		if (!info)
-+			continue;
-+		nand_writel(nand, NDTR0CS0, info->ndtr0cs0);
-+		nand_writel(nand, NDTR1CS0, info->ndtr1cs0);
-+		nand->chip_select = cs;
-+		/* Sometimes nand chip would raise a ready interrupt
-+		 * when resume, reset the by start and stop to prevent
-+		 * it damage driver's state machine */
-+		pxa3xx_nand_start(nand);
-+		pxa3xx_nand_stop(nand);
-+		mtd = get_mtd_by_info(info);
-+		mtd->resume(mtd);
-+	}
-
-+	/* set the controller cs to a invalid num to let driver
-+	 * reconfigure the timing when it call the cmdfunc */
-+	nand->chip_select = 0xff;
- 	return 0;
- }
- #else
 -- 
-1.5.6.5
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
