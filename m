@@ -1,18 +1,21 @@
-Subject: Re: [PATCH v4] mtd: Do not corrupt backing device of device node inode
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-In-Reply-To: <1273074054-11849-1-git-send-email-kirill@shutemov.name>
-References: <1273074054-11849-1-git-send-email-kirill@shutemov.name>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 May 2010 02:04:34 +0100
-Message-ID: <1273799074.9999.653.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
-	linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
-	Alexander Shishkin <virtuoso@slind.org>, linux-mtd@lists.infradead.org,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	linux-fsdevel@vger.kernel.org, stable@kernel.org
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OCjZm-00064f-6R
+	for linux-mtd@lists.infradead.org; Fri, 14 May 2010 01:20:31 +0000
+Date: Fri, 14 May 2010 03:20:23 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 1/2] mtd/chips: add SST39WF160x NOR-flashes
+Message-ID: <20100514012023.GA30794@pengutronix.de>
+References: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
+	<1273797888.9999.591.camel@macbook.infradead.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Disposition: inline
+In-Reply-To: <1273797888.9999.591.camel@macbook.infradead.org>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Guillaume LECERF <glecerf@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-05-05 at 18:40 +0300, Kirill A. Shutemov wrote:
-> We cannot modify file->f_mapping->backing_dev_info, because it will corrupt
-> backing device of device node inode, since file->f_mapping is equal to
-> inode->i_mapping (see __dentry_open() in fs/open.c).
-> 
-> Let's introduce separate inode for MTD device with appropriate backing
-> device.
 
-I hate the fact that we have to do this -- is it really the only option?
+--tKW2IUtsqtDRztdT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Is it _just_ for the backing_device_info? Can't that be done
-differently?
+On Fri, May 14, 2010 at 01:44:48AM +0100, David Woodhouse wrote:
+> On Tue, 2010-04-27 at 04:19 +0200, Wolfram Sang wrote:
+> > Due to a broken CFI, they have to be added to jedec_probe.
+> >=20
+> > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> > Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> > Cc: David Woodhouse <David.Woodhouse@intel.com>
+> > ---
+> >=20
+> > Sadly, those two cannot be detected using Guillaume's SST-patchset.
+>=20
+> Why not? Guillaume has patches which add quirks for specific SST chips;
+> what is fundamentally different about these chips that means you can't
+> take the same approach?
 
-> @@ -85,11 +88,27 @@ static int mtd_open(struct inode *inode, struct file *file)
->  		goto out;
->  	}
->  
-> -	if (mtd->backing_dev_info)
-> -		file->f_mapping->backing_dev_info = mtd->backing_dev_info;
-> +	if (!mtd->inode) {
-> +		mtd->inode = new_inode(mtd_inode_mnt->mnt_sb);
+See his patch 3/8. He introduces:
 
-I believe that would be a race condition, if it wasn't for the BKL.
++#define P_ID_SST_OLD            0x0701
 
-And what happens when you close the chardevice and call iput() on the
-inode so it's destroyed, and then you re-open the device? You never set
-mtd->inode = NULL, so won't it now try to igrab a stale pointer?
+so, he can then do:
 
-You won't have seen this in your testing unless you made it prune the
-icache between the close and open calls.
++       if (cfi->cfiq->P_ID =3D=3D P_ID_SST_OLD) {
++               addr_unlock1 =3D 0x5555;
++               addr_unlock2 =3D 0x2AAA;
++       }
++
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Only after that, he can query for more CFI-information/product ID and apply=
+ the
+quirks.
+
+My flashes don't have P_ID_SST_OLD, sadly, but P_ID_AMD_STD. Still, unlike
+other AMD_STD-flashes, my flashes need their custom unlock address. I could=
+n't
+find a way to distinguish this from the standard case with the regular unlo=
+ck
+addresses.
+
+Kind regards,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--tKW2IUtsqtDRztdT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkvspVcACgkQD27XaX1/VRsmQQCeLiRjGJ2DJJxZOx/Mx6aBSMpa
+PfwAoKP41Lrz6uDjSGsNz5AGH9+K5Q0m
+=hL+x
+-----END PGP SIGNATURE-----
+
+--tKW2IUtsqtDRztdT--
