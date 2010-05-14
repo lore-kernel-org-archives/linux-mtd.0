@@ -1,22 +1,14 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OCoD3-0000My-RF
-	for linux-mtd@lists.infradead.org; Fri, 14 May 2010 06:17:23 +0000
-Message-ID: <4BECEAE9.2030008@free.fr>
-Date: Fri, 14 May 2010 08:17:13 +0200
-From: Chris Moore <moore@free.fr>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v5 5/9] [MTD] remove bogus warning about missing boot
-	bank	location
-References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>	<20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
-	<1273796379.9999.509.camel@macbook.infradead.org>
-In-Reply-To: <1273796379.9999.509.camel@macbook.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Guillaume LECERF <glecerf@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Date: Fri, 14 May 2010 14:17:29 +0800
+Message-ID: <AANLkTikYf7iEoqpbaPFyjwZRFucX1TlpBkqxg3mV2fo9@mail.gmail.com>
+Subject: [PATCH 08/20] mtd: pxa3xx_nand: remove detect configure function
+From: Haojian Zhuang <haojian.zhuang@gmail.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	David Woodhouse <david.woodhouse@intel.com>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Eric Miao <eric.y.miao@gmail.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +18,122 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 14/05/2010 02:19, David Woodhouse a écrit :
-> On Sat, 2010-04-24 at 17:58 +0200, Guillaume LECERF wrote:
->    
->> From: Uwe Kleine-König<Uwe.Kleine-Koenigi@digi.com>
->>
->> After the deleted block bootloc is only used once as follows:
->>
->>          if (bootloc == 3&&  something_else) {
->>                  ...
->>
->> So setting bootloc = 2 doesn't change anything.  Taking that the
->> warning is wrong and missleading.
->>
->> Signed-off-by: Uwe Kleine-König<Uwe.Kleine-Koenig@digi.com>
->> Signed-off-by: Guillaume LECERF<glecerf@gmail.com>
->> Acked-by: Christopher Moore<moore@free.fr>
->>      
-> The warning should be preserved for invalid values, or values we don't
-> support. I don't think it's correct to just remove it.
->
->    
+>From 1d7606d3153a0376246b0aa38b3126278e52a220 Mon Sep 17 00:00:00 2001
+From: Lei Wen <leiwen@marvell.com>
+Date: Mon, 22 Mar 2010 19:42:27 +0800
+Subject: [PATCH] mtd: pxa3xx_nand: remove detect configure function
 
-But, David, the only effect of this code is to print an *erroneous* message.
-The message says "Assuming top" but sets bootloc to bottom (2) :(
-See this thread: http://thread.gmane.org/gmane.linux.drivers.mtd/22176
-Remark: this would be even clearer if the bootloc values were macros 
-instead of 2, 3, ...
+For large page size nand chip, like 4k and 8k, we unable to
+just use register setting left by bootloader to actually tell
+the original page size. This is due to limitaton of the hardware,
+it only has a little more than 2k ram buffer internal.
 
-If you really want to keep the message then it must at least be changed 
-to "Assuming bottom".
+So when we try to do 4k or larger page size chip operation,
+we need to seperate the original page size to what we could
+offer, like 2k or less.
 
-Cheers,
-Chris
+Signed-off-by: Lei Wen <leiwen@marvell.com>
+Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |   78 ----------------------------------------
+ 1 files changed, 0 insertions(+), 78 deletions(-)
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 7a8ff38..2c7f925 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -218,13 +218,6 @@ static int use_dma = 1;
+ module_param(use_dma, bool, 0444);
+ MODULE_PARM_DESC(use_dma, "enable DMA for data transfering to/from NAND HW");
+
+-/*
+- * Default NAND flash controller configuration setup by the
+- * bootloader. This configuration is used only when pdata->keep_config is set
+- */
+-static struct pxa3xx_nand_timing default_timing;
+-static struct pxa3xx_nand_flash default_flash;
+-
+ const static struct pxa3xx_nand_cmdset cmdset = {
+ 	.read1		= 0x3000,
+ 	.read2		= 0x0050,
+@@ -824,77 +817,6 @@ static int pxa3xx_nand_config_flash(struct
+pxa3xx_nand_info *info,
+ 	return 0;
+ }
+
+-static void pxa3xx_nand_detect_timing(struct pxa3xx_nand_info *info,
+-				      struct pxa3xx_nand_timing *t)
+-{
+-	unsigned long nand_clk = clk_get_rate(info->clk);
+-	uint32_t ndtr0 = nand_readl(info, NDTR0CS0);
+-	uint32_t ndtr1 = nand_readl(info, NDTR1CS0);
+-
+-	t->tCH = cycle2ns(tCH_NDTR0(ndtr0), nand_clk);
+-	t->tCS = cycle2ns(tCS_NDTR0(ndtr0), nand_clk);
+-	t->tWH = cycle2ns(tWH_NDTR0(ndtr0), nand_clk);
+-	t->tWP = cycle2ns(tWP_NDTR0(ndtr0), nand_clk);
+-	t->tRH = cycle2ns(tRH_NDTR0(ndtr0), nand_clk);
+-	t->tRP = cycle2ns(tRP_NDTR0(ndtr0), nand_clk);
+-
+-	t->tR = cycle2ns(tR_NDTR1(ndtr1), nand_clk);
+-	t->tWHR = cycle2ns(tWHR_NDTR1(ndtr1), nand_clk);
+-	t->tAR = cycle2ns(tAR_NDTR1(ndtr1), nand_clk);
+-}
+-
+-static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+-{
+-	uint32_t ndcr = nand_readl(info, NDCR);
+-	struct nand_flash_dev *type = NULL;
+-	uint32_t id = -1;
+-	int i;
+-
+-	default_flash.page_per_block = ndcr & NDCR_PG_PER_BLK ? 64 : 32;
+-	default_flash.page_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
+-	default_flash.flash_width = ndcr & NDCR_DWIDTH_M ? 16 : 8;
+-	default_flash.dfc_width = ndcr & NDCR_DWIDTH_C ? 16 : 8;
+-
+-	/* set info fields needed to __readid */
+-	info->read_id_bytes = (default_flash.page_size == 2048) ? 4 : 2;
+-	info->reg_ndcr = ndcr;
+-
+-
+-	pxa3xx_nand_cmdfunc(info->mtd, NAND_CMD_READID, 0, 0);
+-	id = *((uint16_t *)(info->data_buff));
+-
+-	/* Lookup the flash id */
+-	id = (id >> 8) & 0xff;		/* device id is byte 2 */
+-	for (i = 0; nand_flash_ids[i].name != NULL; i++) {
+-		if (id == nand_flash_ids[i].id) {
+-			type =  &nand_flash_ids[i];
+-			break;
+-		}
+-	}
+-
+-	if (!type)
+-		return -ENODEV;
+-
+-	/* fill the missing flash information */
+-	i = __ffs(default_flash.page_per_block * default_flash.page_size);
+-	default_flash.num_blocks = type->chipsize << (20 - i);
+-
+-	info->oob_size = (default_flash.page_size == 2048) ? 64 : 16;
+-
+-	/* calculate addressing information */
+-	info->col_addr_cycles = (default_flash.page_size == 2048) ? 2 : 1;
+-
+-	if (default_flash.num_blocks * default_flash.page_per_block > 65536)
+-		info->row_addr_cycles = 3;
+-	else
+-		info->row_addr_cycles = 2;
+-
+-	pxa3xx_nand_detect_timing(info, &default_timing);
+-	memcpy(&default_flash.timing, &default_timing, sizeof(default_timing));
+-
+-	return 0;
+-}
+-
+ /* the maximum possible buffer size for large page with OOB data
+  * is: 2048 + 64 = 2112 bytes, allocate a page here for both the
+  * data buffer and the DMA descriptor
+-- 
+1.5.6.5
