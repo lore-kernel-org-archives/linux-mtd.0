@@ -1,19 +1,27 @@
-Subject: Re: [PATCH v5 5/9] [MTD] remove bogus warning about missing boot
-	bank	location
-From: David Woodhouse <dwmw2@infradead.org>
-To: Chris Moore <moore@free.fr>
-In-Reply-To: <4BECEAE9.2030008@free.fr>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OCpyB-0004Bw-Eo
+	for linux-mtd@lists.infradead.org; Fri, 14 May 2010 08:10:08 +0000
+Received: by fxm12 with SMTP id 12so911867fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 May 2010 01:10:04 -0700 (PDT)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <1273823642.9999.1528.camel@macbook.infradead.org>
 References: <20100424155751.14723.46761.stgit@shiryu.yomgui.biz>
 	<20100424155812.14723.66554.stgit@shiryu.yomgui.biz>
 	<1273796379.9999.509.camel@macbook.infradead.org>
 	<4BECEAE9.2030008@free.fr>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 May 2010 08:54:02 +0100
-Message-ID: <1273823642.9999.1528.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Guillaume LECERF <glecerf@gmail.com>, Wolfram Sang <w.sang@pengutronix.de>,
+	<1273823642.9999.1528.camel@macbook.infradead.org>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Fri, 14 May 2010 10:09:44 +0200
+Message-ID: <AANLkTik9nUPxig-XFRnVn8O3B45ofHraUMe6xPkPGMYW@mail.gmail.com>
+Subject: Re: [PATCH v5 5/9] [MTD] remove bogus warning about missing boot bank
+	location
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Cc: Wolfram Sang <w.sang@pengutronix.de>,
+	linux-mtd <linux-mtd@lists.infradead.org>, Chris Moore <moore@free.fr>,
 	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,40 +32,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-05-14 at 08:17 +0200, Chris Moore wrote:
-> Le 14/05/2010 02:19, David Woodhouse a écrit :
-> > On Sat, 2010-04-24 at 17:58 +0200, Guillaume LECERF wrote:
-> >    
-> >> From: Uwe Kleine-König<Uwe.Kleine-Koenigi@digi.com>
-> >>
-> >> After the deleted block bootloc is only used once as follows:
-> >>
-> >>          if (bootloc == 3&&  something_else) {
-> >>                  ...
-> >>
-> >> So setting bootloc = 2 doesn't change anything.  Taking that the
-> >> warning is wrong and missleading.
-> >>
-> >> Signed-off-by: Uwe Kleine-König<Uwe.Kleine-Koenig@digi.com>
-> >> Signed-off-by: Guillaume LECERF<glecerf@gmail.com>
-> >> Acked-by: Christopher Moore<moore@free.fr>
-> >>      
-> > The warning should be preserved for invalid values, or values we don't
-> > support. I don't think it's correct to just remove it.
-> >
-> >    
-> 
-> But, David, the only effect of this code is to print an *erroneous* message.
-> The message says "Assuming top" but sets bootloc to bottom (2) :(
-> See this thread: http://thread.gmane.org/gmane.linux.drivers.mtd/22176
-> Remark: this would be even clearer if the bootloc values were macros 
-> instead of 2, 3, ...
-> 
-> If you really want to keep the message then it must at least be changed 
-> to "Assuming bottom".
+2010/5/14 David Woodhouse <dwmw2@infradead.org>:
+> http://git.infradead.org/mtd-2.6.git/commitdiff/412da2f6
 
-http://git.infradead.org/mtd-2.6.git/commitdiff/412da2f6
+Thanks David.
+
+One thing I noted :
+
++                       if ((bootloc < 2) || (bootloc > 5)) {
++                               printk(KERN_WARNING "%s: CFI contains
+unrecognised boot "
++                                      "bank location (%d). Assuming bottom.\n",
++                                      bootloc, map->name);
+
+I think bootloc and map->name need to be swapped to match the printk
+pattern order (%s first then %d).
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
