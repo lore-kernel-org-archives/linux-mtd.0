@@ -1,15 +1,18 @@
-Subject: Re: [PATCH 1/2] mtd/chips: add SST39WF160x NOR-flashes
+Subject: Re: [PATCH v4] mtd: Do not corrupt backing device of device node inode
 From: David Woodhouse <dwmw2@infradead.org>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
-References: <1272334774-17019-1-git-send-email-w.sang@pengutronix.de>
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+In-Reply-To: <1273074054-11849-1-git-send-email-kirill@shutemov.name>
+References: <1273074054-11849-1-git-send-email-kirill@shutemov.name>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 14 May 2010 01:44:48 +0100
-Message-ID: <1273797888.9999.591.camel@macbook.infradead.org>
+Date: Fri, 14 May 2010 02:04:34 +0100
+Message-ID: <1273799074.9999.653.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Guillaume LECERF <glecerf@gmail.com>, linux-mtd@lists.infradead.org
+Cc: Jan Kara <jack@suse.cz>, Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-kernel@vger.kernel.org, David Howells <dhowells@redhat.com>,
+	Alexander Shishkin <virtuoso@slind.org>, linux-mtd@lists.infradead.org,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	linux-fsdevel@vger.kernel.org, stable@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,72 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-04-27 at 04:19 +0200, Wolfram Sang wrote:
-> Due to a broken CFI, they have to be added to jedec_probe.
+On Wed, 2010-05-05 at 18:40 +0300, Kirill A. Shutemov wrote:
+> We cannot modify file->f_mapping->backing_dev_info, because it will corrupt
+> backing device of device node inode, since file->f_mapping is equal to
+> inode->i_mapping (see __dentry_open() in fs/open.c).
 > 
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Cc: David Woodhouse <David.Woodhouse@intel.com>
-> ---
-> 
-> Sadly, those two cannot be detected using Guillaume's SST-patchset.
+> Let's introduce separate inode for MTD device with appropriate backing
+> device.
 
-Why not? Guillaume has patches which add quirks for specific SST chips;
-what is fundamentally different about these chips that means you can't
-take the same approach?
+I hate the fact that we have to do this -- is it really the only option?
 
->  drivers/mtd/chips/jedec_probe.c |   30 ++++++++++++++++++++++++++++++
->  1 files changed, 30 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-> index 8db1148..6850b23 100644
-> --- a/drivers/mtd/chips/jedec_probe.c
-> +++ b/drivers/mtd/chips/jedec_probe.c
-> @@ -166,6 +166,8 @@
->  #define SST39LF160	0x2782
->  #define SST39VF1601	0x234b
->  #define SST39VF3201	0x235b
-> +#define SST39WF1601	0x274b
-> +#define SST39WF1602	0x274a
->  #define SST39LF512	0x00D4
->  #define SST39LF010	0x00D5
->  #define SST39LF020	0x00D6
-> @@ -1529,6 +1531,34 @@ static const struct amd_flash_info jedec_table[] = {
->  			ERASEINFO(0x1000,256)
->  		}
->  	}, {
-> +		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
-> +		.mfr_id		= MANUFACTURER_SST,
-> +		.dev_id		= SST39WF1601,
-> +		.name		= "SST 39WF1601",
-> +		.devtypes	= CFI_DEVICETYPE_X16,
-> +		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
-> +		.dev_size	= SIZE_2MiB,
-> +		.cmd_set	= P_ID_AMD_STD,
-> +		.nr_regions	= 2,
-> +		.regions	= {
-> +			ERASEINFO(0x1000,256),
-> +			ERASEINFO(0x1000,256)
-> +		}
-> +	}, {
-> +		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
-> +		.mfr_id		= MANUFACTURER_SST,
-> +		.dev_id		= SST39WF1602,
-> +		.name		= "SST 39WF1602",
-> +		.devtypes	= CFI_DEVICETYPE_X16,
-> +		.uaddr		= MTD_UADDR_0xAAAA_0x5555,
-> +		.dev_size	= SIZE_2MiB,
-> +		.cmd_set	= P_ID_AMD_STD,
-> +		.nr_regions	= 2,
-> +		.regions	= {
-> +			ERASEINFO(0x1000,256),
-> +			ERASEINFO(0x1000,256)
-> +		}
-> +	}, {
->  		.mfr_id		= MANUFACTURER_SST,     /* should be CFI */
->  		.dev_id		= SST39VF3201,
->  		.name		= "SST 39VF3201",
+Is it _just_ for the backing_device_info? Can't that be done
+differently?
 
+> @@ -85,11 +88,27 @@ static int mtd_open(struct inode *inode, struct file *file)
+>  		goto out;
+>  	}
+>  
+> -	if (mtd->backing_dev_info)
+> -		file->f_mapping->backing_dev_info = mtd->backing_dev_info;
+> +	if (!mtd->inode) {
+> +		mtd->inode = new_inode(mtd_inode_mnt->mnt_sb);
+
+I believe that would be a race condition, if it wasn't for the BKL.
+
+And what happens when you close the chardevice and call iput() on the
+inode so it's destroyed, and then you re-open the device? You never set
+mtd->inode = NULL, so won't it now try to igrab a stale pointer?
+
+You won't have seen this in your testing unless you made it prune the
+icache between the close and open calls.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
