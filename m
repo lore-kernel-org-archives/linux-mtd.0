@@ -1,21 +1,12 @@
-Received: from 173-11-172-146-houston.txt.hfc.comcastbusiness.net
-	([173.11.172.146] helo=mail.breakawaysystems.com)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OD85w-0005t6-8I
-	for linux-mtd@lists.infradead.org; Sat, 15 May 2010 03:31:21 +0000
-Received: from [192.168.1.100]
-	(173-11.172.145-houston.txt.hfc.comcastbusiness.net [173.11.172.145])
-	by mail.breakawaysystems.com (Postfix) with ESMTP id 6FCCA1488B3
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 14 May 2010 22:31:14 -0500 (CDT)
-Message-ID: <4BEE1582.40706@lambsys.com>
-Date: Fri, 14 May 2010 22:31:14 -0500
-From: David Lambert <dave@lambsys.com>
+From: Larry Orsak <Larry.Orsak@sanantonio.gov>
+To: "info@serv.org" <info@serv.org>
+Date: Sat, 15 May 2010 03:41:17 -0500
+Subject: CONTACT ME PRIVATELY @jack.parkinson11@hotmail.com
+Message-ID: <F0DAEB245D23EF42A87F406D202E7BD10A517E5ABC@EXCH-MAIL-03.cosa.root.ci.sat.tx.us>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: 2GB file size limit?
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +16,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is there any way to increase the file size limit on UBIFS beyond 
-2Gbytes? I have tried enabling the kernel ‘Support for large block 
-devices and files’ under ‘Enable the block layer’, but the 2G limit 
-persists.
-
-Regards,
-
-Dave.
+My name is Mr Jack parkinson and i work with the EURO lottery, i got your e=
+mail address from your country website. i am soliciting for your opinion to=
+ make you a winner in our ongoing online lottery draws,And i can make you a=
+ winner and we will share the proceeds equally 50/50. if you are interested=
+ contact me via me personal email:jack.parkinson11@hotmail.com
