@@ -1,56 +1,170 @@
-From: anders.grafstrom@netinsight.net (Anders Grafström)
-Date: Mon, 17 May 2010 15:23:08 +0200
-Subject: [PATCH] mtd: cfi_cmdset_0001: Fix timeout for locking operations
-Message-ID: <mailman.456.1274117234.2170.linux-mtd@lists.infradead.org>
+From: leiwen@marvell.com (Lei Wen)
+Date: Sun, 16 May 2010 17:03:52 +0800
+Subject: [PATCH 04/25] pxa3xx_nand: make scan procedure more clear
+Message-ID: <mailman.8.1276839330.27306.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-The lock/unlock timeout is currently way too short for some flash chips.
-This patch increases it to 10 seconds. The typical delay remains unchanged.
-
-Specification change #11 in '5 Volt Intel StrataFlash Memory Specification Update'
-(297848-15) specifies an increase of Clear Block Lock-Bit Time Max to 7 sec.
-This is contradicted by the table in Specification Change #8 which says .70 sec
-but a 10 sec timeout doesn't hurt so play it safe.
-
-Signed-off-by: Anders Grafstr??m <anders.grafstrom@netinsight.net>
+Signed-off-by: Lei Wen <leiwen@marvell.com>
+Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- drivers/mtd/chips/cfi_cmdset_0001.c |   14 +++++++++-----
- 1 files changed, 9 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c |   88 ++++++++++++++++++++++-----------------
+ 1 files changed, 50 insertions(+), 38 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 62f3ea9..3a22f47 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -2045,7 +2045,8 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 291610a..1f52701 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -160,6 +160,7 @@ struct pxa3xx_nand_info {
+ 	unsigned int 		buf_start;
+ 	unsigned int		buf_count;
+
++	struct mtd_info         *mtd;
+ 	/* DMA information */
+ 	int			drcmr_dat;
+ 	int			drcmr_cmd;
+@@ -1105,21 +1106,13 @@ static void pxa3xx_nand_init_mtd(struct mtd_info *mtd,
+ 	this->chip_delay = 25;
+ }
+
+-static int __devinit pxa3xx_nand_probe(struct platform_device *pdev)
++static int alloc_nand_resource(struct platform_device *pdev)
  {
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	struct cfi_pri_intelext *extp = cfi->cmdset_priv;
--	int udelay;
-+	unsigned int udelay = 0;
-+	unsigned int udelay_max = 0;
- 	int ret;
- 
- 	adr += chip->start;
-@@ -2071,12 +2072,15 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
- 		BUG();
- 
- 	/*
--	 * If Instant Individual Block Locking supported then no need
--	 * to delay.
-+	 * If Instant Individual Block Locking is unsupported then use
-+	 * the tick period as the typical delay and 10 seconds for the timeout.
- 	 */
--	udelay = (!extp || !(extp->FeatureSupport & (1 << 5))) ? 1000000/HZ : 0;
-+	if (!extp || !(extp->FeatureSupport & (1 << 5))) {
-+		udelay = 1000000 / HZ;
-+		udelay_max = 10000000;
+-	struct pxa3xx_nand_platform_data *pdata;
++	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
+ 	struct pxa3xx_nand_info *info;
+-	struct nand_chip *this;
+ 	struct mtd_info *mtd;
+ 	struct resource *r;
+-	int ret = 0, irq;
+-
+-	pdata = pdev->dev.platform_data;
+-
+-	if (!pdata) {
+-		dev_err(&pdev->dev, "no platform data defined\n");
+-		return -ENODEV;
+-	}
++	int ret, irq;
+
+ 	mtd = kzalloc(sizeof(struct mtd_info) + sizeof(struct pxa3xx_nand_info),
+ 			GFP_KERNEL);
+@@ -1131,8 +1124,8 @@ static int __devinit pxa3xx_nand_probe(struct
+platform_device *pdev)
+ 	info = (struct pxa3xx_nand_info *)(&mtd[1]);
+ 	info->pdev = pdev;
+
+-	this = &info->nand_chip;
+ 	mtd->priv = info;
++	info->mtd = mtd;
+ 	mtd->owner = THIS_MODULE;
+
+ 	info->clk = clk_get(&pdev->dev, NULL);
+@@ -1210,27 +1203,9 @@ static int __devinit pxa3xx_nand_probe(struct
+platform_device *pdev)
+ 	}
+
+ 	pxa3xx_nand_init_mtd(mtd, info);
++	platform_set_drvdata(pdev, info);
+
+-	platform_set_drvdata(pdev, mtd);
+-
+-	if (nand_scan(mtd, 1)) {
+-		dev_err(&pdev->dev, "failed to scan nand\n");
+-		ret = -ENXIO;
+-		goto fail_free_irq;
+-	}
+-
+-	if (mtd_has_cmdlinepart()) {
+-		static const char *probes[] = { "cmdlinepart", NULL };
+-		struct mtd_partition *parts;
+-		int nr_parts;
+-
+-		nr_parts = parse_mtd_partitions(mtd, probes, &parts, 0);
+-
+-		if (nr_parts)
+-			return add_mtd_partitions(mtd, parts, nr_parts);
+-	}
+-
+-	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
++	return 0;
+
+ fail_free_irq:
+ 	free_irq(irq, info);
+@@ -1255,8 +1230,8 @@ fail_free_mtd:
+
+ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ {
+-	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct pxa3xx_nand_info *info = mtd->priv;
++	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = info->mtd;
+ 	struct resource *r;
+ 	int irq;
+
+@@ -1285,11 +1260,48 @@ static int pxa3xx_nand_remove(struct
+platform_device *pdev)
+ 	return 0;
+ }
+
++static int __devinit pxa3xx_nand_probe(struct platform_device *pdev)
++{
++	struct pxa3xx_nand_platform_data *pdata;
++	struct pxa3xx_nand_info *info;
++	int ret;
++
++	pdata = pdev->dev.platform_data;
++	if (!pdata) {
++		dev_err(&pdev->dev, "no platform data defined\n");
++		return -ENODEV;
 +	}
- 
--	ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay * 100);
-+	ret = WAIT_TIMEOUT(map, chip, adr, udelay, udelay_max);
- 	if (ret) {
- 		map_write(map, CMD(0x70), adr);
- 		chip->state = FL_STATUS;
++
++	ret = alloc_nand_resource(pdev);
++	if (ret)
++		return ret;
++
++	info = platform_get_drvdata(pdev);
++	if (nand_scan(info->mtd, 1)) {
++		dev_err(&pdev->dev, "failed to scan nand\n");
++		pxa3xx_nand_remove(pdev);
++		return -ENODEV;
++	}
++
++	if (mtd_has_cmdlinepart()) {
++		static const char *probes[] = { "cmdlinepart", NULL };
++		struct mtd_partition *parts;
++		int nr_parts;
++
++		nr_parts = parse_mtd_partitions(mtd, probes, &parts, 0);
++
++		if (nr_parts)
++			return add_mtd_partitions(mtd, parts, nr_parts);
++	}
++
++	return add_mtd_partitions(info->mtd, pdata->parts, pdata->nr_parts);
++}
++
+ #ifdef CONFIG_PM
+ static int pxa3xx_nand_suspend(struct platform_device *pdev,
+pm_message_t state)
+ {
+-	struct mtd_info *mtd = (struct mtd_info *)platform_get_drvdata(pdev);
+-	struct pxa3xx_nand_info *info = mtd->priv;
++	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = info->mtd;
+
+ 	if (info->state != STATE_READY) {
+ 		dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
+@@ -1301,8 +1313,8 @@ static int pxa3xx_nand_suspend(struct
+platform_device *pdev, pm_message_t state)
+
+ static int pxa3xx_nand_resume(struct platform_device *pdev)
+ {
+-	struct mtd_info *mtd = (struct mtd_info *)platform_get_drvdata(pdev);
+-	struct pxa3xx_nand_info *info = mtd->priv;
++	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = info->mtd;
+
+ 	nand_writel(info, NDTR0CS0, info->ndtr0cs0);
+ 	nand_writel(info, NDTR1CS0, info->ndtr1cs0);
 -- 
-1.7.1
+1.7.0.4
