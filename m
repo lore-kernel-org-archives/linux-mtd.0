@@ -1,16 +1,21 @@
-Date: Mon, 17 May 2010 19:55:28 +0100 (BST)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: Re: [PATCH -next] pcmciamtd: fix printk format warnings
-In-Reply-To: <20100517091632.59c2696c.randy.dunlap@oracle.com>
-Message-ID: <alpine.LFD.2.00.1005171954080.8170@dwoodhou-mobl2.ger.corp.intel.com>
-References: <20100517163521.649526d0.sfr@canb.auug.org.au>
-	<20100517091632.59c2696c.randy.dunlap@oracle.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OE6j4-000485-0F
+	for linux-mtd@lists.infradead.org; Mon, 17 May 2010 20:15:47 +0000
+Date: Mon, 17 May 2010 22:15:41 +0200
+From: Robert Schwebel <r.schwebel@pengutronix.de>
+To: David Woodhouse <David.Woodhouse@intel.com>
+Subject: Re: mxc-nand duplicate case value in -next
+Message-ID: <20100517201541.GE6055@pengutronix.de>
+References: <20100423073625.GY7882@pengutronix.de>
+	<20100427075310.GM18567@pengutronix.de>
+	<20100429080954.GI6204@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org,
-	linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-	linux-pcmcia@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20100429080954.GI6204@pengutronix.de>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+	Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 17 May 2010, Randy Dunlap wrote:
+Hi,
 
-> From: Randy Dunlap <randy.dunlap@oracle.com>
+On Thu, Apr 29, 2010 at 10:09:54AM +0200, Robert Schwebel wrote:
+> On Tue, Apr 27, 2010 at 09:53:10AM +0200, Robert Schwebel wrote:
+> > On Fri, Apr 23, 2010 at 09:36:25AM +0200, Sascha Hauer wrote:
+> > > Currently we have a duplicate case value in the mxc-nand driver in
+> > > -next. This is because of to different patches adding reset command
+> > > support to the driver, one from Eric (coming via the mtd master tree)
+> > > and one from Ivo (coming from the mxc master tree). As I see it we
+> > > should take Ivos patch as it adds i.MX21 support along the way, so
+> > > David, can you please drop Erics patch?
+> >
+> > linux-next does still crash with
+> >
+> > drivers/mtd/nand/mxc_nand.c: In function 'mxc_nand_command':
+> > drivers/mtd/nand/mxc_nand.c:689: error: duplicate case value
+> > drivers/mtd/nand/mxc_nand.c:606: error: previously used here
+> > drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_resume':
+> > drivers/mtd/nand/mxc_nand.c:921: warning: unused variable 'host'
+> > make[3]: *** [drivers/mtd/nand/mxc_nand.o] Error 1
+> >
+> > David, would dropping Eric's patch (like suggested by Sascha) be an
+> > acceptable solution?
 >
-> Fix printk format warnings in pcmciamtd debug code:
->
-> drivers/mtd/maps/pcmciamtd.c:163: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
-> drivers/mtd/maps/pcmciamtd.c:212: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
-> drivers/mtd/maps/pcmciamtd.c:274: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
-> drivers/mtd/maps/pcmciamtd.c:312: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
+> ping
 
-I pushed something identical to that earlier today, but thanks.
+I just tested with next-20100517 and the duplicate case is still there.
+David, can we do something to resolve this? Sascha has suggested a
+solution above.
 
-
+Thanks,
+rsc
 -- 
-dwmw2
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
