@@ -1,19 +1,16 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OE2Om-0003RC-Dq
-	for linux-mtd@lists.infradead.org; Mon, 17 May 2010 15:38:33 +0000
-In-Reply-To: <OF7E076EC4.DAE6F9AF-ONC1257723.0042AFF4-C1257723.00430591@transmode.se>
-References: <1269079399-27087-1-git-send-email-Joakim.Tjernlund@transmode.se>		<1273771018.12840.7077.camel@macbook.infradead.org>
-	<OFA2F265F6.2B404027-ONC1257723.003646C0-C1257723.0037EF5F@transmode.se>	<1273833304.9999.1994.camel@macbook.infradead.org>
-	<OF1C1D0F53.C35CA5E4-ONC1257723.003B9D61-C1257723.003D1321@transmode.se>
-	<OF7E076EC4.DAE6F9AF-ONC1257723.0042AFF4-C1257723.00430591@transmode.se>
-Subject: Re: [PATCH] jffs2: Move erasing from write_super to GC.
-Message-ID: <OF65E1A2EA.A3982817-ONC1257726.00559006-C1257726.0055A36B@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Mon, 17 May 2010 17:35:23 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Date: Mon, 17 May 2010 09:16:32 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>, David Woodhouse
+	<dwmw2@infradead.org>
+Subject: [PATCH -next] pcmciamtd: fix printk format warnings
+Message-Id: <20100517091632.59c2696c.randy.dunlap@oracle.com>
+In-Reply-To: <20100517163521.649526d0.sfr@canb.auug.org.au>
+References: <20100517163521.649526d0.sfr@canb.auug.org.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>, linux-pcmcia@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> >
-> > David Woodhouse <dwmw2@infradead.org> wrote on 2010/05/14 12:35:04:
-> > >
-> > > On Fri, 2010-05-14 at 12:10 +0200, Joakim Tjernlund wrote:
-> > > >  The only callers of jffs2_erase_pending_blocks() now call it with a
-> > > > > 'count' argument of 1. So perhaps it's now misnamed and the 's' and the
-> > > > > extra argument should be dropped?
-> > > >
-> > > > I didn't want to change to much and who knows, maybe someone wants
-> > > > to erase more than one block in the future. Removing the
-> > > > count could be an add on patch once this patch has proven itself.
-> > >
-> > > Yeah, that makes some sense.
-> > >
-> > > > > I don't much like the calculation you've added to the end of that
-> > > > > function either, which really ought to be under locks (even though right
-> > > > > now I suspect it doesn't hurt). Why recalculate that at all, though --
-> > > >
-> > > > Why does a simple list test need locks?
-> > >
-> > > Because it's not just about the test itself. It's also about the memory
-> > > barriers. Some other CPU could have changed the list (under locks) but
-> > > unless you have the memory barrier which is implicit in the spinlock,
-> > > you might see old data.
-> >
-> > old data doesn't matter here I think.
-> >
-> > >
-> > > > > why not keep a 'ret' variable which defaults to 0 but is set to 1 just
-> > > > > before the 'goto done' which is the only way out of the function where
-> > > > > the return value should be non-zero anyway?
-> > > >
-> > > > That would not be the same, would it? One wants to know if the lists
-> > > > are empty AFTER erasing count blocks.
-> > >
-> > > Hm, does one? There's precisely one place we use this return value, in
-> > > the GC thread. Can you explain the logic of what you were doing there?
-> >
-> > Sure, return 1 if there are more blocks left in the list after
-> > erasing count. That way the caller knows if there are any block left
-> > to erase.
-> >
-> > > It looks like you really wanted it to return a flag saying whether it
-> > > actually _did_ anything or not. And if it did, that's your work for this
-> > > GC wakeup and you don't call jffs2_garbage_collect_pass(). Why are you
-> > > returning a value which tells whether there's more work to do?
-> >
-> > hmm, I guess the simpler method like you suggested would work too.
-> > Details are a bit fuzzy now.
-> >
-> > >
-> > > >  I guess I could move the list empty
-> > > > check before goto done, but that would not really change anything.
-> > >
-> > > Ah, yes. Instead of setting ret=1 at the 'goto done', you'd actually do
-> > > the test somewhere there too, before dropping the locks. Assuming that
-> > > this really is the return value you need to return, rather than a simple
-> > > 'work_done' flag.
->
-> How about this then? I have changed jffs2_erase_pending_blocks() to use
-> the simpler work_done flag:
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-Ping?
+Fix printk format warnings in pcmciamtd debug code:
+
+drivers/mtd/maps/pcmciamtd.c:163: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
+drivers/mtd/maps/pcmciamtd.c:212: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
+drivers/mtd/maps/pcmciamtd.c:274: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
+drivers/mtd/maps/pcmciamtd.c:312: warning: format '%u' expects type 'unsigned int', but argument 5 has type 'ssize_t'
+
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+---
+ drivers/mtd/maps/pcmciamtd.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+--- linux-next-20100517.orig/drivers/mtd/maps/pcmciamtd.c
++++ linux-next-20100517/drivers/mtd/maps/pcmciamtd.c
+@@ -160,7 +160,7 @@ static void pcmcia_copy_from_remap(struc
+ 	struct pcmciamtd_dev *dev = (struct pcmciamtd_dev *)map->map_priv_1;
+ 	unsigned long win_size = dev->win_size;
+ 
+-	DEBUG(3, "to = %p from = %lu len = %u", to, from, len);
++	DEBUG(3, "to = %p from = %lu len = %zd", to, from, len);
+ 	while(len) {
+ 		int toread = win_size - (from & (win_size-1));
+ 		caddr_t addr;
+@@ -209,7 +209,7 @@ static void pcmcia_copy_to_remap(struct 
+ 	struct pcmciamtd_dev *dev = (struct pcmciamtd_dev *)map->map_priv_1;
+ 	unsigned long win_size = dev->win_size;
+ 
+-	DEBUG(3, "to = %lu from = %p len = %u", to, from, len);
++	DEBUG(3, "to = %lu from = %p len = %zd", to, from, len);
+ 	while(len) {
+ 		int towrite = win_size - (to & (win_size-1));
+ 		caddr_t addr;
+@@ -271,7 +271,7 @@ static void pcmcia_copy_from(struct map_
+ 	if(DEV_REMOVED(map))
+ 		return;
+ 
+-	DEBUG(3, "to = %p from = %lu len = %u", to, from, len);
++	DEBUG(3, "to = %p from = %lu len = %zd", to, from, len);
+ 	memcpy_fromio(to, win_base + from, len);
+ }
+ 
+@@ -309,7 +309,7 @@ static void pcmcia_copy_to(struct map_in
+ 	if(DEV_REMOVED(map))
+ 		return;
+ 
+-	DEBUG(3, "to = %lu from = %p len = %u", to, from, len);
++	DEBUG(3, "to = %lu from = %p len = %zd", to, from, len);
+ 	memcpy_toio(win_base + to, from, len);
+ }
+ 
