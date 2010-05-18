@@ -1,20 +1,16 @@
-Received: from mail.lingnu.com ([199.203.56.105])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OEGPi-000872-Os
-	for linux-mtd@lists.infradead.org; Tue, 18 May 2010 06:36:28 +0000
-Message-ID: <4BF235AE.3030903@shemesh.biz>
-Date: Tue, 18 May 2010 09:37:34 +0300
-From: Shachar Shemesh <shachar@shemesh.biz>
-MIME-Version: 1.0
-To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
-Subject: Re: Wrong flash type in m25p80 driver
-References: <4BF011D7.4010907@shemesh.biz>	<AANLkTilU5vfVxCH9Ch7K6IUQAImLN83fewQdBptzeWiX@mail.gmail.com>	<4BF041A3.70304@shemesh.biz>	<AANLkTikIBhFudwi5DiiqROyhQjOSjJnyxxVoWLrE9ztj@mail.gmail.com>	<4BF04DBE.5020309@shemesh.biz>	<AANLkTikjeciIH0tdmWIlgstKjaiCw66KwIImc-kmM5hI@mail.gmail.com>
-	<4BF173E5.2030304@gmx.net>
-In-Reply-To: <4BF173E5.2030304@gmx.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>
+	id 1OEJVc-0006vK-NE
+	for linux-mtd@lists.infradead.org; Tue, 18 May 2010 09:54:46 +0000
+Received: by wwf26 with SMTP id 26so15640wwf.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 18 May 2010 02:54:40 -0700 (PDT)
+From: Enric Balletbo i Serra <eballetbo@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: Support 4096+64 page sizes.
+Date: Tue, 18 May 2010 11:53:59 +0200
+Message-Id: <1274176439-22351-1-git-send-email-eballetbo@gmail.com>
+Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I should point out that I have sent a retraction to the patch, but my 
-messages got held up for moderation with "suspicious header" and no 
-further explanation. I'm taking a wild guess as to the reason, in the 
-hope that this message does get through. If it does, holding messages 
-with "list does not support HTML or mixed format mail" will be a more 
-useful error report.
+From: Enric Balletbo i Serra <eballetbo@iseebcn.com>
 
-Carl-Daniel Hailfinger wrote:
->   
->   
->
-> The ST M25P80 has a minimum write size of 1 bit (datasheet is a bit
-> unclear, could also be 1 byte) and a maximum write size of 256 bytes.
->
->   
-I have not studies the M25P80 data sheet, but did the M25P32 and the 
-MX25L6405D chips, and I believe all SPI flahses handled by the m25p80 
-driver behave the same in that regard (which is why they were clamped 
-together to begin with).
+Add support for oobsize 64 and writesize 4096 in nanddump & nandwrite.
 
-The minimal "program" length is 1 byte, but since a program can only 
-change a 1 bit into 0, effectively, setting a word to "11...101...11", 
-where the zero is at the bit you want to set, will program 1 bit.
->
-> There's always the option of looking at how flashrom
-> <http://www.flashrom.org/> handles those chips. flashrom an
-> OS-independent userspace tool specialized on chips which are used for
-> BIOS/firmware, but it handles some other flash chips as well.
->   
-It lists them as "SPI", and the chip support page claims, at least for 
-most of them, that it does not know how to erase them 
-(http://www.flashrom.org/Supported_hardware).
+Signed-off-by: Enric Balletbo i Serra <eballetbo@iseebcn.com>
+---
+ nanddump.c  |    1 +
+ nandwrite.c |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
 
-Shachar
-
+diff --git a/nanddump.c b/nanddump.c
+index ae0e425..e44ab36 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -212,6 +212,7 @@ int main(int argc, char * const argv[])
+ 	if (!(meminfo.oobsize == 224 && meminfo.writesize == 4096) &&
+ 			!(meminfo.oobsize == 218 && meminfo.writesize == 4096) &&
+ 			!(meminfo.oobsize == 128 && meminfo.writesize == 4096) &&
++			!(meminfo.oobsize == 64 && meminfo.writesize == 4096) &&
+ 			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
+ 			!(meminfo.oobsize == 32 && meminfo.writesize == 1024) &&
+ 			!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
+diff --git a/nandwrite.c b/nandwrite.c
+index b77edd6..bd45879 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -294,6 +294,7 @@ int main(int argc, char * const argv[])
+ 	if (!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
+ 			!(meminfo.oobsize == 8 && meminfo.writesize == 256) &&
+ 			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
++			!(meminfo.oobsize == 64 && meminfo.writesize == 4096) &&
+ 			!(meminfo.oobsize == 128 && meminfo.writesize == 4096)) {
+ 		fprintf(stderr, "Unknown flash (not normal NAND)\n");
+ 		close(fd);
 -- 
-Shachar Shemesh
-Lingnu Open Source Consulting Ltd.
-http://www.lingnu.com
+1.7.0.4
