@@ -1,15 +1,20 @@
-Subject: Re: JFFS2 on NAND and when is file on media?
-From: David Woodhouse <dwmw2@infradead.org>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <OF4B25913E.44D637F1-ONC12576CB.0044FF12-C12576CB.00450DD1@transmode.se>
-References: <OF8328EA8B.384612F6-ONC12576C5.0061F0C9-C12576C5.00626376@LocalDomain>
-	<OF4B25913E.44D637F1-ONC12576CB.0044FF12-C12576CB.00450DD1@transmode.se>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 18 May 2010 23:58:25 +0100
-Message-ID: <1274223505.6930.8287.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from astoria.ccjclearline.com ([64.235.106.9])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OEWPK-0000Lv-4b
+	for linux-mtd@lists.infradead.org; Tue, 18 May 2010 23:41:06 +0000
+Received: from cpe00142a336e11-cm001ac318e826.cpe.net.cable.rogers.com
+	([174.113.191.234] helo=crashcourse.ca)
+	by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
+	(Exim 4.69) (envelope-from <rpjday@crashcourse.ca>)
+	id 1OEWPF-00085r-PW
+	for linux-mtd@lists.infradead.org; Tue, 18 May 2010 19:41:01 -0400
+Date: Tue, 18 May 2010 19:40:57 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: how to pre-screen patch submissions from a newbie janitor?
+Message-ID: <alpine.DEB.2.00.1005181936120.3484@lynx>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-02-15 at 13:34 +0100, Joakim Tjernlund wrote:
-> Ping? Pretty please :)
-> 
-> Joakim Tjernlund/Transmode wrote on 2010/02/09 18:54:39:
-> > I have been using JFFS2 for many years on NOR flash but never on NAND.
-> > I wonder if NAND has the same guaranties as NOR as to when one
-> > can expect file contents to be safely on media so one can pull the power
-> > without loss of data?
-> > Is the the whole file safe once close(2) returns? If not, what do
-> > I have to do flush all outstanding data to media?
-> >
-> >  Jocke 
 
-POSIX answers this. You need to fsync() before you close, if you want to
-be sure the data have all hit the medium.
+  not that long ago, i suggested cleaning up the MTD Kconfig/Makefile
+structure since there was some definite redundancy in the inclusion of
+source files and subdirectories.  now, i could whip up those patches
+myself and submit them, but i have a local friend who's itching to get
+start doing some simple kernel work and submitting some patches, and
+he's more than smart enough to do what i described above.
 
-You _ought_ to be doing that on NOR flash too. Although JFFS2 _today_
-might not do any write-behind, there's no guarantee that it won't do so
-tomorrow. Or that you won't switch to ubifs/logfs/etc. There's no excuse
-for writing buggy applications just because you _happen_ to know that
-the file system doesn't _currently_ take certain liberties that it's
-permitted to take.
+  however, since he's new to patch creation and submission, i offered
+to "vet" his patches first.  i realize that my vetting carries no
+weight on the MTD list, but given that i've submitted lots and lots of
+patches elsewhere, i can still at least sanity check what he comes up
+with before it hits the list.
+
+  is there a canonical signage for that nowadays?  is it "Reviewed-By"
+or something like that?  so that by the time it gets to the MTD list,
+he would have done the "Signed-Off-By" and i'd sign off as a reviewer.
+is that the way it works?  or is there an alternative?  thanks.
+
+rday
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+
+========================================================================
+Robert P. J. Day                               Waterloo, Ontario, CANADA
+
+            Linux Consulting, Training and Kernel Pedantry.
+
+Web page:                                          http://crashcourse.ca
+Twitter:                                       http://twitter.com/rpjday
+========================================================================
