@@ -1,16 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OEJVc-0006vK-NE
-	for linux-mtd@lists.infradead.org; Tue, 18 May 2010 09:54:46 +0000
-Received: by wwf26 with SMTP id 26so15640wwf.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 May 2010 02:54:40 -0700 (PDT)
-From: Enric Balletbo i Serra <eballetbo@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: Support 4096+64 page sizes.
-Date: Tue, 18 May 2010 11:53:59 +0200
-Message-Id: <1274176439-22351-1-git-send-email-eballetbo@gmail.com>
-Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>
+Received: from bear.ext.ti.com ([192.94.94.41])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OEKmy-0006HC-RP
+	for linux-mtd@lists.infradead.org; Tue, 18 May 2010 11:16:46 +0000
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v3 0/3] omap3 nand: cleanup exiting platform related code
+Date: Tue, 18 May 2010 16:46:26 +0530
+Message-Id: <1274181389-7488-1-git-send-email-s-ghorai@ti.com>
+In-Reply-To: <Sukumar Ghorai <s-ghorai@ti.com>
+References: <Sukumar Ghorai <s-ghorai@ti.com>
+Cc: Artem.Bityutskiy@nokia.com, tony@atomide.com, sakoman@gmail.com,
+	linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +20,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Enric Balletbo i Serra <eballetbo@iseebcn.com>
+   The following set of patches applies on top of for-next branch.
+	http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git
+   Patches verified on: omap3430-SDP, omap3630-sdp, zoom3 and beagle board
 
-Add support for oobsize 64 and writesize 4096 in nanddump & nandwrite.
+   And these are the patches required to address the following input -
+     1. The NAND driver needs to stop tinkering with the GPMC registers
+	The omap General Purpose Memory Controller (GPMC) registers are omap
+        specific, and not driver specific. Tinkering with these registers can
+        cause issues with the other devices on the GPMC.
 
-Signed-off-by: Enric Balletbo i Serra <eballetbo@iseebcn.com>
----
- nanddump.c  |    1 +
- nandwrite.c |    1 +
- 2 files changed, 2 insertions(+), 0 deletions(-)
+     2. Passing hardcoded GPMC_CS0_BASE needs to go from the board files
+	Passing hardcoded GPMC virtual addressess is sure way to mess up things.
+        This should all become unnecessary once the NAND drivers stops messing
+        with the GPMC registers directly.
 
-diff --git a/nanddump.c b/nanddump.c
-index ae0e425..e44ab36 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -212,6 +212,7 @@ int main(int argc, char * const argv[])
- 	if (!(meminfo.oobsize == 224 && meminfo.writesize == 4096) &&
- 			!(meminfo.oobsize == 218 && meminfo.writesize == 4096) &&
- 			!(meminfo.oobsize == 128 && meminfo.writesize == 4096) &&
-+			!(meminfo.oobsize == 64 && meminfo.writesize == 4096) &&
- 			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
- 			!(meminfo.oobsize == 32 && meminfo.writesize == 1024) &&
- 			!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
-diff --git a/nandwrite.c b/nandwrite.c
-index b77edd6..bd45879 100644
---- a/nandwrite.c
-+++ b/nandwrite.c
-@@ -294,6 +294,7 @@ int main(int argc, char * const argv[])
- 	if (!(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
- 			!(meminfo.oobsize == 8 && meminfo.writesize == 256) &&
- 			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
-+			!(meminfo.oobsize == 64 && meminfo.writesize == 4096) &&
- 			!(meminfo.oobsize == 128 && meminfo.writesize == 4096)) {
- 		fprintf(stderr, "Unknown flash (not normal NAND)\n");
- 		close(fd);
--- 
-1.7.0.4
+  v2: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg28467.html
+	Few functionality was missing  like - There should be some locking 
+	as only one chipselect can use the ECC or prefetch engine at a time. 
+	If you have NAND in two chipselects, bad things would happen.
+	
+  v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg28164.html
+	Additionally, it was needed to implement more functions for the
+	platform init code to use.
+
+
+Sukumar Ghorai (3):
+	omap3 gpmc: functionality enhancement
+	omap3 nand: cleanup virtual address usages
+	omap3 nand: fix issue in board file to detect nand
+
+ arch/arm/mach-omap2/board-cm-t35.c         |   20 +---
+ arch/arm/mach-omap2/board-devkit8000.c     |   25 +---
+ arch/arm/mach-omap2/board-omap3beagle.c    |   24 +---
+ arch/arm/mach-omap2/board-omap3touchbook.c |   25 +---
+ arch/arm/mach-omap2/board-overo.c          |   24 +---
+ arch/arm/mach-omap2/gpmc-nand.c            |   39 ++----
+ arch/arm/mach-omap2/gpmc.c                 |    9 -
+ arch/arm/plat-omap/include/plat/gpmc.h     |    7 +-
+ arch/arm/plat-omap/include/plat/nand.h     |    6 +-
+ drivers/mtd/nand/omap2.c                   |  242 +++++++++-------------------
+ 10 files changed, 93 insertions(+), 328 deletions(-)
