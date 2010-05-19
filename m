@@ -1,28 +1,27 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OEgeE-0007kn-4v
-	for linux-mtd@lists.infradead.org; Wed, 19 May 2010 10:37:10 +0000
-In-Reply-To: <1274263531.6930.9695.camel@macbook.infradead.org>
-References: <1269079399-27087-1-git-send-email-Joakim.Tjernlund@transmode.se>	
-	<1273771018.12840.7077.camel@macbook.infradead.org>
-	<OFA2F265F6.2B404027-ONC1257723.003646C0-C1257723.0037EF5F@transmode.se>
-	<1273833304.9999.1994.camel@macbook.infradead.org>	
-	<OF1C1D0F53.C35CA5E4-ONC1257723.003B9D61-C1257723.003D1321@transmode.se>
-	<OF7E076EC4.DAE6F9AF-ONC1257723.0042AFF4-C1257723.00430591@transmode.se>
-	<1274207844.6930.7754.camel@macbook.infradead.org>	
-	<1274209152.6930.7802.camel@macbook.infradead.org>
-	<OFD51FB25D.7FE00DFB-ONC1257727.007C6420-C1257727.007CE876@transmode.se>
-	<1274226122.6930.8416.camel@macbook.infradead.org>	
-	<OFC16DD021.1CA8E33E-ONC1257728.002FE329-C1257728.0035CD60@transmode.se>
-	<1274263531.6930.9695.camel@macbook.infradead.org>
-Subject: Re: [PATCH] jffs2: Move erasing from write_super to GC.
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <OFC7E0941F.53083820-ONC1257728.0039F4AD-C1257728.003A3D76@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Wed, 19 May 2010 12:36:08 +0200
+Received: from de01.mail.all-tld.net ([195.140.232.8])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OEh5U-0004tB-Rk
+	for linux-mtd@lists.infradead.org; Wed, 19 May 2010 11:05:21 +0000
+Date: Wed, 19 May 2010 13:05:00 +0200
+From: Anders Larsen <al@alarsen.net>
+Subject: Re: [PATCH] Fix Oops with Atmel SPI
+To: Andrew Morton <akpm@linux-foundation.org>
+References: <1271231840l.5270l.0l@i-dmzi_al.realan.de>
+	<20100421152410.0fea5e12.akpm@linux-foundation.org>
+In-Reply-To: <20100421152410.0fea5e12.akpm@linux-foundation.org> (from
+	akpm@linux-foundation.org on Thu Apr 22 00:24:10 2010)
+Message-Id: <1274267100l.1747l.1l@i-dmzi_al.realan.de>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Ian McDonnell <ian@brightstareng.com>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Nicolas Pitre <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
+	Iwo Mergler <iwo@call-direct.com.au>, linux-mtd@lists.infradead.org,
+	Matthias Kaehlcke <matthias@kaehlcke.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,25 +31,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse <dwmw2@infradead.org> wrote on 2010/05/19 12:05:31:
->
-> On Wed, 2010-05-19 at 11:47 +0200, Joakim Tjernlund wrote:
-> >
-> > This looks like a typo and I had to change that to:
-> > BUG_ON(spin_is_locked(&c->erase_completion_lock));
->
-> Hm, no -- we want it to BUG() if the spinlock is _NOT_ locked.
->
-> You're building on UP, without preemption or spinlock debugging. In that
-> case, spinlocks are a no-op. So spin_trylock() _always_ succeeds, and
-> spin_is_locked() always returns 0.
->
-> It should be lockdep_assert_held(), I think.
+On 2010-04-22 00:24:10, Andrew Morton wrote:
+> Finally..  Wouldn't it be better to just fix the atmel SPI driver so
+> that it doesn't barf when handed vmalloc'ed memory?  Who do we ridicule
+> about that?  <checks, adds cc>
 
-Ah, now I remember. There was an discussion about this on LKML a while
-ago.
-But would not assert_spin_locked() be better? On the
-other hand lockdep_assert_held() will work too. Depends on what you
-want?
+You mean something like this instead?
 
-       Jocke
+diff --git a/drivers/spi/atmel_spi.c b/drivers/spi/atmel_spi.c
+index c4e0442..a9ad5e8 100644
+--- a/drivers/spi/atmel_spi.c
++++ b/drivers/spi/atmel_spi.c
+@@ -352,16 +352,30 @@ atmel_spi_dma_map_xfer(struct atmel_spi *as, struct s=
+pi_transfer *xfer)
+=20
+ 	xfer->tx_dma =3D xfer->rx_dma =3D INVALID_DMA_ADDRESS;
+ 	if (xfer->tx_buf) {
+-		xfer->tx_dma =3D dma_map_single(dev,
+-				(void *) xfer->tx_buf, xfer->len,
+-				DMA_TO_DEVICE);
++		if (is_vmalloc_addr(xfer->tx_buf))
++			xfer->tx_dma =3D dma_map_page(dev,
++					vmalloc_to_page(xfer->tx_buf),
++					(unsigned long)xfer->tx_buf & (PAGE_SIZE-1),
++					xfer->len,
++					DMA_TO_DEVICE);
++		else
++			xfer->tx_dma =3D dma_map_single(dev,
++					(void *) xfer->tx_buf, xfer->len,
++					DMA_TO_DEVICE);
+ 		if (dma_mapping_error(dev, xfer->tx_dma))
+ 			return -ENOMEM;
+ 	}
+ 	if (xfer->rx_buf) {
+-		xfer->rx_dma =3D dma_map_single(dev,
+-				xfer->rx_buf, xfer->len,
+-				DMA_FROM_DEVICE);
++		if (is_vmalloc_addr(xfer->rx_buf))
++			xfer->rx_dma =3D dma_map_page(dev,
++					vmalloc_to_page(xfer->rx_buf),
++					(unsigned long)xfer->rx_buf & (PAGE_SIZE-1),
++					xfer->len,
++					DMA_FROM_DEVICE);
++		else
++			xfer->rx_dma =3D dma_map_single(dev,
++					xfer->rx_buf, xfer->len,
++					DMA_FROM_DEVICE);
+ 		if (dma_mapping_error(dev, xfer->rx_dma)) {
+ 			if (xfer->tx_buf)
+ 				dma_unmap_single(dev,
