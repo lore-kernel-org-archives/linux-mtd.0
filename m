@@ -1,31 +1,28 @@
-Received: from mail-px0-f177.google.com ([209.85.212.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OEo2x-0005pG-9L
-	for linux-mtd@lists.infradead.org; Wed, 19 May 2010 18:31:12 +0000
-Received: by pxi1 with SMTP id 1so3881600pxi.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 19 May 2010 11:31:09 -0700 (PDT)
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OEpZ4-0007pZ-VS
+	for linux-mtd@lists.infradead.org; Wed, 19 May 2010 20:08:27 +0000
+In-Reply-To: <1274287748.6930.10308.camel@macbook.infradead.org>
+References: <1269079399-27087-1-git-send-email-Joakim.Tjernlund@transmode.se>	
+	<1273771018.12840.7077.camel@macbook.infradead.org>
+	<OFA2F265F6.2B404027-ONC1257723.003646C0-C1257723.0037EF5F@transmode.se>
+	<1273833304.9999.1994.camel@macbook.infradead.org>	
+	<OF1C1D0F53.C35CA5E4-ONC1257723.003B9D61-C1257723.003D1321@transmode.se>
+	<OF7E076EC4.DAE6F9AF-ONC1257723.0042AFF4-C1257723.00430591@transmode.se>
+	<1274207844.6930.7754.camel@macbook.infradead.org>	
+	<1274209152.6930.7802.camel@macbook.infradead.org>
+	<OFD51FB25D.7FE00DFB-ONC1257727.007C6420-C1257727.007CE876@transmode.se>
+	<1274226122.6930.8416.camel@macbook.infradead.org>	
+	<OFC16DD021.1CA8E33E-ONC1257728.002FE329-C1257728.0035CD60@transmode.se>
+	<1274287748.6930.10308.camel@macbook.infradead.org>
+Subject: Re: [PATCH] jffs2: Move erasing from write_super to GC.
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <OFD27FD23A.F1F4C6A3-ONC1257728.006E2A75-C1257728.006E7754@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Wed, 19 May 2010 22:06:35 +0200
 MIME-Version: 1.0
-In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B030D991D50@dbde02.ent.ti.com>
-References: <s-ghorai@ti.com>
-	<1274181389-7488-1-git-send-email-s-ghorai@ti.com>
-	<1274181389-7488-2-git-send-email-s-ghorai@ti.com>
-	<AANLkTikFxtzDpiJvJjnuonM2urMJR1LDLafx5JtpC_bS@mail.gmail.com>
-	<1274284094.6286.17.camel@thunk>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B030D991D50@dbde02.ent.ti.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Thu, 20 May 2010 00:00:47 +0530
-Message-ID: <AANLkTikK4ISAsLFS-l5fXGxCppv98F2qqb8OBnZ7OTHd@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] omap3 gpmc: functionality enhancement
-To: "Ghorai, Sukumar" <s-ghorai@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"tony@atomide.com" <tony@atomide.com>,
-	"sakoman@gmail.com" <sakoman@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"peter.barada@gmail.com" <peter.barada@gmail.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,112 +32,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 19, 2010 at 11:34 PM, Ghorai, Sukumar <s-ghorai@ti.com> wrote:
->> > > +
->> > > + =A0 =A0 =A0 case GPMC_CONFIG_RDY_BSY:
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 regval =A0=3D gpmc_cs_read_reg(cs, GPM=
-C_CS_CONFIG1);
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 regval |=3D WR_RD_PIN_MONITORING;
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_cs_write_reg(cs, GPMC_CS_CONFIG1,=
- regval);
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
->> >
->> > IIRC, at least in OMAP2/3, ready/busy pin is not in use (not connected=
-).
->>
->> On the Logic OMAP3530 LV SOM and Torpedo modules, the R/B# pin of the
->> NAND in the Micron mt29c2g4maklajg-6it POP part is connected to the
->> WAIT0 pin on the OMAP3530 and I'm looking to use it to speed up NAND
->> accesses
-> [Ghorai] So better keep this feature,
 
-Yes, looks like there are some boards which can still take advantage of thi=
-s.
-
->>
-[...]
->> > > @@ -456,13 +572,20 @@ EXPORT_SYMBOL(gpmc_prefetch_enable);
->> > > =A0/**
->> > > =A0* gpmc_prefetch_reset - disables and stops the prefetch engine
->> > > =A0*/
->> > > -void gpmc_prefetch_reset(void)
->> > > +int gpmc_prefetch_reset(int cs)
->> > > =A0{
->> > > + =A0 =A0 =A0 if (gpmc_pref_used =3D=3D cs)
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_pref_used =3D -EINVAL;
->> > > + =A0 =A0 =A0 else
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
->> > > +
->> >
->> > This is also not required. As, this function will be called only if
->> > prefetch was used.
-> [Ghorai] Agree. Can you see this input too?
-> http://www.mail-archive.com/linux-omap@vger.kernel.org/msg28520.html
-
-Exactly, this is what I am telling here. Enable prefetch engine call
-is already being check for *busy* or not.
-
+David Woodhouse <dwmw2@infradead.org> wrote on 2010/05/19 18:49:08:
 >
-[...]
->> > > +int gpmc_ecc_init(int cs, int ecc_size)
->> > > +{
->> > > + =A0 =A0 =A0 unsigned int val =3D 0x0;
->> > > +
->> > > + =A0 =A0 =A0 /* check if ecc engine already by another cs */
->> > > + =A0 =A0 =A0 if (gpmc_ecc_used =3D=3D -EINVAL)
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_ecc_used =3D cs;
->> > > + =A0 =A0 =A0 else
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EBUSY;
->> > Here few things need be to consider:
->> > 1. 'init' is supposed to done once for every instance of driver during
->> probe
->> > 2. But ECC engine, too, have only one instance at a time, So
->> > 3. As long as all NAND chip are supposed to use same ECC machenism, we
->> > can go for only one time 'init' for all drivers, perhaps in
->> > gpmc_nand.c.
->> > 4. But in case, different instances of driver (or NAND chip) requires
->> > different ECC machenism (for ex. Hamming or BCH, or even with
->> > different capabilities of error correction),
->> > this will no longer vailid. Then rather we should have something like
->> > 'gpmc_ecc_config' call to configer ECC engine for everytime a driver
->> > needs it (something like as it is done for prefetch engine).
-> [Ghorai]
-> a. do you think it will reduce the throughput?
-No. But in current implementation it will be called for each instance
-driver. (see my 3rd point)
-
-> b. Moreover I think we will take this as 5th patch as cleanup/ improvemnt=
-.
-> c. And how to know that ECC engine is in used other driver should not use=
- it? Any bit to know that ecc engine is busy, as we check for prefetch?
-Do not really remember config registers. Perhaps there is no way.
-But I guess you should check into register GPMC_ECC_CONFIG at bit 1.
-This is the bit we are setting to enable ECC calculation, IIRC.
-
-> d. any further input on http://www.mail-archive.com/linux-omap@vger.kerne=
-l.org/msg28520.html
-And this what I was suggesting in my point 4. In my example
-'gpmc_ecc_config' is analogy to 'gpmc_ecc_request'.
-I said *config*, since in such scenario you need to configer HW
-ECCconfig register everytime as well, rather just checking
-availability and enabling.
-
+> On Wed, 2010-05-19 at 11:47 +0200, Joakim Tjernlund wrote:
+> >
+> > > It could perhaps be broken into smaller simple patches along the lines
+> > > of:
+> > >  - Add 'work_done' return value from jffs2_erase_pending_blocks()
+> > >  - Call jffs2_erase_pending_blocks() from jffs2_g_c_pass()
+> > >  - Fix the conditions under which jffs2_g_c_pass() will return -EINVAL,
+> > >    fix the way that jffs2_reserve_space() will respond to that, and fix
+> > >    jffs2_erase_succeeded() to actually wake up the erase_wait queue.
+> > >  - Remove locking from jffs2_garbage_collect_trigger() and require that
+> > >    callers have c->erase_completion_lock already held.
+> > >  - Change most callers of jffs2_erase_pending_trigger() to call
+> > >    jffs2_garbage_collect_trigger() instead. To comply with the locking
+> > >    rules, this may involve moving the call up or down a few lines, or
+> > >    sometimes adding a new lock/unlock pair around it.
+> > >  - Remove jffs2_erase_pending_blocks() call from jffs2_write_super().
+> > >  - Rename jffs2_erase_pending_trigger() and its only remaining caller
+> > >    in wbuf.c to jffs2_dirty_trigger().
+> >
+> > I have tried this on my 2.6.33 tree and it seems to work OK.
+> > I am currenltly copying lots of files and deleting them in a loop,
+> > so far so good :) Needed to "tweak":
 >
-[...]
->> > > +int gpmc_ecc_reset(int cs)
->> > > +{
->> > > + =A0 =A0 =A0 if (gpmc_ecc_used =3D=3D cs)
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_ecc_used =3D -EINVAL;
->> > > + =A0 =A0 =A0 else
->> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
->> > > +
->> > > + =A0 =A0 =A0 return 0;
->> > > +}
+> OK, this is now pushed, in some semblance of the above form. I think I
+> got the attribution right on the bits which you wrote. Thanks again.
 
-I guess in this function you should also clear gpmc ecc config
-register explicitly.
-
-
---=20
-Regards,
-Vimal Singh
+Thanks, I am sure you get attribution right, but where did you push?
+Can't find it in http://git.infradead.org/mtd-2.6.git
