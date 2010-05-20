@@ -1,30 +1,19 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mx1.prosoftsystems.ru ([212.23.72.203])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OEyT0-00013F-AY
-	for linux-mtd@lists.infradead.org; Thu, 20 May 2010 05:38:47 +0000
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Vimal Singh <vimal.newwork@gmail.com>
-Date: Thu, 20 May 2010 11:08:29 +0530
-Subject: RE: [PATCH v3 1/3] omap3 gpmc: functionality enhancement
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030D991ECA@dbde02.ent.ti.com>
-References: <s-ghorai@ti.com>
-	<1274181389-7488-1-git-send-email-s-ghorai@ti.com>
-	<1274181389-7488-2-git-send-email-s-ghorai@ti.com>
-	<AANLkTikFxtzDpiJvJjnuonM2urMJR1LDLafx5JtpC_bS@mail.gmail.com>
-	<1274284094.6286.17.camel@thunk>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B030D991D50@dbde02.ent.ti.com>
-	<AANLkTikK4ISAsLFS-l5fXGxCppv98F2qqb8OBnZ7OTHd@mail.gmail.com>
-In-Reply-To: <AANLkTikK4ISAsLFS-l5fXGxCppv98F2qqb8OBnZ7OTHd@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 1OF5e2-0003Su-6B
+	for linux-mtd@lists.infradead.org; Thu, 20 May 2010 13:18:42 +0000
+From: Alexander Pazdnikov <pazdnikov@prosoft.ural.ru>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: ubifs became broken on contigous power-fails
+Date: Thu, 20 May 2010 19:18:42 +0600
+References: <E1OBqfw-0002Rs-00.pazdnikov-list-ru@f27.mail.ru>
+	<201005131408.01573.pazdnikov@prosoft.ural.ru>
+	<201005191636.21845.pazdnikov@prosoft.ural.ru>
+In-Reply-To: <201005191636.21845.pazdnikov@prosoft.ural.ru>
 MIME-Version: 1.0
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"tony@atomide.com" <tony@atomide.com>,
-	"sakoman@gmail.com" <sakoman@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"peter.barada@gmail.com" <peter.barada@gmail.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="Boundary-00=_yaT9LYDdvHYBWsQ"
+Message-ID: <201005201918.42731.pazdnikov@prosoft.ural.ru>
+Reply-To: pazdnikov@prosoftsystems.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,135 +23,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vimal,
+--Boundary-00=_yaT9LYDdvHYBWsQ
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 
-> -----Original Message-----
-> From: Vimal Singh [mailto:vimal.newwork@gmail.com]
-> Sent: 2010-05-20 00:01
-> To: Ghorai, Sukumar
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org;
-> tony@atomide.com; sakoman@gmail.com; mike@compulab.co.il;
-> Artem.Bityutskiy@nokia.com; peter.barada@gmail.com
-> Subject: Re: [PATCH v3 1/3] omap3 gpmc: functionality enhancement
->=20
-> On Wed, May 19, 2010 at 11:34 PM, Ghorai, Sukumar <s-ghorai@ti.com> wrote=
-:
-> >> > > +
-> >> > > + =A0 =A0 =A0 case GPMC_CONFIG_RDY_BSY:
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 regval =A0=3D gpmc_cs_read_reg(cs, G=
-PMC_CS_CONFIG1);
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 regval |=3D WR_RD_PIN_MONITORING;
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_cs_write_reg(cs, GPMC_CS_CONFIG=
-1, regval);
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 break;
-> >> >
-> >> > IIRC, at least in OMAP2/3, ready/busy pin is not in use (not
-> connected).
-> >>
-> >> On the Logic OMAP3530 LV SOM and Torpedo modules, the R/B# pin of the
-> >> NAND in the Micron mt29c2g4maklajg-6it POP part is connected to the
-> >> WAIT0 pin on the OMAP3530 and I'm looking to use it to speed up NAND
-> >> accesses
-> > [Ghorai] So better keep this feature,
->=20
-> Yes, looks like there are some boards which can still take advantage of
-> this.
->=20
-> >>
-> [...]
-> >> > > @@ -456,13 +572,20 @@ EXPORT_SYMBOL(gpmc_prefetch_enable);
-> >> > > =A0/**
-> >> > > =A0* gpmc_prefetch_reset - disables and stops the prefetch engine
-> >> > > =A0*/
-> >> > > -void gpmc_prefetch_reset(void)
-> >> > > +int gpmc_prefetch_reset(int cs)
-> >> > > =A0{
-> >> > > + =A0 =A0 =A0 if (gpmc_pref_used =3D=3D cs)
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_pref_used =3D -EINVAL;
-> >> > > + =A0 =A0 =A0 else
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
-> >> > > +
-> >> >
-> >> > This is also not required. As, this function will be called only if
-> >> > prefetch was used.
-> > [Ghorai] Agree. Can you see this input too?
-> > http://www.mail-archive.com/linux-omap@vger.kernel.org/msg28520.html
->=20
-> Exactly, this is what I am telling here. Enable prefetch engine call
-> is already being check for *busy* or not.
->=20
-> >
-> [...]
-> >> > > +int gpmc_ecc_init(int cs, int ecc_size)
-> >> > > +{
-> >> > > + =A0 =A0 =A0 unsigned int val =3D 0x0;
-> >> > > +
-> >> > > + =A0 =A0 =A0 /* check if ecc engine already by another cs */
-> >> > > + =A0 =A0 =A0 if (gpmc_ecc_used =3D=3D -EINVAL)
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_ecc_used =3D cs;
-> >> > > + =A0 =A0 =A0 else
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EBUSY;
-> >> > Here few things need be to consider:
-> >> > 1. 'init' is supposed to done once for every instance of driver
-> during
-> >> probe
-> >> > 2. But ECC engine, too, have only one instance at a time, So
-> >> > 3. As long as all NAND chip are supposed to use same ECC machenism,
-> we
-> >> > can go for only one time 'init' for all drivers, perhaps in
-> >> > gpmc_nand.c.
-> >> > 4. But in case, different instances of driver (or NAND chip) require=
-s
-> >> > different ECC machenism (for ex. Hamming or BCH, or even with
-> >> > different capabilities of error correction),
-> >> > this will no longer vailid. Then rather we should have something lik=
-e
-> >> > 'gpmc_ecc_config' call to configer ECC engine for everytime a driver
-> >> > needs it (something like as it is done for prefetch engine).
-> > [Ghorai]
-> > a. do you think it will reduce the throughput?
-> No. But in current implementation it will be called for each instance
-> driver. (see my 3rd point)
->=20
-> > b. Moreover I think we will take this as 5th patch as cleanup/
-> improvemnt.
-> > c. And how to know that ECC engine is in used other driver should not
-> use it? Any bit to know that ecc engine is busy, as we check for prefetch=
-?
-> Do not really remember config registers. Perhaps there is no way.
-> But I guess you should check into register GPMC_ECC_CONFIG at bit 1.
-> This is the bit we are setting to enable ECC calculation, IIRC.
->=20
-> > d. any further input on http://www.mail-archive.com/linux-
-> omap@vger.kernel.org/msg28520.html
-> And this what I was suggesting in my point 4. In my example
-> 'gpmc_ecc_config' is analogy to 'gpmc_ecc_request'.
-> I said *config*, since in such scenario you need to configer HW
-> ECCconfig register everytime as well, rather just checking
-> availability and enabling.
-[Ghorai] still I feel we should not mix this patch with cleanup. And yes if=
- possible this will be the 5th one as cleanup.
-4th one - prefetch cleanup
-5th one - ecc cleanup.
-Do you think still missing anything for this patch?
+After reboot by poweroff I've got the following:
 
->=20
-> >
-> [...]
-> >> > > +int gpmc_ecc_reset(int cs)
-> >> > > +{
-> >> > > + =A0 =A0 =A0 if (gpmc_ecc_used =3D=3D cs)
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 gpmc_ecc_used =3D -EINVAL;
-> >> > > + =A0 =A0 =A0 else
-> >> > > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
-> >> > > +
-> >> > > + =A0 =A0 =A0 return 0;
-> >> > > +}
->=20
-> I guess in this function you should also clear gpmc ecc config
-> register explicitly.
->=20
->=20
-> --
-> Regards,
-> Vimal Singh
+first mount ubi2:dbfs RO then remount RW
+
+[   11.069330] UBIFS: recovery needed                                                                     
+[   13.485344] UBIFS: recovery deferred                                                                   
+[   14.781242] UBIFS: mounted UBI device 2, volume 0, name "dbfs"                                         
+[   14.787101] UBIFS: mounted read-only                                                                   
+[   14.791008] UBIFS: file system size:   189149184 bytes (184716 KiB, 180 MiB, 1466 LEBs)                
+[   14.799797] UBIFS: journal size:       9418752 bytes (9198 KiB, 8 MiB, 73 LEBs)                        
+[   14.806633] UBIFS: media format:       w4/r0 (latest is w4/r0)                                         
+[   14.813468] UBIFS: default compressor: lzo                                                             
+[   14.817375] UBIFS: reserved for root:  4952683 bytes (4836 KiB)                                        
+[   14.823234] UBIFS DBG (pid 468): mount_ubifs: compiled on:         May 12 2010 at 18:34:36             
+[   14.823234] UBIFS DBG (pid 468): mount_ubifs: min. I/O unit size:  2048 bytes                          
+[   14.823234] UBIFS DBG (pid 468): mount_ubifs: LEB size:            129024 bytes (126 KiB)              
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: data journal heads:  1                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: UUID:                DC1BB581-CE01-431C-9308-BBA9D0885E3D
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: big_lpt              0                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: log LEBs:            5 (3 - 7)                           
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: LPT area LEBs:       2 (8 - 9)                           
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: orphan area LEBs:    2 (10 - 11)                         
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: main area LEBs:      1466 (12 - 1477)                    
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: index LEBs:          1                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: total index bytes:   46848 (45 KiB, 0 MiB)               
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: key hash type:       0                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: tree fanout:         8                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: reserved GC LEB:     14                                  
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: first main LEB:      12                                  
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. znode size      240                                 
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. index node size 192                                 
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: node sizes:          data 48, inode 160, dentry 56       
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: node sizes:          trun 56, sb 4096, master 512        
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: node sizes:          ref 64, cmt. start 32, orph 32      
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. node sizes:     data 4144, inode 4256 dentry 312    
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: dead watermark:      2048                                
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: dark watermark:      6144                                
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: LEB overhead:        560                                 
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. dark space:     9007104 (8796 KiB, 8 MiB)
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: maximum bud bytes:   8773632 (8568 KiB, 8 MiB)
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: BG commit bud bytes: 7128576 (6961 KiB, 6 MiB)
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: current bud bytes    2572288 (2512 KiB, 2 MiB)
+[   14.826164] UBIFS DBG (pid 468): mount_ubifs: max. seq. number:    6955
+[   14.826164] UBIFS DBG (pid 468): mount_ubifs: commit number:       5
+[   14.890617] UBIFS: completing deferred recovery
+[   14.901359] UBIFS DBG (pid 472): ubifs_bg_thread: background thread "ubifs_bgt2_0" started, PID 472
+[   21.676746] UBIFS: deferred recovery completed
+[   21.681629] UBIFS error (pid 471): dbg_check_space_info: free space changed from 171535545 to 171830940
+[   21.691395] UBIFS: saved lprops statistics dump
+[   21.696277] (pid 471) Lprops statistics: empty_lebs 1350, idx_lebs  1
+[   21.696277]  taken_empty_lebs 0, total_free 174458880, total_dirty 9203536
+[   21.696277]  total_used 5442288, total_dark 8777552, total_dead 22792
+[   21.696277] UBIFS: current lprops statistics dump
+[   21.701160] (pid 471) Lprops statistics: empty_lebs 1360, idx_lebs  1
+[   21.701160]  taken_empty_lebs 1, total_free 175742976, total_dirty 7914704
+[   21.701160]  total_used 5442288, total_dark 8777552, total_dead 22792
+[   21.701160] UBIFS assert failed in dbg_dump_budg at 617 (pid 471)
+[   21.707996] [<c0026820>] (unwind_backtrace+0x0/0xe4) from [<c0158c50>] (dbg_dump_budg+0x250/0x334)
+[   21.716785] [<c0158c50>] (dbg_dump_budg+0x250/0x334) from [<c0158df4>] (dbg_check_space_info+0xc0/0x114)
+[   21.726551] [<c0158df4>] (dbg_check_space_info+0xc0/0x114) from [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc)
+[   21.737293] [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc) from [<c008f7ec>] (do_remount_sb+0x8c/0x100)
+[   21.746082] [<c008f7ec>] (do_remount_sb+0x8c/0x100) from [<c00a80f0>] (do_mount+0x4c0/0x7cc)
+[   21.754871] [<c00a80f0>] (do_mount+0x4c0/0x7cc) from [<c00a8494>] (sys_mount+0x98/0xc8)
+[   21.763660] [<c00a8494>] (sys_mount+0x98/0xc8) from [<c0021f40>] (ret_fast_syscall+0x0/0x28)
+[   21.772449] (pid 471) Budgeting info: budg_data_growth 0, budg_dd_growth 0, budg_idx_growth 0
+[   21.772449]  data budget sum 0, total budget sum 0, freeable_cnt 57
+[   21.772449]  min_idx_lebs 3, old_idx_sz 49216, calc_idx_sz 49216, idx_gc_cnt 0
+[   21.772449]  dirty_pg_cnt 0, dirty_zn_cnt 0, clean_zn_cnt 280
+[   21.772449]  dark_wm 6144, dead_wm 2048, max_idx_node_sz 192
+[   21.772449]  gc_lnum 109, ihead_lnum 12
+[   21.772449]  jhead 0 (GC)     LEB -1
+[   21.772449]  jhead 1 (base)   LEB -1
+[   21.772449]  jhead 2 (data)   LEB -1
+[   21.772449]  commit state 0
+[   21.772449] Budgeting predictions:
+[   21.772449]  available: 174003384, outstanding 0, free 171830940
+[   21.773426] [<c0026820>] (unwind_backtrace+0x0/0xe4) from [<c0158e0c>] (dbg_check_space_info+0xd8/0x114)
+[   21.783191] [<c0158e0c>] (dbg_check_space_info+0xd8/0x114) from [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc)
+[   21.792957] [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc) from [<c008f7ec>] (do_remount_sb+0x8c/0x100)
+[   21.802723] [<c008f7ec>] (do_remount_sb+0x8c/0x100) from [<c00a80f0>] (do_mount+0x4c0/0x7cc)
+[   21.811512] [<c00a80f0>] (do_mount+0x4c0/0x7cc) from [<c00a8494>] (sys_mount+0x98/0xc8)
+[   21.819324] [<c00a8494>] (sys_mount+0x98/0xc8) from [<c0021f40>] (ret_fast_syscall+0x0/0x28)
+
+ 
+--
+Best regards,
+Sasha
+
+--Boundary-00=_yaT9LYDdvHYBWsQ
+Content-Type: text/plain; charset="UTF-8"; name="nand_err_20100520"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="nand_err_20100520"
+Content-Description: nand_err_20100520
+
+[   11.069330] UBIFS: recovery needed                                                                     
+[   13.485344] UBIFS: recovery deferred                                                                   
+[   14.781242] UBIFS: mounted UBI device 2, volume 0, name "dbfs"                                         
+[   14.787101] UBIFS: mounted read-only                                                                   
+[   14.791008] UBIFS: file system size:   189149184 bytes (184716 KiB, 180 MiB, 1466 LEBs)                
+[   14.799797] UBIFS: journal size:       9418752 bytes (9198 KiB, 8 MiB, 73 LEBs)                        
+[   14.806633] UBIFS: media format:       w4/r0 (latest is w4/r0)                                         
+[   14.813468] UBIFS: default compressor: lzo                                                             
+[   14.817375] UBIFS: reserved for root:  4952683 bytes (4836 KiB)                                        
+[   14.823234] UBIFS DBG (pid 468): mount_ubifs: compiled on:         May 12 2010 at 18:34:36             
+[   14.823234] UBIFS DBG (pid 468): mount_ubifs: min. I/O unit size:  2048 bytes                          
+[   14.823234] UBIFS DBG (pid 468): mount_ubifs: LEB size:            129024 bytes (126 KiB)              
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: data journal heads:  1                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: UUID:                DC1BB581-CE01-431C-9308-BBA9D0885E3D
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: big_lpt              0                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: log LEBs:            5 (3 - 7)                           
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: LPT area LEBs:       2 (8 - 9)                           
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: orphan area LEBs:    2 (10 - 11)                         
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: main area LEBs:      1466 (12 - 1477)                    
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: index LEBs:          1                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: total index bytes:   46848 (45 KiB, 0 MiB)               
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: key hash type:       0                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: tree fanout:         8                                   
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: reserved GC LEB:     14                                  
+[   14.824211] UBIFS DBG (pid 468): mount_ubifs: first main LEB:      12                                  
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. znode size      240                                 
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. index node size 192                                 
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: node sizes:          data 48, inode 160, dentry 56       
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: node sizes:          trun 56, sb 4096, master 512        
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: node sizes:          ref 64, cmt. start 32, orph 32      
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. node sizes:     data 4144, inode 4256 dentry 312    
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: dead watermark:      2048                                
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: dark watermark:      6144                                
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: LEB overhead:        560                                 
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: max. dark space:     9007104 (8796 KiB, 8 MiB)
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: maximum bud bytes:   8773632 (8568 KiB, 8 MiB)
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: BG commit bud bytes: 7128576 (6961 KiB, 6 MiB)
+[   14.825187] UBIFS DBG (pid 468): mount_ubifs: current bud bytes    2572288 (2512 KiB, 2 MiB)
+[   14.826164] UBIFS DBG (pid 468): mount_ubifs: max. seq. number:    6955
+[   14.826164] UBIFS DBG (pid 468): mount_ubifs: commit number:       5
+[   14.890617] UBIFS: completing deferred recovery
+[   14.901359] UBIFS DBG (pid 472): ubifs_bg_thread: background thread "ubifs_bgt2_0" started, PID 472
+[   21.676746] UBIFS: deferred recovery completed
+[   21.681629] UBIFS error (pid 471): dbg_check_space_info: free space changed from 171535545 to 171830940
+[   21.691395] UBIFS: saved lprops statistics dump
+[   21.696277] (pid 471) Lprops statistics: empty_lebs 1350, idx_lebs  1
+[   21.696277]  taken_empty_lebs 0, total_free 174458880, total_dirty 9203536
+[   21.696277]  total_used 5442288, total_dark 8777552, total_dead 22792
+[   21.696277] UBIFS: current lprops statistics dump
+[   21.701160] (pid 471) Lprops statistics: empty_lebs 1360, idx_lebs  1
+[   21.701160]  taken_empty_lebs 1, total_free 175742976, total_dirty 7914704
+[   21.701160]  total_used 5442288, total_dark 8777552, total_dead 22792
+[   21.701160] UBIFS assert failed in dbg_dump_budg at 617 (pid 471)
+[   21.707996] [<c0026820>] (unwind_backtrace+0x0/0xe4) from [<c0158c50>] (dbg_dump_budg+0x250/0x334)
+[   21.716785] [<c0158c50>] (dbg_dump_budg+0x250/0x334) from [<c0158df4>] (dbg_check_space_info+0xc0/0x114)
+[   21.726551] [<c0158df4>] (dbg_check_space_info+0xc0/0x114) from [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc)
+[   21.737293] [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc) from [<c008f7ec>] (do_remount_sb+0x8c/0x100)
+[   21.746082] [<c008f7ec>] (do_remount_sb+0x8c/0x100) from [<c00a80f0>] (do_mount+0x4c0/0x7cc)
+[   21.754871] [<c00a80f0>] (do_mount+0x4c0/0x7cc) from [<c00a8494>] (sys_mount+0x98/0xc8)
+[   21.763660] [<c00a8494>] (sys_mount+0x98/0xc8) from [<c0021f40>] (ret_fast_syscall+0x0/0x28)
+[   21.772449] (pid 471) Budgeting info: budg_data_growth 0, budg_dd_growth 0, budg_idx_growth 0
+[   21.772449]  data budget sum 0, total budget sum 0, freeable_cnt 57
+[   21.772449]  min_idx_lebs 3, old_idx_sz 49216, calc_idx_sz 49216, idx_gc_cnt 0
+[   21.772449]  dirty_pg_cnt 0, dirty_zn_cnt 0, clean_zn_cnt 280
+[   21.772449]  dark_wm 6144, dead_wm 2048, max_idx_node_sz 192
+[   21.772449]  gc_lnum 109, ihead_lnum 12
+[   21.772449]  jhead 0 (GC)     LEB -1
+[   21.772449]  jhead 1 (base)   LEB -1
+[   21.772449]  jhead 2 (data)   LEB -1
+[   21.772449]  commit state 0
+[   21.772449] Budgeting predictions:
+[   21.772449]  available: 174003384, outstanding 0, free 171830940
+[   21.773426] [<c0026820>] (unwind_backtrace+0x0/0xe4) from [<c0158e0c>] (dbg_check_space_info+0xd8/0x114)
+[   21.783191] [<c0158e0c>] (dbg_check_space_info+0xd8/0x114) from [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc)
+[   21.792957] [<c0128d3c>] (ubifs_remount_fs+0x528/0x8bc) from [<c008f7ec>] (do_remount_sb+0x8c/0x100)
+[   21.802723] [<c008f7ec>] (do_remount_sb+0x8c/0x100) from [<c00a80f0>] (do_mount+0x4c0/0x7cc)
+[   21.811512] [<c00a80f0>] (do_mount+0x4c0/0x7cc) from [<c00a8494>] (sys_mount+0x98/0xc8)
+[   21.819324] [<c00a8494>] (sys_mount+0x98/0xc8) from [<c0021f40>] (ret_fast_syscall+0x0/0x28)
+
+--Boundary-00=_yaT9LYDdvHYBWsQ--
