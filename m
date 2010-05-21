@@ -1,17 +1,19 @@
-Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
+Received: from p01c11o149.mxlogic.net ([208.65.144.72])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFbrn-0003K2-O4
-	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 23:43:00 +0000
-Date: Fri, 21 May 2010 16:42:32 -0700
-From: Greg KH <greg@kroah.com>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-Subject: Re: [PATCH] pcm551.c: use pci_ids.h defines
-Message-ID: <20100521234232.GA31672@kroah.com>
+	id 1OFbvJ-0001wP-Ki
+	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 23:46:38 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: Greg KH <greg@kroah.com>
+Date: Fri, 21 May 2010 18:46:20 -0500
+Subject: RE: [PATCH] pcm551.c: use pci_ids.h defines
+Message-ID: <0D753D10438DA54287A00B0270842697636F3238BB@AUSP01VMBX24.collaborationhost.net>
 References: <0D753D10438DA54287A00B0270842697636F3238A0@AUSP01VMBX24.collaborationhost.net>
+	<20100521234232.GA31672@kroah.com>
+In-Reply-To: <20100521234232.GA31672@kroah.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0D753D10438DA54287A00B0270842697636F3238A0@AUSP01VMBX24.collaborationhost.net>
 Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
 	David Woodhouse <dwmw2@infradead.org>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
@@ -26,14 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 21, 2010 at 06:24:01PM -0500, H Hartley Sweeten wrote:
-> Move the DEVICE id to pci_ids.h and then use the VENDOR/DEVICE ids provided
-> in pci_ids.h instead of creating local ids.
+On Friday, May 21, 2010 4:43 PM, Greg KH wrote:
+> On Fri, May 21, 2010 at 06:24:01PM -0500, H Hartley Sweeten wrote:
+>> Move the DEVICE id to pci_ids.h and then use the VENDOR/DEVICE ids provi=
+ded
+>> in pci_ids.h instead of creating local ids.
+>
+> Did you read the comment at the top of the pci_ids.h file saying not to
+> do this?  Just use the vendor id that is already in the pci_ids.h file
+> in the driver, but leave the device id in the driver itself.
 
-Did you read the comment at the top of the pci_ids.h file saying not to
-do this?  Just use the vendor id that is already in the pci_ids.h file
-in the driver, but leave the device id in the driver itself.
+Oops.. My bad, sorry.
 
-thanks,
+Please ignore this patch (and the other two).
 
-greg k-h
+Regards,
+Hartley=
