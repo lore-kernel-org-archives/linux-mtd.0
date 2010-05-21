@@ -1,20 +1,22 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OF8Ug-0006ub-4q
-	for linux-mtd@lists.infradead.org; Thu, 20 May 2010 16:21:11 +0000
-Received: from cpe00142a336e11-cm001ac318e826.cpe.net.cable.rogers.com
-	([174.113.191.234] helo=crashcourse.ca)
-	by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.69) (envelope-from <rpjday@crashcourse.ca>)
-	id 1OF8Ub-0002kR-Gn
-	for linux-mtd@lists.infradead.org; Thu, 20 May 2010 12:21:05 -0400
-Date: Thu, 20 May 2010 12:21:04 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: what should be coming soon WRT Kconfig/Makefile cleanup
-Message-ID: <alpine.DEB.2.00.1005201217440.17059@lynx>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OFJIn-0003xW-DS
+	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 03:53:38 +0000
+Received: by fxm15 with SMTP id 15so509332fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 20 May 2010 20:53:34 -0700 (PDT)
+Subject: Re: 2GB file size limit?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: David Lambert <dave@lambsys.com>
+In-Reply-To: <4BEE1582.40706@lambsys.com>
+References: <4BEE1582.40706@lambsys.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 21 May 2010 06:53:30 +0300
+Message-Id: <1274414010.8881.26.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2010-05-14 at 22:31 -0500, David Lambert wrote:
+> Is there any way to increase the file size limit on UBIFS beyond 
+> 2Gbytes?
 
-  sorry, not trying to flog this, but as a short followup to what i
-posted a couple days ago, i'm getting a new kernel janitor to work on
-some specific projects and, rather than constantly email back and
-forth with him, i posted his first potential project at my wiki.  it's
-meant to be a general project, but i used the MTD part of the tree as
-an example:
+We never tested this, but should not be. AFAIR, UBIFS theoretical
+limitation should be something like 16TB, but I tried tested the maximum
+file size.
 
-http://www.crashcourse.ca/wiki/index.php/Kconfig/Makefile_redundancy
+>  I have tried enabling the kernel ‘Support for large block 
+> devices and files’ under ‘Enable the block layer’, but the 2G limit 
+> persists.
 
-  nothing earth-shattering there, just something to get him started
-and looking at the Kbuild structure.  if you think anything else
-should be added to that page, or changed, let me know.  or any other
-MTD-related janitorial projects i can dump on him.  :-)
+UBIFS has nothing to do with block devices. This is a very specialized
+FS for bare flashes:
 
-rday
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_rednote
+
+So that option has no effect for UBIFS.
 
 -- 
-
-========================================================================
-Robert P. J. Day                               Waterloo, Ontario, CANADA
-
-            Linux Consulting, Training and Kernel Pedantry.
-
-Web page:                                          http://crashcourse.ca
-Twitter:                                       http://twitter.com/rpjday
-========================================================================
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
