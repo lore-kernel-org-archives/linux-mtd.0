@@ -1,20 +1,20 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFZGu-0005Yu-61
-	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 20:56:47 +0000
-Received: by iwn40 with SMTP id 40so1498099iwn.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 May 2010 13:56:43 -0700 (PDT)
+Received: from p01c12o143.mxlogic.net ([208.65.145.66])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OFbZb-00026J-79
+	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 23:24:12 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-mtd
+	<linux-mtd@lists.infradead.org>, "linux-pci@vger.kernel.org"
+	<linux-pci@vger.kernel.org>
+Date: Fri, 21 May 2010 18:24:01 -0500
+Subject: [PATCH] pcm551.c: use pci_ids.h defines
+Message-ID: <0D753D10438DA54287A00B0270842697636F3238A0@AUSP01VMBX24.collaborationhost.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <AANLkTilaKsUznEpl7wbQuoN1KpwFudJCwaN-j-rhlOEA@mail.gmail.com>
-References: <AANLkTilaKsUznEpl7wbQuoN1KpwFudJCwaN-j-rhlOEA@mail.gmail.com>
-Date: Fri, 21 May 2010 16:56:13 -0400
-Message-ID: <AANLkTimnNIyn_z7rdtk_4LtM0zDKD7-jvYvT9p2Yx85u@mail.gmail.com>
-Subject: Re: back-porting latest UBI/UBIFS to 2.6.29
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	"jbarnes@virtuousgeek.org" <jbarnes@virtuousgeek.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Are there patches available that support back-porting of newer
-> UBI/UBIFS to 2.6.29? =A0I'm having some issues and see the note under
-> "How to send an UBIFS bugreport" that suggests making sure you're
-> using up-to-date UBIFS.
->
-
-Please disregard.  I found the code at http://git.infradead.org/users/dedek=
-ind
+TW92ZSB0aGUgREVWSUNFIGlkIHRvIHBjaV9pZHMuaCBhbmQgdGhlbiB1c2UgdGhlIFZFTkRPUi9E
+RVZJQ0UgaWRzIHByb3ZpZGVkDQppbiBwY2lfaWRzLmggaW5zdGVhZCBvZiBjcmVhdGluZyBsb2Nh
+bCBpZHMuDQoNClNpZ25lZC1vZmYtYnk6IEggSGFydGxleSBTd2VldGVuIDxoc3dlZXRlbkB2aXNp
+b25lbmdyYXZlcnMuY29tPg0KQ2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9y
+Zz4NCkNjOiBKZXNzZSBCYXJuZXMgPGpiYXJuZXNAdmlydHVvdXNnZWVrLm9yZz4NCg0KLS0tDQoN
+CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9kZXZpY2VzL3BtYzU1MS5jIGIvZHJpdmVycy9tdGQv
+ZGV2aWNlcy9wbWM1NTEuYw0KaW5kZXggZmM4ZWEwYS4uZjY0OGUyYiAxMDA2NDQNCi0tLSBhL2Ry
+aXZlcnMvbXRkL2RldmljZXMvcG1jNTUxLmMNCisrKyBiL2RyaXZlcnMvbXRkL2RldmljZXMvcG1j
+NTUxLmMNCkBAIC02OTcsOCArNjk3LDggQEAgc3RhdGljIGludCBfX2luaXQgaW5pdF9wbWM1NTEo
+dm9pZCkNCiAJICovDQogCWZvciAoOzspIHsNCiANCi0JCWlmICgoUENJX0RldmljZSA9IHBjaV9n
+ZXRfZGV2aWNlKFBDSV9WRU5ET1JfSURfVjNfU0VNSSwNCi0JCQkJCQkgIFBDSV9ERVZJQ0VfSURf
+VjNfU0VNSV9WMzcwUERDLA0KKwkJaWYgKChQQ0lfRGV2aWNlID0gcGNpX2dldF9kZXZpY2UoUENJ
+X1ZFTkRPUl9JRF9WMywNCisJCQkJCQkgIFBDSV9ERVZJQ0VfSURfVjNfVjM3MFBEQywNCiAJCQkJ
+CQkgIFBDSV9EZXZpY2UpKSA9PSBOVUxMKSB7DQogCQkJYnJlYWs7DQogCQl9DQpkaWZmIC0tZ2l0
+IGEvaW5jbHVkZS9saW51eC9tdGQvcG1jNTUxLmggYi9pbmNsdWRlL2xpbnV4L210ZC9wbWM1NTEu
+aA0KaW5kZXggMjdhZDQwYS4uYmM2OGE5ZCAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGludXgvbXRk
+L3BtYzU1MS5oDQorKysgYi9pbmNsdWRlL2xpbnV4L210ZC9wbWM1NTEuaA0KQEAgLTQxLDE4ICs0
+MSw2IEBAIHN0YXRpYyBpbnQgcG1jNTUxX3JlYWQoc3RydWN0IG10ZF9pbmZvICosIGxvZmZfdCwg
+c2l6ZV90LCBzaXplX3QgKiwgdV9jaGFyICopOw0KIHN0YXRpYyBpbnQgcG1jNTUxX3dyaXRlKHN0
+cnVjdCBtdGRfaW5mbyAqLCBsb2ZmX3QsIHNpemVfdCwgc2l6ZV90ICosIGNvbnN0IHVfY2hhciAq
+KTsNCiANCiANCi0vKg0KLSAqIERlZmluZSB0aGUgUENJIElEJ3MgaWYgdGhlIGtlcm5lbCBkb2Vz
+bid0IGRlZmluZSB0aGVtIGZvciB1cw0KLSAqLw0KLSNpZm5kZWYgUENJX1ZFTkRPUl9JRF9WM19T
+RU1JDQotI2RlZmluZSBQQ0lfVkVORE9SX0lEX1YzX1NFTUkgICAgICAgICAgICAgMHgxMWIwDQot
+I2VuZGlmDQotDQotI2lmbmRlZiBQQ0lfREVWSUNFX0lEX1YzX1NFTUlfVjM3MFBEQw0KLSNkZWZp
+bmUgUENJX0RFVklDRV9JRF9WM19TRU1JX1YzNzBQREMgICAgIDB4MDIwMA0KLSNlbmRpZg0KLQ0K
+LQ0KICNkZWZpbmUgUE1DNTUxX1BDSV9NRU1fTUFQMAkweDUwDQogI2RlZmluZSBQTUM1NTFfUENJ
+X01FTV9NQVAxCTB4NTQNCiAjZGVmaW5lIFBNQzU1MV9QQ0lfTUVNX01BUF9NQVBfQUREUl9NQVNL
+CTB4M2ZmMDAwMDANCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3BjaV9pZHMuaCBiL2luY2x1
+ZGUvbGludXgvcGNpX2lkcy5oDQppbmRleCA5ZjY4OGQyLi4zOTg3ZDk2IDEwMDY0NA0KLS0tIGEv
+aW5jbHVkZS9saW51eC9wY2lfaWRzLmgNCisrKyBiL2luY2x1ZGUvbGludXgvcGNpX2lkcy5oDQpA
+QCAtMTU2NSw2ICsxNTY1LDcgQEANCiAjZGVmaW5lIFBDSV9WRU5ET1JfSURfVjMJCTB4MTFiMA0K
+ICNkZWZpbmUgUENJX0RFVklDRV9JRF9WM19WOTYwCQkweDAwMDENCiAjZGVmaW5lIFBDSV9ERVZJ
+Q0VfSURfVjNfVjM1MQkJMHgwMDAyDQorI2RlZmluZSBQQ0lfREVWSUNFX0lEX1YzX1YzNzBQREMJ
+MHgwMjAwDQogDQogI2RlZmluZSBQQ0lfVkVORE9SX0lEX0FUVAkJMHgxMWMxDQogI2RlZmluZSBQ
+Q0lfREVWSUNFX0lEX0FUVF9WRU5VU19NT0RFTQkweDQ4MA0K
