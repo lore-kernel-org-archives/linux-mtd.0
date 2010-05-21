@@ -1,19 +1,21 @@
-Received: from p01c12o143.mxlogic.net ([208.65.145.66])
+Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFbZb-00026J-79
-	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 23:24:12 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-mtd
-	<linux-mtd@lists.infradead.org>, "linux-pci@vger.kernel.org"
-	<linux-pci@vger.kernel.org>
-Date: Fri, 21 May 2010 18:24:01 -0500
-Subject: [PATCH] pcm551.c: use pci_ids.h defines
-Message-ID: <0D753D10438DA54287A00B0270842697636F3238A0@AUSP01VMBX24.collaborationhost.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1OFbrn-0003K2-O4
+	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 23:43:00 +0000
+Date: Fri, 21 May 2010 16:42:32 -0700
+From: Greg KH <greg@kroah.com>
+To: H Hartley Sweeten <hartleys@visionengravers.com>
+Subject: Re: [PATCH] pcm551.c: use pci_ids.h defines
+Message-ID: <20100521234232.GA31672@kroah.com>
+References: <0D753D10438DA54287A00B0270842697636F3238A0@AUSP01VMBX24.collaborationhost.net>
 MIME-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0D753D10438DA54287A00B0270842697636F3238A0@AUSP01VMBX24.collaborationhost.net>
+Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"jbarnes@virtuousgeek.org" <jbarnes@virtuousgeek.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,38 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-TW92ZSB0aGUgREVWSUNFIGlkIHRvIHBjaV9pZHMuaCBhbmQgdGhlbiB1c2UgdGhlIFZFTkRPUi9E
-RVZJQ0UgaWRzIHByb3ZpZGVkDQppbiBwY2lfaWRzLmggaW5zdGVhZCBvZiBjcmVhdGluZyBsb2Nh
-bCBpZHMuDQoNClNpZ25lZC1vZmYtYnk6IEggSGFydGxleSBTd2VldGVuIDxoc3dlZXRlbkB2aXNp
-b25lbmdyYXZlcnMuY29tPg0KQ2M6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9y
-Zz4NCkNjOiBKZXNzZSBCYXJuZXMgPGpiYXJuZXNAdmlydHVvdXNnZWVrLm9yZz4NCg0KLS0tDQoN
-CmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9kZXZpY2VzL3BtYzU1MS5jIGIvZHJpdmVycy9tdGQv
-ZGV2aWNlcy9wbWM1NTEuYw0KaW5kZXggZmM4ZWEwYS4uZjY0OGUyYiAxMDA2NDQNCi0tLSBhL2Ry
-aXZlcnMvbXRkL2RldmljZXMvcG1jNTUxLmMNCisrKyBiL2RyaXZlcnMvbXRkL2RldmljZXMvcG1j
-NTUxLmMNCkBAIC02OTcsOCArNjk3LDggQEAgc3RhdGljIGludCBfX2luaXQgaW5pdF9wbWM1NTEo
-dm9pZCkNCiAJICovDQogCWZvciAoOzspIHsNCiANCi0JCWlmICgoUENJX0RldmljZSA9IHBjaV9n
-ZXRfZGV2aWNlKFBDSV9WRU5ET1JfSURfVjNfU0VNSSwNCi0JCQkJCQkgIFBDSV9ERVZJQ0VfSURf
-VjNfU0VNSV9WMzcwUERDLA0KKwkJaWYgKChQQ0lfRGV2aWNlID0gcGNpX2dldF9kZXZpY2UoUENJ
-X1ZFTkRPUl9JRF9WMywNCisJCQkJCQkgIFBDSV9ERVZJQ0VfSURfVjNfVjM3MFBEQywNCiAJCQkJ
-CQkgIFBDSV9EZXZpY2UpKSA9PSBOVUxMKSB7DQogCQkJYnJlYWs7DQogCQl9DQpkaWZmIC0tZ2l0
-IGEvaW5jbHVkZS9saW51eC9tdGQvcG1jNTUxLmggYi9pbmNsdWRlL2xpbnV4L210ZC9wbWM1NTEu
-aA0KaW5kZXggMjdhZDQwYS4uYmM2OGE5ZCAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGludXgvbXRk
-L3BtYzU1MS5oDQorKysgYi9pbmNsdWRlL2xpbnV4L210ZC9wbWM1NTEuaA0KQEAgLTQxLDE4ICs0
-MSw2IEBAIHN0YXRpYyBpbnQgcG1jNTUxX3JlYWQoc3RydWN0IG10ZF9pbmZvICosIGxvZmZfdCwg
-c2l6ZV90LCBzaXplX3QgKiwgdV9jaGFyICopOw0KIHN0YXRpYyBpbnQgcG1jNTUxX3dyaXRlKHN0
-cnVjdCBtdGRfaW5mbyAqLCBsb2ZmX3QsIHNpemVfdCwgc2l6ZV90ICosIGNvbnN0IHVfY2hhciAq
-KTsNCiANCiANCi0vKg0KLSAqIERlZmluZSB0aGUgUENJIElEJ3MgaWYgdGhlIGtlcm5lbCBkb2Vz
-bid0IGRlZmluZSB0aGVtIGZvciB1cw0KLSAqLw0KLSNpZm5kZWYgUENJX1ZFTkRPUl9JRF9WM19T
-RU1JDQotI2RlZmluZSBQQ0lfVkVORE9SX0lEX1YzX1NFTUkgICAgICAgICAgICAgMHgxMWIwDQot
-I2VuZGlmDQotDQotI2lmbmRlZiBQQ0lfREVWSUNFX0lEX1YzX1NFTUlfVjM3MFBEQw0KLSNkZWZp
-bmUgUENJX0RFVklDRV9JRF9WM19TRU1JX1YzNzBQREMgICAgIDB4MDIwMA0KLSNlbmRpZg0KLQ0K
-LQ0KICNkZWZpbmUgUE1DNTUxX1BDSV9NRU1fTUFQMAkweDUwDQogI2RlZmluZSBQTUM1NTFfUENJ
-X01FTV9NQVAxCTB4NTQNCiAjZGVmaW5lIFBNQzU1MV9QQ0lfTUVNX01BUF9NQVBfQUREUl9NQVNL
-CTB4M2ZmMDAwMDANCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3BjaV9pZHMuaCBiL2luY2x1
-ZGUvbGludXgvcGNpX2lkcy5oDQppbmRleCA5ZjY4OGQyLi4zOTg3ZDk2IDEwMDY0NA0KLS0tIGEv
-aW5jbHVkZS9saW51eC9wY2lfaWRzLmgNCisrKyBiL2luY2x1ZGUvbGludXgvcGNpX2lkcy5oDQpA
-QCAtMTU2NSw2ICsxNTY1LDcgQEANCiAjZGVmaW5lIFBDSV9WRU5ET1JfSURfVjMJCTB4MTFiMA0K
-ICNkZWZpbmUgUENJX0RFVklDRV9JRF9WM19WOTYwCQkweDAwMDENCiAjZGVmaW5lIFBDSV9ERVZJ
-Q0VfSURfVjNfVjM1MQkJMHgwMDAyDQorI2RlZmluZSBQQ0lfREVWSUNFX0lEX1YzX1YzNzBQREMJ
-MHgwMjAwDQogDQogI2RlZmluZSBQQ0lfVkVORE9SX0lEX0FUVAkJMHgxMWMxDQogI2RlZmluZSBQ
-Q0lfREVWSUNFX0lEX0FUVF9WRU5VU19NT0RFTQkweDQ4MA0K
+On Fri, May 21, 2010 at 06:24:01PM -0500, H Hartley Sweeten wrote:
+> Move the DEVICE id to pci_ids.h and then use the VENDOR/DEVICE ids provided
+> in pci_ids.h instead of creating local ids.
+
+Did you read the comment at the top of the pci_ids.h file saying not to
+do this?  Just use the vendor id that is already in the pci_ids.h file
+in the driver, but leave the device id in the driver itself.
+
+thanks,
+
+greg k-h
