@@ -1,14 +1,15 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
+Received: from mgw1.diku.dk ([130.225.96.91])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFjyz-0005iv-IZ
-	for linux-mtd@lists.infradead.org; Sat, 22 May 2010 08:22:58 +0000
-Date: Sat, 22 May 2010 10:22:49 +0200 (CEST)
+	id 1OFlVd-0000up-EG
+	for linux-mtd@lists.infradead.org; Sat, 22 May 2010 10:00:46 +0000
+Date: Sat, 22 May 2010 12:00:21 +0200 (CEST)
 From: Julia Lawall <julia@diku.dk>
-To: David Woodhouse <dwmw2@infradead.org>,
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+	Adrian Hunter <adrian.hunter@nokia.com>,
 	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 	kernel-janitors@vger.kernel.org
-Subject: [PATCH 15/27] drivers/mtd: Use memdup_user
-Message-ID: <Pine.LNX.4.64.1005221022350.13021@ask.diku.dk>
+Subject: [PATCH 4/8] fs/ubifs: Use ERR_CAST
+Message-ID: <Pine.LNX.4.64.1005221200050.13021@ask.diku.dk>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,62 +23,101 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Julia Lawall <julia@diku.dk>
 
-Use memdup_user when user data is immediately copied into the
-allocated region.
+Use ERR_CAST(x) rather than ERR_PTR(PTR_ERR(x)).  The former makes more
+clear what is the purpose of the operation, which otherwise looks like a
+no-op.
 
 The semantic patch that makes this change is as follows:
 (http://coccinelle.lip6.fr/)
 
 // <smpl>
 @@
-expression from,to,size,flag;
-position p;
-identifier l1,l2;
+type T;
+T x;
+identifier f;
 @@
 
--  to = \(kmalloc@p\|kzalloc@p\)(size,flag);
-+  to = memdup_user(from,size);
-   if (
--      to==NULL
-+      IS_ERR(to)
-                 || ...) {
-   <+... when != goto l1;
--  -ENOMEM
-+  PTR_ERR(to)
-   ...+>
-   }
--  if (copy_from_user(to, from, size) != 0) {
--    <+... when != goto l2;
--    -EFAULT
--    ...+>
--  }
+T f (...) { <+...
+- ERR_PTR(PTR_ERR(x))
++ x
+ ...+> }
+
+@@
+expression x;
+@@
+
+- ERR_PTR(PTR_ERR(x))
++ ERR_CAST(x)
 // </smpl>
 
 Signed-off-by: Julia Lawall <julia@diku.dk>
 
 ---
- drivers/mtd/mtdchar.c |   11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+ fs/ubifs/lpt.c        |   14 +++++++-------
+ fs/ubifs/lpt_commit.c |    2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 000d65e..91c8013 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -404,14 +404,9 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
- 	if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
- 		return -EINVAL;
- 
--	ops.oobbuf = kmalloc(length, GFP_KERNEL);
--	if (!ops.oobbuf)
--		return -ENOMEM;
--
--	if (copy_from_user(ops.oobbuf, ptr, length)) {
--		kfree(ops.oobbuf);
--		return -EFAULT;
--	}
-+	ops.oobbuf = memdup_user(ptr, length);
-+	if (IS_ERR(ops.oobbuf))
-+		return PTR_ERR(ops.oobbuf);
- 
- 	start &= ~((uint64_t)mtd->oobsize - 1);
- 	ret = mtd->write_oob(mtd, start, &ops);
+diff -u -p a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
+--- a/fs/ubifs/lpt.c
++++ b/fs/ubifs/lpt.c
+@@ -1457,13 +1457,13 @@ struct ubifs_lprops *ubifs_lpt_lookup(st
+ 		shft -= UBIFS_LPT_FANOUT_SHIFT;
+ 		nnode = ubifs_get_nnode(c, nnode, iip);
+ 		if (IS_ERR(nnode))
+-			return ERR_PTR(PTR_ERR(nnode));
++			return ERR_CAST(nnode);
+ 	}
+ 	iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
+ 	shft -= UBIFS_LPT_FANOUT_SHIFT;
+ 	pnode = ubifs_get_pnode(c, nnode, iip);
+ 	if (IS_ERR(pnode))
+-		return ERR_PTR(PTR_ERR(pnode));
++		return ERR_CAST(pnode);
+ 	iip = (i & (UBIFS_LPT_FANOUT - 1));
+ 	dbg_lp("LEB %d, free %d, dirty %d, flags %d", lnum,
+ 	       pnode->lprops[iip].free, pnode->lprops[iip].dirty,
+@@ -1586,7 +1586,7 @@ struct ubifs_lprops *ubifs_lpt_lookup_di
+ 	nnode = c->nroot;
+ 	nnode = dirty_cow_nnode(c, nnode);
+ 	if (IS_ERR(nnode))
+-		return ERR_PTR(PTR_ERR(nnode));
++		return ERR_CAST(nnode);
+ 	i = lnum - c->main_first;
+ 	shft = c->lpt_hght * UBIFS_LPT_FANOUT_SHIFT;
+ 	for (h = 1; h < c->lpt_hght; h++) {
+@@ -1594,19 +1594,19 @@ struct ubifs_lprops *ubifs_lpt_lookup_di
+ 		shft -= UBIFS_LPT_FANOUT_SHIFT;
+ 		nnode = ubifs_get_nnode(c, nnode, iip);
+ 		if (IS_ERR(nnode))
+-			return ERR_PTR(PTR_ERR(nnode));
++			return ERR_CAST(nnode);
+ 		nnode = dirty_cow_nnode(c, nnode);
+ 		if (IS_ERR(nnode))
+-			return ERR_PTR(PTR_ERR(nnode));
++			return ERR_CAST(nnode);
+ 	}
+ 	iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
+ 	shft -= UBIFS_LPT_FANOUT_SHIFT;
+ 	pnode = ubifs_get_pnode(c, nnode, iip);
+ 	if (IS_ERR(pnode))
+-		return ERR_PTR(PTR_ERR(pnode));
++		return ERR_CAST(pnode);
+ 	pnode = dirty_cow_pnode(c, pnode);
+ 	if (IS_ERR(pnode))
+-		return ERR_PTR(PTR_ERR(pnode));
++		return ERR_CAST(pnode);
+ 	iip = (i & (UBIFS_LPT_FANOUT - 1));
+ 	dbg_lp("LEB %d, free %d, dirty %d, flags %d", lnum,
+ 	       pnode->lprops[iip].free, pnode->lprops[iip].dirty,
+diff -u -p a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
+--- a/fs/ubifs/lpt_commit.c
++++ b/fs/ubifs/lpt_commit.c
+@@ -646,7 +646,7 @@ static struct ubifs_pnode *pnode_lookup(
+ 		shft -= UBIFS_LPT_FANOUT_SHIFT;
+ 		nnode = ubifs_get_nnode(c, nnode, iip);
+ 		if (IS_ERR(nnode))
+-			return ERR_PTR(PTR_ERR(nnode));
++			return ERR_CAST(nnode);
+ 	}
+ 	iip = ((i >> shft) & (UBIFS_LPT_FANOUT - 1));
+ 	return ubifs_get_pnode(c, nnode, iip);
