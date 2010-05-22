@@ -1,24 +1,16 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFjjL-0002nb-Uz
-	for linux-mtd@lists.infradead.org; Sat, 22 May 2010 08:06:48 +0000
-Received: by bwz9 with SMTP id 9so86670bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 22 May 2010 01:06:46 -0700 (PDT)
-Subject: Re: [PATCH 3/3] MTD: Kconfig cleanups
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1274515096.19375.2.camel@maxim-laptop>
-References: <1274490185.15285.22.camel@maxim-laptop>
-	<1274490476-16057-3-git-send-email-maximlevitsky@gmail.com>
-	<1274514430.11551.13808.camel@macbook.infradead.org>
-	<1274515096.19375.2.camel@maxim-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 22 May 2010 11:06:43 +0300
-Message-ID: <1274515603.19696.1.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OFjyz-0005iv-IZ
+	for linux-mtd@lists.infradead.org; Sat, 22 May 2010 08:22:58 +0000
+Date: Sat, 22 May 2010 10:22:49 +0200 (CEST)
+From: Julia Lawall <julia@diku.dk>
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH 15/27] drivers/mtd: Use memdup_user
+Message-ID: <Pine.LNX.4.64.1005221022350.13021@ask.diku.dk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-05-22 at 10:58 +0300, Maxim Levitsky wrote: 
-> On Sat, 2010-05-22 at 08:47 +0100, David Woodhouse wrote: 
-> > On Sat, 2010-05-22 at 04:07 +0300, Maxim Levitsky wrote:
-> > > 
-> > > @@ -129,6 +131,7 @@ config MTD_NAND_RICOH
-> > >         default n
-> > >         depends on PCI
-> > >         select MTD_SM_COMMON
-> > > +       select MTD_NAND_ECC_SMC 
-> > 
-> > I thought we had a better solution than this -- weren't we going to make
-> > it a runtime thing? And default to the 'correct' order?
-> > 
-> > Then, only the legacy devices which need to retain the 'wrong' byteorder
-> > for compatibility reasons will need to do it.
-> > 
-> Sure, but I'll need to do several changes to drivers that I can't test.
-> For now this ensures correctness, then I fix all of this.
-In other words, when I get a bit more free time I promise I fix this and
-other problems. For now this ensures correctness at least of this thing.
+From: Julia Lawall <julia@diku.dk>
 
-Best regards,
-Maxim Levitsky
+Use memdup_user when user data is immediately copied into the
+allocated region.
+
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
+
+// <smpl>
+@@
+expression from,to,size,flag;
+position p;
+identifier l1,l2;
+@@
+
+-  to = \(kmalloc@p\|kzalloc@p\)(size,flag);
++  to = memdup_user(from,size);
+   if (
+-      to==NULL
++      IS_ERR(to)
+                 || ...) {
+   <+... when != goto l1;
+-  -ENOMEM
++  PTR_ERR(to)
+   ...+>
+   }
+-  if (copy_from_user(to, from, size) != 0) {
+-    <+... when != goto l2;
+-    -EFAULT
+-    ...+>
+-  }
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ drivers/mtd/mtdchar.c |   11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 000d65e..91c8013 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -404,14 +404,9 @@ static int mtd_do_writeoob(struct file *file, struct mtd_info *mtd,
+ 	if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
+ 		return -EINVAL;
+ 
+-	ops.oobbuf = kmalloc(length, GFP_KERNEL);
+-	if (!ops.oobbuf)
+-		return -ENOMEM;
+-
+-	if (copy_from_user(ops.oobbuf, ptr, length)) {
+-		kfree(ops.oobbuf);
+-		return -EFAULT;
+-	}
++	ops.oobbuf = memdup_user(ptr, length);
++	if (IS_ERR(ops.oobbuf))
++		return PTR_ERR(ops.oobbuf);
+ 
+ 	start &= ~((uint64_t)mtd->oobsize - 1);
+ 	ret = mtd->write_oob(mtd, start, &ops);
