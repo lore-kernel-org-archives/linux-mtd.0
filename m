@@ -1,24 +1,19 @@
-Received: from p01c11o149.mxlogic.net ([208.65.144.72])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFbvJ-0001wP-Ki
-	for linux-mtd@lists.infradead.org; Fri, 21 May 2010 23:46:38 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: Greg KH <greg@kroah.com>
-Date: Fri, 21 May 2010 18:46:20 -0500
-Subject: RE: [PATCH] pcm551.c: use pci_ids.h defines
-Message-ID: <0D753D10438DA54287A00B0270842697636F3238BB@AUSP01VMBX24.collaborationhost.net>
-References: <0D753D10438DA54287A00B0270842697636F3238A0@AUSP01VMBX24.collaborationhost.net>
-	<20100521234232.GA31672@kroah.com>
-In-Reply-To: <20100521234232.GA31672@kroah.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"jbarnes@virtuousgeek.org" <jbarnes@virtuousgeek.org>
+Received: from fg-out-1718.google.com ([72.14.220.157])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OFd7M-0004Ps-UT
+	for linux-mtd@lists.infradead.org; Sat, 22 May 2010 01:03:09 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so537389fga.0
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 21 May 2010 18:03:07 -0700 (PDT)
+Subject: [PATCH] [R852] Few fixes
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 22 May 2010 04:03:05 +0300
+Message-ID: <1274490185.15285.22.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2 <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, May 21, 2010 4:43 PM, Greg KH wrote:
-> On Fri, May 21, 2010 at 06:24:01PM -0500, H Hartley Sweeten wrote:
->> Move the DEVICE id to pci_ids.h and then use the VENDOR/DEVICE ids provi=
-ded
->> in pci_ids.h instead of creating local ids.
->
-> Did you read the comment at the top of the pci_ids.h file saying not to
-> do this?  Just use the vendor id that is already in the pci_ids.h file
-> in the driver, but leave the device id in the driver itself.
+Hi,
 
-Oops.. My bad, sorry.
+This is patch series that implement few fixes in regard to
+suspend/resume that I finally (after 2 years) managed to fix on my
+notebook.
 
-Please ignore this patch (and the other two).
+Currently there are exactly 3 problems, and I am investigating the
+solutions.
 
-Regards,
-Hartley=
+1) I am finally confident that CONFIG_MMC_RICOH_MMC causes the SD/MMC
+portion of the controller to die  (and trigger an interrupt storm).
+I don't know if this is a regression, because all I did was to execute
+the code that disables MMC controller a bit earlier, because otherwise
+my xD driver will bind to wrong pci function.
+I still continue to investigate this issue, and maybe the only solution
+to it, is to write a full driver for the MMC controller 
+(this is done in windows).
+
+When this happens (it doesn't depend on whether card was in slot or not,
+controller causes interrupt storm, and continues it till sdhci-pci is
+reloaded, at which point it refuses to load.)
+Since r852 shares (at least here) the interrupt with sdhci-pci, if I
+attempt to reload it, it gets interrupt immediately, and accesses
+uninitialized spinlock.
+First patch in that series addresses that issue.
+
+
+2) For some yet unknown to me reason, DMA stops working on r852 after
+resume IF the card was inserted during time system was sleeping.
+Just card reload works around that issue, but my driver still oopses
+when it tries to complete() an completion that time-outed.
+The second patch fixes that oops.
+
+3) This is the weirdest problem, and it might be a cause of
+CONFIG_MMC_RICOH_MMC too. I didn't yet managed to fully understand when
+it happens.
+Again when card is inserted during suspend (maybe even in other cases),
+the controller stops reporting card insert/remove events.
+You can go ahead, remove the xD card, insert SD card, etc, it still
+thinks it has xD card.
+A suspend/resume cycle allows it to detect the card state 'once', for
+example suspending without card makes it finally understand that there
+is no card, and allow to insert other cards, but insert of an xD card
+doesn't make any difference.
+
+The above is for reference, I will try soon to fix these problems.
+(Especially the 2nd).
+
+
+In addition to that i send a patch to fix problem in Kconfig.
+All nand entries weren't shown under mtd menu + at least for now this
+driver should depend on smartmedia byte order.
+(Technically the SM_FTL should depends on it, but this way is safer)
+
+Best regards,
+Maxim Levitsky
