@@ -1,24 +1,15 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFhQr-0006NP-VH
-	for linux-mtd@lists.infradead.org; Sat, 22 May 2010 05:39:34 +0000
-Received: by fxm15 with SMTP id 15so1458927fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 May 2010 22:39:32 -0700 (PDT)
-Subject: Re: [PATCH 2/2] check if the start address is page-aligned.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Stanley.Miao" <stanley.miao@windriver.com>
-In-Reply-To: <1274185390-3066-3-git-send-email-stanley.miao@windriver.com>
-References: <1274185390-3066-1-git-send-email-stanley.miao@windriver.com>
-	<1274185390-3066-2-git-send-email-stanley.miao@windriver.com>
-	<1274185390-3066-3-git-send-email-stanley.miao@windriver.com>
+Subject: Re: [PATCH 3/3] MTD: Kconfig cleanups
+From: David Woodhouse <dwmw2@infradead.org>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+In-Reply-To: <1274490476-16057-3-git-send-email-maximlevitsky@gmail.com>
+References: <1274490185.15285.22.camel@maxim-laptop>
+	<1274490476-16057-3-git-send-email-maximlevitsky@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 22 May 2010 08:39:28 +0300
-Message-Id: <1274506768.8881.31.camel@localhost.localdomain>
+Date: Sat, 22 May 2010 08:47:10 +0100
+Message-ID: <1274514430.11551.13808.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, yaffs@lists.aleph1.co.uk
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +19,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-05-18 at 20:23 +0800, Stanley.Miao wrote:
-> Only page-aligned address is permitted in NAND subsystem.
+On Sat, 2010-05-22 at 04:07 +0300, Maxim Levitsky wrote:
 > 
-> Signed-off-by: Stanley.Miao <stanley.miao@windriver.com>
+> @@ -129,6 +131,7 @@ config MTD_NAND_RICOH
+>         default n
+>         depends on PCI
+>         select MTD_SM_COMMON
+> +       select MTD_NAND_ECC_SMC 
 
-Pushed both patches to the mtd-utils repo, thanks. However, I had to fix
-a tiny white-space damage for you:
+I thought we had a better solution than this -- weren't we going to make
+it a runtime thing? And default to the 'correct' order?
 
-Applying: nandwrite: check if the start address is page-aligned.
-/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:13: trailing
-whitespace.
+Then, only the legacy devices which need to retain the 'wrong' byteorder
+for compatibility reasons will need to do it.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+dwmw2
