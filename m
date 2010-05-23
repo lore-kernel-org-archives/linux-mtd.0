@@ -1,23 +1,22 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OFv7s-0002wq-3F
-	for linux-mtd@lists.infradead.org; Sat, 22 May 2010 20:16:52 +0000
-Received: by vws4 with SMTP id 4so781369vws.36
+	id 1OG4Uj-0006gZ-KK
+	for linux-mtd@lists.infradead.org; Sun, 23 May 2010 06:17:06 +0000
+Received: by fxm15 with SMTP id 15so1868055fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 22 May 2010 13:16:50 -0700 (PDT)
-Date: Sat, 22 May 2010 22:16:26 +0200
-From: Dan Carpenter <error27@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [patch] mtd/sst25l: check for null consistently
-Message-ID: <20100522201626.GJ22515@bicker>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	kernel-janitors@vger.kernel.org,
-	H Hartley Sweeten <hsweeten@visionengravers.com>,
-	Andre Renaud <andre@bluewatersys.com>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>
+	Sat, 22 May 2010 23:17:03 -0700 (PDT)
+Subject: Re: [PATCH] UBI: fix delete compatible internal volume scan
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brijesh Singh <brijesh.s.singh@gmail.com>
+In-Reply-To: <AANLkTimuYmRDCZCkoB9YHifngCwjp9_B2ucFQ1seaiM9@mail.gmail.com>
+References: <AANLkTimuYmRDCZCkoB9YHifngCwjp9_B2ucFQ1seaiM9@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 23 May 2010 09:16:57 +0300
+Message-Id: <1274595417.8881.36.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The rest of the function assumes that "data" can be null.  I don't know
-the code well enough to say whether it can actually be null, but there 
-is no harm in checking here.
+On Tue, 2010-05-18 at 23:10 +0530, Brijesh Singh wrote:
+> This patch resolves a possible bug. Scan is adding delete compatible
+> blocks to both corr list and used list.
+> It should return after adding the block to corr list.
+> 
+> Signed-off-by: Brijesh Singh <brijesh.s.singh@gmail.com>
 
-Signed-off-by: Dan Carpenter <error27@gmail.com>
+I'm not sure this patch is enough. I think we should add a 'compat' flag
+to the 'struct ubi_mkvol_req' structure, to make it possible to create
+volumes with different compatibility flags. Then we need to write a test
+and add it to the UBI test-suite at 'mtd-utils/tests/ubi-tests/'.
 
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index ab5d8cd..684247a 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -454,7 +454,7 @@ static int __init sst25l_probe(struct spi_device *spi)
- 						  parts, nr_parts);
- 		}
+Then once we have tested and fixed this, we should merge this and also
+send to the '-stable' trees.
+
+I remember I did give the compat option a test, but probably not that
+good.
+
+I'll try to do what I've described as soon as I have time, but you guys
+could do this as well, if you have bandwidth.
  
--	} else if (data->nr_parts) {
-+	} else if (data && data->nr_parts) {
- 		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
- 			 data->nr_parts, data->name);
- 	}
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
