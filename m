@@ -1,22 +1,22 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-yw0-f188.google.com ([209.85.211.188])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OG4e1-00089h-0A
-	for linux-mtd@lists.infradead.org; Sun, 23 May 2010 06:26:41 +0000
-Received: by fxm15 with SMTP id 15so1869913fxm.36
+	id 1OG5Xf-0005HX-VH
+	for linux-mtd@lists.infradead.org; Sun, 23 May 2010 07:24:12 +0000
+Received: by ywh26 with SMTP id 26so1187242ywh.12
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 22 May 2010 23:26:39 -0700 (PDT)
-Subject: Re: how to pre-screen patch submissions from a newbie janitor?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Robert P. J. Day" <rpjday@crashcourse.ca>
-In-Reply-To: <alpine.DEB.2.00.1005181936120.3484@lynx>
-References: <alpine.DEB.2.00.1005181936120.3484@lynx>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 23 May 2010 09:26:36 +0300
-Message-Id: <1274595996.8881.42.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Sun, 23 May 2010 00:24:10 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1263541814-6642-2-git-send-email-21cnbao@gmail.com>
+References: <1263541814-6642-1-git-send-email-21cnbao@gmail.com>
+	<1263541814-6642-2-git-send-email-21cnbao@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Sun, 23 May 2010 03:23:50 -0400
+Message-ID: <AANLkTilWGNgBvg1Kg0OlmIv1shPwHRLrKjLojHNUz75l@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd-physmap: add support users can assign the probe
+	type in board files
+To: dwmw2@infradead.org
+Content-Type: text/plain; charset=UTF-8
+Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-05-18 at 19:40 -0400, Robert P. J. Day wrote:
-> not that long ago, i suggested cleaning up the MTD Kconfig/Makefile
-> structure since there was some definite redundancy in the inclusion of
-> source files and subdirectories.  now, i could whip up those patches
-> myself and submit them, but i have a local friend who's itching to get
-> start doing some simple kernel work and submitting some patches, and
-> he's more than smart enough to do what i described above.
-> 
->   however, since he's new to patch creation and submission, i offered
-> to "vet" his patches first.  i realize that my vetting carries no
-> weight on the MTD list, but given that i've submitted lots and lots of
-> patches elsewhere, i can still at least sanity check what he comes up
-> with before it hits the list.
-> 
->   is there a canonical signage for that nowadays?  is it "Reviewed-By"
-> or something like that?  so that by the time it gets to the MTD list,
-> he would have done the "Signed-Off-By" and i'd sign off as a reviewer.
-> is that the way it works?  or is there an alternative?  thanks.
+On Fri, Jan 15, 2010 at 03:50, Barry Song wrote:
+> There are three reasons to add this support:
+> 1. users probably know the interface type of their flashs, then probe
+> can be faster if they give the right type in platform data since wrong
+> types will not be detected.
+> 2. sometimes, detecting can cause destory to system. For example, for
+> kernel XIP, detecting can cause NOR enter a mode instructions can not
+> be fetched right, which will make kernel crash.
+> 3. For a new probe which is not listed in the rom_probe_types, if users
+> assign it in board files, physmap can still probe it.
 
-Hi,
-
-MTD list is not something special, common Linux kernel patch submission
-practices apply. So obviously, he signs off his patches, you can review,
-test, ack or sign off it. I am not pedantic about which tag to use, but
-you can always refer to 'Documentation/SubmittingPatches' and pick the
-right one.
- 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+any input on this patch ?  doesnt seem to be in post 2.6.34 merges ...
+-mike
