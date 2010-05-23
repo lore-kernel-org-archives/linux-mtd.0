@@ -1,22 +1,22 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-px0-f177.google.com ([209.85.212.177])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OGDiQ-0007U5-KS
-	for linux-mtd@lists.infradead.org; Sun, 23 May 2010 16:07:51 +0000
-Received: by fxm15 with SMTP id 15so2030812fxm.36
+	id 1OGF9B-0002fx-5V
+	for linux-mtd@lists.infradead.org; Sun, 23 May 2010 17:39:34 +0000
+Received: by pxi1 with SMTP id 1so1213192pxi.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 23 May 2010 09:07:49 -0700 (PDT)
-Subject: Re: what should be coming soon WRT Kconfig/Makefile cleanup
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Robert P. J. Day" <rpjday@crashcourse.ca>
-In-Reply-To: <alpine.DEB.2.00.1005201217440.17059@lynx>
-References: <alpine.DEB.2.00.1005201217440.17059@lynx>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 23 May 2010 19:07:45 +0300
-Message-Id: <1274630865.8881.61.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Sun, 23 May 2010 10:39:30 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1274506202.8881.30.camel@localhost.localdomain>
+References: <1274176439-22351-1-git-send-email-eballetbo@gmail.com>
+	<1274506202.8881.30.camel@localhost.localdomain>
+Date: Sun, 23 May 2010 19:39:30 +0200
+Message-ID: <AANLkTikhokXCrg5uKIkxnBWYsvBBKQ9QuYmEUvyjstX-@mail.gmail.com>
+Subject: Re: [PATCH] mtd-utils: Support 4096+64 page sizes.
+From: =?UTF-8?Q?Enric_Balletb=C3=B2_i_Serra?= <eballetbo@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-05-20 at 12:21 -0400, Robert P. J. Day wrote:
-> sorry, not trying to flog this, but as a short followup to what i
-> posted a couple days ago, i'm getting a new kernel janitor to work on
-> some specific projects and, rather than constantly email back and
-> forth with him, i posted his first potential project at my wiki.  it's
-> meant to be a general project, but i used the MTD part of the tree as
-> an example:
-> 
-> http://www.crashcourse.ca/wiki/index.php/Kconfig/Makefile_redundancy
-> 
->   nothing earth-shattering there, just something to get him started
-> and looking at the Kbuild structure.  if you think anything else
-> should be added to that page, or changed, let me know.  or any other
-> MTD-related janitorial projects i can dump on him.  :-)
+Hello,
 
-Nice write-up, I never payed much attention to Kconfig / Makefile stuff
-and it was interesting to read your article.
+2010/5/22 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Tue, 2010-05-18 at 11:53 +0200, Enric Balletbo i Serra wrote:
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 !(meminfo.oobsize =3D=3D 64 && meminfo.writesize
+>> =3D=3D 4096) &&
+>
+> Are there flashes with the 4096 page / 64 spare combination? Could you
+> refer to one? May be any URL? I thought 4096 comes with 128.
 
-I think your suggestions are good.
+Much to my regret I can't provide a URL because is not public. IGEP v2
+board has a Onenand with two dice of 2048/64 spare combination but mtd
+views 4096/64. The minimal write page is 4K (2K from first dice and 2K
+from second dice).
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Best regards,
+
+Enric
+
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
+>
+>
