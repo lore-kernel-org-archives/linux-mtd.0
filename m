@@ -1,17 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OG9w4-0006eB-P8
-	for linux-mtd@lists.infradead.org; Sun, 23 May 2010 12:05:42 +0000
-Subject: Re: [PATCH 0/4] UBI: improve empty flash handling
+	id 1OG9xJ-0006hk-MU
+	for linux-mtd@lists.infradead.org; Sun, 23 May 2010 12:06:58 +0000
+Subject: Re: suspend to disk hangs when running from ubifs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-In-Reply-To: <1273210793.2178.4.camel@localhost>
-References: <1272881582-17196-1-git-send-email-Artem.Bityutskiy@nokia.com>
-	<20100506095218.GB15335@Chamillionaire.breakpoint.cc>
-	<1273210793.2178.4.camel@localhost>
+To: saeed bishara <saeed.bishara@gmail.com>
+In-Reply-To: <r2ic70ff3ad1004120131h2127ece2o2fbb8256093c3b0b@mail.gmail.com>
+References: <c70ff3ad1002230217x1393c41che316e24a47f577ff@mail.gmail.com>
+	<1270042736.15073.28.camel@localhost>
+	<1270043508.15073.31.camel@localhost>
+	<r2ic70ff3ad1004120131h2127ece2o2fbb8256093c3b0b@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 23 May 2010 15:03:13 +0300
-Message-ID: <1274616193.22999.19.camel@localhost>
+Date: Sun, 23 May 2010 15:04:36 +0300
+Message-ID: <1274616276.22999.21.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -25,28 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-05-07 at 08:39 +0300, Artem Bityutskiy wrote:
-> On Thu, 2010-05-06 at 11:52 +0200, Sebastian Andrzej Siewior wrote:
-> > * Artem Bityutskiy | 2010-05-03 13:12:58 [+0300]:
-> > 
-> > >Hi Sebastian,
-> > Hi Artem,
-> > 
-> > >Please, review and test the following series.
-> > 
-> > The code looks fine. I wiped the flash and the test resulted in:
-> 
-> Thanks, I'll push this to the ubi-2.6.git tree shortly. Will add
-> 
-> Reviewed-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-> Tested-by: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-> 
-> If you object, please, let me know and I'll amend the tags.
+On Mon, 2010-04-12 at 11:31 +0300, saeed bishara wrote:
+> Thanks Artem, your suggestion fixed my issue.
+> saeed
 
-FYI, because these patches did not have enough exposure in linux-next, I
-did not merge them so far. But I thing it is fair to consider them as
-fixes, so I can merge them in the middle of the 2.6.35 cycle. I'll try
-not to forget about this, but you can always remind :-)
+FYI, the reboot notifiers were removed, so your issue has to be fixed in
+the latest linux kernel trees, or starting from the release version
+2.6.35.
 
 -- 
 Best Regards,
