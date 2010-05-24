@@ -1,21 +1,20 @@
-Subject: Re: [PATCH 03/20] mtd: pxa3xx_nand: remove the flash info in
-	driver structure
-From: David Woodhouse <dwmw2@infradead.org>
-To: Lei Wen <adrian.wenl@gmail.com>
-In-Reply-To: <AANLkTil9Toz4DU7YJ2B3Qtw3S1LCr90R7tlri7KC_NCC@mail.gmail.com>
-References: <AANLkTikU9yabdwx_a5SzpC11v9nowW_zglNHLaswaToB@mail.gmail.com>
-	<4BFA2A02.2040605@compulab.co.il>
-	<AANLkTil9Toz4DU7YJ2B3Qtw3S1LCr90R7tlri7KC_NCC@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 24 May 2010 10:45:05 +0100
-Message-ID: <1274694305.20576.2854.camel@macbook.infradead.org>
-Mime-Version: 1.0
+Received: from mx1.prosoftsystems.ru ([212.23.72.203])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OGUJC-0008Ih-06
+	for linux-mtd@lists.infradead.org; Mon, 24 May 2010 09:50:54 +0000
+From: Alexander Pazdnikov <pazdnikov@prosoft.ural.ru>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: ubifs became broken on contigous power-fails
+Date: Mon, 24 May 2010 15:50:48 +0600
+References: <E1OBqfw-0002Rs-00.pazdnikov-list-ru@f27.mail.ru>
+	<201005241249.28629.pazdnikov@prosoft.ural.ru>
+	<1274689080.22999.43.camel@localhost>
+In-Reply-To: <1274689080.22999.43.camel@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Message-ID: <201005241550.48074.pazdnikov@prosoft.ural.ru>
+Reply-To: pazdnikov@prosoftsystems.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-05-24 at 09:41 +0100, Lei Wen wrote:
-> For this patch set change the original c file greatly, more than half
-> of original code is changed,
-> I cannot create a patch for each change. (If so, this patch set would
-> grow to be a very large one. Maybe 30+?)
+> Could you enable debugging messages when mounging it after power cuts?
+> The messages generate a lot of noise, so you need to disable them before
+> starting the real test. The idea is to get UBIFS debugging messages when
+> errors occur.
+Sorry, I've hurried up, and after applying your pathes reflash all of the 
+devices with new firmware.
+But I'll setup some devices with all firmware to catch this issue again.
 
-Yes you can -- large patch sets are fine. If email becomes cumbersome,
-feel free to just publish it as a git tree. Once Mike approves I can
-pull from it.
+> I never had time to really dig this and fix. Would be nice if you could
+> do this because I will unlikely have time in the nearest future, but I
+> can help you.
+Thank you, I'll continue testings and can supply with debug information.
 
-Let me have a SSH public key if you want to be able to publish a git
-tree on git.infradead.org.
+> One think you can do is to make sure you do not fill UBIFS completely,
+> then you will avoid hitting these budgeting bugs, also known as ENOSPC
+> issues (I think btrfs uses this terminology).
+In the issue above there is 11% used space and 89% free space.
+I've got this issue only when mounting fs in RO and then remounting it in RW.
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Best regards,
+Sasha
