@@ -1,20 +1,19 @@
-Received: from mx1.prosoftsystems.ru ([212.23.72.203])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OGRTY-00005y-R0
-	for linux-mtd@lists.infradead.org; Mon, 24 May 2010 06:49:26 +0000
-From: Alexander Pazdnikov <pazdnikov@prosoft.ural.ru>
-To: <linux-mtd@lists.infradead.org>
-Subject: Re: ubifs became broken on contigous power-fails
-Date: Mon, 24 May 2010 12:49:28 +0600
-References: <E1OBqfw-0002Rs-00.pazdnikov-list-ru@f27.mail.ru>
-	<1274614112.22999.17.camel@localhost>
-	<1274617419.22999.24.camel@localhost>
-In-Reply-To: <1274617419.22999.24.camel@localhost>
+Message-ID: <4BFA29F9.8000400@compulab.co.il>
+Date: Mon, 24 May 2010 10:25:45 +0300
+From: Mike Rapoport <mike@compulab.co.il>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+Subject: Re: [PATCH 02/20] mtd: pxa3xx_nand: introduce common timing to reduce
+	read id times
+References: <AANLkTilOX0zNdwYfGrbJ-gJ7M6spBUIQqwZPFvAe4fbr@mail.gmail.com>
+In-Reply-To: <AANLkTilOX0zNdwYfGrbJ-gJ7M6spBUIQqwZPFvAe4fbr@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <201005241249.28629.pazdnikov@prosoft.ural.ru>
-Reply-To: pazdnikov@prosoftsystems.ru
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <david.woodhouse@intel.com>, linux-mtd@lists.infradead.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +23,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem, thank you very much, now applying your patches and making new stress-tests :-)
+Haojian Zhuang wrote:
+> From 35a06a21643049e146aba95057e7fe89c55d4b32 Mon Sep 17 00:00:00 2001
+> From: Lei Wen <leiwen@marvell.com>
+> Date: Mon, 22 Mar 2010 10:24:48 +0800
+> Subject: [PATCH] mtd: pxa3xx_nand: introduce common timing to reduce
+> read id times
+> 
+> We certainly don't need to send read id command times by times, since
+> we already know what the id is after the first read id...
+> 
+> So create a common timing which could ensure it would successfully read id
+> out all supported chip. Then follow the build-in table to reconfigure
+> the timing.
+> 
+> Signed-off-by: Lei Wen <leiwen@marvell.com>
+> Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+> ---
+>  drivers/mtd/nand/pxa3xx_nand.c |   33 +++++++++++++++++----------------
+>  1 files changed, 17 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+> index da40b9a..5658398 100644
+> --- a/drivers/mtd/nand/pxa3xx_nand.c
+> +++ b/drivers/mtd/nand/pxa3xx_nand.c
+> @@ -225,7 +225,13 @@ const static struct pxa3xx_nand_cmdset cmdset = {
+>  	.lock_status	= 0x007A,
+>  };
+> 
+> +/**
+> + * The timing defined in the builtin_flash_types[0]
+> + * could be considered as the common timing which is used to
+> + * detect the chip id before we know how to optimize further
+> + */
+>  static struct pxa3xx_nand_flash __devinitdata builtin_flash_types[] = {
+> +{ 0, 0, 0, 0, 0, 0, { 40, 80, 60, 100, 80, 100, 90000, 400, 40, }, },
+>  { 0x46ec, 32, 512, 16, 16, 4096, { 10, 0, 20, 40, 30, 40, 11123, 110, 10, }, },
+>  { 0xdaec, 64, 2048, 8, 8, 2048, { 10, 0, 20, 40, 30, 40, 11123, 110, 10, }, },
+>  { 0xd7ec, 128, 4096, 8, 8, 8192, { 10, 0, 20, 40, 30, 40, 11123, 110, 10, }, },
+> @@ -850,12 +856,6 @@ static int pxa3xx_nand_config_flash(struct
+> pxa3xx_nand_info *info,
+>  	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
+>  	uint32_t ndcr = 0x00000FFF; /* disable all interrupts */
+> 
+> -	if (f->page_size != 2048 && f->page_size != 512)
+> -		return -EINVAL;
+> -
+> -	if (f->flash_width != 16 && f->flash_width != 8)
+> -		return -EINVAL;
+> -
+>  	/* calculate flash information */
+>  	info->oob_size = (f->page_size == 2048) ? 64 : 16;
+>  	info->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
+> @@ -967,23 +967,24 @@ static int pxa3xx_nand_detect_flash(struct
+> pxa3xx_nand_info *info,
+>  		if (pxa3xx_nand_detect_config(info) == 0)
+>  			return 0;
+> 
+> -	for (i = 0; i < ARRAY_SIZE(builtin_flash_types); i++) {
+> +	f = &builtin_flash_types[0];
+> +	pxa3xx_nand_config_flash(info, f);
+> +	if (__readid(info, &id))
+> +		goto fail_detect;
+> 
+> +	for (i = 1; i < ARRAY_SIZE(builtin_flash_types); i++) {
+>  		f = &builtin_flash_types[i];
+> -
+> -		if (pxa3xx_nand_config_flash(info, f))
+> -			continue;
+> -
+> -		if (__readid(info, &id))
+> -			continue;
+> -
+> -		if (id == f->chip_id)
+> +		if (f->chip_id == id) {
+> +			dev_info(&info->pdev->dev, "detect chip id: 0x%x\n", id);
+> +			pxa3xx_nand_config_flash(info, f);
+>  			return 0;
+> +		}
+>  	}
+> 
+>  	dev_warn(&info->pdev->dev,
+> -		 "failed to detect configured nand flash; found %04x instead of\n",
+> +			"failed to detect configured nand flash; found %04x instead of\n",
 
-Also last holidays have caught another issue.
+Instead of what?
+And, what if the flash is not listed in the builtin_flash_types? Does it 
+really mean it's
+-ENODEV?
 
-We've modified our program to primary mount ubi2:dbfs in RO, then sleep 3 secs, then remount in RW.
-Today have found half (5/10) of devices with the error : No space left on device
-If mount by hands this stalled fs primary in RW mode, then everything goes OK.
-If drop down mount "mount ubi2:dbfs in RO, then sleep 3 secs", leave only mount in RW, everything also goes OK.
+>  		 id);
+> +fail_detect:
+>  	return -ENODEV;
+>  }
+> 
 
-[    6.576168] UBIFS: recovery needed
-[    6.665035] UBIFS: recovery deferred
-[    6.668941] UBIFS: mounted UBI device 2, volume 0, name "dbfs"
-[    6.674801] UBIFS: mounted read-only
-[    6.678707] UBIFS: file system size:   189407232 bytes (184968 KiB, 180 MiB, 1468 LEBs)
-[    6.687496] UBIFS: journal size:       9418752 bytes (9198 KiB, 8 MiB, 73 LEBs)
-[    6.694332] UBIFS: media format:       w4/r0 (latest is w4/r0)
-[    6.700191] UBIFS: default compressor: lzo
-[    6.705074] UBIFS: reserved for root:  4952683 bytes (4836 KiB)
-[    9.787104] UBIFS: completing deferred recovery
-Remounting ubi2:dbfs on /usr/local/ecom/db failed: No space left on device
-
-# df
-Filesystem                Size      Used Available Use% Mounted on
-ubi0:rootfs              13.2M      7.2M      6.0M  55% /
-tmpfs                     4.0K         0      4.0K   0% /dev
-shm                       1.0M         0      1.0M   0% /dev/shm
-tmpfs                     1.0M     12.0K   1012.0K   1% /tmp
-tmpfs                     1.0M      4.0K   1020.0K   0% /root
-ubi1:logs                11.5M      2.4M      8.4M  22% /var/log
-ubi1:tmp                 13.4M     16.0K     12.7M   0% /usr/local/ecom/tmp
-ubi0:local                2.1M     44.0K      1.9M   2% /var/local
-ubi:config                2.0M     68.0K      1.9M   3% /usr/local/ecom/conf
-ubi2:dbfs               169.2M     18.7M    145.8M  11% /usr/local/ecom/db
 
 -- 
-Best regards,
-Sasha
+Sincerely yours,
+Mike.
