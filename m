@@ -1,21 +1,22 @@
-MIME-Version: 1.0
-In-Reply-To: <4BFA29F9.8000400@compulab.co.il>
-References: <AANLkTilOX0zNdwYfGrbJ-gJ7M6spBUIQqwZPFvAe4fbr@mail.gmail.com>
-	<4BFA29F9.8000400@compulab.co.il>
-Date: Mon, 24 May 2010 16:20:35 +0800
-Message-ID: <AANLkTin4apWmBaCbBGIlSjfDNhhfU8-2s9ZgSpGc2u8k@mail.gmail.com>
-Subject: Re: [PATCH 02/20] mtd: pxa3xx_nand: introduce common timing to reduce
-	read id times
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Mike Rapoport <mike@compulab.co.il>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <david.woodhouse@intel.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OGStu-0004Wq-HG
+	for linux-mtd@lists.infradead.org; Mon, 24 May 2010 08:20:43 +0000
+Subject: Re: ubifs became broken on contigous power-fails
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: pazdnikov@prosoftsystems.ru
+In-Reply-To: <201005241249.28629.pazdnikov@prosoft.ural.ru>
+References: <E1OBqfw-0002Rs-00.pazdnikov-list-ru@f27.mail.ru>
+	<1274614112.22999.17.camel@localhost>
+	<1274617419.22999.24.camel@localhost>
+	<201005241249.28629.pazdnikov@prosoft.ural.ru>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 24 May 2010 11:18:00 +0300
+Message-ID: <1274689080.22999.43.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,141 +26,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 24, 2010 at 3:25 PM, Mike Rapoport <mike@compulab.co.il> wrote:
-> Haojian Zhuang wrote:
->>
->> From 35a06a21643049e146aba95057e7fe89c55d4b32 Mon Sep 17 00:00:00 2001
->> From: Lei Wen <leiwen@marvell.com>
->> Date: Mon, 22 Mar 2010 10:24:48 +0800
->> Subject: [PATCH] mtd: pxa3xx_nand: introduce common timing to reduce
->> read id times
->>
->> We certainly don't need to send read id command times by times, since
->> we already know what the id is after the first read id...
->>
->> So create a common timing which could ensure it would successfully read =
-id
->> out all supported chip. Then follow the build-in table to reconfigure
->> the timing.
->>
->> Signed-off-by: Lei Wen <leiwen@marvell.com>
->> Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
->> ---
->> =C2=A0drivers/mtd/nand/pxa3xx_nand.c | =C2=A0 33 +++++++++++++++++------=
-----------
->> =C2=A01 files changed, 17 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/pxa3xx_nand.c
->> b/drivers/mtd/nand/pxa3xx_nand.c
->> index da40b9a..5658398 100644
->> --- a/drivers/mtd/nand/pxa3xx_nand.c
->> +++ b/drivers/mtd/nand/pxa3xx_nand.c
->> @@ -225,7 +225,13 @@ const static struct pxa3xx_nand_cmdset cmdset =3D {
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0.lock_status =C2=A0 =C2=A0=3D 0x007A,
->> =C2=A0};
->>
->> +/**
->> + * The timing defined in the builtin_flash_types[0]
->> + * could be considered as the common timing which is used to
->> + * detect the chip id before we know how to optimize further
->> + */
->> =C2=A0static struct pxa3xx_nand_flash __devinitdata builtin_flash_types[=
-] =3D {
->> +{ 0, 0, 0, 0, 0, 0, { 40, 80, 60, 100, 80, 100, 90000, 400, 40, }, },
->> =C2=A0{ 0x46ec, 32, 512, 16, 16, 4096, { 10, 0, 20, 40, 30, 40, 11123, 1=
-10, 10,
->> }, },
->> =C2=A0{ 0xdaec, 64, 2048, 8, 8, 2048, { 10, 0, 20, 40, 30, 40, 11123, 11=
-0, 10,
->> }, },
->> =C2=A0{ 0xd7ec, 128, 4096, 8, 8, 8192, { 10, 0, 20, 40, 30, 40, 11123, 1=
-10, 10,
->> }, },
->> @@ -850,12 +856,6 @@ static int pxa3xx_nand_config_flash(struct
->> pxa3xx_nand_info *info,
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct pxa3xx_nand_platform_data *pdata =3D p=
-dev->dev.platform_data;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0uint32_t ndcr =3D 0x00000FFF; /* disable all =
-interrupts */
->>
->> - =C2=A0 =C2=A0 =C2=A0 if (f->page_size !=3D 2048 && f->page_size !=3D 5=
-12)
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EINVAL;
->> -
->> - =C2=A0 =C2=A0 =C2=A0 if (f->flash_width !=3D 16 && f->flash_width !=3D=
- 8)
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EINVAL;
->> -
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* calculate flash information */
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->oob_size =3D (f->page_size =3D=3D 2048)=
- ? 64 : 16;
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->read_id_bytes =3D (f->page_size =3D=3D =
-2048) ? 4 : 2;
->> @@ -967,23 +967,24 @@ static int pxa3xx_nand_detect_flash(struct
->> pxa3xx_nand_info *info,
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0if (pxa3xx_nand_d=
-etect_config(info) =3D=3D 0)
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0return 0;
->>
->> - =C2=A0 =C2=A0 =C2=A0 for (i =3D 0; i < ARRAY_SIZE(builtin_flash_types)=
-; i++) {
->> + =C2=A0 =C2=A0 =C2=A0 f =3D &builtin_flash_types[0];
->> + =C2=A0 =C2=A0 =C2=A0 pxa3xx_nand_config_flash(info, f);
->> + =C2=A0 =C2=A0 =C2=A0 if (__readid(info, &id))
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail_detect;
->>
->> + =C2=A0 =C2=A0 =C2=A0 for (i =3D 1; i < ARRAY_SIZE(builtin_flash_types)=
-; i++) {
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0f =3D &builtin_fl=
-ash_types[i];
->> -
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (pxa3xx_nand_confi=
-g_flash(info, f))
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 continue;
->> -
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (__readid(info, &i=
-d))
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 continue;
->> -
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (id =3D=3D f->chip=
-_id)
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (f->chip_id =3D=3D=
- id) {
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 dev_info(&info->pdev->dev, "detect chip id:
->> 0x%x\n", id);
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 pxa3xx_nand_config_flash(info, f);
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0return 0;
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
->>
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0dev_warn(&info->pdev->dev,
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0"failed to dete=
-ct configured nand flash; found %04x
->> instead of\n",
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 "failed to detect configured nand flash; found
->> %04x instead of\n",
->
-> Instead of what?
-> And, what if the flash is not listed in the builtin_flash_types? Does it
-> really mean it's
-> -ENODEV?
+On Mon, 2010-05-24 at 12:49 +0600, Alexander Pazdnikov wrote:
+> Artem, thank you very much, now applying your patches and making new stress-tests :-)
+> 
+> Also last holidays have caught another issue.
+> 
+> We've modified our program to primary mount ubi2:dbfs in RO, then sleep 3 secs, then remount in RW.
+> Today have found half (5/10) of devices with the error : No space left on device
+> If mount by hands this stalled fs primary in RW mode, then everything goes OK.
+> If drop down mount "mount ubi2:dbfs in RO, then sleep 3 secs", leave only mount in RW, everything also goes OK.
+> 
+> [    6.576168] UBIFS: recovery needed
+> [    6.665035] UBIFS: recovery deferred
+> [    6.668941] UBIFS: mounted UBI device 2, volume 0, name "dbfs"
+> [    6.674801] UBIFS: mounted read-only
+> [    6.678707] UBIFS: file system size:   189407232 bytes (184968 KiB, 180 MiB, 1468 LEBs)
+> [    6.687496] UBIFS: journal size:       9418752 bytes (9198 KiB, 8 MiB, 73 LEBs)
+> [    6.694332] UBIFS: media format:       w4/r0 (latest is w4/r0)
+> [    6.700191] UBIFS: default compressor: lzo
+> [    6.705074] UBIFS: reserved for root:  4952683 bytes (4836 KiB)
+> [    9.787104] UBIFS: completing deferred recovery
+> Remounting ubi2:dbfs on /usr/local/ecom/db failed: No space left on device
+> 
+> # df
+> Filesystem                Size      Used Available Use% Mounted on
+> ubi0:rootfs              13.2M      7.2M      6.0M  55% /
+> tmpfs                     4.0K         0      4.0K   0% /dev
+> shm                       1.0M         0      1.0M   0% /dev/shm
+> tmpfs                     1.0M     12.0K   1012.0K   1% /tmp
+> tmpfs                     1.0M      4.0K   1020.0K   0% /root
+> ubi1:logs                11.5M      2.4M      8.4M  22% /var/log
+> ubi1:tmp                 13.4M     16.0K     12.7M   0% /usr/local/ecom/tmp
+> ubi0:local                2.1M     44.0K      1.9M   2% /var/local
+> ubi:config                2.0M     68.0K      1.9M   3% /usr/local/ecom/conf
+> ubi2:dbfs               169.2M     18.7M    145.8M  11% /usr/local/ecom/db
 
-Yes, when the flash type is not listed in, you should add the new one manua=
-lly.
-For now, just add two lines is enough for a new type flash.
+Could you enable debugging messages when mounging it after power cuts?
+The messages generate a lot of noise, so you need to disable them before
+starting the real test. The idea is to get UBIFS debugging messages when
+errors occur.
 
-The reason why we do this is for different flash has different
-attribute that need to be seperated supported.
-For example, if one flash need different timing and higher ecc(This
-function is not included in this patch set, I would submit it later),
-the driver need to know it to deal in correct behavior.
+You can read about how to enable/disable the messages here:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+and in the
+Documentation/filesystems/ubifs.txt
 
-Best regards,
-Lei
+The problems you see are probably budgeting bugs. Please, read this
+section to get some idea what is the UBIFS budgeting subsystem about:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_spaceacc
+
+I have a test which reproduces budgeting bugs here:
+git://git.infradead.org/users/dedekind/ubifs-userspace.git
+
+see the "freespace" test and the 'freespace.sh' script which runs the
+freespace test on various NAND/NOR size and geometry flashes.
+
+I never had time to really dig this and fix. Would be nice if you could
+do this because I will unlikely have time in the nearest future, but I
+can help you.
+
+One think you can do is to make sure you do not fill UBIFS completely,
+then you will avoid hitting these budgeting bugs, also known as ENOSPC
+issues (I think btrfs uses this terminology).
+
+E.g., if you work under a normal user, you can reserve more space for
+the root (see -R mkfs.ubifs option). But of course, ideally we should
+just fix the issues.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
