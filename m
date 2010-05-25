@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OGmLO-0000zB-Ho
-	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 05:06:23 +0000
+	id 1OGmMf-00020w-1E
+	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 05:07:42 +0000
 Subject: Re: UBIFS failed to recover master node
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: twebb <taliaferro62@gmail.com>
 In-Reply-To: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
 References: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 25 May 2010 08:05:14 +0300
-Message-ID: <1274763914.2106.1.camel@localhost>
+Date: Tue, 25 May 2010 08:06:22 +0300
+Message-ID: <1274763982.2106.2.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -56,8 +56,8 @@ On Mon, 2010-05-24 at 11:22 -0400, twebb wrote:
 > failed to recover master node
 > mount: mounting ubi0_0 on /mnt/ failed: Invalid argument
 
-Please, enable all debugging messages, mount this flash again, and send
-the messages.
+And BTW, it is a good idea not to erase/re-flash this device if you want
+to fix this problem.
 
 -- 
 Best Regards,
