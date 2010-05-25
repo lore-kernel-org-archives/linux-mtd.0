@@ -1,17 +1,18 @@
-Subject: Re: [PATCH] NAND: add Toshiba TC58NVG0 device ID
-From: David Woodhouse <dwmw2@infradead.org>
+Received: from zmc.proxad.net ([212.27.53.206])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OGqLI-0004B6-Qk
+	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 09:22:33 +0000
+Date: Tue, 25 May 2010 11:22:14 +0200 (CEST)
+From: Florian Fainelli <ffainelli@freebox.fr>
 To: Guillaume LECERF <glecerf@gmail.com>
+Message-ID: <823959486.313781274779334977.JavaMail.root@zimbra-corp-1-b7>
 In-Reply-To: <AANLkTilcC2q_sj_i62f0qlnBVt7LiNktT7HfLaBziJd_@mail.gmail.com>
-References: <201005071909.13259.florian@openwrt.org>
-	<201005251036.12238.ffainelli@freebox.fr>
-	<AANLkTilcC2q_sj_i62f0qlnBVt7LiNktT7HfLaBziJd_@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 25 May 2010 10:18:36 +0100
-Message-ID: <1274779116.20576.8470.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Subject: Re: [PATCH] NAND: add Toshiba TC58NVG0 device ID
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <david.woodhouse@intel.com>,
 	Florian Fainelli <ffainelli@freebox.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,13 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-05-25 at 09:50 +0100, Guillaume LECERF wrote:
-> 2010/5/25 Florian Fainelli <ffainelli@freebox.fr>:
-> > David, Artem, anything wrong with this patch?
-> 
-> http://git.infradead.org/mtd-2.6.git/commitdiff/f6b173cc9d73c00a3182ec3fdb0f03909cad4b5b
+Hi Guillaume,
 
-http://git.kernel.org/linus/f6b173cc9d73c00a3182ec3fdb0f03909cad4b5b
+----- Mail d'origine -----
+De: Guillaume LECERF <glecerf@gmail.com>
+=C3=80: Florian Fainelli <ffainelli@freebox.fr>
+Cc: David Woodhouse <david.woodhouse@intel.com>, linux-mtd@lists.infradead.=
+org, Artem Bityutskiy <dedekind1@gmail.com>
+Envoy=C3=A9: Tue, 25 May 2010 10:50:13 +0200 (CEST)
+Objet: Re: [PATCH] NAND: add Toshiba TC58NVG0 device ID
 
--- 
-dwmw2
+2010/5/25 Florian Fainelli <ffainelli@freebox.fr>:
+> David, Artem, anything wrong with this patch?
+
+http://git.infradead.org/mtd-2.6.git/commitdiff/f6b173cc9d73c00a3182ec3fdb0=
+f03909cad4b5b
+
+Oh, I did not see that, thanks!
+--
+Florian
