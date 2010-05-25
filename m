@@ -1,16 +1,19 @@
-Received: from rcsinet10.oracle.com ([148.87.113.121])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OGmdt-0007Aj-Pe
-	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 05:25:30 +0000
-Date: Mon, 24 May 2010 22:22:51 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: lkml <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>
-Subject: [PATCH] mtd/nand_base: fix kernel-doc warnings & typos
-Message-Id: <20100524222251.5c99b939.randy.dunlap@oracle.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from smtp4-g21.free.fr ([212.27.42.4])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OGpcV-0004MV-NK
+	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 08:36:16 +0000
+From: Florian Fainelli <ffainelli@freebox.fr>
+To: David Woodhouse <david.woodhouse@intel.com>
+Subject: Re: [PATCH] NAND: add Toshiba TC58NVG0 device ID
+Date: Tue, 25 May 2010 10:36:12 +0200
+References: <201005071909.13259.florian@openwrt.org>
+In-Reply-To: <201005071909.13259.florian@openwrt.org>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Message-Id: <201005251036.12238.ffainelli@freebox.fr>
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,116 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+On Friday 07 May 2010 19:09:13 Florian Fainelli wrote:
+> This NAND flash part advertises 0xD1 as an identifier but is still a
+> working 128MBytes x 8bits 3.3V NAND part.
 
-Fix mtd/nand_base.c kernel-doc warnings and typos.
+David, Artem, anything wrong with this patch?
 
-Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'mtd'
-Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'ofs'
-Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'len'
-Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'invert'
-Warning(drivers/mtd/nand/nand_base.c:930): No description found for parameter 'mtd'
-Warning(drivers/mtd/nand/nand_base.c:930): No description found for parameter 'ofs'
-Warning(drivers/mtd/nand/nand_base.c:930): No description found for parameter 'len'
-Warning(drivers/mtd/nand/nand_base.c:987): No description found for parameter 'mtd'
-Warning(drivers/mtd/nand/nand_base.c:987): No description found for parameter 'ofs'
-Warning(drivers/mtd/nand/nand_base.c:987): No description found for parameter 'len'
-Warning(drivers/mtd/nand/nand_base.c:2087): No description found for parameter 'len'
-
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
----
- drivers/mtd/nand/nand_base.c |   39 ++++++++++++++++-----------------
- scripts/kernel-doc           |    2 +
- 2 files changed, 22 insertions(+), 19 deletions(-)
-
---- lnx-2634-g8-kerndoc.orig/drivers/mtd/nand/nand_base.c
-+++ lnx-2634-g8-kerndoc/drivers/mtd/nand/nand_base.c
-@@ -876,17 +876,17 @@ static int nand_wait(struct mtd_info *mt
- }
- 
- /**
-- * __nand_unlock - [REPLACABLE] unlocks specified locked blockes
-+ * __nand_unlock - [REPLACEABLE] unlocks specified locked blocks
-  *
-- * @param mtd - mtd info
-- * @param ofs - offset to start unlock from
-- * @param len - length to unlock
-- * @invert -  when = 0, unlock the range of blocks within the lower and
-+ * @mtd: mtd info
-+ * @ofs: offset to start unlock from
-+ * @len: length to unlock
-+ * @invert:   when = 0, unlock the range of blocks within the lower and
-  *                      upper boundary address
-- *            whne = 1, unlock the range of blocks outside the boundaries
-+ *            when = 1, unlock the range of blocks outside the boundaries
-  *                      of the lower and upper boundary address
-  *
-- * @return - unlock status
-+ * return - unlock status
-  */
- static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
- 					uint64_t len, int invert)
-@@ -918,13 +918,13 @@ static int __nand_unlock(struct mtd_info
- }
- 
- /**
-- * nand_unlock - [REPLACABLE] unlocks specified locked blockes
-+ * nand_unlock - [REPLACEABLE] unlocks specified locked blocks
-  *
-- * @param mtd - mtd info
-- * @param ofs - offset to start unlock from
-- * @param len - length to unlock
-+ * @mtd: mtd info
-+ * @ofs: offset to start unlock from
-+ * @len: length to unlock
-  *
-- * @return - unlock status
-+ * return - unlock status
-  */
- int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
- {
-@@ -969,16 +969,16 @@ out:
- }
- 
- /**
-- * nand_lock - [REPLACABLE] locks all blockes present in the device
-+ * nand_lock - [REPLACEABLE] locks all blocks present in the device
-  *
-- * @param mtd - mtd info
-- * @param ofs - offset to start unlock from
-- * @param len - length to unlock
-+ * @mtd: mtd info
-+ * @ofs: offset to start unlock from
-+ * @len: length to unlock
-  *
-- * @return - lock status
-+ * return - lock status
-  *
-- * This feature is not support in many NAND parts. 'Micron' NAND parts
-- * do have this feature, but it allows only to lock all blocks not for
-+ * This feature is not supported in many NAND parts. 'Micron' NAND parts
-+ * do have this feature, but it allows only to lock all blocks, not for
-  * specified range for block.
-  *
-  * Implementing 'lock' feature by making use of 'unlock', for now.
-@@ -2080,6 +2080,7 @@ static int nand_write_page(struct mtd_in
-  * nand_fill_oob - [Internal] Transfer client buffer to oob
-  * @chip:	nand chip structure
-  * @oob:	oob data buffer
-+ * @len:	oob data write length
-  * @ops:	oob ops structure
-  */
- static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
---- lnx-2634-g8-kerndoc.orig/scripts/kernel-doc
-+++ lnx-2634-g8-kerndoc/scripts/kernel-doc
-@@ -1454,6 +1454,8 @@ sub dump_enum($$) {
-     my $file = shift;
- 
-     $x =~ s@/\*.*?\*/@@gos;	# strip comments.
-+    $x =~ s/^#\s*define\s+.*$//; # strip #define macros inside enums
-+
-     if ($x =~ /enum\s+(\w+)\s*{(.*)}/) {
- 	$declaration_name = $1;
- 	my $members = $2;
+> 
+> Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
+> ---
+> diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
+> index 69ee2c9..89907ed 100644
+> --- a/drivers/mtd/nand/nand_ids.c
+> +++ b/drivers/mtd/nand/nand_ids.c
+> @@ -82,6 +82,7 @@ struct nand_flash_dev nand_flash_ids[] = {
+>  	/* 1 Gigabit */
+>  	{"NAND 128MiB 1,8V 8-bit",	0xA1, 0, 128, 0, LP_OPTIONS},
+>  	{"NAND 128MiB 3,3V 8-bit",	0xF1, 0, 128, 0, LP_OPTIONS},
+> +	{"NAND 128MiB 3,3V 8-bit",	0xD1, 0, 128, 0, LP_OPTIONS},
+>  	{"NAND 128MiB 1,8V 16-bit",	0xB1, 0, 128, 0, LP_OPTIONS16},
+>  	{"NAND 128MiB 3,3V 16-bit",	0xC1, 0, 128, 0, LP_OPTIONS16},
