@@ -1,19 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from rcsinet10.oracle.com ([148.87.113.121])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OGmMf-00020w-1E
-	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 05:07:42 +0000
-Subject: Re: UBIFS failed to recover master node
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: twebb <taliaferro62@gmail.com>
-In-Reply-To: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
-References: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 25 May 2010 08:06:22 +0300
-Message-ID: <1274763982.2106.2.camel@localhost>
+	id 1OGmdt-0007Aj-Pe
+	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 05:25:30 +0000
+Date: Mon, 24 May 2010 22:22:51 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: lkml <linux-kernel@vger.kernel.org>, akpm <akpm@linux-foundation.org>
+Subject: [PATCH] mtd/nand_base: fix kernel-doc warnings & typos
+Message-Id: <20100524222251.5c99b939.randy.dunlap@oracle.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +20,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-05-24 at 11:22 -0400, twebb wrote:
-> I've had several cases where our MLC NAND flash appears corrupted in
-> such a way that one of three UBIFS volumes can not be mounted due to
-> "failed to recover master node".  I haven't been able to reproduce the
-> problem, but we've had at least 5 incidents where this has occurred.
-> (A partial capture from one of the failures is below.)
-> 
-> I'm starting to investigate this problem and don't know if this is a
-> UBIFS/UBI problem or a NAND driver problem.  I'm starting the process
-> of back-porting the latest UBIFS code to our 2.6.29 kernel - hoping
-> that new UBIFS code will solve the problem.  However, this may also be
-> a driver problem and I wonder if I also need to update that driver
-> (pxa3xx_nand).  Any suggestions for debugging this problem?
-> 
-> Thanks,
-> twebb
-> 
-> 
-> capture:
-> [root@ESIedge mtd-utils]# mount -t ubifs ubi0_0 /mnt/
-> [  239.605869] UBI error: ubi_io_read: error -74 while reading 516096
-> bytes from PEB 4:8192, read 516096 bytes
-> [  239.616317] UBIFS error (pid 676): ubifs_scan: corrupt empty space
-> at LEB 2:268135
-> [  239.623996] UBIFS error (pid 676): ubifs_scanned_corruption:
-> corruption at LEB 2:268135
-> [  239.642101] UBIFS error (pid 676): ubifs_scan: LEB 2 scanning failed
-> [  239.976396] UBI error: ubi_io_read: error -74 while reading 516096
-> bytes from PEB 4:8192, read 516096 bytes
-> [  239.986742] UBIFS error (pid 676): ubifs_recover_master_node:
-> failed to recover master node
-> mount: mounting ubi0_0 on /mnt/ failed: Invalid argument
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-And BTW, it is a good idea not to erase/re-flash this device if you want
-to fix this problem.
+Fix mtd/nand_base.c kernel-doc warnings and typos.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'mtd'
+Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'ofs'
+Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'len'
+Warning(drivers/mtd/nand/nand_base.c:893): No description found for parameter 'invert'
+Warning(drivers/mtd/nand/nand_base.c:930): No description found for parameter 'mtd'
+Warning(drivers/mtd/nand/nand_base.c:930): No description found for parameter 'ofs'
+Warning(drivers/mtd/nand/nand_base.c:930): No description found for parameter 'len'
+Warning(drivers/mtd/nand/nand_base.c:987): No description found for parameter 'mtd'
+Warning(drivers/mtd/nand/nand_base.c:987): No description found for parameter 'ofs'
+Warning(drivers/mtd/nand/nand_base.c:987): No description found for parameter 'len'
+Warning(drivers/mtd/nand/nand_base.c:2087): No description found for parameter 'len'
+
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/nand_base.c |   39 ++++++++++++++++-----------------
+ scripts/kernel-doc           |    2 +
+ 2 files changed, 22 insertions(+), 19 deletions(-)
+
+--- lnx-2634-g8-kerndoc.orig/drivers/mtd/nand/nand_base.c
++++ lnx-2634-g8-kerndoc/drivers/mtd/nand/nand_base.c
+@@ -876,17 +876,17 @@ static int nand_wait(struct mtd_info *mt
+ }
+ 
+ /**
+- * __nand_unlock - [REPLACABLE] unlocks specified locked blockes
++ * __nand_unlock - [REPLACEABLE] unlocks specified locked blocks
+  *
+- * @param mtd - mtd info
+- * @param ofs - offset to start unlock from
+- * @param len - length to unlock
+- * @invert -  when = 0, unlock the range of blocks within the lower and
++ * @mtd: mtd info
++ * @ofs: offset to start unlock from
++ * @len: length to unlock
++ * @invert:   when = 0, unlock the range of blocks within the lower and
+  *                      upper boundary address
+- *            whne = 1, unlock the range of blocks outside the boundaries
++ *            when = 1, unlock the range of blocks outside the boundaries
+  *                      of the lower and upper boundary address
+  *
+- * @return - unlock status
++ * return - unlock status
+  */
+ static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
+ 					uint64_t len, int invert)
+@@ -918,13 +918,13 @@ static int __nand_unlock(struct mtd_info
+ }
+ 
+ /**
+- * nand_unlock - [REPLACABLE] unlocks specified locked blockes
++ * nand_unlock - [REPLACEABLE] unlocks specified locked blocks
+  *
+- * @param mtd - mtd info
+- * @param ofs - offset to start unlock from
+- * @param len - length to unlock
++ * @mtd: mtd info
++ * @ofs: offset to start unlock from
++ * @len: length to unlock
+  *
+- * @return - unlock status
++ * return - unlock status
+  */
+ int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len)
+ {
+@@ -969,16 +969,16 @@ out:
+ }
+ 
+ /**
+- * nand_lock - [REPLACABLE] locks all blockes present in the device
++ * nand_lock - [REPLACEABLE] locks all blocks present in the device
+  *
+- * @param mtd - mtd info
+- * @param ofs - offset to start unlock from
+- * @param len - length to unlock
++ * @mtd: mtd info
++ * @ofs: offset to start unlock from
++ * @len: length to unlock
+  *
+- * @return - lock status
++ * return - lock status
+  *
+- * This feature is not support in many NAND parts. 'Micron' NAND parts
+- * do have this feature, but it allows only to lock all blocks not for
++ * This feature is not supported in many NAND parts. 'Micron' NAND parts
++ * do have this feature, but it allows only to lock all blocks, not for
+  * specified range for block.
+  *
+  * Implementing 'lock' feature by making use of 'unlock', for now.
+@@ -2080,6 +2080,7 @@ static int nand_write_page(struct mtd_in
+  * nand_fill_oob - [Internal] Transfer client buffer to oob
+  * @chip:	nand chip structure
+  * @oob:	oob data buffer
++ * @len:	oob data write length
+  * @ops:	oob ops structure
+  */
+ static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
+--- lnx-2634-g8-kerndoc.orig/scripts/kernel-doc
++++ lnx-2634-g8-kerndoc/scripts/kernel-doc
+@@ -1454,6 +1454,8 @@ sub dump_enum($$) {
+     my $file = shift;
+ 
+     $x =~ s@/\*.*?\*/@@gos;	# strip comments.
++    $x =~ s/^#\s*define\s+.*$//; # strip #define macros inside enums
++
+     if ($x =~ /enum\s+(\w+)\s*{(.*)}/) {
+ 	$declaration_name = $1;
+ 	my $members = $2;
