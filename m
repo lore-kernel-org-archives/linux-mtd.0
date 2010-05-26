@@ -1,24 +1,23 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OHJXR-00070H-Oa
-	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 16:33:02 +0000
-Received: by mail-fx0-f49.google.com with SMTP id 15so4916906fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 26 May 2010 09:33:01 -0700 (PDT)
-Subject: Re: UBIFS failed to recover master node
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: twebb <taliaferro62@gmail.com>
-In-Reply-To: <AANLkTincmuzSyvBHO6JSsV4aJjht_JXPId58Tk-bzHIJ@mail.gmail.com>
-References: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
-	<1274763914.2106.1.camel@localhost>
-	<AANLkTincmuzSyvBHO6JSsV4aJjht_JXPId58Tk-bzHIJ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 26 May 2010 19:32:21 +0300
-Message-Id: <1274891541.2668.4.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OHKnG-0007po-S8
+	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 17:53:28 +0000
+Received: from octopus.hi.pengutronix.de ([2001:6f8:1178:2:215:17ff:fe12:23b0])
+	by metis.ext.pengutronix.de with esmtp (Exim 4.71)
+	(envelope-from <wsa@pengutronix.de>) id 1OHKnA-00027x-2G
+	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 19:53:20 +0200
+Received: from wsa by octopus.hi.pengutronix.de with local (Exim 4.69)
+	(envelope-from <wsa@pengutronix.de>) id 1OHKnA-00060s-18
+	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 19:53:20 +0200
+Date: Wed, 26 May 2010 19:53:20 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Do we remove from jedec_probe.c?
+Message-ID: <20100526175320.GD24167@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RYJh/3oyKhIjGcML"
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +27,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-05-26 at 12:06 -0400, twebb wrote:
-> > Please, enable all debugging messages, mount this flash again, and send
-> > the messages.
 
-> Should I enable CONFIG_UBIFS_FS_DEBUG_CHKS ?
+--RYJh/3oyKhIjGcML
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-You may enable checks as well, but I was talking about messages. And
-enable them before mounting the corrupted flash, not when you are trying
-to reproduce this.
+Hi,
 
-Refer Documentation/filesystems/ubifs.txt
+now that Guillaume introduced cfi-support for some SST-flashes, I wonder if
+those can be removed from jedec_probe.c? Or should they stay for
+backward-compatibility?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Proposed patch would look like this:
+
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_prob=
+e.c
+index d72a5fb..37fdff3 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -146,8 +146,6 @@
+ #define SST29LE512	0x003d
+ #define SST39LF800	0x2781
+ #define SST39LF160	0x2782
+-#define SST39VF1601	0x234b
+-#define SST39VF3201	0x235b
+ #define SST39WF1601	0x274b
+ #define SST39WF1602	0x274a
+ #define SST39LF512	0x00D4
+@@ -1500,19 +1498,6 @@ static const struct amd_flash_info jedec_table[] =3D=
+ {
+ 			ERASEINFO(0x1000,256)
+ 		}
+ 	}, {
+-		.mfr_id		=3D CFI_MFR_SST,     /* should be CFI */
+-		.dev_id		=3D SST39VF1601,
+-		.name		=3D "SST 39VF1601",
+-		.devtypes	=3D CFI_DEVICETYPE_X16,
+-		.uaddr		=3D MTD_UADDR_0xAAAA_0x5555,
+-		.dev_size	=3D SIZE_2MiB,
+-		.cmd_set	=3D P_ID_AMD_STD,
+-		.nr_regions	=3D 2,
+-		.regions	=3D {
+-			ERASEINFO(0x1000,256),
+-			ERASEINFO(0x1000,256)
+-		}
+-	}, {
+ 		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
+ 		.mfr_id		=3D CFI_MFR_SST,
+ 		.dev_id		=3D SST39WF1601,
+@@ -1541,21 +1526,6 @@ static const struct amd_flash_info jedec_table[] =3D=
+ {
+ 			ERASEINFO(0x1000,256)
+ 		}
+ 	}, {
+-		.mfr_id		=3D CFI_MFR_SST,     /* should be CFI */
+-		.dev_id		=3D SST39VF3201,
+-		.name		=3D "SST 39VF3201",
+-		.devtypes	=3D CFI_DEVICETYPE_X16,
+-		.uaddr		=3D MTD_UADDR_0xAAAA_0x5555,
+-		.dev_size	=3D SIZE_4MiB,
+-		.cmd_set	=3D P_ID_AMD_STD,
+-		.nr_regions	=3D 4,
+-		.regions	=3D {
+-			ERASEINFO(0x1000,256),
+-			ERASEINFO(0x1000,256),
+-			ERASEINFO(0x1000,256),
+-			ERASEINFO(0x1000,256)
+-		}
+-	}, {
+ 		.mfr_id		=3D CFI_MFR_SST,
+ 		.dev_id		=3D SST36VF3203,
+ 		.name		=3D "SST 36VF3203",
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--RYJh/3oyKhIjGcML
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkv9YBAACgkQD27XaX1/VRto7ACfV6hIfmbu6AF7t7Rx0YQu+rej
+NusAnRNc39mK+hG4QUXnQGttsoOQIO90
+=ot01
+-----END PGP SIGNATURE-----
+
+--RYJh/3oyKhIjGcML--
