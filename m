@@ -1,29 +1,22 @@
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OHJ7d-0002Tc-Hx
+	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 16:06:22 +0000
+Received: by pvg2 with SMTP id 2so1545806pvg.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 26 May 2010 09:06:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4BFCF06E.5010809@compulab.co.il>
-References: <AANLkTinVBXhT77Zd-LNpufgJAl7WZdic0oxDFwvNkvJg@mail.gmail.com>
-	<4BFA2B5B.4080105@compulab.co.il>
-	<AANLkTilLYFVPcel-rE8RbuTWEir4RJOBqmyxirb6Vozn@mail.gmail.com>
-	<4BFA5C58.7050109@compulab.co.il>
-	<AANLkTimYwQa5aJ2wuuBvPQ6O6hgYKaQcCcb3jwTcgFcD@mail.gmail.com>
-	<4BFA7D60.6020703@compulab.co.il>
-	<AANLkTil1mq5FBePSexz80DyT80DGqshqyJEi6Pfp0kV7@mail.gmail.com>
-	<4BFBA4BA.9020502@compulab.co.il>
-	<AANLkTimOGbp6m2v4574ZR-74zbUA-dSAZl3BhlkOBqr3@mail.gmail.com>
-	<4BFCF06E.5010809@compulab.co.il>
-Date: Wed, 26 May 2010 21:42:28 +0800
-Message-ID: <AANLkTinaQdD7z2JWrh-LVKbviFsHHDMA4iCXawonlocy@mail.gmail.com>
-Subject: Re: [PATCH 01/20] mtd: pxa3xx_nand: refuse the flash definition get
-	from platform
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Mike Rapoport <mike@compulab.co.il>
+In-Reply-To: <1274763914.2106.1.camel@localhost>
+References: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
+	<1274763914.2106.1.camel@localhost>
+Date: Wed, 26 May 2010 12:06:15 -0400
+Message-ID: <AANLkTincmuzSyvBHO6JSsV4aJjht_JXPId58Tk-bzHIJ@mail.gmail.com>
+Subject: Re: UBIFS failed to recover master node
+From: twebb <taliaferro62@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=UTF-8
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	David Woodhouse <david.woodhouse@intel.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,72 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 26, 2010 at 5:57 PM, Mike Rapoport <mike@compulab.co.il> wrote:
-> Lei Wen wrote:
+>> I've had several cases where our MLC NAND flash appears corrupted in
+>> such a way that one of three UBIFS volumes can not be mounted due to
+>> "failed to recover master node". =C2=A0I haven't been able to reproduce =
+the
+>> problem, but we've had at least 5 incidents where this has occurred.
+>> (A partial capture from one of the failures is below.)
 >>
->> On Tue, May 25, 2010 at 6:21 PM, Mike Rapoport <mike@compulab.co.il>
->> wrote:
+>> I'm starting to investigate this problem and don't know if this is a
+>> UBIFS/UBI problem or a NAND driver problem. =C2=A0I'm starting the proce=
+ss
+>> of back-porting the latest UBIFS code to our 2.6.29 kernel - hoping
+>> that new UBIFS code will solve the problem. =C2=A0However, this may also=
+ be
+>> a driver problem and I wonder if I also need to update that driver
+>> (pxa3xx_nand). =C2=A0Any suggestions for debugging this problem?
+>>
+>> Thanks,
+>> twebb
+>>
+>>
+>> capture:
+>> [root@ESIedge mtd-utils]# mount -t ubifs ubi0_0 /mnt/
+>> [ =C2=A0239.605869] UBI error: ubi_io_read: error -74 while reading 5160=
+96
+>> bytes from PEB 4:8192, read 516096 bytes
+>> [ =C2=A0239.616317] UBIFS error (pid 676): ubifs_scan: corrupt empty spa=
+ce
+>> at LEB 2:268135
+>> [ =C2=A0239.623996] UBIFS error (pid 676): ubifs_scanned_corruption:
+>> corruption at LEB 2:268135
+>> [ =C2=A0239.642101] UBIFS error (pid 676): ubifs_scan: LEB 2 scanning fa=
+iled
+>> [ =C2=A0239.976396] UBI error: ubi_io_read: error -74 while reading 5160=
+96
+>> bytes from PEB 4:8192, read 516096 bytes
+>> [ =C2=A0239.986742] UBIFS error (pid 676): ubifs_recover_master_node:
+>> failed to recover master node
+>> mount: mounting ubi0_0 on /mnt/ failed: Invalid argument
 >
->>> Can you please elaborate what are the attributes that cannot be detected?
->>
->> The attributes comes from two new features that would be included into
->> pxa3xx_nand: BCH support and 8bit per 512bytes ECC.
->> Originally, our pxa3xx_nand only support Hamming ECC way. So no doubt
->> just read the timing register, and just set use ecc bit in NDCR is
->> enough.
->> But for now there is two type of ECC type. For distinguish, we
->> introduce a new register called NDECCCTRL. NDECCCTRL_BCH_EN in the bit
->> 0 of that register control whether use the BCH ECC.
->> You may ask me why not just read from NDECCCTRL to know the ECC type.
->> It is right, but not always to be true. It the last command executed
->> for nand before kernel take control is not read or write operation,
->> the bootloader has no reason to set the NDECCCTRL register. So our
->> kernel also unable to detect whether to use BCH or HAMMING ECC.
->>
->> This two type of ecc has different character, if use hamming ecc for
->> reading while that page is written by BCH, it would instant report of
->> DB error...
->> This is not the worst case., for we may ask the bootloader to always
->> set the NDECCCTRL. (There is no reason to apply ECC when do command
->> except the read and write although)
->>
->> The worst would comes at the supporting of 8bit per 512 bytes ECC. Our
->> BCH engine only support 16bit corroction per 2k data, aka 4bit per
->> 512bytes.
->> If we need to support 8bit per 512bytes feature, which is needed by a
->> lot of newest flash which require such high ecc strength.
->> Then we have to apply the BCH to 1k data instead of 2k. The layout of
->> content on flash would change.
->> Original BCH apply to 2k nand, the layout may like: | 2k data | + | 30
->> bytes ECC |
->> Now after apply BCH to 1k range, the layout would be like: | 1k data |
->> + | 30 bytes ECC| + | 1k data| + |30 bytes ECC|.
->> Even as I said let the bootloader to always set the NDECCCTRL. The
->> kernel would still cannot distinguish the two use case of 4bit per
->> 512bytes and 8bit per 512 bytes ECC strength requirement.
->> For they both use BCH, the only difference could be told on the nand
->> layout, not by register reading.
->>
->> Those two new feature would lead different nand content layout. So if
->> not distinguish properly, nand would not be able to work functional.
->> And obviously, the two features cannot get from register reading, and
->> that is the reason why I suggest drop the feature.
+> Please, enable all debugging messages, mount this flash again, and send
+> the messages.
 >
-> Why not make the ECC type and strength part of the
-> pxa3xx_nand_platform_data? This way you can ensure NAND layout consistency
-> for particular platform without reduction in the driver robustness.
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
 >
 
-The reason why we need define different ecc type and ecc strength is
-for those different kind of ecc strength could give different
-performance cost. For data safe consideration, the higher of ecc
-strength would be safer. But you must notice that the higher ecc
-strength would bring to us more performance downgrade. For flash that
-only need 1bit correction per 512 bytes, we certainly don't
-need the 8bit ECC, or we would suffer from the performance.
+I have enabled...
+CONFIG_MTD_UBI_DEBUG=3Dy
+CONFIG_UBIFS_FS_DEBUG=3Dy
 
-One table with the ECC strength description would solve all the
-problem we have, and also no risk in the driver robustness.
-
-Thanks,
-Lei
+Should I enable CONFIG_UBIFS_FS_DEBUG_CHKS ?
