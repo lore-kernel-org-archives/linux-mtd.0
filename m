@@ -1,33 +1,29 @@
-Received: from mail-px0-f177.google.com ([209.85.212.177])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OGwEc-0005jq-30
-	for linux-mtd@lists.infradead.org; Tue, 25 May 2010 15:40:02 +0000
-Received: by pxi1 with SMTP id 1so2177606pxi.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 25 May 2010 08:40:00 -0700 (PDT)
+Message-ID: <4BFCF06E.5010809@compulab.co.il>
+Date: Wed, 26 May 2010 12:57:02 +0300
+From: Mike Rapoport <mike@compulab.co.il>
 MIME-Version: 1.0
-In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B030DA9F8EB@dbde02.ent.ti.com>
-References: <s-ghorai@ti.com>
-	<1274181389-7488-1-git-send-email-s-ghorai@ti.com>
-	<1274181389-7488-2-git-send-email-s-ghorai@ti.com>
-	<AANLkTikFxtzDpiJvJjnuonM2urMJR1LDLafx5JtpC_bS@mail.gmail.com>
-	<1274284094.6286.17.camel@thunk>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B030D991D50@dbde02.ent.ti.com>
-	<AANLkTikK4ISAsLFS-l5fXGxCppv98F2qqb8OBnZ7OTHd@mail.gmail.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B030DA9F8EB@dbde02.ent.ti.com>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Tue, 25 May 2010 21:04:37 +0530
-Message-ID: <AANLkTimvO3Gd1oM6Ctp22PcaBw7QmvOZhY6YhawJNos0@mail.gmail.com>
-Subject: Re: [PATCH v3 1/3] omap3 gpmc: functionality enhancement
-To: "Ghorai, Sukumar" <s-ghorai@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"tony@atomide.com" <tony@atomide.com>,
-	"sakoman@gmail.com" <sakoman@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"peter.barada@gmail.com" <peter.barada@gmail.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+To: Lei Wen <adrian.wenl@gmail.com>
+Subject: Re: [PATCH 01/20] mtd: pxa3xx_nand: refuse the flash definition get
+	from platform
+References: <AANLkTinVBXhT77Zd-LNpufgJAl7WZdic0oxDFwvNkvJg@mail.gmail.com>	
+	<4BFA2B5B.4080105@compulab.co.il>	
+	<AANLkTilLYFVPcel-rE8RbuTWEir4RJOBqmyxirb6Vozn@mail.gmail.com>	
+	<4BFA5C58.7050109@compulab.co.il>	
+	<AANLkTimYwQa5aJ2wuuBvPQ6O6hgYKaQcCcb3jwTcgFcD@mail.gmail.com>	
+	<4BFA7D60.6020703@compulab.co.il>	
+	<AANLkTil1mq5FBePSexz80DyT80DGqshqyJEi6Pfp0kV7@mail.gmail.com>	
+	<4BFBA4BA.9020502@compulab.co.il>
+	<AANLkTimOGbp6m2v4574ZR-74zbUA-dSAZl3BhlkOBqr3@mail.gmail.com>
+In-Reply-To: <AANLkTimOGbp6m2v4574ZR-74zbUA-dSAZl3BhlkOBqr3@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	David Woodhouse <david.woodhouse@intel.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,31 +33,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, May 25, 2010 at 8:07 PM, Ghorai, Sukumar <s-ghorai@ti.com> wrote:
-[...]
->> > c. And how to know that ECC engine is in used other driver should not
->> use it? Any bit to know that ecc engine is busy, as we check for prefetc=
-h?
->> Do not really remember config registers. Perhaps there is no way.
->> But I guess you should check into register GPMC_ECC_CONFIG at bit 1.
->> This is the bit we are setting to enable ECC calculation, IIRC.
-> [Ghorai] there are two functions -
-> =A0 =A0 =A0 info->nand.ecc.calculate =A0 =A0 =A0 =A0=3D omap_calculate_ec=
-c;
-> =A0 =A0 =A0 info->nand.ecc.hwctl =A0 =A0 =A0 =A0 =A0 =A0=3D omap_enable_h=
-wecc;
-> And GPMC_ECC_CONFIG register..
-> =A0 =A0 =A0 =A03:1 ECCCS Selects the CS where ECC is computed
-> =A0 =A0 =A0 =A00 ECCENABLE Enables the ECC feature
-> Now we enable omap_enable_hwecc (with GPMC_ECC_CONFIG[ECCENABLE]=3D1); an=
-d its get disabled (automatically) when ecc_size data transfer over.
-> But say still it did not read the ecc value yet (omap_calculate_ecc).
-> So how to protect following omap_enable_hwecc() before omap_calculate_ecc=
-() =A0without additional flag? Any input is welcome.
+Lei Wen wrote:
+> On Tue, May 25, 2010 at 6:21 PM, Mike Rapoport <mike@compulab.co.il> wrote:
 
-Oh yes, that's is a problem. Perhaps in that case you have to protect
-it in very much same way you already did.
+>> Can you please elaborate what are the attributes that cannot be detected?
+> 
+> The attributes comes from two new features that would be included into
+> pxa3xx_nand: BCH support and 8bit per 512bytes ECC.
+> Originally, our pxa3xx_nand only support Hamming ECC way. So no doubt
+> just read the timing register, and just set use ecc bit in NDCR is
+> enough.
+> But for now there is two type of ECC type. For distinguish, we
+> introduce a new register called NDECCCTRL. NDECCCTRL_BCH_EN in the bit
+> 0 of that register control whether use the BCH ECC.
+> You may ask me why not just read from NDECCCTRL to know the ECC type.
+> It is right, but not always to be true. It the last command executed
+> for nand before kernel take control is not read or write operation,
+> the bootloader has no reason to set the NDECCCTRL register. So our
+> kernel also unable to detect whether to use BCH or HAMMING ECC.
+> 
+> This two type of ecc has different character, if use hamming ecc for
+> reading while that page is written by BCH, it would instant report of
+> DB error...
+> This is not the worst case., for we may ask the bootloader to always
+> set the NDECCCTRL. (There is no reason to apply ECC when do command
+> except the read and write although)
+> 
+> The worst would comes at the supporting of 8bit per 512 bytes ECC. Our
+> BCH engine only support 16bit corroction per 2k data, aka 4bit per
+> 512bytes.
+> If we need to support 8bit per 512bytes feature, which is needed by a
+> lot of newest flash which require such high ecc strength.
+> Then we have to apply the BCH to 1k data instead of 2k. The layout of
+> content on flash would change.
+> Original BCH apply to 2k nand, the layout may like: | 2k data | + | 30
+> bytes ECC |
+> Now after apply BCH to 1k range, the layout would be like: | 1k data |
+> + | 30 bytes ECC| + | 1k data| + |30 bytes ECC|.
+> Even as I said let the bootloader to always set the NDECCCTRL. The
+> kernel would still cannot distinguish the two use case of 4bit per
+> 512bytes and 8bit per 512 bytes ECC strength requirement.
+> For they both use BCH, the only difference could be told on the nand
+> layout, not by register reading.
+> 
+> Those two new feature would lead different nand content layout. So if
+> not distinguish properly, nand would not be able to work functional.
+> And obviously, the two features cannot get from register reading, and
+> that is the reason why I suggest drop the feature.
 
---=20
-Regards,
-Vimal Singh
+Why not make the ECC type and strength part of the 
+pxa3xx_nand_platform_data? This way you can ensure NAND layout 
+consistency for particular platform without reduction in the driver 
+robustness.
+
+> Thanks,
+> Lei
+
+
+-- 
+Sincerely yours,
+Mike.
