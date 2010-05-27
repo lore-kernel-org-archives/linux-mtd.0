@@ -1,23 +1,16 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OHKnG-0007po-S8
-	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 17:53:28 +0000
-Received: from octopus.hi.pengutronix.de ([2001:6f8:1178:2:215:17ff:fe12:23b0])
-	by metis.ext.pengutronix.de with esmtp (Exim 4.71)
-	(envelope-from <wsa@pengutronix.de>) id 1OHKnA-00027x-2G
-	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 19:53:20 +0200
-Received: from wsa by octopus.hi.pengutronix.de with local (Exim 4.69)
-	(envelope-from <wsa@pengutronix.de>) id 1OHKnA-00060s-18
-	for linux-mtd@lists.infradead.org; Wed, 26 May 2010 19:53:20 +0200
-Date: Wed, 26 May 2010 19:53:20 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: Do we remove from jedec_probe.c?
-Message-ID: <20100526175320.GD24167@pengutronix.de>
+Received: from ipmail04.adl6.internode.on.net ([150.101.137.141])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OHSAO-0000Jc-VK
+	for linux-mtd@lists.infradead.org; Thu, 27 May 2010 01:45:49 +0000
+Message-ID: <4BFDCEC3.7070601@elphinstone.net>
+Date: Thu, 27 May 2010 11:45:39 +1000
+From: Mark Ware <mware@elphinstone.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="RYJh/3oyKhIjGcML"
-Content-Disposition: inline
+To: linux-mtd@lists.infradead.org
+Subject: [RFC/PATCH] doc2000: Fix uninitialized variable in doc_ecc_decode()
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,94 +20,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The variable 'syn' was being used uninitialized.  Also
+fixed incorrect use of syn[] vs s[].
 
---RYJh/3oyKhIjGcML
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tested on powerpc board with 64MB DOC2000.
+---
 
-Hi,
+I am porting from a 2.4.18 kernel to 2.6.32, and I saw random media header
+mismatches causing a failure to detect the DOC device partitions.  Tracing
+through, I saw this variable being used uninitialized and I suspect
+incorrectly also.
 
-now that Guillaume introduced cfi-support for some SST-flashes, I wonder if
-those can be removed from jedec_probe.c? Or should they stay for
-backward-compatibility?
+I do not really understand how the ecc/syndrome code works, so I do not
+know if this patch is the correct solution, but it did make my problem
+go away...
 
-Proposed patch would look like this:
+CC: Thomas Gleixner as I believe he may have written this function initially.
 
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_prob=
-e.c
-index d72a5fb..37fdff3 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -146,8 +146,6 @@
- #define SST29LE512	0x003d
- #define SST39LF800	0x2781
- #define SST39LF160	0x2782
--#define SST39VF1601	0x234b
--#define SST39VF3201	0x235b
- #define SST39WF1601	0x274b
- #define SST39WF1602	0x274a
- #define SST39LF512	0x00D4
-@@ -1500,19 +1498,6 @@ static const struct amd_flash_info jedec_table[] =3D=
- {
- 			ERASEINFO(0x1000,256)
- 		}
- 	}, {
--		.mfr_id		=3D CFI_MFR_SST,     /* should be CFI */
--		.dev_id		=3D SST39VF1601,
--		.name		=3D "SST 39VF1601",
--		.devtypes	=3D CFI_DEVICETYPE_X16,
--		.uaddr		=3D MTD_UADDR_0xAAAA_0x5555,
--		.dev_size	=3D SIZE_2MiB,
--		.cmd_set	=3D P_ID_AMD_STD,
--		.nr_regions	=3D 2,
--		.regions	=3D {
--			ERASEINFO(0x1000,256),
--			ERASEINFO(0x1000,256)
--		}
--	}, {
- 		/* CFI is broken: reports AMD_STD, but needs custom uaddr */
- 		.mfr_id		=3D CFI_MFR_SST,
- 		.dev_id		=3D SST39WF1601,
-@@ -1541,21 +1526,6 @@ static const struct amd_flash_info jedec_table[] =3D=
- {
- 			ERASEINFO(0x1000,256)
- 		}
- 	}, {
--		.mfr_id		=3D CFI_MFR_SST,     /* should be CFI */
--		.dev_id		=3D SST39VF3201,
--		.name		=3D "SST 39VF3201",
--		.devtypes	=3D CFI_DEVICETYPE_X16,
--		.uaddr		=3D MTD_UADDR_0xAAAA_0x5555,
--		.dev_size	=3D SIZE_4MiB,
--		.cmd_set	=3D P_ID_AMD_STD,
--		.nr_regions	=3D 4,
--		.regions	=3D {
--			ERASEINFO(0x1000,256),
--			ERASEINFO(0x1000,256),
--			ERASEINFO(0x1000,256),
--			ERASEINFO(0x1000,256)
--		}
--	}, {
- 		.mfr_id		=3D CFI_MFR_SST,
- 		.dev_id		=3D SST36VF3203,
- 		.name		=3D "SST 36VF3203",
+ drivers/mtd/nand/diskonchip.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---RYJh/3oyKhIjGcML
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkv9YBAACgkQD27XaX1/VRto7ACfV6hIfmbu6AF7t7Rx0YQu+rej
-NusAnRNc39mK+hG4QUXnQGttsoOQIO90
-=ot01
------END PGP SIGNATURE-----
-
---RYJh/3oyKhIjGcML--
+diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+index a5bf9ff..7da2321 100644
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -145,6 +145,7 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
+ 	uint8_t parity;
+ 	uint16_t ds[4], s[5], tmp, errval[8], syn[4];
+ 
++	memset(syn, 0, sizeof(syn));
+ 	/* Convert the ecc bytes into words */
+ 	ds[0] = ((ecc[4] & 0xff) >> 0) | ((ecc[5] & 0x03) << 8);
+ 	ds[1] = ((ecc[5] & 0xfc) >> 2) | ((ecc[2] & 0x0f) << 6);
+@@ -168,9 +169,9 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
+ 			s[i] ^= rs->alpha_to[rs_modnn(rs, tmp + (FCR + i) * j)];
+ 	}
+ 
+-	/* Calc s[i] = s[i] / alpha^(v + i) */
++	/* Calc syn[i] = s[i] / alpha^(v + i) */
+ 	for (i = 0; i < NROOTS; i++) {
+-		if (syn[i])
++		if (s[i])
+ 			syn[i] = rs_modnn(rs, rs->index_of[s[i]] + (NN - FCR - i));
+ 	}
+ 	/* Call the decoder library */
+-- 
+1.5.6.5
