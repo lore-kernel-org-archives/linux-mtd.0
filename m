@@ -1,16 +1,10 @@
-Received: from ipmail04.adl6.internode.on.net ([150.101.137.141])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OHSAO-0000Jc-VK
-	for linux-mtd@lists.infradead.org; Thu, 27 May 2010 01:45:49 +0000
-Message-ID: <4BFDCEC3.7070601@elphinstone.net>
-Date: Thu, 27 May 2010 11:45:39 +1000
-From: Mark Ware <mware@elphinstone.net>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [RFC/PATCH] doc2000: Fix uninitialized variable in doc_ecc_decode()
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Gleixner <tglx@linutronix.de>
+From: Baruch Siach <baruch@tkos.co.il>
+To: Sascha Hauer <kernel@pengutronix.de>
+Subject: [PATCH] mxc_nand: add support for platform defined partitions
+Date: Thu, 27 May 2010 11:50:27 +0300
+Message-Id: <7d46e3bafd160eaa9c5d9a09b88ea1cb4a2d5b89.1274950000.git.baruch@tkos.co.il>
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +14,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The variable 'syn' was being used uninitialized.  Also
-fixed incorrect use of syn[] vs s[].
-
-Tested on powerpc board with 64MB DOC2000.
+Signed-off-by: Baruch Siach <baruch@tkos.co.il>
 ---
+ arch/arm/plat-mxc/include/mach/mxc_nand.h |    4 ++++
+ drivers/mtd/nand/mxc_nand.c               |    2 ++
+ 2 files changed, 6 insertions(+), 0 deletions(-)
 
-I am porting from a 2.4.18 kernel to 2.6.32, and I saw random media header
-mismatches causing a failure to detect the DOC device partitions.  Tracing
-through, I saw this variable being used uninitialized and I suspect
-incorrectly also.
-
-I do not really understand how the ecc/syndrome code works, so I do not
-know if this patch is the correct solution, but it did make my problem
-go away...
-
-CC: Thomas Gleixner as I believe he may have written this function initially.
-
- drivers/mtd/nand/diskonchip.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index a5bf9ff..7da2321 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -145,6 +145,7 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
- 	uint8_t parity;
- 	uint16_t ds[4], s[5], tmp, errval[8], syn[4];
+diff --git a/arch/arm/plat-mxc/include/mach/mxc_nand.h b/arch/arm/plat-mxc/include/mach/mxc_nand.h
+index 5d2d21d..a07bae9 100644
+--- a/arch/arm/plat-mxc/include/mach/mxc_nand.h
++++ b/arch/arm/plat-mxc/include/mach/mxc_nand.h
+@@ -20,9 +20,13 @@
+ #ifndef __ASM_ARCH_NAND_H
+ #define __ASM_ARCH_NAND_H
  
-+	memset(syn, 0, sizeof(syn));
- 	/* Convert the ecc bytes into words */
- 	ds[0] = ((ecc[4] & 0xff) >> 0) | ((ecc[5] & 0x03) << 8);
- 	ds[1] = ((ecc[5] & 0xfc) >> 2) | ((ecc[2] & 0x0f) << 6);
-@@ -168,9 +169,9 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
- 			s[i] ^= rs->alpha_to[rs_modnn(rs, tmp + (FCR + i) * j)];
- 	}
- 
--	/* Calc s[i] = s[i] / alpha^(v + i) */
-+	/* Calc syn[i] = s[i] / alpha^(v + i) */
- 	for (i = 0; i < NROOTS; i++) {
--		if (syn[i])
-+		if (s[i])
- 			syn[i] = rs_modnn(rs, rs->index_of[s[i]] + (NN - FCR - i));
- 	}
- 	/* Call the decoder library */
++#include <linux/mtd/partitions.h>
++
+ struct mxc_nand_platform_data {
+ 	int width;	/* data bus width in bytes */
+ 	int hw_ecc:1;	/* 0 if supress hardware ECC */
+ 	int flash_bbt:1; /* set to 1 to use a flash based bbt */
++	struct mtd_partition	*parts;	/* partition table */
++	int			nr_parts; /* size of parts */
+ };
+ #endif /* __ASM_ARCH_NAND_H */
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index b2900d8..4f615d2 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -838,6 +838,8 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	    parse_mtd_partitions(mtd, part_probes, &host->parts, 0);
+ 	if (nr_parts > 0)
+ 		add_mtd_partitions(mtd, host->parts, nr_parts);
++	else if (pdata->parts)
++		add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+ 	else
+ #endif
+ 	{
 -- 
-1.5.6.5
+1.7.1
