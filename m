@@ -1,19 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OHf8H-00073A-0e
-	for linux-mtd@lists.infradead.org; Thu, 27 May 2010 15:36:29 +0000
-Subject: Re: SELinux and UBIFS
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Steve Iribarne <siribarne@grid-net.com>
-In-Reply-To: <4BFE8ECC.8080404@grid-net.com>
-References: <4BFE8ECC.8080404@grid-net.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 27 May 2010 18:34:43 +0300
-Message-ID: <1274974483.15516.72.camel@localhost>
-Mime-Version: 1.0
+From: =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
+To: 
+Subject: [PATCH] mxc_nand: fix PM
+Date: Thu, 27 May 2010 19:55:19 +0200
+Message-Id: <1274982919-13251-1-git-send-email-eric@eukrea.com>
+In-Reply-To: <1274942000-3580-2-git-send-email-eric@eukrea.com>
+References: <1274942000-3580-2-git-send-email-eric@eukrea.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +19,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-05-27 at 08:25 -0700, Steve Iribarne wrote:
-> I've been searching the net and have yet to find any sort of reliable 
-> "HOWTO" or "does it work" regarding SELinux, UBIFS and the extended 
-> attributes.
-> 
-> We have need to use this here at Grid-Net and I'm trying to get a handle 
-> on if the work is done or is there something else I need to do to 
-> complete it.
-> 
-> I see that there is extended attribute support in the UBIFS, but I've 
-> also seen articles (emails/etc..) claiming that the support is not fully 
-> there.
-> 
-> Can someone point me to the right place if there is a right place?
+* when resuming, we get the following log :
+nand_resume called for a chip which is not in suspended state
+* this happens because mtd->suspend and mtd->resume are already
+called from the mtd layer, thus they were called a second time
+in mxc_nand so mtd complains when trying to resume for the
+second time
+* the fix is to remove these call and thus remove the supend and
+resume functions of mxc_nand
 
-Hi, I added basic xattr support, but never tested xattrs very well. I
-did not implement ACL support. And I do not really know SELinux
-requirements. So just try it and let us know, better with a patch to the
-UBIFS FAQ which you can find here:
-http://www.linux-mtd.infradead.org/faq/ubifs.html
+Signed-off-by: Eric Bénard <eric@eukrea.com>
+Cc: s.hauer@pengutronix.de
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/mxc_nand.c |   44 +------------------------------------------
+ 1 files changed, 1 insertions(+), 43 deletions(-)
 
-and the website sources here:
-http://git.infradead.org/mtd-www.git
-
-Here is a comment from fs/ubifs/xattr.c:
-
-/*
- * This file implements UBIFS extended attributes support.
- *
- * Extended attributes are implemented as regular inodes with attached data,
- * which limits extended attribute size to UBIFS block size (4KiB). Names of
- * extended attributes are described by extended attribute entries (xentries),
- * which are almost identical to directory entries, but have different key type.
- *
- * In other words, the situation with extended attributes is very similar to
- * directories. Indeed, any inode (but of course not xattr inodes) may have a
- * number of associated xentries, just like directory inodes have associated
- * directory entries. Extended attribute entries store the name of the extended
- * attribute, the host inode number, and the extended attribute inode number.
- * Similarly, direntries store the name, the parent and the target inode
- * numbers. Thus, most of the common UBIFS mechanisms may be re-used for
- * extended attributes.
- *
- * The number of extended attributes is not limited, but there is Linux
- * limitation on the maximum possible size of the list of all extended
- * attributes associated with an inode (%XATTR_LIST_MAX), so UBIFS makes sure
- * the sum of all extended attribute names of the inode does not exceed that
- * limit.
- *
- * Extended attributes are synchronous, which means they are written to the
- * flash media synchronously and there is no write-back for extended attribute
- * inodes. The extended attribute values are not stored in compressed form on
- * the media.
- *
- * Since extended attributes are represented by regular inodes, they are cached
- * in the VFS inode cache. The xentries are cached in the LNC cache (see
- * tnc.c).
- *
- * ACL support is not implemented.
- */
-
-It seems like the following xattr namespaces are supported:
-
-/*
- * Extended attribute type constants.
- *
- * USER_XATTR: user extended attribute ("user.*")
- * TRUSTED_XATTR: trusted extended attribute ("trusted.*)
- * SECURITY_XATTR: security extended attribute ("security.*")
- */
-
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 314e2bf..217b247 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -892,53 +892,11 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_PM
+-static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+-{
+-	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct nand_chip *nand_chip = mtd->priv;
+-	struct mxc_nand_host *host = nand_chip->priv;
+-	int ret = 0;
+-
+-	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND suspend\n");
+-
+-	ret = mtd->suspend(mtd);
+-
+-	/*
+-	 * nand_suspend locks the device for exclusive access, so
+-	 * the clock must already be off.
+-	 */
+-	BUG_ON(!ret && host->clk_act);
+-
+-	return ret;
+-}
+-
+-static int mxcnd_resume(struct platform_device *pdev)
+-{
+-	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct nand_chip *nand_chip = mtd->priv;
+-	struct mxc_nand_host *host = nand_chip->priv;
+-	int ret = 0;
+-
+-	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
+-
+-	mtd->resume(mtd);
+-
+-	return ret;
+-}
+-
+-#else
+-# define mxcnd_suspend   NULL
+-# define mxcnd_resume    NULL
+-#endif				/* CONFIG_PM */
+-
+ static struct platform_driver mxcnd_driver = {
+ 	.driver = {
+ 		   .name = DRIVER_NAME,
+-		   },
++	},
+ 	.remove = __devexit_p(mxcnd_remove),
+-	.suspend = mxcnd_suspend,
+-	.resume = mxcnd_resume,
+ };
+ 
+ static int __init mxc_nd_init(void)
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.3.3
