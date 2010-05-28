@@ -1,25 +1,16 @@
-Received: from mailout5.samsung.com ([203.254.224.35])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OHp72-0006nl-LR
-	for linux-mtd@lists.infradead.org; Fri, 28 May 2010 02:15:53 +0000
-Received: from epmmp2 (mailout5.samsung.com [203.254.224.35])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0L330086XYACNK@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 28 May 2010 11:15:48 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L3300E3IYA42S@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 28 May 2010 11:15:40 +0900 (KST)
-Date: Fri, 28 May 2010 11:15:35 +0900
-From: Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH] OneNAND: Samsung SoCs use own chip_probe function
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OHuWK-0000pZ-AF
+	for linux-mtd@lists.infradead.org; Fri, 28 May 2010 08:02:21 +0000
+Date: Fri, 28 May 2010 10:02:17 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Message-id: <20100528021535.GA8117@july>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+Subject: [PATCH] mxc_nand: Fix OOB accesses on i.MX27
+Message-ID: <20100528080217.GH23664@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,68 +20,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Samsung SoCs use own chip_probe function.
-Don't touch the memory configuration at probe time.
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+Hi all,
+
+The OOB handling in the mxc_nand driver is broken for v1 type
+controllers (i.MX27/31) with 512 byte page size. This perhaps
+did not show up because ubi does not use OOB.
+Update the driver to always read/write a whole page even if
+only OOB is requested. With this patch the driver passes the
+mtd_oobtest on i.MX27 with 512 byte page size. Also tested
+with 2048 byte page size and on i.MX35 (v2 type controller)
+
+Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
-diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index 2750317..cb443af 100644
---- a/drivers/mtd/onenand/samsung.c
-+++ b/drivers/mtd/onenand/samsung.c
-@@ -630,6 +630,12 @@ normal:
- 	return 0;
- }
+ drivers/mtd/nand/mxc_nand.c |   31 +++++--------------------------
+ 1 files changed, 5 insertions(+), 26 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 82e9438..6e8aa34 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -623,8 +623,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		else
+ 			host->buf_start = column + mtd->writesize;
  
-+static int s5pc110_chip_probe(struct mtd_info *mtd)
-+{
-+	/* Now just return 0 */
-+	return 0;
-+}
-+
- static int s3c_onenand_bbt_wait(struct mtd_info *mtd, int state)
- {
- 	unsigned int flags = INT_ACT | LOAD_CMP;
-@@ -757,6 +763,7 @@ static void s3c_onenand_setup(struct mtd_info *mtd)
- 		/* Use generic onenand functions */
- 		onenand->cmd_map = s5pc1xx_cmd_map;
- 		this->read_bufferram = s5pc110_read_bufferram;
-+		this->chip_probe = s5pc110_chip_probe;
- 		return;
- 	} else {
- 		BUG();
-@@ -781,7 +788,6 @@ static int s3c_onenand_probe(struct platform_device *pdev)
- 	struct mtd_info *mtd;
- 	struct resource *r;
- 	int size, err;
--	unsigned long onenand_ctrl_cfg = 0;
+-		if (mtd->writesize > 512)
+-			command = NAND_CMD_READ0; /* only READ0 is valid */
++		command = NAND_CMD_READ0; /* only READ0 is valid */
  
- 	pdata = pdev->dev.platform_data;
- 	/* No need to check pdata. the platform data is optional */
-@@ -900,14 +906,6 @@ static int s3c_onenand_probe(struct platform_device *pdev)
- 		}
+ 		send_cmd(host, command, false);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+@@ -639,31 +638,11 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 		break;
  
- 		onenand->phys_base = onenand->base_res->start;
+ 	case NAND_CMD_SEQIN:
+-		if (column >= mtd->writesize) {
+-			/*
+-			 * FIXME: before send SEQIN command for write OOB,
+-			 * We must read one page out.
+-			 * For K9F1GXX has no READ1 command to set current HW
+-			 * pointer to spare area, we must write the whole page
+-			 * including OOB together.
+-			 */
+-			if (mtd->writesize > 512)
+-				/* call ourself to read a page */
+-				mxc_nand_command(mtd, NAND_CMD_READ0, 0,
+-						page_addr);
 -
--		onenand_ctrl_cfg = readl(onenand->dma_addr + 0x100);
--		if ((onenand_ctrl_cfg & ONENAND_SYS_CFG1_SYNC_WRITE) &&
--		    onenand->dma_addr)
--			writel(onenand_ctrl_cfg & ~ONENAND_SYS_CFG1_SYNC_WRITE,
--					onenand->dma_addr + 0x100);
--		else
--			onenand_ctrl_cfg = 0;
- 	}
+-			host->buf_start = column;
+-
+-			/* Set program pointer to spare region */
+-			if (mtd->writesize == 512)
+-				send_cmd(host, NAND_CMD_READOOB, false);
+-		} else {
+-			host->buf_start = column;
++		if (column >= mtd->writesize)
++			/* call ourself to read a page */
++			mxc_nand_command(mtd, NAND_CMD_READ0, 0, page_addr);
  
- 	if (onenand_scan(mtd, 1)) {
-@@ -915,10 +913,7 @@ static int s3c_onenand_probe(struct platform_device *pdev)
- 		goto scan_failed;
- 	}
+-			/* Set program pointer to page start */
+-			if (mtd->writesize == 512)
+-				send_cmd(host, NAND_CMD_READ0, false);
+-		}
++		host->buf_start = column;
  
--	if (onenand->type == TYPE_S5PC110) {
--		if (onenand_ctrl_cfg && onenand->dma_addr)
--			writel(onenand_ctrl_cfg, onenand->dma_addr + 0x100);
--	} else {
-+	if (onenand->type != TYPE_S5PC110) {
- 		/* S3C doesn't handle subpage write */
- 		mtd->subpage_sft = 0;
- 		this->subpagesize = mtd->writesize;
+ 		send_cmd(host, command, false);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+-- 
+1.7.1
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
