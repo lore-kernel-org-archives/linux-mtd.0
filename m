@@ -1,16 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from relay.atmel.no ([80.232.32.139])
 	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OHuWK-0000pZ-AF
-	for linux-mtd@lists.infradead.org; Fri, 28 May 2010 08:02:21 +0000
-Date: Fri, 28 May 2010 10:02:17 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mxc_nand: Fix OOB accesses on i.MX27
-Message-ID: <20100528080217.GH23664@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-arm-kernel@lists.infradead.org
+	id 1OHvu1-00049Q-46
+	for linux-mtd@lists.infradead.org; Fri, 28 May 2010 09:30:54 +0000
+Date: Fri, 28 May 2010 11:27:44 +0200
+From: Haavard Skinnemoen <haavard.skinnemoen@atmel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] Fix Oops with Atmel SPI
+Message-ID: <20100528112744.579dc556@hskinnemoen-d830>
+In-Reply-To: <20100521120106.d955c78b.akpm@linux-foundation.org>
+References: <1271231840l.5270l.0l@i-dmzi_al.realan.de>
+	<20100421152410.0fea5e12.akpm@linux-foundation.org>
+	<1274267100l.1747l.1l@i-dmzi_al.realan.de>
+	<20100521120106.d955c78b.akpm@linux-foundation.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Ian McDonnell <ian@brightstareng.com>,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Nicolas Pitre <nico@fluxnic.net>, Anders Larsen <al@alarsen.net>,
+	linux-kernel@vger.kernel.org, Iwo Mergler <iwo@call-direct.com.au>,
+	linux-mtd@lists.infradead.org, Matthias Kaehlcke <matthias@kaehlcke.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,77 +31,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Andrew Morton <akpm@linux-foundation.org> wrote:
+> On Wed, 19 May 2010 13:05:00 +0200
+> Anders Larsen <al@alarsen.net> wrote:
+> 
+> > On 2010-04-22 00:24:10, Andrew Morton wrote:
+> > > Finally..  Wouldn't it be better to just fix the atmel SPI driver so
+> > > that it doesn't barf when handed vmalloc'ed memory?  Who do we ridicule
+> > > about that?  <checks, adds cc>
+> > 
+> > You mean something like this instead?
+> 
+> That looks simple enough.  How do we get it tested, changelogged and
+> merged up?  Haavard, can you please take a look?
 
-Hi all,
+Sure. Sorry for the late response; I've been traveling for the last two
+weeks.
 
-The OOB handling in the mxc_nand driver is broken for v1 type
-controllers (i.MX27/31) with 512 byte page size. This perhaps
-did not show up because ubi does not use OOB.
-Update the driver to always read/write a whole page even if
-only OOB is requested. With this patch the driver passes the
-mtd_oobtest on i.MX27 with 512 byte page size. Also tested
-with 2048 byte page size and on i.MX35 (v2 type controller)
+Did anyone check what other drivers do to handle this case? Surely this
+isn't the only driver which supports DMA?
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/mxc_nand.c |   31 +++++--------------------------
- 1 files changed, 5 insertions(+), 26 deletions(-)
+> > diff --git a/drivers/spi/atmel_spi.c b/drivers/spi/atmel_spi.c
+> > index c4e0442..a9ad5e8 100644
+> > --- a/drivers/spi/atmel_spi.c
+> > +++ b/drivers/spi/atmel_spi.c
+> > @@ -352,16 +352,30 @@ atmel_spi_dma_map_xfer(struct atmel_spi *as, struct spi_transfer *xfer)
+> >  
+> >  	xfer->tx_dma = xfer->rx_dma = INVALID_DMA_ADDRESS;
+> >  	if (xfer->tx_buf) {
+> > -		xfer->tx_dma = dma_map_single(dev,
+> > -				(void *) xfer->tx_buf, xfer->len,
+> > -				DMA_TO_DEVICE);
+> > +		if (is_vmalloc_addr(xfer->tx_buf))
+> > +			xfer->tx_dma = dma_map_page(dev,
+> > +					vmalloc_to_page(xfer->tx_buf),
+> > +					(unsigned long)xfer->tx_buf & (PAGE_SIZE-1),
+> > +					xfer->len,
+> > +					DMA_TO_DEVICE);
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 82e9438..6e8aa34 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -623,8 +623,7 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		else
- 			host->buf_start = column + mtd->writesize;
- 
--		if (mtd->writesize > 512)
--			command = NAND_CMD_READ0; /* only READ0 is valid */
-+		command = NAND_CMD_READ0; /* only READ0 is valid */
- 
- 		send_cmd(host, command, false);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
-@@ -639,31 +638,11 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
- 		break;
- 
- 	case NAND_CMD_SEQIN:
--		if (column >= mtd->writesize) {
--			/*
--			 * FIXME: before send SEQIN command for write OOB,
--			 * We must read one page out.
--			 * For K9F1GXX has no READ1 command to set current HW
--			 * pointer to spare area, we must write the whole page
--			 * including OOB together.
--			 */
--			if (mtd->writesize > 512)
--				/* call ourself to read a page */
--				mxc_nand_command(mtd, NAND_CMD_READ0, 0,
--						page_addr);
--
--			host->buf_start = column;
--
--			/* Set program pointer to spare region */
--			if (mtd->writesize == 512)
--				send_cmd(host, NAND_CMD_READOOB, false);
--		} else {
--			host->buf_start = column;
-+		if (column >= mtd->writesize)
-+			/* call ourself to read a page */
-+			mxc_nand_command(mtd, NAND_CMD_READ0, 0, page_addr);
- 
--			/* Set program pointer to page start */
--			if (mtd->writesize == 512)
--				send_cmd(host, NAND_CMD_READ0, false);
--		}
-+		host->buf_start = column;
- 
- 		send_cmd(host, command, false);
- 		mxc_do_addr_cycle(mtd, column, page_addr);
--- 
-1.7.1
+Ok, this should be fine for small transfers, but what happens if the
+transfer crosses a page boundary? Are there any guarantees that this
+will never happen? What callers are passing vmalloc'ed memory in the
+first place?
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Ditto for the rx path.
+
+Haavard
