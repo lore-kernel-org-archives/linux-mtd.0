@@ -1,15 +1,36 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJ7zV-0002ZL-1G
-	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 16:37:29 +0000
-From: Anatolij Gustschin <agust@denx.de>
-To: linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: nand: mpc5121_nfc.c: Fix build failures
-Date: Mon, 31 May 2010 18:37:15 +0200
-Message-Id: <1275323836-15711-1-git-send-email-agust@denx.de>
-Cc: Grant Likely <grant.likely@secretlab.ca>,
-	Anatolij Gustschin <agust@denx.de>, David Woodhouse <dwmw2@infradead.org>
+Received: from cantor.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OJ8Ll-0007jH-I2
+	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 17:00:30 +0000
+Date: Mon, 31 May 2010 09:54:52 -0700
+From: Greg KH <gregkh@suse.de>
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [PATCH] drivers: remove all i2c_set_clientdata(client, NULL)
+Message-ID: <20100531165452.GA14066@suse.de>
+References: <1275310552-14685-1-git-send-email-w.sang@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1275310552-14685-1-git-send-email-w.sang@pengutronix.de>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	linux-i2c@vger.kernel.org, devel@driverdev.osuosl.org,
+	Samuel Ortiz <sameo@linux.intel.com>, lm-sensors@lm-sensors.org,
+	linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+	Paul Gortmaker <p_gortmaker@yahoo.com>,
+	Riku Voipio <riku.voipio@iki.fi>, rtc-linux@googlegroups.com,
+	Alessandro Rubini <rubini@ipvvis.unipv.it>,
+	Mauro Carvalho Chehab <mchehab@infradead.org>,
+	Jean Delvare <khali@linux-fr.org>,
+	"Ben Dooks \(embedded platforms\)" <ben-linux@fluff.org>,
+	Liam Girdwood <lrg@slimlogic.co.uk>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Guillaume Ligneul <guillaume.ligneul@gmail.com>,
+	George Joseph <george.joseph@fairview5.com>,
+	Mark Brown <broonie@opensource.wolfsonmicro.com>,
+	linux-kernel@vger.kernel.org, Colin Leroy <colin@colino.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +40,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes build errors caused by the:
- - OF device_node pointer being moved into struct device
- - removal of the match_table field from struct of_platform_driver
+On Mon, May 31, 2010 at 02:55:48PM +0200, Wolfram Sang wrote:
+> I2C-drivers can use the clientdata-pointer to point to private data. As I2C
+> devices are not really unregistered, but merely detached from their driver, it
+> used to be the drivers obligation to clear this pointer during remove() or a
+> failed probe(). As a couple of drivers forgot to do this, it was agreed that it
+> was cleaner if the i2c-core does this clearance when appropriate, as there is
+> no guarantee for the lifetime of the clientdata-pointer after remove() anyhow.
+> This feature was added to the core with commit
+> e4a7b9b04de15f6b63da5ccdd373ffa3057a3681 to fix the faulty drivers.
+> 
+> As there is no need anymore to clear the clientdata-pointer, remove all current
+> occurrences in the drivers to simplify the code and prevent confusion.
+> 
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Jean Delvare <khali@linux-fr.org>
 
-Signed-off-by: Anatolij Gustschin <agust@denx.de>
-Cc: Grant Likely <grant.likely@secretlab.ca>
----
- drivers/mtd/nand/mpc5121_nfc.c |    8 ++++----
- 1 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index 3d0867d..0a130dc 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -650,7 +650,7 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
- static int __devinit mpc5121_nfc_probe(struct of_device *op,
- 					const struct of_device_id *match)
- {
--	struct device_node *rootnode, *dn = op->node;
-+	struct device_node *rootnode, *dn = op->dev.of_node;
- 	struct device *dev = &op->dev;
- 	struct mpc5121_nfc_prv *prv;
- 	struct resource res;
-@@ -889,12 +889,12 @@ static struct of_device_id mpc5121_nfc_match[] __devinitdata = {
- };
- 
- static struct of_platform_driver mpc5121_nfc_driver = {
--	.match_table	= mpc5121_nfc_match,
- 	.probe		= mpc5121_nfc_probe,
- 	.remove		= __devexit_p(mpc5121_nfc_remove),
- 	.driver		= {
--		.name	= DRV_NAME,
--		.owner	= THIS_MODULE,
-+		.name = DRV_NAME,
-+		.owner = THIS_MODULE,
-+		.of_match_table = mpc5121_nfc_match,
- 	},
- };
- 
--- 
-1.7.0.4
+Acked-by: Greg Kroah-Hartman <gregkh@suse.de>
