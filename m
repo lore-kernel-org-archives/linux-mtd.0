@@ -1,10 +1,17 @@
-From: Baruch Siach <baruch@tkos.co.il>
-To: Sascha Hauer <kernel@pengutronix.de>
-Subject: [PATCHv2] mxc_nand: add support for platform defined partitions
-Date: Mon, 31 May 2010 08:49:40 +0300
-Message-Id: <db7fb65b330824c5647ea4271a5f5aa30da6612b.1275284592.git.baruch@tkos.co.il>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Baruch Siach <baruch@tkos.co.il>,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OIyqm-0003oZ-TP
+	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 06:51:53 +0000
+Received: by fxm15 with SMTP id 15so2498111fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 30 May 2010 23:51:50 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 31 May 2010 08:51:50 +0200
+Message-ID: <AANLkTil3v1loUPrHZKHGe36FUqxYOTp52PDtXd9jAGpq@mail.gmail.com>
+Subject: Expected capabilities of MTD-layer drivers?
+From: Leo Barnes <barnes.leo@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,47 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
-Changes v1 -> v2
+Hello!
 
-	Changed the indentation of new fields in mxc_nand_platform_data as 
-	suggested by Marc Kleine-Budde
+I have recently run into trouble with what I now believe is a buggy
+driver in the MTD-layer. The driver in question is the msm_nand driver
+in the MSM android kernel:
 
- arch/arm/plat-mxc/include/mach/mxc_nand.h |    4 ++++
- drivers/mtd/nand/mxc_nand.c               |    2 ++
- 2 files changed, 6 insertions(+), 0 deletions(-)
+http://android.git.kernel.org/?p=kernel/msm.git;a=blob;f=drivers/mtd/devices/msm_nand.h;h=b5e6293e929ab0cab0fc1c1b35a5526915b64086;hb=HEAD
 
-diff --git a/arch/arm/plat-mxc/include/mach/mxc_nand.h b/arch/arm/plat-mxc/include/mach/mxc_nand.h
-index 5d2d21d..2d74748 100644
---- a/arch/arm/plat-mxc/include/mach/mxc_nand.h
-+++ b/arch/arm/plat-mxc/include/mach/mxc_nand.h
-@@ -20,9 +20,13 @@
- #ifndef __ASM_ARCH_NAND_H
- #define __ASM_ARCH_NAND_H
- 
-+#include <linux/mtd/partitions.h>
-+
- struct mxc_nand_platform_data {
- 	int width;	/* data bus width in bytes */
- 	int hw_ecc:1;	/* 0 if supress hardware ECC */
- 	int flash_bbt:1; /* set to 1 to use a flash based bbt */
-+	struct mtd_partition *parts;	/* partition table */
-+	int nr_parts;			/* size of parts */
- };
- #endif /* __ASM_ARCH_NAND_H */
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 82e9438..8bfe158 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -853,6 +853,8 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 	    parse_mtd_partitions(mtd, part_probes, &host->parts, 0);
- 	if (nr_parts > 0)
- 		add_mtd_partitions(mtd, host->parts, nr_parts);
-+	else if (pdata->parts)
-+		add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
- 	else
- #endif
- 	{
--- 
-1.7.1
+It seems to be written with YAFFS2 entirely in mind, which means that
+when trying to access it in other ways results in errors. So, in order
+to tell if it is in fact the driver that is buggy, I need to find out
+what the expected capabilities of nand_read/nand_read_oob and
+nand_write/nand_write_oob actually are.
+
+1. What are the allowed amount of bytes that can be read with
+nand_read? In the driver, this seems to be multiples of the pagesize,
+but I have spotted the UBI driver trying to read 64 byte chunks when
+trying to scan all the EC headers (which fails). When studying the
+OneNAND drivers, an arbitrary amount of bytes seems to be allowed, but
+OneNAND is after all quite different from regular NAND.
+
+2. What are the allowed amount of bytes that can be written with
+nand_write/nand_write_oob?
+
+3. When running the mtd_readtest, the test fails on every page on
+every block when it asks the driver to read OOB-data. What is the
+expected behaviour when ops.mode = MTD_OOB_PLACE, ops.datbuf = ops.len
+= 0 and ops.ooblen = mtd->oobsize (64 bytes in this case)? At the
+moment, the driver returns EBADMSG whenever mtd_readtest tries to do
+this.
+
+Best regards,
+//Leo
