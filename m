@@ -1,12 +1,15 @@
-Date: Mon, 31 May 2010 18:24:34 +0200
-From: Richard Cochran <richardcochran@gmail.com>
-To: Krzysztof Halasa <khc@pm.waw.pl>
-Subject: [PATCH] ixp4xx: add support for static flash partitions
-Message-ID: <20100531162434.GA4599@riccoc20.at.omicron.at>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from mail-out.m-online.net ([212.18.0.10])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OJ7zV-0002ZL-1G
+	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 16:37:29 +0000
+From: Anatolij Gustschin <agust@denx.de>
+To: linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: mpc5121_nfc.c: Fix build failures
+Date: Mon, 31 May 2010 18:37:15 +0200
+Message-Id: <1275323836-15711-1-git-send-email-agust@denx.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>,
+	Anatolij Gustschin <agust@denx.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,92 +19,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for static flash partitioning from a platform
-device. Also, we clean up some weirdness where statements were separated
-by commas instead of semicolons. While we are at it, fix some minor bad
-white space, too.
+Fixes build errors caused by the:
+ - OF device_node pointer being moved into struct device
+ - removal of the match_table field from struct of_platform_driver
 
-Signed-off-by: Richard Cochran <richard.cochran@omicron.at>
+Signed-off-by: Anatolij Gustschin <agust@denx.de>
+Cc: Grant Likely <grant.likely@secretlab.ca>
 ---
- drivers/mtd/maps/ixp4xx.c |   37 ++++++++++++++++++++++++++++---------
- 1 files changed, 28 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/mpc5121_nfc.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index 7b05152..5345d11 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -108,7 +108,7 @@ static void ixp4xx_copy_from(struct map_info *map, void *to,
- 
- 	if (from & 1) {
- 		*dest++ = BYTE1(flash_read16(src));
--                src++;
-+		src++;
- 		--len;
- 	}
- 
-@@ -118,7 +118,7 @@ static void ixp4xx_copy_from(struct map_info *map, void *to,
- 		*dest++ = BYTE1(data);
- 		src += 2;
- 		len -= 2;
--        }
-+	}
- 
- 	if (len > 0)
- 		*dest++ = BYTE0(flash_read16(src));
-@@ -185,6 +185,8 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 3d0867d..0a130dc 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -650,7 +650,7 @@ static void mpc5121_nfc_free(struct device *dev, struct mtd_info *mtd)
+ static int __devinit mpc5121_nfc_probe(struct of_device *op,
+ 					const struct of_device_id *match)
  {
- 	struct flash_platform_data *plat = dev->dev.platform_data;
- 	struct ixp4xx_flash_info *info;
-+	const char *part_type = NULL;
-+	int nr_parts = 0;
- 	int err = -1;
+-	struct device_node *rootnode, *dn = op->node;
++	struct device_node *rootnode, *dn = op->dev.of_node;
+ 	struct device *dev = &op->dev;
+ 	struct mpc5121_nfc_prv *prv;
+ 	struct resource res;
+@@ -889,12 +889,12 @@ static struct of_device_id mpc5121_nfc_match[] __devinitdata = {
+ };
  
- 	if (!plat)
-@@ -219,9 +221,9 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	 */
- 	info->map.bankwidth = 2;
- 	info->map.name = dev_name(&dev->dev);
--	info->map.read = ixp4xx_read16,
--	info->map.write = ixp4xx_probe_write16,
--	info->map.copy_from = ixp4xx_copy_from,
-+	info->map.read = ixp4xx_read16;
-+	info->map.write = ixp4xx_probe_write16;
-+	info->map.copy_from = ixp4xx_copy_from;
+ static struct of_platform_driver mpc5121_nfc_driver = {
+-	.match_table	= mpc5121_nfc_match,
+ 	.probe		= mpc5121_nfc_probe,
+ 	.remove		= __devexit_p(mpc5121_nfc_remove),
+ 	.driver		= {
+-		.name	= DRV_NAME,
+-		.owner	= THIS_MODULE,
++		.name = DRV_NAME,
++		.owner = THIS_MODULE,
++		.of_match_table = mpc5121_nfc_match,
+ 	},
+ };
  
- 	info->res = request_mem_region(dev->resource->start,
- 			resource_size(dev->resource),
-@@ -249,11 +251,28 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	info->mtd->owner = THIS_MODULE;
- 
- 	/* Use the fast version */
--	info->map.write = ixp4xx_write16,
-+	info->map.write = ixp4xx_write16;
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	nr_parts = parse_mtd_partitions(info->mtd, probes, &info->partitions,
-+					dev->resource->start);
-+#endif
-+	if (nr_parts > 0) {
-+		part_type = "dynamic";
-+	} else {
-+		info->partitions = plat->parts;
-+		nr_parts = plat->nr_parts;
-+		part_type = "static";
-+	}
-+	if (nr_parts == 0) {
-+		printk(KERN_NOTICE "IXP4xx flash: no partition info "
-+			"available, registering whole flash\n");
-+		err = add_mtd_device(info->mtd);
-+	} else {
-+		printk(KERN_NOTICE "IXP4xx flash: using %s partition "
-+			"definition\n", part_type);
-+		err = add_mtd_partitions(info->mtd, info->partitions, nr_parts);
- 
--	err = parse_mtd_partitions(info->mtd, probes, &info->partitions, dev->resource->start);
--	if (err > 0) {
--		err = add_mtd_partitions(info->mtd, info->partitions, err);
- 		if(err)
- 			printk(KERN_ERR "Could not parse partitions\n");
- 	}
 -- 
-1.6.3.3
+1.7.0.4
