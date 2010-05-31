@@ -1,19 +1,12 @@
-Received: from moutng.kundenserver.de ([212.227.17.9])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJ6kG-00069e-MN
-	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 15:17:41 +0000
-From: Thorsten =?iso-8859-1?q?M=FChlfelder?= <muehlfelder@enertex.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: How stable is jffs2 summarize option?
-Date: Mon, 31 May 2010 17:17:37 +0200
-References: <201005311503.42629.muehlfelder@enertex.de>
-In-Reply-To: <201005311503.42629.muehlfelder@enertex.de>
+Date: Mon, 31 May 2010 18:24:34 +0200
+From: Richard Cochran <richardcochran@gmail.com>
+To: Krzysztof Halasa <khc@pm.waw.pl>
+Subject: [PATCH] ixp4xx: add support for static flash partitions
+Message-ID: <20100531162434.GA4599@riccoc20.at.omicron.at>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <201005311717.38056.muehlfelder@enertex.de>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +16,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-And is this an error, a warning or just debug output:
-jffs2_sum_write_sumnode: Not enough space for summary, padsize -45
+This patch adds support for static flash partitioning from a platform
+device. Also, we clean up some weirdness where statements were separated
+by commas instead of semicolons. While we are at it, fix some minor bad
+white space, too.
 
+Signed-off-by: Richard Cochran <richard.cochran@omicron.at>
+---
+ drivers/mtd/maps/ixp4xx.c |   37 ++++++++++++++++++++++++++++---------
+ 1 files changed, 28 insertions(+), 9 deletions(-)
 
-Am Monday 31 May 2010 15:03:42 schrieb Thorsten M=FChlfelder:
-> Hi,
->
-> to reduce boot time of a device I want to use the jffs2 summarize option =
-on
-> my root file system. Currently 'm using Linux 2.6.24 on that specific
-> device and the summarize option is marked as "experimental", so I wonder =
-if
-> it is stable enough for a productive system?
-> Are there any well known devices that use this option, too?
-> Do I have to use a newer kernel version?
->
-> Thanks for any information
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-
-
-=2D-=20
-=2D-
-____________________________________________________
-Dipl.-Ing. (FH) Thorsten M=FChlfelder
-Hard- und Softwareentwicklung
-
-Enertex Bayern GmbH
-Innovative Systeml=F6sungen der Energie- und Elektrotechnik
-www.enertex.de =A0 =A0 =A0 =A0 =A0=20
-
-Erlachstra=DFe 13 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 91301 Forchheim
-St.-Nr. 9216/125/50473 =A0 =A0 =A0UST-ID DE 216 837 306
-Registergericht Bamberg =A0 HRB 4569
-Volksbank Forchheim eG, BLZ 763 910 00, Kto.-Nr. 7200480 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0
-
-Tel: 0049 9191 974637 Fax: 0049 9191 974687 =A0Mob:0175 5151913
+diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
+index 7b05152..5345d11 100644
+--- a/drivers/mtd/maps/ixp4xx.c
++++ b/drivers/mtd/maps/ixp4xx.c
+@@ -108,7 +108,7 @@ static void ixp4xx_copy_from(struct map_info *map, void *to,
+ 
+ 	if (from & 1) {
+ 		*dest++ = BYTE1(flash_read16(src));
+-                src++;
++		src++;
+ 		--len;
+ 	}
+ 
+@@ -118,7 +118,7 @@ static void ixp4xx_copy_from(struct map_info *map, void *to,
+ 		*dest++ = BYTE1(data);
+ 		src += 2;
+ 		len -= 2;
+-        }
++	}
+ 
+ 	if (len > 0)
+ 		*dest++ = BYTE0(flash_read16(src));
+@@ -185,6 +185,8 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
+ {
+ 	struct flash_platform_data *plat = dev->dev.platform_data;
+ 	struct ixp4xx_flash_info *info;
++	const char *part_type = NULL;
++	int nr_parts = 0;
+ 	int err = -1;
+ 
+ 	if (!plat)
+@@ -219,9 +221,9 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
+ 	 */
+ 	info->map.bankwidth = 2;
+ 	info->map.name = dev_name(&dev->dev);
+-	info->map.read = ixp4xx_read16,
+-	info->map.write = ixp4xx_probe_write16,
+-	info->map.copy_from = ixp4xx_copy_from,
++	info->map.read = ixp4xx_read16;
++	info->map.write = ixp4xx_probe_write16;
++	info->map.copy_from = ixp4xx_copy_from;
+ 
+ 	info->res = request_mem_region(dev->resource->start,
+ 			resource_size(dev->resource),
+@@ -249,11 +251,28 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
+ 	info->mtd->owner = THIS_MODULE;
+ 
+ 	/* Use the fast version */
+-	info->map.write = ixp4xx_write16,
++	info->map.write = ixp4xx_write16;
++
++#ifdef CONFIG_MTD_PARTITIONS
++	nr_parts = parse_mtd_partitions(info->mtd, probes, &info->partitions,
++					dev->resource->start);
++#endif
++	if (nr_parts > 0) {
++		part_type = "dynamic";
++	} else {
++		info->partitions = plat->parts;
++		nr_parts = plat->nr_parts;
++		part_type = "static";
++	}
++	if (nr_parts == 0) {
++		printk(KERN_NOTICE "IXP4xx flash: no partition info "
++			"available, registering whole flash\n");
++		err = add_mtd_device(info->mtd);
++	} else {
++		printk(KERN_NOTICE "IXP4xx flash: using %s partition "
++			"definition\n", part_type);
++		err = add_mtd_partitions(info->mtd, info->partitions, nr_parts);
+ 
+-	err = parse_mtd_partitions(info->mtd, probes, &info->partitions, dev->resource->start);
+-	if (err > 0) {
+-		err = add_mtd_partitions(info->mtd, info->partitions, err);
+ 		if(err)
+ 			printk(KERN_ERR "Could not parse partitions\n");
+ 	}
+-- 
+1.6.3.3
