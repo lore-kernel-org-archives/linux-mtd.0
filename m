@@ -1,22 +1,36 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from poutre.ipv6.nerim.net ([2001:7a8:1:1::124]
+	helo=poutre.nerim.net)
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJB9z-0000SM-P6
-	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 20:00:32 +0000
-Received: by gyb11 with SMTP id 11so3089342gyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 May 2010 13:00:30 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201005311717.38056.muehlfelder@enertex.de>
-References: <201005311503.42629.muehlfelder@enertex.de>
-	<201005311717.38056.muehlfelder@enertex.de>
-Date: Mon, 31 May 2010 22:00:29 +0200
-Message-ID: <AANLkTini0AfJ74VIaWlEFSLu_iXn_vJY1e8emzxktqKL@mail.gmail.com>
-Subject: Re: How stable is jffs2 summarize option?
-From: Vitaly Wool <vitalywool@gmail.com>
-To: =?ISO-8859-1?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	id 1OJC3d-0001KG-AR
+	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 20:58:02 +0000
+Date: Mon, 31 May 2010 22:57:50 +0200
+From: Jean Delvare <khali@linux-fr.org>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH] drivers: remove all i2c_set_clientdata(client, NULL)
+Message-ID: <20100531225750.0dc18950@hyperion.delvare>
+In-Reply-To: <20100531190911.GC30712@core.coreip.homeip.net>
+References: <1275310552-14685-1-git-send-email-w.sang@pengutronix.de>
+	<20100531190911.GC30712@core.coreip.homeip.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Greg Kroah-Hartman <gregkh@suse.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org, linux-i2c@vger.kernel.org,
+	devel@driverdev.osuosl.org, Samuel Ortiz <sameo@linux.intel.com>,
+	lm-sensors@lm-sensors.org, linux-input@vger.kernel.org,
+	linux-media@vger.kernel.org, Paul Gortmaker <p_gortmaker@yahoo.com>,
+	Riku Voipio <riku.voipio@iki.fi>, rtc-linux@googlegroups.com,
+	Alessandro Rubini <rubini@ipvvis.unipv.it>,
+	Mauro Carvalho Chehab <mchehab@infradead.org>, "Ben Dooks \(embedded
+	platforms\)" <ben-linux@fluff.org>, Liam Girdwood <lrg@slimlogic.co.uk>,
+	Alessandro Zummo <a.zummo@towertech.it>,
+	Guillaume Ligneul <guillaume.ligneul@gmail.com>,
+	George Joseph <george.joseph@fairview5.com>,
+	Mark Brown <broonie@opensource.wolfsonmicro.com>,
+	Wolfram Sang <w.sang@pengutronix.de>, Colin Leroy <colin@colino.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,10 +40,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/5/31 Thorsten M=FChlfelder <muehlfelder@enertex.de>:
-> And is this an error, a warning or just debug output:
-> jffs2_sum_write_sumnode: Not enough space for summary, padsize -45
+Hi Dmitry,
 
-That's completely harmless.
+On Mon, 31 May 2010 12:09:12 -0700, Dmitry Torokhov wrote:
+> Frankly I'd prefer taking input stuff through my tree with the goal of
+> .36 merge window just to minimize potential merge issues. This is a
+> simple cleanup patch that has no dependencies, so there is little gain
+> from doing it all in one go.
 
-~Vitaly
+If I take the patch in my i2c tree, the aim is to merge it upstream
+immediately, so merge issues won't exist.
+
+-- 
+Jean Delvare
