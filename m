@@ -1,15 +1,16 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJB9S-0007CS-Fv
-	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 19:59:59 +0000
-Received: by gwj18 with SMTP id 18so3072615gwj.36
+	id 1OJB9z-0000SM-P6
+	for linux-mtd@lists.infradead.org; Mon, 31 May 2010 20:00:32 +0000
+Received: by gyb11 with SMTP id 11so3089342gyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 May 2010 12:59:56 -0700 (PDT)
+	Mon, 31 May 2010 13:00:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <201005311503.42629.muehlfelder@enertex.de>
+In-Reply-To: <201005311717.38056.muehlfelder@enertex.de>
 References: <201005311503.42629.muehlfelder@enertex.de>
-Date: Mon, 31 May 2010 21:59:56 +0200
-Message-ID: <AANLkTindexX7RcLC_2YLonXLrNQe011Lz-XjT0AnbtpD@mail.gmail.com>
+	<201005311717.38056.muehlfelder@enertex.de>
+Date: Mon, 31 May 2010 22:00:29 +0200
+Message-ID: <AANLkTini0AfJ74VIaWlEFSLu_iXn_vJY1e8emzxktqKL@mail.gmail.com>
 Subject: Re: How stable is jffs2 summarize option?
 From: Vitaly Wool <vitalywool@gmail.com>
 To: =?ISO-8859-1?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>
@@ -25,16 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
 2010/5/31 Thorsten M=FChlfelder <muehlfelder@enertex.de>:
+> And is this an error, a warning or just debug output:
+> jffs2_sum_write_sumnode: Not enough space for summary, padsize -45
 
-> Are there any well known devices that use this option, too?
-
-Yes, there are :)
-
-> Do I have to use a newer kernel version?
-
-Better do so :)
+That's completely harmless.
 
 ~Vitaly
