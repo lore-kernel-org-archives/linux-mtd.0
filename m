@@ -1,23 +1,21 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJO4H-00086z-0g
-	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 09:47:29 +0000
-Received: by gwj18 with SMTP id 18so3466157gwj.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 01 Jun 2010 02:47:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201006011126.23862.muehlfelder@enertex.de>
-References: <201005311503.42629.muehlfelder@enertex.de>
-	<1275383715.25797.14.camel@macbook.infradead.org>
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OJO6w-0000uY-O5
+	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 09:50:15 +0000
+In-Reply-To: <1275384788.25797.17.camel@macbook.infradead.org>
+References: <201005311503.42629.muehlfelder@enertex.de>	<1275383715.25797.14.camel@macbook.infradead.org>
 	<201006011126.23862.muehlfelder@enertex.de>
-Date: Tue, 1 Jun 2010 11:47:27 +0200
-Message-ID: <AANLkTik7JCuxgYe623F0CaR2OAA2f3Wohvp5btP_7y7c@mail.gmail.com>
+	<1275384788.25797.17.camel@macbook.infradead.org>
 Subject: Re: How stable is jffs2 summarize option?
-From: Vitaly Wool <vitalywool@gmail.com>
-To: =?ISO-8859-1?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <OF6BA924CE.75C9F3A4-ONC1257735.0035A313-C1257735.00360683@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Tue, 1 Jun 2010 11:50:06 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=ISO-8859-15
+Content-transfer-encoding: quoted-printable
+Cc: =?ISO-8859-15?Q?Thorsten_M=FChlfelder?= <muehlfelder@enertex.de>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thorsten,
+>
+> On Tue, 2010-06-01 at 11:26 +0200, Thorsten M=FChlfelder wrote:
+> > and what do you think about switching to yaffs2? I know it is devel=
+oped
+> > elsewhere, but it seems to be a good alternative to jffs2+summary a=
+nd
+> > probably switching is easier than to ubifs.
+>
+> Why would you think that switching to something that isn't part of th=
+e
+> Linux kernel would be easier than switching to ubifs? That seems... o=
+dd.
 
-2010/6/1 Thorsten M=FChlfelder <muehlfelder@enertex.de>:
+Yes, if ubifs doesn't fit, perhaps have a look at the recently added
+logfs?
 
-> and what do you think about switching to yaffs2? I know it is developed
-> elsewhere, but it seems to be a good alternative to jffs2+summary and
-> probably switching is easier than to ubifs.
+    Jocke
 
-Can you please share your reasons why you're considering switching first? :=
-)
-
-~Vitaly
+BTW, I once tried JFFS2 summary and it didn't make much of a difference=
+ for us.=
