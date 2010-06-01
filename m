@@ -1,36 +1,17 @@
-Received: from poutre.ipv6.nerim.net ([2001:7a8:1:1::124]
-	helo=poutre.nerim.net)
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJRu7-00033s-Jm
-	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 13:53:18 +0000
-Date: Tue, 1 Jun 2010 15:53:10 +0200
-From: Jean Delvare <khali@linux-fr.org>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Subject: Re: [PATCH] drivers: remove all i2c_set_clientdata(client, NULL)
-Message-ID: <20100601155310.3781fce6@hyperion.delvare>
-In-Reply-To: <1275310552-14685-1-git-send-email-w.sang@pengutronix.de>
-References: <1275310552-14685-1-git-send-email-w.sang@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	linux-i2c@vger.kernel.org, devel@driverdev.osuosl.org,
-	Samuel Ortiz <sameo@linux.intel.com>, lm-sensors@lm-sensors.org,
-	linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-	Paul Gortmaker <p_gortmaker@yahoo.com>,
-	Riku Voipio <riku.voipio@iki.fi>, rtc-linux@googlegroups.com,
-	Alessandro Rubini <rubini@ipvvis.unipv.it>,
-	Mauro Carvalho Chehab <mchehab@infradead.org>,
-	"Ben Dooks \(embedded platforms\)" <ben-linux@fluff.org>,
-	Greg Kroah-Hartman <gregkh@suse.de>, Liam Girdwood <lrg@slimlogic.co.uk>,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Guillaume Ligneul <guillaume.ligneul@gmail.com>,
-	George Joseph <george.joseph@fairview5.com>,
-	Mark Brown <broonie@opensource.wolfsonmicro.com>,
-	linux-kernel@vger.kernel.org, Colin Leroy <colin@colino.net>,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from mgw1.diku.dk ([130.225.96.91])
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OJSY4-0004hY-Kc
+	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 14:34:37 +0000
+Date: Tue, 1 Jun 2010 16:34:20 +0200 (CEST)
+From: Julia Lawall <julia@diku.dk>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Grant Likely <grant.likely@secretlab.ca>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH 1/4] drivers/mtd/maps: introduce missing kfree
+Message-ID: <Pine.LNX.4.64.1006011625510.12546@ask.diku.dk>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,24 +21,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 May 2010 14:55:48 +0200, Wolfram Sang wrote:
-> I2C-drivers can use the clientdata-pointer to point to private data. As I2C
-> devices are not really unregistered, but merely detached from their driver, it
-> used to be the drivers obligation to clear this pointer during remove() or a
-> failed probe(). As a couple of drivers forgot to do this, it was agreed that it
-> was cleaner if the i2c-core does this clearance when appropriate, as there is
-> no guarantee for the lifetime of the clientdata-pointer after remove() anyhow.
-> This feature was added to the core with commit
-> e4a7b9b04de15f6b63da5ccdd373ffa3057a3681 to fix the faulty drivers.
-> 
-> As there is no need anymore to clear the clientdata-pointer, remove all current
-> occurrences in the drivers to simplify the code and prevent confusion.
-> 
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Jean Delvare <khali@linux-fr.org>
-> (...)
+From: Julia Lawall <julia@diku.dk>
 
-Applied, thanks. Will go to Linus in the next few days.
+Error handling code following a kmalloc should free the allocated data.
 
--- 
-Jean Delvare
+The semantic match that finds the problem is as follows:
+(http://www.emn.fr/x-info/coccinelle/)
+
+// <smpl>
+@r exists@
+local idexpression x;
+statement S;
+expression E;
+identifier f,f1,l;
+position p1,p2;
+expression *ptr != NULL;
+@@
+
+x@p1 = \(kmalloc\|kzalloc\|kcalloc\)(...);
+...
+if (x == NULL) S
+<... when != x
+     when != if (...) { <+...x...+> }
+(
+x->f1 = E
+|
+ (x->f1 == NULL || ...)
+|
+ f(...,x->f1,...)
+)
+...>
+(
+ return \(0\|<+...x...+>\|ptr\);
+|
+ return@p2 ...;
+)
+
+@script:python@
+p1 << r.p1;
+p2 << r.p2;
+@@
+
+print "* file: %s kmalloc %s return %s" % (p1[0].file,p1[0].line,p2[0].line)
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+---
+ drivers/mtd/maps/physmap_of.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index ba124ba..6ac5f9f 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -353,7 +353,7 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 				   &info->parts, 0);
+ 	if (err < 0) {
+ 		of_free_probes(part_probe_types);
+-		return err;
++		goto err_out;
+ 	}
+ 	of_free_probes(part_probe_types);
+ 
+@@ -361,14 +361,14 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 	if (err == 0) {
+ 		err = of_mtd_parse_partitions(&dev->dev, dp, &info->parts);
+ 		if (err < 0)
+-			return err;
++			goto err_out;
+ 	}
+ #endif
+ 
+ 	if (err == 0) {
+ 		err = parse_obsolete_partitions(dev, info, dp);
+ 		if (err < 0)
+-			return err;
++			goto err_out;
+ 	}
+ 
+ 	if (err > 0)
