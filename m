@@ -1,26 +1,14 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJMiy-0001FW-KJ
-	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 08:21:25 +0000
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0L3B0099QTVKMC@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 17:21:20 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L3B00EFMTVKQQ@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 17:21:20 +0900 (KST)
-Date: Tue, 01 Jun 2010 17:17:36 +0900
-From: Joonyoung Shim <jy0922.shim@samsung.com>
-Subject: [PATCH 2/2] mtd: OneNAND: Support runtime badblock check of Samsung
-	Soc OneNAND
-In-reply-to: <1275380256-15315-1-git-send-email-jy0922.shim@samsung.com>
-To: linux-mtd@lists.infradead.org
-Message-id: <1275380256-15315-2-git-send-email-jy0922.shim@samsung.com>
-Content-transfer-encoding: 7BIT
-References: <1275380256-15315-1-git-send-email-jy0922.shim@samsung.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: How stable is jffs2 summarize option?
+From: David Woodhouse <dwmw2@infradead.org>
+To: Thorsten =?ISO-8859-1?Q?M=FChlfelder?= <muehlfelder@enertex.de>
+In-Reply-To: <201005311503.42629.muehlfelder@enertex.de>
+References: <201005311503.42629.muehlfelder@enertex.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 01 Jun 2010 10:15:15 +0100
+Message-ID: <1275383715.25797.14.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +18,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kyungmin Park <kyungmin.park@samsung.com>
+On Mon, 2010-05-31 at 15:03 +0200, Thorsten Mühlfelder wrote:
+> to reduce boot time of a device I want to use the jffs2 summarize option on my 
+> root file system. Currently 'm using Linux 2.6.24 on that specific device and 
+> the summarize option is marked as "experimental", so I wonder if it is stable 
+> enough for a productive system?
+> Are there any well known devices that use this option, too?
+> Do I have to use a newer kernel version?
 
-This patch is to support runtime badblock check to Samsung Soc OneNAND
-driver.
+There are other reasons why you should update from 2.6.24 if you're
+using JFFS2, but I don't think the summary code has changed much since
+then. The only reason it was still marked as 'experimental' is because I
+wanted to optimise the on-medium format.
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
- drivers/mtd/onenand/samsung.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index fa4b743..c2bbeae 100644
---- a/drivers/mtd/onenand/samsung.c
-+++ b/drivers/mtd/onenand/samsung.c
-@@ -837,8 +837,12 @@ static int s3c_onenand_probe(struct platform_device *pdev)
- 	/* Set onenand_chip also */
- 	this->base = onenand->base;
- 
--	/* Use runtime badblock check */
-+	/* Skip unlock all check */
- 	this->options |= ONENAND_SKIP_UNLOCK_CHECK;
-+#ifdef CONFIG_MTD_RUNTIME_BADBLOCK_CHECK
-+	/* Use runtime badblock check */
-+	this->options |= ONENAND_RUNTIME_BADBLOCK_CHECK;
-+#endif
- 
- 	if (onenand->type != TYPE_S5PC110) {
- 		r = platform_get_resource(pdev, IORESOURCE_MEM, 1);
 -- 
-1.7.0.4
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
