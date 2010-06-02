@@ -1,15 +1,15 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJnaD-0000df-57
-	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2010 13:02:09 +0000
-Received: by mail-fx0-f49.google.com with SMTP id 15so4682798fxm.36
+	id 1OJnaE-0000gN-Ak
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2010 13:02:10 +0000
+Received: by fxm15 with SMTP id 15so4682958fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 Jun 2010 06:02:08 -0700 (PDT)
+	Wed, 02 Jun 2010 06:02:09 -0700 (PDT)
 From: Maxim Levitsky <maximlevitsky@gmail.com>
 To: dwmw2 <dwmw2@infradead.org>
-Subject: [PATCH 2/4] r852: Fixes in case of DMA timeout
-Date: Wed,  2 Jun 2010 16:01:46 +0300
-Message-Id: <1275483708-11929-3-git-send-email-maximlevitsky@gmail.com>
+Subject: [PATCH 3/4] r852: update card detect early.
+Date: Wed,  2 Jun 2010 16:01:47 +0300
+Message-Id: <1275483708-11929-4-git-send-email-maximlevitsky@gmail.com>
 In-Reply-To: <1275483708-11929-1-git-send-email-maximlevitsky@gmail.com>
 References: <1275483708-11929-1-git-send-email-maximlevitsky@gmail.com>
 Cc: linux-mtd <linux-mtd@lists.infradead.org>,
@@ -23,80 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Don't call complete on dma completion
-* do a INIT_COMPLETE before using it each time
-* Report DMA read error via ecc 'correct'
-
-I finally managed to make my system do suspend to ram propertly, and I see that
-if card was inserted during suspend (while system was off), I get dma timeouts
-on resume. Simple card reinsert solves the issue.
-This patch solves a crash that would happen otherwise
+This turns out to be the reason for DMA timeouts on resume,
+if card was inserted while system was suspended
 
 Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
 ---
- drivers/mtd/nand/r852.c |   14 +++++++++++---
- 1 files changed, 11 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/r852.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index 20a654a..3f219e6 100644
+index 3f219e6..bcfc851 100644
 --- a/drivers/mtd/nand/r852.c
 +++ b/drivers/mtd/nand/r852.c
-@@ -150,7 +150,6 @@ static void r852_dma_done(struct r852_device *dev, int error)
- 	if (dev->phys_dma_addr && dev->phys_dma_addr != dev->phys_bounce_buffer)
- 		pci_unmap_single(dev->pci_dev, dev->phys_dma_addr, R852_DMA_LEN,
- 			dev->dma_dir ? PCI_DMA_FROMDEVICE : PCI_DMA_TODEVICE);
--	complete(&dev->dma_done);
+@@ -712,6 +712,7 @@ void r852_card_detect_work(struct work_struct *work)
+ 		container_of(work, struct r852_device, card_detect_work.work);
+ 
+ 	r852_card_update_present(dev);
++	r852_update_card_detect(dev);
+ 	dev->card_unstable = 0;
+ 
+ 	/* False alarm */
+@@ -727,7 +728,6 @@ void r852_card_detect_work(struct work_struct *work)
+ 	else
+ 		r852_unregister_nand_device(dev);
+ exit:
+-	/* Update detection logic */
+ 	r852_update_card_detect(dev);
  }
- 
- /*
-@@ -182,6 +181,7 @@ static void r852_do_dma(struct r852_device *dev, uint8_t *buf, int do_read)
- 	/* Set dma direction */
- 	dev->dma_dir = do_read;
- 	dev->dma_stage = 1;
-+	INIT_COMPLETION(dev->dma_done);
- 
- 	dbg_verbose("doing dma %s ", do_read ? "read" : "write");
- 
-@@ -494,6 +494,11 @@ int r852_ecc_correct(struct mtd_info *mtd, uint8_t *dat,
- 	if (dev->card_unstable)
- 		return 0;
- 
-+	if (dev->dma_error) {
-+		dev->dma_error = 0;
-+		return -1;
-+	}
-+
- 	r852_write_reg(dev, R852_CTL, dev->ctlreg | R852_CTL_ECC_ACCESS);
- 	ecc_reg = r852_read_reg_dword(dev, R852_DATALINE);
- 	r852_write_reg(dev, R852_CTL, dev->ctlreg);
-@@ -796,6 +801,7 @@ static irqreturn_t r852_irq(int irq, void *data)
- 		if (dma_status & R852_DMA_IRQ_ERROR) {
- 			dbg("recieved dma error IRQ");
- 			r852_dma_done(dev, -EIO);
-+			complete(&dev->dma_done);
- 			goto out;
- 		}
- 
-@@ -825,8 +831,10 @@ static irqreturn_t r852_irq(int irq, void *data)
- 			r852_dma_enable(dev);
- 
- 		/* Operation done */
--		if (dev->dma_stage == 3)
-+		if (dev->dma_stage == 3) {
- 			r852_dma_done(dev, 0);
-+			complete(&dev->dma_done);
-+		}
- 		goto out;
- 	}
- 
-@@ -1082,7 +1090,7 @@ int r852_resume(struct device *device)
- 			dev->card_detected ? "added" : "removed");
- 
- 		queue_delayed_work(dev->card_workqueue,
--		&dev->card_detect_work, 1000);
-+		&dev->card_detect_work, msecs_to_jiffies(1000));
- 		return 0;
- 	}
  
 -- 
 1.7.0.4
