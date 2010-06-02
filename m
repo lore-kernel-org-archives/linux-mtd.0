@@ -1,17 +1,19 @@
-Received: from mgw1.diku.dk ([130.225.96.91])
-	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
-	id 1OJSY4-0004hY-Kc
-	for linux-mtd@lists.infradead.org; Tue, 01 Jun 2010 14:34:37 +0000
-Date: Tue, 1 Jun 2010 16:34:20 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-To: David Woodhouse <dwmw2@infradead.org>,
-	Grant Likely <grant.likely@secretlab.ca>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 1/4] drivers/mtd/maps: introduce missing kfree
-Message-ID: <Pine.LNX.4.64.1006011625510.12546@ask.diku.dk>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
+	id 1OJkA7-00042a-2x
+	for linux-mtd@lists.infradead.org; Wed, 02 Jun 2010 09:23:02 +0000
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.243])
+	by co202.xi-lite.net (Postfix) with ESMTPS id 72943260287
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  2 Jun 2010 11:22:49 +0200 (CEST)
+Message-ID: <4C0622E6.7070203@parrot.com>
+Date: Wed, 2 Jun 2010 11:22:46 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: ubi question
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,82 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+Hi,
 
-Error handling code following a kmalloc should free the allocated data.
+I have some question about ubi implementation.
+I have read most of the "drivers/mtd/ubi/ubi-media.h" documentation.
 
-The semantic match that finds the problem is as follows:
-(http://www.emn.fr/x-info/coccinelle/)
+The doc is not very clear about the case when data_size is set for
+dynamic volume. From my understanding it is set in case copy_flag is set 
+and the value is the logical eraseblock size.
 
-// <smpl>
-@r exists@
-local idexpression x;
-statement S;
-expression E;
-identifier f,f1,l;
-position p1,p2;
-expression *ptr != NULL;
-@@
+When a block with copy_flag set, when we append data (and make the crc 
+invalid), do we make sure that all previous version of this logical 
+eraseblock are removed from flash ?
 
-x@p1 = \(kmalloc\|kzalloc\|kcalloc\)(...);
-...
-if (x == NULL) S
-<... when != x
-     when != if (...) { <+...x...+> }
-(
-x->f1 = E
-|
- (x->f1 == NULL || ...)
-|
- f(...,x->f1,...)
-)
-...>
-(
- return \(0\|<+...x...+>\|ptr\);
-|
- return@p2 ...;
-)
+Why layout volume isn't a static volume with one eraseblock and update 
+done with atomic leb update (copy flag) ?
+This would have :
+- make the crc ckeck done by generic code (static volume one)
+- make the handling of update by generic code
+- avoid to having to handle dynamic volume in minimalist implementation 
+(bootloader)
+Do I miss something ?
 
-@script:python@
-p1 << r.p1;
-p2 << r.p2;
-@@
 
-print "* file: %s kmalloc %s return %s" % (p1[0].file,p1[0].line,p2[0].line)
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
----
- drivers/mtd/maps/physmap_of.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index ba124ba..6ac5f9f 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -353,7 +353,7 @@ static int __devinit of_flash_probe(struct of_device *dev,
- 				   &info->parts, 0);
- 	if (err < 0) {
- 		of_free_probes(part_probe_types);
--		return err;
-+		goto err_out;
- 	}
- 	of_free_probes(part_probe_types);
- 
-@@ -361,14 +361,14 @@ static int __devinit of_flash_probe(struct of_device *dev,
- 	if (err == 0) {
- 		err = of_mtd_parse_partitions(&dev->dev, dp, &info->parts);
- 		if (err < 0)
--			return err;
-+			goto err_out;
- 	}
- #endif
- 
- 	if (err == 0) {
- 		err = parse_obsolete_partitions(dev, info, dp);
- 		if (err < 0)
--			return err;
-+			goto err_out;
- 	}
- 
- 	if (err > 0)
+Matthieu
