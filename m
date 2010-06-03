@@ -1,19 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OKBBt-0008IE-CM
-	for linux-mtd@lists.infradead.org; Thu, 03 Jun 2010 14:14:42 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.243])
-	by co202.xi-lite.net (Postfix) with ESMTPS id CE4C626027D
+	id 1OKBMK-0007n6-Jl
+	for linux-mtd@lists.infradead.org; Thu, 03 Jun 2010 14:25:29 +0000
+Received: by fxm15 with SMTP id 15so145279fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu,  3 Jun 2010 16:14:33 +0200 (CEST)
-Message-ID: <4C07B8C3.7080304@parrot.com>
-Date: Thu, 3 Jun 2010 16:14:27 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] ubi : generate random image_seq when attaching empty MTD
-	device
-Content-Type: multipart/mixed; boundary="------------010705070502010306090208"
+	Thu, 03 Jun 2010 07:25:22 -0700 (PDT)
+Subject: Re: CRC error when mounting UBIFS
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Leo Barnes <barnes.leo@gmail.com>
+In-Reply-To: <AANLkTilGg81TGnkS2VwF6xdFCvsB_AF_8rLYVqTr-81g@mail.gmail.com>
+References: <AANLkTilGg81TGnkS2VwF6xdFCvsB_AF_8rLYVqTr-81g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 03 Jun 2010 17:25:18 +0300
+Message-Id: <1275575118.9729.2.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------010705070502010306090208
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, 2010-06-03 at 16:02 +0200, Leo Barnes wrote:
+> Hello!
+> 
+> I am trying to create and mount an UBIFS partition and get the
+> following error when trying to mount it:
+> <7>[  397.117065] UBIFS DBG (pid 438): ubifs_start_scan: scan LEB 490:0
+> <7>[  397.117218] UBIFS DBG (pid 438): ubifs_scan: look at LEB 490:0
+> (126976 bytes left)
+> <7>[  397.117401] UBIFS DBG (pid 438): ubifs_scan_a_node: hit empty space
+> <7>[  397.117614] UBIFS DBG (pid 438): ubifs_end_scan: stop scanning
+> LEB 490 at offset 0
+> <3>[  397.119598] UBIFS error (pid 438): check_lpt_crc: invalid crc in
+> LPT node: crc 0 calc 90d1
 
-generate random image_seq when attaching empty MTD device (kernel do the 
-ubi formating).
+Most of the time errors like this are because of problems in the driver
+level, e.g., when the driver does not handle small or unaligned length
+reads. Did you validate your MTD driver with MTD tests?
 
-Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
-
---------------010705070502010306090208
-Content-Type: text/x-diff; name="ubi.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="ubi.diff"
-
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index aed19f3..7a95ff3 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -44,6 +44,7 @@
- #include <linux/slab.h>
- #include <linux/crc32.h>
- #include <linux/math64.h>
-+#include <linux/random.h>
- #include "ubi.h"
- 
- #ifdef CONFIG_MTD_UBI_DEBUG_PARANOID
-@@ -935,8 +936,10 @@ struct ubi_scan_info *ubi_scan(struct ubi_device *ubi)
- 	if (si->ec_count)
- 		si->mean_ec = div_u64(si->ec_sum, si->ec_count);
- 
--	if (si->is_empty)
-+	if (si->is_empty) {
- 		ubi_msg("empty MTD device detected");
-+		get_random_bytes(&ubi->image_seq, sizeof(ubi->image_seq));
-+	}
- 
- 	/*
- 	 * Few corrupted PEBs are not a problem and may be just a result of
-
---------------010705070502010306090208--
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
