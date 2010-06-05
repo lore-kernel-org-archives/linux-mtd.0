@@ -1,20 +1,13 @@
+Message-ID: <4C0A13BA.6050700@gmail.com>
+Date: Sat, 05 Jun 2010 17:07:06 +0800
+From: Wan ZongShun <mcuos.com@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTilydl5oKETCC69C_QY6xJa3mIXve097JU6qevfp@mail.gmail.com>
-References: <4C09F15E.9020408@gmail.com>
-	<AANLkTinLfGD-x-861sFK9r2zW5aEZvyXIB4PFKJl8NDZ@mail.gmail.com>
-	<AANLkTikJiPjl3LKVqgqtlK2YEePXDf7K6EdOlUE4uzBb@mail.gmail.com>
-	<AANLkTilydl5oKETCC69C_QY6xJa3mIXve097JU6qevfp@mail.gmail.com>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Sat, 5 Jun 2010 15:59:56 +0800
-Message-ID: <AANLkTile8PqagLri8n1Y0Xn03e8STx7XQODUx83woYNE@mail.gmail.com>
-Subject: Re: [PATCH 1/3] MTD/pxa: patch for error return value method of
-	pxa2xx-flash.c
-To: Wan ZongShun <mcuos.com@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>, Eric Miao <eric.y.miao@gmail.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCHv2 1/3] MTD/pxa: use __devinit for pxa2xx_flash_probe
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +17,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jun 5, 2010 at 3:53 PM, Wan ZongShun <mcuos.com@gmail.com> wrote:
-> Hi Eric,
->
-> This following piece of code:
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!info->map.virt) {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0printk(KERN_WARNIN=
-G "Failed to ioremap %s\n",
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 info->map.name);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0ret =3D -ENOMEM;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0goto fail2;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
->
-> Shouldn't =C2=A0the 'KERN_ERR' in stead of the 'KERN_WARNING '?
-> Because the =C2=A0'info->map.virt =3D=3D NULL' can arouse the serious cra=
-sh.
->
+This patch is to use the '__devinit' for pxa2xx_flash_probe.
 
-The thing is you need to figure out if it is mandatory because we
-have another info->map.cached just in case. Disaster is both can
-not be mapped.
+Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
+Acked-by: Eric Miao <eric.y.miao@gmail.com>
+
+---
+ drivers/mtd/maps/pxa2xx-flash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index dd90880..d8ae634 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -51,7 +51,7 @@ struct pxa2xx_flash_info {
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+
+
+-static int __init pxa2xx_flash_probe(struct platform_device *pdev)
++static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
+ {
+ 	struct flash_platform_data *flash = pdev->dev.platform_data;
+ 	struct pxa2xx_flash_info *info;
+-- 
+1.6.3.3
