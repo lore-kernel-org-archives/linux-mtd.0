@@ -1,14 +1,22 @@
-Message-ID: <4C0A1AD1.5090008@gmail.com>
-Date: Sat, 05 Jun 2010 17:37:21 +0800
-From: Wan ZongShun <mcuos.com@gmail.com>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>, Eric Miao <eric.y.miao@gmail.com>
-Subject: [PATCH] MTD/pxa: use __devexit, __devinit  and __devexit_p for pxa3xx
-	nand
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.69 #1 (Red Hat Linux))
+	id 1OKrvT-0006gy-AE
+	for linux-mtd@lists.infradead.org; Sat, 05 Jun 2010 11:52:32 +0000
+Subject: Re: UBIFS: Oops while rebooting 2.6.34-rc6
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Daniel Mack <daniel@caiaq.de>
+In-Reply-To: <20100507152640.GX30801@buzzloop.caiaq.de>
+References: <20100507131652.GT30801@buzzloop.caiaq.de>
+	<1273245826.4537.294.camel@localhost>
+	<20100507152640.GX30801@buzzloop.caiaq.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 05 Jun 2010 14:50:05 +0300
+Message-ID: <1275738605.20281.2.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Sven Neumann <s.neumann@raumfeld.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,44 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is to use __devexit, __devinit  and __devexit_p for pxa3xx nand driver.
+On Fri, 2010-05-07 at 17:26 +0200, Daniel Mack wrote:
+> > > # reboot
+> > > # [  671.190085] UBIFS: un-mount UBI device 0, volume 1
+> > > The system is going down NOW!
+> > > Sent SIGTERM to all processes
+> > > [  672.083833] Unable to handle kernel NULL pointer dereference at virtual address 000000ac
+> > > [  672.094587] pgd = c0004000
+> > > [  672.097301] [000000ac] *pgd=00000000
+> > > [  672.100850] Internal error: Oops: 817 [#1]
+> > > [  672.104919] last sysfs file: /sys/devices/platform/spi_gpio.0/spi0.2/value
+> > 
+> > It's Firday, and I want to go home, so here is another quick idea for
+> > you where to dig.
+> > 
+> > When the system reboots it re-mounts the FS to RO mode, usually. And
+> > there is some emergency remount business (see do_emergency_remount()),
+> > which will re-mount the FS even if there are files opened for writing.
+> > 
+> > So, if there is a UBIFS or VFS bug, and somehow one process is in
+> > make_reservation() and is about to write something, and another process
+> > managed to re-mount the FS to R/O mode, then we may ooops, because UBIFS
+> > frees these 'wbuf' objects when it is mounted to R/O (see
+> > ubifs_remount_ro()).
+> > 
+> > So, inject printks to ubifs_remount_ro() to check this theory.
+> > 
+> > Have a nice weekend and bughunting!
+> 
+> Thanks for your feedback - I'll give that a try next week.
 
-Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
+Was you able to reproduce this oops?
 
----
- drivers/mtd/nand/pxa3xx_nand.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index e02fa4f..7ba1853 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1206,7 +1206,7 @@ static void pxa3xx_nand_init_mtd(struct mtd_info *mtd,
- 	this->chip_delay = 25;
- }
-
--static int pxa3xx_nand_probe(struct platform_device *pdev)
-+static int __devinit pxa3xx_nand_probe(struct platform_device *pdev)
- {
- 	struct pxa3xx_nand_platform_data *pdata;
- 	struct pxa3xx_nand_info *info;
-@@ -1354,7 +1354,7 @@ fail_free_mtd:
- 	return ret;
- }
-
--static int pxa3xx_nand_remove(struct platform_device *pdev)
-+static int __devexit pxa3xx_nand_remove(struct platform_device *pdev)
- {
- 	struct mtd_info *mtd = platform_get_drvdata(pdev);
- 	struct pxa3xx_nand_info *info = mtd->priv;
-@@ -1419,7 +1419,7 @@ static struct platform_driver pxa3xx_nand_driver = {
- 		.name	= "pxa3xx-nand",
- 	},
- 	.probe		= pxa3xx_nand_probe,
--	.remove		= pxa3xx_nand_remove,
-+	.remove		= __devexit_p(pxa3xx_nand_remove),
- 	.suspend	= pxa3xx_nand_suspend,
- 	.resume		= pxa3xx_nand_resume,
- };
 -- 
-1.6.3.3
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
