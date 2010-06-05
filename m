@@ -1,28 +1,15 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.69 #1 (Red Hat Linux))
-	id 1OKbDU-0008EN-98
-	for linux-mtd@lists.infradead.org; Fri, 04 Jun 2010 18:02:00 +0000
-Received: by fxm15 with SMTP id 15so1092689fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 Jun 2010 11:01:58 -0700 (PDT)
-Subject: Re: CRC error when mounting UBIFS
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Leo Barnes <barnes.leo@gmail.com>
-In-Reply-To: <AANLkTimUrdHmrf5hblunbpI3J24A6tMQj1tIIXbSQoIy@mail.gmail.com>
-References: <AANLkTilGg81TGnkS2VwF6xdFCvsB_AF_8rLYVqTr-81g@mail.gmail.com>
-	<1275575118.9729.2.camel@localhost.localdomain>
-	<AANLkTim4K_-kJc4x7mlgyXG3DPgcWUR5-nb46SEpn3pG@mail.gmail.com>
-	<1275579127.9729.6.camel@localhost.localdomain>
-	<AANLkTinzLo7e5sHOn7sFKRAZNZHWoi3TMMG-FslG-CVv@mail.gmail.com>
-	<1275670996.9729.19.camel@localhost.localdomain>
-	<AANLkTimUrdHmrf5hblunbpI3J24A6tMQj1tIIXbSQoIy@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 04 Jun 2010 21:01:53 +0300
-Message-Id: <1275674513.9729.22.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-ID: <4C09F15E.9020408@gmail.com>
+Date: Sat, 05 Jun 2010 14:40:30 +0800
+From: Wan ZongShun <mcuos.com@gmail.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/3] MTD/pxa: patch for error return value method of
+	pxa2xx-flash.c
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
+Cc: eric.y.miao@gmail.com,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +19,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-06-04 at 19:35 +0200, Leo Barnes wrote:
-> > The way to fix this is to make UBI/UBIFS use arrays of pages instead. Or
-> > array of 2, 4, 8, etc pages, or it may be flexible and contain a field
-> > which describes the allocation order. And then UBI/UBIFS code should be
-> > amended correspondingly.
-> >
-> > This will need some effort, but I think a skilled engineer would do this
-> > relatively quickly. We are not actively working on UBI/UBIFS now, so we
-> > will unlikely implement this, but I'd be happy to help someone else to
-> > do this.
-> >
-> > Many people ask about small features like security xattrs, or NFS
-> > support, or DMA friendliness, but it is strange that people want ready
-> > solutions instead of investing a bit of time and just implementing this.
-> 
-> Sounds good, I might take a crack at it, I have been looking for some
-> way to contribute to the linux kernel.
-> 
-> Have I understood the UBI code correctly in that only the
-> ubi->peb_buf1, ubi->peb_buf2 and ubi->dbg_peb_buf are ever sent to the
-> mtd->read/write functions? Currently at home and dont really have
-> anything to test code in.
+This patch is to re-implement the 'pxa2xx-flash.c' error return value method
+of probe() and remove() function,the old return way can arouse the 'info' memory
+leak risk.
 
-Yes, AFAIR. If you really will try to do this, let's discuss the
-strategy.
+Signed-off-by :Wan ZongShun <mcuos.com@gmail.com>
 
-> Does UBIFS ever access the mtd-layer directly?
+---
+ drivers/mtd/maps/pxa2xx-flash.c |   47 ++++++++++++++++++++++++++++----------
+ 1 files changed, 34 insertions(+), 13 deletions(-)
 
-No. In UBIFS getting rid of vmalloc will be more difficult because it'll
-need to modify algorithms like GC which walks uses the buffers.
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index dd90880..1d2583f 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -60,12 +60,21 @@ static int __init pxa2xx_flash_probe(struct platform_device *pdev)
+ 	int ret = 0;
+
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-	if (!res)
+-		return -ENODEV;
++	if (!res) {
++		ret = -ENODEV;
++		goto fail0;
++	}
++
++	if (!request_mem_region(res->start, resource_size(res), pdev->name)) {
++		ret = -EBUSY;
++		goto fail0;
++	}
+
+ 	info = kzalloc(sizeof(struct pxa2xx_flash_info), GFP_KERNEL);
+-	if (!info)
+-		return -ENOMEM;
++	if (!info) {
++		ret = -ENOMEM;
++		goto fail1;
++	}
+
+ 	info->map.name = (char *) flash->name;
+ 	info->map.bankwidth = flash->width;
+@@ -78,13 +87,17 @@ static int __init pxa2xx_flash_probe(struct platform_device *pdev)
+ 	if (!info->map.virt) {
+ 		printk(KERN_WARNING "Failed to ioremap %s\n",
+ 		       info->map.name);
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto fail2;
+ 	}
+ 	info->map.cached =
+ 		ioremap_cached(info->map.phys, info->map.size);
+-	if (!info->map.cached)
++	if (!info->map.cached) {
+ 		printk(KERN_WARNING "Failed to ioremap cached %s\n",
+ 		       info->map.name);
++		ret = -ENOMEM;
++		goto fail3;
++	}
+ 	info->map.inval_cache = pxa2xx_map_inval_cache;
+ 	simple_map_init(&info->map);
+
+@@ -97,10 +110,8 @@ static int __init pxa2xx_flash_probe(struct platform_device *pdev)
+ 	info->mtd = do_map_probe(flash->map_name, &info->map);
+
+ 	if (!info->mtd) {
+-		iounmap((void *)info->map.virt);
+-		if (info->map.cached)
+-			iounmap(info->map.cached);
+-		return -EIO;
++		ret = -EIO;
++		goto fail4;
+ 	}
+ 	info->mtd->owner = THIS_MODULE;
+
+@@ -124,13 +135,21 @@ static int __init pxa2xx_flash_probe(struct platform_device *pdev)
+
+ 	platform_set_drvdata(pdev, info);
+ 	return 0;
++
++fail4:	iounmap(info->map.cached);
++fail3:	iounmap(info->map.virt);
++fail2:	kfree(info);
++fail1:	release_mem_region(res->start, resource_size(res));
++fail0:
++	return ret;
+ }
+
+ static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
+ {
+ 	struct pxa2xx_flash_info *info = platform_get_drvdata(dev);
++	struct resource *res;
+
+-	platform_set_drvdata(dev, NULL);
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	if (info->nr_parts)
+@@ -141,10 +160,12 @@ static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
+
+ 	map_destroy(info->mtd);
+ 	iounmap(info->map.virt);
+-	if (info->map.cached)
+-		iounmap(info->map.cached);
++	iounmap(info->map.cached);
+ 	kfree(info->parts);
+ 	kfree(info);
++	release_mem_region(res->start, resource_size(res));
++	platform_set_drvdata(dev, NULL);
++
+ 	return 0;
+ }
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.3.3
