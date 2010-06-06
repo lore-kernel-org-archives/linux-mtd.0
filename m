@@ -1,17 +1,15 @@
-MIME-Version: 1.0
-In-Reply-To: <4C0A86D9.2070106@mvista.com>
-References: <4C0A13BA.6050700@gmail.com> <4C0A86D9.2070106@mvista.com>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Sun, 6 Jun 2010 17:27:58 +0800
-Message-ID: <AANLkTinRQ2TwU0fj2k70GdNFKmOVQ4DLc2xELu7HnnZ5@mail.gmail.com>
-Subject: Re: [PATCHv2 1/3] MTD/pxa: use __devinit for pxa2xx_flash_probe
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	Wan ZongShun <mcuos.com@gmail.com>
+Subject: Re: [PATCH] mtd: nand: mpc5121_nfc.c: Fix build failures
+From: David Woodhouse <dwmw2@infradead.org>
+To: Anatolij Gustschin <agust@denx.de>
+In-Reply-To: <1275323836-15711-1-git-send-email-agust@denx.de>
+References: <1275323836-15711-1-git-send-email-agust@denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 06 Jun 2010 11:15:08 +0100
+Message-ID: <1275819308.17903.3099.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 6, 2010 at 1:18 AM, Sergei Shtylyov <sshtylyov@mvista.com> wrot=
-e:
-> Wan ZongShun wrote:
->
->> This patch is to use the '__devinit' for pxa2xx_flash_probe.
->
-> =C2=A0 Why? Is it hot-pluggable device? I guess not...
->
+On Mon, 2010-05-31 at 18:37 +0200, Anatolij Gustschin wrote:
+> Fixes build errors caused by the:
+>  - OF device_node pointer being moved into struct device
+>  - removal of the match_table field from struct of_platform_driver
+> 
+> Signed-off-by: Anatolij Gustschin <agust@denx.de>
+> Cc: Grant Likely <grant.likely@secretlab.ca>
 
-Then I guess the __devexit is not applicable to pxa2xx_flash_remove as well=
-.
-Apart from the _probe() being unnecessarily built in when HOTPLUG is
-defined, is there any drawbacks. It does make code a little bit consistent
-from my POV.
+Um, this isn't applicable to 2.6.35, is it?
 
->> Signed-off-by: Wan ZongShun <mcuos.com@gmail.com>
->> Acked-by: Eric Miao <eric.y.miao@gmail.com>
->
-> WBR, Sergei
->
->
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
