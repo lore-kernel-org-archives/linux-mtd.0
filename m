@@ -1,18 +1,16 @@
-Received: from mail-ew0-f213.google.com ([209.85.219.213])
+Received: from tortuga.cyrius.com ([94.228.35.166])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OLfqQ-0002En-4Z
-	for linux-mtd@lists.infradead.org; Mon, 07 Jun 2010 17:10:39 +0000
-Received: by ewy5 with SMTP id 5so806900ewy.20
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Jun 2010 10:10:36 -0700 (PDT)
-Message-ID: <4C0D2898.5060404@mvista.com>
-Date: Mon, 07 Jun 2010 21:12:56 +0400
-From: Valentine Barshak <vbarshak@mvista.com>
+	id 1OLh6M-0006uG-EB
+	for linux-mtd@lists.infradead.org; Mon, 07 Jun 2010 18:31:11 +0000
+Date: Mon, 7 Jun 2010 19:31:01 +0100
+From: Martin Michlmayr <tbm@cyrius.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: m25p80: Add support for Macronix 25L8005
+Message-ID: <20100607183101.GA378@jirafa.cyrius.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: AMD/Fujitsu (cfi_cmdset_0002) lock/unlock implementation question.
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is anybody working on adding lock/unlock functionality to the 
-cfi_cmdset_0002.c?
-This stuff seems highly h/w-dependent. I'm interested in particular in 
-sector lock/unlock functionality for S29GL-N Spansion chips.
-Any info regarding this feature for cmdset_0002 is greatly appreciated.
+Add support for Macronix 25L8005.  Tested on a HP t5325 Thin Client.
 
-Thanks,
-Val.
+Signed-off-by: Martin Michlmayr <tbm@cyrius.com>
+
+index 81e49a9..372df59 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -641,6 +641,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 
+ 	/* Macronix */
+ 	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
++	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
+ 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+
+-- 
+Martin Michlmayr
+http://www.cyrius.com/
