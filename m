@@ -1,16 +1,20 @@
-Received: from tortuga.cyrius.com ([94.228.35.166])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OLh6M-0006uG-EB
-	for linux-mtd@lists.infradead.org; Mon, 07 Jun 2010 18:31:11 +0000
-Date: Mon, 7 Jun 2010 19:31:01 +0100
-From: Martin Michlmayr <tbm@cyrius.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: m25p80: Add support for Macronix 25L8005
-Message-ID: <20100607183101.GA378@jirafa.cyrius.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OLvCu-0004tJ-8B
+	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2010 09:34:52 +0000
+Subject: Re: [PATCH] ubi : generate random image_seq when attaching empty
+	MTD device
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <4C07B8C3.7080304@parrot.com>
+References: <4C07B8C3.7080304@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 08 Jun 2010 11:45:30 +0300
+Message-ID: <1275986730.4535.0.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,22 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add support for Macronix 25L8005.  Tested on a HP t5325 Thin Client.
+On Thu, 2010-06-03 at 16:14 +0200, Matthieu CASTET wrote:
+> generate random image_seq when attaching empty MTD device (kernel do the 
+> ubi formating).
 
-Signed-off-by: Martin Michlmayr <tbm@cyrius.com>
+Your patch did not apply to the ubi-2.6.git master, because it
+conflicted with my latest changes. But I amended it and pushed, but you
+should probably check.
 
-index 81e49a9..372df59 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -641,6 +641,7 @@ static const struct spi_device_id m25p_ids[] = {
- 
- 	/* Macronix */
- 	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
-+	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
- 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
- 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
- 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+Thanks.
 
 -- 
-Martin Michlmayr
-http://www.cyrius.com/
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
