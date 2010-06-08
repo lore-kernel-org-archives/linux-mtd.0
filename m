@@ -1,25 +1,24 @@
-Received: from lo.gmane.org ([80.91.229.12])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OM0WC-0000g1-E3
-	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2010 15:15:08 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OM0W7-00045k-Ro
-	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2010 17:15:04 +0200
-Received: from amg-holding.md ([89.28.62.63])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Jun 2010 17:15:03 +0200
-Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 08 Jun 2010 17:15:03 +0200
-To: linux-mtd@lists.infradead.org
-From: Egorkat <egorkat@gmail.com>
-Subject: modprobe nftl hangs
-Date: Tue, 8 Jun 2010 15:13:37 +0000 (UTC)
-Message-ID: <loom.20100608T165617-407@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+	id 1OM0lq-0005CN-Oq
+	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2010 15:31:19 +0000
+Received: by pwj6 with SMTP id 6so73313pwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 Jun 2010 08:31:17 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTilYTO_TgJMVrkmY1yAUK5dGTjyzgNIhndNui3r1@mail.gmail.com>
+References: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
+	<1274763914.2106.1.camel@localhost>
+	<AANLkTin31PwUfXVHGV89VGrWG89RbIcY1L1I_VEO7mSk@mail.gmail.com>
+	<1276006648.5677.20.camel@localhost>
+	<AANLkTilYTO_TgJMVrkmY1yAUK5dGTjyzgNIhndNui3r1@mail.gmail.com>
+Date: Tue, 8 Jun 2010 11:23:11 -0400
+Message-ID: <AANLkTil23ApPd97_nAsfu0c_mUdVcZEFwCW7St5V8pE0@mail.gmail.com>
+Subject: Re: UBIFS failed to recover master node
+From: twebb <taliaferro62@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Lei Wen <leiwen@marvell.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Good day to ALL!
+>>
+>> twebb, you did not enable debugging messages. But it looks like they are
+>> not actually needed.
+>
+> I config'd kernel with...
+> CONFIG_MTD_UBI_DEBUG=y
+> CONFIG_UBIFS_FS_DEBUG=y
+>
+> Did I miss something else?
+>
 
-I'm struggling with M-systems DiskOnChip support under kernel 2.6.34.
-
-Compiled support for DoC as a module under MTD device.
-Module loads fine, no errors.
-When I make nftl_format /dev/mtd0, I receive warnings:
-
-voyage:~# nftl_format /dev/mtd0
-version 1.24 2005/11/07 11:15:13 gleixner
-Phase 1. Checking and erasing Erase Zones from 0x00000000 to 0x02000000
-Skipping bad zone (factory marked) #0 @ 0x0
-Skipping bad zone (factory marked) #1 @ 0x4000
-Skipping bad zone (factory marked) #3 @ 0xc000
-Skipping bad zone (factory marked) #4 @ 0x10000
-
-After I try to modprobe nftl, I get:
-NFTL Media Headers at 0x0 and 0x8000 disagree.
-NFTL Media Headers at 0x0 and 0xc000 disagree.
-NFTL Media Headers at 0x0 and 0x10000 disagree.
-NFTL Media Headers at 0x0 and 0x14000 disagree.
-Formatting block 2
-Formatting block 5
-
-And in hangs forever...
-
-I think it is a problem in wrong headers at 0x0, which also resides on bad zone
-But how to work this around?
-
-With best Regards,
-Egorkat.
+Never mind, I now see what I missed:  CONFIG_MTD_UBI_DEBUG_MSG=y
