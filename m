@@ -1,24 +1,25 @@
-Received: from mail-yw0-f204.google.com ([209.85.211.204])
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OM0He-0003lb-Fh
-	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2010 15:00:07 +0000
-Received: by ywh42 with SMTP id 42so4058400ywh.15
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 08 Jun 2010 08:00:05 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1276006648.5677.20.camel@localhost>
-References: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
-	<1274763914.2106.1.camel@localhost>
-	<AANLkTin31PwUfXVHGV89VGrWG89RbIcY1L1I_VEO7mSk@mail.gmail.com>
-	<1276006648.5677.20.camel@localhost>
-Date: Tue, 8 Jun 2010 11:00:04 -0400
-Message-ID: <AANLkTilYTO_TgJMVrkmY1yAUK5dGTjyzgNIhndNui3r1@mail.gmail.com>
-Subject: Re: UBIFS failed to recover master node
-From: twebb <taliaferro62@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Lei Wen <leiwen@marvell.com>, linux-mtd@lists.infradead.org
+	id 1OM0WC-0000g1-E3
+	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2010 15:15:08 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OM0W7-00045k-Ro
+	for linux-mtd@lists.infradead.org; Tue, 08 Jun 2010 17:15:04 +0200
+Received: from amg-holding.md ([89.28.62.63])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Jun 2010 17:15:03 +0200
+Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 08 Jun 2010 17:15:03 +0200
+To: linux-mtd@lists.infradead.org
+From: Egorkat <egorkat@gmail.com>
+Subject: modprobe nftl hangs
+Date: Tue, 8 Jun 2010 15:13:37 +0000 (UTC)
+Message-ID: <loom.20100608T165617-407@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 8, 2010 at 10:17 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Tue, 2010-06-08 at 09:44 -0400, twebb wrote:
->> I've attached a log file that captures the problem I'm seeing.
->
-> twebb, you did not enable debugging messages. But it looks like they are
-> not actually needed.
+Good day to ALL!
 
-I config'd kernel with...
-CONFIG_MTD_UBI_DEBUG=3Dy
-CONFIG_UBIFS_FS_DEBUG=3Dy
+I'm struggling with M-systems DiskOnChip support under kernel 2.6.34.
 
-Did I miss something else?
+Compiled support for DoC as a module under MTD device.
+Module loads fine, no errors.
+When I make nftl_format /dev/mtd0, I receive warnings:
 
->
->> =A0 The
->> log includes failures on 2 of 4 UBIFS volumes that are part of a
->> single MTD device (and shows the other 2 volumes being
->> mounted/umounted without error).
->>
->> It appears from the log that the problem is associated with "corrupt
->> empty space" which can be seen in the log at lines 28, 313, 347, and
->> 359. =A0Could this be HW ECC failing to correct bit errors on reads?
->> Any suggestions on what this problem would be helpful.
->
-> Yes, HW fails to correct bit errors. Why these errors are there - this
-> it the question. May be MLC-related. You need to debug this. Or send me
-> your board, I can try to take a look
+voyage:~# nftl_format /dev/mtd0
+version 1.24 2005/11/07 11:15:13 gleixner
+Phase 1. Checking and erasing Erase Zones from 0x00000000 to 0x02000000
+Skipping bad zone (factory marked) #0 @ 0x0
+Skipping bad zone (factory marked) #1 @ 0x4000
+Skipping bad zone (factory marked) #3 @ 0xc000
+Skipping bad zone (factory marked) #4 @ 0x10000
 
-I'll look into it, thanks.
+After I try to modprobe nftl, I get:
+NFTL Media Headers at 0x0 and 0x8000 disagree.
+NFTL Media Headers at 0x0 and 0xc000 disagree.
+NFTL Media Headers at 0x0 and 0x10000 disagree.
+NFTL Media Headers at 0x0 and 0x14000 disagree.
+Formatting block 2
+Formatting block 5
 
->
-> Did you enable UBI extra self checks?
->
+And in hangs forever...
 
-No.
+I think it is a problem in wrong headers at 0x0, which also resides on bad zone
+But how to work this around?
+
+With best Regards,
+Egorkat.
