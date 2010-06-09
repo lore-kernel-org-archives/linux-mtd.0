@@ -1,7 +1,7 @@
 Received: from mailout1.w1.samsung.com ([210.118.77.11])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OMLug-0005D2-ED
-	for linux-mtd@lists.infradead.org; Wed, 09 Jun 2010 14:05:51 +0000
+	id 1OMLuh-0005D2-KX
+	for linux-mtd@lists.infradead.org; Wed, 09 Jun 2010 14:05:52 +0000
 Received: from eu_spt1 (mailout1.w1.samsung.com [210.118.77.11])
 	by mailout1.w1.samsung.com
 	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
@@ -9,14 +9,14 @@ Received: from eu_spt1 (mailout1.w1.samsung.com [210.118.77.11])
 	linux-mtd@lists.infradead.org; Wed, 09 Jun 2010 15:05:46 +0100 (BST)
 Received: from linux.samsung.com ([106.116.38.10])
 	by spt1.w1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul
-	14 2004)) with ESMTPA id <0L3R000ZX35LW0@spt1.w1.samsung.com> for
+	14 2004)) with ESMTPA id <0L3R00JEE35LAL@spt1.w1.samsung.com> for
 	linux-mtd@lists.infradead.org; Wed, 09 Jun 2010 15:05:46 +0100 (BST)
-Date: Wed, 09 Jun 2010 16:05:31 +0200
+Date: Wed, 09 Jun 2010 16:05:32 +0200
 From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [PATCH 1/4] OneNAND: Introduce chip_probe function
+Subject: [PATCH 2/4] s5pc110: Implement s5pc110 chip_probe for OneNAND probe
 In-reply-to: <1276092335-3245-1-git-send-email-m.szyprowski@samsung.com>
 To: linux-mtd@lists.infradead.org
-Message-id: <1276092335-3245-2-git-send-email-m.szyprowski@samsung.com>
+Message-id: <1276092335-3245-3-git-send-email-m.szyprowski@samsung.com>
 MIME-version: 1.0
 Content-type: TEXT/PLAIN
 Content-transfer-encoding: 7BIT
@@ -33,118 +33,75 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Kyungmin Park <kyungmin.park@samsung.com>
 
-This patch splits OneNAND probe operation into chip and interface probe
-operations. This way the code can be restructured to be more readable on
-chips that require special workarounds during probe operation (like
-OneNAND chip on Samsung S5PC110).
+This patch introduces a noop chip probe callback for OneNAND Samsung
+S5PC110 driver. This way the workarounds can be removed from the
+onenand_setup function and onenand framework.
 
 Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 
 ---
- drivers/mtd/onenand/onenand_base.c |   44 ++++++++++++++++++++++++++---------
- include/linux/mtd/onenand.h        |    1 +
- 2 files changed, 33 insertions(+), 12 deletions(-)
+ drivers/mtd/onenand/samsung.c |   20 +++++++-------------
+ 1 files changed, 7 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 26caf25..fc91c4a 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -3730,17 +3730,16 @@ out:
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 2750317..fa4b743 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -738,6 +738,11 @@ static void s3c_unlock_all(struct mtd_info *mtd)
+ 	s3c_onenand_check_lock_status(mtd);
  }
  
- /**
-- * onenand_probe - [OneNAND Interface] Probe the OneNAND device
-+ * onenand_chip_probe - [OneNAND Interface] Probe the OneNAND device
-  * @param mtd		MTD device structure
-  *
-  * OneNAND detection method:
-  *   Compare the values from command with ones from register
-  */
--static int onenand_probe(struct mtd_info *mtd)
-+static int onenand_chip_probe(struct mtd_info *mtd)
- {
- 	struct onenand_chip *this = mtd->priv;
--	int bram_maf_id, bram_dev_id, maf_id, dev_id, ver_id;
--	int density;
-+	int bram_maf_id, bram_dev_id, maf_id, dev_id;
- 	int syscfg;
- 
- 	/* Save system configuration 1 */
-@@ -3763,12 +3762,6 @@ static int onenand_probe(struct mtd_info *mtd)
- 	/* Restore system configuration 1 */
- 	this->write_word(syscfg, this->base + ONENAND_REG_SYS_CFG1);
- 
--	/* Workaround */
--	if (syscfg & ONENAND_SYS_CFG1_SYNC_WRITE) {
--		bram_maf_id = this->read_word(this->base + ONENAND_REG_MANUFACTURER_ID);
--		bram_dev_id = this->read_word(this->base + ONENAND_REG_DEVICE_ID);
--	}
--
- 	/* Check manufacturer ID */
- 	if (onenand_check_maf(bram_maf_id))
- 		return -ENXIO;
-@@ -3776,13 +3769,37 @@ static int onenand_probe(struct mtd_info *mtd)
- 	/* Read manufacturer and device IDs from Register */
- 	maf_id = this->read_word(this->base + ONENAND_REG_MANUFACTURER_ID);
- 	dev_id = this->read_word(this->base + ONENAND_REG_DEVICE_ID);
--	ver_id = this->read_word(this->base + ONENAND_REG_VERSION_ID);
--	this->technology = this->read_word(this->base + ONENAND_REG_TECHNOLOGY);
- 
- 	/* Check OneNAND device */
- 	if (maf_id != bram_maf_id || dev_id != bram_dev_id)
- 		return -ENXIO;
- 
++static int s5pc110_chip_probe(struct mtd_info *mtd)
++{
 +	return 0;
 +}
 +
-+/**
-+ * onenand_probe - [OneNAND Interface] Probe the OneNAND device
-+ * @param mtd		MTD device structure
-+ *
-+ * Probe OneNAND chip
-+ */
-+static int onenand_probe(struct mtd_info *mtd)
-+{
-+	struct onenand_chip *this = mtd->priv;
-+	int maf_id, dev_id, ver_id;
-+	int density;
-+	int ret;
-+
-+	ret = this->chip_probe(mtd);
-+	if (ret)
-+		return ret;
-+
-+	/* Read manufacturer and device IDs from Register */
-+	maf_id = this->read_word(this->base + ONENAND_REG_MANUFACTURER_ID);
-+	dev_id = this->read_word(this->base + ONENAND_REG_DEVICE_ID);
-+	ver_id = this->read_word(this->base + ONENAND_REG_VERSION_ID);
-+	this->technology = this->read_word(this->base + ONENAND_REG_TECHNOLOGY);
-+
- 	/* Flash device information */
- 	onenand_print_device_info(dev_id, ver_id);
- 	this->device_id = dev_id;
-@@ -3909,6 +3926,9 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 	if (!this->unlock_all)
- 		this->unlock_all = onenand_unlock_all;
+ static void s3c_onenand_setup(struct mtd_info *mtd)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+@@ -757,6 +762,7 @@ static void s3c_onenand_setup(struct mtd_info *mtd)
+ 		/* Use generic onenand functions */
+ 		onenand->cmd_map = s5pc1xx_cmd_map;
+ 		this->read_bufferram = s5pc110_read_bufferram;
++		this->chip_probe = s5pc110_chip_probe;
+ 		return;
+ 	} else {
+ 		BUG();
+@@ -781,7 +787,6 @@ static int s3c_onenand_probe(struct platform_device *pdev)
+ 	struct mtd_info *mtd;
+ 	struct resource *r;
+ 	int size, err;
+-	unsigned long onenand_ctrl_cfg = 0;
  
-+	if (!this->chip_probe)
-+		this->chip_probe = onenand_chip_probe;
-+
- 	if (!this->read_bufferram)
- 		this->read_bufferram = onenand_read_bufferram;
- 	if (!this->write_bufferram)
-diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-index c26ff86..57c3bb4 100644
---- a/include/linux/mtd/onenand.h
-+++ b/include/linux/mtd/onenand.h
-@@ -114,6 +114,7 @@ struct onenand_chip {
- 	unsigned short (*read_word)(void __iomem *addr);
- 	void (*write_word)(unsigned short value, void __iomem *addr);
- 	void (*mmcontrol)(struct mtd_info *mtd, int sync_read);
-+	int (*chip_probe)(struct mtd_info *mtd);
- 	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
- 	int (*scan_bbt)(struct mtd_info *mtd);
+ 	pdata = pdev->dev.platform_data;
+ 	/* No need to check pdata. the platform data is optional */
+@@ -900,14 +905,6 @@ static int s3c_onenand_probe(struct platform_device *pdev)
+ 		}
  
+ 		onenand->phys_base = onenand->base_res->start;
+-
+-		onenand_ctrl_cfg = readl(onenand->dma_addr + 0x100);
+-		if ((onenand_ctrl_cfg & ONENAND_SYS_CFG1_SYNC_WRITE) &&
+-		    onenand->dma_addr)
+-			writel(onenand_ctrl_cfg & ~ONENAND_SYS_CFG1_SYNC_WRITE,
+-					onenand->dma_addr + 0x100);
+-		else
+-			onenand_ctrl_cfg = 0;
+ 	}
+ 
+ 	if (onenand_scan(mtd, 1)) {
+@@ -915,10 +912,7 @@ static int s3c_onenand_probe(struct platform_device *pdev)
+ 		goto scan_failed;
+ 	}
+ 
+-	if (onenand->type == TYPE_S5PC110) {
+-		if (onenand_ctrl_cfg && onenand->dma_addr)
+-			writel(onenand_ctrl_cfg, onenand->dma_addr + 0x100);
+-	} else {
++	if (onenand->type != TYPE_S5PC110) {
+ 		/* S3C doesn't handle subpage write */
+ 		mtd->subpage_sft = 0;
+ 		this->subpagesize = mtd->writesize;
 -- 
 1.6.4
