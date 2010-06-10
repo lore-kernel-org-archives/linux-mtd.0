@@ -1,27 +1,17 @@
-Received: from lo.gmane.org ([80.91.229.12])
+Received: from smtp2-g21.free.fr ([212.27.42.2])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OMi69-0001YN-4m
-	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 13:47:09 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OMi66-00059C-Rc
-	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 15:47:06 +0200
-Received: from amg-holding.md ([89.28.62.63])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2010 15:47:06 +0200
-Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2010 15:47:06 +0200
+	id 1OMiLj-0006tJ-0b
+	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 14:03:17 +0000
+From: =?utf-8?q?Eric=20B=C3=A9nard?= <eric@eukrea.com>
 To: linux-mtd@lists.infradead.org
-From: Egorkat <egorkat@gmail.com>
-Subject: Re: MTD support for old DoC chips MD2201-D72
-Date: Thu, 10 Jun 2010 13:46:56 +0000 (UTC)
-Message-ID: <loom.20100610T154548-504@post.gmane.org>
-References: <loom.20100610T134317-652@post.gmane.org>
-	<1276174914.9474.0.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH 1/2] mxc_nand: fix Unbalanced enable for IRQ
+Date: Thu, 10 Jun 2010 16:03:04 +0200
+Message-Id: <1276178584-10074-1-git-send-email-eric@eukrea.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Cc: s.hauer@pengutronix.de, ivo.clarysse@gmail.com,
+	linux-arm-kernel@lists.arm.linux.org.uk, u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse <dwmw2 <at> infradead.org> writes:
+* preset should be done before sending the reset command
 
-> 
-> On Thu, 2010-06-10 at 12:43 +0000, Egorkat wrote:
-> > 
-> > Is it possible to add support for that chip in mtd? May be I can
-> > supply more
-> > information? 
-> 
-> What are the device and manufacturer IDs? Do you have
-> CONFIG_MTD_NAND_MUSEUM_IDS set?
-> 
+* without this, I get the following error on an i.MX35 :
+[    0.900000] ------------[ cut here ]------------
+[    0.900000] WARNING: at kernel/irq/manage.c:290 __enable_irq+0x4c/0x88()
+[    0.900000] Unbalanced enable for IRQ 33
+[    0.900000] Modules linked in:
+[    0.900000] [<c002ffb8>] (unwind_backtrace+0x0/0xf0) from [<c02f7d0c>] (dump_stack+0x18/0x1c)
+[    0.900000] [<c02f7d0c>] (dump_stack+0x18/0x1c) from [<c0049a44>] (warn_slowpath_common+0x54/0x6c)
+[    0.900000] [<c0049a44>] (warn_slowpath_common+0x54/0x6c) from [<c0049b00>] (warn_slowpath_fmt+0x38/0x40)
+[    0.900000] [<c0049b00>] (warn_slowpath_fmt+0x38/0x40) from [<c008f65c>] (__enable_irq+0x4c/0x88)
+[    0.900000] [<c008f65c>] (__enable_irq+0x4c/0x88) from [<c008fca0>] (enable_irq+0x54/0x98)
+[    0.900000] [<c008fca0>] (enable_irq+0x54/0x98) from [<c021e618>] (wait_op_done+0x40/0x134)
+[    0.900000] [<c021e618>] (wait_op_done+0x40/0x134) from [<c021e808>] (send_cmd+0x30/0x38)
+[    0.900000] [<c021e808>] (send_cmd+0x30/0x38) from [<c021eb8c>] (mxc_nand_command+0x26c/0x328)
+[    0.900000] [<c021eb8c>] (mxc_nand_command+0x26c/0x328) from [<c021aa60>] (nand_scan_ident+0x188/0x6c0)
+[    0.900000] [<c021aa60>] (nand_scan_ident+0x188/0x6c0) from [<c001a9cc>] (mxcnd_probe+0x2b8/0x3d0)
+[    0.900000] [<c001a9cc>] (mxcnd_probe+0x2b8/0x3d0) from [<c01f9e88>] (platform_drv_probe+0x20/0x24)
+[    0.900000] [<c01f9e88>] (platform_drv_probe+0x20/0x24) from [<c01f8c38>] (driver_probe_device+0xb0/0x164)
+[    0.900000] [<c01f8c38>] (driver_probe_device+0xb0/0x164) from [<c01f8d54>] (__driver_attach+0x68/0x8c)
+[    0.900000] [<c01f8d54>] (__driver_attach+0x68/0x8c) from [<c01f8348>] (bus_for_each_dev+0x50/0x84)
+[    0.900000] [<c01f8348>] (bus_for_each_dev+0x50/0x84) from [<c01f8a9c>] (driver_attach+0x20/0x28)
+[    0.900000] [<c01f8a9c>] (driver_attach+0x20/0x28) from [<c01f7c00>] (bus_add_driver+0x144/0x2dc)
+[    0.900000] [<c01f7c00>] (bus_add_driver+0x144/0x2dc) from [<c01f906c>] (driver_register+0xb0/0x13c)
+[    0.900000] [<c01f906c>] (driver_register+0xb0/0x13c) from [<c01fa13c>] (platform_driver_register+0x4c/0x60)
+[    0.900000] [<c01fa13c>] (platform_driver_register+0x4c/0x60) from [<c01fa170>] (platform_driver_probe+0x20/0xa0)
+[    0.900000] [<c01fa170>] (platform_driver_probe+0x20/0xa0) from [<c001a708>] (mxc_nd_init+0x18/0x24)
+[    0.900000] [<c001a708>] (mxc_nd_init+0x18/0x24) from [<c002938c>] (do_one_initcall+0x64/0x1bc)
+[    0.900000] [<c002938c>] (do_one_initcall+0x64/0x1bc) from [<c00084c4>] (kernel_init+0xe8/0x1ac)
+[    0.900000] [<c00084c4>] (kernel_init+0xe8/0x1ac) from [<c002aee8>] (kernel_thread_exit+0x0/0x8)
+[    0.900000] ---[ end trace 8bf72ac6ba089a19 ]---
+[    1.140000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xda (Micron NAND 256MiB 3,3V 8-bit)
 
-I don't know device ids. Is there a way to find it out without recompiling the
-kernel with that parameter?
+Signed-off-by: Eric Bénard <eric@eukrea.com>
+---
+ drivers/mtd/nand/mxc_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 82e9438..8878503 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -604,8 +604,8 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 	/* Command pre-processing step */
+ 	switch (command) {
+ 	case NAND_CMD_RESET:
+-		send_cmd(host, command, false);
+ 		preset(mtd);
++		send_cmd(host, command, false);
+ 		break;
+ 
+ 	case NAND_CMD_STATUS:
+-- 
+1.6.3.3
