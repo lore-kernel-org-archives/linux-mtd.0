@@ -1,19 +1,27 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OMhwn-0007Rs-7e
-	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 13:37:29 +0000
-Message-ID: <4C10EA92.5020505@parrot.com>
-Date: Thu, 10 Jun 2010 15:37:22 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH] ubi : generate random image_seq when attaching empty
-	MTD device
-References: <4C07B8C3.7080304@parrot.com> <1275986730.4535.0.camel@localhost>
-In-Reply-To: <1275986730.4535.0.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1OMi69-0001YN-4m
+	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 13:47:09 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OMi66-00059C-Rc
+	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 15:47:06 +0200
+Received: from amg-holding.md ([89.28.62.63])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2010 15:47:06 +0200
+Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2010 15:47:06 +0200
+To: linux-mtd@lists.infradead.org
+From: Egorkat <egorkat@gmail.com>
+Subject: Re: MTD support for old DoC chips MD2201-D72
+Date: Thu, 10 Jun 2010 13:46:56 +0000 (UTC)
+Message-ID: <loom.20100610T154548-504@post.gmane.org>
+References: <loom.20100610T134317-652@post.gmane.org>
+	<1276174914.9474.0.camel@macbook.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy a écrit :
-> On Thu, 2010-06-03 at 16:14 +0200, Matthieu CASTET wrote:
->> generate random image_seq when attaching empty MTD device (kernel do the 
->> ubi formating).
-> 
-> Your patch did not apply to the ubi-2.6.git master, because it
-> conflicted with my latest changes. But I amended it and pushed, but you
-> should probably check.
-> 
-It looks fine.
+David Woodhouse <dwmw2 <at> infradead.org> writes:
 
-Thanks.
+> 
+> On Thu, 2010-06-10 at 12:43 +0000, Egorkat wrote:
+> > 
+> > Is it possible to add support for that chip in mtd? May be I can
+> > supply more
+> > information? 
+> 
+> What are the device and manufacturer IDs? Do you have
+> CONFIG_MTD_NAND_MUSEUM_IDS set?
+> 
+
+I don't know device ids. Is there a way to find it out without recompiling the
+kernel with that parameter?
