@@ -1,18 +1,25 @@
-Received: from mail-yw0-f204.google.com ([209.85.211.204])
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OMdp7-0000pY-Vr
-	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 09:13:18 +0000
-Received: by ywh42 with SMTP id 42so6590203ywh.15
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Jun 2010 02:13:16 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 10 Jun 2010 14:43:16 +0530
-Message-ID: <AANLkTimMvLdm54CwALZClYKxZc6vu7NV24pXltQqGH1q@mail.gmail.com>
-Subject: NAND bad block table creation
-From: Naveen Mamindlapalli <naveen.mamindlapalli@gmail.com>
+	id 1OMh6V-0007Ms-85
+	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 12:43:28 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OMh6S-0006Of-FV
+	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 14:43:24 +0200
+Received: from amg-holding.md ([89.28.62.63])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2010 14:43:24 +0200
+Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Jun 2010 14:43:24 +0200
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: Egorkat <egorkat@gmail.com>
+Subject: MTD support for old DoC chips MD2201-D72
+Date: Thu, 10 Jun 2010 12:43:13 +0000 (UTC)
+Message-ID: <loom.20100610T134317-652@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +29,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Good day, All!
 
-I am going through mtd subsystem code for bad block management
-information. The linux kernel version I am using is linux-2.6.34. In
-the create_bbt( )=A0 function in drivers/mtd/nand/nand_bbt.c, the for
-loop which checks for whether a block is bad or not is incrementing by
-2 (line 436) . That means alternate NAND blocks are checked to find
-out whether that block is bad or not.
+I've faced the problem in 2.6.34 with support for old DiskonChip drives.
+I have 4 DoCs - one is MD2202-D32 (is recognised) and 3 MD2201-D72.
+modprobe diskonchip says - 
+[  151.499542] DiskOnChip found at 0xc8000
+[  151.504542] DiskOnChip 2000 responds to DWORD access
+[  151.509769] Detected 3 chips per floor.
+[  151.509769] No NAND device found.
+[  151.517548] DiskOnChip found at 0xca000
+[  151.519541] DiskOnChip 2000 responds to DWORD access
+[  151.521541] Detected 3 chips per floor.
+[  151.527544] No NAND device found.
+[  151.536658] No valid DiskOnChip devices found
 
-Is this correct?
+Here is output from dinfo utility - 
+                           D I N F O - utility 
+                  Version 5.1.4.0.8, Last Update: 22 Oct 2002
+                   Copyright (C) M-Systems, 1992 - 2002
+                 ----------------------------------------
 
-Code is pasted below ( drivers/mtd/nand/nand_bbt.c ):
+ DiskOnChip 1 - GENERAL INFO.
+	Physical Address:  0xC8000
+	DiskOnChip Type :  DiskOnChip 2000
+	Flash Type      :  TC5864
+	FormatType      :  NFTL
+	TrueFFS version :  5.1.4
+	Driver Version  :  DOS 5.1.4
+	Sectors         :  9
+	Heads           :  16
+	Cylinders       :  1002
+	Boot Area Size  :  49152 Bytes
+	Logical Sectors :  144288
+	Phy. UnitSize   :  8192 Bytes
+	Physical Size   :  75497472 (72 MB)
+	Unit Size       :  8192 Bytes
+	Media Size      :  75497472 Bytes (72 MB)
+	Chip Size       :  8388608 Bytes (8 MB)
+	No Of Chips     :  9
+	Interleaving    :  1
 
-    417         for (i =3D startblock; i < numblocks;) {
-    418                 int ret;
-    419
-    420                 if (bd->options & NAND_BBT_SCANALLPAGES)
-    421                         ret =3D scan_block_full(mtd, bd, from,
-buf, readlen,
-    422                                               scanlen, len);
-    423                 else
-    424                         ret =3D scan_block_fast(mtd, bd, from, buf,=
- len);
-    425
-    426                 if (ret < 0)
-    427                         return ret;
-    428
-    429                 if (ret) {
-    430                         this->bbt[i >> 3] |=3D 0x03 << (i & 0x6);
-    431                         printk(KERN_WARNING "Bad eraseblock %d
-at 0x%012llx\n",
-    432                                i >> 1, (unsigned long long)from);
-    433                         mtd->ecc_stats.badblocks++;
-    434                 }
-    435
-    436                 i +=3D 2;
-    437                 from +=3D (1 << this->bbt_erase_shift);
-    438         }
+ DiskOnChip 2 - GENERAL INFO.
+	Physical Address:  0xCA000
+	DiskOnChip Type :  DiskOnChip 2000
+	Flash Type      :  TC5864
+	FormatType      :  NFTL
+	TrueFFS version :  5.1.4
+	Driver Version  :  DOS 5.1.4
+	Sectors         :  9
+	Heads           :  16
+	Cylinders       :  1002
+	Boot Area Size  :  49152 Bytes
+	Logical Sectors :  144288
+	Phy. UnitSize   :  8192 Bytes
+	Physical Size   :  75497472 (72 MB)
+	Unit Size       :  8192 Bytes
+	Media Size      :  75497472 Bytes (72 MB)
+	Chip Size       :  8388608 Bytes (8 MB)
+	No Of Chips     :  9
+	Interleaving    :  1
 
-Thanks and Regards,
-Naveen
+Is it possible to add support for that chip in mtd? May be I can supply more
+information?
+
+Thanks in advance!
