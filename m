@@ -1,13 +1,17 @@
 Received: from mail.windriver.com ([147.11.1.11])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OMdal-0004ZW-KD
+	id 1OMdal-0004Zq-MM
 	for linux-mtd@lists.infradead.org; Thu, 10 Jun 2010 08:58:28 +0000
 From: "Stanley.Miao" <stanley.miao@windriver.com>
 To: Artem.Bityutskiy@nokia.com
-Subject: The "struct nand_oobinfo" is able to record only 32 ECC code
-	positions, which
-Date: Thu, 10 Jun 2010 17:09:51 +0800
-Message-Id: <1276160994-7599-1-git-send-email-stanley.miao@windriver.com>
+Subject: [PATCH 3/3] Place the cleanmarker in OOB area according to the mode
+	MTD_OOB_AUTO
+Date: Thu, 10 Jun 2010 17:09:54 +0800
+Message-Id: <1276160994-7599-4-git-send-email-stanley.miao@windriver.com>
+In-Reply-To: <1276160994-7599-3-git-send-email-stanley.miao@windriver.com>
+References: <1276160994-7599-1-git-send-email-stanley.miao@windriver.com>
+	<1276160994-7599-2-git-send-email-stanley.miao@windriver.com>
+	<1276160994-7599-3-git-send-email-stanley.miao@windriver.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -18,12 +22,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now update nandwrite to use the new ioctl command ECCGETLAYOUT. In order to
-keep compatible with the old linux kernel, a linux version detection function
-is added.
+In the current linux kernel, Jffs2 writes the cleanmarker according to the
+mode MTD_OOB_AUTO, so modify the layout of the cleanmarker from
+MTD_OOB_PLACE to MTD_OOB_AUTO in flash_eraseall.
 
-YAFFS and JFFS2 has updated and we don't need the arguments "forcelegacy",
-"forcejffs2", "forceyaffs" anymore. Now clean them up. 
+Signed-off-by: Stanley.Miao <stanley.miao@windriver.com>
+---
+ flash_eraseall.c |   40 ++++++++++++++++++++++------------------
+ 1 files changed, 22 insertions(+), 18 deletions(-)
 
-
-Stanley.
+diff --git a/flash_eraseall.c b/flash_eraseall.c
+index 4e2108b..f0f0371 100644
+--- a/flash_eraseall.c
++++ b/flash_eraseall.c
+@@ -34,7 +34,7 @@
+ #include <time.h>
+ #include <getopt.h>
+ #include <sys/ioctl.h>
+-#include <sys/mount.h>
++#include <sys/param.h>
+ #include "crc32.h"
+ 
+ #include <mtd/mtd-user.h>
+@@ -75,9 +75,11 @@ static int get_linux_version(void)
+ int main (int argc, char *argv[])
+ {
+ 	mtd_info_t meminfo;
+-	int fd, clmpos = 0, clmlen = 8;
++	int fd;
+ 	erase_info_t erase;
+ 	int isNAND, bbtest = 1;
++	unsigned char oobbuf[128];
++	memset(oobbuf, 0xFF, 128);
+ 
+ 	process_options(argc, argv);
+ 
+@@ -98,11 +100,18 @@ int main (int argc, char *argv[])
+ 	if (jffs2) {
+ 		cleanmarker.magic = cpu_to_je16 (JFFS2_MAGIC_BITMASK);
+ 		cleanmarker.nodetype = cpu_to_je16 (JFFS2_NODETYPE_CLEANMARKER);
+-		if (!isNAND)
++		if (!isNAND) {
+ 			cleanmarker.totlen = cpu_to_je32 (sizeof (struct jffs2_unknown_node));
+-		else {
++			cleanmarker.hdr_crc = cpu_to_je32(crc32(0, &cleanmarker, \
++						sizeof(struct jffs2_unknown_node) - 4));
++		} else {
++			int already_read, num, i, start;
+ 			struct nand_ecclayout ecclayout;
+ 
++			cleanmarker.totlen = cpu_to_je32(8);
++			cleanmarker.hdr_crc = cpu_to_je32(crc32(0, &cleanmarker, \
++						sizeof(struct jffs2_unknown_node) - 4));
++
+ 			memset(&ecclayout, 0, sizeof(ecclayout));
+ 			if (get_linux_version() > LINUX_VERSION(2, 6, 17)) {
+ 				if (ioctl(fd, ECCGETLAYOUT, &ecclayout) != 0) {
+@@ -122,19 +131,14 @@ int main (int argc, char *argv[])
+ 				memcpy(&ecclayout.oobfree, &oi.oobfree, sizeof(oi.oobfree));
+ 				ecclayout.eccbytes = oi.eccbytes;
+ 			}
+-
+-			/* Get the position of the free bytes */
+-			if (!ecclayout.oobfree[0].length) {
+-				fprintf(stderr, " Eeep. Autoplacement selected and no empty space in oob\n");
+-				return 1;
++			already_read = 0;
++			for (i = 0; (already_read < 8) && ecclayout.oobfree[i].length; i++) {
++				num = MIN(8 - already_read, ecclayout.oobfree[i].length);
++				start = ecclayout.oobfree[i].offset;
++				memcpy(oobbuf + start, (unsigned char *)&cleanmarker + already_read, num);
++				already_read += num;
+ 			}
+-			clmpos = ecclayout.oobfree[0].offset;
+-			clmlen = ecclayout.oobfree[0].length;
+-			if (clmlen > 8)
+-				clmlen = 8;
+-			cleanmarker.totlen = cpu_to_je32(8);
+ 		}
+-		cleanmarker.hdr_crc =  cpu_to_je32 (crc32 (0, &cleanmarker,  sizeof (struct jffs2_unknown_node) - 4));
+ 	}
+ 
+ 	for (erase.start = 0; erase.start < meminfo.size; erase.start += meminfo.erasesize) {
+@@ -174,9 +178,9 @@ int main (int argc, char *argv[])
+ 		/* write cleanmarker */
+ 		if (isNAND) {
+ 			struct mtd_oob_buf oob;
+-			oob.ptr = (unsigned char *) &cleanmarker;
+-			oob.start = erase.start + clmpos;
+-			oob.length = clmlen;
++			oob.ptr = oobbuf;
++			oob.start = erase.start;
++			oob.length = meminfo.oobsize;
+ 			if (ioctl (fd, MEMWRITEOOB, &oob) != 0) {
+ 				fprintf(stderr, "\n%s: %s: MTD writeoob failure: %s\n", exe_name, mtd_device, strerror(errno));
+ 				continue;
+-- 
+1.5.4.3
