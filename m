@@ -1,24 +1,23 @@
 Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OMyxZ-00061c-Si
-	for linux-mtd@lists.infradead.org; Fri, 11 Jun 2010 07:47:27 +0000
+	id 1OMz09-0006v3-E9
+	for linux-mtd@lists.infradead.org; Fri, 11 Jun 2010 07:50:06 +0000
 Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OMyxX-0000WJ-06
-	for linux-mtd@lists.infradead.org; Fri, 11 Jun 2010 09:47:23 +0200
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OMz08-0001ey-2M
+	for linux-mtd@lists.infradead.org; Fri, 11 Jun 2010 09:50:04 +0200
 Received: from amg-holding.md ([89.28.62.63])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Jun 2010 09:47:22 +0200
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Jun 2010 09:50:04 +0200
 Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Jun 2010 09:47:22 +0200
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Jun 2010 09:50:04 +0200
 To: linux-mtd@lists.infradead.org
 From: Egorkat <egorkat@gmail.com>
-Subject: Re: MTD support for old DoC chips MD2201-D72
-Date: Fri, 11 Jun 2010 07:47:13 +0000 (UTC)
-Message-ID: <loom.20100611T094114-41@post.gmane.org>
-References: <loom.20100610T134317-652@post.gmane.org>
-	<1276174914.9474.0.camel@macbook.infradead.org>
+Subject: Re: modprobe nftl hangs
+Date: Fri, 11 Jun 2010 07:48:23 +0000 (UTC)
+Message-ID: <loom.20100611T094726-371@post.gmane.org>
+References: <loom.20100608T165617-407@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -31,11 +30,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Great! After recompiling my kernel with that parameter, I successfully can load
-diskonchip module! Thanks for advice!
+Situation repeats with another chip - MD2201-D72:
 
-But that doesn't helped me in my primary problem - modprobe nftl also hangs... 
-With these chip behavior is almost equal to MD2202-D32:
 
 modprobe diskonchip -
 DiskOnChip found at 0xc8000
@@ -90,3 +86,4 @@ and modprobe nftl -
 [ 1699.699122] Formatting block 10
 [ 1851.005969] NFTL: cannot calculate a geometry to match size of 0x23e80.
 [ 1851.008110] NFTL: using C:1021 H:16 S:9 (== 0x23e50 sects)
+and nothing... it hangs forever...
