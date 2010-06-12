@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ONPJh-0004B3-As
-	for linux-mtd@lists.infradead.org; Sat, 12 Jun 2010 11:56:01 +0000
-Subject: Re: [PATCH 4/8] fs/ubifs: Use ERR_CAST
+	id 1ONRZQ-0002X6-S7
+	for linux-mtd@lists.infradead.org; Sat, 12 Jun 2010 14:20:26 +0000
+Subject: Re: [PATCH] UBI: fix delete compatible internal volume scan
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Julia Lawall <julia@diku.dk>
-In-Reply-To: <Pine.LNX.4.64.1005221200050.13021@ask.diku.dk>
-References: <Pine.LNX.4.64.1005221200050.13021@ask.diku.dk>
+To: Brijesh Singh <brijesh.s.singh@gmail.com>
+In-Reply-To: <1274595417.8881.36.camel@localhost.localdomain>
+References: <AANLkTimuYmRDCZCkoB9YHifngCwjp9_B2ucFQ1seaiM9@mail.gmail.com>
+	<1274595417.8881.36.camel@localhost.localdomain>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 12 Jun 2010 14:53:28 +0300
-Message-ID: <1276343608.19028.118.camel@localhost>
+Date: Sat, 12 Jun 2010 17:17:57 +0300
+Message-ID: <1276352277.19028.119.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@nokia.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,14 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-05-22 at 12:00 +0200, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
+On Sun, 2010-05-23 at 09:16 +0300, Artem Bityutskiy wrote:
+> On Tue, 2010-05-18 at 23:10 +0530, Brijesh Singh wrote:
+> > This patch resolves a possible bug. Scan is adding delete compatible
+> > blocks to both corr list and used list.
+> > It should return after adding the block to corr list.
+> > 
+> > Signed-off-by: Brijesh Singh <brijesh.s.singh@gmail.com>
 > 
-> Use ERR_CAST(x) rather than ERR_PTR(PTR_ERR(x)).  The former makes more
-> clear what is the purpose of the operation, which otherwise looks like a
-> no-op.
+> I'm not sure this patch is enough. I think we should add a 'compat' flag
+> to the 'struct ubi_mkvol_req' structure, to make it possible to create
+> volumes with different compatibility flags. Then we need to write a test
+> and add it to the UBI test-suite at 'mtd-utils/tests/ubi-tests/'.
+> 
+> Then once we have tested and fixed this, we should merge this and also
+> send to the '-stable' trees.
+> 
+> I remember I did give the compat option a test, but probably not that
+> good.
+> 
+> I'll try to do what I've described as soon as I have time, but you guys
+> could do this as well, if you have bandwidth.
 
-Pushed to the ubifs-2.6.git tree, thank you!
+I did not have time to do this so far, but still planning to do. Did you
+go any further with your ubil?
 
 -- 
 Best Regards,
