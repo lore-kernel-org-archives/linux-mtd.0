@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ONP31-0005UN-S6
-	for linux-mtd@lists.infradead.org; Sat, 12 Jun 2010 11:38:48 +0000
-Subject: Re: [PATCH v5 2/3] mtd-utils: support >4GiB devices
+	id 1ONPAd-0002WO-A3
+	for linux-mtd@lists.infradead.org; Sat, 12 Jun 2010 11:46:40 +0000
+Subject: Re: [PATCH] mtd-utils: Support 4096+64 page sizes.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <1273745471.22706.163.camel@localhost>
-References: <cd4bcbb843643dc463d2a2853766bcf57c23f546@localhost.localdomain>
-	<5e05b5a05a30b2dc2035b87a60bb82f3137174cb@localhost.localdomain>
-	<1273745471.22706.163.camel@localhost>
+To: Enric Balletbo i Serra <eballetbo@gmail.com>
+In-Reply-To: <1274176439-22351-1-git-send-email-eballetbo@gmail.com>
+References: <1274176439-22351-1-git-send-email-eballetbo@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 12 Jun 2010 14:36:19 +0300
-Message-ID: <1276342579.19028.116.camel@localhost>
+Date: Sat, 12 Jun 2010 14:43:34 +0300
+Message-ID: <1276343014.19028.117.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: saeed.bishara@gmail.com, jwboyer@gmail.com, linux-mtd@lists.infradead.org
+Cc: Enric Balletbo i Serra <eballetbo@iseebcn.com>,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,16 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-05-13 at 13:11 +0300, Artem Bityutskiy wrote:
-> >  nandwrite.c           |   60 +++++-----
-> >  13 files changed, 570 insertions(+), 171 deletions(-)
-> >  create mode 100644 mtd_ioctl.c
-> >  create mode 100644 mtd_ioctl.h
+On Tue, 2010-05-18 at 11:53 +0200, Enric Balletbo i Serra wrote:
+> From: Enric Balletbo i Serra <eballetbo@iseebcn.com>
 > 
-> Any chance to extend and use mtd-utils/ubi-utils/src/libmtd.c instead of
-> mtd_ioctl.c?
+> Add support for oobsize 64 and writesize 4096 in nanddump & nandwrite.
+> 
+> Signed-off-by: Enric Balletbo i Serra <eballetbo@iseebcn.com>
+> ---
+>  nanddump.c  |    1 +
+>  nandwrite.c |    1 +
 
-Does silence mean that that answer is "no"? :-)
+Pushed to mtd-utils.git, thank you!
 
 -- 
 Best Regards,
