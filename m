@@ -1,15 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ONk0O-00025j-Py
-	for linux-mtd@lists.infradead.org; Sun, 13 Jun 2010 10:01:29 +0000
-Subject: Re: [PATCH] mtd: denali: add Kconfig dependency
+	id 1ONk9T-0004BF-1W
+	for linux-mtd@lists.infradead.org; Sun, 13 Jun 2010 10:10:51 +0000
+Subject: Re: detecting that ubifs switched to ro after problem
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Karl Beldan <karl.beldan@gmail.com>
-In-Reply-To: <1276338313-12224-1-git-send-email-karl.beldan@gmail.com>
-References: <1276338313-12224-1-git-send-email-karl.beldan@gmail.com>
+To: Jon Ringle <jon@ringle.org>
+In-Reply-To: <1276422454.19028.209.camel@localhost>
+References: <AANLkTik2mO4lpL5QA1kzMf4zp-Prd-SdhSNLVcHB9isl@mail.gmail.com>
+	<1276422454.19028.209.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 13 Jun 2010 12:57:26 +0300
-Message-ID: <1276423046.19028.212.camel@localhost>
+Date: Sun, 13 Jun 2010 13:07:03 +0300
+Message-ID: <1276423623.19028.213.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,26 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-06-12 at 12:25 +0200, Karl Beldan wrote:
-> Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
-> ---
->  drivers/mtd/nand/Kconfig |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
+On Sun, 2010-06-13 at 12:47 +0300, Artem Bityutskiy wrote:
+> On Fri, 2010-06-11 at 22:46 -0400, Jon Ringle wrote:
+> > Hi,
+> > 
+> > I'd like to be able to somehow detect that ubifs has taken the action
+> > of switching from rw to ro due to some error detected in the ubifs
+> > filesystem. If I can detect this then maybe I can do something about
+> > it, such as copying the ubifs contents to a .tar.bz2 in /tmp,
+> > mkfs.ubifs, and restore .tar.bz2 back again.
+> > 
+> > Is there a way I can do this?
 > 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index ffc3720..8fe82c8 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -61,6 +61,7 @@ config MTD_NAND_DENALI
->  config MTD_NAND_DENALI_SCRATCH_REG_ADDR
->          hex "Denali NAND size scratch register address"
->          default "0xFF108018"
-> +        depends on MTD_NAND_DENALI
->          help
->            Some platforms place the NAND chip size in a scratch register
->            because (some versions of) the driver aren't able to automatically
+> I think with 2fde99cb55fb9d9b88180512a5e8a5d939d27fec you can check for
+> R/O state from /proc/mounts. Also, you can use something like inotify to
+> watch /proc/mounts changes and react if UBIFS became r/o.
 
-Pushed to l2-mtd-2.6.git / master, thanks.
+Just added:
+
+http://www.linux-mtd.infradead.org/faq/ubifs.html#L_detect_ro
+
+for your convenience.
 
 -- 
 Best Regards,
