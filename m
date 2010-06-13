@@ -1,20 +1,30 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ONkF6-0005OZ-F5
-	for linux-mtd@lists.infradead.org; Sun, 13 Jun 2010 10:16:41 +0000
-Subject: Re: Fix mtd-utils bugs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Stanley.Miao" <stanley.miao@windriver.com>
-In-Reply-To: <1276422718.19028.211.camel@localhost>
-References: <1276248975-1822-1-git-send-email-stanley.miao@windriver.com>
-	<1276422718.19028.211.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 13 Jun 2010 13:14:08 +0300
-Message-ID: <1276424048.19028.217.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1ONwSe-0007xe-6i
+	for linux-mtd@lists.infradead.org; Sun, 13 Jun 2010 23:19:29 +0000
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L3Z00MTH7GAAX20@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 08:19:22 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L3Z0098A7GAMF@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 08:19:22 +0900 (KST)
+Date: Mon, 14 Jun 2010 08:19:22 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: RE: [PATCH 1/2] mtd: OneNAND: Add runtime badblock check feature
+In-reply-to: <1276421200.19028.192.camel@localhost>
+To: dedekind1@gmail.com, 'Joonyoung Shim' <jy0922.shim@samsung.com>
+Message-id: <012f01cb0b4e$db1a7550$914f5ff0$%park@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-language: ko
+Content-transfer-encoding: quoted-printable
+References: <1275380256-15315-1-git-send-email-jy0922.shim@samsung.com>
+	<1276421200.19028.192.camel@localhost>
+Cc: 'Thomas Gleixner' <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +34,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-06-13 at 12:51 +0300, Artem Bityutskiy wrote:
-> On Fri, 2010-06-11 at 17:36 +0800, Stanley.Miao wrote:
-> > Re-send them because I didn't give a email subject in last version.
-> > 
-> > The "struct nand_oobinfo" is able to record only 32 ECC code positions,which
-> > is not enough for many big NAND chips. Therefore, this structure is replaced
-> > by "struct nand_ecclayout" in linux kernel from the version 2.6.17.
-> > Consequently, the ioctl command changed from MEMGETOOBSEL to ECCGETLAYOUT.
-> > 
-> > Now update nandwrite to use the new ioctl command ECCGETLAYOUT. In order to
-> > keep compatible with the old linux kernel, a linux version detection function
-> > is added.
-> > 
-> > YAFFS and JFFS2 has updated and we don't need the arguments "forcelegacy",
-> > "forcejffs2", "forceyaffs" anymore. Now clean them up. 
-> 
-> Please, make sure your submissions have proper version. I have limited
-> amount of time and do not want to spend it figuring out which patch is
-> the latest. Use the best kernel practices and apply prefix your stuff
-> with [PATCHv3] or something like that.
-> 
-> Could you please re-submit your latest version?
+Hi,
 
-Also, it is nice to put a short changelog, but I can live without it.
+> -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
+> Sent: Sunday, June 13, 2010 6:27 PM
+> To: Joonyoung Shim
+> Cc: linux-mtd@lists.infradead.org; Kyungmin Park; Thomas Gleixner
+> Subject: Re: [PATCH 1/2] mtd: OneNAND: Add runtime badblock check =
+feature
+>=20
+> On Tue, 2010-06-01 at 17:17 +0900, Joonyoung Shim wrote:
+> > From: Kyungmin Park <kyungmin.park@samsung.com>
+> >
+> > This patch is to support runtime badblock checking. This supports =
+only
+> > OneNAND currently. The OneNAND badblock checking when boots occurs =
+boot
+> > time delay. We can reduce boot time because can detect badblock at
+> > runtime.
+> >
+> > Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+>=20
+> Hi, this feature is interesting. But why not to use bad block table
+> instead of adding more complexity to the already very complex and
+> difficult to follow code?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+>=20
+> Also, if you really want this, it should be rather lazy checking, =
+where
+> you read OOB on demand, and then save this information to the in-ram
+> BBT, and when you get another ->block_isbad() for a block which was
+> previously checked, you do not read OOB for the second time.
+
+It's based on BBT already. Now I set the BBT values as 0x2 and then =
+check it at runtime and then mark it 0 for good, 3 for bad block.
+
+Right, it's same word lazy checking and runtime check.
+
+The original ideas are from UBI scan it read all blocks again at probe.
+I just scan almost block read once at ubi scan.
+
+Thank you,
+Kyungmin Park
+
+>=20
+> CCing Thomas, if we are lucky, he'll provide good input.
+>=20
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =
+=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9)
