@@ -1,26 +1,14 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OOChA-0001Q1-Q9
-	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 16:39:33 +0000
-Received: by pwj6 with SMTP id 6so3261897pwj.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Jun 2010 09:39:31 -0700 (PDT)
-Subject: Re: [PATCH] mtd: Fix bug using smp_processor_id() in preemptible
-	ubi_bgt1d kthread
-From: Philby John <pjohn@mvista.com>
-To: Jamie Lokier <jamie@shareable.org>
-In-Reply-To: <20100614150425.GC9550@shareable.org>
-References: <1276513457.16642.3.camel@localhost.localdomain>
-	<20100614150425.GC9550@shareable.org>
-Content-Type: text/plain
-Date: Mon, 14 Jun 2010 22:10:18 +0530
-Message-Id: <1276533618.17818.8.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, Artem Bityutskiy <dedekind1@gmail.com>,
-	linux-mtd@lists.infradead.org, David Daney <ddaney@caviumnetworks.com>,
-	linux-kernel@vger.kernel.org
-Reply-To: pjohn@mvista.com
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-mtd
+	<linux-mtd@lists.infradead.org>
+Date: Mon, 14 Jun 2010 11:57:54 -0500
+Subject: [PATCH] mtd: physmap.c: use resource_size()
+Message-ID: <0D753D10438DA54287A00B02708426976371223143@AUSP01VMBX24.collaborationhost.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +18,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-06-14 at 16:04 +0100, Jamie Lokier wrote:
-> Philby John wrote:
-> > mtd: Fix bug using smp_processor_id() in preemptible ubi_bgt1d kthread
-> > 
-> > On a MIPS Cavium Octeon CN5020 when trying to create a UBI volume,
-> > on the NOR flash, the kernel thread ubi_bgt1d calls
-> > cfi_amdstd_write_buffers() --> do_write_buffer() -->
-> > INVALIDATE_CACHE_UDELAY --> __udelay(). Its __udelay() that calls
-> > smp_processor_id() in preemptible code, which you are not supposed to.
-> > Fix the problem by disabling preemption.
-> 
-> The MTD code just calls udelay().
-> Are you sure it isn't permitted to call udelay() from preemptible code?
-> I think it is fine.
-
-It isn't really udelay() but smp_processor_id() that you are not to call
-from a preemptible thread. Now I also see Ed Swierk has done a similar
-thing https://patchwork.kernel.org/patch/4049/ and he comments "..which
-calls smp_processor_id(), which is not supposed to be called from a
-preemptible thread."
-
-
-So perhaps I can use preempt_disable() around just this call in function
-__udelay()?
-
-Regards,
-Philby
+U2lnbmVkLW9mZi1ieTogSCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVy
+cy5jb20+DQpDYzogRGF2aWQgV29vZGhvdXNlIDxEYXZpZC5Xb29kaG91c2VAaW50ZWwuY29tPg0K
+DQotLS0NCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL21hcHMvcGh5c21hcC5jIGIvZHJpdmVy
+cy9tdGQvbWFwcy9waHlzbWFwLmMNCmluZGV4IDQyNjQ2MWEuLjgyOWFhNGIgMTAwNjQ0DQotLS0g
+YS9kcml2ZXJzL210ZC9tYXBzL3BoeXNtYXAuYw0KKysrIGIvZHJpdmVycy9tdGQvbWFwcy9waHlz
+bWFwLmMNCkBAIC0xMDYsMTIgKzEwNiwxMiBAQCBzdGF0aWMgaW50IHBoeXNtYXBfZmxhc2hfcHJv
+YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqZGV2KQ0KIA0KIAlmb3IgKGkgPSAwOyBpIDwgZGV2
+LT5udW1fcmVzb3VyY2VzOyBpKyspIHsNCiAJCXByaW50ayhLRVJOX05PVElDRSAicGh5c21hcCBw
+bGF0Zm9ybSBmbGFzaCBkZXZpY2U6ICUuOGxseCBhdCAlLjhsbHhcbiIsDQotCQkgICAgICAgKHVu
+c2lnbmVkIGxvbmcgbG9uZykoZGV2LT5yZXNvdXJjZVtpXS5lbmQgLSBkZXYtPnJlc291cmNlW2ld
+LnN0YXJ0ICsgMSksDQorCQkgICAgICAgKHVuc2lnbmVkIGxvbmcgbG9uZylyZXNvdXJjZV9zaXpl
+KCZkZXYtPnJlc291cmNlW2ldKSwNCiAJCSAgICAgICAodW5zaWduZWQgbG9uZyBsb25nKWRldi0+
+cmVzb3VyY2VbaV0uc3RhcnQpOw0KIA0KIAkJaWYgKCFkZXZtX3JlcXVlc3RfbWVtX3JlZ2lvbigm
+ZGV2LT5kZXYsDQogCQkJZGV2LT5yZXNvdXJjZVtpXS5zdGFydCwNCi0JCQlkZXYtPnJlc291cmNl
+W2ldLmVuZCAtIGRldi0+cmVzb3VyY2VbaV0uc3RhcnQgKyAxLA0KKwkJCXJlc291cmNlX3NpemUo
+JmRldi0+cmVzb3VyY2VbaV0pLA0KIAkJCWRldl9uYW1lKCZkZXYtPmRldikpKSB7DQogCQkJZGV2
+X2VycigmZGV2LT5kZXYsICJDb3VsZCBub3QgcmVzZXJ2ZSBtZW1vcnkgcmVnaW9uXG4iKTsNCiAJ
+CQllcnIgPSAtRU5PTUVNOw0KQEAgLTEyMCw3ICsxMjAsNyBAQCBzdGF0aWMgaW50IHBoeXNtYXBf
+Zmxhc2hfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqZGV2KQ0KIA0KIAkJaW5mby0+bWFw
+W2ldLm5hbWUgPSBkZXZfbmFtZSgmZGV2LT5kZXYpOw0KIAkJaW5mby0+bWFwW2ldLnBoeXMgPSBk
+ZXYtPnJlc291cmNlW2ldLnN0YXJ0Ow0KLQkJaW5mby0+bWFwW2ldLnNpemUgPSBkZXYtPnJlc291
+cmNlW2ldLmVuZCAtIGRldi0+cmVzb3VyY2VbaV0uc3RhcnQgKyAxOw0KKwkJaW5mby0+bWFwW2ld
+LnNpemUgPSByZXNvdXJjZV9zaXplKCZkZXYtPnJlc291cmNlW2ldKTsNCiAJCWluZm8tPm1hcFtp
+XS5iYW5rd2lkdGggPSBwaHlzbWFwX2RhdGEtPndpZHRoOw0KIAkJaW5mby0+bWFwW2ldLnNldF92
+cHAgPSBwaHlzbWFwX2RhdGEtPnNldF92cHA7DQogCQlpbmZvLT5tYXBbaV0ucGZvd19iYXNlID0g
+cGh5c21hcF9kYXRhLT5wZm93X2Jhc2U7DQoNCg==
