@@ -1,21 +1,16 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from smtp21.services.sfr.fr ([93.17.128.4])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OO5s4-0007tx-Kd
-	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 09:22:21 +0000
-Date: Mon, 14 Jun 2010 11:22:13 +0200
-From: Anatolij Gustschin <agust@denx.de>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH v3] mtdchar: fix mmap() for MTD RAM/ROM char devices
-Message-ID: <20100614112213.695ac5d2@wker>
-In-Reply-To: <AANLkTikutI1bWUpG4FDWwwKOGSEfik-ycZZLs37AjDtK@mail.gmail.com>
-References: <1276371338-14253-1-git-send-email-agust@denx.de>
-	<AANLkTikutI1bWUpG4FDWwwKOGSEfik-ycZZLs37AjDtK@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Detlev Zundel <dzu@denx.de>
+	id 1OO6ul-00053e-Pv
+	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 10:29:13 +0000
+Subject: [PATCH] mtd: cfi_probe: print manufacturer and id of probed chip
+To: linux-mtd@lists.infradead.org
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Mon, 14 Jun 2010 12:33:45 +0200
+Message-ID: <20100614103345.26103.40429.stgit@dev.siriade.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 12 Jun 2010 21:31:11 -0400
-Mike Frysinger <vapier.adi@gmail.com> wrote:
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+---
+ drivers/mtd/chips/cfi_probe.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-> On Sat, Jun 12, 2010 at 15:35, Anatolij Gustschin wrote:
-> > For no-mmu systems mmap() on RAM/ROM devices already works
-> > but for systems with mmu it probably was not tested and
-> > currently doesn't work.
->=20
-> nope, never did
-
-Do you mean it never worked on mmu systems?
-
->=20
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT))
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
->=20
-> i'm pretty sure this is inappropriate and doesnt belong here
-
-Then I'll drop this in the next patch.
-
-Thanks,
-Anatolij
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index b2acd32..5f5ba3e 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -235,9 +235,9 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	cfi_qry_mode_off(base, map, cfi);
+ 	xip_allowed(base, map);
+ 
+-	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
++	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank. mfr=0x%08x id=0x%08x\n",
+ 	       map->name, cfi->interleave, cfi->device_type*8, base,
+-	       map->bankwidth*8);
++	       map->bankwidth*8, cfi->mfr, cfi->id);
+ 
+ 	return 1;
+ }
