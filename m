@@ -1,21 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OO5Gr-0002C0-N2
-	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 08:43:54 +0000
-Date: Mon, 14 Jun 2010 10:43:51 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Eric =?iso-8859-1?Q?B=E9nard?= <eric@eukrea.com>
-Subject: Re: [PATCH] mxc_nand: fix PM
-Message-ID: <20100614084351.GC12159@pengutronix.de>
-References: <1274942000-3580-2-git-send-email-eric@eukrea.com>
-	<1274982919-13251-1-git-send-email-eric@eukrea.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1274982919-13251-1-git-send-email-eric@eukrea.com>
-Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OO5s4-0007tx-Kd
+	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 09:22:21 +0000
+Date: Mon, 14 Jun 2010 11:22:13 +0200
+From: Anatolij Gustschin <agust@denx.de>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH v3] mtdchar: fix mmap() for MTD RAM/ROM char devices
+Message-ID: <20100614112213.695ac5d2@wker>
+In-Reply-To: <AANLkTikutI1bWUpG4FDWwwKOGSEfik-ycZZLs37AjDtK@mail.gmail.com>
+References: <1276371338-14253-1-git-send-email-agust@denx.de>
+	<AANLkTikutI1bWUpG4FDWwwKOGSEfik-ycZZLs37AjDtK@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Detlev Zundel <dzu@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Eric,
+On Sat, 12 Jun 2010 21:31:11 -0400
+Mike Frysinger <vapier.adi@gmail.com> wrote:
 
-On Thu, May 27, 2010 at 07:55:19PM +0200, Eric Bénard wrote:
-> * when resuming, we get the following log :
-> nand_resume called for a chip which is not in suspended state
-> * this happens because mtd->suspend and mtd->resume are already
-> called from the mtd layer, thus they were called a second time
-> in mxc_nand so mtd complains when trying to resume for the
-> second time
-> * the fix is to remove these call and thus remove the supend and
-> resume functions of mxc_nand
-the commit log looks IMHO ugly.  Better make it (including Subject):
+> On Sat, Jun 12, 2010 at 15:35, Anatolij Gustschin wrote:
+> > For no-mmu systems mmap() on RAM/ROM devices already works
+> > but for systems with mmu it probably was not tested and
+> > currently doesn't work.
+>=20
+> nope, never did
 
-mtd/mxc_nand: don't call mtd->{suspend,resume} explicitly
+Do you mean it never worked on mmu systems?
 
-The mtd layer is responsible to call mtd->{suspend,resume}.  Doing it
-again in the driver is wrong and results in a warning:
+>=20
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (vma->vm_pgoff > (~0UL >> PAGE_SHIFT))
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+>=20
+> i'm pretty sure this is inappropriate and doesnt belong here
 
-	nand_resume called for a chip which is not in suspended state
+Then I'll drop this in the next patch.
 
-at resume time.  Removing the calls from the resume and suspend
-functions makes them empty allowing them to be deleted completely.
-
-Signed-off-by: Eric Bénard <eric@eukrea.com>
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mtd@lists.infradead.org
-
-Best regards
-Uwe
-
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Thanks,
+Anatolij
