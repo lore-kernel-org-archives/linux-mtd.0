@@ -1,14 +1,24 @@
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-mtd
-	<linux-mtd@lists.infradead.org>
-Date: Mon, 14 Jun 2010 11:57:54 -0500
-Subject: [PATCH] mtd: physmap.c: use resource_size()
-Message-ID: <0D753D10438DA54287A00B02708426976371223143@AUSP01VMBX24.collaborationhost.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-gw0-f49.google.com ([74.125.83.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OOEHq-000500-Fp
+	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 18:21:31 +0000
+Received: by gwj18 with SMTP id 18so3069283gwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Jun 2010 11:21:29 -0700 (PDT)
 MIME-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20100614112213.695ac5d2@wker>
+References: <1276371338-14253-1-git-send-email-agust@denx.de>
+	<AANLkTikutI1bWUpG4FDWwwKOGSEfik-ycZZLs37AjDtK@mail.gmail.com>
+	<20100614112213.695ac5d2@wker>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 14 Jun 2010 14:21:08 -0400
+Message-ID: <AANLkTilYAgKHkOkfw4rTlS1SbWvRs99fC-Wwa7jutUEM@mail.gmail.com>
+Subject: Re: [PATCH v3] mtdchar: fix mmap() for MTD RAM/ROM char devices
+To: Anatolij Gustschin <agust@denx.de>
+Content-Type: text/plain; charset=UTF-8
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Detlev Zundel <dzu@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-U2lnbmVkLW9mZi1ieTogSCBIYXJ0bGV5IFN3ZWV0ZW4gPGhzd2VldGVuQHZpc2lvbmVuZ3JhdmVy
-cy5jb20+DQpDYzogRGF2aWQgV29vZGhvdXNlIDxEYXZpZC5Xb29kaG91c2VAaW50ZWwuY29tPg0K
-DQotLS0NCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvbXRkL21hcHMvcGh5c21hcC5jIGIvZHJpdmVy
-cy9tdGQvbWFwcy9waHlzbWFwLmMNCmluZGV4IDQyNjQ2MWEuLjgyOWFhNGIgMTAwNjQ0DQotLS0g
-YS9kcml2ZXJzL210ZC9tYXBzL3BoeXNtYXAuYw0KKysrIGIvZHJpdmVycy9tdGQvbWFwcy9waHlz
-bWFwLmMNCkBAIC0xMDYsMTIgKzEwNiwxMiBAQCBzdGF0aWMgaW50IHBoeXNtYXBfZmxhc2hfcHJv
-YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqZGV2KQ0KIA0KIAlmb3IgKGkgPSAwOyBpIDwgZGV2
-LT5udW1fcmVzb3VyY2VzOyBpKyspIHsNCiAJCXByaW50ayhLRVJOX05PVElDRSAicGh5c21hcCBw
-bGF0Zm9ybSBmbGFzaCBkZXZpY2U6ICUuOGxseCBhdCAlLjhsbHhcbiIsDQotCQkgICAgICAgKHVu
-c2lnbmVkIGxvbmcgbG9uZykoZGV2LT5yZXNvdXJjZVtpXS5lbmQgLSBkZXYtPnJlc291cmNlW2ld
-LnN0YXJ0ICsgMSksDQorCQkgICAgICAgKHVuc2lnbmVkIGxvbmcgbG9uZylyZXNvdXJjZV9zaXpl
-KCZkZXYtPnJlc291cmNlW2ldKSwNCiAJCSAgICAgICAodW5zaWduZWQgbG9uZyBsb25nKWRldi0+
-cmVzb3VyY2VbaV0uc3RhcnQpOw0KIA0KIAkJaWYgKCFkZXZtX3JlcXVlc3RfbWVtX3JlZ2lvbigm
-ZGV2LT5kZXYsDQogCQkJZGV2LT5yZXNvdXJjZVtpXS5zdGFydCwNCi0JCQlkZXYtPnJlc291cmNl
-W2ldLmVuZCAtIGRldi0+cmVzb3VyY2VbaV0uc3RhcnQgKyAxLA0KKwkJCXJlc291cmNlX3NpemUo
-JmRldi0+cmVzb3VyY2VbaV0pLA0KIAkJCWRldl9uYW1lKCZkZXYtPmRldikpKSB7DQogCQkJZGV2
-X2VycigmZGV2LT5kZXYsICJDb3VsZCBub3QgcmVzZXJ2ZSBtZW1vcnkgcmVnaW9uXG4iKTsNCiAJ
-CQllcnIgPSAtRU5PTUVNOw0KQEAgLTEyMCw3ICsxMjAsNyBAQCBzdGF0aWMgaW50IHBoeXNtYXBf
-Zmxhc2hfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqZGV2KQ0KIA0KIAkJaW5mby0+bWFw
-W2ldLm5hbWUgPSBkZXZfbmFtZSgmZGV2LT5kZXYpOw0KIAkJaW5mby0+bWFwW2ldLnBoeXMgPSBk
-ZXYtPnJlc291cmNlW2ldLnN0YXJ0Ow0KLQkJaW5mby0+bWFwW2ldLnNpemUgPSBkZXYtPnJlc291
-cmNlW2ldLmVuZCAtIGRldi0+cmVzb3VyY2VbaV0uc3RhcnQgKyAxOw0KKwkJaW5mby0+bWFwW2ld
-LnNpemUgPSByZXNvdXJjZV9zaXplKCZkZXYtPnJlc291cmNlW2ldKTsNCiAJCWluZm8tPm1hcFtp
-XS5iYW5rd2lkdGggPSBwaHlzbWFwX2RhdGEtPndpZHRoOw0KIAkJaW5mby0+bWFwW2ldLnNldF92
-cHAgPSBwaHlzbWFwX2RhdGEtPnNldF92cHA7DQogCQlpbmZvLT5tYXBbaV0ucGZvd19iYXNlID0g
-cGh5c21hcF9kYXRhLT5wZm93X2Jhc2U7DQoNCg==
+On Mon, Jun 14, 2010 at 05:22, Anatolij Gustschin wrote:
+> On Sat, 12 Jun 2010 21:31:11 -0400 Mike Frysinger wrote:
+>> On Sat, Jun 12, 2010 at 15:35, Anatolij Gustschin wrote:
+>> > For no-mmu systems mmap() on RAM/ROM devices already works
+>> > but for systems with mmu it probably was not tested and
+>> > currently doesn't work.
+>>
+>> nope, never did
+>
+> Do you mean it never worked on mmu systems?
+
+it probably wasnt tested too heavily if at all
+-mike
