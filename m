@@ -1,22 +1,17 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-yw0-f204.google.com ([209.85.211.204])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OO7S1-0003gt-N4
-	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 11:03:37 +0000
-Received: by pwj6 with SMTP id 6so3054110pwj.36
+	id 1OO8YC-0003wa-7H
+	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 12:14:00 +0000
+Received: by ywh42 with SMTP id 42so3261610ywh.15
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Jun 2010 04:03:32 -0700 (PDT)
-Subject: [PATCH] mtd: Fix bug using smp_processor_id() in preemptible
-	ubi_bgt1d kthread
-From: Philby John <pjohn@mvista.com>
+	Mon, 14 Jun 2010 05:13:57 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 14 Jun 2010 17:43:57 +0530
+Message-ID: <AANLkTinvO85ebDTPmezVSxbWTKVRFe-O1dc-j-bQz3lT@mail.gmail.com>
+Subject: Bad block management in MTD subsystem
+From: Naveen Mamindlapalli <naveen.mamindlapalli@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Mon, 14 Jun 2010 16:34:17 +0530
-Message-Id: <1276513457.16642.3.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, David Daney <ddaney@caviumnetworks.com>,
-	linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
-Reply-To: pjohn@mvista.com
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,48 +21,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd: Fix bug using smp_processor_id() in preemptible ubi_bgt1d kthread
+Hi All,
 
-On a MIPS Cavium Octeon CN5020 when trying to create a UBI volume,
-on the NOR flash, the kernel thread ubi_bgt1d calls
-cfi_amdstd_write_buffers() --> do_write_buffer() -->
-INVALIDATE_CACHE_UDELAY --> __udelay(). Its __udelay() that calls
-smp_processor_id() in preemptible code, which you are not supposed to.
-Fix the problem by disabling preemption.
-
-The kernel error messages seen when trying to create UBI volume is
-BUG: using smp_processor_id() in preemptible [00000000] code: ubi_bgt1d/843
-caller is __udelay+0x14/0x70
-Call Trace:
-[<ffffffff8110b0d4>] dump_stack+0x8/0x34
-[<ffffffff812ee1ac>] debug_smp_processor_id+0x114/0x130
-[<ffffffff812e9274>] __udelay+0x14/0x70
-[<ffffffff81337c0c>] cfi_amdstd_write_buffers+0xa9c/0xd70
-[<ffffffff8134cab0>] ubi_io_sync_erase+0x248/0x390
-[<ffffffff8134d714>] erase_worker+0x6c/0x4f8
-[<ffffffff8134e4fc>] do_work+0xac/0x138
-[<ffffffff8134e6a0>] ubi_thread+0x118/0x1a8
-[<ffffffff8115ebe0>] kthread+0x88/0x90
-[<ffffffff81115650>] kernel_thread_helper+0x10/0x18
-
-Signed-off-by: Philby John <pjohn@mvista.com>
----
- include/linux/mtd/cfi.h |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
-index 574d9ee..9673213 100644
---- a/include/linux/mtd/cfi.h
-+++ b/include/linux/mtd/cfi.h
-@@ -495,7 +495,9 @@ static inline void cfi_udelay(int us)
- 	if (us >= 1000) {
- 		msleep((us+999)/1000);
- 	} else {
-+		preempt_disable();
- 		udelay(us);
-+		preempt_enable();
- 		cond_resched();
- 	}
- }
--- 
-1.6.3.3.333.g4d53f
+Is there any bad block management method implemented in Linux mtd subsystem?
+How the bad blocks are taken care by
