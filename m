@@ -1,16 +1,26 @@
-Date: Mon, 14 Jun 2010 18:15:19 +0200
-From: Richard Cochran <richardcochran@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] ixp4xx: add support for static flash partitions
-Message-ID: <20100614161519.GB24877@riccoc20.at.omicron.at>
-References: <20100531162434.GA4599@riccoc20.at.omicron.at>
-	<1276420566.19028.184.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1276420566.19028.184.camel@localhost>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Krzysztof Halasa <khc@pm.waw.pl>
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OOChA-0001Q1-Q9
+	for linux-mtd@lists.infradead.org; Mon, 14 Jun 2010 16:39:33 +0000
+Received: by pwj6 with SMTP id 6so3261897pwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Jun 2010 09:39:31 -0700 (PDT)
+Subject: Re: [PATCH] mtd: Fix bug using smp_processor_id() in preemptible
+	ubi_bgt1d kthread
+From: Philby John <pjohn@mvista.com>
+To: Jamie Lokier <jamie@shareable.org>
+In-Reply-To: <20100614150425.GC9550@shareable.org>
+References: <1276513457.16642.3.camel@localhost.localdomain>
+	<20100614150425.GC9550@shareable.org>
+Content-Type: text/plain
+Date: Mon, 14 Jun 2010 22:10:18 +0530
+Message-Id: <1276533618.17818.8.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mips@linux-mips.org, Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-mtd@lists.infradead.org, David Daney <ddaney@caviumnetworks.com>,
+	linux-kernel@vger.kernel.org
+Reply-To: pjohn@mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,94 +30,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jun 13, 2010 at 12:16:06PM +0300, Artem Bityutskiy wrote:
-> I could fix your patch up myself, but I do not know the code, so please,
-> re-send a patch against the latest mtd-2.6 tree.
+On Mon, 2010-06-14 at 16:04 +0100, Jamie Lokier wrote:
+> Philby John wrote:
+> > mtd: Fix bug using smp_processor_id() in preemptible ubi_bgt1d kthread
+> > 
+> > On a MIPS Cavium Octeon CN5020 when trying to create a UBI volume,
+> > on the NOR flash, the kernel thread ubi_bgt1d calls
+> > cfi_amdstd_write_buffers() --> do_write_buffer() -->
+> > INVALIDATE_CACHE_UDELAY --> __udelay(). Its __udelay() that calls
+> > smp_processor_id() in preemptible code, which you are not supposed to.
+> > Fix the problem by disabling preemption.
+> 
+> The MTD code just calls udelay().
+> Are you sure it isn't permitted to call udelay() from preemptible code?
+> I think it is fine.
 
-Okay, here it is again, this time against today's master branch of 
-git://git.infradead.org/mtd-2.6.git
+It isn't really udelay() but smp_processor_id() that you are not to call
+from a preemptible thread. Now I also see Ed Swierk has done a similar
+thing https://patchwork.kernel.org/patch/4049/ and he comments "..which
+calls smp_processor_id(), which is not supposed to be called from a
+preemptible thread."
 
-Thanks,
-Richard
 
+So perhaps I can use preempt_disable() around just this call in function
+__udelay()?
 
-This patch adds support for static flash partitioning from a platform
-device. Also, we clean up some weirdness where statements were separated
-by commas instead of semicolons. While we are at it, fix some minor bad
-white space, too.
-
-Signed-off-by: Richard Cochran <richard.cochran@omicron.at>
----
- drivers/mtd/maps/ixp4xx.c |   35 +++++++++++++++++++++++++++--------
- 1 files changed, 27 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index e0a5e04..1f9fde0 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -118,7 +118,7 @@ static void ixp4xx_copy_from(struct map_info *map, void *to,
- 		*dest++ = BYTE1(data);
- 		src += 2;
- 		len -= 2;
--        }
-+	}
- 
- 	if (len > 0)
- 		*dest++ = BYTE0(flash_read16(src));
-@@ -185,6 +185,8 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- {
- 	struct flash_platform_data *plat = dev->dev.platform_data;
- 	struct ixp4xx_flash_info *info;
-+	const char *part_type = NULL;
-+	int nr_parts = 0;
- 	int err = -1;
- 
- 	if (!plat)
-@@ -218,9 +220,9 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	 */
- 	info->map.bankwidth = 2;
- 	info->map.name = dev_name(&dev->dev);
--	info->map.read = ixp4xx_read16,
--	info->map.write = ixp4xx_probe_write16,
--	info->map.copy_from = ixp4xx_copy_from,
-+	info->map.read = ixp4xx_read16;
-+	info->map.write = ixp4xx_probe_write16;
-+	info->map.copy_from = ixp4xx_copy_from;
- 
- 	info->res = request_mem_region(dev->resource->start,
- 			resource_size(dev->resource),
-@@ -248,11 +250,28 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	info->mtd->owner = THIS_MODULE;
- 
- 	/* Use the fast version */
--	info->map.write = ixp4xx_write16,
-+	info->map.write = ixp4xx_write16;
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	nr_parts = parse_mtd_partitions(info->mtd, probes, &info->partitions,
-+					dev->resource->start);
-+#endif
-+	if (nr_parts > 0) {
-+		part_type = "dynamic";
-+	} else {
-+		info->partitions = plat->parts;
-+		nr_parts = plat->nr_parts;
-+		part_type = "static";
-+	}
-+	if (nr_parts == 0) {
-+		printk(KERN_NOTICE "IXP4xx flash: no partition info "
-+			"available, registering whole flash\n");
-+		err = add_mtd_device(info->mtd);
-+	} else {
-+		printk(KERN_NOTICE "IXP4xx flash: using %s partition "
-+			"definition\n", part_type);
-+		err = add_mtd_partitions(info->mtd, info->partitions, nr_parts);
- 
--	err = parse_mtd_partitions(info->mtd, probes, &info->partitions, dev->resource->start);
--	if (err > 0) {
--		err = add_mtd_partitions(info->mtd, info->partitions, err);
- 		if(err)
- 			printk(KERN_ERR "Could not parse partitions\n");
- 	}
--- 
-1.6.3.3
+Regards,
+Philby
