@@ -1,17 +1,26 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OOQbG-0002JI-MK
-	for linux-mtd@lists.infradead.org; Tue, 15 Jun 2010 07:30:24 +0000
-From: Anatolij Gustschin <agust@denx.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v4] mtdchar: fix mmap() for MTD RAM/ROM char devices
-Date: Tue, 15 Jun 2010 09:30:15 +0200
-Message-Id: <1276587015-13506-1-git-send-email-agust@denx.de>
-In-Reply-To: <1276371338-14253-1-git-send-email-agust@denx.de>
-References: <1276371338-14253-1-git-send-email-agust@denx.de>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Anatolij Gustschin <agust@denx.de>, David Woodhouse <dwmw2@infradead.org>,
-	Detlev Zundel <dzu@denx.de>
+	id 1OOVDB-0005Fg-U1
+	for linux-mtd@lists.infradead.org; Tue, 15 Jun 2010 12:25:50 +0000
+Received: by iwn3 with SMTP id 3so740956iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Jun 2010 05:25:47 -0700 (PDT)
+Subject: Re: [PATCH] mtd: Fix bug using smp_processor_id() in preemptible
+	ubi_bgt1d kthread
+From: Philby John <pjohn@mvista.com>
+To: Jamie Lokier <jamie@shareable.org>
+In-Reply-To: <20100614150425.GC9550@shareable.org>
+References: <1276513457.16642.3.camel@localhost.localdomain>
+	<20100614150425.GC9550@shareable.org>
+Content-Type: text/plain
+Date: Tue, 15 Jun 2010 17:56:34 +0530
+Message-Id: <1276604794.19810.3.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mips@linux-mips.org, Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-mtd@lists.infradead.org, David Daney <ddaney@caviumnetworks.com>,
+	linux-kernel@vger.kernel.org
+Reply-To: pjohn@mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,74 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For no-mmu systems mmap() on RAM/ROM devices already works
-but for systems with mmu it probably was not tested and
-doesn't work.
+Hello Jamie,
 
-This patch allows using mmap() on MTD RAM/ROM devices on systems
-with MMU. It has been tested on mpc5121e based platform with
-MR0A16A MRAM device attached over LocalBus.
+On Mon, 2010-06-14 at 16:04 +0100, Jamie Lokier wrote:
+> Philby John wrote:
+> > mtd: Fix bug using smp_processor_id() in preemptible ubi_bgt1d kthread
+> > 
+> > On a MIPS Cavium Octeon CN5020 when trying to create a UBI volume,
+> > on the NOR flash, the kernel thread ubi_bgt1d calls
+> > cfi_amdstd_write_buffers() --> do_write_buffer() -->
+> > INVALIDATE_CACHE_UDELAY --> __udelay(). Its __udelay() that calls
+> > smp_processor_id() in preemptible code, which you are not supposed to.
+> > Fix the problem by disabling preemption.
+> 
+> The MTD code just calls udelay().
+> Are you sure it isn't permitted to call udelay() from preemptible code?
+> I think it is fine.
+> 
+> Perhaps MIPS udelay() should be disabling preemption itself, or
+> (as x86 does) using raw_smp_processor_id() instead?
 
-Signed-off-by: Anatolij Gustschin <agust@denx.de>
----
-Changes since v3:
- - remove vma->vm_pgoff check as suggested by Mike
- - update commit message
+Sorry for the noise. I now find that raw_smp_processor_id() has been
+implemented specific to MIPS in the latest kernel, I was using 2.6.32.
 
-Changes since v2:
- - improved commit message and patch description
- - rebased to apply cleanly on current mtd-2.6 tree
-
- drivers/mtd/mtdchar.c |   28 +++++++++++++++++++++++++++-
- 1 files changed, 27 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 8b223c0..c3e5423 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -18,6 +18,7 @@
- #include <linux/mount.h>
- 
- #include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
- #include <linux/mtd/compatmac.h>
- 
- #include <asm/uaccess.h>
-@@ -941,9 +942,34 @@ static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
- #ifdef CONFIG_MMU
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
-+	struct map_info *map = mtd->priv;
-+	unsigned long start;
-+	unsigned long off;
-+	u32 len;
-+
-+	if (mtd->type == MTD_RAM || mtd->type == MTD_ROM) {
-+		off = vma->vm_pgoff << PAGE_SHIFT;
-+		start = map->phys;
-+		len = PAGE_ALIGN((start & ~PAGE_MASK) + map->size);
-+		start &= PAGE_MASK;
-+		if ((vma->vm_end - vma->vm_start + off) > len)
-+			return -EINVAL;
-+
-+		off += start;
-+		vma->vm_pgoff = off >> PAGE_SHIFT;
-+		vma->vm_flags |= VM_IO | VM_RESERVED;
-+
-+#ifdef pgprot_noncached
-+		if (file->f_flags & O_DSYNC || off >= __pa(high_memory))
-+			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
-+#endif
-+		if (io_remap_pfn_range(vma, vma->vm_start, off >> PAGE_SHIFT,
-+				       vma->vm_end - vma->vm_start,
-+				       vma->vm_page_prot))
-+			return -EAGAIN;
- 
--	if (mtd->type == MTD_RAM || mtd->type == MTD_ROM)
- 		return 0;
-+	}
- 	return -ENOSYS;
- #else
- 	return vma->vm_flags & VM_SHARED ? 0 : -ENOSYS;
--- 
-1.7.0.4
+Thanks and regards,
+Philby
