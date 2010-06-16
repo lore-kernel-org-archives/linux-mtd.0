@@ -1,22 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OOozy-00061Y-IR
-	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2010 09:33:31 +0000
-Subject: Re: [PATCH] UBI: fix delete compatible internal volume scan
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <AANLkTim9DUdPdqqpXqrH9n7RqXrb9VTyc3AT36Kk6Wf7@mail.gmail.com>
-References: <AANLkTimuYmRDCZCkoB9YHifngCwjp9_B2ucFQ1seaiM9@mail.gmail.com>
-	<1274595417.8881.36.camel@localhost.localdomain>
-	<1276669357.19028.280.camel@localhost>
-	<AANLkTim9DUdPdqqpXqrH9n7RqXrb9VTyc3AT36Kk6Wf7@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 16 Jun 2010 12:30:29 +0300
-Message-ID: <1276680629.19028.329.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mms2.broadcom.com ([216.31.210.18])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OOvhR-00019v-Dt
+	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2010 16:42:50 +0000
+From: "Brian Norris" <norris@broadcom.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: formatting of odd-sized OOB in nanddump
+Date: Wed, 16 Jun 2010 09:42:07 -0700
+Message-ID: <1276706527-4563-1-git-send-email-norris@broadcom.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <norris@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +20,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-06-16 at 14:22 +0530, Brijesh Singh wrote:
-> > Thirdly, even without your patch everything works just fine, because
-> > even though we also add this PEB to the used tree, we'll never ever use
-> > it, so it will not cause problems.
-> I created internal delete compatible volume. My assumption was that
-> this volume gets deleted in older versions of UBI.
+Changed OOB output formatting in nanddump.
+Most NAND devices have OOB regions with multiples of 16 bytes.
+With newer devices, a 218-byte OOB does not split nicely into
+lines of 16 bytes. This patch fixes the formatting, allowing a
+last line of 10 bytes instead of 16.
 
-Right.
+Signed-off-by: Brian Norris <norris@broadcom.com>
+---
+ nanddump.c |   31 ++++++++++++++++++++++---------
+ 1 files changed, 22 insertions(+), 9 deletions(-)
 
->  So, UBI should not
-> add this PEB to used tree.
-
-As I described, it should not indeed. But adding it to the used tree
-does not cause problems in practice. I mean that old UBI binaries which
-do not contain your patch will also work just fine.
-
-I've pushed your patch to the UBI tree.
-
->  Please correct me if my assumption is
-> wrong.
-
-It is right.
-
-> I have one question: Should UBI ensure that delete compatible volume
-> is deleted? If yes, should these erase blocks be deleted at
-> initialization (not lazily)?
-
-Hmm, good question. I think it is fine to delete them asynchronously. I
-do not see any problems with that. If we have, e.g., a power cut before
-they are actually erased, we will erased them next time we mount.
-
+diff --git a/nanddump.c b/nanddump.c
+index e44ab36..190a653 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -381,15 +381,28 @@ int main(int argc, char * const argv[])
+ 			}
+ 
+ 			for (i = 0; i < meminfo.oobsize; i += 16) {
+-				sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
+-						"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+-						oobbuf[i], oobbuf[i+1], oobbuf[i+2],
+-						oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
+-						oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
+-						oobbuf[i+9], oobbuf[i+10], oobbuf[i+11],
+-						oobbuf[i+12], oobbuf[i+13], oobbuf[i+14],
+-						oobbuf[i+15]);
+-				write(ofd, pretty_buf, 60);
++				/* Check if we have a full 16 bytes left in the OOB */
++				if (i+15 < meminfo.oobsize) {
++					/* Print 16 bytes */
++					sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
++							"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
++							oobbuf[i], oobbuf[i+1], oobbuf[i+2],
++							oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
++							oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
++							oobbuf[i+9], oobbuf[i+10], oobbuf[i+11],
++							oobbuf[i+12], oobbuf[i+13], oobbuf[i+14],
++							oobbuf[i+15]);
++					write(ofd, pretty_buf, 60);
++				} else {
++					/* Print 10 bytes */
++					sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
++							"%02x %02x %02x %02x\n",
++							oobbuf[i], oobbuf[i+1], oobbuf[i+2],
++							oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
++							oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
++							oobbuf[i+9]);
++					write(ofd, pretty_buf, 42);
++				}
+ 			}
+ 		} else
+ 			write(ofd, oobbuf, meminfo.oobsize);
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.1
