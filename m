@@ -1,16 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OOm3o-0004tX-2N
-	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2010 06:25:16 +0000
-Subject: Re: [PATCH] UBI: fix delete compatible internal volume scan
+	id 1OOmOn-0006Jz-5b
+	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2010 06:46:58 +0000
+Subject: Re: detecting that ubifs switched to ro after problem
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <1274595417.8881.36.camel@localhost.localdomain>
-References: <AANLkTimuYmRDCZCkoB9YHifngCwjp9_B2ucFQ1seaiM9@mail.gmail.com>
-	<1274595417.8881.36.camel@localhost.localdomain>
+To: Jon Ringle <jon@ringle.org>
+In-Reply-To: <AANLkTikt_Y_DPNZP7jKvBrHgD230po4lqJWBE5vRVl20@mail.gmail.com>
+References: <AANLkTik2mO4lpL5QA1kzMf4zp-Prd-SdhSNLVcHB9isl@mail.gmail.com>
+	<1276422454.19028.209.camel@localhost>
+	<AANLkTikt_Y_DPNZP7jKvBrHgD230po4lqJWBE5vRVl20@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 16 Jun 2010 09:22:37 +0300
-Message-ID: <1276669357.19028.280.camel@localhost>
+Date: Wed, 16 Jun 2010 09:44:06 +0300
+Message-ID: <1276670646.19028.283.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -24,40 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-05-23 at 09:16 +0300, Artem Bityutskiy wrote:
-> On Tue, 2010-05-18 at 23:10 +0530, Brijesh Singh wrote:
-> > This patch resolves a possible bug. Scan is adding delete compatible
-> > blocks to both corr list and used list.
-> > It should return after adding the block to corr list.
-> > 
-> > Signed-off-by: Brijesh Singh <brijesh.s.singh@gmail.com>
+On Mon, 2010-06-14 at 11:15 -0400, Jon Ringle wrote:
+> On Sun, Jun 13, 2010 at 5:47 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Fri, 2010-06-11 at 22:46 -0400, Jon Ringle wrote:
+> >> Hi,
+> >>
+> >> I'd like to be able to somehow detect that ubifs has taken the action
+> >> of switching from rw to ro due to some error detected in the ubifs
+> >> filesystem. If I can detect this then maybe I can do something about
+> >> it, such as copying the ubifs contents to a .tar.bz2 in /tmp,
+> >> mkfs.ubifs, and restore .tar.bz2 back again.
+> >>
+> >> Is there a way I can do this?
+> >
+> > I think with 2fde99cb55fb9d9b88180512a5e8a5d939d27fec you can check for
+> > R/O state from /proc/mounts. Also, you can use something like inotify to
+> > watch /proc/mounts changes and react if UBIFS became r/o.
 > 
-> I'm not sure this patch is enough. I think we should add a 'compat' flag
-> to the 'struct ubi_mkvol_req' structure, to make it possible to create
-> volumes with different compatibility flags. Then we need to write a test
-> and add it to the UBI test-suite at 'mtd-utils/tests/ubi-tests/'.
+> Any possibility of having that merged into
+> git://git.infradead.org/~dedekind/ubifs-v2.6.32.git?
 
-Ok, that was nonsense. First of all, compatibility flags are applicable
-only for internal volumes, and we do not want to allow users creating
-internal volumes, even for testing.
-
-Secondly, your patch is right.
-
-Thirdly, even without your patch everything works just fine, because
-even though we also add this PEB to the used tree, we'll never ever use
-it, so it will not cause problems.
-
-Thus, I'll just apply your patch, thank you.
-
-> Then once we have tested and fixed this, we should merge this and also
-> send to the '-stable' trees.
-
-And not need to send it to '-stable'.
-
-> I remember I did give the compat option a test, but probably not that
-> good.
-
-They actually seem to work fine.
+It is there since 2010-05-23, you just need to use "git pull" from time
+to time :-)
 
 -- 
 Best Regards,
