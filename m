@@ -1,16 +1,20 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OOvhR-00019v-Dt
-	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2010 16:42:50 +0000
-From: "Brian Norris" <norris@broadcom.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: formatting of odd-sized OOB in nanddump
-Date: Wed, 16 Jun 2010 09:42:07 -0700
-Message-ID: <1276706527-4563-1-git-send-email-norris@broadcom.com>
+Received: from mail.windriver.com ([147.11.1.11])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OP6Ep-0007nH-71
+	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2010 03:58:00 +0000
+Message-ID: <4C19A01E.6060607@windriver.com>
+Date: Thu, 17 Jun 2010 12:10:06 +0800
+From: "stanley.miao" <stanley.miao@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: dedekind1@gmail.com
+Subject: Re: Fix mtd-utils bugs
+References: <1276248975-1822-1-git-send-email-stanley.miao@windriver.com>	
+	<1276422718.19028.211.camel@localhost>
+	<1276424048.19028.217.camel@localhost>
+In-Reply-To: <1276424048.19028.217.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <norris@broadcom.com>
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Changed OOB output formatting in nanddump.
-Most NAND devices have OOB regions with multiples of 16 bytes.
-With newer devices, a 218-byte OOB does not split nicely into
-lines of 16 bytes. This patch fixes the formatting, allowing a
-last line of 10 bytes instead of 16.
+Artem Bityutskiy wrote:
+> On Sun, 2010-06-13 at 12:51 +0300, Artem Bityutskiy wrote:
+>   
+>> On Fri, 2010-06-11 at 17:36 +0800, Stanley.Miao wrote:
+>>     
+>>> Re-send them because I didn't give a email subject in last version.
+>>>
+>>> The "struct nand_oobinfo" is able to record only 32 ECC code positions,which
+>>> is not enough for many big NAND chips. Therefore, this structure is replaced
+>>> by "struct nand_ecclayout" in linux kernel from the version 2.6.17.
+>>> Consequently, the ioctl command changed from MEMGETOOBSEL to ECCGETLAYOUT.
+>>>
+>>> Now update nandwrite to use the new ioctl command ECCGETLAYOUT. In order to
+>>> keep compatible with the old linux kernel, a linux version detection function
+>>> is added.
+>>>
+>>> YAFFS and JFFS2 has updated and we don't need the arguments "forcelegacy",
+>>> "forcejffs2", "forceyaffs" anymore. Now clean them up. 
+>>>       
+>> Please, make sure your submissions have proper version. I have limited
+>> amount of time and do not want to spend it figuring out which patch is
+>> the latest. Use the best kernel practices and apply prefix your stuff
+>> with [PATCHv3] or something like that.
+>>
+>> Could you please re-submit your latest version?
+>>     
+>
+> Also, it is nice to put a short changelog, but I can live without it.
+>   
 
-Signed-off-by: Brian Norris <norris@broadcom.com>
----
- nanddump.c |   31 ++++++++++++++++++++++---------
- 1 files changed, 22 insertions(+), 9 deletions(-)
+Sorry for the delayed reply. I was on vacation in the past 6 days.
 
-diff --git a/nanddump.c b/nanddump.c
-index e44ab36..190a653 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -381,15 +381,28 @@ int main(int argc, char * const argv[])
- 			}
- 
- 			for (i = 0; i < meminfo.oobsize; i += 16) {
--				sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
--						"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
--						oobbuf[i], oobbuf[i+1], oobbuf[i+2],
--						oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
--						oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
--						oobbuf[i+9], oobbuf[i+10], oobbuf[i+11],
--						oobbuf[i+12], oobbuf[i+13], oobbuf[i+14],
--						oobbuf[i+15]);
--				write(ofd, pretty_buf, 60);
-+				/* Check if we have a full 16 bytes left in the OOB */
-+				if (i+15 < meminfo.oobsize) {
-+					/* Print 16 bytes */
-+					sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
-+							"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
-+							oobbuf[i], oobbuf[i+1], oobbuf[i+2],
-+							oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
-+							oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
-+							oobbuf[i+9], oobbuf[i+10], oobbuf[i+11],
-+							oobbuf[i+12], oobbuf[i+13], oobbuf[i+14],
-+							oobbuf[i+15]);
-+					write(ofd, pretty_buf, 60);
-+				} else {
-+					/* Print 10 bytes */
-+					sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
-+							"%02x %02x %02x %02x\n",
-+							oobbuf[i], oobbuf[i+1], oobbuf[i+2],
-+							oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
-+							oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
-+							oobbuf[i+9]);
-+					write(ofd, pretty_buf, 42);
-+				}
- 			}
- 		} else
- 			write(ofd, oobbuf, meminfo.oobsize);
--- 
-1.7.1
+I will re-send them soon.
+
+Stanley.
