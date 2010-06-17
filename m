@@ -1,19 +1,21 @@
-Received: from aa013msr.fastwebnet.it ([85.18.95.73])
+Received: from fg-out-1718.google.com ([72.14.220.154])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OPDCI-0002d1-BC
-	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2010 11:23:51 +0000
-Received: from aurio01.localnet (39.225.70.39) by aa013msr.fastwebnet.it
-	(8.5.016.6) id 4B71F7871123DEDD for linux-mtd@lists.infradead.org;
-	Thu, 17 Jun 2010 13:23:38 +0200
-From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
-To: linux-mtd@lists.infradead.org
-Subject: SST39VF6402B kernel compatibility
-Date: Thu, 17 Jun 2010 13:23:38 +0200
+	id 1OPDRq-0004Oz-OG
+	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2010 11:39:55 +0000
+Received: by fg-out-1718.google.com with SMTP id e21so1573511fga.0
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 17 Jun 2010 04:39:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201006171323.38152.fabio.giovagnini@aurion-tech.com>
+Sender: foxcore@gmail.com
+In-Reply-To: <201006171323.38152.fabio.giovagnini@aurion-tech.com>
+References: <201006171323.38152.fabio.giovagnini@aurion-tech.com>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Thu, 17 Jun 2010 13:39:31 +0200
+Message-ID: <AANLkTimdCaGHZUxhpp7nfuqrTRmT4rVzEGvVRLYyWzKQ@mail.gmail.com>
+Subject: Re: SST39VF6402B kernel compatibility
+To: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
-I'm building Linux version 2.6.35-rc2+ for sh27203.
-Is this release full compliant with SST39VF6402B or do I need more over 
-patches?
+2010/6/17 Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>:
+> Hi All,
 
-Thanks a lot
+Hi Fabio,
 
+> I'm building Linux version 2.6.35-rc2+ for sh27203.
+> Is this release full compliant with SST39VF6402B or do I need more over
+> patches?
+
+This should be OK (
+http://git.infradead.org/mtd-2.6.git/commitdiff/5a0563f0ad0c9864b735e9ae23e55f7fa9c73bf5
+)
+But I would appreciate your confirmation on this, just to be sure.
 
 -- 
-Fabio Giovagnini
-
-Aurion s.r.l.
-P.I e C.F.
-00885711200
-skype: aurion.giovagnini
-Tel. +39.051.594.78.24
-Cell. +39.335.83.50.919
-www.aurion-tech.com
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
