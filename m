@@ -1,24 +1,27 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OQxjS-0005sa-GR
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 07:17:22 +0000
-Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	id 1OQxjT-0005st-OL
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 07:17:24 +0000
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
 	by mgw-mx06.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o5M7GBdn030819
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Jun 2010 10:17:12 +0300
+	o5M7GXOW030878
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Jun 2010 10:17:15 +0300
 Received: from fs-test.localnet (esdhcp035224.research.nokia.com
 	[172.21.35.224])
-	by mgw-sa02.ext.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o5M7GiQL012067
+	by mgw-sa01.ext.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	o5M7GnxZ003213
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Jun 2010 10:16:44 +0300
-Resent-Message-ID: <201006221017.35571.ext-andriy.shevchenko@nokia.com>
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Jun 2010 10:16:50 +0300
+Resent-Message-ID: <201006221017.40861.ext-andriy.shevchenko@nokia.com>
 From: "Shevchenko Andriy (EXT-Teleca/Helsinki)"
 	<ext-andriy.shevchenko@nokia.com>
 To: "Bityutskiy Artem (Nokia-D/Helsinki)" <Artem.Bityutskiy@nokia.com>
-Date: Thu, 17 Jun 2010 10:42:37 +0200
-Subject: [PATCH 1/3] mkfs.ubifs: check output first
-Message-ID: <1276764159-28726-1-git-send-email-ext-andriy.shevchenko@nokia.com>
+Date: Thu, 17 Jun 2010 10:42:38 +0200
+Subject: [PATCH 2/3] flash_eraseall: move constants out of for loop
+Message-ID: <1276764159-28726-2-git-send-email-ext-andriy.shevchenko@nokia.com>
+References: <1276764159-28726-1-git-send-email-ext-andriy.shevchenko@nokia.com>
+In-Reply-To: <1276764159-28726-1-git-send-email-ext-andriy.shevchenko@nokia.com>
 Content-Language: en-US
 Content-Type: text/plain;
   charset="iso-8859-1"
@@ -37,36 +40,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 ---
- mkfs.ubifs/mkfs.ubifs.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+ flash_eraseall.c |   22 +++++++++++-----------
+ 1 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index e4b4e3c..9061453 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -647,8 +647,11 @@ static int get_options(int argc, char**argv)
+diff --git a/flash_eraseall.c b/flash_eraseall.c
+index a22fc49..f6319d1 100644
+--- a/flash_eraseall.c
++++ b/flash_eraseall.c
+@@ -194,21 +194,21 @@ void process_options (int argc, char *argv[])
+ {
+ 	int error =3D 0;
 =20
- 	if (optind !=3D argc && !output)
- 		output =3D strdup(argv[optind]);
--	if (output)
--		out_ubi =3D !open_ubi(output);
++	static const char *short_options =3D "jq";
++	static const struct option long_options[] =3D {
++		{"help", no_argument, 0, 0},
++		{"version", no_argument, 0, 0},
++		{"jffs2", no_argument, 0, 'j'},
++		{"quiet", no_argument, 0, 'q'},
++		{"silent", no_argument, 0, 'q'},
 +
-+	if (!output)
-+		return err_msg("not output device or file specified");
++		{0, 0, 0, 0},
++	};
 +
-+	out_ubi =3D !open_ubi(output);
+ 	exe_name =3D argv[0];
 =20
- 	if (out_ubi) {
- 		c->min_io_size =3D c->di.min_io_size;
-@@ -656,9 +659,6 @@ static int get_options(int argc, char**argv)
- 		c->max_leb_cnt =3D c->vi.rsvd_lebs;
- 	}
-=20
--	if (!output)
--		return err_msg("not output device or file specified");
+ 	for (;;) {
+ 		int option_index =3D 0;
+-		static const char *short_options =3D "jq";
+-		static const struct option long_options[] =3D {
+-			{"help", no_argument, 0, 0},
+-			{"version", no_argument, 0, 0},
+-			{"jffs2", no_argument, 0, 'j'},
+-			{"quiet", no_argument, 0, 'q'},
+-			{"silent", no_argument, 0, 'q'},
 -
- 	if (c->min_io_size =3D=3D -1)
- 		return err_msg("min. I/O unit was not specified "
- 			       "(use -h for help)");
+-			{0, 0, 0, 0},
+-		};
+-
+ 		int c =3D getopt_long(argc, argv, short_options,
+ 				long_options, &option_index);
+ 		if (c =3D=3D EOF) {
 --=20
 1.6.3.3
