@@ -1,20 +1,23 @@
-Received: from mail.windriver.com ([147.11.1.11])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OP6Ep-0007nH-71
-	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2010 03:58:00 +0000
-Message-ID: <4C19A01E.6060607@windriver.com>
-Date: Thu, 17 Jun 2010 12:10:06 +0800
-From: "stanley.miao" <stanley.miao@windriver.com>
+Received: from bld-mail12.adl6.internode.on.net ([150.101.137.97]
+	helo=mail.internode.on.net)
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OP6xn-0006AO-9q
+	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2010 04:44:28 +0000
+Received: from [192.168.1.8] (unverified [118.209.113.54])
+	by mail.internode.on.net (SurgeMail 3.8f2) with ESMTP id
+	28232051-1927428 for <linux-mtd@lists.infradead.org>;
+	Thu, 17 Jun 2010 14:14:20 +0930 (CST)
+Message-ID: <4C19A823.4080804@elphinstone.net>
+Date: Thu, 17 Jun 2010 14:44:19 +1000
+From: Mark Ware <mware@elphinstone.net>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: Fix mtd-utils bugs
-References: <1276248975-1822-1-git-send-email-stanley.miao@windriver.com>	
-	<1276422718.19028.211.camel@localhost>
-	<1276424048.19028.217.camel@localhost>
-In-Reply-To: <1276424048.19028.217.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: linux-mtd@lists.infradead.org
+Subject: Re: [RFC/PATCH] doc2000: Fix uninitialized variable in
+	doc_ecc_decode()
+References: <4BFDCEC3.7070601@elphinstone.net>
+In-Reply-To: <4BFDCEC3.7070601@elphinstone.net>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +27,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Sun, 2010-06-13 at 12:51 +0300, Artem Bityutskiy wrote:
->   
->> On Fri, 2010-06-11 at 17:36 +0800, Stanley.Miao wrote:
->>     
->>> Re-send them because I didn't give a email subject in last version.
->>>
->>> The "struct nand_oobinfo" is able to record only 32 ECC code positions,which
->>> is not enough for many big NAND chips. Therefore, this structure is replaced
->>> by "struct nand_ecclayout" in linux kernel from the version 2.6.17.
->>> Consequently, the ioctl command changed from MEMGETOOBSEL to ECCGETLAYOUT.
->>>
->>> Now update nandwrite to use the new ioctl command ECCGETLAYOUT. In order to
->>> keep compatible with the old linux kernel, a linux version detection function
->>> is added.
->>>
->>> YAFFS and JFFS2 has updated and we don't need the arguments "forcelegacy",
->>> "forcejffs2", "forceyaffs" anymore. Now clean them up. 
->>>       
->> Please, make sure your submissions have proper version. I have limited
->> amount of time and do not want to spend it figuring out which patch is
->> the latest. Use the best kernel practices and apply prefix your stuff
->> with [PATCHv3] or something like that.
->>
->> Could you please re-submit your latest version?
->>     
->
-> Also, it is nice to put a short changelog, but I can live without it.
->   
+No comments?
+I know DOC2000 is pretty old now, but somebody must remember them!
 
-Sorry for the delayed reply. I was on vacation in the past 6 days.
+Regards,
+Mark
 
-I will re-send them soon.
-
-Stanley.
+Mark Ware wrote:
+> The variable 'syn' was being used uninitialized.  Also
+> fixed incorrect use of syn[] vs s[].
+> 
+> Tested on powerpc board with 64MB DOC2000.
+> ---
+> 
+> I am porting from a 2.4.18 kernel to 2.6.32, and I saw random media header
+> mismatches causing a failure to detect the DOC device partitions.  Tracing
+> through, I saw this variable being used uninitialized and I suspect
+> incorrectly also.
+> 
+> I do not really understand how the ecc/syndrome code works, so I do not
+> know if this patch is the correct solution, but it did make my problem
+> go away...
+> 
+> CC: Thomas Gleixner as I believe he may have written this function initially.
+> 
+>  drivers/mtd/nand/diskonchip.c |    5 +++--
+>  1 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+> index a5bf9ff..7da2321 100644
+> --- a/drivers/mtd/nand/diskonchip.c
+> +++ b/drivers/mtd/nand/diskonchip.c
+> @@ -145,6 +145,7 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
+>  	uint8_t parity;
+>  	uint16_t ds[4], s[5], tmp, errval[8], syn[4];
+>  
+> +	memset(syn, 0, sizeof(syn));
+>  	/* Convert the ecc bytes into words */
+>  	ds[0] = ((ecc[4] & 0xff) >> 0) | ((ecc[5] & 0x03) << 8);
+>  	ds[1] = ((ecc[5] & 0xfc) >> 2) | ((ecc[2] & 0x0f) << 6);
+> @@ -168,9 +169,9 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
+>  			s[i] ^= rs->alpha_to[rs_modnn(rs, tmp + (FCR + i) * j)];
+>  	}
+>  
+> -	/* Calc s[i] = s[i] / alpha^(v + i) */
+> +	/* Calc syn[i] = s[i] / alpha^(v + i) */
+>  	for (i = 0; i < NROOTS; i++) {
+> -		if (syn[i])
+> +		if (s[i])
+>  			syn[i] = rs_modnn(rs, rs->index_of[s[i]] + (NN - FCR - i));
+>  	}
+>  	/* Call the decoder library */
