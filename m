@@ -1,23 +1,17 @@
-Received: from bld-mail12.adl6.internode.on.net ([150.101.137.97]
-	helo=mail.internode.on.net)
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OP6xn-0006AO-9q
-	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2010 04:44:28 +0000
-Received: from [192.168.1.8] (unverified [118.209.113.54])
-	by mail.internode.on.net (SurgeMail 3.8f2) with ESMTP id
-	28232051-1927428 for <linux-mtd@lists.infradead.org>;
-	Thu, 17 Jun 2010 14:14:20 +0930 (CST)
-Message-ID: <4C19A823.4080804@elphinstone.net>
-Date: Thu, 17 Jun 2010 14:44:19 +1000
-From: Mark Ware <mware@elphinstone.net>
+	id 1OPAgB-00014H-Ph
+	for linux-mtd@lists.infradead.org; Thu, 17 Jun 2010 08:42:32 +0000
+Received: by fxm11 with SMTP id 11so1473805fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 17 Jun 2010 01:42:29 -0700 (PDT)
 MIME-Version: 1.0
+Date: Thu, 17 Jun 2010 10:42:29 +0200
+Message-ID: <AANLkTikVqjmLiBDq6bdtTcHKwZxlxAVCBg3-WGXMzbmF@mail.gmail.com>
+Subject: UBIFS performance measurements
+From: Leo Barnes <barnes.leo@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: [RFC/PATCH] doc2000: Fix uninitialized variable in
-	doc_ecc_decode()
-References: <4BFDCEC3.7070601@elphinstone.net>
-In-Reply-To: <4BFDCEC3.7070601@elphinstone.net>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,54 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-No comments?
-I know DOC2000 is pretty old now, but somebody must remember them!
+Hello!
 
-Regards,
-Mark
+I have a few questions regarding sequential write speeds in UBIFS and
+how to measure them.
 
-Mark Ware wrote:
-> The variable 'syn' was being used uninitialized.  Also
-> fixed incorrect use of syn[] vs s[].
-> 
-> Tested on powerpc board with 64MB DOC2000.
-> ---
-> 
-> I am porting from a 2.4.18 kernel to 2.6.32, and I saw random media header
-> mismatches causing a failure to detect the DOC device partitions.  Tracing
-> through, I saw this variable being used uninitialized and I suspect
-> incorrectly also.
-> 
-> I do not really understand how the ecc/syndrome code works, so I do not
-> know if this patch is the correct solution, but it did make my problem
-> go away...
-> 
-> CC: Thomas Gleixner as I believe he may have written this function initially.
-> 
->  drivers/mtd/nand/diskonchip.c |    5 +++--
->  1 files changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-> index a5bf9ff..7da2321 100644
-> --- a/drivers/mtd/nand/diskonchip.c
-> +++ b/drivers/mtd/nand/diskonchip.c
-> @@ -145,6 +145,7 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
->  	uint8_t parity;
->  	uint16_t ds[4], s[5], tmp, errval[8], syn[4];
->  
-> +	memset(syn, 0, sizeof(syn));
->  	/* Convert the ecc bytes into words */
->  	ds[0] = ((ecc[4] & 0xff) >> 0) | ((ecc[5] & 0x03) << 8);
->  	ds[1] = ((ecc[5] & 0xfc) >> 2) | ((ecc[2] & 0x0f) << 6);
-> @@ -168,9 +169,9 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
->  			s[i] ^= rs->alpha_to[rs_modnn(rs, tmp + (FCR + i) * j)];
->  	}
->  
-> -	/* Calc s[i] = s[i] / alpha^(v + i) */
-> +	/* Calc syn[i] = s[i] / alpha^(v + i) */
->  	for (i = 0; i < NROOTS; i++) {
-> -		if (syn[i])
-> +		if (s[i])
->  			syn[i] = rs_modnn(rs, rs->index_of[s[i]] + (NN - FCR - i));
->  	}
->  	/* Call the decoder library */
+1. If I want to measure sequential (and later on, random) write speed
+in UBIFS, should I do the writes using the O_SYNC flag or just do a
+fsync after writing? I worry that using the O_SYNC flag will reduce
+the write performance since the file system is meant to be used
+asynchronously and I want my measurements to be as close as possible
+to how the file system is meant to be used.
+
+2. If I do not use O_SYNC, will using fflush and fsync guarantee that
+all written data has been written to flash when they return?
+
+3. If I do not use fflush before fsync, I assume, after reading the
+FAQ, that I am not guaranteed that all data has been written. Is this
+correct?
+
+4. Does the commandline sync command do the same thing as fflush/fsync?
+
+5. Does sync/fsync force garbage collection? In other words, if I have
+deleted lots of files from an UBIFS volume, will I be ensured that
+their corresponding eraseblocks will actually be freed if I do a sync?
+
+Any other tips regarding how to perform valid write performance
+measurements on UBIFS would be welcome.
+
+Best regards,
+//Leo
