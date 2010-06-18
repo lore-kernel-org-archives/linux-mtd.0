@@ -1,21 +1,28 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OPYnh-00023I-TX
-	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 10:27:54 +0000
-Subject: Re: Fix mtd-utils bugs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "stanley.miao" <stanley.miao@windriver.com>
-In-Reply-To: <4C1B2B65.3090606@windriver.com>
-References: <1276248975-1822-1-git-send-email-stanley.miao@windriver.com>
-	<1276422718.19028.211.camel@localhost>
-	<1276424048.19028.217.camel@localhost> <4C1B2B65.3090606@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 18 Jun 2010 13:24:23 +0300
-Message-ID: <1276856663.19028.447.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OPbgH-0003CH-3k
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 13:32:25 +0000
+Received: by wyg36 with SMTP id 36so736945wyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Jun 2010 06:32:20 -0700 (PDT)
+Date: Fri, 18 Jun 2010 17:32:12 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Barry Song <21cnbao@gmail.com>
+Subject: Re: [PATCH 1/2] mtd: m25p80: Rework probing/JEDEC code
+Message-ID: <20100618133212.GA5276@oksana.dev.rtsoft.ru>
+References: <20090818214449.GA12848@oksana.dev.rtsoft.ru>
+	<20090818214622.GA22651@oksana.dev.rtsoft.ru>
+	<AANLkTikg60s6ZRSEDCq9PQK1z7hJtBDk6t4VE1lYDv8u@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <AANLkTikg60s6ZRSEDCq9PQK1z7hJtBDk6t4VE1lYDv8u@mail.gmail.com>
+Cc: David Brownell <dbrownell@users.sourceforge.net>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +32,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-06-18 at 16:16 +0800, stanley.miao wrote:
-> Artem Bityutskiy wrote:
-> > On Sun, 2010-06-13 at 12:51 +0300, Artem Bityutskiy wrote:
-> >   
-> >> On Fri, 2010-06-11 at 17:36 +0800, Stanley.Miao wrote:
-> >>     
-> >>> <snip>
-> >>>       
-> >> Please, make sure your submissions have proper version. I have limited
-> >> amount of time and do not want to spend it figuring out which patch is
-> >> the latest. Use the best kernel practices and apply prefix your stuff
-> >> with [PATCHv3] or something like that.
-> >>
-> >> Could you please re-submit your latest version?
-> >>     
+On Sat, Jun 12, 2010 at 02:27:12PM +0800, Barry Song wrote:
+> On Wed, Aug 19, 2009 at 5:46 AM, Anton Vorontsov
+> <avorontsov@ru.mvista.com> wrote:
 > >
-> > Also, it is nice to put a short changelog, but I can live without it.
-> >   
-> 
-> Is the subject of every emails is the short changelog you wanted ?
+> > Previosly the driver always tried JEDEC probing, assuming that non-JEDEC
+> > chips will return '0'. But truly non-JEDEC chips (like CAT25) won't do
+> > that, their behaviour on RDID command is undefined, so the driver should
+> > not call jedec_probe() for these chips.
+> >
+> > Also, be less strict on error conditions, don't fail to probe if JEDEC
+> > found a chip that is different from what platform code told, instead
+> > just print some warnings and use an information obtained via JEDEC. In
+> This patch caused a problem:
+> even though the external flash doesn't exist, it will still pass the
+> probe() and be registerred into kernel and given the partition table.
+> You may refer to this bug report:
+> http://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?action=TrackerItemEdit&tracker_item_id=5975&start=0
 
-Hi,
+Thanks for the report.
 
-Sorry, I do not understand the question. I do not need changelogs. I
-just noted that there are best practices, and people use changelogs. You
-can take a look at lkml archives at patch series from good kernel
-hackers for example.
+There's little we can do about it. Platform code asked us
+to register the device, and JEDEC probing of M25Pxx chips isn't
+reliable (thanks to various vendors that make these JEDEC and
+non-JEDEC variants), so the best thing we can do is to register
+the chip anyway.
 
-If you asked whether the changelog should be in each patch - no, just in
-the "0" patch, and just short.
+OTOH, if the board pulls MISO line up, then the following patch
+should help.
 
-Anyway, I just want you to re-send your up-to-date patches as a separate
-series with a v2 prefix.
+If this won't work, we'll have to add some flag to the platform
+data, i.e. to force JEDEC probing, and not trust platform data.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Not-yet-Signed-off-by: Anton Vorontsov <cbouatmailru@gmail.com>
+---
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 81e49a9..a307929 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -16,6 +16,7 @@
+  */
+ 
+ #include <linux/init.h>
++#include <linux/errno.h>
+ #include <linux/module.h>
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
+@@ -723,7 +724,7 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ 	if (tmp < 0) {
+ 		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading JEDEC ID\n",
+ 			dev_name(&spi->dev), tmp);
+-		return NULL;
++		return ERR_PTR(tmp);
+ 	}
+ 	jedec = id[0];
+ 	jedec = jedec << 8;
+@@ -737,7 +738,7 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ 	 * exist for non-JEDEC chips, but for compatibility they return ID 0.
+ 	 */
+ 	if (jedec == 0)
+-		return NULL;
++		return ERR_PTR(-EEXIST);
+ 
+ 	ext_jedec = id[3] << 8 | id[4];
+ 
+@@ -749,7 +750,7 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
+ 			return &m25p_ids[tmp];
+ 		}
+ 	}
+-	return NULL;
++	return ERR_PTR(-ENODEV);
+ }
+ 
+ 
+@@ -794,9 +795,11 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 		const struct spi_device_id *jid;
+ 
+ 		jid = jedec_probe(spi);
+-		if (!jid) {
++		if (IS_ERR(jid) && PTR_ERR(jid) == -EEXIST) {
+ 			dev_info(&spi->dev, "non-JEDEC variant of %s\n",
+ 				 id->name);
++		} else if (IS_ERR(jid)) {
++			return PTR_ERR(jid);
+ 		} else if (jid != id) {
+ 			/*
+ 			 * JEDEC knows better, so overwrite platform ID. We
