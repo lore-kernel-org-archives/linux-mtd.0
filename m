@@ -1,19 +1,24 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OPXuu-000283-RG
-	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 09:31:17 +0000
-Subject: Re: UBIFS performance measurements
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Leo Barnes <barnes.leo@gmail.com>
-In-Reply-To: <AANLkTikVqjmLiBDq6bdtTcHKwZxlxAVCBg3-WGXMzbmF@mail.gmail.com>
-References: <AANLkTikVqjmLiBDq6bdtTcHKwZxlxAVCBg3-WGXMzbmF@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 18 Jun 2010 12:28:38 +0300
-Message-ID: <1276853318.19028.442.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <AANLkTimeJYwret1ZlEHaX_-T14qB3WteQwpn9y7_1Zo9@mail.gmail.com>
+References: <AANLkTim1qcVoqSS7T8bE0Vsu6phC2iY_Ok671WYHcD0z@mail.gmail.com>
+	<AANLkTil6QDRdh3s63J9Mm-B1qjMcnYjEEm-W5lC1NXVb@mail.gmail.com>
+	<AANLkTikbzXgwMvnNVRkcOO-9El9hmAXhKZK_dFgStbwY@mail.gmail.com>
+	<AANLkTikDDFYY65l5YYGW3a0O2bWDyKRO6VRb15aaFtF7@mail.gmail.com>
+	<AANLkTil6D3Cijy1JZ3aQLBGBfi99zOGDy5Xl8OmY_T_8@mail.gmail.com>
+	<AANLkTimeJYwret1ZlEHaX_-T14qB3WteQwpn9y7_1Zo9@mail.gmail.com>
+Date: Fri, 18 Jun 2010 18:01:02 +0800
+Message-ID: <AANLkTimU35i4hpzwb34lbqYrP0ijoWw6KH3q_ntb2fHh@mail.gmail.com>
+Subject: Re: [PATCH 02/25] pxa3xx_nand: introduce common timing to reduce read
+	id times
+From: Lei Wen <adrian.wenl@gmail.com>
+To: Eric Miao <eric.y.miao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <david.woodhouse@intel.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +28,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, Jun 18, 2010 at 5:19 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
+> On Fri, Jun 18, 2010 at 5:15 PM, Lei Wen <adrian.wenl@gmail.com> wrote:
+>> On Fri, Jun 18, 2010 at 4:12 PM, Eric Miao <eric.y.miao@gmail.com> wrote=
+:
+>>>>>> - =C2=A0 =C2=A0 =C2=A0 if (f->page_size !=3D 2048 && f->page_size !=
+=3D 512)
+>>>>>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EINVAL;
+>>>>>> -
+>>>>>> - =C2=A0 =C2=A0 =C2=A0 if (f->flash_width !=3D 16 && f->flash_width =
+!=3D 8)
+>>>>>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EINVAL;
+>>>>>> -
+>>>>>
+>>>>> I do think these are sanity check, that's useful to prevent incorrect=
+ly defined
+>>>>> data (esp. coming from board code). Can we define the loose flash typ=
+e as:
+>>>>>
+>>>>>> =C2=A0static struct pxa3xx_nand_flash __devinitdata builtin_flash_ty=
+pes[] =3D {
+>>>>>> + =C2=A0 =C2=A0 =C2=A0 { =C2=A00x0000, =C2=A0 0, =C2=A0 =C2=A0512, =
+=C2=A08, =C2=A08, =C2=A0 =C2=A00, &timing[0], },
+>>>>>> + =C2=A0 =C2=A0 =C2=A0 { 0x46ec, =C2=A032, =C2=A0512, 16, 16, 4096, =
+&timing[1], },
+>>>>>> + =C2=A0 =C2=A0 =C2=A0 { 0xdaec, =C2=A064, 2048, =C2=A08, =C2=A08, 2=
+048, &timing[1], },
+>>>>>
+>>>>> with a comment of /* default flash type to detect ID */?
+>>>>>
+>>>>> My understanding is the minimum requirement to detect the NAND ID is =
+a
+>>>>> loose timing and 512 small page, 8-bit wide bus, so with a chip_id be=
+ing
+>>>>> 0x0000, that should be enough to tell it's a special flash type to de=
+tect ID.
+>>>>
+>>>> There is no need to add the flash page size and bus width for the
+>>>> common timing, or loose timing...
+>>>> For the chip identification only need reset and read id command, and
+>>>> reset and read id command only care
+>>>> for the first command in NDCB0 and the timing setting in NDTR0CS0 and
+>>>> NDTR1CS0, the page size is not useful
+>>>> here and could make confussion if give such definition...
+>>>
+>>> I know, but I'd like to keep the checking of page_size, and flash_width=
+,
+>>> if you take a look into the rest of the code how much it is assumed tha=
+t
+>>> page_size being either 2048 or 512, flash_width being 8 or 16, you'll
+>>> know why such an error checking here is mandatory actually.
+>>
+>> I know that the configure_flash function need to check page_size &
+>> flash_width to set the
+>> ndcr. But what the setting would not affect the reset/read id result any=
+way...
+>> For there is some chip has the same bytes in the first two bytes, I
+>> choose to always read out
+>> 4 bytes data when send read id command in latter patch of this patch set=
+...
+>>
+>
+> My understanding is that NAND READID will at least work with the assumpti=
+on
+> of 512bytes/page and 8-bit wide bus, no matter how the NAND chips are
+> connected. (unless some one comes up with a insane design of using multip=
+le
+> interlaced NAND chips of different types).
+>
+> Again, assume the NAND controller is not initialized (register values bei=
+ng
+> garbage or all zero-ed), do you still think you can read out the ID witho=
+ut
+> letting it know the page size, bus width and etc?
+>
 
-On Thu, 2010-06-17 at 10:42 +0200, Leo Barnes wrote:
-> I have a few questions regarding sequential write speeds in UBIFS and
-> how to measure them.
-
-Measurements are always tricky... :-) But I'm happy to help answering
-specific UBIFS questions, of course.
-
-> 1. If I want to measure sequential (and later on, random) write speed
-> in UBIFS, should I do the writes using the O_SYNC flag or just do a
-> fsync after writing? I worry that using the O_SYNC flag will reduce
-> the write performance since the file system is meant to be used
-> asynchronously and I want my measurements to be as close as possible
-> to how the file system is meant to be used.
-
-With O_SYNC you will get a guarantee that when your 'write()' call
-returns, every single byte of your buffer will be on the flash media.
-Yes, this is slow. This is un-optimal, because UBIFS will waste a lot of
-space flushing the write-buffer every time.
-
-With out O_SYNC you will do your writes to the page cache, then when you
-call fsync(), UBIFS will flush this all, but this should be faster
-because UBIFS will waste less space and pack data nodes nicely to the
-write buffer.
-
-It makes sense to measure both. But yes, write all / fsync is closer to
-real life.
-
-> 2. If I do not use O_SYNC, will using fflush and fsync guarantee that
-> all written data has been written to flash when they return?
-
-Yes.
-
-> 3. If I do not use fflush before fsync, I assume, after reading the
-> FAQ, that I am not guaranteed that all data has been written. Is this
-> correct?
-
-Yes, because some amount of data is cached in usre-space somewhere in
-libc, and was not even sent to the kernel yet. fsync() will just call
-the syscall without flushing that buffered data.
-
-> 4. Does the commandline sync command do the same thing as fflush/fsync?
-
-It syncs all (kernel) dirty pages, for all files. fsync synchronize only
-one file.
-
-> 5. Does sync/fsync force garbage collection?
-
-No, they do minimum stuff to make sure all data is on the media and
-would not lost if you had a power cut just after sync/fsync is done.
-
->  In other words, if I have
-> deleted lots of files from an UBIFS volume, will I be ensured that
-> their corresponding eraseblocks will actually be freed if I do a sync?
-
-No. You are guaranteed that these files will never come back only. But
-on physical flash level, corresponding PEBs will not necessarily be
-erased.
-
-> Any other tips regarding how to perform valid write performance
-> measurements on UBIFS would be welcome.
-
-Well, not from me, although I am of course interested to see people
-using UBIFS :-) FS testing is always tricky, and the best testing is
-using the FS with real-life applications. E.g., if you have some apps
-with back-end data-bases, or you have some apps doing intensive I/O,
-installing removing packages, etc.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Well... I understand it is good to reserve the page size and width
+judgement in configuration.
+I would make this part revert back to its original state...
+For read id, it would not care for the page size and width setting in NDCR.=
+..
