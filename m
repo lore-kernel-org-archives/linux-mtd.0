@@ -1,23 +1,25 @@
-MIME-Version: 1.0
-In-Reply-To: <AANLkTil6D3Cijy1JZ3aQLBGBfi99zOGDy5Xl8OmY_T_8@mail.gmail.com>
-References: <AANLkTim1qcVoqSS7T8bE0Vsu6phC2iY_Ok671WYHcD0z@mail.gmail.com>
-	<AANLkTil6QDRdh3s63J9Mm-B1qjMcnYjEEm-W5lC1NXVb@mail.gmail.com>
-	<AANLkTikbzXgwMvnNVRkcOO-9El9hmAXhKZK_dFgStbwY@mail.gmail.com>
-	<AANLkTikDDFYY65l5YYGW3a0O2bWDyKRO6VRb15aaFtF7@mail.gmail.com>
-	<AANLkTil6D3Cijy1JZ3aQLBGBfi99zOGDy5Xl8OmY_T_8@mail.gmail.com>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Fri, 18 Jun 2010 17:19:59 +0800
-Message-ID: <AANLkTimeJYwret1ZlEHaX_-T14qB3WteQwpn9y7_1Zo9@mail.gmail.com>
-Subject: Re: [PATCH 02/25] pxa3xx_nand: introduce common timing to reduce read
-	id times
-To: Lei Wen <adrian.wenl@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <david.woodhouse@intel.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Received: from lo.gmane.org ([80.91.229.12])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OPXl7-0006YP-4d
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 09:21:09 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OPXl1-0006wl-AV
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 11:21:03 +0200
+Received: from amg-holding.md ([89.28.62.63])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jun 2010 11:21:03 +0200
+Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Jun 2010 11:21:03 +0200
+To: linux-mtd@lists.infradead.org
+From: Egorkat <egorkat@gmail.com>
+Subject: prepare DiskOnChip
+Date: Fri, 18 Jun 2010 09:20:55 +0000 (UTC)
+Message-ID: <loom.20100618T111420-702@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 18, 2010 at 5:15 PM, Lei Wen <adrian.wenl@gmail.com> wrote:
-> On Fri, Jun 18, 2010 at 4:12 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
->>>>> - =C2=A0 =C2=A0 =C2=A0 if (f->page_size !=3D 2048 && f->page_size !=
-=3D 512)
->>>>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EINVAL;
->>>>> -
->>>>> - =C2=A0 =C2=A0 =C2=A0 if (f->flash_width !=3D 16 && f->flash_width !=
-=3D 8)
->>>>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EINVAL;
->>>>> -
->>>>
->>>> I do think these are sanity check, that's useful to prevent incorrectl=
-y defined
->>>> data (esp. coming from board code). Can we define the loose flash type=
- as:
->>>>
->>>>> =C2=A0static struct pxa3xx_nand_flash __devinitdata builtin_flash_typ=
-es[] =3D {
->>>>> + =C2=A0 =C2=A0 =C2=A0 { =C2=A00x0000, =C2=A0 0, =C2=A0 =C2=A0512, =
-=C2=A08, =C2=A08, =C2=A0 =C2=A00, &timing[0], },
->>>>> + =C2=A0 =C2=A0 =C2=A0 { 0x46ec, =C2=A032, =C2=A0512, 16, 16, 4096, &=
-timing[1], },
->>>>> + =C2=A0 =C2=A0 =C2=A0 { 0xdaec, =C2=A064, 2048, =C2=A08, =C2=A08, 20=
-48, &timing[1], },
->>>>
->>>> with a comment of /* default flash type to detect ID */?
->>>>
->>>> My understanding is the minimum requirement to detect the NAND ID is a
->>>> loose timing and 512 small page, 8-bit wide bus, so with a chip_id bei=
-ng
->>>> 0x0000, that should be enough to tell it's a special flash type to det=
-ect ID.
->>>
->>> There is no need to add the flash page size and bus width for the
->>> common timing, or loose timing...
->>> For the chip identification only need reset and read id command, and
->>> reset and read id command only care
->>> for the first command in NDCB0 and the timing setting in NDTR0CS0 and
->>> NDTR1CS0, the page size is not useful
->>> here and could make confussion if give such definition...
->>
->> I know, but I'd like to keep the checking of page_size, and flash_width,
->> if you take a look into the rest of the code how much it is assumed that
->> page_size being either 2048 or 512, flash_width being 8 or 16, you'll
->> know why such an error checking here is mandatory actually.
->
-> I know that the configure_flash function need to check page_size &
-> flash_width to set the
-> ndcr. But what the setting would not affect the reset/read id result anyw=
-ay...
-> For there is some chip has the same bytes in the first two bytes, I
-> choose to always read out
-> 4 bytes data when send read id command in latter patch of this patch set.=
-..
->
+Good day, All!
 
-My understanding is that NAND READID will at least work with the assumption
-of 512bytes/page and 8-bit wide bus, no matter how the NAND chips are
-connected. (unless some one comes up with a insane design of using multiple
-interlaced NAND chips of different types).
+Could you please advise me a correct way to prepare DoC MD2201-D72 for use under
+Linux?
 
-Again, assume the NAND controller is not initialized (register values being
-garbage or all zero-ed), do you still think you can read out the ID without
-letting it know the page size, bus width and etc?
+I can format it under DOS with dformat utility in different ways, even like a
+floppy. But when I try modprobe nftl after successfully modprobe diskonchip, it
+fails or hungs with different errors. 
+I've read and old how-to's, based on 2.4 kernel and old doc2000 driver, and new
+ones. Kernel is compiled to support new MTD modules.
+What do I do wrong...
+
+Please enlighten me, I'm now out of ideas. Any logs, tests, configs and dumps
+will be provided immediately.
+
+Regards!
