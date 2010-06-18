@@ -1,21 +1,14 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail.windriver.com ([147.11.1.11])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OTyUc-0006OZ-B7
-	for linux-mtd@lists.infradead.org; Wed, 30 Jun 2010 14:42:27 +0000
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Wed, 30 Jun 2010 20:12:13 +0530
-Subject: RE: [PATCH v5 0/3] omap3 nand: cleanup exiting platform related code
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030DFE9927@dbde02.ent.ti.com>
-References: <s-ghorai@ti.com> <1275637205-489-1-git-send-email-s-ghorai@ti.com>
-	<AANLkTinf8OcvHbLggdEJNGLvlAtSeExKri-IqNlwLpYD@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Vimal Singh <vimal.newwork@gmail.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1OPYgf-0005Xf-BC
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 10:20:38 +0000
+From: "Stanley.Miao" <stanley.miao@windriver.com>
+To: linux-mtd@lists.infradead.org
+Subject: [v3 1/3] clean up the legacy interfaces in nandwrite.c
+Message-Id: <1276857173-10848-2-git-send-email-stanley.miao@windriver.com>
+In-Reply-To: <1276857173-10848-1-git-send-email-stanley.miao@windriver.com>
+References: <1276857173-10848-1-git-send-email-stanley.miao@windriver.com>
+Cc: Artem.Bityutskiy@nokia.com, joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,135 +17,351 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Fri, 18 Jun 2010 10:20:39 -0000
 
-Tony,
-Please let me know if any have input on following two series.=20
+The "struct nand_oobinfo" is able to record only 32 ECC code positions,which
+is not enough for many big NAND chips. Therefore, this structure is replaced
+by "struct nand_ecclayout" in linux kernel from the version 2.6.17.
+Consequently, the ioctl command changed from MEMGETOOBSEL to ECCGETLAYOUT.
 
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30305.html
-http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30735.html
+Now update nandwrite to use the new ioctl command ECCGETLAYOUT. In order to
+keep compatible with the old linux kernel, a linux version detection function
+is added.
 
-Regards,
-Ghorai
+YAFFS and JFFS2 has updated and we don't need the arguments "forcelegacy",
+"forcejffs2", "forceyaffs" anymore. Now clean them up.
 
-> -----Original Message-----
-> From: Ghorai, Sukumar
-> Sent: Tuesday, June 15, 2010 6:57 PM
-> To: 'Tony Lindgren'
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org;
-> tony@atomide.com; mike@compulab.co.il; 'Vimal Singh'
-> Subject: RE: [PATCH v5 0/3] omap3 nand: cleanup exiting platform related
-> code
->=20
-> Tony,
->=20
-> > -----Original Message-----
-> > From: Vimal Singh [mailto:vimal.newwork@gmail.com]
-> > Sent: Tuesday, June 08, 2010 10:43 PM
-> > To: Ghorai, Sukumar
-> > Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org;
-> > tony@atomide.com; mike@compulab.co.il
-> > Subject: Re: [PATCH v5 0/3] omap3 nand: cleanup exiting platform relate=
-d
-> > code
-> >
-> > Reviewed-by: Vimal Singh <vimal.newwork@gmail.com>
-> >
-> > On Fri, Jun 4, 2010 at 1:10 PM, Sukumar Ghorai <s-ghorai@ti.com> wrote:
-> > > =A0 The following set of patches applies on top of for-next branch.
-> > > =A0 =A0 =A0 =A0http://git.kernel.org/?p=3Dlinux/kernel/git/tmlind/lin=
-ux-omap-
-> > 2.6.git
-> > > =A0 Patches verified on: omap3430-SDP, omap3630-sdp, zoom3 and beagle
-> > board
-> > >
-> > > =A0 And these are the patches required to address the following input=
- -
-> > > =A0 =A0 1. The NAND driver needs to stop tinkering with the GPMC regi=
-sters
-> > > =A0 =A0 =A0 =A0The omap General Purpose Memory Controller (GPMC) regi=
-sters are
-> > omap
-> > > =A0 =A0 =A0 =A0specific, and not driver specific. Tinkering with thes=
-e
-> registers
-> > can
-> > > =A0 =A0 =A0 =A0cause issues with the other devices on the GPMC.
-> > >
-> > > =A0 =A0 2. Passing hardcoded GPMC_CS0_BASE needs to go from the board
-> files
-> > > =A0 =A0 =A0 =A0Passing hardcoded GPMC virtual addressess is sure way =
-to mess
-> up
-> > things.
-> > > =A0 =A0 =A0 =A0This should all become unnecessary once the NAND drive=
-rs stops
-> > messing
-> > > =A0 =A0 =A0 =A0with the GPMC registers directly.
-> > > =A0 =A0 Discussion: http://www.mail-archive.com/linux-
-> > omap@vger.kernel.org/msg27630.html
-> > >
-> > > =A0 Changes in this series -
-> > > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Unused function removed.
-> > >
-> > > =A0Functions related to ecc and prefetch engine are optimized.
-> > > =A0v4: http://www.mail-archive.com/linux-
-> > omap@vger.kernel.org/msg29458.html
-> > >
-> > > =A0Few functionality was missing =A0like - There should be some locki=
-ng as
-> > only
-> > > =A0 one chipselect can use the ECC or prefetch engine at a time. If y=
-ou
-> > have
-> > > =A0 NAND in two chipselects, bad things would happen.
-> > > =A0v3: http://www.mail-archive.com/linux-
-> > omap@vger.kernel.org/msg28715.html
-> > >
-> > > =A0Additionally, it was needed to implement more functions for the
-> > platform
-> > > =A0init code to use.
-> > > =A0v2: http://www.mail-archive.com/linux-
-> > omap@vger.kernel.org/msg28467.html
-> > >
-> > > =A0v1: http://www.mail-archive.com/linux-
-> > omap@vger.kernel.org/msg28164.html
-> > >
-> > >
-> > > Sukumar Ghorai (3):
-> > > =A0 =A0 =A0 =A0omap3 gpmc: functionality enhancement
-> > > =A0 =A0 =A0 =A0omap3 nand: cleanup virtual address usages
-> > > =A0 =A0 =A0 =A0omap3 nand: fix issue in board file to detect nand
-> > > =A0arch/arm/mach-omap2/board-cm-t35.c =A0 =A0 =A0 =A0 | =A0 20 +---
-> > > =A0arch/arm/mach-omap2/board-devkit8000.c =A0 =A0 | =A0 25 +---
-> > > =A0arch/arm/mach-omap2/board-omap3beagle.c =A0 =A0| =A0 24 +---
-> > > =A0arch/arm/mach-omap2/board-omap3touchbook.c | =A0 25 +---
-> > > =A0arch/arm/mach-omap2/board-overo.c =A0 =A0 =A0 =A0 =A0| =A0 24 +---
-> > > =A0arch/arm/mach-omap2/board-sdp-flash.c =A0 =A0 =A0| =A0 =A05 -
-> > > =A0arch/arm/mach-omap2/gpmc-nand.c =A0 =A0 =A0 =A0 =A0 =A0| =A0 39 ++=
-----
-> > > =A0arch/arm/mach-omap2/gpmc.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A022=
-8
-> > +++++++++++++++++++++++++---
-> > > =A0arch/arm/plat-omap/include/plat/gpmc.h =A0 =A0 | =A0 36 ++++-
-> > > =A0arch/arm/plat-omap/include/plat/nand.h =A0 =A0 | =A0 =A06 +-
-> > > =A0drivers/mtd/nand/omap2.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0=
-229 ++++++++-----------
-> --
-> > -------
-> > > =A011 files changed, 320 insertions(+), 341 deletions(-)
->=20
-> [Ghorai] Any comments or input on these patch?
->=20
-> > >
-> > > --
-> > > To unsubscribe from this list: send the line "unsubscribe linux-omap"
-> in
-> > > the body of a message to majordomo@vger.kernel.org
-> > > More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
-> > >
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Vimal Singh
+Signed-off-by: Stanley.Miao <stanley.miao@windriver.com>
+---
+ nandwrite.c |  224 +++++++++++++++--------------------------------------------
+ 1 files changed, 57 insertions(+), 167 deletions(-)
+
+diff --git a/nandwrite.c b/nandwrite.c
+index 1b4ca3d..eadca54 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -34,6 +34,7 @@
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+ #include <sys/types.h>
++#include <sys/utsname.h>
+ #include <getopt.h>
+ 
+ #include <asm/types.h>
+@@ -45,26 +46,7 @@
+ #define MAX_PAGE_SIZE	4096
+ #define MAX_OOB_SIZE	128
+ 
+-// oob layouts to pass into the kernel as default
+-static struct nand_oobinfo none_oobinfo = {
+-	.useecc = MTD_NANDECC_OFF,
+-};
+-
+-static struct nand_oobinfo jffs2_oobinfo = {
+-	.useecc = MTD_NANDECC_PLACE,
+-	.eccbytes = 6,
+-	.eccpos = { 0, 1, 2, 3, 6, 7 }
+-};
+-
+-static struct nand_oobinfo yaffs_oobinfo = {
+-	.useecc = MTD_NANDECC_PLACE,
+-	.eccbytes = 6,
+-	.eccpos = { 8, 9, 10, 13, 14, 15}
+-};
+-
+-static struct nand_oobinfo autoplace_oobinfo = {
+-	.useecc = MTD_NANDECC_AUTOPLACE
+-};
++#define LINUX_VERSION(a, b, c) (((a) << 16) + ((b) << 8) + (c))
+ 
+ static void display_help (void)
+ {
+@@ -72,13 +54,7 @@ static void display_help (void)
+ "Usage: nandwrite [OPTION] MTD_DEVICE [INPUTFILE|-]\n"
+ "Writes to the specified MTD device.\n"
+ "\n"
+-"  -a, --autoplace         Use auto oob layout\n"
+-"  -j, --jffs2             Force jffs2 oob layout (legacy support)\n"
+-"  -y, --yaffs             Force yaffs oob layout (legacy support)\n"
+-"  -f, --forcelegacy       Force legacy support on autoplacement-enabled mtd\n"
+-"                          device\n"
+ "  -m, --markbad           Mark blocks bad if write fails\n"
+-"  -n, --noecc             Write without ecc\n"
+ "  -o, --oob               Image contains oob data\n"
+ "  -r, --raw               Image contains the raw oob data dumped by nanddump\n"
+ "  -s addr, --start=addr   Set start address (default is 0)\n"
+@@ -112,37 +88,49 @@ static int		mtdoffset = 0;
+ static bool		quiet = false;
+ static bool		writeoob = false;
+ static bool		rawoob = false;
+-static bool		autoplace = false;
+ static bool		markbad = false;
+-static bool		forcejffs2 = false;
+-static bool		forceyaffs = false;
+-static bool		forcelegacy = false;
+-static bool		noecc = false;
+ static bool		pad = false;
+ static int		blockalign = 1; /*default to using 16K block size */
+ 
++static int get_linux_version(void)
++{
++	int a, b, c, ret, err = 0;
++	struct utsname buf;
++
++	ret = uname(&buf);
++	if (ret == 0) {
++		ret = sscanf(buf.release, "%d.%d.%d", &a, &b, &c);
++		if (ret != 3)
++			err = 1;
++	} else
++		err = 1;
++
++	if (err) {
++		a = b = c = 0xff;
++		fprintf(stderr, "Warning: Can't get linux kernel version."
++				"Set the default version to the latest version.\n");
++	}
++
++	return LINUX_VERSION(a, b, c);
++}
++
+ static void process_options (int argc, char * const argv[])
+ {
+ 	int error = 0;
+ 
+ 	for (;;) {
+ 		int option_index = 0;
+-		static const char *short_options = "ab:fjmnopqrs:y";
++		static const char *short_options = "b:mopqrs:";
+ 		static const struct option long_options[] = {
+ 			{"help", no_argument, 0, 0},
+ 			{"version", no_argument, 0, 0},
+-			{"autoplace", no_argument, 0, 'a'},
+ 			{"blockalign", required_argument, 0, 'b'},
+-			{"forcelegacy", no_argument, 0, 'f'},
+-			{"jffs2", no_argument, 0, 'j'},
+ 			{"markbad", no_argument, 0, 'm'},
+-			{"noecc", no_argument, 0, 'n'},
+ 			{"oob", no_argument, 0, 'o'},
+ 			{"pad", no_argument, 0, 'p'},
+ 			{"quiet", no_argument, 0, 'q'},
+ 			{"raw", no_argument, 0, 'r'},
+ 			{"start", required_argument, 0, 's'},
+-			{"yaffs", no_argument, 0, 'y'},
+ 			{0, 0, 0, 0},
+ 		};
+ 
+@@ -166,21 +154,6 @@ static void process_options (int argc, char * const argv[])
+ 			case 'q':
+ 				quiet = true;
+ 				break;
+-			case 'a':
+-				autoplace = true;
+-				break;
+-			case 'j':
+-				forcejffs2 = true;
+-				break;
+-			case 'y':
+-				forceyaffs = true;
+-				break;
+-			case 'f':
+-				forcelegacy = true;
+-				break;
+-			case 'n':
+-				noecc = true;
+-				break;
+ 			case 'm':
+ 				markbad = true;
+ 				break;
+@@ -258,8 +231,7 @@ int main(int argc, char * const argv[])
+ 	struct mtd_oob_buf oob;
+ 	loff_t offs;
+ 	int ret;
+-	int oobinfochanged = 0;
+-	struct nand_oobinfo old_oobinfo;
++	struct nand_ecclayout ecclayout;
+ 	bool failed = true;
+ 	// contains all the data read from the file so far for the current eraseblock
+ 	unsigned char *filebuf = NULL;
+@@ -316,86 +288,30 @@ int main(int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
+-	if (autoplace) {
+-		/* Read the current oob info */
+-		if (ioctl (fd, MEMGETOOBSEL, &old_oobinfo) != 0) {
+-			perror ("MEMGETOOBSEL");
+-			close (fd);
+-			exit (EXIT_FAILURE);
+-		}
+-
+-		// autoplace ECC ?
+-		if (autoplace && (old_oobinfo.useecc != MTD_NANDECC_AUTOPLACE)) {
+-
+-			if (ioctl (fd, MEMSETOOBSEL, &autoplace_oobinfo) != 0) {
+-				perror ("MEMSETOOBSEL");
+-				close (fd);
+-				exit (EXIT_FAILURE);
+-			}
+-			oobinfochanged = 1;
+-		}
+-	}
+-
+-	if (noecc)  {
+-		ret = ioctl(fd, MTDFILEMODE, (void *) MTD_MODE_RAW);
+-		if (ret == 0) {
+-			oobinfochanged = 2;
+-		} else {
+-			switch (errno) {
+-			case ENOTTY:
+-				if (ioctl (fd, MEMGETOOBSEL, &old_oobinfo) != 0) {
+-					perror ("MEMGETOOBSEL");
+-					close (fd);
+-					exit (EXIT_FAILURE);
+-				}
+-				if (ioctl (fd, MEMSETOOBSEL, &none_oobinfo) != 0) {
+-					perror ("MEMSETOOBSEL");
+-					close (fd);
+-					exit (EXIT_FAILURE);
+-				}
+-				oobinfochanged = 1;
+-				break;
+-			default:
+-				perror ("MTDFILEMODE");
+-				close (fd);
+-				exit (EXIT_FAILURE);
+-			}
+-		}
+-	}
+-
+-	/*
+-	 * force oob layout for jffs2 or yaffs ?
+-	 * Legacy support
+-	 */
+-	if (forcejffs2 || forceyaffs) {
+-		struct nand_oobinfo *oobsel = forcejffs2 ? &jffs2_oobinfo : &yaffs_oobinfo;
+ 
+-		if (autoplace) {
+-			fprintf(stderr, "Autoplacement is not possible for legacy -j/-y options\n");
+-			goto restoreoob;
+-		}
+-		if ((old_oobinfo.useecc == MTD_NANDECC_AUTOPLACE) && !forcelegacy) {
+-			fprintf(stderr, "Use -f option to enforce legacy placement on autoplacement enabled mtd device\n");
+-			goto restoreoob;
+-		}
+-		if (meminfo.oobsize == 8) {
+-			if (forceyaffs) {
+-				fprintf (stderr, "YAFSS cannot operate on 256 Byte page size");
+-				goto restoreoob;
+-			}
+-			/* Adjust number of ecc bytes */
+-			jffs2_oobinfo.eccbytes = 3;
++	oob.length = meminfo.oobsize;
++	oob.ptr =  oobbuf;
++
++	memset(&ecclayout, 0, sizeof(ecclayout));
++	if (get_linux_version() > LINUX_VERSION(2, 6, 17)) {
++		if (ioctl(fd, ECCGETLAYOUT, &ecclayout) != 0) {
++			perror("ECCGETLAYOUT");
++			close(fd);
++			exit(EXIT_FAILURE);
+ 		}
++	} else {
++		struct nand_oobinfo oi;
+ 
+-		if (ioctl (fd, MEMSETOOBSEL, oobsel) != 0) {
+-			perror ("MEMSETOOBSEL");
+-			goto restoreoob;
++		if (ioctl(fd, MEMGETOOBSEL, &oi) != 0) {
++			perror("MEMGETOOBSEL");
++			close(fd);
++			exit(EXIT_FAILURE);
+ 		}
++		memcpy(&ecclayout.eccpos, &oi.eccpos, sizeof(oi.eccpos));
++		memcpy(&ecclayout.oobfree, &oi.oobfree, sizeof(oi.oobfree));
++		ecclayout.eccbytes = oi.eccbytes;
+ 	}
+ 
+-	oob.length = meminfo.oobsize;
+-	oob.ptr = noecc ? oobreadbuf : oobbuf;
+-
+ 	/* Determine if we are reading from standard input or from a file. */
+ 	if (strcmp(img, standard_input) == 0) {
+ 		ifd = STDIN_FILENO;
+@@ -559,6 +475,8 @@ int main(int argc, char * const argv[])
+ 		}
+ 
+ 		if (writeoob) {
++			int i, start, len;
++			int tags_pos = 0;
+ 			oobreadbuf = writebuf + meminfo.writesize;
+ 
+ 			// Read more data for the OOB from the input if there isn't enough in the buffer
+@@ -595,40 +513,19 @@ int main(int argc, char * const argv[])
+ 				}
+ 			}
+ 
+-			if (noecc) {
+-				oob.ptr = oobreadbuf;
+-			} else {
+-				int i, start, len;
+-				int tags_pos = 0;
+-				/*
+-				 *  We use autoplacement and have the oobinfo with the autoplacement
+-				 * information from the kernel available
+-				 *
+-				 * Modified to support out of order oobfree segments,
+-				 * such as the layout used by diskonchip.c
+-				 */
+-				if (!oobinfochanged && (old_oobinfo.useecc == MTD_NANDECC_AUTOPLACE)) {
+-					for (i = 0;old_oobinfo.oobfree[i][1]; i++) {
+-						/* Set the reserved bytes to 0xff */
+-						start = old_oobinfo.oobfree[i][0];
+-						len = old_oobinfo.oobfree[i][1];
+-						if (rawoob)
+-							memcpy(oobbuf + start,
+-									oobreadbuf + start, len);
+-						else
+-							memcpy(oobbuf + start,
+-									oobreadbuf + tags_pos, len);
+-						tags_pos += len;
+-					}
+-				} else {
+-					/* Set at least the ecc byte positions to 0xff */
+-					start = old_oobinfo.eccbytes;
+-					len = meminfo.oobsize - start;
++			for (i = 0; ecclayout.oobfree[i].length; i++) {
++				/* Set the reserved bytes to 0xff */
++				start = ecclayout.oobfree[i].offset;
++				len = ecclayout.oobfree[i].length;
++				if (rawoob)
+ 					memcpy(oobbuf + start,
+-							oobreadbuf + start,
+-							len);
+-				}
++							oobreadbuf + start, len);
++				else
++					memcpy(oobbuf + start,
++							oobreadbuf + tags_pos, len);
++				tags_pos += len;
+ 			}
++
+ 			/* Write OOB data first, as ecc will be placed in there*/
+ 			oob.start = mtdoffset;
+ 			if (ioctl(fd, MEMWRITEOOB, &oob) != 0) {
+@@ -687,13 +584,6 @@ closeall:
+ 	close(ifd);
+ 
+ restoreoob:
+-	if (oobinfochanged == 1) {
+-		if (ioctl (fd, MEMSETOOBSEL, &old_oobinfo) != 0) {
+-			perror ("MEMSETOOBSEL");
+-			close (fd);
+-			exit (EXIT_FAILURE);
+-		}
+-	}
+ 
+ 	close(fd);
+ 
+-- 
+1.5.4.3
