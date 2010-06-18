@@ -1,25 +1,19 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OPXl7-0006YP-4d
-	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 09:21:09 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OPXl1-0006wl-AV
-	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 11:21:03 +0200
-Received: from amg-holding.md ([89.28.62.63])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jun 2010 11:21:03 +0200
-Received: from egorkat by amg-holding.md with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jun 2010 11:21:03 +0200
-To: linux-mtd@lists.infradead.org
-From: Egorkat <egorkat@gmail.com>
-Subject: prepare DiskOnChip
-Date: Fri, 18 Jun 2010 09:20:55 +0000 (UTC)
-Message-ID: <loom.20100618T111420-702@post.gmane.org>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OPXuu-000283-RG
+	for linux-mtd@lists.infradead.org; Fri, 18 Jun 2010 09:31:17 +0000
+Subject: Re: UBIFS performance measurements
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Leo Barnes <barnes.leo@gmail.com>
+In-Reply-To: <AANLkTikVqjmLiBDq6bdtTcHKwZxlxAVCBg3-WGXMzbmF@mail.gmail.com>
+References: <AANLkTikVqjmLiBDq6bdtTcHKwZxlxAVCBg3-WGXMzbmF@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 18 Jun 2010 12:28:38 +0300
+Message-ID: <1276853318.19028.442.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +23,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Good day, All!
+Hi,
 
-Could you please advise me a correct way to prepare DoC MD2201-D72 for use under
-Linux?
+On Thu, 2010-06-17 at 10:42 +0200, Leo Barnes wrote:
+> I have a few questions regarding sequential write speeds in UBIFS and
+> how to measure them.
 
-I can format it under DOS with dformat utility in different ways, even like a
-floppy. But when I try modprobe nftl after successfully modprobe diskonchip, it
-fails or hungs with different errors. 
-I've read and old how-to's, based on 2.4 kernel and old doc2000 driver, and new
-ones. Kernel is compiled to support new MTD modules.
-What do I do wrong...
+Measurements are always tricky... :-) But I'm happy to help answering
+specific UBIFS questions, of course.
 
-Please enlighten me, I'm now out of ideas. Any logs, tests, configs and dumps
-will be provided immediately.
+> 1. If I want to measure sequential (and later on, random) write speed
+> in UBIFS, should I do the writes using the O_SYNC flag or just do a
+> fsync after writing? I worry that using the O_SYNC flag will reduce
+> the write performance since the file system is meant to be used
+> asynchronously and I want my measurements to be as close as possible
+> to how the file system is meant to be used.
 
-Regards!
+With O_SYNC you will get a guarantee that when your 'write()' call
+returns, every single byte of your buffer will be on the flash media.
+Yes, this is slow. This is un-optimal, because UBIFS will waste a lot of
+space flushing the write-buffer every time.
+
+With out O_SYNC you will do your writes to the page cache, then when you
+call fsync(), UBIFS will flush this all, but this should be faster
+because UBIFS will waste less space and pack data nodes nicely to the
+write buffer.
+
+It makes sense to measure both. But yes, write all / fsync is closer to
+real life.
+
+> 2. If I do not use O_SYNC, will using fflush and fsync guarantee that
+> all written data has been written to flash when they return?
+
+Yes.
+
+> 3. If I do not use fflush before fsync, I assume, after reading the
+> FAQ, that I am not guaranteed that all data has been written. Is this
+> correct?
+
+Yes, because some amount of data is cached in usre-space somewhere in
+libc, and was not even sent to the kernel yet. fsync() will just call
+the syscall without flushing that buffered data.
+
+> 4. Does the commandline sync command do the same thing as fflush/fsync?
+
+It syncs all (kernel) dirty pages, for all files. fsync synchronize only
+one file.
+
+> 5. Does sync/fsync force garbage collection?
+
+No, they do minimum stuff to make sure all data is on the media and
+would not lost if you had a power cut just after sync/fsync is done.
+
+>  In other words, if I have
+> deleted lots of files from an UBIFS volume, will I be ensured that
+> their corresponding eraseblocks will actually be freed if I do a sync?
+
+No. You are guaranteed that these files will never come back only. But
+on physical flash level, corresponding PEBs will not necessarily be
+erased.
+
+> Any other tips regarding how to perform valid write performance
+> measurements on UBIFS would be welcome.
+
+Well, not from me, although I am of course interested to see people
+using UBIFS :-) FS testing is always tricky, and the best testing is
+using the FS with real-life applications. E.g., if you have some apps
+with back-end data-bases, or you have some apps doing intensive I/O,
+installing removing packages, etc.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
