@@ -1,30 +1,22 @@
-Received: from elvis.franken.de ([193.175.24.41])
+Received: from mail.windriver.com ([147.11.1.11])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OQGng-0003nv-It
-	for linux-mtd@lists.infradead.org; Sun, 20 Jun 2010 09:26:49 +0000
-Date: Sun, 20 Jun 2010 11:26:10 +0200
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2 00/26] Add support for the Ingenic JZ4740
-	System-on-a-Chip
-Message-ID: <20100620092610.GA4950@alpha.franken.de>
-References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
+	id 1OQJKw-0007JQ-En
+	for linux-mtd@lists.infradead.org; Sun, 20 Jun 2010 12:09:19 +0000
+Message-ID: <4C1E07D1.4090703@windriver.com>
+Date: Sun, 20 Jun 2010 20:21:37 +0800
+From: "stanley.miao" <stanley.miao@windriver.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1276924111-11158-1-git-send-email-lars@metafoo.de>
-Cc: linux-mips@linux-mips.org, Paul Gortmaker <p_gortmaker@yahoo.com>,
-	David Brownell <dbrownell@users.sourceforge.net>,
-	Mark Brown <broonie@opensource.wolfsonmicro.com>,
-	Samuel Ortiz <sameo@linux.intel.com>, alsa-devel@alsa-project.org,
-	Alessandro Zummo <a.zummo@towertech.it>,
-	Greg Kroah-Hartman <gregkh@suse.de>, linux-mmc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>,
-	lm-sensors@lm-sensors.org, linux-usb@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org,
-	Anton Vorontsov <cbouatmailru@gmail.com>, rtc-linux@googlegroups.com,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, Liam Girdwood <lrg@slimlogic.co.uk>
+To: dedekind1@gmail.com
+Subject: Re: Fix mtd-utils bugs
+References: <1276248975-1822-1-git-send-email-stanley.miao@windriver.com>	
+	<1276422718.19028.211.camel@localhost>	
+	<1276424048.19028.217.camel@localhost>
+	<4C1B2B65.3090606@windriver.com>
+	<1276856663.19028.447.camel@localhost>
+In-Reply-To: <1276856663.19028.447.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,20 +26,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jun 19, 2010 at 07:08:05AM +0200, Lars-Peter Clausen wrote:
-> This patch series adds support for the Ingenic JZ4740 System-on-a-Chip.
+Artem Bityutskiy wrote:
+> On Fri, 2010-06-18 at 16:16 +0800, stanley.miao wrote:
+>   
+>> Artem Bityutskiy wrote:
+>>     
+>>> On Sun, 2010-06-13 at 12:51 +0300, Artem Bityutskiy wrote:
+>>>   
+>>>       
+>>>> On Fri, 2010-06-11 at 17:36 +0800, Stanley.Miao wrote:
+>>>>     
+>>>>         
+>>>>> <snip>
+>>>>>       
+>>>>>           
+>>>> Please, make sure your submissions have proper version. I have limited
+>>>> amount of time and do not want to spend it figuring out which patch is
+>>>> the latest. Use the best kernel practices and apply prefix your stuff
+>>>> with [PATCHv3] or something like that.
+>>>>
+>>>> Could you please re-submit your latest version?
+>>>>     
+>>>>         
+>>> Also, it is nice to put a short changelog, but I can live without it.
+>>>   
+>>>       
+>> Is the subject of every emails is the short changelog you wanted ?
+>>     
+>
+> Hi,
+>
+> Sorry, I do not understand the question. I do not need changelogs. I
+> just noted that there are best practices, and people use changelogs. You
+> can take a look at lkml archives at patch series from good kernel
+> hackers for example.
+>
+> If you asked whether the changelog should be in each patch - no, just in
+> the "0" patch, and just short.
+>   
 
-great stuff. I have a JZ4730 based netbook, for which I started magling
-the provided sources quite some time ago, but I didn't reach the
-point of submitting patches... there are a lot of common stuff between
-JZ4730 and JZ4740 so IMHO it would be a good thing not to nail
-everthing to JZ4740 namewise. It might also a good idea to select
-something like arch/mips/jzrisc as base directory, put the
-factored out code there and add JZ4730/JZ4740 in either seperate
-files or directories.
+Oh, Got it. I misunderstood the "short changelog" previously.
+I have sent the V3.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessary a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks
+Stanley.
+> Anyway, I just want you to re-send your up-to-date patches as a separate
+> series with a v2 prefix.
+>
+>   
