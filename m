@@ -1,142 +1,153 @@
 From: chuanxiao.dong@intel.com (Chuanxiao Dong)
-Date: Mon, 21 Jun 2010 18:46:10 +0800
-Subject: [PATCH 4/5] [MTD/denali] Fixed ECC handler bug
- 1. when found ecc errors while reading, handler only process these errors =
-Message-ID: <mailman.69.1278936648.27306.linux-mtd@lists.infradead.org>
+Date: Mon, 21 Jun 2010 18:34:30 +0800
+Subject: [PATCH 3/5] [MTD/denali] enabled multi connected NAND feature
+Message-ID: <mailman.70.1278936651.27306.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-in MAIN area,
-    just ignore these ecc errors in spare area
- 2. corrected some wrong defines
-
 Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
 ---
- drivers/mtd/nand/denali.c |   28 +++++++++++++++++-----------
- 1 files changed, 17 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/denali.c |   28 +++++++++++++++++++++++++---
+ drivers/mtd/nand/denali.h |    2 ++
+ 2 files changed, 27 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 57818eb..1555921 100644
+index fbdd9f0..57818eb 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1382,12 +1382,12 @@ bool is_erased(uint8_t *buf, int len)
- #define ECC_SECTOR(x)	(((x) & ECC_ERROR_ADDRESS__SECTOR_NR) >> 12)
- #define ECC_BYTE(x)	(((x) & ECC_ERROR_ADDRESS__OFFSET))
- #define ECC_CORRECTION_VALUE(x) ((x) & ERR_CORRECTION_INFO__BYTEMASK)
--#define ECC_ERROR_CORRECTABLE(x) (!((x) & ERR_CORRECTION_INFO))
--#define ECC_ERR_DEVICE(x)	((x) & ERR_CORRECTION_INFO__DEVICE_NR >> 8)
-+#define ECC_ERROR_CORRECTABLE(x) (!((x) & ERR_CORRECTION_INFO__ERROR_TYPE)=
-)
-+#define ECC_ERR_DEVICE(x)	(((x) & ERR_CORRECTION_INFO__DEVICE_NR) >> 8)
- #define ECC_LAST_ERR(x)		((x) & ERR_CORRECTION_INFO__LAST_ERR_INFO)
-=20
- static bool handle_ecc(struct denali_nand_info *denali, uint8_t *buf,
--			uint8_t *oobbuf, uint32_t irq_status)
-+			uint32_t irq_status)
- {
- 	bool check_erased_page =3D false;
-=20
-@@ -1412,13 +1412,19 @@ static bool handle_ecc(struct denali_nand_info *den=
-ali, uint8_t *buf,
-=20
- 			if (ECC_ERROR_CORRECTABLE(err_correction_info)) {
- 				/* offset in our buffer is computed as:
--				   sector number * sector size + offset in
--				   sector
--				 */
--				int offset =3D (err_sector * ECC_SECTOR_SIZE +
--						err_byte) * denali->devnum +
--						err_device;
--				if (offset < denali->mtd.writesize) {
-+				 * sector number * sector size + offset in
-+				 * sector + err_device
-+				 * If err_byte is larger than ECC_SECTOR_SIZE,
-+				 * means error happend in OOB, so we ignore
-+				 * it. It's no need for us to correct it
-+				 * */
-+				if (err_byte < ECC_SECTOR_SIZE) {
-+					int offset;
-+					offset =3D (err_sector *
-+							ECC_SECTOR_SIZE +
-+							err_byte) *
-+							denali->devnum +
-+							err_device;
+@@ -1415,8 +1415,9 @@ static bool handle_ecc(struct denali_nand_info *denal=
+i, uint8_t *buf,
+ 				   sector number * sector size + offset in
+ 				   sector
+ 				 */
+-				int offset =3D err_sector * ECC_SECTOR_SIZE +
+-								err_byte;
++				int offset =3D (err_sector * ECC_SECTOR_SIZE +
++						err_byte) * denali->devnum +
++						err_device;
+ 				if (offset < denali->mtd.writesize) {
  					/* correct the ECC error */
  					buf[offset] ^=3D err_correction_value;
- 					denali->mtd.ecc_stats.corrected++;
-@@ -1604,7 +1610,7 @@ static int denali_read_page(struct mtd_info *mtd, str=
-uct nand_chip *chip,
+@@ -2032,6 +2033,27 @@ static int denali_pci_probe(struct pci_dev *dev, con=
+st struct pci_device_id *id)
+ 		goto failed_nand;
+ 	}
 =20
- 	memcpy(buf, denali->buf.buf, mtd->writesize);
++	/* support for multi nand
++	 * MTD known nothing about multi nand,
++	 * so we should tell it the real pagesize
++	 * and anything necessery,
++	 * Some NAND chip has a spectial OOB size, so here do
++	 * a recheck */
++	denali->mtd.oobsize =3D ioread32(denali->flash_reg +
++						DEVICE_SPARE_AREA_SIZE);
++	denali->devnum =3D ioread32(denali->flash_reg + DEVICES_CONNECTED);
++	denali->nand.chipsize <<=3D (denali->devnum - 1);
++	denali->nand.page_shift +=3D (denali->devnum - 1);
++	denali->nand.pagemask =3D (denali->nand.chipsize >>
++						denali->nand.page_shift) - 1;
++	denali->nand.bbt_erase_shift +=3D (denali->devnum - 1);
++	denali->nand.phys_erase_shift =3D denali->nand.bbt_erase_shift;
++	denali->nand.chip_shift +=3D (denali->devnum - 1);
++	denali->mtd.writesize <<=3D (denali->devnum - 1);
++	denali->mtd.oobsize <<=3D (denali->devnum - 1);
++	denali->mtd.erasesize <<=3D (denali->devnum - 1);
++	denali->mtd.size =3D denali->nand.numchips * denali->nand.chipsize;
++
+ 	/* second stage of the NAND scan
+ 	 * this stage requires information regarding ECC and
+ 	 * bad block management. */
+@@ -2060,7 +2082,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 	denali->nand.ecc.hwctl =3D denali_ecc_hwctl;
 =20
--	check_erased_page =3D handle_ecc(denali, buf, chip->oob_poi, irq_status);
-+	check_erased_page =3D handle_ecc(denali, buf, irq_status);
- 	denali_enable_dma(denali, false);
+ 	/* override the default read operations */
+-	denali->nand.ecc.size =3D denali->mtd.writesize;
++	denali->nand.ecc.size =3D denali->mtd.writesize * denali->devnum;
+ 	denali->nand.ecc.read_page =3D denali_read_page;
+ 	denali->nand.ecc.read_page_raw =3D denali_read_page_raw;
+ 	denali->nand.ecc.write_page =3D denali_write_page;
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index fc6be39..2bee4cb 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -802,6 +802,8 @@ struct denali_nand_info {
+ 	uint32_t irq_status;
+ 	int irq_debug_array[32];
+ 	int idx;
++
++	uint32_t devnum;	/* represent how many nands connected */
+ };
 =20
- 	if (check_erased_page) {
+ #endif /*_LLD_NAND_*/
 --=20
 1.6.6.1
 
 
---_002_5D8008F58939784290FAB48F549751981D09B718B6shsmsx502ccrc_
+--_002_5D8008F58939784290FAB48F549751981D09B718B5shsmsx502ccrc_
 Content-Type: application/octet-stream;
-	name="0004-MTD-denali-Fixed-ECC-handler-bug.patch"
-Content-Description: 0004-MTD-denali-Fixed-ECC-handler-bug.patch
+	name="0003-MTD-denali-enabled-multi-connected-NAND-feature.patch"
+Content-Description: 0003-MTD-denali-enabled-multi-connected-NAND-feature.patch
 Content-Disposition: attachment;
-	filename="0004-MTD-denali-Fixed-ECC-handler-bug.patch"; size=2816;
-	creation-date="Mon, 21 Jun 2010 18:56:23 GMT";
+	filename="0003-MTD-denali-enabled-multi-connected-NAND-feature.patch";
+	size=3098; creation-date="Mon, 21 Jun 2010 18:56:23 GMT";
 	modification-date="Mon, 21 Jun 2010 18:56:23 GMT"
 Content-Transfer-Encoding: base64
 
-RnJvbSBiNzAyMTNmYWE0NWZmZDQzMmQxN2IyZjNjNDVjNjg2MjFmMTUyODFiIE1vbiBTZXAgMTcg
+RnJvbSBlODJhZjVhYjA0OWQyNTIzMzcwOWY5OTg0NjRmNzgxM2Y0ZmMyY2ExIE1vbiBTZXAgMTcg
 MDA6MDA6MDAgMjAwMQpGcm9tOiBDaHVhbnhpYW8gRG9uZyA8Y2h1YW54aWFvLmRvbmdAaW50ZWwu
-Y29tPgpEYXRlOiBNb24sIDIxIEp1biAyMDEwIDE4OjQ2OjEwICswODAwClN1YmplY3Q6IFtQQVRD
-SCA0LzVdIFtNVEQvZGVuYWxpXSBGaXhlZCBFQ0MgaGFuZGxlciBidWcKIDEuIHdoZW4gZm91bmQg
-ZWNjIGVycm9ycyB3aGlsZSByZWFkaW5nLCBoYW5kbGVyIG9ubHkgcHJvY2VzcyB0aGVzZSBlcnJv
-cnMgaW4gTUFJTiBhcmVhLAogICAganVzdCBpZ25vcmUgdGhlc2UgZWNjIGVycm9ycyBpbiBzcGFy
-ZSBhcmVhCiAyLiBjb3JyZWN0ZWQgc29tZSB3cm9uZyBkZWZpbmVzCgpTaWduZWQtb2ZmLWJ5OiBD
-aHVhbnhpYW8gRG9uZyA8Y2h1YW54aWFvLmRvbmdAaW50ZWwuY29tPgotLS0KIGRyaXZlcnMvbXRk
-L25hbmQvZGVuYWxpLmMgfCAgIDI4ICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0KIDEgZmls
-ZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMTEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9tdGQvbmFuZC9kZW5hbGkuYyBiL2RyaXZlcnMvbXRkL25hbmQvZGVuYWxpLmMK
-aW5kZXggNTc4MThlYi4uMTU1NTkyMSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9kZW5h
-bGkuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL2RlbmFsaS5jCkBAIC0xMzgyLDEyICsxMzgyLDEy
-IEBAIGJvb2wgaXNfZXJhc2VkKHVpbnQ4X3QgKmJ1ZiwgaW50IGxlbikKICNkZWZpbmUgRUNDX1NF
-Q1RPUih4KQkoKCh4KSAmIEVDQ19FUlJPUl9BRERSRVNTX19TRUNUT1JfTlIpID4+IDEyKQogI2Rl
-ZmluZSBFQ0NfQllURSh4KQkoKCh4KSAmIEVDQ19FUlJPUl9BRERSRVNTX19PRkZTRVQpKQogI2Rl
-ZmluZSBFQ0NfQ09SUkVDVElPTl9WQUxVRSh4KSAoKHgpICYgRVJSX0NPUlJFQ1RJT05fSU5GT19f
-QllURU1BU0spCi0jZGVmaW5lIEVDQ19FUlJPUl9DT1JSRUNUQUJMRSh4KSAoISgoeCkgJiBFUlJf
-Q09SUkVDVElPTl9JTkZPKSkKLSNkZWZpbmUgRUNDX0VSUl9ERVZJQ0UoeCkJKCh4KSAmIEVSUl9D
-T1JSRUNUSU9OX0lORk9fX0RFVklDRV9OUiA+PiA4KQorI2RlZmluZSBFQ0NfRVJST1JfQ09SUkVD
-VEFCTEUoeCkgKCEoKHgpICYgRVJSX0NPUlJFQ1RJT05fSU5GT19fRVJST1JfVFlQRSkpCisjZGVm
-aW5lIEVDQ19FUlJfREVWSUNFKHgpCSgoKHgpICYgRVJSX0NPUlJFQ1RJT05fSU5GT19fREVWSUNF
-X05SKSA+PiA4KQogI2RlZmluZSBFQ0NfTEFTVF9FUlIoeCkJCSgoeCkgJiBFUlJfQ09SUkVDVElP
-Tl9JTkZPX19MQVNUX0VSUl9JTkZPKQogCiBzdGF0aWMgYm9vbCBoYW5kbGVfZWNjKHN0cnVjdCBk
-ZW5hbGlfbmFuZF9pbmZvICpkZW5hbGksIHVpbnQ4X3QgKmJ1ZiwKLQkJCXVpbnQ4X3QgKm9vYmJ1
-ZiwgdWludDMyX3QgaXJxX3N0YXR1cykKKwkJCXVpbnQzMl90IGlycV9zdGF0dXMpCiB7CiAJYm9v
-bCBjaGVja19lcmFzZWRfcGFnZSA9IGZhbHNlOwogCkBAIC0xNDEyLDEzICsxNDEyLDE5IEBAIHN0
+Y29tPgpEYXRlOiBNb24sIDIxIEp1biAyMDEwIDE4OjM0OjMwICswODAwClN1YmplY3Q6IFtQQVRD
+SCAzLzVdIFtNVEQvZGVuYWxpXSBlbmFibGVkIG11bHRpIGNvbm5lY3RlZCBOQU5EIGZlYXR1cmUK
+ClNpZ25lZC1vZmYtYnk6IENodWFueGlhbyBEb25nIDxjaHVhbnhpYW8uZG9uZ0BpbnRlbC5jb20+
+Ci0tLQogZHJpdmVycy9tdGQvbmFuZC9kZW5hbGkuYyB8ICAgMjggKysrKysrKysrKysrKysrKysr
+KysrKysrKy0tLQogZHJpdmVycy9tdGQvbmFuZC9kZW5hbGkuaCB8ICAgIDIgKysKIDIgZmlsZXMg
+Y2hhbmdlZCwgMjcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9k
+cml2ZXJzL210ZC9uYW5kL2RlbmFsaS5jIGIvZHJpdmVycy9tdGQvbmFuZC9kZW5hbGkuYwppbmRl
+eCBmYmRkOWYwLi41NzgxOGViIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9uYW5kL2RlbmFsaS5j
+CisrKyBiL2RyaXZlcnMvbXRkL25hbmQvZGVuYWxpLmMKQEAgLTE0MTUsOCArMTQxNSw5IEBAIHN0
 YXRpYyBib29sIGhhbmRsZV9lY2Moc3RydWN0IGRlbmFsaV9uYW5kX2luZm8gKmRlbmFsaSwgdWlu
-dDhfdCAqYnVmLAogCiAJCQlpZiAoRUNDX0VSUk9SX0NPUlJFQ1RBQkxFKGVycl9jb3JyZWN0aW9u
-X2luZm8pKSB7CiAJCQkJLyogb2Zmc2V0IGluIG91ciBidWZmZXIgaXMgY29tcHV0ZWQgYXM6Ci0J
-CQkJICAgc2VjdG9yIG51bWJlciAqIHNlY3RvciBzaXplICsgb2Zmc2V0IGluCi0JCQkJICAgc2Vj
-dG9yCi0JCQkJICovCi0JCQkJaW50IG9mZnNldCA9IChlcnJfc2VjdG9yICogRUNDX1NFQ1RPUl9T
-SVpFICsKLQkJCQkJCWVycl9ieXRlKSAqIGRlbmFsaS0+ZGV2bnVtICsKLQkJCQkJCWVycl9kZXZp
-Y2U7Ci0JCQkJaWYgKG9mZnNldCA8IGRlbmFsaS0+bXRkLndyaXRlc2l6ZSkgeworCQkJCSAqIHNl
-Y3RvciBudW1iZXIgKiBzZWN0b3Igc2l6ZSArIG9mZnNldCBpbgorCQkJCSAqIHNlY3RvciArIGVy
-cl9kZXZpY2UKKwkJCQkgKiBJZiBlcnJfYnl0ZSBpcyBsYXJnZXIgdGhhbiBFQ0NfU0VDVE9SX1NJ
-WkUsCisJCQkJICogbWVhbnMgZXJyb3IgaGFwcGVuZCBpbiBPT0IsIHNvIHdlIGlnbm9yZQorCQkJ
-CSAqIGl0LiBJdCdzIG5vIG5lZWQgZm9yIHVzIHRvIGNvcnJlY3QgaXQKKwkJCQkgKiAqLworCQkJ
-CWlmIChlcnJfYnl0ZSA8IEVDQ19TRUNUT1JfU0laRSkgeworCQkJCQlpbnQgb2Zmc2V0OworCQkJ
-CQlvZmZzZXQgPSAoZXJyX3NlY3RvciAqCisJCQkJCQkJRUNDX1NFQ1RPUl9TSVpFICsKKwkJCQkJ
-CQllcnJfYnl0ZSkgKgorCQkJCQkJCWRlbmFsaS0+ZGV2bnVtICsKKwkJCQkJCQllcnJfZGV2aWNl
-OwogCQkJCQkvKiBjb3JyZWN0IHRoZSBFQ0MgZXJyb3IgKi8KIAkJCQkJYnVmW29mZnNldF0gXj0g
-ZXJyX2NvcnJlY3Rpb25fdmFsdWU7CiAJCQkJCWRlbmFsaS0+bXRkLmVjY19zdGF0cy5jb3JyZWN0
-ZWQrKzsKQEAgLTE2MDQsNyArMTYxMCw3IEBAIHN0YXRpYyBpbnQgZGVuYWxpX3JlYWRfcGFnZShz
-dHJ1Y3QgbXRkX2luZm8gKm10ZCwgc3RydWN0IG5hbmRfY2hpcCAqY2hpcCwKIAogCW1lbWNweShi
-dWYsIGRlbmFsaS0+YnVmLmJ1ZiwgbXRkLT53cml0ZXNpemUpOwogCi0JY2hlY2tfZXJhc2VkX3Bh
-Z2UgPSBoYW5kbGVfZWNjKGRlbmFsaSwgYnVmLCBjaGlwLT5vb2JfcG9pLCBpcnFfc3RhdHVzKTsK
-KwljaGVja19lcmFzZWRfcGFnZSA9IGhhbmRsZV9lY2MoZGVuYWxpLCBidWYsIGlycV9zdGF0dXMp
-OwogCWRlbmFsaV9lbmFibGVfZG1hKGRlbmFsaSwgZmFsc2UpOwogCiAJaWYgKGNoZWNrX2VyYXNl
-ZF9wYWdlKSB7Ci0tIAoxLjYuNi4xCgo=
+dDhfdCAqYnVmLAogCQkJCSAgIHNlY3RvciBudW1iZXIgKiBzZWN0b3Igc2l6ZSArIG9mZnNldCBp
+bgogCQkJCSAgIHNlY3RvcgogCQkJCSAqLwotCQkJCWludCBvZmZzZXQgPSBlcnJfc2VjdG9yICog
+RUNDX1NFQ1RPUl9TSVpFICsKLQkJCQkJCQkJZXJyX2J5dGU7CisJCQkJaW50IG9mZnNldCA9IChl
+cnJfc2VjdG9yICogRUNDX1NFQ1RPUl9TSVpFICsKKwkJCQkJCWVycl9ieXRlKSAqIGRlbmFsaS0+
+ZGV2bnVtICsKKwkJCQkJCWVycl9kZXZpY2U7CiAJCQkJaWYgKG9mZnNldCA8IGRlbmFsaS0+bXRk
+LndyaXRlc2l6ZSkgewogCQkJCQkvKiBjb3JyZWN0IHRoZSBFQ0MgZXJyb3IgKi8KIAkJCQkJYnVm
+W29mZnNldF0gXj0gZXJyX2NvcnJlY3Rpb25fdmFsdWU7CkBAIC0yMDMyLDYgKzIwMzMsMjcgQEAg
+c3RhdGljIGludCBkZW5hbGlfcGNpX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpkZXYsIGNvbnN0IHN0
+cnVjdCBwY2lfZGV2aWNlX2lkICppZCkKIAkJZ290byBmYWlsZWRfbmFuZDsKIAl9CiAKKwkvKiBz
+dXBwb3J0IGZvciBtdWx0aSBuYW5kCisJICogTVREIGtub3duIG5vdGhpbmcgYWJvdXQgbXVsdGkg
+bmFuZCwKKwkgKiBzbyB3ZSBzaG91bGQgdGVsbCBpdCB0aGUgcmVhbCBwYWdlc2l6ZQorCSAqIGFu
+ZCBhbnl0aGluZyBuZWNlc3NlcnksCisJICogU29tZSBOQU5EIGNoaXAgaGFzIGEgc3BlY3RpYWwg
+T09CIHNpemUsIHNvIGhlcmUgZG8KKwkgKiBhIHJlY2hlY2sgKi8KKwlkZW5hbGktPm10ZC5vb2Jz
+aXplID0gaW9yZWFkMzIoZGVuYWxpLT5mbGFzaF9yZWcgKworCQkJCQkJREVWSUNFX1NQQVJFX0FS
+RUFfU0laRSk7CisJZGVuYWxpLT5kZXZudW0gPSBpb3JlYWQzMihkZW5hbGktPmZsYXNoX3JlZyAr
+IERFVklDRVNfQ09OTkVDVEVEKTsKKwlkZW5hbGktPm5hbmQuY2hpcHNpemUgPDw9IChkZW5hbGkt
+PmRldm51bSAtIDEpOworCWRlbmFsaS0+bmFuZC5wYWdlX3NoaWZ0ICs9IChkZW5hbGktPmRldm51
+bSAtIDEpOworCWRlbmFsaS0+bmFuZC5wYWdlbWFzayA9IChkZW5hbGktPm5hbmQuY2hpcHNpemUg
+Pj4KKwkJCQkJCWRlbmFsaS0+bmFuZC5wYWdlX3NoaWZ0KSAtIDE7CisJZGVuYWxpLT5uYW5kLmJi
+dF9lcmFzZV9zaGlmdCArPSAoZGVuYWxpLT5kZXZudW0gLSAxKTsKKwlkZW5hbGktPm5hbmQucGh5
+c19lcmFzZV9zaGlmdCA9IGRlbmFsaS0+bmFuZC5iYnRfZXJhc2Vfc2hpZnQ7CisJZGVuYWxpLT5u
+YW5kLmNoaXBfc2hpZnQgKz0gKGRlbmFsaS0+ZGV2bnVtIC0gMSk7CisJZGVuYWxpLT5tdGQud3Jp
+dGVzaXplIDw8PSAoZGVuYWxpLT5kZXZudW0gLSAxKTsKKwlkZW5hbGktPm10ZC5vb2JzaXplIDw8
+PSAoZGVuYWxpLT5kZXZudW0gLSAxKTsKKwlkZW5hbGktPm10ZC5lcmFzZXNpemUgPDw9IChkZW5h
+bGktPmRldm51bSAtIDEpOworCWRlbmFsaS0+bXRkLnNpemUgPSBkZW5hbGktPm5hbmQubnVtY2hp
+cHMgKiBkZW5hbGktPm5hbmQuY2hpcHNpemU7CisKIAkvKiBzZWNvbmQgc3RhZ2Ugb2YgdGhlIE5B
+TkQgc2NhbgogCSAqIHRoaXMgc3RhZ2UgcmVxdWlyZXMgaW5mb3JtYXRpb24gcmVnYXJkaW5nIEVD
+QyBhbmQKIAkgKiBiYWQgYmxvY2sgbWFuYWdlbWVudC4gKi8KQEAgLTIwNjAsNyArMjA4Miw3IEBA
+IHN0YXRpYyBpbnQgZGVuYWxpX3BjaV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqZGV2LCBjb25zdCBz
+dHJ1Y3QgcGNpX2RldmljZV9pZCAqaWQpCiAJZGVuYWxpLT5uYW5kLmVjYy5od2N0bCA9IGRlbmFs
+aV9lY2NfaHdjdGw7CiAKIAkvKiBvdmVycmlkZSB0aGUgZGVmYXVsdCByZWFkIG9wZXJhdGlvbnMg
+Ki8KLQlkZW5hbGktPm5hbmQuZWNjLnNpemUgPSBkZW5hbGktPm10ZC53cml0ZXNpemU7CisJZGVu
+YWxpLT5uYW5kLmVjYy5zaXplID0gZGVuYWxpLT5tdGQud3JpdGVzaXplICogZGVuYWxpLT5kZXZu
+dW07CiAJZGVuYWxpLT5uYW5kLmVjYy5yZWFkX3BhZ2UgPSBkZW5hbGlfcmVhZF9wYWdlOwogCWRl
+bmFsaS0+bmFuZC5lY2MucmVhZF9wYWdlX3JhdyA9IGRlbmFsaV9yZWFkX3BhZ2VfcmF3OwogCWRl
+bmFsaS0+bmFuZC5lY2Mud3JpdGVfcGFnZSA9IGRlbmFsaV93cml0ZV9wYWdlOwpkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9tdGQvbmFuZC9kZW5hbGkuaCBiL2RyaXZlcnMvbXRkL25hbmQvZGVuYWxpLmgK
+aW5kZXggZmM2YmUzOS4uMmJlZTRjYiAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9kZW5h
+bGkuaAorKysgYi9kcml2ZXJzL210ZC9uYW5kL2RlbmFsaS5oCkBAIC04MDIsNiArODAyLDggQEAg
+c3RydWN0IGRlbmFsaV9uYW5kX2luZm8gewogCXVpbnQzMl90IGlycV9zdGF0dXM7CiAJaW50IGly
+cV9kZWJ1Z19hcnJheVszMl07CiAJaW50IGlkeDsKKworCXVpbnQzMl90IGRldm51bTsJLyogcmVw
+cmVzZW50IGhvdyBtYW55IG5hbmRzIGNvbm5lY3RlZCAqLwogfTsKIAogI2VuZGlmIC8qX0xMRF9O
+QU5EXyovCi0tIAoxLjYuNi4xCgo=
 
---_002_5D8008F58939784290FAB48F549751981D09B718B6shsmsx502ccrc_--
+--_002_5D8008F58939784290FAB48F549751981D09B718B5shsmsx502ccrc_--
