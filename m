@@ -1,18 +1,26 @@
-Received: from mail.windriver.com ([147.11.1.11])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OQJMF-00084K-Lh
-	for linux-mtd@lists.infradead.org; Sun, 20 Jun 2010 12:10:40 +0000
-From: "Stanley.Miao" <stanley.miao@windriver.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCHv3 3/3] Place the cleanmarker in OOB area according to the mode
-	MTD_OOB_AUTO
-Date: Sun, 20 Jun 2010 20:23:00 +0800
-Message-Id: <1277036580-3501-4-git-send-email-stanley.miao@windriver.com>
-In-Reply-To: <1277036580-3501-3-git-send-email-stanley.miao@windriver.com>
-References: <1277036580-3501-1-git-send-email-stanley.miao@windriver.com>
-	<1277036580-3501-2-git-send-email-stanley.miao@windriver.com>
-	<1277036580-3501-3-git-send-email-stanley.miao@windriver.com>
-Cc: Artem.Bityutskiy@nokia.com, joakim.tjernlund@transmode.se
+Received: from nwd2mail10.analog.com ([137.71.25.55])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OQWy6-00034S-TH
+	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2010 02:42:39 +0000
+From: "Song, Barry" <Barry.Song@analog.com>
+Content-Class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [Uclinux-dist-devel] [PATCH 1/2] mtd: m25p80: Reworkprobing/JEDEC
+	code
+Date: Mon, 21 Jun 2010 10:42:21 +0800
+Message-ID: <0F1B54C89D5F954D8535DB252AF412FA065551D8@chinexm1.ad.analog.com>
+In-Reply-To: <20100618133212.GA5276@oksana.dev.rtsoft.ru>
+References: <20090818214449.GA12848@oksana.dev.rtsoft.ru><20090818214622.GA22651@oksana.dev.rtsoft.ru><AANLkTikg60s6ZRSEDCq9PQK1z7hJtBDk6t4VE1lYDv8u@mail.gmail.com>
+	<20100618133212.GA5276@oksana.dev.rtsoft.ru>
+To: "Anton Vorontsov" <cbouatmailru@gmail.com>,
+	"Barry Song" <21cnbao@gmail.com>
+Cc: David Brownell <dbrownell@users.sourceforge.net>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org,
+	Andrew Morton <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,100 +30,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The jffs2 filesystem writes the cleanmarker according to the mode
-MTD_OOB_AUTO, so flash_eraseall should arrange the layout of the
-cleanmarker according to the mode MTD_OOB_AUTO too.
+=20
 
-Signed-off-by: Stanley.Miao <stanley.miao@windriver.com>
----
- flash_eraseall.c |   40 ++++++++++++++++++++++------------------
- 1 files changed, 22 insertions(+), 18 deletions(-)
+>-----Original Message-----
+>From: uclinux-dist-devel-bounces@blackfin.uclinux.org=20
+>[mailto:uclinux-dist-devel-bounces@blackfin.uclinux.org] On=20
+>Behalf Of Anton Vorontsov
+>Sent: Friday, June 18, 2010 9:32 PM
+>To: Barry Song
+>Cc: David Brownell; Artem Bityutskiy;=20
+>linux-kernel@vger.kernel.org; linuxppc-dev@ozlabs.org;=20
+>linux-mtd@lists.infradead.org;=20
+>uclinux-dist-devel@blackfin.uclinux.org; Andrew Morton
+>Subject: Re: [Uclinux-dist-devel] [PATCH 1/2] mtd: m25p80:=20
+>Reworkprobing/JEDEC code
+>
+>On Sat, Jun 12, 2010 at 02:27:12PM +0800, Barry Song wrote:
+>> On Wed, Aug 19, 2009 at 5:46 AM, Anton Vorontsov
+>> <avorontsov@ru.mvista.com> wrote:
+>> >
+>> > Previosly the driver always tried JEDEC probing, assuming=20
+>that non-JEDEC
+>> > chips will return '0'. But truly non-JEDEC chips (like=20
+>CAT25) won't do
+>> > that, their behaviour on RDID command is undefined, so the=20
+>driver should
+>> > not call jedec_probe() for these chips.
+>> >
+>> > Also, be less strict on error conditions, don't fail to=20
+>probe if JEDEC
+>> > found a chip that is different from what platform code=20
+>told, instead
+>> > just print some warnings and use an information obtained=20
+>via JEDEC. In
+>> This patch caused a problem:
+>> even though the external flash doesn't exist, it will still pass the
+>> probe() and be registerred into kernel and given the partition table.
+>> You may refer to this bug report:
+>>=20
+>http://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?ac
+>tion=3DTrackerItemEdit&tracker_item_id=3D5975&start=3D0
+>
+>Thanks for the report.
+>
+>There's little we can do about it. Platform code asked us
+>to register the device, and JEDEC probing of M25Pxx chips isn't
+>reliable (thanks to various vendors that make these JEDEC and
+>non-JEDEC variants), so the best thing we can do is to register
+>the chip anyway.
+>
+>OTOH, if the board pulls MISO line up, then the following patch
+>should help.
+Make sense with pullup to keep the value high while external device
+doesn't exist.
+>
+>If this won't work, we'll have to add some flag to the platform
+>data, i.e. to force JEDEC probing, and not trust platform data.
 
-diff --git a/flash_eraseall.c b/flash_eraseall.c
-index b8068c0..374edd7 100644
---- a/flash_eraseall.c
-+++ b/flash_eraseall.c
-@@ -34,7 +34,7 @@
- #include <time.h>
- #include <getopt.h>
- #include <sys/ioctl.h>
--#include <sys/mount.h>
-+#include <sys/param.h>
- #include <sys/utsname.h>
- #include "crc32.h"
- 
-@@ -83,9 +83,11 @@ static int get_linux_version(void)
- int main (int argc, char *argv[])
- {
- 	mtd_info_t meminfo;
--	int fd, clmpos = 0, clmlen = 8;
-+	int fd;
- 	erase_info_t erase;
- 	int isNAND, bbtest = 1;
-+	unsigned char oobbuf[128];
-+	memset(oobbuf, 0xFF, 128);
- 
- 	process_options(argc, argv);
- 
-@@ -106,11 +108,18 @@ int main (int argc, char *argv[])
- 	if (jffs2) {
- 		cleanmarker.magic = cpu_to_je16 (JFFS2_MAGIC_BITMASK);
- 		cleanmarker.nodetype = cpu_to_je16 (JFFS2_NODETYPE_CLEANMARKER);
--		if (!isNAND)
-+		if (!isNAND) {
- 			cleanmarker.totlen = cpu_to_je32 (sizeof (struct jffs2_unknown_node));
--		else {
-+			cleanmarker.hdr_crc = cpu_to_je32(crc32(0, &cleanmarker, \
-+						sizeof(struct jffs2_unknown_node) - 4));
-+		} else {
-+			int already_read, num, i, start;
- 			struct nand_ecclayout ecclayout;
- 
-+			cleanmarker.totlen = cpu_to_je32(8);
-+			cleanmarker.hdr_crc = cpu_to_je32(crc32(0, &cleanmarker, \
-+						sizeof(struct jffs2_unknown_node) - 4));
-+
- 			memset(&ecclayout, 0, sizeof(ecclayout));
- 			if (get_linux_version() > LINUX_VERSION(2, 6, 17)) {
- 				if (ioctl(fd, ECCGETLAYOUT, &ecclayout) != 0) {
-@@ -130,19 +139,14 @@ int main (int argc, char *argv[])
- 				memcpy(&ecclayout.oobfree, &oi.oobfree, sizeof(oi.oobfree));
- 				ecclayout.eccbytes = oi.eccbytes;
- 			}
--
--			/* Get the position of the free bytes */
--			if (!ecclayout.oobfree[0].length) {
--				fprintf(stderr, " Eeep. Autoplacement selected and no empty space in oob\n");
--				return 1;
-+			already_read = 0;
-+			for (i = 0; (already_read < 8) && ecclayout.oobfree[i].length; i++) {
-+				num = MIN(8 - already_read, ecclayout.oobfree[i].length);
-+				start = ecclayout.oobfree[i].offset;
-+				memcpy(oobbuf + start, (unsigned char *)&cleanmarker + already_read, num);
-+				already_read += num;
- 			}
--			clmpos = ecclayout.oobfree[0].offset;
--			clmlen = ecclayout.oobfree[0].length;
--			if (clmlen > 8)
--				clmlen = 8;
--			cleanmarker.totlen = cpu_to_je32(8);
- 		}
--		cleanmarker.hdr_crc =  cpu_to_je32 (crc32 (0, &cleanmarker,  sizeof (struct jffs2_unknown_node) - 4));
- 	}
- 
- 	for (erase.start = 0; erase.start < meminfo.size; erase.start += meminfo.erasesize) {
-@@ -182,9 +186,9 @@ int main (int argc, char *argv[])
- 		/* write cleanmarker */
- 		if (isNAND) {
- 			struct mtd_oob_buf oob;
--			oob.ptr = (unsigned char *) &cleanmarker;
--			oob.start = erase.start + clmpos;
--			oob.length = clmlen;
-+			oob.ptr = oobbuf;
-+			oob.start = erase.start;
-+			oob.length = meminfo.oobsize;
- 			if (ioctl (fd, MEMWRITEOOB, &oob) != 0) {
- 				fprintf(stderr, "\n%s: %s: MTD writeoob failure: %s\n", exe_name, mtd_device, strerror(errno));
- 				continue;
--- 
-1.5.4.3
+How about we add a non_jedec flag in platform_data, if the flag is 1, we
+let the detection pass even though the ID is 0? Otherwise, we need a
+valid ID?
+
+>
+>Not-yet-Signed-off-by: Anton Vorontsov <cbouatmailru@gmail.com>
+>---
+>
+>diff --git a/drivers/mtd/devices/m25p80.c=20
+>b/drivers/mtd/devices/m25p80.c
+>index 81e49a9..a307929 100644
+>--- a/drivers/mtd/devices/m25p80.c
+>+++ b/drivers/mtd/devices/m25p80.c
+>@@ -16,6 +16,7 @@
+>  */
+>=20
+> #include <linux/init.h>
+>+#include <linux/errno.h>
+> #include <linux/module.h>
+> #include <linux/device.h>
+> #include <linux/interrupt.h>
+>@@ -723,7 +724,7 @@ static const struct spi_device_id=20
+>*__devinit jedec_probe(struct spi_device *spi)
+> 	if (tmp < 0) {
+> 		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading=20
+>JEDEC ID\n",
+> 			dev_name(&spi->dev), tmp);
+>-		return NULL;
+>+		return ERR_PTR(tmp);
+> 	}
+> 	jedec =3D id[0];
+> 	jedec =3D jedec << 8;
+>@@ -737,7 +738,7 @@ static const struct spi_device_id=20
+>*__devinit jedec_probe(struct spi_device *spi)
+> 	 * exist for non-JEDEC chips, but for compatibility=20
+>they return ID 0.
+> 	 */
+> 	if (jedec =3D=3D 0)
+>-		return NULL;
+>+		return ERR_PTR(-EEXIST);
+>=20
+> 	ext_jedec =3D id[3] << 8 | id[4];
+>=20
+>@@ -749,7 +750,7 @@ static const struct spi_device_id=20
+>*__devinit jedec_probe(struct spi_device *spi)
+> 			return &m25p_ids[tmp];
+> 		}
+> 	}
+>-	return NULL;
+>+	return ERR_PTR(-ENODEV);
+> }
+>=20
+>=20
+>@@ -794,9 +795,11 @@ static int __devinit m25p_probe(struct=20
+>spi_device *spi)
+> 		const struct spi_device_id *jid;
+>=20
+> 		jid =3D jedec_probe(spi);
+>-		if (!jid) {
+>+		if (IS_ERR(jid) && PTR_ERR(jid) =3D=3D -EEXIST) {
+> 			dev_info(&spi->dev, "non-JEDEC variant of %s\n",
+> 				 id->name);
+>+		} else if (IS_ERR(jid)) {
+>+			return PTR_ERR(jid);
+> 		} else if (jid !=3D id) {
+> 			/*
+> 			 * JEDEC knows better, so overwrite=20
+>platform ID. We
+>_______________________________________________
+>Uclinux-dist-devel mailing list
+>Uclinux-dist-devel@blackfin.uclinux.org
+>https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel
+>
