@@ -1,19 +1,18 @@
+Received: from mail.windriver.com ([147.11.1.11])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OQykp-0003gX-O7
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 08:22:48 +0000
+Message-ID: <4C2075BE.3000000@windriver.com>
+Date: Tue, 22 Jun 2010 16:35:10 +0800
+From: "stanley.miao" <stanley.miao@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimnaBO_Zb0UvPZYzmQNmqJafTv1gWV8KQm_LwC3@mail.gmail.com>
-References: <AANLkTilY1gnS_jwZ_xPKhchTLR5cWj7FEla1V76OuMVK@mail.gmail.com>
-	<AANLkTimnaBO_Zb0UvPZYzmQNmqJafTv1gWV8KQm_LwC3@mail.gmail.com>
-Date: Tue, 22 Jun 2010 16:20:29 +0800
-Message-ID: <AANLkTimPAVPFX3vhYhkCBUCXk6-EEirsNBtD5R3xW8Yt@mail.gmail.com>
-Subject: Re: [PATCH 07/25] pxa3xx_nand: mtd scan id process could be defined
-	by driver itself
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Eric Miao <eric.y.miao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <david.woodhouse@intel.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: "Stanley.Miao" <stanley.miao@windriver.com>
+Subject: Re: [PATCH v3] Fix mtd-utils bugs
+References: <1277036580-3501-1-git-send-email-stanley.miao@windriver.com>
+In-Reply-To: <1277036580-3501-1-git-send-email-stanley.miao@windriver.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 18, 2010 at 2:58 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
-> On Fri, Jun 18, 2010 at 1:34 PM, Haojian Zhuang
-> <haojian.zhuang@gmail.com> wrote:
->> From d2958ecbec5d0b7f7aee311fd3e87ed1a858864d Mon Sep 17 00:00:00 2001
->> From: Lei Wen <leiwen@marvell.com>
->> Date: Wed, 2 Jun 2010 21:55:51 +0800
->> Subject: [PATCH 07/25] pxa3xx_nand: mtd scan id process could be
->> defined by driver itself
->>
->> Different NAND driver may require its unique detection. For pxa3xx_nand,
->> it use its self id database to get the necessary info.
->
-> I believe I get the central point of this patch: to have a specific
-> pxa3xx_nand_scan()
-> instead of using the generic nand_scan(). This point is good, yet I
-> found it extremely
-> difficult to read the patch. Like those chip->xxxx assignment, is that
-> also part of this
-> patch, I strongly recommend to remove irrelevant changes into separate patches.
->
+Any other comments ?
 
-That is also the part of this patch...
--       this->read_word         = pxa3xx_nand_read_word;
-+       chip->read_word         = pxa3xx_nand_read_word;
-Just use "chip" to take place of "this"...
+Stanley.
 
-Best regards,
-Lei
+Stanley.Miao wrote:
+> Changes from V2:
+> 1, Get the linux version via uname() according to Joakim Tjernlund.
+> 2, Set the default version the latest version according to Joakim Tjernlund.
+>
+> The "struct nand_oobinfo" is able to record only 32 ECC code positions,which
+> is not enough for many big NAND chips. Therefore, this structure is replaced
+> by "struct nand_ecclayout" in linux kernel from the version 2.6.17.
+> Consequently, the ioctl command changed from MEMGETOOBSEL to ECCGETLAYOUT.
+>
+> Now update nandwrite to use the new ioctl command ECCGETLAYOUT. In order to
+> keep compatible with the old linux kernel, a linux version detection function
+> is added.
+>
+> YAFFS and JFFS2 has updated and we don't need the arguments "forcelegacy",
+> "forcejffs2", "forceyaffs" anymore. Now clean them up. 
+>
+>
+> Stanley.
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>   
