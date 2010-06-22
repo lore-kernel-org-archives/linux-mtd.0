@@ -1,18 +1,38 @@
-Received: from mail.tqs.de ([62.157.136.17])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OR36A-0002Ni-If
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 13:01:07 +0000
-Content-class: urn:content-classes:message
+	id 1OR6lO-0005vb-IV
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 16:55:55 +0000
+Received: by bwz6 with SMTP id 6so1015077bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Jun 2010 09:55:52 -0700 (PDT)
+Date: Tue, 22 Jun 2010 20:55:45 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Barry Song <21cnbao@gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 1/2] mtd: m25p80:
+	Reworkprobing/JEDEC code
+Message-ID: <20100622165545.GA10255@oksana.dev.rtsoft.ru>
+References: <AANLkTikg60s6ZRSEDCq9PQK1z7hJtBDk6t4VE1lYDv8u@mail.gmail.com>
+	<20100618133212.GA5276@oksana.dev.rtsoft.ru>
+	<0F1B54C89D5F954D8535DB252AF412FA065551D8@chinexm1.ad.analog.com>
+	<AANLkTiksYofs6hhWta6uFX2cla_g8pBu0Mtbtcbv-2tl@mail.gmail.com>
+	<20100621071551.GA16109@oksana.dev.rtsoft.ru>
+	<AANLkTiknH95loHJsQNxvCCyQbriCFWqM5LHl3wKzmdWX@mail.gmail.com>
+	<20100621073909.GA20674@oksana.dev.rtsoft.ru>
+	<AANLkTinjhmkQafVlrtQC5yDnqIZz859_wrZqo45QOEJ2@mail.gmail.com>
+	<20100621112049.GA9273@oksana.dev.rtsoft.ru>
+	<AANLkTikY9pfHsQ6xeVkixKF5kqL2nLyV2kgcR2iJKhG-@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH]] mtdconcat: fix bug with uninitialized lock and unlock
-	functions
-Date: Tue, 22 Jun 2010 15:00:19 +0200
-Message-ID: <47F3F98010FF784EBEE6526EAAB078D10635E728@tq-mailsrv.tq-net.de>
-From: "Martin Krause" <Martin.Krause@tqs.de>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AANLkTikY9pfHsQ6xeVkixKF5kqL2nLyV2kgcR2iJKhG-@mail.gmail.com>
+Cc: David Brownell <dbrownell@users.sourceforge.net>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	linux-kernel@vger.kernel.org, "Song,
+	Barry" <Barry.Song@analog.com>, linuxppc-dev@ozlabs.org,
+	linux-mtd@lists.infradead.org, uclinux-dist-devel@blackfin.uclinux.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +42,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Test if a lock or unlock function is present (pointer not NULL) before
-calling it, to prevent a kernel dump.
+On Tue, Jun 22, 2010 at 02:37:52PM +0800, Barry Song wrote:
+[...]
+> >                jid = jedec_probe(spi);
+> >                if (!jid) {
+> > -                       dev_info(&spi->dev, "non-JEDEC variant of %s\n",
+> > -                                id->name);
+> > +                       return -ENODEV;
+> The patch looks good to me. Only problem is NULL is also returned by
+> spi_write_then_read() fail:
+[...]
+> Here much better for -EIO (return tmp)?
 
-Signed-off-by: Martin Krause <martin.krause@tqs.de>
----
- drivers/mtd/mtdconcat.c |   18 ++++++++++++------
- 1 files changed, 12 insertions(+), 6 deletions(-)
+Agreed. Though, this is not a regression, and I guess desires
+its own patch. 
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index db6de74..0a7ee03 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -541,10 +541,13 @@ static int concat_lock(struct mtd_info *mtd, =
-loff_t ofs, uint64_t len)
- 		else
- 			size =3D len;
-=20
--		err =3D subdev->lock(subdev, ofs, size);
-+		if (subdev->lock) {
-+			err =3D subdev->lock(subdev, ofs, size);
-=20
--		if (err)
--			break;
-+			if (err)
-+				break;
-+		} else
-+			err =3D -EOPNOTSUPP;
-=20
- 		len -=3D size;
- 		if (len =3D=3D 0)
-@@ -579,10 +582,13 @@ static int concat_unlock(struct mtd_info *mtd, =
-loff_t ofs, uint64_t len)
- 		else
- 			size =3D len;
-=20
--		err =3D subdev->unlock(subdev, ofs, size);
-+		if (subdev->unlock) {
-+			err =3D subdev->unlock(subdev, ofs, size);
-=20
--		if (err)
--			break;
-+			if (err)
-+				break;
-+		} else
-+			err =3D -EOPNOTSUPP;
-=20
- 		len -=3D size;
- 		if (len =3D=3D 0)
---=20
-1.6.6.1
+Here are two patches, one for 2.6.35 (minimal changes to fix
+the JEDEC problem), another for 2.6.36.
