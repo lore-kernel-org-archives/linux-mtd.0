@@ -1,307 +1,224 @@
 From: leiwen@marvell.com (Lei Wen)
-Date: Tue, 22 Jun 2010 21:52:09 +0800
-Subject: [PATCH 14/29] pxa3xx_nand: add bch ecc support
-Message-ID: <mailman.119.1280296784.27306.linux-mtd@lists.infradead.org>
+Date: Tue, 22 Jun 2010 22:08:13 +0800
+Subject: [PATCH 15/29] pxa3xx_nand: add more attribute that platform
+Message-ID: <mailman.120.1280296786.27306.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Enable the controller internal bch ecc engine when need.
+could choose from
 
 Signed-off-by: Lei Wen <leiwen@marvell.com>
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   11 ++-
- drivers/mtd/nand/pxa3xx_nand.c               |  119 ++++++++++++++++++-------
- 2 files changed, 94 insertions(+), 36 deletions(-)
+ arch/arm/mach-mmp/aspenite.c                 |    3 ++-
+ arch/arm/mach-mmp/avengers_lite.c            |    3 ++-
+ arch/arm/mach-pxa/cm-x300.c                  |    3 +--
+ arch/arm/mach-pxa/colibri-pxa3xx.c           |    3 +--
+ arch/arm/mach-pxa/littleton.c                |    2 +-
+ arch/arm/mach-pxa/mxm8x10.c                  |    3 +--
+ arch/arm/mach-pxa/raumfeld.c                 |    3 +--
+ arch/arm/mach-pxa/zylonite.c                 |    2 +-
+ arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   23 +++++++++++++----------
+ drivers/mtd/nand/pxa3xx_nand.c               |   11 +++++++----
+ 10 files changed, 30 insertions(+), 26 deletions(-)
 
-diff --git a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
-b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
-index cf42f97..9b1f9df 100644
---- a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
-+++ b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
-@@ -3,6 +3,12 @@
-
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+/* error code and state */
-+enum {
-+	ECC_NONE = 0,
-+	ECC_HAMMIN,
-+	ECC_BCH,
-+};
-
- struct pxa3xx_nand_timing {
- 	unsigned int	tCH;  /* Enable signal hold time */
-@@ -32,10 +38,11 @@ struct pxa3xx_nand_cmdset {
- struct pxa3xx_nand_flash {
- 	char		*name;
- 	uint32_t	chip_id;
--	uint16_t	page_per_block; /* Pages per block (PG_PER_BLK) */
--	uint16_t 	page_size;	/* Page size in bytes (PAGE_SZ) */
-+	uint16_t	page_per_block; /* Pages per block */
-+	uint16_t 	page_size;	/* Page size in bytes */
- 	uint8_t		flash_width;	/* Width of Flash memory (DWIDTH_M) */
- 	uint8_t 	dfc_width;	/* Width of flash controller(DWIDTH_C) */
-+	uint8_t		ecc_type;	/* Which ECC is applied */
- 	uint32_t	num_blocks;	/* Number of physical blocks in Flash */
- 	struct pxa3xx_nand_cmdset *cmdset;	/* NAND command set */
- 	struct pxa3xx_nand_timing *timing;	/* NAND Flash timing */
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 3dea0fe..94df2bd 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -29,6 +29,7 @@
- #define	CHIP_DELAY_TIMEOUT	(2 * HZ/10)
- #define NAND_STOP_DELAY		(2 * HZ/50)
- #define PAGE_CHUNK_SIZE		(2048)
-+#define BCH_THRESHOLD           (8)
-
- /* registers and bit definitions */
- #define NDCR		(0x00) /* Control register */
-@@ -38,12 +39,15 @@
- #define NDPCR		(0x18) /* Page Count Register */
- #define NDBDR0		(0x1C) /* Bad Block Register 0 */
- #define NDBDR1		(0x20) /* Bad Block Register 1 */
-+#define NDECCCTRL	(0x28) /* ECC Control Register */
- #define NDDB		(0x40) /* Data Buffer */
- #define NDCB0		(0x48) /* Command Buffer0 */
- #define NDCB1		(0x4C) /* Command Buffer1 */
- #define NDCB2		(0x50) /* Command Buffer2 */
-
- #define NDCR_SPARE_EN		(0x1 << 31)
-+#define NDSR_ERR_CNT_MASK       (0x1F << 16)
-+#define NDSR_ERR_CNT(x)         (((x) << 16) & NDSR_ERR_CNT_MASK)
- #define NDCR_ECC_EN		(0x1 << 30)
- #define NDCR_DMA_EN		(0x1 << 29)
- #define NDCR_ND_RUN		(0x1 << 28)
-@@ -90,6 +94,13 @@
- #define NDCB0_CMD1_MASK		(0xff)
- #define NDCB0_ADDR_CYC_SHIFT	(16)
-
-+/* ECC Control Register */
-+#define NDECCCTRL_ECC_SPARE_MSK (0xFF << 7)
-+#define NDECCCTRL_ECC_SPARE(x)  (((x) << 7) & NDECCCTRL_ECC_SPARE_MSK)
-+#define NDECCCTRL_ECC_THR_MSK   (0x3F << 1)
-+#define NDECCCTRL_ECC_THRESH(x) (((x) << 1) & NDECCCTRL_ECC_THR_MSK)
-+#define NDECCCTRL_BCH_EN        (0x1)
-+
- /* macros for registers read/write */
- #define nand_writel(info, off, val)	\
- 	__raw_writel((val), (info)->mmio_base + (off))
-@@ -215,16 +226,16 @@ static struct pxa3xx_nand_timing __devinitdata
-timing[] = {
- #define NAND_SETTING_MICRON      &default_cmdset, &timing[2]
- #define NAND_SETTING_ST          &default_cmdset, &timing[3]
- static struct pxa3xx_nand_flash __devinitdata builtin_flash_types[] = {
--{ "DEFAULT FLASH",      0,   0, 2048,  8,  8,    0, NAND_SETTING_DEFAULT, },
--{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, 4096, NAND_SETTING_SAMSUNG, },
--{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, 2048, NAND_SETTING_SAMSUNG, },
--{ "1GiB 8-bit",    0xd3ec, 128, 2048,  8,  8, 4096, NAND_SETTING_SAMSUNG, },
--{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, NAND_SETTING_SAMSUNG, },
--{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, 1024, NAND_SETTING_MICRON, },
--{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, 1024, NAND_SETTING_MICRON, },
--{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, NAND_SETTING_MICRON, },
--{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, NAND_SETTING_MICRON, },
--{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, NAND_SETTING_ST, },
-+{ "DEFAULT FLASH",      0,   0, 2048,  8,  8, ECC_NONE,      0,
-NAND_SETTING_DEFAULT, },
-+{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, ECC_HAMMIN, 4096,
-NAND_SETTING_SAMSUNG, },
-+{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, ECC_HAMMIN, 2048,
-NAND_SETTING_SAMSUNG, },
-+{ "1GiB 8-bit",    0xd3ec, 128, 2048,  8,  8, ECC_BCH,    4096,
-NAND_SETTING_SAMSUNG, },
-+{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, ECC_BCH,    8192,
-NAND_SETTING_SAMSUNG, },
-+{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, ECC_HAMMIN, 1024,
-NAND_SETTING_MICRON, },
-+{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, ECC_HAMMIN, 1024,
-NAND_SETTING_MICRON, },
-+{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, ECC_HAMMIN, 4096,
-NAND_SETTING_MICRON, },
-+{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, ECC_HAMMIN, 4096,
-NAND_SETTING_MICRON, },
-+{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, ECC_HAMMIN, 2048,
-NAND_SETTING_ST, },
+diff --git a/arch/arm/mach-mmp/aspenite.c b/arch/arm/mach-mmp/aspenite.c
+index 81ad58d..8d739d1 100644
+--- a/arch/arm/mach-mmp/aspenite.c
++++ b/arch/arm/mach-mmp/aspenite.c
+@@ -125,7 +125,8 @@ static struct mtd_partition aspenite_nand_partitions[] = {
  };
 
- static const char *mtd_names[] = {"pxa3xx_nand-0", "pxa3xx_nand-1", NULL};
-@@ -273,19 +284,43 @@ static void pxa3xx_set_datasize(struct
-pxa3xx_nand_info *info)
- 	struct pxa3xx_nand *nand = info->nand_data;
- 	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
-
--	nand->data_size = info->page_size;
--	if (!oob_enable) {
--		nand->oob_size = 0;
--		return;
--	}
-+	if (info->page_size >= PAGE_CHUNK_SIZE) {
-+		nand->data_size = PAGE_CHUNK_SIZE;
-+		if (!oob_enable) {
-+			nand->oob_size = 0;
-+			return;
-+		}
-
--	switch (info->page_size) {
--	case 2048:
--		nand->oob_size = (nand->use_ecc) ? 40 : 64;
--		break;
--	case 512:
--		nand->oob_size = (nand->use_ecc) ? 8 : 16;
--		break;
-+		switch (nand->use_ecc) {
-+		case ECC_HAMMIN:
-+			nand->oob_size = 40;
-+			break;
-+		case ECC_BCH:
-+			nand->oob_size = 32;
-+			break;
-+		default:
-+			nand->oob_size = 64;
-+			break;
-+		}
-+	} else {
-+		nand->data_size = 512;
-+		if (!oob_enable) {
-+			nand->oob_size = 0;
-+			return;
-+		}
-+
-+		switch (nand->use_ecc) {
-+		case ECC_HAMMIN:
-+			nand->oob_size = 8;
-+			break;
-+		case ECC_BCH:
-+			printk("Don't support BCH on small page device!!!\n");
-+			BUG();
-+			break;
-+		default:
-+			nand->oob_size = 16;
-+			break;
-+		}
- 	}
+ static struct pxa3xx_nand_platform_data aspenite_nand_info = {
+-	.enable_arbiter	= 1,
++	.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_NAKED_CMD_EN | PXA3XX_DMA_EN
++				| PXA3XX_ADV_TIME_TUNING | PXA3XX_TWO_CHIP_EN,
+ 	.parts[0]	= aspenite_nand_partitions,
+ 	.nr_parts[0]	= ARRAY_SIZE(aspenite_nand_partitions),
+ };
+diff --git a/arch/arm/mach-mmp/avengers_lite.c
+b/arch/arm/mach-mmp/avengers_lite.c
+index a828b1c..3a07613 100644
+--- a/arch/arm/mach-mmp/avengers_lite.c
++++ b/arch/arm/mach-mmp/avengers_lite.c
+@@ -77,7 +77,8 @@ static void __init avengers_init_flash(void)
+ 	avengers_nand_info.nr_parts[0] = ARRAY_SIZE(avengers_nand_partitions_0);
+ 	avengers_nand_info.parts[1] = avengers_nand_partitions_1;
+ 	avengers_nand_info.nr_parts[1] = ARRAY_SIZE(avengers_nand_partitions_1);
+-	avengers_nand_info.enable_arbiter = 1;
++	avengers_nand_info.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_NAKED_CMD_EN
++		| PXA3XX_DMA_EN | PXA3XX_ADV_TIME_TUNING | PXA3XX_TWO_CHIP_EN;
+ 	pxa168_add_nand(&avengers_nand_info);
  }
 
-@@ -298,16 +333,26 @@ static void pxa3xx_set_datasize(struct
-pxa3xx_nand_info *info)
- static void pxa3xx_nand_start(struct pxa3xx_nand *nand)
- {
- 	struct pxa3xx_nand_info *info;
--	uint32_t ndcr;
-+	uint32_t ndcr, ndeccctrl = 0;
+diff --git a/arch/arm/mach-pxa/cm-x300.c b/arch/arm/mach-pxa/cm-x300.c
+index ce1f6d3..9f0282b 100644
+--- a/arch/arm/mach-pxa/cm-x300.c
++++ b/arch/arm/mach-pxa/cm-x300.c
+@@ -417,8 +417,7 @@ static struct mtd_partition cm_x300_nand_partitions[] = {
+ };
 
- 	info = nand->info[nand->chip_select];
- 	ndcr = info->reg_ndcr;
--	ndcr |= nand->use_ecc ? NDCR_ECC_EN : 0;
- 	ndcr |= nand->use_dma ? NDCR_DMA_EN : NDCR_STOP_ON_UNCOR;
- 	ndcr |= NDCR_ND_RUN;
+ static struct pxa3xx_nand_platform_data cm_x300_nand_info = {
+-	.enable_arbiter	= 1,
+-	.keep_config	= 1,
++	.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_DMA_EN | PXA3XX_KEEP_CONFIG,
+ 	.parts[0]	= cm_x300_nand_partitions,
+ 	.nr_parts[0]	= ARRAY_SIZE(cm_x300_nand_partitions),
+ };
+diff --git a/arch/arm/mach-pxa/colibri-pxa3xx.c
+b/arch/arm/mach-pxa/colibri-pxa3xx.c
+index b33559c..627b289 100644
+--- a/arch/arm/mach-pxa/colibri-pxa3xx.c
++++ b/arch/arm/mach-pxa/colibri-pxa3xx.c
+@@ -186,8 +186,7 @@ static struct mtd_partition colibri_nand_partitions[] = {
+ };
 
-+	switch (nand->use_ecc) {
-+	case ECC_BCH:
-+		ndeccctrl |= NDECCCTRL_BCH_EN;
-+		ndeccctrl |= NDECCCTRL_ECC_THRESH(BCH_THRESHOLD);
-+	case ECC_HAMMIN:
-+		ndcr |= NDCR_ECC_EN;
-+	default:
-+		break;
-+	}
-+
- 	/* clear status bits and run */
- 	nand_writel(nand, NDCR, 0);
-+	nand_writel(nand, NDECCCTRL, ndeccctrl);
- 	nand_writel(nand, NDSR, NDSR_MASK);
- 	nand_writel(nand, NDCR, ndcr);
- }
-@@ -420,6 +465,7 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
- 	info            = nand->info[cs];
+ static struct pxa3xx_nand_platform_data colibri_nand_info = {
+-	.enable_arbiter	= 1,
+-	.keep_config	= 1,
++	.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_DMA_EN | PXA3XX_KEEP_CONFIG,
+ 	.parts[0]	= colibri_nand_partitions,
+ 	.nr_parts[0]	= ARRAY_SIZE(colibri_nand_partitions),
+ };
+diff --git a/arch/arm/mach-pxa/littleton.c b/arch/arm/mach-pxa/littleton.c
+index 717cf92..e63451c 100644
+--- a/arch/arm/mach-pxa/littleton.c
++++ b/arch/arm/mach-pxa/littleton.c
+@@ -324,7 +324,7 @@ static struct mtd_partition littleton_nand_partitions[] = {
+ };
 
- 	status = nand_readl(nand, NDSR);
-+	nand->bad_count = (status & NDSR_ERR_CNT_MASK) >> 16;
- 	if (status & NDSR_DBERR)
- 		nand->retcode = ERR_DBERR;
- 	if (status & NDSR_SBERR)
-@@ -498,7 +544,7 @@ static int prepare_command_pool(struct pxa3xx_nand
-*nand, int command,
- 	switch (command) {
- 	case NAND_CMD_READ0:
- 	case NAND_CMD_PAGEPROG:
--		nand->use_ecc = 1;
-+		nand->use_ecc = info->use_ecc;
- 	case NAND_CMD_READOOB:
- 		pxa3xx_set_datasize(info);
- 		nand->oob_buff = nand->data_buff + nand->data_size;
-@@ -757,6 +803,7 @@ static int pxa3xx_nand_config_flash(struct
-pxa3xx_nand_info *info,
- 		return -EINVAL;
+ static struct pxa3xx_nand_platform_data littleton_nand_info = {
+-	.enable_arbiter	= 1,
++	.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_DMA_EN,
+ 	.parts[0]	= littleton_nand_partitions,
+ 	.nr_parts[0]	= ARRAY_SIZE(littleton_nand_partitions),
+ };
+diff --git a/arch/arm/mach-pxa/mxm8x10.c b/arch/arm/mach-pxa/mxm8x10.c
+index 66c2086..baca736 100644
+--- a/arch/arm/mach-pxa/mxm8x10.c
++++ b/arch/arm/mach-pxa/mxm8x10.c
+@@ -389,8 +389,7 @@ static struct mtd_partition mxm_8x10_nand_partitions[] = {
+ };
 
- 	/* calculate flash information */
-+	info->use_ecc = f->ecc_type;
- 	info->cmdset = f->cmdset;
- 	info->page_size = f->page_size;
- 	info->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
-@@ -780,7 +827,6 @@ static int pxa3xx_nand_config_flash(struct
-pxa3xx_nand_info *info,
- 	ndcr |= NDCR_SPARE_EN; /* enable spare by default */
+ static struct pxa3xx_nand_platform_data mxm_8x10_nand_info = {
+-	.enable_arbiter	= 1,
+-	.keep_config	= 1,
++	.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_DMA_EN | PXA3XX_KEEP_CONFIG,
+ 	.parts[0]	= mxm_8x10_nand_partitions,
+ 	.nr_parts[0]	= ARRAY_SIZE(mxm_8x10_nand_partitions)
+ };
+diff --git a/arch/arm/mach-pxa/raumfeld.c b/arch/arm/mach-pxa/raumfeld.c
+index df75d4d..8761775 100644
+--- a/arch/arm/mach-pxa/raumfeld.c
++++ b/arch/arm/mach-pxa/raumfeld.c
+@@ -348,8 +348,7 @@ static struct mtd_partition raumfeld_nand_partitions[] = {
+ };
 
- 	info->reg_ndcr = ndcr;
--	info->use_ecc = 1;
+ static struct pxa3xx_nand_platform_data raumfeld_nand_info = {
+-	.enable_arbiter	= 1,
+-	.keep_config	= 1,
++	.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_DMA_EN | PXA3XX_KEEP_CONFIG,
+ 	.parts[0]	= raumfeld_nand_partitions,
+ 	.nr_parts[0]	= ARRAY_SIZE(raumfeld_nand_partitions),
+ };
+diff --git a/arch/arm/mach-pxa/zylonite.c b/arch/arm/mach-pxa/zylonite.c
+index 9e5c6cd..5cf3d10 100644
+--- a/arch/arm/mach-pxa/zylonite.c
++++ b/arch/arm/mach-pxa/zylonite.c
+@@ -355,7 +355,7 @@ static struct mtd_partition zylonite_nand_partitions[] = {
+ };
 
- 	pxa3xx_nand_set_timing(info, f->timing);
- 	return 0;
-@@ -790,6 +836,7 @@ static int pxa3xx_nand_detect_config(struct
-pxa3xx_nand *nand)
- {
- 	struct pxa3xx_nand_info *info = nand->info[nand->chip_select];
- 	uint32_t ndcr = nand_readl(nand, NDCR);
-+	uint32_t ndeccctrl = nand_readl(nand, NDECCCTRL);
+ static struct pxa3xx_nand_platform_data zylonite_nand_info = {
+-	.enable_arbiter	= 1,
++	.controller_attrs = PXA3XX_ARBI_EN | PXA3XX_DMA_EN,
+ 	.parts[0]	= zylonite_nand_partitions,
+ 	.nr_parts[0]	= ARRAY_SIZE(zylonite_nand_partitions),
+ };
+diff --git a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+index 9b1f9df..ed7d623 100644
+--- a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
++++ b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+@@ -49,17 +49,20 @@ struct pxa3xx_nand_flash {
+ };
 
- 	if (nand->chip_select > 0) {
- 		printk(KERN_ERR "We could not detect configure if two cs is supported!!\n");
-@@ -802,6 +849,7 @@ static int pxa3xx_nand_detect_config(struct
-pxa3xx_nand *nand)
-
- 	info->ndtr0cs0 = nand_readl(nand, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(nand, NDTR1CS0);
-+	info->use_ecc = (ndeccctrl & NDECCCTRL_BCH_EN) ? ECC_BCH : ECC_HAMMIN;
- 	info->cmdset = &default_cmdset;
-
- 	return 0;
-@@ -837,13 +885,16 @@ static int pxa3xx_nand_read_page_hwecc(struct
-mtd_info *mtd,
-
- 	if (nand->retcode == ERR_SBERR) {
- 		switch (nand->use_ecc) {
--			case 1:
--				mtd->ecc_stats.corrected++;
--				break;
+ #define NUM_CHIP_SELECT		(2)
++/* the data flash bus is shared between the Static Memory
++ * Controller and the Data Flash Controller,  the arbiter
++ * controls the ownership of the bus
++ */
++#define PXA3XX_ARBI_EN		(1)
++#define PXA3XX_NAKED_CMD_EN	(1 << 1)
++#define PXA3XX_TWO_CHIP_EN	(1 << 2)
++#define PXA3XX_DMA_EN		(1 << 3)
++/* for newer controller support more precise timing tuning, only
++ * enable such tuning for those platform which support it */
++#define PXA3XX_ADV_TIME_TUNING	(1 << 4)
++#define PXA3XX_KEEP_CONFIG	(1 << 5)
+ struct pxa3xx_nand_platform_data {
 -
--			case 0:
--			default:
--				break;
-+		case ECC_BCH:
-+			if (nand->bad_count > BCH_THRESHOLD)
-+				mtd->ecc_stats.corrected +=
-+					(nand->bad_count - BCH_THRESHOLD);
-+			break;
-+		case ECC_HAMMIN:
-+			mtd->ecc_stats.corrected ++;
-+		case ECC_NONE:
-+		default:
-+			break;
- 		}
- 	} else if (nand->retcode == ERR_DBERR) {
- 		int buf_blank;
-@@ -1026,8 +1077,8 @@ static int alloc_nand_resource(struct
-platform_device *pdev)
- 	nand->mmio_phys = r->start;
+-	/* the data flash bus is shared between the Static Memory
+-	 * Controller and the Data Flash Controller,  the arbiter
+-	 * controls the ownership of the bus
+-	 */
+-	int	enable_arbiter;
+-
+-	/* allow platform code to keep OBM/bootloader defined NFC config */
+-	int	keep_config;
+-
++	unsigned int				controller_attrs;
+ 	const struct mtd_partition		*parts[NUM_CHIP_SELECT];
+ 	unsigned int				nr_parts[NUM_CHIP_SELECT];
 
- 	/* initialize all interrupts to be disabled */
--	disable_int(nand, NDSR_MASK);
- 	irq = platform_get_irq(pdev, 0);
-+	disable_int(nand, NDCR_INT_MASK);
- 	if (irq < 0) {
- 		dev_err(&pdev->dev, "no IRQ resource defined\n");
- 		ret = -ENXIO;
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 94df2bd..204c9d6 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -816,7 +816,7 @@ static int pxa3xx_nand_config_flash(struct
+pxa3xx_nand_info *info,
+ 	else
+ 		info->row_addr_cycles = 2;
+
+-	ndcr |= (pdata->enable_arbiter) ? NDCR_ND_ARB_EN : 0;
++	ndcr |= (pdata->controller_attrs & PXA3XX_ARBI_EN) ? NDCR_ND_ARB_EN : 0;
+ 	ndcr |= (info->col_addr_cycles == 2) ? NDCR_RA_START : 0;
+ 	ndcr |= (f->page_per_block == 64) ? NDCR_PG_PER_BLK : 0;
+ 	ndcr |= (f->page_size == 2048) ? NDCR_PAGE_SZ : 0;
+@@ -947,7 +947,7 @@ static int __devinit pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	uint64_t chipsize;
+ 	int i, ret;
+
+-	if (pdata->keep_config) {
++	if (pdata->controller_attrs & PXA3XX_KEEP_CONFIG) {
+ 		if (pxa3xx_nand_detect_config(nand) == 0)
+ 			goto KEEP_CONFIG;
+ 	}
+@@ -1215,7 +1215,7 @@ static int __devinit pxa3xx_nand_probe(struct
+platform_device *pdev)
+ 	struct mtd_info *mtd;
+ 	static const char *probes[] = { "cmdlinepart", NULL };
+ 	struct mtd_partition *parts;
+-	int nr_parts, ret, cs, probe_success = 0;
++	int nr_parts, ret, cs, probe_success = 0, cs_to_scan;
+
+ 	pdata = pdev->dev.platform_data;
+ 	if (!pdata) {
+@@ -1223,12 +1223,15 @@ static int __devinit pxa3xx_nand_probe(struct
+platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+
++	if (!(pdata->controller_attrs & PXA3XX_DMA_EN))
++		use_dma = 0;
+ 	ret = alloc_nand_resource(pdev);
+ 	if (ret)
+ 		return ret;
+
+ 	nand = platform_get_drvdata(pdev);
+-	for (cs = 0; cs < NUM_CHIP_SELECT; cs++) {
++	cs_to_scan = (pdata->controller_attrs & PXA3XX_TWO_CHIP_EN)? 2 : 1;
++	for (cs = 0; cs < cs_to_scan; cs++) {
+ 		info = nand->info[cs];
+ 		mtd = get_mtd_by_info(info);
+ 		if (pxa3xx_nand_scan(mtd)) {
 -- 
 1.7.0.4
