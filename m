@@ -1,27 +1,18 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OR7hu-0006W3-ED
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 17:56:23 +0000
-Received: by gyb11 with SMTP id 11so3728885gyb.36
+	id 1ORDFR-0005CM-Hc
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 23:51:22 +0000
+Received: by pvc7 with SMTP id 7so1298461pvc.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Jun 2010 10:56:21 -0700 (PDT)
+	Tue, 22 Jun 2010 16:51:19 -0700 (PDT)
+Message-ID: <4C214C73.7000709@taitradio.com>
+Date: Wed, 23 Jun 2010 11:51:15 +1200
+From: Robin Gilks <robin.gilks@taitradio.com>
 MIME-Version: 1.0
-In-Reply-To: <20100622165734.GA20699@oksana.dev.rtsoft.ru>
-References: <20100622165545.GA10255@oksana.dev.rtsoft.ru>
-	<20100622165734.GA20699@oksana.dev.rtsoft.ru>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 22 Jun 2010 13:56:00 -0400
-Message-ID: <AANLkTinP63VyX2LjY-zIbnluasCiT3tOv6tlfZ6k1WqM@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mtd: m25p80: Fix false-positive probing
-To: Anton Vorontsov <avorontsov@mvista.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: David Brownell <dbrownell@users.sourceforge.net>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Updating kernel after 5 year gap!!
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,27 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 22, 2010 at 12:57, Anton Vorontsov wrote:
-> Since commit 18c6182bae0acca220ed6611f741034d563cd19f ("Rework
-> probing/JEDEC code"), m25p80 driver successfully registers chips
-> even if JEDEC probing fails.
->
-> This was needed to support non-JEDEC flashes. Though, it appears
-> that some platforms (e.g. blackfin bf533 stamp[1]) used the old
-> behavior to detect if there's any flash connected, so the driver
-> have to fail on JEDEC probing errors.
->
-> This patch restores the old behavior for JEDEC flashes, and adds
-> "-nonjedec" SPI device IDs for M25Pxx flashes, so that the kernel
-> still supports non-JEDEC flashes.
+Oh dear - I'm going to get some stick from the list for this one...
 
-Acked-by: Mike Frysinger <vapier@gentoo.org>
+I've just come back to a project after a gap of 5 years and wish to 
+update it from 2.4.22 to 2.4.37.9 (latest 2.4) but the functionality 
+contained in maps/physmap seems to have moved on somewhat. How do I 
+invoke the cmdlineparts parser these days - there used to be a 
+part_probes array that defined what probes to do but I can't work out 
+where that functionality has gone.
 
-> [1] http://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?action=TrackerItemEdit&tracker_item_id=5975
+Also, the chips/cfi_cmdset_0001 used to have a fixup list for those 
+chips that didn't quite comply with the CFI spec - eg. the ST chip I'm 
+using doesn't support block write correctly. Has this gone entirely or 
+has it moved to the platform stuff like a lot of other things did in 2.6
 
-http://blackfin.uclinux.org/gf/tracker/5975
+Some pointers to sample code would be the best pointer by far (being a 
+master of the cut-n-paste) but just telling me would work as well :-)
 
-> Reported-by: Mingquan Pan
+Cheers
 
-<Grace.Pan@analog.com>
--mike
+-- 
+Robin Gilks
+Senior Design Engineer
+Tait Radio Communications
+DDI: 64 3 3571569
+www.taitradio.com
+robin.gilks@tait.co.nz
+TAIT: THE RIGHT FIT
