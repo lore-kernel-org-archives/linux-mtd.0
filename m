@@ -1,20 +1,18 @@
+Received: from mail.tqs.de ([62.157.136.17])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OR36A-0002Ni-If
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 13:01:07 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinzmIud44FuZhZSs94yo16F0ipP-uPdX9gAhdPf@mail.gmail.com>
-References: <AANLkTimvhEWIDupsj3Ty8vB9ualwU9RsaIxa0CDgWgYQ@mail.gmail.com>
-	<AANLkTikTzNY2hI0JDTOOZpGeOPc_MU79jVJ_1L9XxA_e@mail.gmail.com>
-	<AANLkTikmuCHqJQY2g8G3FsrufO5dKGt9WNZFnmvoSGl2@mail.gmail.com>
-	<AANLkTinzmIud44FuZhZSs94yo16F0ipP-uPdX9gAhdPf@mail.gmail.com>
-Date: Tue, 22 Jun 2010 19:24:20 +0800
-Message-ID: <AANLkTinEOvQX0f6jKsGEALSLBMPmeSgx9n6QIsCcHVKG@mail.gmail.com>
-Subject: Re: [PATCH 05/25] pxa3xx_nand: rework irq logic
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Eric Miao <eric.y.miao@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <david.woodhouse@intel.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: [PATCH]] mtdconcat: fix bug with uninitialized lock and unlock
+	functions
+Date: Tue, 22 Jun 2010 15:00:19 +0200
+Message-ID: <47F3F98010FF784EBEE6526EAAB078D10635E728@tq-mailsrv.tq-net.de>
+From: "Martin Krause" <Martin.Krause@tqs.de>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 22, 2010 at 6:02 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
-> On Tue, Jun 22, 2010 at 5:34 PM, Lei Wen <adrian.wenl@gmail.com> wrote:
->> On Fri, Jun 18, 2010 at 2:50 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
->>> On Fri, Jun 18, 2010 at 1:34 PM, Haojian Zhuang
->>> <haojian.zhuang@gmail.com> wrote:
->>>> From 18d589a078871a09dec0862241fedd2d1d07be85 Mon Sep 17 00:00:00 2001
->>>> From: Lei Wen <leiwen@marvell.com>
->>>> Date: Mon, 31 May 2010 14:05:46 +0800
->>>> Subject: [PATCH 05/25] pxa3xx_nand: rework irq logic
->>>>
->>>> Enable all irq when we start the nand controller, and
->>>> put all the transaction logic in the pxa3xx_nand_irq.
->>>>
->>>
->>> Didn't look into the change too much, but the idea sounds to me like
->>> chaining all the logic with different IRQ events, which was my original
->>> reason of having different states. And considering the page read/write
->>> is actually to an internal SRAM within the controller, I guess it's quick
->>> enough. (though I'd suggest to do some experiments of time profiling
->>> to see if it's going to increase the interrupt latency)
->>>
->>>> By doing this way, we could dramatically increase the
->>>> performance by avoid unnecessary delay.
->>>>
->>>
->>> The removal of __read_id() doesn't look to be part of this patch, no?
->>>
->> For write_cmd function has been discard and __read_id function would
->> not be used, if
->> continue to keep the __read_id() definition would lead to make failure...
->>
->
-> Well, the logic is: this change doesn't belong to this patch, so is it possible
-> to separate the change apart and still keep it compiling?
->
+Test if a lock or unlock function is present (pointer not NULL) before
+calling it, to prevent a kernel dump.
 
-Em... Seems reasonable, I'll try to do that. :-)
+Signed-off-by: Martin Krause <martin.krause@tqs.de>
+---
+ drivers/mtd/mtdconcat.c |   18 ++++++++++++------
+ 1 files changed, 12 insertions(+), 6 deletions(-)
 
-Best regards,
-Lei
+diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+index db6de74..0a7ee03 100644
+--- a/drivers/mtd/mtdconcat.c
++++ b/drivers/mtd/mtdconcat.c
+@@ -541,10 +541,13 @@ static int concat_lock(struct mtd_info *mtd, =
+loff_t ofs, uint64_t len)
+ 		else
+ 			size =3D len;
+=20
+-		err =3D subdev->lock(subdev, ofs, size);
++		if (subdev->lock) {
++			err =3D subdev->lock(subdev, ofs, size);
+=20
+-		if (err)
+-			break;
++			if (err)
++				break;
++		} else
++			err =3D -EOPNOTSUPP;
+=20
+ 		len -=3D size;
+ 		if (len =3D=3D 0)
+@@ -579,10 +582,13 @@ static int concat_unlock(struct mtd_info *mtd, =
+loff_t ofs, uint64_t len)
+ 		else
+ 			size =3D len;
+=20
+-		err =3D subdev->unlock(subdev, ofs, size);
++		if (subdev->unlock) {
++			err =3D subdev->unlock(subdev, ofs, size);
+=20
+-		if (err)
+-			break;
++			if (err)
++				break;
++		} else
++			err =3D -EOPNOTSUPP;
+=20
+ 		len -=3D size;
+ 		if (len =3D=3D 0)
+--=20
+1.6.6.1
