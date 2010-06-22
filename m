@@ -1,24 +1,24 @@
-Received: from [213.79.90.228] (helo=buildserver.ru.mvista.com)
+Received: from mail-gw0-f49.google.com ([74.125.83.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OR6n9-00069P-Ed
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 16:57:44 +0000
-Date: Tue, 22 Jun 2010 20:57:42 +0400
-From: Anton Vorontsov <avorontsov@mvista.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 2/2] mtd: m25p80: Make jedec_probe() return proper errno values
-Message-ID: <20100622165742.GB20699@oksana.dev.rtsoft.ru>
-References: <20100622165545.GA10255@oksana.dev.rtsoft.ru>
+	id 1OR7Kd-0004QY-0v
+	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 17:32:19 +0000
+Received: by gwj21 with SMTP id 21so1332200gwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Jun 2010 10:32:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20100622165545.GA10255@oksana.dev.rtsoft.ru>
-Cc: David Brownell <dbrownell@users.sourceforge.net>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Andrew Morton <akpm@linux-foundation.org>
+In-Reply-To: <1276764159-28726-3-git-send-email-ext-andriy.shevchenko@nokia.com>
+References: <1276764159-28726-1-git-send-email-ext-andriy.shevchenko@nokia.com>
+	<1276764159-28726-2-git-send-email-ext-andriy.shevchenko@nokia.com>
+	<1276764159-28726-3-git-send-email-ext-andriy.shevchenko@nokia.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 22 Jun 2010 13:31:57 -0400
+Message-ID: <AANLkTilpJ9bGjcdxwfsrq7x7FQKC-vZDy6PyjpDSd4Ad@mail.gmail.com>
+Subject: Re: [PATCH 3/3] flash_eraseall: make -? option the same as --help
+To: "Shevchenko Andriy (EXT-Teleca/Helsinki)" <ext-andriy.shevchenko@nokia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,77 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-spi_write_then_read() may return its own return codes (e.g. -EIO),
-so let's propagate the value down to the probe().
-
-Also, remove jedec == 0 check, it isn't needed as nowadays we use
-dedicated SPI device IDs for non-JEDEC flashes.
-
-Suggested-by: Barry Song <21cnbao@gmail.com>
-Signed-off-by: Anton Vorontsov <avorontsov@mvista.com>
----
-
-This is for 2.6.36.
-
- drivers/mtd/devices/m25p80.c |   18 ++++++------------
- 1 files changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index a610ca9..7bf5c45 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -16,6 +16,8 @@
-  */
- 
- #include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/errno.h>
- #include <linux/module.h>
- #include <linux/device.h>
- #include <linux/interrupt.h>
-@@ -733,7 +735,7 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
- 	if (tmp < 0) {
- 		DEBUG(MTD_DEBUG_LEVEL0, "%s: error %d reading JEDEC ID\n",
- 			dev_name(&spi->dev), tmp);
--		return NULL;
-+		return ERR_PTR(tmp);
- 	}
- 	jedec = id[0];
- 	jedec = jedec << 8;
-@@ -741,14 +743,6 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
- 	jedec = jedec << 8;
- 	jedec |= id[2];
- 
--	/*
--	 * Some chips (like Numonyx M25P80) have JEDEC and non-JEDEC variants,
--	 * which depend on technology process. Officially RDID command doesn't
--	 * exist for non-JEDEC chips, but for compatibility they return ID 0.
--	 */
--	if (jedec == 0)
--		return NULL;
--
- 	ext_jedec = id[3] << 8 | id[4];
- 
- 	for (tmp = 0; tmp < ARRAY_SIZE(m25p_ids) - 1; tmp++) {
-@@ -759,7 +753,7 @@ static const struct spi_device_id *__devinit jedec_probe(struct spi_device *spi)
- 			return &m25p_ids[tmp];
- 		}
- 	}
--	return NULL;
-+	return ERR_PTR(-ENODEV);
- }
- 
- 
-@@ -804,8 +798,8 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 		const struct spi_device_id *jid;
- 
- 		jid = jedec_probe(spi);
--		if (!jid) {
--			return -ENODEV;
-+		if (IS_ERR(jid)) {
-+			return PTR_ERR(jid);
- 		} else if (jid != id) {
- 			/*
- 			 * JEDEC knows better, so overwrite platform ID. We
--- 
-1.7.0.5
+T24gVGh1LCBKdW4gMTcsIDIwMTAgYXQgMDQ6NDIsIFNoZXZjaGVua28gQW5kcml5IHdyb3RlOgo+
+IC0tLSBhL2ZsYXNoX2VyYXNlYWxsLmMKPiArKysgYi9mbGFzaF9lcmFzZWFsbC5jCj4gQEAgLTE5
+Miw4ICsxOTIsNiBAQCBpbnQgbWFpbiAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPgo+IMKgdm9p
+ZCBwcm9jZXNzX29wdGlvbnMgKGludCBhcmdjLCBjaGFyICphcmd2W10pCj4gwqB7Cj4gLSDCoCDC
+oCDCoCBpbnQgZXJyb3IgPSAwOwo+IC0KPiDCoCDCoCDCoCDCoHN0YXRpYyBjb25zdCBjaGFyICpz
+aG9ydF9vcHRpb25zID0gImpxIjsKPiDCoCDCoCDCoCDCoHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb3B0
+aW9uIGxvbmdfb3B0aW9uc1tdID0gewo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgeyJoZWxwIiwg
+bm9fYXJndW1lbnQsIDAsIDB9LAo+IEBAIC0yMzMsMTUgKzIzMSwxMyBAQCB2b2lkIHByb2Nlc3Nf
+b3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGpmZnMyID0gMTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGJyZWFrOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgY2FzZSAnPyc6Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCBlcnJvciA9IDE7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCBkaXNwbGF5X2hlbHAoKTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGJyZWFrOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgfQo+IMKgIMKgIMKgIMKgfQoKTkFLLiAgdGhpcyBpc250ICItPyIsIHRoYXQncyB0aGUgZXJy
+b3IgY2FzZSBvZiBnZXRvcHQuICBsb29rIGF0IHRoZQppbnZvY2F0aW9uIG9mIGdldG9wdCBoZXJl
+IC4uLiA/IGlzIG5vdCBhIHZhbGlkIGNoYXIuCgphbHNvLCB5b3VyIHBhdGNoIGJvbWJpbmcgc2Vl
+bXMgc2NyZXdlZCB1cCBhcyBsaW51eC1tdGQgd2FzIGJjYy1lZC4KLW1pa2UK
