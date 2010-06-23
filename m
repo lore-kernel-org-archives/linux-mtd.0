@@ -1,20 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ORPtc-00087V-Fk
-	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 13:21:41 +0000
-Subject: Re: [PATCH v3] Fix mtd-utils bugs
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: "stanley.miao" <stanley.miao@windriver.com>
-In-Reply-To: <4C2075BE.3000000@windriver.com>
-References: <1277036580-3501-1-git-send-email-stanley.miao@windriver.com>
-	<4C2075BE.3000000@windriver.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 23 Jun 2010 16:18:54 +0300
-Message-ID: <1277299134.18458.0.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: Artem.Bityutskiy@nokia.com
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1ORTNC-00080g-La
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 17:04:27 +0000
+Received: by gyb11 with SMTP id 11so4529454gyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Jun 2010 10:04:24 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 23 Jun 2010 13:04:23 -0400
+Message-ID: <AANLkTilwqK96Btosh4kzW0kMDjRWzWskrG_ymekpV9Uz@mail.gmail.com>
+Subject: ubifs_scan() error handling
+From: twebb <taliaferro62@gmail.com>
+To: linux-mtd@lists.infradead.org, Lei Wen <leiwen@marvell.com>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-06-22 at 16:35 +0800, stanley.miao wrote:
-> Any other comments ?
+Without having a complete understanding of how the UBI and UBIFS
+internals work, I have a question regarding error handling in
+ubifs_scan().
 
-I'll pick this as when I find few hours to go through the MTD ML.
+When ubifs_scan() encounters SCANNED_EMPTY_SPACE during execution, it
+checks whether the LEB is all 0xFFs and if not - returns -EUCLEAN.  In
+some cases (for example, in orphan.c/kill_orphans()), any error
+returned by ubifs_scan() results in a call to ubifs_recover_leb().
+Would it make sense and be acceptable to make this call any time
+ubifs_scan() returns an error?  And if so, would it make more sense to
+include the ubifs_recover_leb() call in ubifs_scan() at goto
+corruption?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thanks,
+twebb
