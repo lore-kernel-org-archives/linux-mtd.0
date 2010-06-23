@@ -1,26 +1,16 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from smtp.seznam.cz ([77.75.72.43])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1ORFQw-0008LY-J6
-	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 02:11:23 +0000
-Received: by gxk22 with SMTP id 22so2978580gxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Jun 2010 19:11:21 -0700 (PDT)
+	id 1ORLdp-00033h-9C
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 08:49:06 +0000
+Date: Wed, 23 Jun 2010 12:48:58 +0200
+From: Ladislav Michl <Ladislav.Michl@seznam.cz>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] flash_eraseall: do not use exit()
+Message-ID: <20100623104858.GA2442@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20100623002334.GA22367@shareable.org>
-References: <1276764159-28726-1-git-send-email-ext-andriy.shevchenko@nokia.com>
-	<1276764159-28726-2-git-send-email-ext-andriy.shevchenko@nokia.com>
-	<AANLkTilBFi58-kjjxM2Q5p0I1l9R5WQpiozBiV5udQYW@mail.gmail.com>
-	<20100623002334.GA22367@shareable.org>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 22 Jun 2010 22:11:01 -0400
-Message-ID: <AANLkTimllsVj3nGC7vWP9oKPJXwIyjd71y0KbA7rFhPH@mail.gmail.com>
-Subject: Re: [PATCH 2/3] flash_eraseall: move constants out of for loop
-To: Jamie Lokier <jamie@shareable.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, "Shevchenko Andriy \(EXT-Teleca/Helsinki\)"
-	<ext-andriy.shevchenko@nokia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Reply-To: Ladislav Michl <ladis@linux-mips.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +20,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jun 22, 2010 at 20:23, Jamie Lokier wrote:
-> Mike Frysinger wrote:
->> i wonder though why this code even bothers with "static".
->
-> The array is static to avoid compiling to code which fills in the
-> array at runtime. =C2=A0I.e. it makes the code smaller, to the same size =
-as
-> if they were globals. =C2=A0And then, only because its static, the const
-> can put them in the .rodata section, reducing unshared data size.
+From: Ladislav Michl <ladis@linux-mips.org>
 
-if it were generated on the stack at runtime, the .text is shared too
+Returning from main() instead of using exit() makes code more readable
+and smaller.
 
-> Because they're static there's no benefit to moving them to another
-> scope.
+   text    data     bss     dec     hex filename
+   6440     324      68    6832    1ab0 flash_eraseall
+   6405     320      68    6793    1a89 flash_eraseall.noexit
 
-that's sort of what i expected, but i found it odd that it isnt:
-    static const char * const short_options =3D "jq";
--mike
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+---
+ flash_eraseall.c |   42 ++++++++++++++++--------------------------
+ 1 file changed, 16 insertions(+), 26 deletions(-)
+
+diff --git a/flash_eraseall.c b/flash_eraseall.c
+index 531bbe6..db65553 100644
+--- a/flash_eraseall.c
++++ b/flash_eraseall.c
+@@ -51,14 +51,6 @@ static int jffs2;		/* format for jffs2 usage */
+ static struct jffs2_unknown_node cleanmarker;
+ int target_endian = __BYTE_ORDER;
+ 
+-static void show_progress(mtd_info_t *meminfo, erase_info_t *erase)
+-{
+-	printf("\rErasing %d Kibyte @ %x -- %2llu %% complete.",
+-		meminfo->erasesize / 1024, erase->start,
+-		(unsigned long long) erase->start * 100 / meminfo->size);
+-	fflush(stdout);
+-}
+-
+ static void display_help(void)
+ {
+ 	printf("Usage: %s [OPTION] MTD_DEVICE\n"
+@@ -70,10 +62,8 @@ static void display_help(void)
+ 			"      --help     display this help and exit\n"
+ 			"      --version  output version information and exit\n",
+ 			exe_name);
+-	exit(0);
+ }
+ 
+-
+ static void display_version(void)
+ {
+ 	printf(PROGRAM " " VERSION "\n"
+@@ -86,12 +76,22 @@ static void display_version(void)
+ 			"You may redistribute copies of " PROGRAM "\n"
+ 			"under the terms of the GNU General Public Licence.\n"
+ 			"See the file `COPYING' for more information.\n");
+-	exit(0);
+ }
+ 
+-static void process_options(int argc, char *argv[])
++static void show_progress(mtd_info_t *meminfo, erase_info_t *erase)
++{
++	printf("\rErasing %d Kibyte @ %x -- %2llu %% complete.",
++		meminfo->erasesize / 1024, erase->start,
++		(unsigned long long) erase->start * 100 / meminfo->size);
++	fflush(stdout);
++}
++
++int main(int argc, char *argv[])
+ {
+-	int error = 0;
++	mtd_info_t meminfo;
++	int fd, error = 0, clmpos = 0, clmlen = 8;
++	erase_info_t erase;
++	int isNAND, bbtest = 1;
+ 
+ 	exe_name = argv[0];
+ 
+@@ -119,10 +119,10 @@ static void process_options(int argc, char *argv[])
+ 				switch (option_index) {
+ 					case 0:
+ 						display_help();
+-						break;
++						return 0;
+ 					case 1:
+ 						display_version();
+-						break;
++						return 0;
+ 				}
+ 				break;
+ 			case 'q':
+@@ -143,20 +143,10 @@ static void process_options(int argc, char *argv[])
+ 	if (error) {
+ 		fprintf(stderr, "Try `%s --help' for more information.\n",
+ 				exe_name);
+-		exit(1);
++		return 1;
+ 	}
+ 
+ 	mtd_device = argv[optind];
+-}
+-
+-int main(int argc, char *argv[])
+-{
+-	mtd_info_t meminfo;
+-	int fd, clmpos = 0, clmlen = 8;
+-	erase_info_t erase;
+-	int isNAND, bbtest = 1;
+-
+-	process_options(argc, argv);
+ 
+ 	if ((fd = open(mtd_device, O_RDWR)) < 0) {
+ 		fprintf(stderr, "%s: %s: %s\n", exe_name, mtd_device, strerror(errno));
