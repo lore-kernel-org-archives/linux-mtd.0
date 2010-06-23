@@ -1,17 +1,25 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1ORTNC-00080g-La
-	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 17:04:27 +0000
-Received: by gyb11 with SMTP id 11so4529454gyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Jun 2010 10:04:24 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 23 Jun 2010 13:04:23 -0400
-Message-ID: <AANLkTilwqK96Btosh4kzW0kMDjRWzWskrG_ymekpV9Uz@mail.gmail.com>
-Subject: ubifs_scan() error handling
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org, Lei Wen <leiwen@marvell.com>
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1ORVb2-0004KS-HF
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 19:26:54 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1ORVav-0008TR-2K
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 21:26:45 +0200
+Received: from gate-ca119.motorola.com ([144.189.100.25])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Jun 2010 21:26:45 +0200
+Received: from dave+gmane by gate-ca119.motorola.com with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Jun 2010 21:26:45 +0200
+To: linux-mtd@lists.infradead.org
+From: David Wuertele <dave+gmane@wuertele.com>
+Subject: Performance effect of mounting jffs2 via mtdblock
+Date: Wed, 23 Jun 2010 19:26:33 +0000 (UTC)
+Message-ID: <loom.20100623T212106-800@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +29,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Without having a complete understanding of how the UBI and UBIFS
-internals work, I have a question regarding error handling in
-ubifs_scan().
+Reading http://www.linux-mtd.infradead.org/faq/jffs2.html, it says that jffs2
+can be mounted with or without the mtdblock driver.  Eg:
 
-When ubifs_scan() encounters SCANNED_EMPTY_SPACE during execution, it
-checks whether the LEB is all 0xFFs and if not - returns -EUCLEAN.  In
-some cases (for example, in orphan.c/kill_orphans()), any error
-returned by ubifs_scan() results in a call to ubifs_recover_leb().
-Would it make sense and be acceptable to make this call any time
-ubifs_scan() returns an error?  And if so, would it make more sense to
-include the ubifs_recover_leb() call in ubifs_scan() at goto
-corruption?
+  mount -t jffs2 mtd2 /foo 
+vs
+  mount -t jffs2 /dev/mtdblock2 /foo
+
+I'm wondering what is the difference between these two methods with respect to
+performance?
 
 Thanks,
-twebb
+Dave
