@@ -1,18 +1,22 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1ORDFR-0005CM-Hc
-	for linux-mtd@lists.infradead.org; Tue, 22 Jun 2010 23:51:22 +0000
-Received: by pvc7 with SMTP id 7so1298461pvc.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Jun 2010 16:51:19 -0700 (PDT)
-Message-ID: <4C214C73.7000709@taitradio.com>
-Date: Wed, 23 Jun 2010 11:51:15 +1200
-From: Robin Gilks <robin.gilks@taitradio.com>
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1ORDki-0007hH-CE
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 00:23:40 +0000
+Date: Wed, 23 Jun 2010 01:23:35 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Subject: Re: [PATCH 2/3] flash_eraseall: move constants out of for loop
+Message-ID: <20100623002334.GA22367@shareable.org>
+References: <1276764159-28726-1-git-send-email-ext-andriy.shevchenko@nokia.com>
+	<1276764159-28726-2-git-send-email-ext-andriy.shevchenko@nokia.com>
+	<AANLkTilBFi58-kjjxM2Q5p0I1l9R5WQpiozBiV5udQYW@mail.gmail.com>
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Updating kernel after 5 year gap!!
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AANLkTilBFi58-kjjxM2Q5p0I1l9R5WQpiozBiV5udQYW@mail.gmail.com>
+Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org, "Shevchenko Andriy \(EXT-Teleca/Helsinki\)"
+	<ext-andriy.shevchenko@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Oh dear - I'm going to get some stick from the list for this one...
+Mike Frysinger wrote:
+> NAK: no explanation why you're doing this, and current code has the
+> variables scoped to where they actually get used.
+> 
+> i wonder though why this code even bothers with "static".
 
-I've just come back to a project after a gap of 5 years and wish to 
-update it from 2.4.22 to 2.4.37.9 (latest 2.4) but the functionality 
-contained in maps/physmap seems to have moved on somewhat. How do I 
-invoke the cmdlineparts parser these days - there used to be a 
-part_probes array that defined what probes to do but I can't work out 
-where that functionality has gone.
+The array is static to avoid compiling to code which fills in the
+array at runtime.  I.e. it makes the code smaller, to the same size as
+if they were globals.  And then, only because its static, the const
+can put them in the .rodata section, reducing unshared data size.
 
-Also, the chips/cfi_cmdset_0001 used to have a fixup list for those 
-chips that didn't quite comply with the CFI spec - eg. the ST chip I'm 
-using doesn't support block write correctly. Has this gone entirely or 
-has it moved to the platform stuff like a lot of other things did in 2.6
+Because they're static there's no benefit to moving them to another
+scope.
 
-Some pointers to sample code would be the best pointer by far (being a 
-master of the cut-n-paste) but just telling me would work as well :-)
-
-Cheers
-
--- 
-Robin Gilks
-Senior Design Engineer
-Tait Radio Communications
-DDI: 64 3 3571569
-www.taitradio.com
-robin.gilks@tait.co.nz
-TAIT: THE RIGHT FIT
+-- Jamie
