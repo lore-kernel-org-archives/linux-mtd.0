@@ -1,18 +1,20 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OREQo-0007aR-42
-	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 01:07:11 +0000
-Received: by pwi1 with SMTP id 1so1332523pwi.36
+	id 1ORFLd-0006cq-Mb
+	for linux-mtd@lists.infradead.org; Wed, 23 Jun 2010 02:05:54 +0000
+Received: by gyb11 with SMTP id 11so4067624gyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Jun 2010 18:07:08 -0700 (PDT)
-Message-ID: <4C215E35.7050503@taitradio.com>
-Date: Wed, 23 Jun 2010 13:07:01 +1200
-From: Robin Gilks <robin.gilks@taitradio.com>
+	Tue, 22 Jun 2010 19:05:52 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Progress but stuck on write_buffers/write_words without fixup
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <4C214C73.7000709@taitradio.com>
+References: <4C214C73.7000709@taitradio.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 22 Jun 2010 22:05:32 -0400
+Message-ID: <AANLkTinJbP83XGao2an1wBzCiiXGQzUxIy4Zl24Dz1I2@mail.gmail.com>
+Subject: Re: Updating kernel after 5 year gap!!
+To: Robin Gilks <robin.gilks@taitradio.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OK - I've found a lot of the issues with updating 5 years in one hop - 
-mtdblocks start from 1 because 0 is the whole phys mapped device, name 
-of the partition list is hardcoded to 'phys' but I've still got a 
-problem with the ST Micro M28W640ECB not supporting write_buffers in a 
-CFI compliant fashion - I can get round it by setting the 
-FORCE_WORD_WRITE in cfi_cmdset_0001.c but I'm hoping someone can tell me 
-there is a better way
+On Tue, Jun 22, 2010 at 19:51, Robin Gilks wrote:
+> I've just come back to a project after a gap of 5 years and wish to update
+> it from 2.4.22 to 2.4.37.9 (latest 2.4)
 
-Cheers
-
--- 
-Robin Gilks
-Senior Design Engineer
-Tait Radio Communications
-DDI: 64 3 3571569
-www.taitradio.com
-robin.gilks@tait.co.nz
-TAIT: THE RIGHT FIT
+no one really tracks 2.4 at all, so you're most likely going to be on
+your own wrt "how does 2.4.xx behave ?".  maybe you'll get lucky and
+someone knows, but i'm doubtful :p.
+-mike
