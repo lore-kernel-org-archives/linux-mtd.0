@@ -1,23 +1,22 @@
-Received: from mail.cvg.de ([62.153.82.30])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ORmAY-0008No-Ds
-	for linux-mtd@lists.infradead.org; Thu, 24 Jun 2010 13:08:39 +0000
-Received: from ensc-virt.intern.sigma-chemnitz.de
-	(ensc-virt.intern.sigma-chemnitz.de [192.168.3.24])
-	by mail.cvg.de (8.14.3/8.14.3) with ESMTP id o5OD8MpR028344
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Jun 2010 15:08:23 +0200
-Received: from ensc by ensc-virt.intern.sigma-chemnitz.de with local (Exim
-	4.72) (envelope-from <ensc@sigma-chemnitz.de>) id 1ORmAI-00042y-4y
-	for linux-mtd@lists.infradead.org; Thu, 24 Jun 2010 15:08:22 +0200
-Resent-Message-ID: <lytyoso9x5.fsf@ensc-virt.intern.sigma-chemnitz.de>
-From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-To: inux-mtd@lists.infradead.org
-Subject: [PATCH/mtd-utils] fix integer underflow in jffs2_rtime_compress()
-Date: Thu, 24 Jun 2010 15:02:40 +0200
-Message-Id: <1277384560-15329-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
-Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
-Cc: Artem.Bityutskiy@nokia.com, Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1ORmqg-0005eo-TH
+	for linux-mtd@lists.infradead.org; Thu, 24 Jun 2010 13:52:14 +0000
+Received: by pwi1 with SMTP id 1so2110018pwi.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 24 Jun 2010 06:52:09 -0700 (PDT)
+Subject: Re: [PATCH] mtd-www doc, FAQ, general: spelling fixes
+From: Philby John <pjohn@mvista.com>
+To: Brian Norris <norris@broadcom.com>
+In-Reply-To: <1277332946-14580-1-git-send-email-norris@broadcom.com>
+References: <1277332946-14580-1-git-send-email-norris@broadcom.com>
+Content-Type: text/plain
+Date: Thu, 24 Jun 2010 19:22:02 +0530
+Message-Id: <1277387522.24980.6.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: pjohn@mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When '*dstlen' is 0 or 1, comparison will return wrong result.  Reported
-by valgrind as
+On Wed, 2010-06-23 at 15:42 -0700, Brian Norris wrote:
+> Several spelling, word choice, etc. edits throughout
+> 
+> Signed-off-by: Brian Norris <norris@broadcom.com>
+> ---
+>  doc/general.xml |    2 +-
+>  doc/nand.xml    |   60 +++++++++++++++++++++++++++---------------------------
+>  doc/onenand.xml |   18 ++++++++--------
+>  doc/ubi.xml     |   14 ++++++------
+>  doc/ubifs.xml   |   18 ++++++++--------
+>  faq/general.xml |    6 ++--
+>  faq/jffs2.xml   |   18 ++++++++--------
+>  faq/nand.xml    |   14 ++++++------
+>  faq/ubi.xml     |   48 ++++++++++++++++++++++----------------------
+>  faq/ubifs.xml   |   48 ++++++++++++++++++++++----------------------
+>  source.xml      |    2 +-
+>  11 files changed, 124 insertions(+), 124 deletions(-)
+> 
+> diff --git a/doc/general.xml b/doc/general.xml
+> index e170ace..4e1bfdd 100644
+> --- a/doc/general.xml
+> +++ b/doc/general.xml
+> @@ -122,7 +122,7 @@ git://git.infradead.org/users/ahunter/nand-tests.git
+>  	and nasty DMA issues on an OMAP2 board with OneNAND flash, just by
+>  	running this tests for few hours.</li>
+>  
+> -	<li><b>mtd_nandecctest</b>: a simple test that checks correctess of the
+> +	<li><b>mtd_nandecctest</b>: a simple test that checks correctness of the
+>  	built-in software ECC for 256 and 512-byte buffers; this test is not
+>  	driver-specific but tests general NAND support code.</li>
+>  </ul>
+> diff --git a/doc/nand.xml b/doc/nand.xml
+> index 549827b..776f891 100644
+> --- a/doc/nand.xml
+> +++ b/doc/nand.xml
+> @@ -16,8 +16,8 @@ NAND and NOR Flash is the bus interface. NOR Flash is connected to a address / d
+>   bus direct like other memory devices as SRAM etc. NAND Flash uses a multiplexed I/O 
+>   Interface with some additional control pins. NAND flash is a sequential access device 
+>   appropriate for mass storage applications, while NOR flash is a random access device 
+> - appropriate for code storage application.NOR Flash can be used for code storage and 
+> - code execution. Code stored on NAND Flash can't be executed frome there. It must be 
+> + appropriate for code storage application. NOR Flash can be used for code storage and 
+> + code execution. Code stored on NAND Flash can't be executed from there. It must be 
+>   loaded into RAM memory and executed from there.</p>
 
-==5919== Invalid write of size 1
-==5919==    at 0x40564E: jffs2_rtime_compress (compr_rtime.c:51)
-==5919==    by 0x40676B: jffs2_compress (compr.c:246)
-==5919==    by 0x403EE4: recursive_populate_directory (mkfs.jffs2.c:884)
-==5919==  Address 0x4e1bdb1 is 0 bytes after a block of size 1 alloc'd
-==5919==    at 0x4A0515D: malloc (vg_replace_malloc.c:195)
-==5919==    by 0x40671C: jffs2_compress (compr.c:229)
-==5919==    by 0x403EE4: recursive_populate_directory (mkfs.jffs2.c:884)
+<-snip->
 
-Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
----
- compr_rtime.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+>  Probably because you flash is too small? Try to use JFFS2 then, becasue it
+                    ^^^                                            ^^^^^
+You missed "you", should be "your", and "becasue".
 
-diff --git a/compr_rtime.c b/compr_rtime.c
-index 131536c..5613963 100644
---- a/compr_rtime.c
-+++ b/compr_rtime.c
-@@ -32,7 +32,7 @@ static int jffs2_rtime_compress(unsigned char *data_in, unsigned char *cpage_out
- 
- 	memset(positions,0,sizeof(positions));
- 
--	while (pos < (*sourcelen) && outpos <= (*dstlen)-2) {
-+	while (pos < (*sourcelen) && outpos+2 <= (*dstlen)) {
- 		int backpos, runlen=0;
- 		unsigned char value;
- 
--- 
-1.7.0.1
+Regards,
+Philby
