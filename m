@@ -1,25 +1,23 @@
-Received: from mail2.shareable.org ([80.68.89.115])
+Received: from mail.cvg.de ([62.153.82.30])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ORaU1-0005yX-E5
-	for linux-mtd@lists.infradead.org; Thu, 24 Jun 2010 00:39:57 +0000
-Date: Thu, 24 Jun 2010 01:39:54 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH 2/3] flash_eraseall: move constants out of for loop
-Message-ID: <20100624003954.GK7058@shareable.org>
-References: <1276764159-28726-1-git-send-email-ext-andriy.shevchenko@nokia.com>
-	<1276764159-28726-2-git-send-email-ext-andriy.shevchenko@nokia.com>
-	<AANLkTilBFi58-kjjxM2Q5p0I1l9R5WQpiozBiV5udQYW@mail.gmail.com>
-	<20100623002334.GA22367@shareable.org>
-	<AANLkTimllsVj3nGC7vWP9oKPJXwIyjd71y0KbA7rFhPH@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AANLkTimllsVj3nGC7vWP9oKPJXwIyjd71y0KbA7rFhPH@mail.gmail.com>
-Cc: "Bityutskiy Artem \(Nokia-D/Helsinki\)" <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, "Shevchenko Andriy \(EXT-Teleca/Helsinki\)"
-	<ext-andriy.shevchenko@nokia.com>
+	id 1ORmAY-0008No-Ds
+	for linux-mtd@lists.infradead.org; Thu, 24 Jun 2010 13:08:39 +0000
+Received: from ensc-virt.intern.sigma-chemnitz.de
+	(ensc-virt.intern.sigma-chemnitz.de [192.168.3.24])
+	by mail.cvg.de (8.14.3/8.14.3) with ESMTP id o5OD8MpR028344
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Jun 2010 15:08:23 +0200
+Received: from ensc by ensc-virt.intern.sigma-chemnitz.de with local (Exim
+	4.72) (envelope-from <ensc@sigma-chemnitz.de>) id 1ORmAI-00042y-4y
+	for linux-mtd@lists.infradead.org; Thu, 24 Jun 2010 15:08:22 +0200
+Resent-Message-ID: <lytyoso9x5.fsf@ensc-virt.intern.sigma-chemnitz.de>
+From: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+To: inux-mtd@lists.infradead.org
+Subject: [PATCH/mtd-utils] fix integer underflow in jffs2_rtime_compress()
+Date: Thu, 24 Jun 2010 15:02:40 +0200
+Message-Id: <1277384560-15329-1-git-send-email-enrico.scholz@sigma-chemnitz.de>
+Sender: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+Cc: Artem.Bityutskiy@nokia.com, Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Frysinger wrote:
-> On Tue, Jun 22, 2010 at 20:23, Jamie Lokier wrote:
-> > Mike Frysinger wrote:
-> >> i wonder though why this code even bothers with "static".
-> >
-> > The array is static to avoid compiling to code which fills in the
-> > array at runtime.  I.e. it makes the code smaller, to the same size as
-> > if they were globals.  And then, only because its static, the const
-> > can put them in the .rodata section, reducing unshared data size.
-> 
-> if it were generated on the stack at runtime, the .text is shared too
+When '*dstlen' is 0 or 1, comparison will return wrong result.  Reported
+by valgrind as
 
-Shared, but larger than the static-const data it replaces.
+==5919== Invalid write of size 1
+==5919==    at 0x40564E: jffs2_rtime_compress (compr_rtime.c:51)
+==5919==    by 0x40676B: jffs2_compress (compr.c:246)
+==5919==    by 0x403EE4: recursive_populate_directory (mkfs.jffs2.c:884)
+==5919==  Address 0x4e1bdb1 is 0 bytes after a block of size 1 alloc'd
+==5919==    at 0x4A0515D: malloc (vg_replace_malloc.c:195)
+==5919==    by 0x40671C: jffs2_compress (compr.c:229)
+==5919==    by 0x403EE4: recursive_populate_directory (mkfs.jffs2.c:884)
 
-> > Because they're static there's no benefit to moving them to another
-> > scope.
-> 
-> that's sort of what i expected, but i found it odd that it isnt:
->     static const char * const short_options = "jq";
+Signed-off-by: Enrico Scholz <enrico.scholz@sigma-chemnitz.de>
+---
+ compr_rtime.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-You're right, I missed that.
-I'd have used this myself:
-
-static const char short_options[] = "jq";
-
--- Jamie
+diff --git a/compr_rtime.c b/compr_rtime.c
+index 131536c..5613963 100644
+--- a/compr_rtime.c
++++ b/compr_rtime.c
+@@ -32,7 +32,7 @@ static int jffs2_rtime_compress(unsigned char *data_in, unsigned char *cpage_out
+ 
+ 	memset(positions,0,sizeof(positions));
+ 
+-	while (pos < (*sourcelen) && outpos <= (*dstlen)-2) {
++	while (pos < (*sourcelen) && outpos+2 <= (*dstlen)) {
+ 		int backpos, runlen=0;
+ 		unsigned char value;
+ 
+-- 
+1.7.0.1
