@@ -1,19 +1,22 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from tethra.basler.com ([206.107.254.19])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OSGap-0002LD-TR
-	for linux-mtd@lists.infradead.org; Fri, 25 Jun 2010 21:37:49 +0000
-From: "Brian Norris" <norris@broadcom.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2] mtd/nand, BB detect: factory marker in page 1, 2,
-	last and byte 1 or 6
-Date: Fri, 25 Jun 2010 14:36:31 -0700
-Message-ID: <1277501791-3146-1-git-send-email-norris@broadcom.com>
-In-Reply-To: <1277325362-13326-1-git-send-email-norris@broadcom.com>
-References: <1277325362-13326-1-git-send-email-norris@broadcom.com>
+	id 1OSIdK-0008RU-1X
+	for linux-mtd@lists.infradead.org; Fri, 25 Jun 2010 23:48:30 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <norris@broadcom.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: JFFS2 corruption when mounting filesystem with filenames
+	oflength> 7
+Date: Fri, 25 Jun 2010 18:48:23 -0500
+Message-ID: <181804936ABC2349BE503168465576460F20CB90@exchserver.basler.com>
+In-Reply-To: <181804936ABC2349BE503168465576460F1AB73E@exchserver.basler.com>
+References: <181804936ABC2349BE503168465576460F1AAEC6@exchserver.basler.com>
+	<181804936ABC2349BE503168465576460F1AAEE1@exchserver.basler.com>
+	<181804936ABC2349BE503168465576460F1AB73E@exchserver.basler.com>
+From: "Steve Deiters" <SteveDeiters@BASLER.com>
+To: <linux-mtd@lists.infradead.org>
+Cc: linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,155 +26,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some level of support for various scanning locations was already built in,
-but this required clean-up. First, BB marker location cannot be determined
-_only_ by the page size. Instead, I implemented some heuristic detection
-based on data sheets from various manufacturers (all found in
-nand_base.c:nand_get_flash_type()).
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org=20
+> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of=20
+> Steve Deiters
+> Sent: Thursday, June 24, 2010 3:02 PM
+> To: linux-mtd@lists.infradead.org
+> Subject: RE: JFFS2 corruption when mounting filesystem with=20
+> filenames oflength> 7
+>=20
+> > -----Original Message-----
+> > From: linux-mtd-bounces@lists.infradead.org
+> > [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Steve=20
+> > Deiters
+> > Sent: Wednesday, June 23, 2010 5:42 PM
+> > To: linux-mtd@lists.infradead.org
+> > Subject: RE: JFFS2 corruption when mounting filesystem with=20
+> filenames=20
+> > oflength > 7
+> >=20
+> > > -----Original Message-----
+> > > From: linux-mtd-bounces@lists.infradead.org
+> > > [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Steve=20
+> > > Deiters
+> > > Sent: Wednesday, June 23, 2010 5:21 PM
+> > > To: linux-mtd@lists.infradead.org
+> > > Subject: JFFS2 corruption when mounting filesystem with
+> > filenames of
+> > > length > 7
+> > >=20
+> > > I found an archived post which seems to be identical to my issue.
+> > > However, this is quite old and there never seemed to be any=20
+> > > resolution.
+> > >=20
+> > > http://www.infradead.org/pipermail/linux-mtd/2006-September/01
+> > > 6491.html
+> > >=20
+> > > If I mount a filesystem that has filenames greater than 7
+> > characters
+> > > in length, the files are corrupted when I mount.
+> > > In my case, I am making a
+> > > JFFS2 image with mkfs.jffs2 and flashing it in with u-boot. =20
+> > > However, I have attached a workflow where I erase the Flash
+> > and create
+> > > a new filesystem completely within Linux and it gives the same=20
+> > > behavior.  I can list the files with the 'ls'
+> > > command from within u-boot.  If I mount from within=20
+> Linux, and then=20
+> > > reboot into u-boot, it will not display any files that had
+> > a filename
+> > > greater than 7 characters.
+> > >=20
+> > > I enabled the MTD debug verbosity at level 2 for the
+> > attached example
+> > > session.
+> > >=20
+> > > I am running on a custom board with a MPC5121 and Linux 2.6.33.4.
+> > >=20
+> > > Thanks in advance for any help.
+> >=20
+> >=20
+> > Sorry for the jumbled mess.  Looks like the line endings are messed=20
+> > up.
+> > Trying again.  I also provided this as an attachment in=20
+> case it gets=20
+> > messed up again.
+>=20
+> Once again sorry for the mess.
+>=20
+> I tried this again with the DENX-v2.6.34 tag in the DENX git=20
+> repository (git://git.denx.de/linux-2.6-denx.git).  The only=20
+> modification I made was to add my dts file.  I still get the=20
+> same issue I had before.
+>=20
+> I've attached my kernel config if that gives any clues.
+>=20
+> Are there any thoughts on what may be causing this?
+>=20
+> Thanks.
 
-Second, once these options were identified, they were not handled properly
-by nand_bbt.c:nand_default_bbt(). I believe there are only 5 combinations
-of page location/byte offset, so I updated the nand_bbt_desc structs
-accordingly.
 
-I have tested these changes with several chips, but particularly a Micron
-29F8G08MAA chip. We use a memory-based, not flash-based, BBT; hence the
-edits only to the "memory_based" side of things. Most edits could be
-applicable to both, but I can't verify that. For instance, I do not
-understand why the small discrepancies between the "memory_based" and
-"flash_based" nand_bbt_descr structs.
+I think there may be something weird going on with the memcpy in my
+build.  If I use the following patch I no longer get errors when I mount
+the filesystem.  All I did was replace the memcpy with a loop.
 
-Finally, please provide any feedback you can. I'm sure there's something
-I have overlooked, but I feel this is a step in the right direction.
+I'm not sure what's special about this particular use of memcpy.  I
+can't believe that things would be working as well as they do if memcpy
+was broken in general.
 
-Signed-off-by: Brian Norris <norris@broadcom.com>
----
- drivers/mtd/nand/nand_base.c |   23 +++++++++++++++++++----
- drivers/mtd/nand/nand_bbt.c  |   41 ++++++++++++++++++++++++++++++++++-------
- 2 files changed, 53 insertions(+), 11 deletions(-)
+This is on a PowerPC 32 bit build for a MPC5121.  I am using a GCC 4.1.2
+to compile.  Is anyone aware of any issues with memcpy in this
+configuration?
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e6cf9ae..2d1ee3c 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2920,9 +2920,13 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 		chip->chip_shift = ffs((unsigned)(chip->chipsize >> 32)) + 32 - 1;
- 
- 	/* Set the bad block position */
--	chip->badblockpos = mtd->writesize > 512 ?
--		NAND_LARGE_BADBLOCK_POS : NAND_SMALL_BADBLOCK_POS;
--	chip->badblockbits = 8;
-+	chip->badblockpos = (!(busw & NAND_BUSWIDTH_16) &&
-+			(*maf_id == NAND_MFR_STMICRO ||
-+			 (*maf_id == NAND_MFR_SAMSUNG &&
-+			  mtd->writesize == 512) ||
-+			 *maf_id == NAND_MFR_AMD))
-+		? NAND_SMALL_BADBLOCK_POS : NAND_LARGE_BADBLOCK_POS;
-+
- 
- 	/* Get chip options, preserve non chip based options */
- 	chip->options &= ~NAND_CHIPOPTIONS_MSK;
-@@ -2941,12 +2945,23 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 
- 	/*
- 	 * Bad block marker is stored in the last page of each block
--	 * on Samsung and Hynix MLC devices
-+	 * on Samsung and Hynix MLC devices; stored in first two pages 
-+	 * of each block on Micron devices with 2KiB pages and on 
-+	 * SLC Samsung, Hynix, and AMD/Spansion. All others scan only 
-+	 * the first page.
- 	 */
- 	if ((chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
- 			(*maf_id == NAND_MFR_SAMSUNG ||
- 			 *maf_id == NAND_MFR_HYNIX))
- 		chip->options |= NAND_BBT_SCANLASTPAGE;
-+	else if ((!(chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
-+				(*maf_id == NAND_MFR_SAMSUNG ||
-+				 *maf_id == NAND_MFR_HYNIX ||
-+				 *maf_id == NAND_MFR_AMD)) ||
-+			(mtd->writesize == 2048 &&
-+			 *maf_id == NAND_MFR_MICRON))
-+		chip->options |= NAND_BBT_SCAN2NDPAGE;
-+
- 
- 	/* Check for AND chips with 4 page planes */
- 	if (chip->options & NAND_4PAGE_ARRAY)
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 71d83be..1719c56 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1093,29 +1093,50 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
- static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
- 
- static struct nand_bbt_descr smallpage_memorybased = {
--	.options = NAND_BBT_SCAN2NDPAGE,
--	.offs = 5,
-+	.options = 0,
-+	.offs = NAND_SMALL_BADBLOCK_POS,
- 	.len = 1,
- 	.pattern = scan_ff_pattern
- };
- 
-+static struct nand_bbt_descr smallpage_scan2nd_memorybased = {
-+	.options = NAND_BBT_SCAN2NDPAGE,
-+	.offs = NAND_SMALL_BADBLOCK_POS,
-+	.len = 2,
-+	.pattern = scan_ff_pattern
-+};
-+
- static struct nand_bbt_descr largepage_memorybased = {
- 	.options = 0,
--	.offs = 0,
-+	.offs = NAND_LARGE_BADBLOCK_POS,
-+	.len = 1,
-+	.pattern = scan_ff_pattern
-+};
-+
-+static struct nand_bbt_descr largepage_scan2nd_memorybased = {
-+	.options = NAND_BBT_SCAN2NDPAGE,
-+	.offs = NAND_LARGE_BADBLOCK_POS,
- 	.len = 2,
- 	.pattern = scan_ff_pattern
- };
- 
-+static struct nand_bbt_descr lastpage_memorybased = {
-+	.options = NAND_BBT_SCANLASTPAGE,
-+	.offs = 0,
-+	.len = 1,
-+	.pattern = scan_ff_pattern
-+};
-+
- static struct nand_bbt_descr smallpage_flashbased = {
- 	.options = NAND_BBT_SCAN2NDPAGE,
--	.offs = 5,
-+	.offs = NAND_SMALL_BADBLOCK_POS,
- 	.len = 1,
- 	.pattern = scan_ff_pattern
- };
- 
- static struct nand_bbt_descr largepage_flashbased = {
- 	.options = NAND_BBT_SCAN2NDPAGE,
--	.offs = 0,
-+	.offs = NAND_LARGE_BADBLOCK_POS,
- 	.len = 2,
- 	.pattern = scan_ff_pattern
- };
-@@ -1197,8 +1218,14 @@ int nand_default_bbt(struct mtd_info *mtd)
- 		this->bbt_td = NULL;
- 		this->bbt_md = NULL;
- 		if (!this->badblock_pattern) {
--			this->badblock_pattern = (mtd->writesize > 512) ?
--			    &largepage_memorybased : &smallpage_memorybased;
-+			if (this->options & NAND_BBT_SCANLASTPAGE)
-+				this->badblock_pattern = &lastpage_memorybased;
-+			else if (this->options & NAND_BBT_SCAN2NDPAGE)
-+				this->badblock_pattern = this->badblockpos == NAND_SMALL_BADBLOCK_POS ? 
-+					&smallpage_scan2nd_memorybased : &largepage_scan2nd_memorybased;
-+			else
-+				this->badblock_pattern = this->badblockpos == NAND_SMALL_BADBLOCK_POS ? 
-+					&smallpage_memorybased : &largepage_memorybased;
- 		}
+Thanks.
+
+-------
+
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 46f870d..673caa2 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -1038,7 +1038,10 @@ static int jffs2_scan_dirent_node(struct
+jffs2_sb_info *c, struct jffs2_eraseblo
+ 	if (!fd) {
+ 		return -ENOMEM;
  	}
- 	return nand_scan_bbt(mtd, this->badblock_pattern);
--- 
-1.7.1
+-	memcpy(&fd->name, rd->name, checkedlen);
++	int i;
++	for(i =3D 0; i < checkedlen; i++)
++		((unsigned char*)fd->name)[i] =3D ((const unsigned
+char*)rd->name)[i];
++
+ 	fd->name[checkedlen] =3D 0;
+=20
+ 	crc =3D crc32(0, fd->name, rd->nsize);
