@@ -1,12 +1,15 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OSJjg-00054i-0J
-	for linux-mtd@lists.infradead.org; Sat, 26 Jun 2010 00:59:09 +0000
+	id 1OSJjn-00054i-4R
+	for linux-mtd@lists.infradead.org; Sat, 26 Jun 2010 00:59:16 +0000
 From: "Brian Norris" <norris@broadcom.com>
 To: "Artem Bityutskiy" <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH 1/2] mtd-utils: formatting of odd-sized OOB in nanddump
-Date: Fri, 25 Jun 2010 17:58:03 -0700
-Message-ID: <1277513884-14715-1-git-send-email-norris@broadcom.com>
+Subject: [PATCH 2/2] mtd-utils (nandwrite + nanddump): Support 4096+218,
+	4096+224 OOB
+Date: Fri, 25 Jun 2010 17:58:04 -0700
+Message-ID: <1277513884-14715-2-git-send-email-norris@broadcom.com>
+In-Reply-To: <1277513884-14715-1-git-send-email-norris@broadcom.com>
+References: <1277513884-14715-1-git-send-email-norris@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -20,58 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Changed OOB output formatting in nanddump.
-Most NAND devices have OOB regions with multiples of 16 bytes.
-With newer devices, a 218-byte OOB does not split nicely into
-lines of 16 bytes. This patch fixes the formatting, allowing a
-last line of 10 bytes instead of 16.
+Parts of this are a resubmission of this patch:
+http://lists.infradead.org/pipermail/linux-mtd/2010-May/029885.html
+
+This was tested with Samsung K9GAG08U0D.
 
 Signed-off-by: Brian Norris <norris@broadcom.com>
 ---
- nanddump.c |   31 ++++++++++++++++++++++---------
- 1 files changed, 22 insertions(+), 9 deletions(-)
+ nanddump.c  |    8 ++++++--
+ nandwrite.c |    6 ++++--
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/nanddump.c b/nanddump.c
-index e44ab36..190a653 100644
+index 190a653..b0dd227 100644
 --- a/nanddump.c
 +++ b/nanddump.c
-@@ -381,15 +381,28 @@ int main(int argc, char * const argv[])
- 			}
+@@ -174,8 +174,12 @@ static void process_options (int argc, char * const argv[])
+ /*
+  * Buffers for reading data from flash
+  */
+-static unsigned char readbuf[4096];
+-static unsigned char oobbuf[128];
++
++#define NAND_MAX_PAGESIZE 4096
++#define NAND_MAX_OOBSIZE 256
++
++static unsigned char readbuf[NAND_MAX_PAGESIZE];
++static unsigned char oobbuf[NAND_MAX_OOBSIZE];
  
- 			for (i = 0; i < meminfo.oobsize; i += 16) {
--				sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
--						"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
--						oobbuf[i], oobbuf[i+1], oobbuf[i+2],
--						oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
--						oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
--						oobbuf[i+9], oobbuf[i+10], oobbuf[i+11],
--						oobbuf[i+12], oobbuf[i+13], oobbuf[i+14],
--						oobbuf[i+15]);
--				write(ofd, pretty_buf, 60);
-+				/* Check if we have a full 16 bytes left in the OOB */
-+				if (i+15 < meminfo.oobsize) {
-+					/* Print 16 bytes */
-+					sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
-+							"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
-+							oobbuf[i], oobbuf[i+1], oobbuf[i+2],
-+							oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
-+							oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
-+							oobbuf[i+9], oobbuf[i+10], oobbuf[i+11],
-+							oobbuf[i+12], oobbuf[i+13], oobbuf[i+14],
-+							oobbuf[i+15]);
-+					write(ofd, pretty_buf, 60);
-+				} else {
-+					/* Print 10 bytes */
-+					sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
-+							"%02x %02x %02x %02x\n",
-+							oobbuf[i], oobbuf[i+1], oobbuf[i+2],
-+							oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
-+							oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
-+							oobbuf[i+9]);
-+					write(ofd, pretty_buf, 42);
-+				}
- 			}
- 		} else
- 			write(ofd, oobbuf, meminfo.oobsize);
+ /*
+  * Main program
+diff --git a/nandwrite.c b/nandwrite.c
+index 1b4ca3d..0d59171 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -43,7 +43,7 @@
+ #define VERSION "$Revision: 1.32 $"
+ 
+ #define MAX_PAGE_SIZE	4096
+-#define MAX_OOB_SIZE	128
++#define MAX_OOB_SIZE	256
+ 
+ // oob layouts to pass into the kernel as default
+ static struct nand_oobinfo none_oobinfo = {
+@@ -302,7 +302,9 @@ int main(int argc, char * const argv[])
+ 			!(meminfo.oobsize == 8 && meminfo.writesize == 256) &&
+ 			!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
+ 			!(meminfo.oobsize == 64 && meminfo.writesize == 4096) &&
+-			!(meminfo.oobsize == 128 && meminfo.writesize == 4096)) {
++			!(meminfo.oobsize == 128 && meminfo.writesize == 4096) &&
++			!(meminfo.oobsize == 218 && meminfo.writesize == 4096) &&
++			!(meminfo.oobsize == 224 && meminfo.writesize == 4096)) {
+ 		fprintf(stderr, "Unknown flash (not normal NAND)\n");
+ 		close(fd);
+ 		exit (EXIT_FAILURE);
 -- 
 1.7.1
