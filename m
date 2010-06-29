@@ -1,21 +1,15 @@
-Received: from bld-mail15.adl6.internode.on.net ([150.101.137.100]
-	helo=mail.internode.on.net)
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OTUbC-0001Y6-GU
-	for linux-mtd@lists.infradead.org; Tue, 29 Jun 2010 06:47:16 +0000
-Message-ID: <4C2996E7.9040209@elphinstone.net>
-Date: Tue, 29 Jun 2010 16:47:03 +1000
-From: Mark Ware <mware@elphinstone.net>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [RFC/PATCH] doc2000: Fix uninitialized variable
-	in	doc_ecc_decode()
-References: <4BFDCEC3.7070601@elphinstone.net>
-	<1277792986.1041.959.camel@localhost>
-In-Reply-To: <1277792986.1041.959.camel@localhost>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd: cfi_probe: print manufacturer and id of probed chip
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Guillaume LECERF <glecerf@gmail.com>
+In-Reply-To: <20100614103345.26103.40429.stgit@dev.siriade.com>
+References: <20100614103345.26103.40429.stgit@dev.siriade.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 29 Jun 2010 09:45:18 +0300
+Message-ID: <1277793918.1041.970.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 29/06/10 16:29, Artem Bityutskiy wrote:
-> On Thu, 2010-05-27 at 11:45 +1000, Mark Ware wrote:
->> The variable 'syn' was being used uninitialized.  Also
->> fixed incorrect use of syn[] vs s[].
->>
->> Tested on powerpc board with 64MB DOC2000.
->> ---
->>
->> I am porting from a 2.4.18 kernel to 2.6.32, and I saw random media header
->> mismatches causing a failure to detect the DOC device partitions.  Tracing
->> through, I saw this variable being used uninitialized and I suspect
->> incorrectly also.
->>
->> I do not really understand how the ecc/syndrome code works, so I do not
->> know if this patch is the correct solution, but it did make my problem
->> go away...
->>
->> CC: Thomas Gleixner as I believe he may have written this function initially.
+On Mon, 2010-06-14 at 12:33 +0200, Guillaume LECERF wrote:
+> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+> ---
+>  drivers/mtd/chips/cfi_probe.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> Please, always add Signed-off-by for kernel patches. I added it for you.
-> 
+> diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+> index b2acd32..5f5ba3e 100644
+> --- a/drivers/mtd/chips/cfi_probe.c
+> +++ b/drivers/mtd/chips/cfi_probe.c
+> @@ -235,9 +235,9 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+>  	cfi_qry_mode_off(base, map, cfi);
+>  	xip_allowed(base, map);
+>  
+> -	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
+> +	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank. mfr=0x%08x id=0x%08x\n",
+>  	       map->name, cfi->interleave, cfi->device_type*8, base,
+> -	       map->bankwidth*8);
+> +	       map->bankwidth*8, cfi->mfr, cfi->id);
 
-Thanks.  I guess I expected to be told that I was smoking something and that
-my DOC error disappearing was unrelated...
+This is not a debugging print, so I think you should do it in a more
+user-friendly way. E.g., "manufect. ID %#08x, chip id %#08x".
 
-Mark
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
