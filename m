@@ -1,14 +1,17 @@
-Subject: Re: [PATCH] mtd: cfi_probe: print manufacturer and id of probed chip
+Subject: Re: [PATCH] ixp4xx: add support for static flash partitions
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Guillaume LECERF <glecerf@gmail.com>
-In-Reply-To: <20100614103345.26103.40429.stgit@dev.siriade.com>
-References: <20100614103345.26103.40429.stgit@dev.siriade.com>
+To: Richard Cochran <richardcochran@gmail.com>
+In-Reply-To: <20100614161519.GB24877@riccoc20.at.omicron.at>
+References: <20100531162434.GA4599@riccoc20.at.omicron.at>
+	<1276420566.19028.184.camel@localhost>
+	<20100614161519.GB24877@riccoc20.at.omicron.at>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 29 Jun 2010 09:45:18 +0300
-Message-ID: <1277793918.1041.970.camel@localhost>
+Date: Tue, 29 Jun 2010 09:47:48 +0300
+Message-ID: <1277794068.1041.971.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Krzysztof Halasa <khc@pm.waw.pl>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,28 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-06-14 at 12:33 +0200, Guillaume LECERF wrote:
-> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
-> ---
->  drivers/mtd/chips/cfi_probe.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
+On Mon, 2010-06-14 at 18:15 +0200, Richard Cochran wrote:
+> On Sun, Jun 13, 2010 at 12:16:06PM +0300, Artem Bityutskiy wrote:
+> > I could fix your patch up myself, but I do not know the code, so please,
+> > re-send a patch against the latest mtd-2.6 tree.
 > 
-> diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-> index b2acd32..5f5ba3e 100644
-> --- a/drivers/mtd/chips/cfi_probe.c
-> +++ b/drivers/mtd/chips/cfi_probe.c
-> @@ -235,9 +235,9 @@ static int __xipram cfi_chip_setup(struct map_info *map,
->  	cfi_qry_mode_off(base, map, cfi);
->  	xip_allowed(base, map);
->  
-> -	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
-> +	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank. mfr=0x%08x id=0x%08x\n",
->  	       map->name, cfi->interleave, cfi->device_type*8, base,
-> -	       map->bankwidth*8);
-> +	       map->bankwidth*8, cfi->mfr, cfi->id);
+> Okay, here it is again, this time against today's master branch of 
+> git://git.infradead.org/mtd-2.6.git
+> 
+> Thanks,
+> Richard
+> 
+> 
+> This patch adds support for static flash partitioning from a platform
+> device. Also, we clean up some weirdness where statements were separated
+> by commas instead of semicolons. While we are at it, fix some minor bad
+> white space, too.
+> 
+> Signed-off-by: Richard Cochran <richard.cochran@omicron.at>
 
-This is not a debugging print, so I think you should do it in a more
-user-friendly way. E.g., "manufect. ID %#08x, chip id %#08x".
+Pushed to l2-mtd-2.6.git / dunno.
 
 -- 
 Best Regards,
