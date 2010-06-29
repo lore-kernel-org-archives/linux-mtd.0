@@ -1,22 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OTUhb-0007tB-6M
-	for linux-mtd@lists.infradead.org; Tue, 29 Jun 2010 06:53:51 +0000
-Subject: Re: [RFC/PATCH] doc2000: Fix uninitialized variable in
-	doc_ecc_decode()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mark Ware <mware@elphinstone.net>
-In-Reply-To: <4C2996E7.9040209@elphinstone.net>
-References: <4BFDCEC3.7070601@elphinstone.net>
-	<1277792986.1041.959.camel@localhost>
-	<4C2996E7.9040209@elphinstone.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 29 Jun 2010 09:50:40 +0300
-Message-ID: <1277794240.1041.973.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from smtp22.services.sfr.fr ([93.17.128.11])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OTW9k-0004Ac-90
+	for linux-mtd@lists.infradead.org; Tue, 29 Jun 2010 08:27:01 +0000
+Subject: [PATCH] mtd: cfi_probe: print manufacturer and id of probed chip
+To: linux-mtd@lists.infradead.org
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Tue, 29 Jun 2010 10:32:37 +0200
+Message-ID: <20100629083204.11146.37097.stgit@dev.siriade.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-06-29 at 16:47 +1000, Mark Ware wrote:
-> On 29/06/10 16:29, Artem Bityutskiy wrote:
-> > On Thu, 2010-05-27 at 11:45 +1000, Mark Ware wrote:
-> >> The variable 'syn' was being used uninitialized.  Also
-> >> fixed incorrect use of syn[] vs s[].
-> >>
-> >> Tested on powerpc board with 64MB DOC2000.
-> >> ---
-> >>
-> >> I am porting from a 2.4.18 kernel to 2.6.32, and I saw random media header
-> >> mismatches causing a failure to detect the DOC device partitions.  Tracing
-> >> through, I saw this variable being used uninitialized and I suspect
-> >> incorrectly also.
-> >>
-> >> I do not really understand how the ecc/syndrome code works, so I do not
-> >> know if this patch is the correct solution, but it did make my problem
-> >> go away...
-> >>
-> >> CC: Thomas Gleixner as I believe he may have written this function initially.
-> > 
-> > Please, always add Signed-off-by for kernel patches. I added it for you.
-> > 
-> 
-> Thanks.  I guess I expected to be told that I was smoking something and that
-> my DOC error disappearing was unrelated...
+2010/6/29 Artem Bityutskiy <dedekind1@gmail.com>:
+> This is not a debugging print, so I think you should do it in a more
+> user-friendly way. E.g., "manufect. ID %#08x, chip id %#08x".
 
-Note, I did not really review your patch - the MTD maintainer will take
-a look at it later, probably.
+OK, here it is again.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+---
+ drivers/mtd/chips/cfi_probe.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index b2acd32..8f5b96a 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -235,9 +235,9 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	cfi_qry_mode_off(base, map, cfi);
+ 	xip_allowed(base, map);
+ 
+-	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
++	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank. Manufacturer ID %#08x Chip ID %#08x\n",
+ 	       map->name, cfi->interleave, cfi->device_type*8, base,
+-	       map->bankwidth*8);
++	       map->bankwidth*8, cfi->mfr, cfi->id);
+ 
+ 	return 1;
+ }
