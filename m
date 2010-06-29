@@ -1,17 +1,20 @@
-Received: from smtp22.services.sfr.fr ([93.17.128.11])
+Received: from fg-out-1718.google.com ([72.14.220.158])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OTW9k-0004Ac-90
-	for linux-mtd@lists.infradead.org; Tue, 29 Jun 2010 08:27:01 +0000
-Subject: [PATCH] mtd: cfi_probe: print manufacturer and id of probed chip
-To: linux-mtd@lists.infradead.org
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Tue, 29 Jun 2010 10:32:37 +0200
-Message-ID: <20100629083204.11146.37097.stgit@dev.siriade.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	id 1OTXqJ-0006k6-6T
+	for linux-mtd@lists.infradead.org; Tue, 29 Jun 2010 10:15:04 +0000
+Received: by fg-out-1718.google.com with SMTP id l26so454338fgb.0
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 29 Jun 2010 03:15:01 -0700 (PDT)
+From: Kulikov Vasiliy <segooon@gmail.com>
+To: Kernel Janitors <kernel-janitors@vger.kernel.org>
+Subject: [PATCH 01/25] r852: remove casts from void*
+Date: Tue, 29 Jun 2010 14:14:57 +0400
+Message-Id: <1277806498-30738-1-git-send-email-segooon@gmail.com>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Maxim Levitsky <maximlevitsky@gmail.com>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Tejun Heo <tj@kernel.org>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/6/29 Artem Bityutskiy <dedekind1@gmail.com>:
-> This is not a debugging print, so I think you should do it in a more
-> user-friendly way. E.g., "manufect. ID %#08x, chip id %#08x".
+Remove unnesessary casts from void*.
 
-OK, here it is again.
-
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
 ---
- drivers/mtd/chips/cfi_probe.c |    4 ++--
+ drivers/mtd/nand/r852.c |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-index b2acd32..8f5b96a 100644
---- a/drivers/mtd/chips/cfi_probe.c
-+++ b/drivers/mtd/chips/cfi_probe.c
-@@ -235,9 +235,9 @@ static int __xipram cfi_chip_setup(struct map_info *map,
- 	cfi_qry_mode_off(base, map, cfi);
- 	xip_allowed(base, map);
- 
--	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank\n",
-+	printk(KERN_INFO "%s: Found %d x%d devices at 0x%x in %d-bit bank. Manufacturer ID %#08x Chip ID %#08x\n",
- 	       map->name, cfi->interleave, cfi->device_type*8, base,
--	       map->bankwidth*8);
-+	       map->bankwidth*8, cfi->mfr, cfi->id);
- 
- 	return 1;
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+index 78a4232..c0a9835 100644
+--- a/drivers/mtd/nand/r852.c
++++ b/drivers/mtd/nand/r852.c
+@@ -64,8 +64,8 @@ static inline void r852_write_reg_dword(struct r852_device *dev,
+ /* returns pointer to our private structure */
+ static inline struct r852_device *r852_get_dev(struct mtd_info *mtd)
+ {
+-	struct nand_chip *chip = (struct nand_chip *)mtd->priv;
+-	return (struct r852_device *)chip->priv;
++	struct nand_chip *chip = mtd->priv;
++	return chip->priv;
  }
+ 
+ 
+-- 
+1.7.0.4
