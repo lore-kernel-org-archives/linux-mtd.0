@@ -1,23 +1,23 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OTMqp-0005vu-RF
-	for linux-mtd@lists.infradead.org; Mon, 28 Jun 2010 22:30:53 +0000
-To: "Steve Deiters" <SteveDeiters@BASLER.com>
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: JFFS2 corruption when mounting filesystem with filenamesoflength>
-	7
-MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: <181804936ABC2349BE503168465576460F20D651@exchserver.basler.com>
-References: <181804936ABC2349BE503168465576460F1AAEC6@exchserver.basler.com>
-	<181804936ABC2349BE503168465576460F1AAEE1@exchserver.basler.com>
-	<181804936ABC2349BE503168465576460F1AB73E@exchserver.basler.com>
-	<181804936ABC2349BE503168465576460F20CB90@exchserver.basler.com>
-	<181804936ABC2349BE503168465576460F20D651@exchserver.basler.com>
-Date: Tue, 29 Jun 2010 00:30:47 +0200
-Message-Id: <20100628223047.6F7F514EBF7@gemini.denx.de>
-Cc: linuxppc-dev@lists.ozlabs.org, linux-mtd@lists.infradead.org
+	id 1OTRmW-0006dj-1u
+	for linux-mtd@lists.infradead.org; Tue, 29 Jun 2010 03:46:44 +0000
+Received: by fxm20 with SMTP id 20so1323415fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 28 Jun 2010 20:46:41 -0700 (PDT)
+Subject: Re: [RFC/PATCH] doc2000: Fix uninitialized variable in
+	doc_ecc_decode()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mark Ware <mware@elphinstone.net>
+In-Reply-To: <4BFDCEC3.7070601@elphinstone.net>
+References: <4BFDCEC3.7070601@elphinstone.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 29 Jun 2010 06:46:37 +0300
+Message-Id: <1277783197.3599.3.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,82 +27,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear "Steve Deiters",
-
-In message <181804936ABC2349BE503168465576460F20D651@exchserver.basler.com> you wrote:
-> > I think there may be something weird going on with the memcpy 
-> > in my build.  If I use the following patch I no longer get 
-> > errors when I mount the filesystem.  All I did was replace 
-> > the memcpy with a loop.
-> > 
-> > I'm not sure what's special about this particular use of 
-> > memcpy.  I can't believe that things would be working as well 
-> > as they do if memcpy was broken in general.
-> > 
-> > This is on a PowerPC 32 bit build for a MPC5121.  I am using 
-> > a GCC 4.1.2 to compile.  Is anyone aware of any issues with 
-> > memcpy in this configuration?
-> > 
-> > Thanks.
+On Thu, 2010-05-27 at 11:45 +1000, Mark Ware wrote:
+> The variable 'syn' was being used uninitialized.  Also
+> fixed incorrect use of syn[] vs s[].
 > 
-> It seems this processor is mangling the data when it access unaligned
-> addresses into Flash with a lwz instruction.  The memcpy implementation
-> in copy_32.S aligns the destination, leaving the source possibly
-> unaligned.  In this particular instance the source is an address into my
-> Flash address space which is causing the problem.  When the filenames
-> were < 8 it always does a bytewise copy which is why I wasn't having
-> problems with those.
+> Tested on powerpc board with 64MB DOC2000.
+> ---
 > 
-> It seems this only occurs when I have the translation enabled.  If I
-> clear the DR bit in the MSR and then repeat the instruction with the
-> corresponding physical address it will read correctly.
+> I am porting from a 2.4.18 kernel to 2.6.32, and I saw random media header
+> mismatches causing a failure to detect the DOC device partitions.  Tracing
+> through, I saw this variable being used uninitialized and I suspect
+> incorrectly also.
 > 
-> I'm not sure if this is expected behavior with this core.  I can fix at
-> least this one problem by using memcpy_fromio since it does alignment
-> checks for the source and destination.
+> I do not really understand how the ecc/syndrome code works, so I do not
+> know if this patch is the correct solution, but it did make my problem
+> go away...
+> 
+> CC: Thomas Gleixner as I believe he may have written this function initially.
+> 
+>  drivers/mtd/nand/diskonchip.c |    5 +++--
+>  1 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
+> index a5bf9ff..7da2321 100644
+> --- a/drivers/mtd/nand/diskonchip.c
+> +++ b/drivers/mtd/nand/diskonchip.c
+> @@ -145,6 +145,7 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
+>  	uint8_t parity;
+>  	uint16_t ds[4], s[5], tmp, errval[8], syn[4];
+>  
+> +	memset(syn, 0, sizeof(syn));
 
-Both the MPC52xx and MPC512x have know problems (silent data
-corruption) with unaligned accesses on the local bus.
+I also do not know the math of this stuff, but this change is not
+needed ...
 
-This can be trivially demonstrated in U-Boot by reading the flash
-memory with 32 bit accesses; for example like this:
+>  	/* Convert the ecc bytes into words */
+>  	ds[0] = ((ecc[4] & 0xff) >> 0) | ((ecc[5] & 0x03) << 8);
+>  	ds[1] = ((ecc[5] & 0xfc) >> 2) | ((ecc[2] & 0x0f) << 6);
+> @@ -168,9 +169,9 @@ static int doc_ecc_decode(struct rs_control *rs, uint8_t *data, uint8_t *ecc)
+>  			s[i] ^= rs->alpha_to[rs_modnn(rs, tmp + (FCR + i) * j)];
+>  	}
+>  
+> -	/* Calc s[i] = s[i] / alpha^(v + i) */
+> +	/* Calc syn[i] = s[i] / alpha^(v + i) */
+>  	for (i = 0; i < NROOTS; i++) {
+> -		if (syn[i])
+> +		if (s[i])
+>  			syn[i] = rs_modnn(rs, rs->index_of[s[i]] + (NN - FCR - i));
+>  	}
 
-=> md FC0C0000 20
-fc0c0000: 7012ab65 01616464 636f6e73 3d736574    p..e.addcons=set
-fc0c0010: 656e7620 626f6f74 61726773 20247b62    env bootargs ${b
-fc0c0020: 6f6f7461 7267737d 20636f6e 736f6c65    ootargs} console
-fc0c0030: 3d247b63 6f6e736f 6c657d2c 247b6261    =${console},${ba
-fc0c0040: 75647261 74657d00 61646469 703d7365    udrate}.addip=se
-fc0c0050: 74656e76 20626f6f 74617267 7320247b    tenv bootargs ${
-fc0c0060: 626f6f74 61726773 7d206970 3d247b69    bootargs} ip=${i
-fc0c0070: 70616464 727d3a24 7b736572 76657269    paddr}:${serveri
-=> md FC0C0001 20
-fc0c0001: 65726901 00000063 0000003d 00000065    eri....c...=...e
-fc0c0011: 00000062 00000061 00000020 0000006f    ...b...a... ...o
-fc0c0021: 00000072 00000020 00000073 0000003d    ...r... ...s...=
-fc0c0031: 0000006f 0000006c 00000024 00000075    ...o...l...$...u
-fc0c0041: 00000074 00000061 00000070 00000074    ...t...a...p...t
-fc0c0051: 00000020 00000074 00000073 00000062    ... ...t...s...b
-fc0c0061: 00000061 0000007d 0000003d 00000070    ...a...}...=...p
-fc0c0071: 00000072 0000007b 00000076 00000070    ...r...{...v...p
-
-> I'm not sure what the proper fix is for this.  If I use memcpy_fromio I
-> think I'll just run into problems somewhere else.  Any other
-> suggestions?
-
-See http://article.gmane.org/gmane.comp.boot-loaders.u-boot/80278 for
-how we fix this in U-Boot.
-
-Best regards,
-
-Wolfgang Denk
+... after this change, right?
 
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-"On two occasions I have been  asked  [by  members  of  Parliament!],
-'Pray,  Mr.  Babbage, if you put into the machine wrong figures, will
-the right answers come out?' I am not able rightly to  apprehend  the
-kind of confusion of ideas that could provoke such a question."
-- Charles Babbage
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
