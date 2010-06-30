@@ -1,24 +1,21 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OTalt-0002Um-5w
-	for linux-mtd@lists.infradead.org; Tue, 29 Jun 2010 13:22:41 +0000
-Received: from dbdp20.itg.ti.com ([172.24.170.38])
-	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id o5TDMZwR027507
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Jun 2010 08:22:38 -0500
-Received: from dbde71.ent.ti.com (localhost [127.0.0.1])
-	by dbdp20.itg.ti.com (8.13.8/8.13.8) with ESMTP id o5TDMZ5m014783
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Jun 2010 18:52:35 +0530 (IST)
+	id 1OTyUc-0006OZ-B7
+	for linux-mtd@lists.infradead.org; Wed, 30 Jun 2010 14:42:27 +0000
 From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Tue, 29 Jun 2010 18:52:34 +0530
-Subject: Info: BCH correction and GPL 
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030DFE919D@dbde02.ent.ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Wed, 30 Jun 2010 20:12:13 +0530
+Subject: RE: [PATCH v5 0/3] omap3 nand: cleanup exiting platform related code
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030DFE9927@dbde02.ent.ti.com>
+References: <s-ghorai@ti.com> <1275637205-489-1-git-send-email-s-ghorai@ti.com>
+	<AANLkTinf8OcvHbLggdEJNGLvlAtSeExKri-IqNlwLpYD@mail.gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
+Cc: Vimal Singh <vimal.newwork@gmail.com>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +25,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Tony,
+Please let me know if any have input on following two series.=20
 
-Is there any GPL license code of BCH error correction that could be used fo=
-r NAND ECC?
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30305.html
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30735.html
 
-We have h/w module for error detection. And we need s/w algorithm/code for =
-error correction for our platform. And we are looking t=3D4 and t=3D8 error=
- correction using degree-13 dimension of Galois field (m=3D13).
-
-Please let me know.=20
-
-Thanks & regards,
+Regards,
 Ghorai
+
+> -----Original Message-----
+> From: Ghorai, Sukumar
+> Sent: Tuesday, June 15, 2010 6:57 PM
+> To: 'Tony Lindgren'
+> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org;
+> tony@atomide.com; mike@compulab.co.il; 'Vimal Singh'
+> Subject: RE: [PATCH v5 0/3] omap3 nand: cleanup exiting platform related
+> code
+>=20
+> Tony,
+>=20
+> > -----Original Message-----
+> > From: Vimal Singh [mailto:vimal.newwork@gmail.com]
+> > Sent: Tuesday, June 08, 2010 10:43 PM
+> > To: Ghorai, Sukumar
+> > Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org;
+> > tony@atomide.com; mike@compulab.co.il
+> > Subject: Re: [PATCH v5 0/3] omap3 nand: cleanup exiting platform relate=
+d
+> > code
+> >
+> > Reviewed-by: Vimal Singh <vimal.newwork@gmail.com>
+> >
+> > On Fri, Jun 4, 2010 at 1:10 PM, Sukumar Ghorai <s-ghorai@ti.com> wrote:
+> > > =A0 The following set of patches applies on top of for-next branch.
+> > > =A0 =A0 =A0 =A0http://git.kernel.org/?p=3Dlinux/kernel/git/tmlind/lin=
+ux-omap-
+> > 2.6.git
+> > > =A0 Patches verified on: omap3430-SDP, omap3630-sdp, zoom3 and beagle
+> > board
+> > >
+> > > =A0 And these are the patches required to address the following input=
+ -
+> > > =A0 =A0 1. The NAND driver needs to stop tinkering with the GPMC regi=
+sters
+> > > =A0 =A0 =A0 =A0The omap General Purpose Memory Controller (GPMC) regi=
+sters are
+> > omap
+> > > =A0 =A0 =A0 =A0specific, and not driver specific. Tinkering with thes=
+e
+> registers
+> > can
+> > > =A0 =A0 =A0 =A0cause issues with the other devices on the GPMC.
+> > >
+> > > =A0 =A0 2. Passing hardcoded GPMC_CS0_BASE needs to go from the board
+> files
+> > > =A0 =A0 =A0 =A0Passing hardcoded GPMC virtual addressess is sure way =
+to mess
+> up
+> > things.
+> > > =A0 =A0 =A0 =A0This should all become unnecessary once the NAND drive=
+rs stops
+> > messing
+> > > =A0 =A0 =A0 =A0with the GPMC registers directly.
+> > > =A0 =A0 Discussion: http://www.mail-archive.com/linux-
+> > omap@vger.kernel.org/msg27630.html
+> > >
+> > > =A0 Changes in this series -
+> > > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Unused function removed.
+> > >
+> > > =A0Functions related to ecc and prefetch engine are optimized.
+> > > =A0v4: http://www.mail-archive.com/linux-
+> > omap@vger.kernel.org/msg29458.html
+> > >
+> > > =A0Few functionality was missing =A0like - There should be some locki=
+ng as
+> > only
+> > > =A0 one chipselect can use the ECC or prefetch engine at a time. If y=
+ou
+> > have
+> > > =A0 NAND in two chipselects, bad things would happen.
+> > > =A0v3: http://www.mail-archive.com/linux-
+> > omap@vger.kernel.org/msg28715.html
+> > >
+> > > =A0Additionally, it was needed to implement more functions for the
+> > platform
+> > > =A0init code to use.
+> > > =A0v2: http://www.mail-archive.com/linux-
+> > omap@vger.kernel.org/msg28467.html
+> > >
+> > > =A0v1: http://www.mail-archive.com/linux-
+> > omap@vger.kernel.org/msg28164.html
+> > >
+> > >
+> > > Sukumar Ghorai (3):
+> > > =A0 =A0 =A0 =A0omap3 gpmc: functionality enhancement
+> > > =A0 =A0 =A0 =A0omap3 nand: cleanup virtual address usages
+> > > =A0 =A0 =A0 =A0omap3 nand: fix issue in board file to detect nand
+> > > =A0arch/arm/mach-omap2/board-cm-t35.c =A0 =A0 =A0 =A0 | =A0 20 +---
+> > > =A0arch/arm/mach-omap2/board-devkit8000.c =A0 =A0 | =A0 25 +---
+> > > =A0arch/arm/mach-omap2/board-omap3beagle.c =A0 =A0| =A0 24 +---
+> > > =A0arch/arm/mach-omap2/board-omap3touchbook.c | =A0 25 +---
+> > > =A0arch/arm/mach-omap2/board-overo.c =A0 =A0 =A0 =A0 =A0| =A0 24 +---
+> > > =A0arch/arm/mach-omap2/board-sdp-flash.c =A0 =A0 =A0| =A0 =A05 -
+> > > =A0arch/arm/mach-omap2/gpmc-nand.c =A0 =A0 =A0 =A0 =A0 =A0| =A0 39 ++=
+----
+> > > =A0arch/arm/mach-omap2/gpmc.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A022=
+8
+> > +++++++++++++++++++++++++---
+> > > =A0arch/arm/plat-omap/include/plat/gpmc.h =A0 =A0 | =A0 36 ++++-
+> > > =A0arch/arm/plat-omap/include/plat/nand.h =A0 =A0 | =A0 =A06 +-
+> > > =A0drivers/mtd/nand/omap2.c =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | =A0=
+229 ++++++++-----------
+> --
+> > -------
+> > > =A011 files changed, 320 insertions(+), 341 deletions(-)
+>=20
+> [Ghorai] Any comments or input on these patch?
+>=20
+> > >
+> > > --
+> > > To unsubscribe from this list: send the line "unsubscribe linux-omap"
+> in
+> > > the body of a message to majordomo@vger.kernel.org
+> > > More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+> > >
+> >
+> >
+> >
+> > --
+> > Regards,
+> > Vimal Singh
