@@ -1,19 +1,21 @@
-Subject: Re: [PATCH] mxc_nand: fix PM
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
-In-Reply-To: <4C15D542.2060102@eukrea.com>
-References: <1274942000-3580-2-git-send-email-eric@eukrea.com>
-	<1274982919-13251-1-git-send-email-eric@eukrea.com>
-	<4C15D542.2060102@eukrea.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 01 Jul 2010 06:47:52 +0300
-Message-Id: <1277956072.3599.29.camel@localhost.localdomain>
+Received: from fallback2.mail.ru ([94.100.176.87])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OUCJu-0007QG-Qw
+	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2010 05:28:19 +0000
+Received: from f238.mail.ru (f238.mail.ru [217.69.128.165])
+	by fallback2.mail.ru (mPOP.Fallback_MX) with ESMTP id D035320C3368
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  1 Jul 2010 09:01:46 +0400 (MSD)
+From: oleg ershov <ershovoa@mail.ru>
+To: linux-mtd@lists.infradead.org
+Subject: help me
 Mime-Version: 1.0
+Date: Thu, 01 Jul 2010 09:01:39 +0400
+Content-Type: text/plain; charset=koi8-r
 Content-Transfer-Encoding: 8bit
-Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Reply-To: dedekind1@gmail.com
+Message-Id: <E1OUBu7-0005xe-00.ershovoa-mail-ru@f238.mail.ru>
+Cc: dworden@gmail.com
+Reply-To: oleg ershov <ershovoa@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-06-14 at 09:07 +0200, Eric Bénard wrote:
-> Hi Sascha,
-> 
-> Le 27/05/2010 19:55, Eric Bénard a écrit :
-> > * when resuming, we get the following log :
-> > nand_resume called for a chip which is not in suspended state
-> > * this happens because mtd->suspend and mtd->resume are already
-> > called from the mtd layer, thus they were called a second time
-> > in mxc_nand so mtd complains when trying to resume for the
-> > second time
-> > * the fix is to remove these call and thus remove the supend and
-> > resume functions of mxc_nand
-> >
-> any news concerning this patch ?
 
-Pushed to l2-mtd-2.6.git / dunno
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+My board is CM-F82 CompuLab.I am using LynxOS-178 2.1.0.
+>I use U-boot 1.1.3 as my bootloader.
+>I have target platform - PowerPC; Board: CM-F82 CompuLab, busfreq 
+>100 MHz; processor MPC8272 Freescale.
+>
+>I need driver File System for LynxOS for CF of size >= 1Gb.
+>
+>Any ideas?
+>Best regards,
+>Oleg Ershov
