@@ -1,16 +1,14 @@
 Received: from devils.ext.ti.com ([198.47.26.153])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OUHDq-0004Rs-Qe
-	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2010 10:42:24 +0000
+	id 1OUHDq-0004RO-Qa
+	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2010 10:42:25 +0000
 From: Sukumar Ghorai <s-ghorai@ti.com>
 To: linux-omap@vger.kernel.org
-Subject: [PATCH v2 2/4] omap3: nand: configurable fifo threshold to gain the
-	throughput
-Date: Thu,  1 Jul 2010 16:12:13 +0530
-Message-Id: <1277980935-24070-3-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1277980935-24070-2-git-send-email-s-ghorai@ti.com>
+Subject: [PATCH v2 1/4] omap3: nand: prefetch in irq mode support
+Date: Thu,  1 Jul 2010 16:12:12 +0530
+Message-Id: <1277980935-24070-2-git-send-email-s-ghorai@ti.com>
+In-Reply-To: <1277980935-24070-1-git-send-email-s-ghorai@ti.com>
 References: <1277980935-24070-1-git-send-email-s-ghorai@ti.com>
-	<1277980935-24070-2-git-send-email-s-ghorai@ti.com>
 Cc: Vimal Singh <vimalsingh@ti.com>, linux-mtd@lists.infradead.org,
 	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,151 +20,390 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  Configure the FIFO THREASHOLD value different for read and write to keep busy both
-  filling and to drain out of FIFO at reading and writing.
+This patch enable prefetch-irq mode for NAND.
 
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
 Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
 ---
- arch/arm/mach-omap2/gpmc.c             |   11 +++++++----
- arch/arm/plat-omap/include/plat/gpmc.h |    5 ++++-
- drivers/mtd/nand/omap2.c               |   24 +++++++++++++++---------
- 3 files changed, 26 insertions(+), 14 deletions(-)
+ arch/arm/mach-omap2/board-flash.c              |    1 +
+ arch/arm/mach-omap2/gpmc.c                     |    7 +
+ arch/arm/mach-omap2/include/mach/board-flash.h |    3 +
+ arch/arm/plat-omap/include/plat/gpmc.h         |    3 +
+ arch/arm/plat-omap/include/plat/nand.h         |    1 +
+ drivers/mtd/nand/Kconfig                       |   14 ++-
+ drivers/mtd/nand/omap2.c                       |  199 +++++++++++++++++++++++-
+ 7 files changed, 222 insertions(+), 6 deletions(-)
 
+diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
+index ac834aa..c6a07dd 100755
+--- a/arch/arm/mach-omap2/board-flash.c
++++ b/arch/arm/mach-omap2/board-flash.c
+@@ -133,6 +133,7 @@ static struct omap_nand_platform_data board_nand_data = {
+ 	.nand_setup	= NULL,
+ 	.gpmc_t		= &nand_timings,
+ 	.dma_channel	= -1,		/* disable DMA in OMAP NAND driver */
++	.gpmc_irq	= GPMC_IRQ_NUMBER,
+ 	.dev_ready	= NULL,
+ 	.devsize	= 0,	/* '0' for 8-bit, '1' for 16-bit device */
+ };
 diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index 4e12a9f..cb38cff
+index b8077c6..4e12a9f 100644
 --- a/arch/arm/mach-omap2/gpmc.c
 +++ b/arch/arm/mach-omap2/gpmc.c
-@@ -58,7 +58,6 @@
- #define GPMC_CHUNK_SHIFT	24		/* 16 MB */
- #define GPMC_SECTION_SHIFT	28		/* 128 MB */
+@@ -465,6 +465,13 @@ int gpmc_hwcontrol(int cs, int cmd, int write, int wval, int *rval)
+ 			*rval = gpmc_read_reg(GPMC_IRQSTATUS);
+ 		break;
  
--#define PREFETCH_FIFOTHRESHOLD	(0x40 << 8)
- #define CS_NUM_SHIFT		24
- #define ENABLE_PREFETCH		(0x1 << 7)
- #define DMA_MPU_MODE		2
-@@ -538,15 +537,19 @@ EXPORT_SYMBOL(gpmc_hwcontrol);
- /**
-  * gpmc_prefetch_enable - configures and starts prefetch transfer
-  * @cs: cs (chip select) number
-+ * @fifo_th: fifo threshold to be used for read/ write
-  * @dma_mode: dma mode enable (1) or disable (0)
-  * @u32_count: number of bytes to be transferred
-  * @is_write: prefetch read(0) or write post(1) mode
-  */
--int gpmc_prefetch_enable(int cs, int dma_mode,
-+int gpmc_prefetch_enable(int cs, int fifo_th, int dma_mode,
- 				unsigned int u32_count, int is_write)
- {
++	case GPMC_ENABLE_IRQ:
++		if (write)
++			gpmc_write_reg(GPMC_IRQENABLE, wval);
++		else
++			*rval = gpmc_read_reg(GPMC_IRQENABLE);
++		break;
++
+ 	case GPMC_PREFETCH_FIFO_CNT:
+ 		regval = gpmc_read_reg(GPMC_PREFETCH_STATUS);
+ 		*rval = GPMC_PREFETCH_STATUS_FIFO_CNT(regval);
+diff --git a/arch/arm/mach-omap2/include/mach/board-flash.h b/arch/arm/mach-omap2/include/mach/board-flash.h
+index b2242ae..37567a7 100644
+--- a/arch/arm/mach-omap2/include/mach/board-flash.h
++++ b/arch/arm/mach-omap2/include/mach/board-flash.h
+@@ -19,6 +19,9 @@
+ #define PDC_ONENAND	3
+ #define DBG_MPDB	4
  
--	if (!(gpmc_read_reg(GPMC_PREFETCH_CONTROL))) {
-+	if (fifo_th > PREFETCH_FIFOTHRESHOLD_MAX) {
-+		printk(KERN_ERR "PREFETCH Fifo Threshold is not supported\n");
-+		return -1;
-+	} else if (!(gpmc_read_reg(GPMC_PREFETCH_CONTROL))) {
- 		/* Set the amount of bytes to be prefetched */
- 		gpmc_write_reg(GPMC_PREFETCH_CONFIG2, u32_count);
- 
-@@ -554,7 +557,7 @@ int gpmc_prefetch_enable(int cs, int dma_mode,
- 		 * enable the engine. Set which cs is has requested for.
- 		 */
- 		gpmc_write_reg(GPMC_PREFETCH_CONFIG1, ((cs << CS_NUM_SHIFT) |
--					PREFETCH_FIFOTHRESHOLD |
-+					PREFETCH_FIFOTHRESHOLD(fifo_th) |
- 					ENABLE_PREFETCH |
- 					(dma_mode << DMA_MPU_MODE) |
- 					(0x1 & is_write)));
++/* Interrupt number to the MPU Subsystem for GPMC */
++#define GPMC_IRQ_NUMBER	20
++
+ struct flash_partitions {
+ 	struct mtd_partition *parts;
+ 	int nr_parts;
 diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
-index 4bdd851..40ce1db
+index ccbc530..4bdd851 100644
 --- a/arch/arm/plat-omap/include/plat/gpmc.h
 +++ b/arch/arm/plat-omap/include/plat/gpmc.h
-@@ -79,6 +79,9 @@
- #define GPMC_IRQ_FIFOEVENTENABLE	0x01
- #define GPMC_IRQ_COUNT_EVENT		0x02
+@@ -37,6 +37,7 @@
+ #define GPMC_PREFETCH_FIFO_CNT	0x00000009 /* bytes available in FIFO for r/w */
+ #define GPMC_PREFETCH_COUNT	0x0000000A /* remaining bytes to be read/write*/
+ #define GPMC_GET_SET_IRQ_STATUS	0x0000000B
++#define GPMC_ENABLE_IRQ		0x0000000C
  
-+#define PREFETCH_FIFOTHRESHOLD_MAX	0x40
-+#define PREFETCH_FIFOTHRESHOLD(val)	(val << 8)
-+
+ /* ECC commands */
+ #define GPMC_ECC_READ		0 /* Reset Hardware ECC for read */
+@@ -75,6 +76,8 @@
+ #define WR_RD_PIN_MONITORING		0x00600000
+ #define GPMC_PREFETCH_STATUS_FIFO_CNT(val)	((val >> 24) & 0x7F)
+ #define GPMC_PREFETCH_STATUS_COUNT(val)	(val & 0x00003fff)
++#define GPMC_IRQ_FIFOEVENTENABLE	0x01
++#define GPMC_IRQ_COUNT_EVENT		0x02
+ 
  /*
   * Note that all values in this struct are in nanoseconds, while
-  * the register values are in gpmc_fck cycles.
-@@ -129,7 +132,7 @@ extern int gpmc_cs_request(int cs, unsigned long size, unsigned long *base);
- extern void gpmc_cs_free(int cs);
- extern int gpmc_cs_set_reserved(int cs, int reserved);
- extern int gpmc_cs_reserved(int cs);
--extern int gpmc_prefetch_enable(int cs, int dma_mode,
-+extern int gpmc_prefetch_enable(int cs, int fifo_th, int dma_mode,
- 					unsigned int u32_count, int is_write);
- extern int gpmc_prefetch_reset(int cs);
- extern void omap3_gpmc_save_context(void);
+diff --git a/arch/arm/plat-omap/include/plat/nand.h b/arch/arm/plat-omap/include/plat/nand.h
+index 6562cd0..5e69463 100644
+--- a/arch/arm/plat-omap/include/plat/nand.h
++++ b/arch/arm/plat-omap/include/plat/nand.h
+@@ -20,6 +20,7 @@ struct omap_nand_platform_data {
+ 	int			(*nand_setup)(void);
+ 	int			(*dev_ready)(struct omap_nand_platform_data *);
+ 	int			dma_channel;
++	int			gpmc_irq;
+ 	unsigned long		phys_base;
+ 	int			devsize;
+ };
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 98a04b3..d0e934b 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -111,6 +111,9 @@ config MTD_NAND_OMAP_PREFETCH
+ 	help
+ 	 The NAND device can be accessed for Read/Write using GPMC PREFETCH engine
+ 	 to improve the performance.
++	 GPMC PREFETCH can be configured eigther in MPU interrupt mode or in DMA
++	 interrupt mode. If not selected any of them prefetch will be used in
++	 polling mode.
+ 
+ config MTD_NAND_OMAP_PREFETCH_DMA
+ 	depends on MTD_NAND_OMAP_PREFETCH
+@@ -119,7 +122,16 @@ config MTD_NAND_OMAP_PREFETCH_DMA
+ 	help
+ 	 The GPMC PREFETCH engine can be configured eigther in MPU interrupt mode
+ 	 or in DMA interrupt mode.
+-	 Say y for DMA mode or MPU mode will be used
++	 Say y for DMA mode
++
++config MTD_NAND_OMAP_PREFETCH_IRQ
++	depends on MTD_NAND_OMAP_PREFETCH && !MTD_NAND_OMAP_PREFETCH_DMA
++	bool "IRQ mode"
++	default n
++	help
++	 The GPMC PREFETCH engine can be configured eigther in MPU interrupt mode
++	 or in DMA interrupt mode.
++	 Say y for IRQ mode
+ 
+ config MTD_NAND_IDS
+ 	tristate
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 2fbdd66..f136fb5
+index f9fa3cb..2ce2410 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -280,7 +280,8 @@ static void omap_read_buf_pref(struct mtd_info *mtd, u_char *buf, int len)
- 	}
+@@ -12,6 +12,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/delay.h>
++#include <linux/interrupt.h>
+ #include <linux/jiffies.h>
+ #include <linux/sched.h>
+ #include <linux/mtd/mtd.h>
+@@ -105,17 +106,27 @@ module_param(use_prefetch, bool, 0);
+ MODULE_PARM_DESC(use_prefetch, "enable/disable use of PREFETCH");
  
- 	/* configure and start prefetch transfer */
--	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
-+	ret = gpmc_prefetch_enable(info->gpmc_cs,
-+			PREFETCH_FIFOTHRESHOLD_MAX, 0x0, len, 0x0);
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
-@@ -325,7 +326,8 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 	}
+ #ifdef CONFIG_MTD_NAND_OMAP_PREFETCH_DMA
++const int use_interrupt;
+ static int use_dma = 1;
  
- 	/*  configure and start prefetch transfer */
--	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x1);
-+	ret = gpmc_prefetch_enable(info->gpmc_cs,
-+			PREFETCH_FIFOTHRESHOLD_MAX, 0x0, len, 0x1);
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
-@@ -381,10 +383,11 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 	dma_addr_t dma_addr;
- 	int ret;
+ /* "modprobe ... use_dma=0" etc */
+ module_param(use_dma, bool, 0);
+-MODULE_PARM_DESC(use_dma, "enable/disable use of DMA");
++MODULE_PARM_DESC(use_dma, "enable/disable use of DMA mode");
++#elif defined(CONFIG_MTD_NAND_OMAP_PREFETCH_IRQ)
++const int use_dma;
++static int use_interrupt = 1;
++
++/* "modprobe ... use_dma=0" etc */
++module_param(use_interrupt, bool, 0);
++MODULE_PARM_DESC(use_interrupt, "enable/disable use of IRQ mode");
+ #else
+ const int use_dma;
++const int use_interrupt;
+ #endif
+ #else
+ const int use_prefetch;
+ const int use_dma;
++const int use_interrupt;
+ #endif
  
--	/* The fifo depth is 64 bytes. We have a sync at each frame and frame
--	 * length is 64 bytes.
-+	/* The fifo depth is 64 bytes max.
-+	 * But configure the FIFO-threahold to 32 to get a sync at each frame
-+	 * and frame length is 32 bytes.
+ struct omap_nand_info {
+@@ -130,6 +141,13 @@ struct omap_nand_info {
+ 	unsigned long			phys_base;
+ 	struct completion		comp;
+ 	int				dma_ch;
++	int				gpmc_irq;
++	enum {
++		NAND_IO_READ = 0,	/* read */
++		NAND_IO_WRITE,		/* write */
++	} iomode;
++	u_char				*buf;
++	int					buf_len;
+ };
+ 
+ /**
+@@ -476,6 +494,155 @@ static void omap_write_buf_dma_pref(struct mtd_info *mtd,
+ 		omap_nand_dma_transfer(mtd, (u_char *) buf, len, 0x1);
+ }
+ 
++/*
++ * omap_nand_irq - GMPC irq handler
++ * @this_irq: gpmc irq number
++ * @dev: omap_nand_info structure pointer is passed here
++ */
++static irqreturn_t omap_nand_irq(int this_irq, void *dev)
++{
++	struct omap_nand_info *info = (struct omap_nand_info *) dev;
++	u32 irq_enb, bytes;
++	u32 irq_stat;
++
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_GET_SET_IRQ_STATUS, 0, 0, &irq_stat);
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_PREFETCH_FIFO_CNT, 0, 0, &bytes);
++	bytes = bytes  & 0xFFFC; /* io in multiple of 4 bytes */
++	if (info->iomode == NAND_IO_WRITE) { /* checks for write operaiton */
++		if (irq_stat & 0x2)
++			goto done;
++
++		if (info->buf_len & (info->buf_len < bytes))
++			bytes = info->buf_len;
++		else if (!info->buf_len)
++			bytes = 0;
++		iowrite32_rep(info->nand.IO_ADDR_W,
++						(u32 *)info->buf, bytes >> 2);
++		info->buf = info->buf + bytes;
++		info->buf_len -= bytes;
++
++	} else {
++		ioread32_rep(info->nand.IO_ADDR_R,
++						(u32 *)info->buf, bytes >> 2);
++		info->buf = info->buf + bytes;
++
++		if (irq_stat & 0x2)
++			goto done;
++	}
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_GET_SET_IRQ_STATUS, 1, irq_stat, 0);
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_GET_SET_IRQ_STATUS, 0, 0, &irq_stat);
++
++	return IRQ_HANDLED;
++
++done:
++	complete(&info->comp);
++	/* disable irq */
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_ENABLE_IRQ, 0, 0, &irq_enb);
++	irq_enb &= ~(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT);
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_ENABLE_IRQ, 1, irq_enb, 0);
++
++	/* clear status */
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_GET_SET_IRQ_STATUS, 1, irq_stat, 0);
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_GET_SET_IRQ_STATUS, 0, 0, &irq_stat);
++
++	return IRQ_HANDLED;
++}
++
++/*
++ * omap_read_buf_irq_pref - read data from NAND controller into buffer
++ * @mtd: MTD device structure
++ * @buf: buffer to store date
++ * @len: number of bytes to read
++ */
++static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
++{
++	struct omap_nand_info *info = container_of(mtd,
++						struct omap_nand_info, mtd);
++	u32 irq_enb;
++	int ret = 0;
++
++	if (len <= mtd->oobsize) {
++		omap_read_buf_pref(mtd, buf, len);
++		return;
++	}
++	info->iomode = NAND_IO_READ;
++	info->buf = buf;
++	init_completion(&info->comp);
++
++	/*  configure and start prefetch transfer */
++	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
++	if (ret)
++		/* PFPW engine is busy, use cpu copy methode */
++		goto out_copy;
++
++	info->buf_len = len;
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_ENABLE_IRQ, 0, 0, &irq_enb);
++	irq_enb |= (GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT);
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_ENABLE_IRQ, 1, irq_enb, 0);
++
++	/* waiting for read to complete */
++	wait_for_completion(&info->comp);
++	/* disable and stop the PFPW engine */
++	gpmc_prefetch_reset(info->gpmc_cs);
++	return;
++
++out_copy:
++	if (info->nand.options & NAND_BUSWIDTH_16)
++		omap_read_buf16(mtd, buf, len);
++	else
++		omap_read_buf8(mtd, buf, len);
++}
++
++/*
++ * omap_write_buf_irq_pref - write buffer to NAND controller
++ * @mtd: MTD device structure
++ * @buf: data buffer
++ * @len: number of bytes to write
++ */
++static void omap_write_buf_irq_pref(struct mtd_info *mtd,
++					const u_char *buf, int len)
++{
++	struct omap_nand_info *info = container_of(mtd,
++						struct omap_nand_info, mtd);
++	u32 irq_enb;
++	int ret = 0;
++	if (len <= mtd->oobsize) {
++		omap_write_buf_pref(mtd, buf, len);
++		return;
++	}
++
++	info->iomode = NAND_IO_WRITE;
++	info->buf = (u_char *) buf;
++	init_completion(&info->comp);
++
++	/*  configure and start prefetch transfer */
++	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x1);
++	if (ret)
++		/* PFPW engine is busy, use cpu copy methode */
++		goto out_copy;
++
++	info->buf_len = len;
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_ENABLE_IRQ, 0, 0, &irq_enb);
++	irq_enb |= (GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT);
++	gpmc_hwcontrol(info->gpmc_cs, GPMC_ENABLE_IRQ, 1, irq_enb, 0);
++
++	/* waiting for write to complete */
++	wait_for_completion(&info->comp);
++	/* wait for data to flushed-out before reset the prefetch */
++	do {
++		gpmc_hwcontrol(info->gpmc_cs, GPMC_PREFETCH_COUNT, 0, 0, &ret);
++	} while (ret);
++	/* disable and stop the PFPW engine */
++	gpmc_prefetch_reset(info->gpmc_cs);
++	return;
++
++out_copy:
++	if (info->nand.options & NAND_BUSWIDTH_16)
++		omap_write_buf16(mtd, buf, len);
++	else
++		omap_write_buf8(mtd, buf, len);
++}
++
+ /**
+  * omap_verify_buf - Verify chip data against buffer
+  * @mtd: MTD device structure
+@@ -811,6 +978,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 
+ 	info->gpmc_cs		= pdata->cs;
+ 	info->phys_base		= pdata->phys_base;
++	info->gpmc_irq		= pdata->gpmc_irq;
+ 
+ 	info->mtd.priv		= &info->nand;
+ 	info->mtd.name		= dev_name(&pdev->dev);
+@@ -874,7 +1042,20 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 				info->nand.read_buf   = omap_read_buf_dma_pref;
+ 				info->nand.write_buf  = omap_write_buf_dma_pref;
+ 			}
++		} else if (use_interrupt) {
++			err = request_irq(info->gpmc_irq, omap_nand_irq,
++					IRQF_SHARED, info->mtd.name, info);
++			if (err) {
++				printk(KERN_INFO"failure requesting irq %i."
++						" Prefetch will work in mpu"
++						" poling mode.\n",
++						info->gpmc_irq);
++			} else {
++				info->nand.read_buf   = omap_read_buf_irq_pref;
++				info->nand.write_buf  = omap_write_buf_irq_pref;
++			}
+ 		}
++
+ 	} else {
+ 		if (info->nand.options & NAND_BUSWIDTH_16) {
+ 			info->nand.read_buf   = omap_read_buf16;
+@@ -964,11 +1145,19 @@ static int __init omap_nand_init(void)
+ 	/* This check is required if driver is being
+ 	 * loaded run time as a module
  	 */
--	int buf_len = len >> 6;
-+	int buf_len = len >> 5;
- 
- 	if (addr >= high_memory) {
- 		struct page *p1;
-@@ -423,7 +426,8 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 					OMAP24XX_DMA_GPMC, OMAP_DMA_SRC_SYNC);
+-	if ((1 == use_dma) && (0 == use_prefetch)) {
+-		printk(KERN_INFO"Wrong parameters: 'use_dma' can not be 1 "
+-				"without use_prefetch'. Prefetch will not be"
+-				" used in either mode (mpu or dma)\n");
++
++	if ((0 == use_prefetch) && (1 == (use_dma | use_interrupt))) {
++		printk(KERN_INFO "Wrong parameters: Neither 'dma' nor 'irq' "
++				"can used without 'use_prefetch' selected.\n");
++		printk(KERN_INFO "Prefetch will not be used in any mode: "
++				"poll, mpu or dma\n");
++	} else if ((1 == use_prefetch) && (1 == (use_interrupt & use_dma))) {
++			printk(KERN_INFO "Wrong parameters: Both DMA and IRQ"
++					" modes can not be used together.\n");
++			printk(KERN_INFO "It has to be selected at compile "
++					"time and same will be used.\n");
  	}
- 	/*  configure and start prefetch transfer */
--	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x1, len, is_write);
-+	ret = gpmc_prefetch_enable(info->gpmc_cs,
-+			PREFETCH_FIFOTHRESHOLD_MAX/2, 0x1, len, is_write);
- 	if (ret)
- 		/* PFPW engine is busy, use cpu copy methode */
- 		goto out_copy;
-@@ -570,7 +574,8 @@ static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
- 	init_completion(&info->comp);
++
+ 	return platform_driver_register(&omap_nand_driver);
+ }
  
- 	/*  configure and start prefetch transfer */
--	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
-+	ret = gpmc_prefetch_enable(info->gpmc_cs,
-+			PREFETCH_FIFOTHRESHOLD_MAX/2, 0x0, len, 0x0);
- 	if (ret)
- 		/* PFPW engine is busy, use cpu copy methode */
- 		goto out_copy;
-@@ -615,8 +620,9 @@ static void omap_write_buf_irq_pref(struct mtd_info *mtd,
- 	info->buf = (u_char *) buf;
- 	init_completion(&info->comp);
- 
--	/*  configure and start prefetch transfer */
--	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x1);
-+	/* configure and start prefetch transfer : size=24 */
-+	ret = gpmc_prefetch_enable(info->gpmc_cs,
-+			(PREFETCH_FIFOTHRESHOLD_MAX*3)/8, 0x0, len, 0x1);
- 	if (ret)
- 		/* PFPW engine is busy, use cpu copy methode */
- 		goto out_copy;
