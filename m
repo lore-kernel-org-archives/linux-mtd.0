@@ -1,21 +1,20 @@
-Received: from fallback2.mail.ru ([94.100.176.87])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OUCJu-0007QG-Qw
-	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2010 05:28:19 +0000
-Received: from f238.mail.ru (f238.mail.ru [217.69.128.165])
-	by fallback2.mail.ru (mPOP.Fallback_MX) with ESMTP id D035320C3368
+	id 1OUCSN-0001Bg-Jt
+	for linux-mtd@lists.infradead.org; Thu, 01 Jul 2010 05:37:04 +0000
+Received: by gya1 with SMTP id 1so1059330gya.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu,  1 Jul 2010 09:01:46 +0400 (MSD)
-From: oleg ershov <ershovoa@mail.ru>
-To: linux-mtd@lists.infradead.org
-Subject: help me
-Mime-Version: 1.0
-Date: Thu, 01 Jul 2010 09:01:39 +0400
-Content-Type: text/plain; charset=koi8-r
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1OUBu7-0005xe-00.ershovoa-mail-ru@f238.mail.ru>
-Cc: dworden@gmail.com
-Reply-To: oleg ershov <ershovoa@mail.ru>
+	Wed, 30 Jun 2010 22:37:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <E1OUBu7-0005xe-00.ershovoa-mail-ru@f238.mail.ru>
+References: <E1OUBu7-0005xe-00.ershovoa-mail-ru@f238.mail.ru>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 1 Jul 2010 01:36:42 -0400
+Message-ID: <AANLkTin3wjcGdvlMFkQMDW1qBJMsmgXFb4RXaNs3h3mo@mail.gmail.com>
+Subject: Re: help me
+To: oleg ershov <ershovoa@mail.ru>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, dworden@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, Jul 1, 2010 at 01:01, oleg ershov wrote:
+> My board is CM-F82 CompuLab.I am using LynxOS-178 2.1.0.
+>>I use U-boot 1.1.3 as my bootloader.
+>>I have target platform - PowerPC; Board: CM-F82 CompuLab, busfreq
+>>100 MHz; processor MPC8272 Freescale.
+>>
+>>I need driver File System for LynxOS for CF of size >= 1Gb.
 
-
-My board is CM-F82 CompuLab.I am using LynxOS-178 2.1.0.
->I use U-boot 1.1.3 as my bootloader.
->I have target platform - PowerPC; Board: CM-F82 CompuLab, busfreq 
->100 MHz; processor MPC8272 Freescale.
->
->I need driver File System for LynxOS for CF of size >= 1Gb.
->
->Any ideas?
->Best regards,
->Oleg Ershov
+why are you asking on a Linux list for LynxOS support ?  Linux !=
+Lynx.  try a more appropriate list.
+-mike
