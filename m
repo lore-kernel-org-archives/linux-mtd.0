@@ -1,11 +1,11 @@
 Received: from [69.28.251.93] (helo=b32.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OVuHs-00039E-9v
-	for linux-mtd@lists.infradead.org; Mon, 05 Jul 2010 22:37:17 +0000
+	id 1OVuHv-0003AG-91
+	for linux-mtd@lists.infradead.org; Mon, 05 Jul 2010 22:37:20 +0000
 From: Kevin Cernekee <cernekee@gmail.com>
-Date: Mon, 5 Jul 2010 15:10:36 -0700
-Subject: [PATCH 3/5] mtd-utils: update to latest mtd-abi.h from kernel.org
-Message-Id: <7f8db6bbd092ca72a217621bfb8dc4ac@localhost>
+Date: Mon, 5 Jul 2010 15:10:37 -0700
+Subject: [PATCH 4/5] libmtd: add support for 64-bit offsets, OOB
+Message-Id: <b025d903aab9bff2a1f0ddadff7f31a8@localhost>
 References: <4822394121cd0a8f08b0bd3ecd6af199@localhost>
 In-Reply-To: <4822394121cd0a8f08b0bd3ecd6af199@localhost>
 To: <dedekind1@gmail.com>, <saeed.bishara@gmail.com>, <jwboyer@gmail.com>
@@ -22,195 +22,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Change mtd_erase() so that it attempts to use MEMERASE64 first, then falls
+back to the old <2.6.31 MEMERASE if MEMERASE64 is unsupported.
+
+Add mtd_read_oob(), mtd_write_oob() functions to wrap the OOB ioctls.
+Similar ioctl fallback logic is used in these functions as well.
+
 Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
- include/mtd/mtd-abi.h |   89 ++++++++++++++++++++++++++++--------------------
- mtd_debug.c           |    2 +-
- 2 files changed, 53 insertions(+), 38 deletions(-)
+ include/libmtd.h |   26 +++++++++++++++++++++
+ lib/libmtd.c     |   65 +++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 88 insertions(+), 3 deletions(-)
 
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index 86defe1..c6954ed 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -1,23 +1,35 @@
- /*
-- * $Id: mtd-abi.h,v 1.13 2005/11/07 11:14:56 gleixner Exp $
-- *
-  * Portions of MTD ABI definition which are shared by kernel and user space
-  */
+diff --git a/include/libmtd.h b/include/libmtd.h
+index 0aea966..2241343 100644
+--- a/include/libmtd.h
++++ b/include/libmtd.h
+@@ -149,6 +149,32 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd);
+ int mtd_erase(const struct mtd_dev_info *mtd, int fd, int eb);
  
- #ifndef __MTD_ABI_H__
- #define __MTD_ABI_H__
- 
-+#include <linux/types.h>
+ /**
++ * mtd_read_oob - read OOB bytes
++ * @fd: MTD device node file descriptor
++ * @start: page-aligned start address
++ * @length: number of OOB bytes to read
++ * @data: read buffer
++ *
++ * This function reads @length OOB bytes starting from address @start on
++ * MTD device described by @fd. Returns %0 in case of success and %-1 in
++ * case of failure.
++ */
++int mtd_read_oob(int fd, uint64_t start, uint64_t length, void *data);
 +
- struct erase_info_user {
--	uint32_t start;
--	uint32_t length;
-+	__u32 start;
-+	__u32 length;
-+};
++/**
++ * mtd_write_oob - write OOB bytes
++ * @fd: MTD device node file descriptor
++ * @start: page-aligned start address
++ * @length: number of OOB bytes to write
++ * @data: write buffer
++ *
++ * This function writes @length OOB bytes starting from address @start on
++ * MTD device described by @fd. Returns %0 in case of success and %-1 in
++ * case of failure.
++ */
++int mtd_write_oob(int fd, uint64_t start, uint64_t length, void *data);
 +
-+struct erase_info_user64 {
-+	__u64 start;
-+	__u64 length;
- };
++/**
+  * mtd_torture - torture an eraseblock.
+  * @mtd: MTD device description object
+  * @fd: MTD device node file descriptor
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 3ff031c..368493b 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -32,6 +32,7 @@
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+ #include <mtd/mtd-user.h>
++#include <mtd/mtd-abi.h>
  
- struct mtd_oob_buf {
--	uint32_t start;
--	uint32_t length;
-+	__u32 start;
-+	__u32 length;
- 	unsigned char *ptr;
- };
+ #include <libmtd.h>
+ #include "libmtd_int.h"
+@@ -791,11 +792,69 @@ int mtd_get_dev_info(libmtd_t desc, const char *node, struct mtd_dev_info *mtd)
  
-+struct mtd_oob_buf64 {
-+	__u64 start;
-+	__u32 pad;
-+	__u32 length;
-+	__u64 usr_ptr;
-+};
+ int mtd_erase(const struct mtd_dev_info *mtd, int fd, int eb)
+ {
+-	struct erase_info_user ei;
++	int ret;
++	struct erase_info_user64 ei;
+ 
+-	ei.start = eb * mtd->eb_size;;
++	ei.start = (__u64)eb * mtd->eb_size;
+ 	ei.length = mtd->eb_size;
+-	return ioctl(fd, MEMERASE, &ei);
++	ret = ioctl(fd, MEMERASE64, &ei);
 +
- #define MTD_ABSENT		0
- #define MTD_RAM			1
- #define MTD_ROM			2
-@@ -29,7 +41,7 @@ struct mtd_oob_buf {
- #define MTD_WRITEABLE		0x400	/* Device is writeable */
- #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
- #define MTD_NO_ERASE		0x1000	/* No erase necessary */
--#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
-+#define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
++	if (ret < 0 && errno == ENOTTY) {
++		struct erase_info_user ei_old;
++
++		ei_old.start = (__u32)ei.start;
++		ei_old.length = (__u32)ei.length;
++
++		if (ei_old.start != ei.start) {
++			errno = EOVERFLOW;
++			return -1;
++		}
++
++		ret = ioctl(fd, MEMERASE, &ei_old);
++	}
++
++	return ret;
++}
++
++static int mtd_oob_op(int cmd, int cmd_old, int fd, uint64_t start,
++	uint64_t length, void *data)
++{
++	int ret;
++	struct mtd_oob_buf64 oob;
++
++	oob.start = start;
++	oob.length = length;
++	oob.usr_ptr = (__u64)(unsigned long)data;
++
++	ret = ioctl(fd, cmd, &oob);
++
++	if (ret < 0 && errno == ENOTTY) {
++		struct mtd_oob_buf oob_old;
++
++		oob_old.start = (__u32)oob.start;
++		oob_old.length = (__u32)oob.length;
++		oob_old.ptr = data;
++
++		if (oob_old.start != oob.start ||
++				oob_old.length != oob.length) {
++			errno = EOVERFLOW;
++			return -1;
++		}
++
++		ret = ioctl(fd, cmd_old, &oob_old);
++	}
++
++	return ret;
++}
++
++int mtd_read_oob(int fd, uint64_t start, uint64_t length, void *data)
++{
++	return mtd_oob_op(MEMREADOOB64, MEMREADOOB, fd, start, length, data);
++}
++
++int mtd_write_oob(int fd, uint64_t start, uint64_t length, void *data)
++{
++	return mtd_oob_op(MEMWRITEOOB64, MEMWRITEOOB, fd, start, length, data);
+ }
  
- // Some common devices / combinations of capabilities
- #define MTD_CAP_ROM		0
-@@ -50,30 +62,30 @@ struct mtd_oob_buf {
- #define MTD_OTP_USER		2
- 
- struct mtd_info_user {
--	uint8_t type;
--	uint32_t flags;
--	uint32_t size;	 // Total size of the MTD
--	uint32_t erasesize;
--	uint32_t writesize;
--	uint32_t oobsize;   // Amount of OOB data per block (e.g. 16)
-+	__u8 type;
-+	__u32 flags;
-+	__u32 size;	 // Total size of the MTD
-+	__u32 erasesize;
-+	__u32 writesize;
-+	__u32 oobsize;   // Amount of OOB data per block (e.g. 16)
- 	/* The below two fields are obsolete and broken, do not use them
- 	 * (TODO: remove at some point) */
--	uint32_t ecctype;
--	uint32_t eccsize;
-+	__u32 ecctype;
-+	__u32 eccsize;
- };
- 
- struct region_info_user {
--	uint32_t offset;		/* At which this region starts,
-+	__u32 offset;		/* At which this region starts,
- 					 * from the beginning of the MTD */
--	uint32_t erasesize;		/* For this region */
--	uint32_t numblocks;		/* Number of blocks in this region */
--	uint32_t regionindex;
-+	__u32 erasesize;		/* For this region */
-+	__u32 numblocks;		/* Number of blocks in this region */
-+	__u32 regionindex;
- };
- 
- struct otp_info {
--	uint32_t start;
--	uint32_t length;
--	uint32_t locked;
-+	__u32 start;
-+	__u32 length;
-+	__u32 locked;
- };
- 
- #define MEMGETINFO		_IOR('M', 1, struct mtd_info_user)
-@@ -86,8 +98,8 @@ struct otp_info {
- #define MEMGETREGIONINFO	_IOWR('M', 8, struct region_info_user)
- #define MEMSETOOBSEL		_IOW('M', 9, struct nand_oobinfo)
- #define MEMGETOOBSEL		_IOR('M', 10, struct nand_oobinfo)
--#define MEMGETBADBLOCK		_IOW('M', 11, loff_t)
--#define MEMSETBADBLOCK		_IOW('M', 12, loff_t)
-+#define MEMGETBADBLOCK		_IOW('M', 11, __kernel_loff_t)
-+#define MEMSETBADBLOCK		_IOW('M', 12, __kernel_loff_t)
- #define OTPSELECT		_IOR('M', 13, int)
- #define OTPGETREGIONCOUNT	_IOW('M', 14, int)
- #define OTPGETREGIONINFO	_IOW('M', 15, struct otp_info)
-@@ -95,21 +107,24 @@ struct otp_info {
- #define ECCGETLAYOUT		_IOR('M', 17, struct nand_ecclayout)
- #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
- #define MTDFILEMODE		_IO('M', 19)
-+#define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
-+#define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
-+#define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
- 
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
-  * interfaces
-  */
- struct nand_oobinfo {
--	uint32_t useecc;
--	uint32_t eccbytes;
--	uint32_t oobfree[8][2];
--	uint32_t eccpos[32];
-+	__u32 useecc;
-+	__u32 eccbytes;
-+	__u32 oobfree[8][2];
-+	__u32 eccpos[32];
- };
- 
- struct nand_oobfree {
--	uint32_t offset;
--	uint32_t length;
-+	__u32 offset;
-+	__u32 length;
- };
- 
- #define MTD_MAX_OOBFREE_ENTRIES	8
-@@ -118,9 +133,9 @@ struct nand_oobfree {
-  * diagnosis and to allow creation of raw images
-  */
- struct nand_ecclayout {
--	uint32_t eccbytes;
--	uint32_t eccpos[64];
--	uint32_t oobavail;
-+	__u32 eccbytes;
-+	__u32 eccpos[64];
-+	__u32 oobavail;
- 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
- };
- 
-@@ -133,10 +148,10 @@ struct nand_ecclayout {
-  * @bbtblocks:	number of blocks reserved for bad block tables
-  */
- struct mtd_ecc_stats {
--	uint32_t corrected;
--	uint32_t failed;
--	uint32_t badblocks;
--	uint32_t bbtblocks;
-+	__u32 corrected;
-+	__u32 failed;
-+	__u32 badblocks;
-+	__u32 bbtblocks;
- };
- 
- /*
-diff --git a/mtd_debug.c b/mtd_debug.c
-index 49a4567..4934699 100644
---- a/mtd_debug.c
-+++ b/mtd_debug.c
-@@ -301,7 +301,7 @@ int showinfo (int fd)
- 			{ "MTD_WRITEABLE", MTD_WRITEABLE },
- 			{ "MTD_BIT_WRITEABLE", MTD_BIT_WRITEABLE },
- 			{ "MTD_NO_ERASE", MTD_NO_ERASE },
--			{ "MTD_STUPID_LOCK", MTD_STUPID_LOCK },
-+			{ "MTD_POWERUP_LOCK", MTD_POWERUP_LOCK },
- 			{ NULL, -1 }
- 		};
- 		for (i = 0; flags[i].name != NULL; i++)
+ /* Patterns to write to a physical eraseblock when torturing it */
 -- 
 1.6.5
