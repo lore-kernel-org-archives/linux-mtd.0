@@ -1,20 +1,27 @@
-Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
+Received: from comal.ext.ti.com ([198.47.26.152])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWRl4-0002zM-Of
-	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2010 10:21:39 +0000
-Date: Wed, 7 Jul 2010 13:21:32 +0300
-From: Tony Lindgren <tony@atomide.com>
-To: Sukumar Ghorai <s-ghorai@ti.com>
-Subject: Re: [PATCH v5 2/3] omap3 nand: cleanup virtual address usages
-Message-ID: <20100707102131.GG1920@atomide.com>
-References: <s-ghorai@ti.com> <1275637205-489-1-git-send-email-s-ghorai@ti.com>
-	<1275637205-489-2-git-send-email-s-ghorai@ti.com>
-	<1275637205-489-3-git-send-email-s-ghorai@ti.com>
+	id 1OWSNV-0002Xh-8i
+	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2010 11:01:22 +0000
+From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>,
+	"'Kevin Hilman'" <khilman@deeprootsystems.com>
+References: <1268772081-6534-1-git-send-email-khilman@deeprootsystems.com>
+	<1273794629.9999.412.camel@macbook.infradead.org>
+In-Reply-To: <1273794629.9999.412.camel@macbook.infradead.org>
+Subject: RE: [PATCH 1/2] mtdpart: memory accessor interface for MTD layer
+Date: Wed, 7 Jul 2010 16:26:22 +0530
+Message-ID: <012f01cb1dc3$09584880$1c08d980$@raj@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1275637205-489-3-git-send-email-s-ghorai@ti.com>
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Cc: 'Bernd Schmidt' <bernd.schmidt@analog.com>,
+	'David Howells' <dhowells@redhat.com>,
+	'David Brownell' <dbrownell@users.sourceforge.net>,
+	'Nicolas Pitre' <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
+	'David Brownell' <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
+	'Andrew Morton' <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +31,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Sukumar Ghorai <s-ghorai@ti.com> [100604 10:34]:
-> --- a/arch/arm/plat-omap/include/plat/gpmc.h
-> +++ b/arch/arm/plat-omap/include/plat/gpmc.h
-> @@ -63,7 +60,6 @@
->  #define GPMC_CONFIG1_DEVICESIZE_16      GPMC_CONFIG1_DEVICESIZE(1)
->  #define GPMC_CONFIG1_DEVICETYPE(val)    ((val & 3) << 10)
->  #define GPMC_CONFIG1_DEVICETYPE_NOR     GPMC_CONFIG1_DEVICETYPE(0)
-> -#define GPMC_CONFIG1_DEVICETYPE_NAND    GPMC_CONFIG1_DEVICETYPE(2)
->  #define GPMC_CONFIG1_MUXADDDATA         (1 << 9)
->  #define GPMC_CONFIG1_TIME_PARA_GRAN     (1 << 4)
->  #define GPMC_CONFIG1_FCLK_DIV(val)      (val & 3)
+Hi David,
 
-Is this no longer needed?
+On Fri, May 14, 2010 at 05:20:29, David Woodhouse wrote:
+> On Tue, 2010-03-16 at 13:41 -0700, Kevin Hilman wrote:
+> > From: Sudhakar Rajashekhara <sudhakar....@ti.com>
+> > 
+> > This patch implements memory accessor interface in the MTD
+> > layer which enables the kernel to access flash data.
+> > 
+> > This patch adds two new members to the mtd_partition structure,
+> > a function handler which will be called during setup of the
+> > partition and an argument to be passed to this setup function.
+> 
+> Ick.
+> 
+> I don't mind providing the mtd_macc_{read,write} helper functions,
+> although they should work on generic MTD devices not just on partitions.
+> But do we really have to do the callout to arbitrary functions from
+> _within_ the core MTD code... why can't we do that in the board driver?
+> 
 
-> --- a/arch/arm/plat-omap/include/plat/nand.h
-> +++ b/arch/arm/plat-omap/include/plat/nand.h
-> @@ -21,13 +21,11 @@ struct omap_nand_platform_data {
->  	int			(*dev_ready)(struct omap_nand_platform_data *);
->  	int			dma_channel;
->  	unsigned long		phys_base;
-> -	void __iomem		*gpmc_cs_baseaddr;
-> -	void __iomem		*gpmc_baseaddr;
->  	int			devsize;
->  };
+First of all apologies for replying to this thread *very* late.
 
-Glad to see these finally going away!
+This thread started in response to the patch at
+http://lkml.org/lkml/2010/3/16/380. I think you are OK with the
+mtd_macc_{read,write} functions being provided within the MTD core but
+you are objecting to the extra ->setup method in struct mtd_partition.
+Without adding the setup method in mtd_parition structure, the MTD
+memory accessor interface users will not knowing when to call the
+mtd_macc_{read,write} functions. These functions should be called after
+the MTD partitions are set up. If the ->setup method is moved to the
+board driver, I'll get into the initialization sequence problem, which
+I want to avoid.
 
-Regards,
-
-Tony 
+Thanks,
+Sudhakar
