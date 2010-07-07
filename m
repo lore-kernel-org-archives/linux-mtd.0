@@ -1,17 +1,21 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mms2.broadcom.com ([216.31.210.18])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWW1w-00024W-RS
-	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2010 14:55:24 +0000
-Received: by pwj7 with SMTP id 7so637712pwj.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 07 Jul 2010 07:55:17 -0700 (PDT)
+	id 1OWZG5-0006o2-M1
+	for linux-mtd@lists.infradead.org; Wed, 07 Jul 2010 18:22:10 +0000
+Message-ID: <4C34C5C6.7010008@broadcom.com>
+Date: Wed, 7 Jul 2010 11:21:58 -0700
+From: "Brian Norris" <norris@broadcom.com>
 MIME-Version: 1.0
-Date: Wed, 7 Jul 2010 16:55:17 +0200
-Message-ID: <AANLkTinrUQKhq9DZ5U8ErJ8PUAEspuDwcNRAPcrv7GCu@mail.gmail.com>
-Subject: mtd_pagetest fails with omap2 OneNAND driver
-From: =?UTF-8?Q?Enric_Balletb=C3=B2_i_Serra?= <eballetbo@gmail.com>
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd-utils: formatting of odd-sized OOB in nanddump
+References: <1276706527-4563-1-git-send-email-norris@broadcom.com>
+	<1278511674.12733.18.camel@localhost>
+In-Reply-To: <1278511674.12733.18.camel@localhost>
+Content-Type: text/plain;
+ charset=utf-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,93 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+> Why 10 bytes, why not 12 or 14?
 
-I need some help to understand what is wrong, maybe someone can help me.
+As of now, the only OOB-size that's not a multiple of 16 supported in 
+the other bits of ugly code is 218-bytes.
 
-I'm running an OMAP3-based board with a OneNAND from Numonyx, the
-problem is some mtd tests fails. An example is the mtd_pagetest, the
-erase test fails.
+218 % 16 = 10
 
-[  937.885925] mtd_pagetest: erasetest
-[  937.889434] mtd_pagetest: erasing block 0
-[  937.895721] mtd_pagetest: writing 1st page of block 0
-[  937.901550] mtd_pagetest: erasing block 0
-[  937.907623] mtd_pagetest: reading 1st page of block 0
-[  937.912994] mtd_pagetest: verifying 1st page of block 0 is all 0xff
-[  937.919342] mtd_pagetest: verifying all 0xff failed at 0
-[  937.924713] mtd_pagetest: finished with 1 errors
+What's the point of checking for a "supported" page-size/OOB-size 
+earlier if we're not gonna use that info? :)
 
-If I read the mtd contents
+> I think it is better to just copy-paste-modify the kernel
+> print_hex_dump() and utilize it, instead of this ugly crocodile code ...
 
-# mtd_debug read /dev/mtd4 0 1024 output.log
-# hexdump output.log
-0000000 1caf ecfa 976b aa81 700a 9ce1 5427 32eb
+I'm looking at that, since it seems a better solution. Does anyone 
+oppose including ASCII output in the "pretty" option? It's built in to 
+the print_hex_dump() already, so it shouldn't be too difficult to adapt. 
+Anyway, it seems that someone intended to print ASCII at some point 
+(nanddump.c, line 77):
 
-looks like the mtd partition it's not erased, but If I use the
-flash_eraseall tool erases the flash completely without problem
-
-# flash_eraseall /dev/mtd4
-Erasing 256 Kibyte @ fa80000 -- 100 % complete.
-# mtd_debug read /dev/mtd4 0 1024 output.log
-Copied 1024 bytes from address 0x00000000 in flash to file.log
-# hexdump output.log
-0000000 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-0000400
-
-So I don't understand why this test fails. Any idea what might be wrong ?
-
-Here the full log
-
-[  775.590270] =================================================
-[  775.596160] mtd_pagetest: MTD device: 4
-[  775.603851] mtd_pagetest: MTD device size 262668288, eraseblock
-size 262144, page size 4096, count of eraseblocks 1002, pages per
-eraseblock 64, OOB size 64
-[  775.618408] mtd_pagetest: scanning for bad eraseblocks
-[  775.624420] mtd_pagetest: scanned 1002 eraseblocks, 0 are bad
-[  775.630218] mtd_pagetest: erasing whole device
-[  777.486846] mtd_pagetest: erased 1002 eraseblocks
-[  777.491638] mtd_pagetest: writing whole device
-[  777.531585] mtd_pagetest: written up to eraseblock 0
-[  786.519378] mtd_pagetest: written up to eraseblock 256
-[  795.505706] mtd_pagetest: written up to eraseblock 512
-[  804.488769] mtd_pagetest: written up to eraseblock 768
-[  812.668182] mtd_pagetest: written 1002 eraseblocks
-[  812.673126] mtd_pagetest: verifying all eraseblocks
-[  812.803375] mtd_pagetest: verified up to eraseblock 0
-[  844.772460] mtd_pagetest: verified up to eraseblock 256
-[  876.734741] mtd_pagetest: verified up to eraseblock 512
-[  908.696838] mtd_pagetest: verified up to eraseblock 768
-[  937.791229] mtd_pagetest: verified 1002 eraseblocks
-[  937.796234] mtd_pagetest: crosstest
-[  937.800903] mtd_pagetest: reading page at 0x0
-[  937.805877] mtd_pagetest: reading page at 0xfa7f000
-[  937.811096] mtd_pagetest: reading page at 0x0
-[  937.816070] mtd_pagetest: verifying pages read at 0x0 match
-[  937.821838] mtd_pagetest: crosstest ok
-[  937.825622] mtd_pagetest: erasecrosstest
-[  937.829589] mtd_pagetest: erasing block 0
-[  937.835906] mtd_pagetest: writing 1st page of block 0
-[  937.841552] mtd_pagetest: reading 1st page of block 0
-[  937.847198] mtd_pagetest: verifying 1st page of block 0
-[  937.852600] mtd_pagetest: erasing block 0
-[  937.858734] mtd_pagetest: writing 1st page of block 0
-[  937.864379] mtd_pagetest: erasing block 1001
-[  937.870788] mtd_pagetest: reading 1st page of block 0
-[  937.876342] mtd_pagetest: verifying 1st page of block 0
-[  937.881652] mtd_pagetest: erasecrosstest ok
-[  937.885925] mtd_pagetest: erasetest
-[  937.889434] mtd_pagetest: erasing block 0
-[  937.895721] mtd_pagetest: writing 1st page of block 0
-[  937.901550] mtd_pagetest: erasing block 0
-[  937.907623] mtd_pagetest: reading 1st page of block 0
-[  937.912994] mtd_pagetest: verifying 1st page of block 0 is all 0xff
-[  937.919342] mtd_pagetest: verifying all 0xff failed at 0
-[  937.924713] mtd_pagetest: finished with 1 errors
-[  937.929870] =================================================
-
-Thanks in advance,
-
-Enric
+static bool             pretty_print = false;   // print nice in ascii
