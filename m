@@ -1,20 +1,23 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWzCH-000694-GC
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 22:03:58 +0000
-Message-ID: <4C364B3A.3020305@broadcom.com>
-Date: Thu, 8 Jul 2010 15:03:38 -0700
+	id 1OWzVV-0004DW-Hj
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 22:23:50 +0000
+Message-ID: <4C364FE8.1030101@broadcom.com>
+Date: Thu, 8 Jul 2010 15:23:36 -0700
 From: "Brian Norris" <norris@broadcom.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 6/6] mtd-utils/nanddump.c: Add "forcebinary" flag
-References: <1278622209-20149-7-git-send-email-norris@broadcom.com>
-In-Reply-To: <1278622209-20149-7-git-send-email-norris@broadcom.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd-www doc, FAQ, general: spelling fixes
+References: <1277332946-14580-1-git-send-email-norris@broadcom.com>
+	<1277387522.24980.6.camel@localhost.localdomain>
+	<4C238ACC.8050004@broadcom.com> <1278581058.12733.77.camel@localhost>
+In-Reply-To: <1278581058.12733.77.camel@localhost>
 Content-Type: text/plain;
- charset=iso-8859-1;
+ charset=utf-8;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <norris@broadcom.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "pjohn@mvista.com" <pjohn@mvista.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,8 +27,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry, apparently some of the "In-Reply-To" information got screwed up. 
-The cover e-mail as well as patches 1 and 3 are in the proper chain, but 
-not 2, 4, 5, 6. :(
+>
+> Pushed, thanks a lot!
+>
 
-Brian
+I think you missed the first patch :) I'm not sure it applies properly 
+now, but here's the link. I can reformat it if necessary:
+http://lists.infradead.org/pipermail/linux-mtd/2010-June/030705.html
