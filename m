@@ -1,19 +1,20 @@
 Received: from mms3.broadcom.com ([216.31.210.19])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWy4e-0001ru-Gg
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 20:52:01 +0000
+	id 1OWzCH-000694-GC
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 22:03:58 +0000
+Message-ID: <4C364B3A.3020305@broadcom.com>
+Date: Thu, 8 Jul 2010 15:03:38 -0700
 From: "Brian Norris" <norris@broadcom.com>
-To: "Artem Bityutskiy" <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH 3/6] mtd-utils/nanddump.c: Add canonical (hex+ascii)
- flag
-Date: Thu, 8 Jul 2010 13:50:06 -0700
-Message-ID: <1278622209-20149-4-git-send-email-norris@broadcom.com>
-In-Reply-To: <1278622209-20149-1-git-send-email-norris@broadcom.com>
-References: <1278622209-20149-1-git-send-email-norris@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 6/6] mtd-utils/nanddump.c: Add "forcebinary" flag
+References: <1278622209-20149-7-git-send-email-norris@broadcom.com>
+In-Reply-To: <1278622209-20149-7-git-send-email-norris@broadcom.com>
+Content-Type: text/plain;
+ charset=iso-8859-1;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <norris@broadcom.com>
+Cc: Brian Norris <norris@broadcom.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added the "-c" or "--canonicalprint" flag (modelled off 'hexdump -C')
-so that users can choose to print ASCII output next to the prettyprint
-output. This is really an extension to the prettyprint option, so the two
-options do not conflict if they are both included in the same execution.
+Sorry, apparently some of the "In-Reply-To" information got screwed up. 
+The cover e-mail as well as patches 1 and 3 are in the proper chain, but 
+not 2, 4, 5, 6. :(
 
-Signed-off-by: Brian Norris <norris@broadcom.com>
----
- nanddump.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/nanddump.c b/nanddump.c
-index 7281279..2e316b9 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -45,6 +45,7 @@ static void display_help (void)
- "\n"
- "           --help               Display this help and exit\n"
- "           --version            Output version information and exit\n"
-+"-c         --canonicalprint     Print canonical Hex+ASCII dump\n"
- "-f file    --file=file          Dump to file\n"
- "-i         --ignoreerrors       Ignore errors\n"
- "-l length  --length=length      Length\n"
-@@ -74,7 +75,7 @@ static void display_version (void)
- // Option variables
- 
- static bool		ignoreerrors = false;	// ignore errors
--static bool		pretty_print = false;	// print nice in ascii
-+static bool		pretty_print = false;	// print nice
- static bool		noecc = false;		// don't error correct
- static bool		omitoob = false;	// omit oob data
- static unsigned long	start_addr;		// start address
-@@ -83,7 +84,7 @@ static const char	*mtddev;		// mtd device name
- static const char	*dumpfile;		// dump file name
- static bool		omitbad = false;
- static bool		quiet = false;		// suppress diagnostic output
--static bool		ascii = false;
-+static bool		ascii = false;		// print nice + ascii
- 
- static void process_options (int argc, char * const argv[])
- {
-@@ -91,10 +92,11 @@ static void process_options (int argc, char * const argv[])
- 
- 	for (;;) {
- 		int option_index = 0;
--		static const char *short_options = "bs:f:il:opqn";
-+		static const char *short_options = "bs:f:il:opqnc";
- 		static const struct option long_options[] = {
- 			{"help", no_argument, 0, 0},
- 			{"version", no_argument, 0, 0},
-+			{"canonicalprint", no_argument, 0, 'c'},
- 			{"file", required_argument, 0, 'f'},
- 			{"ignoreerrors", no_argument, 0, 'i'},
- 			{"prettyprint", no_argument, 0, 'p'},
-@@ -145,6 +147,8 @@ static void process_options (int argc, char * const argv[])
- 			case 'o':
- 				omitoob = true;
- 				break;
-+			case 'c':
-+				ascii = true;
- 			case 'p':
- 				pretty_print = true;
- 				break;
--- 
-1.7.0.4
+Brian
