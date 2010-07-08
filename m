@@ -1,23 +1,24 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWixs-0006Zm-Mr
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 04:44:02 +0000
-Received: by vws8 with SMTP id 8so679390vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 07 Jul 2010 21:43:59 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1278564096.7365.4.camel@localhost.localdomain>
-References: <20100528020311.GA1608@july> <1276352819.19028.123.camel@localhost>
-	<AANLkTilrYbbvRcIm0qwbZXQgB0wcmNxgPo0l_aZl8lu5@mail.gmail.com>
-	<1278564096.7365.4.camel@localhost.localdomain>
-Date: Thu, 8 Jul 2010 13:43:58 +0900
-Message-ID: <AANLkTilNcN2JwhVRG1k32VtjK08s99W-9AbZGGwsiCUF@mail.gmail.com>
-Subject: Re: [PATCH] OneNAND: Introduce chip_probe function
-From: Kyungmin Park <kmpark@infradead.org>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OWk4k-0001iQ-PA
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 05:55:11 +0000
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
+	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	o685sYhg007082
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Jul 2010 00:55:07 -0500
+Subject: Re: [PATCH 0/4] mtd: add mtd repartition ioctl
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+In-Reply-To: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
+References: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 08 Jul 2010 08:50:57 +0300
+Message-ID: <1278568257.12733.34.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 8, 2010 at 1:41 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Thu, 2010-07-08 at 09:50 +0900, Kyungmin Park wrote:
->> Hi Artem,
->>
->> Can merge it next merge window. It's clean method for samsung socs and
->> no functional changes for others.
->
-> Hi,
->
-> I do not merge things, I'm just a "secretary" who picks up patches
-> and passes them to dwmw2. He merges those he approves. So, closer
-> to the merge window he should look at my l2 tree (he usually does)
-> and pick up your stuff.
+On Fri, 2010-06-18 at 13:08 +0300, Roman Tereshonkov wrote:
+> Adding mtd master device after all partitions should provide
+> minimum effect on the created partition enumeration.
+> 
+> The master mtd device can be repartitioned in runtime through
+> the mtd ioctl MTDREPARTITION. The ioctl passed argument is
+> the set of the new partitions defined by the structures:
+> struct mtd_partitions and struct mtd_partition_user.
+> 
+> All at once partition configuration is used and caused by
+> the all at once partition removing. Only unused partitions are deleted.
+> If any of the partitions for given mtd device is used then user gets error.
+> The care should be taken to close all applications which access
+> the partitions.
+> 
+> Roman Tereshonkov (4):
+>   mtd: add new ioctl structures to be used for repartitioning
+>   mtd: add the possibility to modify partitions in runtime
+>   mtd: add MTDREPARTITION ioctl
+>   mtd: create the mtd master device for given set of partitions
+> 
+>  drivers/mtd/mtdchar.c          |  110 +++++++++++++++++++++++++++++++++++++++-
+>  drivers/mtd/mtdpart.c          |   45 ++++++++++++++--
+>  drivers/mtd/onenand/omap2.c    |    8 ++-
+>  include/linux/mtd/partitions.h |    2 +
+>  include/mtd/mtd-abi.h          |   15 ++++++
+>  5 files changed, 170 insertions(+), 10 deletions(-)
 
-I see
-At that time, I will notice again if it's missing.
+I've pushed this to my l2-mtd-2.6.git / master, looks good to me.
 
-Thank you,
-Kyungmin Park
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
