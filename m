@@ -1,21 +1,22 @@
-Received: from mail.dbn.pfk.co.za ([196.212.6.202])
+Received: from mailhost.informatik.uni-hamburg.de ([134.100.9.70])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWqVO-0001Vy-G1
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 12:47:08 +0000
-Received: from pfkdbn-ltp003.pfksa.co.za ([10.3.0.110] helo=PFKDBNLTP003)
-	by mail.dbn.pfk.co.za with esmtp (Exim 4.62)
-	(envelope-from <seanp@pfk.co.za>) id 1OWqZg-0007IY-3P
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 14:51:32 +0200
-From: "Sean Preston" <seanp@pfk.co.za>
-To: "Linux-MTD List" <linux-mtd@lists.infradead.org>
-Subject: New NAND Help
-Date: Thu, 8 Jul 2010 14:46:40 +0200
-Message-ID: <002501cb1e9b$a28bdbb0$e7a39310$@pfk.co.za>
+	id 1OWr1m-00030X-Oe
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 13:20:39 +0000
+Message-ID: <4C35D084.7050605@metafoo.de>
+Date: Thu, 08 Jul 2010 15:20:04 +0200
+From: Lars-Peter Clausen <lars@metafoo.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v2 17/26] MTD: Nand: Add JZ4740 NAND driver
+References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
+	<1276924111-11158-18-git-send-email-lars@metafoo.de>
+	<1278569214.12733.38.camel@localhost>
+In-Reply-To: <1278569214.12733.38.camel@localhost>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Language: en-za
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Artem Bityutskiy wrote:
+> On Sat, 2010-06-19 at 07:08 +0200, Lars-Peter Clausen wrote:
+>> diff --git a/include/linux/mtd/jz4740_nand.h b/include/linux/mtd/jz4740_nand.h
+>> new file mode 100644
+>> index 0000000..379f9b6
+>> --- /dev/null
+>> +++ b/include/linux/mtd/jz4740_nand.h
+>> @@ -0,0 +1,34 @@
+>> +/*
+>> + *  Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+>> + *  JZ4740 SoC NAND controller driver
+>> + *
+>> + *  This program is free software; you can redistribute	 it and/or modify it
+>> + *  under  the terms of	 the GNU General  Public License as published by the
+>> + *  Free Software Foundation;  either version 2 of the	License, or (at your
+>> + *  option) any later version.
+>> + *
+>> + *  You should have received a copy of the  GNU General Public License along
+>> + *  with this program; if not, write  to the Free Software Foundation, Inc.,
+>> + *  675 Mass Ave, Cambridge, MA 02139, USA.
+>> + *
+>> + */
+>> +
+>> +#ifndef __JZ_NAND_H__
+>> +#define __JZ_NAND_H__
+>> +
+>> +#include <linux/mtd/nand.h>
+>> +#include <linux/mtd/partitions.h>
+>> +
+>> +struct jz_nand_platform_data {
+>> +	int			num_partitions;
+>> +	struct mtd_partition	*partitions;
+>> +
+>> +	struct nand_ecclayout	*ecc_layout;
+>> +
+>> +	unsigned int busy_gpio;
+>> +
+>> +	void (*ident_callback)(struct platform_device *, struct nand_chip *,
+>> +				struct mtd_partition **, int *num_partitions);
+>> +};
+>> +
+>> +#endif
+> 
+> Do you really have to add your platform data strucutre to
+> "inlculde/mtd" ? That is quite global namespace, and ideally only things
+> like user-space interface and "public" interface of the MTD subsystem
+> should live there.
+> 
+> Can you keep this somewhere in mips architecture directory?
+
 Hi
 
-I have a TI DM365 EVM board that currently uses the Micron MT29F16G08FAA 2GB
-NAND chip and I would like to test the Micron MT29F8G08ABABA 1GB NAND chip.
+Hm, ok, I see. I'll move it to arch/mips/include/asm/mach-jz4740/ then.
+But I guess I should move the headers for all the other jz4740 driver to the same
+directory as well.
 
+On the other hand I'm wondering where on would put headers for non platform specific
+drivers?
 
-Quick summary of the chips specs:
-Page size: 2112 bytes (2048 + 64 bytes)
-Block size: 64 pages (128K +4K bytes)
-Plane size: 2048 blocks
-Dies: 4
-Chip Enables: 2
-ECC: HW 4bit
-
-New chips specs:
-Page size: 4320 bytes (4096 + 224 bytes)
-Block size: 128 pages (512K +28K bytes)
-Plane size: 2 planes x 1024 blocks per plane
-Dies: 1
-Chip Enables: 1
-ECC: HW 4bit 
-
-Looking at the drivers/mtd/nand section of the tree I have added the new
-chip ID to nand_ids.c  There already appears to be support for 4096 page
-sizes and 512K block sizes.  What else would I need to check to ensure that
-the kernel is able to probe this chip and load the driver needed for it.
-The driver currently being loaded is the davinci_nand driver.  I have
-managed to get this chip working with uBoot which uses a modified version of
-the MTD driver.
-
-Regards
-Sean
-
---
-Sean Preston
-Email: seanp@pfk.co.za
+- Lars
