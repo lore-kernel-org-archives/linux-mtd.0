@@ -1,24 +1,23 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWiBn-0006wq-AW
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 03:54:20 +0000
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Thu, 8 Jul 2010 09:24:09 +0530
-Subject: RE: [PATCH v5 1/3] omap3 gpmc: functionality enhancement
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030E10C9CF@dbde02.ent.ti.com>
-References: <s-ghorai@ti.com> <1275637205-489-1-git-send-email-s-ghorai@ti.com>
-	<1275637205-489-2-git-send-email-s-ghorai@ti.com>
-	<20100707101840.GF1920@atomide.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B030E10C786@dbde02.ent.ti.com>
-	<20100707130138.GW1920@atomide.com>
-In-Reply-To: <20100707130138.GW1920@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OWiQZ-0001jl-19
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 04:09:36 +0000
+Received: by fxm3 with SMTP id 3so170031fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 Jul 2010 21:09:33 -0700 (PDT)
+Subject: Re: [PATCH] mtd-utils: formatting of odd-sized OOB in nanddump
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <norris@broadcom.com>
+In-Reply-To: <4C34C5C6.7010008@broadcom.com>
+References: <1276706527-4563-1-git-send-email-norris@broadcom.com>
+	<1278511674.12733.18.camel@localhost> <4C34C5C6.7010008@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 08 Jul 2010 07:09:29 +0300
+Message-Id: <1278562169.7365.2.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+On Wed, 2010-07-07 at 11:21 -0700, Brian Norris wrote:
+> > Why 10 bytes, why not 12 or 14?
+> 
+> As of now, the only OOB-size that's not a multiple of 16 supported in 
+> the other bits of ugly code is 218-bytes.
+> 
+> 218 % 16 = 10
+> 
+> What's the point of checking for a "supported" page-size/OOB-size 
+> earlier if we're not gonna use that info? :)
 
-> -----Original Message-----
-> From: Tony Lindgren [mailto:tony@atomide.com]
-> Sent: Wednesday, July 07, 2010 6:32 PM
-> To: Ghorai, Sukumar
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org;
-> mike@compulab.co.il
-> Subject: Re: [PATCH v5 1/3] omap3 gpmc: functionality enhancement
->=20
-> * Ghorai, Sukumar <s-ghorai@ti.com> [100707 15:26]:
-> > > From: Tony Lindgren [mailto:tony@atomide.com]
-> > >
-> > > You should just replace this function with simple functions like we
-> > > already
-> > > have in gpmc.c rather than trying to pack everything into one functio=
-n.
-> > > Just add various gpmc_xxx_get/set functions rather than pass int *rva=
-l.
-> >
-> > [Ghorai] So I was having the same query very 1st time.
-> > So we need to implement 15 separate functions to do the same as you
-> suggested. And in my approach it's very easy to enhance the functionally
-> in future, say to add new set/get. E.g. we need the similar cleanup for
-> OneNAND code too.
-> > So, would you please confirm once again with one is the best and should
-> follow?
->=20
-> In general, we should have separate read and write functions.
->=20
-> Maybe you can group them a little bit? Some of them need the chip
-> select, and some of them are generic. Then some of them are NAND
-> specific.
-[Ghorai] ok. And let me re-work this for next version.
->=20
-> Regards,
->=20
-> Tony
+No point, as well as not much point introducing magic hard-coded
+constant like 10 - the printing should be generic.
+> 
+> > I think it is better to just copy-paste-modify the kernel
+> > print_hex_dump() and utilize it, instead of this ugly crocodile code ...
+> 
+> I'm looking at that, since it seems a better solution. Does anyone 
+> oppose including ASCII output in the "pretty" option? It's built in to 
+> the print_hex_dump() already, so it shouldn't be too difficult to adapt. 
+> Anyway, it seems that someone intended to print ASCII at some point 
+> (nanddump.c, line 77):
+> 
+> static bool             pretty_print = false;   // print nice in ascii
+
+Well, it is better to make this configurable or not print ASCII, IMO,
+because it potentially may break scripts which use nanddump.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
