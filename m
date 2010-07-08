@@ -1,12 +1,11 @@
 Received: from [69.28.251.93] (helo=b32.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWf7o-0003by-Vc
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 00:38:02 +0000
+	id 1OWf8A-0003jh-14
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 00:38:23 +0000
 From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 7 Jul 2010 17:30:11 -0700
-Subject: [PATCHv2 2/5] mtd-utils: update Makefiles,
-	source files to use common libmtd.a
-Message-Id: <9b6958cacc8e2e3392fee1b0cc197d28@localhost>
+Date: Wed, 7 Jul 2010 17:30:12 -0700
+Subject: [PATCHv2 3/5] mtd-utils: update to latest mtd-abi.h from kernel.org
+Message-Id: <3104cb9460ba1c5311ebcb12f9bc68e9@localhost>
 In-Reply-To: <eb53f5a0215250d7e523de47d15b0d12@localhost>
 References: <eb53f5a0215250d7e523de47d15b0d12@localhost>
 To: <dedekind1@gmail.com>, <saeed.bishara@gmail.com>, <jwboyer@gmail.com>,
@@ -24,427 +23,195 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Modify the build system and source code so that libmtd.a can be built from
-a "common" location (lib/).  Statically link all utilities at the top level
-with libmtd.a .  Minor changes to mkfs.ubifs to allow using the common
-crc32 implementation.
-
 Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
- Makefile                  |   21 ++++++---------------
- common.mk                 |    2 +-
- fectest.c                 |    2 +-
- flash_eraseall.c          |    2 +-
- include/crc32.h           |    2 +-
- jffs2dump.c               |    2 +-
- lib/Makefile              |   22 ++++++++++++++++++++++
- mkfs.jffs2.c              |    4 ++--
- mkfs.ubifs/Makefile       |    3 ++-
- mkfs.ubifs/compr.c        |    4 +++-
- mkfs.ubifs/mkfs.ubifs.c   |    5 +++--
- mkfs.ubifs/mkfs.ubifs.h   |    1 -
- recv_image.c              |    2 +-
- serve_image.c             |    2 +-
- sumtool.c                 |    2 +-
- ubi-utils/Makefile        |   15 +++++++--------
- ubi-utils/src/libscan.c   |    2 +-
- ubi-utils/src/libubigen.c |    2 +-
- ubi-utils/src/ubicrc32.c  |    2 +-
- ubi-utils/src/ubiformat.c |    2 +-
- 20 files changed, 57 insertions(+), 42 deletions(-)
- create mode 100644 lib/Makefile
+ include/mtd/mtd-abi.h |   89 ++++++++++++++++++++++++++++--------------------
+ mtd_debug.c           |    2 +-
+ 2 files changed, 53 insertions(+), 38 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 577634f..b558705 100644
---- a/Makefile
-+++ b/Makefile
-@@ -7,7 +7,7 @@ ifeq ($(WITHOUT_XATTR), 1)
-   CPPFLAGS += -DWITHOUT_XATTR
- endif
- 
--SUBDIRS = ubi-utils mkfs.ubifs
-+SUBDIRS = lib ubi-utils mkfs.ubifs
- 
- TARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
- 	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
-@@ -20,6 +20,9 @@ TARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
- 
- SYMLINKS =
- 
-+LDLIBS = -L$(BUILDDIR)/lib -lmtd
-+LDDEPS = $(BUILDDIR)/lib/libmtd.a
-+
- include common.mk
- 
- clean::
-@@ -36,28 +39,16 @@ $(SYMLINKS):
- 	ln -sf ../fs/jffs2/$@ $@
- 
- $(BUILDDIR)/mkfs.jffs2: $(addprefix $(BUILDDIR)/,\
--	crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o compr_lzo.o \
-+	compr_rtime.o mkfs.jffs2.o compr_zlib.o compr_lzo.o \
- 	compr.o rbtree.o)
- LDFLAGS_mkfs.jffs2 = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
- LDLIBS_mkfs.jffs2  = -lz -llzo2
- 
--$(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o $(BUILDDIR)/flash_eraseall.o
--
- $(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o
- LDFLAGS_jffs2reader = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
- LDLIBS_jffs2reader  = -lz -llzo2
- 
--$(BUILDDIR)/jffs2dump: $(BUILDDIR)/jffs2dump.o $(BUILDDIR)/crc32.o
--
--$(BUILDDIR)/sumtool: $(BUILDDIR)/sumtool.o $(BUILDDIR)/crc32.o
--
--$(BUILDDIR)/serve_image: $(BUILDDIR)/serve_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
--
--$(BUILDDIR)/recv_image: $(BUILDDIR)/recv_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
--
--$(BUILDDIR)/fectest: $(BUILDDIR)/fectest.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
--
--
-+$(BUILDDIR)/lib/libmtd.a: subdirs_lib_all ;
- 
- install:: ${TARGETS}
- 	mkdir -p ${DESTDIR}/${SBINDIR}
-diff --git a/common.mk b/common.mk
-index d704b44..be785b4 100644
---- a/common.mk
-+++ b/common.mk
-@@ -47,7 +47,7 @@ clean:: $(SUBDIRS_CLEAN)
- 
- install:: $(TARGETS) $(SUBDIRS_INSTALL)
- 
--%: %.o
-+%: %.o $(LDDEPS) $(LDDEPS_$(notdir $@))
- 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_$(notdir $@)) -g -o $@ $^ $(LDLIBS) $(LDLIBS_$(notdir $@))
- 
- $(BUILDDIR)/%.a:
-diff --git a/fectest.c b/fectest.c
-index d5893b9..c1fbd52 100644
---- a/fectest.c
-+++ b/fectest.c
-@@ -8,7 +8,7 @@
- #include <sys/stat.h>
- 
- #include "mcast_image.h"
--#include "crc32.h"
-+#include <crc32.h>
- 
- #define ERASE_SIZE 131072
- //#define PKT_SIZE 1400
-diff --git a/flash_eraseall.c b/flash_eraseall.c
-index a22fc49..e6f8d50 100644
---- a/flash_eraseall.c
-+++ b/flash_eraseall.c
-@@ -35,7 +35,7 @@
- #include <getopt.h>
- #include <sys/ioctl.h>
- #include <sys/mount.h>
--#include "crc32.h"
-+#include <crc32.h>
- 
- #include <mtd/mtd-user.h>
- #include <mtd/jffs2-user.h>
-diff --git a/include/crc32.h b/include/crc32.h
-index 86fc841..4b51177 100644
---- a/include/crc32.h
-+++ b/include/crc32.h
-@@ -10,7 +10,7 @@
- extern const uint32_t crc32_table[256];
- 
- /* Return a 32-bit CRC of the contents of the buffer. */
--static inline uint32_t ubifs_crc32(uint32_t val, const void *ss, int len)
-+static inline uint32_t crc32(uint32_t val, const void *ss, int len)
- {
- 	const unsigned char *s = ss;
- 
-diff --git a/jffs2dump.c b/jffs2dump.c
-index 2802682..cd8b6fa 100644
---- a/jffs2dump.c
-+++ b/jffs2dump.c
-@@ -31,7 +31,7 @@
- #include <endian.h>
- #include <byteswap.h>
- #include <getopt.h>
--#include "crc32.h"
-+#include <crc32.h>
- #include "summary.h"
- 
- #define PROGRAM "jffs2dump"
-diff --git a/lib/Makefile b/lib/Makefile
-new file mode 100644
-index 0000000..91507f3
---- /dev/null
-+++ b/lib/Makefile
-@@ -0,0 +1,22 @@
-+#
-+# Makefile for libmtd
-+#
-+
-+SUBDIRS =
-+
-+# CFLAGS += -Werror
-+CPPFLAGS += -I../include
-+LIBS = libmtd
-+TARGETS = libmtd.a
-+
-+include ../common.mk
-+
-+$(BUILDDIR)/libmtd.a: $(addprefix $(BUILDDIR)/,\
-+	libmtd.o libmtd_legacy.o crc32.o fec.o)
-+
-+clean::
-+	rm -f $(addsuffix .a, $(LIBS))
-+
-+install::
-+
-+uninstall:
-diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
-index 64cafb6..2c78fd5 100644
---- a/mkfs.jffs2.c
-+++ b/mkfs.jffs2.c
-@@ -69,10 +69,10 @@
- #include <sys/acl.h>
- #endif
- #include <byteswap.h>
--#define crc32 __complete_crap
-+#define crc32 __zlib_crc32
- #include <zlib.h>
- #undef crc32
--#include "crc32.h"
-+#include <crc32.h>
- #include "rbtree.h"
- 
- /* Do not use the weird XPG version of basename */
-diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
-index 61d0e20..ba21a8c 100644
---- a/mkfs.ubifs/Makefile
-+++ b/mkfs.ubifs/Makefile
-@@ -7,12 +7,13 @@ ALL_SOURCES=*.[ch] hashtable/*.[ch]
- TARGETS = mkfs.ubifs
- 
- LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid -L$(BUILDDIR)/../ubi-utils/ -lubi
-+LDLIBS_mkfs.ubifs += -L$(BUILDDIR)/../lib -lmtd
- LDLIBS_mkfs.ubifs += $(ZLIBLDFLAGS) $(LZOLDFLAGS)
- 
- include ../common.mk
- 
- $(BUILDDIR)/mkfs.ubifs: $(addprefix $(BUILDDIR)/,\
--	crc16.o crc32.o lpt.o compr.o devtable.o \
-+	crc16.o lpt.o compr.o devtable.o \
- 	hashtable/hashtable.o hashtable/hashtable_itr.o)
- 
- clean::
-diff --git a/mkfs.ubifs/compr.c b/mkfs.ubifs/compr.c
-index e378c5d..7f084c5 100644
---- a/mkfs.ubifs/compr.c
-+++ b/mkfs.ubifs/compr.c
-@@ -24,10 +24,12 @@
- #include <stdio.h>
- #include <stdint.h>
- #include <string.h>
--#include <zlib.h>
- #include <lzo/lzo1x.h>
- #include <linux/types.h>
- 
-+#define crc32 __zlib_crc32
-+#include <zlib.h>
-+
- #include "compr.h"
- #include "ubifs-media.h"
- #include "mkfs.ubifs.h"
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index e4b4e3c..95b20b0 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -21,6 +21,7 @@
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 86defe1..c6954ed 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -1,23 +1,35 @@
+ /*
+- * $Id: mtd-abi.h,v 1.13 2005/11/07 11:14:56 gleixner Exp $
+- *
+  * Portions of MTD ABI definition which are shared by kernel and user space
   */
  
- #include "mkfs.ubifs.h"
-+#include <crc32.h>
+ #ifndef __MTD_ABI_H__
+ #define __MTD_ABI_H__
  
- #define PROGRAM_VERSION "1.3"
++#include <linux/types.h>
++
+ struct erase_info_user {
+-	uint32_t start;
+-	uint32_t length;
++	__u32 start;
++	__u32 length;
++};
++
++struct erase_info_user64 {
++	__u64 start;
++	__u64 length;
+ };
  
-@@ -752,7 +753,7 @@ static void prepare_node(void *node, int len)
- 	ch->group_type = UBIFS_NO_NODE_GROUP;
- 	ch->sqnum = cpu_to_le64(++c->max_sqnum);
- 	ch->padding[0] = ch->padding[1] = 0;
--	crc = ubifs_crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
-+	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
- 	ch->crc = cpu_to_le32(crc);
- }
+ struct mtd_oob_buf {
+-	uint32_t start;
+-	uint32_t length;
++	__u32 start;
++	__u32 length;
+ 	unsigned char *ptr;
+ };
  
-@@ -822,7 +823,7 @@ static int do_pad(void *buf, int len)
- 		pad_len -= UBIFS_PAD_NODE_SZ;
- 		pad_node->pad_len = cpu_to_le32(pad_len);
++struct mtd_oob_buf64 {
++	__u64 start;
++	__u32 pad;
++	__u32 length;
++	__u64 usr_ptr;
++};
++
+ #define MTD_ABSENT		0
+ #define MTD_RAM			1
+ #define MTD_ROM			2
+@@ -29,7 +41,7 @@ struct mtd_oob_buf {
+ #define MTD_WRITEABLE		0x400	/* Device is writeable */
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+ #define MTD_NO_ERASE		0x1000	/* No erase necessary */
+-#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
++#define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
  
--		crc = ubifs_crc32(UBIFS_CRC32_INIT, buf + 8,
-+		crc = crc32(UBIFS_CRC32_INIT, buf + 8,
- 				  UBIFS_PAD_NODE_SZ - 8);
- 		ch->crc = cpu_to_le32(crc);
+ // Some common devices / combinations of capabilities
+ #define MTD_CAP_ROM		0
+@@ -50,30 +62,30 @@ struct mtd_oob_buf {
+ #define MTD_OTP_USER		2
  
-diff --git a/mkfs.ubifs/mkfs.ubifs.h b/mkfs.ubifs/mkfs.ubifs.h
-index 16b34c7..c00dce0 100644
---- a/mkfs.ubifs/mkfs.ubifs.h
-+++ b/mkfs.ubifs/mkfs.ubifs.h
-@@ -49,7 +49,6 @@
- #include <sys/file.h>
+ struct mtd_info_user {
+-	uint8_t type;
+-	uint32_t flags;
+-	uint32_t size;	 // Total size of the MTD
+-	uint32_t erasesize;
+-	uint32_t writesize;
+-	uint32_t oobsize;   // Amount of OOB data per block (e.g. 16)
++	__u8 type;
++	__u32 flags;
++	__u32 size;	 // Total size of the MTD
++	__u32 erasesize;
++	__u32 writesize;
++	__u32 oobsize;   // Amount of OOB data per block (e.g. 16)
+ 	/* The below two fields are obsolete and broken, do not use them
+ 	 * (TODO: remove at some point) */
+-	uint32_t ecctype;
+-	uint32_t eccsize;
++	__u32 ecctype;
++	__u32 eccsize;
+ };
  
- #include "libubi.h"
--#include "crc32.h"
- #include "defs.h"
- #include "crc16.h"
- #include "ubifs-media.h"
-diff --git a/recv_image.c b/recv_image.c
-index d65aa2a..2be511a 100644
---- a/recv_image.c
-+++ b/recv_image.c
-@@ -16,7 +16,7 @@
- #include <netinet/in.h>
- #include <sys/ioctl.h>
- #include <sys/time.h>
--#include "crc32.h"
-+#include <crc32.h>
- #include "mtd/mtd-user.h"
- #include "mcast_image.h"
+ struct region_info_user {
+-	uint32_t offset;		/* At which this region starts,
++	__u32 offset;		/* At which this region starts,
+ 					 * from the beginning of the MTD */
+-	uint32_t erasesize;		/* For this region */
+-	uint32_t numblocks;		/* Number of blocks in this region */
+-	uint32_t regionindex;
++	__u32 erasesize;		/* For this region */
++	__u32 numblocks;		/* Number of blocks in this region */
++	__u32 regionindex;
+ };
  
-diff --git a/serve_image.c b/serve_image.c
-index adb4869..5aafa35 100644
---- a/serve_image.c
-+++ b/serve_image.c
-@@ -16,7 +16,7 @@
- #include <sys/mman.h>
- #include <netinet/in.h>
- #include <sys/time.h>
--#include "crc32.h"
-+#include <crc32.h>
- #include "mcast_image.h"
+ struct otp_info {
+-	uint32_t start;
+-	uint32_t length;
+-	uint32_t locked;
++	__u32 start;
++	__u32 length;
++	__u32 locked;
+ };
  
- int tx_rate = 80000;
-diff --git a/sumtool.c b/sumtool.c
-index 6bb7168..966e110 100644
---- a/sumtool.c
-+++ b/sumtool.c
-@@ -44,7 +44,7 @@
- #include <endian.h>
- #include <byteswap.h>
- #include <getopt.h>
--#include "crc32.h"
-+#include <crc32.h>
- #include "summary.h"
+ #define MEMGETINFO		_IOR('M', 1, struct mtd_info_user)
+@@ -86,8 +98,8 @@ struct otp_info {
+ #define MEMGETREGIONINFO	_IOWR('M', 8, struct region_info_user)
+ #define MEMSETOOBSEL		_IOW('M', 9, struct nand_oobinfo)
+ #define MEMGETOOBSEL		_IOR('M', 10, struct nand_oobinfo)
+-#define MEMGETBADBLOCK		_IOW('M', 11, loff_t)
+-#define MEMSETBADBLOCK		_IOW('M', 12, loff_t)
++#define MEMGETBADBLOCK		_IOW('M', 11, __kernel_loff_t)
++#define MEMSETBADBLOCK		_IOW('M', 12, __kernel_loff_t)
+ #define OTPSELECT		_IOR('M', 13, int)
+ #define OTPGETREGIONCOUNT	_IOW('M', 14, int)
+ #define OTPGETREGIONINFO	_IOW('M', 15, struct otp_info)
+@@ -95,21 +107,24 @@ struct otp_info {
+ #define ECCGETLAYOUT		_IOR('M', 17, struct nand_ecclayout)
+ #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
+ #define MTDFILEMODE		_IO('M', 19)
++#define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
++#define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
++#define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
  
- #define PAD(x) (((x)+3)&~3)
-diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
-index e736a09..327d2d7 100644
---- a/ubi-utils/Makefile
-+++ b/ubi-utils/Makefile
-@@ -9,11 +9,12 @@ SUBDIRS = old-utils
- # CFLAGS += -Werror
- CPPFLAGS += -Iinclude -Isrc -I$(KERNELHDR)
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
+  * interfaces
+  */
+ struct nand_oobinfo {
+-	uint32_t useecc;
+-	uint32_t eccbytes;
+-	uint32_t oobfree[8][2];
+-	uint32_t eccpos[32];
++	__u32 useecc;
++	__u32 eccbytes;
++	__u32 oobfree[8][2];
++	__u32 eccpos[32];
+ };
  
--LIBS = libubi libmtd libubigen libiniparser libscan
-+LIBS = libubi libubigen libiniparser libscan
- TARGETS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
-           ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol
+ struct nand_oobfree {
+-	uint32_t offset;
+-	uint32_t length;
++	__u32 offset;
++	__u32 length;
+ };
  
- VPATH = src
-+LDLIBS = -L$(BUILDDIR)/../lib -lmtd
+ #define MTD_MAX_OOBFREE_ENTRIES	8
+@@ -118,9 +133,9 @@ struct nand_oobfree {
+  * diagnosis and to allow creation of raw images
+  */
+ struct nand_ecclayout {
+-	uint32_t eccbytes;
+-	uint32_t eccpos[64];
+-	uint32_t oobavail;
++	__u32 eccbytes;
++	__u32 eccpos[64];
++	__u32 oobavail;
+ 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
+ };
  
- include ../common.mk
+@@ -133,10 +148,10 @@ struct nand_ecclayout {
+  * @bbtblocks:	number of blocks reserved for bad block tables
+  */
+ struct mtd_ecc_stats {
+-	uint32_t corrected;
+-	uint32_t failed;
+-	uint32_t badblocks;
+-	uint32_t bbtblocks;
++	__u32 corrected;
++	__u32 failed;
++	__u32 badblocks;
++	__u32 bbtblocks;
+ };
  
-@@ -23,32 +24,30 @@ $(TARGETS): $(addprefix $(BUILDDIR)/,\
- #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lubi -o $@
- 
- $(BUILDDIR)/ubicrc32: $(addprefix $(BUILDDIR)/,\
--	ubicrc32.o crc32.o)
-+	ubicrc32.o)
- #	$(CC) $(CFLAGS) -o $@ $^
- 
- $(BUILDDIR)/ubinize: $(addprefix $(BUILDDIR)/,\
--	ubinize.o common.o crc32.o libiniparser.a libubigen.a)
-+	ubinize.o common.o libiniparser.a libubigen.a)
- #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -liniparser -lubigen -o $@
- 
- $(BUILDDIR)/mtdinfo: $(addprefix $(BUILDDIR)/,\
--	libmtd.a libubigen.a crc32.o common.o)
-+	libubigen.a common.o)
- #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lmtd -lubigen -o $@
- 
- $(BUILDDIR)/ubiformat: $(addprefix $(BUILDDIR)/,\
--	ubiformat.o common.o crc32.o libmtd.a libscan.a libubi.a libubigen.a)
-+	ubiformat.o common.o libscan.a libubi.a libubigen.a)
- #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lmtd -lscan -lubi -lubigen -o $@
- 
- $(BUILDDIR)/libubi.a: $(BUILDDIR)/libubi.o
- 
--$(BUILDDIR)/libmtd.a: $(BUILDDIR)/libmtd.o $(BUILDDIR)/libmtd_legacy.o
--
- $(BUILDDIR)/libubigen.a: $(BUILDDIR)/libubigen.o
- 
- $(BUILDDIR)/libiniparser.a: $(addprefix $(BUILDDIR)/,\
- 	libiniparser.o dictionary.o)
- 
- $(BUILDDIR)/libscan.a: $(addprefix $(BUILDDIR)/,\
--	libscan.o crc32.o)
-+	libscan.o)
- 
- clean::
- 	rm -f $(addsuffix .a, $(LIBS))
-diff --git a/ubi-utils/src/libscan.c b/ubi-utils/src/libscan.c
-index 5a2ea78..85f3d7f 100644
---- a/ubi-utils/src/libscan.c
-+++ b/ubi-utils/src/libscan.c
-@@ -32,8 +32,8 @@
- #include <mtd/mtd-user.h>
- #include <libmtd.h>
- #include <libscan.h>
-+#include <crc32.h>
- #include "common.h"
--#include "crc32.h"
- 
- #define PROGRAM_NAME "libscan"
- 
-diff --git a/ubi-utils/src/libubigen.c b/ubi-utils/src/libubigen.c
-index 8f060da..62792d0 100644
---- a/ubi-utils/src/libubigen.c
-+++ b/ubi-utils/src/libubigen.c
-@@ -32,7 +32,7 @@
- #include <mtd/ubi-media.h>
- #include <mtd_swab.h>
- #include <libubigen.h>
--#include "crc32.h"
-+#include <crc32.h>
- #include "common.h"
- 
- #define PROGRAM_NAME "libubigen"
-diff --git a/ubi-utils/src/ubicrc32.c b/ubi-utils/src/ubicrc32.c
-index d39af10..2dd69e1 100644
---- a/ubi-utils/src/ubicrc32.c
-+++ b/ubi-utils/src/ubicrc32.c
-@@ -28,8 +28,8 @@
- #include <getopt.h>
- #include <unistd.h>
- #include <mtd/ubi-media.h>
-+#include <crc32.h>
- 
--#include "crc32.h"
- #include "common.h"
- 
- #define BUFSIZE 4096
-diff --git a/ubi-utils/src/ubiformat.c b/ubi-utils/src/ubiformat.c
-index 8487fd5..f0a87c4 100644
---- a/ubi-utils/src/ubiformat.c
-+++ b/ubi-utils/src/ubiformat.c
-@@ -41,7 +41,7 @@
- #include <libscan.h>
- #include <libubigen.h>
- #include <mtd_swab.h>
--#include "crc32.h"
-+#include <crc32.h>
- #include "common.h"
- 
- #define PROGRAM_VERSION "1.5"
+ /*
+diff --git a/mtd_debug.c b/mtd_debug.c
+index 49a4567..4934699 100644
+--- a/mtd_debug.c
++++ b/mtd_debug.c
+@@ -301,7 +301,7 @@ int showinfo (int fd)
+ 			{ "MTD_WRITEABLE", MTD_WRITEABLE },
+ 			{ "MTD_BIT_WRITEABLE", MTD_BIT_WRITEABLE },
+ 			{ "MTD_NO_ERASE", MTD_NO_ERASE },
+-			{ "MTD_STUPID_LOCK", MTD_STUPID_LOCK },
++			{ "MTD_POWERUP_LOCK", MTD_POWERUP_LOCK },
+ 			{ NULL, -1 }
+ 		};
+ 		for (i = 0; flags[i].name != NULL; i++)
 -- 
 1.7.0.4
