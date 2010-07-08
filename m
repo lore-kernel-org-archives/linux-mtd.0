@@ -1,22 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWkJz-0005zF-R8
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 06:10:56 +0000
-Subject: Re: [PATCH v2 17/26] MTD: Nand: Add JZ4740 NAND driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lars-Peter Clausen <lars@metafoo.de>
-In-Reply-To: <1276924111-11158-18-git-send-email-lars@metafoo.de>
-References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
-	<1276924111-11158-18-git-send-email-lars@metafoo.de>
+Subject: Re: [PATCH] Mtd: fixed coding style issues in afs.c ar7part.c
+	cmdlinepart.c inftlcore.c This is a patch to the files afs.c ar7part.c
+	cmdlinepart.c inftlcore.c that fixes up warnings found by the
+	checkpatch.pl tool Signed-off-by: Neal Buckendahl <nealb001@gmail.com>
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Neal Buckendahl <nealb001@gmail.com>
+In-Reply-To: <1277020914-10984-1-git-send-email-nealb001@gmail.com>
+References: <1277020914-10984-1-git-send-email-nealb001@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Jul 2010 09:06:54 +0300
-Message-ID: <1278569214.12733.38.camel@localhost>
+Date: Thu, 08 Jul 2010 09:37:01 +0300
+Message-ID: <1278571021.12733.47.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Reply-To: dedekind1@gmail.com
+Cc: maximlevitsky@gmail.com, cascardo@holoscopio.com,
+	linux-kernel@vger.kernel.org, julia@diku.dk,
+	Neal Buckendahl <nealb@tbcnet.com>,
+	linux-mtd@lists.infradead.org, jkosina@suse.cz,
+	mohanlaljangir@gmail.com, rmk+kernel@arm.linux.org.uk, dwmw2@infradead.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,54 +26,259 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-06-19 at 07:08 +0200, Lars-Peter Clausen wrote:
-> diff --git a/include/linux/mtd/jz4740_nand.h b/include/linux/mtd/jz4740_nand.h
-> new file mode 100644
-> index 0000000..379f9b6
-> --- /dev/null
-> +++ b/include/linux/mtd/jz4740_nand.h
-> @@ -0,0 +1,34 @@
-> +/*
-> + *  Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
-> + *  JZ4740 SoC NAND controller driver
-> + *
-> + *  This program is free software; you can redistribute	 it and/or modify it
-> + *  under  the terms of	 the GNU General  Public License as published by the
-> + *  Free Software Foundation;  either version 2 of the	License, or (at your
-> + *  option) any later version.
-> + *
-> + *  You should have received a copy of the  GNU General Public License along
-> + *  with this program; if not, write  to the Free Software Foundation, Inc.,
-> + *  675 Mass Ave, Cambridge, MA 02139, USA.
-> + *
-> + */
-> +
-> +#ifndef __JZ_NAND_H__
-> +#define __JZ_NAND_H__
-> +
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/partitions.h>
-> +
-> +struct jz_nand_platform_data {
-> +	int			num_partitions;
-> +	struct mtd_partition	*partitions;
-> +
-> +	struct nand_ecclayout	*ecc_layout;
-> +
-> +	unsigned int busy_gpio;
-> +
-> +	void (*ident_callback)(struct platform_device *, struct nand_chip *,
-> +				struct mtd_partition **, int *num_partitions);
-> +};
-> +
-> +#endif
+On Sun, 2010-06-20 at 03:01 -0500, Neal Buckendahl wrote:
+> From: Neal Buckendahl <nealb@tbcnet.com>
+> 
+> ---
+>  drivers/mtd/afs.c         |    9 ++-
+>  drivers/mtd/ar7part.c     |    2 +-
+>  drivers/mtd/cmdlinepart.c |  167 ++++++++++++++++++++-------------------------
+>  drivers/mtd/inftlcore.c   |   47 ++++++++-----
+>  4 files changed, 109 insertions(+), 116 deletions(-)
 
-Do you really have to add your platform data strucutre to
-"inlculde/mtd" ? That is quite global namespace, and ideally only things
-like user-space interface and "public" interface of the MTD subsystem
-should live there.
+Many fixes are debatable. Could you please split your patch on smaller
+patches, at least per-file basis, but also better on per-change-type
+basis.
 
-Can you keep this somewhere in mips architecture directory?
+Additionally, please, do not put so much crap into the subject line.
+
+Thanks!
+
+Some comments below.
+
+> diff --git a/drivers/mtd/afs.c b/drivers/mtd/afs.c
+> index cec7ab9..d127171 100644
+> --- a/drivers/mtd/afs.c
+> +++ b/drivers/mtd/afs.c
+> @@ -162,8 +162,8 @@ afs_read_iis(struct mtd_info *mtd, struct image_info_struct *iis, u_int ptr)
+>  }
+>  
+>  static int parse_afs_partitions(struct mtd_info *mtd,
+> -                         struct mtd_partition **pparts,
+> -                         unsigned long origin)
+> +			struct mtd_partition **pparts,
+> +			unsigned long origin)
+>  {
+>  	struct mtd_partition *parts;
+>  	u_int mask, off, idx, sz;
+> @@ -235,11 +235,12 @@ static int parse_afs_partitions(struct mtd_info *mtd,
+>  		strcpy(str, iis.name);
+>  
+>  		parts[idx].name		= str;
+> -		parts[idx].size		= (iis.length + mtd->erasesize - 1) & ~(mtd->erasesize - 1);
+> +		parts[idx].size		= (iis.length + mtd->erasesize - 1)&
+> +						~(mtd->erasesize - 1);
+
+Use ALIGN()
+
+>  		parts[idx].offset	= img_ptr;
+>  		parts[idx].mask_flags	= 0;
+>  
+> -		printk("  mtd%d: at 0x%08x, %5lluKiB, %8u, %s\n",
+> +		printk(KERN_INFO "  mtd%d: at 0x%08x, %5lluKiB, %8u, %s\n",
+>  			idx, img_ptr, parts[idx].size / 1024,
+>  			iis.imageNumber, str);
+>  
+> diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
+> index 6697a1e..7ccfdca 100644
+> --- a/drivers/mtd/ar7part.c
+> +++ b/drivers/mtd/ar7part.c
+> @@ -148,6 +148,6 @@ static int __init ar7_parser_init(void)
+>  module_init(ar7_parser_init);
+>  
+>  MODULE_LICENSE("GPL");
+> -MODULE_AUTHOR(	"Felix Fietkau <nbd@openwrt.org>, "
+> +MODULE_AUTHOR("Felix Fietkau <nbd@openwrt.org>, "
+>  		"Eugene Konev <ejka@openwrt.org>");
+>  MODULE_DESCRIPTION("MTD partitioning for TI AR7");
+> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+> index 1479da6..ef5ea7e 100644
+> --- a/drivers/mtd/cmdlinepart.c
+> +++ b/drivers/mtd/cmdlinepart.c
+> @@ -34,7 +34,8 @@
+>  
+>  /* debug macro */
+>  #if 0
+> -#define dbg(x) do { printk("DEBUG-CMDLINE-PART: "); printk x; } while(0)
+> +#define dbg(x) do { printk(KERN_DEBUG "DEBUG-CMDLINE-PART: "); printk x;
+> +		} while (0)
+>  #else
+>  #define dbg(x)
+>  #endif
+
+Can you just kill this whole dbg() stuff - I t is useless nowadays.
+
+> @@ -56,7 +57,7 @@ static struct cmdline_mtd_partition *partitions;
+>  
+>  /* the command line passed to mtdpart_setupd() */
+>  static char *cmdline;
+> -static int cmdline_parsed = 0;
+> +static int cmdline_parsed = 1;
+
+1 ?
+ 
+>  /*
+>   * Parse one partition definition for an MTD. Since there can be many
+> @@ -66,12 +67,12 @@ static int cmdline_parsed = 0;
+>   * is allocated upon the last definition being found. At that point the
+>   * syntax has been verified ok.
+>   */
+> -static struct mtd_partition * newpart(char *s,
+> -                                      char **retptr,
+> -                                      int *num_parts,
+> -                                      int this_part,
+> -                                      unsigned char **extra_mem_ptr,
+> -                                      int extra_mem_size)
+> +static struct mtd_partition *newpart(char *s,
+> +					char **retptr,
+> +					int *num_parts,
+> +					int this_part,
+> +					unsigned char **extra_mem_ptr,
+> +					int extra_mem_size)
+
+Merge some lines
+
+>  {
+>  	struct mtd_partition *parts;
+>  	unsigned long size;
+> @@ -83,17 +84,15 @@ static struct mtd_partition * newpart(char *s,
+>  	unsigned int mask_flags;
+>  
+>  	/* fetch the partition size */
+> -	if (*s == '-')
+> -	{	/* assign all remaining space to this partition */
+> +	if (*s == '-') {
+> +		/* assign all remaining space to this partition */
+>  		size = SIZE_REMAINING;
+>  		s++;
+> -	}
+> -	else
+> -	{
+> +	} else {
+>  		size = memparse(s, &s);
+> -		if (size < PAGE_SIZE)
+> -		{
+> -			printk(KERN_ERR ERRP "partition size too small (%lx)\n", size);
+> +		if (size < PAGE_SIZE) {
+> +			printk(KERN_ERR ERRP "partition size too small (%lx)\n"
+> +			, size);
+>  			return NULL;
+>  		}
+>  	}
+> @@ -101,61 +100,51 @@ static struct mtd_partition * newpart(char *s,
+>  	/* fetch partition name and flags */
+>  	mask_flags = 0; /* this is going to be a regular partition */
+>  	delim = 0;
+> -        /* check for offset */
+> -        if (*s == '@')
+> -	{
+> -                s++;
+> -                offset = memparse(s, &s);
+> -        }
+> -        /* now look for name */
+> +	/* check for offset */
+> +	if (*s == '@') {
+> +		s++;
+> +		offset = memparse(s, &s);
+> +	}
+> +	/* now look for name */
+>  	if (*s == '(')
+> -	{
+>  		delim = ')';
+> -	}
+>  
+> -	if (delim)
+> -	{
+> +	if (delim) {
+>  		char *p;
+> -
+> -	    	name = ++s;
+> +		name = ++s;
+>  		p = strchr(name, delim);
+> -		if (!p)
+> -		{
+> -			printk(KERN_ERR ERRP "no closing %c found in partition name\n", delim);
+> +		if (!p) {
+> +			printk(KERN_ERR ERRP
+> +			"no closing %c found in partition name\n", delim);
+>  			return NULL;
+>  		}
+>  		name_len = p - name;
+>  		s = p + 1;
+> -	}
+> -	else
+> -	{
+> -	    	name = NULL;
+> +	} else {
+> +		name = NULL;
+>  		name_len = 13; /* Partition_000 */
+>  	}
+>  
+>  	/* record name length for memory allocation later */
+>  	extra_mem_size += name_len + 1;
+>  
+> -        /* test for options */
+> -        if (strncmp(s, "ro", 2) == 0)
+> -	{
+> +	/* test for options */
+> +	if (strncmp(s, "ro", 2) == 0) {
+>  		mask_flags |= MTD_WRITEABLE;
+>  		s += 2;
+> -        }
+> +	}
+>  
+> -        /* if lk is found do NOT unlock the MTD partition*/
+> -        if (strncmp(s, "lk", 2) == 0)
+> -	{
+> +	/* if lk is found do NOT unlock the MTD partition*/
+> +	if (strncmp(s, "lk", 2) == 0) {
+>  		mask_flags |= MTD_POWERUP_LOCK;
+>  		s += 2;
+> -        }
+> +	}
+>  
+>  	/* test if more partitions are following */
+> -	if (*s == ',')
+> -	{
+> -		if (size == SIZE_REMAINING)
+> -		{
+> -			printk(KERN_ERR ERRP "no partitions allowed after a fill-up partition\n");
+> +	if (*s == ',') {
+> +		if (size == SIZE_REMAINING) {
+> +			printk(KERN_ERR ERRP
+> +			"no partitions allowed after a fill-up partition\n");
+>  			return NULL;
+>  		}
+>  		/* more partitions follow, parse them */
+> @@ -163,34 +152,29 @@ static struct mtd_partition * newpart(char *s,
+>  				&extra_mem, extra_mem_size);
+>  		if (!parts)
+>  			return NULL;
+> -	}
+> -	else
+> -	{	/* this is the last partition: allocate space for all */
+> +	} else {
+> +		/* this is the last partition: allocate space for all */
+>  		int alloc_size;
+>  
+>  		*num_parts = this_part + 1;
+>  		alloc_size = *num_parts * sizeof(struct mtd_partition) +
+>  			     extra_mem_size;
+>  		parts = kzalloc(alloc_size, GFP_KERNEL);
+> -		if (!parts)
+> -		{
+> +		if (!parts) {
+>  			printk(KERN_ERR ERRP "out of memory\n");
+>  			return NULL;
+>  		}
+>  		extra_mem = (unsigned char *)(parts + *num_parts);
+>  	}
+
+All the { } stuff should be in a separate patch.
+
+The patch is too large, no one is going to merge it because it is
+difficult to get confident it is doing a good thing. Split it.
+
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
