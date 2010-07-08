@@ -1,11 +1,12 @@
 Received: from [69.28.251.93] (helo=b32.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWfBx-00056C-Nk
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 00:42:19 +0000
+	id 1OWfCb-0005EZ-KQ
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 00:42:58 +0000
 From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 7 Jul 2010 17:30:13 -0700
-Subject: [PATCHv2 4/5] libmtd: add support for 64-bit offsets, OOB
-Message-Id: <c65631c48fb5d2de8d25f65bffa5e22d@localhost>
+Date: Wed, 7 Jul 2010 17:30:14 -0700
+Subject: [PATCHv2 5/5] mtd-utils: change flash_eraseall to use libmtd-wrapped
+	ioctls
+Message-Id: <5bd45316e40b10460d6290a8ca84daa9@localhost>
 In-Reply-To: <eb53f5a0215250d7e523de47d15b0d12@localhost>
 References: <eb53f5a0215250d7e523de47d15b0d12@localhost>
 To: <dedekind1@gmail.com>, <saeed.bishara@gmail.com>, <jwboyer@gmail.com>,
@@ -23,195 +24,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Change mtd_erase() so that it attempts to use MEMERASE64 first, then falls
-back to the old <2.6.31 MEMERASE if MEMERASE64 is unsupported.
-
-Add mtd_read_oob(), mtd_write_oob() functions to wrap the OOB ioctls.
-Similar ioctl fallback logic is used in these functions as well.
-
 Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
- include/libmtd.h |   36 ++++++++++++++++++++++-
- lib/libmtd.c     |   82 ++++++++++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 111 insertions(+), 7 deletions(-)
+ flash_eraseall.c |   58 +++++++++++++++++++++++++++--------------------------
+ 1 files changed, 30 insertions(+), 28 deletions(-)
 
-diff --git a/include/libmtd.h b/include/libmtd.h
-index 0aea966..292d8c3 100644
---- a/include/libmtd.h
-+++ b/include/libmtd.h
-@@ -66,6 +66,7 @@ struct mtd_info
-  * @region_cnt: count of additional erase regions
-  * @writable: zero if the device is read-only
-  * @bb_allowed: non-zero if the MTD device may have bad eraseblocks
-+ * @legacy_ioctls: non-zero if the kernel lacks MEMERASE64, MEM*OOB64
-  */
- struct mtd_dev_info
- {
-@@ -84,6 +85,7 @@ struct mtd_dev_info
- 	int region_cnt;
- 	unsigned int writable:1;
- 	unsigned int bb_allowed:1;
-+	unsigned int legacy_ioctls:1;
- };
- 
- /**
-@@ -146,7 +148,37 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd);
-  * This function erases eraseblock @eb of MTD device described by @fd. Returns
-  * %0 in case of success and %-1 in case of failure.
-  */
--int mtd_erase(const struct mtd_dev_info *mtd, int fd, int eb);
-+int mtd_erase(struct mtd_dev_info *mtd, int fd, int eb);
-+
-+/**
-+ * mtd_read_oob - read OOB bytes
-+ * @mtd: MTD device description object
-+ * @fd: MTD device node file descriptor
-+ * @start: page-aligned start address
-+ * @length: number of OOB bytes to read
-+ * @data: read buffer
-+ *
-+ * This function reads @length OOB bytes starting from address @start on
-+ * MTD device described by @fd. Returns %0 in case of success and %-1 in
-+ * case of failure.
-+ */
-+int mtd_read_oob(struct mtd_dev_info *mtd, int fd, uint64_t start,
-+	uint64_t length, void *data);
-+
-+/**
-+ * mtd_write_oob - write OOB bytes
-+ * @mtd: MTD device description object
-+ * @fd: MTD device node file descriptor
-+ * @start: page-aligned start address
-+ * @length: number of OOB bytes to write
-+ * @data: write buffer
-+ *
-+ * This function writes @length OOB bytes starting from address @start on
-+ * MTD device described by @fd. Returns %0 in case of success and %-1 in
-+ * case of failure.
-+ */
-+int mtd_write_oob(struct mtd_dev_info *mtd, int fd, uint64_t start,
-+	uint64_t length, void *data);
- 
- /**
-  * mtd_torture - torture an eraseblock.
-@@ -157,7 +189,7 @@ int mtd_erase(const struct mtd_dev_info *mtd, int fd, int eb);
-  * This function tortures eraseblock @eb. Returns %0 in case of success and %-1
-  * in case of failure.
-  */
--int mtd_torture(const struct mtd_dev_info *mtd, int fd, int eb);
-+int mtd_torture(struct mtd_dev_info *mtd, int fd, int eb);
- 
- /**
-  * mtd_is_bad - check if eraseblock is bad.
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 3ff031c..66e794a 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -32,6 +32,7 @@
- #include <sys/stat.h>
+diff --git a/flash_eraseall.c b/flash_eraseall.c
+index e6f8d50..916a75a 100644
+--- a/flash_eraseall.c
++++ b/flash_eraseall.c
+@@ -36,6 +36,7 @@
  #include <sys/ioctl.h>
+ #include <sys/mount.h>
+ #include <crc32.h>
++#include <libmtd.h>
+ 
  #include <mtd/mtd-user.h>
-+#include <mtd/mtd-abi.h>
+ #include <mtd/jffs2-user.h>
+@@ -49,7 +50,7 @@ static int quiet;		/* true -- don't output progress */
+ static int jffs2;		// format for jffs2 usage
  
- #include <libmtd.h>
- #include "libmtd_int.h"
-@@ -789,13 +790,84 @@ int mtd_get_dev_info(libmtd_t desc, const char *node, struct mtd_dev_info *mtd)
- 	return mtd_get_dev_info1(desc, mtd_num, mtd);
- }
+ static void process_options (int argc, char *argv[]);
+-void show_progress (mtd_info_t *meminfo, erase_info_t *erase);
++void show_progress (struct mtd_dev_info *mtd, uint64_t start);
+ static void display_help (void);
+ static void display_version (void);
+ static struct jffs2_unknown_node cleanmarker;
+@@ -57,26 +58,31 @@ int target_endian = __BYTE_ORDER;
  
--int mtd_erase(const struct mtd_dev_info *mtd, int fd, int eb)
-+int mtd_erase(struct mtd_dev_info *mtd, int fd, int eb)
+ int main (int argc, char *argv[])
  {
--	struct erase_info_user ei;
-+	int ret;
-+	struct erase_info_user64 ei;
+-	mtd_info_t meminfo;
+-	int fd, clmpos = 0, clmlen = 8;
+-	erase_info_t erase;
++	libmtd_t mtd_desc;
++	struct mtd_dev_info mtd;
++	int fd, clmpos = 0, clmlen = 8, eb;
+ 	int isNAND, bbtest = 1;
++	uint64_t offset = 0;
  
--	ei.start = eb * mtd->eb_size;;
-+	ei.start = (__u64)eb * mtd->eb_size;
- 	ei.length = mtd->eb_size;
--	return ioctl(fd, MEMERASE, &ei);
-+
-+	if (!mtd->legacy_ioctls) {
-+		ret = ioctl(fd, MEMERASE64, &ei);
-+		if (ret < 0 && errno == ENOTTY)
-+			mtd->legacy_ioctls = 1;
+ 	process_options(argc, argv);
+ 
++	mtd_desc = libmtd_open();
++	if (mtd_desc == NULL) {
++		fprintf(stderr, "%s: can't initialize libmtd\n", exe_name);
++		return 1;
 +	}
 +
-+	if (mtd->legacy_ioctls) {
-+		struct erase_info_user ei_old;
-+
-+		ei_old.start = ei.start;
-+		ei_old.length = ei.length;
-+
-+		if (ei_old.start != ei.start) {
-+			errno = EOVERFLOW;
-+			return -1;
-+		}
-+
-+		ret = ioctl(fd, MEMERASE, &ei_old);
-+	}
-+
-+	return ret;
-+}
-+
-+static int mtd_oob_op(int cmd, int cmd_old, struct mtd_dev_info *mtd, int fd,
-+	uint64_t start, uint64_t length, void *data)
-+{
-+	int ret;
-+	struct mtd_oob_buf64 oob;
-+
-+	oob.start = start;
-+	oob.length = length;
-+	oob.usr_ptr = (__u64)(unsigned long)data;
-+
-+	if (!mtd->legacy_ioctls) {
-+		ret = ioctl(fd, cmd, &oob);
-+		if (ret < 0 && errno == ENOTTY)
-+			mtd->legacy_ioctls = 1;
-+	}
-+
-+	if (mtd->legacy_ioctls) {
-+		struct mtd_oob_buf oob_old;
-+
-+		oob_old.start = oob.start;
-+		oob_old.length = oob.length;
-+		oob_old.ptr = data;
-+
-+		if (oob_old.start != oob.start ||
-+				oob_old.length != oob.length) {
-+			errno = EOVERFLOW;
-+			return -1;
-+		}
-+
-+		ret = ioctl(fd, cmd_old, &oob_old);
-+	}
-+
-+	return ret;
-+}
-+
-+int mtd_read_oob(struct mtd_dev_info *mtd, int fd, uint64_t start,
-+	uint64_t length, void *data)
-+{
-+	return mtd_oob_op(MEMREADOOB64, MEMREADOOB, mtd, fd, start, length,
-+		data);
-+}
-+
-+int mtd_write_oob(struct mtd_dev_info *mtd, int fd, uint64_t start,
-+	uint64_t length, void *data)
-+{
-+	return mtd_oob_op(MEMWRITEOOB64, MEMWRITEOOB, mtd, fd, start, length,
-+		data);
+ 	if ((fd = open(mtd_device, O_RDWR)) < 0) {
+ 		fprintf(stderr, "%s: %s: %s\n", exe_name, mtd_device, strerror(errno));
+ 		return 1;
+ 	}
+ 
+-
+-	if (ioctl(fd, MEMGETINFO, &meminfo) != 0) {
+-		fprintf(stderr, "%s: %s: unable to get MTD device info\n", exe_name, mtd_device);
++	if (mtd_get_dev_info(mtd_desc, mtd_device, &mtd) < 0) {
++		fprintf(stderr, "%s: mtd_get_dev_info failed\n", exe_name);
+ 		return 1;
+ 	}
+ 
+-	erase.length = meminfo.erasesize;
+-	isNAND = meminfo.type == MTD_NANDFLASH ? 1 : 0;
++	isNAND = mtd.type == MTD_NANDFLASH ? 1 : 0;
+ 
+ 	if (jffs2) {
+ 		cleanmarker.magic = cpu_to_je16 (JFFS2_MAGIC_BITMASK);
+@@ -104,7 +110,7 @@ int main (int argc, char *argv[])
+ 					clmlen = 8;
+ 			} else {
+ 				/* Legacy mode */
+-				switch (meminfo.oobsize) {
++				switch (mtd.oob_size) {
+ 					case 8:
+ 						clmpos = 6;
+ 						clmlen = 2;
+@@ -124,13 +130,13 @@ int main (int argc, char *argv[])
+ 		cleanmarker.hdr_crc =  cpu_to_je32 (crc32 (0, &cleanmarker,  sizeof (struct jffs2_unknown_node) - 4));
+ 	}
+ 
+-	for (erase.start = 0; erase.start < meminfo.size; erase.start += meminfo.erasesize) {
++	for (eb = 0; eb < (mtd.size / mtd.eb_size); eb++) {
++		offset = eb * mtd.eb_size;
+ 		if (bbtest) {
+-			loff_t offset = erase.start;
+-			int ret = ioctl(fd, MEMGETBADBLOCK, &offset);
++			int ret = mtd_is_bad(&mtd, fd, eb);
+ 			if (ret > 0) {
+ 				if (!quiet)
+-					printf ("\nSkipping bad block at 0x%08x\n", erase.start);
++					printf ("\nSkipping bad block at 0x%08llx\n", (unsigned long long)offset);
+ 				continue;
+ 			} else if (ret < 0) {
+ 				if (errno == EOPNOTSUPP) {
+@@ -147,9 +153,9 @@ int main (int argc, char *argv[])
+ 		}
+ 
+ 		if (!quiet)
+-			show_progress(&meminfo, &erase);
++			show_progress(&mtd, offset);
+ 
+-		if (ioctl(fd, MEMERASE, &erase) != 0) {
++		if (mtd_erase(&mtd, fd, eb) != 0) {
+ 			fprintf(stderr, "\n%s: %s: MTD Erase failure: %s\n", exe_name, mtd_device, strerror(errno));
+ 			continue;
+ 		}
+@@ -160,16 +166,12 @@ int main (int argc, char *argv[])
+ 
+ 		/* write cleanmarker */
+ 		if (isNAND) {
+-			struct mtd_oob_buf oob;
+-			oob.ptr = (unsigned char *) &cleanmarker;
+-			oob.start = erase.start + clmpos;
+-			oob.length = clmlen;
+-			if (ioctl (fd, MEMWRITEOOB, &oob) != 0) {
++			if (mtd_write_oob(&mtd, fd, offset + clmpos, clmlen, &cleanmarker) != 0) {
+ 				fprintf(stderr, "\n%s: %s: MTD writeoob failure: %s\n", exe_name, mtd_device, strerror(errno));
+ 				continue;
+ 			}
+ 		} else {
+-			if (lseek (fd, erase.start, SEEK_SET) < 0) {
++			if (lseek (fd, (loff_t)offset, SEEK_SET) < 0) {
+ 				fprintf(stderr, "\n%s: %s: MTD lseek failure: %s\n", exe_name, mtd_device, strerror(errno));
+ 				continue;
+ 			}
+@@ -179,10 +181,10 @@ int main (int argc, char *argv[])
+ 			}
+ 		}
+ 		if (!quiet)
+-			printf (" Cleanmarker written at %x.", erase.start);
++			printf (" Cleanmarker written at %llx.", (unsigned long long)offset);
+ 	}
+ 	if (!quiet) {
+-		show_progress(&meminfo, &erase);
++		show_progress(&mtd, offset);
+ 		printf("\n");
+ 	}
+ 
+@@ -250,11 +252,11 @@ void process_options (int argc, char *argv[])
+ 	mtd_device = argv[optind];
  }
  
- /* Patterns to write to a physical eraseblock when torturing it */
-@@ -820,7 +892,7 @@ static int check_pattern(const void *buf, uint8_t patt, int size)
- 	return 1;
- }
- 
--int mtd_torture(const struct mtd_dev_info *mtd, int fd, int eb)
-+int mtd_torture(struct mtd_dev_info *mtd, int fd, int eb)
+-void show_progress (mtd_info_t *meminfo, erase_info_t *erase)
++void show_progress (struct mtd_dev_info *mtd, uint64_t start)
  {
- 	int err, i, patt_count;
- 	void *buf;
+-	printf("\rErasing %d Kibyte @ %x -- %2llu %% complete.",
+-		meminfo->erasesize / 1024, erase->start,
+-		(unsigned long long) erase->start * 100 / meminfo->size);
++	printf("\rErasing %d Kibyte @ %llx -- %2llu %% complete.",
++		mtd->eb_size / 1024, (unsigned long long)start,
++		(unsigned long long) start * 100 / mtd->size);
+ 	fflush(stdout);
+ }
+ 
 -- 
 1.7.0.4
