@@ -1,25 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWkBA-0003Ou-F3
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 06:01:49 +0000
-Subject: Re: [PATCH 1/2] mtd: m25p80: Fix false-positive probing
+	id 1OWkJz-0005zF-R8
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 06:10:56 +0000
+Subject: Re: [PATCH v2 17/26] MTD: Nand: Add JZ4740 NAND driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Anton Vorontsov <avorontsov@mvista.com>
-In-Reply-To: <20100622165734.GA20699@oksana.dev.rtsoft.ru>
-References: <20100622165545.GA10255@oksana.dev.rtsoft.ru>
-	<20100622165734.GA20699@oksana.dev.rtsoft.ru>
+To: Lars-Peter Clausen <lars@metafoo.de>
+In-Reply-To: <1276924111-11158-18-git-send-email-lars@metafoo.de>
+References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
+	<1276924111-11158-18-git-send-email-lars@metafoo.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Jul 2010 08:57:24 +0300
-Message-ID: <1278568644.12733.35.camel@localhost>
+Date: Thu, 08 Jul 2010 09:06:54 +0300
+Message-ID: <1278569214.12733.38.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Brownell <dbrownell@users.sourceforge.net>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,29 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-06-22 at 20:57 +0400, Anton Vorontsov wrote:
-> Since commit 18c6182bae0acca220ed6611f741034d563cd19f ("Rework
-> probing/JEDEC code"), m25p80 driver successfully registers chips
-> even if JEDEC probing fails.
-> 
-> This was needed to support non-JEDEC flashes. Though, it appears
-> that some platforms (e.g. blackfin bf533 stamp[1]) used the old
-> behavior to detect if there's any flash connected, so the driver
-> have to fail on JEDEC probing errors.
-> 
-> This patch restores the old behavior for JEDEC flashes, and adds
-> "-nonjedec" SPI device IDs for M25Pxx flashes, so that the kernel
-> still supports non-JEDEC flashes.
-> 
-> [1] http://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?action=TrackerItemEdit&tracker_item_id=5975
-> 
-> Reported-by: Mingquan Pan
-> Reported-by: Barry Song <21cnbao@gmail.com>
-> Signed-off-by: Anton Vorontsov <avorontsov@mvista.com>
-> ---
+On Sat, 2010-06-19 at 07:08 +0200, Lars-Peter Clausen wrote:
+> diff --git a/include/linux/mtd/jz4740_nand.h b/include/linux/mtd/jz4740_nand.h
+> new file mode 100644
+> index 0000000..379f9b6
+> --- /dev/null
+> +++ b/include/linux/mtd/jz4740_nand.h
+> @@ -0,0 +1,34 @@
+> +/*
+> + *  Copyright (C) 2009-2010, Lars-Peter Clausen <lars@metafoo.de>
+> + *  JZ4740 SoC NAND controller driver
+> + *
+> + *  This program is free software; you can redistribute	 it and/or modify it
+> + *  under  the terms of	 the GNU General  Public License as published by the
+> + *  Free Software Foundation;  either version 2 of the	License, or (at your
+> + *  option) any later version.
+> + *
+> + *  You should have received a copy of the  GNU General Public License along
+> + *  with this program; if not, write  to the Free Software Foundation, Inc.,
+> + *  675 Mass Ave, Cambridge, MA 02139, USA.
+> + *
+> + */
+> +
+> +#ifndef __JZ_NAND_H__
+> +#define __JZ_NAND_H__
+> +
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+> +
+> +struct jz_nand_platform_data {
+> +	int			num_partitions;
+> +	struct mtd_partition	*partitions;
+> +
+> +	struct nand_ecclayout	*ecc_layout;
+> +
+> +	unsigned int busy_gpio;
+> +
+> +	void (*ident_callback)(struct platform_device *, struct nand_chip *,
+> +				struct mtd_partition **, int *num_partitions);
+> +};
+> +
+> +#endif
 
-Pushed both patches to my l2-mtd-2.6.git / dunno, added Mike's ack.
+Do you really have to add your platform data strucutre to
+"inlculde/mtd" ? That is quite global namespace, and ideally only things
+like user-space interface and "public" interface of the MTD subsystem
+should live there.
 
+Can you keep this somewhere in mips architecture directory?
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
