@@ -1,23 +1,25 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWk4k-0001iQ-PA
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 05:55:11 +0000
-Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
-	[10.160.244.32])
-	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o685sYhg007082
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Jul 2010 00:55:07 -0500
-Subject: Re: [PATCH 0/4] mtd: add mtd repartition ioctl
+	id 1OWkBA-0003Ou-F3
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 06:01:49 +0000
+Subject: Re: [PATCH 1/2] mtd: m25p80: Fix false-positive probing
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-In-Reply-To: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
-References: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
+To: Anton Vorontsov <avorontsov@mvista.com>
+In-Reply-To: <20100622165734.GA20699@oksana.dev.rtsoft.ru>
+References: <20100622165545.GA10255@oksana.dev.rtsoft.ru>
+	<20100622165734.GA20699@oksana.dev.rtsoft.ru>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Jul 2010 08:50:57 +0300
-Message-ID: <1278568257.12733.34.camel@localhost>
+Date: Thu, 08 Jul 2010 08:57:24 +0300
+Message-ID: <1278568644.12733.35.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: David Brownell <dbrownell@users.sourceforge.net>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Barry Song <21cnbao@gmail.com>, linux-kernel@vger.kernel.org,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	uclinux-dist-devel@blackfin.uclinux.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,35 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-06-18 at 13:08 +0300, Roman Tereshonkov wrote:
-> Adding mtd master device after all partitions should provide
-> minimum effect on the created partition enumeration.
+On Tue, 2010-06-22 at 20:57 +0400, Anton Vorontsov wrote:
+> Since commit 18c6182bae0acca220ed6611f741034d563cd19f ("Rework
+> probing/JEDEC code"), m25p80 driver successfully registers chips
+> even if JEDEC probing fails.
 > 
-> The master mtd device can be repartitioned in runtime through
-> the mtd ioctl MTDREPARTITION. The ioctl passed argument is
-> the set of the new partitions defined by the structures:
-> struct mtd_partitions and struct mtd_partition_user.
+> This was needed to support non-JEDEC flashes. Though, it appears
+> that some platforms (e.g. blackfin bf533 stamp[1]) used the old
+> behavior to detect if there's any flash connected, so the driver
+> have to fail on JEDEC probing errors.
 > 
-> All at once partition configuration is used and caused by
-> the all at once partition removing. Only unused partitions are deleted.
-> If any of the partitions for given mtd device is used then user gets error.
-> The care should be taken to close all applications which access
-> the partitions.
+> This patch restores the old behavior for JEDEC flashes, and adds
+> "-nonjedec" SPI device IDs for M25Pxx flashes, so that the kernel
+> still supports non-JEDEC flashes.
 > 
-> Roman Tereshonkov (4):
->   mtd: add new ioctl structures to be used for repartitioning
->   mtd: add the possibility to modify partitions in runtime
->   mtd: add MTDREPARTITION ioctl
->   mtd: create the mtd master device for given set of partitions
+> [1] http://blackfin.uclinux.org/gf/project/uclinux-dist/tracker/?action=TrackerItemEdit&tracker_item_id=5975
 > 
->  drivers/mtd/mtdchar.c          |  110 +++++++++++++++++++++++++++++++++++++++-
->  drivers/mtd/mtdpart.c          |   45 ++++++++++++++--
->  drivers/mtd/onenand/omap2.c    |    8 ++-
->  include/linux/mtd/partitions.h |    2 +
->  include/mtd/mtd-abi.h          |   15 ++++++
->  5 files changed, 170 insertions(+), 10 deletions(-)
+> Reported-by: Mingquan Pan
+> Reported-by: Barry Song <21cnbao@gmail.com>
+> Signed-off-by: Anton Vorontsov <avorontsov@mvista.com>
+> ---
 
-I've pushed this to my l2-mtd-2.6.git / master, looks good to me.
+Pushed both patches to my l2-mtd-2.6.git / dunno, added Mike's ack.
 
 -- 
 Best Regards,
