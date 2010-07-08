@@ -1,22 +1,27 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from devils.ext.ti.com ([198.47.26.153])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWseE-00054j-36
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 15:04:23 +0000
-From: "Paulraj, Sandeep" <s-paulraj@ti.com>
-To: Eric Millbrandt <emillbrandt@dekaresearch.com>, "'Sean Preston'"
-	<seanp@pfk.co.za>, Linux-MTD List <linux-mtd@lists.infradead.org>
-Date: Thu, 8 Jul 2010 10:03:46 -0500
-Subject: RE: New NAND Help
-Message-ID: <0554BEF07D437848AF01B9C9B5F0BC5D9F1351CD@dlee01.ent.ti.com>
-References: <002501cb1e9b$a28bdbb0$e7a39310$@pfk.co.za>
-	<0A40042D85E7C84DB443060EC44B3FD325405DE5AE@dekaexchange07.deka.local>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9F13518B@dlee01.ent.ti.com>
-	<0A40042D85E7C84DB443060EC44B3FD325405DE5AF@dekaexchange07.deka.local>
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD325405DE5AF@dekaexchange07.deka.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1OWspF-0004lz-0P
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 15:15:45 +0000
+From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
+To: "'David Brownell'" <david-b@pacbell.net>,
+	"'David Woodhouse'" <dwmw2@infradead.org>,
+	"'Kevin Hilman'" <khilman@deeprootsystems.com>
+References: <012f01cb1dc3$09584880$1c08d980$@raj@ti.com>
+	<54038.80733.qm@web180305.mail.gq1.yahoo.com>
+In-Reply-To: <54038.80733.qm@web180305.mail.gq1.yahoo.com>
+Subject: RE: [PATCH 1/2] mtdpart: memory accessor interface for MTD layer
+Date: Thu, 8 Jul 2010 20:40:09 +0530
+Message-ID: <027001cb1eaf$a7dc64e0$f7952ea0$@raj@ti.com>
 MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Cc: 'Bernd Schmidt' <bernd.schmidt@analog.com>,
+	'David Brownell' <dbrownell@users.sourceforge.net>,
+	'Nicolas Pitre' <nico@fluxnic.net>, linux-kernel@vger.kernel.org,
+	'David Howells' <dhowells@redhat.com>, linux-mtd@lists.infradead.org,
+	'Andrew Morton' <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Dave,
 
+On Wed, Jul 07, 2010 at 16:38:54, David Brownell wrote:
+> 
+> > > > This patch adds two new members to the
+> > mtd_partition structure,
+> > > > a function handler which will be
+> > > > called during setup of the
+> > > > partition and an argument to be passed to this
+> > setup function.
+> > > 
+> > > Ick.
+> > > 
+> > > I don't mind providing the mtd_macc_{read,write}
+> > helper functions,
+> > > although they should work on generic MTD
+> > > >devices not just on partitions.
+> > > But do we really have to do the callout to
+> > > arbitrary functions from
+> > > _within_ the core MTD code... why can't we
+> > > do that in the board driver?
+> 
+> I think the short answer is that the callout is
+> what provides the board drivers enough information
+> to make the correct calls.
+> 
 
->=20
-> <snip>
->=20
-> > This device is probably a ONFI device. Thus the fourth ID byte might no=
-t
-> > be properly interpreted.
-> >
->=20
-> That is correct.  Micron used to support both the ID byte and the
-> parameter page in their ONFO 1.0 compliant parts, but seems to have
-> dropped support in their newer ONFI 2.1 compliant parts.  I found out the
-> hard way when switching from an mlc part to an slc part.
+If you agree to what the patch is doing, then can you Ack it?
 
-
-So did i
-IIRC there were some discussions on the list to add support for these devic=
-es and reading the relevant info from the param page.=20
->=20
-> Eric
-
-
-The issue with the DM365 is that the RBL is not geared up for these devices=
-.
-
-Sandeep
+Thanks,
+Sudhakar
