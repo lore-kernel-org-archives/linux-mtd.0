@@ -1,15 +1,16 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWnDp-0006VP-Rv
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 09:16:46 +0000
-Subject: Re: Performance effect of mounting jffs2 via mtdblock
+	id 1OWnGU-0006yv-Ea
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 09:19:31 +0000
+Subject: Re: [PATCH] mtd/nand: Edit macro flag for BBT scan of last page in
+	block
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Wuertele <dave+gmane@wuertele.com>
-In-Reply-To: <loom.20100623T212106-800@post.gmane.org>
-References: <loom.20100623T212106-800@post.gmane.org>
+To: Brian Norris <norris@broadcom.com>
+In-Reply-To: <1277325362-13326-1-git-send-email-norris@broadcom.com>
+References: <1277325362-13326-1-git-send-email-norris@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Jul 2010 12:11:52 +0300
-Message-ID: <1278580312.12733.75.camel@localhost>
+Date: Thu, 08 Jul 2010 12:15:12 +0300
+Message-ID: <1278580512.12733.76.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,18 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-06-23 at 19:26 +0000, David Wuertele wrote:
-> Reading http://www.linux-mtd.infradead.org/faq/jffs2.html, it says that jffs2
-> can be mounted with or without the mtdblock driver.  Eg:
+On Wed, 2010-06-23 at 13:36 -0700, Brian Norris wrote:
+> NAND_BB_LAST_PAGE used to be in nand.h, but it pertained to bad block
+> management and so belongs next to NAND_BBT_SCAN2NDPAGE in bbm.h. Also,
+> its previous flag value (0x00000400) conflicted with NAND_BBT_SCANALLPAGES
+> so I changed its value to 0x00008000. All uses of the name were modified to
+> provide consistency with other "NAND_BBT_*" flags.
 > 
->   mount -t jffs2 mtd2 /foo 
-> vs
->   mount -t jffs2 /dev/mtdblock2 /foo
-> 
-> I'm wondering what is the difference between these two methods with respect to
-> performance?
+> Signed-off-by: Brian Norris <norris@broadcom.com>
 
-There is no difference.
+Pushed to l2-mtd-2.6.git / master, thanks.
 
 -- 
 Best Regards,
