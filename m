@@ -1,11 +1,14 @@
 Received: from [69.28.251.93] (helo=b32.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWf7b-0003ZK-Hr
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 00:37:50 +0000
+	id 1OWf7o-0003by-Vc
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 00:38:02 +0000
 From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 7 Jul 2010 17:30:10 -0700
-Subject: [PATCHv2 1/5] mtd-utils: move libmtd source files to lib/ subdirectory
-Message-Id: <eb53f5a0215250d7e523de47d15b0d12@localhost>
+Date: Wed, 7 Jul 2010 17:30:11 -0700
+Subject: [PATCHv2 2/5] mtd-utils: update Makefiles,
+	source files to use common libmtd.a
+Message-Id: <9b6958cacc8e2e3392fee1b0cc197d28@localhost>
+In-Reply-To: <eb53f5a0215250d7e523de47d15b0d12@localhost>
+References: <eb53f5a0215250d7e523de47d15b0d12@localhost>
 To: <dedekind1@gmail.com>, <saeed.bishara@gmail.com>, <jwboyer@gmail.com>,
 	<vapier.adi@gmail.com>
 MIME-Version: 1.0
@@ -21,321 +24,427 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Source files for libmtd, crc32, and fec are scattered throughout the
-tree.  Move them to a central location so they can be built into a
-common "libmtd.a" library used by all mtd-utils programs.
-
-This patch only renames/deletes files and does not change the content.
+Modify the build system and source code so that libmtd.a can be built from
+a "common" location (lib/).  Statically link all utilities at the top level
+with libmtd.a .  Minor changes to mkfs.ubifs to allow using the common
+crc32 implementation.
 
 Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
- crc32.h                                 |   19 ------
- {ubi-utils/src => include}/common.h     |    0
- {mkfs.ubifs => include}/crc32.h         |    0
- {ubi-utils/include => include}/libmtd.h |    0
- crc32.c => lib/crc32.c                  |    0
- fec.c => lib/fec.c                      |    0
- {ubi-utils/src => lib}/libmtd.c         |    0
- {ubi-utils/src => lib}/libmtd_int.h     |    0
- {ubi-utils/src => lib}/libmtd_legacy.c  |    0
- mkfs.ubifs/crc32.c                      |   95 -------------------------------
- ubi-utils/src/crc32.c                   |   95 -------------------------------
- ubi-utils/src/crc32.h                   |   17 ------
- 12 files changed, 0 insertions(+), 226 deletions(-)
- delete mode 100644 crc32.h
- rename {ubi-utils/src => include}/common.h (100%)
- rename {mkfs.ubifs => include}/crc32.h (100%)
- rename {ubi-utils/include => include}/libmtd.h (100%)
- rename crc32.c => lib/crc32.c (100%)
- rename fec.c => lib/fec.c (100%)
- rename {ubi-utils/src => lib}/libmtd.c (100%)
- rename {ubi-utils/src => lib}/libmtd_int.h (100%)
- rename {ubi-utils/src => lib}/libmtd_legacy.c (100%)
- delete mode 100644 mkfs.ubifs/crc32.c
- delete mode 100644 ubi-utils/src/crc32.c
- delete mode 100644 ubi-utils/src/crc32.h
+ Makefile                  |   21 ++++++---------------
+ common.mk                 |    2 +-
+ fectest.c                 |    2 +-
+ flash_eraseall.c          |    2 +-
+ include/crc32.h           |    2 +-
+ jffs2dump.c               |    2 +-
+ lib/Makefile              |   22 ++++++++++++++++++++++
+ mkfs.jffs2.c              |    4 ++--
+ mkfs.ubifs/Makefile       |    3 ++-
+ mkfs.ubifs/compr.c        |    4 +++-
+ mkfs.ubifs/mkfs.ubifs.c   |    5 +++--
+ mkfs.ubifs/mkfs.ubifs.h   |    1 -
+ recv_image.c              |    2 +-
+ serve_image.c             |    2 +-
+ sumtool.c                 |    2 +-
+ ubi-utils/Makefile        |   15 +++++++--------
+ ubi-utils/src/libscan.c   |    2 +-
+ ubi-utils/src/libubigen.c |    2 +-
+ ubi-utils/src/ubicrc32.c  |    2 +-
+ ubi-utils/src/ubiformat.c |    2 +-
+ 20 files changed, 57 insertions(+), 42 deletions(-)
+ create mode 100644 lib/Makefile
 
-diff --git a/crc32.h b/crc32.h
-deleted file mode 100644
-index ee3145b..0000000
---- a/crc32.h
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#ifndef CRC32_H
--#define CRC32_H
+diff --git a/Makefile b/Makefile
+index 577634f..b558705 100644
+--- a/Makefile
++++ b/Makefile
+@@ -7,7 +7,7 @@ ifeq ($(WITHOUT_XATTR), 1)
+   CPPFLAGS += -DWITHOUT_XATTR
+ endif
+ 
+-SUBDIRS = ubi-utils mkfs.ubifs
++SUBDIRS = lib ubi-utils mkfs.ubifs
+ 
+ TARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
+ 	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
+@@ -20,6 +20,9 @@ TARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
+ 
+ SYMLINKS =
+ 
++LDLIBS = -L$(BUILDDIR)/lib -lmtd
++LDDEPS = $(BUILDDIR)/lib/libmtd.a
++
+ include common.mk
+ 
+ clean::
+@@ -36,28 +39,16 @@ $(SYMLINKS):
+ 	ln -sf ../fs/jffs2/$@ $@
+ 
+ $(BUILDDIR)/mkfs.jffs2: $(addprefix $(BUILDDIR)/,\
+-	crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o compr_lzo.o \
++	compr_rtime.o mkfs.jffs2.o compr_zlib.o compr_lzo.o \
+ 	compr.o rbtree.o)
+ LDFLAGS_mkfs.jffs2 = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
+ LDLIBS_mkfs.jffs2  = -lz -llzo2
+ 
+-$(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o $(BUILDDIR)/flash_eraseall.o
 -
--#include <stdint.h>
+ $(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o
+ LDFLAGS_jffs2reader = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
+ LDLIBS_jffs2reader  = -lz -llzo2
+ 
+-$(BUILDDIR)/jffs2dump: $(BUILDDIR)/jffs2dump.o $(BUILDDIR)/crc32.o
 -
--extern const uint32_t crc32_table[256];
+-$(BUILDDIR)/sumtool: $(BUILDDIR)/sumtool.o $(BUILDDIR)/crc32.o
 -
--/* Return a 32-bit CRC of the contents of the buffer. */
+-$(BUILDDIR)/serve_image: $(BUILDDIR)/serve_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
 -
--	static inline uint32_t
--crc32(uint32_t val, const void *ss, int len)
--{
--	const unsigned char *s = ss;
--	while (--len >= 0)
--		val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
--	return val;
--}
+-$(BUILDDIR)/recv_image: $(BUILDDIR)/recv_image.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
 -
--#endif
-diff --git a/ubi-utils/src/common.h b/include/common.h
-similarity index 100%
-rename from ubi-utils/src/common.h
-rename to include/common.h
-diff --git a/mkfs.ubifs/crc32.h b/include/crc32.h
-similarity index 100%
-rename from mkfs.ubifs/crc32.h
-rename to include/crc32.h
-diff --git a/ubi-utils/include/libmtd.h b/include/libmtd.h
-similarity index 100%
-rename from ubi-utils/include/libmtd.h
-rename to include/libmtd.h
-diff --git a/crc32.c b/lib/crc32.c
-similarity index 100%
-rename from crc32.c
-rename to lib/crc32.c
-diff --git a/fec.c b/lib/fec.c
-similarity index 100%
-rename from fec.c
-rename to lib/fec.c
-diff --git a/ubi-utils/src/libmtd.c b/lib/libmtd.c
-similarity index 100%
-rename from ubi-utils/src/libmtd.c
-rename to lib/libmtd.c
-diff --git a/ubi-utils/src/libmtd_int.h b/lib/libmtd_int.h
-similarity index 100%
-rename from ubi-utils/src/libmtd_int.h
-rename to lib/libmtd_int.h
-diff --git a/ubi-utils/src/libmtd_legacy.c b/lib/libmtd_legacy.c
-similarity index 100%
-rename from ubi-utils/src/libmtd_legacy.c
-rename to lib/libmtd_legacy.c
-diff --git a/mkfs.ubifs/crc32.c b/mkfs.ubifs/crc32.c
-deleted file mode 100644
-index 6b1e50c..0000000
---- a/mkfs.ubifs/crc32.c
-+++ /dev/null
-@@ -1,95 +0,0 @@
--/*
-- *  COPYRIGHT (C) 1986 Gary S. Brown.  You may use this program, or
-- *  code or tables extracted from it, as desired without restriction.
-- *
-- *  First, the polynomial itself and its table of feedback terms.  The
-- *  polynomial is
-- *  X^32+X^26+X^23+X^22+X^16+X^12+X^11+X^10+X^8+X^7+X^5+X^4+X^2+X^1+X^0
-- *
-- *  Note that we take it "backwards" and put the highest-order term in
-- *  the lowest-order bit.  The X^32 term is "implied"; the LSB is the
-- *  X^31 term, etc.  The X^0 term (usually shown as "+1") results in
-- *  the MSB being 1
-- *
-- *  Note that the usual hardware shift register implementation, which
-- *  is what we're using (we're merely optimizing it by doing eight-bit
-- *  chunks at a time) shifts bits into the lowest-order term.  In our
-- *  implementation, that means shifting towards the right.  Why do we
-- *  do it this way?  Because the calculated CRC must be transmitted in
-- *  order from highest-order term to lowest-order term.  UARTs transmit
-- *  characters in order from LSB to MSB.  By storing the CRC this way
-- *  we hand it to the UART in the order low-byte to high-byte; the UART
-- *  sends each low-bit to hight-bit; and the result is transmission bit
-- *  by bit from highest- to lowest-order term without requiring any bit
-- *  shuffling on our part.  Reception works similarly
-- *
-- *  The feedback terms table consists of 256, 32-bit entries.  Notes
-- *
-- *      The table can be generated at runtime if desired; code to do so
-- *      is shown later.  It might not be obvious, but the feedback
-- *      terms simply represent the results of eight shift/xor opera
-- *      tions for all combinations of data and CRC register values
-- *
-- *      The values must be right-shifted by eight bits by the "updcrc
-- *      logic; the shift must be unsigned (bring in zeroes).  On some
-- *      hardware you could probably optimize the shift in assembler by
-- *      using byte-swap instructions
-- *      polynomial $edb88320
-- */
+-$(BUILDDIR)/fectest: $(BUILDDIR)/fectest.o $(BUILDDIR)/crc32.o $(BUILDDIR)/fec.o
 -
--#include <stdint.h>
 -
--const uint32_t crc32_table[256] = {
--	0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL, 0x076dc419L,
--	0x706af48fL, 0xe963a535L, 0x9e6495a3L, 0x0edb8832L, 0x79dcb8a4L,
--	0xe0d5e91eL, 0x97d2d988L, 0x09b64c2bL, 0x7eb17cbdL, 0xe7b82d07L,
--	0x90bf1d91L, 0x1db71064L, 0x6ab020f2L, 0xf3b97148L, 0x84be41deL,
--	0x1adad47dL, 0x6ddde4ebL, 0xf4d4b551L, 0x83d385c7L, 0x136c9856L,
--	0x646ba8c0L, 0xfd62f97aL, 0x8a65c9ecL, 0x14015c4fL, 0x63066cd9L,
--	0xfa0f3d63L, 0x8d080df5L, 0x3b6e20c8L, 0x4c69105eL, 0xd56041e4L,
--	0xa2677172L, 0x3c03e4d1L, 0x4b04d447L, 0xd20d85fdL, 0xa50ab56bL,
--	0x35b5a8faL, 0x42b2986cL, 0xdbbbc9d6L, 0xacbcf940L, 0x32d86ce3L,
--	0x45df5c75L, 0xdcd60dcfL, 0xabd13d59L, 0x26d930acL, 0x51de003aL,
--	0xc8d75180L, 0xbfd06116L, 0x21b4f4b5L, 0x56b3c423L, 0xcfba9599L,
--	0xb8bda50fL, 0x2802b89eL, 0x5f058808L, 0xc60cd9b2L, 0xb10be924L,
--	0x2f6f7c87L, 0x58684c11L, 0xc1611dabL, 0xb6662d3dL, 0x76dc4190L,
--	0x01db7106L, 0x98d220bcL, 0xefd5102aL, 0x71b18589L, 0x06b6b51fL,
--	0x9fbfe4a5L, 0xe8b8d433L, 0x7807c9a2L, 0x0f00f934L, 0x9609a88eL,
--	0xe10e9818L, 0x7f6a0dbbL, 0x086d3d2dL, 0x91646c97L, 0xe6635c01L,
--	0x6b6b51f4L, 0x1c6c6162L, 0x856530d8L, 0xf262004eL, 0x6c0695edL,
--	0x1b01a57bL, 0x8208f4c1L, 0xf50fc457L, 0x65b0d9c6L, 0x12b7e950L,
--	0x8bbeb8eaL, 0xfcb9887cL, 0x62dd1ddfL, 0x15da2d49L, 0x8cd37cf3L,
--	0xfbd44c65L, 0x4db26158L, 0x3ab551ceL, 0xa3bc0074L, 0xd4bb30e2L,
--	0x4adfa541L, 0x3dd895d7L, 0xa4d1c46dL, 0xd3d6f4fbL, 0x4369e96aL,
--	0x346ed9fcL, 0xad678846L, 0xda60b8d0L, 0x44042d73L, 0x33031de5L,
--	0xaa0a4c5fL, 0xdd0d7cc9L, 0x5005713cL, 0x270241aaL, 0xbe0b1010L,
--	0xc90c2086L, 0x5768b525L, 0x206f85b3L, 0xb966d409L, 0xce61e49fL,
--	0x5edef90eL, 0x29d9c998L, 0xb0d09822L, 0xc7d7a8b4L, 0x59b33d17L,
--	0x2eb40d81L, 0xb7bd5c3bL, 0xc0ba6cadL, 0xedb88320L, 0x9abfb3b6L,
--	0x03b6e20cL, 0x74b1d29aL, 0xead54739L, 0x9dd277afL, 0x04db2615L,
--	0x73dc1683L, 0xe3630b12L, 0x94643b84L, 0x0d6d6a3eL, 0x7a6a5aa8L,
--	0xe40ecf0bL, 0x9309ff9dL, 0x0a00ae27L, 0x7d079eb1L, 0xf00f9344L,
--	0x8708a3d2L, 0x1e01f268L, 0x6906c2feL, 0xf762575dL, 0x806567cbL,
--	0x196c3671L, 0x6e6b06e7L, 0xfed41b76L, 0x89d32be0L, 0x10da7a5aL,
--	0x67dd4accL, 0xf9b9df6fL, 0x8ebeeff9L, 0x17b7be43L, 0x60b08ed5L,
--	0xd6d6a3e8L, 0xa1d1937eL, 0x38d8c2c4L, 0x4fdff252L, 0xd1bb67f1L,
--	0xa6bc5767L, 0x3fb506ddL, 0x48b2364bL, 0xd80d2bdaL, 0xaf0a1b4cL,
--	0x36034af6L, 0x41047a60L, 0xdf60efc3L, 0xa867df55L, 0x316e8eefL,
--	0x4669be79L, 0xcb61b38cL, 0xbc66831aL, 0x256fd2a0L, 0x5268e236L,
--	0xcc0c7795L, 0xbb0b4703L, 0x220216b9L, 0x5505262fL, 0xc5ba3bbeL,
--	0xb2bd0b28L, 0x2bb45a92L, 0x5cb36a04L, 0xc2d7ffa7L, 0xb5d0cf31L,
--	0x2cd99e8bL, 0x5bdeae1dL, 0x9b64c2b0L, 0xec63f226L, 0x756aa39cL,
--	0x026d930aL, 0x9c0906a9L, 0xeb0e363fL, 0x72076785L, 0x05005713L,
--	0x95bf4a82L, 0xe2b87a14L, 0x7bb12baeL, 0x0cb61b38L, 0x92d28e9bL,
--	0xe5d5be0dL, 0x7cdcefb7L, 0x0bdbdf21L, 0x86d3d2d4L, 0xf1d4e242L,
--	0x68ddb3f8L, 0x1fda836eL, 0x81be16cdL, 0xf6b9265bL, 0x6fb077e1L,
--	0x18b74777L, 0x88085ae6L, 0xff0f6a70L, 0x66063bcaL, 0x11010b5cL,
--	0x8f659effL, 0xf862ae69L, 0x616bffd3L, 0x166ccf45L, 0xa00ae278L,
--	0xd70dd2eeL, 0x4e048354L, 0x3903b3c2L, 0xa7672661L, 0xd06016f7L,
--	0x4969474dL, 0x3e6e77dbL, 0xaed16a4aL, 0xd9d65adcL, 0x40df0b66L,
--	0x37d83bf0L, 0xa9bcae53L, 0xdebb9ec5L, 0x47b2cf7fL, 0x30b5ffe9L,
--	0xbdbdf21cL, 0xcabac28aL, 0x53b39330L, 0x24b4a3a6L, 0xbad03605L,
--	0xcdd70693L, 0x54de5729L, 0x23d967bfL, 0xb3667a2eL, 0xc4614ab8L,
--	0x5d681b02L, 0x2a6f2b94L, 0xb40bbe37L, 0xc30c8ea1L, 0x5a05df1bL,
--	0x2d02ef8dL
--};
-diff --git a/ubi-utils/src/crc32.c b/ubi-utils/src/crc32.c
-deleted file mode 100644
-index 6b1e50c..0000000
---- a/ubi-utils/src/crc32.c
-+++ /dev/null
-@@ -1,95 +0,0 @@
--/*
-- *  COPYRIGHT (C) 1986 Gary S. Brown.  You may use this program, or
-- *  code or tables extracted from it, as desired without restriction.
-- *
-- *  First, the polynomial itself and its table of feedback terms.  The
-- *  polynomial is
-- *  X^32+X^26+X^23+X^22+X^16+X^12+X^11+X^10+X^8+X^7+X^5+X^4+X^2+X^1+X^0
-- *
-- *  Note that we take it "backwards" and put the highest-order term in
-- *  the lowest-order bit.  The X^32 term is "implied"; the LSB is the
-- *  X^31 term, etc.  The X^0 term (usually shown as "+1") results in
-- *  the MSB being 1
-- *
-- *  Note that the usual hardware shift register implementation, which
-- *  is what we're using (we're merely optimizing it by doing eight-bit
-- *  chunks at a time) shifts bits into the lowest-order term.  In our
-- *  implementation, that means shifting towards the right.  Why do we
-- *  do it this way?  Because the calculated CRC must be transmitted in
-- *  order from highest-order term to lowest-order term.  UARTs transmit
-- *  characters in order from LSB to MSB.  By storing the CRC this way
-- *  we hand it to the UART in the order low-byte to high-byte; the UART
-- *  sends each low-bit to hight-bit; and the result is transmission bit
-- *  by bit from highest- to lowest-order term without requiring any bit
-- *  shuffling on our part.  Reception works similarly
-- *
-- *  The feedback terms table consists of 256, 32-bit entries.  Notes
-- *
-- *      The table can be generated at runtime if desired; code to do so
-- *      is shown later.  It might not be obvious, but the feedback
-- *      terms simply represent the results of eight shift/xor opera
-- *      tions for all combinations of data and CRC register values
-- *
-- *      The values must be right-shifted by eight bits by the "updcrc
-- *      logic; the shift must be unsigned (bring in zeroes).  On some
-- *      hardware you could probably optimize the shift in assembler by
-- *      using byte-swap instructions
-- *      polynomial $edb88320
-- */
++$(BUILDDIR)/lib/libmtd.a: subdirs_lib_all ;
+ 
+ install:: ${TARGETS}
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+diff --git a/common.mk b/common.mk
+index d704b44..be785b4 100644
+--- a/common.mk
++++ b/common.mk
+@@ -47,7 +47,7 @@ clean:: $(SUBDIRS_CLEAN)
+ 
+ install:: $(TARGETS) $(SUBDIRS_INSTALL)
+ 
+-%: %.o
++%: %.o $(LDDEPS) $(LDDEPS_$(notdir $@))
+ 	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_$(notdir $@)) -g -o $@ $^ $(LDLIBS) $(LDLIBS_$(notdir $@))
+ 
+ $(BUILDDIR)/%.a:
+diff --git a/fectest.c b/fectest.c
+index d5893b9..c1fbd52 100644
+--- a/fectest.c
++++ b/fectest.c
+@@ -8,7 +8,7 @@
+ #include <sys/stat.h>
+ 
+ #include "mcast_image.h"
+-#include "crc32.h"
++#include <crc32.h>
+ 
+ #define ERASE_SIZE 131072
+ //#define PKT_SIZE 1400
+diff --git a/flash_eraseall.c b/flash_eraseall.c
+index a22fc49..e6f8d50 100644
+--- a/flash_eraseall.c
++++ b/flash_eraseall.c
+@@ -35,7 +35,7 @@
+ #include <getopt.h>
+ #include <sys/ioctl.h>
+ #include <sys/mount.h>
+-#include "crc32.h"
++#include <crc32.h>
+ 
+ #include <mtd/mtd-user.h>
+ #include <mtd/jffs2-user.h>
+diff --git a/include/crc32.h b/include/crc32.h
+index 86fc841..4b51177 100644
+--- a/include/crc32.h
++++ b/include/crc32.h
+@@ -10,7 +10,7 @@
+ extern const uint32_t crc32_table[256];
+ 
+ /* Return a 32-bit CRC of the contents of the buffer. */
+-static inline uint32_t ubifs_crc32(uint32_t val, const void *ss, int len)
++static inline uint32_t crc32(uint32_t val, const void *ss, int len)
+ {
+ 	const unsigned char *s = ss;
+ 
+diff --git a/jffs2dump.c b/jffs2dump.c
+index 2802682..cd8b6fa 100644
+--- a/jffs2dump.c
++++ b/jffs2dump.c
+@@ -31,7 +31,7 @@
+ #include <endian.h>
+ #include <byteswap.h>
+ #include <getopt.h>
+-#include "crc32.h"
++#include <crc32.h>
+ #include "summary.h"
+ 
+ #define PROGRAM "jffs2dump"
+diff --git a/lib/Makefile b/lib/Makefile
+new file mode 100644
+index 0000000..91507f3
+--- /dev/null
++++ b/lib/Makefile
+@@ -0,0 +1,22 @@
++#
++# Makefile for libmtd
++#
++
++SUBDIRS =
++
++# CFLAGS += -Werror
++CPPFLAGS += -I../include
++LIBS = libmtd
++TARGETS = libmtd.a
++
++include ../common.mk
++
++$(BUILDDIR)/libmtd.a: $(addprefix $(BUILDDIR)/,\
++	libmtd.o libmtd_legacy.o crc32.o fec.o)
++
++clean::
++	rm -f $(addsuffix .a, $(LIBS))
++
++install::
++
++uninstall:
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index 64cafb6..2c78fd5 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -69,10 +69,10 @@
+ #include <sys/acl.h>
+ #endif
+ #include <byteswap.h>
+-#define crc32 __complete_crap
++#define crc32 __zlib_crc32
+ #include <zlib.h>
+ #undef crc32
+-#include "crc32.h"
++#include <crc32.h>
+ #include "rbtree.h"
+ 
+ /* Do not use the weird XPG version of basename */
+diff --git a/mkfs.ubifs/Makefile b/mkfs.ubifs/Makefile
+index 61d0e20..ba21a8c 100644
+--- a/mkfs.ubifs/Makefile
++++ b/mkfs.ubifs/Makefile
+@@ -7,12 +7,13 @@ ALL_SOURCES=*.[ch] hashtable/*.[ch]
+ TARGETS = mkfs.ubifs
+ 
+ LDLIBS_mkfs.ubifs = -lz -llzo2 -lm -luuid -L$(BUILDDIR)/../ubi-utils/ -lubi
++LDLIBS_mkfs.ubifs += -L$(BUILDDIR)/../lib -lmtd
+ LDLIBS_mkfs.ubifs += $(ZLIBLDFLAGS) $(LZOLDFLAGS)
+ 
+ include ../common.mk
+ 
+ $(BUILDDIR)/mkfs.ubifs: $(addprefix $(BUILDDIR)/,\
+-	crc16.o crc32.o lpt.o compr.o devtable.o \
++	crc16.o lpt.o compr.o devtable.o \
+ 	hashtable/hashtable.o hashtable/hashtable_itr.o)
+ 
+ clean::
+diff --git a/mkfs.ubifs/compr.c b/mkfs.ubifs/compr.c
+index e378c5d..7f084c5 100644
+--- a/mkfs.ubifs/compr.c
++++ b/mkfs.ubifs/compr.c
+@@ -24,10 +24,12 @@
+ #include <stdio.h>
+ #include <stdint.h>
+ #include <string.h>
+-#include <zlib.h>
+ #include <lzo/lzo1x.h>
+ #include <linux/types.h>
+ 
++#define crc32 __zlib_crc32
++#include <zlib.h>
++
+ #include "compr.h"
+ #include "ubifs-media.h"
+ #include "mkfs.ubifs.h"
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index e4b4e3c..95b20b0 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -21,6 +21,7 @@
+  */
+ 
+ #include "mkfs.ubifs.h"
++#include <crc32.h>
+ 
+ #define PROGRAM_VERSION "1.3"
+ 
+@@ -752,7 +753,7 @@ static void prepare_node(void *node, int len)
+ 	ch->group_type = UBIFS_NO_NODE_GROUP;
+ 	ch->sqnum = cpu_to_le64(++c->max_sqnum);
+ 	ch->padding[0] = ch->padding[1] = 0;
+-	crc = ubifs_crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
++	crc = crc32(UBIFS_CRC32_INIT, node + 8, len - 8);
+ 	ch->crc = cpu_to_le32(crc);
+ }
+ 
+@@ -822,7 +823,7 @@ static int do_pad(void *buf, int len)
+ 		pad_len -= UBIFS_PAD_NODE_SZ;
+ 		pad_node->pad_len = cpu_to_le32(pad_len);
+ 
+-		crc = ubifs_crc32(UBIFS_CRC32_INIT, buf + 8,
++		crc = crc32(UBIFS_CRC32_INIT, buf + 8,
+ 				  UBIFS_PAD_NODE_SZ - 8);
+ 		ch->crc = cpu_to_le32(crc);
+ 
+diff --git a/mkfs.ubifs/mkfs.ubifs.h b/mkfs.ubifs/mkfs.ubifs.h
+index 16b34c7..c00dce0 100644
+--- a/mkfs.ubifs/mkfs.ubifs.h
++++ b/mkfs.ubifs/mkfs.ubifs.h
+@@ -49,7 +49,6 @@
+ #include <sys/file.h>
+ 
+ #include "libubi.h"
+-#include "crc32.h"
+ #include "defs.h"
+ #include "crc16.h"
+ #include "ubifs-media.h"
+diff --git a/recv_image.c b/recv_image.c
+index d65aa2a..2be511a 100644
+--- a/recv_image.c
++++ b/recv_image.c
+@@ -16,7 +16,7 @@
+ #include <netinet/in.h>
+ #include <sys/ioctl.h>
+ #include <sys/time.h>
+-#include "crc32.h"
++#include <crc32.h>
+ #include "mtd/mtd-user.h"
+ #include "mcast_image.h"
+ 
+diff --git a/serve_image.c b/serve_image.c
+index adb4869..5aafa35 100644
+--- a/serve_image.c
++++ b/serve_image.c
+@@ -16,7 +16,7 @@
+ #include <sys/mman.h>
+ #include <netinet/in.h>
+ #include <sys/time.h>
+-#include "crc32.h"
++#include <crc32.h>
+ #include "mcast_image.h"
+ 
+ int tx_rate = 80000;
+diff --git a/sumtool.c b/sumtool.c
+index 6bb7168..966e110 100644
+--- a/sumtool.c
++++ b/sumtool.c
+@@ -44,7 +44,7 @@
+ #include <endian.h>
+ #include <byteswap.h>
+ #include <getopt.h>
+-#include "crc32.h"
++#include <crc32.h>
+ #include "summary.h"
+ 
+ #define PAD(x) (((x)+3)&~3)
+diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+index e736a09..327d2d7 100644
+--- a/ubi-utils/Makefile
++++ b/ubi-utils/Makefile
+@@ -9,11 +9,12 @@ SUBDIRS = old-utils
+ # CFLAGS += -Werror
+ CPPFLAGS += -Iinclude -Isrc -I$(KERNELHDR)
+ 
+-LIBS = libubi libmtd libubigen libiniparser libscan
++LIBS = libubi libubigen libiniparser libscan
+ TARGETS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
+           ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol
+ 
+ VPATH = src
++LDLIBS = -L$(BUILDDIR)/../lib -lmtd
+ 
+ include ../common.mk
+ 
+@@ -23,32 +24,30 @@ $(TARGETS): $(addprefix $(BUILDDIR)/,\
+ #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lubi -o $@
+ 
+ $(BUILDDIR)/ubicrc32: $(addprefix $(BUILDDIR)/,\
+-	ubicrc32.o crc32.o)
++	ubicrc32.o)
+ #	$(CC) $(CFLAGS) -o $@ $^
+ 
+ $(BUILDDIR)/ubinize: $(addprefix $(BUILDDIR)/,\
+-	ubinize.o common.o crc32.o libiniparser.a libubigen.a)
++	ubinize.o common.o libiniparser.a libubigen.a)
+ #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -liniparser -lubigen -o $@
+ 
+ $(BUILDDIR)/mtdinfo: $(addprefix $(BUILDDIR)/,\
+-	libmtd.a libubigen.a crc32.o common.o)
++	libubigen.a common.o)
+ #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lmtd -lubigen -o $@
+ 
+ $(BUILDDIR)/ubiformat: $(addprefix $(BUILDDIR)/,\
+-	ubiformat.o common.o crc32.o libmtd.a libscan.a libubi.a libubigen.a)
++	ubiformat.o common.o libscan.a libubi.a libubigen.a)
+ #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lmtd -lscan -lubi -lubigen -o $@
+ 
+ $(BUILDDIR)/libubi.a: $(BUILDDIR)/libubi.o
+ 
+-$(BUILDDIR)/libmtd.a: $(BUILDDIR)/libmtd.o $(BUILDDIR)/libmtd_legacy.o
 -
--#include <stdint.h>
--
--const uint32_t crc32_table[256] = {
--	0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL, 0x076dc419L,
--	0x706af48fL, 0xe963a535L, 0x9e6495a3L, 0x0edb8832L, 0x79dcb8a4L,
--	0xe0d5e91eL, 0x97d2d988L, 0x09b64c2bL, 0x7eb17cbdL, 0xe7b82d07L,
--	0x90bf1d91L, 0x1db71064L, 0x6ab020f2L, 0xf3b97148L, 0x84be41deL,
--	0x1adad47dL, 0x6ddde4ebL, 0xf4d4b551L, 0x83d385c7L, 0x136c9856L,
--	0x646ba8c0L, 0xfd62f97aL, 0x8a65c9ecL, 0x14015c4fL, 0x63066cd9L,
--	0xfa0f3d63L, 0x8d080df5L, 0x3b6e20c8L, 0x4c69105eL, 0xd56041e4L,
--	0xa2677172L, 0x3c03e4d1L, 0x4b04d447L, 0xd20d85fdL, 0xa50ab56bL,
--	0x35b5a8faL, 0x42b2986cL, 0xdbbbc9d6L, 0xacbcf940L, 0x32d86ce3L,
--	0x45df5c75L, 0xdcd60dcfL, 0xabd13d59L, 0x26d930acL, 0x51de003aL,
--	0xc8d75180L, 0xbfd06116L, 0x21b4f4b5L, 0x56b3c423L, 0xcfba9599L,
--	0xb8bda50fL, 0x2802b89eL, 0x5f058808L, 0xc60cd9b2L, 0xb10be924L,
--	0x2f6f7c87L, 0x58684c11L, 0xc1611dabL, 0xb6662d3dL, 0x76dc4190L,
--	0x01db7106L, 0x98d220bcL, 0xefd5102aL, 0x71b18589L, 0x06b6b51fL,
--	0x9fbfe4a5L, 0xe8b8d433L, 0x7807c9a2L, 0x0f00f934L, 0x9609a88eL,
--	0xe10e9818L, 0x7f6a0dbbL, 0x086d3d2dL, 0x91646c97L, 0xe6635c01L,
--	0x6b6b51f4L, 0x1c6c6162L, 0x856530d8L, 0xf262004eL, 0x6c0695edL,
--	0x1b01a57bL, 0x8208f4c1L, 0xf50fc457L, 0x65b0d9c6L, 0x12b7e950L,
--	0x8bbeb8eaL, 0xfcb9887cL, 0x62dd1ddfL, 0x15da2d49L, 0x8cd37cf3L,
--	0xfbd44c65L, 0x4db26158L, 0x3ab551ceL, 0xa3bc0074L, 0xd4bb30e2L,
--	0x4adfa541L, 0x3dd895d7L, 0xa4d1c46dL, 0xd3d6f4fbL, 0x4369e96aL,
--	0x346ed9fcL, 0xad678846L, 0xda60b8d0L, 0x44042d73L, 0x33031de5L,
--	0xaa0a4c5fL, 0xdd0d7cc9L, 0x5005713cL, 0x270241aaL, 0xbe0b1010L,
--	0xc90c2086L, 0x5768b525L, 0x206f85b3L, 0xb966d409L, 0xce61e49fL,
--	0x5edef90eL, 0x29d9c998L, 0xb0d09822L, 0xc7d7a8b4L, 0x59b33d17L,
--	0x2eb40d81L, 0xb7bd5c3bL, 0xc0ba6cadL, 0xedb88320L, 0x9abfb3b6L,
--	0x03b6e20cL, 0x74b1d29aL, 0xead54739L, 0x9dd277afL, 0x04db2615L,
--	0x73dc1683L, 0xe3630b12L, 0x94643b84L, 0x0d6d6a3eL, 0x7a6a5aa8L,
--	0xe40ecf0bL, 0x9309ff9dL, 0x0a00ae27L, 0x7d079eb1L, 0xf00f9344L,
--	0x8708a3d2L, 0x1e01f268L, 0x6906c2feL, 0xf762575dL, 0x806567cbL,
--	0x196c3671L, 0x6e6b06e7L, 0xfed41b76L, 0x89d32be0L, 0x10da7a5aL,
--	0x67dd4accL, 0xf9b9df6fL, 0x8ebeeff9L, 0x17b7be43L, 0x60b08ed5L,
--	0xd6d6a3e8L, 0xa1d1937eL, 0x38d8c2c4L, 0x4fdff252L, 0xd1bb67f1L,
--	0xa6bc5767L, 0x3fb506ddL, 0x48b2364bL, 0xd80d2bdaL, 0xaf0a1b4cL,
--	0x36034af6L, 0x41047a60L, 0xdf60efc3L, 0xa867df55L, 0x316e8eefL,
--	0x4669be79L, 0xcb61b38cL, 0xbc66831aL, 0x256fd2a0L, 0x5268e236L,
--	0xcc0c7795L, 0xbb0b4703L, 0x220216b9L, 0x5505262fL, 0xc5ba3bbeL,
--	0xb2bd0b28L, 0x2bb45a92L, 0x5cb36a04L, 0xc2d7ffa7L, 0xb5d0cf31L,
--	0x2cd99e8bL, 0x5bdeae1dL, 0x9b64c2b0L, 0xec63f226L, 0x756aa39cL,
--	0x026d930aL, 0x9c0906a9L, 0xeb0e363fL, 0x72076785L, 0x05005713L,
--	0x95bf4a82L, 0xe2b87a14L, 0x7bb12baeL, 0x0cb61b38L, 0x92d28e9bL,
--	0xe5d5be0dL, 0x7cdcefb7L, 0x0bdbdf21L, 0x86d3d2d4L, 0xf1d4e242L,
--	0x68ddb3f8L, 0x1fda836eL, 0x81be16cdL, 0xf6b9265bL, 0x6fb077e1L,
--	0x18b74777L, 0x88085ae6L, 0xff0f6a70L, 0x66063bcaL, 0x11010b5cL,
--	0x8f659effL, 0xf862ae69L, 0x616bffd3L, 0x166ccf45L, 0xa00ae278L,
--	0xd70dd2eeL, 0x4e048354L, 0x3903b3c2L, 0xa7672661L, 0xd06016f7L,
--	0x4969474dL, 0x3e6e77dbL, 0xaed16a4aL, 0xd9d65adcL, 0x40df0b66L,
--	0x37d83bf0L, 0xa9bcae53L, 0xdebb9ec5L, 0x47b2cf7fL, 0x30b5ffe9L,
--	0xbdbdf21cL, 0xcabac28aL, 0x53b39330L, 0x24b4a3a6L, 0xbad03605L,
--	0xcdd70693L, 0x54de5729L, 0x23d967bfL, 0xb3667a2eL, 0xc4614ab8L,
--	0x5d681b02L, 0x2a6f2b94L, 0xb40bbe37L, 0xc30c8ea1L, 0x5a05df1bL,
--	0x2d02ef8dL
--};
-diff --git a/ubi-utils/src/crc32.h b/ubi-utils/src/crc32.h
-deleted file mode 100644
-index c001fcf..0000000
---- a/ubi-utils/src/crc32.h
-+++ /dev/null
-@@ -1,17 +0,0 @@
--#ifndef __CRC32_H__
--#define __CRC32_H__
--
--#include <stdint.h>
--
--extern const uint32_t crc32_table[256];
--
--/* Returns a 32-bit CRC of the contents of the buffer */
--static inline uint32_t crc32(uint32_t val, const void *ss, int len)
--{
--	const unsigned char *s = ss;
--	while (--len >= 0)
--		val = crc32_table[(val ^ *s++) & 0xff] ^ (val >> 8);
--	return val;
--}
--
--#endif
+ $(BUILDDIR)/libubigen.a: $(BUILDDIR)/libubigen.o
+ 
+ $(BUILDDIR)/libiniparser.a: $(addprefix $(BUILDDIR)/,\
+ 	libiniparser.o dictionary.o)
+ 
+ $(BUILDDIR)/libscan.a: $(addprefix $(BUILDDIR)/,\
+-	libscan.o crc32.o)
++	libscan.o)
+ 
+ clean::
+ 	rm -f $(addsuffix .a, $(LIBS))
+diff --git a/ubi-utils/src/libscan.c b/ubi-utils/src/libscan.c
+index 5a2ea78..85f3d7f 100644
+--- a/ubi-utils/src/libscan.c
++++ b/ubi-utils/src/libscan.c
+@@ -32,8 +32,8 @@
+ #include <mtd/mtd-user.h>
+ #include <libmtd.h>
+ #include <libscan.h>
++#include <crc32.h>
+ #include "common.h"
+-#include "crc32.h"
+ 
+ #define PROGRAM_NAME "libscan"
+ 
+diff --git a/ubi-utils/src/libubigen.c b/ubi-utils/src/libubigen.c
+index 8f060da..62792d0 100644
+--- a/ubi-utils/src/libubigen.c
++++ b/ubi-utils/src/libubigen.c
+@@ -32,7 +32,7 @@
+ #include <mtd/ubi-media.h>
+ #include <mtd_swab.h>
+ #include <libubigen.h>
+-#include "crc32.h"
++#include <crc32.h>
+ #include "common.h"
+ 
+ #define PROGRAM_NAME "libubigen"
+diff --git a/ubi-utils/src/ubicrc32.c b/ubi-utils/src/ubicrc32.c
+index d39af10..2dd69e1 100644
+--- a/ubi-utils/src/ubicrc32.c
++++ b/ubi-utils/src/ubicrc32.c
+@@ -28,8 +28,8 @@
+ #include <getopt.h>
+ #include <unistd.h>
+ #include <mtd/ubi-media.h>
++#include <crc32.h>
+ 
+-#include "crc32.h"
+ #include "common.h"
+ 
+ #define BUFSIZE 4096
+diff --git a/ubi-utils/src/ubiformat.c b/ubi-utils/src/ubiformat.c
+index 8487fd5..f0a87c4 100644
+--- a/ubi-utils/src/ubiformat.c
++++ b/ubi-utils/src/ubiformat.c
+@@ -41,7 +41,7 @@
+ #include <libscan.h>
+ #include <libubigen.h>
+ #include <mtd_swab.h>
+-#include "crc32.h"
++#include <crc32.h>
+ #include "common.h"
+ 
+ #define PROGRAM_VERSION "1.5"
 -- 
 1.7.0.4
