@@ -1,24 +1,20 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWrwU-0008UB-SH
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 14:19:11 +0000
-Subject: Re: [PATCH v2 17/26] MTD: Nand: Add JZ4740 NAND driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lars-Peter Clausen <lars@metafoo.de>
-In-Reply-To: <4C35DA6C.2060405@metafoo.de>
-References: <1276924111-11158-1-git-send-email-lars@metafoo.de>
-	<1276924111-11158-18-git-send-email-lars@metafoo.de>
-	<1278569214.12733.38.camel@localhost>  <4C35D084.7050605@metafoo.de>
-	<1278595142.20321.26.camel@localhost>  <4C35DA6C.2060405@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 08 Jul 2010 17:14:57 +0300
-Message-ID: <1278598497.20321.29.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
-Reply-To: dedekind1@gmail.com
+	id 1OWsOV-0002mZ-Sz
+	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 14:48:08 +0000
+From: Eric Millbrandt <emillbrandt@dekaresearch.com>
+To: 'Sean Preston' <seanp@pfk.co.za>, Linux-MTD List
+	<linux-mtd@lists.infradead.org>
+Date: Thu, 8 Jul 2010 10:49:51 -0400
+Subject: RE: New NAND Help
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD325405DE5AE@dekaexchange07.deka.local>
+References: <002501cb1e9b$a28bdbb0$e7a39310$@pfk.co.za>
+In-Reply-To: <002501cb1e9b$a28bdbb0$e7a39310$@pfk.co.za>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,22 +24,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-07-08 at 16:02 +0200, Lars-Peter Clausen wrote:
-> Artem Bityutskiy wrote:
-> > On Thu, 2010-07-08 at 15:20 +0200, Lars-Peter Clausen wrote:
-> >> On the other hand I'm wondering where on would put headers for non platform specific
-> >> drivers?
-> > 
-> > If we are talking about MTD, then drivers/mtd ?
-> > 
-> No, what I meant was header defining platform data structs and such.
-> And what I wanted to get at is an answer to why driver header files are put in
-> different directories while the driver files themselves are all keep in the same
-> directory. (drivers of the same subsystem that is)
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-
+> bounces@lists.infradead.org] On Behalf Of Sean Preston
+> Sent: Thursday, July 08, 2010 08:47
+> To: Linux-MTD List
+> Subject: New NAND Help
+>
+<snip>
+>
+> Looking at the drivers/mtd/nand section of the tree I have added the new
+> chip ID to nand_ids.c  There already appears to be support for 4096 page
+> sizes and 512K block sizes.  What else would I need to check to ensure
+> that
+> the kernel is able to probe this chip and load the driver needed for it.
+> The driver currently being loaded is the davinci_nand driver.  I have
+> managed to get this chip working with uBoot which uses a modified version
+> of
+> the MTD driver.
+>
+I found that some of the newer Micron nand chips don't store information ab=
+out the chip layout in the id block anymore.  It's all been moved to the pa=
+rameter page.  nand_get_flash_type(), in nand_base.c, relies on that data t=
+o correctly describe the chip layout, so you may need to hardcode the pages=
+ize and eraseblock size in the nand_flash_ids table.
 
-To be frank I do not know, I did not look at the whole picture, just at
-the MTD part :-)
+Take a look at the READ ID operation section in the micron datasheet to see=
+ if the relevant data is still exists, otherwise you need to hardcode those=
+ values.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Eric
+
+-DISCLAIMER: an automatically appended disclaimer may follow. By posting-
+-to a public e-mail mailing list I hereby grant permission to distribute-
+-and copy this message.-
+
+> Regards
+> Sean
+>
+> --
+> Sean Preston
+> Email: seanp@pfk.co.za
+>
+>
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
