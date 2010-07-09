@@ -1,21 +1,10 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OXBIy-0008C1-Nu
-	for linux-mtd@lists.infradead.org; Fri, 09 Jul 2010 10:59:41 +0000
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Fri, 9 Jul 2010 16:29:32 +0530
-Subject: RE: [PATCH v6 0/3] omap3 nand: cleanup exiting platform related code
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030E181B51@dbde02.ent.ti.com>
-References: <1278660308-8689-1-git-send-email-s-ghorai@ti.com>
-	<20100709083256.GI24913@atomide.com>
-In-Reply-To: <20100709083256.GI24913@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v4 0/8] nand support on omap3 boards
+Date: Fri,  9 Jul 2010 19:57:46 +0530
+Message-Id: <1278685671-12036-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +14,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tony,
+   The following set of patches applies on top of for-next branch.
+   And these are the patches required to enable nand (nor and onenand for sdp
+   only) for different platform.
+   
+   v4: patch rebase on latest code base; depend on
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31950.html
+   
+   v3:  http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30735.html
+	patch rebase on latest nand patch and depend on -
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30305.html
+   
+   v2: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg26479.html
+	rework to use full nand in partition table of ZOOM2/3;
+	ZOOM1(LDP)support added.
+		
+   v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg22205.html
 
-> -----Original Message-----
-> From: Tony Lindgren [mailto:tony@atomide.com]
-> Sent: Friday, July 09, 2010 2:03 PM
-> To: Ghorai, Sukumar
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org
-> Subject: Re: [PATCH v6 0/3] omap3 nand: cleanup exiting platform related
-> code
->=20
-> * Sukumar Ghorai <s-ghorai@ti.com> [100709 10:19]:
-> >    The following set of patches applies on top of for-next branch.
-> > 	http://git.kernel.org/?p=3Dlinux/kernel/git/tmlind/linux-omap-2.6.git
-> >    Patches verified on: omap3430-SDP, omap3630-sdp, zoom3 and beagle
-> board
-> >
-> >    And these are the patches required to address the following input -
-> >      1. The NAND driver needs to stop tinkering with the GPMC registers
-> > 	The omap General Purpose Memory Controller (GPMC) registers are omap
-> >         specific, and not driver specific. Tinkering with these
-> registers can
-> >         cause issues with the other devices on the GPMC.
-> >
-> >      2. Passing hardcoded GPMC_CS0_BASE needs to go from the board file=
-s
-> > 	Passing hardcoded GPMC virtual addressess is sure way to mess up
-> things.
-> >         This should all become unnecessary once the NAND drivers stops
-> messing
-> >         with the GPMC registers directly.
->=20
-> Looks good to me, thanks for doing this.
->=20
-> One more request: Please repost this series one more time with linux-arm-
-> kernel
-> mailing list Cc'd. Then if no comments, I'll merge this series during the
-> next
-> merge window.
+Sukumar Ghorai (5):
+	omap3 flash: rename board-sdp-flash.c to be use by other boards
+	omap3: add support for NAND on zoom2 board
+	omap3: add support for NAND on zoom3 board
+	omap-3630-sdp : Add support for Flash
+	omap3: add support for NAND on LDP board
 
-[Ghorai] Thanks.=20
-And would you please check if you have any input on following patch series?=
- Otherwise I will rework on this and send again. We need those patches in t=
-his time.
-1. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30735.html
-2. http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
-
-Regards,
-Ghorai
+ arch/arm/mach-omap2/Makefile                  |    6 +-
+ arch/arm/mach-omap2/board-3430sdp.c           |   16 +++-
+ arch/arm/mach-omap2/board-3630sdp.c           |  120 +++++++++++++++++++++++++
+ arch/arm/mach-omap2/board-ldp.c               |   35 +++++++
+ arch/arm/mach-omap2/board-sdp-flash.c         |   88 ++++++++-----------
+ arch/arm/mach-omap2/board-zoom2.c             |   43 +++++++++
+ arch/arm/mach-omap2/board-zoom3.c             |   43 +++++++++
+ arch/arm/mach-omap2/include/mach/board-sdp.h  |    9 ++-
+ arch/arm/mach-omap2/include/mach/board-zoom.h |    6 ++
+ 9 files changed, 311 insertions(+), 55 deletions(-)
