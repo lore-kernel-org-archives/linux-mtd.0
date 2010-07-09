@@ -1,23 +1,15 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OWzVV-0004DW-Hj
-	for linux-mtd@lists.infradead.org; Thu, 08 Jul 2010 22:23:50 +0000
-Message-ID: <4C364FE8.1030101@broadcom.com>
-Date: Thu, 8 Jul 2010 15:23:36 -0700
-From: "Brian Norris" <norris@broadcom.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH] mtd-www doc, FAQ, general: spelling fixes
-References: <1277332946-14580-1-git-send-email-norris@broadcom.com>
-	<1277387522.24980.6.camel@localhost.localdomain>
-	<4C238ACC.8050004@broadcom.com> <1278581058.12733.77.camel@localhost>
-In-Reply-To: <1278581058.12733.77.camel@localhost>
-Content-Type: text/plain;
- charset=utf-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "pjohn@mvista.com" <pjohn@mvista.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from comal.ext.ti.com ([198.47.26.152])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OX6Oi-0001Ok-42
+	for linux-mtd@lists.infradead.org; Fri, 09 Jul 2010 05:45:17 +0000
+From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-nand: davinci: correct 4-bit error correction
+Date: Fri,  9 Jul 2010 10:59:49 +0530
+Message-Id: <1278653389-12019-1-git-send-email-sudhakar.raj@ti.com>
+Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
+	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, nsnehaprabha@ti.com,
+	davinci-linux-open-source@linux.davincidsp.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,10 +19,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
-> Pushed, thanks a lot!
->
+On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
+4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
+before waiting for the NAND Flash status register to be equal to 1, 2 or
+3, we have to wait till the ECC HW goes to correction state.  Without this
+wait, ECC correction calculations will not be proper.
 
-I think you missed the first patch :) I'm not sure it applies properly 
-now, but here's the link. I can reformat it if necessary:
-http://lists.infradead.org/pipermail/linux-mtd/2010-June/030705.html
+This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and DM365
+EVMs.
+
+Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+This patch applies on top of Linus's master.
+
+This patch was present in -mm tree and was dropped because it was merged
+into mainline. But now this patch is not present neither in Linus's tree
+nor in linux-next. Hence resending it again.
+
+ drivers/mtd/nand/davinci_nand.c |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index 9c9d893..2ac7367 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -311,7 +311,9 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
+ 	unsigned short ecc10[8];
+ 	unsigned short *ecc16;
+ 	u32 syndrome[4];
++	u32 ecc_state;
+ 	unsigned num_errors, corrected;
++	unsigned long timeo = jiffies + msecs_to_jiffies(100);
+ 
+ 	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
+ 	for (i = 0; i < 10; i++) {
+@@ -361,6 +363,21 @@ compare:
+ 	 */
+ 	davinci_nand_writel(info, NANDFCR_OFFSET,
+ 			davinci_nand_readl(info, NANDFCR_OFFSET) | BIT(13));
++
++	/*
++	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
++	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
++	 * begin trying to poll for the state, you may fall right out of your
++	 * loop without any of the correction calculations having taken place.
++	 * The recommendation from the hardware team is to wait till ECC_STATE
++	 * reads less than 4, which means ECC HW has entered correction state.
++	 */
++	do {
++		ecc_state = (davinci_nand_readl(info,
++				NANDFSR_OFFSET) >> 8) & 0x0f;
++		cpu_relax();
++	} while ((ecc_state < 4) && time_before(jiffies, timeo));
++
+ 	for (;;) {
+ 		u32	fsr = davinci_nand_readl(info, NANDFSR_OFFSET);
+ 
+-- 
+1.5.6
