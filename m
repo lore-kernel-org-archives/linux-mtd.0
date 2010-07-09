@@ -1,14 +1,12 @@
 From: Sukumar Ghorai <s-ghorai@ti.com>
 To: linux-omap@vger.kernel.org
-Subject: [PATCH v4 5/5] omap3: add support for NAND on LDP board
-Date: Fri,  9 Jul 2010 19:57:51 +0530
-Message-Id: <1278685671-12036-6-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1278685671-12036-5-git-send-email-s-ghorai@ti.com>
+Subject: [PATCH v4 3/5] omap3: add support for NAND on zoom3 board
+Date: Fri,  9 Jul 2010 19:57:49 +0530
+Message-Id: <1278685671-12036-4-git-send-email-s-ghorai@ti.com>
+In-Reply-To: <1278685671-12036-3-git-send-email-s-ghorai@ti.com>
 References: <1278685671-12036-1-git-send-email-s-ghorai@ti.com>
 	<1278685671-12036-2-git-send-email-s-ghorai@ti.com>
 	<1278685671-12036-3-git-send-email-s-ghorai@ti.com>
-	<1278685671-12036-4-git-send-email-s-ghorai@ti.com>
-	<1278685671-12036-5-git-send-email-s-ghorai@ti.com>
 Cc: Vimal Singh <vimalsingh@ti.com>, linux-mtd@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,44 +18,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-patch adds NAND support to LDP board.
+patch adds NAND support to zoom3 board.
 
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 ---
- arch/arm/mach-omap2/Makefile    |    1 +
- arch/arm/mach-omap2/board-ldp.c |   35 +++++++++++++++++++++++++++++++++++
- 2 files changed, 36 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/Makefile      |    1 +
+ arch/arm/mach-omap2/board-zoom3.c |   43 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
-index b55a5d7..fc9133f 100644
+index 81c3b08..cbd3458 100644
 --- a/arch/arm/mach-omap2/Makefile
 +++ b/arch/arm/mach-omap2/Makefile
-@@ -110,6 +110,7 @@ obj-$(CONFIG_MACH_OMAP3_BEAGLE)		+= board-omap3beagle.o \
- obj-$(CONFIG_MACH_DEVKIT8000)     	+= board-devkit8000.o \
-                                            hsmmc.o
- obj-$(CONFIG_MACH_OMAP_LDP)		+= board-ldp.o \
+@@ -133,6 +133,7 @@ obj-$(CONFIG_MACH_OMAP_ZOOM2)		+= board-zoom2.o \
+ 					   board-zoom-debugboard.o
+ obj-$(CONFIG_MACH_OMAP_ZOOM3)		+= board-zoom3.o \
+ 					   board-zoom-peripherals.o \
 +					   board-flash.o \
- 					   hsmmc.o
- obj-$(CONFIG_MACH_OVERO)		+= board-overo.o \
- 					   hsmmc.o
-diff --git a/arch/arm/mach-omap2/board-ldp.c b/arch/arm/mach-omap2/board-ldp.c
-index 6e3930e..9845995 100644
---- a/arch/arm/mach-omap2/board-ldp.c
-+++ b/arch/arm/mach-omap2/board-ldp.c
-@@ -38,6 +38,7 @@
- #include <plat/board.h>
- #include <plat/common.h>
- #include <plat/gpmc.h>
-+#include <mach/board-zoom.h>
- 
- #include <asm/delay.h>
- #include <plat/control.h>
-@@ -388,6 +389,38 @@ static struct omap_musb_board_data musb_board_data = {
- 	.power			= 100,
+ 					   hsmmc.o \
+ 					   board-zoom-debugboard.o
+ obj-$(CONFIG_MACH_OMAP_3630SDP)		+= board-3630sdp.o \
+diff --git a/arch/arm/mach-omap2/board-zoom3.c b/arch/arm/mach-omap2/board-zoom3.c
+index 0c6858b..84f49da 100644
+--- a/arch/arm/mach-omap2/board-zoom3.c
++++ b/arch/arm/mach-omap2/board-zoom3.c
+@@ -28,6 +28,47 @@
+ static struct omap_board_config_kernel zoom_config[] __initdata = {
  };
  
-+static struct mtd_partition ldp_nand_partitions[] = {
++static struct mtd_partition zoom_nand_partitions[] = {
 +	/* All the partition sizes are listed in terms of NAND block size */
 +	{
 +		.name		= "X-Loader-NAND",
@@ -82,22 +72,31 @@ index 6e3930e..9845995 100644
 +		.size		= 240 * (64 * 2048),	/* 30M, 0x1E00000 */
 +	},
 +	{
-+		.name		= "File System - NAND",
++		.name		= "system",
 +		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x2000000 */
-+		.size		= MTDPART_SIZ_FULL,	/* 96MB, 0x6000000 */
++		.size		= 3328 * (64 * 2048),	/* 416M, 0x1A000000 */
 +	},
-+
++	{
++		.name		= "userdata",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x1C000000*/
++		.size		= 256 * (64 * 2048),	/* 32M, 0x2000000 */
++	},
++	{
++		.name		= "cache",
++		.offset		= MTDPART_OFS_APPEND,	/* Offset = 0x1E000000*/
++		.size		= 256 * (64 * 2048),	/* 32M, 0x2000000 */
++	},
 +};
 +
- static void __init omap_ldp_init(void)
+ static void __init omap_zoom_init_irq(void)
  {
- 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
-@@ -400,6 +433,8 @@ static void __init omap_ldp_init(void)
- 	ads7846_dev_init();
- 	omap_serial_init();
- 	usb_musb_init(&musb_board_data);
-+	board_nand_init(ldp_nand_partitions,
-+		ARRAY_SIZE(ldp_nand_partitions), ZOOM_NAND_CS);
+ 	omap_board_config = zoom_config;
+@@ -75,6 +116,8 @@ static void __init omap_zoom_init(void)
+ {
+ 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBP);
+ 	zoom_peripherals_init();
++	board_nand_init(zoom_nand_partitions,
++			 ARRAY_SIZE(zoom_nand_partitions), ZOOM_NAND_CS);
+ 	zoom_debugboard_init();
  
- 	omap2_hsmmc_init(mmc);
- 	/* link regulators to MMC adapters */
+ 	omap_mux_init_gpio(64, OMAP_PIN_OUTPUT);
