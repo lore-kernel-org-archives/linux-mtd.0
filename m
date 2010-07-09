@@ -1,22 +1,13 @@
-Received: from mail.dbn.pfk.co.za ([196.212.6.202])
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OX7e0-0000Ui-D9
-	for linux-mtd@lists.infradead.org; Fri, 09 Jul 2010 07:05:09 +0000
-From: "Sean Preston" <seanp@pfk.co.za>
-To: "'Paulraj, Sandeep'" <s-paulraj@ti.com>,
-	"'Eric Millbrandt'" <emillbrandt@dekaresearch.com>,
-	"'Linux-MTD List'" <linux-mtd@lists.infradead.org>
-References: <002501cb1e9b$a28bdbb0$e7a39310$@pfk.co.za>	<0A40042D85E7C84DB443060EC44B3FD325405DE5AE@dekaexchange07.deka.local>	<0554BEF07D437848AF01B9C9B5F0BC5D9F13518B@dlee01.ent.ti.com>	<0A40042D85E7C84DB443060EC44B3FD325405DE5AF@dekaexchange07.deka.local>
-	<0554BEF07D437848AF01B9C9B5F0BC5D9F1351CD@dlee01.ent.ti.com>
-In-Reply-To: <0554BEF07D437848AF01B9C9B5F0BC5D9F1351CD@dlee01.ent.ti.com>
-Subject: RE: New NAND Help
-Date: Fri, 9 Jul 2010 09:04:43 +0200
-Message-ID: <002801cb1f35$08502930$18f07b90$@pfk.co.za>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-za
+	id 1OX7xT-0003o9-VD
+	for linux-mtd@lists.infradead.org; Fri, 09 Jul 2010 07:25:16 +0000
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v6 0/3] omap3 nand: cleanup exiting platform related code
+Date: Fri,  9 Jul 2010 12:55:05 +0530
+Message-Id: <1278660308-8689-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +17,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+   The following set of patches applies on top of for-next branch.
+	http://git.kernel.org/?p=linux/kernel/git/tmlind/linux-omap-2.6.git
+   Patches verified on: omap3430-SDP, omap3630-sdp, zoom3 and beagle board
 
-First, thanks for the info so far.
+   And these are the patches required to address the following input -
+     1. The NAND driver needs to stop tinkering with the GPMC registers
+	The omap General Purpose Memory Controller (GPMC) registers are omap
+        specific, and not driver specific. Tinkering with these registers can
+        cause issues with the other devices on the GPMC.
 
-> > <snip>
-> > That is correct.  Micron used to support both the ID byte and the
-> > parameter page in their ONFO 1.0 compliant parts, but seems to have
-> > dropped support in their newer ONFI 2.1 compliant parts.  I found out
-> > the hard way when switching from an mlc part to an slc part.
-> 
-> So did i
-> IIRC there were some discussions on the list to add support for these
-devices
-> and reading the relevant info from the param page.
-> 
-> The issue with the DM365 is that the RBL is not geared up for these
-devices.
+     2. Passing hardcoded GPMC_CS0_BASE needs to go from the board files
+	Passing hardcoded GPMC virtual addressess is sure way to mess up things.
+        This should all become unnecessary once the NAND drivers stops messing
+        with the GPMC registers directly.
+     Discussion: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg27630.html
 
-I am using silicon version 1.2 of the DM365 and the RBL thankfully does seem
-to work with this device.  I have been able to successfully flash it with
-the stock UBL in the TI DVSDK 3.10.00_12 & 16 and also get the uBoot written
-to it and working correctly with only minor changes.
+   Changes in this series -
+	gpmc_hwcontrol() function in gpmc.c, break into various small function.
 
-I will try the hard coding route and see if I can get the device working in
-the kernel on the TI DM365 EVM board and will then feedback.
+  Unused function removed.
+  v5: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30305.html
+		
+  Functions related to ecc and prefetch engine are optimized.
+  v4: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg29458.html
 
-Regards
-Sean
+  Few functionality was missing  like - There should be some locking as only
+   one chipselect can use the ECC or prefetch engine at a time. If you have
+   NAND in two chipselects, bad things would happen.
+  v3: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg28715.html
 
---
-Sean Preston
-Email: seanp@pfk.co.za
+  Additionally, it was needed to implement more functions for the platform
+  init code to use.
+  v2: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg28467.html
+	
+  v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg28164.html
+
+
+Sukumar Ghorai (3):
+	omap3 gpmc: functionality enhancement
+	omap3 nand: cleanup virtual address usages
+	omap3 nand: fix issue in board file to detect nand
+ arch/arm/mach-omap2/board-cm-t35.c         |   20 +--
+ arch/arm/mach-omap2/board-devkit8000.c     |   25 +---
+ arch/arm/mach-omap2/board-omap3beagle.c    |   24 +---
+ arch/arm/mach-omap2/board-omap3touchbook.c |   25 +---
+ arch/arm/mach-omap2/board-overo.c          |   24 +---
+ arch/arm/mach-omap2/board-sdp-flash.c      |    5 -
+ arch/arm/mach-omap2/gpmc-nand.c            |   38 +---
+ arch/arm/mach-omap2/gpmc.c                 |  285 ++++++++++++++++++++++++++--
+ arch/arm/plat-omap/include/plat/gpmc.h     |   42 ++++-
+ arch/arm/plat-omap/include/plat/nand.h     |    6 +-
+ drivers/mtd/nand/omap2.c                   |  218 ++++++----------------
+ 11 files changed, 371 insertions(+), 341 deletions(-)
