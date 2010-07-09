@@ -1,15 +1,16 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OX6Oi-0001Ok-42
-	for linux-mtd@lists.infradead.org; Fri, 09 Jul 2010 05:45:17 +0000
+	id 1OX6Xh-0004Jp-V1
+	for linux-mtd@lists.infradead.org; Fri, 09 Jul 2010 05:54:34 +0000
 From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-nand: davinci: correct 4-bit error correction
-Date: Fri,  9 Jul 2010 10:59:49 +0530
-Message-Id: <1278653389-12019-1-git-send-email-sudhakar.raj@ti.com>
-Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
-	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, nsnehaprabha@ti.com,
-	davinci-linux-open-source@linux.davincidsp.com
+Subject: [PATCH] mtdpart: memory accessor interface for MTD layer
+Date: Fri,  9 Jul 2010 11:09:04 +0530
+Message-Id: <1278653944-12432-1-git-send-email-sudhakar.raj@ti.com>
+Cc: dhowells@redhat.com, Sudhakar Rajashekhara <sudhakar.raj@ti.com>,
+	khilman@deeprootsystems.com, Sudhakar Rajashekhara <"sudhakar...."@ti.com>,
+	linux-kernel@vger.kernel.org, david-b@pacbell.net,
+	akpm@linux-foundation.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,64 +20,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
-4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
-before waiting for the NAND Flash status register to be equal to 1, 2 or
-3, we have to wait till the ECC HW goes to correction state.  Without this
-wait, ECC correction calculations will not be proper.
+From: Sudhakar Rajashekhara <sudhakar....@ti.com>
 
-This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and DM365
-EVMs.
+This patch implements memory accessor interface in the MTD
+layer which enables the kernel to access flash data.
+
+This patch adds two new members to the mtd_partition structure,
+a function handler which will be called during setup of the
+partition and an argument to be passed to this setup function.
+
+Example:
++static struct mtd_partition spi_flash_partitions[] = {
++       [0] = {
++               .name       = "U-Boot",
++               .offset     = 0,
++               .size       = SZ_256K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [1] = {
++               .name       = "U-Boot Environment",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [2] = {
++               .name       = "Linux",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_7M,
++               .mask_flags = 0,
++       },
++       [3] = {
++               .name       = "MAC Address",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = 0,
++               .setup      = davinci_get_mac_addr,
++               .context    = (void *)0,
++       },
++};
+
+The davinci_get_mac_addr function reads the MAC address from
+offset ZERO of last MTD partition.
 
 Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+Acked-by: Kevin Hilman <khilman@deeprootsystems.com>
+Cc: David Brownell <david-b@pacbell.net>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
-This patch applies on top of Linus's master.
+ drivers/mtd/mtdpart.c          |   40 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/partitions.h |    3 +++
+ 2 files changed, 43 insertions(+), 0 deletions(-)
 
-This patch was present in -mm tree and was dropped because it was merged
-into mainline. But now this patch is not present neither in Linus's tree
-nor in linux-next. Hence resending it again.
-
- drivers/mtd/nand/davinci_nand.c |   17 +++++++++++++++++
- 1 files changed, 17 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 9c9d893..2ac7367 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -311,7 +311,9 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
- 	unsigned short ecc10[8];
- 	unsigned short *ecc16;
- 	u32 syndrome[4];
-+	u32 ecc_state;
- 	unsigned num_errors, corrected;
-+	unsigned long timeo = jiffies + msecs_to_jiffies(100);
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index b8043a9..9f4d5f8 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -26,6 +26,7 @@ static LIST_HEAD(mtd_partitions);
+ struct mtd_part {
+ 	struct mtd_info mtd;
+ 	struct mtd_info *master;
++	struct memory_accessor macc;
+ 	uint64_t offset;
+ 	struct list_head list;
+ };
+@@ -327,6 +328,39 @@ int del_mtd_partitions(struct mtd_info *master)
+ }
+ EXPORT_SYMBOL(del_mtd_partitions);
  
- 	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
- 	for (i = 0; i < 10; i++) {
-@@ -361,6 +363,21 @@ compare:
- 	 */
- 	davinci_nand_writel(info, NANDFCR_OFFSET,
- 			davinci_nand_readl(info, NANDFCR_OFFSET) | BIT(13));
++/*
++ * This lets other kernel code access the flash data. For example, it
++ * might hold a board's Ethernet address, or board-specific calibration
++ * data generated on the manufacturing floor.
++ */
++static ssize_t mtd_macc_read(struct memory_accessor *macc, char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
 +
-+	/*
-+	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
-+	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
-+	 * begin trying to poll for the state, you may fall right out of your
-+	 * loop without any of the correction calculations having taken place.
-+	 * The recommendation from the hardware team is to wait till ECC_STATE
-+	 * reads less than 4, which means ECC HW has entered correction state.
-+	 */
-+	do {
-+		ecc_state = (davinci_nand_readl(info,
-+				NANDFSR_OFFSET) >> 8) & 0x0f;
-+		cpu_relax();
-+	} while ((ecc_state < 4) && time_before(jiffies, timeo));
++	if (part_read((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
 +
- 	for (;;) {
- 		u32	fsr = davinci_nand_readl(info, NANDFSR_OFFSET);
++	return ret;
++}
++
++static ssize_t mtd_macc_write(struct memory_accessor *macc, const char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
++
++	if (part_write((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
++
++	return ret;
++}
++
+ static struct mtd_part *add_one_partition(struct mtd_info *master,
+ 		const struct mtd_partition *part, int partno,
+ 		uint64_t cur_offset)
+@@ -364,6 +398,9 @@ static struct mtd_part *add_one_partition(struct mtd_info *master,
+ 	slave->mtd.read = part_read;
+ 	slave->mtd.write = part_write;
  
++	slave->macc.read = mtd_macc_read;
++	slave->macc.write = mtd_macc_write;
++
+ 	if (master->panic_write)
+ 		slave->mtd.panic_write = part_panic_write;
+ 
+@@ -428,6 +465,9 @@ static struct mtd_part *add_one_partition(struct mtd_info *master,
+ 	printk(KERN_NOTICE "0x%012llx-0x%012llx : \"%s\"\n", (unsigned long long)slave->offset,
+ 		(unsigned long long)(slave->offset + slave->mtd.size), slave->mtd.name);
+ 
++	if (part->setup)
++		part->setup(&slave->macc, (void *)part->context);
++
+ 	/* let's do some sanity checks */
+ 	if (slave->offset >= master->size) {
+ 		/* let's register it anyway to preserve ordering */
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index 274b619..39782a6 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -10,6 +10,7 @@
+ #define MTD_PARTITIONS_H
+ 
+ #include <linux/types.h>
++#include <linux/memory.h>
+ 
+ 
+ /*
+@@ -40,6 +41,8 @@ struct mtd_partition {
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+ 	struct nand_ecclayout *ecclayout;	/* out of band layout for this partition (NAND only)*/
++	void (*setup)(struct memory_accessor *, void *context);
++	void *context;
+ };
+ 
+ #define MTDPART_OFS_NXTBLK	(-2)
 -- 
 1.5.6
