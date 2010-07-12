@@ -1,19 +1,32 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYHqR-0000js-Ri
-	for linux-mtd@lists.infradead.org; Mon, 12 Jul 2010 12:10:48 +0000
-From: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>
-To: "Woodhouse, David" <david.woodhouse@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 12 Jul 2010 17:04:49 +0800
-Subject: [PATCH 5/5]mtd/nand/denali.c: remove set_ecc_config functions
-Message-ID: <5D8008F58939784290FAB48F549751981D09B718B7@shsmsx502.ccr.corp.intel.com>
-Content-Language: en-US
-Content-Type: multipart/mixed;
-	boundary="_002_5D8008F58939784290FAB48F549751981D09B718B7shsmsx502ccrc_"
+	id 1OYKTh-0001eG-Nx
+	for linux-mtd@lists.infradead.org; Mon, 12 Jul 2010 14:59:30 +0000
+Received: by pvf33 with SMTP id 33so2132761pvf.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 12 Jul 2010 07:59:27 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>, "Gao,
-	Yunpeng" <yunpeng.gao@intel.com>, "Yuan, Hang" <hang.yuan@intel.com>
+In-Reply-To: <1278584577.20321.2.camel@localhost>
+References: <u2v70c9a9111004300305n4c86774bm7ed70161ad72d830@mail.gmail.com>
+	<z2p9c9fda241005052046j3fea69a4v91f3d5fd86648fac@mail.gmail.com>
+	<k2x70c9a9111005060422v90e246daw19b1f71d57a890a1@mail.gmail.com>
+	<g2x9c9fda241005060444x7f9c4360u334d3afb06f1e8b8@mail.gmail.com>
+	<z2v70c9a9111005060602n7b7477ebueb197af05372bd5@mail.gmail.com>
+	<AANLkTimwO5iU6zPUJeLwAxW3GZGz5ldSRLmp2vpTBem3@mail.gmail.com>
+	<AANLkTiktbqSHHw572y1YGVw7XhZaim9Pg3lhoMmDBLXY@mail.gmail.com>
+	<AANLkTin43tv-AiFjwNkUE7ijy_ADMtsZTrqo_PY3DpCE@mail.gmail.com>
+	<1278583087.20321.0.camel@localhost>
+	<AANLkTiludbDD8ndnQlqxyWeP7us-BxaEDHvKfDpw-AW8@mail.gmail.com>
+	<1278584577.20321.2.camel@localhost>
+Date: Mon, 12 Jul 2010 16:59:27 +0200
+Message-ID: <AANLkTikDPqoO_VGJtBKWHutPOb60XAIUAYOu7kIRxMyQ@mail.gmail.com>
+Subject: Re: Possible bug in onenand_base ?
+From: =?UTF-8?Q?Enric_Balletb=C3=B2_i_Serra?= <eballetbo@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Rohit Hagargundgi <h.rohit@samsung.com>, linux-mtd@lists.infradead.org,
+	linux-omap@vger.kernel.org, Kyungmin Park <kmpark@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,178 +36,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---_002_5D8008F58939784290FAB48F549751981D09B718B7shsmsx502ccrc_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
->From 399e22e9f1bc32558961391db377309b08806b25 Mon Sep 17 00:00:00 2001
-From: Chuanxiao Dong <chuanxiao.dong@intel.com>
-Date: Mon, 21 Jun 2010 18:51:19 +0800
-Subject: [PATCH 5/5] [MTD/denali] remove set_ecc_config
- 	This function only need to set ECC_CORRECTION reg
- 	so remove it and set this reg in probe function.
- 	For denali nand controller only support 15bits and
- 	8bits ecc correction on MRST, here use 15bits ecc
- 	correction for MLC NAND and 8bits ecc correction for
- 	SLC NAND.
-
-Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
----
- drivers/mtd/nand/denali.c |   44 ++---------------------------------------=
----
- 1 files changed, 2 insertions(+), 42 deletions(-)
-
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 1555921..d143b0b 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -354,46 +354,6 @@ static void nand_onfi_timing_set(struct denali_nand_in=
-fo *denali,
- 	denali_write32(cs_cnt, denali->flash_reg + CS_SETUP_CNT);
- }
-=20
--/* configures the initial ECC settings for the controller */
--static void set_ecc_config(struct denali_nand_info *denali)
--{
--#if SUPPORT_8BITECC
--	if ((ioread32(denali->flash_reg + DEVICE_MAIN_AREA_SIZE) < 4096) ||
--		(ioread32(denali->flash_reg + DEVICE_SPARE_AREA_SIZE) <=3D 128))
--		denali_write32(8, denali->flash_reg + ECC_CORRECTION);
--#endif
--
--	if ((ioread32(denali->flash_reg + ECC_CORRECTION) &
--				ECC_CORRECTION__VALUE) =3D=3D 1) {
--		denali->dev_info.wECCBytesPerSector =3D 4;
--		denali->dev_info.wECCBytesPerSector *=3D
--			denali->dev_info.wDevicesConnected;
--		denali->dev_info.wNumPageSpareFlag =3D
--			denali->dev_info.wPageSpareSize -
--			denali->dev_info.wPageDataSize /
--			(ECC_SECTOR_SIZE * denali->dev_info.wDevicesConnected) *
--			denali->dev_info.wECCBytesPerSector
--			- denali->dev_info.wSpareSkipBytes;
--	} else {
--		denali->dev_info.wECCBytesPerSector =3D
--			(ioread32(denali->flash_reg + ECC_CORRECTION) &
--			ECC_CORRECTION__VALUE) * 13 / 8;
--		if ((denali->dev_info.wECCBytesPerSector) % 2 =3D=3D 0)
--			denali->dev_info.wECCBytesPerSector +=3D 2;
--		else
--			denali->dev_info.wECCBytesPerSector +=3D 1;
--
--		denali->dev_info.wECCBytesPerSector *=3D
--			denali->dev_info.wDevicesConnected;
--		denali->dev_info.wNumPageSpareFlag =3D
--			denali->dev_info.wPageSpareSize -
--			denali->dev_info.wPageDataSize /
--			(ECC_SECTOR_SIZE * denali->dev_info.wDevicesConnected) *
--			denali->dev_info.wECCBytesPerSector
--			- denali->dev_info.wSpareSkipBytes;
--	}
--}
--
- /* queries the NAND device to see what ONFI modes it supports. */
- static uint16_t get_onfi_nand_para(struct denali_nand_info *denali)
- {
-@@ -900,8 +860,6 @@ static uint16_t denali_nand_timing_set(struct denali_na=
-nd_info *denali)
- 	denali->dev_info.nBitsInBlockDataSize =3D
- 		ilog2(denali->dev_info.wBlockDataSize);
-=20
--	set_ecc_config(denali);
--
- 	no_of_planes =3D ioread32(denali->flash_reg + NUMBER_OF_PLANES) &
- 		NUMBER_OF_PLANES__VALUE;
-=20
-@@ -2075,9 +2033,11 @@ static int denali_pci_probe(struct pci_dev *dev, con=
-st struct pci_device_id *id)
- 	if (denali->dev_info.MLCDevice) {
- 		denali->nand.ecc.layout =3D &nand_oob_mlc_14bit;
- 		denali->nand.ecc.bytes =3D ECC_BYTES_MLC;
-+		denali_write32(15, denali->flash_reg + ECC_CORRECTION);
- 	} else { /* SLC */
- 		denali->nand.ecc.layout =3D &nand_oob_slc;
- 		denali->nand.ecc.bytes =3D ECC_BYTES_SLC;
-+		denali_write32(8, denali->flash_reg + ECC_CORRECTION);
- 	}
-=20
- 	/* These functions are required by the NAND core framework, otherwise,
---=20
-1.6.6.1
+2010/7/8 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Thu, 2010-07-08 at 12:11 +0200, Enric Balletb=C3=B2 i Serra wrote:
+>> Hello,
+>>
+>> 2010/7/8 Artem Bityutskiy <dedekind1@gmail.com>:
+>> > On Thu, 2010-07-08 at 11:55 +0200, Enric Balletb=C3=B2 i Serra wrote:
+>> >> Hello,
+>> >>
+>> >> I made new tests regarding this issue. Looks like the problem is
+>> >> reading from the OneNAND device.
+>> >
+>> > Did you try older kernel and then bisecting who is responsible for the
+>> > breakage?
+>>
+>> Yes, before commit
+>>
+>> 5988af2319781bc8e0ce418affec4e09cfa77907 (mtd: Flex-OneNAND support)
+>>
+>> http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dc=
+ommit;h=3D5988af2319781bc8e0ce418affec4e09cfa77907
+>>
+>> my =C2=A0OneNAND is working, after the commit, the OneNAND support is br=
+oken.
+>
+> Ok, we could revert it, but it is better to fix it. CCing the author of
+> the commit.
 
 
---_002_5D8008F58939784290FAB48F549751981D09B718B7shsmsx502ccrc_
-Content-Type: application/octet-stream;
-	name="0005-MTD-denali-remove-set_ecc_config.patch"
-Content-Description: 0005-MTD-denali-remove-set_ecc_config.patch
-Content-Disposition: attachment;
-	filename="0005-MTD-denali-remove-set_ecc_config.patch"; size=3545;
-	creation-date="Mon, 21 Jun 2010 18:56:23 GMT";
-	modification-date="Mon, 21 Jun 2010 19:11:43 GMT"
-Content-Transfer-Encoding: base64
+Comparing the onenand_base.c file before commit
 
-RnJvbSAzOTllMjJlOWYxYmMzMjU1ODk2MTM5MWRiMzc3MzA5YjA4ODA2YjI1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQ0KRnJvbTogQ2h1YW54aWFvIERvbmcgPGNodWFueGlhby5kb25nQGludGVs
-LmNvbT4NCkRhdGU6IE1vbiwgMjEgSnVuIDIwMTAgMTg6NTE6MTkgKzA4MDANClN1YmplY3Q6IFtQ
-QVRDSCA1LzVdIFtNVEQvZGVuYWxpXSByZW1vdmUgc2V0X2VjY19jb25maWcNCiAJVGhpcyBmdW5j
-dGlvbiBvbmx5IG5lZWQgdG8gc2V0IEVDQ19DT1JSRUNUSU9OIHJlZw0KIAlzbyByZW1vdmUgaXQg
-YW5kIHNldCB0aGlzIHJlZyBpbiBwcm9iZSBmdW5jdGlvbi4NCiAJRm9yIGRlbmFsaSBuYW5kIGNv
-bnRyb2xsZXIgb25seSBzdXBwb3J0IDE1Yml0cyBhbmQNCiAJOGJpdHMgZWNjIGNvcnJlY3Rpb24g
-b24gTVJTVCwgaGVyZSB1c2UgMTViaXRzIGVjYw0KIAljb3JyZWN0aW9uIGZvciBNTEMgTkFORCBh
-bmQgOGJpdHMgZWNjIGNvcnJlY3Rpb24gZm9yDQogCVNMQyBOQU5ELg0KDQpTaWduZWQtb2ZmLWJ5
-OiBDaHVhbnhpYW8gRG9uZyA8Y2h1YW54aWFvLmRvbmdAaW50ZWwuY29tPg0KLS0tDQogZHJpdmVy
-cy9tdGQvbmFuZC9kZW5hbGkuYyB8ICAgNDQgKystLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0NCiAxIGZpbGVzIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgNDIgZGVs
-ZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9uYW5kL2RlbmFsaS5jIGIvZHJp
-dmVycy9tdGQvbmFuZC9kZW5hbGkuYw0KaW5kZXggMTU1NTkyMS4uZDE0M2IwYiAxMDA2NDQNCi0t
-LSBhL2RyaXZlcnMvbXRkL25hbmQvZGVuYWxpLmMNCisrKyBiL2RyaXZlcnMvbXRkL25hbmQvZGVu
-YWxpLmMNCkBAIC0zNTQsNDYgKzM1NCw2IEBAIHN0YXRpYyB2b2lkIG5hbmRfb25maV90aW1pbmdf
-c2V0KHN0cnVjdCBkZW5hbGlfbmFuZF9pbmZvICpkZW5hbGksDQogCWRlbmFsaV93cml0ZTMyKGNz
-X2NudCwgZGVuYWxpLT5mbGFzaF9yZWcgKyBDU19TRVRVUF9DTlQpOw0KIH0NCiANCi0vKiBjb25m
-aWd1cmVzIHRoZSBpbml0aWFsIEVDQyBzZXR0aW5ncyBmb3IgdGhlIGNvbnRyb2xsZXIgKi8NCi1z
-dGF0aWMgdm9pZCBzZXRfZWNjX2NvbmZpZyhzdHJ1Y3QgZGVuYWxpX25hbmRfaW5mbyAqZGVuYWxp
-KQ0KLXsNCi0jaWYgU1VQUE9SVF84QklURUNDDQotCWlmICgoaW9yZWFkMzIoZGVuYWxpLT5mbGFz
-aF9yZWcgKyBERVZJQ0VfTUFJTl9BUkVBX1NJWkUpIDwgNDA5NikgfHwNCi0JCShpb3JlYWQzMihk
-ZW5hbGktPmZsYXNoX3JlZyArIERFVklDRV9TUEFSRV9BUkVBX1NJWkUpIDw9IDEyOCkpDQotCQlk
-ZW5hbGlfd3JpdGUzMig4LCBkZW5hbGktPmZsYXNoX3JlZyArIEVDQ19DT1JSRUNUSU9OKTsNCi0j
-ZW5kaWYNCi0NCi0JaWYgKChpb3JlYWQzMihkZW5hbGktPmZsYXNoX3JlZyArIEVDQ19DT1JSRUNU
-SU9OKSAmDQotCQkJCUVDQ19DT1JSRUNUSU9OX19WQUxVRSkgPT0gMSkgew0KLQkJZGVuYWxpLT5k
-ZXZfaW5mby53RUNDQnl0ZXNQZXJTZWN0b3IgPSA0Ow0KLQkJZGVuYWxpLT5kZXZfaW5mby53RUND
-Qnl0ZXNQZXJTZWN0b3IgKj0NCi0JCQlkZW5hbGktPmRldl9pbmZvLndEZXZpY2VzQ29ubmVjdGVk
-Ow0KLQkJZGVuYWxpLT5kZXZfaW5mby53TnVtUGFnZVNwYXJlRmxhZyA9DQotCQkJZGVuYWxpLT5k
-ZXZfaW5mby53UGFnZVNwYXJlU2l6ZSAtDQotCQkJZGVuYWxpLT5kZXZfaW5mby53UGFnZURhdGFT
-aXplIC8NCi0JCQkoRUNDX1NFQ1RPUl9TSVpFICogZGVuYWxpLT5kZXZfaW5mby53RGV2aWNlc0Nv
-bm5lY3RlZCkgKg0KLQkJCWRlbmFsaS0+ZGV2X2luZm8ud0VDQ0J5dGVzUGVyU2VjdG9yDQotCQkJ
-LSBkZW5hbGktPmRldl9pbmZvLndTcGFyZVNraXBCeXRlczsNCi0JfSBlbHNlIHsNCi0JCWRlbmFs
-aS0+ZGV2X2luZm8ud0VDQ0J5dGVzUGVyU2VjdG9yID0NCi0JCQkoaW9yZWFkMzIoZGVuYWxpLT5m
-bGFzaF9yZWcgKyBFQ0NfQ09SUkVDVElPTikgJg0KLQkJCUVDQ19DT1JSRUNUSU9OX19WQUxVRSkg
-KiAxMyAvIDg7DQotCQlpZiAoKGRlbmFsaS0+ZGV2X2luZm8ud0VDQ0J5dGVzUGVyU2VjdG9yKSAl
-IDIgPT0gMCkNCi0JCQlkZW5hbGktPmRldl9pbmZvLndFQ0NCeXRlc1BlclNlY3RvciArPSAyOw0K
-LQkJZWxzZQ0KLQkJCWRlbmFsaS0+ZGV2X2luZm8ud0VDQ0J5dGVzUGVyU2VjdG9yICs9IDE7DQot
-DQotCQlkZW5hbGktPmRldl9pbmZvLndFQ0NCeXRlc1BlclNlY3RvciAqPQ0KLQkJCWRlbmFsaS0+
-ZGV2X2luZm8ud0RldmljZXNDb25uZWN0ZWQ7DQotCQlkZW5hbGktPmRldl9pbmZvLndOdW1QYWdl
-U3BhcmVGbGFnID0NCi0JCQlkZW5hbGktPmRldl9pbmZvLndQYWdlU3BhcmVTaXplIC0NCi0JCQlk
-ZW5hbGktPmRldl9pbmZvLndQYWdlRGF0YVNpemUgLw0KLQkJCShFQ0NfU0VDVE9SX1NJWkUgKiBk
-ZW5hbGktPmRldl9pbmZvLndEZXZpY2VzQ29ubmVjdGVkKSAqDQotCQkJZGVuYWxpLT5kZXZfaW5m
-by53RUNDQnl0ZXNQZXJTZWN0b3INCi0JCQktIGRlbmFsaS0+ZGV2X2luZm8ud1NwYXJlU2tpcEJ5
-dGVzOw0KLQl9DQotfQ0KLQ0KIC8qIHF1ZXJpZXMgdGhlIE5BTkQgZGV2aWNlIHRvIHNlZSB3aGF0
-IE9ORkkgbW9kZXMgaXQgc3VwcG9ydHMuICovDQogc3RhdGljIHVpbnQxNl90IGdldF9vbmZpX25h
-bmRfcGFyYShzdHJ1Y3QgZGVuYWxpX25hbmRfaW5mbyAqZGVuYWxpKQ0KIHsNCkBAIC05MDAsOCAr
-ODYwLDYgQEAgc3RhdGljIHVpbnQxNl90IGRlbmFsaV9uYW5kX3RpbWluZ19zZXQoc3RydWN0IGRl
-bmFsaV9uYW5kX2luZm8gKmRlbmFsaSkNCiAJZGVuYWxpLT5kZXZfaW5mby5uQml0c0luQmxvY2tE
-YXRhU2l6ZSA9DQogCQlpbG9nMihkZW5hbGktPmRldl9pbmZvLndCbG9ja0RhdGFTaXplKTsNCiAN
-Ci0Jc2V0X2VjY19jb25maWcoZGVuYWxpKTsNCi0NCiAJbm9fb2ZfcGxhbmVzID0gaW9yZWFkMzIo
-ZGVuYWxpLT5mbGFzaF9yZWcgKyBOVU1CRVJfT0ZfUExBTkVTKSAmDQogCQlOVU1CRVJfT0ZfUExB
-TkVTX19WQUxVRTsNCiANCkBAIC0yMDc1LDkgKzIwMzMsMTEgQEAgc3RhdGljIGludCBkZW5hbGlf
-cGNpX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpkZXYsIGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lk
-ICppZCkNCiAJaWYgKGRlbmFsaS0+ZGV2X2luZm8uTUxDRGV2aWNlKSB7DQogCQlkZW5hbGktPm5h
-bmQuZWNjLmxheW91dCA9ICZuYW5kX29vYl9tbGNfMTRiaXQ7DQogCQlkZW5hbGktPm5hbmQuZWNj
-LmJ5dGVzID0gRUNDX0JZVEVTX01MQzsNCisJCWRlbmFsaV93cml0ZTMyKDE1LCBkZW5hbGktPmZs
-YXNoX3JlZyArIEVDQ19DT1JSRUNUSU9OKTsNCiAJfSBlbHNlIHsgLyogU0xDICovDQogCQlkZW5h
-bGktPm5hbmQuZWNjLmxheW91dCA9ICZuYW5kX29vYl9zbGM7DQogCQlkZW5hbGktPm5hbmQuZWNj
-LmJ5dGVzID0gRUNDX0JZVEVTX1NMQzsNCisJCWRlbmFsaV93cml0ZTMyKDgsIGRlbmFsaS0+Zmxh
-c2hfcmVnICsgRUNDX0NPUlJFQ1RJT04pOw0KIAl9DQogDQogCS8qIFRoZXNlIGZ1bmN0aW9ucyBh
-cmUgcmVxdWlyZWQgYnkgdGhlIE5BTkQgY29yZSBmcmFtZXdvcmssIG90aGVyd2lzZSwNCi0tIA0K
-MS42LjYuMQ0KDQo=
+  5988af2319781bc8e0ce418affec4e09cfa77907 (mtd: Flex-OneNAND support)
 
---_002_5D8008F58939784290FAB48F549751981D09B718B7shsmsx502ccrc_--
+and after the commit I made a little patch which seems solves the
+issue. The patch has two parts.
+
+The first part replaces line 380 with  'page =3D (int) (addr >>
+this->page_shift);' like before apply the Flex-OneNAND support. I
+suppose this is not the better solution, but with this the nandtest
+tool works for me. Maybe the author of the commit can clarify this.
+
+The second part (1964) adds two lines which I think are missed when
+the Flex-OneNAND support was applied.
+
+diff --git a/drivers/mtd/onenand/onenand_base.c
+b/drivers/mtd/onenand/onenand_base.c
+index 26caf25..a39d906 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -377,7 +377,7 @@ static int onenand_command(struct mtd_info *mtd,
+int cmd, loff_t addr, size_t le
+
+        default:
+                block =3D onenand_block(this, addr);
+-               page =3D (int) (addr - onenand_addr(this, block)) >>
+this->page_shift;
++               page =3D (int) (addr >> this->page_shift);
+
+                if (ONENAND_IS_2PLANE(this)) {
+                        /* Make the even block number */
+@@ -1961,6 +1961,9 @@ static int onenand_write_ops_nolock(struct
+mtd_info *mtd, loff_t to,
+
+                        /* In partial page write we don't update bufferram =
+*/
+                        onenand_update_bufferram(mtd, to, !ret && !subpage)=
+;
++                       ONENAND_SET_BUFFERRAM1(this);
++                       onenand_update_bufferram(mtd, to +
+this->writesize, !ret && !subpage);
++
+                        if (ret) {
+                                printk(KERN_ERR "%s: write failed %d\n",
+                                        __func__, ret);
+
+Best regards,
+
+Enric
