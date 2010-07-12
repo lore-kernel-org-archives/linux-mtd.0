@@ -1,23 +1,17 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYCaD-0002wv-NF
-	for linux-mtd@lists.infradead.org; Mon, 12 Jul 2010 06:33:42 +0000
-From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
-To: "'Andrew Morton'" <akpm@linux-foundation.org>
-References: <1278653389-12019-1-git-send-email-sudhakar.raj@ti.com>
-	<20100709153932.0a6cdbcd.akpm@linux-foundation.org>
-In-Reply-To: <20100709153932.0a6cdbcd.akpm@linux-foundation.org>
-Subject: RE: [PATCH] mtd-nand: davinci: correct 4-bit error correction
-Date: Mon, 12 Jul 2010 11:58:18 +0530
-Message-ID: <00c701cb218b$6e4d6dd0$4ae84970$@raj@ti.com>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OYDwX-0001XV-9k
+	for linux-mtd@lists.infradead.org; Mon, 12 Jul 2010 08:00:50 +0000
+Received: by bwz20 with SMTP id 20so1779444bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 12 Jul 2010 01:00:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Cc: linux-mtd@lists.infradead.org,
-	davinci-linux-open-source@linux.davincidsp.com,
-	nsnehaprabha@ti.com, dwmw2@infradead.org
+Date: Mon, 12 Jul 2010 10:00:44 +0200
+Message-ID: <AANLkTim9UejsaoDT4IypuONDDZSfASelAmcGXhhNv7A8@mail.gmail.com>
+Subject: UBIFS sequential write performance vs YAFFS2
+From: Leo Barnes <barnes.leo@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +21,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Jul 10, 2010 at 04:09:32, Andrew Morton wrote:
-> On Fri,  9 Jul 2010 10:59:49 +0530
-> Sudhakar Rajashekhara <sudhakar.raj@ti.com> wrote:
-> 
-> > +
-> > +	/*
-> > +	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
-> > +	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
-> > +	 * begin trying to poll for the state, you may fall right out of your
-> > +	 * loop without any of the correction calculations having taken place.
-> > +	 * The recommendation from the hardware team is to wait till ECC_STATE
-> > +	 * reads less than 4, which means ECC HW has entered correction state.
-> > +	 */
-> > +	do {
-> > +		ecc_state = (davinci_nand_readl(info,
-> > +				NANDFSR_OFFSET) >> 8) & 0x0f;
-> > +		cpu_relax();
-> > +	} while ((ecc_state < 4) && time_before(jiffies, timeo));
-> 
-> An up-to-100-milliseond busy wait is pretty bad.  For how long do you
-> expect this to spin in practice?
+Hello!
 
-On the hardware, I have never seen this taking 100 msec to come out of
-the loop. I'll check with the hardware folks on the maximum time to wait
-for, before the ECC engine is ready.
+I have now done quite a lot of measurements comparing the filesystem
+performance of both YAFFS2 and UBIFS on a device. Most of the results
+seem logical, but there is something that looks very strange to me.
+Here is the data:
 
-Thanks,
-Sudhakar
+MTD raw write speeds:
+Block (128 KiB): 3937 KiB/s
+2 pages (4 KiB): 3770 KiB/s
+1 page (2 KiB): 3724 KiB/s
+
+YAFFS2 sequential write speed: 3250 KiB/s
+UBIFS sequential write speed: 1930 KiB/s
+
+UBIFS is mounted with -o compr=none,bulk_read,no_chk_data_crc (of
+which compr=none should be the only one affecting write speed if I
+understand the options correctly).
+The speeds have been measured using iozone and tiotest, and since no
+compression is used, it should not matter that these programs only
+write zeros. I tried running tiotest with the option to use
+synchronous writes which dropped the UBIFS speed right down to about
+900 KiB/s, so the programs are apparantly not using the O_SYNC flag
+until forced.
+
+Can anyone explain why UBIFS seems to give so much worse performance
+when using no compression? I know that UBIFS does the writing
+asynchronously, using a write-buffer. This should add some overhead,
+but since this overhead is done in RAM, it should be negligible when
+compared to the time it takes to write to flash. When studying exactly
+what commands both YAFFS2 and UBIFS sends to the MTD-layer, it seems
+that both filesystems only do writes one page at a time, so it
+shouldnt have anything to do with the fact that writing a full block
+is faster than a page (it's not that much faster anyway). Is it
+perhaps the CRC calculation that gives such a large overhead?
+
+Best regards,
+//Leo
