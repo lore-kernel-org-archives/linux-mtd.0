@@ -1,20 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYh7x-0007QH-P7
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 15:10:34 +0000
-Message-ID: <4C3C81E3.3030407@parrot.com>
-Date: Tue, 13 Jul 2010 17:10:27 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: ubifs : corruption after power cut test
-References: <4C346D5B.2000609@parrot.com> <4C3C1572.8080501@parrot.com>	
-	<4C3C2740.2040105@parrot.com> <4C3C30D1.9030005@parrot.com>
-	<1279031064.31639.90.camel@localhost>
-In-Reply-To: <1279031064.31639.90.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OYjYs-00051K-Mv
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 17:46:31 +0000
+Date: Tue, 13 Jul 2010 10:41:26 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
+Subject: Re: [PATCH] mtd-nand: davinci: correct 4-bit error correction
+Message-Id: <20100713104126.95891684.akpm@linux-foundation.org>
+In-Reply-To: <012f01cb226e$61ac9b80$2505d280$@raj@ti.com>
+References: <1278653389-12019-1-git-send-email-sudhakar.raj@ti.com>
+	<20100709153932.0a6cdbcd.akpm@linux-foundation.org>
+	<00c701cb218b$6e4d6dd0$4ae84970$@raj@ti.com>
+	<012f01cb226e$61ac9b80$2505d280$@raj@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: nsnehaprabha@ti.com, davinci-linux-open-source@linux.davincidsp.com,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy a écrit :
-> On Tue, 2010-07-13 at 11:24 +0200, Matthieu CASTET wrote:
->> Matthieu CASTET a écrit :
->>> Matthieu CASTET a écrit :
->>>> Hi,
->>>>
->>>> we found some bug in our driver. Now there no more ubifs error when
->>>> there is uncorrectable ecc error (they should happen in the last
->>>> (interrupted) written page).
->>>>
->>>> But now we got "validate_master: bad master node at offset 69632 error
->>>> 7" [1].
->>> notice that gc_lnum==-1 in this case.
->>> Also this didn't happen on power cut.
->>> The senario was :
->>> - power cut
->>> - mount fs [1]
->>> - do some fs operation
->>> - umount fs quickly (9 second after mount in this case) [2]
->>> - mount fs [3]
->>>
->>> The the problem seems that gc_lnum==-1 is not handled in mount or
->>> shouldn't happen in umount.
->>>
->> The attached patch try to support mount with gc_lnum == -1.
->>
->> Does it look sane ?
+On Tue, 13 Jul 2010 15:02:59 +0530 "Sudhakar Rajashekhara" <sudhakar.raj@ti.com> wrote:
+
+> Hi,
 > 
-> I did not give it much thought, but I do not see how master node can end
-> up with gc_lnum = -1 in it, and it seems we assumed this cannot happen.
-> Could you please add this hack to your kernel? It should catch the
-> situations when we write gc_lnum == -1 to the master node and print the
-> stack dump, which should give some idea about the code-path which causes
-> it.
-Ok thanks, I will run it
+> On Mon, Jul 12, 2010 at 11:58:18, Sudhakar Rajashekhara wrote:
+> > On Sat, Jul 10, 2010 at 04:09:32, Andrew Morton wrote:
+> > > On Fri,  9 Jul 2010 10:59:49 +0530
+> > > Sudhakar Rajashekhara <sudhakar.raj@ti.com> wrote:
+> > > 
+> > > > +
+> > > > +	/*
+> > > > +	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
+> > > > +	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
+> > > > +	 * begin trying to poll for the state, you may fall right out of your
+> > > > +	 * loop without any of the correction calculations having taken place.
+> > > > +	 * The recommendation from the hardware team is to wait till ECC_STATE
+> > > > +	 * reads less than 4, which means ECC HW has entered correction state.
+> > > > +	 */
+> > > > +	do {
+> > > > +		ecc_state = (davinci_nand_readl(info,
+> > > > +				NANDFSR_OFFSET) >> 8) & 0x0f;
+> > > > +		cpu_relax();
+> > > > +	} while ((ecc_state < 4) && time_before(jiffies, timeo));
+> > > 
+> > > An up-to-100-milliseond busy wait is pretty bad.  For how long do you
+> > > expect this to spin in practice?
+> > 
+> > On the hardware, I have never seen this taking 100 msec to come out of
+> > the loop. I'll check with the hardware folks on the maximum time to wait
+> > for, before the ECC engine is ready.
+> 
+> I checked this with the hardware team but no one is sure about the exact
+> time one should wait before the ECC engine becomes ready. But everyone is
+> of the opinion that 100 loop cycles should be enough. To be on the safer
+> side, I'll be changing the timeout to 10 milliseconds in the next version
+> of this patch.
 
-When checking the code, I saw that switch_gc_head can set c->gc_lnum to -1.
-
-In ubifs_put_super, we set c->mst_node->gc_lnum to c->gc_lnum and write 
-master node.
-Can't ubifs_put_super run while switch_gc_head set gc_lnum to -1 ?
-
-Matthieu
+Going from 100ms down to 10ms sounds a bit risky.  It'd be better to
+retain the 100ms and to make the kernel spend most of that time
+sleeping, rather than busywaiting, IMO.
