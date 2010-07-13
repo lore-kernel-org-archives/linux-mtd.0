@@ -1,16 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYaVw-0001La-3Q
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 08:06:52 +0000
-Subject: Re: [PATCH] mtd/nand: Edit macro flag for BBT scan of last page in
-	block
+	id 1OYadw-00043Y-5s
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 08:15:10 +0000
+Subject: Re: [PATCH] mtd-www doc, FAQ, general: spelling fixes
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <norris@broadcom.com>
-In-Reply-To: <1277325362-13326-1-git-send-email-norris@broadcom.com>
-References: <1277325362-13326-1-git-send-email-norris@broadcom.com>
+In-Reply-To: <1277332946-14580-1-git-send-email-norris@broadcom.com>
+References: <1277332946-14580-1-git-send-email-norris@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 13 Jul 2010 11:01:39 +0300
-Message-ID: <1279008099.30765.0.camel@localhost>
+Date: Tue, 13 Jul 2010 11:10:03 +0300
+Message-ID: <1279008603.30765.1.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -24,16 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-06-23 at 13:36 -0700, Brian Norris wrote:
-> NAND_BB_LAST_PAGE used to be in nand.h, but it pertained to bad block
-> management and so belongs next to NAND_BBT_SCAN2NDPAGE in bbm.h. Also,
-> its previous flag value (0x00000400) conflicted with NAND_BBT_SCANALLPAGES
-> so I changed its value to 0x00008000. All uses of the name were modified to
-> provide consistency with other "NAND_BBT_*" flags.
+On Wed, 2010-06-23 at 15:42 -0700, Brian Norris wrote:
+> Several spelling, word choice, etc. edits throughout
 > 
 > Signed-off-by: Brian Norris <norris@broadcom.com>
+> ---
+>  doc/general.xml |    2 +-
+>  doc/nand.xml    |   60
+> +++++++++++++++++++++++++++---------------------------
+>  doc/onenand.xml |   18 ++++++++--------
+>  doc/ubi.xml     |   14 ++++++------
+>  doc/ubifs.xml   |   18 ++++++++--------
+>  faq/general.xml |    6 ++--
+>  faq/jffs2.xml   |   18 ++++++++--------
+>  faq/nand.xml    |   14 ++++++------
+>  faq/ubi.xml     |   48 ++++++++++++++++++++++----------------------
+>  faq/ubifs.xml   |   48 ++++++++++++++++++++++----------------------
+>  source.xml      |    2 +-
+>  11 files changed, 124 insertions(+), 124 deletions(-) 
 
-Pushed to l2-mtd-2.6.git / master, thanks.
+Pushed to mtd-www.git and updated the web-site, thank you!
 
 -- 
 Best Regards,
