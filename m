@@ -1,22 +1,20 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYjYs-00051K-Mv
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 17:46:31 +0000
-Date: Tue, 13 Jul 2010 10:41:26 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
-Subject: Re: [PATCH] mtd-nand: davinci: correct 4-bit error correction
-Message-Id: <20100713104126.95891684.akpm@linux-foundation.org>
-In-Reply-To: <012f01cb226e$61ac9b80$2505d280$@raj@ti.com>
-References: <1278653389-12019-1-git-send-email-sudhakar.raj@ti.com>
-	<20100709153932.0a6cdbcd.akpm@linux-foundation.org>
-	<00c701cb218b$6e4d6dd0$4ae84970$@raj@ti.com>
-	<012f01cb226e$61ac9b80$2505d280$@raj@ti.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OYnlI-0005m7-N8
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 22:15:38 +0000
+From: "Brian Norris" <norris@broadcom.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2 0/2] Improved BB Scanning
+Date: Tue, 13 Jul 2010 15:12:59 -0700
+Message-ID: <1279059181-29300-1-git-send-email-norris@broadcom.com>
+In-Reply-To: <1279009292.30765.10.camel@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Cc: nsnehaprabha@ti.com, davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Brian Norris <norris@broadcom.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,43 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 Jul 2010 15:02:59 +0530 "Sudhakar Rajashekhara" <sudhakar.raj@ti.com> wrote:
+This is a two-patch correction and update to my previous attempt
+to address a few issues with bad block scanning. Overall, they should
+help renovate some incorrect and unwieldy code.
 
-> Hi,
-> 
-> On Mon, Jul 12, 2010 at 11:58:18, Sudhakar Rajashekhara wrote:
-> > On Sat, Jul 10, 2010 at 04:09:32, Andrew Morton wrote:
-> > > On Fri,  9 Jul 2010 10:59:49 +0530
-> > > Sudhakar Rajashekhara <sudhakar.raj@ti.com> wrote:
-> > > 
-> > > > +
-> > > > +	/*
-> > > > +	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
-> > > > +	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
-> > > > +	 * begin trying to poll for the state, you may fall right out of your
-> > > > +	 * loop without any of the correction calculations having taken place.
-> > > > +	 * The recommendation from the hardware team is to wait till ECC_STATE
-> > > > +	 * reads less than 4, which means ECC HW has entered correction state.
-> > > > +	 */
-> > > > +	do {
-> > > > +		ecc_state = (davinci_nand_readl(info,
-> > > > +				NANDFSR_OFFSET) >> 8) & 0x0f;
-> > > > +		cpu_relax();
-> > > > +	} while ((ecc_state < 4) && time_before(jiffies, timeo));
-> > > 
-> > > An up-to-100-milliseond busy wait is pretty bad.  For how long do you
-> > > expect this to spin in practice?
-> > 
-> > On the hardware, I have never seen this taking 100 msec to come out of
-> > the loop. I'll check with the hardware folks on the maximum time to wait
-> > for, before the ECC engine is ready.
-> 
-> I checked this with the hardware team but no one is sure about the exact
-> time one should wait before the ECC engine becomes ready. But everyone is
-> of the opinion that 100 loop cycles should be enough. To be on the safer
-> side, I'll be changing the timeout to 10 milliseconds in the next version
-> of this patch.
+I included the top few maintainers from get_maintainers.pl. Sorry if these
+were incorrect addressees.
 
-Going from 100ms down to 10ms sounds a bit risky.  It'd be better to
-retain the 100ms and to make the kernel spend most of that time
-sleeping, rather than busywaiting, IMO.
+Brian Norris (2):
+  mtd/nand, BB detect: factory marker in page 1, 2, last and byte 1 or 6
+  mtd/nand: More BB Detection, dynamic scan options
+
+ drivers/mtd/nand/nand_base.c |   38 ++++++++++++++++--
+ drivers/mtd/nand/nand_bbt.c  |   89 +++++++++++++++++++++++++++++------------
+ include/linux/mtd/bbm.h      |    4 ++
+ 3 files changed, 101 insertions(+), 30 deletions(-)
