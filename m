@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYckq-0003v1-T9
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 10:30:25 +0000
-Subject: Re: [PATCH] mtd: return -1 if verify failed
+	id 1OYcuV-0006vg-OP
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 10:40:25 +0000
+Subject: Re: [PATCHv2 1/5] mtd-utils: move libmtd source files to lib/
+	subdirectory
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roel Kluin <roel.kluin@gmail.com>
-In-Reply-To: <4C2D12C1.3000801@gmail.com>
-References: <4C2D12C1.3000801@gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <eb53f5a0215250d7e523de47d15b0d12@localhost>
+References: <eb53f5a0215250d7e523de47d15b0d12@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 13 Jul 2010 13:24:58 +0300
-Message-ID: <1279016698.31639.25.camel@localhost>
+Date: Tue, 13 Jul 2010 13:35:18 +0300
+Message-ID: <1279017318.31639.27.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org, jwboyer@gmail.com, saeed.bishara@gmail.com,
+	vapier.adi@gmail.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,29 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-07-02 at 00:12 +0200, Roel Kluin wrote:
-> It should return -1 if the verify failed.
+On Wed, 2010-07-07 at 17:30 -0700, Kevin Cernekee wrote:
+> Source files for libmtd, crc32, and fec are scattered throughout the
+> tree.  Move them to a central location so they can be built into a
+> common "libmtd.a" library used by all mtd-utils programs.
 > 
-> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
-> ---
-> I think this needed, correct?
+> This patch only renames/deletes files and does not change the content.
 > 
-> diff --git a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
-> index 6bc1b82..7414888 100644
-> --- a/drivers/mtd/tests/mtd_pagetest.c
-> +++ b/drivers/mtd/tests/mtd_pagetest.c
-> @@ -358,7 +358,7 @@ static int erasecrosstest(void)
->  		printk(PRINT_PREF "verify failed!\n");
->  		errcnt += 1;
->  		ok = 0;
-> -		return err;
-> +		return -1;
->  	}
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 
-Yeah, I changed your patch a bit and removed the 'ok' variable
-altogether. Pushed to l2-mtd-2.6.git, please, check:
-
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/4e2ef8529d9bc2e2b96f18a1a2917bda5475f0e4
+Let's try to keep the tree always compilable. This patch alone breaks
+compilation, so I merged it with the second patch and pushed to the
+mtd-utils tree.
 
 -- 
 Best Regards,
