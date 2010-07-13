@@ -1,21 +1,20 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYb5h-0004Ik-S8
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 08:43:52 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.243])
-	by co202.xi-lite.net (Postfix) with ESMTPS id C7FE32602B1
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Jul 2010 10:43:47 +0200 (CEST)
-Message-ID: <4C3C2740.2040105@parrot.com>
-Date: Tue, 13 Jul 2010 10:43:44 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ubifs : corruption after power cut test
-References: <4C346D5B.2000609@parrot.com> <4C3C1572.8080501@parrot.com>
-In-Reply-To: <4C3C1572.8080501@parrot.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OYbFO-0001Z0-VN
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 08:53:52 +0000
+Subject: Re: UBIFS failed to recover master node
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: re <re.wirth@web.de>
+In-Reply-To: <4C285B76.5010108@web.de>
+References: <AANLkTimPxrQzSS_n6CofW8ePwCKuE7sbENJZXUl1Yszl@mail.gmail.com>
+	<1274763982.2106.2.camel@localhost>  <4C285B76.5010108@web.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 13 Jul 2010 11:48:43 +0300
+Message-ID: <1279010923.31639.17.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, twebb <taliaferro62@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,507 +24,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Matthieu CASTET a �crit :
-> Hi,
-> 
-> we found some bug in our driver. Now there no more ubifs error when
-> there is uncorrectable ecc error (they should happen in the last
-> (interrupted) written page).
-> 
-> But now we got "validate_master: bad master node at offset 69632 error
-> 7" [1].
-notice that gc_lnum==-1 in this case.
-Also this didn't happen on power cut.
-The senario was :
-- power cut
-- mount fs [1]
-- do some fs operation
-- umount fs quickly (9 second after mount in this case) [2]
-- mount fs [3]
+Hi
 
-The the problem seems that gc_lnum==-1 is not handled in mount or 
-shouldn't happen in umount.
+On Mon, 2010-06-28 at 10:21 +0200, re wrote:
+> Am 25.05.2010 07:06, schrieb Artem Bityutskiy:
+> > On Mon, 2010-05-24 at 11:22 -0400, twebb wrote:
+> >> I've had several cases where our MLC NAND flash appears corrupted in
+> >> such a way that one of three UBIFS volumes can not be mounted due to
+> >> "failed to recover master node".  I haven't been able to reproduce the
+> >> problem, but we've had at least 5 incidents where this has occurred.
+> >> (A partial capture from one of the failures is below.)
+> >>
+> >> I'm starting to investigate this problem and don't know if this is a
+> >> UBIFS/UBI problem or a NAND driver problem.  I'm starting the process
+> >> of back-porting the latest UBIFS code to our 2.6.29 kernel - hoping
+> >> that new UBIFS code will solve the problem.  However, this may also be
+> >> a driver problem and I wonder if I also need to update that driver
+> >> (pxa3xx_nand).  Any suggestions for debugging this problem?
+> >>
+> >> Thanks,
+> >> twebb
+> >>
+> >>
+> >> capture:
+> >> [root@ESIedge mtd-utils]# mount -t ubifs ubi0_0 /mnt/
+> >> [  239.605869] UBI error: ubi_io_read: error -74 while reading 516096
+> >> bytes from PEB 4:8192, read 516096 bytes
+> >> [  239.616317] UBIFS error (pid 676): ubifs_scan: corrupt empty space
+> >> at LEB 2:268135
+> >> [  239.623996] UBIFS error (pid 676): ubifs_scanned_corruption:
+> >> corruption at LEB 2:268135
+> >> [  239.642101] UBIFS error (pid 676): ubifs_scan: LEB 2 scanning failed
+> >> [  239.976396] UBI error: ubi_io_read: error -74 while reading 516096
+> >> bytes from PEB 4:8192, read 516096 bytes
+> >> [  239.986742] UBIFS error (pid 676): ubifs_recover_master_node:
+> >> failed to recover master node
+> >> mount: mounting ubi0_0 on /mnt/ failed: Invalid argument
+> > And BTW, it is a good idea not to erase/re-flash this device if you want
+> > to fix this problem.
+> >
+> Our power off tests causes this sporadic error too  (ubifs_recover_master_node: failed
+> to recover master node).
+> We use kernel 2.6.29 with the git-patch (from 3/2010) for 47MB NOR flash partition.
+> 
+> I tried to find with debugging  the error reason.
+> The recover of the master_node reads the master_node1 and master_node2.
+> The master_node1 was emty.
+> The error was detected in:
+> int ubifs_recover_master_node(struct ubifs_info *c)
+>     ....
+>     if (mst1) {
+>        ......
+>     } else {
+>         if (!mst2)
+>             goto out_err;          
+>         /* 1st LEB was unmapped and about to be written, so there must
+>          * be no room left in 2nd LEB.         */
+>         offs2 = (void *)mst2 - buf2;
+>         if (offs2 + sz + sz <= c->leb_size)
+>             goto out_err;                               !!!!!!!!!!!!!!!!!!!
+>         mst = mst2;
+>     }
+> I checked the values of the compare "if (115712 + 512 +512  (=116736) <= 130944)".
+> I skipped this error for test purpose. The master_node was recovered. I saw no problems
+> with the FS. I was not able to follow this check.
 
-[1]
-UBIFS: recovery needed
-UBIFS: recovery completed
-UBIFS: mounted UBI device 3, volume 0, name "test"
-UBIFS: file system size:   14348288 bytes (14012 KiB, 13 MiB, 113 LEBs)
-UBIFS: journal size:       1015809 bytes (992 KiB, 0 MiB, 6 LEBs)
-UBIFS: media format:       w4/r0 (latest is w4/r0)
-UBIFS: default compressor: none
-UBIFS: reserved for root:  677704 bytes (661 KiB)
-[2]
-### round 0 : 9 seconds
-UBIFS: un-mount UBI device 3, volume 0
-[3]
-UBIFS error (pid 287): validate_master: bad master node at offset 69632 
-error 7
+But how this situation could happen? UBIFS updates the master nodes by
+writing them one-after-another, till there is space to write. And when
+thee there is no space, it unmaps the 1st LEB, writes the master node,
+then unmaps the 2nd LEB, and writes the master node.
 
-> 
-> The error is not very clear to me.
-> 
-> What does it means ?
-> 
-> What could cause it.
-> 
-> 
-> Thanks
-> 
-> Matthieu
-> 
-> 
-> 
-> [1]
-> [...]
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 69632
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 1:69632 (57344 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 1:70144 (56832 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 71680
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 1:71680 (55296 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: hit empty space
-> 
-> UBIFS DBG (pid 288): ubifs_end_scan: stop scanning LEB 1 at offset 71680
-> 
-> UBIFS DBG (pid 288): ubifs_start_scan: scan LEB 2:0
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:0 (126976 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:512 (126464 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 2048
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:2048 (124928 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:2560 (124416 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 4096
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:4096 (122880 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:4608 (122368 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 6144
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:6144 (120832 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:6656 (120320 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 8192
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:8192 (118784 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:8704 (118272 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 10240
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:10240 (116736 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:10752 (116224 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 12288
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:12288 (114688 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:12800 (114176 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 14336
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:14336 (112640 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:14848 (112128 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 16384
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:16384 (110592 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:16896 (110080 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 18432
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:18432 (108544 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:18944 (108032 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 20480
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:20480 (106496 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:20992 (105984 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 22528
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:22528 (104448 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:23040 (103936 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 24576
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:24576 (102400 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:25088 (101888 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 26624
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:26624 (100352 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:27136 (99840 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 28672
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:28672 (98304 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:29184 (97792 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 30720
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:30720 (96256 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:31232 (95744 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 32768
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:32768 (94208 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:33280 (93696 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 34816
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:34816 (92160 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:35328 (91648 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 36864
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:36864 (90112 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:37376 (89600 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 38912
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:38912 (88064 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:39424 (87552 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 40960
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:40960 (86016 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:41472 (85504 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 43008
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:43008 (83968 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:43520 (83456 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 45056
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:45056 (81920 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:45568 (81408 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 47104
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:47104 (79872 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:47616 (79360 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 49152
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:49152 (77824 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:49664 (77312 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 51200
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:51200 (75776 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:51712 (75264 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 53248
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:53248 (73728 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:53760 (73216 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 55296
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:55296 (71680 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:55808 (71168 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 57344
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:57344 (69632 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:57856 (69120 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 59392
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:59392 (67584 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:59904 (67072 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 61440
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:61440 (65536 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:61952 (65024 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 63488
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:63488 (63488 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:64000 (62976 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 65536
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:65536 (61440 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:66048 (60928 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 67584
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:67584 (59392 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:68096 (58880 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 69632
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:69632 (57344 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning master node
-> 
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:70144 (56832 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: scanning padding node
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: 1508 bytes padded, offset now
-> 71680
-> UBIFS DBG (pid 288): ubifs_scan: look at LEB 2:71680 (55296 bytes left)
-> 
-> UBIFS DBG (pid 288): ubifs_scan_a_node: hit empty space
-> 
-> UBIFS DBG (pid 288): ubifs_end_scan: stop scanning LEB 2 at offset 71680
-> 
-> UBIFS error (pid 288): validate_master: bad master node at offset 69632
-> error 7
->          magic          0x6101831
-> 
->          crc            0xf1cb595d
-> 
->          node_type      7 (master node)
-> 
->          group_type     0 (no node group)
-> 
->          sqnum          53559169
-> 
->          len            512
-> 
->          highest_inum   50055
-> 
->          commit number  208832
-> 
->          flags          0x2
-> 
->          log_lnum       3
-> 
->          root_lnum      42
-> 
->          root_offs      78864
-> 
->          root_len       68
-> 
->          gc_lnum        4294967295
-> 
->          ihead_lnum     42
-> 
->          ihead_offs     79872
-> 
->          index_size     81072
-> 
->          lpt_lnum       6
-> 
->          lpt_offs       27032
-> 
->          nhead_lnum     6
-> 
->          nhead_offs     28672
-> 
->          ltab_lnum      6
-> 
->          ltab_offs      26624
-> 
->          lsave_lnum     0
-> 
->          lsave_offs     0
-> 
->          lscan_lnum     58
-> 
->          leb_cnt        122
-> 
->          empty_lebs     1
-> 
->          idx_lebs       3
-> 
->          total_free     327680
-> 
->          total_dirty    4500616
-> 
->          total_used     9438920
-> 
->          total_dead     0
-> 
->          total_dark     620816
-> 
-> UBIFS DBG (pid 292): ubifs_bg_thread: background thread "ubifs_bgt3_0"
-> stops
-> 
+How could we end-up with a situation when the 1st LEB is empty, while
+the 2nd has room for more master nodes? This sounds like the problem is
+somewhere else, may be in UBI? Do you have any explanation?
+
+I mean, the only code-path which changes the master nodes in UBIFS is
+'ubifs_write_master()'. If this function is the only one which, your
+situation cannot happen.
+
+Did you try to enable recovery debugging messages? Did you look what is
+in your LEB2 after 'offs2' ? Are there 0xFFs? I think if you enable
+recover debugging, UBIFS will print a hexdump? Or you can just inject
+some 'dbg_dump_node()' or 'print_hex_dump()' calls.
+
+I mean, if you just remove that check, you may hide the real problem.
+
+> I was able to provoke this error manual.
+
+Well, yes, you break UBIFS assumptions about which kind of errors it
+fixes. As I answered in another e-mail today to twebb - UBIFS fixes only
+problems caused by power-cuts. If it sees a problem which cannot happen
+because of a power-cut, it panics. So, as I explain above, your issue
+should not happen due to power cuts. But it happens, which means there
+is probably a bug somewhere else.
+
+Reproducing the problem and dumping the flash contents in the end of
+LEB2 would be interesting.
+
+Here you can find some notes about debugging UBIFS:
+
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
