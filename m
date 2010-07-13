@@ -1,23 +1,19 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYcdE-0001Ex-5f
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 10:22:33 +0000
-Subject: Re: [PATCH 01/25] r852: remove casts from void*
+	id 1OYckq-0003v1-T9
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 10:30:25 +0000
+Subject: Re: [PATCH] mtd: return -1 if verify failed
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kulikov Vasiliy <segooon@gmail.com>
-In-Reply-To: <1277806498-30738-1-git-send-email-segooon@gmail.com>
-References: <1277806498-30738-1-git-send-email-segooon@gmail.com>
+To: Roel Kluin <roel.kluin@gmail.com>
+In-Reply-To: <4C2D12C1.3000801@gmail.com>
+References: <4C2D12C1.3000801@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 13 Jul 2010 12:57:56 +0300
-Message-ID: <1279015076.31639.20.camel@localhost>
+Date: Tue, 13 Jul 2010 13:24:58 +0300
+Message-ID: <1279016698.31639.25.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Maxim Levitsky <maximlevitsky@gmail.com>,
-	Kernel Janitors <kernel-janitors@vger.kernel.org>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Tejun Heo <tj@kernel.org>, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,12 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-06-29 at 14:14 +0400, Kulikov Vasiliy wrote:
-> Remove unnesessary casts from void*.
+On Fri, 2010-07-02 at 00:12 +0200, Roel Kluin wrote:
+> It should return -1 if the verify failed.
 > 
-> Signed-off-by: Kulikov Vasiliy <segooon@gmail.com>
+> Signed-off-by: Roel Kluin <roel.kluin@gmail.com>
+> ---
+> I think this needed, correct?
+> 
+> diff --git a/drivers/mtd/tests/mtd_pagetest.c b/drivers/mtd/tests/mtd_pagetest.c
+> index 6bc1b82..7414888 100644
+> --- a/drivers/mtd/tests/mtd_pagetest.c
+> +++ b/drivers/mtd/tests/mtd_pagetest.c
+> @@ -358,7 +358,7 @@ static int erasecrosstest(void)
+>  		printk(PRINT_PREF "verify failed!\n");
+>  		errcnt += 1;
+>  		ok = 0;
+> -		return err;
+> +		return -1;
+>  	}
 
-Pushed whole series to l2-mtd-2.6.git / master.
+Yeah, I changed your patch a bit and removed the 'ok' variable
+altogether. Pushed to l2-mtd-2.6.git, please, check:
+
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/4e2ef8529d9bc2e2b96f18a1a2917bda5475f0e4
 
 -- 
 Best Regards,
