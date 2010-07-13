@@ -1,13 +1,13 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mms2.broadcom.com ([216.31.210.18])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYnlw-0005qL-U2
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 22:16:18 +0000
+	id 1OYnm9-00066t-OO
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 22:16:31 +0000
 From: "Brian Norris" <norris@broadcom.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 1/2] mtd/nand, BB detect: factory marker in page 1,
-	2, last and byte 1 or 6
-Date: Tue, 13 Jul 2010 15:13:00 -0700
-Message-ID: <1279059181-29300-2-git-send-email-norris@broadcom.com>
+Subject: [PATCH v2 2/2] mtd/nand: More BB Detection, dynamic scan
+ options
+Date: Tue, 13 Jul 2010 15:13:01 -0700
+Message-ID: <1279059181-29300-3-git-send-email-norris@broadcom.com>
 In-Reply-To: <1279059181-29300-1-git-send-email-norris@broadcom.com>
 References: <1279059181-29300-1-git-send-email-norris@broadcom.com>
 MIME-Version: 1.0
@@ -26,151 +26,224 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some level of support for various scanning locations was already built in,
-but this required clean-up. First, BB marker location cannot be determined
-_only_ by the page size. Instead, I implemented some heuristic detection
-based on data sheets from various manufacturers (all found in
-nand_base.c:nand_get_flash_type()).
+Added new flag for scanning of both bytes 1 and 6 of the OOB for
+a BB marker (instead of simply one or the other).
 
-Second, once these options were identified, they were not handled properly
-by nand_bbt.c:nand_default_bbt(). I updated the static nand_bbt_desc structs
-to reflect the need for more combinations of detection. The memory allocation
-here probably needs to be done dynamically in the very near future (see next
-patches).
+In order to handle increases in variety of necessary scanning patterns,
+I implemented dynamic memory allocation of nand_bbt_descr structs
+in new function 'nand_create_default_bbt_descr()'. This replaces
+some increasingly-unwieldy, statically-declared descriptors. It can
+replace several more (e.g. "flashbased" structs). However, I do not
+test the flashbased options personally.
 
 Signed-off-by: Brian Norris <norris@broadcom.com>
 ---
- drivers/mtd/nand/nand_base.c |   24 ++++++++++++++++++---
- drivers/mtd/nand/nand_bbt.c  |   45 +++++++++++++++++++++++++++++++++++------
- 2 files changed, 58 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/nand_base.c |   14 +++++
+ drivers/mtd/nand/nand_bbt.c  |  116 ++++++++++++++++++++++--------------------
+ include/linux/mtd/bbm.h      |    4 ++
+ 3 files changed, 79 insertions(+), 55 deletions(-)
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e6cf9ae..bd69790 100644
+index bd69790..c2901bd 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -2920,9 +2920,14 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 		chip->chip_shift = ffs((unsigned)(chip->chipsize >> 32)) + 32 - 1;
+@@ -2963,6 +2963,15 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 			 *maf_id == NAND_MFR_MICRON))
+ 		chip->options |= NAND_BBT_SCAN2NDPAGE;
  
- 	/* Set the bad block position */
--	chip->badblockpos = mtd->writesize > 512 ?
--		NAND_LARGE_BADBLOCK_POS : NAND_SMALL_BADBLOCK_POS;
--	chip->badblockbits = 8;
-+	if (!(busw & NAND_BUSWIDTH_16) && (*maf_id == NAND_MFR_STMICRO ||
-+				(*maf_id == NAND_MFR_SAMSUNG &&
-+				 mtd->writesize == 512) ||
-+				*maf_id == NAND_MFR_AMD))
-+		chip->badblockpos = NAND_SMALL_BADBLOCK_POS;
-+	else
-+		chip->badblockpos = NAND_LARGE_BADBLOCK_POS;
-+
- 
- 	/* Get chip options, preserve non chip based options */
- 	chip->options &= ~NAND_CHIPOPTIONS_MSK;
-@@ -2941,12 +2946,23 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 
- 	/*
- 	 * Bad block marker is stored in the last page of each block
--	 * on Samsung and Hynix MLC devices
-+	 * on Samsung and Hynix MLC devices; stored in first two pages
-+	 * of each block on Micron devices with 2KiB pages and on
-+	 * SLC Samsung, Hynix, and AMD/Spansion. All others scan only
-+	 * the first page.
- 	 */
- 	if ((chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
- 			(*maf_id == NAND_MFR_SAMSUNG ||
- 			 *maf_id == NAND_MFR_HYNIX))
- 		chip->options |= NAND_BBT_SCANLASTPAGE;
-+	else if ((!(chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
-+				(*maf_id == NAND_MFR_SAMSUNG ||
-+				 *maf_id == NAND_MFR_HYNIX ||
-+				 *maf_id == NAND_MFR_AMD)) ||
-+			(mtd->writesize == 2048 &&
-+			 *maf_id == NAND_MFR_MICRON))
-+		chip->options |= NAND_BBT_SCAN2NDPAGE;
-+
++	/*
++	 * Numonyx/ST 2K pages, x8 bus use BOTH byte 1 and 6
++	 */
++	if (!(busw & NAND_BUSWIDTH_16) &&
++			*maf_id == NAND_MFR_STMICRO &&
++			mtd->writesize == 2048) {
++		chip->options |= NAND_BBT_SCANBYTE1AND6;
++		chip->badblockpos = 0;
++	}
  
  	/* Check for AND chips with 4 page planes */
  	if (chip->options & NAND_4PAGE_ARRAY)
+@@ -3322,6 +3331,11 @@ void nand_release(struct mtd_info *mtd)
+ 	kfree(chip->bbt);
+ 	if (!(chip->options & NAND_OWN_BUFFERS))
+ 		kfree(chip->buffers);
++
++	/* Free bad block descriptor memory */
++	if (chip->badblock_pattern && chip->badblock_pattern->options
++			& NAND_BBT_DYNAMICSTRUCT)
++		kfree(chip->badblock_pattern);
+ }
+ 
+ EXPORT_SYMBOL_GPL(nand_lock);
 diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 71d83be..ec1700e 100644
+index ec1700e..474ff66 100644
 --- a/drivers/mtd/nand/nand_bbt.c
 +++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1093,29 +1093,50 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+@@ -397,12 +397,10 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 
+ 	if (bd->options & NAND_BBT_SCANALLPAGES)
+ 		len = 1 << (this->bbt_erase_shift - this->page_shift);
+-	else {
+-		if (bd->options & NAND_BBT_SCAN2NDPAGE)
+-			len = 2;
+-		else
+-			len = 1;
+-	}
++	else if (bd->options & NAND_BBT_SCAN2NDPAGE)
++		len = 2;
++	else
++		len = 1;
+ 
+ 	if (!(bd->options & NAND_BBT_SCANEMPTY)) {
+ 		/* We need only read few bytes from the OOB area */
+@@ -447,6 +445,24 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
+ 		if (ret < 0)
+ 			return ret;
+ 
++		/* Check if we need a second scan for the 6th byte
++		 * Perhaps there is a more efficient way of doing this?
++		 */
++		if (!ret && bd->options & NAND_BBT_SCANBYTE1AND6) {
++			bd->offs = NAND_SMALL_BADBLOCK_POS;
++			if (bd->options & NAND_BBT_SCANALLPAGES)
++				ret = scan_block_full(mtd, bd, from, buf,
++						readlen, scanlen, len);
++			else
++				ret = scan_block_fast(mtd, bd, from, buf, len);
++
++			/* Reset offset for future scans */
++			bd->offs = NAND_LARGE_BADBLOCK_POS;
++
++			if (ret < 0)
++				return ret;
++		}
++
+ 		if (ret) {
+ 			this->bbt[i >> 3] |= 0x03 << (i & 0x6);
+ 			printk(KERN_WARNING "Bad eraseblock %d at 0x%012llx\n",
+@@ -1092,41 +1108,6 @@ int nand_update_bbt(struct mtd_info *mtd, loff_t offs)
+  * while scanning a device for factory marked good / bad blocks. */
  static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
  
- static struct nand_bbt_descr smallpage_memorybased = {
+-static struct nand_bbt_descr smallpage_memorybased = {
+-	.options = 0,
+-	.offs = NAND_SMALL_BADBLOCK_POS,
+-	.len = 1,
+-	.pattern = scan_ff_pattern
+-};
+-
+-static struct nand_bbt_descr smallpage_scan2nd_memorybased = {
 -	.options = NAND_BBT_SCAN2NDPAGE,
--	.offs = 5,
-+	.options = 0,
-+	.offs = NAND_SMALL_BADBLOCK_POS,
- 	.len = 1,
- 	.pattern = scan_ff_pattern
- };
- 
-+static struct nand_bbt_descr smallpage_scan2nd_memorybased = {
-+	.options = NAND_BBT_SCAN2NDPAGE,
-+	.offs = NAND_SMALL_BADBLOCK_POS,
-+	.len = 2,
-+	.pattern = scan_ff_pattern
-+};
-+
- static struct nand_bbt_descr largepage_memorybased = {
- 	.options = 0,
+-	.offs = NAND_SMALL_BADBLOCK_POS,
+-	.len = 2,
+-	.pattern = scan_ff_pattern
+-};
+-
+-static struct nand_bbt_descr largepage_memorybased = {
+-	.options = 0,
+-	.offs = NAND_LARGE_BADBLOCK_POS,
+-	.len = 1,
+-	.pattern = scan_ff_pattern
+-};
+-
+-static struct nand_bbt_descr largepage_scan2nd_memorybased = {
+-	.options = NAND_BBT_SCAN2NDPAGE,
+-	.offs = NAND_LARGE_BADBLOCK_POS,
+-	.len = 2,
+-	.pattern = scan_ff_pattern
+-};
+-
+-static struct nand_bbt_descr lastpage_memorybased = {
+-	.options = NAND_BBT_SCANLASTPAGE,
 -	.offs = 0,
-+	.offs = NAND_LARGE_BADBLOCK_POS,
-+	.len = 1,
-+	.pattern = scan_ff_pattern
-+};
-+
-+static struct nand_bbt_descr largepage_scan2nd_memorybased = {
-+	.options = NAND_BBT_SCAN2NDPAGE,
-+	.offs = NAND_LARGE_BADBLOCK_POS,
- 	.len = 2,
- 	.pattern = scan_ff_pattern
- };
- 
-+static struct nand_bbt_descr lastpage_memorybased = {
-+	.options = NAND_BBT_SCANLASTPAGE,
-+	.offs = 0,
-+	.len = 1,
-+	.pattern = scan_ff_pattern
-+};
-+
+-	.len = 1,
+-	.pattern = scan_ff_pattern
+-};
+-
  static struct nand_bbt_descr smallpage_flashbased = {
  	.options = NAND_BBT_SCAN2NDPAGE,
--	.offs = 5,
-+	.offs = NAND_SMALL_BADBLOCK_POS,
- 	.len = 1,
- 	.pattern = scan_ff_pattern
+ 	.offs = NAND_SMALL_BADBLOCK_POS,
+@@ -1175,6 +1156,43 @@ static struct nand_bbt_descr bbt_mirror_descr = {
+ 	.pattern = mirror_pattern
  };
  
- static struct nand_bbt_descr largepage_flashbased = {
- 	.options = NAND_BBT_SCAN2NDPAGE,
--	.offs = 0,
-+	.offs = NAND_LARGE_BADBLOCK_POS,
- 	.len = 2,
- 	.pattern = scan_ff_pattern
- };
-@@ -1197,8 +1218,18 @@ int nand_default_bbt(struct mtd_info *mtd)
++#define BBT_SCAN_OPTIONS (NAND_BBT_SCANLASTPAGE | NAND_BBT_SCAN2NDPAGE | \
++		NAND_BBT_SCANBYTE1AND6)
++/**
++ * nand_create_default_bbt_descr - [Internal] Creates a BBT descriptor structure
++ * @this:	NAND chip to create descriptor for
++ *
++ * This function allocates and initializes a nand_bbt_descr for BBM detection
++ * based on the properties of "this". The new descriptor is stored in
++ * this->badblock_pattern. Thus, this->badblock_pattern should be NULL when
++ * passed to this function.
++ *
++ * TODO: Handle other flags, replace other static structs
++ *        (e.g. handle NAND_BBT_FLASH for flash-based BBT,
++ *             replace smallpage_flashbased)
++ *
++ */
++static int nand_create_default_bbt_descr(struct nand_chip *this)
++{
++	struct nand_bbt_descr *bd;
++	if (this->badblock_pattern) {
++		printk(KERN_WARNING "BBT descr already allocated; not replacing.\n");
++		return -EINVAL;
++	}
++	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
++	if (!bd) {
++		printk(KERN_ERR "nand_create_default_bbt_descr: Out of memory\n");
++		return -ENOMEM;
++	}
++	bd->options = this->options & BBT_SCAN_OPTIONS;
++	bd->offs = this->badblockpos;
++	bd->len = (this->options & NAND_BUSWIDTH_16) ? 2 : 1;
++	bd->pattern = scan_ff_pattern;
++	bd->options |= NAND_BBT_DYNAMICSTRUCT;
++	this->badblock_pattern = bd;
++	return 0;
++}
++
+ /**
+  * nand_default_bbt - [NAND Interface] Select a default bad block table for the device
+  * @mtd:	MTD device structure
+@@ -1217,20 +1235,8 @@ int nand_default_bbt(struct mtd_info *mtd)
+ 	} else {
  		this->bbt_td = NULL;
  		this->bbt_md = NULL;
- 		if (!this->badblock_pattern) {
--			this->badblock_pattern = (mtd->writesize > 512) ?
--			    &largepage_memorybased : &smallpage_memorybased;
-+			if (this->options & NAND_BBT_SCANLASTPAGE)
-+				this->badblock_pattern = &lastpage_memorybased;
-+			else if (this->options & NAND_BBT_SCAN2NDPAGE)
-+				this->badblock_pattern = this->badblockpos ==
-+					NAND_SMALL_BADBLOCK_POS ?
-+					&smallpage_scan2nd_memorybased :
-+					&largepage_scan2nd_memorybased;
-+			else
-+				this->badblock_pattern = this->badblockpos ==
-+					NAND_SMALL_BADBLOCK_POS ?
-+					&smallpage_memorybased :
-+					&largepage_memorybased;
- 		}
+-		if (!this->badblock_pattern) {
+-			if (this->options & NAND_BBT_SCANLASTPAGE)
+-				this->badblock_pattern = &lastpage_memorybased;
+-			else if (this->options & NAND_BBT_SCAN2NDPAGE)
+-				this->badblock_pattern = this->badblockpos ==
+-					NAND_SMALL_BADBLOCK_POS ?
+-					&smallpage_scan2nd_memorybased :
+-					&largepage_scan2nd_memorybased;
+-			else
+-				this->badblock_pattern = this->badblockpos ==
+-					NAND_SMALL_BADBLOCK_POS ?
+-					&smallpage_memorybased :
+-					&largepage_memorybased;
+-		}
++		if (!this->badblock_pattern)
++			nand_create_default_bbt_descr(this);
  	}
  	return nand_scan_bbt(mtd, this->badblock_pattern);
+ }
+diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
+index 8ad0b86..a04b962 100644
+--- a/include/linux/mtd/bbm.h
++++ b/include/linux/mtd/bbm.h
+@@ -84,6 +84,10 @@ struct nand_bbt_descr {
+ #define NAND_BBT_SCAN2NDPAGE	0x00004000
+ /* Search good / bad pattern on the last page of the eraseblock */
+ #define NAND_BBT_SCANLASTPAGE	0x00008000
++/* Chip stores bad block marker on BOTH 1st and 6th bytes of OOB */
++#define NAND_BBT_SCANBYTE1AND6 0x00100000
++/* The nand_bbt_descr was created dynamicaly and must be freed */
++#define NAND_BBT_DYNAMICSTRUCT 0x00200000
+ 
+ /* The maximum number of blocks to scan for a bbt */
+ #define NAND_BBT_SCAN_MAXBLOCKS	4
 -- 
 1.7.0.4
