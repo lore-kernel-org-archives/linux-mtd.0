@@ -1,20 +1,20 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYgci-0005JS-Pw
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 14:38:20 +0000
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OYh7x-0007QH-P7
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 15:10:34 +0000
+Message-ID: <4C3C81E3.3030407@parrot.com>
+Date: Tue, 13 Jul 2010 17:10:27 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+MIME-Version: 1.0
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
 Subject: Re: ubifs : corruption after power cut test
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4C3C56D1.7060201@parrot.com>
-References: <4C346D5B.2000609@parrot.com>
-	<1279019274.31639.39.camel@localhost>  <4C3C56D1.7060201@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 13 Jul 2010 17:33:05 +0300
-Message-ID: <1279031585.31639.95.camel@localhost>
-Mime-Version: 1.0
+References: <4C346D5B.2000609@parrot.com> <4C3C1572.8080501@parrot.com>	
+	<4C3C2740.2040105@parrot.com> <4C3C30D1.9030005@parrot.com>
+	<1279031064.31639.90.camel@localhost>
+In-Reply-To: <1279031064.31639.90.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-07-13 at 14:06 +0200, Matthieu CASTET wrote:
-> > You also wan this (new) patch I think:
-> > http://git.infradead.org/ubifs-2.6.git/commit/6fb4374f6b1b3932f3acfe9d353568d3d8599cad
-> > 
-> Yes I managed to trigger this case :)
-> I also taken 
-> http://git.infradead.org/ubifs-2.6.git/commitdiff/276de5d2a18bcdc69e6d48a4d96afc14cfef9dcb
+Artem Bityutskiy a écrit :
+> On Tue, 2010-07-13 at 11:24 +0200, Matthieu CASTET wrote:
+>> Matthieu CASTET a écrit :
+>>> Matthieu CASTET a écrit :
+>>>> Hi,
+>>>>
+>>>> we found some bug in our driver. Now there no more ubifs error when
+>>>> there is uncorrectable ecc error (they should happen in the last
+>>>> (interrupted) written page).
+>>>>
+>>>> But now we got "validate_master: bad master node at offset 69632 error
+>>>> 7" [1].
+>>> notice that gc_lnum==-1 in this case.
+>>> Also this didn't happen on power cut.
+>>> The senario was :
+>>> - power cut
+>>> - mount fs [1]
+>>> - do some fs operation
+>>> - umount fs quickly (9 second after mount in this case) [2]
+>>> - mount fs [3]
+>>>
+>>> The the problem seems that gc_lnum==-1 is not handled in mount or
+>>> shouldn't happen in umount.
+>>>
+>> The attached patch try to support mount with gc_lnum == -1.
+>>
+>> Does it look sane ?
+> 
+> I did not give it much thought, but I do not see how master node can end
+> up with gc_lnum = -1 in it, and it seems we assumed this cannot happen.
+> Could you please add this hack to your kernel? It should catch the
+> situations when we write gc_lnum == -1 to the master node and print the
+> stack dump, which should give some idea about the code-path which causes
+> it.
+Ok thanks, I will run it
 
-But this is a good lesson for me - it does not matter how much you test,
-other people will find bugs. I mean, the recovery is something we really
-tested a lot. There is even debugging mode which emulates various
-failures, we used that as well as random power cuts while running stress
-tests.
+When checking the code, I saw that switch_gc_head can set c->gc_lnum to -1.
 
-Nevermind, just a though which crossed my mind :-)
+In ubifs_put_super, we set c->mst_node->gc_lnum to c->gc_lnum and write 
+master node.
+Can't ubifs_put_super run while switch_gc_head set gc_lnum to -1 ?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Matthieu
