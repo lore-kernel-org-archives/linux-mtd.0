@@ -1,7 +1,7 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYd7u-0001G3-8Z
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 10:54:15 +0000
+	id 1OYd9Q-0001vH-5v
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 10:55:49 +0000
 Subject: Re: [PATCHv2 4/5] libmtd: add support for 64-bit offsets, OOB
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Kevin Cernekee <cernekee@gmail.com>
@@ -9,8 +9,8 @@ In-Reply-To: <c65631c48fb5d2de8d25f65bffa5e22d@localhost>
 References: <eb53f5a0215250d7e523de47d15b0d12@localhost>
 	<c65631c48fb5d2de8d25f65bffa5e22d@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 13 Jul 2010 13:49:03 +0300
-Message-ID: <1279018143.31639.33.camel@localhost>
+Date: Tue, 13 Jul 2010 13:50:43 +0300
+Message-ID: <1279018243.31639.35.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, jwboyer@gmail.com, saeed.bishara@gmail.com,
@@ -56,20 +56,37 @@ On Wed, 2010-07-07 at 17:30 -0700, Kevin Cernekee wrote:
 >  	unsigned int bb_allowed:1;
 > +	unsigned int legacy_ioctls:1;
 >  };
+>  
+>  /**
+> @@ -146,7 +148,37 @@ int mtd_get_dev_info1(libmtd_t desc, int mtd_num, struct mtd_dev_info *mtd);
+>   * This function erases eraseblock @eb of MTD device described by @fd. Returns
+>   * %0 in case of success and %-1 in case of failure.
+>   */
+> -int mtd_erase(const struct mtd_dev_info *mtd, int fd, int eb);
+> +int mtd_erase(struct mtd_dev_info *mtd, int fd, int eb);
+> +
+> +/**
+> + * mtd_read_oob - read OOB bytes
+> + * @mtd: MTD device description object
+> + * @fd: MTD device node file descriptor
+> + * @start: page-aligned start address
+> + * @length: number of OOB bytes to read
+> + * @data: read buffer
+> + *
+> + * This function reads @length OOB bytes starting from address @start on
+> + * MTD device described by @fd. Returns %0 in case of success and %-1 in
+> + * case of failure.
+> + */
+> +int mtd_read_oob(struct mtd_dev_info *mtd, int fd, uint64_t start,
+> +	uint64_t length, void *data);
 
-Kevin, I'm sorry, but thinking about this some more, this is not a
-property of mtd device, this is a property of whole mtd subsystem. So
-this flag should live in 'struct mtd_info', just like the 'unsigned int
-sysfs_supported:1;' field.
+Minor, but for consistency, please, use the same indentation style as
+the rest of the code. Namely, aline the second line:
 
-You should find out whether the new ioctl's are supported in
-'libmtd_open()'. This also means that all libmtd calls which need this
-flag will need a 'libmtd_t desc' parameter.
+int mtd_read_oob(struct mtd_dev_info *mtd, int fd, uint64_t start,
+		 uint64_t length, void *data);
 
-Also, is it possible to have 2 separate patches - 1st adds support for
-64-bit offest, second adds OOB calls.
-
-Is this doable? I think this should not be too difficult to change.
+Use tabs, but then adjust by adding spaces.
 
 -- 
 Best Regards,
