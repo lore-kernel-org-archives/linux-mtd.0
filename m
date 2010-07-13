@@ -1,21 +1,23 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYbjL-00083N-Iv
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 09:24:48 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.243])
-	by co202.xi-lite.net (Postfix) with ESMTPS id 4D84C2602B1
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Jul 2010 11:24:46 +0200 (CEST)
-Message-ID: <4C3C30D1.9030005@parrot.com>
-Date: Tue, 13 Jul 2010 11:24:33 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OYbw2-0000Pv-Io
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 09:37:55 +0000
+From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
+To: "'Sudhakar Rajashekhara'" <sudhakar.raj@ti.com>,
+	"'Andrew Morton'" <akpm@linux-foundation.org>
+References: <1278653389-12019-1-git-send-email-sudhakar.raj@ti.com>	<20100709153932.0a6cdbcd.akpm@linux-foundation.org>
+	<00c701cb218b$6e4d6dd0$4ae84970$@raj@ti.com>
+In-Reply-To: <00c701cb218b$6e4d6dd0$4ae84970$@raj@ti.com>
+Subject: RE: [PATCH] mtd-nand: davinci: correct 4-bit error correction
+Date: Tue, 13 Jul 2010 15:02:59 +0530
+Message-ID: <012f01cb226e$61ac9b80$2505d280$@raj@ti.com>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: ubifs : corruption after power cut test
-References: <4C346D5B.2000609@parrot.com> <4C3C1572.8080501@parrot.com>
-	<4C3C2740.2040105@parrot.com>
-In-Reply-To: <4C3C2740.2040105@parrot.com>
-Content-Type: multipart/mixed; boundary="------------000602020804070504000400"
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Cc: nsnehaprabha@ti.com, davinci-linux-open-source@linux.davincidsp.com,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,97 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------000602020804070504000400
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 8bit
+Hi,
 
-Matthieu CASTET a écrit :
-> Matthieu CASTET a écrit :
->> Hi,
->>
->> we found some bug in our driver. Now there no more ubifs error when
->> there is uncorrectable ecc error (they should happen in the last
->> (interrupted) written page).
->>
->> But now we got "validate_master: bad master node at offset 69632 error
->> 7" [1].
-> notice that gc_lnum==-1 in this case.
-> Also this didn't happen on power cut.
-> The senario was :
-> - power cut
-> - mount fs [1]
-> - do some fs operation
-> - umount fs quickly (9 second after mount in this case) [2]
-> - mount fs [3]
+On Mon, Jul 12, 2010 at 11:58:18, Sudhakar Rajashekhara wrote:
+> On Sat, Jul 10, 2010 at 04:09:32, Andrew Morton wrote:
+> > On Fri,  9 Jul 2010 10:59:49 +0530
+> > Sudhakar Rajashekhara <sudhakar.raj@ti.com> wrote:
+> > 
+> > > +
+> > > +	/*
+> > > +	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
+> > > +	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
+> > > +	 * begin trying to poll for the state, you may fall right out of your
+> > > +	 * loop without any of the correction calculations having taken place.
+> > > +	 * The recommendation from the hardware team is to wait till ECC_STATE
+> > > +	 * reads less than 4, which means ECC HW has entered correction state.
+> > > +	 */
+> > > +	do {
+> > > +		ecc_state = (davinci_nand_readl(info,
+> > > +				NANDFSR_OFFSET) >> 8) & 0x0f;
+> > > +		cpu_relax();
+> > > +	} while ((ecc_state < 4) && time_before(jiffies, timeo));
+> > 
+> > An up-to-100-milliseond busy wait is pretty bad.  For how long do you
+> > expect this to spin in practice?
 > 
-> The the problem seems that gc_lnum==-1 is not handled in mount or
-> shouldn't happen in umount.
-> 
-The attached patch try to support mount with gc_lnum == -1.
+> On the hardware, I have never seen this taking 100 msec to come out of
+> the loop. I'll check with the hardware folks on the maximum time to wait
+> for, before the ECC engine is ready.
 
-Does it look sane ?
+I checked this with the hardware team but no one is sure about the exact
+time one should wait before the ECC engine becomes ready. But everyone is
+of the opinion that 100 loop cycles should be enough. To be on the safer
+side, I'll be changing the timeout to 10 milliseconds in the next version
+of this patch.
 
-
-Matthieu
-
---------------000602020804070504000400
-Content-Type: text/x-diff; name="ubifs.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="ubifs.diff"
-
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index eb532e0..56de77f 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1320,18 +1322,27 @@ static int mount_ubifs(struct ubifs_info *c)
- 			if (err)
- 				goto out_orphans;
- 			err = ubifs_rcvry_gc_commit(c);
--		} else {
--			err = take_gc_lnum(c);
- 			if (err)
- 				goto out_orphans;
-+		} else {
-+			if (c->gc_lnum == -1) {
-+				err = ubifs_rcvry_gc_commit(c);
-+				if (err)
-+					goto out_orphans;
-+			}
-+			else {
-+				err = take_gc_lnum(c);
-+				if (err)
-+					goto out_orphans;
- 
--			/*
--			 * GC LEB may contain garbage if there was an unclean
--			 * reboot, and it should be un-mapped.
--			 */
--			err = ubifs_leb_unmap(c, c->gc_lnum);
--			if (err)
--				return err;
-+				/*
-+				 * GC LEB may contain garbage if there was an unclean
-+				 * reboot, and it should be un-mapped.
-+				 */
-+				err = ubifs_leb_unmap(c, c->gc_lnum);
-+				if (err)
-+					return err;
-+			}
- 		}
- 
- 		err = dbg_check_lprops(c);
-diff --git a/fs/ubifs/master.c b/fs/ubifs/master.c
-index 28beaee..8d5b080 100644
---- a/fs/ubifs/master.c
-+++ b/fs/ubifs/master.c
-@@ -135,7 +135,7 @@ static int validate_master(const struct ubifs_info *c)
- 		goto out;
- 	}
- 
--	if (c->gc_lnum >= c->leb_cnt || c->gc_lnum < c->main_first) {
-+	if (c->gc_lnum != -1 && (c->gc_lnum >= c->leb_cnt || c->gc_lnum < c->main_first)) {
- 		err = 7;
- 		goto out;
- 	}
-
---------------000602020804070504000400--
+Thanks,
+Sudhakar
