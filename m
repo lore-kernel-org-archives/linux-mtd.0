@@ -1,14 +1,18 @@
-Subject: Re: [PATCH] mtd: cfi_probe: print manufacturer and id of probed chip
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OYcUL-0007DI-JX
+	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 10:13:22 +0000
+Subject: Re: [UBIFS] 2.6.27-backport bug
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Guillaume LECERF <glecerf@gmail.com>
-In-Reply-To: <20100629083204.11146.37097.stgit@dev.siriade.com>
-References: <20100629083204.11146.37097.stgit@dev.siriade.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <4C2C51E2.7030308@parrot.com>
+References: <4C2C51E2.7030308@parrot.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 13 Jul 2010 12:54:53 +0300
-Message-ID: <1279014893.31639.19.camel@localhost>
+Date: Tue, 13 Jul 2010 13:08:12 +0300
+Message-ID: <1279015692.31639.21.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -19,16 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-06-29 at 10:32 +0200, Guillaume LECERF wrote:
-> 2010/6/29 Artem Bityutskiy <dedekind1@gmail.com>:
-> > This is not a debugging print, so I think you should do it in a more
-> > user-friendly way. E.g., "manufect. ID %#08x, chip id %#08x".
+On Thu, 2010-07-01 at 10:29 +0200, Matthieu CASTET wrote:
+> Hi,
 > 
-> OK, here it is again.
+> I know 2.6.27-backport is not supported anymore, but I found a bug, and 
+> I post it for the record.
 > 
-> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+> The bug happen with a kernel oops [1].
+> 
+> After investigation it happens because of programming a timer that is 
+> already programmed (we don't check wbuf->no_timer in new_wbuf_timer_nolock)
+> 
 
-Pushed to l2-mtd-2.6.git / master
+Pushed. BTW, if you back ported newer stuff to ubifs-v2.6.27, I can pull
+it from you and we can make this tree more up-to-date.
 
 -- 
 Best Regards,
