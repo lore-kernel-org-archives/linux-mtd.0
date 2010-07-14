@@ -1,31 +1,21 @@
-Received: from faui40.informatik.uni-erlangen.de ([131.188.34.40])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZ2aC-0001P6-69
-	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2010 14:05:08 +0000
-Date: Wed, 14 Jul 2010 16:05:05 +0200
-From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>,
-	Matt Porter <mporter@kernel.crashing.org>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>, Solomon Peachy <solomon@linux-wlan.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Mike Frysinger <vapier@gentoo.org>, Jiri Kosina <jkosina@suse.cz>,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Alexander Kurz <linux@kbdbabel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Randy Dunlap <randy.dunlap@oracle.com>, John Linn <john.linn@xilinx.com>,
-	Florian Fainelli <florian@openwrt.org>, linuxppc-dev@ozlabs.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 5/5] Remove REDWOOD_5 and REDWOOD_6 config options and
-	conditional code
-Message-ID: <4f07b3092cafbbba37d61d367cc7484e24d18d2a.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
-References: <c3c850bed3f5714f1efcfad24ad4f8bfcb6b5b54.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OZ35d-0006lr-Bd
+	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2010 14:37:41 +0000
+Received: by pwj7 with SMTP id 7so3261564pwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Jul 2010 07:37:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3c850bed3f5714f1efcfad24ad4f8bfcb6b5b54.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
-Cc: vamos-dev@i4.informatik.uni-erlangen.de
+In-Reply-To: <0L5J00FOLHZI2I@ms13.samsung.com>
+References: <0L5J00FOLHZI2I@ms13.samsung.com>
+Date: Wed, 14 Jul 2010 16:37:30 +0200
+Message-ID: <AANLkTinuTRyHdCUhP5dOocIFAUxrgvIhtGbBk3WUJfsS@mail.gmail.com>
+Subject: Re: Possible bug in onenand_base ?
+From: =?UTF-8?Q?Enric_Balletb=C3=B2_i_Serra?= <eballetbo@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: rohit.hs@samsung.com, v.dalal@samsung.com, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,132 +25,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The config options for REDWOOD_[56] were commented out in the powerpc
-Kconfig. The ifdefs referencing this options therefore are dead and all
-references to this can be removed (Also dependencies in other KConfig
-files).
+Hello,
 
-Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
----
- arch/powerpc/platforms/40x/Kconfig |   16 -------------
- drivers/mtd/maps/Kconfig           |    2 +-
- drivers/mtd/maps/redwood.c         |   43 ------------------------------------
- drivers/net/Kconfig                |    2 +-
- 4 files changed, 2 insertions(+), 61 deletions(-)
+2010/7/14 ROHIT H.S <rohit.hs@samsung.com>
+>
+> Hi Artem,
+>
+> Rohit Hagargundgi , author of mtd: Flex-OneNAND support has left the orga=
+nization.
+>
+> Any Flex OneNAND specific issues will be taken care by us from now onward=
+s.
+>
+> >On Thu, 2010-07-08 at 12:11 +0200, Enric Balletb=C3=B2 i Serra wrote:
+>
+> >> Hello,
+>
+> > >
+>
+> > >2010/7/8 Artem Bityutskiy <dedekind1 at gmail.com>:
+>
+> > >> On Thu, 2010-07-08 at 11:55 +0200, Enric Balletb=C3=B2 i Serra wrote=
+:
+>
+> > >>> Hello,
+> > >>>
+>
+> > >> >I made new tests regarding this issue. Looks like the problem is > =
+>> reading from the OneNAND device.
+> > >>
+>
+> > > >Did you try older kernel and then bisecting who is responsible for t=
+he
+> > > >breakage?
+>
+> > >
+>
+> > >Yes, before commit
+> > >5988af2319781bc8e0ce418affec4e09cfa77907 (mtd: Flex-OneNAND support)
+> > >http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=
+=3Dcommit;h=3D5988af2319781bc8e0ce418affec4e09cfa77907
+> > >my OneNAND is working, after the commit, the OneNAND support is broken=
+.
+>
+>
+> >Ok, we could revert it, but it is better to fix it. CCing the author of
+>
+> the commit.
+>
+> We tested Samsung Muxed OneNAND(DDP) on Apollon Board with
+>
+> kernel 2.6.35-rc4 and did not face any problems with DDP OneNand read/wri=
+te.
+>
+> We didn't face any problem with the below code as pointed by Eric in
+>
+> file:: onenand_base.c
+> 378: default:
+> block =3D onenand_block(this, addr);
+> page =3D (int) (addr - onenand_addr(this, block)) >> this->page_shift;
+>
+>
+> We didn't changed anything in onenand_base.c and have runned nandtest uti=
+lity. Below are the results.
+> mtd3 and mtd4 are our OneNAND paritions.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> # nandtest /dev/mtd3
+> ECC corrections: 0
+> ECC failures : 0
+> Bad blocks : 1
+> BBT blocks : 0
+> Bad block at 0x00bc0000
+> 00fe0000: checking...
+> Finished pass 1 successfully
+> # nandtest /dev/mtd4
+> ECC corrections: 0
+> ECC failures : 0
+> Bad blocks : 0
+> BBT blocks : 0
+> 01fe0000: checking...
+> Finished pass 1 successfully
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> We don't have Nymonix OneNAND DDP chip as used by Eric. So can't say why =
+issue
+>
+> is coming up in that.
+>
+> Eric we need more details about the internal organization of Nymonix chip=
+s which you are using.
+>
+> Reciprocating the envirnoment is not possible but atleast we will try to
+>
+> figure out if there is any difference in internal organization.
 
-diff --git a/arch/powerpc/platforms/40x/Kconfig b/arch/powerpc/platforms/40x/Kconfig
-index ec64264..b721764 100644
---- a/arch/powerpc/platforms/40x/Kconfig
-+++ b/arch/powerpc/platforms/40x/Kconfig
-@@ -71,22 +71,6 @@ config MAKALU
- 	help
- 	  This option enables support for the AMCC PPC405EX board.
- 
--#config REDWOOD_5
--#	bool "Redwood-5"
--#	depends on 40x
--#	default n
--#	select STB03xxx
--#	help
--#	  This option enables support for the IBM STB04 evaluation board.
--
--#config REDWOOD_6
--#	bool "Redwood-6"
--#	depends on 40x
--#	default n
--#	select STB03xxx
--#	help
--#	  This option enables support for the IBM STBx25xx evaluation board.
--
- #config SYCAMORE
- #	bool "Sycamore"
- #	depends on 40x
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index f22bc9f..b5ebb72 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -321,7 +321,7 @@ config MTD_CFI_FLAGADM
- 
- config MTD_REDWOOD
- 	tristate "CFI Flash devices mapped on IBM Redwood"
--	depends on MTD_CFI && ( REDWOOD_4 || REDWOOD_5 || REDWOOD_6 )
-+	depends on MTD_CFI && REDWOOD_4
- 	help
- 	  This enables access routines for the flash chips on the IBM
- 	  Redwood board. If you have one of these boards and would like to
-diff --git a/drivers/mtd/maps/redwood.c b/drivers/mtd/maps/redwood.c
-index 933c0b6..d2c9db0 100644
---- a/drivers/mtd/maps/redwood.c
-+++ b/drivers/mtd/maps/redwood.c
-@@ -22,8 +22,6 @@
- 
- #include <asm/io.h>
- 
--#if !defined (CONFIG_REDWOOD_6)
--
- #define WINDOW_ADDR 0xffc00000
- #define WINDOW_SIZE 0x00400000
- 
-@@ -69,47 +67,6 @@ static struct mtd_partition redwood_flash_partitions[] = {
- 	}
- };
- 
--#else /* CONFIG_REDWOOD_6 */
--/* FIXME: the window is bigger - armin */
--#define WINDOW_ADDR 0xff800000
--#define WINDOW_SIZE 0x00800000
--
--#define RW_PART0_OF	0
--#define RW_PART0_SZ	0x400000	/* 4 MiB data */
--#define RW_PART1_OF	RW_PART0_OF + RW_PART0_SZ
--#define RW_PART1_SZ	0x10000		/* 64K VPD */
--#define RW_PART2_OF	RW_PART1_OF + RW_PART1_SZ
--#define RW_PART2_SZ	0x400000 - (0x10000 + 0x20000)
--#define RW_PART3_OF	RW_PART2_OF + RW_PART2_SZ
--#define RW_PART3_SZ	0x20000
--
--static struct mtd_partition redwood_flash_partitions[] = {
--	{
--		.name = "Redwood filesystem",
--		.offset = RW_PART0_OF,
--		.size = RW_PART0_SZ
--	},
--	{
--		.name = "Redwood OpenBIOS Vital Product Data",
--		.offset = RW_PART1_OF,
--		.size = RW_PART1_SZ,
--		.mask_flags = MTD_WRITEABLE	/* force read-only */
--	},
--	{
--		.name = "Redwood kernel",
--		.offset = RW_PART2_OF,
--		.size = RW_PART2_SZ
--	},
--	{
--		.name = "Redwood OpenBIOS",
--		.offset = RW_PART3_OF,
--		.size = RW_PART3_SZ,
--		.mask_flags = MTD_WRITEABLE	/* force read-only */
--	}
--};
--
--#endif /* CONFIG_REDWOOD_6 */
--
- struct map_info redwood_flash_map = {
- 	.name = "IBM Redwood",
- 	.size = WINDOW_SIZE,
-diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
-index ce2fcdd..313d306 100644
---- a/drivers/net/Kconfig
-+++ b/drivers/net/Kconfig
-@@ -913,7 +913,7 @@ config SMC91X
- 	tristate "SMC 91C9x/91C1xxx support"
- 	select CRC32
- 	select MII
--	depends on ARM || REDWOOD_5 || REDWOOD_6 || M32R || SUPERH || \
-+	depends on ARM || M32R || SUPERH || \
- 		MIPS || BLACKFIN || MN10300 || COLDFIRE
- 	help
- 	  This is a driver for SMC's 91x series of Ethernet chipsets,
--- 
-1.7.0.4
+I have two different OneNAND from Numonyx and nandtest fails on all of them=
+.
+
+The first one is a 2-Gbit OneNAND device from Numonyx composed of one
+dice with 2KB
+page, the device is equipped with two DataRAMs ( two planes)
+
+[   25.964904] OneNAND Manufacturer: Numonyx (0x20)
+[   25.964904] Muxed OneNAND 256MB 1.8V 16-bit (0x40)
+[   25.969787] OneNAND version =3D 0x0031
+[   25.973388] Chip support all block unlock
+[   25.973388] Chip has 2 plane
+
+The second one is a 4-Gbit DDP OneNAND device from Numonyx composed of
+two 2-Gbit 2KB
+page dice stacked together, the device is equipped with two DataRAMs,
+
+[   29.368347] OneNAND Manufacturer: Numonyx (0x20)
+[   29.368347] Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
+[   29.373657] OneNAND version =3D 0x0031
+[   29.377258] Chip support all block unlock
+[   29.377258] Chip has 2 plane
+
+Note that these two devices have 2 planes, maybe this is difference.
+
+Have you tested with a OneNAND with 2 planes ?
+
+Best regards,
+-- Enric
