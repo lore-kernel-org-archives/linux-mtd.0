@@ -1,23 +1,31 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from faui40.informatik.uni-erlangen.de ([131.188.34.40])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZ0B4-0003ev-7a
-	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2010 11:31:02 +0000
-From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
-To: "'Andrew Morton'" <akpm@linux-foundation.org>
-References: <1278653389-12019-1-git-send-email-sudhakar.raj@ti.com>	<20100709153932.0a6cdbcd.akpm@linux-foundation.org>	<00c701cb218b$6e4d6dd0$4ae84970$@raj@ti.com>	<012f01cb226e$61ac9b80$2505d280$@raj@ti.com>
-	<20100713104126.95891684.akpm@linux-foundation.org>
-In-Reply-To: <20100713104126.95891684.akpm@linux-foundation.org>
-Subject: RE: [PATCH] mtd-nand: davinci: correct 4-bit error correction
-Date: Wed, 14 Jul 2010 16:55:34 +0530
-Message-ID: <025e01cb2347$46817310$d3845930$@raj@ti.com>
+	id 1OZ2aC-0001P6-69
+	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2010 14:05:08 +0000
+Date: Wed, 14 Jul 2010 16:05:05 +0200
+From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+To: Josh Boyer <jwboyer@linux.vnet.ibm.com>,
+	Matt Porter <mporter@kernel.crashing.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>, Solomon Peachy <solomon@linux-wlan.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Mike Frysinger <vapier@gentoo.org>, Jiri Kosina <jkosina@suse.cz>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Alexander Kurz <linux@kbdbabel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Randy Dunlap <randy.dunlap@oracle.com>, John Linn <john.linn@xilinx.com>,
+	Florian Fainelli <florian@openwrt.org>, linuxppc-dev@ozlabs.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org
+Subject: [PATCH 5/5] Remove REDWOOD_5 and REDWOOD_6 config options and
+	conditional code
+Message-ID: <4f07b3092cafbbba37d61d367cc7484e24d18d2a.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
+References: <c3c850bed3f5714f1efcfad24ad4f8bfcb6b5b54.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Cc: linux-mtd@lists.infradead.org,
-	davinci-linux-open-source@linux.davincidsp.com,
-	nsnehaprabha@ti.com, dwmw2@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c3c850bed3f5714f1efcfad24ad4f8bfcb6b5b54.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
+Cc: vamos-dev@i4.informatik.uni-erlangen.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +35,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+The config options for REDWOOD_[56] were commented out in the powerpc
+Kconfig. The ifdefs referencing this options therefore are dead and all
+references to this can be removed (Also dependencies in other KConfig
+files).
 
-On Tue, Jul 13, 2010 at 23:11:26, Andrew Morton wrote:
-> On Tue, 13 Jul 2010 15:02:59 +0530 "Sudhakar Rajashekhara" <sudhakar.raj@ti.com> wrote:
-> 
-> > Hi,
-> > 
-> > On Mon, Jul 12, 2010 at 11:58:18, Sudhakar Rajashekhara wrote:
-> > > On Sat, Jul 10, 2010 at 04:09:32, Andrew Morton wrote:
-> > > > On Fri,  9 Jul 2010 10:59:49 +0530
-> > > > Sudhakar Rajashekhara <sudhakar.raj@ti.com> wrote:
-> > > > 
-> > > > > +
-> > > > > +	/*
-> > > > > +	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
-> > > > > +	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
-> > > > > +	 * begin trying to poll for the state, you may fall right out of your
-> > > > > +	 * loop without any of the correction calculations having taken place.
-> > > > > +	 * The recommendation from the hardware team is to wait till ECC_STATE
-> > > > > +	 * reads less than 4, which means ECC HW has entered correction state.
-> > > > > +	 */
-> > > > > +	do {
-> > > > > +		ecc_state = (davinci_nand_readl(info,
-> > > > > +				NANDFSR_OFFSET) >> 8) & 0x0f;
-> > > > > +		cpu_relax();
-> > > > > +	} while ((ecc_state < 4) && time_before(jiffies, timeo));
-> > > > 
-> > > > An up-to-100-milliseond busy wait is pretty bad.  For how long do you
-> > > > expect this to spin in practice?
-> > > 
-> > > On the hardware, I have never seen this taking 100 msec to come out of
-> > > the loop. I'll check with the hardware folks on the maximum time to wait
-> > > for, before the ECC engine is ready.
-> > 
-> > I checked this with the hardware team but no one is sure about the exact
-> > time one should wait before the ECC engine becomes ready. But everyone is
-> > of the opinion that 100 loop cycles should be enough. To be on the safer
-> > side, I'll be changing the timeout to 10 milliseconds in the next version
-> > of this patch.
-> 
-> Going from 100ms down to 10ms sounds a bit risky.  It'd be better to
-> retain the 100ms and to make the kernel spend most of that time
-> sleeping, rather than busywaiting, IMO.
-> 
+Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+---
+ arch/powerpc/platforms/40x/Kconfig |   16 -------------
+ drivers/mtd/maps/Kconfig           |    2 +-
+ drivers/mtd/maps/redwood.c         |   43 ------------------------------------
+ drivers/net/Kconfig                |    2 +-
+ 4 files changed, 2 insertions(+), 61 deletions(-)
 
-I chose 100ms timeout randomly, but today I did some calculation using
-do_gettimeofday() to find out the actual time spent inside the loop. I
-found that, control is coming out of loop within 5 microseconds. So I'll
-go ahead and use usecs_to_jiffies(100) as timeout. Busywaiting for such
-a short duration may not be a problem.
-
-Regards,
-Sudhakar
+diff --git a/arch/powerpc/platforms/40x/Kconfig b/arch/powerpc/platforms/40x/Kconfig
+index ec64264..b721764 100644
+--- a/arch/powerpc/platforms/40x/Kconfig
++++ b/arch/powerpc/platforms/40x/Kconfig
+@@ -71,22 +71,6 @@ config MAKALU
+ 	help
+ 	  This option enables support for the AMCC PPC405EX board.
+ 
+-#config REDWOOD_5
+-#	bool "Redwood-5"
+-#	depends on 40x
+-#	default n
+-#	select STB03xxx
+-#	help
+-#	  This option enables support for the IBM STB04 evaluation board.
+-
+-#config REDWOOD_6
+-#	bool "Redwood-6"
+-#	depends on 40x
+-#	default n
+-#	select STB03xxx
+-#	help
+-#	  This option enables support for the IBM STBx25xx evaluation board.
+-
+ #config SYCAMORE
+ #	bool "Sycamore"
+ #	depends on 40x
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index f22bc9f..b5ebb72 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -321,7 +321,7 @@ config MTD_CFI_FLAGADM
+ 
+ config MTD_REDWOOD
+ 	tristate "CFI Flash devices mapped on IBM Redwood"
+-	depends on MTD_CFI && ( REDWOOD_4 || REDWOOD_5 || REDWOOD_6 )
++	depends on MTD_CFI && REDWOOD_4
+ 	help
+ 	  This enables access routines for the flash chips on the IBM
+ 	  Redwood board. If you have one of these boards and would like to
+diff --git a/drivers/mtd/maps/redwood.c b/drivers/mtd/maps/redwood.c
+index 933c0b6..d2c9db0 100644
+--- a/drivers/mtd/maps/redwood.c
++++ b/drivers/mtd/maps/redwood.c
+@@ -22,8 +22,6 @@
+ 
+ #include <asm/io.h>
+ 
+-#if !defined (CONFIG_REDWOOD_6)
+-
+ #define WINDOW_ADDR 0xffc00000
+ #define WINDOW_SIZE 0x00400000
+ 
+@@ -69,47 +67,6 @@ static struct mtd_partition redwood_flash_partitions[] = {
+ 	}
+ };
+ 
+-#else /* CONFIG_REDWOOD_6 */
+-/* FIXME: the window is bigger - armin */
+-#define WINDOW_ADDR 0xff800000
+-#define WINDOW_SIZE 0x00800000
+-
+-#define RW_PART0_OF	0
+-#define RW_PART0_SZ	0x400000	/* 4 MiB data */
+-#define RW_PART1_OF	RW_PART0_OF + RW_PART0_SZ
+-#define RW_PART1_SZ	0x10000		/* 64K VPD */
+-#define RW_PART2_OF	RW_PART1_OF + RW_PART1_SZ
+-#define RW_PART2_SZ	0x400000 - (0x10000 + 0x20000)
+-#define RW_PART3_OF	RW_PART2_OF + RW_PART2_SZ
+-#define RW_PART3_SZ	0x20000
+-
+-static struct mtd_partition redwood_flash_partitions[] = {
+-	{
+-		.name = "Redwood filesystem",
+-		.offset = RW_PART0_OF,
+-		.size = RW_PART0_SZ
+-	},
+-	{
+-		.name = "Redwood OpenBIOS Vital Product Data",
+-		.offset = RW_PART1_OF,
+-		.size = RW_PART1_SZ,
+-		.mask_flags = MTD_WRITEABLE	/* force read-only */
+-	},
+-	{
+-		.name = "Redwood kernel",
+-		.offset = RW_PART2_OF,
+-		.size = RW_PART2_SZ
+-	},
+-	{
+-		.name = "Redwood OpenBIOS",
+-		.offset = RW_PART3_OF,
+-		.size = RW_PART3_SZ,
+-		.mask_flags = MTD_WRITEABLE	/* force read-only */
+-	}
+-};
+-
+-#endif /* CONFIG_REDWOOD_6 */
+-
+ struct map_info redwood_flash_map = {
+ 	.name = "IBM Redwood",
+ 	.size = WINDOW_SIZE,
+diff --git a/drivers/net/Kconfig b/drivers/net/Kconfig
+index ce2fcdd..313d306 100644
+--- a/drivers/net/Kconfig
++++ b/drivers/net/Kconfig
+@@ -913,7 +913,7 @@ config SMC91X
+ 	tristate "SMC 91C9x/91C1xxx support"
+ 	select CRC32
+ 	select MII
+-	depends on ARM || REDWOOD_5 || REDWOOD_6 || M32R || SUPERH || \
++	depends on ARM || M32R || SUPERH || \
+ 		MIPS || BLACKFIN || MN10300 || COLDFIRE
+ 	help
+ 	  This is a driver for SMC's 91x series of Ethernet chipsets,
+-- 
+1.7.0.4
