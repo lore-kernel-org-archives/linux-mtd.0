@@ -1,24 +1,23 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OYpLc-0000ex-Fy
-	for linux-mtd@lists.infradead.org; Tue, 13 Jul 2010 23:57:13 +0000
-Message-ID: <4C3CFD4A.3020708@broadcom.com>
-Date: Tue, 13 Jul 2010 16:56:58 -0700
-From: "Brian Norris" <norris@broadcom.com>
+	id 1OYpXy-0003af-QI
+	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2010 00:09:59 +0000
+Received: by gya1 with SMTP id 1so4264959gya.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Jul 2010 17:09:57 -0700 (PDT)
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH v2 2/2] mtd/nand: More BB Detection, dynamic scan options
-References: <1279059181-29300-1-git-send-email-norris@broadcom.com>
-	<1279059181-29300-3-git-send-email-norris@broadcom.com>
-In-Reply-To: <1279059181-29300-3-git-send-email-norris@broadcom.com>
-Content-Type: text/plain;
- charset=iso-8859-1;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Brian Norris <norris@broadcom.com>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1279018143.31639.33.camel@localhost>
+References: <eb53f5a0215250d7e523de47d15b0d12@localhost>
+	<c65631c48fb5d2de8d25f65bffa5e22d@localhost>
+	<1279018143.31639.33.camel@localhost>
+Date: Tue, 13 Jul 2010 17:09:56 -0700
+Message-ID: <AANLkTilsz1EamG4I_45ey7dy0UTA0C3N9HWvz_dix2qN@mail.gmail.com>
+Subject: Re: [PATCHv2 4/5] libmtd: add support for 64-bit offsets, OOB
+From: Kevin Cernekee <cernekee@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, jwboyer@gmail.com, saeed.bishara@gmail.com,
+	vapier.adi@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a few comments/questions about the following sections.
+On Tue, Jul 13, 2010 at 3:49 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> You should find out whether the new ioctl's are supported in
+> 'libmtd_open()'. This also means that all libmtd calls which need this
+> flag will need a 'libmtd_t desc' parameter.
 
-On 07/13/2010 03:13 PM, Brian Norris wrote:
-> Added new flag for scanning of both bytes 1 and 6 of the OOB for
-> a BB marker (instead of simply one or the other).
+Typically I just try the new ioctl first, then fall back to the old
+one if it returned -ENOTTY.  Could you recommend a way to detect the
+presence of the new ioctls from libmtd_open()?
 
-<snip>
-
-> diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-> index ec1700e..474ff66 100644
-> --- a/drivers/mtd/nand/nand_bbt.c
-> +++ b/drivers/mtd/nand/nand_bbt.c
-
-<snip>
-
-> @@ -447,6 +445,24 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf,
->   		if (ret<  0)
->   			return ret;
->
-> +		/* Check if we need a second scan for the 6th byte
-> +		 * Perhaps there is a more efficient way of doing this?
-> +		 */
-> +		if (!ret&&  bd->options&  NAND_BBT_SCANBYTE1AND6) {
-> +			bd->offs = NAND_SMALL_BADBLOCK_POS;
-> +			if (bd->options&  NAND_BBT_SCANALLPAGES)
-> +				ret = scan_block_full(mtd, bd, from, buf,
-> +						readlen, scanlen, len);
-> +			else
-> +				ret = scan_block_fast(mtd, bd, from, buf, len);
-> +
-> +			/* Reset offset for future scans */
-> +			bd->offs = NAND_LARGE_BADBLOCK_POS;
-> +
-> +			if (ret<  0)
-> +				return ret;
-> +		}
-> +
->   		if (ret) {
->   			this->bbt[i>>  3] |= 0x03<<  (i&  0x6);
->   			printk(KERN_WARNING "Bad eraseblock %d at 0x%012llx\n",
-
-I realize it's probably not the best practice to just duplicate/modify 
-the detection code as I did above. I am trying to find the best place to 
-implement the scanning of both bytes 1 and 6 of the OOB. Perhaps 
-nand_bbt.c:check_pattern() and check_short_pattern()?
-
-Also, it seems to me that in addition to the main scanning routines, I 
-should update the nand_default_block_markbad() function in nand_base.c 
-so that it writes its BB marker to the proper bytes in the OOB. Does 
-this sound reasonable?
-
-Comments/corrections are appreciated!
-
-Brian
+Thanks.
