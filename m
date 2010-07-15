@@ -1,15 +1,29 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZGz4-0007OO-Nl
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2010 05:27:47 +0000
-From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd-nand: davinci: correct 4-bit error correction
-Date: Thu, 15 Jul 2010 10:40:41 +0530
-Message-Id: <1279170641-24494-1-git-send-email-sudhakar.raj@ti.com>
-Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
-	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, nsnehaprabha@ti.com,
-	davinci-linux-open-source@linux.davincidsp.com
+Received: from mail4.comsite.net ([205.238.176.238])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OZJ5E-00021S-8t
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2010 07:42:16 +0000
+From: Milton Miller <miltonm@bga.com>
+To: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+Message-Id: <redwood56-reply-1-miltonm@bga.com>
+Subject: Re: [5/5] Remove REDWOOD_5 and REDWOOD_6 config options and
+	conditional code
+In-Reply-To: <4f07b3092cafbbba37d61d367cc7484e24d18d2a.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
+References: <4f07b3092cafbbba37d61d367cc7484e24d18d2a.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
+Date: Thu, 15 Jul 2010 02:42:07 -0500
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Mike Frysinger <vapier@gentoo.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Florian Fainelli <florian@openwrt.org>,
+	Solomon Peachy <solomon@linux-wlan.com>,
+	vamos-dev@i4.informatik.uni-erlangen.de, linuxppc-dev@ozlabs.org,
+	Alexander Kurz <linux@kbdbabel.org>,
+	linux-mtd@lists.infradead.org, Jiri Kosina <jkosina@suse.cz>,
+	Paul Mackerras <paulus@samba.org>,
+	Matt Porter <mporter@kernel.crashing.org>,
+	David Woodhouse <dwmw2@infradead.org>, John Linn <john.linn@xilinx.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,80 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
-4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
-before waiting for the NAND Flash status register to be equal to 1, 2 or
-3, we have to wait till the ECC HW goes to correction state.  Without this
-wait, ECC correction calculations will not be proper.
+On Wed, 14 Jul 2010 about 04:05:05 -0000, Christian Dietrich wrote:
+> 
+> The config options for REDWOOD_[56] were commented out in the powerpc
+> Kconfig. The ifdefs referencing this options therefore are dead and all
+> references to this can be removed (Also dependencies in other KConfig
+> files).
+> 
+> Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+> 
+> ---
+> arch/powerpc/platforms/40x/Kconfig |   16 -------------
+>  drivers/mtd/maps/Kconfig           |    2 +-
+>  drivers/mtd/maps/redwood.c         |   43 ------------------------------------
+>  drivers/net/Kconfig                |    2 +-
+>  4 files changed, 2 insertions(+), 61 deletions(-)
 
-This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and DM365
-EVMs.
+> diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+> index f22bc9f..b5ebb72 100644
+> --- a/drivers/mtd/maps/Kconfig
+> +++ b/drivers/mtd/maps/Kconfig
+> @@ -321,7 +321,7 @@ config MTD_CFI_FLAGADM
+>  
+>  config MTD_REDWOOD
+>  	tristate "CFI Flash devices mapped on IBM Redwood"
+> -	depends on MTD_CFI && ( REDWOOD_4 || REDWOOD_5 || REDWOOD_6 )
+> +	depends on MTD_CFI && REDWOOD_4
+>  	help
+>  	  This enables access routines for the flash chips on the IBM
+>  	  Redwood board. If you have one of these boards and would like to
 
-Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-Since v1:
-a. Timeout has been changed from 100 msec to 100 usec.
-b. Comment above the do, while loop was not matching the code.
-   This has been corrected.
-c. Initialization of 'timeo' variable has been moved down.
-d. It was observed that, while calculating the time in the loop,
-   if there is a context switch between setting the 4BITECC_ADD_CALC_START
-   bit and reading of ECC_STATE field, then the loop will not come out
-   until the timeout happens. To prevent the context switch, spin_lock_irqsave
-   and spin_unlock_irqrestore are used.
+REDWOOD_4 does not appear to be in the tree either so this mapping driver
+should be deleted if the patch is otherwise acceptable.  Besides we
+would express the info contained in this simple map driver the device tree
+using physmap_of.
 
- drivers/mtd/nand/davinci_nand.c |   22 ++++++++++++++++++++++
- 1 files changed, 22 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index 9c9d893..1e2657c 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -311,7 +311,11 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
- 	unsigned short ecc10[8];
- 	unsigned short *ecc16;
- 	u32 syndrome[4];
-+	u32 ecc_state;
- 	unsigned num_errors, corrected;
-+	unsigned long timeo;
-+	DEFINE_SPINLOCK(ecc_spin_lock);
-+	unsigned long flags;
- 
- 	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
- 	for (i = 0; i < 10; i++) {
-@@ -355,12 +359,30 @@ compare:
- 	 */
- 	davinci_nand_readl(info, NAND_ERR_ADD1_OFFSET);
- 
-+	spin_lock_irqsave(&ecc_spin_lock, flags);
- 	/* Start address calculation, and wait for it to complete.
- 	 * We _could_ start reading more data while this is working,
- 	 * to speed up the overall page read.
- 	 */
- 	davinci_nand_writel(info, NANDFCR_OFFSET,
- 			davinci_nand_readl(info, NANDFCR_OFFSET) | BIT(13));
-+
-+	/*
-+	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
-+	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
-+	 * begin trying to poll for the state, you may fall right out of your
-+	 * loop without any of the correction calculations having taken place.
-+	 * The recommendation from the hardware team is to wait till ECC_STATE
-+	 * reads >= 4, which means ECC HW has entered correction state.
-+	 */
-+	timeo = jiffies + usecs_to_jiffies(100);
-+	do {
-+		ecc_state = (davinci_nand_readl(info,
-+				NANDFSR_OFFSET) >> 8) & 0x0f;
-+		cpu_relax();
-+	} while ((ecc_state < 4) && time_before(jiffies, timeo));
-+	spin_unlock_irqrestore(&ecc_spin_lock, flags);
-+
- 	for (;;) {
- 		u32	fsr = davinci_nand_readl(info, NANDFSR_OFFSET);
- 
--- 
-1.5.6
+milton
