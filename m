@@ -1,21 +1,15 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZ35d-0006lr-Bd
-	for linux-mtd@lists.infradead.org; Wed, 14 Jul 2010 14:37:41 +0000
-Received: by pwj7 with SMTP id 7so3261564pwj.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Jul 2010 07:37:34 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <0L5J00FOLHZI2I@ms13.samsung.com>
-References: <0L5J00FOLHZI2I@ms13.samsung.com>
-Date: Wed, 14 Jul 2010 16:37:30 +0200
-Message-ID: <AANLkTinuTRyHdCUhP5dOocIFAUxrgvIhtGbBk3WUJfsS@mail.gmail.com>
-Subject: Re: Possible bug in onenand_base ?
-From: =?UTF-8?Q?Enric_Balletb=C3=B2_i_Serra?= <eballetbo@gmail.com>
+Received: from arroyo.ext.ti.com ([192.94.94.40])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OZGz4-0007OO-Nl
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2010 05:27:47 +0000
+From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: rohit.hs@samsung.com, v.dalal@samsung.com, dedekind1@gmail.com
+Subject: [PATCH v2] mtd-nand: davinci: correct 4-bit error correction
+Date: Thu, 15 Jul 2010 10:40:41 +0530
+Message-Id: <1279170641-24494-1-git-send-email-sudhakar.raj@ti.com>
+Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
+	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, nsnehaprabha@ti.com,
+	davinci-linux-open-source@linux.davincidsp.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,132 +19,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
+4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
+before waiting for the NAND Flash status register to be equal to 1, 2 or
+3, we have to wait till the ECC HW goes to correction state.  Without this
+wait, ECC correction calculations will not be proper.
 
-2010/7/14 ROHIT H.S <rohit.hs@samsung.com>
->
-> Hi Artem,
->
-> Rohit Hagargundgi , author of mtd: Flex-OneNAND support has left the orga=
-nization.
->
-> Any Flex OneNAND specific issues will be taken care by us from now onward=
-s.
->
-> >On Thu, 2010-07-08 at 12:11 +0200, Enric Balletb=C3=B2 i Serra wrote:
->
-> >> Hello,
->
-> > >
->
-> > >2010/7/8 Artem Bityutskiy <dedekind1 at gmail.com>:
->
-> > >> On Thu, 2010-07-08 at 11:55 +0200, Enric Balletb=C3=B2 i Serra wrote=
-:
->
-> > >>> Hello,
-> > >>>
->
-> > >> >I made new tests regarding this issue. Looks like the problem is > =
->> reading from the OneNAND device.
-> > >>
->
-> > > >Did you try older kernel and then bisecting who is responsible for t=
-he
-> > > >breakage?
->
-> > >
->
-> > >Yes, before commit
-> > >5988af2319781bc8e0ce418affec4e09cfa77907 (mtd: Flex-OneNAND support)
-> > >http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=
-=3Dcommit;h=3D5988af2319781bc8e0ce418affec4e09cfa77907
-> > >my OneNAND is working, after the commit, the OneNAND support is broken=
-.
->
->
-> >Ok, we could revert it, but it is better to fix it. CCing the author of
->
-> the commit.
->
-> We tested Samsung Muxed OneNAND(DDP) on Apollon Board with
->
-> kernel 2.6.35-rc4 and did not face any problems with DDP OneNand read/wri=
-te.
->
-> We didn't face any problem with the below code as pointed by Eric in
->
-> file:: onenand_base.c
-> 378: default:
-> block =3D onenand_block(this, addr);
-> page =3D (int) (addr - onenand_addr(this, block)) >> this->page_shift;
->
->
-> We didn't changed anything in onenand_base.c and have runned nandtest uti=
-lity. Below are the results.
-> mtd3 and mtd4 are our OneNAND paritions.
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> # nandtest /dev/mtd3
-> ECC corrections: 0
-> ECC failures : 0
-> Bad blocks : 1
-> BBT blocks : 0
-> Bad block at 0x00bc0000
-> 00fe0000: checking...
-> Finished pass 1 successfully
-> # nandtest /dev/mtd4
-> ECC corrections: 0
-> ECC failures : 0
-> Bad blocks : 0
-> BBT blocks : 0
-> 01fe0000: checking...
-> Finished pass 1 successfully
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> We don't have Nymonix OneNAND DDP chip as used by Eric. So can't say why =
-issue
->
-> is coming up in that.
->
-> Eric we need more details about the internal organization of Nymonix chip=
-s which you are using.
->
-> Reciprocating the envirnoment is not possible but atleast we will try to
->
-> figure out if there is any difference in internal organization.
+This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and DM365
+EVMs.
 
-I have two different OneNAND from Numonyx and nandtest fails on all of them=
-.
+Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+Since v1:
+a. Timeout has been changed from 100 msec to 100 usec.
+b. Comment above the do, while loop was not matching the code.
+   This has been corrected.
+c. Initialization of 'timeo' variable has been moved down.
+d. It was observed that, while calculating the time in the loop,
+   if there is a context switch between setting the 4BITECC_ADD_CALC_START
+   bit and reading of ECC_STATE field, then the loop will not come out
+   until the timeout happens. To prevent the context switch, spin_lock_irqsave
+   and spin_unlock_irqrestore are used.
 
-The first one is a 2-Gbit OneNAND device from Numonyx composed of one
-dice with 2KB
-page, the device is equipped with two DataRAMs ( two planes)
+ drivers/mtd/nand/davinci_nand.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
 
-[   25.964904] OneNAND Manufacturer: Numonyx (0x20)
-[   25.964904] Muxed OneNAND 256MB 1.8V 16-bit (0x40)
-[   25.969787] OneNAND version =3D 0x0031
-[   25.973388] Chip support all block unlock
-[   25.973388] Chip has 2 plane
-
-The second one is a 4-Gbit DDP OneNAND device from Numonyx composed of
-two 2-Gbit 2KB
-page dice stacked together, the device is equipped with two DataRAMs,
-
-[   29.368347] OneNAND Manufacturer: Numonyx (0x20)
-[   29.368347] Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
-[   29.373657] OneNAND version =3D 0x0031
-[   29.377258] Chip support all block unlock
-[   29.377258] Chip has 2 plane
-
-Note that these two devices have 2 planes, maybe this is difference.
-
-Have you tested with a OneNAND with 2 planes ?
-
-Best regards,
--- Enric
+diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
+index 9c9d893..1e2657c 100644
+--- a/drivers/mtd/nand/davinci_nand.c
++++ b/drivers/mtd/nand/davinci_nand.c
+@@ -311,7 +311,11 @@ static int nand_davinci_correct_4bit(struct mtd_info *mtd,
+ 	unsigned short ecc10[8];
+ 	unsigned short *ecc16;
+ 	u32 syndrome[4];
++	u32 ecc_state;
+ 	unsigned num_errors, corrected;
++	unsigned long timeo;
++	DEFINE_SPINLOCK(ecc_spin_lock);
++	unsigned long flags;
+ 
+ 	/* All bytes 0xff?  It's an erased page; ignore its ECC. */
+ 	for (i = 0; i < 10; i++) {
+@@ -355,12 +359,30 @@ compare:
+ 	 */
+ 	davinci_nand_readl(info, NAND_ERR_ADD1_OFFSET);
+ 
++	spin_lock_irqsave(&ecc_spin_lock, flags);
+ 	/* Start address calculation, and wait for it to complete.
+ 	 * We _could_ start reading more data while this is working,
+ 	 * to speed up the overall page read.
+ 	 */
+ 	davinci_nand_writel(info, NANDFCR_OFFSET,
+ 			davinci_nand_readl(info, NANDFCR_OFFSET) | BIT(13));
++
++	/*
++	 * ECC_STATE field reads 0x3 (Error correction complete) immediately
++	 * after setting the 4BITECC_ADD_CALC_START bit. So if you immediately
++	 * begin trying to poll for the state, you may fall right out of your
++	 * loop without any of the correction calculations having taken place.
++	 * The recommendation from the hardware team is to wait till ECC_STATE
++	 * reads >= 4, which means ECC HW has entered correction state.
++	 */
++	timeo = jiffies + usecs_to_jiffies(100);
++	do {
++		ecc_state = (davinci_nand_readl(info,
++				NANDFSR_OFFSET) >> 8) & 0x0f;
++		cpu_relax();
++	} while ((ecc_state < 4) && time_before(jiffies, timeo));
++	spin_unlock_irqrestore(&ecc_spin_lock, flags);
++
+ 	for (;;) {
+ 		u32	fsr = davinci_nand_readl(info, NANDFSR_OFFSET);
+ 
+-- 
+1.5.6
