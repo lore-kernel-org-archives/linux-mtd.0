@@ -1,30 +1,26 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from webbox687.server-home.net ([195.149.74.151])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZKhS-0003G0-1v
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2010 09:25:52 +0000
-Received: from epmmp2 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L5L00EBXE6TDY70@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 15 Jul 2010 18:25:41 +0900 (KST)
-Received: from roh83 ([107.108.214.183])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L5L003LTE6RU8@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 15 Jul 2010 18:25:41 +0900 (KST)
-Date: Thu, 15 Jul 2010 14:55:38 +0530
-From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
-Subject: RE: Possible bug in onenand_base ?
-In-reply-to: <AANLkTinuTRyHdCUhP5dOocIFAUxrgvIhtGbBk3WUJfsS@mail.gmail.com>
-To: =?UTF-8?Q?'Enric_Balletb=C3=B2_i_Serra'?= <eballetbo@gmail.com>,
-	linux-mtd@lists.infradead.org
-Message-id: <000201cb23ff$b11ab020$13501060$%hs@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=UTF-8
-Content-language: en-us
-Content-transfer-encoding: quoted-printable
-References: <0L5J00FOLHZI2I@ms13.samsung.com>
-	<AANLkTinuTRyHdCUhP5dOocIFAUxrgvIhtGbBk3WUJfsS@mail.gmail.com>
-Cc: v.dalal@samsung.com, dedekind1@gmail.com
+	id 1OZLYJ-0001GT-Oc
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2010 10:20:28 +0000
+Received: from comm.systec-electronic.de (178-25-112-77-dynip.superkabel.de
+	[178.25.112.77])
+	by webbox687.server-home.net (Postfix) with ESMTP id 5DD9877803D
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Jul 2010 12:20:20 +0200 (CEST)
+Received: from ws-stein.localnet (ws-stein.systec-electronic.de
+	[192.168.10.93])
+	by comm.systec-electronic.de (Postfix) with ESMTP id 082F297C068
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Jul 2010 12:20:18 +0200 (CEST)
+From: Alexander Stein <alexander.stein@systec-electronic.com>
+To: linux-mtd@lists.infradead.org
+Subject: CFI for 2x 16 bit NOR-FLash on one chipselect?
+Date: Thu, 15 Jul 2010 12:20:16 +0200
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201007151220.16650.alexander.stein@systec-electronic.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,182 +30,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Eric,
+Hello,
 
->
->-----Original Message-----
->From: Enric Balletb=C3=B2 i Serra [mailto:eballetbo@gmail.com]=20
->Sent: Wednesday, July 14, 2010 8:08 PM
->To: linux-mtd@lists.infradead.org
->Cc: dedekind1@gmail.com; v.dalal@samsung.com; rohit.hs@samsung.com
->Subject: Re: Possible bug in onenand_base ?
->
->Hello,
->
->2010/7/14 ROHIT H.S <rohit.hs@samsung.com>
->>
->> Hi Artem,
->>
->> Rohit Hagargundgi , author of mtd: Flex-OneNAND support has left the =
-organization.
->>
->> Any Flex OneNAND specific issues will be taken care by us from now =
-onwards.
->>
->> >On Thu, 2010-07-08 at 12:11 +0200, Enric Balletb=C3=B2 i Serra =
-wrote:
->>
->> >> Hello,
->>
->> > >
->>
->> > >2010/7/8 Artem Bityutskiy <dedekind1 at gmail.com>:
->>
->> > >> On Thu, 2010-07-08 at 11:55 +0200, Enric Balletb=C3=B2 i Serra =
-wrote:
->>
->> > >>> Hello,
->> > >>>
->>
->> > >> >I made new tests regarding this issue. Looks like the problem =
-is > >> reading from the OneNAND device.
->> > >>
->>
->> > > >Did you try older kernel and then bisecting who is responsible =
-for the
->> > > >breakage?
->>
->> > >
->>
->> > >Yes, before commit
->> > >5988af2319781bc8e0ce418affec4e09cfa77907 (mtd: Flex-OneNAND =
-support)
->> > =
->http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-2.6.git;a=3Dc=
-ommit;h=3D5988af2319781bc8e0ce418affec4e09cfa77907
->> > >my OneNAND is working, after the commit, the OneNAND support is =
-broken.
->>
->>
->> >Ok, we could revert it, but it is better to fix it. CCing the author =
-of
->>
->> the commit.
->>
->> We tested Samsung Muxed OneNAND(DDP) on Apollon Board with
->>
->> kernel 2.6.35-rc4 and did not face any problems with DDP OneNand =
-read/write.
->>
->> We didn't face any problem with the below code as pointed by Eric in
->>
->> file:: onenand_base.c
->> 378: default:
->> block =3D onenand_block(this, addr);
->> page =3D (int) (addr - onenand_addr(this, block)) >> =
-this->page_shift;
->>
->>
->> We didn't changed anything in onenand_base.c and have runned nandtest =
-utility. Below are the results.
->> mtd3 and mtd4 are our OneNAND paritions.
->>
->> =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->> # nandtest /dev/mtd3
->> ECC corrections: 0
->> ECC failures : 0
->> Bad blocks : 1
->> BBT blocks : 0
->> Bad block at 0x00bc0000
->> 00fe0000: checking...
->> Finished pass 1 successfully
->> # nandtest /dev/mtd4
->> ECC corrections: 0
->> ECC failures : 0
->> Bad blocks : 0
->> BBT blocks : 0
->> 01fe0000: checking...
->> Finished pass 1 successfully
->>
->> =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->> We don't have Nymonix OneNAND DDP chip as used by Eric. So can't say =
-why issue
->>
->> is coming up in that.
->>
->> Eric we need more details about the internal organization of Nymonix =
-chips which you are using.
->>
->> Reciprocating the envirnoment is not possible but atleast we will try =
-to
->>
->> figure out if there is any difference in internal organization.
->
->I have two different OneNAND from Numonyx and nandtest fails on all of =
-them.
->
->The first one is a 2-Gbit OneNAND device from Numonyx composed of one
->dice with 2KB
->page, the device is equipped with two DataRAMs ( two planes)
->
->[   25.964904] OneNAND Manufacturer: Numonyx (0x20)
->[   25.964904] Muxed OneNAND 256MB 1.8V 16-bit (0x40)
->[   25.969787] OneNAND version =3D 0x0031
->[   25.973388] Chip support all block unlock
->[   25.973388] Chip has 2 plane
->
->The second one is a 4-Gbit DDP OneNAND device from Numonyx composed of
->two 2-Gbit 2KB
->page dice stacked together, the device is equipped with two DataRAMs,
->
->[   29.368347] OneNAND Manufacturer: Numonyx (0x20)
->[   29.368347] Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
->[   29.373657] OneNAND version =3D 0x0031
->[   29.377258] Chip support all block unlock
->[   29.377258] Chip has 2 plane
->
->Note that these two devices have 2 planes, maybe this is difference.
->
->Have you tested with a OneNAND with 2 planes ?
+we are planning to use 2x 16bit NOR-Flash on one chipselect to use the 32bit 
+bus. Now I'm wondering if this setup is supported by the CFI driver included 
+in linux?
 
-
-Yes, we have tested 2 planes Muxed OneNAND DDP device from =
-Samsung(KFN4G16Q2A) and=20
-did not face any problem with read/write from latest linux kernel.
-
-Below is the device information captured from U-boot,
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-U-Boot 2010.06 (Jul 15 2010 - 10:27:31)
-
-OMAP2420-GP revision 5
-Samsung Apollon SDP Base Board + mDDR
-DRAM:  64 MiB
-Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
-OneNAND version =3D 0x0121
-Chip support all block unlock
-Chip has 2 plane
-block =3D 2048, wp status =3D 0x2
-Scanning device for bad blocks
-onenand_bbt_wait: ecc error =3D 0x2222, controller =3D 0x2400
-Bad eraseblock 2485 at 0x136a0000
-OneNAND: 512 MiB
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-
-We haven't faced any issue with Samsung 2 plane DDP OneNAND device.
-Can you please provide us the Numonyx 2 plane OneNAND Chip spec which =
-you
-are using.
-
-Regards,
-Rohit Hassan
+Best regards,
+Alexander
