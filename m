@@ -1,31 +1,36 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZjeJ-00048M-Rf
-	for linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 12:04:17 +0000
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L5N00BE0G6YHQ90@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 21:04:10 +0900 (KST)
-Received: from roh83 ([107.108.214.183])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L5N003TYG6WWL@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 21:04:10 +0900 (KST)
-Date: Fri, 16 Jul 2010 17:34:08 +0530
-From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
-Subject: RE: Possible bug in onenand_base ?
-In-reply-to: <AANLkTilSY5bFc9OlnktxRoKh-zv69pRrGo1L0u_zCMHN@mail.gmail.com>
-To: =?utf-8?Q?'Enric_Balletb=C3=B2_i_Serra'?= <eballetbo@gmail.com>
-Message-id: <000001cb24de$ffcb14f0$ff613ed0$%hs@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-language: en-us
-Content-transfer-encoding: quoted-printable
-References: <0L5J00FOLHZI2I@ms13.samsung.com>
-	<AANLkTinuTRyHdCUhP5dOocIFAUxrgvIhtGbBk3WUJfsS@mail.gmail.com>
-	<000201cb23ff$b11ab020$13501060$%hs@samsung.com>
-	<AANLkTilSY5bFc9OlnktxRoKh-zv69pRrGo1L0u_zCMHN@mail.gmail.com>
-Cc: v.dalal@samsung.com, linux-mtd@lists.infradead.org, dedekind1@gmail.com
+Received: from faui40.informatik.uni-erlangen.de ([131.188.34.40])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OZk4F-0005xw-Q0
+	for linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 12:31:04 +0000
+Date: Fri, 16 Jul 2010 14:28:56 +0200
+From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+To: Milton Miller <miltonm@bga.com>, Josh Boyer <jwboyer@linux.vnet.ibm.com>,
+	Matt Porter <mporter@kernel.crashing.org>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>, Solomon Peachy <solomon@linux-wlan.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Mike Frysinger <vapier@gentoo.org>, Jiri Kosina <jkosina@suse.cz>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Alexander Kurz <linux@kbdbabel.org>,
+	Russell King <rmk+kernel@arm.linux.org.uk>,
+	Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Randy Dunlap <randy.dunlap@oracle.com>, John Linn <john.linn@xilinx.com>,
+	Florian Fainelli <florian@openwrt.org>,
+	Nicolas Pitre <nico@fluxnic.net>, Joe Perches <joe@perches.com>,
+	Ladislav Michl <ladis@linux-mips.org>,
+	David Brown <davidb@quicinc.com>, linuxppc-dev@ozlabs.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	netdev@vger.kernel.org
+Subject: [PATCH 0/2] Removing dead code
+Message-ID: <cover.1279282865.git.qy03fugy@stud.informatik.uni-erlangen.de>
+References: <4f07b3092cafbbba37d61d367cc7484e24d18d2a.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
+	<redwood56-reply-1-miltonm@bga.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <redwood56-reply-1-miltonm@bga.com>
+Cc: vamos-dev@i4.informatik.uni-erlangen.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,263 +40,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Enric,
+Hi all!
 
-> -----Original Message-----
-> From: Enric Balletb=C3=B2 i Serra [mailto:eballetbo@gmail.com]
-> Sent: Thursday, July 15, 2010 4:49 PM
-> To: Rohit Hassan Sathyanarayan
-> Cc: linux-mtd@lists.infradead.org; dedekind1@gmail.com; =
-v.dalal@samsung.com
-> Subject: Re: Possible bug in onenand_base ?
->=20
-> Hello Rohit,
->=20
-> 2010/7/15 Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>:
-> > Hi Eric,
-> >
-> >>
-> >>-----Original Message-----
-> >>From: Enric Balletb=C3=B2 i Serra [mailto:eballetbo@gmail.com]
-> >>Sent: Wednesday, July 14, 2010 8:08 PM
-> >>To: linux-mtd@lists.infradead.org
-> >>Cc: dedekind1@gmail.com; v.dalal@samsung.com; rohit.hs@samsung.com
-> >>Subject: Re: Possible bug in onenand_base ?
-> >>
-> >>Hello,
-> >>
-> >>2010/7/14 ROHIT H.S <rohit.hs@samsung.com>
-> >>>
-> >>> Hi Artem,
-> >>>
-> >>> Rohit Hagargundgi , author of mtd: Flex-OneNAND support has left =
-the organization.
-> >>>
-> >>> Any Flex OneNAND specific issues will be taken care by us from now =
-onwards.
-> >>>
-> >>> >On Thu, 2010-07-08 at 12:11 +0200, Enric Balletb=C3=B2 i Serra =
-wrote:
-> >>>
-> >>> >> Hello,
-> >>>
-> >>> > >
-> >>>
-> >>> > >2010/7/8 Artem Bityutskiy <dedekind1 at gmail.com>:
-> >>>
-> >>> > >> On Thu, 2010-07-08 at 11:55 +0200, Enric Balletb=C3=B2 i =
-Serra wrote:
-> >>>
-> >>> > >>> Hello,
-> >>> > >>>
-> >>>
-> >>> > >> >I made new tests regarding this issue. Looks like the =
-problem is > >> reading from the
-> OneNAND device.
-> >>> > >>
-> >>>
-> >>> > > >Did you try older kernel and then bisecting who is =
-responsible for the
-> >>> > > >breakage?
-> >>>
-> >>> > >
-> >>>
-> >>> > >Yes, before commit
-> >>> > >5988af2319781bc8e0ce418affec4e09cfa77907 (mtd: Flex-OneNAND =
-support)
-> >>> > >http://git.kernel.org/?p=3Dlinux/kernel/git/torvalds/linux-
-> 2.6.git;a=3Dcommit;h=3D5988af2319781bc8e0ce418affec4e09cfa77907
-> >>> > >my OneNAND is working, after the commit, the OneNAND support is =
-broken.
-> >>>
-> >>>
-> >>> >Ok, we could revert it, but it is better to fix it. CCing the =
-author of
-> >>>
-> >>> the commit.
-> >>>
-> >>> We tested Samsung Muxed OneNAND(DDP) on Apollon Board with
-> >>>
-> >>> kernel 2.6.35-rc4 and did not face any problems with DDP OneNand =
-read/write.
-> >>>
-> >>> We didn't face any problem with the below code as pointed by Eric =
-in
-> >>>
-> >>> file:: onenand_base.c
-> >>> 378: default:
-> >>> block =3D onenand_block(this, addr);
-> >>> page =3D (int) (addr - onenand_addr(this, block)) >> =
-this->page_shift;
-> >>>
-> >>>
-> >>> We didn't changed anything in onenand_base.c and have runned =
-nandtest utility. Below are the
-> results.
-> >>> mtd3 and mtd4 are our OneNAND paritions.
-> >>>
-> >>> =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>> # nandtest /dev/mtd3
-> >>> ECC corrections: 0
-> >>> ECC failures : 0
-> >>> Bad blocks : 1
-> >>> BBT blocks : 0
-> >>> Bad block at 0x00bc0000
-> >>> 00fe0000: checking...
-> >>> Finished pass 1 successfully
-> >>> # nandtest /dev/mtd4
-> >>> ECC corrections: 0
-> >>> ECC failures : 0
-> >>> Bad blocks : 0
-> >>> BBT blocks : 0
-> >>> 01fe0000: checking...
-> >>> Finished pass 1 successfully
-> >>>
-> >>> =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>
-> >>> We don't have Nymonix OneNAND DDP chip as used by Eric. So can't =
-say why issue
-> >>>
-> >>> is coming up in that.
-> >>>
-> >>> Eric we need more details about the internal organization of =
-Nymonix chips which you are using.
-> >>>
-> >>> Reciprocating the envirnoment is not possible but atleast we will =
-try to
-> >>>
-> >>> figure out if there is any difference in internal organization.
-> >>
-> >>I have two different OneNAND from Numonyx and nandtest fails on all =
-of them.
-> >>
-> >>The first one is a 2-Gbit OneNAND device from Numonyx composed of =
-one
-> >>dice with 2KB
-> >>page, the device is equipped with two DataRAMs ( two planes)
-> >>
-> >>[   25.964904] OneNAND Manufacturer: Numonyx (0x20)
-> >>[   25.964904] Muxed OneNAND 256MB 1.8V 16-bit (0x40)
-> >>[   25.969787] OneNAND version =3D 0x0031
-> >>[   25.973388] Chip support all block unlock
-> >>[   25.973388] Chip has 2 plane
-> >>
-> >>The second one is a 4-Gbit DDP OneNAND device from Numonyx composed =
-of
-> >>two 2-Gbit 2KB
-> >>page dice stacked together, the device is equipped with two =
-DataRAMs,
-> >>
-> >>[   29.368347] OneNAND Manufacturer: Numonyx (0x20)
-> >>[   29.368347] Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
-> >>[   29.373657] OneNAND version =3D 0x0031
-> >>[   29.377258] Chip support all block unlock
-> >>[   29.377258] Chip has 2 plane
-> >>
-> >>Note that these two devices have 2 planes, maybe this is difference.
-> >>
-> >>Have you tested with a OneNAND with 2 planes ?
-> >
-> >
-> > Yes, we have tested 2 planes Muxed OneNAND DDP device from =
-Samsung(KFN4G16Q2A) and
-> > did not face any problem with read/write from latest linux kernel.
-> >
-> > Below is the device information captured from U-boot,
-> > =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> > U-Boot 2010.06 (Jul 15 2010 - 10:27:31)
-> >
-> > OMAP2420-GP revision 5
-> > Samsung Apollon SDP Base Board + mDDR
-> > DRAM:  64 MiB
-> > Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x58)
-> > OneNAND version =3D 0x0121
-> > Chip support all block unlock
-> > Chip has 2 plane
-> > block =3D 2048, wp status =3D 0x2
-> > Scanning device for bad blocks
-> > onenand_bbt_wait: ecc error =3D 0x2222, controller =3D 0x2400
-> > Bad eraseblock 2485 at 0x136a0000
-> > OneNAND: 512 MiB
-> > =
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> >
-> > We haven't faced any issue with Samsung 2 plane DDP OneNAND device.
-> > Can you please provide us the Numonyx 2 plane OneNAND Chip spec =
-which you
-> > are using.
-> >
->=20
-> Unfortunately I can't send the Numonyx datasheet because is under NDA.
-> Maybe someone from Numonyx can send us the datasheet. I think they
-> should seriously consider provide this information to help all
-> developers.
->=20
-> OTOH I investigated a little more, and I think I found something =
-interesting.
->=20
-> Comparing the KFN4G16Q2A with the Numonyx device I see are very
-> similar, so I compared the OneNAND configuration on Apollon board and
-> the IGEP v2 board. I see a significant diference, the IGEP v2 board
-> sets the CONFIG_MTD_ONENAND_2X_PROGRAM. Here are the results
->=20
-> # nandtest /dev/mtd4
-> ECC corrections: 0
-> ECC failures   : 0
-> Bad blocks     : 2
-> BBT blocks     : 0
-> Bad block at 0x0a100000
-> Bad block at 0x0a120000
-> 0fa60000: checking...
-> Finished pass 1 successfully
->=20
-> Surprise, works now !
->=20
-> Whitout CONFIG_MTD_ONENAND_2X_PROGRAM the mtd info shows
-> # mtd_debug info /dev/mtd4
-> mtd.type =3D MTD_NANDFLASH
-> mtd.flags =3D MTD_CAP_NANDFLASH
-> mtd.size =3D 262668288 (250M)
-> mtd.erasesize =3D 131072 (128K)
-> mtd.writesize =3D 2048 (2K)
-> mtd.oobsize =3D 64
-> regions =3D 0
->=20
-> With CONFIG_MTD_ONENAND_2X_PROGRAM the mtd info shows
-> # mtd_debug info /dev/mtd4
-> mtd.type =3D MTD_NANDFLASH
-> mtd.flags =3D MTD_CAP_NANDFLASH
-> mtd.size =3D 262668288 (250M)
-> mtd.erasesize =3D 262144 (256K)
-> mtd.writesize =3D 4096 (4K)
-> mtd.oobsize =3D 64
-> regions =3D 0
->=20
-> In conclusion, seems the problem is handling the 2X program feature
-> and I suspect you can reproduce the issue enabling the
-> CONFIG_MTD_ONENAND_2X_PROGRAM in the apollon defconfig. Please, can
-> you test with your board ?
+I merged the two patches from Christoph Egger[1] to remove the
+REDWOOD_[456] config depends. And wrote a second patch, which removes
+the redwood/mtd mapping module. I hope this is now acceptable to bring
+it into the kernel, if this options are really dead.       
 
-Your correct, problem is with properly handling 2X program feature.
+Regards
 
-We tested Samsung Muxed OneNAND(DDP) by enabling =
-CONFIG_MTD_ONENAND_2X_PROGRAM=20
-in apollon defconfig and we faced the same issue pointed by you.
+        Christian Dietrich
 
-We are working on this issue.
+[0] http://vamos1.informatik.uni-erlangen.de/
+[1] Message-Id: <adba61f63f4439ac17f2e428429f01ae5e65ab15.1279110895.git.siccegge@cs.fau.de>
 
-Thanks for your pointers,
+Christian Dietrich (2):
+  Remove REDWOOD_[456] config options and conditional code
+  Removed redwood/mtd mapping
 
-Regards,
-Rohit Hassan & Vivek Dalal
+ arch/powerpc/platforms/40x/Kconfig |   16 ----
+ drivers/mtd/maps/Kconfig           |    8 --
+ drivers/mtd/maps/Makefile          |    1 -
+ drivers/mtd/maps/redwood.c         |  174 ------------------------------------
+ drivers/net/Kconfig                |    2 +-
+ drivers/net/smc91x.h               |   37 --------
+ 6 files changed, 1 insertions(+), 237 deletions(-)
+ delete mode 100644 drivers/mtd/maps/redwood.c
