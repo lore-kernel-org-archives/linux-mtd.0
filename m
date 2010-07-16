@@ -1,19 +1,22 @@
-Received: from ussvlmgty02.spansion.com ([12.151.36.113])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZmty-0005Lz-Oh
-	for linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 15:32:43 +0000
-From: "Hoyler, Gernot" <Gernot.Hoyler@spansion.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Fri, 16 Jul 2010 08:32:35 -0700
-Subject: RE: Spansion SPI parts
-Message-ID: <D0271AF888369C4C85548462366DB24B3F524F16@US2K7EXMBPF1.spansion.com>
+	id 1OZn1V-0004tR-A5
+	for linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 15:40:31 +0000
+Received: by gya1 with SMTP id 1so1592197gya.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 16 Jul 2010 08:40:23 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <D0271AF888369C4C85548462366DB24B3F524F16@US2K7EXMBPF1.spansion.com>
 References: <D0271AF888369C4C85548462366DB24B3F524EF2@US2K7EXMBPF1.spansion.com>
 	<AANLkTilwlddf90uXscKJLF9P0qonT1DcYuF8JT5PRrZb@mail.gmail.com>
-In-Reply-To: <AANLkTilwlddf90uXscKJLF9P0qonT1DcYuF8JT5PRrZb@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+	<D0271AF888369C4C85548462366DB24B3F524F16@US2K7EXMBPF1.spansion.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Fri, 16 Jul 2010 11:40:02 -0400
+Message-ID: <AANLkTinF9f0FMeyK4kMc6cVw3rtSDELJzkLLD_4J0hKT@mail.gmail.com>
+Subject: Re: Spansion SPI parts
+To: "Hoyler, Gernot" <Gernot.Hoyler@spansion.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgTWlrZSwNCg0KPiB5b3Ugd2lsbCBuZWVkIHRvIHZlcmlmeSBhbGwgcGxhdGZvcm0gcmVzb3Vy
-Y2VzIGluIGJvYXJkIGZpbGVzIGFyZSB1cGRhdGVkIGFzIHdlbGwgLW1pa2UNCg0KSSBoYWQgcnVu
-IGEgcmVjdXJzaXZlIGdyZXAgdGhyb3VnaCB0aGUgb3JpZ2luYWwga2VybmVsIHNvdXJjZSB0cmVl
-LCBzZWUgYmVsb3cuDQpJbiB0aGlzIG91dHB1dCwgSSBkbyBub3Qgc2VlIGFueSBkaXJlY3RseSBt
-YXRjaGluZyBib2FyZCBkcml2ZXIgcmVmZXJlbmNlcy4uLiANCmV4Y2VwdCBzb21lIHJlZnMgdG8g
-czI1c2wxMjhiIHdoaWNoIHNlZW1zIHRvIGJlIGRlY2xhcmVkIGJ5IHNvbWUgZGVyaXZlZCBGcmVl
-c2NhbGUNCmRyaXZlciAoZnNsX20yNXA4MCkuIEkgYXNzdW1lIHdlIGNhbm5vdCBmaXggdGhhdCBk
-ZXJpdmF0aXZlIChiZWNhdXNlIGl0IG9ubHkgY29tZXMNCndpdGggdGhlIEZyZWVzY2FsZSBCU1Bz
-KSwgc28gd2Ugc2hvdWxkIGJlIGNsZWFuIQ0KDQpUaHgsIEdlcm5vdA0KDQo9PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PQ0KJSBmaW5kIGxpbnV4LTIuNi4zNCAtZXhlYyBncmVwIC1pIHMyNXNsIHt9IFw7IC1wcmludA0K
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtb2RhbCA9ICJzMjVzbDEyOGIiOw0KbGlu
-dXgtMi42LjM0LWZpeGVkL2FyY2gvcG93ZXJwYy9ib290L2R0cy9wMjAyMHJkYi5kdHMNCiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwgPSAiczI1c2wxMjhiIjsNCmxpbnV4LTIu
-Ni4zNC1maXhlZC9hcmNoL3Bvd2VycGMvYm9vdC9kdHMvcDIwMjByZGJfY2FtcF9jb3JlMC5kdHMN
-CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbW9kYWwgPSAiczI1c2wxMjhiIjsNCmxp
-bnV4LTIuNi4zNC1maXhlZC9hcmNoL3Bvd2VycGMvYm9vdC9kdHMvcDEwMjByZGIuZHRzDQogICAg
-ICAgIHsgInMyNXNsMDA0YSIsICBJTkZPKDB4MDEwMjEyLCAgICAgIDAsICA2NCAqIDEwMjQsICAg
-OCwgMCkgfSwNCiAgICAgICAgeyAiczI1c2wwMDhhIiwgIElORk8oMHgwMTAyMTMsICAgICAgMCwg
-IDY0ICogMTAyNCwgIDE2LCAwKSB9LA0KICAgICAgICB7ICJzMjVzbDAxNmEiLCAgSU5GTygweDAx
-MDIxNCwgICAgICAwLCAgNjQgKiAxMDI0LCAgMzIsIDApIH0sDQogICAgICAgIHsgInMyNXNsMDMy
-YSIsICBJTkZPKDB4MDEwMjE1LCAgICAgIDAsICA2NCAqIDEwMjQsICA2NCwgMCkgfSwNCiAgICAg
-ICAgeyAiczI1c2wwNjRhIiwgIElORk8oMHgwMTAyMTYsICAgICAgMCwgIDY0ICogMTAyNCwgMTI4
-LCAwKSB9LA0KICAgICAgICB7ICJzMjVzbDEyODAwIiwgSU5GTygweDAxMjAxOCwgMHgwMzAwLCAy
-NTYgKiAxMDI0LCAgNjQsIDApIH0sDQogICAgICAgIHsgInMyNXNsMTI4MDEiLCBJTkZPKDB4MDEy
-MDE4LCAweDAzMDEsICA2NCAqIDEwMjQsIDI1NiwgMCkgfSwNCmxpbnV4LTIuNi4zNC1maXhlZC9k
-cml2ZXJzL210ZC9kZXZpY2VzL20yNXA4MC5jDQogICAgICAgICAgU3BhbnNpb24gUzI1U0wsIFNT
-VCAyNVZGLCBTVCBNMjVQLCBhbmQgV2luYm9uZCBXMjVYLiAgT3RoZXIgY2hpcHMNCmxpbnV4LTIu
-Ni4zNC1maXhlZC9kcml2ZXJzL210ZC9kZXZpY2VzL0tjb25maWcNCg0KDQo9PT09PT09PT09PT09
-IC9hcmNoL3Bvd2VycGMvYm9vdC9kdHMvcDIwMjByZGJfY2FtcF9jb3JlMC5kdHMgPT09PT09PT09
-PT09DQogICAgICAgICAgICAgICAgICAgICAgbGludXgsbW9kYWxpYXMgPSAiZnNsX20yNXA4MCI7
-DQogICAgICAgICAgICAgICAgICAgICAgbW9kYWwgPSAiczI1c2wxMjhiIjsNCiAgICAgICAgICAg
-ICAgICAgICAgICBzcGktbWF4LWZyZXF1ZW5jeSA9IDw1MDAwMDAwMD47DQogICAgICAgICAgICAg
-ICAgICAgICAgbW9kZSA9IDwwPjsNCg0K
+On Fri, Jul 16, 2010 at 11:32, Hoyler, Gernot wrote:
+>> you will need to verify all platform resources in board files are updated as well -mike
+>
+> I had run a recursive grep through the original kernel source tree, see below.
+> In this output, I do not see any directly matching board driver references...
+> except some refs to s25sl128b which seems to be declared by some derived Freescale
+> driver (fsl_m25p80). I assume we cannot fix that derivative (because it only comes
+> with the Freescale BSPs), so we should be clean!
+
+mmm, why do you assume that ?  dts files are compiled into device
+trees which are bundled into the kernel image.  you will need to
+change those dts files to use the updated name.  otherwise the spi
+flash will not be detected/probed for those boards anymore.
+-mike
