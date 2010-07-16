@@ -1,20 +1,17 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OZenG-0001vD-8K
-	for linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 06:53:11 +0000
-Date: Fri, 16 Jul 2010 08:53:04 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Eric =?iso-8859-15?Q?B=E9nard?= <eric@eukrea.com>
-Subject: Re: [PATCH 1/2] mxc_nand: fix Unbalanced enable for IRQ
-Message-ID: <20100716065304.GG14113@pengutronix.de>
-References: <1276178584-10074-1-git-send-email-eric@eukrea.com>
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OZiAL-0007ga-F3
+	for linux-mtd@lists.infradead.org; Fri, 16 Jul 2010 10:29:14 +0000
+Received: by pvf33 with SMTP id 33so903885pvf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 16 Jul 2010 03:29:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1276178584-10074-1-git-send-email-eric@eukrea.com>
-Cc: ivo.clarysse@gmail.com, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.arm.linux.org.uk, u.kleine-koenig@pengutronix.de
+Date: Fri, 16 Jul 2010 15:59:08 +0530
+Message-ID: <AANLkTincY7XUC7X83YSbC7Gt8q6QTU67yejqbYv1ewgq@mail.gmail.com>
+Subject: JFFS2 image mount but ls fails??
+From: Manish Aggarwal <manish@circuitsutra.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,71 +21,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 10, 2010 at 04:03:04PM +0200, Eric Bénard wrote:
-> * preset should be done before sending the reset command
+Hi All,
 
-Has this been picked up somewhere? Otherwise I would do.
+I am running linux kernel version 2.6.32 on ARM RealView based virtual
+platform (from ARM fastmodel).
 
-Sascha
+I am able to boot the kernel successfully and able to get cramfs based
+root file system loaded on to it.
 
-> 
-> * without this, I get the following error on an i.MX35 :
-> [    0.900000] ------------[ cut here ]------------
-> [    0.900000] WARNING: at kernel/irq/manage.c:290 __enable_irq+0x4c/0x88()
-> [    0.900000] Unbalanced enable for IRQ 33
-> [    0.900000] Modules linked in:
-> [    0.900000] [<c002ffb8>] (unwind_backtrace+0x0/0xf0) from [<c02f7d0c>] (dump_stack+0x18/0x1c)
-> [    0.900000] [<c02f7d0c>] (dump_stack+0x18/0x1c) from [<c0049a44>] (warn_slowpath_common+0x54/0x6c)
-> [    0.900000] [<c0049a44>] (warn_slowpath_common+0x54/0x6c) from [<c0049b00>] (warn_slowpath_fmt+0x38/0x40)
-> [    0.900000] [<c0049b00>] (warn_slowpath_fmt+0x38/0x40) from [<c008f65c>] (__enable_irq+0x4c/0x88)
-> [    0.900000] [<c008f65c>] (__enable_irq+0x4c/0x88) from [<c008fca0>] (enable_irq+0x54/0x98)
-> [    0.900000] [<c008fca0>] (enable_irq+0x54/0x98) from [<c021e618>] (wait_op_done+0x40/0x134)
-> [    0.900000] [<c021e618>] (wait_op_done+0x40/0x134) from [<c021e808>] (send_cmd+0x30/0x38)
-> [    0.900000] [<c021e808>] (send_cmd+0x30/0x38) from [<c021eb8c>] (mxc_nand_command+0x26c/0x328)
-> [    0.900000] [<c021eb8c>] (mxc_nand_command+0x26c/0x328) from [<c021aa60>] (nand_scan_ident+0x188/0x6c0)
-> [    0.900000] [<c021aa60>] (nand_scan_ident+0x188/0x6c0) from [<c001a9cc>] (mxcnd_probe+0x2b8/0x3d0)
-> [    0.900000] [<c001a9cc>] (mxcnd_probe+0x2b8/0x3d0) from [<c01f9e88>] (platform_drv_probe+0x20/0x24)
-> [    0.900000] [<c01f9e88>] (platform_drv_probe+0x20/0x24) from [<c01f8c38>] (driver_probe_device+0xb0/0x164)
-> [    0.900000] [<c01f8c38>] (driver_probe_device+0xb0/0x164) from [<c01f8d54>] (__driver_attach+0x68/0x8c)
-> [    0.900000] [<c01f8d54>] (__driver_attach+0x68/0x8c) from [<c01f8348>] (bus_for_each_dev+0x50/0x84)
-> [    0.900000] [<c01f8348>] (bus_for_each_dev+0x50/0x84) from [<c01f8a9c>] (driver_attach+0x20/0x28)
-> [    0.900000] [<c01f8a9c>] (driver_attach+0x20/0x28) from [<c01f7c00>] (bus_add_driver+0x144/0x2dc)
-> [    0.900000] [<c01f7c00>] (bus_add_driver+0x144/0x2dc) from [<c01f906c>] (driver_register+0xb0/0x13c)
-> [    0.900000] [<c01f906c>] (driver_register+0xb0/0x13c) from [<c01fa13c>] (platform_driver_register+0x4c/0x60)
-> [    0.900000] [<c01fa13c>] (platform_driver_register+0x4c/0x60) from [<c01fa170>] (platform_driver_probe+0x20/0xa0)
-> [    0.900000] [<c01fa170>] (platform_driver_probe+0x20/0xa0) from [<c001a708>] (mxc_nd_init+0x18/0x24)
-> [    0.900000] [<c001a708>] (mxc_nd_init+0x18/0x24) from [<c002938c>] (do_one_initcall+0x64/0x1bc)
-> [    0.900000] [<c002938c>] (do_one_initcall+0x64/0x1bc) from [<c00084c4>] (kernel_init+0xe8/0x1ac)
-> [    0.900000] [<c00084c4>] (kernel_init+0xe8/0x1ac) from [<c002aee8>] (kernel_thread_exit+0x0/0x8)
-> [    0.900000] ---[ end trace 8bf72ac6ba089a19 ]---
-> [    1.140000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xda (Micron NAND 256MiB 3,3V 8-bit)
-> 
-> Signed-off-by: Eric Bénard <eric@eukrea.com>
-> ---
->  drivers/mtd/nand/mxc_nand.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 82e9438..8878503 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -604,8 +604,8 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
->  	/* Command pre-processing step */
->  	switch (command) {
->  	case NAND_CMD_RESET:
-> -		send_cmd(host, command, false);
->  		preset(mtd);
-> +		send_cmd(host, command, false);
->  		break;
->  
->  	case NAND_CMD_STATUS:
-> -- 
-> 1.6.3.3
-> 
-> 
+There are two flash in the system which are partitioned (using MTD
+subsystem) like this using the kernel command line:
+
+armflash.0 -> First 2M for Kernel and next 2 MB for busybox
+based cramfs image
+armflash.1 -> Full 64 MB for another root (JFFS2 based) file system
+
+(The flash is  Intel Strata Flash J3, a nor flash )
+
+Now after that I have to mount the jffs2 image on some mount point,
+which I do using the following command
+
+mount -t jffs2 /dev/mtdblock2  /tmpfs/new_dir
+
+The command executes successfully abd "df -h" actually shows the
+expected output, but when I run "ls /tmpfs/new_dir", system seems to
+go into infinite loop and the prompt never comes back.
+
+Any ideas on this why it is happening so and what I can do to rectify it??
+
+Other details are:
+=================
+
+I created the jffs2 based rootfs using the following command.
+
+mkfs.jffs2  -n  -s 128 -r _install -o root_jffs2.img
+
+where _install is my rootfs directory and root_jffs2.img is
+the output image. The size of root_jffs2.img is around 48MB.
+
+
+Other observations are:
+===================
+
+When I keep the the partition size of rootfs on armflash.1 to
+be 32 MB the "ls" commands succeeds. But due to obvious reasons when I
+run "chroot /tmpfs/new_dir  /int", I got segmentation fault.
+
+I don't understand why the ls commands works (for the same image) when
+the partition size is equal to 32 MB but not when partition size is
+64MB and what should I do to correctly mount the jffs2 rootfs.
+
+Any help in this regard will be highly appreciated.
+
+Regards,
+Manish
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+CircuitSutra Technologies
+Software Partner to Semiconductors
+manish@circuitsutra.com
