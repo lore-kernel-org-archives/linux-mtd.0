@@ -1,24 +1,21 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oa0IB-0000du-Ga
-	for linux-mtd@lists.infradead.org; Sat, 17 Jul 2010 05:50:33 +0000
-Received: by fxm3 with SMTP id 3so1617952fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 16 Jul 2010 22:50:29 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mxc_nand: fix Unbalanced enable for IRQ
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Eric =?ISO-8859-1?Q?B=E9nard?= <eric@eukrea.com>
-In-Reply-To: <1276178584-10074-1-git-send-email-eric@eukrea.com>
-References: <1276178584-10074-1-git-send-email-eric@eukrea.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 17 Jul 2010 08:50:24 +0300
-Message-Id: <1279345824.3212.24.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from 31.mail-out.ovh.net ([213.186.62.10])
+	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oa1lJ-0002Jk-6O
+	for linux-mtd@lists.infradead.org; Sat, 17 Jul 2010 07:24:42 +0000
+Message-ID: <4C415AB5.9070705@eukrea.com>
+Date: Sat, 17 Jul 2010 09:24:37 +0200
+From: =?UTF-8?B?RXJpYyBCw6luYXJk?= <eric@eukrea.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v2] mtd/mxc_nand: don't call mtd->{suspend,
+	resume} explicitly
+References: <1276801147-4103-1-git-send-email-eric@eukrea.com>	<1276801147-4103-2-git-send-email-eric@eukrea.com>	<1276801147-4103-3-git-send-email-eric@eukrea.com>
+	<1276801147-4103-4-git-send-email-eric@eukrea.com>
+In-Reply-To: <1276801147-4103-4-git-send-email-eric@eukrea.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: s.hauer@pengutronix.de, u.kleine-koenig@pengutronix.de,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.arm.linux.org.uk, ivo.clarysse@gmail.com
-Reply-To: dedekind1@gmail.com
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +25,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-06-10 at 16:03 +0200, Eric Bénard wrote:
-> * preset should be done before sending the reset command
-> 
-> * without this, I get the following error on an i.MX35 :
-> [    0.900000] ------------[ cut here ]------------
-> [    0.900000] WARNING: at kernel/irq/manage.c:290 __enable_irq+0x4c/0x88()
-> [    0.900000] Unbalanced enable for IRQ 33
-> [    0.900000] Modules linked in:
-> [    0.900000] [<c002ffb8>] (unwind_backtrace+0x0/0xf0) from [<c02f7d0c>] (dump_stack+0x18/0x1c)
-> [    0.900000] [<c02f7d0c>] (dump_stack+0x18/0x1c) from [<c0049a44>] (warn_slowpath_common+0x54/0x6c)
-> [    0.900000] [<c0049a44>] (warn_slowpath_common+0x54/0x6c) from [<c0049b00>] (warn_slowpath_fmt+0x38/0x40)
-> [    0.900000] [<c0049b00>] (warn_slowpath_fmt+0x38/0x40) from [<c008f65c>] (__enable_irq+0x4c/0x88)
-> [    0.900000] [<c008f65c>] (__enable_irq+0x4c/0x88) from [<c008fca0>] (enable_irq+0x54/0x98)
-> [    0.900000] [<c008fca0>] (enable_irq+0x54/0x98) from [<c021e618>] (wait_op_done+0x40/0x134)
-> [    0.900000] [<c021e618>] (wait_op_done+0x40/0x134) from [<c021e808>] (send_cmd+0x30/0x38)
-....
+Hi Artem,
 
-Pushed to l2-mtd-2.6.git / master
+can you also pick this patch for mxc_nand ?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thanks
+Eric
+
+Le 17/06/2010 20:59, Eric Bénard a écrit :
+> The mtd layer is responsible to call mtd->{suspend,resume}.  Doing it
+> again in the driver is wrong and results in a warning:
+>
+> 	nand_resume called for a chip which is not in suspended state
+>
+> at resume time.  Removing the calls from the resume and suspend
+> functions makes them empty allowing them to be deleted completely.
+>
+> Signed-off-by: Eric Bénard<eric@eukrea.com>
+> Acked-by: Uwe Kleine-König<u.kleine-koenig@pengutronix.de>
+> Cc: Sascha Hauer<s.hauer@pengutronix.de>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-mtd@lists.infradead.org
+> ---
+> v2:
+> 	fix commit log (writen by Uwe Kleine-König)
+>
+>   drivers/mtd/nand/mxc_nand.c |   44 +------------------------------------------
+>   1 files changed, 1 insertions(+), 43 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 0d76b16..ad19dc6 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -873,53 +873,11 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+>   	return 0;
+>   }
+>
+> -#ifdef CONFIG_PM
+> -static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
+> -{
+> -	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> -	struct nand_chip *nand_chip = mtd->priv;
+> -	struct mxc_nand_host *host = nand_chip->priv;
+> -	int ret = 0;
+> -
+> -	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND suspend\n");
+> -
+> -	ret = mtd->suspend(mtd);
+> -
+> -	/*
+> -	 * nand_suspend locks the device for exclusive access, so
+> -	 * the clock must already be off.
+> -	 */
+> -	BUG_ON(!ret&&  host->clk_act);
+> -
+> -	return ret;
+> -}
+> -
+> -static int mxcnd_resume(struct platform_device *pdev)
+> -{
+> -	struct mtd_info *mtd = platform_get_drvdata(pdev);
+> -	struct nand_chip *nand_chip = mtd->priv;
+> -	struct mxc_nand_host *host = nand_chip->priv;
+> -	int ret = 0;
+> -
+> -	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
+> -
+> -	mtd->resume(mtd);
+> -
+> -	return ret;
+> -}
+> -
+> -#else
+> -# define mxcnd_suspend   NULL
+> -# define mxcnd_resume    NULL
+> -#endif				/* CONFIG_PM */
+> -
+>   static struct platform_driver mxcnd_driver = {
+>   	.driver = {
+>   		   .name = DRIVER_NAME,
+> -		   },
+> +	},
+>   	.remove = __devexit_p(mxcnd_remove),
+> -	.suspend = mxcnd_suspend,
+> -	.resume = mxcnd_resume,
+>   };
+>
+>   static int __init mxc_nd_init(void)
