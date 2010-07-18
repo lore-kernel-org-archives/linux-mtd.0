@@ -1,41 +1,24 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OaX6V-0004Es-J5
-	for linux-mtd@lists.infradead.org; Sun, 18 Jul 2010 16:52:40 +0000
-Received: by fxm3 with SMTP id 3so2065637fxm.36
+	id 1OaX81-0006vj-Lx
+	for linux-mtd@lists.infradead.org; Sun, 18 Jul 2010 16:54:14 +0000
+Received: by fxm3 with SMTP id 3so2066073fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 18 Jul 2010 09:52:38 -0700 (PDT)
-Subject: Re: [PATCH 1/2] Remove REDWOOD_[456] config options and
-	conditional code
+	Sun, 18 Jul 2010 09:54:13 -0700 (PDT)
+Subject: Re: [PATCH v3] MTD: Nand: Add JZ4740 NAND driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-In-Reply-To: <20100716142055.GA11736@zod.rchland.ibm.com>
-References: <4f07b3092cafbbba37d61d367cc7484e24d18d2a.1279116162.git.qy03fugy@stud.informatik.uni-erlangen.de>
-	<redwood56-reply-1-miltonm@bga.com>
-	<cover.1279282865.git.qy03fugy@stud.informatik.uni-erlangen.de>
-	<ca1bb25d203618c3548748f5efb6f125a96c89e0.1279282865.git.qy03fugy@stud.informatik.uni-erlangen.de>
-	<20100716142055.GA11736@zod.rchland.ibm.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+In-Reply-To: <1279368929-21193-1-git-send-email-lars@metafoo.de>
+References: <1276924111-11158-18-git-send-email-lars@metafoo.de>
+	<1279368929-21193-1-git-send-email-lars@metafoo.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 18 Jul 2010 19:52:31 +0300
-Message-Id: <1279471951.16247.61.camel@localhost.localdomain>
+Date: Sun, 18 Jul 2010 19:54:08 +0300
+Message-Id: <1279472048.16247.63.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linuxppc-dev@ozlabs.org, Alexander Kurz <linux@kbdbabel.org>,
-	Paul Mackerras <paulus@samba.org>, John Linn <john.linn@xilinx.com>,
-	David Brown <davidb@quicinc.com>, Ladislav Michl <ladis@linux-mips.org>,
-	Solomon Peachy <solomon@linux-wlan.com>,
-	vamos-dev@i4.informatik.uni-erlangen.de,
-	Matt Porter <mporter@kernel.crashing.org>,
-	Mike Frysinger <vapier@gentoo.org>, Florian Fainelli <florian@openwrt.org>,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>,
-	Nicolas Pitre <nico@fluxnic.net>, Jiri Kosina <jkosina@suse.cz>,
-	linux-kernel@vger.kernel.org, Milton Miller <miltonm@bga.com>,
-	netdev@vger.kernel.org, Joe Perches <joe@perches.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	"David S. Miller" <davem@davemloft.net>
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -46,28 +29,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-07-16 at 10:20 -0400, Josh Boyer wrote:
-> On Fri, Jul 16, 2010 at 02:29:02PM +0200, Christian Dietrich wrote:
-> >The config options for REDWOOD_[456] were commented out in the powerpc
-> >Kconfig. The ifdefs referencing this options therefore are dead and all
-> >references to this can be removed (Also dependencies in other KConfig
-> >files).
-> >
-> >Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-> >Signed-off-by: Christoph Egger <siccegge@cs.fau.de>
+On Sat, 2010-07-17 at 14:15 +0200, Lars-Peter Clausen wrote:
+> This patch adds support for the NAND controller on JZ4740 SoCs.
 > 
-> This seems fine with me.
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Cc: linux-mtd@lists.infradead.org
 > 
-> The only question is which tree it coms through.  I'm happy to take it
-> in via mine if the netdev and MTD people are fine with that.  Otherwise,
-> my ack is below.
-> 
-> Acked-by: Josh Boyer <jwboyer@linux.vnet.ibm.com>
 
-You know how slow MTD people may be sometimes, so I'd suggest you to
-merge this via whatever tree. David is in CC, he'll complain if he is
-unhappy, I think.
-
+Do you expect this patch to go in via the MTD tree? I guess it might be
+better if it was MIPS tree?
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
