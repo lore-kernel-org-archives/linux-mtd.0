@@ -1,25 +1,21 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OaOHb-0004M4-UK
-	for linux-mtd@lists.infradead.org; Sun, 18 Jul 2010 07:27:32 +0000
-Received: by fxm3 with SMTP id 3so1933478fxm.36
+	id 1OaOi5-0004nT-0P
+	for linux-mtd@lists.infradead.org; Sun, 18 Jul 2010 07:54:53 +0000
+Received: by fxm3 with SMTP id 3so1938827fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 18 Jul 2010 00:27:30 -0700 (PDT)
-Subject: Re: [PATCH 1/6] Mtd: fixed coding style indent errors
+	Sun, 18 Jul 2010 00:54:51 -0700 (PDT)
+Subject: Re: UBIFS sequential write performance vs YAFFS2
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Neal B <nealb001@gmail.com>
-In-Reply-To: <4C3A8220.6040707@gmail.com>
-References: <4C3A8220.6040707@gmail.com>
+To: Leo Barnes <barnes.leo@gmail.com>
+In-Reply-To: <AANLkTim9UejsaoDT4IypuONDDZSfASelAmcGXhhNv7A8@mail.gmail.com>
+References: <AANLkTim9UejsaoDT4IypuONDDZSfASelAmcGXhhNv7A8@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 18 Jul 2010 10:27:26 +0300
-Message-Id: <1279438046.16247.22.camel@localhost.localdomain>
+Date: Sun, 18 Jul 2010 10:54:48 +0300
+Message-Id: <1279439688.16247.34.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Artem.Bityutskiy@nokia.com, maximlevitsky@gmail.com,
-	cascardo@holoscopio.com, linux-kernel@vger.kernel.org,
-	Julia Lawall <julia@diku.dk>, linux-mtd@lists.infradead.org,
-	jkosina@suse.cz, mohanlaljangir@gmail.com,
-	rmk+kernel@arm.linux.org.uk, dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,20 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-07-11 at 21:46 -0500, Neal B wrote:
-> From f4301b9c13f65d173d67759d53acaf3e8d2331c6 Mon Sep 17 00:00:00 2001
-> From: Neal Buckendahl <nealb001@gmail.com>
-> Date: Sun, 11 Jul 2010 16:58:24 -0500
-> Subject: [PATCH 1/6] Mtd: fixed coding style indent errors found by the 
-> checkpatch.pl tool
->   Signed-off-by: Neal Buckendahl <nealb001@gmail.com>
+Hi,
 
-Unfortunately, your patches are line-wrapped. You should send
-non-wrapped patches. Use git send-email - it can do the trick (use
---dry-run first, check everything is fine, then send).
+On Mon, 2010-07-12 at 10:00 +0200, Leo Barnes wrote:
+> Hello!
+> 
+> I have now done quite a lot of measurements comparing the filesystem
+> performance of both YAFFS2 and UBIFS on a device. Most of the results
+> seem logical, but there is something that looks very strange to me.
+> Here is the data:
+> 
+> MTD raw write speeds:
+> Block (128 KiB): 3937 KiB/s
+> 2 pages (4 KiB): 3770 KiB/s
+> 1 page (2 KiB): 3724 KiB/s
+> 
+> YAFFS2 sequential write speed: 3250 KiB/s
+> UBIFS sequential write speed: 1930 KiB/s
+> 
+> UBIFS is mounted with -o compr=none,bulk_read,no_chk_data_crc (of
+> which compr=none should be the only one affecting write speed if I
+> understand the options correctly).
+> The speeds have been measured using iozone and tiotest, and since no
+> compression is used, it should not matter that these programs only
+> write zeros. I tried running tiotest with the option to use
+> synchronous writes which dropped the UBIFS speed right down to about
+> 900 KiB/s, so the programs are apparantly not using the O_SYNC flag
+> until forced.
+> 
+> Can anyone explain why UBIFS seems to give so much worse performance
+> when using no compression? I know that UBIFS does the writing
+> asynchronously, using a write-buffer. This should add some overhead,
+> but since this overhead is done in RAM, it should be negligible when
+> compared to the time it takes to write to flash. When studying exactly
+> what commands both YAFFS2 and UBIFS sends to the MTD-layer, it seems
+> that both filesystems only do writes one page at a time, so it
+> shouldnt have anything to do with the fact that writing a full block
+> is faster than a page (it's not that much faster anyway). Is it
+> perhaps the CRC calculation that gives such a large overhead?
 
-Also, int the commit message, it is a bit better to specify which
-exactly warning it fixes.
+Difficult to say. You should use oprofile and figure out where UBIFS
+spends more time. But herea are some random points which came to my
+mind.
+
+UBIFS maintains on-flash index, so I guess index overhead is something
+which makes UBIFS slower comparing to YAFFS. 
+
+Also, CRC32 calculation may slow things down.
+
+We never tried to benchmark/optimize synchronous I/O. We only made sure
+it syncs everything when operation return.
+
+I know at least JFFS2 does not handle sync I/O completely correctly - it
+does not sync the write-buffer. UBIFS syncs everything. Does YAFFS also
+sync absolutely everything when write returns?
+
+UBIFS writes can be much faster if we implemented ->write_pages VFS
+method, we could then combine many pages and write them at once.
+
+Then we have an idea of implementing asynchronous MTD io, just like in
+block layer. Then, if write_pages is implemented, we could
+compress/calculate crc in parallel with writing.
+
+So, I thing because YAFFS is much simpler (this is YAFFS's strength), it
+has less overhead, and it can write faster. UBIFS has room for
+optimization, though.
+
+But please, try oprofile, it will be useful.
+
+Adrian had some comments, but keeps silence :-) CCing him.
 
 -- 
 Best Regards,
