@@ -1,22 +1,23 @@
-Received: from mailhost.informatik.uni-hamburg.de ([134.100.9.70])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OaXGK-0000m8-8v
-	for linux-mtd@lists.infradead.org; Sun, 18 Jul 2010 17:02:49 +0000
-Message-ID: <4C43338E.7030706@metafoo.de>
-Date: Sun, 18 Jul 2010 19:02:06 +0200
-From: Lars-Peter Clausen <lars@metafoo.de>
-MIME-Version: 1.0
+Received: from moutng.kundenserver.de ([212.227.17.10])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OaaOG-0007MO-Ly
+	for linux-mtd@lists.infradead.org; Sun, 18 Jul 2010 20:23:13 +0000
+From: Arnd Bergmann <arnd@arndb.de>
 To: dedekind1@gmail.com
-Subject: Re: [PATCH v3] MTD: Nand: Add JZ4740 NAND driver
-References: <1276924111-11158-18-git-send-email-lars@metafoo.de>
-	<1279368929-21193-1-git-send-email-lars@metafoo.de>
-	<1279472048.16247.63.camel@localhost.localdomain>
-In-Reply-To: <1279472048.16247.63.camel@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 1/4] mtd: add new ioctl structures to be used for
+	repartitioning
+Date: Sun, 18 Jul 2010 20:22:58 +0000
+References: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
+	<1276855711-18570-2-git-send-email-roman.tereshonkov@nokia.com>
+	<1279472431.16247.67.camel@localhost.localdomain>
+In-Reply-To: <1279472431.16247.67.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, Ralf Baechle <ralf@linux-mips.org>
+Message-Id: <201007182022.59590.arnd@arndb.de>
+Cc: linux-mtd@lists.infradead.org,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +27,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Sat, 2010-07-17 at 14:15 +0200, Lars-Peter Clausen wrote:
->> This patch adds support for the NAND controller on JZ4740 SoCs.
->>
->> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: linux-mtd@lists.infradead.org
->>
+On Sunday 18 July 2010, Artem Bityutskiy wrote:
+> CCing Arnd to review the ioctl interface.
 > 
-> Do you expect this patch to go in via the MTD tree? I guess it might be
-> better if it was MIPS tree?
+> One thing just struck me, see below.
+> 
+> On Fri, 2010-06-18 at 13:08 +0300, Roman Tereshonkov wrote:
+> > Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+> > ---
+> >  include/mtd/mtd-abi.h |   15 +++++++++++++++
+> >  1 files changed, 15 insertions(+), 0 deletions(-)
+> > 
+> > diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+> > index be51ae2..c2c6b41 100644
+> > --- a/include/mtd/mtd-abi.h
+> > +++ b/include/mtd/mtd-abi.h
+> > @@ -88,6 +88,20 @@ struct otp_info {
+> >  	__u32 locked;
+> >  };
+> >  
+> > +#define MTD_MAX_PARTITION_NAME_LEN	64
+> > +struct mtd_partition_user {
+> > +	__u64 size;
+> > +	__u64 offset;
+> > +	__u32 mask_flags;
+> > +	char name[MTD_MAX_PARTITION_NAME_LEN];
+> > +	__u8 padding[128];	/* reserved for future, must be zero! */
+> > +};
+> > +
+> > +struct mtd_partitions {
+> > +	__u32 nparts;
+> > +	struct mtd_partition_user __user *parts;
+> > +};
+> 
+> Hmm, I think nowadays pointers should be passed as __u64 and
+> compat_ioctl() should be avoided.
 
-Hi
+Yes, that's generally true. It would be nice if the BLKPG ioctl
+definition could be reused for this. It is more complicated
+than it should be, but not more than this suggestion, and
+it's an existing ioctl.
 
-Yes, letting it go through the MIPS tree is the plan.
-
-- Lars
+	Arnd
