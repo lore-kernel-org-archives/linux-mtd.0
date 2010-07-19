@@ -1,20 +1,18 @@
-Received: from ussvlmgty03.spansion.com ([12.151.36.115])
+Received: from ussvlmgty02.spansion.com ([12.151.36.113])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oanvx-0002gZ-NZ
-	for linux-mtd@lists.infradead.org; Mon, 19 Jul 2010 10:50:54 +0000
-From: "Hoyler, Gernot" <Gernot.Hoyler@spansion.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-Date: Mon, 19 Jul 2010 03:50:49 -0700
-Subject: RE: Spansion SPI parts
-Message-ID: <D0271AF888369C4C85548462366DB24B3F525006@US2K7EXMBPF1.spansion.com>
-References: <D0271AF888369C4C85548462366DB24B3F524EF2@US2K7EXMBPF1.spansion.com>
-	<AANLkTimqyn8KAvlcj5zbLU4OwOQOri02O9CXjbHF27h2@mail.gmail.com>
-In-Reply-To: <AANLkTimqyn8KAvlcj5zbLU4OwOQOri02O9CXjbHF27h2@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1OaobU-0001gT-Qz
+	for linux-mtd@lists.infradead.org; Mon, 19 Jul 2010 11:33:49 +0000
+Message-ID: <4C443818.5050400@spansion.com>
+Date: Mon, 19 Jul 2010 13:33:44 +0200
+From: Gernot Hoyler <Gernot.Hoyler@spansion.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Re: [PATCH] mtd: cfi_cmdset_0002: fix the check for valid primary
+	extension versions
+References: <20100702123910.24930.73018.stgit@dev.siriade.com>
+In-Reply-To: <20100702123910.24930.73018.stgit@dev.siriade.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiArIMKgIMKgIMKgIHsgInMyNWZsMTI4cDAiLCBJTkZPKDB4MDEyMDE4LCAweDAzMDAsIDI1NiAq
-IDEwMjQsIMKgNjQsIDApIH0sDQo+ICsgwqAgwqAgwqAgeyAiczI1ZmwxMjhwMSIsIElORk8oMHgw
-MTIwMTgsIDB4MDMwMSwgwqA2NCAqIDEwMjQsIDI1NiwgMCkgfSwNCj4gwqAgwqAgwqAgwqB7ICJz
-MjVmbDEyOXAwIiwgSU5GTygweDAxMjAxOCwgMHg0ZDAwLCAyNTYgKiAxMDI0LCDCoDY0LCAwKSB9
-LA0KPiDCoCDCoCDCoCDCoHsgInMyNWZsMTI5cDEiLCBJTkZPKDB4MDEyMDE4LCAweDRkMDEsIMKg
-NjQgKiAxMDI0LCAyNTYsIDApIH0sDQoNCj4gQWZ0ZXIgcmVyZWFkaW5nIHRoZSBkYXRhc2hlZXRz
-IEkgc3VzcGVjdCB0aGF0IEkgdXNlZCBpbmNvcnJlY3QNCj4gc3VmZml4ZXMgZm9yIHRoZSBzMjVm
-bDEyOSogZGV2aWNlcy4gIFdvdWxkIHlvdSBtaW5kIHJldmlld2luZyB0aGVzZSA0DQo+IGVudHJp
-ZXMgdG8gZW5zdXJlIHRoYXQgdGhleSBsaW5lIHVwIHdpdGggZWFjaCBjaGlwJ3MgbWFya2luZ3M/
-DQoNCllvdSBtZWFuIHRoZSB0cmFpbGluZyAnMCcgYW5kICcxJz8gV2VsbCwgdGhlIGNvcnJlY3Qg
-T1BOcyBmb3IgdGhlc2UgZGV2aWNlcyBhcmUgczI1ZmwxMjhweHh4eHgwMCwgczI1ZmwxMjhweHh4
-eHgwMSwgczI1ZmwxMjlweHh4eHgwMCBhbmQgczI1ZmwxMjhweHh4eHgwMSwgcmVzcGVjdGl2ZWx5
-LCB3aGVyZSBhIHRyYWlsaW5nICcwMCcgZGVub3RlcyB0aGUgNjRrQiBzZWN0b3IgZGV2aWNlcyBh
-bmQgYSB0YWlsaW5nICcwMScgZGVub3RlcyB0aGUgMjU2a0Igc2VjdG9yIGRldmljZXMuIFRoZSBs
-YXNlciBtYXJraW5ncyBvbiB0aGUgcGFja2FnZXMgdHlwaWNhbGx5IG9ubHkgaW5jbHVkZSB0aGUg
-MXN0IHBvcnRpb24gb2YgdGhlIE9QTiwgZS5nLiBGTDEyOFBJRi4gU28sIHllcywgaWYgeW91IHdh
-bnQgdG8gYWxpZ24gdGhlIG5hbWluZyBzY2hlbWUgd2l0aCB0aGUgT1BOcyB0aGVuIHlvdSBtaWdo
-dCBjaGFuZ2UgdGhlIG5hbWVzIHRvOg0KDQogICAgICAgIHsgInMyNWZsMTI4cC0wMSIsIElORk8o
-MHgwMTIwMTgsIDB4MDMwMCwgMjU2ICogMTAyNCwgIDY0LCAwKSB9LA0KICAgICAgICB7ICJzMjVm
-bDEyOHAtMDAiLCBJTkZPKDB4MDEyMDE4LCAweDAzMDEsICA2NCAqIDEwMjQsIDI1NiwgMCkgfSwN
-CiAgICAgICAgeyAiczI1ZmwxMjlwLTAxIiwgSU5GTygweDAxMjAxOCwgMHg0ZDAwLCAyNTYgKiAx
-MDI0LCAgNjQsIDApIH0sDQogICAgICAgIHsgInMyNWZsMTI5cC0wMCIsIElORk8oMHgwMTIwMTgs
-IDB4NGQwMSwgIDY0ICogMTAyNCwgMjU2LCAwKSB9LA0KDQpPbiB0aGUgb3RoZXIgc2lkZSwgaWYg
-eW91IHdhbnQgdG8gYWxpZ24gdGhlIHRyYWlsaW5nICcwJyBvciAnMScgd2l0aCB0aGUgNXRoIGRl
-dmljZSBJRCBieXRlIHRoZW4geW91IGNhbiBzdGljayB3aXRoIHRoZSBmaXJzdCBwcm9wb3NhbC4N
-Cg==
+ > Valid primary extension versions are: 1.0, 1.1, 1.2, 1.3 [1][2].
+ > Fix the check in cfi_cmdset_0002 accordingly.
+ > ...
+
+I would prefer not to remove CFI 1.4 support from the AMD/Spansion 
+driver. For example, the Spansion S29WS-P device family uses CFI version 
+1.4, see page 90 of the datasheet 
+http://www.spansion.com/Support/Datasheets/s29ws-p_00_a12_e.pdf.
+
+--Gernot
