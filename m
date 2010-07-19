@@ -1,19 +1,24 @@
 Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OauDk-0005FE-U6
-	for linux-mtd@lists.infradead.org; Mon, 19 Jul 2010 17:33:41 +0000
+	id 1Oaw4a-0000sk-Ax
+	for linux-mtd@lists.infradead.org; Mon, 19 Jul 2010 19:32:20 +0000
+Message-ID: <4C44A833.3010500@broadcom.com>
+Date: Mon, 19 Jul 2010 12:32:03 -0700
 From: "Brian Norris" <norris@broadcom.com>
-To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 3/6] mtd-utils/nanddump.c: Add canonical (hex+ascii)
- flag
-Date: Mon, 19 Jul 2010 10:33:15 -0700
-Message-ID: <1279560796-6388-2-git-send-email-norris@broadcom.com>
-In-Reply-To: <1279437819.16247.19.camel@localhost.localdomain>
-References: <1279437819.16247.19.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: [PATCH v2 0/2] Improved BB Scanning
+References: <1279059181-29300-1-git-send-email-norris@broadcom.com>
+	<1279471132.16247.55.camel@localhost.localdomain>
+In-Reply-To: <1279471132.16247.55.camel@localhost.localdomain>
+Content-Type: text/plain;
+ charset=utf-8;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brian Norris <norris@broadcom.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added the "-c" or "--canonicalprint" flag (modelled off 'hexdump -C')
-so that users can choose to print ASCII output next to the prettyprint
-output. This is really an extension to the prettyprint option, so the two
-options do not conflict if they are both included in the same execution.
+On 07/18/2010 09:38 AM, Artem Bityutskiy wrote:
+> I did not _really_ review this, it the patches look good. How did you
+> test them? Did you test on both large and small page NANDs?
 
-Signed-off-by: Brian Norris <norris@broadcom.com>
----
- nanddump.c |   10 +++++++---
- 1 files changed, 7 insertions(+), 3 deletions(-)
+I referenced 30+ data sheets (covering 100+ parts), and I tested a 
+selection of 10 different chips to varying degrees. Particularly, I 
+tested the creation of bad-block descriptors and basic BB scanning on 
+three parts:
 
-diff --git a/nanddump.c b/nanddump.c
-index eccb651..cd018c6 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -45,6 +45,7 @@ static void display_help (void)
- "\n"
- "           --help               Display this help and exit\n"
- "           --version            Output version information and exit\n"
-+"-c         --canonicalprint     Print canonical Hex+ASCII dump\n"
- "-f file    --file=file          Dump to file\n"
- "-i         --ignoreerrors       Ignore errors\n"
- "-l length  --length=length      Length\n"
-@@ -74,7 +75,7 @@ static void display_version (void)
- // Option variables
- 
- static bool		ignoreerrors = false;	// ignore errors
--static bool		pretty_print = false;	// print nice in ascii
-+static bool		pretty_print = false;	// print nice
- static bool		noecc = false;		// don't error correct
- static bool		omitoob = false;	// omit oob data
- static unsigned long	start_addr;		// start address
-@@ -83,7 +84,7 @@ static const char	*mtddev;		// mtd device name
- static const char	*dumpfile;		// dump file name
- static bool		omitbad = false;
- static bool		quiet = false;		// suppress diagnostic output
--static bool		canonical = false;
-+static bool		canonical = false;	// print nice + ascii
- 
- static void process_options (int argc, char * const argv[])
- {
-@@ -91,10 +92,11 @@ static void process_options (int argc, char * const argv[])
- 
- 	for (;;) {
- 		int option_index = 0;
--		static const char *short_options = "bs:f:il:opqn";
-+		static const char *short_options = "bs:f:il:opqnc";
- 		static const struct option long_options[] = {
- 			{"help", no_argument, 0, 0},
- 			{"version", no_argument, 0, 0},
-+			{"canonicalprint", no_argument, 0, 'c'},
- 			{"file", required_argument, 0, 'f'},
- 			{"ignoreerrors", no_argument, 0, 'i'},
- 			{"prettyprint", no_argument, 0, 'p'},
-@@ -145,6 +147,8 @@ static void process_options (int argc, char * const argv[])
- 			case 'o':
- 				omitoob = true;
- 				break;
-+			case 'c':
-+				canonical = true;
- 			case 'p':
- 				pretty_print = true;
- 				break;
--- 
-1.7.0.4
+ST NAND04GW3B2D, 2K page
+ST NAND128W3A, 512B page
+Samsung K9F1G08U0A, 2K page
+
+To test these, I wrote some fake bad block markers to the flash (in OOB 
+bytes 1, 6, and elsewhere) to see if the scanning routine would detect 
+them properly. However, this method was somewhat limited because the 
+driver I am using has some bugs in its OOB write functionality.
