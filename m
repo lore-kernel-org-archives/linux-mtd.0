@@ -1,12 +1,12 @@
 Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OauDi-0005Ex-UX
-	for linux-mtd@lists.infradead.org; Mon, 19 Jul 2010 17:33:40 +0000
+	id 1OauDk-0005FD-Ty
+	for linux-mtd@lists.infradead.org; Mon, 19 Jul 2010 17:33:41 +0000
 From: "Brian Norris" <norris@broadcom.com>
 To: "Artem Bityutskiy" <dedekind1@gmail.com>
-Subject: [PATCH v2 2/6] mtd-utils/nanddump.c: Robust pretty hexdump
-Date: Mon, 19 Jul 2010 10:33:14 -0700
-Message-ID: <1279560796-6388-1-git-send-email-norris@broadcom.com>
+Subject: [PATCH v2 6/6] mtd-utils/nanddump.c: Add "forcebinary" flag
+Date: Mon, 19 Jul 2010 10:33:16 -0700
+Message-ID: <1279560796-6388-3-git-send-email-norris@broadcom.com>
 In-Reply-To: <1279437819.16247.19.camel@localhost.localdomain>
 References: <1279437819.16247.19.camel@localhost.localdomain>
 MIME-Version: 1.0
@@ -22,179 +22,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These should be what you were looking for.
-
-Adapted code from the linux kernel hex_dump_to_buffer() (lib/hexdump.c)
-to provide a more robust hexdump for the pretty option. Now, nanddump
-can print out any size of OOB (or page for that matter...) without
-having to worry about non-multiples of 16.
-
-This also provides ability to dump ASCII format next to the hex output
-once additional command-line flags are added.
-
-Tested with Samsung K9GAG08U0D
+Restrict binary dumping so that by default, binary garbage is not
+printed directly to a terminal. Output redicted to files or piped to
+other commands should not be affected (as judged by "isatty(ofd)").
+A new flag "-a" or "--forcebinary" is included so that users can
+override this behavior if necessary.
 
 Signed-off-by: Brian Norris <norris@broadcom.com>
 ---
- nanddump.c |  117 ++++++++++++++++++++++++++++++++++++++++++-----------------
- 1 files changed, 83 insertions(+), 34 deletions(-)
+ nanddump.c |   22 +++++++++++++++++++++-
+ 1 files changed, 21 insertions(+), 1 deletions(-)
 
 diff --git a/nanddump.c b/nanddump.c
-index 735ae48..eccb651 100644
+index cd018c6..acfdb33 100644
 --- a/nanddump.c
 +++ b/nanddump.c
-@@ -83,6 +83,7 @@ static const char	*mtddev;		// mtd device name
- static const char	*dumpfile;		// dump file name
+@@ -45,6 +45,7 @@ static void display_help (void)
+ "\n"
+ "           --help               Display this help and exit\n"
+ "           --version            Output version information and exit\n"
++"-a         --forcebinary        Force printing of binary data to tty\n"
+ "-c         --canonicalprint     Print canonical Hex+ASCII dump\n"
+ "-f file    --file=file          Dump to file\n"
+ "-i         --ignoreerrors       Ignore errors\n"
+@@ -85,6 +86,7 @@ static const char	*dumpfile;		// dump file name
  static bool		omitbad = false;
  static bool		quiet = false;		// suppress diagnostic output
-+static bool		canonical = false;
+ static bool		canonical = false;	// print nice + ascii
++static bool		forcebinary = false;	// force printing binary to tty
  
  static void process_options (int argc, char * const argv[])
  {
-@@ -171,6 +172,80 @@ static void process_options (int argc, char * const argv[])
- 	mtddev = argv[optind];
- }
+@@ -92,10 +94,11 @@ static void process_options (int argc, char * const argv[])
  
-+#define PRETTY_ROW_SIZE 16
-+#define PRETTY_BUF_LEN 80
-+
-+/**
-+ * pretty_dump_to_buffer - formats a blob of data to "hex ASCII" in memory
-+ * @buf: data blob to dump
-+ * @len: number of bytes in the @buf
-+ * @linebuf: where to put the converted data
-+ * @linebuflen: total size of @linebuf, including space for terminating NULL
-+ * @pagedump: true - dumping as page format; false - dumping as OOB format
-+ * @ascii: dump ascii formatted data next to hexdump
-+ * @prefix: address to print before line in a page dump, ignored if !pagedump
-+ *
-+ * pretty_dump_to_buffer() works on one "line" of output at a time, i.e.,
-+ * PRETTY_ROW_SIZE bytes of input data converted to hex + ASCII output.
-+ *
-+ * Given a buffer of unsigned char data, pretty_dump_to_buffer() converts the
-+ * input data to a hex/ASCII dump at the supplied memory location. A prefix
-+ * is included based on whether we are dumping page or OOB data. The converted
-+ * output is always NULL-terminated.
-+ *
-+ * e.g.
-+ *   pretty_dump_to_buffer(data, data_len, prettybuf, linelen, true,
-+ *                         false, 256);
-+ * produces:
-+ *   0x00000100: 40 41 42 43 44 45 46 47 48 49 4a 4b 4c 4d 4e 4f
-+ * NOTE: This function was adapted from linux kernel, "lib/hexdump.c"
-+ */
-+static void pretty_dump_to_buffer(const unsigned char *buf, size_t len,
-+		char *linebuf, size_t linebuflen, bool pagedump, bool ascii,
-+		unsigned int prefix)
-+{
-+	static const char hex_asc[] = "0123456789abcdef";
-+	unsigned char ch;
-+	int j, lx = 0;
-+	int ascii_column;
-+
-+	if (pagedump)
-+		sprintf(linebuf, "0x%.8x: ", prefix);
-+	else
-+		sprintf(linebuf, "  OOB Data: ");
-+	lx += 12;
-+
-+	if (!len)
-+		goto nil;
-+	if (len > PRETTY_ROW_SIZE)	/* limit to one line at a time */
-+		len = PRETTY_ROW_SIZE;
-+
-+	for (j = 0; (j < len) && (lx + 3) <= linebuflen; j++) {
-+		ch = buf[j];
-+		linebuf[lx++] = hex_asc[ch & 0x0f];
-+		linebuf[lx++] = hex_asc[(ch & 0xf0) >> 4];
-+		linebuf[lx++] = ' ';
+ 	for (;;) {
+ 		int option_index = 0;
+-		static const char *short_options = "bs:f:il:opqnc";
++		static const char *short_options = "bs:f:il:opqnca";
+ 		static const struct option long_options[] = {
+ 			{"help", no_argument, 0, 0},
+ 			{"version", no_argument, 0, 0},
++			{"forcebinary", no_argument, 0, 'a'},
+ 			{"canonicalprint", no_argument, 0, 'c'},
+ 			{"file", required_argument, 0, 'f'},
+ 			{"ignoreerrors", no_argument, 0, 'i'},
+@@ -147,6 +150,9 @@ static void process_options (int argc, char * const argv[])
+ 			case 'o':
+ 				omitoob = true;
+ 				break;
++			case 'a':
++				forcebinary = true;
++				break;
+ 			case 'c':
+ 				canonical = true;
+ 			case 'p':
+@@ -170,6 +176,13 @@ static void process_options (int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	if (forcebinary && pretty_print) {
++		fprintf(stderr, "The forcebinary and pretty print options are\n"
++				"mutually-exclusive. Choose one or the "
++				"other.\n");
++		exit(EXIT_FAILURE);
 +	}
-+	if (j)
-+		lx--;
 +
-+	ascii_column = 3 * PRETTY_ROW_SIZE + 14;
-+
-+	if (!ascii)
-+		goto nil;
-+
-+	while (lx < (linebuflen - 1) && lx < (ascii_column - 1))
-+		linebuf[lx++] = ' ';
-+	linebuf[lx++] = '|';
-+	for (j = 0; (j < len) && (lx + 2) < linebuflen; j++)
-+		linebuf[lx++] = (isascii(buf[j]) && isprint(buf[j])) ? buf[j]
-+			: '.';
-+	linebuf[lx++] = '|';
-+nil:
-+	linebuf[lx++] = '\n';
-+	linebuf[lx++] = '\0';
-+}
-+
- /*
-  * Buffers for reading data from flash
-  */
-@@ -189,7 +264,7 @@ int main(int argc, char * const argv[])
- 	int ret, i, fd, ofd, bs, badblock = 0;
- 	struct mtd_oob_buf oob = {0, 16, oobbuf};
- 	mtd_info_t meminfo;
--	char pretty_buf[80];
-+	char pretty_buf[PRETTY_BUF_LEN];
- 	int oobinfochanged = 0 ;
- 	struct nand_oobinfo old_oobinfo;
- 	struct mtd_ecc_stats stat1, stat2;
-@@ -336,20 +411,10 @@ int main(int argc, char * const argv[])
+ 	if ((argc - optind) != 1 || error)
+ 		display_help ();
  
- 		/* Write out page data */
- 		if (pretty_print) {
--			for (i = 0; i < bs; i += 16) {
--				sprintf(pretty_buf,
--						"0x%08x: %02x %02x %02x %02x %02x %02x %02x "
--						"%02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
--						(unsigned int) (ofs + i),  readbuf[i],
--						readbuf[i+1], readbuf[i+2],
--						readbuf[i+3], readbuf[i+4],
--						readbuf[i+5], readbuf[i+6],
--						readbuf[i+7], readbuf[i+8],
--						readbuf[i+9], readbuf[i+10],
--						readbuf[i+11], readbuf[i+12],
--						readbuf[i+13], readbuf[i+14],
--						readbuf[i+15]);
--				write(ofd, pretty_buf, 60);
-+			for (i = 0; i < bs; i += PRETTY_ROW_SIZE) {
-+				pretty_dump_to_buffer(readbuf+i, PRETTY_ROW_SIZE,
-+						pretty_buf, PRETTY_BUF_LEN, true, canonical, ofs+i);
-+				write(ofd, pretty_buf, strlen(pretty_buf));
- 			}
- 		} else
- 			write(ofd, readbuf, bs);
-@@ -372,26 +437,10 @@ int main(int argc, char * const argv[])
+@@ -355,6 +368,13 @@ int main(int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
  
- 		/* Write out OOB data */
- 		if (pretty_print) {
--			if (meminfo.oobsize < 16) {
--				sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
--						"%02x %02x\n",
--						oobbuf[0], oobbuf[1], oobbuf[2],
--						oobbuf[3], oobbuf[4], oobbuf[5],
--						oobbuf[6], oobbuf[7]);
--				write(ofd, pretty_buf, 48);
--				continue;
--			}
--
- 			for (i = 0; i < meminfo.oobsize; i += 16) {
--				sprintf(pretty_buf, "  OOB Data: %02x %02x %02x %02x %02x %02x "
--						"%02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
--						oobbuf[i], oobbuf[i+1], oobbuf[i+2],
--						oobbuf[i+3], oobbuf[i+4], oobbuf[i+5],
--						oobbuf[i+6], oobbuf[i+7], oobbuf[i+8],
--						oobbuf[i+9], oobbuf[i+10], oobbuf[i+11],
--						oobbuf[i+12], oobbuf[i+13], oobbuf[i+14],
--						oobbuf[i+15]);
--				write(ofd, pretty_buf, 60);
-+				pretty_dump_to_buffer(oobbuf+i, meminfo.oobsize-i,
-+						pretty_buf, PRETTY_BUF_LEN, false, canonical, 0);
-+				write(ofd, pretty_buf, strlen(pretty_buf));
- 			}
- 		} else
- 			write(ofd, oobbuf, meminfo.oobsize);
++	if (!pretty_print && !forcebinary && isatty(ofd)) {
++		fprintf(stderr, "Not printing binary garbage to tty. Use '-a'\n"
++				"or '--forcebinary' to override.\n");
++		close(fd);
++		exit(EXIT_FAILURE);
++	}
++
+ 	/* Initialize start/end addresses and block size */
+ 	if (length)
+ 		end_addr = start_addr + length;
 -- 
 1.7.0.4
