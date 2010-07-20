@@ -1,24 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ob9BS-0007oZ-49
-	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2010 09:32:19 +0000
-Subject: Re: [PATCH 1/4] mtd: add new ioctl structures to be used for
-	repartitioning
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <201007201119.17747.arnd@arndb.de>
-References: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
-	<201007182022.59590.arnd@arndb.de>
-	<1279512386.16247.70.camel@localhost.localdomain>
-	<201007201119.17747.arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 20 Jul 2010 12:25:44 +0300
-Message-ID: <1279617944.16462.99.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
-	Roman Tereshonkov <roman.tereshonkov@nokia.com>
-Reply-To: dedekind1@gmail.com
+	id 1Ob9wh-00047b-U3
+	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2010 10:21:09 +0000
+Message-ID: <4C457885.9000404@pengutronix.de>
+Date: Tue, 20 Jul 2010 12:20:53 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 1/2] mxc_nand: fix Unbalanced enable for IRQ
+References: <1276178584-10074-1-git-send-email-eric@eukrea.com>
+	<1279345824.3212.24.camel@localhost.localdomain>
+In-Reply-To: <1279345824.3212.24.camel@localhost.localdomain>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature";
+	boundary="------------enig2F7E3CF394C91174153354AB"
+Cc: s.hauer@pengutronix.de, u.kleine-koenig@pengutronix.de,
+	linux-mtd@lists.infradead.org, ivo.clarysse@gmail.com,
+	linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-07-20 at 11:19 +0200, Arnd Bergmann wrote:
-> On Monday 19 July 2010, Artem Bityutskiy wrote:
-> > On Sun, 2010-07-18 at 20:22 +0000, Arnd Bergmann wrote:
-> > > Yes, that's generally true. It would be nice if the BLKPG ioctl
-> > > definition could be reused for this. It is more complicated
-> > > than it should be, but not more than this suggestion, and
-> > > it's an existing ioctl.
-> > 
-> > Thanks for reply.
-> > 
-> > MTD devices do not support BLKPG, do you mean we should you the same
-> > data-structures and names as block devices?
-> 
-> Yes. I'm not sure if it should also be possible to actually repartition
-> the flash using the mtdblock driver, but what I meant was to implement
-> the BLKPG API in the mtdchar driver, with slightly adapted semantics.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig2F7E3CF394C91174153354AB
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-No, using mtdblock is not feasible, because of several reasons like that
-it is a debugging driver which does not handle bad blocks, and it works
-on top of mtd, has no idea about mtd internals, and all the partitions
-logic is inside mtd, and not available for mtdblock.
+Hey Artem,
 
-But yes, using the BLKPG API sounds like a reasonable idea, thanks.
+Artem Bityutskiy wrote:
+> On Thu, 2010-06-10 at 16:03 +0200, Eric B=C3=A9nard wrote:
+>> * preset should be done before sending the reset command
+>>
+>> * without this, I get the following error on an i.MX35 :
+>> [    0.900000] ------------[ cut here ]------------
+>> [    0.900000] WARNING: at kernel/irq/manage.c:290 __enable_irq+0x4c/0=
+x88()
+>> [    0.900000] Unbalanced enable for IRQ 33
+>> [    0.900000] Modules linked in:
+>> [    0.900000] [<c002ffb8>] (unwind_backtrace+0x0/0xf0) from [<c02f7d0=
+c>] (dump_stack+0x18/0x1c)
+>> [    0.900000] [<c02f7d0c>] (dump_stack+0x18/0x1c) from [<c0049a44>] (=
+warn_slowpath_common+0x54/0x6c)
+>> [    0.900000] [<c0049a44>] (warn_slowpath_common+0x54/0x6c) from [<c0=
+049b00>] (warn_slowpath_fmt+0x38/0x40)
+>> [    0.900000] [<c0049b00>] (warn_slowpath_fmt+0x38/0x40) from [<c008f=
+65c>] (__enable_irq+0x4c/0x88)
+>> [    0.900000] [<c008f65c>] (__enable_irq+0x4c/0x88) from [<c008fca0>]=
+ (enable_irq+0x54/0x98)
+>> [    0.900000] [<c008fca0>] (enable_irq+0x54/0x98) from [<c021e618>] (=
+wait_op_done+0x40/0x134)
+>> [    0.900000] [<c021e618>] (wait_op_done+0x40/0x134) from [<c021e808>=
+] (send_cmd+0x30/0x38)
+> ....
+>=20
+> Pushed to l2-mtd-2.6.git / master
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Current mainline has (still) this problem, too. Is there any change to
+get this patch into 2.6.35 before the release?
+
+cheers, Marc
+
+--=20
+Pengutronix e.K.                  | Marc Kleine-Budde           |
+Industrial Linux Solutions        | Phone: +49-231-2826-924     |
+Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
+Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+
+
+--------------enig2F7E3CF394C91174153354AB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iEYEARECAAYFAkxFeIkACgkQjTAFq1RaXHOsEwCglMFQ5TCkNz5oueG7fgCRl79M
+QqsAn26wk20meMgcUDKxqK/nnmu6Q7+K
+=dQCt
+-----END PGP SIGNATURE-----
+
+--------------enig2F7E3CF394C91174153354AB--
