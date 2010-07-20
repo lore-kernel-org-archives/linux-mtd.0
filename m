@@ -1,16 +1,23 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ob3Dz-0002oe-63
-	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2010 03:10:31 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id D5316677DD
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Jul 2010 03:10:07 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] fix parallel build between ubi-utils and mkfs.ubifs
-Date: Mon, 19 Jul 2010 23:06:41 -0400
-Message-Id: <1279595201-16520-1-git-send-email-vapier@gentoo.org>
+Received: from moutng.kundenserver.de ([212.227.126.171])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ob8z2-0007Kh-8q
+	for linux-mtd@lists.infradead.org; Tue, 20 Jul 2010 09:19:28 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 1/4] mtd: add new ioctl structures to be used for
+	repartitioning
+Date: Tue, 20 Jul 2010 11:19:17 +0200
+References: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
+	<201007182022.59590.arnd@arndb.de>
+	<1279512386.16247.70.camel@localhost.localdomain>
+In-Reply-To: <1279512386.16247.70.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201007201119.17747.arnd@arndb.de>
+Cc: linux-mtd@lists.infradead.org,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- Makefile |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+On Monday 19 July 2010, Artem Bityutskiy wrote:
+> On Sun, 2010-07-18 at 20:22 +0000, Arnd Bergmann wrote:
+> > Yes, that's generally true. It would be nice if the BLKPG ioctl
+> > definition could be reused for this. It is more complicated
+> > than it should be, but not more than this suggestion, and
+> > it's an existing ioctl.
+> 
+> Thanks for reply.
+> 
+> MTD devices do not support BLKPG, do you mean we should you the same
+> data-structures and names as block devices?
 
-diff --git a/Makefile b/Makefile
-index b558705..8457654 100644
---- a/Makefile
-+++ b/Makefile
-@@ -9,6 +9,9 @@ endif
- 
- SUBDIRS = lib ubi-utils mkfs.ubifs
- 
-+# mkfs.ubifs needs -lubi which is in ubi-utils/
-+subdirs_mkfs.ubifs_all: subdirs_ubi-utils_all
-+
- TARGETS = ftl_format flash_erase flash_eraseall nanddump doc_loadbios \
- 	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
- 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
--- 
-1.7.1.1
+Yes. I'm not sure if it should also be possible to actually repartition
+the flash using the mtdblock driver, but what I meant was to implement
+the BLKPG API in the mtdchar driver, with slightly adapted semantics.
+
+	Arnd
