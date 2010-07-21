@@ -1,25 +1,23 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1ObdkD-0008NT-Ux
-	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2010 18:10:15 +0000
-Received: by fxm3 with SMTP id 3so4373400fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 21 Jul 2010 11:10:11 -0700 (PDT)
-Subject: Re: [patch 1/4] mtd/sst25l: check for null consistently
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-In-Reply-To: <20100721101654.1dbb3468.akpm@linux-foundation.org>
-References: <201007202224.o6KMO0oR021381@imap1.linux-foundation.org>
-	<1279708452.2306.6.camel@localhost>
-	<20100721101654.1dbb3468.akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Jul 2010 21:10:08 +0300
-Message-Id: <1279735808.16247.73.camel@localhost.localdomain>
+Received: from smtp1.linux-foundation.org ([140.211.169.13])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1ObhM8-0001wj-2f
+	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2010 22:01:36 +0000
+Date: Wed, 21 Jul 2010 15:00:58 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
+Subject: Re: [PATCH v2] mtd-nand: davinci: correct 4-bit error correction
+Message-Id: <20100721150058.dfb4ef06.akpm@linux-foundation.org>
+In-Reply-To: <034501cb2415$ad54cc80$07fe6580$@raj@ti.com>
+References: <1279170641-24494-1-git-send-email-sudhakar.raj@ti.com>
+	<70E876B0EA86DD4BAF101844BC814DFE0903CBD539@Cloud.RL.local>
+	<034101cb2412$ac5bcde0$051369a0$@raj@ti.com>
+	<034501cb2415$ad54cc80$07fe6580$@raj@ti.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Artem.Bityutskiy@nokia.com, andre@bluewatersys.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org, error27@gmail.com
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, 'Jon Povey' <Jon.Povey@racelogic.co.uk>,
+	linux-mtd@lists.infradead.org,
+	davinci-linux-open-source@linux.davincidsp.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-07-21 at 10:16 -0700, Andrew Morton wrote:
-> On Wed, 21 Jul 2010 13:34:12 +0300 Artem Bityutskiy <Artem.Bityutskiy@nokia.com> wrote:
-> 
-> > On Tue, 2010-07-20 at 15:23 -0700, akpm@linux-foundation.org wrote:
-> > > From: Dan Carpenter <error27@gmail.com>
-> > > 
-> > > The rest of the function assumes that "data" can be null.  I don't know
-> > > the code well enough to say whether it can actually be null, but there is
-> > > no harm in checking here.
-> > > 
-> > > Signed-off-by: Dan Carpenter <error27@gmail.com>
-> > > Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> > > Cc: Andre Renaud <andre@bluewatersys.com>
-> > > Cc: David Woodhouse <dwmw2@infradead.org>
-> > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > 
-> > This patch is also in my l2-mtd-2.6 / master tree.
-> > 
-> > The tree: http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
-> 
-> Can we add that tree to linux-next?
+On Thu, 15 Jul 2010 17:33:03 +0530
+"Sudhakar Rajashekhara" <sudhakar.raj@ti.com> wrote:
 
-Well... This is not the first time you are requesting this :) Up to
-dwmw2, but alternatively, he could just look at my tree more often.
+> On Thu, Jul 15, 2010 at 17:11:32, Sudhakar Rajashekhara wrote:
+> > Hi,
+> > 
+> > On Thu, Jul 15, 2010 at 16:31:19, Jon Povey wrote:
+> > > Sudhakar Rajashekhara wrote:
+> > > > On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
+> > > > 4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
+> > > > before waiting for the NAND Flash status register to be equal to 1, 2
+> > > > or 3, we have to wait till the ECC HW goes to correction state.
+> > > > Without this wait, ECC correction calculations will not be proper.
+> > > >
+> > > > This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and
+> > > > DM365 EVMs.
+> > > >
+> > > > Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+> > > > Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+> > > > Cc: David Woodhouse <dwmw2@infradead.org>
+> > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > > 
+> > > Have these people acked and signed off this new version of the patch?
+> > > 
+> > 
+> > No. Andrew Morton has not signed off this version. I'll remove
+> > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> > 
+> 
+> Andrew Morton had signed off an earlier version of this patch and
+> it was present in -mm tree for a long time. He has not yet commented
+> on v2 version of this patch. But I thought I can carry forward the
+> Sign-offs from previous version to the next version. What's the common
+> practice?
+> 
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+
+I've lost the plot on this patch and I think I'll drop my copy.  Please
+update and resend, cc'ing everyone.
+
+I've been sitting on this thing since November last year!  It fixes a
+bug!  Where the heck are the MTD maintainers and why aren't they
+running around with hair on fire getting this thing finalised and
+merged?!?!
