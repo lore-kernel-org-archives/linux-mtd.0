@@ -1,24 +1,18 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1ObWBm-0008IS-Tg
-	for linux-mtd@lists.infradead.org; Wed, 21 Jul 2010 10:06:11 +0000
-Received: from vaebh105.NOE.Nokia.com (vaebh105.europe.nokia.com
-	[10.160.244.31])
-	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o6LA4Io2023700
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Jul 2010 05:06:09 -0500
-Subject: Re: [PATCH 0/4] mtd: add mtd repartition ioctl
+Subject: Re: [PATCH] drivers/mtd: remove makefile subdirectory processing
+	redundancies
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-In-Reply-To: <1278568257.12733.34.camel@localhost>
-References: <1276855711-18570-1-git-send-email-roman.tereshonkov@nokia.com>
-	<1278568257.12733.34.camel@localhost>
+To: Kyle Spaans <kspaans@uwaterloo.ca>
+In-Reply-To: <20100720021718.GA32479@caffeine.csclub.uwaterloo.ca>
+References: <20100714042509.GA7775@caffeine.csclub.uwaterloo.ca>
+	<1279471590.16247.57.camel@localhost.localdomain>
+	<20100720021718.GA32479@caffeine.csclub.uwaterloo.ca>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 21 Jul 2010 12:58:43 +0300
-Message-ID: <1279706323.2306.2.camel@localhost>
+Date: Wed, 21 Jul 2010 13:09:35 +0300
+Message-ID: <1279706975.2306.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,38 +23,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-07-08 at 08:50 +0300, Artem Bityutskiy wrote:
-> On Fri, 2010-06-18 at 13:08 +0300, Roman Tereshonkov wrote:
-> > Adding mtd master device after all partitions should provide
-> > minimum effect on the created partition enumeration.
+On Mon, 2010-07-19 at 22:17 -0400, Kyle Spaans wrote:
+> > > +obj-$(CONFIG_MTD_TESTS)		+= tests/
+> > > +obj-$(CONFIG_MTD_LPDDR)		+= lpddr/
+> > > +obj-$(CONFIG_MTD_NAND)		+= nand/
+> > > +obj-$(CONFIG_MTD_ONENAND)	+= onenand/
+> > >  obj-$(CONFIG_MTD_BI)		+= ubi/
 > > 
-> > The master mtd device can be repartitioned in runtime through
-> > the mtd ioctl MTDREPARTITION. The ioctl passed argument is
-> > the set of the new partitions defined by the structures:
-> > struct mtd_partitions and struct mtd_partition_user.
-> > 
-> > All at once partition configuration is used and caused by
-> > the all at once partition removing. Only unused partitions are deleted.
-> > If any of the partitions for given mtd device is used then user gets error.
-> > The care should be taken to close all applications which access
-> > the partitions.
-> > 
-> > Roman Tereshonkov (4):
-> >   mtd: add new ioctl structures to be used for repartitioning
-> >   mtd: add the possibility to modify partitions in runtime
-> >   mtd: add MTDREPARTITION ioctl
-> >   mtd: create the mtd master device for given set of partitions
-> > 
-> >  drivers/mtd/mtdchar.c          |  110 +++++++++++++++++++++++++++++++++++++++-
-> >  drivers/mtd/mtdpart.c          |   45 ++++++++++++++--
-> >  drivers/mtd/onenand/omap2.c    |    8 ++-
-> >  include/linux/mtd/partitions.h |    2 +
-> >  include/mtd/mtd-abi.h          |   15 ++++++
-> >  5 files changed, 170 insertions(+), 10 deletions(-)
+> > This cannot be right, because we have UBI, not 'BI'.
 > 
-> I've pushed this to my l2-mtd-2.6.git / master, looks good to me.
+> Weird! Mutt seems to have mangled the patch on me. I must have pressed some
+> buttons while composing the message. Try it now. Thanks! (Can I resubmit the
+> patch like this, or does it need to go in its own email? I can't quite tell
+> from looking at linux-mtd and lkml traffic.)
 
-Removed from l2-mtd-2.6 - please, address the comments from me and Arnd.
+I see the following errors when I apply your patch to my l2-mtd-2.6 [1]
+tree and compile on my x86_64 PC:
+
+Kernel: arch/x86/boot/bzImage is ready  (#4)
+ERROR: "ubi_open_volume" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_map" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_open_volume_nm" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_change" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_write" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_get_device_info" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_read" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_unmap" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_close_volume" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_get_volume_info" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_open_volume_path" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_sync" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_is_mapped" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_register_volume_notifier" [drivers/mtd/ubi/gluebi.ko]
+undefined!
+ERROR: "ubi_leb_read" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_leb_write" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_leb_erase" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_leb_unmap" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_open_volume" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_close_volume" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_unregister_volume_notifier" [drivers/mtd/ubi/gluebi.ko]
+undefined!
+ERROR: "onenand_scan" [drivers/mtd/onenand/onenand_sim.ko] undefined!
+ERROR: "flexonenand_region" [drivers/mtd/onenand/onenand_sim.ko]
+undefined!
+ERROR: "onenand_addr" [drivers/mtd/onenand/onenand_sim.ko] undefined!
+ERROR: "onenand_release" [drivers/mtd/onenand/onenand_sim.ko] undefined!
+ERROR: "onenand_scan" [drivers/mtd/onenand/generic.ko] undefined!
+ERROR: "onenand_release" [drivers/mtd/onenand/generic.ko] undefined!
+ERROR: "nand_scan_tail" [drivers/mtd/nand/sm_common.ko] undefined!
+ERROR: "nand_scan_ident" [drivers/mtd/nand/sm_common.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/r852.ko] undefined!
+ERROR: "nand_scan" [drivers/mtd/nand/plat_nand.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/plat_nand.ko] undefined!
+ERROR: "nand_default_bbt" [drivers/mtd/nand/nandsim.ko] undefined!
+ERROR: "nand_scan" [drivers/mtd/nand/nandsim.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/nandsim.ko] undefined!
+ERROR: "nand_scan" [drivers/mtd/nand/diskonchip.ko] undefined!
+ERROR: "nand_scan_bbt" [drivers/mtd/nand/diskonchip.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/diskonchip.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/denali.ko] undefined!
+ERROR: "nand_scan_tail" [drivers/mtd/nand/denali.ko] undefined!
+ERROR: "nand_scan_ident" [drivers/mtd/nand/denali.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "nand_scan_tail" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "nand_scan_ident" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "nand_wait_ready" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "lpddr_cmdset" [drivers/mtd/lpddr/qinfo_probe.ko] undefined!
+WARNING: modpost: Found 10 section mismatch(es).
+To see full details build your kernel with:
+'make CONFIG_DEBUG_SECTION_MISMATCH=y'
+make[1]: *** [__modpost] Error 1
+make: *** [modules] Error 2
+
+[1] git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
 
 -- 
 Best Regards,
