@@ -1,23 +1,19 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OcEyY-0003Gs-MK
-	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2010 09:55:31 +0000
-From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
-To: "'Andrew Morton'" <akpm@linux-foundation.org>
-References: <1279170641-24494-1-git-send-email-sudhakar.raj@ti.com>	<70E876B0EA86DD4BAF101844BC814DFE0903CBD539@Cloud.RL.local>	<034101cb2412$ac5bcde0$051369a0$@raj@ti.com>	<034501cb2415$ad54cc80$07fe6580$@raj@ti.com>
-	<20100721150058.dfb4ef06.akpm@linux-foundation.org>
-In-Reply-To: <20100721150058.dfb4ef06.akpm@linux-foundation.org>
-Subject: RE: [PATCH v2] mtd-nand: davinci: correct 4-bit error correction
-Date: Fri, 23 Jul 2010 15:19:49 +0530
-Message-ID: <051701cb2a4c$6456ead0$2d04c070$@raj@ti.com>
+Date: Fri, 23 Jul 2010 09:27:02 -0400
+From: "John W. Linville" <linville@tuxdriver.com>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: Re: [PATCH 6/6] pcmcia: remove cs_types.h
+Message-ID: <20100723132702.GB6678@tuxdriver.com>
+References: <20100723083726.GA20947@comet.dominikbrodowski.net>
+	<1279874305-21191-6-git-send-email-linux@dominikbrodowski.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-language: en-us
-Cc: dwmw2@infradead.org, 'Jon Povey' <Jon.Povey@racelogic.co.uk>,
-	linux-mtd@lists.infradead.org,
-	davinci-linux-open-source@linux.davincidsp.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1279874305-21191-6-git-send-email-linux@dominikbrodowski.net>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	linux-pcmcia@lists.infradead.org, linux-wireless@vger.kernel.org,
+	laforge@gnumonks.org, linux-ide@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, Jul 23, 2010 at 10:38:25AM +0200, Dominik Brodowski wrote:
+> Remove cs_types.h which is no longer needed: Most definitions aren't
+> used at all, a few can be made away with, and two remaining definitions
+> (typedefs, unfortunatley) may be moved to more specific places.
+> 
+> CC: netdev@vger.kernel.org
+> CC: linux-wireless@vger.kernel.org
+> CC: linux-ide@vger.kernel.org
+> CC: linux-usb@vger.kernel.org
+> CC: laforge@gnumonks.org
+> CC: linux-mtd@lists.infradead.org
+> CC: linux-bluetooth@vger.kernel.org
+> CC: alsa-devel@alsa-project.org
+> CC: linux-serial@vger.kernel.org
+> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
-On Thu, Jul 22, 2010 at 03:30:58, Andrew Morton wrote:
-> On Thu, 15 Jul 2010 17:33:03 +0530
-> "Sudhakar Rajashekhara" <sudhakar.raj@ti.com> wrote:
-> 
-> > On Thu, Jul 15, 2010 at 17:11:32, Sudhakar Rajashekhara wrote:
-> > > Hi,
-> > > 
-> > > On Thu, Jul 15, 2010 at 16:31:19, Jon Povey wrote:
-> > > > Sudhakar Rajashekhara wrote:
-> > > > > On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
-> > > > > 4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
-> > > > > before waiting for the NAND Flash status register to be equal to 1, 2
-> > > > > or 3, we have to wait till the ECC HW goes to correction state.
-> > > > > Without this wait, ECC correction calculations will not be proper.
-> > > > >
-> > > > > This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and
-> > > > > DM365 EVMs.
-> > > > >
-> > > > > Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-> > > > > Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
-> > > > > Cc: David Woodhouse <dwmw2@infradead.org>
-> > > > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > > 
-> > > > Have these people acked and signed off this new version of the patch?
-> > > > 
-> > > 
-> > > No. Andrew Morton has not signed off this version. I'll remove
-> > > Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> > > 
-> > 
-> > Andrew Morton had signed off an earlier version of this patch and
-> > it was present in -mm tree for a long time. He has not yet commented
-> > on v2 version of this patch. But I thought I can carry forward the
-> > Sign-offs from previous version to the next version. What's the common
-> > practice?
-> > 
-> 
-> 
-> I've lost the plot on this patch and I think I'll drop my copy.  Please
-> update and resend, cc'ing everyone.
-> 
-> I've been sitting on this thing since November last year!  It fixes a
-> bug!  Where the heck are the MTD maintainers and why aren't they
-> running around with hair on fire getting this thing finalised and
-> merged?!?!
-> 
+ACK for the drivers/net/wireless bits...
 
-I got an e-mail from Artem Bityutskiy(dedekind1@gmail.com) saying that
-he has pushed this patch to his l2-mtd-2.6/master tree. May be it will
-get to upstream from there.
-
-Thanks,
-Sudhakar
+-- 
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
