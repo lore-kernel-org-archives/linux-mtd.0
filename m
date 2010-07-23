@@ -1,27 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OcJRE-0008Ko-7m
-	for linux-mtd@lists.infradead.org; Fri, 23 Jul 2010 14:41:25 +0000
-Received: by wwb31 with SMTP id 31so2335878wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Jul 2010 07:41:20 -0700 (PDT)
-Sender: Rogan Dawes <rogan.dawes@gmail.com>
-Message-ID: <4C49AA07.5050603@dawes.za.net>
-Date: Fri, 23 Jul 2010 16:41:11 +0200
-From: Rogan Dawes <rogan@dawes.za.net>
-MIME-Version: 1.0
-To: Alexey Korolev <akorolev@infradead.org>,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Guillaume LECERF <glecerf@gmail.com>,
-	Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>,
-	Jiri Slaby <jslaby@suse.cz>,
-	linux-mtd@lists.infradead.org, Massimo Cirillo <maxcir@gmail.com>,
-	Nicolas Pitre <nico@fluxnic.net>, Stefani Seibold <stefani@seibold.net>,
-	Wolfram Sang <w.sang@pengutronix.de>
-Subject: Programming the flash chip in the Dlink DNS323
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: [PATCH 6/6] pcmcia: remove cs_types.h
+From: Marcel Holtmann <marcel@holtmann.org>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+In-Reply-To: <1279874305-21191-6-git-send-email-linux@dominikbrodowski.net>
+References: <20100723083726.GA20947@comet.dominikbrodowski.net>
+	<1279874305-21191-6-git-send-email-linux@dominikbrodowski.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 23 Jul 2010 08:28:08 -0700
+Message-ID: <1279898888.2621.18.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	linux-pcmcia@lists.infradead.org, linux-wireless@vger.kernel.org,
+	laforge@gnumonks.org, linux-ide@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-serial@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,112 +23,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks,
+Hi Dominik,
 
-I sent this mail to the linux-mtd list a few days ago, but got no 
-response. The kernel get_maintainers script indicated that you had all 
-had something to do with the CFI code in the past. If I have been 
-excessive in my addressing, I apologize sincerely.
+> Remove cs_types.h which is no longer needed: Most definitions aren't
+> used at all, a few can be made away with, and two remaining definitions
+> (typedefs, unfortunatley) may be moved to more specific places.
+> 
+> CC: netdev@vger.kernel.org
+> CC: linux-wireless@vger.kernel.org
+> CC: linux-ide@vger.kernel.org
+> CC: linux-usb@vger.kernel.org
+> CC: laforge@gnumonks.org
+> CC: linux-mtd@lists.infradead.org
+> CC: linux-bluetooth@vger.kernel.org
+> CC: alsa-devel@alsa-project.org
+> CC: linux-serial@vger.kernel.org
+> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+> ---
+>  Documentation/pcmcia/driver-changes.txt          |    5 +++
+>  drivers/ata/pata_pcmcia.c                        |    1 -
+>  drivers/bluetooth/bluecard_cs.c                  |    1 -
+>  drivers/bluetooth/bt3c_cs.c                      |    1 -
+>  drivers/bluetooth/btuart_cs.c                    |    1 -
+>  drivers/bluetooth/dtl1_cs.c                      |    1 -
+>  drivers/char/pcmcia/cm4000_cs.c                  |    1 -
+>  drivers/char/pcmcia/cm4040_cs.c                  |    1 -
+>  drivers/char/pcmcia/ipwireless/main.h            |    1 -
+>  drivers/char/pcmcia/ipwireless/tty.h             |    1 -
+>  drivers/char/pcmcia/synclink_cs.c                |    1 -
+>  drivers/ide/ide-cs.c                             |    1 -
+>  drivers/isdn/hardware/avm/avm_cs.c               |    1 -
+>  drivers/isdn/hisax/avma1_cs.c                    |    1 -
+>  drivers/isdn/hisax/elsa_cs.c                     |    1 -
+>  drivers/isdn/hisax/sedlbauer_cs.c                |    1 -
+>  drivers/isdn/hisax/teles_cs.c                    |    1 -
+>  drivers/mmc/host/sdricoh_cs.c                    |    1 -
+>  drivers/mtd/maps/pcmciamtd.c                     |    1 -
+>  drivers/net/pcmcia/3c574_cs.c                    |    1 -
+>  drivers/net/pcmcia/3c589_cs.c                    |    1 -
+>  drivers/net/pcmcia/axnet_cs.c                    |    1 -
+>  drivers/net/pcmcia/com20020_cs.c                 |    1 -
+>  drivers/net/pcmcia/fmvj18x_cs.c                  |    1 -
+>  drivers/net/pcmcia/ibmtr_cs.c                    |    1 -
+>  drivers/net/pcmcia/nmclan_cs.c                   |    1 -
+>  drivers/net/pcmcia/pcnet_cs.c                    |    5 +--
+>  drivers/net/pcmcia/smc91c92_cs.c                 |    1 -
+>  drivers/net/pcmcia/xirc2ps_cs.c                  |    1 -
+>  drivers/net/wireless/airo_cs.c                   |    1 -
+>  drivers/net/wireless/atmel_cs.c                  |    1 -
+>  drivers/net/wireless/b43/pcmcia.c                |    1 -
+>  drivers/net/wireless/hostap/hostap_cs.c          |    3 +-
+>  drivers/net/wireless/libertas/if_cs.c            |    1 -
+>  drivers/net/wireless/orinoco/orinoco_cs.c        |    1 -
+>  drivers/net/wireless/orinoco/spectrum_cs.c       |    1 -
+>  drivers/net/wireless/ray_cs.c                    |    1 -
+>  drivers/net/wireless/wl3501_cs.c                 |   10 +-----
+>  drivers/parport/parport_cs.c                     |    1 -
+>  drivers/pcmcia/au1000_generic.h                  |    1 -
+>  drivers/pcmcia/au1000_pb1x00.c                   |    2 -
+>  drivers/pcmcia/cistpl.c                          |    1 -
+>  drivers/pcmcia/cs.c                              |    1 -
+>  drivers/pcmcia/db1xxx_ss.c                       |    1 -
+>  drivers/pcmcia/ds.c                              |    1 -
+>  drivers/pcmcia/i82092.c                          |    1 -
+>  drivers/pcmcia/i82365.c                          |    1 -
+>  drivers/pcmcia/m32r_cfc.c                        |    1 -
+>  drivers/pcmcia/m32r_pcc.c                        |    1 -
+>  drivers/pcmcia/m8xx_pcmcia.c                     |    1 -
+>  drivers/pcmcia/pcmcia_cis.c                      |    1 -
+>  drivers/pcmcia/pcmcia_resource.c                 |    1 -
+>  drivers/pcmcia/pd6729.c                          |    1 -
+>  drivers/pcmcia/pxa2xx_base.c                     |    1 -
+>  drivers/pcmcia/rsrc_iodyn.c                      |    1 -
+>  drivers/pcmcia/rsrc_mgr.c                        |    1 -
+>  drivers/pcmcia/rsrc_nonstatic.c                  |    1 -
+>  drivers/pcmcia/sa1100_generic.c                  |    1 -
+>  drivers/pcmcia/soc_common.h                      |    1 -
+>  drivers/pcmcia/socket_sysfs.c                    |    1 -
+>  drivers/pcmcia/tcic.c                            |    1 -
+>  drivers/pcmcia/xxs1500_ss.c                      |    1 -
+>  drivers/pcmcia/yenta_socket.c                    |    1 -
+>  drivers/scsi/pcmcia/aha152x_stub.c               |    1 -
+>  drivers/scsi/pcmcia/fdomain_stub.c               |    1 -
+>  drivers/scsi/pcmcia/nsp_cs.c                     |    1 -
+>  drivers/scsi/pcmcia/qlogic_stub.c                |    1 -
+>  drivers/scsi/pcmcia/sym53c500_cs.c               |    1 -
+>  drivers/serial/serial_cs.c                       |    1 -
+>  drivers/ssb/main.c                               |    1 -
+>  drivers/ssb/pcmcia.c                             |    1 -
+>  drivers/ssb/scan.c                               |    1 -
+>  drivers/staging/comedi/drivers/cb_das16_cs.c     |    1 -
+>  drivers/staging/comedi/drivers/das08_cs.c        |    1 -
+>  drivers/staging/comedi/drivers/ni_daq_700.c      |    1 -
+>  drivers/staging/comedi/drivers/ni_daq_dio24.c    |    1 -
+>  drivers/staging/comedi/drivers/ni_labpc_cs.c     |    1 -
+>  drivers/staging/comedi/drivers/ni_mio_cs.c       |    1 -
+>  drivers/staging/comedi/drivers/quatech_daqp_cs.c |    1 -
+>  drivers/staging/wlags49_h2/wl_cs.c               |    1 -
+>  drivers/staging/wlags49_h2/wl_internal.h         |    1 -
+>  drivers/telephony/ixj_pcmcia.c                   |    1 -
+>  drivers/usb/host/sl811_cs.c                      |    5 +--
+>  include/pcmcia/cistpl.h                          |    2 +
+>  include/pcmcia/cs.h                              |   10 +-----
+>  include/pcmcia/cs_types.h                        |   40 ----------------------
+>  include/pcmcia/ds.h                              |    3 +-
+>  include/pcmcia/ss.h                              |    1 -
+>  sound/pcmcia/pdaudiocf/pdaudiocf.h               |    1 -
+>  sound/pcmcia/vx/vxpocket.h                       |    1 -
+>  90 files changed, 14 insertions(+), 151 deletions(-)
+>  delete mode 100644 include/pcmcia/cs_types.h
 
-I'm trying to find out whether there is any special-casing in the kernel 
-CFI code for the Spansion S29GL064M90TFIR4 used in my DNS-323. I am 
-trying to build an up-to-date (U-Boot) bootloader, that has more 
-functionality than the seriously crippled one that ships by default with 
-the device.
+for drivers/bluetooth/
 
-Unfortunately, the current U-Boot CFI code can not detect the flash 
-chip, which has led me to investigate how Linux controls it. From my 
-initial reading of the setup code in 
-arch/arm/mach-orion5x/dns323-setup.c, there doesn't seem to be anything 
-special about the DNS-323's flash part, but I'd appreciate it if anyone 
-could confirm that?
+Acked-by: Marcel Holtmann <marcel@holtmann.org>
 
-If there is nothing special-cased in the kernel CFI code, then I guess I 
-will have to try to port the kernel CFI code to U-Boot.
+Regards
 
-See below for some info about how the Spansion flash part behaves in 
-U-Boot, if you are interested.
-
-Many thanks for reading this (and more if you respond! :-) )
-
-Rogan
-
--------- Original Message --------
-Subject: Programming the flash chip in the Dlink DNS323
-Date: Tue, 20 Jul 2010 17:34:10 +0200
-From: Rogan Dawes <rogan@dawes.za.net>
-To: linux-mtd@lists.infradead.org
-Newsgroups: gmane.linux.drivers.mtd
-
-Hi folks,
-
-I am trying to add support for the DNS323 to U-Boot, but am struggling
-with the flash chip, a Spansion S29GL064M90TFIR4. I am unable to get it
-to generate the appropriate CFI responses. In fact, I cannot even get it 
-to react to the sequence to trigger the manufacturer ID, although I can 
-get it to show the QRY response.
-
-This is what I get (from the u-boot command line):
-
-DNS323B1> mw.b 0xf4000000 0xF0          // send a reset
-DNS323B1> md.b 0xf4000000 0x40          // display the first bytes
-f4000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-................
-f4000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-................
-f4000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-................
-f4000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-................
-DNS323B1> mw.b 0xf40000aa 0x98         // enable QRY mode
-DNS323B1> md.b 0xf4000000 0x40         // display the QRY info
-f4000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-................
-f4000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-................
-f4000020: 51 51 52 52 59 59 02 02 00 00 40 40 00 00 00 00
-QQRRYY....@@....
-f4000030: 00 00 00 00 00 00 27 27 36 36 00 00 00 00 04 04
-......''66......
-
-The apparently odd thing is that rather than "QRY" at 0x10, I get
-"QQRRYY" at 0x20, but the device should be in 8-bit mode, from all the
-info I've found (including the kernel sources).
-
-It seems that there is support for it in the mainstream kernel, and as
-far as I can see, it is being detected using CFI.
-
-Here is where it is set up:
-
-arch/arm/mach-orion5x/dns323-setup.c
-
-which simply defines the flash addresses and bus width:
-
-static struct physmap_flash_data dns323_nor_flash_data = {
-         .width          = 1,
-         .parts          = dns323_partitions,
-         .nr_parts       = ARRAY_SIZE(dns323_partitions)
-};
-
-static struct resource dns323_nor_flash_resource = {
-         .flags          = IORESOURCE_MEM,
-         .start          = DNS323_NOR_BOOT_BASE,
-         .end            = DNS323_NOR_BOOT_BASE + DNS323_NOR_BOOT_SIZE - 1,
-};
-
-static struct platform_device dns323_nor_flash = {
-         .name           = "physmap-flash",
-         .id             = 0,
-         .dev            = {
-                 .platform_data  = &dns323_nor_flash_data,
-         },
-         .resource       = &dns323_nor_flash_resource,
-         .num_resources  = 1,
-};
-
-Does anyone have any insight into this chip, and could help me add
-support for it to U-Boot?
-
-Many thanks.
-
-Rogan
+Marcel
