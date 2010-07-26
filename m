@@ -1,21 +1,15 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OdO3G-0001PV-Vo
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2010 13:49:10 +0000
-Received: by bwz15 with SMTP id 15so3511844bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 26 Jul 2010 06:49:05 -0700 (PDT)
+Received: from [69.28.251.93] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OdT1I-00041d-9J
+	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2010 19:07:25 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Mon, 26 Jul 2010 11:37:19 -0700
+Subject: [PATCH v4] mtd-utils: clean up compile warnings
+Message-Id: <316b2205ef90aed27bc9bf7b3a5701f0@localhost>
+To: <dedekind1@gmail.com>, <vapier.adi@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1280150054.14917.108.camel@localhost>
-References: <AANLkTikC6wxXV08=AYsqn56h8Cs-qC_-b8hNyq9DUWps@mail.gmail.com>
-	<1280150054.14917.108.camel@localhost>
-Date: Mon, 26 Jul 2010 15:49:02 +0200
-Message-ID: <AANLkTik7CdwdyhzVYFXG66V3LKZvqnZhLbg4eVC0nQ=S@mail.gmail.com>
-Subject: Re: error!: "/dev/ubi0" is not a character device ?!?
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,129 +20,271 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/7/26 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Mon, 2010-07-26 at 14:00 +0200, Arno Steffen wrote:
->> I just tried the howto (mount an empty UBI volume). But when I want to d=
-o
->> ubimkvol /dev/ubi0 -N test_vol -s 10MiB I get an error message:
->> libubi: error!: "/dev/ubi0" is not a character device
->> ubimkvol: error!: error while probing "/dev/ubi0"
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 error 22 (Invalid argument)
->>
->> If I check /dev/ubi0 it is indeed a block device. But this has been
->> created by ubiattach which I used as howto
->> What is the problem????
->
-> Your udev rules, perhaps? Creating device nodes is responsibility of
-> your system, not UBI/ubi-utils.
+gcc 4.4.3 on x86_64:
 
-My mtd8 is a character device as it should be.
-crw-rw----    1 root     root      90,  16 Jan  1 00:00 /dev/mtd8
+libcrc32.c:42: warning: ‘static’ is not at beginning of declaration
 
-I don't know who is creating the device node, but it is avauilable
-after ubiattach.
-If it is done by udev - how to control it and change it's behaviour?
-I can delete the device node and create one manually as described by
-free_electrons.
+libfec.c:120: warning: initialization discards qualifiers from pointer target type
+libfec.c:121: warning: initialization discards qualifiers from pointer target type
 
-cat /sys/class/ubi/ubi0/dev (e.g. 253:0)
-mknod /dev/ubi0 c 253 0
+libfec.c:417: warning: passing argument 2 of ‘my_malloc’ discards qualifiers from pointer target type
 
-Calling ubimkvol then creates a lot of other errors. (see below)
+recv_image.c:164: warning: comparison of unsigned expression < 0 is always false
+recv_image.c:170: warning: format ‘%d’ expects type ‘int’, but argument 3 has type ‘size_t’
+recv_image.c:170: warning: format ‘%d’ expects type ‘int’, but argument 4 has type ‘long unsigned int’
 
->
->> ( I tried to set the device as a char-device by
->>
->> [root@or:/]# ll /dev/ub*
->> brw-rw---- =C2=A0 =C2=A01 root =C2=A0 =C2=A0 root =C2=A0 =C2=A0 253, =C2=
-=A0 0 Jan =C2=A01 00:46 /dev/ubi0
->> crw-rw---- =C2=A0 =C2=A01 root =C2=A0 =C2=A0 root =C2=A0 =C2=A0 =C2=A010=
-, =C2=A063 Jan =C2=A01 00:00 /dev/ubi_ctrl
->> [root@or:/]# rm /dev/ubi0
->> [root@or:/]# mknod /dev/ubi0 c 253 0
->>
->> But than I get other error messages:
->>
->> [root@or:/]# ubimkvol /dev/ubi0 -N test -s 10MiB
->> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
->> 331:512, written 0 bytes
->> Backtrace:
->> [<8002d558>] (dump_backtrace+0x0/0x10c) from [<80267dac>] (dump_stack+0x=
-18/0x1c)
->> =C2=A0r6:0000014b r5:fffffffb r4:87a19800 r3:00000002
->> [<80267d94>] (dump_stack+0x0/0x1c) from [<801bb084>] (ubi_io_write+0x308=
-/0x384)
->> [<801bad7c>] (ubi_io_write+0x0/0x384) from [<801bb228>]
->> (ubi_io_write_vid_hdr+0x128/0x144)
->> [<801bb100>] (ubi_io_write_vid_hdr+0x0/0x144) from [<801b9114>]
->> (ubi_eba_write_leb+0x550/0x758)
->> =C2=A0r6:87928400 r5:879dde00 r4:87a19800
->> [<801b8bc4>] (ubi_eba_write_leb+0x0/0x758) from [<801b1560>]
->> (ubi_change_vtbl_record+0xf4/0x158)
->> [<801b146c>] (ubi_change_vtbl_record+0x0/0x158) from [<801b2d74>]
->> (ubi_create_volume+0x51c/0x6c0)
->> =C2=A0r7:87a19800 r6:87a73d2c r5:87928200 r4:879282a0
->> [<801b2858>] (ubi_create_volume+0x0/0x6c0) from [<801b56f4>]
->> (ubi_cdev_ioctl+0x1f4/0x96c)
->> [<801b5500>] (ubi_cdev_ioctl+0x0/0x96c) from [<800b6194>] (vfs_ioctl+0x3=
-4/0xb4)
->> [<800b6160>] (vfs_ioctl+0x0/0xb4) from [<800b6880>] (do_vfs_ioctl+0x56c/=
-0x5b4)
->> =C2=A0r6:40986f00 r5:879f73c0 r4:7e85c9d8 r3:87a2e230
->> [<800b6314>] (do_vfs_ioctl+0x0/0x5b4) from [<800b6908>] (sys_ioctl+0x40/=
-0x64)
->> [<800b68c8>] (sys_ioctl+0x0/0x64) from [<80029fc0>] (ret_fast_syscall+0x=
-0/0x2c)
->> =C2=A0r7:00000036 r6:00000003 r5:7e85cba8 r4:7e85c9d8
->> UBI warning: ubi_eba_write_leb: failed to write VID header to LEB
->> 2147479551:0, PEB 331
->> UBI: run torture test for PEB 331
->
-> Strange. Your MTD device returned -EIO, probably you should check
-> whether you can write to your mtd device or not.
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+And many more along the same lines.
 
-Yes, the mtd is in general writable. Not sure if it is still after ubiattac=
-h.
-Another try was to flash a ubi.img, but it will not mount again.
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ compr.h        |    2 +-
+ lib/libcrc32.c |    2 +-
+ lib/libfec.c   |    6 +++---
+ mkfs.jffs2.c   |    9 +++++----
+ mtd_debug.c    |    4 ++--
+ nandtest.c     |    6 +++---
+ nftl_format.c  |    3 ++-
+ recv_image.c   |   10 +++++-----
+ sumtool.c      |    6 +++---
+ 9 files changed, 25 insertions(+), 23 deletions(-)
 
-ubiattach /dev/ubi_ctrl -m 8
-UBI: attaching mtd8 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    129024 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          512 (aligned 512)
-UBI: data offset:                2048
-UBI warning: ubi_eba_init_scan: cannot reserve enough PEBs for bad PEB
-handling, reserved 1, need 3
-UBI: attached mtd8 to ubi0
-UBI: MTD device name:            "extra"
-UBI: MTD device size:            41 MiB
-UBI: number of good PEBs:        331
-UBI: number of bad PEBs:         1
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 331
-UBI: number of PEBs reserved for bad PEB handling: 1
-UBI: max/mean erase counter: 1/0
-UBI: image sequence number: 228182237
-UBI: background thread "ubi_bgt0d" started, PID 367
-UBI device number 0, total 331 LEBs (42706944 bytes, 40.7 MiB),
-available 0 LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
-[root@or:/]#
-[root@or:/]# ls -l /dev/ubi*
-brw-rw----    1 root     root     253,   0 Jan  1 00:13 /dev/ubi0
-brw-rw----    1 root     root     253,   1 Jan  1 00:13 /dev/ubi0_0
-crw-rw----    1 root     root      10,  63 Jan  1 00:00 /dev/ubi_ctrl
-[root@or:/]# mount -t ubifs /dev/ubi0_0 /tmp
-mount: mounting /dev/ubi0_0 on /tmp failed: No such device
+diff --git a/compr.h b/compr.h
+index 51bf0dd..4b79802 100644
+--- a/compr.h
++++ b/compr.h
+@@ -67,7 +67,7 @@ int jffs2_set_compressor_priority(const char *name, int priority);
+ struct jffs2_compressor {
+ 	struct list_head list;
+ 	int priority;             /* used by prirority comr. mode */
+-	char *name;
++	const char *name;
+ 	char compr;               /* JFFS2_COMPR_XXX */
+ 	int (*compress)(unsigned char *data_in, unsigned char *cpage_out,
+ 			uint32_t *srclen, uint32_t *destlen, void *model);
+diff --git a/lib/libcrc32.c b/lib/libcrc32.c
+index d556e91..d47a842 100644
+--- a/lib/libcrc32.c
++++ b/lib/libcrc32.c
+@@ -39,7 +39,7 @@
+ 
+ #include <stdint.h>
+ 
+-const static uint32_t crc32_table[256] = {
++static const uint32_t crc32_table[256] = {
+ 	0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL, 0x076dc419L,
+ 	0x706af48fL, 0xe963a535L, 0x9e6495a3L, 0x0edb8832L, 0x79dcb8a4L,
+ 	0xe0d5e91eL, 0x97d2d988L, 0x09b64c2bL, 0x7eb17cbdL, 0xe7b82d07L,
+diff --git a/lib/libfec.c b/lib/libfec.c
+index 6d9020f..adf2bba 100644
+--- a/lib/libfec.c
++++ b/lib/libfec.c
+@@ -114,7 +114,7 @@ typedef unsigned short gf;
+  * Primitive polynomials - see Lin & Costello, Appendix A,
+  * and  Lee & Messerschmitt, p. 453.
+  */
+-static char *allPp[] = {    /* GF_BITS	polynomial		*/
++static const char *allPp[] = {    /* GF_BITS	polynomial		*/
+     NULL,		    /*  0	no code			*/
+     NULL,		    /*  1	no code			*/
+     "111",		    /*  2	1+x+x^2			*/
+@@ -226,7 +226,7 @@ gf_mul(x,y)
+  * one place.
+  */
+ static void *
+-my_malloc(int sz, char *err_string)
++my_malloc(int sz, const char *err_string)
+ {
+     void *p = malloc( sz );
+     if (p == NULL) {
+@@ -247,7 +247,7 @@ generate_gf(void)
+ {
+     int i;
+     gf mask;
+-    char *Pp =  allPp[GF_BITS] ;
++    const char *Pp =  allPp[GF_BITS] ;
+ 
+     mask = 1;	/* x ** 0 = 1 */
+     gf_exp[GF_BITS] = 0; /* will be updated at the end of the 1st loop */
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index 4ba71fe..181fe9d 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -1090,7 +1090,7 @@ static uint32_t highest_xseqno = 0;
+ 
+ static struct {
+ 	int xprefix;
+-	char *string;
++	const char *string;
+ 	int length;
+ } xprefix_tbl[] = {
+ 	{ JFFS2_XPREFIX_USER, XATTR_USER_PREFIX, XATTR_USER_PREFIX_LEN },
+@@ -1232,7 +1232,8 @@ static void write_xattr_entry(struct filesystem_entry *e)
+ 	struct jffs2_raw_xref ref;
+ 	struct xattr_entry *xe;
+ 	char xlist[XATTR_BUFFER_SIZE], xvalue[XATTR_BUFFER_SIZE];
+-	char *xname, *prefix_str;
++	char *xname;
++	const char *prefix_str;
+ 	int i, xprefix, prefix_len;
+ 	int list_sz, offset, name_len, value_len;
+ 
+@@ -1481,7 +1482,7 @@ static struct option long_options[] = {
+ 	{NULL, 0, NULL, 0}
+ };
+ 
+-static char *helptext =
++static const char helptext[] =
+ "Usage: mkfs.jffs2 [OPTIONS]\n"
+ "Make a JFFS2 file system image from an existing directory tree\n\n"
+ "Options:\n"
+@@ -1520,7 +1521,7 @@ static char *helptext =
+ "  -V, --version           Display version information\n"
+ "  -i, --incremental=FILE  Parse FILE and generate appendage output for it\n\n";
+ 
+-static char *revtext = "1.60";
++static const char revtext[] = "1.60";
+ 
+ int load_next_block() {
+ 
+diff --git a/mtd_debug.c b/mtd_debug.c
+index 4934699..928cb5a 100644
+--- a/mtd_debug.c
++++ b/mtd_debug.c
+@@ -158,7 +158,7 @@ retry:
+ 	if (buf != NULL)
+ 		free (buf);
+ 	close (outfd);
+-	printf ("Copied %d bytes from address 0x%.8x in flash to %s\n",len,offset,filename);
++	printf ("Copied %zu bytes from address 0x%.8x in flash to %s\n",len,offset,filename);
+ 	return (0);
+ 
+ err2:
+@@ -309,7 +309,7 @@ int showinfo (int fd)
+ 			{
+ 				if (first)
+ 				{
+-					printf (flags[i].name);
++					printf ("%s", flags[i].name);
+ 					first = 0;
+ 				}
+ 				else printf (" | %s",flags[i].name);
+diff --git a/nandtest.c b/nandtest.c
+index 13e9577..4d90159 100644
+--- a/nandtest.c
++++ b/nandtest.c
+@@ -70,7 +70,7 @@ int erase_and_write(loff_t ofs, unsigned char *data, unsigned char *rbuf)
+ 	}
+ 	if (len < meminfo.erasesize) {
+ 		printf("\n");
+-		fprintf(stderr, "Short write (%d bytes)\n", len);
++		fprintf(stderr, "Short write (%zd bytes)\n", len);
+ 		exit(1);
+ 	}
+ 
+@@ -81,7 +81,7 @@ int erase_and_write(loff_t ofs, unsigned char *data, unsigned char *rbuf)
+ 	if (len < meminfo.erasesize) {
+ 		printf("\n");
+ 		if (len)
+-			fprintf(stderr, "Short read (%d bytes)\n", len);
++			fprintf(stderr, "Short read (%zd bytes)\n", len);
+ 		else
+ 			perror("read");
+ 		exit(1);
+@@ -263,7 +263,7 @@ int main(int argc, char **argv)
+ 				if (len < meminfo.erasesize) {
+ 					printf("\n");
+ 					if (len)
+-						fprintf(stderr, "Short read (%d bytes)\n", len);
++						fprintf(stderr, "Short read (%zd bytes)\n", len);
+ 					else
+ 						perror("read");
+ 					exit(1);
+diff --git a/nftl_format.c b/nftl_format.c
+index 42949a0..167098a 100644
+--- a/nftl_format.c
++++ b/nftl_format.c
+@@ -202,7 +202,8 @@ int main(int argc, char **argv)
+ 	long MediaUnitOff1 = 0, MediaUnitOff2 = 0;
+ 	unsigned char oobbuf[16];
+ 	struct mtd_oob_buf oob = {0, 16, oobbuf};
+-	char *mtddevice, *nftl;
++	char *mtddevice;
++	const char *nftl;
+ 	int c, do_inftl = 0, do_bbt = 0;
+ 
+ 
+diff --git a/recv_image.c b/recv_image.c
+index 2be511a..35059b3 100644
+--- a/recv_image.c
++++ b/recv_image.c
+@@ -39,24 +39,24 @@ int main(int argc, char **argv)
+ 	struct addrinfo *runp;
+ 	int ret;
+ 	int sock;
+-	size_t len;
++	ssize_t len;
+ 	int flfd;
+ 	struct mtd_info_user meminfo;
+ 	unsigned char *eb_buf, *decode_buf, **src_pkts;
+ 	int nr_blocks = 0;
+ 	int pkts_per_block;
+ 	int block_nr = -1;
+-	uint32_t image_crc;
++	uint32_t image_crc = 0;
+ 	int total_pkts = 0;
+ 	int ignored_pkts = 0;
+ 	loff_t mtdoffset = 0;
+ 	int badcrcs = 0;
+ 	int duplicates = 0;
+ 	int file_mode = 0;
+-	struct fec_parms *fec;
++	struct fec_parms *fec = NULL;
+ 	int i;
+ 	struct eraseblock *eraseblocks = NULL;
+-	uint32_t start_seq;
++	uint32_t start_seq = 0;
+ 	struct timeval start, now;
+ 	unsigned long fec_time = 0, flash_time = 0, crc_time = 0,
+ 		rflash_time = 0, erase_time = 0, net_time = 0;
+@@ -166,7 +166,7 @@ int main(int argc, char **argv)
+ 			break;
+ 		}
+ 		if (len < sizeof(thispkt)) {
+-			fprintf(stderr, "Wrong length %d bytes (expected %d)\n",
++			fprintf(stderr, "Wrong length %zd bytes (expected %lu)\n",
+ 				len, sizeof(thispkt));
+ 			continue;
+ 		}
+diff --git a/sumtool.c b/sumtool.c
+index 966e110..11b25b1 100644
+--- a/sumtool.c
++++ b/sumtool.c
+@@ -88,7 +88,7 @@ static struct option long_options[] = {
+ 	{NULL, 0, NULL, 0}
+ };
+ 
+-static char *helptext =
++static const char helptext[] =
+ "Usage: sumtool [OPTIONS] -i inputfile -o outputfile\n\n"
+ "Convert the input JFFS2 image to a summarized JFFS2 image\n"
+ "Summary makes mounting faster - if summary support enabled in your kernel\n\n"
+@@ -112,7 +112,7 @@ static char *helptext =
+ "                            eraseblock\n\n";
+ 
+ 
+-static char *revtext = "$Revision: 1.9 $";
++static const char revtext[] = "$Revision: 1.9 $";
+ 
+ static unsigned char ffbuf[16] = {
+ 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+@@ -927,7 +927,7 @@ int main(int argc, char **argv)
+ 			close(in_fd);
+ 		if(out_fd != -1)
+ 			close(out_fd);
+-		fprintf(stderr,helptext);
++		fprintf(stderr, "%s", helptext);
+ 		error_msg_and_die("You must specify input and output files!\n");
+ 	}
+ 
+-- 
+1.7.0.4
