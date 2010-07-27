@@ -1,19 +1,25 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail.solarflare.com ([216.237.3.220]
+	helo=exchange.solarflare.com)
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OdmjE-0001aA-Uq
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 16:10:08 +0000
-Received: by fxm3 with SMTP id 3so820125fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Jul 2010 09:10:03 -0700 (PDT)
-Subject: Question regarding LP NAND chip with built-in ECC
-From: Peter Barada <peter.barada@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 27 Jul 2010 12:23:55 -0400
-Message-ID: <1280247835.14079.136.camel@thunk>
+	id 1Odo8M-00055d-RZ
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 17:40:07 +0000
+Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
+	ref-counting  back to open/release
+From: Ben Hutchings <bhutchings@solarflare.com>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+In-Reply-To: <AANLkTikCQsH8kGCsPPOqQ+Qj_TxyxepGGb6=462MuQxT@mail.gmail.com>
+References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
+	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
+	<AANLkTi=Aw=yFCsz4PArNoMVOpOU567ffzUHooVvXKQtF@mail.gmail.com>
+	<1279991008.4915.7.camel@localhost>
+	<AANLkTikCQsH8kGCsPPOqQ+Qj_TxyxepGGb6=462MuQxT@mail.gmail.com>
+Content-Type: text/plain
+Date: Tue, 27 Jul 2010 18:40:01 +0100
+Message-Id: <1280252401.2132.12.camel@achroite.uk.solarflarecom.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Reply-To: peter.barada@gmail.com
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm working to add support for a new 2KiB page NAND chip on OMAP3 that
-has built in ECC - the chip calculates the ECC on writes and programs
-the ECC into the OOB area, leaving 16 bytes (out of 64) usable for OOB
-information.  On reads the chip reads the page into the read buffer
-caculating/correcting the ECC in the process and updating the
-status with the result.
+On Sun, 2010-07-25 at 10:41 +0300, Maxim Levitsky wrote:
+> On Sat, Jul 24, 2010 at 8:03 PM, Ben Hutchings
+> <bhutchings@solarflare.com> wrote:
+> > OK, I get it.  Maybe that should be deferred to a work item.
+> >
+> 
+> I thought about that too.
+> It doesn't solve the races, because now the deferred work races with
+> device removal, just like the function that adds new mtd device.
+> Unless it takes mtd_table_mutex....
 
-My problem is trying to figure out the best way to add support for it in
-the current MTD NAND structure while modifying a minimal amount of code.
+You can cancel it in device removal.
 
-The chip requires on reads to send the following (starting with the
-normal read sequence):
+> > This only works if the MTD itself is hotplugged, and not if the MTD's
+> > parent is hotplugged.  In fixing one case you have broken the other.
+> 
+> Why?
+> 
+> In my case the mtd device does have a parent, a pci device.
+> If pci device is removed, I just remove the mtd device from the pci driver.
+>  (although this codepath it untested)
 
-0x00  C1 C2 R1 R2 R3 0x30
+OK, I have tested this and you are right.  But it is a pain to have to
+unbind all devices before removing the module.
 
-At this point wait for tR_ECC, then read the status back to determine if
-a hard/soft ECC occured:
-
-0x70 <status>
-
-Then issue the READSTART command:
-
-0x00
-
-and then read out the data.
-
-Writes appear to be handled normally.
-
-I was wondering if anyone has run across a chip such as this
-
-I was thinking of adding NAND_ECC_CHIP as a new ECC mode and creating
-nand_read_page_chipecc() to handle the reads and use the ecc entrypoints
-for NAND_ECC_NONE to handle the other functions.
-
-Would this work?
+Ben.
 
 -- 
-Peter Barada <peter.barada@gmail.com>
+Ben Hutchings, Senior Software Engineer, Solarflare Communications
+Not speaking for my employer; that's the marketing department's job.
+They asked us to note that Solarflare product names are trademarked.
