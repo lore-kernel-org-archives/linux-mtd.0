@@ -1,17 +1,14 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OdeBv-0004b6-NH
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 07:03:08 +0000
-Received: by gwb10 with SMTP id 10so461641gwb.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Jul 2010 00:03:05 -0700 (PDT)
-MIME-Version: 1.0
-Date: Tue, 27 Jul 2010 09:03:05 +0200
-Message-ID: <AANLkTin+3QMqZvMNgvKTH0F_ZngY9ooBR7sSKW5cdJUq@mail.gmail.com>
-Subject: mkfs.ubifs gives corrupt images/crc errors
-From: Leo Barnes <barnes.leo@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Date: Tue, 27 Jul 2010 19:39:37 +0900
+From: Kyungmin Park <kmpark@infradead.org>,
+	Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH] S5PC110: Add OneNAND interrupt number
+To: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
+Message-id: <20100727103937.GA1247@july>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Cc: kgene.kim@samsung.com, m.szyprowski@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,23 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+To use OneNAND interrupt at drivers, also extend DMA address to cover fully.
 
-The recent versions of mkfs.ubifs in the mtd-utils gives corrupt
-images for me. I get the following error messages when trying to mount
-the ubi-volume:
-
-<3>[  711.246826] UBIFS error (pid 413): ubifs_check_node: bad CRC:
-calculated 0x1f8f89ca, read 0xbb39064c
-<3>[  711.247558] UBIFS error (pid 413): ubifs_check_node: bad node at LEB 0:0
-<3>[  711.247924] UBIFS error (pid 413): ubifs_read_node: expected node type 6
-
-I have identified it as being broken since (approximately) after
-commit 004760f969175da7392dd02bb4fa14164ff46c1e (Wed Jun 16 09:47:27
-2010 +0300). Two or three of the commits after this one refuse to
-build with various make errors, and the next one that builds gives
-corrupt images. It seems to have something to do with the CRC
-calculation.
-
-Best regards,
-//Leo
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+diff --git a/arch/arm/mach-s5pv210/dev-onenand.c b/arch/arm/mach-s5pv210/dev-onenand.c
+index 34997b7..f8ede33 100644
+--- a/arch/arm/mach-s5pv210/dev-onenand.c
++++ b/arch/arm/mach-s5pv210/dev-onenand.c
+@@ -27,9 +27,14 @@ static struct resource s5pc110_onenand_resources[] = {
+ 	},
+ 	[1] = {
+ 		.start	= S5PC110_PA_ONENAND_DMA,
+-		.end	= S5PC110_PA_ONENAND_DMA + SZ_2K - 1,
++		.end	= S5PC110_PA_ONENAND_DMA + SZ_8K - 1,
+ 		.flags	= IORESOURCE_MEM,
+ 	},
++	[2] = {
++		.start	= IRQ_ONENAND_AUDI,
++		.end	= IRQ_ONENAND_AUDI,
++		.flags	= IORESOURCE_IRQ,
++	},
+ };
+ 
+ struct platform_device s5pc110_device_onenand = {
