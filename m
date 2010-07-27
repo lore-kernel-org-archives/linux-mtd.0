@@ -1,24 +1,19 @@
-Received: from mga14.intel.com ([143.182.124.37])
+Received: from mga01.intel.com ([192.55.52.88])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OdbIw-0000cE-VV
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 03:58:12 +0000
+	id 1OdbJi-0000e9-Qo
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 03:59:00 +0000
 From: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Tue, 27 Jul 2010 11:58:03 +0800
-Subject: RE: [PATCH 1/2]  [MTD] nand/denali.c: fixed all checkpatch errors
-	in denali.c
-Message-ID: <5D8008F58939784290FAB48F549751981D4E9692B4@shsmsx502.ccr.corp.intel.com>
-References: <5D8008F58939784290FAB48F549751981D10A98E53@shsmsx502.ccr.corp.intel.com>
-	<1280118596.14917.6.camel@localhost>
-In-Reply-To: <1280118596.14917.6.camel@localhost>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Tue, 27 Jul 2010 11:58:51 +0800
+Subject: [PATCH 2/6] mtd: denali.c: clean up whitespace in code indent
+Message-ID: <5D8008F58939784290FAB48F549751981D4E9692B7@shsmsx502.ccr.corp.intel.com>
 Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "Yuan, Hang" <hang.yuan@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Woodhouse, David" <david.woodhouse@intel.com>, "Gao,
-	Yunpeng" <yunpeng.gao@intel.com>
+Cc: "Yuan, Hang" <hang.yuan@intel.com>, "Woodhouse,
+	David" <david.woodhouse@intel.com>, "Gao, Yunpeng" <yunpeng.gao@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +23,203 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhhbmtzIGZvciB5b3VyIHJldmlldyBhbmQgY29tbWVudHMuDQpJIHNwbGl0IHRoaXMgcGF0Y2gg
-dG8gYmUgNiBzbWFsbGVyIHBhdGNoZXMuIEkgd2lsbCBzZW5kIGl0IG91dCBhZnRlciB0aGlzIG1h
-aWwuDQpCZWxvdyBhcmUgdGhlIHN1YmplY3RzIGZvciB0aGVzZSBzbWFsbGVyIHBhdGNoZXM6DQpb
-UEFUQ0ggMS82XSBtdGQ6IGRlbmFsaS5jOiBjbGVhbiB1cCBhbGwgdGhlIHdoaXRlc3BhY2UgaW4g
-dGhlIGVuZCBvZiBzb21lIGxpbmVzDQpbUEFUQ0ggMi82XSBtdGQ6IGRlbmFsaS5jOiBjbGVhbiB1
-cCB3aGl0ZXNwYWNlIGluIGNvZGUgaW5kZW50DQpbUEFUQ0ggMy82XSBtdGQ6IGRlbmFsaS5jOiBm
-aXhlZCBhbGwgb3BlbiBicmFjZSB7IGNoZWNrLXBhdGNoIGVycm9ycw0KW1BBVENIIDQvNl0gbXRk
-OiBkZW5hbGkuYzogYWRkIGFuZCB1cGRhdGUgS0VSTl8gZmFjaWxpdHkgbGV2ZWwgaW4gcHJpbnRr
-KCkNCltQQVRDSCA1LzZdIG10ZDogZGVuYWxpLmM6IGZpeCBhbGwgImxpbmUgb3ZlciA4MCBjaGFy
-YWN0ZXJzIiB3YXJuaW5ncw0KW1BBVENIIDYvNl0gbXRkOiBkZW5hbGkuYzogZml4IHJlc2VydmVk
-IGFsbCBjaGVjay1wYXRjaCBlcnJvcnMNCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-PiBGcm9tOiBBcnRlbSBCaXR5dXRza2l5IFttYWlsdG86ZGVkZWtpbmQxQGdtYWlsLmNvbV0NCj4g
-U2VudDogTW9uZGF5LCBKdWx5IDI2LCAyMDEwIDEyOjMwIFBNDQo+IFRvOiBEb25nLCBDaHVhbnhp
-YW8NCj4gQ2M6IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyBXb29kaG91c2UsIERhdmlk
-OyBHYW8sIFl1bnBlbmc7IFl1YW4sIEhhbmcNCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzJdIFtN
-VERdIG5hbmQvZGVuYWxpLmM6IGZpeGVkIGFsbCBjaGVja3BhdGNoIGVycm9ycyBpbiBkZW5hbGku
-Yw0KPiANCj4gT24gVGh1LCAyMDEwLTA3LTIyIGF0IDAxOjMyICswODAwLCBEb25nLCBDaHVhbnhp
-YW8gd3JvdGU6DQo+ID4gSGkgYWxsDQo+ID4gVGhlcmUgYXJlIDIgcGF0Y2hlcyB0byBmaXggY2hl
-Y2twYXRjaCBlcnJvcnMgaW4gbmFuZC9kZW5hbGkuYyBhbmQgbmFuZC9kZW5hbGkuaC4NCj4gSGVy
-ZSBpcyB0aGUgZmlyc3Qgb25lLg0KPiA+IFNvIGNhbiB0aGlzIHBhdGNoIGJlIGFjY2VwdGVkIG9y
-IHNvbWVib2R5IGdpdmUgbWUgc29tZSBjb21tZW50cz8gSSB3aWxsIGJlDQo+IHZlcnkgZ2xhZCB0
-byBmaXggaXQuDQo+ID4gVGhhbmtzIGZvciB5b3VyIHRpbWUgdG8gcmV2aWV3LiBMb29raW5nIGZv
-cndhcmQgYW55IHJlc3BvbnNlLg0KPiA+DQo+ID4gRnJvbSA5ZGZmNzAyNzI1NDM3NDMzZjY0MTI3
-NjBhOWRmNDkyYmU2NmJlNmUxIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQ0KPiA+IEZyb206IENo
-dWFueGlhbyBEb25nIDxjaHVhbnhpYW8uZG9uZ0BpbnRlbC5jb20+DQo+ID4gRGF0ZTogVGh1LCAy
-MiBKdWwgMjAxMCAwMDo1MzozNSArMDgwMA0KPiA+IFN1YmplY3Q6IFtQQVRDSCAxLzJdIFtNVERd
-IG5hbmQvZGVuYWxpLmM6IGZpeGVkIGNoZWNrcGF0Y2ggZXJyb3JzIGluIGRlbmFsaS5jDQo+ID4N
-Cj4gPiBTaWduZWQtb2ZmLWJ5OiBDaHVhbnhpYW8gRG9uZyA8Y2h1YW54aWFvLmRvbmdAaW50ZWwu
-Y29tPg0KPiANCj4gVGhpcyBwYXRjaCBpcyB0b28gaHVnZSBhbmQgbm90IHJldmlld2FibGUuIFBs
-ZWFzZSwgc3BsaXQgaXQgb24gc2V2ZXJhbA0KPiBzbWFsbGVyIHBhdGNoZXMuDQo+IA0KPiAtLQ0K
-PiBCZXN0IFJlZ2FyZHMsDQo+IEFydGVtIEJpdHl1dHNraXkgKNCQ0YDRgtGR0Lwg0JHQuNGC0Y7R
-htC60LjQuSkNCg0K
+>From c47153cbe37a7d801bfaed65570c82ddf84b37fb Mon Sep 17 00:00:00 2001
+From: Chuanxiao Dong <chuanxiao.dong@intel.com>
+Date: Tue, 27 Jul 2010 10:30:48 +0800
+Subject: [PATCH 2/6] mtd: denali.c: clean up whitespace in code indent
+
+Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
+---
+ drivers/mtd/nand/denali.c |   59 ++++++++++++++++++++++-------------------=
+----
+ 1 files changed, 29 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 93cf8da..ca02838 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -56,7 +56,7 @@ MODULE_PARM_DESC(onfi_timing_mode, "Overrides default ONF=
+I setting. -1 indicates
+=20
+ /* indicates whether or not the internal value for the flash bank is
+    valid or not */
+-#define CHIP_SELECT_INVALID 	-1
++#define CHIP_SELECT_INVALID	-1
+=20
+ #define SUPPORT_8BITECC		1
+=20
+@@ -100,23 +100,23 @@ static const struct pci_device_id denali_pci_ids[] =
+=3D {
+  */
+ static const uint32_t intr_status_addresses[4] =3D {INTR_STATUS0,
+ 						  INTR_STATUS1,
+-					     	  INTR_STATUS2,
++						  INTR_STATUS2,
+ 						  INTR_STATUS3};
+=20
+ static const uint32_t device_reset_banks[4] =3D {DEVICE_RESET__BANK0,
+-                                               DEVICE_RESET__BANK1,
+-                                               DEVICE_RESET__BANK2,
+-                                               DEVICE_RESET__BANK3};
++							DEVICE_RESET__BANK1,
++							DEVICE_RESET__BANK2,
++							DEVICE_RESET__BANK3};
+=20
+ static const uint32_t operation_timeout[4] =3D {INTR_STATUS0__TIME_OUT,
+-                        		      INTR_STATUS1__TIME_OUT,
+-		                              INTR_STATUS2__TIME_OUT,
+-		                              INTR_STATUS3__TIME_OUT};
++							INTR_STATUS1__TIME_OUT,
++							INTR_STATUS2__TIME_OUT,
++							INTR_STATUS3__TIME_OUT};
+=20
+ static const uint32_t reset_complete[4] =3D {INTR_STATUS0__RST_COMP,
+-                		           INTR_STATUS1__RST_COMP,
+-		                           INTR_STATUS2__RST_COMP,
+-		                           INTR_STATUS3__RST_COMP};
++							INTR_STATUS1__RST_COMP,
++							INTR_STATUS2__RST_COMP,
++							INTR_STATUS3__RST_COMP};
+=20
+ /* specifies the debug level of the driver */
+ static int nand_debug_level =3D 0;
+@@ -641,7 +641,7 @@ static void find_valid_banks(struct denali_nand_info *d=
+enali)
+ 	{
+ 		/* Platform limitations of the CE4100 device limit
+ 		 * users to a single chip solution for NAND.
+-                 * Multichip support is not enabled.
++		 * Multichip support is not enabled.
+ 		 */
+ 		if (denali->total_used_banks !=3D 1)
+ 		{
+@@ -1016,7 +1016,7 @@ static irqreturn_t denali_isr(int irq, void *dev_id)
+ 	spin_lock(&denali->irq_lock);
+=20
+ 	/* check to see if a valid NAND chip has
+-         * been selected.
++	 * been selected.
+ 	 */
+ 	if (is_flash_bank_valid(denali->flash_bank))
+ 	{
+@@ -1081,7 +1081,7 @@ static uint32_t wait_for_irq(struct denali_nand_info =
+*denali, uint32_t irq_mask)
+ 		else
+ 		{
+ 			/* these are not the interrupts you are looking for -
+-		           need to wait again */
++			 * need to wait again */
+ 			spin_unlock_irq(&denali->irq_lock);
+ #if DEBUG_DENALI
+ 			print_irq_log(denali);
+@@ -1096,7 +1096,7 @@ static uint32_t wait_for_irq(struct denali_nand_info =
+*denali, uint32_t irq_mask)
+ 	{
+ 		/* timeout */
+ 		printk(KERN_ERR "timeout occurred, status =3D 0x%x, mask =3D 0x%x\n",
+-	       			intr_status, irq_mask);
++				intr_status, irq_mask);
+=20
+ 		intr_status =3D 0;
+ 	}
+@@ -1231,7 +1231,6 @@ static int read_data_from_flash_mem(struct denali_nan=
+d_info *denali, uint8_t *bu
+ 	/* we assume that len will be a multiple of 4, if not
+ 	 * it would be nice to know about it ASAP rather than
+ 	 * have random failures...
+-         *
+ 	 * This assumption is based on the fact that this
+ 	 * function is designed to be used to read flash pages,
+ 	 * which are typically multiples of 4...
+@@ -1505,8 +1504,8 @@ static void write_page(struct mtd_info *mtd, struct n=
+and_chip *chip,
+ 	{
+ 		printk(KERN_ERR "timeout on write_page (type =3D %d)\n", raw_xfer);
+ 		denali->status =3D
+-	   	   (irq_status & INTR_STATUS0__PROGRAM_FAIL) ? NAND_STATUS_FAIL :
+-						   	     PASS;
++			(irq_status & INTR_STATUS0__PROGRAM_FAIL) ? NAND_STATUS_FAIL :
++														PASS;
+ 	}
+=20
+ 	denali_enable_dma(denali, false);
+@@ -1522,7 +1521,7 @@ static void denali_write_page(struct mtd_info *mtd, s=
+truct nand_chip *chip,
+ 				const uint8_t *buf)
+ {
+ 	/* for regular page writes, we let HW handle all the ECC
+-         * data written to the device. */
++	 * data written to the device. */
+ 	write_page(mtd, chip, buf, false);
+ }
+=20
+@@ -1550,7 +1549,7 @@ static int denali_read_oob(struct mtd_info *mtd, stru=
+ct nand_chip *chip,
+ 	read_oob_data(mtd, chip->oob_poi, page);
+=20
+ 	return 0; /* notify NAND core to send command to
+-                   * NAND device. */
++			   NAND device. */
+ }
+=20
+ static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
+@@ -1722,12 +1721,12 @@ static void denali_cmdfunc(struct mtd_info *mtd, un=
+signed int cmd, int col,
+ 			{
+ 				/* write manufacturer information into nand
+ 				   buffer for NAND subsystem to fetch.
+-  			         */
+-	                        write_byte_to_buf(denali, denali->dev_info.wDevic=
+eMaker);
+-	                        write_byte_to_buf(denali, denali->dev_info.wDevic=
+eID);
+-	                        write_byte_to_buf(denali, denali->dev_info.bDevic=
+eParam0);
+-	                        write_byte_to_buf(denali, denali->dev_info.bDevic=
+eParam1);
+-	                        write_byte_to_buf(denali, denali->dev_info.bDevic=
+eParam2);
++				   */
++				write_byte_to_buf(denali, denali->dev_info.wDeviceMaker);
++				write_byte_to_buf(denali, denali->dev_info.wDeviceID);
++				write_byte_to_buf(denali, denali->dev_info.bDeviceParam0);
++				write_byte_to_buf(denali, denali->dev_info.bDeviceParam1);
++				write_byte_to_buf(denali, denali->dev_info.bDeviceParam2);
+ 			}
+ 			else
+ 			{
+@@ -1977,7 +1976,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 	NAND_Read_Device_ID(denali);
+=20
+ 	/* MTD supported page sizes vary by kernel. We validate our
+-           kernel supports the device here.
++	 * kernel supports the device here.
+ 	 */
+ 	if (denali->dev_info.wPageSize > NAND_MAX_PAGESIZE + NAND_MAX_OOBSIZE)
+ 	{
+@@ -2020,7 +2019,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+=20
+ 	/* second stage of the NAND scan
+ 	 * this stage requires information regarding ECC and
+-         * bad block management. */
++	 * bad block management. */
+=20
+ 	/* Bad block management */
+ 	denali->nand.bbt_td =3D &bbt_main_descr;
+@@ -2042,8 +2041,8 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 	}
+=20
+ 	/* These functions are required by the NAND core framework, otherwise,
+-           the NAND core will assert. However, we don't need them, so we'l=
+l stub
+-           them out. */
++	 * the NAND core will assert. However, we don't need them, so we'll stub
++	 * them out. */
+ 	denali->nand.ecc.calculate =3D denali_ecc_calculate;
+ 	denali->nand.ecc.correct =3D denali_ecc_correct;
+ 	denali->nand.ecc.hwctl =3D denali_ecc_hwctl;
+--=20
+1.6.6.1
