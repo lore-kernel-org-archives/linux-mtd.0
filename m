@@ -1,202 +1,174 @@
 From: chuanxiao.dong@intel.com (Chuanxiao Dong)
-Date: Tue, 27 Jul 2010 10:30:48 +0800
-Subject: [PATCH 2/6] mtd: denali.c: clean up whitespace in code indent
-Message-ID: <mailman.86.1280203141.27306.linux-mtd@lists.infradead.org>
+Date: Tue, 27 Jul 2010 10:48:34 +0800
+Subject: [PATCH 4/6] mtd: denali.c: add and update KERN_ facility level in =
+Message-ID: <mailman.87.1280203157.27306.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
+printk()
+
 Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
 ---
- drivers/mtd/nand/denali.c |   59 ++++++++++++++++++++++-------------------=
-----
- 1 files changed, 29 insertions(+), 30 deletions(-)
+ drivers/mtd/nand/denali.c |   32 ++++++++++++++++----------------
+ 1 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 93cf8da..ca02838 100644
+index f850a65..55a7a39 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -56,7 +56,7 @@ MODULE_PARM_DESC(onfi_timing_mode, "Overrides default ONF=
-I setting. -1 indicates
+@@ -138,7 +138,7 @@ static void denali_write32(uint32_t value, void *addr)
+ 	iowrite32(value, addr);
 =20
- /* indicates whether or not the internal value for the flash bank is
-    valid or not */
--#define CHIP_SELECT_INVALID 	-1
-+#define CHIP_SELECT_INVALID	-1
+ #if DEBUG_DENALI
+-	printk(KERN_ERR "wrote: 0x%x -> 0x%x\n", value, (uint32_t)((uint32_t)addr=
+ & 0x1fff));
++	printk(KERN_INFO "wrote: 0x%x -> 0x%x\n", value, (uint32_t)((uint32_t)add=
+r & 0x1fff));
+ #endif
+ }
 =20
- #define SUPPORT_8BITECC		1
+@@ -191,7 +191,7 @@ static void read_status(struct denali_nand_info *denali=
+)
+ 	write_byte_to_buf(denali, ioread32(denali->flash_mem + 0x10));
 =20
-@@ -100,23 +100,23 @@ static const struct pci_device_id denali_pci_ids[] =
-=3D {
-  */
- static const uint32_t intr_status_addresses[4] =3D {INTR_STATUS0,
- 						  INTR_STATUS1,
--					     	  INTR_STATUS2,
-+						  INTR_STATUS2,
- 						  INTR_STATUS3};
+ #if DEBUG_DENALI
+-	printk("device reporting status value of 0x%2x\n", denali->buf.buf[0]);
++	printk(KERN_INFO "device reporting status value of 0x%2x\n", denali->buf.=
+buf[0]);
+ #endif
+ }
 =20
- static const uint32_t device_reset_banks[4] =3D {DEVICE_RESET__BANK0,
--                                               DEVICE_RESET__BANK1,
--                                               DEVICE_RESET__BANK2,
--                                               DEVICE_RESET__BANK3};
-+							DEVICE_RESET__BANK1,
-+							DEVICE_RESET__BANK2,
-+							DEVICE_RESET__BANK3};
+@@ -989,9 +989,9 @@ static void print_irq_log(struct denali_nand_info *dena=
+li)
+ {
+ 	int i =3D 0;
 =20
- static const uint32_t operation_timeout[4] =3D {INTR_STATUS0__TIME_OUT,
--                        		      INTR_STATUS1__TIME_OUT,
--		                              INTR_STATUS2__TIME_OUT,
--		                              INTR_STATUS3__TIME_OUT};
-+							INTR_STATUS1__TIME_OUT,
-+							INTR_STATUS2__TIME_OUT,
-+							INTR_STATUS3__TIME_OUT};
+-	printk("ISR debug log index =3D %X\n", denali->idx);
++	printk(KERN_INFO "ISR debug log index =3D %X\n", denali->idx);
+ 	for (i =3D 0; i < 32; i++)
+-		printk("%08X: %08X\n", i, denali->irq_debug_array[i]);
++		printk(KERN_INFO "%08X: %08X\n", i, denali->irq_debug_array[i]);
+ }
+ #endif
 =20
- static const uint32_t reset_complete[4] =3D {INTR_STATUS0__RST_COMP,
--                		           INTR_STATUS1__RST_COMP,
--		                           INTR_STATUS2__RST_COMP,
--		                           INTR_STATUS3__RST_COMP};
-+							INTR_STATUS1__RST_COMP,
-+							INTR_STATUS2__RST_COMP,
-+							INTR_STATUS3__RST_COMP};
+@@ -1018,7 +1018,7 @@ static irqreturn_t denali_isr(int irq, void *dev_id)
+ 			denali->irq_debug_array[denali->idx++] =3D 0x10000000 | irq_status;
+ 			denali->idx %=3D 32;
 =20
- /* specifies the debug level of the driver */
- static int nand_debug_level =3D 0;
-@@ -641,7 +641,7 @@ static void find_valid_banks(struct denali_nand_info *d=
-enali)
- 	{
- 		/* Platform limitations of the CE4100 device limit
- 		 * users to a single chip solution for NAND.
--                 * Multichip support is not enabled.
-+		 * Multichip support is not enabled.
- 		 */
- 		if (denali->total_used_banks !=3D 1)
- 		{
-@@ -1016,7 +1016,7 @@ static irqreturn_t denali_isr(int irq, void *dev_id)
- 	spin_lock(&denali->irq_lock);
-=20
- 	/* check to see if a valid NAND chip has
--         * been selected.
-+	 * been selected.
- 	 */
- 	if (is_flash_bank_valid(denali->flash_bank))
- 	{
-@@ -1081,7 +1081,7 @@ static uint32_t wait_for_irq(struct denali_nand_info =
+-			printk("IRQ status =3D 0x%04x\n", irq_status);
++			printk(KERN_INFO "IRQ status =3D 0x%04x\n", irq_status);
+ #endif
+ 			/* handle interrupt */
+ 			/* first acknowledge it */
+@@ -1046,7 +1046,7 @@ static uint32_t wait_for_irq(struct denali_nand_info =
 *denali, uint32_t irq_mask)
- 		else
- 		{
- 			/* these are not the interrupts you are looking for -
--		           need to wait again */
-+			 * need to wait again */
+=20
+ 	do {
+ #if DEBUG_DENALI
+-		printk("waiting for 0x%x\n", irq_mask);
++		printk(KERN_INFO "waiting for 0x%x\n", irq_mask);
+ #endif
+ 		comp_res =3D wait_for_completion_timeout(&denali->complete, timeout);
+ 		spin_lock_irq(&denali->irq_lock);
+@@ -1061,7 +1061,7 @@ static uint32_t wait_for_irq(struct denali_nand_info =
+*denali, uint32_t irq_mask)
+ 			denali->irq_status &=3D ~irq_mask;
+ 			spin_unlock_irq(&denali->irq_lock);
+ #if DEBUG_DENALI
+-			if (retry) printk("status on retry =3D 0x%x\n", intr_status);
++			if (retry) printk(KERN_INFO "status on retry =3D 0x%x\n", intr_status);
+ #endif
+ 			/* our interrupt was detected */
+ 			break;
+@@ -1071,7 +1071,7 @@ static uint32_t wait_for_irq(struct denali_nand_info =
+*denali, uint32_t irq_mask)
  			spin_unlock_irq(&denali->irq_lock);
  #if DEBUG_DENALI
  			print_irq_log(denali);
-@@ -1096,7 +1096,7 @@ static uint32_t wait_for_irq(struct denali_nand_info =
-*denali, uint32_t irq_mask)
- 	{
- 		/* timeout */
- 		printk(KERN_ERR "timeout occurred, status =3D 0x%x, mask =3D 0x%x\n",
--	       			intr_status, irq_mask);
-+				intr_status, irq_mask);
+-			printk("received irq nobody cared: irq_status =3D 0x%x,"
++			printk(KERN_INFO "received irq nobody cared: irq_status =3D 0x%x,"
+ 				" irq_mask =3D 0x%x, timeout =3D %ld\n", intr_status, irq_mask, comp_r=
+es);
+ #endif
+ 			retry =3D true;
+@@ -1263,7 +1263,7 @@ static void read_oob_data(struct mtd_info *mtd, uint8=
+_t *buf, int page)
+ 	denali->page =3D page;
 =20
- 		intr_status =3D 0;
- 	}
-@@ -1231,7 +1231,6 @@ static int read_data_from_flash_mem(struct denali_nan=
-d_info *denali, uint8_t *bu
- 	/* we assume that len will be a multiple of 4, if not
- 	 * it would be nice to know about it ASAP rather than
- 	 * have random failures...
--         *
- 	 * This assumption is based on the fact that this
- 	 * function is designed to be used to read flash pages,
- 	 * which are typically multiples of 4...
-@@ -1505,8 +1504,8 @@ static void write_page(struct mtd_info *mtd, struct n=
-and_chip *chip,
- 	{
- 		printk(KERN_ERR "timeout on write_page (type =3D %d)\n", raw_xfer);
- 		denali->status =3D
--	   	   (irq_status & INTR_STATUS0__PROGRAM_FAIL) ? NAND_STATUS_FAIL :
--						   	     PASS;
-+			(irq_status & INTR_STATUS0__PROGRAM_FAIL) ? NAND_STATUS_FAIL :
-+														PASS;
- 	}
-=20
- 	denali_enable_dma(denali, false);
-@@ -1522,7 +1521,7 @@ static void denali_write_page(struct mtd_info *mtd, s=
-truct nand_chip *chip,
- 				const uint8_t *buf)
- {
- 	/* for regular page writes, we let HW handle all the ECC
--         * data written to the device. */
-+	 * data written to the device. */
- 	write_page(mtd, chip, buf, false);
- }
-=20
-@@ -1550,7 +1549,7 @@ static int denali_read_oob(struct mtd_info *mtd, stru=
-ct nand_chip *chip,
- 	read_oob_data(mtd, chip->oob_poi, page);
-=20
- 	return 0; /* notify NAND core to send command to
--                   * NAND device. */
-+			   NAND device. */
- }
-=20
- static int denali_read_page(struct mtd_info *mtd, struct nand_chip *chip,
-@@ -1722,12 +1721,12 @@ static void denali_cmdfunc(struct mtd_info *mtd, un=
-signed int cmd, int col,
- 			{
- 				/* write manufacturer information into nand
- 				   buffer for NAND subsystem to fetch.
--  			         */
--	                        write_byte_to_buf(denali, denali->dev_info.wDevic=
-eMaker);
--	                        write_byte_to_buf(denali, denali->dev_info.wDevic=
-eID);
--	                        write_byte_to_buf(denali, denali->dev_info.bDevic=
-eParam0);
--	                        write_byte_to_buf(denali, denali->dev_info.bDevic=
-eParam1);
--	                        write_byte_to_buf(denali, denali->dev_info.bDevic=
-eParam2);
-+				   */
-+				write_byte_to_buf(denali, denali->dev_info.wDeviceMaker);
-+				write_byte_to_buf(denali, denali->dev_info.wDeviceID);
-+				write_byte_to_buf(denali, denali->dev_info.bDeviceParam0);
-+				write_byte_to_buf(denali, denali->dev_info.bDeviceParam1);
-+				write_byte_to_buf(denali, denali->dev_info.bDeviceParam2);
+ #if DEBUG_DENALI
+-	printk("read_oob %d\n", page);
++	printk(KERN_INFO "read_oob %d\n", page);
+ #endif
+ 	if (denali_send_pipeline_cmd(denali, false, true, SPARE_ACCESS,
+ 							DENALI_READ) =3D=3D PASS) {
+@@ -1364,7 +1364,7 @@ static bool handle_ecc(struct denali_nand_info *denal=
+i, uint8_t *buf,
  			}
- 			else
- 			{
-@@ -1977,7 +1976,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+=20
+ #if DEBUG_DENALI
+-			printk("Detected ECC error in page %d: err_addr =3D 0x%08x,"
++			printk(KERN_INFO "Detected ECC error in page %d: err_addr =3D 0x%08x,"
+ 				" info to fix is 0x%08x\n", denali->page, err_address,
+ 				err_correction_info);
+ #endif
+@@ -1589,7 +1589,7 @@ static uint8_t denali_read_byte(struct mtd_info *mtd)
+ 		result =3D denali->buf.buf[denali->buf.head++];
+=20
+ #if DEBUG_DENALI
+-	printk("read byte -> 0x%02x\n", result);
++	printk(KERN_INFO "read byte -> 0x%02x\n", result);
+ #endif
+ 	return result;
+ }
+@@ -1598,7 +1598,7 @@ static void denali_select_chip(struct mtd_info *mtd, =
+int chip)
+ {
+ 	struct denali_nand_info *denali =3D mtd_to_denali(mtd);
+ #if DEBUG_DENALI
+-	printk("denali select chip %d\n", chip);
++	printk(KERN_INFO "denali select chip %d\n", chip);
+ #endif
+ 	spin_lock_irq(&denali->irq_lock);
+ 	denali->flash_bank =3D chip;
+@@ -1612,7 +1612,7 @@ static int denali_waitfunc(struct mtd_info *mtd, stru=
+ct nand_chip *chip)
+ 	denali->status =3D 0;
+=20
+ #if DEBUG_DENALI
+-	printk("waitfunc %d\n", status);
++	printk(KERN_INFO "waitfunc %d\n", status);
+ #endif
+ 	return status;
+ }
+@@ -1624,7 +1624,7 @@ static void denali_erase(struct mtd_info *mtd, int pa=
+ge)
+ 	uint32_t cmd =3D 0x0, irq_status =3D 0;
+=20
+ #if DEBUG_DENALI
+-	printk("erase page: %d\n", page);
++	printk(KERN_INFO "erase page: %d\n", page);
+ #endif
+ 	/* clear interrupts */
+ 	clear_interrupts(denali);
+@@ -1647,7 +1647,7 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsi=
+gned int cmd, int col,
+ 	struct denali_nand_info *denali =3D mtd_to_denali(mtd);
+=20
+ #if DEBUG_DENALI
+-	printk("cmdfunc: 0x%x %d %d\n", cmd, col, page);
++	printk(KERN_INFO "cmdfunc: 0x%x %d %d\n", cmd, col, page);
+ #endif
+ 	switch (cmd) {
+ 		case NAND_CMD_PAGEPROG:
+@@ -1824,7 +1824,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
 t struct pci_device_id *id)
- 	NAND_Read_Device_ID(denali);
-=20
- 	/* MTD supported page sizes vary by kernel. We validate our
--           kernel supports the device here.
-+	 * kernel supports the device here.
- 	 */
- 	if (denali->dev_info.wPageSize > NAND_MAX_PAGESIZE + NAND_MAX_OOBSIZE)
- 	{
-@@ -2020,7 +2019,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
-t struct pci_device_id *id)
-=20
- 	/* second stage of the NAND scan
- 	 * this stage requires information regarding ECC and
--         * bad block management. */
-+	 * bad block management. */
-=20
- 	/* Bad block management */
- 	denali->nand.bbt_td =3D &bbt_main_descr;
-@@ -2042,8 +2041,8 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
-t struct pci_device_id *id)
- 	}
-=20
- 	/* These functions are required by the NAND core framework, otherwise,
--           the NAND core will assert. However, we don't need them, so we'l=
-l stub
--           them out. */
-+	 * the NAND core will assert. However, we don't need them, so we'll stub
-+	 * them out. */
- 	denali->nand.ecc.calculate =3D denali_ecc_calculate;
- 	denali->nand.ecc.correct =3D denali_ecc_correct;
- 	denali->nand.ecc.hwctl =3D denali_ecc_hwctl;
+ 		 * ONFI timing mode 1 and below.
+ 		 */
+ 		if (onfi_timing_mode < -1 || onfi_timing_mode > 1) {
+-			printk("Intel CE4100 only supports ONFI timing mode 1 "
++			printk(KERN_ERR "Intel CE4100 only supports ONFI timing mode 1 "
+ 				"or below\n");
+ 			ret =3D -EINVAL;
+ 			goto failed_enable;
 --=20
 1.6.6.1
