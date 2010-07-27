@@ -1,25 +1,25 @@
-Received: from mail.solarflare.com ([216.237.3.220]
-	helo=exchange.solarflare.com)
+Received: from lo.gmane.org ([80.91.229.12])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Odo8M-00055d-RZ
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 17:40:07 +0000
-Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
-	ref-counting  back to open/release
-From: Ben Hutchings <bhutchings@solarflare.com>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-In-Reply-To: <AANLkTikCQsH8kGCsPPOqQ+Qj_TxyxepGGb6=462MuQxT@mail.gmail.com>
-References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
-	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
-	<AANLkTi=Aw=yFCsz4PArNoMVOpOU567ffzUHooVvXKQtF@mail.gmail.com>
-	<1279991008.4915.7.camel@localhost>
-	<AANLkTikCQsH8kGCsPPOqQ+Qj_TxyxepGGb6=462MuQxT@mail.gmail.com>
-Content-Type: text/plain
-Date: Tue, 27 Jul 2010 18:40:01 +0100
-Message-Id: <1280252401.2132.12.camel@achroite.uk.solarflarecom.com>
+	id 1OdpcJ-0002uc-W7
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 19:15:10 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1OdpcG-0004BT-8t
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 21:15:04 +0200
+Received: from h20244.upc-h.chello.nl ([62.194.20.244])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Jul 2010 21:15:04 +0200
+Received: from sfzhi by h20244.upc-h.chello.nl with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Jul 2010 21:15:04 +0200
+To: linux-mtd@lists.infradead.org
+From: Sergei Zhirikov <sfzhi@yahoo.com>
+Subject: Mounting UBIFS readonly - is it really readonly?
+Date: Tue, 27 Jul 2010 21:05:50 +0200
+Message-ID: <i2namf$mj6$1@dough.gmane.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-07-25 at 10:41 +0300, Maxim Levitsky wrote:
-> On Sat, Jul 24, 2010 at 8:03 PM, Ben Hutchings
-> <bhutchings@solarflare.com> wrote:
-> > OK, I get it.  Maybe that should be deferred to a work item.
-> >
-> 
-> I thought about that too.
-> It doesn't solve the races, because now the deferred work races with
-> device removal, just like the function that adds new mtd device.
-> Unless it takes mtd_table_mutex....
+Hi,
 
-You can cancel it in device removal.
+I hope someone can help me to resolve the following mystery.
 
-> > This only works if the MTD itself is hotplugged, and not if the MTD's
-> > parent is hotplugged.  In fixing one case you have broken the other.
-> 
-> Why?
-> 
-> In my case the mtd device does have a parent, a pci device.
-> If pci device is removed, I just remove the mtd device from the pci driver.
->  (although this codepath it untested)
+I'm using UBIFS as the root filesystem always mounted readonly.
+The kernel boot parameters are:
+console=ttyS0,115200 ubi.mtd=2 root=ubi0:rootfs rootfstype=ubifs ro loglevel=6
 
-OK, I have tested this and you are right.  But it is a pain to have to
-unbind all devices before removing the module.
+As you can see, there is "ro", which causes UBIFS to be initially mounted readonly. And later it is *never* remounted read-write. Everything seems to work as expected (I get "Read-only file system" error upon a write attempt) except one thing. Somehow the modification time of /dev/console is updated every time the system boots. Note: I'm not talking about the /dev/console located inside the /dev mount (which is tmpfs and is obvously writable), I'm talking about the /dev/console located on the root file system and accessed (probably by init) before /dev is mounted. I'm really puzzled. How is this possible? The root filesystem has been readonly all the time and still the timestamp is somehow updated. Does anyone have an idea what might be going on there?
 
-Ben.
+I'm using kernel 2.6.33.6 and classic sysvinit-2.86.
 
--- 
-Ben Hutchings, Senior Software Engineer, Solarflare Communications
-Not speaking for my employer; that's the marketing department's job.
-They asked us to note that Solarflare product names are trademarked.
+Thanks and regards,
+Sergei.
