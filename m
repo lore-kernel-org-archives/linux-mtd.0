@@ -1,21 +1,24 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Odq2c-0002us-6A
-	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 19:42:19 +0000
-Message-ID: <4C4F3691.9020505@broadcom.com>
-Date: Tue, 27 Jul 2010 12:42:09 -0700
-From: "Brian Norris" <norris@broadcom.com>
+	id 1Odr3U-0006ES-Eo
+	for linux-mtd@lists.infradead.org; Tue, 27 Jul 2010 20:47:17 +0000
+Received: by iwn40 with SMTP id 40so4642890iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Jul 2010 13:47:15 -0700 (PDT)
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2] mtd/nand: Support Micron chips, pagesize >= 4KB
-References: <4C4DEA3D.5070208@broadcom.com>
-In-Reply-To: <4C4DEA3D.5070208@broadcom.com>
-Content-Type: text/plain;
- charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>,
-	Maxim Levitsky <maximlevitsky@gmail.com>,
-	Brian Norris <norris@broadcom.com>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1280243535.3021.29.camel@localhost.localdomain>
+References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
+	<1280121714.14917.40.camel@localhost>
+	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
+	<1280243535.3021.29.camel@localhost.localdomain>
+Date: Tue, 27 Jul 2010 16:47:13 -0400
+Message-ID: <AANLkTimY5d6_koSrmg7Ser0O1SveWCBpYs76tEqd3GaX@mail.gmail.com>
+Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,102 +28,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I found some newer Micron parts that introduce an 8K page size, and so
-need a modification on the algorithm. Here's the updated list and a
-revision to my patch.
+On Tue, Jul 27, 2010 at 11:12 AM, Artem Bityutskiy <dedekind1@gmail.com> wr=
+ote:
+>
+> OK, you are right, UBI should not bug you so early, there are still
+> plenty of reserved PEBs left. What do you think about the following
+> algorithm:
+>
+> 1. If this is a new image, preserve current behavior and warn.
+> 2. If we see that this is a system which has already been used, we warn
+> only when the reserve is really about to end, say, 5% of the reserve is
+> left.
+>
 
-Part			ID String		Block	Page	OOB
-MT29F16G08ABABA		2C 48 00 26 89 00 00	512K	4K	224
-MT29F16G08CBABA		2C 48 04 46 85 00 00	1024K	4K	224
-MT29F16G08MAA		2C D5 94 3E 74 00 00	512K	4K	218
-MT29F32G08CBACA		2C 68 04 4A A9 00 00	1024K	4K	224
-MT29F64G08CBAAA		2C 88 04 4B A9 00 00	2048K	8K	448
-MT29F256G08CJAAA	2C A8 05 CB A9 00 00	2048K	8K	448
+Sounds fine to me.  And the warning as-is isn't necessarily
+inaccurate; were it not for the errors later on, I probably would've
+assumed (correctly) that it's simply due to the fact that some NAND
+blocks which were initially good have since gone bad, causing my
+reserve pool of eraseblocks to drop.
 
-Signed-off-by: Brian Norris <norris@broadcom.com>
----
- drivers/mtd/nand/nand_base.c |   37 ++++++++++++++++++++++++++++---------
- drivers/mtd/nand/nand_ids.c  |   10 ++++++++++
- 2 files changed, 38 insertions(+), 9 deletions(-)
+Then again, that should probably be expected on any long-running NAND
+device, so it might make sense to only show the warning on a new
+image.  :)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 4a7b864..a9216af 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2846,6 +2846,9 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 		 * Field definitions are in the following datasheets:
- 		 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
- 		 * New style   (6 byte ID): Samsung K9GAG08U0D (p.40)
-+		 * Micron      (5 byte ID): Micron MT29F16G08MAA (p.24)
-+		 *      Note: Micron rule is based on heuristics for
-+		 *            newer chips
- 		 *
- 		 * Check for wraparound + Samsung ID + nonzero 6th byte
- 		 * to decide what to do.
-@@ -2867,15 +2870,31 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 			/* Calc pagesize */
- 			mtd->writesize = 1024 << (extid & 0x03);
- 			extid >>= 2;
--			/* Calc oobsize */
--			mtd->oobsize = (8 << (extid & 0x01)) *
--				(mtd->writesize >> 9);
--			extid >>= 2;
--			/* Calc blocksize. Blocksize is multiples of 64KiB */
--			mtd->erasesize = (64 * 1024) << (extid & 0x03);
--			extid >>= 2;
--			/* Get buswidth information */
--			busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
-+			/* Check for 5 byte ID + Micron + read more 0x00 */
-+			if (id_data[0] == NAND_MFR_MICRON && id_data[4] != 0x00
-+					&& mtd->writesize >= 4096
-+					&& id_data[5] == 0x00
-+					&& id_data[6] == 0x00) {
-+				/* OOB is 218B/224B per 4KiB pagesize */
-+				mtd->oobsize = ((extid & 0x03) == 0x03 ? 218 :
-+						224) << (mtd->writesize >> 13);
-+				extid >>= 3;
-+				/* Blocksize is multiple of 64KiB */
-+				mtd->erasesize = mtd->writesize <<
-+					(extid & 0x03) << 6;
-+				/* All Micron have busw x8? */
-+				busw = 0;
-+			} else {
-+				/* Calc oobsize */
-+				mtd->oobsize = (8 << (extid & 0x01)) *
-+					(mtd->writesize >> 9);
-+				extid >>= 2;
-+				/* Calc blocksize (multiples of 64KiB) */
-+				mtd->erasesize = (64 * 1024) << (extid & 0x03);
-+				extid >>= 2;
-+				/* Get buswidth information */
-+				busw = (extid & 0x01) ? NAND_BUSWIDTH_16 : 0;
-+			}
- 		}
- 	} else {
- 		/*
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 89907ed..4f6e59a 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -107,9 +107,19 @@ struct nand_flash_dev nand_flash_ids[] = {
- 	/* 16 Gigabit */
- 	{"NAND 2GiB 1,8V 8-bit",	0xA5, 0, 2048, 0, LP_OPTIONS},
- 	{"NAND 2GiB 3,3V 8-bit",	0xD5, 0, 2048, 0, LP_OPTIONS},
-+	{"NAND 2GiB 3,3V 8-bit",	0x48, 0, 2048, 0, LP_OPTIONS},
- 	{"NAND 2GiB 1,8V 16-bit",	0xB5, 0, 2048, 0, LP_OPTIONS16},
- 	{"NAND 2GiB 3,3V 16-bit",	0xC5, 0, 2048, 0, LP_OPTIONS16},
- 
-+	/* 32 Gigabit */
-+	{"NAND 4GiB 3,3V 8-bit",	0x68, 0, 4096, 0, LP_OPTIONS},
-+
-+	/* 64 Gigabit */
-+	{"NAND 8GiB 3,3V 8-bit",	0x88, 0, 8192, 0, LP_OPTIONS},
-+
-+	/* 256 Gigabit */
-+	{"NAND 32GiB 3,3V 8-bit",	0xA8, 0, 32768, 0, LP_OPTIONS},
-+
- 	/*
- 	 * Renesas AND 1 Gigabit. Those chips do not support extended id and
- 	 * have a strange page/block layout !  The chosen minimum erasesize is
--- 
-1.7.0.4
+>> Could this account for the warning and/or the UBIFS error below? =A0Or
+>> would these kinds of problems manifest in a different way entirely?
+>
+> Well, theoretically they can. But if users did not re-flash your
+> devices, then obviously not.
+>
+
+>
+> I'm sure your ring buffer contains more information. This is one of the
+> reasons I gave you the above link - it explains that not all messages go
+> to console and how to get all meassages. Try to use dmesg. In UBIFS code
+> I see that 'ubifs_read_node()' calls 'dbg_dump_node()' which should dump
+> the node.
+>
+
+Sorry, I missed the bit about "ignore_loglevel" on serial consoles.  A
+more complete log is available here (it's around 5MB):
+
+http://mcreech.com/work/ubi-error.txt
+
+>
+> May be if I have a NAND dump of your broken device I can look at it, but
+> do not promise anything, and I'm also on holiday :-)
+>
+
+Sure, I'll try to set up a NFS root so that I can boot without flash.
+I realize it might not help much in diagnosing this problem
+after-the-fact, though.
+
+>
+> What is your kernel? If it is old, make sure you have fixes from the
+> back-port trees.
+>
+
+Vanilla 2.6.31, plus patches for UnionFS and YAFFS (unused) support
+and a few board-specific items.  One of the devices was running
+development firmware, so it was using 2.6.34 at the time at which
+problems were first seen.  So I'm assuming that kernel version
+probably doesn't make much difference, unless there are significant
+changes sitting in the UBI git tree that don't get pushed upstream as
+part of the kernel release cycle.
+
+>
+> This really does not look like a NAND/MTD driver issue. More look like
+> either an UBIFS bug of some kind of corruption which corrupted an EC or
+> VID header, then UBI decided to erase this PEB, and then UBIFS reads all
+> 0xFFs from there.
+>
+> The second theory should BTW be fixed. Indeed, when UBI finds a PEB with
+> corrupted headers, it adds this PEB to the 'corr' list, and then just
+> erases. But this is wrong! It should erase them only if there are all
+> 0xFFs in the rest of the block.
+>
+
+Makes sense.  Unfortunately it's difficult to reproduce the problem
+(I've certainly tried), so this change probably wouldn't help me in
+the short-term.  However, it would definitely help if/when I encounter
+the issue again on another device, and will certainly help anybody
+else who sees similar issues in the future.
+
+Thanks again for your help Artem (especially while on vacation).  :)
+
+--=20
+Matthew L. Creech
