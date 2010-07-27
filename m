@@ -1,128 +1,185 @@
 From: chuanxiao.dong@intel.com (Chuanxiao Dong)
-Date: Tue, 27 Jul 2010 14:17:37 +0800
-Subject: [PATCH 1/2] mtd: denali: rename functions which is named by using capitals
-Message-ID: <mailman.159.1281025635.27306.linux-mtd@lists.infradead.org>
+Date: Tue, 27 Jul 2010 15:10:00 +0800
+Subject: [PATCH 2/2] mtd: denali: update get nand para functions
+Message-ID: <mailman.160.1281025678.27306.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-rename these functions' name and remove additional declarations
-in header file
+In denali driver, wTotalBlocks variable is useless, so just
+remove them in get_toshiba_nand_para and get_hynix_nand_para
+first. Other wTotalBlocks in denali.c and other variables in
+dev_info struct are also useless, will remove them later.
+
+Also add a parameter in get_hynix_nand_para to prepare to
+remove dev_info struct. This parameter comes by reading NAND
+ID directly. Reading register will report wrong value for
+some NAND chips, e.g. some Micron MT29F32G08QAA chips.
+So update NAND_CMD_READID method as well.
 
 Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
 ---
- drivers/mtd/nand/denali.c |   22 +++++++++++-----------
- drivers/mtd/nand/denali.h |    5 -----
- 2 files changed, 11 insertions(+), 16 deletions(-)
+ drivers/mtd/nand/denali.c |  105 ++++++++++++++-------------------------------
+ 1 files changed, 33 insertions(+), 72 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 52278d8..0c76a16 100644
+index 0c76a16..b525dee 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -221,7 +221,7 @@ static void reset_bank(struct denali_nand_info *denali)
- }
+@@ -549,7 +549,6 @@ static void get_samsung_nand_para(struct denali_nand_info *denali)
  
- /* Reset the flash controller */
--static uint16_t NAND_Flash_Reset(struct denali_nand_info *denali)
-+static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+ static void get_toshiba_nand_para(struct denali_nand_info *denali)
  {
- 	uint32_t i;
+-	void __iomem *scratch_reg;
+ 	uint32_t tmp;
  
-@@ -256,7 +256,7 @@ static uint16_t NAND_Flash_Reset(struct denali_nand_info *denali)
-  * programs the clocking register accordingly. The mode is determined by
-  * the get_onfi_nand_para routine.
-  */
--static void NAND_ONFi_Timing_Mode(struct denali_nand_info *denali,
-+static void nand_onfi_timing_set(struct denali_nand_info *denali,
- 								uint16_t mode)
- {
- 	uint16_t Trea[6] = {40, 30, 25, 20, 20, 16};
-@@ -487,7 +487,7 @@ static uint16_t get_onfi_nand_para(struct denali_nand_info *denali)
- 			break;
+ 	/* Workaround to fix a controller bug which reports a wrong */
+@@ -567,33 +566,14 @@ static void get_toshiba_nand_para(struct denali_nand_info *denali)
+ 		denali_write32(8, denali->flash_reg + ECC_CORRECTION);
+ #endif
  	}
- 
--	NAND_ONFi_Timing_Mode(denali, i);
-+	nand_onfi_timing_set(denali, i);
- 
- 	index_addr(denali, MODE_11 | 0, 0x90);
- 	index_addr(denali, MODE_11 | 1, 0);
-@@ -803,7 +803,7 @@ static void dump_device_info(struct denali_nand_info *denali)
- 		denali->dev_info.nBitsInBlockDataSize);
+-
+-	/* As Toshiba NAND can not provide it's block number, */
+-	/* so here we need user to provide the correct block */
+-	/* number in a scratch register before the Linux NAND */
+-	/* driver is loaded. If no valid value found in the scratch */
+-	/* register, then we use default block number value */
+-	scratch_reg = ioremap_nocache(SCRATCH_REG_ADDR, SCRATCH_REG_SIZE);
+-	if (!scratch_reg) {
+-		printk(KERN_ERR "Spectra: ioremap failed in %s, Line %d",
+-			__FILE__, __LINE__);
+-		denali->dev_info.wTotalBlocks = GLOB_HWCTL_DEFAULT_BLKS;
+-	} else {
+-		nand_dbg_print(NAND_DBG_WARN,
+-			"Spectra: ioremap reg address: 0x%p\n", scratch_reg);
+-		denali->dev_info.wTotalBlocks = 1 << ioread8(scratch_reg);
+-		if (denali->dev_info.wTotalBlocks < 512)
+-			denali->dev_info.wTotalBlocks = GLOB_HWCTL_DEFAULT_BLKS;
+-		iounmap(scratch_reg);
+-	}
  }
  
--static uint16_t NAND_Read_Device_ID(struct denali_nand_info *denali)
-+static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+-static void get_hynix_nand_para(struct denali_nand_info *denali)
++static void get_hynix_nand_para(struct denali_nand_info *denali,
++							uint8_t device_id)
+ {
+-	void __iomem *scratch_reg;
+ 	uint32_t main_size, spare_size;
+ 
+-	switch (denali->dev_info.wDeviceID) {
++	switch (device_id) {
+ 	case 0xD5: /* Hynix H27UAG8T2A, H27UBG8U5A or H27UCG8VFA */
+ 	case 0xD7: /* Hynix H27UDG8VEM, H27UCG8UDM or H27UCG8V5A */
+ 		denali_write32(128, denali->flash_reg + PAGES_PER_BLOCK);
+@@ -621,20 +601,6 @@ static void get_hynix_nand_para(struct denali_nand_info *denali)
+ 			"Will use default parameter values instead.\n",
+ 			denali->dev_info.wDeviceID);
+ 	}
+-
+-	scratch_reg = ioremap_nocache(SCRATCH_REG_ADDR, SCRATCH_REG_SIZE);
+-	if (!scratch_reg) {
+-		printk(KERN_ERR "Spectra: ioremap failed in %s, Line %d",
+-			__FILE__, __LINE__);
+-		denali->dev_info.wTotalBlocks = GLOB_HWCTL_DEFAULT_BLKS;
+-	} else {
+-		nand_dbg_print(NAND_DBG_WARN,
+-			"Spectra: ioremap reg address: 0x%p\n", scratch_reg);
+-		denali->dev_info.wTotalBlocks = 1 << ioread8(scratch_reg);
+-		if (denali->dev_info.wTotalBlocks < 512)
+-			denali->dev_info.wTotalBlocks = GLOB_HWCTL_DEFAULT_BLKS;
+-		iounmap(scratch_reg);
+-	}
+ }
+ 
+ /* determines how many NAND chips are connected to the controller. Note for
+@@ -807,34 +773,35 @@ static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
  {
  	uint16_t status = PASS;
  	uint8_t no_of_planes;
-@@ -928,12 +928,12 @@ static uint16_t NAND_Read_Device_ID(struct denali_nand_info *denali)
- 	 * with a specific ONFI mode, we apply those changes here.
- 	 */
- 	if (onfi_timing_mode != NAND_DEFAULT_TIMINGS)
--		NAND_ONFi_Timing_Mode(denali, onfi_timing_mode);
-+		nand_onfi_timing_set(denali, onfi_timing_mode);
++	uint32_t id_bytes[5], addr;
++	uint8_t i, maf_id, device_id;
  
- 	return status;
- }
- 
--static void NAND_LLD_Enable_Disable_Interrupts(struct denali_nand_info *denali,
-+static void denali_set_intr_modes(struct denali_nand_info *denali,
- 					uint16_t INT_ENABLE)
- {
  	nand_dbg_print(NAND_DBG_TRACE, "%s, Line %d, Function: %s\n",
-@@ -958,7 +958,7 @@ static void denali_irq_init(struct denali_nand_info *denali)
- 	uint32_t int_mask = 0;
+ 		       __FILE__, __LINE__, __func__);
  
- 	/* Disable global interrupts */
--	NAND_LLD_Enable_Disable_Interrupts(denali, false);
-+	denali_set_intr_modes(denali, false);
- 
- 	int_mask = DENALI_IRQ_ALL;
- 
-@@ -973,7 +973,7 @@ static void denali_irq_init(struct denali_nand_info *denali)
- 
- static void denali_irq_cleanup(int irqnum, struct denali_nand_info *denali)
- {
--	NAND_LLD_Enable_Disable_Interrupts(denali, false);
-+	denali_set_intr_modes(denali, false);
- 	free_irq(irqnum, denali);
- }
- 
-@@ -1797,7 +1797,7 @@ static void denali_ecc_hwctl(struct mtd_info *mtd, int mode)
- static void denali_hw_init(struct denali_nand_info *denali)
- {
- 	denali_irq_init(denali);
--	NAND_Flash_Reset(denali);
-+	denali_nand_reset(denali);
- 	denali_write32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
- 	denali_write32(CHIP_EN_DONT_CARE__FLAG,
- 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
-@@ -1993,11 +1993,11 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	}
- 
- 	/* now that our ISR is registered, we can enable interrupts */
--	NAND_LLD_Enable_Disable_Interrupts(denali, true);
-+	denali_set_intr_modes(denali, true);
- 
- 	pci_set_drvdata(dev, denali);
- 
--	NAND_Read_Device_ID(denali);
-+	denali_nand_timing_set(denali);
- 
- 	/* MTD supported page sizes vary by kernel. We validate our
- 	 * kernel supports the device here.
-diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index b56fa3c..626c915 100644
---- a/drivers/mtd/nand/denali.h
-+++ b/drivers/mtd/nand/denali.h
-@@ -804,9 +804,4 @@ struct denali_nand_info {
- 	int idx;
- };
- 
--static uint16_t NAND_Flash_Reset(struct denali_nand_info *denali);
--static uint16_t NAND_Read_Device_ID(struct denali_nand_info *denali);
--static void NAND_LLD_Enable_Disable_Interrupts(struct denali_nand_info *denali,
--						uint16_t INT_ENABLE);
+-	denali->dev_info.wDeviceMaker =
+-		ioread32(denali->flash_reg + MANUFACTURER_ID);
+-	denali->dev_info.wDeviceID =
+-		ioread32(denali->flash_reg + DEVICE_ID);
+-	denali->dev_info.bDeviceParam0 =
+-		ioread32(denali->flash_reg + DEVICE_PARAM_0);
+-	denali->dev_info.bDeviceParam1 =
+-		ioread32(denali->flash_reg + DEVICE_PARAM_1);
+-	denali->dev_info.bDeviceParam2 =
+-		ioread32(denali->flash_reg + DEVICE_PARAM_2);
 -
- #endif /*_LLD_NAND_*/
+-	denali->dev_info.MLCDevice =
+-		ioread32(denali->flash_reg + DEVICE_PARAM_0) & 0x0c;
++	/* Use read id method to get device ID and other
++	 * params. For some NAND chips, controller can't
++	 * report the correct device ID by reading from
++	 * DEVICE_ID register
++	 * */
++	addr = (uint32_t)MODE_11 | BANK(denali->flash_bank);
++	index_addr(denali, (uint32_t)addr | 0, 0x90);
++	index_addr(denali, (uint32_t)addr | 1, 0);
++	for (i = 0; i < 5; i++)
++		index_addr_read_data(denali, addr | 2, &id_bytes[i]);
++	maf_id = id_bytes[0];
++	device_id = id_bytes[1];
+ 
+ 	if (ioread32(denali->flash_reg + ONFI_DEVICE_NO_OF_LUNS) &
+ 		ONFI_DEVICE_NO_OF_LUNS__ONFI_DEVICE) { /* ONFI 1.0 NAND */
+ 		if (FAIL == get_onfi_nand_para(denali))
+ 			return FAIL;
+-	} else if (denali->dev_info.wDeviceMaker == 0xEC) { /* Samsung NAND */
++	} else if (maf_id == 0xEC) { /* Samsung NAND */
+ 		get_samsung_nand_para(denali);
+-	} else if (denali->dev_info.wDeviceMaker == 0x98) { /* Toshiba NAND */
++	} else if (maf_id == 0x98) { /* Toshiba NAND */
+ 		get_toshiba_nand_para(denali);
+-	} else if (denali->dev_info.wDeviceMaker == 0xAD) { /* Hynix NAND */
+-		get_hynix_nand_para(denali);
++	} else if (maf_id == 0xAD) { /* Hynix NAND */
++		get_hynix_nand_para(denali, device_id);
+ 	} else {
+ 		denali->dev_info.wTotalBlocks = GLOB_HWCTL_DEFAULT_BLKS;
+ 	}
+@@ -1732,24 +1699,18 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ 		break;
+ 	case NAND_CMD_READID:
+ 		reset_buf(denali);
+-		if (denali->flash_bank < denali->total_used_banks) {
+-			/* write manufacturer information into nand
+-			   buffer for NAND subsystem to fetch.
+-			   */
+-			write_byte_to_buf(denali,
+-					denali->dev_info.wDeviceMaker);
+-			write_byte_to_buf(denali,
+-					denali->dev_info.wDeviceID);
+-			write_byte_to_buf(denali,
+-					denali->dev_info.bDeviceParam0);
+-			write_byte_to_buf(denali,
+-					denali->dev_info.bDeviceParam1);
+-			write_byte_to_buf(denali,
+-					denali->dev_info.bDeviceParam2);
+-		} else {
+-			int i;
+-			for (i = 0; i < 5; i++)
+-				write_byte_to_buf(denali, 0xff);
++		/*sometimes ManufactureId read from register is not right
++		 * e.g. some of Micron MT29F32G08QAA MLC NAND chips
++		 * So here we send READID cmd to NAND insteand
++		 * */
++		addr = (uint32_t)MODE_11 | BANK(denali->flash_bank);
++		index_addr(denali, (uint32_t)addr | 0, 0x90);
++		index_addr(denali, (uint32_t)addr | 1, 0);
++		for (i = 0; i < 5; i++) {
++			index_addr_read_data(denali,
++						(uint32_t)addr | 2,
++						&id);
++			write_byte_to_buf(denali, id);
+ 		}
+ 		break;
+ 	case NAND_CMD_READ0:
 -- 
 1.6.6.1
