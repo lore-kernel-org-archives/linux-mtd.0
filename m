@@ -1,23 +1,15 @@
-Received: from www84.your-server.de ([213.133.104.84])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OdzTl-0008HY-FN
-	for linux-mtd@lists.infradead.org; Wed, 28 Jul 2010 05:46:58 +0000
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
-From: Stefani Seibold <stefani@seibold.net>
-To: dedekind1@gmail.com
-In-Reply-To: <1280244117.3021.36.camel@localhost.localdomain>
-References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
-	<1280121714.14917.40.camel@localhost>
-	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
-	<1280243535.3021.29.camel@localhost.localdomain>
-	<1280244117.3021.36.camel@localhost.localdomain>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Wed, 28 Jul 2010 07:46:49 +0200
-Message-ID: <1280296009.4310.5.camel@wall-e.seibold.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Kreuzer, Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>,
-	linux-mtd@lists.infradead.org, "Matthew L. Creech" <mlcreech@gmail.com>
+MIME-Version: 1.0
+Date: Wed, 28 Jul 2010 13:55:57 +0800
+Message-ID: <AANLkTimW-T96Gu0WQVJS1fRUa+=xt-RJLhkXrawn+cv1@mail.gmail.com>
+Subject: [PATCH 01/29] pxa3xx_nand: condense the flash definition
+From: Haojian Zhuang <haojian.zhuang@gmail.com>
+To: Eric Miao <eric.y.miao@gmail.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	David Woodhouse <david.woodhouse@intel.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, linux-mtd@lists.infradead.org,
+	Lei Wen <leiwen@marvell.com>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +19,305 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, den 27.07.2010, 18:21 +0300 schrieb Artem Bityutskiy:
-> On Tue, 2010-07-27 at 18:12 +0300, Artem Bityutskiy wrote:
-> > This really does not look like a NAND/MTD driver issue. More look like
-> > either an UBIFS bug of some kind of corruption which corrupted an EC or
-> > VID header, then UBI decided to erase this PEB, and then UBIFS reads all
-> > 0xFFs from there.
-> > 
-> > The second theory should BTW be fixed. Indeed, when UBI finds a PEB with
-> > corrupted headers, it adds this PEB to the 'corr' list, and then just
-> > erases. But this is wrong! It should erase them only if there are all
-> > 0xFFs in the rest of the block.
-> 
-> Yeah, indeed looks like a bad bug in UBI. So, when we have some flash
-> corruptions which corrupt the VID header, UBI just silently erases this
-> PEB! And then we have small chances to find out why on LEB suddenly
-> became unmapped (erased).
-> 
-> UBI logic is - if VID header is corrupted, it is because a sudden power
-> cut while writing the header. And we can erase the PEB because if we
-> were writing the header, we have not written the data yet.
-> 
-> But it does not bother checking what goes _after_ the header. If there
-> are some data, UBI should not erase the PEB but preserve it and switch
-> to R/O mode.
-> 
-> CCing Stefani, I think here group faced a similar issue recently - one
-> of LEB suddenly disappeared. This may be the reason.
-> 
-> Then the other question - why VID became corrupted? Dunno, but if UBI
-> won't erase the PEB we'll have better chances to find this out. Does
-> this sound reasonable?
-> 
+>From 6a43fc8bcad1e8f220696ef84be05b6daee18db9 Mon Sep 17 00:00:00 2001
+From: Lei Wen <leiwen@marvell.com>
+Date: Sat, 20 Mar 2010 19:01:23 +0800
+Subject: [PATCH 01/29] pxa3xx_nand: condense the flash definition
 
-Not really. Why should especially the master LEB crash?
+Adding a new flash definition would need less code.
+Keep the platform passing flash definition method.
+If one flash is both defined in platform data and builtin table,
+driver would select the one from platform data first.
 
-First: As i understand UBIFS will append data to the master LEBs until
-no space is free, and then it will erase the master LEB and create a new
-one. Is this right?
+By this way, platform could select the timing most suit for itself,
+not need to follow the common settings.
 
-Second: We need a kind of the patch which i had provided i the case one
-of the master block will be damaged. Otherwise the whole file system is
-garbage.
+Signed-off-by: Lei Wen <leiwen@marvell.com>
+Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+---
+ arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |   17 ++--
+ drivers/mtd/nand/Kconfig                     |    7 -
+ drivers/mtd/nand/pxa3xx_nand.c               |  175 +++-----------------------
+ 3 files changed, 27 insertions(+), 172 deletions(-)
 
-- Stefani
+diff --git a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+index 3478eae..0bf1bcf 100644
+--- a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
++++ b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+@@ -30,15 +30,14 @@ struct pxa3xx_nand_cmdset {
+ };
+
+ struct pxa3xx_nand_flash {
+-	const struct pxa3xx_nand_timing *timing; /* NAND Flash timing */
+-	const struct pxa3xx_nand_cmdset *cmdset;
+-
+-	uint32_t page_per_block;/* Pages per block (PG_PER_BLK) */
+-	uint32_t page_size;	/* Page size in bytes (PAGE_SZ) */
+-	uint32_t flash_width;	/* Width of Flash memory (DWIDTH_M) */
+-	uint32_t dfc_width;	/* Width of flash controller(DWIDTH_C) */
+-	uint32_t num_blocks;	/* Number of physical blocks in Flash */
+-	uint32_t chip_id;
++	uint32_t	chip_id;
++	uint16_t	page_per_block; /* Pages per block (PG_PER_BLK) */
++	uint16_t 	page_size;	/* Page size in bytes (PAGE_SZ) */
++	uint8_t		flash_width;	/* Width of Flash memory (DWIDTH_M) */
++	uint8_t 	dfc_width;	/* Width of flash controller(DWIDTH_C) */
++	uint32_t	num_blocks;	/* Number of physical blocks in Flash */
++	struct pxa3xx_nand_cmdset *cmdset;	/* NAND command set */
++	struct pxa3xx_nand_timing *timing;	/* NAND Flash timing */
+ };
+
+ struct pxa3xx_nand_platform_data {
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index ffc3720..cd30a5c 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -400,13 +400,6 @@ config MTD_NAND_PXA3xx
+ 	  This enables the driver for the NAND flash device found on
+ 	  PXA3xx processors
+
+-config MTD_NAND_PXA3xx_BUILTIN
+-	bool "Use builtin definitions for some NAND chips (deprecated)"
+-	depends on MTD_NAND_PXA3xx
+-	help
+-	  This enables builtin definitions for some NAND chips. This
+-	  is deprecated in favor of platform specific data.
+-
+ config MTD_NAND_CM_X270
+ 	tristate "Support for NAND Flash on CM-X270 modules"
+ 	depends on MTD_NAND && MACH_ARMCORE
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index e02fa4f..3ffcbcd 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -176,21 +176,7 @@ MODULE_PARM_DESC(use_dma, "enable DMA for data
+transfering to/from NAND HW");
+  */
+ static struct pxa3xx_nand_timing default_timing;
+ static struct pxa3xx_nand_flash default_flash;
+-
+-static struct pxa3xx_nand_cmdset smallpage_cmdset = {
+-	.read1		= 0x0000,
+-	.read2		= 0x0050,
+-	.program	= 0x1080,
+-	.read_status	= 0x0070,
+-	.read_id	= 0x0090,
+-	.erase		= 0xD060,
+-	.reset		= 0x00FF,
+-	.lock		= 0x002A,
+-	.unlock		= 0x2423,
+-	.lock_status	= 0x007A,
+-};
+-
+-static struct pxa3xx_nand_cmdset largepage_cmdset = {
++static struct pxa3xx_nand_cmdset default_cmdset = {
+ 	.read1		= 0x3000,
+ 	.read2		= 0x0050,
+ 	.program	= 0x1080,
+@@ -203,143 +189,26 @@ static struct pxa3xx_nand_cmdset largepage_cmdset = {
+ 	.lock_status	= 0x007A,
+ };
+
+-#ifdef CONFIG_MTD_NAND_PXA3xx_BUILTIN
+-static struct pxa3xx_nand_timing samsung512MbX16_timing = {
+-	.tCH	= 10,
+-	.tCS	= 0,
+-	.tWH	= 20,
+-	.tWP	= 40,
+-	.tRH	= 30,
+-	.tRP	= 40,
+-	.tR	= 11123,
+-	.tWHR	= 110,
+-	.tAR	= 10,
+-};
+-
+-static struct pxa3xx_nand_flash samsung512MbX16 = {
+-	.timing		= &samsung512MbX16_timing,
+-	.cmdset		= &smallpage_cmdset,
+-	.page_per_block	= 32,
+-	.page_size	= 512,
+-	.flash_width	= 16,
+-	.dfc_width	= 16,
+-	.num_blocks	= 4096,
+-	.chip_id	= 0x46ec,
+-};
+-
+-static struct pxa3xx_nand_flash samsung2GbX8 = {
+-	.timing		= &samsung512MbX16_timing,
+-	.cmdset		= &smallpage_cmdset,
+-	.page_per_block	= 64,
+-	.page_size	= 2048,
+-	.flash_width	= 8,
+-	.dfc_width	= 8,
+-	.num_blocks	= 2048,
+-	.chip_id	= 0xdaec,
+-};
+-
+-static struct pxa3xx_nand_flash samsung32GbX8 = {
+-	.timing		= &samsung512MbX16_timing,
+-	.cmdset		= &smallpage_cmdset,
+-	.page_per_block	= 128,
+-	.page_size	= 4096,
+-	.flash_width	= 8,
+-	.dfc_width	= 8,
+-	.num_blocks	= 8192,
+-	.chip_id	= 0xd7ec,
++static struct pxa3xx_nand_timing __devinitdata timing[] = {
++	{ 10,  0, 20, 40, 30, 40, 11123, 110, 10, },
++	{ 10, 25, 15, 25, 15, 30, 25000,  60, 10, },
++	{ 10, 35, 15, 25, 15, 25, 25000,  60, 10, },
+ };
+
+-static struct pxa3xx_nand_timing micron_timing = {
+-	.tCH	= 10,
+-	.tCS	= 25,
+-	.tWH	= 15,
+-	.tWP	= 25,
+-	.tRH	= 15,
+-	.tRP	= 30,
+-	.tR	= 25000,
+-	.tWHR	= 60,
+-	.tAR	= 10,
++#define NAND_SETTING_SAMSUNG     &default_cmdset, &timing[0]
++#define NAND_SETTING_MICRON      &default_cmdset, &timing[1]
++#define NAND_SETTING_ST          &default_cmdset, &timing[2]
++static struct pxa3xx_nand_flash __devinitdata builtin_flash_types[] = {
++	{ 0x46ec,  32,  512, 16, 16, 4096, NAND_SETTING_SAMSUNG, },
++	{ 0xdaec,  64, 2048,  8,  8, 2048, NAND_SETTING_SAMSUNG, },
++	{ 0xd7ec, 128, 4096,  8,  8, 8192, NAND_SETTING_SAMSUNG, },
++	{ 0xa12c,  64, 2048,  8,  8, 1024, NAND_SETTING_MICRON, },
++	{ 0xb12c,  64, 2048, 16, 16, 1024, NAND_SETTING_MICRON, },
++	{ 0xdc2c,  64, 2048,  8,  8, 4096, NAND_SETTING_MICRON, },
++	{ 0xcc2c,  64, 2048, 16, 16, 4096, NAND_SETTING_MICRON, },
++	{ 0xba20,  64, 2048, 16, 16, 2048, NAND_SETTING_ST, },
+ };
+
+-static struct pxa3xx_nand_flash micron1GbX8 = {
+-	.timing		= &micron_timing,
+-	.cmdset		= &largepage_cmdset,
+-	.page_per_block	= 64,
+-	.page_size	= 2048,
+-	.flash_width	= 8,
+-	.dfc_width	= 8,
+-	.num_blocks	= 1024,
+-	.chip_id	= 0xa12c,
+-};
+-
+-static struct pxa3xx_nand_flash micron1GbX16 = {
+-	.timing		= &micron_timing,
+-	.cmdset		= &largepage_cmdset,
+-	.page_per_block	= 64,
+-	.page_size	= 2048,
+-	.flash_width	= 16,
+-	.dfc_width	= 16,
+-	.num_blocks	= 1024,
+-	.chip_id	= 0xb12c,
+-};
+-
+-static struct pxa3xx_nand_flash micron4GbX8 = {
+-	.timing		= &micron_timing,
+-	.cmdset		= &largepage_cmdset,
+-	.page_per_block	= 64,
+-	.page_size	= 2048,
+-	.flash_width	= 8,
+-	.dfc_width	= 8,
+-	.num_blocks	= 4096,
+-	.chip_id	= 0xdc2c,
+-};
+-
+-static struct pxa3xx_nand_flash micron4GbX16 = {
+-	.timing		= &micron_timing,
+-	.cmdset		= &largepage_cmdset,
+-	.page_per_block	= 64,
+-	.page_size	= 2048,
+-	.flash_width	= 16,
+-	.dfc_width	= 16,
+-	.num_blocks	= 4096,
+-	.chip_id	= 0xcc2c,
+-};
+-
+-static struct pxa3xx_nand_timing stm2GbX16_timing = {
+-	.tCH = 10,
+-	.tCS = 35,
+-	.tWH = 15,
+-	.tWP = 25,
+-	.tRH = 15,
+-	.tRP = 25,
+-	.tR = 25000,
+-	.tWHR = 60,
+-	.tAR = 10,
+-};
+-
+-static struct pxa3xx_nand_flash stm2GbX16 = {
+-	.timing = &stm2GbX16_timing,
+-	.cmdset	= &largepage_cmdset,
+-	.page_per_block = 64,
+-	.page_size = 2048,
+-	.flash_width = 16,
+-	.dfc_width = 16,
+-	.num_blocks = 2048,
+-	.chip_id = 0xba20,
+-};
+-
+-static struct pxa3xx_nand_flash *builtin_flash_types[] = {
+-	&samsung512MbX16,
+-	&samsung2GbX8,
+-	&samsung32GbX8,
+-	&micron1GbX8,
+-	&micron1GbX16,
+-	&micron4GbX8,
+-	&micron4GbX16,
+-	&stm2GbX16,
+-};
+-#endif /* CONFIG_MTD_NAND_PXA3xx_BUILTIN */
+-
+ #define NDTR0_tCH(c)	(min((c), 7) << 19)
+ #define NDTR0_tCS(c)	(min((c), 7) << 16)
+ #define NDTR0_tWH(c)	(min((c), 7) << 11)
+@@ -1027,11 +896,6 @@ static int pxa3xx_nand_detect_config(struct
+pxa3xx_nand_info *info)
+ 	default_flash.flash_width = ndcr & NDCR_DWIDTH_M ? 16 : 8;
+ 	default_flash.dfc_width = ndcr & NDCR_DWIDTH_C ? 16 : 8;
+
+-	if (default_flash.page_size == 2048)
+-		default_flash.cmdset = &largepage_cmdset;
+-	else
+-		default_flash.cmdset = &smallpage_cmdset;
+-
+ 	/* set info fields needed to __readid */
+ 	info->flash_info = &default_flash;
+ 	info->read_id_bytes = (default_flash.page_size == 2048) ? 4 : 2;
+@@ -1068,6 +932,7 @@ static int pxa3xx_nand_detect_config(struct
+pxa3xx_nand_info *info)
+
+ 	pxa3xx_nand_detect_timing(info, &default_timing);
+ 	default_flash.timing = &default_timing;
++	default_flash.cmdset = &default_cmdset;
+
+ 	return 0;
+ }
+@@ -1096,10 +961,9 @@ static int pxa3xx_nand_detect_flash(struct
+pxa3xx_nand_info *info,
+ 			return 0;
+ 	}
+
+-#ifdef CONFIG_MTD_NAND_PXA3xx_BUILTIN
+ 	for (i = 0; i < ARRAY_SIZE(builtin_flash_types); i++) {
+
+-		f = builtin_flash_types[i];
++		f = &builtin_flash_types[i];
+
+ 		if (pxa3xx_nand_config_flash(info, f))
+ 			continue;
+@@ -1110,7 +974,6 @@ static int pxa3xx_nand_detect_flash(struct
+pxa3xx_nand_info *info,
+ 		if (id == f->chip_id)
+ 			return 0;
+ 	}
+-#endif
+
+ 	dev_warn(&info->pdev->dev,
+ 		 "failed to detect configured nand flash; found %04x instead of\n",
+-- 
+1.7.0.4
