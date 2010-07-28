@@ -1,7 +1,8 @@
 MIME-Version: 1.0
-Date: Wed, 28 Jul 2010 13:59:03 +0800
-Message-ID: <AANLkTimV7uMuRuRaxqJG-GpwsTuMisZPsGn1bwV68_wW@mail.gmail.com>
-Subject: [PATCH 28/29] pxa3xx_nand: fix power management support
+Date: Wed, 28 Jul 2010 13:59:10 +0800
+Message-ID: <AANLkTi=PFrFBYM34HjBpb2G9U0T22CS8EkeKCtg16RjK@mail.gmail.com>
+Subject: [PATCH 29/29] pxa3xx_nand: new read oob logic only works with new
+	silicon
 From: Haojian Zhuang <haojian.zhuang@gmail.com>
 To: Eric Miao <eric.y.miao@gmail.com>,
 	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
@@ -19,87 +20,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 126fa886e4902a655805e8699b8b208fa931c141 Mon Sep 17 00:00:00 2001
+>From 45ab26923b14a6380b4d8b69902ce3faae7f82d1 Mon Sep 17 00:00:00 2001
 From: Lei Wen <leiwen@marvell.com>
-Date: Tue, 22 Jun 2010 23:17:36 +0800
-Subject: [PATCH 28/29] pxa3xx_nand: fix power management support
+Date: Tue, 13 Jul 2010 21:10:32 +0800
+Subject: [PATCH 29/29] pxa3xx_nand: new read oob logic only works with
+new silicon
+
 
 Signed-off-by: Lei Wen <leiwen@marvell.com>
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c |   48 +++++++++++++++++++++++++++++++--------
- 1 files changed, 38 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/pxa3xx_nand.c |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 65cf54c..bc2f56d 100644
+index bc2f56d..068232c 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -1659,26 +1659,54 @@ static int __devinit pxa3xx_nand_probe(struct
-platform_device *pdev)
- #ifdef CONFIG_PM
- static int pxa3xx_nand_suspend(struct platform_device *pdev,
-pm_message_t state)
+@@ -360,6 +360,8 @@ static void pxa3xx_nand_set_timing(struct
+pxa3xx_nand_info *info,
+ static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
  {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = info->mtd;
-+	struct pxa3xx_nand *nand= platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info;
-+	struct mtd_info *mtd;
-+	int ret = 0;
-+	uint8_t cs;
+ 	struct pxa3xx_nand *nand = info->nand_data;
++	struct platform_device *pdev = nand->pdev;
++	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
+ 	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
 
--	if (info->state & STATE_CMD_PREPARED) {
--		dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
-+	if (nand->state & STATE_CMD_PREPARED) {
-+		dev_err(&pdev->dev, "driver busy, state = %d\n", nand->state);
- 		return -EAGAIN;
+ 	if (info->page_size < PAGE_CHUNK_SIZE) {
+@@ -388,7 +390,10 @@ static void pxa3xx_set_datasize(struct
+pxa3xx_nand_info *info)
+ 		return;
  	}
 
--	return 0;
-+	for (cs = 0; cs < NUM_CHIP_SELECT; cs ++) {
-+		info = nand->info[cs];
-+		if (!info)
-+			continue;
-+		mtd = get_mtd_by_info(info);
-+		ret = mtd->suspend(mtd);
-+	}
-+
-+	return ret;
- }
-
- static int pxa3xx_nand_resume(struct platform_device *pdev)
- {
--	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
--	struct mtd_info *mtd = info->mtd;
-+	struct pxa3xx_nand *nand= platform_get_drvdata(pdev);
-+	struct pxa3xx_nand_info *info;
-+	struct mtd_info *mtd;
-+	uint8_t cs;
-
--	nand_writel(info, NDTR0CS0, info->ndtr0cs0);
--	nand_writel(info, NDTR1CS0, info->ndtr1cs0);
--	clk_enable(info->clk);
-+	for (cs = 0; cs < NUM_CHIP_SELECT; cs ++) {
-+		info = nand->info[cs];
-+		if (!info)
-+			continue;
-+		nand_writel(nand, NDTR0CS0, info->ndtr0cs0);
-+		nand_writel(nand, NDTR1CS0, info->ndtr1cs0);
-+		nand->chip_select = cs;
-+		/* Sometimes nand chip would raise a ready interrupt
-+		 * when resume, reset the by start and stop to prevent
-+		 * it damage driver's state machine */
-+		pxa3xx_nand_start(nand);
-+		pxa3xx_nand_stop(nand);
-+		mtd = get_mtd_by_info(info);
-+		mtd->resume(mtd);
-+	}
-
-+	/* set the controller cs to a invalid num to let driver
-+	 * reconfigure the timing when it call the cmdfunc */
-+	nand->chip_select = 0xff;
- 	return 0;
- }
- #else
+-	if (nand->command == NAND_CMD_READOOB) {
++	if (nand->command == NAND_CMD_READOOB
++		&& pdata->controller_attrs & PXA3XX_NAKED_CMD_EN) {
++		/* This special handle read oob method can only be used
++		 * with silicon support naked command*/
+ 		switch (info->ecc_strength) {
+ 		case HAMMING_STRENGTH:
+ 			nand->ndcb1[3] = 2 * PAGE_CHUNK_SIZE + OOB_CHUNK_SIZE;
 -- 
 1.7.0.4
