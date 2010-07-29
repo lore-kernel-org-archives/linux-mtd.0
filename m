@@ -1,23 +1,27 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
+Received: from mailout4.samsung.com ([203.254.224.34])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OeOtr-0004oA-Cy
-	for linux-mtd@lists.infradead.org; Thu, 29 Jul 2010 08:55:37 +0000
-From: Florian Fainelli <ffainelli@freebox.fr>
+	id 1OeRKM-0006oy-1v
+	for linux-mtd@lists.infradead.org; Thu, 29 Jul 2010 11:31:07 +0000
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L6B005JUHBRK520@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 29 Jul 2010 20:31:03 +0900 (KST)
+Received: from roh83 ([107.108.214.183])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L6B00802HBNYF@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 29 Jul 2010 20:31:03 +0900 (KST)
+Date: Thu, 29 Jul 2010 17:00:59 +0530
+From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
+Subject: [PATCH 1/1][MTD] Adding IOCTLs for run-time partitioning support
 To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] NAND: add support for reading ONFI parameters from NAND
-	device
-Date: Thu, 29 Jul 2010 10:51:38 +0200
-References: <201007290047.06394.ffainelli@freebox.fr>
-	<4C5133AC.5010009@parrot.com>
-In-Reply-To: <4C5133AC.5010009@parrot.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201007291051.38278.ffainelli@freebox.fr>
-Cc: Maxime Bizon <mbizon@freebox.fr>, David Woodhouse <dwmw2@infradead.org>,
-	Brian Norris <norris@broadcom.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+Message-id: <000101cb2f11$86c3f5d0$944be170$%hs@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-language: en-us
+Content-transfer-encoding: 7BIT
+Cc: v.dalal@samsung.com, 'David Woodhouse' <dwmw2@infradead.org>,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,131 +31,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matthieu,
+Hi All
 
-On Thursday 29 July 2010 09:54:20 Matthieu CASTET wrote:
-> Hi,
->=20
-> Florian Fainelli a =C3=A9crit :
-> > A nand_chip which has valid ONFI parameters gets its options field
-> > updated with the NAND_ONFI flag. In that case both the ONFI version (in
-> > BCD format) as well as the complete page parameters is available in the
-> > struct nand_chip. This allows for better detection of some new devices,
-> > as well as fine tuning of NAND driver timings. This patch only adds
-> > support for ONFI 1.0 parameters.
-> >=20
-> > Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
-> > Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
-> > ---
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index 4a7b864..c255cec 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -2773,6 +2773,83 @@ static void nand_set_defaults(struct nand_chip
-> > *chip, int busw)
-> >=20
-> >  }
-> >=20
-> > +
-> > +/*
-> > + * Check whether flash support ONFI and read ONFI parameters in that
-> > + * case
-> > + */
-> > +static void nand_read_onfi(struct mtd_info *mtd, struct nand_chip *chi=
-p)
-> > +{
-> > +	struct nand_onfi_params *p;
-> > +	uint8_t sig[4];
-> > +	uint16_t val;
-> > +
-> > +	if (!chip->cmdfunc || !chip->read_buf)
-> > +		return;
-> > +
-> > +	/* read ONFI signature */
-> > +	chip->cmdfunc(mtd, NAND_CMD_READID, NAND_ADDR_ONFI_ID, -1);
-> > +	chip->read_buf(mtd, sig, sizeof(sig));
-> > +
-> > +	if (memcmp(sig, "ONFI", sizeof(sig)))
-> > +		return;
-> > +
-> > +	/* ONFI seems supported */
-> > +	chip->cmdfunc(mtd, NAND_CMD_READ_ONFI_PARAMS, 0, -1);
-> > +	p =3D &chip->onfi_params;
-> > +	chip->read_buf(mtd, (uint8_t *)p, sizeof(*p));
-> > +
-> > +	/* recheck signature */
-> > +	if (memcmp(p->sig, "ONFI", sizeof(p->sig))) {
-> > +		printk(KERN_INFO "%s: bad ONFI params signature\n", __func__);
-> > +		return;
-> > +	}
->=20
-> You need to check crc. onfi param can be corrupted (bitflip ?) and
-> should try at least 3 page.
+Sending the patch on MTD for adding four IOCTLs.
+MTDPARTITIONCREATE
+MTDPARTITIONDELETE
+MTDPARTITIONSETPERMISSION
+MTDPARTITIONMERGE
 
-Ok.
 
->=20
->=20
-> Also you don't handle endianness (integer are little endian) for value
-> in nand_onfi_params.
 
-Yes, so far the drivers using those values were doing the correct endian=20
-conversion when they need to use them.
+Signed-off-by: Rohit HS <rohit.hs@samsung.com>
+---
+drivers/mtd/mtdchar.c |  126 ++++++++++++++++++++++++++++++++++++++++++++++++++
+include/mtd/mtd-abi.h |   17 ++++++
+2 files changed, 142 insertions(+), 1 deletion(-)
 
->=20
-> Also I am not sure it is worth to export all the onfi param. Fill the
-> mtd param for page, erase, oob size and other stuff.
-
-What we were interested about are mostly timings, manufacturer and model=20
-string because they can help handling new parts correctly.
-
-> After all rev info and features block, manufacturer information block,
-> memory organization block should only be used by mtd layer.
-
-You are right.
-
-> Only electrical parameter block can interest driver for fine tunning
-
-Yes.
-
->=20
-> >   * Get the flash and manufacturer id and lookup if the type is support=
-ed
-> >   */
-> > =20
-> >  static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
-> >=20
-> > @@ -2958,10 +3035,19 @@ static struct nand_flash_dev
-> > *nand_get_flash_type(struct mtd_info *mtd,
-> >=20
-> >  	if (mtd->writesize > 512 && chip->cmdfunc =3D=3D nand_command)
-> >  =09
-> >  		chip->cmdfunc =3D nand_command_lp;
-> >=20
-> > +	nand_read_onfi(mtd, chip);
-> > +
-> >=20
-> >  	printk(KERN_INFO "NAND device: Manufacturer ID:"
-> >  =09
-> >  	       " 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, dev_id,
-> >  	       nand_manuf_ids[maf_idx].name, type->name);
-> >=20
-> > +	if (chip->options & NAND_ONFI)
-> > +		printk(KERN_INFO "NAND is ONFI %d.%d compliant "
-> > +		       "(man:%s model:%s)\n",
-> > +		       chip->onfi_version / 10, chip->onfi_version % 10,
-> > +		       chip->onfi_params.manufacturer,
-> > +		       chip->onfi_params.model);
-> > +
-> >=20
-> >  	return type;
-> > =20
-> >  }
->=20
-> This won't work this unknown nand, and not work with some LP nand that
-> doesn't provide additional id bytes.
-
-So how do you see things regarding the provisioning of the relevant ONFI=20
-parameters?
-=2D-
-=46lorian
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 8b223c0..704788c 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -22,6 +22,10 @@
+ 
+ #include <asm/uaccess.h>
+ 
++#ifdef CONFIG_MTD_PARTITIONS
++#include <linux/mtd/partitions.h>
++#endif
++
+ #define MTD_INODE_FS_MAGIC 0x11307854
+ static struct vfsmount *mtd_inode_mnt __read_mostly;
+ 
+@@ -826,6 +830,128 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 		}
+ 		file->f_pos = 0;
+ 		break;
++#ifdef CONFIG_MTD_PARTITIONS
++
++		case MTDPARTITIONCREATE:
++		{
++		struct mtd_partition *pst_minfo = NULL;
++		struct mtd_partition *pst_minfo_hold = NULL;
++		struct mtd_partition st_free;
++		uint64_t u64_userfreeoffset = 0;
++		uint64_t u64_userfreesize = 0;
++		struct user_mtd *puser_partitions = NULL;
++		struct user_mtd_info upartition;
++		int i;
++
++			if (copy_from_user(&upartition, argp,
++				sizeof(struct user_mtd_info))) {
++				ret = -EFAULT;
++				break;
++			}
++			puser_partitions = kzalloc(sizeof(struct user_mtd)*
++						upartition.num_partitions
++						, GFP_KERNEL);
++			pst_minfo = kzalloc(sizeof(struct mtd_partition)*
++					upartition.num_partitions,
++					GFP_KERNEL);
++			pst_minfo_hold = pst_minfo;
++			if (puser_partitions == NULL) {
++				ret = -EFAULT;
++				break;
++			}
++			if (copy_from_user(puser_partitions,
++					upartition.pst_user_partitions,
++					sizeof(struct user_mtd)*
++					upartition.num_partitions)) {
++				ret = -EFAULT;
++				break;
++			}
++			for (i = 0; i < upartition.num_partitions; i++) {
++				pst_minfo->name  = puser_partitions->name;
++				pst_minfo->size  =
++					puser_partitions->partition_size;
++				u64_userfreesize += pst_minfo->size;
++				pst_minfo->offset =
++					puser_partitions->partition_offset;
++				u64_userfreeoffset += pst_minfo->offset;
++				pst_minfo->mask_flags =
++					puser_partitions->partition_mask;
++
++				puser_partitions++;
++				pst_minfo++;
++			}
++			add_mtd_partitions(mtd, pst_minfo_hold,
++						upartition.num_partitions);
++			if ((mtd->size - u64_userfreesize) > 0) {
++				st_free.name	= "FREE";
++				st_free.size	= mtd->size - u64_userfreesize;
++				st_free.offset	= u64_userfreesize;
++				st_free.mask_flags = 0;
++				add_mtd_partitions(mtd, &st_free, 1);
++			}
++		break;
++		}
++		case MTDPARTITIONDELETE:
++		{
++		struct mtd_info *pst_del_info = NULL;
++		uint32_t mtd_partition_number;
++
++			if (copy_from_user(&mtd_partition_number, argp,
++					sizeof(mtd_partition_number))) {
++				ret = -EFAULT;
++				break;
++			}
++			pst_del_info = get_mtd_device(NULL,
++					mtd_partition_number);
++
++			if (pst_del_info != NULL) {
++				put_mtd_device(pst_del_info);
++				del_mtd_device(pst_del_info);
++			}
++			break;
++		}
++		case MTDPARTITIONSETPERMISSION:
++		{
++		uint32_t u32_mask_flags;
++		struct mtd_info *pst_device = NULL;
++		int i32_dev_num;
++
++			if (copy_from_user(&u32_mask_flags, argp,
++					sizeof(u32_mask_flags))) {
++				ret = -EFAULT;
++				break;
++			}
++			i32_dev_num = (u32_mask_flags & 0x0000FFFF);
++			u32_mask_flags = (u32_mask_flags & 0xFFFF0000) >> 16;
++			pst_device = get_mtd_device(NULL, i32_dev_num);
++			pst_device->flags = u32_mask_flags;
++			break;
++		}
++		case MTDPARTITIONMERGE:
++		{
++		struct mtd_info *pst_merge_device1 = NULL;
++		struct mtd_info *pst_merge_device2 = NULL;
++		unsigned char partition_number[2];
++
++			if (copy_from_user(partition_number, argp, 2)) {
++				ret = -EFAULT;
++				break;
++			}
++			pst_merge_device1 = get_mtd_device(NULL,
++							partition_number[0]);
++			pst_merge_device2 = get_mtd_device(NULL,
++							partition_number[1]);
++			if ((pst_merge_device1 != NULL) &&
++				(pst_merge_device2 != NULL)) {
++				pst_merge_device1->size +=
++						pst_merge_device2->size;
++				put_mtd_device(pst_merge_device2);
++				del_mtd_device(pst_merge_device2);
++			}
++			break;
++		}
++#endif
++
+ 	}
+ 
+ 	default:
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index be51ae2..85168f2 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -30,6 +30,18 @@ struct mtd_oob_buf64 {
+ 	__u64 usr_ptr;
+ };
+ 
++struct user_mtd {
++	char name[32];
++	 __u64 partition_size;
++	 __u64 partition_offset;
++	 __u32 partition_mask;
++};
++
++struct user_mtd_info {
++	struct user_mtd *pst_user_partitions;
++	__u32 num_partitions;
++};
++
+ #define MTD_ABSENT		0
+ #define MTD_RAM			1
+ #define MTD_ROM			2
+@@ -110,7 +122,10 @@ struct otp_info {
+ #define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
+ #define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
+ #define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
+-
++#define MTDPARTITIONCREATE      _IOW('M', 23, int)
++#define MTDPARTITIONDELETE      _IOW('M', 24, int)
++#define MTDPARTITIONSETPERMISSION _IOW('M', 26, int)
++#define MTDPARTITIONMERGE       _IOW('M', 27, int)
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
+  * interfaces
+---
