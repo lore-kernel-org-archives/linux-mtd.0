@@ -1,23 +1,16 @@
-Received: from g1t0029.austin.hp.com ([15.216.28.36])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OeUOK-0002pC-QA
-	for linux-mtd@lists.infradead.org; Thu, 29 Jul 2010 14:47:26 +0000
-Received: from G1W0400.americas.hpqcorp.net (g1w0400.americas.hpqcorp.net
-	[16.236.31.10]) (using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by g1t0029.austin.hp.com (Postfix) with ESMTPS id 9B3143882A
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 29 Jul 2010 14:47:22 +0000 (UTC)
-From: "Cordero, Hector A" <hector.cordero@hp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Thu, 29 Jul 2010 14:45:39 +0000
-Subject: FW: Contact Via E-mail:hondauk8@w.cn
-Message-ID: <F48A876E96735643AF632D5131291C384392CE7BC2@GVW0436EXB.americas.hpqcorp.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "Cordero, Hector A" <hector.cordero@hp.com>
+Date: Thu, 29 Jul 2010 10:13:06 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: Stephen Rothwell <sfr@canb.auug.org.au>, David Woodhouse
+	<dwmw2@infradead.org>
+Subject: [PATCH -next] mtd: redwood depends on MTD_PARTITIONS
+Message-Id: <20100729101306.36c20611.randy.dunlap@oracle.com>
+In-Reply-To: <20100729143211.9e7edaed.sfr@canb.auug.org.au>
+References: <20100729143211.9e7edaed.sfr@canb.auug.org.au>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,11 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG86DQoNCkkgcmVjZWl2ZSB0aGlzIG1lc3NhZ2UgdG9kYXkgd2l0aCBubyBmdXJ0aGVyIGlu
-Zm9ybWF0aW9uLiBJIG11c3QgY29udGFjdCBhbiBhZ2VudCBmb3IgZnV0aGVyIGRldGFpbHMuIFBs
-ZWFzZSBwcm92aWRlIHRoaXMgaW5mb3JtYXRpb24gdG8gbWUgZW1haWwgYWRkcmVzcy4gIFRoYW5r
-IHlvdS4NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEhvbmRhIFByb21vIFtt
-YWlsdG86b2FzbGlndXJpYUBmYXN0d2VibmV0Lml0XQ0KU2VudDogV2VkbmVzZGF5LCBKdWx5IDI4
-LCAyMDEwIDY6MTQgUE0NClN1YmplY3Q6IENvbnRhY3QgVmlhIEUtbWFpbDpob25kYXVrOEB3LmNu
-DQoNCnlvdXIgZW1haWwgYWRkcmVzcyBoYXMgbHVja2x5IHdvbiB5b3UgdGhlIHN0YXItcHJpemUg
-b2YgMSw3NTAsMDAwLjAwIEdCUCAuY29udGFjDQp0IHRoZSBjbGFpbXMgYWdlbnQuDQoNCg==
+From: Randy Dunlap <randy.dunlap@oracle.com>
+
+redwood uses add/del_mtd_partitions(), so it should depend on
+MTD_PARTITIONS.
+
+ERROR: "add_mtd_partitions" [drivers/mtd/maps/redwood.ko] undefined!
+ERROR: "del_mtd_partitions" [drivers/mtd/maps/redwood.ko] undefined!
+
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+---
+ drivers/mtd/maps/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20100729.orig/drivers/mtd/maps/Kconfig
++++ linux-next-20100729/drivers/mtd/maps/Kconfig
+@@ -321,7 +321,7 @@ config MTD_CFI_FLAGADM
+ 
+ config MTD_REDWOOD
+ 	tristate "CFI Flash devices mapped on IBM Redwood"
+-	depends on MTD_CFI
++	depends on MTD_CFI && MTD_PARTITIONS
+ 	help
+ 	  This enables access routines for the flash chips on the IBM
+ 	  Redwood board. If you have one of these boards and would like to
