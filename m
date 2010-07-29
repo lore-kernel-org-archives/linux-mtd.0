@@ -1,16 +1,18 @@
-Date: Thu, 29 Jul 2010 10:13:06 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, David Woodhouse
-	<dwmw2@infradead.org>
-Subject: [PATCH -next] mtd: redwood depends on MTD_PARTITIONS
-Message-Id: <20100729101306.36c20611.randy.dunlap@oracle.com>
-In-Reply-To: <20100729143211.9e7edaed.sfr@canb.auug.org.au>
-References: <20100729143211.9e7edaed.sfr@canb.auug.org.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-next@vger.kernel.org, linux-mtd@lists.infradead.org,
-	LKML <linux-kernel@vger.kernel.org>
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OeZu9-0002V1-EO
+	for linux-mtd@lists.infradead.org; Thu, 29 Jul 2010 20:40:38 +0000
+Received: by pwj7 with SMTP id 7so328517pwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 29 Jul 2010 13:40:35 -0700 (PDT)
+Date: Thu, 29 Jul 2010 16:44:13 -0400
+From: Khaled El Mously <kelmously@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: changelog or bug database
+Message-ID: <20100729204412.GB19054@kal-ix-axentra.axentra.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+Hello.
 
-redwood uses add/del_mtd_partitions(), so it should depend on
-MTD_PARTITIONS.
+I have a Marvell 88F6281 board that I'm using with a vendor-supplied kernel (actually, it's 2.6.31.8 + LSP 5.0.3).
 
-ERROR: "add_mtd_partitions" [drivers/mtd/maps/redwood.ko] undefined!
-ERROR: "del_mtd_partitions" [drivers/mtd/maps/redwood.ko] undefined!
+I seem to be having some wear-leveling related issues. These problems don't happen when I use a 2.6.22.18 + LSP 4.2.7, which tells me that the hardware is fine.
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
----
- drivers/mtd/maps/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am interested in finding a bugzilla (or bugzilla-like) DB for any/all of MTD/UBI/UBIFS, or perhaps a changelog between the different kernel versions. I can't seem to find that.
 
---- linux-next-20100729.orig/drivers/mtd/maps/Kconfig
-+++ linux-next-20100729/drivers/mtd/maps/Kconfig
-@@ -321,7 +321,7 @@ config MTD_CFI_FLAGADM
- 
- config MTD_REDWOOD
- 	tristate "CFI Flash devices mapped on IBM Redwood"
--	depends on MTD_CFI
-+	depends on MTD_CFI && MTD_PARTITIONS
- 	help
- 	  This enables access routines for the flash chips on the IBM
- 	  Redwood board. If you have one of these boards and would like to
+I apologize if the answer is in plain sight somewhere.
+
+Any help is appreciated.
+
+Thanks.
