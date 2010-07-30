@@ -1,25 +1,21 @@
-Received: from g6t0186.atlanta.hp.com ([15.193.32.63])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OenlY-0001g4-F1
-	for linux-mtd@lists.infradead.org; Fri, 30 Jul 2010 11:28:42 +0000
-Received: from G1W0400.americas.hpqcorp.net (g1w0400.americas.hpqcorp.net
-	[16.236.31.10]) (using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by g6t0186.atlanta.hp.com (Postfix) with ESMTPS id 99F832C54B
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 30 Jul 2010 11:28:38 +0000 (UTC)
-From: "Cordero, Hector A" <hector.cordero@hp.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Fri, 30 Jul 2010 11:27:04 +0000
-Subject: RE: Contact Via E-mail:hondauk8@w.cn
-Message-ID: <F48A876E96735643AF632D5131291C384392CE824C@GVW0436EXB.americas.hpqcorp.net>
-References: <F48A876E96735643AF632D5131291C384392CE7BC2@GVW0436EXB.americas.hpqcorp.net>
-In-Reply-To: <F48A876E96735643AF632D5131291C384392CE7BC2@GVW0436EXB.americas.hpqcorp.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1Oerix-0000xp-PQ
+	for linux-mtd@lists.infradead.org; Fri, 30 Jul 2010 15:42:16 +0000
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD: pxa2xx: move pxa2xx_flash_probe to .devinit.text
+Date: Fri, 30 Jul 2010 17:42:09 +0200
+Message-Id: <1280504530-31737-1-git-send-email-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Cc: "Cordero, Hector A" <hector.cordero@hp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: Nicolas Pitre <nico@marvell.com>, linux-kernel@vger.kernel.org,
+	Julia Lawall <julia@diku.dk>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Tejun Heo <tj@kernel.org>, Russell King <rmk+kernel@arm.linux.org.uk>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-R29vZCBtb3JuaW5nOg0KDQpIZWxsbzoNCg0KSSByZWNlaXZlIHRoaXMgbWVzc2FnZSB0b2RheSB3
-aXRoIG5vIGZ1cnRoZXIgaW5mb3JtYXRpb24uIEkgbXVzdCBjb250YWN0IGFuIGFnZW50IGZvciBm
-dXRoZXIgZGV0YWlscy4gUGxlYXNlIHByb3ZpZGUgdGhpcyBpbmZvcm1hdGlvbiB0byBtZSBlbWFp
-bCBhZGRyZXNzLiAgVGhhbmsgeW91Lg0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpG
-cm9tOiBDb3JkZXJvLCBIZWN0b3IgQQ0KU2VudDogVGh1cnNkYXksIEp1bHkgMjksIDIwMTAgMTA6
-NDYgQU0NClRvOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KQ2M6IENvcmRlcm8sIEhl
-Y3RvciBBDQpTdWJqZWN0OiBGVzogQ29udGFjdCBWaWEgRS1tYWlsOmhvbmRhdWs4QHcuY24NCg0K
-SGVsbG86DQoNCkkgcmVjZWl2ZSB0aGlzIG1lc3NhZ2UgdG9kYXkgd2l0aCBubyBmdXJ0aGVyIGlu
-Zm9ybWF0aW9uLiBJIG11c3QgY29udGFjdCBhbiBhZ2VudCBmb3IgZnV0aGVyIGRldGFpbHMuIFBs
-ZWFzZSBwcm92aWRlIHRoaXMgaW5mb3JtYXRpb24gdG8gbWUgZW1haWwgYWRkcmVzcy4gIFRoYW5r
-IHlvdS4NCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEhvbmRhIFByb21vIFtt
-YWlsdG86b2FzbGlndXJpYUBmYXN0d2VibmV0Lml0XQ0KU2VudDogV2VkbmVzZGF5LCBKdWx5IDI4
-LCAyMDEwIDY6MTQgUE0NClN1YmplY3Q6IENvbnRhY3QgVmlhIEUtbWFpbDpob25kYXVrOEB3LmNu
-DQoNCnlvdXIgZW1haWwgYWRkcmVzcyBoYXMgbHVja2x5IHdvbiB5b3UgdGhlIHN0YXItcHJpemUg
-b2YgMSw3NTAsMDAwLjAwIEdCUCAuY29udGFjDQp0IHRoZSBjbGFpbXMgYWdlbnQuDQoNCg==
+This fixes the following warning by modpost:
+
+	WARNING: vmlinux.o(.data+0x15018): Section mismatch in reference from the variable pxa2xx_flash_driver to the function .init.text:pxa2xx_flash_probe()
+	The variable pxa2xx_flash_driver references
+	the function __init pxa2xx_flash_probe()
+	If the reference is valid then annotate the
+	variable with __init* or __refdata (see linux/init.h) or name the variable:
+	*_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console,
+
+I choosed to do this instead of using platform_driver_probe as the remove
+function uses __devexit.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/mtd/maps/pxa2xx-flash.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index dd90880..d8ae634 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -51,7 +51,7 @@ struct pxa2xx_flash_info {
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+ 
+ 
+-static int __init pxa2xx_flash_probe(struct platform_device *pdev)
++static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
+ {
+ 	struct flash_platform_data *flash = pdev->dev.platform_data;
+ 	struct pxa2xx_flash_info *info;
+-- 
+1.7.1
