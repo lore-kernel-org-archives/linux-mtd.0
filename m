@@ -1,24 +1,22 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OecWl-0006E5-O8
-	for linux-mtd@lists.infradead.org; Thu, 29 Jul 2010 23:28:40 +0000
-Message-ID: <4C520E99.3050006@broadcom.com>
-Date: Thu, 29 Jul 2010 16:28:25 -0700
-From: "Brian Norris" <norris@broadcom.com>
-MIME-Version: 1.0
-To: "Matthieu CASTET" <matthieu.castet@parrot.com>
-Subject: Re: [PATCH v2] mtd/nand: Support Micron chips, pagesize >= 4KB
-References: <4C4DEA3D.5070208@broadcom.com>
-	<4C4F3691.9020505@broadcom.com> <4C4FEC02.9050300@parrot.com>
-In-Reply-To: <4C4FEC02.9050300@parrot.com>
-Content-Type: text/plain;
- charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, Brian Norris <norris@broadcom.com>
+	id 1OeiUv-0003xa-FO
+	for linux-mtd@lists.infradead.org; Fri, 30 Jul 2010 05:51:10 +0000
+Received: by eyd10 with SMTP id 10so569022eyd.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 29 Jul 2010 22:51:07 -0700 (PDT)
+Subject: Re: changelog or bug database
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Khaled El Mously <kelmously@gmail.com>
+In-Reply-To: <20100729204412.GB19054@kal-ix-axentra.axentra.com>
+References: <20100729204412.GB19054@kal-ix-axentra.axentra.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 30 Jul 2010 08:51:03 +0300
+Message-Id: <1280469064.2838.2.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/28/2010 01:36 AM, Matthieu CASTET wrote:
-> Hi,
->=20
-> Brian Norris a =E9crit :
->> I found some newer Micron parts that introduce an 8K page size, and so
->> need a modification on the algorithm. Here's the updated list and a
->> revision to my patch.
->>
-> Doesn't these micron nands support onfi ?
-> The micron nands we have support it.
+On Thu, 2010-07-29 at 16:44 -0400, Khaled El Mously wrote:
+> Hello.
+> 
+> I have a Marvell 88F6281 board that I'm using with a vendor-supplied kernel (actually, it's 2.6.31.8 + LSP 5.0.3).
+> 
+> I seem to be having some wear-leveling related issues. These problems don't happen when I use a 2.6.22.18 + LSP 4.2.7, which tells me that the hardware is fine.
+> 
+> I am interested in finding a bugzilla (or bugzilla-like) DB for any/all of MTD/UBI/UBIFS, or perhaps a changelog between the different kernel versions. I can't seem to find that.
+> 
+> I apologize if the answer is in plain sight somewhere.
 
-Yes, they do support ONFI...but you missed my statements in the previous
-e-mail :)
+Funny question :-) If you invest money and men-hours into creating and
+maintaining such a database, we'd have one. But we do not have it :-)
 
-On 07/26/2010 01:04 PM, Brian Norris wrote:
-> And before the question is asked: I realize that these chips support ONFI=
-,
-> so that should be the primary means by which to identify them, but I woul=
-d
-> still like to be able to detect these properly without ONFI if necessary,
-> especially considering some of the older NAND controllers we still use do=
- not
-> support reading ONFI data.
+git log will provide you the list of all changes. 
 
-But thanks for the interest. I guess the real question I have is: is it
-possible to do a contrived detection by ID for these, even though the inten=
-t
-is for detection by ONFI? If so, is my [PATCH v2] an acceptable solution?
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
