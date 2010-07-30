@@ -1,26 +1,23 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oetju-0000ar-5f
-	for linux-mtd@lists.infradead.org; Fri, 30 Jul 2010 17:51:22 +0000
-Received: by wyb32 with SMTP id 32so1594383wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 30 Jul 2010 10:51:20 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oeufl-0005dA-5C
+	for linux-mtd@lists.infradead.org; Fri, 30 Jul 2010 18:51:10 +0000
+Date: Fri, 30 Jul 2010 20:51:06 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Sergei Shtylyov <sshtylyov@mvista.com>
+Subject: Re: [PATCH] MTD: pxa2xx: move pxa2xx_flash_probe to .devinit.text
+Message-ID: <20100730185106.GA25446@pengutronix.de>
+References: <1280504530-31737-1-git-send-email-u.kleine-koenig@pengutronix.de>
+	<4C52F6C1.5090207@mvista.com>
 MIME-Version: 1.0
-In-Reply-To: <1280506337.2826.1.camel@localhost.localdomain>
-References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
-	<1280121714.14917.40.camel@localhost>
-	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
-	<1280243535.3021.29.camel@localhost.localdomain>
-	<AANLkTimY5d6_koSrmg7Ser0O1SveWCBpYs76tEqd3GaX@mail.gmail.com>
-	<1280506337.2826.1.camel@localhost.localdomain>
-Date: Fri, 30 Jul 2010 13:51:15 -0400
-Message-ID: <AANLkTikgmnRZHwN64xCFaO7F71xHaGXWo3WZ62u4939u@mail.gmail.com>
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4C52F6C1.5090207@mvista.com>
+Cc: Nicolas Pitre <nico@marvell.com>, linux-kernel@vger.kernel.org,
+	Julia Lawall <julia@diku.dk>, Russell King <rmk+kernel@arm.linux.org.uk>,
+	Tejun Heo <tj@kernel.org>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 30, 2010 at 12:12 PM, Artem Bityutskiy <dedekind1@gmail.com> wr=
-ote:
+On Fri, Jul 30, 2010 at 07:58:57PM +0400, Sergei Shtylyov wrote:
+> Uwe Kleine-König wrote:
 >
-> Something like this, I guess, would be good enough?
+>> This fixes the following warning by modpost:
 >
-...
-> + * =A0 o if this is a new UBI image, then just print the warning
-> + * =A0 o if this is an UBI image which has already been used for some ti=
-me, print
-> + * =A0 =A0 a warning only if we can reserve less than 10% of the expecte=
-d amount of
-> + * =A0 =A0 the reserved PEB.
-> + *
-> + * The idea is that when UBI is used, PEBs become bad, and the reserved =
-pool
-> + * of PEBs becomes smaller, which is normal and we do not want to scare =
-users
-> + * with a warning every time they attach the MTD device. This was an iss=
-ue
-> + * reported by real users.
+>> 	WARNING: vmlinux.o(.data+0x15018): Section mismatch in reference from the variable pxa2xx_flash_driver to the function .init.text:pxa2xx_flash_probe()
+>> 	The variable pxa2xx_flash_driver references
+>> 	the function __init pxa2xx_flash_probe()
+>> 	If the reference is valid then annotate the
+>> 	variable with __init* or __refdata (see linux/init.h) or name the variable:
+>> 	*_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console,
+>
+>> I choosed to do this instead of using platform_driver_probe as the remove
+>
+>    s/choosed/chose/
+oh right, thanks.
 
-This sounds like a good compromise to me.  I was wondering whether
-we'd still want to warn in the case in which nearly all of the reserve
-PEBs had been exhausted, and using a 10% threshold seems like a good
-way to accomplish that without scaring others unnecessarily.  :)
+>> function uses __devexit.
+>
+>    Perhaps remove() method should have been fixed instead -- I doubt that 
+> this is a hotplug device.
+Actually I don't care much.
 
-Thanks
+Best regards
+Uwe
 
---=20
-Matthew L. Creech
+-- 
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
