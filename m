@@ -1,23 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oeufl-0005dA-5C
-	for linux-mtd@lists.infradead.org; Fri, 30 Jul 2010 18:51:10 +0000
-Date: Fri, 30 Jul 2010 20:51:06 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Subject: Re: [PATCH] MTD: pxa2xx: move pxa2xx_flash_probe to .devinit.text
-Message-ID: <20100730185106.GA25446@pengutronix.de>
-References: <1280504530-31737-1-git-send-email-u.kleine-koenig@pengutronix.de>
-	<4C52F6C1.5090207@mvista.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4C52F6C1.5090207@mvista.com>
-Cc: Nicolas Pitre <nico@marvell.com>, linux-kernel@vger.kernel.org,
-	Julia Lawall <julia@diku.dk>, Russell King <rmk+kernel@arm.linux.org.uk>,
-	Tejun Heo <tj@kernel.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OfBLM-0004AO-1Q
+	for linux-mtd@lists.infradead.org; Sat, 31 Jul 2010 12:39:13 +0000
+Received: by bwz15 with SMTP id 15so1453801bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 31 Jul 2010 05:39:08 -0700 (PDT)
+Subject: Re: MTD: 2 patches
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1280332397-6031-1-git-send-email-maximlevitsky@gmail.com>
+References: <1280332397-6031-1-git-send-email-maximlevitsky@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 31 Jul 2010 15:38:57 +0300
+Message-ID: <1280579937.6208.0.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 30, 2010 at 07:58:57PM +0400, Sergei Shtylyov wrote:
-> Uwe Kleine-König wrote:
->
->> This fixes the following warning by modpost:
->
->> 	WARNING: vmlinux.o(.data+0x15018): Section mismatch in reference from the variable pxa2xx_flash_driver to the function .init.text:pxa2xx_flash_probe()
->> 	The variable pxa2xx_flash_driver references
->> 	the function __init pxa2xx_flash_probe()
->> 	If the reference is valid then annotate the
->> 	variable with __init* or __refdata (see linux/init.h) or name the variable:
->> 	*_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console,
->
->> I choosed to do this instead of using platform_driver_probe as the remove
->
->    s/choosed/chose/
-oh right, thanks.
+On Wed, 2010-07-28 at 18:53 +0300, Maxim Levitsky wrote: 
+> Hi,
+> 
+> I recently found bug that I intoduced.
+> I seen that just once, but it is obivous that code is wrong.
+> Also I want to trim warning on sm_ftl, I think it was a bit too scary.
 
->> function uses __devexit.
->
->    Perhaps remove() method should have been fixed instead -- I doubt that 
-> this is a hotplug device.
-Actually I don't care much.
+Any update?
 
-Best regards
-Uwe
-
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Best regards,
+Maxim Levitsky
