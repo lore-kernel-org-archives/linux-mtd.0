@@ -1,21 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OfrNp-0002l1-7e
-	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2010 09:32:34 +0000
-Date: Mon, 2 Aug 2010 11:32:30 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 1/2] mxc_nand: fix Unbalanced enable for IRQ
-Message-ID: <20100802093230.GA29811@pengutronix.de>
-References: <1276178584-10074-1-git-send-email-eric@eukrea.com>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OfrO0-0002uB-FZ
+	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2010 09:32:44 +0000
+Message-ID: <4C5690B1.6030407@parrot.com>
+Date: Mon, 2 Aug 2010 11:32:33 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1276178584-10074-1-git-send-email-eric@eukrea.com>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-arm-kernel@lists.arm.linux.org.uk,
-	linux-mtd@lists.infradead.org, ivo.clarysse@gmail.com, stable@kernel.org
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: ubifs : corruption after power cut test
+References: <4C346D5B.2000609@parrot.com>	<4C3C1572.8080501@parrot.com>		<4C3C2740.2040105@parrot.com>	<4C3C30D1.9030005@parrot.com>	<1279031064.31639.90.camel@localhost>	<4C3C81E3.3030407@parrot.com>
+	<4C4FDEF5.2040405@parrot.com>
+In-Reply-To: <4C4FDEF5.2040405@parrot.com>
+Content-Type: multipart/mixed; boundary="------------020206030502060505000104"
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+--------------020206030502060505000104
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 
-can we please have this patch soon in mainline.  This bugs our
-autobuilder since long.
+Matthieu CASTET a Ã©crit :
+> Hi,
+> 
+> Matthieu CASTET a Ã©crit :
+>> Artem Bityutskiy a Ã©crit :
+>> Ok thanks, I will run it
+>>
+>> When checking the code, I saw that switch_gc_head can set c->gc_lnum to -1.
+>>
+>> In ubifs_put_super, we set c->mst_node->gc_lnum to c->gc_lnum and write 
+>> master node.
+>> Can't ubifs_put_super run while switch_gc_head set gc_lnum to -1 ?
+>>
+> I manage to reproduce it with the backtrace [1].
+> 
+Waiting for a proper fix, I force recovery if gc_lnum to -1.
 
-Best regards
-Uwe
 
-On Thu, Jun 10, 2010 at 04:03:04PM +0200, Eric Bénard wrote:
-> * preset should be done before sending the reset command
-> 
-> * without this, I get the following error on an i.MX35 :
-> [    0.900000] ------------[ cut here ]------------
-> [    0.900000] WARNING: at kernel/irq/manage.c:290 __enable_irq+0x4c/0x88()
-> [    0.900000] Unbalanced enable for IRQ 33
-> [    0.900000] Modules linked in:
-> [    0.900000] [<c002ffb8>] (unwind_backtrace+0x0/0xf0) from [<c02f7d0c>] (dump_stack+0x18/0x1c)
-> [    0.900000] [<c02f7d0c>] (dump_stack+0x18/0x1c) from [<c0049a44>] (warn_slowpath_common+0x54/0x6c)
-> [    0.900000] [<c0049a44>] (warn_slowpath_common+0x54/0x6c) from [<c0049b00>] (warn_slowpath_fmt+0x38/0x40)
-> [    0.900000] [<c0049b00>] (warn_slowpath_fmt+0x38/0x40) from [<c008f65c>] (__enable_irq+0x4c/0x88)
-> [    0.900000] [<c008f65c>] (__enable_irq+0x4c/0x88) from [<c008fca0>] (enable_irq+0x54/0x98)
-> [    0.900000] [<c008fca0>] (enable_irq+0x54/0x98) from [<c021e618>] (wait_op_done+0x40/0x134)
-> [    0.900000] [<c021e618>] (wait_op_done+0x40/0x134) from [<c021e808>] (send_cmd+0x30/0x38)
-> [    0.900000] [<c021e808>] (send_cmd+0x30/0x38) from [<c021eb8c>] (mxc_nand_command+0x26c/0x328)
-> [    0.900000] [<c021eb8c>] (mxc_nand_command+0x26c/0x328) from [<c021aa60>] (nand_scan_ident+0x188/0x6c0)
-> [    0.900000] [<c021aa60>] (nand_scan_ident+0x188/0x6c0) from [<c001a9cc>] (mxcnd_probe+0x2b8/0x3d0)
-> [    0.900000] [<c001a9cc>] (mxcnd_probe+0x2b8/0x3d0) from [<c01f9e88>] (platform_drv_probe+0x20/0x24)
-> [    0.900000] [<c01f9e88>] (platform_drv_probe+0x20/0x24) from [<c01f8c38>] (driver_probe_device+0xb0/0x164)
-> [    0.900000] [<c01f8c38>] (driver_probe_device+0xb0/0x164) from [<c01f8d54>] (__driver_attach+0x68/0x8c)
-> [    0.900000] [<c01f8d54>] (__driver_attach+0x68/0x8c) from [<c01f8348>] (bus_for_each_dev+0x50/0x84)
-> [    0.900000] [<c01f8348>] (bus_for_each_dev+0x50/0x84) from [<c01f8a9c>] (driver_attach+0x20/0x28)
-> [    0.900000] [<c01f8a9c>] (driver_attach+0x20/0x28) from [<c01f7c00>] (bus_add_driver+0x144/0x2dc)
-> [    0.900000] [<c01f7c00>] (bus_add_driver+0x144/0x2dc) from [<c01f906c>] (driver_register+0xb0/0x13c)
-> [    0.900000] [<c01f906c>] (driver_register+0xb0/0x13c) from [<c01fa13c>] (platform_driver_register+0x4c/0x60)
-> [    0.900000] [<c01fa13c>] (platform_driver_register+0x4c/0x60) from [<c01fa170>] (platform_driver_probe+0x20/0xa0)
-> [    0.900000] [<c01fa170>] (platform_driver_probe+0x20/0xa0) from [<c001a708>] (mxc_nd_init+0x18/0x24)
-> [    0.900000] [<c001a708>] (mxc_nd_init+0x18/0x24) from [<c002938c>] (do_one_initcall+0x64/0x1bc)
-> [    0.900000] [<c002938c>] (do_one_initcall+0x64/0x1bc) from [<c00084c4>] (kernel_init+0xe8/0x1ac)
-> [    0.900000] [<c00084c4>] (kernel_init+0xe8/0x1ac) from [<c002aee8>] (kernel_thread_exit+0x0/0x8)
-> [    0.900000] ---[ end trace 8bf72ac6ba089a19 ]---
-> [    1.140000] NAND device: Manufacturer ID: 0x2c, Chip ID: 0xda (Micron NAND 256MiB 3,3V 8-bit)
-> 
-> Signed-off-by: Eric Bénard <eric@eukrea.com>
-> ---
->  drivers/mtd/nand/mxc_nand.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 82e9438..8878503 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -604,8 +604,8 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
->  	/* Command pre-processing step */
->  	switch (command) {
->  	case NAND_CMD_RESET:
-> -		send_cmd(host, command, false);
->  		preset(mtd);
-> +		send_cmd(host, command, false);
->  		break;
->  
->  	case NAND_CMD_STATUS:
-> -- 
-> 1.6.3.3
-> 
-> 
+Matthieu
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+--------------020206030502060505000104
+Content-Type: text/plain; name="ubifs"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="ubifs"
+
+ZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL21hc3Rlci5jIGIvZnMvdWJpZnMvbWFzdGVyLmMKaW5k
+ZXggMjhiZWFlZS4uMmI2NjhjYyAxMDA2NDQKLS0tIGEvZnMvdWJpZnMvbWFzdGVyLmMKKysr
+IGIvZnMvdWJpZnMvbWFzdGVyLmMKQEAgLTEzNSw3ICsxMzUsNyBAQCBzdGF0aWMgaW50IHZh
+bGlkYXRlX21hc3Rlcihjb25zdCBzdHJ1Y3QgdWJpZnNfaW5mbyAqYykKIAkJZ290byBvdXQ7
+CiAJfQogCi0JaWYgKGMtPmdjX2xudW0gPj0gYy0+bGViX2NudCB8fCBjLT5nY19sbnVtIDwg
+Yy0+bWFpbl9maXJzdCkgeworCWlmIChjLT5nY19sbnVtICE9IC0xICYmIChjLT5nY19sbnVt
+ID49IGMtPmxlYl9jbnQgfHwgYy0+Z2NfbG51bSA8IGMtPm1haW5fZmlyc3QpKSB7CiAJCWVy
+ciA9IDc7CiAJCWdvdG8gb3V0OwogCX0KZGlmZiAtLWdpdCBhL2ZzL3ViaWZzL3N1cGVyLmMg
+Yi9mcy91Ymlmcy9zdXBlci5jCmluZGV4IDhjZGNkYzUuLjAyMDc2MjAgMTAwNjQ0Ci0tLSBh
+L2ZzL3ViaWZzL3N1cGVyLmMKKysrIGIvZnMvdWJpZnMvc3VwZXIuYwpAQCAtMTI2MCw3ICsx
+MjYwLDcgQEAgc3RhdGljIGludCBtb3VudF91YmlmcyhzdHJ1Y3QgdWJpZnNfaW5mbyAqYykK
+IAogCWluaXRfY29uc3RhbnRzX21hc3RlcihjKTsKIAotCWlmICgoYy0+bXN0X25vZGUtPmZs
+YWdzICYgY3B1X3RvX2xlMzIoVUJJRlNfTVNUX0RJUlRZKSkgIT0gMCkgeworCWlmICgoYy0+
+bXN0X25vZGUtPmZsYWdzICYgY3B1X3RvX2xlMzIoVUJJRlNfTVNUX0RJUlRZKSkgIT0gMCB8
+fCBjLT5nY19sbnVtID09IC0xKSB7CiAJCXViaWZzX21zZygicmVjb3ZlcnkgbmVlZGVkIik7
+CiAJCWMtPm5lZWRfcmVjb3ZlcnkgPSAxOwogCQlpZiAoIW1vdW50ZWRfcmVhZF9vbmx5KSB7
+Cg==
+--------------020206030502060505000104--
