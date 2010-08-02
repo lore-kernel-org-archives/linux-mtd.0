@@ -1,16 +1,23 @@
-Date: Mon, 2 Aug 2010 16:03:07 +0300
-From: Tony Lindgren <tony@atomide.com>
-To: Sukumar Ghorai <s-ghorai@ti.com>
-Subject: Re: [PATCH v3 1/4] omap3: nand: prefetch in irq mode support
-Message-ID: <20100802130306.GL12293@atomide.com>
-References: <1278996337-25172-1-git-send-email-s-ghorai@ti.com>
-	<1278996337-25172-2-git-send-email-s-ghorai@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1278996337-25172-2-git-send-email-s-ghorai@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from out1.smtp.messagingengine.com ([66.111.4.25])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ofv89-0002Z5-QK
+	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2010 13:32:39 +0000
+Received: from compute2.internal (compute2.internal [10.202.2.42])
+	by gateway1.messagingengine.com (Postfix) with ESMTP id 4BCDF185820
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  2 Aug 2010 09:32:35 -0400 (EDT)
+Received: from [10.2.11.102] (unknown [195.59.102.251])
+	by www.fastmail.fm (Postfix) with ESMTPSA id B32504DEC1
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  2 Aug 2010 09:32:34 -0400 (EDT)
+Subject: Is repartitioning possible while one of the partitions is mounted?
+From: Tim Cussins <timcussins@eml.cc>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 02 Aug 2010 14:32:33 +0100
+Message-ID: <1280755953.2174.24.camel@pc816>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Sukumar Ghorai <s-ghorai@ti.com> [100713 07:39]:
-> This patch enable prefetch-irq mode for NAND.
+Hi all,
 
-<snip>
+I just spotted post regarding upcoming Runtime Partitioning Support
+(http://lists.infradead.org/pipermail/linux-mtd/2010-July/031200.html)
 
-> --- a/arch/arm/mach-omap2/board-flash.c
-> +++ b/arch/arm/mach-omap2/board-flash.c
-> @@ -133,6 +133,7 @@ static struct omap_nand_platform_data board_nand_data = {
->  	.nand_setup	= NULL,
->  	.gpmc_t		= &nand_timings,
->  	.dma_channel	= -1,		/* disable DMA in OMAP NAND driver */
-> +	.gpmc_irq	= GPMC_IRQ_NUMBER,
->  	.dev_ready	= NULL,
->  	.devsize	= 0,	/* '0' for 8-bit, '1' for 16-bit device */
->  };
-> --- a/arch/arm/mach-omap2/include/mach/board-flash.h
-> +++ b/arch/arm/mach-omap2/include/mach/board-flash.h
-> @@ -19,6 +19,9 @@
->  #define PDC_ONENAND	3
->  #define DBG_MPDB	4
->  
-> +/* Interrupt number to the MPU Subsystem for GPMC */
-> +#define GPMC_IRQ_NUMBER	20
-> +
+After taking a cursory glance at the patch it's not immediately obvious
+( uh, to me anyway :D ) whether you can create/delete partitions while
+a filesystem (e.g. rootfs) is mounted from another partition on the same
+mtd device.
 
-This does not look right for the IRQ. Please add it to the irqs.h and 34xx,
-then set it dynamically during the init just like we handle the other
-interrupt numbers.
+Under what conditions can you create/delete partitions?
 
-This is because the irq numbers can change between omaps, like irqs-44xx.h
-already has
-
-#define OMAP44XX_IRQ_GPMC                       (20 + OMAP44XX_IRQ_GIC_START)
-
-> @@ -130,6 +141,13 @@ struct omap_nand_info {
->  	unsigned long			phys_base;
->  	struct completion		comp;
->  	int				dma_ch;
-> +	int				gpmc_irq;
-> +	enum {
-> +		NAND_IO_READ = 0,	/* read */
-> +		NAND_IO_WRITE,		/* write */
-> +	} iomode;
-> +	u_char				*buf;
-> +	int					buf_len;
->  };
-
-These should probably be OMAP_NAND_IO_READ and OMAP_NAND_IO_WRITE?
-
-Regards,
-
-Tony
+Cheers,
+Tim
