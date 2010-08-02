@@ -1,28 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from co202.xi-lite.net ([149.6.83.202])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OfmXS-0004oy-Mz
-	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2010 04:22:11 +0000
-Received: by fxm3 with SMTP id 3so1852312fxm.36
+	id 1OfqHS-0002Lj-KH
+	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2010 08:21:55 +0000
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.243])
+	by co202.xi-lite.net (Postfix) with ESMTPS id C476C2602BC
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 01 Aug 2010 21:22:08 -0700 (PDT)
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <AANLkTikgmnRZHwN64xCFaO7F71xHaGXWo3WZ62u4939u@mail.gmail.com>
-References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
-	<1280121714.14917.40.camel@localhost>
-	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
-	<1280243535.3021.29.camel@localhost.localdomain>
-	<AANLkTimY5d6_koSrmg7Ser0O1SveWCBpYs76tEqd3GaX@mail.gmail.com>
-	<1280506337.2826.1.camel@localhost.localdomain>
-	<AANLkTikgmnRZHwN64xCFaO7F71xHaGXWo3WZ62u4939u@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 02 Aug 2010 07:22:04 +0300
-Message-Id: <1280722924.4363.0.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Mon,  2 Aug 2010 10:21:51 +0200 (CEST)
+Message-ID: <4C56801D.3040300@parrot.com>
+Date: Mon, 2 Aug 2010 10:21:49 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+MIME-Version: 1.0
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: mtdchar : writing image with oob and NOP=1
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-07-30 at 13:51 -0400, Matthew L. Creech wrote:
-> On Fri, Jul 30, 2010 at 12:12 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> >
-> > Something like this, I guess, would be good enough?
-> >
-> ...
-> > + *   o if this is a new UBI image, then just print the warning
-> > + *   o if this is an UBI image which has already been used for some time, print
-> > + *     a warning only if we can reserve less than 10% of the expected amount of
-> > + *     the reserved PEB.
-> > + *
-> > + * The idea is that when UBI is used, PEBs become bad, and the reserved pool
-> > + * of PEBs becomes smaller, which is normal and we do not want to scare users
-> > + * with a warning every time they attach the MTD device. This was an issue
-> > + * reported by real users.
-> 
-> This sounds like a good compromise to me.  I was wondering whether
-> we'd still want to warn in the case in which nearly all of the reserve
-> PEBs had been exhausted, and using a 10% threshold seems like a good
-> way to accomplish that without scaring others unnecessarily.  :)
+Hi,
 
-Pushed this patch to ubi-2.6.git
+We need to write our bootloader with a special ecc (use by cpu rom).
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+For that we use MTD_MODE_RAW, write and MEMWRITEOOB. This work fine, but 
+from my understanding this will do a first page program with oob set to 
+0xff and then program again oob.
+
+But some recent nand support only 1 program per page (NOP=1).
+How can we program nand with NOP=1 with a custom ecc ?
+
+ From what I see in mtdchar either datbuf is set (and oobbuf is null) or 
+oobbuf is set (and datbuf is null).
+
+So this mean we need to add an ioctl to do that ?
+
+Matthieu
