@@ -1,13 +1,20 @@
-From: Sukumar Ghorai <s-ghorai@ti.com>
-To: linux-omap@vger.kernel.org
-Subject: [PATCH v4 4/4] omap: nand: making ecc layout as compatible with
-	romcode ecc
-Date: Mon,  2 Aug 2010 21:19:52 +0530
-Message-Id: <1280764192-15053-5-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1280764192-15053-1-git-send-email-s-ghorai@ti.com>
-References: <1280764192-15053-1-git-send-email-s-ghorai@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
+Received: from www84.your-server.de ([213.133.104.84])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Og0sn-0002Sq-7A
+	for linux-mtd@lists.infradead.org; Mon, 02 Aug 2010 19:41:10 +0000
+From: stefani@seibold.net
+To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	Arnd Bergmann <arnd@arndb.de>, Vasiliy Kulikov <segooon@gmail.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	David Woodhouse <David.Woodhouse@intel.com>,
+	Nicolas Pitre <nico@fluxnic.net>,
+	Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>,
+	Jiri Slaby <jslaby@suse.cz>, Tejun Heo <tj@kernel.org>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] Change struct flchip_shared spinlock locking into mutex
+Date: Mon,  2 Aug 2010 21:40:48 +0200
+Message-Id: <1280778048-6208-1-git-send-email-stefani@seibold.net>
+Cc: stefani@seibold.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,91 +24,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-    This patch overrides nand ecc layout and bad block descriptor (for 8-bit
-    device) to support hw ecc in romcode layout. So as to have in sync with ecc
-    layout throughout; i.e. x-loader, u-boot and kernel.
+From: Stefani Seibold <stefani@seibold.net>
 
-    This patch also enables to use romcode ecc for spd and zoom, by default.
+This patch prevent to schedule while atomic by changing the
+flchip_shared spinlock into a mutex. This should be save since no atomic
+path will use this lock.
 
-    This enables to flash x-loader, u-boot, kernel, FS images from kernel itself
-    and compatiable with other tools.
+This patch is based on linux kernel 2.6.35. Please apply.
 
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+It was requested by Arnd Bergmann and Vasiliy Kulikov.
+
+- Stefani
+
+shared->
+
+Signed-off-by: Stefani Seibold <stefani@seibold.net>
 ---
- arch/arm/mach-omap2/board-flash.c |    2 +-
- drivers/mtd/nand/omap2.c          |   34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 1 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0001.c |   20 ++++++++++----------
+ include/linux/mtd/flashchip.h       |    2 +-
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
-index 5f74c8f..d71c511 100644
---- a/arch/arm/mach-omap2/board-flash.c
-+++ b/arch/arm/mach-omap2/board-flash.c
-@@ -145,7 +145,7 @@ __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs)
- 	board_nand_data.cs		= cs;
- 	board_nand_data.parts		= nand_parts;
- 	board_nand_data.nr_parts	= nr_parts;
--	board_nand_data.ecc_opt		= OMAP_ECC_HAMMING_CODE_DIFF_LAYOUT;
-+	board_nand_data.ecc_opt		= OMAP_ECC_HAMMING_CODE_HW;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 62f3ea9..3364061 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -717,7 +717,7 @@ static int cfi_intelext_partition_fixup(struct mtd_info *mtd,
+ 		chip = &newcfi->chips[0];
+ 		for (i = 0; i < cfi->numchips; i++) {
+ 			shared[i].writing = shared[i].erasing = NULL;
+-			spin_lock_init(&shared[i].lock);
++			mutex_init(&shared[i].lock);
+ 			for (j = 0; j < numparts; j++) {
+ 				*chip = cfi->chips[i];
+ 				chip->start += j << partshift;
+@@ -886,7 +886,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 		 */
+ 		struct flchip_shared *shared = chip->priv;
+ 		struct flchip *contender;
+-		spin_lock(&shared->lock);
++		mutex_lock(&shared->lock);
+ 		contender = shared->writing;
+ 		if (contender && contender != chip) {
+ 			/*
+@@ -899,7 +899,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 			 * get_chip returns success we're clear to go ahead.
+ 			 */
+ 			ret = mutex_trylock(&contender->mutex);
+-			spin_unlock(&shared->lock);
++			mutex_unlock(&shared->lock);
+ 			if (!ret)
+ 				goto retry;
+ 			mutex_unlock(&chip->mutex);
+@@ -914,7 +914,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 				mutex_unlock(&contender->mutex);
+ 				return ret;
+ 			}
+-			spin_lock(&shared->lock);
++			mutex_lock(&shared->lock);
  
- 	gpmc_nand_init(&board_nand_data);
- }
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 63682c0..1041783 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -128,6 +128,20 @@ const int use_dma;
- const int use_interrupt;
- #endif
+ 			/* We should not own chip if it is already
+ 			 * in FL_SYNCING state. Put contender and retry. */
+@@ -930,7 +930,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 		 * on this chip. Sleep. */
+ 		if (mode == FL_ERASING && shared->erasing
+ 		    && shared->erasing->oldstate == FL_ERASING) {
+-			spin_unlock(&shared->lock);
++			mutex_unlock(&shared->lock);
+ 			set_current_state(TASK_UNINTERRUPTIBLE);
+ 			add_wait_queue(&chip->wq, &wait);
+ 			mutex_unlock(&chip->mutex);
+@@ -944,7 +944,7 @@ static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr
+ 		shared->writing = chip;
+ 		if (mode == FL_ERASING)
+ 			shared->erasing = chip;
+-		spin_unlock(&shared->lock);
++		mutex_unlock(&shared->lock);
+ 	}
+ 	ret = chip_ready(map, chip, adr, mode);
+ 	if (ret == -EAGAIN)
+@@ -959,7 +959,7 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
  
-+/* oob info generated runtime depending on ecc algorithm and layout selected */
-+static struct nand_ecclayout omap_oobinfo;
-+/* Define some generic bad / good block scan pattern which are used
-+ * while scanning a device for factory marked good / bad blocks
-+ */
-+static uint8_t scan_ff_pattern[] = { 0xff };
-+static struct nand_bbt_descr bb_descrip_flashbased = {
-+	.options = NAND_BBT_SCANEMPTY | NAND_BBT_SCANALLPAGES,
-+	.offs = 0,
-+	.len = 1,
-+	.pattern = scan_ff_pattern,
-+};
-+
-+
- struct omap_nand_info {
- 	struct nand_hw_control		controller;
- 	struct omap_nand_platform_data	*pdata;
-@@ -945,6 +959,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	struct omap_nand_info		*info;
- 	struct omap_nand_platform_data	*pdata;
- 	int				err;
-+	int				i, offset;
- 
- 	pdata = pdev->dev.platform_data;
- 	if (pdata == NULL) {
-@@ -1079,6 +1094,25 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 	if (chip->priv) {
+ 		struct flchip_shared *shared = chip->priv;
+-		spin_lock(&shared->lock);
++		mutex_lock(&shared->lock);
+ 		if (shared->writing == chip && chip->oldstate == FL_READY) {
+ 			/* We own the ability to write, but we're done */
+ 			shared->writing = shared->erasing;
+@@ -967,7 +967,7 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
+ 				/* give back ownership to who we loaned it from */
+ 				struct flchip *loaner = shared->writing;
+ 				mutex_lock(&loaner->mutex);
+-				spin_unlock(&shared->lock);
++				mutex_unlock(&shared->lock);
+ 				mutex_unlock(&chip->mutex);
+ 				put_chip(map, loaner, loaner->start);
+ 				mutex_lock(&chip->mutex);
+@@ -985,11 +985,11 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
+ 			 * Don't let the switch below mess things up since
+ 			 * we don't have ownership to resume anything.
+ 			 */
+-			spin_unlock(&shared->lock);
++			mutex_unlock(&shared->lock);
+ 			wake_up(&chip->wq);
+ 			return;
  		}
+-		spin_unlock(&shared->lock);
++		mutex_unlock(&shared->lock);
  	}
  
-+	/* rom code layout */
-+	if (pdata->ecc_opt != OMAP_ECC_HAMMING_CODE_DIFF_LAYOUT) {
-+		offset = (info->nand.options & NAND_BUSWIDTH_16) ? 2 : 1;
-+		if (info->mtd.oobsize == 16) {
-+			info->nand.badblock_pattern = &bb_descrip_flashbased;
-+			omap_oobinfo.eccbytes = 3;
-+		} else
-+			omap_oobinfo.eccbytes  = 3 * 4;
-+
-+		for (i = 0; i < omap_oobinfo.eccbytes; i++)
-+			omap_oobinfo.eccpos[i] = i+offset;
-+
-+		omap_oobinfo.oobfree->offset = offset + omap_oobinfo.eccbytes;
-+		omap_oobinfo.oobfree->length = info->mtd.oobsize -
-+					(offset + omap_oobinfo.eccbytes);
-+
-+		info->nand.ecc.layout = &omap_oobinfo;
-+	}
-+
- #ifdef CONFIG_MTD_PARTITIONS
- 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
- 	if (err > 0)
+ 	switch(chip->oldstate) {
+diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
+index f43e9b4..23cc10f 100644
+--- a/include/linux/mtd/flashchip.h
++++ b/include/linux/mtd/flashchip.h
+@@ -92,7 +92,7 @@ struct flchip {
+ /* This is used to handle contention on write/erase operations
+    between partitions of the same physical chip. */
+ struct flchip_shared {
+-	spinlock_t lock;
++	struct mutex lock;
+ 	struct flchip *writing;
+ 	struct flchip *erasing;
+ };
+-- 
+1.7.2
