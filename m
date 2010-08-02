@@ -1,15 +1,16 @@
-Date: Mon, 2 Aug 2010 15:52:48 +0300
+Date: Mon, 2 Aug 2010 16:03:07 +0300
 From: Tony Lindgren <tony@atomide.com>
 To: Sukumar Ghorai <s-ghorai@ti.com>
-Subject: Re: [PATCH v4 0/8] nand support on omap3 boards
-Message-ID: <20100802125248.GK12293@atomide.com>
-References: <1278685671-12036-1-git-send-email-s-ghorai@ti.com>
+Subject: Re: [PATCH v3 1/4] omap3: nand: prefetch in irq mode support
+Message-ID: <20100802130306.GL12293@atomide.com>
+References: <1278996337-25172-1-git-send-email-s-ghorai@ti.com>
+	<1278996337-25172-2-git-send-email-s-ghorai@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1278685671-12036-1-git-send-email-s-ghorai@ti.com>
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1278996337-25172-2-git-send-email-s-ghorai@ti.com>
+Cc: Vimal Singh <vimalsingh@ti.com>, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,50 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Sukumar Ghorai <s-ghorai@ti.com> [100709 17:21]:
->    The following set of patches applies on top of for-next branch.
->    And these are the patches required to enable nand (nor and onenand for sdp
->    only) for different platform.
+* Sukumar Ghorai <s-ghorai@ti.com> [100713 07:39]:
+> This patch enable prefetch-irq mode for NAND.
 
-Will add this series into omap-for-linus too.
+<snip>
+
+> --- a/arch/arm/mach-omap2/board-flash.c
+> +++ b/arch/arm/mach-omap2/board-flash.c
+> @@ -133,6 +133,7 @@ static struct omap_nand_platform_data board_nand_data = {
+>  	.nand_setup	= NULL,
+>  	.gpmc_t		= &nand_timings,
+>  	.dma_channel	= -1,		/* disable DMA in OMAP NAND driver */
+> +	.gpmc_irq	= GPMC_IRQ_NUMBER,
+>  	.dev_ready	= NULL,
+>  	.devsize	= 0,	/* '0' for 8-bit, '1' for 16-bit device */
+>  };
+> --- a/arch/arm/mach-omap2/include/mach/board-flash.h
+> +++ b/arch/arm/mach-omap2/include/mach/board-flash.h
+> @@ -19,6 +19,9 @@
+>  #define PDC_ONENAND	3
+>  #define DBG_MPDB	4
+>  
+> +/* Interrupt number to the MPU Subsystem for GPMC */
+> +#define GPMC_IRQ_NUMBER	20
+> +
+
+This does not look right for the IRQ. Please add it to the irqs.h and 34xx,
+then set it dynamically during the init just like we handle the other
+interrupt numbers.
+
+This is because the irq numbers can change between omaps, like irqs-44xx.h
+already has
+
+#define OMAP44XX_IRQ_GPMC                       (20 + OMAP44XX_IRQ_GIC_START)
+
+> @@ -130,6 +141,13 @@ struct omap_nand_info {
+>  	unsigned long			phys_base;
+>  	struct completion		comp;
+>  	int				dma_ch;
+> +	int				gpmc_irq;
+> +	enum {
+> +		NAND_IO_READ = 0,	/* read */
+> +		NAND_IO_WRITE,		/* write */
+> +	} iomode;
+> +	u_char				*buf;
+> +	int					buf_len;
+>  };
+
+These should probably be OMAP_NAND_IO_READ and OMAP_NAND_IO_WRITE?
 
 Regards,
 
 Tony
-
-    
->    v4: patch rebase on latest code base; depend on
-> 	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31950.html
->    
->    v3:  http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30735.html
-> 	patch rebase on latest nand patch and depend on -
-> 	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg30305.html
->    
->    v2: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg26479.html
-> 	rework to use full nand in partition table of ZOOM2/3;
-> 	ZOOM1(LDP)support added.
-> 		
->    v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg22205.html
-> 
-> Sukumar Ghorai (5):
-> 	omap3 flash: rename board-sdp-flash.c to be use by other boards
-> 	omap3: add support for NAND on zoom2 board
-> 	omap3: add support for NAND on zoom3 board
-> 	omap-3630-sdp : Add support for Flash
-> 	omap3: add support for NAND on LDP board
-> 
->  arch/arm/mach-omap2/Makefile                  |    6 +-
->  arch/arm/mach-omap2/board-3430sdp.c           |   16 +++-
->  arch/arm/mach-omap2/board-3630sdp.c           |  120 +++++++++++++++++++++++++
->  arch/arm/mach-omap2/board-ldp.c               |   35 +++++++
->  arch/arm/mach-omap2/board-sdp-flash.c         |   88 ++++++++-----------
->  arch/arm/mach-omap2/board-zoom2.c             |   43 +++++++++
->  arch/arm/mach-omap2/board-zoom3.c             |   43 +++++++++
->  arch/arm/mach-omap2/include/mach/board-sdp.h  |    9 ++-
->  arch/arm/mach-omap2/include/mach/board-zoom.h |    6 ++
->  9 files changed, 311 insertions(+), 55 deletions(-)
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
