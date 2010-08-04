@@ -1,18 +1,17 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OgWsM-0006Mw-GP
-	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2010 05:50:51 +0000
-Date: Wed, 4 Aug 2010 07:48:45 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-To: Artem Bityutskiy <dedekind1@gmail.com>
 Subject: Re: question about drivers/mtd/ubi/cdev.c
-In-Reply-To: <1280891212.4363.5.camel@localhost.localdomain>
-Message-ID: <Pine.LNX.4.64.1008040747330.3431@ask.diku.dk>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Julia Lawall <julia@diku.dk>
+In-Reply-To: <Pine.LNX.4.64.1008040747330.3431@ask.diku.dk>
 References: <Pine.LNX.4.64.1008032206060.20393@ask.diku.dk>
 	<1280891212.4363.5.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	<Pine.LNX.4.64.1008040747330.3431@ask.diku.dk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 04 Aug 2010 09:37:13 +0300
+Message-ID: <1280903833.15689.65.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 4 Aug 2010, Artem Bityutskiy wrote:
-
-> On Tue, 2010-08-03 at 22:12 +0200, Julia Lawall wrote:
-> > I was wondering about the following code in the function rename_volumes in 
-> > the file drivers/mtd/ubi/cdev.c:
-> > 
-> > list_for_each_entry(re, &rename_list, list) {
-> > 	...
-> >         if (no_remove_needed)
-> >                 continue;
-> > 	...
-> >         re = kzalloc(sizeof(struct ubi_rename_entry), GFP_KERNEL);
-> > 	if (!re) { ... }
-> >         re->remove = 1;
-> >         re->desc = desc;
-> >         list_add(&re->list, &rename_list);
-> > 	...
-> > }
-> > 
-> > Is there a danger of repeating computation since re is redefined and moved 
-> > back to the beginning of the list?
+On Wed, 2010-08-04 at 07:48 +0200, Julia Lawall wrote:
+> > Hmm, the code is bogus, I do not know how it works, but it does, because
+> > I tested it :-)
+> >
+> > We should not use 're' as a temporary variable inside the loop. I guess
+> > we can use 're1' instead. I'll change this later, when have time, unless
+> > you submit a fix earlier :-)
 > 
-> Hmm, the code is bogus, I do not know how it works, but it does, because
-> I tested it :-)
->
-> We should not use 're' as a temporary variable inside the loop. I guess
-> we can use 're1' instead. I'll change this later, when have time, unless
-> you submit a fix earlier :-)
+> Would the proper approach be to use list_for_each_entry_safe?
 
-Would the proper approach be to use list_for_each_entry_safe?
+Yes, plus not using the iterator as a temporary variable is also a good
+idea.
 
-julia
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
