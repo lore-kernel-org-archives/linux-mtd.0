@@ -1,16 +1,19 @@
-Received: from phoenix3.szarvasnet.hu ([87.101.127.16])
+Received: from smtp1-g21.free.fr ([212.27.42.1])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OgjQE-0007A2-4l
-	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2010 19:14:38 +0000
-From: Gabor Juhos <juhosg@openwrt.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 3/3] mtd: m25p80: add support for the Winbond W25Q32 SPI flash
-	chip
-Date: Wed,  4 Aug 2010 21:14:27 +0200
-Message-Id: <1280949267-18154-3-git-send-email-juhosg@openwrt.org>
-In-Reply-To: <1280949267-18154-1-git-send-email-juhosg@openwrt.org>
-References: <1280949267-18154-1-git-send-email-juhosg@openwrt.org>
-Cc: Gabor Juhos <juhosg@openwrt.org>, linux-mtd@lists.infradead.org
+	id 1OgjlA-0005Il-Kx
+	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2010 19:36:20 +0000
+Subject: [PATCH] mtd: cfi_cmdset_0002: fix the check for valid primary
+	extension versions
+To: linux-mtd@lists.infradead.org
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Wed, 04 Aug 2010 21:36:09 +0200
+Message-ID: <20100804193242.10954.14837.stgit@dev.siriade.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: Gernot Hoyler <Gernot.Hoyler@spansion.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Florian Fainelli <florian@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,22 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Valid primary extension versions are: 1.0, 1.1, 1.2, 1.3, 1.4 [1][2][3].
+Fix the check in cfi_cmdset_0002 accordingly.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 57fec6d..8d4ac1b 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -716,6 +716,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "w25x80", INFO(0xef3014, 0, 64 * 1024,  16, SECT_4K) },
- 	{ "w25x16", INFO(0xef3015, 0, 64 * 1024,  32, SECT_4K) },
- 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
-+	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+[1] http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf, page 19
+[2] http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_100_20011201.pdf
+[3] http://www.spansion.com/Support/Datasheets/s29ws-p_00_a12_e.pdf
+
+Signed-off-by: Florian Fainelli <florian@openwrt.org>
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   16 +++++++++++++---
+ 1 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index d81079e..16c4eee 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -417,16 +417,26 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 			 */
+ 			cfi_fixup_major_minor(cfi, extp);
  
- 	/* Catalyst / On Semiconductor -- non-JEDEC */
--- 
-1.5.3.2
++			/*
++			 * Valid primary extension versions are: 1.0, 1.1, 1.2, 1.3, 1.4
++			 * see: http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf, page 19
++			 *      http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_100_20011201.pdf
++			 *      http://www.spansion.com/Support/Datasheets/s29ws-p_00_a12_e.pdf
++			 */
+ 			if (extp->MajorVersion != '1' ||
+-			    (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
++			    (extp->MajorVersion == '1' && ( extp->MinorVersion < '0' || extp->MinorVersion > '4'))) {
+ 				printk(KERN_ERR "  Unknown Amd/Fujitsu Extended Query "
+-				       "version %c.%c.\n",  extp->MajorVersion,
+-				       extp->MinorVersion);
++				       "version %c.%c (%#02x/%#02x).\n",
++				       extp->MajorVersion, extp->MinorVersion,
++				       extp->MajorVersion, extp->MinorVersion);
+ 				kfree(extp);
+ 				kfree(mtd);
+ 				return NULL;
+ 			}
+ 
++			printk(KERN_INFO "  Amd/Fujitsu Extended Query version %c.%c.\n",
++			       extp->MajorVersion, extp->MinorVersion);
++
+ 			/* Install our own private info structure */
+ 			cfi->cmdset_priv = extp;
+ 
