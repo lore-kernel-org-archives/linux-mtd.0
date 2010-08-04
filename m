@@ -1,18 +1,18 @@
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>, Tony Lindgren
-	<tony@atomide.com>
-Date: Wed, 4 Aug 2010 09:28:57 +0530
-Subject: RE: [PATCH v4 0/4] nand prefetch-irq support and ecc layout chanage
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030E5E4374@dbde02.ent.ti.com>
-References: <1280764192-15053-1-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1280764192-15053-1-git-send-email-s-ghorai@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OgWsM-0006Mw-GP
+	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2010 05:50:51 +0000
+Date: Wed, 4 Aug 2010 07:48:45 +0200 (CEST)
+From: Julia Lawall <julia@diku.dk>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: question about drivers/mtd/ubi/cdev.c
+In-Reply-To: <1280891212.4363.5.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.64.1008040747330.3431@ask.diku.dk>
+References: <Pine.LNX.4.64.1008032206060.20393@ask.diku.dk>
+	<1280891212.4363.5.camel@localhost.localdomain>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: Ghorai, Sukumar
-> Sent: Monday, August 02, 2010 9:20 PM
-> To: linux-omap@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org; linux-mtd@lists.infradead.org;
-> Ghorai, Sukumar
-> Subject: [PATCH v4 0/4] nand prefetch-irq support and ecc layout chanage
->=20
->    The following set of patches applies on top of omap-for-linus.
->=20
->    v4: Comments incorporated
->=20
->    v3: http://www.mail-archive.com/linux-
-> omap@vger.kernel.org/msg32071.html
->    	Rebase on latest codebase and previous patch(posted).
-> 	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31963.html
->=20
->    v2: Rebase on latest codebase and previous patch(posted).
-> 	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
->=20
->    v1: http://www.mail-archive.com/linux-
-> omap@vger.kernel.org/msg26666.html
->=20
-> Sukumar Ghorai (4):
-> 	omap3: nand: prefetch in irq mode support
-> 	omap: nand: configurable fifo threshold to gain the throughput
-> 	omap: nand: ecc layout select from board file
-> 	omap: nand: making ecc layout as compatible with romcode ecc
->=20
->  arch/arm/mach-omap2/board-flash.c      |    5 +-
->  arch/arm/mach-omap2/gpmc.c             |   15 ++-
->  arch/arm/plat-omap/include/plat/gpmc.h |    9 +-
->  arch/arm/plat-omap/include/plat/irqs.h |    1 +
->  arch/arm/plat-omap/include/plat/nand.h |    7 +
->  drivers/mtd/nand/Kconfig               |   14 ++-
->  drivers/mtd/nand/omap2.c               |  277
-> ++++++++++++++++++++++++++++---
->  7 files changed, 294 insertions(+), 34 deletions(-)
-[Ghorai]=20
-Tony,
-Would you please check if you have any input further?
+On Wed, 4 Aug 2010, Artem Bityutskiy wrote:
 
-Regards,
-Ghorai
+> On Tue, 2010-08-03 at 22:12 +0200, Julia Lawall wrote:
+> > I was wondering about the following code in the function rename_volumes in 
+> > the file drivers/mtd/ubi/cdev.c:
+> > 
+> > list_for_each_entry(re, &rename_list, list) {
+> > 	...
+> >         if (no_remove_needed)
+> >                 continue;
+> > 	...
+> >         re = kzalloc(sizeof(struct ubi_rename_entry), GFP_KERNEL);
+> > 	if (!re) { ... }
+> >         re->remove = 1;
+> >         re->desc = desc;
+> >         list_add(&re->list, &rename_list);
+> > 	...
+> > }
+> > 
+> > Is there a danger of repeating computation since re is redefined and moved 
+> > back to the beginning of the list?
+> 
+> Hmm, the code is bogus, I do not know how it works, but it does, because
+> I tested it :-)
+>
+> We should not use 're' as a temporary variable inside the loop. I guess
+> we can use 're1' instead. I'll change this later, when have time, unless
+> you submit a fix earlier :-)
+
+Would the proper approach be to use list_for_each_entry_safe?
+
+julia
