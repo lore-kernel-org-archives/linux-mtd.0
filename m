@@ -1,28 +1,20 @@
-Date: Wed, 4 Aug 2010 14:41:51 +0200
-From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
-	Roman Zippel <zippel@linux-m68k.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Mike Frysinger <vapier@gentoo.org>, Jiri Kosina <jkosina@suse.cz>,
-	Alexander Kurz <linux@kbdbabel.org>, Michael Roth <mroth@nessie.de>,
-	Russell King <rmk+kernel@arm.linux.org.uk>,
-	Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	Grant Likely <grant.likely@secretlab.ca>,
-	Sean MacLennan <smaclennan@pikatech.com>,
-	Anatolij Gustschin <agust@denx.de>, linux-m68k@lists.linux-m68k.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-pcmcia@lists.infradead.org
-Subject: [PATCH 4/9] Removing dead CONFIG_RPX(LITE|CLASSIC)
-Message-ID: <e173704b7be0070b4adc976f185e89afca566aac.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
-References: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OgfZT-0004NO-02
+	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2010 15:07:56 +0000
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.243])
+	by co202.xi-lite.net (Postfix) with ESMTPS id F05F226027E
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  4 Aug 2010 17:07:51 +0200 (CEST)
+Message-ID: <4C598244.9060901@parrot.com>
+Date: Wed, 4 Aug 2010 17:07:48 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
-Cc: vamos-dev@i4.informatik.uni-erlangen.de
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: mtdchar : writing image with oob and NOP=1
+References: <4C56801D.3040300@parrot.com>
+In-Reply-To: <4C56801D.3040300@parrot.com>
+Content-Type: multipart/mixed; boundary="------------080804020509070605030900"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,252 +24,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CONFIG_RPX(LITE|CLASSIC) doesn't exist in Kconfig, therefore removing
-all references to it from the source. Because RPX(LITE|CLASSIC) can't
-be defined, MTD_RPXLITE can't be defined either. Therfore removing it to.
+--------------080804020509070605030900
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 8bit
 
-They were be introduced in 14cf11af6cf608eb8c23e989ddb17a715ddce109 and 
-removed in df34403dcaacef541a67c955aebc37c51f53ca7c.
+Matthieu CASTET a écrit :
+> Hi,
+> 
+> We need to write our bootloader with a special ecc (use by cpu rom).
+> 
+> For that we use MTD_MODE_RAW, write and MEMWRITEOOB. This work fine, but 
+> from my understanding this will do a first page program with oob set to 
+> 0xff and then program again oob.
+> 
+> But some recent nand support only 1 program per page (NOP=1).
+> How can we program nand with NOP=1 with a custom ecc ?
+> 
+>  From what I see in mtdchar either datbuf is set (and oobbuf is null) or 
+> oobbuf is set (and datbuf is null).
+> 
+> So this mean we need to add an ioctl to do that ?
+> 
+For info here what we did for our 2.6.27 kernel.
 
-Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
----
- arch/m68k/include/asm/commproc.h |   17 --------
- drivers/mtd/maps/Kconfig         |   10 -----
- drivers/mtd/maps/Makefile        |    1 -
- drivers/mtd/maps/rpxlite.c       |   64 ------------------------------
- drivers/pcmcia/m8xx_pcmcia.c     |   81 --------------------------------------
- 5 files changed, 0 insertions(+), 173 deletions(-)
- delete mode 100644 drivers/mtd/maps/rpxlite.c
+Matthieu
 
-diff --git a/arch/m68k/include/asm/commproc.h b/arch/m68k/include/asm/commproc.h
-index b4f1d54..48f5466 100644
---- a/arch/m68k/include/asm/commproc.h
-+++ b/arch/m68k/include/asm/commproc.h
-@@ -480,23 +480,6 @@ typedef struct scc_enet {
- #define SICR_ENET_CLKRT	((uint)0x0000003d)
- #endif
+--------------080804020509070605030900
+Content-Type: text/x-diff; name="memwritepage.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="memwritepage.diff"
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index e00d424..7621449 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -547,6 +547,84 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 		break;
  
--#ifdef CONFIG_RPXLITE
--/* This ENET stuff is for the MPC850 with ethernet on SCC2.  Some of
-- * this may be unique to the RPX-Lite configuration.
-- * Note TENA is on Port B.
-- */
--#define PA_ENET_RXD	((ushort)0x0004)
--#define PA_ENET_TXD	((ushort)0x0008)
--#define PA_ENET_TCLK	((ushort)0x0200)
--#define PA_ENET_RCLK	((ushort)0x0800)
--#define PB_ENET_TENA	((uint)0x00002000)
--#define PC_ENET_CLSN	((ushort)0x0040)
--#define PC_ENET_RENA	((ushort)0x0080)
--
--#define SICR_ENET_MASK	((uint)0x0000ff00)
--#define SICR_ENET_CLKRT	((uint)0x00003d00)
--#endif
--
- /* SCC Event register as used by Ethernet.
- */
- #define SCCE_ENET_GRA	((ushort)0x0080)	/* Graceful stop complete */
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index f22bc9f..10261fc 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -286,16 +286,6 @@ config MTD_TQM8XXL
- 	  code to communicate with the chips on the TQM8xxL board. More at
- 	  <http://www.denx.de/embedded-ppc-en.html>.
+ 	}
++	case MEMWRITEPAGE:
++	{
++		struct mtd_page_buf buf;
++		struct mtd_oob_ops ops;
++		struct mtd_page_buf __user *user_buf = argp;
++	        uint32_t retlen;
++
++		if(!(file->f_mode & 2))
++			return -EPERM;
++
++		if (copy_from_user(&buf, argp, sizeof(struct mtd_page_buf)))
++			return -EFAULT;
++
++		if (buf.length != mtd->writesize || buf.oob_length != mtd->oobsize)
++			return -EINVAL;
++
++		if (!mtd->write_oob)
++			return -EOPNOTSUPP;
++
++		ret = access_ok(VERIFY_READ, buf.ptr,
++					buf.length) ? 0 : EFAULT;
++		if (ret)
++			return ret;
++
++		ret = access_ok(VERIFY_READ, buf.oob_ptr,
++					buf.oob_length) ? 0 : EFAULT;
++		if (ret)
++			return ret;
++
++		ops.ooblen = mtd->oobsize;
++		ops.ooboffs = 0;
++		ops.len = mtd->writesize;
++		ops.mode = MTD_OOB_RAW;
++
++		if (ops.ooboffs && ops.ooblen > (mtd->oobsize - ops.ooboffs))
++			return -EINVAL;
++
++		ops.datbuf = kmalloc(buf.length, GFP_KERNEL);
++		if (!ops.datbuf)
++			return -ENOMEM;
++
++		if (copy_from_user(ops.datbuf, buf.ptr, buf.length)) {
++			kfree(ops.datbuf);
++			return -EFAULT;
++		}
++
++		ops.oobbuf = kmalloc(buf.oob_length, GFP_KERNEL);
++		if (!ops.oobbuf) {
++			kfree(ops.datbuf);
++			return -ENOMEM;
++		}
++
++		if (copy_from_user(ops.oobbuf, buf.oob_ptr, buf.oob_length)) {
++			kfree(ops.datbuf);
++			kfree(ops.oobbuf);
++			return -EFAULT;
++		}
++
++		ret = mtd->write_oob(mtd, buf.start, &ops);
++
++		if (!ret) {
++			retlen = ops.retlen;
++			if (copy_to_user(&user_buf->length, &retlen, sizeof(buf.length)))
++				ret = -EFAULT;
++		}
++
++		if (!ret) {
++			retlen = ops.oobretlen;
++			if (copy_to_user(&user_buf->oob_length, &retlen, sizeof(buf.oob_length)))
++				ret = -EFAULT;
++		}
++
++
++		kfree(ops.datbuf);
++		kfree(ops.oobbuf);
++		break;
++
++	}
  
--config MTD_RPXLITE
--	tristate "CFI Flash device mapped on RPX Lite or CLLF"
--	depends on MTD_CFI && (RPXCLASSIC || RPXLITE)
--	help
--	  The RPXLite PowerPC board has CFI-compliant chips mapped in
--	  a strange sparse mapping. This 'mapping' driver supports that
--	  arrangement, allowing the CFI probe and command set driver code
--	  to communicate with the chips on the RPXLite board. More at
--	  <http://www.embeddedplanet.com/>.
--
- config MTD_MBX860
- 	tristate "System flash on MBX860 board"
- 	depends on MTD_CFI && MBX
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index bb035cd..7821c71 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -27,7 +27,6 @@ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
- obj-$(CONFIG_MTD_PISMO)		+= pismo.o
- obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
- obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
--obj-$(CONFIG_MTD_RPXLITE)	+= rpxlite.o
- obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
- obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
- obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
-diff --git a/drivers/mtd/maps/rpxlite.c b/drivers/mtd/maps/rpxlite.c
-deleted file mode 100644
-index 3e3ef53..0000000
---- a/drivers/mtd/maps/rpxlite.c
-+++ /dev/null
-@@ -1,64 +0,0 @@
--/*
-- * Handle mapping of the flash on the RPX Lite and CLLF boards
-- */
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/init.h>
--#include <asm/io.h>
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--
--
--#define WINDOW_ADDR 0xfe000000
--#define WINDOW_SIZE 0x800000
--
--static struct mtd_info *mymtd;
--
--static struct map_info rpxlite_map = {
--	.name = "RPX",
--	.size = WINDOW_SIZE,
--	.bankwidth = 4,
--	.phys = WINDOW_ADDR,
--};
--
--static int __init init_rpxlite(void)
--{
--	printk(KERN_NOTICE "RPX Lite or CLLF flash device: %x at %x\n", WINDOW_SIZE*4, WINDOW_ADDR);
--	rpxlite_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
--
--	if (!rpxlite_map.virt) {
--		printk("Failed to ioremap\n");
--		return -EIO;
--	}
--	simple_map_init(&rpxlite_map);
--	mymtd = do_map_probe("cfi_probe", &rpxlite_map);
--	if (mymtd) {
--		mymtd->owner = THIS_MODULE;
--		add_mtd_device(mymtd);
--		return 0;
--	}
--
--	iounmap((void *)rpxlite_map.virt);
--	return -ENXIO;
--}
--
--static void __exit cleanup_rpxlite(void)
--{
--	if (mymtd) {
--		del_mtd_device(mymtd);
--		map_destroy(mymtd);
--	}
--	if (rpxlite_map.virt) {
--		iounmap((void *)rpxlite_map.virt);
--		rpxlite_map.virt = 0;
--	}
--}
--
--module_init(init_rpxlite);
--module_exit(cleanup_rpxlite);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Arnold Christensen <AKC@pel.dk>");
--MODULE_DESCRIPTION("MTD map driver for RPX Lite and CLLF boards");
-diff --git a/drivers/pcmcia/m8xx_pcmcia.c b/drivers/pcmcia/m8xx_pcmcia.c
-index 25e5e30..e56dd87 100644
---- a/drivers/pcmcia/m8xx_pcmcia.c
-+++ b/drivers/pcmcia/m8xx_pcmcia.c
-@@ -71,12 +71,6 @@ MODULE_LICENSE("Dual MPL/GPL");
+ 	case MEMREADOOB:
+ 	{
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index c6c61cd..3d9e3bc 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -16,6 +16,13 @@ struct mtd_oob_buf {
+ 	unsigned char __user *ptr;
+ };
  
- #if !defined(CONFIG_PCMCIA_SLOT_A) && !defined(CONFIG_PCMCIA_SLOT_B)
++struct mtd_page_buf {
++	uint32_t start;
++	uint32_t length;
++	unsigned char __user *ptr;
++	uint32_t oob_length;
++	unsigned char __user *oob_ptr;
++};
+ #define MTD_ABSENT		0
+ #define MTD_RAM			1
+ #define MTD_ROM			2
+@@ -93,6 +100,7 @@ struct otp_info {
+ #define ECCGETLAYOUT		_IOR('M', 17, struct nand_ecclayout)
+ #define ECCGETSTATS		_IOR('M', 18, struct mtd_ecc_stats)
+ #define MTDFILEMODE		_IO('M', 19)
++#define MEMWRITEPAGE		_IOWR('M', 30, struct mtd_page_buf)
  
--/* The RPX series use SLOT_B */
--#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
--#define CONFIG_PCMCIA_SLOT_B
--#define CONFIG_BD_IS_MHZ
--#endif
--
- /* The ADS board use SLOT_A */
- #ifdef CONFIG_ADS
- #define CONFIG_PCMCIA_SLOT_A
-@@ -256,81 +250,6 @@ static irqreturn_t m8xx_interrupt(int irq, void *dev);
- 
- #define PCMCIA_BMT_LIMIT (15*4)	/* Bus Monitor Timeout value */
- 
--/* ------------------------------------------------------------------------- */
--/* board specific stuff:                                                     */
--/* voltage_set(), hardware_enable() and hardware_disable()                   */
--/* ------------------------------------------------------------------------- */
--/* RPX Boards from Embedded Planet                                           */
--
--#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
--
--/* The RPX boards seems to have it's bus monitor timeout set to 6*8 clocks.
-- * SYPCR is write once only, therefore must the slowest memory be faster
-- * than the bus monitor or we will get a machine check due to the bus timeout.
-- */
--
--#define PCMCIA_BOARD_MSG "RPX CLASSIC or RPX LITE"
--
--#undef PCMCIA_BMT_LIMIT
--#define PCMCIA_BMT_LIMIT (6*8)
--
--static int voltage_set(int slot, int vcc, int vpp)
--{
--	u32 reg = 0;
--
--	switch (vcc) {
--	case 0:
--		break;
--	case 33:
--		reg |= BCSR1_PCVCTL4;
--		break;
--	case 50:
--		reg |= BCSR1_PCVCTL5;
--		break;
--	default:
--		return 1;
--	}
--
--	switch (vpp) {
--	case 0:
--		break;
--	case 33:
--	case 50:
--		if (vcc == vpp)
--			reg |= BCSR1_PCVCTL6;
--		else
--			return 1;
--		break;
--	case 120:
--		reg |= BCSR1_PCVCTL7;
--	default:
--		return 1;
--	}
--
--	if (!((vcc == 50) || (vcc == 0)))
--		return 1;
--
--	/* first, turn off all power */
--
--	out_be32(((u32 *) RPX_CSR_ADDR),
--		 in_be32(((u32 *) RPX_CSR_ADDR)) & ~(BCSR1_PCVCTL4 |
--						     BCSR1_PCVCTL5 |
--						     BCSR1_PCVCTL6 |
--						     BCSR1_PCVCTL7));
--
--	/* enable new powersettings */
--
--	out_be32(((u32 *) RPX_CSR_ADDR), in_be32(((u32 *) RPX_CSR_ADDR)) | reg);
--
--	return 0;
--}
--
--#define socket_get(_slot_) PCMCIA_SOCKET_KEY_5V
--#define hardware_enable(_slot_)	/* No hardware to enable */
--#define hardware_disable(_slot_)	/* No hardware to disable */
--
--#endif				/* CONFIG_RPXCLASSIC */
--
- /* FADS Boards from Motorola                                               */
- 
- #if defined(CONFIG_FADS)
--- 
-1.7.0.4
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
+
+--------------080804020509070605030900--
