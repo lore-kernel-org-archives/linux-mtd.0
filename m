@@ -1,15 +1,7 @@
-Date: Wed, 4 Aug 2010 14:41:29 +0200
+Date: Wed, 4 Aug 2010 14:41:51 +0200
 From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
 To: Geert Uytterhoeven <geert@linux-m68k.org>,
 	Roman Zippel <zippel@linux-m68k.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Finn Thain <fthain@telegraphics.com.au>,
-	Greg Kroah-Hartman <gregkh@suse.de>, John Stultz <johnstul@us.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Sam Creasey <sammy@sammy.net>,
-	Greg Ungerer <gerg@uclinux.org>, Christoph Hellwig <hch@lst.de>,
-	Maxim Kuvyrkov <maxim@codesourcery.com>,
-	Lennart Sorensen <lsorense@csclub.uwaterloo.ca>,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>, Joe Perches <joe@perches.com>,
 	David Woodhouse <dwmw2@infradead.org>,
 	Mike Frysinger <vapier@gentoo.org>, Jiri Kosina <jkosina@suse.cz>,
 	Alexander Kurz <linux@kbdbabel.org>, Michael Roth <mroth@nessie.de>,
@@ -23,11 +15,13 @@ To: Geert Uytterhoeven <geert@linux-m68k.org>,
 	Anatolij Gustschin <agust@denx.de>, linux-m68k@lists.linux-m68k.org,
 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 	linux-pcmcia@lists.infradead.org
-Subject: [PATCH 0/9] Removing dead code
-Message-ID: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
+Subject: [PATCH 4/9] Removing dead CONFIG_RPX(LITE|CLASSIC)
+Message-ID: <e173704b7be0070b4adc976f185e89afca566aac.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
+References: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
 Cc: vamos-dev@i4.informatik.uni-erlangen.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,68 +32,252 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all!
-       
-        As part of the VAMOS[0] research project at the University of
-Erlangen we are looking at multiple integrity errors in linux'
-configuration system.
+CONFIG_RPX(LITE|CLASSIC) doesn't exist in Kconfig, therefore removing
+all references to it from the source. Because RPX(LITE|CLASSIC) can't
+be defined, MTD_RPXLITE can't be defined either. Therfore removing it to.
 
-        I've been running a check on the arch/m68k{,nommu} sourcetree for
-config Items not defined in Kconfig and found 9 such cases. Sourcecode
-blocks depending on these Items are not reachable from a vanilla
-kernel -- dead code. I've seen such dead blocks made on purpose
-e.g. while integrating new features into the kernel but generally
-they're just useless.
+They were be introduced in 14cf11af6cf608eb8c23e989ddb17a715ddce109 and 
+removed in df34403dcaacef541a67c955aebc37c51f53ca7c.
 
-        Each of the patches in this patchset removes on such dead
-config Item, I'd be glad if you consider applying them. I've been
-doing deeper analysis of such issues before and can do so again but
-I'm not so sure they were fastly usefull.
-
-In lack of an m68k cross compiler i was not able to build the kernel
-against this patches. I don't think that they will crash the
-compiling, but i'm not totally sure.
-
-        Please keep me informed of this patch getting confirmed /
-merged so we can keep track of it.
-
-Regards
-
-        Christian Dietrich
-
-[0] http://vamos1.informatik.uni-erlangen.de/
-
-Christian Dietrich (9):
-  arch/m68k: Removing dead GG2 config option
-  arch/m68k: Removing dead BSEIP config option
-  arch/m68k{,nommu}: Removing dead SMP config option
-  Removing dead CONFIG_RPX(LITE|CLASSIC)
-  arch/m68knommu: Removing dead M68000 config option
-  arch/m68knommu: Removing dead RELOCATE config option
-  arch/m68knommu: Removing dead M68KFPU_EMU config option
-  arch/m68knommu: Removing dead RAM_{16,32}_MB config option
-  arch/m68knommu: Removing dead 68328_SERIAL_UART2 config option
-
- arch/m68k/Kconfig                        |    4 +-
- arch/m68k/include/asm/amigahw.h          |    1 -
- arch/m68k/include/asm/commproc.h         |   39 --------------
- arch/m68k/include/asm/io_mm.h            |   37 --------------
- arch/m68k/include/asm/system_mm.h        |    2 -
- arch/m68k/include/asm/system_no.h        |    9 ---
- arch/m68k/kernel/setup.c                 |    6 --
- arch/m68k/kernel/time.c                  |    2 -
- arch/m68k/sun3/sun3ints.c                |    8 +--
- arch/m68knommu/kernel/ptrace.c           |   18 -------
- arch/m68knommu/kernel/setup.c            |    3 -
- arch/m68knommu/kernel/time.c             |    3 +-
- arch/m68knommu/kernel/traps.c            |   13 -----
- arch/m68knommu/platform/68328/head-de2.S |    6 --
- arch/m68knommu/platform/68328/head-ram.S |   27 ----------
- arch/m68knommu/platform/68VZ328/config.c |    5 --
- drivers/mtd/maps/Kconfig                 |   10 ----
- drivers/mtd/maps/Makefile                |    1 -
- drivers/mtd/maps/rpxlite.c               |   64 -----------------------
- drivers/pcmcia/m8xx_pcmcia.c             |   81 ------------------------------
- drivers/serial/68328serial.h             |    5 --
- 21 files changed, 6 insertions(+), 338 deletions(-)
+Signed-off-by: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+---
+ arch/m68k/include/asm/commproc.h |   17 --------
+ drivers/mtd/maps/Kconfig         |   10 -----
+ drivers/mtd/maps/Makefile        |    1 -
+ drivers/mtd/maps/rpxlite.c       |   64 ------------------------------
+ drivers/pcmcia/m8xx_pcmcia.c     |   81 --------------------------------------
+ 5 files changed, 0 insertions(+), 173 deletions(-)
  delete mode 100644 drivers/mtd/maps/rpxlite.c
+
+diff --git a/arch/m68k/include/asm/commproc.h b/arch/m68k/include/asm/commproc.h
+index b4f1d54..48f5466 100644
+--- a/arch/m68k/include/asm/commproc.h
++++ b/arch/m68k/include/asm/commproc.h
+@@ -480,23 +480,6 @@ typedef struct scc_enet {
+ #define SICR_ENET_CLKRT	((uint)0x0000003d)
+ #endif
+ 
+-#ifdef CONFIG_RPXLITE
+-/* This ENET stuff is for the MPC850 with ethernet on SCC2.  Some of
+- * this may be unique to the RPX-Lite configuration.
+- * Note TENA is on Port B.
+- */
+-#define PA_ENET_RXD	((ushort)0x0004)
+-#define PA_ENET_TXD	((ushort)0x0008)
+-#define PA_ENET_TCLK	((ushort)0x0200)
+-#define PA_ENET_RCLK	((ushort)0x0800)
+-#define PB_ENET_TENA	((uint)0x00002000)
+-#define PC_ENET_CLSN	((ushort)0x0040)
+-#define PC_ENET_RENA	((ushort)0x0080)
+-
+-#define SICR_ENET_MASK	((uint)0x0000ff00)
+-#define SICR_ENET_CLKRT	((uint)0x00003d00)
+-#endif
+-
+ /* SCC Event register as used by Ethernet.
+ */
+ #define SCCE_ENET_GRA	((ushort)0x0080)	/* Graceful stop complete */
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index f22bc9f..10261fc 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -286,16 +286,6 @@ config MTD_TQM8XXL
+ 	  code to communicate with the chips on the TQM8xxL board. More at
+ 	  <http://www.denx.de/embedded-ppc-en.html>.
+ 
+-config MTD_RPXLITE
+-	tristate "CFI Flash device mapped on RPX Lite or CLLF"
+-	depends on MTD_CFI && (RPXCLASSIC || RPXLITE)
+-	help
+-	  The RPXLite PowerPC board has CFI-compliant chips mapped in
+-	  a strange sparse mapping. This 'mapping' driver supports that
+-	  arrangement, allowing the CFI probe and command set driver code
+-	  to communicate with the chips on the RPXLite board. More at
+-	  <http://www.embeddedplanet.com/>.
+-
+ config MTD_MBX860
+ 	tristate "System flash on MBX860 board"
+ 	depends on MTD_CFI && MBX
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index bb035cd..7821c71 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -27,7 +27,6 @@ obj-$(CONFIG_MTD_PHYSMAP_OF)	+= physmap_of.o
+ obj-$(CONFIG_MTD_PISMO)		+= pismo.o
+ obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+ obj-$(CONFIG_MTD_PCMCIA)	+= pcmciamtd.o
+-obj-$(CONFIG_MTD_RPXLITE)	+= rpxlite.o
+ obj-$(CONFIG_MTD_TQM8XXL)	+= tqm8xxl.o
+ obj-$(CONFIG_MTD_SA1100)	+= sa1100-flash.o
+ obj-$(CONFIG_MTD_SBC_GXX)	+= sbc_gxx.o
+diff --git a/drivers/mtd/maps/rpxlite.c b/drivers/mtd/maps/rpxlite.c
+deleted file mode 100644
+index 3e3ef53..0000000
+--- a/drivers/mtd/maps/rpxlite.c
++++ /dev/null
+@@ -1,64 +0,0 @@
+-/*
+- * Handle mapping of the flash on the RPX Lite and CLLF boards
+- */
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <asm/io.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-
+-
+-#define WINDOW_ADDR 0xfe000000
+-#define WINDOW_SIZE 0x800000
+-
+-static struct mtd_info *mymtd;
+-
+-static struct map_info rpxlite_map = {
+-	.name = "RPX",
+-	.size = WINDOW_SIZE,
+-	.bankwidth = 4,
+-	.phys = WINDOW_ADDR,
+-};
+-
+-static int __init init_rpxlite(void)
+-{
+-	printk(KERN_NOTICE "RPX Lite or CLLF flash device: %x at %x\n", WINDOW_SIZE*4, WINDOW_ADDR);
+-	rpxlite_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
+-
+-	if (!rpxlite_map.virt) {
+-		printk("Failed to ioremap\n");
+-		return -EIO;
+-	}
+-	simple_map_init(&rpxlite_map);
+-	mymtd = do_map_probe("cfi_probe", &rpxlite_map);
+-	if (mymtd) {
+-		mymtd->owner = THIS_MODULE;
+-		add_mtd_device(mymtd);
+-		return 0;
+-	}
+-
+-	iounmap((void *)rpxlite_map.virt);
+-	return -ENXIO;
+-}
+-
+-static void __exit cleanup_rpxlite(void)
+-{
+-	if (mymtd) {
+-		del_mtd_device(mymtd);
+-		map_destroy(mymtd);
+-	}
+-	if (rpxlite_map.virt) {
+-		iounmap((void *)rpxlite_map.virt);
+-		rpxlite_map.virt = 0;
+-	}
+-}
+-
+-module_init(init_rpxlite);
+-module_exit(cleanup_rpxlite);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Arnold Christensen <AKC@pel.dk>");
+-MODULE_DESCRIPTION("MTD map driver for RPX Lite and CLLF boards");
+diff --git a/drivers/pcmcia/m8xx_pcmcia.c b/drivers/pcmcia/m8xx_pcmcia.c
+index 25e5e30..e56dd87 100644
+--- a/drivers/pcmcia/m8xx_pcmcia.c
++++ b/drivers/pcmcia/m8xx_pcmcia.c
+@@ -71,12 +71,6 @@ MODULE_LICENSE("Dual MPL/GPL");
+ 
+ #if !defined(CONFIG_PCMCIA_SLOT_A) && !defined(CONFIG_PCMCIA_SLOT_B)
+ 
+-/* The RPX series use SLOT_B */
+-#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
+-#define CONFIG_PCMCIA_SLOT_B
+-#define CONFIG_BD_IS_MHZ
+-#endif
+-
+ /* The ADS board use SLOT_A */
+ #ifdef CONFIG_ADS
+ #define CONFIG_PCMCIA_SLOT_A
+@@ -256,81 +250,6 @@ static irqreturn_t m8xx_interrupt(int irq, void *dev);
+ 
+ #define PCMCIA_BMT_LIMIT (15*4)	/* Bus Monitor Timeout value */
+ 
+-/* ------------------------------------------------------------------------- */
+-/* board specific stuff:                                                     */
+-/* voltage_set(), hardware_enable() and hardware_disable()                   */
+-/* ------------------------------------------------------------------------- */
+-/* RPX Boards from Embedded Planet                                           */
+-
+-#if defined(CONFIG_RPXCLASSIC) || defined(CONFIG_RPXLITE)
+-
+-/* The RPX boards seems to have it's bus monitor timeout set to 6*8 clocks.
+- * SYPCR is write once only, therefore must the slowest memory be faster
+- * than the bus monitor or we will get a machine check due to the bus timeout.
+- */
+-
+-#define PCMCIA_BOARD_MSG "RPX CLASSIC or RPX LITE"
+-
+-#undef PCMCIA_BMT_LIMIT
+-#define PCMCIA_BMT_LIMIT (6*8)
+-
+-static int voltage_set(int slot, int vcc, int vpp)
+-{
+-	u32 reg = 0;
+-
+-	switch (vcc) {
+-	case 0:
+-		break;
+-	case 33:
+-		reg |= BCSR1_PCVCTL4;
+-		break;
+-	case 50:
+-		reg |= BCSR1_PCVCTL5;
+-		break;
+-	default:
+-		return 1;
+-	}
+-
+-	switch (vpp) {
+-	case 0:
+-		break;
+-	case 33:
+-	case 50:
+-		if (vcc == vpp)
+-			reg |= BCSR1_PCVCTL6;
+-		else
+-			return 1;
+-		break;
+-	case 120:
+-		reg |= BCSR1_PCVCTL7;
+-	default:
+-		return 1;
+-	}
+-
+-	if (!((vcc == 50) || (vcc == 0)))
+-		return 1;
+-
+-	/* first, turn off all power */
+-
+-	out_be32(((u32 *) RPX_CSR_ADDR),
+-		 in_be32(((u32 *) RPX_CSR_ADDR)) & ~(BCSR1_PCVCTL4 |
+-						     BCSR1_PCVCTL5 |
+-						     BCSR1_PCVCTL6 |
+-						     BCSR1_PCVCTL7));
+-
+-	/* enable new powersettings */
+-
+-	out_be32(((u32 *) RPX_CSR_ADDR), in_be32(((u32 *) RPX_CSR_ADDR)) | reg);
+-
+-	return 0;
+-}
+-
+-#define socket_get(_slot_) PCMCIA_SOCKET_KEY_5V
+-#define hardware_enable(_slot_)	/* No hardware to enable */
+-#define hardware_disable(_slot_)	/* No hardware to disable */
+-
+-#endif				/* CONFIG_RPXCLASSIC */
+-
+ /* FADS Boards from Motorola                                               */
+ 
+ #if defined(CONFIG_FADS)
+-- 
+1.7.0.4
