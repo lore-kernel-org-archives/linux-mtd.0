@@ -1,22 +1,34 @@
-Received: from n58b.bullet.mail.sp1.yahoo.com ([98.136.45.31])
-	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ogc8K-00060G-W0
-	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2010 11:27:41 +0000
-Message-ID: <30519.93306.qm@web180312.mail.gq1.yahoo.com>
-Date: Wed, 4 Aug 2010 04:27:38 -0700 (PDT)
-From: David Brownell <david-b@pacbell.net>
-Subject: RE: [PATCH 1/2] mtdpart: memory accessor interface for MTD layer
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1280920127.19499.20.camel@localhost>
+Date: Wed, 4 Aug 2010 14:41:29 +0200
+From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>,
+	Roman Zippel <zippel@linux-m68k.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Finn Thain <fthain@telegraphics.com.au>,
+	Greg Kroah-Hartman <gregkh@suse.de>, John Stultz <johnstul@us.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Sam Creasey <sammy@sammy.net>,
+	Greg Ungerer <gerg@uclinux.org>, Christoph Hellwig <hch@lst.de>,
+	Maxim Kuvyrkov <maxim@codesourcery.com>,
+	Lennart Sorensen <lsorense@csclub.uwaterloo.ca>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>, Joe Perches <joe@perches.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Mike Frysinger <vapier@gentoo.org>, Jiri Kosina <jkosina@suse.cz>,
+	Alexander Kurz <linux@kbdbabel.org>, Michael Roth <mroth@nessie.de>,
+	Russell King <rmk+kernel@arm.linux.org.uk>,
+	Ralf Baechle <ralf@linux-mips.org>, Manuel Lauss <manuel.lauss@gmail.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Wolfram Sang <w.sang@pengutronix.de>,
+	Grant Likely <grant.likely@secretlab.ca>,
+	Sean MacLennan <smaclennan@pikatech.com>,
+	Anatolij Gustschin <agust@denx.de>, linux-m68k@lists.linux-m68k.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-pcmcia@lists.infradead.org
+Subject: [PATCH 0/9] Removing dead code
+Message-ID: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: 'Bernd Schmidt' <bernd.schmidt@analog.com>,
-	Sudhakar Rajashekhara <sudhakar.raj@ti.com>,
-	'Nicolas Pitre' <nico@fluxnic.net>,
-	'Kevin Hilman' <khilman@deeprootsystems.com>, linux-kernel@vger.kernel.org,
-	'David Howells' <dhowells@redhat.com>,
-	'David Brownell' <dbrownell@users.sourceforge.net>,
-	linux-mtd@lists.infradead.org, 'Andrew Morton' <akpm@linux-foundation.org>
+Content-Disposition: inline
+Cc: vamos-dev@i4.informatik.uni-erlangen.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +38,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all!
+       
+        As part of the VAMOS[0] research project at the University of
+Erlangen we are looking at multiple integrity errors in linux'
+configuration system.
 
+        I've been running a check on the arch/m68k{,nommu} sourcetree for
+config Items not defined in Kconfig and found 9 such cases. Sourcecode
+blocks depending on these Items are not reachable from a vanilla
+kernel -- dead code. I've seen such dead blocks made on purpose
+e.g. while integrating new features into the kernel but generally
+they're just useless.
 
---- On Wed, 8/4/10, David Woodhouse <dwmw2@infradead.org> wrote:
+        Each of the patches in this patchset removes on such dead
+config Item, I'd be glad if you consider applying them. I've been
+doing deeper analysis of such issues before and can do so again but
+I'm not so sure they were fastly usefull.
 
-> > Point is to ensure that enough of the right context
-> > information is available to initialize correctly.
-> > So the right data is extracted and passed on.
+In lack of an m68k cross compiler i was not able to build the kernel
+against this patches. I don't think that they will crash the
+compiling, but i'm not totally sure.
 
+        Please keep me informed of this patch getting confirmed /
+merged so we can keep track of it.
 
-And also, ISTR, that the mechanism is general
-enough to work with both MTD and EEPROM ...
+Regards
 
-> 
-> Forgive me if I'm being dim (and in particular, please
-> forgive me if I'm
-> going over something that was already discussed; I know
-> it's been a
-> while).
+        Christian Dietrich
 
-I also am at risk of getting lost in a pile
-of hypotheticals which have been left behind
-earlier in these threads.
+[0] http://vamos1.informatik.uni-erlangen.de/
 
- But I don't see why it needs to be passed through
-> the core MTD  code.
-> 
-> To take the simple case of an unpartitioned MTD device --
-> why can't the
-> map driver (or whatever) just call the maccessor setup
-> function for
-> itself, directly, right after calling add_mtd_device() with
-> its newly-probed MTD device?
+Christian Dietrich (9):
+  arch/m68k: Removing dead GG2 config option
+  arch/m68k: Removing dead BSEIP config option
+  arch/m68k{,nommu}: Removing dead SMP config option
+  Removing dead CONFIG_RPX(LITE|CLASSIC)
+  arch/m68knommu: Removing dead M68000 config option
+  arch/m68knommu: Removing dead RELOCATE config option
+  arch/m68knommu: Removing dead M68KFPU_EMU config option
+  arch/m68knommu: Removing dead RAM_{16,32}_MB config option
+  arch/m68knommu: Removing dead 68328_SERIAL_UART2 config option
 
-No idea, except that doing it once rather than
-modifying every driver would seem healthier.
-Surely changing all drivers is a Bad Thing.
-
-> 
-> And for partitions, why can't it do the same, on the
-> appropriate partition.
-> 
-> OK, the answer to the latter question is that you don't
-> actually *have*
-> the pointers to each partition you register. But that's
-> easily fixed.
-> 
-> If we make add_mtd_partitions() take an extra 'struct
-> mtd_info **'
-> argument and put pointers to the slave mtd 'devices' into
-> that, it means
-> that your board driver *can* reliably get the mtd pointer
-> for the fourth
-> partition, or whatever it needs. And can then just do the
-> memory
-> accessor setup for itself.
-> 
-> Isn't that enough?
-
-Might be.  Not my patch though...  You asked why
-the context was needed along with the partition
-data (otherwise not available); I answered.
-
-Still haven't seen a better patch though.
+ arch/m68k/Kconfig                        |    4 +-
+ arch/m68k/include/asm/amigahw.h          |    1 -
+ arch/m68k/include/asm/commproc.h         |   39 --------------
+ arch/m68k/include/asm/io_mm.h            |   37 --------------
+ arch/m68k/include/asm/system_mm.h        |    2 -
+ arch/m68k/include/asm/system_no.h        |    9 ---
+ arch/m68k/kernel/setup.c                 |    6 --
+ arch/m68k/kernel/time.c                  |    2 -
+ arch/m68k/sun3/sun3ints.c                |    8 +--
+ arch/m68knommu/kernel/ptrace.c           |   18 -------
+ arch/m68knommu/kernel/setup.c            |    3 -
+ arch/m68knommu/kernel/time.c             |    3 +-
+ arch/m68knommu/kernel/traps.c            |   13 -----
+ arch/m68knommu/platform/68328/head-de2.S |    6 --
+ arch/m68knommu/platform/68328/head-ram.S |   27 ----------
+ arch/m68knommu/platform/68VZ328/config.c |    5 --
+ drivers/mtd/maps/Kconfig                 |   10 ----
+ drivers/mtd/maps/Makefile                |    1 -
+ drivers/mtd/maps/rpxlite.c               |   64 -----------------------
+ drivers/pcmcia/m8xx_pcmcia.c             |   81 ------------------------------
+ drivers/serial/68328serial.h             |    5 --
+ 21 files changed, 6 insertions(+), 338 deletions(-)
+ delete mode 100644 drivers/mtd/maps/rpxlite.c
