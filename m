@@ -1,17 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-px0-f177.google.com ([209.85.212.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh2M6-0001cV-TQ
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 15:27:40 +0000
-Received: by fxm3 with SMTP id 3so3685641fxm.36
+	id 1Oh2No-0001vp-P9
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 15:29:25 +0000
+Received: by pxi13 with SMTP id 13so2851559pxi.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Aug 2010 08:27:36 -0700 (PDT)
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: r852: remove useless pci powerup/down from
-	suspend/resume routines.
-Date: Thu,  5 Aug 2010 18:27:26 +0300
-Message-Id: <1281022046-21185-1-git-send-email-maximlevitsky@gmail.com>
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>
+	Thu, 05 Aug 2010 08:29:23 -0700 (PDT)
+Date: Thu, 5 Aug 2010 23:29:34 +0800
+From: Chuanxiao <chuanxiao.dong@gmail.com>
+To: David Woodhouse <David.Woodhouse@intel.com>
+Subject: Re: [PATCH V2 1/5]nand/denali Clean up all white spaces in code indent
+Message-ID: <20100805152934.GA6828@infernal>
+References: <20100805150604.GA6589@infernal>
+	<1281021118.8720.5.camel@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1281021118.8720.5.camel@localhost>
+Cc: chuanxiao.dong@intel.com, hang.yuan@intel.com,
+	linux-mtd@lists.infradead.org, yunpeng.gao@intel.com, dedekind1@gmail.com
+Reply-To: Chuanxiao <chuanxiao.dong@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,104 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It turns out that pci core now handles these, so this code is redundand
-and can even cause bugs
-
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/nand/r852.c |   30 +-----------------------------
- drivers/mtd/nand/r852.h |    2 --
- 2 files changed, 1 insertions(+), 31 deletions(-)
-
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index bcfc851..288715d 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -757,11 +757,6 @@ static irqreturn_t r852_irq(int irq, void *data)
- 
- 	spin_lock_irqsave(&dev->irqlock, flags);
- 
--	/* We can recieve shared interrupt while pci is suspended
--		in that case reads will return 0xFFFFFFFF.... */
--	if (dev->insuspend)
--		goto out;
--
- 	/* handle card detection interrupts first */
- 	card_status = r852_read_reg(dev, R852_CARD_IRQ_STA);
- 	r852_write_reg(dev, R852_CARD_IRQ_STA, card_status);
-@@ -1035,7 +1030,6 @@ void r852_shutdown(struct pci_dev *pci_dev)
- int r852_suspend(struct device *device)
- {
- 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
--	unsigned long flags;
- 
- 	if (dev->ctlreg & R852_CTL_CARDENABLE)
- 		return -EBUSY;
-@@ -1047,43 +1041,22 @@ int r852_suspend(struct device *device)
- 	r852_disable_irqs(dev);
- 	r852_engine_disable(dev);
- 
--	spin_lock_irqsave(&dev->irqlock, flags);
--	dev->insuspend = 1;
--	spin_unlock_irqrestore(&dev->irqlock, flags);
--
--	/* At that point, even if interrupt handler is running, it will quit */
--	/* So wait for this to happen explictly */
--	synchronize_irq(dev->irq);
--
- 	/* If card was pulled off just during the suspend, which is very
- 		unlikely, we will remove it on resume, it too late now
- 		anyway... */
- 	dev->card_unstable = 0;
--
--	pci_save_state(to_pci_dev(device));
--	return pci_prepare_to_sleep(to_pci_dev(device));
-+	return 0;
- }
- 
- int r852_resume(struct device *device)
- {
- 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
--	unsigned long flags;
--
--	/* Turn on the hardware */
--	pci_back_from_sleep(to_pci_dev(device));
--	pci_restore_state(to_pci_dev(device));
- 
- 	r852_disable_irqs(dev);
- 	r852_card_update_present(dev);
- 	r852_engine_disable(dev);
- 
- 
--	/* Now its safe for IRQ to run */
--	spin_lock_irqsave(&dev->irqlock, flags);
--	dev->insuspend = 0;
--	spin_unlock_irqrestore(&dev->irqlock, flags);
--
--
- 	/* If card status changed, just do the work */
- 	if (dev->card_detected != dev->card_registred) {
- 		dbg("card was %s during low power state",
-@@ -1121,7 +1094,6 @@ MODULE_DEVICE_TABLE(pci, r852_pci_id_tbl);
- 
- SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
- 
--
- static struct pci_driver r852_pci_driver = {
- 	.name		= DRV_NAME,
- 	.id_table	= r852_pci_id_tbl,
-diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
-index 8096cc2..e6a21d9 100644
---- a/drivers/mtd/nand/r852.h
-+++ b/drivers/mtd/nand/r852.h
-@@ -140,8 +140,6 @@ struct r852_device {
- 	/* interrupt handling */
- 	spinlock_t irqlock;		/* IRQ protecting lock */
- 	int irq;			/* irq num */
--	int insuspend;			/* device is suspended */
--
- 	/* misc */
- 	void *tmp_buffer;		/* temporary buffer */
- 	uint8_t ctlreg;			/* cached contents of control reg */
--- 
-1.7.0.4
+On Thu, Aug 05, 2010 at 04:11:58PM +0100, David Woodhouse wrote:
+>On Thu, 2010-08-05 at 16:06 +0100, Chuanxiao wrote:
+>> Hi,
+>> I have changed the outlook mail cliet to be linux mutt client and use my
+>> personal gmail to submit patches.
+>> Here are 5 new patches to fix nand/denali check patch errors. The other
+>> 4 patches will be sent out after this mail.
+>> Thanks for your review.
+>
+>Apply? [y]es/[n]o/[e]dit/[v]iew patch/[a]ccept all y
+>Applying: nand/denali Clean up all white spaces in code indent
+>error: patch failed: drivers/mtd/nand/denali.c:29
+>error: drivers/mtd/nand/denali.c: patch does not apply
+>Patch failed at 0001 nand/denali Clean up all white spaces in code indent
+>
+>
+>Are you *really* sending this stuff to yourself first, and checking that
+>it applies *before* you try sending mail to anyone else?
+Before I send these patches to mail list I have sent them to myself
+first and applies all of them, but not using "intel.com" account.
+I have already using mutt as mail client.
+I have been tortured by "intel.com" mail for several days and found that
+the email I received through "intel.com" account lost tab and some white
+spaces but no problems recevied through my personal mail "gmail.com".
+I don't understand how this happend.
+So David, can you try the patches get from linux-mtd mail list, not from
+your "intel.com" account?
+Thanks.
+--Chuanxiao
+>
+>-- 
+>David Woodhouse                            Open Source Technology Centre
+>David.Woodhouse@intel.com                              Intel Corporation
+>
