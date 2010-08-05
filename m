@@ -1,25 +1,20 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh45D-0004LH-9n
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 17:18:20 +0000
-Received: by pzk3 with SMTP id 3so2962274pzk.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Aug 2010 10:18:18 -0700 (PDT)
-Date: Fri, 6 Aug 2010 01:18:16 +0800
-From: Chuanxiao <chuanxiao.dong@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v1 2/2]nand/denali Update get_nand_para functions
-Message-ID: <20100805171816.GA6320@infernal>
-References: <20100805162800.GC3160@infernal>
-	<1281026095.8720.29.camel@localhost>
+	id 1Oh4dJ-0005t8-Bn
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 17:53:34 +0000
+Received: from [10.12.160.50] (ld-irv-0074.broadcom.com [10.12.160.50])
+	by mail-irva-12.broadcom.com (Postfix) with ESMTP id D208F69CB0 for
+	<linux-mtd@lists.infradead.org>; Thu, 5 Aug 2010 10:53:13 -0700 (PDT)
+Message-ID: <4C5AFA88.3040009@broadcom.com>
+Date: Thu, 5 Aug 2010 10:53:12 -0700
+From: "Brian Norris" <norris@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1281026095.8720.29.camel@localhost>
-Cc: chuanxiao.dong@intel.com, hang.yuan@intel.com,
-	linux-mtd@lists.infradead.org, yunpeng.gao@intel.com, dedekind1@gmail.com
-Reply-To: Chuanxiao <chuanxiao.dong@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: NAND ECC Layout, sysfs question
+Content-Type: text/plain;
+ charset=iso-8859-1;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,53 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 05, 2010 at 05:34:55PM +0100, David Woodhouse wrote:
->On Fri, 2010-08-06 at 00:28 +0800, Chuanxiao wrote:
->> @@ -1732,24 +1699,18 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
->>                 break;
->>         case NAND_CMD_READID:
->>                 reset_buf(denali);
->> -               if (denali->flash_bank < denali->total_used_banks) {
->> -                       /* write manufacturer information into nand
->> -                          buffer for NAND subsystem to fetch.
->> -                          */
->> -                       write_byte_to_buf(denali,
->> -                                       denali->dev_info.wDeviceMaker);
->> -                       write_byte_to_buf(denali,
->> -                                       denali->dev_info.wDeviceID);
->> -                       write_byte_to_buf(denali,
->> -                                       denali->dev_info.bDeviceParam0);
->> -                       write_byte_to_buf(denali,
->> -                                       denali->dev_info.bDeviceParam1);
->> -                       write_byte_to_buf(denali,
->> -                                       denali->dev_info.bDeviceParam2);
->> -               } else {
->> -                       int i;
->> -                       for (i = 0; i < 5; i++)
->> -                               write_byte_to_buf(denali, 0xff);
->> +               /*sometimes ManufactureId read from register is not right
->> +                * e.g. some of Micron MT29F32G08QAA MLC NAND chips
->> +                * So here we send READID cmd to NAND insteand
->> +                * */
->> +               addr = (uint32_t)MODE_11 | BANK(denali->flash_bank); 
->
->drivers/mtd/nand/denali.c: In function ‘denali_cmdfunc’:
->drivers/mtd/nand/denali.c:1706: error: ‘addr’ undeclared (first use in this function)
->drivers/mtd/nand/denali.c:1706: error: (Each undeclared identifier is reported only once
->drivers/mtd/nand/denali.c:1706: error: for each function it appears in.)
->drivers/mtd/nand/denali.c:1709: error: ‘i’ undeclared (first use in this function)
->drivers/mtd/nand/denali.c:1712: error: ‘id’ undeclared (first use in this function)
->make[3]: *** [drivers/mtd/nand/denali.o] Error 1
->
-My mistake. Sorry... New patches were sent out.
-David, I will keep on submit patches tomorrow when I come back to
-office. In office, I can't use mutt client to access my gmail
-account. As far as I know, intel email can send mail out
-with no errors. So tomorrow I will try to send patches by intel
-email. If the patches send out by intel email has problems, I will
-resend patches after I come back home.
-Thank you, David.
->-- 
->David Woodhouse                            Open Source Technology Centre
->David.Woodhouse@intel.com                              Intel Corporation
->
+Hello,
+
+I'm trying to replace the following structure (in mtd-abi.h) and its 
+corresponding ioctl with a larger, dynamic form exported via sysfs. 
+We're running out of room in the eccpos and oobfree arrays on larger chips:
+
+#define MTD_MAX_OOBFREE_ENTRIES 8
+/*
+  * ECC layout control structure. Exported to userspace for
+  * diagnosis and to allow creation of raw images
+  */
+
+struct nand_ecclayout {
+         __u32 eccbytes;
+         __u32 eccpos[64];
+         __u32 oobavail;
+         struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
+};
+
+First, is it a smart idea to use sysfs?
+
+Second, if we go with sysfs, there seem to be many potential ways to 
+structure the "eccpos" and "oobfree" arrays. Bearing in mind the 
+convention of either one entry per file or a space-separated array of 
+values as well as the file limit of PAGE_SIZE (approx. 4096 bytes?), 
+there are several options with which I'm having difficulty. Formats 
+could be as follows:
+1) Single file: 0 1 2 3 6 7 10 12
+2) Single file: 0-3 6-7 10 12
+3) Multiple files:
+     file 0: 0 3
+     file 1: 6 7
+     file 2: 10 10
+     file 3: 12 12
+It seemed to me like (3) was the cleanest while ensuring we fit under 
+PAGE_SIZE even if the OOB gets to be 1000+ bytes, so no one ever has to 
+come back and redo this :) Unfortunately, directories and a dynamic 
+number of attributes/files aren't really straightforward, hence my next 
+questions...
+
+Third, if I were to create directories under the "mtdX" sysfs directory, 
+what's the best way to do this? Explicitly creating and filling in a 
+kobject? Or creating a new "device"? Or are there other, better options?
+
+I've already coded parts of a few of these options, but they all have 
+various difficulties and can easily become ugly pieces of code (at least 
+with my limited skill at sysfs).
+
+Thanks,
+Brian
