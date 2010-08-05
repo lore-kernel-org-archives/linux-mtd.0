@@ -1,24 +1,22 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OgxDi-00056l-2x
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 09:58:39 +0000
-Subject: Re: [PATCH] Change struct flchip_shared spinlock locking into mutex
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: stefani@seibold.net
-In-Reply-To: <1280992766-13745-1-git-send-email-stefani@seibold.net>
-References: <1280992766-13745-1-git-send-email-stefani@seibold.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 12:37:47 +0300
-Message-ID: <1281001067.15689.80.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <David.Woodhouse@intel.com>, Arnd Bergmann <arnd@arndb.de>,
-	Nicolas Pitre <nico@fluxnic.net>, Vasiliy Kulikov <segooon@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Tejun Heo <tj@kernel.org>, akpm@linux-foundation.org,
-	Jiri Slaby <jslaby@suse.cz>,
-	Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Reply-To: dedekind1@gmail.com
+Received: from moutng.kundenserver.de ([212.227.17.8])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ogxsq-0001XG-VD
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 10:41:09 +0000
+From: =?UTF-8?q?Andreas=20Bie=C3=9Fmann?= <biessmann@corscience.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH] atmel_nand: Fix warning: 'part_probes' defined but not used
+Date: Thu,  5 Aug 2010 12:38:41 +0200
+Message-Id: <1281004721-397-1-git-send-email-biessmann@corscience.de>
+In-Reply-To: <1279099026-24298-1-git-send-email-biessmann@corscience.de>
+References: <1279099026-24298-1-git-send-email-biessmann@corscience.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: David Brownell <dbrownell@users.sourceforge.net>, trivial@kernel.org,
+	Sandeep Paulraj <s-paulraj@ti.com>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	=?UTF-8?q?Andreas=20Bie=C3=9Fmann?= <biessmann@corscience.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-05 at 09:19 +0200, stefani@seibold.net wrote:
-> From: Stefani Seibold <stefani@seibold.net>
-> 
-> This patch prevent to schedule while atomic by changing the
-> flchip_shared spinlock into a mutex. This should be save since no atomic
-> path will use this lock.
-> 
-> This patch is based on linux kernel 2.6.35. Please apply.
-> 
-> It was suggested by Arnd Bergmann and Vasiliy Kulikov.
+This patch fixes
 
-Pushed to my l2-mtd-2.6.git / master.
+drivers/mtd/nand/atmel_nand.c:372: warning: 'part_probes' defined but not=
+ used
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+which is issued when CONFIG_MTD_PARTITIONS is defined but
+CONFIG_MTD_CMDLINE_PARTS not.
+
+Signed-off-by: Andreas Bie=C3=9Fmann <biessmann@corscience.de>
+---
+ Resent this patch as a trivial one cause it does only fix a warning whic=
+h is
+ seen in very rare cases. There is no functionality change here! I think =
+this
+ is the definition of a trivial patch.
+
+ In addition no one has commented my last submission of this patch.
+
+ drivers/mtd/nand/atmel_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.=
+c
+index 04d3088..ccce0f0 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -364,7 +364,7 @@ static void atmel_nand_hwctl(struct mtd_info *mtd, in=
+t mode)
+ 	}
+ }
+=20
+-#ifdef CONFIG_MTD_PARTITIONS
++#ifdef CONFIG_MTD_CMDLINE_PARTS
+ static const char *part_probes[] =3D { "cmdlinepart", NULL };
+ #endif
+=20
+--=20
+1.7.1
