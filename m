@@ -1,25 +1,20 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh30w-00033M-KR
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 16:09:57 +0000
-Received: by pzk3 with SMTP id 3so2921735pzk.36
+	id 1Oh3Hh-0006cB-Lw
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 16:27:14 +0000
+Received: by pwi9 with SMTP id 9so174436pwi.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Aug 2010 09:09:49 -0700 (PDT)
-Date: Fri, 6 Aug 2010 00:09:52 +0800
+	Thu, 05 Aug 2010 09:27:08 -0700 (PDT)
+Date: Fri, 6 Aug 2010 00:26:54 +0800
 From: Chuanxiao <chuanxiao.dong@gmail.com>
-To: David Woodhouse <David.Woodhouse@intel.com>
-Subject: Re: [PATCH V2 1/5]nand/denali Clean up all white spaces in code indent
-Message-ID: <20100805160951.GA3160@infernal>
-References: <20100805150604.GA6589@infernal>
-	<1281021118.8720.5.camel@localhost>
-	<20100805152934.GA6828@infernal>
-	<1281022802.8720.16.camel@localhost>
+To: linux-mtd@lists.infradead.org, dedekind1@gmail.com, dwmw2@infradead.org
+Subject: [PATCH v1 1/2]nand/denali Rename functions which is named by using
+	captials
+Message-ID: <20100805162654.GB3160@infernal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1281022802.8720.16.camel@localhost>
-Cc: chuanxiao.dong@intel.com, hang.yuan@intel.com,
-	linux-mtd@lists.infradead.org, yunpeng.gao@intel.com, dedekind1@gmail.com
+Cc: chuanxiao.dong@intel.com, yunpeng.gao@intel.com, hang.yuan@intel.com
 Reply-To: Chuanxiao <chuanxiao.dong@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,52 +25,129 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 05, 2010 at 04:40:02PM +0100, David Woodhouse wrote:
->On Thu, 2010-08-05 at 16:29 +0100, Chuanxiao wrote:
->> On Thu, Aug 05, 2010 at 04:11:58PM +0100, David Woodhouse wrote:
->> >On Thu, 2010-08-05 at 16:06 +0100, Chuanxiao wrote:
->> >> Hi,
->> >> I have changed the outlook mail cliet to be linux mutt client and use my
->> >> personal gmail to submit patches.
->> >> Here are 5 new patches to fix nand/denali check patch errors. The other
->> >> 4 patches will be sent out after this mail.
->> >> Thanks for your review.
->> >
->> >Apply? [y]es/[n]o/[e]dit/[v]iew patch/[a]ccept all y
->> >Applying: nand/denali Clean up all white spaces in code indent
->> >error: patch failed: drivers/mtd/nand/denali.c:29
->> >error: drivers/mtd/nand/denali.c: patch does not apply
->> >Patch failed at 0001 nand/denali Clean up all white spaces in code indent
->> >
->> >
->> >Are you *really* sending this stuff to yourself first, and checking that
->> >it applies *before* you try sending mail to anyone else?
->>
->> Before I send these patches to mail list I have sent them to myself
->> first and applies all of them, but not using "intel.com" account.
->> I have already using mutt as mail client.
->> I have been tortured by "intel.com" mail for several days and found that
->> the email I received through "intel.com" account lost tab and some white
->> spaces but no problems recevied through my personal mail "gmail.com".
->> I don't understand how this happend.
->> So David, can you try the patches get from linux-mtd mail list, not from
->> your "intel.com" account?
->
->Yes, the copy I received through my external email is working fine.
->Sorry for not checking that before -- I thought the issues with Intel
->mail servers corrupting email were long since fixed.
->
->Please don't use my @intel.com mail address for *anything* that needs to
->survive intact; please use dwmw2@infradead.org instead.
-OK. Thanks for your understanding. I will send patches to @infradead.org
-mail list insteand.
->
->I've now applied your patches. Are there more to come?
-There are 2 more patches I will send out later and if there is no
-problem I will send more tomorrow.
-Thank you, David.
->
->-- 
->David Woodhouse                            Open Source Technology Centre
->David.Woodhouse@intel.com                              Intel Corporation
->
+>From bc6e36c08d97940e6c6a968d54363a4a1164dc8b Mon Sep 17 00:00:00 2001
+From: Chuanxiao Dong <chuanxiao.dong@intel.com>
+Date: Tue, 27 Jul 2010 14:17:37 +0800
+Subject: [PATCH 1/2] mtd: denali: rename functions which is named by using capitals
+
+rename these functions' name and remove additional declarations
+in header file
+
+Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
+---
+ drivers/mtd/nand/denali.c |   22 +++++++++++-----------
+ drivers/mtd/nand/denali.h |    5 -----
+ 2 files changed, 11 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 52278d8..0c76a16 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -221,7 +221,7 @@ static void reset_bank(struct denali_nand_info *denali)
+ }
+ 
+ /* Reset the flash controller */
+-static uint16_t NAND_Flash_Reset(struct denali_nand_info *denali)
++static uint16_t denali_nand_reset(struct denali_nand_info *denali)
+ {
+ 	uint32_t i;
+ 
+@@ -256,7 +256,7 @@ static uint16_t NAND_Flash_Reset(struct denali_nand_info *denali)
+  * programs the clocking register accordingly. The mode is determined by
+  * the get_onfi_nand_para routine.
+  */
+-static void NAND_ONFi_Timing_Mode(struct denali_nand_info *denali,
++static void nand_onfi_timing_set(struct denali_nand_info *denali,
+ 								uint16_t mode)
+ {
+ 	uint16_t Trea[6] = {40, 30, 25, 20, 20, 16};
+@@ -487,7 +487,7 @@ static uint16_t get_onfi_nand_para(struct denali_nand_info *denali)
+ 			break;
+ 	}
+ 
+-	NAND_ONFi_Timing_Mode(denali, i);
++	nand_onfi_timing_set(denali, i);
+ 
+ 	index_addr(denali, MODE_11 | 0, 0x90);
+ 	index_addr(denali, MODE_11 | 1, 0);
+@@ -803,7 +803,7 @@ static void dump_device_info(struct denali_nand_info *denali)
+ 		denali->dev_info.nBitsInBlockDataSize);
+ }
+ 
+-static uint16_t NAND_Read_Device_ID(struct denali_nand_info *denali)
++static uint16_t denali_nand_timing_set(struct denali_nand_info *denali)
+ {
+ 	uint16_t status = PASS;
+ 	uint8_t no_of_planes;
+@@ -928,12 +928,12 @@ static uint16_t NAND_Read_Device_ID(struct denali_nand_info *denali)
+ 	 * with a specific ONFI mode, we apply those changes here.
+ 	 */
+ 	if (onfi_timing_mode != NAND_DEFAULT_TIMINGS)
+-		NAND_ONFi_Timing_Mode(denali, onfi_timing_mode);
++		nand_onfi_timing_set(denali, onfi_timing_mode);
+ 
+ 	return status;
+ }
+ 
+-static void NAND_LLD_Enable_Disable_Interrupts(struct denali_nand_info *denali,
++static void denali_set_intr_modes(struct denali_nand_info *denali,
+ 					uint16_t INT_ENABLE)
+ {
+ 	nand_dbg_print(NAND_DBG_TRACE, "%s, Line %d, Function: %s\n",
+@@ -958,7 +958,7 @@ static void denali_irq_init(struct denali_nand_info *denali)
+ 	uint32_t int_mask = 0;
+ 
+ 	/* Disable global interrupts */
+-	NAND_LLD_Enable_Disable_Interrupts(denali, false);
++	denali_set_intr_modes(denali, false);
+ 
+ 	int_mask = DENALI_IRQ_ALL;
+ 
+@@ -973,7 +973,7 @@ static void denali_irq_init(struct denali_nand_info *denali)
+ 
+ static void denali_irq_cleanup(int irqnum, struct denali_nand_info *denali)
+ {
+-	NAND_LLD_Enable_Disable_Interrupts(denali, false);
++	denali_set_intr_modes(denali, false);
+ 	free_irq(irqnum, denali);
+ }
+ 
+@@ -1797,7 +1797,7 @@ static void denali_ecc_hwctl(struct mtd_info *mtd, int mode)
+ static void denali_hw_init(struct denali_nand_info *denali)
+ {
+ 	denali_irq_init(denali);
+-	NAND_Flash_Reset(denali);
++	denali_nand_reset(denali);
+ 	denali_write32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
+ 	denali_write32(CHIP_EN_DONT_CARE__FLAG,
+ 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
+@@ -1993,11 +1993,11 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
+ 	}
+ 
+ 	/* now that our ISR is registered, we can enable interrupts */
+-	NAND_LLD_Enable_Disable_Interrupts(denali, true);
++	denali_set_intr_modes(denali, true);
+ 
+ 	pci_set_drvdata(dev, denali);
+ 
+-	NAND_Read_Device_ID(denali);
++	denali_nand_timing_set(denali);
+ 
+ 	/* MTD supported page sizes vary by kernel. We validate our
+ 	 * kernel supports the device here.
+diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
+index b56fa3c..626c915 100644
+--- a/drivers/mtd/nand/denali.h
++++ b/drivers/mtd/nand/denali.h
+@@ -804,9 +804,4 @@ struct denali_nand_info {
+ 	int idx;
+ };
+ 
+-static uint16_t NAND_Flash_Reset(struct denali_nand_info *denali);
+-static uint16_t NAND_Read_Device_ID(struct denali_nand_info *denali);
+-static void NAND_LLD_Enable_Disable_Interrupts(struct denali_nand_info *denali,
+-						uint16_t INT_ENABLE);
+-
+ #endif /*_LLD_NAND_*/
+-- 
+1.6.6.1
