@@ -1,13 +1,13 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh22r-0007TX-WA
+	id 1Oh22q-0007RJ-3s
 	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 15:07:50 +0000
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 5/7] mtd: Blackfin NFC: make sure to check NAND_ALE in cmd_ctrl
-Date: Thu,  5 Aug 2010 11:07:42 -0400
-Message-Id: <1281020864-26842-5-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 3/7] mtd: Blackfin NFC: fix typo for read/write delay setup
+Date: Thu,  5 Aug 2010 11:07:40 -0400
+Message-Id: <1281020864-26842-3-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1281020864-26842-1-git-send-email-vapier@gentoo.org>
 References: <1281020864-26842-1-git-send-email-vapier@gentoo.org>
 Cc: uclinux-dist-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
@@ -22,10 +22,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Barry Song <barry.song@analog.com>
 
-The NAND base may send some controls which are neither CLE nor ALE, so
-we need to explicitly check both instead of assuming things are always
-one or the other.  Otherwise, we sometimes send out illegal addresses
-to the NAND device.
+We used the platform rd_dly field when we meant to use the wr_dly field.
 
 Signed-off-by: Barry Song <barry.song@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
@@ -34,17 +31,17 @@ Signed-off-by: Mike Frysinger <vapier@gentoo.org>
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 949f656..2f90cac 100644
+index 81a05cd..b553705 100644
 --- a/drivers/mtd/nand/bf5xx_nand.c
 +++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -203,7 +203,7 @@ static void bf5xx_nand_hwcontrol(struct mtd_info *mtd, int cmd,
+@@ -632,7 +632,7 @@ static int bf5xx_nand_hw_init(struct bf5xx_nand_info *info)
+ 	val = (plat->page_size << NFC_PG_SIZE_OFFSET) |
+ 		(plat->data_width << NFC_NWIDTH_OFFSET) |
+ 		(plat->rd_dly << NFC_RDDLY_OFFSET) |
+-		(plat->rd_dly << NFC_WRDLY_OFFSET);
++		(plat->wr_dly << NFC_WRDLY_OFFSET);
+ 	dev_dbg(info->device, "NFC_CTL is 0x%04x\n", val);
  
- 	if (ctrl & NAND_CLE)
- 		bfin_write_NFC_CMD(cmd);
--	else
-+	else if (ctrl & NAND_ALE)
- 		bfin_write_NFC_ADDR(cmd);
- 	SSYNC();
- }
+ 	bfin_write_NFC_CTL(val);
 -- 
 1.7.2
