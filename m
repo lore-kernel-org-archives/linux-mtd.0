@@ -1,24 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OgtfZ-0006Ka-Qi
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 06:11:10 +0000
-Received: by fxm3 with SMTP id 3so3264672fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 04 Aug 2010 23:11:09 -0700 (PDT)
-Subject: Re: [PATCH 1/3] mtd: m25p80: add support for the EON EN25P{32, 64}
-	SPI flash chips
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Gabor Juhos <juhosg@openwrt.org>
-In-Reply-To: <1280988619.1175.25.camel@localhost.localdomain>
-References: <1280949267-18154-1-git-send-email-juhosg@openwrt.org>
-	<1280988619.1175.25.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 09:11:06 +0300
-Message-Id: <1280988666.1175.26.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+Date: Thu, 05 Aug 2010 15:15:04 +0900
+From: Kukjin Kim <kgene.kim@samsung.com>
+Subject: RE: [PATCH] S5PC110: Add OneNAND interrupt number
+In-reply-to: <AANLkTikV8ypbpainB7toPPeq7n6Q1P7ZDwL4Uf89q9dP@mail.gmail.com>
+To: 'Kyungmin Park' <kmpark@infradead.org>, dedekind1@gmail.com
+Message-id: <009301cb3465$8df1b3c0$a9d51b40$%kim@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-language: ko
+Content-transfer-encoding: quoted-printable
+References: <20100727103937.GA1247@july>
+	<1280982776.4363.18.camel@localhost.localdomain>
+	<AANLkTikV8ypbpainB7toPPeq7n6Q1P7ZDwL4Uf89q9dP@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	m.szyprowski@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +22,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-05 at 09:10 +0300, Artem Bityutskiy wrote:
-> On Wed, 2010-08-04 at 21:14 +0200, Gabor Juhos wrote:
-> > Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
-> > ---
-> >  drivers/mtd/devices/m25p80.c |    4 ++++
-> >  1 files changed, 4 insertions(+), 0 deletions(-)
-> 
-> Pushed to my l2-mtd-2.6.git / dunno.
+Kyungmin Park wrote:
+>=20
+> On Thu, Aug 5, 2010 at 1:32 PM, Artem Bityutskiy <dedekind1@gmail.com>
+wrote:
+> > On Tue, 2010-07-27 at 19:39 +0900, Kyungmin Park wrote:
+> >> To use OneNAND interrupt at drivers, also extend DMA address to =
+cover
+fully.
+> >>
+> >> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+> >> ---
+> >> diff --git a/arch/arm/mach-s5pv210/dev-onenand.c b/arch/arm/mach-
+> s5pv210/dev-onenand.c
+> >> index 34997b7..f8ede33 100644
+> >> --- a/arch/arm/mach-s5pv210/dev-onenand.c
+> >> +++ b/arch/arm/mach-s5pv210/dev-onenand.c
+> >> @@ -27,9 +27,14 @@ static struct resource =
+s5pc110_onenand_resources[] =3D
+{
+> >> =A0 =A0 =A0 },
+> >> =A0 =A0 =A0 [1] =3D {
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .start =A0=3D S5PC110_PA_ONENAND_DMA,
+> >> - =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =A0=3D S5PC110_PA_ONENAND_DMA + =
+SZ_2K - 1,
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =A0=3D S5PC110_PA_ONENAND_DMA + =
+SZ_8K - 1,
+> >> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .flags =A0=3D IORESOURCE_MEM,
+> >> =A0 =A0 =A0 },
+> >> + =A0 =A0 [2] =3D {
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 .start =A0=3D IRQ_ONENAND_AUDI,
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =A0=3D IRQ_ONENAND_AUDI,
+> >> + =A0 =A0 =A0 =A0 =A0 =A0 .flags =A0=3D IORESOURCE_IRQ,
+> >> + =A0 =A0 },
+> >> =A0};
+> >
+> > You do not expect this to go through the MTD tree, right?
+>=20
+> After this patch, I did a lot of works but failed to persuade the =
+Kukjin.
 
-I mean, all 3 patches.
+Maybe I missed this single patch...looks ok itself.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> At this time. it's okay only this patch to mtd tree.
+>=20
+I think, it's better this patch is going to upstream through ARM tree.
+
+Artem, I will apply in my tree. Thanks.
+
+> Kukjin, are you okay?
+> Since It's only affect the c110.
+>=20
+
+Thanks.
+
+Best regards,
+Kgene.
+--
+Kukjin Kim <kgene.kim@samsung.com>, Senior Engineer,
+SW Solution Development Team, Samsung Electronics Co., Ltd.
