@@ -1,16 +1,22 @@
-Subject: Re: [PATCH] S5PC110: Add OneNAND interrupt number
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OgsAt-0005zv-DL
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 04:35:24 +0000
+Received: by fxm3 with SMTP id 3so3245053fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 04 Aug 2010 21:35:22 -0700 (PDT)
+Subject: Re: [PATCH] gen_nand: Fix support for multiple chips
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kyungmin Park <kmpark@infradead.org>,
-	Kyungmin Park <kyungmin.park@samsung.com>
-In-Reply-To: <20100727103937.GA1247@july>
-References: <20100727103937.GA1247@july>
+To: Marek Vasut <marek.vasut@gmail.com>
+In-Reply-To: <1280295414-3354-1-git-send-email-marek.vasut@gmail.com>
+References: <1280295414-3354-1-git-send-email-marek.vasut@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 07:32:56 +0300
-Message-Id: <1280982776.4363.18.camel@localhost.localdomain>
+Date: Thu, 05 Aug 2010 07:35:18 +0300
+Message-Id: <1280982918.4363.19.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kgene.kim@samsung.com, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
+Cc: hsweeten@visionengravers.com, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,31 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-07-27 at 19:39 +0900, Kyungmin Park wrote:
-> To use OneNAND interrupt at drivers, also extend DMA address to cover fully.
+On Wed, 2010-07-28 at 07:36 +0200, Marek Vasut wrote:
+> This patch corrects a problem where gen_nand driver assumed there can be only
+> one chip and ignored the pdata->chip.nr_chips value.
 > 
-> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
-> ---
-> diff --git a/arch/arm/mach-s5pv210/dev-onenand.c b/arch/arm/mach-s5pv210/dev-onenand.c
-> index 34997b7..f8ede33 100644
-> --- a/arch/arm/mach-s5pv210/dev-onenand.c
-> +++ b/arch/arm/mach-s5pv210/dev-onenand.c
-> @@ -27,9 +27,14 @@ static struct resource s5pc110_onenand_resources[] = {
->  	},
->  	[1] = {
->  		.start	= S5PC110_PA_ONENAND_DMA,
-> -		.end	= S5PC110_PA_ONENAND_DMA + SZ_2K - 1,
-> +		.end	= S5PC110_PA_ONENAND_DMA + SZ_8K - 1,
->  		.flags	= IORESOURCE_MEM,
->  	},
-> +	[2] = {
-> +		.start	= IRQ_ONENAND_AUDI,
-> +		.end	= IRQ_ONENAND_AUDI,
-> +		.flags	= IORESOURCE_IRQ,
-> +	},
->  };
+> Signed-off-by: Marek Vasut <marek.vasut@gmail.com>
 
-You do not expect this to go through the MTD tree, right?
+Pushed to my l2-mtd-2.6.git / master
 
 -- 
 Best Regards,
