@@ -1,25 +1,25 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OgsTQ-0002FV-Sd
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 04:54:33 +0000
-Received: by fxm3 with SMTP id 3so3248630fxm.36
+	id 1OgsUI-00031z-KH
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 04:55:27 +0000
+Received: by fxm3 with SMTP id 3so3248807fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 04 Aug 2010 21:54:31 -0700 (PDT)
-Subject: Re: [PATCH] NAND: add support for reading ONFI parameters from
-	NAND device
+	Wed, 04 Aug 2010 21:55:26 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mxc_nand: fix Unbalanced enable for IRQ
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Florian Fainelli <ffainelli@freebox.fr>
-In-Reply-To: <201007290047.06394.ffainelli@freebox.fr>
-References: <201007290047.06394.ffainelli@freebox.fr>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20100802093230.GA29811@pengutronix.de>
+References: <1276178584-10074-1-git-send-email-eric@eukrea.com>
+	<20100802093230.GA29811@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 07:54:19 +0300
-Message-Id: <1280984059.1175.13.camel@localhost.localdomain>
+Date: Thu, 05 Aug 2010 07:55:22 +0300
+Message-Id: <1280984122.1175.14.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	Brian Norris <norris@broadcom.com>, Maxime Bizon <mbizon@freebox.fr>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>, stable@kernel.org,
+	linux-mtd@lists.infradead.org, ivo.clarysse@gmail.com,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-arm-kernel@lists.arm.linux.org.uk
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,17 +30,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-07-29 at 00:47 +0200, Florian Fainelli wrote:
-> A nand_chip which has valid ONFI parameters gets its options field updated
-> with the NAND_ONFI flag. In that case both the ONFI version (in BCD format)
-> as well as the complete page parameters is available in the struct nand_chip.
-> This allows for better detection of some new devices, as well as fine tuning of
-> NAND driver timings. This patch only adds support for ONFI 1.0 parameters.
+On Mon, 2010-08-02 at 11:32 +0200, Uwe Kleine-König wrote:
+> Hi David,
 > 
-> Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
-> Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
+> can we please have this patch soon in mainline.  This bugs our
+> autobuilder since long.
 
-I assume you will send v2 of this patch, so not taking this one.
+It is in the mtd tree now.
 
 -- 
 Best Regards,
