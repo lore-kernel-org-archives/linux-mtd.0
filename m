@@ -1,13 +1,13 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh22q-0007RJ-3s
+	id 1Oh22q-0007Sb-UO
 	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 15:07:50 +0000
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 3/7] mtd: Blackfin NFC: fix typo for read/write delay setup
-Date: Thu,  5 Aug 2010 11:07:40 -0400
-Message-Id: <1281020864-26842-3-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 4/7] mtd: Blackfin NFC: wait for the ECC reset to finish
+Date: Thu,  5 Aug 2010 11:07:41 -0400
+Message-Id: <1281020864-26842-4-git-send-email-vapier@gentoo.org>
 In-Reply-To: <1281020864-26842-1-git-send-email-vapier@gentoo.org>
 References: <1281020864-26842-1-git-send-email-vapier@gentoo.org>
 Cc: uclinux-dist-devel@blackfin.uclinux.org, Barry Song <barry.song@analog.com>
@@ -22,26 +22,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Barry Song <barry.song@analog.com>
 
-We used the platform rd_dly field when we meant to use the wr_dly field.
+When resetting the ECC registers/counters, the bit will automatically
+clear itself once the reset has actually finished.  So make sure we
+wait for that to occur before doing anything else rather than assuming
+everything is peachy and proceeding with stale ECC values.
 
 Signed-off-by: Barry Song <barry.song@analog.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- drivers/mtd/nand/bf5xx_nand.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 81a05cd..b553705 100644
+index b553705..949f656 100644
 --- a/drivers/mtd/nand/bf5xx_nand.c
 +++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -632,7 +632,7 @@ static int bf5xx_nand_hw_init(struct bf5xx_nand_info *info)
- 	val = (plat->page_size << NFC_PG_SIZE_OFFSET) |
- 		(plat->data_width << NFC_NWIDTH_OFFSET) |
- 		(plat->rd_dly << NFC_RDDLY_OFFSET) |
--		(plat->rd_dly << NFC_WRDLY_OFFSET);
-+		(plat->wr_dly << NFC_WRDLY_OFFSET);
- 	dev_dbg(info->device, "NFC_CTL is 0x%04x\n", val);
+@@ -507,6 +507,8 @@ static void bf5xx_nand_dma_rw(struct mtd_info *mtd,
+ 	 */
+ 	bfin_write_NFC_RST(ECC_RST);
+ 	SSYNC();
++	while (bfin_read_NFC_RST() & ECC_RST)
++		cpu_relax();
  
- 	bfin_write_NFC_CTL(val);
+ 	disable_dma(CH_NFC);
+ 	clear_dma_irqstat(CH_NFC);
 -- 
 1.7.2
