@@ -1,24 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OgyZR-00020Q-29
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 11:25:09 +0000
-Subject: Re: [PATCH] atmel_nand: Fix warning: 'part_probes' defined but not
-	used
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Andreas =?ISO-8859-1?Q?Bie=DFmann?= <biessmann@corscience.de>
-In-Reply-To: <1281004721-397-1-git-send-email-biessmann@corscience.de>
-References: <1279099026-24298-1-git-send-email-biessmann@corscience.de>
-	<1281004721-397-1-git-send-email-biessmann@corscience.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 13:50:40 +0300
-Message-ID: <1281005440.15689.83.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Brownell <dbrownell@users.sourceforge.net>, trivial@kernel.org,
-	linux-kernel@vger.kernel.org, Sandeep Paulraj <s-paulraj@ti.com>,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+Received: from smtp1-g21.free.fr ([212.27.42.1])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OgyjV-00042d-6f
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 11:35:34 +0000
+Subject: [PATCH] mtd: cfi_cmdset_0002: consider version 1.4 as a valid primary
+	extension version
+To: linux-mtd@lists.infradead.org
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Thu, 05 Aug 2010 13:18:19 +0200
+Message-ID: <20100805111819.27536.1397.stgit@dev.siriade.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: Gernot Hoyler <Gernot.Hoyler@spansion.com>,
 	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-05 at 12:38 +0200, Andreas Bießmann wrote:
-> This patch fixes
-> 
-> drivers/mtd/nand/atmel_nand.c:372: warning: 'part_probes' defined but not used
-> 
-> which is issued when CONFIG_MTD_PARTITIONS is defined but
-> CONFIG_MTD_CMDLINE_PARTS not.
-> 
-> Signed-off-by: Andreas Bießmann <biessmann@corscience.de>
+The Spansion S29WS-P device family uses CFI version 1.4 [1].
+Consider it as a valide version.
 
-Pushed to my l2-mtd-2.6.git / master
+[1] http://www.spansion.com/Support/Datasheets/s29ws-p_00_a12_e.pdf
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 749203f..16c4eee 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -418,12 +418,13 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 			cfi_fixup_major_minor(cfi, extp);
+ 
+ 			/*
+-			 * Valid primary extension versions are: 1.0, 1.1, 1.2, 1.3
+-			 * see: http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf, page 19 and on
++			 * Valid primary extension versions are: 1.0, 1.1, 1.2, 1.3, 1.4
++			 * see: http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf, page 19
+ 			 *      http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_100_20011201.pdf
++			 *      http://www.spansion.com/Support/Datasheets/s29ws-p_00_a12_e.pdf
+ 			 */
+ 			if (extp->MajorVersion != '1' ||
+-			    (extp->MajorVersion == '1' && ( extp->MinorVersion < '0' || extp->MinorVersion > '3'))) {
++			    (extp->MajorVersion == '1' && ( extp->MinorVersion < '0' || extp->MinorVersion > '4'))) {
+ 				printk(KERN_ERR "  Unknown Amd/Fujitsu Extended Query "
+ 				       "version %c.%c (%#02x/%#02x).\n",
+ 				       extp->MajorVersion, extp->MinorVersion,
