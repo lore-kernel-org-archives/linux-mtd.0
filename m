@@ -1,28 +1,20 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from phoenix3.szarvasnet.hu ([87.101.127.16])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh0cs-00053J-5A
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 13:36:54 +0000
-Received: by fxm3 with SMTP id 3so3550611fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Aug 2010 06:36:48 -0700 (PDT)
-Subject: Re: error!: "/dev/ubi0" is not a character device ?!?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Arno Steffen <arno.steffen@googlemail.com>
-In-Reply-To: <AANLkTikZb=R=8BObvTN6uGaZGAmvvUZd4oYKvkCJih7H@mail.gmail.com>
-References: <AANLkTikC6wxXV08=AYsqn56h8Cs-qC_-b8hNyq9DUWps@mail.gmail.com>
-	<1280150054.14917.108.camel@localhost>
-	<AANLkTik7CdwdyhzVYFXG66V3LKZvqnZhLbg4eVC0nQ=S@mail.gmail.com>
-	<1280244340.3021.38.camel@localhost.localdomain>
-	<AANLkTi=7-Ur35OzqF7iJtiPzfc-Jp-ANGwa3g_Y=+ae8@mail.gmail.com>
-	<1280471755.2838.29.camel@localhost.localdomain>
-	<AANLkTikZb=R=8BObvTN6uGaZGAmvvUZd4oYKvkCJih7H@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 16:36:45 +0300
-Message-Id: <1281015405.1175.32.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1Oh1ts-0003uQ-U5
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 14:58:29 +0000
+Message-ID: <4C5AD18E.8030002@openwrt.org>
+Date: Thu, 05 Aug 2010 16:58:22 +0200
+From: Gabor Juhos <juhosg@openwrt.org>
+MIME-Version: 1.0
+To: Luigi Zambrano <luzambran@gmail.com>
+Subject: Re: [PATCH 2/3] mtd: m25p80: add support for the Intel/Numonyx {16,
+	32, 64}0S33B SPI flash chips
+References: <AANLkTimkwt3R5CJ7-R8F=14YOwvA89bpj0jbTED4Gbmp@mail.gmail.com>
+In-Reply-To: <AANLkTimkwt3R5CJ7-R8F=14YOwvA89bpj0jbTED4Gbmp@mail.gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-05 at 13:55 +0200, Arno Steffen wrote:
-> cat /proc/devices give me back, that  (252 ubi8) is a character device.
+2010.08.05. 15:19 keltez=E9ssel, Luigi Zambrano =EDrta:
 
-Ok.
+> Actually I=92m not sure about this patch. From the datasheet, the 16Mbi=
+t
+> device has 32 sectors (32*64KB =3D 16Mbit), the 32Mbit device has 64 se=
+ctors
+> (64*64KB =3D 32Mbit) and the 64Mbit device has 128 sectors (128*64KB =3D
+> 64Mbit). So, I think the patch has to be modified in the following way
+>=20
+>=20
+>=20
+>  +       { "160s33b",  INFO(0x898911, 0, 64 * 1024,  32, 0) },
+>=20
+>  +       { "320s33b",  INFO(0x898912, 0, 64 * 1024,  64, 0) },
+>=20
+>  +       { "640s33b",  INFO(0x898913, 0, 64 * 1024, 128, 0) },
+>=20
 
-> But looking above, in /dev it is listed as block device !?!
+Oops, you are right. We are using this patch in OpenWrt since a year or s=
+o, but
+nobody noticed this so far. Good catch, thanks!
 
-udev!?!
+I will send a fixed version.
 
-> For me creating entries are not transparent, this happend with
-> ubiattach. No idea how to force ubiattach to write ubi8 in the
-> devicelist as character device.
-
-I thought I explained how udev works briefly. I also suggested you
-udevmonitor, you can also google. Neither UBI nor ubiattach nor any
-other ubi utility should create any /dev device.
-
-Sorry, I cannot provide more help. Try to dig this yourself - there are:
-many ways. You can add printks to the kernel. You can even do echo 1
-> /proc/sys/vm/block_dump and find out which process creates /dev
-entries. Hey, be creative, do not wait that others will solve your
-issues! :-)
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Regards,
+Gabor
