@@ -1,22 +1,23 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh519-0004eW-L2
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 18:18:12 +0000
-Received: by fxm3 with SMTP id 3so3889666fxm.36
+	id 1Oh5Hy-0004da-D0
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 18:35:35 +0000
+Received: by pzk3 with SMTP id 3so3002442pzk.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Aug 2010 11:18:10 -0700 (PDT)
-Subject: Re: NAND ECC Layout, sysfs question
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <norris@broadcom.com>
-In-Reply-To: <4C5AFA88.3040009@broadcom.com>
-References: <4C5AFA88.3040009@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 21:18:04 +0300
-Message-Id: <1281032284.1175.45.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Thu, 05 Aug 2010 11:35:32 -0700 (PDT)
+From: Kevin Hilman <khilman@deeprootsystems.com>
+To: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Subject: Re: [PATCH v3] mtd-nand: davinci: correct 4-bit error correction
+References: <1279521506-4537-1-git-send-email-sudhakar.raj@ti.com>
+Date: Thu, 05 Aug 2010 11:35:30 -0700
+In-Reply-To: <1279521506-4537-1-git-send-email-sudhakar.raj@ti.com> (Sudhakar
+	Rajashekhara's message of "Mon, 19 Jul 2010 12:08:26 +0530")
+Message-ID: <878w4kvrf1.fsf@deeprootsystems.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: dwmw2@infradead.org, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org,
+	davinci-linux-open-source@linux.davincidsp.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,73 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-05 at 10:53 -0700, Brian Norris wrote:
-> Hello,
-> 
-> I'm trying to replace the following structure (in mtd-abi.h) and its 
-> corresponding ioctl with a larger, dynamic form exported via sysfs. 
-> We're running out of room in the eccpos and oobfree arrays on larger chips:
+Sudhakar Rajashekhara <sudhakar.raj@ti.com> writes:
 
-I personally hate that internal information like eccpos is exposed to
-user-space. I think a good an not error-prone SW should be written in a
-way the ECC is completely hidden and handled by driver. And it is better
-not to use OOB.
+> On TI's DA830/OMAP-L137, DA850/OMAP-L138 and DM365, after setting the
+> 4BITECC_ADD_CALC_START bit in the NAND Flash control register to 1 and
+> before waiting for the NAND Flash status register to be equal to 1, 2 or
+> 3, we have to wait till the ECC HW goes to correction state.  Without this
+> wait, ECC correction calculations will not be proper.
+>
+> This has been tested on DA830/OMAP-L137, DA850/OMAP-L138, DM355 and DM365
+> EVMs.
+>
+> Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+> Acked-by: Sneha Narnakaje <nsnehaprabha@ti.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
-But there may be people who want to use OOB. But then ECC and free space
-in OOB should be considered as virtual contiguous array, and the driver
-places it properly. It is not user-spaces' business to know where ECC
-bytes are placed. There was some OOB mode for this, do not remember its
-name.
-
-Do you really need to know ECC layout? What for? Would be nice if
-everything but the above mode of working with OOB / ECC would be
-considered as legacy and died...
-
-> #define MTD_MAX_OOBFREE_ENTRIES 8
-> /*
->   * ECC layout control structure. Exported to userspace for
->   * diagnosis and to allow creation of raw images
->   */
-> 
-> struct nand_ecclayout {
->          __u32 eccbytes;
->          __u32 eccpos[64];
->          __u32 oobavail;
->          struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
-> };
-> 
-> First, is it a smart idea to use sysfs?
-> 
-> Second, if we go with sysfs, there seem to be many potential ways to 
-> structure the "eccpos" and "oobfree" arrays. Bearing in mind the 
-> convention of either one entry per file or a space-separated array of 
-> values as well as the file limit of PAGE_SIZE (approx. 4096 bytes?), 
-> there are several options with which I'm having difficulty. Formats 
-> could be as follows:
-> 1) Single file: 0 1 2 3 6 7 10 12
-> 2) Single file: 0-3 6-7 10 12
-> 3) Multiple files:
->      file 0: 0 3
->      file 1: 6 7
->      file 2: 10 10
->      file 3: 12 12
-> It seemed to me like (3) was the cleanest while ensuring we fit under 
-> PAGE_SIZE even if the OOB gets to be 1000+ bytes, so no one ever has to 
-> come back and redo this :) Unfortunately, directories and a dynamic 
-> number of attributes/files aren't really straightforward, hence my next 
-> questions...
-> 
-> Third, if I were to create directories under the "mtdX" sysfs directory, 
-> what's the best way to do this? Explicitly creating and filling in a 
-> kobject? Or creating a new "device"? Or are there other, better options?
-> 
-> I've already coded parts of a few of these options, but they all have 
-> various difficulties and can easily become ugly pieces of code (at least 
-> with my limited skill at sysfs).
-
-If you really have to do this, I think a new ioctl with some extra space
-for future extentions is better. sysfs is not good choice, imo.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Acked-by: Kevin Hilman <khilman@deeprootsystems.com>
