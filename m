@@ -1,30 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ogt29-0003Am-HC
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 05:30:26 +0000
-Received: by fxm3 with SMTP id 3so3256050fxm.36
+	id 1OgtMH-0008Pq-Cs
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 05:51:14 +0000
+Received: by wwi14 with SMTP id 14so6793579wwi.18
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 04 Aug 2010 22:30:24 -0700 (PDT)
-Subject: Re: [PATCH] Change struct flchip_shared spinlock locking into mutex
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: stefani@seibold.net
-In-Reply-To: <1280984291.1175.15.camel@localhost.localdomain>
-References: <1280778048-6208-1-git-send-email-stefani@seibold.net>
-	<1280984291.1175.15.camel@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 08:30:21 +0300
-Message-Id: <1280986221.1175.20.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	David Woodhouse <David.Woodhouse@intel.com>,
-	Arnd Bergmann <arnd@arndb.de>, Nicolas Pitre <nico@fluxnic.net>,
-	Vasiliy Kulikov <segooon@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Tejun Heo <tj@kernel.org>, akpm@linux-foundation.org,
-	Jiri Slaby <jslaby@suse.cz>,
-	Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-Reply-To: dedekind1@gmail.com
+	Wed, 04 Aug 2010 22:51:11 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <1280982776.4363.18.camel@localhost.localdomain>
+References: <20100727103937.GA1247@july>
+	<1280982776.4363.18.camel@localhost.localdomain>
+Date: Thu, 5 Aug 2010 14:51:11 +0900
+Message-ID: <AANLkTikV8ypbpainB7toPPeq7n6Q1P7ZDwL4Uf89q9dP@mail.gmail.com>
+Subject: Re: [PATCH] S5PC110: Add OneNAND interrupt number
+From: Kyungmin Park <kmpark@infradead.org>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: kgene.kim@samsung.com, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, m.szyprowski@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,49 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-05 at 07:58 +0300, Artem Bityutskiy wrote:
-> On Mon, 2010-08-02 at 21:40 +0200, stefani@seibold.net wrote:
-> > From: Stefani Seibold <stefani@seibold.net>
-> > 
-> > This patch prevent to schedule while atomic by changing the
-> > flchip_shared spinlock into a mutex. This should be save since no atomic
-> > path will use this lock.
-> > 
-> > This patch is based on linux kernel 2.6.35. Please apply.
-> > 
-> > It was requested by Arnd Bergmann and Vasiliy Kulikov.
-> 
-> Taken to my l2-mtd-2.6.git / master
+On Thu, Aug 5, 2010 at 1:32 PM, Artem Bityutskiy <dedekind1@gmail.com> wrot=
+e:
+> On Tue, 2010-07-27 at 19:39 +0900, Kyungmin Park wrote:
+>> To use OneNAND interrupt at drivers, also extend DMA address to cover fu=
+lly.
+>>
+>> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+>> ---
+>> diff --git a/arch/arm/mach-s5pv210/dev-onenand.c b/arch/arm/mach-s5pv210=
+/dev-onenand.c
+>> index 34997b7..f8ede33 100644
+>> --- a/arch/arm/mach-s5pv210/dev-onenand.c
+>> +++ b/arch/arm/mach-s5pv210/dev-onenand.c
+>> @@ -27,9 +27,14 @@ static struct resource s5pc110_onenand_resources[] =
+=3D {
+>> =A0 =A0 =A0 },
+>> =A0 =A0 =A0 [1] =3D {
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .start =A0=3D S5PC110_PA_ONENAND_DMA,
+>> - =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =A0=3D S5PC110_PA_ONENAND_DMA + SZ_2K=
+ - 1,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =A0=3D S5PC110_PA_ONENAND_DMA + SZ_8K=
+ - 1,
+>> =A0 =A0 =A0 =A0 =A0 =A0 =A0 .flags =A0=3D IORESOURCE_MEM,
+>> =A0 =A0 =A0 },
+>> + =A0 =A0 [2] =3D {
+>> + =A0 =A0 =A0 =A0 =A0 =A0 .start =A0=3D IRQ_ONENAND_AUDI,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 .end =A0 =A0=3D IRQ_ONENAND_AUDI,
+>> + =A0 =A0 =A0 =A0 =A0 =A0 .flags =A0=3D IORESOURCE_IRQ,
+>> + =A0 =A0 },
+>> =A0};
+>
+> You do not expect this to go through the MTD tree, right?
 
-This patch causes the following compilation error:
+After this patch, I did a lot of works but failed to persuade the Kukjin.
+At this time. it's okay only this patch to mtd tree.
 
-drivers/mtd/lpddr/lpddr_cmds.c: In function ‘lpddr_cmdset’:
-drivers/mtd/lpddr/lpddr_cmds.c:101: warning: passing argument 1 of ‘spinlock_check’ from incompatible pointer type
-include/linux/spinlock.h:271: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:101: error: ‘struct mutex’ has no member named ‘rlock’
-drivers/mtd/lpddr/lpddr_cmds.c: In function ‘get_chip’:
-drivers/mtd/lpddr/lpddr_cmds.c:220: warning: passing argument 1 of ‘spin_lock’ from incompatible pointer type
-include/linux/spinlock.h:282: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:233: warning: passing argument 1 of ‘spin_unlock’ from incompatible pointer type
-include/linux/spinlock.h:322: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:248: warning: passing argument 1 of ‘spin_lock’ from incompatible pointer type
-include/linux/spinlock.h:282: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:264: warning: passing argument 1 of ‘spin_unlock’ from incompatible pointer type
-include/linux/spinlock.h:322: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:278: warning: passing argument 1 of ‘spin_unlock’ from incompatible pointer type
-include/linux/spinlock.h:322: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c: In function ‘put_chip’:
-drivers/mtd/lpddr/lpddr_cmds.c:351: warning: passing argument 1 of ‘spin_lock’ from incompatible pointer type
-include/linux/spinlock.h:282: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:359: warning: passing argument 1 of ‘spin_unlock’ from incompatible pointer type
-include/linux/spinlock.h:322: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:377: warning: passing argument 1 of ‘spin_unlock’ from incompatible pointer type
-include/linux/spinlock.h:322: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
-drivers/mtd/lpddr/lpddr_cmds.c:381: warning: passing argument 1 of ‘spin_unlock’ from incompatible pointer type
-include/linux/spinlock.h:322: note: expected ‘struct spinlock_t *’ but argument is of type ‘struct mutex *’
+Kukjin, are you okay?
+Since It's only affect the c110.
 
-Removed from my tree.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thank you,
+Kyungmin Park
