@@ -1,21 +1,17 @@
-Received: from phoenix3.szarvasnet.hu ([87.101.127.16])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ogv1A-0006e4-On
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 07:37:33 +0000
-Message-ID: <4C5A6A36.5050409@openwrt.org>
-Date: Thu, 05 Aug 2010 09:37:26 +0200
-From: Gabor Juhos <juhosg@openwrt.org>
+	id 1OgvOT-0007Fe-Mt
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 08:01:38 +0000
+Received: by bwz15 with SMTP id 15so4007127bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 05 Aug 2010 01:01:36 -0700 (PDT)
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 1/3] mtd: m25p80: add support for the EON EN25P{32, 64}
-	SPI flash chips
-References: <1280949267-18154-1-git-send-email-juhosg@openwrt.org>	
-	<1280988619.1175.25.camel@localhost.localdomain>
-	<1280988666.1175.26.camel@localhost.localdomain>
-In-Reply-To: <1280988666.1175.26.camel@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 5 Aug 2010 10:01:35 +0200
+Message-ID: <AANLkTinWBxKC0F-awnJktD7JfJofg3XqT-1onPcQypws@mail.gmail.com>
+Subject: protection on cfi-flash
+From: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010.08.05. 8:11 keltez=C3=A9ssel, Artem Bityutskiy =C3=ADrta:
-> On Thu, 2010-08-05 at 09:10 +0300, Artem Bityutskiy wrote:
->> On Wed, 2010-08-04 at 21:14 +0200, Gabor Juhos wrote:
->>> Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
->>> ---
->>>  drivers/mtd/devices/m25p80.c |    4 ++++
->>>  1 files changed, 4 insertions(+), 0 deletions(-)
->>
->> Pushed to my l2-mtd-2.6.git / dunno.
->=20
-> I mean, all 3 patches.
+Hi,
 
-Thanks,
-Gabor
+I have a board with Spansion nor flash, type S29GL01GP. This uses the
+cfi-flash driver
+In order to avoid accidential erasure of sectors, and hence wanted to
+use flash_lock and flash_unlock.
+However apparently the mtd driver for this chip does not support lock
+and unlock.
+
+U-boot does support protecting the flash (using the protect command)
+so it is feasible.
+The chip uses cfi_cmdset_0002.c to do its work.
+
+I guess adding lock/unlock to this is technically not too difficult,
+but I lack some info on the internals of mtd and how best to do this.
+Anyone a suggestion (or maybe some code or a pointer to some code)?
+
+Thanks alot, Frans
+
+PS: I noticed that if I protect the flash in u-boot that flash_erase
+will still report success when I invoke it (although of course the
+actual data is not erased).
+I would expect flash_erase to get some error code in that case and
+report it back (or if that is not possible do a readback of the data
+to see if the erase was successful).
