@@ -1,22 +1,16 @@
-Received: from mga09.intel.com ([134.134.136.24])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh270-0002m8-Gm
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 15:12:03 +0000
-Subject: Re: [PATCH V2 1/5]nand/denali Clean up all white spaces in code indent
-From: David Woodhouse <David.Woodhouse@intel.com>
-To: Chuanxiao <chuanxiao.dong@gmail.com>
-In-Reply-To: <20100805150604.GA6589@infernal>
-References: <20100805150604.GA6589@infernal>
+Subject: Re: [PATCH 4/7] mtd: Blackfin NFC: wait for the ECC reset to finish
+From: David Woodhouse <dwmw2@infradead.org>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1281020864-26842-4-git-send-email-vapier@gentoo.org>
+References: <1281020864-26842-1-git-send-email-vapier@gentoo.org>
+	<1281020864-26842-4-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 Aug 2010 16:11:58 +0100
-Message-ID: <1281021118.8720.5.camel@localhost>
+Date: Thu, 05 Aug 2010 16:16:02 +0100
+Message-ID: <1281021362.8720.6.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>, "Yuan,
-	Hang" <hang.yuan@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Gao, Yunpeng" <yunpeng.gao@intel.com>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org,
+	Barry Song <barry.song@analog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +20,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-05 at 16:06 +0100, Chuanxiao wrote:
-> Hi,
-> I have changed the outlook mail cliet to be linux mutt client and use my
-> personal gmail to submit patches.
-> Here are 5 new patches to fix nand/denali check patch errors. The other
-> 4 patches will be sent out after this mail.
-> Thanks for your review.
+On Thu, 2010-08-05 at 11:07 -0400, Mike Frysinger wrote:
+> 
+> +       while (bfin_read_NFC_RST() & ECC_RST)
+> +               cpu_relax(); 
 
-Apply? [y]es/[n]o/[e]dit/[v]iew patch/[a]ccept all y
-Applying: nand/denali Clean up all white spaces in code indent
-error: patch failed: drivers/mtd/nand/denali.c:29
-error: drivers/mtd/nand/denali.c: patch does not apply
-Patch failed at 0001 nand/denali Clean up all white spaces in code indent
-
-
-Are you *really* sending this stuff to yourself first, and checking that
-it applies *before* you try sending mail to anyone else?
+All applied, but I'd be happier if this one had some kind of timeout and
+didn't have the potential to loop forever if the hardware misbehaves.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
