@@ -1,25 +1,17 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oh2FK-0007rJ-Qw
-	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 15:20:43 +0000
-Received: by wyf19 with SMTP id 19so3612162wyf.36
+	id 1Oh2M6-0001cV-TQ
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 15:27:40 +0000
+Received: by fxm3 with SMTP id 3so3685641fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Aug 2010 08:20:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1281021362.8720.6.camel@localhost>
-References: <1281020864-26842-1-git-send-email-vapier@gentoo.org>
-	<1281020864-26842-4-git-send-email-vapier@gentoo.org>
-	<1281021362.8720.6.camel@localhost>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 5 Aug 2010 11:20:16 -0400
-Message-ID: <AANLkTingjY9sYcTnJ_dmp1NWyBjqv2Rv-U3JcVaFJhop@mail.gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 4/7] mtd: Blackfin NFC: wait for the
-	ECC reset to finish
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org,
-	Barry Song <barry.song@analog.com>
+	Thu, 05 Aug 2010 08:27:36 -0700 (PDT)
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD: r852: remove useless pci powerup/down from
+	suspend/resume routines.
+Date: Thu,  5 Aug 2010 18:27:26 +0300
+Message-Id: <1281022046-21185-1-git-send-email-maximlevitsky@gmail.com>
+Cc: Maxim Levitsky <maximlevitsky@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +21,104 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 5, 2010 at 11:16, David Woodhouse wrote:
-> On Thu, 2010-08-05 at 11:07 -0400, Mike Frysinger wrote:
->>
->> + =C2=A0 =C2=A0 =C2=A0 while (bfin_read_NFC_RST() & ECC_RST)
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 cpu_relax();
->
-> All applied, but I'd be happier if this one had some kind of timeout and
-> didn't have the potential to loop forever if the hardware misbehaves.
+It turns out that pci core now handles these, so this code is redundand
+and can even cause bugs
 
-ive opened a tracker item for it
--mike
+Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
+---
+ drivers/mtd/nand/r852.c |   30 +-----------------------------
+ drivers/mtd/nand/r852.h |    2 --
+ 2 files changed, 1 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
+index bcfc851..288715d 100644
+--- a/drivers/mtd/nand/r852.c
++++ b/drivers/mtd/nand/r852.c
+@@ -757,11 +757,6 @@ static irqreturn_t r852_irq(int irq, void *data)
+ 
+ 	spin_lock_irqsave(&dev->irqlock, flags);
+ 
+-	/* We can recieve shared interrupt while pci is suspended
+-		in that case reads will return 0xFFFFFFFF.... */
+-	if (dev->insuspend)
+-		goto out;
+-
+ 	/* handle card detection interrupts first */
+ 	card_status = r852_read_reg(dev, R852_CARD_IRQ_STA);
+ 	r852_write_reg(dev, R852_CARD_IRQ_STA, card_status);
+@@ -1035,7 +1030,6 @@ void r852_shutdown(struct pci_dev *pci_dev)
+ int r852_suspend(struct device *device)
+ {
+ 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
+-	unsigned long flags;
+ 
+ 	if (dev->ctlreg & R852_CTL_CARDENABLE)
+ 		return -EBUSY;
+@@ -1047,43 +1041,22 @@ int r852_suspend(struct device *device)
+ 	r852_disable_irqs(dev);
+ 	r852_engine_disable(dev);
+ 
+-	spin_lock_irqsave(&dev->irqlock, flags);
+-	dev->insuspend = 1;
+-	spin_unlock_irqrestore(&dev->irqlock, flags);
+-
+-	/* At that point, even if interrupt handler is running, it will quit */
+-	/* So wait for this to happen explictly */
+-	synchronize_irq(dev->irq);
+-
+ 	/* If card was pulled off just during the suspend, which is very
+ 		unlikely, we will remove it on resume, it too late now
+ 		anyway... */
+ 	dev->card_unstable = 0;
+-
+-	pci_save_state(to_pci_dev(device));
+-	return pci_prepare_to_sleep(to_pci_dev(device));
++	return 0;
+ }
+ 
+ int r852_resume(struct device *device)
+ {
+ 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
+-	unsigned long flags;
+-
+-	/* Turn on the hardware */
+-	pci_back_from_sleep(to_pci_dev(device));
+-	pci_restore_state(to_pci_dev(device));
+ 
+ 	r852_disable_irqs(dev);
+ 	r852_card_update_present(dev);
+ 	r852_engine_disable(dev);
+ 
+ 
+-	/* Now its safe for IRQ to run */
+-	spin_lock_irqsave(&dev->irqlock, flags);
+-	dev->insuspend = 0;
+-	spin_unlock_irqrestore(&dev->irqlock, flags);
+-
+-
+ 	/* If card status changed, just do the work */
+ 	if (dev->card_detected != dev->card_registred) {
+ 		dbg("card was %s during low power state",
+@@ -1121,7 +1094,6 @@ MODULE_DEVICE_TABLE(pci, r852_pci_id_tbl);
+ 
+ SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
+ 
+-
+ static struct pci_driver r852_pci_driver = {
+ 	.name		= DRV_NAME,
+ 	.id_table	= r852_pci_id_tbl,
+diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
+index 8096cc2..e6a21d9 100644
+--- a/drivers/mtd/nand/r852.h
++++ b/drivers/mtd/nand/r852.h
+@@ -140,8 +140,6 @@ struct r852_device {
+ 	/* interrupt handling */
+ 	spinlock_t irqlock;		/* IRQ protecting lock */
+ 	int irq;			/* irq num */
+-	int insuspend;			/* device is suspended */
+-
+ 	/* misc */
+ 	void *tmp_buffer;		/* temporary buffer */
+ 	uint8_t ctlreg;			/* cached contents of control reg */
+-- 
+1.7.0.4
