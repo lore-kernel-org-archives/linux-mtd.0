@@ -1,18 +1,24 @@
-Received: from smtp1-g21.free.fr ([212.27.42.1])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ogkut-0000AM-EV
-	for linux-mtd@lists.infradead.org; Wed, 04 Aug 2010 20:50:24 +0000
-Subject: [PATCH] mtd: cfi_cmdset_0002: consider version 1.4 as a valid primary
-	extension version
-To: linux-mtd@lists.infradead.org
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Wed, 04 Aug 2010 22:50:17 +0200
-Message-ID: <20100804204916.27906.74766.stgit@dev.siriade.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: Gernot Hoyler <Gernot.Hoyler@spansion.com>,
-	David Woodhouse <dwmw2@infradead.org>
+	id 1Ogs1D-0002zy-Nd
+	for linux-mtd@lists.infradead.org; Thu, 05 Aug 2010 04:25:24 +0000
+Received: by fxm3 with SMTP id 3so3243080fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 04 Aug 2010 21:25:22 -0700 (PDT)
+Subject: Re: MTD: 2 patches
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+In-Reply-To: <1280866759.3617.0.camel@maxim-laptop>
+References: <1280332397-6031-1-git-send-email-maximlevitsky@gmail.com>
+	<1280579937.6208.0.camel@maxim-laptop>
+	<1280866759.3617.0.camel@maxim-laptop>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 05 Aug 2010 07:25:17 +0300
+Message-Id: <1280982317.4363.13.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As my first patch has been pushed, here is the change requested by Gernot Hoyler.
+On Tue, 2010-08-03 at 23:19 +0300, Maxim Levitsky wrote:
+> On Sat, 2010-07-31 at 15:38 +0300, Maxim Levitsky wrote: 
+> > On Wed, 2010-07-28 at 18:53 +0300, Maxim Levitsky wrote: 
+> > > Hi,
+> > > 
+> > > I recently found bug that I intoduced.
+> > > I seen that just once, but it is obivous that code is wrong.
+> > > Also I want to trim warning on sm_ftl, I think it was a bit too scary.
+> > 
+> > Any update?
+> Any update? 
 
----
-The Spansion S29WS-P device family uses CFI version 1.4 [1].
-Consider it as a valide version.
+Taken to my l2-mtd-2.6.git / master
 
-[1] http://www.spansion.com/Support/Datasheets/s29ws-p_00_a12_e.pdf
-
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 749203f..16c4eee 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -418,12 +418,13 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
- 			cfi_fixup_major_minor(cfi, extp);
- 
- 			/*
--			 * Valid primary extension versions are: 1.0, 1.1, 1.2, 1.3
--			 * see: http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf, page 19 and on
-+			 * Valid primary extension versions are: 1.0, 1.1, 1.2, 1.3, 1.4
-+			 * see: http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_r20.pdf, page 19
- 			 *      http://www.amd.com/us-en/assets/content_type/DownloadableAssets/cfi_100_20011201.pdf
-+			 *      http://www.spansion.com/Support/Datasheets/s29ws-p_00_a12_e.pdf
- 			 */
- 			if (extp->MajorVersion != '1' ||
--			    (extp->MajorVersion == '1' && ( extp->MinorVersion < '0' || extp->MinorVersion > '3'))) {
-+			    (extp->MajorVersion == '1' && ( extp->MinorVersion < '0' || extp->MinorVersion > '4'))) {
- 				printk(KERN_ERR "  Unknown Amd/Fujitsu Extended Query "
- 				       "version %c.%c (%#02x/%#02x).\n",
- 				       extp->MajorVersion, extp->MinorVersion,
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
