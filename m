@@ -1,12 +1,12 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhNMX-0002HH-Aj
+	id 1OhNMX-0002HK-SI
 	for linux-mtd@lists.infradead.org; Fri, 06 Aug 2010 13:53:32 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/8] mxc_nand: factor out a check_int function
-Date: Fri,  6 Aug 2010 15:53:07 +0200
-Message-Id: <1281102791-8089-5-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 6/8] mxc_nand: fix correct_data function
+Date: Fri,  6 Aug 2010 15:53:09 +0200
+Message-Id: <1281102791-8089-7-git-send-email-s.hauer@pengutronix.de>
 In-Reply-To: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
 References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
 Cc: John Ogness <john.ogness@linutronix.de>, Baruch Siach <baruch@tkos.co.il>,
@@ -20,82 +20,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The v2 controller has a totally different mechanism to check
+whether the data we read had ecc errors or not. Implement this.
+The mechanism in the v2 controller happens to be identical to
+the v3 controller.
+
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   32 +++++++++++++++++++-------------
- 1 files changed, 19 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   42 ++++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 40 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 2d2e2e7..70f64dc 100644
+index 48b6dca..a6dc5a5 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -122,6 +122,7 @@ struct mxc_nand_host {
- 	void			(*send_page)(struct mtd_info *, unsigned int);
- 	void			(*send_read_id)(struct mxc_nand_host *);
- 	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
-+	int			(*check_int)(struct mxc_nand_host *);
- };
+@@ -94,6 +94,7 @@ struct mxc_nand_host {
+ 	struct clk		*clk;
+ 	int			clk_act;
+ 	int			irq;
++	int			eccsize;
  
- /* OOB placement block for use with hardware ecc generation */
-@@ -181,34 +182,38 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
- 	return IRQ_HANDLED;
+ 	wait_queue_head_t	irq_waitq;
+ 
+@@ -342,7 +343,7 @@ static void mxc_nand_enable_hwecc(struct mtd_info *mtd, int mode)
+ 	 */
  }
  
-+static int check_int_v1_v2(struct mxc_nand_host *host)
+-static int mxc_nand_correct_data(struct mtd_info *mtd, u_char *dat,
++static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+ 				 u_char *read_ecc, u_char *calc_ecc)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+@@ -364,6 +365,40 @@ static int mxc_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+ 	return 0;
+ }
+ 
++static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
++				 u_char *read_ecc, u_char *calc_ecc)
 +{
-+	uint32_t tmp;
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
++	u32 ecc_stat, err;
++	int no_subpages = 1;
++	int ret = 0;
++	u8 ecc_bit_mask, err_limit;
 +
-+	tmp = readw(host->regs + NFC_CONFIG2);
-+	if (!(tmp & NFC_INT))
-+		return 0;
++	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
++	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
 +
-+	writew(tmp & ~NFC_INT, NFC_CONFIG2);
++	no_subpages = mtd->writesize >> 9;
 +
-+	return 1;
++	ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
++
++	do {
++		err = ecc_stat & ecc_bit_mask;
++		if (err > err_limit) {
++			printk(KERN_WARNING "UnCorrectable RS-ECC Error\n");
++			return -1;
++		} else {
++			ret += err;
++		}
++		ecc_stat >>= 4;
++	} while (--no_subpages);
++
++	mtd->ecc_stats.corrected += ret;
++	pr_debug("%d Symbol Correctable RS-ECC Error\n", ret);
++
++	return ret;
 +}
 +
- /* This function polls the NANDFC to wait for the basic operation to
-  * complete by checking the INT bit of config2 register.
-  */
- static void wait_op_done(struct mxc_nand_host *host, int useirq)
+ static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+ 				  u_char *ecc_code)
  {
--	uint16_t tmp;
- 	int max_retries = 8000;
- 
- 	if (useirq) {
--		if ((readw(host->regs + NFC_CONFIG2) & NFC_INT) == 0) {
-+		if (!host->check_int(host)) {
- 
- 			enable_irq(host->irq);
- 
--			wait_event(host->irq_waitq,
--				readw(host->regs + NFC_CONFIG2) & NFC_INT);
--
--			tmp = readw(host->regs + NFC_CONFIG2);
--			tmp  &= ~NFC_INT;
--			writew(tmp, host->regs + NFC_CONFIG2);
-+			wait_event(host->irq_waitq, host->check_int(host));
- 		}
+@@ -790,7 +825,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	if (pdata->hw_ecc) {
+ 		this->ecc.calculate = mxc_nand_calculate_ecc;
+ 		this->ecc.hwctl = mxc_nand_enable_hwecc;
+-		this->ecc.correct = mxc_nand_correct_data;
++		if (nfc_is_v1())
++			this->ecc.correct = mxc_nand_correct_data_v1;
++		else
++			this->ecc.correct = mxc_nand_correct_data_v2_v3;
+ 		this->ecc.mode = NAND_ECC_HW;
  	} else {
- 		while (max_retries-- > 0) {
--			if (readw(host->regs + NFC_CONFIG2) & NFC_INT) {
--				tmp = readw(host->regs + NFC_CONFIG2);
--				tmp  &= ~NFC_INT;
--				writew(tmp, host->regs + NFC_CONFIG2);
-+			if (host->check_int(host))
- 				break;
--			}
-+
- 			udelay(1);
- 		}
- 		if (max_retries < 0)
-@@ -774,6 +779,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		host->send_page = send_page_v1_v2;
- 		host->send_read_id = send_read_id_v1_v2;
- 		host->get_dev_status = get_dev_status_v1_v2;
-+		host->check_int = check_int_v1_v2;
- 	}
- 
- 	if (nfc_is_v21()) {
+ 		this->ecc.mode = NAND_ECC_SOFT;
 -- 
 1.7.1
