@@ -1,20 +1,17 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhIev-0005At-Rz
-	for linux-mtd@lists.infradead.org; Fri, 06 Aug 2010 08:52:10 +0000
-Received: by iwn3 with SMTP id 3so1200019iwn.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 06 Aug 2010 01:52:08 -0700 (PDT)
+From: "Ghorai, Sukumar" <s-ghorai@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Fri, 6 Aug 2010 14:33:48 +0530
+Subject: RE: [PATCH v4 0/4] nand prefetch-irq support and ecc layout chanage
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B030E65BEFD@dbde02.ent.ti.com>
+References: <1280764192-15053-1-git-send-email-s-ghorai@ti.com> 
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <AANLkTilQGyVU4-_ipLDN3p5B6856jvugY9mKq9feWr9G@mail.gmail.com>
-References: <AANLkTinAXEkD4_sYtGAojAuecpkiTlxyylxLlQP2i_9D@mail.gmail.com>
-	<AANLkTilQGyVU4-_ipLDN3p5B6856jvugY9mKq9feWr9G@mail.gmail.com>
-Date: Fri, 6 Aug 2010 10:52:08 +0200
-Message-ID: <AANLkTik3emBFUbohWqjjBcuKWJFYDs8CDYiV+SJiO4Ro@mail.gmail.com>
-Subject: Re: uncorrectable error :
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +21,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/7/6 Arno Steffen <arno.steffen@googlemail.com>:
-> I know this is not a good solution but for now I decided to do a
-> reboot, when this by "incorrectable error" occurs, as it will
-> disappear than.
-> Nevertheless I would be happy if one of the experts here could give me
-> some advice.
->
+Tony,
 
-Solved the issue, timing problem in OMAP. There is a kernel patch available.
-NAND timing violation: Specific patch that address the NAND timing
-issue is available as part of PSP 03.00.01.06
-(http://arago-project.org/git/people/?p=sriram/ti-psp-omap.git;a=commit;h=d04b6a46438de949570bf490089266192fa725c2)
+> -----Original Message-----
+> From: Ghorai, Sukumar
+> Sent: Wednesday, August 04, 2010 9:29 AM
+> To: linux-omap@vger.kernel.org; 'Tony Lindgren'
+> Cc: linux-arm-kernel@lists.infradead.org; linux-mtd@lists.infradead.org
+> Subject: RE: [PATCH v4 0/4] nand prefetch-irq support and ecc layout
+> chanage
+>=20
+> > -----Original Message-----
+> > From: Ghorai, Sukumar
+> > Sent: Monday, August 02, 2010 9:20 PM
+> > To: linux-omap@vger.kernel.org
+> > Cc: linux-arm-kernel@lists.infradead.org; linux-mtd@lists.infradead.org=
+;
+> > Ghorai, Sukumar
+> > Subject: [PATCH v4 0/4] nand prefetch-irq support and ecc layout chanag=
+e
+> >
+> >    The following set of patches applies on top of omap-for-linus.
+> >
+> >    v4: Comments incorporated
+> >
+> >    v3: http://www.mail-archive.com/linux-
+> > omap@vger.kernel.org/msg32071.html
+> >    	Rebase on latest codebase and previous patch(posted).
+> > 	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31963.html
+> >
+> >    v2: Rebase on latest codebase and previous patch(posted).
+> > 	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
+> >
+> >    v1: http://www.mail-archive.com/linux-
+> > omap@vger.kernel.org/msg26666.html
+> >
+> > Sukumar Ghorai (4):
+> > 	omap3: nand: prefetch in irq mode support
+> > 	omap: nand: configurable fifo threshold to gain the throughput
+> > 	omap: nand: ecc layout select from board file
+> > 	omap: nand: making ecc layout as compatible with romcode ecc
+> >
+> >  arch/arm/mach-omap2/board-flash.c      |    5 +-
+> >  arch/arm/mach-omap2/gpmc.c             |   15 ++-
+> >  arch/arm/plat-omap/include/plat/gpmc.h |    9 +-
+> >  arch/arm/plat-omap/include/plat/irqs.h |    1 +
+> >  arch/arm/plat-omap/include/plat/nand.h |    7 +
+> >  drivers/mtd/nand/Kconfig               |   14 ++-
+> >  drivers/mtd/nand/omap2.c               |  277
+> > ++++++++++++++++++++++++++++---
+> >  7 files changed, 294 insertions(+), 34 deletions(-)
+> [Ghorai]
+> Tony,
+> Would you please check if you have any input further?
+
+[Ghorai]=20
+Tony,
+Would you please check the status of these patch(s).
+
+Regards,
+Ghorai
