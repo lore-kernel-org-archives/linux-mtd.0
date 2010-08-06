@@ -1,12 +1,13 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhNMX-0002HD-7z
+	id 1OhNMX-0002HE-8A
 	for linux-mtd@lists.infradead.org; Fri, 06 Aug 2010 13:53:31 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/8] mxc_nand: rework get_dev_status
-Date: Fri,  6 Aug 2010 15:53:05 +0200
-Message-Id: <1281102791-8089-3-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 3/8] mxc_nand: make some internally used functions
+	overwriteable
+Date: Fri,  6 Aug 2010 15:53:06 +0200
+Message-Id: <1281102791-8089-4-git-send-email-s.hauer@pengutronix.de>
 In-Reply-To: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
 References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
 Cc: John Ogness <john.ogness@linutronix.de>, Baruch Siach <baruch@tkos.co.il>,
@@ -20,71 +21,223 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We save/restore the value in the buffer anyway, so it makes
-no difference whether we use main_area0 or main_area1. So,
-we can use main_area0 and remove main_area1 from the driver
-which is otherwise unused. Also, clean up the comments in
-get_dev_status.
+This patch prepares the driver to add v3 controller support
+later. The v3 controller is basically the same controller as v1
+and v2, but with a completely different register layout.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   21 +++++++++------------
- 1 files changed, 9 insertions(+), 12 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   72 ++++++++++++++++++++++++++----------------
+ 1 files changed, 44 insertions(+), 28 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index abec73a..6654446 100644
+index 6654446..2d2e2e7 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -102,7 +102,6 @@ struct mxc_nand_host {
+@@ -115,6 +115,13 @@ struct mxc_nand_host {
+ 	uint8_t			*data_buf;
+ 	unsigned int		buf_start;
+ 	int			spare_len;
++
++	void			(*preset)(struct mtd_info *);
++	void			(*send_cmd)(struct mxc_nand_host *, uint16_t, int);
++	void			(*send_addr)(struct mxc_nand_host *, uint16_t, int);
++	void			(*send_page)(struct mtd_info *, unsigned int);
++	void			(*send_read_id)(struct mxc_nand_host *);
++	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
+ };
  
- 	void			*spare0;
- 	void			*main_area0;
--	void			*main_area1;
+ /* OOB placement block for use with hardware ecc generation */
+@@ -212,7 +219,7 @@ static void wait_op_done(struct mxc_nand_host *host, int useirq)
  
- 	void __iomem		*base;
- 	void __iomem		*regs;
-@@ -305,25 +304,24 @@ static void send_read_id(struct mxc_nand_host *host)
-  * NAND device status and returns the current status. */
- static uint16_t get_dev_status(struct mxc_nand_host *host)
+ /* This function issues the specified command to the NAND device and
+  * waits for completion. */
+-static void send_cmd(struct mxc_nand_host *host, uint16_t cmd, int useirq)
++static void send_cmd_v1_v2(struct mxc_nand_host *host, uint16_t cmd, int useirq)
  {
--	void __iomem *main_buf = host->main_area1;
-+	void __iomem *main_buf = host->main_area0;
+ 	DEBUG(MTD_DEBUG_LEVEL3, "send_cmd(host, 0x%x, %d)\n", cmd, useirq);
+ 
+@@ -241,7 +248,7 @@ static void send_cmd(struct mxc_nand_host *host, uint16_t cmd, int useirq)
+ /* This function sends an address (or partial address) to the
+  * NAND device. The address is used to select the source/destination for
+  * a NAND command. */
+-static void send_addr(struct mxc_nand_host *host, uint16_t addr, int islast)
++static void send_addr_v1_v2(struct mxc_nand_host *host, uint16_t addr, int islast)
+ {
+ 	DEBUG(MTD_DEBUG_LEVEL3, "send_addr(host, 0x%x %d)\n", addr, islast);
+ 
+@@ -252,7 +259,7 @@ static void send_addr(struct mxc_nand_host *host, uint16_t addr, int islast)
+ 	wait_op_done(host, islast);
+ }
+ 
+-static void send_page(struct mtd_info *mtd, unsigned int ops)
++static void send_page_v1_v2(struct mtd_info *mtd, unsigned int ops)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+@@ -276,7 +283,7 @@ static void send_page(struct mtd_info *mtd, unsigned int ops)
+ }
+ 
+ /* Request the NANDFC to perform a read of the NAND device ID. */
+-static void send_read_id(struct mxc_nand_host *host)
++static void send_read_id_v1_v2(struct mxc_nand_host *host)
+ {
+ 	struct nand_chip *this = &host->nand;
+ 
+@@ -302,7 +309,7 @@ static void send_read_id(struct mxc_nand_host *host)
+ 
+ /* This function requests the NANDFC to perform a read of the
+  * NAND device status and returns the current status. */
+-static uint16_t get_dev_status(struct mxc_nand_host *host)
++static uint16_t get_dev_status_v1_v2(struct mxc_nand_host *host)
+ {
+ 	void __iomem *main_buf = host->main_area0;
  	uint32_t store;
- 	uint16_t ret;
--	/* Issue status request to NAND device */
+@@ -381,7 +388,7 @@ static u_char mxc_nand_read_byte(struct mtd_info *mtd)
  
--	/* store the main area1 first word, later do recovery */
-+	writew(0x0, NFC_V1_V2_BUF_ADDR);
-+
-+	/*
-+	 * The device status is stored in main_area0. To
-+	 * prevent corruption of the buffer save the value
-+	 * and restore it afterwards.
-+	 */
- 	store = readl(main_buf);
--	/* NANDFC buffer 1 is used for device status to prevent
--	 * corruption of read/write buffer on status requests. */
--	writew(1, host->regs + NFC_BUF_ADDR);
+ 	/* Check for status request */
+ 	if (host->status_request)
+-		return get_dev_status(host) & 0xFF;
++		return host->get_dev_status(host) & 0xFF;
  
- 	writew(NFC_STATUS, host->regs + NFC_CONFIG2);
--
--	/* Wait for operation to complete */
- 	wait_op_done(host, true);
- 
--	/* Status is placed in first word of main buffer */
--	/* get status, then recovery area 1 data */
- 	ret = readw(main_buf);
-+
- 	writel(store, main_buf);
- 
- 	return ret;
-@@ -761,7 +759,6 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	ret = *(uint8_t *)(host->data_buf + host->buf_start);
+ 	host->buf_start++;
+@@ -517,39 +524,39 @@ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
+ 		 * we will used the saved column address to index into
+ 		 * the full page.
+ 		 */
+-		send_addr(host, 0, page_addr == -1);
++		host->send_addr(host, 0, page_addr == -1);
+ 		if (mtd->writesize > 512)
+ 			/* another col addr cycle for 2k page */
+-			send_addr(host, 0, false);
++			host->send_addr(host, 0, false);
  	}
  
- 	host->main_area0 = host->base;
--	host->main_area1 = host->base + 0x200;
+ 	/* Write out page address, if necessary */
+ 	if (page_addr != -1) {
+ 		/* paddr_0 - p_addr_7 */
+-		send_addr(host, (page_addr & 0xff), false);
++		host->send_addr(host, (page_addr & 0xff), false);
  
+ 		if (mtd->writesize > 512) {
+ 			if (mtd->size >= 0x10000000) {
+ 				/* paddr_8 - paddr_15 */
+-				send_addr(host, (page_addr >> 8) & 0xff, false);
+-				send_addr(host, (page_addr >> 16) & 0xff, true);
++				host->send_addr(host, (page_addr >> 8) & 0xff, false);
++				host->send_addr(host, (page_addr >> 16) & 0xff, true);
+ 			} else
+ 				/* paddr_8 - paddr_15 */
+-				send_addr(host, (page_addr >> 8) & 0xff, true);
++				host->send_addr(host, (page_addr >> 8) & 0xff, true);
+ 		} else {
+ 			/* One more address cycle for higher density devices */
+ 			if (mtd->size >= 0x4000000) {
+ 				/* paddr_8 - paddr_15 */
+-				send_addr(host, (page_addr >> 8) & 0xff, false);
+-				send_addr(host, (page_addr >> 16) & 0xff, true);
++				host->send_addr(host, (page_addr >> 8) & 0xff, false);
++				host->send_addr(host, (page_addr >> 16) & 0xff, true);
+ 			} else
+ 				/* paddr_8 - paddr_15 */
+-				send_addr(host, (page_addr >> 8) & 0xff, true);
++				host->send_addr(host, (page_addr >> 8) & 0xff, true);
+ 		}
+ 	}
+ }
+ 
+-static void preset(struct mtd_info *mtd)
++static void preset_v1_v2(struct mtd_info *mtd)
+ {
+ 	struct nand_chip *nand_chip = mtd->priv;
+ 	struct mxc_nand_host *host = nand_chip->priv;
+@@ -602,15 +609,15 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 	/* Command pre-processing step */
+ 	switch (command) {
+ 	case NAND_CMD_RESET:
+-		send_cmd(host, command, false);
+-		preset(mtd);
++		host->send_cmd(host, command, false);
++		host->preset(mtd);
+ 		break;
+ 
+ 	case NAND_CMD_STATUS:
+ 		host->buf_start = 0;
+ 		host->status_request = true;
+ 
+-		send_cmd(host, command, true);
++		host->send_cmd(host, command, true);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		break;
+ 
+@@ -623,13 +630,13 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 
+ 		command = NAND_CMD_READ0; /* only READ0 is valid */
+ 
+-		send_cmd(host, command, false);
++		host->send_cmd(host, command, false);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 
+ 		if (mtd->writesize > 512)
+-			send_cmd(host, NAND_CMD_READSTART, true);
++			host->send_cmd(host, NAND_CMD_READSTART, true);
+ 
+-		send_page(mtd, NFC_OUTPUT);
++		host->send_page(mtd, NFC_OUTPUT);
+ 
+ 		memcpy(host->data_buf, host->main_area0, mtd->writesize);
+ 		copy_spare(mtd, true);
+@@ -642,28 +649,28 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+ 
+ 		host->buf_start = column;
+ 
+-		send_cmd(host, command, false);
++		host->send_cmd(host, command, false);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		break;
+ 
+ 	case NAND_CMD_PAGEPROG:
+ 		memcpy(host->main_area0, host->data_buf, mtd->writesize);
+ 		copy_spare(mtd, false);
+-		send_page(mtd, NFC_INPUT);
+-		send_cmd(host, command, true);
++		host->send_page(mtd, NFC_INPUT);
++		host->send_cmd(host, command, true);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 		break;
+ 
+ 	case NAND_CMD_READID:
+-		send_cmd(host, command, true);
++		host->send_cmd(host, command, true);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+-		send_read_id(host);
++		host->send_read_id(host);
+ 		host->buf_start = column;
+ 		break;
+ 
+ 	case NAND_CMD_ERASE1:
+ 	case NAND_CMD_ERASE2:
+-		send_cmd(host, command, false);
++		host->send_cmd(host, command, false);
+ 		mxc_do_addr_cycle(mtd, column, page_addr);
+ 
+ 		break;
+@@ -760,6 +767,15 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 
+ 	host->main_area0 = host->base;
+ 
++	if (nfc_is_v1() || nfc_is_v21()) {
++		host->preset = preset_v1_v2;
++		host->send_cmd = send_cmd_v1_v2;
++		host->send_addr = send_addr_v1_v2;
++		host->send_page = send_page_v1_v2;
++		host->send_read_id = send_read_id_v1_v2;
++		host->get_dev_status = get_dev_status_v1_v2;
++	}
++
  	if (nfc_is_v21()) {
  		host->regs = host->base + 0x1e00;
+ 		host->spare0 = host->base + 0x1000;
 -- 
 1.7.1
