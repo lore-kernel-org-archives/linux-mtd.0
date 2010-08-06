@@ -1,27 +1,20 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhGoY-0006kf-UE
-	for linux-mtd@lists.infradead.org; Fri, 06 Aug 2010 06:53:59 +0000
-From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>,
-	"'David Brownell'" <david-b@pacbell.net>
-References: <350720.60481.qm@web180309.mail.gq1.yahoo.com>
-	<1280920127.19499.20.camel@localhost>
-In-Reply-To: <1280920127.19499.20.camel@localhost>
-Subject: RE: [PATCH 1/2] mtdpart: memory accessor interface for MTD layer
-Date: Fri, 6 Aug 2010 12:18:22 +0530
-Message-ID: <000401cb3533$5c982470$15c86d50$@raj@ti.com>
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OhIev-0005At-Rz
+	for linux-mtd@lists.infradead.org; Fri, 06 Aug 2010 08:52:10 +0000
+Received: by iwn3 with SMTP id 3so1200019iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 06 Aug 2010 01:52:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Cc: 'Bernd Schmidt' <bernd.schmidt@analog.com>,
-	'David Brownell' <dbrownell@users.sourceforge.net>,
-	'Nicolas Pitre' <nico@fluxnic.net>,
-	'Kevin Hilman' <khilman@deeprootsystems.com>, linux-kernel@vger.kernel.org,
-	'David Howells' <dhowells@redhat.com>, linux-mtd@lists.infradead.org,
-	'Andrew Morton' <akpm@linux-foundation.org>
+In-Reply-To: <AANLkTilQGyVU4-_ipLDN3p5B6856jvugY9mKq9feWr9G@mail.gmail.com>
+References: <AANLkTinAXEkD4_sYtGAojAuecpkiTlxyylxLlQP2i_9D@mail.gmail.com>
+	<AANLkTilQGyVU4-_ipLDN3p5B6856jvugY9mKq9feWr9G@mail.gmail.com>
+Date: Fri, 6 Aug 2010 10:52:08 +0200
+Message-ID: <AANLkTik3emBFUbohWqjjBcuKWJFYDs8CDYiV+SJiO4Ro@mail.gmail.com>
+Subject: Re: uncorrectable error :
+From: Arno Steffen <arno.steffen@googlemail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+2010/7/6 Arno Steffen <arno.steffen@googlemail.com>:
+> I know this is not a good solution but for now I decided to do a
+> reboot, when this by "incorrectable error" occurs, as it will
+> disappear than.
+> Nevertheless I would be happy if one of the experts here could give me
+> some advice.
+>
 
-On Wed, Aug 04, 2010 at 16:38:47, David Woodhouse wrote:
-> On Wed, 2010-08-04 at 03:31 -0700, David Brownell wrote:
-> > Point is to ensure that enough of the right context
-> > information is available to initialize correctly.
-> > So the right data is extracted and passed on.
-> 
-> Forgive me if I'm being dim (and in particular, please forgive me if I'm
-> going over something that was already discussed; I know it's been a
-> while). But I don't see why it needs to be passed through the core MTD
-> code.
-> 
-> To take the simple case of an unpartitioned MTD device -- why can't the
-> map driver (or whatever) just call the maccessor setup function for
-> itself, directly, right after calling add_mtd_device() with its
-> newly-probed MTD device?
-> 
-> And for partitions, why can't it do the same, on the appropriate
-> partition.
-> 
-> OK, the answer to the latter question is that you don't actually *have*
-> the pointers to each partition you register. But that's easily fixed.
-> 
-> If we make add_mtd_partitions() take an extra 'struct mtd_info **'
-> argument and put pointers to the slave mtd 'devices' into that, it means
-> that your board driver *can* reliably get the mtd pointer for the fourth
-> partition, or whatever it needs. And can then just do the memory
-> accessor setup for itself.
-> 
-> Isn't that enough?
-> 
-
-Thanks for the feedback. I'll be re-working on this patch and will re-post
-the updated patch soon.
-
-Regards,
-Sudhakar
+Solved the issue, timing problem in OMAP. There is a kernel patch available.
+NAND timing violation: Specific patch that address the NAND timing
+issue is available as part of PSP 03.00.01.06
+(http://arago-project.org/git/people/?p=sriram/ti-psp-omap.git;a=commit;h=d04b6a46438de949570bf490089266192fa725c2)
