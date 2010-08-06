@@ -1,16 +1,15 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhNMX-0002HN-So
-	for linux-mtd@lists.infradead.org; Fri, 06 Aug 2010 13:53:35 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 8/8] mxc_nand: Add v3 (i.MX51) Support
-Date: Fri,  6 Aug 2010 15:53:11 +0200
-Message-Id: <1281102791-8089-9-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
-References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
-Cc: John Ogness <john.ogness@linutronix.de>, Baruch Siach <baruch@tkos.co.il>,
-	Sascha Hauer <s.hauer@pengutronix.de>, linux-arm-kernel@lists.infradead.org
+From: Valerie Aurora <vaurora@redhat.com>
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH 12/38] whiteout: jffs2 whiteout support
+Date: Fri,  6 Aug 2010 15:34:58 -0700
+Message-Id: <1281134124-17041-13-git-send-email-vaurora@redhat.com>
+In-Reply-To: <1281134124-17041-1-git-send-email-vaurora@redhat.com>
+References: <1281134124-17041-1-git-send-email-vaurora@redhat.com>
+Cc: Felix Fietkau <nbd@openwrt.org>, Miklos Szeredi <miklos@szeredi.hu>,
+	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
+	Valerie Aurora <vaurora@redhat.com>,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Jan Blunck <jblunck@suse.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,348 +19,184 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
----
- drivers/mtd/nand/Kconfig    |    2 +-
- drivers/mtd/nand/mxc_nand.c |  222 ++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 222 insertions(+), 2 deletions(-)
+From: Felix Fietkau <nbd@openwrt.org>
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 362d177..b8a03bd 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -482,7 +482,7 @@ config MTD_NAND_MPC5121_NFC
+Add support for whiteout dentries to jffs2.
+
+XXX - David Woodhouse suggests several changes and provides an
+untested patch.  See:
+
+http://patchwork.ozlabs.org/patch/50466/
+
+XXX - Backward compatibility?  Creating a whiteout on a JFFS2 file
+system can only happen if it is deliberately mounted "-o union" so
+there is some way to prevent creation of whiteouts on a file system
+you want to later mount with an earlier (no support for whiteout) file
+system.  However, ext2/3 has much more robust methods (explicit fs
+feature flag) to prevent such an occurance.
+
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+Signed-off-by: Valerie Aurora <vaurora@redhat.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ fs/jffs2/dir.c        |   72 +++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/jffs2/fs.c         |    4 +++
+ fs/jffs2/super.c      |    2 +-
+ include/linux/jffs2.h |    2 +
+ 4 files changed, 77 insertions(+), 3 deletions(-)
+
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index 166062a..4798586 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -34,6 +34,8 @@ static int jffs2_mknod (struct inode *,struct dentry *,int,dev_t);
+ static int jffs2_rename (struct inode *, struct dentry *,
+ 			 struct inode *, struct dentry *);
  
- config MTD_NAND_MXC
- 	tristate "MXC NAND support"
--	depends on ARCH_MX2 || ARCH_MX25 || ARCH_MX3
-+	depends on ARCH_MX2 || ARCH_MX25 || ARCH_MX3 || ARCH_MX51
- 	help
- 	  This enables the driver for the NAND flash controller on the
- 	  MXC processors.
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 030da08..d88f0fa 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -39,6 +39,8 @@
- 
- #define nfc_is_v21()		(cpu_is_mx25() || cpu_is_mx35())
- #define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
-+#define nfc_is_v3_2()		cpu_is_mx51()
-+#define nfc_is_v3()		nfc_is_v3_2()
- 
- /* Addresses for NFC registers */
- #define NFC_V1_V2_BUF_SIZE		(host->regs + 0x00)
-@@ -80,6 +82,54 @@
- #define NFC_ID				(1 << 4)
- #define NFC_STATUS			(1 << 5)
- 
-+#define NFC_V3_FLASH_CMD		(host->regs_axi + 0x00)
-+#define NFC_V3_FLASH_ADDR0		(host->regs_axi + 0x04)
++static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
 +
-+#define NFC_V3_CONFIG1			(host->regs_axi + 0x34)
-+#define NFC_V3_CONFIG1_SP_EN		(1 << 0)
-+#define NFC_V3_CONFIG1_RBA(x)		(((x) & 0x7 ) << 4)
-+
-+#define NFC_V3_ECC_STATUS_RESULT	(host->regs_axi + 0x38)
-+
-+#define NFC_V3_LAUNCH			(host->regs_axi + 0x40)
-+
-+#define NFC_V3_WRPROT			(host->regs_ip + 0x0)
-+#define NFC_V3_WRPROT_LOCK_TIGHT	(1 << 0)
-+#define NFC_V3_WRPROT_LOCK		(1 << 1)
-+#define NFC_V3_WRPROT_UNLOCK		(1 << 2)
-+#define NFC_V3_WRPROT_BLS_UNLOCK	(2 << 6)
-+
-+#define NFC_V3_WRPROT_UNLOCK_BLK_ADD0   (host->regs_ip + 0x04)
-+
-+#define NFC_V3_CONFIG2			(host->regs_ip + 0x24)
-+#define NFC_V3_CONFIG2_PS_512			(0 << 0)
-+#define NFC_V3_CONFIG2_PS_2048			(1 << 0)
-+#define NFC_V3_CONFIG2_PS_4096			(2 << 0)
-+#define NFC_V3_CONFIG2_ONE_CYCLE		(1 << 2)
-+#define NFC_V3_CONFIG2_ECC_EN			(1 << 3)
-+#define NFC_V3_CONFIG2_2CMD_PHASES		(1 << 4)
-+#define NFC_V3_CONFIG2_NUM_ADDR_PHASE0		(1 << 5)
-+#define NFC_V3_CONFIG2_ECC_MODE_8		(1 << 6)
-+#define NFC_V3_CONFIG2_PPB(x)			(((x) & 0x3) << 7)
-+#define NFC_V3_CONFIG2_NUM_ADDR_PHASE1(x)	(((x) & 0x3) << 12)
-+#define NFC_V3_CONFIG2_INT_MSK			(1 << 15)
-+#define NFC_V3_CONFIG2_ST_CMD(x)		(((x) & 0xff) << 24)
-+#define NFC_V3_CONFIG2_SPAS(x)			(((x) & 0xff) << 16)
-+
-+#define NFC_V3_CONFIG3				(host->regs_ip + 0x28)
-+#define NFC_V3_CONFIG3_ADD_OP(x)		(((x) & 0x3) << 0)
-+#define NFC_V3_CONFIG3_FW8			(1 << 3)
-+#define NFC_V3_CONFIG3_SBB(x)			(((x) & 0x7) << 8)
-+#define NFC_V3_CONFIG3_NUM_OF_DEVICES(x)	(((x) & 0x7) << 12)
-+#define NFC_V3_CONFIG3_RBB_MODE			(1 << 15)
-+#define NFC_V3_CONFIG3_NO_SDMA			(1 << 20)
-+
-+#define NFC_V3_IPC			(host->regs_ip + 0x2C)
-+#define NFC_V3_IPC_CREQ			(1 << 0)
-+#define NFC_V3_IPC_INT			(1 << 31)
-+
-+#define NFC_V3_DELAY_LINE		(host->regs_ip + 0x34)
-+
- struct mxc_nand_host {
- 	struct mtd_info		mtd;
- 	struct nand_chip	nand;
-@@ -91,6 +141,8 @@ struct mxc_nand_host {
- 
- 	void __iomem		*base;
- 	void __iomem		*regs;
-+	void __iomem		*regs_axi;
-+	void __iomem		*regs_ip;
- 	int			status_request;
- 	struct clk		*clk;
- 	int			clk_act;
-@@ -169,6 +221,20 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
- 
-+static int check_int_v3(struct mxc_nand_host *host)
-+{
-+	uint32_t tmp;
-+
-+	tmp = readl(NFC_V3_IPC);
-+	if (!(tmp & NFC_V3_IPC_INT))
-+		return 0;
-+
-+	tmp &= ~NFC_V3_IPC_INT;
-+	writel(tmp, NFC_V3_IPC);
-+
-+	return 1;
-+}
-+
- static int check_int_v1_v2(struct mxc_nand_host *host)
+ const struct file_operations jffs2_dir_operations =
  {
- 	uint32_t tmp;
-@@ -209,6 +275,18 @@ static void wait_op_done(struct mxc_nand_host *host, int useirq)
+ 	.read =		generic_read_dir,
+@@ -56,6 +58,7 @@ const struct inode_operations jffs2_dir_inode_operations =
+ 	.mknod =	jffs2_mknod,
+ 	.rename =	jffs2_rename,
+ 	.check_acl =	jffs2_check_acl,
++	.whiteout =     jffs2_whiteout,
+ 	.setattr =	jffs2_setattr,
+ 	.setxattr =	jffs2_setxattr,
+ 	.getxattr =	jffs2_getxattr,
+@@ -98,8 +101,14 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
+ 			fd = fd_list;
+ 		}
  	}
- }
- 
-+static void send_cmd_v3(struct mxc_nand_host *host, uint16_t cmd, int useirq)
-+{
-+	/* fill command */
-+	writel(cmd, NFC_V3_FLASH_CMD);
-+
-+	/* send out command */
-+	writel(NFC_CMD, NFC_V3_LAUNCH);
-+
-+	/* Wait for operation to complete */
-+	wait_op_done(host, useirq);
-+}
-+
- /* This function issues the specified command to the NAND device and
-  * waits for completion. */
- static void send_cmd_v1_v2(struct mxc_nand_host *host, uint16_t cmd, int useirq)
-@@ -237,6 +315,17 @@ static void send_cmd_v1_v2(struct mxc_nand_host *host, uint16_t cmd, int useirq)
+-	if (fd)
+-		ino = fd->ino;
++	if (fd) {
++		spin_lock(&target->d_lock);
++		if (fd->type == DT_WHT)
++			target->d_flags |= DCACHE_WHITEOUT;
++		else
++			ino = fd->ino;
++		spin_unlock(&target->d_lock);
++	}
+ 	mutex_unlock(&dir_f->sem);
+ 	if (ino) {
+ 		inode = jffs2_iget(dir_i->i_sb, ino);
+@@ -502,6 +511,11 @@ static int jffs2_mkdir (struct inode *dir_i, struct dentry *dentry, int mode)
+ 		return PTR_ERR(inode);
  	}
- }
  
-+static void send_addr_v3(struct mxc_nand_host *host, uint16_t addr, int islast)
-+{
-+	/* fill address */
-+	writel(addr, NFC_V3_FLASH_ADDR0);
-+
-+	/* send out address */
-+	writel(NFC_ADDR, NFC_V3_LAUNCH);
-+
-+	wait_op_done(host, 0);
-+}
-+
- /* This function sends an address (or partial address) to the
-  * NAND device. The address is used to select the source/destination for
-  * a NAND command. */
-@@ -251,6 +340,22 @@ static void send_addr_v1_v2(struct mxc_nand_host *host, uint16_t addr, int islas
- 	wait_op_done(host, islast);
- }
- 
-+static void send_page_v3(struct mtd_info *mtd, unsigned int ops)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct mxc_nand_host *host = nand_chip->priv;
-+	uint32_t tmp;
-+
-+	tmp = readl(NFC_V3_CONFIG1);
-+	tmp &= ~(7 << 4);
-+	writel(tmp, NFC_V3_CONFIG1);
-+
-+	/* transfer data from NFC ram to nand */
-+	writel(ops, NFC_V3_LAUNCH);
-+
-+	wait_op_done(host, false);
-+}
-+
- static void send_page_v1_v2(struct mtd_info *mtd, unsigned int ops)
- {
- 	struct nand_chip *nand_chip = mtd->priv;
-@@ -274,6 +379,16 @@ static void send_page_v1_v2(struct mtd_info *mtd, unsigned int ops)
- 	}
- }
- 
-+static void send_read_id_v3(struct mxc_nand_host *host)
-+{
-+	/* Read ID into main buffer */
-+	writel(NFC_ID, NFC_V3_LAUNCH);
-+
-+	wait_op_done(host, true);
-+
-+	memcpy(host->data_buf, host->main_area0, 16);
-+}
-+
- /* Request the NANDFC to perform a read of the NAND device ID. */
- static void send_read_id_v1_v2(struct mxc_nand_host *host)
- {
-@@ -299,6 +414,14 @@ static void send_read_id_v1_v2(struct mxc_nand_host *host)
- 	memcpy(host->data_buf, host->main_area0, 16);
- }
- 
-+static uint16_t get_dev_status_v3(struct mxc_nand_host *host)
-+{
-+	writew(NFC_STATUS, NFC_V3_LAUNCH);
-+	wait_op_done(host, true);
-+
-+	return readl(NFC_V3_CONFIG1) >> 16;
-+}
-+
- /* This function requests the NANDFC to perform a read of the
-  * NAND device status and returns the current status. */
- static uint16_t get_dev_status_v1_v2(struct mxc_nand_host *host)
-@@ -381,7 +504,10 @@ static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
- 
- 	no_subpages = mtd->writesize >> 9;
- 
--	ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
-+	if (nfc_is_v21())
-+		ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
-+	else
-+		ecc_stat = readl(NFC_V3_ECC_STATUS_RESULT);
- 
- 	do {
- 		err = ecc_stat & ecc_bit_mask;
-@@ -643,6 +769,72 @@ static void preset_v1_v2(struct mtd_info *mtd)
- 	writew(0x4, NFC_V1_V2_WRPROT);
- }
- 
-+static void preset_v3(struct mtd_info *mtd)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct mxc_nand_host *host = chip->priv;
-+	uint32_t config2, config3;
-+	int i, addr_phases;
-+
-+	writel(NFC_V3_CONFIG1_RBA(0), NFC_V3_CONFIG1);
-+	writel(NFC_V3_IPC_CREQ, NFC_V3_IPC);
-+
-+	/* Unlock the internal RAM Buffer */
-+	writel(NFC_V3_WRPROT_BLS_UNLOCK | NFC_V3_WRPROT_UNLOCK,
-+			NFC_V3_WRPROT);
-+
-+	/* Blocks to be unlocked */
-+	for (i = 0; i < NAND_MAX_CHIPS; i++)
-+		writel(0x0 |	(0xffff << 16),
-+				NFC_V3_WRPROT_UNLOCK_BLK_ADD0 + (i << 2));
-+
-+	writel(0, NFC_V3_IPC);
-+
-+	config2 = NFC_V3_CONFIG2_ONE_CYCLE |
-+		NFC_V3_CONFIG2_2CMD_PHASES |
-+		NFC_V3_CONFIG2_SPAS(mtd->oobsize >> 1) |
-+		NFC_V3_CONFIG2_ST_CMD(0x70) |
-+		NFC_V3_CONFIG2_NUM_ADDR_PHASE0;
-+
-+	if (chip->ecc.mode == NAND_ECC_HW)
-+		config2 |= NFC_V3_CONFIG2_ECC_EN;
-+
-+	addr_phases = fls(chip->pagemask) >> 3;
-+
-+	if (mtd->writesize == 2048) {
-+		config2 |= NFC_V3_CONFIG2_PS_2048;
-+		config2 |= NFC_V3_CONFIG2_NUM_ADDR_PHASE1(addr_phases);
-+	} else if (mtd->writesize == 4096) {
-+		config2 |= NFC_V3_CONFIG2_PS_4096;
-+		config2 |= NFC_V3_CONFIG2_NUM_ADDR_PHASE1(addr_phases);
-+	} else {
-+		config2 |= NFC_V3_CONFIG2_PS_512;
-+		config2 |= NFC_V3_CONFIG2_NUM_ADDR_PHASE1(addr_phases - 1);
++	if (dentry->d_flags & DCACHE_WHITEOUT) {
++		inode->i_flags |= S_OPAQUE;
++		ri->flags = cpu_to_je16(JFFS2_INO_FLAG_OPAQUE);
 +	}
 +
-+	if (mtd->writesize) {
-+		config2 |= NFC_V3_CONFIG2_PPB(ffs(mtd->erasesize / mtd->writesize) - 6);
-+		host->eccsize = get_eccsize(mtd);
-+		if (host->eccsize == 8)
-+			config2 |= NFC_V3_CONFIG2_ECC_MODE_8;
+ 	inode->i_op = &jffs2_dir_inode_operations;
+ 	inode->i_fop = &jffs2_dir_operations;
+ 
+@@ -784,6 +798,60 @@ static int jffs2_mknod (struct inode *dir_i, struct dentry *dentry, int mode, de
+ 	return ret;
+ }
+ 
++static int jffs2_whiteout (struct inode *dir, struct dentry *old_dentry,
++			   struct dentry *new_dentry)
++{
++	struct jffs2_sb_info *c = JFFS2_SB_INFO(dir->i_sb);
++	struct jffs2_inode_info *victim_f = NULL;
++	uint32_t now;
++	int ret;
++
++	/* If it's a directory, then check whether it is really empty */
++	if (new_dentry->d_inode) {
++		victim_f = JFFS2_INODE_INFO(old_dentry->d_inode);
++		if (S_ISDIR(old_dentry->d_inode->i_mode)) {
++			struct jffs2_full_dirent *fd;
++
++			mutex_lock(&victim_f->sem);
++			for (fd = victim_f->dents; fd; fd = fd->next) {
++				if (fd->ino) {
++					mutex_unlock(&victim_f->sem);
++					return -ENOTEMPTY;
++				}
++			}
++			mutex_unlock(&victim_f->sem);
++		}
 +	}
 +
-+	writel(config2, NFC_V3_CONFIG2);
++	now = get_seconds();
++	ret = jffs2_do_link(c, JFFS2_INODE_INFO(dir), 0, DT_WHT,
++			    new_dentry->d_name.name, new_dentry->d_name.len, now);
++	if (ret)
++		return ret;
 +
-+	config3 = NFC_V3_CONFIG3_NUM_OF_DEVICES(0) |
-+			NFC_V3_CONFIG3_NO_SDMA |
-+			NFC_V3_CONFIG3_RBB_MODE |
-+			NFC_V3_CONFIG3_SBB(6) | /* Reset default */
-+			NFC_V3_CONFIG3_ADD_OP(0);
++	spin_lock(&new_dentry->d_lock);
++	new_dentry->d_flags |= DCACHE_WHITEOUT;
++	spin_unlock(&new_dentry->d_lock);
++	d_add(new_dentry, NULL);
 +
-+	if (!(chip->options & NAND_BUSWIDTH_16))
-+		config3 |= NFC_V3_CONFIG3_FW8;
++	if (victim_f) {
++		/* There was a victim. Kill it off nicely */
++		drop_nlink(old_dentry->d_inode);
++		/* Don't oops if the victim was a dirent pointing to an
++		   inode which didn't exist. */
++		if (victim_f->inocache) {
++			mutex_lock(&victim_f->sem);
++			if (S_ISDIR(old_dentry->d_inode->i_mode))
++				victim_f->inocache->pino_nlink = 0;
++			else
++				victim_f->inocache->pino_nlink--;
++			mutex_unlock(&victim_f->sem);
++		}
++	}
 +
-+	writel(config3, NFC_V3_CONFIG3);
-+
-+	writel(0, NFC_V3_DELAY_LINE);
++	return 0;
 +}
 +
- /* Used by the upper layer to write command to NAND Flash for
-  * different operations to be carried out on NAND Flash */
- static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
-@@ -843,6 +1035,30 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		oob_smallpage = &nandv1_hw_eccoob_smallpage;
- 		oob_largepage = &nandv1_hw_eccoob_largepage;
- 		this->ecc.bytes = 3;
-+		host->eccsize = 1;
-+	} else if (nfc_is_v3_2()) {
-+		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-+		if (!res) {
-+			err = -ENODEV;
-+			goto eirq;
-+		}
-+		host->regs_ip = ioremap(res->start, resource_size(res));
-+		if (!host->regs_ip) {
-+			err = -ENOMEM;
-+			goto eirq;
-+		}
-+		host->regs_axi = host->base + 0x1e00;
-+		host->spare0 = host->base + 0x1000;
-+		host->spare_len = 64;
-+		host->preset = preset_v3;
-+		host->send_cmd = send_cmd_v3;
-+		host->send_addr = send_addr_v3;
-+		host->send_page = send_page_v3;
-+		host->send_read_id = send_read_id_v3;
-+		host->check_int = check_int_v3;
-+		host->get_dev_status = get_dev_status_v3;
-+		oob_smallpage = &nandv2_hw_eccoob_smallpage;
-+		oob_largepage = &nandv2_hw_eccoob_largepage;
- 	} else
- 		BUG();
+ static int jffs2_rename (struct inode *old_dir_i, struct dentry *old_dentry,
+ 			 struct inode *new_dir_i, struct dentry *new_dentry)
+ {
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 459d39d..cdb2667 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -301,6 +301,10 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
  
-@@ -920,6 +1136,8 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- escan:
- 	free_irq(host->irq, host);
- eirq:
-+	if (host->regs_ip)
-+		iounmap(host->regs_ip);
- 	iounmap(host->base);
- eres:
- 	clk_put(host->clk);
-@@ -939,6 +1157,8 @@ static int __devexit mxcnd_remove(struct platform_device *pdev)
+ 		inode->i_op = &jffs2_dir_inode_operations;
+ 		inode->i_fop = &jffs2_dir_operations;
++
++		if (je16_to_cpu(latest_node.flags) & JFFS2_INO_FLAG_OPAQUE)
++			inode->i_flags |= S_OPAQUE;
++
+ 		break;
+ 	}
+ 	case S_IFREG:
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 511e2d6..f998679 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -170,7 +170,7 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
  
- 	nand_release(&host->mtd);
- 	free_irq(host->irq, host);
-+	if (host->regs_ip)
-+		iounmap(host->regs_ip);
- 	iounmap(host->base);
- 	kfree(host);
+ 	sb->s_op = &jffs2_super_operations;
+ 	sb->s_export_op = &jffs2_export_ops;
+-	sb->s_flags = sb->s_flags | MS_NOATIME;
++	sb->s_flags = sb->s_flags | MS_NOATIME | MS_WHITEOUT;
+ 	sb->s_xattr = jffs2_xattr_handlers;
+ #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+ 	sb->s_flags |= MS_POSIXACL;
+diff --git a/include/linux/jffs2.h b/include/linux/jffs2.h
+index 0874ab5..cc6347f 100644
+--- a/include/linux/jffs2.h
++++ b/include/linux/jffs2.h
+@@ -87,6 +87,8 @@
+ #define JFFS2_INO_FLAG_USERCOMPR  2	/* User has requested a specific
+ 					   compression type */
  
++#define JFFS2_INO_FLAG_OPAQUE     4	/* Directory is opaque (for union mounts) */
++
+ 
+ /* These can go once we've made sure we've caught all uses without
+    byteswapping */
 -- 
-1.7.1
+1.6.3.3
