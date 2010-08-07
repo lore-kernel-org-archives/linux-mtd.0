@@ -1,12 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ohejh-0007Zi-Nw
-	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 08:26:34 +0000
+	id 1Ohejj-0007aF-Gs
+	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 08:26:36 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/7] UBIFS: recent patches
-Date: Sat,  7 Aug 2010 11:26:10 +0300
-Message-Id: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 1/7] UBIFS: switch to RO mode after synchronizing
+Date: Sat,  7 Aug 2010 11:26:11 +0300
+Message-Id: <1281169577-18664-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
+References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
 	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,21 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-while looking at the UBIFS gc_lnum  == -1 issue, and testing UBIFS in 2.6.35, I
-found few issues and made several patches. Here they go. I've also pushed them
-to ubifs-2.6 / master.
+In 'ubifs_garbage_collect()' on error path, we first switch to R/O mode, and
+then synchronize write-buffers (to make sure no data are lost). But the GC
+write-buffer synchronization will fail, because we are already in R/O mode.
+This patch re-orders this and makes sure we first synchronize the write-buffer,
+and then switch to R/O mode.
 
-Note, the GC sorting fixes are presumably important to have, so please, test
-them them before I've merged buggy versions upstream (2.6.37) and to back-port
-trees :-)
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/gc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Matthieu, I failed to figure out how gc_lnum can become -1 in the master node.
-Most probably I'll have to create a debugging patch and ask you to reproduce
-the error again, but do not thing I'll have time for this in August. So, you
-could try to look at the code and put more printk's in interesting places
-yourself, and find when exactly it becomes -1, and then how it ends up in the
-master node. That would be helpful.
-
-Artem.
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index 918d158..f89a422 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -774,8 +774,8 @@ out_unlock:
+ out:
+ 	ubifs_assert(ret < 0);
+ 	ubifs_assert(ret != -ENOSPC && ret != -EAGAIN);
+-	ubifs_ro_mode(c, ret);
+ 	ubifs_wbuf_sync_nolock(wbuf);
++	ubifs_ro_mode(c, ret);
+ 	mutex_unlock(&wbuf->io_mutex);
+ 	ubifs_return_leb(c, lp.lnum);
+ 	return ret;
+-- 
+1.7.1.1
