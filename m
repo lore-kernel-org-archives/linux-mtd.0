@@ -1,12 +1,12 @@
 Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ohejj-0007aF-Gs
+	id 1Ohejk-0007ae-8X
 	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 08:26:36 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/7] UBIFS: switch to RO mode after synchronizing
-Date: Sat,  7 Aug 2010 11:26:11 +0300
-Message-Id: <1281169577-18664-2-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 2/7] UBIFS: do not treat ENOSPC specially
+Date: Sat,  7 Aug 2010 11:26:12 +0300
+Message-Id: <1281169577-18664-3-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
 References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -22,11 +22,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-In 'ubifs_garbage_collect()' on error path, we first switch to R/O mode, and
-then synchronize write-buffers (to make sure no data are lost). But the GC
-write-buffer synchronization will fail, because we are already in R/O mode.
-This patch re-orders this and makes sure we first synchronize the write-buffer,
-and then switch to R/O mode.
+'ubifs_garbage_collect_leb()' should never return '-ENOSPC', and if it
+does, this is an error. Thus, do not treat this error code specially.
+'-EAGAIN' is a special error code, but not '-ENOSPC'.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
@@ -34,18 +32,17 @@ Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
  1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 918d158..f89a422 100644
+index f89a422..29ce1b3 100644
 --- a/fs/ubifs/gc.c
 +++ b/fs/ubifs/gc.c
-@@ -774,8 +774,8 @@ out_unlock:
- out:
- 	ubifs_assert(ret < 0);
- 	ubifs_assert(ret != -ENOSPC && ret != -EAGAIN);
--	ubifs_ro_mode(c, ret);
- 	ubifs_wbuf_sync_nolock(wbuf);
-+	ubifs_ro_mode(c, ret);
- 	mutex_unlock(&wbuf->io_mutex);
- 	ubifs_return_leb(c, lp.lnum);
- 	return ret;
+@@ -677,7 +677,7 @@ int ubifs_garbage_collect(struct ubifs_info *c, int anyway)
+ 
+ 		ret = ubifs_garbage_collect_leb(c, &lp);
+ 		if (ret < 0) {
+-			if (ret == -EAGAIN || ret == -ENOSPC) {
++			if (ret == -EAGAIN) {
+ 				/*
+ 				 * These codes are not errors, so we have to
+ 				 * return the LEB to lprops. But if the
 -- 
 1.7.1.1
