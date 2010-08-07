@@ -1,12 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ohejm-0007bC-E4
-	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 08:26:39 +0000
+	id 1Ohejo-0007ct-LA
+	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 08:26:41 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/7] UBIFS: fix GC sroting
-Date: Sat,  7 Aug 2010 11:26:14 +0300
-Message-Id: <1281169577-18664-5-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 6/7] UBIFS: do not use key type in list_sort compariosn fuction
+Date: Sat,  7 Aug 2010 11:26:16 +0300
+Message-Id: <1281169577-18664-7-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
 References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -22,91 +22,79 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Unfortunately, the comparison functions for both data and non-data nodes
-('data_nodes_cmp()' and 'nondata_nodes_cmp()') was screwed. It did not
-work for the case when 'inuma == inumb' and 'blka > blkb' or 'hasha > hashb'.
+Simplify the 'nondata_nodes_cmp()' a bit by using the
+'struct ubifs_scan_node->type' field, instead of the key type.
 
-Basically, this means that it did not actually sort the list. This is not
-fatal, but this means that GC did not optimize the on-flash layout as we
-thought it would.
-
-This issue was revealed by commit '835cc0c8477fdbc59e0217891d6f11061b1ac4e2' of
-Don Mullis: assertions in the comparison functions started triggering.
-
-This patch fixes the issue. Additionally, it makes the comparison functions
-return immediately the elements to compare are actually the same element.
-This is just a tiny optimization.
+And while on it, add more 'ubifs_assert()' statements to the 'list_sort()'
+comparison function in gc.c.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c |   34 ++++++++++++++--------------------
- 1 files changed, 14 insertions(+), 20 deletions(-)
+ fs/ubifs/gc.c |   29 ++++++++++++++++++++---------
+ 1 files changed, 20 insertions(+), 9 deletions(-)
 
 diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index d060c62..fbb9272 100644
+index f68e58d..0bc6565 100644
 --- a/fs/ubifs/gc.c
 +++ b/fs/ubifs/gc.c
-@@ -125,6 +125,9 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
- 	struct ubifs_scan_node *sa, *sb;
+@@ -130,8 +130,11 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
  
- 	cond_resched();
-+	if (a == b)
-+		return 0;
-+
  	sa = list_entry(a, struct ubifs_scan_node, list);
  	sb = list_entry(b, struct ubifs_scan_node, list);
++
  	ubifs_assert(key_type(c, &sa->key) == UBIFS_DATA_KEY);
-@@ -133,16 +136,10 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+ 	ubifs_assert(key_type(c, &sb->key) == UBIFS_DATA_KEY);
++	ubifs_assert(sa->type == UBIFS_DATA_NODE);
++	ubifs_assert(sb->type == UBIFS_DATA_NODE);
+ 
  	inuma = key_inum(c, &sa->key);
  	inumb = key_inum(c, &sb->key);
- 
--	if (inuma == inumb) {
--		unsigned int blka = key_block(c, &sa->key);
--		unsigned int blkb = key_block(c, &sb->key);
--
--		if (blka <= blkb)
--			return -1;
--	} else if (inuma <= inumb)
--		return -1;
--
--	return 1;
-+	if (inuma == inumb)
-+		return key_block(c, &sa->key) - key_block(c, &sb->key);
-+	else
-+		return inuma - inumb;
- }
- 
- /*
-@@ -163,6 +160,9 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+@@ -154,7 +157,6 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+  */
+ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+ {
+-	int typea, typeb;
+ 	ino_t inuma, inumb;
+ 	struct ubifs_info *c = priv;
  	struct ubifs_scan_node *sa, *sb;
+@@ -165,21 +167,30 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
  
- 	cond_resched();
-+	if (a == b)
-+		return 0;
-+
  	sa = list_entry(a, struct ubifs_scan_node, list);
  	sb = list_entry(b, struct ubifs_scan_node, list);
- 	typea = key_type(c, &sa->key);
-@@ -183,16 +183,10 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+-	typea = key_type(c, &sa->key);
+-	typeb = key_type(c, &sb->key);
+-	ubifs_assert(typea != UBIFS_DATA_KEY && typeb != UBIFS_DATA_KEY);
++
++	ubifs_assert(key_type(c, &sa->key) != UBIFS_DATA_KEY &&
++		     key_type(c, &sb->key) != UBIFS_DATA_KEY);
++	ubifs_assert(sa->type != UBIFS_DATA_NODE &&
++		     sb->type != UBIFS_DATA_NODE);
+ 
+ 	/* Inodes go before directory entries */
+-	if (typea == UBIFS_INO_KEY) {
+-		if (typeb == UBIFS_INO_KEY)
++	if (sa->type == UBIFS_INO_NODE) {
++		if (sb->type == UBIFS_INO_NODE)
+ 			return sb->len - sa->len;
+ 		return -1;
+ 	}
+-	if (typeb == UBIFS_INO_KEY)
++	if (sb->type == UBIFS_INO_NODE)
+ 		return 1;
+ 
+-	ubifs_assert(typea == UBIFS_DENT_KEY || typea == UBIFS_XENT_KEY);
+-	ubifs_assert(typeb == UBIFS_DENT_KEY || typeb == UBIFS_XENT_KEY);
++	ubifs_assert(key_type(c, &sa->key) == UBIFS_DENT_KEY ||
++		     key_type(c, &sa->key) == UBIFS_XENT_KEY);
++	ubifs_assert(key_type(c, &sb->key) == UBIFS_DENT_KEY ||
++		     key_type(c, &sb->key) == UBIFS_XENT_KEY);
++	ubifs_assert(sa->type == UBIFS_DENT_NODE ||
++		     sa->type == UBIFS_XENT_NODE);
++	ubifs_assert(sb->type == UBIFS_DENT_NODE ||
++		     sb->type == UBIFS_XENT_NODE);
++
  	inuma = key_inum(c, &sa->key);
  	inumb = key_inum(c, &sb->key);
  
--	if (inuma == inumb) {
--		uint32_t hasha = key_hash(c, &sa->key);
--		uint32_t hashb = key_hash(c, &sb->key);
--
--		if (hasha <= hashb)
--			return -1;
--	} else if (inuma <= inumb)
--		return -1;
--
--	return 1;
-+	if (inuma == inumb)
-+		return key_hash(c, &sa->key) - key_hash(c, &sb->key);
-+	else
-+		return inuma - inumb;
- }
- 
- /**
 -- 
 1.7.1.1
