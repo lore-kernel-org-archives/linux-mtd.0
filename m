@@ -1,17 +1,20 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhfRH-0001bv-Rr
-	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 09:11:36 +0000
-Date: Sat, 7 Aug 2010 11:09:29 +0200 (CEST)
-From: Julia Lawall <julia@diku.dk>
-To: Artem Bityutskiy <dedekind1@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH 2/2] drivers/mtd/ubi: Eliminate update of list_for_each_entry
-	loop cursor
-Message-ID: <Pine.LNX.4.64.1008071109140.5821@ask.diku.dk>
+	id 1OhiB3-00055I-DZ
+	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 12:07:02 +0000
+Message-ID: <4C5D4C5D.3090204@nokia.com>
+Date: Sat, 07 Aug 2010 15:06:53 +0300
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 5/7] UBIFS: do not look up junk nodes
+References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
+	<1281169577-18664-6-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1281169577-18664-6-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+Artem Bityutskiy wrote:
+> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> 
+> When moving nodes, do not try to look up truncation and padding nodes in TNC,
+> because they do not exist there. This bug was most probably harmless, because
+> the TNC look-up probably failed for all padding and truncation nodes, but it
 
-list_for_each_entry uses its first argument to move from one element to the
-next, so modifying it can break the iteration.  The variable re1 is already
-used within the loop as a temporary variable, and is not live here.
+The scan does not return padding nodes.
 
-The semantic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
+> could also succeed and lead to various "interesting" errors.
 
-// <smpl>
-@r@
-iterator name list_for_each_entry;
-expression x,E;
-position p1,p2;
-@@
+Why would it succeed?
 
-list_for_each_entry@p1(x,...) { <... x =@p2 E ...> }
-
-@@
-expression x,E;
-position r.p1,r.p2;
-statement S;
-@@
-
-*x =@p2 E
-...
-list_for_each_entry@p1(x,...) S
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/ubi/cdev.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 4dfa6b9..3d2d1a6 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -798,18 +798,18 @@ static int rename_volumes(struct ubi_device *ubi,
- 			goto out_free;
- 		}
- 
--		re = kzalloc(sizeof(struct ubi_rename_entry), GFP_KERNEL);
--		if (!re) {
-+		re1 = kzalloc(sizeof(struct ubi_rename_entry), GFP_KERNEL);
-+		if (!re1) {
- 			err = -ENOMEM;
- 			ubi_close_volume(desc);
- 			goto out_free;
- 		}
- 
--		re->remove = 1;
--		re->desc = desc;
--		list_add(&re->list, &rename_list);
-+		re1->remove = 1;
-+		re1->desc = desc;
-+		list_add(&re1->list, &rename_list);
- 		dbg_msg("will remove volume %d, name \"%s\"",
--			re->desc->vol->vol_id, re->desc->vol->name);
-+			re1->desc->vol->vol_id, re1->desc->vol->name);
- 	}
- 
- 	mutex_lock(&ubi->device_mutex);
+> 
+> This patch fixes the issue.
+> 
+> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> ---
+>  fs/ubifs/gc.c |   23 ++++++++++++++++++++---
+>  1 files changed, 20 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+> index fbb9272..f68e58d 100644
+> --- a/fs/ubifs/gc.c
+> +++ b/fs/ubifs/gc.c
+> @@ -227,9 +227,26 @@ static int sort_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+>  	list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
+>  		int err;
+>  
+> -		ubifs_assert(snod->type != UBIFS_IDX_NODE);
+> -		ubifs_assert(snod->type != UBIFS_REF_NODE);
+> -		ubifs_assert(snod->type != UBIFS_CS_NODE);
+> +		ubifs_assert(snod->type == UBIFS_INO_NODE  ||
+> +			     snod->type == UBIFS_DATA_NODE ||
+> +			     snod->type == UBIFS_DENT_NODE ||
+> +			     snod->type == UBIFS_XENT_NODE ||
+> +			     snod->type == UBIFS_TRUN_NODE ||
+> +			     snod->type == UBIFS_PAD_NODE);
+> +		ubifs_assert(key_type(c, &snod->key) == UBIFS_DATA_KEY ||
+> +			     key_type(c, &snod->key) == UBIFS_INO_KEY  ||
+> +			     key_type(c, &snod->key) == UBIFS_DENT_KEY ||
+> +			     key_type(c, &snod->key) == UBIFS_XENT_KEY);
+> +
+> +		if (snod->type != UBIFS_INO_NODE  &&
+> +		    snod->type != UBIFS_DATA_NODE &&
+> +		    snod->type != UBIFS_DENT_NODE &&
+> +		    snod->type != UBIFS_XENT_NODE) {
+> +			/* Truncation or padding node, zap it */
+> +			list_del(&snod->list);
+> +			kfree(snod);
+> +			continue;
+> +		}
+>  
+>  		err = ubifs_tnc_has_node(c, &snod->key, 0, sleb->lnum,
+>  					 snod->offs, 0);
