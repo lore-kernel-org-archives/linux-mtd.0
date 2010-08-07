@@ -1,16 +1,16 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhiB3-00055I-DZ
-	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 12:07:02 +0000
-Message-ID: <4C5D4C5D.3090204@nokia.com>
-Date: Sat, 07 Aug 2010 15:06:53 +0300
+	id 1OhiFn-0006hc-UH
+	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 12:11:57 +0000
+Message-ID: <4C5D4D85.4000800@nokia.com>
+Date: Sat, 07 Aug 2010 15:11:49 +0300
 From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 5/7] UBIFS: do not look up junk nodes
+Subject: Re: [PATCH 4/7] UBIFS: fix GC sroting
 References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
-	<1281169577-18664-6-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1281169577-18664-6-git-send-email-dedekind1@gmail.com>
+	<1281169577-18664-5-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1281169577-18664-5-git-send-email-dedekind1@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
@@ -27,55 +27,93 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Artem Bityutskiy wrote:
 > From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 > 
-> When moving nodes, do not try to look up truncation and padding nodes in TNC,
-> because they do not exist there. This bug was most probably harmless, because
-> the TNC look-up probably failed for all padding and truncation nodes, but it
+> Unfortunately, the comparison functions for both data and non-data nodes
+> ('data_nodes_cmp()' and 'nondata_nodes_cmp()') was screwed. It did not
+> work for the case when 'inuma == inumb' and 'blka > blkb' or 'hasha > hashb'.
 
-The scan does not return padding nodes.
-
-> could also succeed and lead to various "interesting" errors.
-
-Why would it succeed?
+Can you explain a bit more.  The old logic looks OK to me whereas the
+new logic would seem to make block 0x80000001 < 0x00000001 ?
 
 > 
-> This patch fixes the issue.
+> Basically, this means that it did not actually sort the list. This is not
+> fatal, but this means that GC did not optimize the on-flash layout as we
+> thought it would.
+> 
+> This issue was revealed by commit '835cc0c8477fdbc59e0217891d6f11061b1ac4e2' of
+> Don Mullis: assertions in the comparison functions started triggering.
+> 
+> This patch fixes the issue. Additionally, it makes the comparison functions
+> return immediately the elements to compare are actually the same element.
+> This is just a tiny optimization.
 > 
 > Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 > ---
->  fs/ubifs/gc.c |   23 ++++++++++++++++++++---
->  1 files changed, 20 insertions(+), 3 deletions(-)
+>  fs/ubifs/gc.c |   34 ++++++++++++++--------------------
+>  1 files changed, 14 insertions(+), 20 deletions(-)
 > 
 > diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-> index fbb9272..f68e58d 100644
+> index d060c62..fbb9272 100644
 > --- a/fs/ubifs/gc.c
 > +++ b/fs/ubifs/gc.c
-> @@ -227,9 +227,26 @@ static int sort_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
->  	list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
->  		int err;
+> @@ -125,6 +125,9 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+>  	struct ubifs_scan_node *sa, *sb;
 >  
-> -		ubifs_assert(snod->type != UBIFS_IDX_NODE);
-> -		ubifs_assert(snod->type != UBIFS_REF_NODE);
-> -		ubifs_assert(snod->type != UBIFS_CS_NODE);
-> +		ubifs_assert(snod->type == UBIFS_INO_NODE  ||
-> +			     snod->type == UBIFS_DATA_NODE ||
-> +			     snod->type == UBIFS_DENT_NODE ||
-> +			     snod->type == UBIFS_XENT_NODE ||
-> +			     snod->type == UBIFS_TRUN_NODE ||
-> +			     snod->type == UBIFS_PAD_NODE);
-> +		ubifs_assert(key_type(c, &snod->key) == UBIFS_DATA_KEY ||
-> +			     key_type(c, &snod->key) == UBIFS_INO_KEY  ||
-> +			     key_type(c, &snod->key) == UBIFS_DENT_KEY ||
-> +			     key_type(c, &snod->key) == UBIFS_XENT_KEY);
+>  	cond_resched();
+> +	if (a == b)
+> +		return 0;
 > +
-> +		if (snod->type != UBIFS_INO_NODE  &&
-> +		    snod->type != UBIFS_DATA_NODE &&
-> +		    snod->type != UBIFS_DENT_NODE &&
-> +		    snod->type != UBIFS_XENT_NODE) {
-> +			/* Truncation or padding node, zap it */
-> +			list_del(&snod->list);
-> +			kfree(snod);
-> +			continue;
-> +		}
+>  	sa = list_entry(a, struct ubifs_scan_node, list);
+>  	sb = list_entry(b, struct ubifs_scan_node, list);
+>  	ubifs_assert(key_type(c, &sa->key) == UBIFS_DATA_KEY);
+> @@ -133,16 +136,10 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+>  	inuma = key_inum(c, &sa->key);
+>  	inumb = key_inum(c, &sb->key);
 >  
->  		err = ubifs_tnc_has_node(c, &snod->key, 0, sleb->lnum,
->  					 snod->offs, 0);
+> -	if (inuma == inumb) {
+> -		unsigned int blka = key_block(c, &sa->key);
+> -		unsigned int blkb = key_block(c, &sb->key);
+> -
+> -		if (blka <= blkb)
+> -			return -1;
+> -	} else if (inuma <= inumb)
+> -		return -1;
+> -
+> -	return 1;
+> +	if (inuma == inumb)
+> +		return key_block(c, &sa->key) - key_block(c, &sb->key);
+> +	else
+> +		return inuma - inumb;
+>  }
+>  
+>  /*
+> @@ -163,6 +160,9 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+>  	struct ubifs_scan_node *sa, *sb;
+>  
+>  	cond_resched();
+> +	if (a == b)
+> +		return 0;
+> +
+>  	sa = list_entry(a, struct ubifs_scan_node, list);
+>  	sb = list_entry(b, struct ubifs_scan_node, list);
+>  	typea = key_type(c, &sa->key);
+> @@ -183,16 +183,10 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+>  	inuma = key_inum(c, &sa->key);
+>  	inumb = key_inum(c, &sb->key);
+>  
+> -	if (inuma == inumb) {
+> -		uint32_t hasha = key_hash(c, &sa->key);
+> -		uint32_t hashb = key_hash(c, &sb->key);
+> -
+> -		if (hasha <= hashb)
+> -			return -1;
+> -	} else if (inuma <= inumb)
+> -		return -1;
+> -
+> -	return 1;
+> +	if (inuma == inumb)
+> +		return key_hash(c, &sa->key) - key_hash(c, &sb->key);
+> +	else
+> +		return inuma - inumb;
+>  }
+>  
+>  /**
