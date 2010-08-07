@@ -1,12 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ohejl-0007ag-5x
-	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 08:26:37 +0000
+	id 1Ohejm-0007c0-GO
+	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 08:26:39 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/7] UBIFS: fix assertion warning
-Date: Sat,  7 Aug 2010 11:26:13 +0300
-Message-Id: <1281169577-18664-4-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 5/7] UBIFS: do not look up junk nodes
+Date: Sat,  7 Aug 2010 11:26:15 +0300
+Message-Id: <1281169577-18664-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
 References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -22,31 +22,51 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This patch fixes the following false assertion warning:
+When moving nodes, do not try to look up truncation and padding nodes in TNC,
+because they do not exist there. This bug was most probably harmless, because
+the TNC look-up probably failed for all padding and truncation nodes, but it
+could also succeed and lead to various "interesting" errors.
 
-UBIFS assert failed in data_nodes_cmp at 130 (pid 15107)
-
-The assertion was wrong because it did not take into account that the
-node can be an xentry.
+This patch fixes the issue.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ fs/ubifs/gc.c |   23 ++++++++++++++++++++---
+ 1 files changed, 20 insertions(+), 3 deletions(-)
 
 diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 29ce1b3..d060c62 100644
+index fbb9272..f68e58d 100644
 --- a/fs/ubifs/gc.c
 +++ b/fs/ubifs/gc.c
-@@ -178,7 +178,8 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
- 	if (typeb == UBIFS_INO_KEY)
- 		return 1;
+@@ -227,9 +227,26 @@ static int sort_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 	list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
+ 		int err;
  
--	ubifs_assert(typea == UBIFS_DENT_KEY && typeb == UBIFS_DENT_KEY);
-+	ubifs_assert(typea == UBIFS_DENT_KEY || typea == UBIFS_XENT_KEY);
-+	ubifs_assert(typeb == UBIFS_DENT_KEY || typeb == UBIFS_XENT_KEY);
- 	inuma = key_inum(c, &sa->key);
- 	inumb = key_inum(c, &sb->key);
+-		ubifs_assert(snod->type != UBIFS_IDX_NODE);
+-		ubifs_assert(snod->type != UBIFS_REF_NODE);
+-		ubifs_assert(snod->type != UBIFS_CS_NODE);
++		ubifs_assert(snod->type == UBIFS_INO_NODE  ||
++			     snod->type == UBIFS_DATA_NODE ||
++			     snod->type == UBIFS_DENT_NODE ||
++			     snod->type == UBIFS_XENT_NODE ||
++			     snod->type == UBIFS_TRUN_NODE ||
++			     snod->type == UBIFS_PAD_NODE);
++		ubifs_assert(key_type(c, &snod->key) == UBIFS_DATA_KEY ||
++			     key_type(c, &snod->key) == UBIFS_INO_KEY  ||
++			     key_type(c, &snod->key) == UBIFS_DENT_KEY ||
++			     key_type(c, &snod->key) == UBIFS_XENT_KEY);
++
++		if (snod->type != UBIFS_INO_NODE  &&
++		    snod->type != UBIFS_DATA_NODE &&
++		    snod->type != UBIFS_DENT_NODE &&
++		    snod->type != UBIFS_XENT_NODE) {
++			/* Truncation or padding node, zap it */
++			list_del(&snod->list);
++			kfree(snod);
++			continue;
++		}
  
+ 		err = ubifs_tnc_has_node(c, &snod->key, 0, sleb->lnum,
+ 					 snod->offs, 0);
 -- 
 1.7.1.1
