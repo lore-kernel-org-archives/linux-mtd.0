@@ -1,15 +1,23 @@
-From: Valerie Aurora <vaurora@redhat.com>
-To: Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 24/39] fallthru: jffs2 fallthru support
-Date: Sun,  8 Aug 2010 11:52:41 -0400
-Message-Id: <1281282776-5447-25-git-send-email-vaurora@redhat.com>
-In-Reply-To: <1281282776-5447-1-git-send-email-vaurora@redhat.com>
-References: <1281282776-5447-1-git-send-email-vaurora@redhat.com>
-Cc: Felix Fietkau <nbd@openwrt.org>, Miklos Szeredi <miklos@szeredi.hu>,
-	linux-kernel@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-	Valerie Aurora <vaurora@redhat.com>,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	Jan Blunck <jblunck@suse.de>, David Woodhouse <dwmw2@infradead.org>
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiA27-0006Fm-JJ
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 17:51:40 +0000
+Received: by qwe4 with SMTP id 4so7605978qwe.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 08 Aug 2010 10:51:38 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1281169577-18664-3-git-send-email-dedekind1@gmail.com>
+References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
+	<1281169577-18664-3-git-send-email-dedekind1@gmail.com>
+Date: Sun, 8 Aug 2010 13:51:37 -0400
+Message-ID: <AANLkTinexMZo_7aTx3cvs=Nk1freiH+jeuo2bYyMrXJu@mail.gmail.com>
+Subject: Re: [PATCH 2/7] UBIFS: do not treat ENOSPC specially
+From: Vitaly Wool <vitalywool@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,146 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Felix Fietkau <nbd@openwrt.org>
+Hi Artem,
 
-Add support for fallthru dentries to jffs2.
+On Sat, Aug 7, 2010 at 4:26 AM, Artem Bityutskiy <dedekind1@gmail.com> wrot=
+e:
+> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+>
+> 'ubifs_garbage_collect_leb()' should never return '-ENOSPC', and if it
+> does, this is an error. Thus, do not treat this error code specially.
+> '-EAGAIN' is a special error code, but not '-ENOSPC'.
+>
+> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> ---
+> =A0fs/ubifs/gc.c | =A0 =A02 +-
+> =A01 files changed, 1 insertions(+), 1 deletions(-)
+>
+> diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+> index f89a422..29ce1b3 100644
+> --- a/fs/ubifs/gc.c
+> +++ b/fs/ubifs/gc.c
+> @@ -677,7 +677,7 @@ int ubifs_garbage_collect(struct ubifs_info *c, int a=
+nyway)
+>
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret =3D ubifs_garbage_collect_leb(c, &lp);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ret < 0) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret =3D=3D -EAGAIN || r=
+et =3D=3D -ENOSPC) {
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret =3D=3D -EAGAIN) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * These c=
+odes are not errors, so we have to
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * return =
+the LEB to lprops. But if the
 
-XXX - untested changes including generic_readdir_fallthru()
+(just passing by...) probably the comment should be updated as well?
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-Signed-off-by: Valerie Aurora <vaurora@redhat.com>
----
- fs/jffs2/dir.c        |   49 +++++++++++++++++++++++++++++++++++++++++++++----
- include/linux/jffs2.h |    6 ++++++
- 2 files changed, 51 insertions(+), 4 deletions(-)
-
-diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index 4798586..453e695 100644
---- a/fs/jffs2/dir.c
-+++ b/fs/jffs2/dir.c
-@@ -35,6 +35,7 @@ static int jffs2_rename (struct inode *, struct dentry *,
- 			 struct inode *, struct dentry *);
- 
- static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
-+static int jffs2_fallthru (struct inode *, struct dentry *);
- 
- const struct file_operations jffs2_dir_operations =
- {
-@@ -59,6 +60,7 @@ const struct inode_operations jffs2_dir_inode_operations =
- 	.rename =	jffs2_rename,
- 	.check_acl =	jffs2_check_acl,
- 	.whiteout =     jffs2_whiteout,
-+	.fallthru =     jffs2_fallthru,
- 	.setattr =	jffs2_setattr,
- 	.setxattr =	jffs2_setxattr,
- 	.getxattr =	jffs2_getxattr,
-@@ -103,10 +105,14 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
- 	}
- 	if (fd) {
- 		spin_lock(&target->d_lock);
--		if (fd->type == DT_WHT)
-+		switch (fd->type) {
-+		case DT_WHT:
- 			target->d_flags |= DCACHE_WHITEOUT;
--		else
-+		case JFFS2_DT_FALLTHRU:
-+			target->d_flags |= DCACHE_FALLTHRU;
-+		default:
- 			ino = fd->ino;
-+		}
- 		spin_unlock(&target->d_lock);
- 	}
- 	mutex_unlock(&dir_f->sem);
-@@ -131,6 +137,8 @@ static int jffs2_readdir(struct file *filp, void *dirent, filldir_t filldir)
- 	struct inode *inode = filp->f_path.dentry->d_inode;
- 	struct jffs2_full_dirent *fd;
- 	unsigned long offset, curofs;
-+	ino_t ino;
-+	char d_type;
- 
- 	D1(printk(KERN_DEBUG "jffs2_readdir() for dir_i #%lu\n", filp->f_path.dentry->d_inode->i_ino));
- 
-@@ -164,13 +172,25 @@ static int jffs2_readdir(struct file *filp, void *dirent, filldir_t filldir)
- 				  fd->name, fd->ino, fd->type, curofs, offset));
- 			continue;
- 		}
--		if (!fd->ino) {
-+		if (fd->type == JFFS2_DT_FALLTHRU) {
-+			int err;
-+			err = generic_readdir_fallthru(filp->f_path.dentry, fd->name, strlen(fd->name),
-+						       &ino, &d_type);
-+			if (err) {
-+				D2(printk(KERN_DEBUG "Skipping fallthru dirent \"%s\"\n", fd->name));
-+				offset++;
-+				continue;
-+			}
-+		} else if (!fd->ino && (fd->type != DT_WHT)) {
- 			D2(printk(KERN_DEBUG "Skipping deletion dirent \"%s\"\n", fd->name));
- 			offset++;
- 			continue;
-+		} else {
-+			ino = fd->ino;
-+			d_type = fd->type;
- 		}
- 		D2(printk(KERN_DEBUG "Dirent %ld: \"%s\", ino #%u, type %d\n", offset, fd->name, fd->ino, fd->type));
--		if (filldir(dirent, fd->name, strlen(fd->name), offset, fd->ino, fd->type) < 0)
-+		if (filldir(dirent, fd->name, strlen(fd->name), offset, ino, d_type) < 0)
- 			break;
- 		offset++;
- 	}
-@@ -798,6 +818,26 @@ static int jffs2_mknod (struct inode *dir_i, struct dentry *dentry, int mode, de
- 	return ret;
- }
- 
-+static int jffs2_fallthru (struct inode *dir, struct dentry *dentry)
-+{
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(dir->i_sb);
-+	uint32_t now;
-+	int ret;
-+
-+	now = get_seconds();
-+	ret = jffs2_do_link(c, JFFS2_INODE_INFO(dir), 0, DT_UNKNOWN,
-+			    dentry->d_name.name, dentry->d_name.len, now);
-+	if (ret)
-+		return ret;
-+
-+	d_instantiate(dentry, NULL);
-+	spin_lock(&dentry->d_lock);
-+	dentry->d_flags |= DCACHE_FALLTHRU;
-+	spin_unlock(&dentry->d_lock);
-+
-+	return 0;
-+}
-+
- static int jffs2_whiteout (struct inode *dir, struct dentry *old_dentry,
- 			   struct dentry *new_dentry)
- {
-@@ -830,6 +870,7 @@ static int jffs2_whiteout (struct inode *dir, struct dentry *old_dentry,
- 		return ret;
- 
- 	spin_lock(&new_dentry->d_lock);
-+	new_dentry->d_flags &= ~DCACHE_FALLTHRU;
- 	new_dentry->d_flags |= DCACHE_WHITEOUT;
- 	spin_unlock(&new_dentry->d_lock);
- 	d_add(new_dentry, NULL);
-diff --git a/include/linux/jffs2.h b/include/linux/jffs2.h
-index cc6347f..f3cedf6 100644
---- a/include/linux/jffs2.h
-+++ b/include/linux/jffs2.h
-@@ -114,6 +114,12 @@ struct jffs2_unknown_node
- 	jint32_t hdr_crc;
- };
- 
-+/*
-+ * Non-standard directory entry type(s), for on-disk use
-+ */
-+
-+#define                JFFS2_DT_FALLTHRU       (DT_WHT + 1)
-+
- struct jffs2_raw_dirent
- {
- 	jint16_t magic;
--- 
-1.6.3.3
+Thanks,
+   Vitaly
