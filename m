@@ -1,23 +1,23 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiA27-0006Fm-JJ
-	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 17:51:40 +0000
-Received: by qwe4 with SMTP id 4so7605978qwe.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 08 Aug 2010 10:51:38 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiCio-0004PC-6L
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 20:43:55 +0000
+Date: Sun, 8 Aug 2010 22:43:41 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH 6/8] mxc_nand: fix correct_data function
+Message-ID: <20100808204341.GA20065@pengutronix.de>
+References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
+	<1281102791-8089-7-git-send-email-s.hauer@pengutronix.de>
+	<20100808081955.GB8687@n2100.arm.linux.org.uk>
+	<20100808083244.GC21128@jasper.tkos.co.il>
 MIME-Version: 1.0
-In-Reply-To: <1281169577-18664-3-git-send-email-dedekind1@gmail.com>
-References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
-	<1281169577-18664-3-git-send-email-dedekind1@gmail.com>
-Date: Sun, 8 Aug 2010 13:51:37 -0400
-Message-ID: <AANLkTinexMZo_7aTx3cvs=Nk1freiH+jeuo2bYyMrXJu@mail.gmail.com>
-Subject: Re: [PATCH 2/7] UBIFS: do not treat ENOSPC specially
-From: Vitaly Wool <vitalywool@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20100808083244.GC21128@jasper.tkos.co.il>
+Cc: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	John Ogness <john.ogness@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Sun, Aug 08, 2010 at 11:32:44AM +0300, Baruch Siach wrote:
+> Hi Russell,
+> 
+> On Sun, Aug 08, 2010 at 09:19:56AM +0100, Russell King - ARM Linux wrote:
+> > On Fri, Aug 06, 2010 at 03:53:09PM +0200, Sascha Hauer wrote:
+> > > +		err = ecc_stat & ecc_bit_mask;
+> > > +		if (err > err_limit) {
+> > > +			printk(KERN_WARNING "UnCorrectable RS-ECC Error\n");
+> > > +			return -1;
+> > 
+> > Someone's being lazy.
+> 
+> The code at nand_read_subpage() (drivers/mtd/nand/nand_base.c) expects the 
+> .correct callback to return -1 on an uncorrectable error:
+> 
+>                 stat = chip->ecc.correct(mtd, p, &chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
+>                 if (stat == -1)
+>                         mtd->ecc_stats.failed++;
+>                 else
+>                         mtd->ecc_stats.corrected += stat;
 
-On Sat, Aug 7, 2010 at 4:26 AM, Artem Bityutskiy <dedekind1@gmail.com> wrot=
-e:
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
->
-> 'ubifs_garbage_collect_leb()' should never return '-ENOSPC', and if it
-> does, this is an error. Thus, do not treat this error code specially.
-> '-EAGAIN' is a special error code, but not '-ENOSPC'.
->
-> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> ---
-> =A0fs/ubifs/gc.c | =A0 =A02 +-
-> =A01 files changed, 1 insertions(+), 1 deletions(-)
->
-> diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-> index f89a422..29ce1b3 100644
-> --- a/fs/ubifs/gc.c
-> +++ b/fs/ubifs/gc.c
-> @@ -677,7 +677,7 @@ int ubifs_garbage_collect(struct ubifs_info *c, int a=
-nyway)
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0ret =3D ubifs_garbage_collect_leb(c, &lp);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ret < 0) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret =3D=3D -EAGAIN || r=
-et =3D=3D -ENOSPC) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret =3D=3D -EAGAIN) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/*
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * These c=
-odes are not errors, so we have to
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * return =
-the LEB to lprops. But if the
+Then this should be changed to check for stat < 0. I found some drivers
+in the tree returning an errno value in their .correct function instead
+of -1.
 
-(just passing by...) probably the comment should be updated as well?
+Sascha
 
-Thanks,
-   Vitaly
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
