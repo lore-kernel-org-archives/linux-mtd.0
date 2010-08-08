@@ -1,12 +1,12 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oi2db-0003Hq-Jh
-	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:57:52 +0000
+	id 1Oi2dc-0003Ib-9O
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:57:53 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCHv2 2/9] UBIFS: do not treat ENOSPC specially
-Date: Sun,  8 Aug 2010 12:57:25 +0300
-Message-Id: <1281261452-9868-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCHv2 3/9] UBIFS: fix assertion warning
+Date: Sun,  8 Aug 2010 12:57:26 +0300
+Message-Id: <1281261452-9868-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -22,27 +22,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-'ubifs_garbage_collect_leb()' should never return '-ENOSPC', and if it
-does, this is an error. Thus, do not treat this error code specially.
-'-EAGAIN' is a special error code, but not '-ENOSPC'.
+This patch fixes the following false assertion warning:
+
+UBIFS assert failed in data_nodes_cmp at 130 (pid 15107)
+
+The assertion was wrong because it did not take into account that the
+node can be an xentry.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ fs/ubifs/gc.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
 diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index f89a422..29ce1b3 100644
+index 29ce1b3..d060c62 100644
 --- a/fs/ubifs/gc.c
 +++ b/fs/ubifs/gc.c
-@@ -677,7 +677,7 @@ int ubifs_garbage_collect(struct ubifs_info *c, int anyway)
+@@ -178,7 +178,8 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+ 	if (typeb == UBIFS_INO_KEY)
+ 		return 1;
  
- 		ret = ubifs_garbage_collect_leb(c, &lp);
- 		if (ret < 0) {
--			if (ret == -EAGAIN || ret == -ENOSPC) {
-+			if (ret == -EAGAIN) {
- 				/*
- 				 * These codes are not errors, so we have to
- 				 * return the LEB to lprops. But if the
+-	ubifs_assert(typea == UBIFS_DENT_KEY && typeb == UBIFS_DENT_KEY);
++	ubifs_assert(typea == UBIFS_DENT_KEY || typea == UBIFS_XENT_KEY);
++	ubifs_assert(typeb == UBIFS_DENT_KEY || typeb == UBIFS_XENT_KEY);
+ 	inuma = key_inum(c, &sa->key);
+ 	inumb = key_inum(c, &sb->key);
+ 
 -- 
 1.7.1.1
