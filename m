@@ -1,12 +1,13 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oi2dj-0003gW-BH
+	id 1Oi2dj-0003gV-Al
 	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:58:00 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCHv2 6/9] UBIFS: improve assertion in node comparison functions
-Date: Sun,  8 Aug 2010 12:57:29 +0300
-Message-Id: <1281261452-9868-7-git-send-email-dedekind1@gmail.com>
+Subject: [PATCHv2 7/9] UBIFS: do not write rubbish into truncation scanning
+	node
+Date: Sun,  8 Aug 2010 12:57:30 +0300
+Message-Id: <1281261452-9868-8-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -22,55 +23,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Improve assertions in gc.c in the comparison functions for 'list_sort()': check
-key types _and_ node types.
+In the scanning code, in 'ubifs_add_snod()', we write rubbish into
+'snod->key', because we assume that on-flash truncation nodes have a key, but
+they do not. If the other parts of UBIFS then mistakenly try to look-up
+the truncation node key (they should not do this, but may do because of a bug),
+we can succeed and corrupt TNC. It looks like we did have such a situation in
+'sort_nodes()' in gc.c.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+ fs/ubifs/scan.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index f2be055..8dbe36f 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -127,8 +127,11 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
- 	cond_resched();
- 	sa = list_entry(a, struct ubifs_scan_node, list);
- 	sb = list_entry(b, struct ubifs_scan_node, list);
-+
- 	ubifs_assert(key_type(c, &sa->key) == UBIFS_DATA_KEY);
- 	ubifs_assert(key_type(c, &sb->key) == UBIFS_DATA_KEY);
-+	ubifs_assert(sa->type == UBIFS_DATA_NODE);
-+	ubifs_assert(sb->type == UBIFS_DATA_NODE);
- 
- 	inuma = key_inum(c, &sa->key);
- 	inumb = key_inum(c, &sb->key);
-@@ -164,6 +167,9 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
- 	cond_resched();
- 	sa = list_entry(a, struct ubifs_scan_node, list);
- 	sb = list_entry(b, struct ubifs_scan_node, list);
-+
-+	ubifs_assert(key_type(c, &sa->key) != UBIFS_DATA_KEY &&
-+		     key_type(c, &sb->key) != UBIFS_DATA_KEY);
- 	ubifs_assert(sa->type != UBIFS_DATA_NODE &&
- 		     sb->type != UBIFS_DATA_NODE);
- 
-@@ -176,10 +182,15 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
- 	if (sb->type == UBIFS_INO_NODE)
- 		return 1;
- 
-+	ubifs_assert(key_type(c, &sa->key) == UBIFS_DENT_KEY ||
-+		     key_type(c, &sa->key) == UBIFS_XENT_KEY);
-+	ubifs_assert(key_type(c, &sb->key) == UBIFS_DENT_KEY ||
-+		     key_type(c, &sb->key) == UBIFS_XENT_KEY);
- 	ubifs_assert(sa->type == UBIFS_DENT_NODE ||
- 		     sa->type == UBIFS_XENT_NODE);
- 	ubifs_assert(sb->type == UBIFS_DENT_NODE ||
- 		     sb->type == UBIFS_XENT_NODE);
-+
- 	inuma = key_inum(c, &sa->key);
- 	inumb = key_inum(c, &sb->key);
- 
+diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
+index 96c5253..a0a305c 100644
+--- a/fs/ubifs/scan.c
++++ b/fs/ubifs/scan.c
+@@ -212,7 +212,6 @@ int ubifs_add_snod(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 	case UBIFS_DENT_NODE:
+ 	case UBIFS_XENT_NODE:
+ 	case UBIFS_DATA_NODE:
+-	case UBIFS_TRUN_NODE:
+ 		/*
+ 		 * The key is in the same place in all keyed
+ 		 * nodes.
 -- 
 1.7.1.1
