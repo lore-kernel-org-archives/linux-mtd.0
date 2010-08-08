@@ -1,12 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oi2dk-0003op-Km
-	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:58:01 +0000
+	id 1Oi2dn-0003sQ-1j
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:58:04 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCHv2 8/9] UBIFS: fix assertion warnings in comparison function
-Date: Sun,  8 Aug 2010 12:57:31 +0300
-Message-Id: <1281261452-9868-9-git-send-email-dedekind1@gmail.com>
+Subject: [PATCHv2 9/9] UBIFS: introduce list sorting debugging checks
+Date: Sun,  8 Aug 2010 12:57:32 +0300
+Message-Id: <1281261452-9868-10-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -22,62 +22,246 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-When running the integrity test ('integck' from mtd-utils) on current
-UBIFS on 2.6.35, I see that assertions in UBIFS 'list_sort()' comparison
-functions trigger sometimes, e.g.:
+The UBIFS bug in the GC list sorting comparison functions inspired
+me to write internal debugging check functions which verify that
+the list of nodes is sorted properly.
 
-UBIFS assert failed in data_nodes_cmp at 132 (pid 28311)
+So, this patch implements 2 new debugging functions:
+ o 'dbg_check_data_nodes_order()' - check order of data nodes list
+ o 'dbg_check_nondata_nodes_order()' - check order of non-data nodes list
 
-My investigation showed that this happens when 'list_sort()' calls the 'cmp()'
-function with equivalent arguments. In this case, the 'struct list_head'
-parameter, passed to 'cmp()' is bogus, and it does not belong to any element in
-the original list.
-
-And this issue seems to be introduced by commit:
-
-commit 835cc0c8477fdbc59e0217891d6f11061b1ac4e2
-Author: Don Mullis <don.mullis@gmail.com>
-Date:   Fri Mar 5 13:43:15 2010 -0800
-
-It is easy to work around the issue by doing:
-
-if (a == b)
-	return 0;
-
-in UBIFS. It works, but 'lib_sort()' should nevertheless be fixed. Although it
-is harmless to have this piece of code in UBIFS.
-
-This patch adds that code to both UBIFS 'cmp()' functions:
-'data_nodes_cmp()' and 'nondata_nodes_cmp()'.
+The debugging functions are executed only if general UBIFS debugging checks are
+enabled. And they are compiled out if UBIFS debugging is disabled.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+ fs/ubifs/debug.c |  156 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/ubifs/debug.h |    4 ++
+ fs/ubifs/gc.c    |   10 +++-
+ 3 files changed, 168 insertions(+), 2 deletions(-)
 
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index c2a68ba..1f00d77 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2239,6 +2239,162 @@ out_free:
+ 	return err;
+ }
+ 
++/**
++ * dbg_check_data_nodes_order - check that list of data nodes is sorted.
++ * @c: UBIFS file-system description object
++ * @head: the list of nodes ('struct ubifs_scan_node' objects)
++ *
++ * This function returns zero if the list of data nodes is sorted correctly,
++ * and %-EINVAL if not.
++ */
++int dbg_check_data_nodes_order(struct ubifs_info *c, struct list_head *head)
++{
++	struct list_head *cur;
++	struct ubifs_scan_node *sa, *sb;
++
++	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
++		return 0;
++
++	for (cur = head->next; cur->next != head; cur = cur->next) {
++		ino_t inuma, inumb;
++		uint32_t blka, blkb;
++
++		cond_reshed();
++		sa = container_of(cur, struct ubifs_scan_node, list);
++		sb = container_of(cur->next, struct ubifs_scan_node, list);
++
++		if (sa->type != UBIFS_DATA_NODE) {
++			ubifs_err("bad node type %d", sa->type);
++			dbg_dump_node(c, sa->node);
++			return -EINVAL;
++		}
++		if (sb->type != UBIFS_DATA_NODE) {
++			ubifs_err("bad node type %d", sb->type);
++			dbg_dump_node(c, sb->node);
++			return -EINVAL;
++		}
++
++		inuma = key_inum(c, &sa->key);
++		inumb = key_inum(c, &sb->key);
++
++		if (inuma < inumb)
++			continue;
++		if (inuma > inumb) {
++			ubifs_err("larger inum %lu goes before inum %lu",
++				  (unsigned long)inuma, (unsigned long)inumb);
++			goto error_dump;
++		}
++
++		blka = key_block(c, &sa->key);
++		blkb = key_block(c, &sb->key);
++
++		if (blka > blkb) {
++			ubifs_err("larger block %u goes before %u", blka, blkb);
++			goto error_dump;
++		}
++		if (blka == blkb) {
++			ubifs_err("two data nodes for the same block");
++			goto error_dump;
++		}
++	}
++
++	return 0;
++
++error_dump:
++	dbg_dump_node(c, sa->node);
++	dbg_dump_node(c, sb->node);
++	return -EINVAL;
++}
++
++/**
++ * dbg_check_nondata_nodes_order - check that list of data nodes is sorted.
++ * @c: UBIFS file-system description object
++ * @head: the list of nodes ('struct ubifs_scan_node' objects)
++ *
++ * This function returns zero if the list of non-data nodes is sorted correctly,
++ * and %-EINVAL if not.
++ */
++int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head)
++{
++	struct list_head *cur;
++	struct ubifs_scan_node *sa, *sb;
++
++	if (!(ubifs_chk_flags & UBIFS_CHK_GEN))
++		return 0;
++
++	for (cur = head->next; cur->next != head; cur = cur->next) {
++		ino_t inuma, inumb;
++		uint32_t hasha, hashb;
++
++		cond_reshed();
++		sa = container_of(cur, struct ubifs_scan_node, list);
++		sb = container_of(cur->next, struct ubifs_scan_node, list);
++
++		if (sa->type != UBIFS_INO_NODE && sa->type != UBIFS_DENT_NODE &&
++		    sa->type != UBIFS_XENT_NODE) {
++			ubifs_err("bad node type %d", sa->type);
++			dbg_dump_node(c, sa->node);
++			return -EINVAL;
++		}
++		if (sa->type != UBIFS_INO_NODE && sa->type != UBIFS_DENT_NODE &&
++		    sa->type != UBIFS_XENT_NODE) {
++			ubifs_err("bad node type %d", sb->type);
++			dbg_dump_node(c, sb->node);
++			return -EINVAL;
++		}
++
++		if (sa->type != UBIFS_INO_NODE && sb->type == UBIFS_INO_NODE) {
++			ubifs_err("non-inode node goes before inode node");
++			goto error_dump;
++		}
++
++		if (sa->type == UBIFS_INO_NODE && sb->type != UBIFS_INO_NODE)
++			continue;
++
++		if (sa->type == UBIFS_INO_NODE && sb->type == UBIFS_INO_NODE) {
++			/* Inode nodes are sorted in descending size order */
++			if (sa->len < sb->len) {
++				ubifs_err("smaller inode node goes first");
++				goto error_dump;
++			}
++			continue;
++		}
++
++		/*
++		 * This is either a dentry or xentry, which should be sorted in
++		 * ascending (parent ino, hash) order.
++		 */
++		inuma = key_inum(c, &sa->key);
++		inumb = key_inum(c, &sb->key);
++
++		if (inuma < inumb)
++			continue;
++		if (inuma > inumb) {
++			ubifs_err("larger inum %lu goes before inum %lu",
++				  (unsigned long)inuma, (unsigned long)inumb);
++			goto error_dump;
++		}
++
++		hasha = key_block(c, &sa->key);
++		hashb = key_block(c, &sb->key);
++
++		if (hasha > hashb) {
++			ubifs_err("larger hash %u goes before %u", hasha, hashb);
++			goto error_dump;
++		}
++	}
++
++	return 0;
++
++error_dump:
++	ubifs_msg("dumping first node");
++	dbg_dump_node(c, sa->node);
++	ubifs_msg("dumping second node");
++	dbg_dump_node(c, sb->node);
++	return -EINVAL;
++	return 0;
++}
++
+ static int invocation_cnt;
+ 
+ int dbg_force_in_the_gaps(void)
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index 29d9601..69ebe47 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -324,6 +324,8 @@ int dbg_check_lpt_nodes(struct ubifs_info *c, struct ubifs_cnode *cnode,
+ 			int row, int col);
+ int dbg_check_inode_size(struct ubifs_info *c, const struct inode *inode,
+ 			 loff_t size);
++int dbg_check_data_nodes_order(struct ubifs_info *c, struct list_head *head);
++int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head);
+ 
+ /* Force the use of in-the-gaps method for testing */
+ 
+@@ -465,6 +467,8 @@ void dbg_debugfs_exit_fs(struct ubifs_info *c);
+ #define dbg_check_lprops(c)                        0
+ #define dbg_check_lpt_nodes(c, cnode, row, col)    0
+ #define dbg_check_inode_size(c, inode, size)       0
++#define dbg_check_data_nodes_order(c, head)        0
++#define dbg_check_nondata_nodes_order(c, head)     0
+ #define dbg_force_in_the_gaps_enabled              0
+ #define dbg_force_in_the_gaps()                    0
+ #define dbg_failure_mode                           0
 diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 8dbe36f..84ab9aa 100644
+index 84ab9aa..95317a9 100644
 --- a/fs/ubifs/gc.c
 +++ b/fs/ubifs/gc.c
-@@ -125,6 +125,9 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
- 	struct ubifs_scan_node *sa, *sb;
+@@ -242,14 +242,13 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+ static int sort_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 		      struct list_head *nondata, int *min)
+ {
++	int err;
+ 	struct ubifs_scan_node *snod, *tmp;
  
- 	cond_resched();
-+	if (a == b)
-+		return 0;
+ 	*min = INT_MAX;
+ 
+ 	/* Separate data nodes and non-data nodes */
+ 	list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
+-		int err;
+-
+ 		ubifs_assert(snod->type == UBIFS_INO_NODE  ||
+ 			     snod->type == UBIFS_DATA_NODE ||
+ 			     snod->type == UBIFS_DENT_NODE ||
+@@ -293,6 +292,13 @@ static int sort_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 	/* Sort data and non-data nodes */
+ 	list_sort(c, &sleb->nodes, &data_nodes_cmp);
+ 	list_sort(c, nondata, &nondata_nodes_cmp);
 +
- 	sa = list_entry(a, struct ubifs_scan_node, list);
- 	sb = list_entry(b, struct ubifs_scan_node, list);
- 
-@@ -165,6 +168,9 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
- 	struct ubifs_scan_node *sa, *sb;
- 
- 	cond_resched();
-+	if (a == b)
-+		return 0;
-+
- 	sa = list_entry(a, struct ubifs_scan_node, list);
- 	sb = list_entry(b, struct ubifs_scan_node, list);
++	err = dbg_check_data_nodes_order(c, &sleb->nodes);
++	if (err)
++		return err;
++	err = dbg_check_nondata_nodes_order(c, nondata);
++	if (err)
++		return err;
+ 	return 0;
+ }
  
 -- 
 1.7.1.1
