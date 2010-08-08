@@ -1,12 +1,14 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oi2db-0003DP-9U
-	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:57:51 +0000
+	id 1Oi2db-0003Hq-Jh
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:57:52 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCHv2 0/9] UBIFS: recent patches
-Date: Sun,  8 Aug 2010 12:57:23 +0300
-Message-Id: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCHv2 2/9] UBIFS: do not treat ENOSPC specially
+Date: Sun,  8 Aug 2010 12:57:25 +0300
+Message-Id: <1281261452-9868-3-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
+References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
 	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,11 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-here are re-workded patches. The GC fix patch is thrown out because it is
-"ballocs". The scanning code is fixed. And I found out the real reason of
-assertions in 'list_sort()'s 'cmp()' function. This vesrsion should be
-better.
+'ubifs_garbage_collect_leb()' should never return '-ENOSPC', and if it
+does, this is an error. Thus, do not treat this error code specially.
+'-EAGAIN' is a special error code, but not '-ENOSPC'.
 
-Pushed to ubifs-2.6.git / master.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/gc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index f89a422..29ce1b3 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -677,7 +677,7 @@ int ubifs_garbage_collect(struct ubifs_info *c, int anyway)
+ 
+ 		ret = ubifs_garbage_collect_leb(c, &lp);
+ 		if (ret < 0) {
+-			if (ret == -EAGAIN || ret == -ENOSPC) {
++			if (ret == -EAGAIN) {
+ 				/*
+ 				 * These codes are not errors, so we have to
+ 				 * return the LEB to lprops. But if the
+-- 
+1.7.1.1
