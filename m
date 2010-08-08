@@ -1,21 +1,25 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiCjC-0004S1-SR
-	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 20:44:19 +0000
-Date: Sun, 8 Aug 2010 22:44:17 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Baruch Siach <baruch@tkos.co.il>
+	id 1OiE5B-0004KR-0D
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 22:11:06 +0000
+Date: Sun, 8 Aug 2010 23:10:42 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Sascha Hauer <s.hauer@pengutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH 6/8] mxc_nand: fix correct_data function
-Message-ID: <20100808204417.GB20065@pengutronix.de>
+Message-ID: <20100808221042.GE23623@n2100.arm.linux.org.uk>
 References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
 	<1281102791-8089-7-git-send-email-s.hauer@pengutronix.de>
-	<20100808061950.GB21128@jasper.tkos.co.il>
+	<20100808081955.GB8687@n2100.arm.linux.org.uk>
+	<20100808083244.GC21128@jasper.tkos.co.il>
+	<20100808204341.GA20065@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20100808061950.GB21128@jasper.tkos.co.il>
-Cc: John Ogness <john.ogness@linutronix.de>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20100808204341.GA20065@pengutronix.de>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: linux-arm-kernel@lists.infradead.org, Baruch Siach <baruch@tkos.co.il>,
+	linux-mtd@lists.infradead.org, John Ogness <john.ogness@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +29,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 08, 2010 at 09:19:50AM +0300, Baruch Siach wrote:
-> Hi Sascha,
-> 
-> On Fri, Aug 06, 2010 at 03:53:09PM +0200, Sascha Hauer wrote:
-> > The v2 controller has a totally different mechanism to check
-> > whether the data we read had ecc errors or not. Implement this.
-> > The mechanism in the v2 controller happens to be identical to
-> > the v3 controller.
+On Sun, Aug 08, 2010 at 10:43:41PM +0200, Sascha Hauer wrote:
+> On Sun, Aug 08, 2010 at 11:32:44AM +0300, Baruch Siach wrote:
+> > Hi Russell,
 > > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  drivers/mtd/nand/mxc_nand.c |   42 ++++++++++++++++++++++++++++++++++++++++--
-> >  1 files changed, 40 insertions(+), 2 deletions(-)
+> > On Sun, Aug 08, 2010 at 09:19:56AM +0100, Russell King - ARM Linux wrote:
+> > > On Fri, Aug 06, 2010 at 03:53:09PM +0200, Sascha Hauer wrote:
+> > > > +		err = ecc_stat & ecc_bit_mask;
+> > > > +		if (err > err_limit) {
+> > > > +			printk(KERN_WARNING "UnCorrectable RS-ECC Error\n");
+> > > > +			return -1;
+> > > 
+> > > Someone's being lazy.
 > > 
-> > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> > index 48b6dca..a6dc5a5 100644
-> > --- a/drivers/mtd/nand/mxc_nand.c
-> > +++ b/drivers/mtd/nand/mxc_nand.c
-> > @@ -94,6 +94,7 @@ struct mxc_nand_host {
-> >  	struct clk		*clk;
-> >  	int			clk_act;
-> >  	int			irq;
-> > +	int			eccsize;
+> > The code at nand_read_subpage() (drivers/mtd/nand/nand_base.c) expects the 
+> > .correct callback to return -1 on an uncorrectable error:
+> > 
+> >                 stat = chip->ecc.correct(mtd, p, &chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
+> >                 if (stat == -1)
+> >                         mtd->ecc_stats.failed++;
+> >                 else
+> >                         mtd->ecc_stats.corrected += stat;
 > 
-> This new mxc_nand_host field doesn't get initialized in this patch, although 
-> it is used in the .correct implementation. The next patch in this series 
-> includes the eccsize initialization code. This might break bisect. Won't it be 
-> safer to switch the order of these patches?
+> Then this should be changed to check for stat < 0. I found some drivers
+> in the tree returning an errno value in their .correct function instead
+> of -1.
 
-Ok, will fix.
+That's the whole danger of the whole 'return -1' evilness in the kernel.
+The long established convention in the kernel is that negative numbers
+returned from functions are negative errno codes.
 
-Sascha
+As soon as you decide that you want a function to return -1 to indicate
+an error rather than a real errno code, you lose clarity on which
+functions need '-1' and which are proper negative errno codes, and then
+you end up with people returning negative errno codes for functions
+which should be -1, and people returning -1 for functions which should
+be negative errno codes.
 
+If you want a function to return -1 for error, then it probably makes
+sense to create a ECC_CORRECT_FAILED definition which happens to be -1.
+Or some other number.  But don't use plain '-1' - it looks far too much
+like "I was lazy, I couldn't be bothered to look up a proper errno."
 
--- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+We know full well that _lots_ of people submit stuff with 'return -1'
+statements where they should be proper negative errno codes, so it's
+something people are having a great deal of trouble with already.  Let's
+not further confuse everyone by having functions expecting called methods
+to do a plain "return -1;" on error.
