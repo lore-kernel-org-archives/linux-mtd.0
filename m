@@ -1,17 +1,16 @@
-Date: Sun, 8 Aug 2010 11:32:44 +0300
-From: Baruch Siach <baruch@tkos.co.il>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH 6/8] mxc_nand: fix correct_data function
-Message-ID: <20100808083244.GC21128@jasper.tkos.co.il>
-References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
-	<1281102791-8089-7-git-send-email-s.hauer@pengutronix.de>
-	<20100808081955.GB8687@n2100.arm.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20100808081955.GB8687@n2100.arm.linux.org.uk>
-Cc: linux-arm-kernel@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-mtd@lists.infradead.org, John Ogness <john.ogness@linutronix.de>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oi2da-0003DO-MU
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:57:51 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCHv2 1/9] UBIFS: switch to RO mode after synchronizing
+Date: Sun,  8 Aug 2010 12:57:24 +0300
+Message-Id: <1281261452-9868-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
+References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
+Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Russell,
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-On Sun, Aug 08, 2010 at 09:19:56AM +0100, Russell King - ARM Linux wrote:
-> On Fri, Aug 06, 2010 at 03:53:09PM +0200, Sascha Hauer wrote:
-> > +		err = ecc_stat & ecc_bit_mask;
-> > +		if (err > err_limit) {
-> > +			printk(KERN_WARNING "UnCorrectable RS-ECC Error\n");
-> > +			return -1;
-> 
-> Someone's being lazy.
+In 'ubifs_garbage_collect()' on error path, we first switch to R/O mode, and
+then synchronize write-buffers (to make sure no data are lost). But the GC
+write-buffer synchronization will fail, because we are already in R/O mode.
+This patch re-orders this and makes sure we first synchronize the write-buffer,
+and then switch to R/O mode.
 
-The code at nand_read_subpage() (drivers/mtd/nand/nand_base.c) expects the 
-.correct callback to return -1 on an uncorrectable error:
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/gc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-                stat = chip->ecc.correct(mtd, p, &chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
-                if (stat == -1)
-                        mtd->ecc_stats.failed++;
-                else
-                        mtd->ecc_stats.corrected += stat;
-
-baruch
-
+diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+index 918d158..f89a422 100644
+--- a/fs/ubifs/gc.c
++++ b/fs/ubifs/gc.c
+@@ -774,8 +774,8 @@ out_unlock:
+ out:
+ 	ubifs_assert(ret < 0);
+ 	ubifs_assert(ret != -ENOSPC && ret != -EAGAIN);
+-	ubifs_ro_mode(c, ret);
+ 	ubifs_wbuf_sync_nolock(wbuf);
++	ubifs_ro_mode(c, ret);
+ 	mutex_unlock(&wbuf->io_mutex);
+ 	ubifs_return_leb(c, lp.lnum);
+ 	return ret;
 -- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
+1.7.1.1
