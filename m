@@ -1,22 +1,26 @@
-Message-ID: <103911.103501281272851252.komurojun-mbn@nifty.com>
-Date: Sun, 8 Aug 2010 22:07:31 +0900 (JST)
-From: Komuro <komurojun-mbn@nifty.com>
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: Re: [PATCH 11/18] pcmcia: do not use io_req_t when calling
-	pcmcia_request_io()
-In-Reply-To: <1281046014-7585-11-git-send-email-linux@dominikbrodowski.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 7bit
-References: <1281046014-7585-11-git-send-email-linux@dominikbrodowski.net>
-	<20100805220511.GA7040@comet.dominikbrodowski.net>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-	linux-serial@vger.kernel.org, netdev@vger.kernel.org,
-	linux-pcmcia@lists.infradead.org, linux-wireless@vger.kernel.org,
-	laforge@gnumonks.org, linux-ide@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Michael Buesch <mb@bu3sch.de>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oi6PO-00031T-IQ
+	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 13:59:27 +0000
+Received: by fxm3 with SMTP id 3so5856556fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 08 Aug 2010 06:59:25 -0700 (PDT)
+Subject: Re: [PATCHv2 7/9] UBIFS: do not write rubbish into truncation
+	scanning node
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+In-Reply-To: <4C5E901E.5060802@nokia.com>
+References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
+	<1281261452-9868-8-git-send-email-dedekind1@gmail.com>
+	<4C5E8F15.9080505@nokia.com>  <4C5E901E.5060802@nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 08 Aug 2010 16:59:21 +0300
+Message-Id: <1281275962.1175.84.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
+On Sun, 2010-08-08 at 14:08 +0300, Adrian Hunter wrote:
+> No I was wrong, the key in ubifs_recover_size_accum() is already created using
+> trun_key_init()
 > 
->-    link->io.IOAddrLines =10;
->-    link->io.Attributes1 = IO_DATA_PATH_WIDTH_16;
->+    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
+> Still, trun_key_init might be better here because the all-zeroes key has a key-type
+> of UBIFS_INO_KEY.  What do you think?
 
-link->io_lines should be set here?
+Did not really think, but off the top of my head it is probably good to
+initialize ->key to something invalid of all other nodes then.
 
-
-
->@@ -840,14 +839,15 @@ xirc2ps_config(struct pcmcia_device * link)
-> 	}
-> 	printk(KNOT_XIRC "no ports available\n");
->     } else {
->-	link->io.NumPorts1 = 16;
->+	link->io_lines = 10;
->+	link->resource[0]->end = 16;
-
-Best Regards
-Komuro
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
