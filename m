@@ -1,29 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OhsnQ-0003MS-IQ
-	for linux-mtd@lists.infradead.org; Sat, 07 Aug 2010 23:27:21 +0000
-Received: by wwi14 with SMTP id 14so9936124wwi.18
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 07 Aug 2010 16:27:17 -0700 (PDT)
+Date: Sun, 8 Aug 2010 09:19:50 +0300
+From: Baruch Siach <baruch@tkos.co.il>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 6/8] mxc_nand: fix correct_data function
+Message-ID: <20100808061950.GB21128@jasper.tkos.co.il>
+References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
+	<1281102791-8089-7-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <1280914408.19499.8.camel@localhost>
-References: <1274599824-17530-1-git-send-email-vapier@gentoo.org>
-	<1276352794.19028.122.camel@localhost>
-	<1280914408.19499.8.camel@localhost>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Sat, 7 Aug 2010 19:26:57 -0400
-Message-ID: <AANLkTikMrbK4B22Q=aa1zWmx_M-f_eqnKHcaZZb7qj9i@mail.gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 1/2] mtd: physmap: add
-	physmap_unmapped_area() for no-mmu XIP
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David@blackfin.uclinux.org, uclinux-dev@uclinux.org, dedekind1@gmail.com,
-	Paul@blackfin.uclinux.org, Schmidt <bernds_cb1@t-online.de>,
-	David Howells <dhowells@redhat.com>, Mundt <lethal@linux-sh.org>,
-	linux-mtd@lists.infradead.org, Greg Ungerer <gerg@uclinux.org>,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Bernd@blackfin.uclinux.org, McCullough <davidm@snapgear.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1281102791-8089-7-git-send-email-s.hauer@pengutronix.de>
+Cc: John Ogness <john.ogness@linutronix.de>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,35 +20,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Aug 4, 2010 at 05:33, David Woodhouse wrote:
-> On Sat, 2010-06-12 at 17:26 +0300, Artem Bityutskiy wrote:
->> On Sun, 2010-05-23 at 03:30 -0400, Mike Frysinger wrote:
->> > Currently, romfs XIP doesn't work in flash memory (the kernel crashes
->> > with a null pointer dereference). =C2=A0The problem is that the mtd ph=
-ysmap
->> > driver isn't setting up a get_unmapped_area pointer for the mtd
->> > partitions it creates.
->>
->> Pushed both to my l2-mtd-2.6.git / dunno.
->
-> I'm confused by the second patch -- isn't this done in add_mtd_device()
-> already, according to the device type?
->
-> You're setting mtd_bdi_ro_mappable indiscriminately for all types of
-> devices. For flash devices, that can be an issue -- if you schedule a
-> userspace process while the kernel is writing to the flash, for example.
->
-> If you want to allow XIP of writable flash devices, there's more to it
-> than this.
+Hi Sascha,
 
-can you can safely do XIP on writable flash devices ?  with nommu, you
-certainly cant.  plus, it is only possible with certain filesystems
-right ?  like ROMFS ?  and that's already r/o ...
+On Fri, Aug 06, 2010 at 03:53:09PM +0200, Sascha Hauer wrote:
+> The v2 controller has a totally different mechanism to check
+> whether the data we read had ecc errors or not. Implement this.
+> The mechanism in the v2 controller happens to be identical to
+> the v3 controller.
+> 
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/mxc_nand.c |   42 ++++++++++++++++++++++++++++++++++++++++--
+>  1 files changed, 40 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 48b6dca..a6dc5a5 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -94,6 +94,7 @@ struct mxc_nand_host {
+>  	struct clk		*clk;
+>  	int			clk_act;
+>  	int			irq;
+> +	int			eccsize;
 
-if we delve a bit, what you're referring to is only possible i think
-if this change is merged (we posted this back in Jan w/no feedback):
-  mtd-physmap: add support users can assign the probe type in board files
+This new mxc_nand_host field doesn't get initialized in this patch, although 
+it is used in the .correct implementation. The next patch in this series 
+includes the eccsize initialization code. This might break bisect. Won't it be 
+safer to switch the order of these patches?
 
-otherwise, there's no way of declaring a physmap of a parallel nor
-flash and having it end up with read-only capabilities ...
--mike
+baruch
+
+>  	wait_queue_head_t	irq_waitq;
+>  
+> @@ -342,7 +343,7 @@ static void mxc_nand_enable_hwecc(struct mtd_info *mtd, int mode)
+>  	 */
+>  }
+>  
+> -static int mxc_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+> +static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+>  				 u_char *read_ecc, u_char *calc_ecc)
+>  {
+>  	struct nand_chip *nand_chip = mtd->priv;
+> @@ -364,6 +365,40 @@ static int mxc_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+>  	return 0;
+>  }
+>  
+> +static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
+> +				 u_char *read_ecc, u_char *calc_ecc)
+> +{
+> +	struct nand_chip *nand_chip = mtd->priv;
+> +	struct mxc_nand_host *host = nand_chip->priv;
+> +	u32 ecc_stat, err;
+> +	int no_subpages = 1;
+> +	int ret = 0;
+> +	u8 ecc_bit_mask, err_limit;
+> +
+> +	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
+> +	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
+> +
+> +	no_subpages = mtd->writesize >> 9;
+> +
+> +	ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
+> +
+> +	do {
+> +		err = ecc_stat & ecc_bit_mask;
+> +		if (err > err_limit) {
+> +			printk(KERN_WARNING "UnCorrectable RS-ECC Error\n");
+> +			return -1;
+> +		} else {
+> +			ret += err;
+> +		}
+> +		ecc_stat >>= 4;
+> +	} while (--no_subpages);
+> +
+> +	mtd->ecc_stats.corrected += ret;
+> +	pr_debug("%d Symbol Correctable RS-ECC Error\n", ret);
+> +
+> +	return ret;
+> +}
+> +
+>  static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+>  				  u_char *ecc_code)
+>  {
+> @@ -790,7 +825,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+>  	if (pdata->hw_ecc) {
+>  		this->ecc.calculate = mxc_nand_calculate_ecc;
+>  		this->ecc.hwctl = mxc_nand_enable_hwecc;
+> -		this->ecc.correct = mxc_nand_correct_data;
+> +		if (nfc_is_v1())
+> +			this->ecc.correct = mxc_nand_correct_data_v1;
+> +		else
+> +			this->ecc.correct = mxc_nand_correct_data_v2_v3;
+>  		this->ecc.mode = NAND_ECC_HW;
+>  	} else {
+>  		this->ecc.mode = NAND_ECC_SOFT;
+
+-- 
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
