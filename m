@@ -1,12 +1,12 @@
 Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oi2dd-0003L7-Hb
+	id 1Oi2de-0003Oc-3O
 	for linux-mtd@lists.infradead.org; Sun, 08 Aug 2010 09:57:54 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCHv2 4/9] UBIFS: do not look up truncation nodes
-Date: Sun,  8 Aug 2010 12:57:27 +0300
-Message-Id: <1281261452-9868-5-git-send-email-dedekind1@gmail.com>
+Subject: [PATCHv2 5/9] UBIFS: do not use key type in list_sort
+Date: Sun,  8 Aug 2010 12:57:28 +0300
+Message-Id: <1281261452-9868-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -22,50 +22,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-When moving nodes in GC, do not try to look up truncation nodes in TNC,
-because they do not exist there. This would be harmless, because the TNC
-look-up would fail, if we did not have bug 'ubifs_add_snod()' which reads
-garbage into 'snod->key'. But in any case, it is less error prone to
-explicitly ignore everything but inode, data, dentry and xentry nodes.
+In comparison function for 'list_sort()' we use key type to distinguish between
+node types. However, we have a bit easier way to detect node type -
+'snod->type'. This is a bit easier and more logical to use, comparing to
+decoding key types. Also allows to get rid of 2 local variables.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c |   23 ++++++++++++++++++++---
- 1 files changed, 20 insertions(+), 3 deletions(-)
+ fs/ubifs/gc.c |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index d060c62..fd944fe 100644
+index fd944fe..f2be055 100644
 --- a/fs/ubifs/gc.c
 +++ b/fs/ubifs/gc.c
-@@ -233,9 +233,26 @@ static int sort_nodes(struct ubifs_info *c, struct ubifs_scan_leb *sleb,
- 	list_for_each_entry_safe(snod, tmp, &sleb->nodes, list) {
- 		int err;
+@@ -157,7 +157,6 @@ int data_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+  */
+ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+ {
+-	int typea, typeb;
+ 	ino_t inuma, inumb;
+ 	struct ubifs_info *c = priv;
+ 	struct ubifs_scan_node *sa, *sb;
+@@ -165,21 +164,22 @@ int nondata_nodes_cmp(void *priv, struct list_head *a, struct list_head *b)
+ 	cond_resched();
+ 	sa = list_entry(a, struct ubifs_scan_node, list);
+ 	sb = list_entry(b, struct ubifs_scan_node, list);
+-	typea = key_type(c, &sa->key);
+-	typeb = key_type(c, &sb->key);
+-	ubifs_assert(typea != UBIFS_DATA_KEY && typeb != UBIFS_DATA_KEY);
++	ubifs_assert(sa->type != UBIFS_DATA_NODE &&
++		     sb->type != UBIFS_DATA_NODE);
  
--		ubifs_assert(snod->type != UBIFS_IDX_NODE);
--		ubifs_assert(snod->type != UBIFS_REF_NODE);
--		ubifs_assert(snod->type != UBIFS_CS_NODE);
-+		ubifs_assert(snod->type == UBIFS_INO_NODE  ||
-+			     snod->type == UBIFS_DATA_NODE ||
-+			     snod->type == UBIFS_DENT_NODE ||
-+			     snod->type == UBIFS_XENT_NODE ||
-+			     snod->type == UBIFS_TRUN_NODE);
-+
-+		if (snod->type != UBIFS_INO_NODE  &&
-+		    snod->type != UBIFS_DATA_NODE &&
-+		    snod->type != UBIFS_DENT_NODE &&
-+		    snod->type != UBIFS_XENT_NODE) {
-+			/* Probably truncation node, zap it */
-+			list_del(&snod->list);
-+			kfree(snod);
-+			continue;
-+		}
-+
-+		ubifs_assert(key_type(c, &snod->key) == UBIFS_DATA_KEY ||
-+			     key_type(c, &snod->key) == UBIFS_INO_KEY  ||
-+			     key_type(c, &snod->key) == UBIFS_DENT_KEY ||
-+			     key_type(c, &snod->key) == UBIFS_XENT_KEY);
+ 	/* Inodes go before directory entries */
+-	if (typea == UBIFS_INO_KEY) {
+-		if (typeb == UBIFS_INO_KEY)
++	if (sa->type == UBIFS_INO_NODE) {
++		if (sb->type == UBIFS_INO_NODE)
+ 			return sb->len - sa->len;
+ 		return -1;
+ 	}
+-	if (typeb == UBIFS_INO_KEY)
++	if (sb->type == UBIFS_INO_NODE)
+ 		return 1;
  
- 		err = ubifs_tnc_has_node(c, &snod->key, 0, sleb->lnum,
- 					 snod->offs, 0);
+-	ubifs_assert(typea == UBIFS_DENT_KEY || typea == UBIFS_XENT_KEY);
+-	ubifs_assert(typeb == UBIFS_DENT_KEY || typeb == UBIFS_XENT_KEY);
++	ubifs_assert(sa->type == UBIFS_DENT_NODE ||
++		     sa->type == UBIFS_XENT_NODE);
++	ubifs_assert(sb->type == UBIFS_DENT_NODE ||
++		     sb->type == UBIFS_XENT_NODE);
+ 	inuma = key_inum(c, &sa->key);
+ 	inumb = key_inum(c, &sb->key);
+ 
 -- 
 1.7.1.1
