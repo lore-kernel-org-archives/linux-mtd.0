@@ -1,16 +1,19 @@
-Message-ID: <19551.62912.570721.778442@ipc1.ka-ro>
-Date: Mon, 9 Aug 2010 14:34:08 +0200
-From: =?iso-8859-15?Q?Lothar_Wa=DFmann?= <LW@KARO-electronics.de>
-To: Baruch Siach <baruch@tkos.co.il>
-Content-Type: text/plain; charset=iso-8859-1
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiSFY-00080T-Cr
+	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 13:18:45 +0000
+Message-ID: <4C60002E.5070704@parrot.com>
+Date: Mon, 9 Aug 2010 15:18:38 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
+MIME-Version: 1.0
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 0/7] UBIFS: recent patches
+References: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1281169577-18664-1-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 2/2] mxc_nand: remove unused variables
-In-Reply-To: <d4b734ef5662b65466fbe959bd1fc993a7f08398.1281353601.git.baruch@tkos.co.il>
-References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
-	<cover.1281353601.git.baruch@tkos.co.il>
-	<d4b734ef5662b65466fbe959bd1fc993a7f08398.1281353601.git.baruch@tkos.co.il>
-Cc: linux-arm-kernel@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-mtd@lists.infradead.org, John Ogness <john.ogness@linutronix.de>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Baruch Siach writes:
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> ---
->  drivers/mtd/nand/mxc_nand.c |    5 +----
->  1 files changed, 1 insertions(+), 4 deletions(-)
+Artem Bityutskiy a écrit :
+> Hi,
 > 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 3092240..dfa8311 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -1210,15 +1210,12 @@ static int mxcnd_suspend(struct platform_device *pdev, pm_message_t state)
->  static int mxcnd_resume(struct platform_device *pdev)
->  {
->  	struct mtd_info *mtd = platform_get_drvdata(pdev);
-> -	struct nand_chip *nand_chip = mtd->priv;
-> -	struct mxc_nand_host *host = nand_chip->priv;
-> -	int ret = 0;
->  
->  	DEBUG(MTD_DEBUG_LEVEL0, "MXC_ND : NAND resume\n");
->  
->  	mtd->resume(mtd);
->  
-There was a patch to remove the whole function mxcnd_resume() because
-the call to mtd->resume() is done elsewhere in the MTD layer:
-http://lists.infradead.org/pipermail/linux-arm-kernel/2010-June/018243.html
+> Matthieu, I failed to figure out how gc_lnum can become -1 in the master node.
+> Most probably I'll have to create a debugging patch and ask you to reproduce
+> the error again, but do not thing I'll have time for this in August. So, you
+> could try to look at the code and put more printk's in interesting places
+> yourself, and find when exactly it becomes -1, and then how it ends up in the
+> master node. That would be helpful.
+Ok,
+
+I will try to see what can I do.
 
 
-Lothar Waßmann
--- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+Matthieu
