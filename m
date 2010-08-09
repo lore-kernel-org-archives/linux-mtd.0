@@ -1,23 +1,39 @@
-Received: from www84.your-server.de ([213.133.104.84])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiO6I-0003zl-Ry
-	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 08:52:55 +0000
-Subject: Re: [PATCH] Add quick erase format option
-From: Stefani Seibold <stefani@seibold.net>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1281343038.12908.25.camel@localhost>
-References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
-	<1281343038.12908.25.camel@localhost>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Mon, 09 Aug 2010 10:52:54 +0200
-Message-ID: <1281343974.18398.13.camel@wall-e.seibold.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+To: Greg Ungerer <gerg@snapgear.com>
+Subject: Re: [PATCH 0/9] Removing dead code
+References: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
+	<4C5F9715.1030806@snapgear.com>
+Date: Mon, 09 Aug 2010 11:03:49 +0200
+In-Reply-To: <4C5F9715.1030806@snapgear.com> (Greg Ungerer's message of "Mon,
+	9 Aug 2010 15:50:13 +1000")
+Message-ID: <86tyn4ximi.fsf@peer.zerties.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Roman Zippel <zippel@linux-m68k.org>, John Stultz <johnstul@us.ibm.com>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+	Alexander Kurz <linux@kbdbabel.org>,
+	linux-mtd@lists.infradead.org, Michael Roth <mroth@nessie.de>,
+	Greg Ungerer <gerg@uclinux.org>, Christoph Hellwig <hch@lst.de>,
+	Finn Thain <fthain@telegraphics.com.au>, Tony Lindgren <tony@atomide.com>,
+	vamos-dev@i4.informatik.uni-erlangen.de,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Lennart Sorensen <lsorense@csclub.uwaterloo.ca>,
+	Russell King <rmk+kernel@arm.linux.org.uk>,
+	Anatolij Gustschin <agust@denx.de>,
+	Sam Creasey <sammy@sammy.net>, linux-pcmcia@lists.infradead.org,
+	Mike Frysinger <vapier@gentoo.org>,
+	Sean MacLennan <smaclennan@pikatech.com>,
+	Joe Perches <joe@perches.com>, linux-m68k@lists.linux-m68k.org,
+	Maxim Kuvyrkov <maxim@codesourcery.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+	Greg Kroah-Hartman <gregkh@suse.de>, Wolfram Sang <w.sang@pengutronix.de>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Manuel Lauss <manuel.lauss@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +43,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, den 09.08.2010, 09:37 +0100 schrieb David Woodhouse:
-> On Mon, 2010-08-09 at 09:25 +0100, stefani@seibold.net wrote:
-> > From: Stefani Seibold <stefani@seibold.net>
-> > 
-> > This patch add a quick format option which skips erasing of already erased
-> > flash blocks. This is useful for first time production environments where
-> > the flash arrived erased.
-> > 
-> > Signed-off-by: Stefani Seibold <stefani@seibold.net> 
-> 
-> This scares me, given the lengths we had to go to in JFFS2 to cope with
-> blocks which *look* like they're erased, but which actually start losing
-> data as soon as you start writing to them because the erase didn't
-> complete.
-> 
+> Hi Christian,
+> I don't have any problems with any of these from a
+> m68knommu point of view. I can merge them via the
+> m68knommu git tree if you want?
 
-I know the drawback. This is why it is only an option which must be
-enabled. And in most use cases there is a subsequent ubimkvol, which
-will fail if the flash is not correct initialized.
+If there aren't any complaints from the m68k people i'm fine with that.
 
-Flash are normally delivered erased. So this save in our production
-environment (Nokia Siemens Networks) about 5 minutes per device (256 MB
-NOR CFI Flash).
-
-The old JFFS2 was very fast to install the first time on a flash, it was
-only a simple mount of the MTD partition. 
-
-Which the quick format option i have now only a slightly first time
-installation overhead compared to JFFS2. Without this option the
-overhead is more than 5 minutes.
-
-- Stefani
+greetz didi
+--=20
+(=CE=BB x . x x) (=CE=BB x . x x) -- See how beatiful the lambda is
+No documentation is better than bad documentation
+-- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
