@@ -1,18 +1,21 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiZUA-0006Vf-0Q
-	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 21:02:18 +0000
-Received: by pwi9 with SMTP id 9so1778733pwi.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 09 Aug 2010 14:02:16 -0700 (PDT)
+Received: from dcn237-231.dcn.davis.ca.us ([168.150.237.231]
+	helo=rusty.jkmicro.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiZme-0007oj-5R
+	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 21:21:24 +0000
+Received: from [10.10.1.107] (dcn237-230.dcn.davis.ca.us [168.150.237.230])
+	by rusty.jkmicro.com (8.12.8/8.12.8) with ESMTP id o79KTf99028428
+	for <linux-mtd@lists.infradead.org>; Mon, 9 Aug 2010 13:29:41 -0700
+Message-ID: <4C607150.6040806@jkmicro.com>
+Date: Mon, 09 Aug 2010 14:21:20 -0700
+From: Adam Yergovich <ayergo@jkmicro.com>
 MIME-Version: 1.0
-Sender: jonringle@gmail.com
-Date: Mon, 9 Aug 2010 17:02:16 -0400
-Message-ID: <AANLkTikPQfNJ9eZeF6scpnx5beVt=dR6pfNgqcExteMu@mail.gmail.com>
-Subject: buffer write error (status 0x90)
-From: Jon Ringle <jon@ringle.org>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: buffer write error (status 0x90)
+References: <AANLkTikPQfNJ9eZeF6scpnx5beVt=dR6pfNgqcExteMu@mail.gmail.com>
+In-Reply-To: <AANLkTikPQfNJ9eZeF6scpnx5beVt=dR6pfNgqcExteMu@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Jon Ringle wrote:
+> We are replacing the discontinued Intel StrataFlash P30 flash
+> JS28F256P30T95 with the Numonyx P30-65nm flash JS28F256P30TF on our
+> boards and have a few boards with sample chips. During some testing
+> one of the boards with the Numonyx flash chip is now reporting the
+> following buffer write error (status 0x90) on every boot:
 
-We are replacing the discontinued Intel StrataFlash P30 flash
-JS28F256P30T95 with the Numonyx P30-65nm flash JS28F256P30TF on our
-boards and have a few boards with sample chips. During some testing
-one of the boards with the Numonyx flash chip is now reporting the
-following buffer write error (status 0x90) on every boot:
+I have tested swapping the lower density part and haven't had any 
+problems with MTD or otherwise.  I suspect you've just got a bad part or 
+something else happened.
 
-[    4.720000] IXP4XX-Flash.0: buffer write error (status 0x90)
-[    4.720000] UBI error: nor_erase_prepare: cannot invalidate PEB 62,
-write returned -22 read returned 2
-[    5.160000] UBI error: erase_worker: failed to erase PEB 62, error -5
-[    5.180000] UBI error: erase_worker: bad physical eraseblock 62 detected
-[    5.180000] UBI warning: ubi_ro_mode: switch to read-only mode
-[    5.200000] UBI error: do_work: work failed with error code -5
-[    5.200000] UBI error: ubi_thread: ubi_bgt0d: work failed with error code -5
+-Adam
 
-The chipstatus that is report (0x90) comes from:
-		unsigned long chipstatus = MERGESTATUS(status);
+-- 
+Adam Yergovich
+Engineer
+JK Microsystems
 
-But I can't make sense of what 0x90 means.
+1403 Fifth St. Suite D
+Davis, CA 95616
 
-Thanks,
-Jon
+Tel:(530) 297-6073
