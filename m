@@ -1,31 +1,16 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiMuW-0002yl-3k
-	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 07:36:42 +0000
-Received: by wyf19 with SMTP id 19so7063746wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 09 Aug 2010 00:36:38 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1281267200.19967.246.camel@macbook.infradead.org>
-References: <1274599824-17530-1-git-send-email-vapier@gentoo.org>
-	<1276352794.19028.122.camel@localhost>
-	<1280914408.19499.8.camel@localhost>
-	<AANLkTikMrbK4B22Q=aa1zWmx_M-f_eqnKHcaZZb7qj9i@mail.gmail.com>
-	<1281267200.19967.246.camel@macbook.infradead.org>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 9 Aug 2010 03:36:18 -0400
-Message-ID: <AANLkTinTntguz9sZVKb2NJEUHW_+rj7S1u2XT02PDi2q@mail.gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH 1/2] mtd: physmap: add
-	physmap_unmapped_area() for no-mmu XIP
-To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David@blackfin.uclinux.org, uclinux-dev@uclinux.org, dedekind1@gmail.com,
-	Paul@blackfin.uclinux.org, Schmidt <bernds_cb1@t-online.de>,
-	David Howells <dhowells@redhat.com>, Mundt <lethal@linux-sh.org>,
-	linux-mtd@lists.infradead.org, Greg Ungerer <gerg@uclinux.org>,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	Bernd@blackfin.uclinux.org, McCullough <davidm@snapgear.com>
+Received: from www84.your-server.de ([213.133.104.84])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiNgK-0006nJ-CJ
+	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 08:26:05 +0000
+From: stefani@seibold.net
+To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] Add quick erase format option
+Date: Mon,  9 Aug 2010 10:25:53 +0200
+Message-Id: <1281342353-18180-1-git-send-email-stefani@seibold.net>
+Cc: stefani@seibold.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,22 +20,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 8, 2010 at 07:33, David Woodhouse wrote:
-> On Sat, 2010-08-07 at 19:26 -0400, Mike Frysinger wrote:
->> if we delve a bit, what you're referring to is only possible i think
->> if this change is merged (we posted this back in Jan w/no feedback):
->> =C2=A0 mtd-physmap: add support users can assign the probe type in board=
- files
->>
->> otherwise, there's no way of declaring a physmap of a parallel nor
->> flash and having it end up with read-only capabilities ...
->
-> Hm, yeah -- that one looks sane enough. I can merge that, although part
-> 1 of that 2-part series I still object to because I don't *want*
-> different architectures to use different config symbols for the same
-> thing. Driver code shouldn't have to cope with that.
+From: Stefani Seibold <stefani@seibold.net>
 
-the two arent really dependent on each other.  i'll probably just
-change the Blackfin code to also enable the XIP_KERNEL symbol and
-forget about the whole damned mess.
--mike
+This patch add a quick format option which skips erasing of already erased
+flash blocks. This is useful for first time production environments where
+the flash arrived erased.
+
+Signed-off-by: Stefani Seibold <stefani@seibold.net>
+---
+ ubi-utils/src/ubiformat.c |   29 ++++++++++++++++++++++++++---
+ 1 files changed, 26 insertions(+), 3 deletions(-)
+
+diff --git a/ubi-utils/src/ubiformat.c b/ubi-utils/src/ubiformat.c
+index 4e27e4f..8e33334 100644
+--- a/ubi-utils/src/ubiformat.c
++++ b/ubi-utils/src/ubiformat.c
+@@ -45,7 +45,7 @@
+ #include "common.h"
+ #include "ubiutils-common.h"
+ 
+-#define PROGRAM_VERSION "1.5"
++#define PROGRAM_VERSION "1.6"
+ #define PROGRAM_NAME    "ubiformat"
+ 
+ /* The variables below are set by command line arguments */
+@@ -55,6 +55,7 @@ struct args {
+ 	unsigned int verbose:1;
+ 	unsigned int override_ec:1;
+ 	unsigned int novtbl:1;
++	unsigned int quick:1;
+ 	unsigned int manual_subpage;
+ 	int subpage_size;
+ 	int vid_hdr_offs;
+@@ -94,6 +95,7 @@ static const char *optionsstr =
+ "                             (default is 1)\n"
+ "-Q, --image-seq=<num>        32-bit UBI image sequence number to use\n"
+ "                             (by default a random number is picked)\n"
++"-E, --erase-quick            erase only used blocks\n"
+ "-y, --yes                    assume the answer is \"yes\" for all question\n"
+ "                             this program would otherwise ask\n"
+ "-q, --quiet                  suppress progress percentage information\n"
+@@ -125,6 +127,7 @@ static const struct option long_options[] = {
+ 	{ .name = "ubi-ver",         .has_arg = 1, .flag = NULL, .val = 'x' },
+ 	{ .name = "help",            .has_arg = 0, .flag = NULL, .val = 'h' },
+ 	{ .name = "version",         .has_arg = 0, .flag = NULL, .val = 'V' },
++	{ .name = "erase-quick",     .has_arg = 0, .flag = NULL, .val = 'E' },
+ 	{ NULL, 0, NULL, 0},
+ };
+ 
+@@ -138,7 +141,7 @@ static int parse_opt(int argc, char * const argv[])
+ 		char *endp;
+ 		unsigned long int image_seq;
+ 
+-		key = getopt_long(argc, argv, "nh?Vyqve:x:s:O:f:S:", long_options, NULL);
++		key = getopt_long(argc, argv, "nh?Vyqve:x:s:O:f:S:E", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -202,6 +205,10 @@ static int parse_opt(int argc, char * const argv[])
+ 			break;
+ 
+ 
++		case 'E':
++			args.quick = 1;
++			break;
++
+ 		case 'v':
+ 			args.verbose = 1;
+ 			break;
+@@ -600,7 +607,20 @@ static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+ 			ec = si->ec[eb] + 1;
+ 		else
+ 			ec = si->mean_ec;
+-		ubigen_init_ec_hdr(ui, hdr, ec);
++
++		if (args.quick) {
++			err = mtd_read(mtd, args.node_fd, eb, 0, hdr, write_size);
++			if (!err) {
++				int i;
++
++				for(i = 0; i != write_size; i++) {
++					if (((unsigned char *)hdr)[i] != 0xff)
++						break;
++				}
++				if (i == write_size)
++					goto skip_erase;
++			}
++		}
+ 
+ 		if (args.verbose) {
+ 			normsg_cont("eraseblock %d: erase", eb);
+@@ -621,6 +641,9 @@ static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+ 			continue;
+ 		}
+ 
++skip_erase:
++		ubigen_init_ec_hdr(ui, hdr, ec);
++
+ 		if ((eb1 == -1 || eb2 == -1) && !novtbl) {
+ 			if (eb1 == -1) {
+ 				eb1 = eb;
+-- 
+1.7.2
