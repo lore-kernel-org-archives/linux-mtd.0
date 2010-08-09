@@ -1,8 +1,12 @@
 From: Sekhar Nori <nsekhar@ti.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 0/6] davinci: add support for aemif timing configuration
-Date: Mon,  9 Aug 2010 15:46:34 +0530
-Message-Id: <1281349000-822-1-git-send-email-nsekhar@ti.com>
+Subject: [PATCH 3/6] davinci: dm644x evm: setup NAND flash timing
+Date: Mon,  9 Aug 2010 15:46:37 +0530
+Message-Id: <1281349000-822-4-git-send-email-nsekhar@ti.com>
+In-Reply-To: <1281349000-822-3-git-send-email-nsekhar@ti.com>
+References: <1281349000-822-1-git-send-email-nsekhar@ti.com>
+	<1281349000-822-2-git-send-email-nsekhar@ti.com>
+	<1281349000-822-3-git-send-email-nsekhar@ti.com>
 Cc: Kevin Hilman <khilman@deeprootsystems.com>, Sekhar Nori <nsekhar@ti.com>,
 	davinci-linux-open-source@linux.davincidsp.com,
 	David Woodhouse <dwmw2@infradead.org>
@@ -15,37 +19,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This series of patches adds support for AEMIF timing configuration
-for DaVinci SoCs.
+The DM644x EVM nand flash timing was earlier being
+done as a special case in the NAND driver itself.
 
-Currently AEMIF timing configuration is done as a special case for
-DM644x EVM. This work provides for a generic way of doing this.
+With the NAND driver now capable of progamming the
+AEMIF interface using timing data passed from the
+platform, the timing values are being moved into
+their rightful place in the EVM specific board file.
 
-David,
-	Patch 1/6 and 2/6 of this series touch the
-	drivers/mtd/nand/davinci_nand.c file along with other arch specific
-	files. Based on the discussion on DaVinci list, Kevin is OK to merge
-	this with your agreement. Please let us know how to proceed.
+The values being programmed match what was being done
+earlier and thus do not represent any change in
+performance/functionality.
 
-Sekhar Nori (5):
-  davinci: add support for aemif timing configuration
-  nand: davinci: add support for timing configuration
-  davinci: dm644x evm: setup NAND flash timing
-  davinci: am18x/da850/omap-l138 evm: setup NAND flash timing
-  davinci: dm6467t evm: setup NAND flash timing
+Signed-off-by: Sekhar Nori <nsekhar@ti.com>
+Acked-by: Kevin Hilman <khilman@deeprootsystems.com>
+---
+ arch/arm/mach-davinci/board-dm644x-evm.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
 
-Sudhakar Rajashekhara (1):
-  davinci: am17x/da830/omap-l137 evm: setup NAND flash timing
-
- arch/arm/mach-davinci/Makefile             |    2 +-
- arch/arm/mach-davinci/aemif.c              |  133 ++++++++++++++++++++++++++++
- arch/arm/mach-davinci/board-da830-evm.c    |   12 +++
- arch/arm/mach-davinci/board-da850-evm.c    |   12 +++
- arch/arm/mach-davinci/board-dm644x-evm.c   |   12 +++
- arch/arm/mach-davinci/board-dm646x-evm.c   |   14 +++
- arch/arm/mach-davinci/include/mach/aemif.h |   36 ++++++++
- arch/arm/mach-davinci/include/mach/nand.h  |    6 +-
- drivers/mtd/nand/davinci_nand.c            |   61 +++++--------
- 9 files changed, 246 insertions(+), 42 deletions(-)
- create mode 100644 arch/arm/mach-davinci/aemif.c
- create mode 100644 arch/arm/mach-davinci/include/mach/aemif.h
+diff --git a/arch/arm/mach-davinci/board-dm644x-evm.c b/arch/arm/mach-davinci/board-dm644x-evm.c
+index 34c8b41..65bb940 100644
+--- a/arch/arm/mach-davinci/board-dm644x-evm.c
++++ b/arch/arm/mach-davinci/board-dm644x-evm.c
+@@ -37,6 +37,7 @@
+ #include <mach/nand.h>
+ #include <mach/mmc.h>
+ #include <mach/usb.h>
++#include <mach/aemif.h>
+ 
+ #define DM644X_EVM_PHY_MASK		(0x2)
+ #define DM644X_EVM_MDIO_FREQUENCY	(2200000) /* PHY bus frequency */
+@@ -137,11 +138,22 @@ static struct mtd_partition davinci_evm_nandflash_partition[] = {
+ 	 */
+ };
+ 
++static struct davinci_aemif_timing davinci_evm_nandflash_timing = {
++	.wsetup		= 20,
++	.wstrobe	= 40,
++	.whold		= 20,
++	.rsetup		= 10,
++	.rstrobe	= 40,
++	.rhold		= 10,
++	.ta		= 40,
++};
++
+ static struct davinci_nand_pdata davinci_evm_nandflash_data = {
+ 	.parts		= davinci_evm_nandflash_partition,
+ 	.nr_parts	= ARRAY_SIZE(davinci_evm_nandflash_partition),
+ 	.ecc_mode	= NAND_ECC_HW,
+ 	.options	= NAND_USE_FLASH_BBT,
++	.timing		= &davinci_evm_nandflash_timing,
+ };
+ 
+ static struct resource davinci_evm_nandflash_resource[] = {
+-- 
+1.6.2.4
