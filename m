@@ -1,39 +1,24 @@
-From: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-To: Greg Ungerer <gerg@snapgear.com>
-Subject: Re: [PATCH 0/9] Removing dead code
-References: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
-	<4C5F9715.1030806@snapgear.com>
-Date: Mon, 09 Aug 2010 11:03:49 +0200
-In-Reply-To: <4C5F9715.1030806@snapgear.com> (Greg Ungerer's message of "Mon,
-	9 Aug 2010 15:50:13 +1000")
-Message-ID: <86tyn4ximi.fsf@peer.zerties.org>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiObk-0002h1-EC
+	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 09:25:25 +0000
+Message-ID: <4C5FC97E.3030506@parrot.com>
+Date: Mon, 9 Aug 2010 11:25:18 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Roman Zippel <zippel@linux-m68k.org>, John Stultz <johnstul@us.ibm.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
-	Alexander Kurz <linux@kbdbabel.org>,
-	linux-mtd@lists.infradead.org, Michael Roth <mroth@nessie.de>,
-	Greg Ungerer <gerg@uclinux.org>, Christoph Hellwig <hch@lst.de>,
-	Finn Thain <fthain@telegraphics.com.au>, Tony Lindgren <tony@atomide.com>,
-	vamos-dev@i4.informatik.uni-erlangen.de,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Lennart Sorensen <lsorense@csclub.uwaterloo.ca>,
-	Russell King <rmk+kernel@arm.linux.org.uk>,
-	Anatolij Gustschin <agust@denx.de>,
-	Sam Creasey <sammy@sammy.net>, linux-pcmcia@lists.infradead.org,
-	Mike Frysinger <vapier@gentoo.org>,
-	Sean MacLennan <smaclennan@pikatech.com>,
-	Joe Perches <joe@perches.com>, linux-m68k@lists.linux-m68k.org,
-	Maxim Kuvyrkov <maxim@codesourcery.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
-	Greg Kroah-Hartman <gregkh@suse.de>, Wolfram Sang <w.sang@pengutronix.de>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>,
-	Manuel Lauss <manuel.lauss@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+To: Florian Fainelli <ffainelli@freebox.fr>
+Subject: Re: [PATCH] NAND: add support for reading ONFI parameters from NAND
+	device
+References: <201007290047.06394.ffainelli@freebox.fr>
+	<201007291051.38278.ffainelli@freebox.fr>
+	<4C568F1D.4020007@parrot.com>
+	<201008021355.52744.ffainelli@freebox.fr>
+In-Reply-To: <201008021355.52744.ffainelli@freebox.fr>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Brian Norris <norris@broadcom.com>, Maxime Bizon <mbizon@freebox.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,15 +28,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Hi Christian,
-> I don't have any problems with any of these from a
-> m68knommu point of view. I can merge them via the
-> m68knommu git tree if you want?
+Hi Florian,
 
-If there aren't any complaints from the m68k people i'm fine with that.
+Florian Fainelli a écrit :
+> Hi Matthieu,
+> 
+> On Monday 02 August 2010 11:25:49 Matthieu CASTET wrote:
+>> Florian Fainelli a écrit :
+>>> Hi Matthieu,
+>>>
+>>> On Thursday 29 July 2010 09:54:20 Matthieu CASTET wrote:
+>>>> Hi,
+>>>>
+>>>>
+>>>> Also you don't handle endianness (integer are little endian) for value
+>>>> in nand_onfi_params.
+>>> Yes, so far the drivers using those values were doing the correct endian
+>>> conversion when they need to use them.
+>> In that case use le16, le32, ... type. Also prefer kernel type over
+>> uintx_t type.
+>>
+>>>> This won't work this unknown nand, and not work with some LP nand that
+>>>> doesn't provide additional id bytes.
+>>> So how do you see things regarding the provisioning of the relevant ONFI
+>>> parameters?
+>> I will see something like in the patch attached in
+>> http://article.gmane.org/gmane.linux.drivers.mtd/30935.
+>>
+>> ONFI parsing is done early in nand_get_flash_type (unknow chip or LP nand).
+>> If the ONFI parsing is ok we bypass the old identification method
+>> (additional id bytes).
+> 
+> Looks ok to me.
+> 
+>> As an example I attach a patch that mix your patch and mine.
+>>
+>>
+>> Matthieu
+>>
+>> PS : the NAND_ONFI flags seems useless, we can use onfi_version (0 means
+>> no onfi).
+> 
+> Right, thanks for noticing that.
+> 
+> I got a couple of comments on your patch that I inlined, the rest looks
+> good.
+> --
 
-greetz didi
---=20
-(=CE=BB x . x x) (=CE=BB x . x x) -- See how beatiful the lambda is
-No documentation is better than bad documentation
--- Das Ausdrucken dieser Mail wird urheberrechtlich verfolgt.
+> +#if 1
+> +       chip->onfi_version = 0;
+> +       if (!type->name || !type->pagesize) {
+> +               /* try ONFI for unknow chip or LP */
+> +               chip->cmdfunc(mtd, NAND_CMD_READID, 0x20, -1);
+> +               if (chip->read_byte(mtd) == 'O' &&
+> +                       chip->read_byte(mtd) == 'N' &&
+> +                       chip->read_byte(mtd) == 'F' &&
+> +                       chip->read_byte(mtd) == 'I') {
+> 
+> Why not use what was in our original patch and do the memcmp? That looks
+> cleaner to me and allows to invert the logic on the if statement to get the
+> code cleaner. That's just cosmetic anyway.
+I wanted to avoid to use read_buf, because some advanced controller 
+(those who implement cmdfunc) need to overrides all io access.
+But some driver assumed  that nand_scan_ident only used read_byte. That 
+the case of the denali driver [1]. Using it will cause random read in 
+memory and likely a kernel panic.
+
+But we need read_buf for reading onfi page. Also these advanced 
+controllers will break because they won't handle correctly in cmdfunc 
+new NAND_CMD_READID and NAND_CMD_PARAM.
+
+I don't know what the best way to handle them.
+
+
+> +                       if (i < 3) {
+> +                               /* check version */
+> +                               int val = le16_to_cpu(p->revision);
+> +                               if (!is_power_of_2(val) || val == 1 || val > (1 << 4)) {
+> 
+> the !is_power_of_2 check does not work for ONFI version 2.1 (3), so I would only
+> keep the two other checks.
+> 
+Ok.
+
+Will you take care to post a new patch ?
+
+
+Matthieu
+
+
+[1]
+/* register the driver with the NAND core subsystem */
+     denali->nand.select_chip = denali_select_chip;
+     denali->nand.cmdfunc = denali_cmdfunc;
+     denali->nand.read_byte = denali_read_byte;
+     denali->nand.waitfunc = denali_waitfunc;
+
+     /* scan for NAND devices attached to the controller
+      * this is the first stage in a two step process to register
+      * with the nand subsystem */
+     if (nand_scan_ident(&denali->mtd, LLD_MAX_FLASH_BANKS, NULL))
