@@ -1,12 +1,12 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiSHi-0000d2-R2
+	id 1OiSHi-0000d9-U7
 	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 13:21:03 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/12] mxc_nand: support 8bit ecc
-Date: Mon,  9 Aug 2010 15:20:50 +0200
-Message-Id: <1281360053-8386-7-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 07/12] mxc_nand: fix correct_data function
+Date: Mon,  9 Aug 2010 15:20:51 +0200
+Message-Id: <1281360053-8386-8-git-send-email-s.hauer@pengutronix.de>
 In-Reply-To: <1281360053-8386-1-git-send-email-s.hauer@pengutronix.de>
 References: <1281360053-8386-1-git-send-email-s.hauer@pengutronix.de>
 Cc: Baruch Siach <baruch@tkos.co.il>, Sascha Hauer <s.hauer@pengutronix.de>,
@@ -21,84 +21,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nand devices with at least 26 bytes of oob data per 512 byte block
-can have 8bit ecc on v2 type controllers. This is currently not tested,
-but at least this patch puts the ECC_MODE bit into a well defined state.
+The v2 controller has a totally different mechanism to check
+whether the data we read had ecc errors or not. Implement this.
+The mechanism in the v2 controller happens to be identical to
+the v3 controller.
 
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   31 +++++++++++++++++++++++++++++++
- 1 files changed, 31 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   41 +++++++++++++++++++++++++++++++++++++++--
+ 1 files changed, 39 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 48b6dca..c616c19 100644
+index c616c19..030da08 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -58,6 +58,7 @@
- #define NFC_V1_V2_CONFIG1		(host->regs + 0x1a)
- #define NFC_V1_V2_CONFIG2		(host->regs + 0x1c)
- 
-+#define NFC_V2_CONFIG1_ECC_MODE_4	(1 << 0)
- #define NFC_V1_V2_CONFIG1_SP_EN		(1 << 2)
- #define NFC_V1_V2_CONFIG1_ECC_EN	(1 << 3)
- #define NFC_V1_V2_CONFIG1_INT_MSK	(1 << 4)
-@@ -94,6 +95,7 @@ struct mxc_nand_host {
- 	struct clk		*clk;
- 	int			clk_act;
- 	int			irq;
-+	int			eccsize;
- 
- 	wait_queue_head_t	irq_waitq;
- 
-@@ -546,6 +548,23 @@ static void mxc_do_addr_cycle(struct mtd_info *mtd, int column, int page_addr)
- 	}
+@@ -344,7 +344,7 @@ static void mxc_nand_enable_hwecc(struct mtd_info *mtd, int mode)
+ 	 */
  }
  
-+/*
-+ * v2 and v3 type controllers can do 4bit or 8bit ecc depending
-+ * on how much oob the nand chip has. For 8bit ecc we need at least
-+ * 26 bytes of oob data per 512 byte block.
-+ */
-+static int get_eccsize(struct mtd_info *mtd)
-+{
-+	int oobbytes_per_512 = 0;
-+
-+	oobbytes_per_512 = mtd->oobsize * 512 / mtd->writesize;
-+
-+	if (oobbytes_per_512 < 26)
-+		return 4;
-+	else
-+		return 8;
-+}
-+
- static void preset_v1_v2(struct mtd_info *mtd)
+-static int mxc_nand_correct_data(struct mtd_info *mtd, u_char *dat,
++static int mxc_nand_correct_data_v1(struct mtd_info *mtd, u_char *dat,
+ 				 u_char *read_ecc, u_char *calc_ecc)
  {
  	struct nand_chip *nand_chip = mtd->priv;
-@@ -561,6 +580,15 @@ static void preset_v1_v2(struct mtd_info *mtd)
+@@ -366,6 +366,40 @@ static int mxc_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+ 	return 0;
+ }
+ 
++static int mxc_nand_correct_data_v2_v3(struct mtd_info *mtd, u_char *dat,
++				 u_char *read_ecc, u_char *calc_ecc)
++{
++	struct nand_chip *nand_chip = mtd->priv;
++	struct mxc_nand_host *host = nand_chip->priv;
++	u32 ecc_stat, err;
++	int no_subpages = 1;
++	int ret = 0;
++	u8 ecc_bit_mask, err_limit;
++
++	ecc_bit_mask = (host->eccsize == 4) ? 0x7 : 0xf;
++	err_limit = (host->eccsize == 4) ? 0x4 : 0x8;
++
++	no_subpages = mtd->writesize >> 9;
++
++	ecc_stat = readl(NFC_V1_V2_ECC_STATUS_RESULT);
++
++	do {
++		err = ecc_stat & ecc_bit_mask;
++		if (err > err_limit) {
++			printk(KERN_WARNING "UnCorrectable RS-ECC Error\n");
++			return -1;
++		} else {
++			ret += err;
++		}
++		ecc_stat >>= 4;
++	} while (--no_subpages);
++
++	mtd->ecc_stats.corrected += ret;
++	pr_debug("%d Symbol Correctable RS-ECC Error\n", ret);
++
++	return ret;
++}
++
+ static int mxc_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+ 				  u_char *ecc_code)
+ {
+@@ -818,7 +852,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	if (pdata->hw_ecc) {
+ 		this->ecc.calculate = mxc_nand_calculate_ecc;
+ 		this->ecc.hwctl = mxc_nand_enable_hwecc;
+-		this->ecc.correct = mxc_nand_correct_data;
++		if (nfc_is_v1())
++			this->ecc.correct = mxc_nand_correct_data_v1;
++		else
++			this->ecc.correct = mxc_nand_correct_data_v2_v3;
+ 		this->ecc.mode = NAND_ECC_HW;
  	} else {
- 		tmp &= ~NFC_V1_V2_CONFIG1_ECC_EN;
- 	}
-+
-+	if (nfc_is_v21() && mtd->writesize) {
-+		host->eccsize = get_eccsize(mtd);
-+		if (host->eccsize == 4)
-+			tmp |= NFC_V2_CONFIG1_ECC_MODE_4;
-+	} else {
-+		host->eccsize = 1;
-+	}
-+
- 	writew(tmp, NFC_V1_V2_CONFIG1);
- 	/* preset operation */
- 
-@@ -821,6 +849,9 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		goto escan;
- 	}
- 
-+	/* Call preset again, with correct writesize this time */
-+	host->preset(mtd);
-+
- 	if (mtd->writesize == 2048)
- 		this->ecc.layout = oob_largepage;
- 
+ 		this->ecc.mode = NAND_ECC_SOFT;
 -- 
 1.7.1
