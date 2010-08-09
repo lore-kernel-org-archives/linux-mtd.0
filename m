@@ -1,17 +1,21 @@
-Date: Mon, 9 Aug 2010 15:19:33 +0300
-From: Baruch Siach <baruch@tkos.co.il>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 0/2] mxc_nand: fixes for purposed updates
-Message-ID: <20100809121933.GE2894@jasper.tkos.co.il>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiRT2-0000Cw-Ey
+	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 12:28:37 +0000
+Date: Mon, 9 Aug 2010 14:28:33 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Baruch Siach <baruch@tkos.co.il>
+Subject: Re: [PATCH 1/2] mxc_nand: fix build error
+Message-ID: <20100809122833.GB27749@pengutronix.de>
 References: <1281102791-8089-1-git-send-email-s.hauer@pengutronix.de>
 	<cover.1281353601.git.baruch@tkos.co.il>
-	<1281354805.26440.4.camel@localhost>
+	<4db426cd74bc8aae80ddcbf666681c3cd439dfc7.1281353601.git.baruch@tkos.co.il>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1281354805.26440.4.camel@localhost>
-Cc: linux-arm-kernel@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
-	linux-mtd@lists.infradead.org, John Ogness <john.ogness@linutronix.de>
+In-Reply-To: <4db426cd74bc8aae80ddcbf666681c3cd439dfc7.1281353601.git.baruch@tkos.co.il>
+Cc: John Ogness <john.ogness@linutronix.de>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+On Mon, Aug 09, 2010 at 02:38:13PM +0300, Baruch Siach wrote:
+> drivers/mtd/nand/mxc_nand.c: In function 'mxc_nand_command':
+> drivers/mtd/nand/mxc_nand.c:908: error: implicit declaration of function 'send_cmd'
 
-On Mon, Aug 09, 2010 at 12:53:25PM +0100, David Woodhouse wrote:
-> On Mon, 2010-08-09 at 14:38 +0300, Baruch Siach wrote:
-> > With these patches applied I've tested mxc-nand-pu on a i.MX25 based system.
-> > 
-> > Baruch Siach (2):
-> >   mxc_nand: fix build error
-> >   mxc_nand: remove unused variables
-> > 
-> >  drivers/mtd/nand/mxc_nand.c |    9 +++------
-> >  1 files changed, 3 insertions(+), 6 deletions(-)
+This is because you based my series on 2.6.35. With current master this
+patch is not necessary.
+
+Sascha
+
 > 
-> These patches don't apply to the mtd-2.6.git tree.
-
-These patches apply on top of the mxc-nand-pu branch of Sascha Hauer at 
-git://git.pengutronix.de/git/imx/linux-2.6.git. Sorry for not mentioning this.
-
-baruch
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  drivers/mtd/nand/mxc_nand.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 4032e0b..3092240 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -905,13 +905,13 @@ static void mxc_nand_command(struct mtd_info *mtd, unsigned command,
+>  
+>  			/* Set program pointer to spare region */
+>  			if (mtd->writesize == 512)
+> -				send_cmd(host, NAND_CMD_READOOB, false);
+> +				host->send_cmd(host, NAND_CMD_READOOB, false);
+>  		} else {
+>  			host->buf_start = column;
+>  
+>  			/* Set program pointer to page start */
+>  			if (mtd->writesize == 512)
+> -				send_cmd(host, NAND_CMD_READ0, false);
+> +				host->send_cmd(host, NAND_CMD_READ0, false);
+>  		}
+>  
+>  		host->send_cmd(host, command, false);
+> -- 
+> 1.7.1
+> 
+> 
 
 -- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
