@@ -1,26 +1,16 @@
-Received: from www84.your-server.de ([213.133.104.84])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiSoF-0000Yj-8S
-	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 13:54:35 +0000
-Subject: Re: [PATCH] Add quick erase format option
-From: Stefani Seibold <stefani@seibold.net>
-To: dedekind1@gmail.com
-In-Reply-To: <1281353344.2332.8.camel@brekeke>
-References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
-	<1281343038.12908.25.camel@localhost>
-	<1281343974.18398.13.camel@wall-e.seibold.net>
-	<1281353344.2332.8.camel@brekeke>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Mon, 09 Aug 2010 15:54:29 +0200
-Message-ID: <1281362069.20181.16.camel@wall-e.seibold.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Enzinger,
-	Robert \(EXT-Other - DE/Munich\)" <robert.enzinger.ext@nsn.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from mga02.intel.com ([134.134.136.20])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiV9M-0001Am-CL
+	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 16:24:33 +0000
+Date: Tue, 10 Aug 2010 00:22:09 +0800
+From: "Chuanxiao.Dong" <chuanxiao.dong@intel.com>
+To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: [PATCH v1 1/4]nand/denali: Fixed probe function bugs
+Message-ID: <20100809162209.GA10968@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,94 +20,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Montag, den 09.08.2010, 14:29 +0300 schrieb Artem Bityutskiy: 
-> On Mon, 2010-08-09 at 10:52 +0200, Stefani Seibold wrote:
-> > Am Montag, den 09.08.2010, 09:37 +0100 schrieb David Woodhouse:
-> > > On Mon, 2010-08-09 at 09:25 +0100, stefani@seibold.net wrote:
-> > > > From: Stefani Seibold <stefani@seibold.net>
-> > > > 
-> > > > This patch add a quick format option which skips erasing of already erased
-> > > > flash blocks. This is useful for first time production environments where
-> > > > the flash arrived erased.
-> > > > 
-> > > > Signed-off-by: Stefani Seibold <stefani@seibold.net> 
-> > > 
-> > > This scares me, given the lengths we had to go to in JFFS2 to cope with
-> > > blocks which *look* like they're erased, but which actually start losing
-> > > data as soon as you start writing to them because the erase didn't
-> > > complete.
-> > > 
-> > 
-> > I know the drawback. This is why it is only an option which must be
-> > enabled. And in most use cases there is a subsequent ubimkvol, which
-> > will fail if the flash is not correct initialized.
-> > 
-> > Flash are normally delivered erased. So this save in our production
-> > environment (Nokia Siemens Networks) about 5 minutes per device (256 MB
-> > NOR CFI Flash).
-> > 
-> > The old JFFS2 was very fast to install the first time on a flash, it was
-> > only a simple mount of the MTD partition. 
-> 
-> Not sure what you do, but both UBI and UBIFS auto-format flash if it is
-> empty, and attaching empty flash should be very fast.
-> 
 
-I was never able to mount a UBIFS without a previous ubimkvol, despite
-the flash is already erased.
+=46rom 25d2402fc8fd70c041cb8d0b976359b366a96e9d Mon Sep 17 00:00:00 2001
+=46rom: Chuanxiao Dong <chuanxiao.dong@intel.com>
+Date: Mon, 9 Aug 2010 18:37:00 +0800
+Subject: [PATCH 1/4] nand/denali: Fixed probe function bugs
 
-Here are my timing results mounting an already erased flash as UBIFS:
+Fixed a pci_resource_len function error;
+Changed returning sequence of probe function;
 
-ubiattach /dev/ubi_ctrl -m 5 -d 1              -->   2.023s
-ubimkvol /dev/ubi1 -m -N flash                 --> 294.574s
-mount -t ubifs -o sync ubi1:flash /mnt         -->   0.221s
+Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
+---
+ drivers/mtd/nand/denali.c |   44 +++++++++++++++++++++++------------------=
+---
+ 1 files changed, 23 insertions(+), 21 deletions(-)
 
-And this are the timing results when i do an ubiformat first:
-
-ubiformat /dev/mtd5                            --> 299.111s
-ubiattach /dev/ubi_ctrl -m 5 -d 1              -->   0.129s
-ubimkvol /dev/ubi1 -m -N flash                 -->   1.784s
-mount -t ubifs -o sync ubi1:flash /mnt         -->   0.220s
-
-And this are the results with my patched version of the ubiformat tool
-using an already erased flash:
-
-ubiformat /dev/mtd5 -E                         -->   5.475s
-ubiattach /dev/ubi_ctrl -m 5 -d                -->   0.130s
-ubimkvol /dev/ubi1 -m -N flash                 -->   1.699s
-mount -t ubifs -o sync ubi1:flash /mnt         -->   0.220s
-
-As you can see this is 296.818s vs. 7.524 or 40 times faster.
-
-Maybe i do something wrong, but i have no idea. Can u explain it to me?
-
-BTW: The flash is a 128 MB CFI AMD NOR and the size of the mtd5
-partition is 47 MB.
-
-> But yes, the first volume creation ioctl will block until everything is
-> erased, although this is just an implementation issue and in theory,
-> fixable.
-> 
-> > Which the quick format option i have now only a slightly first time
-> > installation overhead compared to JFFS2. Without this option the
-> > overhead is more than 5 minutes.
-> 
-> Are you flashing an UBI image in production? Then what you can do if you
-> want to be faster is to flash only the blocks which contain image date,
-> and leave the rest intact, UBI will erase them and write EC header to
-> them when you first boot the device.
-> 
-
-No, we only initialize the flash, mount it as UBIFS and copy files.
-
-> So I think it is better to add an --pristine-flash option, or something
-> like this. In this case ubiformat won't erase anything, and will assume
-> everything is 0xFFed without reading. This should be faster and I think
-> is better to do.
-> 
-
-This patch assumes nothing, it will skip the erase of the PEB if all
-bytes in the EC header are 0xff. I think this is safer than your
-suggestion.
-
-- Stefani
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 1422edd..b8b7b93 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1536,7 +1536,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 	ret =3D pci_enable_device(dev);
+ 	if (ret) {
+ 		printk(KERN_ERR "Spectra: pci_enable_device failed.\n");
+-		goto failed_enable;
++		goto failed_alloc_memery;
+ 	}
+=20
+ 	if (id->driver_data =3D=3D INTEL_CE4100) {
+@@ -1547,7 +1547,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 			printk(KERN_ERR "Intel CE4100 only supports"
+ 					" ONFI timing mode 1 or below\n");
+ 			ret =3D -EINVAL;
+-			goto failed_enable;
++			goto failed_enable_dev;
+ 		}
+ 		denali->platform =3D INTEL_CE4100;
+ 		mem_base =3D pci_resource_start(dev, 0);
+@@ -1557,7 +1557,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 	} else {
+ 		denali->platform =3D INTEL_MRST;
+ 		csr_base =3D pci_resource_start(dev, 0);
+-		csr_len =3D pci_resource_start(dev, 0);
++		csr_len =3D pci_resource_len(dev, 0);
+ 		mem_base =3D pci_resource_start(dev, 1);
+ 		mem_len =3D pci_resource_len(dev, 1);
+ 		if (!mem_len) {
+@@ -1576,7 +1576,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+=20
+ 	if (ret) {
+ 		printk(KERN_ERR "Spectra: no usable DMA configuration\n");
+-		goto failed_enable;
++		goto failed_enable_dev;
+ 	}
+ 	denali->buf.dma_buf =3D
+ 		pci_map_single(dev, denali->buf.buf,
+@@ -1585,7 +1585,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+=20
+ 	if (pci_dma_mapping_error(dev, denali->buf.dma_buf)) {
+ 		printk(KERN_ERR "Spectra: failed to map DMA buffer\n");
+-		goto failed_enable;
++		goto failed_enable_dev;
+ 	}
+=20
+ 	pci_set_master(dev);
+@@ -1594,14 +1594,14 @@ static int denali_pci_probe(struct pci_dev *dev, co=
+nst struct pci_device_id *id)
+ 	ret =3D pci_request_regions(dev, DENALI_NAND_NAME);
+ 	if (ret) {
+ 		printk(KERN_ERR "Spectra: Unable to request memory regions\n");
+-		goto failed_req_csr;
++		goto failed_dma_map;
+ 	}
+=20
+ 	denali->flash_reg =3D ioremap_nocache(csr_base, csr_len);
+ 	if (!denali->flash_reg) {
+ 		printk(KERN_ERR "Spectra: Unable to remap memory region\n");
+ 		ret =3D -ENOMEM;
+-		goto failed_remap_csr;
++		goto failed_req_regions;
+ 	}
+ 	nand_dbg_print(NAND_DBG_DEBUG, "Spectra: CSR 0x%08Lx -> 0x%p (0x%lx)\n",
+ 		       (uint64_t)csr_base, denali->flash_reg, csr_len);
+@@ -1609,9 +1609,8 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 	denali->flash_mem =3D ioremap_nocache(mem_base, mem_len);
+ 	if (!denali->flash_mem) {
+ 		printk(KERN_ERR "Spectra: ioremap_nocache failed!");
+-		iounmap(denali->flash_reg);
+ 		ret =3D -ENOMEM;
+-		goto failed_remap_csr;
++		goto failed_remap_reg;
+ 	}
+=20
+ 	nand_dbg_print(NAND_DBG_WARN,
+@@ -1627,7 +1626,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 			DENALI_NAND_NAME, denali)) {
+ 		printk(KERN_ERR "Spectra: Unable to allocate IRQ\n");
+ 		ret =3D -ENODEV;
+-		goto failed_request_irq;
++		goto failed_remap_mem;
+ 	}
+=20
+ 	/* now that our ISR is registered, we can enable interrupts */
+@@ -1664,7 +1663,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 	 * with the nand subsystem */
+ 	if (nand_scan_ident(&denali->mtd, LLD_MAX_FLASH_BANKS, NULL)) {
+ 		ret =3D -ENXIO;
+-		goto failed_nand;
++		goto failed_req_irq;
+ 	}
+=20
+ 	/* MTD supported page sizes vary by kernel. We validate our
+@@ -1674,7 +1673,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 		ret =3D -ENODEV;
+ 		printk(KERN_ERR "Spectra: device size not supported by this "
+ 			"version of MTD.");
+-		goto failed_nand;
++		goto failed_req_irq;
+ 	}
+=20
+ 	/* support for multi nand
+@@ -1725,7 +1724,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
+t struct pci_device_id *id)
+ 			ECC_SECTOR_SIZE))) {
+ 		printk(KERN_ERR "Your NAND chip OOB is not large enough to"
+ 				" contain 8bit ECC correction codes");
+-		goto failed_nand;
++		goto failed_req_irq;
+ 	} else {
+ 		denali->nand.ecc.layout =3D &nand_8bit_oob;
+ 		denali->nand.ecc.bytes =3D ECC_8BITS;
+@@ -1769,28 +1768,31 @@ static int denali_pci_probe(struct pci_dev *dev, co=
+nst struct pci_device_id *id)
+=20
+ 	if (nand_scan_tail(&denali->mtd)) {
+ 		ret =3D -ENXIO;
+-		goto failed_nand;
++		goto failed_req_irq;
+ 	}
+=20
+ 	ret =3D add_mtd_device(&denali->mtd);
+ 	if (ret) {
+ 		printk(KERN_ERR "Spectra: Failed to register"
+ 				" MTD device: %d\n", ret);
+-		goto failed_nand;
++		goto failed_req_irq;
+ 	}
+ 	return 0;
+=20
+- failed_nand:
++failed_req_irq:
+ 	denali_irq_cleanup(dev->irq, denali);
+- failed_request_irq:
+-	iounmap(denali->flash_reg);
++failed_remap_mem:
+ 	iounmap(denali->flash_mem);
+- failed_remap_csr:
++failed_remap_reg:
++	iounmap(denali->flash_reg);
++failed_req_regions:
+ 	pci_release_regions(dev);
+- failed_req_csr:
++failed_dma_map:
+ 	pci_unmap_single(dev, denali->buf.dma_buf, DENALI_BUF_SIZE,
+ 							PCI_DMA_BIDIRECTIONAL);
+- failed_enable:
++failed_enable_dev:
++	pci_disable_device(dev);
++failed_alloc_memery:
+ 	kfree(denali);
+ 	return ret;
+ }
+--=20
+1.6.6.1
