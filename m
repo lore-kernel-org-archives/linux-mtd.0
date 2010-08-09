@@ -1,35 +1,31 @@
-Received: from db3ehsobe001.messaging.microsoft.com ([213.199.154.139]
-	helo=DB3EHSOBE001.bigfish.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiMrz-0001qp-Td
-	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 07:34:04 +0000
-Received: from mail75-db3 (localhost.localdomain [127.0.0.1])	by
-	mail75-db3-R.bigfish.com (Postfix) with ESMTP id 59AA1A885AD	for
-	<linux-mtd@lists.infradead.org>; Mon,  9 Aug 2010 07:34:01 +0000 (UTC)
-Received: from DB3EHSMHS005.bigfish.com (unknown [10.3.81.252])	by
-	mail75-db3.bigfish.com (Postfix) with ESMTP id A95FDF400C2	for
-	<linux-mtd@lists.infradead.org>; Mon,  9 Aug 2010 07:33:40 +0000 (UTC)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net
-	[10.64.34.199])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
-	id o797XR0N029697	for <linux-mtd@lists.infradead.org>;
-	Mon, 9 Aug 2010 00:33:27 -0700 (MST)
-Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
-	[10.192.129.207])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP
-	id o797iswN024237	for <linux-mtd@lists.infradead.org>;
-	Mon, 9 Aug 2010 02:44:55 -0500 (CDT)
-Content-Class: urn:content-classes:message
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OiMuW-0002yl-3k
+	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 07:36:42 +0000
+Received: by wyf19 with SMTP id 19so7063746wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 09 Aug 2010 00:36:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <1281267200.19967.246.camel@macbook.infradead.org>
+References: <1274599824-17530-1-git-send-email-vapier@gentoo.org>
+	<1276352794.19028.122.camel@localhost>
+	<1280914408.19499.8.camel@localhost>
+	<AANLkTikMrbK4B22Q=aa1zWmx_M-f_eqnKHcaZZb7qj9i@mail.gmail.com>
+	<1281267200.19967.246.camel@macbook.infradead.org>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 9 Aug 2010 03:36:18 -0400
+Message-ID: <AANLkTinTntguz9sZVKb2NJEUHW_+rj7S1u2XT02PDi2q@mail.gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 1/2] mtd: physmap: add
+	physmap_unmapped_area() for no-mmu XIP
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH 1/3][MTD] P4080/eLBC: Make Freescale elbc interrupt common
-	to elbc devices
-Date: Mon, 9 Aug 2010 15:33:22 +0800
-Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A03E044@zch01exm23.fsl.freescale.net>
-In-Reply-To: <1281063096-26598-1-git-send-email-tie-fei.zang@freescale.com>
-From: Zang Roy-R61911 <r61911@freescale.com>
-To: "Zang Roy-R61911" <R61911@freescale.com>, <linux-mtd@lists.infradead.org>
-Cc: Lan Chunhe-B25806 <B25806@freescale.com>, linuxppc-dev@ozlabs.org,
-	akpm@linux-foundation.org, Gala Kumar-B11780 <B11780@freescale.com>
+Cc: David@blackfin.uclinux.org, uclinux-dev@uclinux.org, dedekind1@gmail.com,
+	Paul@blackfin.uclinux.org, Schmidt <bernds_cb1@t-online.de>,
+	David Howells <dhowells@redhat.com>, Mundt <lethal@linux-sh.org>,
+	linux-mtd@lists.infradead.org, Greg Ungerer <gerg@uclinux.org>,
+	uclinux-dist-devel@blackfin.uclinux.org,
+	Bernd@blackfin.uclinux.org, McCullough <davidm@snapgear.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,29 +35,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
+On Sun, Aug 8, 2010 at 07:33, David Woodhouse wrote:
+> On Sat, 2010-08-07 at 19:26 -0400, Mike Frysinger wrote:
+>> if we delve a bit, what you're referring to is only possible i think
+>> if this change is merged (we posted this back in Jan w/no feedback):
+>> =C2=A0 mtd-physmap: add support users can assign the probe type in board=
+ files
+>>
+>> otherwise, there's no way of declaring a physmap of a parallel nor
+>> flash and having it end up with read-only capabilities ...
+>
+> Hm, yeah -- that one looks sane enough. I can merge that, although part
+> 1 of that 2-part series I still object to because I don't *want*
+> different architectures to use different config symbols for the same
+> thing. Driver code shouldn't have to cope with that.
 
-> -----Original Message-----
-> From: Zang Roy-R61911=20
-> Sent: Friday, August 06, 2010 10:52 AM
-> To: linux-mtd@lists.infradead.org
-> Cc: linuxppc-dev@ozlabs.org; akpm@linux-foundation.org; Gala=20
-> Kumar-B11780; Lan Chunhe-B25806
-> Subject: [PATCH 1/3][MTD] P4080/eLBC: Make Freescale elbc=20
-> interrupt common to elbc devices
->=20
-> From: Lan Chunhe-B25806 <b25806@freescale.com>
->=20
-> Move Freescale elbc interrupt from nand dirver to elbc driver.
-> Then all elbc devices can use the interrupt instead of ONLY nand.
->=20
-> Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
-> Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
-> ---
-> send the patch to linux-mtd@lists.infradead.org
-> it has been posted to linuxppc-dev@ozlabs.org and do not get=20
-> any comment.
-Any comment about this serial patches?
-If none, I'd ask Andrew to merge to his mm tree.
-Thanks.
-Roy
+the two arent really dependent on each other.  i'll probably just
+change the Blackfin code to also enable the XIP_KERNEL symbol and
+forget about the whole damned mess.
+-mike
