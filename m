@@ -1,12 +1,12 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OiSHi-0000d0-Or
+	id 1OiSHi-0000cs-Ds
 	for linux-mtd@lists.infradead.org; Mon, 09 Aug 2010 13:21:00 +0000
 From: Sascha Hauer <s.hauer@pengutronix.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 04/12] mxc_nand: factor out a check_int function
-Date: Mon,  9 Aug 2010 15:20:48 +0200
-Message-Id: <1281360053-8386-5-git-send-email-s.hauer@pengutronix.de>
+Subject: [PATCH 01/12] mxc_nand: remove 0xe00 offset from registers
+Date: Mon,  9 Aug 2010 15:20:45 +0200
+Message-Id: <1281360053-8386-2-git-send-email-s.hauer@pengutronix.de>
 In-Reply-To: <1281360053-8386-1-git-send-email-s.hauer@pengutronix.de>
 References: <1281360053-8386-1-git-send-email-s.hauer@pengutronix.de>
 Cc: Baruch Siach <baruch@tkos.co.il>, Sascha Hauer <s.hauer@pengutronix.de>,
@@ -21,82 +21,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add the offset to the register base instead. This is done
+in preparation for v3 controller support.
+
 Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 ---
- drivers/mtd/nand/mxc_nand.c |   32 +++++++++++++++++++-------------
- 1 files changed, 19 insertions(+), 13 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   36 ++++++++++++++++++------------------
+ 1 files changed, 18 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 2d2e2e7..70f64dc 100644
+index 0d76b16..abec73a 100644
 --- a/drivers/mtd/nand/mxc_nand.c
 +++ b/drivers/mtd/nand/mxc_nand.c
-@@ -122,6 +122,7 @@ struct mxc_nand_host {
- 	void			(*send_page)(struct mtd_info *, unsigned int);
- 	void			(*send_read_id)(struct mxc_nand_host *);
- 	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
-+	int			(*check_int)(struct mxc_nand_host *);
- };
+@@ -41,22 +41,22 @@
+ #define nfc_is_v1()		(cpu_is_mx31() || cpu_is_mx27() || cpu_is_mx21())
  
- /* OOB placement block for use with hardware ecc generation */
-@@ -181,34 +182,38 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
- 	return IRQ_HANDLED;
- }
+ /* Addresses for NFC registers */
+-#define NFC_BUF_SIZE		0xE00
+-#define NFC_BUF_ADDR		0xE04
+-#define NFC_FLASH_ADDR		0xE06
+-#define NFC_FLASH_CMD		0xE08
+-#define NFC_CONFIG		0xE0A
+-#define NFC_ECC_STATUS_RESULT	0xE0C
+-#define NFC_RSLTMAIN_AREA	0xE0E
+-#define NFC_RSLTSPARE_AREA	0xE10
+-#define NFC_WRPROT		0xE12
+-#define NFC_V1_UNLOCKSTART_BLKADDR	0xe14
+-#define NFC_V1_UNLOCKEND_BLKADDR	0xe16
+-#define NFC_V21_UNLOCKSTART_BLKADDR	0xe20
+-#define NFC_V21_UNLOCKEND_BLKADDR	0xe22
+-#define NFC_NF_WRPRST		0xE18
+-#define NFC_CONFIG1		0xE1A
+-#define NFC_CONFIG2		0xE1C
++#define NFC_BUF_SIZE			0x00
++#define NFC_BUF_ADDR			0x04
++#define NFC_FLASH_ADDR			0x06
++#define NFC_FLASH_CMD			0x08
++#define NFC_CONFIG			0x0a
++#define NFC_ECC_STATUS_RESULT		0x0c
++#define NFC_RSLTMAIN_AREA		0x0e
++#define NFC_RSLTSPARE_AREA		0x10
++#define NFC_WRPROT			0x12
++#define NFC_V1_UNLOCKSTART_BLKADDR	0x14
++#define NFC_V1_UNLOCKEND_BLKADDR	0x16
++#define NFC_V21_UNLOCKSTART_BLKADDR	0x20
++#define NFC_V21_UNLOCKEND_BLKADDR	0x22
++#define NFC_NF_WRPRST			0x18
++#define NFC_CONFIG1			0x1a
++#define NFC_CONFIG2			0x1c
  
-+static int check_int_v1_v2(struct mxc_nand_host *host)
-+{
-+	uint32_t tmp;
-+
-+	tmp = readw(host->regs + NFC_CONFIG2);
-+	if (!(tmp & NFC_INT))
-+		return 0;
-+
-+	writew(tmp & ~NFC_INT, NFC_CONFIG2);
-+
-+	return 1;
-+}
-+
- /* This function polls the NANDFC to wait for the basic operation to
-  * complete by checking the INT bit of config2 register.
-  */
- static void wait_op_done(struct mxc_nand_host *host, int useirq)
- {
--	uint16_t tmp;
- 	int max_retries = 8000;
- 
- 	if (useirq) {
--		if ((readw(host->regs + NFC_CONFIG2) & NFC_INT) == 0) {
-+		if (!host->check_int(host)) {
- 
- 			enable_irq(host->irq);
- 
--			wait_event(host->irq_waitq,
--				readw(host->regs + NFC_CONFIG2) & NFC_INT);
--
--			tmp = readw(host->regs + NFC_CONFIG2);
--			tmp  &= ~NFC_INT;
--			writew(tmp, host->regs + NFC_CONFIG2);
-+			wait_event(host->irq_waitq, host->check_int(host));
- 		}
- 	} else {
- 		while (max_retries-- > 0) {
--			if (readw(host->regs + NFC_CONFIG2) & NFC_INT) {
--				tmp = readw(host->regs + NFC_CONFIG2);
--				tmp  &= ~NFC_INT;
--				writew(tmp, host->regs + NFC_CONFIG2);
-+			if (host->check_int(host))
- 				break;
--			}
-+
- 			udelay(1);
- 		}
- 		if (max_retries < 0)
-@@ -774,6 +779,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		host->send_page = send_page_v1_v2;
- 		host->send_read_id = send_read_id_v1_v2;
- 		host->get_dev_status = get_dev_status_v1_v2;
-+		host->check_int = check_int_v1_v2;
- 	}
+ /* Set INT to 0, FCMD to 1, rest to 0 in NFC_CONFIG2 Register
+  * for Command operation */
+@@ -764,14 +764,14 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	host->main_area1 = host->base + 0x200;
  
  	if (nfc_is_v21()) {
+-		host->regs = host->base + 0x1000;
++		host->regs = host->base + 0x1e00;
+ 		host->spare0 = host->base + 0x1000;
+ 		host->spare_len = 64;
+ 		oob_smallpage = &nandv2_hw_eccoob_smallpage;
+ 		oob_largepage = &nandv2_hw_eccoob_largepage;
+ 		this->ecc.bytes = 9;
+ 	} else if (nfc_is_v1()) {
+-		host->regs = host->base;
++		host->regs = host->base + 0xe00;
+ 		host->spare0 = host->base + 0x800;
+ 		host->spare_len = 16;
+ 		oob_smallpage = &nandv1_hw_eccoob_smallpage;
 -- 
 1.7.1
