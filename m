@@ -1,23 +1,16 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oip6H-0005le-Tv
-	for linux-mtd@lists.infradead.org; Tue, 10 Aug 2010 13:42:42 +0000
-Received: by bwz19 with SMTP id 19so2608877bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Aug 2010 06:42:40 -0700 (PDT)
-Message-ID: <4C61571D.1030906@mvista.com>
-Date: Tue, 10 Aug 2010 17:41:49 +0400
-From: Sergei Shtylyov <sshtylyov@mvista.com>
+From: John Ogness <john.ogness@linutronix.de>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 1/3] mxc_nand: set spare size and pages per block
+References: <80r5i63dn4.fsf@merkur.tec.linutronix.de>
+	<20100810121912.GG27749@pengutronix.de>
+Date: Tue, 10 Aug 2010 16:31:40 +0200
+In-Reply-To: <20100810121912.GG27749@pengutronix.de> (Sascha Hauer's message
+	of "Tue, 10 Aug 2010 14:19:12 +0200")
+Message-ID: <801va635f7.fsf@merkur.tec.linutronix.de>
 MIME-Version: 1.0
-To: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-Subject: Re: [PATCH] m25p80: add support for a callback to platform code on
-	successful device probe
-References: <1281422578-20461-1-git-send-email-sudhakar.raj@ti.com>
-In-Reply-To: <1281422578-20461-1-git-send-email-sudhakar.raj@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: --cc=dwmw2@infradead.org, davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,72 +20,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+On 2010-08-10, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> Sorry, last time I sent only up to 09/12, so the patches I explicitely
+> mentioned to solve the things from your previous series were missing.
+> I just sent them. My versions of the patches differ slightly.
 
-Sudhakar Rajashekhara wrote:
+Your version allows a small window between request_irq() and
+irq_control() where on the i.MX21 there is a possibility of the
+interrupts being disabled twice. Namely, if an interrupt occurs before
+irq_control() has had a chance to disable it. IMHO it would be better to
+call:
 
-> On some platforms, MTD device can hold MAC address, calibration
-> data, serial numbers etc.
+    set_irq_flags(host->irq, IRQF_VALID | IRQF_NOAUTOEN);
 
-> On TI's DA850/OMAP-L138/AM18xx EVM, MAC address is stored on
-> the last sector of the SPI flash, which is exported as an MTD
-> device.
+for the i.MX21 before requesting the irq. This closes the window.
 
-> This patch adds two new members to the 'flash_platform_data'
-> structure, a function handler which will be called after
-> add_mtd_device() and an argument to be passed to this function,
-> for example: offset to read from.
+For non-i.MX21 this window also exists, but since in that situation the
+irq hander simply unnecessarily sets a bit, it is not so dramatic. By
+masking the interrupt before requesting the irq, the windows is also
+closed for non-i.MX21.
 
-> Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-> ---
->  drivers/mtd/devices/m25p80.c |   15 +++++++++++++--
->  include/linux/spi/flash.h    |    2 ++
->  2 files changed, 15 insertions(+), 2 deletions(-)
+> For this patch I decided to initialize every bit in NFC_V1_V2_CONFIG1
+> from scratch so that we do not depend on any reset or bootloader
+> values.  I think this is cleaner so I propose that we use my version
+> of the patch.
 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 81e49a9..b832091 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-[...]
-> @@ -924,13 +925,23 @@ static int __devinit m25p_probe(struct spi_device *spi)
->  					(long long)(parts[i].size >> 10));
->  			}
->  			flash->partitioned = 1;
-> -			return add_mtd_partitions(&flash->mtd, parts, nr_parts);
-> +			ret = add_mtd_partitions(&flash->mtd, parts, nr_parts);
-> +			if (!ret)
-> +				goto out;
-> +
-> +			return ret;
->  		}
->  	} else if (data && data->nr_parts)
->  		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
->  				data->nr_parts, data->name);
->  
-> -	return add_mtd_device(&flash->mtd) == 1 ? -ENODEV : 0;
-> +	ret = add_mtd_device(&flash->mtd);
-> +
-> +out:
-> +	if (data->setup && !ret)
-> +		(data->setup)(&flash->mtd, (void *)data->context);
+I agree that initializing all the bits is better. But you need to set
+the mask as well. Your latest patches clear the mask when initializing
+V1_V2_CONFIG1 and V3_CONFIG2. For non-i.MX21 the mask should always be
+set except when explicitly waiting for an interrupt in wait_op_done().
 
-    Parens not necessary around 'data->setup'.
+All the patches (01-12) were tested on an i.MX35 with 16-bit NAND and
+work as expected. My only recommendations would be to close the window
+at request_irq() and also include the following patch to set the mask
+during preset().
 
-> diff --git a/include/linux/spi/flash.h b/include/linux/spi/flash.h
-> index 3f22932..daa4875 100644
-> --- a/include/linux/spi/flash.h
-> +++ b/include/linux/spi/flash.h
-> @@ -24,6 +24,8 @@ struct flash_platform_data {
->  	unsigned int	nr_parts;
->  
->  	char		*type;
-> +	void		(*setup)(struct mtd_info *, void *context);
-> +	void		*context;
->  
->  	/* we'll likely add more ... use JEDEC IDs, etc */
->  };
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+ drivers/mtd/nand/mxc_nand.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-    Hm, is m25p80.c the only SPI flash driver using this structure? I guess 
-not -- I'm seeing at least sst25l.c and mtd_dataflash.c...
-
-WBR, Sergei
+Index: linux-2.6-454a740/drivers/mtd/nand/mxc_nand.c
+===================================================================
+--- linux-2.6-454a740.orig/drivers/mtd/nand/mxc_nand.c
++++ linux-2.6-454a740/drivers/mtd/nand/mxc_nand.c
+@@ -788,6 +788,8 @@ static void preset_v1_v2(struct mtd_info
+ 
+ 	if (nfc_is_v21())
+ 		config1 |= NFC_V2_CONFIG1_FP_INT;
++	else
++		config1 |= NFC_V1_V2_CONFIG1_INT_MSK;
+ 
+ 	if (nfc_is_v21() && mtd->writesize) {
+ 		uint16_t pages_per_block = mtd->erasesize / mtd->writesize;
+@@ -846,6 +848,7 @@ static void preset_v3(struct mtd_info *m
+ 		NFC_V3_CONFIG2_2CMD_PHASES |
+ 		NFC_V3_CONFIG2_SPAS(mtd->oobsize >> 1) |
+ 		NFC_V3_CONFIG2_ST_CMD(0x70) |
++		NFC_V3_CONFIG2_INT_MSK |
+ 		NFC_V3_CONFIG2_NUM_ADDR_PHASE0;
+ 
+ 	if (chip->ecc.mode == NAND_ECC_HW)
