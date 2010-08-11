@@ -1,36 +1,19 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
-	helo=TX2EHSOBE006.bigfish.com)
+Received: from relay2.mail.timico.net ([62.121.20.90] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oj1KQ-0002gU-HE
-	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2010 02:46:08 +0000
-Received: from mail170-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail170-tx2-R.bigfish.com (Postfix) with ESMTP id 56AC73287AD	for
-	<linux-mtd@lists.infradead.org>; Wed, 11 Aug 2010 02:46:04 +0000 (UTC)
-Received: from TX2EHSMHS020.bigfish.com (unknown [10.9.14.249])	by
-	mail170-tx2.bigfish.com (Postfix) with ESMTP id 20D312004E	for
-	<linux-mtd@lists.infradead.org>; Wed, 11 Aug 2010 02:46:04 +0000 (UTC)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
-	o7B2jkPZ023985	for
-	<linux-mtd@lists.infradead.org>; Tue, 10 Aug 2010 19:45:51 -0700 (MST)
-Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
-	[10.192.129.207])	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP
-	id o7B2wkHE001006	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Aug 2010 21:58:47 -0500 (CDT)
+	id 1Oj7dr-00073A-J1
+	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2010 09:30:36 +0000
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Date: Wed, 11 Aug 2010 10:30:28 +0100
+Subject: How to stop mtd char device generating ECC on writes?
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE0903DC2323@Cloud.RL.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH 1/3][MTD] P4080/eLBC: Make Freescale elbc interrupt common
-	to elbc devices
-Date: Wed, 11 Aug 2010 10:45:41 +0800
-Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A056382@zch01exm23.fsl.freescale.net>
-In-Reply-To: <1281063096-26598-1-git-send-email-tie-fei.zang@freescale.com>
-From: Zang Roy-R61911 <r61911@freescale.com>
-To: "Zang Roy-R61911" <R61911@freescale.com>, <linux-mtd@lists.infradead.org>
-Cc: Lan Chunhe-B25806 <B25806@freescale.com>, linuxppc-dev@ozlabs.org,
-	akpm@linux-foundation.org, Gala Kumar-B11780 <B11780@freescale.com>,
-	Wood Scott-B07421 <B07421@freescale.com>
+MIME-Version: 1.0
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,35 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
+I am trying to write a binary image to NAND flash using nandwrite on TI DaV=
+inci DM355. For historical reasons involving badly-written ROM bootloaders,=
+ I want to write the "legacy" OOB format for one area of flash (the UBL, se=
+cond-stage bootloader).
 
-> -----Original Message-----
-> From: Zang Roy-R61911=20
-> Sent: Friday, August 06, 2010 10:52 AM
-> To: linux-mtd@lists.infradead.org
-> Cc: linuxppc-dev@ozlabs.org; akpm@linux-foundation.org; Gala=20
-> Kumar-B11780; Lan Chunhe-B25806
-> Subject: [PATCH 1/3][MTD] P4080/eLBC: Make Freescale elbc=20
-> interrupt common to elbc devices
->=20
-> From: Lan Chunhe-B25806 <b25806@freescale.com>
->=20
-> Move Freescale elbc interrupt from nand dirver to elbc driver.
-> Then all elbc devices can use the interrupt instead of ONLY nand.
->=20
-> Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
-> Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
-> ---
-> send the patch to linux-mtd@lists.infradead.org
-> it has been posted to linuxppc-dev@ozlabs.org and do not get=20
-> any comment.
->=20
->  arch/powerpc/Kconfig               |    7 +-
->  arch/powerpc/include/asm/fsl_lbc.h |   34 +++++-
->  arch/powerpc/sysdev/fsl_lbc.c      |  254=20
-> ++++++++++++++++++++++++++++++------
->  3 files changed, 253 insertions(+), 42 deletions(-)
-Who is response to review the nand driver in mtd list?
-Please help to  comment on this serial patch.
-Thanks.
-Roy
+For reference the legacy layout of a 2KB flash page is
+  4x (512B data followed by 16B OOB (6 spare then 10 ECC)).
+
+The "new" format used by u-boot, MTD etc. is
+  2KB data followed by 64B OOB (24 spare then 40 ECC).
+
+I can get a bootloader image with the needed (legacy) OOB and ECC using
+  nanddump -f ubl0.dump -s 0x20000 -l 0x8000 -n /dev/mtd0
+
+But I can't seem to write it back properly using nandwrite.
+Testing on another partition mtd6, If I do this:
+  nandwrite -r -s 0x20000 /dev/mtd6 ubl0.dump
+then it seems my 64 bytes of "OOB" are skipped and I get a generated 24 byt=
+es of 0xFF spare and 40 bytes of generated ECC.
+
+If I use --noecc --oob instead of -r, it looks like my 64 bytes of "OOB" do=
+es get written, but then hardware ECC is getting written OVER THE TOP, i.e.=
+ the last 40 bytes have various bits 0 that should be 1 (but no 1s that sho=
+uld be 0)
+
+I am looking through the nandwrite and drivers/mtd sources at the moment, b=
+ut would love to get a clue if someone can tell me
+
+- Does MTD support what I'm trying to do from userland?
+
+- If yes, could this be a bug in the DaVinci NAND driver?
+
+- Or, is nandwrite supposed to support this? or do I need to modify it?
+
+Thanks folks,
+
+--
+Jon Povey
+jon.povey@racelogic.co.uk
+
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
+
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
