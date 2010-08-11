@@ -1,20 +1,21 @@
-From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
-To: "'Mike Frysinger'" <vapier.adi@gmail.com>,
-	"'David Brownell'" <david-b@pacbell.net>
-References: <893387.4342.qm@web180301.mail.gq1.yahoo.com>
-	<AANLkTi=RqZjXojM0XD0RhYj23fY+zrunFRtFTYGd3POp@mail.gmail.com>
-In-Reply-To: <AANLkTi=RqZjXojM0XD0RhYj23fY+zrunFRtFTYGd3POp@mail.gmail.com>
-Subject: RE: [PATCH] m25p80: add support for a callback to platform code on
-	successful device probe
-Date: Wed, 11 Aug 2010 17:26:07 +0530
-Message-ID: <02b001cb394c$2e7ec9f0$8b7c5dd0$@raj@ti.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OjAhJ-00059G-GS
+	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2010 12:46:24 +0000
+Date: Wed, 11 Aug 2010 14:46:17 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 11/12] mxc_nand: do not depend on disabling the irq in
+	the interrupt handler
+Message-ID: <20100811124617.GR27749@pengutronix.de>
+References: <1281442473-31428-1-git-send-email-s.hauer@pengutronix.de>
+	<1281442473-31428-3-git-send-email-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Cc: dwmw2@infradead.org, davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1281442473-31428-3-git-send-email-s.hauer@pengutronix.de>
+Cc: Baruch Siach <baruch@tkos.co.il>, John Ogness <john.ogness@linutronix.de>,
+	linux-arm-kernel@lists.infradead.org, Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mike,
-
-On Wed, Aug 11, 2010 at 00:32:00, Mike Frysinger wrote:
-> On Tue, Aug 10, 2010 at 09:07, David Brownell wrote:
-> >> On Tue, Aug 10, 2010 at 12:47:05, Mike Frysinger wrote:
-> >> it is necessary
-> >> > that you do these things from kernel space instead of
-> >> standard
-> >> > userspace.
-> >
-> > Hard to get userspace to do this stuff if
-> > you're doing a network boot, and thus need
-> > to have the MAC address working early.. it's
-> > easy if the kernel can get the MAC address,
-> > else not possible to boot.  Right?
+On Tue, Aug 10, 2010 at 02:14:32PM +0200, Sascha Hauer wrote:
+> This patch reverts the driver to enabling/disabling the NFC interrupt
+> mask rather than enabling/disabling the system interrupt. This cleans
+> up the driver so that it doesn't rely on interrupts being disabled
+> within the interrupt handler.
+> This patch is based on earlier work by John Ogness.
 > 
-> no, that isnt true at all.  you can easily have a small initramfs to
-> handle all of your random setup.  if that's too much overhead, you can
-> add a late initcall to your boards file that is run after the MTD
-> devices are probed and let that read the required information.  all of
-> this is more than documented:
-> http://www.denx.de/wiki/view/DULG/EthernetDoesNotWorkInLinux
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/mtd/nand/mxc_nand.c |   78 +++++++++++++++++++++++++++++++++++++------
+>  1 files changed, 67 insertions(+), 11 deletions(-)
 > 
+> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+> index 3767dcc..0cc4343 100644
+> --- a/drivers/mtd/nand/mxc_nand.c
+> +++ b/drivers/mtd/nand/mxc_nand.c
+> @@ -30,6 +30,8 @@
+>  #include <linux/clk.h>
+>  #include <linux/err.h>
+>  #include <linux/io.h>
+> +#include <linux/irq.h>
+> +#include <linux/completion.h>
+>  
+>  #include <asm/mach/flash.h>
+>  #include <mach/mxc_nand.h>
+> @@ -149,7 +151,7 @@ struct mxc_nand_host {
+>  	int			irq;
+>  	int			eccsize;
+>  
+> -	wait_queue_head_t	irq_waitq;
+> +	struct completion	op_completion;
+>  
+>  	uint8_t			*data_buf;
+>  	unsigned int		buf_start;
+> @@ -162,6 +164,7 @@ struct mxc_nand_host {
+>  	void			(*send_read_id)(struct mxc_nand_host *);
+>  	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
+>  	int			(*check_int)(struct mxc_nand_host *);
+> +	void			(*irq_control)(struct mxc_nand_host *, int);
+>  };
+>  
+>  /* OOB placement block for use with hardware ecc generation */
+> @@ -214,9 +217,14 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+>  {
+>  	struct mxc_nand_host *host = dev_id;
+>  
+> -	disable_irq_nosync(irq);
+> +	if (!host->check_int(host)) {
+> +		printk("none?\n");
 
-I looked around in the kernel and found mtd_notifier callbacks which get
-called upon addition of MTD device. Inside this callback, I am checking
-for the device in which I am interested and doing a mtd->read to get the
-MAC address. So this patch can be dropped.
+Nah, this printk goes away of course.
 
-Thanks,
-Sudhakar
+Sascha
+
+
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
