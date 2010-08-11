@@ -1,17 +1,18 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oj7q3-0000dQ-5F
-	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2010 09:43:11 +0000
-Message-ID: <4C6270A9.5090606@parrot.com>
-Date: Wed, 11 Aug 2010 11:43:05 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oj7sy-00015R-S1
+	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2010 09:46:15 +0000
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Class: urn:content-classes:message
+Date: Wed, 11 Aug 2010 10:46:06 +0100
+Subject: RE: How to stop mtd char device generating ECC on writes?
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE0903DC232C@Cloud.RL.local>
+In-Reply-To: <4C6270A9.5090606@parrot.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-Subject: Re: How to stop mtd char device generating ECC on writes?
-References: <70E876B0EA86DD4BAF101844BC814DFE0903DC2323@Cloud.RL.local>
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0903DC2323@Cloud.RL.local>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 8bit
 Cc: "davinci-linux-open-source@linux.davincidsp.com"
 	<davinci-linux-open-source@linux.davincidsp.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -24,27 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Matthieu CASTET wrote:
+> Jon Povey a =E9crit :
+>> - Does MTD support what I'm trying to do from userland?
+> yes write in raw mode + MEMWRITEOOB. But you will need 2 number of
+> program.
 
-Jon Povey a écrit :
-> But I can't seem to write it back properly using nandwrite.
-> Testing on another partition mtd6, If I do this:
->   nandwrite -r -s 0x20000 /dev/mtd6 ubl0.dump
-> then it seems my 64 bytes of "OOB" are skipped and I get a generated 24 bytes of 0xFF spare and 40 bytes of generated ECC.
-> 
-> If I use --noecc --oob instead of -r, it looks like my 64 bytes of "OOB" does get written, but then hardware ECC is getting written OVER THE TOP, i.e. the last 40 bytes have various bits 0 that should be 1 (but no 1s that should be 0)
-> 
-> I am looking through the nandwrite and drivers/mtd sources at the moment, but would love to get a clue if someone can tell me
-> 
-> - Does MTD support what I'm trying to do from userland?
-yes write in raw mode + MEMWRITEOOB. But you will need 2 number of program.
+Thanks Matthieu.
 
-> 
-> - If yes, could this be a bug in the DaVinci NAND driver?
-> 
-> - Or, is nandwrite supposed to support this? or do I need to modify it?
-> 
-I don't know nandwrite
+Sod's law, I actually found the answer a few minutes after sending the emai=
+l..
+Realised I hadn't tried "--noecc --raw" combination of switches. Works grea=
+t.
 
+Sorry for noise, hopefuly some archive reader can learn from my mistake.
 
-Matthieu.
+--
+Jon Povey
+jon.povey@racelogic.co.uk
+
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
+
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
