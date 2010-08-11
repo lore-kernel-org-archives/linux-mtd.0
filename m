@@ -1,20 +1,20 @@
 Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OjAhJ-00059G-GS
-	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2010 12:46:24 +0000
-Date: Wed, 11 Aug 2010 14:46:17 +0200
+	id 1OjAr5-0004op-Ri
+	for linux-mtd@lists.infradead.org; Wed, 11 Aug 2010 12:56:40 +0000
+Date: Wed, 11 Aug 2010 14:56:25 +0200
 From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 11/12] mxc_nand: do not depend on disabling the irq in
-	the interrupt handler
-Message-ID: <20100811124617.GR27749@pengutronix.de>
-References: <1281442473-31428-1-git-send-email-s.hauer@pengutronix.de>
-	<1281442473-31428-3-git-send-email-s.hauer@pengutronix.de>
+To: John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH 1/3] mxc_nand: set spare size and pages per block
+Message-ID: <20100811125625.GS27749@pengutronix.de>
+References: <80r5i63dn4.fsf@merkur.tec.linutronix.de>
+	<20100810121912.GG27749@pengutronix.de>
+	<801va635f7.fsf@merkur.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1281442473-31428-3-git-send-email-s.hauer@pengutronix.de>
-Cc: Baruch Siach <baruch@tkos.co.il>, John Ogness <john.ogness@linutronix.de>,
+In-Reply-To: <801va635f7.fsf@merkur.tec.linutronix.de>
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
 	linux-arm-kernel@lists.infradead.org, Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,60 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Aug 10, 2010 at 02:14:32PM +0200, Sascha Hauer wrote:
-> This patch reverts the driver to enabling/disabling the NFC interrupt
-> mask rather than enabling/disabling the system interrupt. This cleans
-> up the driver so that it doesn't rely on interrupts being disabled
-> within the interrupt handler.
-> This patch is based on earlier work by John Ogness.
+On Tue, Aug 10, 2010 at 04:31:40PM +0200, John Ogness wrote:
+> On 2010-08-10, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> > Sorry, last time I sent only up to 09/12, so the patches I explicitely
+> > mentioned to solve the things from your previous series were missing.
+> > I just sent them. My versions of the patches differ slightly.
 > 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  drivers/mtd/nand/mxc_nand.c |   78 +++++++++++++++++++++++++++++++++++++------
->  1 files changed, 67 insertions(+), 11 deletions(-)
+> Your version allows a small window between request_irq() and
+> irq_control() where on the i.MX21 there is a possibility of the
+> interrupts being disabled twice. Namely, if an interrupt occurs before
+> irq_control() has had a chance to disable it. IMHO it would be better to
+> call:
 > 
-> diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> index 3767dcc..0cc4343 100644
-> --- a/drivers/mtd/nand/mxc_nand.c
-> +++ b/drivers/mtd/nand/mxc_nand.c
-> @@ -30,6 +30,8 @@
->  #include <linux/clk.h>
->  #include <linux/err.h>
->  #include <linux/io.h>
-> +#include <linux/irq.h>
-> +#include <linux/completion.h>
->  
->  #include <asm/mach/flash.h>
->  #include <mach/mxc_nand.h>
-> @@ -149,7 +151,7 @@ struct mxc_nand_host {
->  	int			irq;
->  	int			eccsize;
->  
-> -	wait_queue_head_t	irq_waitq;
-> +	struct completion	op_completion;
->  
->  	uint8_t			*data_buf;
->  	unsigned int		buf_start;
-> @@ -162,6 +164,7 @@ struct mxc_nand_host {
->  	void			(*send_read_id)(struct mxc_nand_host *);
->  	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
->  	int			(*check_int)(struct mxc_nand_host *);
-> +	void			(*irq_control)(struct mxc_nand_host *, int);
->  };
->  
->  /* OOB placement block for use with hardware ecc generation */
-> @@ -214,9 +217,14 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
->  {
->  	struct mxc_nand_host *host = dev_id;
->  
-> -	disable_irq_nosync(irq);
-> +	if (!host->check_int(host)) {
-> +		printk("none?\n");
+>     set_irq_flags(host->irq, IRQF_VALID | IRQF_NOAUTOEN);
+> 
+> for the i.MX21 before requesting the irq. This closes the window.
 
-Nah, this printk goes away of course.
+IIRC it is not allowed to call set_irq_flags before request_irq. We are
+changing a resource we do not own yet.
+I think the worst thing that could happen without this change is that we
+get an interrupt after request_irq.
+Alternatively we could set the interrupt mask bit before requesting the
+irq.
 
 Sascha
-
 
 -- 
 Pengutronix e.K.                           |                             |
