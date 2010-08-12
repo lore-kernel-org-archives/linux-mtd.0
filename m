@@ -1,21 +1,20 @@
-Received: from mga11.intel.com ([192.55.52.93])
+Received: from smtp4-g21.free.fr ([212.27.42.4])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OjW9U-0003QS-0z
-	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 11:40:52 +0000
-From: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Thu, 12 Aug 2010 19:40:46 +0800
-Subject: RE: [PATCH v2 2/6]nand/denali: Add bad block management for MRST
-Message-ID: <5D8008F58939784290FAB48F549751981F917EF33C@shsmsx502.ccr.corp.intel.com>
-References: <20100812105117.GB11634@intel.com>
-	<1281611668.12475.67.camel@localhost>
-In-Reply-To: <1281611668.12475.67.camel@localhost>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1OjXIA-0003WW-Cr
+	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 12:53:55 +0000
+From: Florian Fainelli <ffainelli@freebox.fr>
+Date: Thu, 12 Aug 2010 14:53:46 +0200
+Subject: [PATCH 2/3] NAND: denali should also handle NAND_CMD_PARAM
 MIME-Version: 1.0
-Cc: "Roberts, Jason E" <jason.e.roberts@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201008121453.46569.ffainelli@freebox.fr>
+Cc: Maxime Bizon <mbizon@freebox.fr>, David Woodhouse <dwmw2@infradead.org>,
+	Brian Norris <norris@broadcom.com>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	"Chuanxiao.Dong" <chuanxiao.dong@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiAoQWN0dWFsbHksIHdlICpjYW4qIC0tIHlvdSBkb24ndCB1c2UgdGhlc2Ugb3B0aW9ucyBhbnl3
-aGVyZSAoeWV0PykNCj4gZXhjZXB0IGFzIGEgZ2F0ZXdheSB0byBsZXR0aW5nIHVzIHNldCB0aGUg
-QkJUX0JMT0NLTlVNIHZhbHVlLg0KPiANCj4gSXQgbWF5IGFsc28gYmUgd29ydGggc3dpdGNoaW5n
-IENFNDEwMCB0byB1c2UgdGhlIHNhbWUgQkJUIHNjaGVtZSBhcw0KPiB5b3UncmUgdXNpbmcgaW4g
-TVJTVCAtLSBkb24ndCBhbGwgdGhlIHNhbWUgYXJndW1lbnRzIGFwcGx5IHRoZXJlPw0KPiANCj4g
-SSdtIGd1ZXNzaW5nIHRoYXQgeW91IGRpZG4ndCBjaGFuZ2UgQ0U0MTAwIGp1c3QgYmVjYXVzZSB5
-b3Ugd2FudCB0bw0KPiByZXRhaW4gb24tbWVkaXVtIGNvbXBhdGliaWxpdHk/IExldCdzIGFzayBK
-YXNvbiAtLSBJIHN1c3BlY3QgaXQgd291bGQgYmUNCj4gT0sgdG8gY2hhbmdlLi4uDQpbQ2h1YW54
-aWFvIERvbmddIEl0IHdpbGwgYmUgYmV0dGVyIGlmIENFNDEwMCBjYW4gdXNlIHRoaXMgQkJULiBC
-dXQgZnJvbSB0aGUNCm9yaWdpbmFsIGRlbmFsaS5jLCBJIGZvdW5kIENFNDEwMCBtYXliZSBkb24n
-dCBoYXZlIGEgcHJvdGVjdGVkIHBhcnRpdGlvbiBsaWtlDQpNUlNUIGRvZXMuIEluIE1SU1QsIGl0
-cyBJQUZXIGlzIHN0b3JlZCBpbiB0aGlzIHBhcnRpdGlvbi4gVGhpcyBwYXJ0aXRpb24gaXMNCmNy
-ZWF0ZWQgYnkgU0NVIEZXLiBTbyBNVEQgZHJpdmVyIGRvZXNuJ3QgaGF2ZSBhbnkgcGVybWlzc2lv
-biB0byBhY2Nlc3MgdGhpcw0KcGFydGl0aW9uLiBTbyB0aGUgQkJUIGNhbid0IGJlIGNyZWF0ZWQg
-Ynkgc2Nhbm5pbmcgTkFORCBmcm9tIHRoZSBiZWdpbm5pbmcuDQpJdCBuZWVkIHRvIHNraXAgdGhl
-IHByb3RlY3RlZCBwYXJ0aXRpb24uIEhlcmUgaXMgdGhlIGJpZ2dlc3QgZGlmZmVyZW5jZSBiZXR3
-ZWVuDQpNUlNUIGFuZCBDRTQxMDAuIFRoaXMgaXMganVzdCBJIGdvdCBmcm9tIGNvZGUuLi4uLiBO
-ZXZlciBjb25maXJtZWQgd2l0aCBESEcgZ3V5cy4NCg0KDQo+IEknbSBhbHNvIHNvbWV3aGF0IGR1
-YmlvdXMgYWJvdXQgdGhlIHdheSB3ZSBhYmFuZG9uIHRoZSBCQlQgd2hlbiB3ZSdyZQ0KPiBnb2lu
-ZyB0byB1c2UgU3BlY3RyYSAtLSBhbmQgZXNwZWNpYWxseSB0aGUgdXNlIG9mIHRoZSBzY3JhdGNo
-IHJlZ2lzdGVyLg0KPiBDYW4ndCB3ZSBwdXQgdGhhdCBpbmZvcm1hdGlvbiBpbnRvIFBDSSBjb25m
-aWcgc3BhY2UgaWYgd2UgcmVhbGx5IG11c3QNCj4gaGF2ZSBpdD8gSSdsbCBsb29rIG92ZXIgdGhh
-dCBpbiBtb3JlIGRldGFpbC4uLg0KW0NodWFueGlhbyBEb25nXSBTcGVjdHJhICsgTVREIG9ubHkg
-dXNlZCBpbiB0d28gd2F5cy4NCjEpIFNwZWN0cmEgb25seSBtYW5hZ2UgYSBmZXcgYmxvY2tzIGFz
-IHdlbGwgYXMgSUFGVy4gSW4gdGhpcyB3YXksIG1lYW5zIFNwZWN0cmENCmlzIHVzZWQgdG8gdXBk
-YXRlIEtlcm5lbCBvciBzb21ldGhpbmcgbGlrZSBib290bG9hZGVyLiBObyBmaWxlIHN5c3RlbSBh
-bGxvd2VkLg0KSW4gdGhpcyB3YXksIEJCVCB3aWxsIG5vdCBjb250YWluIHRoZXNlIGJsb2NrcyBp
-bmZvcm1hdGlvbi4NCjIpIFNwZWN0cmEgbWFuYWdlIHRoZSB3aG9sZSBOQU5EIGFzIHdlbGwgYXMg
-SUFGVy4gVGhhdCBtZWFucyBubyBOQU5EIGZpbGUNCnN5c3RlbSBhbGxvd2VkLiBPbmx5IEVYVDMg
-d2lsbCBiZSB1c2VkLiBTbyBpbiB0aGlzIHdheSwgTVREIGRyaXZlciBkb2Vzbid0IGNyZWF0ZSBC
-QlQuDQoNClNvIEkgdGhpbmssIEJCVCB3aWxsIGhhdmUgbm8gaW5mbHVlbmNlIHRvIFNwZWN0cmEu
-DQpTY3JhdGNoIHJlZ2lzdGVyIGp1c3QgdXNlZCB0byBsZXQgTVREIGRyaXZlciBrbm93IGhvdyBt
-YW55IGJsb2NrcyBJQUZXIG1hbmFnaW5nLiBTbw0Kd2hhdCB3aWxsIGJlIHRoZSBlZmZlY3Qgb2Yg
-dXNpbmcgc2NyYXRjaCByZWdpc3Rlcj8NCg==
+
+Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
+---
+Note: this has not been runtime tested.
+
+diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
+index 532fe07..8c8d3c8 100644
+--- a/drivers/mtd/nand/denali.c
++++ b/drivers/mtd/nand/denali.c
+@@ -1292,6 +1292,7 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
+ 		read_status(denali);
+ 		break;
+ 	case NAND_CMD_READID:
++	case NAND_CMD_PARAM:
+ 		reset_buf(denali);
+ 		/*sometimes ManufactureId read from register is not right
+ 		 * e.g. some of Micron MT29F32G08QAA MLC NAND chips
