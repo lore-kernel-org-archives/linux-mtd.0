@@ -1,17 +1,17 @@
-Received: from mga03.intel.com ([143.182.124.21])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OjNVM-00018J-Hw
-	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 02:26:53 +0000
-Date: Thu, 12 Aug 2010 10:23:24 +0800
-From: "Chuanxiao.Dong" <chuanxiao.dong@intel.com>
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: [PATCH v1 3/5]nand/denali: use cpu_relax() while waiting for
-	hardware interrupt
-Message-ID: <20100812022324.GC25657@intel.com>
+Date: Thu, 12 Aug 2010 08:42:38 +0300
+From: Baruch Siach <baruch@tkos.co.il>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] nand: fix .correct callback return value check
+Message-ID: <20100812054237.GB13166@jasper.tkos.co.il>
+References: <20100808204341.GA20065@pengutronix.de>
+	<ca767a0d6cafbea862c307e944c2b800dafb6660.1281327492.git.baruch@tkos.co.il>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ca767a0d6cafbea862c307e944c2b800dafb6660.1281327492.git.baruch@tkos.co.il>
+Cc: linux-arm-kernel@lists.infradead.org, Sascha Hauer <s.hauer@pengutronix.de>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	John Ogness <john.ogness@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +21,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi linux-mtd list,
 
-=46rom 4c0c46694b0d69e840295524bc8261e217ea0bf1 Mon Sep 17 00:00:00 2001
-=46rom: Chuanxiao Dong <chuanxiao.dong@intel.com>
-Date: Wed, 11 Aug 2010 17:53:29 +0800
-Subject: [PATCH 3/5] nand/denali: use cpu_relax() while waiting for hardwar=
-e interrupt
+Ping?
 
-Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
----
- drivers/mtd/nand/denali.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+At least the atmel_nand and the bf5xx_nand drivers may return -EIO for 
+uncorrectable errors, so this patch fixes a real bug.
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 975a893..5f7c8c8 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -211,9 +211,9 @@ static uint16_t denali_nand_reset(struct denali_nand_in=
-fo *denali)
- 		iowrite32(device_reset_banks[i],
- 				denali->flash_reg + DEVICE_RESET);
- 		while (!(ioread32(denali->flash_reg +
--						intr_status_addresses[i]) &
-+				intr_status_addresses[i]) &
- 			(reset_complete[i] | operation_timeout[i])))
--			;
-+			cpu_relax();
- 		if (ioread32(denali->flash_reg + intr_status_addresses[i]) &
- 			operation_timeout[i])
- 			dev_dbg(&denali->dev->dev,
---=20
-1.6.6.1
+baruch
+
+On Mon, Aug 09, 2010 at 07:20:23AM +0300, Baruch Siach wrote:
+> Drivers may (and do) return negative errno values other than -1 from the
+> .correct callback.
+> 
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  drivers/mtd/nand/nand_base.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 4a7b864..080f551 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1210,7 +1210,7 @@ static int nand_read_subpage(struct mtd_info *mtd, struct nand_chip *chip, uint3
+>  		int stat;
+>  
+>  		stat = chip->ecc.correct(mtd, p, &chip->buffers->ecccode[i], &chip->buffers->ecccalc[i]);
+> -		if (stat == -1)
+> +		if (stat < 0)
+>  			mtd->ecc_stats.failed++;
+>  		else
+>  			mtd->ecc_stats.corrected += stat;
+> -- 
+> 1.7.1
+
+-- 
+                                                     ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
