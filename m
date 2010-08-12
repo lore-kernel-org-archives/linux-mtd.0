@@ -1,13 +1,13 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mga03.intel.com ([143.182.124.21])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OjNVF-00016G-Lq
-	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 02:26:46 +0000
-Date: Thu, 12 Aug 2010 10:24:17 +0800
+	id 1OjNVM-00018J-Hw
+	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 02:26:53 +0000
+Date: Thu, 12 Aug 2010 10:23:24 +0800
 From: "Chuanxiao.Dong" <chuanxiao.dong@intel.com>
 To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: [PATCH v1 5/5]nand/denali: move all hardware initialization work
-	to denali_hw_init
-Message-ID: <20100812022417.GE25657@intel.com>
+Subject: [PATCH v1 3/5]nand/denali: use cpu_relax() while waiting for
+	hardware interrupt
+Message-ID: <20100812022324.GC25657@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -22,78 +22,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-=46rom a2466d732864307416db04519e49da9f77c3431f Mon Sep 17 00:00:00 2001
+=46rom 4c0c46694b0d69e840295524bc8261e217ea0bf1 Mon Sep 17 00:00:00 2001
 =46rom: Chuanxiao Dong <chuanxiao.dong@intel.com>
-Date: Thu, 12 Aug 2010 10:07:18 +0800
-Subject: [PATCH 5/5] nand/denali: move all hardware initialization work to =
-denali_hw_init
-
-All hardware initialization will be done in denali_hw_init before
-irq handler registered
-Change mtd name from "DENALI NAND" to be "denali-nand" since whitespace in
-name can cause problems if we use cmdlinepart
+Date: Wed, 11 Aug 2010 17:53:29 +0800
+Subject: [PATCH 3/5] nand/denali: use cpu_relax() while waiting for hardwar=
+e interrupt
 
 Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
 ---
- drivers/mtd/nand/denali.c |   11 ++++++-----
- 1 files changed, 6 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/denali.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 017cde4..532fe07 100644
+index 975a893..5f7c8c8 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -1364,18 +1364,18 @@ static void denali_hw_init(struct denali_nand_info =
-*denali)
- 	 * */
- 	denali->bbtskipbytes =3D ioread32(denali->flash_reg +
- 						SPARE_AREA_SKIP_BYTES);
--	denali_irq_init(denali);
- 	denali_nand_reset(denali);
- 	iowrite32(0x0F, denali->flash_reg + RB_PIN_ENABLED);
- 	iowrite32(CHIP_EN_DONT_CARE__FLAG,
- 			denali->flash_reg + CHIP_ENABLE_DONT_CARE);
-=20
--	iowrite32(0x0, denali->flash_reg + SPARE_AREA_SKIP_BYTES);
- 	iowrite32(0xffff, denali->flash_reg + SPARE_AREA_MARKER);
-=20
- 	/* Should set value for these registers when init */
- 	iowrite32(0, denali->flash_reg + TWO_ROW_ADDR_CYCLES);
- 	iowrite32(1, denali->flash_reg + ECC_ENABLE);
-+	denali_nand_timing_set(denali);
-+	denali_irq_init(denali);
- }
-=20
- /* Althogh controller spec said SLC ECC is forceb to be 4bit,
-@@ -1501,6 +1501,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
-t struct pci_device_id *id)
-=20
- 	pci_set_master(dev);
- 	denali->dev =3D dev;
-+	denali->mtd.dev.parent =3D &dev->dev;
-=20
- 	ret =3D pci_request_regions(dev, DENALI_NAND_NAME);
- 	if (ret) {
-@@ -1525,6 +1526,8 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
-t struct pci_device_id *id)
- 	denali_hw_init(denali);
- 	denali_drv_init(denali);
-=20
-+	/* denali_isr register is done after all the hardware
-+	 * initilization is finished*/
- 	if (request_irq(dev->irq, denali_isr, IRQF_SHARED,
- 			DENALI_NAND_NAME, denali)) {
- 		printk(KERN_ERR "Spectra: Unable to allocate IRQ\n");
-@@ -1537,9 +1540,7 @@ static int denali_pci_probe(struct pci_dev *dev, cons=
-t struct pci_device_id *id)
-=20
- 	pci_set_drvdata(dev, denali);
-=20
--	denali_nand_timing_set(denali);
--
--	denali->mtd.name =3D "Denali NAND";
-+	denali->mtd.name =3D "denali-nand";
- 	denali->mtd.owner =3D THIS_MODULE;
- 	denali->mtd.priv =3D &denali->nand;
-=20
+@@ -211,9 +211,9 @@ static uint16_t denali_nand_reset(struct denali_nand_in=
+fo *denali)
+ 		iowrite32(device_reset_banks[i],
+ 				denali->flash_reg + DEVICE_RESET);
+ 		while (!(ioread32(denali->flash_reg +
+-						intr_status_addresses[i]) &
++				intr_status_addresses[i]) &
+ 			(reset_complete[i] | operation_timeout[i])))
+-			;
++			cpu_relax();
+ 		if (ioread32(denali->flash_reg + intr_status_addresses[i]) &
+ 			operation_timeout[i])
+ 			dev_dbg(&denali->dev->dev,
 --=20
 1.6.6.1
