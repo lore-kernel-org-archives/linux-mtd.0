@@ -1,12 +1,13 @@
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OjNUE-0000yR-8C
-	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 02:25:42 +0000
-Date: Thu, 12 Aug 2010 10:23:14 +0800
+	id 1OjNV8-00014E-Hk
+	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 02:26:39 +0000
+Date: Thu, 12 Aug 2010 10:24:10 +0800
 From: "Chuanxiao.Dong" <chuanxiao.dong@intel.com>
 To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: [PATCH v1 2/5]nand/denali: change read_status function method
-Message-ID: <20100812022314.GB25657@intel.com>
+Subject: [PATCH v1 4/5]nand/denali: Add a page check in denali_read_page &
+	denali_read_page_raw
+Message-ID: <20100812022410.GD25657@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -21,50 +22,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-=46rom 8b09365e8e58ea0d18fe0ce03b20531c98d43a7a Mon Sep 17 00:00:00 2001
+=46rom 6bcf2a5704eafa810a843c4cedf50d44d5ce9f27 Mon Sep 17 00:00:00 2001
 =46rom: Chuanxiao Dong <chuanxiao.dong@intel.com>
-Date: Wed, 11 Aug 2010 17:14:59 +0800
-Subject: [PATCH 2/5] nand/denali: change read_status function method
-
-In mtd->write, Denali controller will use MODE_11 mode to read
-NAND flash status, then return back to MODE_1O mode to do page
-write.
-Here comes a bug for this kind of using, sometimes controller will
-not write data to NAND and just return a good interrupt to tell
-driver writing work is done. The data in this page is all 0xff and
-this page can not be written again. The reason is unknow.
-
-So read Denali controller register WRITE_PROTECT to get NAND status
-instead.
+Date: Wed, 11 Aug 2010 18:19:23 +0800
+Subject: [PATCH 4/5] nand/denali: Add a page check in denali_read_page & de=
+nali_read_page_raw
 
 Signed-off-by: Chuanxiao Dong <chuanxiao.dong@intel.com>
 ---
- drivers/mtd/nand/denali.c |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+ drivers/mtd/nand/denali.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 3ba8952..975a893 100644
+index 5f7c8c8..017cde4 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -169,13 +169,11 @@ static void read_status(struct denali_nand_info *dena=
-li)
- 	/* initialize the data buffer to store status */
- 	reset_buf(denali);
+@@ -1149,6 +1149,13 @@ static int denali_read_page(struct mtd_info *mtd, st=
+ruct nand_chip *chip,
+ 			    INTR_STATUS0__ECC_ERR;
+ 	bool check_erased_page =3D false;
 =20
--	/* initiate a device status read */
--	cmd =3D MODE_11 | BANK(denali->flash_bank);
--	index_addr(denali, cmd | COMMAND_CYCLE, 0x70);
--	iowrite32(cmd | STATUS_CYCLE, denali->flash_mem);
--
--	/* update buffer with status value */
--	write_byte_to_buf(denali, ioread32(denali->flash_mem + 0x10));
-+	cmd =3D ioread32(denali->flash_reg + WRITE_PROTECT);
-+	if (cmd)
-+		write_byte_to_buf(denali, NAND_STATUS_WP);
-+	else
-+		write_byte_to_buf(denali, 0);
- }
++	if (page !=3D denali->page) {
++		dev_err(&denali->dev->dev, "IN %s: page %d is not"
++				" equal to denali->page %d, investigate!!",
++				__func__, page, denali->page);
++		BUG();
++	}
++
+ 	setup_ecc_for_xfer(denali, true, false);
 =20
- /* resets a specific device connected to the core */
+ 	denali_enable_dma(denali, true);
+@@ -1193,6 +1200,13 @@ static int denali_read_page_raw(struct mtd_info *mtd=
+, struct nand_chip *chip,
+ 	uint32_t irq_status =3D 0;
+ 	uint32_t irq_mask =3D INTR_STATUS0__DMA_CMD_COMP;
+=20
++	if (page !=3D denali->page) {
++		dev_err(&denali->dev->dev, "IN %s: page %d is not"
++				" equal to denali->page %d, investigate!!",
++				__func__, page, denali->page);
++		BUG();
++	}
++
+ 	setup_ecc_for_xfer(denali, false, true);
+ 	denali_enable_dma(denali, true);
+=20
 --=20
 1.6.6.1
