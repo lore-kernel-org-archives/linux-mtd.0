@@ -1,19 +1,25 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OjgUR-0006Vm-AL
-	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 22:43:12 +0000
+	id 1OjgrT-0002AG-U9
+	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 23:07:00 +0000
+Message-ID: <4C647E87.3050205@broadcom.com>
+Date: Thu, 12 Aug 2010 16:06:47 -0700
 From: "Brian Norris" <norris@broadcom.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd/nand: Spansion S30MLxxxP support
-Date: Thu, 12 Aug 2010 15:42:38 -0700
-Message-ID: <1281652958-2354-1-git-send-email-norris@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+To: "Florian Fainelli" <ffainelli@freebox.fr>
+Subject: Re: [PATCH 3/3] NAND: add support for reading ONFI parameters
+	from NAND device
+References: <201008121453.50207.ffainelli@freebox.fr>
+	<4C644426.9010106@broadcom.com>
+	<201008122147.54733.ffainelli@freebox.fr>
+In-Reply-To: <201008122147.54733.ffainelli@freebox.fr>
+Content-Type: text/plain;
+ charset=iso-8859-1;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Kevin Cernekee <cernekee@broadcom.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Maxim Levitsky <maximlevitsky@gmail.com>,
-	Brian Norris <norris@broadcom.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some Spansion chips have a method for determining eraseblock size that
-is incompatible with similar ID chips of other sizes. This implements
-some heuristic detection of these differences.
+Hi,
 
-Note that I am unsure about the wraparound nature of the ID string here.
-I have not been able to fully test this with the physical chip.
-Essentially, the rule is correct, but the ID string detection may fail
-here. Let me know if anyone can fix this.
+On 08/12/2010 12:47 PM, Florian Fainelli wrote:
+>> Also, previously, you said:
+>>> +   if (!is_power_of_2(val) || val == 1 || val > (1 << 4)) {
+>>> the !is_power_of_2 check does not work for ONFI version 2.1 (3), so I
+>>> would only keep the two other checks."
+>>
+>> So why is it now:
+>>> +   if (is_power_of_2(val) || val == 1 || val > (1 << 4)) {
+>>
+>> Is that a typo? Perhaps it's better to throw that test out altogether.
+>
+> That was not a typo, I actually misread the ONFI specification and confused bit
+> is set, with the actual value. So this is the correct check, sorry about that.
 
-Signed-off-by: Brian Norris <norris@broadcom.com>
----
- drivers/mtd/nand/nand_base.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+Again, I might be mistaken, but it seems that the "is_power_of_2" would 
+weed out ONFI 1.0, since val would be simply 1 << 1, i.e., val == 2. 
+Really, it seems that the ONFI version number may or may not be a power 
+of two. If so, then we should just check individual bits as performed in 
+the other tests (and perhaps include a test to be sure "val & 1 == 0")
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a3c7473..66f4412 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2899,6 +2899,17 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 		mtd->writesize = type->pagesize;
- 		mtd->oobsize = mtd->writesize / 32;
- 		busw = type->options & NAND_BUSWIDTH_16;
-+
-+		/*
-+		 * Check for Spansion/AMD ID + repeating 5th, 6th byte since
-+		 * some Spansion chips have erasesize that conflicts with size
-+		 * listed in nand_ids table
-+		 * Data sheet (5 byte ID): Spansion S30ML-P ORNAND (p.39)
-+		 */
-+		if (*maf_id == NAND_MFR_AMD && id_data[5] == 0x01 &&
-+				id_data[6] == 0x01)
-+			mtd->erasesize = (128 * 1024) << ((id_data[3] & 0x03)
-+					<< 1);
- 	}
- 
- 	/* Try to identify manufacturer */
--- 
-1.7.0.4
+>> I "fixed" the changes I mentioned as well as a few coding style, logic
+>> cleanups, etc. (e.g. too many levels of logic, creating lines > 80 chars).
+>> Here's a new patch. I didn't change over the crc function to the library
+>> function because that would require configuring the Kbuild options and
+>> setting a dependency, which I'm not familiar with. I'm certainly not an
+>> expert on most of this, so take my patch with a grain of salt!
+>
+> It is usually as simple as doing the proper select FOO in the related Kconfig.
+
+Thanks for the tip. It worked for me.
+
+Brian
