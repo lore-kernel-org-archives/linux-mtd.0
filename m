@@ -1,24 +1,21 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mga11.intel.com ([192.55.52.93])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OjVmZ-0005cY-4q
-	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 11:17:12 +0000
-Received: by bwz14 with SMTP id 14so146741bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Aug 2010 04:17:08 -0700 (PDT)
-Date: Thu, 12 Aug 2010 15:17:05 +0400
-From: Anton Vorontsov <cbouatmailru@gmail.com>
-To: Dan Carpenter <error27@gmail.com>
-Subject: Re: [patch 2/2] mtd/m25p80: fix test for end of loop
-Message-ID: <20100812111705.GA9966@oksana.dev.rtsoft.ru>
-References: <20100812075827.GO645@bicker>
+	id 1OjW9U-0003QS-0z
+	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 11:40:52 +0000
+From: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Date: Thu, 12 Aug 2010 19:40:46 +0800
+Subject: RE: [PATCH v2 2/6]nand/denali: Add bad block management for MRST
+Message-ID: <5D8008F58939784290FAB48F549751981F917EF33C@shsmsx502.ccr.corp.intel.com>
+References: <20100812105117.GB11634@intel.com>
+	<1281611668.12475.67.camel@localhost>
+In-Reply-To: <1281611668.12475.67.camel@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20100812075827.GO645@bicker>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Mike Frysinger <vapier@gentoo.org>, kernel-janitors@vger.kernel.org,
-	Gabor Juhos <juhosg@openwrt.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: "Roberts, Jason E" <jason.e.roberts@intel.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 12, 2010 at 09:58:27AM +0200, Dan Carpenter wrote:
-> "plat_id" is always non-NULL here.  There is a zero element on the end
-> of the m25p_ids[] array and if we hit the end of the loop then plat_id
-> points to that.
-> 
-> This would lead to a NULL pointer dereference later on in the function.
-> 
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
-
-Acked-by: Anton Vorontsov <cbouatmailru@gmail.com>
-
-Thanks,
-
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 83c9086..6f512b5 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -793,7 +793,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
->  			break;
->  		}
->  
-> -		if (plat_id)
-> +		if (i < ARRAY_SIZE(m25p_ids) - 1)
->  			id = plat_id;
->  		else
->  			dev_warn(&spi->dev, "unrecognized id %s\n", data->type);
-
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+PiAoQWN0dWFsbHksIHdlICpjYW4qIC0tIHlvdSBkb24ndCB1c2UgdGhlc2Ugb3B0aW9ucyBhbnl3
+aGVyZSAoeWV0PykNCj4gZXhjZXB0IGFzIGEgZ2F0ZXdheSB0byBsZXR0aW5nIHVzIHNldCB0aGUg
+QkJUX0JMT0NLTlVNIHZhbHVlLg0KPiANCj4gSXQgbWF5IGFsc28gYmUgd29ydGggc3dpdGNoaW5n
+IENFNDEwMCB0byB1c2UgdGhlIHNhbWUgQkJUIHNjaGVtZSBhcw0KPiB5b3UncmUgdXNpbmcgaW4g
+TVJTVCAtLSBkb24ndCBhbGwgdGhlIHNhbWUgYXJndW1lbnRzIGFwcGx5IHRoZXJlPw0KPiANCj4g
+SSdtIGd1ZXNzaW5nIHRoYXQgeW91IGRpZG4ndCBjaGFuZ2UgQ0U0MTAwIGp1c3QgYmVjYXVzZSB5
+b3Ugd2FudCB0bw0KPiByZXRhaW4gb24tbWVkaXVtIGNvbXBhdGliaWxpdHk/IExldCdzIGFzayBK
+YXNvbiAtLSBJIHN1c3BlY3QgaXQgd291bGQgYmUNCj4gT0sgdG8gY2hhbmdlLi4uDQpbQ2h1YW54
+aWFvIERvbmddIEl0IHdpbGwgYmUgYmV0dGVyIGlmIENFNDEwMCBjYW4gdXNlIHRoaXMgQkJULiBC
+dXQgZnJvbSB0aGUNCm9yaWdpbmFsIGRlbmFsaS5jLCBJIGZvdW5kIENFNDEwMCBtYXliZSBkb24n
+dCBoYXZlIGEgcHJvdGVjdGVkIHBhcnRpdGlvbiBsaWtlDQpNUlNUIGRvZXMuIEluIE1SU1QsIGl0
+cyBJQUZXIGlzIHN0b3JlZCBpbiB0aGlzIHBhcnRpdGlvbi4gVGhpcyBwYXJ0aXRpb24gaXMNCmNy
+ZWF0ZWQgYnkgU0NVIEZXLiBTbyBNVEQgZHJpdmVyIGRvZXNuJ3QgaGF2ZSBhbnkgcGVybWlzc2lv
+biB0byBhY2Nlc3MgdGhpcw0KcGFydGl0aW9uLiBTbyB0aGUgQkJUIGNhbid0IGJlIGNyZWF0ZWQg
+Ynkgc2Nhbm5pbmcgTkFORCBmcm9tIHRoZSBiZWdpbm5pbmcuDQpJdCBuZWVkIHRvIHNraXAgdGhl
+IHByb3RlY3RlZCBwYXJ0aXRpb24uIEhlcmUgaXMgdGhlIGJpZ2dlc3QgZGlmZmVyZW5jZSBiZXR3
+ZWVuDQpNUlNUIGFuZCBDRTQxMDAuIFRoaXMgaXMganVzdCBJIGdvdCBmcm9tIGNvZGUuLi4uLiBO
+ZXZlciBjb25maXJtZWQgd2l0aCBESEcgZ3V5cy4NCg0KDQo+IEknbSBhbHNvIHNvbWV3aGF0IGR1
+YmlvdXMgYWJvdXQgdGhlIHdheSB3ZSBhYmFuZG9uIHRoZSBCQlQgd2hlbiB3ZSdyZQ0KPiBnb2lu
+ZyB0byB1c2UgU3BlY3RyYSAtLSBhbmQgZXNwZWNpYWxseSB0aGUgdXNlIG9mIHRoZSBzY3JhdGNo
+IHJlZ2lzdGVyLg0KPiBDYW4ndCB3ZSBwdXQgdGhhdCBpbmZvcm1hdGlvbiBpbnRvIFBDSSBjb25m
+aWcgc3BhY2UgaWYgd2UgcmVhbGx5IG11c3QNCj4gaGF2ZSBpdD8gSSdsbCBsb29rIG92ZXIgdGhh
+dCBpbiBtb3JlIGRldGFpbC4uLg0KW0NodWFueGlhbyBEb25nXSBTcGVjdHJhICsgTVREIG9ubHkg
+dXNlZCBpbiB0d28gd2F5cy4NCjEpIFNwZWN0cmEgb25seSBtYW5hZ2UgYSBmZXcgYmxvY2tzIGFz
+IHdlbGwgYXMgSUFGVy4gSW4gdGhpcyB3YXksIG1lYW5zIFNwZWN0cmENCmlzIHVzZWQgdG8gdXBk
+YXRlIEtlcm5lbCBvciBzb21ldGhpbmcgbGlrZSBib290bG9hZGVyLiBObyBmaWxlIHN5c3RlbSBh
+bGxvd2VkLg0KSW4gdGhpcyB3YXksIEJCVCB3aWxsIG5vdCBjb250YWluIHRoZXNlIGJsb2NrcyBp
+bmZvcm1hdGlvbi4NCjIpIFNwZWN0cmEgbWFuYWdlIHRoZSB3aG9sZSBOQU5EIGFzIHdlbGwgYXMg
+SUFGVy4gVGhhdCBtZWFucyBubyBOQU5EIGZpbGUNCnN5c3RlbSBhbGxvd2VkLiBPbmx5IEVYVDMg
+d2lsbCBiZSB1c2VkLiBTbyBpbiB0aGlzIHdheSwgTVREIGRyaXZlciBkb2Vzbid0IGNyZWF0ZSBC
+QlQuDQoNClNvIEkgdGhpbmssIEJCVCB3aWxsIGhhdmUgbm8gaW5mbHVlbmNlIHRvIFNwZWN0cmEu
+DQpTY3JhdGNoIHJlZ2lzdGVyIGp1c3QgdXNlZCB0byBsZXQgTVREIGRyaXZlciBrbm93IGhvdyBt
+YW55IGJsb2NrcyBJQUZXIG1hbmFnaW5nLiBTbw0Kd2hhdCB3aWxsIGJlIHRoZSBlZmZlY3Qgb2Yg
+dXNpbmcgc2NyYXRjaCByZWdpc3Rlcj8NCg==
