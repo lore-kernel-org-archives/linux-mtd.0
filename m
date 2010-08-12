@@ -1,14 +1,24 @@
-Subject: Re: [PATCH v2 2/6]nand/denali: Add bad block management for MRST
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Chuanxiao.Dong" <chuanxiao.dong@intel.com>
-In-Reply-To: <20100812105117.GB11634@intel.com>
-References: <20100812105117.GB11634@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 12 Aug 2010 12:14:28 +0100
-Message-ID: <1281611668.12475.67.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Jason Roberts <jason.e.roberts@intel.com>, linux-mtd@lists.infradead.org
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OjVmZ-0005cY-4q
+	for linux-mtd@lists.infradead.org; Thu, 12 Aug 2010 11:17:12 +0000
+Received: by bwz14 with SMTP id 14so146741bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Aug 2010 04:17:08 -0700 (PDT)
+Date: Thu, 12 Aug 2010 15:17:05 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Dan Carpenter <error27@gmail.com>
+Subject: Re: [patch 2/2] mtd/m25p80: fix test for end of loop
+Message-ID: <20100812111705.GA9966@oksana.dev.rtsoft.ru>
+References: <20100812075827.GO645@bicker>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20100812075827.GO645@bicker>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Mike Frysinger <vapier@gentoo.org>, kernel-janitors@vger.kernel.org,
+	Gabor Juhos <juhosg@openwrt.org>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-08-12 at 18:51 +0800, Chuanxiao.Dong wrote:
+On Thu, Aug 12, 2010 at 09:58:27AM +0200, Dan Carpenter wrote:
+> "plat_id" is always non-NULL here.  There is a zero element on the end
+> of the m25p_ids[] array and if we hit the end of the loop then plat_id
+> points to that.
 > 
-> +choice
-> +       prompt "Compile for"
-> +       depends on MTD_NAND_DENALI
-> +       default MRST_NAND_CONTROLLER
-> +
-> +config MRST_NAND_CONTROLLER
-> +       bool "MRST NAND controller"
-> +       help
-> +
-> +config CE4100_NAND_CONTROLLER
-> +       bool "CE4100 NAND controller"
-> +       help
-> +
-> +endchoice 
+> This would lead to a NULL pointer dereference later on in the function.
+> 
+> Signed-off-by: Dan Carpenter <error27@gmail.com>
 
+Acked-by: Anton Vorontsov <cbouatmailru@gmail.com>
 
-Hm, I don't like this much -- we ought to be able to compile a generic
-kernel which will support *both* MRST and CE4100. 
+Thanks,
 
-(Actually, we *can* -- you don't use these options anywhere (yet?)
-except as a gateway to letting us set the BBT_BLOCKNUM value.
-
-It may also be worth switching CE4100 to use the same BBT scheme as
-you're using in MRST -- don't all the same arguments apply there?
-
-I'm guessing that you didn't change CE4100 just because you want to
-retain on-medium compatibility? Let's ask Jason -- I suspect it would be
-OK to change...
-
-I'm also somewhat dubious about the way we abandon the BBT when we're
-going to use Spectra -- and especially the use of the scratch register.
-Can't we put that information into PCI config space if we really must
-have it? I'll look over that in more detail...
-
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 83c9086..6f512b5 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -793,7 +793,7 @@ static int __devinit m25p_probe(struct spi_device *spi)
+>  			break;
+>  		}
+>  
+> -		if (plat_id)
+> +		if (i < ARRAY_SIZE(m25p_ids) - 1)
+>  			id = plat_id;
+>  		else
+>  			dev_warn(&spi->dev, "unrecognized id %s\n", data->type);
 
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
