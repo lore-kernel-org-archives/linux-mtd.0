@@ -1,23 +1,24 @@
 Received: from smtp4-g21.free.fr ([212.27.42.4])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ojq8F-0003pw-Bu
-	for linux-mtd@lists.infradead.org; Fri, 13 Aug 2010 09:00:56 +0000
+	id 1Ojq95-0005LI-32
+	for linux-mtd@lists.infradead.org; Fri, 13 Aug 2010 09:01:48 +0000
 From: Florian Fainelli <ffainelli@freebox.fr>
 To: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH 3/3] NAND: add support for reading ONFI parameters from
 	NAND device
-Date: Fri, 13 Aug 2010 11:00:38 +0200
+Date: Fri, 13 Aug 2010 11:01:31 +0200
 References: <201008121453.50207.ffainelli@freebox.fr>
 	<201008122147.54733.ffainelli@freebox.fr>
-	<4C64F34F.8020402@parrot.com>
-In-Reply-To: <4C64F34F.8020402@parrot.com>
+	<4C647E87.3050205@broadcom.com>
+In-Reply-To: <4C647E87.3050205@broadcom.com>
 MIME-Version: 1.0
 Content-Type: Text/Plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <201008131100.38707.ffainelli@freebox.fr>
-Cc: David Woodhouse <dwmw2@infradead.org>, Brian Norris <norris@broadcom.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+Message-Id: <201008131101.31482.ffainelli@freebox.fr>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Brian Norris <norris@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,94 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-On Friday 13 August 2010 09:25:03 Matthieu CASTET wrote:
-> Hello,
+On Friday 13 August 2010 01:06:47 Brian Norris wrote:
+> Hi,
 >=20
-> Florian Fainelli a =E9crit :
-> > Hello Brian,
+> On 08/12/2010 12:47 PM, Florian Fainelli wrote:
+> >> Also, previously, you said:
+> >>> +   if (!is_power_of_2(val) || val =3D=3D 1 || val > (1 << 4)) {
+> >>> the !is_power_of_2 check does not work for ONFI version 2.1 (3), so I
+> >>> would only keep the two other checks."
+> >>=20
+> >> So why is it now:
+> >>> +   if (is_power_of_2(val) || val =3D=3D 1 || val > (1 << 4)) {
+> >>=20
+> >> Is that a typo? Perhaps it's better to throw that test out altogether.
 > >=20
-> > Le Thursday 12 August 2010 20:57:42, Brian Norris a =E9crit :
-> >> Hello,
-> >>=20
-> >> I've got a few comments and a patch; I cannot test them, though,
-> >> just build.
-> >>=20
-> >> On 08/12/2010 05:53 AM, Florian Fainelli wrote:
-> >>> +static u16 onfi_crc(u16 crc, unsigned char const *p, size_t len)
-> >>> +{
-> >>> +   int i;
-> >>> +   while (len--) {
-> >>> +           crc ^=3D *p++<<  8;
-> >>> +           for (i =3D 0; i<  8; i++)
-> >>> +                   crc =3D (crc<<  1) ^ ((crc&  0x8000) ? 0x8005 : 0=
-);
-> >>> +   }
-> >>> +   return crc;
-> >>> +}
-> >>=20
-> >> Can this function safely be replaced by the library function crc16?
-> >> #include <linux/crc16.h>
-> >> u16 crc16(u16 crc, u8 const *buffer, size_t len);
-> >=20
-> > Certainly, thanks for noticing.
->=20
-> No it is not the same crc16 endianness, one is big the other is little.
+> > That was not a typo, I actually misread the ONFI specification and
+> > confused bit is set, with the actual value. So this is the correct
+> > check, sorry about that.
 
-Maybe we should add a crc16_le to lib/crc16.c?
+I forgot to answer that, yes, that was a typo, the original code was right=
+=20
+(that is: !is_power_of_2()).
 
 >=20
-> >>> +
-> >>> +   chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1);
-> >>> +
-> >>> +   /* Read entire ID string */
-> >>> +
-> >>> +   for (i =3D 0; i<  8; i++)
-> >>> +           id_data[i] =3D chip->read_byte(mtd);
-> >>> +
-> >>>=20
-> >>>     if (!type->name)
-> >>>    =20
-> >>>             return ERR_PTR(-ENODEV);
-> >>=20
-> >> Do we really need a third chance to read the ID bytes? It seems like we
-> >> can just read the whole string the second time instead of shortening it
-> >> to two bytes and waiting to reread all 8 bytes until after the ONFI
-> >> scan.
+> Again, I might be mistaken, but it seems that the "is_power_of_2" would
+> weed out ONFI 1.0, since val would be simply 1 << 1, i.e., val =3D=3D 2.
+> Really, it seems that the ONFI version number may or may not be a power
+> of two. If so, then we should just check individual bits as performed in
+> the other tests (and perhaps include a test to be sure "val & 1 =3D=3D 0")
+
+2 is still a power of 2, even though the exponent is 1 and is_power_of_2(2)=
+=20
+returns true.
+
+=46rom my understanding of the ONFI specification, the corresponding bit is=
+ set,=20
+when the ONFI version is supported. What is not clear to me and this is whe=
+re=20
+the is_power_of_2() check will return false, is in the case we have a devic=
+e=20
+supporting, say ONFI 2.0, we might have bits 1, 2, 3, 4 being set (30), whi=
+ch=20
+is not a power of 2. I agree with you on that. So let's just check the=20
+invidual bits instead starting with the higher one.
+
 >=20
-> Well onfi define only 2 bytes for id string, I though it was safer to
-> not read beyond specification for onfi nand.
->=20
-> >>> +                                   if (val&  (1<<  1))
-> >>> +                                           chip->onfi_version =3D 10;
-> >>> +                                   else if (val&  (1<<  2))
-> >>> +                                           chip->onfi_version =3D 20;
-> >>> +                                   else if (val&  (1<<  3))
-> >>> +                                           chip->onfi_version =3D 21;
-> >>> +                                   else
-> >>> +                                           chip->onfi_version =3D 22;
-> >>=20
-> >> I cannot currently test ONFI on a real chip, but shouldn't the order of
-> >> these conditionals be switched? It seems possible that the bits could =
-be
-> >> set high for more the one version (e.g., a chip supports 1.0 and 2.0, =
-so
-> >> we have val =3D 00000110 (binary), so the current logic would succeed =
-at
-> >> 1.0, not realizing that it supports 2.0. Again, I don't know about the
-> >> actual behavior in a real chip, but anyway, it seems harmless to
-> >> reverse this.
+> >> I "fixed" the changes I mentioned as well as a few coding style, logic
+> >> cleanups, etc. (e.g. too many levels of logic, creating lines > 80
+> >> chars). Here's a new patch. I didn't change over the crc function to
+> >> the library function because that would require configuring the Kbuild
+> >> options and setting a dependency, which I'm not familiar with. I'm
+> >> certainly not an expert on most of this, so take my patch with a grain
+> >> of salt!
 > >=20
-> > I think you are right about this. We only have ONFI 1.0 compliant chips
-> > right now, so we can't know for sure, but as you say, this is harmless.
+> > It is usually as simple as doing the proper select FOO in the related
+> > Kconfig.
 >=20
-> ok
->=20
->=20
-> Matthieu
->=20
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> Thanks for the tip. It worked for me.
+
+I will respin the patch with Matthieu's comments and yours.
+=2D-
+=46lorian
