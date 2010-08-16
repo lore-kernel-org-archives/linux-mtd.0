@@ -1,28 +1,23 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Okxqm-0003qy-MB
-	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 11:27:33 +0000
-Received: by iwn41 with SMTP id 41so1722345iwn.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 Aug 2010 04:27:30 -0700 (PDT)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Okxrr-0003wP-Rz
+	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 11:28:42 +0000
+Date: Mon, 16 Aug 2010 13:28:37 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH 1/3] mxc_nand: set spare size and pages per block
+Message-ID: <20100816112837.GO27749@pengutronix.de>
+References: <80r5i63dn4.fsf@merkur.tec.linutronix.de>
+	<20100810121912.GG27749@pengutronix.de>
+	<801va635f7.fsf@merkur.tec.linutronix.de>
+	<20100811125625.GS27749@pengutronix.de>
+	<80r5i5z3v1.fsf@merkur.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTikkRNqnEX0PkHigv=zT+Z36J52DEtoVeMGbBExf@mail.gmail.com>
-References: <AANLkTikC6wxXV08=AYsqn56h8Cs-qC_-b8hNyq9DUWps@mail.gmail.com>
-	<1280150054.14917.108.camel@localhost>
-	<AANLkTik7CdwdyhzVYFXG66V3LKZvqnZhLbg4eVC0nQ=S@mail.gmail.com>
-	<1280244340.3021.38.camel@localhost.localdomain>
-	<AANLkTi=7-Ur35OzqF7iJtiPzfc-Jp-ANGwa3g_Y=+ae8@mail.gmail.com>
-	<1280471755.2838.29.camel@localhost.localdomain>
-	<AANLkTikZb=R=8BObvTN6uGaZGAmvvUZd4oYKvkCJih7H@mail.gmail.com>
-	<AANLkTikkRNqnEX0PkHigv=zT+Z36J52DEtoVeMGbBExf@mail.gmail.com>
-Date: Mon, 16 Aug 2010 13:27:30 +0200
-Message-ID: <AANLkTim6U4uO_2yf-VyoL+4j9-yDkouTQdP_aszpEXwW@mail.gmail.com>
-Subject: Re: error!: "/dev/ubi0" is not a character device ?!?
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: twebb <taliaferro62@gmail.com>, dedekind1@gmail.com,
-	linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80r5i5z3v1.fsf@merkur.tec.linutronix.de>
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,76 +27,242 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/8/6 twebb <taliaferro62@gmail.com>:
->>
->> cat /proc/devices give me back, that =A0(252 ubi8) is a character device=
-.
->> But looking above, in /dev it is listed as block device !?!
->>
->> For me creating entries are not transparent, this happend with
->> ubiattach. No idea how to force ubiattach to write ubi8 in the
->> devicelist as character device.
->> Best regards
->> Arno
->>
->
-> Have you gotten anywhere on this problem? =A0I have looked and have not
-> found the udev rules anywhere.
->
-> Thanks,
-> twebb
->
+On Wed, Aug 11, 2010 at 03:16:34PM +0200, John Ogness wrote:
+> On 2010-08-11, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> >> Your version allows a small window between request_irq() and
+> >> irq_control() where on the i.MX21 there is a possibility of the
+> >> interrupts being disabled twice. Namely, if an interrupt occurs
+> >> before irq_control() has had a chance to disable it. IMHO it would be
+> >> better to call:
+> >> 
+> >>     set_irq_flags(host->irq, IRQF_VALID | IRQF_NOAUTOEN);
+> >> 
+> >> for the i.MX21 before requesting the irq. This closes the window.
+> >
+> > IIRC it is not allowed to call set_irq_flags before request_irq. We
+> > are changing a resource we do not own yet.
+> 
+> Normally, yes. But the only way the IRQF_NOAUTOEN flag can ever be
+> useful is if set_irq_flags() is called before request_irq().
+> 
+> > I think the worst thing that could happen without this change is that
+> > we get an interrupt after request_irq.
+> 
+> Yes. And this causes a problem on the i.MX21 because the interrupt
+> handler will disable the interrupts. The irq_control() after
+> request_irq() will _also_ disable the interrupts. This means the
+> interrupts are disabled twice, which causes some issues on an RT kernel.
+> 
+> > Alternatively we could set the interrupt mask bit before requesting
+> > the irq.
+> 
+> Yes. This would be best. But for the i.MX21 it is important that the
+> interrupts are unmasked after irq_control() has disabled the interrupts.
 
-Sorry for delay, have been out of office.
-Haven't found neither /etc/udev nor /lib/udev on my embedded system.
-udev is not mention in dmesg | grep udev
-But after creating /etc/udev/rules/10-udev.rules I could see this in
- cat /dev/udev/rules.d/10-udev.rules
-As I don't have any idea what rule I have to write in I left it blank.
-So no success with this method
+Ok, here is an updated version of this patch
 
-Other way like in : free-electrons.com/doc/training/embedded-linux/slides.p=
-df
+Sascha
 
-cat /sys/class/ubi/ubi0/dev
-252:0
-rm /dev/ubi0
-mknod /dev/ubi0 c 252 0
-ll /dev/ubi*
-crw-r--r--    1 root     root     252,   0 Jan  1 00:04 /dev/ubi0
-crw-rw----    1 root     root      10,  63 Jan  1 00:00 /dev/ubi_ctrl
+commit 3a411e6c690654f78bea93dd8cdb14c27ba418a5
+Author: Sascha Hauer <s.hauer@pengutronix.de>
+Date:   Mon Aug 9 14:21:00 2010 +0200
 
--> looks good so far. But finally I am screwed:
+    mxc_nand: do not depend on disabling the irq in the interrupt handler
+    
+    This patch reverts the driver to enabling/disabling the NFC interrupt
+    mask rather than enabling/disabling the system interrupt. This cleans
+    up the driver so that it doesn't rely on interrupts being disabled
+    within the interrupt handler.
+    For i.MX21 we keep the current behaviour, that is calling
+    enable_irq/disable_irq_nosync to enable/disable interrupts.
+    This patch is based on earlier work by John Ogness.
+    
+    Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
 
-ubimkvol /dev/ubi0 -N test -m
-Set volume size to 9805824UBI error: ubi_io_write: error -5 while
-writing 512 bytes to PEB 81:512, written 0 bytes
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index d58214b..c1a3d04 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -30,6 +30,8 @@
+ #include <linux/clk.h>
+ #include <linux/err.h>
+ #include <linux/io.h>
++#include <linux/irq.h>
++#include <linux/completion.h>
+ 
+ #include <asm/mach/flash.h>
+ #include <mach/mxc_nand.h>
+@@ -149,7 +151,7 @@ struct mxc_nand_host {
+ 	int			irq;
+ 	int			eccsize;
+ 
+-	wait_queue_head_t	irq_waitq;
++	struct completion	op_completion;
+ 
+ 	uint8_t			*data_buf;
+ 	unsigned int		buf_start;
+@@ -162,6 +164,7 @@ struct mxc_nand_host {
+ 	void			(*send_read_id)(struct mxc_nand_host *);
+ 	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
+ 	int			(*check_int)(struct mxc_nand_host *);
++	void			(*irq_control)(struct mxc_nand_host *, int);
+ };
+ 
+ /* OOB placement block for use with hardware ecc generation */
+@@ -214,9 +217,12 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+ {
+ 	struct mxc_nand_host *host = dev_id;
+ 
+-	disable_irq_nosync(irq);
++	if (!host->check_int(host))
++		return IRQ_NONE;
+ 
+-	wake_up(&host->irq_waitq);
++	host->irq_control(host, 0);
++
++	complete(&host->op_completion);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -243,11 +249,54 @@ static int check_int_v1_v2(struct mxc_nand_host *host)
+ 	if (!(tmp & NFC_V1_V2_CONFIG2_INT))
+ 		return 0;
+ 
+-	writew(tmp & ~NFC_V1_V2_CONFIG2_INT, NFC_V1_V2_CONFIG2);
++	if (!cpu_is_mx21())
++		writew(tmp & ~NFC_V1_V2_CONFIG2_INT, NFC_V1_V2_CONFIG2);
+ 
+ 	return 1;
+ }
+ 
++/*
++ * It has been observed that the i.MX21 cannot read the CONFIG2:INT bit
++ * if interrupts are masked (CONFIG1:INT_MSK is set). To handle this, the
++ * driver can enable/disable the irq line rather than simply masking the
++ * interrupts.
++ */
++static void irq_control_mx21(struct mxc_nand_host *host, int activate)
++{
++	if (activate)
++		enable_irq(host->irq);
++	else
++		disable_irq_nosync(host->irq);
++}
++
++static void irq_control_v1_v2(struct mxc_nand_host *host, int activate)
++{
++	uint16_t tmp;
++
++	tmp = readw(NFC_V1_V2_CONFIG1);
++
++	if (activate)
++		tmp &= ~NFC_V1_V2_CONFIG1_INT_MSK;
++	else
++		tmp |= NFC_V1_V2_CONFIG1_INT_MSK;
++
++	writew(tmp, NFC_V1_V2_CONFIG1);
++}
++
++static void irq_control_v3(struct mxc_nand_host *host, int activate)
++{
++	uint32_t tmp;
++
++	tmp = readl(NFC_V3_CONFIG2);
++
++	if (activate)
++		tmp &= ~NFC_V3_CONFIG2_INT_MSK;
++	else
++		tmp |= NFC_V3_CONFIG2_INT_MSK;
++
++	writel(tmp, NFC_V3_CONFIG2);
++}
++
+ /* This function polls the NANDFC to wait for the basic operation to
+  * complete by checking the INT bit of config2 register.
+  */
+@@ -257,10 +306,9 @@ static void wait_op_done(struct mxc_nand_host *host, int useirq)
+ 
+ 	if (useirq) {
+ 		if (!host->check_int(host)) {
+-
+-			enable_irq(host->irq);
+-
+-			wait_event(host->irq_waitq, host->check_int(host));
++			INIT_COMPLETION(host->op_completion);
++			host->irq_control(host, 1);
++			wait_for_completion(&host->op_completion);
+ 		}
+ 	} else {
+ 		while (max_retries-- > 0) {
+@@ -731,9 +779,8 @@ static void preset_v1_v2(struct mtd_info *mtd)
+ 	struct mxc_nand_host *host = nand_chip->priv;
+ 	uint16_t tmp;
+ 
+-	/* enable interrupt, disable spare enable */
++	/* disable spare enable */
+ 	tmp = readw(NFC_V1_V2_CONFIG1);
+-	tmp &= ~NFC_V1_V2_CONFIG1_INT_MSK;
+ 	tmp &= ~NFC_V1_V2_CONFIG1_SP_EN;
+ 	if (nand_chip->ecc.mode == NAND_ECC_HW) {
+ 		tmp |= NFC_V1_V2_CONFIG1_ECC_EN;
+@@ -1020,6 +1067,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		host->send_read_id = send_read_id_v1_v2;
+ 		host->get_dev_status = get_dev_status_v1_v2;
+ 		host->check_int = check_int_v1_v2;
++		if (cpu_is_mx21())
++			host->irq_control = irq_control_mx21;
++		else
++			host->irq_control = irq_control_v1_v2;
+ 	}
+ 
+ 	if (nfc_is_v21()) {
+@@ -1058,6 +1109,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		host->send_read_id = send_read_id_v3;
+ 		host->check_int = check_int_v3;
+ 		host->get_dev_status = get_dev_status_v3;
++		host->irq_control = irq_control_v3;
+ 		oob_smallpage = &nandv2_hw_eccoob_smallpage;
+ 		oob_largepage = &nandv2_hw_eccoob_largepage;
+ 	} else
+@@ -1089,14 +1141,34 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 		this->options |= NAND_USE_FLASH_BBT;
+ 	}
+ 
+-	init_waitqueue_head(&host->irq_waitq);
++	init_completion(&host->op_completion);
+ 
+ 	host->irq = platform_get_irq(pdev, 0);
+ 
++	/*
++	 * mask the interrupt. For i.MX21 explicitely call
++	 * irq_control_v1_v2 to use the mask bit. We can't call
++	 * disable_irq_nosync() for an interrupt we do not own yet.
++	 */
++	if (cpu_is_mx21())
++		irq_control_v1_v2(host, 0);
++	else
++		host->irq_control(host, 0);
++
+ 	err = request_irq(host->irq, mxc_nfc_irq, IRQF_DISABLED, DRIVER_NAME, host);
+ 	if (err)
+ 		goto eirq;
+ 
++	host->irq_control(host, 0);
++
++	/*
++	 * Now that the interrupt is disabled make sure the interrupt
++	 * mask bit is cleared on i.MX21. Otherwise we can't read
++	 * the interrupt status bit on this machine.
++	 */
++	if (cpu_is_mx21())
++		irq_control_v1_v2(host, 1);
++
+ 	/* first scan to find the device and get the page size */
+ 	if (nand_scan_ident(mtd, 1, NULL)) {
+ 		err = -ENXIO;
 
-UBI warning: ubi_eba_write_leb: failed to write VID header to LEB
-2147479551:0, PEB 81
-UBI: run torture test for PEB 81
-UBI: try another PEB
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
-0:512, written 0 bytes
-UBI warning: ubi_eba_write_leb: failed to write VID header to LEB
-2147479551:0, PEB 0
-UBI: try another PEB
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
-80:512, written 0 bytes
-UBI warning: ubi_eba_write_leb: failed to write VID header to LEB
-2147479551:0, PEB 80
-UBI: try another PEB
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB
-79:512, written 0 bytes
-UBI warning: ubi_eba_write_leb: failed to write VID header to LEB
-2147479551:0, PEB 79
-UBI warning: ubi_ro_mode: switch to read-only mode
-UBI error: ubi_io_write: read-only mode
-UBI error: ubi_create_volume: cannot create volume 0, error -30
-ubimkvol: error!: cannot UBI creUBI error: erase_worker: failed to
-erase PEB 81, error -30
-ate volume
-          error 30 (UBI error: do_work: work failed with error code -30
-Read-only file system)
-[root@ViUBI error: ubi_thread: ubi_bgt0d: work failed with error code -30
-sor:/]#
+-- 
+Pengutronix e.K.                           |                             |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
