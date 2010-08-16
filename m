@@ -1,21 +1,24 @@
-Received: from dakia3.marvell.com ([65.219.4.28])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Okyto-0008RD-3M
-	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 12:34:45 +0000
-From: Lei Wen <leiwen@marvell.com>
-To: Eric Miao <eric.y.miao@gmail.com>, Axel Lin <axel.lin@gmail.com>
-Date: Mon, 16 Aug 2010 05:34:38 -0700
-Subject: RE: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
-	samsung2GbX8
-Message-ID: <53612FE6B944314AAADB181E45A45B64133DDFC156@sc-vexch3.marvell.com>
-In-Reply-To: <AANLkTi=YSS0-Nf4MWOw30YDrCdrkmtzLhv7DXfsoJTjX@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Okz3A-0000pS-TC
+	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 12:44:25 +0000
+Received: by wwi14 with SMTP id 14so5453541wwi.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Aug 2010 05:44:23 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <53612FE6B944314AAADB181E45A45B64133DDFC156@sc-vexch3.marvell.com>
+References: <AANLkTi=YSS0-Nf4MWOw30YDrCdrkmtzLhv7DXfsoJTjX@mail.gmail.com>
+	<53612FE6B944314AAADB181E45A45B64133DDFC156@sc-vexch3.marvell.com>
+From: Eric Miao <eric.y.miao@gmail.com>
+Date: Mon, 16 Aug 2010 20:44:03 +0800
+Message-ID: <AANLkTimh=dbUV75ZVXuhknt4FiMtximXLY8xoADfbe=q@mail.gmail.com>
+Subject: Re: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
+	samsung2GbX8
+To: Lei Wen <leiwen@marvell.com>
+Content-Type: text/plain; charset=UTF-8
 Cc: Haojian Zhuang <hzhuang1@marvell.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
+	Axel Lin <axel.lin@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,38 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXhlbCwNCg0KSSBzdWdnZXN0IG5vdCBtZXJnZSB5b3VyIHBhdGNoIGludG8gbWFpbmxpbmUg
-Y29kZS4gU2luY2UgSSBoYXZlIGEgbGFyZ2Ugc2VyaWVzIG9mIHBhdGNoIHdoaWNoIHJlY29uc3Ry
-dWN0IHRoZSBuYW5kIGZsYXNoIGRlZmluaXRpb24sIHRoaXMgZml4IHdvdWxkIG5vIGxvbmdlciBi
-ZSBuZWVkZWQuDQoNClRoYW5rcywNCkxlaQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
-RnJvbTogRXJpYyBNaWFvIFttYWlsdG86ZXJpYy55Lm1pYW9AZ21haWwuY29tXSANClNlbnQ6IDIw
-MTDlubQ45pyIMTbml6UgMjA6MjINClRvOiBBeGVsIExpbg0KQ2M6IGxpbnV4LWtlcm5lbDsgRGF2
-aWQgV29vZGhvdXNlOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgTGVpIFdlbjsgSGFv
-amlhbiBaaHVhbmcNClN1YmplY3Q6IFJlOiBbUEFUQ0hdIFtNVERdIFtOQU5EXSBweGEzeHg6IGZp
-eCB0aW1pbmcgYW5kIGNtZHNldCBmb3Igc2Ftc3VuZzJHYlg4DQoNCkNjJ2VkIExlaSBhbmQgSGFv
-amlhbi4NCg0KT24gTW9uLCBBdWcgMTYsIDIwMTAgYXQgNDo1MCBQTSwgQXhlbCBMaW4gPGF4ZWwu
-bGluQGdtYWlsLmNvbT4gd3JvdGU6DQo+IFRoaXMgcGF0Y2ggYWRkcyB0aW1pbmcgc2V0dGluZ3Mg
-Zm9yIHNhbXN1bmcyR2JYOCBhbmQNCj4gZml4ZXMgdGhlIGNtZHNldCBzZXR0aW5ncy4gc2Ftc3Vu
-ZzJHYlg4IGlzIGxhcmdlIHBhZ2UuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IEF4ZWwgTGluIDxheGVs
-LmxpbkBnbWFpbC5jb20+DQo+IC0tLQ0KPiDCoGRyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQu
-YyB8IMKgIDE2ICsrKysrKysrKysrKysrLS0NCj4gwqAxIGZpbGVzIGNoYW5nZWQsIDE0IGluc2Vy
-dGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9u
-YW5kL3B4YTN4eF9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3B4YTN4eF9uYW5kLmMNCj4gaW5k
-ZXggNGQ4OWYzNy4uNDdjMDQ0MiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9weGEz
-eHhfbmFuZC5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYw0KPiBAQCAt
-MjI3LDkgKzIyNywyMSBAQCBzdGF0aWMgc3RydWN0IHB4YTN4eF9uYW5kX2ZsYXNoIHNhbXN1bmc1
-MTJNYlgxNiA9IHsNCj4gwqAgwqAgwqAgwqAuY2hpcF9pZCDCoCDCoCDCoCDCoD0gMHg0NmVjLA0K
-PiDCoH07DQo+DQo+ICtzdGF0aWMgc3RydWN0IHB4YTN4eF9uYW5kX3RpbWluZyBzYW1zdW5nMkdi
-WDhfdGltaW5nID0gew0KPiArIMKgIMKgIMKgIC50Q0ggwqAgwqA9IDUsDQo+ICsgwqAgwqAgwqAg
-LnRDUyDCoCDCoD0gMjAsDQo+ICsgwqAgwqAgwqAgLnRXSCDCoCDCoD0gMTAsDQo+ICsgwqAgwqAg
-wqAgLnRXUCDCoCDCoD0gMTIsDQo+ICsgwqAgwqAgwqAgLnRSSCDCoCDCoD0gMTAsDQo+ICsgwqAg
-wqAgwqAgLnRSUCDCoCDCoD0gMTIsDQo+ICsgwqAgwqAgwqAgLnRSIMKgIMKgID0gMjUwMDAsDQo+
-ICsgwqAgwqAgwqAgLnRXSFIgwqAgPSA2MCwNCj4gKyDCoCDCoCDCoCAudEFSIMKgIMKgPSAxMCwN
-Cj4gK307DQo+ICsNCj4gwqBzdGF0aWMgc3RydWN0IHB4YTN4eF9uYW5kX2ZsYXNoIHNhbXN1bmcy
-R2JYOCA9IHsNCj4gLSDCoCDCoCDCoCAudGltaW5nIMKgIMKgIMKgIMKgID0gJnNhbXN1bmc1MTJN
-YlgxNl90aW1pbmcsDQo+IC0gwqAgwqAgwqAgLmNtZHNldCDCoCDCoCDCoCDCoCA9ICZzbWFsbHBh
-Z2VfY21kc2V0LA0KPiArIMKgIMKgIMKgIC50aW1pbmcgwqAgwqAgwqAgwqAgPSAmc2Ftc3VuZzJH
-Ylg4X3RpbWluZywNCj4gKyDCoCDCoCDCoCAuY21kc2V0IMKgIMKgIMKgIMKgID0gJmxhcmdlcGFn
-ZV9jbWRzZXQsDQo+IMKgIMKgIMKgIMKgLnBhZ2VfcGVyX2Jsb2NrID0gNjQsDQo+IMKgIMKgIMKg
-IMKgLnBhZ2Vfc2l6ZSDCoCDCoCDCoD0gMjA0OCwNCj4gwqAgwqAgwqAgwqAuZmxhc2hfd2lkdGgg
-wqAgwqA9IDgsDQo+IC0tDQo+IDEuNy4yDQo+DQo+DQo+DQo+DQo=
+On Mon, Aug 16, 2010 at 8:34 PM, Lei Wen <leiwen@marvell.com> wrote:
+> Hi Axel,
+>
+> I suggest not merge your patch into mainline code. Since I have a large series of patch which reconstruct the nand flash definition, this fix would no longer be needed.
+>
+
+Lei, would you please point the URL of the patch series (possibly by
+searching linux-mtd archive or some other mailing list archive) so that
+Axel can have a reference and be involved?
+
+- eric
