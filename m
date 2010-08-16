@@ -1,21 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ol0V2-0002EG-LB
-	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 14:17:17 +0000
-Received: by eye22 with SMTP id 22so1139912eye.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 Aug 2010 07:17:15 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <53612FE6B944314AAADB181E45A45B64133DDFC162@sc-vexch3.marvell.com>
-References: <AANLkTikCO505BZfqQGsRAdLgMa9hBQZ8YS-hJy-1RGg1@mail.gmail.com>
-	<53612FE6B944314AAADB181E45A45B64133DDFC162@sc-vexch3.marvell.com>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Mon, 16 Aug 2010 22:16:54 +0800
-Message-ID: <AANLkTimSqtpTemencLrKpRyHgSii0UYzH=FwawstDQmU@mail.gmail.com>
-Subject: Re: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
+Received: from dakia3.marvell.com ([65.219.4.28])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ol0YZ-0003cu-3P
+	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 14:20:59 +0000
+From: Lei Wen <leiwen@marvell.com>
+To: Eric Miao <eric.y.miao@gmail.com>
+Date: Mon, 16 Aug 2010 07:20:51 -0700
+Subject: RE: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
 	samsung2GbX8
-To: Lei Wen <leiwen@marvell.com>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <53612FE6B944314AAADB181E45A45B64133DDFC166@sc-vexch3.marvell.com>
+In-Reply-To: <AANLkTimSqtpTemencLrKpRyHgSii0UYzH=FwawstDQmU@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
 Cc: Haojian Zhuang <hzhuang1@marvell.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	Axel Lin <axel.lin@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
@@ -29,13 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/8/16 Lei Wen <leiwen@marvell.com>:
-> Eric,
-> The first patch is a bit of fundamental. I'm afraid that modify it would bring changes to all latter patches in this series...
->
-> So I think I would repost another round of updating patch series and hope that would be merged. How do you think about this?
->
-
-Please separate the patches into several patch series.
-
-(PS: I'll possibly talk with you on this tomorrow F2F)
+SSBtYXkgbm90IGhhdmUgdGltZSBmcm9tIDEwYW0gdG8gMTFhbS4gRXhjZXB0IHRoYXQsIGFueSB0
+aW1lIGlzIG9rIGZvciBtZS4gOi0pDQoNCkJlc3QgcmVnYXJkcywNCkxlaQ0KDQotLS0tLU9yaWdp
+bmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogRXJpYyBNaWFvIFttYWlsdG86ZXJpYy55Lm1pYW9AZ21h
+aWwuY29tXSANClNlbnQ6IDIwMTDE6jjUwjE2yNUgMjI6MTcNClRvOiBMZWkgV2VuDQpDYzogRGF2
+aWQgV29vZGhvdXNlOyBIYW9qaWFuIFpodWFuZzsgQXhlbCBMaW47IGxpbnV4LWtlcm5lbDsgbGlu
+dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmcNClN1YmplY3Q6IFJlOiBbUEFUQ0hdIFtNVERdIFtO
+QU5EXSBweGEzeHg6IGZpeCB0aW1pbmcgYW5kIGNtZHNldCBmb3Igc2Ftc3VuZzJHYlg4DQoNCjIw
+MTAvOC8xNiBMZWkgV2VuIDxsZWl3ZW5AbWFydmVsbC5jb20+Og0KPiBFcmljLA0KPiBUaGUgZmly
+c3QgcGF0Y2ggaXMgYSBiaXQgb2YgZnVuZGFtZW50YWwuIEknbSBhZnJhaWQgdGhhdCBtb2RpZnkg
+aXQgd291bGQgYnJpbmcgY2hhbmdlcyB0byBhbGwgbGF0dGVyIHBhdGNoZXMgaW4gdGhpcyBzZXJp
+ZXMuLi4NCj4NCj4gU28gSSB0aGluayBJIHdvdWxkIHJlcG9zdCBhbm90aGVyIHJvdW5kIG9mIHVw
+ZGF0aW5nIHBhdGNoIHNlcmllcyBhbmQgaG9wZSB0aGF0IHdvdWxkIGJlIG1lcmdlZC4gSG93IGRv
+IHlvdSB0aGluayBhYm91dCB0aGlzPw0KPg0KDQpQbGVhc2Ugc2VwYXJhdGUgdGhlIHBhdGNoZXMg
+aW50byBzZXZlcmFsIHBhdGNoIHNlcmllcy4NCg0KKFBTOiBJJ2xsIHBvc3NpYmx5IHRhbGsgd2l0
+aCB5b3Ugb24gdGhpcyB0b21vcnJvdyBGMkYpDQo=
