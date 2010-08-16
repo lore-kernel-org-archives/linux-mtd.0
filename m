@@ -1,20 +1,16 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OkvMh-0005Pp-1U
-	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 08:48:24 +0000
-Received: by pzk3 with SMTP id 3so2059618pzk.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 Aug 2010 01:48:17 -0700 (PDT)
-Subject: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for samsung2GbX8
-From: Axel Lin <axel.lin@gmail.com>
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain
-Date: Mon, 16 Aug 2010 16:50:41 +0800
-Message-Id: <1281948641.29696.1.camel@mola>
+Subject: Re: [PATCH] [MTD] [NAND] pxa3xx: fix ns2cycle equation
+From: David Woodhouse <dwmw2@infradead.org>
+To: Axel Lin <axel.lin@gmail.com>
+In-Reply-To: <1281946149.10299.1.camel@mola>
+References: <1281946149.10299.1.camel@mola>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 16 Aug 2010 11:32:18 +0100
+Message-ID: <1281954738.21549.65.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Eric Miao <eric.y.miao@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Matt Reimer <mreimer@vpop.net>,
+	Eric Miao <eric.y.miao@gmail.com>,
+	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds timing settings for samsung2GbX8 and
-fixes the cmdset settings. samsung2GbX8 is large page.
+On Mon, 2010-08-16 at 16:09 +0800, Axel Lin wrote:
+> Test on a PXA310 platform with Samsung K9F2G08X0B NAND flash,
+> with tCH=5 and clk is 156MHz, ns2cycle(5, 156000000) returns -1.
+> 
+> ns2cycle returns negtive value will break NDTR0_tXX macros.
+> 
+> After checking the commit log, I found the problem is introduced by
+> commit 5b0d4d7c8a67c5ba3d35e6ceb0c5530cc6846db7
+> "[MTD] [NAND] pxa3xx: convert from ns to clock ticks more accurately"
+> 
+> To get num of clock cycles, we use below equation:
+> num of clock cycles = time (ns) / one clock cycle (ns) + 1
+> We need to add 1 cycle here because integer division will truncate the result.
+> It is possible the developers set the Min values in SPEC for timing settings.
+> Thus the truncate may cause problem, and it is safe to add an extra cycle here.
+> 
+> The various fields in NDTR{01} are in units of clock ticks minus one,
+> thus we should subtract 1 cycle then.
+> 
+> Thus the correct equation should be:
+> num of clock cycles = time (ns) / one clock cycle (ns) + 1 - 1
+>                     = time (ns) / one clock cycle (ns)
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |   16 ++++++++++++++--
- 1 files changed, 14 insertions(+), 2 deletions(-)
+Looks sane to me; thanks. Wants to go to stable@ too, yes?
 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index 4d89f37..47c0442 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -227,9 +227,21 @@ static struct pxa3xx_nand_flash samsung512MbX16 = {
- 	.chip_id	= 0x46ec,
- };
- 
-+static struct pxa3xx_nand_timing samsung2GbX8_timing = {
-+	.tCH	= 5,
-+	.tCS	= 20,
-+	.tWH	= 10,
-+	.tWP	= 12,
-+	.tRH	= 10,
-+	.tRP	= 12,
-+	.tR	= 25000,
-+	.tWHR	= 60,
-+	.tAR	= 10,
-+};
-+
- static struct pxa3xx_nand_flash samsung2GbX8 = {
--	.timing		= &samsung512MbX16_timing,
--	.cmdset		= &smallpage_cmdset,
-+	.timing		= &samsung2GbX8_timing,
-+	.cmdset		= &largepage_cmdset,
- 	.page_per_block	= 64,
- 	.page_size	= 2048,
- 	.flash_width	= 8,
+Can I have an Acked-By: from Matt and/or Eric?
+
 -- 
-1.7.2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
