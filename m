@@ -1,17 +1,25 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ojzzn-0003Ml-Lw
-	for linux-mtd@lists.infradead.org; Fri, 13 Aug 2010 19:32:53 +0000
-Received: by bwz13 with SMTP id 13so62588bwz.36
+	id 1OkpqD-0008BN-Iy
+	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 02:54:26 +0000
+Received: by gyf2 with SMTP id 2so2105166gyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Aug 2010 12:32:49 -0700 (PDT)
+	Sun, 15 Aug 2010 19:54:24 -0700 (PDT)
 MIME-Version: 1.0
-From: Shane Volpe <shanevolpe@gmail.com>
-Date: Fri, 13 Aug 2010 15:32:29 -0400
-Message-ID: <AANLkTim=pAP6T6mvunJJHozJTYhTPaaP5R1ot_dQUCT8@mail.gmail.com>
-Subject: CFI when flash chips are not identical
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+In-Reply-To: <1281021362.8720.6.camel@localhost>
+References: <1281020864-26842-1-git-send-email-vapier@gentoo.org>
+	<1281020864-26842-4-git-send-email-vapier@gentoo.org>
+	<1281021362.8720.6.camel@localhost>
+From: Barry Song <21cnbao@gmail.com>
+Date: Mon, 16 Aug 2010 10:54:04 +0800
+Message-ID: <AANLkTi=7YJ1_Wd499WTVfmpvqxdysROCRHpekfkUyrDT@mail.gmail.com>
+Subject: Re: [Uclinux-dist-devel] [PATCH 4/7] mtd: Blackfin NFC: wait for the
+	ECC reset to finish
+To: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: uclinux-dist-devel@blackfin.uclinux.org, Mike Frysinger <vapier@gentoo.org>,
+	linux-mtd@lists.infradead.org, Barry Song <barry.song@analog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All,
-I'm working on a design that uses 2 flash ICs (2x16), one for bits
-0-15 and the second for bits 16-31.  We were in the process of
-approving 2 versions of Intel's P30 flash die and were doing some
-testing when we found out that the newer die version has a larger
-buffer so if it is in the 0-15 location then the Linux CFI uses its
-buffer size causing flash writes fail since the older die version in
-bits 16-31 does not have a big enough buffer.  This got me thinking
-even some more, how is the busy bit handled for the flash in the CFI
-interface, does it just check the 1st flash in a 2x16 configuration or
-does it poll both?  If it does not poll both then could this be a
-point of failure?
+On Thu, Aug 5, 2010 at 11:16 PM, David Woodhouse <dwmw2@infradead.org> wrot=
+e:
+> On Thu, 2010-08-05 at 11:07 -0400, Mike Frysinger wrote:
+>>
+>> + =C2=A0 =C2=A0 =C2=A0 while (bfin_read_NFC_RST() & ECC_RST)
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 cpu_relax();
+>
+> All applied, but I'd be happier if this one had some kind of timeout and
+> didn't have the potential to loop forever if the hardware misbehaves.
+If this loop forever, it means a chip bug and really has no any way to
+continue to run the system. So the point is "bfin_read_NFC_RST() &
+ECC_RST" will must be real for the right chip, if the chip has bug,
+there should be workaround but not a timeout.
 
-FYI:  I'm working on kernel version 2.6.23 (yes quite old!), I plan to
-look at the latest kernel and see if the MaxBufWriteSize is still only
-read from one IC and also compare how both kernels handle the busy
-state.
-Regards,
-Shane
+>
+> --
+> David Woodhouse =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Open Source Technology Centre
+> David.Woodhouse@intel.com =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Intel Corporatio=
+n
+>
+>
+> _______________________________________________
+> Uclinux-dist-devel mailing list
+> Uclinux-dist-devel@blackfin.uclinux.org
+> https://blackfin.uclinux.org/mailman/listinfo/uclinux-dist-devel
+>
