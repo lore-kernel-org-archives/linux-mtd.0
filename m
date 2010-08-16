@@ -1,20 +1,24 @@
-Received: from dakia3.marvell.com ([65.219.4.28])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ol0HU-0006qQ-AU
-	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 14:03:17 +0000
-From: Lei Wen <leiwen@marvell.com>
-To: Eric Miao <eric.y.miao@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 16 Aug 2010 07:03:11 -0700
-Subject: RE: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
-	samsung2GbX8
-Message-ID: <53612FE6B944314AAADB181E45A45B64133DDFC162@sc-vexch3.marvell.com>
-In-Reply-To: <AANLkTikCO505BZfqQGsRAdLgMa9hBQZ8YS-hJy-1RGg1@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ol0V2-0002EG-LB
+	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 14:17:17 +0000
+Received: by eye22 with SMTP id 22so1139912eye.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Aug 2010 07:17:15 -0700 (PDT)
 MIME-Version: 1.0
-Cc: Haojian Zhuang <hzhuang1@marvell.com>, Axel Lin <axel.lin@gmail.com>,
+In-Reply-To: <53612FE6B944314AAADB181E45A45B64133DDFC162@sc-vexch3.marvell.com>
+References: <AANLkTikCO505BZfqQGsRAdLgMa9hBQZ8YS-hJy-1RGg1@mail.gmail.com>
+	<53612FE6B944314AAADB181E45A45B64133DDFC162@sc-vexch3.marvell.com>
+From: Eric Miao <eric.y.miao@gmail.com>
+Date: Mon, 16 Aug 2010 22:16:54 +0800
+Message-ID: <AANLkTimSqtpTemencLrKpRyHgSii0UYzH=FwawstDQmU@mail.gmail.com>
+Subject: Re: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
+	samsung2GbX8
+To: Lei Wen <leiwen@marvell.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: Haojian Zhuang <hzhuang1@marvell.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Axel Lin <axel.lin@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
 	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,38 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RXJpYywNClRoZSBmaXJzdCBwYXRjaCBpcyBhIGJpdCBvZiBmdW5kYW1lbnRhbC4gSSdtIGFmcmFp
-ZCB0aGF0IG1vZGlmeSBpdCB3b3VsZCBicmluZyBjaGFuZ2VzIHRvIGFsbCBsYXR0ZXIgcGF0Y2hl
-cyBpbiB0aGlzIHNlcmllcy4uLg0KDQpTbyBJIHRoaW5rIEkgd291bGQgcmVwb3N0IGFub3RoZXIg
-cm91bmQgb2YgdXBkYXRpbmcgcGF0Y2ggc2VyaWVzIGFuZCBob3BlIHRoYXQgd291bGQgYmUgbWVy
-Z2VkLiBIb3cgZG8geW91IHRoaW5rIGFib3V0IHRoaXM/DQoNClRoYW5rcywNCkxlaQ0KDQoNCg0K
-LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEVyaWMgTWlhbyBbbWFpbHRvOmVyaWMu
-eS5taWFvQGdtYWlsLmNvbV0gDQpTZW50OiAyMDEwxOo41MIxNsjVIDIxOjU1DQpUbzogRGF2aWQg
-V29vZGhvdXNlDQpDYzogSGFvamlhbiBaaHVhbmc7IExlaSBXZW47IEF4ZWwgTGluOyBsaW51eC1r
-ZXJuZWw7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBSZTogW1BBVENI
-XSBbTVREXSBbTkFORF0gcHhhM3h4OiBmaXggdGltaW5nIGFuZCBjbWRzZXQgZm9yIHNhbXN1bmcy
-R2JYOA0KDQpPbiBNb24sIEF1ZyAxNiwgMjAxMCBhdCA5OjA1IFBNLCBEYXZpZCBXb29kaG91c2Ug
-PGR3bXcyQGluZnJhZGVhZC5vcmc+IHdyb3RlOg0KPiBPbiBNb24sIDIwMTAtMDgtMTYgYXQgMjA6
-NTUgKzA4MDAsIEVyaWMgTWlhbyB3cm90ZToNCj4+IE9uIE1vbiwgQXVnIDE2LCAyMDEwIGF0IDg6
-NDkgUE0sIEhhb2ppYW4gWmh1YW5nIDxoemh1YW5nMUBtYXJ2ZWxsLmNvbT4gd3JvdGU6DQo+PiA+
-IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAxMC1KdWx5
-L3N1YmplY3QuaHRtbA0KPj4gPg0KPj4gPiBUaGV5J3JlIHJlLXBvc3RlZCBpbiBKdWx5LiBQbGVh
-c2Ugc2VhcmNoIHRoZSBzdWJqZWN0cyBpbiB0aGF0IHBhZ2UuIFRoZXkncmUgdG90YWxseSAyOSBw
-YXRjaGVzLg0KPj4gPg0KPj4gPiBCeSB0aGUgd2F5LCBEYXZpZCwgd2hhdCdzIHRoZSByZXN1bHQg
-b2YgcmV2aWV3IG9uIHRoZXNlIHBhdGNoZXM/IFdlIGFscmVhZHkgcG9zdGVkIGZvciBzZXZlcmFs
-IHRpbWVzLg0KPj4gPg0KPj4NCj4+IEkndmUgYWN0dWFsbHkgcmV2aWV3ZWQgc29tZSBvZiB0aGUg
-cGF0Y2hlcyBhbmQgZ2F2ZSBteSBBY2suIEZvciB0aG9zZQ0KPj4gcGF0Y2hlcywgSSB0aGluayB0
-aGV5IGNhbiBiZSBtZXJnZWQgZWFybHkuDQo+Pg0KPj4gQW5kIG92ZXJhbGwsIHRoZXkgbG9vayBn
-b29kLiBZZXQgMjkgcGF0Y2ggaW4gYSB3aG9sZSBpcyBzdGlsbCBhIGJpdCB0b28NCj4+IG11Y2gs
-IHdvdWxkIGJlIGdvb2QgdG8gc2VlIHRoZW0gbG9naWNhbGx5IGJlIHNlcGFyYXRlZCBpbnRvIHNl
-dmVyYWwNCj4+IHBhdGNoIHNlcmllcy4NCj4NCj4gWW91IGhhZCBzb21lIGNyaXRpY2lzbSBvZiBw
-YXRjaCAjMSBpbiB0aGUgc2VxdWVuY2UsIGFuZCBzb21lIHF1ZXN0aW9ucy4NCj4NCg0KU28gdGhl
-eSBuZWVkIHRvIGJlIGFkZHJlc3NlZC4gTGVpLCBjb3VsZCB5b3UgcGxlYXNlIGNvbWUgdXAgd2l0
-aA0KYW4gdXBkYXRlZCBwYXRjaD8NCg0KPiBJIGRpZG4ndCBsb29rIG11Y2ggaGFyZGVyIHRoYW4g
-dGhhdCwgaWlyYy4uLiBhbHRob3VnaCBsb29raW5nIGJhY2sgbm93DQo+IGl0IHNlZW1zIHRoYXQg
-dGhlIHJlc3Qgb2YgeW91ciByZXNwb25zZXMgdG8gdGhlIHNlcXVlbmNlIHdlcmUgbGFyZ2VseQ0K
-PiBwb3NpdGl2ZS4NCj4NCj4gQXJlIHlvdSBoYXBweSB3aXRoIHRoZSBmaXJzdCBwYXRjaCwgYW5k
-IGlmIHNvIHNoYWxsIEkgZ28gYWhlYWQgYW5kDQo+IGltcG9ydCB0aGUgd2hvbGUgc2VxdWVuY2Ug
-d2l0aCB5b3VyIEFja2VkLUJ5Oj8NCj4NCg0KSSdtIGdlbmVyYWxseSBPSywgYnV0IHN0aWxsIHRo
-aW5rIGl0IHdvdWxkIGJlIGdvb2QgdG8gaGF2ZSBhbm90aGVyIGFyb3VuZA0Kb2YgcmV2aWV3IGJl
-Zm9yZSB0aGV5IGNhbiBiZSBtZXJnZWQuDQo=
+2010/8/16 Lei Wen <leiwen@marvell.com>:
+> Eric,
+> The first patch is a bit of fundamental. I'm afraid that modify it would bring changes to all latter patches in this series...
+>
+> So I think I would repost another round of updating patch series and hope that would be merged. How do you think about this?
+>
+
+Please separate the patches into several patch series.
+
+(PS: I'll possibly talk with you on this tomorrow F2F)
