@@ -1,25 +1,22 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Okyhv-0003m5-5T
-	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 12:22:28 +0000
-Received: by eye22 with SMTP id 22so1044887eye.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 Aug 2010 05:22:25 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1281948641.29696.1.camel@mola>
-References: <1281948641.29696.1.camel@mola>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Mon, 16 Aug 2010 20:22:05 +0800
-Message-ID: <AANLkTi=YSS0-Nf4MWOw30YDrCdrkmtzLhv7DXfsoJTjX@mail.gmail.com>
-Subject: Re: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
+Received: from dakia3.marvell.com ([65.219.4.28])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Okyto-0008RD-3M
+	for linux-mtd@lists.infradead.org; Mon, 16 Aug 2010 12:34:45 +0000
+From: Lei Wen <leiwen@marvell.com>
+To: Eric Miao <eric.y.miao@gmail.com>, Axel Lin <axel.lin@gmail.com>
+Date: Mon, 16 Aug 2010 05:34:38 -0700
+Subject: RE: [PATCH] [MTD] [NAND] pxa3xx: fix timing and cmdset for
 	samsung2GbX8
-To: Axel Lin <axel.lin@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Lei Wen <leiwen@marvell.com>, linux-mtd@lists.infradead.org,
+Message-ID: <53612FE6B944314AAADB181E45A45B64133DDFC156@sc-vexch3.marvell.com>
+In-Reply-To: <AANLkTi=YSS0-Nf4MWOw30YDrCdrkmtzLhv7DXfsoJTjX@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: Haojian Zhuang <hzhuang1@marvell.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>
+	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cc'ed Lei and Haojian.
-
-On Mon, Aug 16, 2010 at 4:50 PM, Axel Lin <axel.lin@gmail.com> wrote:
-> This patch adds timing settings for samsung2GbX8 and
-> fixes the cmdset settings. samsung2GbX8 is large page.
->
-> Signed-off-by: Axel Lin <axel.lin@gmail.com>
-> ---
-> =C2=A0drivers/mtd/nand/pxa3xx_nand.c | =C2=A0 16 ++++++++++++++--
-> =C2=A01 files changed, 14 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
-d.c
-> index 4d89f37..47c0442 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -227,9 +227,21 @@ static struct pxa3xx_nand_flash samsung512MbX16 =3D =
-{
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.chip_id =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D 0x46ec=
-,
-> =C2=A0};
->
-> +static struct pxa3xx_nand_timing samsung2GbX8_timing =3D {
-> + =C2=A0 =C2=A0 =C2=A0 .tCH =C2=A0 =C2=A0=3D 5,
-> + =C2=A0 =C2=A0 =C2=A0 .tCS =C2=A0 =C2=A0=3D 20,
-> + =C2=A0 =C2=A0 =C2=A0 .tWH =C2=A0 =C2=A0=3D 10,
-> + =C2=A0 =C2=A0 =C2=A0 .tWP =C2=A0 =C2=A0=3D 12,
-> + =C2=A0 =C2=A0 =C2=A0 .tRH =C2=A0 =C2=A0=3D 10,
-> + =C2=A0 =C2=A0 =C2=A0 .tRP =C2=A0 =C2=A0=3D 12,
-> + =C2=A0 =C2=A0 =C2=A0 .tR =C2=A0 =C2=A0 =3D 25000,
-> + =C2=A0 =C2=A0 =C2=A0 .tWHR =C2=A0 =3D 60,
-> + =C2=A0 =C2=A0 =C2=A0 .tAR =C2=A0 =C2=A0=3D 10,
-> +};
-> +
-> =C2=A0static struct pxa3xx_nand_flash samsung2GbX8 =3D {
-> - =C2=A0 =C2=A0 =C2=A0 .timing =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D &samsung51=
-2MbX16_timing,
-> - =C2=A0 =C2=A0 =C2=A0 .cmdset =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D &smallpage=
-_cmdset,
-> + =C2=A0 =C2=A0 =C2=A0 .timing =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D &samsung2G=
-bX8_timing,
-> + =C2=A0 =C2=A0 =C2=A0 .cmdset =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D &largepage=
-_cmdset,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.page_per_block =3D 64,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.page_size =C2=A0 =C2=A0 =C2=A0=3D 2048,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0.flash_width =C2=A0 =C2=A0=3D 8,
-> --
-> 1.7.2
->
->
->
->
+SGkgQXhlbCwNCg0KSSBzdWdnZXN0IG5vdCBtZXJnZSB5b3VyIHBhdGNoIGludG8gbWFpbmxpbmUg
+Y29kZS4gU2luY2UgSSBoYXZlIGEgbGFyZ2Ugc2VyaWVzIG9mIHBhdGNoIHdoaWNoIHJlY29uc3Ry
+dWN0IHRoZSBuYW5kIGZsYXNoIGRlZmluaXRpb24sIHRoaXMgZml4IHdvdWxkIG5vIGxvbmdlciBi
+ZSBuZWVkZWQuDQoNClRoYW5rcywNCkxlaQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0K
+RnJvbTogRXJpYyBNaWFvIFttYWlsdG86ZXJpYy55Lm1pYW9AZ21haWwuY29tXSANClNlbnQ6IDIw
+MTDlubQ45pyIMTbml6UgMjA6MjINClRvOiBBeGVsIExpbg0KQ2M6IGxpbnV4LWtlcm5lbDsgRGF2
+aWQgV29vZGhvdXNlOyBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZzsgTGVpIFdlbjsgSGFv
+amlhbiBaaHVhbmcNClN1YmplY3Q6IFJlOiBbUEFUQ0hdIFtNVERdIFtOQU5EXSBweGEzeHg6IGZp
+eCB0aW1pbmcgYW5kIGNtZHNldCBmb3Igc2Ftc3VuZzJHYlg4DQoNCkNjJ2VkIExlaSBhbmQgSGFv
+amlhbi4NCg0KT24gTW9uLCBBdWcgMTYsIDIwMTAgYXQgNDo1MCBQTSwgQXhlbCBMaW4gPGF4ZWwu
+bGluQGdtYWlsLmNvbT4gd3JvdGU6DQo+IFRoaXMgcGF0Y2ggYWRkcyB0aW1pbmcgc2V0dGluZ3Mg
+Zm9yIHNhbXN1bmcyR2JYOCBhbmQNCj4gZml4ZXMgdGhlIGNtZHNldCBzZXR0aW5ncy4gc2Ftc3Vu
+ZzJHYlg4IGlzIGxhcmdlIHBhZ2UuDQo+DQo+IFNpZ25lZC1vZmYtYnk6IEF4ZWwgTGluIDxheGVs
+LmxpbkBnbWFpbC5jb20+DQo+IC0tLQ0KPiDCoGRyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQu
+YyB8IMKgIDE2ICsrKysrKysrKysrKysrLS0NCj4gwqAxIGZpbGVzIGNoYW5nZWQsIDE0IGluc2Vy
+dGlvbnMoKyksIDIgZGVsZXRpb25zKC0pDQo+DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9u
+YW5kL3B4YTN4eF9uYW5kLmMgYi9kcml2ZXJzL210ZC9uYW5kL3B4YTN4eF9uYW5kLmMNCj4gaW5k
+ZXggNGQ4OWYzNy4uNDdjMDQ0MiAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9tdGQvbmFuZC9weGEz
+eHhfbmFuZC5jDQo+ICsrKyBiL2RyaXZlcnMvbXRkL25hbmQvcHhhM3h4X25hbmQuYw0KPiBAQCAt
+MjI3LDkgKzIyNywyMSBAQCBzdGF0aWMgc3RydWN0IHB4YTN4eF9uYW5kX2ZsYXNoIHNhbXN1bmc1
+MTJNYlgxNiA9IHsNCj4gwqAgwqAgwqAgwqAuY2hpcF9pZCDCoCDCoCDCoCDCoD0gMHg0NmVjLA0K
+PiDCoH07DQo+DQo+ICtzdGF0aWMgc3RydWN0IHB4YTN4eF9uYW5kX3RpbWluZyBzYW1zdW5nMkdi
+WDhfdGltaW5nID0gew0KPiArIMKgIMKgIMKgIC50Q0ggwqAgwqA9IDUsDQo+ICsgwqAgwqAgwqAg
+LnRDUyDCoCDCoD0gMjAsDQo+ICsgwqAgwqAgwqAgLnRXSCDCoCDCoD0gMTAsDQo+ICsgwqAgwqAg
+wqAgLnRXUCDCoCDCoD0gMTIsDQo+ICsgwqAgwqAgwqAgLnRSSCDCoCDCoD0gMTAsDQo+ICsgwqAg
+wqAgwqAgLnRSUCDCoCDCoD0gMTIsDQo+ICsgwqAgwqAgwqAgLnRSIMKgIMKgID0gMjUwMDAsDQo+
+ICsgwqAgwqAgwqAgLnRXSFIgwqAgPSA2MCwNCj4gKyDCoCDCoCDCoCAudEFSIMKgIMKgPSAxMCwN
+Cj4gK307DQo+ICsNCj4gwqBzdGF0aWMgc3RydWN0IHB4YTN4eF9uYW5kX2ZsYXNoIHNhbXN1bmcy
+R2JYOCA9IHsNCj4gLSDCoCDCoCDCoCAudGltaW5nIMKgIMKgIMKgIMKgID0gJnNhbXN1bmc1MTJN
+YlgxNl90aW1pbmcsDQo+IC0gwqAgwqAgwqAgLmNtZHNldCDCoCDCoCDCoCDCoCA9ICZzbWFsbHBh
+Z2VfY21kc2V0LA0KPiArIMKgIMKgIMKgIC50aW1pbmcgwqAgwqAgwqAgwqAgPSAmc2Ftc3VuZzJH
+Ylg4X3RpbWluZywNCj4gKyDCoCDCoCDCoCAuY21kc2V0IMKgIMKgIMKgIMKgID0gJmxhcmdlcGFn
+ZV9jbWRzZXQsDQo+IMKgIMKgIMKgIMKgLnBhZ2VfcGVyX2Jsb2NrID0gNjQsDQo+IMKgIMKgIMKg
+IMKgLnBhZ2Vfc2l6ZSDCoCDCoCDCoD0gMjA0OCwNCj4gwqAgwqAgwqAgwqAuZmxhc2hfd2lkdGgg
+wqAgwqA9IDgsDQo+IC0tDQo+IDEuNy4yDQo+DQo+DQo+DQo+DQo=
