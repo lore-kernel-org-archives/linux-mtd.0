@@ -1,22 +1,22 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OlPXS-00043b-Kk
-	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2010 17:01:27 +0000
-Message-ID: <4C6AC037.7070205@broadcom.com>
-Date: Tue, 17 Aug 2010 10:00:39 -0700
-From: "Brian Norris" <norris@broadcom.com>
+From: John Ogness <john.ogness@linutronix.de>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 1/3] mxc_nand: set spare size and pages per block
+References: <80r5i63dn4.fsf@merkur.tec.linutronix.de>
+	<20100810121912.GG27749@pengutronix.de>
+	<801va635f7.fsf@merkur.tec.linutronix.de>
+	<20100811125625.GS27749@pengutronix.de>
+	<80r5i5z3v1.fsf@merkur.tec.linutronix.de>
+	<20100816112837.GO27749@pengutronix.de>
+	<80zkwm69uv.fsf@merkur.tec.linutronix.de>
+	<20100817085406.GW27749@pengutronix.de>
+Date: Tue, 17 Aug 2010 19:02:02 +0200
+In-Reply-To: <20100817085406.GW27749@pengutronix.de> (Sascha Hauer's message
+	of "Tue, 17 Aug 2010 10:54:06 +0200")
+Message-ID: <801v9x41h1.fsf@merkur.tec.linutronix.de>
 MIME-Version: 1.0
-To: "Michael Guntsche" <mike@it-loops.com>
-Subject: Re: [BUG] Nand support broken with v2.6.36-rc1
-References: <20100817113644.GA31317@gibson.comsick.at>
-In-Reply-To: <20100817113644.GA31317@gibson.comsick.at>
-Content-Type: text/plain;
- charset=iso-8859-1;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Brian Norris <norris@broadcom.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, Ivo Clarysse <ivo.clarysse@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,69 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-On 08/17/2010 01:52 AM, Michael Guntsche wrote:
- > The only thing that might be special with the nand driver that is being
- > used is that a different oob layout is being used.
- >
- > static struct nand_ecclayout rbppc_nand_oob_16 = {
- >    .eccbytes = 6,
- >    .eccpos = { 8, 9, 10, 13, 14, 15 },
- >    .oobavail = 9,
- >    .oobfree = { { 0, 4 }, { 6, 2 }, { 11, 2 }, { 4, 1 } }
- > };
-
-On 08/17/2010 04:36 AM, Michael Guntsche wrote:
-> I added this to the nand driver itself.
+On 2010-08-17, Sascha Hauer <s.hauer@pengutronix.de> wrote:
+> The following changes since commit da5cabf80e2433131bf0ed8993abc0f7ea618c73:
 >
-> static uint8_t scan_ff_pattern[] = { 0xff, 0xff };
-> static struct nand_bbt_descr rbppc_nand_smallpage = {
->    .options = NAND_BBT_SCAN2NDPAGE,
->    .offs = NAND_SMALL_BADBLOCK_POS,
->    .len = 1,
->    .pattern = scan_ff_pattern
-> };
+>   Linux 2.6.36-rc1 (2010-08-15 17:41:37 -0700)
 >
-> and the driver is working again. But shouldn't this be supported by the stock level code as well?
+> are available in the git repository at:
+>   git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand-pu
+>
+> John Ogness (2):
+>       mxc_nand: Do not do byte accesses to the NFC buffer.
+>       mxc_nand: remove unused variables.
+>
+> Sascha Hauer (10):
+>       mxc_nand: remove 0xe00 offset from registers
+>       mxc_nand: rework get_dev_status
+>       mxc_nand: make some internally used functions overwriteable
+>       mxc_nand: factor out a check_int function
+>       mxc_nand: add V1_V2 namespace to registers
+>       mxc_nand: support 8bit ecc
+>       mxc_nand: fix correct_data function
+>       mxc_nand: Add v3 (i.MX51) Support
+>       mxc_nand: do not depend on disabling the irq in the interrupt handler
+>       mxc_nand: configure pages per block for v2 controller
+>
+>  drivers/mtd/nand/Kconfig    |    2 +-
+>  drivers/mtd/nand/mxc_nand.c |  671 +++++++++++++++++++++++++++++++++----------
+>  2 files changed, 521 insertions(+), 152 deletions(-)
 
-Why yes, it should! Somebody (probably me) goofed. Your nand_ecclayout 
-is conflicting with the kernel's choice of bad block position. Recent 
-changes must have affected which position is chosen automatically by the 
-kernel.
+Acked-by: John Ogness <john.ogness@linutronix.de>
+Tested-by: John Ogness <john.ogness@linutronix.de>
 
-One of the following two cases is likely the problem:
-(1) Your chip is supposed to use offset 0, not 5, for the BBM (i.e., 
-NAND_LARGE_BADBLOCK_POS, not NAND_SMALL_BADBLOCK_POS), and so your 
-ecclayout should not be leaving byte 0 in the "oobfree" array (a design 
-flaw since you first began using this chip)
-(2) I made the commit that you mentioned 
-(c7b28e25cb9beb943aead770ff14551b55fa8c79) too restrictive in allowing 
-chips to use NAND_SMALL_BADBLOCK_POS.
-
-Option 2 is likely the case, and in fact, I realized a stupid mistake I 
-made in refactoring the detection here.
-
-I have been studying data from hundreds of flash chips to find where the 
-factory-determined markers should be stored. Unfortunately, I can't 
-cover all of them, and so your Hynix chip is likely one that was 
-overlooked. Could you send the full NAND ID string (8 bytes, not just 
-the manufacturer and chip ID), an exact part number for the flash, and a 
-datasheet? Any one of those could help (the datasheet being the most 
-important), but whatever you can provide is helpful. More data on your 
-chip would allow me to determine the problem for sure; I will send a 
-patch ASAP once I get your information.
-
-Sorry for the trouble!
-
-On another note, it may be intelligent to have the kernel-specific 
-systems check for such a conflict between bad-block markers and ECC 
-layout. If a position needed by the bad-block marker is listed in 
-"oobfree" or "eccpos" then we have a problem. Sound like a good idea 
-anybody? If so, what would be the best approach:
-* print an error and quit detection
-* try to modify the ecclayout, bbm info or both
-* try to modify, and fall-back to error message and quit if necessary
-
-Thanks,
-Brian
+I tested the driver with all the above changes on an i.MX35 with a
+16-bit NAND chip. The driver performed as expected.
