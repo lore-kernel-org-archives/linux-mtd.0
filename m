@@ -1,18 +1,21 @@
-Received: from lvps87-230-0-242.dedicated.hosteurope.de ([87.230.0.242])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OlQGM-0005F6-4A
-	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2010 17:47:51 +0000
-Date: Tue, 17 Aug 2010 19:47:04 +0200
-From: Michael Guntsche <mike@it-loops.com>
-To: Brian Norris <norris@broadcom.com>
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OlREk-0008Lo-Ah
+	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2010 18:50:15 +0000
+Message-ID: <4C6AD9C2.1070705@broadcom.com>
+Date: Tue, 17 Aug 2010 11:49:38 -0700
+From: "Brian Norris" <norris@broadcom.com>
+MIME-Version: 1.0
+To: "Michael Guntsche" <mike@it-loops.com>
 Subject: Re: [BUG] Nand support broken with v2.6.36-rc1
-Message-ID: <20100817174704.GA1322@gibson.comsick.at>
 References: <20100817113644.GA31317@gibson.comsick.at>
 	<4C6AC037.7070205@broadcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4C6AC037.7070205@broadcom.com>
+	<20100817174704.GA1322@gibson.comsick.at>
+In-Reply-To: <20100817174704.GA1322@gibson.comsick.at>
+Content-Type: text/plain;
+ charset=iso-8859-1;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,29 +27,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 17 Aug 10 10:00, Brian Norris wrote:
-> One of the following two cases is likely the problem:
-> (1) Your chip is supposed to use offset 0, not 5, for the BBM (i.e.,
-> NAND_LARGE_BADBLOCK_POS, not NAND_SMALL_BADBLOCK_POS), and so your
-> ecclayout should not be leaving byte 0 in the "oobfree" array (a
-> design flaw since you first began using this chip)
+Hi,
 
-First, I am just an end user so I have no access to the datasheets etc. I
-just got the code from the board manufactrurer (2.6.27) and forward
-port it to recent kernels.
+On 08/17/2010 10:47 AM, Michael Guntsche wrote:
+> First, I am just an end user so I have no access to the datasheets etc. I
+> just got the code from the board manufactrurer (2.6.27) and forward
+> port it to recent kernels.
 
-The reason I am using a specific layout is because the bootloader on
-this board expects it this way. It formats it this way in the beginning
-and I cannot change that. 
+I see. No problem. We'll work with what you can do:
 
+If you can simply find the NAND chip part number (it would be printed on 
+the chip itself), that will be helpful.
 
-> Could you send the full NAND ID string (8 bytes, not
-If you can tell me where I can find that I'll be more than happy to send
-it to you. But as I said I think the reason for this is this special
-bootloader.
+Also, there are a few things you can do under a working kernel (e.g., 
+2.6.35?).
 
-Please tell me, if you need more informations.
+First, have you ever used any of the mtdutils? In particular, running 
+the command "mtdinfo -a" and sending the output is helpful if you have 
+the utility installed on your board.
 
+Second, since you are doing the forward-porting, I assume you can do a 
+little bit of coding/patching. To print the whole ID string, you can add 
+a simple "printk" line to the code in "drivers/mtd/nand/nand_base.c". 
+For example, on the 2.6.35 kernel, you can just apply the patch below. 
+Then, on boot, the ID string will print (or at least show up in "dmesg" 
+or "syslog"). That info can help a little.
 
-Kind regards,
-Michael
+> The reason I am using a specific layout is because the bootloader on
+> this board expects it this way. It formats it this way in the beginning
+> and I cannot change that.
+
+Well, if the new commit that broke your board is getting the block 
+marker *correct* according to the factory specifications, then this 
+particular problem is your setup's problem; perhaps there could be a 
+workaround, like I mentioned about checking for these kind of conflicts. 
+However, I'm still hypothesizing that I simply got the detection wrong, 
+and so my fix will solve your problem.
+
+Thanks,
+Brian
+
+---
+  drivers/mtd/nand/nand_base.c |    4 +++-
+  1 files changed, 3 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 4a7b864..d2d1fab 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2809,8 +2809,10 @@ static struct nand_flash_dev 
+*nand_get_flash_type(struct mtd_info *mtd,
+
+  	/* Read entire ID string */
+
+-	for (i = 0; i < 8; i++)
++	for (i = 0; i < 8; i++) {
+  		id_data[i] = chip->read_byte(mtd);
++		printk(KERN_INFO "ID byte %i: %#x\n", i, id_data[i]);
++	}
+
+  	if (id_data[0] != *maf_id || id_data[1] != dev_id) {
+  		printk(KERN_INFO "%s: second ID read did not match "
+-- 
+1.7.0.4
