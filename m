@@ -1,22 +1,20 @@
-From: John Ogness <john.ogness@linutronix.de>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/3] mxc_nand: set spare size and pages per block
-References: <80r5i63dn4.fsf@merkur.tec.linutronix.de>
-	<20100810121912.GG27749@pengutronix.de>
-	<801va635f7.fsf@merkur.tec.linutronix.de>
-	<20100811125625.GS27749@pengutronix.de>
-	<80r5i5z3v1.fsf@merkur.tec.linutronix.de>
-	<20100816112837.GO27749@pengutronix.de>
-	<80zkwm69uv.fsf@merkur.tec.linutronix.de>
-	<20100817085406.GW27749@pengutronix.de>
-Date: Tue, 17 Aug 2010 19:02:02 +0200
-In-Reply-To: <20100817085406.GW27749@pengutronix.de> (Sascha Hauer's message
-	of "Tue, 17 Aug 2010 10:54:06 +0200")
-Message-ID: <801v9x41h1.fsf@merkur.tec.linutronix.de>
+Received: from lvps87-230-0-242.dedicated.hosteurope.de ([87.230.0.242])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OlQGM-0005F6-4A
+	for linux-mtd@lists.infradead.org; Tue, 17 Aug 2010 17:47:51 +0000
+Date: Tue, 17 Aug 2010 19:47:04 +0200
+From: Michael Guntsche <mike@it-loops.com>
+To: Brian Norris <norris@broadcom.com>
+Subject: Re: [BUG] Nand support broken with v2.6.36-rc1
+Message-ID: <20100817174704.GA1322@gibson.comsick.at>
+References: <20100817113644.GA31317@gibson.comsick.at>
+	<4C6AC037.7070205@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Ivo Clarysse <ivo.clarysse@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <4C6AC037.7070205@broadcom.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2010-08-17, Sascha Hauer <s.hauer@pengutronix.de> wrote:
-> The following changes since commit da5cabf80e2433131bf0ed8993abc0f7ea618c73:
->
->   Linux 2.6.36-rc1 (2010-08-15 17:41:37 -0700)
->
-> are available in the git repository at:
->   git://git.pengutronix.de/git/imx/linux-2.6.git mxc-nand-pu
->
-> John Ogness (2):
->       mxc_nand: Do not do byte accesses to the NFC buffer.
->       mxc_nand: remove unused variables.
->
-> Sascha Hauer (10):
->       mxc_nand: remove 0xe00 offset from registers
->       mxc_nand: rework get_dev_status
->       mxc_nand: make some internally used functions overwriteable
->       mxc_nand: factor out a check_int function
->       mxc_nand: add V1_V2 namespace to registers
->       mxc_nand: support 8bit ecc
->       mxc_nand: fix correct_data function
->       mxc_nand: Add v3 (i.MX51) Support
->       mxc_nand: do not depend on disabling the irq in the interrupt handler
->       mxc_nand: configure pages per block for v2 controller
->
->  drivers/mtd/nand/Kconfig    |    2 +-
->  drivers/mtd/nand/mxc_nand.c |  671 +++++++++++++++++++++++++++++++++----------
->  2 files changed, 521 insertions(+), 152 deletions(-)
+On 17 Aug 10 10:00, Brian Norris wrote:
+> One of the following two cases is likely the problem:
+> (1) Your chip is supposed to use offset 0, not 5, for the BBM (i.e.,
+> NAND_LARGE_BADBLOCK_POS, not NAND_SMALL_BADBLOCK_POS), and so your
+> ecclayout should not be leaving byte 0 in the "oobfree" array (a
+> design flaw since you first began using this chip)
 
-Acked-by: John Ogness <john.ogness@linutronix.de>
-Tested-by: John Ogness <john.ogness@linutronix.de>
+First, I am just an end user so I have no access to the datasheets etc. I
+just got the code from the board manufactrurer (2.6.27) and forward
+port it to recent kernels.
 
-I tested the driver with all the above changes on an i.MX35 with a
-16-bit NAND chip. The driver performed as expected.
+The reason I am using a specific layout is because the bootloader on
+this board expects it this way. It formats it this way in the beginning
+and I cannot change that. 
+
+
+> Could you send the full NAND ID string (8 bytes, not
+If you can tell me where I can find that I'll be more than happy to send
+it to you. But as I said I think the reason for this is this special
+bootloader.
+
+Please tell me, if you need more informations.
+
+
+Kind regards,
+Michael
