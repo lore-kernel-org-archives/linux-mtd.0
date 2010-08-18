@@ -1,16 +1,17 @@
-Subject: Re: [PATCH 01/06] pxa3xx_nand: update ns2cycle calculation method
-From: David Woodhouse <dwmw2@infradead.org>
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-In-Reply-To: <AANLkTikzdVAwOZcLhgHsDQGNhW4_-420XodbxSUmfDRW@mail.gmail.com>
-References: <AANLkTikzdVAwOZcLhgHsDQGNhW4_-420XodbxSUmfDRW@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 18 Aug 2010 13:30:53 +0100
-Message-ID: <1282134653.13405.15.camel@localhost>
-Mime-Version: 1.0
+Received: from ussvlmgty02.spansion.com ([12.151.36.113])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OliIU-0004sL-Jz
+	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2010 13:03:15 +0000
+Message-ID: <4C6BDA0E.2080404@spansion.com>
+Date: Wed, 18 Aug 2010 15:03:10 +0200
+From: Gernot Hoyler <Gernot.Hoyler@spansion.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: Re: [PATCH] mtd/nand: Spansion S30MLxxxP support
+References: <1281652958-2354-1-git-send-email-norris@broadcom.com>
+In-Reply-To: <1281652958-2354-1-git-send-email-norris@broadcom.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Eric Miao <eric.y.miao@gmail.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-08-17 at 13:29 +0100, Haojian Zhuang wrote:
-> From 9064b2c877cad560fda7577564b3369c0025b7df Mon Sep 17 00:00:00 2001
-> From: Lei Wen <leiwen@marvell.com>
-> Date: Tue, 17 Aug 2010 17:24:06 +0800
-> Subject: [PATCH 01/06] pxa3xx_nand: update ns2cycle calculation method
-> 
-> For the original method change from plus 1 to minus 1,
-> this way make the default timing like tCS become 0 after calculation,
-> although we set the timing as 0xa...
-> 
-> Change the method to no plus and minus, and make the result
-> closer to what the timing specified in the NAND chip spec.
-> 
-> Signed-off-by: Lei Wen <leiwen@marvell.com>
+ > Note that I am unsure about the wraparound nature of the ID string
+ > here. I have not been able to fully test this with the physical chip.
+ > Essentially, the rule is correct, but the ID string detection may fail
+ > here. Let me know if anyone can fix this.
 
-I have an identical patch queued for -stable and 2.6.36 already, from
-Axel Lin (but with a slightly better changelog).
+I have just tested this on a physical device (S30ML512P30TFE51).
+Unfortunately, the extended device IDs are a little bit different so
+the patch does not work yet. With a S30ML512P30TFE51, the device IDs
+are as follows:
 
-I'll add your signed-off-by to that and send it on today.
+   id_data[0]=0x01
+   id_data[1]=0x56
+   id_data[2]=0x00
+   id_data[3]=0x01
+   id_data[4]=0x10
+   id_data[5]=0x00
+   id_data[6]=0x00
+   id_data[7]=0x00
 
-The other five I'll apply to the mtd-2.6.git on top, once I have Eric's
-ack.
+My suggestion would be to check the page size instead of the extended
+IDs (seems like the patch applies to all Spansion S30ML devices with
+small pages, i.e. 512 bytes). So you might write:
 
-Thanks.
++		if (*maf_id == NAND_MFR_AMD && type->pagesize == 512) {
+...
 
-By the way, please could you use my dwmw2@infradead.org address instead
-of @intel.com -- the latter has taken to corrupting incoming mail again,
-and they're being extremely slow to fix it.
-
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+This works for me.
