@@ -1,13 +1,13 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oln30-0003m1-3D
-	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2010 18:07:35 +0000
+	id 1Oln35-0003nz-3d
+	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2010 18:07:42 +0000
 From: "Brian Norris" <norris@broadcom.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 1/2] mtd: nand: Expand nand_ecc_layout, deprecate
+Subject: [PATCH v2 2/2] mtd: nand: Expand nand_ecc_layout, deprecate
 	ioctl ECCGETLAYOUT
-Date: Wed, 18 Aug 2010 11:06:45 -0700
-Message-ID: <1282154806-9420-2-git-send-email-norris@broadcom.com>
+Date: Wed, 18 Aug 2010 11:06:46 -0700
+Message-ID: <1282154806-9420-3-git-send-email-norris@broadcom.com>
 In-Reply-To: <4C5CA4A1.1040000@broadcom.com>
 References: <4C5CA4A1.1040000@broadcom.com>
 MIME-Version: 1.0
