@@ -1,12 +1,20 @@
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OlkpL-0006Zh-B7
+	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2010 15:45:21 +0000
+In-Reply-To: <201008181401.15328.florian@openwrt.org>
+References: <201008181401.15328.florian@openwrt.org>
+Subject: Re: [PATCH 3/4 v2] lib: add crc16_le helper
+To: Florian Fainelli <florian@openwrt.org>
+Message-ID: <OF455F8776.C288C2AE-ONC1257783.0055D496-C1257783.00566B4E@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Wed, 18 Aug 2010 17:43:55 +0200
 MIME-Version: 1.0
-Date: Wed, 18 Aug 2010 22:36:24 +0800
-Message-ID: <AANLkTikngmRrF35E66NN2cOfgHf1kc0QY6h+40k9mUxT@mail.gmail.com>
-Subject: [PATCH 5/5] pxa3xx_nand: set oob length in the runtime
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
-To: Eric Miao <eric.y.miao@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-	linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-type: text/plain; charset=US-ASCII
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	linux-mtd@lists.infradead.org, Maxime Bizon <mbizon@freebox.fr>,
+	David Woodhouse <dwmw2@infradead.org>, Brian Norris <norris@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,104 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 85d8cdc6774445d3ec7842de5227e9798f13efa3 Mon Sep 17 00:00:00 2001
-From: Lei Wen <leiwen@marvell.com>
-Date: Tue, 17 Aug 2010 14:09:30 +0800
-Subject: [PATCH 5/5] pxa3xx_nand: set oob length in the runtime
+>
+> This patch adds a crc16_le helper function to lib/crc16.c
+>
+> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
+> Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
+> --
+> diff --git a/include/linux/crc16.h b/include/linux/crc16.h
+> index 9443c08..6c1c61f 100644
+> --- a/include/linux/crc16.h
+> +++ b/include/linux/crc16.h
+> @@ -26,5 +26,7 @@ static inline u16 crc16_byte(u16 crc, const u8 data)
+>     return (crc >> 8) ^ crc16_table[(crc ^ data) & 0xff];
+>  }
+>
+> +extern u16 crc16_le(u16 crc, const u8 *buffer, size_t len);
+> +
+>  #endif /* __CRC16_H */
+>
+> diff --git a/lib/crc16.c b/lib/crc16.c
+> index 8737b08..ec4a95c 100644
+> --- a/lib/crc16.c
+> +++ b/lib/crc16.c
+> @@ -62,6 +62,18 @@ u16 crc16(u16 crc, u8 const *buffer, size_t len)
+>  }
+>  EXPORT_SYMBOL(crc16);
+>
+> +u16 crc16_le(u16 crc, u8 const *p, size_t len)
+> +{
+> +   int i;
+> +   while (len--) {
+> +      crc ^= *p++ << 8;
+> +      for (i = 0; i < 8; i++)
+> +         crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);
+> +   }
+> +   return crc;
+> +}
+> +EXPORT_SYMBOL(crc16_le);
+> +
+>  MODULE_DESCRIPTION("CRC16 calculations");
+>  MODULE_LICENSE("GPL");
 
-For different command need different oob requirement, set the proper
-oob length by different cmd.
+Don't recall much of my earlier crc32 work but the above looks wrong.
+crc & 0x8000 suggests this is a big endian crc. if so, 0x8005 looks
+wrong too. see CRCPOLY_LE resp. CRCPOLY_BE for an idea.
+What is this crc sum used for?
 
-Signed-off-by: Lei Wen <leiwen@marvell.com>
----
- drivers/mtd/nand/pxa3xx_nand.c |   25 ++++++++++++++++++-------
- 1 files changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index dce9407..5d24968 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -273,13 +273,20 @@ static int wait_for_event(struct
-pxa3xx_nand_info *info, uint32_t event)
-
- static void pxa3xx_set_datasize(struct pxa3xx_nand_info *info)
- {
--	/* calculate data size */
-+	int oob_enable = info->reg_ndcr & NDCR_SPARE_EN;
-+
-+	info->data_size = info->page_size;
-+	if (!oob_enable) {
-+		info->oob_size = 0;
-+		return;
-+	}
-+
- 	switch (info->page_size) {
- 	case 2048:
--		info->data_size = (info->use_ecc) ? 2088 : 2112;
-+		info->oob_size = (info->use_ecc) ? 40 : 64;
- 		break;
- 	case 512:
--		info->data_size = (info->use_ecc) ? 520 : 528;
-+		info->oob_size = (info->use_ecc) ? 8 : 16;
- 		break;
- 	}
- }
-@@ -333,6 +340,7 @@ static int prepare_other_cmd(struct
-pxa3xx_nand_info *info, uint16_t cmd)
- 	info->ndcb1 = 0;
- 	info->ndcb2 = 0;
-
-+	info->oob_size = 0;
- 	if (cmd == cmdset->read_id) {
- 		info->ndcb0 |= NDCB0_CMD_TYPE(3);
- 		info->data_size = 8;
-@@ -401,6 +409,9 @@ static int handle_data_pio(struct pxa3xx_nand_info *info)
- 	case STATE_PIO_WRITING:
- 		__raw_writesl(info->mmio_base + NDDB, info->data_buff,
- 				DIV_ROUND_UP(info->data_size, 4));
-+		if (info->oob_size > 0)
-+			__raw_writesl(info->mmio_base + NDDB, info->oob_buff,
-+					DIV_ROUND_UP(info->oob_size, 4));
-
- 		enable_int(info, NDSR_CS0_BBD | NDSR_CS0_CMDD);
-
-@@ -413,6 +424,9 @@ static int handle_data_pio(struct pxa3xx_nand_info *info)
- 	case STATE_PIO_READING:
- 		__raw_readsl(info->mmio_base + NDDB, info->data_buff,
- 				DIV_ROUND_UP(info->data_size, 4));
-+		if (info->oob_size > 0)
-+			__raw_readsl(info->mmio_base + NDDB, info->oob_buff,
-+					DIV_ROUND_UP(info->oob_size, 4));
- 		break;
- 	default:
- 		printk(KERN_ERR "%s: invalid state %d\n", __func__,
-@@ -427,7 +441,7 @@ static int handle_data_pio(struct pxa3xx_nand_info *info)
- static void start_data_dma(struct pxa3xx_nand_info *info, int dir_out)
- {
- 	struct pxa_dma_desc *desc = info->data_desc;
--	int dma_len = ALIGN(info->data_size, 32);
-+	int dma_len = ALIGN(info->data_size + info->oob_size, 32);
-
- 	desc->ddadr = DDADR_STOP;
- 	desc->dcmd = DCMD_ENDIRQEN | DCMD_WIDTH4 | DCMD_BURST32 | dma_len;
-@@ -833,7 +847,6 @@ static int pxa3xx_nand_config_flash(struct
-pxa3xx_nand_info *info,
- 	info->cmdset = f->cmdset;
- 	info->page_size = f->page_size;
- 	info->oob_buff = info->data_buff + f->page_size;
--	info->oob_size = (f->page_size == 2048) ? 64 : 16;
- 	info->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
-
- 	/* calculate addressing information */
-@@ -892,8 +905,6 @@ static int pxa3xx_nand_detect_config(struct
-pxa3xx_nand_info *info)
- 	i = __ffs(page_per_block * info->page_size);
- 	num_blocks = type->chipsize << (20 - i);
-
--	info->oob_size = (info->page_size == 2048) ? 64 : 16;
--
- 	/* calculate addressing information */
- 	info->col_addr_cycles = (info->page_size == 2048) ? 2 : 1;
-
--- 
-1.7.0.4
+       Jocke
