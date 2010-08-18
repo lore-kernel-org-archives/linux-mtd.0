@@ -1,25 +1,24 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OlhLe-0005Y7-0A
-	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2010 12:02:26 +0000
-Received: by wwe15 with SMTP id 15so707213wwe.18
+	id 1OlhLf-0005Ye-6L
+	for linux-mtd@lists.infradead.org; Wed, 18 Aug 2010 12:02:28 +0000
+Received: by ewy9 with SMTP id 9so277150ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 18 Aug 2010 05:02:24 -0700 (PDT)
+	Wed, 18 Aug 2010 05:02:26 -0700 (PDT)
 Sender: Florian Fainelli <f.fainelli@gmail.com>
 From: Florian Fainelli <florian@openwrt.org>
-Date: Wed, 18 Aug 2010 14:01:12 +0200
-Subject: [PATCH 2/4 v2] NAND: denali should also handle NAND_CMD_PARAM
+Date: Wed, 18 Aug 2010 14:01:15 +0200
+Subject: [PATCH 3/4 v2] lib: add crc16_le helper
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>,
+	Brian Norris <norris@broadcom.com>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Maxime Bizon <mbizon@freebox.fr>
 Content-Type: text/plain;
   charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <201008181401.12945.florian@openwrt.org>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	"Chuanxiao.Dong" <chuanxiao.dong@intel.com>,
-	Maxime Bizon <mbizon@freebox.fr>, David Woodhouse <dwmw2@infradead.org>,
-	Brian Norris <norris@broadcom.com>
+Message-Id: <201008181401.15328.florian@openwrt.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This patch adds a crc16_le helper function to lib/crc16.c
 
+Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
 Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
----
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 532fe07..8c8d3c8 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1292,6 +1292,7 @@ static void denali_cmdfunc(struct mtd_info *mtd, unsigned int cmd, int col,
- 		read_status(denali);
- 		break;
- 	case NAND_CMD_READID:
-+	case NAND_CMD_PARAM:
- 		reset_buf(denali);
- 		/*sometimes ManufactureId read from register is not right
- 		 * e.g. some of Micron MT29F32G08QAA MLC NAND chips
+--
+diff --git a/include/linux/crc16.h b/include/linux/crc16.h
+index 9443c08..6c1c61f 100644
+--- a/include/linux/crc16.h
++++ b/include/linux/crc16.h
+@@ -26,5 +26,7 @@ static inline u16 crc16_byte(u16 crc, const u8 data)
+ 	return (crc >> 8) ^ crc16_table[(crc ^ data) & 0xff];
+ }
+ 
++extern u16 crc16_le(u16 crc, const u8 *buffer, size_t len);
++
+ #endif /* __CRC16_H */
+ 
+diff --git a/lib/crc16.c b/lib/crc16.c
+index 8737b08..ec4a95c 100644
+--- a/lib/crc16.c
++++ b/lib/crc16.c
+@@ -62,6 +62,18 @@ u16 crc16(u16 crc, u8 const *buffer, size_t len)
+ }
+ EXPORT_SYMBOL(crc16);
+ 
++u16 crc16_le(u16 crc, u8 const *p, size_t len)
++{
++	int i;
++	while (len--) {
++		crc ^= *p++ << 8;
++		for (i = 0; i < 8; i++)
++			crc = (crc << 1) ^ ((crc & 0x8000) ? 0x8005 : 0);
++	}
++	return crc;
++}
++EXPORT_SYMBOL(crc16_le);
++
+ MODULE_DESCRIPTION("CRC16 calculations");
+ MODULE_LICENSE("GPL");
+ 
