@@ -1,19 +1,19 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from code-monkey.de ([88.198.45.137])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Om6lz-0006hS-F0
-	for linux-mtd@lists.infradead.org; Thu, 19 Aug 2010 15:11:21 +0000
-From: "Brian Norris" <norris@broadcom.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd/nand: Spansion S30MLxxxP support
-Date: Thu, 19 Aug 2010 08:11:02 -0700
-Message-ID: <1282230662-25388-1-git-send-email-norris@broadcom.com>
-In-Reply-To: <4C6BDA0E.2080404@spansion.com>
+	id 1Om8is-0007vF-0P
+	for linux-mtd@lists.infradead.org; Thu, 19 Aug 2010 17:16:15 +0000
+Date: Thu, 19 Aug 2010 19:16:11 +0200
+From: Tilman Sauerbeck <tilman@code-monkey.de>
+To: Brian Norris <norris@broadcom.com>
+Subject: Re: Bad assumption about ID field definition for Samsung NAND?
+Message-ID: <20100819171558.GA8536@code-monkey.de>
+References: <20100818180538.GA12238@code-monkey.de>
+	<4C6C6BFC.9020408@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: gernot.hoyler@spansion.com, Kevin Cernekee <cernekee@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, Brian Norris <norris@broadcom.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4C6C6BFC.9020408@broadcom.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for the help, I will add that.
+Brian Norris [2010-08-18 16:25]:
 
-I also don't know how I got confused thinking that the ID trails with
-0x01 instead of 0x00. I think the following patch is a little more
-robust. We need to be sure that chips don't accidentally get
-misdetected as ORNAND.
+Hi,
 
-Brian
+> I have similar problems on similar chips, however, I cannot
+> determine that for sure; can you print out the full ID string (8
+> bytes) from nand_base?
 
----------------------------------------------------------------------
+ID: ec dc 10 95 54 ec ec dc
 
-Some Spansion chips have a method for determining eraseblock size that
-is incompatible with similar ID chips of other sizes. This implements
-some heuristic detection of these differences.
+> This may be an issue with an unfortunate wraparound of the ID where
+> it *should* give a 5-byte string, then wraparound to give the same
+> ID again, but instead it gives a 6-byte string, then wraps around
+> again. This would incorrectly classify this ID string under the
 
-This patch checks for a 5-byte ID with trailing zeros as well as a
-512-byte page size to ensure that chips are not misdetected as the
-S30MLxxxP ORNAND series.
+I think I might have found the real problem.
+Kevin's commit message says:
 
-Signed-off-by: Brian Norris <norris@broadcom.com>
----
- drivers/mtd/nand/nand_base.c |   12 ++++++++++++
- 1 files changed, 12 insertions(+), 0 deletions(-)
+>   This patch uses the new 6-byte scheme if the following conditions are
+>   all true:
+>   [...]
+>   3) 6th byte is zero
+
+... but what the code does is use new scheme if id_data[5] is _not_
+zero.
+
+The following diff works for me, but I cannot test with any other flash
+chip but the K9F4G08U0B:
 
 diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a3c7473..8bdcf64 100644
+index 4a7b864..abc71cd 100644
 --- a/drivers/mtd/nand/nand_base.c
 +++ b/drivers/mtd/nand/nand_base.c
-@@ -2899,6 +2899,18 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
- 		mtd->writesize = type->pagesize;
- 		mtd->oobsize = mtd->writesize / 32;
- 		busw = type->options & NAND_BUSWIDTH_16;
-+
-+		/*
-+		 * Check for Spansion/AMD ID + repeating 5th, 6th byte since
-+		 * some Spansion chips have erasesize that conflicts with size
-+		 * listed in nand_ids table
-+		 * Data sheet (5 byte ID): Spansion S30ML-P ORNAND (p.39)
-+		 */
-+		if (*maf_id == NAND_MFR_AMD && id_data[4] != 0x00 &&
-+				id_data[5] == 0x00 && id_data[6] == 0x00 &&
-+				id_data[7] == 0x00 && mtd->writesize == 512)
-+			mtd->erasesize = (128 * 1024) << ((id_data[3] & 0x03)
-+					<< 1);
- 	}
- 
- 	/* Try to identify manufacturer */
+@@ -2847,12 +2847,12 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+                 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
+                 * New style   (6 byte ID): Samsung K9GAG08U0D (p.40)
+                 *
+-                * Check for wraparound + Samsung ID + nonzero 6th byte
++                * Check for wraparound + Samsung ID + zero 6th byte
+                 * to decide what to do.
+                 */
+                if (id_data[0] == id_data[6] && id_data[1] == id_data[7] &&
+                                id_data[0] == NAND_MFR_SAMSUNG &&
+-                               id_data[5] != 0x00) {
++                               id_data[5] == 0x00) {
+                        /* Calc pagesize */
+                        mtd->writesize = 2048 << (extid & 0x03);
+                        extid >>= 2;
+
+Thanks,
+Tilman
+
 -- 
-1.7.0.4
+A: Because it messes up the order in which people normally read text.
+Q: Why is top-posting such a bad thing?
+A: Top-posting.
+Q: What is the most annoying thing on usenet and in e-mail?
