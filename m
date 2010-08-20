@@ -1,21 +1,13 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from sand.ocn.ne.jp ([122.28.30.136] helo=smtp.sand.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OmMM1-0005IX-7U
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 07:49:43 +0000
-From: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Fri, 20 Aug 2010 15:49:23 +0800
-Subject: RE: [PATCH v2 2/6]nand/denali: Add bad block management for MRST
-Message-ID: <5D8008F58939784290FAB48F54975198211C529047@shsmsx502.ccr.corp.intel.com>
-References: <20100812105117.GB11634@intel.com>
-	<1281611668.12475.67.camel@localhost>
-In-Reply-To: <1281611668.12475.67.camel@localhost>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "Roberts, Jason E" <jason.e.roberts@intel.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1OmMhL-0007no-E6
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 08:11:36 +0000
+From: Jon Povey <jon.povey@racelogic.co.uk>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] nanddump: Fix hexdump nybble ordering
+Date: Fri, 20 Aug 2010 17:11:19 +0900
+Message-Id: <1282291879-28754-1-git-send-email-jon.povey@racelogic.co.uk>
+Cc: Jon Povey <jon.povey@racelogic.co.uk>, Brian Norris <norris@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +17,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgRGF2aWQNCkRvIHlvdSBoYXZlIGFueSBjb21tZW50IGFib3V0IHRoZXNlIDYgcGF0Y2hlcz8N
-CklzIHRoZXJlIGFueSB1cGRhdGU/DQoNClRoYW5rcw0KLS1DaHVhbnhpYW8NCg0KPiAtLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYXZpZCBXb29kaG91c2UgW21haWx0bzpkd213
-MkBpbmZyYWRlYWQub3JnXQ0KPiBTZW50OiBUaHVyc2RheSwgQXVndXN0IDEyLCAyMDEwIDc6MTQg
-UE0NCj4gVG86IERvbmcsIENodWFueGlhbw0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVh
-ZC5vcmc7IFJvYmVydHMsIEphc29uIEUNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAyLzZdbmFu
-ZC9kZW5hbGk6IEFkZCBiYWQgYmxvY2sgbWFuYWdlbWVudCBmb3IgTVJTVA0KPiANCj4gT24gVGh1
-LCAyMDEwLTA4LTEyIGF0IDE4OjUxICswODAwLCBDaHVhbnhpYW8uRG9uZyB3cm90ZToNCj4gPg0K
-PiA+ICtjaG9pY2UNCj4gPiArICAgICAgIHByb21wdCAiQ29tcGlsZSBmb3IiDQo+ID4gKyAgICAg
-ICBkZXBlbmRzIG9uIE1URF9OQU5EX0RFTkFMSQ0KPiA+ICsgICAgICAgZGVmYXVsdCBNUlNUX05B
-TkRfQ09OVFJPTExFUg0KPiA+ICsNCj4gPiArY29uZmlnIE1SU1RfTkFORF9DT05UUk9MTEVSDQo+
-ID4gKyAgICAgICBib29sICJNUlNUIE5BTkQgY29udHJvbGxlciINCj4gPiArICAgICAgIGhlbHAN
-Cj4gPiArDQo+ID4gK2NvbmZpZyBDRTQxMDBfTkFORF9DT05UUk9MTEVSDQo+ID4gKyAgICAgICBi
-b29sICJDRTQxMDAgTkFORCBjb250cm9sbGVyIg0KPiA+ICsgICAgICAgaGVscA0KPiA+ICsNCj4g
-PiArZW5kY2hvaWNlDQo+IA0KPiANCj4gSG0sIEkgZG9uJ3QgbGlrZSB0aGlzIG11Y2ggLS0gd2Ug
-b3VnaHQgdG8gYmUgYWJsZSB0byBjb21waWxlIGEgZ2VuZXJpYw0KPiBrZXJuZWwgd2hpY2ggd2ls
-bCBzdXBwb3J0ICpib3RoKiBNUlNUIGFuZCBDRTQxMDAuDQo+IA0KPiAoQWN0dWFsbHksIHdlICpj
-YW4qIC0tIHlvdSBkb24ndCB1c2UgdGhlc2Ugb3B0aW9ucyBhbnl3aGVyZSAoeWV0PykNCj4gZXhj
-ZXB0IGFzIGEgZ2F0ZXdheSB0byBsZXR0aW5nIHVzIHNldCB0aGUgQkJUX0JMT0NLTlVNIHZhbHVl
-Lg0KPiANCj4gSXQgbWF5IGFsc28gYmUgd29ydGggc3dpdGNoaW5nIENFNDEwMCB0byB1c2UgdGhl
-IHNhbWUgQkJUIHNjaGVtZSBhcw0KPiB5b3UncmUgdXNpbmcgaW4gTVJTVCAtLSBkb24ndCBhbGwg
-dGhlIHNhbWUgYXJndW1lbnRzIGFwcGx5IHRoZXJlPw0KPiANCj4gSSdtIGd1ZXNzaW5nIHRoYXQg
-eW91IGRpZG4ndCBjaGFuZ2UgQ0U0MTAwIGp1c3QgYmVjYXVzZSB5b3Ugd2FudCB0bw0KPiByZXRh
-aW4gb24tbWVkaXVtIGNvbXBhdGliaWxpdHk/IExldCdzIGFzayBKYXNvbiAtLSBJIHN1c3BlY3Qg
-aXQgd291bGQgYmUNCj4gT0sgdG8gY2hhbmdlLi4uDQo+IA0KPiBJJ20gYWxzbyBzb21ld2hhdCBk
-dWJpb3VzIGFib3V0IHRoZSB3YXkgd2UgYWJhbmRvbiB0aGUgQkJUIHdoZW4gd2UncmUNCj4gZ29p
-bmcgdG8gdXNlIFNwZWN0cmEgLS0gYW5kIGVzcGVjaWFsbHkgdGhlIHVzZSBvZiB0aGUgc2NyYXRj
-aCByZWdpc3Rlci4NCj4gQ2FuJ3Qgd2UgcHV0IHRoYXQgaW5mb3JtYXRpb24gaW50byBQQ0kgY29u
-ZmlnIHNwYWNlIGlmIHdlIHJlYWxseSBtdXN0DQo+IGhhdmUgaXQ/IEknbGwgbG9vayBvdmVyIHRo
-YXQgaW4gbW9yZSBkZXRhaWwuLi4NCj4gDQo+IA0KPiAtLQ0KPiBEYXZpZCBXb29kaG91c2UgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgT3BlbiBTb3VyY2UgVGVjaG5vbG9neQ0KPiBDZW50cmUN
-Cj4gRGF2aWQuV29vZGhvdXNlQGludGVsLmNvbSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IEludGVsDQo+IENvcnBvcmF0aW9uDQoNCg==
+Hex dumps were being printed with the nybbles reversed since
+commit 6ff458433ba15b8a7cb258ce64e64e98982df26e
+Fix.
+
+Signed-off-by: Jon Povey <jon.povey@racelogic.co.uk>
+CC: Brian Norris <norris@broadcom.com>
+---
+ nanddump.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/nanddump.c b/nanddump.c
+index acfdb33..22fec5f 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -239,8 +239,8 @@ static void pretty_dump_to_buffer(const unsigned char *buf, size_t len,
+ 
+ 	for (j = 0; (j < len) && (lx + 3) <= linebuflen; j++) {
+ 		ch = buf[j];
+-		linebuf[lx++] = hex_asc[ch & 0x0f];
+ 		linebuf[lx++] = hex_asc[(ch & 0xf0) >> 4];
++		linebuf[lx++] = hex_asc[ch & 0x0f];
+ 		linebuf[lx++] = ' ';
+ 	}
+ 	if (j)
+-- 
+1.6.3.3
