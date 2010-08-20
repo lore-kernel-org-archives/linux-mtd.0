@@ -1,25 +1,21 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
+Received: from mga01.intel.com ([192.55.52.88])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OmLyp-00049D-Ky
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 07:25:37 +0000
-From: Florian Fainelli <ffainelli@freebox.fr>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Subject: Re: [PATCH 3/4 v2] lib: add crc16_le helper
-Date: Fri, 20 Aug 2010 09:24:17 +0200
-References: <201008181401.15328.florian@openwrt.org>
-	<4C6CE079.7040002@parrot.com>
-	<OF0B6D7B9E.AB4F71B7-ONC1257784.0033173C-C1257784.003536A4@transmode.se>
-In-Reply-To: <OF0B6D7B9E.AB4F71B7-ONC1257784.0033173C-C1257784.003536A4@transmode.se>
+	id 1OmMM1-0005IX-7U
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 07:49:43 +0000
+From: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Date: Fri, 20 Aug 2010 15:49:23 +0800
+Subject: RE: [PATCH v2 2/6]nand/denali: Add bad block management for MRST
+Message-ID: <5D8008F58939784290FAB48F54975198211C529047@shsmsx502.ccr.corp.intel.com>
+References: <20100812105117.GB11634@intel.com>
+	<1281611668.12475.67.camel@localhost>
+In-Reply-To: <1281611668.12475.67.camel@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201008200924.17691.ffainelli@freebox.fr>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Maxime Bizon <mbizon@freebox.fr>, David Woodhouse <dwmw2@infradead.org>,
-	Brian Norris <norris@broadcom.com>
+Cc: "Roberts, Jason E" <jason.e.roberts@intel.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,81 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Joakim,
-
-On Thursday 19 August 2010 11:41:13 Joakim Tjernlund wrote:
-> Matthieu CASTET <matthieu.castet@parrot.com> wrote on 2010/08/19 09:42:49:
-> > Hi,
-> >=20
-> > Joakim Tjernlund a =E9crit :
-> > > Matthieu CASTET <matthieu.castet@parrot.com> wrote on 2010/08/18=20
-18:10:11:
-> > >>> if so, 0x8005 looks
-> > >>> wrong too. see CRCPOLY_LE resp. CRCPOLY_BE for an idea.
-> > >>=20
-> > >> Why ?
-> > >=20
-> > > Because changing endian of crc also require the POLY
-> > >=20
-> > > to be bit reversed as well. See:
-> > >  #define CRCPOLY_LE 0xedb88320
-> > >  #define CRCPOLY_BE 0x04c11db7
-> > >=20
-> > > So I assume you need to do that as well for crc16_be, otherwise it
-> > > won't be a BE version of the standard crc16 LE
-> >=20
-> > Well it match the crc provided in onfi nand [1]. But it may be not a
-> > real BE version.
-> >=20
-> > >>> What is this crc sum used for?
-> > >>=20
-> > >> Onfi flash parsing in mtd.
-> > >=20
-> > > And this is a one time operation of fairly small amount of
-> > > data? I ask because you impl. is really slow.
-> >=20
-> > Yes it checks only 253 bytes at startup time (one time only). So it is
-> > not speed critical.
->=20
-> OK.
->=20
-> > > Why can't you use the crc16 LE version?
-> >=20
-> > Because it doesn't compute the crc provided by onfi spec. Or is there
-> > some magic maths to convert LE version to our version ?
->=20
-> I suspect the onfi spec got it wrong and isn't computing a real
-> crc16_be. I suggest you rename this to onfi_crc16_be and move it
-> inside the onfi subsystem. I supposed you are stuck with
-> the onfi version?
-
-I thought we could somehow genericize this version of the crc16, but you ar=
-e=20
-right, we cannot, so let's put it back to the mtd subsystem where it is use=
-d.
-
-Thanks for your comments.
-
-> Just for the record, I think the crc16_be should be like this:
->=20
-> u16 crc16_le(u16 crc, u8 const *p, size_t len)
-> {
->    int i;
->    while (len--) {
->       crc ^=3D *p++ << 8;
->       i =3D 8;
->       do {
->          crc =3D (crc << 1) ^ ((crc & 0x8000) ? 0xa001 : 0);
->       } while(--i);
->    }
->    return crc;
-> }
->=20
-> Don't know of an easy way to go between LE and BE versions but
-> have a look at lib/crc32.c, there is a unit test in there
-> that suggests that on can byte reverse the data to go between
-> LE and BE.
-
-Ok, I will give it a try.
-=2D-
-=46lorian
+SGkgRGF2aWQNCkRvIHlvdSBoYXZlIGFueSBjb21tZW50IGFib3V0IHRoZXNlIDYgcGF0Y2hlcz8N
+CklzIHRoZXJlIGFueSB1cGRhdGU/DQoNClRoYW5rcw0KLS1DaHVhbnhpYW8NCg0KPiAtLS0tLU9y
+aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBEYXZpZCBXb29kaG91c2UgW21haWx0bzpkd213
+MkBpbmZyYWRlYWQub3JnXQ0KPiBTZW50OiBUaHVyc2RheSwgQXVndXN0IDEyLCAyMDEwIDc6MTQg
+UE0NCj4gVG86IERvbmcsIENodWFueGlhbw0KPiBDYzogbGludXgtbXRkQGxpc3RzLmluZnJhZGVh
+ZC5vcmc7IFJvYmVydHMsIEphc29uIEUNCj4gU3ViamVjdDogUmU6IFtQQVRDSCB2MiAyLzZdbmFu
+ZC9kZW5hbGk6IEFkZCBiYWQgYmxvY2sgbWFuYWdlbWVudCBmb3IgTVJTVA0KPiANCj4gT24gVGh1
+LCAyMDEwLTA4LTEyIGF0IDE4OjUxICswODAwLCBDaHVhbnhpYW8uRG9uZyB3cm90ZToNCj4gPg0K
+PiA+ICtjaG9pY2UNCj4gPiArICAgICAgIHByb21wdCAiQ29tcGlsZSBmb3IiDQo+ID4gKyAgICAg
+ICBkZXBlbmRzIG9uIE1URF9OQU5EX0RFTkFMSQ0KPiA+ICsgICAgICAgZGVmYXVsdCBNUlNUX05B
+TkRfQ09OVFJPTExFUg0KPiA+ICsNCj4gPiArY29uZmlnIE1SU1RfTkFORF9DT05UUk9MTEVSDQo+
+ID4gKyAgICAgICBib29sICJNUlNUIE5BTkQgY29udHJvbGxlciINCj4gPiArICAgICAgIGhlbHAN
+Cj4gPiArDQo+ID4gK2NvbmZpZyBDRTQxMDBfTkFORF9DT05UUk9MTEVSDQo+ID4gKyAgICAgICBi
+b29sICJDRTQxMDAgTkFORCBjb250cm9sbGVyIg0KPiA+ICsgICAgICAgaGVscA0KPiA+ICsNCj4g
+PiArZW5kY2hvaWNlDQo+IA0KPiANCj4gSG0sIEkgZG9uJ3QgbGlrZSB0aGlzIG11Y2ggLS0gd2Ug
+b3VnaHQgdG8gYmUgYWJsZSB0byBjb21waWxlIGEgZ2VuZXJpYw0KPiBrZXJuZWwgd2hpY2ggd2ls
+bCBzdXBwb3J0ICpib3RoKiBNUlNUIGFuZCBDRTQxMDAuDQo+IA0KPiAoQWN0dWFsbHksIHdlICpj
+YW4qIC0tIHlvdSBkb24ndCB1c2UgdGhlc2Ugb3B0aW9ucyBhbnl3aGVyZSAoeWV0PykNCj4gZXhj
+ZXB0IGFzIGEgZ2F0ZXdheSB0byBsZXR0aW5nIHVzIHNldCB0aGUgQkJUX0JMT0NLTlVNIHZhbHVl
+Lg0KPiANCj4gSXQgbWF5IGFsc28gYmUgd29ydGggc3dpdGNoaW5nIENFNDEwMCB0byB1c2UgdGhl
+IHNhbWUgQkJUIHNjaGVtZSBhcw0KPiB5b3UncmUgdXNpbmcgaW4gTVJTVCAtLSBkb24ndCBhbGwg
+dGhlIHNhbWUgYXJndW1lbnRzIGFwcGx5IHRoZXJlPw0KPiANCj4gSSdtIGd1ZXNzaW5nIHRoYXQg
+eW91IGRpZG4ndCBjaGFuZ2UgQ0U0MTAwIGp1c3QgYmVjYXVzZSB5b3Ugd2FudCB0bw0KPiByZXRh
+aW4gb24tbWVkaXVtIGNvbXBhdGliaWxpdHk/IExldCdzIGFzayBKYXNvbiAtLSBJIHN1c3BlY3Qg
+aXQgd291bGQgYmUNCj4gT0sgdG8gY2hhbmdlLi4uDQo+IA0KPiBJJ20gYWxzbyBzb21ld2hhdCBk
+dWJpb3VzIGFib3V0IHRoZSB3YXkgd2UgYWJhbmRvbiB0aGUgQkJUIHdoZW4gd2UncmUNCj4gZ29p
+bmcgdG8gdXNlIFNwZWN0cmEgLS0gYW5kIGVzcGVjaWFsbHkgdGhlIHVzZSBvZiB0aGUgc2NyYXRj
+aCByZWdpc3Rlci4NCj4gQ2FuJ3Qgd2UgcHV0IHRoYXQgaW5mb3JtYXRpb24gaW50byBQQ0kgY29u
+ZmlnIHNwYWNlIGlmIHdlIHJlYWxseSBtdXN0DQo+IGhhdmUgaXQ/IEknbGwgbG9vayBvdmVyIHRo
+YXQgaW4gbW9yZSBkZXRhaWwuLi4NCj4gDQo+IA0KPiAtLQ0KPiBEYXZpZCBXb29kaG91c2UgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgT3BlbiBTb3VyY2UgVGVjaG5vbG9neQ0KPiBDZW50cmUN
+Cj4gRGF2aWQuV29vZGhvdXNlQGludGVsLmNvbSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IEludGVsDQo+IENvcnBvcmF0aW9uDQoNCg==
