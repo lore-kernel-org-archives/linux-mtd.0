@@ -1,26 +1,18 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
+Received: from mms3.broadcom.com ([216.31.210.19])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OmVcI-0007LS-U6
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 17:42:59 +0000
-Message-ID: <4C6EBE90.2090604@broadcom.com>
-Date: Fri, 20 Aug 2010 10:42:40 -0700
+	id 1OmVk5-0000uA-CD
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 17:51:02 +0000
 From: "Brian Norris" <norris@broadcom.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: nand: Samsung MLC - new OOB sizes
+Date: Fri, 20 Aug 2010 10:50:43 -0700
+Message-ID: <1282326643-9598-1-git-send-email-norris@broadcom.com>
 MIME-Version: 1.0
-To: "Tilman Sauerbeck" <tilman@code-monkey.de>
-Subject: Re: Bad assumption about ID field definition for Samsung NAND?
-References: <20100818180538.GA12238@code-monkey.de>
-	<4C6C6BFC.9020408@broadcom.com> <20100819171558.GA8536@code-monkey.de>
-	<AANLkTikiTX6US09pVu+uYm_U5=70WVbF+eH9wBtDeWKM@mail.gmail.com>
-	<4C6DAFFD.4040602@broadcom.com>
-	<AANLkTi=9RmDvzx-5n0UbnMUj2zMm41b1VA=PQqXK_Wgc@mail.gmail.com>
-	<20100820134316.GA437@code-monkey.de>
-In-Reply-To: <20100820134316.GA437@code-monkey.de>
-Content-Type: text/plain;
- charset=iso-8859-1;
- format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Cc: r64343@freescale.com, Kevin Cernekee <cernekee@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: tilman@code-monkey.de, Kevin Cernekee <cernekee@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>, Brian Norris <norris@broadcom.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/20/2010 06:43 AM, Tilman Sauerbeck wrote:
+There are some additions to the detection scheme used by Samsung
+MLC NAND. These simple changes to support the 400- and 436-byte OOB
+are found in the following data sheet:
 
-> Okay, how do we proceed? Should I send a proper patch with the diff
-> above? Or does anyone want to try and come up with a better fix...?
+Samsung K9GBG08U0M (p.40)
 
-I vote for Tilman's patch. There's nothing unnecessarily ugly about it; 
-it simply checks cell-type in order to decide whether we use Samsung's 
-new "standard" for MLC or fall-back to the real standard. If anything, 
-the existing code (checking ID length) is ugly. However, both checks 
-seem necessary.
+Signed-off-by: Brian Norris <norris@broadcom.com>
+---
+ drivers/mtd/nand/nand_base.c |   17 +++++++++++++++--
+ 1 files changed, 15 insertions(+), 2 deletions(-)
 
-Brian
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a3c7473..80ff671 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2859,7 +2859,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 		/*
+ 		 * Field definitions are in the following datasheets:
+ 		 * Old style (4,5 byte ID): Samsung K9GAG08U0M (p.32)
+-		 * New style   (6 byte ID): Samsung K9GAG08U0D (p.40)
++		 * New style   (6 byte ID): Samsung K9GBG08U0M (p.40)
+ 		 *
+ 		 * Check for wraparound + Samsung ID + nonzero 6th byte
+ 		 * to decide what to do.
+@@ -2871,7 +2871,20 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 			mtd->writesize = 2048 << (extid & 0x03);
+ 			extid >>= 2;
+ 			/* Calc oobsize */
+-			mtd->oobsize = (extid & 0x03) == 0x01 ? 128 : 218;
++			switch (extid & 0x03) {
++			case 1:
++				mtd->oobsize = 128;
++				break;
++			case 2:
++				mtd->oobsize = 218;
++				break;
++			case 3:
++				mtd->oobsize = 400;
++				break;
++			default:
++				mtd->oobsize = 436;
++				break;
++			}
+ 			extid >>= 2;
+ 			/* Calc blocksize */
+ 			mtd->erasesize = (128 * 1024) <<
+-- 
+1.7.0.4
