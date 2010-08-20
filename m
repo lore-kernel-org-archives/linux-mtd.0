@@ -1,25 +1,26 @@
-Received: from code-monkey.de ([88.198.45.137])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OmRsM-0008W2-IX
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 13:43:22 +0000
-Date: Fri, 20 Aug 2010 15:43:16 +0200
-From: Tilman Sauerbeck <tilman@code-monkey.de>
-To: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: Bad assumption about ID field definition for Samsung NAND?
-Message-ID: <20100820134316.GA437@code-monkey.de>
-References: <20100818180538.GA12238@code-monkey.de>
-	<4C6C6BFC.9020408@broadcom.com>
-	<20100819171558.GA8536@code-monkey.de>
-	<AANLkTikiTX6US09pVu+uYm_U5=70WVbF+eH9wBtDeWKM@mail.gmail.com>
-	<4C6DAFFD.4040602@broadcom.com>
-	<AANLkTi=9RmDvzx-5n0UbnMUj2zMm41b1VA=PQqXK_Wgc@mail.gmail.com>
+	id 1OmTK6-0002W6-Qz
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 15:16:04 +0000
+Message-ID: <4C6E9C23.6060703@broadcom.com>
+Date: Fri, 20 Aug 2010 08:15:47 -0700
+From: "Brian Norris" <norris@broadcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AANLkTi=9RmDvzx-5n0UbnMUj2zMm41b1VA=PQqXK_Wgc@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brian Norris <norris@broadcom.com>
+To: "Shinya Kuribayashi" <shinya.kuribayashi.px@renesas.com>
+Subject: Re: [PATCH v2 0/2] Deprecate ECCGETLAYOUT
+References: <4C5CA4A1.1040000@broadcom.com>
+	<1282154806-9420-1-git-send-email-norris@broadcom.com>
+	<4C6DD170.1060807@renesas.com>
+In-Reply-To: <4C6DD170.1060807@renesas.com>
+Content-Type: text/plain;
+ charset=iso-8859-1;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <dedekind1@gmail.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	Sneha Narnakaje <nsnehaprabha@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>, Brian Norris <norris@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,31 +30,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kevin Cernekee [2010-08-19 20:29]:
-> On Thu, Aug 19, 2010 at 3:28 PM, Brian Norris <norris@broadcom.com> wrote:
-> > On 08/19/2010 12:46 PM, Kevin Cernekee wrote:
-> >> @@ -2852,6 +2852,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
-> >>                  */
-> >>                 if (id_data[0] == id_data[6] && id_data[1] == id_data[7] &&
-> >>                                 id_data[0] == NAND_MFR_SAMSUNG &&
-> >> +                               (chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
-> >>                                 id_data[5] != 0x00) {
-> >>                         /* Calc pagesize */
-> >>                         mtd->writesize = 2048 << (extid & 0x03);
-> 
-> This looks OK (at least for K9GAG08U0D).
-> 
-> I wonder if Samsung could provide some firm guidelines for when to use
-> the old style vs. the new style.
+Hi,
 
-Okay, how do we proceed? Should I send a proper patch with the diff
-above? Or does anyone want to try and come up with a better fix...?
+Sorry for the problems. I will try to explain.
 
-Regards,
-Tilman
+On 08/19/2010 05:50 PM, Shinya Kuribayashi wrote:
+> [PATCH v3 1/2] mtd: Expand nand_ecc_layout, deprecate ioctl	ECCGETLAYOUT
+> [PATCH v3 2/2] (I can't find this in my inbox, by the way)
 
--- 
-A: Because it messes up the order in which people normally read text.
-Q: Why is top-posting such a bad thing?
-A: Top-posting.
-Q: What is the most annoying thing on usenet and in e-mail?
+There was no PATCH v3 2/2. See below.
+
+> I'd like to see the info about what's updated in v2, v3 when revised.
+
+The only difference is that I actually sent the correct patch :) Again, 
+I explain below.
+
+> By the way.
+>
+> On 8/19/2010 3:06 AM, Brian Norris wrote:
+>> Brian Norris (2):
+>>    mtd: nand: Expand nand_ecc_layout, deprecate ioctl ECCGETLAYOUT
+>>    mtd: nand: Expand nand_ecc_layout, deprecate ioctl ECCGETLAYOUT
+>
+> Two patches with the same title.  Similar symptom can be seen in your
+> latest v3 post (we can't find [PATCH v3 2/2]). Perhaps something weird
+> is in your repository (or git settings).
+
+No problem with git, just my inability to express my "2 independent 
+patch" problem properly.
+
+First, I sent my original patch 08/06/2010:
+[PATCH] mtd: Expand nand_ecc_layout, deprecate ioctl ECCGETLAYOUT
+
+Realizing this may not necessarily have been the *best* way to 
+accomplish my goal, I sent v2:
+[PATCH v2 1/2] mtd: nand: Expand...
+[PATCH v2 2/2] mtd: nand: Expand...
+
+These two patches were supposed to be two different, independent 
+approaches to the same task; with discussion over how best to do this, 
+we should settle on one of the two patches. I decided (for good or for 
+bad) that they didn't need a new title - they were essentially the same 
+code with a slight twist. However, instead of sending two different 
+patches, I sent the same one twice (my mistake).
+
+Finally, I sent v3 to include just the missing patch:
+[PATCH v3 1/2] mtd: Expand...
+
+I only included the missing patch and called it v3.
+
+So this leaves the important patch set as the following two independent, 
+slightly different approaches to the same problem; we should choose 
+between them:
+[PATCH v3 1/2] mtd: Expand...
+[PATCH v2 2/2] mtd: nand: Expand...
+
+Sorry if my naming, numbering, and failure of intelligence in sending 
+e-mail confused anyone. I can resend with distinct names and correct 
+numbering if requested.
+
+Thanks,
+Brian
