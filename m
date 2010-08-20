@@ -1,18 +1,19 @@
-Received: from p01c11o144.mxlogic.net ([208.65.144.67])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OmFUY-0006jY-Qf
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 00:29:56 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mtd/ubi: cleanup and simplify Kconfig
-Date: Thu, 19 Aug 2010 17:28:50 -0700
+Message-ID: <4C6DD170.1060807@renesas.com>
+Date: Fri, 20 Aug 2010 09:50:56 +0900
+From: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+To: Brian Norris <norris@broadcom.com>
+Subject: Re: [PATCH v2 0/2] Deprecate ECCGETLAYOUT
+References: <4C5CA4A1.1040000@broadcom.com>
+	<1282154806-9420-1-git-send-email-norris@broadcom.com>
+In-Reply-To: <1282154806-9420-1-git-send-email-norris@broadcom.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-ID: <201008191728.50871.hartleys@visionengravers.com>
-Cc: dwmw2@infradead.org, linux-mtd <linux-mtd@lists.infradead.org>,
-	dedekind1@gmail.com
+Sender: shinya.kuribayashi.px@renesas.com
+Cc: Sneha Narnakaje <nsnehaprabha@ti.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,172 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cleanup the Kconfig for UBI by using menuconfig to enable/disable the entire
-driver. Remove the dependency checks for MTD_UBI and MTD_UBI_DEBUG by
-wrapping the options in if/endif blocks and remove any redundant checks.
-Remove all default n since that is the Kconfig default. Change menu "Additional
-UBI debugging messages" into a comment to remove one menu level.
+Hi,
 
-Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
+[PATCH] mtd: Expand nand_ecc_layout, deprecate ioctl ECCGETLAYOUT
 
----
+[PATCH v2 0/2] Deprecate ECCGETLAYOUT
+[PATCH v2 1/2] mtd: nand: Expand nand_ecc_layout, deprecate	ioctl ECCGETLAYOUT
+[PATCH v2 2/2] mtd: nand: Expand nand_ecc_layout, deprecate	ioctl ECCGETLAYOUT
 
-diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
-index f702a16..3cf193f 100644
---- a/drivers/mtd/ubi/Kconfig
-+++ b/drivers/mtd/ubi/Kconfig
-@@ -1,9 +1,5 @@
--menu "UBI - Unsorted block images"
--	depends on MTD
--
--config MTD_UBI
--	tristate "Enable UBI"
--	depends on MTD
-+menuconfig MTD_UBI
-+	tristate "Enable UBI - Unsorted block images"
- 	select CRC32
- 	help
- 	  UBI is a software layer above MTD layer which admits of LVM-like
-@@ -12,11 +8,12 @@ config MTD_UBI
- 	  capabilities. Please, consult the MTD web site for more details
- 	  (www.linux-mtd.infradead.org).
- 
-+if MTD_UBI
-+
- config MTD_UBI_WL_THRESHOLD
- 	int "UBI wear-leveling threshold"
- 	default 4096
- 	range 2 65536
--	depends on MTD_UBI
- 	help
- 	  This parameter defines the maximum difference between the highest
- 	  erase counter value and the lowest erase counter value of eraseblocks
-@@ -34,7 +31,6 @@ config MTD_UBI_BEB_RESERVE
- 	int "Percentage of reserved eraseblocks for bad eraseblocks handling"
- 	default 1
- 	range 0 25
--	depends on MTD_UBI
- 	help
- 	  If the MTD device admits of bad eraseblocks (e.g. NAND flash), UBI
- 	  reserves some amount of physical eraseblocks to handle new bad
-@@ -48,8 +44,6 @@ config MTD_UBI_BEB_RESERVE
- 
- config MTD_UBI_GLUEBI
- 	tristate "MTD devices emulation driver (gluebi)"
--	default n
--	depends on MTD_UBI
- 	help
- 	   This option enables gluebi - an additional driver which emulates MTD
- 	   devices on top of UBI volumes: for each UBI volumes an MTD device is
-@@ -59,4 +53,5 @@ config MTD_UBI_GLUEBI
- 	   software.
- 
- source "drivers/mtd/ubi/Kconfig.debug"
--endmenu
-+
-+endif # MTD_UBI
-diff --git a/drivers/mtd/ubi/Kconfig.debug b/drivers/mtd/ubi/Kconfig.debug
-index 2246f15..d508b78 100644
---- a/drivers/mtd/ubi/Kconfig.debug
-+++ b/drivers/mtd/ubi/Kconfig.debug
-@@ -1,94 +1,73 @@
- comment "UBI debugging options"
--	depends on MTD_UBI
- 
- config MTD_UBI_DEBUG
- 	bool "UBI debugging"
- 	depends on SYSFS
--	depends on MTD_UBI
- 	select DEBUG_FS
- 	select KALLSYMS_ALL
- 	help
- 	  This option enables UBI debugging.
- 
-+if MTD_UBI_DEBUG
-+
- config MTD_UBI_DEBUG_MSG
- 	bool "UBI debugging messages"
--	depends on MTD_UBI_DEBUG
--	default n
- 	help
- 	  This option enables UBI debugging messages.
- 
- config MTD_UBI_DEBUG_PARANOID
- 	bool "Extra self-checks"
--	default n
--	depends on MTD_UBI_DEBUG
- 	help
- 	  This option enables extra checks in UBI code. Note this slows UBI down
- 	  significantly.
- 
- config MTD_UBI_DEBUG_DISABLE_BGT
- 	bool "Do not enable the UBI background thread"
--	depends on MTD_UBI_DEBUG
--	default n
- 	help
- 	  This option switches the background thread off by default. The thread
- 	  may be also be enabled/disabled via UBI sysfs.
- 
- config MTD_UBI_DEBUG_EMULATE_BITFLIPS
- 	bool "Emulate flash bit-flips"
--	depends on MTD_UBI_DEBUG
--	default n
- 	help
- 	  This option emulates bit-flips with probability 1/50, which in turn
- 	  causes scrubbing. Useful for debugging and stressing UBI.
- 
- config MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES
- 	bool "Emulate flash write failures"
--	depends on MTD_UBI_DEBUG
--	default n
- 	help
- 	  This option emulates write failures with probability 1/100. Useful for
- 	  debugging and testing how UBI handlines errors.
- 
- config MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES
- 	bool "Emulate flash erase failures"
--	depends on MTD_UBI_DEBUG
--	default n
- 	help
- 	  This option emulates erase failures with probability 1/100. Useful for
- 	  debugging and testing how UBI handlines errors.
- 
--menu "Additional UBI debugging messages"
--	depends on MTD_UBI_DEBUG
-+comment "Additional UBI debugging messages"
- 
- config MTD_UBI_DEBUG_MSG_BLD
- 	bool "Additional UBI initialization and build messages"
--	default n
--	depends on MTD_UBI_DEBUG
- 	help
- 	  This option enables detailed UBI initialization and device build
- 	  debugging messages.
- 
- config MTD_UBI_DEBUG_MSG_EBA
- 	bool "Eraseblock association unit messages"
--	default n
--	depends on MTD_UBI_DEBUG
- 	help
- 	  This option enables debugging messages from the UBI eraseblock
- 	  association unit.
- 
- config MTD_UBI_DEBUG_MSG_WL
- 	bool "Wear-leveling unit messages"
--	default n
--	depends on MTD_UBI_DEBUG
- 	help
- 	  This option enables debugging messages from the UBI wear-leveling
- 	  unit.
- 
- config MTD_UBI_DEBUG_MSG_IO
- 	bool "Input/output unit messages"
--	default n
--	depends on MTD_UBI_DEBUG
- 	help
- 	  This option enables debugging messages from the UBI input/output unit.
- 
--endmenu # UBI debugging messages
-+endif # MTD_UBI_DEBUG
+[PATCH v3 1/2] mtd: Expand nand_ecc_layout, deprecate ioctl	ECCGETLAYOUT
+[PATCH v3 2/2] (I can't find this in my inbox, by the way)
+
+I'd like to see the info about what's updated in v2, v3 when revised.
+
+By the way.
+
+On 8/19/2010 3:06 AM, Brian Norris wrote:
+> Brian Norris (2):
+>   mtd: nand: Expand nand_ecc_layout, deprecate ioctl ECCGETLAYOUT
+>   mtd: nand: Expand nand_ecc_layout, deprecate ioctl ECCGETLAYOUT
+
+Two patches with the same title.  Similar symptom can be seen in your
+latest v3 post (we can't find [PATCH v3 2/2]). Perhaps something weird
+is in your repository (or git settings).
+-- 
+Shinya Kuribayashi
+Renesas Electronics
