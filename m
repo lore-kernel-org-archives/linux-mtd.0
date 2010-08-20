@@ -1,22 +1,18 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OmDb9-0005bK-9C
-	for linux-mtd@lists.infradead.org; Thu, 19 Aug 2010 22:28:35 +0000
-Message-ID: <4C6DAFFD.4040602@broadcom.com>
-Date: Thu, 19 Aug 2010 15:28:13 -0700
-From: "Brian Norris" <norris@broadcom.com>
+Received: from p01c11o144.mxlogic.net ([208.65.144.67])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OmFUY-0006jY-Qf
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 00:29:56 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd/ubi: cleanup and simplify Kconfig
+Date: Thu, 19 Aug 2010 17:28:50 -0700
 MIME-Version: 1.0
-To: "Kevin Cernekee" <cernekee@gmail.com>
-Subject: Re: Bad assumption about ID field definition for Samsung NAND?
-References: <20100818180538.GA12238@code-monkey.de>
-	<4C6C6BFC.9020408@broadcom.com> <20100819171558.GA8536@code-monkey.de>
-	<AANLkTikiTX6US09pVu+uYm_U5=70WVbF+eH9wBtDeWKM@mail.gmail.com>
-In-Reply-To: <AANLkTikiTX6US09pVu+uYm_U5=70WVbF+eH9wBtDeWKM@mail.gmail.com>
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Tilman Sauerbeck <tilman@code-monkey.de>
+Content-Disposition: inline
+Message-ID: <201008191728.50871.hartleys@visionengravers.com>
+Cc: dwmw2@infradead.org, linux-mtd <linux-mtd@lists.infradead.org>,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +22,172 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/19/2010 12:46 PM, Kevin Cernekee wrote:
-> The code is right; the comment is wrong.
+Cleanup the Kconfig for UBI by using menuconfig to enable/disable the entire
+driver. Remove the dependency checks for MTD_UBI and MTD_UBI_DEBUG by
+wrapping the options in if/endif blocks and remove any redundant checks.
+Remove all default n since that is the Kconfig default. Change menu "Additional
+UBI debugging messages" into a comment to remove one menu level.
 
-In that case, should we fix the comment and add the
-check that Tilman mentioned previously? (below)
-This looks safe and will at least eliminate a few weird
-cases where Samsung SLC happen to have 6-byte ID strings
-(such as the K9F4G08U0B in question).
+Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>
 
-I have another fix I will tack on in series to this; should
-I include you as a "Signed-off-by", Tilman?
+---
 
-Brian
-
-> @@ -2852,6 +2852,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
->                  */
->                 if (id_data[0] == id_data[6] && id_data[1] == id_data[7] &&
->                                 id_data[0] == NAND_MFR_SAMSUNG &&
-> +                               (chip->cellinfo & NAND_CI_CELLTYPE_MSK) &&
->                                 id_data[5] != 0x00) {
->                         /* Calc pagesize */
->                         mtd->writesize = 2048 << (extid & 0x03);
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index f702a16..3cf193f 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -1,9 +1,5 @@
+-menu "UBI - Unsorted block images"
+-	depends on MTD
+-
+-config MTD_UBI
+-	tristate "Enable UBI"
+-	depends on MTD
++menuconfig MTD_UBI
++	tristate "Enable UBI - Unsorted block images"
+ 	select CRC32
+ 	help
+ 	  UBI is a software layer above MTD layer which admits of LVM-like
+@@ -12,11 +8,12 @@ config MTD_UBI
+ 	  capabilities. Please, consult the MTD web site for more details
+ 	  (www.linux-mtd.infradead.org).
+ 
++if MTD_UBI
++
+ config MTD_UBI_WL_THRESHOLD
+ 	int "UBI wear-leveling threshold"
+ 	default 4096
+ 	range 2 65536
+-	depends on MTD_UBI
+ 	help
+ 	  This parameter defines the maximum difference between the highest
+ 	  erase counter value and the lowest erase counter value of eraseblocks
+@@ -34,7 +31,6 @@ config MTD_UBI_BEB_RESERVE
+ 	int "Percentage of reserved eraseblocks for bad eraseblocks handling"
+ 	default 1
+ 	range 0 25
+-	depends on MTD_UBI
+ 	help
+ 	  If the MTD device admits of bad eraseblocks (e.g. NAND flash), UBI
+ 	  reserves some amount of physical eraseblocks to handle new bad
+@@ -48,8 +44,6 @@ config MTD_UBI_BEB_RESERVE
+ 
+ config MTD_UBI_GLUEBI
+ 	tristate "MTD devices emulation driver (gluebi)"
+-	default n
+-	depends on MTD_UBI
+ 	help
+ 	   This option enables gluebi - an additional driver which emulates MTD
+ 	   devices on top of UBI volumes: for each UBI volumes an MTD device is
+@@ -59,4 +53,5 @@ config MTD_UBI_GLUEBI
+ 	   software.
+ 
+ source "drivers/mtd/ubi/Kconfig.debug"
+-endmenu
++
++endif # MTD_UBI
+diff --git a/drivers/mtd/ubi/Kconfig.debug b/drivers/mtd/ubi/Kconfig.debug
+index 2246f15..d508b78 100644
+--- a/drivers/mtd/ubi/Kconfig.debug
++++ b/drivers/mtd/ubi/Kconfig.debug
+@@ -1,94 +1,73 @@
+ comment "UBI debugging options"
+-	depends on MTD_UBI
+ 
+ config MTD_UBI_DEBUG
+ 	bool "UBI debugging"
+ 	depends on SYSFS
+-	depends on MTD_UBI
+ 	select DEBUG_FS
+ 	select KALLSYMS_ALL
+ 	help
+ 	  This option enables UBI debugging.
+ 
++if MTD_UBI_DEBUG
++
+ config MTD_UBI_DEBUG_MSG
+ 	bool "UBI debugging messages"
+-	depends on MTD_UBI_DEBUG
+-	default n
+ 	help
+ 	  This option enables UBI debugging messages.
+ 
+ config MTD_UBI_DEBUG_PARANOID
+ 	bool "Extra self-checks"
+-	default n
+-	depends on MTD_UBI_DEBUG
+ 	help
+ 	  This option enables extra checks in UBI code. Note this slows UBI down
+ 	  significantly.
+ 
+ config MTD_UBI_DEBUG_DISABLE_BGT
+ 	bool "Do not enable the UBI background thread"
+-	depends on MTD_UBI_DEBUG
+-	default n
+ 	help
+ 	  This option switches the background thread off by default. The thread
+ 	  may be also be enabled/disabled via UBI sysfs.
+ 
+ config MTD_UBI_DEBUG_EMULATE_BITFLIPS
+ 	bool "Emulate flash bit-flips"
+-	depends on MTD_UBI_DEBUG
+-	default n
+ 	help
+ 	  This option emulates bit-flips with probability 1/50, which in turn
+ 	  causes scrubbing. Useful for debugging and stressing UBI.
+ 
+ config MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES
+ 	bool "Emulate flash write failures"
+-	depends on MTD_UBI_DEBUG
+-	default n
+ 	help
+ 	  This option emulates write failures with probability 1/100. Useful for
+ 	  debugging and testing how UBI handlines errors.
+ 
+ config MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES
+ 	bool "Emulate flash erase failures"
+-	depends on MTD_UBI_DEBUG
+-	default n
+ 	help
+ 	  This option emulates erase failures with probability 1/100. Useful for
+ 	  debugging and testing how UBI handlines errors.
+ 
+-menu "Additional UBI debugging messages"
+-	depends on MTD_UBI_DEBUG
++comment "Additional UBI debugging messages"
+ 
+ config MTD_UBI_DEBUG_MSG_BLD
+ 	bool "Additional UBI initialization and build messages"
+-	default n
+-	depends on MTD_UBI_DEBUG
+ 	help
+ 	  This option enables detailed UBI initialization and device build
+ 	  debugging messages.
+ 
+ config MTD_UBI_DEBUG_MSG_EBA
+ 	bool "Eraseblock association unit messages"
+-	default n
+-	depends on MTD_UBI_DEBUG
+ 	help
+ 	  This option enables debugging messages from the UBI eraseblock
+ 	  association unit.
+ 
+ config MTD_UBI_DEBUG_MSG_WL
+ 	bool "Wear-leveling unit messages"
+-	default n
+-	depends on MTD_UBI_DEBUG
+ 	help
+ 	  This option enables debugging messages from the UBI wear-leveling
+ 	  unit.
+ 
+ config MTD_UBI_DEBUG_MSG_IO
+ 	bool "Input/output unit messages"
+-	default n
+-	depends on MTD_UBI_DEBUG
+ 	help
+ 	  This option enables debugging messages from the UBI input/output unit.
+ 
+-endmenu # UBI debugging messages
++endif # MTD_UBI_DEBUG
