@@ -1,30 +1,26 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OmZiX-0002YM-Qg
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2010 22:05:45 +0000
-Message-ID: <4C6EFC21.1080605@broadcom.com>
-Date: Fri, 20 Aug 2010 15:05:21 -0700
-From: "Brian Norris" <norris@broadcom.com>
-MIME-Version: 1.0
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: Bad assumption about ID field definition for Samsung NAND?
-References: <20100818180538.GA12238@code-monkey.de>
-	<4C6C6BFC.9020408@broadcom.com> <20100819171558.GA8536@code-monkey.de>
-	<AANLkTikiTX6US09pVu+uYm_U5=70WVbF+eH9wBtDeWKM@mail.gmail.com>
-	<4C6DAFFD.4040602@broadcom.com>
-	<AANLkTi=9RmDvzx-5n0UbnMUj2zMm41b1VA=PQqXK_Wgc@mail.gmail.com>
-	<20100820134316.GA437@code-monkey.de> <4C6EBE90.2090604@broadcom.com>
-	<1282334008.25239.91.camel@localhost> <4C6EED3B.4000001@broadcom.com>
-	<1282340081.25239.134.camel@localhost>
-In-Reply-To: <1282340081.25239.134.camel@localhost>
-Content-Type: text/plain;
- charset=utf-8;
- format=flowed
+	id 1On280-0005Db-5W
+	for linux-mtd@lists.infradead.org; Sun, 22 Aug 2010 04:25:53 +0000
+Received: by fxm12 with SMTP id 12so2938307fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 21 Aug 2010 21:25:50 -0700 (PDT)
+Subject: Re: [PATCHv2 7/9] UBIFS: do not write rubbish into truncation
+	scanning node
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+In-Reply-To: <4C5E901E.5060802@nokia.com>
+References: <1281261452-9868-1-git-send-email-dedekind1@gmail.com>
+	<1281261452-9868-8-git-send-email-dedekind1@gmail.com>
+	<4C5E8F15.9080505@nokia.com>  <4C5E901E.5060802@nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 22 Aug 2010 07:25:46 +0300
+Message-ID: <1282451146.16502.4.camel@brekeke>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "r64343@freescale.com" <r64343@freescale.com>,
-	Kevin Cernekee <cernekee@gmail.com>,
-	Tilman Sauerbeck <tilman@code-monkey.de>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,52 +30,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 08/20/2010 02:34 PM, David Woodhouse wrote:
-> On Fri, 2010-08-20 at 14:01 -0700, Brian Norris wrote:
->>> Can I have a signed-off-by for it?
->>
->> I don't know what's "legal" here. I'm appending the patch with a
->> sign-off for me and Tilman (since Tilman authored it). Hopefully that's
->> ok.
->
-> You have to cut and paste Tilman's own Signed-off-by: header; the magic
-> doesn't work if you type it yourself. :)
+On Sun, 2010-08-08 at 14:08 +0300, Adrian Hunter wrote:
+> Still, trun_key_init might be better here because the all-zeroes key has a key-type
+> of UBIFS_INO_KEY.  What do you think?
 
-I'm glad someone has a sense of humor (or humour, depending on the country)
+I've left this patch as it is, since it is the simplest fix for the
+issue. But on top of it I've applied the patch below. I've also amended
+comments in patch 2/7, as Vitaly Wool suggested. Pushed to
+ubifs-2.6.git / master. Only compile-tested the last series so far.
 
->> I'm really no expert on how inclusion for different versions goes; I
->> just send 'em to you! Anyway, this patch is *very* important:
->> 	* [PATCH] mtd: nand: Fix regression in BBM detection
->> 	http://lists.infradead.org/pipermail/linux-mtd/2010-August/031594.html
->> It addresses issues I overlooked with a lot of Hynix small-page NAND
->> (and others).
->
-> That's in the tree already:
-> http://git.infradead.org/mtd-2.6.git/commitdiff/065a1ed8
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: [PATCH] UBIFS: mark unused key objects as invalid
 
-I realized that right after sending this.
+When scanning the flash, UBIFS builds a list of flash nodes of type
+'struct ubifs_scan_node'. Each scanned node has a 'snod->key' field. This field
+is valid for most of the nodes, but invalid for some node type, e.g., truncation
+nodes. It is safer to explicitly initialize such keys to something invalid,
+rather than leaving them initialized to all zeros, which has key type of
+UBIFS_INO_KEY.
 
->> Other patches - they are ready, but not as important:
->> 	* Spansion ORNAND
->> 	http://lists.infradead.org/pipermail/linux-mtd/2010-August/031603.html
->> 	* New Samsung MLC OOB sizes
->> 	http://lists.infradead.org/pipermail/linux-mtd/2010-August/031621.html
->
-> Those aren't regressions or important bug-fixes, so given the timing I
-> think they've missed the merge window and are now candidates for 2.6.37
-> rather than 2.6.36?
->
-> I'll merge them as soon as I've asked Linus to pull what's in the tree
-> right now. Unless you object to my classification?
+This patch introduces new "fake" key type UBIFS_INVALID_KEY and initializes
+unused 'snod->key' objects to this type. It also adds debugging assertions in
+the TNC code to make sure no one ever tries to look these nodes up in the TNC.
 
-No objection.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/key.h   |   14 ++++++++++++++
+ fs/ubifs/scan.c  |    5 ++++-
+ fs/ubifs/tnc.c   |    5 ++++-
+ fs/ubifs/ubifs.h |    6 +++++-
+ 4 files changed, 27 insertions(+), 3 deletions(-)
 
-> Just FYI; not to criticise when you're doing such excellent work -- this
-> would ideally have a From: and Subject: "header" indicating that Tilman
-> is the author, and giving the first line of the commit comment. That
-> way, running 'git-am' on it would fairly much work. Not that it's a
-> problem for me to do it either, of course.
-
-I see. (Thanks for the compliment, btw, I'm rather new to this)
-
-Brian
+diff --git a/fs/ubifs/key.h b/fs/ubifs/key.h
+index 0f530c6..92a8491 100644
+--- a/fs/ubifs/key.h
++++ b/fs/ubifs/key.h
+@@ -306,6 +306,20 @@ static inline void trun_key_init(const struct ubifs_info *c,
+ }
+ 
+ /**
++ * invalid_key_init - initialize invalid node key.
++ * @c: UBIFS file-system description object
++ * @key: key to initialize
++ *
++ * This is a helper function which marks a @key object as invalid.
++ */
++static inline void invalid_key_init(const struct ubifs_info *c,
++				    union ubifs_key *key)
++{
++	key->u32[0] = 0xDEADBEAF;
++	key->u32[1] = UBIFS_INVALID_KEY;
++}
++
++/**
+  * key_type - get key type.
+  * @c: UBIFS file-system description object
+  * @key: key to get type of
+diff --git a/fs/ubifs/scan.c b/fs/ubifs/scan.c
+index a0a305c..3e1ee57 100644
+--- a/fs/ubifs/scan.c
++++ b/fs/ubifs/scan.c
+@@ -197,7 +197,7 @@ int ubifs_add_snod(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 	struct ubifs_ino_node *ino = buf;
+ 	struct ubifs_scan_node *snod;
+ 
+-	snod = kzalloc(sizeof(struct ubifs_scan_node), GFP_NOFS);
++	snod = kmalloc(sizeof(struct ubifs_scan_node), GFP_NOFS);
+ 	if (!snod)
+ 		return -ENOMEM;
+ 
+@@ -218,6 +218,9 @@ int ubifs_add_snod(const struct ubifs_info *c, struct ubifs_scan_leb *sleb,
+ 		 */
+ 		key_read(c, &ino->key, &snod->key);
+ 		break;
++	default:
++		invalid_key_init(c, &snod->key);
++		break;
+ 	}
+ 	list_add_tail(&snod->list, &sleb->nodes);
+ 	sleb->nodes_cnt += 1;
+diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
+index 2194915..ad9cf01 100644
+--- a/fs/ubifs/tnc.c
++++ b/fs/ubifs/tnc.c
+@@ -1177,6 +1177,7 @@ int ubifs_lookup_level0(struct ubifs_info *c, const union ubifs_key *key,
+ 	unsigned long time = get_seconds();
+ 
+ 	dbg_tnc("search key %s", DBGKEY(key));
++	ubifs_assert(key_type(c, key) < UBIFS_INVALID_KEY);
+ 
+ 	znode = c->zroot.znode;
+ 	if (unlikely(!znode)) {
+@@ -2966,7 +2967,7 @@ static struct ubifs_znode *right_znode(struct ubifs_info *c,
+  *
+  * This function searches an indexing node by its first key @key and its
+  * address @lnum:@offs. It looks up the indexing tree by pulling all indexing
+- * nodes it traverses to TNC. This function is called fro indexing nodes which
++ * nodes it traverses to TNC. This function is called for indexing nodes which
+  * were found on the media by scanning, for example when garbage-collecting or
+  * when doing in-the-gaps commit. This means that the indexing node which is
+  * looked for does not have to have exactly the same leftmost key @key, because
+@@ -2988,6 +2989,8 @@ static struct ubifs_znode *lookup_znode(struct ubifs_info *c,
+ 	struct ubifs_znode *znode, *zn;
+ 	int n, nn;
+ 
++	ubifs_assert(key_type(c, key) < UBIFS_INVALID_KEY);
++
+ 	/*
+ 	 * The arguments have probably been read off flash, so don't assume
+ 	 * they are valid.
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 0431087..a5928b1 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -119,8 +119,12 @@
+  * in TNC. However, when replaying, it is handy to introduce fake "truncation"
+  * keys for truncation nodes because the code becomes simpler. So we define
+  * %UBIFS_TRUN_KEY type.
++ *
++ * But otherwise, out of the journal reply scope, the truncation keys are
++ * invalid.
+  */
+-#define UBIFS_TRUN_KEY UBIFS_KEY_TYPES_CNT
++#define UBIFS_TRUN_KEY    UBIFS_KEY_TYPES_CNT
++#define UBIFS_INVALID_KEY UBIFS_KEY_TYPES_CNT
+ 
+ /*
+  * How much a directory entry/extended attribute entry adds to the parent/host
+-- 
+1.7.2.1
