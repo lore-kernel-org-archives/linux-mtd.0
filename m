@@ -1,27 +1,24 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OnC5s-00062J-Dk
-	for linux-mtd@lists.infradead.org; Sun, 22 Aug 2010 15:04:21 +0000
-Received: by fxm12 with SMTP id 12so3092592fxm.36
+	id 1OnFJW-0004WZ-1W
+	for linux-mtd@lists.infradead.org; Sun, 22 Aug 2010 18:30:39 +0000
+Received: by fxm12 with SMTP id 12so3156544fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 22 Aug 2010 08:04:19 -0700 (PDT)
+	Sun, 22 Aug 2010 11:30:35 -0700 (PDT)
 Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Stefani Seibold <stefani@seibold.net>
-In-Reply-To: <1280296009.4310.5.camel@wall-e.seibold.net>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <1280243535.3021.29.camel@localhost.localdomain>
 References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
 	<1280121714.14917.40.camel@localhost>
 	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
 	<1280243535.3021.29.camel@localhost.localdomain>
-	<1280244117.3021.36.camel@localhost.localdomain>
-	<1280296009.4310.5.camel@wall-e.seibold.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 22 Aug 2010 18:04:16 +0300
-Message-ID: <1282489456.16502.74.camel@brekeke>
+Date: Sun, 22 Aug 2010 21:30:32 +0300
+Message-ID: <1282501832.16502.97.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Kreuzer, Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>,
-	linux-mtd@lists.infradead.org, "Matthew L. Creech" <mlcreech@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,53 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-07-28 at 07:46 +0200, Stefani Seibold wrote:
-> Am Dienstag, den 27.07.2010, 18:21 +0300 schrieb Artem Bityutskiy:
-> > On Tue, 2010-07-27 at 18:12 +0300, Artem Bityutskiy wrote:
-> > > This really does not look like a NAND/MTD driver issue. More look like
-> > > either an UBIFS bug of some kind of corruption which corrupted an EC or
-> > > VID header, then UBI decided to erase this PEB, and then UBIFS reads all
-> > > 0xFFs from there.
-> > > 
-> > > The second theory should BTW be fixed. Indeed, when UBI finds a PEB with
-> > > corrupted headers, it adds this PEB to the 'corr' list, and then just
-> > > erases. But this is wrong! It should erase them only if there are all
-> > > 0xFFs in the rest of the block.
-> > 
-> > Yeah, indeed looks like a bad bug in UBI. So, when we have some flash
-> > corruptions which corrupt the VID header, UBI just silently erases this
-> > PEB! And then we have small chances to find out why on LEB suddenly
-> > became unmapped (erased).
-> > 
-> > UBI logic is - if VID header is corrupted, it is because a sudden power
-> > cut while writing the header. And we can erase the PEB because if we
-> > were writing the header, we have not written the data yet.
-> > 
-> > But it does not bother checking what goes _after_ the header. If there
-> > are some data, UBI should not erase the PEB but preserve it and switch
-> > to R/O mode.
-> > 
-> > CCing Stefani, I think here group faced a similar issue recently - one
-> > of LEB suddenly disappeared. This may be the reason.
-> > 
-> > Then the other question - why VID became corrupted? Dunno, but if UBI
-> > won't erase the PEB we'll have better chances to find this out. Does
-> > this sound reasonable?
-> > 
+On Tue, 2010-07-27 at 18:12 +0300, Artem Bityutskiy wrote:
+> > Certainly.  I enabled all the relevant UBI and UBIFS debugging options
+> > that I saw, along with internal self-checks, but there's still not a
+> > whole lot of output.  Full console dump is attached - this is a
+> > different device than the first, but exhibits the same problem.
 > 
-> Not really. Why should especially the master LEB crash?
+> I'm sure your ring buffer contains more information. This is one of the
+> reasons I gave you the above link - it explains that not all messages go
+> to console and how to get all meassages. Try to use dmesg. In UBIFS code
+> I see that 'ubifs_read_node()' calls 'dbg_dump_node()' which should dump
+> the node.
+> 
+> But '255' is 0xFF, so probably UBIFS read all 0xFF. This may be an UBIFS
+> bug, or some corruption, difficult to say. For some reason the place
+> where a valid znode should live is erased.
+> 
+> May be if I have a NAND dump of your broken device I can look at it, but
+> do not promise anything, and I'm also on holiday :-)
 
-Not sure, may be there is some reason. Dunno, that was just a thought.
+Could you please dump LEB 5586 and check whether it is really erased or
+not? Please, apply the following patch:
 
-> First: As i understand UBIFS will append data to the master LEBs until
-> no space is free, and then it will erase the master LEB and create a new
-> one. Is this right?
+>From feb1616809b0bebeaf0cb596fdb5d715f6d75700 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Sun, 22 Aug 2010 21:27:30 +0300
+Subject: [PATCH] UBIFS: improve error reporting when reading bad node
 
-Yes.
+When an error happens during validation of read node, the typical situation is that
+the LEB we read is unmapped (due to some bug). It is handy to include the mapping
+status into the error message.
 
-> Second: We need a kind of the patch which i had provided i the case one
-> of the master block will be damaged. Otherwise the whole file system is
-> garbage.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/io.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-Yes, but your patch fixes the symptom, unfortunately. It is ok for you
-to use as a work-around, but I still hope to find the root cause.
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index bcf5a16..9432431 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -815,7 +815,8 @@ int ubifs_read_node(const struct ubifs_info *c, void *buf, int type, int len,
+ 	return 0;
+ 
+ out:
+-	ubifs_err("bad node at LEB %d:%d", lnum, offs);
++	ubifs_err("bad node at LEB %d:%d, LEB mapping status %d", lnum, offs,
++		  ubi_is_mapped(c->ubi, lnum));
+ 	dbg_dump_node(c, buf);
+ 	dbg_dump_stack();
+ 	return -EINVAL;
+-- 
+1.7.2.1
