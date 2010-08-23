@@ -1,32 +1,39 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OnYEn-0006uS-PM
-	for linux-mtd@lists.infradead.org; Mon, 23 Aug 2010 14:43:03 +0000
-Received: by fxm12 with SMTP id 12so3674619fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 Aug 2010 07:43:00 -0700 (PDT)
-Subject: Re: error!: "/dev/ubi0" is not a character device ?!?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Arno Steffen <arno.steffen@googlemail.com>
-In-Reply-To: <AANLkTinqAT=aCYFBi8Nri72L898U0k6dTk3z90OJOpRc@mail.gmail.com>
-References: <AANLkTikC6wxXV08=AYsqn56h8Cs-qC_-b8hNyq9DUWps@mail.gmail.com>
-	<1280150054.14917.108.camel@localhost>
-	<AANLkTik7CdwdyhzVYFXG66V3LKZvqnZhLbg4eVC0nQ=S@mail.gmail.com>
-	<1280244340.3021.38.camel@localhost.localdomain>
-	<AANLkTi=7-Ur35OzqF7iJtiPzfc-Jp-ANGwa3g_Y=+ae8@mail.gmail.com>
-	<1280471755.2838.29.camel@localhost.localdomain>
-	<AANLkTikZb=R=8BObvTN6uGaZGAmvvUZd4oYKvkCJih7H@mail.gmail.com>
-	<AANLkTikkRNqnEX0PkHigv=zT+Z36J52DEtoVeMGbBExf@mail.gmail.com>
-	<AANLkTim6U4uO_2yf-VyoL+4j9-yDkouTQdP_aszpEXwW@mail.gmail.com>
-	<1282566891.24044.32.camel@localhost>
-	<AANLkTinqAT=aCYFBi8Nri72L898U0k6dTk3z90OJOpRc@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 23 Aug 2010 17:41:29 +0300
-Message-ID: <1282574489.24044.74.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, twebb <taliaferro62@gmail.com>
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <861v9ptzex.fsf@peer.zerties.org>
+References: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
+	<4C5F9715.1030806@snapgear.com> <86tyn4ximi.fsf@peer.zerties.org>
+	<861v9ptzex.fsf@peer.zerties.org>
+Date: Mon, 23 Aug 2010 16:46:09 +0200
+Message-ID: <AANLkTimiLhhTW=XRD4hSdsKxnNdKaMSDLUgOeVR=SCJf@mail.gmail.com>
+Subject: Re: [PATCH 0/9] Removing dead code
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-m68k@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>,
+	John Stultz <johnstul@us.ibm.com>,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+	Alexander Kurz <linux@kbdbabel.org>,
+	linux-mtd@lists.infradead.org, Michael Roth <mroth@nessie.de>,
+	Greg Ungerer <gerg@uclinux.org>, Christoph Hellwig <hch@lst.de>,
+	Finn Thain <fthain@telegraphics.com.au>, Tony Lindgren <tony@atomide.com>,
+	vamos-dev@i4.informatik.uni-erlangen.de,
+	Lennart Sorensen <lsorense@csclub.uwaterloo.ca>,
+	Russell King <rmk+kernel@arm.linux.org.uk>,
+	Anatolij Gustschin <agust@denx.de>,
+	Sam Creasey <sammy@sammy.net>, Greg Ungerer <gerg@snapgear.com>,
+	linux-pcmcia@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>,
+	Sean MacLennan <smaclennan@pikatech.com>, Joe Perches <joe@perches.com>,
+	Maxim Kuvyrkov <maxim@codesourcery.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
+	Greg Kroah-Hartman <gregkh@suse.de>, Wolfram Sang <w.sang@pengutronix.de>,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Martin Schwidefsky <schwidefsky@de.ibm.com>,
+	Manuel Lauss <manuel.lauss@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,33 +43,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-08-23 at 16:13 +0200, Arno Steffen wrote:
-> My results are: (other will follow next day)
+On Mon, Aug 23, 2010 at 12:07, Christian Dietrich
+<qy03fugy@stud.informatik.uni-erlangen.de> wrote:
+> Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de> writes:
+>>> I don't have any problems with any of these from a
+>>> m68knommu point of view. I can merge them via the
+>>> m68knommu git tree if you want?
+>>
+>> If there aren't any complaints from the m68k people i'm fine with
+>> that.
+>
+> Hm, last message was two weeks ago, so perhaps the m68k people (with
+> mmu) have no complaints with these patches and they can be included in
+> the m68knommu tree?
 
-... snip ...
+Sorry, I've been a bit too busy with other things...
 
-> mtd_readtest: MTD device: 0
-> mtd_readtest: MTD device size 262144, eraseblock size 131072, page
-> size 2048, count of eraseblocks 2, pages per eraseblock 64, OOB size
-> 64
-> mtd_readtest: scanning for bad eraseblocks
-> mtd_readtest: scanned 2 eraseblocks, 0 are bad
-> mtd_readtest: testing page read
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> mtd_readtest: error: read failed at 0x0
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> uncorrectable error :
-> mtd_readtest: error: read failed at 0x800
-> uncorrectable error :
+  - arch/m68k: Removing dead GG2 config option
+    Fine for me
+  - arch/m68k{,nommu}: Removing dead SMP config option
+    Are there any SMP m68k systems coming?
+    If yes, we may want to keep it. From the other hand, probably many
+other places
+    need adjustment for SMP too, so the few checks for CONFIG_SMP may give =
+a
+    false feeling of readiness for SMP.
+  - arch/m68knommu: Removing dead M68KFPU_EMU config option
+    With the imminent(?) merge of mmu and nommu, perhaps we want to keep it=
+?
 
-They do not look very too well :-)
+Gr{oetje,eeting}s,
 
-No wonder UBI hates your flash and refuses it.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
