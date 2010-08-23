@@ -1,20 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OnVvl-000811-Sl
-	for linux-mtd@lists.infradead.org; Mon, 23 Aug 2010 12:15:14 +0000
-Received: by fxm12 with SMTP id 12so3506520fxm.36
+	id 1OnW5R-0000yw-FH
+	for linux-mtd@lists.infradead.org; Mon, 23 Aug 2010 12:25:14 +0000
+Received: by bwz13 with SMTP id 13so5175277bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 Aug 2010 05:15:12 -0700 (PDT)
-Subject: Re: MTD Flash Partition: change possible?
+	Mon, 23 Aug 2010 05:25:12 -0700 (PDT)
+Subject: Re: Mounting UBIFS readonly - is it really readonly?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Arno Steffen <arno.steffen@googlemail.com>
-In-Reply-To: <AANLkTikc13g+5Q3YFMhgfJ1LWq_aMLUK1M9AFr2G1WSP@mail.gmail.com>
-References: <AANLkTikgBKD4yku0fF_WaatNaOsRWwPf-VLKrWXByk1a@mail.gmail.com>
-	<1282560805.24044.5.camel@localhost>
-	<AANLkTikc13g+5Q3YFMhgfJ1LWq_aMLUK1M9AFr2G1WSP@mail.gmail.com>
+To: Sergei Zhirikov <sfzhi@yahoo.com>
+In-Reply-To: <i2namf$mj6$1@dough.gmane.org>
+References: <i2namf$mj6$1@dough.gmane.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 23 Aug 2010 15:13:42 +0300
-Message-ID: <1282565622.24044.20.camel@localhost>
+Date: Mon, 23 Aug 2010 15:23:40 +0300
+Message-ID: <1282566220.24044.22.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -28,54 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-08-23 at 14:11 +0200, Arno Steffen wrote:
-> 2010/8/23 Artem Bityutskiy <dedekind1@gmail.com>:
-> > On Mon, 2010-08-23 at 12:23 +0200, Arno Steffen wrote:
-> >> In my embedded system the Flash-partition table is compiled into kernel.
-> >> Is there a way to change partition table without booting a new kernel? How?
-> >>
-> >> Background: I want to update an embedded system and change the size of
-> >> partitions. But tools as flash_eraseall and nandwrite use partitions
-> >> of the current kernel. If I want to change the size of the partitions,
-> >> this is impossible.
-> >> If I first flash a new kernel with new partition table, I have to
-> >> reboot and the system will not start, as the old partitioning scheme
-> >> is still active.
-> >
-> > There were at least 2 patches. One from Nokia - it was ok, but a small
-> > change was requested and the author disappeared. One was from Samsung -
-> > I did not look at it so far. The patches were sent to the MTD mailing
-> > list a month or 2 ago.
-> >
-> > --
-> > Best Regards,
-> > Artem Bityutskiy (Артём Битюцкий)
-> >
-> >
-> 
-> Spasibo, Artem.
-> 
-> I found the Nokia Patch
-> http://lists.infradead.org/pipermail/linux-mtd/2010-June/030645.html
-> This seems to be done for OneNand, while I am using Nand.
+On Tue, 2010-07-27 at 21:05 +0200, Sergei Zhirikov wrote:
+> As you can see, there is "ro", which causes UBIFS to be initially
+> mounted readonly. And later it is *never* remounted read-write.
+> Everything seems to work as expected (I get "Read-only file system"
+> error upon a write attempt) except one thing. Somehow the modification
+> time of /dev/console is updated every time the system boots. Note: I'm
+> not talking about the /dev/console located inside the /dev mount
+> (which is tmpfs and is obvously writable), I'm talking about
+> the /dev/console located on the root file system and accessed
+> (probably by init) before /dev is mounted. I'm really puzzled. How is
+> this possible? The root filesystem has been readonly all the time and
+> still the timestamp is somehow updated. Does anyone have an idea what
+> might be going on there?
 
-No, it is not OneNAND-specific!
-
-> Regarding the pathes: That are requests to change, so it is not for
-> sure that this is implemented in a new kernel?
-> 
-> I found this as an update to mtdutils.
-> http://lists.infradead.org/pipermail/linux-mtd/2010-July/031200.html
->  Does this needs a new kernel to support this functions? I am using a 2.6.33.
-
-Dunno, did not look at this.
-
-> Reading this, I think there is no solution for my current system.
-> Is there a way to show the startaddress of a partition? /proc/mtd
-> shows just size, not start address.
-
-I do not think we can change /proc/mtd, but isn't it easy to calculate
-the start address using partition sizes?
+Did you solve the issue, I'm just curious.
 
 -- 
 Best Regards,
