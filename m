@@ -1,25 +1,21 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OnIu6-0005gb-Gy
-	for linux-mtd@lists.infradead.org; Sun, 22 Aug 2010 22:20:39 +0000
-Received: by vws11 with SMTP id 11so5283376vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 22 Aug 2010 15:20:37 -0700 (PDT)
+Message-ID: <4C71F51D.2000600@renesas.com>
+Date: Mon, 23 Aug 2010 13:12:13 +0900
+From: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
 MIME-Version: 1.0
-In-Reply-To: <1282465255.16502.52.camel@brekeke>
-References: <4C4DEA3D.5070208@broadcom.com> <4C4F3691.9020505@broadcom.com>
-	<1282465255.16502.52.camel@brekeke>
-Date: Sun, 22 Aug 2010 15:20:36 -0700
-Message-ID: <AANLkTim-XofxxyZt6epCcoQN=PL0vFdT0vjmk_5D=soY@mail.gmail.com>
-Subject: Re: [PATCH v2] mtd/nand: Support Micron chips, pagesize >= 4KB
-From: Kevin Cernekee <cernekee@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
+To: Brian Norris <norris@broadcom.com>
+Subject: Re: [PATCH v2 0/2] Deprecate ECCGETLAYOUT
+References: <4C5CA4A1.1040000@broadcom.com>
+	<1282154806-9420-1-git-send-email-norris@broadcom.com>
+	<4C6DD170.1060807@renesas.com> <4C6E9C23.6060703@broadcom.com>
+In-Reply-To: <4C6E9C23.6060703@broadcom.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Sender: shinya.kuribayashi.px@renesas.com
+Cc: Sneha Narnakaje <nsnehaprabha@ti.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	David Woodhouse <dwmw2@infradead.org>,
-	Maxim Levitsky <maximlevitsky@gmail.com>,
-	Brian Norris <norris@broadcom.com>
+	Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Aug 22, 2010 at 1:20 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> I'm not picking this patch to my l2-mtd-2.6.git, since AFAICS the chips
-> support ONFI should be detected properly.
->
-> The "older chips" which do not support reading ONFI data can then be
-> detected using special quirks. But using heuristics even for the chips
-> which do support reading ONFI data sounds bad.
+On 8/21/2010 12:15 AM, Brian Norris wrote:
+[ ... ]
+> So this leaves the important patch set as the following two independent,
+> slightly different approaches to the same problem; we should choose
+> between them:
+> [PATCH v3 1/2] mtd: Expand...
+> [PATCH v2 2/2] mtd: nand: Expand...
+> 
+> Sorry if my naming, numbering, and failure of intelligence in sending
+> e-mail confused anyone. I can resend with distinct names and correct
+> numbering if requested.
 
-The NAND controllers on certain legacy SoCs are not able to read the
-ONFI parameter page, even if the flash device itself supports ONFI.
-Consequently, heuristics or a lookup table would need to be used to
-determine the device parameters.
-
-Worst case, I guess the Micron ID decoding logic could just be moved
-into the low-level driver.
+Thanks for the explanation, got it.  I'm following that thread and
+already know what's discussed and proposed, but couldn't follow the
+changes made between numbered / revised patches with similar subjects.
+-- 
+Shinya Kuribayashi
+Renesas Electronics
