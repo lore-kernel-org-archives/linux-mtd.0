@@ -1,39 +1,16 @@
+Received: from web112313.mail.gq1.yahoo.com ([98.137.26.168])
+	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Onbpp-0004Hs-Sb
+	for linux-mtd@lists.infradead.org; Mon, 23 Aug 2010 18:33:31 +0000
+Message-ID: <752212.66527.qm@web112313.mail.gq1.yahoo.com>
+Date: Mon, 23 Aug 2010 11:33:27 -0700 (PDT)
+From: Sergei Zhirikov <sfzhi@yahoo.com>
+Subject: Re: Mounting UBIFS readonly - is it really readonly?
+To: dedekind1@gmail.com
+In-Reply-To: <1282567283.24044.35.camel@localhost>
 MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <861v9ptzex.fsf@peer.zerties.org>
-References: <cover.1280924671.git.qy03fugy@stud.informatik.uni-erlangen.de>
-	<4C5F9715.1030806@snapgear.com> <86tyn4ximi.fsf@peer.zerties.org>
-	<861v9ptzex.fsf@peer.zerties.org>
-Date: Mon, 23 Aug 2010 16:46:09 +0200
-Message-ID: <AANLkTimiLhhTW=XRD4hSdsKxnNdKaMSDLUgOeVR=SCJf@mail.gmail.com>
-Subject: Re: [PATCH 0/9] Removing dead code
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-m68k@vger.kernel.org, Roman Zippel <zippel@linux-m68k.org>,
-	John Stultz <johnstul@us.ibm.com>,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
-	Alexander Kurz <linux@kbdbabel.org>,
-	linux-mtd@lists.infradead.org, Michael Roth <mroth@nessie.de>,
-	Greg Ungerer <gerg@uclinux.org>, Christoph Hellwig <hch@lst.de>,
-	Finn Thain <fthain@telegraphics.com.au>, Tony Lindgren <tony@atomide.com>,
-	vamos-dev@i4.informatik.uni-erlangen.de,
-	Lennart Sorensen <lsorense@csclub.uwaterloo.ca>,
-	Russell King <rmk+kernel@arm.linux.org.uk>,
-	Anatolij Gustschin <agust@denx.de>,
-	Sam Creasey <sammy@sammy.net>, Greg Ungerer <gerg@snapgear.com>,
-	linux-pcmcia@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>,
-	Sean MacLennan <smaclennan@pikatech.com>, Joe Perches <joe@perches.com>,
-	Maxim Kuvyrkov <maxim@codesourcery.com>,
-	Thomas Gleixner <tglx@linutronix.de>, Jiri Kosina <jkosina@suse.cz>,
-	Greg Kroah-Hartman <gregkh@suse.de>, Wolfram Sang <w.sang@pengutronix.de>,
-	Ralf Baechle <ralf@linux-mips.org>,
-	Martin Schwidefsky <schwidefsky@de.ibm.com>,
-	Manuel Lauss <manuel.lauss@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,47 +20,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 23, 2010 at 12:07, Christian Dietrich
-<qy03fugy@stud.informatik.uni-erlangen.de> wrote:
-> Christian Dietrich <qy03fugy@stud.informatik.uni-erlangen.de> writes:
->>> I don't have any problems with any of these from a
->>> m68knommu point of view. I can merge them via the
->>> m68knommu git tree if you want?
->>
->> If there aren't any complaints from the m68k people i'm fine with
->> that.
->
-> Hm, last message was two weeks ago, so perhaps the m68k people (with
-> mmu) have no complaints with these patches and they can be included in
-> the m68knommu tree?
+> From: Artem Bityutskiy <dedekind1@gmail.com>
+> Subject: Re: Mounting UBIFS readonly - is it really readonly?
+> To: "Sergei Zhirikov" <sfzhi@yahoo.com>
+> Cc: linux-mtd@lists.infradead.org
+> Date: Monday, August 23, 2010, 2:41 PM
+> On Mon, 2010-08-23 at 15:23 +0300,
+> Artem Bityutskiy wrote:
+> > On Tue, 2010-07-27 at 21:05 +0200, Sergei Zhirikov
+> wrote:
+> > > As you can see, there is "ro", which causes UBIFS
+> to be initially
+> > > mounted readonly. And later it is *never*
+> remounted read-write.
+> > > Everything seems to work as expected (I get
+> "Read-only file system"
+> > > error upon a write attempt) except one thing.
+> Somehow the modification
+> > > time of /dev/console is updated every time the
+> system boots. Note: I'm
+> > > not talking about the /dev/console located inside
+> the /dev mount
+> > > (which is tmpfs and is obvously writable), I'm
+> talking about
+> > > the /dev/console located on the root file system
+> and accessed
+> > > (probably by init) before /dev is mounted. I'm
+> really puzzled. How is
+> > > this possible? The root filesystem has been
+> readonly all the time and
+> > > still the timestamp is somehow updated. Does
+> anyone have an idea what
+> > > might be going on there?
+> > 
+> > Did you solve the issue, I'm just curious.
+> 
+> I think you can use inotify to verify whether the FS is
+> ever changed?
+> 
+> http://en.wikipedia.org/wiki/Inotify
+> 
+I made the changes you suggested earlier to see if/when something is written and the results were quite unexpected. Just as I assumed, UBIFS remains mounted read-only all the time. But contrary to what I expected, none of the functions related to writing is ever called. Nevertheless, the timestamp still changes.
 
-Sorry, I've been a bit too busy with other things...
+I have also managed to reproduce the issue without involving system reboot. If I create a device node equivalent to /dev/console (major 5, minor 1) in any directory (on the root UBIFS) and then remount the FS read-only, the timestamp of the device node keeps changing upon any write operation to the device. The same thing happens when I try /dev/tty (major 5, minor 0), but with /dev/null (1,3) or /dev/zero (1,5) the timestamp does not change.
 
-  - arch/m68k: Removing dead GG2 config option
-    Fine for me
-  - arch/m68k{,nommu}: Removing dead SMP config option
-    Are there any SMP m68k systems coming?
-    If yes, we may want to keep it. From the other hand, probably many
-other places
-    need adjustment for SMP too, so the few checks for CONFIG_SMP may give =
-a
-    false feeling of readiness for SMP.
-  - arch/m68knommu: Removing dead M68KFPU_EMU config option
-    With the imminent(?) merge of mmu and nommu, perhaps we want to keep it=
-?
-
-Gr{oetje,eeting}s,
-
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+I'm now even more puzzled than I was in the beginning. It looks like the VFS decides to update the timestamp for some reason, but does not pass that change to UBIFS (perhaps, because it knows the latter is read-only). So the updated timestamp exists only cached in memory and is never actually written to the FS. I haven't tried to verify that theory yet (which shouldn't be difficult).
 
 --
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
+Sergei.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
+
+      
