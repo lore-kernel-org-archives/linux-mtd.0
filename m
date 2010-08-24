@@ -1,22 +1,27 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OnoXI-0005lQ-1e
-	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 08:07:12 +0000
-Received: by bwz13 with SMTP id 13so6205496bwz.36
+	id 1Onoif-0000Ks-UB
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 08:18:58 +0000
+Received: by fxm12 with SMTP id 12so4417455fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 Aug 2010 01:07:11 -0700 (PDT)
-Subject: Re: Is repartitioning possible while one of the partitions is mounted?
+	Tue, 24 Aug 2010 01:18:56 -0700 (PDT)
+Subject: Re: [PATCH] drivers/mtd: remove makefile subdirectory processing
+	redundancies
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tim Cussins <timcussins@eml.cc>
-In-Reply-To: <1282637086.24044.133.camel@localhost>
-References: <1280755953.2174.24.camel@pc816>
-	<1282637086.24044.133.camel@localhost>
+To: Kyle Spaans <kspaans@uwaterloo.ca>
+In-Reply-To: <20100804005804.GA11770@taurine.csclub.uwaterloo.ca>
+References: <20100714042509.GA7775@caffeine.csclub.uwaterloo.ca>
+	<1279471590.16247.57.camel@localhost.localdomain>
+	<20100720021718.GA32479@caffeine.csclub.uwaterloo.ca>
+	<1279706975.2306.4.camel@localhost>
+	<20100804005804.GA11770@taurine.csclub.uwaterloo.ca>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 Aug 2010 11:05:43 +0300
-Message-ID: <1282637143.24044.134.camel@localhost>
+Date: Tue, 24 Aug 2010 11:17:27 +0300
+Message-ID: <1282637847.24044.136.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,26 +32,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-08-24 at 11:04 +0300, Artem Bityutskiy wrote:
-> On Mon, 2010-08-02 at 14:32 +0100, Tim Cussins wrote:
-> > Hi all,
-> > 
-> > I just spotted post regarding upcoming Runtime Partitioning Support
-> > (http://lists.infradead.org/pipermail/linux-mtd/2010-July/031200.html)
-> > 
-> > After taking a cursory glance at the patch it's not immediately obvious
-> > ( uh, to me anyway :D ) whether you can create/delete partitions while
-> > a filesystem (e.g. rootfs) is mounted from another partition on the same
-> > mtd device.
-> > 
-> > Under what conditions can you create/delete partitions?
+On Tue, 2010-08-03 at 20:58 -0400, Kyle Spaans wrote:
+> Remove redundant config checks when the subdirectory's Makefile is already
+> conditionally processed. Add more conditional processing when the subdirectory
+> can be selected/deselected as a whole.
 > 
-> I guess it is good idea to put the authors of that patch in CC, no?
-> 
-> I think this case should be handled. If it is not, the solution is not
-> very good. But this is just IMHO.
+> Signed-off-by: Kyle Spaans <kspaans@uwaterloo.ca>
 
-Sorry, did not notice there was a reply.
+Sorry, bad luck. I get the following with your patch, but without your
+patch my compilation is fine. Forgot to compile-test? :-)
+
+[dedekind@eru l2-mtd-2.6]$ make
+  CHK     include/linux/version.h
+  CHK     include/generated/utsrelease.h
+  CALL    scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CHK     include/linux/version.h
+make[2]: `scripts/unifdef' is up to date.
+Kernel: arch/x86/boot/bzImage is ready  (#7)
+  Building modules, stage 2.
+  MODPOST 251 modules
+ERROR: "ubi_open_volume" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_map" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_open_volume_nm" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_change" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_write" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_get_device_info" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_read" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_leb_unmap" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_close_volume" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_get_volume_info" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_open_volume_path" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_sync" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_is_mapped" [fs/ubifs/ubifs.ko] undefined!
+ERROR: "ubi_register_volume_notifier" [drivers/mtd/ubi/gluebi.ko]
+undefined!
+ERROR: "ubi_leb_read" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_leb_write" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_leb_erase" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_leb_unmap" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_open_volume" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_close_volume" [drivers/mtd/ubi/gluebi.ko] undefined!
+ERROR: "ubi_unregister_volume_notifier" [drivers/mtd/ubi/gluebi.ko]
+undefined!
+ERROR: "onenand_scan" [drivers/mtd/onenand/onenand_sim.ko] undefined!
+ERROR: "flexonenand_region" [drivers/mtd/onenand/onenand_sim.ko]
+undefined!
+ERROR: "onenand_addr" [drivers/mtd/onenand/onenand_sim.ko] undefined!
+ERROR: "onenand_release" [drivers/mtd/onenand/onenand_sim.ko] undefined!
+ERROR: "onenand_scan" [drivers/mtd/onenand/generic.ko] undefined!
+ERROR: "onenand_release" [drivers/mtd/onenand/generic.ko] undefined!
+ERROR: "nand_scan_tail" [drivers/mtd/nand/sm_common.ko] undefined!
+ERROR: "nand_scan_ident" [drivers/mtd/nand/sm_common.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/r852.ko] undefined!
+ERROR: "nand_scan" [drivers/mtd/nand/plat_nand.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/plat_nand.ko] undefined!
+ERROR: "nand_default_bbt" [drivers/mtd/nand/nandsim.ko] undefined!
+ERROR: "nand_scan" [drivers/mtd/nand/nandsim.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/nandsim.ko] undefined!
+ERROR: "nand_scan" [drivers/mtd/nand/diskonchip.ko] undefined!
+ERROR: "nand_scan_bbt" [drivers/mtd/nand/diskonchip.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/diskonchip.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/denali.ko] undefined!
+ERROR: "nand_scan_tail" [drivers/mtd/nand/denali.ko] undefined!
+ERROR: "nand_scan_ident" [drivers/mtd/nand/denali.ko] undefined!
+ERROR: "nand_release" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "nand_scan_tail" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "nand_scan_ident" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "nand_wait_ready" [drivers/mtd/nand/cafe_nand.ko] undefined!
+ERROR: "lpddr_cmdset" [drivers/mtd/lpddr/qinfo_probe.ko] undefined!
+make[1]: *** [__modpost] Error 1
+make: *** [modules] Error 2
 
 -- 
 Best Regards,
