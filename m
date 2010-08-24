@@ -1,23 +1,24 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OnzTw-0001iQ-T8
-	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 19:48:32 +0000
-Received: by bwz13 with SMTP id 13so35115bwz.36
+	id 1Oo28c-0005LT-OJ
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 22:38:43 +0000
+Received: by wyg36 with SMTP id 36so21101wyg.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 Aug 2010 12:48:24 -0700 (PDT)
+	Tue, 24 Aug 2010 15:38:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinL1dqv9LmQ1zTCEJ46pb=jfc3=25cehHFi9wfT@mail.gmail.com>
-References: <AANLkTikPQfNJ9eZeF6scpnx5beVt=dR6pfNgqcExteMu@mail.gmail.com>
-	<4C607150.6040806@jkmicro.com>
-	<AANLkTinL1dqv9LmQ1zTCEJ46pb=jfc3=25cehHFi9wfT@mail.gmail.com>
-From: Shane Volpe <shanevolpe@gmail.com>
-Date: Tue, 24 Aug 2010 15:48:04 -0400
-Message-ID: <AANLkTinV-YT9ypqY8aXxmP2ZVKVsofzU0Y7PLXH6ac5g@mail.gmail.com>
-Subject: Re: buffer write error (status 0x90)
-To: Jon Ringle <jon@ringle.org>
+In-Reply-To: <1282501832.16502.97.camel@brekeke>
+References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
+	<1280121714.14917.40.camel@localhost>
+	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
+	<1280243535.3021.29.camel@localhost.localdomain>
+	<1282501832.16502.97.camel@brekeke>
+Date: Tue, 24 Aug 2010 18:38:34 -0400
+Message-ID: <AANLkTi=AXo7Ziiz9qWTFMuYaMJbq0xpS2YcuJeWL3BC5@mail.gmail.com>
+Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Adam Yergovich <ayergo@jkmicro.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +28,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jon,
-I'm also replacing the obsolete P30 part and ran into an interesting
-issue.  It turns out the new replacement part has a larger buffer size
-so if you mix and match the obsolete part with the newer part you will
-have issues because if the new part is in the lower nibble 0:15 the
-CFI will read out its buffer size and since that buffer size is larger
-than the obsolete P30 sitting in the higher nibble 16:31 then the its
-buffer will get over run and not work.  So what I'm saying is that
-even though the replacement part is almost the same as the old part do
-not mix and match as the buffer sizes will cause issues.  Although you
-can patch the kernel and hard code the buffer size to that of the
-legacy P30 or even better patch it to read the buffer sizes out of
-both ICs and use the smaller size.
+On Sun, Aug 22, 2010 at 2:30 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>
+> Could you please dump LEB 5586 and check whether it is really erased or
+> not? Please, apply the following patch:
+>
+...
 
-Regards,
-Shane
+Hi Artem,
 
-On Mon, Aug 9, 2010 at 11:46 PM, Jon Ringle <jon@ringle.org> wrote:
-> On Mon, Aug 9, 2010 at 5:21 PM, Adam Yergovich <ayergo@jkmicro.com> wrote=
-:
->> Jon Ringle wrote:
->>>
->>> We are replacing the discontinued Intel StrataFlash P30 flash
->>> JS28F256P30T95 with the Numonyx P30-65nm flash JS28F256P30TF on our
->>> boards and have a few boards with sample chips. During some testing
->>> one of the boards with the Numonyx flash chip is now reporting the
->>> following buffer write error (status 0x90) on every boot:
->>
->> I have tested swapping the lower density part and haven't had any proble=
-ms
->> with MTD or otherwise. =A0I suspect you've just got a bad part or someth=
-ing
->> else happened.
->
-> Maybe, but we have seen other incompatibilities that occurred on all
-> of our samples. We use Redboot as the bootloader and we found that a
-> Redboot image in ROM mode will hang when trying to unlock and erase a
-> sector. I resolved that problem by building a ROMRAM Redboot image.
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+I applied your patch to 2.6.35 and booted that on the same bad device
+for which I posted a boot log.  But to my surprise, it didn't give any
+errors at all - the boot process completed normally, and it appears to
+be working fine so far.  I had booted the kernel from memory, so I
+pulled the power and let it go through the normal boot process (using
+the 2.6.31 kernel that's built in to the firmware) - that also works
+fine.
+
+I checked my sanity by trying another bad device, and the same thing
+happened there - booting 2.6.35 somehow "fixed" my problem.
+Unfortunately, this means I can no longer tell what happened to the
+original block you were interested in.  I'll try to dig up another bad
+device, and use your patch with an older kenel version to see what
+happens there.
+
+Is it at all possible that the error was caused by something at the
+UBI or MTD layer which was fixed between 2.6.34 and 2.6.35, and
+booting up with 2.6.35 "touched" something that made it work again
+even after reverting to an older kernel?  Sounds pretty far-fetched,
+but I don't know how else to explain these suddenly-recovered
+devices...
+
+-- 
+Matthew L. Creech
