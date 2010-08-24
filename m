@@ -1,28 +1,32 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Onoif-0000Ks-UB
-	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 08:18:58 +0000
-Received: by fxm12 with SMTP id 12so4417455fxm.36
+	id 1Onovc-00028S-Nf
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 08:32:21 +0000
+Received: by yxf34 with SMTP id 34so2942657yxf.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 Aug 2010 01:18:56 -0700 (PDT)
-Subject: Re: [PATCH] drivers/mtd: remove makefile subdirectory processing
-	redundancies
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kyle Spaans <kspaans@uwaterloo.ca>
-In-Reply-To: <20100804005804.GA11770@taurine.csclub.uwaterloo.ca>
-References: <20100714042509.GA7775@caffeine.csclub.uwaterloo.ca>
-	<1279471590.16247.57.camel@localhost.localdomain>
-	<20100720021718.GA32479@caffeine.csclub.uwaterloo.ca>
-	<1279706975.2306.4.camel@localhost>
-	<20100804005804.GA11770@taurine.csclub.uwaterloo.ca>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 Aug 2010 11:17:27 +0300
-Message-ID: <1282637847.24044.136.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+	Tue, 24 Aug 2010 01:32:19 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1282574489.24044.74.camel@localhost>
+References: <AANLkTikC6wxXV08=AYsqn56h8Cs-qC_-b8hNyq9DUWps@mail.gmail.com>
+	<1280150054.14917.108.camel@localhost>
+	<AANLkTik7CdwdyhzVYFXG66V3LKZvqnZhLbg4eVC0nQ=S@mail.gmail.com>
+	<1280244340.3021.38.camel@localhost.localdomain>
+	<AANLkTi=7-Ur35OzqF7iJtiPzfc-Jp-ANGwa3g_Y=+ae8@mail.gmail.com>
+	<1280471755.2838.29.camel@localhost.localdomain>
+	<AANLkTikZb=R=8BObvTN6uGaZGAmvvUZd4oYKvkCJih7H@mail.gmail.com>
+	<AANLkTikkRNqnEX0PkHigv=zT+Z36J52DEtoVeMGbBExf@mail.gmail.com>
+	<AANLkTim6U4uO_2yf-VyoL+4j9-yDkouTQdP_aszpEXwW@mail.gmail.com>
+	<1282566891.24044.32.camel@localhost>
+	<AANLkTinqAT=aCYFBi8Nri72L898U0k6dTk3z90OJOpRc@mail.gmail.com>
+	<1282574489.24044.74.camel@localhost>
+Date: Tue, 24 Aug 2010 10:32:18 +0200
+Message-ID: <AANLkTik+T6HA+umRvxj5oPmGwf5=tQvk-sNzSTqaq8VB@mail.gmail.com>
+Subject: Re: error!: "/dev/ubi0" is not a character device ?!?
+From: Arno Steffen <arno.steffen@googlemail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,78 +36,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-08-03 at 20:58 -0400, Kyle Spaans wrote:
-> Remove redundant config checks when the subdirectory's Makefile is already
-> conditionally processed. Add more conditional processing when the subdirectory
-> can be selected/deselected as a whole.
-> 
-> Signed-off-by: Kyle Spaans <kspaans@uwaterloo.ca>
+2010/8/23 Artem Bityutskiy <dedekind1@gmail.com>:
+> On Mon, 2010-08-23 at 16:13 +0200, Arno Steffen wrote:
+>> My results are: (other will follow next day)
+>
+> ... snip ...
+>
+>> mtd_readtest: MTD device: 0
+>> mtd_readtest: MTD device size 262144, eraseblock size 131072, page
+>> size 2048, count of eraseblocks 2, pages per eraseblock 64, OOB size
+>> 64
+>> mtd_readtest: scanning for bad eraseblocks
+>> mtd_readtest: scanned 2 eraseblocks, 0 are bad
+>> mtd_readtest: testing page read
+>> uncorrectable error :
+>> uncorrectable error :
+>> uncorrectable error :
+>> mtd_readtest: error: read failed at 0x0
+>> uncorrectable error :
+>> uncorrectable error :
+>> uncorrectable error :
+>> uncorrectable error :
+>> mtd_readtest: error: read failed at 0x800
+>> uncorrectable error :
+>
+> They do not look very too well :-)
+>
+> No wonder UBI hates your flash and refuses it.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
+>
+>
 
-Sorry, bad luck. I get the following with your patch, but without your
-patch my compilation is fine. Forgot to compile-test? :-)
+Please let me know, whether I used it right. I enabled in config
+build test modules, "make modules" and copied this modules to my
+embedded device. There I just typed insmod mtd_readtest.ko
+As far as I could see it just accesses /dev/mtd0. This is read only
+(Xloader and HW-ECC). Can this cause this problems? How to check other
+parts of Flash. Couldn't found some docu to the test modules.
 
-[dedekind@eru l2-mtd-2.6]$ make
-  CHK     include/linux/version.h
-  CHK     include/generated/utsrelease.h
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  CHK     include/linux/version.h
-make[2]: `scripts/unifdef' is up to date.
-Kernel: arch/x86/boot/bzImage is ready  (#7)
-  Building modules, stage 2.
-  MODPOST 251 modules
-ERROR: "ubi_open_volume" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_leb_map" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_open_volume_nm" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_leb_change" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_leb_write" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_get_device_info" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_leb_read" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_leb_unmap" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_close_volume" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_get_volume_info" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_open_volume_path" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_sync" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_is_mapped" [fs/ubifs/ubifs.ko] undefined!
-ERROR: "ubi_register_volume_notifier" [drivers/mtd/ubi/gluebi.ko]
-undefined!
-ERROR: "ubi_leb_read" [drivers/mtd/ubi/gluebi.ko] undefined!
-ERROR: "ubi_leb_write" [drivers/mtd/ubi/gluebi.ko] undefined!
-ERROR: "ubi_leb_erase" [drivers/mtd/ubi/gluebi.ko] undefined!
-ERROR: "ubi_leb_unmap" [drivers/mtd/ubi/gluebi.ko] undefined!
-ERROR: "ubi_open_volume" [drivers/mtd/ubi/gluebi.ko] undefined!
-ERROR: "ubi_close_volume" [drivers/mtd/ubi/gluebi.ko] undefined!
-ERROR: "ubi_unregister_volume_notifier" [drivers/mtd/ubi/gluebi.ko]
-undefined!
-ERROR: "onenand_scan" [drivers/mtd/onenand/onenand_sim.ko] undefined!
-ERROR: "flexonenand_region" [drivers/mtd/onenand/onenand_sim.ko]
-undefined!
-ERROR: "onenand_addr" [drivers/mtd/onenand/onenand_sim.ko] undefined!
-ERROR: "onenand_release" [drivers/mtd/onenand/onenand_sim.ko] undefined!
-ERROR: "onenand_scan" [drivers/mtd/onenand/generic.ko] undefined!
-ERROR: "onenand_release" [drivers/mtd/onenand/generic.ko] undefined!
-ERROR: "nand_scan_tail" [drivers/mtd/nand/sm_common.ko] undefined!
-ERROR: "nand_scan_ident" [drivers/mtd/nand/sm_common.ko] undefined!
-ERROR: "nand_release" [drivers/mtd/nand/r852.ko] undefined!
-ERROR: "nand_scan" [drivers/mtd/nand/plat_nand.ko] undefined!
-ERROR: "nand_release" [drivers/mtd/nand/plat_nand.ko] undefined!
-ERROR: "nand_default_bbt" [drivers/mtd/nand/nandsim.ko] undefined!
-ERROR: "nand_scan" [drivers/mtd/nand/nandsim.ko] undefined!
-ERROR: "nand_release" [drivers/mtd/nand/nandsim.ko] undefined!
-ERROR: "nand_scan" [drivers/mtd/nand/diskonchip.ko] undefined!
-ERROR: "nand_scan_bbt" [drivers/mtd/nand/diskonchip.ko] undefined!
-ERROR: "nand_release" [drivers/mtd/nand/diskonchip.ko] undefined!
-ERROR: "nand_release" [drivers/mtd/nand/denali.ko] undefined!
-ERROR: "nand_scan_tail" [drivers/mtd/nand/denali.ko] undefined!
-ERROR: "nand_scan_ident" [drivers/mtd/nand/denali.ko] undefined!
-ERROR: "nand_release" [drivers/mtd/nand/cafe_nand.ko] undefined!
-ERROR: "nand_scan_tail" [drivers/mtd/nand/cafe_nand.ko] undefined!
-ERROR: "nand_scan_ident" [drivers/mtd/nand/cafe_nand.ko] undefined!
-ERROR: "nand_wait_ready" [drivers/mtd/nand/cafe_nand.ko] undefined!
-ERROR: "lpddr_cmdset" [drivers/mtd/lpddr/qinfo_probe.ko] undefined!
-make[1]: *** [__modpost] Error 1
-make: *** [modules] Error 2
+What does this mean:
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+mtd_readtest: finished with errors
+mtd_readtest: error -74 occurred
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+insmod: cannot insert 'mtd_readtest.ko': Bad message
