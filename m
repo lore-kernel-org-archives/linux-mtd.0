@@ -1,18 +1,25 @@
-Received: from ussvlmgty03.spansion.com ([12.151.36.115])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OnqEo-0004yM-9h
-	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 09:56:14 +0000
-Message-ID: <4C739735.3090408@spansion.com>
-Date: Tue, 24 Aug 2010 11:56:05 +0200
-From: Gernot Hoyler <Gernot.Hoyler@spansion.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Re: protection on cfi-flash
-References: <AANLkTinWBxKC0F-awnJktD7JfJofg3XqT-1onPcQypws@mail.gmail.com>
-In-Reply-To: <AANLkTinWBxKC0F-awnJktD7JfJofg3XqT-1onPcQypws@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: fransmeulenbroeks@gmail.com
+	id 1Onqyd-00069Y-CF
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 10:43:36 +0000
+Received: by bwz13 with SMTP id 13so6289069bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Aug 2010 03:43:33 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] Deprecate ECCGETLAYOUT
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <norris@broadcom.com>
+In-Reply-To: <1282154806-9420-1-git-send-email-norris@broadcom.com>
+References: <4C5CA4A1.1040000@broadcom.com>
+	<1282154806-9420-1-git-send-email-norris@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 24 Aug 2010 13:42:04 +0300
+Message-ID: <1282646524.24044.161.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	Sneha Narnakaje <nsnehaprabha@ti.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- > I would expect flash_erase to get some error code in that case and
- > report it back (or if that is not possible do a readback of the data
- > to see if the erase was successful).
+On Wed, 2010-08-18 at 11:06 -0700, Brian Norris wrote:
+> The following two patches are implementations of two different
+> strategies to deprecate the ioctl ECCGETLAYOUT. This ioctl is not
+> very useful and imposes restrictions on expanding the corresponding
+> kernel struct nand_ecclayout. Either patch will leave functionality
+> intact but allow the kernel-space layouts to expand in the future.
+> 
+> Strategy 1: Create new struct nand_ecclayout_l and convert all kernel
+>   code to use this struct.
+> Strategy 2: Rename old struct nand_ecclayout_user and modify
+>   nand_ecclayout to be used in the kernel only.
 
-Erasing or programing a locked sector does not immediately issue an
-error on the S29GL01GP. The status you get from the device in this
-case shows a couple of toggle bit cycles before it goes back to read
-array mode.
+I think nand_ecclayout_l is silly name. Strategy 2 looks nicer, let's
+stick to that one.
 
-It is the responsibility of higher layers to verify erase and/or program
-operations. This verification step is done e.g. in flash file systems
-but not in the MTD chip driver.
-
---Gernot
-
-PS: Feel free to get in direct touch with me regarding adding locking
-     support to the AMD/Spansion chip driver. I can help you with this.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
