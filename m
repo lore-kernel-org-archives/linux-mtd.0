@@ -1,23 +1,21 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ont0Y-00030k-Lk
-	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 12:53:43 +0000
-Received: by fxm12 with SMTP id 12so4522746fxm.36
+	id 1OntO6-0000la-7o
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 13:18:02 +0000
+Received: by bwz13 with SMTP id 13so6396140bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 Aug 2010 05:53:39 -0700 (PDT)
-Subject: Re: [PATCH 2/2] drivers/mtd/ubi: Eliminate update of
-	list_for_each_entry loop cursor
+	Tue, 24 Aug 2010 06:18:01 -0700 (PDT)
+Subject: Re: JFFS2 what file is a given node in?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Julia Lawall <julia@diku.dk>
-In-Reply-To: <Pine.LNX.4.64.1008071109140.5821@ask.diku.dk>
-References: <Pine.LNX.4.64.1008071109140.5821@ask.diku.dk>
+To: Shane Volpe <shanevolpe@gmail.com>
+In-Reply-To: <AANLkTikWFqbH-s2Uo8TjW-fX2jkYdGH=9oKp17yVqZ7F@mail.gmail.com>
+References: <AANLkTikWFqbH-s2Uo8TjW-fX2jkYdGH=9oKp17yVqZ7F@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 Aug 2010 15:52:12 +0300
-Message-ID: <1282654332.24044.170.camel@localhost>
+Date: Tue, 24 Aug 2010 16:10:49 +0300
+Message-ID: <1282655449.24044.173.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,42 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-08-07 at 11:09 +0200, Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
-> 
-> list_for_each_entry uses its first argument to move from one element to the
-> next, so modifying it can break the iteration.  The variable re1 is already
-> used within the loop as a temporary variable, and is not live here.
-> 
-> The semantic match that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
-> 
-> // <smpl>
-> @r@
-> iterator name list_for_each_entry;
-> expression x,E;
-> position p1,p2;
-> @@
-> 
-> list_for_each_entry@p1(x,...) { <... x =@p2 E ...> }
-> 
-> @@
-> expression x,E;
-> position r.p1,r.p2;
-> statement S;
-> @@
-> 
-> *x =@p2 E
-> ...
-> list_for_each_entry@p1(x,...) S
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
+On Tue, 2010-08-24 at 08:52 -0400, Shane Volpe wrote:
+> I get the following message:
+> <4>Data CRC 0550f35b != calculated CRC 81fbb81c for node at 02aedb74
+> I want to find out what file this node is in so I can further
+> investigate the corruption, how do I do that?
 
-Pushed to ubi-2.6.git tree. This won't be seen in linux-next for some
-time though, but I'll make it visible in linux-next at some point soon.
+Add a printk to the corresponding piece of code?
 
-Thanks!
+Also, notice that these messages are usually harmless and appear because
+or unclean reboots.
 
 -- 
 Best Regards,
