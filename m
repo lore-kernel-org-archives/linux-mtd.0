@@ -1,22 +1,17 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ons7Y-0003f0-3J
-	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 11:56:54 +0000
-Received: by eye22 with SMTP id 22so3692497eye.36
+	id 1Onszo-0002us-Hu
+	for linux-mtd@lists.infradead.org; Tue, 24 Aug 2010 12:52:58 +0000
+Received: by bwz13 with SMTP id 13so6374808bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 Aug 2010 04:56:50 -0700 (PDT)
-Date: Tue, 24 Aug 2010 13:56:27 +0200
-From: Dan Carpenter <error27@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [patch] mtd/pcmciamtd: remove dead code
-Message-ID: <20100824115627.GD29330@bicker>
+	Tue, 24 Aug 2010 05:52:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: kernel-janitors@vger.kernel.org,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Magnus Damm <damm@opensource.se>, Alexander Kurz <linux@kbdbabel.org>,
-	linux-mtd@lists.infradead.org, Karsten Keil <keil@b1-systems.de>
+From: Shane Volpe <shanevolpe@gmail.com>
+Date: Tue, 24 Aug 2010 08:52:34 -0400
+Message-ID: <AANLkTikWFqbH-s2Uo8TjW-fX2jkYdGH=9oKp17yVqZ7F@mail.gmail.com>
+Subject: JFFS2 what file is a given node in?
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +21,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This code isn't reachable.  I looked through the git history and it
-hasn't been reachable for years.  Someone removed the label to silence
-gcc's unused label warning but these few lines accidentally got left
-behind.
-
-Signed-off-by: Dan Carpenter <error27@gmail.com>
-
-diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
-index e9ca5ba..86c7468 100644
---- a/drivers/mtd/maps/pcmciamtd.c
-+++ b/drivers/mtd/maps/pcmciamtd.c
-@@ -654,10 +654,6 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	}
- 	dev_info(&dev->p_dev->dev, "mtd%d: %s\n", mtd->index, mtd->name);
- 	return 0;
--
--	dev_err(&dev->p_dev->dev, "CS Error, exiting\n");
--	pcmciamtd_release(link);
--	return -ENODEV;
- }
- 
- 
+I get the following message:
+<4>Data CRC 0550f35b != calculated CRC 81fbb81c for node at 02aedb74
+I want to find out what file this node is in so I can further
+investigate the corruption, how do I do that?
+Regards,
+Shane
