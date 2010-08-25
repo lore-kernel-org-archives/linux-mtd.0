@@ -1,18 +1,25 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OoCP6-0001De-7R
-	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2010 09:36:20 +0000
-Received: by qwe4 with SMTP id 4so324752qwe.36
+	id 1OoEcd-0006VV-Ia
+	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2010 11:58:28 +0000
+Received: by fxm12 with SMTP id 12so260308fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Aug 2010 02:36:19 -0700 (PDT)
+	Wed, 25 Aug 2010 04:58:26 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 25 Aug 2010 17:36:18 +0800
-Message-ID: <AANLkTim=JEuHBXXqVFOJ4ozXGSEVxjuCt7sOpXcox-NQ@mail.gmail.com>
-Subject: anyone can help me about nand_get_flash_type
-From: Tony Wan <visual2me@gmail.com>
-To: linux-mtd@lists.infradead.org
+In-Reply-To: <OFA98E98D2.70D73DE5-ONC1257789.007F6116-C1257789.008000E9@transmode.se>
+References: <AANLkTikPQfNJ9eZeF6scpnx5beVt=dR6pfNgqcExteMu@mail.gmail.com>
+	<4C607150.6040806@jkmicro.com>
+	<AANLkTinL1dqv9LmQ1zTCEJ46pb=jfc3=25cehHFi9wfT@mail.gmail.com>
+	<AANLkTinV-YT9ypqY8aXxmP2ZVKVsofzU0Y7PLXH6ac5g@mail.gmail.com>
+	<OFA98E98D2.70D73DE5-ONC1257789.007F6116-C1257789.008000E9@transmode.se>
+From: Shane Volpe <shanevolpe@gmail.com>
+Date: Wed, 25 Aug 2010 07:58:06 -0400
+Message-ID: <AANLkTin+Av3=MPjxFX12m9_T5T7fY7o11CmfxACdb_a5@mail.gmail.com>
+Subject: Re: buffer write error (status 0x90)
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Adam Yergovich <ayergo@jkmicro.com>,
+	Jon Ringle <jon@ringle.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+On Tue, Aug 24, 2010 at 7:18 PM, Joakim Tjernlund
+<joakim.tjernlund@transmode.se> wrote:
+> It states :
+> When customer uses [...] block unlock, the block lock status might be
+> altered inadvertently. Lock status might be set to either 01h or 03h
+> unexpectedly (00h as expected data), which leads to program/erase failure
+> on certain blocks.
+>
+> Easy to work around.
 
-I got an ARM device from Marvell with a NAND rom, running Linux
-2.6.22.18. These days I'm working on upgrading the kernel to 2.6.31.8.
-After the upgrade, all devices work well except the NAND rom. I found
-it's because that the device and=A0manufacturer IDs cannot be retrieved
-correctly in nand_get_flash_type. =A0In 2.6.22.18, the IDs can be
-retrieved as expected; but in 2.6.31.8, the IDs always be 0, which
-leads to an error in nand_scan.
-
-I'm a definitely newbie with MTD, and currently have no idea about the
-problem. Except IO_ADDR_R & IO_ADDR_W are remapped to different
-addresses, I can't find any differences between the 2 versions from
-the system log -- may it be the reason? Anyone can give me some tips
-about this problem -- how to fix it or how to debug? Any suggestions
-will be appreciated.
-
---
-Best regards,
-Tony Wan
+Joakim,
+Do you have a patch or an example on how to work around this?
+Regards,
+Shane
