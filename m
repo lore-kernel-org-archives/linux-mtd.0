@@ -1,23 +1,27 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OoG42-0006BF-RA
-	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2010 13:30:51 +0000
-Date: Wed, 25 Aug 2010 15:30:45 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: Re: [RFC] nand/davinci: Fix comment to match the code
-Message-ID: <20100825133045.GB9916@pengutronix.de>
-References: <1282738700-30966-1-git-send-email-w.sang@pengutronix.de>
-	<039d01cb4450$e8f7d6a0$bae783e0$@raj@ti.com>
-	<1282740906.24044.210.camel@localhost>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OoGWk-0008Tz-If
+	for linux-mtd@lists.infradead.org; Wed, 25 Aug 2010 14:00:31 +0000
+Received: by fxm12 with SMTP id 12so363565fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 Aug 2010 07:00:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="kXdP64Ggrk/fb43R"
-Content-Disposition: inline
-In-Reply-To: <1282740906.24044.210.camel@localhost>
-Cc: 'Sneha Narnakaje' <nsnehaprabha@ti.com>,
-	davinci-linux-open-source@linux.davincidsp.com,
-	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <OF0FF7D4F4.BB0FA8ED-ONC125778A.0043A5C9-C125778A.0043DEAC@transmode.se>
+References: <AANLkTikPQfNJ9eZeF6scpnx5beVt=dR6pfNgqcExteMu@mail.gmail.com>
+	<4C607150.6040806@jkmicro.com>
+	<AANLkTinL1dqv9LmQ1zTCEJ46pb=jfc3=25cehHFi9wfT@mail.gmail.com>
+	<AANLkTinV-YT9ypqY8aXxmP2ZVKVsofzU0Y7PLXH6ac5g@mail.gmail.com>
+	<OFA98E98D2.70D73DE5-ONC1257789.007F6116-C1257789.008000E9@transmode.se>
+	<AANLkTin+Av3=MPjxFX12m9_T5T7fY7o11CmfxACdb_a5@mail.gmail.com>
+	<OF0FF7D4F4.BB0FA8ED-ONC125778A.0043A5C9-C125778A.0043DEAC@transmode.se>
+From: Shane Volpe <shanevolpe@gmail.com>
+Date: Wed, 25 Aug 2010 10:00:07 -0400
+Message-ID: <AANLkTimSYjLrOpYB24rF2b1cUtsmtJnj3_YCoYdKvD2+@mail.gmail.com>
+Subject: Re: buffer write error (status 0x90)
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, Adam Yergovich <ayergo@jkmicro.com>,
+	Jon Ringle <jon@ringle.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +31,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+>
+> See u-boot:
+> http://lists.denx.de/pipermail/u-boot/2010-August/075727.html
+>
+>
 
---kXdP64Ggrk/fb43R
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Aug 25, 2010 at 03:55:06PM +0300, Artem Bityutskiy wrote:
-
-> then it is already in upstream in Linus' tree. I do not have anything els=
-e from you.
-
-I checked linux-next before creating this patch; the comment was the
-same as in linus-tree.
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---kXdP64Ggrk/fb43R
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkx1GwUACgkQD27XaX1/VRu/hwCeL2J5qKyv+0mCppUJve3NaLDD
-IpYAoJCAKgZiROntCYfcLxOoFId9/QbB
-=hZUh
------END PGP SIGNATURE-----
-
---kXdP64Ggrk/fb43R--
+Joakim,
+Great, thanks.  Do you know if this issue has been addressed in the
+Linux kernel?
+Regards,
+Shane
