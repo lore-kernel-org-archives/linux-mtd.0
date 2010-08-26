@@ -1,18 +1,15 @@
-Subject: Re: [PATCH 0/5] pxa3xx_nand updates
+Subject: Re: Pull request: i.MX nand driver updates
 From: David Woodhouse <dwmw2@infradead.org>
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-In-Reply-To: <AANLkTim+zxHQHwpM0KJ5vrNNfKAb-ro+2aJiG7CtEvqF@mail.gmail.com>
-References: <AANLkTinU2nF2q9+eSX9XkA3U=Kj3M+BELrDBN1S2AaZp@mail.gmail.com>
-	<AANLkTikMedFwPzoodZx+EJTUkkB2hdsso3Yc7o1q9jBr@mail.gmail.com>
-	<AANLkTim+zxHQHwpM0KJ5vrNNfKAb-ro+2aJiG7CtEvqF@mail.gmail.com>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+In-Reply-To: <20100823064024.GP27749@pengutronix.de>
+References: <20100823064024.GP27749@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 26 Aug 2010 17:30:36 +0100
-Message-ID: <1282840236.15156.41.camel@localhost>
+Date: Fri, 27 Aug 2010 00:37:45 +0100
+Message-ID: <1282865865.29421.47.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Eric Miao <eric.y.miao@gmail.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, John Ogness <john.ogness@linutronix.de>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +19,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-08-27 at 00:22 +0800, Haojian Zhuang wrote:
-> On Mon, Aug 23, 2010 at 4:22 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
-> > On Wed, Aug 18, 2010 at 10:34 PM, Haojian Zhuang
-> > <haojian.zhuang@gmail.com> wrote:
-> >> Changelog from v1:
-> >>
-> >> 1. Add default timing in order to read id successfully.
-> >> 2. Clean code
-> >>
-> >
-> > This series looks good to me. David, would you please help
-> > merge this? Thanks.
-> >
+On Mon, 2010-08-23 at 08:40 +0200, Sascha Hauer wrote:
+> Hi Artem,
 > 
-> Hi David,
+> Please pull the following patches to the i.MX nand driver for -next.
+> The patches have been reviewed here on the list and on linux-arm-kernel.
 > 
-> How about this series of patches? If they can be merged, we can
-> produce new patches from mtd tree.
+> Sascha
+> 
+> The following changes since commit da5cabf80e2433131bf0ed8993abc0f7ea618c73:
+> 
+>   Linux 2.6.36-rc1 (2010-08-15 17:41:37 -0700)
+> 
+> are available in the git repository at:
+>   git://git.pengutronix.de/git/imx/linux-2.6.git mtd-imx-nand
+> 
+> John Ogness (2):
+>       mxc_nand: Do not do byte accesses to the NFC buffer.
+>       mxc_nand: remove unused variables.
+> 
+> Sascha Hauer (10):
+>       mxc_nand: remove 0xe00 offset from registers
+>       mxc_nand: rework get_dev_status
+>       mxc_nand: make some internally used functions overwriteable
+>       mxc_nand: factor out a check_int function
+>       mxc_nand: add V1_V2 namespace to registers
+>       mxc_nand: support 8bit ecc
+>       mxc_nand: fix correct_data function
+>       mxc_nand: Add v3 (i.MX51) Support
+>       mxc_nand: do not depend on disabling the irq in the interrupt handler
+>       mxc_nand: configure pages per block for v2 controller
 
-Please could you resend them -- with Eric's Acked-By, and *without* the
-line wrap that prevents them from applying.
+Um, that repo seems to be based on something earlier than 2.6.36-rc1.
+And the real -rc1 already contains most of those commits.
+
+I think there are four commits which aren't already included. Of those,
+at least one looks like a bug fix which needs to go into 2.6.36. What
+about the others?
 
 -- 
-dwmw2
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
