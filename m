@@ -1,21 +1,21 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oop6R-0004it-2T
-	for linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 02:55:40 +0000
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
+	id 1Oop6e-0005C8-LD
+	for linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 02:55:53 +0000
+Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
 	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L7S003DJISMQKE0@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 11:55:34 +0900 (KST)
+	2010)) with ESMTP id <0L7S009I1IT13GE0@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 11:55:49 +0900 (KST)
 Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L7S00HVEISMID@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 11:55:34 +0900 (KST)
-Date: Fri, 27 Aug 2010 11:55:29 +0900
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L7S00N1UIT14S@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 11:55:50 +0900 (KST)
+Date: Fri, 27 Aug 2010 11:55:44 +0900
 From: Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH 1/3] MTD: OneNAND: Remove unused cmd_map at s5pc110
+Subject: [PATCH 3/3] MTD: OneNAND: Fix 2KiB pagesize handling at Samsung	SoCs
 To: linux-mtd@lists.infradead.org
-Message-id: <20100827025529.GA10692@july>
+Message-id: <20100827025544.GA10702@july>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7BIT
@@ -32,24 +32,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Kyungmin Park <kyungmin.park@samsung.com>
 
-S5PC110 OneNAND controller use the generic functions provided from onenand_base.
+Wrong assumption bufferram can be switched between BufferRAM0 and BufferRAM1
 
 Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 ---
- drivers/mtd/onenand/samsung.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ drivers/mtd/onenand/samsung.c |    5 ++---
+ 1 files changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index cb443af..05329ba 100644
+index 69e48d0..7913a92 100644
 --- a/drivers/mtd/onenand/samsung.c
 +++ b/drivers/mtd/onenand/samsung.c
-@@ -761,7 +761,6 @@ static void s3c_onenand_setup(struct mtd_info *mtd)
- 		onenand->cmd_map = s5pc1xx_cmd_map;
- 	} else if (onenand->type == TYPE_S5PC110) {
- 		/* Use generic onenand functions */
--		onenand->cmd_map = s5pc1xx_cmd_map;
- 		this->read_bufferram = s5pc110_read_bufferram;
- 		this->chip_probe = s5pc110_chip_probe;
- 		return;
+@@ -570,13 +570,12 @@ static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
+ 		unsigned char *buffer, int offset, size_t count)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+-	void __iomem *bufferram;
+ 	void __iomem *p;
+ 	void *buf = (void *) buffer;
+ 	dma_addr_t dma_src, dma_dst;
+ 	int err;
+ 
+-	p = bufferram = this->base + area;
++	p = this->base + area;
+ 	if (ONENAND_CURRENT_BUFFERRAM(this)) {
+ 		if (area == ONENAND_DATARAM)
+ 			p += this->writesize;
+@@ -620,7 +619,7 @@ static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
+ normal:
+ 	if (count != mtd->writesize) {
+ 		/* Copy the bufferram to memory to prevent unaligned access */
+-		memcpy(this->page_buf, bufferram, mtd->writesize);
++		memcpy(this->page_buf, p, mtd->writesize);
+ 		p = this->page_buf + offset;
+ 	}
+ 
 -- 
 1.5.3.3
