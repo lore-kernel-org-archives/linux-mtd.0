@@ -1,15 +1,26 @@
-Subject: Re: Pull request: i.MX nand driver updates
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <20100823064024.GP27749@pengutronix.de>
-References: <20100823064024.GP27749@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 27 Aug 2010 00:37:45 +0100
-Message-ID: <1282865865.29421.47.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, John Ogness <john.ogness@linutronix.de>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oop6R-0004it-2T
+	for linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 02:55:40 +0000
+Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L7S003DJISMQKE0@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 11:55:34 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L7S00HVEISMID@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 27 Aug 2010 11:55:34 +0900 (KST)
+Date: Fri, 27 Aug 2010 11:55:29 +0900
+From: Kyungmin Park <kmpark@infradead.org>
+Subject: [PATCH 1/3] MTD: OneNAND: Remove unused cmd_map at s5pc110
+To: linux-mtd@lists.infradead.org
+Message-id: <20100827025529.GA10692@july>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Cc: Artem.Bityutskiy@nokia.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-08-23 at 08:40 +0200, Sascha Hauer wrote:
-> Hi Artem,
-> 
-> Please pull the following patches to the i.MX nand driver for -next.
-> The patches have been reviewed here on the list and on linux-arm-kernel.
-> 
-> Sascha
-> 
-> The following changes since commit da5cabf80e2433131bf0ed8993abc0f7ea618c73:
-> 
->   Linux 2.6.36-rc1 (2010-08-15 17:41:37 -0700)
-> 
-> are available in the git repository at:
->   git://git.pengutronix.de/git/imx/linux-2.6.git mtd-imx-nand
-> 
-> John Ogness (2):
->       mxc_nand: Do not do byte accesses to the NFC buffer.
->       mxc_nand: remove unused variables.
-> 
-> Sascha Hauer (10):
->       mxc_nand: remove 0xe00 offset from registers
->       mxc_nand: rework get_dev_status
->       mxc_nand: make some internally used functions overwriteable
->       mxc_nand: factor out a check_int function
->       mxc_nand: add V1_V2 namespace to registers
->       mxc_nand: support 8bit ecc
->       mxc_nand: fix correct_data function
->       mxc_nand: Add v3 (i.MX51) Support
->       mxc_nand: do not depend on disabling the irq in the interrupt handler
->       mxc_nand: configure pages per block for v2 controller
+From: Kyungmin Park <kyungmin.park@samsung.com>
 
-Um, that repo seems to be based on something earlier than 2.6.36-rc1.
-And the real -rc1 already contains most of those commits.
+S5PC110 OneNAND controller use the generic functions provided from onenand_base.
 
-I think there are four commits which aren't already included. Of those,
-at least one looks like a bug fix which needs to go into 2.6.36. What
-about the others?
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+ drivers/mtd/onenand/samsung.c |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
 
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index cb443af..05329ba 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -761,7 +761,6 @@ static void s3c_onenand_setup(struct mtd_info *mtd)
+ 		onenand->cmd_map = s5pc1xx_cmd_map;
+ 	} else if (onenand->type == TYPE_S5PC110) {
+ 		/* Use generic onenand functions */
+-		onenand->cmd_map = s5pc1xx_cmd_map;
+ 		this->read_bufferram = s5pc110_read_bufferram;
+ 		this->chip_probe = s5pc110_chip_probe;
+ 		return;
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+1.5.3.3
