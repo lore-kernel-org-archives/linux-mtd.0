@@ -1,15 +1,13 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OpS54-0007Hs-1Q
+	id 1OpS54-0007Hu-Mv
 	for linux-mtd@lists.infradead.org; Sat, 28 Aug 2010 20:32:51 +0000
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
 Subject: [PATCH] mtd: Blackfin NFC: fix invalid free in remove()
-Date: Sat, 28 Aug 2010 16:42:05 -0400
-Message-Id: <1283028125-6027-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
-References: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
+Date: Sat, 28 Aug 2010 16:42:04 -0400
+Message-Id: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
 Cc: uclinux-dist-devel@blackfin.uclinux.org,
 	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -27,6 +25,8 @@ the driver built as a module.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
+note: this should be merged for 2.6.36 and probably sent to stable trees
+
  drivers/mtd/nand/bf5xx_nand.c |    7 +------
  1 files changed, 1 insertions(+), 6 deletions(-)
 
