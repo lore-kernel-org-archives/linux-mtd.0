@@ -1,18 +1,19 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OpebH-0000Ru-69
-	for linux-mtd@lists.infradead.org; Sun, 29 Aug 2010 09:54:55 +0000
-From: Julia Lawall <julia@diku.dk>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 3/7] drivers/mtd/nand/mpc5121_nfc.c: Add of_node_put to avoid
-	memory leak
-Date: Sun, 29 Aug 2010 11:52:42 +0200
-Message-Id: <1283075566-27441-4-git-send-email-julia@diku.dk>
-In-Reply-To: <1283075566-27441-1-git-send-email-julia@diku.dk>
-References: <1283075566-27441-1-git-send-email-julia@diku.dk>
-Cc: Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
-	devicetree-discuss@lists.ozlabs.org,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+From: Marek Vasut <marek.vasut@gmail.com>
+To: linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/5] pxa3xx_nand updates
+Date: Sun, 29 Aug 2010 12:42:55 +0200
+References: <AANLkTinU2nF2q9+eSX9XkA3U=Kj3M+BELrDBN1S2AaZp@mail.gmail.com>
+	<1282840236.15156.41.camel@localhost>
+	<AANLkTikU1oa-WqkraOTGz9re_=rreuikA1uoJk-SeEOR@mail.gmail.com>
+In-Reply-To: <AANLkTikU1oa-WqkraOTGz9re_=rreuikA1uoJk-SeEOR@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201008291242.55347.marek.vasut@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>, Eric Miao <eric.y.miao@gmail.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,81 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a call to of_node_put in the error handling code following a call to
-of_find_compatible_node.
+Dne Ne 29. srpna 2010 05:05:26 Haojian Zhuang napsal(a):
+> On Fri, Aug 27, 2010 at 12:30 AM, David Woodhouse <dwmw2@infradead.org> wrote:
+> > On Fri, 2010-08-27 at 00:22 +0800, Haojian Zhuang wrote:
+> >> On Mon, Aug 23, 2010 at 4:22 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
+> >> > On Wed, Aug 18, 2010 at 10:34 PM, Haojian Zhuang
+> >> > 
+> >> > <haojian.zhuang@gmail.com> wrote:
+> >> >> Changelog from v1:
+> >> >> 
+> >> >> 1. Add default timing in order to read id successfully.
+> >> >> 2. Clean code
+> >> > 
+> >> > This series looks good to me. David, would you please help
+> >> > merge this? Thanks.
+> >> 
+> >> Hi David,
+> >> 
+> >> How about this series of patches? If they can be merged, we can
+> >> produce new patches from mtd tree.
+> > 
+> > Please could you resend them -- with Eric's Acked-By, and *without* the
+> > line wrap that prevents them from applying.
+> > 
+> > --
+> > dwmw2
+> 
+> Hi David,
+> 
+> Eric's Acked-by is added into these patches already. Please help to
+> review and merge.
+> 
+> Since the first patch is already merged, only submit the other 4 patches.
 
-The semantic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
+Do you use git send-email by any chance? That shouldn't cause such line-wrap, 
+right?
 
-// <smpl>
-@r exists@
-local idexpression x;
-expression E,E1;
-statement S;
-@@
-
-*x = 
-(of_find_node_by_path
-|of_find_node_by_name
-|of_find_node_by_phandle
-|of_get_parent
-|of_get_next_parent
-|of_get_next_child
-|of_find_compatible_node
-|of_match_node
-)(...);
-...
-if (x == NULL) S
-<... when != x = E
-*if (...) {
-  ... when != of_node_put(x)
-      when != if (...) { ... of_node_put(x); ... }
-(
-  return <+...x...+>;
-|
-*  return ...;
-)
-}
-...>
-of_node_put(x);
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- drivers/mtd/nand/mpc5121_nfc.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
-index df0c1da..f4610bc 100644
---- a/drivers/mtd/nand/mpc5121_nfc.c
-+++ b/drivers/mtd/nand/mpc5121_nfc.c
-@@ -568,6 +568,7 @@ static int mpc5121_nfc_read_hw_config(struct mtd_info *mtd)
- 	uint rcw_width;
- 	uint rcwh;
- 	uint romloc, ps;
-+	int ret = 0;
- 
- 	rmnode = of_find_compatible_node(NULL, NULL, "fsl,mpc5121-reset");
- 	if (!rmnode) {
-@@ -579,7 +580,8 @@ static int mpc5121_nfc_read_hw_config(struct mtd_info *mtd)
- 	rm = of_iomap(rmnode, 0);
- 	if (!rm) {
- 		dev_err(prv->dev, "Error mapping reset module node!\n");
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto out;
- 	}
- 
- 	rcwh = in_be32(&rm->rcwhr);
-@@ -628,8 +630,9 @@ static int mpc5121_nfc_read_hw_config(struct mtd_info *mtd)
- 				rcw_width * 8, rcw_pagesize,
- 				rcw_sparesize);
- 	iounmap(rm);
-+out:
- 	of_node_put(rmnode);
--	return 0;
-+	return ret;
- }
- 
- /* Free driver resources */
+Cheers
+> 
+> Thanks
+> Haojian
