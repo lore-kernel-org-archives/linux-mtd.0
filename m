@@ -1,20 +1,31 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OpgmS-0005AB-PF
-	for linux-mtd@lists.infradead.org; Sun, 29 Aug 2010 12:14:37 +0000
-Received: by ywi4 with SMTP id 4so1909499ywi.36
+	id 1OpgsB-0007cP-R3
+	for linux-mtd@lists.infradead.org; Sun, 29 Aug 2010 12:20:32 +0000
+Received: by yxf34 with SMTP id 34so2055287yxf.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 29 Aug 2010 05:14:36 -0700 (PDT)
-Subject: [PATCH 2/2] UBI: fix forward compatibility
+	Sun, 29 Aug 2010 05:20:31 -0700 (PDT)
+Subject: Re: [PATCH] Add quick erase format option
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <1283083932.2131.36.camel@brekeke>
-References: <1283083932.2131.36.camel@brekeke>
+To: Stefani Seibold <stefani@seibold.net>
+In-Reply-To: <1283081435.2131.24.camel@brekeke>
+References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
+	<1281343038.12908.25.camel@localhost>
+	<1281343974.18398.13.camel@wall-e.seibold.net>
+	<1281353344.2332.8.camel@brekeke>
+	<1281362069.20181.16.camel@wall-e.seibold.net>
+	<1283081435.2131.24.camel@brekeke>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 29 Aug 2010 15:14:32 +0300
-Message-ID: <1283084072.2131.38.camel@brekeke>
+Date: Sun, 29 Aug 2010 15:20:24 +0300
+Message-ID: <1283084424.2131.40.camel@brekeke>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Enzinger,
+	Robert \(EXT-Other - DE/Munich\)" <robert.enzinger.ext@nsn.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,33 +36,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On Sun, 2010-08-29 at 14:30 +0300, Artem Bityutskiy wrote:
+> The reason why this flushing is needed is that we want to make sure
+> that
+> there are no PEBs which belonged to a volume with the same ID. Indeed,
+> imaging you have volume 5 with many used LEBs. Then you remove this
+> volume, so that all its LEBs are scheduled for erasure. Then you
+> create
+> a new volume with the same ID = 5. If we do not flush the queue, we
+> may
+> end up with rubbish from the older volume 5 in the new one. 
 
-Commit 0798cea8c2e1afee59686c51d27d0e96b05e42d1 "UBI: improve corrupted flash handling"
-broke delet-compatible volumes handling - it introduced a limit of 8 eraseblocks which
-may be corrupted. And delete-compatible eraseblocks are added to the "corrupted" list,
-so if we'd have a large delete-compatible volume, UBI would refuse it.
+Err, it is important to say that we'll end up with the rubbish if we
+have an unclean reboot after the new volume with ID 5 is created, but
+before all PEBs belonging to the old volume with ID 5 are erased.
+Hopefully, my explanation is not too messy :-)
 
-The fix is to add delete-compatible volumes to the erase list instead. Indeed, they are
-corrupted, we just have to erase them.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/scan.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 372a15a..69b52e9 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -843,7 +843,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		case UBI_COMPAT_DELETE:
- 			ubi_msg("\"delete\" compatible internal volume %d:%d"
- 				" found, will remove it", vol_id, lnum);
--			err = add_to_list(si, pnum, ec, &si->corr);
-+			err = add_to_list(si, pnum, ec, &si->erase);
- 			if (err)
- 				return err;
- 			return 0;
 -- 
-1.7.2.2
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
