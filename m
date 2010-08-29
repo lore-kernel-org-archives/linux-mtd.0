@@ -1,18 +1,18 @@
-MIME-Version: 1.0
-In-Reply-To: <1282840236.15156.41.camel@localhost>
-References: <AANLkTinU2nF2q9+eSX9XkA3U=Kj3M+BELrDBN1S2AaZp@mail.gmail.com>
-	<AANLkTikMedFwPzoodZx+EJTUkkB2hdsso3Yc7o1q9jBr@mail.gmail.com>
-	<AANLkTim+zxHQHwpM0KJ5vrNNfKAb-ro+2aJiG7CtEvqF@mail.gmail.com>
-	<1282840236.15156.41.camel@localhost>
-Date: Sun, 29 Aug 2010 11:05:26 +0800
-Message-ID: <AANLkTikU1oa-WqkraOTGz9re_=rreuikA1uoJk-SeEOR@mail.gmail.com>
-Subject: Re: [PATCH 0/5] pxa3xx_nand updates
-From: Haojian Zhuang <haojian.zhuang@gmail.com>
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OpebH-0000Ru-69
+	for linux-mtd@lists.infradead.org; Sun, 29 Aug 2010 09:54:55 +0000
+From: Julia Lawall <julia@diku.dk>
 To: David Woodhouse <dwmw2@infradead.org>
-Content-Type: multipart/mixed; boundary=0016364d2b619c8b86048eed9ea0
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Eric Miao <eric.y.miao@gmail.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 3/7] drivers/mtd/nand/mpc5121_nfc.c: Add of_node_put to avoid
+	memory leak
+Date: Sun, 29 Aug 2010 11:52:42 +0200
+Message-Id: <1283075566-27441-4-git-send-email-julia@diku.dk>
+In-Reply-To: <1283075566-27441-1-git-send-email-julia@diku.dk>
+References: <1283075566-27441-1-git-send-email-julia@diku.dk>
+Cc: Grant Likely <grant.likely@secretlab.ca>, linux-mtd@lists.infradead.org,
+	devicetree-discuss@lists.ozlabs.org,
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,171 +22,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0016364d2b619c8b86048eed9ea0
-Content-Type: text/plain; charset=ISO-8859-1
+Add a call to of_node_put in the error handling code following a call to
+of_find_compatible_node.
 
-On Fri, Aug 27, 2010 at 12:30 AM, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Fri, 2010-08-27 at 00:22 +0800, Haojian Zhuang wrote:
->> On Mon, Aug 23, 2010 at 4:22 PM, Eric Miao <eric.y.miao@gmail.com> wrote:
->> > On Wed, Aug 18, 2010 at 10:34 PM, Haojian Zhuang
->> > <haojian.zhuang@gmail.com> wrote:
->> >> Changelog from v1:
->> >>
->> >> 1. Add default timing in order to read id successfully.
->> >> 2. Clean code
->> >>
->> >
->> > This series looks good to me. David, would you please help
->> > merge this? Thanks.
->> >
->>
->> Hi David,
->>
->> How about this series of patches? If they can be merged, we can
->> produce new patches from mtd tree.
->
-> Please could you resend them -- with Eric's Acked-By, and *without* the
-> line wrap that prevents them from applying.
->
-> --
-> dwmw2
->
->
+The semantic match that finds this problem is as follows:
+(http://coccinelle.lip6.fr/)
 
-Hi David,
+// <smpl>
+@r exists@
+local idexpression x;
+expression E,E1;
+statement S;
+@@
 
-Eric's Acked-by is added into these patches already. Please help to
-review and merge.
+*x = 
+(of_find_node_by_path
+|of_find_node_by_name
+|of_find_node_by_phandle
+|of_get_parent
+|of_get_next_parent
+|of_get_next_child
+|of_find_compatible_node
+|of_match_node
+)(...);
+...
+if (x == NULL) S
+<... when != x = E
+*if (...) {
+  ... when != of_node_put(x)
+      when != if (...) { ... of_node_put(x); ... }
+(
+  return <+...x...+>;
+|
+*  return ...;
+)
+}
+...>
+of_node_put(x);
+// </smpl>
 
-Since the first patch is already merged, only submit the other 4 patches.
+Signed-off-by: Julia Lawall <julia@diku.dk>
 
-Thanks
-Haojian
+---
+ drivers/mtd/nand/mpc5121_nfc.c |    7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---0016364d2b619c8b86048eed9ea0
-Content-Type: application/x-gzip; name="20100829_nand_series1.tgz"
-Content-Disposition: attachment; filename="20100829_nand_series1.tgz"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gdfbgy1l0
-
-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
-YrFYLBaLxWJtqD+IbvbyAKAAAA==
---0016364d2b619c8b86048eed9ea0--
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index df0c1da..f4610bc 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -568,6 +568,7 @@ static int mpc5121_nfc_read_hw_config(struct mtd_info *mtd)
+ 	uint rcw_width;
+ 	uint rcwh;
+ 	uint romloc, ps;
++	int ret = 0;
+ 
+ 	rmnode = of_find_compatible_node(NULL, NULL, "fsl,mpc5121-reset");
+ 	if (!rmnode) {
+@@ -579,7 +580,8 @@ static int mpc5121_nfc_read_hw_config(struct mtd_info *mtd)
+ 	rm = of_iomap(rmnode, 0);
+ 	if (!rm) {
+ 		dev_err(prv->dev, "Error mapping reset module node!\n");
+-		return -EBUSY;
++		ret = -EBUSY;
++		goto out;
+ 	}
+ 
+ 	rcwh = in_be32(&rm->rcwhr);
+@@ -628,8 +630,9 @@ static int mpc5121_nfc_read_hw_config(struct mtd_info *mtd)
+ 				rcw_width * 8, rcw_pagesize,
+ 				rcw_sparesize);
+ 	iounmap(rm);
++out:
+ 	of_node_put(rmnode);
+-	return 0;
++	return ret;
+ }
+ 
+ /* Free driver resources */
