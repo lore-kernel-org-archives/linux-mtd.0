@@ -1,23 +1,23 @@
 Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq3hF-00066d-Hd
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 12:42:45 +0000
-Received: by vws11 with SMTP id 11so5518578vws.36
+	id 1Oq3oK-00009I-ER
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 12:50:08 +0000
+Received: by vws11 with SMTP id 11so5526076vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 05:42:44 -0700 (PDT)
-Subject: Re: [PATCH 1/1]nand/denali: Add runtime pm framework for MRST
-	Denali NAND controller
+	Mon, 30 Aug 2010 05:50:03 -0700 (PDT)
+Subject: Re: [PATCH 2/3] MTD: OneNAND: Fix loop hang when DMA error at
+	Samsung	SoCs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Chuanxiao.Dong" <chuanxiao.dong@intel.com>
-In-Reply-To: <20100826081201.GA11565@intel.com>
-References: <20100826081201.GA11565@intel.com>
+To: Kyungmin Park <kmpark@infradead.org>
+In-Reply-To: <20100827025537.GA10698@july>
+References: <20100827025537.GA10698@july>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 15:42:39 +0300
-Message-ID: <1283172159.12995.64.camel@brekeke>
+Date: Mon, 30 Aug 2010 15:49:57 +0300
+Message-ID: <1283172597.12995.68.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	arjan.van.de.ven@intel.com
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,47 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 2010-08-27 at 11:55 +0900, Kyungmin Park wrote:
+> From: Kyungmin Park <kyungmin.park@samsung.com>
+> 
+> When DMA error occurs. it's loop hang since it can't exit the loop.
+> and it's the right DMA handling code as Spec.
+> 
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+> ---
+>  drivers/mtd/onenand/samsung.c |   11 +++++------
+>  1 files changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+> index 05329ba..69e48d0 100644
+> --- a/drivers/mtd/onenand/samsung.c
+> +++ b/drivers/mtd/onenand/samsung.c
+> @@ -554,14 +554,13 @@ static int s5pc110_dma_ops(void *dst, void *src, size_t count, int direction)
+>  
+>  	do {
+>  		status = readl(base + S5PC110_DMA_TRANS_STATUS);
+> +		if (status & S5PC110_DMA_TRANS_STATUS_TE) {
+> +			writel(S5PC110_DMA_TRANS_CMD_TEC,
+> +					base + S5PC110_DMA_TRANS_CMD);
+> +			return -EIO;
+> +		}
+>  	} while (!(status & S5PC110_DMA_TRANS_STATUS_TD));
+>  
+> -	if (status & S5PC110_DMA_TRANS_STATUS_TE) {
+> -		writel(S5PC110_DMA_TRANS_CMD_TEC, base + S5PC110_DMA_TRANS_CMD);
+> -		writel(S5PC110_DMA_TRANS_CMD_TDC, base + S5PC110_DMA_TRANS_CMD);
+> -		return -EIO;
+> -	}
+> -
+>  	writel(S5PC110_DMA_TRANS_CMD_TDC, base + S5PC110_DMA_TRANS_CMD);
 
-On Thu, 2010-08-26 at 16:12 +0800, Chuanxiao.Dong wrote:
-> +static struct dev_pm_ops denali_pm = {
-> +	.runtime_suspend = denali_runtime_suspend,
-> +	.runtime_resume = denali_runtime_resume,
-> +	.runtime_idle = denali_runtime_idle,
-> +};
-> +#define DENALI_PM (&denali_pm)
-
-I think it is confusing to use this style. Please, do not define this
-DENALI_PM macro, unless this is a standard practice, which I doubt, but
-not sure.
-
-... snip ...
-
-> +#else
-> +#define DENALI_PM NULL
-Ditto.
-> +static inline void denali_timer_add(struct denali_nand_info *denali) {}
-> +static inline void denali_timer_func(unsigned long ptr) {}
-> +#endif
-
-#endif /* !CONFIG_PM_RUNTIME */
-
-.. snip ..
-
->  static struct pci_driver denali_pci_driver = {
-> +	.driver = {
-> +		.pm = DENALI_PM,
-> +	},
-
-This is the only place where you use this macro, just do
-
-#ifdef CONFIG_PM_RUNTIME
-	.driver = {
-		.pm = DENALI_PM,
-	},
-#endif
-
-And it will be more readable.
+You shoule also add timeout to the loop. Forever loops are bad. Please,
+while you are on it, fix the forever loop by doing something like this:
+http://patchwork.ozlabs.org/patch/59180/
+I mean, add timeout please.
 
 -- 
 Best Regards,
