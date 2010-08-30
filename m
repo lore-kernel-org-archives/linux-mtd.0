@@ -1,20 +1,25 @@
-Subject: Re: [PATCH 0/5] pxa3xx_nand updates
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oq4Bx-00062i-5w
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:14:34 +0000
+Received: by vws11 with SMTP id 11so5551134vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 30 Aug 2010 06:14:02 -0700 (PDT)
+Subject: Re: [PATCH 3/7] drivers/mtd/nand/mpc5121_nfc.c: Add of_node_put to
+	avoid memory leak
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-In-Reply-To: <AANLkTikU1oa-WqkraOTGz9re_=rreuikA1uoJk-SeEOR@mail.gmail.com>
-References: <AANLkTinU2nF2q9+eSX9XkA3U=Kj3M+BELrDBN1S2AaZp@mail.gmail.com>
-	<AANLkTikMedFwPzoodZx+EJTUkkB2hdsso3Yc7o1q9jBr@mail.gmail.com>
-	<AANLkTim+zxHQHwpM0KJ5vrNNfKAb-ro+2aJiG7CtEvqF@mail.gmail.com>
-	<1282840236.15156.41.camel@localhost>
-	<AANLkTikU1oa-WqkraOTGz9re_=rreuikA1uoJk-SeEOR@mail.gmail.com>
+To: Julia Lawall <julia@diku.dk>
+In-Reply-To: <1283075566-27441-4-git-send-email-julia@diku.dk>
+References: <1283075566-27441-1-git-send-email-julia@diku.dk>
+	<1283075566-27441-4-git-send-email-julia@diku.dk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 16:09:13 +0300
-Message-ID: <1283173753.12995.76.camel@brekeke>
+Date: Mon, 30 Aug 2010 16:13:40 +0300
+Message-ID: <1283174020.12995.77.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>, Eric Miao <eric.y.miao@gmail.com>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,13 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-08-29 at 11:05 +0800, Haojian Zhuang wrote:
-> Eric's Acked-by is added into these patches already. Please help to
-> review and merge.
+On Sun, 2010-08-29 at 11:52 +0200, Julia Lawall wrote:
+> Add a call to of_node_put in the error handling code following a call to
+> of_find_compatible_node.
 > 
-> Since the first patch is already merged, only submit the other 4 patches.
+> The semantic match that finds this problem is as follows:
+> (http://coccinelle.lip6.fr/)
 
-I've pushed them to my l2-mtd-2.6.git / master, thanks.
+Pushed to l2-mtd-2.6.git / master, thanks.
 
 -- 
 Best Regards,
