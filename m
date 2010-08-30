@@ -1,23 +1,17 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq1r9-0008Ps-2a
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 10:44:56 +0000
-Received: by yxf34 with SMTP id 34so2354310yxf.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 03:44:50 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: Samsung MLC - new OOB sizes
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <norris@broadcom.com>
-In-Reply-To: <1282326643-9598-1-git-send-email-norris@broadcom.com>
-References: <1282326643-9598-1-git-send-email-norris@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 13:44:16 +0300
-Message-ID: <1283165056.12995.51.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tilman@code-monkey.de, David Woodhouse <dwmw2@infradead.org>,
-	Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: Viresh KUMAR <viresh.kumar@st.com>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
+Date: Mon, 30 Aug 2010 16:13:56 +0530
+Message-Id: <a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
+In-Reply-To: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+In-Reply-To: <cover.1283161023.git.viresh.kumar@st.com>
+References: <cover.1283161023.git.viresh.kumar@st.com>
+Cc: pratyush.anand@st.com, Viresh Kumar <viresh.kumar@st.com>,
+	vipulkumar.samar@st.com, bhupesh.sharma@st.com,
+	armando.visconti@st.com, Vipin Kumar <vipin.kumar@st.com>,
+	shiraz.hashim@st.com, rajeev-dlh.kumar@st.com, deepak.sikri@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-08-20 at 10:50 -0700, Brian Norris wrote:
-> There are some additions to the detection scheme used by Samsung
-> MLC NAND. These simple changes to support the 400- and 436-byte OOB
-> are found in the following data sheet:
-> 
-> Samsung K9GBG08U0M (p.40)
-> 
-> Signed-off-by: Brian Norris <norris@broadcom.com>
-> ---
->  drivers/mtd/nand/nand_base.c |   17 +++++++++++++++--
->  1 files changed, 15 insertions(+), 2 deletions(-)
+From: Vipin Kumar <vipin.kumar@st.com>
 
-Thanks, pushed to l2-mtd-2.6.git / dunno
+For a page size of 4096, the number of oob bytes are 128 per page. This demands
+for an increased ecc_pos array as well as ecc can be placed at more than 64
+locations.
 
+This patch is added because SPEAr platforms NAND controller has 13 bytes of ecc
+for each 512 bytes of data. This results in 104 bytes of ecc in case of 4096
+byte page.
+
+Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+---
+ include/mtd/mtd-abi.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 4debb45..ff3f30e 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -150,7 +150,7 @@ struct nand_oobfree {
+  */
+ struct nand_ecclayout {
+ 	__u32 eccbytes;
+-	__u32 eccpos[64];
++	__u32 eccpos[128];
+ 	__u32 oobavail;
+ 	struct nand_oobfree oobfree[MTD_MAX_OOBFREE_ENTRIES];
+ };
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.7.2.2
