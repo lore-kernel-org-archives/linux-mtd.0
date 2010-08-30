@@ -1,25 +1,22 @@
 Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq1pq-0007II-E3
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 10:43:32 +0000
-Received: by yxf34 with SMTP id 34so2354043yxf.36
+	id 1Oq1r9-0008Ps-2a
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 10:44:56 +0000
+Received: by yxf34 with SMTP id 34so2354310yxf.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 03:43:29 -0700 (PDT)
-Subject: Re: [PATCH v3] Fix mtd-utils bugs
+	Mon, 30 Aug 2010 03:44:50 -0700 (PDT)
+Subject: Re: [PATCH] mtd: nand: Samsung MLC - new OOB sizes
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ladislav Michl <ladis@linux-mips.org>
-In-Reply-To: <20100820130313.GA3558@localhost.localdomain>
-References: <1277036580-3501-1-git-send-email-stanley.miao@windriver.com>
-	<20100623151622.GA2771@localhost.localdomain>
-	<1282282168.2183.2.camel@brekeke>
-	<20100820130313.GA3558@localhost.localdomain>
+To: Brian Norris <norris@broadcom.com>
+In-Reply-To: <1282326643-9598-1-git-send-email-norris@broadcom.com>
+References: <1282326643-9598-1-git-send-email-norris@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 13:42:19 +0300
-Message-ID: <1283164939.12995.50.camel@brekeke>
+Date: Mon, 30 Aug 2010 13:44:16 +0300
+Message-ID: <1283165056.12995.51.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "Stanley.Miao" <stanley.miao@windriver.com>, linux-mtd@lists.infradead.org,
-	joakim.tjernlund@transmode.se
+Cc: tilman@code-monkey.de, David Woodhouse <dwmw2@infradead.org>,
+	Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,23 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-08-20 at 15:03 +0200, Ladislav Michl wrote:
-> Here it is based on the top of current git. Updated only, compile tested only...
+On Fri, 2010-08-20 at 10:50 -0700, Brian Norris wrote:
+> There are some additions to the detection scheme used by Samsung
+> MLC NAND. These simple changes to support the 400- and 436-byte OOB
+> are found in the following data sheet:
 > 
-> Returning from main() instead of using exit() makes code more readable
-> and smaller (ARM EABI binary sizes)
+> Samsung K9GBG08U0M (p.40)
 > 
->    text    data     bss     dec     hex filename
->   28882     436      44   29362    72b2 flash_eraseall
->   28827     432      44   29303    7277 flash_eraseall.noexit
-> 
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> Signed-off-by: Brian Norris <norris@broadcom.com>
 > ---
->  flash_eraseall.c |  193 +++++++++++++++++++++++++------------------------------
->  1 file changed, 89 insertions(+), 104 deletions(-)
+>  drivers/mtd/nand/nand_base.c |   17 +++++++++++++++--
+>  1 files changed, 15 insertions(+), 2 deletions(-)
 
-Invented a subject line myself (you missed it) and pushed to
-mtd-utils.git, thank you!
+Thanks, pushed to l2-mtd-2.6.git / dunno
 
 -- 
 Best Regards,
