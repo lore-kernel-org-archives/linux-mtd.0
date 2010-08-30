@@ -1,14 +1,20 @@
-Received: from moutng.kundenserver.de ([212.227.126.187])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq256-0007sn-Tc
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 10:59:18 +0000
-From: Thierry Reding <thierry.reding@avionic-design.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] m25p80: Add support for the Winbond W25Q64.
-Date: Mon, 30 Aug 2010 13:00:48 +0200
-Message-Id: <1283166048-28228-1-git-send-email-thierry.reding@avionic-design.de>
-Cc: Thierry Reding <thierry.reding@avionic-design.de>,
-	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Viresh KUMAR <viresh.kumar@st.com>
+In-Reply-To: <a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
+References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 30 Aug 2010 15:14:29 +0300
+Message-ID: <1283170469.12995.53.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: pratyush.anand@st.com, vipulkumar.samar@st.com, bhupesh.sharma@st.com,
+	armando.visconti@st.com, Vipin Kumar <vipin.kumar@st.com>,
+	shiraz.hashim@st.com, rajeev-dlh.kumar@st.com,
+	linux-mtd@lists.infradead.org, deepak.sikri@st.com,
+	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,24 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for the Winbond W25Q64 serial flash.
+On Mon, 2010-08-30 at 16:13 +0530, Viresh KUMAR wrote:
+> From: Vipin Kumar <vipin.kumar@st.com>
+> 
+> For a page size of 4096, the number of oob bytes are 128 per page. This demands
+> for an increased ecc_pos array as well as ecc can be placed at more than 64
+> locations.
+> 
+> This patch is added because SPEAr platforms NAND controller has 13 bytes of ecc
+> for each 512 bytes of data. This results in 104 bytes of ecc in case of 4096
+> byte page.
+> 
+> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 
-Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
----
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Nack, breaking ABI Is not allowed in Linux.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 6f512b5..8cd2ec2 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -714,6 +714,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "w25x32", INFO(0xef3016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25q32", INFO(0xef4016, 0, 64 * 1024,  64, SECT_4K) },
- 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
-+	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128, SECT_4K) },
- 
- 	/* Catalyst / On Semiconductor -- non-JEDEC */
- 	{ "cat25c11", CAT25_INFO(  16, 8, 16, 1) },
 -- 
-1.7.1
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
