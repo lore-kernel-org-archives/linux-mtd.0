@@ -1,24 +1,24 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-px0-f177.google.com ([209.85.212.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq4cQ-0006IA-KE
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:41:51 +0000
-Received: by wyb38 with SMTP id 38so5507642wyb.36
+	id 1Oq5Tk-0005Re-PR
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 14:36:57 +0000
+Received: by pxi4 with SMTP id 4so2468671pxi.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 06:41:49 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1283172597.12995.68.camel@brekeke>
-References: <20100827025537.GA10698@july> <1283172597.12995.68.camel@brekeke>
-Date: Mon, 30 Aug 2010 22:41:48 +0900
-Message-ID: <AANLkTi=v8ZpmNG_7rOKYRydU2DzDB+_41YCjyq87zTiZ@mail.gmail.com>
-Subject: Re: [PATCH 2/3] MTD: OneNAND: Fix loop hang when DMA error at Samsung
-	SoCs
-From: Kyungmin Park <kmpark@infradead.org>
+	Mon, 30 Aug 2010 07:36:52 -0700 (PDT)
+From: Kevin Hilman <khilman@deeprootsystems.com>
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org
+Subject: Re: [PATCH 0/6] davinci: add support for aemif timing configuration
+References: <1281349000-822-1-git-send-email-nsekhar@ti.com>
+	<1283082501.2131.29.camel@brekeke>
+Date: Mon, 30 Aug 2010 07:36:46 -0700
+In-Reply-To: <1283082501.2131.29.camel@brekeke> (Artem Bityutskiy's message of
+	"Sun, 29 Aug 2010 14:48:21 +0300")
+Message-ID: <877hj8b20x.fsf@deeprootsystems.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org,
+	davinci-linux-open-source@linux.davincidsp.com,
+	Sekhar Nori <nsekhar@ti.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,70 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 30, 2010 at 9:49 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Fri, 2010-08-27 at 11:55 +0900, Kyungmin Park wrote:
->> From: Kyungmin Park <kyungmin.park@samsung.com>
->>
->> When DMA error occurs. it's loop hang since it can't exit the loop.
->> and it's the right DMA handling code as Spec.
->>
->> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
->> ---
->> =C2=A0drivers/mtd/onenand/samsung.c | =C2=A0 11 +++++------
->> =C2=A01 files changed, 5 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung=
-.c
->> index 05329ba..69e48d0 100644
->> --- a/drivers/mtd/onenand/samsung.c
->> +++ b/drivers/mtd/onenand/samsung.c
->> @@ -554,14 +554,13 @@ static int s5pc110_dma_ops(void *dst, void *src, s=
-ize_t count, int direction)
->>
->> =C2=A0 =C2=A0 =C2=A0 do {
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 status =3D readl(base +=
- S5PC110_DMA_TRANS_STATUS);
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (status & S5PC110_DMA_TRA=
-NS_STATUS_TE) {
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-writel(S5PC110_DMA_TRANS_CMD_TEC,
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 base + S5PC110_DMA_=
-TRANS_CMD);
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-return -EIO;
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
->> =C2=A0 =C2=A0 =C2=A0 } while (!(status & S5PC110_DMA_TRANS_STATUS_TD));
->>
->> - =C2=A0 =C2=A0 if (status & S5PC110_DMA_TRANS_STATUS_TE) {
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 writel(S5PC110_DMA_TRANS_CMD=
-_TEC, base + S5PC110_DMA_TRANS_CMD);
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 writel(S5PC110_DMA_TRANS_CMD=
-_TDC, base + S5PC110_DMA_TRANS_CMD);
->> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EIO;
->> - =C2=A0 =C2=A0 }
->> -
->> =C2=A0 =C2=A0 =C2=A0 writel(S5PC110_DMA_TRANS_CMD_TDC, base + S5PC110_DM=
-A_TRANS_CMD);
->
-> You shoule also add timeout to the loop. Forever loops are bad. Please,
-> while you are on it, fix the forever loop by doing something like this:
-> http://patchwork.ozlabs.org/patch/59180/
-> I mean, add timeout please.
+Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-No problem, I will update this patch tomorrow.
+> On Mon, 2010-08-09 at 15:46 +0530, Sekhar Nori wrote:
+>> This series of patches adds support for AEMIF timing configuration
+>> for DaVinci SoCs.
+>> 
+>> Currently AEMIF timing configuration is done as a special case for
+>> DM644x EVM. This work provides for a generic way of doing this.
+>> 
+>> David,
+>> 	Patch 1/6 and 2/6 of this series touch the
+>> 	drivers/mtd/nand/davinci_nand.c file along with other arch specific
+>> 	files. Based on the discussion on DaVinci list, Kevin is OK to merge
+>> 	this with your agreement. Please let us know how to proceed.
+>
+> Pushed to l2-mtd-2.6.git / dunno.
 
-Thank you,
-Kyungmin Park
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Hi Artem,
+
+If it's OK with you, and with your Ack, I'd prefer to merge this series
+via the davinci tree.
+
+The reason is because the files touched in arch/arm/mach-davinci/* are
+also getting lots of other changes for 2.6.37, and I'd like to minimize
+conflicts.
+
+Let me know if that's OK with you and if I can add your signoff to the
+drivers/mtd/* patches.  
+
+Thanks,
+
+Kevin
