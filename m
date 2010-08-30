@@ -1,24 +1,27 @@
-Received: from mail-px0-f177.google.com ([209.85.212.177])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq5Tk-0005Re-PR
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 14:36:57 +0000
-Received: by pxi4 with SMTP id 4so2468671pxi.36
+	id 1Oq60d-0006uN-Jj
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 15:10:59 +0000
+Received: by wyb38 with SMTP id 38so5614071wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 07:36:52 -0700 (PDT)
-From: Kevin Hilman <khilman@deeprootsystems.com>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 0/6] davinci: add support for aemif timing configuration
-References: <1281349000-822-1-git-send-email-nsekhar@ti.com>
-	<1283082501.2131.29.camel@brekeke>
-Date: Mon, 30 Aug 2010 07:36:46 -0700
-In-Reply-To: <1283082501.2131.29.camel@brekeke> (Artem Bityutskiy's message of
-	"Sun, 29 Aug 2010 14:48:21 +0300")
-Message-ID: <877hj8b20x.fsf@deeprootsystems.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mtd@lists.infradead.org,
-	davinci-linux-open-source@linux.davincidsp.com,
-	Sekhar Nori <nsekhar@ti.com>, David Woodhouse <dwmw2@infradead.org>
+	Mon, 30 Aug 2010 08:10:54 -0700 (PDT)
+Subject: Re: [Uclinux-dist-devel] [PATCH] mtd: Blackfin NFC: fix invalid
+	free in remove()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <AANLkTikE93Uqnf7_8p72rEhcRydmx0LdBVCM_z3tNr-z@mail.gmail.com>
+References: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
+	<1283173086.12995.74.camel@brekeke> <1283173173.12995.75.camel@brekeke>
+	<AANLkTikE93Uqnf7_8p72rEhcRydmx0LdBVCM_z3tNr-z@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 30 Aug 2010 18:10:47 +0300
+Message-ID: <1283181047.2005.1.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: uclinux-dist-devel@blackfin.uclinux.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind1@gmail.com> writes:
+On Mon, 2010-08-30 at 09:32 -0400, Mike Frysinger wrote:
+> On Mon, Aug 30, 2010 at 08:59, Artem Bityutskiy wrote:
+> > On Mon, 2010-08-30 at 15:58 +0300, Artem Bityutskiy wrote:
+> >> On Sat, 2010-08-28 at 16:42 -0400, Mike Frysinger wrote:
+> >> > Since info->mtd isn't dynamically allocated, we shouldn't attempt to
+> >> > kfree() it.  Otherwise we get random fun corruption when unloading
+> >> > the driver built as a module.
+> >> >
+> >> > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> >> > ---
+> >> > note: this should be merged for 2.6.36 and probably sent to stable trees
+> >>
+> >> You send the same patch 2 times once with this note and the other time
+> >> without this note. Which one should be ignored?
+> >
+> > I guess it is 2.6.36 material. Also, if you want this in -stable, add
+> > corresponding CC please.
+> 
+> once it gets merged, then i can notify the stable guys
 
-> On Mon, 2010-08-09 at 15:46 +0530, Sekhar Nori wrote:
->> This series of patches adds support for AEMIF timing configuration
->> for DaVinci SoCs.
->> 
->> Currently AEMIF timing configuration is done as a special case for
->> DM644x EVM. This work provides for a generic way of doing this.
->> 
->> David,
->> 	Patch 1/6 and 2/6 of this series touch the
->> 	drivers/mtd/nand/davinci_nand.c file along with other arch specific
->> 	files. Based on the discussion on DaVinci list, Kevin is OK to merge
->> 	this with your agreement. Please let us know how to proceed.
->
-> Pushed to l2-mtd-2.6.git / dunno.
+AFAIK, this is not the way they prefer to work. The right protocol is
+that you add 'Cc: stable@kernel.org' to the commit message, ane they
+pick the patch. I might be mistaken, but AFAIK this is the way.
 
-Hi Artem,
-
-If it's OK with you, and with your Ack, I'd prefer to merge this series
-via the davinci tree.
-
-The reason is because the files touched in arch/arm/mach-davinci/* are
-also getting lots of other changes for 2.6.37, and I'd like to minimize
-conflicts.
-
-Let me know if that's OK with you and if I can add your signoff to the
-drivers/mtd/* patches.  
-
-Thanks,
-
-Kevin
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
