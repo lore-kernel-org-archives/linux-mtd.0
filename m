@@ -1,25 +1,20 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq3xc-00087j-4y
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 12:59:40 +0000
-Received: by vws11 with SMTP id 11so5536654vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 05:59:39 -0700 (PDT)
-Subject: Re: [PATCH] mtd: Blackfin NFC: fix invalid free in remove()
+Subject: Re: [PATCH 0/5] pxa3xx_nand updates
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1283173086.12995.74.camel@brekeke>
-References: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
-	<1283173086.12995.74.camel@brekeke>
+To: Haojian Zhuang <haojian.zhuang@gmail.com>
+In-Reply-To: <AANLkTikU1oa-WqkraOTGz9re_=rreuikA1uoJk-SeEOR@mail.gmail.com>
+References: <AANLkTinU2nF2q9+eSX9XkA3U=Kj3M+BELrDBN1S2AaZp@mail.gmail.com>
+	<AANLkTikMedFwPzoodZx+EJTUkkB2hdsso3Yc7o1q9jBr@mail.gmail.com>
+	<AANLkTim+zxHQHwpM0KJ5vrNNfKAb-ro+2aJiG7CtEvqF@mail.gmail.com>
+	<1282840236.15156.41.camel@localhost>
+	<AANLkTikU1oa-WqkraOTGz9re_=rreuikA1uoJk-SeEOR@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 15:59:33 +0300
-Message-ID: <1283173173.12995.75.camel@brekeke>
+Date: Mon, 30 Aug 2010 16:09:13 +0300
+Message-ID: <1283173753.12995.76.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	uclinux-dist-devel@blackfin.uclinux.org
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>, Eric Miao <eric.y.miao@gmail.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,21 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-08-30 at 15:58 +0300, Artem Bityutskiy wrote:
-> On Sat, 2010-08-28 at 16:42 -0400, Mike Frysinger wrote:
-> > Since info->mtd isn't dynamically allocated, we shouldn't attempt to
-> > kfree() it.  Otherwise we get random fun corruption when unloading
-> > the driver built as a module.
-> > 
-> > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> > ---
-> > note: this should be merged for 2.6.36 and probably sent to stable trees
+On Sun, 2010-08-29 at 11:05 +0800, Haojian Zhuang wrote:
+> Eric's Acked-by is added into these patches already. Please help to
+> review and merge.
 > 
-> You send the same patch 2 times once with this note and the other time
-> without this note. Which one should be ignored?
+> Since the first patch is already merged, only submit the other 4 patches.
 
-I guess it is 2.6.36 material. Also, if you want this in -stable, add
-corresponding CC please.
+I've pushed them to my l2-mtd-2.6.git / master, thanks.
 
 -- 
 Best Regards,
