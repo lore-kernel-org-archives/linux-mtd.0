@@ -1,28 +1,23 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq64c-00081u-Iv
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 15:15:03 +0000
-Received: by bwz13 with SMTP id 13so4683306bwz.36
+	id 1Oq7KL-00023q-Ip
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 16:35:22 +0000
+Received: by wyb38 with SMTP id 38so5713762wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 08:15:01 -0700 (PDT)
+	Mon, 30 Aug 2010 09:35:20 -0700 (PDT)
+Sender: Florian Fainelli <f.fainelli@gmail.com>
+From: Florian Fainelli <florian@openwrt.org>
+Date: Mon, 30 Aug 2010 18:32:14 +0200
+Subject: [PATCH 1/3 v3] NAND: add NAND_CMD_PARAM (0xec) definition
 MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1283181047.2005.1.camel@brekeke>
-References: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
-	<1283173086.12995.74.camel@brekeke> <1283173173.12995.75.camel@brekeke>
-	<AANLkTikE93Uqnf7_8p72rEhcRydmx0LdBVCM_z3tNr-z@mail.gmail.com>
-	<1283181047.2005.1.camel@brekeke>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 30 Aug 2010 11:14:41 -0400
-Message-ID: <AANLkTinsov-zKRVLePv-9DwFYMK9Pmr+CWfqFZSYpE8g@mail.gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH] mtd: Blackfin NFC: fix invalid free
-	in remove()
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: uclinux-dist-devel@blackfin.uclinux.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201008301832.14935.florian@openwrt.org>
+Cc: Maxime Bizon <mbizon@freebox.fr>, David Woodhouse <dwmw2@infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Brian Norris <norris@broadcom.com>, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,34 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 30, 2010 at 11:10, Artem Bityutskiy wrote:
-> On Mon, 2010-08-30 at 09:32 -0400, Mike Frysinger wrote:
->> On Mon, Aug 30, 2010 at 08:59, Artem Bityutskiy wrote:
->> > On Mon, 2010-08-30 at 15:58 +0300, Artem Bityutskiy wrote:
->> >> On Sat, 2010-08-28 at 16:42 -0400, Mike Frysinger wrote:
->> >> > Since info->mtd isn't dynamically allocated, we shouldn't attempt t=
-o
->> >> > kfree() it. =C2=A0Otherwise we get random fun corruption when unloa=
-ding
->> >> > the driver built as a module.
->> >> >
->> >> > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
->> >> > ---
->> >> > note: this should be merged for 2.6.36 and probably sent to stable =
-trees
->> >>
->> >> You send the same patch 2 times once with this note and the other tim=
-e
->> >> without this note. Which one should be ignored?
->> >
->> > I guess it is 2.6.36 material. Also, if you want this in -stable, add
->> > corresponding CC please.
->>
->> once it gets merged, then i can notify the stable guys
->
-> AFAIK, this is not the way they prefer to work. The right protocol is
-> that you add 'Cc: stable@kernel.org' to the commit message, ane they
-> pick the patch. I might be mistaken, but AFAIK this is the way.
+This command is used to read the device ONFI parameters page.
 
-np ... i'm not claiming to know more than you ;)
--mike
+Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
+---
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 102e12c..8b288b6 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -88,6 +88,7 @@ extern int nand_unlock(struct mtd_info *mtd, loff_t ofs, uint64_t len);
+ #define NAND_CMD_RNDIN		0x85
+ #define NAND_CMD_READID		0x90
+ #define NAND_CMD_ERASE2		0xd0
++#define NAND_CMD_PARAM		0xec
+ #define NAND_CMD_RESET		0xff
+ 
+ #define NAND_CMD_LOCK		0x2a
