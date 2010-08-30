@@ -1,24 +1,30 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq0Uh-0002xz-1q
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 09:17:35 +0000
-Received: by gwb10 with SMTP id 10so2357282gwb.36
+	id 1Oq1UL-0004fg-9O
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 10:21:17 +0000
+Received: by gxk27 with SMTP id 27so2343734gxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 02:17:34 -0700 (PDT)
-Subject: RE: Is repartitioning possible while one of the partitions is mounted?
+	Mon, 30 Aug 2010 03:21:16 -0700 (PDT)
+Subject: Re: [PATCH v4] mtd: nand: Expand nand_ecc_layout, deprecate ioctl
+	ECCGETLAYOUT
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
-In-Reply-To: <000001cb4821$3d913c00$b8b3b400$%hs@samsung.com>
-References: <1280755953.2174.24.camel@pc816>
-	<1282637086.24044.133.camel@localhost>
-	<000001cb4821$3d913c00$b8b3b400$%hs@samsung.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <4C746DE0.7000104@gmail.com>
+References: <4C5CA4A1.1040000@broadcom.com>
+	<1282154806-9420-1-git-send-email-norris@broadcom.com>
+	<4C6DD170.1060807@renesas.com>  <4C6E9C23.6060703@broadcom.com>
+	<1282646703.24044.162.camel@localhost>  <4C746DE0.7000104@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 12:17:27 +0300
-Message-ID: <1283159847.12995.28.camel@brekeke>
+Date: Mon, 30 Aug 2010 13:20:47 +0300
+Message-ID: <1283163647.12995.43.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: v.dalal@samsung.com, 'Tim Cussins' <timcussins@eml.cc>,
-	linux-mtd@lists.infradead.org
+Cc: Kevin Cernekee <cernekee@gmail.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	Sneha Narnakaje <nsnehaprabha@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>,
+	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,42 +35,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-08-30 at 14:26 +0530, Rohit Hassan Sathyanarayan wrote:
-> Hi Artem
-> 
-> > -----Original Message-----
-> > From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf
-> > Of Artem Bityutskiy
-> > Sent: Tuesday, August 24, 2010 1:35 PM
-> > To: Tim Cussins
-> > Cc: linux-mtd@lists.infradead.org
-> > Subject: Re: Is repartitioning possible while one of the partitions is mounted?
-> > 
-> > On Mon, 2010-08-02 at 14:32 +0100, Tim Cussins wrote:
-> > > Hi all,
-> > >
-> > > I just spotted post regarding upcoming Runtime Partitioning Support
-> > > (http://lists.infradead.org/pipermail/linux-mtd/2010-July/031200.html)
-> > >
-> > > After taking a cursory glance at the patch it's not immediately obvious
-> > > ( uh, to me anyway :D ) whether you can create/delete partitions while
-> > > a filesystem (e.g. rootfs) is mounted from another partition on the same
-> > > mtd device.
-> > >
-> > > Under what conditions can you create/delete partitions?
-> > 
-> > I guess it is good idea to put the authors of that patch in CC, no?
-> > 
-> > I think this case should be handled. If it is not, the solution is not
-> > very good. But this is just IMHO.
-> > 
-> Its possible to partition/delete/resize the other partitions of the device even
-> if rootfs is mounted on one partition.
-> The utility even gives freedom to change the permissions of the partitions and 
-> merging adjacent partitions apart from above features.
+On Tue, 2010-08-24 at 18:12 -0700, Brian Norris wrote:
+> My e-mail address has changed, since I am no longer working at Broadcom.
+> I will still be able to track messages to my old account if the MTD mailing
+> list is CC'd.
 
-Why the merge operation is needed? Why is it better than delete + delete
-+ create? I also sent you another e-mail with questions + some review.
+Oh, does it mean you will stop loving MTD and we won't see steady flow
+of improvements for you? :-( BTW, I think you have been doing great job
+- MTD subsystem needs love badly!
+
+> Note that on the same subject (different thread) David suggested our new
+> struct be allocated dynamically:
+
+Yes, but I agree with your arguments and also think it is ok to keep it
+simple for now. So I'm applying this to my l2 tree, and then it is up to
+dwmw2 to take it or not.
+
+But I also have some requests about commentaries, so if you can re-send
+another version of this patch, it would be nice. But I take this one for
+now, it is good enough.
+ 
+> +/*
+> + * Copies (and truncates, if necessary) data from the larger struct,
+> + * nand_ecclayout, to the smaller, deprecated layout struct,
+> + * nand_ecclayout_user. This is necessary only to suppport the deprecated
+> + * API ioctl ECCGETLAYOUT while allowing all new functionality to use
+> + * nand_ecclayout flexibly (i.e. the struct may change size in new
+> + * releases without requiring major rewrites).
+> + */
+
+I think a similar comment should exist in linux/mtd/mtd.h. Indeed, that
+file is our API with user-space, and our users will probably look at it,
+and it is nice to document the situation with 'struct
+nand_ecclayout_user' there.
+
+> +#define MTD_MAX_OOBFREE_ENTRIES_LARGE	32
+> +#define MTD_MAX_ECCPOS_ENTRIES_LARGE	448
+> +#define MTD_MAX_ECCPOS_ENTRIES_OLD	64	/* Previous maximum */
+> +/*
+> + * Correct ECC layout control structure. This replaces old nand_ecclayout
+> + * (mtd-abi.h) that is exported via ECCGETLAYOUT ioctl. It should be expandable
+> + *  in the future simply by the above macros.
+> + */
+
+I find this comment confusing. First, "Correct ECC" -> "Internal ECC",
+because one could think "Correct ECC structure" means something like
+"structure which describes ECC corrections" or something like that.
+
+Also, I'd avoid mentioning things like "old nand_ecclayout", because
+with time this will be confusing. Could you please imagine that you are
+an MTD newbie reading the code in 2012 - you have no idea what was
+happening in the past in the ancient 2010. 
+
+Thanks!
 
 -- 
 Best Regards,
