@@ -1,22 +1,21 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-gw0-f49.google.com ([74.125.83.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OpozB-0001l0-Dk
-	for linux-mtd@lists.infradead.org; Sun, 29 Aug 2010 21:00:17 +0000
-Received: by yxf34 with SMTP id 34so2163111yxf.36
+	id 1OpypZ-0005Pd-Eg
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 07:31:02 +0000
+Received: by gwb10 with SMTP id 10so2331299gwb.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 29 Aug 2010 14:00:15 -0700 (PDT)
-Subject: Re: ubi : kernel panic on erroneous block
+	Mon, 30 Aug 2010 00:31:00 -0700 (PDT)
+Subject: Re: wiping a UBIFS volume
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <1283114768.2003.222.camel@brekeke>
-References: <4C61223F.30100@parrot.com>  <1283114768.2003.222.camel@brekeke>
+To: twebb <taliaferro62@gmail.com>
+In-Reply-To: <AANLkTim32XFn_Dsk8NdLwTX1aXwdjN4UVQA1xhWvLJLQ@mail.gmail.com>
+References: <AANLkTim32XFn_Dsk8NdLwTX1aXwdjN4UVQA1xhWvLJLQ@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 00:00:09 +0300
-Message-ID: <1283115609.1948.14.camel@brekeke>
+Date: Mon, 30 Aug 2010 10:30:54 +0300
+Message-ID: <1283153454.12995.2.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <dedekind@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,33 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-08-29 at 23:46 +0300, Artem Bityutskiy wrote:
-> Because of inlining, your stack-dump lacks some function calls. I think
-> it was: ubifs_replay_journal() -> replay_log_leb() -> ubifs_scan()
-> -> ... Then we had -EBADMSG, and returned back to 'replay_log_leb()'.
-> Then we call 'ubifs_recover_log_leb()', which scans the LEB again.
-> 
-> Yes, this is sub-optimal to scan twice, but this is how the thing is
-> implemented. I can try to fix it later - but this is not so important
-> now, let's first deal with your issues. But please, feel free to bug me
-> later and remind about this.
+On Wed, 2010-08-11 at 12:45 -0400, twebb wrote:
+> I'm trying to delete everything in a UBIFS volume and leave as little
+> as possible behind to prevent any malicious use of "deleted" files.
+> Is there any significant difference between simply removing all the
+> files on a UBIFS volume versus using "upiupdatevol /dev/ubi0_0 -t"?
+> Is there a preferred way to accomplish this for a UBIFS volume?
 
-An additional idea: we can strengthen 'ubi_io_read()' and make it re-try
-several times if there was -EBADMSG. It already retires for 'read !=
-len' case, but probably we should make it retry in case of any error.
+When you delete files in UBIFS, this does not guarantee you that all
+nodes belonging to these files are erased. They may still live on the
+flash for long time, until garbage-collected.
 
-But this is not a fix, just an improvement. Lets do this at the end,
-when we have addressed your issues, because otherwise it will be more
-difficult to reproduce.
-
-So, let's postpone this, but please, bug me and remind about this.
-
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Subject: [PATCH] UBIFS: do not oops when erroneous PEB is scheduled for scrubbing
-
-And of course the prefix should be "UBI:".
-
-I've pushed this patch to the UBI tree as well.
+Wiping out the volume guarantees that all data belonging to whole volume
+(and thus, all UBIFS data) is erased, or at least scheduled for erasure.
 
 -- 
 Best Regards,
