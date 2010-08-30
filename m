@@ -1,24 +1,23 @@
 Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq4Bx-00062i-5w
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:14:34 +0000
-Received: by vws11 with SMTP id 11so5551134vws.36
+	id 1Oq4FH-0002Vi-VY
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:17:56 +0000
+Received: by vws11 with SMTP id 11so5554730vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 06:14:02 -0700 (PDT)
-Subject: Re: [PATCH 3/7] drivers/mtd/nand/mpc5121_nfc.c: Add of_node_put to
-	avoid memory leak
+	Mon, 30 Aug 2010 06:17:43 -0700 (PDT)
+Subject: Re: [patch] mtd/pcmciamtd: remove dead code
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Julia Lawall <julia@diku.dk>
-In-Reply-To: <1283075566-27441-4-git-send-email-julia@diku.dk>
-References: <1283075566-27441-1-git-send-email-julia@diku.dk>
-	<1283075566-27441-4-git-send-email-julia@diku.dk>
+To: Dan Carpenter <error27@gmail.com>
+In-Reply-To: <20100824115627.GD29330@bicker>
+References: <20100824115627.GD29330@bicker>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 16:13:40 +0300
-Message-ID: <1283174020.12995.77.camel@brekeke>
+Date: Mon, 30 Aug 2010 16:17:35 +0300
+Message-ID: <1283174255.12995.78.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: devicetree-discuss@lists.ozlabs.org, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+Cc: Karsten Keil <keil@b1-systems.de>, kernel-janitors@vger.kernel.org,
+	Dominik Brodowski <linux@dominikbrodowski.net>,
+	Magnus Damm <damm@opensource.se>, Alexander Kurz <linux@kbdbabel.org>,
 	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -30,12 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-08-29 at 11:52 +0200, Julia Lawall wrote:
-> Add a call to of_node_put in the error handling code following a call to
-> of_find_compatible_node.
+On Tue, 2010-08-24 at 13:56 +0200, Dan Carpenter wrote:
+> This code isn't reachable.  I looked through the git history and it
+> hasn't been reachable for years.  Someone removed the label to silence
+> gcc's unused label warning but these few lines accidentally got left
+> behind.
 > 
-> The semantic match that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
+> Signed-off-by: Dan Carpenter <error27@gmail.com>
 
 Pushed to l2-mtd-2.6.git / master, thanks.
 
