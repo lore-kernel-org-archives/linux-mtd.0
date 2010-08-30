@@ -1,26 +1,24 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq4Z1-0008Rg-H4
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:38:19 +0000
-Received: by vws11 with SMTP id 11so5571509vws.36
+	id 1Oq4cQ-0006IA-KE
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:41:51 +0000
+Received: by wyb38 with SMTP id 38so5507642wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 06:38:00 -0700 (PDT)
+	Mon, 30 Aug 2010 06:41:49 -0700 (PDT)
 MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1283173086.12995.74.camel@brekeke>
-References: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
-	<1283173086.12995.74.camel@brekeke>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 30 Aug 2010 09:31:48 -0400
-Message-ID: <AANLkTi=e+_AhXjHp9EsZqNe2ZZYwW-uYu-wNQ5PkHf-i@mail.gmail.com>
-Subject: Re: [Uclinux-dist-devel] [PATCH] mtd: Blackfin NFC: fix invalid free
-	in remove()
+Sender: kyungmin78@gmail.com
+In-Reply-To: <1283172597.12995.68.camel@brekeke>
+References: <20100827025537.GA10698@july> <1283172597.12995.68.camel@brekeke>
+Date: Mon, 30 Aug 2010 22:41:48 +0900
+Message-ID: <AANLkTi=v8ZpmNG_7rOKYRydU2DzDB+_41YCjyq87zTiZ@mail.gmail.com>
+Subject: Re: [PATCH 2/3] MTD: OneNAND: Fix loop hang when DMA error at Samsung
+	SoCs
+From: Kyungmin Park <kmpark@infradead.org>
 To: dedekind1@gmail.com
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: uclinux-dist-devel@blackfin.uclinux.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +28,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 30, 2010 at 08:58, Artem Bityutskiy wrote:
-> On Sat, 2010-08-28 at 16:42 -0400, Mike Frysinger wrote:
->> Since info->mtd isn't dynamically allocated, we shouldn't attempt to
->> kfree() it. =C2=A0Otherwise we get random fun corruption when unloading
->> the driver built as a module.
+On Mon, Aug 30, 2010 at 9:49 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Fri, 2010-08-27 at 11:55 +0900, Kyungmin Park wrote:
+>> From: Kyungmin Park <kyungmin.park@samsung.com>
 >>
->> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+>> When DMA error occurs. it's loop hang since it can't exit the loop.
+>> and it's the right DMA handling code as Spec.
+>>
+>> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 >> ---
->> note: this should be merged for 2.6.36 and probably sent to stable trees
+>> =C2=A0drivers/mtd/onenand/samsung.c | =C2=A0 11 +++++------
+>> =C2=A01 files changed, 5 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung=
+.c
+>> index 05329ba..69e48d0 100644
+>> --- a/drivers/mtd/onenand/samsung.c
+>> +++ b/drivers/mtd/onenand/samsung.c
+>> @@ -554,14 +554,13 @@ static int s5pc110_dma_ops(void *dst, void *src, s=
+ize_t count, int direction)
+>>
+>> =C2=A0 =C2=A0 =C2=A0 do {
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 status =3D readl(base +=
+ S5PC110_DMA_TRANS_STATUS);
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (status & S5PC110_DMA_TRA=
+NS_STATUS_TE) {
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+writel(S5PC110_DMA_TRANS_CMD_TEC,
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 base + S5PC110_DMA_=
+TRANS_CMD);
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+return -EIO;
+>> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
+>> =C2=A0 =C2=A0 =C2=A0 } while (!(status & S5PC110_DMA_TRANS_STATUS_TD));
+>>
+>> - =C2=A0 =C2=A0 if (status & S5PC110_DMA_TRANS_STATUS_TE) {
+>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 writel(S5PC110_DMA_TRANS_CMD=
+_TEC, base + S5PC110_DMA_TRANS_CMD);
+>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 writel(S5PC110_DMA_TRANS_CMD=
+_TDC, base + S5PC110_DMA_TRANS_CMD);
+>> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EIO;
+>> - =C2=A0 =C2=A0 }
+>> -
+>> =C2=A0 =C2=A0 =C2=A0 writel(S5PC110_DMA_TRANS_CMD_TDC, base + S5PC110_DM=
+A_TRANS_CMD);
 >
-> You send the same patch 2 times once with this note and the other time
-> without this note. Which one should be ignored?
+> You shoule also add timeout to the loop. Forever loops are bad. Please,
+> while you are on it, fix the forever loop by doing something like this:
+> http://patchwork.ozlabs.org/patch/59180/
+> I mean, add timeout please.
 
-they're the same thing.  i used a wrong option with git-send-email.
--mike
+No problem, I will update this patch tomorrow.
+
+Thank you,
+Kyungmin Park
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
