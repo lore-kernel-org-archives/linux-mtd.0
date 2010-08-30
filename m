@@ -1,31 +1,22 @@
 Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq3XR-0005nT-Tq
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 12:32:39 +0000
-Received: by vws11 with SMTP id 11so5508523vws.36
+	id 1Oq3Z4-0006GW-0a
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 12:34:18 +0000
+Received: by vws11 with SMTP id 11so5510221vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 05:32:36 -0700 (PDT)
-Subject: Re: [PATCH v2] mtd/nand: Support Micron chips, pagesize >= 4KB
+	Mon, 30 Aug 2010 05:34:17 -0700 (PDT)
+Subject: Re: NAND flash data table
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <AANLkTik6657CazQWORXN5fUxancjiUmsQ9ciC035E2T=@mail.gmail.com>
-References: <4C4DEA3D.5070208@broadcom.com> <4C4F3691.9020505@broadcom.com>
-	<1282465255.16502.52.camel@brekeke>
-	<AANLkTim-XofxxyZt6epCcoQN=PL0vFdT0vjmk_5D=soY@mail.gmail.com>
-	<4C722FAD.2030501@parrot.com>
-	<AANLkTi=d5B3sjAPZPEumkZwtGBEqyVTAVwHopShLdwFr@mail.gmail.com>
-	<1282630237.24044.106.camel@localhost>
-	<AANLkTik6657CazQWORXN5fUxancjiUmsQ9ciC035E2T=@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1282802549.24044.267.camel@localhost>
+References: <4C75FF39.9010709@gmail.com> <1282802549.24044.267.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 30 Aug 2010 15:32:22 +0300
-Message-ID: <1283171542.12995.56.camel@brekeke>
+Date: Mon, 30 Aug 2010 15:34:11 +0300
+Message-ID: <1283171651.12995.58.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Maxim Levitsky <maximlevitsky@gmail.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, Brian Norris <norris@broadcom.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -36,24 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-08-25 at 17:43 -0700, Kevin Cernekee wrote:
-> > So, I was thinking that adding strange heuristics and quirks to generic
-> > code is bad. We should _first_ add proper ONFI code, and _then_ add
-> > exception for strange devices like you have.
+On Thu, 2010-08-26 at 09:02 +0300, Artem Bityutskiy wrote:
+> On Wed, 2010-08-25 at 22:44 -0700, Brian Norris wrote:
+> > Hello,
+> > 
+> > I am submitting two documents to the general Linux MTD community
+> > (attached). They are two tables: one in simple CSV format and the other
+> > in a lightly formatted HTML page. They comprise the summary of a few
+> > months' work in studying and cataloging NAND flash parts and their data
+> > sheets. The attached data should be helpful to other developers in
+> > debugging support for various chips as well as in determining future
+> > methods for detection of new chips. There are a few extra comments and
+> > color-labeling in the HTML doc.
+> > 
+> > I am open to the wider use of these documents (e.g., incorporation into
+> > the MTD website as additional documentation) and have GPL'd the table.
+> > It could very easily be converted to a kind of XML mini-database with
+> > functionality to build into a web-page. Of course, I don't have time to
+> > do this at the moment :) Send me any comments or questions, though.
+> > 
+> > I hope this is useful!
 > 
-> Unfortunately, I think the heuristic/quirk logic is unavoidable for
-> Samsung and other non-ONFI vendors.
-> 
-> So the question becomes: if nand_base.c already has to have
-> heuristic/quirk code anyway, and some controller(s) can't speak ONFI
-> so they need even MORE heuristic/quirk code than the others - do we
-> add the latter code into nand_base.c or just put it in the driver?
+> Impressive! How about sending a patch against mtd-www.git and we'll put
+> this to the web site?
 
-OK, I can apply it to the dunno branch and let dwmw2 decide. But this
-patch does not apply anymore to to my tree. Brian, would you refresh and
-resend? Also, Florian said he is going to send ONFI support soon, may be
-it'll make sens to wait a bit and re-send the patch on top of ONFI
-support?
+If you cannot do this, let me know, I'll try to adapt this to the mtd
+web site - this piece of information is very useful.
+
+Also, I please, take a look at my l2 tree - I think I picked up or
+commented on all your patches, but there were many and I could miss
+some. Please, let me know if something is missing.
 
 -- 
 Best Regards,
