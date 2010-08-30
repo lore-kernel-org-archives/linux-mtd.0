@@ -1,18 +1,18 @@
 Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oq4Tj-00079O-Il
-	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:32:52 +0000
-Received: by vws11 with SMTP id 11so5567317vws.36
+	id 1Oq4Z1-0008Rg-H4
+	for linux-mtd@lists.infradead.org; Mon, 30 Aug 2010 13:38:19 +0000
+Received: by vws11 with SMTP id 11so5571509vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Aug 2010 06:32:36 -0700 (PDT)
+	Mon, 30 Aug 2010 06:38:00 -0700 (PDT)
 MIME-Version: 1.0
 Sender: vapier.adi@gmail.com
-In-Reply-To: <1283173173.12995.75.camel@brekeke>
+In-Reply-To: <1283173086.12995.74.camel@brekeke>
 References: <1283028125-6027-1-git-send-email-vapier@gentoo.org>
-	<1283173086.12995.74.camel@brekeke> <1283173173.12995.75.camel@brekeke>
+	<1283173086.12995.74.camel@brekeke>
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 30 Aug 2010 09:32:15 -0400
-Message-ID: <AANLkTikE93Uqnf7_8p72rEhcRydmx0LdBVCM_z3tNr-z@mail.gmail.com>
+Date: Mon, 30 Aug 2010 09:31:48 -0400
+Message-ID: <AANLkTi=e+_AhXjHp9EsZqNe2ZZYwW-uYu-wNQ5PkHf-i@mail.gmail.com>
 Subject: Re: [Uclinux-dist-devel] [PATCH] mtd: Blackfin NFC: fix invalid free
 	in remove()
 To: dedekind1@gmail.com
@@ -30,24 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 30, 2010 at 08:59, Artem Bityutskiy wrote:
-> On Mon, 2010-08-30 at 15:58 +0300, Artem Bityutskiy wrote:
->> On Sat, 2010-08-28 at 16:42 -0400, Mike Frysinger wrote:
->> > Since info->mtd isn't dynamically allocated, we shouldn't attempt to
->> > kfree() it. =C2=A0Otherwise we get random fun corruption when unloadin=
-g
->> > the driver built as a module.
->> >
->> > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
->> > ---
->> > note: this should be merged for 2.6.36 and probably sent to stable tre=
-es
+On Mon, Aug 30, 2010 at 08:58, Artem Bityutskiy wrote:
+> On Sat, 2010-08-28 at 16:42 -0400, Mike Frysinger wrote:
+>> Since info->mtd isn't dynamically allocated, we shouldn't attempt to
+>> kfree() it. =C2=A0Otherwise we get random fun corruption when unloading
+>> the driver built as a module.
 >>
->> You send the same patch 2 times once with this note and the other time
->> without this note. Which one should be ignored?
+>> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+>> ---
+>> note: this should be merged for 2.6.36 and probably sent to stable trees
 >
-> I guess it is 2.6.36 material. Also, if you want this in -stable, add
-> corresponding CC please.
+> You send the same patch 2 times once with this note and the other time
+> without this note. Which one should be ignored?
 
-once it gets merged, then i can notify the stable guys
+they're the same thing.  i used a wrong option with git-send-email.
 -mike
