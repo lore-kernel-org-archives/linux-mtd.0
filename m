@@ -1,28 +1,22 @@
-Received: from www84.your-server.de ([213.133.104.84])
+Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OqKYa-00008U-Av
-	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2010 06:42:57 +0000
-Subject: Re: [PATCH] Add quick erase format option
-From: Stefani Seibold <stefani@seibold.net>
-To: dedekind1@gmail.com
-In-Reply-To: <1283081435.2131.24.camel@brekeke>
-References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
-	<1281343038.12908.25.camel@localhost>
-	<1281343974.18398.13.camel@wall-e.seibold.net>
-	<1281353344.2332.8.camel@brekeke>
-	<1281362069.20181.16.camel@wall-e.seibold.net>
-	<1283081435.2131.24.camel@brekeke>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Tue, 31 Aug 2010 08:42:58 +0200
-Message-ID: <1283236978.6083.28.camel@wall-e.seibold.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Enzinger,
-	Robert \(EXT-Other - DE/Munich\)" <robert.enzinger.ext@nsn.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+	id 1OqOWz-0005F8-Fp
+	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2010 10:57:35 +0000
+Received: from [95.177.23.22] (helo=luce.racelogic.co.uk)
+	by relay.timico.net with esmtpsa (TLS1.0:RSA_AES_128_CBC_SHA1:16)
+	(Exim 4.69) (envelope-from <Jon.Povey@racelogic.co.uk>)
+	id 1OqOWw-0002ge-K7
+	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2010 11:57:30 +0100
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Class: urn:content-classes:message
+Date: Tue, 31 Aug 2010 11:57:28 +0100
+Subject: mkfs.ubifs generating bad CRCs
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE0903E02E09@Cloud.RL.local>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,77 +26,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Sonntag, den 29.08.2010, 14:30 +0300 schrieb Artem Bityutskiy:
-> On Mon, 2010-08-09 at 15:54 +0200, Stefani Seibold wrote:
+Building mkfs.ubifs from today's mtd-utils git I get a mkfs.ubifs that seem=
+s to generate bad CRCs.
+I also have ubuntu's binary mtd-utils installed which produce good CRCs. I =
+tested using both versions of mkfs.ubifs and only ubuntu's ubinize for both=
+ images, so can confirm ubinize is not a problem.
 
-> > As you can see this is 296.818s vs. 7.524 or 40 times faster.
-> > 
-> > Maybe i do something wrong, but i have no idea. Can u explain it to me?
-> 
-> No, it is ok. The only thing I do not really like is the name of the
-> option and the fact that you still read the beginning of PEBs and check
-> for 0xFFs. And if you hit a PEB with non-0xFF, you erase it, for other
-> PEBs you skip the erasure - this is error prone, because if you have one
-> PEB with non-FF data, then you may have PEBs with 0xFFs at the beginning
-> and garbage at the end, and you will not catch these.
-> 
-> I would like to change the option name so that it would reflect the
-> exact use-case we are creating it for: wiped out flash. So I'd be
-> happier with something like --pristine-flash.
+Related sounding thing I found:
+http://lists.infradead.org/pipermail/linux-mtd/2010-July/031187.html
 
-"Pristine" is not a word which non native speaker have in its
-vocabulary. Quick-format is the best, because it is exactly what it is
-doing. But if you prefer this, you are okay be me.
+After flashing the image from git mkfs.ubifs I get this on my console:
 
-> 
-> Also, I think you should not read the beginning of the flash and check
-> for 0xFFs. If the user gave us this option, he knows what he is doing
-> and we can trust him, so no need to read and check, assume all PEBs are
-> pristine (contain 0xFFs).
-> 
+...
+UBI: attaching mtd3 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    126976 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          2048 (aligned 2048)
+UBI: data offset:                4096
+UBI: attached mtd3 to ubi0
+UBI: MTD device name:            "root_a"
+UBI: MTD device size:            32 MiB
+UBI: number of good PEBs:        255
+UBI: number of bad PEBs:         1
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     1
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 255
+UBI: number of PEBs reserved for bad PEB handling: 2
+UBI: max/mean erase counter: 1/0
+UBI: image sequence number: 0
+...
+UBIFS error (pid 1): ubifs_check_node: bad CRC: calculated 0x5ce2f518, read=
+ 0xf8547a9e
+UBIFS error (pid 1): ubifs_check_node: bad node at LEB 0:0
+UBIFS error (pid 1): ubifs_read_node: expected node type 6
+VFS: Cannot open root device "ubi0:rootfs" or unknown-block(0,0)
+Please append a correct "root=3D" boot option; here are the available parti=
+tions:
+1f00            3840 mtdblock0 (driver?)
+1f01             256 mtdblock1 (driver?)
+1f02           32768 mtdblock2 (driver?)
+1f03           32768 mtdblock3 (driver?)
+1f04           32768 mtdblock4 (driver?)
+1f05           65536 mtdblock5 (driver?)
+1f06           65536 mtdblock6 (driver?)
+1f07          749568 mtdblock7 (driver?)
+Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0=
+,0)
+Backtrace:
+[etc...]
 
-The user never knows what he is doing, believe me that is what live
-teach me. This is a kind of defensive programming.
+The image generated with ubuntu's binary mtd-utils boots OK.
 
-> > No, we only initialize the flash, mount it as UBIFS and copy files.
-> 
-> OK. But did you consider to pre-create the image with ubinize and
-> mkfs.ubifs tools and just flash the raw image in production? This is the
-> fastest possible way.
-> 
+here is some info about my build environment; I'm on a 64-bit machine, migh=
+t that be related?
 
-This did not work in our NSN transport environment. It would take to
-much time to explain why, because the PCU software managment server is a
-10 year old application which handles a wide range of transport boards
-in the same way, including the old JFFS2 systems and the new UBIFS based
-boards.
- 
-> > > So I think it is better to add an --pristine-flash option, or something
-> > > like this. In this case ubiformat won't erase anything, and will assume
-> > > everything is 0xFFed without reading. This should be faster and I think
-> > > is better to do.
-> > > 
-> > 
-> > This patch assumes nothing, it will skip the erase of the PEB if all
-> > bytes in the EC header are 0xff. I think this is safer than your
-> > suggestion.
-> 
-> It does assume that if the beginning of the flash contains 0xFFs then it
-> is safe to treat it as erased. Instead, I think you should just trust
-> the user and not even check the beginning of the flash. And this will be
-> also faster.
-> 
+$ uname -a
+Linux eroko 2.6.31-22-generic #60-Ubuntu SMP Thu May 27 02:41:03 UTC 2010 x=
+86_64 GNU/Linux
+$ gcc -v
+Using built-in specs.
+Target: x86_64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion=3D'Ubuntu 4.4.1-4ubu=
+ntu9' --with-bugurl=3Dfile:///usr/share/doc/gcc-4.4/README.Bugs --enable-la=
+nguages=3Dc,c++,fortran,objc,obj-c++ --prefix=3D/usr --enable-shared --enab=
+le-multiarch --enable-linker-build-id --with-system-zlib --libexecdir=3D/us=
+r/lib --without-included-gettext --enable-threads=3Dposix --with-gxx-includ=
+e-dir=3D/usr/include/c++/4.4 --program-suffix=3D-4.4 --enable-nls --enable-=
+clocale=3Dgnu --enable-libstdcxx-debug --enable-objc-gc --disable-werror --=
+with-arch-32=3Di486 --with-tune=3Dgeneric --enable-checking=3Drelease --bui=
+ld=3Dx86_64-linux-gnu --host=3Dx86_64-linux-gnu --target=3Dx86_64-linux-gnu
+Thread model: posix
+gcc version 4.4.1 (Ubuntu 4.4.1-4ubuntu9)
 
-Never trust the user. And why should we remove this check? The coast is
-very minimal and it will make live much easier.
+I note that mkfs.ubifs produces different data (and checksums) every time I=
+ run it, not sure why (random IDs? changing atimes?) so not easy to bisect =
+and find where this broke. testing new flash images takes some legwork.
 
-For example: In our production environment everything is automated by
-scripts, so the software bring up did not know if the flash is already
-erased or not. It is possible that an broken used board is returned into
-the production after it was repaired.
+happy to test some things or try some patches though, or if someone can tel=
+l me how to get mkfs.ubifs to produce consistent images each time I can loo=
+k for the problem myself a bit easier.
 
-What you assume is that the user or the scripts does know the status of
-the flash, but this is not true in real production environment, where
-thousands of boards are prepared.
+--
+Jon Povey
+jon.povey@racelogic.co.uk
 
-Stefani
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
+
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
