@@ -1,26 +1,28 @@
-Message-ID: <4C7CA278.9040902@st.com>
-Date: Tue, 31 Aug 2010 12:04:32 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
-References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>	
-	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
-	<1283170469.12995.53.camel@brekeke>
-In-Reply-To: <1283170469.12995.53.camel@brekeke>
-Content-Type: text/plain; charset="UTF-8"
+Received: from www84.your-server.de ([213.133.104.84])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OqKYa-00008U-Av
+	for linux-mtd@lists.infradead.org; Tue, 31 Aug 2010 06:42:57 +0000
+Subject: Re: [PATCH] Add quick erase format option
+From: Stefani Seibold <stefani@seibold.net>
+To: dedekind1@gmail.com
+In-Reply-To: <1283081435.2131.24.camel@brekeke>
+References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
+	<1281343038.12908.25.camel@localhost>
+	<1281343974.18398.13.camel@wall-e.seibold.net>
+	<1281353344.2332.8.camel@brekeke>
+	<1281362069.20181.16.camel@wall-e.seibold.net>
+	<1283081435.2131.24.camel@brekeke>
+Content-Type: text/plain; charset="ISO-8859-15"
+Date: Tue, 31 Aug 2010 08:42:58 +0200
+Message-ID: <1283236978.6083.28.camel@wall-e.seibold.net>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Enzinger,
+	Robert \(EXT-Other - DE/Munich\)" <robert.enzinger.ext@nsn.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +32,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/30/2010 5:44 PM, Artem Bityutskiy wrote:
-> On Mon, 2010-08-30 at 16:13 +0530, Viresh KUMAR wrote:
->> From: Vipin Kumar <vipin.kumar@st.com>
->>
->> For a page size of 4096, the number of oob bytes are 128 per page. This demands
->> for an increased ecc_pos array as well as ecc can be placed at more than 64
->> locations.
->>
->> This patch is added because SPEAr platforms NAND controller has 13 bytes of ecc
->> for each 512 bytes of data. This results in 104 bytes of ecc in case of 4096
->> byte page.
->>
->> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
->> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
-> 
-> Nack, breaking ABI Is not allowed in Linux.
-> 
-Hello Artem,
+Am Sonntag, den 29.08.2010, 14:30 +0300 schrieb Artem Bityutskiy:
+> On Mon, 2010-08-09 at 15:54 +0200, Stefani Seibold wrote:
 
-I could not understand your point. Can you please elaborate. How does this patch 
-break ABI
+> > As you can see this is 296.818s vs. 7.524 or 40 times faster.
+> > 
+> > Maybe i do something wrong, but i have no idea. Can u explain it to me?
+> 
+> No, it is ok. The only thing I do not really like is the name of the
+> option and the fact that you still read the beginning of PEBs and check
+> for 0xFFs. And if you hit a PEB with non-0xFF, you erase it, for other
+> PEBs you skip the erasure - this is error prone, because if you have one
+> PEB with non-FF data, then you may have PEBs with 0xFFs at the beginning
+> and garbage at the end, and you will not catch these.
+> 
+> I would like to change the option name so that it would reflect the
+> exact use-case we are creating it for: wiped out flash. So I'd be
+> happier with something like --pristine-flash.
 
-Regards
-Vipin
+"Pristine" is not a word which non native speaker have in its
+vocabulary. Quick-format is the best, because it is exactly what it is
+doing. But if you prefer this, you are okay be me.
+
+> 
+> Also, I think you should not read the beginning of the flash and check
+> for 0xFFs. If the user gave us this option, he knows what he is doing
+> and we can trust him, so no need to read and check, assume all PEBs are
+> pristine (contain 0xFFs).
+> 
+
+The user never knows what he is doing, believe me that is what live
+teach me. This is a kind of defensive programming.
+
+> > No, we only initialize the flash, mount it as UBIFS and copy files.
+> 
+> OK. But did you consider to pre-create the image with ubinize and
+> mkfs.ubifs tools and just flash the raw image in production? This is the
+> fastest possible way.
+> 
+
+This did not work in our NSN transport environment. It would take to
+much time to explain why, because the PCU software managment server is a
+10 year old application which handles a wide range of transport boards
+in the same way, including the old JFFS2 systems and the new UBIFS based
+boards.
+ 
+> > > So I think it is better to add an --pristine-flash option, or something
+> > > like this. In this case ubiformat won't erase anything, and will assume
+> > > everything is 0xFFed without reading. This should be faster and I think
+> > > is better to do.
+> > > 
+> > 
+> > This patch assumes nothing, it will skip the erase of the PEB if all
+> > bytes in the EC header are 0xff. I think this is safer than your
+> > suggestion.
+> 
+> It does assume that if the beginning of the flash contains 0xFFs then it
+> is safe to treat it as erased. Instead, I think you should just trust
+> the user and not even check the beginning of the flash. And this will be
+> also faster.
+> 
+
+Never trust the user. And why should we remove this check? The coast is
+very minimal and it will make live much easier.
+
+For example: In our production environment everything is automated by
+scripts, so the software bring up did not know if the flash is already
+erased or not. It is possible that an broken used board is returned into
+the production after it was repaired.
+
+What you assume is that the user or the scripts does know the status of
+the flash, but this is not true in real production environment, where
+thousands of boards are prepared.
+
+Stefani
