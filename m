@@ -1,23 +1,26 @@
-Subject: Re: [PATCH] ARM: pxa3xx: fix build error when
-	CONFIG_MTD_PARTITIONS is not defined
+Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-In-Reply-To: <AANLkTinn_Yb+jGOcpc139X2cW0ax5Ev23ovjpp9NrPJC@mail.gmail.com>
-References: <1282813011-6187-1-git-send-email-mark.brown314@gmail.com>
-	<1282813011-6187-2-git-send-email-mark.brown314@gmail.com>
-	<AANLkTinn_Yb+jGOcpc139X2cW0ax5Ev23ovjpp9NrPJC@mail.gmail.com>
+To: Vipin Kumar <vipin.kumar@st.com>
+In-Reply-To: <4C7CA278.9040902@st.com>
+References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
+	<1283170469.12995.53.camel@brekeke>  <4C7CA278.9040902@st.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Sep 2010 02:31:32 +0300
-Message-ID: <1283297492.2018.62.camel@brekeke>
+Date: Wed, 01 Sep 2010 02:36:50 +0300
+Message-ID: <1283297810.2018.67.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	"Mark F. Brown" <mark.brown314@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,12 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-08-31 at 13:51 +0800, Haojian Zhuang wrote:
-> Hi Mark,
-> 
-> Don't forget to cc maintainer of mtd tree. I loop them now.
+Hi,
 
-FYI, the MTD maintainer id dwmw2, I'm just helping him sometimes.
+On Tue, 2010-08-31 at 12:04 +0530, Vipin Kumar wrote:
+> > Nack, breaking ABI Is not allowed in Linux.
+> I could not understand your point. Can you please elaborate. How does this patch 
+> break ABI
+
+You are changing data structure (struct nand_ecclayout) used for in MTD
+ioctl. Tha ioctl is part of the Linux ABI. By changing the data
+structure, you are breaking the ABI. This means that current binaries
+would stop working with newer versions of the Linux kernel if we'd
+accept your patch.
 
 -- 
 Best Regards,
