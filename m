@@ -1,30 +1,27 @@
-MIME-Version: 1.0
-In-Reply-To: <4C7EC43B.2050903@bluewatersys.com>
-References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
-	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
-	<1283170469.12995.53.camel@brekeke> <4C7CA278.9040902@st.com>
-	<1283297810.2018.67.camel@brekeke> <4C7DD2FD.1080501@st.com>
-	<1283337939.1958.20.camel@brekeke> <4C7E3344.2020202@st.com>
-	<4C7EC43B.2050903@bluewatersys.com>
-Date: Wed, 1 Sep 2010 14:54:37 -0700
-Message-ID: <AANLkTinmEck5413ZuCDMB1jyBjH63Uh=L+87q8V4Ek1X@mail.gmail.com>
-Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
-From: Kevin Cernekee <cernekee@gmail.com>
-To: Vipin Kumar <vipin.kumar@st.com>, Ryan Mallon <ryan@bluewatersys.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OqvLD-0000Li-Bw
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 21:59:36 +0000
+Received: by vws11 with SMTP id 11so7662732vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 01 Sep 2010 14:59:34 -0700 (PDT)
+Subject: Re: [PATCH v2] mtd-www: NAND-DATA: Added NAND support table
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <4C7D8D57.3060103@gmail.com>
+References: <4C75FF39.9010709@gmail.com> <1282802549.24044.267.camel@localhost>
+	<1283171651.12995.58.camel@brekeke>
+	<4C7C5E43.3070409@gmail.com> <4C7C6120.3080805@gmail.com>
+	<4C7D8D57.3060103@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 02 Sep 2010 00:59:31 +0300
+Message-ID: <1283378371.2209.37.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, Philip Rakity <prakity@yahoo.com>,
+	Kevin Cernekee <cernekee@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,12 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 1, 2010 at 2:23 PM, Ryan Mallon <ryan@bluewatersys.com> wrote:
-> However, we are interested in having a proper solution to this problem.
+On Tue, 2010-08-31 at 16:16 -0700, Brian Norris wrote:
+> Included new NAND Flash support table. This table includes data about
+> various NAND chips as well as information about the MTD subsystem's
+> support for these chips. The table is provided in CSV format and is
+> sorted, formatted, and output to an HTML page via a Python script
+> (added to Makefile). New entries can simply be added as new rows in
+> the CSV document.
+> 
+> Note: I did not link this into the main site yet. I can follow-up later
+> if you'd like, or feel free to do so yourself.
+> 
+> Philip Rakity contributed to fixing the build script.
 
-I would suggest using this patch as a starting point - could you
-please review the changes and try it out?
+Pushed to mtd-www, thanks:
 
-http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/b6d6ae730be2750fac166ed9df11ee6ea54d9160
+http://linux-mtd.infradead.org/nand-data/nanddata.html
 
-Thanks.
+And since you did not add a reference to this table anywhere, I had find
+it a good place, and found it here:
+
+http://linux-mtd.infradead.org/doc/nand.html
+
+but I'm not sure it is the good place.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
