@@ -1,17 +1,32 @@
-Received: from mail-qy0-f170.google.com ([209.85.216.170])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OqpMF-00033U-Vq
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 15:36:17 +0000
-Received: by qyk35 with SMTP id 35so828271qyk.15
+	id 1OqpXj-0003FS-Te
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 15:48:09 +0000
+Received: by qwe4 with SMTP id 4so7207772qwe.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Sep 2010 08:36:12 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 1 Sep 2010 17:36:09 +0200
-Message-ID: <AANLkTinR9H7B5taVHmowOQ8Z==dQU4PdcnjLyHKPRibV@mail.gmail.com>
-Subject: [RFC] [MTD-utils] mkfs.jffs2: JFFS2 and minimal erase block size
-From: Yegor Yefremov <yegorslists@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=001636426f9be72ec7048f3474e3
+	Wed, 01 Sep 2010 08:48:07 -0700 (PDT)
+Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Stefani Seibold <stefani@seibold.net>
+In-Reply-To: <1283256587.7515.16.camel@wall-e.seibold.net>
+References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
+	<1280121714.14917.40.camel@localhost>
+	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
+	<1280243535.3021.29.camel@localhost.localdomain>
+	<1280244117.3021.36.camel@localhost.localdomain>
+	<1280296009.4310.5.camel@wall-e.seibold.net>
+	<1282489456.16502.74.camel@brekeke>
+	<1283256587.7515.16.camel@wall-e.seibold.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 01 Sep 2010 18:47:57 +0300
+Message-ID: <1283356077.2209.19.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "Kreuzer, Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>,
+	linux-mtd@lists.infradead.org, "Pagliari,
+	Vivenzio \(NSN - DE/Ulm\)" <vivenzio.pagliari@nsn.com>,
+	"Matthew L. Creech" <mlcreech@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +36,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001636426f9be72ec7048f3474e3
-Content-Type: text/plain; charset=UTF-8
+Hi,
 
-Hello,
+On Tue, 2010-08-31 at 14:09 +0200, Stefani Seibold wrote:
+> Am Sonntag, den 22.08.2010, 18:04 +0300 schrieb Artem Bityutskiy:
+> > 
+> > Yes, but your patch fixes the symptom, unfortunately. It is ok for you
+> > to use as a work-around, but I still hope to find the root cause.
 
-I'm using a NOR flash SST39VF3201. According to its data sheet the
-erase size is 2 Kword. That corresponds to -e 0x1000 value. But the
-mkfs.jffs2 utility has a limit of 0x2000 bytes. If I change this limit
-to 0x1000 and create an image, I can successfully mount and use it,
-with 8KiB value the jffs2 driver fails to work with such an image. I
-have found some similar complains like this one
-http://lists.infradead.org/pipermail/linux-mtd/2009-February/024523.html,
-but no one seems to have asked this question on the list.
+> True, but also if we fix the cause, this could happen. Imagine that one
+> of the two master LEB will get corrupted, due a flash error or a power
+> fail during a write access. Than the system should able to mount this
+> damaged file system and restore the lost master LEB.
 
-Is there any reason for limiting erase block to 0x2000?
+Firs of all, UBIFS _does_ handle the situation when on master LEB is
+corrupted. It is designed for this and this part was tested. _But_ UBIFS
+expects that the master LEB is corrupted in _certain way_. If it is
+corrupted in an unexpected way - we panic.
 
-I've created a patch to decrease this value to 0x1000, but perhaps
-there are any other way?
+To put it differently, we do not handle random corruptions, we handle
+only corruptions which _look_ like corruptions caused by power cuts.
 
-Regards,
-Yegor
+In your case you have very strange corruption. We can apply your patch,
+problem solved, but will you be 100% comfortable with this? There is a
+chance that you have some issues which can later have different
+symptoms. I am still interested to find out the real root reason.
 
---001636426f9be72ec7048f3474e3
-Content-Type: application/octet-stream; name="jffs2-erase-block-fix.patch"
-Content-Disposition: attachment; filename="jffs2-erase-block-fix.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gdkcm7930
+I will look at your issue as soon as I have time. I'm currently in
+Brazil at the LinuxCon and do not have enough time to look at large
+things so far.
 
-U2V0IG1pbmltYWwgZXJhc2UgYmxvY2sgdmFsdWUgdG8gMHgxMDAwIHRvIHN1cHBvcnQgZmxhc2hl
-cwp3aXRoIHN1Y2ggZXJhc2UgYmxvY2sKClNpZ25lZC1vZmYtYnk6IFllZ29yIFllZnJlbW92IDx5
-ZWdvcnNsaXN0c0Bnb29nbGVtYWlsLmNvbT4KCkluZGV4OiBiL21rZnMuamZmczIuYwo9PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09Ci0tLSBhL21rZnMuamZmczIuYwkyMDEwLTA5LTAxIDE2OjA3OjUzLjAwMDAwMDAwMCArMDIw
-MAorKysgYi9ta2ZzLmpmZnMyLmMJMjAxMC0wOS0wMSAxNjowODozNi4wMDAwMDAwMDAgKzAyMDAK
-QEAgLTE3NjUsMTAgKzE3NjUsMTAgQEAKIAkJCQkJCSAgZXJhc2VfYmxvY2tfc2l6ZSAqPSB1bml0
-czsKIAogCQkJCQkJICAvKiBJZiBpdCdzIGxlc3MgdGhhbiA4S2lCLCB0aGV5J3JlIG5vdCBhbGxv
-d2VkICovCi0JCQkJCQkgIGlmIChlcmFzZV9ibG9ja19zaXplIDwgMHgyMDAwKSB7CisJCQkJCQkg
-IGlmIChlcmFzZV9ibG9ja19zaXplIDwgMHgxMDAwKSB7CiAJCQkJCQkJICBmcHJpbnRmKHN0ZGVy
-ciwgIkVyYXNlIHNpemUgMHgleCB0b28gc21hbGwuIEluY3JlYXNpbmcgdG8gOEtpQiBtaW5pbXVt
-XG4iLAogCQkJCQkJCQkJICBlcmFzZV9ibG9ja19zaXplKTsKLQkJCQkJCQkgIGVyYXNlX2Jsb2Nr
-X3NpemUgPSAweDIwMDA7CisJCQkJCQkJICBlcmFzZV9ibG9ja19zaXplID0gMHgxMDAwOwogCQkJ
-CQkJICB9CiAJCQkJCQkgIGJyZWFrOwogCQkJCQkgIH0K
---001636426f9be72ec7048f3474e3--
+> We should try to make UBIFS as robustly as possible and handle all
+> possible errors.
+
+Yes. But again, your case is a failure which does not look like a
+corruption due to power cuts. In UBIFS we have certain expectations
+about how Flash behaves, and we designed UBI/UBIFS around these
+expectations. In your the corruption does not fit our expectations. So
+we need to understand what happens. Then we can amend UBIFS expectation.
+
+Thus, I think your patch should not be applied to upstream UBIFS
+_before_ the reasons of the issue are fully understood.
+
+Lets at least _try_, there is no guarantee we can find out what
+happened, but lets try anyway.
+
+> I think it is important to be a bit more defensive and assume the worst
+> case.
+
+We do try to be defensive - we refuse mounting if we see that the FS is
+screwed in unexpected way. Instead of swallowing corrupted FS and
+corrupting it even more - we refuse it. That's very defensive!
+
+As I explained, we recover only if we see that the corruption looks like
+the power-cut corruption.
+
+I am actually trying to help you to find the real root cause. Sorry for
+my stubbornness, but I really try to help.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
