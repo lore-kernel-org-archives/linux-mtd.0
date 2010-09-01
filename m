@@ -1,24 +1,19 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OqwWE-0002GK-82
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 23:15:03 +0000
-Received: by vws11 with SMTP id 11so7722789vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Sep 2010 16:15:01 -0700 (PDT)
-Subject: Re: [RFC] nand/davinci: Fix comment to match the code
+Subject: Re: [PATCH] ARM: pxa3xx: fix build error when
+	CONFIG_MTD_PARTITIONS is not defined
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <1282738700-30966-1-git-send-email-w.sang@pengutronix.de>
-References: <1282738700-30966-1-git-send-email-w.sang@pengutronix.de>
+To: "Mark F. Brown" <mark.brown314@gmail.com>
+In-Reply-To: <1282813011-6187-2-git-send-email-mark.brown314@gmail.com>
+References: <1282813011-6187-1-git-send-email-mark.brown314@gmail.com>
+	<1282813011-6187-2-git-send-email-mark.brown314@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 02:14:58 +0300
-Message-ID: <1283382898.2209.62.camel@brekeke>
+Date: Thu, 02 Sep 2010 02:20:14 +0300
+Message-ID: <1283383214.2209.63.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	davinci-linux-open-source@linux.davincidsp.com,
-	Sudhakar Rajashekhara <sudhakar.raj@ti.com>, linux-mtd@lists.infradead.org,
-	Sneha Narnakaje <nsnehaprabha@ti.com>
+Cc: linux-mtd@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,16 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-08-25 at 14:18 +0200, Wolfram Sang wrote:
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-> Cc: Sneha Narnakaje <nsnehaprabha@ti.com>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On Thu, 2010-08-26 at 04:56 -0400, Mark F. Brown wrote:
+> Signed-off-by: Mark F. Brown <mark.brown314@gmail.com>
 > ---
-> 
-> Found while debugging a NAND issue with a dm365.
+>  drivers/mtd/nand/pxa3xx_nand.c |    6 ++++++
+>  1 files changed, 6 insertions(+), 0 deletions(-)
 
-Pushed to my l2-mtd-2.6.git / master, thanks.
+Pushed to l2-mtd-2.6 / for-2.6.36, thanks.
 
 -- 
 Best Regards,
