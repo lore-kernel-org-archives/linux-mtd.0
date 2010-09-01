@@ -1,28 +1,28 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OqkhJ-0000wu-HX
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 10:37:42 +0000
-Received: by wwb24 with SMTP id 24so5732176wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Sep 2010 03:37:40 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1283336933.1958.3.camel@brekeke>
-References: <20100827025523.GA10688@july> <1283172749.12995.70.camel@brekeke>
-	<AANLkTinDPN4bw=2VfwXjKoaXW69m+_oUUq8yH-hvM9oT@mail.gmail.com>
-	<1283296419.2018.47.camel@brekeke>
-	<AANLkTik-Fr0mvA8jM2RrLD7VzEmJN=reeqwkOcATjVXY@mail.gmail.com>
-	<1283336933.1958.3.camel@brekeke>
-Date: Wed, 1 Sep 2010 19:37:39 +0900
-Message-ID: <AANLkTi=KDK0d31WhpnN3xktqyFiB4S0kULohViz5fBXf@mail.gmail.com>
-Subject: Re: [PATCH 0/3] MTD: OneNAND: Fix OneNAND DMA error handling and 2KiB
-	pagesize
-From: Kyungmin Park <kmpark@infradead.org>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org
+Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Vipin Kumar <vipin.kumar@st.com>
+In-Reply-To: <4C7DD2FD.1080501@st.com>
+References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
+	<1283170469.12995.53.camel@brekeke>  <4C7CA278.9040902@st.com>
+	<1283297810.2018.67.camel@brekeke>  <4C7DD2FD.1080501@st.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 01 Sep 2010 13:45:39 +0300
+Message-ID: <1283337939.1958.20.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,81 +32,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 1, 2010 at 7:28 PM, Artem Bityutskiy <dedekind1@gmail.com> wrot=
-e:
-> On Wed, 2010-09-01 at 11:35 +0900, Kyungmin Park wrote:
->> On Wed, Sep 1, 2010 at 8:13 AM, Artem Bityutskiy <dedekind1@gmail.com> w=
-rote:
->> > On Tue, 2010-08-31 at 08:27 +0900, Kyungmin Park wrote:
->> >> On Mon, Aug 30, 2010 at 9:52 PM, Artem Bityutskiy <dedekind1@gmail.co=
-m> wrote:
->> >> > On Fri, 2010-08-27 at 11:55 +0900, Kyungmin Park wrote:
->> >> >> Kyungmin Park (3):
->> >> >> =C2=A0 =C2=A0 =C2=A0 MTD: OneNAND: Remove unused cmd_map at s5pc11=
-0
->> >> >> =C2=A0 =C2=A0 =C2=A0 MTD: OneNAND: Fix loop hang when DMA error at=
- Samsung SoCs
->> >> >> =C2=A0 =C2=A0 =C2=A0 MTD: OneNAND: Fix 2KiB pagesize handling at S=
-amsung SoCs
->> >> >>
->> >> >> =C2=A0drivers/mtd/onenand/samsung.c | =C2=A0 17 +++++++----------
->> >> >> =C2=A01 files changed, 7 insertions(+), 10 deletions(-)
->> >> >
->> >> > Taken patches 1 and 3, requested a change for patch 2. Pushed patch=
-es 1
->> >> > and 3 to l2-mtd-2.6.git / dunno, thanks.
->> >>
->> >> To David, Artem,
->> >> Can you include these patches to linux-2.6.36-rc4? since it's bug fix=
-es.
->> >>
->> >> How do you think?
->> >
->> > Note, Linus nowadays tends to be stricter about what goes in -rc. Why
->> > would the first patch be a fix deserving urgent merging?
->>
->> There's no problem with s5pc110 since there's no DMA error. but new
->> SOC s5pc210 has some problem with DMA.
->> it occurs the DMA error and can't exit the loop. as it's decided to
->> use the 2.6.36 for s5pc210 we need to fix it ASAP.
->>
->> >
->> > About the second patch, what if you was mistaken and 20msces is not
->> > enough sometimes? Don't you afraid to introduce another bug with this?
->> If it takes more then 20msec it's really slow device. I think I give
->> the enough time to transfer 2KiB or 4KiB pagesize transfer at DMA.
->>
->> I'll measure the real time, how much time taken at 2.6.35 kernel and
->> give exact number.
->>
->> >
->> > Probably for 2.6.36 the older version of your patch can be merged, and
->> > then you can add timeout support on top?
->>
->> Now I implemented it as DMA polling method, but also implemented the
->> DMA interrupt codes. as it's new implementation. I don't expect it
->> can't merge at this windows. so send fixed codes.
->
-> I am not sure I completely understand what you mean. but lets play safe
-> and merge your original version, because it is small and just fixes the
-> problem. Adding timeout is an improvement, and for this very simple
-> reason it should not go to 2.6.36.
->
-> Please, clone my l2 tree
-> (http://git.infradead.org/users/dedekind/l2-mtd-2.6.git), checkout the
-> 'for-2.6.36' branch, add timeout, and send it to me as as a separate
-> independent patch. I'll take care of it then.
->
-> Would you do this please?
+On Wed, 2010-09-01 at 09:43 +0530, Vipin Kumar wrote:
+> On 9/1/2010 5:06 AM, Artem Bityutskiy wrote:
+> > Hi,
+> > 
+> > On Tue, 2010-08-31 at 12:04 +0530, Vipin Kumar wrote:
+> >>> Nack, breaking ABI Is not allowed in Linux.
+> >> I could not understand your point. Can you please elaborate. How does this patch 
+> >> break ABI
+> > 
+> > You are changing data structure (struct nand_ecclayout) used for in MTD
+> > ioctl. Tha ioctl is part of the Linux ABI. By changing the data
+> > structure, you are breaking the ABI. This means that current binaries
+> > would stop working with newer versions of the Linux kernel if we'd
+> > accept your patch.
+> > 
+> Hello,
+> 
+> The only change that I have made is increasing the number of bytes to keep ecc. 
 
-No problem,
+Right, but this break ABI.
 
-Thank you,
-Kyungmin Park
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
->
->
+> Since the ecc is generally kept in spare area, it makes sense to have the ecc 
+> locations to be equal to the maximum spare area possible.
+
+May be.
+
+> A NAND page with a page size of 4096 would contain a spare area of 128 bytes. 
+> Now, ecc for the page can be less/more than 64 bytes(currently allocated for 
+> ecc positions) depending on the algorithm used to generate ecc. 
+> Incidently, in our case the ecc can fit in 104 bytes and this is still quite 
+> logical to place it in spare area since the linux image supports 4096 page but 
+> the problem is that the ecc locations supported by linux are less than the 
+> practically possible scenario so in effect this change is an improvement in linux
+
+Yes, this is historical and a bit unfortunate, but you cannot break ABI
+even if you have reasons like that
+
+> Please let me know if you disagree
+
+Please, create an app which uses 'struct nand_ecclayout' and compile it
+against the old headers. Check that it works. Then do you kernel
+modification and run the same program (without re-compiling) and my
+prediction is that it won't work. This is what I call ABI breaking which
+is disallowed.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
