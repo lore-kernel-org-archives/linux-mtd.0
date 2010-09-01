@@ -1,21 +1,28 @@
-Received: from mail-gw0-f49.google.com ([74.125.83.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OqwdV-0007hg-Ge
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 23:22:33 +0000
-Received: by gwb10 with SMTP id 10so3982163gwb.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Sep 2010 16:22:32 -0700 (PDT)
-Subject: Re: ubi wear leveling
+Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: jagadish bihani <jagadishb@cse.iitb.ac.in>
-In-Reply-To: <4C7E1FC7.1000103@cse.iitb.ac.in>
-References: <4C7E1FC7.1000103@cse.iitb.ac.in>
+To: Vipin Kumar <vipin.kumar@st.com>
+In-Reply-To: <4C7E3344.2020202@st.com>
+References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
+	<1283170469.12995.53.camel@brekeke>  <4C7CA278.9040902@st.com>
+	<1283297810.2018.67.camel@brekeke>  <4C7DD2FD.1080501@st.com>
+	<1283337939.1958.20.camel@brekeke>  <4C7E3344.2020202@st.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 02:22:22 +0300
-Message-ID: <1283383342.2209.65.camel@brekeke>
+Date: Thu, 02 Sep 2010 02:23:25 +0300
+Message-ID: <1283383405.2209.66.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,21 +33,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-01 at 15:11 +0530, jagadish bihani wrote:
-> As part of my M. Tech project I want to extend the wear leveling of UBI and
-> garbage collection in UBIFS by adding few things.
+Hi,
 
-You mean you know which things you you are looking for these things?
+On Wed, 2010-09-01 at 16:34 +0530, Vipin Kumar wrote:
+> I got the point, but this change is essential (at least for me). It may be 
+> essential to others as well in near future. Please let me know how to handle more 
+> than 64 bytes of ecc
 
->  I searched in the mailing
-> lists but I didn't find any reference.
-
-Sorry, reference to what?
-
->   Has any work been done on these two
-> things which is not there in the current documentation of UBI and UBIFS?
-
-Completely confuse, Which 2 things?
+Invent new ioctl, and declare the old one deprecated.
 
 -- 
 Best Regards,
