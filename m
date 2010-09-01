@@ -1,22 +1,19 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail.datacast.com ([209.87.232.171] helo=datacast.com)
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oqlc0-0008Dd-8l
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 11:36:19 +0000
-Received: by gyg8 with SMTP id 8so3615269gyg.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Sep 2010 04:36:15 -0700 (PDT)
-Subject: Re: mkfs.ubifs generating bad CRCs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0903E02E09@Cloud.RL.local>
-References: <70E876B0EA86DD4BAF101844BC814DFE0903E02E09@Cloud.RL.local>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 01 Sep 2010 14:36:06 +0300
-Message-ID: <1283340966.1958.21.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	id 1OqmC8-00074R-N7
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 12:13:37 +0000
+Received: from [192.168.2.130] by datacast.com (MDaemon PRO v9.6.1)
+	with ESMTP id md50002093796.msg
+	for <linux-mtd@lists.infradead.org>; Wed, 01 Sep 2010 08:13:35 -0400
+Message-ID: <4C7E4540.9040203@datacast.com>
+Date: Wed, 01 Sep 2010 08:21:20 -0400
+From: Jonne Mintern <jmintern@datacast.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Reporting nand bad blocks in Linux
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Reply-To: jmintern@datacast.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +23,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-08-31 at 11:57 +0100, Jon Povey wrote:
-> Building mkfs.ubifs from today's mtd-utils git I get a mkfs.ubifs that seems to generate bad CRCs.
-> I also have ubuntu's binary mtd-utils installed which produce good CRCs. I tested using both versions of mkfs.ubifs and only ubuntu's ubinize for both images, so can confirm ubinize is not a problem.
-> 
-> Related sounding thing I found:
-> http://lists.infradead.org/pipermail/linux-mtd/2010-July/031187.html
-> 
-> After flashing the image from git mkfs.ubifs I get this on my console:
-
-Fixed in current mtd-utils.git
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+To report nand bad blocks, I have been using cmd 'nand bad' from uboot. What Linux cmd will get thesame report from a Linux prompt? I'm using Denx eldk4.2 on an AMCC PPC440EPx. I'm not sure what nand chip.
