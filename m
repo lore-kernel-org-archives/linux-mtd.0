@@ -1,27 +1,24 @@
-Message-ID: <4C7DD2FD.1080501@st.com>
-Date: Wed, 1 Sep 2010 09:43:49 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oqg0I-0002Rp-M4
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 05:36:59 +0000
+Date: Wed, 1 Sep 2010 07:36:53 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: Pull request: i.MX nand driver updates
+Message-ID: <20100901053653.GA1366@pengutronix.de>
+References: <20100823064024.GP27749@pengutronix.de>
+	<1282865865.29421.47.camel@localhost>
+	<20100827105538.GB1473@pengutronix.de>
+	<1283297236.2018.61.camel@brekeke>
 MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
-References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>	
-	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>	
-	<1283170469.12995.53.camel@brekeke> <4C7CA278.9040902@st.com>
-	<1283297810.2018.67.camel@brekeke>
-In-Reply-To: <1283297810.2018.67.camel@brekeke>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="82I3+IH0IqGh5yIs"
+Content-Disposition: inline
+In-Reply-To: <1283297236.2018.61.camel@brekeke>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org,
+	John Ogness <john.ogness@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,35 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/1/2010 5:06 AM, Artem Bityutskiy wrote:
-> Hi,
-> 
-> On Tue, 2010-08-31 at 12:04 +0530, Vipin Kumar wrote:
->>> Nack, breaking ABI Is not allowed in Linux.
->> I could not understand your point. Can you please elaborate. How does this patch 
->> break ABI
-> 
-> You are changing data structure (struct nand_ecclayout) used for in MTD
-> ioctl. Tha ioctl is part of the Linux ABI. By changing the data
-> structure, you are breaking the ABI. This means that current binaries
-> would stop working with newer versions of the Linux kernel if we'd
-> accept your patch.
-> 
-Hello,
 
-The only change that I have made is increasing the number of bytes to keep ecc. 
-Since the ecc is generally kept in spare area, it makes sense to have the ecc 
-locations to be equal to the maximum spare area possible.
+--82I3+IH0IqGh5yIs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A NAND page with a page size of 4096 would contain a spare area of 128 bytes. 
-Now, ecc for the page can be less/more than 64 bytes(currently allocated for 
-ecc positions) depending on the algorithm used to generate ecc. 
-Incidently, in our case the ecc can fit in 104 bytes and this is still quite 
-logical to place it in spare area since the linux image supports 4096 page but 
-the problem is that the ecc locations supported by linux are less than the 
-practically possible scenario so in effect this change is an improvement in linux
+Hi Artem,
 
-Please let me know if you disagree
+Sascha is away for two weeks, maybe he was in a hurry to get this request o=
+ut
+before he left. We are sorry for the problems that might have caused!
 
-Regards
-Vipin
+> Anyway, I cherry-picked those 2 patches and put them to my
+> l2-mtd-2.6.git tree to the for-2.6.36 branch, and will bug dwmw2.
+
+Thanks for doing that!
+
+> Please, send the rest of your stuff for 2.6.37 as well.
+>=20
+> Also, please, use "mtd:" prefix for all your patches.
+
+Will try to get this properly done in the next days.
+
+Thanks again,
+
+   Wolfram
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--82I3+IH0IqGh5yIs
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkx95nUACgkQD27XaX1/VRtCoQCeKYK8DAXp70vGmHZ+WWfCi8pm
+0bUAoIz7VCMlghr32q0mHnAFsy/bBmPZ
+=UiyI
+-----END PGP SIGNATURE-----
+
+--82I3+IH0IqGh5yIs--
