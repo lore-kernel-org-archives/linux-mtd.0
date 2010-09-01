@@ -1,17 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oqprq-0000p6-DB
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 16:08:58 +0000
-Received: by fxm12 with SMTP id 12so5889393fxm.36
+	id 1OqsA7-0001Id-TN
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 18:35:56 +0000
+Received: by vws11 with SMTP id 11so7477256vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Sep 2010 09:08:51 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 1 Sep 2010 09:08:49 -0700
-Message-ID: <AANLkTimuZZ-B1sO1jHAu_gjwa8Gb_WXKowORNvWHMmcT@mail.gmail.com>
-Subject: UBIFS in-place vs out-of-place GC
-From: Russ Dill <russ.dill@gmail.com>
-To: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+	Wed, 01 Sep 2010 11:35:55 -0700 (PDT)
+Subject: Re: [RFC] jffs2: use cond_resched() instead of yield()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <1283357021-16187-1-git-send-email-w.sang@pengutronix.de>
+References: <1283357021-16187-1-git-send-email-w.sang@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 01 Sep 2010 21:35:51 +0300
+Message-ID: <1283366151.2209.21.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, Ingo Molnar <mingo@elte.hu>,
+	dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm doing a bit of research on UBIFS and something I read from a few
-sources has me confused regarding garbage collection:
+This 'yield()' was introduced by dwmw2, so he may have strong feelings
+about it. CCed.
 
-http://osl.sed.hu/~havasi/ubifs/#gc
+On Wed, 2010-09-01 at 18:03 +0200, Wolfram Sang wrote:
+> yield() has different semantics meanwhile and even causes RT-kernels to
+> BUG. Replace the only appearance left in jffs2.
+> 
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Cc: Ingo Molnar <mingo@elte.hu>
+> ---
+> 
+> The aforementioned BUG() showed up in one of our customer's RT-projects. While
+> this could be handled by rearranging his thread-priorities, I wondered if such
+> a patch would be worthwhile, still. Reading through the material covering
+> yield() and related replacements, I believe this patch should be appropriate.
+> Please say if I missed some side-effects.
+> 
+>  fs/jffs2/erase.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+> index abac961..e513f19 100644
+> --- a/fs/jffs2/erase.c
+> +++ b/fs/jffs2/erase.c
+> @@ -151,7 +151,7 @@ int jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
+>  		}
+>  
+>  		/* Be nice */
+> -		yield();
+> +		cond_resched();
+>  		mutex_lock(&c->erase_free_sem);
+>  		spin_lock(&c->erase_completion_lock);
+>  	}
 
->> Out-place mode:
->>
->> This mode deletes the active nodes from the tree and inserts them
->> again into a new location. Because of the wandering algorithm it
->> makes dirty nodes as well. After garbage collection, it can be
->> possible that an erase block has more dirty space created than freed
->> up.In-place mode:
->>
->> This method copies the active nodes into an empty erase block
->> and creates a displacement table to its beginning. Afterwards, it
->> logically swaps these two erase blocks, so the active nodes will
->> be accessible at the same place as before, thus modifying other
->> parts of the tree is not necessary. A big advantage of this method
->> is that it can convert all dirty space in the erase block to free space.
->> Its disadvantage is that it can cause fragmentation.
->>
->> The default GC mode of the UBIFS is in-place mode and it will
->> use a heuristic method to detect fragmentation and call out-place
->> mode.
-
-Looking at the source, I can find the code that does the out of place
-updates, but I can't find any references to in place updates or
-displacement tables. What gives?
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
