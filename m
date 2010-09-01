@@ -1,15 +1,22 @@
-Received: from ussvlmgty02.spansion.com ([12.151.36.113])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OqlGY-0001mm-Qf
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 11:14:07 +0000
-Message-ID: <4C7E3578.20608@spansion.com>
-Date: Wed, 1 Sep 2010 13:14:00 +0200
-From: Gernot Hoyler <Gernot.Hoyler@spansion.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] m25p80: Add support for two new Spansion SPI devices (S25FL-K)
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Oqlc0-0008Dd-8l
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 11:36:19 +0000
+Received: by gyg8 with SMTP id 8so3615269gyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 01 Sep 2010 04:36:15 -0700 (PDT)
+Subject: Re: mkfs.ubifs generating bad CRCs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jon Povey <Jon.Povey@racelogic.co.uk>
+In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0903E02E09@Cloud.RL.local>
+References: <70E876B0EA86DD4BAF101844BC814DFE0903E02E09@Cloud.RL.local>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 01 Sep 2010 14:36:06 +0300
+Message-ID: <1283340966.1958.21.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,28 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for Spansion S25FL016K and S25FL064K SPI flash.
-It has been tested with physical devices. Note that both parts exhibit
-a Winbond manufacturer ID so they might also be added to that section.
+On Tue, 2010-08-31 at 11:57 +0100, Jon Povey wrote:
+> Building mkfs.ubifs from today's mtd-utils git I get a mkfs.ubifs that seems to generate bad CRCs.
+> I also have ubuntu's binary mtd-utils installed which produce good CRCs. I tested using both versions of mkfs.ubifs and only ubuntu's ubinize for both images, so can confirm ubinize is not a problem.
+> 
+> Related sounding thing I found:
+> http://lists.infradead.org/pipermail/linux-mtd/2010-July/031187.html
+> 
+> After flashing the image from git mkfs.ubifs I get this on my console:
 
+Fixed in current mtd-utils.git
 
-Signed-off-by: Gernot Hoyler <gernot.hoyler@spansion.com>
----
-  drivers/mtd/devices/m25p80.c |    2 ++
-  1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 6f512b5..1f0f703 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -666,6 +666,8 @@ static const struct spi_device_id m25p_ids[] = {
-  	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
-  	{ "s25fl129p0", INFO(0x012018, 0x4d00, 256 * 1024,  64, 0) },
-  	{ "s25fl129p1", INFO(0x012018, 0x4d01,  64 * 1024, 256, 0) },
-+	{ "s25fl016k",  INFO(0xef4015,      0,  64 * 1024,  32, SECT_4K) },
-+	{ "s25fl064k",  INFO(0xef4017,      0,  64 * 1024, 128, SECT_4K) },
-
-  	/* SST -- large erase sizes are "overlays", "sectors" are 4K */
-  	{ "sst25vf040b", INFO(0xbf258d, 0, 64 * 1024,  8, SECT_4K) },
 -- 
-1.6.2.2
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
