@@ -1,33 +1,23 @@
-Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OqwSK-0004hZ-80
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 23:11:00 +0000
+Received: by qwe4 with SMTP id 4so7694794qwe.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 01 Sep 2010 16:10:51 -0700 (PDT)
+Subject: Re: UBI crashes / fixing NAND subpage writes
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ryan Mallon <ryan@bluewatersys.com>
-In-Reply-To: <4C7ED1E9.4050208@bluewatersys.com>
-References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
-	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
-	<1283170469.12995.53.camel@brekeke>	<4C7CA278.9040902@st.com>
-	<1283297810.2018.67.camel@brekeke>	<4C7DD2FD.1080501@st.com>
-	<1283337939.1958.20.camel@brekeke>	<4C7E3344.2020202@st.com>
-	<4C7EC43B.2050903@bluewatersys.com>
-	<AANLkTinmEck5413ZuCDMB1jyBjH63Uh=L+87q8V4Ek1X@mail.gmail.com>
-	<4C7ED1E9.4050208@bluewatersys.com>
+To: Jon Povey <Jon.Povey@racelogic.co.uk>
+In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0903E02F56@Cloud.RL.local>
+References: <70E876B0EA86DD4BAF101844BC814DFE0903E02F56@Cloud.RL.local>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 01:53:22 +0300
-Message-ID: <1283381602.2209.49.camel@brekeke>
+Date: Thu, 02 Sep 2010 02:10:46 +0300
+Message-ID: <1283382646.2209.61.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Kevin Cernekee <cernekee@gmail.com>, Vipin Kumar <vipin.kumar@st.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Cc: "davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -38,49 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-02 at 10:21 +1200, Ryan Mallon wrote:
-> On 09/02/2010 09:54 AM, Kevin Cernekee wrote:
-> > On Wed, Sep 1, 2010 at 2:23 PM, Ryan Mallon <ryan@bluewatersys.com> wrote:
-> >> However, we are interested in having a proper solution to this problem.
-> > 
-> > I would suggest using this patch as a starting point - could you
-> > please review the changes and try it out?
-> > 
-> > http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/b6d6ae730be2750fac166ed9df11ee6ea54d9160
+On Wed, 2010-09-01 at 08:40 +0100, Jon Povey wrote:
+> Of course this is not a very good solution. The right thing to do
+> would seem to be make nand_do_write_ops() properly subpage aware and
+> either add start and end offsets to the nand_write_page* family of
+> functions, or add a nand_write_subpage* family of functions.
 > 
-> That patch still breaks the ABI by renaming struct nand_ecclayout to
-> nand_ecclayout_user.
+> I don't mind having a go at some of this but am not confident to start
+> such major overhaul of nand_base.c without at least seeking comment
+> from others, so: This email. Maybe there's already something being
+> worked on?
 
-Hmm, would you please show why my binary file 'nandwrite' would have to
-be re-built?
-
->  Any application using the old names will have to be
-> rewritten to compile against a new kernel.
-
-Not necessary. mtd-utils, for example, maintain their own copy of the
-mtd-abi.h file, which I personally think is a good idea.
-
-But if your apps depend on the kernel headers, then yes, you will need
-to amend it or copy the old header into your project.
-
-IOW, the patch breaks API by renaming, but not ABI, I think. I do not
-see this as a major problem - just a small inconvenience.
-
-> The old interface should remain unchanged in that include/mtd/mtd-abi.h.
-> If an application using the old interface calls any of the ecc ioctls
-> for a nand chip with > 64 bytes ecc it should return an error.
-
-It will, because size of the structure is part of the ioctl number,
-even. See the corresponding ioctl macro definition.
-
-> I still think the eccpos field should be a pointer, so that it can
-> allocate as much space as is needed for the ecc. This also means that
-> the kernel doesn't need to be changed every time a new NAND chips
-> appears with a bigger ecc size.
-
-Sure, this is the whole point: go ahead and design the new ioctl, and
-then deprecate the old one. Just invest men/hours into that and we are
-all right :-)
+I think nand_write_subpage() is a good way do deal with this. If the
+chip does not define own nand_write_subpage(), we fall-back to the
+default one which uses the current way.
 
 -- 
 Best Regards,
