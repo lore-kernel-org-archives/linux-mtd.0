@@ -1,14 +1,17 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OqpnG-0004C9-12
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 16:04:15 +0000
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: linux-kernel@vger.kernel.org
-Subject: [RFC] jffs2: use cond_resched() instead of yield()
-Date: Wed,  1 Sep 2010 18:03:41 +0200
-Message-Id: <1283357021-16187-1-git-send-email-w.sang@pengutronix.de>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, Ingo Molnar <mingo@elte.hu>,
-	linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oqprq-0000p6-DB
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 16:08:58 +0000
+Received: by fxm12 with SMTP id 12so5889393fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 01 Sep 2010 09:08:51 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 1 Sep 2010 09:08:49 -0700
+Message-ID: <AANLkTimuZZ-B1sO1jHAu_gjwa8Gb_WXKowORNvWHMmcT@mail.gmail.com>
+Subject: UBIFS in-place vs out-of-place GC
+From: Russ Dill <russ.dill@gmail.com>
+To: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,35 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-yield() has different semantics meanwhile and even causes RT-kernels to
-BUG. Replace the only appearance left in jffs2.
+I'm doing a bit of research on UBIFS and something I read from a few
+sources has me confused regarding garbage collection:
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: Ingo Molnar <mingo@elte.hu>
----
+http://osl.sed.hu/~havasi/ubifs/#gc
 
-The aforementioned BUG() showed up in one of our customer's RT-projects. While
-this could be handled by rearranging his thread-priorities, I wondered if such
-a patch would be worthwhile, still. Reading through the material covering
-yield() and related replacements, I believe this patch should be appropriate.
-Please say if I missed some side-effects.
+>> Out-place mode:
+>>
+>> This mode deletes the active nodes from the tree and inserts them
+>> again into a new location. Because of the wandering algorithm it
+>> makes dirty nodes as well. After garbage collection, it can be
+>> possible that an erase block has more dirty space created than freed
+>> up.In-place mode:
+>>
+>> This method copies the active nodes into an empty erase block
+>> and creates a displacement table to its beginning. Afterwards, it
+>> logically swaps these two erase blocks, so the active nodes will
+>> be accessible at the same place as before, thus modifying other
+>> parts of the tree is not necessary. A big advantage of this method
+>> is that it can convert all dirty space in the erase block to free space.
+>> Its disadvantage is that it can cause fragmentation.
+>>
+>> The default GC mode of the UBIFS is in-place mode and it will
+>> use a heuristic method to detect fragmentation and call out-place
+>> mode.
 
- fs/jffs2/erase.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index abac961..e513f19 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -151,7 +151,7 @@ int jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
- 		}
- 
- 		/* Be nice */
--		yield();
-+		cond_resched();
- 		mutex_lock(&c->erase_free_sem);
- 		spin_lock(&c->erase_completion_lock);
- 	}
--- 
-1.7.1
+Looking at the source, I can find the code that does the out of place
+updates, but I can't find any references to in place updates or
+displacement tables. What gives?
