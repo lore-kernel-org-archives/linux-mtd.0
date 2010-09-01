@@ -1,22 +1,39 @@
-Received: from mail-qy0-f170.google.com ([209.85.216.170])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oqwit-0001c0-Gs
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 23:28:07 +0000
-Received: by qyk35 with SMTP id 35so1349571qyk.15
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 01 Sep 2010 16:28:07 -0700 (PDT)
-Subject: Re: Reporting nand bad blocks in Linux
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: jmintern@datacast.com
-In-Reply-To: <4C7E4540.9040203@datacast.com>
-References: <4C7E4540.9040203@datacast.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 02:28:03 +0300
-Message-ID: <1283383683.2209.69.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail.bluewatersys.com ([202.124.120.130]
+	helo=hayes.bluewaternz.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oqwrc-0007q1-1W
+	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 23:37:09 +0000
+Message-ID: <4C7EE3A7.4050108@bluewatersys.com>
+Date: Thu, 02 Sep 2010 11:37:11 +1200
+From: Ryan Mallon <ryan@bluewatersys.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
+References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>	
+	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>	
+	<1283170469.12995.53.camel@brekeke>	<4C7CA278.9040902@st.com>	
+	<1283297810.2018.67.camel@brekeke>	<4C7DD2FD.1080501@st.com>	
+	<1283337939.1958.20.camel@brekeke>	<4C7E3344.2020202@st.com>	
+	<4C7EC43B.2050903@bluewatersys.com>	
+	<AANLkTinmEck5413ZuCDMB1jyBjH63Uh=L+87q8V4Ek1X@mail.gmail.com>	
+	<4C7ED1E9.4050208@bluewatersys.com>
+	<1283381602.2209.49.camel@brekeke>
+In-Reply-To: <1283381602.2209.49.camel@brekeke>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	Kevin Cernekee <cernekee@gmail.com>, Vipin Kumar <vipin.kumar@st.com>,
+	Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +43,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-01 at 08:21 -0400, Jonne Mintern wrote:
-> To report nand bad blocks, I have been using cmd 'nand bad' from
-> uboot. What Linux cmd will get thesame report from a Linux prompt? I'm
-> using Denx eldk4.2 on an AMCC PPC440EPx. I'm not sure what nand chip.
+On 09/02/2010 10:53 AM, Artem Bityutskiy wrote:
+> On Thu, 2010-09-02 at 10:21 +1200, Ryan Mallon wrote:
+>> On 09/02/2010 09:54 AM, Kevin Cernekee wrote:
+>>> On Wed, Sep 1, 2010 at 2:23 PM, Ryan Mallon <ryan@bluewatersys.com> wrote:
+>>>> However, we are interested in having a proper solution to this problem.
+>>>
+>>> I would suggest using this patch as a starting point - could you
+>>> please review the changes and try it out?
+>>>
+>>> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/b6d6ae730be2750fac166ed9df11ee6ea54d9160
+>>
+>> That patch still breaks the ABI by renaming struct nand_ecclayout to
+>> nand_ecclayout_user.
+> 
+> Hmm, would you please show why my binary file 'nandwrite' would have to
+> be re-built?
+> 
+>>  Any application using the old names will have to be
+>> rewritten to compile against a new kernel.
+> 
+> Not necessary. mtd-utils, for example, maintain their own copy of the
+> mtd-abi.h file, which I personally think is a good idea.
+> 
+> But if your apps depend on the kernel headers, then yes, you will need
+> to amend it or copy the old header into your project.
+> 
+> IOW, the patch breaks API by renaming, but not ABI, I think. I do not
+> see this as a major problem - just a small inconvenience.
 
-Hmm, I think this utility does not exist, and you need to implement it,
-but I am not 100% sure.
+Sorry, you are correct, it breaks the API not the ABI. I understood that
+such changes were still to be avoided.
+
+>> The old interface should remain unchanged in that include/mtd/mtd-abi.h.
+>> If an application using the old interface calls any of the ecc ioctls
+>> for a nand chip with > 64 bytes ecc it should return an error.
+> 
+> It will, because size of the structure is part of the ioctl number,
+> even. See the corresponding ioctl macro definition.
+
+Right, but I don't think it needs the complexity of the shrink_ecc
+function from Kevin's patch. The old ioctl should return an error
+(possibly with a kernel message) if the requested nand chip has > 64
+bytes ecc. Otherwise it should just copy upto 64 bytes into the old
+nand_ecclayout structure and return.
+
+Any new structure should be totally independent and should, IMHO, have
+an arbitrary sized array for the ecc. It should have its own new set of
+ioctls, one for getting the size of the ecc and one for getting the
+actual ecc data. Though I can't remember if ioctls support arbitrary
+sized arguments to make this possible.
+
+~Ryan
 
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Bluewater Systems Ltd - ARM Technology Solution Centre
+
+Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
+ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
+http://www.bluewatersys.com	New Zealand
+Phone: +64 3 3779127		Freecall: Australia 1800 148 751
+Fax:   +64 3 3779135			  USA 1800 261 2934
