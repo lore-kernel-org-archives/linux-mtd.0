@@ -1,32 +1,13 @@
-Received: from mail.bluewatersys.com ([202.124.120.130]
-	helo=hayes.bluewaternz.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oqwxj-0003Jt-Nj
-	for linux-mtd@lists.infradead.org; Wed, 01 Sep 2010 23:43:28 +0000
-Message-ID: <4C7EE526.2080703@bluewatersys.com>
-Date: Thu, 02 Sep 2010 11:43:34 +1200
-From: Ryan Mallon <ryan@bluewatersys.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
-References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>		<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>		<1283170469.12995.53.camel@brekeke>	<4C7CA278.9040902@st.com>		<1283297810.2018.67.camel@brekeke>	<4C7DD2FD.1080501@st.com>		<1283337939.1958.20.camel@brekeke>	<4C7E3344.2020202@st.com>		<4C7EC43B.2050903@bluewatersys.com>		<AANLkTinmEck5413ZuCDMB1jyBjH63Uh=L+87q8V4Ek1X@mail.gmail.com>		<4C7ED1E9.4050208@bluewatersys.com>	<1283381602.2209.49.camel@brekeke>
-	<4C7EE3A7.4050108@bluewatersys.com>
-In-Reply-To: <4C7EE3A7.4050108@bluewatersys.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Kevin Cernekee <cernekee@gmail.com>, Vipin Kumar <vipin.kumar@st.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from sand.ocn.ne.jp ([122.28.30.136] helo=smtp.sand.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OqzqT-0006f8-JH
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 02:48:14 +0000
+From: Jon Povey <jon.povey@racelogic.co.uk>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] ubi-utils: provide default value for /dev/ubi_ctrl
+Date: Thu,  2 Sep 2010 11:47:53 +0900
+Message-Id: <1283395673-4710-1-git-send-email-jon.povey@racelogic.co.uk>
+Cc: Jon Povey <jon.povey@racelogic.co.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,63 +17,123 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/02/2010 11:37 AM, Ryan Mallon wrote:
-> On 09/02/2010 10:53 AM, Artem Bityutskiy wrote:
->> On Thu, 2010-09-02 at 10:21 +1200, Ryan Mallon wrote:
->>> On 09/02/2010 09:54 AM, Kevin Cernekee wrote:
->>>> On Wed, Sep 1, 2010 at 2:23 PM, Ryan Mallon <ryan@bluewatersys.com> wrote:
->>>>> However, we are interested in having a proper solution to this problem.
->>>>
->>>> I would suggest using this patch as a starting point - could you
->>>> please review the changes and try it out?
->>>>
->>>> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commitdiff/b6d6ae730be2750fac166ed9df11ee6ea54d9160
->>>
->>> That patch still breaks the ABI by renaming struct nand_ecclayout to
->>> nand_ecclayout_user.
->>
->> Hmm, would you please show why my binary file 'nandwrite' would have to
->> be re-built?
->>
->>>  Any application using the old names will have to be
->>> rewritten to compile against a new kernel.
->>
->> Not necessary. mtd-utils, for example, maintain their own copy of the
->> mtd-abi.h file, which I personally think is a good idea.
->>
->> But if your apps depend on the kernel headers, then yes, you will need
->> to amend it or copy the old header into your project.
->>
->> IOW, the patch breaks API by renaming, but not ABI, I think. I do not
->> see this as a major problem - just a small inconvenience.
-> 
-> Sorry, you are correct, it breaks the API not the ABI. I understood that
-> such changes were still to be avoided.
-> 
->>> The old interface should remain unchanged in that include/mtd/mtd-abi.h.
->>> If an application using the old interface calls any of the ecc ioctls
->>> for a nand chip with > 64 bytes ecc it should return an error.
->>
->> It will, because size of the structure is part of the ioctl number,
->> even. See the corresponding ioctl macro definition.
-> 
-> Right, but I don't think it needs the complexity of the shrink_ecc
-> function from Kevin's patch. The old ioctl should return an error
-> (possibly with a kernel message) if the requested nand chip has > 64
-> bytes ecc. Otherwise it should just copy upto 64 bytes into the old
-> nand_ecclayout structure and return.
+Modify ubiattach and ubidetach to default to /dev/ubi_ctrl if not supplied
+rather than requiring the user to type it in every time.
 
-Oops, I misread the patch. The shrink_ecclayout function is actually
-fine. The only change I would make is to possible add a warning/error if
-the data is being truncated.
+Also bump version from 1.0 to 1.1
 
-~Ryan
+Signed-off-by: Jon Povey <jon.povey@racelogic.co.uk>
+---
+ ubi-utils/src/ubiattach.c |   17 ++++++++++-------
+ ubi-utils/src/ubidetach.c |   17 ++++++++++-------
+ 2 files changed, 20 insertions(+), 14 deletions(-)
 
+diff --git a/ubi-utils/src/ubiattach.c b/ubi-utils/src/ubiattach.c
+index b1c8d74..4454c38 100644
+--- a/ubi-utils/src/ubiattach.c
++++ b/ubi-utils/src/ubiattach.c
+@@ -31,8 +31,9 @@
+ #include "common.h"
+ #include "ubiutils-common.h"
+ 
+-#define PROGRAM_VERSION "1.0"
++#define PROGRAM_VERSION "1.1"
+ #define PROGRAM_NAME    "ubiattach"
++#define DEFAULT_CTRL_DEV "/dev/ubi_ctrl"
+ 
+ /* The variables below are set by command line arguments */
+ struct args {
+@@ -68,13 +69,14 @@ static const char *optionsstr =
+ "-V, --version                   print program version";
+ 
+ static const char *usage =
+-"Usage: " PROGRAM_NAME " <UBI control device node file name>\n"
++"Usage: " PROGRAM_NAME " [<UBI control device node file name>]\n"
+ "\t[-m <MTD device number>] [-d <UBI device number>] [-p <path to device>]\n"
+ "\t[--mtdn=<MTD device number>] [--devn=<UBI device number>]\n"
+ "\t[--dev-path=<path to device>]\n"
+-"Example 1: " PROGRAM_NAME " /dev/ubi_ctrl -p /dev/mtd0 - attach /dev/mtd0 to UBI\n"
+-"Example 2: " PROGRAM_NAME " /dev/ubi_ctrl -m 0 - attach MTD device 0 (mtd0) to UBI\n"
+-"Example 3: " PROGRAM_NAME " /dev/ubi_ctrl -m 0 -d 3 - attach MTD device 0 (mtd0) to UBI and\n"
++"UBI control device defaults to " DEFAULT_CTRL_DEV " if not supplied.\n"
++"Example 1: " PROGRAM_NAME " -p /dev/mtd0 - attach /dev/mtd0 to UBI\n"
++"Example 2: " PROGRAM_NAME " -m 0 - attach MTD device 0 (mtd0) to UBI\n"
++"Example 3: " PROGRAM_NAME " -m 0 -d 3 - attach MTD device 0 (mtd0) to UBI\n"
+ "           and create UBI device number 3 (ubi3)";
+ 
+ static const struct option long_options[] = {
+@@ -142,14 +144,15 @@ static int parse_opt(int argc, char * const argv[])
+ 	}
+ 
+ 	if (optind == argc)
+-		return errmsg("UBI control device name was not specified (use -h for help)");
++		args.node = DEFAULT_CTRL_DEV;
+ 	else if (optind != argc - 1)
+ 		return errmsg("more then one UBI control device specified (use -h for help)");
++	else
++		args.node = argv[optind];
+ 
+ 	if (args.mtdn == -1 && args.dev == NULL)
+ 		return errmsg("MTD device to attach was not specified (use -h for help)");
+ 
+-	args.node = argv[optind];
+ 	return 0;
+ }
+ 
+diff --git a/ubi-utils/src/ubidetach.c b/ubi-utils/src/ubidetach.c
+index 335486d..c4c05a5 100644
+--- a/ubi-utils/src/ubidetach.c
++++ b/ubi-utils/src/ubidetach.c
+@@ -30,8 +30,9 @@
+ #include <libubi.h>
+ #include "common.h"
+ 
+-#define PROGRAM_VERSION "1.0"
++#define PROGRAM_VERSION "1.1"
+ #define PROGRAM_NAME    "ubidetach"
++#define DEFAULT_CTRL_DEV "/dev/ubi_ctrl"
+ 
+ /* The variables below are set by command line arguments */
+ struct args {
+@@ -59,13 +60,14 @@ static const char *optionsstr =
+ "-V, --version                   print program version";
+ 
+ static const char *usage =
+-"Usage: " PROGRAM_NAME " <UBI control device node file name>\n"
++"Usage: " PROGRAM_NAME " [<UBI control device node file name>]\n"
+ "\t[-d <UBI device number>] [-m <MTD device number>] [-p <path to device>]\n"
+ "\t[--devn=<UBI device number>] [--mtdn=<MTD device number>]\n"
+ "\t[--dev-path=<path to device>]\n"
+-"Example 1: " PROGRAM_NAME " /dev/ubi_ctrl -p /dev/mtd0 - detach MTD device /dev/mtd0\n"
+-"Example 2: " PROGRAM_NAME " /dev/ubi_ctrl -d 2 - delete UBI device 2 (ubi2)\n"
+-"Example 3: " PROGRAM_NAME " /dev/ubi_ctrl -m 0 - detach MTD device 0 (mtd0)";
++"UBI control device defaults to " DEFAULT_CTRL_DEV " if not supplied.\n"
++"Example 1: " PROGRAM_NAME " -p /dev/mtd0 - detach MTD device /dev/mtd0\n"
++"Example 2: " PROGRAM_NAME " -d 2 - delete UBI device 2 (ubi2)\n"
++"Example 3: " PROGRAM_NAME " -m 0 - detach MTD device 0 (mtd0)";
+ 
+ static const struct option long_options[] = {
+ 	{ .name = "devn",     .has_arg = 1, .flag = NULL, .val = 'd' },
+@@ -124,9 +126,11 @@ static int parse_opt(int argc, char * const argv[])
+ 	}
+ 
+ 	if (optind == argc)
+-		return errmsg("UBI control device name was not specified (use -h for help)");
++		args.node = DEFAULT_CTRL_DEV;
+ 	else if (optind != argc - 1)
+ 		return errmsg("more then one UBI control device specified (use -h for help)");
++	else
++		args.node = argv[optind];
+ 
+ 	if (args.mtdn == -1 && args.devn == -1 && args.dev == NULL)
+ 		return errmsg("neither MTD nor UBI devices were specified (use -h for help)");
+@@ -138,7 +142,6 @@ static int parse_opt(int argc, char * const argv[])
+ 	} else if (args.mtdn != -1 && args.dev != NULL)
+ 		return errmsg("specify either MTD number or device node (use -h for help)");
+ 
+-	args.node = argv[optind];
+ 	return 0;
+ }
+ 
 -- 
-Bluewater Systems Ltd - ARM Technology Solution Centre
-
-Ryan Mallon         		5 Amuri Park, 404 Barbadoes St
-ryan@bluewatersys.com         	PO Box 13 889, Christchurch 8013
-http://www.bluewatersys.com	New Zealand
-Phone: +64 3 3779127		Freecall: Australia 1800 148 751
-Fax:   +64 3 3779135			  USA 1800 261 2934
+1.6.3.3
