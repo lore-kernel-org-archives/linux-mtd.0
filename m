@@ -1,23 +1,28 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Or7dK-0006BJ-BH
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 11:07:07 +0000
-Received: by ywi4 with SMTP id 4so144491ywi.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Sep 2010 04:07:05 -0700 (PDT)
-Subject: Re: [PATCH] NAND: split ONFI detection logic to its own function
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Florian Fainelli <ffainelli@freebox.fr>
-In-Reply-To: <201009012229.00660.ffainelli@freebox.fr>
-References: <201009012229.00660.ffainelli@freebox.fr>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 14:07:03 +0300
-Message-ID: <1283425623.3085.7.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Matthieu CASTET <matthieu.castet@parrot.com>
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+In-Reply-To: <4C7F5B9E.8090406@st.com>
+References: <cover.1283161023.git.viresh.kumar@st.com>
+	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>
+	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>
+	<4C7F5B9E.8090406@st.com>
+Date: Thu, 2 Sep 2010 13:15:13 +0200
+Message-ID: <AANLkTikwjCh=2Cekg9R1SqacKXC+_ZgV7m+=ZVVCaDba@mail.gmail.com>
+Subject: Re: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
+From: Linus Walleij <linus.ml.walleij@gmail.com>
+To: Armando Visconti <armando.visconti@st.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Sebastian RASMUSSEN <sebastian.rasmussen@stericsson.com>,
+	Alessandro Rubini <rubini-list@gnudd.com>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-01 at 22:28 +0200, Florian Fainelli wrote:
-> In order to reduce the indentation and improve the readability of nand_get_
-> flash_type, split the ONFI detection logic to its own function. The detection
-> logic inside nand_flash_detect_onfi is also rewritten to allow for less
-> indentation.
-> 
-> Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
+2010/9/2 Armando Visconti <armando.visconti@st.com>:
 
-Pushed to l2-mtd-2.6.git / dunno, thanks.
+>> I *highly* suspect that this driver duplicates some code found in
+>> drivers/mtd/nand/nomadik_nand.c because it's the same silicon.
+>
+> Why nomadik_nand.c?
+> Shouldn't the fsmc_nand.c rule apply also in this case?
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+As I said I think nomadik_nand.c shall be deleted and replaced with
+this driver.
+
+Unless Alessandro hits me on the fingers... If it is made generic
+I can provide testing for the U300. (Maybe I can get my NHK8815
+card booting too, I don't know.)
+
+Yours,
+Linus Walleij
