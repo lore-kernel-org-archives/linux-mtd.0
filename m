@@ -1,30 +1,22 @@
-Received: from www84.your-server.de ([213.133.104.84])
+Received: from gw1.transmode.se ([213.115.205.20])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Or3fR-0007zT-28
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 06:53:01 +0000
-Subject: Re: [PATCH] Add quick erase format option
-From: Stefani Seibold <stefani@seibold.net>
+	id 1Or3qY-0001o8-0P
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 07:04:31 +0000
+In-Reply-To: <1283366151.2209.21.camel@brekeke>
+References: <1283357021-16187-1-git-send-email-w.sang@pengutronix.de>
+	<1283366151.2209.21.camel@brekeke>
+Subject: Re: [RFC] jffs2: use cond_resched() instead of yield()
 To: dedekind1@gmail.com
-In-Reply-To: <1283302043.2018.92.camel@brekeke>
-References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
-	<1281343038.12908.25.camel@localhost>
-	<1281343974.18398.13.camel@wall-e.seibold.net>
-	<1281353344.2332.8.camel@brekeke>
-	<1281362069.20181.16.camel@wall-e.seibold.net>
-	<1283081435.2131.24.camel@brekeke>
-	<1283236978.6083.28.camel@wall-e.seibold.net>
-	<1283302043.2018.92.camel@brekeke>
-Content-Type: text/plain; charset="ISO-8859-15"
-Date: Thu, 02 Sep 2010 08:53:12 +0200
-Message-ID: <1283410392.6920.36.camel@wall-e.seibold.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Enzinger,
-	Robert \(EXT-Other - DE/Munich\)" <robert.enzinger.ext@nsn.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Message-ID: <OF213EDC22.80E0A084-ONC1257792.0025CB36-C1257792.00268F36@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Thu, 2 Sep 2010 09:01:10 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=KOI8-R
+Content-transfer-encoding: base64
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
+	Wolfram Sang <w.sang@pengutronix.de>,
+	linux-mtd@lists.infradead.org, Ingo Molnar <mingo@elte.hu>,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,43 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Mittwoch, den 01.09.2010, 03:47 +0300 schrieb Artem Bityutskiy:
-> Stefani,
-> 
-> you have strong points, but I'm still not entirely convinced.
-> 
-> On Tue, 2010-08-31 at 08:42 +0200, Stefani Seibold wrote:
-> > > I would like to change the option name so that it would reflect the
-> > > exact use-case we are creating it for: wiped out flash. So I'd be
-> > > happier with something like --pristine-flash.
-> > 
-> > "Pristine" is not a word which non native speaker have in its
-> > vocabulary.
-> 
-> Agree, not very simple word, when I met it in JFFS2 sources, I looked it
-> up in the dictionary :-)
-> 
-
-> Also, your use-case is new/virgin/pristine/whatever NOR chips, which are
-> guaranteed to be erased, and I wanted to use option name which reflects
-> your use-case.
-> 
-> How about:
-> 
-> --virgin
-> --factory
-> --brand-new
-> --all-erased
-> 
-> Or  :-)
-
---do-not-use-me is the best. But more seriously i think we should it
-split it into two options. --all-erased and --check-erased. The first
-assumes that all PEB are erased, while the second do the check if the
-PEB is erased and if not it will be erased.
-
-So we can handle NAND's, which have a fast erase, and NOR's  which are
-very slow. With this we are able to pick the best option for the
-manufacturing.
-
-- Stefani
+Pg0KPiBUaGlzICd5aWVsZCgpJyB3YXMgaW50cm9kdWNlZCBieSBkd213Miwgc28gaGUgbWF5IGhh
+dmUgc3Ryb25nIGZlZWxpbmdzDQo+IGFib3V0IGl0LiBDQ2VkLg0KDQpBY3R1YWxseSwgaXQgd2Fz
+IGludHJvZHVjZWQgYnkgbWUgd2l0aCBjb21taXQgZmQ1MzI0OTA5ZTQxMGEzMjAyYzFiMDFiZDUw
+N2MyZGZiYTU4ZmNhNSA6DQoNCltKRkZTMl0gRml4IGhhbmdpbmcgY2xvc2UgZm9yIC9kZXYvbXRk
+IGNoYXJhY3RlciBkZXZpY2UuDQoNCiAgICBXaGVuIHBkZmx1c2ggaXMgZXJhc2luZyBsb3RzIG9m
+IHNlY3RvcnMsIGRyaXZlcnMgY2FsbGluZw0KICAgIG10ZC0+c3luYyB3aWxsIGhhbmcgdW50aWwg
+YWxsIGJsb2NrcyBhcmUgZXJhc2VkLiBCZSBuaWNlci4NCg0KICAgIFNpZ25lZC1vZmYtYnk6IEpv
+YWtpbSBUamVybmx1bmQgPEpvYWtpbS5UamVybmx1bmRAdHJhbnNtb2RlLnNlPg0KICAgIFNpZ25l
+ZC1vZmYtYnk6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4NCg0KDQpAQCAt
+MTQyLDcgKzE0Miw3IEBAIHZvaWQgamZmczJfZXJhc2VfcGVuZGluZ19ibG9ja3Moc3RydWN0IGpm
+ZnMyX3NiX2luZm8gKmMsIGludCBjb3VudCkNCiAJCX0NCg0KIAkJLyogQmUgbmljZSAqLw0KLQkJ
+Y29uZF9yZXNjaGVkKCk7DQorCQl5aWVsZCgpOw0KIAkJc3Bpbl9sb2NrKCZjLT5lcmFzZV9jb21w
+bGV0aW9uX2xvY2spOw0KIAl9DQoNCkF0IHRoZSB0aW1lIGNvbmRfcmVzY2hlZCgpIHdhcyBhIHBy
+b2JsZW0gYnV0IG5vdyBJIGRvbid0IGtub3cuIFRoZSBlcmFzaW5nDQpoYXMgbW92ZWQgdG8gdGhl
+IEdDIHRocmVhZCBhbmQgYmVlbiBzb21ld2hhdCByZXdvcmtlZC4gSSBkb24ndCBrbm93IGlmDQpp
+dCBzdGlsbCBuZWVkcyB5aWVsZCgpLiBQZXJoYXBzIERhdmlkIGNhbiB0ZWxsPw0KDQogICAgSm9j
+a2UNCj4NCj4gT24gV2VkLCAyMDEwLTA5LTAxIGF0IDE4OjAzICswMjAwLCBXb2xmcmFtIFNhbmcg
+d3JvdGU6DQo+ID4geWllbGQoKSBoYXMgZGlmZmVyZW50IHNlbWFudGljcyBtZWFud2hpbGUgYW5k
+IGV2ZW4gY2F1c2VzIFJULWtlcm5lbHMgdG8NCj4gPiBCVUcuIFJlcGxhY2UgdGhlIG9ubHkgYXBw
+ZWFyYW5jZSBsZWZ0IGluIGpmZnMyLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogV29sZnJhbSBT
+YW5nIDx3LnNhbmdAcGVuZ3V0cm9uaXguZGU+DQo+ID4gQ2M6IEFydGVtIEJpdHl1dHNraXkgPEFy
+dGVtLkJpdHl1dHNraXlAbm9raWEuY29tPg0KPiA+IENjOiBJbmdvIE1vbG5hciA8bWluZ29AZWx0
+ZS5odT4NCj4gPiAtLS0NCj4gPg0KPiA+IFRoZSBhZm9yZW1lbnRpb25lZCBCVUcoKSBzaG93ZWQg
+dXAgaW4gb25lIG9mIG91ciBjdXN0b21lcidzIFJULXByb2plY3RzLiBXaGlsZQ0KPiA+IHRoaXMg
+Y291bGQgYmUgaGFuZGxlZCBieSByZWFycmFuZ2luZyBoaXMgdGhyZWFkLXByaW9yaXRpZXMsIEkg
+d29uZGVyZWQgaWYgc3VjaA0KPiA+IGEgcGF0Y2ggd291bGQgYmUgd29ydGh3aGlsZSwgc3RpbGwu
+IFJlYWRpbmcgdGhyb3VnaCB0aGUgbWF0ZXJpYWwgY292ZXJpbmcNCj4gPiB5aWVsZCgpIGFuZCBy
+ZWxhdGVkIHJlcGxhY2VtZW50cywgSSBiZWxpZXZlIHRoaXMgcGF0Y2ggc2hvdWxkIGJlIGFwcHJv
+cHJpYXRlLg0KPiA+IFBsZWFzZSBzYXkgaWYgSSBtaXNzZWQgc29tZSBzaWRlLWVmZmVjdHMuDQo+
+ID4NCj4gPiAgZnMvamZmczIvZXJhc2UuYyB8ICAgIDIgKy0NCj4gPiAgMSBmaWxlcyBjaGFuZ2Vk
+LCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
+ZnMvamZmczIvZXJhc2UuYyBiL2ZzL2pmZnMyL2VyYXNlLmMNCj4gPiBpbmRleCBhYmFjOTYxLi5l
+NTEzZjE5IDEwMDY0NA0KPiA+IC0tLSBhL2ZzL2pmZnMyL2VyYXNlLmMNCj4gPiArKysgYi9mcy9q
+ZmZzMi9lcmFzZS5jDQo+ID4gQEAgLTE1MSw3ICsxNTEsNyBAQCBpbnQgamZmczJfZXJhc2VfcGVu
+ZGluZ19ibG9ja3Moc3RydWN0IGpmZnMyX3NiX2luZm8gKmMsIGludCBjb3VudCkNCj4gPiAgICAg
+ICAgfQ0KPiA+DQo+ID4gICAgICAgIC8qIEJlIG5pY2UgKi8NCj4gPiAtICAgICAgeWllbGQoKTsN
+Cj4gPiArICAgICAgY29uZF9yZXNjaGVkKCk7DQo+ID4gICAgICAgIG11dGV4X2xvY2soJmMtPmVy
+YXNlX2ZyZWVfc2VtKTsNCj4gPiAgICAgICAgc3Bpbl9sb2NrKCZjLT5lcmFzZV9jb21wbGV0aW9u
+X2xvY2spOw0KPiA+ICAgICB9DQo+DQo+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4gQXJ0ZW0gQml0
+eXV0c2tpeSAo4snUwMPLycog4dLUo80pDQo+DQo+DQo+IF9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
+YWlsaW5nIGxpc3QNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQv
