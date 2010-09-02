@@ -1,26 +1,22 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Or7Vj-00032H-Gu
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 10:59:16 +0000
-Received: by yxf34 with SMTP id 34so88718yxf.36
+	id 1Or7dK-0006BJ-BH
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 11:07:07 +0000
+Received: by ywi4 with SMTP id 4so144491ywi.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Sep 2010 03:59:14 -0700 (PDT)
-Subject: Re: [RFC] jffs2: use cond_resched() instead of yield()
+	Thu, 02 Sep 2010 04:07:05 -0700 (PDT)
+Subject: Re: [PATCH] NAND: split ONFI detection logic to its own function
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <OF213EDC22.80E0A084-ONC1257792.0025CB36-C1257792.00268F36@transmode.se>
-References: <1283357021-16187-1-git-send-email-w.sang@pengutronix.de>
-	<1283366151.2209.21.camel@brekeke>
-	<OF213EDC22.80E0A084-ONC1257792.0025CB36-C1257792.00268F36@transmode.se>
+To: Florian Fainelli <ffainelli@freebox.fr>
+In-Reply-To: <201009012229.00660.ffainelli@freebox.fr>
+References: <201009012229.00660.ffainelli@freebox.fr>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 13:59:09 +0300
-Message-ID: <1283425149.3085.6.camel@brekeke>
+Date: Thu, 02 Sep 2010 14:07:03 +0300
+Message-ID: <1283425623.3085.7.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	linux-mtd@lists.infradead.org, Ingo Molnar <mingo@elte.hu>,
-	dwmw2@infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,12 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-02 at 09:01 +0200, Joakim Tjernlund wrote:
-> At the time cond_resched() was a problem but now I don't know. The erasing
-> has moved to the GC thread and been somewhat reworked. I don't know if
-> it still needs yield(). Perhaps David can tell?
+On Wed, 2010-09-01 at 22:28 +0200, Florian Fainelli wrote:
+> In order to reduce the indentation and improve the readability of nand_get_
+> flash_type, split the ONFI detection logic to its own function. The detection
+> logic inside nand_flash_detect_onfi is also rewritten to allow for less
+> indentation.
+> 
+> Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
 
-I think 'yield()' is rather a hack than a real solution.
+Pushed to l2-mtd-2.6.git / dunno, thanks.
 
 -- 
 Best Regards,
