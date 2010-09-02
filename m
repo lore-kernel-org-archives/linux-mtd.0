@@ -1,26 +1,18 @@
-Message-ID: <4C7F9993.3040700@st.com>
-Date: Thu, 2 Sep 2010 14:33:23 +0200
-From: Armando Visconti <armando.visconti@st.com>
+Received: from mgw-sa02.nokia.com ([147.243.1.48])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Or9m6-0003lk-UN
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 13:24:20 +0000
+Date: Thu, 2 Sep 2010 16:24:16 +0300
+From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+To: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
+Subject: Re: [PATCH 1/1][MTD] Adding IOCTLs for run-time partitioning support
+Message-ID: <20100902132416.GA9857@nokia.com>
+References: <000101cb2f11$86c3f5d0$944be170$%hs@samsung.com>
 MIME-Version: 1.0
-To: Linus Walleij <linus.ml.walleij@gmail.com>
-Subject: Re: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
-References: <cover.1283161023.git.viresh.kumar@st.com>	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>	<4C7F5B9E.8090406@st.com>
-	<AANLkTikwjCh=2Cekg9R1SqacKXC+_ZgV7m+=ZVVCaDba@mail.gmail.com>
-In-Reply-To: <AANLkTikwjCh=2Cekg9R1SqacKXC+_ZgV7m+=ZVVCaDba@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Sebastian RASMUSSEN <sebastian.rasmussen@stericsson.com>,
-	Alessandro Rubini <rubini-list@gnudd.com>,
-	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000101cb2f11$86c3f5d0$944be170$%hs@samsung.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +22,231 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus Walleij wrote:
-> 2010/9/2 Armando Visconti <armando.visconti@st.com>:
->
->   
->>> I *highly* suspect that this driver duplicates some code found in
->>> drivers/mtd/nand/nomadik_nand.c because it's the same silicon.
->>>       
->> Why nomadik_nand.c?
->> Shouldn't the fsmc_nand.c rule apply also in this case?
->>     
->
-> As I said I think nomadik_nand.c shall be deleted and replaced with
-> this driver.
->
-> Unless Alessandro hits me on the fingers... If it is made generic
-> I can provide testing for the U300. (Maybe I can get my NHK8815
-> card booting too, I don't know.)
->   
-As I said before, the SPEAr driver should work on Nomadik too
-as it looks generic enough and for us it is working
-on two different platforms with different FSMC versions.
+On Thu, Jul 29, 2010 at 05:00:59PM +0530, Rohit Hassan Sathyanarayan wrote:
+> Hi All
+> 
+> Sending the patch on MTD for adding four IOCTLs.
+> MTDPARTITIONCREATE
+> MTDPARTITIONDELETE
+> MTDPARTITIONSETPERMISSION
+> MTDPARTITIONMERGE
+> 
+> 
+> 
+> Signed-off-by: Rohit HS <rohit.hs at samsung.com>
+> ---
+> drivers/mtd/mtdchar.c |  126 ++++++++++++++++++++++++++++++++++++++++++++++++++
+> include/mtd/mtd-abi.h |   17 ++++++
+> 2 files changed, 142 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 8b223c0..704788c 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -22,6 +22,10 @@
+> 
+> #include <asm/uaccess.h>
+> 
+> +#ifdef CONFIG_MTD_PARTITIONS
+> +#include <linux/mtd/partitions.h>
+> +#endif
+> +
+> #define MTD_INODE_FS_MAGIC 0x11307854
+> static struct vfsmount *mtd_inode_mnt __read_mostly;
+> 
+> @@ -826,6 +830,128 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+> }
+> file->f_pos = 0;
+> break;
+> +#ifdef CONFIG_MTD_PARTITIONS
+> +
+> +		case MTDPARTITIONCREATE:
+> +		{
+> +		struct mtd_partition *pst_minfo = NULL;
+> +		struct mtd_partition *pst_minfo_hold = NULL;
+> +		struct mtd_partition st_free;
+> +		uint64_t u64_userfreeoffset = 0;
+> +		uint64_t u64_userfreesize = 0;
+> +		struct user_mtd *puser_partitions = NULL;
+> +		struct user_mtd_info upartition;
+> +		int i;
+> +
+> +			if (copy_from_user(&upartition, argp,
+> +				sizeof(struct user_mtd_info))) {
+> +				ret = -EFAULT;
+> +				break;
+> +			}
+> +			puser_partitions = kzalloc(sizeof(struct user_mtd)*
+> +						upartition.num_partitions
+> +						, GFP_KERNEL);
+> +			pst_minfo = kzalloc(sizeof(struct mtd_partition)*
+> +					upartition.num_partitions,
+> +					GFP_KERNEL);
+> +			pst_minfo_hold = pst_minfo;
+> +			if (puser_partitions == NULL) {
+> +				ret = -EFAULT;
+> +				break;
+> +			}
 
-This, unless the Nomadik FSMC is a customized h/w block, which
-I seem to remember in fact ...
+The case puser_partitions == NULL && pst_minfo != NULL leads to the memory leakage.
 
-Ciao,
-Arm
+> +			if (copy_from_user(puser_partitions,
+> +					upartition.pst_user_partitions,
+> +					sizeof(struct user_mtd)*
+> +					upartition.num_partitions)) {
+> +				ret = -EFAULT;
+> +				break;
 
+What happens with previously allocated memory?
 
--- 
--- "Every step appears to be the unavoidable consequence of the
--- preceding one." (A. Einstein) 
--- 
-Armando Visconti                  Mobile: (+39) 346 8879146
-Senior SW Engineer                Fax:    (+39) 02 93519290
-CPG                               Work:   (+39) 02 93519683
-Computer System Division          e-mail: armando.visconti@st.com
-ST Microelectronics               TINA:   051  4683
-                                    
- 
+> +			}
+> +			for (i = 0; i < upartition.num_partitions; i++) {
+> +				pst_minfo->name  = puser_partitions->name;
+> +				pst_minfo->size  =
+> +					puser_partitions->partition_size;
+> +				u64_userfreesize += pst_minfo->size;
+> +				pst_minfo->offset =
+> +					puser_partitions->partition_offset;
+> +				u64_userfreeoffset += pst_minfo->offset;
+> +				pst_minfo->mask_flags =
+> +					puser_partitions->partition_mask;
+> +
+> +				puser_partitions++;
+> +				pst_minfo++;
+> +			}
+> +			add_mtd_partitions(mtd, pst_minfo_hold,
+> +						upartition.num_partitions);
+
+The function add_mtd_partitions implies to be called only for all mtd partitions at once.
+There are some dependences on the partition which goes the first in the passed list.
+See add_one_partition function partno argument.
+
+> +			if ((mtd->size - u64_userfreesize) > 0) {
+> +				st_free.name	= "FREE";
+> +				st_free.size	= mtd->size - u64_userfreesize;
+> +				st_free.offset	= u64_userfreesize;
+> +				st_free.mask_flags = 0;
+> +				add_mtd_partitions(mtd, &st_free, 1);
+> +			}
+> +		break;
+> +		}
+> +		case MTDPARTITIONDELETE:
+> +		{
+
+How do you free memory allocated in MTDPARTITIONCREATE?
+
+> +		struct mtd_info *pst_del_info = NULL;
+> +		uint32_t mtd_partition_number;
+> +
+> +			if (copy_from_user(&mtd_partition_number, argp,
+> +					sizeof(mtd_partition_number))) {
+> +				ret = -EFAULT;
+> +				break;
+> +			}
+> +			pst_del_info = get_mtd_device(NULL,
+> +					mtd_partition_number);
+> +
+> +			if (pst_del_info != NULL) {
+> +				put_mtd_device(pst_del_info);
+> +				del_mtd_device(pst_del_info);
+> +			}
+> +			break;
+> +		}
+
+If the partition is used del_mtd_device returns EBUSY.
+Should the user space be informed about this?
+
+> +		case MTDPARTITIONSETPERMISSION:
+> +		{
+> +		uint32_t u32_mask_flags;
+> +		struct mtd_info *pst_device = NULL;
+> +		int i32_dev_num;
+> +
+> +			if (copy_from_user(&u32_mask_flags, argp,
+> +					sizeof(u32_mask_flags))) {
+> +				ret = -EFAULT;
+> +				break;
+> +			}
+> +			i32_dev_num = (u32_mask_flags & 0x0000FFFF);
+> +			u32_mask_flags = (u32_mask_flags & 0xFFFF0000) >> 16;
+> +			pst_device = get_mtd_device(NULL, i32_dev_num);
+> +			pst_device->flags = u32_mask_flags;
+> +			break;
+> +		}
+> +		case MTDPARTITIONMERGE:
+
+MERGE = DELETE + CREATE
+Is this ioctl really needed?
+
+> +		{
+> +		struct mtd_info *pst_merge_device1 = NULL;
+> +		struct mtd_info *pst_merge_device2 = NULL;
+> +		unsigned char partition_number[2];
+> +
+> +			if (copy_from_user(partition_number, argp, 2)) {
+> +				ret = -EFAULT;
+> +				break;
+> +			}
+> +			pst_merge_device1 = get_mtd_device(NULL,
+> +							partition_number[0]);
+> +			pst_merge_device2 = get_mtd_device(NULL,
+> +							partition_number[1]);
+
+The case when only one of pst_merge_device1 and pst_merge_device2 is non-NULL
+leads to the unreleased mtd_device.
+
+> +			if ((pst_merge_device1 != NULL) &&
+> +				(pst_merge_device2 != NULL)) {
+> +				pst_merge_device1->size +=
+> +						pst_merge_device2->size;
+> +				put_mtd_device(pst_merge_device2);
+> +				del_mtd_device(pst_merge_device2);
+
+pst_merge_device1 should be released probably.
+
+> +			}
+> +			break;
+> +		}
+> +#endif
+> +
+> }
+> 
+> default:
+> diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+> index be51ae2..85168f2 100644
+> --- a/include/mtd/mtd-abi.h
+> +++ b/include/mtd/mtd-abi.h
+> @@ -30,6 +30,18 @@ struct mtd_oob_buf64 {
+> __u64 usr_ptr;
+> };
+> 
+> +struct user_mtd {
+> +	char name[32];
+> +	 __u64 partition_size;
+> +	 __u64 partition_offset;
+> +	 __u32 partition_mask;
+> +};
+> +
+> +struct user_mtd_info {
+> +	struct user_mtd *pst_user_partitions;
+> +	__u32 num_partitions;
+> +};
+> +
+> #define MTD_ABSENT		0
+> #define MTD_RAM			1
+> #define MTD_ROM			2
+> @@ -110,7 +122,10 @@ struct otp_info {
+> #define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
+> #define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
+> #define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
+> -
+> +#define MTDPARTITIONCREATE      _IOW('M', 23, int)
+> +#define MTDPARTITIONDELETE      _IOW('M', 24, int)
+> +#define MTDPARTITIONSETPERMISSION _IOW('M', 26, int)
+> +#define MTDPARTITIONMERGE       _IOW('M', 27, int)
+> /*
+> * Obsolete legacy interface. Keep it in order not to break userspace
+> * interfaces
+> ---
+> 
+> 
