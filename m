@@ -1,22 +1,32 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Or87f-0000EA-Al
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 11:38:28 +0000
-Received: by gxk27 with SMTP id 27so157568gxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Sep 2010 04:38:26 -0700 (PDT)
-Subject: Re: [RFC] [MTD-utils] mkfs.jffs2: JFFS2 and minimal erase block size
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Yegor Yefremov <yegorslists@googlemail.com>
-In-Reply-To: <AANLkTinR9H7B5taVHmowOQ8Z==dQU4PdcnjLyHKPRibV@mail.gmail.com>
-References: <AANLkTinR9H7B5taVHmowOQ8Z==dQU4PdcnjLyHKPRibV@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 14:38:21 +0300
-Message-ID: <1283427501.3085.11.camel@brekeke>
+Received: from www84.your-server.de ([213.133.104.84])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Or8Bf-0001Ce-Sk
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 11:42:36 +0000
+Subject: Re: [PATCH] Add quick erase format option
+From: Stefani Seibold <stefani@seibold.net>
+To: dedekind1@gmail.com
+In-Reply-To: <1283425100.3085.5.camel@brekeke>
+References: <1281342353-18180-1-git-send-email-stefani@seibold.net>
+	<1281343038.12908.25.camel@localhost>
+	<1281343974.18398.13.camel@wall-e.seibold.net>
+	<1281353344.2332.8.camel@brekeke>
+	<1281362069.20181.16.camel@wall-e.seibold.net>
+	<1283081435.2131.24.camel@brekeke>
+	<1283236978.6083.28.camel@wall-e.seibold.net>
+	<1283302043.2018.92.camel@brekeke>
+	<1283410392.6920.36.camel@wall-e.seibold.net>
+	<1283425100.3085.5.camel@brekeke>
+Content-Type: text/plain; charset="ISO-8859-15"
+Date: Thu, 02 Sep 2010 13:42:43 +0200
+Message-ID: <1283427763.9613.0.camel@wall-e.seibold.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Enzinger,
+	Robert \(EXT-Other - DE/Munich\)" <robert.enzinger.ext@nsn.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +36,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-01 at 17:36 +0200, Yegor Yefremov wrote:
-> Hello,
+Am Donnerstag, den 02.09.2010, 13:58 +0300 schrieb Artem Bityutskiy:
+> On Thu, 2010-09-02 at 08:53 +0200, Stefani Seibold wrote: 
+> > --do-not-use-me is the best. But more seriously i think we should it
+> > split it into two options. --all-erased and --check-erased. The first
+> > assumes that all PEB are erased, while the second do the check if the
+> > PEB is erased and if not it will be erased.
+> > 
+> > So we can handle NAND's, which have a fast erase, and NOR's  which are
+> > very slow. With this we are able to pick the best option for the
+> > manufacturing.
 > 
-> I'm using a NOR flash SST39VF3201. According to its data sheet the
-> erase size is 2 Kword. That corresponds to -e 0x1000 value. But the
-> mkfs.jffs2 utility has a limit of 0x2000 bytes. If I change this limit
-> to 0x1000 and create an image, I can successfully mount and use it,
-> with 8KiB value the jffs2 driver fails to work with such an image. I
-> have found some similar complains like this one
-> http://lists.infradead.org/pipermail/linux-mtd/2009-February/024523.html,
-> but no one seems to have asked this question on the list.
+> I am fine with checking, but what bothers me is that you check only 64
+> bytes out of 128KiB - why this is enough to make sure the eraseblock is
+> erased?
 > 
-> Is there any reason for limiting erase block to 0x2000?
+> Probably it is ok for you, but in for general use-case this is wrong,
+> even checking all 128KiB is wrong, because of the unstable bits.
 > 
-> I've created a patch to decrease this value to 0x1000, but perhaps
-> there are any other way?
+> What I think will make more sense is to add general option --verify or
+> something like that. It would read everything the utility wrote and
+> verify it is identical to what was written. Probably this can be done in
+> libmtd.
+> 
+> Then you will be able to combine --all-erased with --verify and achieve
+> what you want.
+> 
 
-JFFS2 should be able to fit at least one node to eraseblock. The maximum
-node size is 4KiB+few bytes. This is why the minimum eraseblocks size is
-8KiB.
+Agree. I will create a patch for this in the next few days.
 
-But in practice, even 8KiB is bad because you and up with wasting a lot
-of space at the end of eraseblocks.
-
-You should join several erasblock into one virtual eraseblock of 64 or
-128 KiB and use it - this will be more optiomal.
-
-So, nack for the patch.
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+- Stefani
