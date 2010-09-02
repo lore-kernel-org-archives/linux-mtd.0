@@ -1,45 +1,43 @@
-Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
-	helo=TX2EHSOBE001.bigfish.com)
+Received: from am1ehsobe003.messaging.microsoft.com ([213.199.154.206]
+	helo=AM1EHSOBE003.bigfish.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Or5fh-0003O1-Mq
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 09:01:26 +0000
-Received: from mail80-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail80-tx2-R.bigfish.com (Postfix) with ESMTP id 8148077846F	for
-	<linux-mtd@lists.infradead.org>; Thu,  2 Sep 2010 09:01:22 +0000 (UTC)
-Received: from TX2EHSMHS032.bigfish.com (unknown [10.9.14.238])	by
-	mail80-tx2.bigfish.com (Postfix) with ESMTP id D20F1E8051	for
-	<linux-mtd@lists.infradead.org>; Thu,  2 Sep 2010 09:01:21 +0000 (UTC)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	id 1Or5ij-0005Y4-Pn
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 09:04:35 +0000
+Received: from mail41-am1 (localhost.localdomain [127.0.0.1])	by
+	mail41-am1-R.bigfish.com (Postfix) with ESMTP id 95FDAA9049F	for
+	<linux-mtd@lists.infradead.org>; Thu,  2 Sep 2010 09:04:31 +0000 (UTC)
+Received: from am1ehsmhs004.bigfish.com (unknown [10.3.201.241])	by
+	mail41-am1.bigfish.com (Postfix) with ESMTP id 64EBBF70052	for
+	<linux-mtd@lists.infradead.org>; Thu,  2 Sep 2010 09:04:30 +0000 (UTC)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
 	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
-	o828vXlV013363	for
-	<linux-mtd@lists.infradead.org>; Thu, 2 Sep 2010 01:57:33 -0700 (MST)
+	o8294RAI014067	for
+	<linux-mtd@lists.infradead.org>; Thu, 2 Sep 2010 02:04:27 -0700 (MST)
 Received: from zmy16exm20.fsl.freescale.net (zmy16exm20.ap.freescale.net
-	[10.211.3.23])	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id
-	o829CFbC005522	for <linux-mtd@lists.infradead.org>;
-	Thu, 2 Sep 2010 04:12:16 -0500 (CDT)
-Content-Class: urn:content-classes:message
+	[10.211.3.23])	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id
+	o829ICqc019321	for <linux-mtd@lists.infradead.org>;
+	Thu, 2 Sep 2010 04:18:13 -0500 (CDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: [spi-devel-general] [PATCH v2 3/6] mtd: m25p80: add support to
-	parse the SPI flash's partitions
-Date: Thu, 2 Sep 2010 16:57:30 +0800
-Message-ID: <73839B4A0818E747864426270AC332C30561B6E8@zmy16exm20.fsl.freescale.net>
-In-Reply-To: <20100810160157.GA24553@oksana.dev.rtsoft.ru>
-References: <AANLkTik9cy+at2n28U+Mut4RD6_cJ9uRZzjf+H86d-rp@mail.gmail.com>
-	<796604.30863.qm@web180307.mail.gq1.yahoo.com>
-	<AANLkTi=FGf9gbWDkO4qs01Z+qkip+Zm11=Jc4wHu3G8b@mail.gmail.com>
-	<OF0D24DC16.E1FE65D2-ONC125777B.002E544A-C125777B.002EA7C2@transmode.se>
-	<AANLkTinYYTj+dR6ckPoShHKZTUmENEA1O-DYP9mjnWrs@mail.gmail.com>
-	<20100810160157.GA24553@oksana.dev.rtsoft.ru>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Class: urn:content-classes:message
+Subject: RE: [PATCH v2 4/6] mtd: m25p80: add a read function to read page by
+	page
+Date: Thu, 2 Sep 2010 17:04:07 +0800
+Message-ID: <73839B4A0818E747864426270AC332C30561B6F3@zmy16exm20.fsl.freescale.net>
+In-Reply-To: <AANLkTikM5je7Ckt=7bP6fj7OKCaroSn_AqgcS4T+Bv5d@mail.gmail.com>
+References: <1280735524-17547-1-git-send-email-Mingkai.hu@freescale.com>
+	<1280735524-17547-2-git-send-email-Mingkai.hu@freescale.com>
+	<1280735524-17547-3-git-send-email-Mingkai.hu@freescale.com>
+	<1280735524-17547-4-git-send-email-Mingkai.hu@freescale.com>
+	<1280735524-17547-5-git-send-email-Mingkai.hu@freescale.com>
+	<AANLkTikM5je7Ckt=7bP6fj7OKCaroSn_AqgcS4T+Bv5d@mail.gmail.com>
 From: Hu Mingkai-B21284 <B21284@freescale.com>
-To: "Anton Vorontsov" <cbouatmailru@gmail.com>,
-	"Grant Likely" <grant.likely@secretlab.ca>
-Cc: Joakim Tjernlund <joakim.tjernlund@transmode.se>,
-	David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
-	spi-devel-general@lists.sourceforge.net,
-	Gala Kumar-B11780 <B11780@freescale.com>,
-	David Woodhouse <dwmw2@infradead.org>
+To: "Grant Likely" <grant.likely@secretlab.ca>,
+	"David Woodhouse" <dwmw2@infradead.org>
+Cc: linuxppc-dev@ozlabs.org, Gala Kumar-B11780 <B11780@freescale.com>,
+	linux-mtd@lists.infradead.org, Zang Roy-R61911 <R61911@freescale.com>,
+	spi-devel-general@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,31 +47,220 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW50b24gVm9yb250c292
-IFttYWlsdG86Y2JvdWF0bWFpbHJ1QGdtYWlsLmNvbV0NCj4gU2VudDogV2VkbmVzZGF5LCBBdWd1
-c3QgMTEsIDIwMTAgMTI6MDIgQU0NCj4gVG86IEdyYW50IExpa2VseQ0KPiBDYzogSm9ha2ltIFRq
-ZXJubHVuZDsgR2FsYSBLdW1hci1CMTE3ODA7IERhdmlkIEJyb3duZWxsOyBsaW51eC0NCj4gbXRk
-QGxpc3RzLmluZnJhZGVhZC5vcmc7IHNwaS1kZXZlbC1nZW5lcmFsQGxpc3RzLnNvdXJjZWZvcmdl
-Lm5ldDsgSHUgTWluZ2thaS0NCj4gQjIxMjg0OyBEYXZpZCBXb29kaG91c2UNCj4gU3ViamVjdDog
-UmU6IFtzcGktZGV2ZWwtZ2VuZXJhbF0gW1BBVENIIHYyIDMvNl0gbXRkOiBtMjVwODA6IGFkZCBz
-dXBwb3J0IHRvDQo+IHBhcnNlIHRoZSBTUEkgZmxhc2gncyBwYXJ0aXRpb25zDQo+IA0KPiBPbiBU
-dWUsIEF1ZyAxMCwgMjAxMCBhdCAwODo1Njo0MkFNIC0wNjAwLCBHcmFudCBMaWtlbHkgd3JvdGU6
-DQo+IFsuLi5dDQo+ID4gVGhlIHN1Z2dlc3Rpb24gaGFzIGJlZW4gcmFpc2VkIHRvIHVzZSBzb21l
-dGhpbmcgbGlrZSBidXMgbm90aWZpZXJzIHRvDQo+ID4gZ2V0IGEgaG9vayBvbnRvIHRoZSBkZXZp
-Y2UgcmVnaXN0cmF0aW9uIGJlZm9yZSB0aGUgZHJpdmVyIGlzIHByb2JlZCBzbw0KPiA+IHRoYXQg
-dGhlIHBsYXRmb3JtX2RhdGEgY2FuIGJlIHRyYW5zbGF0ZWQgaW4gYW4gc2VwYXJhdGUgY2h1Y2sg
-b2YgY29kZSwNCj4gPiBidXQgZG93biB0aGF0IHBhdGggbGllcyBpbnNhbml0eS4gIFRoZXJlIGFy
-ZSBhbGwga2luZHMgb2Ygb3JkZXJpbmcNCj4gPiBpc3N1ZXMgKGxpa2UgbWFraW5nIHN1cmUgdGhl
-IHRyYW5zbGF0aW9uIGNvZGUgaXMgY2FsbGVkIGJlZm9yZSB0aGUNCj4gPiBkcml2ZXIgcHJvYmUg
-Y29kZSksIGFuZCBpdCBpcyBhIGxvdCBvZiBjb21wbGV4aXR5IGZvciB3aGF0IGlzIHJlYWxseSBh
-DQo+ID4gc2ltcGxlIHRoaW5nLg0KPiANCj4gVGhlcmUncyBhbm90aGVyIG9wdGlvbjogcGxhdGZv
-cm0gZGF0YSBoYW5kbGVycyAodGhleSBjb3VsZCBiZSBjaGFpbmVkLCBpbiBjYXNlDQo+IGlmIHdl
-IHdhbnQgdG8gdXNlIHNldmVyYWwgbWV0aG9kcyBvZiBvYnRhaW5pbmcgcGxhdGZvcm0gZGF0YSwg
-aS5lLiAidHJ5IHJhdyBkYXRhLA0KPiB0aGVuIEFDUEksIHRoZW4gT0YiKS4NCj4gDQo+IFNlZSBp
-bmNsdWRlL2xpbnV4L3NwaS9tbWNfc3BpLmggKG1tY19zcGlfZ2V0X3BkYXRhKSBhbmQNCj4gZHJp
-dmVycy9tbWMvaG9zdC9vZl9tbWNfc3BpLmMuDQo+IA0KPiBJIHRoaW5rIHdlIG1pZ2h0IGltcGxl
-bWVudCBzb21lIGxpYnJhcnkgdG8gbWFrZSB0aGVzZSBoYW5kbGVycyBtb3JlIGdlbmVyaWMsIGJ1
-dA0KPiBldmVuIHRoZSBzaW1wbGUgaW1wbGVtZW50YXRpb24gYXMgaW4gbW1jX3NwaSBjYXNlIHBy
-b3ZlcyB0aGF0IGl0IGlzIHBvc3NpYmxlIHRvDQo+IHNlcGFyYXRlIE9GL0FDUEkvRE1JL3doYXRl
-dmVyIGhhbmRsaW5nIGZyb20gdGhlIGdlbmVyaWMgY29kZS4NCj4gDQoNCkl0J3MgYWxzbyBhIGdv
-b2Qgc3VnZ2VzdGlvbiwgSSdsbCB0cnkgaXQuDQoNClRoYW5rcywNCk1pbmdrYWkNCg==
+[adding mtd list]
+
+Hi guys,
+
+Could you please take a look at this patch and give some suggestion?
+
+Thanks,
+Mingkai
+
+> -----Original Message-----
+> From: glikely@secretlab.ca [mailto:glikely@secretlab.ca] On Behalf Of =
+Grant
+> Likely
+> Sent: Tuesday, August 10, 2010 3:00 PM
+> To: Hu Mingkai-B21284; David Woodhouse
+> Cc: linuxppc-dev@ozlabs.org; spi-devel-general@lists.sourceforge.net; =
+Gala
+> Kumar-B11780; Zang Roy-R61911
+> Subject: Re: [PATCH v2 4/6] mtd: m25p80: add a read function to read =
+page by
+> page
+>=20
+> [adding David Woodhouse]
+>=20
+> (Btw, you should cc: David Woodhouse and the mtd list on the MTD =
+patches).
+>=20
+> On Mon, Aug 2, 2010 at 1:52 AM, Mingkai Hu <Mingkai.hu@freescale.com> =
+wrote:
+> > For Freescale's eSPI controller, the max transaction length one time
+> > is limitted by the SPCOM[TRANSLEN] field which is 0xFFFF. When used
+> > mkfs.ext2 command to create ext2 filesystem on the flash, the read
+> > length will exceed the max value of the SPCOM[TRANSLEN] field, so
+> > change the read function to read page by page.
+> >
+> > For other SPI flash driver, also needed to supply the read function =
+if
+> > used the eSPI controller.
+> >
+> > Signed-off-by: Mingkai Hu <Mingkai.hu@freescale.com>
+>=20
+> This one bothers me, but I can't put my finger on it.  The flag feels =
+like a
+> controller specific hack.  David, can you take a look at this patch?
+>=20
+> g.
+>=20
+> > ---
+> >
+> > v2:
+> > =A0- Add SPI_MASTER_TRANS_LIMIT flag to indicate the master's trans
+> > length
+> > =A0 limitation, so the MTD driver can select the correct transfer
+> > behaviour
+> > =A0 at driver probe time
+> >
+> > =A0drivers/mtd/devices/m25p80.c | =A0 78
+> > ++++++++++++++++++++++++++++++++++++++++++
+> > =A0drivers/spi/spi_fsl_espi.c =A0 | =A0 =A01 +
+> > =A0include/linux/spi/spi.h =A0 =A0 =A0| =A0 =A01 +
+> > =A03 files changed, 80 insertions(+), 0 deletions(-)
+> >
+> > diff --git a/drivers/mtd/devices/m25p80.c
+> > b/drivers/mtd/devices/m25p80.c index 5f00075..30e4568 100644
+> > --- a/drivers/mtd/devices/m25p80.c
+> > +++ b/drivers/mtd/devices/m25p80.c
+> > @@ -376,6 +376,81 @@ static int m25p80_read(struct mtd_info *mtd,
+> > loff_t from, size_t len,
+> > =A0}
+> >
+> > =A0/*
+> > + * Read an address range from the flash chip page by page.
+> > + * Some controller has transaction length limitation such as the
+> > + * Freescale's eSPI controller can only trasmit 0xFFFF bytes one
+> > + * time, so we have to read page by page if the len is more than
+> > + * the limitation.
+> > + */
+> > +static int m25p80_page_read(struct mtd_info *mtd, loff_t from, =
+size_t
+> > +len,
+> > + =A0 =A0 =A0 size_t *retlen, u_char *buf)
+> > +{
+> > + =A0 =A0 =A0 struct m25p *flash =3D mtd_to_m25p(mtd);
+> > + =A0 =A0 =A0 struct spi_transfer t[2];
+> > + =A0 =A0 =A0 struct spi_message m;
+> > + =A0 =A0 =A0 u32 i, page_size =3D 0;
+> > +
+> > + =A0 =A0 =A0 DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %zd\n",
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+dev_name(&flash->spi->dev), __func__, "from",
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (u32)from, len);
+> > +
+> > + =A0 =A0 =A0 /* sanity checks */
+> > + =A0 =A0 =A0 if (!len)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
+> > +
+> > + =A0 =A0 =A0 if (from + len > flash->mtd.size)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
+> > +
+> > + =A0 =A0 =A0 spi_message_init(&m);
+> > + =A0 =A0 =A0 memset(t, 0, (sizeof t));
+> > +
+> > + =A0 =A0 =A0 /* NOTE:
+> > + =A0 =A0 =A0 =A0* OPCODE_FAST_READ (if available) is faster.
+> > + =A0 =A0 =A0 =A0* Should add 1 byte DUMMY_BYTE.
+> > + =A0 =A0 =A0 =A0*/
+> > + =A0 =A0 =A0 t[0].tx_buf =3D flash->command;
+> > + =A0 =A0 =A0 t[0].len =3D m25p_cmdsz(flash) + FAST_READ_DUMMY_BYTE;
+> > + =A0 =A0 =A0 spi_message_add_tail(&t[0], &m);
+> > +
+> > + =A0 =A0 =A0 t[1].rx_buf =3D buf;
+> > + =A0 =A0 =A0 spi_message_add_tail(&t[1], &m);
+> > +
+> > + =A0 =A0 =A0 /* Byte count starts at zero. */
+> > + =A0 =A0 =A0 if (retlen)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *retlen =3D 0;
+> > +
+> > + =A0 =A0 =A0 mutex_lock(&flash->lock);
+> > +
+> > + =A0 =A0 =A0 /* Wait till previous write/erase is done. */
+> > + =A0 =A0 =A0 if (wait_till_ready(flash)) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* REVISIT status return?? */
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mutex_unlock(&flash->lock);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 1;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 /* Set up the write data buffer. */
+> > + =A0 =A0 =A0 flash->command[0] =3D OPCODE_READ;
+> > +
+> > + =A0 =A0 =A0 for (i =3D page_size; i < len; i +=3D page_size) {
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 page_size =3D len - i;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (page_size > flash->page_size)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 page_size =3D =
+flash->page_size;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 m25p_addr2cmd(flash, from + i, =
+flash->command);
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 t[1].len =3D page_size;
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 t[1].rx_buf =3D buf + i;
+> > +
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 spi_sync(flash->spi, &m);
+> > +
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *retlen +=3D m.actual_length - =
+m25p_cmdsz(flash)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 - =
+FAST_READ_DUMMY_BYTE;
+> > + =A0 =A0 =A0 }
+> > +
+> > + =A0 =A0 =A0 mutex_unlock(&flash->lock);
+> > +
+> > + =A0 =A0 =A0 return 0;
+> > +}
+> > +
+> > +/*
+> > =A0* Write an address range to the flash chip. =A0Data must be =
+written in
+> > =A0* FLASH_PAGESIZE chunks. =A0The address range may be any size =
+provided
+> > =A0* it is within the physical boundaries.
+> > @@ -877,6 +952,9 @@ static int __devinit m25p_probe(struct =
+spi_device
+> > *spi)
+> > =A0 =A0 =A0 =A0flash->mtd.erase =3D m25p80_erase;
+> > =A0 =A0 =A0 =A0flash->mtd.read =3D m25p80_read;
+> >
+> > + =A0 =A0 =A0 if (spi->master->flags & SPI_MASTER_TRANS_LIMIT)
+> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 flash->mtd.read =3D m25p80_page_read;
+> > +
+> > =A0 =A0 =A0 =A0/* sst flash chips use AAI word program */
+> > =A0 =A0 =A0 =A0if (info->jedec_id >> 16 =3D=3D 0xbf)
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0flash->mtd.write =3D sst_write; diff =
+--git
+> > a/drivers/spi/spi_fsl_espi.c b/drivers/spi/spi_fsl_espi.c index
+> > 61987cf..e15b7dc 100644
+> > --- a/drivers/spi/spi_fsl_espi.c
+> > +++ b/drivers/spi/spi_fsl_espi.c
+> > @@ -470,6 +470,7 @@ static struct spi_master * __devinit
+> > fsl_espi_probe(struct device *dev,
+> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0goto err_probe;
+> >
+> > =A0 =A0 =A0 =A0master->setup =3D fsl_espi_setup;
+> > + =A0 =A0 =A0 master->flags =3D SPI_MASTER_TRANS_LIMIT;
+> >
+> > =A0 =A0 =A0 =A0mpc8xxx_spi =3D spi_master_get_devdata(master);
+> > =A0 =A0 =A0 =A0mpc8xxx_spi->spi_do_one_msg =3D fsl_espi_do_one_msg; =
+diff --git
+> > a/include/linux/spi/spi.h b/include/linux/spi/spi.h index
+> > af56071..0729cbd 100644
+> > --- a/include/linux/spi/spi.h
+> > +++ b/include/linux/spi/spi.h
+> > @@ -261,6 +261,7 @@ struct spi_master {
+> > =A0#define SPI_MASTER_HALF_DUPLEX BIT(0) =A0 =A0 =A0 =A0 =A0/* can't =
+do full
+> > duplex */
+> > =A0#define SPI_MASTER_NO_RX =A0 =A0 =A0 BIT(1) =A0 =A0 =A0 =A0 =A0/* =
+can't do buffer
+> > read */
+> > =A0#define SPI_MASTER_NO_TX =A0 =A0 =A0 BIT(2) =A0 =A0 =A0 =A0 =A0/* =
+can't do buffer
+> > write */
+> > +#define SPI_MASTER_TRANS_LIMIT BIT(3) =A0 =A0 =A0 =A0 =A0/* have =
+trans length
+> > +limit */
+> >
+> > =A0 =A0 =A0 =A0/* Setup mode and clock, etc (spi driver may call =
+many times).
+> > =A0 =A0 =A0 =A0 *
+> > --
+> > 1.6.4
+> >
+> >
+> >
+>=20
+>=20
+>=20
+> --
+> Grant Likely, B.Sc., P.Eng.
+> Secret Lab Technologies Ltd.
