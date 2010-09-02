@@ -1,23 +1,21 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-qy0-f170.google.com ([209.85.216.170])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OrE3k-0005L5-7C
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 17:58:52 +0000
-Received: by wwb24 with SMTP id 24so954116wwb.18
+	id 1OrIrT-0007MT-N6
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 23:06:31 +0000
+Received: by qyk35 with SMTP id 35so2821005qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Sep 2010 10:58:46 -0700 (PDT)
-Subject: Re: Re: [PATCH] m25p80: Add support for two new Spansion SPI
-	devices 	(S25FL-K)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Gernot Hoyler <Gernot.Hoyler@spansion.com>
-In-Reply-To: <201009021727.20453.Gernot.Hoyler@spansion.com>
-References: <201009021727.20453.Gernot.Hoyler@spansion.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 20:58:41 +0300
-Message-ID: <1283450321.1694.11.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Thu, 02 Sep 2010 16:06:26 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1283427948.3085.19.camel@brekeke>
+References: <AANLkTimuZZ-B1sO1jHAu_gjwa8Gb_WXKowORNvWHMmcT@mail.gmail.com>
+	<1283427948.3085.19.camel@brekeke>
+Date: Thu, 2 Sep 2010 16:06:26 -0700
+Message-ID: <AANLkTi=JQDmBoy7LjSop1hT+cO=Cynbedsk2iGOvOh1D@mail.gmail.com>
+Subject: Re: UBIFS in-place vs out-of-place GC
+From: Russ Dill <russ.dill@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-02 at 17:27 +0200, Gernot Hoyler wrote:
-> This patch adds support for Spansion S25FL016K and S25FL064K SPI flash.
-> It has been tested with physical devices. Note that both parts exhibit
-> a Winbond manufacturer ID so they might also be added to that section.
-> 
-> Signed-off-by: Gernot Hoyler <Gernot.Hoyler@spansion.com>
+On Thu, Sep 2, 2010 at 4:45 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Hi,
+>
+> On Wed, 2010-09-01 at 09:08 -0700, Russ Dill wrote:
+>> I'm doing a bit of research on UBIFS and something I read from a few
+>> sources has me confused regarding garbage collection:
+>>
+>> http://osl.sed.hu/~havasi/ubifs/#gc
+>
+> You should contact Szeged guys and ask them to remove obsolete
+> information.
+>
+> For much more up-to-date information, see
+> http://linux-mtd.infradead.org/doc/ubifs.html#L_documentation
+>
+>> Looking at the source, I can find the code that does the out of place
+>> updates, but I can't find any references to in place updates or
+>> displacement tables. What gives?
+>
+> We do not have displacement tables, that was some old idea which we
+> never implemented.
+>
+> We do not have in-place GC in UBIFS. But we have so-called "in-the-gaps"
+> method which we use during commit to write the FS index when we do not
+> have extra empty LEBs. In the code it corresponds to the
+> 'layout_in_gaps()' function.
+>
 
-Pushed to l2-mtd-2.6.git, thanks.
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Thanks much, I figured it was outdated information, I just wanted to
+confirm that suspicion.
