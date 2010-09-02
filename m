@@ -1,20 +1,34 @@
-Received: from ussvlmgty02.spansion.com ([12.151.36.113])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Or6In-0000zc-HE
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 09:41:50 +0000
-From: "Hoyler, Gernot" <Gernot.Hoyler@spansion.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Date: Thu, 2 Sep 2010 02:41:39 -0700
-Subject: RE: [PATCH] m25p80: Add support for two new Spansion SPI devices
-	(S25FL-K)
-Message-ID: <D0271AF888369C4C85548462366DB24B8F0EF20E@US2K7EXMBPF1.spansion.com>
-References: <4C7E3578.20608@spansion.com> <1283383617.2209.68.camel@brekeke>
-In-Reply-To: <1283383617.2209.68.camel@brekeke>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1Or6MH-000863-Jc
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 09:45:26 +0000
+Received: by gyg8 with SMTP id 8so78516gyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 02 Sep 2010 02:45:23 -0700 (PDT)
+Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Stefani Seibold <stefani@seibold.net>
+In-Reply-To: <1283410033.6920.30.camel@wall-e.seibold.net>
+References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
+	<1280121714.14917.40.camel@localhost>
+	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
+	<1280243535.3021.29.camel@localhost.localdomain>
+	<1280244117.3021.36.camel@localhost.localdomain>
+	<1280296009.4310.5.camel@wall-e.seibold.net>
+	<1282489456.16502.74.camel@brekeke>
+	<1283256587.7515.16.camel@wall-e.seibold.net>
+	<1283356077.2209.19.camel@brekeke>
+	<1283410033.6920.30.camel@wall-e.seibold.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 02 Sep 2010 12:45:18 +0300
+Message-ID: <1283420718.1748.3.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "Kreuzer, Michael \(NSN - DE/Ulm\)" <michael.kreuzer@nsn.com>,
+	linux-mtd@lists.infradead.org, "Pagliari,
+	Vivenzio \(NSN - DE/Ulm\)" <vivenzio.pagliari@nsn.com>,
+	"Matthew L. Creech" <mlcreech@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +38,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PiBXb3VsZCB5b3UgcGxlYXNlLCBzZW5kIGEgcGF0Y2ggd2hpY2ggaXMgYXBwbGljYWJsZSB0byB0
-aGUgY3VycmVudCBtdGQNCj4gdHJlZTogaHR0cDovL2dpdC5pbmZyYWRlYWQub3JnL210ZC0yLjYu
-Z2l0DQoNCkhtbSwgaXQgc2hvdWxkLiBJZiBoYXZlIGNsb25lZCBnaXQ6Ly9naXQuaW5mcmFkZWFk
-Lm9yZy9tdGQtMi42LCANCmNyZWF0ZWQgYSBuZXcgaGVhZCwgYXBwbGllZCBhbmQgY29tbWl0dGVk
-IG15IGNoYW5nZXMgdG8gdGhhdCBuZXcgaGVhZC4NClRoZW4gSSBoYXZlIGNyZWF0ZWQgdGhlIHBh
-dGNoIHZpYSAiZ2l0IGZvcm1hdC1wYXRjaCBtYXN0ZXIuLmhlYWQiIGFuZCANCihtYW51YWxseSkg
-YWRkZWQgdGhlIHNpZ25lZC1vZmYtYnkgbGluZS4gQWxzbywgSSBoYXZlIHZlcmlmaWVkIHRoYXQg
-SSANCmNhbiBhcHBseSB0aGUgcGF0Y2ggdG8gdGhlIGxhdGVzdCBtYXN0ZXIgaGVhZCB2aWEgInBh
-dGNoIC1wMSA8IC4uLiIuDQoNCkRpZCBJIG1pc3Mgc29tZXRoaW5nPw0KDQpUaHgsIEdlcm5vdA0K
-DQo=
+On Thu, 2010-09-02 at 08:47 +0200, Stefani Seibold wrote:
+> 
+> That is the point! Panic or refuse to mount is not a good solution. If
+> there is a way to mount the file system, than do it. Maybe read-only
+> with a big fat warning, but this is better than nothing. This is like
+> the ext3 fs, which handles this also in this way.
+> 
+> > In your case you have very strange corruption. We can apply your
+> patch,
+> > problem solved, but will you be 100% comfortable with this? There is
+> a
+> > chance that you have some issues which can later have different
+> > symptoms. I am still interested to find out the real root reason.
+> > 
+> 
+> No a will be not 100% comfortable with this, but it is better than
+> nothing. I agree with you to fix the cause and not the symptoms, but
+> may
+> patch will help to get your data back in case of this bug. 
+
+May be. I need some more time to think about this.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
