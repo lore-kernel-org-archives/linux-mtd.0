@@ -1,32 +1,23 @@
-Subject: Re: [PATCH 28/74] Incrementing the ecc_pos array to contain 128 char
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Or6US-0004gy-Iz
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 09:53:52 +0000
+Received: by yxf34 with SMTP id 34so68779yxf.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 02 Sep 2010 02:53:52 -0700 (PDT)
+Subject: RE: [PATCH] m25p80: Add support for two new Spansion SPI devices
+	(S25FL-K)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <4C7F4526.105@gmail.com>
-References: <07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
-	<a750eadbd743c3a2d5dc8b35c25e0ee82f569e87.1283161023.git.viresh.kumar@st.com>
-	<1283170469.12995.53.camel@brekeke>	<4C7CA278.9040902@st.com>
-	<1283297810.2018.67.camel@brekeke>	<4C7DD2FD.1080501@st.com>
-	<1283337939.1958.20.camel@brekeke>	<4C7E3344.2020202@st.com>
-	<4C7EC43B.2050903@bluewatersys.com>
-	<AANLkTinmEck5413ZuCDMB1jyBjH63Uh=L+87q8V4Ek1X@mail.gmail.com>
-	<4C7ED1E9.4050208@bluewatersys.com>  <4C7F4526.105@gmail.com>
+To: "Hoyler, Gernot" <Gernot.Hoyler@spansion.com>
+In-Reply-To: <D0271AF888369C4C85548462366DB24B8F0EF20E@US2K7EXMBPF1.spansion.com>
+References: <4C7E3578.20608@spansion.com> <1283383617.2209.68.camel@brekeke>
+	<D0271AF888369C4C85548462366DB24B8F0EF20E@US2K7EXMBPF1.spansion.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 02 Sep 2010 12:49:37 +0300
-Message-ID: <1283420977.1748.6.camel@brekeke>
+Date: Thu, 02 Sep 2010 12:53:48 +0300
+Message-ID: <1283421228.1748.7.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Kevin Cernekee <cernekee@gmail.com>, Vipin Kumar <vipin.kumar@st.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>, Ryan Mallon <ryan@bluewatersys.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -37,16 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-01 at 23:33 -0700, Brian Norris wrote:
+On Thu, 2010-09-02 at 02:41 -0700, Hoyler, Gernot wrote:
+> > Would you please, send a patch which is applicable to the current mtd
+> > tree: http://git.infradead.org/mtd-2.6.git
 > 
-> I'm curious how many applications actually need to have the ecclayout.
-> nandwrite doesn't actually use it, just oobinfo. 
+> Hmm, it should. If have cloned git://git.infradead.org/mtd-2.6, 
+> created a new head, applied and committed my changes to that new head.
+> Then I have created the patch via "git format-patch master..head" and 
+> (manually) added the signed-off-by line. Also, I have verified that I 
+> can apply the patch to the latest master head via "patch -p1 < ...".
 
-That is good point - I think we should not accept new ioctl before the
-submitter shows us how and for what he will use it.
-
-My point is simple - OOB layout should be transparent to users-space.
-Messing with this is error-prone.
+Could you please try to save your own e-mail and apply it with git am ?
 
 -- 
 Best Regards,
