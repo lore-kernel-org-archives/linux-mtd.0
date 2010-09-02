@@ -1,21 +1,23 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OrDaA-0006LN-Hs
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 17:28:15 +0000
-Received: by pzk3 with SMTP id 3so252339pzk.36
+	id 1OrDlm-0001I0-SZ
+	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 17:40:19 +0000
+Received: by vws11 with SMTP id 11so635431vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Sep 2010 10:28:12 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1282465361.16502.53.camel@brekeke>
-References: <AANLkTin+3QMqZvMNgvKTH0F_ZngY9ooBR7sSKW5cdJUq@mail.gmail.com>
-	<1282465361.16502.53.camel@brekeke>
-Date: Thu, 2 Sep 2010 19:28:02 +0200
-Message-ID: <AANLkTi=XuMVcfBLnyUAKN7WcBDnH0eH+J5Dcy28ZkEJ5@mail.gmail.com>
-Subject: Re: mkfs.ubifs gives corrupt images/crc errors
-From: Leo Barnes <barnes.leo@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+	Thu, 02 Sep 2010 10:40:13 -0700 (PDT)
+Subject: Re: [PATCH 2/2 l2-mtd-2.6/dunno] NAND: fix almost all checkpatch
+	warnings
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Florian Fainelli <florian@openwrt.org>
+In-Reply-To: <201009021356.00275.ffainelli@freebox.fr>
+References: <201009021356.00275.ffainelli@freebox.fr>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 02 Sep 2010 20:40:03 +0300
+Message-ID: <1283449203.1694.4.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I cannot reproduce this. Does this still happen for you? Does cloning
-> the mtd-utils git tree anew help?
->
+Hi,
 
-Hello!
+I appreciate clean-up patches, but I do not like few things in this one:
 
-Sorry for not answering earlier, I was on vacation without internet
-access. I have not tested the absolutely latest commits, but I have
-now identified the problem.
+On Thu, 2010-09-02 at 13:56 +0200, Florian Fainelli wrote:
+>  		/* send the command to read the particular ecc bytes */
+>  		/* take care about buswidth alignment in read_buf */
+> -		aligned_pos = eccpos[start_step * chip->ecc.bytes] & ~(busw - 1);
+> +		aligned_pos = eccpos[start_step * chip->ecc.bytes] &
+> +								~(busw - 1);
+>  		aligned_len = eccfrag_len;
+>  		if (eccpos[start_step * chip->ecc.bytes] & (busw - 1))
+>  			aligned_len++;
+> -		if (eccpos[(start_step + num_steps) * chip->ecc.bytes] & (busw - 1))
+> +		if (eccpos[(start_step + num_steps) * chip->ecc.bytes] &
+> +								(busw - 1))
 
-In commit 2d40ed7b415bcb6a358c9f221160c4a419f01f19, the
-crc-calculation function changed from being an inline function to a
-linked function called crc32. There already exists a crc32 function
-with the same arguments in ZLIB, which does not seem to give the same
-checksums as the mtd-utils crc-function. After the mentioned commit,
-mkfs.ubifs seems to use the ZLIB crc32-function instead of the
-mtd-utils version which is what gives the faulty checksums.
+This is not pretty, How about a temporary variable, e.g.
 
-I managed to fix this in two simple ways:
-1. Change the order of linking in the makefile so that libmtd comes
-before libz. This might possibly break ZLIB (I have not tried this
-when using ZLIB).
-2. Change the name of the mtd-utils crc32 function.
+i = (start_step + num_steps) * chip->ecc.bytes;
+if (eccpos[i] & (busw - 1))
 
-Changing the name of the function is probably the preferred option.
+> -				memcpy(buf, chip->buffers->databuf + col, bytes);
+> +				memcpy(buf, chip->buffers->databuf + col,
+> +									bytes);
 
-Best regards,
-//Leo
+This is not nice as well, too many indentations for 'bytes'
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
