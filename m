@@ -1,22 +1,26 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Or3qY-0001o8-0P
-	for linux-mtd@lists.infradead.org; Thu, 02 Sep 2010 07:04:31 +0000
-In-Reply-To: <1283366151.2209.21.camel@brekeke>
-References: <1283357021-16187-1-git-send-email-w.sang@pengutronix.de>
-	<1283366151.2209.21.camel@brekeke>
-Subject: Re: [RFC] jffs2: use cond_resched() instead of yield()
-To: dedekind1@gmail.com
-Message-ID: <OF213EDC22.80E0A084-ONC1257792.0025CB36-C1257792.00268F36@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 2 Sep 2010 09:01:10 +0200
+Message-ID: <4C7F5B9E.8090406@st.com>
+Date: Thu, 2 Sep 2010 10:09:02 +0200
+From: Armando Visconti <armando.visconti@st.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=KOI8-R
-Content-transfer-encoding: base64
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, linux-kernel@vger.kernel.org,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	linux-mtd@lists.infradead.org, Ingo Molnar <mingo@elte.hu>,
-	dwmw2@infradead.org
+To: Linus Walleij <linus.ml.walleij@gmail.com>
+Subject: Re: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
+References: <cover.1283161023.git.viresh.kumar@st.com>	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>
+	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>
+In-Reply-To: <AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Sebastian RASMUSSEN <sebastian.rasmussen@stericsson.com>,
+	Alessandro Rubini <rubini-list@gnudd.com>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +30,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pg0KPiBUaGlzICd5aWVsZCgpJyB3YXMgaW50cm9kdWNlZCBieSBkd213Miwgc28gaGUgbWF5IGhh
-dmUgc3Ryb25nIGZlZWxpbmdzDQo+IGFib3V0IGl0LiBDQ2VkLg0KDQpBY3R1YWxseSwgaXQgd2Fz
-IGludHJvZHVjZWQgYnkgbWUgd2l0aCBjb21taXQgZmQ1MzI0OTA5ZTQxMGEzMjAyYzFiMDFiZDUw
-N2MyZGZiYTU4ZmNhNSA6DQoNCltKRkZTMl0gRml4IGhhbmdpbmcgY2xvc2UgZm9yIC9kZXYvbXRk
-IGNoYXJhY3RlciBkZXZpY2UuDQoNCiAgICBXaGVuIHBkZmx1c2ggaXMgZXJhc2luZyBsb3RzIG9m
-IHNlY3RvcnMsIGRyaXZlcnMgY2FsbGluZw0KICAgIG10ZC0+c3luYyB3aWxsIGhhbmcgdW50aWwg
-YWxsIGJsb2NrcyBhcmUgZXJhc2VkLiBCZSBuaWNlci4NCg0KICAgIFNpZ25lZC1vZmYtYnk6IEpv
-YWtpbSBUamVybmx1bmQgPEpvYWtpbS5UamVybmx1bmRAdHJhbnNtb2RlLnNlPg0KICAgIFNpZ25l
-ZC1vZmYtYnk6IERhdmlkIFdvb2Rob3VzZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4NCg0KDQpAQCAt
-MTQyLDcgKzE0Miw3IEBAIHZvaWQgamZmczJfZXJhc2VfcGVuZGluZ19ibG9ja3Moc3RydWN0IGpm
-ZnMyX3NiX2luZm8gKmMsIGludCBjb3VudCkNCiAJCX0NCg0KIAkJLyogQmUgbmljZSAqLw0KLQkJ
-Y29uZF9yZXNjaGVkKCk7DQorCQl5aWVsZCgpOw0KIAkJc3Bpbl9sb2NrKCZjLT5lcmFzZV9jb21w
-bGV0aW9uX2xvY2spOw0KIAl9DQoNCkF0IHRoZSB0aW1lIGNvbmRfcmVzY2hlZCgpIHdhcyBhIHBy
-b2JsZW0gYnV0IG5vdyBJIGRvbid0IGtub3cuIFRoZSBlcmFzaW5nDQpoYXMgbW92ZWQgdG8gdGhl
-IEdDIHRocmVhZCBhbmQgYmVlbiBzb21ld2hhdCByZXdvcmtlZC4gSSBkb24ndCBrbm93IGlmDQpp
-dCBzdGlsbCBuZWVkcyB5aWVsZCgpLiBQZXJoYXBzIERhdmlkIGNhbiB0ZWxsPw0KDQogICAgSm9j
-a2UNCj4NCj4gT24gV2VkLCAyMDEwLTA5LTAxIGF0IDE4OjAzICswMjAwLCBXb2xmcmFtIFNhbmcg
-d3JvdGU6DQo+ID4geWllbGQoKSBoYXMgZGlmZmVyZW50IHNlbWFudGljcyBtZWFud2hpbGUgYW5k
-IGV2ZW4gY2F1c2VzIFJULWtlcm5lbHMgdG8NCj4gPiBCVUcuIFJlcGxhY2UgdGhlIG9ubHkgYXBw
-ZWFyYW5jZSBsZWZ0IGluIGpmZnMyLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogV29sZnJhbSBT
-YW5nIDx3LnNhbmdAcGVuZ3V0cm9uaXguZGU+DQo+ID4gQ2M6IEFydGVtIEJpdHl1dHNraXkgPEFy
-dGVtLkJpdHl1dHNraXlAbm9raWEuY29tPg0KPiA+IENjOiBJbmdvIE1vbG5hciA8bWluZ29AZWx0
-ZS5odT4NCj4gPiAtLS0NCj4gPg0KPiA+IFRoZSBhZm9yZW1lbnRpb25lZCBCVUcoKSBzaG93ZWQg
-dXAgaW4gb25lIG9mIG91ciBjdXN0b21lcidzIFJULXByb2plY3RzLiBXaGlsZQ0KPiA+IHRoaXMg
-Y291bGQgYmUgaGFuZGxlZCBieSByZWFycmFuZ2luZyBoaXMgdGhyZWFkLXByaW9yaXRpZXMsIEkg
-d29uZGVyZWQgaWYgc3VjaA0KPiA+IGEgcGF0Y2ggd291bGQgYmUgd29ydGh3aGlsZSwgc3RpbGwu
-IFJlYWRpbmcgdGhyb3VnaCB0aGUgbWF0ZXJpYWwgY292ZXJpbmcNCj4gPiB5aWVsZCgpIGFuZCBy
-ZWxhdGVkIHJlcGxhY2VtZW50cywgSSBiZWxpZXZlIHRoaXMgcGF0Y2ggc2hvdWxkIGJlIGFwcHJv
-cHJpYXRlLg0KPiA+IFBsZWFzZSBzYXkgaWYgSSBtaXNzZWQgc29tZSBzaWRlLWVmZmVjdHMuDQo+
-ID4NCj4gPiAgZnMvamZmczIvZXJhc2UuYyB8ICAgIDIgKy0NCj4gPiAgMSBmaWxlcyBjaGFuZ2Vk
-LCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEv
-ZnMvamZmczIvZXJhc2UuYyBiL2ZzL2pmZnMyL2VyYXNlLmMNCj4gPiBpbmRleCBhYmFjOTYxLi5l
-NTEzZjE5IDEwMDY0NA0KPiA+IC0tLSBhL2ZzL2pmZnMyL2VyYXNlLmMNCj4gPiArKysgYi9mcy9q
-ZmZzMi9lcmFzZS5jDQo+ID4gQEAgLTE1MSw3ICsxNTEsNyBAQCBpbnQgamZmczJfZXJhc2VfcGVu
-ZGluZ19ibG9ja3Moc3RydWN0IGpmZnMyX3NiX2luZm8gKmMsIGludCBjb3VudCkNCj4gPiAgICAg
-ICAgfQ0KPiA+DQo+ID4gICAgICAgIC8qIEJlIG5pY2UgKi8NCj4gPiAtICAgICAgeWllbGQoKTsN
-Cj4gPiArICAgICAgY29uZF9yZXNjaGVkKCk7DQo+ID4gICAgICAgIG11dGV4X2xvY2soJmMtPmVy
-YXNlX2ZyZWVfc2VtKTsNCj4gPiAgICAgICAgc3Bpbl9sb2NrKCZjLT5lcmFzZV9jb21wbGV0aW9u
-X2xvY2spOw0KPiA+ICAgICB9DQo+DQo+IC0tDQo+IEJlc3QgUmVnYXJkcywNCj4gQXJ0ZW0gQml0
-eXV0c2tpeSAo4snUwMPLycog4dLUo80pDQo+DQo+DQo+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBt
-YWlsaW5nIGxpc3QNCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQv
+Ciao Linus,
+
+Linus Walleij wrote:
+> 2010/8/30 Viresh KUMAR <viresh.kumar@st.com>:
+>
+>   
+>> From: Vipin Kumar <vipin.kumar@st.com>
+>>
+>> SPEAr platforms use Flexible Static Memory Controller(FSMC) provided by ST for
+>> interfacing with NAND devices.
+>> This patch adds the support for glue logic for NAND flash on SPEAr boards
+>>     
+>
+> OK...
+>
+>   
+>> (...)
+>>  create mode 100644 arch/arm/plat-spear/include/plat/fsmc.h
+>>  create mode 100644 arch/arm/plat-spear/include/plat/nand.h
+>>  create mode 100644 drivers/mtd/nand/spear_nand.c
+>>     
+>
+> spear_nand.c?
+>
+> Why not fsmc-nand.c or similar if this is the name of the block.
+> We have this in U300, Nomadik NHK8815 and other platforms too,
+> it doesn't have much to do with SPEAr actually...
+>
+> Also, what are the include files doing in plat-spear since we have
+> the same hardware in other platforms? Move them to include/linux/mtd/
+> so we can use them please.
+>
+> I *highly* suspect that this driver duplicates some code found in
+> drivers/mtd/nand/nomadik_nand.c because it's the same silicon.
+>   
+Why nomadik_nand.c?
+Shouldn't the fsmc_nand.c rule apply also in this case?
+
+
+> Alessandro can judge on this, but I have a feeling that driver
+> should be replaced by this, more mature driver.
+>   
+Maybe.
+But I suspect that may be few differences in the ECC accelerator inside, 
+in fact.
+
+In our FSMC previous case it was a Hamming accelerator, and I think this 
+apply
+also for nomadik (maybe). In our sp1300 case it is a BCH with 104 bytes 
+of ECC.
+
+This is one of the options when generating the h/w block, so FSMCs may 
+differ.
+If we want to re-use same driver I guess we might change something and 
+accept
+few parameters from the platform.
+
+Vipin can for sure comment more on this.....
+
+
+Rgds,
+Arm
+
+-- 
+-- "Every step appears to be the unavoidable consequence of the
+-- preceding one." (A. Einstein) 
+-- 
+Armando Visconti                  Mobile: (+39) 346 8879146
+Senior SW Engineer                Fax:    (+39) 02 93519290
+CPG                               Work:   (+39) 02 93519683
+Computer System Division          e-mail: armando.visconti@st.com
+ST Microelectronics               TINA:   051  4683
+                                    
+ 
