@@ -1,26 +1,31 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OrUHU-0000Ez-1C
-	for linux-mtd@lists.infradead.org; Fri, 03 Sep 2010 11:18:06 +0000
-Received: from dflp53.itg.ti.com ([128.247.5.6])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id o83BI28l018448
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Sep 2010 06:18:02 -0500
-From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
-To: "'Wolfram Sang'" <w.sang@pengutronix.de>, <linux-mtd@lists.infradead.org>
-References: <1283382898.2209.62.camel@brekeke>
-	<1283510137-23573-1-git-send-email-w.sang@pengutronix.de>
-In-Reply-To: <1283510137-23573-1-git-send-email-w.sang@pengutronix.de>
-Subject: RE: [PATCH] nand/davinci: relax a timeout for ECC-initialization
-Date: Fri, 3 Sep 2010 16:42:22 +0530
-Message-ID: <030d01cb4b58$e18cafd0$a4a60f70$@raj@ti.com>
+From: Sebastian RASMUSSEN <sebastian.rasmussen@stericsson.com>
+To: Vipin KUMAR <vipin.kumar@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>
+Date: Fri, 3 Sep 2010 13:22:49 +0200
+Subject: RE: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
+Message-ID: <ECD438FDEF6BD742895E554C24725A401602C9EF37@EXDCVYMBSTM005.EQ1STM.local>
+References: <cover.1283161023.git.viresh.kumar@st.com>
+	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
+	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>
+	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>
+	<4C7F5B9E.8090406@st.com> <4C809FBC.8020003@st.com>
+In-Reply-To: <4C809FBC.8020003@st.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Cc: 'Artem Bityutskiy' <Artem.Bityutskiy@nokia.com>,
-	davinci-linux-open-source@linux.davincidsp.com
+Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Linus Walleij <linus.ml.walleij@gmail.com>,
+	Alessandro Rubini <rubini-list@gnudd.com>,
+	Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,29 +35,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Wolfram Sang,
-
-On Fri, Sep 03, 2010 at 16:05:37, Wolfram Sang wrote:
-> Sudhakar found out that 100us are enough. Sadly, his updated patch was
-> overlooked and an older version still using 100ms was merged. Fix this.
-> 
-> Reference: http://patchwork.ozlabs.org/patch/59180/
-> 
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
-> Cc: Sneha Narnakaje <nsnehaprabha@ti.com>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> ---
-> 
-> Artem, if you pick up this one, too, then we have what Sudhakar sent as
-> v3 of his original patch. Except for some minor rewording in the comment.
-> 
-> Sudhakar, I hope it is okay if I send this patch now. I just want to have
-> the confusion about the different versions gone.
-
-I was tied up for the past few days, so couldn't work on this patch. Thanks
-for taking this up. Can you modify the comment also to match my patch and
-re-submit this again?
-
-Thanks,
-Sudhakar
+SGkhDQoNCj4gQWRkaW5nIG9uIHRvcCBvZiB3aGF0IEFybWFuZG8gaGFzIGFscmVhZHkgcG9pbnRl
+ZCBvdXQsIEZTTUMgYmxvY2sgbWF5IA0KPiBoYXZlIGRpZmZlcmVudCB2ZXJzaW9ucyBhbmQgZWFj
+aCBvZiB0aGVtIG1heSBzdXBwb3J0IGRpZmZlcmVudCBmZWF0dXJlcyANCj4gYmFzZWQgb24gaXRz
+IGNvbmZpZ3VyYXRpb24gZWcuIHNwZWFyIGRldmljZSdzIEZTTUMgYmxvY2sgaXMgdmVyc2lvbjgg
+DQo+IGFuZCBpcyBjb25maWd1cmVkIGZvciAxMyBieXRlIGVjYyhwZXIgNTEyIGJ5dGVzIGRhdGEs
+IEJDSDggYWxnb3JpdGhtKS4gDQo+IFRoZXJlIGFyZSBvdGhlciBwb3NzaWJpbGl0aWVzIGVnLiBC
+Q0g0LCBCQ0gyIGV0YyB3aGljaCBhcmUgbm90IHVzZWQgaW4gDQo+IHNwZWFyIGRldmljZXMuDQoN
+Ckxvb2tpbmcgYXQgdGhlIGZ1dHVyZSB0cmVuZCBvZiBOQU5EIGZsYXNoIG1lbW9yaWVzIEkgYmVs
+aWV2ZSB0aGF0IEJDSDggaXMNCmxpa2VseSB0byBiZSBvZiBtb3N0IGludGVyZXN0LCBidXQgb2Yg
+Y291cnNlIGhhdmluZyBiYWNrd2FyZHMgY29tcGF0aWJpbGl0eQ0Kd2l0aCBhbHJlYWR5IGV4aXN0
+aW5nIEZTTUMgYmxvY2sgdXNhZ2UgaXMgaW50ZXJlc3RpbmcgZW5vdWdoLg0KDQo+IE1ha2luZyBp
+dCBnZW5lcmljIHdvdWxkIGFsc28gZW50YWlsIHN1cHBvcnRpbmcgYWxsIHBvc3NpYmxlIGNvbmZp
+Z3VyYXRpb25zIA0KPiB0aHJvdWdoIHNpbmdsZSBkcml2ZXIgKG1ha2VzIG1vcmUgc2Vuc2UpDQpb
+Li4uXQ0KPiBBbGVzc2FuZHJvL1NlYmFzdGlhbjogSXMgaXQgT0sgdG8gYWRkIGEgY29tbW9uIGRy
+aXZlciBmb3IgYWxsIEZTTUMgdmVyc2lvbnMNCj4gYW5kIGN1c3RvbWl6YXRpb25zDQoNCkkgYmVs
+aWV2ZSB0aGF0IGEgY29tbW9uIGRyaXZlciBpcyB0aGUgYmVzdCB3YXkgZm9yd2FyZCwgeWVzLiBM
+ZXQgbWUga25vdyBpZiBJDQpjYW4gYXNzaXN0IHlvdSBpbiBhbnkgb2YgdGhlIGRldmVsb3BtZW50
+IG9yIHRlc3RpbmcuDQoNCiAvIFNlYmFzdGlhbg0K
