@@ -1,16 +1,21 @@
-Received: from n17.bullet.mail.mud.yahoo.com ([68.142.206.144])
-	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OrRKO-0006kE-7V
-	for linux-mtd@lists.infradead.org; Fri, 03 Sep 2010 08:08:54 +0000
-Message-ID: <544370.63303.qm@smtp123.plus.mail.sp1.yahoo.com>
-From: "Elcotkqd" <doraisyyqt@yahoo.com.mx>
-Subject: =?gb2312?B?1MS2wbjVtKvTyrz+MkyjqDMtNaOp?=
+Received: from mail2.tricnet.de ([217.115.141.165])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OrSiW-0008GR-LW
+	for linux-mtd@lists.infradead.org; Fri, 03 Sep 2010 09:37:57 +0000
+Received: from teliad.com (ds87-230-83-22.dedicated.hosteurope.de
+	[87.230.83.22])
+	by mail2.tricnet.de (Postfix) with ESMTP id ECFCA1BF3FB
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  3 Sep 2010 11:37:38 +0200 (CEST)
+Date: Fri, 3 Sep 2010 11:37:38 +0200
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
-	charset="gb2312"
+From: David Lowe <sales@teliad.com>
+Subject: Backlink marketplace / SEO Services
+Message-ID: <b81b6cc46223366b9dcc4d6d7f15a056@teliad.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Date: Fri, 3 Sep 2010 16:08:24 +0800
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Reply-To: David Lowe <sales@teliad.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,14 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-xPq6w6Oh16jStbmp06bUrbOn0czLv8Xk1sa498Dgw+LLsM/j0cwuDQoNCiDW0LuqoaLcvcjYu8ah
-osvV0cyhorTz0KHQ3MOooaK7xrrXwqWhotK7vsXSu8H5oaK2rLPmz8Sy3bXIo6ENCg0KIMGqz7VR
-UaO6NjQyNzE0MzYyICAgus7J+jEzNjkyMjI3NzYyIA0KDQogsb7JzNDQz+PRzLa8yse+q7fCz7XB
-0C6w/Newus3V5sa3sfDO3sG90fmjqNPQt8DOscLro6kgv9q40LS/1f0uOTUltrzKx9Xm0czLvy4N
-Cg0KINX9ueazp7zSvNO5pNbG1/cuob6+q7fCob8gs6e1xNKqx/O63NHPuPEu0czStsirsr/M2Mri
-vNO5pNPr1sbX99Xm1f2077W9wcu437Hq17y1xNKqx/Mho6jF+sG/vNu48cHt0umjqb270tfB47Wj
-t+fP1aOhDQoNCiDKx9fUs+ks1dC0/SzLzcDxLMX6t6IswePK2yy5q8u+LL7GteosINPpwNazocv5
-tcjK19GhLCANCg0KILzbuPG4/LrPwO0sv9rOtrj8tL/V/SEgvPu79bi2v+4sx+u3xdDEubrC8iEg
-s7m118jDxPrO3rrzucvWrtPHIQ0KDQog0tShsLPP0MUuzvHKtS6439CnLrmy066hsc6q19rWvNPr
-xPqzpMbaus/X9ywgtPLIxcfrxOPBwr3iDQoNCiAgICAgICAgeWFob28uY29tLm14KDMtOSl5YWhv
-by5jb20ubXgoMy05KQ0K
+Hello,
+
+My name is David Lowe. I work as a sales assistant at teliad, an
+international marketplace for text links.
+
+In search of potential customers I visited your website at
+lists.infradead.org. We offer different products in our marketplace that
+you might find interesting.
+
+teliad works with many well-known SEO agencies that use our marketplace
+to find suitable offers for their link building projects (large
+portfolio of high quality offers from many different content areas).
+Many customers even outsource their link building service to us
+entirely. You can find more information on our website:
+
+http://www.teliad.com
+
+In case you are interested in our services, please contact me. I would
+be happy to provide further information regarding our marketplace and
+its features. 
+
+Best regards
+
+David Lowe
+- teliad sales -
+
+------------------------------------------------------------------------
+teliad Internetmarketing GmbH | David Lowe
+Kreuznacher Str. 62           | - teliad sales -
+70372 Stuttgart, Germany      | Phone: +49 (0)711 - 90 11 575
+http://www.teliad.com
+
+HRB 720138 Stuttgart Court of first instance,
+CEO: Andreas Armbruster
+------------------------------------------------------------------------
