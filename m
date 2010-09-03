@@ -1,28 +1,16 @@
-Message-ID: <4C809FBC.8020003@st.com>
-Date: Fri, 3 Sep 2010 12:41:56 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
+Received: from n17.bullet.mail.mud.yahoo.com ([68.142.206.144])
+	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OrRKO-0006kE-7V
+	for linux-mtd@lists.infradead.org; Fri, 03 Sep 2010 08:08:54 +0000
+Message-ID: <544370.63303.qm@smtp123.plus.mail.sp1.yahoo.com>
+From: "Elcotkqd" <doraisyyqt@yahoo.com.mx>
+Subject: =?gb2312?B?1MS2wbjVtKvTyrz+MkyjqDMtNaOp?=
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="gb2312"
 MIME-Version: 1.0
-To: Armando VISCONTI <armando.visconti@st.com>
-Subject: Re: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
-References: <cover.1283161023.git.viresh.kumar@st.com>	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>
-	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>
-	<4C7F5B9E.8090406@st.com>
-In-Reply-To: <4C7F5B9E.8090406@st.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Sebastian RASMUSSEN <sebastian.rasmussen@stericsson.com>,
-	Linus Walleij <linus.ml.walleij@gmail.com>,
-	Alessandro Rubini <rubini-list@gnudd.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Transfer-Encoding: base64
+Date: Fri, 3 Sep 2010 16:08:24 +0800
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,92 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/2/2010 1:39 PM, Armando VISCONTI wrote:
-> Ciao Linus,
-> 
-> Linus Walleij wrote:
->> 2010/8/30 Viresh KUMAR <viresh.kumar@st.com>:
->>
->>   
->>> From: Vipin Kumar <vipin.kumar@st.com>
->>>
->>> SPEAr platforms use Flexible Static Memory Controller(FSMC) provided by ST for
->>> interfacing with NAND devices.
->>> This patch adds the support for glue logic for NAND flash on SPEAr boards
->>>     
->>
->> OK...
->>
->>   
->>> (...)
->>>  create mode 100644 arch/arm/plat-spear/include/plat/fsmc.h
->>>  create mode 100644 arch/arm/plat-spear/include/plat/nand.h
->>>  create mode 100644 drivers/mtd/nand/spear_nand.c
->>>     
->>
->> spear_nand.c?
->>
->> Why not fsmc-nand.c or similar if this is the name of the block.
->> We have this in U300, Nomadik NHK8815 and other platforms too,
->> it doesn't have much to do with SPEAr actually...
->>
->> Also, what are the include files doing in plat-spear since we have
->> the same hardware in other platforms? Move them to include/linux/mtd/
->> so we can use them please.
->>
->> I *highly* suspect that this driver duplicates some code found in
->> drivers/mtd/nand/nomadik_nand.c because it's the same silicon.
->>   
-> Why nomadik_nand.c?
-> Shouldn't the fsmc_nand.c rule apply also in this case?
-> 
-> 
->> Alessandro can judge on this, but I have a feeling that driver
->> should be replaced by this, more mature driver.
->>   
-
-Hello All,
-
-> Maybe.
-> But I suspect that may be few differences in the ECC accelerator inside, 
-> in fact.
-> 
-> In our FSMC previous case it was a Hamming accelerator, and I think this 
-> apply
-> also for nomadik (maybe). In our sp1300 case it is a BCH with 104 bytes 
-> of ECC.
-
-Adding on top of what Armando has already pointed out, FSMC block may 
-have different versions and each of them may support different features 
-based on its configuration eg. spear device's FSMC block is version8 
-and is configured for 13 byte ecc(per 512 bytes data, BCH8 algorithm). 
-There are other possibilities eg. BCH4, BCH2 etc which are not used in 
-spear devices.
-
-Making it generic would also entail supporting all possible configurations 
-through single driver (makes more sense)
-
-Customization was the prime reason for keeping the driver spear 
-dependent and naming it as spear_nand.c
-
-Alessandro/Sebastian: Is it OK to add a common driver for all FSMC versions
-and customizations
-
-Comments/Suggestions welcome
-
-Regards
-Vipin
-
-> 
-> This is one of the options when generating the h/w block, so FSMCs may 
-> differ.
-> If we want to re-use same driver I guess we might change something and 
-> accept
-> few parameters from the platform.
-> 
-> Vipin can for sure comment more on this.....
-> 
-> 
-> Rgds,
-> Arm
-> 
+xPq6w6Oh16jStbmp06bUrbOn0czLv8Xk1sa498Dgw+LLsM/j0cwuDQoNCiDW0LuqoaLcvcjYu8ah
+osvV0cyhorTz0KHQ3MOooaK7xrrXwqWhotK7vsXSu8H5oaK2rLPmz8Sy3bXIo6ENCg0KIMGqz7VR
+UaO6NjQyNzE0MzYyICAgus7J+jEzNjkyMjI3NzYyIA0KDQogsb7JzNDQz+PRzLa8yse+q7fCz7XB
+0C6w/Newus3V5sa3sfDO3sG90fmjqNPQt8DOscLro6kgv9q40LS/1f0uOTUltrzKx9Xm0czLvy4N
+Cg0KINX9ueazp7zSvNO5pNbG1/cuob6+q7fCob8gs6e1xNKqx/O63NHPuPEu0czStsirsr/M2Mri
+vNO5pNPr1sbX99Xm1f2077W9wcu437Hq17y1xNKqx/Mho6jF+sG/vNu48cHt0umjqb270tfB47Wj
+t+fP1aOhDQoNCiDKx9fUs+ks1dC0/SzLzcDxLMX6t6IswePK2yy5q8u+LL7GteosINPpwNazocv5
+tcjK19GhLCANCg0KILzbuPG4/LrPwO0sv9rOtrj8tL/V/SEgvPu79bi2v+4sx+u3xdDEubrC8iEg
+s7m118jDxPrO3rrzucvWrtPHIQ0KDQog0tShsLPP0MUuzvHKtS6439CnLrmy066hsc6q19rWvNPr
+xPqzpMbaus/X9ywgtPLIxcfrxOPBwr3iDQoNCiAgICAgICAgeWFob28uY29tLm14KDMtOSl5YWhv
+by5jb20ubXgoMy05KQ0K
