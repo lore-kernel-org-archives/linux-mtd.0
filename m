@@ -1,38 +1,22 @@
-Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
-	helo=AM1EHSOBE004.bigfish.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ora9Y-0000us-Mw
-	for linux-mtd@lists.infradead.org; Fri, 03 Sep 2010 17:34:21 +0000
-Received: from mail69-am1 (localhost.localdomain [127.0.0.1])	by
-	mail69-am1-R.bigfish.com (Postfix) with ESMTP id 5A51A628126	for
-	<linux-mtd@lists.infradead.org>; Fri,  3 Sep 2010 17:34:14 +0000 (UTC)
-Received: from am1ehsmhs001.bigfish.com (unknown [10.3.201.250])	by
-	mail69-am1.bigfish.com (Postfix) with ESMTP id 0642B118156	for
-	<linux-mtd@lists.infradead.org>; Fri,  3 Sep 2010 17:34:01 +0000 (UTC)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net
-	[10.64.34.199])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
-	id o83HXep6008832	for <linux-mtd@lists.infradead.org>;
-	Fri, 3 Sep 2010 10:33:45 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id
-	o83HjsV2014528	for <linux-mtd@lists.infradead.org>;
-	Fri, 3 Sep 2010 12:45:54 -0500 (CDT)
-Date: Fri, 3 Sep 2010 12:33:38 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: Anton Vorontsov <cbouatmailru@gmail.com>
-Subject: Re: [PATCH 2/3][MTD] P4080/nand: Only make elbc nand driver detect
-	nand flash partitions
-Message-ID: <20100903123338.0884a761@schlenkerla.am.freescale.net>
-In-Reply-To: <20100903114357.GC11847@oksana.dev.rtsoft.ru>
-References: <1281063096-26598-1-git-send-email-tie-fei.zang@freescale.com>
-	<1281063096-26598-2-git-send-email-tie-fei.zang@freescale.com>
-	<20100903114357.GC11847@oksana.dev.rtsoft.ru>
+Sender: "Gustavo F. Padovan" <pao@profusion.mobi>
+Date: Fri, 3 Sep 2010 19:32:56 -0300
+From: "Gustavo F. Padovan" <padovan@profusion.mobi>
+To: Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: Re: [PATCH 07/15] pcmcia: move config_{base,index,regs} to struct
+	pcmcia_device
+Message-ID: <20100903223256.GC16973@vigoh>
+References: <20100903105628.GA21255@comet.dominikbrodowski.net>
+	<1283511434-21620-7-git-send-email-linux@dominikbrodowski.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-Cc: B25806@freescale.com, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	Roy Zang <tie-fei.zang@freescale.com>, B11780@freescale.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1283511434-21620-7-git-send-email-linux@dominikbrodowski.net>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+	netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org,
+	linux-wireless@vger.kernel.org, laforge@gnumonks.org,
+	linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-serial@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,29 +26,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 3 Sep 2010 15:43:57 +0400
-Anton Vorontsov <cbouatmailru@gmail.com> wrote:
+* Dominik Brodowski <linux@dominikbrodowski.net> [2010-09-03 12:57:06 +0200]:
 
-> On Fri, Aug 06, 2010 at 10:51:35AM +0800, Roy Zang wrote:
-> [...]
-> >  
-> > +static struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl;
-> > +
+> Several drivers prefer to explicitly set config_{base,index,regs},
+> formerly known as ConfigBase, ConfigIndex and Present. Instead of
+> passing these values inside config_req_t, store it in struct
+> pcmcia_device.
 > 
-> Are you sure that you want it as a global var? A bit scary change.
-> 
-> Oh, you probably don't need it, as you can get it from
-> fsl_lbc_ctrl_dev->nand?
-> 
-> I wonder if Scott saw these patches? Cc'ed.
+> CC: netdev@vger.kernel.org
+> CC: linux-wireless@vger.kernel.org
+> CC: linux-ide@vger.kernel.org
+> CC: linux-usb@vger.kernel.org
+> CC: laforge@gnumonks.org
+> CC: linux-mtd@lists.infradead.org
+> CC: linux-bluetooth@vger.kernel.org
+> CC: alsa-devel@alsa-project.org
+> CC: linux-serial@vger.kernel.org
+> CC: Jiri Kosina <jkosina@suse.cz>
+> CC: linux-scsi@vger.kernel.org
+> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+> ---
+>  drivers/bluetooth/bluecard_cs.c                  |    2 +-
+>  drivers/char/pcmcia/ipwireless/main.c            |    2 +-
+>  drivers/char/pcmcia/synclink_cs.c                |    6 ++--
+>  drivers/ide/ide-cs.c                             |    3 +-
+>  drivers/isdn/hardware/avm/avm_cs.c               |    4 +-
+>  drivers/isdn/hisax/avma1_cs.c                    |    4 +-
+>  drivers/isdn/hisax/elsa_cs.c                     |    2 +-
+>  drivers/isdn/hisax/sedlbauer_cs.c                |    2 +-
+>  drivers/isdn/hisax/teles_cs.c                    |    2 +-
+>  drivers/mtd/maps/pcmciamtd.c                     |    2 +-
+>  drivers/net/pcmcia/3c574_cs.c                    |    2 +-
+>  drivers/net/pcmcia/3c589_cs.c                    |    2 +-
+>  drivers/net/pcmcia/axnet_cs.c                    |    6 ++--
+>  drivers/net/pcmcia/fmvj18x_cs.c                  |   22 ++++++------
+>  drivers/net/pcmcia/ibmtr_cs.c                    |    4 +-
+>  drivers/net/pcmcia/nmclan_cs.c                   |    4 +-
+>  drivers/net/pcmcia/pcnet_cs.c                    |    6 ++--
+>  drivers/net/pcmcia/smc91c92_cs.c                 |   10 +++---
+>  drivers/net/pcmcia/xirc2ps_cs.c                  |    2 +-
+>  drivers/net/wireless/airo_cs.c                   |    2 +-
+>  drivers/net/wireless/hostap/hostap_cs.c          |    2 +-
+>  drivers/net/wireless/ray_cs.c                    |    2 +-
+>  drivers/net/wireless/wl3501_cs.c                 |    2 +-
+>  drivers/parport/parport_cs.c                     |    2 +-
+>  drivers/pcmcia/cs_internal.h                     |    3 --
+>  drivers/pcmcia/ds.c                              |    8 ++--
+>  drivers/pcmcia/pcmcia_cis.c                      |    2 +-
+>  drivers/pcmcia/pcmcia_resource.c                 |   38 +++++++++++-----------
+>  drivers/scsi/pcmcia/aha152x_stub.c               |    2 +-
+>  drivers/scsi/pcmcia/fdomain_stub.c               |    2 +-
+>  drivers/scsi/pcmcia/nsp_cs.c                     |    2 +-
+>  drivers/scsi/pcmcia/qlogic_stub.c                |    2 +-
+>  drivers/serial/serial_cs.c                       |    6 ++--
+>  drivers/staging/comedi/drivers/cb_das16_cs.c     |    2 +-
+>  drivers/staging/comedi/drivers/das08_cs.c        |    2 +-
+>  drivers/staging/comedi/drivers/ni_daq_700.c      |    2 +-
+>  drivers/staging/comedi/drivers/ni_daq_dio24.c    |    2 +-
+>  drivers/staging/comedi/drivers/ni_labpc_cs.c     |    2 +-
+>  drivers/staging/comedi/drivers/quatech_daqp_cs.c |    2 +-
+>  drivers/staging/wlags49_h2/wl_cs.c               |    4 +-
+>  drivers/usb/host/sl811_cs.c                      |    2 +-
+>  include/pcmcia/cs.h                              |   15 --------
+>  include/pcmcia/ds.h                              |   14 ++++++++
+>  sound/pcmcia/pdaudiocf/pdaudiocf.c               |    6 ++--
+>  sound/pcmcia/vx/vxpocket.c                       |    4 +-
+>  45 files changed, 107 insertions(+), 112 deletions(-)
 
-I saw many iterations of these patches. :-)
+For drivers/bluetooth
 
-I had the same reaction to this, but during internal review it did not
-seem to be the most pressing concern to focus on.
+Acked-by: Gustavo F. Padovan <padovan@profusion.mobi>
 
-In practice, there will only be one eLBC, and properly handling multiple
-devices and binding the right one across this new boundary would have
-been unnecessary complexity.
-
--Scott
+-- 
+Gustavo F. Padovan
+ProFUSION embedded systems - http://profusion.mobi
