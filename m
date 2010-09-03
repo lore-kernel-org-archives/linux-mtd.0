@@ -1,31 +1,23 @@
-From: Sebastian RASMUSSEN <sebastian.rasmussen@stericsson.com>
-To: Vipin KUMAR <vipin.kumar@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>
-Date: Fri, 3 Sep 2010 13:22:49 +0200
-Subject: RE: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
-Message-ID: <ECD438FDEF6BD742895E554C24725A401602C9EF37@EXDCVYMBSTM005.EQ1STM.local>
-References: <cover.1283161023.git.viresh.kumar@st.com>
-	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
-	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>
-	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>
-	<4C7F5B9E.8090406@st.com> <4C809FBC.8020003@st.com>
-In-Reply-To: <4C809FBC.8020003@st.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OrUR7-0002rF-TP
+	for linux-mtd@lists.infradead.org; Fri, 03 Sep 2010 11:28:04 +0000
+Received: by eye22 with SMTP id 22so1082358eye.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 03 Sep 2010 04:28:00 -0700 (PDT)
+Date: Fri, 3 Sep 2010 15:27:55 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Roy Zang <tie-fei.zang@freescale.com>
+Subject: Re: [PATCH 1/3][MTD] P4080/eLBC: Make Freescale elbc interrupt
+	common to elbc devices
+Message-ID: <20100903112755.GA11847@oksana.dev.rtsoft.ru>
+References: <1281063096-26598-1-git-send-email-tie-fei.zang@freescale.com>
 MIME-Version: 1.0
-Cc: Pratyush ANAND <pratyush.anand@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Linus Walleij <linus.ml.walleij@gmail.com>,
-	Alessandro Rubini <rubini-list@gnudd.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1281063096-26598-1-git-send-email-tie-fei.zang@freescale.com>
+Cc: B25806@freescale.com, linuxppc-dev@ozlabs.org, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org, B11780@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,21 +27,353 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkhDQoNCj4gQWRkaW5nIG9uIHRvcCBvZiB3aGF0IEFybWFuZG8gaGFzIGFscmVhZHkgcG9pbnRl
-ZCBvdXQsIEZTTUMgYmxvY2sgbWF5IA0KPiBoYXZlIGRpZmZlcmVudCB2ZXJzaW9ucyBhbmQgZWFj
-aCBvZiB0aGVtIG1heSBzdXBwb3J0IGRpZmZlcmVudCBmZWF0dXJlcyANCj4gYmFzZWQgb24gaXRz
-IGNvbmZpZ3VyYXRpb24gZWcuIHNwZWFyIGRldmljZSdzIEZTTUMgYmxvY2sgaXMgdmVyc2lvbjgg
-DQo+IGFuZCBpcyBjb25maWd1cmVkIGZvciAxMyBieXRlIGVjYyhwZXIgNTEyIGJ5dGVzIGRhdGEs
-IEJDSDggYWxnb3JpdGhtKS4gDQo+IFRoZXJlIGFyZSBvdGhlciBwb3NzaWJpbGl0aWVzIGVnLiBC
-Q0g0LCBCQ0gyIGV0YyB3aGljaCBhcmUgbm90IHVzZWQgaW4gDQo+IHNwZWFyIGRldmljZXMuDQoN
-Ckxvb2tpbmcgYXQgdGhlIGZ1dHVyZSB0cmVuZCBvZiBOQU5EIGZsYXNoIG1lbW9yaWVzIEkgYmVs
-aWV2ZSB0aGF0IEJDSDggaXMNCmxpa2VseSB0byBiZSBvZiBtb3N0IGludGVyZXN0LCBidXQgb2Yg
-Y291cnNlIGhhdmluZyBiYWNrd2FyZHMgY29tcGF0aWJpbGl0eQ0Kd2l0aCBhbHJlYWR5IGV4aXN0
-aW5nIEZTTUMgYmxvY2sgdXNhZ2UgaXMgaW50ZXJlc3RpbmcgZW5vdWdoLg0KDQo+IE1ha2luZyBp
-dCBnZW5lcmljIHdvdWxkIGFsc28gZW50YWlsIHN1cHBvcnRpbmcgYWxsIHBvc3NpYmxlIGNvbmZp
-Z3VyYXRpb25zIA0KPiB0aHJvdWdoIHNpbmdsZSBkcml2ZXIgKG1ha2VzIG1vcmUgc2Vuc2UpDQpb
-Li4uXQ0KPiBBbGVzc2FuZHJvL1NlYmFzdGlhbjogSXMgaXQgT0sgdG8gYWRkIGEgY29tbW9uIGRy
-aXZlciBmb3IgYWxsIEZTTUMgdmVyc2lvbnMNCj4gYW5kIGN1c3RvbWl6YXRpb25zDQoNCkkgYmVs
-aWV2ZSB0aGF0IGEgY29tbW9uIGRyaXZlciBpcyB0aGUgYmVzdCB3YXkgZm9yd2FyZCwgeWVzLiBM
-ZXQgbWUga25vdyBpZiBJDQpjYW4gYXNzaXN0IHlvdSBpbiBhbnkgb2YgdGhlIGRldmVsb3BtZW50
-IG9yIHRlc3RpbmcuDQoNCiAvIFNlYmFzdGlhbg0K
+On Fri, Aug 06, 2010 at 10:51:34AM +0800, Roy Zang wrote:
+> From: Lan Chunhe-B25806 <b25806@freescale.com>
+> 
+> Move Freescale elbc interrupt from nand dirver to elbc driver.
+> Then all elbc devices can use the interrupt instead of ONLY nand.
+> 
+> Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
+> Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
+> ---
+> send the patch to linux-mtd@lists.infradead.org
+> it has been posted to linuxppc-dev@ozlabs.org and do not get any comment.
+> 
+>  arch/powerpc/Kconfig               |    7 +-
+>  arch/powerpc/include/asm/fsl_lbc.h |   34 +++++-
+>  arch/powerpc/sysdev/fsl_lbc.c      |  254 ++++++++++++++++++++++++++++++------
+>  3 files changed, 253 insertions(+), 42 deletions(-)
+> 
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index 2031a28..5155b53 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -703,9 +703,12 @@ config 4xx_SOC
+>  	bool
+>  
+>  config FSL_LBC
+> -	bool
+> +	bool "Freescale Local Bus support"
+> +	depends on FSL_SOC
+>  	help
+> -	  Freescale Localbus support
+> +	  Enables reporting of errors from the Freescale local bus
+> +	  controller.  Also contains some common code used by
+> +	  drivers for specific local bus peripherals.
+>  
+>  config FSL_GTM
+>  	bool
+[...]
+> diff --git a/arch/powerpc/sysdev/fsl_lbc.c b/arch/powerpc/sysdev/fsl_lbc.c
+> index dceb8d1..9c9e44f 100644
+> --- a/arch/powerpc/sysdev/fsl_lbc.c
+> +++ b/arch/powerpc/sysdev/fsl_lbc.c
+> @@ -5,6 +5,10 @@
+>   *
+>   * Author: Anton Vorontsov <avorontsov@ru.mvista.com>
+>   *
+> + * Copyright (c) 2010 Freescale Semiconductor
+> + *
+> + * Authors: Jack Lan <Jack.Lan@freescale.com>
+
+Would be prettier if you'd group copyright and authorship notices.
+I.e.
+
+Copyright 2008 MV
+Copyright 2010 FSL
+
+Authors: Anton
+         Jack
+
+> + *
+>   * This program is free software; you can redistribute it and/or modify
+>   * it under the terms of the GNU General Public License as published by
+>   * the Free Software Foundation; either version 2 of the License, or
+> @@ -23,35 +27,8 @@
+>  #include <asm/fsl_lbc.h>
+>  
+>  static spinlock_t fsl_lbc_lock = __SPIN_LOCK_UNLOCKED(fsl_lbc_lock);
+> -static struct fsl_lbc_regs __iomem *fsl_lbc_regs;
+> -
+> -static char __initdata *compat_lbc[] = {
+> -	"fsl,pq2-localbus",
+> -	"fsl,pq2pro-localbus",
+> -	"fsl,pq3-localbus",
+> -	"fsl,elbc",
+> -};
+> -
+> -static int __init fsl_lbc_init(void)
+> -{
+> -	struct device_node *lbus;
+> -	int i;
+> -
+> -	for (i = 0; i < ARRAY_SIZE(compat_lbc); i++) {
+> -		lbus = of_find_compatible_node(NULL, NULL, compat_lbc[i]);
+> -		if (lbus)
+> -			goto found;
+> -	}
+> -	return -ENODEV;
+> -
+> -found:
+> -	fsl_lbc_regs = of_iomap(lbus, 0);
+> -	of_node_put(lbus);
+> -	if (!fsl_lbc_regs)
+> -		return -ENOMEM;
+> -	return 0;
+> -}
+> -arch_initcall(fsl_lbc_init);
+> +struct fsl_lbc_ctrl *fsl_lbc_ctrl_dev;
+> +EXPORT_SYMBOL(fsl_lbc_ctrl_dev);
+>  
+>  /**
+>   * fsl_lbc_find - find Localbus bank
+> @@ -66,12 +43,12 @@ int fsl_lbc_find(phys_addr_t addr_base)
+>  {
+>  	int i;
+>  
+> -	if (!fsl_lbc_regs)
+> +	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
+>  		return -ENODEV;
+>  
+> -	for (i = 0; i < ARRAY_SIZE(fsl_lbc_regs->bank); i++) {
+> -		__be32 br = in_be32(&fsl_lbc_regs->bank[i].br);
+> -		__be32 or = in_be32(&fsl_lbc_regs->bank[i].or);
+> +	for (i = 0; i < ARRAY_SIZE(fsl_lbc_ctrl_dev->regs->bank); i++) {
+> +		__be32 br = in_be32(&fsl_lbc_ctrl_dev->regs->bank[i].br);
+> +		__be32 or = in_be32(&fsl_lbc_ctrl_dev->regs->bank[i].or);
+
+A dedicated variable for regs would make this much more readable?
+
+>  
+>  		if (br & BR_V && (br & or & BR_BA) == addr_base)
+>  			return i;
+> @@ -99,17 +76,20 @@ int fsl_upm_find(phys_addr_t addr_base, struct fsl_upm *upm)
+>  	if (bank < 0)
+>  		return bank;
+>  
+> -	br = in_be32(&fsl_lbc_regs->bank[bank].br);
+> +	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
+> +		return -ENODEV;
+> +
+> +	br = in_be32(&fsl_lbc_ctrl_dev->regs->bank[bank].br);
+>  
+>  	switch (br & BR_MSEL) {
+>  	case BR_MS_UPMA:
+> -		upm->mxmr = &fsl_lbc_regs->mamr;
+> +		upm->mxmr = &fsl_lbc_ctrl_dev->regs->mamr;
+
+Ditto, a very repetitive stuff, desires a variable for regs?
+
+>  		break;
+>  	case BR_MS_UPMB:
+> -		upm->mxmr = &fsl_lbc_regs->mbmr;
+> +		upm->mxmr = &fsl_lbc_ctrl_dev->regs->mbmr;
+>  		break;
+>  	case BR_MS_UPMC:
+> -		upm->mxmr = &fsl_lbc_regs->mcmr;
+> +		upm->mxmr = &fsl_lbc_ctrl_dev->regs->mcmr;
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> @@ -143,14 +123,18 @@ EXPORT_SYMBOL(fsl_upm_find);
+>   * thus UPM pattern actually executed. Note that mar usage depends on the
+>   * pre-programmed AMX bits in the UPM RAM.
+>   */
+> +
+>  int fsl_upm_run_pattern(struct fsl_upm *upm, void __iomem *io_base, u32 mar)
+>  {
+>  	int ret = 0;
+>  	unsigned long flags;
+>  
+> +	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
+> +		return -ENODEV;
+> +
+>  	spin_lock_irqsave(&fsl_lbc_lock, flags);
+>  
+> -	out_be32(&fsl_lbc_regs->mar, mar);
+> +	out_be32(&fsl_lbc_ctrl_dev->regs->mar, mar);
+>  
+>  	switch (upm->width) {
+>  	case 8:
+> @@ -172,3 +156,197 @@ int fsl_upm_run_pattern(struct fsl_upm *upm, void __iomem *io_base, u32 mar)
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(fsl_upm_run_pattern);
+> +
+> +static int __devinit fsl_lbc_ctrl_init(struct fsl_lbc_ctrl *ctrl)
+> +{
+> +	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
+
+Yep, something like this for the functions above.
+
+> +
+> +	/* clear event registers */
+> +	setbits32(&lbc->ltesr, LTESR_CLEAR);
+> +	out_be32(&lbc->lteatr, 0);
+> +	out_be32(&lbc->ltear, 0);
+> +	out_be32(&lbc->lteccr, LTECCR_CLEAR);
+> +	out_be32(&lbc->ltedr, LTEDR_ENABLE);
+> +
+> +	/* Enable interrupts for any detected events */
+> +	out_be32(&lbc->lteir, LTEIR_ENABLE);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __devexit fsl_lbc_ctrl_remove(struct of_device *ofdev)
+> +{
+> +	struct fsl_lbc_ctrl *ctrl = dev_get_drvdata(&ofdev->dev);
+> +
+> +	if (ctrl->irq)
+> +		free_irq(ctrl->irq, ctrl);
+> +
+> +	if (ctrl->regs)
+> +		iounmap(ctrl->regs);
+> +
+> +	dev_set_drvdata(&ofdev->dev, NULL);
+> +	kfree(ctrl);
+> +
+> +	return 0;
+> +}
+> +
+> +/* NOTE: This interrupt is used to report localbus events of various kinds,
+> + * such as transaction errors on the chipselects.
+> + */
+
+/*
+ * multi line comments
+ * should be like this
+ */
+
+[...]
+> +/* fsl_lbc_ctrl_probe
+> + *
+> + * called by device layer when it finds a device matching
+> + * one our driver can handled. This code allocates all of
+> + * the resources needed for the controller only.  The
+> + * resources for the NAND banks themselves are allocated
+> + * in the chip probe function.
+> +*/
+
+ditto.
+
+> +static int __devinit fsl_lbc_ctrl_probe(struct of_device *ofdev,
+> +					 const struct of_device_id *match)
+> +{
+> +	int ret = 0;
+
+no need for the initial value here.
+
+> +
+> +	fsl_lbc_ctrl_dev = kzalloc(sizeof(*fsl_lbc_ctrl_dev), GFP_KERNEL);
+> +	if (!fsl_lbc_ctrl_dev)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(&ofdev->dev, fsl_lbc_ctrl_dev);
+> +
+> +	spin_lock_init(&fsl_lbc_ctrl_dev->lock);
+> +	init_waitqueue_head(&fsl_lbc_ctrl_dev->irq_wait);
+> +
+> +	fsl_lbc_ctrl_dev->regs = of_iomap(ofdev->dev.of_node, 0);
+> +	if (!fsl_lbc_ctrl_dev->regs) {
+> +		dev_err(&ofdev->dev, "failed to get memory region\n");
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	fsl_lbc_ctrl_dev->irq = of_irq_to_resource(ofdev->dev.of_node, 0, NULL);
+> +	if (fsl_lbc_ctrl_dev->irq == NO_IRQ) {
+> +		dev_err(&ofdev->dev, "failed to get irq resource\n");
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	fsl_lbc_ctrl_dev->dev = &ofdev->dev;
+> +
+> +	ret = fsl_lbc_ctrl_init(fsl_lbc_ctrl_dev);
+> +	if (ret < 0)
+> +		goto err;
+> +
+> +	ret = request_irq(fsl_lbc_ctrl_dev->irq, fsl_lbc_ctrl_irq, 0,
+> +				"fsl-lbc", fsl_lbc_ctrl_dev);
+> +	if (ret != 0) {
+> +		dev_err(&ofdev->dev, "failed to install irq (%d)\n",
+> +			fsl_lbc_ctrl_dev->irq);
+> +		ret = fsl_lbc_ctrl_dev->irq;
+> +		goto err;
+> +	}
+> +
+> +	return 0;
+> +
+> +err:
+
+fsl_lbc_ctrl_dev leaked. Plus, after freeing it, you should
+NULLify it as well, as other functions checks it for !NULL.
+
+fsl_lbc_ctrl_dev->regs leaks too.
+
+> +	return ret;
+> +}
+> +
+> +static const struct of_device_id fsl_lbc_match[] = {
+> +	{
+> +		.compatible = "fsl,elbc",
+> +	},
+> +	{
+> +		.compatible = "fsl,pq3-localbus",
+> +	},
+> +	{
+> +		.compatible = "fsl,pq2-localbus",
+> +	},
+> +	{
+> +		.compatible = "fsl,pq2pro-localbus",
+> +	},
+> +	{},
+
+Could save 8 lines by writing "{ .compatible = "...", },".
+
+> +};
+> +
+> +static struct of_platform_driver fsl_lbc_ctrl_driver = {
+
+I think you shouldn't use of_platform for new code. just platform
+will work (there's platform_driver.driver.of_match_table nowadays).
+
+> +	.driver = {
+> +		.name = "fsl-lbc",
+> +		.of_match_table = fsl_lbc_match,
+> +	},
+> +	.probe = fsl_lbc_ctrl_probe,
+> +	.remove = __devexit_p(fsl_lbc_ctrl_remove),
+
+The device is not removable, I think you don't need this.
+
+> +};
+> +
+> +static int __init fsl_lbc_init(void)
+> +{
+> +	return of_register_platform_driver(&fsl_lbc_ctrl_driver);
+> +}
+> +
+> +static void __exit fsl_lbc_exit(void)
+> +{
+> +	of_unregister_platform_driver(&fsl_lbc_ctrl_driver);
+> +}
+> +
+> +module_init(fsl_lbc_init);
+> +module_exit(fsl_lbc_exit);
+
+fsl_lbc is not a module, so you don't need _exit().
+
+> +MODULE_LICENSE("GPL");
+> +MODULE_AUTHOR("Freescale Semiconductor");
+> +MODULE_DESCRIPTION("Freescale Enhanced Local Bus Controller driver");
+
+ditto, no need for this.
+
+Thanks,
+
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
