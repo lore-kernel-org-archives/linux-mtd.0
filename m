@@ -1,17 +1,19 @@
 Received: from dakia2.marvell.com ([65.219.4.35])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OsDJc-0000o8-6n
-	for linux-mtd@lists.infradead.org; Sun, 05 Sep 2010 11:23:16 +0000
+	id 1OsExa-0006R8-Fb
+	for linux-mtd@lists.infradead.org; Sun, 05 Sep 2010 13:08:39 +0000
 Received: from maili.marvell.com (maili.marvell.com [10.68.76.51]) by
-	dakia2.marvell.com with ESMTP id tz75EfLAJuTxm8ZR for
+	dakia2.marvell.com with ESMTP id wLI9EDiSrZBL1hzl for
 	<linux-mtd@lists.infradead.org>;
-	Sun, 05 Sep 2010 04:23:12 -0700 (PDT)
+	Sun, 05 Sep 2010 06:08:36 -0700 (PDT)
 From: Saeed Bishara <saeed@marvell.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] cmd line partitions: use 64 bit variables to detect
+Subject: Re: [PATCH v2] cmd line partitions: use 64 bit variables to detect
 	partitions/offsets larger than 4G.
-Date: Sun,  5 Sep 2010 14:23:10 +0300
-Message-Id: <1283685790-8619-1-git-send-email-saeed@marvell.com>
+Date: Sun,  5 Sep 2010 16:08:34 +0300
+Message-Id: <1283692114-1744-1-git-send-email-saeed@marvell.com>
+In-Reply-To: <1283685790-8619-1-git-send-email-saeed@marvell.com>
+References: <1283685790-8619-1-git-send-email-saeed@marvell.com>
 Cc: Saeed Bishara <saeed@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,13 +24,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Saeed Bishara <saeed@marvell.com>
----
- drivers/mtd/cmdlinepart.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
-
 diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index 1479da6..ae56c23 100644
+index 1479da6..80036d1 100644
 --- a/drivers/mtd/cmdlinepart.c
 +++ b/drivers/mtd/cmdlinepart.c
 @@ -41,8 +41,8 @@
@@ -62,5 +59,14 @@ index 1479da6..ae56c23 100644
  			return NULL;
  		}
  	}
+@@ -304,7 +304,7 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+                              struct mtd_partition **pparts,
+                              unsigned long origin)
+ {
+-	unsigned long offset;
++	unsigned long long offset;
+ 	int i;
+ 	struct cmdline_mtd_partition *part;
+ 	const char *mtd_id = master->name;
 -- 
 1.6.0.4
