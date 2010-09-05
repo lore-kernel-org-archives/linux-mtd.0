@@ -1,21 +1,18 @@
-Sender: "Gustavo F. Padovan" <pao@profusion.mobi>
-Date: Fri, 3 Sep 2010 19:38:01 -0300
-From: "Gustavo F. Padovan" <padovan@profusion.mobi>
-To: Dominik Brodowski <linux@dominikbrodowski.net>
-Subject: Re: [PATCH 10/15] pcmcia: introduce autoconfiguration feature
-Message-ID: <20100903223801.GG16973@vigoh>
-References: <20100903105628.GA21255@comet.dominikbrodowski.net>
-	<1283511434-21620-10-git-send-email-linux@dominikbrodowski.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1283511434-21620-10-git-send-email-linux@dominikbrodowski.net>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	netdev@vger.kernel.org, linux-pcmcia@lists.infradead.org,
-	linux-wireless@vger.kernel.org, laforge@gnumonks.org,
-	linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-serial@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>
+Received: from dakia2.marvell.com ([65.219.4.35])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OsDJc-0000o8-6n
+	for linux-mtd@lists.infradead.org; Sun, 05 Sep 2010 11:23:16 +0000
+Received: from maili.marvell.com (maili.marvell.com [10.68.76.51]) by
+	dakia2.marvell.com with ESMTP id tz75EfLAJuTxm8ZR for
+	<linux-mtd@lists.infradead.org>;
+	Sun, 05 Sep 2010 04:23:12 -0700 (PDT)
+From: Saeed Bishara <saeed@marvell.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] cmd line partitions: use 64 bit variables to detect
+	partitions/offsets larger than 4G.
+Date: Sun,  5 Sep 2010 14:23:10 +0300
+Message-Id: <1283685790-8619-1-git-send-email-saeed@marvell.com>
+Cc: Saeed Bishara <saeed@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Dominik Brodowski <linux@dominikbrodowski.net> [2010-09-03 12:57:09 +0200]:
+Signed-off-by: Saeed Bishara <saeed@marvell.com>
+---
+ drivers/mtd/cmdlinepart.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-> Introduce an autoconfiguration feature to set certain values in
-> pcmcia_loop_config(), instead of copying the same code over and over
-> in each PCMCIA driver. At first, introduce the following options:
-> 
-> CONF_AUTO_CHECK_VCC	check or matching Vcc entry
-> CONF_AUTO_SET_VPP	set Vpp
-> CONF_AUTO_AUDIO		enable the speaker line
-> 
-> CC: netdev@vger.kernel.org
-> CC: linux-wireless@vger.kernel.org
-> CC: linux-ide@vger.kernel.org
-> CC: linux-usb@vger.kernel.org
-> CC: laforge@gnumonks.org
-> CC: linux-mtd@lists.infradead.org
-> CC: linux-bluetooth@vger.kernel.org
-> CC: alsa-devel@alsa-project.org
-> CC: linux-serial@vger.kernel.org
-> CC: Jiri Kosina <jkosina@suse.cz>
-> CC: linux-scsi@vger.kernel.org
-> Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
-> ---
->  drivers/ata/pata_pcmcia.c                        |   23 +----
->  drivers/bluetooth/bt3c_cs.c                      |    7 +-
->  drivers/bluetooth/btuart_cs.c                    |    7 +-
->  drivers/bluetooth/dtl1_cs.c                      |    1 -
->  drivers/char/pcmcia/cm4000_cs.c                  |    1 -
->  drivers/char/pcmcia/cm4040_cs.c                  |    1 -
->  drivers/char/pcmcia/ipwireless/main.c            |    1 -
->  drivers/char/pcmcia/synclink_cs.c                |    1 -
->  drivers/ide/ide-cs.c                             |   23 +----
->  drivers/isdn/hardware/avm/avm_cs.c               |    1 -
->  drivers/isdn/hisax/avma1_cs.c                    |    1 -
->  drivers/isdn/hisax/elsa_cs.c                     |    1 -
->  drivers/isdn/hisax/sedlbauer_cs.c                |   25 +-----
->  drivers/isdn/hisax/teles_cs.c                    |    1 -
->  drivers/net/pcmcia/axnet_cs.c                    |    1 -
->  drivers/net/pcmcia/fmvj18x_cs.c                  |    1 -
->  drivers/net/pcmcia/pcnet_cs.c                    |    1 -
->  drivers/net/pcmcia/smc91c92_cs.c                 |    2 -
->  drivers/net/pcmcia/xirc2ps_cs.c                  |    5 +-
->  drivers/net/wireless/airo_cs.c                   |   17 +---
->  drivers/net/wireless/atmel_cs.c                  |   17 +---
->  drivers/net/wireless/hostap/hostap_cs.c          |   27 +-----
->  drivers/net/wireless/libertas/if_cs.c            |    1 -
->  drivers/net/wireless/orinoco/orinoco_cs.c        |   31 +------
->  drivers/net/wireless/orinoco/spectrum_cs.c       |   24 +----
->  drivers/parport/parport_cs.c                     |    1 -
->  drivers/pcmcia/pcmcia_cis.c                      |   36 ++++++-
->  drivers/scsi/pcmcia/aha152x_stub.c               |    1 -
->  drivers/scsi/pcmcia/fdomain_stub.c               |    1 -
->  drivers/scsi/pcmcia/nsp_cs.c                     |  110 ++++++++-------------
->  drivers/scsi/pcmcia/qlogic_stub.c                |    1 -
->  drivers/scsi/pcmcia/sym53c500_cs.c               |    1 -
->  drivers/serial/serial_cs.c                       |   10 +--
->  drivers/staging/comedi/drivers/cb_das16_cs.c     |    1 -
->  drivers/staging/comedi/drivers/das08_cs.c        |    1 -
->  drivers/staging/comedi/drivers/ni_daq_700.c      |   10 +--
->  drivers/staging/comedi/drivers/ni_daq_dio24.c    |   10 +--
->  drivers/staging/comedi/drivers/ni_labpc_cs.c     |   11 +--
->  drivers/staging/comedi/drivers/ni_mio_cs.c       |    1 -
->  drivers/staging/comedi/drivers/quatech_daqp_cs.c |    1 -
->  drivers/telephony/ixj_pcmcia.c                   |    1 -
->  drivers/usb/host/sl811_cs.c                      |   24 +----
->  include/pcmcia/ds.h                              |    7 +-
->  43 files changed, 120 insertions(+), 329 deletions(-)
-
-For drivers/bluetooth
-
-Acked-by: Gustavo F. Padovan <padovan@profusion.mobi>
-
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 1479da6..ae56c23 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -41,8 +41,8 @@
+ 
+ 
+ /* special size referring to all the remaining space in a partition */
+-#define SIZE_REMAINING UINT_MAX
+-#define OFFSET_CONTINUOUS UINT_MAX
++#define SIZE_REMAINING LLONG_MAX
++#define OFFSET_CONTINUOUS LLONG_MAX
+ 
+ struct cmdline_mtd_partition {
+ 	struct cmdline_mtd_partition *next;
+@@ -74,8 +74,8 @@ static struct mtd_partition * newpart(char *s,
+                                       int extra_mem_size)
+ {
+ 	struct mtd_partition *parts;
+-	unsigned long size;
+-	unsigned long offset = OFFSET_CONTINUOUS;
++	unsigned long long size;
++	unsigned long long offset = OFFSET_CONTINUOUS;
+ 	char *name;
+ 	int name_len;
+ 	unsigned char *extra_mem;
+@@ -93,7 +93,7 @@ static struct mtd_partition * newpart(char *s,
+ 		size = memparse(s, &s);
+ 		if (size < PAGE_SIZE)
+ 		{
+-			printk(KERN_ERR ERRP "partition size too small (%lx)\n", size);
++			printk(KERN_ERR ERRP "partition size too small (%llx)\n", size);
+ 			return NULL;
+ 		}
+ 	}
 -- 
-Gustavo F. Padovan
-ProFUSION embedded systems - http://profusion.mobi
+1.6.0.4
