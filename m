@@ -1,15 +1,15 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OsK1c-0000na-Hr
-	for linux-mtd@lists.infradead.org; Sun, 05 Sep 2010 18:33:09 +0000
-Received: by ewy9 with SMTP id 9so2056353ewy.36
+	id 1OsK1g-0000nt-Cy
+	for linux-mtd@lists.infradead.org; Sun, 05 Sep 2010 18:33:13 +0000
+Received: by eye22 with SMTP id 22so2056198eye.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 05 Sep 2010 11:33:06 -0700 (PDT)
+	Sun, 05 Sep 2010 11:33:10 -0700 (PDT)
 From: Kulikov Vasiliy <segooon@gmail.com>
 To: kernel-janitors@vger.kernel.org
-Subject: [PATCH 11/14] ubifs: check return code of ubifs_lpt_lookup
-Date: Sun,  5 Sep 2010 22:33:00 +0400
-Message-Id: <1283711580-7546-1-git-send-email-segooon@gmail.com>
+Subject: [PATCH 12/14] ubifs: check return code of pnode_lookup
+Date: Sun,  5 Sep 2010 22:33:04 +0400
+Message-Id: <1283711584-7587-1-git-send-email-segooon@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>, Vasiliy Kulikov <segooon@gmail.com>,
 	linux-kernel@vger.kernel.org, Julia Lawall <julia@diku.dk>,
 	Tejun Heo <tj@kernel.org>, linux-mtd@lists.infradead.org,
@@ -25,39 +25,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Vasiliy Kulikov <segooon@gmail.com>
 
-Function ubifs_lpt_lookup may return ERR_PTR(...). Check for it.
+Function pnode_lookup may return ERR_PTR(...). Check for it.
 
 Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
 ---
  Compile tested.
 
- fs/ubifs/lpt.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+ fs/ubifs/lpt_commit.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-diff --git a/fs/ubifs/lpt.c b/fs/ubifs/lpt.c
-index 0084a33..841bb36 100644
---- a/fs/ubifs/lpt.c
-+++ b/fs/ubifs/lpt.c
-@@ -1351,6 +1351,7 @@ static int read_lsave(struct ubifs_info *c)
- {
- 	int err, i;
- 	void *buf;
-+	struct ubifs_lprops *perr;
+diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
+index d12535b..5c90dec 100644
+--- a/fs/ubifs/lpt_commit.c
++++ b/fs/ubifs/lpt_commit.c
+@@ -705,6 +705,9 @@ static int make_tree_dirty(struct ubifs_info *c)
+ 	struct ubifs_pnode *pnode;
  
- 	buf = vmalloc(c->lsave_sz);
- 	if (!buf)
-@@ -1370,7 +1371,11 @@ static int read_lsave(struct ubifs_info *c)
- 		 */
- 		if (lnum >= c->leb_cnt)
- 			continue;
--		ubifs_lpt_lookup(c, lnum);
-+		perr = ubifs_lpt_lookup(c, lnum);
-+		if (IS_ERR(perr)) {
-+			err = PTR_ERR(perr);
-+			goto out;
-+		}
- 	}
- out:
- 	vfree(buf);
+ 	pnode = pnode_lookup(c, 0);
++	if (IS_ERR(pnode))
++		return PTR_ERR(pnode);
++
+ 	while (pnode) {
+ 		do_make_pnode_dirty(c, pnode);
+ 		pnode = next_pnode_to_dirty(c, pnode);
 -- 
 1.7.0.4
