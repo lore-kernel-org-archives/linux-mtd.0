@@ -1,27 +1,28 @@
-Date: Fri, 3 Sep 2010 13:23:38 +0200
-From: Alessandro Rubini <rubini-list@gnudd.com>
-To: armando.visconti@st.com
-Subject: Re: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
-Message-ID: <20100903112338.GA3132@morgana.i.gnudd.com>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OsWlr-0006Xt-6u
+	for linux-mtd@lists.infradead.org; Mon, 06 Sep 2010 08:09:44 +0000
+Received: by eye22 with SMTP id 22so2172040eye.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Sep 2010 01:09:41 -0700 (PDT)
+Date: Mon, 6 Sep 2010 12:09:38 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Zang Roy-R61911 <r61911@freescale.com>
+Subject: Re: [PATCH 2/3][MTD] P4080/nand: Only make elbc nand driver detect
+	nand flash partitions
+Message-ID: <20100906080938.GA13755@oksana.dev.rtsoft.ru>
+References: <1281063096-26598-1-git-send-email-tie-fei.zang@freescale.com>
+	<1281063096-26598-2-git-send-email-tie-fei.zang@freescale.com>
+	<20100903114357.GC11847@oksana.dev.rtsoft.ru>
+	<3850A844E6A3854C827AC5C0BEC7B60A1B37B0@zch01exm23.fsl.freescale.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Sender: rubini@gnudd.com
-In-Reply-To: <4C7F9993.3040700@st.com>
-References: <4C7F9993.3040700@st.com>
-	<cover.1283161023.git.viresh.kumar@st.com>
-	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>
-	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>
-	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>
-	<4C7F5B9E.8090406@st.com>
-	<AANLkTikwjCh=2Cekg9R1SqacKXC+_ZgV7m+=ZVVCaDba@mail.gmail.com>
-Cc: pratyush.anand@st.com, viresh.kumar@st.com, vipulkumar.samar@st.com,
-	bhupesh.sharma@st.com, sebastian.rasmussen@stericsson.com,
-	linus.ml.walleij@gmail.com, rubini-list@gnudd.com,
-	vipin.kumar@st.com, shiraz.hashim@st.com,
-	rajeev-dlh.kumar@st.com, linux-mtd@lists.infradead.org,
-	deepak.sikri@st.com, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
+In-Reply-To: <3850A844E6A3854C827AC5C0BEC7B60A1B37B0@zch01exm23.fsl.freescale.net>
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+	Lan Chunhe-B25806 <B25806@freescale.com>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	akpm@linux-foundation.org, Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +32,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linus:
->> As I said I think nomadik_nand.c shall be deleted and replaced with
->> this driver.
+On Mon, Sep 06, 2010 at 12:49:17PM +0800, Zang Roy-R61911 wrote:
+> > On Fri, Aug 06, 2010 at 10:51:35AM +0800, Roy Zang wrote:
+> > [...]
+> > >
+> > > +static struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl;
+> > > +
+> > 
+> > Are you sure that you want it as a global var? A bit scary change.
+> > 
+> > Oh, you probably don't need it, as you can get it from
+> > fsl_lbc_ctrl_dev->nand?
+> Get it form fsl_lbc_ctrl_dev->nand or assign it to
+> fsl_lbc_ctrl_dev->nand in probe?
 
-Armando:
-> As I said before, the SPEAr driver should work on Nomadik too
-> as it looks generic enough and for us it is working
-> on two different platforms with different FSMC versions.
+I meant to get it from fsl_lbc_ctrl_dev->nand. I.e. in
+probe() you do: fsl_lbc_ctrl_dev->nand = elbc_fcm_ctrl, so
+you probably don't need the global var.
 
-Ok. I can't test it for a while, so I'll take your word. If needed
-I'll make my homework later to fix 8815 over the new driver.
+(fsl_lbc_ctrl_dev seems to be global as well, duh. Well,
+one variable less in the global name space. But I'd
+probably use lbc_np->data to store the LBC private
+struct).
 
-Note however that the platform data in
-arch/arm/mach-nomadik/board-nhk8815.c should be fixed to reference the
-new driver.  If you remove my version please at least compile-check
-the nhk with the new patch-set.
+Scott seem to be fine with it as there are probably no
+plans to to add several localbus controllers into the SoCs.
 
-thanks
-/alessandro
+But, I saw a custom board with two MPC82xx SoCs connected
+together, one as a master (core + peripheral devs), and
+other as a slave (its core was halted, and only slave's
+CPM peripheral devices were used by the master CPU).
+
+I think it is possible to connect two (or more) SoCs in
+a such way so that two or more LBC controllers would
+be visible for the Linux.
+
+Thanks,
+
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
