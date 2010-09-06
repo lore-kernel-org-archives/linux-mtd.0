@@ -1,30 +1,39 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OsRY1-0007Hj-39
-	for linux-mtd@lists.infradead.org; Mon, 06 Sep 2010 02:35:06 +0000
-Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L8B00K2I0HSR6E0@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 06 Sep 2010 11:34:40 +0900 (KST)
-Received: from roh83 ([107.108.214.183])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L8B00CDK0HQ4A@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 06 Sep 2010 11:34:40 +0900 (KST)
-Date: Mon, 06 Sep 2010 08:04:38 +0530
-From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
-Subject: RE: [PATCH 1/1][MTD] Adding IOCTLs for run-time partitioning support
-In-reply-to: <1282574026.24044.70.camel@localhost>
-To: dedekind1@gmail.com
-Message-id: <002c01cb4d6c$0e2bf680$2a83e380$%hs@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-language: en-us
-Content-transfer-encoding: quoted-printable
-References: <000101cb2f11$86c3f5d0$944be170$%hs@samsung.com>
-	<1282574026.24044.70.camel@localhost>
-Cc: 'David Woodhouse' <dwmw2@infradead.org>, v.dalal@samsung.com,
-	linux-mtd@lists.infradead.org
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+	helo=TX2EHSOBE003.bigfish.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OsSXT-0006dG-5s
+	for linux-mtd@lists.infradead.org; Mon, 06 Sep 2010 03:38:37 +0000
+Received: from mail32-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail32-tx2-R.bigfish.com (Postfix) with ESMTP id 8538A19C8085	for
+	<linux-mtd@lists.infradead.org>; Mon,  6 Sep 2010 03:38:32 +0000 (UTC)
+Received: from TX2EHSMHS034.bigfish.com (unknown [10.9.14.241])	by
+	mail32-tx2.bigfish.com (Postfix) with ESMTP id 662D620058	for
+	<linux-mtd@lists.infradead.org>; Mon,  6 Sep 2010 03:38:31 +0000 (UTC)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
+	o863cFsa013261	for
+	<linux-mtd@lists.infradead.org>; Sun, 5 Sep 2010 20:38:21 -0700 (MST)
+Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
+	[10.192.129.207])	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id
+	o863r23t027938	for <linux-mtd@lists.infradead.org>;
+	Sun, 5 Sep 2010 22:53:04 -0500 (CDT)
+Content-Class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Subject: RE: [PATCH 1/3][MTD] P4080/eLBC: Make Freescale elbc interrupt common
+	to elbc devices
+Date: Mon, 6 Sep 2010 11:38:09 +0800
+Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A1B378F@zch01exm23.fsl.freescale.net>
+In-Reply-To: <20100903112755.GA11847@oksana.dev.rtsoft.ru>
+References: <1281063096-26598-1-git-send-email-tie-fei.zang@freescale.com>
+	<20100903112755.GA11847@oksana.dev.rtsoft.ru>
+From: Zang Roy-R61911 <r61911@freescale.com>
+To: "Anton Vorontsov" <cbouatmailru@gmail.com>
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+	Lan Chunhe-B25806 <B25806@freescale.com>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	akpm@linux-foundation.org, Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,313 +43,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-
-> -----Original Message-----
-> From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
-> Sent: Monday, August 23, 2010 8:04 PM
-> To: Rohit Hassan Sathyanarayan
-> Cc: linux-mtd@lists.infradead.org; 'David Woodhouse'; =
-v.dalal@samsung.com
-> Subject: Re: [PATCH 1/1][MTD] Adding IOCTLs for run-time partitioning =
-support
->=20
-> On Thu, 2010-07-29 at 17:00 +0530, Rohit Hassan Sathyanarayan wrote:
-> > Hi All
-> >
-> > Sending the patch on MTD for adding four IOCTLs.
-> > MTDPARTITIONCREATE
-> > MTDPARTITIONDELETE
-> > MTDPARTITIONSETPERMISSION
-> > MTDPARTITIONMERGE
-> >
-> >
-> >
-> > Signed-off-by: Rohit HS <rohit.hs@samsung.com>
->=20
-> Could you pleas make scripts/checkpatch.pl happy?
->=20
-  I checked it with scripts/checkpatch.pl but didn't faced any problem.
-  I will surely recheck it.
-> Could you please take a look at the solution from Roman and compare it
-> to your solution: what is the difference, which one is better? He
-> submitted the patch earlier than you. And I may be mistaken, but your
-> solution looks broken, but I did not really look deep enough. See =
-below.
->=20
-  Functionally both are same.
-  But implementation differences are,
-  Roman's patch passes the mtd to be partitioned by open mtd node =
-itself.=20
-  Ex: If partitions are to be created on mtd4,then mtd4 itself is opened =
-and
-      Partitions are created and then mtd4 is deleted.
-
-  In my patch, the mtd on which partitions are to be created is passed =
-as=20
-  argument in MTDPARTITIONCREATE ioctl.=20
-  For changing from user to kernel space and access mtd, default read =
-only
-  mtd Partition is opened.
-  Ex: If partitions are to be created on /dev/mtd4,then /dev/mtd0 is =
-opened
-      and mtd4 information is passed in MTDPARTITIONCREATE ioctl =
-argument.
-
-  Also permissions of the partitions can be changed with my patch.
-  This patch also works independent of the device. I have tested this =
-with
-  Nand , OneNand and FlexOnenand.
-  Implementation in kernel is minimal in my patch. =20
-
-  MTDPARTITIONMERGE is just another option, advantage of merge option
-  over(delete+delete+create) is definitely number of system calls.    =20
- =20
-> Could you please also take a look at the discussion of Roman's patch =
-and
-> the request for the interface - Arn asked to have it look as much as
-> possible as the corresponding ioctl for block devices.
->=20
-> I did not really review your patch, but few things are below.
->=20
-> > +#ifdef CONFIG_MTD_PARTITIONS
-> > +
-> > +		case MTDPARTITIONCREATE:
-> > +		{
-> > +		struct mtd_partition *pst_minfo =3D NULL;
-> > +		struct mtd_partition *pst_minfo_hold =3D NULL;
-> > +		struct mtd_partition st_free;
-> > +		uint64_t u64_userfreeoffset =3D 0;
-> > +		uint64_t u64_userfreesize =3D 0;
->=20
-> Do not prefix variable names with types - kernel people hate this, and
-> they will hate your patches if you do like this!
->=20
-> General suggestion: when you modify an existing file, stick to the =
-style
-> used in this file, do not push for your own style. Or change the style
-> of the whole file.
->=20
-> > +		struct user_mtd *puser_partitions =3D NULL;
-> > +		struct user_mtd_info upartition;
-> > +		int i;
->=20
-> Variable names are too long and cryptic, try to think about s
->=20
-> > +			add_mtd_partitions(mtd, pst_minfo_hold,
-> > +						upartition.num_partitions);
->=20
-> So 'pst_minfo_hold' (bad name!) becomes the master partition. You
-> allocate it in this function. But who delets it? When? Could you =
-please
-> point to the code which kfree()s this object?
->=20
-  kfree() is at end of ioctl(MTDPARTITIONCREATE),by mistake it was not =
-generated in patch.=20
-
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =
-=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9)
-
-I have modified the patch as per your comments,
-
-Regards,
-Rohit.H.S
-
-
-
-
-Signed-off-by: Rohit HS <rohit.hs@samsung.com>
----
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 91c8013..160538d 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -22,6 +22,12 @@
-=20
- #include <asm/uaccess.h>
-=20
-+#ifdef CONFIG_MTD_PARTITIONS
-+#include <linux/mtd/partitions.h>
-+#define MTD_PART_DEV_NUM	0x0000FFFF
-+#define MTD_PART_FLAGS		0xFFFF0000
-+#endif
-+
- #define MTD_INODE_FS_MAGIC 0x11307854
- static struct vfsmount *mtd_inode_mnt __read_mostly;
-=20
-@@ -471,7 +477,15 @@ static int mtd_ioctl(struct file *file, u_int cmd, =
-u_long arg)
- 	int ret =3D 0;
- 	u_long size;
- 	struct mtd_info_user info;
--
-+#ifdef CONFIG_MTD_PARTITIONS
-+	struct mtd_partition	*pmtd;
-+	struct mtd_partition	*pmtd1;
-+	struct mtd_partition	free;
-+	struct mtd_info *pinfo1;
-+	struct mtd_info *pinfo2;
-+	struct user_mtd	*ppart =3D NULL;
-+	struct user_mtd_info	upart;
-+#endif
- 	DEBUG(MTD_DEBUG_LEVEL0, "MTD_ioctl\n");
-=20
- 	size =3D (cmd & IOCSIZE_MASK) >> IOCSIZE_SHIFT;
-@@ -825,6 +839,117 @@ static int mtd_ioctl(struct file *file, u_int cmd, =
-u_long arg)
- 		}
- 		file->f_pos =3D 0;
- 		break;
-+#ifdef CONFIG_MTD_PARTITIONS
-+
-+	case MTDPARTITIONCREATE:
-+	{
-+		u_int64_t	uoffset =3D 0;
-+		u_int64_t	usize =3D 0;
-+		u_int32_t	i;
-+
-+			if (copy_from_user(&upart, argp,
-+				sizeof(struct user_mtd_info))) {
-+				ret =3D -EFAULT;
-+				break;
-+			}
-+			ppart =3D kzalloc(sizeof(struct user_mtd)*
-+						upart.num_partitions
-+						, GFP_KERNEL);
-+			pmtd =3D kzalloc(sizeof(struct mtd_partition)*
-+					upart.num_partitions,
-+					GFP_KERNEL);
-+			pmtd1 =3D pmtd;
-+			if (ppart =3D=3D NULL) {
-+				ret =3D -EFAULT;
-+				break;
-+			}
-+			if (copy_from_user(ppart,
-+					upart.pst_user_partitions,
-+					sizeof(struct user_mtd)*
-+					upart.num_partitions)) {
-+				ret =3D -EFAULT;
-+				break;
-+			}
-+			for (i =3D 0; i < upart.num_partitions; i++) {
-+				pmtd->name  =3D ppart->name;
-+				pmtd->size  =3D
-+					ppart->partition_size;
-+				usize +=3D pmtd->size;
-+				pmtd->offset =3D
-+					ppart->partition_offset;
-+				uoffset +=3D pmtd->offset;
-+				pmtd->mask_flags =3D
-+					ppart->partition_mask;
-+
-+				ppart++;
-+				pmtd++;
-+			}
-+			add_mtd_partitions(mtd, pmtd1,
-+						upart.num_partitions);
-+			if ((mtd->size - usize) > 0) {
-+				free.name	=3D "FREE";
-+				free.size	=3D mtd->size - usize;
-+				free.offset	=3D usize;
-+				free.mask_flags =3D 0;
-+				add_mtd_partitions(mtd, &free, 1);
-+			}
-+			kfree(pmtd1);
-+		break;
-+	}
-+	case MTDPARTITIONDELETE:
-+	{
-+		u_int32_t mtd_num;
-+
-+			if (copy_from_user(&mtd_num, argp,
-+					sizeof(mtd_num))) {
-+				ret =3D -EFAULT;
-+				break;
-+			}
-+			pinfo1 =3D get_mtd_device(NULL,
-+					mtd_num);
-+
-+			if (pinfo1 !=3D NULL) {
-+				put_mtd_device(pinfo1);
-+				del_mtd_device(pinfo1);
-+			}
-+		break;
-+	}
-+	case MTDPARTITIONSETPERMISSION:
-+	{
-+		u_int32_t flags;
-+		int dev_num;
-+
-+			if (copy_from_user(&flags, argp,
-+					sizeof(flags))) {
-+				ret =3D -EFAULT;
-+				break;
-+			}
-+			dev_num =3D (flags & MTD_PART_DEV_NUM);
-+			flags =3D (flags & MTD_PART_FLAGS) >> 16;
-+			pinfo1 =3D get_mtd_device(NULL, dev_num);
-+			pinfo1->flags =3D flags;
-+		break;
-+	}
-+	case MTDPARTITIONMERGE:
-+	{
-+		u_int8_t part_num[2];
-+
-+			if (copy_from_user(part_num, argp, 2)) {
-+				ret =3D -EFAULT;
-+				break;
-+			}
-+			pinfo1 =3D get_mtd_device(NULL, part_num[0]);
-+			pinfo2 =3D get_mtd_device(NULL, part_num[1]);
-+			if ((pinfo1 !=3D NULL) &&
-+				(pinfo2 !=3D NULL)) {
-+				pinfo1->size +=3D	pinfo2->size;
-+				put_mtd_device(pinfo2);
-+				del_mtd_device(pinfo2);
-+			}
-+		break;
-+	}
-+#endif
-+
- 	}
-=20
- 	default:
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index be51ae2..cfebc75 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -30,6 +30,19 @@ struct mtd_oob_buf64 {
- 	__u64 usr_ptr;
- };
-=20
-+struct user_mtd {
-+	char name[32];
-+	 __u64 partition_size;
-+	 __u64 partition_offset;
-+	 __u32 partition_mask;
-+};
-+
-+struct user_mtd_info {
-+	struct user_mtd *pst_user_partitions;
-+	__u32 num_partitions;
-+};
-+
-+
- #define MTD_ABSENT		0
- #define MTD_RAM			1
- #define MTD_ROM			2
-@@ -110,7 +123,10 @@ struct otp_info {
- #define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
- #define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
- #define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
--
-+#define MTDPARTITIONCREATE      _IOW('M', 23, int)
-+#define MTDPARTITIONDELETE      _IOW('M', 24, int)
-+#define MTDPARTITIONSETPERMISSION _IOW('M', 26, int)
-+#define MTDPARTITIONMERGE       _IOW('M', 27, int)
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
-  * interfaces
----
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW50b24gVm9yb250c292
+IFttYWlsdG86Y2JvdWF0bWFpbHJ1QGdtYWlsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBTZXB0ZW1i
+ZXIgMDMsIDIwMTAgMTk6MjggUE0NCj4gVG86IFphbmcgUm95LVI2MTkxMQ0KPiBDYzogbGludXgt
+bXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IExhbiBDaHVuaGUtQjI1ODA2OyBsaW51eHBwYy1kZXZA
+b3psYWJzLm9yZzsNCj4gYWtwbUBsaW51eC1mb3VuZGF0aW9uLm9yZzsgR2FsYSBLdW1hci1CMTE3
+ODANCj4gU3ViamVjdDogUmU6IFtQQVRDSCAxLzNdW01URF0gUDQwODAvZUxCQzogTWFrZSBGcmVl
+c2NhbGUgZWxiYyBpbnRlcnJ1cHQgY29tbW9uDQo+IHRvIGVsYmMgZGV2aWNlcw0KPiANCj4gT24g
+RnJpLCBBdWcgMDYsIDIwMTAgYXQgMTA6NTE6MzRBTSArMDgwMCwgUm95IFphbmcgd3JvdGU6DQo+
+ID4gRnJvbTogTGFuIENodW5oZS1CMjU4MDYgPGIyNTgwNkBmcmVlc2NhbGUuY29tPg0KPiA+DQo+
+ID4gTW92ZSBGcmVlc2NhbGUgZWxiYyBpbnRlcnJ1cHQgZnJvbSBuYW5kIGRpcnZlciB0byBlbGJj
+IGRyaXZlci4NCj4gPiBUaGVuIGFsbCBlbGJjIGRldmljZXMgY2FuIHVzZSB0aGUgaW50ZXJydXB0
+IGluc3RlYWQgb2YgT05MWSBuYW5kLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogTGFuIENodW5o
+ZS1CMjU4MDYgPGIyNTgwNkBmcmVlc2NhbGUuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFJveSBa
+YW5nIDx0aWUtZmVpLnphbmdAZnJlZXNjYWxlLmNvbT4NCj4gPiAtLS0NCj4gPiBzZW5kIHRoZSBw
+YXRjaCB0byBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiA+IGl0IGhhcyBiZWVuIHBv
+c3RlZCB0byBsaW51eHBwYy1kZXZAb3psYWJzLm9yZyBhbmQgZG8gbm90IGdldCBhbnkgY29tbWVu
+dC4NCj4gPg0KPiA+ICBhcmNoL3Bvd2VycGMvS2NvbmZpZyAgICAgICAgICAgICAgIHwgICAgNyAr
+LQ0KPiA+ICBhcmNoL3Bvd2VycGMvaW5jbHVkZS9hc20vZnNsX2xiYy5oIHwgICAzNCArKysrKy0N
+Cj4gPiAgYXJjaC9wb3dlcnBjL3N5c2Rldi9mc2xfbGJjLmMgICAgICB8ICAyNTQgKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrLS0tDQo+IC0tLQ0KPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDI1
+MyBpbnNlcnRpb25zKCspLCA0MiBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1naXQgYS9h
+cmNoL3Bvd2VycGMvS2NvbmZpZyBiL2FyY2gvcG93ZXJwYy9LY29uZmlnDQo+ID4gaW5kZXggMjAz
+MWEyOC4uNTE1NWI1MyAxMDA2NDQNCj4gPiAtLS0gYS9hcmNoL3Bvd2VycGMvS2NvbmZpZw0KPiA+
+ICsrKyBiL2FyY2gvcG93ZXJwYy9LY29uZmlnDQo+ID4gQEAgLTcwMyw5ICs3MDMsMTIgQEAgY29u
+ZmlnIDR4eF9TT0MNCj4gPiAgCWJvb2wNCj4gPg0KPiA+ICBjb25maWcgRlNMX0xCQw0KPiA+IC0J
+Ym9vbA0KPiA+ICsJYm9vbCAiRnJlZXNjYWxlIExvY2FsIEJ1cyBzdXBwb3J0Ig0KPiA+ICsJZGVw
+ZW5kcyBvbiBGU0xfU09DDQo+ID4gIAloZWxwDQo+ID4gLQkgIEZyZWVzY2FsZSBMb2NhbGJ1cyBz
+dXBwb3J0DQo+ID4gKwkgIEVuYWJsZXMgcmVwb3J0aW5nIG9mIGVycm9ycyBmcm9tIHRoZSBGcmVl
+c2NhbGUgbG9jYWwgYnVzDQo+ID4gKwkgIGNvbnRyb2xsZXIuICBBbHNvIGNvbnRhaW5zIHNvbWUg
+Y29tbW9uIGNvZGUgdXNlZCBieQ0KPiA+ICsJICBkcml2ZXJzIGZvciBzcGVjaWZpYyBsb2NhbCBi
+dXMgcGVyaXBoZXJhbHMuDQo+ID4NCj4gPiAgY29uZmlnIEZTTF9HVE0NCj4gPiAgCWJvb2wNCj4g
+Wy4uLl0NCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dlcnBjL3N5c2Rldi9mc2xfbGJjLmMgYi9h
+cmNoL3Bvd2VycGMvc3lzZGV2L2ZzbF9sYmMuYw0KPiA+IGluZGV4IGRjZWI4ZDEuLjljOWU0NGYg
+MTAwNjQ0DQo+ID4gLS0tIGEvYXJjaC9wb3dlcnBjL3N5c2Rldi9mc2xfbGJjLmMNCj4gPiArKysg
+Yi9hcmNoL3Bvd2VycGMvc3lzZGV2L2ZzbF9sYmMuYw0KPiA+IEBAIC01LDYgKzUsMTAgQEANCj4g
+PiAgICoNCj4gPiAgICogQXV0aG9yOiBBbnRvbiBWb3JvbnRzb3YgPGF2b3JvbnRzb3ZAcnUubXZp
+c3RhLmNvbT4NCj4gPiAgICoNCj4gPiArICogQ29weXJpZ2h0IChjKSAyMDEwIEZyZWVzY2FsZSBT
+ZW1pY29uZHVjdG9yDQo+ID4gKyAqDQo+ID4gKyAqIEF1dGhvcnM6IEphY2sgTGFuIDxKYWNrLkxh
+bkBmcmVlc2NhbGUuY29tPg0KPiANCj4gV291bGQgYmUgcHJldHRpZXIgaWYgeW91J2QgZ3JvdXAg
+Y29weXJpZ2h0IGFuZCBhdXRob3JzaGlwIG5vdGljZXMuDQo+IEkuZS4NCj4gDQo+IENvcHlyaWdo
+dCAyMDA4IE1WDQo+IENvcHlyaWdodCAyMDEwIEZTTA0KPiANCj4gQXV0aG9yczogQW50b24NCj4g
+ICAgICAgICAgSmFjaw0KVGhlbiBob3cgdG8gcmVmbGVjdCB0aGUgcmVsYXRpb25zaGlwIG9mIHRo
+ZSBBdXRob3IgYW5kIHRoZSBjb21wYW55PyBmcm9tIGVtYWlsIGFkZHJlc3M/DQoNCj4gDQo+ID4g
+KyAqDQo+ID4gICAqIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlz
+dHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5DQo+ID4gICAqIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0
+aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5DQo+ID4gICAqIHRo
+ZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vu
+c2UsIG9yDQo+ID4gQEAgLTIzLDM1ICsyNyw4IEBADQo+ID4gICNpbmNsdWRlIDxhc20vZnNsX2xi
+Yy5oPg0KPiA+DQo+ID4gIHN0YXRpYyBzcGlubG9ja190IGZzbF9sYmNfbG9jayA9IF9fU1BJTl9M
+T0NLX1VOTE9DS0VEKGZzbF9sYmNfbG9jayk7DQo+ID4gLXN0YXRpYyBzdHJ1Y3QgZnNsX2xiY19y
+ZWdzIF9faW9tZW0gKmZzbF9sYmNfcmVnczsNCj4gPiAtDQo+ID4gLXN0YXRpYyBjaGFyIF9faW5p
+dGRhdGEgKmNvbXBhdF9sYmNbXSA9IHsNCj4gPiAtCSJmc2wscHEyLWxvY2FsYnVzIiwNCj4gPiAt
+CSJmc2wscHEycHJvLWxvY2FsYnVzIiwNCj4gPiAtCSJmc2wscHEzLWxvY2FsYnVzIiwNCj4gPiAt
+CSJmc2wsZWxiYyIsDQo+ID4gLX07DQo+ID4gLQ0KPiA+IC1zdGF0aWMgaW50IF9faW5pdCBmc2xf
+bGJjX2luaXQodm9pZCkNCj4gPiAtew0KPiA+IC0Jc3RydWN0IGRldmljZV9ub2RlICpsYnVzOw0K
+PiA+IC0JaW50IGk7DQo+ID4gLQ0KPiA+IC0JZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoY29t
+cGF0X2xiYyk7IGkrKykgew0KPiA+IC0JCWxidXMgPSBvZl9maW5kX2NvbXBhdGlibGVfbm9kZShO
+VUxMLCBOVUxMLCBjb21wYXRfbGJjW2ldKTsNCj4gPiAtCQlpZiAobGJ1cykNCj4gPiAtCQkJZ290
+byBmb3VuZDsNCj4gPiAtCX0NCj4gPiAtCXJldHVybiAtRU5PREVWOw0KPiA+IC0NCj4gPiAtZm91
+bmQ6DQo+ID4gLQlmc2xfbGJjX3JlZ3MgPSBvZl9pb21hcChsYnVzLCAwKTsNCj4gPiAtCW9mX25v
+ZGVfcHV0KGxidXMpOw0KPiA+IC0JaWYgKCFmc2xfbGJjX3JlZ3MpDQo+ID4gLQkJcmV0dXJuIC1F
+Tk9NRU07DQo+ID4gLQlyZXR1cm4gMDsNCj4gPiAtfQ0KPiA+IC1hcmNoX2luaXRjYWxsKGZzbF9s
+YmNfaW5pdCk7DQo+ID4gK3N0cnVjdCBmc2xfbGJjX2N0cmwgKmZzbF9sYmNfY3RybF9kZXY7DQo+
+ID4gK0VYUE9SVF9TWU1CT0woZnNsX2xiY19jdHJsX2Rldik7DQo+ID4NCj4gPiAgLyoqDQo+ID4g
+ICAqIGZzbF9sYmNfZmluZCAtIGZpbmQgTG9jYWxidXMgYmFuaw0KPiA+IEBAIC02NiwxMiArNDMs
+MTIgQEAgaW50IGZzbF9sYmNfZmluZChwaHlzX2FkZHJfdCBhZGRyX2Jhc2UpDQo+ID4gIHsNCj4g
+PiAgCWludCBpOw0KPiA+DQo+ID4gLQlpZiAoIWZzbF9sYmNfcmVncykNCj4gPiArCWlmICghZnNs
+X2xiY19jdHJsX2RldiB8fCAhZnNsX2xiY19jdHJsX2Rldi0+cmVncykNCj4gPiAgCQlyZXR1cm4g
+LUVOT0RFVjsNCj4gPg0KPiA+IC0JZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoZnNsX2xiY19y
+ZWdzLT5iYW5rKTsgaSsrKSB7DQo+ID4gLQkJX19iZTMyIGJyID0gaW5fYmUzMigmZnNsX2xiY19y
+ZWdzLT5iYW5rW2ldLmJyKTsNCj4gPiAtCQlfX2JlMzIgb3IgPSBpbl9iZTMyKCZmc2xfbGJjX3Jl
+Z3MtPmJhbmtbaV0ub3IpOw0KPiA+ICsJZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUoZnNsX2xi
+Y19jdHJsX2Rldi0+cmVncy0+YmFuayk7IGkrKykgew0KPiA+ICsJCV9fYmUzMiBiciA9IGluX2Jl
+MzIoJmZzbF9sYmNfY3RybF9kZXYtPnJlZ3MtPmJhbmtbaV0uYnIpOw0KPiA+ICsJCV9fYmUzMiBv
+ciA9IGluX2JlMzIoJmZzbF9sYmNfY3RybF9kZXYtPnJlZ3MtPmJhbmtbaV0ub3IpOw0KPiANCj4g
+QSBkZWRpY2F0ZWQgdmFyaWFibGUgZm9yIHJlZ3Mgd291bGQgbWFrZSB0aGlzIG11Y2ggbW9yZSBy
+ZWFkYWJsZT8NClllcy4gY29uc2lkZXJpbmcgdGhlIGZvbGxvd2luZyBjb25kaXRpb24gbGluZS4N
+Cj4gDQo+ID4NCj4gPiAgCQlpZiAoYnIgJiBCUl9WICYmIChiciAmIG9yICYgQlJfQkEpID09IGFk
+ZHJfYmFzZSkNCj4gPiAgCQkJcmV0dXJuIGk7DQo+ID4gQEAgLTk5LDE3ICs3NiwyMCBAQCBpbnQg
+ZnNsX3VwbV9maW5kKHBoeXNfYWRkcl90IGFkZHJfYmFzZSwgc3RydWN0IGZzbF91cG0NCj4gKnVw
+bSkNCj4gPiAgCWlmIChiYW5rIDwgMCkNCj4gPiAgCQlyZXR1cm4gYmFuazsNCj4gPg0KPiA+IC0J
+YnIgPSBpbl9iZTMyKCZmc2xfbGJjX3JlZ3MtPmJhbmtbYmFua10uYnIpOw0KPiA+ICsJaWYgKCFm
+c2xfbGJjX2N0cmxfZGV2IHx8ICFmc2xfbGJjX2N0cmxfZGV2LT5yZWdzKQ0KPiA+ICsJCXJldHVy
+biAtRU5PREVWOw0KPiA+ICsNCj4gPiArCWJyID0gaW5fYmUzMigmZnNsX2xiY19jdHJsX2Rldi0+
+cmVncy0+YmFua1tiYW5rXS5icik7DQo+ID4NCj4gPiAgCXN3aXRjaCAoYnIgJiBCUl9NU0VMKSB7
+DQo+ID4gIAljYXNlIEJSX01TX1VQTUE6DQo+ID4gLQkJdXBtLT5teG1yID0gJmZzbF9sYmNfcmVn
+cy0+bWFtcjsNCj4gPiArCQl1cG0tPm14bXIgPSAmZnNsX2xiY19jdHJsX2Rldi0+cmVncy0+bWFt
+cjsNCj4gDQo+IERpdHRvLCBhIHZlcnkgcmVwZXRpdGl2ZSBzdHVmZiwgZGVzaXJlcyBhIHZhcmlh
+YmxlIGZvciByZWdzPw0KQnV0IHRoZSBmYWN0IGlzIHRoYXQgdGhlIHZhcmlhYmxlIHJlcHJlc2Vu
+dHMgZGlmZmVyZW50IHJlZyBhZGRyZXNzIGFjY29yZGluZyB0byB0aGUgY29uZGl0aW9uLiBJdCB3
+aWxsIGJlIHVnbHkgdG8gdXNlIHRoZSByZWcgYWRkcmVzcyBkaXJlY3RvbHkuDQo+IA0KPiA+ICAJ
+CWJyZWFrOw0KPiA+ICAJY2FzZSBCUl9NU19VUE1COg0KPiA+IC0JCXVwbS0+bXhtciA9ICZmc2xf
+bGJjX3JlZ3MtPm1ibXI7DQo+ID4gKwkJdXBtLT5teG1yID0gJmZzbF9sYmNfY3RybF9kZXYtPnJl
+Z3MtPm1ibXI7DQo+ID4gIAkJYnJlYWs7DQo+ID4gIAljYXNlIEJSX01TX1VQTUM6DQo+ID4gLQkJ
+dXBtLT5teG1yID0gJmZzbF9sYmNfcmVncy0+bWNtcjsNCj4gPiArCQl1cG0tPm14bXIgPSAmZnNs
+X2xiY19jdHJsX2Rldi0+cmVncy0+bWNtcjsNCj4gPiAgCQlicmVhazsNCj4gPiAgCWRlZmF1bHQ6
+DQo+ID4gIAkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gQEAgLTE0MywxNCArMTIzLDE4IEBAIEVYUE9S
+VF9TWU1CT0woZnNsX3VwbV9maW5kKTsNCj4gPiAgICogdGh1cyBVUE0gcGF0dGVybiBhY3R1YWxs
+eSBleGVjdXRlZC4gTm90ZSB0aGF0IG1hciB1c2FnZSBkZXBlbmRzIG9uIHRoZQ0KPiA+ICAgKiBw
+cmUtcHJvZ3JhbW1lZCBBTVggYml0cyBpbiB0aGUgVVBNIFJBTS4NCj4gPiAgICovDQo+ID4gKw0K
+PiA+ICBpbnQgZnNsX3VwbV9ydW5fcGF0dGVybihzdHJ1Y3QgZnNsX3VwbSAqdXBtLCB2b2lkIF9f
+aW9tZW0gKmlvX2Jhc2UsIHUzMiBtYXIpDQo+ID4gIHsNCj4gPiAgCWludCByZXQgPSAwOw0KPiA+
+ICAJdW5zaWduZWQgbG9uZyBmbGFnczsNCj4gPg0KPiA+ICsJaWYgKCFmc2xfbGJjX2N0cmxfZGV2
+IHx8ICFmc2xfbGJjX2N0cmxfZGV2LT5yZWdzKQ0KPiA+ICsJCXJldHVybiAtRU5PREVWOw0KPiA+
+ICsNCj4gPiAgCXNwaW5fbG9ja19pcnFzYXZlKCZmc2xfbGJjX2xvY2ssIGZsYWdzKTsNCj4gPg0K
+PiA+IC0Jb3V0X2JlMzIoJmZzbF9sYmNfcmVncy0+bWFyLCBtYXIpOw0KPiA+ICsJb3V0X2JlMzIo
+JmZzbF9sYmNfY3RybF9kZXYtPnJlZ3MtPm1hciwgbWFyKTsNCj4gPg0KPiA+ICAJc3dpdGNoICh1
+cG0tPndpZHRoKSB7DQo+ID4gIAljYXNlIDg6DQo+ID4gQEAgLTE3MiwzICsxNTYsMTk3IEBAIGlu
+dCBmc2xfdXBtX3J1bl9wYXR0ZXJuKHN0cnVjdCBmc2xfdXBtICp1cG0sIHZvaWQNCj4gX19pb21l
+bSAqaW9fYmFzZSwgdTMyIG1hcikNCj4gPiAgCXJldHVybiByZXQ7DQo+ID4gIH0NCj4gPiAgRVhQ
+T1JUX1NZTUJPTChmc2xfdXBtX3J1bl9wYXR0ZXJuKTsNCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQg
+X19kZXZpbml0IGZzbF9sYmNfY3RybF9pbml0KHN0cnVjdCBmc2xfbGJjX2N0cmwgKmN0cmwpDQo+
+ID4gK3sNCj4gPiArCXN0cnVjdCBmc2xfbGJjX3JlZ3MgX19pb21lbSAqbGJjID0gY3RybC0+cmVn
+czsNCj4gDQo+IFllcCwgc29tZXRoaW5nIGxpa2UgdGhpcyBmb3IgdGhlIGZ1bmN0aW9ucyBhYm92
+ZS4NCkkgZG8gbm90IHNlZSBhbnkgaGFybSB0byBhZGQgYSB2YXJpYWJsZSBsYmMgaW4gdGhlIGZ1
+bmN0aW9uIHRvIGluY3JlYXNlIHRoZSByZWFkYWJsZS4NCj4gDQo+ID4gKw0KPiA+ICsJLyogY2xl
+YXIgZXZlbnQgcmVnaXN0ZXJzICovDQo+ID4gKwlzZXRiaXRzMzIoJmxiYy0+bHRlc3IsIExURVNS
+X0NMRUFSKTsNCj4gPiArCW91dF9iZTMyKCZsYmMtPmx0ZWF0ciwgMCk7DQo+ID4gKwlvdXRfYmUz
+MigmbGJjLT5sdGVhciwgMCk7DQo+ID4gKwlvdXRfYmUzMigmbGJjLT5sdGVjY3IsIExURUNDUl9D
+TEVBUik7DQo+ID4gKwlvdXRfYmUzMigmbGJjLT5sdGVkciwgTFRFRFJfRU5BQkxFKTsNCj4gPiAr
+DQo+ID4gKwkvKiBFbmFibGUgaW50ZXJydXB0cyBmb3IgYW55IGRldGVjdGVkIGV2ZW50cyAqLw0K
+PiA+ICsJb3V0X2JlMzIoJmxiYy0+bHRlaXIsIExURUlSX0VOQUJMRSk7DQo+ID4gKw0KPiA+ICsJ
+cmV0dXJuIDA7DQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyBpbnQgX19kZXZleGl0IGZzbF9s
+YmNfY3RybF9yZW1vdmUoc3RydWN0IG9mX2RldmljZSAqb2ZkZXYpDQo+ID4gK3sNCj4gPiArCXN0
+cnVjdCBmc2xfbGJjX2N0cmwgKmN0cmwgPSBkZXZfZ2V0X2RydmRhdGEoJm9mZGV2LT5kZXYpOw0K
+PiA+ICsNCj4gPiArCWlmIChjdHJsLT5pcnEpDQo+ID4gKwkJZnJlZV9pcnEoY3RybC0+aXJxLCBj
+dHJsKTsNCj4gPiArDQo+ID4gKwlpZiAoY3RybC0+cmVncykNCj4gPiArCQlpb3VubWFwKGN0cmwt
+PnJlZ3MpOw0KPiA+ICsNCj4gPiArCWRldl9zZXRfZHJ2ZGF0YSgmb2ZkZXYtPmRldiwgTlVMTCk7
+DQo+ID4gKwlrZnJlZShjdHJsKTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4gPiArfQ0KPiA+
+ICsNCj4gPiArLyogTk9URTogVGhpcyBpbnRlcnJ1cHQgaXMgdXNlZCB0byByZXBvcnQgbG9jYWxi
+dXMgZXZlbnRzIG9mIHZhcmlvdXMga2luZHMsDQo+ID4gKyAqIHN1Y2ggYXMgdHJhbnNhY3Rpb24g
+ZXJyb3JzIG9uIHRoZSBjaGlwc2VsZWN0cy4NCj4gPiArICovDQo+IA0KPiAvKg0KPiAgKiBtdWx0
+aSBsaW5lIGNvbW1lbnRzDQo+ICAqIHNob3VsZCBiZSBsaWtlIHRoaXMNCj4gICovDQpPSy4NCg0K
+PiANCj4gWy4uLl0NCj4gPiArLyogZnNsX2xiY19jdHJsX3Byb2JlDQo+ID4gKyAqDQo+ID4gKyAq
+IGNhbGxlZCBieSBkZXZpY2UgbGF5ZXIgd2hlbiBpdCBmaW5kcyBhIGRldmljZSBtYXRjaGluZw0K
+PiA+ICsgKiBvbmUgb3VyIGRyaXZlciBjYW4gaGFuZGxlZC4gVGhpcyBjb2RlIGFsbG9jYXRlcyBh
+bGwgb2YNCj4gPiArICogdGhlIHJlc291cmNlcyBuZWVkZWQgZm9yIHRoZSBjb250cm9sbGVyIG9u
+bHkuICBUaGUNCj4gPiArICogcmVzb3VyY2VzIGZvciB0aGUgTkFORCBiYW5rcyB0aGVtc2VsdmVz
+IGFyZSBhbGxvY2F0ZWQNCj4gPiArICogaW4gdGhlIGNoaXAgcHJvYmUgZnVuY3Rpb24uDQo+ID4g
+KyovDQo+IA0KPiBkaXR0by4NCk9LLg0KPiANCj4gPiArc3RhdGljIGludCBfX2RldmluaXQgZnNs
+X2xiY19jdHJsX3Byb2JlKHN0cnVjdCBvZl9kZXZpY2UgKm9mZGV2LA0KPiA+ICsJCQkJCSBjb25z
+dCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkICptYXRjaCkNCj4gPiArew0KPiA+ICsJaW50IHJldCA9IDA7
+DQo+IA0KPiBubyBuZWVkIGZvciB0aGUgaW5pdGlhbCB2YWx1ZSBoZXJlLg0KQW55IGhhcm0/DQoN
+Cj4gDQo+ID4gKw0KPiA+ICsJZnNsX2xiY19jdHJsX2RldiA9IGt6YWxsb2Moc2l6ZW9mKCpmc2xf
+bGJjX2N0cmxfZGV2KSwgR0ZQX0tFUk5FTCk7DQo+ID4gKwlpZiAoIWZzbF9sYmNfY3RybF9kZXYp
+DQo+ID4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ID4gKw0KPiA+ICsJZGV2X3NldF9kcnZkYXRhKCZv
+ZmRldi0+ZGV2LCBmc2xfbGJjX2N0cmxfZGV2KTsNCj4gPiArDQo+ID4gKwlzcGluX2xvY2tfaW5p
+dCgmZnNsX2xiY19jdHJsX2Rldi0+bG9jayk7DQo+ID4gKwlpbml0X3dhaXRxdWV1ZV9oZWFkKCZm
+c2xfbGJjX2N0cmxfZGV2LT5pcnFfd2FpdCk7DQo+ID4gKw0KPiA+ICsJZnNsX2xiY19jdHJsX2Rl
+di0+cmVncyA9IG9mX2lvbWFwKG9mZGV2LT5kZXYub2Zfbm9kZSwgMCk7DQo+ID4gKwlpZiAoIWZz
+bF9sYmNfY3RybF9kZXYtPnJlZ3MpIHsNCj4gPiArCQlkZXZfZXJyKCZvZmRldi0+ZGV2LCAiZmFp
+bGVkIHRvIGdldCBtZW1vcnkgcmVnaW9uXG4iKTsNCj4gPiArCQlyZXQgPSAtRU5PREVWOw0KPiA+
+ICsJCWdvdG8gZXJyOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCWZzbF9sYmNfY3RybF9kZXYtPmly
+cSA9IG9mX2lycV90b19yZXNvdXJjZShvZmRldi0+ZGV2Lm9mX25vZGUsIDAsIE5VTEwpOw0KPiA+
+ICsJaWYgKGZzbF9sYmNfY3RybF9kZXYtPmlycSA9PSBOT19JUlEpIHsNCj4gPiArCQlkZXZfZXJy
+KCZvZmRldi0+ZGV2LCAiZmFpbGVkIHRvIGdldCBpcnEgcmVzb3VyY2VcbiIpOw0KPiA+ICsJCXJl
+dCA9IC1FTk9ERVY7DQo+ID4gKwkJZ290byBlcnI7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJZnNs
+X2xiY19jdHJsX2Rldi0+ZGV2ID0gJm9mZGV2LT5kZXY7DQo+ID4gKw0KPiA+ICsJcmV0ID0gZnNs
+X2xiY19jdHJsX2luaXQoZnNsX2xiY19jdHJsX2Rldik7DQo+ID4gKwlpZiAocmV0IDwgMCkNCj4g
+PiArCQlnb3RvIGVycjsNCj4gPiArDQo+ID4gKwlyZXQgPSByZXF1ZXN0X2lycShmc2xfbGJjX2N0
+cmxfZGV2LT5pcnEsIGZzbF9sYmNfY3RybF9pcnEsIDAsDQo+ID4gKwkJCQkiZnNsLWxiYyIsIGZz
+bF9sYmNfY3RybF9kZXYpOw0KPiA+ICsJaWYgKHJldCAhPSAwKSB7DQo+ID4gKwkJZGV2X2Vycigm
+b2ZkZXYtPmRldiwgImZhaWxlZCB0byBpbnN0YWxsIGlycSAoJWQpXG4iLA0KPiA+ICsJCQlmc2xf
+bGJjX2N0cmxfZGV2LT5pcnEpOw0KPiA+ICsJCXJldCA9IGZzbF9sYmNfY3RybF9kZXYtPmlycTsN
+Cj4gPiArCQlnb3RvIGVycjsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlyZXR1cm4gMDsNCj4gPiAr
+DQo+ID4gK2VycjoNCj4gDQo+IGZzbF9sYmNfY3RybF9kZXYgbGVha2VkLiBQbHVzLCBhZnRlciBm
+cmVlaW5nIGl0LCB5b3Ugc2hvdWxkDQo+IE5VTExpZnkgaXQgYXMgd2VsbCwgYXMgb3RoZXIgZnVu
+Y3Rpb25zIGNoZWNrcyBpdCBmb3IgIU5VTEwuDQpBZ3JlZS4NCj4gDQo+IGZzbF9sYmNfY3RybF9k
+ZXYtPnJlZ3MgbGVha3MgdG9vLg0KQWdyZWUuDQo+IA0KPiA+ICsJcmV0dXJuIHJldDsNCj4gPiAr
+fQ0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgZnNsX2xiY19t
+YXRjaFtdID0gew0KPiA+ICsJew0KPiA+ICsJCS5jb21wYXRpYmxlID0gImZzbCxlbGJjIiwNCj4g
+PiArCX0sDQo+ID4gKwl7DQo+ID4gKwkJLmNvbXBhdGlibGUgPSAiZnNsLHBxMy1sb2NhbGJ1cyIs
+DQo+ID4gKwl9LA0KPiA+ICsJew0KPiA+ICsJCS5jb21wYXRpYmxlID0gImZzbCxwcTItbG9jYWxi
+dXMiLA0KPiA+ICsJfSwNCj4gPiArCXsNCj4gPiArCQkuY29tcGF0aWJsZSA9ICJmc2wscHEycHJv
+LWxvY2FsYnVzIiwNCj4gPiArCX0sDQo+ID4gKwl7fSwNCj4gDQo+IENvdWxkIHNhdmUgOCBsaW5l
+cyBieSB3cml0aW5nICJ7IC5jb21wYXRpYmxlID0gIi4uLiIsIH0sIi4NCg0KQWdyZWUuDQo+IA0K
+PiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIHN0cnVjdCBvZl9wbGF0Zm9ybV9kcml2ZXIgZnNs
+X2xiY19jdHJsX2RyaXZlciA9IHsNCj4gDQo+IEkgdGhpbmsgeW91IHNob3VsZG4ndCB1c2Ugb2Zf
+cGxhdGZvcm0gZm9yIG5ldyBjb2RlLiBqdXN0IHBsYXRmb3JtDQo+IHdpbGwgd29yayAodGhlcmUn
+cyBwbGF0Zm9ybV9kcml2ZXIuZHJpdmVyLm9mX21hdGNoX3RhYmxlIG5vd2FkYXlzKS4NCj4gDQo+
+ID4gKwkuZHJpdmVyID0gew0KPiA+ICsJCS5uYW1lID0gImZzbC1sYmMiLA0KPiA+ICsJCS5vZl9t
+YXRjaF90YWJsZSA9IGZzbF9sYmNfbWF0Y2gsDQo+ID4gKwl9LA0KPiA+ICsJLnByb2JlID0gZnNs
+X2xiY19jdHJsX3Byb2JlLA0KPiA+ICsJLnJlbW92ZSA9IF9fZGV2ZXhpdF9wKGZzbF9sYmNfY3Ry
+bF9yZW1vdmUpLA0KPiANCj4gVGhlIGRldmljZSBpcyBub3QgcmVtb3ZhYmxlLCBJIHRoaW5rIHlv
+dSBkb24ndCBuZWVkIHRoaXMuDQpBZ3JlZS4NCg0KPiANCj4gPiArfTsNCj4gPiArDQo+ID4gK3N0
+YXRpYyBpbnQgX19pbml0IGZzbF9sYmNfaW5pdCh2b2lkKQ0KPiA+ICt7DQo+ID4gKwlyZXR1cm4g
+b2ZfcmVnaXN0ZXJfcGxhdGZvcm1fZHJpdmVyKCZmc2xfbGJjX2N0cmxfZHJpdmVyKTsNCj4gPiAr
+fQ0KPiA+ICsNCj4gPiArc3RhdGljIHZvaWQgX19leGl0IGZzbF9sYmNfZXhpdCh2b2lkKQ0KPiA+
+ICt7DQo+ID4gKwlvZl91bnJlZ2lzdGVyX3BsYXRmb3JtX2RyaXZlcigmZnNsX2xiY19jdHJsX2Ry
+aXZlcik7DQo+ID4gK30NCj4gPiArDQo+ID4gK21vZHVsZV9pbml0KGZzbF9sYmNfaW5pdCk7DQo+
+ID4gK21vZHVsZV9leGl0KGZzbF9sYmNfZXhpdCk7DQo+IA0KPiBmc2xfbGJjIGlzIG5vdCBhIG1v
+ZHVsZSwgc28geW91IGRvbid0IG5lZWQgX2V4aXQoKS4NCkFncmVlLg0KPiANCj4gPiArTU9EVUxF
+X0xJQ0VOU0UoIkdQTCIpOw0KPiA+ICtNT0RVTEVfQVVUSE9SKCJGcmVlc2NhbGUgU2VtaWNvbmR1
+Y3RvciIpOw0KPiA+ICtNT0RVTEVfREVTQ1JJUFRJT04oIkZyZWVzY2FsZSBFbmhhbmNlZCBMb2Nh
+bCBCdXMgQ29udHJvbGxlciBkcml2ZXIiKTsNCj4gDQo+IGRpdHRvLCBubyBuZWVkIGZvciB0aGlz
+Lg0KQWdyZWUuDQpUaGFua3MuDQpSb3kNCg==
