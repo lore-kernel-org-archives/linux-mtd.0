@@ -1,25 +1,23 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mga02.intel.com ([134.134.136.20])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OsOjg-0006Z7-2B
-	for linux-mtd@lists.infradead.org; Sun, 05 Sep 2010 23:35:02 +0000
-Received: by vws11 with SMTP id 11so3122809vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 05 Sep 2010 16:34:54 -0700 (PDT)
+	id 1OsR6J-0004LX-1R
+	for linux-mtd@lists.infradead.org; Mon, 06 Sep 2010 02:06:27 +0000
+From: "Dong, Chuanxiao" <chuanxiao.dong@intel.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Date: Mon, 6 Sep 2010 10:05:47 +0800
+Subject: RE: [PATCH 1/1]nand/denali: Add runtime pm framework for MRST
+	Denali NAND controller
+Message-ID: <5D8008F58939784290FAB48F54975198278A379469@shsmsx502.ccr.corp.intel.com>
+References: <20100826081201.GA11565@intel.com>
+	<1283172159.12995.64.camel@brekeke>
+In-Reply-To: <1283172159.12995.64.camel@brekeke>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
-References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
-	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
-Date: Sun, 5 Sep 2010 16:34:54 -0700
-Message-ID: <AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
-Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module ref-counting
-	back to open/release
-From: Kevin Cernekee <cernekee@gmail.com>
-To: Ben Hutchings <bhutchings@solarflare.com>,
-	Maxim Levitsky <maximlevitsky@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>, "Van De Ven,
+	Arjan" <arjan.van.de.ven@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,62 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 22, 2010 at 10:44 AM, Ben Hutchings
-<bhutchings@solarflare.com> wrote:
-> commit 048d87199566663e4edc4880df3703c04bcf41d9 "mtd: blktrans: Hotplug
-> fixes" causes the MTD and the MTD driver module's ref-counts to be
-> bumped for each block device that is created, whether or not it's
-> actually in use.
->
-> This means that before removing an MTD or driver module one must first
-> remove all the associated block devices. =C2=A0But the block devices will
-> be removed only when the MTDs themselves are removed, which is no
-> longer possible.
-
-Just updated to 2.6.36-rc3 and noticed a related issue.  Configuration is:
-
-CONFIG_MTD_BLOCK=3Dy
-CONFIG_MTD_BLKDEVS=3Dy
-CONFIG_MTD_UBI_GLUEBI=3Dy
-
-When I "ubiattach" a physical MTD device, a gluebi MTD device is
-automatically created for each UBI volume.  The notifiers cause
-add_mtd_blktrans_dev() to get called for each new gluebi device.  But
-add_mtd_blktrans_dev() now calls __get_mtd_device(), locking up the
-gluebi device and preventing it from being used:
-
-# ubiattach -m3
-UBI: attaching mtd3 to ubi0
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    130944 bytes
-UBI: smallest flash I/O unit:    1
-UBI: VID header offset:          64 (aligned 64)
-UBI: data offset:                128
-UBI: max. sequence number:       14
-UBI: attached mtd3 to ubi0
-UBI: MTD device name:            "root"
-UBI: MTD device size:            16 MiB
-UBI: number of good PEBs:        128
-UBI: number of bad PEBs:         0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 128
-UBI: number of PEBs reserved for bad PEB handling: 0
-UBI: max/mean erase counter: 1/0
-UBI: image sequence number:  0
-UBI: background thread "ubi_bgt0d" started, PID 448
-UBI device number 0, total 128 LEBs (16760832 bytes, 16.0 MiB),
-available 0 LEBs (0 bytes), LEB size 130944 bytes (127.9 KiB)
-# mount -t ubifs ubi0:rootfs /mnt
-UBI error: ubi_open_volume: cannot open device 0, volume 0, error -16
-mount: mounting ubi0:rootfs on /mnt failed: Device or resource busy
-# ubidetach -m3
-ubidetach: error!: cannot detach mtd3
-           error 16 (Device or resource busy)
-
-My short-term workaround is to disable CONFIG_MTD_BLOCK and
-CONFIG_MTD_BLKDEVS.  It would be nice to fix the code for 2.6.36
-though.
+SGkgQXJ0ZW0NClRoYW5rcyBmb3IgeW91ciBjb21tZW50LiBFeGNlcHQgdGhlIERFTkFMSV9QTSBt
+YWNybyBwcm9ibGVtLCBkbyB5b3UgaGF2ZSBhbnkgb3RoZXIgY29tbWVudA0KYWJvdXQgdGhlIGlt
+cGxlbWVudCBvZiBydW50aW1lIHBtPw0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+
+IEZyb206IEFydGVtIEJpdHl1dHNraXkgW21haWx0bzpkZWRla2luZDFAZ21haWwuY29tXQ0KPiBT
+ZW50OiBNb25kYXksIEF1Z3VzdCAzMCwgMjAxMCA4OjQzIFBNDQo+IFRvOiBEb25nLCBDaHVhbnhp
+YW8NCj4gQ2M6IGR3bXcyQGluZnJhZGVhZC5vcmc7IFZhbiBEZSBWZW4sIEFyamFuOyBsaW51eC1t
+dGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDEvMV1uYW5kL2Rl
+bmFsaTogQWRkIHJ1bnRpbWUgcG0gZnJhbWV3b3JrIGZvciBNUlNUIERlbmFsaQ0KPiBOQU5EIGNv
+bnRyb2xsZXINCj4gDQo+IEhpLA0KPiANCj4gT24gVGh1LCAyMDEwLTA4LTI2IGF0IDE2OjEyICsw
+ODAwLCBDaHVhbnhpYW8uRG9uZyB3cm90ZToNCj4gPiArc3RhdGljIHN0cnVjdCBkZXZfcG1fb3Bz
+IGRlbmFsaV9wbSA9IHsNCj4gPiArCS5ydW50aW1lX3N1c3BlbmQgPSBkZW5hbGlfcnVudGltZV9z
+dXNwZW5kLA0KPiA+ICsJLnJ1bnRpbWVfcmVzdW1lID0gZGVuYWxpX3J1bnRpbWVfcmVzdW1lLA0K
+PiA+ICsJLnJ1bnRpbWVfaWRsZSA9IGRlbmFsaV9ydW50aW1lX2lkbGUsDQo+ID4gK307DQo+ID4g
+KyNkZWZpbmUgREVOQUxJX1BNICgmZGVuYWxpX3BtKQ0KPiANCj4gSSB0aGluayBpdCBpcyBjb25m
+dXNpbmcgdG8gdXNlIHRoaXMgc3R5bGUuIFBsZWFzZSwgZG8gbm90IGRlZmluZSB0aGlzDQo+IERF
+TkFMSV9QTSBtYWNybywgdW5sZXNzIHRoaXMgaXMgYSBzdGFuZGFyZCBwcmFjdGljZSwgd2hpY2gg
+SSBkb3VidCwgYnV0DQo+IG5vdCBzdXJlLg0KPiANCj4gLi4uIHNuaXAgLi4uDQo+IA0KPiA+ICsj
+ZWxzZQ0KPiA+ICsjZGVmaW5lIERFTkFMSV9QTSBOVUxMDQo+IERpdHRvLg0KPiA+ICtzdGF0aWMg
+aW5saW5lIHZvaWQgZGVuYWxpX3RpbWVyX2FkZChzdHJ1Y3QgZGVuYWxpX25hbmRfaW5mbyAqZGVu
+YWxpKSB7fQ0KPiA+ICtzdGF0aWMgaW5saW5lIHZvaWQgZGVuYWxpX3RpbWVyX2Z1bmModW5zaWdu
+ZWQgbG9uZyBwdHIpIHt9DQo+ID4gKyNlbmRpZg0KPiANCj4gI2VuZGlmIC8qICFDT05GSUdfUE1f
+UlVOVElNRSAqLw0KPiANCj4gLi4gc25pcCAuLg0KPiANCj4gPiAgc3RhdGljIHN0cnVjdCBwY2lf
+ZHJpdmVyIGRlbmFsaV9wY2lfZHJpdmVyID0gew0KPiA+ICsJLmRyaXZlciA9IHsNCj4gPiArCQku
+cG0gPSBERU5BTElfUE0sDQo+ID4gKwl9LA0KPiANCj4gVGhpcyBpcyB0aGUgb25seSBwbGFjZSB3
+aGVyZSB5b3UgdXNlIHRoaXMgbWFjcm8sIGp1c3QgZG8NCj4gDQo+ICNpZmRlZiBDT05GSUdfUE1f
+UlVOVElNRQ0KPiAJLmRyaXZlciA9IHsNCj4gCQkucG0gPSBERU5BTElfUE0sDQo+IAl9LA0KPiAj
+ZW5kaWYNCj4gDQo+IEFuZCBpdCB3aWxsIGJlIG1vcmUgcmVhZGFibGUuDQo+IA0KPiAtLQ0KPiBC
+ZXN0IFJlZ2FyZHMsDQo+IEFydGVtIEJpdHl1dHNraXkgKNCR0LjRgtGO0YbQutC40Lkg0JDRgNGC
+0ZHQvCkNCg0K
