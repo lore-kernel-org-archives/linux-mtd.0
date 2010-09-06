@@ -1,13 +1,12 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OsXTm-0000BU-LP
+	id 1OsXTm-0000NP-LY
 	for linux-mtd@lists.infradead.org; Mon, 06 Sep 2010 08:55:07 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 01/13] mtd: nand_nase: do not cache pages with uncorrectable
-	ECC errors
-Date: Mon,  6 Sep 2010 11:54:45 +0300
-Message-Id: <1283763293-1882-2-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 02/13] UBI: fix small 80 characters limit style issue
+Date: Mon,  6 Sep 2010 11:54:46 +0300
+Message-Id: <1283763293-1882-3-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1283763293-1882-1-git-send-email-dedekind1@gmail.com>
 References: <1283763293-1882-1-git-send-email-dedekind1@gmail.com>
 Cc: Matthieu CASTET <matthieu.castet@parrot.com>,
@@ -23,34 +22,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Currently MTD caches the last read NAND page, even if there was an uncorrectable ECC
-error. This patch prevents caching in case of uncorrectable ECC errors. The reason
-is that we want to allow the user to re-read the NAND page several times. In case of
-unstable bits re-trying may help.
-
-Moreover, current behavior is wrong because the first read returns -EBADMSG (correctly)
-but the second read succeeds and incorrectly returns 0 (because we read from the cache).
-
-I've pushed these patches to ubi-2.6.git / master.
+One line was longer than 80 lines, make it shorter.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/nand/nand_base.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ drivers/mtd/ubi/build.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d551ddd..ddffe76 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1493,7 +1493,8 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 78ae894..f247c4e 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -95,8 +95,8 @@ DEFINE_MUTEX(ubi_devices_mutex);
+ static DEFINE_SPINLOCK(ubi_devices_lock);
  
- 			/* Transfer not aligned data */
- 			if (!aligned) {
--				if (!NAND_SUBPAGE_READ(chip) && !oob)
-+				if (!NAND_SUBPAGE_READ(chip) && !oob &&
-+				    !(mtd->ecc_stats.failed - stats.failed))
- 					chip->pagebuf = realpage;
- 				memcpy(buf, chip->buffers->databuf + col, bytes);
- 			}
+ /* "Show" method for files in '/<sysfs>/class/ubi/' */
+-static ssize_t ubi_version_show(struct class *class, struct class_attribute *attr,
+-				char *buf)
++static ssize_t ubi_version_show(struct class *class,
++				struct class_attribute *attr, char *buf)
+ {
+ 	return sprintf(buf, "%d\n", UBI_VERSION);
+ }
 -- 
 1.7.1.1
