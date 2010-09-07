@@ -1,33 +1,27 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ot2HS-0004N4-PI
-	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 17:48:30 +0000
-Received: by bwz13 with SMTP id 13so5731284bwz.36
+	id 1Ot5Bb-00067K-RE
+	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 20:54:36 +0000
+Received: by fxm12 with SMTP id 12so4288683fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Sep 2010 10:48:25 -0700 (PDT)
-Subject: Re: ubi_eba_init_scan: cannot reserve enough PEBs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <1283879856.2029.6.camel@brekeke>
-References: <AANLkTi=nYBryUf8SyNFAcx_PPqTfdmY=x835Q-RhLmAn@mail.gmail.com>
-	<1280121714.14917.40.camel@localhost>
-	<AANLkTinJbZXx+YY7dxhmuEJ4XgN4Fj77=fFo_2WYL1fJ@mail.gmail.com>
-	<1280243535.3021.29.camel@localhost.localdomain>
-	<1282501832.16502.97.camel@brekeke>
-	<AANLkTi=AXo7Ziiz9qWTFMuYaMJbq0xpS2YcuJeWL3BC5@mail.gmail.com>
-	<AANLkTinHmSpucwL4nKc5RNaBVc6fdt7bT_hTd2-fkQhB@mail.gmail.com>
-	<1283367468.2209.33.camel@brekeke>
-	<1283764656.11066.22.camel@localhost>
-	<AANLkTi=LT+rigRKrUkwF202mqvJCA7L0DG4WTYqBzCLE@mail.gmail.com>
-	<1283879856.2029.6.camel@brekeke>
+	Tue, 07 Sep 2010 13:54:34 -0700 (PDT)
+Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
+	ref-counting back to open/release
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: dedekind1@gmail.com
+In-Reply-To: <1283855250.2979.33.camel@localhost>
+References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
+	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
+	<AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
+	<1283855250.2979.33.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Sep 2010 20:48:22 +0300
-Message-ID: <1283881702.2029.8.camel@brekeke>
+Date: Tue, 07 Sep 2010 23:54:29 +0300
+Message-ID: <1283892869.3407.4.camel@maxim-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: JamesLNute@eaton.com, linux-mtd@lists.infradead.org,
-	Adrian.Hunter@nokia.com
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Ben Hutchings <bhutchings@solarflare.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,20 +31,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-07 at 20:17 +0300, Artem Bityutskiy wrote:
-> > I'll probably have time to set this test up in the next few days, but
-> > it may be weeks until the test device goes bad (if it ever goes bad at
-> > all).  As far as what code should be tested, do you want me to just
-> > pull a copy of the latest ubifs-2.6 tree?
+On Tue, 2010-09-07 at 13:27 +0300, Artem Bityutskiy wrote: 
+> On Sun, 2010-09-05 at 16:34 -0700, Kevin Cernekee wrote:
+> > On Thu, Jul 22, 2010 at 10:44 AM, Ben Hutchings
+> > <bhutchings@solarflare.com> wrote:
+> > > commit 048d87199566663e4edc4880df3703c04bcf41d9 "mtd: blktrans: Hotplug
+> > > fixes" causes the MTD and the MTD driver module's ref-counts to be
+> > > bumped for each block device that is created, whether or not it's
+> > > actually in use.
+> > >
+> > > This means that before removing an MTD or driver module one must first
+> > > remove all the associated block devices.  But the block devices will
+> > > be removed only when the MTDs themselves are removed, which is no
+> > > longer possible.
+> > 
+> > Just updated to 2.6.36-rc3 and noticed a related issue.  Configuration is:
 > 
-> This is probably not so important. Use the ubifs you have, but I'd like
-> to also see it. And send the debugging patch to me for reveiw to
-> comments (you'll need to prepare).
+> Sounds like a regression which should be either fixed or the patch which
+> causes this should be reverted. Maxim?
 
-Err, I also think you should try my UBI patches which may help. But they
-may themselves have a bug. May be 2 setups - one with one of your trees
-and the other is latest ubifs + those patches?
+We have a tough issue here.
+The way mtd core is built, it assumes that one can always remove an mtd
+device, therefore all users must let it go as soon as asked first time.
+Its possible to fix that of course, but I'll need to touch a lot of code
+I can't test.
+Really mtd core wasn't build with hotplug in the mind.
+I'll think of something (and you all are welcome to help).
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Best regards,
+Maxim Levitsky
