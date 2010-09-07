@@ -1,20 +1,28 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OsvLW-0005qV-VD
-	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 10:24:11 +0000
-Message-ID: <4C8612B9.4060305@nokia.com>
-Date: Tue, 07 Sep 2010 13:23:53 +0300
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: NOTE! mkfs.ubifs
-References: <1283848562-19564-1-git-send-email-dedekind1@gmail.com>
-	<1283850698.2979.25.camel@localhost>
-In-Reply-To: <1283850698.2979.25.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Arno Steffen <arno.steffen@googlemail.com>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OsvQJ-0006tG-0r
+	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 10:29:07 +0000
+Received: by fxm12 with SMTP id 12so3699502fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 07 Sep 2010 03:29:06 -0700 (PDT)
+Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
+	ref-counting back to open/release
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>, Maxim Levitsky
+	<maximlevitsky@gmail.com>
+In-Reply-To: <AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
+References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
+	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
+	<AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 07 Sep 2010 13:27:30 +0300
+Message-ID: <1283855250.2979.33.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Ben Hutchings <bhutchings@solarflare.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +32,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Tue, 2010-09-07 at 11:36 +0300, Artem Bityutskiy wrote:
->> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
->>
->> When mkfs.ubifs is used with -r dir, it does not make the root UBIFS
->> inode uid/gid/permissions to be equivalent to dir's permissions, but
->> it makes root inode permissions to be equivalent to uid = git = 0
->> (root) and permissions = u+rwx go+rx.
->>
->> This patch changes the behavior and makes mkfs.ubifs use the
->> permissions of the directory containing the original files on the host.
->> I.e., it will be <dir>'s uid/git/permissions if case of mkfs.ubifs
->> -r <dir>.
->>
->> This patch is a bit dangerous because it changes the behavior and may
->> have security implications if someone used the older version, relied
->> on this bug, and upgrades to the newer version.
->>
->> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On Sun, 2010-09-05 at 16:34 -0700, Kevin Cernekee wrote:
+> On Thu, Jul 22, 2010 at 10:44 AM, Ben Hutchings
+> <bhutchings@solarflare.com> wrote:
+> > commit 048d87199566663e4edc4880df3703c04bcf41d9 "mtd: blktrans: Hotplug
+> > fixes" causes the MTD and the MTD driver module's ref-counts to be
+> > bumped for each block device that is created, whether or not it's
+> > actually in use.
+> >
+> > This means that before removing an MTD or driver module one must first
+> > remove all the associated block devices.  But the block devices will
+> > be removed only when the MTDs themselves are removed, which is no
+> > longer possible.
 > 
-> All mkfs.ubifs users should take a look at this - should we apply this
-> patch? I'm still in doubt...
-> 
+> Just updated to 2.6.36-rc3 and noticed a related issue.  Configuration is:
 
-I do not agree with changing the behaviour.  It should be a new option,
-and you could add a warning explaining what the root inode permissions
-are and why e.g.
+Sounds like a regression which should be either fixed or the patch which
+causes this should be reverted. Maxim?
 
-	Warning: Option ?? not used. Setting root inode permissions to blah
-
-	Warning: Option ?? used. Setting root inode permissions to blah
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
