@@ -1,24 +1,14 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ostzk-0007aL-Dc
-	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 08:57:37 +0000
-Received: by fxm12 with SMTP id 12so3664708fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Sep 2010 01:57:35 -0700 (PDT)
-Subject: Re: [PATCH v2] cmd line partitions: use 64 bit variables to detect
-	partitions/offsets larger than 4G.
+Received: from mgw-sa02.nokia.com ([147.243.1.48])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Osu9M-0000In-LS
+	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 09:07:33 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Saeed Bishara <saeed@marvell.com>
-In-Reply-To: <1283692114-1744-1-git-send-email-saeed@marvell.com>
-References: <1283685790-8619-1-git-send-email-saeed@marvell.com>
-	<1283692114-1744-1-git-send-email-saeed@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Sep 2010 11:56:05 +0300
-Message-ID: <1283849765.2979.22.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mkfs.ubifs: do not override root inode permissions
+Date: Tue,  7 Sep 2010 11:36:02 +0300
+Message-Id: <1283848562-19564-1-git-send-email-dedekind1@gmail.com>
+Cc: Arno Steffen <arno.steffen@googlemail.com>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-09-05 at 16:08 +0300, Saeed Bishara wrote:
-> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-> index 1479da6..80036d1 100644
-> --- a/drivers/mtd/cmdlinepart.c
-> +++ b/drivers/mtd/cmdlinepart.c
-> @@ -41,8 +41,8 @@
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Please, send with Signed-off-by.
+When mkfs.ubifs is used with -r dir, it does not make the root UBIFS
+inode uid/gid/permissions to be equivalent to dir's permissions, but
+it makes root inode permissions to be equivalent to uid = git = 0
+(root) and permissions = u+rwx go+rx.
 
+This patch changes the behavior and makes mkfs.ubifs use the
+permissions of the directory containing the original files on the host.
+I.e., it will be <dir>'s uid/git/permissions if case of mkfs.ubifs
+-r <dir>.
+
+This patch is a bit dangerous because it changes the behavior and may
+have security implications if someone used the older version, relied
+on this bug, and upgrades to the newer version.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ mkfs.ubifs/mkfs.ubifs.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
+
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index 9f2a226..a4aebcb 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -1639,9 +1639,8 @@ static int write_data(void)
+ 	} else {
+ 		root_st.st_mtime = time(NULL);
+ 		root_st.st_atime = root_st.st_ctime = root_st.st_mtime;
++		root_st.st_mode = S_IFDIR | S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+ 	}
+-	root_st.st_uid = root_st.st_gid = 0;
+-	root_st.st_mode = S_IFDIR | S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH;
+ 
+ 	head_flags = 0;
+ 	err = add_directory(root, UBIFS_ROOT_INO, &root_st, !root);
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.1.1
