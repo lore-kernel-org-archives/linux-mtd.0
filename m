@@ -1,16 +1,22 @@
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OswKY-0005p4-Ey
+	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 11:27:15 +0000
+Received: by wyb38 with SMTP id 38so6384348wyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 07 Sep 2010 04:27:12 -0700 (PDT)
+Sender: Florian Fainelli <f.fainelli@gmail.com>
+From: Florian Fainelli <florian@openwrt.org>
+Date: Tue, 7 Sep 2010 13:23:43 +0200
+Subject: [PATCH 1/2] mtd: fix all checkpatch errors in nand_base.c
 MIME-Version: 1.0
-In-Reply-To: <1283179285-6539-1-git-send-email-haojian.zhuang@marvell.com>
-References: <1283179285-6539-1-git-send-email-haojian.zhuang@marvell.com>
-Date: Tue, 7 Sep 2010 19:20:58 +0800
-Message-ID: <AANLkTinuKC8hWbDZWDkMa8kpBMWUXF4E+9mWnCXFN8WM@mail.gmail.com>
-Subject: Re: [PATCH 1/6] pxa3xx_nand: make scan procedure more clear
-From: Lei Wen <adrian.wenl@gmail.com>
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Eric Miao <eric.y.miao@gmail.com>, Lei Wen <leiwen@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201009071323.44108.ffainelli@freebox.fr>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,212 +26,220 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-
-On Mon, Aug 30, 2010 at 10:41 PM, Haojian Zhuang
-<haojian.zhuang@gmail.com> wrote:
-> From: Lei Wen <leiwen@marvell.com>
->
-> Signed-off-by: Lei Wen <leiwen@marvell.com>
-> Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
-> Cc: Eric Miao <eric.y.miao@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> ---
-> =C2=A0drivers/mtd/nand/pxa3xx_nand.c | =C2=A0 88 ++++++++++++++++++++++--=
----------------
-> =C2=A01 files changed, 50 insertions(+), 38 deletions(-)
->
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
-d.c
-> index 5d24968..3468a3d 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -126,6 +126,7 @@ struct pxa3xx_nand_info {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0buf_start;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0buf_count;
->
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info =C2=A0 =C2=A0 =C2=A0 =C2=A0 *mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* DMA information */
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 drcmr_dat;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 drcmr_cmd;
-> @@ -1044,21 +1045,13 @@ static void pxa3xx_nand_init_mtd(struct mtd_info =
-*mtd,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0this->chip_delay =3D 25;
-> =C2=A0}
->
-> -static int pxa3xx_nand_probe(struct platform_device *pdev)
-> +static int alloc_nand_resource(struct platform_device *pdev)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_platform_data *pdata;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_platform_data *pdata =3D pdev->=
-dev.platform_data;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct pxa3xx_nand_info *info;
-> - =C2=A0 =C2=A0 =C2=A0 struct nand_chip *this;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct mtd_info *mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct resource *r;
-> - =C2=A0 =C2=A0 =C2=A0 int ret =3D 0, irq;
-> -
-> - =C2=A0 =C2=A0 =C2=A0 pdata =3D pdev->dev.platform_data;
-> -
-> - =C2=A0 =C2=A0 =C2=A0 if (!pdata) {
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "n=
-o platform data defined\n");
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
-> - =C2=A0 =C2=A0 =C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 int ret, irq;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd =3D kzalloc(sizeof(struct mtd_info) + size=
-of(struct pxa3xx_nand_info),
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0GFP_KERNEL);
-> @@ -1070,8 +1063,8 @@ static int pxa3xx_nand_probe(struct platform_device=
- *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0info =3D (struct pxa3xx_nand_info *)(&mtd[1]);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->pdev =3D pdev;
->
-> - =C2=A0 =C2=A0 =C2=A0 this =3D &info->nand_chip;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd->priv =3D info;
-> + =C2=A0 =C2=A0 =C2=A0 info->mtd =3D mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd->owner =3D THIS_MODULE;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->clk =3D clk_get(&pdev->dev, NULL);
-> @@ -1149,27 +1142,9 @@ static int pxa3xx_nand_probe(struct platform_devic=
-e *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0pxa3xx_nand_init_mtd(mtd, info);
-> + =C2=A0 =C2=A0 =C2=A0 platform_set_drvdata(pdev, info);
->
-> - =C2=A0 =C2=A0 =C2=A0 platform_set_drvdata(pdev, mtd);
-> -
-> - =C2=A0 =C2=A0 =C2=A0 if (nand_scan(mtd, 1)) {
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "f=
-ailed to scan nand\n");
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D -ENXIO;
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail_free_irq;
-> - =C2=A0 =C2=A0 =C2=A0 }
-> -
-> - =C2=A0 =C2=A0 =C2=A0 if (mtd_has_cmdlinepart()) {
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 static const char *pro=
-bes[] =3D { "cmdlinepart", NULL };
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 struct mtd_partition *=
-parts;
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int nr_parts;
-> -
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 nr_parts =3D parse_mtd=
-_partitions(mtd, probes, &parts, 0);
-> -
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (nr_parts)
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 return add_mtd_partitions(mtd, parts, nr_parts);
-> - =C2=A0 =C2=A0 =C2=A0 }
-> -
-> - =C2=A0 =C2=A0 =C2=A0 return add_mtd_partitions(mtd, pdata->parts, pdata=
-->nr_parts);
-> + =C2=A0 =C2=A0 =C2=A0 return 0;
->
-> =C2=A0fail_free_irq:
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0free_irq(irq, info);
-> @@ -1194,8 +1169,8 @@ fail_free_mtd:
->
-> =C2=A0static int pxa3xx_nand_remove(struct platform_device *pdev)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D platform_get_drvdata(pdev=
-);
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D mtd->priv;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D platform_get_drv=
-data(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D info->mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct resource *r;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int irq;
->
-> @@ -1224,11 +1199,48 @@ static int pxa3xx_nand_remove(struct platform_dev=
-ice *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0return 0;
-> =C2=A0}
->
-> +static int pxa3xx_nand_probe(struct platform_device *pdev)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_platform_data *pdata;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info;
-> + =C2=A0 =C2=A0 =C2=A0 int ret;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 pdata =3D pdev->dev.platform_data;
-> + =C2=A0 =C2=A0 =C2=A0 if (!pdata) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "n=
-o platform data defined\n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 ret =3D alloc_nand_resource(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 if (ret)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ret;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 info =3D platform_get_drvdata(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 if (nand_scan(info->mtd, 1)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "f=
-ailed to scan nand\n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 pxa3xx_nand_remove(pde=
-v);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (mtd_has_cmdlinepart()) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 static const char *pro=
-bes[] =3D { "cmdlinepart", NULL };
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 struct mtd_partition *=
-parts;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int nr_parts;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 nr_parts =3D parse_mtd=
-_partitions(info->mtd, probes, &parts, 0);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (nr_parts)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 return add_mtd_partitions(info->mtd, parts, nr_parts);
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return add_mtd_partitions(info->mtd, pdata->parts,=
- pdata->nr_parts);
-> +}
-> +
-> =C2=A0#ifdef CONFIG_PM
-> =C2=A0static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_mes=
-sage_t state)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D (struct mtd_info *)platfo=
-rm_get_drvdata(pdev);
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D mtd->priv;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D platform_get_drv=
-data(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D info->mtd;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (info->state !=3D STATE_READY) {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0dev_err(&pdev->dev=
-, "driver busy, state =3D %d\n", info->state);
-> @@ -1240,8 +1252,8 @@ static int pxa3xx_nand_suspend(struct platform_devi=
-ce *pdev, pm_message_t state)
->
-> =C2=A0static int pxa3xx_nand_resume(struct platform_device *pdev)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D (struct mtd_info *)platfo=
-rm_get_drvdata(pdev);
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D mtd->priv;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D platform_get_drv=
-data(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D info->mtd;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0nand_writel(info, NDTR0CS0, info->ndtr0cs0);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0nand_writel(info, NDTR1CS0, info->ndtr1cs0);
-> --
-> 1.7.0.4
->
-Any suggestion on this series? ...
-
-Best regards,
-Lei
+Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
+---
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 5b96f62..50c0d5f 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -59,7 +59,7 @@ static struct nand_ecclayout nand_oob_8 = {
+ 		{.offset = 3,
+ 		 .length = 2},
+ 		{.offset = 6,
+-		 .length = 2}}
++		 .length = 2} }
+ };
+ 
+ static struct nand_ecclayout nand_oob_16 = {
+@@ -67,7 +67,7 @@ static struct nand_ecclayout nand_oob_16 = {
+ 	.eccpos = {0, 1, 2, 3, 6, 7},
+ 	.oobfree = {
+ 		{.offset = 8,
+-		 . length = 8}}
++		 . length = 8} }
+ };
+ 
+ static struct nand_ecclayout nand_oob_64 = {
+@@ -78,7 +78,7 @@ static struct nand_ecclayout nand_oob_64 = {
+ 		   56, 57, 58, 59, 60, 61, 62, 63},
+ 	.oobfree = {
+ 		{.offset = 2,
+-		 .length = 38}}
++		 .length = 38} }
+ };
+ 
+ static struct nand_ecclayout nand_oob_128 = {
+@@ -92,7 +92,7 @@ static struct nand_ecclayout nand_oob_128 = {
+ 		   120, 121, 122, 123, 124, 125, 126, 127},
+ 	.oobfree = {
+ 		{.offset = 2,
+-		 .length = 78}}
++		 .length = 78} }
+ };
+ 
+ static int nand_get_device(struct nand_chip *chip, struct mtd_info *mtd,
+@@ -612,7 +612,8 @@ static void nand_command(struct mtd_info *mtd, unsigned int command,
+ 			       NAND_CTRL_CLE | NAND_CTRL_CHANGE);
+ 		chip->cmd_ctrl(mtd,
+ 			       NAND_CMD_NONE, NAND_NCE | NAND_CTRL_CHANGE);
+-		while (!(chip->read_byte(mtd) & NAND_STATUS_READY)) ;
++		while (!(chip->read_byte(mtd) & NAND_STATUS_READY))
++				;
+ 		return;
+ 
+ 		/* This applies to read commands */
+@@ -718,7 +719,8 @@ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 			       NAND_NCE | NAND_CLE | NAND_CTRL_CHANGE);
+ 		chip->cmd_ctrl(mtd, NAND_CMD_NONE,
+ 			       NAND_NCE | NAND_CTRL_CHANGE);
+-		while (!(chip->read_byte(mtd) & NAND_STATUS_READY)) ;
++		while (!(chip->read_byte(mtd) & NAND_STATUS_READY))
++				;
+ 		return;
+ 
+ 	case NAND_CMD_RNDOUT:
+@@ -834,7 +836,7 @@ static void panic_nand_wait(struct mtd_info *mtd, struct nand_chip *chip,
+ 				break;
+ 		}
+ 		mdelay(1);
+-        }
++	}
+ }
+ 
+ /**
+@@ -1390,7 +1392,7 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ static uint8_t *nand_transfer_oob(struct nand_chip *chip, uint8_t *oob,
+ 				  struct mtd_oob_ops *ops, size_t len)
+ {
+-	switch(ops->mode) {
++	switch (ops->mode) {
+ 
+ 	case MTD_OOB_PLACE:
+ 	case MTD_OOB_RAW:
+@@ -1402,7 +1404,7 @@ static uint8_t *nand_transfer_oob(struct nand_chip *chip, uint8_t *oob,
+ 		uint32_t boffs = 0, roffs = ops->ooboffs;
+ 		size_t bytes = 0;
+ 
+-		for(; free->length && len; free++, len -= bytes) {
++		for (; free->length && len; free++, len -= bytes) {
+ 			/* Read request not from offset 0 ? */
+ 			if (unlikely(roffs)) {
+ 				if (roffs >= free->length) {
+@@ -1466,7 +1468,7 @@ static int nand_do_read_ops(struct mtd_info *mtd, loff_t from,
+ 	buf = ops->datbuf;
+ 	oob = ops->oobbuf;
+ 
+-	while(1) {
++	while (1) {
+ 		bytes = min(mtd->writesize - col, readlen);
+ 		aligned = (bytes == mtd->writesize);
+ 
+@@ -1791,7 +1793,7 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 	realpage = (int)(from >> chip->page_shift);
+ 	page = realpage & chip->pagemask;
+ 
+-	while(1) {
++	while (1) {
+ 		sndcmd = chip->ecc.read_oob(mtd, chip, page, sndcmd);
+ 
+ 		len = min(len, readlen);
+@@ -1861,7 +1863,7 @@ static int nand_read_oob(struct mtd_info *mtd, loff_t from,
+ 
+ 	nand_get_device(chip, mtd, FL_READING);
+ 
+-	switch(ops->mode) {
++	switch (ops->mode) {
+ 	case MTD_OOB_PLACE:
+ 	case MTD_OOB_AUTO:
+ 	case MTD_OOB_RAW:
+@@ -2099,7 +2101,7 @@ static int nand_write_page(struct mtd_info *mtd, struct nand_chip *chip,
+ static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
+ 						struct mtd_oob_ops *ops)
+ {
+-	switch(ops->mode) {
++	switch (ops->mode) {
+ 
+ 	case MTD_OOB_PLACE:
+ 	case MTD_OOB_RAW:
+@@ -2111,7 +2113,7 @@ static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
+ 		uint32_t boffs = 0, woffs = ops->ooboffs;
+ 		size_t bytes = 0;
+ 
+-		for(; free->length && len; free++, len -= bytes) {
++		for (; free->length && len; free++, len -= bytes) {
+ 			/* Write request not from offset 0 ? */
+ 			if (unlikely(woffs)) {
+ 				if (woffs >= free->length) {
+@@ -2137,7 +2139,7 @@ static uint8_t *nand_fill_oob(struct nand_chip *chip, uint8_t *oob, size_t len,
+ 	return NULL;
+ }
+ 
+-#define NOTALIGNED(x)	(x & (chip->subpagesize - 1)) != 0
++#define NOTALIGNED(x)	((x & (chip->subpagesize - 1)) != 0)
+ 
+ /**
+  * nand_do_write_ops - [Internal] NAND write with ECC
+@@ -2203,7 +2205,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 	if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
+ 		return -EINVAL;
+ 
+-	while(1) {
++	while (1) {
+ 		int bytes = mtd->writesize;
+ 		int cached = writelen > bytes && page != blockmask;
+ 		uint8_t *wbuf = buf;
+@@ -2431,7 +2433,7 @@ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+ 
+ 	nand_get_device(chip, mtd, FL_WRITING);
+ 
+-	switch(ops->mode) {
++	switch (ops->mode) {
+ 	case MTD_OOB_PLACE:
+ 	case MTD_OOB_AUTO:
+ 	case MTD_OOB_RAW:
+@@ -2511,7 +2513,7 @@ int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
+ {
+ 	int page, status, pages_per_block, ret, chipnr;
+ 	struct nand_chip *chip = mtd->priv;
+-	loff_t rewrite_bbt[NAND_MAX_CHIPS]={0};
++	loff_t rewrite_bbt[NAND_MAX_CHIPS] = {0};
+ 	unsigned int bbt_masked_page = 0xffffffff;
+ 	loff_t len;
+ 
+@@ -2706,7 +2708,8 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	struct nand_chip *chip = mtd->priv;
+ 	int ret;
+ 
+-	if ((ret = nand_block_isbad(mtd, ofs))) {
++	ret = nand_block_isbad(mtd, ofs);
++	if (ret) {
+ 		/* If it was bad already, return success and do nothing. */
+ 		if (ret > 0)
+ 			return 0;
+@@ -2935,7 +2938,7 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 
+ 	for (; type->name != NULL; type++)
+ 		if (*dev_id == type->id)
+-                        break;
++			break;
+ 
+ 	chip->onfi_version = 0;
+ 	if (!type->name || !type->pagesize) {
+@@ -3137,7 +3140,7 @@ ident_done:
+ 	printk(KERN_INFO "NAND device: Manufacturer ID:"
+ 		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
+ 		nand_manuf_ids[maf_idx].name,
+-		chip->onfi_version ? type->name:chip->onfi_params.model);
++	chip->onfi_version ? type->name : chip->onfi_params.model);
+ 
+ 	return type;
+ }
+@@ -3360,7 +3363,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 * mode
+ 	 */
+ 	chip->ecc.steps = mtd->writesize / chip->ecc.size;
+-	if(chip->ecc.steps * chip->ecc.size != mtd->writesize) {
++	if (chip->ecc.steps * chip->ecc.size != mtd->writesize) {
+ 		printk(KERN_WARNING "Invalid ecc parameters\n");
+ 		BUG();
+ 	}
+@@ -3372,7 +3375,7 @@ int nand_scan_tail(struct mtd_info *mtd)
+ 	 */
+ 	if (!(chip->options & NAND_NO_SUBPAGE_WRITE) &&
+ 	    !(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
+-		switch(chip->ecc.steps) {
++		switch (chip->ecc.steps) {
+ 		case 2:
+ 			mtd->subpage_sft = 1;
+ 			break;
