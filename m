@@ -1,27 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ot5Bb-00067K-RE
-	for linux-mtd@lists.infradead.org; Tue, 07 Sep 2010 20:54:36 +0000
-Received: by fxm12 with SMTP id 12so4288683fxm.36
+	id 1Ot9JN-0005YA-0z
+	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2010 01:18:53 +0000
+Received: by iwn40 with SMTP id 40so6839341iwn.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Sep 2010 13:54:34 -0700 (PDT)
-Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
-	ref-counting back to open/release
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: dedekind1@gmail.com
-In-Reply-To: <1283855250.2979.33.camel@localhost>
-References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
-	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
-	<AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
-	<1283855250.2979.33.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 07 Sep 2010 23:54:29 +0300
-Message-ID: <1283892869.3407.4.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Ben Hutchings <bhutchings@solarflare.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+	Tue, 07 Sep 2010 18:18:51 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 8 Sep 2010 09:18:51 +0800
+Message-ID: <AANLkTi=vYL2uAycRoaBW3cG5EHb_FU3sYcP=899ouHuK@mail.gmail.com>
+Subject: Anyone can help me about do_write_buffer at cfi_cmdset_0002
+From: Qi Zhang <qzhan2009@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-07 at 13:27 +0300, Artem Bityutskiy wrote: 
-> On Sun, 2010-09-05 at 16:34 -0700, Kevin Cernekee wrote:
-> > On Thu, Jul 22, 2010 at 10:44 AM, Ben Hutchings
-> > <bhutchings@solarflare.com> wrote:
-> > > commit 048d87199566663e4edc4880df3703c04bcf41d9 "mtd: blktrans: Hotplug
-> > > fixes" causes the MTD and the MTD driver module's ref-counts to be
-> > > bumped for each block device that is created, whether or not it's
-> > > actually in use.
-> > >
-> > > This means that before removing an MTD or driver module one must first
-> > > remove all the associated block devices.  But the block devices will
-> > > be removed only when the MTDs themselves are removed, which is no
-> > > longer possible.
-> > 
-> > Just updated to 2.6.36-rc3 and noticed a related issue.  Configuration is:
-> 
-> Sounds like a regression which should be either fixed or the patch which
-> causes this should be reverted. Maxim?
+Hello:
 
-We have a tough issue here.
-The way mtd core is built, it assumes that one can always remove an mtd
-device, therefore all users must let it go as soon as asked first time.
-Its possible to fix that of course, but I'll need to touch a lot of code
-I can't test.
-Really mtd core wasn't build with hotplug in the mind.
-I'll think of something (and you all are welcome to help).
+=A0=A0=A0 In functions
+=A0=A0=A0 do_write_buffer @ drivers/mtd/chips/cfi_cmdset_0002.c.
+=A0=A0=A0 ...
+=A0=A0=A0 map_write(map, CMD(0x29), cmd_adr);
+=A0=A0=A0 /* send buffer program command */
+=A0=A0=A0 chip->state =3D FL_WRITING;
+=A0=A0=A0 /* change chip state */
+=A0=A0=A0 INVALIDATE_CACHE_UDELAY(map, chip, adr, map_bankwidth(map),
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ chip->word_write_time);
+=A0=A0=A0 /* why word_write_time? */
+=A0=A0=A0 ...
 
-Best regards,
-Maxim Levitsky
+=A0=A0=A0 Struct flchip already have "buffer_write_time",
+=A0=A0=A0 seems it should replace the "word_write_time".
+=A0=A0=A0 Both of thems come from the cfi_ident's
+=A0=A0=A0 "WordWriteTimeoutTyp" and "BufWriteTimeoutTyp",
+=A0=A0=A0 which indicate the real flash performance on word program
+=A0=A0=A0 and buffer program and usually they are quite different.
+
+=A0=A0=A0 Further more, the cfi_ident also have
+=A0=A0=A0 "WordWriteTimeoutMax", "BufWriteTimeoutMax",
+=A0=A0=A0 but the real implementation igore them as below
+
+=A0=A0=A0 ......
+=A0=A0=A0 unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
+=A0=A0=A0 ....
+=A0=A0=A0 INVALIDATE_CACHE_UDELAY(map, chip, adr, map_bankwidth(map),
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ chip->word_write_time);
+=A0=A0=A0 timeo =3D jiffies + uWriteTimeout;
+=A0=A0=A0 for (;;) {
+=A0=A0=A0=A0=A0=A0 ......
+=A0=A0=A0=A0=A0=A0 if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+=A0=A0=A0=A0=A0=A0 break;
+=A0=A0=A0=A0=A0=A0 ......
+=A0=A0 }
+
+=A0=A0 The max time out will be "word_write_time" + "uWriteTimeOut"
+
+=A0=A0 Let's look at Intel M29EW flash's CFI spec.
+
+=A0=A0 WordWriteTimeoutTyp : 512us
+=A0=A0 BufWriteTimeoutTyp=A0=A0=A0 : 1024us
+=A0=A0 WordWriteTimeoutMax: 1024us
+=A0=A0 BufWriteTimeoutMax:=A0=A0=A0 4096us
+
+=A0=A0 for HZ =3D 100, that will be ok since 1 tick 10ms
+=A0=A0 But for HZ =3D 1000, we got only 2.5ms ( 512us + 2 ticks),
+=A0=A0 and 3ms (1024us + 2 ticks)
+=A0 (when replaced word_write_time with buf_write_time).
+=A0=A0 Both are not met 4096us spec.
+
+=A0=A0 Does anybody can help on that?
+
+Thanks
+Zhang Qi
