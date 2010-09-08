@@ -1,16 +1,24 @@
-Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
-	helo=TX2EHSOBE005.bigfish.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OtBwj-0004CD-TA
-	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2010 04:07:43 +0000
-From: Roy Zang <tie-fei.zang@freescale.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: fix the build warning for fsl_upm.c
-Date: Wed, 8 Sep 2010 11:46:01 +0800
-Message-ID: <1283917561-13930-1-git-send-email-tie-fei.zang@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: akpm@linux-foundation.org, dwmw2@infradead.org, cbouatmailru@gmail.com
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OtDdK-0008Ue-TY
+	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2010 05:55:47 +0000
+Received: by bwz13 with SMTP id 13so6421190bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 07 Sep 2010 22:55:45 -0700 (PDT)
+Subject: Re: NOTE! mkfs.ubifs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+In-Reply-To: <4C8612B9.4060305@nokia.com>
+References: <1283848562-19564-1-git-send-email-dedekind1@gmail.com>
+	<1283850698.2979.25.camel@localhost>  <4C8612B9.4060305@nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 08 Sep 2010 08:55:41 +0300
+Message-ID: <1283925341.7370.2.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Arno Steffen <arno.steffen@googlemail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix the build warning:
+On Tue, 2010-09-07 at 13:23 +0300, Adrian Hunter wrote:
+> Artem Bityutskiy wrote:
+> > On Tue, 2010-09-07 at 11:36 +0300, Artem Bityutskiy wrote:
+> >> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> >>
+> >> When mkfs.ubifs is used with -r dir, it does not make the root UBIFS
+> >> inode uid/gid/permissions to be equivalent to dir's permissions, but
+> >> it makes root inode permissions to be equivalent to uid = git = 0
+> >> (root) and permissions = u+rwx go+rx.
+> >>
+> >> This patch changes the behavior and makes mkfs.ubifs use the
+> >> permissions of the directory containing the original files on the host.
+> >> I.e., it will be <dir>'s uid/git/permissions if case of mkfs.ubifs
+> >> -r <dir>.
+> >>
+> >> This patch is a bit dangerous because it changes the behavior and may
+> >> have security implications if someone used the older version, relied
+> >> on this bug, and upgrades to the newer version.
+> >>
+> >> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> > 
+> > All mkfs.ubifs users should take a look at this - should we apply this
+> > patch? I'm still in doubt...
+> > 
+> 
+> I do not agree with changing the behaviour.  It should be a new option,
+> and you could add a warning explaining what the root inode permissions
+> are and why e.g.
 
-drivers/mtd/nand/fsl_upm.c: In function 'fun_chip_init':
-drivers/mtd/nand/fsl_upm.c:190: warning: format '%x' expects type 'unsigned int', but argument 3 has type 'resource_size_t'
+But on the other hand, a separate option looks silly... Would be nice to
+somehow slowly deprecate current behavior...
 
-Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
----
- drivers/mtd/nand/fsl_upm.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+> 	Warning: Option ?? not used. Setting root inode permissions to blah
+> 
+> 	Warning: Option ?? used. Setting root inode permissions to blah
 
-diff --git a/drivers/mtd/nand/fsl_upm.c b/drivers/mtd/nand/fsl_upm.c
-index 4eff8b2..dc61ecf 100644
---- a/drivers/mtd/nand/fsl_upm.c
-+++ b/drivers/mtd/nand/fsl_upm.c
-@@ -186,8 +186,8 @@ static int __devinit fun_chip_init(struct fsl_upm_nand *fun,
- 	if (!flash_np)
- 		return -ENODEV;
- 
--	fun->mtd.name = kasprintf(GFP_KERNEL, "%x.%s", io_res->start,
--				  flash_np->name);
-+	fun->mtd.name = kasprintf(GFP_KERNEL, "%x.%s", 
-+			(unsigned int)io_res->start, flash_np->name);
- 	if (!fun->mtd.name) {
- 		ret = -ENOMEM;
- 		goto err;
 -- 
-1.5.6.5
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
