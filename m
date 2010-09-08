@@ -1,23 +1,23 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OtFsj-0001Qg-Ab
-	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2010 08:19:50 +0000
-Received: by bwz13 with SMTP id 13so6508414bwz.36
+	id 1OtG5U-0007nc-27
+	for linux-mtd@lists.infradead.org; Wed, 08 Sep 2010 08:33:04 +0000
+Received: by fxm12 with SMTP id 12so4627599fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Sep 2010 01:19:48 -0700 (PDT)
-Subject: Re: NOTE! mkfs.ubifs
+	Wed, 08 Sep 2010 01:32:57 -0700 (PDT)
+Subject: Re: [PATCH] cmd line partitions: use 64 bit variables to detect
+	partitions/offsets larger than 4G.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-In-Reply-To: <4C8612B9.4060305@nokia.com>
-References: <1283848562-19564-1-git-send-email-dedekind1@gmail.com>
-	<1283850698.2979.25.camel@localhost>  <4C8612B9.4060305@nokia.com>
+To: Saeed Bishara <saeed@marvell.com>
+In-Reply-To: <1283852918-9141-1-git-send-email-saeed@marvell.com>
+References: <1283849765.2979.22.camel@localhost>
+	<1283852918-9141-1-git-send-email-saeed@marvell.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 08 Sep 2010 11:18:19 +0300
-Message-ID: <1283933899.2979.56.camel@localhost>
+Date: Wed, 08 Sep 2010 11:31:26 +0300
+Message-ID: <1283934686.2979.58.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Arno Steffen <arno.steffen@googlemail.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,16 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-07 at 13:23 +0300, Adrian Hunter wrote:
-> I do not agree with changing the behaviour.  It should be a new option,
-> and you could add a warning explaining what the root inode permissions
-> are and why e.g.
+On Tue, 2010-09-07 at 12:48 +0300, Saeed Bishara wrote:
+> Signed-off-by: Saeed Bishara <saeed@marvell.com>
+> ---
+>  drivers/mtd/cmdlinepart.c |   12 ++++++------
+>  1 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> 	Warning: Option ?? not used. Setting root inode permissions to blah
+> diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+> index 1479da6..80036d1 100644
+> --- a/drivers/mtd/cmdlinepart.c
+> +++ b/drivers/mtd/cmdlinepart.c
+> @@ -41,8 +41,8 @@
+>  
 > 
-> 	Warning: Option ?? used. Setting root inode permissions to blah
+>  /* special size referring to all the remaining space in a partition */
+> -#define SIZE_REMAINING UINT_MAX
+> -#define OFFSET_CONTINUOUS UINT_MAX
+> +#define SIZE_REMAINING LLONG_MAX
+> +#define OFFSET_CONTINUOUS LLONG_MAX
 
-Sent you v2 of this patch with an alternative (less harsh) solution.
+Should be ULLONG_MAX since you use unsigned long long and also offsets
+in 'struct mtd_partition' uses uint64_t.
 
 -- 
 Best Regards,
