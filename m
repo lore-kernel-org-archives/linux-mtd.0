@@ -1,25 +1,28 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Otfho-0004RR-T2
-	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 11:54:17 +0000
-Received: by iwn10 with SMTP id 10so1089856iwn.36
+	id 1OtfuK-0001nG-F6
+	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 12:07:12 +0000
+Received: by bwz13 with SMTP id 13so1356147bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Sep 2010 04:54:15 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1284030609.27765.4.camel@localhost>
+	Thu, 09 Sep 2010 05:07:11 -0700 (PDT)
+Subject: Re: mks.jffs2 uid/gid for root inode
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Arno Steffen <arno.steffen@googlemail.com>
+In-Reply-To: <AANLkTikhyEJn97McTOSYcAXG11EeqfpXzRUdRqY0_1Sr@mail.gmail.com>
 References: <AANLkTikScro_GmWvVb6SCq5wTzMAfN+c_4Od2SBY+OpO@mail.gmail.com>
 	<1283846532.2979.0.camel@localhost>
 	<AANLkTi=mrqg21uOXPJf=dOUq20YD1ocAZJpf1=fodtVM@mail.gmail.com>
 	<1284019747.2979.73.camel@localhost>
 	<AANLkTi=SGuBghcHnFoZfe6j3jVxQbKxzSU7t4z+vwPxc@mail.gmail.com>
 	<1284030609.27765.4.camel@localhost>
-Date: Thu, 9 Sep 2010 13:54:15 +0200
-Message-ID: <AANLkTikhyEJn97McTOSYcAXG11EeqfpXzRUdRqY0_1Sr@mail.gmail.com>
-Subject: Re: mks.jffs2 uid/gid for root inode
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: dedekind1@gmail.com, linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
+	<AANLkTikhyEJn97McTOSYcAXG11EeqfpXzRUdRqY0_1Sr@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 09 Sep 2010 15:05:43 +0300
+Message-ID: <1284033943.27765.22.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,33 +32,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/9/9 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Thu, 2010-09-09 at 11:57 +0200, Arno Steffen wrote:
->> 2010/9/9 Artem Bityutskiy <dedekind1@gmail.com>:
->> > On Thu, 2010-09-09 at 08:17 +0200, Arno Steffen wrote:
->> >> Thanks, thought already nobody is interested in this. Regarding a
->> >> patch: I did look at the code, but my knowledge about the details is
->> >> to less.
->> >
->> > I've sent you the patch. Please, test v2 of the patch and let me know =
-if
->> > it works for you. Thanks!
->> >
->> > --
->> > Best Regards,
->> > Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
->>
->> Havn't got e mail with patch ?!?
->
-> Attached. It was sent to the MTD ML and you was in CC.
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
->
+On Thu, 2010-09-09 at 13:54 +0200, Arno Steffen wrote:
+> Thanks for the patch. But this is for ubifs, while I detected this bug
+> in jffs2 - this is what I am using.
 
-Thanks for the patch. But this is for ubifs, while I detected this bug
-in jffs2 - this is what I am using.
-So I can't test this.
-Best regards
-Arno
+Oh my god, I really need to start wearing glasses. Sorry. But the same
+bug exists in mkfs.ubifs, anyway. Since I'm not interested in JFFS2
+anymore, I'm not going to fix it. You can do analogous thing for
+mkfs.jffs2, if you wish.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
