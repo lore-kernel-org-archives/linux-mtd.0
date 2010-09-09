@@ -1,16 +1,24 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mail.grid-net.com ([97.65.115.2])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Otgy2-0006l5-NK
-	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 13:15:12 +0000
-Message-ID: <4C88DDD5.4060507@parrot.com>
-Date: Thu, 9 Sep 2010 15:15:01 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: UBI/UBIFS interrupted write page handling
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+	id 1OthPl-000227-A2
+	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 13:43:47 +0000
+References: <1283933928-14601-1-git-send-email-dedekind1@gmail.com>
+	<C7A5B00EFC707A46AB67997D0215216786812A@mx1.grid-net.com>
+	<AANLkTimOCyLXdHM0sJ-ObVgS3S9PFtYomorJhWpE+gB-@mail.gmail.com>
+Message-ID: <6CBB27E8-B22A-41C6-B397-8C5FB2437716@grid-net.com>
+From: "Steve Iribarne" <siribarne@grid-net.com>
+To: "Arno Steffen" <arno.steffen@googlemail.com>
+In-Reply-To: <AANLkTimOCyLXdHM0sJ-ObVgS3S9PFtYomorJhWpE+gB-@mail.gmail.com>
+Content-Type: text/plain;
+	format=flowed;
+	delsp=yes;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: "dedekind1@gmail.com" <dedekind1@gmail.com>
+MIME-Version: 1.0 (iPhone Mail 7E18)
+Subject: Re: [PATCHv2] mkfs.ubifs: do not override root inode permissions
+Date: Thu, 9 Sep 2010 06:43:29 -0700
+Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,97 +28,274 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Yes.  We follow the latest changes.  Mainly because I'm going to start  
+implementing ubifs and SELinux.  So I want to have the latest and  
+greatest when I do it.
 
-we have nands where interrupted write page become unstable and can't be 
-trusted.
+-stv
+On Sep 9, 2010, at 5:32, "Arno Steffen" <arno.steffen@googlemail.com>  
+wrote:
 
-All interrupted write page should be erased before further usage. This 
-mean we should have an algorithm to identify them when mounting/scanning.
-
-If we are writing PageX and it is interrupt by power cut. On reboot we 
-could have the following case :
-1) PageX empty. But we don't know if write process started and the page 
-can't be written again
-2) PageX contains invalid data (bad crc, ecc).
-3) PageX contains valid data, but we don't know if the write finish and 
-if the page is stable.
-
-How ubi/ubifs detect this interrupt write pages ?
-
-Only case 2 seems handled and it is not enough.
-
-On one of our test, we are in case 3. Ubifs find a valid interrupt page 
-on mount and trust it. Latter the page become corrupted [1] because it 
-is unstable.
-
-
-
-To identify a interrupted write page we :
-- could use interrupted flags for static volume
-- handle with care data move (copy flags) : if sqnum of the copy is the 
-biggest, we should ignore it/copy it.
-- use upper layer for dynamic volume. For ubifs this could be a journal.
-
-
-Matthieu
-
-PS : the same story happen for erase, but ubi should handle them correctly.
-
-[1]
-
-[   12.720244] UBIFS: un-mount UBI device 3, volume 0
-[   12.760056] UBIFS: mounted UBI device 3, volume 0, name "system"
-[   12.765919] UBIFS: file system size:   30601216 bytes (29884 KiB, 29
-MiB, 241 LEBs)
-[   12.773642] UBIFS: journal size:       1523712 bytes (1488 KiB, 1
-MiB, 12 LEBs)
-[   12.780868] UBIFS: media format:       w4/r0 (latest is w4/r0)
-[   12.786668] UBIFS: default compressor: none
-[   12.790852] UBIFS: reserved for root:  1445370 bytes (1411 KiB)
-writing file '//mnt/dir06/file0046.bin' num=70, size=147120
-writing file '//mnt/dir0c/file006c.bin' num=108, size=288146
-[   13.491407] UBI error: ubi_io_read: error -74 while reading 60 bytes
-from PEB 106:129480, read 60 bytes
-[   13.500785] [<c00279f0>] (dump_stack+0x0/0x14) from [<c0161040>]
-(ubi_io_read+0xf0/0x258)
-[   13.508952] [<c0160f50>] (ubi_io_read+0x0/0x258) from [<c01603a0>]
-(ubi_eba_read_leb+0x1b4/0x490)
-[   13.517791] [<c01601ec>] (ubi_eba_read_leb+0x0/0x490) from
-[<c015e3f0>] (ubi_leb_read+0xe8/0x138)
-[   13.526649] [<c015e308>] (ubi_leb_read+0x0/0x138) from [<c00d0c48>]
-(ubifs_read_node+0x40/0x190)
-[   13.535423]  r7:00000002 r6:00000000 r5:c78489a0 r4:c78489a0
-[   13.541065] [<c00d0c08>] (ubifs_read_node+0x0/0x190) from
-[<c00d18b8>] (ubifs_read_node_wbuf+0x4c/0x204)
-[   13.550547] [<c00d186c>] (ubifs_read_node_wbuf+0x0/0x204) from
-[<c00e6b60>] (ubifs_tnc_read_node+0x5c/0xf8)
-[   13.560274] [<c00e6b04>] (ubifs_tnc_read_node+0x0/0xf8) from
-[<c00d32a8>] (matches_name+0x94/0xdc)
-[   13.569218] [<c00d3214>] (matches_name+0x0/0xdc) from [<c00d3334>]
-(resolve_collision+0x44/0x204)
-[   13.578074] [<c00d32f0>] (resolve_collision+0x0/0x204) from
-[<c00d45e4>] (ubifs_tnc_remove_nm+0xf0/0x108)
-[   13.587615] [<c00d44f4>] (ubifs_tnc_remove_nm+0x0/0x108) from
-[<c00c7f08>] (ubifs_jnl_rename+0x4f8/0x70c)
-[   13.597169] [<c00c7a10>] (ubifs_jnl_rename+0x0/0x70c) from
-[<c00caaf8>] (ubifs_rename+0x2b0/0x5e4)
-[   13.606117] [<c00ca848>] (ubifs_rename+0x0/0x5e4) from [<c008581c>]
-(vfs_rename+0x238/0x270)
-[   13.614538] [<c00855e4>] (vfs_rename+0x0/0x270) from [<c0086e54>]
-(sys_renameat+0x1b8/0x1cc)
-[   13.622965] [<c0086c9c>] (sys_renameat+0x0/0x1cc) from [<c0086e8c>]
-(sys_rename+0x24/0x28)
-[   13.631213] [<c0086e68>] (sys_rename+0x0/0x28) from [<c0023c00>]
-(ret_fast_syscall+0x0/0x2c)
-[   13.639670] UBIFS error (pid 273): ubifs_read_node: bad node type (0
-but expected 2)
-[   13.647371] UBIFS error (pid 273): ubifs_read_node: bad node at LEB
-47:125384
-[   13.654514] UBIFS warning (pid 273): ubifs_ro_mode: switched to
-read-only mode, error -22
-/endurance: endurance.c: 197: create_file: Assertion `status == 0' failed.
-[   46.357586] UBIFS error (pid 101): make_reservation: cannot reserve
-160 bytes in jhead 1, error -30
-[   46.366503] UBIFS error (pid 101): ubifs_write_inode: can't write
-inode 19507, error -30
+> Does someone of you is expert enough to patch mkfs.jffs2?
+>
+> 2010/9/8 Steve Iribarne <siribarne@grid-net.com>:
+>>
+>> Sorry for the top post... stupid M$oft outlook.
+>>
+>> Anyway.. .just a quick thanks for v2 of this from someone who uses  
+>> this in
+>> production.
+>> I can eventually migrate to the proper option but it's going to  
+>> take me two
+>> releases to do it.
+>>
+>> -stv
+>>
+>> -----Original Message-----
+>> From: linux-mtd-bounces@lists.infradead.org on behalf of Artem  
+>> Bityutskiy
+>> Sent: Wed 9/8/2010 1:18 AM
+>> To: linux-mtd@lists.infradead.org
+>> Cc: Arno Steffen; Adrian Hunter
+>> Subject: [PATCHv2] mkfs.ubifs: do not override root inode permissions
+>>
+>> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+>>
+>> When mkfs.ubifs is used with -r dir, it does not make the root UBIFS
+>> inode uid/gid/permissions to be equivalent to dir's permissions, but
+>> it makes root inode permissions to be equivalent to uid = git = 0
+>> (root) and permissions = u+rwx go+rx.
+>>
+>> Unfortunately, we cannot simply fix this bug, because mkfs.ubifs is
+>> already used in production. Thus, we have introduce --squash-rino- 
+>> perm
+>> option which is the default and it preserves the old mkfs.ubifs
+>> behavior. We also introduce --nosquash-rino-perm option which fixes
+>> mkfs.ubifs behavior. If none of these options is used, we print a
+>> warning. The plan is to make everyone use one of these options, then
+>> make --nosquash-rino-perm to be the default and remove the warning,
+>> and then eventually deprecate and remove both options.
+>>
+>> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+>> ---
+>>  mkfs.ubifs/mkfs.ubifs.c |   87
+>> ++++++++++++++++++++++++++++++++++------------
+>>  1 files changed, 64 insertions(+), 23 deletions(-)
+>>
+>> diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+>> index 9f2a226..eeb5e42 100644
+>> --- a/mkfs.ubifs/mkfs.ubifs.c
+>> +++ b/mkfs.ubifs/mkfs.ubifs.c
+>> @@ -23,7 +23,7 @@
+>>  #include "mkfs.ubifs.h"
+>>  #include <crc32.h>
+>>
+>> -#define PROGRAM_VERSION "1.3"
+>> +#define PROGRAM_VERSION "1.4"
+>>
+>>  /* Size (prime number) of hash table for link counting */
+>>  #define HASH_TABLE_SIZE 10099
+>> @@ -109,6 +109,7 @@ static char *output;
+>>  static int out_fd;
+>>  static int out_ubi;
+>>  static int squash_owner;
+>> +static int squash_rino_perm = -1;
+>>
+>>  /* The 'head' (position) which nodes are written */
+>>  static int head_lnum;
+>> @@ -134,25 +135,27 @@ static unsigned long long creat_sqnum;
+>>  static const char *optstring = "d:r:m:o:D:h? 
+>> vVe:c:g:f:P:k:x:X:j:R:l:j:U";
+>>
+>>  static const struct option longopts[] = {
+>> -       {"root",          1, NULL, 'r'},
+>> -       {"min-io-size",   1, NULL, 'm'},
+>> -       {"leb-size",      1, NULL, 'e'},
+>> -       {"max-leb-cnt",   1, NULL, 'c'},
+>> -       {"output",        1, NULL, 'o'},
+>> -       {"devtable",      1, NULL, 'D'},
+>> -       {"help",          0, NULL, 'h'},
+>> -       {"verbose",       0, NULL, 'v'},
+>> -       {"version",       0, NULL, 'V'},
+>> -       {"debug-level",   1, NULL, 'g'},
+>> -       {"jrn-size",      1, NULL, 'j'},
+>> -       {"reserved",      1, NULL, 'R'},
+>> -       {"compr",         1, NULL, 'x'},
+>> -       {"favor-percent", 1, NULL, 'X'},
+>> -       {"fanout",        1, NULL, 'f'},
+>> -       {"keyhash",       1, NULL, 'k'},
+>> -       {"log-lebs",      1, NULL, 'l'},
+>> -       {"orph-lebs",     1, NULL, 'p'},
+>> -       {"squash-uids" ,  0, NULL, 'U'},
+>> +       {"root",               1, NULL, 'r'},
+>> +       {"min-io-size",        1, NULL, 'm'},
+>> +       {"leb-size",           1, NULL, 'e'},
+>> +       {"max-leb-cnt",        1, NULL, 'c'},
+>> +       {"output",             1, NULL, 'o'},
+>> +       {"devtable",           1, NULL, 'D'},
+>> +       {"help",               0, NULL, 'h'},
+>> +       {"verbose",            0, NULL, 'v'},
+>> +       {"version",            0, NULL, 'V'},
+>> +       {"debug-level",        1, NULL, 'g'},
+>> +       {"jrn-size",           1, NULL, 'j'},
+>> +       {"reserved",           1, NULL, 'R'},
+>> +       {"compr",              1, NULL, 'x'},
+>> +       {"favor-percent",      1, NULL, 'X'},
+>> +       {"fanout",             1, NULL, 'f'},
+>> +       {"keyhash",            1, NULL, 'k'},
+>> +       {"log-lebs",           1, NULL, 'l'},
+>> +       {"orph-lebs",          1, NULL, 'p'},
+>> +       {"squash-uids" ,       0, NULL, 'U'},
+>> +       {"squash-rino-perm",   0, NULL, 'Q'},
+>> +       {"nosquash-rino-perm", 0, NULL, 'q'},
+>>         {NULL, 0, NULL, 0}
+>>  };
+>>
+>> @@ -190,6 +193,12 @@ static const char *helptext =
+>>  "-V, --version            display version information\n"
+>>  "-g, --debug=LEVEL        display debug information (0 - none, 1 -
+>> statistics,\n"
+>>  "                         2 - files, 3 - more details)\n"
+>> +"-Q, --squash-rino-perm   ignore permissions of the FS image  
+>> directory (the
+>> one\n"
+>> +"                         specified with --root) and make the  
+>> UBIFS root
+>> inode\n"
+>> +"                        permissions to be {uid=gid=root, u+rwx,go 
+>> +rx};
+>> this is\n"
+>> +"                         see also the default so far, see  
+>> explanations
+>> below\n"
+>> +"-q, --nosquash-rino-perm for the UBIFS root inode use permissions  
+>> of the
+>> FS\n"
+>> +"                         image directory (the one specified with
+>> --root)\n"
+>>  "-h, --help               display this help text\n\n"
+>>  "Note, SIZE is specified in bytes, but it may also be specified in
+>> Kilobytes,\n"
+>>  "Megabytes, and Gigabytes if a KiB, MiB, or GiB suffix is used.\n\n"
+>> @@ -201,7 +210,19 @@ static const char *helptext =
+>>  "or more percent better than \"lzo\", mkfs.ubifs chooses \"lzo\",  
+>> otherwise
+>> it chooses\n"
+>>  "\"zlib\". The \"--favor-percent\" may specify arbitrary threshold  
+>> instead
+>> of the\n"
+>>  "default 20%.\n\n"
+>> -"The -R parameter specifies amount of bytes reserved for the
+>> super-user.\n";
+>> +"The -R parameter specifies amount of bytes reserved for the
+>> super-user.\n\n"
+>> +"Some clarifications about --squash-rino-perm and --nosquash-rino- 
+>> perm
+>> options.\n"
+>> +"Originally, mkfs.ubifs did not have them, and it always set  
+>> permissions
+>> for the UBIFS\n"
+>> +"root inode to be {uid=gid=root, u+rwx,go+rx}. This was a bug  
+>> which was
+>> found too\n"
+>> +"late, when mkfs.ubifs had already been used in production. To fix  
+>> this
+>> bug, 2 new\n"
+>> +"options were introduced: --squash-rino-perm which preserves the old
+>> behavior and\n"
+>> +"--nosquash-rino-perm which makes mkfs.ubifs use the right  
+>> permissions for
+>> the root\n"
+>> +"inode. For now --squash-rino-perm is the default, and if neither
+>> --squash-rino-perm\n"
+>> +"nor --nosquash-rino-perm are used, mkfs.ubifs prints a warning. The
+>> further plan is:\n"
+>> +" o keep the warning for few releases to make sure users start  
+>> using one of
+>> the\n"
+>> +"   options\n"
+>> +" o make --nosquash-rino-perm to be the default, and remove the  
+>> warning\n"
+>> +" o eventually deprecate both options\n";
+>>
+>>  /**
+>>   * make_path - make a path name from a directory and a name.
+>> @@ -643,6 +664,12 @@ static int get_options(int argc, char**argv)
+>>                 case 'U':
+>>                         squash_owner = 1;
+>>                         break;
+>> +               case 'Q':
+>> +                       squash_rino_perm = 1;
+>> +                       break;
+>> +               case 'q':
+>> +                       squash_rino_perm = 0;
+>> +                       break;
+>>                 }
+>>         }
+>>
+>> @@ -671,6 +698,10 @@ static int get_options(int argc, char**argv)
+>>                 return err_msg("Maximum count of LEBs was not  
+>> specified "
+>>                                "(use -h for help)");
+>>
+>> +       if (squash_rino_perm != -1 && root)
+>> +               return err_msg("--squash-rino-perm and nosquash- 
+>> rino-perm
+>> options"
+>> +                              "can be used only with the --root  
+>> option");
+>> +
+>>         if (c->max_bud_bytes == -1) {
+>>                 int lebs;
+>>
+>> @@ -1630,18 +1661,28 @@ static int add_multi_linked_files(void)
+>>  static int write_data(void)
+>>  {
+>>         int err;
+>> +       mode_t mode = S_IFDIR | S_IRWXU | S_IRGRP | S_IXGRP |  
+>> S_IROTH |
+>> S_IXOTH;
+>>
+>>         if (root) {
+>>                 err = stat(root, &root_st);
+>>                 if (err)
+>>                         return sys_err_msg("bad root file-system  
+>> directory
+>> '%s'",
+>>                                            root);
+>> +               if (squash_rino_perm == -1) {
+>> +                       printf("WARNING: setting root UBIFS inode  
+>> UID=GID=0
+>> (root) and permissions "
+>> +                                "to u+rwx,go+rx; use --squash-rino- 
+>> perm or
+>> --nosquash-rino-perm "
+>> +                                "to suppress this warning");
+>> +                       squash_rino_perm = 1;
+>> +               }
+>> +               if (squash_rino_perm) {
+>> +                       root_st.st_uid = root_st.st_gid = 0;
+>> +                       root_st.st_mode = mode;
+>> +               }
+>>         } else {
+>>                 root_st.st_mtime = time(NULL);
+>>                 root_st.st_atime = root_st.st_ctime =  
+>> root_st.st_mtime;
+>> +               root_st.st_mode = mode;
+>>         }
+>> -       root_st.st_uid = root_st.st_gid = 0;
+>> -       root_st.st_mode = S_IFDIR | S_IRWXU | S_IRGRP | S_IXGRP |  
+>> S_IROTH |
+>> S_IXOTH;
+>>
+>>         head_flags = 0;
+>>         err = add_directory(root, UBIFS_ROOT_INO, &root_st, !root);
+>> --
+>> 1.7.1.1
+>>
+>>
+>> ______________________________________________________
+>> Linux MTD discussion mailing list
+>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>>
