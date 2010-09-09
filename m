@@ -1,16 +1,22 @@
-MIME-Version: 1.0
-In-Reply-To: <1283179285-6539-1-git-send-email-haojian.zhuang@marvell.com>
-References: <1283179285-6539-1-git-send-email-haojian.zhuang@marvell.com>
-From: Eric Miao <eric.y.miao@gmail.com>
-Date: Thu, 9 Sep 2010 21:59:40 +0800
-Message-ID: <AANLkTinGdpt3kiCas6tpEZPbTknEe1Upz9D_aLgfNWo_@mail.gmail.com>
-Subject: Re: [PATCH 1/6] pxa3xx_nand: make scan procedure more clear
-To: Haojian Zhuang <haojian.zhuang@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Lei Wen <leiwen@marvell.com>, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, Haojian Zhuang <haojian.zhuang@marvell.com>,
-	linux-arm-kernel@lists.infradead.org
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OtlHG-0000wt-Je
+	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 17:51:15 +0000
+Received: by bwz13 with SMTP id 13so1774221bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 09 Sep 2010 10:51:13 -0700 (PDT)
+Subject: Re: UBI/UBIFS interrupted write page handling
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <4C88DDD5.4060507@parrot.com>
+References: <4C88DDD5.4060507@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 09 Sep 2010 20:51:09 +0300
+Message-ID: <1284054669.11335.21.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,215 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 30, 2010 at 10:41 PM, Haojian Zhuang
-<haojian.zhuang@gmail.com> wrote:
-> From: Lei Wen <leiwen@marvell.com>
->
-> Signed-off-by: Lei Wen <leiwen@marvell.com>
-> Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
-> Cc: Eric Miao <eric.y.miao@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> ---
-> =C2=A0drivers/mtd/nand/pxa3xx_nand.c | =C2=A0 88 ++++++++++++++++++++++--=
----------------
-> =C2=A01 files changed, 50 insertions(+), 38 deletions(-)
->
-> diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nan=
-d.c
-> index 5d24968..3468a3d 100644
-> --- a/drivers/mtd/nand/pxa3xx_nand.c
-> +++ b/drivers/mtd/nand/pxa3xx_nand.c
-> @@ -126,6 +126,7 @@ struct pxa3xx_nand_info {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0buf_start;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0buf_count;
->
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info =C2=A0 =C2=A0 =C2=A0 =C2=A0 *mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0/* DMA information */
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 drcmr_dat;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 drcmr_cmd;
-> @@ -1044,21 +1045,13 @@ static void pxa3xx_nand_init_mtd(struct mtd_info =
-*mtd,
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0this->chip_delay =3D 25;
-> =C2=A0}
->
-> -static int pxa3xx_nand_probe(struct platform_device *pdev)
-> +static int alloc_nand_resource(struct platform_device *pdev)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_platform_data *pdata;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_platform_data *pdata =3D pdev->=
-dev.platform_data;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct pxa3xx_nand_info *info;
-> - =C2=A0 =C2=A0 =C2=A0 struct nand_chip *this;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct mtd_info *mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct resource *r;
-> - =C2=A0 =C2=A0 =C2=A0 int ret =3D 0, irq;
-> -
-> - =C2=A0 =C2=A0 =C2=A0 pdata =3D pdev->dev.platform_data;
-> -
-> - =C2=A0 =C2=A0 =C2=A0 if (!pdata) {
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "n=
-o platform data defined\n");
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
-> - =C2=A0 =C2=A0 =C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 int ret, irq;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd =3D kzalloc(sizeof(struct mtd_info) + size=
-of(struct pxa3xx_nand_info),
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0GFP_KERNEL);
-> @@ -1070,8 +1063,8 @@ static int pxa3xx_nand_probe(struct platform_device=
- *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0info =3D (struct pxa3xx_nand_info *)(&mtd[1]);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->pdev =3D pdev;
->
-> - =C2=A0 =C2=A0 =C2=A0 this =3D &info->nand_chip;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd->priv =3D info;
-> + =C2=A0 =C2=A0 =C2=A0 info->mtd =3D mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd->owner =3D THIS_MODULE;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0info->clk =3D clk_get(&pdev->dev, NULL);
-> @@ -1149,27 +1142,9 @@ static int pxa3xx_nand_probe(struct platform_devic=
-e *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0pxa3xx_nand_init_mtd(mtd, info);
-> + =C2=A0 =C2=A0 =C2=A0 platform_set_drvdata(pdev, info);
->
-> - =C2=A0 =C2=A0 =C2=A0 platform_set_drvdata(pdev, mtd);
-> -
-> - =C2=A0 =C2=A0 =C2=A0 if (nand_scan(mtd, 1)) {
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "f=
-ailed to scan nand\n");
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D -ENXIO;
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 goto fail_free_irq;
-> - =C2=A0 =C2=A0 =C2=A0 }
-> -
-> - =C2=A0 =C2=A0 =C2=A0 if (mtd_has_cmdlinepart()) {
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 static const char *pro=
-bes[] =3D { "cmdlinepart", NULL };
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 struct mtd_partition *=
-parts;
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int nr_parts;
-> -
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 nr_parts =3D parse_mtd=
-_partitions(mtd, probes, &parts, 0);
-> -
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (nr_parts)
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 return add_mtd_partitions(mtd, parts, nr_parts);
-> - =C2=A0 =C2=A0 =C2=A0 }
-> -
-> - =C2=A0 =C2=A0 =C2=A0 return add_mtd_partitions(mtd, pdata->parts, pdata=
-->nr_parts);
-> + =C2=A0 =C2=A0 =C2=A0 return 0;
->
-> =C2=A0fail_free_irq:
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0free_irq(irq, info);
-> @@ -1194,8 +1169,8 @@ fail_free_mtd:
->
-> =C2=A0static int pxa3xx_nand_remove(struct platform_device *pdev)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D platform_get_drvdata(pdev=
-);
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D mtd->priv;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D platform_get_drv=
-data(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D info->mtd;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct resource *r;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0int irq;
->
-> @@ -1224,11 +1199,48 @@ static int pxa3xx_nand_remove(struct platform_dev=
-ice *pdev)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0return 0;
-> =C2=A0}
->
-> +static int pxa3xx_nand_probe(struct platform_device *pdev)
-> +{
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_platform_data *pdata;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info;
-> + =C2=A0 =C2=A0 =C2=A0 int ret;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 pdata =3D pdev->dev.platform_data;
-> + =C2=A0 =C2=A0 =C2=A0 if (!pdata) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "n=
-o platform data defined\n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 ret =3D alloc_nand_resource(pdev);
+On Thu, 2010-09-09 at 15:15 +0200, Matthieu CASTET wrote:
+> Hi,
+> 
+> we have nands where interrupted write page become unstable and can't be 
+> trusted.
+> 
+> All interrupted write page should be erased before further usage. This 
+> mean we should have an algorithm to identify them when mounting/scanning.
+> 
+> If we are writing PageX and it is interrupt by power cut. On reboot we 
+> could have the following case :
+> 1) PageX empty. But we don't know if write process started and the page 
+> can't be written again
 
-Hrm... I'd rather this being something like:
+So this page may be unstable and we should not really write there,
+AFAIU. But UBIFS will, which is a problem. However, should be easily
+fixable, se below.
 
-        info =3D alloc_nand_info(pdev);
-        if (info =3D=3D NULL)
-                blah ... blah ...
+> 2) PageX contains invalid data (bad crc, ecc).
 
-Otherwise looks all good to me.
+I think UBIFS ignores ECC errors completely. When replying the journal,
+if it gets an ECC error, it ignores it and checks the nodes in the read
+buffer. Those which have correct CRC are used, those which have
+incorrect ECC are dropped.
 
-> + =C2=A0 =C2=A0 =C2=A0 if (ret)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ret;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 info =3D platform_get_drvdata(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 if (nand_scan(info->mtd, 1)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 dev_err(&pdev->dev, "f=
-ailed to scan nand\n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 pxa3xx_nand_remove(pde=
-v);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -ENODEV;
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 if (mtd_has_cmdlinepart()) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 static const char *pro=
-bes[] =3D { "cmdlinepart", NULL };
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 struct mtd_partition *=
-parts;
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int nr_parts;
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 nr_parts =3D parse_mtd=
-_partitions(info->mtd, probes, &parts, 0);
-> +
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (nr_parts)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 return add_mtd_partitions(info->mtd, parts, nr_parts);
-> + =C2=A0 =C2=A0 =C2=A0 }
-> +
-> + =C2=A0 =C2=A0 =C2=A0 return add_mtd_partitions(info->mtd, pdata->parts,=
- pdata->nr_parts);
-> +}
-> +
-> =C2=A0#ifdef CONFIG_PM
-> =C2=A0static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_mes=
-sage_t state)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D (struct mtd_info *)platfo=
-rm_get_drvdata(pdev);
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D mtd->priv;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D platform_get_drv=
-data(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D info->mtd;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (info->state !=3D STATE_READY) {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0dev_err(&pdev->dev=
-, "driver busy, state =3D %d\n", info->state);
-> @@ -1240,8 +1252,8 @@ static int pxa3xx_nand_suspend(struct platform_devi=
-ce *pdev, pm_message_t state)
->
-> =C2=A0static int pxa3xx_nand_resume(struct platform_device *pdev)
-> =C2=A0{
-> - =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D (struct mtd_info *)platfo=
-rm_get_drvdata(pdev);
-> - =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D mtd->priv;
-> + =C2=A0 =C2=A0 =C2=A0 struct pxa3xx_nand_info *info =3D platform_get_drv=
-data(pdev);
-> + =C2=A0 =C2=A0 =C2=A0 struct mtd_info *mtd =3D info->mtd;
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0nand_writel(info, NDTR0CS0, info->ndtr0cs0);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0nand_writel(info, NDTR1CS0, info->ndtr1cs0);
-> --
-> 1.7.0.4
->
->
+Obviously, UBIFS does not write anymore to this page. But it uses the
+next page.
+
+This is also a problem because if the page which had ECC errors is
+unstable, some nodes which were OK may not be OK later.
+
+Should be easily fixable as well.
+
+> 3) PageX contains valid data, but we don't know if the write finish and 
+> if the page is stable.
+
+UBIFS always knows whether it was unmounted cleanly or not. But we are
+considering the case when it was not cleanly unmounted. So yes, this is
+a problem as well.
+
+> How ubi/ubifs detect this interrupt write pages ?
+
+You are right, currently UBIFS is vulnerable to the unstable pages
+issue.
+
+> Only case 2 seems handled and it is not enough.
+
+I think none are properly handled actually :-)
+
+> On one of our test, we are in case 3. Ubifs find a valid interrupt page 
+> on mount and trust it. Latter the page become corrupted [1] because it 
+> is unstable.
+
+OK, I see.
+
+> To identify a interrupted write page we :
+> - could use interrupted flags for static volume
+> - handle with care data move (copy flags) : if sqnum of the copy is the 
+> biggest, we should ignore it/copy it.
+> - use upper layer for dynamic volume. For ubifs this could be a journal.
+
+Actually, for UBIFS things are rather simple. In UBIFS every writes go
+to the journal. Even GC writes to the journal. So when we are mounting
+after an unclean reboot, we can simply refresh the last LEBs of all
+journal heads using the 'ubi_leb_change()' call. This should handle all
+the three cases you describe.
+
+I do not think it is very difficult to do.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
