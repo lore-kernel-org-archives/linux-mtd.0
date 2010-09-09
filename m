@@ -1,26 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Otdoh-0000yE-Kt
-	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 09:53:16 +0000
-Received: by fxm12 with SMTP id 12so911529fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Sep 2010 02:53:14 -0700 (PDT)
-Subject: Re: ubifs : corruption after power cut test
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4C88A769.4010103@parrot.com>
-References: <4C346D5B.2000609@parrot.com> <4C3C1572.8080501@parrot.com>
-	<4C3C2740.2040105@parrot.com> <4C3C30D1.9030005@parrot.com>
-	<1279031064.31639.90.camel@localhost> <4C3C81E3.3030407@parrot.com>
-	<4C4FDEF5.2040405@parrot.com>  <1282463086.16502.38.camel@brekeke>
-	<1283763308.11066.0.camel@localhost>  <4C88A769.4010103@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Sep 2010 12:51:45 +0300
-Message-ID: <1284025905.27765.2.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
+	helo=AM1EHSOBE004.bigfish.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OteaN-0005i5-1P
+	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 10:42:32 +0000
+From: Roy Zang <tie-fei.zang@freescale.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/3 v2][MTD] P4080/eLBC: Make Freescale elbc interrupt common
+	to elbc devices
+Date: Thu, 9 Sep 2010 18:20:30 +0800
+Message-ID: <1284027632-32573-1-git-send-email-tie-fei.zang@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: B07421@freescale.com, dedekind1@gmail.com, B25806@freescale.com,
+	linuxppc-dev@ozlabs.org, cbouatmailru@gmail.com,
+	akpm@linux-foundation.org, dwmw2@infradead.org, B11780@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +23,431 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> PS : any idea/comment on the handling of interrupted write page by 
-> UBI/UBIFS ?
+From: Lan Chunhe-B25806 <b25806@freescale.com>
 
-Err, I think these are perfectly handled, I read your e-mails, they were
-a little messy, but I did not find anything UBIFS does not handle. I
-sent you a fix for your oops.
+Move Freescale elbc interrupt from nand dirver to elbc driver.
+Then all elbc devices can use the interrupt instead of ONLY nand.
 
-Would you please re-formulate your questions nicely in a separate
-e-mail, if you still have them?
+Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
+Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
+---
+Comparing with v1, according to the feedback, add some decorations.
 
+ arch/powerpc/Kconfig               |    7 +-
+ arch/powerpc/include/asm/fsl_lbc.h |   34 +++++-
+ arch/powerpc/sysdev/fsl_lbc.c      |  248 ++++++++++++++++++++++++++++++------
+ 3 files changed, 247 insertions(+), 42 deletions(-)
+
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 631e5a0..44df1ba 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -687,9 +687,12 @@ config 4xx_SOC
+ 	bool
+ 
+ config FSL_LBC
+-	bool
++	bool "Freescale Local Bus support"
++	depends on FSL_SOC
+ 	help
+-	  Freescale Localbus support
++	  Enables reporting of errors from the Freescale local bus
++	  controller.  Also contains some common code used by
++	  drivers for specific local bus peripherals.
+ 
+ config FSL_GTM
+ 	bool
+diff --git a/arch/powerpc/include/asm/fsl_lbc.h b/arch/powerpc/include/asm/fsl_lbc.h
+index 1b5a210..9b95eab 100644
+--- a/arch/powerpc/include/asm/fsl_lbc.h
++++ b/arch/powerpc/include/asm/fsl_lbc.h
+@@ -1,9 +1,10 @@
+ /* Freescale Local Bus Controller
+  *
+- * Copyright (c) 2006-2007 Freescale Semiconductor
++ * Copyright (c) 2006-2007, 2010 Freescale Semiconductor
+  *
+  * Authors: Nick Spence <nick.spence@freescale.com>,
+  *          Scott Wood <scottwood@freescale.com>
++ *          Jack Lan <jack.lan@freescale.com>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -27,6 +28,9 @@
+ #include <linux/types.h>
+ #include <linux/io.h>
+ 
++#include <linux/of_platform.h>
++#include <linux/interrupt.h>
++
+ struct fsl_lbc_bank {
+ 	__be32 br;             /**< Base Register  */
+ #define BR_BA           0xFFFF8000
+@@ -125,13 +129,23 @@ struct fsl_lbc_regs {
+ #define LTESR_ATMW 0x00800000
+ #define LTESR_ATMR 0x00400000
+ #define LTESR_CS   0x00080000
++#define LTESR_UPM  0x00000002
+ #define LTESR_CC   0x00000001
+ #define LTESR_NAND_MASK (LTESR_FCT | LTESR_PAR | LTESR_CC)
++#define LTESR_MASK      (LTESR_BM | LTESR_FCT | LTESR_PAR | LTESR_WP \
++			 | LTESR_ATMW | LTESR_ATMR | LTESR_CS | LTESR_UPM \
++			 | LTESR_CC)
++#define LTESR_CLEAR	0xFFFFFFFF
++#define LTECCR_CLEAR	0xFFFFFFFF
++#define LTESR_STATUS	LTESR_MASK
++#define LTEIR_ENABLE	LTESR_MASK
++#define LTEDR_ENABLE	0x00000000
+ 	__be32 ltedr;           /**< Transfer Error Disable Register */
+ 	__be32 lteir;           /**< Transfer Error Interrupt Register */
+ 	__be32 lteatr;          /**< Transfer Error Attributes Register */
+ 	__be32 ltear;           /**< Transfer Error Address Register */
+-	u8 res6[0xC];
++	__be32 lteccr;          /**< Transfer Error ECC Register */
++	u8 res6[0x8];
+ 	__be32 lbcr;            /**< Configuration Register */
+ #define LBCR_LDIS  0x80000000
+ #define LBCR_LDIS_SHIFT    31
+@@ -265,7 +279,23 @@ static inline void fsl_upm_end_pattern(struct fsl_upm *upm)
+ 		cpu_relax();
+ }
+ 
++/* overview of the fsl lbc controller */
++
++struct fsl_lbc_ctrl {
++	/* device info */
++	struct device			*dev;
++	struct fsl_lbc_regs __iomem	*regs;
++	int				irq;
++	wait_queue_head_t		irq_wait;
++	spinlock_t			lock;
++	void				*nand;
++
++	/* status read from LTESR by irq handler */
++	unsigned int			irq_status;
++};
++
+ extern int fsl_upm_run_pattern(struct fsl_upm *upm, void __iomem *io_base,
+ 			       u32 mar);
++extern struct fsl_lbc_ctrl *fsl_lbc_ctrl_dev;
+ 
+ #endif /* __ASM_FSL_LBC_H */
+diff --git a/arch/powerpc/sysdev/fsl_lbc.c b/arch/powerpc/sysdev/fsl_lbc.c
+index dceb8d1..f4eca8d 100644
+--- a/arch/powerpc/sysdev/fsl_lbc.c
++++ b/arch/powerpc/sysdev/fsl_lbc.c
+@@ -2,8 +2,11 @@
+  * Freescale LBC and UPM routines.
+  *
+  * Copyright (c) 2007-2008  MontaVista Software, Inc.
++ * Copyright (c) 2010 Freescale Semiconductor
+  *
+  * Author: Anton Vorontsov <avorontsov@ru.mvista.com>
++ * Author: Jack Lan <Jack.Lan@freescale.com>
++ * Author: Roy Zang <tie-fei.zang@freescale.com>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+@@ -21,37 +24,11 @@
+ #include <linux/of.h>
+ #include <asm/prom.h>
+ #include <asm/fsl_lbc.h>
++#include <linux/slab.h>
+ 
+ static spinlock_t fsl_lbc_lock = __SPIN_LOCK_UNLOCKED(fsl_lbc_lock);
+-static struct fsl_lbc_regs __iomem *fsl_lbc_regs;
+-
+-static char __initdata *compat_lbc[] = {
+-	"fsl,pq2-localbus",
+-	"fsl,pq2pro-localbus",
+-	"fsl,pq3-localbus",
+-	"fsl,elbc",
+-};
+-
+-static int __init fsl_lbc_init(void)
+-{
+-	struct device_node *lbus;
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(compat_lbc); i++) {
+-		lbus = of_find_compatible_node(NULL, NULL, compat_lbc[i]);
+-		if (lbus)
+-			goto found;
+-	}
+-	return -ENODEV;
+-
+-found:
+-	fsl_lbc_regs = of_iomap(lbus, 0);
+-	of_node_put(lbus);
+-	if (!fsl_lbc_regs)
+-		return -ENOMEM;
+-	return 0;
+-}
+-arch_initcall(fsl_lbc_init);
++struct fsl_lbc_ctrl *fsl_lbc_ctrl_dev;
++EXPORT_SYMBOL(fsl_lbc_ctrl_dev);
+ 
+ /**
+  * fsl_lbc_find - find Localbus bank
+@@ -65,13 +42,15 @@ arch_initcall(fsl_lbc_init);
+ int fsl_lbc_find(phys_addr_t addr_base)
+ {
+ 	int i;
++	struct fsl_lbc_regs __iomem *lbc;
+ 
+-	if (!fsl_lbc_regs)
++	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
+ 		return -ENODEV;
+ 
+-	for (i = 0; i < ARRAY_SIZE(fsl_lbc_regs->bank); i++) {
+-		__be32 br = in_be32(&fsl_lbc_regs->bank[i].br);
+-		__be32 or = in_be32(&fsl_lbc_regs->bank[i].or);
++	lbc = fsl_lbc_ctrl_dev->regs;
++	for (i = 0; i < ARRAY_SIZE(lbc->bank); i++) {
++		__be32 br = in_be32(&lbc->bank[i].br);
++		__be32 or = in_be32(&lbc->bank[i].or);
+ 
+ 		if (br & BR_V && (br & or & BR_BA) == addr_base)
+ 			return i;
+@@ -94,22 +73,26 @@ int fsl_upm_find(phys_addr_t addr_base, struct fsl_upm *upm)
+ {
+ 	int bank;
+ 	__be32 br;
++	struct fsl_lbc_regs __iomem *lbc;
+ 
+ 	bank = fsl_lbc_find(addr_base);
+ 	if (bank < 0)
+ 		return bank;
+ 
+-	br = in_be32(&fsl_lbc_regs->bank[bank].br);
++	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
++		return -ENODEV;
++	lbc = fsl_lbc_ctrl_dev->regs;
++	br = in_be32(&lbc->bank[bank].br);
+ 
+ 	switch (br & BR_MSEL) {
+ 	case BR_MS_UPMA:
+-		upm->mxmr = &fsl_lbc_regs->mamr;
++		upm->mxmr = &lbc->mamr;
+ 		break;
+ 	case BR_MS_UPMB:
+-		upm->mxmr = &fsl_lbc_regs->mbmr;
++		upm->mxmr = &lbc->mbmr;
+ 		break;
+ 	case BR_MS_UPMC:
+-		upm->mxmr = &fsl_lbc_regs->mcmr;
++		upm->mxmr = &lbc->mcmr;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -143,14 +126,18 @@ EXPORT_SYMBOL(fsl_upm_find);
+  * thus UPM pattern actually executed. Note that mar usage depends on the
+  * pre-programmed AMX bits in the UPM RAM.
+  */
++
+ int fsl_upm_run_pattern(struct fsl_upm *upm, void __iomem *io_base, u32 mar)
+ {
+ 	int ret = 0;
+ 	unsigned long flags;
+ 
++	if (!fsl_lbc_ctrl_dev || !fsl_lbc_ctrl_dev->regs)
++		return -ENODEV;
++
+ 	spin_lock_irqsave(&fsl_lbc_lock, flags);
+ 
+-	out_be32(&fsl_lbc_regs->mar, mar);
++	out_be32(&fsl_lbc_ctrl_dev->regs->mar, mar);
+ 
+ 	switch (upm->width) {
+ 	case 8:
+@@ -172,3 +159,188 @@ int fsl_upm_run_pattern(struct fsl_upm *upm, void __iomem *io_base, u32 mar)
+ 	return ret;
+ }
+ EXPORT_SYMBOL(fsl_upm_run_pattern);
++
++static int __devinit fsl_lbc_ctrl_init(struct fsl_lbc_ctrl *ctrl)
++{
++	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
++
++	/* clear event registers */
++	setbits32(&lbc->ltesr, LTESR_CLEAR);
++	out_be32(&lbc->lteatr, 0);
++	out_be32(&lbc->ltear, 0);
++	out_be32(&lbc->lteccr, LTECCR_CLEAR);
++	out_be32(&lbc->ltedr, LTEDR_ENABLE);
++
++	/* Enable interrupts for any detected events */
++	out_be32(&lbc->lteir, LTEIR_ENABLE);
++
++	return 0;
++}
++
++static int __devexit fsl_lbc_ctrl_remove(struct platform_device *ofdev)
++{
++	struct fsl_lbc_ctrl *ctrl = dev_get_drvdata(&ofdev->dev);
++
++	if (ctrl->irq)
++		free_irq(ctrl->irq, ctrl);
++
++	if (ctrl->regs)
++		iounmap(ctrl->regs);
++
++	dev_set_drvdata(&ofdev->dev, NULL);
++
++	kfree(ctrl);
++
++	return 0;
++}
++
++/*
++ * NOTE: This interrupt is used to report localbus events of various kinds,
++ * such as transaction errors on the chipselects.
++ */
++
++static irqreturn_t fsl_lbc_ctrl_irq(int irqno, void *data)
++{
++	struct fsl_lbc_ctrl *ctrl = data;
++	struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
++	u32 status;
++
++	status = in_be32(&lbc->ltesr);
++
++	if (status) {
++		out_be32(&lbc->ltesr, LTESR_CLEAR);
++		out_be32(&lbc->lteatr, 0);
++		out_be32(&lbc->ltear, 0);
++		ctrl->irq_status = status;
++
++		if (status & LTESR_BM)
++			dev_err(ctrl->dev, "Local bus monitor time-out: "
++				"LTESR 0x%08X\n", status);
++		if (status & LTESR_WP)
++			dev_err(ctrl->dev, "Write protect error: "
++				"LTESR 0x%08X\n", status);
++		if (status & LTESR_ATMW)
++			dev_err(ctrl->dev, "Atomic write error: "
++				"LTESR 0x%08X\n", status);
++		if (status & LTESR_ATMR)
++			dev_err(ctrl->dev, "Atomic read error: "
++				"LTESR 0x%08X\n", status);
++		if (status & LTESR_CS)
++			dev_err(ctrl->dev, "Chip select error: "
++				"LTESR 0x%08X\n", status);
++		if (status & LTESR_UPM)
++			;
++		if (status & LTESR_FCT) {
++			dev_err(ctrl->dev, "FCM command time-out: "
++				"LTESR 0x%08X\n", status);
++			smp_wmb();
++			wake_up(&ctrl->irq_wait);
++		}
++		if (status & LTESR_PAR) {
++			dev_err(ctrl->dev, "Parity or Uncorrectable ECC error: "
++				"LTESR 0x%08X\n", status);
++			smp_wmb();
++			wake_up(&ctrl->irq_wait);
++		}
++		if (status & LTESR_CC) {
++			smp_wmb();
++			wake_up(&ctrl->irq_wait);
++		}
++		if (status & ~LTESR_MASK)
++			dev_err(ctrl->dev, "Unknown error: "
++				"LTESR 0x%08X\n", status);
++
++		return IRQ_HANDLED;
++	}
++
++	return IRQ_NONE;
++}
++
++/*
++ * fsl_lbc_ctrl_probe
++ *
++ * called by device layer when it finds a device matching
++ * one our driver can handled. This code allocates all of
++ * the resources needed for the controller only.  The
++ * resources for the NAND banks themselves are allocated
++ * in the chip probe function.
++*/
++
++static int __devinit fsl_lbc_ctrl_probe(struct platform_device *ofdev,
++					 const struct of_device_id *match)
++{
++	int ret;
++
++	if (!ofdev->dev.of_node) {
++		dev_err(&ofdev->dev, "Device OF-Node is NULL");
++		return -EFAULT;
++	}
++	fsl_lbc_ctrl_dev = kzalloc(sizeof(*fsl_lbc_ctrl_dev), GFP_KERNEL);
++	if (!fsl_lbc_ctrl_dev)
++		return -ENOMEM;
++
++	dev_set_drvdata(&ofdev->dev, fsl_lbc_ctrl_dev);
++
++	spin_lock_init(&fsl_lbc_ctrl_dev->lock);
++	init_waitqueue_head(&fsl_lbc_ctrl_dev->irq_wait);
++
++	fsl_lbc_ctrl_dev->regs = of_iomap(ofdev->dev.of_node, 0);
++	if (!fsl_lbc_ctrl_dev->regs) {
++		dev_err(&ofdev->dev, "failed to get memory region\n");
++		ret = -ENODEV;
++		goto err;
++	}
++
++	fsl_lbc_ctrl_dev->irq = irq_of_parse_and_map(ofdev->dev.of_node, 0);
++	if (fsl_lbc_ctrl_dev->irq == NO_IRQ) {
++		dev_err(&ofdev->dev, "failed to get irq resource\n");
++		ret = -ENODEV;
++		goto err;
++	}
++
++	fsl_lbc_ctrl_dev->dev = &ofdev->dev;
++
++	ret = fsl_lbc_ctrl_init(fsl_lbc_ctrl_dev);
++	if (ret < 0)
++		goto err;
++
++	ret = request_irq(fsl_lbc_ctrl_dev->irq, fsl_lbc_ctrl_irq, 0,
++				"fsl-lbc", fsl_lbc_ctrl_dev);
++	if (ret != 0) {
++		dev_err(&ofdev->dev, "failed to install irq (%d)\n",
++			fsl_lbc_ctrl_dev->irq);
++		ret = fsl_lbc_ctrl_dev->irq;
++		goto err;
++	}
++
++	return 0;
++
++err:
++	iounmap(fsl_lbc_ctrl_dev->regs);
++	kfree(fsl_lbc_ctrl_dev);
++	return ret;
++}
++
++static const struct of_device_id fsl_lbc_match[] = {
++	{ .compatible = "fsl,elbc", },
++	{ .compatible = "fsl,pq3-localbus", },
++	{ .compatible = "fsl,pq2-localbus", },
++	{ .compatible = "fsl,pq2pro-localbus", },
++	{},
++};
++
++static struct of_platform_driver fsl_lbc_ctrl_driver = {
++	.driver = {
++		.name = "fsl-lbc",
++		.of_match_table = fsl_lbc_match,
++	},
++	.probe = fsl_lbc_ctrl_probe,
++};
++
++static int __init fsl_lbc_init(void)
++{
++	return of_register_platform_driver(&fsl_lbc_ctrl_driver);
++}
++
++module_init(fsl_lbc_init);
++
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.5.6.5
