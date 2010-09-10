@@ -1,28 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Otzx2-0003Tv-8G
-	for linux-mtd@lists.infradead.org; Fri, 10 Sep 2010 09:31:21 +0000
-Received: by eye22 with SMTP id 22so1739012eye.36
+	id 1OuDPb-0005uA-EP
+	for linux-mtd@lists.infradead.org; Fri, 10 Sep 2010 23:53:43 +0000
+Received: by vws11 with SMTP id 11so3439183vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Sep 2010 02:31:18 -0700 (PDT)
-Date: Fri, 10 Sep 2010 13:31:13 +0400
-From: Anton Vorontsov <cbouatmailru@gmail.com>
-To: Zang Roy-R61911 <r61911@freescale.com>
-Subject: Re: [PATCH 1/3 v2][MTD] P4080/eLBC: Make Freescale elbc interrupt
-	common to elbc devices
-Message-ID: <20100910093113.GA22204@oksana.dev.rtsoft.ru>
-References: <1284027632-32573-1-git-send-email-tie-fei.zang@freescale.com>
-	<20100909115338.GA12320@oksana.dev.rtsoft.ru>
-	<3850A844E6A3854C827AC5C0BEC7B60A1FBF4A@zch01exm23.fsl.freescale.net>
+	Fri, 10 Sep 2010 16:53:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3850A844E6A3854C827AC5C0BEC7B60A1FBF4A@zch01exm23.fsl.freescale.net>
-Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
-	Lan Chunhe-B25806 <B25806@freescale.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, dwmw2@infradead.org,
-	Gala Kumar-B11780 <B11780@freescale.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Fri, 10 Sep 2010 19:53:22 -0400
+Message-ID: <AANLkTikrEq1hJEttX=DkMWYaLsJnW+QWGRaL2eygZ8uZ@mail.gmail.com>
+Subject: linux equivalent of u-boot's "nand scrub" (erasing blocks even when
+	OOB says "bad")
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,49 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 10, 2010 at 02:58:15PM +0800, Zang Roy-R61911 wrote:
-[...]
-> > > +static struct of_platform_driver fsl_lbc_ctrl_driver = {
-> > 
-> > Need linux/of_platform.h for this.
-> It has been include by
-> fsl_lbc.h->linux/of_platform.h-> linux/platform_device.h
-> Before submitting the patch, I have built and tested it.
+ive come across a situation where it would have been invaluable to
+have the ability to "scrub" the nand flash while running linux.
+unfortunately, while i can see options to mark blocks as bad, there
+doesnt appear to be any ioctls to mark blocks as good.  this applies
+both to the userspace api as well as the kernel api.
 
-In Linux we try to include all the headers explicitly (except
-for asm/* if the same header name exists in linux/).
+further, it seems like if (for whatever reason)  the bad block marker
+in the oob region got screwed, there is absolutely no way to recover
+(when not using a dedicated bbt).  in
+drivers/mtd/nand/nand_base.c:nand_erase_nand(), the very first thing
+it does is call nand_block_checkbad().  without a bbt, it'll tail into
+chip->block_bad and the default nand_block_bad() reads the bad block
+marker out of the oob.  but if the oob region has been screwed, the
+block will be thought of as bad, and so you're stuck in a loop.  you
+cant reset the oob to 0xff because the oob isnt 0xff ...
 
-That's to avoid problems if for some reason fsl_lbc.h will stop
-including of_plaform.h some day.
-
-Oh, and by the way, there is absolutely no reason to add
-linux/of_platform.h and interrupts.h into fsl_lbc.h, they're
-is simply not needed in fsl_lbc.h.
-
-> Do you think I do not build the tree before I send out the patch?
-
-Nope, that's not what I think. I didn't say that the file
-won't build w/o these fixes, but they're still needed.
-
-> > > +
-> > > +static struct of_platform_driver fsl_lbc_ctrl_driver = {
-> > 
-> > Need linux/of_platform.h for this.
-> > 
-> > But you actually don't need of_platform_driver, as for the
-> > new code you can use platform_driver (and thus
-> > linux/platform_device.h).
-> I'd prefer using of_platform_driver here for simplified code.
-> Any special reason to use platform_device here?
-
-In the new kernels, of_platform_driver is almost a synonym of
-platform_driver, and 'of_platform_driver' stuff is soon to be
-deleted. You can use platform_driver just like
-of_platform_driver nowadays.
-
-Thanks,
-
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+the logical thing in my mind would be to extend the userspace mtd abi
+to allow a "do the erase even if people think it's bad" option.
+perhaps MEMSCRUB ?
+-mike
