@@ -1,22 +1,27 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OtlHG-0000wt-Je
-	for linux-mtd@lists.infradead.org; Thu, 09 Sep 2010 17:51:15 +0000
-Received: by bwz13 with SMTP id 13so1774221bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Sep 2010 10:51:13 -0700 (PDT)
-Subject: Re: UBI/UBIFS interrupted write page handling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4C88DDD5.4060507@parrot.com>
-References: <4C88DDD5.4060507@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 09 Sep 2010 20:51:09 +0300
-Message-ID: <1284054669.11335.21.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Message-ID: <4C89B257.4000202@st.com>
+Date: Fri, 10 Sep 2010 09:51:43 +0530
+From: viresh kumar <viresh.kumar@st.com>
+MIME-Version: 1.0
+To: Linus Walleij <linus.ml.walleij@gmail.com>
+Subject: Re: [PATCH 27/74] ST SPEAr : NAND interface driver for spear platforms
+References: <cover.1283161023.git.viresh.kumar@st.com>	<07ce8daf18d3a9f13864752074af3490a324d84c.1283161023.git.viresh.kumar@st.com>	<7cd7060b403b448d74649cec5c28c795bcbbdbc3.1283161023.git.viresh.kumar@st.com>	<AANLkTik9Di4k183t+wuY-1eprsO3xBOESaOY5dnxt6ii@mail.gmail.com>	<4C7F5B9E.8090406@st.com>	<AANLkTikwjCh=2Cekg9R1SqacKXC+_ZgV7m+=ZVVCaDba@mail.gmail.com>	<4C7F9993.3040700@st.com>	<20100903112338.GA3132@morgana.i.gnudd.com>
+	<AANLkTinri8ve=wb+tm5zO4JSnz6_RE-n+sZoKU-ipios@mail.gmail.com>
+In-Reply-To: <AANLkTinri8ve=wb+tm5zO4JSnz6_RE-n+sZoKU-ipios@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Pratyush ANAND <pratyush.anand@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Sebastian RASMUSSEN <sebastian.rasmussen@stericsson.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	Alessandro Rubini <rubini-list@gnudd.com>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-09 at 15:15 +0200, Matthieu CASTET wrote:
-> Hi,
+On 9/3/2010 10:56 PM, Linus Walleij wrote:
+>> > Note however that the platform data in
+>> > arch/arm/mach-nomadik/board-nhk8815.c should be fixed to reference the
+>> > new driver.  If you remove my version please at least compile-check
+>> > the nhk with the new patch-set.
+> What about we put this new FSMC generic thing in, and
+> then remove the old one with the same patch that
+> instead activates the new one. No need to rush that.
 > 
-> we have nands where interrupted write page become unstable and can't be 
-> trusted.
-> 
-> All interrupted write page should be erased before further usage. This 
-> mean we should have an algorithm to identify them when mounting/scanning.
-> 
-> If we are writing PageX and it is interrupt by power cut. On reboot we 
-> could have the following case :
-> 1) PageX empty. But we don't know if write process started and the page 
-> can't be written again
+> Right now I mostly worry about having it in the proper
+> place with the proper name and the headers accessible from
+> all archs...
 
-So this page may be unstable and we should not really write there,
-AFAIU. But UBIFS will, which is a problem. However, should be easily
-fixable, se below.
+Linus,
 
-> 2) PageX contains invalid data (bad crc, ecc).
+Sorry for replying late!!!
 
-I think UBIFS ignores ECC errors completely. When replying the journal,
-if it gets an ECC error, it ignores it and checks the nodes in the read
-buffer. Those which have correct CRC are used, those which have
-incorrect ECC are dropped.
+The solution looks fine to us, but currently we don't have
+enough bandwidth to rework on the suggested solution.
 
-Obviously, UBIFS does not write anymore to this page. But it uses the
-next page.
+Maybe, we can go ahead with current patch, get it acked. Then send another
+patch later to fix mentioned issues.
 
-This is also a problem because if the page which had ECC errors is
-unstable, some nodes which were OK may not be OK later.
+How do you suggest to proceed on this?
 
-Should be easily fixable as well.
-
-> 3) PageX contains valid data, but we don't know if the write finish and 
-> if the page is stable.
-
-UBIFS always knows whether it was unmounted cleanly or not. But we are
-considering the case when it was not cleanly unmounted. So yes, this is
-a problem as well.
-
-> How ubi/ubifs detect this interrupt write pages ?
-
-You are right, currently UBIFS is vulnerable to the unstable pages
-issue.
-
-> Only case 2 seems handled and it is not enough.
-
-I think none are properly handled actually :-)
-
-> On one of our test, we are in case 3. Ubifs find a valid interrupt page 
-> on mount and trust it. Latter the page become corrupted [1] because it 
-> is unstable.
-
-OK, I see.
-
-> To identify a interrupted write page we :
-> - could use interrupted flags for static volume
-> - handle with care data move (copy flags) : if sqnum of the copy is the 
-> biggest, we should ignore it/copy it.
-> - use upper layer for dynamic volume. For ubifs this could be a journal.
-
-Actually, for UBIFS things are rather simple. In UBIFS every writes go
-to the journal. Even GC writes to the journal. So when we are mounting
-after an unclean reboot, we can simply refresh the last LEBs of all
-journal heads using the 'ubi_leb_change()' call. This should handle all
-the three cases you describe.
-
-I do not think it is very difficult to do.
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+viresh.
