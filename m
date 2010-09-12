@@ -1,23 +1,13 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OursJ-0000hU-B4
-	for linux-mtd@lists.infradead.org; Sun, 12 Sep 2010 19:06:08 +0000
-Received: by vws11 with SMTP id 11so4542994vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 12 Sep 2010 12:06:02 -0700 (PDT)
+From: Linus Walleij <linus.walleij@stericsson.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH 2/2] ARM: platform data to use the FSMC NAND with the U300
+Date: Mon, 13 Sep 2010 00:35:37 +0200
+Message-ID: <1284330937-3636-1-git-send-email-linus.walleij@stericsson.com>
 MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1284308851.1783.23.camel@brekeke>
-References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
-	<1284308851.1783.23.camel@brekeke>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Sun, 12 Sep 2010 15:05:42 -0400
-Message-ID: <AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
-Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: Linus Walleij <linus.walleij@stericsson.com>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +17,150 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 12, 2010 at 12:27, Artem Bityutskiy wrote:
-> On Sat, 2010-09-11 at 23:51 -0400, Mike Frysinger wrote:
->> Sometimes dumping bad blocks is useful, like when the block isn't actual=
-ly
->> bad but the OOB layout isn't what the kernel is expecting or is otherwis=
-e
->> screwed up. =C2=A0The --nobad option allows just that.
->
-> How useful is this? I think instead you should implement the force flag
-> we discussed and deal with 'otherwise screwed up' eraseblocks with
-> flash_erase. I am afraid it is too dangerous to introduce this option.
+Just as it says, if this is merged along with the other patch, the
+driver supports the U300 NAND flash interface.
 
-i dont see how this is any more dangerous than adding an option to
-force erasing of bad blocks ?  why should we be over protective of the
-system ?  this is what got is into the existing rut of unrecoverable
-blocks.
+Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
+---
+ arch/arm/mach-u300/clock.c                  |    6 ++--
+ arch/arm/mach-u300/core.c                   |   47 ++++++++++++++++++++++++---
+ arch/arm/mach-u300/include/mach/u300-regs.h |    2 -
+ 3 files changed, 45 insertions(+), 10 deletions(-)
 
-i find it useful during development to write out the content of pages
-irregardless of the bad blocks and then read them back.  and for
-recovering systems manually without having to resort to local access
-to the bootloader.
--mike
+diff --git a/arch/arm/mach-u300/clock.c b/arch/arm/mach-u300/clock.c
+index 60acf9e..7458fc6 100644
+--- a/arch/arm/mach-u300/clock.c
++++ b/arch/arm/mach-u300/clock.c
+@@ -66,7 +66,7 @@ static DEFINE_SPINLOCK(syscon_resetreg_lock);
+  *  AMBA bus
+  *  |
+  *  +- CPU
+- *  +- NANDIF NAND Flash interface
++ *  +- FSMC NANDIF NAND Flash interface
+  *  +- SEMI Shared Memory interface
+  *  +- ISP Image Signal Processor (U335 only)
+  *  +- CDS (U335 only)
+@@ -726,7 +726,7 @@ static struct clk cpu_clk = {
+ };
+ 
+ static struct clk nandif_clk = {
+-	.name       = "NANDIF",
++	.name       = "FSMC",
+ 	.parent	    = &amba_clk,
+ 	.hw_ctrld   = false,
+ 	.reset	    = true,
+@@ -1259,7 +1259,7 @@ static struct clk_lookup lookups[] = {
+ 	/* Connected directly to the AMBA bus */
+ 	DEF_LOOKUP("amba",      &amba_clk),
+ 	DEF_LOOKUP("cpu",       &cpu_clk),
+-	DEF_LOOKUP("fsmc",      &nandif_clk),
++	DEF_LOOKUP("fsmc-nand", &nandif_clk),
+ 	DEF_LOOKUP("semi",      &semi_clk),
+ #ifdef CONFIG_MACH_U300_BS335
+ 	DEF_LOOKUP("isp",       &isp_clk),
+diff --git a/arch/arm/mach-u300/core.c b/arch/arm/mach-u300/core.c
+index ea41c23..5615587 100644
+--- a/arch/arm/mach-u300/core.c
++++ b/arch/arm/mach-u300/core.c
+@@ -21,7 +21,8 @@
+ #include <linux/gpio.h>
+ #include <linux/clk.h>
+ #include <linux/err.h>
+-#include <mach/coh901318.h>
++#include <linux/mtd/nand.h>
++#include <mtd/fsmc.h>
+ 
+ #include <asm/types.h>
+ #include <asm/setup.h>
+@@ -30,6 +31,7 @@
+ #include <asm/mach/map.h>
+ #include <asm/mach/irq.h>
+ 
++#include <mach/coh901318.h>
+ #include <mach/hardware.h>
+ #include <mach/syscon.h>
+ #include <mach/dma_channels.h>
+@@ -285,6 +287,13 @@ static struct resource rtc_resources[] = {
+  */
+ static struct resource fsmc_resources[] = {
+ 	{
++		.name  = "nand_data",
++		.start = U300_NAND_CS0_PHYS_BASE,
++		.end   = U300_NAND_CS0_PHYS_BASE + SZ_16K - 1,
++		.flags = IORESOURCE_MEM,
++	},
++	{
++		.name  = "fsmc_regs",
+ 		.start = U300_NAND_IF_PHYS_BASE,
+ 		.end   = U300_NAND_IF_PHYS_BASE + SZ_4K - 1,
+ 		.flags = IORESOURCE_MEM,
+@@ -1429,11 +1438,39 @@ static struct platform_device rtc_device = {
+ 	.resource = rtc_resources,
+ };
+ 
+-static struct platform_device fsmc_device = {
+-	.name = "nandif",
++static struct mtd_partition u300_partitions[] = {
++	{
++		.name = "bootrecords",
++		.offset = 0,
++		.size = SZ_128K,
++	},
++	{
++		.name = "free",
++		.offset = SZ_128K,
++		.size = 8064 * SZ_1K,
++	},
++	{
++		.name = "platform",
++		.offset = 8192 * SZ_1K,
++		.size = 253952 * SZ_1K,
++	},
++};
++
++static struct fsmc_nand_platform_data nand_platform_data = {
++	.partitions = u300_partitions,
++	.nr_partitions = ARRAY_SIZE(u300_partitions),
++	.options = NAND_SKIP_BBTSCAN,
++	.width = FSMC_NAND_BW8,
++};
++
++static struct platform_device nand_device = {
++	.name = "fsmc-nand",
+ 	.id = -1,
+-	.num_resources = ARRAY_SIZE(fsmc_resources),
+ 	.resource = fsmc_resources,
++	.num_resources = ARRAY_SIZE(fsmc_resources),
++	.dev = {
++		.platform_data = &nand_platform_data,
++	},
+ };
+ 
+ static struct platform_device ave_device = {
+@@ -1465,7 +1502,7 @@ static struct platform_device *platform_devs[] __initdata = {
+ 	&keypad_device,
+ 	&rtc_device,
+ 	&gpio_device,
+-	&fsmc_device,
++	&nand_device,
+ 	&wdog_device,
+ 	&ave_device
+ };
+diff --git a/arch/arm/mach-u300/include/mach/u300-regs.h b/arch/arm/mach-u300/include/mach/u300-regs.h
+index 56721a0..8b85df4 100644
+--- a/arch/arm/mach-u300/include/mach/u300-regs.h
++++ b/arch/arm/mach-u300/include/mach/u300-regs.h
+@@ -20,11 +20,9 @@
+ 
+ /* NAND Flash CS0 */
+ #define U300_NAND_CS0_PHYS_BASE		0x80000000
+-#define U300_NAND_CS0_VIRT_BASE		0xff040000
+ 
+ /* NFIF */
+ #define U300_NAND_IF_PHYS_BASE		0x9f800000
+-#define U300_NAND_IF_VIRT_BASE		0xff030000
+ 
+ /* AHB Peripherals */
+ #define U300_AHB_PER_PHYS_BASE		0xa0000000
+-- 
+1.6.3.3
