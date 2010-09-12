@@ -1,18 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OudZ6-0005P0-NW
-	for linux-mtd@lists.infradead.org; Sun, 12 Sep 2010 03:49:17 +0000
+	id 1OudZ7-0005P1-6f
+	for linux-mtd@lists.infradead.org; Sun, 12 Sep 2010 03:49:18 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 1B8611B4103
+	by smtp.gentoo.org (Postfix) with ESMTP id 6E2D31B40F4
 	for <linux-mtd@lists.infradead.org>;
 	Sun, 12 Sep 2010 03:49:13 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] nanddump: add --nobad to read bad blocks
-Date: Sat, 11 Sep 2010 23:50:27 -0400
-Message-Id: <1284263427-31342-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1284263427-31342-1-git-send-email-vapier@gentoo.org>
-References: <1284263427-31342-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 1/2] nanddump: drop unused --ignoreerrors option
+Date: Sat, 11 Sep 2010 23:50:26 -0400
+Message-Id: <1284263427-31342-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,72 +20,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sometimes dumping bad blocks is useful, like when the data isn't actually
-bad but the OOB layout isn't what the kernel is expecting or is otherwise
-screwed up.  The --nobad option allows just that.
+Nowhere in the nanddump code is the "ignoreerrors" variable used.  So
+drop the option completely.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- nanddump.c |   12 ++++++++++--
- 1 files changed, 10 insertions(+), 2 deletions(-)
+ nanddump.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
 
 diff --git a/nanddump.c b/nanddump.c
-index 70b78f0..8b3d4a1 100644
+index 22fec5f..70b78f0 100644
 --- a/nanddump.c
 +++ b/nanddump.c
-@@ -50,6 +50,7 @@ static void display_help (void)
+@@ -48,7 +48,6 @@ static void display_help (void)
+ "-a         --forcebinary        Force printing of binary data to tty\n"
+ "-c         --canonicalprint     Print canonical Hex+ASCII dump\n"
  "-f file    --file=file          Dump to file\n"
+-"-i         --ignoreerrors       Ignore errors\n"
  "-l length  --length=length      Length\n"
  "-n         --noecc              Read without error correction\n"
-+"-N         --nobad              Read without bad block skipping\n"
  "-o         --omitoob            Omit oob data\n"
- "-b         --omitbad            Omit bad blocks from the dump\n"
- "-p         --prettyprint        Print nice (hexdump)\n"
-@@ -76,6 +77,7 @@ static void display_version (void)
+@@ -75,7 +74,6 @@ static void display_version (void)
  
+ // Option variables
+ 
+-static bool		ignoreerrors = false;	// ignore errors
  static bool		pretty_print = false;	// print nice
  static bool		noecc = false;		// don't error correct
-+static bool		nobad = false;		// don't skip bad blocks
  static bool		omitoob = false;	// omit oob data
- static unsigned long	start_addr;		// start address
- static unsigned long	length;			// dump length
-@@ -92,7 +94,7 @@ static void process_options (int argc, char * const argv[])
+@@ -94,14 +92,13 @@ static void process_options (int argc, char * const argv[])
  
  	for (;;) {
  		int option_index = 0;
--		static const char *short_options = "bs:f:l:opqnca";
-+		static const char *short_options = "bs:f:l:opqnNca";
+-		static const char *short_options = "bs:f:il:opqnca";
++		static const char *short_options = "bs:f:l:opqnca";
  		static const struct option long_options[] = {
  			{"help", no_argument, 0, 0},
  			{"version", no_argument, 0, 0},
-@@ -105,6 +107,7 @@ static void process_options (int argc, char * const argv[])
- 			{"startaddress", required_argument, 0, 's'},
- 			{"length", required_argument, 0, 'l'},
- 			{"noecc", no_argument, 0, 'n'},
-+			{"nobad", no_argument, 0, 'N'},
- 			{"quiet", no_argument, 0, 'q'},
- 			{0, 0, 0, 0},
- 		};
-@@ -158,6 +161,9 @@ static void process_options (int argc, char * const argv[])
- 			case 'n':
- 				noecc = true;
+ 			{"forcebinary", no_argument, 0, 'a'},
+ 			{"canonicalprint", no_argument, 0, 'c'},
+ 			{"file", required_argument, 0, 'f'},
+-			{"ignoreerrors", no_argument, 0, 'i'},
+ 			{"prettyprint", no_argument, 0, 'p'},
+ 			{"omitoob", no_argument, 0, 'o'},
+ 			{"omitbad", no_argument, 0, 'b'},
+@@ -141,9 +138,6 @@ static void process_options (int argc, char * const argv[])
+ 					exit(EXIT_FAILURE);
+ 				}
  				break;
-+			case 'N':
-+				nobad = true;
-+				break;
- 			case '?':
- 				error++;
+-			case 'i':
+-				ignoreerrors = true;
+-				break;
+ 			case 'l':
+ 				length = strtol(optarg, NULL, 0);
  				break;
-@@ -390,7 +396,9 @@ int main(int argc, char * const argv[])
- 	for (ofs = start_addr; ofs < end_addr ; ofs+=bs) {
- 
- 		// new eraseblock , check for bad block
--		if (blockstart != (ofs & (~meminfo.erasesize + 1))) {
-+		if (nobad) {
-+			badblock = 0;
-+		} else if (blockstart != (ofs & (~meminfo.erasesize + 1))) {
- 			blockstart = ofs & (~meminfo.erasesize + 1);
- 			if ((badblock = ioctl(fd, MEMGETBADBLOCK, &blockstart)) < 0) {
- 				perror("ioctl(MEMGETBADBLOCK)");
 -- 
 1.7.2
