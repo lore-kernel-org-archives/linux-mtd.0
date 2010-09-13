@@ -1,24 +1,15 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ov2VN-0004rd-0m
-	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 06:27:05 +0000
-Received: by fxm12 with SMTP id 12so3721402fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 12 Sep 2010 23:27:04 -0700 (PDT)
-Subject: RE: linux equivalent of u-boot's "nand scrub" (erasing blocks even
-	whenOOB says "bad")
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0903E3E3DD@Cloud.RL.local>
-References: <70E876B0EA86DD4BAF101844BC814DFE0903E3E3DD@Cloud.RL.local>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 13 Sep 2010 09:25:40 +0300
-Message-ID: <1284359140.27765.156.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ov3Fc-00068t-OF
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 07:14:58 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] nanddump: Rename --nobad to --noskipbad
+Date: Mon, 13 Sep 2010 09:15:13 +0200
+Message-Id: <1284362113-26737-1-git-send-email-w.sang@pengutronix.de>
+In-Reply-To: <1284359070.27765.155.camel@localhost>
+References: <1284359070.27765.155.camel@localhost>
+Cc: Mike Frysinger <vapier@gentoo.org>, Wolfram Sang <w.sang@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +19,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-09-13 at 06:54 +0100, Jon Povey wrote:
-> Mike Frysinger wrote:
-> > ive come across a situation where it would have been invaluable to
-> > have the ability to "scrub" the nand flash while running linux.
-> 
-> I would find this useful too, or more specifically I recently wanted to rewrite the BBT in software from linux (to change OOB layout), but those blocks are marked off-limits. Some way to force it would be nice.
-> 
-> I am just rambling though, no real useful suggestion :) Sorry..
-> 
-> As for clearing blocks marked bad, how about MEMSETGOODBLOCK as the inverse of the existing MEMSETBADBLOCK?
+"nobad" might lead to the assumption that bad blocks are skipped, but this
+option does exactly the opposite. Use a more descriptive name.
 
-So may be we need a separate ioctl for dealing with bad eraseblocks
-which will also include abilities to re-write BBT?
+Reported-by: Jon Povey <Jon.Povey@racelogic.co.uk>
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+Cc: Mike Frysinger <vapier@gentoo.org>
+---
 
+Build tested only.
+
+ nanddump.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/nanddump.c b/nanddump.c
+index 8b3d4a1..709b2db 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -50,7 +50,7 @@ static void display_help (void)
+ "-f file    --file=file          Dump to file\n"
+ "-l length  --length=length      Length\n"
+ "-n         --noecc              Read without error correction\n"
+-"-N         --nobad              Read without bad block skipping\n"
++"-N         --noskipbad          Read without bad block skipping\n"
+ "-o         --omitoob            Omit oob data\n"
+ "-b         --omitbad            Omit bad blocks from the dump\n"
+ "-p         --prettyprint        Print nice (hexdump)\n"
+@@ -77,7 +77,7 @@ static void display_version (void)
+ 
+ static bool		pretty_print = false;	// print nice
+ static bool		noecc = false;		// don't error correct
+-static bool		nobad = false;		// don't skip bad blocks
++static bool		noskipbad = false;	// don't skip bad blocks
+ static bool		omitoob = false;	// omit oob data
+ static unsigned long	start_addr;		// start address
+ static unsigned long	length;			// dump length
+@@ -107,7 +107,7 @@ static void process_options (int argc, char * const argv[])
+ 			{"startaddress", required_argument, 0, 's'},
+ 			{"length", required_argument, 0, 'l'},
+ 			{"noecc", no_argument, 0, 'n'},
+-			{"nobad", no_argument, 0, 'N'},
++			{"noskipbad", no_argument, 0, 'N'},
+ 			{"quiet", no_argument, 0, 'q'},
+ 			{0, 0, 0, 0},
+ 		};
+@@ -162,7 +162,7 @@ static void process_options (int argc, char * const argv[])
+ 				noecc = true;
+ 				break;
+ 			case 'N':
+-				nobad = true;
++				noskipbad = true;
+ 				break;
+ 			case '?':
+ 				error++;
+@@ -396,7 +396,7 @@ int main(int argc, char * const argv[])
+ 	for (ofs = start_addr; ofs < end_addr ; ofs+=bs) {
+ 
+ 		// new eraseblock , check for bad block
+-		if (nobad) {
++		if (noskipbad) {
+ 			badblock = 0;
+ 		} else if (blockstart != (ofs & (~meminfo.erasesize + 1))) {
+ 			blockstart = ofs & (~meminfo.erasesize + 1);
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.1
