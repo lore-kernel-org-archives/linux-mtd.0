@@ -1,20 +1,21 @@
-Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ov200-0002QD-0x
-	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 05:54:40 +0000
-From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Mike Frysinger <vapier.adi@gmail.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Content-Class: urn:content-classes:message
-Date: Mon, 13 Sep 2010 06:54:36 +0100
-Subject: RE: linux equivalent of u-boot's "nand scrub" (erasing blocks even
-	whenOOB says "bad")
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE0903E3E3DD@Cloud.RL.local>
-In-Reply-To: <AANLkTikrEq1hJEttX=DkMWYaLsJnW+QWGRaL2eygZ8uZ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+	id 1Ov2Qh-0003bO-7i
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 06:22:16 +0000
+Date: Mon, 13 Sep 2010 08:22:09 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Jon Povey <Jon.Povey@racelogic.co.uk>
+Subject: Re: [PATCH 2/2] nanddump: add --nobad to read bad blocks
+Message-ID: <20100913062209.GA7382@pengutronix.de>
+References: <1284263427-31342-2-git-send-email-vapier@gentoo.org>
+	<70E876B0EA86DD4BAF101844BC814DFE0903E3E3DC@Cloud.RL.local>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="k1lZvvs/B4yU6o8G"
+Content-Disposition: inline
+In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0903E3E3DC@Cloud.RL.local>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Mike Frysinger <vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Frysinger wrote:
-> ive come across a situation where it would have been invaluable to
-> have the ability to "scrub" the nand flash while running linux.
 
-I would find this useful too, or more specifically I recently wanted to rew=
-rite the BBT in software from linux (to change OOB layout), but those block=
-s are marked off-limits. Some way to force it would be nice.
+--k1lZvvs/B4yU6o8G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am just rambling though, no real useful suggestion :) Sorry..
+On Mon, Sep 13, 2010 at 06:50:04AM +0100, Jon Povey wrote:
+> Mike Frysinger wrote:
+> > Sometimes dumping bad blocks is useful, like when the data isn't actual=
+ly
+> > bad but the OOB layout isn't what the kernel is expecting or is otherwi=
+se
+> > screwed up.  The --nobad option allows just that.
+>=20
+> > +"-N         --nobad              Read without bad block skipping\n"
+>=20
+> This doesn't seem like a good name for the option to me. A useful option =
+but
+> an unintuitive name, "nobad" sounds like it is going to omit bad blocks,
+> where actually it is going to include them.
+>=20
+> "noskipbad" or "includebad" would seem to be better.
 
-As for clearing blocks marked bad, how about MEMSETGOODBLOCK as the inverse=
- of the existing MEMSETBADBLOCK?
+I agree. Is that still fixable despite being pushed already?
 
---
-Jon Povey
-jon.povey@racelogic.co.uk
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-Racelogic is a limited company registered in England. Registered number 274=
-3719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
-ks, MK18 1TB .
+--k1lZvvs/B4yU6o8G
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-The information contained in this electronic mail transmission is intended =
-by Racelogic Ltd for the use of the named individual or entity to which it =
-is directed and may contain information that is confidential or privileged.=
- If you have received this electronic mail transmission in error, please de=
-lete it from your system without copying or forwarding it, and notify the s=
-ender of the error by reply email so that the sender's address records can =
-be corrected. The views expressed by the sender of this communication do no=
-t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
-reserves the right to monitor e-mail communications passing through its net=
-work
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkyNwxAACgkQD27XaX1/VRutcQCgoOKRbQaZU/9yYjMhaMglkmr2
+L48AoJIf7x25csYa3lglATSPt649m4mi
+=DdoQ
+-----END PGP SIGNATURE-----
+
+--k1lZvvs/B4yU6o8G--
