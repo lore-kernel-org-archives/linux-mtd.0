@@ -1,35 +1,22 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvC9l-00081A-JE
-	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 16:45:26 +0000
-Received: by bwz13 with SMTP id 13so6085176bwz.36
+	id 1OvDmy-0006Ml-Fd
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 18:30:01 +0000
+Received: by bwz13 with SMTP id 13so6210783bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Sep 2010 09:45:24 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3][MTD] P4080/mtd: Fix the freescale lbc issue
-	with 36bit mode
+	Mon, 13 Sep 2010 11:29:59 -0700 (PDT)
+Subject: Re: [PATCH 00/13] UBI reliability improvements
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Timur Tabi <timur.tabi@gmail.com>
-In-Reply-To: <AANLkTinyELs7KNDQxWsaR8Ea13SewWYwgtnie_P7cAzC@mail.gmail.com>
-References: <1284027632-32573-1-git-send-email-tie-fei.zang@freescale.com>
-	<1284027632-32573-2-git-send-email-tie-fei.zang@freescale.com>
-	<1284027632-32573-3-git-send-email-tie-fei.zang@freescale.com>
-	<20100909114153.GB6622@oksana.dev.rtsoft.ru>
-	<3850A844E6A3854C827AC5C0BEC7B60A1FC158@zch01exm23.fsl.freescale.net>
-	<AANLkTimfKwdw+nLAjDjxf52dbZKLF-3aES+bT7CHskAS@mail.gmail.com>
-	<1284388075.10955.51.camel@localhost>
-	<AANLkTinyELs7KNDQxWsaR8Ea13SewWYwgtnie_P7cAzC@mail.gmail.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1283763293-1882-1-git-send-email-dedekind1@gmail.com>
+References: <1283763293-1882-1-git-send-email-dedekind1@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 13 Sep 2010 19:45:20 +0300
-Message-ID: <1284396320.1783.30.camel@brekeke>
+Date: Mon, 13 Sep 2010 21:29:55 +0300
+Message-ID: <1284402595.1783.34.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Wood Scott-B07421 <B07421@freescale.com>,
-	Zang Roy-R61911 <r61911@freescale.com>,
-	Lan Chunhe-B25806 <B25806@freescale.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Anton Vorontsov <cbouatmailru@gmail.com>,
-	akpm@linux-foundation.org, dwmw2@infradead.org,
-	Gala Kumar-B11780 <B11780@freescale.com>
+Cc: "Matthew L. Creech" <mlcreech@gmail.com>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -40,32 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-09-13 at 09:35 -0500, Timur Tabi wrote:
-> On Mon, Sep 13, 2010 at 9:27 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Mon, 2010-09-06 at 11:54 +0300, Artem Bityutskiy wrote:
+> Hi,
 > 
-> > Yes, sizeof(int) == 4 assumption is not good.
-> >
-> > But sizeof(int) >= 4 is perfectly fine.
+> here is a set of patches which should improve UBI reliability. I wrote them
+> during my trip to LinuxCon Brazil.
 > 
-> I have to disagree.   I don't see how you can say that == is not okay,
-> but >= is okay.
+> Patches 1-5 should be interesting for Matthieu CASTET - they improve -EUCLEAN
+> errors handling a little.
+> 
+> Patches 6-13 should be interesting for Matthew L. Creech - they presimably have
+> to help in catching why in his setup UBIFS refers unmapped LEB. I'm not sure
+> they will help, but there is a chance - my theory is that UBI decides that the
+> LEB is corrupted and wipes it. With this patch-set UBI should instead preserve
+> corrupted LEBs, so we could take a look what happened.
+> 
+> Please, reveiw, test. I tested them a little as well, but not extensively.
 
-If I assume that int == 4, which is true for all platform ATM, and will
-most probably stay true for very long time, I still make an unnecessary
-assumption which C99 does not guarantee. This is just not very clean. So
-for things which require exactly 32 bits, u32 or C99 uint32_t should be
-used.
-
-On the other hand, if a have a local variable "var" which needs to store
-values which I know will always fit 32 bits, and I do not use it in
-operations (I/O, etc) which require exactly 32 bits, it is better to use
-unsigned int for it. Unsigned int is reliably >= 4 in Linux.
-
-This is wat I meant that sizeof(int) >= 4 is perfectly fine. One
-everywhere, of course, but in many cases.
-
-To put it differently, if there is no special reason to limit the
-variable by exactly 32 bits, it is better to use int.
+OK, although no one reviewed / tested this so far, I'm pushing this to
+the ubi-2.6.git / master tree.
 
 -- 
 Best Regards,
