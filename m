@@ -1,15 +1,16 @@
 Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ov1vi-00022b-8O
-	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 05:50:15 +0000
+	id 1Ov200-0002QD-0x
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 05:54:40 +0000
 From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Mike Frysinger <vapier@gentoo.org>, "linux-mtd@lists.infradead.org"
+To: Mike Frysinger <vapier.adi@gmail.com>, "linux-mtd@lists.infradead.org"
 	<linux-mtd@lists.infradead.org>
 Content-Class: urn:content-classes:message
-Date: Mon, 13 Sep 2010 06:50:04 +0100
-Subject: RE: [PATCH 2/2] nanddump: add --nobad to read bad blocks
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE0903E3E3DC@Cloud.RL.local>
-In-Reply-To: <1284263427-31342-2-git-send-email-vapier@gentoo.org>
+Date: Mon, 13 Sep 2010 06:54:36 +0100
+Subject: RE: linux equivalent of u-boot's "nand scrub" (erasing blocks even
+	whenOOB says "bad")
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE0903E3E3DD@Cloud.RL.local>
+In-Reply-To: <AANLkTikrEq1hJEttX=DkMWYaLsJnW+QWGRaL2eygZ8uZ@mail.gmail.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -24,21 +25,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Mike Frysinger wrote:
-> Sometimes dumping bad blocks is useful, like when the data isn't
-> actually
-> bad but the OOB layout isn't what the kernel is expecting or is
-> otherwise
-> screwed up.  The --nobad option allows just that.
+> ive come across a situation where it would have been invaluable to
+> have the ability to "scrub" the nand flash while running linux.
 
-> +"-N         --nobad              Read without bad block skipping\n"
+I would find this useful too, or more specifically I recently wanted to rew=
+rite the BBT in software from linux (to change OOB layout), but those block=
+s are marked off-limits. Some way to force it would be nice.
 
-This doesn't seem like a good name for the option to me. A useful option bu=
-t an unintuitive name, "nobad" sounds like it is going to omit bad blocks, =
-where actually it is going to include them.
+I am just rambling though, no real useful suggestion :) Sorry..
 
-"noskipbad" or "includebad" would seem to be better.
-
-I see this got pushed already though..
+As for clearing blocks marked bad, how about MEMSETGOODBLOCK as the inverse=
+ of the existing MEMSETBADBLOCK?
 
 --
 Jon Povey
