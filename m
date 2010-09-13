@@ -1,23 +1,35 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvDmy-0006Ml-Fd
-	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 18:30:01 +0000
-Received: by bwz13 with SMTP id 13so6210783bwz.36
+	id 1OvDu4-0001WM-FN
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 18:37:20 +0000
+Received: by iwn36 with SMTP id 36so4845020iwn.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Sep 2010 11:29:59 -0700 (PDT)
-Subject: Re: [PATCH 00/13] UBI reliability improvements
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1283763293-1882-1-git-send-email-dedekind1@gmail.com>
-References: <1283763293-1882-1-git-send-email-dedekind1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 13 Sep 2010 21:29:55 +0300
-Message-ID: <1284402595.1783.34.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "Matthew L. Creech" <mlcreech@gmail.com>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
-Reply-To: dedekind1@gmail.com
+	Mon, 13 Sep 2010 11:37:19 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1284396320.1783.30.camel@brekeke>
+References: <1284027632-32573-1-git-send-email-tie-fei.zang@freescale.com>
+	<1284027632-32573-2-git-send-email-tie-fei.zang@freescale.com>
+	<1284027632-32573-3-git-send-email-tie-fei.zang@freescale.com>
+	<20100909114153.GB6622@oksana.dev.rtsoft.ru>
+	<3850A844E6A3854C827AC5C0BEC7B60A1FC158@zch01exm23.fsl.freescale.net>
+	<AANLkTimfKwdw+nLAjDjxf52dbZKLF-3aES+bT7CHskAS@mail.gmail.com>
+	<1284388075.10955.51.camel@localhost>
+	<AANLkTinyELs7KNDQxWsaR8Ea13SewWYwgtnie_P7cAzC@mail.gmail.com>
+	<1284396320.1783.30.camel@brekeke>
+From: Timur Tabi <timur.tabi@gmail.com>
+Date: Mon, 13 Sep 2010 13:36:45 -0500
+Message-ID: <AANLkTimUR5-hWRkDAwWTXJYCOcse7LTR0r-vSsZec1g1@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3][MTD] P4080/mtd: Fix the freescale lbc issue with
+	36bit mode
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Wood Scott-B07421 <B07421@freescale.com>,
+	Zang Roy-R61911 <r61911@freescale.com>,
+	Lan Chunhe-B25806 <B25806@freescale.com>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Anton Vorontsov <cbouatmailru@gmail.com>,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +39,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-09-06 at 11:54 +0300, Artem Bityutskiy wrote:
-> Hi,
-> 
-> here is a set of patches which should improve UBI reliability. I wrote them
-> during my trip to LinuxCon Brazil.
-> 
-> Patches 1-5 should be interesting for Matthieu CASTET - they improve -EUCLEAN
-> errors handling a little.
-> 
-> Patches 6-13 should be interesting for Matthew L. Creech - they presimably have
-> to help in catching why in his setup UBIFS refers unmapped LEB. I'm not sure
-> they will help, but there is a chance - my theory is that UBI decides that the
-> LEB is corrupted and wipes it. With this patch-set UBI should instead preserve
-> corrupted LEBs, so we could take a look what happened.
-> 
-> Please, reveiw, test. I tested them a little as well, but not extensively.
+On Mon, Sep 13, 2010 at 11:45 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> Unsigned int is reliably >= 4 in Linux.
 
-OK, although no one reviewed / tested this so far, I'm pushing this to
-the ubi-2.6.git / master tree.
+Not exactly.  sizeof(unsigned int) is effectively never greater than 4
+in Linux (I think it's still 32 bits even on a 64-bit kernel), so it
+makes no sense to say >=.  So since you can't say that sizeof(int) ==
+4, and you can't say that sizeof(int) > 4, then you certainly can't
+say that sizeof(int) >= 4.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Timur Tabi
+Linux kernel developer at Freescale
