@@ -1,19 +1,22 @@
-Subject: Re: [patch] mtd: sanity check input
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Dan Carpenter <error27@gmail.com>
-In-Reply-To: <20100908193956.GB3463@bicker>
-References: <20100908193956.GB3463@bicker>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ov4qK-0001rb-W3
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 08:56:54 +0000
+Received: by bwz13 with SMTP id 13so5624992bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Sep 2010 01:56:51 -0700 (PDT)
+Subject: Re: [PATCH] mtd: add Broadcom BCM63xx image tag partition parser
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Florian Fainelli <florian@openwrt.org>
+In-Reply-To: <201009121553.01374.florian@openwrt.org>
+References: <201009121553.01374.florian@openwrt.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 13 Sep 2010 11:53:43 +0300
-Message-ID: <1284368023.27765.179.camel@localhost>
+Date: Mon, 13 Sep 2010 11:55:25 +0300
+Message-ID: <1284368125.27765.180.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-	H Hartley Sweeten <hsweeten@visionengravers.com>,
-	linux-mtd@lists.infradead.org, Ben Hutchings <bhutchings@solarflare.com>,
-	"Kirill A. Shutemov" <kirill@shutemov.name>,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: Artem.Bityutskiy@nokia.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-08 at 21:39 +0200, Dan Carpenter wrote:
-> If "ur_idx" is wrong we could go past the end of the array.  The
-> "ur_idx" comes from root so it's not a huge deal, but adding a sanity
-> check makes the code more robust.
+On Sun, 2010-09-12 at 15:52 +0200, Florian Fainelli wrote:
+> This patch adds support for parsing Broadcom BCM63xx image tag format and
+> creating MTD partitions accordingly. This driver is a platform_device which
+> can be instantiated accordingly by bcm63xx board support code.
 > 
-> Signed-off-by: Dan Carpenter <error27@gmail.com>
-> 
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index a825002..9c00549 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -513,6 +513,9 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
->  		if (get_user(ur_idx, &(ur->regionindex)))
->  			return -EFAULT;
->  
-> +		if (ur_idx >= mtd->numeraseregions)
-> +			return -EINVAL;
-> +
+> Signed-off-by: Daniel Dickinson <cshore@csolve.net>
+> Signed-off-by: Mike Albon <malbon@openwrt.org>
+> Signed-off-by: Florian Fainelli <florian@openwrt.org>
 
-Pushed to l2-mtd-2.6.git with my "Signed-off-by", thanks.
+Pushed to l2-mtd-2.6.git without my "Signed-off-by", thanks.
 
 -- 
 Best Regards,
