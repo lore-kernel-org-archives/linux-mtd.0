@@ -1,23 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ov2Sx-0003ps-Kq
-	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 06:24:36 +0000
-Received: by fxm12 with SMTP id 12so3720734fxm.36
+	id 1Ov2UH-0004em-J3
+	for linux-mtd@lists.infradead.org; Mon, 13 Sep 2010 06:26:01 +0000
+Received: by bwz13 with SMTP id 13so5534729bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 12 Sep 2010 23:24:34 -0700 (PDT)
-Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
+	Sun, 12 Sep 2010 23:25:55 -0700 (PDT)
+Subject: Re: [PATCH 2/2] nanddump: add --nobad to read bad blocks
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
-References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
-	<1284308851.1783.23.camel@brekeke>
-	<AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <20100913062209.GA7382@pengutronix.de>
+References: <1284263427-31342-2-git-send-email-vapier@gentoo.org>
+	<70E876B0EA86DD4BAF101844BC814DFE0903E3E3DC@Cloud.RL.local>
+	<20100913062209.GA7382@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 13 Sep 2010 09:23:10 +0300
-Message-ID: <1284358990.27765.154.camel@localhost>
+Date: Mon, 13 Sep 2010 09:24:30 +0300
+Message-ID: <1284359070.27765.155.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Mike Frysinger <vapier@gentoo.org>, Jon Povey <Jon.Povey@racelogic.co.uk>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,44 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-09-12 at 15:05 -0400, Mike Frysinger wrote:
-> On Sun, Sep 12, 2010 at 12:27, Artem Bityutskiy wrote:
-> > On Sat, 2010-09-11 at 23:51 -0400, Mike Frysinger wrote:
-> >> Sometimes dumping bad blocks is useful, like when the block isn't actually
-> >> bad but the OOB layout isn't what the kernel is expecting or is otherwise
-> >> screwed up.  The --nobad option allows just that.
-> >
-> > How useful is this? I think instead you should implement the force flag
-> > we discussed and deal with 'otherwise screwed up' eraseblocks with
-> > flash_erase. I am afraid it is too dangerous to introduce this option.
+On Mon, 2010-09-13 at 08:22 +0200, Wolfram Sang wrote:
+> On Mon, Sep 13, 2010 at 06:50:04AM +0100, Jon Povey wrote:
+> > Mike Frysinger wrote:
+> > > Sometimes dumping bad blocks is useful, like when the data isn't actually
+> > > bad but the OOB layout isn't what the kernel is expecting or is otherwise
+> > > screwed up.  The --nobad option allows just that.
+> > 
+> > > +"-N         --nobad              Read without bad block skipping\n"
+> > 
+> > This doesn't seem like a good name for the option to me. A useful option but
+> > an unintuitive name, "nobad" sounds like it is going to omit bad blocks,
+> > where actually it is going to include them.
+> > 
+> > "noskipbad" or "includebad" would seem to be better.
 > 
-> i dont see how this is any more dangerous than adding an option to
-> force erasing of bad blocks ?  why should we be over protective of the
-> system ?
+> I agree. Is that still fixable despite being pushed already?
 
-Because it was like this for long time and people are accustomed to the
-fact that if a block is marked as bad, nothing will happen to it.
-
-Besides, if I misuse options and lose a really bad block, it is very
-difficult to find it again.
-
->   this is what got is into the existing rut of unrecoverable
-> blocks.
-
-> 
-> i find it useful during development to write out the content of pages
-> irregardless of the bad blocks and then read them back.
-
-But if a block is marked as bad, the current contents of it is not
-necessarily 0xFFs and it does not necessarily ready to be written. You
-have to first erase it.
-
-So my point was - please, first provide the means to erase them.
-
->   and for
-> recovering systems manually without having to resort to local access
-> to the bootloader.
-> -mike
+Sure, send a patch please.
 
 -- 
 Best Regards,
