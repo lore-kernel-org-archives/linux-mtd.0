@@ -1,21 +1,21 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from mailout4.samsung.com ([203.254.224.34])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvQWq-00033Y-I8
-	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 08:06:13 +0000
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
+	id 1OvQX5-0003YX-WA
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 08:06:28 +0000
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
 	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L8Q002ND968TWB0@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 17:06:08 +0900 (KST)
+	2010)) with ESMTP id <0L8Q00M3D96B5RB0@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 17:06:11 +0900 (KST)
 Received: from roh83 ([107.108.214.183])
 	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
 	2004)) with ESMTPA id <0L8Q00KVH966XR@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 17:06:08 +0900 (KST)
-Date: Tue, 14 Sep 2010 13:36:06 +0530
+	linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 17:06:11 +0900 (KST)
+Date: Tue, 14 Sep 2010 13:36:10 +0530
 From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
-Subject: [PATCH 1/2][MTD]MLC device check in OneNAND driver
+Subject: [PATCH 2/2][MTD]MLC device check in OneNAND driver
 To: dedekind1@gmail.com
-Message-id: <000001cb53e3$afc0f090$0f42d1b0$%hs@samsung.com>
+Message-id: <000101cb53e3$b15d6280$14182780$%hs@samsung.com>
 MIME-version: 1.0
 Content-type: text/plain; charset=iso-8859-1
 Content-language: en-us
@@ -32,28 +32,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi Artem,
 
- This MLC device check will be required for adding MLC support in file system.
+        Adding MLC device check Macro.
 
 
 Signed-off-by: Rohit HS <rohit.hs@samsung.com>
 ---
- drivers/mtd/onenand/onenand_base.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ include/mtd/mtd-abi.h |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index a2bb520..59af37d 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -4028,7 +4028,8 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 4debb45..6c6465d 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -57,12 +57,14 @@ struct mtd_oob_buf64 {
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+ #define MTD_NO_ERASE		0x1000	/* No erase necessary */
+ #define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
++#define MTD_WRITABLE_ONCE	0x4000
  
- 	/* Fill in remaining MTD driver data */
- 	mtd->type = MTD_NANDFLASH;
--	mtd->flags = MTD_CAP_NANDFLASH;
-+	mtd->flags = ONENAND_IS_MLC(this) ? MTD_CAP_MLCNANDFLASH
-+						: MTD_CAP_NANDFLASH;
- 	mtd->erase = onenand_erase;
- 	mtd->point = NULL;
- 	mtd->unpoint = NULL;
+ // Some common devices / combinations of capabilities
+ #define MTD_CAP_ROM		0
+ #define MTD_CAP_RAM		(MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
+ #define MTD_CAP_NORFLASH	(MTD_WRITEABLE | MTD_BIT_WRITEABLE)
+ #define MTD_CAP_NANDFLASH	(MTD_WRITEABLE)
++#define MTD_CAP_MLCNANDFLASH	(MTD_WRITEABLE | MTD_WRITABLE_ONCE)
+ 
+ /* ECC byte placement */
+ #define MTD_NANDECC_OFF		0	// Switch off ECC (Not recommended)
 ---
 
 
