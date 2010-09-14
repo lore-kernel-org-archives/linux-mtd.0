@@ -1,22 +1,16 @@
-Received: from moutng.kundenserver.de ([212.227.126.186])
+Received: from moutng.kundenserver.de ([212.227.17.9])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvbZk-0004cn-EX
-	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 19:53:58 +0000
+	id 1Ovbaf-0004lM-Tt
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 19:54:55 +0000
 From: Arnd Bergmann <arnd@arndb.de>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 0/7] BKL mass-conversion to mutex
-Date: Tue, 14 Sep 2010 21:53:35 +0200
-Message-Id: <1284494022-7346-1-git-send-email-arnd@arndb.de>
-Cc: Corey Minyard <minyard@acm.org>, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Arnd Bergmann <arnd@arndb.de>, linux-scsi@vger.kernel.org,
-	Takashi Iwai <tiwai@suse.de>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org,
-	"James E.J. Bottomley" <James.Bottomley@suse.de>,
-	linux-mtd@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
-	Ingo Molnar <mingo@elte.hu>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	openipmi-developer@lists.sourceforge.net,
-	David Woodhouse <David.Woodhouse@intel.com>
+Subject: [PATCH 2/7] mtd: autoconvert trivial BKL users to private mutex
+Date: Tue, 14 Sep 2010 21:53:37 +0200
+Message-Id: <1284494022-7346-3-git-send-email-arnd@arndb.de>
+In-Reply-To: <1284494022-7346-1-git-send-email-arnd@arndb.de>
+References: <1284494022-7346-1-git-send-email-arnd@arndb.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>,
+	Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,157 +20,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is one out of five topic branches in my BKL removal
-series that I would like to get into linux-next as
-a preparation for merging into 2.6.37.
+All these files use the big kernel lock in a trivial
+way to serialize their private file operations,
+typically resulting from an earlier semi-automatic
+pushdown from VFS.
 
-Based on a discussion with Ingo Molnar, this series converts
-many drivers that only have a single file using the BKL
-to use a private mutex instead.  All these patches except for
-the last two have been reviewed before.
+None of these drivers appears to want to lock against
+other code, and they all use the BKL as the top-level
+lock in their file operations, meaning that there
+is no lock-order inversion problem.
 
-This is safe because they all use the BKL only to protect
-their basic file operations and they take it as the
-outermost lock. Consequently, we do not run into lock-order
-problem or recursion.
+Consequently, we can remove the BKL completely,
+replacing it with a per-file mutex in every case.
+Using a scripted approach means we can avoid
+typos.
 
-Using a script that works for all these drivers gives
-me reasonable confidence in the approach, since it avoids
-typos and other common mistakes from sloppiness.
+file=$1
+name=$2
+if grep -q lock_kernel ${file} ; then
+    if grep -q 'include.*linux.mutex.h' ${file} ; then
+            sed -i '/include.*<linux\/smp_lock.h>/d' ${file}
+    else
+            sed -i 's/include.*<linux\/smp_lock.h>.*$/include <linux\/mutex.h>/g' ${file}
+    fi
+    sed -i ${file} \
+        -e "/^#include.*linux.mutex.h/,$ {
+                1,/^\(static\|int\|long\)/ {
+                     /^\(static\|int\|long\)/istatic DEFINE_MUTEX(${name}_mutex);
 
-Stephen, please add
-git+ssh://master.kernel.org/pub/scm/linux/kernel/git/arnd/bkl.git trivial
+} }"  \
+    -e "s/\(un\)*lock_kernel\>[ ]*()/mutex_\1lock(\&${name}_mutex)/g" \
+    -e '/[      ]*cycle_kernel_lock();/d'
+else
+    sed -i -e '/include.*\<smp_lock.h\>/d' ${file}  \
+                -e '/cycle_kernel_lock()/d'
+fi
 
-Arnd Bergmann (7):
-  scsi: autoconvert trivial BKL users to private mutex
-  mtd: autoconvert trivial BKL users to private mutex
-  mac: autoconvert trivial BKL users to private mutex
-  ipmi: autoconvert trivial BKL users to private mutex
-  drivers: autoconvert trivial BKL users to private mutex
-  sound: autoconvert trivial BKL users to private mutex
-  block: autoconvert trivial BKL users to private mutex
-
- block/bsg.c                                |    3 --
- drivers/block/DAC960.c                     |   11 ++++---
- drivers/block/amiflop.c                    |   19 ++++++------
- drivers/block/aoe/aoeblk.c                 |    9 +++--
- drivers/block/aoe/aoechr.c                 |    9 +++--
- drivers/block/ataflop.c                    |   15 +++++----
- drivers/block/brd.c                        |    7 ++--
- drivers/block/cciss.c                      |   14 ++++----
- drivers/block/cpqarray.c                   |   15 +++++----
- drivers/block/drbd/drbd_main.c             |   11 ++++---
- drivers/block/floppy.c                     |   16 +++++-----
- drivers/block/loop.c                       |   11 ++++---
- drivers/block/nbd.c                        |    7 ++--
- drivers/block/paride/pcd.c                 |   15 +++++----
- drivers/block/paride/pd.c                  |   15 +++++----
- drivers/block/paride/pf.c                  |   17 ++++++-----
- drivers/block/paride/pg.c                  |    7 ++--
- drivers/block/paride/pt.c                  |   19 ++++++------
- drivers/block/pktcdvd.c                    |   16 +++++-----
- drivers/block/swim.c                       |   15 +++++----
- drivers/block/swim3.c                      |   15 +++++----
- drivers/block/ub.c                         |   15 +++++----
- drivers/block/viodasd.c                    |   11 ++++---
- drivers/block/virtio_blk.c                 |    7 ++--
- drivers/block/xd.c                         |    7 ++--
- drivers/block/xen-blkfront.c               |   11 ++++---
- drivers/block/xsysace.c                    |   11 ++++---
- drivers/block/z2ram.c                      |   15 +++++----
- drivers/cdrom/gdrom.c                      |   15 +++++----
- drivers/cdrom/viocd.c                      |   15 +++++----
- drivers/char/apm-emulation.c               |   11 ++++---
- drivers/char/applicom.c                    |    9 +++--
- drivers/char/ds1302.c                      |   15 +++++----
- drivers/char/ds1620.c                      |    8 ++--
- drivers/char/dsp56k.c                      |   27 +++++++++--------
- drivers/char/dtlk.c                        |    8 ++--
- drivers/char/generic_nvram.c               |    7 ++--
- drivers/char/genrtc.c                      |   13 ++++----
- drivers/char/i8k.c                         |    7 ++--
- drivers/char/ip2/ip2main.c                 |    8 ++--
- drivers/char/ipmi/ipmi_devintf.c           |   14 ++++----
- drivers/char/ipmi/ipmi_watchdog.c          |    8 ++--
- drivers/char/lp.c                          |   15 +++++----
- drivers/char/mbcs.c                        |    8 ++--
- drivers/char/mmtimer.c                     |    7 ++--
- drivers/char/mwave/mwavedd.c               |   44 ++++++++++++++--------------
- drivers/char/nvram.c                       |   11 ++++---
- drivers/char/nwflash.c                     |   12 ++++----
- drivers/char/pcmcia/cm4000_cs.c            |   11 ++++---
- drivers/char/pcmcia/cm4040_cs.c            |    7 ++--
- drivers/char/ppdev.c                       |    8 ++--
- drivers/char/rio/rio_linux.c               |    7 ++--
- drivers/char/snsc.c                        |    9 +++--
- drivers/char/toshiba.c                     |    9 +++--
- drivers/char/viotape.c                     |   11 ++++---
- drivers/char/xilinx_hwicap/xilinx_hwicap.c |    6 ++--
- drivers/hwmon/fschmd.c                     |    6 ++--
- drivers/hwmon/w83793.c                     |    6 ++--
- drivers/ide/ide-cd.c                       |   14 ++++----
- drivers/ide/ide-disk_ioctl.c               |    7 ++--
- drivers/ide/ide-floppy_ioctl.c             |    7 ++--
- drivers/ide/ide-gd.c                       |   10 +++---
- drivers/ide/ide-tape.c                     |   19 ++++++------
- drivers/input/misc/hp_sdc_rtc.c            |    7 ++--
- drivers/macintosh/adb.c                    |   10 +++---
- drivers/macintosh/smu.c                    |    6 ++--
- drivers/macintosh/via-pmu.c                |   11 ++++---
- drivers/md/dm.c                            |   10 +++---
- drivers/md/md.c                            |   13 ++++----
- drivers/memstick/core/mspro_block.c        |   11 ++++---
- drivers/message/fusion/mptctl.c            |   15 +++++----
- drivers/message/i2o/i2o_block.c            |   15 +++++----
- drivers/message/i2o/i2o_config.c           |   23 +++++++-------
- drivers/misc/phantom.c                     |   11 ++++---
- drivers/mmc/card/block.c                   |   10 +++---
- drivers/mtd/mtd_blkdevs.c                  |   14 ++++----
- drivers/mtd/mtdchar.c                      |   15 +++++----
- drivers/pci/hotplug/cpqphp_sysfs.c         |   13 ++++----
- drivers/rtc/rtc-m41t80.c                   |   13 ++++----
- drivers/s390/char/tape_block.c             |   13 ++++----
- drivers/sbus/char/jsflash.c                |   24 ++++++++-------
- drivers/scsi/3w-9xxx.c                     |    7 ++--
- drivers/scsi/3w-sas.c                      |    7 ++--
- drivers/scsi/3w-xxxx.c                     |    9 ++---
- drivers/scsi/aacraid/linit.c               |   15 +++++----
- drivers/scsi/ch.c                          |    8 ++--
- drivers/scsi/dpt_i2o.c                     |   18 ++++++------
- drivers/scsi/gdth.c                        |   11 ++++---
- drivers/scsi/megaraid.c                    |    8 ++--
- drivers/scsi/megaraid/megaraid_mm.c        |    8 ++--
- drivers/scsi/megaraid/megaraid_sas.c       |    2 -
- drivers/scsi/mpt2sas/mpt2sas_ctl.c         |   11 ++++---
- drivers/scsi/osst.c                        |   15 +++++----
- drivers/scsi/scsi_tgt_if.c                 |    2 -
- drivers/scsi/sg.c                          |   11 ++++---
- drivers/scsi/sr.c                          |   14 ++++----
- drivers/scsi/st.c                          |   12 ++++----
- drivers/staging/hv/blkvsc_drv.c            |   11 ++++---
- drivers/staging/spectra/ffsport.c          |    7 ++--
- drivers/telephony/ixj.c                    |    7 ++--
- drivers/watchdog/cpwd.c                    |   15 +++++----
- fs/hfsplus/ioctl.c                         |   11 ++++---
- sound/oss/au1550_ac97.c                    |   30 +++++++++---------
- sound/oss/dmasound/dmasound_core.c         |   41 +++++++++++++------------
- sound/oss/msnd_pinnacle.c                  |   15 +++++----
- sound/oss/sh_dac_audio.c                   |   13 ++++----
- sound/oss/soundcard.c                      |   41 +++++++++++++------------
- sound/oss/swarm_cs4297a.c                  |   20 ++++++------
- sound/oss/vwsnd.c                          |   30 +++++++++---------
- 109 files changed, 718 insertions(+), 657 deletions(-)
-
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: linux-scsi@vger.kernel.org
-Cc: "James E.J. Bottomley" <James.Bottomley@suse.de>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Cc: David Woodhouse <David.Woodhouse@intel.com>
 Cc: linux-mtd@lists.infradead.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Ingo Molnar <mingo@elte.hu>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: linuxppc-dev@ozlabs.org
-Cc: Corey Minyard <minyard@acm.org>
-Cc: openipmi-developer@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Jens Axboe <axboe@kernel.dk>
+---
+ drivers/mtd/mtdchar.c |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index a825002..5ef4548 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -26,7 +26,7 @@
+ #include <linux/module.h>
+ #include <linux/slab.h>
+ #include <linux/sched.h>
+-#include <linux/smp_lock.h>
++#include <linux/mutex.h>
+ #include <linux/backing-dev.h>
+ #include <linux/compat.h>
+ #include <linux/mount.h>
+@@ -37,6 +37,7 @@
+ #include <asm/uaccess.h>
+ 
+ #define MTD_INODE_FS_MAGIC 0x11307854
++static DEFINE_MUTEX(mtd_mutex);
+ static struct vfsmount *mtd_inode_mnt __read_mostly;
+ 
+ /*
+@@ -90,7 +91,7 @@ static int mtd_open(struct inode *inode, struct file *file)
+ 	if ((file->f_mode & FMODE_WRITE) && (minor & 1))
+ 		return -EACCES;
+ 
+-	lock_kernel();
++	mutex_lock(&mtd_mutex);
+ 	mtd = get_mtd_device(NULL, devnum);
+ 
+ 	if (IS_ERR(mtd)) {
+@@ -138,7 +139,7 @@ static int mtd_open(struct inode *inode, struct file *file)
+ 	file->private_data = mfi;
+ 
+ out:
+-	unlock_kernel();
++	mutex_unlock(&mtd_mutex);
+ 	return ret;
+ } /* mtd_open */
+ 
+@@ -866,9 +867,9 @@ static long mtd_unlocked_ioctl(struct file *file, u_int cmd, u_long arg)
+ {
+ 	int ret;
+ 
+-	lock_kernel();
++	mutex_lock(&mtd_mutex);
+ 	ret = mtd_ioctl(file, cmd, arg);
+-	unlock_kernel();
++	mutex_unlock(&mtd_mutex);
+ 
+ 	return ret;
+ }
+@@ -892,7 +893,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
+ 	void __user *argp = compat_ptr(arg);
+ 	int ret = 0;
+ 
+-	lock_kernel();
++	mutex_lock(&mtd_mutex);
+ 
+ 	switch (cmd) {
+ 	case MEMWRITEOOB32:
+@@ -927,7 +928,7 @@ static long mtd_compat_ioctl(struct file *file, unsigned int cmd,
+ 		ret = mtd_ioctl(file, cmd, (unsigned long)argp);
+ 	}
+ 
+-	unlock_kernel();
++	mutex_unlock(&mtd_mutex);
+ 
+ 	return ret;
+ }
+-- 
+1.7.1
