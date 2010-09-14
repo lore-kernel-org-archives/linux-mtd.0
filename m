@@ -1,23 +1,25 @@
 Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvK8u-0000N1-Ri
-	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 01:17:07 +0000
-Received: by vws11 with SMTP id 11so5928125vws.36
+	id 1OvKDk-0000Pk-Ut
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 01:22:05 +0000
+Received: by vws11 with SMTP id 11so5932833vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Sep 2010 18:17:03 -0700 (PDT)
+	Mon, 13 Sep 2010 18:22:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1284359140.27765.156.camel@localhost>
-References: <70E876B0EA86DD4BAF101844BC814DFE0903E3E3DD@Cloud.RL.local>
-	<1284359140.27765.156.camel@localhost>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 13 Sep 2010 21:16:39 -0400
-Message-ID: <AANLkTim=Fi_-kwaHSpF1OXMVv79xugnigMK7=bzQmE=s@mail.gmail.com>
-Subject: Re: linux equivalent of u-boot's "nand scrub" (erasing blocks even
-	whenOOB says "bad")
+Sender: vapier.adi@gmail.com
+In-Reply-To: <1284358990.27765.154.camel@localhost>
+References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
+	<1284308851.1783.23.camel@brekeke>
+	<AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
+	<1284358990.27765.154.camel@localhost>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Mon, 13 Sep 2010 21:21:44 -0400
+Message-ID: <AANLkTin4u=jQOxxuTwzMHrEEg=vDc2TSTah_=_Li02xx@mail.gmail.com>
+Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
 To: dedekind1@gmail.com
 Content-Type: text/plain; charset=UTF-8
-Cc: Jon Povey <Jon.Povey@racelogic.co.uk>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +29,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 13, 2010 at 02:25, Artem Bityutskiy wrote:
-> On Mon, 2010-09-13 at 06:54 +0100, Jon Povey wrote:
->> Mike Frysinger wrote:
->> > ive come across a situation where it would have been invaluable to
->> > have the ability to "scrub" the nand flash while running linux.
+On Mon, Sep 13, 2010 at 02:23, Artem Bityutskiy wrote:
+> On Sun, 2010-09-12 at 15:05 -0400, Mike Frysinger wrote:
+>> On Sun, Sep 12, 2010 at 12:27, Artem Bityutskiy wrote:
+>> > On Sat, 2010-09-11 at 23:51 -0400, Mike Frysinger wrote:
+>> >> Sometimes dumping bad blocks is useful, like when the block isn't act=
+ually
+>> >> bad but the OOB layout isn't what the kernel is expecting or is other=
+wise
+>> >> screwed up. =C2=A0The --nobad option allows just that.
+>> >
+>> > How useful is this? I think instead you should implement the force fla=
+g
+>> > we discussed and deal with 'otherwise screwed up' eraseblocks with
+>> > flash_erase. I am afraid it is too dangerous to introduce this option.
 >>
->> I would find this useful too, or more specifically I recently wanted to rewrite the BBT in software from linux (to change OOB layout), but those blocks are marked off-limits. Some way to force it would be nice.
->>
->> I am just rambling though, no real useful suggestion :) Sorry..
->>
->> As for clearing blocks marked bad, how about MEMSETGOODBLOCK as the inverse of the existing MEMSETBADBLOCK?
+>> i dont see how this is any more dangerous than adding an option to
+>> force erasing of bad blocks ? =C2=A0why should we be over protective of =
+the
+>> system ?
 >
-> So may be we need a separate ioctl for dealing with bad eraseblocks
-> which will also include abilities to re-write BBT?
+> Because it was like this for long time and people are accustomed to the
+> fact that if a block is marked as bad, nothing will happen to it.
+>
+> Besides, if I misuse options and lose a really bad block, it is very
+> difficult to find it again.
 
-i dont have any devices that have dedicated software BBTs.  i'm
-concerned with just the forced erasing of blocks since the rest works
-for me already (forced reading and writing).  the ability to change
-the definition of the OOB is apparently "deprecated" now, so i cant
-fix things on the fly there.
+... i dont see what any of this has to do with my proposal.  the
+default behavior is unchanged, and i dont think we need to be coddling
+people to not use new options.  if you dont want to "lose" things,
+then dont use the new option.
+
+>> i find it useful during development to write out the content of pages
+>> irregardless of the bad blocks and then read them back.
+>
+> But if a block is marked as bad, the current contents of it is not
+> necessarily 0xFFs and it does not necessarily ready to be written. You
+> have to first erase it.
+>
+> So my point was - please, first provide the means to erase them.
+
+so once we have the ability to erase them, you'll merge this ?
+
+not that i see why we're restricting this behavior in the first place
+... policy is for the end user to determine ... this is putting
+artificial limits for no real reason that i can see.
 -mike
