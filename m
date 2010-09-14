@@ -1,29 +1,22 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
+Received: from moutng.kundenserver.de ([212.227.126.186])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvU8R-00060q-OD
-	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 11:57:16 +0000
-Received: by iwn36 with SMTP id 36so5736894iwn.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Sep 2010 04:57:14 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <3850A844E6A3854C827AC5C0BEC7B60A1FC299@zch01exm23.fsl.freescale.net>
-References: <AANLkTik3ViwjmOFfm6GUwmuzMkO75+2pCUdnC0z8A7Jb@mail.gmail.com>
-	<3850A844E6A3854C827AC5C0BEC7B60A1FC150@zch01exm23.fsl.freescale.net>
-	<20100913112749.2fb32b3d@schlenkerla.am.freescale.net>
-	<3850A844E6A3854C827AC5C0BEC7B60A1FC299@zch01exm23.fsl.freescale.net>
-From: Timur Tabi <timur.tabi@gmail.com>
-Date: Tue, 14 Sep 2010 06:56:44 -0500
-Message-ID: <AANLkTim2HAnwF7wdbJb_Oc9rzPVe0Y-B7nOHiUVoWef=@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3][MTD] P4080/mtd: Fix the freescale lbc issue with
-	36bit mode
-To: Zang Roy-R61911 <r61911@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
-	Lan Chunhe-B25806 <B25806@freescale.com>, linuxppc-dev@ozlabs.org,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	dwmw2@infradead.org, Gala Kumar-B11780 <B11780@freescale.com>
+	id 1OvbZk-0004cn-EX
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 19:53:58 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 0/7] BKL mass-conversion to mutex
+Date: Tue, 14 Sep 2010 21:53:35 +0200
+Message-Id: <1284494022-7346-1-git-send-email-arnd@arndb.de>
+Cc: Corey Minyard <minyard@acm.org>, Stephen Rothwell <sfr@canb.auug.org.au>,
+	Arnd Bergmann <arnd@arndb.de>, linux-scsi@vger.kernel.org,
+	Takashi Iwai <tiwai@suse.de>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>, linuxppc-dev@ozlabs.org,
+	"James E.J. Bottomley" <James.Bottomley@suse.de>,
+	linux-mtd@lists.infradead.org, Jens Axboe <axboe@kernel.dk>,
+	Ingo Molnar <mingo@elte.hu>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	openipmi-developer@lists.sourceforge.net,
+	David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,22 +26,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 13, 2010 at 11:09 PM, Zang Roy-R61911 <r61911@freescale.com> wr=
-ote:
+This is one out of five topic branches in my BKL removal
+series that I would like to get into linux-next as
+a preparation for merging into 2.6.37.
 
->> > > Shouldn't this be u32 or __be32, for consistency with the actual
->> > > comparisons below?
->> > __be32 is better.
->>
->> I disagree, the return from this function is native-endian. =A0It should
->> be u32.
-> But the return of this value is ONLY used for br comparing. It is big end=
-ia.
-> Thanks.
+Based on a discussion with Ingo Molnar, this series converts
+many drivers that only have a single file using the BKL
+to use a private mutex instead.  All these patches except for
+the last two have been reviewed before.
 
-No, Scott is right.  The return value is native-endian (NE).  You've
-converted it from BE to NE already.
+This is safe because they all use the BKL only to protect
+their basic file operations and they take it as the
+outermost lock. Consequently, we do not run into lock-order
+problem or recursion.
 
---=20
-Timur Tabi
-Linux kernel developer at Freescale
+Using a script that works for all these drivers gives
+me reasonable confidence in the approach, since it avoids
+typos and other common mistakes from sloppiness.
+
+Stephen, please add
+git+ssh://master.kernel.org/pub/scm/linux/kernel/git/arnd/bkl.git trivial
+
+Arnd Bergmann (7):
+  scsi: autoconvert trivial BKL users to private mutex
+  mtd: autoconvert trivial BKL users to private mutex
+  mac: autoconvert trivial BKL users to private mutex
+  ipmi: autoconvert trivial BKL users to private mutex
+  drivers: autoconvert trivial BKL users to private mutex
+  sound: autoconvert trivial BKL users to private mutex
+  block: autoconvert trivial BKL users to private mutex
+
+ block/bsg.c                                |    3 --
+ drivers/block/DAC960.c                     |   11 ++++---
+ drivers/block/amiflop.c                    |   19 ++++++------
+ drivers/block/aoe/aoeblk.c                 |    9 +++--
+ drivers/block/aoe/aoechr.c                 |    9 +++--
+ drivers/block/ataflop.c                    |   15 +++++----
+ drivers/block/brd.c                        |    7 ++--
+ drivers/block/cciss.c                      |   14 ++++----
+ drivers/block/cpqarray.c                   |   15 +++++----
+ drivers/block/drbd/drbd_main.c             |   11 ++++---
+ drivers/block/floppy.c                     |   16 +++++-----
+ drivers/block/loop.c                       |   11 ++++---
+ drivers/block/nbd.c                        |    7 ++--
+ drivers/block/paride/pcd.c                 |   15 +++++----
+ drivers/block/paride/pd.c                  |   15 +++++----
+ drivers/block/paride/pf.c                  |   17 ++++++-----
+ drivers/block/paride/pg.c                  |    7 ++--
+ drivers/block/paride/pt.c                  |   19 ++++++------
+ drivers/block/pktcdvd.c                    |   16 +++++-----
+ drivers/block/swim.c                       |   15 +++++----
+ drivers/block/swim3.c                      |   15 +++++----
+ drivers/block/ub.c                         |   15 +++++----
+ drivers/block/viodasd.c                    |   11 ++++---
+ drivers/block/virtio_blk.c                 |    7 ++--
+ drivers/block/xd.c                         |    7 ++--
+ drivers/block/xen-blkfront.c               |   11 ++++---
+ drivers/block/xsysace.c                    |   11 ++++---
+ drivers/block/z2ram.c                      |   15 +++++----
+ drivers/cdrom/gdrom.c                      |   15 +++++----
+ drivers/cdrom/viocd.c                      |   15 +++++----
+ drivers/char/apm-emulation.c               |   11 ++++---
+ drivers/char/applicom.c                    |    9 +++--
+ drivers/char/ds1302.c                      |   15 +++++----
+ drivers/char/ds1620.c                      |    8 ++--
+ drivers/char/dsp56k.c                      |   27 +++++++++--------
+ drivers/char/dtlk.c                        |    8 ++--
+ drivers/char/generic_nvram.c               |    7 ++--
+ drivers/char/genrtc.c                      |   13 ++++----
+ drivers/char/i8k.c                         |    7 ++--
+ drivers/char/ip2/ip2main.c                 |    8 ++--
+ drivers/char/ipmi/ipmi_devintf.c           |   14 ++++----
+ drivers/char/ipmi/ipmi_watchdog.c          |    8 ++--
+ drivers/char/lp.c                          |   15 +++++----
+ drivers/char/mbcs.c                        |    8 ++--
+ drivers/char/mmtimer.c                     |    7 ++--
+ drivers/char/mwave/mwavedd.c               |   44 ++++++++++++++--------------
+ drivers/char/nvram.c                       |   11 ++++---
+ drivers/char/nwflash.c                     |   12 ++++----
+ drivers/char/pcmcia/cm4000_cs.c            |   11 ++++---
+ drivers/char/pcmcia/cm4040_cs.c            |    7 ++--
+ drivers/char/ppdev.c                       |    8 ++--
+ drivers/char/rio/rio_linux.c               |    7 ++--
+ drivers/char/snsc.c                        |    9 +++--
+ drivers/char/toshiba.c                     |    9 +++--
+ drivers/char/viotape.c                     |   11 ++++---
+ drivers/char/xilinx_hwicap/xilinx_hwicap.c |    6 ++--
+ drivers/hwmon/fschmd.c                     |    6 ++--
+ drivers/hwmon/w83793.c                     |    6 ++--
+ drivers/ide/ide-cd.c                       |   14 ++++----
+ drivers/ide/ide-disk_ioctl.c               |    7 ++--
+ drivers/ide/ide-floppy_ioctl.c             |    7 ++--
+ drivers/ide/ide-gd.c                       |   10 +++---
+ drivers/ide/ide-tape.c                     |   19 ++++++------
+ drivers/input/misc/hp_sdc_rtc.c            |    7 ++--
+ drivers/macintosh/adb.c                    |   10 +++---
+ drivers/macintosh/smu.c                    |    6 ++--
+ drivers/macintosh/via-pmu.c                |   11 ++++---
+ drivers/md/dm.c                            |   10 +++---
+ drivers/md/md.c                            |   13 ++++----
+ drivers/memstick/core/mspro_block.c        |   11 ++++---
+ drivers/message/fusion/mptctl.c            |   15 +++++----
+ drivers/message/i2o/i2o_block.c            |   15 +++++----
+ drivers/message/i2o/i2o_config.c           |   23 +++++++-------
+ drivers/misc/phantom.c                     |   11 ++++---
+ drivers/mmc/card/block.c                   |   10 +++---
+ drivers/mtd/mtd_blkdevs.c                  |   14 ++++----
+ drivers/mtd/mtdchar.c                      |   15 +++++----
+ drivers/pci/hotplug/cpqphp_sysfs.c         |   13 ++++----
+ drivers/rtc/rtc-m41t80.c                   |   13 ++++----
+ drivers/s390/char/tape_block.c             |   13 ++++----
+ drivers/sbus/char/jsflash.c                |   24 ++++++++-------
+ drivers/scsi/3w-9xxx.c                     |    7 ++--
+ drivers/scsi/3w-sas.c                      |    7 ++--
+ drivers/scsi/3w-xxxx.c                     |    9 ++---
+ drivers/scsi/aacraid/linit.c               |   15 +++++----
+ drivers/scsi/ch.c                          |    8 ++--
+ drivers/scsi/dpt_i2o.c                     |   18 ++++++------
+ drivers/scsi/gdth.c                        |   11 ++++---
+ drivers/scsi/megaraid.c                    |    8 ++--
+ drivers/scsi/megaraid/megaraid_mm.c        |    8 ++--
+ drivers/scsi/megaraid/megaraid_sas.c       |    2 -
+ drivers/scsi/mpt2sas/mpt2sas_ctl.c         |   11 ++++---
+ drivers/scsi/osst.c                        |   15 +++++----
+ drivers/scsi/scsi_tgt_if.c                 |    2 -
+ drivers/scsi/sg.c                          |   11 ++++---
+ drivers/scsi/sr.c                          |   14 ++++----
+ drivers/scsi/st.c                          |   12 ++++----
+ drivers/staging/hv/blkvsc_drv.c            |   11 ++++---
+ drivers/staging/spectra/ffsport.c          |    7 ++--
+ drivers/telephony/ixj.c                    |    7 ++--
+ drivers/watchdog/cpwd.c                    |   15 +++++----
+ fs/hfsplus/ioctl.c                         |   11 ++++---
+ sound/oss/au1550_ac97.c                    |   30 +++++++++---------
+ sound/oss/dmasound/dmasound_core.c         |   41 +++++++++++++------------
+ sound/oss/msnd_pinnacle.c                  |   15 +++++----
+ sound/oss/sh_dac_audio.c                   |   13 ++++----
+ sound/oss/soundcard.c                      |   41 +++++++++++++------------
+ sound/oss/swarm_cs4297a.c                  |   20 ++++++------
+ sound/oss/vwsnd.c                          |   30 +++++++++---------
+ 109 files changed, 718 insertions(+), 657 deletions(-)
+
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: linux-scsi@vger.kernel.org
+Cc: "James E.J. Bottomley" <James.Bottomley@suse.de>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+Cc: linux-mtd@lists.infradead.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: linuxppc-dev@ozlabs.org
+Cc: Corey Minyard <minyard@acm.org>
+Cc: openipmi-developer@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Jens Axboe <axboe@kernel.dk>
