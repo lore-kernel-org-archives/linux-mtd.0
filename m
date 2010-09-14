@@ -1,23 +1,40 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvKo4-00045Y-Du
-	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 01:59:37 +0000
-Received: by vws11 with SMTP id 11so5967192vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Sep 2010 18:59:35 -0700 (PDT)
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+	helo=TX2EHSOBE004.bigfish.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OvMpn-0000RO-Va
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 04:09:33 +0000
+Received: from mail123-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail123-tx2-R.bigfish.com (Postfix) with ESMTP id C551E17406F8	for
+	<linux-mtd@lists.infradead.org>; Tue, 14 Sep 2010 04:09:28 +0000 (UTC)
+Received: from TX2EHSMHS015.bigfish.com (unknown [10.9.14.241])	by
+	mail123-tx2.bigfish.com (Postfix) with ESMTP id 71203DD8051	for
+	<linux-mtd@lists.infradead.org>; Tue, 14 Sep 2010 04:09:28 +0000 (UTC)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw01.freescale.net (8.14.3/8.14.3) with ESMTP id
+	o8E49Rcg016393	for
+	<linux-mtd@lists.infradead.org>; Mon, 13 Sep 2010 21:09:27 -0700 (MST)
+Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
+	[10.192.129.207])	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP
+	id o8E4NYd4014251	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Sep 2010 23:23:35 -0500 (CDT)
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE0903E3E5A5@Cloud.RL.local>
-References: <AANLkTim=Fi_-kwaHSpF1OXMVv79xugnigMK7=bzQmE=s@mail.gmail.com>
-	<70E876B0EA86DD4BAF101844BC814DFE0903E3E5A5@Cloud.RL.local>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 13 Sep 2010 21:59:15 -0400
-Message-ID: <AANLkTim54nshFKJFWkoJbdpEVBi3e9pn01ANg-gi+XNA@mail.gmail.com>
-Subject: Re: linux equivalent of u-boot's "nand scrub" (erasing blocks even
-	whenOOB says "bad")
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: RE: [PATCH v2 3/3][MTD] P4080/mtd: Fix the freescale lbc issue with
+	36bit mode
+Date: Tue, 14 Sep 2010 12:09:20 +0800
+Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A1FC299@zch01exm23.fsl.freescale.net>
+In-Reply-To: <20100913112749.2fb32b3d@schlenkerla.am.freescale.net>
+References: <AANLkTik3ViwjmOFfm6GUwmuzMkO75+2pCUdnC0z8A7Jb@mail.gmail.com><3850A844E6A3854C827AC5C0BEC7B60A1FC150@zch01exm23.fsl.freescale.net>
+	<20100913112749.2fb32b3d@schlenkerla.am.freescale.net>
+From: Zang Roy-R61911 <r61911@freescale.com>
+To: "Wood Scott-B07421" <B07421@freescale.com>
+Cc: dedekind1@gmail.com, Lan Chunhe-B25806 <B25806@freescale.com>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +44,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 13, 2010 at 21:53, Jon Povey wrote:
-> Mike Frysinger wrote:
->> i dont have any devices that have dedicated software BBTs. =C2=A0i'm
->> concerned with just the forced erasing of blocks since the rest works
->> for me already (forced reading and writing). =C2=A0the ability to change
->> the definition of the OOB is apparently "deprecated" now, so i cant
->> fix things on the fly there.
->
-> Not quite sure what you mean by the last part. I have used raw writes wit=
-h OOB, software-generated ECC and altered layout of flash pages, to good ef=
-fect.
->
-> I'm don't know what's deprecated, although the kind of hackery I am doing=
- I wouldn't expect to be encouraged by the API. I do, however, appreciate w=
-hen such things are possible. Especially on embedded, I don't want a kernel=
- API thinking it knows best about, f.ex., allowing me to erase and rewrite =
-the BBT. Stopping me doing it by accident is fine. Making it impossible is =
-a pain.
 
-please fix your e-mailer to not generate long  unwrapped lines
 
-i'm talking about MEM{G,S}ETOOBSEL
--mike
+> -----Original Message-----
+> From: Wood Scott-B07421
+> Sent: Tuesday, September 14, 2010 0:28 AM
+> To: Zang Roy-R61911
+> Cc: Geert Uytterhoeven; linux-mtd@lists.infradead.org; Wood =
+Scott-B07421;
+> dedekind1@gmail.com; Lan Chunhe-B25806; linuxppc-dev@ozlabs.org; =
+akpm@linux-
+> foundation.org; dwmw2@infradead.org; Gala Kumar-B11780
+> Subject: Re: [PATCH v2 3/3][MTD] P4080/mtd: Fix the freescale lbc =
+issue with
+> 36bit mode
+>=20
+> On Mon, 13 Sep 2010 00:22:10 -0700
+> "Zang Roy-R61911" <r61911@freescale.com> wrote:
+>=20
+> >
+> >
+> > > -----Original Message-----
+> > > From: geert.uytterhoeven@gmail.com =
+[mailto:geert.uytterhoeven@gmail.com]
+> On
+> > > Behalf Of Geert Uytterhoeven
+> > > Sent: Thursday, September 09, 2010 19:06 PM
+> > > To: Zang Roy-R61911
+> > > Cc: linux-mtd@lists.infradead.org; Wood Scott-B07421; =
+dedekind1@gmail.com;
+> Lan
+> > > Chunhe-B25806; linuxppc-dev@ozlabs.org; akpm@linux-foundation.org;
+> > > dwmw2@infradead.org; Gala Kumar-B11780
+> > > Subject: Re: [PATCH v2 3/3][MTD] P4080/mtd: Fix the freescale lbc =
+issue
+> with
+> > > 36bit mode
+> > >
+> > > On Thu, Sep 9, 2010 at 12:20, Roy Zang =
+<tie-fei.zang@freescale.com> wrote:
+> > > > From: Lan Chunhe-B25806 <b25806@freescale.com>
+> > > >
+> > > > When system uses 36bit physical address, res.start is 36bit
+> > > > physical address. But the function of in_be32 returns 32bit
+> > > > physical address. Then both of them compared each other is
+> > > > wrong. So by converting the address of res.start into
+> > > > the right format fixes this issue.
+> > >
+> > > > =A0/**
+> > > > + * fsl_lbc_addr - convert the base address
+> > > > + * @addr_base: base address of the memory bank
+> > > > + *
+> > > > + * This function converts a base address of lbc into the right =
+format
+> for
+> > > the BR
+> > > > + * registers. If the SOC has eLBC then it returns 32bit =
+physical
+> address
+> > > else
+> > > > + * it returns 34bit physical address for local bus(Example: =
+MPC8641).
+> > > > + */
+> > > > +unsigned int fsl_lbc_addr(phys_addr_t addr_base)
+> > >     ^^^^^^^^^^^^
+> > > Shouldn't this be u32 or __be32, for consistency with the actual
+> > > comparisons below?
+> > __be32 is better.
+>=20
+> I disagree, the return from this function is native-endian.  It should
+> be u32.
+But the return of this value is ONLY used for br comparing. It is big =
+endia.
+Thanks.
+Roy=20
