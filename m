@@ -1,25 +1,20 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OvKDk-0000Pk-Ut
-	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 01:22:05 +0000
-Received: by vws11 with SMTP id 11so5932833vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Sep 2010 18:22:04 -0700 (PDT)
-MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1284358990.27765.154.camel@localhost>
-References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
-	<1284308851.1783.23.camel@brekeke>
-	<AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
-	<1284358990.27765.154.camel@localhost>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Mon, 13 Sep 2010 21:21:44 -0400
-Message-ID: <AANLkTin4u=jQOxxuTwzMHrEEg=vDc2TSTah_=_Li02xx@mail.gmail.com>
-Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
+Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OvKi3-000298-9E
+	for linux-mtd@lists.infradead.org; Tue, 14 Sep 2010 01:53:24 +0000
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Content-Class: urn:content-classes:message
+Date: Tue, 14 Sep 2010 02:53:18 +0100
+Subject: RE: linux equivalent of u-boot's "nand scrub" (erasing blocks even
+	whenOOB says "bad")
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE0903E3E5A5@Cloud.RL.local>
+In-Reply-To: <AANLkTim=Fi_-kwaHSpF1OXMVv79xugnigMK7=bzQmE=s@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Sep 13, 2010 at 02:23, Artem Bityutskiy wrote:
-> On Sun, 2010-09-12 at 15:05 -0400, Mike Frysinger wrote:
->> On Sun, Sep 12, 2010 at 12:27, Artem Bityutskiy wrote:
->> > On Sat, 2010-09-11 at 23:51 -0400, Mike Frysinger wrote:
->> >> Sometimes dumping bad blocks is useful, like when the block isn't act=
-ually
->> >> bad but the OOB layout isn't what the kernel is expecting or is other=
-wise
->> >> screwed up. =C2=A0The --nobad option allows just that.
->> >
->> > How useful is this? I think instead you should implement the force fla=
-g
->> > we discussed and deal with 'otherwise screwed up' eraseblocks with
->> > flash_erase. I am afraid it is too dangerous to introduce this option.
->>
->> i dont see how this is any more dangerous than adding an option to
->> force erasing of bad blocks ? =C2=A0why should we be over protective of =
-the
->> system ?
->
-> Because it was like this for long time and people are accustomed to the
-> fact that if a block is marked as bad, nothing will happen to it.
->
-> Besides, if I misuse options and lose a really bad block, it is very
-> difficult to find it again.
+Mike Frysinger wrote:
+> i dont have any devices that have dedicated software BBTs.  i'm
+> concerned with just the forced erasing of blocks since the rest works
+> for me already (forced reading and writing).  the ability to change
+> the definition of the OOB is apparently "deprecated" now, so i cant
+> fix things on the fly there.
 
-... i dont see what any of this has to do with my proposal.  the
-default behavior is unchanged, and i dont think we need to be coddling
-people to not use new options.  if you dont want to "lose" things,
-then dont use the new option.
+Not quite sure what you mean by the last part. I have used raw writes with =
+OOB, software-generated ECC and altered layout of flash pages, to good effe=
+ct.
 
->> i find it useful during development to write out the content of pages
->> irregardless of the bad blocks and then read them back.
->
-> But if a block is marked as bad, the current contents of it is not
-> necessarily 0xFFs and it does not necessarily ready to be written. You
-> have to first erase it.
->
-> So my point was - please, first provide the means to erase them.
+I'm don't know what's deprecated, although the kind of hackery I am doing I=
+ wouldn't expect to be encouraged by the API. I do, however, appreciate whe=
+n such things are possible. Especially on embedded, I don't want a kernel A=
+PI thinking it knows best about, f.ex., allowing me to erase and rewrite th=
+e BBT. Stopping me doing it by accident is fine. Making it impossible is a =
+pain.
 
-so once we have the ability to erase them, you'll merge this ?
+--
+Jon Povey
+jon.povey@racelogic.co.uk
 
-not that i see why we're restricting this behavior in the first place
-... policy is for the end user to determine ... this is putting
-artificial limits for no real reason that i can see.
--mike
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
+
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
