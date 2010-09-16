@@ -1,13 +1,25 @@
-From: Sukumar Ghorai <s-ghorai@ti.com>
-To: linux-omap@vger.kernel.org
-Subject: [PATCH RESEND v4 4/4] omap: nand: making ecc layout as compatible
-	with romcode ecc
-Date: Thu, 16 Sep 2010 13:30:59 +0530
-Message-Id: <1284624059-1741-5-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
-References: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ow9j0-0000eu-CA
+	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 08:21:47 +0000
+Received: by eye22 with SMTP id 22so590986eye.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Sep 2010 01:21:45 -0700 (PDT)
+Date: Thu, 16 Sep 2010 12:21:41 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Roy Zang <tie-fei.zang@freescale.com>
+Subject: Re: [PATCH 2/3 v3] P4080/mtd: Only make elbc nand driver detect
+	nand flash partitions
+Message-ID: <20100916082141.GA10978@oksana.dev.rtsoft.ru>
+References: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
+	<1284619284-23614-2-git-send-email-tie-fei.zang@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1284619284-23614-2-git-send-email-tie-fei.zang@freescale.com>
+Cc: B07421@freescale.com, dedekind1@gmail.com, B25806@freescale.com,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	akpm@linux-foundation.org, dwmw2@infradead.org, B11780@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,93 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-    This patch overrides nand ecc layout and bad block descriptor (for 8-bit
-    device) to support hw ecc in romcode layout. So as to have in sync with ecc
-    layout throughout; i.e. x-loader, u-boot and kernel.
+On Thu, Sep 16, 2010 at 02:41:23PM +0800, Roy Zang wrote:
+[...]
+> -static int __devinit fsl_elbc_chip_probe(struct fsl_elbc_ctrl *ctrl,
+> -                                      struct device_node *node)
+> +/*
+> + * Currently only one elbc probe is supported.
+> + */
+> +static int __devinit fsl_elbc_nand_probe(struct platform_device *dev)
+>  {
+> -     struct fsl_lbc_regs __iomem *lbc = ctrl->regs;
+> +     struct fsl_lbc_regs __iomem *lbc;
+>       struct fsl_elbc_mtd *priv;
+>       struct resource res;
+> +     struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl = NULL;
+[...]
+> -     ctrl->chips[bank] = priv;
+> +     if (fsl_lbc_ctrl_dev->nand == NULL) {
+> +             elbc_fcm_ctrl = kzalloc(sizeof(*elbc_fcm_ctrl), GFP_KERNEL);
+> +             if (!elbc_fcm_ctrl) {
+[...]
+> +                     goto err;
+> +             }
+> +             fsl_lbc_ctrl_dev->nand = elbc_fcm_ctrl;
+> +     }
+> +
+> +     elbc_fcm_ctrl->chips[bank] = priv;
 
-    This patch also enables to use romcode ecc for spd and zoom, by default.
+Again, this will oops on the second probe. And you still don't
+lock fsl_lbc_ctrl_dev->nand during check-then-assignment, so
+with parallel probing there will be a race. :-(
 
-    This enables to flash x-loader, u-boot, kernel, FS images from kernel itself
-    and compatiable with other tools.
+We do have boards with several NAND chips (e.g.
+arch/powerpc/boot/dts/mpc8610_hpcd.dts), so these issues
+are all legitimate.
 
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
----
- arch/arm/mach-omap2/board-flash.c |    2 +-
- drivers/mtd/nand/omap2.c          |   34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 1 deletions(-)
+Thanks,
 
-diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
-index 5f74c8f..d71c511 100644
---- a/arch/arm/mach-omap2/board-flash.c
-+++ b/arch/arm/mach-omap2/board-flash.c
-@@ -145,7 +145,7 @@ __init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs)
- 	board_nand_data.cs		= cs;
- 	board_nand_data.parts		= nand_parts;
- 	board_nand_data.nr_parts	= nr_parts;
--	board_nand_data.ecc_opt		= OMAP_ECC_HAMMING_CODE_DIFF_LAYOUT;
-+	board_nand_data.ecc_opt		= OMAP_ECC_HAMMING_CODE_HW;
- 
- 	gpmc_nand_init(&board_nand_data);
- }
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index dbbd699..33c356b 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -128,6 +128,20 @@ const int use_dma;
- const int use_interrupt;
- #endif
- 
-+/* oob info generated runtime depending on ecc algorithm and layout selected */
-+static struct nand_ecclayout omap_oobinfo;
-+/* Define some generic bad / good block scan pattern which are used
-+ * while scanning a device for factory marked good / bad blocks
-+ */
-+static uint8_t scan_ff_pattern[] = { 0xff };
-+static struct nand_bbt_descr bb_descrip_flashbased = {
-+	.options = NAND_BBT_SCANEMPTY | NAND_BBT_SCANALLPAGES,
-+	.offs = 0,
-+	.len = 1,
-+	.pattern = scan_ff_pattern,
-+};
-+
-+
- struct omap_nand_info {
- 	struct nand_hw_control		controller;
- 	struct omap_nand_platform_data	*pdata;
-@@ -945,6 +959,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	struct omap_nand_info		*info;
- 	struct omap_nand_platform_data	*pdata;
- 	int				err;
-+	int				i, offset;
- 
- 	pdata = pdev->dev.platform_data;
- 	if (pdata == NULL) {
-@@ -1079,6 +1094,25 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	/* rom code layout */
-+	if (pdata->ecc_opt != OMAP_ECC_HAMMING_CODE_DIFF_LAYOUT) {
-+		offset = (info->nand.options & NAND_BUSWIDTH_16) ? 2 : 1;
-+		if (info->mtd.oobsize == 16) {
-+			info->nand.badblock_pattern = &bb_descrip_flashbased;
-+			omap_oobinfo.eccbytes = 3;
-+		} else
-+			omap_oobinfo.eccbytes  = 3 * 4;
-+
-+		for (i = 0; i < omap_oobinfo.eccbytes; i++)
-+			omap_oobinfo.eccpos[i] = i+offset;
-+
-+		omap_oobinfo.oobfree->offset = offset + omap_oobinfo.eccbytes;
-+		omap_oobinfo.oobfree->length = info->mtd.oobsize -
-+					(offset + omap_oobinfo.eccbytes);
-+
-+		info->nand.ecc.layout = &omap_oobinfo;
-+	}
-+
- #ifdef CONFIG_MTD_PARTITIONS
- 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
- 	if (err > 0)
 -- 
-1.7.0.4
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
