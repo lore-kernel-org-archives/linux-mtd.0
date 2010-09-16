@@ -1,21 +1,23 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ow8sm-0002Pb-Nx
-	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 07:27:49 +0000
-Received: by ewy9 with SMTP id 9so580695ewy.36
+	id 1Ow8wY-0003T0-Hb
+	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 07:31:43 +0000
+Received: by eye22 with SMTP id 22so582881eye.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Sep 2010 00:27:47 -0700 (PDT)
-Date: Thu, 16 Sep 2010 11:27:42 +0400
+	Thu, 16 Sep 2010 00:31:40 -0700 (PDT)
+Date: Thu, 16 Sep 2010 11:31:35 +0400
 From: Anton Vorontsov <cbouatmailru@gmail.com>
 To: Roy Zang <tie-fei.zang@freescale.com>
-Subject: Re: [PATCH 1/3 v3] P4080/eLBC: Make Freescale elbc interrupt
-	common to elbc devices
-Message-ID: <20100916072742.GA3176@oksana.dev.rtsoft.ru>
+Subject: Re: [PATCH 3/3 v3] P4080/mtd: Fix the freescale lbc issue with
+	36bit mode
+Message-ID: <20100916073135.GA5431@oksana.dev.rtsoft.ru>
 References: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
+	<1284619284-23614-2-git-send-email-tie-fei.zang@freescale.com>
+	<1284619284-23614-3-git-send-email-tie-fei.zang@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
+In-Reply-To: <1284619284-23614-3-git-send-email-tie-fei.zang@freescale.com>
 Cc: B07421@freescale.com, dedekind1@gmail.com, B25806@freescale.com,
 	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	akpm@linux-foundation.org, dwmw2@infradead.org, B11780@freescale.com
@@ -28,46 +30,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 16, 2010 at 02:41:22PM +0800, Roy Zang wrote:
-[...]
-> +static const struct platform_device_id fsl_lbc_match[] = {
-> +	{ "fsl,elbc", },
-> +	{ "fsl,pq3-localbus", },
-> +	{ "fsl,pq2-localbus", },
-> +	{ "fsl,pq2pro-localbus", },
-> +	{},
-> +};
-> +
-> +static struct platform_driver fsl_lbc_ctrl_driver = {
-> +	.driver = {
-> +		.name = "fsl-lbc",
-> +	},
-> +	.probe = fsl_lbc_ctrl_probe,
-> +	.id_table = fsl_lbc_match,
-> +};
+On Thu, Sep 16, 2010 at 02:41:24PM +0800, Roy Zang wrote:
+> From: Lan Chunhe-B25806 <b25806@freescale.com>
+> 
+> When system uses 36bit physical address, res.start is 36bit
+> physical address. But the function of in_be32 returns 32bit
+> physical address. Then both of them compared each other is
+> wrong. So by converting the address of res.start into
+> the right format fixes this issue.
+> 
+> Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
+> Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
+> ---
+>  arch/powerpc/include/asm/fsl_lbc.h |    1 +
+>  arch/powerpc/sysdev/fsl_lbc.c      |   23 ++++++++++++++++++++++-
+>  drivers/mtd/nand/fsl_elbc_nand.c   |    2 +-
+>  3 files changed, 24 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/powerpc/include/asm/fsl_lbc.h b/arch/powerpc/include/asm/fsl_lbc.h
+> index db94698..5638b1e 100644
+> --- a/arch/powerpc/include/asm/fsl_lbc.h
+> +++ b/arch/powerpc/include/asm/fsl_lbc.h
+> @@ -246,6 +246,7 @@ struct fsl_upm {
+>  	int width;
+>  };
+>  
+> +extern unsigned int fsl_lbc_addr(phys_addr_t addr_base);
 
-No, it won't work that way (at least not w/o a device constructor
-somewhere in fsl_soc.c). Instead, you should write something like
+u32 here.
 
-static const struct of_device_id fsl_lbc_match[] = {
-	...
-};
+Other than that, the patch looks good.
 
-static struct platform_driver fsl_lbc_ctrl_driver = {
-	.driver = {
-		.name = "fsl-lbc",
-		.of_match_table = fsl_lbc_match;
-	}
-	...
-};
+Reviewed-by: Anton Vorontsov <cbouatmailru@gmail.com>
 
-(Note that platform_driver.driver has of_match_table nowadays --
- that's what makes it possible to seamlessly transit from
- of_platform_driver to platform_driver.)
-
-The same applies for the second patch as well.
-
-Thanks,
+Thanks!
 
 -- 
 Anton Vorontsov
