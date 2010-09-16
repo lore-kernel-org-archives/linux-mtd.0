@@ -1,20 +1,23 @@
-Received: from db3ehsobe002.messaging.microsoft.com ([213.199.154.140]
-	helo=DB3EHSOBE002.bigfish.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ow8WB-0004eY-FR
-	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 07:04:28 +0000
-From: Roy Zang <tie-fei.zang@freescale.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3 v3] P4080/mtd: Fix the freescale lbc issue with 36bit mode
-Date: Thu, 16 Sep 2010 14:41:24 +0800
-Message-ID: <1284619284-23614-3-git-send-email-tie-fei.zang@freescale.com>
-In-Reply-To: <1284619284-23614-2-git-send-email-tie-fei.zang@freescale.com>
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ow8sm-0002Pb-Nx
+	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 07:27:49 +0000
+Received: by ewy9 with SMTP id 9so580695ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Sep 2010 00:27:47 -0700 (PDT)
+Date: Thu, 16 Sep 2010 11:27:42 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Roy Zang <tie-fei.zang@freescale.com>
+Subject: Re: [PATCH 1/3 v3] P4080/eLBC: Make Freescale elbc interrupt
+	common to elbc devices
+Message-ID: <20100916072742.GA3176@oksana.dev.rtsoft.ru>
 References: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
-	<1284619284-23614-2-git-send-email-tie-fei.zang@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
 Cc: B07421@freescale.com, dedekind1@gmail.com, B25806@freescale.com,
-	linuxppc-dev@ozlabs.org, cbouatmailru@gmail.com,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	akpm@linux-foundation.org, dwmw2@infradead.org, B11780@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,87 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Lan Chunhe-B25806 <b25806@freescale.com>
+On Thu, Sep 16, 2010 at 02:41:22PM +0800, Roy Zang wrote:
+[...]
+> +static const struct platform_device_id fsl_lbc_match[] = {
+> +	{ "fsl,elbc", },
+> +	{ "fsl,pq3-localbus", },
+> +	{ "fsl,pq2-localbus", },
+> +	{ "fsl,pq2pro-localbus", },
+> +	{},
+> +};
+> +
+> +static struct platform_driver fsl_lbc_ctrl_driver = {
+> +	.driver = {
+> +		.name = "fsl-lbc",
+> +	},
+> +	.probe = fsl_lbc_ctrl_probe,
+> +	.id_table = fsl_lbc_match,
+> +};
 
-When system uses 36bit physical address, res.start is 36bit
-physical address. But the function of in_be32 returns 32bit
-physical address. Then both of them compared each other is
-wrong. So by converting the address of res.start into
-the right format fixes this issue.
+No, it won't work that way (at least not w/o a device constructor
+somewhere in fsl_soc.c). Instead, you should write something like
 
-Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
-Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
----
- arch/powerpc/include/asm/fsl_lbc.h |    1 +
- arch/powerpc/sysdev/fsl_lbc.c      |   23 ++++++++++++++++++++++-
- drivers/mtd/nand/fsl_elbc_nand.c   |    2 +-
- 3 files changed, 24 insertions(+), 2 deletions(-)
+static const struct of_device_id fsl_lbc_match[] = {
+	...
+};
 
-diff --git a/arch/powerpc/include/asm/fsl_lbc.h b/arch/powerpc/include/asm/fsl_lbc.h
-index db94698..5638b1e 100644
---- a/arch/powerpc/include/asm/fsl_lbc.h
-+++ b/arch/powerpc/include/asm/fsl_lbc.h
-@@ -246,6 +246,7 @@ struct fsl_upm {
- 	int width;
- };
- 
-+extern unsigned int fsl_lbc_addr(phys_addr_t addr_base);
- extern int fsl_lbc_find(phys_addr_t addr_base);
- extern int fsl_upm_find(phys_addr_t addr_base, struct fsl_upm *upm);
- 
-diff --git a/arch/powerpc/sysdev/fsl_lbc.c b/arch/powerpc/sysdev/fsl_lbc.c
-index edd6d95..8a835ef 100644
---- a/arch/powerpc/sysdev/fsl_lbc.c
-+++ b/arch/powerpc/sysdev/fsl_lbc.c
-@@ -34,6 +34,27 @@ struct fsl_lbc_ctrl *fsl_lbc_ctrl_dev;
- EXPORT_SYMBOL(fsl_lbc_ctrl_dev);
- 
- /**
-+ * fsl_lbc_addr - convert the base address
-+ * @addr_base:	base address of the memory bank
-+ *
-+ * This function converts a base address of lbc into the right format for the
-+ * BR register. If the SOC has eLBC then it returns 32bit physical address
-+ * else it convers a 34bit local bus physical address to correct format of
-+ * 32bit address for BR register (Example: MPC8641).
-+ */
-+u32 fsl_lbc_addr(phys_addr_t addr_base)
-+{
-+	struct device_node *np = fsl_lbc_ctrl_dev->dev->of_node;
-+	u32 addr = addr_base & 0xffff8000;
-+
-+	if (of_device_is_compatible(np, "fsl,elbc"))
-+		return addr;
-+
-+	return addr | ((addr_base & 0x300000000ull) >> 19);
-+}
-+EXPORT_SYMBOL(fsl_lbc_addr);
-+
-+/**
-  * fsl_lbc_find - find Localbus bank
-  * @addr_base:	base address of the memory bank
-  *
-@@ -55,7 +76,7 @@ int fsl_lbc_find(phys_addr_t addr_base)
- 		__be32 br = in_be32(&lbc->bank[i].br);
- 		__be32 or = in_be32(&lbc->bank[i].or);
- 
--		if (br & BR_V && (br & or & BR_BA) == addr_base)
-+		if (br & BR_V && (br & or & BR_BA) == fsl_lbc_addr(addr_base))
- 			return i;
- 	}
- 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 91c5c05..85858e3 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -865,7 +865,7 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *dev)
- 		    (in_be32(&lbc->bank[bank].br) & BR_MSEL) == BR_MS_FCM &&
- 		    (in_be32(&lbc->bank[bank].br) &
- 		     in_be32(&lbc->bank[bank].or) & BR_BA)
--		     == res.start)
-+		     == fsl_lbc_addr(res.start))
- 			break;
- 
- 	if (bank >= MAX_BANKS) {
+static struct platform_driver fsl_lbc_ctrl_driver = {
+	.driver = {
+		.name = "fsl-lbc",
+		.of_match_table = fsl_lbc_match;
+	}
+	...
+};
+
+(Note that platform_driver.driver has of_match_table nowadays --
+ that's what makes it possible to seamlessly transit from
+ of_platform_driver to platform_driver.)
+
+The same applies for the second patch as well.
+
+Thanks,
+
 -- 
-1.5.6.5
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
