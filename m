@@ -1,31 +1,17 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OwBUA-0000ji-9o
-	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 10:14:35 +0000
-Received: by eye22 with SMTP id 22so610974eye.36
+	id 1OwBpy-0006uk-LK
+	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 10:37:07 +0000
+Received: by iwn36 with SMTP id 36so1176494iwn.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Sep 2010 03:14:33 -0700 (PDT)
-Date: Thu, 16 Sep 2010 14:14:29 +0400
-From: Anton Vorontsov <cbouatmailru@gmail.com>
-To: Zang Roy-R61911 <r61911@freescale.com>
-Subject: Re: [PATCH 2/3 v3] P4080/mtd: Only make elbc nand driver detect
-	nand flash partitions
-Message-ID: <20100916101429.GA27393@oksana.dev.rtsoft.ru>
-References: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
-	<1284619284-23614-2-git-send-email-tie-fei.zang@freescale.com>
-	<20100916082141.GA10978@oksana.dev.rtsoft.ru>
-	<3850A844E6A3854C827AC5C0BEC7B60A1FC6B8@zch01exm23.fsl.freescale.net>
-	<20100916092551.GA17548@oksana.dev.rtsoft.ru>
-	<3850A844E6A3854C827AC5C0BEC7B60A1FC6DB@zch01exm23.fsl.freescale.net>
+	Thu, 16 Sep 2010 03:37:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <3850A844E6A3854C827AC5C0BEC7B60A1FC6DB@zch01exm23.fsl.freescale.net>
-Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
-	Lan Chunhe-B25806 <B25806@freescale.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, dwmw2@infradead.org,
-	Gala Kumar-B11780 <B11780@freescale.com>
+Date: Thu, 16 Sep 2010 12:37:02 +0200
+Message-ID: <AANLkTimjo2H3AM1tYPSaRdpUt1cWtnvB5f-5fLdD4xAU@mail.gmail.com>
+Subject: nandwrite with hw ecc ?
+From: Arno Steffen <arno.steffen@googlemail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,38 +21,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 16, 2010 at 06:08:14PM +0800, Zang Roy-R61911 wrote:
-[...]
-> Interesting.
-> How about this?
-> #include <stdio.h>
-> #include <malloc.h>
-> 
-> char *foo;
-> 
-> void probe(void)
-> {
->         char *bar = NULL;
-> 
->         if (!foo) {
->                 bar = malloc(sizeof(*bar));
->                 if (!bar)
->                         return;
->                 foo = bar;
->         } else
-> 		   bar = foo;
-
-This willl work of course; but I'd write it as
-
-foo_lock();
-if (!foo)
-	foo = alloc();
-foo_unlock();
-
-bar = foo;
-bar->baz;
-
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+I have to flash an xloader to my system using uboots "nandwrite hwecc"
+Is something like that is also possible with nandwrite, so that I
+could upate this partition (the only with hw ecc)
+from Linux?
+How?
+I could see it is possible to flash with oob data. Is this the way?
+But what format has this file than?
+Thanks
+Arno
