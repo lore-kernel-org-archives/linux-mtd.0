@@ -1,15 +1,10 @@
-Received: from mailout-de.gmx.net ([213.165.64.23] helo=mail.gmx.net)
-	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ow9DX-000752-MF
-	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 07:49:16 +0000
-Content-Type: text/plain; charset="utf-8"
-Date: Thu, 16 Sep 2010 09:49:11 +0200
-From: "Klaus Rudolph" <lts-rudolph@gmx.de>
-Message-ID: <20100916074911.142030@gmx.net>
-MIME-Version: 1.0
-Subject: multiple mtd partitions with mtdram
-To: linux-mtd@lists.infradead.org
-Content-Transfer-Encoding: 8bit
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH RESEND v4 0/4] nand prefetch-irq support and ecc layout chanage
+Date: Thu, 16 Sep 2010 13:30:55 +0530
+Message-Id: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,13 +14,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+  The following set of patches applies on linux-2.6.
+   
+   v4: resend of 
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32689.html
+   
+   v3: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32071.html
+   	Rebase on latest codebase and previous patch(posted).	
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31963.html
+	
+   v2: Rebase on latest codebase and previous patch(posted).	
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
 
-I want to simulate our embedded device on a standard desktop linux os and need a way to have multiple mtd partitions /dev/mtdx. With the mtdram driver module I actually can get only the /dev/mtd0 device. Is there a way to have multiple devices available, maybe with different size?
+   v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg26666.html
 
-Thanks!
- Klaus
 
--- 
-Neu: GMX De-Mail - Einfach wie E-Mail, sicher wie ein Brief!  
-Jetzt De-Mail-Adresse reservieren: http://portal.gmx.net/de/go/demail
+
+Sukumar Ghorai (5):
+  Merge branches 'master' and 'master' of
+    git://git.kernel.org/.../torvalds/linux-2.6
+  omap3: nand: prefetch in irq mode support
+  omap3: nand: configurable fifo threshold to gain the throughput
+  omap: nand: ecc layout select from board file
+  omap: nand: making ecc layout as compatible with romcode ecc
+
+ arch/arm/mach-omap2/board-flash.c      |    5 +-
+ arch/arm/mach-omap2/gpmc.c             |   15 ++-
+ arch/arm/plat-omap/include/plat/gpmc.h |    9 +-
+ arch/arm/plat-omap/include/plat/irqs.h |    1 +
+ arch/arm/plat-omap/include/plat/nand.h |    7 +
+ drivers/mtd/nand/Kconfig               |   14 ++-
+ drivers/mtd/nand/omap2.c               |  277 ++++++++++++++++++++++++++++---
+ 7 files changed, 294 insertions(+), 34 deletions(-)
