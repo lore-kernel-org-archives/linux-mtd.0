@@ -1,31 +1,16 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
-	helo=TX2EHSOBE008.bigfish.com)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OwBtG-000841-SW
-	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 10:40:31 +0000
-Received: from mail55-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail55-tx2-R.bigfish.com (Postfix) with ESMTP id 3D4F617A010A	for
-	<linux-mtd@lists.infradead.org>; Thu, 16 Sep 2010 10:40:28 +0000 (UTC)
-Received: from TX2EHSMHS046.bigfish.com (unknown [10.9.14.246])	by
-	mail55-tx2.bigfish.com (Postfix) with ESMTP id 0E8D12A80D7	for
-	<linux-mtd@lists.infradead.org>; Thu, 16 Sep 2010 10:39:47 +0000 (UTC)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by de01egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
-	o8GAdjga025609	for
-	<linux-mtd@lists.infradead.org>; Thu, 16 Sep 2010 03:39:45 -0700 (MST)
-Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
-	[10.192.129.207])	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id
-	o8GAswJk023993	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Sep 2010 05:54:59 -0500 (CDT)
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: [PATCH 2/3 v3] P4080/mtd: Only make elbc nand driver detect nand
-	flash partitions
-Date: Thu, 16 Sep 2010 18:39:40 +0800
-Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A1FC6E1@zch01exm23.fsl.freescale.net>
-In-Reply-To: <20100916101429.GA27393@oksana.dev.rtsoft.ru>
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OwCbl-0002BR-6p
+	for linux-mtd@lists.infradead.org; Thu, 16 Sep 2010 11:26:30 +0000
+Received: by ewy9 with SMTP id 9so623368ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Sep 2010 04:26:28 -0700 (PDT)
+Date: Thu, 16 Sep 2010 15:26:24 +0400
+From: Anton Vorontsov <cbouatmailru@gmail.com>
+To: Zang Roy-R61911 <r61911@freescale.com>
+Subject: Re: [PATCH 2/3 v3] P4080/mtd: Only make elbc nand driver detect
+	nand flash partitions
+Message-ID: <20100916112624.GA32074@oksana.dev.rtsoft.ru>
 References: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
 	<1284619284-23614-2-git-send-email-tie-fei.zang@freescale.com>
 	<20100916082141.GA10978@oksana.dev.rtsoft.ru>
@@ -33,8 +18,11 @@ References: <1284619284-23614-1-git-send-email-tie-fei.zang@freescale.com>
 	<20100916092551.GA17548@oksana.dev.rtsoft.ru>
 	<3850A844E6A3854C827AC5C0BEC7B60A1FC6DB@zch01exm23.fsl.freescale.net>
 	<20100916101429.GA27393@oksana.dev.rtsoft.ru>
-From: Zang Roy-R61911 <r61911@freescale.com>
-To: "Anton Vorontsov" <cbouatmailru@gmail.com>
+	<3850A844E6A3854C827AC5C0BEC7B60A1FC6E1@zch01exm23.fsl.freescale.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <3850A844E6A3854C827AC5C0BEC7B60A1FC6E1@zch01exm23.fsl.freescale.net>
 Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
 	Lan Chunhe-B25806 <B25806@freescale.com>,
 	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
@@ -49,43 +37,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW50b24gVm9yb250c292
-IFttYWlsdG86Y2JvdWF0bWFpbHJ1QGdtYWlsLmNvbV0NCj4gU2VudDogVGh1cnNkYXksIFNlcHRl
-bWJlciAxNiwgMjAxMCAxODoxNCBQTQ0KPiBUbzogWmFuZyBSb3ktUjYxOTExDQo+IENjOiBXb29k
-IFNjb3R0LUIwNzQyMTsgZGVkZWtpbmQxQGdtYWlsLmNvbTsgTGFuIENodW5oZS1CMjU4MDY7IGxp
-bnV4cHBjLQ0KPiBkZXZAb3psYWJzLm9yZzsgbGludXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7
-IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7DQo+IGR3bXcyQGluZnJhZGVhZC5vcmc7IEdhbGEg
-S3VtYXItQjExNzgwDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggMi8zIHYzXSBQNDA4MC9tdGQ6IE9u
-bHkgbWFrZSBlbGJjIG5hbmQgZHJpdmVyIGRldGVjdCBuYW5kDQo+IGZsYXNoIHBhcnRpdGlvbnMN
-Cj4gDQo+IE9uIFRodSwgU2VwIDE2LCAyMDEwIGF0IDA2OjA4OjE0UE0gKzA4MDAsIFphbmcgUm95
-LVI2MTkxMSB3cm90ZToNCj4gWy4uLl0NCj4gPiBJbnRlcmVzdGluZy4NCj4gPiBIb3cgYWJvdXQg
-dGhpcz8NCj4gPiAjaW5jbHVkZSA8c3RkaW8uaD4NCj4gPiAjaW5jbHVkZSA8bWFsbG9jLmg+DQo+
-ID4NCj4gPiBjaGFyICpmb287DQo+ID4NCj4gPiB2b2lkIHByb2JlKHZvaWQpDQo+ID4gew0KPiA+
-ICAgICAgICAgY2hhciAqYmFyID0gTlVMTDsNCj4gPg0KPiA+ICAgICAgICAgaWYgKCFmb28pIHsN
-Cj4gPiAgICAgICAgICAgICAgICAgYmFyID0gbWFsbG9jKHNpemVvZigqYmFyKSk7DQo+ID4gICAg
-ICAgICAgICAgICAgIGlmICghYmFyKQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVy
-bjsNCj4gPiAgICAgICAgICAgICAgICAgZm9vID0gYmFyOw0KPiA+ICAgICAgICAgfSBlbHNlDQo+
-ID4gCQkgICBiYXIgPSBmb287DQo+IA0KPiBUaGlzIHdpbGxsIHdvcmsgb2YgY291cnNlOyBidXQg
-SSdkIHdyaXRlIGl0IGFzDQo+IA0KPiBmb29fbG9jaygpOw0KPiBpZiAoIWZvbykNCj4gCWZvbyA9
-IGFsbG9jKCk7DQo+IGZvb191bmxvY2soKTsNCj4gDQo+IGJhciA9IGZvbzsNCj4gYmFyLT5iYXo7
-DQpCdXQgbXkgY29kZSBoYXMgc29tZSBhc3NpZ25tZW50IGZvciAiZm9vIiBpbnN0ZWFkIG9mIGEg
-c2ltcGxlDQphbGxvY2F0aW9uLCBob3cgYWJvdXQgdGhpcyB3YXkgZm9yIG15IGNvZGU6DQpERUZJ
-TkVfTVVURVgoZnNsX2VsYmNfbXV0ZXgpOw0KLi4uDQpzdGF0aWMgaW50IF9fZGV2aW5pdCBmc2xf
-ZWxiY19uYW5kX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKmRldikNCnsNCi4uLg0KICAg
-ICAgICBtdXRleF9sb2NrKCZmc2xfbGJjX211dGV4KTsNCiAgICAgICAgaWYgKCFmc2xfbGJjX2N0
-cmxfZGV2LT5uYW5kKSB7DQogICAgICAgICAgICAgICAgZWxiY19mY21fY3RybCA9IGt6YWxsb2Mo
-c2l6ZW9mKCplbGJjX2ZjbV9jdHJsKSwgR0ZQX0tFUk5FTCk7DQogICAgICAgICAgICAgICAgaWYg
-KCFlbGJjX2ZjbV9jdHJsKSB7DQogICAgICAgICAgICAgICAgICAgICAgICBkZXZfZXJyKGZzbF9s
-YmNfY3RybF9kZXYtPmRldiwgImZhaWxlZCB0byBhbGxvY2F0ZSAiDQogICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIm1lbW9yeVxuIik7DQogICAgICAgICAgICAgICAgICAg
-ICAgICByZXQgPSAtRU5PTUVNOw0KICAgICAgICAgICAgICAgICAgICAgICAgZ290byBlcnI7DQog
-ICAgICAgICAgICAgICAgfQ0KDQogICAgICAgICAgICAgICAgZWxiY19mY21fY3RybC0+cmVhZF9i
-eXRlcyA9IDA7DQogICAgICAgICAgICAgICAgZWxiY19mY21fY3RybC0+aW5kZXggPSAwOw0KICAg
-ICAgICAgICAgICAgIGVsYmNfZmNtX2N0cmwtPmFkZHIgPSBOVUxMOw0KDQogICAgICAgICAgICAg
-ICAgc3Bpbl9sb2NrX2luaXQoJmVsYmNfZmNtX2N0cmwtPmNvbnRyb2xsZXIubG9jayk7DQogICAg
-ICAgICAgICAgICAgaW5pdF93YWl0cXVldWVfaGVhZCgmZWxiY19mY21fY3RybC0+Y29udHJvbGxl
-ci53cSk7DQogICAgICAgICAgICAgICAgZnNsX2xiY19jdHJsX2Rldi0+bmFuZCA9IGVsYmNfZmNt
-X2N0cmw7DQogICAgICAgIH0gZWxzZQ0KICAgICAgICAgICAgICAgIGVsYmNfZmNtX2N0cmwgPSBm
-c2xfbGJjX2N0cmxfZGV2LT5uYW5kOw0KICAgICAgICBtdXRleF91bmxvY2soJmZzbF9sYmNfbXV0
-ZXgpOw0KDQogICAgICAgIGVsYmNfZmNtX2N0cmwtPmNoaXBzW2JhbmtdID0gcHJpdjsNCi4uLg0K
-fQ0KDQpBbnkgY29tbWVudD8NClRoYW5rcy4NClJveQ0KDQoNCg0K
+On Thu, Sep 16, 2010 at 06:39:40PM +0800, Zang Roy-R61911 wrote:
+[...]
+> But my code has some assignment for "foo" instead of a simple
+> allocation, how about this way for my code:
+
+This will surely work, and all the rest is just a matter of
+taste. So, I'm fine with it. But see below, I think I found
+some new, quite serious issues.
+
+> DEFINE_MUTEX(fsl_elbc_mutex);
+
+I'd place the mutex inside the fsl_lbc_ctrl_dev,
+i.e. fsl_lbc_ctrl_dev->nand_lock. This is to avoid more
+global variables.
+
+> ...
+> static int __devinit fsl_elbc_nand_probe(struct platform_device *dev)
+> {
+> ...
+>         mutex_lock(&fsl_lbc_mutex);
+>         if (!fsl_lbc_ctrl_dev->nand) {
+>                 elbc_fcm_ctrl = kzalloc(sizeof(*elbc_fcm_ctrl), GFP_KERNEL);
+>                 if (!elbc_fcm_ctrl) {
+>                         dev_err(fsl_lbc_ctrl_dev->dev, "failed to allocate "
+>                                         "memory\n");
+>                         ret = -ENOMEM;
+>                         goto err;
+>                 }
+> 
+>                 elbc_fcm_ctrl->read_bytes = 0;
+>                 elbc_fcm_ctrl->index = 0;
+>                 elbc_fcm_ctrl->addr = NULL;
+
+I guess these variables should be per chip select, as
+otherwise there will be tons of races when somebody try
+to access two or more NAND chips simultaneously.
+
+(Plus, you don't need these = 0 and = NULL as you used
+ kzalloc() for allocation.)
+
+> 
+>                 spin_lock_init(&elbc_fcm_ctrl->controller.lock);
+>                 init_waitqueue_head(&elbc_fcm_ctrl->controller.wq);
+
+Some of these may need to be per chip select too.
+
+So, I'd suggest to redo the whole thing this way: don't allocate
+elbc_fcm_ctrl in this driver, but make an array inside the
+fsl_lbc_ctrl_dev. I.e.
+fsl_lbc_ctrl_dev->nand_ctrl[MAX_CHIP_SELECTS]
+or something like that.
+
+Btw, even before this patch, it seems that the driver had
+all these bugs/races, i.e. ctrl->controller.lock was not
+used at all. Ugh.
+
+>                 fsl_lbc_ctrl_dev->nand = elbc_fcm_ctrl;
+>         } else
+>                 elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
+
+Per coding style this should be
+
+} else {
+	elbc_fcm_ctrl = fsl_lbc_ctrl_dev->nand;
+}
+
+>         mutex_unlock(&fsl_lbc_mutex);
+> 
+>         elbc_fcm_ctrl->chips[bank] = priv;
+> ...
+> }
+
+Thanks,
+
+-- 
+Anton Vorontsov
+email: cbouatmailru@gmail.com
+irc://irc.freenode.net/bd2
