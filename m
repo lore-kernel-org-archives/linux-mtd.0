@@ -1,25 +1,12 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OwWHF-0003Vy-1m
-	for linux-mtd@lists.infradead.org; Fri, 17 Sep 2010 08:26:37 +0000
-Received: by bwz19 with SMTP id 19so3401057bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Sep 2010 01:26:33 -0700 (PDT)
-Subject: Re: [PATCH] nanddump: Rename --nobad to --noskipbad
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <20100917075411.GA3119@pengutronix.de>
-References: <1284359070.27765.155.camel@localhost>
-	<1284362113-26737-1-git-send-email-w.sang@pengutronix.de>
-	<1284704420.2373.60.camel@localhost>
-	<20100917075411.GA3119@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 17 Sep 2010 11:24:39 +0300
-Message-ID: <1284711879.2373.61.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Mike Frysinger <vapier@gentoo.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/2] mtd: add BLKPG API based repartition support
+Date: Fri, 17 Sep 2010 13:31:42 +0300
+Message-Id: <1284719502-24183-3-git-send-email-roman.tereshonkov@nokia.com>
+In-Reply-To: <1284719502-24183-2-git-send-email-roman.tereshonkov@nokia.com>
+References: <1284719502-24183-1-git-send-email-roman.tereshonkov@nokia.com>
+	<1284719502-24183-2-git-send-email-roman.tereshonkov@nokia.com>
+Cc: dwmw2@infradead.org, Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +16,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-09-17 at 09:54 +0200, Wolfram Sang wrote:
-> On Fri, Sep 17, 2010 at 09:20:20AM +0300, Artem Bityutskiy wrote:
-> > On Mon, 2010-09-13 at 09:15 +0200, Wolfram Sang wrote:
-> > > "nobad" might lead to the assumption that bad blocks are skipped, but this
-> > > option does exactly the opposite. Use a more descriptive name.
-> > > 
-> > > Reported-by: Jon Povey <Jon.Povey@racelogic.co.uk>
-> > > Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> > > Cc: Mike Frysinger <vapier@gentoo.org>
-> > 
-> > It does not apply to the latest mtd-utils tree. Would you please re-send
-> > an updated version?
-> 
-> Ehrm, it still applies on top of Mike's original patch (it just seems
-> that the latter is not pushed yet despite your mail saying so). Or do
-> you want me to fold those two?
+Add support for mtd repartition based on the block
+device BLKPG interface:
+BLKPG_ADD_PARTITION - for partition creation;
+BLKPG_DEL_PARTITION - for partition delete
 
-Indeed forgot to push it out, sorry. No, I'll sort this out, thanks.
+The usage is based on BLKPG ioctl called with
+struct blkpg_ioctl_arg argument which includes the
+reference to struct blkpg_partition discribing the
+partition offset and length.
 
+Disadvantage: there is no implementation for mtd
+flags control. The flags are always borrowed from
+the master device.
+
+Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+---
+ drivers/mtd/mtdchar.c |   62 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 files changed, 60 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index a825002..3171a4d 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -30,8 +30,9 @@
+ #include <linux/backing-dev.h>
+ #include <linux/compat.h>
+ #include <linux/mount.h>
+-
++#include <linux/blkpg.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
+ #include <linux/mtd/map.h>
+ 
+ #include <asm/uaccess.h>
+@@ -477,6 +478,47 @@ static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+ 	return ret;
+ }
+ 
++#ifdef CONFIG_MTD_PARTITIONS
++static int mtd_blkpg_ioctl(struct mtd_info *mtd,
++			   struct blkpg_ioctl_arg __user *arg)
++{
++	struct blkpg_ioctl_arg a;
++	struct blkpg_partition p;
++
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
++	/* Only master mtd device must be used to control partitions */
++	if (!mtd_is_master(mtd))
++		return -EACCES;
++
++	if (copy_from_user(&a, arg, sizeof(struct blkpg_ioctl_arg)))
++		return -EFAULT;
++
++	if (!access_ok(VERIFY_READ, a.data, sizeof(struct blkpg_partition)))
++		return -EFAULT;
++	if (copy_from_user(&p, a.data, sizeof(struct blkpg_partition)))
++		return -EFAULT;
++
++	switch (a.op) {
++	case BLKPG_ADD_PARTITION:
++
++		return mtd_add_partition(mtd, p.devname, p.start, p.length);
++
++	case BLKPG_DEL_PARTITION:
++
++		if (p.pno < 0)
++			return -EINVAL;
++
++		return mtd_del_partition(mtd, p.pno);
++
++	default:
++		return -EINVAL;
++	}
++}
++#endif
++
++
+ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ {
+ 	struct mtd_file_info *mfi = file->private_data;
+@@ -855,6 +897,22 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		break;
+ 	}
+ 
++#ifdef CONFIG_MTD_PARTITIONS
++	case BLKPG:
++	{
++		ret = mtd_blkpg_ioctl(mtd,
++		      (struct blkpg_ioctl_arg __user *)arg);
++		break;
++	}
++
++	case BLKRRPART:
++	{
++		/* No reread partition feature. Just return ok */
++		ret = 0;
++		break;
++	}
++#endif
++
+ 	default:
+ 		ret = -ENOTTY;
+ 	}
+@@ -1033,7 +1091,7 @@ static int mtd_inodefs_get_sb(struct file_system_type *fs_type, int flags,
+                                const char *dev_name, void *data,
+                                struct vfsmount *mnt)
+ {
+-        return get_sb_pseudo(fs_type, "mtd_inode:", NULL, MTD_INODE_FS_MAGIC,
++	return get_sb_pseudo(fs_type, "mtd_inode:", NULL, MTD_INODE_FS_MAGIC,
+                              mnt);
+ }
+ 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.2.4
