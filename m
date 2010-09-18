@@ -1,22 +1,20 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ox1mj-0003Qi-Rp
-	for linux-mtd@lists.infradead.org; Sat, 18 Sep 2010 18:05:14 +0000
-Received: by fxm4 with SMTP id 4so119337fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 18 Sep 2010 11:05:12 -0700 (PDT)
-Subject: Re: [PATCH] m25p80: Add support for the Winbond W25Q64.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Thierry Reding <thierry.reding@avionic-design.de>
-In-Reply-To: <1283166048-28228-1-git-send-email-thierry.reding@avionic-design.de>
-References: <1283166048-28228-1-git-send-email-thierry.reding@avionic-design.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 18 Sep 2010 21:05:04 +0300
-Message-ID: <1284833104.1721.41.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+From: "Ghorai, Sukumar" <s-ghorai@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Sat, 18 Sep 2010 23:54:55 +0530
+Subject: RE: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode support
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B031606213F@dbde02.ent.ti.com>
+References: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
+	<1284624059-1741-2-git-send-email-s-ghorai@ti.com>
+	<20100917175504.GG29610@atomide.com>
+In-Reply-To: <20100917175504.GG29610@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +24,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-08-30 at 13:00 +0200, Thierry Reding wrote:
-> This patch adds support for the Winbond W25Q64 serial flash.
-> 
-> Signed-off-by: Thierry Reding <thierry.reding@avionic-design.de>
+Tony,
 
-Pushed to l2-mtd-2.6.git, thanks.
+> -----Original Message-----
+> From: Tony Lindgren [mailto:tony@atomide.com]
+> Sent: Friday, September 17, 2010 11:25 PM
+> To: Ghorai, Sukumar
+> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
+> kernel@lists.infradead.org; Vimal Singh
+> Subject: Re: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode
+> support
+>=20
+> * Sukumar Ghorai <s-ghorai@ti.com> [100916 00:53]:
+> > This patch enable prefetch-irq mode for NAND.
+> >
+> > --- a/drivers/mtd/nand/omap2.c
+> > +++ b/drivers/mtd/nand/omap2.c
+> > @@ -467,6 +485,152 @@ static void omap_write_buf_dma_pref(struct
+> mtd_info *mtd,
+> >  		omap_nand_dma_transfer(mtd, (u_char *) buf, len, 0x1);
+> >  }
+> >
+> > +/*
+> > + * omap_nand_irq - GMPC irq handler
+> > + * @this_irq: gpmc irq number
+> > + * @dev: omap_nand_info structure pointer is passed here
+> > + */
+> > +static irqreturn_t omap_nand_irq(int this_irq, void *dev)
+> > +{
+> > +	struct omap_nand_info *info =3D (struct omap_nand_info *) dev;
+> > +	u32 bytes;
+> > +	u32 irq_stat;
+> > +
+> > +	irq_stat =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+> > +	bytes =3D gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
+> > +	bytes =3D bytes  & 0xFFFC; /* io in multiple of 4 bytes */
+> > +	if (info->iomode =3D=3D OMAP_NAND_IO_WRITE) { /* checks for write io =
+*/
+> > +		if (irq_stat & 0x2)
+> > +			goto done;
+> > +
+> > +		if (info->buf_len & (info->buf_len < bytes))
+> > +			bytes =3D info->buf_len;
+> > +		else if (!info->buf_len)
+> > +			bytes =3D 0;
+> > +		iowrite32_rep(info->nand.IO_ADDR_W,
+> > +						(u32 *)info->buf, bytes >> 2);
+> > +		info->buf =3D info->buf + bytes;
+> > +		info->buf_len -=3D bytes;
+> > +
+> > +	} else {
+> > +		ioread32_rep(info->nand.IO_ADDR_R,
+> > +						(u32 *)info->buf, bytes >> 2);
+> > +		info->buf =3D info->buf + bytes;
+> > +
+> > +		if (irq_stat & 0x2)
+> > +			goto done;
+> > +	}
+> > +	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
+> > +	irq_stat =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+> > +
+> > +	return IRQ_HANDLED;
+> > +
+> > +done:
+> > +	complete(&info->comp);
+> > +	/* disable irq */
+> > +	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
+> > +
+> > +	/* clear status */
+> > +	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
+> > +	irq_stat =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+> > +
+> > +	return IRQ_HANDLED;
+> > +}
+>=20
+> This handler should be in gpmc.c as it may be needed for other GPMC
+> connected devices on the same system. You can use chained irq handlers
+> to allow all the drivers to use the interrupt then.
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+[Ghorai]=20
+You mean as this function used the gpmc-irq number in nand file, so handler=
+ should move to gpmc.c file?=20
+	1. For that we need to add one io-struct (to keep io buffer status) in gpm=
+c.c;=20
+
+	2. Also need help how to sync between gpmc.c/omap_nand_irq() and omap2.c/o=
+map_write_buf_irq_pref(), men how read/write function know that work done i=
+n interrupt-context? Or you prefer to move the complete IO function (omap_r=
+ead/write_buf_irq_pref) to gpmc.c?
+
+	3. gpmc does not now about the read and write address that's applicable fo=
+r NAND. So how to pass the IO address from omap2.c to gpmc.c, interrupt han=
+dler?
+
+
+So, please let me know your suggestion again such that I can post this time=
+ itself. Otherwise again it will miss from coming release, this was posted/=
+reviewed for last release too. And suggest to void repeating of missing rel=
+ease window again.
+
+>=20
+> Regards,
+>=20
+> Tony
