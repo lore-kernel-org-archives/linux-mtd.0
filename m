@@ -1,26 +1,28 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ox2A7-0003in-Sy
-	for linux-mtd@lists.infradead.org; Sat, 18 Sep 2010 18:29:24 +0000
-Received: by bwz19 with SMTP id 19so5022053bwz.36
+	id 1Ox2An-0005N0-9g
+	for linux-mtd@lists.infradead.org; Sat, 18 Sep 2010 18:30:06 +0000
+Received: by bwz19 with SMTP id 19so5022365bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 18 Sep 2010 11:29:21 -0700 (PDT)
-Subject: Re: Pull request for 2.6.36
+	Sat, 18 Sep 2010 11:30:04 -0700 (PDT)
+Subject: Re: [PATCH 0/3] MTD: OneNAND: Fix OneNAND DMA error handling and
+	2KiB pagesize
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <20100830124347.GK1473@pengutronix.de>
-References: <20100823064024.GP27749@pengutronix.de>
-	<1282865865.29421.47.camel@localhost>
-	<20100827105538.GB1473@pengutronix.de>
-	<1283083179.2131.33.camel@brekeke>
-	<20100830124347.GK1473@pengutronix.de>
+To: Kyungmin Park <kmpark@infradead.org>
+In-Reply-To: <AANLkTi=KDK0d31WhpnN3xktqyFiB4S0kULohViz5fBXf@mail.gmail.com>
+References: <20100827025523.GA10688@july> <1283172749.12995.70.camel@brekeke>
+	<AANLkTinDPN4bw=2VfwXjKoaXW69m+_oUUq8yH-hvM9oT@mail.gmail.com>
+	<1283296419.2018.47.camel@brekeke>
+	<AANLkTik-Fr0mvA8jM2RrLD7VzEmJN=reeqwkOcATjVXY@mail.gmail.com>
+	<1283336933.1958.3.camel@brekeke>
+	<AANLkTi=KDK0d31WhpnN3xktqyFiB4S0kULohViz5fBXf@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 18 Sep 2010 21:29:17 +0300
-Message-ID: <1284834557.1721.67.camel@brekeke>
+Date: Sat, 18 Sep 2010 21:29:57 +0300
+Message-ID: <1284834597.1721.70.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	John Ogness <john.ogness@linutronix.de>
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,25 +33,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-08-30 at 14:43 +0200, Sascha Hauer wrote:
-> The following changes since commit d1b113bb028999e82a8528e1484be8c23fb5a7d9:
+On Wed, 2010-09-01 at 19:37 +0900, Kyungmin Park wrote:
+> On Wed, Sep 1, 2010 at 7:28 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Wed, 2010-09-01 at 11:35 +0900, Kyungmin Park wrote:
+> >> On Wed, Sep 1, 2010 at 8:13 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> >> > On Tue, 2010-08-31 at 08:27 +0900, Kyungmin Park wrote:
+> >> >> On Mon, Aug 30, 2010 at 9:52 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> >> >> > On Fri, 2010-08-27 at 11:55 +0900, Kyungmin Park wrote:
+> >> >> >> Kyungmin Park (3):
+> >> >> >>       MTD: OneNAND: Remove unused cmd_map at s5pc110
+> >> >> >>       MTD: OneNAND: Fix loop hang when DMA error at Samsung SoCs
+> >> >> >>       MTD: OneNAND: Fix 2KiB pagesize handling at Samsung SoCs
+> >> >> >>
+> >> >> >>  drivers/mtd/onenand/samsung.c |   17 +++++++----------
+> >> >> >>  1 files changed, 7 insertions(+), 10 deletions(-)
+> >> >> >
+> >> >> > Taken patches 1 and 3, requested a change for patch 2. Pushed patches 1
+> >> >> > and 3 to l2-mtd-2.6.git / dunno, thanks.
+> >> >>
+> >> >> To David, Artem,
+> >> >> Can you include these patches to linux-2.6.36-rc4? since it's bug fixes.
+> >> >>
+> >> >> How do you think?
+> >> >
+> >> > Note, Linus nowadays tends to be stricter about what goes in -rc. Why
+> >> > would the first patch be a fix deserving urgent merging?
+> >>
+> >> There's no problem with s5pc110 since there's no DMA error. but new
+> >> SOC s5pc210 has some problem with DMA.
+> >> it occurs the DMA error and can't exit the loop. as it's decided to
+> >> use the 2.6.36 for s5pc210 we need to fix it ASAP.
+> >>
+> >> >
+> >> > About the second patch, what if you was mistaken and 20msces is not
+> >> > enough sometimes? Don't you afraid to introduce another bug with this?
+> >> If it takes more then 20msec it's really slow device. I think I give
+> >> the enough time to transfer 2KiB or 4KiB pagesize transfer at DMA.
+> >>
+> >> I'll measure the real time, how much time taken at 2.6.35 kernel and
+> >> give exact number.
+> >>
+> >> >
+> >> > Probably for 2.6.36 the older version of your patch can be merged, and
+> >> > then you can add timeout support on top?
+> >>
+> >> Now I implemented it as DMA polling method, but also implemented the
+> >> DMA interrupt codes. as it's new implementation. I don't expect it
+> >> can't merge at this windows. so send fixed codes.
+> >
+> > I am not sure I completely understand what you mean. but lets play safe
+> > and merge your original version, because it is small and just fixes the
+> > problem. Adding timeout is an improvement, and for this very simple
+> > reason it should not go to 2.6.36.
+> >
+> > Please, clone my l2 tree
+> > (http://git.infradead.org/users/dedekind/l2-mtd-2.6.git), checkout the
+> > 'for-2.6.36' branch, add timeout, and send it to me as as a separate
+> > independent patch. I'll take care of it then.
+> >
+> > Would you do this please?
 > 
->   Merge git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-2.6 (2010-08-23 18:30:30 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.pengutronix.de/git/imx/linux-2.6.git mtd-imx-nand
-> 
-> John Ogness (1):
->       mxc_nand: Do not do byte accesses to the NFC buffer.
-> 
-> Sascha Hauer (1):
->       mxc_nand: configure pages per block for v2 controller
-> 
->  drivers/mtd/nand/mxc_nand.c |   47 +++++++++++++++++++++++-------------------
->  1 files changed, 26 insertions(+), 21 deletions(-)
+> No problem,
 
-FYI, both patches were merged upstream.
+Still waiting for the patch which adds timeout.
 
 -- 
 Best Regards,
