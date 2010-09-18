@@ -1,16 +1,11 @@
-Date: Fri, 17 Sep 2010 10:55:04 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Sukumar Ghorai <s-ghorai@ti.com>
-Subject: Re: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode support
-Message-ID: <20100917175504.GG29610@atomide.com>
-References: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
-	<1284624059-1741-2-git-send-email-s-ghorai@ti.com>
+Date: Sat, 18 Sep 2010 08:02:11 -0400 (CLT)
+From: =?utf-8?Q?=C2=A92010_Google_Giveaway_Team?= <igajardo@uct.cl>
+Message-ID: <108783116.54771284811331354.JavaMail.root@rehue.uct.cl>
+Subject: Google 11th Anniversary Promotion***You have W O N!!***
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1284624059-1741-2-git-send-email-s-ghorai@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,71 +15,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Sukumar Ghorai <s-ghorai@ti.com> [100916 00:53]:
-> This patch enable prefetch-irq mode for NAND.
-> 
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -467,6 +485,152 @@ static void omap_write_buf_dma_pref(struct mtd_info *mtd,
->  		omap_nand_dma_transfer(mtd, (u_char *) buf, len, 0x1);
->  }
->  
-> +/*
-> + * omap_nand_irq - GMPC irq handler
-> + * @this_irq: gpmc irq number
-> + * @dev: omap_nand_info structure pointer is passed here
-> + */
-> +static irqreturn_t omap_nand_irq(int this_irq, void *dev)
-> +{
-> +	struct omap_nand_info *info = (struct omap_nand_info *) dev;
-> +	u32 bytes;
-> +	u32 irq_stat;
-> +
-> +	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
-> +	bytes = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
-> +	bytes = bytes  & 0xFFFC; /* io in multiple of 4 bytes */
-> +	if (info->iomode == OMAP_NAND_IO_WRITE) { /* checks for write io */
-> +		if (irq_stat & 0x2)
-> +			goto done;
-> +
-> +		if (info->buf_len & (info->buf_len < bytes))
-> +			bytes = info->buf_len;
-> +		else if (!info->buf_len)
-> +			bytes = 0;
-> +		iowrite32_rep(info->nand.IO_ADDR_W,
-> +						(u32 *)info->buf, bytes >> 2);
-> +		info->buf = info->buf + bytes;
-> +		info->buf_len -= bytes;
-> +
-> +	} else {
-> +		ioread32_rep(info->nand.IO_ADDR_R,
-> +						(u32 *)info->buf, bytes >> 2);
-> +		info->buf = info->buf + bytes;
-> +
-> +		if (irq_stat & 0x2)
-> +			goto done;
-> +	}
-> +	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
-> +	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
-> +
-> +	return IRQ_HANDLED;
-> +
-> +done:
-> +	complete(&info->comp);
-> +	/* disable irq */
-> +	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
-> +
-> +	/* clear status */
-> +	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
-> +	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
-> +
-> +	return IRQ_HANDLED;
-> +}
 
-This handler should be in gpmc.c as it may be needed for other GPMC
-connected devices on the same system. You can use chained irq handlers
-to allow all the drivers to use the interrupt then.
 
-Regards,
+Your E-mail has W o n =C2=A3850,000 UK Pounds in our on-going 11th Annivers=
+ary
+Online Promo!!
 
-Tony
+YOUR DETAILS:
+L u c k y # : 12-12-23-35-40-41(12)
+T i c k e t # : 00869575733664
+C G P N : 7-22-71-00-66-12
+
+FOR MORE DETAILS CONTACT CLAIM/PROCESSING OFFICER:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+MR.GRAHAMS BENFIELD,
+Emails : promocoodin121@ gmail.com
+           : officialclaims.procesing@ msn.com
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+Congratulations!!
+(c)2010 Google Online Coordinator/Announcer.
