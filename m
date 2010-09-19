@@ -1,21 +1,33 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ox6bL-0008Lx-6z
-	for linux-mtd@lists.infradead.org; Sat, 18 Sep 2010 23:14:03 +0000
-Received: by fxm4 with SMTP id 4so197257fxm.36
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OxE9q-0002Ss-EY
+	for linux-mtd@lists.infradead.org; Sun, 19 Sep 2010 07:17:55 +0000
+Received: by bwz19 with SMTP id 19so5284069bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 18 Sep 2010 16:12:58 -0700 (PDT)
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 2/3] MTD: r852: remove useless pci powerup/down from
-	suspend/resume routines.
-Date: Sun, 19 Sep 2010 01:12:37 +0200
-Message-Id: <1284851558-1154-3-git-send-email-maximlevitsky@gmail.com>
-In-Reply-To: <1284851558-1154-1-git-send-email-maximlevitsky@gmail.com>
-References: <1284851558-1154-1-git-send-email-maximlevitsky@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
-	Maxim Levitsky <maximlevitsky@gmail.com>,
-	Maciej Rutecki <maciej.rutecki@gmail.com>
+	Sun, 19 Sep 2010 00:17:53 -0700 (PDT)
+Subject: Re: [PATCH v4] mtd: nand: Expand nand_ecc_layout, deprecate ioctl
+	ECCGETLAYOUT
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <4C951B2A.1000706@gmail.com>
+References: <4C5CA4A1.1040000@broadcom.com>
+	<1282154806-9420-1-git-send-email-norris@broadcom.com>
+	<4C6DD170.1060807@renesas.com>  <4C6E9C23.6060703@broadcom.com>
+	<1282646703.24044.162.camel@localhost>  <4C746DE0.7000104@gmail.com>
+	<1283163647.12995.43.camel@brekeke> <1284830690.1721.3.camel@brekeke>
+	<4C951B2A.1000706@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 19 Sep 2010 10:17:50 +0300
+Message-ID: <1284880670.1721.111.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Kevin Cernekee <cernekee@gmail.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	Sneha Narnakaje <nsnehaprabha@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,104 +37,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It turns out that pci core now handles these, so this code is redundand
-and can even cause bugs
+On Sat, 2010-09-18 at 13:03 -0700, Brian Norris wrote:
+> On 9/18/2010 10:24 AM, Artem Bityutskiy wrote:
+> > Brian,
+> > 
+> > would you address the small things I noticed in a follow-up patch?
+> 
+> Artem,
+> 
+> Yes, I will. I'm sorry for the delay; I've been a little busy and
+> putting some things off. Would you like a patch for the comments against
+> your l2 tree or try and squash it with my previous commit and base it
+> off of mtd-2.6 or some other option?
 
-Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
----
- drivers/mtd/nand/r852.c |   30 +-----------------------------
- drivers/mtd/nand/r852.h |    2 --
- 2 files changed, 1 insertions(+), 31 deletions(-)
+No, against l2 tree is ok, I'll put it on top, thanks!
 
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index 5169ca6..d9d7efb 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -757,11 +757,6 @@ static irqreturn_t r852_irq(int irq, void *data)
- 
- 	spin_lock_irqsave(&dev->irqlock, flags);
- 
--	/* We can recieve shared interrupt while pci is suspended
--		in that case reads will return 0xFFFFFFFF.... */
--	if (dev->insuspend)
--		goto out;
--
- 	/* handle card detection interrupts first */
- 	card_status = r852_read_reg(dev, R852_CARD_IRQ_STA);
- 	r852_write_reg(dev, R852_CARD_IRQ_STA, card_status);
-@@ -1035,7 +1030,6 @@ void r852_shutdown(struct pci_dev *pci_dev)
- int r852_suspend(struct device *device)
- {
- 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
--	unsigned long flags;
- 
- 	if (dev->ctlreg & R852_CTL_CARDENABLE)
- 		return -EBUSY;
-@@ -1047,43 +1041,22 @@ int r852_suspend(struct device *device)
- 	r852_disable_irqs(dev);
- 	r852_engine_disable(dev);
- 
--	spin_lock_irqsave(&dev->irqlock, flags);
--	dev->insuspend = 1;
--	spin_unlock_irqrestore(&dev->irqlock, flags);
--
--	/* At that point, even if interrupt handler is running, it will quit */
--	/* So wait for this to happen explictly */
--	synchronize_irq(dev->irq);
--
- 	/* If card was pulled off just during the suspend, which is very
- 		unlikely, we will remove it on resume, it too late now
- 		anyway... */
- 	dev->card_unstable = 0;
--
--	pci_save_state(to_pci_dev(device));
--	return pci_prepare_to_sleep(to_pci_dev(device));
-+	return 0;
- }
- 
- int r852_resume(struct device *device)
- {
- 	struct r852_device *dev = pci_get_drvdata(to_pci_dev(device));
--	unsigned long flags;
--
--	/* Turn on the hardware */
--	pci_back_from_sleep(to_pci_dev(device));
--	pci_restore_state(to_pci_dev(device));
- 
- 	r852_disable_irqs(dev);
- 	r852_card_update_present(dev);
- 	r852_engine_disable(dev);
- 
- 
--	/* Now its safe for IRQ to run */
--	spin_lock_irqsave(&dev->irqlock, flags);
--	dev->insuspend = 0;
--	spin_unlock_irqrestore(&dev->irqlock, flags);
--
--
- 	/* If card status changed, just do the work */
- 	if (dev->card_detected != dev->card_registred) {
- 		dbg("card was %s during low power state",
-@@ -1121,7 +1094,6 @@ MODULE_DEVICE_TABLE(pci, r852_pci_id_tbl);
- 
- SIMPLE_DEV_PM_OPS(r852_pm_ops, r852_suspend, r852_resume);
- 
--
- static struct pci_driver r852_pci_driver = {
- 	.name		= DRV_NAME,
- 	.id_table	= r852_pci_id_tbl,
-diff --git a/drivers/mtd/nand/r852.h b/drivers/mtd/nand/r852.h
-index 8096cc2..e6a21d9 100644
---- a/drivers/mtd/nand/r852.h
-+++ b/drivers/mtd/nand/r852.h
-@@ -140,8 +140,6 @@ struct r852_device {
- 	/* interrupt handling */
- 	spinlock_t irqlock;		/* IRQ protecting lock */
- 	int irq;			/* irq num */
--	int insuspend;			/* device is suspended */
--
- 	/* misc */
- 	void *tmp_buffer;		/* temporary buffer */
- 	uint8_t ctlreg;			/* cached contents of control reg */
 -- 
-1.7.0.4
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
