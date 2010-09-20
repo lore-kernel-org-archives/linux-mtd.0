@@ -1,21 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oxf4t-0001ld-Ag
-	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2010 12:02:35 +0000
-Received: by fxm4 with SMTP id 4so777915fxm.36
+	id 1OxfjR-0002gj-HT
+	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2010 12:44:30 +0000
+Received: by bwz19 with SMTP id 19so6102876bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Sep 2010 05:02:33 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mtd: prepare partition add and del functions for
-	ioctl requests
+	Mon, 20 Sep 2010 05:44:28 -0700 (PDT)
+Subject: Re: [PATCH 0/2] mtd: add BLKPG API based repartition support
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-In-Reply-To: <1284972658.2286.52.camel@localhost>
+In-Reply-To: <1284719502-24183-1-git-send-email-roman.tereshonkov@nokia.com>
 References: <1284719502-24183-1-git-send-email-roman.tereshonkov@nokia.com>
-	<1284719502-24183-2-git-send-email-roman.tereshonkov@nokia.com>
-	<1284972658.2286.52.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 20 Sep 2010 15:00:42 +0300
-Message-ID: <1284984042.5258.21.camel@localhost>
+Date: Mon, 20 Sep 2010 15:42:37 +0300
+Message-ID: <1284986557.5258.40.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
@@ -29,25 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-09-20 at 11:50 +0300, Artem Bityutskiy wrote:
-> On Fri, 2010-09-17 at 13:31 +0300, Roman Tereshonkov wrote:
-> > +       list_for_each_entry(p, &mtd_partitions, list)
-> > +               if (p->master == master) {
-> > +                           (start < (p->offset + p->mtd.size)))
-> > +                               goto err_inv; 
+On Fri, 2010-09-17 at 13:31 +0300, Roman Tereshonkov wrote:
+> Add support for mtd repartition based on the block
+>     device BLKPG interface:
+>     BLKPG_ADD_PARTITION - for partition creation;
+>     BLKPG_DEL_PARTITION - for partition delete
 > 
-> Pardon?
+>     The usage is based on BLKPG ioctl called with
+>     struct blkpg_ioctl_arg argument. This structure includes the
+>     reference to struct blkpg_partition discribing the
+>     partition name, offset and length for partition creation
+>     and partition number for its deletion.
+> 
+>     Disadvantage: there is no implementation for mtd
+>     flags control. The flags are always borrowed from
+>     the master device.
+> 
+> Roman Tereshonkov (2):
+>   mtd: prepare partition add and del functions for ioctl requests
+>   mtd: add BLKPG API based repartition support
+> 
+>  drivers/mtd/mtdchar.c          |   62 ++++++++++++++++-
+>  drivers/mtd/mtdpart.c          |  154 +++++++++++++++++++++++++++++++++++-----
+>  include/linux/mtd/partitions.h |    5 ++
+>  3 files changed, 201 insertions(+), 20 deletions(-)
 
-Sorry, it is some Evolution (e-mail client) bug. The code is different,
-it displays it incorrectly. I do not really why. The code is actually
-different:
-
-+               if (p->master == master) {
-+                       if ((start >= p->offset) &&
-+                           (start < (p->offset + p->mtd.size)))
-+                               goto err_inv;
-
-I really do not know why Evolution decided to kill the "if" line...
+The patches look good. Pushed to the l2-mtd-2.6.git tree with my
+signature, thanks!
 
 -- 
 Best Regards,
