@@ -1,26 +1,33 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OxUsJ-0003bs-KT
-	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2010 01:08:56 +0000
-Received: by fxm4 with SMTP id 4so576636fxm.36
+	id 1OxZrh-0007BK-5E
+	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2010 06:28:38 +0000
+Received: by pvg12 with SMTP id 12so1462822pvg.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 19 Sep 2010 18:08:54 -0700 (PDT)
-Subject: Re: [PATCH 1/3] MTD: blktrans: Final version of hotplug support
-From: Maxim Levitsky <maximlevitsky@gmail.com>
+	Sun, 19 Sep 2010 23:28:34 -0700 (PDT)
+Message-ID: <4C96FF10.2010805@gmail.com>
+Date: Sun, 19 Sep 2010 23:28:32 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+MIME-Version: 1.0
 To: dedekind1@gmail.com
-In-Reply-To: <1284928536.4022.5.camel@maxim-laptop>
-References: <1284851558-1154-1-git-send-email-maximlevitsky@gmail.com>
-	<1284851558-1154-2-git-send-email-maximlevitsky@gmail.com>
-	<1284920908.1704.5.camel@brekeke>
-	<1284928536.4022.5.camel@maxim-laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 20 Sep 2010 03:08:48 +0200
-Message-ID: <1284944928.27565.2.camel@maxim-laptop>
-Mime-Version: 1.0
+Subject: Re: [PATCH v4] mtd: nand: Expand nand_ecc_layout, deprecate ioctl
+	ECCGETLAYOUT
+References: <4C5CA4A1.1040000@broadcom.com>	
+	<1282154806-9420-1-git-send-email-norris@broadcom.com>	
+	<4C6DD170.1060807@renesas.com> <4C6E9C23.6060703@broadcom.com>	
+	<1282646703.24044.162.camel@localhost>
+	<4C746DE0.7000104@gmail.com>	 <1283163647.12995.43.camel@brekeke>
+	<1284830690.1721.3.camel@brekeke>
+In-Reply-To: <1284830690.1721.3.camel@brekeke>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Maciej Rutecki <maciej.rutecki@gmail.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	Sneha Narnakaje <nsnehaprabha@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,54 +37,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-09-19 at 22:35 +0200, Maxim Levitsky wrote: 
-> On Sun, 2010-09-19 at 21:28 +0300, Artem Bityutskiy wrote: 
-> > On Sun, 2010-09-19 at 01:12 +0200, Maxim Levitsky wrote:
-> > > Or at least this patch claims it to be so...
-> > > 
-> > > Now it once again possible to remove mtdtrans and mtd drivers even
-> > > if underlying mtd device is mounted.
-> > > This time in addition to code review, I also made the code
-> > > pass some torture tests like module reload in  a loop + read in a loop +
-> > > card insert/removal all at same time.
-> > > 
-> > > The blktrans_open/blktrans_release don't take the mtd table lock because:
-> > > 
-> > > While device is added (that includes execution of add_mtd_blktrans_dev)
-> > > the lock is already taken
-> > > 
-> > > Now suppose the device will never be removed. In this case even if we have changes
-> > > in mtd table, the entry that we need will stay exactly the same. (Note that we don't
-> > > look at table at all, just following private pointer of block device).
-> > > 
-> > > Now suppose that someone tries to remove the mtd device.
-> > > This will be propagated to trans driver which _ought_ to call del_mtd_blktrans_dev
-> > > which will take the per device lock, release the mtd device and set trans->mtd = NULL.
-> > > From this point on, following opens won't even be able to know anything about that mtd device
-> > > (which at that point is likely not to exist)
-> > > Also the same care is taken not to trip over NULL mtd pointer in blktrans_dev_release.
-> > > 
-> > > In addition to that I moved the blk_cleanup_queue back to del_mtd_blktrans_dev
-> > > because I now know that is ok, and I removed the BUG from deregister_mtd_blktrans
-> > > because the current mtd trans driver can still have 'dead' users upon removal.
-> > > These won't touch it again, so its safe to remove the module.
-> > > 
-> > > Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
-> > 
-> > Too many changes in one patch - please, split it on smaller patches. Do
-> > one change per patch not many changes in one. This patch is not really
-> > reviewable. And since you are fixing regression, make sure you have
-> > first N _minimal_ patches which just fix the regression and nothing
-> > else, and to the rest in the following M patches.
-> Artem, this patch, really fixes just one regression (especially V2).
-> The move of blk_cleanup_queue back if you insist, I can skip, its just
-> one line.
+Hello,
 
-On the second thought, you are right,
-I dudn't notice few more changes I added because I was busy stabilizing
-it.
-Btw, no crashes yet despite many attempts.
+Now that I've finally gotten around to working on this, I have questions
+and comments.
 
+On 9/18/2010 10:24 AM, Artem Bityutskiy wrote:
+> On Mon, 2010-08-30 at 13:20 +0300, Artem Bityutskiy wrote:
+>> On Tue, 2010-08-24 at 18:12 -0700, Brian Norris wrote:
+>>> My e-mail address has changed, since I am no longer working at Broadcom.
+>>> I will still be able to track messages to my old account if the MTD mailing
+>>> list is CC'd.
+>>
+>> Oh, does it mean you will stop loving MTD and we won't see steady flow
+>> of improvements for you? :-( BTW, I think you have been doing great job
+>> - MTD subsystem needs love badly!
 
-Best regards,
-Maxim Levitsky
+No, this doesn't mean I will stop loving MTD, although as may be readily
+apparent by my delay, I may work a bit slower :) In fact, I will
+probably be picking up some more work shortly.
+
+>>> +/*
+>>> + * Copies (and truncates, if necessary) data from the larger struct,
+>>> + * nand_ecclayout, to the smaller, deprecated layout struct,
+>>> + * nand_ecclayout_user. This is necessary only to suppport the deprecated
+>>> + * API ioctl ECCGETLAYOUT while allowing all new functionality to use
+>>> + * nand_ecclayout flexibly (i.e. the struct may change size in new
+>>> + * releases without requiring major rewrites).
+>>> + */
+>>
+>> I think a similar comment should exist in linux/mtd/mtd.h. Indeed, that
+>> file is our API with user-space, and our users will probably look at it,
+>> and it is nice to document the situation with 'struct
+>> nand_ecclayout_user' there.
+
+>From the context, I assume you meant include/mtd/mtd-abi.h, not
+linux/mtd/mtd.h; am I correct?
+
+I will send the patch out shortly under the assumption that I am correct.
+
+Brian
