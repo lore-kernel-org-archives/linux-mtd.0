@@ -1,19 +1,22 @@
-Subject: Re: [PATCH 1/2] MTD: generic FSMC NAND MTD driver
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oxc1x-00021m-E9
+	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2010 08:47:22 +0000
+Received: by bwz19 with SMTP id 19so5952408bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Sep 2010 01:47:20 -0700 (PDT)
+Subject: Re: [PATCH] usibfs: fix kconfig dependency warning
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Walleij <linus.ml.walleij@gmail.com>
-In-Reply-To: <AANLkTikuKC2n488ZNAeSr83p9cju2ZQCGU1W_FXqgzVy@mail.gmail.com>
-References: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
-	<AANLkTikuKC2n488ZNAeSr83p9cju2ZQCGU1W_FXqgzVy@mail.gmail.com>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+In-Reply-To: <20100918125340.7a2cbb8b.randy.dunlap@oracle.com>
+References: <20100918125340.7a2cbb8b.randy.dunlap@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 20 Sep 2010 11:39:39 +0300
-Message-ID: <1284971979.2286.46.camel@localhost>
+Date: Mon, 20 Sep 2010 11:45:28 +0300
+Message-ID: <1284972328.2286.49.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Viresh Kumar <viresh.kumar@st.com>, Rajeev Kumar <rajeev-dlh.kumar@st.com>,
-	Linus Walleij <linus.walleij@stericsson.com>,
-	Vipin Kumar <vipin.kumar@st.com>, Shiraz Hashim <shiraz.hashim@st.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,18 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-14 at 10:52 +0200, Linus Walleij wrote:
-> 2010/9/13 Linus Walleij <linus.walleij@stericsson.com>:
+On Sat, 2010-09-18 at 12:53 -0700, Randy Dunlap wrote:
+> From: Randy Dunlap <randy.dunlap@oracle.com>
 > 
-> > This is the same driver submitted by ST Micros SPEAr team but
-> > generalized and tested on the ST-Ericsson U300. It probably
-> > easily works on the NHK8815 too.
+> Fix another kconfig dependency warning, this time in ubifs.
 > 
-> David if this one looks OK then can you merge both patches through
-> the MTD tree?
+> warning: (MTD_UBI_DEBUG && MTD && SYSFS && MTD_UBI && KALLSYMS && DEBUG_KERNEL || UBIFS_FS_DEBUG && MISC_FILESYSTEMS && UBIFS_FS || LOCKDEP && DEBUG_KERNEL && TRACE_IRQFLAGS_SUPPORT && STACKTRACE_SUPPORT && LOCKDEP_SUPPORT || LATENCYTOP && HAVE_LATENCYTOP_SUPPORT && DEBUG_KERNEL && STACKTRACE_SUPPORT && PROC_FS) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
 
-I've pushed both patches to my l2-mtd-2.6.git / master, without signing
-this off myself.
+Pushed to the ubifs-2.6.git tree. This won't go to 2.6.36, though, I
+think - not too important. But I have anything really important, I'll
+merge this one as well, although for now I do not have such plans.
+
+Thanks!
 
 -- 
 Best Regards,
