@@ -1,24 +1,27 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OxblX-0006IU-ON
-	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2010 08:30:24 +0000
-Received: by bwz19 with SMTP id 19so5944417bwz.36
+	id 1Oxbn2-0006lr-Qt
+	for linux-mtd@lists.infradead.org; Mon, 20 Sep 2010 08:31:58 +0000
+Received: by fxm4 with SMTP id 4so697728fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Sep 2010 01:30:21 -0700 (PDT)
-Subject: Re: [PATCH 1/3] MTD: blktrans: Final version of hotplug support
+	Mon, 20 Sep 2010 01:31:55 -0700 (PDT)
+Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
+	ref-counting back to open/release
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-In-Reply-To: <1284851558-1154-2-git-send-email-maximlevitsky@gmail.com>
-References: <1284851558-1154-1-git-send-email-maximlevitsky@gmail.com>
-	<1284851558-1154-2-git-send-email-maximlevitsky@gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
+References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
+	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
+	<AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 20 Sep 2010 11:28:29 +0300
-Message-ID: <1284971309.2286.44.camel@localhost>
+Date: Mon, 20 Sep 2010 11:30:03 +0300
+Message-ID: <1284971403.2286.45.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+Cc: Ben Hutchings <bhutchings@solarflare.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
 	David Woodhouse <dwmw2@infradead.org>,
-	Maciej Rutecki <maciej.rutecki@gmail.com>
+	Maxim Levitsky <maximlevitsky@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,92 +32,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In one of your e-mails you said this patch is minimalistic. Here are
-some suggestions.
-
-On Sun, 2010-09-19 at 01:12 +0200, Maxim Levitsky wrote:
-> Signed-off-by: Maxim Levitsky <maximlevitsky@gmail.com>
-> ---
->  drivers/mtd/mtd_blkdevs.c |   67 +++++++++++++++++++-------------------------
->  1 files changed, 29 insertions(+), 38 deletions(-)
+On Sun, 2010-09-05 at 16:34 -0700, Kevin Cernekee wrote:
+> On Thu, Jul 22, 2010 at 10:44 AM, Ben Hutchings
+> <bhutchings@solarflare.com> wrote:
+> > commit 048d87199566663e4edc4880df3703c04bcf41d9 "mtd: blktrans: Hotplug
+> > fixes" causes the MTD and the MTD driver module's ref-counts to be
+> > bumped for each block device that is created, whether or not it's
+> > actually in use.
+> >
+> > This means that before removing an MTD or driver module one must first
+> > remove all the associated block devices.  But the block devices will
+> > be removed only when the MTDs themselves are removed, which is no
+> > longer possible.
 > 
-> diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> index 62e6870..d773a40 100644
-> --- a/drivers/mtd/mtd_blkdevs.c
-> +++ b/drivers/mtd/mtd_blkdevs.c
-> @@ -47,7 +47,6 @@ void blktrans_dev_release(struct kref *kref)
->  		container_of(kref, struct mtd_blktrans_dev, ref);
->  
->  	dev->disk->private_data = NULL;
-> -	blk_cleanup_queue(dev->rq);
+> Just updated to 2.6.36-rc3 and noticed a related issue.  Configuration is:
+> 
+> CONFIG_MTD_BLOCK=y
+> CONFIG_MTD_BLKDEVS=y
+> CONFIG_MTD_UBI_GLUEBI=y
 
-Them can be a separate patch.
->  	put_disk(dev->disk);
->  	list_del(&dev->list);
->  	kfree(dev);
-> @@ -133,6 +132,10 @@ static int mtd_blktrans_thread(void *arg)
->  
->  		if (!req && !(req = blk_fetch_request(rq))) {
->  			set_current_state(TASK_INTERRUPTIBLE);
-> +
-> +			if (kthread_should_stop())
-> +				break;
-
-This could be a separate patch.
-
-> +
->  			spin_unlock_irq(rq->queue_lock);
->  			schedule();
->  			spin_lock_irq(rq->queue_lock);
-> @@ -176,54 +179,51 @@ static void mtd_blktrans_request(struct request_queue *rq)
->  static int blktrans_open(struct block_device *bdev, fmode_t mode)
->  {
->  	struct mtd_blktrans_dev *dev = blktrans_dev_get(bdev->bd_disk);
-> -	int ret;
-> +	int ret = 0;
->  
->  	if (!dev)
-> -		return -ERESTARTSYS; /* FIXME: busy loop! -arnd*/
-> +		return -EIO;
-
-Hmm, why EIO? ENODEV is better. And this can be a separate patch, may
-be?
-
-> -	lock_kernel();
->  	mutex_lock(&dev->lock);
->  
-> -	if (!dev->mtd) {
-> -		ret = -ENXIO;
-> +	if (dev->open++)
->  		goto unlock;
-> -	}
->  
-> -	ret = !dev->open++ && dev->tr->open ? dev->tr->open(dev) : 0;
-> +	kref_get(&dev->ref);
-> +
-> +	if (dev->mtd) {
-> +		ret = dev->tr->open ? dev->tr->open(dev) : 0;
-> +		__get_mtd_device(dev->mtd);
-> +	}
->  
-> -	/* Take another reference on the device so it won't go away till
-> -		last release */
-> -	if (!ret)
-> -		kref_get(&dev->ref);
->  unlock:
->  	mutex_unlock(&dev->lock);
->  	blktrans_dev_put(dev);
-> -	unlock_kernel();
-
-So you kill BKL in the same patch? No, make it separately, please.
-
-Did not look further.
-
-Please, make a nice set of independent minimalistic patches. This is
-very important for patches which will go to 2.6.36 to be minimal and
-just fix the problem. Then the rest of the patches can do more things
-and they will go to 2.6.37.
- 
+Would you please check if Maxim's patch fixes this:
+[PATCH V2] MTD: blktrans: Final version of hotplug support
 
 -- 
 Best Regards,
