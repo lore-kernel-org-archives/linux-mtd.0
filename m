@@ -1,29 +1,20 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oy43M-0005c2-Rx
-	for linux-mtd@lists.infradead.org; Tue, 21 Sep 2010 14:42:41 +0000
-Received: by wwb24 with SMTP id 24so5820352wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Sep 2010 07:42:39 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: dedekind1@gmail.com
-Subject: Re: latest MTD-utils
-References: <AANLkTin+Y2YD3w4MfdTmQkRyB_UZD8pY51ci4pTQHacB@mail.gmail.com>
-	<1285053950.7512.5.camel@localhost>
-	<871v8n2osc.fsf@macbook.be.48ers.dk>
-	<1285077063.7512.120.camel@localhost>
-	<1285077268.7512.121.camel@localhost>
-	<87sk131977.fsf@macbook.be.48ers.dk>
-	<1285079252.7512.136.camel@localhost>
-Date: Tue, 21 Sep 2010 16:42:30 +0200
-In-Reply-To: <1285079252.7512.136.camel@localhost> (Artem Bityutskiy's message
-	of "Tue, 21 Sep 2010 17:27:32 +0300")
-Message-ID: <87mxrb17l5.fsf@macbook.be.48ers.dk>
+Date: Tue, 21 Sep 2010 07:58:21 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "Ghorai, Sukumar" <s-ghorai@ti.com>
+Subject: Re: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode support
+Message-ID: <20100921145820.GQ4611@atomide.com>
+References: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
+	<1284624059-1741-2-git-send-email-s-ghorai@ti.com>
+	<20100917175504.GG29610@atomide.com>
+	<2A3DCF3DA181AD40BDE86A3150B27B6B031606213F@dbde02.ent.ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: Bruno Cornec <bruno@project-builder.org>, linux-mtd@lists.infradead.org,
-	twebb <taliaferro62@gmail.com>, David.Woodhouse@intel.com
+Content-Disposition: inline
+In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B031606213F@dbde02.ent.ti.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
+* Ghorai, Sukumar <s-ghorai@ti.com> [100918 11:16]:
+> > 
+> > This handler should be in gpmc.c as it may be needed for other GPMC
+> > connected devices on the same system. You can use chained irq handlers
+> > to allow all the drivers to use the interrupt then.
+> 
+> [Ghorai] 
+> You mean as this function used the gpmc-irq number in nand file, so handler should move to gpmc.c file? 
 
-Hi,
+Yes, other GPMC connected drivers may want to use it too for their chip selects.
 
- Artem> It is not too difficult to provide tarball, but this is
- Artem> something developers do not care about, they develop. Packagers
- Artem> do care, and it is saner when packagers do this, not developers.
+> 	1. For that we need to add one io-struct (to keep io buffer status) in gpmc.c; 
+>
+> 	2. Also need help how to sync between gpmc.c/omap_nand_irq() and omap2.c/omap_write_buf_irq_pref(), men how read/write function know that work done in interrupt-context? Or you prefer to move the complete IO function (omap_read/write_buf_irq_pref) to gpmc.c?
+> 
+> 	3. gpmc does not now about the read and write address that's applicable for NAND. So how to pass the IO address from omap2.c to gpmc.c, interrupt handler?
 
- Artem> I was in LinuxCon Brazil this year, and there was this presentation:
- Artem> http://events.linuxfoundation.org/2010/linuxcon-brazil/cornec
+Hmm, I don't follow you. You can have the interrupt handler
+both in gpmc.c and in the nand driver with set_irq_chained_handler()
+and set_irq_data(). We are doing that already in lots of places,
+like gpio.c and twl4030-irq.c. 
+ 
+> So, please let me know your suggestion again such that I can post this time itself. Otherwise again it will miss from coming release, this was posted/reviewed for last release too. And suggest to void repeating of missing release window again.
 
- Artem> where bruno said exactly the same. And he was promoting his
- Artem> project which claims to be able to pick sources from anywhere -
- Artem> git, svn, whatever.
+Yes would be nice to get this patch in, to me it seems that this
+issue is the only blocker. It should be pretty easy change to
+make.
 
- Artem> So the question is, why Buildroot cannot adjust to the reality
- Artem> (which is that developers in average do not care about tarballs)
- Artem> and cannot be improved?
+Regards,
 
-Sure, buildroot can fetch from git - That's not the problem. All I'm
-asking for is a bit of consistency to lower the amount of confusion:
-
-- Either provide tarballs like in the past
-- Or clearly state that you don't (website, readme on ftp site) and
-  (re)move the old releases so people don't think that's where they are
-  supposed to find releases (E.G. google for
-  ftp://ftp.infradead.org/pub/mtd-utils/ and see the amount of references)
-
--- 
-Bye, Peter Korsgaard
+Tony
