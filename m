@@ -1,18 +1,21 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OxxST-0008Gb-7K
-	for linux-mtd@lists.infradead.org; Tue, 21 Sep 2010 07:40:10 +0000
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: mxc_nand: do not depend on disabling the irq in the
-	interrupt handler
-Date: Tue, 21 Sep 2010 09:40:02 +0200
-Message-Id: <1285054802-21388-2-git-send-email-s.hauer@pengutronix.de>
-In-Reply-To: <1285054802-21388-1-git-send-email-s.hauer@pengutronix.de>
-References: <1285054802-21388-1-git-send-email-s.hauer@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+From: "Ghorai, Sukumar" <s-ghorai@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Tue, 21 Sep 2010 18:24:39 +0530
+Subject: RE: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode support
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B031610E073@dbde02.ent.ti.com>
+References: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
+	<1284624059-1741-2-git-send-email-s-ghorai@ti.com>
+	<20100917175504.GG29610@atomide.com>
+	<2A3DCF3DA181AD40BDE86A3150B27B6B0316062730@dbde02.ent.ti.com>
+In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B0316062730@dbde02.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,198 +25,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch reverts the driver to enabling/disabling the NFC interrupt
-mask rather than enabling/disabling the system interrupt. This cleans
-up the driver so that it doesn't rely on interrupts being disabled
-within the interrupt handler.
-For i.MX21 we keep the current behaviour, that is calling
-enable_irq/disable_irq_nosync to enable/disable interrupts.
-This patch is based on earlier work by John Ogness.
+Tony,
 
-Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-Acked-by: John Ogness <john.ogness@linutronix.de>
-Tested-by: John Ogness <john.ogness@linutronix.de>
----
- drivers/mtd/nand/mxc_nand.c |   92 ++++++++++++++++++++++++++++++++++++++----
- 1 files changed, 83 insertions(+), 9 deletions(-)
+> -----Original Message-----
+> From: linux-omap-owner@vger.kernel.org [mailto:linux-omap-
+> owner@vger.kernel.org] On Behalf Of Ghorai, Sukumar
+> Sent: Monday, September 20, 2010 7:01 PM
+> To: Tony Lindgren
+> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
+> kernel@lists.infradead.org
+> Subject: RE: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode
+> support
+>=20
+> Tony,
+>=20
+> > -----Original Message-----
+> > From: Ghorai, Sukumar
+> > Sent: Saturday, September 18, 2010 11:55 PM
+> > To: 'Tony Lindgren'
+> > Cc: 'linux-omap@vger.kernel.org'; 'linux-mtd@lists.infradead.org';
+> 'linux-
+> > arm-kernel@lists.infradead.org'
+> > Subject: RE: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode
+> > support
+> >
+> > Tony,
+> >
+> > > -----Original Message-----
+> > > From: Tony Lindgren [mailto:tony@atomide.com]
+> > > Sent: Friday, September 17, 2010 11:25 PM
+> > > To: Ghorai, Sukumar
+> > > Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-
+> > arm-
+> > > kernel@lists.infradead.org; Vimal Singh
+> > > Subject: Re: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode
+> > > support
+> > >
+> > > * Sukumar Ghorai <s-ghorai@ti.com> [100916 00:53]:
+> > > > This patch enable prefetch-irq mode for NAND.
+> > > >
+> > > > --- a/drivers/mtd/nand/omap2.c
+> > > > +++ b/drivers/mtd/nand/omap2.c
+> > > > @@ -467,6 +485,152 @@ static void omap_write_buf_dma_pref(struct
+> > > mtd_info *mtd,
+> > > >  		omap_nand_dma_transfer(mtd, (u_char *) buf, len, 0x1);
+> > > >  }
+> > > >
+> > > > +/*
+> > > > + * omap_nand_irq - GMPC irq handler
+> > > > + * @this_irq: gpmc irq number
+> > > > + * @dev: omap_nand_info structure pointer is passed here
+> > > > + */
+> > > > +static irqreturn_t omap_nand_irq(int this_irq, void *dev)
+> > > > +{
+> > > > +	struct omap_nand_info *info =3D (struct omap_nand_info *) dev;
+> > > > +	u32 bytes;
+> > > > +	u32 irq_stat;
+> > > > +
+> > > > +	irq_stat =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+> > > > +	bytes =3D gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
+> > > > +	bytes =3D bytes  & 0xFFFC; /* io in multiple of 4 bytes */
+> > > > +	if (info->iomode =3D=3D OMAP_NAND_IO_WRITE) { /* checks for write
+> io */
+> > > > +		if (irq_stat & 0x2)
+> > > > +			goto done;
+> > > > +
+> > > > +		if (info->buf_len & (info->buf_len < bytes))
+> > > > +			bytes =3D info->buf_len;
+> > > > +		else if (!info->buf_len)
+> > > > +			bytes =3D 0;
+> > > > +		iowrite32_rep(info->nand.IO_ADDR_W,
+> > > > +						(u32 *)info->buf, bytes >> 2);
+> > > > +		info->buf =3D info->buf + bytes;
+> > > > +		info->buf_len -=3D bytes;
+> > > > +
+> > > > +	} else {
+> > > > +		ioread32_rep(info->nand.IO_ADDR_R,
+> > > > +						(u32 *)info->buf, bytes >> 2);
+> > > > +		info->buf =3D info->buf + bytes;
+> > > > +
+> > > > +		if (irq_stat & 0x2)
+> > > > +			goto done;
+> > > > +	}
+> > > > +	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS,
+> irq_stat);
+> > > > +	irq_stat =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+> > > > +
+> > > > +	return IRQ_HANDLED;
+> > > > +
+> > > > +done:
+> > > > +	complete(&info->comp);
+> > > > +	/* disable irq */
+> > > > +	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
+> > > > +
+> > > > +	/* clear status */
+> > > > +	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS,
+> irq_stat);
+> > > > +	irq_stat =3D gpmc_read_status(GPMC_GET_IRQ_STATUS);
+> > > > +
+> > > > +	return IRQ_HANDLED;
+> > > > +}
+> > >
+> > > This handler should be in gpmc.c as it may be needed for other GPMC
+> > > connected devices on the same system. You can use chained irq handler=
+s
+> > > to allow all the drivers to use the interrupt then.
+> >
+> > [Ghorai]
+> > You mean as this function used the gpmc-irq number in nand file, so
+> > handler should move to gpmc.c file?
+> > 	1. For that we need to add one io-struct (to keep io buffer status)
+> > in gpmc.c;
+> >
+> > 	2. Also need help how to sync between gpmc.c/omap_nand_irq() and
+> > omap2.c/omap_write_buf_irq_pref(), men how read/write function know tha=
+t
+> > work done in interrupt-context? Or you prefer to move the complete IO
+> > function (omap_read/write_buf_irq_pref) to gpmc.c?
+> >
+> > 	3. gpmc does not now about the read and write address that's
+> > applicable for NAND. So how to pass the IO address from omap2.c to
+> gpmc.c,
+> > interrupt handler?
+> >
+> >
+> > So, please let me know your suggestion again such that I can post this
+> > time itself. Otherwise again it will miss from coming release, this was
+> > posted/reviewed for last release too. And suggest to void repeating of
+> > missing release window again.
+>=20
+> [Ghorai] Please reply with your 2nd suggestion.
+[Ghorai] Please reply with your 2nd suggestion.
 
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index b2828e8..214b03a 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -30,6 +30,8 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/io.h>
-+#include <linux/irq.h>
-+#include <linux/completion.h>
- 
- #include <asm/mach/flash.h>
- #include <mach/mxc_nand.h>
-@@ -151,7 +153,7 @@ struct mxc_nand_host {
- 	int			irq;
- 	int			eccsize;
- 
--	wait_queue_head_t	irq_waitq;
-+	struct completion	op_completion;
- 
- 	uint8_t			*data_buf;
- 	unsigned int		buf_start;
-@@ -164,6 +166,7 @@ struct mxc_nand_host {
- 	void			(*send_read_id)(struct mxc_nand_host *);
- 	uint16_t		(*get_dev_status)(struct mxc_nand_host *);
- 	int			(*check_int)(struct mxc_nand_host *);
-+	void			(*irq_control)(struct mxc_nand_host *, int);
- };
- 
- /* OOB placement block for use with hardware ecc generation */
-@@ -216,9 +219,12 @@ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
- {
- 	struct mxc_nand_host *host = dev_id;
- 
--	disable_irq_nosync(irq);
-+	if (!host->check_int(host))
-+		return IRQ_NONE;
- 
--	wake_up(&host->irq_waitq);
-+	host->irq_control(host, 0);
-+
-+	complete(&host->op_completion);
- 
- 	return IRQ_HANDLED;
- }
-@@ -245,11 +251,54 @@ static int check_int_v1_v2(struct mxc_nand_host *host)
- 	if (!(tmp & NFC_V1_V2_CONFIG2_INT))
- 		return 0;
- 
--	writew(tmp & ~NFC_V1_V2_CONFIG2_INT, NFC_V1_V2_CONFIG2);
-+	if (!cpu_is_mx21())
-+		writew(tmp & ~NFC_V1_V2_CONFIG2_INT, NFC_V1_V2_CONFIG2);
- 
- 	return 1;
- }
- 
-+/*
-+ * It has been observed that the i.MX21 cannot read the CONFIG2:INT bit
-+ * if interrupts are masked (CONFIG1:INT_MSK is set). To handle this, the
-+ * driver can enable/disable the irq line rather than simply masking the
-+ * interrupts.
-+ */
-+static void irq_control_mx21(struct mxc_nand_host *host, int activate)
-+{
-+	if (activate)
-+		enable_irq(host->irq);
-+	else
-+		disable_irq_nosync(host->irq);
-+}
-+
-+static void irq_control_v1_v2(struct mxc_nand_host *host, int activate)
-+{
-+	uint16_t tmp;
-+
-+	tmp = readw(NFC_V1_V2_CONFIG1);
-+
-+	if (activate)
-+		tmp &= ~NFC_V1_V2_CONFIG1_INT_MSK;
-+	else
-+		tmp |= NFC_V1_V2_CONFIG1_INT_MSK;
-+
-+	writew(tmp, NFC_V1_V2_CONFIG1);
-+}
-+
-+static void irq_control_v3(struct mxc_nand_host *host, int activate)
-+{
-+	uint32_t tmp;
-+
-+	tmp = readl(NFC_V3_CONFIG2);
-+
-+	if (activate)
-+		tmp &= ~NFC_V3_CONFIG2_INT_MSK;
-+	else
-+		tmp |= NFC_V3_CONFIG2_INT_MSK;
-+
-+	writel(tmp, NFC_V3_CONFIG2);
-+}
-+
- /* This function polls the NANDFC to wait for the basic operation to
-  * complete by checking the INT bit of config2 register.
-  */
-@@ -259,10 +308,9 @@ static void wait_op_done(struct mxc_nand_host *host, int useirq)
- 
- 	if (useirq) {
- 		if (!host->check_int(host)) {
--
--			enable_irq(host->irq);
--
--			wait_event(host->irq_waitq, host->check_int(host));
-+			INIT_COMPLETION(host->op_completion);
-+			host->irq_control(host, 1);
-+			wait_for_completion(&host->op_completion);
- 		}
- 	} else {
- 		while (max_retries-- > 0) {
-@@ -799,6 +847,7 @@ static void preset_v3(struct mtd_info *mtd)
- 		NFC_V3_CONFIG2_2CMD_PHASES |
- 		NFC_V3_CONFIG2_SPAS(mtd->oobsize >> 1) |
- 		NFC_V3_CONFIG2_ST_CMD(0x70) |
-+		NFC_V3_CONFIG2_INT_MSK |
- 		NFC_V3_CONFIG2_NUM_ADDR_PHASE0;
- 
- 	if (chip->ecc.mode == NAND_ECC_HW)
-@@ -1024,6 +1073,10 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		host->send_read_id = send_read_id_v1_v2;
- 		host->get_dev_status = get_dev_status_v1_v2;
- 		host->check_int = check_int_v1_v2;
-+		if (cpu_is_mx21())
-+			host->irq_control = irq_control_mx21;
-+		else
-+			host->irq_control = irq_control_v1_v2;
- 	}
- 
- 	if (nfc_is_v21()) {
-@@ -1062,6 +1115,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		host->send_read_id = send_read_id_v3;
- 		host->check_int = check_int_v3;
- 		host->get_dev_status = get_dev_status_v3;
-+		host->irq_control = irq_control_v3;
- 		oob_smallpage = &nandv2_hw_eccoob_smallpage;
- 		oob_largepage = &nandv2_hw_eccoob_largepage;
- 	} else
-@@ -1093,14 +1147,34 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		this->options |= NAND_USE_FLASH_BBT;
- 	}
- 
--	init_waitqueue_head(&host->irq_waitq);
-+	init_completion(&host->op_completion);
- 
- 	host->irq = platform_get_irq(pdev, 0);
- 
-+	/*
-+	 * mask the interrupt. For i.MX21 explicitely call
-+	 * irq_control_v1_v2 to use the mask bit. We can't call
-+	 * disable_irq_nosync() for an interrupt we do not own yet.
-+	 */
-+	if (cpu_is_mx21())
-+		irq_control_v1_v2(host, 0);
-+	else
-+		host->irq_control(host, 0);
-+
- 	err = request_irq(host->irq, mxc_nfc_irq, IRQF_DISABLED, DRIVER_NAME, host);
- 	if (err)
- 		goto eirq;
- 
-+	host->irq_control(host, 0);
-+
-+	/*
-+	 * Now that the interrupt is disabled make sure the interrupt
-+	 * mask bit is cleared on i.MX21. Otherwise we can't read
-+	 * the interrupt status bit on this machine.
-+	 */
-+	if (cpu_is_mx21())
-+		irq_control_v1_v2(host, 1);
-+
- 	/* first scan to find the device and get the page size */
- 	if (nand_scan_ident(mtd, 1, NULL)) {
- 		err = -ENXIO;
--- 
-1.7.2.3
+> >
+> > >
+> > > Regards,
+> > >
+> > > Tony
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
