@@ -1,20 +1,22 @@
-Date: Tue, 21 Sep 2010 07:58:21 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: "Ghorai, Sukumar" <s-ghorai@ti.com>
-Subject: Re: [PATCH RESEND v4 1/4] omap3: nand: prefetch in irq mode support
-Message-ID: <20100921145820.GQ4611@atomide.com>
-References: <1284624059-1741-1-git-send-email-s-ghorai@ti.com>
-	<1284624059-1741-2-git-send-email-s-ghorai@ti.com>
-	<20100917175504.GG29610@atomide.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B031606213F@dbde02.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B031606213F@dbde02.ent.ti.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mga14.intel.com ([143.182.124.37])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oy4hc-0000E1-Ca
+	for linux-mtd@lists.infradead.org; Tue, 21 Sep 2010 15:24:17 +0000
+Subject: Re: latest MTD-utils
+From: David Woodhouse <David.Woodhouse@intel.com>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+In-Reply-To: <1285077063.7512.120.camel@localhost>
+References: <AANLkTin+Y2YD3w4MfdTmQkRyB_UZD8pY51ci4pTQHacB@mail.gmail.com>
+	<1285053950.7512.5.camel@localhost>
+	<871v8n2osc.fsf@macbook.be.48ers.dk>
+	<1285077063.7512.120.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 21 Sep 2010 16:24:01 +0100
+Message-ID: <1285082641.19908.4.camel@i7.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: twebb <taliaferro62@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ghorai, Sukumar <s-ghorai@ti.com> [100918 11:16]:
+On Tue, 2010-09-21 at 14:51 +0100, Artem Bityutskiy wrote:
+> On Tue, 2010-09-21 at 15:45 +0200, Peter Korsgaard wrote:
+> > >>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 > > 
-> > This handler should be in gpmc.c as it may be needed for other GPMC
-> > connected devices on the same system. You can use chained irq handlers
-> > to allow all the drivers to use the interrupt then.
+> >  Artem> On Mon, 2010-09-20 at 18:47 -0400, twebb wrote:
+> >  >> What is recommended for one who wants the latest, stable version of
+> >  >> mtd-utils.  On http://git.infradead.org/mtd-utils.git, the latest tag
+> >  >> is v1.3.1 but that is 8 months old.  Should I get the HEAD or
+> >  >> something else?
+> > 
+> >  Artem> Tagged v1.4.0, thanks for reminder.
+> > 
+> > And once again - David, could we please have a tarball on
+> > ftp://ftp.infradead.org/pub/mtd-utils?
 > 
-> [Ghorai] 
-> You mean as this function used the gpmc-irq number in nand file, so handler should move to gpmc.c file? 
+> :-)))
+> I can do this, if David grants me the rights.
 
-Yes, other GPMC connected drivers may want to use it too for their chip selects.
+You've had write privs to /var/ftp/pub/mtd-utils on casper for as long
+as I can remember.
 
-> 	1. For that we need to add one io-struct (to keep io buffer status) in gpmc.c; 
->
-> 	2. Also need help how to sync between gpmc.c/omap_nand_irq() and omap2.c/omap_write_buf_irq_pref(), men how read/write function know that work done in interrupt-context? Or you prefer to move the complete IO function (omap_read/write_buf_irq_pref) to gpmc.c?
-> 
-> 	3. gpmc does not now about the read and write address that's applicable for NAND. So how to pass the IO address from omap2.c to gpmc.c, interrupt handler?
-
-Hmm, I don't follow you. You can have the interrupt handler
-both in gpmc.c and in the nand driver with set_irq_chained_handler()
-and set_irq_data(). We are doing that already in lots of places,
-like gpio.c and twl4030-irq.c. 
- 
-> So, please let me know your suggestion again such that I can post this time itself. Otherwise again it will miss from coming release, this was posted/reviewed for last release too. And suggest to void repeating of missing release window again.
-
-Yes would be nice to get this patch in, to me it seems that this
-issue is the only blocker. It should be pretty easy change to
-make.
-
-Regards,
-
-Tony
+-- 
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
