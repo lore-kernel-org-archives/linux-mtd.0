@@ -1,22 +1,17 @@
-Received: from mga14.intel.com ([143.182.124.37])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oy4hc-0000E1-Ca
-	for linux-mtd@lists.infradead.org; Tue, 21 Sep 2010 15:24:17 +0000
-Subject: Re: latest MTD-utils
-From: David Woodhouse <David.Woodhouse@intel.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-In-Reply-To: <1285077063.7512.120.camel@localhost>
-References: <AANLkTin+Y2YD3w4MfdTmQkRyB_UZD8pY51ci4pTQHacB@mail.gmail.com>
-	<1285053950.7512.5.camel@localhost>
-	<871v8n2osc.fsf@macbook.be.48ers.dk>
-	<1285077063.7512.120.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 21 Sep 2010 16:24:01 +0100
-Message-ID: <1285082641.19908.4.camel@i7.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: twebb <taliaferro62@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from dakia2.marvell.com ([65.219.4.35])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oy5Vm-0007b6-11
+	for linux-mtd@lists.infradead.org; Tue, 21 Sep 2010 16:16:07 +0000
+From: Lei Wen <leiwen@marvell.com>
+To: eric.y.miao@gmail.com, haojian.zhuang@gmail.com,
+	dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, haojian.zhuang@marvell.com,
+	adrian.wenl@gmail.com
+Subject: [PATCH 1/6 V2] pxa3xx_nand: make scan procedure more clear
+Date: Wed, 22 Sep 2010 00:21:25 +0800
+Message-Id: <1285086085-2264-1-git-send-email-leiwen@marvell.com>
+In-Reply-To: <AANLkTinGdpt3kiCas6tpEZPbTknEe1Upz9D_aLgfNWo_@mail.gmail.com>
+References: <AANLkTinGdpt3kiCas6tpEZPbTknEe1Upz9D_aLgfNWo_@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +21,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-21 at 14:51 +0100, Artem Bityutskiy wrote:
-> On Tue, 2010-09-21 at 15:45 +0200, Peter Korsgaard wrote:
-> > >>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
-> > 
-> >  Artem> On Mon, 2010-09-20 at 18:47 -0400, twebb wrote:
-> >  >> What is recommended for one who wants the latest, stable version of
-> >  >> mtd-utils.  On http://git.infradead.org/mtd-utils.git, the latest tag
-> >  >> is v1.3.1 but that is 8 months old.  Should I get the HEAD or
-> >  >> something else?
-> > 
-> >  Artem> Tagged v1.4.0, thanks for reminder.
-> > 
-> > And once again - David, could we please have a tarball on
-> > ftp://ftp.infradead.org/pub/mtd-utils?
-> 
-> :-)))
-> I can do this, if David grants me the rights.
+Signed-off-by: Lei Wen <leiwen@marvell.com>
+Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
+Cc: Eric Miao <eric.y.miao@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+---
+ drivers/mtd/nand/pxa3xx_nand.c |   98 ++++++++++++++++++++++------------------
+ 1 files changed, 54 insertions(+), 44 deletions(-)
 
-You've had write privs to /var/ftp/pub/mtd-utils on casper for as long
-as I can remember.
-
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 17f8518..aff28dc 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -126,6 +126,7 @@ struct pxa3xx_nand_info {
+ 	unsigned int 		buf_start;
+ 	unsigned int		buf_count;
+ 
++	struct mtd_info         *mtd;
+ 	/* DMA information */
+ 	int			drcmr_dat;
+ 	int			drcmr_cmd;
+@@ -1044,34 +1045,26 @@ static void pxa3xx_nand_init_mtd(struct mtd_info *mtd,
+ 	this->chip_delay = 25;
+ }
+ 
+-static int pxa3xx_nand_probe(struct platform_device *pdev)
++static struct pxa3xx_nand_info *alloc_nand_resource(struct platform_device *pdev)
+ {
+-	struct pxa3xx_nand_platform_data *pdata;
++	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
+ 	struct pxa3xx_nand_info *info;
+-	struct nand_chip *this;
+ 	struct mtd_info *mtd;
+ 	struct resource *r;
+-	int ret = 0, irq;
+-
+-	pdata = pdev->dev.platform_data;
+-
+-	if (!pdata) {
+-		dev_err(&pdev->dev, "no platform data defined\n");
+-		return -ENODEV;
+-	}
++	int ret, irq;
+ 
+ 	mtd = kzalloc(sizeof(struct mtd_info) + sizeof(struct pxa3xx_nand_info),
+ 			GFP_KERNEL);
+ 	if (!mtd) {
+ 		dev_err(&pdev->dev, "failed to allocate memory\n");
+-		return -ENOMEM;
++		return NULL;
+ 	}
+ 
+ 	info = (struct pxa3xx_nand_info *)(&mtd[1]);
+ 	info->pdev = pdev;
+ 
+-	this = &info->nand_chip;
+ 	mtd->priv = info;
++	info->mtd = mtd;
+ 	mtd->owner = THIS_MODULE;
+ 
+ 	info->clk = clk_get(&pdev->dev, NULL);
+@@ -1149,31 +1142,9 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	pxa3xx_nand_init_mtd(mtd, info);
++	platform_set_drvdata(pdev, info);
+ 
+-	platform_set_drvdata(pdev, mtd);
+-
+-	if (nand_scan(mtd, 1)) {
+-		dev_err(&pdev->dev, "failed to scan nand\n");
+-		ret = -ENXIO;
+-		goto fail_free_irq;
+-	}
+-
+-#ifdef CONFIG_MTD_PARTITIONS
+-	if (mtd_has_cmdlinepart()) {
+-		static const char *probes[] = { "cmdlinepart", NULL };
+-		struct mtd_partition *parts;
+-		int nr_parts;
+-
+-		nr_parts = parse_mtd_partitions(mtd, probes, &parts, 0);
+-
+-		if (nr_parts)
+-			return add_mtd_partitions(mtd, parts, nr_parts);
+-	}
+-
+-	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+-#else
+-	return 0;
+-#endif
++	return info;
+ 
+ fail_free_irq:
+ 	free_irq(irq, info);
+@@ -1193,13 +1164,13 @@ fail_put_clk:
+ 	clk_put(info->clk);
+ fail_free_mtd:
+ 	kfree(mtd);
+-	return ret;
++	return NULL;
+ }
+ 
+ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ {
+-	struct mtd_info *mtd = platform_get_drvdata(pdev);
+-	struct pxa3xx_nand_info *info = mtd->priv;
++	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = info->mtd;
+ 	struct resource *r;
+ 	int irq;
+ 
+@@ -1230,11 +1201,50 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static int pxa3xx_nand_probe(struct platform_device *pdev)
++{
++	struct pxa3xx_nand_platform_data *pdata;
++	struct pxa3xx_nand_info *info;
++
++	pdata = pdev->dev.platform_data;
++	if (!pdata) {
++		dev_err(&pdev->dev, "no platform data defined\n");
++		return -ENODEV;
++	}
++
++	info = alloc_nand_resource(pdev);
++	if (info == NULL)
++		return -ENOMEM;
++
++	if (nand_scan(info->mtd, 1)) {
++		dev_err(&pdev->dev, "failed to scan nand\n");
++		pxa3xx_nand_remove(pdev);
++		return -ENODEV;
++	}
++
++#ifdef CONFIG_MTD_PARTITIONS
++	if (mtd_has_cmdlinepart()) {
++		static const char *probes[] = { "cmdlinepart", NULL };
++		struct mtd_partition *parts;
++		int nr_parts;
++
++		nr_parts = parse_mtd_partitions(info->mtd, probes, &parts, 0);
++
++		if (nr_parts)
++			return add_mtd_partitions(mtd, parts, nr_parts);
++	}
++
++	return add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
++#else
++	return 0;
++#endif
++}
++
+ #ifdef CONFIG_PM
+ static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_t state)
+ {
+-	struct mtd_info *mtd = (struct mtd_info *)platform_get_drvdata(pdev);
+-	struct pxa3xx_nand_info *info = mtd->priv;
++	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = info->mtd;
+ 
+ 	if (info->state != STATE_READY) {
+ 		dev_err(&pdev->dev, "driver busy, state = %d\n", info->state);
+@@ -1246,8 +1256,8 @@ static int pxa3xx_nand_suspend(struct platform_device *pdev, pm_message_t state)
+ 
+ static int pxa3xx_nand_resume(struct platform_device *pdev)
+ {
+-	struct mtd_info *mtd = (struct mtd_info *)platform_get_drvdata(pdev);
+-	struct pxa3xx_nand_info *info = mtd->priv;
++	struct pxa3xx_nand_info *info = platform_get_drvdata(pdev);
++	struct mtd_info *mtd = info->mtd;
+ 
+ 	nand_writel(info, NDTR0CS0, info->ndtr0cs0);
+ 	nand_writel(info, NDTR1CS0, info->ndtr1cs0);
 -- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+1.7.0.4
