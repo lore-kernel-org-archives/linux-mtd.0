@@ -1,29 +1,26 @@
 Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyJqY-0005E4-7t
-	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2010 07:34:30 +0000
-Received: by qwe4 with SMTP id 4so9940qwe.36
+	id 1OyJzQ-00037o-A3
+	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2010 07:43:42 +0000
+Received: by qwe4 with SMTP id 4so16987qwe.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Sep 2010 00:34:28 -0700 (PDT)
-MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1285139570.7512.137.camel@localhost>
-References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
-	<1284308851.1783.23.camel@brekeke>
-	<AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
-	<1284358990.27765.154.camel@localhost>
-	<AANLkTin4u=jQOxxuTwzMHrEEg=vDc2TSTah_=_Li02xx@mail.gmail.com>
-	<1284441967.2084.18.camel@brekeke>
-	<AANLkTin+2ocUT_NMToGHoAhX5=Trn2CdLFmiMBmvSVuC@mail.gmail.com>
-	<1285139570.7512.137.camel@localhost>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 22 Sep 2010 03:34:08 -0400
-Message-ID: <AANLkTi=ssyUrvaic86hx8tT0TvZiMzyDa_KL0SfU144J@mail.gmail.com>
-Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
+	Wed, 22 Sep 2010 00:43:28 -0700 (PDT)
+From: Mike Frysinger <vapier.adi@gmail.com>
 To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: linux equivalent of u-boot's "nand scrub" (erasing blocks even
+	when OOB says "bad")
+Date: Wed, 22 Sep 2010 03:43:32 -0400
+References: <AANLkTikrEq1hJEttX=DkMWYaLsJnW+QWGRaL2eygZ8uZ@mail.gmail.com>
+	<AANLkTinHKU1BfmtZyEKFwUVFJz9YoPr93D7tP6jqXeJE@mail.gmail.com>
+	<1284278043.1783.10.camel@brekeke>
+In-Reply-To: <1284278043.1783.10.camel@brekeke>
+MIME-Version: 1.0
+Message-Id: <201009220343.33025.vapier.adi@gmail.com>
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,50 +30,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 22, 2010 at 03:12, Artem Bityutskiy wrote:
-> On Wed, 2010-09-22 at 00:23 -0400, Mike Frysinger wrote:
->> On Tue, Sep 14, 2010 at 01:26, Artem Bityutskiy wrote:
->> > On Mon, 2010-09-13 at 21:21 -0400, Mike Frysinger wrote:
->> >> ... policy is for the end user to determine ... this is putting
->> >> artificial limits for no real reason that i can see.
->> >
->> > But the problem is not artificial limits. The problem is that I do not
->> > think your option is usable at all, because, as I explained, bad
->> > eraseblock is not necessarily writable, it's contents and the state is
->> > unpredictable. It may contain unstable bits, for example. You really
->> > need to erase it before writing.
->>
->> it is completely artificial. =C2=A0as you said yourself, it is "not
->> necessarily writable". =C2=A0that means i should be able to tell the
->> hardware "do XXX" and let the hardware do it. =C2=A0instead, i'm stuck w=
-ith
->> userspace utils that say "no, you cant do that". =C2=A0except the only
->> thing telling me i cant do that is the userspace utils. =C2=A0as clearly
->> demonstrated, adding this option lets me do what i want -- write to
->> pages and change their contents.
->>
->> the fact that i might not get the same data back as what i wrote is
->> completely irrelevant. =C2=A0i can already do this to good pages without
->> erasing them first. =C2=A0by your logic, nandwrite should also be
->> artificially aborting with "oh, you need to erase these blocks first".
->> =C2=A0but it isnt
->>
->> the fact that normally you want to skip badblocks is also irrelevant.
->> that's why it is an option the user specifically needs to enable
->> themselves. =C2=A0i dont care if the default policy is "dont write to ba=
-d
->> blocks". =C2=A0the default policy has no bearing here.
->
-> You are pushing for this quite aggressively, so I guess you really need
-> this :-) And you sound convincing
+On Sunday, September 12, 2010 03:54:03 Artem Bityutskiy wrote:
+> On Sun, 2010-09-12 at 00:03 -0400, Mike Frysinger wrote:
+> > On Sat, Sep 11, 2010 at 02:32, Artem Bityutskiy wrote:
+> > > It will be confusing if the same word is used in MTD for "unmarking"
+> > > eraseblocks. How about: 'force erase' or 'bad erase' ?
+> > 
+> > that makes it sound like an option to the existing MEMERASE operation.
+> > 
+> >  so i guess what if we just do that -- extend the erase_info_user
+> > 
+> > structure to contain a flags field and add a MEMERASE2 that works with
+> > the larger structure ?  for now we'd only have one option (FORCE), but
+> > it makes it easy to extend in the future.
+> 
+> Ohh, this was so stupid of me to not ask people to add extra fields to
+> 'struct erase_info_user64' which was introduced relatively recently... I
+> always add extra fields to ioctl data structures...
+> 
+> But yeah, what you say sounds ok to me.
 
-i'm open to logic, but i cant figure out your side.  all i can see is
-"it's been this way" and "we shouldnt write bad blocks".  but both
-sound like policies that the end user should have control over rather
-than the userspace utils always enforcing.  so if you feel i've missed
-something, please highlight it.
+here's a POC that works for me.  with a simple tweak to `flash_eraseall`, i
+can now recover my mtd devices with funky OOB layouts.
 
-> but give me some time to think about this please.
-
-np
+ive only extended MEMERASE64 as i believe the non-64 variants are EOL ?  or
+should i also extend the 32bit interface as well ?
 -mike
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 5b081cb..68c2864 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -513,6 +513,7 @@ static int mtd_ioctl(struct inode *inode, struct file 
+*file,
+ 
+ 	case MEMERASE:
+ 	case MEMERASE64:
++	case MEMERASE64_FLAGS:
+ 	{
+ 		struct erase_info *erase;
+ 
+@@ -538,6 +539,17 @@ static int mtd_ioctl(struct inode *inode, struct file 
+*file,
+ 				}
+ 				erase->addr = einfo64.start;
+ 				erase->len = einfo64.length;
++			} else if (cmd == MEMERASE64_FLAGS) {
++				struct erase_info_user64_flags einfo64;
++
++				if (copy_from_user(&einfo64, argp,
++					    sizeof(struct erase_info_user64_flags))) {
++					kfree(erase);
++					return -EFAULT;
++				}
++				erase->addr = einfo64.start;
++				erase->len = einfo64.length;
++				erase->flags = einfo64.flags;
+ 			} else {
+ 				struct erase_info_user einfo32;
+ 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8f2958f..e440d84 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2354,7 +2354,8 @@ int nand_erase_nand(struct mtd_info *mtd, struct 
+erase_info *instr,
+ 		/*
+ 		 * heck if we have a bad block, we do not erase bad blocks !
+ 		 */
+-		if (nand_block_checkbad(mtd, ((loff_t) page) <<
++		if (!(instr->flags & MTD_ERASE_BADBLOCKS) &&
++			nand_block_checkbad(mtd, ((loff_t) page) <<
+ 					chip->page_shift, 0, allowbbt)) {
+ 			printk(KERN_WARNING "%s: attempt to erase a bad block "
+ 					"at page 0x%08x\n", __func__, page);
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 0f32a9b..f1cda73 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -37,6 +37,7 @@ struct erase_info {
+ 	struct mtd_info *mtd;
+ 	uint64_t addr;
+ 	uint64_t len;
++	uint32_t flags;
+ 	uint64_t fail_addr;
+ 	u_long time;
+ 	u_long retries;
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index be51ae2..fef14ba 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -17,6 +17,12 @@ struct erase_info_user64 {
+ 	__u64 length;
+ };
+ 
++struct erase_info_user64_flags {
++	__u64 start;
++	__u64 length;
++	__u32 flags;
++};
++
+ struct mtd_oob_buf {
+ 	__u32 start;
+ 	__u32 length;
+@@ -61,6 +67,9 @@ struct mtd_oob_buf64 {
+ #define MTD_OTP_FACTORY		1
+ #define MTD_OTP_USER		2
+ 
++/* Erase flags */
++#define MTD_ERASE_BADBLOCKS	0x1
++
+ struct mtd_info_user {
+ 	__u8 type;
+ 	__u32 flags;
+@@ -110,6 +119,7 @@ struct otp_info {
+ #define MEMERASE64		_IOW('M', 20, struct erase_info_user64)
+ #define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
+ #define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
++#define MEMERASE64_FLAGS	_IOW('M', 23, struct erase_info_user64_flags)
+ 
+ /*
+  * Obsolete legacy interface. Keep it in order not to break userspace
