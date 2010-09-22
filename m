@@ -1,27 +1,16 @@
-Received: from wis38-1-82-236-159-40.fbx.proxad.net ([82.236.159.40]
-	helo=rameau.dmz.musique-ancienne.org)
-	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyY6R-0002B3-0r
-	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2010 22:47:54 +0000
-Date: Thu, 23 Sep 2010 00:47:38 +0200
-From: Bruno Cornec <bruno@victoria.frmug.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: latest MTD-utils
-Message-ID: <20100922224738.GB23892@victoria2.home.musique-ancienne.org>
-References: <AANLkTin+Y2YD3w4MfdTmQkRyB_UZD8pY51ci4pTQHacB@mail.gmail.com>
-	<1285053950.7512.5.camel@localhost>
-	<871v8n2osc.fsf@macbook.be.48ers.dk>
-	<1285077063.7512.120.camel@localhost>
-	<1285077268.7512.121.camel@localhost>
-	<87sk131977.fsf@macbook.be.48ers.dk>
-	<1285079252.7512.136.camel@localhost>
+Received: from [69.28.251.93] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OyYQt-00036K-TF
+	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2010 23:09:01 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Wed, 22 Sep 2010 16:01:59 -0700
+Subject: [PATCH] mkfs.ubifs: Fix heap corruption on LEB overrun
+Message-Id: <1fcf6a9591841eba82df96a80da0bdfa@localhost>
+To: <dedekind1@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1285079252.7512.136.camel@localhost>
-Cc: Bruno Cornec <bruno@project-builder.org>, twebb <taliaferro62@gmail.com>,
-	David.Woodhouse@intel.com, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,70 +20,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+If max_leb_cnt (-c option) is set too low, set_lprops() will corrupt
+the heap and may result in a scary looking crash:
 
-On Tue, Sep 21, 2010 at 05:27:32PM +0300, Artem Bityutskiy wrote:
-> On Tue, 2010-09-21 at 16:07 +0200, Peter Korsgaard wrote:
-> > >>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
-> > 
-> > Hi,
-> > 
-> >  Artem> Peter, why would not you make a make tarball target, BTW? Sorry,
-> >  Artem> may be you explained, but I forgot.
-> > 
-> > You mean why don't I just checkout from git and make a tarball myself?
-> > 
-> > Tarballs are pretty much the standard for source releases, and
-> > source-based metadistributions (like Buildroot that I maintain) normally
-> > are optimized for tarballs rather than semi-random git snapshots
-> > (E.G. mirroring, automatic handling, ..).
-> > 
-> > And then there's the issue about people checking the ftp and not
-> > noticing that there's actually a new stable release out instead of the
-> > old 1.3.1
-> 
-> It is not too difficult to provide tarball, but this is something
-> developers do not care about, they develop. Packagers do care, and it is
-> saner when packagers do this, not developers.
+$ bin/mkfs.ubifs -U -r romfs -o ubifs.img -m 512 -e 15360 -c 39
+Error: max_leb_cnt too low (241 needed)
+*** glibc detected *** bin/mkfs.ubifs: double free or corruption (!prev): 0x088fe070 ***
+======= Backtrace: =========
+/lib32/libc.so.6(+0x6c231)[0xf75fb231]
+/lib32/libc.so.6(+0x6dab8)[0xf75fcab8]
+/lib32/libc.so.6(cfree+0x6d)[0xf75ffb9d]
+bin/mkfs.ubifs[0x804e801]
+bin/mkfs.ubifs[0x804e94b]
+bin/mkfs.ubifs[0x804e99d]
+/lib32/libc.so.6(__libc_start_main+0xe6)[0xf75a5bd6]
+bin/mkfs.ubifs(__fxstat64+0x55)[0x80491e1]
+======= Memory map: ========
+08048000-0805d000 r-xp 00000000 08:08 10012045                           /work/bin/mkfs.ubifs
+0805d000-0805e000 rwxp 00015000 08:08 10012045                           /work/bin/mkfs.ubifs
+088fe000-08945000 rwxp 00000000 00:00 0                                  [heap]
+f73e1000-f73fe000 r-xp 00000000 08:05 2228842                            /usr/lib32/libgcc_s.so.1
+f73fe000-f73ff000 r-xp 0001c000 08:05 2228842                            /usr/lib32/libgcc_s.so.1
+f73ff000-f7400000 rwxp 0001d000 08:05 2228842                            /usr/lib32/libgcc_s.so.1
+f7400000-f7421000 rwxp 00000000 00:00 0
+f7421000-f7500000 ---p 00000000 00:00 0
+f751c000-f758f000 rwxp 00000000 00:00 0
+f758f000-f76e2000 r-xp 00000000 08:05 426288                             /lib32/libc-2.11.1.so
+f76e2000-f76e3000 ---p 00153000 08:05 426288                             /lib32/libc-2.11.1.so
+f76e3000-f76e5000 r-xp 00153000 08:05 426288                             /lib32/libc-2.11.1.so
+f76e5000-f76e6000 rwxp 00155000 08:05 426288                             /lib32/libc-2.11.1.so
+f76e6000-f76e9000 rwxp 00000000 00:00 0
+f76e9000-f770d000 r-xp 00000000 08:05 426296                             /lib32/libm-2.11.1.so
+f770d000-f770e000 r-xp 00023000 08:05 426296                             /lib32/libm-2.11.1.so
+f770e000-f770f000 rwxp 00024000 08:05 426296                             /lib32/libm-2.11.1.so
+f772a000-f772c000 rwxp 00000000 00:00 0
+f772c000-f772d000 r-xp 00000000 00:00 0                                  [vdso]
+f772d000-f7749000 r-xp 00000000 08:05 6062081                            /lib32/ld-2.11.1.so
+f7749000-f774a000 r-xp 0001b000 08:05 6062081                            /lib32/ld-2.11.1.so
+f774a000-f774b000 rwxp 0001c000 08:05 6062081                            /lib32/ld-2.11.1.so
+ffb58000-ffb6d000 rwxp 00000000 00:00 0                                  [stack]
+Aborted
 
-Well, I'd find normal that a team producing a SW, agrees to produce a
-given version and materialize its production by the delivery of a tar
-ball correctly tagged. At least, that's what I do for my projects.
+New code aborts cleanly, and still calculates the number of LEBs
+required:
 
-Also I understand quite well SVN, but with git, I'm always under the
-impression that there is not really a reference repo from which people
-can build a reference SW. Probably my lack of practice of git.
+$ bin/mkfs.ubifs -U -r romfs -o tmp/ubifs.img -m 512 -e 15360 -c 39
+Error: max_leb_cnt too low (241 needed)
+$ echo $?
+255
+$ bin/mkfs.ubifs -U -r romfs -o tmp/ubifs.img -m 512 -e 15360 -c 240
+Error: max_leb_cnt too low (241 needed)
+$ bin/mkfs.ubifs -U -r romfs -o tmp/ubifs.img -m 512 -e 15360 -c 241
+$
 
-> I was in LinuxCon Brazil this year, and there was this presentation:
-> http://events.linuxfoundation.org/2010/linuxcon-brazil/cornec
-> where bruno said exactly the same. And he was promoting his project
-> which claims to be able to pick sources from anywhere - git, svn,
-> whatever.
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ mkfs.ubifs/mkfs.ubifs.c |   10 +++++-----
+ 1 files changed, 5 insertions(+), 5 deletions(-)
 
-Yes it is ;-) My goal is to allow people wanting to follow the
-development to have a way to install/uninstall the project very easily
-without perturbation to their normal packaging system.
-
-To that purpose, the tool creates from a VCS such as git/svn/... a tar
-ball for a given version/branch/context/ and build appropriate packages
-from that point. It needs some conf files in order to support that.
-(Examples of projects using project-builder.org at
-http://trac.project-builder.org/browser/projects and doc at
-http://trac.project-builder.org/browser/devel/pb-doc/LabProject-Builder.org.pdf
-More details upon request.
-
-> I'm not competent in the packaging area, though. Just a logical thought.
-> Also CCed Bruno, may he'll be interested to know his presentation was
-> listened to :-) Bruno, the beginning of the conversation is here:
-> http://lists.infradead.org/pipermail/linux-mtd/2010-September/032164.html
-
-Thanks ! And really happy to see that some words of what I said are
-indeed useful ;-)
-
-Best regards,
-Bruno.
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index 9f2a226..60fe861 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -898,9 +898,11 @@ static void set_lprops(int lnum, int offs, int flags)
+ 	dirty = c->leb_size - free - ALIGN(offs, 8);
+ 	dbg_msg(3, "LEB %d free %d dirty %d flags %d", lnum, free, dirty,
+ 		flags);
+-	c->lpt[i].free = free;
+-	c->lpt[i].dirty = dirty;
+-	c->lpt[i].flags = flags;
++	if (i < c->main_lebs) {
++		c->lpt[i].free = free;
++		c->lpt[i].dirty = dirty;
++		c->lpt[i].flags = flags;
++	}
+ 	c->lst.total_free += free;
+ 	c->lst.total_dirty += dirty;
+ 	if (flags & LPROPS_INDEX)
+@@ -1902,8 +1904,6 @@ static int finalize_leb_cnt(void)
+ {
+ 	c->leb_cnt = head_lnum;
+ 	if (c->leb_cnt > c->max_leb_cnt)
+-		/* TODO: in this case it segfaults because buffer overruns - we
+-		 * somewhere allocate smaller buffers - fix */
+ 		return err_msg("max_leb_cnt too low (%d needed)", c->leb_cnt);
+ 	c->main_lebs = c->leb_cnt - c->main_first;
+ 	if (verbose) {
 -- 
-Des infos sur la musique ancienne  -- http://www.musique-ancienne.org
-Des infos sur les logiciels libres -- http://www.HyPer-Linux.org
-Home, sweet musical Home -- Lover of Andromède, Béatrice, Early Music, 
-Josquin, Linux, Mélisande, Recorder, and Ségolène (not in that order)
+1.7.0.4
