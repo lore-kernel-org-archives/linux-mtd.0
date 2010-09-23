@@ -1,23 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oyl2u-0001NS-Ek
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:37:05 +0000
-Date: Thu, 23 Sep 2010 14:37:02 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: =?iso-8859-15?Q?Fl=E1vio?= Silveira <fggs@terra.com.br>
+Received: from if01-mail-sr06-mia.mta.terra.com ([208.84.243.23])
+	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oyl6Y-0008R4-Ib
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:40:54 +0000
+Message-ID: <341EADF720C14B4F86C63204D9C60723@THOR>
+From: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+To: "Yegor Yefremov" <yegorslists@googlemail.com>
+References: <E73F778B634944A0B8D4333B7BD012E4@THOR><AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com><74A5BE60138147F696E151AACD52EDEE@THOR><AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com><D3A375B91F5944B38630B07214914DF8@THOR>
+	<AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com>
+In-Reply-To: <AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com>
 Subject: Re: [Help] SST39VF6401B Support
-Message-ID: <20100923123701.GE2994@pengutronix.de>
-References: <E73F778B634944A0B8D4333B7BD012E4@THOR>
-	<AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com>
-	<74A5BE60138147F696E151AACD52EDEE@THOR>
-	<20100923120534.GD2994@pengutronix.de>
-	<F42FA4FD208F41E8891EB2BF9C7E62CB@THOR>
+Date: Thu, 23 Sep 2010 09:40:23 -0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="doKZ0ri6bHmN2Q5y"
-Content-Disposition: inline
-In-Reply-To: <F42FA4FD208F41E8891EB2BF9C7E62CB@THOR>
-Cc: linux-mtd@lists.infradead.org, Yegor Yefremov <yegorslists@googlemail.com>
+Content-Type: text/plain; format=flowed; charset="UTF-8"; reply-type=original
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+It's kernel 2.6.23 with some patches, they call it 2.6.24.111
 
---doKZ0ri6bHmN2Q5y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Flavio
+
+----- Original Message ----- 
+From: "Yegor Yefremov" <yegorslists@googlemail.com>
+To: "Flávio Silveira" <fggs@terra.com.br>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Thursday, September 23, 2010 9:33 AM
+Subject: Re: [Help] SST39VF6401B Support
 
 
->  Thanks for your response. What do you mean by broken CFI?
-
-Well, ehrm, it is broken :) It simply doesn't work the way it is
-expected, due to the custom unlock address.
-
->  Also, as you seem with way more experience than me, do you know if
-> cfi_probe do 3 cycle command for SST CFI Query Entry?
->  If you could check: http://www.sst.com/dotAsset/40483.pdf
->  Give me your thoughts about it
-
-Sorry, besides my initial pointer, I have too many other things going on
-today. But it seems Guillaume had a look and will guide you.
-
-Regards,
-
-   Wolfram
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---doKZ0ri6bHmN2Q5y
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkybSe0ACgkQD27XaX1/VRvwOgCgkNF+YvVN9PujrgzVHRUeoxNL
-lFAAoJOwofXl6NBe3ZP5yTbE+RoARdKO
-=N8zd
------END PGP SIGNATURE-----
-
---doKZ0ri6bHmN2Q5y--
+>> Ok, I'll see if I can build a firmware with jedec enabled and your patch.
+>
+> By the way, what's your kernel version?
+>
+> Yegor
+> 
