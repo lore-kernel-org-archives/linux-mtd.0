@@ -1,13 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OybuY-00017W-KT
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 02:51:52 +0000
+	id 1OybxJ-0001Kx-V8
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 02:54:43 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id D18691B40E7
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Sep 2010 02:54:38 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] jffs2: drop unused model argument
-Date: Wed, 22 Sep 2010 22:52:33 -0400
-Message-Id: <1285210353-30804-1-git-send-email-vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: compr: drop unused model argument
+Date: Wed, 22 Sep 2010 22:53:47 -0400
+Message-Id: <1285210427-13238-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,173 +26,125 @@ and the callees never use it.  So punt this useless overhead.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- fs/jffs2/compr.c       |    6 +++---
- fs/jffs2/compr.h       |    4 ++--
- fs/jffs2/compr_lzo.c   |    4 ++--
- fs/jffs2/compr_rtime.c |    6 ++----
- fs/jffs2/compr_rubin.c |   11 ++++-------
- fs/jffs2/compr_zlib.c  |    6 ++----
- 6 files changed, 15 insertions(+), 22 deletions(-)
+ compr.c       |    6 +++---
+ compr.h       |    4 ++--
+ compr_lzo.c   |    4 ++--
+ compr_rtime.c |    4 ++--
+ compr_zlib.c  |    4 ++--
+ 5 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
-index 617a1e5..de42470 100644
---- a/fs/jffs2/compr.c
-+++ b/fs/jffs2/compr.c
-@@ -103,7 +103,7 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 			spin_unlock(&jffs2_compressor_list_lock);
- 			*datalen  = orig_slen;
- 			*cdatalen = orig_dlen;
--			compr_ret = this->compress(data_in, output_buf, datalen, cdatalen, NULL);
-+			compr_ret = this->compress(data_in, output_buf, datalen, cdatalen);
- 			spin_lock(&jffs2_compressor_list_lock);
- 			this->usecount--;
- 			if (!compr_ret) {
-@@ -152,7 +152,7 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 			spin_unlock(&jffs2_compressor_list_lock);
- 			*datalen  = orig_slen;
- 			*cdatalen = orig_dlen;
--			compr_ret = this->compress(data_in, this->compr_buf, datalen, cdatalen, NULL);
-+			compr_ret = this->compress(data_in, this->compr_buf, datalen, cdatalen);
- 			spin_lock(&jffs2_compressor_list_lock);
- 			this->usecount--;
- 			if (!compr_ret) {
-@@ -220,7 +220,7 @@ int jffs2_decompress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
- 			if (comprtype == this->compr) {
- 				this->usecount++;
- 				spin_unlock(&jffs2_compressor_list_lock);
--				ret = this->decompress(cdata_in, data_out, cdatalen, datalen, NULL);
-+				ret = this->decompress(cdata_in, data_out, cdatalen, datalen);
- 				spin_lock(&jffs2_compressor_list_lock);
- 				if (ret) {
- 					printk(KERN_WARNING "Decompressor \"%s\" returned %d\n", this->name, ret);
-diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
-index e471a91..13bb759 100644
---- a/fs/jffs2/compr.h
-+++ b/fs/jffs2/compr.h
-@@ -49,9 +49,9 @@ struct jffs2_compressor {
- 	char *name;
- 	char compr;			/* JFFS2_COMPR_XXX */
+diff --git a/compr.c b/compr.c
+index 7028c93..2d3a56b 100644
+--- a/compr.c
++++ b/compr.c
+@@ -149,7 +149,7 @@ static void jffs2_decompression_test(struct jffs2_compressor *compr,
+ 		jffs2_error_cnt++;
+ 		return;
+ 	}
+-	if (compr->decompress(output_buf,jffs2_compression_check_buf,cdatalen,datalen,NULL)) {
++	if (compr->decompress(output_buf,jffs2_compression_check_buf,cdatalen,datalen)) {
+ 		fprintf(stderr,"JFFS2 compression check: decompression failed at %s.\n", compr->name);
+ 		jffs2_error_cnt++;
+ 	}
+@@ -243,7 +243,7 @@ uint16_t jffs2_compress( unsigned char *data_in, unsigned char **cpage_out,
+ 
+ 				*datalen  = orig_slen;
+ 				*cdatalen = orig_dlen;
+-				compr_ret = this->compress(data_in, output_buf, datalen, cdatalen, NULL);
++				compr_ret = this->compress(data_in, output_buf, datalen, cdatalen);
+ 				this->usecount--;
+ 				if (!compr_ret) {
+ 					ret = this->compr;
+@@ -294,7 +294,7 @@ uint16_t jffs2_compress( unsigned char *data_in, unsigned char **cpage_out,
+ 					jffs2_decompression_test_prepare(this->compr_buf,this->compr_buf_size);
+ 				*datalen  = orig_slen;
+ 				*cdatalen = orig_dlen;
+-				compr_ret = this->compress(data_in, this->compr_buf, datalen, cdatalen, NULL);
++				compr_ret = this->compress(data_in, this->compr_buf, datalen, cdatalen);
+ 				this->usecount--;
+ 				if (!compr_ret) {
+ 					if (jffs2_compression_check)
+diff --git a/compr.h b/compr.h
+index 4b79802..a21e935 100644
+--- a/compr.h
++++ b/compr.h
+@@ -70,9 +70,9 @@ struct jffs2_compressor {
+ 	const char *name;
+ 	char compr;               /* JFFS2_COMPR_XXX */
  	int (*compress)(unsigned char *data_in, unsigned char *cpage_out,
 -			uint32_t *srclen, uint32_t *destlen, void *model);
 +			uint32_t *srclen, uint32_t *destlen);
  	int (*decompress)(unsigned char *cdata_in, unsigned char *data_out,
--			  uint32_t cdatalen, uint32_t datalen, void *model);
-+			  uint32_t cdatalen, uint32_t datalen);
+-			uint32_t cdatalen, uint32_t datalen, void *model);
++			uint32_t cdatalen, uint32_t datalen);
  	int usecount;
- 	int disabled;		/* if set the compressor won't compress */
- 	unsigned char *compr_buf;	/* used by size compr. mode */
-diff --git a/fs/jffs2/compr_lzo.c b/fs/jffs2/compr_lzo.c
-index ed25ae7c..af186ee 100644
---- a/fs/jffs2/compr_lzo.c
-+++ b/fs/jffs2/compr_lzo.c
-@@ -42,7 +42,7 @@ static int __init alloc_workspace(void)
- }
- 
- static int jffs2_lzo_compress(unsigned char *data_in, unsigned char *cpage_out,
--			      uint32_t *sourcelen, uint32_t *dstlen, void *model)
-+			      uint32_t *sourcelen, uint32_t *dstlen)
+ 	int disabled;             /* if seted the compressor won't compress */
+ 	unsigned char *compr_buf; /* used by size compr. mode */
+diff --git a/compr_lzo.c b/compr_lzo.c
+index 3d7dad7..d0f0ed7 100644
+--- a/compr_lzo.c
++++ b/compr_lzo.c
+@@ -46,7 +46,7 @@ static void *lzo_compress_buf;
+  *
+  */
+ static int jffs2_lzo_cmpr(unsigned char *data_in, unsigned char *cpage_out,
+-			  uint32_t *sourcelen, uint32_t *dstlen, void *model)
++			  uint32_t *sourcelen, uint32_t *dstlen)
  {
- 	size_t compress_size;
+ 	lzo_uint compress_size;
  	int ret;
-@@ -67,7 +67,7 @@ static int jffs2_lzo_compress(unsigned char *data_in, unsigned char *cpage_out,
+@@ -66,7 +66,7 @@ static int jffs2_lzo_cmpr(unsigned char *data_in, unsigned char *cpage_out,
  }
  
  static int jffs2_lzo_decompress(unsigned char *data_in, unsigned char *cpage_out,
 -				 uint32_t srclen, uint32_t destlen, void *model)
 +				 uint32_t srclen, uint32_t destlen)
  {
- 	size_t dl = destlen;
  	int ret;
-diff --git a/fs/jffs2/compr_rtime.c b/fs/jffs2/compr_rtime.c
-index 9696ad9..16a5047 100644
---- a/fs/jffs2/compr_rtime.c
-+++ b/fs/jffs2/compr_rtime.c
-@@ -31,8 +31,7 @@
+ 	lzo_uint dl;
+diff --git a/compr_rtime.c b/compr_rtime.c
+index 5613963..7818e1b 100644
+--- a/compr_rtime.c
++++ b/compr_rtime.c
+@@ -24,7 +24,7 @@
+ 
  /* _compress returns the compressed size, -1 if bigger */
- static int jffs2_rtime_compress(unsigned char *data_in,
- 				unsigned char *cpage_out,
--				uint32_t *sourcelen, uint32_t *dstlen,
--				void *model)
-+				uint32_t *sourcelen, uint32_t *dstlen)
+ static int jffs2_rtime_compress(unsigned char *data_in, unsigned char *cpage_out,
+-		uint32_t *sourcelen, uint32_t *dstlen, void *model)
++		uint32_t *sourcelen, uint32_t *dstlen)
  {
  	short positions[256];
  	int outpos = 0;
-@@ -73,8 +72,7 @@ static int jffs2_rtime_compress(unsigned char *data_in,
+@@ -64,7 +64,7 @@ static int jffs2_rtime_compress(unsigned char *data_in, unsigned char *cpage_out
  
- static int jffs2_rtime_decompress(unsigned char *data_in,
- 				  unsigned char *cpage_out,
--				  uint32_t srclen, uint32_t destlen,
--				  void *model)
-+				  uint32_t srclen, uint32_t destlen)
+ 
+ static int jffs2_rtime_decompress(unsigned char *data_in, unsigned char *cpage_out,
+-		uint32_t srclen, uint32_t destlen, void *model)
++		uint32_t srclen, uint32_t destlen)
  {
  	short positions[256];
  	int outpos = 0;
-diff --git a/fs/jffs2/compr_rubin.c b/fs/jffs2/compr_rubin.c
-index a12b4f7..9e7cec8 100644
---- a/fs/jffs2/compr_rubin.c
-+++ b/fs/jffs2/compr_rubin.c
-@@ -298,7 +298,7 @@ static int rubin_do_compress(int bit_divider, int *bits, unsigned char *data_in,
- #if 0
- /* _compress returns the compressed size, -1 if bigger */
- int jffs2_rubinmips_compress(unsigned char *data_in, unsigned char *cpage_out,
--		   uint32_t *sourcelen, uint32_t *dstlen, void *model)
-+		   uint32_t *sourcelen, uint32_t *dstlen)
- {
- 	return rubin_do_compress(BIT_DIVIDER_MIPS, bits_mips, data_in,
- 				 cpage_out, sourcelen, dstlen);
-@@ -306,8 +306,7 @@ int jffs2_rubinmips_compress(unsigned char *data_in, unsigned char *cpage_out,
- #endif
- static int jffs2_dynrubin_compress(unsigned char *data_in,
- 				   unsigned char *cpage_out,
--				   uint32_t *sourcelen, uint32_t *dstlen,
--				   void *model)
-+				   uint32_t *sourcelen, uint32_t *dstlen)
- {
- 	int bits[8];
- 	unsigned char histo[256];
-@@ -387,8 +386,7 @@ static void rubin_do_decompress(int bit_divider, int *bits,
+diff --git a/compr_zlib.c b/compr_zlib.c
+index 03464f9..dda3e40 100644
+--- a/compr_zlib.c
++++ b/compr_zlib.c
+@@ -53,7 +53,7 @@ Q: Is 12 bytes sufficient?
+ #define STREAM_END_SPACE 12
  
- static int jffs2_rubinmips_decompress(unsigned char *data_in,
- 				      unsigned char *cpage_out,
--				      uint32_t sourcelen, uint32_t dstlen,
--				      void *model)
-+				      uint32_t sourcelen, uint32_t dstlen)
+ static int jffs2_zlib_compress(unsigned char *data_in, unsigned char *cpage_out,
+-		uint32_t *sourcelen, uint32_t *dstlen, void *model)
++		uint32_t *sourcelen, uint32_t *dstlen)
  {
- 	rubin_do_decompress(BIT_DIVIDER_MIPS, bits_mips, data_in,
- 			    cpage_out, sourcelen, dstlen);
-@@ -397,8 +395,7 @@ static int jffs2_rubinmips_decompress(unsigned char *data_in,
- 
- static int jffs2_dynrubin_decompress(unsigned char *data_in,
- 				     unsigned char *cpage_out,
--				     uint32_t sourcelen, uint32_t dstlen,
--				     void *model)
-+				     uint32_t sourcelen, uint32_t dstlen)
- {
- 	int bits[8];
- 	int c;
-diff --git a/fs/jffs2/compr_zlib.c b/fs/jffs2/compr_zlib.c
-index 97fc45d..fd05a0b 100644
---- a/fs/jffs2/compr_zlib.c
-+++ b/fs/jffs2/compr_zlib.c
-@@ -68,8 +68,7 @@ static void free_workspaces(void)
- 
- static int jffs2_zlib_compress(unsigned char *data_in,
- 			       unsigned char *cpage_out,
--			       uint32_t *sourcelen, uint32_t *dstlen,
--			       void *model)
-+			       uint32_t *sourcelen, uint32_t *dstlen)
- {
+ 	z_stream strm;
  	int ret;
+@@ -101,7 +101,7 @@ static int jffs2_zlib_compress(unsigned char *data_in, unsigned char *cpage_out,
+ }
  
-@@ -136,8 +135,7 @@ static int jffs2_zlib_compress(unsigned char *data_in,
- 
- static int jffs2_zlib_decompress(unsigned char *data_in,
- 				 unsigned char *cpage_out,
--				 uint32_t srclen, uint32_t destlen,
--				 void *model)
-+				 uint32_t srclen, uint32_t destlen)
+ static int jffs2_zlib_decompress(unsigned char *data_in, unsigned char *cpage_out,
+-		uint32_t srclen, uint32_t destlen, void *model)
++		uint32_t srclen, uint32_t destlen)
  {
+ 	z_stream strm;
  	int ret;
- 	int wbits = MAX_WBITS;
 -- 
 1.7.3
