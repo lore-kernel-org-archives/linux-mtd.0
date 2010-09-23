@@ -1,18 +1,18 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oylzr-0003rw-P9
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 13:38:00 +0000
-Received: by bwz19 with SMTP id 19so1652085bwz.36
+	id 1Oym07-0003tM-9O
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 13:38:15 +0000
+Received: by fxm4 with SMTP id 4so1324565fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 06:37:58 -0700 (PDT)
-Subject: Re: [PATCH] rbtree: avoid redefining offsetof
+	Thu, 23 Sep 2010 06:38:14 -0700 (PDT)
+Subject: Re: [PATCH] mtd-utils: clean up zlib.h usage a bit
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1285208020-24905-1-git-send-email-vapier@gentoo.org>
-References: <1285208020-24905-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285209176-30223-1-git-send-email-vapier@gentoo.org>
+References: <1285209176-30223-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 23 Sep 2010 16:36:15 +0300
-Message-ID: <1285248975.29268.126.camel@localhost>
+Date: Thu, 23 Sep 2010 16:36:30 +0300
+Message-ID: <1285248990.29268.127.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,13 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-22 at 22:13 -0400, Mike Frysinger wrote:
-> Newer versions of gcc will define & export offsetof, so we don't
-> want to unconditionally define it.  Otherwise we hit:
-> 	In file included from mkfs.jffs2.c:76:0:
-> 	rbtree.h:134:0: warning: "offsetof" redefined
-> 	/usr/lib/gcc/x86_64-pc-linux-gnu/4.5.1/include/stddef.h:411:0: note:
-> 		this is the location of the previous definition
+On Wed, 2010-09-22 at 22:32 -0400, Mike Frysinger wrote:
+> Hide zlib's crc32 in compr_zlib.c and mkfs.ubifs/compr.c.
+> 
+> jffs2reader.c and mkfs.jffs2.c don't actually use zlib, so punt the
+> include from the file.
+> 
+> mkfs.jffs2.c is implicitly using crc32 from zlib.h instead of the
+> local mtd_crc32, so fix the local usage.  otherwise we get warnings
+> about undefined crc32 because the file was redirecting the prototype.
 > 
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
