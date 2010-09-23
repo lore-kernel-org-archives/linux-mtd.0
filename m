@@ -1,20 +1,19 @@
 Received: from relay2.mail.timico.net ([62.121.20.90] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oyav0-0003Ui-QA
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 01:48:15 +0000
+	id 1Oyb43-0007MC-4a
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 01:57:35 +0000
 From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Mike Frysinger <vapier@gentoo.org>, "dedekind1@gmail.com"
-	<dedekind1@gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
 Content-Class: urn:content-classes:message
-Date: Thu, 23 Sep 2010 02:48:08 +0100
-Subject: RE: [PATCH] nandwrite: add --nobad to write bad blocks
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FAA1@Cloud.RL.local>
-In-Reply-To: <AANLkTin+2ocUT_NMToGHoAhX5=Trn2CdLFmiMBmvSVuC@mail.gmail.com>
+Date: Thu, 23 Sep 2010 02:57:31 +0100
+Subject: RE: flash_erase vs flash_eraseall
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FAA2@Cloud.RL.local>
+In-Reply-To: <AANLkTi=efR8LkMr_FVxV7V6TzZ2yd1-=2ph5vsaNz41U@mail.gmail.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +24,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 linux-mtd-bounces@lists.infradead.org wrote:
-> it is completely artificial.  as you said yourself, it is "not
-> necessarily writable".  that means i should be able to tell the
-> hardware "do XXX" and let the hardware do it.  instead, i'm stuck with
-> userspace utils that say "no, you cant do that".
+> while looking to extend the erase ioctl abi to take a flags argument,
+> i needed updated utils to test my work.  reviewing the flash_erase and
+> flash_eraseall code bases makes me wonder why there are even two tools
+> in the first place.
 
-As Artem is thinking about it, I'll just chip in with a "me too".
+I was there too recently, I assume it's historical crufty reasons.
 
-By all means the default should protect you from doing potentially
-stupid and dangerous things. But these are low level utilities for
-people who know what they are doing, having a "safeties off" option
-makes a lot of sense.
+I needed more control knobs than mtd-utils supported, I ended up writing
+my own "flashtool" combining flash_erase and flash_write features. I don't
+know if I can publish the source, but it does things like optionally erase
+blocks as it goes along writing, just as many as it needs, option to skip
+or fail on bad blocks, absolute maximum offset limit, UBI image writing
+mode (skip trailing all-FF pages in a block) and a couple of other things.
+
+It can also do software-generated ECC, rearrange the data/OOB and write
+raw (to write layouts not supported by MTD) but that's very device-specific=
+.
+
+More power to you if you want to spruce up some of those utilities, they
+seem like they could use some love.
 
 --
 Jon Povey
