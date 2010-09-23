@@ -1,23 +1,21 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oyjoz-0002TW-KB
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 11:18:38 +0000
-Received: by bwz19 with SMTP id 19so1539497bwz.36
+	id 1Oyjwn-0006uU-ND
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 11:26:42 +0000
+Received: by fxm4 with SMTP id 4so1231895fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 04:18:36 -0700 (PDT)
-Subject: Re: [PATCH] mtd: mxc_nand: do not depend on disabling the irq in
-	the interrupt handler
+	Thu, 23 Sep 2010 04:26:40 -0700 (PDT)
+Subject: Re: flash_erase vs flash_eraseall
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-In-Reply-To: <1285054802-21388-2-git-send-email-s.hauer@pengutronix.de>
-References: <1285054802-21388-1-git-send-email-s.hauer@pengutronix.de>
-	<1285054802-21388-2-git-send-email-s.hauer@pengutronix.de>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <AANLkTi=efR8LkMr_FVxV7V6TzZ2yd1-=2ph5vsaNz41U@mail.gmail.com>
+References: <AANLkTi=efR8LkMr_FVxV7V6TzZ2yd1-=2ph5vsaNz41U@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 23 Sep 2010 14:16:52 +0300
-Message-ID: <1285240612.29268.76.camel@localhost>
+Date: Thu, 23 Sep 2010 14:24:57 +0300
+Message-ID: <1285241097.29268.80.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,22 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-21 at 09:40 +0200, Sascha Hauer wrote:
-> This patch reverts the driver to enabling/disabling the NFC interrupt
-> mask rather than enabling/disabling the system interrupt. This cleans
-> up the driver so that it doesn't rely on interrupts being disabled
-> within the interrupt handler.
-> For i.MX21 we keep the current behaviour, that is calling
-> enable_irq/disable_irq_nosync to enable/disable interrupts.
-> This patch is based on earlier work by John Ogness.
-> 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> Acked-by: John Ogness <john.ogness@linutronix.de>
-> Tested-by: John Ogness <john.ogness@linutronix.de>
+On Wed, 2010-09-22 at 00:35 -0400, Mike Frysinger wrote:
+> while looking to extend the erase ioctl abi to take a flags argument,
+> i needed updated utils to test my work.  reviewing the flash_erase and
+> flash_eraseall code bases makes me wonder why there are even two tools
+> in the first place.  "eraseall" sounds like it should simply be an
+> option to the "erase" util.  so why does it warrant its own code base
+> for a mere option ?
 
-I've created l2-mtd-2.6.git/for-2.6.36 branch, pushed your patch there,
-pinged dwmw2 for you. I do not give you any guarantees this will reach
-2.6.36, you have to ping dwmw2.
+I have no idea, this is historical.
+
+> 
+> also in looking at these utils, flash_erase does not support the
+> extended 64bit api as it is doing ioctls directly nor does it use
+> getopt.  flash_eraseall however is using the common libmtd api (so it
+> gets the extend api support for free), and it is cleanly using getopt
+> cleanly.  which leads to a simple conclusion from my side ...
+> 
+> let's punt the current flash_erase code, rename flash_eraseall to
+> flash_erase, and then extend its options to support the minor
+> functionality of flash_erase.  doesnt look like it'll be hard at all
+> to do this.  but before i undertake the task, i want to make sure the
+> idea isnt simply going to be rejected due to some concern about
+> retaining backwards compatibility.
+> 
+> running `flash_erase /dev/mtd#` (no arguments) will make it erase the
+> first block.  this seems kind of useless to me.
+> 
+> so i'd make the arguments:
+> flash_erase [options] <mtd> <start> [count]
+> Options:
+>   -N, --erasebad
+>   -j, --jffs2
+>   -u, --unlock
+>   -q, --quiet
+>         --silent
+> 
+> for the "all" functionality, we can have a value of "-1" or "0" for
+> the count mean "all", or make people type "all".
+> -mike
+
+I'm perfectly fine with getting rid of one of these, this would be a
+very good clean-up. May be additionally we could create a
+flashe_eraseall shell script which will just run flash_erase <mtd> 0 -1
+<other flags>.
+
+But also, it need a careful look to make sure all flash_eraseall
+functionality is also in flash_erase.
 
 -- 
 Best Regards,
