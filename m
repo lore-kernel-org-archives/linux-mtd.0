@@ -1,28 +1,16 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OytHX-0000QD-Rl
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 21:24:44 +0000
-Received: by fxm4 with SMTP id 4so1788131fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 14:24:41 -0700 (PDT)
-Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
-	ref-counting back to open/release
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <AANLkTikfAveMKPCx29JH+BkqtQgF4qLXD2zhzPAA=FXV@mail.gmail.com>
-References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
-	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
-	<AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
-	<1284971403.2286.45.camel@localhost>
-	<AANLkTikfAveMKPCx29JH+BkqtQgF4qLXD2zhzPAA=FXV@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 23 Sep 2010 23:14:36 +0200
-Message-ID: <1285276476.12300.4.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Ben Hutchings <bhutchings@solarflare.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+Received: from [69.28.251.93] (helo=b32.net)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oyv0u-0001DD-LH
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 23:15:41 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Thu, 23 Sep 2010 15:58:48 -0700
+Subject: [PATCH] mkfs.ubifs: Fix --squash-rino-perm / --nosquash-rino-perm
+Message-Id: <1a602213cef25044c025cc1aaf873cf5@localhost>
+To: <dedekind1@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +20,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-09-20 at 14:47 -0700, Kevin Cernekee wrote: 
-> On Mon, Sep 20, 2010 at 1:30 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Sun, 2010-09-05 at 16:34 -0700, Kevin Cernekee wrote:
-> >> Just updated to 2.6.36-rc3 and noticed a related issue.  Configuration is:
-> >>
-> >> CONFIG_MTD_BLOCK=y
-> >> CONFIG_MTD_BLKDEVS=y
-> >> CONFIG_MTD_UBI_GLUEBI=y
-> >
-> > Would you please check if Maxim's patch fixes this:
-> > [PATCH V2] MTD: blktrans: Final version of hotplug support
-> 
-> I applied the following patch to my 2.6.36-rc4 tree:
-> 
-> Subject: [PATCH 1/3] MTD: blktrans: Final version of hotplug support
-> Date: Sun, 19 Sep 2010 01:12:36 +0200
-> Message-Id: <1284851558-1154-2-git-send-email-maximlevitsky@gmail.com>
-> 
-> This fixed the MTD_BLOCK + MTD_UBI_GLUEBI regression that I reported earlier.
+This addresses a couple of issues:
 
-Sorry for not sending updates, I did split this patch up, and will send
-it soon.
-Was finding workarounds, filling bugs for Ubuntu 10.10 brain damage.
-(Had to install it somewhen).
+1) Code was only allowing these options if --root was NOT specified (the
+opposite of the documented usage)
 
-Look one cosmetic, but annoying regression turned out to be a explicit
-feature, and this 'bug' fixes it...
-https://bugs.launchpad.net/ubuntu/+source/gnome-power-manager/+bug/619816
+2) -q / -Q short options did not work
 
-Sorry for this ooftopic rant, but it really got my nerves.
+3) Spacing fixes in the error/warning strings
 
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ mkfs.ubifs/mkfs.ubifs.c |    8 ++++----
+ 1 files changed, 4 insertions(+), 4 deletions(-)
 
-Best regards,
-Maxim Levitsky
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index ec38f0e..d83f6bd 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -132,7 +132,7 @@ static struct inum_mapping **hash_table;
+ /* Inode creation sequence number */
+ static unsigned long long creat_sqnum;
+ 
+-static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:P:k:x:X:j:R:l:j:U";
++static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:P:k:x:X:j:R:l:j:UQq";
+ 
+ static const struct option longopts[] = {
+ 	{"root",               1, NULL, 'r'},
+@@ -698,8 +698,8 @@ static int get_options(int argc, char**argv)
+ 		return err_msg("Maximum count of LEBs was not specified "
+ 			       "(use -h for help)");
+ 
+-	if (squash_rino_perm != -1 && root)
+-		return err_msg("--squash-rino-perm and nosquash-rino-perm options"
++	if (squash_rino_perm != -1 && !root)
++		return err_msg("--squash-rino-perm and nosquash-rino-perm options "
+ 			       "can be used only with the --root option");
+ 
+ 	if (c->max_bud_bytes == -1) {
+@@ -1673,7 +1673,7 @@ static int write_data(void)
+ 		if (squash_rino_perm == -1) {
+ 			printf("WARNING: setting root UBIFS inode UID=GID=0 (root) and permissions "
+ 				 "to u+rwx,go+rx; use --squash-rino-perm or --nosquash-rino-perm "
+-				 "to suppress this warning");
++				 "to suppress this warning\n");
+ 			squash_rino_perm = 1;
+ 		}
+ 		if (squash_rino_perm) {
+-- 
+1.7.0.4
