@@ -1,23 +1,26 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oykkq-0006WZ-JJ
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:18:25 +0000
-Received: by qwe4 with SMTP id 4so20342qwe.36
+	id 1Oykq6-0000D2-JR
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:23:51 +0000
+Received: by qyk34 with SMTP id 34so2509902qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 05:18:23 -0700 (PDT)
+	Thu, 23 Sep 2010 05:23:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <74A5BE60138147F696E151AACD52EDEE@THOR>
+Sender: foxcore@gmail.com
+In-Reply-To: <20100923120534.GD2994@pengutronix.de>
 References: <E73F778B634944A0B8D4333B7BD012E4@THOR>
 	<AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com>
 	<74A5BE60138147F696E151AACD52EDEE@THOR>
-Date: Thu, 23 Sep 2010 14:18:22 +0200
-Message-ID: <AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com>
+	<20100923120534.GD2994@pengutronix.de>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Thu, 23 Sep 2010 14:23:27 +0200
+Message-ID: <AANLkTikU011z8uK8axjmzqpyepRHNgnyNupZzJSxkWTa@mail.gmail.com>
 Subject: Re: [Help] SST39VF6401B Support
-From: Yegor Yefremov <yegorslists@googlemail.com>
-To: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+To: Wolfram Sang <w.sang@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>,
+	linux-mtd@lists.infradead.org, Yegor Yefremov <yegorslists@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> =C2=A0Thanks for your response. Does this mean this chip isn't CFI compli=
-ant?
-> Like, datasheet says it is, but not really.
-> Sorry if I sound confused, I've never messed with flashchips before so na=
-mes
-> and terms are still complicated.
+2010/9/23 Wolfram Sang <w.sang@pengutronix.de>:
+>
+>> =C2=A0Thanks for your response. Does this mean this chip isn't CFI
+>> compliant? Like, datasheet says it is, but not really.
+>
+> SST? Broken CFI happened to me, too :(
+> http://patchwork.ozlabs.org/patch/51027/
 
-Just to apply the patch and see what happens. The most important part
-of this patch is:
+This patch [1] (tried to) add support for your chip.
+According to the datasheet [2], it uses addr_unlock1 =3D 0x555 and
+addr_unlock2 =3D 0x2AA, and has no extended query table.
+So this chip must be handled by the fixup_sst39vf_rev_b() fixup function.
 
-Please refer to the data sheets Table 6:
-39VF6401B data sheet http://www.sst.com/downloads/datasheet/S71288.pdf
-39VF6401 data sheet http://www.sst.com/downloads/datasheet/S71223-03.pdf
+Could you provide us with a more detailed log, i.e. with
+DEBUG_CFI_FEATURES enabled in cfi_cmdset_0002.c and DEBUG_CFI in
+cfi_probe.c ?
 
-The difference in the 6th bus write cycle. 39VF6401B uses 0x50 and
-39VF6401 uses 0x30.
 
-Without this even if the chip gets detected you cannot write to it.
-
-I haven't look at this since my try to submit this patch, so I don't
-know how to fix the stuff for cfi_probe.
-
-Regards,
-Yegor
+[1] http://patchwork.ozlabs.org/patch/50906/
+[2] http://www.sst.com/dotAsset/40661.pdf
+--=20
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
