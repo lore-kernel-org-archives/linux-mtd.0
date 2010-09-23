@@ -1,24 +1,22 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oyqdc-0005pX-2o
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 18:35:21 +0000
-Received: by bwz19 with SMTP id 19so1981609bwz.36
+	id 1OyrMc-00079a-FL
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 19:21:51 +0000
+Received: by yxm34 with SMTP id 34so921956yxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 11:35:18 -0700 (PDT)
-Subject: Re: UBI/UBIFS interrupted write page handling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4C9B7CD8.4070806@parrot.com>
-References: <4C88DDD5.4060507@parrot.com>
-	<1284054669.11335.21.camel@brekeke> <1285006478.1762.1.camel@brekeke>
-	<4C9B7CD8.4070806@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 23 Sep 2010 21:35:13 +0300
-Message-ID: <1285266914.1766.1.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Thu, 23 Sep 2010 12:21:48 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1285241097.29268.80.camel@localhost>
+References: <AANLkTi=efR8LkMr_FVxV7V6TzZ2yd1-=2ph5vsaNz41U@mail.gmail.com>
+	<1285241097.29268.80.camel@localhost>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 23 Sep 2010 15:21:27 -0400
+Message-ID: <AANLkTik2qGUa9T3cpRDQv1SxuQxUoPfwDh-b31_2Q9qG@mail.gmail.com>
+Subject: Re: flash_erase vs flash_eraseall
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,49 +26,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-23 at 18:14 +0200, Matthieu CASTET wrote:
-> Hi Artem,
-> 
-> Artem Bityutskiy a écrit :
-> > On Thu, 2010-09-09 at 20:51 +0300, Artem Bityutskiy wrote:
-> >>> On one of our test, we are in case 3. Ubifs find a valid interrupt page 
-> >>> on mount and trust it. Latter the page become corrupted [1] because it 
-> >>> is unstable.
-> >> OK, I see.
-> >>
-> >>> To identify a interrupted write page we :
-> >>> - could use interrupted flags for static volume
-> >>> - handle with care data move (copy flags) : if sqnum of the copy is the 
-> >>> biggest, we should ignore it/copy it.
-> >>> - use upper layer for dynamic volume. For ubifs this could be a journal.
-> >> Actually, for UBIFS things are rather simple. In UBIFS every writes go
-> >> to the journal. Even GC writes to the journal. So when we are mounting
-> >> after an unclean reboot, we can simply refresh the last LEBs of all
-> >> journal heads using the 'ubi_leb_change()' call. This should handle all
-> >> the three cases you describe.
-> >>
-> >> I do not think it is very difficult to do.
-> > 
-> > Matthieu, I can try to do to make some patches for you, but when you
-> > come back on-line and start actively testing :-) I do want to help you
-> > and improve UBIFS, but I'm not very motivated to do this unless this is
-> > really needed. I think we have few other pending issues, and the ball is
-> > on your side. :-)
-> > 
-> Ok.
-> 
-> I will run some tests this weekend.
-> 
-> What I have to test ?
-> 
-> - 
-> http://git.infradead.org/users/dedekind/ubifs-v2.6.28.git/commit/7240a7396fa4b1998d0463123c6d1d192935f969
-> - UBI reliability improvements patch
-> - c->gc_lnum is -1 patch
+On Thu, Sep 23, 2010 at 07:24, Artem Bityutskiy wrote:
+> On Wed, 2010-09-22 at 00:35 -0400, Mike Frysinger wrote:
+>> also in looking at these utils, flash_erase does not support the
+>> extended 64bit api as it is doing ioctls directly nor does it use
+>> getopt. =C2=A0flash_eraseall however is using the common libmtd api (so =
+it
+>> gets the extend api support for free), and it is cleanly using getopt
+>> cleanly. =C2=A0which leads to a simple conclusion from my side ...
+>>
+>> let's punt the current flash_erase code, rename flash_eraseall to
+>> flash_erase, and then extend its options to support the minor
+>> functionality of flash_erase. =C2=A0doesnt look like it'll be hard at al=
+l
+>> to do this. =C2=A0but before i undertake the task, i want to make sure t=
+he
+>> idea isnt simply going to be rejected due to some concern about
+>> retaining backwards compatibility.
+>>
+>> running `flash_erase /dev/mtd#` (no arguments) will make it erase the
+>> first block. =C2=A0this seems kind of useless to me.
+>>
+>> so i'd make the arguments:
+>> flash_erase [options] <mtd> <start> [count]
+>> Options:
+>> =C2=A0 -N, --erasebad
+>> =C2=A0 -j, --jffs2
+>> =C2=A0 -u, --unlock
+>> =C2=A0 -q, --quiet
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 --silent
+>>
+>> for the "all" functionality, we can have a value of "-1" or "0" for
+>> the count mean "all", or make people type "all".
+>
+> I'm perfectly fine with getting rid of one of these, this would be a
+> very good clean-up. May be additionally we could create a
+> flashe_eraseall shell script which will just run flash_erase <mtd> 0 -1
+> <other flags>.
 
-Yes. But it would be less confusing if you just back-ported all
-ubifs-2.6.git / master. c->gc_lnum is a separate patch, of course.
+OK, i'll get going on this then
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+> But also, it need a careful look to make sure all flash_eraseall
+> functionality is also in flash_erase.
+
+shouldnt be too hard :)
+-mike
