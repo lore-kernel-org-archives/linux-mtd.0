@@ -1,29 +1,21 @@
-Received: from if09-mail-fb05-mia.mta.terra.com ([208.84.243.229])
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oyd04-0004OZ-7F
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 04:01:36 +0000
-Received: from if05-mail-sr06-mia.mta.terra.com
-	(if05-mail-sr06-mia.mta.terra.com [208.84.243.63])
-	by mail-fb05-mia.tpn.terra.com (Postfix) with ESMTP id D535B2400507F
+	id 1OygEU-0007cb-DR
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 07:28:43 +0000
+Received: by qyk34 with SMTP id 34so2149503qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 03:44:26 +0000 (UTC)
-Received: from 1n0.tpn.terra.com (1n0.tpn.terra.com [10.235.200.56])
-	by mail-sr06-mia.tpn.terra.com (Postfix) with ESMTP id 488554800106
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 03:44:16 +0000 (UTC)
-Received: from THOR (unknown [189.35.37.231]) (authenticated user fggs)
-	by 1n0.tpn.terra.com (Postfix) with ESMTPA id 97EAB80080087
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 03:44:15 +0000 (UTC)
-Message-ID: <E73F778B634944A0B8D4333B7BD012E4@THOR>
-From: =?iso-8859-1?Q?Fl=E1vio_Silveira?= <fggs@terra.com.br>
-To: <linux-mtd@lists.infradead.org>
-Subject: [Help] SST39VF6401B Support
-Date: Thu, 23 Sep 2010 00:43:55 -0300
+	Thu, 23 Sep 2010 00:28:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <E73F778B634944A0B8D4333B7BD012E4@THOR>
+References: <E73F778B634944A0B8D4333B7BD012E4@THOR>
+Date: Thu, 23 Sep 2010 09:28:40 +0200
+Message-ID: <AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com>
+Subject: Re: [Help] SST39VF6401B Support
+From: Yegor Yefremov <yegorslists@googlemail.com>
+To: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,16 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+> =C2=A0I'm new to this list, so I'm not sure if I'm doing it correctly.
+>
+> =C2=A0I'm trying to get this chip supported by the 3rd party router firmw=
+are I
+> use. The developer from this firmware applied latest patches from git but
+> console log still says "pflash: cfi_probe failed" and then kernel panic.
+>
+> =C2=A0I tried to enable some debug without success.
+>
+> =C2=A0Any help appreciated
 
-  I'm new to this list, so I'm not sure if I'm doing it correctly.
+Some time ago I've got this flash chip working with this patch
+https://patchwork.kernel.org/patch/32333/. Try enabling JEDEC_PROBE in
+your kernel. Unfortunately I don't have such a system now to try this
+patch with a newer kernel.
 
-  I'm trying to get this chip supported by the 3rd party router firmware I 
-use. The developer from this firmware applied latest patches from git but 
-console log still says "pflash: cfi_probe failed" and then kernel panic.
-
-  I tried to enable some debug without success.
-
-  Any help appreciated
-
-Flavio 
+Regards,
+Yegor
