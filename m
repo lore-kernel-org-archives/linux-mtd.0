@@ -1,19 +1,21 @@
-Received: from if01-mail-sr06-mia.mta.terra.com ([208.84.243.23])
-	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oyl6Y-0008R4-Ib
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:40:54 +0000
-Message-ID: <341EADF720C14B4F86C63204D9C60723@THOR>
-From: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
-To: "Yegor Yefremov" <yegorslists@googlemail.com>
-References: <E73F778B634944A0B8D4333B7BD012E4@THOR><AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com><74A5BE60138147F696E151AACD52EDEE@THOR><AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com><D3A375B91F5944B38630B07214914DF8@THOR>
-	<AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com>
-In-Reply-To: <AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com>
-Subject: Re: [Help] SST39VF6401B Support
-Date: Thu, 23 Sep 2010 09:40:23 -0300
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"; reply-type=original
+Subject: Re: [PATCH 1/2] MTD: generic FSMC NAND MTD driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Linus Walleij <linus.ml.walleij@gmail.com>
+In-Reply-To: <AANLkTi=LHxCHrAvWgscZDeHUZ3LfVjwARSf60DZYV8gL@mail.gmail.com>
+References: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
+	<AANLkTikuKC2n488ZNAeSr83p9cju2ZQCGU1W_FXqgzVy@mail.gmail.com>
+	<1284971979.2286.46.camel@localhost>
+	<AANLkTi=LHxCHrAvWgscZDeHUZ3LfVjwARSf60DZYV8gL@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 23 Sep 2010 16:00:31 +0300
+Message-ID: <1285246831.29268.118.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Viresh Kumar <viresh.kumar@st.com>, Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+	Vipin Kumar <vipin.kumar@st.com>, Shiraz Hashim <shiraz.hashim@st.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's kernel 2.6.23 with some patches, they call it 2.6.24.111
-
-Flavio
-
------ Original Message ----- 
-From: "Yegor Yefremov" <yegorslists@googlemail.com>
-To: "Flávio Silveira" <fggs@terra.com.br>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Thursday, September 23, 2010 9:33 AM
-Subject: Re: [Help] SST39VF6401B Support
-
-
->> Ok, I'll see if I can build a firmware with jedec enabled and your patch.
->
-> By the way, what's your kernel version?
->
-> Yegor
+On Wed, 2010-09-22 at 10:10 +0200, Linus Walleij wrote:
+> 2010/9/20 Artem Bityutskiy <dedekind1@gmail.com>:
+> > On Tue, 2010-09-14 at 10:52 +0200, Linus Walleij wrote:
+> >> 2010/9/13 Linus Walleij <linus.walleij@stericsson.com>:
+> >>
+> >> > This is the same driver submitted by ST Micros SPEAr team but
+> >> > generalized and tested on the ST-Ericsson U300. It probably
+> >> > easily works on the NHK8815 too.
+> >>
+> >> David if this one looks OK then can you merge both patches through
+> >> the MTD tree?
+> >
+> > I've pushed both patches to my l2-mtd-2.6.git / master, without signing
+> > this off myself.
 > 
+> Thanks Artem, are you integrating MTD to Linus (Torvalds)?
+
+Not me, dwmw2 should pick patches from my tree.
+
+> This git is not part of linux-next right?
+
+Right.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
