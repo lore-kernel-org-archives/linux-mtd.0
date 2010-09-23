@@ -1,18 +1,18 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oym9p-00073c-MZ
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 13:48:19 +0000
-Received: by bwz19 with SMTP id 19so1664060bwz.36
+	id 1Oym9z-00073c-8C
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 13:48:27 +0000
+Received: by mail-bw0-f49.google.com with SMTP id 19so1664060bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 06:48:16 -0700 (PDT)
-Subject: Re: [PATCH] mtd-utils: compr: drop unused model argument
+	Thu, 23 Sep 2010 06:48:26 -0700 (PDT)
+Subject: Re: [PATCH] libfec: fix up pointer warnings in fec magic computation
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1285210427-13238-1-git-send-email-vapier@gentoo.org>
-References: <1285210427-13238-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285211283-17618-1-git-send-email-vapier@gentoo.org>
+References: <1285211283-17618-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 23 Sep 2010 16:46:33 +0300
-Message-ID: <1285249593.29268.130.camel@localhost>
+Date: Thu, 23 Sep 2010 16:46:43 +0300
+Message-ID: <1285249603.29268.131.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,10 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-22 at 22:53 -0400, Mike Frysinger wrote:
-> The jffs2 compression framework provides a "model" argument when
-> compressing and decompressing, but the caller always passes in NULL
-> and the callees never use it.  So punt this useless overhead.
+On Wed, 2010-09-22 at 23:08 -0400, Mike Frysinger wrote:
+> The current fec code casts a pointer to an int which causes warnings on
+> 64bit systems.  So create a macro for the duplicate/complicated magic
+> computation, and add an unsigned long cast in it to fix the original
+> problem.
 > 
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
