@@ -1,16 +1,20 @@
-Received: from [69.28.251.93] (helo=b32.net)
+Received: from relay2.mail.timico.net ([62.121.20.90] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyYQt-00036K-TF
-	for linux-mtd@lists.infradead.org; Wed, 22 Sep 2010 23:09:01 +0000
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Wed, 22 Sep 2010 16:01:59 -0700
-Subject: [PATCH] mkfs.ubifs: Fix heap corruption on LEB overrun
-Message-Id: <1fcf6a9591841eba82df96a80da0bdfa@localhost>
-To: <dedekind1@gmail.com>
+	id 1Oyav0-0003Ui-QA
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 01:48:15 +0000
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: Mike Frysinger <vapier@gentoo.org>, "dedekind1@gmail.com"
+	<dedekind1@gmail.com>
+Content-Class: urn:content-classes:message
+Date: Thu, 23 Sep 2010 02:48:08 +0100
+Subject: RE: [PATCH] nandwrite: add --nobad to write bad blocks
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FAA1@Cloud.RL.local>
+In-Reply-To: <AANLkTin+2ocUT_NMToGHoAhX5=Trn2CdLFmiMBmvSVuC@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,91 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If max_leb_cnt (-c option) is set too low, set_lprops() will corrupt
-the heap and may result in a scary looking crash:
+linux-mtd-bounces@lists.infradead.org wrote:
+> it is completely artificial.  as you said yourself, it is "not
+> necessarily writable".  that means i should be able to tell the
+> hardware "do XXX" and let the hardware do it.  instead, i'm stuck with
+> userspace utils that say "no, you cant do that".
 
-$ bin/mkfs.ubifs -U -r romfs -o ubifs.img -m 512 -e 15360 -c 39
-Error: max_leb_cnt too low (241 needed)
-*** glibc detected *** bin/mkfs.ubifs: double free or corruption (!prev): 0x088fe070 ***
-======= Backtrace: =========
-/lib32/libc.so.6(+0x6c231)[0xf75fb231]
-/lib32/libc.so.6(+0x6dab8)[0xf75fcab8]
-/lib32/libc.so.6(cfree+0x6d)[0xf75ffb9d]
-bin/mkfs.ubifs[0x804e801]
-bin/mkfs.ubifs[0x804e94b]
-bin/mkfs.ubifs[0x804e99d]
-/lib32/libc.so.6(__libc_start_main+0xe6)[0xf75a5bd6]
-bin/mkfs.ubifs(__fxstat64+0x55)[0x80491e1]
-======= Memory map: ========
-08048000-0805d000 r-xp 00000000 08:08 10012045                           /work/bin/mkfs.ubifs
-0805d000-0805e000 rwxp 00015000 08:08 10012045                           /work/bin/mkfs.ubifs
-088fe000-08945000 rwxp 00000000 00:00 0                                  [heap]
-f73e1000-f73fe000 r-xp 00000000 08:05 2228842                            /usr/lib32/libgcc_s.so.1
-f73fe000-f73ff000 r-xp 0001c000 08:05 2228842                            /usr/lib32/libgcc_s.so.1
-f73ff000-f7400000 rwxp 0001d000 08:05 2228842                            /usr/lib32/libgcc_s.so.1
-f7400000-f7421000 rwxp 00000000 00:00 0
-f7421000-f7500000 ---p 00000000 00:00 0
-f751c000-f758f000 rwxp 00000000 00:00 0
-f758f000-f76e2000 r-xp 00000000 08:05 426288                             /lib32/libc-2.11.1.so
-f76e2000-f76e3000 ---p 00153000 08:05 426288                             /lib32/libc-2.11.1.so
-f76e3000-f76e5000 r-xp 00153000 08:05 426288                             /lib32/libc-2.11.1.so
-f76e5000-f76e6000 rwxp 00155000 08:05 426288                             /lib32/libc-2.11.1.so
-f76e6000-f76e9000 rwxp 00000000 00:00 0
-f76e9000-f770d000 r-xp 00000000 08:05 426296                             /lib32/libm-2.11.1.so
-f770d000-f770e000 r-xp 00023000 08:05 426296                             /lib32/libm-2.11.1.so
-f770e000-f770f000 rwxp 00024000 08:05 426296                             /lib32/libm-2.11.1.so
-f772a000-f772c000 rwxp 00000000 00:00 0
-f772c000-f772d000 r-xp 00000000 00:00 0                                  [vdso]
-f772d000-f7749000 r-xp 00000000 08:05 6062081                            /lib32/ld-2.11.1.so
-f7749000-f774a000 r-xp 0001b000 08:05 6062081                            /lib32/ld-2.11.1.so
-f774a000-f774b000 rwxp 0001c000 08:05 6062081                            /lib32/ld-2.11.1.so
-ffb58000-ffb6d000 rwxp 00000000 00:00 0                                  [stack]
-Aborted
+As Artem is thinking about it, I'll just chip in with a "me too".
 
-New code aborts cleanly, and still calculates the number of LEBs
-required:
+By all means the default should protect you from doing potentially
+stupid and dangerous things. But these are low level utilities for
+people who know what they are doing, having a "safeties off" option
+makes a lot of sense.
 
-$ bin/mkfs.ubifs -U -r romfs -o tmp/ubifs.img -m 512 -e 15360 -c 39
-Error: max_leb_cnt too low (241 needed)
-$ echo $?
-255
-$ bin/mkfs.ubifs -U -r romfs -o tmp/ubifs.img -m 512 -e 15360 -c 240
-Error: max_leb_cnt too low (241 needed)
-$ bin/mkfs.ubifs -U -r romfs -o tmp/ubifs.img -m 512 -e 15360 -c 241
-$
+--
+Jon Povey
+jon.povey@racelogic.co.uk
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- mkfs.ubifs/mkfs.ubifs.c |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index 9f2a226..60fe861 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -898,9 +898,11 @@ static void set_lprops(int lnum, int offs, int flags)
- 	dirty = c->leb_size - free - ALIGN(offs, 8);
- 	dbg_msg(3, "LEB %d free %d dirty %d flags %d", lnum, free, dirty,
- 		flags);
--	c->lpt[i].free = free;
--	c->lpt[i].dirty = dirty;
--	c->lpt[i].flags = flags;
-+	if (i < c->main_lebs) {
-+		c->lpt[i].free = free;
-+		c->lpt[i].dirty = dirty;
-+		c->lpt[i].flags = flags;
-+	}
- 	c->lst.total_free += free;
- 	c->lst.total_dirty += dirty;
- 	if (flags & LPROPS_INDEX)
-@@ -1902,8 +1904,6 @@ static int finalize_leb_cnt(void)
- {
- 	c->leb_cnt = head_lnum;
- 	if (c->leb_cnt > c->max_leb_cnt)
--		/* TODO: in this case it segfaults because buffer overruns - we
--		 * somewhere allocate smaller buffers - fix */
- 		return err_msg("max_leb_cnt too low (%d needed)", c->leb_cnt);
- 	c->main_lebs = c->leb_cnt - c->main_first;
- 	if (verbose) {
--- 
-1.7.0.4
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
