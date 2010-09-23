@@ -1,18 +1,22 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyrMc-00079a-FL
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 19:21:51 +0000
-Received: by yxm34 with SMTP id 34so921956yxm.36
+	id 1OyrtK-0003eW-NW
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 19:55:39 +0000
+Received: by qwe4 with SMTP id 4so293729qwe.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 12:21:48 -0700 (PDT)
+	Thu, 23 Sep 2010 12:55:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1285241097.29268.80.camel@localhost>
-References: <AANLkTi=efR8LkMr_FVxV7V6TzZ2yd1-=2ph5vsaNz41U@mail.gmail.com>
-	<1285241097.29268.80.camel@localhost>
+In-Reply-To: <1285244894.29268.104.camel@localhost>
+References: <AANLkTikrEq1hJEttX=DkMWYaLsJnW+QWGRaL2eygZ8uZ@mail.gmail.com>
+	<AANLkTinHKU1BfmtZyEKFwUVFJz9YoPr93D7tP6jqXeJE@mail.gmail.com>
+	<1284278043.1783.10.camel@brekeke>
+	<201009220343.33025.vapier.adi@gmail.com>
+	<1285244894.29268.104.camel@localhost>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 23 Sep 2010 15:21:27 -0400
-Message-ID: <AANLkTik2qGUa9T3cpRDQv1SxuQxUoPfwDh-b31_2Q9qG@mail.gmail.com>
-Subject: Re: flash_erase vs flash_eraseall
+Date: Thu, 23 Sep 2010 15:55:17 -0400
+Message-ID: <AANLkTinFYHz9Ncw9NWPgQoAM=8H7S9J11Gaybsrov1AT@mail.gmail.com>
+Subject: Re: linux equivalent of u-boot's "nand scrub" (erasing blocks even
+	when OOB says "bad")
 To: dedekind1@gmail.com
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -26,48 +30,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 23, 2010 at 07:24, Artem Bityutskiy wrote:
-> On Wed, 2010-09-22 at 00:35 -0400, Mike Frysinger wrote:
->> also in looking at these utils, flash_erase does not support the
->> extended 64bit api as it is doing ioctls directly nor does it use
->> getopt. =C2=A0flash_eraseall however is using the common libmtd api (so =
-it
->> gets the extend api support for free), and it is cleanly using getopt
->> cleanly. =C2=A0which leads to a simple conclusion from my side ...
+On Thu, Sep 23, 2010 at 08:28, Artem Bityutskiy wrote:
+> On Wed, 2010-09-22 at 03:43 -0400, Mike Frysinger wrote:
+>> here's a POC that works for me. =C2=A0with a simple tweak to `flash_eras=
+eall`, i
+>> can now recover my mtd devices with funky OOB layouts.
 >>
->> let's punt the current flash_erase code, rename flash_eraseall to
->> flash_erase, and then extend its options to support the minor
->> functionality of flash_erase. =C2=A0doesnt look like it'll be hard at al=
-l
->> to do this. =C2=A0but before i undertake the task, i want to make sure t=
-he
->> idea isnt simply going to be rejected due to some concern about
->> retaining backwards compatibility.
->>
->> running `flash_erase /dev/mtd#` (no arguments) will make it erase the
->> first block. =C2=A0this seems kind of useless to me.
->>
->> so i'd make the arguments:
->> flash_erase [options] <mtd> <start> [count]
->> Options:
->> =C2=A0 -N, --erasebad
->> =C2=A0 -j, --jffs2
->> =C2=A0 -u, --unlock
->> =C2=A0 -q, --quiet
->> =C2=A0 =C2=A0 =C2=A0 =C2=A0 --silent
->>
->> for the "all" functionality, we can have a value of "-1" or "0" for
->> the count mean "all", or make people type "all".
+>> ive only extended MEMERASE64 as i believe the non-64 variants are EOL ? =
+=C2=A0or
+>> should i also extend the 32bit interface as well ?
 >
-> I'm perfectly fine with getting rid of one of these, this would be a
-> very good clean-up. May be additionally we could create a
-> flashe_eraseall shell script which will just run flash_erase <mtd> 0 -1
-> <other flags>.
+> We need something consistent. This patch will just erase the bad
+> eraseblock. This will not mark it as good in the BBT (neither in-ram nor
+> on-flash). If the erasure succeeds, the block will still be marked as
+> bad in BBT, but after reboot, if the BBT is not on-flash, it will be
+> treated as good eraseblock, because scanning will not find the bad block
+> marker anymore. If the BBT is on-flash, it'll stay bad. This is
+> inconsistent.
 
-OK, i'll get going on this then
+i dont think the current BBT API supports marking bad blocks as good ?
+ if it does, could you highlight it for me ?
 
-> But also, it need a careful look to make sure all flash_eraseall
-> functionality is also in flash_erase.
+>> +struct erase_info_user64_flags {
+>> + =C2=A0 =C2=A0 __u64 start;
+>> + =C2=A0 =C2=A0 __u64 length;
+>> + =C2=A0 =C2=A0 __u32 flags;
+>> +};
+>
+> I think it needs to have som more room for possible future extentions.
+> Also, good tone for ioctls is to make them to be multiple of 64-bit -
+> less pain in mixed 32/64 bit setups.
+>
+> Please, add some
+>
+> u8 padding[12]
+>
+> field and add a comment that this has to be zero, and may be used in
+> future.
+>
+> Then in future we may extend ioctls and add more fields.
 
-shouldnt be too hard :)
+well, the idea i have with flags is that we carve one bit out to mean
+"extend".  so if in the future we wanted to extend the struct, we set
+that flag and the kernel knows that userspace wants the larger
+version.  that gives you a way of extending things indefinitely at the
+cost of 1 bit.
+
+which also means i should probably carve that bit out now and have the
+kernel return an error when it is set today.
+
+>> +#define MEMERASE64_FLAGS =C2=A0 =C2=A0 _IOW('M', 23, struct erase_info_=
+user64_flags)
+>
+> I do not like the name. We may add something else, not just flags later.
+
+i was going to use "MEMERASE2", but that didnt scale well with "MEMERASE264=
+".
+
+> May be MEMERASE64_EXTENDED ?
+
+OK
 -mike
