@@ -1,22 +1,20 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from if09-mail-sr02-mia.mta.terra.com ([208.84.243.99])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OymAs-0007GP-O2
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 13:49:23 +0000
-Received: by bwz19 with SMTP id 19so1665303bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 06:49:22 -0700 (PDT)
-Subject: Re: [PATCH] jffs2: drop unused model argument
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1285210353-30804-1-git-send-email-vapier@gentoo.org>
-References: <1285210353-30804-1-git-send-email-vapier@gentoo.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 23 Sep 2010 16:47:38 +0300
-Message-ID: <1285249658.29268.132.camel@localhost>
-Mime-Version: 1.0
+	id 1OymI3-000151-Az
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 13:56:48 +0000
+Message-ID: <51B22523C5674E869E940EB49B0931CE@THOR>
+From: =?iso-8859-1?Q?Fl=E1vio_Silveira?= <fggs@terra.com.br>
+To: "Yegor Yefremov" <yegorslists@googlemail.com>
+References: <E73F778B634944A0B8D4333B7BD012E4@THOR><AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com><74A5BE60138147F696E151AACD52EDEE@THOR><AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com><D3A375B91F5944B38630B07214914DF8@THOR><AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com><341EADF720C14B4F86C63204D9C60723@THOR>
+	<AANLkTikXbKZLFOCBDkrwgVPJEYTwF88xBtYFnwaTQH+5@mail.gmail.com>
+In-Reply-To: <AANLkTikXbKZLFOCBDkrwgVPJEYTwF88xBtYFnwaTQH+5@mail.gmail.com>
+Subject: Re: [Help] SST39VF6401B Support
+Date: Thu, 23 Sep 2010 10:56:21 -0300
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-22 at 22:52 -0400, Mike Frysinger wrote:
-> The jffs2 compression framework provides a "model" argument when
-> compressing and decompressing, but the caller always passes in NULL
-> and the callees never use it.  So punt this useless overhead.
+Well, I never tried the patch for JEDEC as firmware doesn't use it yet.
+ I'm still trying to build then test other things, thanks for your help!
+
+Flavio
+
+----- Original Message ----- 
+From: "Yegor Yefremov" <yegorslists@googlemail.com>
+To: "Fl�vio Silveira" <fggs@terra.com.br>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Thursday, September 23, 2010 10:45 AM
+Subject: Re: [Help] SST39VF6401B Support
+
+
+>> It's kernel 2.6.23 with some patches, they call it 2.6.24.111
+>
+> It is really old! This is a gap of more than 10 kernel versions! Any
+> chance to get something newer? 2.6.35?
+>
+> I could imagine, that the patches mentioned in this thread could fail
+> due to old kernel. Many things like JEDEC and CFI probes were greatly
+> improved since then. I tested my patch for 2.6.29. .27 and .28 may
+> also work.
+>
+> Yegor
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 > 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-
-Pushed to l2-mtd-2.6.git with my Signed-off-by, thanks!
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
