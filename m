@@ -1,31 +1,23 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OykgM-0007Ns-30
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:13:46 +0000
-Received: by wyb38 with SMTP id 38so1715705wyb.36
+	id 1Oykkq-0006WZ-JJ
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:18:25 +0000
+Received: by qwe4 with SMTP id 4so20342qwe.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 05:13:43 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: dedekind1@gmail.com
-Subject: Re: latest MTD-utils
-References: <AANLkTin+Y2YD3w4MfdTmQkRyB_UZD8pY51ci4pTQHacB@mail.gmail.com>
-	<1285053950.7512.5.camel@localhost>
-	<871v8n2osc.fsf@macbook.be.48ers.dk>
-	<1285077063.7512.120.camel@localhost>
-	<1285077268.7512.121.camel@localhost>
-	<87sk131977.fsf@macbook.be.48ers.dk>
-	<1285079252.7512.136.camel@localhost>
-	<87mxrb17l5.fsf@macbook.be.48ers.dk>
-	<1285243389.29268.88.camel@localhost>
-Date: Thu, 23 Sep 2010 14:13:39 +0200
-In-Reply-To: <1285243389.29268.88.camel@localhost> (Artem Bityutskiy's message
-	of "Thu, 23 Sep 2010 15:03:09 +0300")
-Message-ID: <87vd5w8xos.fsf@macbook.be.48ers.dk>
+	Thu, 23 Sep 2010 05:18:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, twebb <taliaferro62@gmail.com>,
-	David.Woodhouse@intel.com
+In-Reply-To: <74A5BE60138147F696E151AACD52EDEE@THOR>
+References: <E73F778B634944A0B8D4333B7BD012E4@THOR>
+	<AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com>
+	<74A5BE60138147F696E151AACD52EDEE@THOR>
+Date: Thu, 23 Sep 2010 14:18:22 +0200
+Message-ID: <AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com>
+Subject: Re: [Help] SST39VF6401B Support
+From: Yegor Yefremov <yegorslists@googlemail.com>
+To: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,20 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
+> =C2=A0Thanks for your response. Does this mean this chip isn't CFI compli=
+ant?
+> Like, datasheet says it is, but not really.
+> Sorry if I sound confused, I've never messed with flashchips before so na=
+mes
+> and terms are still complicated.
 
- Artem> On Tue, 2010-09-21 at 16:42 +0200, Peter Korsgaard wrote:
- >> - Either provide tarballs like in the past
+Just to apply the patch and see what happens. The most important part
+of this patch is:
 
- Artem> Done, there is
+Please refer to the data sheets Table 6:
+39VF6401B data sheet http://www.sst.com/downloads/datasheet/S71288.pdf
+39VF6401 data sheet http://www.sst.com/downloads/datasheet/S71223-03.pdf
 
- Artem> ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.4.0.tar.bz2
+The difference in the 6th bus write cycle. 39VF6401B uses 0x50 and
+39VF6401 uses 0x30.
 
- Artem> now.
+Without this even if the chip gets detected you cannot write to it.
 
- Artem> However, I did not update the .spec file. Hopefully this is not needed.
+I haven't look at this since my try to submit this patch, so I don't
+know how to fix the stuff for cfi_probe.
 
-Thanks, builds fine here.
-
--- 
-Bye, Peter Korsgaard
+Regards,
+Yegor
