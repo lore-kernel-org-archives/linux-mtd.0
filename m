@@ -1,21 +1,19 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OygEU-0007cb-DR
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 07:28:43 +0000
-Received: by qyk34 with SMTP id 34so2149503qyk.15
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 00:28:40 -0700 (PDT)
+Received: from mail.kernelconcepts.de ([212.60.202.196])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oygyv-0001lP-6T
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 08:16:42 +0000
+Received: from [192.168.2.28] by mail.kernelconcepts.de with esmtpsa
+	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
+	(envelope-from <nils.faerber@kernelconcepts.de>) id 1Oyh9I-0007al-0l
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 10:27:24 +0200
+Message-ID: <4C9B0CE3.6040703@kernelconcepts.de>
+Date: Thu, 23 Sep 2010 10:16:35 +0200
+From: Nils Faerber <nils.faerber@kernelconcepts.de>
 MIME-Version: 1.0
-In-Reply-To: <E73F778B634944A0B8D4333B7BD012E4@THOR>
-References: <E73F778B634944A0B8D4333B7BD012E4@THOR>
-Date: Thu, 23 Sep 2010 09:28:40 +0200
-Message-ID: <AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com>
-Subject: Re: [Help] SST39VF6401B Support
-From: Yegor Yefremov <yegorslists@googlemail.com>
-To: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: NAND on MV78100
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> =C2=A0I'm new to this list, so I'm not sure if I'm doing it correctly.
->
-> =C2=A0I'm trying to get this chip supported by the 3rd party router firmw=
-are I
-> use. The developer from this firmware applied latest patches from git but
-> console log still says "pflash: cfi_probe failed" and then kernel panic.
->
-> =C2=A0I tried to enable some debug without success.
->
-> =C2=A0Any help appreciated
+Hi!
+I am currently working on board support for a Marvell MV78100 based
+board. The MV78100 uses the same Orion SOC components as e.g. the
+Kirkwood which is quite well supported from OpenRD and SheevaPlug.
 
-Some time ago I've got this flash chip working with this patch
-https://patchwork.kernel.org/patch/32333/. Try enabling JEDEC_PROBE in
-your kernel. Unfortunately I don't have such a system now to try this
-patch with a newer kernel.
+After some struggling I got the Orion NAND driver working, it detects
+the NAND chip properly (512MB) and assigns a partition. Everything seems
+OK so far.
 
-Regards,
-Yegor
+But when I read from the device, e.g. just by "cat /dev/mtdblock1 | wc
+-c" it starts to fail with "uncorrectable error" after exactly 1MB
+(1024*1024).
+
+This seems pretty strange to me and I have no real idea where to look
+for the problem. I have the Orion NAND driver working cleanly with the
+very same kernel version on a Kirkwood based board without problems.
+
+Any hint on where to look would be *very* much appreciated ;)
+
+Thanks!
+
+Cheers
+  nils
+
+-- 
+kernel concepts GbR        Tel: +49-271-771091-12
+Sieghuetter Hauptweg 48
+D-57072 Siegen             Mob: +49-176-21024535
+http://www.kernelconcepts.de
