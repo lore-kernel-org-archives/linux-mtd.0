@@ -1,23 +1,28 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oys5A-00056f-2i
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 20:07:52 +0000
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([66.130.28.92]) by VL-MO-MR006.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-8.01 (built Dec 16 2008;
-	32bit))
-	with ESMTP id <0L97003LURSZ9Z60@VL-MO-MR006.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 15:07:47 -0400 (EDT)
-Date: Thu, 23 Sep 2010 15:07:47 -0400 (EDT)
-From: Nicolas Pitre <nico@fluxnic.net>
-To: Nils Faerber <nils.faerber@kernelconcepts.de>
-Subject: Re: NAND on MV78100
-In-reply-to: <4C9B0CE3.6040703@kernelconcepts.de>
-Message-id: <alpine.LFD.2.00.1009231500430.13233@xanadu.home>
-References: <4C9B0CE3.6040703@kernelconcepts.de>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1OytHX-0000QD-Rl
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 21:24:44 +0000
+Received: by fxm4 with SMTP id 4so1788131fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Sep 2010 14:24:41 -0700 (PDT)
+Subject: Re: [PATCH 2.6.35] mtd: blktrans: Move device and module
+	ref-counting back to open/release
+From: Maxim Levitsky <maximlevitsky@gmail.com>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <AANLkTikfAveMKPCx29JH+BkqtQgF4qLXD2zhzPAA=FXV@mail.gmail.com>
+References: <1279127694.2084.17.camel@achroite.uk.solarflarecom.com>
+	<1279820660.2104.27.camel@achroite.uk.solarflarecom.com>
+	<AANLkTinqy+hYrj5WN=4QEbPu+8F_HFs+rrb35TThoBRm@mail.gmail.com>
+	<1284971403.2286.45.camel@localhost>
+	<AANLkTikfAveMKPCx29JH+BkqtQgF4qLXD2zhzPAA=FXV@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 23 Sep 2010 23:14:36 +0200
+Message-ID: <1285276476.12300.4.camel@maxim-laptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Ben Hutchings <bhutchings@solarflare.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +32,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 23 Sep 2010, Nils Faerber wrote:
-
-> Hi!
-> I am currently working on board support for a Marvell MV78100 based
-> board. The MV78100 uses the same Orion SOC components as e.g. the
-> Kirkwood which is quite well supported from OpenRD and SheevaPlug.
+On Mon, 2010-09-20 at 14:47 -0700, Kevin Cernekee wrote: 
+> On Mon, Sep 20, 2010 at 1:30 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Sun, 2010-09-05 at 16:34 -0700, Kevin Cernekee wrote:
+> >> Just updated to 2.6.36-rc3 and noticed a related issue.  Configuration is:
+> >>
+> >> CONFIG_MTD_BLOCK=y
+> >> CONFIG_MTD_BLKDEVS=y
+> >> CONFIG_MTD_UBI_GLUEBI=y
+> >
+> > Would you please check if Maxim's patch fixes this:
+> > [PATCH V2] MTD: blktrans: Final version of hotplug support
 > 
-> After some struggling I got the Orion NAND driver working, it detects
-> the NAND chip properly (512MB) and assigns a partition. Everything seems
-> OK so far.
+> I applied the following patch to my 2.6.36-rc4 tree:
 > 
-> But when I read from the device, e.g. just by "cat /dev/mtdblock1 | wc
-> -c" it starts to fail with "uncorrectable error" after exactly 1MB
-> (1024*1024).
+> Subject: [PATCH 1/3] MTD: blktrans: Final version of hotplug support
+> Date: Sun, 19 Sep 2010 01:12:36 +0200
+> Message-Id: <1284851558-1154-2-git-send-email-maximlevitsky@gmail.com>
+> 
+> This fixed the MTD_BLOCK + MTD_UBI_GLUEBI regression that I reported earlier.
 
-This is most likely due to a difference in the ECC model used.
-The quick "fix" would be to reformat the NAND (at least from the offset 
-where it fails) using the Linux supported 1-bit ECC.
+Sorry for not sending updates, I did split this patch up, and will send
+it soon.
+Was finding workarounds, filling bugs for Ubuntu 10.10 brain damage.
+(Had to install it somewhen).
 
-The Marvell LSPs (and most unfortunately the bootrom) are using a 
-4-bit software ECC implementation that is poorly optimized, and layered 
-backward.
+Look one cosmetic, but annoying regression turned out to be a explicit
+feature, and this 'bug' fixes it...
+https://bugs.launchpad.net/ubuntu/+source/gnome-power-manager/+bug/619816
+
+Sorry for this ooftopic rant, but it really got my nerves.
 
 
-Nicolas
+Best regards,
+Maxim Levitsky
