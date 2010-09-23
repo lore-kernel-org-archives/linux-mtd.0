@@ -1,26 +1,18 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyrtK-0003eW-NW
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 19:55:39 +0000
-Received: by qwe4 with SMTP id 4so293729qwe.36
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oys2U-0000Lo-Pu
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 20:05:07 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 401441B40AF
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 12:55:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1285244894.29268.104.camel@localhost>
-References: <AANLkTikrEq1hJEttX=DkMWYaLsJnW+QWGRaL2eygZ8uZ@mail.gmail.com>
-	<AANLkTinHKU1BfmtZyEKFwUVFJz9YoPr93D7tP6jqXeJE@mail.gmail.com>
-	<1284278043.1783.10.camel@brekeke>
-	<201009220343.33025.vapier.adi@gmail.com>
-	<1285244894.29268.104.camel@localhost>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Thu, 23 Sep 2010 15:55:17 -0400
-Message-ID: <AANLkTinFYHz9Ncw9NWPgQoAM=8H7S9J11Gaybsrov1AT@mail.gmail.com>
-Subject: Re: linux equivalent of u-boot's "nand scrub" (erasing blocks even
-	when OOB says "bad")
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	Thu, 23 Sep 2010 20:05:03 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] nandwrite: add --nobad to write bad blocks
+Date: Thu, 23 Sep 2010 16:04:15 -0400
+Message-Id: <1285272255-6980-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285238285.29268.28.camel@localhost>
+References: <1285238285.29268.28.camel@localhost>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,64 +22,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 23, 2010 at 08:28, Artem Bityutskiy wrote:
-> On Wed, 2010-09-22 at 03:43 -0400, Mike Frysinger wrote:
->> here's a POC that works for me. =C2=A0with a simple tweak to `flash_eras=
-eall`, i
->> can now recover my mtd devices with funky OOB layouts.
->>
->> ive only extended MEMERASE64 as i believe the non-64 variants are EOL ? =
-=C2=A0or
->> should i also extend the 32bit interface as well ?
->
-> We need something consistent. This patch will just erase the bad
-> eraseblock. This will not mark it as good in the BBT (neither in-ram nor
-> on-flash). If the erasure succeeds, the block will still be marked as
-> bad in BBT, but after reboot, if the BBT is not on-flash, it will be
-> treated as good eraseblock, because scanning will not find the bad block
-> marker anymore. If the BBT is on-flash, it'll stay bad. This is
-> inconsistent.
+Sometimes dumping bad blocks is useful, like when the block isn't actually
+bad but the OOB layout isn't what the kernel is expecting or is otherwise
+screwed up.  The --nobad option allows just that.
 
-i dont think the current BBT API supports marking bad blocks as good ?
- if it does, could you highlight it for me ?
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+v2
+	- rename --nobad to --noskipbad
 
->> +struct erase_info_user64_flags {
->> + =C2=A0 =C2=A0 __u64 start;
->> + =C2=A0 =C2=A0 __u64 length;
->> + =C2=A0 =C2=A0 __u32 flags;
->> +};
->
-> I think it needs to have som more room for possible future extentions.
-> Also, good tone for ioctls is to make them to be multiple of 64-bit -
-> less pain in mixed 32/64 bit setups.
->
-> Please, add some
->
-> u8 padding[12]
->
-> field and add a comment that this has to be zero, and may be used in
-> future.
->
-> Then in future we may extend ioctls and add more fields.
+ nandwrite.c |   10 +++++++++-
+ 1 files changed, 9 insertions(+), 1 deletions(-)
 
-well, the idea i have with flags is that we carve one bit out to mean
-"extend".  so if in the future we wanted to extend the struct, we set
-that flag and the kernel knows that userspace wants the larger
-version.  that gives you a way of extending things indefinitely at the
-cost of 1 bit.
-
-which also means i should probably carve that bit out now and have the
-kernel return an error when it is set today.
-
->> +#define MEMERASE64_FLAGS =C2=A0 =C2=A0 _IOW('M', 23, struct erase_info_=
-user64_flags)
->
-> I do not like the name. We may add something else, not just flags later.
-
-i was going to use "MEMERASE2", but that didnt scale well with "MEMERASE264=
-".
-
-> May be MEMERASE64_EXTENDED ?
-
-OK
--mike
+diff --git a/nandwrite.c b/nandwrite.c
+index 1b4ca3d..8fe8875 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -79,6 +79,7 @@ static void display_help (void)
+ "                          device\n"
+ "  -m, --markbad           Mark blocks bad if write fails\n"
+ "  -n, --noecc             Write without ecc\n"
++"  -N, --noskipbad         Write without bad block skipping\n"
+ "  -o, --oob               Image contains oob data\n"
+ "  -r, --raw               Image contains the raw oob data dumped by nanddump\n"
+ "  -s addr, --start=addr   Set start address (default is 0)\n"
+@@ -118,6 +119,7 @@ static bool		forcejffs2 = false;
+ static bool		forceyaffs = false;
+ static bool		forcelegacy = false;
+ static bool		noecc = false;
++static bool		noskipbad = false;
+ static bool		pad = false;
+ static int		blockalign = 1; /*default to using 16K block size */
+ 
+@@ -127,7 +129,7 @@ static void process_options (int argc, char * const argv[])
+ 
+ 	for (;;) {
+ 		int option_index = 0;
+-		static const char *short_options = "ab:fjmnopqrs:y";
++		static const char *short_options = "ab:fjmnNopqrs:y";
+ 		static const struct option long_options[] = {
+ 			{"help", no_argument, 0, 0},
+ 			{"version", no_argument, 0, 0},
+@@ -137,6 +139,7 @@ static void process_options (int argc, char * const argv[])
+ 			{"jffs2", no_argument, 0, 'j'},
+ 			{"markbad", no_argument, 0, 'm'},
+ 			{"noecc", no_argument, 0, 'n'},
++			{"noskipbad", no_argument, 0, 'N'},
+ 			{"oob", no_argument, 0, 'o'},
+ 			{"pad", no_argument, 0, 'p'},
+ 			{"quiet", no_argument, 0, 'q'},
+@@ -181,6 +184,9 @@ static void process_options (int argc, char * const argv[])
+ 			case 'n':
+ 				noecc = true;
+ 				break;
++			case 'N':
++				noskipbad = true;
++				break;
+ 			case 'm':
+ 				markbad = true;
+ 				break;
+@@ -487,6 +493,8 @@ int main(int argc, char * const argv[])
+ 						 blockstart / meminfo.erasesize, blockstart);
+ 
+ 			/* Check all the blocks in an erase block for bad blocks */
++			if (noskipbad)
++				continue;
+ 			do {
+ 				if ((ret = ioctl(fd, MEMGETBADBLOCK, &offs)) < 0) {
+ 					perror("ioctl(MEMGETBADBLOCK)");
+-- 
+1.7.3
