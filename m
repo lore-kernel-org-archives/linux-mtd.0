@@ -1,19 +1,22 @@
-Received: from mail.kernelconcepts.de ([212.60.202.196])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oygyv-0001lP-6T
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 08:16:42 +0000
-Received: from [192.168.2.28] by mail.kernelconcepts.de with esmtpsa
-	(TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.69)
-	(envelope-from <nils.faerber@kernelconcepts.de>) id 1Oyh9I-0007al-0l
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 10:27:24 +0200
-Message-ID: <4C9B0CE3.6040703@kernelconcepts.de>
-Date: Thu, 23 Sep 2010 10:16:35 +0200
-From: Nils Faerber <nils.faerber@kernelconcepts.de>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: NAND on MV78100
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OyjDT-00014b-8M
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 10:39:52 +0000
+Received: by fxm4 with SMTP id 4so1210212fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Sep 2010 03:39:49 -0700 (PDT)
+Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
+References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 23 Sep 2010 13:38:05 +0300
+Message-ID: <1285238285.29268.28.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-I am currently working on board support for a Marvell MV78100 based
-board. The MV78100 uses the same Orion SOC components as e.g. the
-Kirkwood which is quite well supported from OpenRD and SheevaPlug.
+On Sat, 2010-09-11 at 23:51 -0400, Mike Frysinger wrote:
+> Sometimes dumping bad blocks is useful, like when the block isn't actually
+> bad but the OOB layout isn't what the kernel is expecting or is otherwise
+> screwed up.  The --nobad option allows just that.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  nandwrite.c |   10 +++++++++-
+>  1 files changed, 9 insertions(+), 1 deletions(-)
 
-After some struggling I got the Orion NAND driver working, it detects
-the NAND chip properly (512MB) and assigns a partition. Everything seems
-OK so far.
-
-But when I read from the device, e.g. just by "cat /dev/mtdblock1 | wc
--c" it starts to fail with "uncorrectable error" after exactly 1MB
-(1024*1024).
-
-This seems pretty strange to me and I have no real idea where to look
-for the problem. I have the Orion NAND driver working cleanly with the
-very same kernel version on a Kirkwood based board without problems.
-
-Any hint on where to look would be *very* much appreciated ;)
-
-Thanks!
-
-Cheers
-  nils
+Let's merge this. But other people were unhappy about --nobad name and
+suggested --noskipbad, and this was done for nanddump. Let's use
+consistent name for nandwrite, would you please tweak the patch and
+re-send?
 
 -- 
-kernel concepts GbR        Tel: +49-271-771091-12
-Sieghuetter Hauptweg 48
-D-57072 Siegen             Mob: +49-176-21024535
-http://www.kernelconcepts.de
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
