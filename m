@@ -1,16 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oybdc-0005bT-LJ
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 02:34:21 +0000
+	id 1OybeS-0006JF-7H
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 02:35:12 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 80E2D1B4060
+	by smtp.gentoo.org (Postfix) with ESMTP id 2409B1B4049
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 02:34:19 +0000 (UTC)
+	Thu, 23 Sep 2010 02:35:11 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] ftl_check: drop unused verbose flag
-Date: Wed, 22 Sep 2010 22:33:32 -0400
-Message-Id: <1285209212-32647-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] compr_zlib: mark local functions as static
+Date: Wed, 22 Sep 2010 22:34:24 -0400
+Message-Id: <1285209264-3936-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,63 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The verbose flag isn't actually checked anywhere, so punt it.
-
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- ftl_check.c |   13 ++++---------
- 1 files changed, 4 insertions(+), 9 deletions(-)
+ compr_zlib.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/ftl_check.c b/ftl_check.c
-index f41e79a..485eaa8 100644
---- a/ftl_check.c
-+++ b/ftl_check.c
-@@ -79,7 +79,7 @@ static void print_size(u_int s)
+diff --git a/compr_zlib.c b/compr_zlib.c
+index db4811d..03464f9 100644
+--- a/compr_zlib.c
++++ b/compr_zlib.c
+@@ -52,7 +52,7 @@ Q: Is 12 bytes sufficient?
+  */
+ #define STREAM_END_SPACE 12
  
- /*====================================================================*/
- 
--static void check_partition(int fd, int verbose)
-+static void check_partition(int fd)
+-int jffs2_zlib_compress(unsigned char *data_in, unsigned char *cpage_out,
++static int jffs2_zlib_compress(unsigned char *data_in, unsigned char *cpage_out,
+ 		uint32_t *sourcelen, uint32_t *dstlen, void *model)
  {
- 	mtd_info_t mtd;
- 	erase_unit_header_t hdr, hdr2;
-@@ -180,26 +180,21 @@ static void check_partition(int fd, int verbose)
- /* Show usage information */
- void showusage(char *pname)
- {
--	fprintf(stderr, "usage: %s [-v] device\n", pname);
--	fprintf(stderr, "-v verbose messages\n");
-+	fprintf(stderr, "usage: %s device\n", pname);
+ 	z_stream strm;
+@@ -100,7 +100,7 @@ int jffs2_zlib_compress(unsigned char *data_in, unsigned char *cpage_out,
+ 	return 0;
  }
  
- /*====================================================================*/
- 
- int main(int argc, char *argv[])
+-int jffs2_zlib_decompress(unsigned char *data_in, unsigned char *cpage_out,
++static int jffs2_zlib_decompress(unsigned char *data_in, unsigned char *cpage_out,
+ 		uint32_t srclen, uint32_t destlen, void *model)
  {
--	int verbose;
- 	int optch, errflg, fd;
- 	struct stat buf;
- 
- 	errflg = 0;
--	verbose = 0;
--	while ((optch = getopt(argc, argv, "vh")) != -1) {
-+	while ((optch = getopt(argc, argv, "h")) != -1) {
- 		switch (optch) {
- 			case 'h':
- 				errflg = 1; break;
--			case 'v':
--				verbose = 1; break;
- 			default:
- 				errflg = -1; break;
- 		}
-@@ -224,7 +219,7 @@ int main(int argc, char *argv[])
- 		exit(EXIT_FAILURE);
- 	}
- 
--	check_partition(fd, verbose);
-+	check_partition(fd);
- 	close(fd);
- 
- 	exit(EXIT_SUCCESS);
+ 	z_stream strm;
 -- 
 1.7.3
