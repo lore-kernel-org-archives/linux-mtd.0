@@ -1,21 +1,31 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OykYU-00011Y-Ul
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:05:40 +0000
-Date: Thu, 23 Sep 2010 14:05:34 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: =?iso-8859-15?Q?Fl=E1vio?= Silveira <fggs@terra.com.br>
-Subject: Re: [Help] SST39VF6401B Support
-Message-ID: <20100923120534.GD2994@pengutronix.de>
-References: <E73F778B634944A0B8D4333B7BD012E4@THOR>
-	<AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com>
-	<74A5BE60138147F696E151AACD52EDEE@THOR>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OykgM-0007Ns-30
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:13:46 +0000
+Received: by wyb38 with SMTP id 38so1715705wyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Sep 2010 05:13:43 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: dedekind1@gmail.com
+Subject: Re: latest MTD-utils
+References: <AANLkTin+Y2YD3w4MfdTmQkRyB_UZD8pY51ci4pTQHacB@mail.gmail.com>
+	<1285053950.7512.5.camel@localhost>
+	<871v8n2osc.fsf@macbook.be.48ers.dk>
+	<1285077063.7512.120.camel@localhost>
+	<1285077268.7512.121.camel@localhost>
+	<87sk131977.fsf@macbook.be.48ers.dk>
+	<1285079252.7512.136.camel@localhost>
+	<87mxrb17l5.fsf@macbook.be.48ers.dk>
+	<1285243389.29268.88.camel@localhost>
+Date: Thu, 23 Sep 2010 14:13:39 +0200
+In-Reply-To: <1285243389.29268.88.camel@localhost> (Artem Bityutskiy's message
+	of "Thu, 23 Sep 2010 15:03:09 +0300")
+Message-ID: <87vd5w8xos.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="9ADF8FXzFeE7X4jE"
-Content-Disposition: inline
-In-Reply-To: <74A5BE60138147F696E151AACD52EDEE@THOR>
-Cc: linux-mtd@lists.infradead.org, Yegor Yefremov <yegorslists@googlemail.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, twebb <taliaferro62@gmail.com>,
+	David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +35,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+>>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 
---9ADF8FXzFeE7X4jE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+ Artem> On Tue, 2010-09-21 at 16:42 +0200, Peter Korsgaard wrote:
+ >> - Either provide tarballs like in the past
 
+ Artem> Done, there is
 
->  Thanks for your response. Does this mean this chip isn't CFI
-> compliant? Like, datasheet says it is, but not really.
+ Artem> ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.4.0.tar.bz2
 
-SST? Broken CFI happened to me, too :(
-http://patchwork.ozlabs.org/patch/51027/
+ Artem> now.
 
-Regards,
+ Artem> However, I did not update the .spec file. Hopefully this is not needed.
 
-   Wolfram
+Thanks, builds fine here.
 
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---9ADF8FXzFeE7X4jE
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkybQo4ACgkQD27XaX1/VRuz6wCdE5K1WwLuhS7IqNJQGwH9/VYd
-Ca4AoKYdwFImqRUi2d0ul4CU7HmwMe1f
-=uOT9
------END PGP SIGNATURE-----
-
---9ADF8FXzFeE7X4jE--
+-- 
+Bye, Peter Korsgaard
