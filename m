@@ -1,26 +1,19 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oykw3-0001H6-F9
-	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:30:00 +0000
-Received: by bwz19 with SMTP id 19so1588917bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 05:29:58 -0700 (PDT)
-Subject: Re: linux equivalent of u-boot's "nand scrub" (erasing blocks even
-	when OOB says "bad")
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <201009220343.33025.vapier.adi@gmail.com>
-References: <AANLkTikrEq1hJEttX=DkMWYaLsJnW+QWGRaL2eygZ8uZ@mail.gmail.com>
-	<AANLkTinHKU1BfmtZyEKFwUVFJz9YoPr93D7tP6jqXeJE@mail.gmail.com>
-	<1284278043.1783.10.camel@brekeke>
-	<201009220343.33025.vapier.adi@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 23 Sep 2010 15:28:14 +0300
-Message-ID: <1285244894.29268.104.camel@localhost>
-Mime-Version: 1.0
+Received: from if03-mail-sr01-mia.mta.terra.com ([208.84.243.38])
+	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OykwX-0008H6-63
+	for linux-mtd@lists.infradead.org; Thu, 23 Sep 2010 12:30:33 +0000
+Message-ID: <D3A375B91F5944B38630B07214914DF8@THOR>
+From: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+To: "Yegor Yefremov" <yegorslists@googlemail.com>
+References: <E73F778B634944A0B8D4333B7BD012E4@THOR><AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com><74A5BE60138147F696E151AACD52EDEE@THOR>
+	<AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com>
+In-Reply-To: <AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com>
+Subject: Re: [Help] SST39VF6401B Support
+Date: Thu, 23 Sep 2010 09:30:01 -0300
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="UTF-8"; reply-type=original
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,65 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-22 at 03:43 -0400, Mike Frysinger wrote:
-> On Sunday, September 12, 2010 03:54:03 Artem Bityutskiy wrote:
-> > On Sun, 2010-09-12 at 00:03 -0400, Mike Frysinger wrote:
-> > > On Sat, Sep 11, 2010 at 02:32, Artem Bityutskiy wrote:
-> > > > It will be confusing if the same word is used in MTD for "unmarking"
-> > > > eraseblocks. How about: 'force erase' or 'bad erase' ?
-> > > 
-> > > that makes it sound like an option to the existing MEMERASE operation.
-> > > 
-> > >  so i guess what if we just do that -- extend the erase_info_user
-> > > 
-> > > structure to contain a flags field and add a MEMERASE2 that works with
-> > > the larger structure ?  for now we'd only have one option (FORCE), but
-> > > it makes it easy to extend in the future.
-> > 
-> > Ohh, this was so stupid of me to not ask people to add extra fields to
-> > 'struct erase_info_user64' which was introduced relatively recently... I
-> > always add extra fields to ioctl data structures...
-> > 
-> > But yeah, what you say sounds ok to me.
-> 
-> here's a POC that works for me.  with a simple tweak to `flash_eraseall`, i
-> can now recover my mtd devices with funky OOB layouts.
-> 
-> ive only extended MEMERASE64 as i believe the non-64 variants are EOL ?  or
-> should i also extend the 32bit interface as well ?
+Ok, I'll see if I can build a firmware with jedec enabled and your patch. 
+Thanks!
 
-We need something consistent. This patch will just erase the bad
-eraseblock. This will not mark it as good in the BBT (neither in-ram nor
-on-flash). If the erasure succeeds, the block will still be marked as
-bad in BBT, but after reboot, if the BBT is not on-flash, it will be
-treated as good eraseblock, because scanning will not find the bad block
-marker anymore. If the BBT is on-flash, it'll stay bad. This is
-inconsistent.
+Regards,
+  Flavio
 
-> +struct erase_info_user64_flags {
-> +	__u64 start;
-> +	__u64 length;
-> +	__u32 flags;
-> +};
+----- Original Message ----- 
+From: "Yegor Yefremov" <yegorslists@googlemail.com>
+To: "Flávio Silveira" <fggs@terra.com.br>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Thursday, September 23, 2010 9:18 AM
+Subject: Re: [Help] SST39VF6401B Support
 
-I think it needs to have som more room for possible future extentions.
-Also, good tone for ioctls is to make them to be multiple of 64-bit -
-less pain in mixed 32/64 bit setups.
 
-Please, add some
+> Thanks for your response. Does this mean this chip isn't CFI compliant?
+> Like, datasheet says it is, but not really.
+> Sorry if I sound confused, I've never messed with flashchips before so 
+> names
+> and terms are still complicated.
 
-u8 padding[12]
+Just to apply the patch and see what happens. The most important part
+of this patch is:
 
-field and add a comment that this has to be zero, and may be used in
-future.
+Please refer to the data sheets Table 6:
+39VF6401B data sheet http://www.sst.com/downloads/datasheet/S71288.pdf
+39VF6401 data sheet http://www.sst.com/downloads/datasheet/S71223-03.pdf
 
-Then in future we may extend ioctls and add more fields.
+The difference in the 6th bus write cycle. 39VF6401B uses 0x50 and
+39VF6401 uses 0x30.
 
-> +#define MEMERASE64_FLAGS	_IOW('M', 23, struct erase_info_user64_flags)
+Without this even if the chip gets detected you cannot write to it.
 
-I do not like the name. We may add something else, not just flags later.
-May be MEMERASE64_EXTENDED ?
+I haven't look at this since my try to submit this patch, so I don't
+know how to fix the stuff for cfi_probe.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Regards,
+Yegor
