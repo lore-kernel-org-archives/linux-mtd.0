@@ -1,19 +1,23 @@
-Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz1Xk-0005HV-0o
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 06:14:01 +0000
-From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Mike Frysinger <vapier@gentoo.org>
-Content-Class: urn:content-classes:message
-Date: Fri, 24 Sep 2010 07:13:56 +0100
-Subject: RE: [PATCH 3/4] mtd-utils: new strtoX helpers
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9F@Cloud.RL.local>
-In-Reply-To: <AANLkTik6reUk+FiAZO91qdM0V07-QBsys+-eYmbbnXk6@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oz3qb-0008Tf-EF
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 08:41:38 +0000
+Received: by fxm4 with SMTP id 4so2037328fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Sep 2010 01:41:35 -0700 (PDT)
+Subject: Re: [PATCH 1/2][MTD]MLC device check in OneNAND driver
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
+In-Reply-To: <000101cb5b16$59d2dab0$0d789010$%hs@samsung.com>
+References: <000101cb5b16$59d2dab0$0d789010$%hs@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 24 Sep 2010 11:39:53 +0300
+Message-ID: <1285317593.29268.155.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: v.dalal@samsung.com, gupta.raghav@samsung.com,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Frysinger wrote:
-> On Fri, Sep 24, 2010 at 00:31, Jon Povey wrote:
->> linux-mtd-bounces@lists.infradead.org wrote:
->>> Simply usage of converting strings to numbers by adding some
->>> wrappers around the standard strtoX functions.  These helpers
->>> support both hex and dec numbers transparently, and the caller need
->>> only provide a ptr to an error integer if they want to be notified
->>> of problems.
->>
->>> + */ +#define simple_strtoX(func, type) \
->>> +static inline type simple_##func(const char *snum, int *error) \
->>> +{ \
->>
->> Why inline? won't this bloat code, better to remove inline?
->
-> because uninlined static definitions will generate unused warnings
+Hi,
 
-you could do
-__attribute__((unused)) static type simple_##func(...
+few minor things. I could just do this all myself, but since this is not
+the first non-perfect patch you send, I think I'll be a little nasty and
+ask you should do the exercise :-)
 
-I assume the compiler will still optimise them away, not sure.
+On Thu, 2010-09-23 at 17:26 +0530, Rohit Hassan Sathyanarayan wrote:
+> Hi Artem,
+> 
+> Adding driver check for MLC flash type.
+> 
+> 
+> Signed-off-by: Rohit HS <rohit.hs@samsung.com>
+> Signed-off-by: Raghav Gupta <gupta.raghav@samsung.com>
 
-but with the 0xnn handling going away, does this header now offer
-much over just calling strtol et al directly?
+1. Do no add extra line between the message and signed off.
 
-I'd argue it just adds complexity and maintainence hassle.
+2. Ideally, your patches should be applicable with git-am without the
+   need to edit them. Try git am for your patches and see the result -
+   the commit message will contain 'Hi Artem,' phrase, which should not
+   be there.
 
---
-Jon Povey
-jon.povey@racelogic.co.uk
+> ---
+>  drivers/mtd/onenand/onenand_base.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+> index a2bb520..33e0dbb 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -4027,7 +4027,7 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+>  	mtd->ecclayout = this->ecclayout;
+>  
+>  	/* Fill in remaining MTD driver data */
+> -	mtd->type = MTD_NANDFLASH;
+> +	mtd->type = ONENAND_IS_MLC(this) ? MTD_MLCNANDFLASH : MTD_NANDFLASH;
+>  	mtd->flags = MTD_CAP_NANDFLASH;
+>  	mtd->erase = onenand_erase;
+>  	mtd->point = NULL;
 
-Racelogic is a limited company registered in England. Registered number 274=
-3719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
-ks, MK18 1TB .
+The kernel does not compile with this patch. You should make this patch
+the second, the first one should introduce MTD_MLCNANDFLASH.
 
-The information contained in this electronic mail transmission is intended =
-by Racelogic Ltd for the use of the named individual or entity to which it =
-is directed and may contain information that is confidential or privileged.=
- If you have received this electronic mail transmission in error, please de=
-lete it from your system without copying or forwarding it, and notify the s=
-ender of the error by reply email so that the sender's address records can =
-be corrected. The views expressed by the sender of this communication do no=
-t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
-reserves the right to monitor e-mail communications passing through its net=
-work
+The kernel has to be bisectable, you patches should not break
+bisectability.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
