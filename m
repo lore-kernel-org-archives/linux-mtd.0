@@ -1,14 +1,14 @@
 Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz130-0006mU-74
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 05:42:15 +0000
+	id 1Oz1Xk-0005HV-0o
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 06:14:01 +0000
 From: Jon Povey <Jon.Povey@racelogic.co.uk>
 To: Mike Frysinger <vapier@gentoo.org>
 Content-Class: urn:content-classes:message
-Date: Fri, 24 Sep 2010 06:42:09 +0100
-Subject: RE: [PATCH 4/4] mtd-utils: unify flash_erase and flash_eraseall
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9E@Cloud.RL.local>
-In-Reply-To: <AANLkTim3U4i0y0jtV1SmJvGUR8vAiyiqv8HetVHXFN6a@mail.gmail.com>
+Date: Fri, 24 Sep 2010 07:13:56 +0100
+Subject: RE: [PATCH 3/4] mtd-utils: new strtoX helpers
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9F@Cloud.RL.local>
+In-Reply-To: <AANLkTik6reUk+FiAZO91qdM0V07-QBsys+-eYmbbnXk6@mail.gmail.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -24,17 +24,31 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Mike Frysinger wrote:
-> On Fri, Sep 24, 2010 at 00:35, Jon Povey wrote:
-
->> But anyway; will the flash_eraseall script still get installed by
->> make install? it needs to.
+> On Fri, Sep 24, 2010 at 00:31, Jon Povey wrote:
+>> linux-mtd-bounces@lists.infradead.org wrote:
+>>> Simply usage of converting strings to numbers by adding some
+>>> wrappers around the standard strtoX functions.  These helpers
+>>> support both hex and dec numbers transparently, and the caller need
+>>> only provide a ptr to an error integer if they want to be notified
+>>> of problems.
+>>
+>>> + */ +#define simple_strtoX(func, type) \
+>>> +static inline type simple_##func(const char *snum, int *error) \
+>>> +{ \
+>>
+>> Why inline? won't this bloat code, better to remove inline?
 >
-> it will not, but i didnt think that to be too much of a problem.
-> people usually dont use `make install` for their embedded system ...
-> they pluck out the one or two utils they actually need.
+> because uninlined static definitions will generate unused warnings
 
-"I suppose" is not much of an argument for breaking make install.
-It can be made to work.. I could do this but don't have time right now.
+you could do
+__attribute__((unused)) static type simple_##func(...
+
+I assume the compiler will still optimise them away, not sure.
+
+but with the 0xnn handling going away, does this header now offer
+much over just calling strtol et al directly?
+
+I'd argue it just adds complexity and maintainence hassle.
 
 --
 Jon Povey
