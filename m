@@ -1,21 +1,21 @@
-Received: from mail-px0-f177.google.com ([209.85.212.177])
+Received: from co202.xi-lite.net ([149.6.83.202])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz7bn-0007vz-9i
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 12:42:36 +0000
-Received: by pxi4 with SMTP id 4so1012675pxi.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Sep 2010 05:42:33 -0700 (PDT)
+	id 1OzAFS-0003c6-Hr
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 15:31:43 +0000
+Message-ID: <4C9CC455.3000404@parrot.com>
+Date: Fri, 24 Sep 2010 17:31:33 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9E@Cloud.RL.local>
-References: <AANLkTim3U4i0y0jtV1SmJvGUR8vAiyiqv8HetVHXFN6a@mail.gmail.com>
-	<70E876B0EA86DD4BAF101844BC814DFE093ED5FC9E@Cloud.RL.local>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 24 Sep 2010 08:42:13 -0400
-Message-ID: <AANLkTin1sWJsqDL3dbWMd6-cqX_b8Wi82hZ0=CRekNrm@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mtd-utils: unify flash_erase and flash_eraseall
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-Content-Type: text/plain; charset=UTF-8
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: ubifs : corruption after power cut test
+References: <4C346D5B.2000609@parrot.com> <4C3C1572.8080501@parrot.com>	
+	<4C3C2740.2040105@parrot.com> <4C3C30D1.9030005@parrot.com>	
+	<1279031064.31639.90.camel@localhost>
+	<4C3C81E3.3030407@parrot.com>	 <4C4FDEF5.2040405@parrot.com>
+	<1282463086.16502.38.camel@brekeke>
+In-Reply-To: <1282463086.16502.38.camel@brekeke>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,21 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 24, 2010 at 01:42, Jon Povey wrote:
-> Mike Frysinger wrote:
->> On Fri, Sep 24, 2010 at 00:35, Jon Povey wrote:
->>> But anyway; will the flash_eraseall script still get installed by
->>> make install? it needs to.
->>
->> it will not, but i didnt think that to be too much of a problem.
->> people usually dont use `make install` for their embedded system ...
->> they pluck out the one or two utils they actually need.
->
-> "I suppose" is not much of an argument for breaking make install.
-> It can be made to work.. I could do this but don't have time right now.
+Artem Bityutskiy a écrit :
+> On Wed, 2010-07-28 at 09:40 +0200, Matthieu CASTET wrote:
+>> I manage to reproduce it with the backtrace [1].
+> 
+> Matthieu, your work-around patch or something very close should
+> certainly be applied to the UBIFS tree, but I still would like to find
+> out what exactly happened in your setup.
+> 
+> I see 2 possibilities:
+> 
+> 1. An error happened and 'ubifs_garbage_collect()' returned while
+> c->gc_lnum was -1. But in this case we should have switched to R/O mode,
+> and the master node would not be written. But may be for some reasons we
+> did not switch to R/O mode, dunno.
+> 
+> 2. More likely scenario: in 'ubifs_rcvry_gc_commit()' we call
+> 'ubifs_garbage_collect_leb()' directly, which can return while
+> c->gc_lnum is -1. And we do not handle this.
+> 
+> Would you please be patient enough to reproduce the issue once again with
+> the following patch, which was created against the latest ubifs-2.6.git, but
+> you should be easily able to apply it to your tree.
+None of these check happen.
 
-you call it "breakage", i call it "intended behavior"
+only the dump in ubifs_write_master.
 
-it's trivial to make it work as a one off:
-+install: TARGETS += flash_eraseall
--mike
+
+Matthieu
