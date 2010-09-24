@@ -1,15 +1,15 @@
 Received: from relay2.mail.timico.net ([62.121.20.90] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyzwZ-00010D-0h
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 04:31:31 +0000
+	id 1Oz004-000252-Mn
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 04:35:09 +0000
 From: Jon Povey <Jon.Povey@racelogic.co.uk>
 To: Mike Frysinger <vapier@gentoo.org>, "linux-mtd@lists.infradead.org"
 	<linux-mtd@lists.infradead.org>
 Content-Class: urn:content-classes:message
-Date: Fri, 24 Sep 2010 05:31:26 +0100
-Subject: RE: [PATCH 3/4] mtd-utils: new strtoX helpers
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9B@Cloud.RL.local>
-In-Reply-To: <1285293221-25028-3-git-send-email-vapier@gentoo.org>
+Date: Fri, 24 Sep 2010 05:35:05 +0100
+Subject: RE: [PATCH 4/4] mtd-utils: unify flash_erase and flash_eraseall
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9C@Cloud.RL.local>
+In-Reply-To: <1285293221-25028-4-git-send-email-vapier@gentoo.org>
 Content-Language: en-US
 Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
@@ -24,23 +24,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 linux-mtd-bounces@lists.infradead.org wrote:
-> Simply usage of converting strings to numbers by adding some wrappers
-> around the standard strtoX functions.  These helpers support both hex
-> and dec numbers transparently, and the caller need only provide a ptr
-> to an error integer if they want to be notified of problems.
+> These have overlapping functionality, and while
+> flash_eraseall supports
+> newer 64bit ioctls, flash_erase does not.  So rather than
+> graft support
+> onto flash_erase, merge the functionality of two into
+> flash_erase so we
+> only have to support one util from now on.
+>
+> A simple wrapper is provided to ease old flash_eraseall users into the
+> new combined flash_erase util.
 
-> + */ +#define simple_strtoX(func, type) \
-> +static inline type simple_##func(const char *snum, int *error) \ +{ \
 
-Why inline? won't this bloat code, better to remove inline?
+> -TARGETS =3D ftl_format flash_erase flash_eraseall nanddump
+> doc_loadbios \ +TARGETS =3D ftl_format flash_erase nanddump
+>         doc_loadbios \ ftl_check mkfs.jffs2 flash_lock flash_unlock
+>         flash_info \ flash_otp_info flash_otp_dump mtd_debug flashcp
+> nandwrite nandtest \
+>         jffs2dump \
 
-> +       if (snum[0] =3D=3D '0' && snum[1] =3D=3D 'x') \
-> +               ret =3D func(snum, &endptr, 16); \
-> +       else \
-> +               ret =3D func(snum, &endptr, 10); \
+Wow, my mailer really mangles patches.
 
-Can just call strtol etc. with 0 instead of 10 or 16, it will autodetect
-0xnnn as base 16.
+But anyway; will the flash_eraseall script still get installed by
+make install? it needs to.
 
 --
 Jon Povey
