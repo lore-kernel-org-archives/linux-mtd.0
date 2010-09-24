@@ -1,16 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyxRM-0004zX-9o
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 01:51:09 +0000
+	id 1OyxRi-00058C-Kf
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 01:51:31 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 372641B40BB
+	by smtp.gentoo.org (Postfix) with ESMTP id 8502D1B412F
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Sep 2010 01:51:05 +0000 (UTC)
+	Fri, 24 Sep 2010 01:51:29 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] libmtd: unify erase block argument checking
-Date: Thu, 23 Sep 2010 21:51:53 -0400
-Message-Id: <1285293113-24844-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] mtd-utils: convert to common.h/min
+Date: Thu, 23 Sep 2010 21:52:17 -0400
+Message-Id: <1285293137-24887-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,131 +20,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Kill off duplicated min() defines and convert to the common.h one.
+
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- lib/libmtd.c |   68 +++++++++++++++++++++++++++------------------------------
- 1 files changed, 32 insertions(+), 36 deletions(-)
+ compr_zlib.c     |    3 +--
+ include/common.h |    1 +
+ jffs-dump.c      |    4 ++--
+ mkfs.jffs2.c     |    3 ++-
+ recv_image.c     |    2 +-
+ 5 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 0010790..d57ae8f 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -791,19 +791,27 @@ int mtd_get_dev_info(libmtd_t desc, const char *node, struct mtd_dev_info *mtd)
- 	return mtd_get_dev_info1(desc, mtd_num, mtd);
- }
+diff --git a/compr_zlib.c b/compr_zlib.c
+index dda3e40..0564f16 100644
+--- a/compr_zlib.c
++++ b/compr_zlib.c
+@@ -39,10 +39,9 @@
+ #include <stdio.h>
+ #include <asm/types.h>
+ #include <linux/jffs2.h>
++#include "common.h"
+ #include "compr.h"
  
--int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
-+static int mtd_valid_erase_block(const struct mtd_dev_info *mtd, int eb)
- {
--	int ret;
--	struct libmtd *lib = (struct libmtd *)desc;
--	struct erase_info_user64 ei64;
--	struct erase_info_user ei;
+-#define min(x,y) ((x)<(y)?(x):(y))
 -
- 	if (eb < 0 || eb >= mtd->eb_cnt) {
- 		errmsg("bad eraseblock number %d, mtd%d has %d eraseblocks",
- 		       eb, mtd->mtd_num, mtd->eb_cnt);
- 		errno = EINVAL;
- 		return -1;
- 	}
-+	return 0;
-+}
+ /* Plan: call deflate() with avail_in == *sourcelen,
+    avail_out = *dstlen - 12 and flush == Z_FINISH.
+    If it doesn't manage to finish,	call it again with
+diff --git a/include/common.h b/include/common.h
+index 03e6f7c..f2b7b6b 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -34,6 +34,7 @@ extern "C" {
+ #endif
+ 
+ #define MIN(a ,b) ((a) < (b) ? (a) : (b))
++#define min(a, b) MIN(a, b) /* glue for linux kernel source */
+ #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+ 
+ /* Verbose messages */
+diff --git a/jffs-dump.c b/jffs-dump.c
+index 31cdad2..3176469 100644
+--- a/jffs-dump.c
++++ b/jffs-dump.c
+@@ -14,6 +14,8 @@
+ #include <linux/types.h>
+ #include <asm/byteorder.h>
+ 
++#include "common.h"
 +
-+int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
-+{
-+	int ret;
-+	struct libmtd *lib = (struct libmtd *)desc;
-+	struct erase_info_user64 ei64;
-+	struct erase_info_user ei;
+ #define BLOCK_SIZE 1024
+ #define JFFS_MAGIC 0x34383931 /* "1984" */
+ #define JFFS_MAX_NAME_LEN 256
+@@ -32,8 +34,6 @@
+ #define JFFS_MAGIC_BITMASK 0x34383931
+ #define JFFS_DIRTY_BITMASK 0x00000000
+ 
+-#define min(x,y) (x) > (y) ? (y) : (x)
+-
+ struct jffs_raw_inode
+ {
+ 	uint32_t magic;    /* A constant magic number.  */
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index 5c18eb1..c83b725 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -72,13 +72,14 @@
+ #include <crc32.h>
+ #include "rbtree.h"
+ 
++#include "common.h"
 +
-+	ret = mtd_valid_erase_block(mtd, eb);
-+	if (ret)
-+		return ret;
+ /* Do not use the weird XPG version of basename */
+ #undef basename
  
- 	ei64.start = (__u64)eb * mtd->eb_size;
- 	ei64.length = mtd->eb_size;
-@@ -930,12 +938,9 @@ int mtd_is_bad(const struct mtd_dev_info *mtd, int fd, int eb)
- 	int ret;
- 	loff_t seek;
+ //#define DMALLOC
+ //#define mkfs_debug_msg    error_msg
+ #define mkfs_debug_msg(a...)	{ }
+-#define min(x,y) ({ typeof((x)) _x = (x); typeof((y)) _y = (y); (_x>_y)?_y:_x; })
  
--	if (eb < 0 || eb >= mtd->eb_cnt) {
--		errmsg("bad eraseblock number %d, mtd%d has %d eraseblocks",
--		       eb, mtd->mtd_num, mtd->eb_cnt);
--		errno = EINVAL;
--		return -1;
--	}
-+	ret = mtd_valid_erase_block(mtd, eb);
-+	if (ret)
-+		return ret;
+ #define PAD(x) (((x)+3)&~3)
  
- 	if (!mtd->bb_allowed)
- 		return 0;
-@@ -958,12 +963,9 @@ int mtd_mark_bad(const struct mtd_dev_info *mtd, int fd, int eb)
- 		return -1;
- 	}
+diff --git a/recv_image.c b/recv_image.c
+index 617711c..6d27f3b 100644
+--- a/recv_image.c
++++ b/recv_image.c
+@@ -20,7 +20,7 @@
+ #include "mtd/mtd-user.h"
+ #include "mcast_image.h"
  
--	if (eb < 0 || eb >= mtd->eb_cnt) {
--		errmsg("bad eraseblock number %d, mtd%d has %d eraseblocks",
--		       eb, mtd->mtd_num, mtd->eb_cnt);
--		errno = EINVAL;
--		return -1;
--	}
-+	ret = mtd_valid_erase_block(mtd, eb);
-+	if (ret)
-+		return ret;
+-#define min(x,y) (  (x)>(y)?(y):(x) )
++#include "common.h"
  
- 	seek = (loff_t)eb * mtd->eb_size;
- 	ret = ioctl(fd, MEMSETBADBLOCK, &seek);
-@@ -979,12 +981,10 @@ int mtd_read(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
- 	int ret, rd = 0;
- 	off_t seek;
- 
--	if (eb < 0 || eb >= mtd->eb_cnt) {
--		errmsg("bad eraseblock number %d, mtd%d has %d eraseblocks",
--		       eb, mtd->mtd_num, mtd->eb_cnt);
--		errno = EINVAL;
--		return -1;
--	}
-+	ret = mtd_valid_erase_block(mtd, eb);
-+	if (ret)
-+		return ret;
-+
- 	if (offs < 0 || offs + len > mtd->eb_size) {
- 		errmsg("bad offset %d or length %d, mtd%d eraseblock size is %d",
- 		       offs, len, mtd->mtd_num, mtd->eb_size);
-@@ -1015,12 +1015,10 @@ int mtd_write(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
- 	int ret;
- 	off_t seek;
- 
--	if (eb < 0 || eb >= mtd->eb_cnt) {
--		errmsg("bad eraseblock number %d, mtd%d has %d eraseblocks",
--		       eb, mtd->mtd_num, mtd->eb_cnt);
--		errno = EINVAL;
--		return -1;
--	}
-+	ret = mtd_valid_erase_block(mtd, eb);
-+	if (ret)
-+		return ret;
-+
- 	if (offs < 0 || offs + len > mtd->eb_size) {
- 		errmsg("bad offset %d or length %d, mtd%d eraseblock size is %d",
- 		       offs, len, mtd->mtd_num, mtd->eb_size);
-@@ -1157,12 +1155,10 @@ int mtd_write_img(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
- 	struct stat st;
- 	char *buf;
- 
--	if (eb < 0 || eb >= mtd->eb_cnt) {
--		errmsg("bad eraseblock number %d, mtd%d has %d eraseblocks",
--		       eb, mtd->mtd_num, mtd->eb_cnt);
--		errno = EINVAL;
--		return -1;
--	}
-+	ret = mtd_valid_erase_block(mtd, eb);
-+	if (ret)
-+		return ret;
-+
- 	if (offs < 0 || offs >= mtd->eb_size) {
- 		errmsg("bad offset %d, mtd%d eraseblock size is %d",
- 		       offs, mtd->mtd_num, mtd->eb_size);
+ #define WBUF_SIZE 4096
+ struct eraseblock {
 -- 
 1.7.3
