@@ -1,19 +1,19 @@
-Received: from mail.kernelconcepts.de ([212.60.202.196])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz5QI-0006Sw-8d
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 10:22:35 +0000
-Message-ID: <4C9C7BF0.1040701@kernelconcepts.de>
-Date: Fri, 24 Sep 2010 12:22:40 +0200
-From: Nils Faerber <nils.faerber@kernelconcepts.de>
+Received: from if05-mail-sr05-mia.mta.terra.com ([208.84.243.62])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oz5xS-0004U7-JZ
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 10:56:53 +0000
+Message-ID: <DB610A768D2B46C7A888B2DBECEBEC79@THOR>
+From: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+To: "Guillaume LECERF" <glecerf@gmail.com>
+References: <E73F778B634944A0B8D4333B7BD012E4@THOR><AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com><74A5BE60138147F696E151AACD52EDEE@THOR><AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com><D3A375B91F5944B38630B07214914DF8@THOR><AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com><341EADF720C14B4F86C63204D9C60723@THOR><AANLkTikXbKZLFOCBDkrwgVPJEYTwF88xBtYFnwaTQH+5@mail.gmail.com><6E1A182A06054C5A99BD3C0D3202C24F@THOR>
+	<AANLkTi=qZ_wYcHHfKjaJsvf-ODgnECDOTEHmuorpA7K2@mail.gmail.com>
+In-Reply-To: <AANLkTi=qZ_wYcHHfKjaJsvf-ODgnECDOTEHmuorpA7K2@mail.gmail.com>
+Subject: Re: [Help] SST39VF6401B Support
+Date: Fri, 24 Sep 2010 07:56:19 -0300
 MIME-Version: 1.0
-To: Nicolas Pitre <nico@fluxnic.net>
-Subject: Re: NAND on MV78100
-References: <4C9B0CE3.6040703@kernelconcepts.de>
-	<alpine.LFD.2.00.1009231500430.13233@xanadu.home>
-In-Reply-To: <alpine.LFD.2.00.1009231500430.13233@xanadu.home>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; format=flowed; charset="UTF-8"; reply-type=original
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Yegor Yefremov <yegorslists@googlemail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 23.09.2010 21:07, schrieb Nicolas Pitre:
-> On Thu, 23 Sep 2010, Nils Faerber wrote:
->> I am currently working on board support for a Marvell MV78100 based
->> board. The MV78100 uses the same Orion SOC components as e.g. the
->> Kirkwood which is quite well supported from OpenRD and SheevaPlug.
->>
->> After some struggling I got the Orion NAND driver working, it detects
->> the NAND chip properly (512MB) and assigns a partition. Everything seems
->> OK so far.
->>
->> But when I read from the device, e.g. just by "cat /dev/mtdblock1 | wc
->> -c" it starts to fail with "uncorrectable error" after exactly 1MB
->> (1024*1024).
-> 
-> This is most likely due to a difference in the ECC model used.
-> The quick "fix" would be to reformat the NAND (at least from the offset 
-> where it fails) using the Linux supported 1-bit ECC.
-> The Marvell LSPs (and most unfortunately the bootrom) are using a 
-> 4-bit software ECC implementation that is poorly optimized, and layered 
-> backward.
+Hi Guillaume,
 
-This could be the reason since the Marvell LSP kernel was used before on
-this board.
-Reformatting means flash_erase?
-I was scared to hose my flash by wrongly erasing it so I tried reading
-only first ;)
+  I tried another router firmware with kernel 2.6.34.5, downloaded 
+mtd-2.6.git and pasted chips folder and "linux/mtd" headers, applied your 
+last patch and kernel compiled fine.
+  I've also enabled debug in kernel and cfi. Should I paste console log in 
+message body or should I attach a file with the log?
+  I had an error but I don't know if it's related to mtd or the firmware, 
+because my router is not officialy supported.
 
-But after your assurance I tried to flash_eraseall one partition and see
-- yeha, works!
+Regards,
+  Flavio
 
-Now I just might have another issue - since I do not know some of the
-board's details like RAM timing and I do not have a proper JTAG setup I
-do not want to touch the pre-installed Marvell-based U-Boot. But U-Boot
-shall read the at least the kernel from the NAND. But I would guess that
-since the ECC is different it will not work that easily?
-Well, as fallback we still have a NOR flash which could hold the kernel.
+----- Original Message ----- 
+From: "Guillaume LECERF" <glecerf@gmail.com>
+To: "Flávio Silveira" <fggs@terra.com.br>
+Cc: <linux-mtd@lists.infradead.org>; "Yegor Yefremov" 
+<yegorslists@googlemail.com>
+Sent: Thursday, September 23, 2010 12:33 PM
+Subject: Re: [Help] SST39VF6401B Support
 
-Ah, just tried and see - the Marvell UBoot obviously ignores the ECC
-when reading - perfect ;)
 
-Thank you!
+2010/9/23 Flávio Silveira <fggs@terra.com.br>:
+> I think I might found something:
+>
+> In cfi_probe.c, starting at line 222, there are these lines:
+>
+> cfi_send_gen_cmd(0xaa, addr_unlock1, base, map, cfi, cfi->device_type,
+> NULL);
+> cfi_send_gen_cmd(0x55, addr_unlock2, base, map, cfi, cfi->device_type,
+> NULL);
+> cfi_send_gen_cmd(0x90, addr_unlock1, base, map, cfi, cfi->device_type,
+> NULL);
+>
+> Which seems the correct way to CFI query the chip, but the last line is
+> 0x90.
+> Datasheet states that 0x90 is Software ID and CFI Query Entry is 0x98
+>
+> Could that be the problem?
 
-> Nicolas
-Cheers
-  nils
+No. This snippet comes from the function in charge of identifying the
+chip and its capacities.
+
+CFI Query Entry (0x98) is handled by cfi_qry_mode_on() in cfi_util.c.
+Humm...
+Could you try the attached patch ?
 
 -- 
-kernel concepts GbR      Tel: +49-271-771091-12
-Sieghuetter Hauptweg 48  Fax: +49-271-771091-19
-D-57072 Siegen           Mob: +49-176-21024535
-http://www.kernelconcepts.de
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
+
+
+
+--------------------------------------------------------------------------------
+
+
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
