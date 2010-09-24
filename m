@@ -1,19 +1,19 @@
 Received: from mail-qy0-f177.google.com ([209.85.216.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz0wt-0005Xr-HE
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 05:35:56 +0000
-Received: by qyk34 with SMTP id 34so3789242qyk.15
+	id 1Oz0y8-0005cV-Om
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 05:37:13 +0000
+Received: by qyk34 with SMTP id 34so3790453qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Sep 2010 22:35:55 -0700 (PDT)
+	Thu, 23 Sep 2010 22:37:12 -0700 (PDT)
 MIME-Version: 1.0
 Sender: vapier.adi@gmail.com
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9B@Cloud.RL.local>
-References: <1285293221-25028-3-git-send-email-vapier@gentoo.org>
-	<70E876B0EA86DD4BAF101844BC814DFE093ED5FC9B@Cloud.RL.local>
+In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE093ED5FC9C@Cloud.RL.local>
+References: <1285293221-25028-4-git-send-email-vapier@gentoo.org>
+	<70E876B0EA86DD4BAF101844BC814DFE093ED5FC9C@Cloud.RL.local>
 From: Mike Frysinger <vapier@gentoo.org>
-Date: Fri, 24 Sep 2010 01:35:34 -0400
-Message-ID: <AANLkTik6reUk+FiAZO91qdM0V07-QBsys+-eYmbbnXk6@mail.gmail.com>
-Subject: Re: [PATCH 3/4] mtd-utils: new strtoX helpers
+Date: Fri, 24 Sep 2010 01:36:51 -0400
+Message-ID: <AANLkTim3U4i0y0jtV1SmJvGUR8vAiyiqv8HetVHXFN6a@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mtd-utils: unify flash_erase and flash_eraseall
 To: Jon Povey <Jon.Povey@racelogic.co.uk>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -27,30 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 24, 2010 at 00:31, Jon Povey wrote:
+On Fri, Sep 24, 2010 at 00:35, Jon Povey wrote:
 > linux-mtd-bounces@lists.infradead.org wrote:
->> Simply usage of converting strings to numbers by adding some wrappers
->> around the standard strtoX functions. =C2=A0These helpers support both h=
-ex
->> and dec numbers transparently, and the caller need only provide a ptr
->> to an error integer if they want to be notified of problems.
+>> These have overlapping functionality, and while
+>> flash_eraseall supports
+>> newer 64bit ioctls, flash_erase does not. =C2=A0So rather than
+>> graft support
+>> onto flash_erase, merge the functionality of two into
+>> flash_erase so we
+>> only have to support one util from now on.
+>>
+>> A simple wrapper is provided to ease old flash_eraseall users into the
+>> new combined flash_erase util.
 >
->> + */ +#define simple_strtoX(func, type) \
->> +static inline type simple_##func(const char *snum, int *error) \ +{ \
+>> -TARGETS =3D ftl_format flash_erase flash_eraseall nanddump
+>> doc_loadbios \ +TARGETS =3D ftl_format flash_erase nanddump
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 doc_loadbios \ ftl_check mkfs.jffs2 flash_lo=
+ck flash_unlock
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 flash_info \ flash_otp_info flash_otp_dump m=
+td_debug flashcp
+>> nandwrite nandtest \
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A0 jffs2dump \
 >
-> Why inline? won't this bloat code, better to remove inline?
+> But anyway; will the flash_eraseall script still get installed by
+> make install? it needs to.
 
-because uninlined static definitions will generate unused warnings
-
->> + =C2=A0 =C2=A0 =C2=A0 if (snum[0] =3D=3D '0' && snum[1] =3D=3D 'x') \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D func(snum, &e=
-ndptr, 16); \
->> + =C2=A0 =C2=A0 =C2=A0 else \
->> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ret =3D func(snum, &e=
-ndptr, 10); \
->
-> Can just call strtol etc. with 0 instead of 10 or 16, it will autodetect
-> 0xnnn as base 16.
-
-true ... i'll fix that up
+it will not, but i didnt think that to be too much of a problem.
+people usually dont use `make install` for their embedded system ...
+they pluck out the one or two utils they actually need.
 -mike
