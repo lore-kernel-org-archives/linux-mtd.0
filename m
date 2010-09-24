@@ -1,17 +1,26 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
+Received: from mailout4.samsung.com ([203.254.224.34])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz6UN-0002Hs-Op
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 11:30:52 +0000
-Received: by qyk34 with SMTP id 34so4203004qyk.15
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Sep 2010 04:30:50 -0700 (PDT)
-From: Huang Shijie <shijie8@gmail.com>
-To: David.Woodhouse@intel.com
-Subject: [PATCH] mtd : add init_size hook for NAND driver
-Date: Fri, 24 Sep 2010 19:34:23 +0800
-Message-Id: <1285328063-7982-1-git-send-email-shijie8@gmail.com>
-Cc: Huang Shijie <shijie8@gmail.com>, akpm@linux-foundation.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+	id 1Oz6dS-0008UZ-8v
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 11:40:15 +0000
+Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L99002541R0KL00@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 20:40:12 +0900 (KST)
+Received: from roh83 ([107.108.214.183])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L9900CDA1QY9X@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 20:40:12 +0900 (KST)
+Date: Fri, 24 Sep 2010 17:10:10 +0530
+From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
+Subject: [PATCH RESEND][MTD]MLC device check in OneNAND driver
+To: dedekind1@gmail.com, linux-mtd@lists.infradead.org
+Message-id: <001701cb5bdd$3fd69a80$bf83cf80$%hs@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-language: en-us
+Content-transfer-encoding: 7BIT
+Cc: v.dalal@samsung.com, gupta.raghav@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Not all the NAND devices have all the information in additional
-id bytes.
-
-So add a hook in the nand_chip{} is a good method to calculate the
-right value of oobsize, erasesize and so on.
-
-Without the hook,you will get the wrong value, and you have to hack
-in the ->scan_bbt() to change the wrong value which make the code
-mess.
-
-Signed-off-by: Huang Shijie <shijie8@gmail.com>
+Signed-off-by: Rohit HS <rohit.hs@samsung.com>
+Signed-off-by: Raghav Gupta <gupta.raghav@samsung.com>
 ---
- drivers/mtd/nand/nand_base.c |    6 ++++--
- include/linux/mtd/nand.h     |    5 +++++
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |    2 +-
+ include/mtd/mtd-abi.h              |    1 +
+ 2 files changed, 2 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index d551ddd..0288f1f 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2848,8 +2848,10 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index a2bb520..33e0dbb 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -4027,7 +4027,7 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+ 	mtd->ecclayout = this->ecclayout;
  
- 	chip->chipsize = (uint64_t)type->chipsize << 20;
+ 	/* Fill in remaining MTD driver data */
+-	mtd->type = MTD_NANDFLASH;
++	mtd->type = ONENAND_IS_MLC(this) ? MTD_MLCNANDFLASH : MTD_NANDFLASH;
+ 	mtd->flags = MTD_CAP_NANDFLASH;
+ 	mtd->erase = onenand_erase;
+ 	mtd->point = NULL;
+diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
+index 4debb45..8d8161c 100644
+--- a/include/mtd/mtd-abi.h
++++ b/include/mtd/mtd-abi.h
+@@ -52,6 +52,7 @@ struct mtd_oob_buf64 {
+ #define MTD_NANDFLASH		4
+ #define MTD_DATAFLASH		6
+ #define MTD_UBIVOLUME		7
++#define MTD_MLCNANDFLASH	8
  
--	/* Newer devices have all the information in additional id bytes */
--	if (!type->pagesize) {
-+	if (!type->pagesize && chip->init_size) {
-+		/* set the pagesize, oobsize, erasesize by the driver*/
-+		busw = chip->init_size(mtd, chip);
-+	} else if (!type->pagesize) {
- 		int extid;
- 		/* The 3rd id byte holds MLC / multichip data */
- 		chip->cellinfo = id_data[2];
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 102e12c..2296a7a 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -332,6 +332,9 @@ struct nand_buffers {
-  * @block_markbad:	[REPLACEABLE] mark the block bad
-  * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific funtion for controlling
-  *			ALE/CLE/nCE. Also used to write command and address
-+ * @init_size:		[BOARDSPECIFIC] hardwarespecific funtion for setting
-+ *			mtd->oobsize, mtd->writesize and so on.
-+ *			Return with the bus width.
-  * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accesing device ready/busy line
-  *			If set to NULL no access to ready/busy is available and the ready/busy information
-  *			is read from the chip status register
-@@ -386,6 +389,8 @@ struct nand_chip {
- 	int		(*block_markbad)(struct mtd_info *mtd, loff_t ofs);
- 	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
- 				    unsigned int ctrl);
-+	int		(*init_size)(struct mtd_info *mtd,
-+					struct nand_chip *this);
- 	int		(*dev_ready)(struct mtd_info *mtd);
- 	void		(*cmdfunc)(struct mtd_info *mtd, unsigned command, int column, int page_addr);
- 	int		(*waitfunc)(struct mtd_info *mtd, struct nand_chip *this);
+ #define MTD_WRITEABLE		0x400	/* Device is writeable */
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
 -- 
-1.7.2.2
+1.6.6.1
