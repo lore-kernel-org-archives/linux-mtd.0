@@ -1,19 +1,17 @@
-Received: from if05-mail-sr05-mia.mta.terra.com ([208.84.243.62])
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz5xS-0004U7-JZ
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 10:56:53 +0000
-Message-ID: <DB610A768D2B46C7A888B2DBECEBEC79@THOR>
-From: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
-To: "Guillaume LECERF" <glecerf@gmail.com>
-References: <E73F778B634944A0B8D4333B7BD012E4@THOR><AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com><74A5BE60138147F696E151AACD52EDEE@THOR><AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com><D3A375B91F5944B38630B07214914DF8@THOR><AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com><341EADF720C14B4F86C63204D9C60723@THOR><AANLkTikXbKZLFOCBDkrwgVPJEYTwF88xBtYFnwaTQH+5@mail.gmail.com><6E1A182A06054C5A99BD3C0D3202C24F@THOR>
-	<AANLkTi=qZ_wYcHHfKjaJsvf-ODgnECDOTEHmuorpA7K2@mail.gmail.com>
-In-Reply-To: <AANLkTi=qZ_wYcHHfKjaJsvf-ODgnECDOTEHmuorpA7K2@mail.gmail.com>
-Subject: Re: [Help] SST39VF6401B Support
-Date: Fri, 24 Sep 2010 07:56:19 -0300
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"; reply-type=original
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Yegor Yefremov <yegorslists@googlemail.com>
+	id 1Oz6UN-0002Hs-Op
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 11:30:52 +0000
+Received: by qyk34 with SMTP id 34so4203004qyk.15
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Sep 2010 04:30:50 -0700 (PDT)
+From: Huang Shijie <shijie8@gmail.com>
+To: David.Woodhouse@intel.com
+Subject: [PATCH] mtd : add init_size hook for NAND driver
+Date: Fri, 24 Sep 2010 19:34:23 +0800
+Message-Id: <1285328063-7982-1-git-send-email-shijie8@gmail.com>
+Cc: Huang Shijie <shijie8@gmail.com>, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +21,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Guillaume,
+Not all the NAND devices have all the information in additional
+id bytes.
 
-  I tried another router firmware with kernel 2.6.34.5, downloaded 
-mtd-2.6.git and pasted chips folder and "linux/mtd" headers, applied your 
-last patch and kernel compiled fine.
-  I've also enabled debug in kernel and cfi. Should I paste console log in 
-message body or should I attach a file with the log?
-  I had an error but I don't know if it's related to mtd or the firmware, 
-because my router is not officialy supported.
+So add a hook in the nand_chip{} is a good method to calculate the
+right value of oobsize, erasesize and so on.
 
-Regards,
-  Flavio
+Without the hook,you will get the wrong value, and you have to hack
+in the ->scan_bbt() to change the wrong value which make the code
+mess.
 
------ Original Message ----- 
-From: "Guillaume LECERF" <glecerf@gmail.com>
-To: "Flávio Silveira" <fggs@terra.com.br>
-Cc: <linux-mtd@lists.infradead.org>; "Yegor Yefremov" 
-<yegorslists@googlemail.com>
-Sent: Thursday, September 23, 2010 12:33 PM
-Subject: Re: [Help] SST39VF6401B Support
+Signed-off-by: Huang Shijie <shijie8@gmail.com>
+---
+ drivers/mtd/nand/nand_base.c |    6 ++++--
+ include/linux/mtd/nand.h     |    5 +++++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-
-2010/9/23 Flávio Silveira <fggs@terra.com.br>:
-> I think I might found something:
->
-> In cfi_probe.c, starting at line 222, there are these lines:
->
-> cfi_send_gen_cmd(0xaa, addr_unlock1, base, map, cfi, cfi->device_type,
-> NULL);
-> cfi_send_gen_cmd(0x55, addr_unlock2, base, map, cfi, cfi->device_type,
-> NULL);
-> cfi_send_gen_cmd(0x90, addr_unlock1, base, map, cfi, cfi->device_type,
-> NULL);
->
-> Which seems the correct way to CFI query the chip, but the last line is
-> 0x90.
-> Datasheet states that 0x90 is Software ID and CFI Query Entry is 0x98
->
-> Could that be the problem?
-
-No. This snippet comes from the function in charge of identifying the
-chip and its capacities.
-
-CFI Query Entry (0x98) is handled by cfi_qry_mode_on() in cfi_util.c.
-Humm...
-Could you try the attached patch ?
-
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index d551ddd..0288f1f 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2848,8 +2848,10 @@ static struct nand_flash_dev *nand_get_flash_type(struct mtd_info *mtd,
+ 
+ 	chip->chipsize = (uint64_t)type->chipsize << 20;
+ 
+-	/* Newer devices have all the information in additional id bytes */
+-	if (!type->pagesize) {
++	if (!type->pagesize && chip->init_size) {
++		/* set the pagesize, oobsize, erasesize by the driver*/
++		busw = chip->init_size(mtd, chip);
++	} else if (!type->pagesize) {
+ 		int extid;
+ 		/* The 3rd id byte holds MLC / multichip data */
+ 		chip->cellinfo = id_data[2];
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 102e12c..2296a7a 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -332,6 +332,9 @@ struct nand_buffers {
+  * @block_markbad:	[REPLACEABLE] mark the block bad
+  * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific funtion for controlling
+  *			ALE/CLE/nCE. Also used to write command and address
++ * @init_size:		[BOARDSPECIFIC] hardwarespecific funtion for setting
++ *			mtd->oobsize, mtd->writesize and so on.
++ *			Return with the bus width.
+  * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accesing device ready/busy line
+  *			If set to NULL no access to ready/busy is available and the ready/busy information
+  *			is read from the chip status register
+@@ -386,6 +389,8 @@ struct nand_chip {
+ 	int		(*block_markbad)(struct mtd_info *mtd, loff_t ofs);
+ 	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
+ 				    unsigned int ctrl);
++	int		(*init_size)(struct mtd_info *mtd,
++					struct nand_chip *this);
+ 	int		(*dev_ready)(struct mtd_info *mtd);
+ 	void		(*cmdfunc)(struct mtd_info *mtd, unsigned command, int column, int page_addr);
+ 	int		(*waitfunc)(struct mtd_info *mtd, struct nand_chip *this);
 -- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
-
-
-
---------------------------------------------------------------------------------
-
-
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+1.7.2.2
