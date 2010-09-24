@@ -1,30 +1,19 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Oz5C7-0005Fj-0K
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 10:07:55 +0000
-Received: by iwn36 with SMTP id 36so2691840iwn.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Sep 2010 03:07:54 -0700 (PDT)
+Received: from mail.kernelconcepts.de ([212.60.202.196])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Oz5QI-0006Sw-8d
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 10:22:35 +0000
+Message-ID: <4C9C7BF0.1040701@kernelconcepts.de>
+Date: Fri, 24 Sep 2010 12:22:40 +0200
+From: Nils Faerber <nils.faerber@kernelconcepts.de>
 MIME-Version: 1.0
-In-Reply-To: <1285322197.29268.167.camel@localhost>
-References: <AANLkTikScro_GmWvVb6SCq5wTzMAfN+c_4Od2SBY+OpO@mail.gmail.com>
-	<1283846532.2979.0.camel@localhost>
-	<AANLkTi=mrqg21uOXPJf=dOUq20YD1ocAZJpf1=fodtVM@mail.gmail.com>
-	<1284019747.2979.73.camel@localhost>
-	<AANLkTi=SGuBghcHnFoZfe6j3jVxQbKxzSU7t4z+vwPxc@mail.gmail.com>
-	<1284030609.27765.4.camel@localhost>
-	<AANLkTikhyEJn97McTOSYcAXG11EeqfpXzRUdRqY0_1Sr@mail.gmail.com>
-	<1284033943.27765.22.camel@localhost>
-	<AANLkTimnho0HwowkvcrGV6sWUPT=XOmNjrfpB65O9GjO@mail.gmail.com>
-	<1285322197.29268.167.camel@localhost>
-Date: Fri, 24 Sep 2010 12:07:53 +0200
-Message-ID: <AANLkTinqi7zZsZzsd0PTF=XV5KOp+v2k6woWV4JpV_WX@mail.gmail.com>
-Subject: Re: mks.jffs2 uid/gid for root inode
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David.Woodhouse@intel.com
+To: Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: NAND on MV78100
+References: <4C9B0CE3.6040703@kernelconcepts.de>
+	<alpine.LFD.2.00.1009231500430.13233@xanadu.home>
+In-Reply-To: <alpine.LFD.2.00.1009231500430.13233@xanadu.home>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,37 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/9/24 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Fri, 2010-09-24 at 11:52 +0200, Arno Steffen wrote:
->> 2010/9/9 Artem Bityutskiy <dedekind1@gmail.com>:
->> > On Thu, 2010-09-09 at 13:54 +0200, Arno Steffen wrote:
->> >> Thanks for the patch. But this is for ubifs, while I detected this bu=
-g
->> >> in jffs2 - this is what I am using.
->> >
->> > Oh my god, I really need to start wearing glasses. Sorry. But the same
->> > bug exists in mkfs.ubifs, anyway. Since I'm not interested in JFFS2
->> > anymore, I'm not going to fix it. You can do analogous thing for
->> > mkfs.jffs2, if you wish.
->> >
->> > --
->> > Best Regards,
->> > Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
+Am 23.09.2010 21:07, schrieb Nicolas Pitre:
+> On Thu, 23 Sep 2010, Nils Faerber wrote:
+>> I am currently working on board support for a Marvell MV78100 based
+>> board. The MV78100 uses the same Orion SOC components as e.g. the
+>> Kirkwood which is quite well supported from OpenRD and SheevaPlug.
 >>
->> If it's mkfs.jffs2 is not your fokus, Artem, maybe David can have a look=
- at it.
->> It make sense to keep the same functionality for all mkfs tools.
->
-> May be, unsurprisingly, I have no jurisdiction over him, he is free to
-> do or not to do something for you.
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
->
->
+>> After some struggling I got the Orion NAND driver working, it detects
+>> the NAND chip properly (512MB) and assigns a partition. Everything seems
+>> OK so far.
+>>
+>> But when I read from the device, e.g. just by "cat /dev/mtdblock1 | wc
+>> -c" it starts to fail with "uncorrectable error" after exactly 1MB
+>> (1024*1024).
+> 
+> This is most likely due to a difference in the ECC model used.
+> The quick "fix" would be to reformat the NAND (at least from the offset 
+> where it fails) using the Linux supported 1-bit ECC.
+> The Marvell LSPs (and most unfortunately the bootrom) are using a 
+> 4-bit software ECC implementation that is poorly optimized, and layered 
+> backward.
 
-Hasn't expect an order. Just a broad hint for David ;) (or someone
-else who has the ability).
-If It would be just for me, I wouldn't push. I know that my only
-chance is to argue.
+This could be the reason since the Marvell LSP kernel was used before on
+this board.
+Reformatting means flash_erase?
+I was scared to hose my flash by wrongly erasing it so I tried reading
+only first ;)
+
+But after your assurance I tried to flash_eraseall one partition and see
+- yeha, works!
+
+Now I just might have another issue - since I do not know some of the
+board's details like RAM timing and I do not have a proper JTAG setup I
+do not want to touch the pre-installed Marvell-based U-Boot. But U-Boot
+shall read the at least the kernel from the NAND. But I would guess that
+since the ECC is different it will not work that easily?
+Well, as fallback we still have a NOR flash which could hold the kernel.
+
+Ah, just tried and see - the Marvell UBoot obviously ignores the ECC
+when reading - perfect ;)
+
+Thank you!
+
+> Nicolas
+Cheers
+  nils
+
+-- 
+kernel concepts GbR      Tel: +49-271-771091-12
+Sieghuetter Hauptweg 48  Fax: +49-271-771091-19
+D-57072 Siegen           Mob: +49-176-21024535
+http://www.kernelconcepts.de
