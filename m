@@ -1,16 +1,18 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OyxS8-0005TE-4i
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 01:51:57 +0000
+	id 1OyxT5-0006qu-Dl
+	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 01:52:56 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 1375F1B4095
+	by smtp.gentoo.org (Postfix) with ESMTP id 5BC8B1B410C
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Sep 2010 01:51:54 +0000 (UTC)
+	Fri, 24 Sep 2010 01:52:54 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mkfs.ubifs: use common ARRAY_SIZE
-Date: Thu, 23 Sep 2010 21:52:42 -0400
-Message-Id: <1285293162-24970-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH 2/4] mtd-utils: new bareverbose() helper
+Date: Thu, 23 Sep 2010 21:53:39 -0400
+Message-Id: <1285293221-25028-2-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285293221-25028-1-git-send-email-vapier@gentoo.org>
+References: <1285293221-25028-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Add a new helper that let's people do simple verbose output without any
+implicit strings added around it.  Good for progress bars and such.
+
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- mkfs.ubifs/hashtable/hashtable.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+ include/common.h |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/mkfs.ubifs/hashtable/hashtable.c b/mkfs.ubifs/hashtable/hashtable.c
-index 763357e..b751c62 100644
---- a/mkfs.ubifs/hashtable/hashtable.c
-+++ b/mkfs.ubifs/hashtable/hashtable.c
-@@ -1,5 +1,6 @@
- /* Copyright (C) 2004 Christopher Clark <firstname.lastname@cl.cam.ac.uk> */
+diff --git a/include/common.h b/include/common.h
+index e87b215..11b0cf6 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -38,10 +38,12 @@ extern "C" {
+ #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
  
-+#include "common.h"
- #include "hashtable.h"
- #include "hashtable_private.h"
- #include <stdlib.h>
-@@ -21,7 +22,7 @@ static const unsigned int primes[] = {
- 50331653, 100663319, 201326611, 402653189,
- 805306457, 1610612741
- };
--const unsigned int prime_table_length = sizeof(primes)/sizeof(primes[0]);
-+const unsigned int prime_table_length = ARRAY_SIZE(primes);
- const float max_load_factor = 0.65;
+ /* Verbose messages */
+-#define verbose(verbose, fmt, ...) do {                            \
++#define bareverbose(verbose, fmt, ...) do {                        \
+ 	if (verbose)                                               \
+-		printf(PROGRAM_NAME ": " fmt "\n", ##__VA_ARGS__); \
++		printf(fmt, ##__VA_ARGS__);                        \
+ } while(0)
++#define verbose(verbose, fmt, ...) \
++	bareverbose(verbose, PROGRAM_NAME ": " fmt "\n", ##__VA_ARGS__)
  
- /*****************************************************************************/
+ /* Normal messages */
+ #define normsg(fmt, ...) do {                              \
 -- 
 1.7.3
