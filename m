@@ -1,18 +1,18 @@
-Received: from duck.dooz.org ([194.146.227.125])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OzG53-0007Vd-Et
-	for linux-mtd@lists.infradead.org; Fri, 24 Sep 2010 21:45:22 +0000
-From: =?UTF-8?q?Lo=C3=AFc=20Minier?= <loic.minier@linaro.org>
-To: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org
-Subject: [PATCH] nand: omap2: Missing arg to gpmc_prefetch_reset()
-Date: Fri, 24 Sep 2010 23:45:02 +0200
-Message-Id: <1285364702-13922-1-git-send-email-loic.minier@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: Tony Lindgren <tony@atomide.com>,
-	=?UTF-8?q?Lo=C3=AFc=20Minier?= <loic.minier@linaro.org>,
-	Sukumar Ghorai <s-ghorai@ti.com>
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1OzNsG-0004PA-F7
+	for linux-mtd@lists.infradead.org; Sat, 25 Sep 2010 06:04:40 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 2ABF81B437B
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 25 Sep 2010 06:04:36 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/4 v2] mtd-utils: new bareverbose() helper
+Date: Sat, 25 Sep 2010 02:05:25 -0400
+Message-Id: <1285394725-29738-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285293221-25028-2-git-send-email-vapier@gentoo.org>
+References: <1285293221-25028-2-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix missing cs arg to gpmc_prefetch_reset() when
-CONFIG_MTD_NAND_OMAP_PREFETCH_DMA=y which caused a build failure since
-948d38e799f0ab87cf8ed9113fcdaaee61acf321:
-drivers/mtd/nand/omap2.c: In function 'omap_nand_dma_transfer':
-drivers/mtd/nand/omap2.c:416: error: too few arguments to function 'gpmc_prefetch_reset'
+Add a new helper that lets people do simple verbose output without any
+implicit strings added around it.  Good for progress bars and such.
 
-Signed-off-by: Loïc Minier <loic.minier@linaro.org>
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- drivers/mtd/nand/omap2.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+v2
+	- fix typo in changelog
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 133d515..513e0a7 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -413,7 +413,7 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
- 		prefetch_status = gpmc_read_status(GPMC_PREFETCH_COUNT);
- 	} while (prefetch_status);
- 	/* disable and stop the PFPW engine */
--	gpmc_prefetch_reset();
-+	gpmc_prefetch_reset(info->gpmc_cs);
+ include/common.h |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/include/common.h b/include/common.h
+index e87b215..11b0cf6 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -38,10 +38,12 @@ extern "C" {
+ #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
  
- 	dma_unmap_single(&info->pdev->dev, dma_addr, len, dir);
- 	return 0;
+ /* Verbose messages */
+-#define verbose(verbose, fmt, ...) do {                            \
++#define bareverbose(verbose, fmt, ...) do {                        \
+ 	if (verbose)                                               \
+-		printf(PROGRAM_NAME ": " fmt "\n", ##__VA_ARGS__); \
++		printf(fmt, ##__VA_ARGS__);                        \
+ } while(0)
++#define verbose(verbose, fmt, ...) \
++	bareverbose(verbose, PROGRAM_NAME ": " fmt "\n", ##__VA_ARGS__)
+ 
+ /* Normal messages */
+ #define normsg(fmt, ...) do {                              \
 -- 
-1.7.1
+1.7.2.3
