@@ -1,22 +1,24 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OzSRG-000570-3p
-	for linux-mtd@lists.infradead.org; Sat, 25 Sep 2010 10:57:07 +0000
-Received: by bwz19 with SMTP id 19so3387338bwz.36
+	id 1OzZxz-0000Aw-IQ
+	for linux-mtd@lists.infradead.org; Sat, 25 Sep 2010 18:59:24 +0000
+Received: by wyb38 with SMTP id 38so4185030wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 25 Sep 2010 03:57:05 -0700 (PDT)
-Subject: Re: [PATCH] nandwrite: Remove redundant 'autoplace' check
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
-In-Reply-To: <4C9C6DED.5040200@renesas.com>
-References: <4C9C6DED.5040200@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 25 Sep 2010 13:57:01 +0300
-Message-ID: <1285412221.13050.6.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	Sat, 25 Sep 2010 11:59:22 -0700 (PDT)
+MIME-Version: 1.0
+Sender: vapier.adi@gmail.com
+In-Reply-To: <1285412062.13050.5.camel@brekeke>
+References: <1285293221-25028-3-git-send-email-vapier@gentoo.org>
+	<1285394808-29795-1-git-send-email-vapier@gentoo.org>
+	<1285412062.13050.5.camel@brekeke>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 25 Sep 2010 14:59:02 -0400
+Message-ID: <AANLkTi=q_WSfUGuYSm0andpmrUjD4gFaV9PJ_03zZZ0T@mail.gmail.com>
+Subject: Re: [PATCH 3/4 v2] mtd-utils: new strtoX helpers
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +28,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-09-24 at 18:22 +0900, Shinya Kuribayashi wrote:
-> We're already in 'if (autoplace) { }' block at ths moment.
-> 
-> Signed-off-by: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
-> ---
+On Sat, Sep 25, 2010 at 06:54, Artem Bityutskiy wrote:
+> On Sat, 2010-09-25 at 02:06 -0400, Mike Frysinger wrote:
+>> Simply usage of converting strings to numbers by adding some wrappers
+>> around the standard strtoX functions. =C2=A0These helpers support both h=
+ex
+>> and dec numbers transparently, and the caller need only provide a ptr
+>> to an error integer if they want to be notified of problems.
+>
+> Why do you need a separate file for this? common.h does not suit this?
 
-Pushed, thanks!
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+the expansion of PROGRAM_NAME causes build errors for programs that do
+not define it but include common.h
+-mike
