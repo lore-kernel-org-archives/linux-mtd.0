@@ -1,19 +1,18 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OzSOg-0004Dc-3h
-	for linux-mtd@lists.infradead.org; Sat, 25 Sep 2010 10:54:26 +0000
-Received: by bwz19 with SMTP id 19so3386426bwz.36
+	id 1OzSRG-000570-3p
+	for linux-mtd@lists.infradead.org; Sat, 25 Sep 2010 10:57:07 +0000
+Received: by bwz19 with SMTP id 19so3387338bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 25 Sep 2010 03:54:25 -0700 (PDT)
-Subject: Re: [PATCH 3/4 v2] mtd-utils: new strtoX helpers
+	Sat, 25 Sep 2010 03:57:05 -0700 (PDT)
+Subject: Re: [PATCH] nandwrite: Remove redundant 'autoplace' check
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1285394808-29795-1-git-send-email-vapier@gentoo.org>
-References: <1285293221-25028-3-git-send-email-vapier@gentoo.org>
-	<1285394808-29795-1-git-send-email-vapier@gentoo.org>
+To: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
+In-Reply-To: <4C9C6DED.5040200@renesas.com>
+References: <4C9C6DED.5040200@renesas.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 25 Sep 2010 13:54:22 +0300
-Message-ID: <1285412062.13050.5.camel@brekeke>
+Date: Sat, 25 Sep 2010 13:57:01 +0300
+Message-ID: <1285412221.13050.6.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,18 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-09-25 at 02:06 -0400, Mike Frysinger wrote:
-> Simply usage of converting strings to numbers by adding some wrappers
-> around the standard strtoX functions.  These helpers support both hex
-> and dec numbers transparently, and the caller need only provide a ptr
-> to an error integer if they want to be notified of problems.
+On Fri, 2010-09-24 at 18:22 +0900, Shinya Kuribayashi wrote:
+> We're already in 'if (autoplace) { }' block at ths moment.
 > 
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> Signed-off-by: Shinya Kuribayashi <shinya.kuribayashi.px@renesas.com>
 > ---
-> v2
-> 	- drop redundant parsing logic
 
-Why do you need a separate file for this? common.h does not suit this?
+Pushed, thanks!
 
 -- 
 Best Regards,
