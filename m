@@ -1,26 +1,22 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ozpcm-0001fZ-Sn
-	for linux-mtd@lists.infradead.org; Sun, 26 Sep 2010 11:42:33 +0000
-Received: by bwz19 with SMTP id 19so3858388bwz.36
+	id 1Ozpyu-0001mw-LI
+	for linux-mtd@lists.infradead.org; Sun, 26 Sep 2010 12:05:25 +0000
+Received: by bwz19 with SMTP id 19so3865856bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Sep 2010 04:42:32 -0700 (PDT)
-Subject: Re: [PATCH 3/4 v2] mtd-utils: new strtoX helpers
+	Sun, 26 Sep 2010 05:05:23 -0700 (PDT)
+Subject: Re: [PATCH] mtd : add init_size hook for NAND driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <AANLkTikkS=iZJ5Y37YEeqp+P_5+HXH4DQsVrtOYXuYBu@mail.gmail.com>
-References: <1285293221-25028-3-git-send-email-vapier@gentoo.org>
-	<1285394808-29795-1-git-send-email-vapier@gentoo.org>
-	<1285412062.13050.5.camel@brekeke>
-	<AANLkTi=q_WSfUGuYSm0andpmrUjD4gFaV9PJ_03zZZ0T@mail.gmail.com>
-	<1285443076.13050.12.camel@brekeke>
-	<AANLkTikkS=iZJ5Y37YEeqp+P_5+HXH4DQsVrtOYXuYBu@mail.gmail.com>
+To: Huang Shijie <shijie8@gmail.com>
+In-Reply-To: <1285328063-7982-1-git-send-email-shijie8@gmail.com>
+References: <1285328063-7982-1-git-send-email-shijie8@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 26 Sep 2010 14:42:29 +0300
-Message-ID: <1285501349.13050.14.camel@brekeke>
+Date: Sun, 26 Sep 2010 15:05:19 +0300
+Message-ID: <1285502719.13050.17.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,32 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-09-25 at 15:37 -0400, Mike Frysinger wrote:
-> On Sat, Sep 25, 2010 at 15:31, Artem Bityutskiy wrote:
-> > On Sat, 2010-09-25 at 14:59 -0400, Mike Frysinger wrote:
-> >> On Sat, Sep 25, 2010 at 06:54, Artem Bityutskiy wrote:
-> >> > On Sat, 2010-09-25 at 02:06 -0400, Mike Frysinger wrote:
-> >> >> Simply usage of converting strings to numbers by adding some wrappers
-> >> >> around the standard strtoX functions.  These helpers support both hex
-> >> >> and dec numbers transparently, and the caller need only provide a ptr
-> >> >> to an error integer if they want to be notified of problems.
-> >> >
-> >> > Why do you need a separate file for this? common.h does not suit this?
-> >>
-> >> the expansion of PROGRAM_NAME causes build errors for programs that do
-> >> not define it but include common.h
-> >
-> > May be
-> >
-> > #ifndef PROGRAM_NAME
-> > #define PROGRAM_NAME "undefined"
-> > #endif
+On Fri, 2010-09-24 at 19:34 +0800, Huang Shijie wrote:
+> Not all the NAND devices have all the information in additional
+> id bytes.
 > 
-> if we're going to go that route, i'd rather just go through the few
-> files not defining PROGRAM_NAME, add it, and then turn the comment in
-> common.h about people defining it into an error
+> So add a hook in the nand_chip{} is a good method to calculate the
+> right value of oobsize, erasesize and so on.
+> 
+> Without the hook,you will get the wrong value, and you have to hack
+> in the ->scan_bbt() to change the wrong value which make the code
+> mess.
+> 
+> Signed-off-by: Huang Shijie <shijie8@gmail.com>
+> ---
+>  drivers/mtd/nand/nand_base.c |    6 ++++--
+>  include/linux/mtd/nand.h     |    5 +++++
+>  2 files changed, 9 insertions(+), 2 deletions(-)
 
-Sounds good as well.
+Taken to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
