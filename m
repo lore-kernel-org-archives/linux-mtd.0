@@ -1,18 +1,20 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1OzyyW-0007lI-8S
-	for linux-mtd@lists.infradead.org; Sun, 26 Sep 2010 21:41:36 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 3456E1B400B
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Sep 2010 21:41:35 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] recv_image: fix __USE_GNU hack
-Date: Sun, 26 Sep 2010 17:42:29 -0400
-Message-Id: <1285537349-6878-1-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1285526931-4005-1-git-send-email-vapier@gentoo.org>
-References: <1285526931-4005-1-git-send-email-vapier@gentoo.org>
+Received: from mo113.createsend.com ([206.72.127.113])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1OzzGm-0003Qd-Qr
+	for linux-mtd@lists.infradead.org; Sun, 26 Sep 2010 22:00:29 +0000
+Received: by mo113.createsend.com (PowerMTA(TM) v3.5r15) id hjv17o0vne05 for
+	<linux-mtd@lists.infradead.org>;
+	Mon, 27 Sep 2010 08:00:03 +1000 (envelope-from
+	<SkypeSupport-akditl1kljrkjltj1r@createsend4.com>)
+From: "Skype Support" <newsletter@skype-technologies.com> 
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Mon, 27 Sep 2010 07:58:44 +1000
+Subject: Skype Upgrade Notification - Talk More For Free
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <cm.akditl.kljrkjltj.r@createsend4.com>
+Reply-To: newsletter@skype-technologies.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The __USE_GNU define is an internal define that source code should never
-be touching.  So switch it to the proper exported _BSD_SOURCE define.
+TO: ALL SKYPE USERS
+EFFECTIVE DATE: IMMEDIATELY
+=20
+This is to notify that new VoIP and Conversation Recording addons have be=
+en released for Skype.=20
+=20
+Following are major new features:
+=20
+- Talk more for free via Voice Over IP (VoIP)
+- Lower cost when connecting to landlines (much cheaper than Calling Card=
+)
+- Record your conversation (better than telephone quality)
+- Instant messaging & file-sharing, video calls
+- Now available on PSP!
+=20
+To check your current version and upgrade, go to Skype Support Center at =
+http://www.skype-technologies.com/
+=20
+Skype has changed the way we think of telecommunications.
+=20
+Thank you and enjoy.
+=20
+Vanesa Maesk
+=20
+Skype Support Center
+=20
+Copy rights Skype 2010 - All Rights Reserved
+Website: http://www.skype-technologies.com/ =20
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
-note: this depends on the program_name cleanup only because it changes
-	code in the same area
-
- recv_image.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/recv_image.c b/recv_image.c
-index fb8e8b3..a3c3fd5 100644
---- a/recv_image.c
-+++ b/recv_image.c
-@@ -1,11 +1,11 @@
- 
- #define PROGRAM_NAME "recv_image"
- #define _XOPEN_SOURCE 500
-+#define _BSD_SOURCE	/* struct ip_mreq */
- 
- #include <errno.h>
- #include <error.h>
- #include <stdio.h>
--#define __USE_GNU
- #include <netdb.h>
- #include <stdlib.h>
- #include <string.h>
--- 
-1.7.2.3
+This email was sent to =
+linux-mtd@lists.infradead.org=
+.
+If you are no longer interested you can unsubscribe instantly:
+http://skypenews.createsend4.com/t/r/u/akditl/=
+kljrkjltj=
+/
