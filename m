@@ -1,19 +1,23 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1OzpcB-0000IP-5k
-	for linux-mtd@lists.infradead.org; Sun, 26 Sep 2010 11:41:56 +0000
-Received: by bwz19 with SMTP id 19so3858173bwz.36
+	id 1Ozpcm-0001fZ-Sn
+	for linux-mtd@lists.infradead.org; Sun, 26 Sep 2010 11:42:33 +0000
+Received: by bwz19 with SMTP id 19so3858388bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Sep 2010 04:41:53 -0700 (PDT)
+	Sun, 26 Sep 2010 04:42:32 -0700 (PDT)
 Subject: Re: [PATCH 3/4 v2] mtd-utils: new strtoX helpers
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1285394808-29795-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <AANLkTikkS=iZJ5Y37YEeqp+P_5+HXH4DQsVrtOYXuYBu@mail.gmail.com>
 References: <1285293221-25028-3-git-send-email-vapier@gentoo.org>
 	<1285394808-29795-1-git-send-email-vapier@gentoo.org>
+	<1285412062.13050.5.camel@brekeke>
+	<AANLkTi=q_WSfUGuYSm0andpmrUjD4gFaV9PJ_03zZZ0T@mail.gmail.com>
+	<1285443076.13050.12.camel@brekeke>
+	<AANLkTikkS=iZJ5Y37YEeqp+P_5+HXH4DQsVrtOYXuYBu@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 26 Sep 2010 14:41:50 +0300
-Message-ID: <1285501310.13050.13.camel@brekeke>
+Date: Sun, 26 Sep 2010 14:42:29 +0300
+Message-ID: <1285501349.13050.14.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,14 +31,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-09-25 at 02:06 -0400, Mike Frysinger wrote:
-> +#ifndef __MTD_UTILS_STRTOX_H__
-> +#define __MTD_UTILS_STRTOX_H__
-> +
-> +#include "common.h"
-> +#include <stdlib.h>
+On Sat, 2010-09-25 at 15:37 -0400, Mike Frysinger wrote:
+> On Sat, Sep 25, 2010 at 15:31, Artem Bityutskiy wrote:
+> > On Sat, 2010-09-25 at 14:59 -0400, Mike Frysinger wrote:
+> >> On Sat, Sep 25, 2010 at 06:54, Artem Bityutskiy wrote:
+> >> > On Sat, 2010-09-25 at 02:06 -0400, Mike Frysinger wrote:
+> >> >> Simply usage of converting strings to numbers by adding some wrappers
+> >> >> around the standard strtoX functions.  These helpers support both hex
+> >> >> and dec numbers transparently, and the caller need only provide a ptr
+> >> >> to an error integer if they want to be notified of problems.
+> >> >
+> >> > Why do you need a separate file for this? common.h does not suit this?
+> >>
+> >> the expansion of PROGRAM_NAME causes build errors for programs that do
+> >> not define it but include common.h
+> >
+> > May be
+> >
+> > #ifndef PROGRAM_NAME
+> > #define PROGRAM_NAME "undefined"
+> > #endif
+> 
+> if we're going to go that route, i'd rather just go through the few
+> files not defining PROGRAM_NAME, add it, and then turn the comment in
+> common.h about people defining it into an error
 
-Hmm, but you include this file here anyway.
+Sounds good as well.
 
 -- 
 Best Regards,
