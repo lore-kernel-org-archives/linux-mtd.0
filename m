@@ -1,224 +1,110 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1QwA-0007Y6-0z
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 21:45:11 +0000
-Received: by gyh20 with SMTP id 20so3373gyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Sep 2010 14:44:29 -0700 (PDT)
-MIME-Version: 1.0
-Sender: glikely@secretlab.ca
-In-Reply-To: <1285833646-12006-7-git-send-email-Mingkai.hu@freescale.com>
-References: <1285833646-12006-1-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-2-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-3-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-4-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-5-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-6-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-7-git-send-email-Mingkai.hu@freescale.com>
-From: Grant Likely <grant.likely@secretlab.ca>
-Date: Fri, 1 Oct 2010 06:41:15 +0900
-Message-ID: <AANLkTi=XNRotizwq1hiUstnXUgJ8HFJ43+VSOvDpa4PK@mail.gmail.com>
-Subject: Re: [PATCH v3 6/7] mtd: m25p80: add a read function to read page by
-	page
-To: Mingkai Hu <Mingkai.hu@freescale.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: tie-fei.zang@freescale.com, linuxppc-dev@ozlabs.org,
-	kumar.gala@freescale.com, linux-mtd@lists.infradead.org,
-	spi-devel-general@lists.sourceforge.net
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
+Date: Sun, 26 Sep 2010 20:47:28 +0300
+Subject: [PATCH] UBI: Matthiew fixes - 1
+Message-ID: <mailman.8.1285523920.1886.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-Hmmm.... for some reason the previous replies didn't get picked up by
-patchwork, so I'm replying with my comment again for the public
-record.
+Fixes on top of my "preserve corrupted" patch series for issues indicated
+by Matthieu Castet.
 
-In this case the eSPI controller driver is buggy and needs to be
-fixed.  If the hardware can only support small transfers, then it is
-the responsibilty of the driver to chain up smaller chunks into one
-big transfer, and make sure that the CS line doesn't go low in the
-middle of it.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/scan.c |   43 ++++++++++++++++++++++++++++++-------------
+ 1 files changed, 30 insertions(+), 13 deletions(-)
 
-g.
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index ae901cc..30b7102 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -746,15 +746,15 @@ struct ubi_scan_leb *ubi_scan_get_free_peb(struct ubi_device *ubi,
+  * @vid_hrd: the (corrupted) VID header of this PEB
+  * @pnum: the physical eraseblock number to check
+  *
+- * This is a helper function which was created to distinguish between VID header
++ * This is a helper function which is used to distinguish between VID header
+  * corruptions caused by power cuts and other reasons. If the PEB contains only
+  * 0xFF bytes at the data area, the VID header is most probably corrupted
+- * because of power cut (%0 is returned in this case). Otherwise, it was
++ * because of a power cut (%0 is returned in this case). Otherwise, it was
+  * corrupted for some other reasons (%1 is returned in this case). A negative
+  * error code is returned if a read error occurred.
+  *
+  * If the corruption reason was a power cut, UBI can safely erase this PEB.
+- * Otherwise, we cannot do this, because we'd possibly destroy important
++ * Otherwise, it should preserve it to avoid possibly destroying important
+  * information.
+  */
+ static int check_data_ff(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
+@@ -912,15 +912,32 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 		break;
+ 	case UBI_IO_BAD_HDR_EBADMSG:
+ 		if (ec_err == UBI_IO_BAD_HDR_EBADMSG)
+-			/* Both EC and VID headers were read with data
+-			 * integrity error, probably this is a bad PEB, bit it
+-			 * is not marked a bad yet.
++			/*
++			 * Both EC and VID headers are corrupted and were read
++			 * with data integrity error, probably this is a bad
++			 * PEB, bit it is not marked as bad yet. This may also
++			 * be a result of power cut during erasure.
+ 			 */
+ 			si->maybe_bad_peb_count += 1;
+ 	case UBI_IO_BAD_HDR:
+-		err = check_data_ff(ubi, vidh, pnum);
++		if (ec_err)
++			/*
++			 * Both headers are corrupted. There is a possibility
++			 * that this a valid UBI PEB which has corresponding
++			 * LEB, but the headers are corrupted. However, it is
++			 * impossible to distinguish it from a PEB which just
++			 * contains garbage because a power cut during erase
++			 * operation. So we just schedule this PEB for erasure.
++			 */
++			err = 0;
++		else
++			/*
++			 * The EC was OK, but the VID header is corrupted. We
++			 * have to check what is in the data area.
++			 */
++			err = check_data_ff(ubi, vidh, pnum);
+ 		if (!err)
+-			/* This corruption is caused by a power cut - it's OK */
++			/* This corruption is caused by a power cut */
+ 			err = add_to_list(si, pnum, ec, 1, &si->erase);
+ 		else
+ 			/* This is an unexpected corruption */
+@@ -1023,7 +1040,7 @@ static int check_what_we_have(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 	max_corr = peb_count / 20 ?: 8;
+ 
+ 	/*
+-	 * Few corrupted PEBs are not a problem and may be just a result of
++	 * Few corrupted PEBs is not a problem and may be just a result of
+ 	 * unclean reboots. However, many of them may indicate some problems
+ 	 * with the flash HW or driver.
+ 	 */
+@@ -1048,14 +1065,14 @@ static int check_what_we_have(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 	if (si->empty_peb_count + si->maybe_bad_peb_count == peb_count) {
+ 		/*
+ 		 * All PEBs are empty, or almost all - a couple PEBs look like
+-		 * they may be bad PEB which were not marked as bad yet.
++		 * they may be bad PEBs which were not marked as bad yet.
+ 		 *
+-		 * This piece of code basically tries to distinguish  between
+-		 * the following 2 situations:
++		 * This piece of code basically tries to distinguish between
++		 * the following situations:
+ 		 *
+ 		 * 1. Flash is empty, but there are few bad PEBs, which are not
+ 		 *    marked as bad so far, and which were read with error. We
+-		 *    want to go ahead and format this flash. While formating,
++		 *    want to go ahead and format this flash. While formatting,
+ 		 *    the faulty PEBs will probably be marked as bad.
+ 		 *
+ 		 * 2. Flash contains non-UBI data and we do not want to format
+-- 
+1.7.2.2
 
-On Thu, Sep 30, 2010 at 5:00 PM, Mingkai Hu <Mingkai.hu@freescale.com> wrot=
-e:
-> For Freescale's eSPI controller, the max transaction length one time
-> is limitted by the SPCOM[TRANSLEN] field which is 0xFFFF. When used
-> mkfs.ext2 command to create ext2 filesystem on the flash, the read
-> length will exceed the max value of the SPCOM[TRANSLEN] field, so
-> change the read function to read page by page.
->
-> For other SPI flash driver, also needed to supply the read function
-> if used the eSPI controller.
->
-> Signed-off-by: Mingkai Hu <Mingkai.hu@freescale.com>
-> ---
-> v3:
-> =A0- Add a quirks member for the SPI master to handle the contrains of th=
-e
-> =A0 SPI controller. I can't think of other method. :-(
->
-> =A0drivers/mtd/devices/m25p80.c | =A0 78 ++++++++++++++++++++++++++++++++=
-++++++++++
-> =A0drivers/spi/spi_fsl_lib.c =A0 =A0| =A0 =A04 ++
-> =A0include/linux/spi/spi.h =A0 =A0 =A0| =A0 =A05 +++
-> =A03 files changed, 87 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 47d53c7..f65cca8 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -377,6 +377,81 @@ static int m25p80_read(struct mtd_info *mtd, loff_t =
-from, size_t len,
-> =A0}
->
-> =A0/*
-> + * Read an address range from the flash chip page by page.
-> + * Some controller has transaction length limitation such as the
-> + * Freescale's eSPI controller can only trasmit 0xFFFF bytes one
-> + * time, so we have to read page by page if the len is more than
-> + * the limitation.
-> + */
-> +static int m25p80_page_read(struct mtd_info *mtd, loff_t from, size_t le=
-n,
-> + =A0 =A0 =A0 size_t *retlen, u_char *buf)
-> +{
-> + =A0 =A0 =A0 struct m25p *flash =3D mtd_to_m25p(mtd);
-> + =A0 =A0 =A0 struct spi_transfer t[2];
-> + =A0 =A0 =A0 struct spi_message m;
-> + =A0 =A0 =A0 u32 i, page_size =3D 0;
-> +
-> + =A0 =A0 =A0 DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %zd\n",
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_name(&flash->spi->dev),=
- __func__, "from",
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 (u32)from, len);
-> +
-> + =A0 =A0 =A0 /* sanity checks */
-> + =A0 =A0 =A0 if (!len)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 0;
-> +
-> + =A0 =A0 =A0 if (from + len > flash->mtd.size)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return -EINVAL;
-> +
-> + =A0 =A0 =A0 spi_message_init(&m);
-> + =A0 =A0 =A0 memset(t, 0, (sizeof t));
-> +
-> + =A0 =A0 =A0 /* NOTE:
-> + =A0 =A0 =A0 =A0* OPCODE_FAST_READ (if available) is faster.
-> + =A0 =A0 =A0 =A0* Should add 1 byte DUMMY_BYTE.
-> + =A0 =A0 =A0 =A0*/
-> + =A0 =A0 =A0 t[0].tx_buf =3D flash->command;
-> + =A0 =A0 =A0 t[0].len =3D m25p_cmdsz(flash) + FAST_READ_DUMMY_BYTE;
-> + =A0 =A0 =A0 spi_message_add_tail(&t[0], &m);
-> +
-> + =A0 =A0 =A0 t[1].rx_buf =3D buf;
-> + =A0 =A0 =A0 spi_message_add_tail(&t[1], &m);
-> +
-> + =A0 =A0 =A0 /* Byte count starts at zero. */
-> + =A0 =A0 =A0 if (retlen)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *retlen =3D 0;
-> +
-> + =A0 =A0 =A0 mutex_lock(&flash->lock);
-> +
-> + =A0 =A0 =A0 /* Wait till previous write/erase is done. */
-> + =A0 =A0 =A0 if (wait_till_ready(flash)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 /* REVISIT status return?? */
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 mutex_unlock(&flash->lock);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 return 1;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 /* Set up the write data buffer. */
-> + =A0 =A0 =A0 flash->command[0] =3D OPCODE_READ;
-> +
-> + =A0 =A0 =A0 for (i =3D page_size; i < len; i +=3D page_size) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 page_size =3D len - i;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (page_size > flash->page_size)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 page_size =3D flash->page_s=
-ize;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 m25p_addr2cmd(flash, from + i, flash->comma=
-nd);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 t[1].len =3D page_size;
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 t[1].rx_buf =3D buf + i;
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 spi_sync(flash->spi, &m);
-> +
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 *retlen +=3D m.actual_length - m25p_cmdsz(f=
-lash)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 - FAST_READ_DUMMY_BYTE;
-> + =A0 =A0 =A0 }
-> +
-> + =A0 =A0 =A0 mutex_unlock(&flash->lock);
-> +
-> + =A0 =A0 =A0 return 0;
-> +}
-> +
-> +/*
-> =A0* Write an address range to the flash chip. =A0Data must be written in
-> =A0* FLASH_PAGESIZE chunks. =A0The address range may be any size provided
-> =A0* it is within the physical boundaries.
-> @@ -874,6 +949,9 @@ static int __devinit m25p_probe(struct spi_device *sp=
-i)
-> =A0 =A0 =A0 =A0flash->mtd.erase =3D m25p80_erase;
-> =A0 =A0 =A0 =A0flash->mtd.read =3D m25p80_read;
->
-> + =A0 =A0 =A0 if (spi->master->quirks & SPI_QUIRK_TRANS_LEN_LIMIT)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 flash->mtd.read =3D m25p80_page_read;
-> +
-> =A0 =A0 =A0 =A0/* sst flash chips use AAI word program */
-> =A0 =A0 =A0 =A0if (info->jedec_id >> 16 =3D=3D 0xbf)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0flash->mtd.write =3D sst_write;
-> diff --git a/drivers/spi/spi_fsl_lib.c b/drivers/spi/spi_fsl_lib.c
-> index 5cd741f..c8d8c2d 100644
-> --- a/drivers/spi/spi_fsl_lib.c
-> +++ b/drivers/spi/spi_fsl_lib.c
-> @@ -135,6 +135,10 @@ int mpc8xxx_spi_probe(struct device *dev, struct res=
-ource *mem,
-> =A0 =A0 =A0 =A0master->cleanup =3D mpc8xxx_spi_cleanup;
-> =A0 =A0 =A0 =A0master->dev.of_node =3D dev->of_node;
->
-> + =A0 =A0 =A0 if (of_get_property(dev->of_node,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "fsl,spi-qu=
-irk-trans-len-limit", NULL))
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 master->quirks |=3D SPI_QUIRK_TRANS_LEN_LIM=
-IT;
-> +
-> =A0 =A0 =A0 =A0mpc8xxx_spi =3D spi_master_get_devdata(master);
-> =A0 =A0 =A0 =A0mpc8xxx_spi->dev =3D dev;
-> =A0 =A0 =A0 =A0mpc8xxx_spi->get_rx =3D mpc8xxx_spi_rx_buf_u8;
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index 92e52a1..4234dfd 100644
-> --- a/include/linux/spi/spi.h
-> +++ b/include/linux/spi/spi.h
-> @@ -304,6 +304,11 @@ struct spi_master {
->
-> =A0 =A0 =A0 =A0/* called on release() to free memory provided by spi_mast=
-er */
-> =A0 =A0 =A0 =A0void =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0(*cleanup)(str=
-uct spi_device *spi);
-> +
-> + =A0 =A0 =A0 /* some constraints of the controller */
-> + =A0 =A0 =A0 u16 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 quirks;
-> +#define SPI_QUIRK_TRANS_LEN_LIMIT =A0 =A0 =A0BIT(0) =A0/* have trans len=
-gth limit */
-> +
-> =A0};
->
-> =A0static inline void *spi_master_get_devdata(struct spi_master *master)
-> --
-> 1.6.4
->
->
->
-
-
-
---=20
-Grant Likely, B.Sc., P.Eng.
-Secret Lab Technologies Ltd.
+-- 
+Best Regards,
+Artem Bityutskiy (???????????????? ??????????)
