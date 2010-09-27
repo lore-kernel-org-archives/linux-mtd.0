@@ -1,18 +1,22 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P07P6-0002il-AG
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 06:41:38 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id D5E8B1B4091
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P07Rm-0006vz-O2
+	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 06:44:23 +0000
+Received: by bwz19 with SMTP id 19so4315947bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Sep 2010 06:41:33 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v3] mtd-utils: new strtoX helpers
-Date: Mon, 27 Sep 2010 02:42:28 -0400
-Message-Id: <1285569748-16152-1-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1285394808-29795-1-git-send-email-vapier@gentoo.org>
-References: <1285394808-29795-1-git-send-email-vapier@gentoo.org>
+	Sun, 26 Sep 2010 23:44:21 -0700 (PDT)
+Subject: Re: [PATCH] mtd-utils: common.h: clean up PROGRAM_NAME usage
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1285569626-16021-1-git-send-email-vapier@gentoo.org>
+References: <1285569626-16021-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 27 Sep 2010 09:42:33 +0300
+Message-ID: <1285569753.16181.6.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,60 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Simply usage of converting strings to numbers by adding some wrappers
-around the standard strtoX functions.  These helpers simplify the api
-of these functions a bit by providing an optional "error" pointer and
-automatic error message.
+On Mon, 2010-09-27 at 02:40 -0400, Mike Frysinger wrote:
+> Make PROGRAM_NAME required in order to include common.h so we can rely
+> on it existing.
+> 
+> Further, stop embedding PROGRAM_NAME in every error message so that we
+> can save string space with it being declare only once.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  include/common.h |   25 ++++++++++++-------------
+>  1 files changed, 12 insertions(+), 13 deletions(-)
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
-v3
-	- merge into common.h now that PROGRAM_NAME has been sorted out
+Pushed, thanks!
 
- include/common.h |   24 ++++++++++++++++++++++++
- 1 files changed, 24 insertions(+), 0 deletions(-)
-
-diff --git a/include/common.h b/include/common.h
-index dce067b..472315e 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -20,6 +20,7 @@
- #define __MTD_UTILS_COMMON_H__
- 
- #include <stdio.h>
-+#include <stdlib.h>
- #include <ctype.h>
- #include <string.h>
- #include <errno.h>
-@@ -79,6 +80,29 @@ static inline int is_power_of_2(unsigned long long n)
- 	        return (n != 0 && ((n & (n - 1)) == 0));
- }
- 
-+/**
-+ * simple_strtoX - convert a hex/dec/oct string into a number
-+ * @snum: buffer to convert
-+ * @error: set to 1 when buffer isn't fully consumed
-+ */
-+#define simple_strtoX(func, type) \
-+static inline type simple_##func(const char *snum, int *error) \
-+{ \
-+	char *endptr; \
-+	type ret = func(snum, &endptr, 0); \
-+ \
-+	if (error && (!*snum || *endptr)) { \
-+		errmsg("%s: unable to parse the number '%s'", #func, snum); \
-+		*error = 1; \
-+	} \
-+ \
-+	return ret; \
-+}
-+simple_strtoX(strtol, long int)
-+simple_strtoX(strtoll, long int)
-+simple_strtoX(strtoul, unsigned long int)
-+simple_strtoX(strtoull, unsigned long int)
-+
- #ifdef __cplusplus
- }
- #endif
 -- 
-1.7.2.3
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
