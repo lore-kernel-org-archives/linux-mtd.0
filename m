@@ -1,18 +1,19 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P07Rm-0006vz-O2
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 06:44:23 +0000
-Received: by bwz19 with SMTP id 19so4315947bwz.36
+	id 1P07Tv-0002O2-BQ
+	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 06:46:35 +0000
+Received: by bwz19 with SMTP id 19so4316726bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 26 Sep 2010 23:44:21 -0700 (PDT)
-Subject: Re: [PATCH] mtd-utils: common.h: clean up PROGRAM_NAME usage
+	Sun, 26 Sep 2010 23:46:34 -0700 (PDT)
+Subject: Re: [PATCH v3] mtd-utils: new strtoX helpers
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1285569626-16021-1-git-send-email-vapier@gentoo.org>
-References: <1285569626-16021-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285569748-16152-1-git-send-email-vapier@gentoo.org>
+References: <1285394808-29795-1-git-send-email-vapier@gentoo.org>
+	<1285569748-16152-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 27 Sep 2010 09:42:33 +0300
-Message-ID: <1285569753.16181.6.camel@localhost>
+Date: Mon, 27 Sep 2010 09:44:46 +0300
+Message-ID: <1285569886.16181.7.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,17 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-09-27 at 02:40 -0400, Mike Frysinger wrote:
-> Make PROGRAM_NAME required in order to include common.h so we can rely
-> on it existing.
-> 
-> Further, stop embedding PROGRAM_NAME in every error message so that we
-> can save string space with it being declare only once.
+On Mon, 2010-09-27 at 02:42 -0400, Mike Frysinger wrote:
+> Simply usage of converting strings to numbers by adding some wrappers
+> around the standard strtoX functions.  These helpers simplify the api
+> of these functions a bit by providing an optional "error" pointer and
+> automatic error message.
 > 
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 > ---
->  include/common.h |   25 ++++++++++++-------------
->  1 files changed, 12 insertions(+), 13 deletions(-)
+> v3
+> 	- merge into common.h now that PROGRAM_NAME has been sorted out
 
 Pushed, thanks!
 
