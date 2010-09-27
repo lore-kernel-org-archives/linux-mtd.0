@@ -1,26 +1,30 @@
-Received: from mailout4.samsung.com ([203.254.224.34])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0AWq-0006d5-6x
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 10:01:50 +0000
-Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
-	by mailout4.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L9E002R4H6XDF50@mailout4.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 19:01:45 +0900 (KST)
-Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L9E001TEH6X6E@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 19:01:45 +0900 (KST)
-Date: Mon, 27 Sep 2010 19:01:43 +0900
+	id 1P0AeB-0001cq-5q
+	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 10:09:25 +0000
+Received: by wwb24 with SMTP id 24so4443917wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 27 Sep 2010 03:09:21 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <1284834597.1721.70.camel@brekeke>
+References: <20100827025523.GA10688@july> <1283172749.12995.70.camel@brekeke>
+	<AANLkTinDPN4bw=2VfwXjKoaXW69m+_oUUq8yH-hvM9oT@mail.gmail.com>
+	<1283296419.2018.47.camel@brekeke>
+	<AANLkTik-Fr0mvA8jM2RrLD7VzEmJN=reeqwkOcATjVXY@mail.gmail.com>
+	<1283336933.1958.3.camel@brekeke>
+	<AANLkTi=KDK0d31WhpnN3xktqyFiB4S0kULohViz5fBXf@mail.gmail.com>
+	<1284834597.1721.70.camel@brekeke>
+Date: Mon, 27 Sep 2010 19:09:20 +0900
+Message-ID: <AANLkTimo_6ZgnAnzCH4LfdbZbLsgEJ1r9ehQFiD1K8ay@mail.gmail.com>
+Subject: Re: [PATCH 0/3] MTD: OneNAND: Fix OneNAND DMA error handling and 2KiB
+	pagesize
 From: Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH] MTD: OneNAND: S5PC110: Implement DMA interrupt method
-To: linux-mtd@lists.infradead.org
-Message-id: <20100927100143.GA17778@july>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Cc: Artem.Bityutskiy@nokia.com, dwmw2@infradead.org
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Artem.Bityutskiy@nokia.com, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,146 +34,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Kyungmin Park <kyungmin.park@samsung.com>
+Hi,
 
-Implement DMA interrupt method. previous time it polls the DMA status.
-It can reduce the CPU power but decrease the performance a little.
+Sorry for late reply. it's holiday at korea.
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
- drivers/mtd/onenand/samsung.c |   85 ++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 84 insertions(+), 1 deletions(-)
+I posted some fixes and improvements.
+you can find onenand patches at git here.
+http://git.infradead.org/users/kmpark/linux-2.6-samsung/shortlog/refs/heads=
+/onenand
 
-diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index afdb4c5..214ed1e 100644
---- a/drivers/mtd/onenand/samsung.c
-+++ b/drivers/mtd/onenand/samsung.c
-@@ -22,6 +22,7 @@
- #include <linux/mtd/onenand.h>
- #include <linux/mtd/partitions.h>
- #include <linux/dma-mapping.h>
-+#include <linux/interrupt.h>
- 
- #include <asm/mach/flash.h>
- #include <plat/regs-onenand.h>
-@@ -81,6 +82,17 @@ enum soc_type {
- #define S5PC110_DMA_TRANS_CMD		0x418
- #define S5PC110_DMA_TRANS_STATUS	0x41C
- #define S5PC110_DMA_TRANS_DIR		0x420
-+#define S5PC110_INTC_DMA_CLR		0x1004
-+#define S5PC110_INTC_ONENAND_CLR	0x1008
-+#define S5PC110_INTC_DMA_MASK		0x1024
-+#define S5PC110_INTC_ONENAND_MASK	0x1028
-+#define S5PC110_INTC_DMA_PEND		0x1044
-+#define S5PC110_INTC_ONENAND_PEND	0x1048
-+#define S5PC110_INTC_DMA_STATUS		0x1064
-+#define S5PC110_INTC_ONENAND_STATUS	0x1068
-+
-+#define S5PC110_INTC_DMA_TD		(1 << 24)
-+#define S5PC110_INTC_DMA_TE		(1 << 16)
- 
- #define S5PC110_DMA_CFG_SINGLE		(0x0 << 16)
- #define S5PC110_DMA_CFG_4BURST		(0x2 << 16)
-@@ -134,6 +146,7 @@ struct s3c_onenand {
- 	void __iomem	*dma_addr;
- 	struct resource *dma_res;
- 	unsigned long	phys_base;
-+	struct completion	complete;
- #ifdef CONFIG_MTD_PARTITIONS
- 	struct mtd_partition *parts;
- #endif
-@@ -531,7 +544,9 @@ static int onenand_write_bufferram(struct mtd_info *mtd, int area,
- 	return 0;
- }
- 
--static int s5pc110_dma_ops(void *dst, void *src, size_t count, int direction)
-+static int (*s5pc110_dma_ops)(void *dst, void *src, size_t count, int direction);
-+
-+static int s5pc110_dma_poll(void *dst, void *src, size_t count, int direction)
- {
- 	void __iomem *base = onenand->dma_addr;
- 	int status;
-@@ -575,6 +590,60 @@ static int s5pc110_dma_ops(void *dst, void *src, size_t count, int direction)
- 	return 0;
- }
- 
-+static irqreturn_t s5pc110_onenand_irq(int irq, void *data)
-+{
-+	void __iomem *base = onenand->dma_addr;
-+	int status, cmd = 0;
-+
-+	status = readl(base + S5PC110_INTC_DMA_STATUS);
-+
-+	if (likely(status & S5PC110_INTC_DMA_TD))
-+		cmd = S5PC110_DMA_TRANS_CMD_TDC;
-+
-+	if (unlikely(status & S5PC110_INTC_DMA_TE))
-+		cmd = S5PC110_DMA_TRANS_CMD_TEC;
-+
-+	writel(cmd, base + S5PC110_DMA_TRANS_CMD);
-+	writel(status, base + S5PC110_INTC_DMA_CLR);
-+
-+	if (!onenand->complete.done)
-+		complete(&onenand->complete);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int s5pc110_dma_irq(void *dst, void *src, size_t count, int direction)
-+{
-+	void __iomem *base = onenand->dma_addr;
-+	int status;
-+
-+	status = readl(base + S5PC110_INTC_DMA_MASK);
-+	if (status) {
-+		status &= ~(S5PC110_INTC_DMA_TD | S5PC110_INTC_DMA_TE);
-+		writel(status, base + S5PC110_INTC_DMA_MASK);
-+	}
-+
-+	writel(src, base + S5PC110_DMA_SRC_ADDR);
-+	writel(dst, base + S5PC110_DMA_DST_ADDR);
-+
-+	if (direction == S5PC110_DMA_DIR_READ) {
-+		writel(S5PC110_DMA_SRC_CFG_READ, base + S5PC110_DMA_SRC_CFG);
-+		writel(S5PC110_DMA_DST_CFG_READ, base + S5PC110_DMA_DST_CFG);
-+	} else {
-+		writel(S5PC110_DMA_SRC_CFG_WRITE, base + S5PC110_DMA_SRC_CFG);
-+		writel(S5PC110_DMA_DST_CFG_WRITE, base + S5PC110_DMA_DST_CFG);
-+	}
-+
-+	writel(count, base + S5PC110_DMA_TRANS_SIZE);
-+	writel(direction, base + S5PC110_DMA_TRANS_DIR);
-+
-+	writel(S5PC110_DMA_TRANS_CMD_TR, base + S5PC110_DMA_TRANS_CMD);
-+
-+	wait_for_completion_timeout(&onenand->complete, msecs_to_jiffies(20));
-+
-+	return 0;
-+}
-+
- static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
- 		unsigned char *buffer, int offset, size_t count)
- {
-@@ -919,6 +988,20 @@ static int s3c_onenand_probe(struct platform_device *pdev)
- 		}
- 
- 		onenand->phys_base = onenand->base_res->start;
-+
-+		s5pc110_dma_ops = s5pc110_dma_poll;
-+		/* Interrupt support */
-+		r = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+		if (r) {
-+			init_completion(&onenand->complete);
-+			s5pc110_dma_ops = s5pc110_dma_irq;
-+			err = request_irq(r->start, s5pc110_onenand_irq,
-+					IRQF_SHARED, "onenand", &onenand);
-+			if (err) {
-+				dev_err(&pdev->dev, "failed to get irq\n");
-+				goto scan_failed;
-+			}
-+		}
- 	}
- 
- 	if (onenand_scan(mtd, 1)) {
--- 
-1.5.3.3
+Thank you,
+Kyungmin Park
+
+On Sun, Sep 19, 2010 at 3:29 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Wed, 2010-09-01 at 19:37 +0900, Kyungmin Park wrote:
+>> On Wed, Sep 1, 2010 at 7:28 PM, Artem Bityutskiy <dedekind1@gmail.com> w=
+rote:
+>> > On Wed, 2010-09-01 at 11:35 +0900, Kyungmin Park wrote:
+>> >> On Wed, Sep 1, 2010 at 8:13 AM, Artem Bityutskiy <dedekind1@gmail.com=
+> wrote:
+>> >> > On Tue, 2010-08-31 at 08:27 +0900, Kyungmin Park wrote:
+>> >> >> On Mon, Aug 30, 2010 at 9:52 PM, Artem Bityutskiy <dedekind1@gmail=
+.com> wrote:
+>> >> >> > On Fri, 2010-08-27 at 11:55 +0900, Kyungmin Park wrote:
+>> >> >> >> Kyungmin Park (3):
+>> >> >> >> =C2=A0 =C2=A0 =C2=A0 MTD: OneNAND: Remove unused cmd_map at s5p=
+c110
+>> >> >> >> =C2=A0 =C2=A0 =C2=A0 MTD: OneNAND: Fix loop hang when DMA error=
+ at Samsung SoCs
+>> >> >> >> =C2=A0 =C2=A0 =C2=A0 MTD: OneNAND: Fix 2KiB pagesize handling a=
+t Samsung SoCs
+>> >> >> >>
+>> >> >> >> =C2=A0drivers/mtd/onenand/samsung.c | =C2=A0 17 +++++++--------=
+--
+>> >> >> >> =C2=A01 files changed, 7 insertions(+), 10 deletions(-)
+>> >> >> >
+>> >> >> > Taken patches 1 and 3, requested a change for patch 2. Pushed pa=
+tches 1
+>> >> >> > and 3 to l2-mtd-2.6.git / dunno, thanks.
+>> >> >>
+>> >> >> To David, Artem,
+>> >> >> Can you include these patches to linux-2.6.36-rc4? since it's bug =
+fixes.
+>> >> >>
+>> >> >> How do you think?
+>> >> >
+>> >> > Note, Linus nowadays tends to be stricter about what goes in -rc. W=
+hy
+>> >> > would the first patch be a fix deserving urgent merging?
+>> >>
+>> >> There's no problem with s5pc110 since there's no DMA error. but new
+>> >> SOC s5pc210 has some problem with DMA.
+>> >> it occurs the DMA error and can't exit the loop. as it's decided to
+>> >> use the 2.6.36 for s5pc210 we need to fix it ASAP.
+>> >>
+>> >> >
+>> >> > About the second patch, what if you was mistaken and 20msces is not
+>> >> > enough sometimes? Don't you afraid to introduce another bug with th=
+is?
+>> >> If it takes more then 20msec it's really slow device. I think I give
+>> >> the enough time to transfer 2KiB or 4KiB pagesize transfer at DMA.
+>> >>
+>> >> I'll measure the real time, how much time taken at 2.6.35 kernel and
+>> >> give exact number.
+>> >>
+>> >> >
+>> >> > Probably for 2.6.36 the older version of your patch can be merged, =
+and
+>> >> > then you can add timeout support on top?
+>> >>
+>> >> Now I implemented it as DMA polling method, but also implemented the
+>> >> DMA interrupt codes. as it's new implementation. I don't expect it
+>> >> can't merge at this windows. so send fixed codes.
+>> >
+>> > I am not sure I completely understand what you mean. but lets play saf=
+e
+>> > and merge your original version, because it is small and just fixes th=
+e
+>> > problem. Adding timeout is an improvement, and for this very simple
+>> > reason it should not go to 2.6.36.
+>> >
+>> > Please, clone my l2 tree
+>> > (http://git.infradead.org/users/dedekind/l2-mtd-2.6.git), checkout the
+>> > 'for-2.6.36' branch, add timeout, and send it to me as as a separate
+>> > independent patch. I'll take care of it then.
+>> >
+>> > Would you do this please?
+>>
+>> No problem,
+>
+> Still waiting for the patch which adds timeout.
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
+>
+>
