@@ -1,16 +1,10 @@
-Received: from proxy.dresearch.de ([87.193.137.100] helo=mail.dresearch.de)
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0D0w-0002ga-9A
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 12:41:03 +0000
-From: Steffen Sledz <sledz@dresearch.de>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH v2] ubifs: avoid kernel error if ubifs superblock read fails
-Date: Mon, 27 Sep 2010 14:20:26 +0200
-Message-Id: <1285590026-11629-1-git-send-email-sledz@dresearch.de>
-In-Reply-To: <1285577837.16181.14.camel@localhost>
-References: <1285577837.16181.14.camel@localhost>
-Cc: Steffen Sledz <sledz@dresearch.de>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v5 0/5] nand prefetch-irq support and ecc layout chanage
+Date: Mon, 27 Sep 2010 19:07:09 +0530
+Message-Id: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +14,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* .get_sb is called on mounts with automatic fs detection too, so this
-  function should print an error if it cannot read the superblock in
-  debug mode only
-  (new behaviour conforms the other fs types)
+  The following set of patches applies on linux-2.6.
+     
+    The main motivations behind this patch series are -
+        1. support NAND I/O in irq mode.
+        2. support of different ECC schema. 
+        3. also to make ecc layout as like in romcode ecc layout
 
-Signed-off-by: Steffen Sledz <sledz@dresearch.de>
----
- fs/ubifs/super.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+   v5: This address the input as to support the irq_chained in GPMC 
+	
+   v4: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg34882.html
+       and resend of 
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32689.html
+   
+   v3: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32071.html
+   	Rebase on latest codebase and previous patch(posted).	
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31963.html
+	
+   v2: Rebase on latest codebase and previous patch(posted).	
+	http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 4e5bf3f..bb6ed5d 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -2054,8 +2054,8 @@ static int ubifs_get_sb(struct file_system_type *fs_type, int flags,
- 	 */
- 	ubi = open_ubi(name, UBI_READONLY);
- 	if (IS_ERR(ubi)) {
--		ubifs_err("cannot open \"%s\", error %d",
--			  name, (int)PTR_ERR(ubi));
-+		dbg_err("cannot open \"%s\", error %d",
-+			name, (int)PTR_ERR(ubi));
- 		return PTR_ERR(ubi);
- 	}
- 	ubi_get_volume_info(ubi, &vi);
--- 
-1.7.1
+   v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg26666.html
+
+
+
+Sukumar Ghorai (5):
+  omap gpmc: enable irq mode in gpmc
+  omap3: nand: prefetch in irq mode support
+  omap3: nand: configurable fifo threshold to gain the throughput
+  omap: nand: ecc layout select from board file
+  omap: nand: making ecc layout as compatible with romcode ecc
+
+ arch/arm/mach-omap2/board-2430sdp.c        |    1 +
+ arch/arm/mach-omap2/board-3430sdp.c        |    1 +
+ arch/arm/mach-omap2/board-3630sdp.c        |    1 +
+ arch/arm/mach-omap2/board-4430sdp.c        |    2 +
+ arch/arm/mach-omap2/board-am3517evm.c      |    2 +
+ arch/arm/mach-omap2/board-apollon.c        |    1 +
+ arch/arm/mach-omap2/board-cm-t35.c         |    1 +
+ arch/arm/mach-omap2/board-devkit8000.c     |    1 +
+ arch/arm/mach-omap2/board-flash.c          |    5 +-
+ arch/arm/mach-omap2/board-generic.c        |    2 +
+ arch/arm/mach-omap2/board-h4.c             |    1 +
+ arch/arm/mach-omap2/board-igep0020.c       |    1 +
+ arch/arm/mach-omap2/board-ldp.c            |    1 +
+ arch/arm/mach-omap2/board-n8x0.c           |    2 +
+ arch/arm/mach-omap2/board-omap3beagle.c    |    1 +
+ arch/arm/mach-omap2/board-omap3evm.c       |    2 +
+ arch/arm/mach-omap2/board-omap3pandora.c   |    2 +
+ arch/arm/mach-omap2/board-omap3stalker.c   |    1 +
+ arch/arm/mach-omap2/board-omap3touchbook.c |    1 +
+ arch/arm/mach-omap2/board-omap4panda.c     |    2 +
+ arch/arm/mach-omap2/board-overo.c          |    1 +
+ arch/arm/mach-omap2/board-rx51.c           |    1 +
+ arch/arm/mach-omap2/board-zoom2.c          |    2 +
+ arch/arm/mach-omap2/board-zoom3.c          |    2 +
+ arch/arm/mach-omap2/gpmc.c                 |   48 +++++-
+ arch/arm/mach-omap2/io.c                   |    2 -
+ arch/arm/plat-omap/include/plat/gpmc.h     |   16 ++-
+ arch/arm/plat-omap/include/plat/irqs.h     |    9 +-
+ arch/arm/plat-omap/include/plat/nand.h     |    3 +
+ drivers/mtd/nand/Kconfig                   |   14 ++-
+ drivers/mtd/nand/omap2.c                   |  277 +++++++++++++++++++++++++---
+ 31 files changed, 367 insertions(+), 39 deletions(-)
