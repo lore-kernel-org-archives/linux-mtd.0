@@ -1,21 +1,22 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mailout4.samsung.com ([203.254.224.34])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0832-0002y7-R5
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 07:22:53 +0000
-Received: from epmmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
+	id 1P0837-00033G-K8
+	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 07:22:58 +0000
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
 	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L9E00DVT9U1WP00@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 16:22:49 +0900 (KST)
+	2010)) with ESMTP id <0L9E00IXM9U8TPB0@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 16:22:56 +0900 (KST)
 Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L9E0068T9U2AW@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 16:22:50 +0900 (KST)
-Date: Mon, 27 Sep 2010 16:25:10 +0900
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L9E00HJS9U8O2@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 16:22:56 +0900 (KST)
+Date: Mon, 27 Sep 2010 16:25:17 +0900
 From: Kyungmin Park <kmpark@infradead.org>
-Subject: [PATCH 3/4] MTD: OneNAND: S5PC110: Fix wrong DMA hanlding when	HIGHMEM
+Subject: [PATCH 4/4] MTD: OneNAND: S5PC110: Add timeout to prevent the	endless
+	loop
 To: linux-mtd@lists.infradead.org
-Message-id: <20100927072510.GA32091@july>
+Message-id: <20100927072517.GA32095@july>
 MIME-version: 1.0
 Content-type: text/plain; charset=us-ascii
 Content-transfer-encoding: 7BIT
@@ -32,65 +33,49 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Kyungmin Park <kyungmin.park@samsung.com>
 
-When use HIGHMEM, dma_map_single doesn't get the proper DMA address.
-So use the dma_map_page in this case.
+There's no case timeout but add it for some H/W problem or
+wrong codes implementation
 
 Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 ---
- drivers/mtd/onenand/samsung.c |   29 ++++++++++++++++++-----------
- 1 files changed, 18 insertions(+), 11 deletions(-)
+ drivers/mtd/onenand/samsung.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
 
 diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
-index 234788e..30eccd7 100644
+index 30eccd7..afdb4c5 100644
 --- a/drivers/mtd/onenand/samsung.c
 +++ b/drivers/mtd/onenand/samsung.c
-@@ -573,7 +573,8 @@ static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
- 	void __iomem *p;
- 	void *buf = (void *) buffer;
- 	dma_addr_t dma_src, dma_dst;
--	int err;
-+	int err, page_dma = 0;
-+	struct device *dev = &onenand->pdev->dev;
+@@ -535,6 +535,7 @@ static int s5pc110_dma_ops(void *dst, void *src, size_t count, int direction)
+ {
+ 	void __iomem *base = onenand->dma_addr;
+ 	int status;
++	unsigned long timeout;
  
- 	p = this->base + area;
- 	if (ONENAND_CURRENT_BUFFERRAM(this)) {
-@@ -597,21 +598,27 @@ static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
- 		page = vmalloc_to_page(buf);
- 		if (!page)
- 			goto normal;
--		buf = page_address(page) + ((size_t) buf & ~PAGE_MASK);
--	}
+ 	writel(src, base + S5PC110_DMA_SRC_ADDR);
+ 	writel(dst, base + S5PC110_DMA_DST_ADDR);
+@@ -552,6 +553,13 @@ static int s5pc110_dma_ops(void *dst, void *src, size_t count, int direction)
  
--	/* DMA routine */
--	dma_src = onenand->phys_base + (p - this->base);
--	dma_dst = dma_map_single(&onenand->pdev->dev,
--			buf, count, DMA_FROM_DEVICE);
--	if (dma_mapping_error(&onenand->pdev->dev, dma_dst)) {
--		dev_err(&onenand->pdev->dev,
--			"Couldn't map a %d byte buffer for DMA\n", count);
-+		page_dma = 1;
-+		/* DMA routine */
-+		dma_src = onenand->phys_base + (p - this->base);
-+		dma_dst = dma_map_page(dev, page, 0, count, DMA_FROM_DEVICE);
-+	} else {
-+		/* DMA routine */
-+		dma_src = onenand->phys_base + (p - this->base);
-+		dma_dst = dma_map_single(dev, buf, count, DMA_FROM_DEVICE);
-+	}
-+	if (dma_mapping_error(dev, dma_dst)) {
-+		dev_err(dev, "Couldn't map a %d byte buffer for DMA\n", count);
- 		goto normal;
- 	}
- 	err = s5pc110_dma_ops((void *) dma_dst, (void *) dma_src,
- 			count, S5PC110_DMA_DIR_READ);
--	dma_unmap_single(&onenand->pdev->dev, dma_dst, count, DMA_FROM_DEVICE);
+ 	writel(S5PC110_DMA_TRANS_CMD_TR, base + S5PC110_DMA_TRANS_CMD);
+ 
++	/*
++	 * There's no exact timeout values at Spec.
++	 * In real case it takes under 1 msec.
++	 * So 20 msecs are enough.
++	 */
++	timeout = jiffies + msecs_to_jiffies(20);
 +
-+	if (page_dma)
-+		dma_unmap_page(dev, dma_dst, count, DMA_FROM_DEVICE);
-+	else
-+		dma_unmap_single(dev, dma_dst, count, DMA_FROM_DEVICE);
+ 	do {
+ 		status = readl(base + S5PC110_DMA_TRANS_STATUS);
+ 		if (status & S5PC110_DMA_TRANS_STATUS_TE) {
+@@ -559,7 +567,8 @@ static int s5pc110_dma_ops(void *dst, void *src, size_t count, int direction)
+ 					base + S5PC110_DMA_TRANS_CMD);
+ 			return -EIO;
+ 		}
+-	} while (!(status & S5PC110_DMA_TRANS_STATUS_TD));
++	} while (!(status & S5PC110_DMA_TRANS_STATUS_TD) &&
++		time_before(jiffies, timeout));
  
- 	if (!err)
- 		return 0;
+ 	writel(S5PC110_DMA_TRANS_CMD_TDC, base + S5PC110_DMA_TRANS_CMD);
+ 
 -- 
 1.5.3.3
