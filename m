@@ -1,27 +1,16 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from proxy.dresearch.de ([87.193.137.100] helo=mail.dresearch.de)
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0B0G-0006VQ-Dc
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 10:32:13 +0000
-Received: from epmmp1 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
-	2010)) with ESMTP id <0L9E00LDKILNVK50@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 19:32:11 +0900 (KST)
-Received: from roh83 ([107.108.214.183])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0L9E00145ILL6E@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 19:32:11 +0900 (KST)
-Date: Mon, 27 Sep 2010 16:02:10 +0530
-From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
-Subject: [PATCH v3 2/2] mtd: MLC device check in OneNAND driver
-To: dedekind1@gmail.com
-Message-id: <002801cb5e2f$3f170c20$bd452460$%hs@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-language: en-us
-Content-transfer-encoding: 7BIT
-Cc: v.dalal@samsung.com, gupta.raghav@samsung.com,
-	linux-mtd@lists.infradead.org
+	id 1P0D0w-0002ga-9A
+	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 12:41:03 +0000
+From: Steffen Sledz <sledz@dresearch.de>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ubifs: avoid kernel error if ubifs superblock read fails
+Date: Mon, 27 Sep 2010 14:20:26 +0200
+Message-Id: <1285590026-11629-1-git-send-email-sledz@dresearch.de>
+In-Reply-To: <1285577837.16181.14.camel@localhost>
+References: <1285577837.16181.14.camel@localhost>
+Cc: Steffen Sledz <sledz@dresearch.de>, linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The MLC NAND Flash differs from the SLC NAND flash in functioning
-and the cell structure. Therefore we are considering it as a
-different Flash type.
+* .get_sb is called on mounts with automatic fs detection too, so this
+  function should print an error if it cannot read the superblock in
+  debug mode only
+  (new behaviour conforms the other fs types)
 
-Signed-off-by: Rohit H.S <rohit.hs@samsung.com>
-Signed-off-by: Raghav Gupta <gupta.raghav@samsung.com>
+Signed-off-by: Steffen Sledz <sledz@dresearch.de>
 ---
- drivers/mtd/onenand/onenand_base.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ fs/ubifs/super.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index a2bb520..33e0dbb 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -4027,7 +4027,7 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 	mtd->ecclayout = this->ecclayout;
- 
- 	/* Fill in remaining MTD driver data */
--	mtd->type = MTD_NANDFLASH;
-+	mtd->type = ONENAND_IS_MLC(this) ? MTD_MLCNANDFLASH : MTD_NANDFLASH;
- 	mtd->flags = MTD_CAP_NANDFLASH;
- 	mtd->erase = onenand_erase;
- 	mtd->point = NULL;
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 4e5bf3f..bb6ed5d 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -2054,8 +2054,8 @@ static int ubifs_get_sb(struct file_system_type *fs_type, int flags,
+ 	 */
+ 	ubi = open_ubi(name, UBI_READONLY);
+ 	if (IS_ERR(ubi)) {
+-		ubifs_err("cannot open \"%s\", error %d",
+-			  name, (int)PTR_ERR(ubi));
++		dbg_err("cannot open \"%s\", error %d",
++			name, (int)PTR_ERR(ubi));
+ 		return PTR_ERR(ubi);
+ 	}
+ 	ubi_get_volume_info(ubi, &vi);
 -- 
-1.6.6.1
+1.7.1
