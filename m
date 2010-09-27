@@ -1,22 +1,10 @@
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: "Premi, Sanjeev" <premi@ti.com>, "linux-omap@vger.kernel.org"
-	<linux-omap@vger.kernel.org>
-Date: Mon, 27 Sep 2010 19:32:56 +0530
-Subject: RE: [PATCH v5 5/5] omap: nand: making ecc layout as compatible with
-	romcode ecc
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B03560989F6@dbde02.ent.ti.com>
-References: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
-	<1285594634-19277-6-git-send-email-s-ghorai@ti.com>
-	<B85A65D85D7EB246BE421B3FB0FBB5930233C3631E@dbde02.ent.ti.com>
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB5930233C3631E@dbde02.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Vimal Singh <vimalsingh@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH RESEND v5 0/5] nand prefetch-irq support and ecc layout chanage
+Date: Mon, 27 Sep 2010 19:41:45 +0530
+Message-Id: <1285596710-25658-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,45 +14,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The following set of patches applies on linux-2.6.
+     
+The main motivations behind this patch series are -
+	1. support NAND I/O in irq mode.
+	2. support of different ECC schema. 
+	3. also to make ecc layout as like in romcode ecc layout
 
+v5: This address the input as to support the irq_chained in GPMC.
+And resend of
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg35848.html
 
-> -----Original Message-----
-> From: Premi, Sanjeev
-> Sent: Monday, September 27, 2010 7:29 PM
-> To: Ghorai, Sukumar; linux-omap@vger.kernel.org
-> Cc: linux-mtd@lists.infradead.org; linux-arm-kernel@lists.infradead.org;
-> Ghorai, Sukumar; Vimal Singh
-> Subject: RE: [PATCH v5 5/5] omap: nand: making ecc layout as compatible
-> with romcode ecc
->=20
-> > -----Original Message-----
-> > From: linux-omap-owner@vger.kernel.org
-> > [mailto:linux-omap-owner@vger.kernel.org] On Behalf Of Sukumar Ghorai
-> > Sent: Monday, September 27, 2010 7:07 PM
-> > To: linux-omap@vger.kernel.org
-> > Cc: linux-mtd@lists.infradead.org;
-> > linux-arm-kernel@lists.infradead.org; Ghorai, Sukumar; Vimal Singh
-> > Subject: [PATCH v5 5/5] omap: nand: making ecc layout as
-> > compatible with romcode ecc
-> >
-> >     This patch overrides nand ecc layout and bad block
-> > descriptor (for 8-bit
-> >     device) to support hw ecc in romcode layout. So as to
-> > have in sync with ecc
-> >     layout throughout; i.e. x-loader, u-boot and kernel.
-> >
-> >     This patch also enables to use romcode ecc for spd and
-> > zoom, by default.
-> >
-> >     This enables to flash x-loader, u-boot, kernel, FS images
-> > from kernel itself
-> >     and compatiable with other tools.
-> >
-> The description seems to start with different whitespace indents
-> in this patch series.
->=20
-[Ghorai] Thanks. I will RESEND.
+v4: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg34882.html
+and resend of 
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32689.html
 
-> ~sanjeev
->=20
-> [snip]...[snip]
+v3: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32071.html
+Rebase on latest codebase and previous patch(posted).	
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31963.html
+
+v2: Rebase on latest codebase and previous patch(posted).	
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
+
+v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg26666.html
+
+Sukumar Ghorai (5):
+  omap gpmc: enable irq mode in gpmc
+  omap3: nand: prefetch in irq mode support
+  omap3: nand: configurable fifo threshold to gain the throughput
+  omap: nand: ecc layout select from board file
+  omap: nand: making ecc layout as compatible with romcode ecc
+
+ arch/arm/mach-omap2/board-2430sdp.c        |    1 +
+ arch/arm/mach-omap2/board-3430sdp.c        |    1 +
+ arch/arm/mach-omap2/board-3630sdp.c        |    1 +
+ arch/arm/mach-omap2/board-4430sdp.c        |    2 +
+ arch/arm/mach-omap2/board-am3517evm.c      |    2 +
+ arch/arm/mach-omap2/board-apollon.c        |    1 +
+ arch/arm/mach-omap2/board-cm-t35.c         |    1 +
+ arch/arm/mach-omap2/board-devkit8000.c     |    1 +
+ arch/arm/mach-omap2/board-flash.c          |    5 +-
+ arch/arm/mach-omap2/board-generic.c        |    2 +
+ arch/arm/mach-omap2/board-h4.c             |    1 +
+ arch/arm/mach-omap2/board-igep0020.c       |    1 +
+ arch/arm/mach-omap2/board-ldp.c            |    1 +
+ arch/arm/mach-omap2/board-n8x0.c           |    2 +
+ arch/arm/mach-omap2/board-omap3beagle.c    |    1 +
+ arch/arm/mach-omap2/board-omap3evm.c       |    2 +
+ arch/arm/mach-omap2/board-omap3pandora.c   |    2 +
+ arch/arm/mach-omap2/board-omap3stalker.c   |    1 +
+ arch/arm/mach-omap2/board-omap3touchbook.c |    1 +
+ arch/arm/mach-omap2/board-omap4panda.c     |    2 +
+ arch/arm/mach-omap2/board-overo.c          |    1 +
+ arch/arm/mach-omap2/board-rx51.c           |    1 +
+ arch/arm/mach-omap2/board-zoom2.c          |    2 +
+ arch/arm/mach-omap2/board-zoom3.c          |    2 +
+ arch/arm/mach-omap2/gpmc.c                 |   48 +++++-
+ arch/arm/mach-omap2/io.c                   |    2 -
+ arch/arm/plat-omap/include/plat/gpmc.h     |   16 ++-
+ arch/arm/plat-omap/include/plat/irqs.h     |    9 +-
+ arch/arm/plat-omap/include/plat/nand.h     |    3 +
+ drivers/mtd/nand/Kconfig                   |   14 ++-
+ drivers/mtd/nand/omap2.c                   |  277 +++++++++++++++++++++++++---
+ 31 files changed, 367 insertions(+), 39 deletions(-)
