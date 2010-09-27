@@ -1,13 +1,21 @@
-From: Sukumar Ghorai <s-ghorai@ti.com>
-To: linux-omap@vger.kernel.org
-Subject: [PATCH v5 5/5] omap: nand: making ecc layout as compatible with
+From: "Premi, Sanjeev" <premi@ti.com>
+To: "Ghorai, Sukumar" <s-ghorai@ti.com>, "linux-omap@vger.kernel.org"
+	<linux-omap@vger.kernel.org>
+Date: Mon, 27 Sep 2010 19:28:49 +0530
+Subject: RE: [PATCH v5 5/5] omap: nand: making ecc layout as compatible with
 	romcode ecc
-Date: Mon, 27 Sep 2010 19:07:14 +0530
-Message-Id: <1285594634-19277-6-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB5930233C3631E@dbde02.ent.ti.com>
 References: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
+	<1285594634-19277-6-git-send-email-s-ghorai@ti.com>
+In-Reply-To: <1285594634-19277-6-git-send-email-s-ghorai@ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Vimal Singh <vimalsingh@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "Ghorai, Sukumar" <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,79 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-    This patch overrides nand ecc layout and bad block descriptor (for 8-bit
-    device) to support hw ecc in romcode layout. So as to have in sync with ecc
-    layout throughout; i.e. x-loader, u-boot and kernel.
+> -----Original Message-----
+> From: linux-omap-owner@vger.kernel.org=20
+> [mailto:linux-omap-owner@vger.kernel.org] On Behalf Of Sukumar Ghorai
+> Sent: Monday, September 27, 2010 7:07 PM
+> To: linux-omap@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org;=20
+> linux-arm-kernel@lists.infradead.org; Ghorai, Sukumar; Vimal Singh
+> Subject: [PATCH v5 5/5] omap: nand: making ecc layout as=20
+> compatible with romcode ecc
+>=20
+>     This patch overrides nand ecc layout and bad block=20
+> descriptor (for 8-bit
+>     device) to support hw ecc in romcode layout. So as to=20
+> have in sync with ecc
+>     layout throughout; i.e. x-loader, u-boot and kernel.
+>=20
+>     This patch also enables to use romcode ecc for spd and=20
+> zoom, by default.
+>=20
+>     This enables to flash x-loader, u-boot, kernel, FS images=20
+> from kernel itself
+>     and compatiable with other tools.
+>=20
+The description seems to start with different whitespace indents
+in this patch series.
 
-    This patch also enables to use romcode ecc for spd and zoom, by default.
+~sanjeev
 
-    This enables to flash x-loader, u-boot, kernel, FS images from kernel itself
-    and compatiable with other tools.
-
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
----
- drivers/mtd/nand/omap2.c |   34 ++++++++++++++++++++++++++++++++++
- 1 files changed, 34 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 3fd9ee0..9ccfd88 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -128,6 +128,20 @@ const int use_dma;
- const int use_interrupt;
- #endif
- 
-+/* oob info generated runtime depending on ecc algorithm and layout selected */
-+static struct nand_ecclayout omap_oobinfo;
-+/* Define some generic bad / good block scan pattern which are used
-+ * while scanning a device for factory marked good / bad blocks
-+ */
-+static uint8_t scan_ff_pattern[] = { 0xff };
-+static struct nand_bbt_descr bb_descrip_flashbased = {
-+	.options = NAND_BBT_SCANEMPTY | NAND_BBT_SCANALLPAGES,
-+	.offs = 0,
-+	.len = 1,
-+	.pattern = scan_ff_pattern,
-+};
-+
-+
- struct omap_nand_info {
- 	struct nand_hw_control		controller;
- 	struct omap_nand_platform_data	*pdata;
-@@ -946,6 +960,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	struct omap_nand_info		*info;
- 	struct omap_nand_platform_data	*pdata;
- 	int				err;
-+	int				i, offset;
- 
- 	pdata = pdev->dev.platform_data;
- 	if (pdata == NULL) {
-@@ -1079,6 +1094,25 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	/* rom code layout */
-+	if (pdata->ecc_opt != OMAP_ECC_HAMMING_CODE_DIFF_LAYOUT) {
-+		offset = (info->nand.options & NAND_BUSWIDTH_16) ? 2 : 1;
-+		if (info->mtd.oobsize == 16) {
-+			info->nand.badblock_pattern = &bb_descrip_flashbased;
-+			omap_oobinfo.eccbytes = 3;
-+		} else
-+			omap_oobinfo.eccbytes  = 3 * 4;
-+
-+		for (i = 0; i < omap_oobinfo.eccbytes; i++)
-+			omap_oobinfo.eccpos[i] = i+offset;
-+
-+		omap_oobinfo.oobfree->offset = offset + omap_oobinfo.eccbytes;
-+		omap_oobinfo.oobfree->length = info->mtd.oobsize -
-+					(offset + omap_oobinfo.eccbytes);
-+
-+		info->nand.ecc.layout = &omap_oobinfo;
-+	}
-+
- #ifdef CONFIG_MTD_PARTITIONS
- 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
- 	if (err > 0)
--- 
-1.7.0.4
+[snip]...[snip]=
