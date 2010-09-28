@@ -1,24 +1,18 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mail.solarflare.com ([216.237.3.220]
+	helo=exchange.solarflare.com)
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0chm-0004wi-J5
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 16:06:59 +0000
-Message-ID: <4CA2129D.3070703@parrot.com>
-Date: Tue, 28 Sep 2010 18:06:53 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: RE : UBI/UBIFS interrupted write page handling
-References: <4C88DDD5.4060507@parrot.com>	 <1284054669.11335.21.camel@brekeke>
-	<1285006478.1762.1.camel@brekeke>	 <4C9B7CD8.4070806@parrot.com>,
-	<1285266914.1766.1.camel@brekeke>	
-	<F5C24FC168F95048BB6B9E0B13EB33152BA6F5304E@DIAMANT.xi-lite.lan>	
-	<1285523911.1776.9.camel@brekeke>
-	<1285657088.2437.23.camel@localhost>	 <4CA19DAE.7030402@parrot.com>
-	<1285660934.2437.44.camel@localhost>
-In-Reply-To: <1285660934.2437.44.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+	id 1P0eT4-0004Nk-Hj
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 17:59:55 +0000
+Subject: [RFC] Online firmware upgrade in non-embedded systems
+From: Ben Hutchings <bhutchings@solarflare.com>
+To: netdev <netdev@vger.kernel.org>, linux-kernel
+	<linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 28 Sep 2010 18:59:47 +0100
+Message-ID: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: sf-linux-drivers <linux-net-drivers@solarflare.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy a écrit :
-> On Tue, 2010-09-28 at 09:47 +0200, Matthieu CASTET wrote:
->> Artem Bityutskiy a écrit :
->>> On Sun, 2010-09-26 at 20:58 +0300, Artem Bityutskiy wrote:
->> That's better : interrupt erased page are not put anymore in corrupted list.
->> But I have problem with interrupt write :
->> this night the test crashed [1].
-> 
-> Yeah, this should be fixed by forcing LEB refresh for the last LEBs of
-> journal heads. This problem exists long time. I'll work on this and send
-> you patches.
-ok
-> 
-> Then I'll push the patches to the linux-next. This means I'll re-base
-> once again the master branch - will you survive such frequent
-> re-basing :-) ?
-I should. I rebased my bsp commit on top of linux-merge. So a git reset 
---hard bsp_commit_top; git pull should handle it.
+Network and disk controllers normally have at least some firmware in
+flash to support their use as boot devices.  Solarflare's current
+network adapters can have as many as 4 distinct firmware partitions: one
+for each PHY, one for the management CPU and one for net-boot.  Any or
+all of these may need to be updated in the field, to fix bugs or to add
+features.  (Furthermore, the net-boot firmware is based on gPXE and is
+therefore modifiable by any user.)
 
-> 
-> We also have the outstanding gc_lnum problem - did you see it in new
-> ubifs?
-No, but the scenario/hardware is a bit different. I will try to 
-reproduce it this night.
+Currently the sfc network driver is optionally combined with an MTD
+driver (CONFIG_SFC_MTD) which exposes all upgradable firmware and
+configuration partitions in flash.  This works nicely in kernels with
+MTD enabled, but since MTD is mainly used in embedded systems with
+on-board flash it is often disabled in distribution kernels and custom
+kernels alike.  This leaves users of sfc unable to upgrade firmware
+without rebuilding the kernel or booting some other distribution.  The
+lack of widespread MTD support is a regular cause of support requests.
 
-> 
-> Also I wanted to add re-try logic to UBI read path, so that we could try
-> to read several times if there is an ECC errors, because as you pointed,
-> re-trying sometimes helps. However, this also needs a fix in mtd, which
-> is currently in my l2 tree:
-> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/755e723d39ac6975e6488298e129284e30d74823
-> 
-So this one need a manual merge ? Can't you include in ubi-2.6 ?
+There are two main alternatives I'm aware of:
 
-Matthieu
+- Use the ethtool ETHTOOL_SEEPROM command with multiple magic numbers
+for different partitions. bnx2x does something a little like this for
+PHY firmware upgrades. The ethtool core passes in a page at a time so
+this won't work well with flash block sizes greater than PAGE_SIZE.
+
+- Use the ethtool ETHTOOL_FLASHDEV command. It's intended for precisely
+this purpose, but the driver is supposed to implement it using
+request_firmware(). That seems to require any firmware update program to
+integrate with udev or to copy firmware images under /lib/firmware even
+though they are one-time updates. That doesn't make a lot of sense to
+me. Am I missing something?
+
+Of course these are both specific to network devices; it seems deisrable
+to have a more general convention for online firmware upgrades.  MTDs
+clearly are more generally applicable, and pretty much every computer
+does have flash storage for firmware and boot configuration, so perhaps
+it should be treated as more of a standard feature?
+
+Ben.
+
+-- 
+Ben Hutchings, Senior Software Engineer, Solarflare Communications
+Not speaking for my employer; that's the marketing department's job.
+They asked us to note that Solarflare product names are trademarked.
