@@ -1,17 +1,26 @@
-Subject: Re: [PATCH 0/4] MTD: OneNAND: Fix samsung SoCs various bugs
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: ext Kyungmin Park <kmpark@infradead.org>
-In-Reply-To: <AANLkTi=d3YZEMBMKU9-RVjXQEfF3eWGxesVJ5japEwjX@mail.gmail.com>
-References: <20100927072431.GA32076@july> <1285655139.2437.7.camel@localhost>
-	<AANLkTi=d3YZEMBMKU9-RVjXQEfF3eWGxesVJ5japEwjX@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 28 Sep 2010 13:03:29 +0300
-Message-ID: <1285668209.2437.70.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>
-Reply-To: Artem.Bityutskiy@nokia.com
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P0XP2-00085b-Ag
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 10:27:16 +0000
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L9G004K6D13WI50@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 19:27:03 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L9G002Y0D13ZC@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 19:27:03 +0900 (KST)
+Date: Tue, 28 Sep 2010 19:26:54 +0900
+From: Kyungmin Park <kmpark@infradead.org>
+Subject: [PATCH v2 0/3] mtd: OneNAND: S5PC100/S5PC110 Updates
+To: linux-mtd@lists.infradead.org
+Message-id: <20100928102654.GA30178@july>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Cc: Artem.Bityutskiy@nokia.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-28 at 12:02 +0200, ext Kyungmin Park wrote:
-> On Tue, Sep 28, 2010 at 3:25 PM, Artem Bityutskiy
-> <Artem.Bityutskiy@nokia.com> wrote:
-> > On Mon, 2010-09-27 at 16:24 +0900, Kyungmin Park wrote:
-> >> The following changes since commit 32163f4b2cef28a5aab8b226ffecfc6379a53786:
-> >>   Al Viro (1):
-> >>         alpha: fix usp value in multithreaded coredumps
-> >>
-> >> Kyungmin Park (4):
-> >>       MTD: OneNAND: Remove unused cmd_map at s5pc110
-> >>       MTD: OneNAND: S5PC100: Only S5PC110 use the command map method
-> >>       MTD: OneNAND: S5PC110: Fix wrong DMA hanlding when HIGHMEM
-> >>       MTD: OneNAND: S5PC110: Add timeout to prevent the endless loop
-> >>
-> >>  drivers/mtd/onenand/samsung.c |   45 +++++++++++++++++++++++++++-------------
-> >>  1 files changed, 30 insertions(+), 15 deletions(-)
-> >
-> > Some patches are already in my l2-mtd-2.6.git tree, could you please
-> > send the series against the l2 tree so that I could apply it?
-> 
-> I tried to clone you tree. but it's too slow since internal network issue.
-> I will send it tomorrow.
+The following changes since commit 5e999254f1894da542e7200b968fcfeec162478e:
+  Rohit Hassan Sathyanarayan (1):
+        mtd: MLC device check in OneNAND driver
 
-Always use --reference linux-2.6 when cloning linux trees and it'll be
-faster.
+Kyungmin Park (3):
+      MTD: OneNAND: S5PC100: Only S5PC110 use the command map method
+      MTD: OneNAND: S5PC110: Fix wrong DMA hanlding when HIGHMEM
+      MTD: OneNAND: S5PC110: Implement DMA interrupt method
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+ drivers/mtd/onenand/samsung.c |  118 ++++++++++++++++++++++++++++++++++++-----
+ 1 files changed, 104 insertions(+), 14 deletions(-)
