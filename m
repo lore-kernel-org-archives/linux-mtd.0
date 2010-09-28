@@ -1,17 +1,23 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0ZZv-0002KF-6o
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 12:46:39 +0000
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Tue, 28 Sep 2010 18:16:31 +0530
-Subject: Issue : jffs2 and ecc layout
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B03560990E3@dbde02.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Date: Tue, 28 Sep 2010 08:21:39 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "G, Manjunath Kondaiah" <manjugk@ti.com>
+Subject: Re: [GIT PULL] omap2 sparse fixes
+Message-ID: <20100928152139.GB3117@atomide.com>
+References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
+	<20100923225851.GR4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
+	<20100925001914.GO4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
 MIME-Version: 1.0
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I was using the following ecc layout which is not working to mount the jffs=
-2 File-system. I was in 2.6.32 kernel and working; but same layout is not w=
-orking with latest 2.6 kernel.
+* G, Manjunath Kondaiah <manjugk@ti.com> [100928 01:04]:
+> 
+> Three patches are fixed using above method which are:
+> OMAP: mach-omap2: Fix static function warnings
+> OMAP: plat-omap: Fix static function warnings
+> TWL IRQ: Fix fucntion declaration warnings
 
-Observation is that - no read request issued to the driver (say omap2.c).
+OK thanks.
+ 
+> are available in the git repository at:
+> 
+>   git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git sparse_fixes_v3
+> 
+> G, Manjunath Kondaiah (10):
+>       OMAP: mach-omap2: Fix incorrect assignment warnings
+>       OMAP: mach-omap2: Fix static declaration warnings
+>       OMAP2plus: Fix static function warnings
+>       OMAP: mach-omap2: Fix miscellaneous sparse warnings
+>       OMAP: plat-omap: Fix static function warnings
+>       OMAP: NAND: Fix static declaration warning
+>       TWL CORE: Fix sparse warning
+>       TWL IRQ: Fix fucntion declaration warnings
 
-# mount -t jffs2 /dev/mtdblock4 /mnt/nand
-[=A0=A0 32.505218] cannot read OOB for EB at 00000000, requested 8 bytes, r=
-ead 0 bytes, error -22
-mount: Mounting /dev/mtdblock4 on /mnt/nand failed: Input/output error
+Didn't Samuel just reply that he has applied these two TWL fixes?
 
-# dmesg=20
-<3>[=A0=A0 32.505218] cannot read OOB for EB at 00000000, requested 8 bytes=
-, read 0 bytes, error -22
-
-Code:
-=A0178 static struct nand_ecclayout hw_x16_romcode_oob_64 =3D {
-=A0179=A0=A0=A0=A0=A0=A0=A0=A0 .eccbytes =3D 12,
-=A0180=A0=A0=A0=A0=A0=A0=A0=A0 .eccpos =3D {
-=A0181=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 2, 3, 4,=
- 5, 6, 7, 8, 9, 10, 11, 12, 13
-=A0182=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 },
-=A0183=A0=A0=A0=A0=A0=A0=A0=A0 .oobfree =3D {
-=A0184=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0=
-=A0=A0{.offset =3D 14,
-=A0185=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0 .length =3D 50}
-=A0186=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
-=A0187 };
-
-=A01188=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info->nand.ecc.layout =3D &h=
-w_x16_romcode_oob_64;
+>       OMAP2/3: Convert write/read functions to raw read/write
+>       OMAP3: Keypad: Fix incorrect type initializer
 
 Regards,
-Ghorai
+
+Tony
