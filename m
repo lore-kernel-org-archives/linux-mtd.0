@@ -1,28 +1,18 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from smtp4-g21.free.fr ([212.27.42.4])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0f0l-0002sg-Bh
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 18:34:45 +0000
-Received: by bwz19 with SMTP id 19so6034237bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Sep 2010 11:34:41 -0700 (PDT)
-Subject: Re: RE : UBI/UBIFS interrupted write page handling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4CA2129D.3070703@parrot.com>
-References: <4C88DDD5.4060507@parrot.com>
-	<1284054669.11335.21.camel@brekeke> <1285006478.1762.1.camel@brekeke>
-	<4C9B7CD8.4070806@parrot.com>,<1285266914.1766.1.camel@brekeke>
-	<F5C24FC168F95048BB6B9E0B13EB33152BA6F5304E@DIAMANT.xi-lite.lan>
-	<1285523911.1776.9.camel@brekeke> <1285657088.2437.23.camel@localhost>
-	<4CA19DAE.7030402@parrot.com> <1285660934.2437.44.camel@localhost>
-	<4CA2129D.3070703@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 28 Sep 2010 21:34:38 +0300
-Message-ID: <1285698878.1776.10.camel@brekeke>
+	id 1P0fDJ-0000Eh-BM
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 18:47:42 +0000
+Subject: pwrite() to nand in raw mode fails with EINVAL
+From: Maxime Bizon <mbizon@freebox.fr>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Content-Type: text/plain; charset="ANSI_X3.4-1968"
+Date: Tue, 28 Sep 2010 20:47:30 +0200
+Message-ID: <1285699650.32420.70.camel@sakura.staff.proxad.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David.Woodhouse@intel.com
+Reply-To: mbizon@freebox.fr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-09-28 at 18:06 +0200, Matthieu CASTET wrote:
-> > Also I wanted to add re-try logic to UBI read path, so that we could try
-> > to read several times if there is an ECC errors, because as you pointed,
-> > re-trying sometimes helps. However, this also needs a fix in mtd, which
-> > is currently in my l2 tree:
-> > http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/755e723d39ac6975e6488298e129284e30d74823
-> > 
-> So this one need a manual merge ? Can't you include in ubi-2.6 ?
 
-It is actually in the ubi-2.6.git / master as well.
+Hi,
+
+Since commit 782ce79a45b3b850b108896fcf7da26754061c8f ("cleanup the
+nand_do_write_ops"), a pwrite() to a NAND device fails with EINVAL.
+
+The EINVAL comes from here:
+
+        /* Don't allow multipage oob writes with offset */
+        if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
+                return -EINVAL;
+
+
+ops->ooboffs seems uninitialized.
+
+
+I think the following memset() are missing:
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index e4def84..731ff36 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -202,6 +202,7 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
+ 		{
+ 			struct mtd_oob_ops ops;
+ 
++			memset(&ops, 0, sizeof (ops));
+ 			ops.mode = MTD_OOB_RAW;
+ 			ops.datbuf = kbuf;
+ 			ops.oobbuf = NULL;
+@@ -305,6 +306,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
+ 		{
+ 			struct mtd_oob_ops ops;
+ 
++			memset(&ops, 0, sizeof (ops));
+ 			ops.mode = MTD_OOB_RAW;
+ 			ops.datbuf = kbuf;
+ 			ops.oobbuf = NULL;
+
+
 
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Maxime
