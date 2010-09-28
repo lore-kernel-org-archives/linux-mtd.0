@@ -1,21 +1,23 @@
-Received: from mgw-sa02.nokia.com ([147.243.1.48])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0VUb-0006Dv-FG
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 08:24:54 +0000
-Date: Tue, 28 Sep 2010 11:24:46 +0300
-From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-Subject: Re: Cannot rmmod after call to add_mtd_blktrans_dev
-Message-ID: <20100928082446.GA999@angel.research.nokia.com>
-References: <20100908122039.GA25005@angel.research.nokia.com>
-	<1283957007.7935.0.camel@maxim-laptop>
-	<1284851862.28101.2.camel@maxim-laptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1284851862.28101.2.camel@maxim-laptop>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
-Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P0Wn3-00086x-1b
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 09:48:01 +0000
+Received: by bwz19 with SMTP id 19so5507311bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Sep 2010 02:47:57 -0700 (PDT)
+Subject: Re: [PATCH 4/4] mtd-utils: unify flash_erase and flash_eraseall
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1285293221-25028-4-git-send-email-vapier@gentoo.org>
+References: <1285293221-25028-1-git-send-email-vapier@gentoo.org>
+	<1285293221-25028-4-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 28 Sep 2010 12:46:07 +0300
+Message-ID: <1285667167.2437.66.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Sep 19, 2010 at 01:17:42AM +0200, ext Maxim Levitsky wrote:
-> Please test the patch I have just posted on linux-mtd.
+On Thu, 2010-09-23 at 21:53 -0400, Mike Frysinger wrote:
+> These have overlapping functionality, and while flash_eraseall supports
+> newer 64bit ioctls, flash_erase does not.  So rather than graft support
+> onto flash_erase, merge the functionality of two into flash_erase so we
+> only have to support one util from now on.
+> 
+> A simple wrapper is provided to ease old flash_eraseall users into the
+> new combined flash_erase util.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 
-I tried the 1/3 patch sent on Sep 18 23:12 on top of 2.6.36-rc5.
-Had some email problem and to pick the patch from web
-archives. It didn't apply cleanly, but the merge conflict seemed
-minor.
+And BTW, thanks for good clean-ups!
 
-The patch seems to work. I am able to remove module but now
-del_mtd_blktrans_dev(dev) relases my own device structure a bit
-too early and have to protect it with extra kref_get() and
-release it with blktrans_dev_put(dev).
-
-Jarkko Lavinen
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
