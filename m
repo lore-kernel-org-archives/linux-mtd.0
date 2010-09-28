@@ -1,18 +1,16 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0fDJ-0000Eh-BM
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 18:47:42 +0000
-Subject: pwrite() to nand in raw mode fails with EINVAL
-From: Maxime Bizon <mbizon@freebox.fr>
-To: Maxim Levitsky <maximlevitsky@gmail.com>
-Content-Type: text/plain; charset="ANSI_X3.4-1968"
-Date: Tue, 28 Sep 2010 20:47:30 +0200
-Message-ID: <1285699650.32420.70.camel@sakura.staff.proxad.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	David.Woodhouse@intel.com
-Reply-To: mbizon@freebox.fr
+Date: Tue, 28 Sep 2010 15:27:28 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: Sukumar Ghorai <s-ghorai@ti.com>
+Subject: Re: [PATCH v5 1/5] omap gpmc: enable irq mode in gpmc
+Message-ID: <20100928222727.GS3117@atomide.com>
+References: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
+	<1285594634-19277-2-git-send-email-s-ghorai@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1285594634-19277-2-git-send-email-s-ghorai@ti.com>
+Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +20,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+* Sukumar Ghorai <s-ghorai@ti.com> [100927 06:30]:
+>   add support the irq mode in GPMC.
+>   gpmc_init() function move after omap_init_irq() as it has dependecy on irq.
 
-Hi,
+> --- a/arch/arm/mach-omap2/board-2430sdp.c
+> +++ b/arch/arm/mach-omap2/board-2430sdp.c
+> @@ -144,6 +144,7 @@ static void __init omap_2430sdp_init_irq(void)
+>  	omap_board_config_size = ARRAY_SIZE(sdp2430_config);
+>  	omap2_init_common_hw(NULL, NULL);
+>  	omap_init_irq();
+> +	gpmc_init();
+>  	omap_gpio_init();
+>  }
+>  
+> diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
+> index 67b95b5..549cd62 100644
+> --- a/arch/arm/mach-omap2/board-3430sdp.c
+> +++ b/arch/arm/mach-omap2/board-3430sdp.c
+> @@ -328,6 +328,7 @@ static void __init omap_3430sdp_init_irq(void)
+>  	omap3_pm_init_cpuidle(omap3_cpuidle_params_table);
+>  	omap2_init_common_hw(hyb18m512160af6_sdrc_params, NULL);
+>  	omap_init_irq();
+> +	gpmc_init();
+>  	omap_gpio_init();
+>  }
+...
 
-Since commit 782ce79a45b3b850b108896fcf7da26754061c8f ("cleanup the
-nand_do_write_ops"), a pwrite() to a NAND device fails with EINVAL.
+You can avoid adding gpmc_init() by making it a subsys_initcall().
+Just make sure you return early from it with if (!cpu_class_is_omap2()).
 
-The EINVAL comes from here:
+> --- a/arch/arm/mach-omap2/gpmc.c
+> +++ b/arch/arm/mach-omap2/gpmc.c
+> @@ -713,6 +721,31 @@ void __init gpmc_init(void)
+>  	l |= (0x02 << 3) | (1 << 0);
+>  	gpmc_write_reg(GPMC_SYSCONFIG, l);
+>  	gpmc_mem_init();
+> +
+> +	/* initalize the irq_chained */
+> +	irq = OMAP_GPMC_IRQ_BASE;
+> +	for (cs = 0; cs < GPMC_CS_NUM; cs++) {
+> +		set_irq_handler(irq, handle_simple_irq);
+> +		set_irq_flags(irq, IRQF_VALID);
+> +		irq++;
+> +	}
+> +
+> +	if (request_irq(20, gpmc_handle_irq, IRQF_SHARED, "gpmc", gpmc_base))
+> +		printk(KERN_ERR "gpmc: irq-%d could not claim: err %d\n",
+> +							INT_34XX_GPMC_IRQ, irq);
+> +}
 
-        /* Don't allow multipage oob writes with offset */
-        if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
-                return -EINVAL;
+Hmm, this does not look right.. Shouldn't you call set_irq_chained_handler()
+somewhere too? Also, are you sure the interrupt is 20 for all of mach-omap2?
+It should be added to the irqs.h files.
 
+> +static irqreturn_t gpmc_handle_irq(int irq, void *dev)
+> +{
+> +	u8 cs;
+> +
+> +	if (irq != INT_34XX_GPMC_IRQ)
+> +		return IRQ_HANDLED;
+> +	/* check cs to invoke the irq */
+> +	cs = ((gpmc_read_reg(GPMC_PREFETCH_CONFIG1)) >> CS_NUM_SHIFT) & 0x7;
+> +	generic_handle_irq(OMAP_GPMC_IRQ_BASE+cs);
+> +
+> +	return IRQ_HANDLED;
+>  }
 
-ops->ooboffs seems uninitialized.
+Doesn't doing OMAP_GPMC_IRQ_BASE + cs overlap with some other irq?
 
+Regards,
 
-I think the following memset() are missing:
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index e4def84..731ff36 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -202,6 +202,7 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
- 		{
- 			struct mtd_oob_ops ops;
- 
-+			memset(&ops, 0, sizeof (ops));
- 			ops.mode = MTD_OOB_RAW;
- 			ops.datbuf = kbuf;
- 			ops.oobbuf = NULL;
-@@ -305,6 +306,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
- 		{
- 			struct mtd_oob_ops ops;
- 
-+			memset(&ops, 0, sizeof (ops));
- 			ops.mode = MTD_OOB_RAW;
- 			ops.datbuf = kbuf;
- 			ops.oobbuf = NULL;
-
-
-
--- 
-Maxime
+Tony
