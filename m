@@ -1,16 +1,22 @@
-Date: Tue, 28 Sep 2010 15:29:33 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: Sukumar Ghorai <s-ghorai@ti.com>
-Subject: Re: [PATCH v5 2/5] omap3: nand: prefetch in irq mode support
-Message-ID: <20100928222933.GT3117@atomide.com>
-References: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
-	<1285594634-19277-3-git-send-email-s-ghorai@ti.com>
+Received: from mailout-de.gmx.net ([213.165.64.23] helo=mail.gmx.net)
+	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P0is4-0006Ts-PL
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 22:42:02 +0000
+Message-ID: <4CA26F35.6060408@gmx.net>
+Date: Wed, 29 Sep 2010 00:41:57 +0200
+From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1285594634-19277-3-git-send-email-s-ghorai@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Ben Hutchings <bhutchings@solarflare.com>
+Subject: Re: [RFC] Online firmware upgrade in non-embedded systems
+References: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>
+In-Reply-To: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: netdev <netdev@vger.kernel.org>,
+	sf-linux-drivers <linux-net-drivers@solarflare.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	flashrom <flashrom@flashrom.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Sukumar Ghorai <s-ghorai@ti.com> [100927 06:30]:
->  This patch enable prefetch-irq mode for NAND.
+[adding flashrom@flashrom.org to CC, senders will be whitelisted after a
+short delay]
 
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -112,6 +112,9 @@ config MTD_NAND_OMAP_PREFETCH
->  	help
->  	 The NAND device can be accessed for Read/Write using GPMC PREFETCH engine
->  	 to improve the performance.
-> +	 GPMC PREFETCH can be configured eigther in MPU interrupt mode or in DMA
-> +	 interrupt mode. If not selected any of them prefetch will be used in
-> +	 polling mode.
->  
->  config MTD_NAND_OMAP_PREFETCH_DMA
->  	depends on MTD_NAND_OMAP_PREFETCH
-> @@ -120,7 +123,16 @@ config MTD_NAND_OMAP_PREFETCH_DMA
->  	help
->  	 The GPMC PREFETCH engine can be configured eigther in MPU interrupt mode
->  	 or in DMA interrupt mode.
-> -	 Say y for DMA mode or MPU mode will be used
-> +	 Say y for DMA mode
-> +
-> +config MTD_NAND_OMAP_PREFETCH_IRQ
-> +	depends on MTD_NAND_OMAP_PREFETCH && !MTD_NAND_OMAP_PREFETCH_DMA
-> +	bool "IRQ mode"
-> +	default n
-> +	help
-> +	 The GPMC PREFETCH engine can be configured eigther in MPU interrupt mode
-> +	 or in DMA interrupt mode.
-> +	 Say y for IRQ mode
->  
->  config MTD_NAND_IDS
->  	tristate
+On 28.09.2010 19:59, Ben Hutchings wrote:
+> Network and disk controllers normally have at least some firmware in
+> flash to support their use as boot devices. [...]
+>
+> Currently the sfc network driver is optionally combined with an MTD
+> driver (CONFIG_SFC_MTD) which exposes all upgradable firmware and
+> configuration partitions in flash.  This works nicely in kernels with
+> MTD enabled, but since MTD is mainly used in embedded systems with
+> on-board flash it is often disabled in distribution kernels and custom
+> kernels alike.  This leaves users of sfc unable to upgrade firmware
+> without rebuilding the kernel or booting some other distribution.  The
+> lack of widespread MTD support is a regular cause of support requests.
+>
+> There are two main alternatives I'm aware of:
+>
+> - Use the ethtool ETHTOOL_SEEPROM [...]
+>
+> - Use the ethtool ETHTOOL_FLASHDEV command [..]
+>
+> Of course these are both specific to network devices; it seems deisrable
+> to have a more general convention for online firmware upgrades.  MTDs
+> clearly are more generally applicable, and pretty much every computer
+> does have flash storage for firmware and boot configuration, so perhaps
+> it should be treated as more of a standard feature?
+>   
 
-The configuration to use the prefetch IRQ should be passed in the platform_data
-from the board-*.c files. What if you want to to boot a distro kernel on
-omap2, 3 and 4 and only some of the boards can use the prefetch interrupt?
+Given that the flashrom utility <http://www.flashrom.org/> (GPLv2)
+supports flashing many network cards, SATA/PATA controllers, graphics
+cards, and of course the main system firmware/BIOS/EFI, and it does that
+from userspace without any kernel support, using flashrom for those
+purposes makes sense IMHO.
 
-Tony
+flashrom works fine under Linux 2.4, 2.6 and pretty much every other OS
+out there. There is a focus on x86, but MIPS, PowerPC and other
+architectures are supported as well. flashrom is independent of the MTD
+framework, so you don't need to boot a special kernel for a firmware
+upgrade.
+
+That said, writing a flashrom driver for your hardware is pretty easy.
+You could even use existing kernel code for your device as a template
+for the flashrom driver since the license is compatible.
+
+If you have any questions, please ask.
+
+Regards,
+Carl-Daniel
