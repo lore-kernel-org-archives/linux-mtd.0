@@ -1,23 +1,21 @@
-From: "G, Manjunath Kondaiah" <manjugk@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Tue, 28 Sep 2010 13:42:17 +0530
-Subject: RE: [GIT PULL] omap2 sparse fixes
-Message-ID: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
-References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
-	<20100923225851.GR4211@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
-	<20100925001914.GO4211@atomide.com>
-In-Reply-To: <20100925001914.GO4211@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mgw-sa02.nokia.com ([147.243.1.48])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P0VUb-0006Dv-FG
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 08:24:54 +0000
+Date: Tue, 28 Sep 2010 11:24:46 +0300
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: Maxim Levitsky <maximlevitsky@gmail.com>
+Subject: Re: Cannot rmmod after call to add_mtd_blktrans_dev
+Message-ID: <20100928082446.GA999@angel.research.nokia.com>
+References: <20100908122039.GA25005@angel.research.nokia.com>
+	<1283957007.7935.0.camel@maxim-laptop>
+	<1284851862.28101.2.camel@maxim-laptop>
 MIME-Version: 1.0
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1284851862.28101.2.camel@maxim-laptop>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <david.woodhouse@intel.com>
+Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,117 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, Sep 19, 2010 at 01:17:42AM +0200, ext Maxim Levitsky wrote:
+> Please test the patch I have just posted on linux-mtd.
 
-Tony,
+I tried the 1/3 patch sent on Sep 18 23:12 on top of 2.6.36-rc5.
+Had some email problem and to pick the patch from web
+archives. It didn't apply cleanly, but the merge conflict seemed
+minor.
 
-> -----Original Message-----
-> From: Tony Lindgren [mailto:tony@atomide.com]=20
-> Sent: Saturday, September 25, 2010 5:49 AM
-> To: G, Manjunath Kondaiah
-> Cc: linux-omap@vger.kernel.org; linux-arm-kernel@lists.infradead.org
-> Subject: Re: [GIT PULL] omap2 sparse fixes
->=20
-> * G, Manjunath Kondaiah <manjugk@ti.com> [100924 12:33]:
-> >=20
-> > Tony,
-> > Here is new pull request which is rebased to 2.6.36-rc5.
-> >=20
-> > -Manjunath
-> >=20
-> > The following changes since commit=20
-> b30a3f6257ed2105259b404d419b4964e363928c:
-> >   Linus Torvalds (1):
-> >         Linux 2.6.36-rc5
-> >=20
-> > are available in the git repository at:
-> >=20
-> >   git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git=20
-> > sparse_fixes
-> >=20
-> > G, Manjunath Kondaiah (10):
-> >       OMAP: mach-omap2: Fix incorrect assignment warnings
-> >       OMAP: mach-omap2: Fix static declaration warnings
-> >       OMAP: mach-omap2: Fix static function warnings
-> >       OMAP: mach-omap2: Fix miscellaneous sparse warnings
-> >       OMAP: plat-omap: Fix static function warnings
-> >       OMAP: NAND: Fix static declaration warning
-> >       TWL CORE: Fix sparse warning
-> >       TWL IRQ: Fix fucntion declaration warnings
-> >       OMAP2/3: Convert write/read functions to raw read/write
-> >       OMAP3: Keypad: Fix incorrect type initializer
->=20
-> Hmm tried pulling these, but ran into an issue where at least=20
-> 2430 takes about a minute to boot with these patches with no=20
-> output on the console intially.
->=20
-> Can you please check that? Will not merge for now until we=20
-> figure out what changes with these patches.
->=20
-> Then, I also noticed the following exports getting added:
->=20
-> +EXPORT_SYMBOL(omap2_gp_clockevent_set_gptimer);
-> +EXPORT_SYMBOL(omapfb_reserve_sram);
-> +EXPORT_SYMBOL(omap_sram_init);
->=20
-> These should not be exported, they are only intended to be=20
-> called from the low-level platform init code. So exporting=20
-> them is not the right fix for these.
+The patch seems to work. I am able to remove module but now
+del_mtd_blktrans_dev(dev) relases my own device structure a bit
+too early and have to protect it with extra kref_get() and
+release it with blktrans_dev_put(dev).
 
-Similar comments received for twl irq apis's hence it was aligned
-to declare these functions as extern functions in local header(if exists)=20
-or create new header in the source file directory for these declarations.
-
-Three patches are fixed using above method which are:
-OMAP: mach-omap2: Fix static function warnings
-OMAP: plat-omap: Fix static function warnings
-TWL IRQ: Fix fucntion declaration warnings
-
-The patch series is tested on below boards(with omap3_defconfig)
-and links for boot logs is provided below:
-
-beagle boot log:
-http://pastebin.com/jz6ZGHsH
-
-zoom3 boot log:
-http://pastebin.com/T0YjunCk
-
-2430sdp boot log:
-http://pastebin.com/7BbpieYS
-
-As I mentioned in other e-mail, 2430sdp with omap3_defconfig boots
-only after disabling usb. OMAP4SDPES2.0 boots with ES2.0 patches from
-for-next branch.
-
-Here is all parse errors fixed with this series:
-
-Sparse warns before fixes:
-http://pastebin.com/yct2p201
-
-Sparse warns after fixes:
-http://pastebin.com/qpnTbYwL
-
-All the tested patches are pushed to new branch at:
-
-The following changes since commit b30a3f6257ed2105259b404d419b4964e363928c=
-:
-  Linus Torvalds (1):
-        Linux 2.6.36-rc5
-
-are available in the git repository at:
-
-  git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git sparse_fixes_v3
-
-G, Manjunath Kondaiah (10):
-      OMAP: mach-omap2: Fix incorrect assignment warnings
-      OMAP: mach-omap2: Fix static declaration warnings
-      OMAP2plus: Fix static function warnings
-      OMAP: mach-omap2: Fix miscellaneous sparse warnings
-      OMAP: plat-omap: Fix static function warnings
-      OMAP: NAND: Fix static declaration warning
-      TWL CORE: Fix sparse warning
-      TWL IRQ: Fix fucntion declaration warnings
-      OMAP2/3: Convert write/read functions to raw read/write
-      OMAP3: Keypad: Fix incorrect type initializer
-
-
--Manjunath
+Jarkko Lavinen
