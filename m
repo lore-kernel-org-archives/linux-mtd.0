@@ -1,25 +1,28 @@
-Date: Tue, 28 Sep 2010 11:31:59 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: "G, Manjunath Kondaiah" <manjugk@ti.com>
-Subject: Re: [GIT PULL] omap2 sparse fixes
-Message-ID: <20100928183157.GH3117@atomide.com>
-References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
-	<20100923225851.GR4211@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
-	<20100925001914.GO4211@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
-	<20100928152139.GB3117@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P0f0l-0002sg-Bh
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 18:34:45 +0000
+Received: by bwz19 with SMTP id 19so6034237bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Sep 2010 11:34:41 -0700 (PDT)
+Subject: Re: RE : UBI/UBIFS interrupted write page handling
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <4CA2129D.3070703@parrot.com>
+References: <4C88DDD5.4060507@parrot.com>
+	<1284054669.11335.21.camel@brekeke> <1285006478.1762.1.camel@brekeke>
+	<4C9B7CD8.4070806@parrot.com>,<1285266914.1766.1.camel@brekeke>
+	<F5C24FC168F95048BB6B9E0B13EB33152BA6F5304E@DIAMANT.xi-lite.lan>
+	<1285523911.1776.9.camel@brekeke> <1285657088.2437.23.camel@localhost>
+	<4CA19DAE.7030402@parrot.com> <1285660934.2437.44.camel@localhost>
+	<4CA2129D.3070703@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 28 Sep 2010 21:34:38 +0300
+Message-ID: <1285698878.1776.10.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,48 +32,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* G, Manjunath Kondaiah <manjugk@ti.com> [100928 08:26]:
-> 
-> 
-> > -----Original Message-----
-> > From: Tony Lindgren [mailto:tony@atomide.com] 
-> > Sent: Tuesday, September 28, 2010 8:52 PM
-> > To: G, Manjunath Kondaiah
-> > Cc: linux-omap@vger.kernel.org; 
-> > linux-arm-kernel@lists.infradead.org; Samuel Ortiz; Dmitry 
-> > Torokhov; linux-mtd@lists.infradead.org; Russell King - ARM Linux
-> > Subject: Re: [GIT PULL] omap2 sparse fixes
+On Tue, 2010-09-28 at 18:06 +0200, Matthieu CASTET wrote:
+> > Also I wanted to add re-try logic to UBI read path, so that we could try
+> > to read several times if there is an ECC errors, because as you pointed,
+> > re-trying sometimes helps. However, this also needs a fix in mtd, which
+> > is currently in my l2 tree:
+> > http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/755e723d39ac6975e6488298e129284e30d74823
 > > 
-> > * G, Manjunath Kondaiah <manjugk@ti.com> [100928 01:04]:
-> > > 
-> > > Three patches are fixed using above method which are:
-> > > OMAP: mach-omap2: Fix static function warnings
-> > > OMAP: plat-omap: Fix static function warnings TWL IRQ: Fix fucntion 
-> > > declaration warnings
-> > 
-> > OK thanks.
-> >  
-> > > are available in the git repository at:
-> > > 
-> > >   git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git 
-> > > sparse_fixes_v3
-> > > 
-> > > G, Manjunath Kondaiah (10):
-> > >       OMAP: mach-omap2: Fix incorrect assignment warnings
-> > >       OMAP: mach-omap2: Fix static declaration warnings
-> > >       OMAP2plus: Fix static function warnings
-> > >       OMAP: mach-omap2: Fix miscellaneous sparse warnings
-> > >       OMAP: plat-omap: Fix static function warnings
-> > >       OMAP: NAND: Fix static declaration warning
-> > >       TWL CORE: Fix sparse warning
-> > >       TWL IRQ: Fix fucntion declaration warnings
-> > 
-> > Didn't Samuel just reply that he has applied these two TWL fixes?
-> 
-> Samuel applied only one patch and other patch is yet to be applied.
-> Do you want me to pull out these two twl patches from the series?
+> So this one need a manual merge ? Can't you include in ubi-2.6 ?
 
-Yes please take out all patches that are not in arch/arm/*omap*/ path.
-The others really should go to the driver maintainers.
+It is actually in the ubi-2.6.git / master as well.
 
-Tony
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
