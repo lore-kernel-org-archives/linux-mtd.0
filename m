@@ -1,26 +1,22 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0UAQ-000616-Kp
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 06:59:59 +0000
-Received: by bwz19 with SMTP id 19so5427790bwz.36
+	id 1P0Ud5-0002m8-3t
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 07:29:36 +0000
+Received: by pzk32 with SMTP id 32so1959204pzk.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Sep 2010 23:59:57 -0700 (PDT)
-Subject: Re: RE : UBI/UBIFS interrupted write page handling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu Castet <matthieu.castet@parrot.com>
-In-Reply-To: <1285523911.1776.9.camel@brekeke>
-References: <4C88DDD5.4060507@parrot.com>
-	<1284054669.11335.21.camel@brekeke> <1285006478.1762.1.camel@brekeke>
-	<4C9B7CD8.4070806@parrot.com>,<1285266914.1766.1.camel@brekeke>
-	<F5C24FC168F95048BB6B9E0B13EB33152BA6F5304E@DIAMANT.xi-lite.lan>
-	<1285523911.1776.9.camel@brekeke>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 28 Sep 2010 09:58:08 +0300
-Message-ID: <1285657088.2437.23.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Tue, 28 Sep 2010 00:29:33 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <1285655337.2437.13.camel@localhost>
+References: <20100927100143.GA17778@july> <1285655337.2437.13.camel@localhost>
+Date: Tue, 28 Sep 2010 16:29:33 +0900
+Message-ID: <AANLkTinF0JFpjVd8zWRzFYH3xarC8uu7ONEeQN+Z45um@mail.gmail.com>
+Subject: Re: [PATCH] MTD: OneNAND: S5PC110: Implement DMA interrupt method
+From: Kyungmin Park <kmpark@infradead.org>
+To: Artem.Bityutskiy@nokia.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-09-26 at 20:58 +0300, Artem Bityutskiy wrote:
-> > The test is still running, but because for each boot we got this slow
-> > dump (take near 1 min), I expect others errors to take longer to
-> > appear.
-> 
-> Your PEB 20 contains almost all 0xFFs, but not quite, and NAND pages are
-> read with ECC errors. I think this is a result of power cut during
-> erasure.
-> 
-> My new patch-set is trying to detect situations when we have a PEB which
-> contains important data, but its VID header is corrupted. We try to
-> preserve such PEBs instead of erasing. UBI would not spam so much if
-> debugging was disabled.
+On Tue, Sep 28, 2010 at 3:28 PM, Artem Bityutskiy
+<Artem.Bityutskiy@nokia.com> wrote:
+> On Mon, 2010-09-27 at 19:01 +0900, Kyungmin Park wrote:
+>> From: Kyungmin Park <kyungmin.park@samsung.com>
+>>
+>> Implement DMA interrupt method. previous time it polls the DMA status.
+>> It can reduce the CPU power but decrease the performance a little.
+>>
+>> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+>
+> Does not apply to the l2 tree. Also it is not clear at all whether it
+> depends on the previous series or it is completely independent. Please,
+> re-send with the other patches which I did not take yet.
 
-Matthieu, thanks for testing the latest UBI changes. I wonder, do you
-have issues with the follow-up fix I sent you. I just wonder if it is ok
-for me to put these patches to linux-next or it is better to wait a
-little?
+It's dependent on previous patches, I think these patches including
+previous are for 2.6.37.
+Okay I'll re-send based on l2 tree.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thank you,
+Kyungmin Park
+
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
+>
+>
