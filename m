@@ -1,13 +1,16 @@
-Received: from dakia2.marvell.com ([65.219.4.35])
+Received: from [69.28.251.93] (helo=b32.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0FAE-0005Ho-Qu
-	for linux-mtd@lists.infradead.org; Mon, 27 Sep 2010 14:58:47 +0000
-From: Lei Wen <leiwen@marvell.com>
-To: roman.tereshonkov@nokia.com, dwmw2@infradead.org,
-	dedekind1@gmail.com, linux-mtd@lists.infradead.org, adrian.wenl@gmail.com
-Subject: [PATCH] mtd: add get offset and size function for partition query
-Date: Mon, 27 Sep 2010 23:04:44 +0800
-Message-Id: <1285599884-18312-1-git-send-email-leiwen@marvell.com>
+	id 1P0OIC-00083R-Ap
+	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 00:43:37 +0000
+From: Kevin Cernekee <cernekee@gmail.com>
+Date: Mon, 27 Sep 2010 17:22:04 -0700
+Subject: [PATCH] mtd-utils: Use $(CURDIR) in place of $(PWD)
+Message-Id: <90498d8ec2a6b99c34b3bc61cf5e6444@localhost>
+To: <dedekind1@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,74 +20,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since we add add_mtd_partitions and mtd_del_partition kenrel api to
-facilitate the mtd repartition job. It would be nice to add another two api
-to know the offset and size of each partition.
+$(PWD) comes from the shell and may cause unexpected side effects when
+using "make -C".
 
-Signed-off-by: Lei Wen <leiwen@marvell.com>
+$(CURDIR) is defined internally by GNU make.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 ---
- drivers/mtd/mtdpart.c          |   36 ++++++++++++++++++++++++++++++++++++
- include/linux/mtd/partitions.h |    2 ++
- 2 files changed, 38 insertions(+), 0 deletions(-)
+ Makefile  |    2 +-
+ common.mk |    4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 726c287..4548168 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -655,6 +655,42 @@ int add_mtd_partitions(struct mtd_info *master,
- }
- EXPORT_SYMBOL(add_mtd_partitions);
+diff --git a/Makefile b/Makefile
+index 93661cb..7ab9743 100644
+--- a/Makefile
++++ b/Makefile
+@@ -33,7 +33,7 @@ clean::
+ 	-rm -f $(SYMLINKS)
+ ifneq ($(BUILDDIR)/.git,)
+ ifneq ($(BUILDDIR),.)
+-ifneq ($(BUILDDIR),$(PWD))
++ifneq ($(BUILDDIR),$(CURDIR))
+ 	rm -rf $(BUILDDIR)
+ endif
+ endif
+diff --git a/common.mk b/common.mk
+index be785b4..0444ad9 100644
+--- a/common.mk
++++ b/common.mk
+@@ -26,10 +26,10 @@ INCLUDEDIR=$(PREFIX)/include
  
-+uint64_t get_mtd_offset(struct mtd_info *master, int partno)
-+{
-+	struct mtd_part *slave, *next;
-+	uint64_t ret = ULLONG_MAX;
-+
-+	mutex_lock(&mtd_partitions_mutex);
-+	list_for_each_entry_safe(slave, next, &mtd_partitions, list)
-+		if ((slave->master == master) &&
-+		    (slave->mtd.index == partno)) {
-+			ret = slave->offset;
-+			break;
-+		}
-+	mutex_unlock(&mtd_partitions_mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(get_mtd_offset);
-+
-+uint64_t get_mtd_size(struct mtd_info *master, int partno)
-+{
-+	struct mtd_part *slave, *next;
-+	uint64_t ret = ULLONG_MAX;
-+
-+	mutex_lock(&mtd_partitions_mutex);
-+	list_for_each_entry_safe(slave, next, &mtd_partitions, list)
-+		if ((slave->master == master) &&
-+		    (slave->mtd.index == partno)) {
-+			ret = slave->mtd.size;
-+			break;
-+		}
-+	mutex_unlock(&mtd_partitions_mutex);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(get_mtd_size);
-+
- static DEFINE_SPINLOCK(part_parser_lock);
- static LIST_HEAD(part_parsers);
- 
-diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-index ffab9a6..03333ec 100644
---- a/include/linux/mtd/partitions.h
-+++ b/include/linux/mtd/partitions.h
-@@ -93,5 +93,7 @@ int mtd_is_master(struct mtd_info *mtd);
- int mtd_add_partition(struct mtd_info *master, char *name,
- 		      long long offset, long long length);
- int mtd_del_partition(struct mtd_info *master, int partno);
-+uint64_t get_mtd_offset(struct mtd_info *master, int partno);
-+uint64_t get_mtd_size(struct mtd_info *master, int partno);
- 
- #endif
+ ifndef BUILDDIR
+ ifeq ($(origin CROSS),undefined)
+-  BUILDDIR := $(PWD)
++  BUILDDIR := $(CURDIR)
+ else
+ # Remove the trailing slash to make the directory name
+-  BUILDDIR := $(PWD)/$(CROSS:-=)
++  BUILDDIR := $(CURDIR)/$(CROSS:-=)
+ endif
+ endif
+ override BUILDDIR := $(patsubst %/,%,$(BUILDDIR))
 -- 
 1.7.0.4
