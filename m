@@ -1,16 +1,15 @@
-Received: from [69.28.251.93] (helo=b32.net)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0OIC-00083R-Ap
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 00:43:37 +0000
-From: Kevin Cernekee <cernekee@gmail.com>
-Date: Mon, 27 Sep 2010 17:22:04 -0700
-Subject: [PATCH] mtd-utils: Use $(CURDIR) in place of $(PWD)
-Message-Id: <90498d8ec2a6b99c34b3bc61cf5e6444@localhost>
-To: <dedekind1@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 0/4] MTD: OneNAND: Fix samsung SoCs various bugs
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Kyungmin Park <kmpark@infradead.org>
+In-Reply-To: <20100927072431.GA32076@july>
+References: <20100927072431.GA32076@july>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 28 Sep 2010 09:25:39 +0300
+Message-ID: <1285655139.2437.7.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +19,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-$(PWD) comes from the shell and may cause unexpected side effects when
-using "make -C".
+On Mon, 2010-09-27 at 16:24 +0900, Kyungmin Park wrote:
+> The following changes since commit 32163f4b2cef28a5aab8b226ffecfc6379a53786:
+>   Al Viro (1):
+>         alpha: fix usp value in multithreaded coredumps
+> 
+> Kyungmin Park (4):
+>       MTD: OneNAND: Remove unused cmd_map at s5pc110
+>       MTD: OneNAND: S5PC100: Only S5PC110 use the command map method
+>       MTD: OneNAND: S5PC110: Fix wrong DMA hanlding when HIGHMEM
+>       MTD: OneNAND: S5PC110: Add timeout to prevent the endless loop
+> 
+>  drivers/mtd/onenand/samsung.c |   45 +++++++++++++++++++++++++++-------------
+>  1 files changed, 30 insertions(+), 15 deletions(-)
 
-$(CURDIR) is defined internally by GNU make.
+Some patches are already in my l2-mtd-2.6.git tree, could you please
+send the series against the l2 tree so that I could apply it?
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
----
- Makefile  |    2 +-
- common.mk |    4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 93661cb..7ab9743 100644
---- a/Makefile
-+++ b/Makefile
-@@ -33,7 +33,7 @@ clean::
- 	-rm -f $(SYMLINKS)
- ifneq ($(BUILDDIR)/.git,)
- ifneq ($(BUILDDIR),.)
--ifneq ($(BUILDDIR),$(PWD))
-+ifneq ($(BUILDDIR),$(CURDIR))
- 	rm -rf $(BUILDDIR)
- endif
- endif
-diff --git a/common.mk b/common.mk
-index be785b4..0444ad9 100644
---- a/common.mk
-+++ b/common.mk
-@@ -26,10 +26,10 @@ INCLUDEDIR=$(PREFIX)/include
- 
- ifndef BUILDDIR
- ifeq ($(origin CROSS),undefined)
--  BUILDDIR := $(PWD)
-+  BUILDDIR := $(CURDIR)
- else
- # Remove the trailing slash to make the directory name
--  BUILDDIR := $(PWD)/$(CROSS:-=)
-+  BUILDDIR := $(CURDIR)/$(CROSS:-=)
- endif
- endif
- override BUILDDIR := $(patsubst %/,%,$(BUILDDIR))
 -- 
-1.7.0.4
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
