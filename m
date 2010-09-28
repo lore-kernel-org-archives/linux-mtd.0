@@ -1,18 +1,25 @@
-Received: from mail.solarflare.com ([216.237.3.220]
-	helo=exchange.solarflare.com)
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0eT4-0004Nk-Hj
-	for linux-mtd@lists.infradead.org; Tue, 28 Sep 2010 17:59:55 +0000
-Subject: [RFC] Online firmware upgrade in non-embedded systems
-From: Ben Hutchings <bhutchings@solarflare.com>
-To: netdev <netdev@vger.kernel.org>, linux-kernel
-	<linux-kernel@vger.kernel.org>, linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 28 Sep 2010 18:59:47 +0100
-Message-ID: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: sf-linux-drivers <linux-net-drivers@solarflare.com>
+Date: Tue, 28 Sep 2010 11:31:59 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "G, Manjunath Kondaiah" <manjugk@ti.com>
+Subject: Re: [GIT PULL] omap2 sparse fixes
+Message-ID: <20100928183157.GH3117@atomide.com>
+References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
+	<20100923225851.GR4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
+	<20100925001914.GO4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
+	<20100928152139.GB3117@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Network and disk controllers normally have at least some firmware in
-flash to support their use as boot devices.  Solarflare's current
-network adapters can have as many as 4 distinct firmware partitions: one
-for each PHY, one for the management CPU and one for net-boot.  Any or
-all of these may need to be updated in the field, to fix bugs or to add
-features.  (Furthermore, the net-boot firmware is based on gPXE and is
-therefore modifiable by any user.)
+* G, Manjunath Kondaiah <manjugk@ti.com> [100928 08:26]:
+> 
+> 
+> > -----Original Message-----
+> > From: Tony Lindgren [mailto:tony@atomide.com] 
+> > Sent: Tuesday, September 28, 2010 8:52 PM
+> > To: G, Manjunath Kondaiah
+> > Cc: linux-omap@vger.kernel.org; 
+> > linux-arm-kernel@lists.infradead.org; Samuel Ortiz; Dmitry 
+> > Torokhov; linux-mtd@lists.infradead.org; Russell King - ARM Linux
+> > Subject: Re: [GIT PULL] omap2 sparse fixes
+> > 
+> > * G, Manjunath Kondaiah <manjugk@ti.com> [100928 01:04]:
+> > > 
+> > > Three patches are fixed using above method which are:
+> > > OMAP: mach-omap2: Fix static function warnings
+> > > OMAP: plat-omap: Fix static function warnings TWL IRQ: Fix fucntion 
+> > > declaration warnings
+> > 
+> > OK thanks.
+> >  
+> > > are available in the git repository at:
+> > > 
+> > >   git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git 
+> > > sparse_fixes_v3
+> > > 
+> > > G, Manjunath Kondaiah (10):
+> > >       OMAP: mach-omap2: Fix incorrect assignment warnings
+> > >       OMAP: mach-omap2: Fix static declaration warnings
+> > >       OMAP2plus: Fix static function warnings
+> > >       OMAP: mach-omap2: Fix miscellaneous sparse warnings
+> > >       OMAP: plat-omap: Fix static function warnings
+> > >       OMAP: NAND: Fix static declaration warning
+> > >       TWL CORE: Fix sparse warning
+> > >       TWL IRQ: Fix fucntion declaration warnings
+> > 
+> > Didn't Samuel just reply that he has applied these two TWL fixes?
+> 
+> Samuel applied only one patch and other patch is yet to be applied.
+> Do you want me to pull out these two twl patches from the series?
 
-Currently the sfc network driver is optionally combined with an MTD
-driver (CONFIG_SFC_MTD) which exposes all upgradable firmware and
-configuration partitions in flash.  This works nicely in kernels with
-MTD enabled, but since MTD is mainly used in embedded systems with
-on-board flash it is often disabled in distribution kernels and custom
-kernels alike.  This leaves users of sfc unable to upgrade firmware
-without rebuilding the kernel or booting some other distribution.  The
-lack of widespread MTD support is a regular cause of support requests.
+Yes please take out all patches that are not in arch/arm/*omap*/ path.
+The others really should go to the driver maintainers.
 
-There are two main alternatives I'm aware of:
-
-- Use the ethtool ETHTOOL_SEEPROM command with multiple magic numbers
-for different partitions. bnx2x does something a little like this for
-PHY firmware upgrades. The ethtool core passes in a page at a time so
-this won't work well with flash block sizes greater than PAGE_SIZE.
-
-- Use the ethtool ETHTOOL_FLASHDEV command. It's intended for precisely
-this purpose, but the driver is supposed to implement it using
-request_firmware(). That seems to require any firmware update program to
-integrate with udev or to copy firmware images under /lib/firmware even
-though they are one-time updates. That doesn't make a lot of sense to
-me. Am I missing something?
-
-Of course these are both specific to network devices; it seems deisrable
-to have a more general convention for online firmware upgrades.  MTDs
-clearly are more generally applicable, and pretty much every computer
-does have flash storage for firmware and boot configuration, so perhaps
-it should be treated as more of a standard feature?
-
-Ben.
-
--- 
-Ben Hutchings, Senior Software Engineer, Solarflare Communications
-Not speaking for my employer; that's the marketing department's job.
-They asked us to note that Solarflare product names are trademarked.
+Tony
