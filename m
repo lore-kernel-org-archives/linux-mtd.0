@@ -1,22 +1,13 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0xAj-0002Xa-EJ
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 13:58:14 +0000
-Subject: Re: pwrite() to nand in raw mode fails with EINVAL
-From: Maxime Bizon <mbizon@freebox.fr>
-To: dedekind1@gmail.com
-In-Reply-To: <1285764747.2437.116.camel@localhost>
-References: <1285699650.32420.70.camel@sakura.staff.proxad.net>
-	<1285764747.2437.116.camel@localhost>
-Content-Type: text/plain; charset="ANSI_X3.4-1968"
-Date: Wed, 29 Sep 2010 15:58:04 +0200
-Message-ID: <1285768684.32420.91.camel@sakura.staff.proxad.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Maxim Levitsky <maximlevitsky@gmail.com>
-Reply-To: mbizon@freebox.fr
+Received: from www.tglx.de ([62.245.132.106])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P10hY-0000gm-Nr
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 17:44:21 +0000
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: Add support for BBT without touching OOB area
+Date: Wed, 29 Sep 2010 19:43:49 +0200
+Message-Id: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
+Cc: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +17,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Without this patch (number three) NAND controllers which use complete OOB
+area for ECC information can not use a BBT at all. The vendor bit is
+gone after the first write and the flash BBT stores a marker in the OOB
+area. The patch simply moves the marker into the data area.
 
-On Wed, 2010-09-29 at 15:52 +0300, Artem Bityutskiy wrote:
+The series contains:
+- [PATCH 1/5] mtd/nand: use ALIGN where possible
+- [PATCH 2/5] mtd/nand: pull in td into read_bbt()
+clean up.
 
-> Maxime, I've cleaned up comments, added your signed-off-by and cc
-> stable. Is this OK?
+- [PATCH 3/5] mtd/nand: add support for BBT without OOB
+adds the functionality.
 
-Yep
+- [PATCH 4/5] mtd/nand: introduce NAND_CREATE_EMPTY_BBT
+NAND_CREATE_BBT creates a BBT based on vendor's informations (or something
+else if specified). Without NAND_CREATE_BBT the BBT is written to flash
+after the first bad block is found. This options enforces writting an
+"empty" table.
 
-> It would also be nice to get an ack from Maxim Levitsky.
+- [PATCH 5/5] mtd/nandsim: add module param for BBT handling
+Used for first testing.
 
-The patch fixes the problem, but I let Maxim decides if that's the
-correct way to fix it.
-
--- 
-Maxime
+Sebastian
