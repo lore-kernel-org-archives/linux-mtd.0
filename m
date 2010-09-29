@@ -1,28 +1,20 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0qB1-00016V-Sn
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 06:30:04 +0000
-Received: by pwi5 with SMTP id 5so139581pwi.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Sep 2010 23:30:02 -0700 (PDT)
-Sender: Grant Likely <glikely@secretlab.ca>
-Date: Wed, 29 Sep 2010 15:29:58 +0900
-From: Grant Likely <grant.likely@secretlab.ca>
-To: Michal Simek <monstr@monstr.eu>
-Subject: Re: [PATCH 2/7] of: MTD: Fix OF probing on little-endian systems
-Message-ID: <20100929062958.GE2439@angua.secretlab.ca>
-References: <1285739538-29058-1-git-send-email-monstr@monstr.eu>
-	<1285739538-29058-2-git-send-email-monstr@monstr.eu>
-	<1285739538-29058-3-git-send-email-monstr@monstr.eu>
+From: "Ghorai, Sukumar" <s-ghorai@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Wed, 29 Sep 2010 12:07:48 +0530
+Subject: RE: [PATCH v5 1/5] omap gpmc: enable irq mode in gpmc
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B0356476436@dbde02.ent.ti.com>
+References: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
+	<1285594634-19277-2-git-send-email-s-ghorai@ti.com>
+	<20100928222727.GS3117@atomide.com>
+In-Reply-To: <20100928222727.GS3117@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1285739538-29058-3-git-send-email-monstr@monstr.eu>
-Cc: microblaze-uclinux@itee.uq.edu.au, devicetree-discuss@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-	linux-mtd@lists.infradead.org, duyl@xilinx.com, linnj@xilinx.com,
-	edgar.iglesias@gmail.com, David Woodhouse <dwmw2@infradead.org>,
-	john.williams@petalogix.com
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,54 +24,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 29, 2010 at 03:52:13PM +1000, Michal Simek wrote:
-> Convert big-endian DTB to little-endian if necessary.
-> 
-> Signed-off-by: Michal Simek <monstr@monstr.eu>
-> CC: David Woodhouse <dwmw2@infradead.org>
-> CC: Tejun Heo <tj@kernel.org>
-> CC: Grant Likely <grant.likely@secretlab.ca>
-> CC: linux-mtd@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
-> CC: devicetree-discuss@lists.ozlabs.org
 
-Applied, thanks.
 
-g.
+> -----Original Message-----
+> From: Tony Lindgren [mailto:tony@atomide.com]
+> Sent: Wednesday, September 29, 2010 3:57 AM
+> To: Ghorai, Sukumar
+> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
+> kernel@lists.infradead.org
+> Subject: Re: [PATCH v5 1/5] omap gpmc: enable irq mode in gpmc
+>=20
+> * Sukumar Ghorai <s-ghorai@ti.com> [100927 06:30]:
+> >   add support the irq mode in GPMC.
+> >   gpmc_init() function move after omap_init_irq() as it has dependecy o=
+n
+> irq.
+>=20
+> > --- a/arch/arm/mach-omap2/board-2430sdp.c
+> > +++ b/arch/arm/mach-omap2/board-2430sdp.c
+> > @@ -144,6 +144,7 @@ static void __init omap_2430sdp_init_irq(void)
+> >  	omap_board_config_size =3D ARRAY_SIZE(sdp2430_config);
+> >  	omap2_init_common_hw(NULL, NULL);
+> >  	omap_init_irq();
+> > +	gpmc_init();
+> >  	omap_gpio_init();
+> >  }
+> >
+> > diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-
+> omap2/board-3430sdp.c
+> > index 67b95b5..549cd62 100644
+> > --- a/arch/arm/mach-omap2/board-3430sdp.c
+> > +++ b/arch/arm/mach-omap2/board-3430sdp.c
+> > @@ -328,6 +328,7 @@ static void __init omap_3430sdp_init_irq(void)
+> >  	omap3_pm_init_cpuidle(omap3_cpuidle_params_table);
+> >  	omap2_init_common_hw(hyb18m512160af6_sdrc_params, NULL);
+> >  	omap_init_irq();
+> > +	gpmc_init();
+> >  	omap_gpio_init();
+> >  }
+> ...
+>=20
+> You can avoid adding gpmc_init() by making it a subsys_initcall().
+> Just make sure you return early from it with if (!cpu_class_is_omap2()).
+[Ghorai] will do
+>=20
+> > --- a/arch/arm/mach-omap2/gpmc.c
+> > +++ b/arch/arm/mach-omap2/gpmc.c
+> > @@ -713,6 +721,31 @@ void __init gpmc_init(void)
+> >  	l |=3D (0x02 << 3) | (1 << 0);
+> >  	gpmc_write_reg(GPMC_SYSCONFIG, l);
+> >  	gpmc_mem_init();
+> > +
+> > +	/* initalize the irq_chained */
+> > +	irq =3D OMAP_GPMC_IRQ_BASE;
+> > +	for (cs =3D 0; cs < GPMC_CS_NUM; cs++) {
+> > +		set_irq_handler(irq, handle_simple_irq);
+> > +		set_irq_flags(irq, IRQF_VALID);
+> > +		irq++;
+> > +	}
+> > +
+> > +	if (request_irq(20, gpmc_handle_irq, IRQF_SHARED, "gpmc",
+> gpmc_base))
+> > +		printk(KERN_ERR "gpmc: irq-%d could not claim: err %d\n",
+> > +							INT_34XX_GPMC_IRQ, irq);
+> > +}
+>=20
+> Hmm, this does not look right.. Shouldn't you call
+> set_irq_chained_handler()
+> somewhere too?=20
+[Ghorai] its not use, as multi-lebel irq is not there.
+>Also, are you sure the interrupt is 20 for all of mach-
+> omap2?
+> It should be added to the irqs.h files.
+[Ghorai] it's added in irqs.h, and will remove the hard coded value. Last m=
+inute mistake.
 
-> ---
->  drivers/mtd/maps/physmap_of.c |    2 +-
->  drivers/mtd/ofpart.c          |    4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-> index fe63f6b..ec3edf6 100644
-> --- a/drivers/mtd/maps/physmap_of.c
-> +++ b/drivers/mtd/maps/physmap_of.c
-> @@ -294,7 +294,7 @@ static int __devinit of_flash_probe(struct platform_device *dev,
->  		info->list[i].map.name = dev_name(&dev->dev);
->  		info->list[i].map.phys = res.start;
->  		info->list[i].map.size = res_size;
-> -		info->list[i].map.bankwidth = *width;
-> +		info->list[i].map.bankwidth = be32_to_cpup(width);
->  
->  		err = -ENOMEM;
->  		info->list[i].map.virt = ioremap(info->list[i].map.phys,
-> diff --git a/drivers/mtd/ofpart.c b/drivers/mtd/ofpart.c
-> index 8bf7dc6..7bd171e 100644
-> --- a/drivers/mtd/ofpart.c
-> +++ b/drivers/mtd/ofpart.c
-> @@ -53,8 +53,8 @@ int __devinit of_mtd_parse_partitions(struct device *dev,
->  			continue;
->  		}
->  
-> -		(*pparts)[i].offset = reg[0];
-> -		(*pparts)[i].size = reg[1];
-> +		(*pparts)[i].offset = be32_to_cpu(reg[0]);
-> +		(*pparts)[i].size = be32_to_cpu(reg[1]);
->  
->  		partname = of_get_property(pp, "label", &len);
->  		if (!partname)
-> -- 
-> 1.5.5.1
-> 
+>=20
+> > +static irqreturn_t gpmc_handle_irq(int irq, void *dev)
+> > +{
+> > +	u8 cs;
+> > +
+> > +	if (irq !=3D INT_34XX_GPMC_IRQ)
+> > +		return IRQ_HANDLED;
+> > +	/* check cs to invoke the irq */
+> > +	cs =3D ((gpmc_read_reg(GPMC_PREFETCH_CONFIG1)) >> CS_NUM_SHIFT) & 0x7=
+;
+> > +	generic_handle_irq(OMAP_GPMC_IRQ_BASE+cs);
+> > +
+> > +	return IRQ_HANDLED;
+> >  }
+>=20
+> Doesn't doing OMAP_GPMC_IRQ_BASE + cs overlap with some other irq?
+[Ghorai] will check the boundary condition too -
+if(OMAP_GPMC_IRQ_BASE + cs <=3D OMAP_GPMC_IRQ_END)
+
+And will re-submit.
+
+>=20
+> Regards,
+>=20
+> Tony
