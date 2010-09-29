@@ -1,15 +1,27 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P10hj-0000k5-5a
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 17:44:32 +0000
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 5/5] mtd/nandsim: add module param for BBT handling
-Date: Wed, 29 Sep 2010 19:43:54 +0200
-Message-Id: <1285782234-32509-6-git-send-email-bigeasy@linutronix.de>
-In-Reply-To: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
-References: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
-Cc: tglx@linutronix.de, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: "G, Manjunath Kondaiah" <manjugk@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Thu, 30 Sep 2010 01:21:00 +0530
+Subject: RE: [GIT PULL] omap2 sparse fixes
+Message-ID: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE8F9@dbde02.ent.ti.com>
+References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
+	<20100923225851.GR4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
+	<20100925001914.GO4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
+	<20100928152139.GB3117@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
+	<20100928183157.GH3117@atomide.com>
+In-Reply-To: <20100928183157.GH3117@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,73 +31,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I used this to check the BBT on flash together with a hack in mtdchar in
-order to read bad blocks.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/mtd/nand/nandsim.c |   19 +++++++++++++++++--
- 1 files changed, 17 insertions(+), 2 deletions(-)
+Tony,
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index c25648b..a6a73aa 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -107,6 +107,7 @@ static char *gravepages = NULL;
- static unsigned int rptwear = 0;
- static unsigned int overridesize = 0;
- static char *cache_file = NULL;
-+static unsigned int bbt;
- 
- module_param(first_id_byte,  uint, 0400);
- module_param(second_id_byte, uint, 0400);
-@@ -130,6 +131,7 @@ module_param(gravepages,     charp, 0400);
- module_param(rptwear,        uint, 0400);
- module_param(overridesize,   uint, 0400);
- module_param(cache_file,     charp, 0400);
-+module_param(bbt,	     uint, 0400);
- 
- MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID)");
- MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
-@@ -162,6 +164,7 @@ MODULE_PARM_DESC(overridesize,   "Specifies the NAND Flash size overriding the I
- 				 "The size is specified in erase blocks and as the exponent of a power of two"
- 				 " e.g. 5 means a size of 32 erase blocks");
- MODULE_PARM_DESC(cache_file,     "File to use to cache nand pages instead of memory");
-+MODULE_PARM_DESC(bbt,		 "0 OOB, 1 BBT with marker in OOB, 2 BBT with marker in data area");
- 
- /* The largest possible page size */
- #define NS_LARGEST_PAGE_SIZE	4096
-@@ -2264,6 +2267,18 @@ static int __init ns_init_module(void)
- 	/* and 'badblocks' parameters to work */
- 	chip->options   |= NAND_SKIP_BBTSCAN;
- 
-+	switch (bbt) {
-+	case 2:
-+		 chip->options |= NAND_USE_FLASH_BBT_NO_OOB;
-+	case 1:
-+		 chip->options |= NAND_USE_FLASH_BBT;
-+	case 0:
-+		break;
-+	default:
-+		NS_ERR("bbt has to be 0..2\n");
-+		retval = -EINVAL;
-+		goto error;
-+	}
- 	/*
- 	 * Perform minimum nandsim structure initialization to handle
- 	 * the initial ID read command correctly
-@@ -2321,10 +2336,10 @@ static int __init ns_init_module(void)
- 	if ((retval = init_nandsim(nsmtd)) != 0)
- 		goto err_exit;
- 
--	if ((retval = parse_badblocks(nand, nsmtd)) != 0)
-+	if ((retval = nand_default_bbt(nsmtd)) != 0)
- 		goto err_exit;
- 
--	if ((retval = nand_default_bbt(nsmtd)) != 0)
-+	if ((retval = parse_badblocks(nand, nsmtd)) != 0)
- 		goto err_exit;
- 
- 	/* Register NAND partitions */
--- 
-1.7.2.3
+> -----Original Message-----
+> From: Tony Lindgren [mailto:tony@atomide.com]=20
+> Sent: Wednesday, September 29, 2010 12:02 AM
+> To: G, Manjunath Kondaiah
+> Cc: linux-omap@vger.kernel.org;=20
+> linux-arm-kernel@lists.infradead.org; Samuel Ortiz; Dmitry=20
+> Torokhov; linux-mtd@lists.infradead.org; Russell King - ARM Linux
+> Subject: Re: [GIT PULL] omap2 sparse fixes
+>=20
+> * G, Manjunath Kondaiah <manjugk@ti.com> [100928 08:26]:
+...
+
+> Yes please take out all patches that are not in arch/arm/*omap*/ path.
+> The others really should go to the driver maintainers.
+>=20
+> Tony
+
+Here is new branch which has only arch/arm/*omap*/ related patches.
+
+-Manjunath
+
+The following changes since commit 899611ee7d373e5eeda08e9a8632684e1ebbbf00=
+:
+  Linus Torvalds (1):
+        Linux 2.6.36-rc6
+
+are available in the git repository at:
+
+  git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git omap_sparse_fix=
+es
+
+G, Manjunath Kondaiah (7):
+      OMAP: mach-omap2: Fix incorrect assignment warnings
+      OMAP: mach-omap2: Fix static declaration warnings
+      OMAP: mach-omap2: Fix static function warnings
+      OMAP: mach-omap2: Fix miscellaneous sparse warnings
+      OMAP: plat-omap: Fix static function warnings
+      OMAP: Convert write/read functions to raw read/write
+      OMAP3: Keypad: Fix incorrect type initializer
+
+ arch/arm/mach-omap2/board-3430sdp.c                |    2 +-
+ arch/arm/mach-omap2/board-4430sdp.c                |    3 +-
+ arch/arm/mach-omap2/board-am3517evm.c              |    5 +--
+ arch/arm/mach-omap2/board-cm-t35.c                 |    2 +-
+ arch/arm/mach-omap2/board-devkit8000.c             |    4 +-
+ arch/arm/mach-omap2/board-igep0020.c               |    4 +-
+ arch/arm/mach-omap2/board-ldp.c                    |    2 +-
+ arch/arm/mach-omap2/board-n8x0.c                   |   16 +----------
+ arch/arm/mach-omap2/board-omap3beagle.c            |    2 +-
+ arch/arm/mach-omap2/board-omap3evm.c               |    8 +++---
+ arch/arm/mach-omap2/board-omap3stalker.c           |    6 ++--
+ arch/arm/mach-omap2/board-omap3touchbook.c         |    4 +-
+ arch/arm/mach-omap2/board-omap4panda.c             |    2 +-
+ arch/arm/mach-omap2/board-rx51-peripherals.c       |    4 ++-
+ arch/arm/mach-omap2/board-rx51-sdram.c             |    2 +-
+ arch/arm/mach-omap2/board-rx51-video.c             |    2 +
+ arch/arm/mach-omap2/board-zoom-debugboard.c        |    2 +
+ arch/arm/mach-omap2/board-zoom-peripherals.c       |    4 ++-
+ arch/arm/mach-omap2/control.c                      |    5 ++-
+ arch/arm/mach-omap2/gpmc-onenand.c                 |    8 +++---
+ arch/arm/mach-omap2/include/mach/board-flash.h     |    2 +
+ arch/arm/mach-omap2/include/mach/board-rx51.h      |   11 ++++++++
+ arch/arm/mach-omap2/io.c                           |    1 +
+ arch/arm/mach-omap2/io.h                           |    7 +++++
+ arch/arm/mach-omap2/irq.c                          |    1 -
+ arch/arm/mach-omap2/mux2420.c                      |    2 +-
+ arch/arm/mach-omap2/mux2430.c                      |    2 +-
+ arch/arm/mach-omap2/mux34xx.c                      |   12 ++++----
+ arch/arm/mach-omap2/pm-debug.c                     |    2 +-
+ arch/arm/mach-omap2/pm34xx.c                       |    2 +-
+ arch/arm/mach-omap2/powerdomain.c                  |   28 ----------------=
+----
+ arch/arm/mach-omap2/prcm.c                         |    2 +-
+ .../include/plat =3D> mach-omap2}/timer-gp.h         |    3 +-
+ arch/arm/plat-omap/cpu-omap.c                      |    4 +-
+ arch/arm/plat-omap/dmtimer.c                       |    6 ++--
+ arch/arm/plat-omap/fb.c                            |    2 +
+ arch/arm/plat-omap/fb.h                            |   10 +++++++
+ arch/arm/plat-omap/include/plat/dmtimer.h          |    4 ++-
+ arch/arm/plat-omap/include/plat/sdrc.h             |    1 +
+ arch/arm/plat-omap/include/plat/sram.h             |    1 -
+ arch/arm/plat-omap/mcbsp.c                         |   10 +++---
+ arch/arm/plat-omap/sram.c                          |   21 ++++++--------
+ arch/arm/plat-omap/sram.h                          |    6 ++++
+ 43 files changed, 115 insertions(+), 112 deletions(-)
+ create mode 100644 arch/arm/mach-omap2/include/mach/board-rx51.h
+ create mode 100644 arch/arm/mach-omap2/io.h
+ rename arch/arm/{plat-omap/include/plat =3D> mach-omap2}/timer-gp.h (86%)
+ create mode 100644 arch/arm/plat-omap/fb.h
+ create mode 100644 arch/arm/plat-omap/sram.h
