@@ -1,23 +1,25 @@
-Received: from exchange.solarflare.com ([216.237.3.220])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0vsJ-00074J-0X
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 12:35:08 +0000
+	id 1P0vtV-0007DF-16
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 12:36:21 +0000
+Received: by fxm15 with SMTP id 15so496684fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Sep 2010 05:36:19 -0700 (PDT)
 Subject: Re: [RFC] Online firmware upgrade in non-embedded systems
-From: Ben Hutchings <bhutchings@solarflare.com>
-To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
-In-Reply-To: <4CA26F35.6060408@gmx.net>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ben Hutchings <bhutchings@solarflare.com>
+In-Reply-To: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>
 References: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>
-	<4CA26F35.6060408@gmx.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 29 Sep 2010 13:35:00 +0100
-Message-ID: <1285763700.2283.6.camel@achroite.uk.solarflarecom.com>
+Date: Wed, 29 Sep 2010 15:34:18 +0300
+Message-ID: <1285763658.2437.112.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: netdev <netdev@vger.kernel.org>,
 	sf-linux-drivers <linux-net-drivers@solarflare.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>,
-	flashrom <flashrom@flashrom.org>
+	linux-kernel <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,47 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-29 at 00:41 +0200, Carl-Daniel Hailfinger wrote:
-> [adding flashrom@flashrom.org to CC, senders will be whitelisted after a
-> short delay]
-> 
-> On 28.09.2010 19:59, Ben Hutchings wrote:
-> > Network and disk controllers normally have at least some firmware in
-> > flash to support their use as boot devices. [...]
-> >
-> > Currently the sfc network driver is optionally combined with an MTD
-> > driver (CONFIG_SFC_MTD) which exposes all upgradable firmware and
-> > configuration partitions in flash.  This works nicely in kernels with
-> > MTD enabled, but since MTD is mainly used in embedded systems with
-> > on-board flash it is often disabled in distribution kernels and custom
-> > kernels alike.  This leaves users of sfc unable to upgrade firmware
-> > without rebuilding the kernel or booting some other distribution.  The
-> > lack of widespread MTD support is a regular cause of support requests.
-> >
-> > There are two main alternatives I'm aware of:
-> >
-> > - Use the ethtool ETHTOOL_SEEPROM [...]
-> >
-> > - Use the ethtool ETHTOOL_FLASHDEV command [..]
-> >
-> > Of course these are both specific to network devices; it seems deisrable
-> > to have a more general convention for online firmware upgrades.  MTDs
-> > clearly are more generally applicable, and pretty much every computer
-> > does have flash storage for firmware and boot configuration, so perhaps
-> > it should be treated as more of a standard feature?
-> >   
-> 
-> Given that the flashrom utility <http://www.flashrom.org/> (GPLv2)
-> supports flashing many network cards, SATA/PATA controllers, graphics
-> cards, and of course the main system firmware/BIOS/EFI, and it does that
-> from userspace without any kernel support,
-[...]
+On Tue, 2010-09-28 at 18:59 +0100, Ben Hutchings wrote:
+> Currently the sfc network driver is optionally combined with an MTD
+> driver (CONFIG_SFC_MTD) which exposes all upgradable firmware and
+> configuration partitions in flash.  This works nicely in kernels with
+> MTD enabled, but since MTD is mainly used in embedded systems with
+> on-board flash it is often disabled in distribution kernels and custom
+> kernels alike.  This leaves users of sfc unable to upgrade firmware
+> without rebuilding the kernel or booting some other distribution.  The
+> lack of widespread MTD support is a regular cause of support requests.
 
-I'm looking for a clean solution, not a hack.
-
-Ben.
+At least Fedora does have MTD enabled. But I guess commercial
+distributions like RHEL might have it disabled (but I did not check),
+and I think I could guess the reason for this.
 
 -- 
-Ben Hutchings, Senior Software Engineer, Solarflare Communications
-Not speaking for my employer; that's the marketing department's job.
-They asked us to note that Solarflare product names are trademarked.
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
