@@ -1,23 +1,18 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P12zc-0006ug-DA
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 20:11:09 +0000
-Received: by bwz19 with SMTP id 19so1176179bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Sep 2010 13:11:07 -0700 (PDT)
-Subject: Re: [PATCH 3/5] mtd/nand: add support for BBT without OOB
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-In-Reply-To: <1285782234-32509-4-git-send-email-bigeasy@linutronix.de>
-References: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
-	<1285782234-32509-4-git-send-email-bigeasy@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 29 Sep 2010 23:11:04 +0300
-Message-ID: <1285791064.1776.35.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from postdiluvian.org ([128.30.54.21] helo=porklips.postdiluvian.org)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P14uY-0000bO-Nh
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 22:14:03 +0000
+Received: from mason by porklips.postdiluvian.org with local (Exim 4.72)
+	(envelope-from <mason@postdiluvian.org>) id 1P14uX-0008W5-4Y
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 18:14:01 -0400
+Date: Wed, 29 Sep 2010 18:14:01 -0400
+From: Mark Mason <mason@postdiluvian.org>
+To: linux-mtd@lists.infradead.org
+Subject: Scheduler latency problems when using NAND
+Message-ID: <20100929221401.GA32583@postdiluvian.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,102 +22,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-29 at 19:43 +0200, Sebastian Andrzej Siewior wrote:
-> The first (sixt) byte in the OOB area contains vendor's bad block
-> information. During identification of the NAND chip this information is
-> collected by scanning the complete chip.
-> The option NAND_USE_FLASH_BBT is used to store this information in a sector so
-> we don't have to scan the complete flash. Unfortunately the code stores
-> a marker, in order to recognize the BBT, in the OOB area. This will fail
-> if the OOB area is completely used for ECC.
-> This patch introduces the option NAND_USE_FLASH_BBT_NO_OOB which has to be
-> used with NAND_USE_FLASH_BBT. It will then store BBT on flash without
-> touching the OOB area. The BBT format on flash remains same except the
-> first page starts with the recognition pattern followed by the no longer
-> optional version byte.
-> This change was tested in nandsim and on real HW with this issue.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  drivers/mtd/nand/nand_bbt.c |  193 ++++++++++++++++++++++++++++++++++++++++---
->  include/linux/mtd/bbm.h     |    2 +
->  include/linux/mtd/nand.h    |    7 +-
->  3 files changed, 189 insertions(+), 13 deletions(-)
+Hi all,
 
-Few minor things.
+I hope this is the right place for this question.  I'm having some
+problems with scheduler latency when using UBIFS, and I'm hoping for
+some suggestions.
 
-First, is it please possible to add more descriptive comment into the
-code. Something like you put to the patch description, may be even a bit
-more descriptive. May be to the header of nand_bbt.c?
+Linux 2.6.29-6, with a newer MTD, dating from probably around six
+months ago.  Embedded PowerPC 8315, with built-in NAND controller,
+using nand/fsl_elbc_nand.c.  NAND is a Samsung K9WAG08U1B two-die
+stack (one package with two chip selects), 2Gbyte x 8 bit.  The system
+has plenty of memory, but is short on CPU.
 
-The idea is that the BBT code is quite difficult to follow, and you make
-it even more complex, so a comment describing various flavors of BBT
-would be very useful.
+The application is storing streaming video, almost entirely large
+sequential files, roughly 250K to 15M, to a 1.6G filesystem.  There's
+no seeking or rewriting, just creat, write, close, repeat.  No
+compression is used on the filesystem.
 
-And then several stylistic nitpicks.
+The problem I'm seeing is excessively large scheduler latency when
+data is flushed to NAND.
 
->  	while (totlen) {
-> +
->  		len = min(totlen, (size_t) (1 << this->bbt_erase_shift));
+Originally this had been happening during erases.  I noticed that
+hundreds of erases (up to around 700) were being issued in rapid
+succession, and I was seeing other threads unable to run for sometimes
+as much as the expected 7 seconds (I measured 1.1 ms per erase).  To
+address this, I split the erase command in two halves - FIR_OP_CM0 |
+FIR_OP_PA | FIR_OP_CM2 and FIR_OP_CW1 | FIR_OP_RS - with schedule()
+called in between.  This had the effect if issuing the erase, calling
+schedule(), then waiting for the erase to complete if it hadn't
+already, but usually it had.
 
-These extra whits spaces are not really needed. Ideally, your patch
-should make checkpatch.pl happy.
-> +
-> +		if (marker_len) {
-> +			/*
-> +			 * In case the BBT marker is not in the OOB area it
-> +			 * will be just in the first page
-> +			 */
+I'm surprised this helped so much, since the calling thread should
+have been put to sleep for the duration of the erase by the call to
+wait_event_timeout(), but it definitely did - I guess it was the
+explicit schedule().
 
-Yes, this is the right multi-line comment. You may also put a dot at the
-end. But in other places you used not the right multi-line comments.
+The erases are no longer a significant bottleneck, but now the writes
+are.  A page program takes 200us, which seems too short for an
+explicit schedule(), and I am seeing periods with the busy line
+asserted in back-to-back 200us chunks for most of a second.
 
-> +		} else if (td->options & NAND_BBT_NO_OOB) {
-> +
-> +			ooboffs = 0;
+I have played with thread priorities a bit, but I wound up with too
+many threads being "most important".  There is some hardware that
+can't tolerate large latencies, and unfortunately the existing code
+base doesn't have enough separation between critical and non-critical
+tasks to allow us to run just the critical stuff at a higher priority.
 
-Extra blank line.
+On average, the system can keep up with the load, but it has problems
+with the burstiness of the flushes to NAND, so I'm hoping for some
+ideas to smooth the traffic out, or even a totally different way to
+approach the problem.  I tried lowering the priority of the UBI
+background thread, the failure mode there is pretty obvious.  I tried
+lowering dirty_background_centisecs, that helped a little bit, but not
+enough, and there's also a SATA drive, although a smaller commit
+interval probably wouldn't bother it since the traffic is similar.
 
-> +			offs = td->len;
-> +			/* the version byte */
-> +			if (td->options & NAND_BBT_VERSION)
-> +				offs++;
-> +			/* Calc length */
-> +			len = (size_t) (numblocks >> sft);
-> +			len += offs;
-> +			/* Make it page aligned ! */
-> +			len = ALIGN(len, mtd->writesize);
-> +			/* Preset the buffer with 0xff */
-> +			memset(buf, 0xff, len);
-> +			/* Pattern is located at the begin of first page */
-> +			memcpy(buf, td->pattern, td->len);
-> +
->  		} else {
+I'm contemplating something along the lines of a smaller commit
+interval, an even higher background thread priority, and a sleep with
+a schedule during the page program, but that many extra context
+switches are liable to be a problem - there's no L2 cache on this CPU,
+so context switches are extra expensive.
 
-And here.
+Does anyone have any suggestions, ideas, hints, advice, etc?
 
-> -/* Use a flash based bad block table. This option is passed to the
-> - * default bad block table function. */
-> +/* Use a flash based bad block table. OOB identifier is saved in OOB area.
-> + * This option is passed to the default bad block table function. */
-
-Would be nice to convert this to the right multi-line comment.
-
->  #define NAND_USE_FLASH_BBT	0x00010000
->  /* This option skips the bbt scan during initialization. */
->  #define NAND_SKIP_BBTSCAN	0x00020000
-> @@ -215,6 +215,9 @@ typedef enum {
->  #define NAND_OWN_BUFFERS	0x00040000
->  /* Chip may not exist, so silence any errors in scan */
->  #define NAND_SCAN_SILENT_NODEV	0x00080000
-> +/* If passed additionally to NAND_USE_FLASH_BBT then BBT code will not touch
-> + * the OOB area */
-
-And this. Yeah, I know this file uses different styles, but you could
-convert even all of them.
-
-> +#define NAND_USE_FLASH_BBT_NO_OOB	0x00100000
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Thanks!
