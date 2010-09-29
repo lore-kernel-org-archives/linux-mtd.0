@@ -1,21 +1,23 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0r5s-0004VR-U2
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 07:28:50 +0000
-Date: Wed, 29 Sep 2010 09:28:43 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd: mxc_nand: do not depend on disabling the irq in
-	the interrupt handler
-Message-ID: <20100929072843.GC23406@pengutronix.de>
-References: <1285054802-21388-1-git-send-email-s.hauer@pengutronix.de>
-	<1285054802-21388-2-git-send-email-s.hauer@pengutronix.de>
-	<1285240612.29268.76.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1285240612.29268.76.camel@localhost>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Received: from exchange.solarflare.com ([216.237.3.220])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P0vsJ-00074J-0X
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 12:35:08 +0000
+Subject: Re: [RFC] Online firmware upgrade in non-embedded systems
+From: Ben Hutchings <bhutchings@solarflare.com>
+To: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
+In-Reply-To: <4CA26F35.6060408@gmx.net>
+References: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>
+	<4CA26F35.6060408@gmx.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 29 Sep 2010 13:35:00 +0100
+Message-ID: <1285763700.2283.6.camel@achroite.uk.solarflarecom.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: netdev <netdev@vger.kernel.org>,
+	sf-linux-drivers <linux-net-drivers@solarflare.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	flashrom <flashrom@flashrom.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +27,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
-
-On Thu, Sep 23, 2010 at 02:16:52PM +0300, Artem Bityutskiy wrote:
-> On Tue, 2010-09-21 at 09:40 +0200, Sascha Hauer wrote:
-> > This patch reverts the driver to enabling/disabling the NFC interrupt
-> > mask rather than enabling/disabling the system interrupt. This cleans
-> > up the driver so that it doesn't rely on interrupts being disabled
-> > within the interrupt handler.
-> > For i.MX21 we keep the current behaviour, that is calling
-> > enable_irq/disable_irq_nosync to enable/disable interrupts.
-> > This patch is based on earlier work by John Ogness.
-> > 
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > Acked-by: John Ogness <john.ogness@linutronix.de>
-> > Tested-by: John Ogness <john.ogness@linutronix.de>
+On Wed, 2010-09-29 at 00:41 +0200, Carl-Daniel Hailfinger wrote:
+> [adding flashrom@flashrom.org to CC, senders will be whitelisted after a
+> short delay]
 > 
-> I've created l2-mtd-2.6.git/for-2.6.36 branch, pushed your patch there,
-> pinged dwmw2 for you. I do not give you any guarantees this will reach
-> 2.6.36, you have to ping dwmw2.
+> On 28.09.2010 19:59, Ben Hutchings wrote:
+> > Network and disk controllers normally have at least some firmware in
+> > flash to support their use as boot devices. [...]
+> >
+> > Currently the sfc network driver is optionally combined with an MTD
+> > driver (CONFIG_SFC_MTD) which exposes all upgradable firmware and
+> > configuration partitions in flash.  This works nicely in kernels with
+> > MTD enabled, but since MTD is mainly used in embedded systems with
+> > on-board flash it is often disabled in distribution kernels and custom
+> > kernels alike.  This leaves users of sfc unable to upgrade firmware
+> > without rebuilding the kernel or booting some other distribution.  The
+> > lack of widespread MTD support is a regular cause of support requests.
+> >
+> > There are two main alternatives I'm aware of:
+> >
+> > - Use the ethtool ETHTOOL_SEEPROM [...]
+> >
+> > - Use the ethtool ETHTOOL_FLASHDEV command [..]
+> >
+> > Of course these are both specific to network devices; it seems deisrable
+> > to have a more general convention for online firmware upgrades.  MTDs
+> > clearly are more generally applicable, and pretty much every computer
+> > does have flash storage for firmware and boot configuration, so perhaps
+> > it should be treated as more of a standard feature?
+> >   
+> 
+> Given that the flashrom utility <http://www.flashrom.org/> (GPLv2)
+> supports flashing many network cards, SATA/PATA controllers, graphics
+> cards, and of course the main system firmware/BIOS/EFI, and it does that
+> from userspace without any kernel support,
+[...]
 
-Any chance to get this in? The mxc-nand driver is nonfunctional at the
-moment and 2.6.36 is getting closer.
+I'm looking for a clean solution, not a hack.
 
-Sascha
+Ben.
 
 -- 
-Pengutronix e.K.                           |                             |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-Peiner Str. 6-8, 31137 Hildesheim, Germany | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Ben Hutchings, Senior Software Engineer, Solarflare Communications
+Not speaking for my employer; that's the marketing department's job.
+They asked us to note that Solarflare product names are trademarked.
