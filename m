@@ -1,27 +1,18 @@
-Date: Wed, 29 Sep 2010 14:56:36 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: "G, Manjunath Kondaiah" <manjugk@ti.com>
-Subject: Re: [GIT PULL] omap2 sparse fixes
-Message-ID: <20100929215635.GC3117@atomide.com>
-References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
-	<20100923225851.GR4211@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
-	<20100925001914.GO4211@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
-	<20100928152139.GB3117@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
-	<20100928183157.GH3117@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE8F9@dbde02.ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE8F9@dbde02.ent.ti.com>
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P16CK-0001hM-OY
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 23:36:29 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 953B11B43F6
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Sep 2010 23:29:28 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 2/3] mtd-utils: add xasprintf() helper
+Date: Wed, 29 Sep 2010 19:30:23 -0400
+Message-Id: <1285803024-13572-2-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
+References: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* G, Manjunath Kondaiah <manjugk@ti.com> [100929 12:42]:
-> 
-> Tony,
-> 
-> > -----Original Message-----
-> > From: Tony Lindgren [mailto:tony@atomide.com] 
-> > Sent: Wednesday, September 29, 2010 12:02 AM
-> > To: G, Manjunath Kondaiah
-> > Cc: linux-omap@vger.kernel.org; 
-> > linux-arm-kernel@lists.infradead.org; Samuel Ortiz; Dmitry 
-> > Torokhov; linux-mtd@lists.infradead.org; Russell King - ARM Linux
-> > Subject: Re: [GIT PULL] omap2 sparse fixes
-> > 
-> > * G, Manjunath Kondaiah <manjugk@ti.com> [100928 08:26]:
-> ...
-> 
-> > Yes please take out all patches that are not in arch/arm/*omap*/ path.
-> > The others really should go to the driver maintainers.
-> > 
-> > Tony
-> 
-> Here is new branch which has only arch/arm/*omap*/ related patches.
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ include/xalloc.h |   20 ++++++++++++++++++++
+ 1 files changed, 20 insertions(+), 0 deletions(-)
 
-Thanks. Noticed one more thing though:
-
-In your patch "OMAP: mach-omap2: Fix static function warnings" looks like
-you're adding omap2_gp_clockevent_set_gptimer twice:
-
---- a/arch/arm/plat-omap/include/plat/timer-gp.h
-+++ b/arch/arm/mach-omap2/timer-gp.h
-@@ -11,7 +11,6 @@
- #ifndef __ARCH_ARM_PLAT_OMAP_INCLUDE_MACH_TIMER_GP_H
- #define __ARCH_ARM_PLAT_OMAP_INCLUDE_MACH_TIMER_GP_H
+diff --git a/include/xalloc.h b/include/xalloc.h
+index 5b8a4c3..0e501e0 100644
+--- a/include/xalloc.h
++++ b/include/xalloc.h
+@@ -77,4 +77,24 @@ static char *xstrdup(const char *s)
+ 	return t;
+ }
  
--int __init omap2_gp_clockevent_set_gptimer(u8 id);
-+extern int __init omap2_gp_clockevent_set_gptimer(u8 id);
- 
- #endif
--
---- a/arch/arm/plat-omap/include/plat/dmtimer.h
-+++ b/arch/arm/plat-omap/include/plat/dmtimer.h
-@@ -81,6 +81,6 @@ unsigned int omap_dm_timer_read_counter(struct omap_dm_timer *timer);
- void omap_dm_timer_write_counter(struct omap_dm_timer *timer, unsigned int value);
- 
- int omap_dm_timers_active(void);
--
-+int omap2_gp_clockevent_set_gptimer(u8 id);
- 
- #endif /* __ASM_ARCH_DMTIMER_H */
-
-Please also be careful that your branch contains the same patches
-as you've posted for review. Nobody wants to pull different stuff
-than what was posted! Also looks like Paul had one comment related
-to the same patch.
-
-Regards,
-
-Tony
++#ifdef _GNU_SOURCE
++#include <stdarg.h>
++
++__attribute__((unused))
++static int xasprintf(char **strp, const char *fmt, ...)
++{
++	int cnt;
++	va_list ap;
++
++	va_start(ap, fmt);
++	cnt = vasprintf(strp, fmt, ap);
++	va_end(ap);
++
++	if (cnt == -1)
++		sys_errmsg_and_die("asprintf(...) failed");
++
++	return cnt;
++}
++#endif
++
+ #endif /* !__MTD_UTILS_XALLOC_H__ */
+-- 
+1.7.2.3
