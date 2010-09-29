@@ -1,18 +1,27 @@
-Received: from postdiluvian.org ([128.30.54.21] helo=porklips.postdiluvian.org)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P14uY-0000bO-Nh
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 22:14:03 +0000
-Received: from mason by porklips.postdiluvian.org with local (Exim 4.72)
-	(envelope-from <mason@postdiluvian.org>) id 1P14uX-0008W5-4Y
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 18:14:01 -0400
-Date: Wed, 29 Sep 2010 18:14:01 -0400
-From: Mark Mason <mason@postdiluvian.org>
-To: linux-mtd@lists.infradead.org
-Subject: Scheduler latency problems when using NAND
-Message-ID: <20100929221401.GA32583@postdiluvian.org>
+Date: Wed, 29 Sep 2010 14:56:36 -0700
+From: Tony Lindgren <tony@atomide.com>
+To: "G, Manjunath Kondaiah" <manjugk@ti.com>
+Subject: Re: [GIT PULL] omap2 sparse fixes
+Message-ID: <20100929215635.GC3117@atomide.com>
+References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
+	<20100923225851.GR4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
+	<20100925001914.GO4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
+	<20100928152139.GB3117@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
+	<20100928183157.GH3117@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE8F9@dbde02.ent.ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE8F9@dbde02.ent.ti.com>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,67 +31,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+* G, Manjunath Kondaiah <manjugk@ti.com> [100929 12:42]:
+> 
+> Tony,
+> 
+> > -----Original Message-----
+> > From: Tony Lindgren [mailto:tony@atomide.com] 
+> > Sent: Wednesday, September 29, 2010 12:02 AM
+> > To: G, Manjunath Kondaiah
+> > Cc: linux-omap@vger.kernel.org; 
+> > linux-arm-kernel@lists.infradead.org; Samuel Ortiz; Dmitry 
+> > Torokhov; linux-mtd@lists.infradead.org; Russell King - ARM Linux
+> > Subject: Re: [GIT PULL] omap2 sparse fixes
+> > 
+> > * G, Manjunath Kondaiah <manjugk@ti.com> [100928 08:26]:
+> ...
+> 
+> > Yes please take out all patches that are not in arch/arm/*omap*/ path.
+> > The others really should go to the driver maintainers.
+> > 
+> > Tony
+> 
+> Here is new branch which has only arch/arm/*omap*/ related patches.
 
-I hope this is the right place for this question.  I'm having some
-problems with scheduler latency when using UBIFS, and I'm hoping for
-some suggestions.
+Thanks. Noticed one more thing though:
 
-Linux 2.6.29-6, with a newer MTD, dating from probably around six
-months ago.  Embedded PowerPC 8315, with built-in NAND controller,
-using nand/fsl_elbc_nand.c.  NAND is a Samsung K9WAG08U1B two-die
-stack (one package with two chip selects), 2Gbyte x 8 bit.  The system
-has plenty of memory, but is short on CPU.
+In your patch "OMAP: mach-omap2: Fix static function warnings" looks like
+you're adding omap2_gp_clockevent_set_gptimer twice:
 
-The application is storing streaming video, almost entirely large
-sequential files, roughly 250K to 15M, to a 1.6G filesystem.  There's
-no seeking or rewriting, just creat, write, close, repeat.  No
-compression is used on the filesystem.
+--- a/arch/arm/plat-omap/include/plat/timer-gp.h
++++ b/arch/arm/mach-omap2/timer-gp.h
+@@ -11,7 +11,6 @@
+ #ifndef __ARCH_ARM_PLAT_OMAP_INCLUDE_MACH_TIMER_GP_H
+ #define __ARCH_ARM_PLAT_OMAP_INCLUDE_MACH_TIMER_GP_H
+ 
+-int __init omap2_gp_clockevent_set_gptimer(u8 id);
++extern int __init omap2_gp_clockevent_set_gptimer(u8 id);
+ 
+ #endif
+-
+--- a/arch/arm/plat-omap/include/plat/dmtimer.h
++++ b/arch/arm/plat-omap/include/plat/dmtimer.h
+@@ -81,6 +81,6 @@ unsigned int omap_dm_timer_read_counter(struct omap_dm_timer *timer);
+ void omap_dm_timer_write_counter(struct omap_dm_timer *timer, unsigned int value);
+ 
+ int omap_dm_timers_active(void);
+-
++int omap2_gp_clockevent_set_gptimer(u8 id);
+ 
+ #endif /* __ASM_ARCH_DMTIMER_H */
 
-The problem I'm seeing is excessively large scheduler latency when
-data is flushed to NAND.
+Please also be careful that your branch contains the same patches
+as you've posted for review. Nobody wants to pull different stuff
+than what was posted! Also looks like Paul had one comment related
+to the same patch.
 
-Originally this had been happening during erases.  I noticed that
-hundreds of erases (up to around 700) were being issued in rapid
-succession, and I was seeing other threads unable to run for sometimes
-as much as the expected 7 seconds (I measured 1.1 ms per erase).  To
-address this, I split the erase command in two halves - FIR_OP_CM0 |
-FIR_OP_PA | FIR_OP_CM2 and FIR_OP_CW1 | FIR_OP_RS - with schedule()
-called in between.  This had the effect if issuing the erase, calling
-schedule(), then waiting for the erase to complete if it hadn't
-already, but usually it had.
+Regards,
 
-I'm surprised this helped so much, since the calling thread should
-have been put to sleep for the duration of the erase by the call to
-wait_event_timeout(), but it definitely did - I guess it was the
-explicit schedule().
-
-The erases are no longer a significant bottleneck, but now the writes
-are.  A page program takes 200us, which seems too short for an
-explicit schedule(), and I am seeing periods with the busy line
-asserted in back-to-back 200us chunks for most of a second.
-
-I have played with thread priorities a bit, but I wound up with too
-many threads being "most important".  There is some hardware that
-can't tolerate large latencies, and unfortunately the existing code
-base doesn't have enough separation between critical and non-critical
-tasks to allow us to run just the critical stuff at a higher priority.
-
-On average, the system can keep up with the load, but it has problems
-with the burstiness of the flushes to NAND, so I'm hoping for some
-ideas to smooth the traffic out, or even a totally different way to
-approach the problem.  I tried lowering the priority of the UBI
-background thread, the failure mode there is pretty obvious.  I tried
-lowering dirty_background_centisecs, that helped a little bit, but not
-enough, and there's also a SATA drive, although a smaller commit
-interval probably wouldn't bother it since the traffic is similar.
-
-I'm contemplating something along the lines of a smaller commit
-interval, an even higher background thread priority, and a sleep with
-a schedule during the page program, but that many extra context
-switches are liable to be a problem - there's no L2 cache on this CPU,
-so context switches are extra expensive.
-
-Does anyone have any suggestions, ideas, hints, advice, etc?
-
-Thanks!
+Tony
