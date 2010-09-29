@@ -1,20 +1,29 @@
-Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P16KR-0004nR-6U
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 23:44:53 +0000
-Message-ID: <4CA3CF60.5060705@call-direct.com.au>
-Date: Thu, 30 Sep 2010 09:44:32 +1000
-From: Iwo Mergler <iwo@call-direct.com.au>
+From: "G, Manjunath Kondaiah" <manjugk@ti.com>
+To: Tony Lindgren <tony@atomide.com>
+Date: Thu, 30 Sep 2010 05:16:56 +0530
+Subject: RE: [GIT PULL] omap2 sparse fixes
+Message-ID: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE911@dbde02.ent.ti.com>
+References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
+	<20100923225851.GR4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
+	<20100925001914.GO4211@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
+	<20100928152139.GB3117@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
+	<20100928183157.GH3117@atomide.com>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE8F9@dbde02.ent.ti.com>
+	<20100929215635.GC3117@atomide.com>
+In-Reply-To: <20100929215635.GC3117@atomide.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
-References: <70E876B0EA86DD4BAF101844BC814DFE093ED6015C@Cloud.RL.local>
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE093ED6015C@Cloud.RL.local>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier@gentoo.org>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
+Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,65 +33,113 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jon Povey wrote:
-> I can't speak for Mike, but I have run into a few situations where
-> blocks were marked bad incorrectly. For example, the ROM bootloader of
-> a chip I work with requires a different OOB layout to that specified by
-> the NAND flash manufacturer, so to write the second-stage bootloader
-> you must write data into what is, as far as the NAND maker is concerned,
-> the OOB area. Then when u-boot or Linux loads, it finds no BBT, scans
-> the bootloader, finds non-FF OOB and marks it bad.
-> 
-> These blocks are NOT really bad, and as engineers who know what we are
-> doing, we need to be able to rewrite these for firmware upgrades and
-> so on.
+=20
 
-No problem with that. Anything *you* have marked bad is fair game.
+> -----Original Message-----
+> From: Tony Lindgren [mailto:tony@atomide.com]=20
+> Sent: Thursday, September 30, 2010 3:27 AM
+> To: G, Manjunath Kondaiah
+> Cc: linux-omap@vger.kernel.org;=20
+> linux-arm-kernel@lists.infradead.org; Samuel Ortiz; Dmitry=20
+> Torokhov; linux-mtd@lists.infradead.org; Russell King - ARM Linux
+> Subject: Re: [GIT PULL] omap2 sparse fixes
+>=20
+> * G, Manjunath Kondaiah <manjugk@ti.com> [100929 12:42]:
+> >=20
+> > Tony,
+> >=20
+> > > -----Original Message-----
+> > > From: Tony Lindgren [mailto:tony@atomide.com]
+> > > Sent: Wednesday, September 29, 2010 12:02 AM
+> > > To: G, Manjunath Kondaiah
+> > > Cc: linux-omap@vger.kernel.org;
+> > > linux-arm-kernel@lists.infradead.org; Samuel Ortiz;=20
+> Dmitry Torokhov;=20
+> > > linux-mtd@lists.infradead.org; Russell King - ARM Linux
+> > > Subject: Re: [GIT PULL] omap2 sparse fixes
+> > >=20
+> > > * G, Manjunath Kondaiah <manjugk@ti.com> [100928 08:26]:
+> > ...
+> >=20
+> > > Yes please take out all patches that are not in=20
+> arch/arm/*omap*/ path.
+> > > The others really should go to the driver maintainers.
+> > >=20
+> > > Tony
+> >=20
+> > Here is new branch which has only arch/arm/*omap*/ related patches.
+>=20
+> Thanks. Noticed one more thing though:
+>=20
+> In your patch "OMAP: mach-omap2: Fix static function=20
+> warnings" looks like you're adding=20
+> omap2_gp_clockevent_set_gptimer twice:
 
-Although I would always use an in-flash BBT for this kind of situation.
-As you say, there are bootloaders, filesystems and hardware ECC that
-will only work if you re-purpose the bad block marker region in the
-OOB.
+Sorry I missed removing this while adding it in timer-gp.h. Also, I noticed
+in the same patch, the board_nand_init nd board_flash_init functions are
+exported thrgough board-flash.h.=20
 
-In such a case, just do the bad block scan once, at production time,
-and write the BBT. Then change everything else to use that BBT. And
-you leave the BBT alone during reflash.
-
-> There are also situations of upgrading to new firmware that uses a
-> different OOB layout (yes it's perverted, and yes I have been there),
-> maybe we know a block is bad but it's full of FF, we are going to
-> reboot and rebuild the BBT, we want to write a bad block marker in
-> the new OOB - we need to be able to write the bad block.
-
-You can't guarantee that that will always succeed. It's unlikely,
-but you can end up with a marker that verifies correctly and then
-fades, long before the official 10 endurance years are over.
-
-It's a judgement call, of course. It somewhat depends whether
-you're making a toy or a medical implant. Warranty return or
-lawsuit. :-)
-
-In the case you describe, I would use the old BBT to create the
-new one directly, without attempting to write to the bad blocks.
-
-> imo, the mtd-utils are low-level and specialist enough that allowing
-> a --yes-i-really-know-what-i-am-doing kind of flag makes sense.
-> Perhaps that support could even be an #ifdef, disabled by default.
-> 
-> Yes, someone using it has to really know what they are doing, including
-> being aware of manufacturer-marked bad blocks.
-> 
-> Either way, I for one need to do these kind of low-level hacks, and if
-> mtd kernel or utils have policy hardwired into them, happily I have
-> the source and a compiler and can fix that locally.
-
-I agree. I only wrote what I did to maybe contribute to the 
-documentation. There seemed to be the sentiment that the tools
-only skiped bad blocks because of some silly tradition.
-
-I'm all in favour of adding the feature.
+I moved board-flash.h from mach/board-flash.h to mach-omap2/board-flash.h s=
+o
+that only board files can access these functions.
 
 
-Best regards,
+>=20
+> --- a/arch/arm/plat-omap/include/plat/timer-gp.h
+> +++ b/arch/arm/mach-omap2/timer-gp.h
+> @@ -11,7 +11,6 @@
+>  #ifndef __ARCH_ARM_PLAT_OMAP_INCLUDE_MACH_TIMER_GP_H
+>  #define __ARCH_ARM_PLAT_OMAP_INCLUDE_MACH_TIMER_GP_H
+> =20
+> -int __init omap2_gp_clockevent_set_gptimer(u8 id);
+> +extern int __init omap2_gp_clockevent_set_gptimer(u8 id);
+> =20
+>  #endif
+> -
+> --- a/arch/arm/plat-omap/include/plat/dmtimer.h
+> +++ b/arch/arm/plat-omap/include/plat/dmtimer.h
+> @@ -81,6 +81,6 @@ unsigned int=20
+> omap_dm_timer_read_counter(struct omap_dm_timer *timer); =20
+> void omap_dm_timer_write_counter(struct omap_dm_timer *timer,=20
+> unsigned int value);
+> =20
+>  int omap_dm_timers_active(void);
+> -
+> +int omap2_gp_clockevent_set_gptimer(u8 id);
 
-Iwo
+Removed.
+
+> =20
+>  #endif /* __ASM_ARCH_DMTIMER_H */
+>=20
+> Please also be careful that your branch contains the same=20
+> patches as you've posted for review. Nobody wants to pull=20
+> different stuff than what was posted! Also looks like Paul=20
+> had one comment related to the same patch.
+
+Patches are same except pulling out twl and driver patches from
+the series.
+
+Paul's comment is addressed and changes are pushed to git branch.
+Build tested with omap3_defconfig and boot tested with beagle board.
+
+The following changes since commit 899611ee7d373e5eeda08e9a8632684e1ebbbf00=
+:
+  Linus Torvalds (1):
+        Linux 2.6.36-rc6
+
+are available in the git repository at:
+
+  git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git omap_sparse_fix=
+esv2
+
+G, Manjunath Kondaiah (7):
+      OMAP: mach-omap2: Fix incorrect assignment warnings
+      OMAP: mach-omap2: Fix static declaration warnings
+      OMAP2plus: Fix static function warnings
+      OMAP: mach-omap2: Fix miscellaneous sparse warnings
+      OMAP: plat-omap: Fix static function warnings
+      OMAP: Convert write/read functions to raw read/write
+      OMAP3: Keypad: Fix incorrect type initializer
+
+-Manjunath
