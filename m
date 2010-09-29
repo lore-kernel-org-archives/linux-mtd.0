@@ -1,16 +1,31 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P16CK-0001hV-Uo
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 23:36:31 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 09F1A1B43FB
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Sep 2010 23:29:27 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] mtd-utils: new memory wrappers
-Date: Wed, 29 Sep 2010 19:30:22 -0400
-Message-Id: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
+Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P16Es-0002Cd-Kj
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 23:39:07 +0000
+Date: Thu, 30 Sep 2010 01:38:07 +0200
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Subject: Re: Dirtiable inode bdi default != sb bdi btrfs
+Message-ID: <20100929233806.GB12707@quack.suse.cz>
+References: <4C9AA546.6050201@cesarb.net>
+	<20100923123849.8975fe47.akpm@linux-foundation.org>
+	<20100927222548.GG3610@quack.suse.cz> <20100927225452.GG4270@think>
+	<20100929081936.GA23322@lst.de>
+	<20100929121808.GB3290@quack.suse.cz>
+	<20100929141006.GB7439@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20100929141006.GB7439@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+	kernel@lists.fedoraproject.org, Jens Axboe <jaxboe@fusionio.com>,
+	linux-kernel@vger.kernel.org, Micha?? Piotrowski <mkkp4x4@gmail.com>,
+	linux-mtd@lists.infradead.org, Chris Mason <chris.mason@oracle.com>,
+	Chuck Ebbert <cebbert@redhat.com>, linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>, linux-btrfs@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, stable@kernel.org,
+	Cesar Eduardo Barros <cesarb@cesarb.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,194 +35,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The mkfs.jffs2 program has local wrappers for memory related functions
-that are useful beyond mkfs.jffs2, so break them out into a common header.
+On Wed 29-09-10 16:10:06, Christoph Hellwig wrote:
+> On Wed, Sep 29, 2010 at 02:18:08PM +0200, Jan Kara wrote:
+> > On Wed 29-09-10 10:19:36, Christoph Hellwig wrote:
+> > > ---
+> > > From: Christoph Hellwig <hch@lst.de>
+> > > Subject: [PATCH] writeback: always use sb->s_bdi for writeback purposes
+> > > 
+> > ...
+> > > The one exception for now is the block device filesystem which really
+> > > wants different writeback contexts for it's different (internal) inodes
+> > > to handle the writeout more efficiently.  For now we do this with
+> > > a hack in fs-writeback.c because we're so late in the cycle, but in
+> > > the future I plan to replace this with a superblock method that allows
+> > > for multiple writeback contexts per filesystem.
+> >   Another exception I know about is mtd_inodefs filesystem
+> > (drivers/mtd/mtdchar.c).
+> 
+> No, it's not.  MTD only has three different backing_dev_info instances
+> which have different flags in the mapping-relevant portion of the
+> backing_dev. 
+  In the end I agree I was probably wrong but it's not that simple ;)
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- include/common.h |    8 +++++
- include/xalloc.h |   80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- mkfs.jffs2.c     |   41 ---------------------------
- 3 files changed, 88 insertions(+), 41 deletions(-)
- create mode 100644 include/xalloc.h
+> >   So at least here you'd need also add a similar exception for
+> > "mtd_inodefs".
+> 
+> No.  For one thing we don't need any exception for correctnes alone -
+> even the block device variant would work fine with the default case.
+Here I don't agree. If you don't have some kind of exception, sb->s_bdi
+for both "block" and "mtd_inodefs" filesystems points to
+noop_backing_dev_info and you get no writeback for that one. So it isn't
+just a performance issue but also a correctness one.
 
-diff --git a/include/common.h b/include/common.h
-index 472315e..6e27d62 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -58,6 +58,9 @@ extern "C" {
- 	fprintf(stderr, "%s: error!: " fmt "\n", PROGRAM_NAME, ##__VA_ARGS__); \
- 	-1;                                                                 \
- })
-+#define errmsg_and_die(fmt, ...) do {                                       \
-+	exit(errmsg(fmt, ##__VA_ARGS__));                                   \
-+} while(0)
- 
- /* System error messages */
- #define sys_errmsg(fmt, ...)  ({                                            \
-@@ -69,6 +72,9 @@ extern "C" {
- 	fprintf(stderr, "error %d (%s)\n", _err, strerror(_err));           \
- 	-1;                                                                 \
- })
-+#define sys_errmsg_and_die(fmt, ...) do {                                   \
-+	exit(sys_errmsg(fmt, ##__VA_ARGS__));                               \
-+} while(0)
- 
- /* Warnings */
- #define warnmsg(fmt, ...) do {                                                \
-@@ -103,6 +109,8 @@ simple_strtoX(strtoll, long int)
- simple_strtoX(strtoul, unsigned long int)
- simple_strtoX(strtoull, unsigned long int)
- 
-+#include "xalloc.h"
-+
- #ifdef __cplusplus
- }
- #endif
-diff --git a/include/xalloc.h b/include/xalloc.h
-new file mode 100644
-index 0000000..5b8a4c3
---- /dev/null
-+++ b/include/xalloc.h
-@@ -0,0 +1,80 @@
-+/*
-+ * memory wrappers
-+ *
-+ * Copyright (c) Artem Bityutskiy, 2007, 2008
-+ * Copyright 2001, 2002 Red Hat, Inc.
-+ *           2001 David A. Schleef <ds@lineo.com>
-+ *           2002 Axis Communications AB
-+ *           2001, 2002 Erik Andersen <andersen@codepoet.org>
-+ *           2004 University of Szeged, Hungary
-+ *           2006 KaiGai Kohei <kaigai@ak.jp.nec.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-+ */
-+
-+#ifndef __MTD_UTILS_XALLOC_H__
-+#define __MTD_UTILS_XALLOC_H__
-+
-+#include <stdlib.h>
-+#include <string.h>
-+
-+/*
-+ * Mark these functions as unused so that gcc does not emit warnings
-+ * when people include this header but don't use every function.
-+ */
-+
-+__attribute__((unused))
-+static void *xmalloc(size_t size)
-+{
-+	void *ptr = malloc(size);
-+
-+	if (ptr == NULL && size != 0)
-+		sys_errmsg_and_die("malloc(%zu) failed", size);
-+	return ptr;
-+}
-+
-+__attribute__((unused))
-+static void *xcalloc(size_t nmemb, size_t size)
-+{
-+	void *ptr = calloc(nmemb, size);
-+
-+	if (ptr == NULL && nmemb != 0 && size != 0)
-+		sys_errmsg_and_die("calloc(%zu, %zu) failed", nmemb, size);
-+	return ptr;
-+}
-+
-+__attribute__((unused))
-+static void *xrealloc(void *ptr, size_t size)
-+{
-+	ptr = realloc(ptr, size);
-+	if (ptr == NULL && size != 0)
-+		sys_errmsg_and_die("realloc(%p, %zu) failed", ptr, size);
-+	return ptr;
-+}
-+
-+__attribute__((unused))
-+static char *xstrdup(const char *s)
-+{
-+	char *t;
-+
-+	if (s == NULL)
-+		return NULL;
-+	t = strdup(s);
-+	if (t == NULL)
-+		sys_errmsg_and_die("strdup(%p) failed", s);
-+	return t;
-+}
-+
-+#endif /* !__MTD_UTILS_XALLOC_H__ */
-diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
-index 1abe09c..1ea3598 100644
---- a/mkfs.jffs2.c
-+++ b/mkfs.jffs2.c
-@@ -110,7 +110,6 @@ static int squash_uids = 0;
- static int squash_perms = 0;
- static int fake_times = 0;
- int target_endian = __BYTE_ORDER;
--static const char *const memory_exhausted = "memory exhausted";
- 
- uint32_t find_hardlink(struct filesystem_entry *e)
- {
-@@ -197,46 +196,6 @@ static void perror_msg_and_die(const char *s, ...)
- 	exit(EXIT_FAILURE);
- }
- 
--#ifndef DMALLOC
--extern void *xmalloc(size_t size)
--{
--	void *ptr = malloc(size);
--
--	if (ptr == NULL && size != 0)
--		error_msg_and_die(memory_exhausted);
--	return ptr;
--}
--
--extern void *xcalloc(size_t nmemb, size_t size)
--{
--	void *ptr = calloc(nmemb, size);
--
--	if (ptr == NULL && nmemb != 0 && size != 0)
--		error_msg_and_die(memory_exhausted);
--	return ptr;
--}
--
--extern void *xrealloc(void *ptr, size_t size)
--{
--	ptr = realloc(ptr, size);
--	if (ptr == NULL && size != 0)
--		error_msg_and_die(memory_exhausted);
--	return ptr;
--}
--
--extern char *xstrdup(const char *s)
--{
--	char *t;
--
--	if (s == NULL)
--		return NULL;
--	t = strdup(s);
--	if (t == NULL)
--		error_msg_and_die(memory_exhausted);
--	return t;
--}
--#endif
--
- extern char *xreadlink(const char *path)
- {
- 	static const int GROWBY = 80; /* how large we will grow strings by */
+Regarding mtd_inodefs I now looked in more detail what MTD actually does
+and it seems to me that MTD device inodes do not seem to carry any
+cached state that flusher threads could write back. So returning
+noop_backing_dev_info might be the right thing for them after all...
+(added David Woodhouse and MTD list to CC so that they can shout if it's
+not the case). Coming to this conclusion, I'm happy with your patch going
+in as is...
+								Honza
 -- 
-1.7.2.3
+Jan Kara <jack@suse.cz>
+SUSE Labs, CR
