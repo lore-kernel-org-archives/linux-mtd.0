@@ -1,31 +1,20 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P16Es-0002Cd-Kj
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 23:39:07 +0000
-Date: Thu, 30 Sep 2010 01:38:07 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Subject: Re: Dirtiable inode bdi default != sb bdi btrfs
-Message-ID: <20100929233806.GB12707@quack.suse.cz>
-References: <4C9AA546.6050201@cesarb.net>
-	<20100923123849.8975fe47.akpm@linux-foundation.org>
-	<20100927222548.GG3610@quack.suse.cz> <20100927225452.GG4270@think>
-	<20100929081936.GA23322@lst.de>
-	<20100929121808.GB3290@quack.suse.cz>
-	<20100929141006.GB7439@lst.de>
+	id 1P16KR-0004nR-6U
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 23:44:53 +0000
+Message-ID: <4CA3CF60.5060705@call-direct.com.au>
+Date: Thu, 30 Sep 2010 09:44:32 +1000
+From: Iwo Mergler <iwo@call-direct.com.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20100929141006.GB7439@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-	kernel@lists.fedoraproject.org, Jens Axboe <jaxboe@fusionio.com>,
-	linux-kernel@vger.kernel.org, Micha?? Piotrowski <mkkp4x4@gmail.com>,
-	linux-mtd@lists.infradead.org, Chris Mason <chris.mason@oracle.com>,
-	Chuck Ebbert <cebbert@redhat.com>, linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>, linux-btrfs@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, stable@kernel.org,
-	Cesar Eduardo Barros <cesarb@cesarb.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>
+To: Jon Povey <Jon.Povey@racelogic.co.uk>
+Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
+References: <70E876B0EA86DD4BAF101844BC814DFE093ED6015C@Cloud.RL.local>
+In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE093ED6015C@Cloud.RL.local>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Mike Frysinger <vapier@gentoo.org>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,46 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed 29-09-10 16:10:06, Christoph Hellwig wrote:
-> On Wed, Sep 29, 2010 at 02:18:08PM +0200, Jan Kara wrote:
-> > On Wed 29-09-10 10:19:36, Christoph Hellwig wrote:
-> > > ---
-> > > From: Christoph Hellwig <hch@lst.de>
-> > > Subject: [PATCH] writeback: always use sb->s_bdi for writeback purposes
-> > > 
-> > ...
-> > > The one exception for now is the block device filesystem which really
-> > > wants different writeback contexts for it's different (internal) inodes
-> > > to handle the writeout more efficiently.  For now we do this with
-> > > a hack in fs-writeback.c because we're so late in the cycle, but in
-> > > the future I plan to replace this with a superblock method that allows
-> > > for multiple writeback contexts per filesystem.
-> >   Another exception I know about is mtd_inodefs filesystem
-> > (drivers/mtd/mtdchar.c).
+Jon Povey wrote:
+> I can't speak for Mike, but I have run into a few situations where
+> blocks were marked bad incorrectly. For example, the ROM bootloader of
+> a chip I work with requires a different OOB layout to that specified by
+> the NAND flash manufacturer, so to write the second-stage bootloader
+> you must write data into what is, as far as the NAND maker is concerned,
+> the OOB area. Then when u-boot or Linux loads, it finds no BBT, scans
+> the bootloader, finds non-FF OOB and marks it bad.
 > 
-> No, it's not.  MTD only has three different backing_dev_info instances
-> which have different flags in the mapping-relevant portion of the
-> backing_dev. 
-  In the end I agree I was probably wrong but it's not that simple ;)
+> These blocks are NOT really bad, and as engineers who know what we are
+> doing, we need to be able to rewrite these for firmware upgrades and
+> so on.
 
-> >   So at least here you'd need also add a similar exception for
-> > "mtd_inodefs".
+No problem with that. Anything *you* have marked bad is fair game.
+
+Although I would always use an in-flash BBT for this kind of situation.
+As you say, there are bootloaders, filesystems and hardware ECC that
+will only work if you re-purpose the bad block marker region in the
+OOB.
+
+In such a case, just do the bad block scan once, at production time,
+and write the BBT. Then change everything else to use that BBT. And
+you leave the BBT alone during reflash.
+
+> There are also situations of upgrading to new firmware that uses a
+> different OOB layout (yes it's perverted, and yes I have been there),
+> maybe we know a block is bad but it's full of FF, we are going to
+> reboot and rebuild the BBT, we want to write a bad block marker in
+> the new OOB - we need to be able to write the bad block.
+
+You can't guarantee that that will always succeed. It's unlikely,
+but you can end up with a marker that verifies correctly and then
+fades, long before the official 10 endurance years are over.
+
+It's a judgement call, of course. It somewhat depends whether
+you're making a toy or a medical implant. Warranty return or
+lawsuit. :-)
+
+In the case you describe, I would use the old BBT to create the
+new one directly, without attempting to write to the bad blocks.
+
+> imo, the mtd-utils are low-level and specialist enough that allowing
+> a --yes-i-really-know-what-i-am-doing kind of flag makes sense.
+> Perhaps that support could even be an #ifdef, disabled by default.
 > 
-> No.  For one thing we don't need any exception for correctnes alone -
-> even the block device variant would work fine with the default case.
-Here I don't agree. If you don't have some kind of exception, sb->s_bdi
-for both "block" and "mtd_inodefs" filesystems points to
-noop_backing_dev_info and you get no writeback for that one. So it isn't
-just a performance issue but also a correctness one.
+> Yes, someone using it has to really know what they are doing, including
+> being aware of manufacturer-marked bad blocks.
+> 
+> Either way, I for one need to do these kind of low-level hacks, and if
+> mtd kernel or utils have policy hardwired into them, happily I have
+> the source and a compiler and can fix that locally.
 
-Regarding mtd_inodefs I now looked in more detail what MTD actually does
-and it seems to me that MTD device inodes do not seem to carry any
-cached state that flusher threads could write back. So returning
-noop_backing_dev_info might be the right thing for them after all...
-(added David Woodhouse and MTD list to CC so that they can shout if it's
-not the case). Coming to this conclusion, I'm happy with your patch going
-in as is...
-								Honza
--- 
-Jan Kara <jack@suse.cz>
-SUSE Labs, CR
+I agree. I only wrote what I did to maybe contribute to the 
+documentation. There seemed to be the sentiment that the tools
+only skiped bad blocks because of some silly tradition.
+
+I'm all in favour of adding the feature.
+
+
+Best regards,
+
+Iwo
