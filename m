@@ -1,31 +1,26 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0whx-0003ZM-2B
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 13:28:29 +0000
-Received: by pzk32 with SMTP id 32so226930pzk.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Sep 2010 06:28:27 -0700 (PDT)
+Received: from mailout-de.gmx.net ([213.165.64.22] helo=mail.gmx.net)
+	by bombadil.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P0wwz-0007ni-Px
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 13:44:03 +0000
+Message-ID: <4CA3429E.4070104@gmx.net>
+Date: Wed, 29 Sep 2010 15:43:58 +0200
+From: Carl-Daniel Hailfinger <c-d.hailfinger.devel.2006@gmx.net>
 MIME-Version: 1.0
-Sender: vapier.adi@gmail.com
-In-Reply-To: <1285765173.2437.123.camel@localhost>
-References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
-	<1284308851.1783.23.camel@brekeke>
-	<AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
-	<1284358990.27765.154.camel@localhost>
-	<AANLkTin4u=jQOxxuTwzMHrEEg=vDc2TSTah_=_Li02xx@mail.gmail.com>
-	<1284441967.2084.18.camel@brekeke>
-	<AANLkTin+2ocUT_NMToGHoAhX5=Trn2CdLFmiMBmvSVuC@mail.gmail.com>
-	<1285139570.7512.137.camel@localhost>
-	<AANLkTi=ssyUrvaic86hx8tT0TvZiMzyDa_KL0SfU144J@mail.gmail.com>
-	<4CA2B3E9.3030707@call-direct.com.au>
-	<1285765173.2437.123.camel@localhost>
-From: Mike Frysinger <vapier@gentoo.org>
-Date: Wed, 29 Sep 2010 09:28:06 -0400
-Message-ID: <AANLkTi=FD+8OyqQjUs7Y9+hS=fVgN+=s12M6tnAWH9Oy@mail.gmail.com>
-Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
-To: dedekind1@gmail.com
+To: Ben Hutchings <bhutchings@solarflare.com>
+Subject: Re: [RFC] Online firmware upgrade in non-embedded systems
+References: <1285696787.2282.45.camel@achroite.uk.solarflarecom.com>	
+	<4CA26F35.6060408@gmx.net>	
+	<1285763700.2283.6.camel@achroite.uk.solarflarecom.com>	
+	<4CA334FA.2080707@gmx.net>
+	<1285765850.2283.15.camel@achroite.uk.solarflarecom.com>
+In-Reply-To: <1285765850.2283.15.camel@achroite.uk.solarflarecom.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: linux-mtd@lists.infradead.org, Iwo Mergler <iwo@call-direct.com.au>
+Content-Transfer-Encoding: 7bit
+Cc: netdev <netdev@vger.kernel.org>,
+	sf-linux-drivers <linux-net-drivers@solarflare.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	flashrom <flashrom@flashrom.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,34 +30,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 29, 2010 at 08:59, Artem Bityutskiy wrote:
-> On Wed, 2010-09-29 at 13:35 +1000, Iwo Mergler wrote:
->> The upshot of this is that blocks are marked as bad by the
->> manufacturer based on corner case testing. Like erasing at
->> high temperature / low voltage and reading back at low
->> temperature / high voltage. The manufacturer can also
->> access pads on the naked die that are not connected to pins
->> during packaging.
+On 29.09.2010 15:10, Ben Hutchings wrote:
+> On Wed, 2010-09-29 at 14:45 +0200, Carl-Daniel Hailfinger wrote:
+>   
+>> On 29.09.2010 14:35, Ben Hutchings wrote:
+>>     
+>>> On Wed, 2010-09-29 at 00:41 +0200, Carl-Daniel Hailfinger wrote:
+>>>   
+>>>       
+>>>> [adding flashrom@flashrom.org to CC, senders will be whitelisted after a
+>>>> short delay]
+>>>>
+>>>> On 28.09.2010 19:59, Ben Hutchings wrote:
+>>>>     
+>>>>         
+>>>>> Network and disk controllers normally have at least some firmware in
+>>>>> flash to support their use as boot devices. [...]
+>>>>>   
+>>>>>       
+>>>>>           
+>>>> Given that the flashrom utility <http://www.flashrom.org/> (GPLv2)
+>>>> supports flashing many network cards, SATA/PATA controllers, graphics
+>>>> cards, and of course the main system firmware/BIOS/EFI, and it does that
+>>>> from userspace without any kernel support,
+>>>>     
+>>>>         
+>>> [...]
+>>>
+>>> I'm looking for a clean solution, not a hack.
+>>>   
+>>>       
+>> What would qualify as a clean solution?
+>>     
 >
-> Is only about letting you write to bad eraseblocks, not about erasing
-> them. I assumed this cannot be used for marking bad eraseblocks as good
-> back. The kernel does not have any protection against writing to bad
-> eraseblocks, so I do not see why Mike cannot have this option.
+> One where hardware access is mediated by the kernel, and doesn't involve
+> unloading or potentially conflicting with the driver for that hardware.
+>   
 
-correct on all points :)
+flashrom can ask the kernel driver to "please stop accessing flash". No
+unloading needed, no conflict in place.
 
-> But speaking about erasing bad eraseblocks, which we also discussed, I
-> think you have a good point - we should probably distinguish between
-> factory-marked bad eraseblocks and user-marked. AFAIR, the OOB marker
-> for them was even different, or in BBT, do not really remember.
+
+>> And is cross-platform code one of your goals?
+>>     
 >
-> We probably can allow erasing user-marked bad eraseblocks and unmarking
-> them. But we probably should not allow erasing factory-marked bad
-> eraseblocks. But again, I'm not sure if it is possible to do, did not
-> really think about this.
+> Not at this level.  At the application level, yes, but we already have a
+> working application so I'm not interested in using flashrom for that.
+>   
 
-i think you're correct here too.  i havent seen any indication that
-factory-marked bad blocks are distinguished in any way from
-user-marked bad blocks.  either in the software BBT or in the OOB
-layout.
--mike
+I see. Just because I'm interested in how other flashing applications
+solve this: Does that application work on *BSD as well? And could you
+tell me the name of the app so I can take a look at it? Thanks.
+
+Regards,
+Carl-Daniel
+
+-- 
+http://www.hailfinger.org/
