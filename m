@@ -1,22 +1,30 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P0wB3-0003A8-EP
-	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 12:54:30 +0000
-Received: by bwz19 with SMTP id 19so654907bwz.36
+	id 1P0wHw-0005Ye-0j
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 13:01:37 +0000
+Received: by fxm15 with SMTP id 15so515294fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Sep 2010 05:54:28 -0700 (PDT)
-Subject: Re: pwrite() to nand in raw mode fails with EINVAL
+	Wed, 29 Sep 2010 06:01:35 -0700 (PDT)
+Subject: Re: [PATCH] nandwrite: add --nobad to write bad blocks
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: mbizon@freebox.fr, Maxim Levitsky <maximlevitsky@gmail.com>
-In-Reply-To: <1285699650.32420.70.camel@sakura.staff.proxad.net>
-References: <1285699650.32420.70.camel@sakura.staff.proxad.net>
+To: Iwo Mergler <iwo@call-direct.com.au>
+In-Reply-To: <4CA2B3E9.3030707@call-direct.com.au>
+References: <1284263480-31573-1-git-send-email-vapier@gentoo.org>
+	<1284308851.1783.23.camel@brekeke>
+	<AANLkTinkp3O9uFhumuuBTq4T+Um9MSjFv3nb_byF0Q35@mail.gmail.com>
+	<1284358990.27765.154.camel@localhost>
+	<AANLkTin4u=jQOxxuTwzMHrEEg=vDc2TSTah_=_Li02xx@mail.gmail.com>
+	<1284441967.2084.18.camel@brekeke>
+	<AANLkTin+2ocUT_NMToGHoAhX5=Trn2CdLFmiMBmvSVuC@mail.gmail.com>
+	<1285139570.7512.137.camel@localhost>
+	<AANLkTi=ssyUrvaic86hx8tT0TvZiMzyDa_KL0SfU144J@mail.gmail.com>
+	<4CA2B3E9.3030707@call-direct.com.au>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 29 Sep 2010 15:52:27 +0300
-Message-ID: <1285764747.2437.116.camel@localhost>
+Date: Wed, 29 Sep 2010 15:59:33 +0300
+Message-ID: <1285765173.2437.123.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,56 +35,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Maxime, I've cleaned up comments, added your signed-off-by and cc
-stable. Is this OK?
+On Wed, 2010-09-29 at 13:35 +1000, Iwo Mergler wrote:
+> The upshot of this is that blocks are marked as bad by the
+> manufacturer based on corner case testing. Like erasing at
+> high temperature / low voltage and reading back at low
+> temperature / high voltage. The manufacturer can also
+> access pads on the naked die that are not connected to pins
+> during packaging.
 
-It would also be nice to get an ack from Maxim Levitsky.
+Is only about letting you write to bad eraseblocks, not about erasing
+them. I assumed this cannot be used for marking bad eraseblocks as good
+back. The kernel does not have any protection against writing to bad
+eraseblocks, so I do not see why Mike cannot have this option.
 
-From: Maxime Bizon <mbizon@freebox.fr>
-Subject: [PATCH] mtd: fix NAND pwrite in raw mode
+But speaking about erasing bad eraseblocks, which we also discussed, I
+think you have a good point - we should probably distinguish between
+factory-marked bad eraseblocks and user-marked. AFAIR, the OOB marker
+for them was even different, or in BBT, do not really remember.
 
-Since commit 782ce79a45b3b850b108896fcf7da26754061c8f ("cleanup the
-nand_do_write_ops") 'pwrite()' to a NAND device fails with '-EINVAL'
-which comes from:
+We probably can allow erasing user-marked bad eraseblocks and unmarking
+them. But we probably should not allow erasing factory-marked bad
+eraseblocks. But again, I'm not sure if it is possible to do, did not
+really think about this.
 
-        /* Don't allow multipage oob writes with offset */
-        if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
-                return -EINVAL;
-
-because 'ops->ooboffs' was uninitialized. This patch fixes the issue.
-
-Artem: clean-up comment, add stable.
-
-Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
-Cc: stable <stable@kernel.org>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/mtdchar.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index a825002..39dcb57 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -216,6 +216,7 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
- 		{
- 			struct mtd_oob_ops ops;
- 
-+			memset(&ops, 0, sizeof (ops));
- 			ops.mode = MTD_OOB_RAW;
- 			ops.datbuf = kbuf;
- 			ops.oobbuf = NULL;
-@@ -319,6 +320,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
- 		{
- 			struct mtd_oob_ops ops;
- 
-+			memset(&ops, 0, sizeof (ops));
- 			ops.mode = MTD_OOB_RAW;
- 			ops.datbuf = kbuf;
- 			ops.oobbuf = NULL;
--- 
-1.7.2.3
-
+But I think this particular patch from Mike is OK.
 
 -- 
 Best Regards,
