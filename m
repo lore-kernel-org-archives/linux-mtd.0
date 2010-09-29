@@ -1,27 +1,22 @@
-From: "G, Manjunath Kondaiah" <manjugk@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Thu, 30 Sep 2010 01:21:00 +0530
-Subject: RE: [GIT PULL] omap2 sparse fixes
-Message-ID: <E0D41E29EB0DAC4E9F3FF173962E9E9402DB7FE8F9@dbde02.ent.ti.com>
-References: <E0D41E29EB0DAC4E9F3FF173962E9E9402785A390E@dbde02.ent.ti.com>
-	<20100923225851.GR4211@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F859E@dbde02.ent.ti.com>
-	<20100925001914.GO4211@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F917C@dbde02.ent.ti.com>
-	<20100928152139.GB3117@atomide.com>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DB3F94C9@dbde02.ent.ti.com>
-	<20100928183157.GH3117@atomide.com>
-In-Reply-To: <20100928183157.GH3117@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Samuel Ortiz <sameo@linux.intel.com>, Dmitry Torokhov <dtor@mail.ru>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P12zc-0006uQ-D2
+	for linux-mtd@lists.infradead.org; Wed, 29 Sep 2010 20:11:08 +0000
+Received: by bwz19 with SMTP id 19so1176164bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Sep 2010 13:11:07 -0700 (PDT)
+Subject: Re: Add support for BBT without touching OOB area
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+In-Reply-To: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
+References: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 29 Sep 2010 23:11:00 +0300
+Message-ID: <1285791060.1776.34.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,96 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2010-09-29 at 19:43 +0200, Sebastian Andrzej Siewior wrote:
+> Without this patch (number three) NAND controllers which use complete OOB
+> area for ECC information can not use a BBT at all. The vendor bit is
+> gone after the first write and the flash BBT stores a marker in the OOB
+> area. The patch simply moves the marker into the data area.
+> 
+> The series contains:
+> - [PATCH 1/5] mtd/nand: use ALIGN where possible
+> - [PATCH 2/5] mtd/nand: pull in td into read_bbt()
+> clean up.
 
-Tony,
+Pushed these to l2-mtd-2.6.git.
 
-> -----Original Message-----
-> From: Tony Lindgren [mailto:tony@atomide.com]=20
-> Sent: Wednesday, September 29, 2010 12:02 AM
-> To: G, Manjunath Kondaiah
-> Cc: linux-omap@vger.kernel.org;=20
-> linux-arm-kernel@lists.infradead.org; Samuel Ortiz; Dmitry=20
-> Torokhov; linux-mtd@lists.infradead.org; Russell King - ARM Linux
-> Subject: Re: [GIT PULL] omap2 sparse fixes
->=20
-> * G, Manjunath Kondaiah <manjugk@ti.com> [100928 08:26]:
-...
+> - [PATCH 3/5] mtd/nand: add support for BBT without OOB
+> adds the functionality.
 
-> Yes please take out all patches that are not in arch/arm/*omap*/ path.
-> The others really should go to the driver maintainers.
->=20
-> Tony
+Sent some minor requests.
 
-Here is new branch which has only arch/arm/*omap*/ related patches.
-
--Manjunath
-
-The following changes since commit 899611ee7d373e5eeda08e9a8632684e1ebbbf00=
-:
-  Linus Torvalds (1):
-        Linux 2.6.36-rc6
-
-are available in the git repository at:
-
-  git://dev.omapzoom.org/pub/scm/manju/kernel-omap3-dev.git omap_sparse_fix=
-es
-
-G, Manjunath Kondaiah (7):
-      OMAP: mach-omap2: Fix incorrect assignment warnings
-      OMAP: mach-omap2: Fix static declaration warnings
-      OMAP: mach-omap2: Fix static function warnings
-      OMAP: mach-omap2: Fix miscellaneous sparse warnings
-      OMAP: plat-omap: Fix static function warnings
-      OMAP: Convert write/read functions to raw read/write
-      OMAP3: Keypad: Fix incorrect type initializer
-
- arch/arm/mach-omap2/board-3430sdp.c                |    2 +-
- arch/arm/mach-omap2/board-4430sdp.c                |    3 +-
- arch/arm/mach-omap2/board-am3517evm.c              |    5 +--
- arch/arm/mach-omap2/board-cm-t35.c                 |    2 +-
- arch/arm/mach-omap2/board-devkit8000.c             |    4 +-
- arch/arm/mach-omap2/board-igep0020.c               |    4 +-
- arch/arm/mach-omap2/board-ldp.c                    |    2 +-
- arch/arm/mach-omap2/board-n8x0.c                   |   16 +----------
- arch/arm/mach-omap2/board-omap3beagle.c            |    2 +-
- arch/arm/mach-omap2/board-omap3evm.c               |    8 +++---
- arch/arm/mach-omap2/board-omap3stalker.c           |    6 ++--
- arch/arm/mach-omap2/board-omap3touchbook.c         |    4 +-
- arch/arm/mach-omap2/board-omap4panda.c             |    2 +-
- arch/arm/mach-omap2/board-rx51-peripherals.c       |    4 ++-
- arch/arm/mach-omap2/board-rx51-sdram.c             |    2 +-
- arch/arm/mach-omap2/board-rx51-video.c             |    2 +
- arch/arm/mach-omap2/board-zoom-debugboard.c        |    2 +
- arch/arm/mach-omap2/board-zoom-peripherals.c       |    4 ++-
- arch/arm/mach-omap2/control.c                      |    5 ++-
- arch/arm/mach-omap2/gpmc-onenand.c                 |    8 +++---
- arch/arm/mach-omap2/include/mach/board-flash.h     |    2 +
- arch/arm/mach-omap2/include/mach/board-rx51.h      |   11 ++++++++
- arch/arm/mach-omap2/io.c                           |    1 +
- arch/arm/mach-omap2/io.h                           |    7 +++++
- arch/arm/mach-omap2/irq.c                          |    1 -
- arch/arm/mach-omap2/mux2420.c                      |    2 +-
- arch/arm/mach-omap2/mux2430.c                      |    2 +-
- arch/arm/mach-omap2/mux34xx.c                      |   12 ++++----
- arch/arm/mach-omap2/pm-debug.c                     |    2 +-
- arch/arm/mach-omap2/pm34xx.c                       |    2 +-
- arch/arm/mach-omap2/powerdomain.c                  |   28 ----------------=
-----
- arch/arm/mach-omap2/prcm.c                         |    2 +-
- .../include/plat =3D> mach-omap2}/timer-gp.h         |    3 +-
- arch/arm/plat-omap/cpu-omap.c                      |    4 +-
- arch/arm/plat-omap/dmtimer.c                       |    6 ++--
- arch/arm/plat-omap/fb.c                            |    2 +
- arch/arm/plat-omap/fb.h                            |   10 +++++++
- arch/arm/plat-omap/include/plat/dmtimer.h          |    4 ++-
- arch/arm/plat-omap/include/plat/sdrc.h             |    1 +
- arch/arm/plat-omap/include/plat/sram.h             |    1 -
- arch/arm/plat-omap/mcbsp.c                         |   10 +++---
- arch/arm/plat-omap/sram.c                          |   21 ++++++--------
- arch/arm/plat-omap/sram.h                          |    6 ++++
- 43 files changed, 115 insertions(+), 112 deletions(-)
- create mode 100644 arch/arm/mach-omap2/include/mach/board-rx51.h
- create mode 100644 arch/arm/mach-omap2/io.h
- rename arch/arm/{plat-omap/include/plat =3D> mach-omap2}/timer-gp.h (86%)
- create mode 100644 arch/arm/plat-omap/fb.h
- create mode 100644 arch/arm/plat-omap/sram.h
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
