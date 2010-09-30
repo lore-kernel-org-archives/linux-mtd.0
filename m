@@ -1,28 +1,39 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1D6H-0007hD-3X
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 06:58:42 +0000
-Received: by bwz19 with SMTP id 19so1559404bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Sep 2010 23:58:39 -0700 (PDT)
-Subject: Re: [PATCH 1/3] mtd-utils: new memory wrappers
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <AANLkTin0Fxd+oSEMNNc6zdNusJUUPRaZ1vgPR1vvThXi@mail.gmail.com>
-References: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
-	<1285822785.11684.11.camel@localhost>
-	<AANLkTimzVA06P8GR4Gy_2PSFDXKnzTOHPj2qr+_X__zw@mail.gmail.com>
-	<1285825735.11684.22.camel@localhost>
-	<AANLkTi=E6qy2sBq1thXMUWfxSbCuNZDUOmmGT8o0j0hW@mail.gmail.com>
-	<1285826499.11684.24.camel@localhost>
-	<AANLkTin0Fxd+oSEMNNc6zdNusJUUPRaZ1vgPR1vvThXi@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 30 Sep 2010 09:56:32 +0300
-Message-ID: <1285829792.11684.47.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from tx2ehsobe001.messaging.microsoft.com ([65.55.88.11]
+	helo=TX2EHSOBE002.bigfish.com)
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P1ESp-0004v4-HK
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 08:26:05 +0000
+Received: from mail33-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail33-tx2-R.bigfish.com (Postfix) with ESMTP id 1BEA811F0052	for
+	<linux-mtd@lists.infradead.org>; Thu, 30 Sep 2010 08:26:02 +0000 (UTC)
+Received: from TX2EHSMHS015.bigfish.com (unknown [10.9.14.249])	by
+	mail33-tx2.bigfish.com (Postfix) with ESMTP id 87A5C1890050	for
+	<linux-mtd@lists.infradead.org>; Thu, 30 Sep 2010 08:26:01 +0000 (UTC)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
+	o8U8Q0Fk021234	for
+	<linux-mtd@lists.infradead.org>; Thu, 30 Sep 2010 01:26:00 -0700 (MST)
+Received: from zch01exm21.fsl.freescale.net (zch01exm21.ap.freescale.net
+	[10.192.129.205])	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP
+	id o8U8eU0o025764	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Sep 2010 03:40:41 -0500 (CDT)
+From: Mingkai Hu <Mingkai.hu@freescale.com>
+To: <linuxppc-dev@ozlabs.org>, <spi-devel-general@lists.sourceforge.net>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH v3 6/7] mtd: m25p80: add a read function to read page by page
+Date: Thu, 30 Sep 2010 16:00:45 +0800
+Message-ID: <1285833646-12006-7-git-send-email-Mingkai.hu@freescale.com>
+In-Reply-To: <1285833646-12006-6-git-send-email-Mingkai.hu@freescale.com>
+References: <1285833646-12006-1-git-send-email-Mingkai.hu@freescale.com>
+	<1285833646-12006-2-git-send-email-Mingkai.hu@freescale.com>
+	<1285833646-12006-3-git-send-email-Mingkai.hu@freescale.com>
+	<1285833646-12006-4-git-send-email-Mingkai.hu@freescale.com>
+	<1285833646-12006-5-git-send-email-Mingkai.hu@freescale.com>
+	<1285833646-12006-6-git-send-email-Mingkai.hu@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: grant.likely@secretlab.ca, kumar.gala@freescale.com,
+	tie-fei.zang@freescale.com, Mingkai Hu <Mingkai.hu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,33 +43,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-30 at 02:18 -0400, Mike Frysinger wrote:
-> issues (not good or bad, but just are):
->  - change "#define PROGRAM_NAME" to "const char program_name[]"
->  - errors thrown up by libraries would be flagged as part of the
-> program, and not part of the library (i.e. libubifs)
->  - unused functions would take up space in final exe
-> 
-> the first is easy to change.  the 2nd i think is OK (and maybe even
-> less confusing for the user when reviewing error output).  the 3rd i'd
-> like to make sure we address.
-> 
-> two possible solutions to 3rd one.  one ugly but portable, one nice
-> but gnu-specific.  although we already use gnu-specific code and
-> flags, so maybe that isnt an issue (no one has complained yet).
-> 
-> ugly: create lib/common/ and put every function into its own file and
-> merge into libmtd.a.  linker only pulls in objects (funcs) when
-> needed.
-> nice: use -ffunction-sections -fdata-sections -Wl,--gc-sections.
-> additional advantage of saving space across all linked in library code
-> and not just common.h stuff.
+For Freescale's eSPI controller, the max transaction length one time
+is limitted by the SPCOM[TRANSLEN] field which is 0xFFFF. When used
+mkfs.ext2 command to create ext2 filesystem on the flash, the read
+length will exceed the max value of the SPCOM[TRANSLEN] field, so
+change the read function to read page by page.
 
-Sorry, I never dealt with -ffunction-sections stuff, I do not know the
-price of this, so I basically cannot judge. But of course removing
-unused code is a good thing to do. So you seem to be more competent in
-these question, just go ahead with you nice cleanups!
+For other SPI flash driver, also needed to supply the read function
+if used the eSPI controller.
 
+Signed-off-by: Mingkai Hu <Mingkai.hu@freescale.com>
+---
+v3:
+ - Add a quirks member for the SPI master to handle the contrains of the
+   SPI controller. I can't think of other method. :-(
+
+ drivers/mtd/devices/m25p80.c |   78 ++++++++++++++++++++++++++++++++++++++++++
+ drivers/spi/spi_fsl_lib.c    |    4 ++
+ include/linux/spi/spi.h      |    5 +++
+ 3 files changed, 87 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 47d53c7..f65cca8 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -377,6 +377,81 @@ static int m25p80_read(struct mtd_info *mtd, loff_t from, size_t len,
+ }
+ 
+ /*
++ * Read an address range from the flash chip page by page.
++ * Some controller has transaction length limitation such as the
++ * Freescale's eSPI controller can only trasmit 0xFFFF bytes one
++ * time, so we have to read page by page if the len is more than
++ * the limitation.
++ */
++static int m25p80_page_read(struct mtd_info *mtd, loff_t from, size_t len,
++	size_t *retlen, u_char *buf)
++{
++	struct m25p *flash = mtd_to_m25p(mtd);
++	struct spi_transfer t[2];
++	struct spi_message m;
++	u32 i, page_size = 0;
++
++	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %zd\n",
++			dev_name(&flash->spi->dev), __func__, "from",
++			(u32)from, len);
++
++	/* sanity checks */
++	if (!len)
++		return 0;
++
++	if (from + len > flash->mtd.size)
++		return -EINVAL;
++
++	spi_message_init(&m);
++	memset(t, 0, (sizeof t));
++
++	/* NOTE:
++	 * OPCODE_FAST_READ (if available) is faster.
++	 * Should add 1 byte DUMMY_BYTE.
++	 */
++	t[0].tx_buf = flash->command;
++	t[0].len = m25p_cmdsz(flash) + FAST_READ_DUMMY_BYTE;
++	spi_message_add_tail(&t[0], &m);
++
++	t[1].rx_buf = buf;
++	spi_message_add_tail(&t[1], &m);
++
++	/* Byte count starts at zero. */
++	if (retlen)
++		*retlen = 0;
++
++	mutex_lock(&flash->lock);
++
++	/* Wait till previous write/erase is done. */
++	if (wait_till_ready(flash)) {
++		/* REVISIT status return?? */
++		mutex_unlock(&flash->lock);
++		return 1;
++	}
++
++	/* Set up the write data buffer. */
++	flash->command[0] = OPCODE_READ;
++
++	for (i = page_size; i < len; i += page_size) {
++		page_size = len - i;
++		if (page_size > flash->page_size)
++			page_size = flash->page_size;
++		m25p_addr2cmd(flash, from + i, flash->command);
++		t[1].len = page_size;
++		t[1].rx_buf = buf + i;
++
++		spi_sync(flash->spi, &m);
++
++		*retlen += m.actual_length - m25p_cmdsz(flash)
++			- FAST_READ_DUMMY_BYTE;
++	}
++
++	mutex_unlock(&flash->lock);
++
++	return 0;
++}
++
++/*
+  * Write an address range to the flash chip.  Data must be written in
+  * FLASH_PAGESIZE chunks.  The address range may be any size provided
+  * it is within the physical boundaries.
+@@ -874,6 +949,9 @@ static int __devinit m25p_probe(struct spi_device *spi)
+ 	flash->mtd.erase = m25p80_erase;
+ 	flash->mtd.read = m25p80_read;
+ 
++	if (spi->master->quirks & SPI_QUIRK_TRANS_LEN_LIMIT)
++		flash->mtd.read = m25p80_page_read;
++
+ 	/* sst flash chips use AAI word program */
+ 	if (info->jedec_id >> 16 == 0xbf)
+ 		flash->mtd.write = sst_write;
+diff --git a/drivers/spi/spi_fsl_lib.c b/drivers/spi/spi_fsl_lib.c
+index 5cd741f..c8d8c2d 100644
+--- a/drivers/spi/spi_fsl_lib.c
++++ b/drivers/spi/spi_fsl_lib.c
+@@ -135,6 +135,10 @@ int mpc8xxx_spi_probe(struct device *dev, struct resource *mem,
+ 	master->cleanup = mpc8xxx_spi_cleanup;
+ 	master->dev.of_node = dev->of_node;
+ 
++	if (of_get_property(dev->of_node,
++				"fsl,spi-quirk-trans-len-limit", NULL))
++		master->quirks |= SPI_QUIRK_TRANS_LEN_LIMIT;
++
+ 	mpc8xxx_spi = spi_master_get_devdata(master);
+ 	mpc8xxx_spi->dev = dev;
+ 	mpc8xxx_spi->get_rx = mpc8xxx_spi_rx_buf_u8;
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 92e52a1..4234dfd 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -304,6 +304,11 @@ struct spi_master {
+ 
+ 	/* called on release() to free memory provided by spi_master */
+ 	void			(*cleanup)(struct spi_device *spi);
++
++	/* some constraints of the controller */
++	u16			quirks;
++#define SPI_QUIRK_TRANS_LEN_LIMIT	BIT(0)	/* have trans length limit */
++
+ };
+ 
+ static inline void *spi_master_get_devdata(struct spi_master *master)
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.4
