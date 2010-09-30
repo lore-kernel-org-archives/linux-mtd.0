@@ -1,14 +1,15 @@
-Received: from protonic.xs4all.nl ([213.84.116.84] helo=protonic.prtnl)
+Received: from sand.ocn.ne.jp ([122.28.30.136] helo=smtp.sand.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1HGX-0004AX-7A
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 11:25:35 +0000
-From: David Jander <david.jander@protonic.nl>
+	id 1P1HWJ-0008SH-Jt
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 11:41:53 +0000
+From: Jon Povey <jon.povey@racelogic.co.uk>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: m25p80.c: Add support for S25FL032P spi-nor flash
-	devices.
-Date: Thu, 30 Sep 2010 13:26:02 +0200
-Message-Id: <1285845962-29597-1-git-send-email-david.jander@protonic.nl>
-Cc: David Jander <david@protonic.nl>
+Subject: [PATCH] mtd: nand: fix MTD_MODE_RAW writes
+Date: Thu, 30 Sep 2010 20:41:34 +0900
+Message-Id: <1285846894-4479-1-git-send-email-jon.povey@racelogic.co.uk>
+Cc: Jon Povey <jon.povey@racelogic.co.uk>,
+	Maxim Levitsky <maximlevitsky@gmail.com>,
+	David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,24 +19,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Jander <david@protonic.nl>
+RAW writes were broken by 782ce79a45b3b850b108896fcf7da26754061c8f
+which introduced a check of ops->ooboffs in nand_do_write_ops().
 
-Signed-off-by: David Jander <david@protonic.nl>
+When writing in RAW mode this is called with an ops struct on the stack
+of mtdchar.c:mtd_write() which does not initialise ops->ooboffs, so it
+is garbage and fails this test.
+
+This test does not make sense if ops->oobbuf is NULL, which it is in the
+RAW write path, so include that in the test.
+
+Signed-off-by: Jon Povey <jon.povey@racelogic.co.uk>
+CC: Maxim Levitsky <maximlevitsky@gmail.com>
+CC: David Woodhouse <David.Woodhouse@intel.com>
 ---
- drivers/mtd/devices/m25p80.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+I am not sure this is the right way to fix this, as I don't really understand
+what the test was trying to fix/prevent.
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 6f512b5..305f1be 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -661,6 +661,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "s25sl008a",  INFO(0x010213,      0,  64 * 1024,  16, 0) },
- 	{ "s25sl016a",  INFO(0x010214,      0,  64 * 1024,  32, 0) },
- 	{ "s25sl032a",  INFO(0x010215,      0,  64 * 1024,  64, 0) },
-+	{ "s25sl032p",  INFO(0x010215, 0x4d00,  64 * 1024,  64, SECT_4K) },
- 	{ "s25sl064a",  INFO(0x010216,      0,  64 * 1024, 128, 0) },
- 	{ "s25sl12800", INFO(0x012018, 0x0300, 256 * 1024,  64, 0) },
- 	{ "s25sl12801", INFO(0x012018, 0x0301,  64 * 1024, 256, 0) },
+This is really just me showing my shotgun debugging solution that seems to
+work for me, and see what people have to say about it / how to fix properly.
+
+This was an unpleasant regression for me: I use MTD_MODE_RAW to write a
+bootloader, and this got close to being a field update bricker..
+
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 044be4c..b3469a7 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2219,7 +2219,7 @@ static int nand_do_write_ops(struct mtd_info *mtd, loff_t to,
+ 		memset(chip->oob_poi, 0xff, mtd->oobsize);
+ 
+ 	/* Don't allow multipage oob writes with offset */
+-	if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
++	if (oob && ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
+ 		return -EINVAL;
+ 
+ 	while(1) {
 -- 
 1.6.3.3
