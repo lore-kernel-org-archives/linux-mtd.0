@@ -1,28 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1KiX-0000RL-KS
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 15:06:42 +0000
-Received: by eye22 with SMTP id 22so946274eye.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Sep 2010 08:06:40 -0700 (PDT)
-Date: Thu, 30 Sep 2010 19:06:33 +0400
-From: Anton Vorontsov <cbouatmailru@gmail.com>
-To: Grant Likely <grant.likely@secretlab.ca>
-Subject: Re: [PATCH v3 6/7] mtd: m25p80: add a read function to read page
-	by page
-Message-ID: <20100930150633.GA13741@oksana.dev.rtsoft.ru>
-References: <841976.76219.qm@web180306.mail.gq1.yahoo.com>
-	<AANLkTinBDdEyMDt3KoauNdmTCz1ZAJ5mZ23iMWiwsUm4@mail.gmail.com>
-	<AANLkTi=GydTyhf3TOzCZOtrme1Jh0UmNDHqTVP59q=LH@mail.gmail.com>
+Received: from gw1.transmode.se ([213.115.205.20])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P1KlB-0000td-96
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 15:09:26 +0000
+In-Reply-To: <4CA3D92E.9060109@call-direct.com.au>
+References: <20100929221401.GA32583@postdiluvian.org>
+	<4CA3D92E.9060109@call-direct.com.au>
+Subject: Re: Scheduler latency problems when using NAND
+To: Iwo Mergler <iwo@call-direct.com.au>
+Message-ID: <OF858CFBAE.35B192AE-ONC12577AE.00530886-C12577AE.0053293B@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Thu, 30 Sep 2010 17:08:20 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <AANLkTi=GydTyhf3TOzCZOtrme1Jh0UmNDHqTVP59q=LH@mail.gmail.com>
-Cc: kumar.gala@freescale.com, David Brownell <david-b@pacbell.net>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	spi-devel-general@lists.sourceforge.net,
-	Mingkai Hu <Mingkai.hu@freescale.com>
+Content-type: text/plain; charset=US-ASCII
+Cc: Mark Mason <mason@postdiluvian.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,36 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 30, 2010 at 11:41:40PM +0900, Grant Likely wrote:
-> On Thu, Sep 30, 2010 at 11:16 PM, Grant Likely
-> <grant.likely@secretlab.ca> wrote:
-> > On Thu, Sep 30, 2010 at 7:46 PM, David Brownell <david-b@pacbell.net> wrote:
-> >>
-> >> --- On Thu, 9/30/10, Mingkai Hu <Mingkai.hu@freescale.com> wrote:
-> >>
-> >>> From: Mingkai Hu <Mingkai.hu@freescale.com>
-> >>> Subject: [PATCH v3 6/7] mtd: m25p80: add a read function to read page by page
-> >>
-> >> NAK.
-> >>
-> >> We went over this before.
+>
+> Mark Mason wrote:
+> > Hi all,
 > >
-> > Yes, I agree with David on this.  If large transfers don't work, then
-> > it is the SPI master driver that is buggy.
-> 
-> By the way, does this fix your problem?
-> 
-> https://patchwork.kernel.org/patch/184752/
+> > I hope this is the right place for this question.  I'm having some
+> > problems with scheduler latency when using UBIFS, and I'm hoping for
+> > some suggestions.
+> <snip>
+> > The application is storing streaming video, almost entirely large
+> > sequential files, roughly 250K to 15M, to a 1.6G filesystem.  There's
+> > no seeking or rewriting, just creat, write, close, repeat.  No
+> > compression is used on the filesystem.
+> >
+> > The problem I'm seeing is excessively large scheduler latency when
+> > data is flushed to NAND.
+> <snip>
+> > Does anyone have any suggestions, ideas, hints, advice, etc?
+>
+> The Linux block cache is optimised for mechanical hard drives,
+> to minimise seek times. Some of the assumptions don't make much
+> sense with FLASH and streaming storage.
+>
+> Maybe try to flush data whenever you have written a few blocks'
+> worth. Or have a look at the O_DIRECT flag (or madvise), although
+> I don't know how it interacts with UBIFS.
+>
+> Have you considered using a different file system? UBIFS is not
+> exactly optimised for your use case. JFFS2 would be better, but
+> won't stomach your flash size.
 
-It shouldn't. AFAIK, eSPI is PIO-only controller, and the overrun
-fix is for the DMA mode.
+Perhaps try the new LogFS? Maybe it is better suited to this workload.
 
-Thanks,
-
-p.s. Btw, in patch 3/7, is_dma_mapped argument of fsl_espi_bufs()
-is unneeded.
-
--- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+      Jocke
