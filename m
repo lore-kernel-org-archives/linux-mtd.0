@@ -1,32 +1,18 @@
-Received: from verein.lst.de ([213.95.11.210])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P16gN-0007ja-MB
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 00:07:32 +0000
-Date: Thu, 30 Sep 2010 02:06:41 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Jan Kara <jack@suse.cz>
-Subject: Re: Dirtiable inode bdi default != sb bdi btrfs
-Message-ID: <20100930000641.GA27865@lst.de>
-References: <4C9AA546.6050201@cesarb.net>
-	<20100923123849.8975fe47.akpm@linux-foundation.org>
-	<20100927222548.GG3610@quack.suse.cz>
-	<20100927225452.GG4270@think> <20100929081936.GA23322@lst.de>
-	<20100929121808.GB3290@quack.suse.cz>
-	<20100929141006.GB7439@lst.de>
-	<20100929233806.GB12707@quack.suse.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20100929233806.GB12707@quack.suse.cz>
-Cc: Jens Axboe <axboe@kernel.dk>, kernel@lists.fedoraproject.org,
-	Jens Axboe <jaxboe@fusionio.com>, linux-kernel@vger.kernel.org,
-	stable@kernel.org, Micha?? Piotrowski <mkkp4x4@gmail.com>,
-	linux-mtd@lists.infradead.org, Cesar Eduardo Barros <cesarb@cesarb.net>,
-	Chuck Ebbert <cebbert@redhat.com>, linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>, linux-btrfs@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, Christoph Hellwig <hch@lst.de>,
-	Chris Mason <chris.mason@oracle.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>
+Received: from ipmail07.adl2.internode.on.net ([150.101.137.131])
+	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P16yy-00053Z-Ax
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 00:26:49 +0000
+Message-ID: <4CA3D92E.9060109@call-direct.com.au>
+Date: Thu, 30 Sep 2010 10:26:22 +1000
+From: Iwo Mergler <iwo@call-direct.com.au>
+MIME-Version: 1.0
+To: Mark Mason <mason@postdiluvian.org>
+Subject: Re: Scheduler latency problems when using NAND
+References: <20100929221401.GA32583@postdiluvian.org>
+In-Reply-To: <20100929221401.GA32583@postdiluvian.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,15 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 30, 2010 at 01:38:07AM +0200, Jan Kara wrote:
-> > No.  For one thing we don't need any exception for correctnes alone -
-> > even the block device variant would work fine with the default case.
-> Here I don't agree. If you don't have some kind of exception, sb->s_bdi
-> for both "block" and "mtd_inodefs" filesystems points to
-> noop_backing_dev_info and you get no writeback for that one. So it isn't
-> just a performance issue but also a correctness one.
+Mark Mason wrote:
+> Hi all,
+> 
+> I hope this is the right place for this question.  I'm having some
+> problems with scheduler latency when using UBIFS, and I'm hoping for
+> some suggestions.
+<snip>
+> The application is storing streaming video, almost entirely large
+> sequential files, roughly 250K to 15M, to a 1.6G filesystem.  There's
+> no seeking or rewriting, just creat, write, close, repeat.  No
+> compression is used on the filesystem.
+> 
+> The problem I'm seeing is excessively large scheduler latency when
+> data is flushed to NAND.
+<snip>
+> Does anyone have any suggestions, ideas, hints, advice, etc?
 
-Indeed - for internal filesystems that require writeback the change
-causes trouble if they haven't registered a s_bdi.  But for all user
-visible filesystems that doesn't happen as we require s_bdi for
-sync or even unmounts to work.
+The Linux block cache is optimised for mechanical hard drives,
+to minimise seek times. Some of the assumptions don't make much
+sense with FLASH and streaming storage.
+
+Maybe try to flush data whenever you have written a few blocks'
+worth. Or have a look at the O_DIRECT flag (or madvise), although
+I don't know how it interacts with UBIFS.
+
+Have you considered using a different file system? UBIFS is not
+exactly optimised for your use case. JFFS2 would be better, but
+won't stomach your flash size.
+
+Especially if you only deal with one stream at a time, you could
+create a very simple circular file system yourself. Like JFFS2
+without the memory cache.
+
+You could use a real filesystem to store the metadata for your
+circular storage partition (file name, length, offset).
+
+Maybe use raw UBI so you don't have to worry about bad blocks.
+
+Either way, the time to erase a block and write a single page
+is predictable and you can do it as soon as you get the data.
+
+
+Best regards,
+
+Iwo
