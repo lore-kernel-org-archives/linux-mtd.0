@@ -1,20 +1,19 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1C2p-0002Oy-Lf
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 05:51:04 +0000
-Received: by fxm15 with SMTP id 15so1338186fxm.36
+	id 1P1C80-0003R0-KK
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 05:56:25 +0000
+Received: by fxm15 with SMTP id 15so1339643fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Sep 2010 22:51:02 -0700 (PDT)
-Subject: Re: [PATCH 1/3] mtd-utils: new memory wrappers
+	Wed, 29 Sep 2010 22:56:23 -0700 (PDT)
+Subject: Re: [PATCH 1/3 v2] mtd-utils: new memory wrappers
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <AANLkTimzVA06P8GR4Gy_2PSFDXKnzTOHPj2qr+_X__zw@mail.gmail.com>
+In-Reply-To: <1285824458-21933-1-git-send-email-vapier@gentoo.org>
 References: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
-	<1285822785.11684.11.camel@localhost>
-	<AANLkTimzVA06P8GR4Gy_2PSFDXKnzTOHPj2qr+_X__zw@mail.gmail.com>
+	<1285824458-21933-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 30 Sep 2010 08:48:55 +0300
-Message-ID: <1285825735.11684.22.camel@localhost>
+Date: Thu, 30 Sep 2010 08:54:16 +0300
+Message-ID: <1285826056.11684.23.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -28,11 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-30 at 01:15 -0400, Mike Frysinger wrote:
-> as i'm sure you noticed, i didnt make these up.  i simply moved them
-> from existing mtd-utils code.
+On Thu, 2010-09-30 at 01:27 -0400, Mike Frysinger wrote:
+> The mkfs.jffs2 program has local wrappers for memory related functions
+> that are useful beyond mkfs.jffs2, so break them out into a common header.
+> 
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+> v2
 
-Actually no, I did not notice!
+Pushed this one and 2/4 v2 and 3/3 to mtd-utils, thanks!
 
 -- 
 Best Regards,
