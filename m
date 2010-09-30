@@ -1,21 +1,22 @@
-Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1AB7-0008BS-S2
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 03:51:31 +0000
-From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Mike Frysinger <vapier@gentoo.org>, "dedekind1@gmail.com"
-	<dedekind1@gmail.com>
-Content-Class: urn:content-classes:message
-Date: Thu, 30 Sep 2010 04:51:22 +0100
-Subject: RE: [PATCH] nandwrite: add --nobad to write bad blocks
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EE3E0B8@Cloud.RL.local>
-In-Reply-To: <AANLkTi=FD+8OyqQjUs7Y9+hS=fVgN+=s12M6tnAWH9Oy@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Iwo Mergler <iwo@call-direct.com.au>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P1BEY-0008IS-Or
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 04:59:08 +0000
+Received: by fxm15 with SMTP id 15so1324117fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Sep 2010 21:59:05 -0700 (PDT)
+Subject: Re: Scheduler latency problems when using NAND
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mark Mason <mason@postdiluvian.org>
+In-Reply-To: <20100929221401.GA32583@postdiluvian.org>
+References: <20100929221401.GA32583@postdiluvian.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 30 Sep 2010 07:56:58 +0300
+Message-ID: <1285822618.11684.9.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +26,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-linux-mtd-bounces@lists.infradead.org wrote:
-> On Wed, Sep 29, 2010 at 08:59, Artem Bityutskiy wrote:
->> But speaking about erasing bad eraseblocks, which we also discussed,
->> I think you have a good point - we should probably distinguish
->> between factory-marked bad eraseblocks and user-marked. AFAIR, the
->> OOB marker for them was even different, or in BBT, do not really
->> remember.
+On Wed, 2010-09-29 at 18:14 -0400, Mark Mason wrote:
+> Hi all,
+> 
+> I hope this is the right place for this question.  I'm having some
+> problems with scheduler latency when using UBIFS, and I'm hoping for
+> some suggestions.
 
-> i think you're correct here too.  i havent seen any indication that
-> factory-marked bad blocks are distinguished in any way from
-> user-marked bad blocks.  either in the software BBT or in the OOB
-> layout. -mike
+Hi Mark, this e-mail is not specific to UBIFS, so I suggest you keep
+lkml to CC.
 
-I remember reading somewhere that the BBT is designed to distinguish
-them, e.g. here:
-http://wiki.laptop.org/go/NAND_Flash_Bad_Block_Table#Bad_Block_Table_Format
+I cannot really suggest you much. Off the top of my head - try to enable
+preemption in your kernel. But in general, it sounds like you actually
+need the RT tree. Also there is the ftrace latency tracer - try to use
+it.
 
-I haven't looked in the code to see if that's actually used, though.
+> Linux 2.6.29-6, with a newer MTD, dating from probably around six
+> months ago.  Embedded PowerPC 8315, with built-in NAND controller,
+> using nand/fsl_elbc_nand.c.  NAND is a Samsung K9WAG08U1B two-die
+> stack (one package with two chip selects), 2Gbyte x 8 bit.  The system
+> has plenty of memory, but is short on CPU.
+> 
+> The application is storing streaming video, almost entirely large
+> sequential files, roughly 250K to 15M, to a 1.6G filesystem.  There's
+> no seeking or rewriting, just creat, write, close, repeat.  No
+> compression is used on the filesystem.
+> 
+> The problem I'm seeing is excessively large scheduler latency when
+> data is flushed to NAND.
+> 
+> Originally this had been happening during erases.  I noticed that
+> hundreds of erases (up to around 700) were being issued in rapid
+> succession, and I was seeing other threads unable to run for sometimes
+> as much as the expected 7 seconds (I measured 1.1 ms per erase).  To
+> address this, I split the erase command in two halves - FIR_OP_CM0 |
+> FIR_OP_PA | FIR_OP_CM2 and FIR_OP_CW1 | FIR_OP_RS - with schedule()
+> called in between.  This had the effect if issuing the erase, calling
+> schedule(), then waiting for the erase to complete if it hadn't
+> already, but usually it had.
+> 
+> I'm surprised this helped so much, since the calling thread should
+> have been put to sleep for the duration of the erase by the call to
+> wait_event_timeout(), but it definitely did - I guess it was the
+> explicit schedule().
+> 
+> The erases are no longer a significant bottleneck, but now the writes
+> are.  A page program takes 200us, which seems too short for an
+> explicit schedule(), and I am seeing periods with the busy line
+> asserted in back-to-back 200us chunks for most of a second.
+> 
+> I have played with thread priorities a bit, but I wound up with too
+> many threads being "most important".  There is some hardware that
+> can't tolerate large latencies, and unfortunately the existing code
+> base doesn't have enough separation between critical and non-critical
+> tasks to allow us to run just the critical stuff at a higher priority.
+> 
+> On average, the system can keep up with the load, but it has problems
+> with the burstiness of the flushes to NAND, so I'm hoping for some
+> ideas to smooth the traffic out, or even a totally different way to
+> approach the problem.  I tried lowering the priority of the UBI
+> background thread, the failure mode there is pretty obvious.  I tried
+> lowering dirty_background_centisecs, that helped a little bit, but not
+> enough, and there's also a SATA drive, although a smaller commit
+> interval probably wouldn't bother it since the traffic is similar.
+> 
+> I'm contemplating something along the lines of a smaller commit
+> interval, an even higher background thread priority, and a sleep with
+> a schedule during the page program, but that many extra context
+> switches are liable to be a problem - there's no L2 cache on this CPU,
+> so context switches are extra expensive.
+> 
+> Does anyone have any suggestions, ideas, hints, advice, etc?
+> 
+> Thanks!
 
-
---
-Jon Povey
-jon.povey@racelogic.co.uk
-
-Racelogic is a limited company registered in England. Registered number 274=
-3719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
-ks, MK18 1TB .
-
-The information contained in this electronic mail transmission is intended =
-by Racelogic Ltd for the use of the named individual or entity to which it =
-is directed and may contain information that is confidential or privileged.=
- If you have received this electronic mail transmission in error, please de=
-lete it from your system without copying or forwarding it, and notify the s=
-ender of the error by reply email so that the sender's address records can =
-be corrected. The views expressed by the sender of this communication do no=
-t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
-reserves the right to monitor e-mail communications passing through its net=
-work
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
