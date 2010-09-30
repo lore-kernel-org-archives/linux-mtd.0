@@ -1,21 +1,21 @@
-Received: from relay2.mail.timico.net ([62.121.20.90] helo=relay.timico.net)
+Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P19jv-0002DP-ON
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 03:23:24 +0000
+	id 1P1AB7-0008BS-S2
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 03:51:31 +0000
 From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Iwo Mergler <iwo@call-direct.com.au>
+To: Mike Frysinger <vapier@gentoo.org>, "dedekind1@gmail.com"
+	<dedekind1@gmail.com>
 Content-Class: urn:content-classes:message
-Date: Thu, 30 Sep 2010 04:23:15 +0100
+Date: Thu, 30 Sep 2010 04:51:22 +0100
 Subject: RE: [PATCH] nandwrite: add --nobad to write bad blocks
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EE3E0B7@Cloud.RL.local>
-In-Reply-To: <4CA3CF60.5060705@call-direct.com.au>
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EE3E0B8@Cloud.RL.local>
+In-Reply-To: <AANLkTi=FD+8OyqQjUs7Y9+hS=fVgN+=s12M6tnAWH9Oy@mail.gmail.com>
 Content-Language: en-US
 Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Mike Frysinger <vapier@gentoo.org>,
-	"dedekind1@gmail.com" <dedekind1@gmail.com>
+	Iwo Mergler <iwo@call-direct.com.au>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Iwo Mergler wrote:
-> Jon Povey wrote:
-> Although I would always use an in-flash BBT for this kind of
-> situation. As you say, there are bootloaders, filesystems and
-> hardware ECC that will only work if you re-purpose the bad block
-> marker region in the OOB.
->
-> In such a case, just do the bad block scan once, at production time,
-> and write the BBT. Then change everything else to use that BBT. And
-> you leave the BBT alone during reflash.
+linux-mtd-bounces@lists.infradead.org wrote:
+> On Wed, Sep 29, 2010 at 08:59, Artem Bityutskiy wrote:
+>> But speaking about erasing bad eraseblocks, which we also discussed,
+>> I think you have a good point - we should probably distinguish
+>> between factory-marked bad eraseblocks and user-marked. AFAIR, the
+>> OOB marker for them was even different, or in BBT, do not really
+>> remember.
 
-I agree this is a nice way to do it, if it's practical.
+> i think you're correct here too.  i havent seen any indication that
+> factory-marked bad blocks are distinguished in any way from
+> user-marked bad blocks.  either in the software BBT or in the OOB
+> layout. -mike
 
-> In the case you describe, I would use the old BBT to create the
-> new one directly, without attempting to write to the bad blocks.
+I remember reading somewhere that the BBT is designed to distinguish
+them, e.g. here:
+http://wiki.laptop.org/go/NAND_Flash_Bad_Block_Table#Bad_Block_Table_Format
 
-That's what I did, but note mtd won't allow you to rewrite the BBTs,
-they are hardwired to be off-limits in the kernel. So, you have to
-do something like write a new bootloader that can translate it on
-reboot. Happily that has been OK for me, but it's not ideal, and one
-may be in a position where that is difficult (restricted code size for
-bootloader and such)
+I haven't looked in the code to see if that's actually used, though.
 
-The inability to rewrite the BBT from linux is a separate issue though.
-
->> Either way, I for one need to do these kind of low-level hacks, and
->> if mtd kernel or utils have policy hardwired into them, happily I
->> have the source and a compiler and can fix that locally.
->
-> I agree. I only wrote what I did to maybe contribute to the
-> documentation. There seemed to be the sentiment that the tools
-> only skiped bad blocks because of some silly tradition.
->
-> I'm all in favour of adding the feature.
-
-Ah, I thought you were against it.
-Jolly good.
 
 --
 Jon Povey
