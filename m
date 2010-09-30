@@ -1,21 +1,21 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1BEY-0008IS-Or
-	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 04:59:08 +0000
-Received: by fxm15 with SMTP id 15so1324117fxm.36
+	id 1P1BHG-0000lC-JO
+	for linux-mtd@lists.infradead.org; Thu, 30 Sep 2010 05:01:55 +0000
+Received: by bwz19 with SMTP id 19so1514423bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Sep 2010 21:59:05 -0700 (PDT)
-Subject: Re: Scheduler latency problems when using NAND
+	Wed, 29 Sep 2010 22:01:51 -0700 (PDT)
+Subject: Re: [PATCH 1/3] mtd-utils: new memory wrappers
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mark Mason <mason@postdiluvian.org>
-In-Reply-To: <20100929221401.GA32583@postdiluvian.org>
-References: <20100929221401.GA32583@postdiluvian.org>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
+References: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 30 Sep 2010 07:56:58 +0300
-Message-ID: <1285822618.11684.9.camel@localhost>
+Date: Thu, 30 Sep 2010 07:59:45 +0300
+Message-ID: <1285822785.11684.11.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,79 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-09-29 at 18:14 -0400, Mark Mason wrote:
-> Hi all,
+On Wed, 2010-09-29 at 19:30 -0400, Mike Frysinger wrote:
+> The mkfs.jffs2 program has local wrappers for memory related functions
+> that are useful beyond mkfs.jffs2, so break them out into a common header.
 > 
-> I hope this is the right place for this question.  I'm having some
-> problems with scheduler latency when using UBIFS, and I'm hoping for
-> some suggestions.
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  include/common.h |    8 +++++
+>  include/xalloc.h |   80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+>  mkfs.jffs2.c     |   41 ---------------------------
+>  3 files changed, 88 insertions(+), 41 deletions(-)
+>  create mode 100644 include/xalloc.h
+> 
+> diff --git a/include/common.h b/include/common.h
+> index 472315e..6e27d62 100644
+> --- a/include/common.h
+> +++ b/include/common.h
+> @@ -58,6 +58,9 @@ extern "C" {
+>  	fprintf(stderr, "%s: error!: " fmt "\n", PROGRAM_NAME, ##__VA_ARGS__); \
+>  	-1;                                                                 \
+>  })
+> +#define errmsg_and_die(fmt, ...) do {                                       \
+> +	exit(errmsg(fmt, ##__VA_ARGS__));                                   \
+> +} while(0)
+>  
+>  /* System error messages */
+>  #define sys_errmsg(fmt, ...)  ({                                            \
+> @@ -69,6 +72,9 @@ extern "C" {
+>  	fprintf(stderr, "error %d (%s)\n", _err, strerror(_err));           \
+>  	-1;                                                                 \
+>  })
+> +#define sys_errmsg_and_die(fmt, ...) do {                                   \
+> +	exit(sys_errmsg(fmt, ##__VA_ARGS__));                               \
+> +} while(0)
 
-Hi Mark, this e-mail is not specific to UBIFS, so I suggest you keep
-lkml to CC.
+Often these funcs are used with longish strings, so it is better to try
+keeping the function names short. Thus, I suggest you to use
+'err_msg_die()' etc. IOW, without the '_and' part.
 
-I cannot really suggest you much. Off the top of my head - try to enable
-preemption in your kernel. But in general, it sounds like you actually
-need the RT tree. Also there is the ftrace latency tracer - try to use
-it.
-
-> Linux 2.6.29-6, with a newer MTD, dating from probably around six
-> months ago.  Embedded PowerPC 8315, with built-in NAND controller,
-> using nand/fsl_elbc_nand.c.  NAND is a Samsung K9WAG08U1B two-die
-> stack (one package with two chip selects), 2Gbyte x 8 bit.  The system
-> has plenty of memory, but is short on CPU.
-> 
-> The application is storing streaming video, almost entirely large
-> sequential files, roughly 250K to 15M, to a 1.6G filesystem.  There's
-> no seeking or rewriting, just creat, write, close, repeat.  No
-> compression is used on the filesystem.
-> 
-> The problem I'm seeing is excessively large scheduler latency when
-> data is flushed to NAND.
-> 
-> Originally this had been happening during erases.  I noticed that
-> hundreds of erases (up to around 700) were being issued in rapid
-> succession, and I was seeing other threads unable to run for sometimes
-> as much as the expected 7 seconds (I measured 1.1 ms per erase).  To
-> address this, I split the erase command in two halves - FIR_OP_CM0 |
-> FIR_OP_PA | FIR_OP_CM2 and FIR_OP_CW1 | FIR_OP_RS - with schedule()
-> called in between.  This had the effect if issuing the erase, calling
-> schedule(), then waiting for the erase to complete if it hadn't
-> already, but usually it had.
-> 
-> I'm surprised this helped so much, since the calling thread should
-> have been put to sleep for the duration of the erase by the call to
-> wait_event_timeout(), but it definitely did - I guess it was the
-> explicit schedule().
-> 
-> The erases are no longer a significant bottleneck, but now the writes
-> are.  A page program takes 200us, which seems too short for an
-> explicit schedule(), and I am seeing periods with the busy line
-> asserted in back-to-back 200us chunks for most of a second.
-> 
-> I have played with thread priorities a bit, but I wound up with too
-> many threads being "most important".  There is some hardware that
-> can't tolerate large latencies, and unfortunately the existing code
-> base doesn't have enough separation between critical and non-critical
-> tasks to allow us to run just the critical stuff at a higher priority.
-> 
-> On average, the system can keep up with the load, but it has problems
-> with the burstiness of the flushes to NAND, so I'm hoping for some
-> ideas to smooth the traffic out, or even a totally different way to
-> approach the problem.  I tried lowering the priority of the UBI
-> background thread, the failure mode there is pretty obvious.  I tried
-> lowering dirty_background_centisecs, that helped a little bit, but not
-> enough, and there's also a SATA drive, although a smaller commit
-> interval probably wouldn't bother it since the traffic is similar.
-> 
-> I'm contemplating something along the lines of a smaller commit
-> interval, an even higher background thread priority, and a sleep with
-> a schedule during the page program, but that many extra context
-> switches are liable to be a problem - there's no L2 cache on this CPU,
-> so context switches are extra expensive.
-> 
-> Does anyone have any suggestions, ideas, hints, advice, etc?
-> 
-> Thanks!
+If you are OK with this, I can just tweak your patch. But you can also
+re-send it - whatever you prefer.
 
 -- 
 Best Regards,
