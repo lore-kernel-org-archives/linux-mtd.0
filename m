@@ -1,19 +1,18 @@
+Message-ID: <4CA5BD78.9080808@st.com>
+Date: Fri, 1 Oct 2010 16:22:40 +0530
+From: Vipin Kumar <vipin.kumar@st.com>
+MIME-Version: 1.0
+To: Linus WALLEIJ <linus.walleij@stericsson.com>
 Subject: Re: [PATCH 1/2] MTD: generic FSMC NAND MTD driver
-From: David Woodhouse <dwmw2@infradead.org>
-To: Linus Walleij <linus.ml.walleij@gmail.com>
-In-Reply-To: <AANLkTintC=5Mo82QS0xxB143WrHrijqGOqdyZ=2BxCYe@mail.gmail.com>
 References: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
-	<4CA560B7.5080505@st.com>
-	<1285910489.31224.14.camel@macbook.infradead.org>
-	<AANLkTintC=5Mo82QS0xxB143WrHrijqGOqdyZ=2BxCYe@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Oct 2010 16:44:32 +0900
-Message-ID: <1285919072.31224.21.camel@macbook.infradead.org>
-Mime-Version: 1.0
+In-Reply-To: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: viresh kumar <viresh.kumar@st.com>, Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+Cc: Viresh KUMAR <viresh.kumar@st.com>, Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>,
+	Shiraz HASHIM <shiraz.hashim@st.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
 	"linux-arm-kernel@lists.infradead.org"
 	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,20 +24,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-01 at 09:25 +0200, Linus Walleij wrote:
-> 2010/10/1 David Woodhouse <dwmw2@infradead.org>:
-> > On Fri, 2010-10-01 at 09:46 +0530, viresh kumar wrote:
-> 
-> >> Just one query, what should be the location of fsmc.h
-> >> include/mtd/ or include/linux/mtd ??
-> >
-> > We use include/mtd/ for headers which are exported to userspace. Looks
-> > like this should be include/linux/mtd/
-> 
-> Aha, I'll respin it then.
 
-Or perhaps it shouldn't be in a header file at all. Where else does it
-get used from?
+Hello David, Linus
 
--- 
-dwmw2
+> +#include <linux/mtd/nand_ecc.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/io.h>
+> +#include <linux/slab.h>
+> +#include <mtd/fsmc.h>
+> +#include <mtd/mtd-abi.h>
+> +
+> +static struct nand_ecclayout fsmc_ecc1_layout = {
+> +       .eccbytes = 24,
+> +       .eccpos = {2, 3, 4, 18, 19, 20, 34, 35, 36, 50, 51, 52,
+> +               66, 67, 68, 82, 83, 84, 98, 99, 100, 114, 115, 116},
+> +       .oobfree = {
+> +               {.offset = 8, .length = 8},
+> +               {.offset = 24, .length = 8},
+> +               {.offset = 40, .length = 8},
+> +               {.offset = 56, .length = 8},
+> +               {.offset = 72, .length = 8},
+> +               {.offset = 88, .length = 8},
+> +               {.offset = 104, .length = 8},
+> +               {.offset = 120, .length = 8}
+> +       }
+> +};
+> +
+> +static struct nand_ecclayout fsmc_ecc4_lp_layout = {
+> +       .eccbytes = 104,
+> +       .eccpos = {  2,   3,   4,   5,   6,   7,   8,
+> +               9,  10,  11,  12,  13,  14,
+> +               18,  19,  20,  21,  22,  23,  24,
+> +               25,  26,  27,  28,  29,  30,
+> +               34,  35,  36,  37,  38,  39,  40,
+> +               41,  42,  43,  44,  45,  46,
+> +               50,  51,  52,  53,  54,  55,  56,
+> +               57,  58,  59,  60,  61,  62,
+> +               66,  67,  68,  69,  70,  71,  72,
+> +               73,  74,  75,  76,  77,  78,
+> +               82,  83,  84,  85,  86,  87,  88,
+> +               89,  90,  91,  92,  93,  94,
+> +               98,  99, 100, 101, 102, 103, 104,
+> +               105, 106, 107, 108, 109, 110,
+> +               114, 115, 116, 117, 118, 119, 120,
+> +               121, 122, 123, 124, 125, 126
+> +       },
+> +       .oobfree = {
+> +               {.offset = 15, .length = 3},
+> +               {.offset = 31, .length = 3},
+> +               {.offset = 47, .length = 3},
+> +               {.offset = 63, .length = 3},
+> +               {.offset = 79, .length = 3},
+> +               {.offset = 95, .length = 3},
+> +               {.offset = 111, .length = 3},
+> +               {.offset = 127, .length = 1}
+> +       }
+> +};
+> +
+
+I just noticed that the above array is based on an earlier patch which increased 
+the array size from 64 to 128. 
+
+http://lists.infradead.org/pipermail/linux-arm-kernel/2010-August/024372.html
+
+This patch itself was under the lense of reviewers for a long time. Actually, 
+increasing this array breaks mtd abi as pointed by Artem
+
+
+Quoting from his mail
+
+> The old interface should remain unchanged in that include/mtd/mtd-abi.h.
+> If an application using the old interface calls any of the ecc ioctls
+> for a nand chip with > 64 bytes ecc it should return an error.
+
+It will, because size of the structure is part of the ioctl number,
+even. See the corresponding ioctl macro definition.
+
+> I still think the eccpos field should be a pointer, so that it can
+> allocate as much space as is needed for the ecc. This also means that
+> the kernel doesn't need to be changed every time a new NAND chips
+> appears with a bigger ecc size.
+
+Sure, this is the whole point: go ahead and design the new ioctl, and
+then deprecate the old one. Just invest men/hours into that and we are
+all right :-)
+
+
+This means that the patch sent by linus can be added only after a new ioctl
+is defined and the old one deprecated
+
+> +#define __MTD_FSMC_H
+> +
+> +#include <linux/platform_device.h>
+> +#include <linux/mtd/physmap.h>
+> +#include <linux/types.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <asm/param.h>
+
+Linus, there is a checkpatch warining here :)
+
+Best Regards
+Vipin
