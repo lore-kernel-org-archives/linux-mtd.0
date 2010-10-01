@@ -1,20 +1,17 @@
-Subject: Re: [PATCH 1/2] MTD: generic FSMC NAND MTD driver
-From: David Woodhouse <dwmw2@infradead.org>
-To: viresh kumar <viresh.kumar@st.com>
-In-Reply-To: <4CA560B7.5080505@st.com>
-References: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
-	<4CA560B7.5080505@st.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Oct 2010 14:21:29 +0900
-Message-ID: <1285910489.31224.14.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	Linus WALLEIJ <linus.walleij@stericsson.com>,
-	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P1YIR-0004SB-8O
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 05:36:39 +0000
+Received: from localhost.localdomain (localhost [127.0.0.1])
+	by smtp.gentoo.org (Postfix) with ESMTP id 7C1F41B403B
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  1 Oct 2010 05:36:31 +0000 (UTC)
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: enable garbage collection of unused function/data
+	sections
+Date: Fri,  1 Oct 2010 01:37:14 -0400
+Message-Id: <1285911434-9186-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-01 at 09:46 +0530, viresh kumar wrote:
-> 
-> 
-> Just one query, what should be the location of fsmc.h
-> include/mtd/ or include/linux/mtd ?? 
+On my default build, this cumulatively shaves off ~100KiB of unused
+code and data from the mtd-utils programs.
 
-We use include/mtd/ for headers which are exported to userspace. Looks
-like this should be include/linux/mtd/
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ common.mk |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
+diff --git a/common.mk b/common.mk
+index 0444ad9..a55c548 100644
+--- a/common.mk
++++ b/common.mk
+@@ -3,6 +3,7 @@ AR := $(CROSS)ar
+ RANLIB := $(CROSS)ranlib
+ 
+ # Stolen from Linux build system
++comma = ,
+ try-run = $(shell set -e; ($(1)) >/dev/null 2>&1 && echo "$(2)" || echo "$(3)")
+ cc-option = $(call try-run, $(CC) $(1) -c -xc /dev/null -o /dev/null,$(1),$(2))
+ 
+@@ -12,6 +13,8 @@ WFLAGS := -Wall \
+ 	$(call cc-option,-Wwrite-strings) \
+ 	$(call cc-option,-Wno-sign-compare)
+ CFLAGS += $(WFLAGS)
++SECTION_CFLAGS := $(call cc-option,-ffunction-sections -fdata-sections -Wl$(comma)--gc-sections)
++CFLAGS += $(SECTION_CFLAGS)
+ 
+ ifneq ($(WITHOUT_LARGEFILE), 1)
+   CPPFLAGS += -D_FILE_OFFSET_BITS=64
 -- 
-dwmw2
+1.7.3.1
