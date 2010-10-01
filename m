@@ -1,110 +1,88 @@
-From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
-Date: Sun, 26 Sep 2010 20:47:28 +0300
-Subject: [PATCH] UBI: Matthiew fixes - 1
-Message-ID: <mailman.8.1285523920.1886.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
+	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P1Tmd-0003V5-3r
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 00:47:31 +0000
+Received: by qyk31 with SMTP id 31so774757qyk.15
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Sep 2010 17:47:30 -0700 (PDT)
+MIME-Version: 1.0
+Sender: vapier.adi@gmail.com
+In-Reply-To: <1285829792.11684.47.camel@localhost>
+References: <1285803024-13572-1-git-send-email-vapier@gentoo.org>
+	<1285822785.11684.11.camel@localhost>
+	<AANLkTimzVA06P8GR4Gy_2PSFDXKnzTOHPj2qr+_X__zw@mail.gmail.com>
+	<1285825735.11684.22.camel@localhost>
+	<AANLkTi=E6qy2sBq1thXMUWfxSbCuNZDUOmmGT8o0j0hW@mail.gmail.com>
+	<1285826499.11684.24.camel@localhost>
+	<AANLkTin0Fxd+oSEMNNc6zdNusJUUPRaZ1vgPR1vvThXi@mail.gmail.com>
+	<1285829792.11684.47.camel@localhost>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Thu, 30 Sep 2010 20:47:09 -0400
+Message-ID: <AANLkTi=n8UC7OWdugvRAQgtK=1VVf80hgWDo5d3HfH0i@mail.gmail.com>
+Subject: Re: [PATCH 1/3] mtd-utils: new memory wrappers
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fixes on top of my "preserve corrupted" patch series for issues indicated
-by Matthieu Castet.
+On Thu, Sep 30, 2010 at 02:56, Artem Bityutskiy wrote:
+> On Thu, 2010-09-30 at 02:18 -0400, Mike Frysinger wrote:
+>> nice: use -ffunction-sections -fdata-sections -Wl,--gc-sections.
+>> additional advantage of saving space across all linked in library code
+>> and not just common.h stuff.
+>
+> Sorry, I never dealt with -ffunction-sections stuff, I do not know the
+> price of this, so I basically cannot judge. But of course removing
+> unused code is a good thing to do. So you seem to be more competent in
+> these question, just go ahead with you nice cleanups!
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/scan.c |   43 ++++++++++++++++++++++++++++++-------------
- 1 files changed, 30 insertions(+), 13 deletions(-)
+i get nice results even now with these options.
 
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index ae901cc..30b7102 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -746,15 +746,15 @@ struct ubi_scan_leb *ubi_scan_get_free_peb(struct ubi_device *ubi,
-  * @vid_hrd: the (corrupted) VID header of this PEB
-  * @pnum: the physical eraseblock number to check
-  *
-- * This is a helper function which was created to distinguish between VID header
-+ * This is a helper function which is used to distinguish between VID header
-  * corruptions caused by power cuts and other reasons. If the PEB contains only
-  * 0xFF bytes at the data area, the VID header is most probably corrupted
-- * because of power cut (%0 is returned in this case). Otherwise, it was
-+ * because of a power cut (%0 is returned in this case). Otherwise, it was
-  * corrupted for some other reasons (%1 is returned in this case). A negative
-  * error code is returned if a read error occurred.
-  *
-  * If the corruption reason was a power cut, UBI can safely erase this PEB.
-- * Otherwise, we cannot do this, because we'd possibly destroy important
-+ * Otherwise, it should preserve it to avoid possibly destroying important
-  * information.
-  */
- static int check_data_ff(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
-@@ -912,15 +912,32 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 		break;
- 	case UBI_IO_BAD_HDR_EBADMSG:
- 		if (ec_err == UBI_IO_BAD_HDR_EBADMSG)
--			/* Both EC and VID headers were read with data
--			 * integrity error, probably this is a bad PEB, bit it
--			 * is not marked a bad yet.
-+			/*
-+			 * Both EC and VID headers are corrupted and were read
-+			 * with data integrity error, probably this is a bad
-+			 * PEB, bit it is not marked as bad yet. This may also
-+			 * be a result of power cut during erasure.
- 			 */
- 			si->maybe_bad_peb_count += 1;
- 	case UBI_IO_BAD_HDR:
--		err = check_data_ff(ubi, vidh, pnum);
-+		if (ec_err)
-+			/*
-+			 * Both headers are corrupted. There is a possibility
-+			 * that this a valid UBI PEB which has corresponding
-+			 * LEB, but the headers are corrupted. However, it is
-+			 * impossible to distinguish it from a PEB which just
-+			 * contains garbage because a power cut during erase
-+			 * operation. So we just schedule this PEB for erasure.
-+			 */
-+			err = 0;
-+		else
-+			/*
-+			 * The EC was OK, but the VID header is corrupted. We
-+			 * have to check what is in the data area.
-+			 */
-+			err = check_data_ff(ubi, vidh, pnum);
- 		if (!err)
--			/* This corruption is caused by a power cut - it's OK */
-+			/* This corruption is caused by a power cut */
- 			err = add_to_list(si, pnum, ec, 1, &si->erase);
- 		else
- 			/* This is an unexpected corruption */
-@@ -1023,7 +1040,7 @@ static int check_what_we_have(struct ubi_device *ubi, struct ubi_scan_info *si)
- 	max_corr = peb_count / 20 ?: 8;
- 
- 	/*
--	 * Few corrupted PEBs are not a problem and may be just a result of
-+	 * Few corrupted PEBs is not a problem and may be just a result of
- 	 * unclean reboots. However, many of them may indicate some problems
- 	 * with the flash HW or driver.
- 	 */
-@@ -1048,14 +1065,14 @@ static int check_what_we_have(struct ubi_device *ubi, struct ubi_scan_info *si)
- 	if (si->empty_peb_count + si->maybe_bad_peb_count == peb_count) {
- 		/*
- 		 * All PEBs are empty, or almost all - a couple PEBs look like
--		 * they may be bad PEB which were not marked as bad yet.
-+		 * they may be bad PEBs which were not marked as bad yet.
- 		 *
--		 * This piece of code basically tries to distinguish  between
--		 * the following 2 situations:
-+		 * This piece of code basically tries to distinguish between
-+		 * the following situations:
- 		 *
- 		 * 1. Flash is empty, but there are few bad PEBs, which are not
- 		 *    marked as bad so far, and which were read with error. We
--		 *    want to go ahead and format this flash. While formating,
-+		 *    want to go ahead and format this flash. While formatting,
- 		 *    the faulty PEBs will probably be marked as bad.
- 		 *
- 		 * 2. Flash contains non-UBI data and we do not want to format
--- 
-1.7.2.2
+total shrinkage in bytes: 103298(.text) 1344(.data) 128(.bss)
 
--- 
-Best Regards,
-Artem Bityutskiy (???????????????? ??????????)
+individual totals:
+docfdisk -42 -16
+doc_loadbios -42 -16
+flashcp -34 -8
+flash_erase -4746 -32
+flash_info -42 -16
+flash_lock -42 -16
+flash_otp_dump -42 -16
+flash_otp_info -34 -16
+flash_unlock -42 -16
+ftl_check -42 -16
+ftl_format -42 -16
+jffs2dump -34 -16
+mkfs.jffs2 -1466 -32
+mkfs.ubifs -5106 -24
+mtd_debug -66 -16
+nanddump -34 -16
+nandtest -66 -16
+nandwrite -34 -32 -32
+nftldump -34 -16 -32
+nftl_format -42 -16
+recv_image -914 -16 -32
+rfddump -34 -16
+rfdformat -34 -16
+serve_image -2770 -16 -32
+sumtool -66 -32
+ubirsvol -5514 -80
+ubicrc32 -1794 -56
+mtdinfo -14298 -88
+ubimkvol -5258 -72
+ubiupdatevol -7986 -80
+ubinize -1866 -48
+ubirename -6586 -72
+ubidetach -9842 -80
+ubirmvol -6170 -72
+ubiformat -15018 -56
+ubinfo -5002 -88
+ubiattach -8114 -88
+-mike
