@@ -1,20 +1,33 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1lRK-0006GT-OC
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 19:38:43 +0000
-Date: Fri, 1 Oct 2010 21:37:37 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH v2] mtd/nand: introduce NAND_CREATE_EMPTY_BBT
-Message-ID: <20101001193737.GA28639@www.tglx.de>
-References: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
-	<1285782234-32509-5-git-send-email-bigeasy@linutronix.de>
-	<1285959468.32172.2.camel@brekeke>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P1lIu-00069Q-1B
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 19:30:01 +0000
+Received: by bwz19 with SMTP id 19so3277822bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 01 Oct 2010 12:29:10 -0700 (PDT)
+Subject: Re: [PATCH 15/18] mtd: Fix endianness issues from device tree
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ian Munsie <imunsie@au1.ibm.com>
+In-Reply-To: <1285916771-18033-16-git-send-email-imunsie@au1.ibm.com>
+References: <1285916771-18033-1-git-send-email-imunsie@au1.ibm.com>
+	<1285916771-18033-16-git-send-email-imunsie@au1.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 01 Oct 2010 22:29:06 +0300
+Message-ID: <1285961346.32172.10.camel@brekeke>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <1285959468.32172.2.camel@brekeke>
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Cc: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	benh@kernel.crashing.org, linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, Grant Likely <grant.likely@secretlab.ca>,
+	H Hartley Sweeten <hsweeten@visionengravers.com>,
+	paulus@samba.org, linux-mtd@lists.infradead.org,
+	Sean MacLennan <smaclennan@pikatech.com>,
+	Tejun Heo <tj@kernel.org>, Julia Lawall <julia@diku.dk>,
+	Steve Deiters <SteveDeiters@basler.com>,
+	Anatolij Gustschin <agust@denx.de>, David Woodhouse <dwmw2@infradead.org>,
+	"David S. Miller" <davem@davemloft.net>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,57 +37,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-it will create an empty BBT table without considering vendor's BBT
-information. Vendor's information may be unavailable if the NAND
-controller has a different DATA & OOB layout or this information may be
-allready purged.
+On Fri, 2010-10-01 at 17:06 +1000, Ian Munsie wrote:
+> From: Ian Munsie <imunsie@au1.ibm.com>
+> 
+> This patch adds the appropriate conversions to correct the endianness
+> issues in the MTD driver whenever it accesses the device tree (which is
+> always big endian).
+> 
+> Signed-off-by: Ian Munsie <imunsie@au1.ibm.com>
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- drivers/mtd/nand/nand_bbt.c |    3 ++-
- include/linux/mtd/bbm.h     |    2 +-
- include/linux/mtd/nand.h    |    2 ++
- 3 files changed, 5 insertions(+), 2 deletions(-)
+Pushed to l2-mtd-2.6.git, thanks!
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index b7b63cf..a27984c 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -999,7 +999,8 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
- 			continue;
- 
- 		/* Create the table in memory by scanning the chip(s) */
--		create_bbt(mtd, buf, bd, chipsel);
-+		if (!(this->options & NAND_CREATE_EMPTY_BBT))
-+			create_bbt(mtd, buf, bd, chipsel);
- 
- 		td->version[i] = 1;
- 		if (md)
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index ba15b52..57cc0e6 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -84,7 +84,7 @@ struct nand_bbt_descr {
- #define NAND_BBT_PERCHIP	0x00000080
- /* bbt has a version counter at offset veroffs */
- #define NAND_BBT_VERSION	0x00000100
--/* Create a bbt if none axists */
-+/* Create a bbt if none exists */
- #define NAND_BBT_CREATE		0x00000200
- /* Search good / bad pattern through all pages of a block */
- #define NAND_BBT_SCANALLPAGES	0x00000400
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 27e3d0a..d34b912 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -223,6 +223,8 @@ typedef enum {
-  * the OOB area
-  */
- #define NAND_USE_FLASH_BBT_NO_OOB	0x00100000
-+/* Create an empty BBT with no vendor information if the BBT is available */
-+#define NAND_CREATE_EMPTY_BBT		0x00200000
- 
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
 -- 
-1.7.2.3
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
