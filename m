@@ -1,7 +1,3 @@
-Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
-	by casper.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1eFs-00086j-EQ
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 11:58:25 +0000
 From: Viresh KUMAR <viresh.kumar@st.com>
 To: linux-arm-kernel@lists.infradead.org, rtc-linux@googlegroups.com,
 	a.zummo@towertech.it, dbrownell@users.sourceforge.net,
@@ -9,17 +5,18 @@ To: linux-arm-kernel@lists.infradead.org, rtc-linux@googlegroups.com,
 	dmitry.torokhov@gmail.com, linux-mtd@lists.infradead.org,
 	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH V2 46/69] ST SPEAr13xx: Adding machine support for pci gadget
-Date: Fri,  1 Oct 2010 17:26:06 +0530
-Message-Id: <52b8b1701090d726b3af6b79b98cd967229113d8.1285933332.git.viresh.kumar@st.com>
+Subject: [PATCH V2 57/69] SPEAr3xx: Make local structures static
+Date: Fri,  1 Oct 2010 17:26:17 +0530
+Message-Id: <a4419b75d9a8f793c745d89e1cd0ba5d23880bd1.1285933332.git.viresh.kumar@st.com>
 In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
 References: <cover.1285933331.git.viresh.kumar@st.com>
 In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
 References: <cover.1285933331.git.viresh.kumar@st.com>
-Cc: Pratyush Anand <pratyush.anand@st.com>, Viresh Kumar <viresh.kumar@st.com>,
+Cc: pratyush.anand@st.com, Viresh Kumar <viresh.kumar@st.com>,
 	vipulkumar.samar@st.com, bhupesh.sharma@st.com,
 	armando.visconti@st.com, vipin.kumar@st.com,
-	shiraz.hashim@st.com, rajeev-dlh.kumar@st.com, deepak.sikri@st.com
+	shiraz.hashim@st.com, Ryan Mallon <ryan@bluewatersys.com>,
+	rajeev-dlh.kumar@st.com, deepak.sikri@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,174 +26,203 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Pratyush Anand <pratyush.anand@st.com>
+From: Ryan Mallon <ryan@bluewatersys.com>
 
-Signed-off-by: Pratyush Anand <pratyush.anand@st.com>
-Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
+Several structures in arch/arm/mach-spear3xx are not marked static
+like they should be. Fix this.
+
+Signed-off-by: Ryan Mallon <ryan@bluewatersys.com>
 Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- arch/arm/mach-spear13xx/include/mach/generic.h |    3 +
- arch/arm/mach-spear13xx/include/mach/spear.h   |    2 +-
- arch/arm/mach-spear13xx/spear1300_evb.c        |    1 +
- arch/arm/mach-spear13xx/spear1310_evb.c        |    1 +
- arch/arm/mach-spear13xx/spear13xx.c            |   94 ++++++++++++++++++++++++
- 5 files changed, 100 insertions(+), 1 deletions(-)
+ arch/arm/mach-spear3xx/spear300.c |    6 +++---
+ arch/arm/mach-spear3xx/spear310.c |   16 ++++++++--------
+ arch/arm/mach-spear3xx/spear320.c |   12 ++++++------
+ arch/arm/mach-spear3xx/spear3xx.c |    2 --
+ 4 files changed, 17 insertions(+), 19 deletions(-)
 
-diff --git a/arch/arm/mach-spear13xx/include/mach/generic.h b/arch/arm/mach-spear13xx/include/mach/generic.h
-index 9b0f009..56ed7a7 100644
---- a/arch/arm/mach-spear13xx/include/mach/generic.h
-+++ b/arch/arm/mach-spear13xx/include/mach/generic.h
-@@ -40,6 +40,9 @@ extern struct platform_device spear13xx_kbd_device;
- extern struct platform_device spear13xx_nand_device;
- extern struct platform_device spear13xx_ohci0_device;
- extern struct platform_device spear13xx_ohci1_device;
-+extern struct platform_device spear13xx_pcie_gadget0_device;
-+extern struct platform_device spear13xx_pcie_gadget1_device;
-+extern struct platform_device spear13xx_pcie_gadget2_device;
- extern struct platform_device spear13xx_rtc_device;
- extern struct platform_device spear13xx_sdhci_device;
- extern struct platform_device spear13xx_smi_device;
-diff --git a/arch/arm/mach-spear13xx/include/mach/spear.h b/arch/arm/mach-spear13xx/include/mach/spear.h
-index cf25eb5..d043280 100644
---- a/arch/arm/mach-spear13xx/include/mach/spear.h
-+++ b/arch/arm/mach-spear13xx/include/mach/spear.h
-@@ -60,7 +60,7 @@
- #define SPEAR13XX_SYS_LOCATION		(SPEAR13XX_SYSRAM0_BASE + 0x600)
- 
- #define SPEAR13XX_SYSRAM1_BASE		UL(0xE0800000)
--#define SPEAR13XX_SYSRAM1_SIZE		0x00800000
-+#define SPEAR13XX_SYSRAM1_SIZE		0x00001000
- #define SPEAR13XX_CLCD_BASE		UL(0xE1000000)
- #define SPEAR13XX_C3_BASE		UL(0xE1800000)
- #define SPEAR13XX_GETH_BASE		UL(0xE2000000)
-diff --git a/arch/arm/mach-spear13xx/spear1300_evb.c b/arch/arm/mach-spear13xx/spear1300_evb.c
-index e56fbd4..34e2647 100644
---- a/arch/arm/mach-spear13xx/spear1300_evb.c
-+++ b/arch/arm/mach-spear13xx/spear1300_evb.c
-@@ -52,6 +52,7 @@ static struct platform_device *plat_devs[] __initdata = {
- 	&spear13xx_nand_device,
- 	&spear13xx_ohci0_device,
- 	&spear13xx_ohci1_device,
-+	&spear13xx_pcie_gadget0_device,
- 	&spear13xx_rtc_device,
- 	&spear13xx_sdhci_device,
- 	&spear13xx_smi_device,
-diff --git a/arch/arm/mach-spear13xx/spear1310_evb.c b/arch/arm/mach-spear13xx/spear1310_evb.c
-index f6b4323..1af152f 100644
---- a/arch/arm/mach-spear13xx/spear1310_evb.c
-+++ b/arch/arm/mach-spear13xx/spear1310_evb.c
-@@ -53,6 +53,7 @@ static struct platform_device *plat_devs[] __initdata = {
- 	&spear13xx_nand_device,
- 	&spear13xx_ohci0_device,
- 	&spear13xx_ohci1_device,
-+	&spear13xx_pcie_gadget0_device,
- 	&spear13xx_rtc_device,
- 	&spear13xx_sdhci_device,
- 	&spear13xx_smi_device,
-diff --git a/arch/arm/mach-spear13xx/spear13xx.c b/arch/arm/mach-spear13xx/spear13xx.c
-index 08e87d7..c86bd1c 100644
---- a/arch/arm/mach-spear13xx/spear13xx.c
-+++ b/arch/arm/mach-spear13xx/spear13xx.c
-@@ -429,6 +429,100 @@ struct platform_device spear13xx_sdhci_device = {
- 	.resource = sdhci_resources,
+diff --git a/arch/arm/mach-spear3xx/spear300.c b/arch/arm/mach-spear3xx/spear300.c
+index 9885fe9..bbaf872 100644
+--- a/arch/arm/mach-spear3xx/spear300.c
++++ b/arch/arm/mach-spear3xx/spear300.c
+@@ -114,7 +114,6 @@ struct pmx_mode caml_lcd_mode = {
+ 	.value = 0x0F,
  };
  
-+/* pcie gadget registration */
-+static struct resource pcie_gadget0_resources[] = {
-+	{
-+		.start = SPEAR13XX_PCIE0_APP_BASE,
-+		.end = SPEAR13XX_PCIE0_APP_BASE + SZ_8K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.start = SPEAR13XX_PCIE0_BASE,
-+		.end = SPEAR13XX_PCIE0_BASE + SZ_8K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.start = IRQ_PCIE0,
-+		.flags = IORESOURCE_IRQ,
-+	},
-+};
+-/* devices */
+ /* Pad multiplexing for FSMC 2 NAND devices */
+ static struct pmx_mux_reg pmx_fsmc_2_mux[] = {
+ 	{
+@@ -700,7 +699,7 @@ struct platform_device sdhci_device = {
+ };
+ 
+ /* spear3xx shared irq */
+-struct shirq_dev_config shirq_ras1_config[] = {
++static struct shirq_dev_config shirq_ras1_config[] = {
+ 	{
+ 		.virq = VIRQ_IT_PERS_S,
+ 		.enb_mask = IT_PERS_S_IRQ_MASK,
+@@ -740,7 +739,8 @@ struct shirq_dev_config shirq_ras1_config[] = {
+ 	},
+ };
+ 
+-struct spear_shirq shirq_ras1 = {
 +
-+/* pcie_gadget0_id defaults to 0, being static variable */
-+static int pcie_gadget0_id;
-+static u64 pcie_gadget0_dmamask = ~0;
-+
-+struct platform_device spear13xx_pcie_gadget0_device = {
-+	.name = "pcie-gadget-spear",
-+	.id = 0,
-+	.dev = {
-+		.coherent_dma_mask = ~0,
-+		.dma_mask = &pcie_gadget0_dmamask,
-+		.platform_data = &pcie_gadget0_id,
-+	},
-+	.num_resources = ARRAY_SIZE(pcie_gadget0_resources),
-+	.resource = pcie_gadget0_resources,
-+};
-+
-+static struct resource pcie_gadget1_resources[] = {
-+	{
-+		.start = SPEAR13XX_PCIE1_APP_BASE,
-+		.end = SPEAR13XX_PCIE1_APP_BASE + SZ_8K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.start = SPEAR13XX_PCIE1_BASE,
-+		.end = SPEAR13XX_PCIE1_BASE + SZ_8K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.start = IRQ_PCIE1,
-+		.flags = IORESOURCE_IRQ,
-+	},
-+};
-+
-+/* pcie_gadget1_id defaults to 0, being static variable */
-+static int pcie_gadget1_id;
-+static u64 pcie_gadget1_dmamask = ~0;
-+
-+struct platform_device spear13xx_pcie_gadget1_device = {
-+	.name = "pcie-gadget-spear",
-+	.id = 1,
-+	.dev = {
-+		.coherent_dma_mask = ~0,
-+		.dma_mask = &pcie_gadget1_dmamask,
-+		.platform_data = &pcie_gadget1_id,
-+	},
-+	.num_resources = ARRAY_SIZE(pcie_gadget1_resources),
-+	.resource = pcie_gadget1_resources,
-+};
-+
-+static struct resource pcie_gadget2_resources[] = {
-+	{
-+		.start = SPEAR13XX_PCIE2_APP_BASE,
-+		.end = SPEAR13XX_PCIE2_APP_BASE + SZ_8K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.start = SPEAR13XX_PCIE2_BASE,
-+		.end = SPEAR13XX_PCIE2_BASE + SZ_8K - 1,
-+		.flags = IORESOURCE_MEM,
-+	}, {
-+		.start = IRQ_PCIE2,
-+		.flags = IORESOURCE_IRQ,
-+	},
-+};
-+
-+/* pcie_gadget2_id defaults to 0, being static variable */
-+static int pcie_gadget2_id;
-+static u64 pcie_gadget2_dmamask = ~0;
-+
-+struct platform_device spear13xx_pcie_gadget2_device = {
-+	.name = "pcie-gadget-spear",
-+	.id = 2,
-+	.dev = {
-+		.coherent_dma_mask = ~0,
-+		.dma_mask = &pcie_gadget2_dmamask,
-+		.platform_data = &pcie_gadget2_id,
-+	},
-+	.num_resources = ARRAY_SIZE(pcie_gadget2_resources),
-+	.resource = pcie_gadget2_resources,
-+};
-+
- /* Do spear13xx familiy common initialization part here */
- void __init spear13xx_init(void)
- {
++static struct spear_shirq shirq_ras1 = {
+ 	.irq = IRQ_GEN_RAS_1,
+ 	.dev_config = shirq_ras1_config,
+ 	.dev_count = ARRAY_SIZE(shirq_ras1_config),
+diff --git a/arch/arm/mach-spear3xx/spear310.c b/arch/arm/mach-spear3xx/spear310.c
+index be2f9de..7d4ff0e 100644
+--- a/arch/arm/mach-spear3xx/spear310.c
++++ b/arch/arm/mach-spear3xx/spear310.c
+@@ -363,7 +363,7 @@ struct platform_device plgpio_device = {
+ 
+ 
+ /* spear3xx shared irq */
+-struct shirq_dev_config shirq_ras1_config[] = {
++static struct shirq_dev_config shirq_ras1_config[] = {
+ 	{
+ 		.virq = VIRQ_SMII0,
+ 		.status_mask = SMII0_IRQ_MASK,
+@@ -391,7 +391,7 @@ struct shirq_dev_config shirq_ras1_config[] = {
+ 	},
+ };
+ 
+-struct spear_shirq shirq_ras1 = {
++static struct spear_shirq shirq_ras1 = {
+ 	.irq = IRQ_GEN_RAS_1,
+ 	.dev_config = shirq_ras1_config,
+ 	.dev_count = ARRAY_SIZE(shirq_ras1_config),
+@@ -403,7 +403,7 @@ struct spear_shirq shirq_ras1 = {
+ 	},
+ };
+ 
+-struct shirq_dev_config shirq_ras2_config[] = {
++static struct shirq_dev_config shirq_ras2_config[] = {
+ 	{
+ 		.virq = VIRQ_UART1,
+ 		.status_mask = UART1_IRQ_MASK,
+@@ -422,7 +422,7 @@ struct shirq_dev_config shirq_ras2_config[] = {
+ 	},
+ };
+ 
+-struct spear_shirq shirq_ras2 = {
++static struct spear_shirq shirq_ras2 = {
+ 	.irq = IRQ_GEN_RAS_2,
+ 	.dev_config = shirq_ras2_config,
+ 	.dev_count = ARRAY_SIZE(shirq_ras2_config),
+@@ -434,14 +434,14 @@ struct spear_shirq shirq_ras2 = {
+ 	},
+ };
+ 
+-struct shirq_dev_config shirq_ras3_config[] = {
++static struct shirq_dev_config shirq_ras3_config[] = {
+ 	{
+ 		.virq = VIRQ_EMI,
+ 		.status_mask = EMI_IRQ_MASK,
+ 	},
+ };
+ 
+-struct spear_shirq shirq_ras3 = {
++static struct spear_shirq shirq_ras3 = {
+ 	.irq = IRQ_GEN_RAS_3,
+ 	.dev_config = shirq_ras3_config,
+ 	.dev_count = ARRAY_SIZE(shirq_ras3_config),
+@@ -453,7 +453,7 @@ struct spear_shirq shirq_ras3 = {
+ 	},
+ };
+ 
+-struct shirq_dev_config shirq_intrcomm_ras_config[] = {
++static struct shirq_dev_config shirq_intrcomm_ras_config[] = {
+ 	{
+ 		.virq = VIRQ_TDM_HDLC,
+ 		.status_mask = TDM_HDLC_IRQ_MASK,
+@@ -466,7 +466,7 @@ struct shirq_dev_config shirq_intrcomm_ras_config[] = {
+ 	},
+ };
+ 
+-struct spear_shirq shirq_intrcomm_ras = {
++static struct spear_shirq shirq_intrcomm_ras = {
+ 	.irq = IRQ_INTRCOMM_RAS_ARM,
+ 	.dev_config = shirq_intrcomm_ras_config,
+ 	.dev_count = ARRAY_SIZE(shirq_intrcomm_ras_config),
+diff --git a/arch/arm/mach-spear3xx/spear320.c b/arch/arm/mach-spear3xx/spear320.c
+index bd308b8..948ca8e 100644
+--- a/arch/arm/mach-spear3xx/spear320.c
++++ b/arch/arm/mach-spear3xx/spear320.c
+@@ -835,7 +835,7 @@ struct platform_device sdhci_device = {
+ };
+ 
+ /* spear3xx shared irq */
+-struct shirq_dev_config shirq_ras1_config[] = {
++static struct shirq_dev_config shirq_ras1_config[] = {
+ 	{
+ 		.virq = VIRQ_EMI,
+ 		.status_mask = EMI_IRQ_MASK,
+@@ -851,7 +851,7 @@ struct shirq_dev_config shirq_ras1_config[] = {
+ 	},
+ };
+ 
+-struct spear_shirq shirq_ras1 = {
++static struct spear_shirq shirq_ras1 = {
+ 	.irq = IRQ_GEN_RAS_1,
+ 	.dev_config = shirq_ras1_config,
+ 	.dev_count = ARRAY_SIZE(shirq_ras1_config),
+@@ -864,7 +864,7 @@ struct spear_shirq shirq_ras1 = {
+ 	},
+ };
+ 
+-struct shirq_dev_config shirq_ras3_config[] = {
++static struct shirq_dev_config shirq_ras3_config[] = {
+ 	{
+ 		.virq = VIRQ_PLGPIO,
+ 		.enb_mask = GPIO_IRQ_MASK,
+@@ -883,7 +883,7 @@ struct shirq_dev_config shirq_ras3_config[] = {
+ 	},
+ };
+ 
+-struct spear_shirq shirq_ras3 = {
++static struct spear_shirq shirq_ras3 = {
+ 	.irq = IRQ_GEN_RAS_3,
+ 	.dev_config = shirq_ras3_config,
+ 	.dev_count = ARRAY_SIZE(shirq_ras3_config),
+@@ -897,7 +897,7 @@ struct spear_shirq shirq_ras3 = {
+ 	},
+ };
+ 
+-struct shirq_dev_config shirq_intrcomm_ras_config[] = {
++static struct shirq_dev_config shirq_intrcomm_ras_config[] = {
+ 	{
+ 		.virq = VIRQ_CANU,
+ 		.status_mask = CAN_U_IRQ_MASK,
+@@ -945,7 +945,7 @@ struct shirq_dev_config shirq_intrcomm_ras_config[] = {
+ 	},
+ };
+ 
+-struct spear_shirq shirq_intrcomm_ras = {
++static struct spear_shirq shirq_intrcomm_ras = {
+ 	.irq = IRQ_INTRCOMM_RAS_ARM,
+ 	.dev_config = shirq_intrcomm_ras_config,
+ 	.dev_count = ARRAY_SIZE(shirq_intrcomm_ras_config),
+diff --git a/arch/arm/mach-spear3xx/spear3xx.c b/arch/arm/mach-spear3xx/spear3xx.c
+index ec1340c..544072d 100644
+--- a/arch/arm/mach-spear3xx/spear3xx.c
++++ b/arch/arm/mach-spear3xx/spear3xx.c
+@@ -292,7 +292,6 @@ void __init spear3xx_map_io(void)
+ }
+ 
+ /* pad multiplexing support */
+-/* devices */
+ 
+ /* Pad multiplexing for firda device */
+ static struct pmx_mux_reg pmx_firda_mux[] = {
+@@ -625,7 +624,6 @@ struct pmx_dev pmx_timer_1_2 = {
+ };
+ 
+ #if defined(CONFIG_MACH_SPEAR310) || defined(CONFIG_MACH_SPEAR320)
+-/* plgpios devices */
+ /* Pad multiplexing for plgpio_0_1 devices */
+ static struct pmx_mux_reg pmx_plgpio_0_1_mux[] = {
+ 	{
 -- 
 1.7.2.2
