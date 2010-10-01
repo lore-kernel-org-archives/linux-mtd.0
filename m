@@ -1,17 +1,18 @@
-Message-ID: <4CA560B7.5080505@st.com>
-Date: Fri, 1 Oct 2010 09:46:55 +0530
-From: viresh kumar <viresh.kumar@st.com>
-MIME-Version: 1.0
-To: Linus WALLEIJ <linus.walleij@stericsson.com>
 Subject: Re: [PATCH 1/2] MTD: generic FSMC NAND MTD driver
+From: David Woodhouse <dwmw2@infradead.org>
+To: viresh kumar <viresh.kumar@st.com>
+In-Reply-To: <4CA560B7.5080505@st.com>
 References: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
-In-Reply-To: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+	<4CA560B7.5080505@st.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 01 Oct 2010 14:21:29 +0900
+Message-ID: <1285910489.31224.14.camel@macbook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Rajeev KUMAR <rajeev-dlh.kumar@st.com>, Vipin KUMAR <vipin.kumar@st.com>,
-	Shiraz HASHIM <shiraz.hashim@st.com>,
+Cc: Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	Linus WALLEIJ <linus.walleij@stericsson.com>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
 	"linux-arm-kernel@lists.infradead.org"
 	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,21 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 09/13/2010 04:05 AM, Linus WALLEIJ wrote:
-> This is the same driver submitted by ST Micros SPEAr team but
-> generalized and tested on the ST-Ericsson U300. It probably
-> easily works on the NHK8815 too.
+On Fri, 2010-10-01 at 09:46 +0530, viresh kumar wrote:
 > 
-<snip...>
-> ---
->  drivers/mtd/nand/Kconfig     |    7 +
->  drivers/mtd/nand/Makefile    |    1 +
->  drivers/mtd/nand/fsmc_nand.c |  862 ++++++++++++++++++++++++++++++++++++++++++
->  include/mtd/fsmc.h           |  181 +++++++++
+> 
+> Just one query, what should be the location of fsmc.h
+> include/mtd/ or include/linux/mtd ?? 
 
-Linus,
+We use include/mtd/ for headers which are exported to userspace. Looks
+like this should be include/linux/mtd/
 
-Just one query, what should be the location of fsmc.h
-include/mtd/ or include/linux/mtd ??
-
-viresh.
+-- 
+dwmw2
