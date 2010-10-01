@@ -5,15 +5,14 @@ To: linux-arm-kernel@lists.infradead.org, rtc-linux@googlegroups.com,
 	dmitry.torokhov@gmail.com, linux-mtd@lists.infradead.org,
 	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
 	akpm@linux-foundation.org
-Subject: [PATCH V2 55/69] ST SPEAr3xx: Passing pmx devices address from
-	machine *.c files
-Date: Fri,  1 Oct 2010 17:26:15 +0530
-Message-Id: <694da64e36590aafeb8aa214a85f396a1b4dd542.1285933332.git.viresh.kumar@st.com>
+Subject: [PATCH V2 45/69] ST SPEAr: PCIE gadget suppport
+Date: Fri,  1 Oct 2010 17:26:05 +0530
+Message-Id: <c91308e26397dbe49f384c7d3cf168593e1fe8b0.1285933332.git.viresh.kumar@st.com>
 In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
 References: <cover.1285933331.git.viresh.kumar@st.com>
 In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
 References: <cover.1285933331.git.viresh.kumar@st.com>
-Cc: pratyush.anand@st.com, Viresh Kumar <viresh.kumar@st.com>,
+Cc: Pratyush Anand <pratyush.anand@st.com>, Viresh Kumar <viresh.kumar@st.com>,
 	vipulkumar.samar@st.com, bhupesh.sharma@st.com,
 	armando.visconti@st.com, vipin.kumar@st.com,
 	shiraz.hashim@st.com, rajeev-dlh.kumar@st.com, deepak.sikri@st.com
@@ -26,829 +25,948 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-All spear3xx machines have different pad mux register addresses.
-In order to have single image for all spear3xx boards, we need to pass
-this address from machine specific files to fix addresses of pmx devs found
-in spear3xx.c
+From: Pratyush Anand <pratyush.anand@st.com>
 
+This is a configurable gadget. can be configured by sysfs interface. Any
+IP available at PCIE bus can be programmed to be used by host
+controller.It supoorts both INTX and MSI.
+By default, gadget is configured for INTX and SYSRAM1 is mapped to BAR0
+with size 0x1000
+
+Signed-off-by: Pratyush Anand <pratyush.anand@st.com>
 Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- arch/arm/mach-spear3xx/include/mach/generic.h |   11 +++---
- arch/arm/mach-spear3xx/spear300.c             |   27 +++-----------
- arch/arm/mach-spear3xx/spear310.c             |   11 ++----
- arch/arm/mach-spear3xx/spear320.c             |   31 ++--------------
- arch/arm/mach-spear3xx/spear3xx.c             |   48 +++++++++---------------
- 5 files changed, 36 insertions(+), 92 deletions(-)
+ drivers/misc/Kconfig                 |   10 +
+ drivers/misc/Makefile                |    1 +
+ drivers/misc/spear13xx_pcie_gadget.c |  888 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 899 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/misc/spear13xx_pcie_gadget.c
 
-diff --git a/arch/arm/mach-spear3xx/include/mach/generic.h b/arch/arm/mach-spear3xx/include/mach/generic.h
-index 1b97ba8..0412808 100644
---- a/arch/arm/mach-spear3xx/include/mach/generic.h
-+++ b/arch/arm/mach-spear3xx/include/mach/generic.h
-@@ -50,6 +50,7 @@ void __init spear_setup_timer(void);
- void __init spear3xx_map_io(void);
- void __init spear3xx_init_irq(void);
- void __init spear3xx_init(void);
-+void spear3xx_pmx_init_addr(struct pmx_driver *driver, unsigned int addr);
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index b743312..e19deda 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -344,6 +344,16 @@ config DS1682
+ 	  This driver can also be built as a module.  If so, the module
+ 	  will be called ds1682.
  
- /* pad mux declarations */
- #define PMX_FIRDA_MASK		(1 << 14)
-@@ -150,8 +151,8 @@ extern struct pmx_dev pmx_telecom_sdhci_8bit;
- extern struct pmx_dev pmx_gpio1;
- 
- /* pad multiplexing support */
--#define PAD_MUX_CONFIG_REG	0x99000000
--#define MODE_CONFIG_REG		0x99000004
-+#define SPEAR300_PAD_MUX_CONFIG_REG	0x99000000
-+#define SPEAR300_MODE_CONFIG_REG	0x99000004
- 
- /* Add spear300 machine function declarations here */
- void __init spear300_init(void);
-@@ -183,7 +184,7 @@ extern struct pmx_dev pmx_uart3_4_5;
- extern struct pmx_dev pmx_fsmc;
- extern struct pmx_dev pmx_rs485_0_1;
- extern struct pmx_dev pmx_tdm0;
--#define PAD_MUX_CONFIG_REG	0xB4000008
-+#define SPEAR310_PAD_MUX_CONFIG_REG	0xB4000008
- 
- /* Add spear310 machine function declarations here */
- void __init spear310_init(void);
-@@ -235,8 +236,8 @@ extern struct pmx_dev pmx_smii1;
- extern struct pmx_dev pmx_i2c1;
- 
- /* pad multiplexing support */
--#define PAD_MUX_CONFIG_REG	0xB300000C
--#define MODE_CONFIG_REG		0xB3000010
-+#define SPEAR320_PAD_MUX_CONFIG_REG	0xB300000C
-+#define SPEAR320_MODE_CONFIG_REG	0xB3000010
- 
- /* Add spear320 machine function declarations here */
- void __init spear320_init(void);
-diff --git a/arch/arm/mach-spear3xx/spear300.c b/arch/arm/mach-spear3xx/spear300.c
-index 2671cfd..9885fe9 100644
---- a/arch/arm/mach-spear3xx/spear300.c
-+++ b/arch/arm/mach-spear3xx/spear300.c
-@@ -118,7 +118,6 @@ struct pmx_mode caml_lcd_mode = {
- /* Pad multiplexing for FSMC 2 NAND devices */
- static struct pmx_mux_reg pmx_fsmc_2_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_FIRDA_MASK,
- 		.value = 0,
- 	},
-@@ -142,7 +141,6 @@ struct pmx_dev pmx_fsmc_2_chips = {
- /* Pad multiplexing for FSMC 4 NAND devices */
- static struct pmx_mux_reg pmx_fsmc_4_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_FIRDA_MASK | PMX_UART0_MASK,
- 		.value = 0,
- 	},
-@@ -166,7 +164,6 @@ struct pmx_dev pmx_fsmc_4_chips = {
- /* Pad multiplexing for Keyboard device */
- static struct pmx_mux_reg pmx_kbd_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = 0x0,
- 		.value = 0,
- 	},
-@@ -192,7 +189,6 @@ struct pmx_dev pmx_keyboard = {
- /* Pad multiplexing for CLCD device */
- static struct pmx_mux_reg pmx_clcd_pfmode_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -200,7 +196,6 @@ static struct pmx_mux_reg pmx_clcd_pfmode_mux[] = {
- 
- static struct pmx_mux_reg pmx_clcd_lcdmode_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -228,7 +223,6 @@ struct pmx_dev pmx_clcd = {
- /* Pad multiplexing for Telecom GPIO device */
- static struct pmx_mux_reg pmx_gpio_lcdmode_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -236,7 +230,6 @@ static struct pmx_mux_reg pmx_gpio_lcdmode_mux[] = {
- 
- static struct pmx_mux_reg pmx_gpio_fonemode_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK | PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -244,7 +237,6 @@ static struct pmx_mux_reg pmx_gpio_fonemode_mux[] = {
- 
- static struct pmx_mux_reg pmx_gpio_atai2smode_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK | PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -252,7 +244,6 @@ static struct pmx_mux_reg pmx_gpio_atai2smode_mux[] = {
- 
- static struct pmx_mux_reg pmx_gpio_lendfonemode_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK | PMX_TIMER_1_2_MASK,
- 		.value = 0,
- 	},
-@@ -260,7 +251,6 @@ static struct pmx_mux_reg pmx_gpio_lendfonemode_mux[] = {
- 
- static struct pmx_mux_reg pmx_gpio_atawi2smode_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK | PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK
- 			| PMX_UART0_MODEM_MASK,
- 		.value = 0,
-@@ -300,7 +290,6 @@ struct pmx_dev pmx_telecom_gpio = {
- /* Pad multiplexing for TDM device */
- static struct pmx_mux_reg pmx_tdm_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK | PMX_SSP_CS_MASK,
- 		.value = 0,
- 	},
-@@ -327,7 +316,6 @@ struct pmx_dev pmx_telecom_tdm = {
- /* Pad multiplexing for spi cs i2c device */
- static struct pmx_mux_reg pmx_spi_cs_i2c_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -352,7 +340,6 @@ struct pmx_dev pmx_telecom_spi_cs_i2c_clk = {
- 
- static struct pmx_mux_reg pmx_caml_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -360,7 +347,6 @@ static struct pmx_mux_reg pmx_caml_mux[] = {
- 
- static struct pmx_mux_reg pmx_camu_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK | PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -387,7 +373,6 @@ struct pmx_dev pmx_telecom_camera = {
- /* Pad multiplexing for dac device */
- static struct pmx_mux_reg pmx_dac_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK,
- 		.value = 0,
- 	},
-@@ -411,7 +396,6 @@ struct pmx_dev pmx_telecom_dac = {
- /* Pad multiplexing for spi cs i2c device */
- static struct pmx_mux_reg pmx_i2s_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK,
- 		.value = 0,
- 	},
-@@ -437,7 +421,6 @@ struct pmx_dev pmx_telecom_i2s = {
- /* Pad multiplexing for bootpins device */
- static struct pmx_mux_reg pmx_bootpins_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK | PMX_TIMER_1_2_MASK |
- 			PMX_TIMER_3_4_MASK,
- 		.value = 0,
-@@ -461,7 +444,6 @@ struct pmx_dev pmx_telecom_boot_pins = {
- /* Pad multiplexing for sdhci 4bit device */
- static struct pmx_mux_reg pmx_sdhci_4bit_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN0_MASK | PMX_GPIO_PIN1_MASK |
- 			PMX_GPIO_PIN2_MASK | PMX_GPIO_PIN3_MASK |
- 			PMX_GPIO_PIN4_MASK | PMX_GPIO_PIN5_MASK,
-@@ -490,7 +472,6 @@ struct pmx_dev pmx_telecom_sdhci_4bit = {
- /* Pad multiplexing for spi cs i2c device */
- static struct pmx_mux_reg pmx_sdhci_8bit_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN0_MASK | PMX_GPIO_PIN1_MASK |
- 			PMX_GPIO_PIN2_MASK | PMX_GPIO_PIN3_MASK |
- 			PMX_GPIO_PIN4_MASK | PMX_GPIO_PIN5_MASK | PMX_MII_MASK,
-@@ -518,7 +499,6 @@ struct pmx_dev pmx_telecom_sdhci_8bit = {
- /* Pad multiplexing for spi cs i2c device */
- static struct pmx_mux_reg pmx_gpio1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK | PMX_TIMER_1_2_MASK |
- 			PMX_TIMER_3_4_MASK,
- 		.value = 0,
-@@ -541,7 +521,7 @@ struct pmx_dev pmx_gpio1 = {
- 
- /* pmx driver structure */
- struct pmx_driver pmx_driver = {
--	.mode_reg = {.address = MODE_CONFIG_REG, .mask = 0x0000000f},
-+	.mode_reg = {.address = SPEAR300_MODE_CONFIG_REG, .mask = 0x0000000f},
- };
- 
- /* Add spear300 specific devices here */
-@@ -777,7 +757,7 @@ struct spear_shirq shirq_ras1 = {
- void sdhci_i2s_mem_enable(u8 mask)
- {
- 	u32 val;
--	void __iomem *config = ioremap(MODE_CONFIG_REG, SZ_16);
-+	void __iomem *config = ioremap(SPEAR300_MODE_CONFIG_REG, SZ_16);
- 	if (!config) {
- 		pr_debug("sdhci_i2s_enb: ioremap fail\n");
- 		return;
-@@ -809,6 +789,9 @@ void __init spear300_init(void)
- 			printk(KERN_ERR "Error registering Shared IRQ\n");
- 	}
- 
-+	/* This fixes addresses of all pmx devices for spear300 */
-+	spear3xx_pmx_init_addr(&pmx_driver, SPEAR300_PAD_MUX_CONFIG_REG);
++config SPEAR13XX_PCIE_GADGET
++	bool "PCIE gadget support for SPEAr13XX platform"
++	depends on ARCH_SPEAR13XX
++	default n
++	help
++	 This option enables gadget support for PCIE controller. If
++	 board file defines any controller as PCIE endpoint then a sysfs
++	 entry will be created for that controller. User can use these
++	 sysfs node to configure PCIE EP as per his requirements.
 +
- 	/* pmx initialization */
- 	ret = pmx_register(&pmx_driver);
- 	if (ret)
-diff --git a/arch/arm/mach-spear3xx/spear310.c b/arch/arm/mach-spear3xx/spear310.c
-index 79f7105..be2f9de 100644
---- a/arch/arm/mach-spear3xx/spear310.c
-+++ b/arch/arm/mach-spear3xx/spear310.c
-@@ -26,7 +26,6 @@
- /* Pad multiplexing for emi_cs_0_1_4_5 devices */
- static struct pmx_mux_reg pmx_emi_cs_0_1_4_5_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -48,7 +47,6 @@ struct pmx_dev pmx_emi_cs_0_1_4_5 = {
- /* Pad multiplexing for emi_cs_2_3 devices */
- static struct pmx_mux_reg pmx_emi_cs_2_3_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK,
- 		.value = 0,
- 	},
-@@ -70,7 +68,6 @@ struct pmx_dev pmx_emi_cs_2_3 = {
- /* Pad multiplexing for uart1 device */
- static struct pmx_mux_reg pmx_uart1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_FIRDA_MASK,
- 		.value = 0,
- 	},
-@@ -92,7 +89,6 @@ struct pmx_dev pmx_uart1 = {
- /* Pad multiplexing for uart2 device */
- static struct pmx_mux_reg pmx_uart2_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK,
- 		.value = 0,
- 	},
-@@ -114,7 +110,6 @@ struct pmx_dev pmx_uart2 = {
- /* Pad multiplexing for uart3_4_5 devices */
- static struct pmx_mux_reg pmx_uart3_4_5_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK,
- 		.value = 0,
- 	},
-@@ -136,7 +131,6 @@ struct pmx_dev pmx_uart3_4_5 = {
- /* Pad multiplexing for fsmc device */
- static struct pmx_mux_reg pmx_fsmc_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_CS_MASK,
- 		.value = 0,
- 	},
-@@ -158,7 +152,6 @@ struct pmx_dev pmx_fsmc = {
- /* Pad multiplexing for rs485_0_1 devices */
- static struct pmx_mux_reg pmx_rs485_0_1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -180,7 +173,6 @@ struct pmx_dev pmx_rs485_0_1 = {
- /* Pad multiplexing for tdm0 device */
- static struct pmx_mux_reg pmx_tdm0_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -523,6 +515,9 @@ void __init spear310_init(void)
- 			printk(KERN_ERR "Error registering Shared IRQ 4\n");
- 	}
- 
-+	/* This fixes addresses of all pmx devices for spear310 */
-+	spear3xx_pmx_init_addr(&pmx_driver, SPEAR310_PAD_MUX_CONFIG_REG);
+ config TI_DAC7512
+ 	tristate "Texas Instruments DAC7512"
+ 	depends on SPI && SYSFS
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index 42eab95..9408f23 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -33,5 +33,6 @@ obj-$(CONFIG_IWMC3200TOP)      += iwmc3200top/
+ obj-$(CONFIG_HMC6352)		+= hmc6352.o
+ obj-y				+= eeprom/
+ obj-y				+= cb710/
++obj-$(CONFIG_SPEAR13XX_PCIE_GADGET)	+= spear13xx_pcie_gadget.o
+ obj-$(CONFIG_VMWARE_BALLOON)	+= vmw_balloon.o
+ obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
+diff --git a/drivers/misc/spear13xx_pcie_gadget.c b/drivers/misc/spear13xx_pcie_gadget.c
+new file mode 100644
+index 0000000..dc63a28
+--- /dev/null
++++ b/drivers/misc/spear13xx_pcie_gadget.c
+@@ -0,0 +1,888 @@
++/*
++ * drivers/misc/spear13xx_pcie_gadget.c
++ *
++ * Copyright (C) 2010 ST Microelectronics
++ * Pratyush Anand<pratyush.anand@st.com>
++ *
++ * This file is licensed under the terms of the GNU General Public
++ * License version 2. This program is licensed "as is" without any
++ * warranty of any kind, whether express or implied.
++ */
++#include <linux/delay.h>
++#include <linux/irq.h>
++#include <linux/clk.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/io.h>
++#include <linux/interrupt.h>
++#include <linux/pci_regs.h>
++#include <mach/pcie.h>
++#include <mach/misc_regs.h>
 +
- 	/* pmx initialization */
- 	ret = pmx_register(&pmx_driver);
- 	if (ret)
-diff --git a/arch/arm/mach-spear3xx/spear320.c b/arch/arm/mach-spear3xx/spear320.c
-index 8481955..bd308b8 100644
---- a/arch/arm/mach-spear3xx/spear320.c
-+++ b/arch/arm/mach-spear3xx/spear320.c
-@@ -58,7 +58,6 @@ struct pmx_mode small_printers_mode = {
- /* Pad multiplexing for CLCD device */
- static struct pmx_mux_reg pmx_clcd_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = 0x0,
- 		.value = 0,
- 	},
-@@ -81,7 +80,6 @@ struct pmx_dev pmx_clcd = {
- /* Pad multiplexing for EMI (Parallel NOR flash) device */
- static struct pmx_mux_reg pmx_emi_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -104,7 +102,6 @@ struct pmx_dev pmx_emi = {
- /* Pad multiplexing for FSMC (NAND flash) device */
- static struct pmx_mux_reg pmx_fsmc_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = 0x0,
- 		.value = 0,
- 	},
-@@ -127,7 +124,6 @@ struct pmx_dev pmx_fsmc = {
- /* Pad multiplexing for SPP device */
- static struct pmx_mux_reg pmx_spp_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = 0x0,
- 		.value = 0,
- 	},
-@@ -150,7 +146,6 @@ struct pmx_dev pmx_spp = {
- /* Pad multiplexing for SDHCI device */
- static struct pmx_mux_reg pmx_sdhci_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -174,7 +169,6 @@ struct pmx_dev pmx_sdhci = {
- /* Pad multiplexing for I2S device */
- static struct pmx_mux_reg pmx_i2s_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK,
- 		.value = 0,
- 	},
-@@ -197,7 +191,6 @@ struct pmx_dev pmx_i2s = {
- /* Pad multiplexing for UART1 device */
- static struct pmx_mux_reg pmx_uart1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN0_MASK | PMX_GPIO_PIN1_MASK,
- 		.value = 0,
- 	},
-@@ -220,7 +213,6 @@ struct pmx_dev pmx_uart1 = {
- /* Pad multiplexing for UART1 Modem device */
- static struct pmx_mux_reg pmx_uart1_modem_autoexp_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK | PMX_TIMER_3_4_MASK |
- 			PMX_SSP_CS_MASK,
- 		.value = 0,
-@@ -229,7 +221,6 @@ static struct pmx_mux_reg pmx_uart1_modem_autoexp_mux[] = {
- 
- static struct pmx_mux_reg pmx_uart1_modem_smallpri_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN3_MASK | PMX_GPIO_PIN4_MASK |
- 			PMX_GPIO_PIN5_MASK | PMX_SSP_CS_MASK,
- 		.value = 0,
-@@ -257,7 +248,6 @@ struct pmx_dev pmx_uart1_modem = {
- /* Pad multiplexing for UART2 device */
- static struct pmx_mux_reg pmx_uart2_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_FIRDA_MASK,
- 		.value = 0,
- 	},
-@@ -280,7 +270,6 @@ struct pmx_dev pmx_uart2 = {
- /* Pad multiplexing for Touchscreen device */
- static struct pmx_mux_reg pmx_touchscreen_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_CS_MASK,
- 		.value = 0,
- 	},
-@@ -303,7 +292,6 @@ struct pmx_dev pmx_touchscreen = {
- /* Pad multiplexing for CAN device */
- static struct pmx_mux_reg pmx_can_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN2_MASK | PMX_GPIO_PIN3_MASK |
- 			PMX_GPIO_PIN4_MASK | PMX_GPIO_PIN5_MASK,
- 		.value = 0,
-@@ -327,7 +315,6 @@ struct pmx_dev pmx_can = {
- /* Pad multiplexing for SDHCI LED device */
- static struct pmx_mux_reg pmx_sdhci_led_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_CS_MASK,
- 		.value = 0,
- 	},
-@@ -350,7 +337,6 @@ struct pmx_dev pmx_sdhci_led = {
- /* Pad multiplexing for PWM0 device */
- static struct pmx_mux_reg pmx_pwm0_net_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK,
- 		.value = 0,
- 	},
-@@ -358,7 +344,6 @@ static struct pmx_mux_reg pmx_pwm0_net_mux[] = {
- 
- static struct pmx_mux_reg pmx_pwm0_autoexpsmallpri_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -385,7 +370,6 @@ struct pmx_dev pmx_pwm0 = {
- /* Pad multiplexing for PWM1 device */
- static struct pmx_mux_reg pmx_pwm1_net_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK,
- 		.value = 0,
- 	},
-@@ -393,7 +377,6 @@ static struct pmx_mux_reg pmx_pwm1_net_mux[] = {
- 
- static struct pmx_mux_reg pmx_pwm1_autoexpsmallpri_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -420,7 +403,6 @@ struct pmx_dev pmx_pwm1 = {
- /* Pad multiplexing for PWM2 device */
- static struct pmx_mux_reg pmx_pwm2_net_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_CS_MASK,
- 		.value = 0,
- 	},
-@@ -428,7 +410,6 @@ static struct pmx_mux_reg pmx_pwm2_net_mux[] = {
- 
- static struct pmx_mux_reg pmx_pwm2_autoexpsmallpri_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -455,7 +436,6 @@ struct pmx_dev pmx_pwm2 = {
- /* Pad multiplexing for PWM3 device */
- static struct pmx_mux_reg pmx_pwm3_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -478,7 +458,6 @@ struct pmx_dev pmx_pwm3 = {
- /* Pad multiplexing for SSP1 device */
- static struct pmx_mux_reg pmx_ssp1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -501,7 +480,6 @@ struct pmx_dev pmx_ssp1 = {
- /* Pad multiplexing for SSP2 device */
- static struct pmx_mux_reg pmx_ssp2_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -524,7 +502,6 @@ struct pmx_dev pmx_ssp2 = {
- /* Pad multiplexing for mii1 device */
- static struct pmx_mux_reg pmx_mii1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = 0x0,
- 		.value = 0,
- 	},
-@@ -547,7 +524,6 @@ struct pmx_dev pmx_mii1 = {
- /* Pad multiplexing for smii0 device */
- static struct pmx_mux_reg pmx_smii0_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -570,7 +546,6 @@ struct pmx_dev pmx_smii0 = {
- /* Pad multiplexing for smii1 device */
- static struct pmx_mux_reg pmx_smii1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -593,7 +568,6 @@ struct pmx_dev pmx_smii1 = {
- /* Pad multiplexing for i2c1 device */
- static struct pmx_mux_reg pmx_i2c1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = 0x0,
- 		.value = 0,
- 	},
-@@ -615,7 +589,7 @@ struct pmx_dev pmx_i2c1 = {
- 
- /* pmx driver structure */
- struct pmx_driver pmx_driver = {
--	.mode_reg = {.address = MODE_CONFIG_REG, .mask = 0x00000007},
-+	.mode_reg = {.address = SPEAR320_MODE_CONFIG_REG, .mask = 0x00000007},
- };
- 
- /* Add spear320 specific devices here */
-@@ -1015,6 +989,9 @@ void __init spear320_init(void)
- 			printk(KERN_ERR "Error registering Shared IRQ 4\n");
- 	}
- 
-+	/* This fixes addresses of all pmx devices for spear320 */
-+	spear3xx_pmx_init_addr(&pmx_driver, SPEAR320_PAD_MUX_CONFIG_REG);
++#define IN0_MEM_SIZE	(200 * 1024 * 1024 - 1)
++/* In current implementation address translation is done using IN0 only.
++ * So IN1 start address and IN0 end address has been kept same
++*/
++#define IN1_MEM_SIZE	(0 * 1024 * 1024 - 1)
++#define IN_IO_SIZE	(20 * 1024 * 1024 - 1)
++#define IN_CFG0_SIZE	(12 * 1024 * 1024 - 1)
++#define IN_CFG1_SIZE	(12 * 1024 * 1024 - 1)
++#define IN_MSG_SIZE	(12 * 1024 * 1024 - 1)
++/* Keep default BAR size as 4K*/
++/* AORAM would be mapped by default*/
++#define INBOUND_ADDR_MASK	(SPEAR13XX_SYSRAM1_SIZE - 1)
 +
- 	/* pmx initialization */
- 	ret = pmx_register(&pmx_driver);
- 	if (ret)
-diff --git a/arch/arm/mach-spear3xx/spear3xx.c b/arch/arm/mach-spear3xx/spear3xx.c
-index 45a0774..ec1340c 100644
---- a/arch/arm/mach-spear3xx/spear3xx.c
-+++ b/arch/arm/mach-spear3xx/spear3xx.c
-@@ -297,7 +297,6 @@ void __init spear3xx_map_io(void)
- /* Pad multiplexing for firda device */
- static struct pmx_mux_reg pmx_firda_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_FIRDA_MASK,
- 		.value = PMX_FIRDA_MASK,
- 	},
-@@ -320,7 +319,6 @@ struct pmx_dev pmx_firda = {
- /* Pad multiplexing for i2c device */
- static struct pmx_mux_reg pmx_i2c_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_I2C_MASK,
- 		.value = PMX_I2C_MASK,
- 	},
-@@ -343,7 +341,6 @@ struct pmx_dev pmx_i2c = {
- /* Pad multiplexing for firda device */
- static struct pmx_mux_reg pmx_ssp_cs_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_CS_MASK,
- 		.value = PMX_SSP_CS_MASK,
- 	},
-@@ -366,7 +363,6 @@ struct pmx_dev pmx_ssp_cs = {
- /* Pad multiplexing for ssp device */
- static struct pmx_mux_reg pmx_ssp_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_MASK,
- 		.value = PMX_SSP_MASK,
- 	},
-@@ -389,7 +385,6 @@ struct pmx_dev pmx_ssp = {
- /* Pad multiplexing for mii device */
- static struct pmx_mux_reg pmx_mii_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = PMX_MII_MASK,
- 	},
-@@ -412,7 +407,6 @@ struct pmx_dev pmx_mii = {
- /* Pad multiplexing for gpio pin0 device */
- static struct pmx_mux_reg pmx_gpio_pin0_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN0_MASK,
- 		.value = PMX_GPIO_PIN0_MASK,
- 	},
-@@ -435,7 +429,6 @@ struct pmx_dev pmx_gpio_pin0 = {
- /* Pad multiplexing for gpio pin1 device */
- static struct pmx_mux_reg pmx_gpio_pin1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN1_MASK,
- 		.value = PMX_GPIO_PIN1_MASK,
- 	},
-@@ -458,7 +451,6 @@ struct pmx_dev pmx_gpio_pin1 = {
- /* Pad multiplexing for gpio pin2 device */
- static struct pmx_mux_reg pmx_gpio_pin2_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN2_MASK,
- 		.value = PMX_GPIO_PIN2_MASK,
- 	},
-@@ -481,7 +473,6 @@ struct pmx_dev pmx_gpio_pin2 = {
- /* Pad multiplexing for gpio pin3 device */
- static struct pmx_mux_reg pmx_gpio_pin3_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN3_MASK,
- 		.value = PMX_GPIO_PIN3_MASK,
- 	},
-@@ -504,7 +495,6 @@ struct pmx_dev pmx_gpio_pin3 = {
- /* Pad multiplexing for gpio pin4 device */
- static struct pmx_mux_reg pmx_gpio_pin4_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN4_MASK,
- 		.value = PMX_GPIO_PIN4_MASK,
- 	},
-@@ -527,7 +517,6 @@ struct pmx_dev pmx_gpio_pin4 = {
- /* Pad multiplexing for gpio pin5 device */
- static struct pmx_mux_reg pmx_gpio_pin5_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN5_MASK,
- 		.value = PMX_GPIO_PIN5_MASK,
- 	},
-@@ -550,7 +539,6 @@ struct pmx_dev pmx_gpio_pin5 = {
- /* Pad multiplexing for uart0 modem device */
- static struct pmx_mux_reg pmx_uart0_modem_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK,
- 		.value = PMX_UART0_MODEM_MASK,
- 	},
-@@ -573,7 +561,6 @@ struct pmx_dev pmx_uart0_modem = {
- /* Pad multiplexing for uart0 device */
- static struct pmx_mux_reg pmx_uart0_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MASK,
- 		.value = PMX_UART0_MASK,
- 	},
-@@ -596,7 +583,6 @@ struct pmx_dev pmx_uart0 = {
- /* Pad multiplexing for timer 3, 4 device */
- static struct pmx_mux_reg pmx_timer_3_4_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_3_4_MASK,
- 		.value = PMX_TIMER_3_4_MASK,
- 	},
-@@ -619,7 +605,6 @@ struct pmx_dev pmx_timer_3_4 = {
- /* Pad multiplexing for gpio pin0 device */
- static struct pmx_mux_reg pmx_timer_1_2_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK,
- 		.value = PMX_TIMER_1_2_MASK,
- 	},
-@@ -644,7 +629,6 @@ struct pmx_dev pmx_timer_1_2 = {
- /* Pad multiplexing for plgpio_0_1 devices */
- static struct pmx_mux_reg pmx_plgpio_0_1_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_FIRDA_MASK,
- 		.value = 0,
- 	},
-@@ -667,7 +651,6 @@ struct pmx_dev pmx_plgpio_0_1 = {
- /* Pad multiplexing for plgpio_2_3 devices */
- static struct pmx_mux_reg pmx_plgpio_2_3_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MASK,
- 		.value = 0,
- 	},
-@@ -690,7 +673,6 @@ struct pmx_dev pmx_plgpio_2_3 = {
- /* Pad multiplexing for plgpio_4_5 devices */
- static struct pmx_mux_reg pmx_plgpio_4_5_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_I2C_MASK,
- 		.value = 0,
- 	},
-@@ -713,7 +695,6 @@ struct pmx_dev pmx_plgpio_4_5 = {
- /* Pad multiplexing for plgpio_6_9 devices */
- static struct pmx_mux_reg pmx_plgpio_6_9_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_MASK,
- 		.value = 0,
- 	},
-@@ -736,7 +717,6 @@ struct pmx_dev pmx_plgpio_6_9 = {
- /* Pad multiplexing for plgpio_10_27 devices */
- static struct pmx_mux_reg pmx_plgpio_10_27_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_MII_MASK,
- 		.value = 0,
- 	},
-@@ -759,7 +739,6 @@ struct pmx_dev pmx_plgpio_10_27 = {
- /* Pad multiplexing for plgpio_28 devices */
- static struct pmx_mux_reg pmx_plgpio_28_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN0_MASK,
- 		.value = 0,
- 	},
-@@ -782,7 +761,6 @@ struct pmx_dev pmx_plgpio_28 = {
- /* Pad multiplexing for plgpio_29 devices */
- static struct pmx_mux_reg pmx_plgpio_29_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN1_MASK,
- 		.value = 0,
- 	},
-@@ -805,7 +783,6 @@ struct pmx_dev pmx_plgpio_29 = {
- /* Pad multiplexing for plgpio_30 device */
- static struct pmx_mux_reg pmx_plgpio_30_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN2_MASK,
- 		.value = 0,
- 	},
-@@ -828,7 +805,6 @@ struct pmx_dev pmx_plgpio_30 = {
- /* Pad multiplexing for plgpio_31 device */
- static struct pmx_mux_reg pmx_plgpio_31_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN3_MASK,
- 		.value = 0,
- 	},
-@@ -851,7 +827,6 @@ struct pmx_dev pmx_plgpio_31 = {
- /* Pad multiplexing for plgpio_32 device */
- static struct pmx_mux_reg pmx_plgpio_32_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN4_MASK,
- 		.value = 0,
- 	},
-@@ -874,7 +849,6 @@ struct pmx_dev pmx_plgpio_32 = {
- /* Pad multiplexing for plgpio_33 device */
- static struct pmx_mux_reg pmx_plgpio_33_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_GPIO_PIN5_MASK,
- 		.value = 0,
- 	},
-@@ -897,7 +871,6 @@ struct pmx_dev pmx_plgpio_33 = {
- /* Pad multiplexing for plgpio_34_36 device */
- static struct pmx_mux_reg pmx_plgpio_34_36_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_SSP_CS_MASK,
- 		.value = 0,
- 	},
-@@ -920,7 +893,6 @@ struct pmx_dev pmx_plgpio_34_36 = {
- /* Pad multiplexing for plgpio_37_42 device */
- static struct pmx_mux_reg pmx_plgpio_37_42_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_UART0_MODEM_MASK,
- 		.value = 0,
- 	},
-@@ -943,7 +915,6 @@ struct pmx_dev pmx_plgpio_37_42 = {
- /* Pad multiplexing for plgpio_43_44_47_48 device */
- static struct pmx_mux_reg pmx_plgpio_43_44_47_48_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_1_2_MASK,
- 		.value = 0,
- 	},
-@@ -966,7 +937,6 @@ struct pmx_dev pmx_plgpio_43_44_47_48 = {
- /* Pad multiplexing for plgpio_45_46_49_50 device */
- static struct pmx_mux_reg pmx_plgpio_45_46_49_50_mux[] = {
- 	{
--		.address = PAD_MUX_CONFIG_REG,
- 		.mask = PMX_TIMER_3_4_MASK,
- 		.value = 0,
- 	},
-@@ -1017,3 +987,21 @@ static void __init spear3xx_timer_init(void)
- struct sys_timer spear3xx_timer = {
- 	.init = spear3xx_timer_init,
- };
++#define INT_TYPE_NO_INT	0
++#define INT_TYPE_INTX	1
++#define INT_TYPE_MSI	2
++struct spear_pcie_gadget_config {
++	void __iomem *base;
++	void __iomem *va_app_base;
++	void __iomem *va_dbi_base;
++	char int_type[10];
++	u32 requested_msi;
++	u32 configured_msi;
++	u32 bar0_size;
++	u32 bar0_rw_offset;
++	u32 va_bar0_address;
++};
 +
-+/* This fixes addresses of all pmx devices for different machines */
-+void spear3xx_pmx_init_addr(struct pmx_driver *driver, unsigned int addr)
++static void enable_dbi_access(struct pcie_app_reg *app_reg)
 +{
-+	int i;
-+	for (i = 0; i < driver->devs_count; i++) {
-+		int j;
-+		struct pmx_dev *pdev = driver->devs[i];
++	/* Enable DBI access */
++	writel(readl(&app_reg->slv_armisc) | (1 << AXI_OP_DBI_ACCESS_ID),
++			&app_reg->slv_armisc);
++	writel(readl(&app_reg->slv_awmisc) | (1 << AXI_OP_DBI_ACCESS_ID),
++			&app_reg->slv_awmisc);
 +
-+		for (j = 0; j < pdev->mode_count; j++) {
-+			int k;
-+			struct pmx_dev_mode *mode = &pdev->modes[j];
++}
 +
-+			for (k = 0; k < mode->mux_reg_cnt; k++)
-+				mode->mux_regs[k].address = addr;
++static void disable_dbi_access(struct pcie_app_reg *app_reg)
++{
++	/* disable DBI access */
++	writel(readl(&app_reg->slv_armisc) & ~(1 << AXI_OP_DBI_ACCESS_ID),
++			&app_reg->slv_armisc);
++	writel(readl(&app_reg->slv_awmisc) & ~(1 << AXI_OP_DBI_ACCESS_ID),
++			&app_reg->slv_awmisc);
++
++}
++
++static void spear_dbi_read_reg(struct spear_pcie_gadget_config *config,
++		int where, int size, u32 *val)
++{
++	struct pcie_app_reg *app_reg
++		= (struct pcie_app_reg *) config->va_app_base;
++	u32 va_address;
++
++	/* Enable DBI access */
++	enable_dbi_access(app_reg);
++
++	va_address = (u32)config->va_dbi_base + (where & ~0x3);
++
++	*val = readl(va_address);
++
++	if (size == 1)
++		*val = (*val >> (8 * (where & 3))) & 0xff;
++	else if (size == 2)
++		*val = (*val >> (8 * (where & 3))) & 0xffff;
++
++	/* Disable DBI access */
++	disable_dbi_access(app_reg);
++}
++
++static void spear_dbi_write_reg(struct spear_pcie_gadget_config *config,
++		int where, int size, u32 val)
++{
++	struct pcie_app_reg *app_reg
++		= (struct pcie_app_reg *) config->va_app_base;
++	u32 va_address;
++
++	/* Enable DBI access */
++	enable_dbi_access(app_reg);
++
++	va_address = (u32)config->va_dbi_base + (where & ~0x3);
++
++	if (size == 4)
++		writel(val, va_address);
++	else if (size == 2)
++		writew(val, va_address + (where & 2));
++	else if (size == 1)
++		writeb(val, va_address + (where & 3));
++
++	/* Disable DBI access */
++	disable_dbi_access(app_reg);
++}
++
++#define PCI_FIND_CAP_TTL	48
++
++static int pci_find_own_next_cap_ttl(struct spear_pcie_gadget_config *config,
++		u32 pos, int cap, int *ttl)
++{
++	u32 id;
++
++	while ((*ttl)--) {
++		spear_dbi_read_reg(config, pos, 1, &pos);
++		if (pos < 0x40)
++			break;
++		pos &= ~3;
++		spear_dbi_read_reg(config, pos + PCI_CAP_LIST_ID, 1, &id);
++		if (id == 0xff)
++			break;
++		if (id == cap)
++			return pos;
++		pos += PCI_CAP_LIST_NEXT;
++	}
++	return 0;
++}
++
++static int pci_find_own_next_cap(struct spear_pcie_gadget_config *config,
++			u32 pos, int cap)
++{
++	int ttl = PCI_FIND_CAP_TTL;
++
++	return pci_find_own_next_cap_ttl(config, pos, cap, &ttl);
++}
++
++static int pci_find_own_cap_start(struct spear_pcie_gadget_config *config,
++				u8 hdr_type)
++{
++	u32 status;
++
++	spear_dbi_read_reg(config, PCI_STATUS, 2, &status);
++	if (!(status & PCI_STATUS_CAP_LIST))
++		return 0;
++
++	switch (hdr_type) {
++	case PCI_HEADER_TYPE_NORMAL:
++	case PCI_HEADER_TYPE_BRIDGE:
++		return PCI_CAPABILITY_LIST;
++	case PCI_HEADER_TYPE_CARDBUS:
++		return PCI_CB_CAPABILITY_LIST;
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
++/**
++ * Tell if a device supports a given PCI capability.
++ * Returns the address of the requested capability structure within the
++ * device's PCI configuration space or 0 in case the device does not
++ * support it. Possible values for @cap:
++ *
++ * %PCI_CAP_ID_PM	Power Management
++ * %PCI_CAP_ID_AGP	Accelerated Graphics Port
++ * %PCI_CAP_ID_VPD	Vital Product Data
++ * %PCI_CAP_ID_SLOTID	Slot Identification
++ * %PCI_CAP_ID_MSI	Message Signalled Interrupts
++ * %PCI_CAP_ID_CHSWP	CompactPCI HotSwap
++ * %PCI_CAP_ID_PCIX	PCI-X
++ * %PCI_CAP_ID_EXP	PCI Express
++ */
++static int pci_find_own_capability(struct spear_pcie_gadget_config *config,
++		int cap)
++{
++	u32 pos;
++	u32 hdr_type;
++
++	spear_dbi_read_reg(config, PCI_HEADER_TYPE, 1, &hdr_type);
++
++	pos = pci_find_own_cap_start(config, hdr_type);
++	if (pos)
++		pos = pci_find_own_next_cap(config, pos, cap);
++
++	return pos;
++}
++
++static irqreturn_t spear_pcie_gadget_irq(int irq, void *dev_id)
++{
++	return 0;
++}
++
++static ssize_t pcie_gadget_show_link(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++
++	if (readl(&app_reg->app_status_1) & ((u32)1 << XMLH_LINK_UP_ID))
++		return sprintf(buf, "UP");
++	else
++		return sprintf(buf, "DOWN");
++}
++
++static ssize_t pcie_gadget_store_link(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++	char link[10];
++
++	if (sscanf(buf, "%s", link) != 1)
++		return -EINVAL;
++
++	if (!strcmp(link, "UP"))
++		writel(readl(&app_reg->app_ctrl_0) | (1 << APP_LTSSM_ENABLE_ID),
++			&app_reg->app_ctrl_0);
++	else
++		writel(readl(&app_reg->app_ctrl_0)
++				& ~(1 << APP_LTSSM_ENABLE_ID),
++				&app_reg->app_ctrl_0);
++	return count;
++}
++
++static DEVICE_ATTR(link, S_IWUSR | S_IRUGO, pcie_gadget_show_link,
++		pcie_gadget_store_link);
++
++static ssize_t pcie_gadget_show_int_type(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%s", config->int_type);
++}
++
++static ssize_t pcie_gadget_store_int_type(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	char int_type[10];
++	u32 cap, vector, vec, flags;
++
++	if (sscanf(buf, "%s", int_type) != 1)
++		return -EINVAL;
++
++	if (!strcmp(int_type, "INTA"))
++		spear_dbi_write_reg(config, PCI_INTERRUPT_LINE, 1, 1);
++
++	else if (!strcmp(int_type, "MSI")) {
++		vector = config->requested_msi;
++		vec = 0;
++		while (vector > 1) {
++			vector /= 2;
++			vec++;
++		}
++		spear_dbi_write_reg(config, PCI_INTERRUPT_LINE, 1, 0);
++		cap = pci_find_own_capability(config, PCI_CAP_ID_MSI);
++		spear_dbi_read_reg(config, cap + PCI_MSI_FLAGS, 1, &flags);
++		flags &= ~PCI_MSI_FLAGS_QMASK;
++		flags |= vec << 1;
++		spear_dbi_write_reg(config, cap + PCI_MSI_FLAGS, 1, flags);
++	}
++
++	strcpy(config->int_type, int_type);
++
++	return count;
++}
++
++static DEVICE_ATTR(int_type, S_IWUSR | S_IRUGO, pcie_gadget_show_int_type,
++		pcie_gadget_store_int_type);
++
++static ssize_t pcie_gadget_show_no_of_msi(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++	u32 cap, vector, vec, flags;
++
++	if ((readl(&app_reg->msg_status) & (1 << CFG_MSI_EN_ID))
++			!= (1 << CFG_MSI_EN_ID))
++		vector = 0;
++	else {
++		cap = pci_find_own_capability(config, PCI_CAP_ID_MSI);
++		spear_dbi_read_reg(config, cap + PCI_MSI_FLAGS, 1, &flags);
++		flags &= ~PCI_MSI_FLAGS_QSIZE;
++		vec = flags >> 4;
++		vector = 1;
++		while (vec--)
++			vector *= 2;
++	}
++	config->configured_msi = vector;
++
++	return sprintf(buf, "%u", vector);
++}
++
++static ssize_t pcie_gadget_store_no_of_msi(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++
++	if (sscanf(buf, "%u", &config->requested_msi) != 1)
++		return -EINVAL;
++	if (config->requested_msi > 32)
++		config->requested_msi = 32;
++
++	return count;
++}
++
++static DEVICE_ATTR(no_of_msi, S_IWUSR | S_IRUGO, pcie_gadget_show_no_of_msi,
++		pcie_gadget_store_no_of_msi);
++
++static ssize_t pcie_gadget_store_inta(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++	int en;
++
++	if (sscanf(buf, "%d", &en) != 1)
++		return -EINVAL;
++
++	if (en)
++		writel(readl(&app_reg->app_ctrl_0) | (1 << SYS_INT_ID),
++				&app_reg->app_ctrl_0);
++	else
++		writel(readl(&app_reg->app_ctrl_0) & ~(1 << SYS_INT_ID),
++				&app_reg->app_ctrl_0);
++
++	return count;
++}
++
++static DEVICE_ATTR(inta, S_IWUSR, NULL, pcie_gadget_store_inta);
++
++static ssize_t pcie_gadget_store_send_msi(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++	int vector;
++	u32 ven_msi;
++
++	if (sscanf(buf, "%d", &vector) != 1)
++		return -EINVAL;
++
++	if (!config->configured_msi)
++		return -EINVAL;
++
++	if (vector >= config->configured_msi)
++		return -EINVAL;
++
++	ven_msi = readl(&app_reg->ven_msi_1);
++	ven_msi &= ~VEN_MSI_FUN_NUM_MASK;
++	ven_msi |= 0 << VEN_MSI_FUN_NUM_ID;
++	ven_msi &= ~VEN_MSI_TC_MASK;
++	ven_msi |= 0 << VEN_MSI_TC_ID;
++	ven_msi &= ~VEN_MSI_VECTOR_MASK;
++	ven_msi |= vector << VEN_MSI_VECTOR_ID;
++
++	/*generating interrupt for msi vector*/
++	ven_msi |= VEN_MSI_REQ_EN;
++	writel(ven_msi, &app_reg->ven_msi_1);
++	/*need to wait till this bit is cleared, it is not cleared
++	 * autometically[Bug RTL] TBD*/
++	udelay(1);
++	ven_msi &= ~VEN_MSI_REQ_EN;
++	writel(ven_msi, &app_reg->ven_msi_1);
++
++	return count;
++}
++
++static DEVICE_ATTR(send_msi, S_IWUSR, NULL, pcie_gadget_store_send_msi);
++
++static ssize_t pcie_gadget_show_vendor_id(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 id;
++
++	spear_dbi_read_reg(config, PCI_VENDOR_ID, 2, &id);
++
++	return sprintf(buf, "%x", id);
++}
++
++static ssize_t pcie_gadget_store_vendor_id(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 id;
++
++	if (sscanf(buf, "%x", &id) != 1)
++		return -EINVAL;
++
++	spear_dbi_write_reg(config, PCI_VENDOR_ID, 2, id);
++
++	return count;
++}
++
++static DEVICE_ATTR(vendor_id, S_IWUSR | S_IRUGO, pcie_gadget_show_vendor_id,
++		pcie_gadget_store_vendor_id);
++
++static ssize_t pcie_gadget_show_device_id(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 id;
++
++	spear_dbi_read_reg(config, PCI_DEVICE_ID, 2, &id);
++
++	return sprintf(buf, "%x", id);
++}
++
++static ssize_t pcie_gadget_store_device_id(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 id;
++
++	if (sscanf(buf, "%x", &id) != 1)
++		return -EINVAL;
++
++	spear_dbi_write_reg(config, PCI_DEVICE_ID, 2, id);
++
++	return count;
++}
++
++static DEVICE_ATTR(device_id, S_IWUSR | S_IRUGO, pcie_gadget_show_device_id,
++		pcie_gadget_store_device_id);
++
++static ssize_t pcie_gadget_show_bar0_size(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%x", config->bar0_size);
++}
++
++static ssize_t pcie_gadget_store_bar0_size(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 size, pos, pos1;
++	u32 no_of_bit = 0;
++
++	if (sscanf(buf, "%x", &size) != 1)
++		return -EINVAL;
++	/* as per PCIE specs, min bar size supported is 128 bytes. But
++	 * our controller supports min as 256*/
++	if (size <= 0x100)
++		size = 0x100;
++	/* max bar size is 1MB*/
++	else if (size >= 0x100000)
++		size = 0x100000;
++	else {
++		pos = 0;
++		pos1 = 0;
++		while (pos < 21) {
++			pos = find_next_bit((unsigned long *)&size, 21, pos);
++			if (pos != 21)
++				pos1 = pos + 1;
++			pos++;
++			no_of_bit++;
++		}
++		if (no_of_bit == 2)
++			pos1--;
++
++		size = 1 << pos1;
++	}
++	config->bar0_size = size;
++	spear_dbi_write_reg(config, PCIE_BAR0_MASK_REG, 4, size - 1);
++
++	return count;
++}
++
++static DEVICE_ATTR(bar0_size, S_IWUSR | S_IRUGO, pcie_gadget_show_bar0_size,
++		pcie_gadget_store_bar0_size);
++
++static ssize_t pcie_gadget_show_bar0_address(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++
++	u32 address = readl(&app_reg->pim0_mem_addr_start);
++
++	return sprintf(buf, "%x", address);
++}
++
++static ssize_t pcie_gadget_store_bar0_address(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++	u32 address;
++
++	if (sscanf(buf, "%x", &address) != 1)
++		return -EINVAL;
++
++	address &= ~(config->bar0_size - 1);
++	if (config->va_bar0_address)
++		iounmap((void *)config->va_bar0_address);
++	config->va_bar0_address = (u32)ioremap(address, config->bar0_size);
++	if (!config->va_bar0_address)
++		return -ENOMEM;
++
++	writel(address, &app_reg->pim0_mem_addr_start);
++
++	return count;
++}
++
++static DEVICE_ATTR(bar0_address, S_IWUSR | S_IRUGO,
++		pcie_gadget_show_bar0_address, pcie_gadget_store_bar0_address);
++
++static ssize_t pcie_gadget_show_bar0_rw_offset(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++
++	return sprintf(buf, "%x", config->bar0_rw_offset);
++}
++
++static ssize_t pcie_gadget_store_bar0_rw_offset(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 offset;
++
++	if (sscanf(buf, "%x", &offset) != 1)
++		return -EINVAL;
++
++	if (offset % 4)
++		return -EINVAL;
++
++	config->bar0_rw_offset = offset;
++
++	return count;
++}
++
++static DEVICE_ATTR(bar0_rw_offset, S_IWUSR | S_IRUGO,
++	pcie_gadget_show_bar0_rw_offset, pcie_gadget_store_bar0_rw_offset);
++
++static ssize_t pcie_gadget_show_bar0_data(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 data;
++
++	if (!config->va_bar0_address)
++		return -ENOMEM;
++
++	data = readl(config->va_bar0_address + config->bar0_rw_offset);
++
++	return sprintf(buf, "%x", data);
++}
++
++static ssize_t pcie_gadget_store_bar0_data(struct device *dev,
++		struct device_attribute *attr, const char *buf, size_t count)
++{
++	struct spear_pcie_gadget_config *config = dev_get_drvdata(dev);
++	u32 data;
++
++	if (sscanf(buf, "%x", &data) != 1)
++		return -EINVAL;
++
++	if (!config->va_bar0_address)
++		return -ENOMEM;
++
++	writel(data, config->va_bar0_address + config->bar0_rw_offset);
++
++	return count;
++}
++
++static DEVICE_ATTR(bar0_data, S_IWUSR | S_IRUGO,
++		pcie_gadget_show_bar0_data, pcie_gadget_store_bar0_data);
++
++static ssize_t pcie_gadget_show_help(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	char text[] = "\t\tlink read->ltssm status\n \
++		link write->arg1 = UP to enable ltsmm DOWN to disable\n \
++		int_type read->type of supported interrupt\n \
++		int_type write->arg1 = interrupt type to be configured and\n \
++		can be INTA, MSI or NO_INT\n \
++		(select MSI only when you have programmed no_of_msi)\n \
++		no_of_msi read->zero if MSI is not enabled by host\n \
++		and positive value is the number of MSI vector granted\n \
++		no_of_msi write->arg1 = number of MSI vector needed\n \
++		inta write->arg1 = 1 to assert INTA and 0 to de-assert\n \
++		send_msi write->arg1 = MSI vector to be send\n \
++		vendor_id read->programmed vendor id (hex)\n\
++		vendor_id write->arg1 = vendor id(hex) to be programmed\n \
++		device_id read->programmed device id(hex)\n \
++		device_id write->arg1 = device id(hex) to be programmed\n \
++		bar0_size read->size of bar0 in hex\n \
++		bar0_size write->arg1= size of bar0 in hex\n \
++		(default bar0 size is 1000 (hex) bytes)\n \
++		bar0_address read->address of bar0 mapped area in hex\n \
++		bar0_address write->arg1 = address of bar0 mapped area in hex\n\
++		(default mapping of bar0 is SYSRAM1(E0800000)\n \
++		(always program bar size before bar address)\n \
++		(kernel might modify bar size and address to align)\n \
++		(read back bar size and address after writing to check)\n \
++		bar0_rw_offset read->offset of bar0 for which bar0_data \n \
++		will return value\n \
++		bar0_rw_offset write->arg1 = offset of bar0 for which\n \
++		bar0_data will write value\n \
++		bar0_data read->data at bar0_rw_offset\n \
++		bar0_data write->arg1 = data to be written at\n \
++		bar0_rw_offset\n";
++
++	int size = (sizeof(text) < PAGE_SIZE) ? sizeof(text) : PAGE_SIZE;
++
++	return snprintf(buf, size, "%s", text);
++}
++
++static DEVICE_ATTR(help, S_IRUGO, pcie_gadget_show_help, NULL);
++
++static struct attribute *pcie_gadget_attributes[] = {
++	&dev_attr_link.attr,
++	&dev_attr_int_type.attr,
++	&dev_attr_no_of_msi.attr,
++	&dev_attr_inta.attr,
++	&dev_attr_send_msi.attr,
++	&dev_attr_vendor_id.attr,
++	&dev_attr_device_id.attr,
++	&dev_attr_bar0_size.attr,
++	&dev_attr_bar0_address.attr,
++	&dev_attr_bar0_rw_offset.attr,
++	&dev_attr_bar0_data.attr,
++	&dev_attr_help.attr,
++	NULL
++};
++
++static const struct attribute_group pcie_gadget_attr_group = {
++	.attrs = pcie_gadget_attributes,
++};
++
++static void spear13xx_pcie_device_init(struct spear_pcie_gadget_config *config)
++{
++	struct pcie_app_reg *app_reg =
++		(struct pcie_app_reg *)config->va_app_base;
++
++	/*setup registers for outbound translation */
++
++	writel(config->base, &app_reg->in0_mem_addr_start);
++	writel(app_reg->in0_mem_addr_start + IN0_MEM_SIZE,
++			&app_reg->in0_mem_addr_limit);
++	writel(app_reg->in0_mem_addr_limit + 1, &app_reg->in1_mem_addr_start);
++	writel(app_reg->in1_mem_addr_start + IN1_MEM_SIZE,
++			&app_reg->in1_mem_addr_limit);
++	writel(app_reg->in1_mem_addr_limit + 1, &app_reg->in_io_addr_start);
++	writel(app_reg->in_io_addr_start + IN_IO_SIZE,
++			&app_reg->in_io_addr_limit);
++	writel(app_reg->in_io_addr_limit + 1, &app_reg->in_cfg0_addr_start);
++	writel(app_reg->in_cfg0_addr_start + IN_CFG0_SIZE,
++			&app_reg->in_cfg0_addr_limit);
++	writel(app_reg->in_cfg0_addr_limit + 1, &app_reg->in_cfg1_addr_start);
++	writel(app_reg->in_cfg1_addr_start + IN_CFG1_SIZE,
++			&app_reg->in_cfg1_addr_limit);
++	writel(app_reg->in_cfg1_addr_limit + 1, &app_reg->in_msg_addr_start);
++	writel(app_reg->in_msg_addr_start + IN_MSG_SIZE,
++			&app_reg->in_msg_addr_limit);
++
++	writel(app_reg->in0_mem_addr_start, &app_reg->pom0_mem_addr_start);
++	writel(app_reg->in1_mem_addr_start, &app_reg->pom1_mem_addr_start);
++	writel(app_reg->in_io_addr_start, &app_reg->pom_io_addr_start);
++
++	/*setup registers for inbound translation */
++
++	/* Keep AORAM mapped at BAR0 as default */
++	config->bar0_size = INBOUND_ADDR_MASK + 1;
++	spear_dbi_write_reg(config, PCIE_BAR0_MASK_REG, 4, INBOUND_ADDR_MASK);
++	spear_dbi_write_reg(config, PCI_BASE_ADDRESS_0, 4, 0xC);
++	config->va_bar0_address = (u32)ioremap(SPEAR13XX_SYSRAM1_BASE,
++			config->bar0_size);
++
++	writel(SPEAR13XX_SYSRAM1_BASE, &app_reg->pim0_mem_addr_start);
++	writel(0, &app_reg->pim1_mem_addr_start);
++	writel(INBOUND_ADDR_MASK + 1, &app_reg->mem0_addr_offset_limit);
++
++	writel(0x0, &app_reg->pim_io_addr_start);
++	writel(0x0, &app_reg->pim_io_addr_start);
++	writel(0x0, &app_reg->pim_rom_addr_start);
++
++	writel(DEVICE_TYPE_EP | (1 << MISCTRL_EN_ID)
++			| ((u32)1 << REG_TRANSLATION_ENABLE),
++			&app_reg->app_ctrl_0);
++	/* disable all rx interrupts */
++	writel(0, &app_reg->int_mask);
++
++	/* Select INTA as default*/
++	spear_dbi_write_reg(config, PCI_INTERRUPT_LINE, 1, 1);
++}
++
++static int __devinit spear_pcie_gadget_probe(struct platform_device *pdev)
++{
++	struct resource *res0, *res1;
++	struct spear_pcie_gadget_config *config;
++	unsigned int status = 0;
++	int irq;
++	struct clk *clk;
++
++	/* get resource for application registers*/
++
++	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res0) {
++		dev_err(&pdev->dev, "no resource defined\n");
++		return -EBUSY;
++	}
++	if (!request_mem_region(res0->start, resource_size(res0),
++				pdev->name)) {
++		dev_err(&pdev->dev, "pcie gadget region already	claimed\n");
++		return -EBUSY;
++	}
++	/* get resource for dbi registers*/
++
++	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (!res1) {
++		dev_err(&pdev->dev, "no resource defined\n");
++		goto err_rel_res0;
++	}
++	if (!request_mem_region(res1->start, resource_size(res1),
++				pdev->name)) {
++		dev_err(&pdev->dev, "pcie gadget region already	claimed\n");
++		goto err_rel_res0;
++	}
++
++	config = kzalloc(sizeof(*config), GFP_KERNEL);
++	if (!config) {
++		dev_err(&pdev->dev, "out of memory\n");
++		status = -ENOMEM;
++		goto err_rel_res;
++	}
++
++	config->va_app_base = ioremap(res0->start, resource_size(res0));
++	if (!config->va_app_base) {
++		dev_err(&pdev->dev, "ioremap fail\n");
++		status = -ENOMEM;
++		goto err_kzalloc;
++	}
++
++	config->base = (void *)res1->start;
++
++	config->va_dbi_base = ioremap(res1->start, resource_size(res1));
++	if (!config->va_dbi_base) {
++		dev_err(&pdev->dev, "ioremap fail\n");
++		status = -ENOMEM;
++		goto err_iounmap_app;
++	}
++
++	dev_set_drvdata(&pdev->dev, config);
++
++	irq = platform_get_irq(pdev, 0);
++	if (irq < 0) {
++		dev_err(&pdev->dev, "no update irq?\n");
++		status = irq;
++		goto err_iounmap;
++	}
++
++	status = request_irq(irq, spear_pcie_gadget_irq, 0, pdev->name, NULL);
++	if (status) {
++		dev_err(&pdev->dev, "pcie gadget interrupt IRQ%d already \
++				claimed\n", irq);
++		goto err_get_irq;
++	}
++	/* Register sysfs hooks */
++	status = sysfs_create_group(&pdev->dev.kobj, &pcie_gadget_attr_group);
++	if (status)
++		goto err_irq;
++
++	/* init basic pcie application registers*/
++	/* do not enable clock if it is PCIE0.Ideally , all controller should
++	 * have been independent from others with respect to clock. But PCIE1
++	 * and 2 depends on PCIE0.So PCIE0 clk is provided during board init.*/
++	if (pdev->id == 1) {
++		/* Ideally CFG Clock should have been also enabled here. But
++		 * it is done currently during board init routne*/
++		clk = clk_get_sys("pcie1", NULL);
++		if (!clk) {
++			pr_err("%s:couldn't get clk for pcie1\n", __func__);
++			goto err_irq;
++		}
++		if (clk_enable(clk)) {
++			pr_err("%s:couldn't enable clk for pcie1\n", __func__);
++			goto err_irq;
++		}
++	} else if (pdev->id == 2) {
++		/* Ideally CFG Clock should have been also enabled here. But
++		 * it is done currently during board init routne*/
++		clk = clk_get_sys("pcie2", NULL);
++		if (!clk) {
++			pr_err("%s:couldn't get clk for pcie2\n", __func__);
++			goto err_irq;
++		}
++		if (clk_enable(clk)) {
++			pr_err("%s:couldn't enable clk for pcie2\n", __func__);
++			goto err_irq;
 +		}
 +	}
++	spear13xx_pcie_device_init(config);
++
++	return 0;
++err_irq:
++	free_irq(irq, NULL);
++err_get_irq:
++	dev_set_drvdata(&pdev->dev, NULL);
++err_iounmap:
++	iounmap(config->va_dbi_base);
++err_iounmap_app:
++	iounmap(config->va_app_base);
++err_kzalloc:
++	kfree(config);
++err_rel_res:
++	release_mem_region(res1->start, resource_size(res1));
++err_rel_res0:
++	release_mem_region(res0->start, resource_size(res0));
++	return status;
 +}
++
++static int __devexit spear_pcie_gadget_remove(struct platform_device *pdev)
++{
++	struct resource *res0, *res1;
++	struct spear_pcie_gadget_config *config;
++	int irq;
++
++	res0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	res1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	irq = platform_get_irq(pdev, 0);
++	config = dev_get_drvdata(&pdev->dev);
++
++	free_irq(irq, NULL);
++	dev_set_drvdata(&pdev->dev, NULL);
++	iounmap(config->va_dbi_base);
++	iounmap(config->va_app_base);
++	kfree(config);
++	release_mem_region(res1->start, resource_size(res1));
++	release_mem_region(res0->start, resource_size(res0));
++	sysfs_remove_group(&pdev->dev.kobj, &pcie_gadget_attr_group);
++
++	return 0;
++}
++
++static void spear_pcie_gadget_shutdown(struct platform_device *pdev)
++{
++}
++
++static struct platform_driver spear_pcie_gadget_driver = {
++	.probe = spear_pcie_gadget_probe,
++	.remove = spear_pcie_gadget_remove,
++	.shutdown = spear_pcie_gadget_shutdown,
++	.driver = {
++		.name = "pcie-gadget-spear",
++		.bus = &platform_bus_type
++	},
++};
++
++static int __init spear_pcie_gadget_init(void)
++{
++	return platform_driver_register(&spear_pcie_gadget_driver);
++}
++module_init(spear_pcie_gadget_init);
++
++static void __exit spear_pcie_gadget_exit(void)
++{
++	platform_driver_unregister(&spear_pcie_gadget_driver);
++}
++module_exit(spear_pcie_gadget_exit);
++
++MODULE_ALIAS("pcie-gadget-spear");
++MODULE_AUTHOR("Pratyush Anand");
++MODULE_LICENSE("GPL");
 -- 
 1.7.2.2
