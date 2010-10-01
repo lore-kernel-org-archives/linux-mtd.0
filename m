@@ -1,16 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1YPh-0006nQ-Mf
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 05:44:10 +0000
+	id 1P1YR8-0007zs-0o
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 05:45:38 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 7CF611B4001
+	by smtp.gentoo.org (Postfix) with ESMTP id BA4A81B4001
 	for <linux-mtd@lists.infradead.org>;
-	Fri,  1 Oct 2010 05:44:08 +0000 (UTC)
+	Fri,  1 Oct 2010 05:45:36 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: xalloc: simplify/unify error messages
-Date: Fri,  1 Oct 2010 01:45:06 -0400
-Message-Id: <1285911906-9672-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] libmtd: unify some error messages
+Date: Fri,  1 Oct 2010 01:46:34 -0400
+Message-Id: <1285911994-9747-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +20,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm not sure that if we actually are out of memory that declaring the
-failing allocation size is useful in the output.  So use the same
-simple string in every error message to cut down on size (there will
-only be one copy of this at runtime).  Size is a much more common
-concern than handling OOM issues which most likely aren't the fault
-of mtd-utils in the first place.
+By using the same error message string, we only need one copy of it
+in memory at runtime.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- include/xalloc.h |   10 +++++-----
- 1 files changed, 5 insertions(+), 5 deletions(-)
+ lib/libmtd.c |   27 ++++++++++++++-------------
+ 1 files changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/include/xalloc.h b/include/xalloc.h
-index 35a94af..f1cc8d4 100644
---- a/include/xalloc.h
-+++ b/include/xalloc.h
-@@ -41,7 +41,7 @@ static void *xmalloc(size_t size)
- 	void *ptr = malloc(size);
- 
- 	if (ptr == NULL && size != 0)
--		sys_errmsg_die("malloc(%zu) failed", size);
-+		sys_errmsg_die("out of memory");
- 	return ptr;
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 1839192..e0c0934 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -785,6 +785,13 @@ int mtd_get_dev_info(libmtd_t desc, const char *node, struct mtd_dev_info *mtd)
+ 	return mtd_get_dev_info1(desc, mtd_num, mtd);
  }
  
-@@ -51,7 +51,7 @@ static void *xcalloc(size_t nmemb, size_t size)
- 	void *ptr = calloc(nmemb, size);
- 
- 	if (ptr == NULL && nmemb != 0 && size != 0)
--		sys_errmsg_die("calloc(%zu, %zu) failed", nmemb, size);
-+		sys_errmsg_die("out of memory");
- 	return ptr;
- }
- 
-@@ -66,7 +66,7 @@ static void *xrealloc(void *ptr, size_t size)
++static inline int mtd_ioctl_error(const struct mtd_dev_info *mtd, int eb,
++				  const char *sreq)
++{
++	return sys_errmsg("%s ioctl failed for eraseblock %d (mtd%d)",
++			  sreq, eb, mtd->mtd_num);
++}
++
+ static int mtd_valid_erase_block(const struct mtd_dev_info *mtd, int eb)
  {
- 	ptr = realloc(ptr, size);
- 	if (ptr == NULL && size != 0)
--		sys_errmsg_die("realloc(%p, %zu) failed", ptr, size);
-+		sys_errmsg_die("out of memory");
- 	return ptr;
+ 	if (eb < 0 || eb >= mtd->eb_cnt) {
+@@ -811,8 +818,7 @@ static int mtd_xlock(const struct mtd_dev_info *mtd, int fd, int eb, int req,
+ 
+ 	ret = ioctl(fd, req, &ei);
+ 	if (ret < 0)
+-		return sys_errmsg("%s ioctl failed for eraseblock %d "
+-				  "(mtd%d)", sreq, eb, mtd->mtd_num);
++		return mtd_ioctl_error(mtd, eb, sreq);
+ 
+ 	return 0;
+ }
+@@ -850,9 +856,7 @@ int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+ 
+ 		if (errno != ENOTTY ||
+ 		    lib->offs64_ioctls != OFFS64_IOCTLS_UNKNOWN)
+-			return sys_errmsg("MEMERASE64 ioctl failed for "
+-					  "eraseblock %d (mtd%d)",
+-					  eb, mtd->mtd_num);
++			return mtd_ioctl_error(mtd, eb, "MEMERASE64");
+ 
+ 		/*
+ 		 * MEMERASE64 support was added in kernel version 2.6.31, so
+@@ -873,8 +877,7 @@ int mtd_erase(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+ 	ei.length = ei64.length;
+ 	ret = ioctl(fd, MEMERASE, &ei);
+ 	if (ret < 0)
+-		return sys_errmsg("MEMERASE ioctl failed for eraseblock %d "
+-				  "(mtd%d)", eb, mtd->mtd_num);
++		return mtd_ioctl_error(mtd, eb, "MEMERASE");
+ 	return 0;
  }
  
-@@ -79,7 +79,7 @@ static char *xstrdup(const char *s)
- 		return NULL;
- 	t = strdup(s);
- 	if (t == NULL)
--		sys_errmsg_die("strdup(%p) failed", s);
-+		sys_errmsg_die("out of memory");
- 	return t;
+@@ -970,8 +973,7 @@ int mtd_is_bad(const struct mtd_dev_info *mtd, int fd, int eb)
+ 	seek = (loff_t)eb * mtd->eb_size;
+ 	ret = ioctl(fd, MEMGETBADBLOCK, &seek);
+ 	if (ret == -1)
+-		return sys_errmsg("MEMGETBADBLOCK ioctl failed for "
+-				  "eraseblock %d (mtd%d)", eb, mtd->mtd_num);
++		return mtd_ioctl_error(mtd, eb, "MEMGETBADBLOCK");
+ 	return ret;
  }
  
-@@ -97,7 +97,7 @@ static int xasprintf(char **strp, const char *fmt, ...)
- 	va_end(ap);
- 
- 	if (cnt == -1)
--		sys_errmsg_die("asprintf(...) failed");
-+		sys_errmsg_die("out of memory");
- 
- 	return cnt;
+@@ -992,8 +994,7 @@ int mtd_mark_bad(const struct mtd_dev_info *mtd, int fd, int eb)
+ 	seek = (loff_t)eb * mtd->eb_size;
+ 	ret = ioctl(fd, MEMSETBADBLOCK, &seek);
+ 	if (ret == -1)
+-		return sys_errmsg("MEMSETBADBLOCK ioctl failed for "
+-			          "eraseblock %d (mtd%d)", eb, mtd->mtd_num);
++		return mtd_ioctl_error(mtd, eb, "MEMSETBADBLOCK");
+ 	return 0;
  }
+ 
+@@ -1196,7 +1197,7 @@ int mtd_write_img(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
+ 
+ 	in_fd = open(img_name, O_RDONLY);
+ 	if (in_fd == -1)
+-		return sys_errmsg("cannot open %s", img_name);
++		return sys_errmsg("cannot open \"%s\"", img_name);
+ 
+ 	if (fstat(in_fd, &st)) {
+ 		sys_errmsg("cannot stat %s", img_name);
+@@ -1237,7 +1238,7 @@ int mtd_write_img(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
+ 		do {
+ 			ret = read(in_fd, buf, mtd->eb_size - offs - rd);
+ 			if (ret == -1) {
+-				sys_errmsg("cannot read from %s", img_name);
++				sys_errmsg("cannot read \"%s\"", img_name);
+ 				goto out_free;
+ 			}
+ 			rd += ret;
 -- 
 1.7.3.1
