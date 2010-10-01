@@ -1,27 +1,14 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1kni-0005XZ-TG
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 18:57:47 +0000
-Received: by fxm15 with SMTP id 15so2840686fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 01 Oct 2010 11:56:56 -0700 (PDT)
-Subject: Re: [PATCH v2] mtd/nand: add support for BBT without OOB
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-In-Reply-To: <20100930192800.GA17730@Chamillionaire.breakpoint.cc>
-References: <1285782234-32509-1-git-send-email-bigeasy@linutronix.de>
-	<1285782234-32509-4-git-send-email-bigeasy@linutronix.de>
-	<1285791064.1776.35.camel@brekeke>
-	<20100930085111.GA12354@Chamillionaire.breakpoint.cc>
-	<1285838065.11684.57.camel@localhost>
-	<20100930192800.GA17730@Chamillionaire.breakpoint.cc>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Oct 2010 21:56:50 +0300
-Message-ID: <1285959410.32172.1.camel@brekeke>
-Mime-Version: 1.0
+Message-Id: <201010012116.o91LGRGn021118@imap1.linux-foundation.org>
+Subject: [patch 1/2] mtdpart: memory accessor interface for MTD layer
+To: dwmw2@infradead.org
+From: akpm@linux-foundation.org
+Date: Fri, 01 Oct 2010 14:16:27 -0700
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: sudhakar.raj@ti.com, khilman@deeprootsystems.com, david-b@pacbell.net,
+	linux-mtd@lists.infradead.org, cbouatmailru@gmail.com,
+	akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +18,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-09-30 at 21:28 +0200, Sebastian Andrzej Siewior wrote:
-> The first (sixt) byte in the OOB area contains vendor's bad block
-> information. During identification of the NAND chip this information is
-> collected by scanning the complete chip.
-> The option NAND_USE_FLASH_BBT is used to store this information in a sector so
-> we don't have to scan the complete flash. Unfortunately the code stores
-> a marker in order to recognize the BBT in the OOB area. This will fail
-> if the OOB area is completely used for ECC.
-> This patch introduces the option NAND_USE_FLASH_BBT_NO_OOB which has to be
-> used with NAND_USE_FLASH_BBT. It will then store BBT on flash without
-> touching the OOB area. The BBT format on flash remains same except the
-> first page starts with the recognition pattern followed by the version byte.
-> This change was tested in nandsim and it looks good so far :)
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
 
-Pushed to l2-mtd-2.6.git, thanks.
+Implement a memory accessor interface in the MTD layer which enables the
+kernel to access flash data.
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+This patch adds two new members to the mtd_partition structure, a function
+handler which will be called during setup of the partition and an argument
+to be passed to this setup function.
+
+Example:
++static struct mtd_partition spi_flash_partitions[] = {
++       [0] = {
++               .name       = "U-Boot",
++               .offset     = 0,
++               .size       = SZ_256K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [1] = {
++               .name       = "U-Boot Environment",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [2] = {
++               .name       = "Linux",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_7M,
++               .mask_flags = 0,
++       },
++       [3] = {
++               .name       = "MAC Address",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = 0,
++               .setup      = davinci_get_mac_addr,
++               .context    = (void *)0,
++       },
++};
+
+The davinci_get_mac_addr function reads the MAC address from
+offset ZERO of last MTD partition.
+
+Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Acked-by: Kevin Hilman <khilman@deeprootsystems.com>
+Cc: David Brownell <david-b@pacbell.net>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Anton Vorontsov <cbouatmailru@gmail.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/mtd/mtdpart.c          |   40 +++++++++++++++++++++++++++++++
+ include/linux/mtd/partitions.h |    3 ++
+ 2 files changed, 43 insertions(+)
+
+diff -puN drivers/mtd/mtdpart.c~mtdpart-memory-accessor-interface-for-mtd-layer drivers/mtd/mtdpart.c
+--- a/drivers/mtd/mtdpart.c~mtdpart-memory-accessor-interface-for-mtd-layer
++++ a/drivers/mtd/mtdpart.c
+@@ -37,6 +37,7 @@ static LIST_HEAD(mtd_partitions);
+ struct mtd_part {
+ 	struct mtd_info mtd;
+ 	struct mtd_info *master;
++	struct memory_accessor macc;
+ 	uint64_t offset;
+ 	struct list_head list;
+ };
+@@ -346,6 +347,39 @@ int del_mtd_partitions(struct mtd_info *
+ }
+ EXPORT_SYMBOL(del_mtd_partitions);
+ 
++/*
++ * This lets other kernel code access the flash data. For example, it
++ * might hold a board's Ethernet address, or board-specific calibration
++ * data generated on the manufacturing floor.
++ */
++static ssize_t mtd_macc_read(struct memory_accessor *macc, char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
++
++	if (part_read((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
++
++	return ret;
++}
++
++static ssize_t mtd_macc_write(struct memory_accessor *macc, const char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
++
++	if (part_write((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
++
++	return ret;
++}
++
+ static struct mtd_part *add_one_partition(struct mtd_info *master,
+ 		const struct mtd_partition *part, int partno,
+ 		uint64_t cur_offset)
+@@ -383,6 +417,9 @@ static struct mtd_part *add_one_partitio
+ 	slave->mtd.read = part_read;
+ 	slave->mtd.write = part_write;
+ 
++	slave->macc.read = mtd_macc_read;
++	slave->macc.write = mtd_macc_write;
++
+ 	if (master->panic_write)
+ 		slave->mtd.panic_write = part_panic_write;
+ 
+@@ -449,6 +486,9 @@ static struct mtd_part *add_one_partitio
+ 	printk(KERN_NOTICE "0x%012llx-0x%012llx : \"%s\"\n", (unsigned long long)slave->offset,
+ 		(unsigned long long)(slave->offset + slave->mtd.size), slave->mtd.name);
+ 
++	if (part->setup)
++		part->setup(&slave->macc, (void *)part->context);
++
+ 	/* let's do some sanity checks */
+ 	if (slave->offset >= master->size) {
+ 		/* let's register it anyway to preserve ordering */
+diff -puN include/linux/mtd/partitions.h~mtdpart-memory-accessor-interface-for-mtd-layer include/linux/mtd/partitions.h
+--- a/include/linux/mtd/partitions.h~mtdpart-memory-accessor-interface-for-mtd-layer
++++ a/include/linux/mtd/partitions.h
+@@ -10,6 +10,7 @@
+ #define MTD_PARTITIONS_H
+ 
+ #include <linux/types.h>
++#include <linux/memory.h>
+ 
+ 
+ /*
+@@ -40,6 +41,8 @@ struct mtd_partition {
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+ 	struct nand_ecclayout *ecclayout;	/* out of band layout for this partition (NAND only)*/
++	void (*setup)(struct memory_accessor *, void *context);
++	void *context;
+ };
+ 
+ #define MTDPART_OFS_NXTBLK	(-2)
+_
