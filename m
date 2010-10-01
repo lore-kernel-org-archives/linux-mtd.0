@@ -1,16 +1,23 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1jAT-0003Od-Ee
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 17:13:12 +0000
-Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id 09F2E1B4082
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  1 Oct 2010 17:13:07 +0000 (UTC)
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] jffs2reader: convert to common.h helpers
-Date: Fri,  1 Oct 2010 13:14:06 -0400
-Message-Id: <1285953246-19729-1-git-send-email-vapier@gentoo.org>
+From: Viresh KUMAR <viresh.kumar@st.com>
+To: linux-arm-kernel@lists.infradead.org, rtc-linux@googlegroups.com,
+	a.zummo@towertech.it, dbrownell@users.sourceforge.net,
+	linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+	dmitry.torokhov@gmail.com, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org
+Subject: [PATCH V2 68/69] ST SPEAr: Adding information in Documentation/ and
+	MAINTAINERS
+Date: Fri,  1 Oct 2010 17:26:28 +0530
+Message-Id: <ffb4a467d09710964cb451eb1ccefc597985fbef.1285933332.git.viresh.kumar@st.com>
+In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
+References: <cover.1285933331.git.viresh.kumar@st.com>
+In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
+References: <cover.1285933331.git.viresh.kumar@st.com>
+Cc: pratyush.anand@st.com, Viresh Kumar <viresh.kumar@st.com>,
+	vipulkumar.samar@st.com, bhupesh.sharma@st.com,
+	armando.visconti@st.com, vipin.kumar@st.com,
+	Shiraz Hashim <shiraz.hashim@st.com>, rajeev-dlh.kumar@st.com,
+	deepak.sikri@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,156 +27,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
- jffs2reader.c |   70 +++++++++++++++++---------------------------------------
- 1 files changed, 21 insertions(+), 49 deletions(-)
+From: Shiraz Hashim <shiraz.hashim@st.com>
 
-diff --git a/jffs2reader.c b/jffs2reader.c
-index 0cdff19..8326971 100644
---- a/jffs2reader.c
-+++ b/jffs2reader.c
-@@ -136,10 +136,8 @@ void putblock(char *b, size_t bsize, size_t * rsize,
- {
- 	uLongf dlen = n->dsize;
+Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+---
+ Documentation/arm/SPEAr/overview.txt |   34 +++++++++++++++++++++++-----------
+ MAINTAINERS                          |    6 ++++++
+ 2 files changed, 29 insertions(+), 11 deletions(-)
+
+diff --git a/Documentation/arm/SPEAr/overview.txt b/Documentation/arm/SPEAr/overview.txt
+index 253a35c..4e510061 100644
+--- a/Documentation/arm/SPEAr/overview.txt
++++ b/Documentation/arm/SPEAr/overview.txt
+@@ -9,8 +9,9 @@ Introduction
  
--	if (n->isize > bsize || (n->offset + dlen) > bsize) {
--		fprintf(stderr, "File does not fit into buffer!\n");
--		exit(EXIT_FAILURE);
--	}
-+	if (n->isize > bsize || (n->offset + dlen) > bsize)
-+		errmsg("File does not fit into buffer!");
+   The ST Microelectronics SPEAr range of ARM9/CortexA9 System-on-Chip CPUs are
+   supported by the 'spear' platform of ARM Linux. Currently SPEAr300,
+-  SPEAr310, SPEAr320 and SPEAr600 SOCs are supported. Support for the SPEAr13XX
+-  series is in progress.
++  SPEAr310, SPEAr320, SPEAr600, SPEAr1300 and SPEAr1310 SOCs are supported.
++  SPEAr3XX and SPEAr6XX are based on ARM9 whereas SPEAr13XX is based on latest
++  ARM Cortex A9 CPUs.
  
- 	if (*rsize < n->isize)
- 		bzero(b + *rsize, n->isize - *rsize);
-@@ -163,8 +161,7 @@ void putblock(char *b, size_t bsize, size_t * rsize,
- 			/* [DYN]RUBIN support required! */
+   Hierarchy in SPEAr is as follows:
  
- 		default:
--			fprintf(stderr, "Unsupported compression method!\n");
--			exit(EXIT_FAILURE);
-+			errmsg("Unsupported compression method!");
- 	}
+@@ -27,16 +28,25 @@ Introduction
+ 			- SPEAr600_EVB (Evaluation Board)
+ 	- SPEAr13XX (13XX SOC series, based on ARM CORTEXA9)
+ 		- SPEAr1300 (SOC)
++			- SPEAr1300_EVB (Evaluation Board)
++		- SPEAr1310 (SOC)
++			- SPEAr1310_EVB (Evaluation Board)
  
- 	*rsize = n->isize;
-@@ -188,7 +185,7 @@ struct dir *putdir(struct dir *dd, struct jffs2_raw_dirent *n)
+   Configuration
+   -------------
  
- 	if (n->ino) {
- 		if (dd == NULL) {
--			d = malloc(sizeof(struct dir));
-+			d = xmalloc(sizeof(struct dir));
- 			d->type = n->type;
- 			memcpy(d->name, n->name, n->nsize);
- 			d->nsize = n->nsize;
-@@ -208,7 +205,7 @@ struct dir *putdir(struct dir *dd, struct jffs2_raw_dirent *n)
- 			}
+-  A generic configuration is provided for each machine, and can be used as the
++  A generic configuration is provided for each machine family, and can be used as the
+   default by
+-	make spear600_defconfig
+-	make spear300_defconfig
+-	make spear310_defconfig
+-	make spear320_defconfig
++	#make ARCH=arm spear13xx_defconfig
++	#make ARCH=arm spear3xx_defconfig
++	#make ARCH=arm spear6xx_defconfig
++
++  Compilation
++  -----------
++
++  After applying default configuration, Linux kernel for SPEAr architecture
++  can be compiled as
++	#make ARCH=arm CROSS_COMPILE=arm-linux- uImage
  
- 			if (dd->next == NULL) {
--				dd->next = malloc(sizeof(struct dir));
-+				dd->next = xmalloc(sizeof(struct dir));
- 				dd->next->type = n->type;
- 				memcpy(dd->next->name, n->name, n->nsize);
- 				dd->next->nsize = n->nsize;
-@@ -344,7 +341,7 @@ void printdir(char *o, size_t size, struct dir *d, char *path, int recurse)
- 		}
- 		ri = find_raw_inode(o, size, d->ino);
- 		if (!ri) {
--			fprintf(stderr, "bug: raw_inode missing!\n");
-+			warnmsg("bug: raw_inode missing!");
- 			d = d->next;
- 			continue;
- 		}
-@@ -379,11 +376,7 @@ void printdir(char *o, size_t size, struct dir *d, char *path, int recurse)
+   Layout
+   ------
+@@ -48,13 +58,15 @@ Introduction
+   Each machine series have a directory with name arch/arm/mach-spear followed by
+   series name. Like mach-spear3xx, mach-spear6xx and mach-spear13xx.
  
- 		if (d->type == DT_DIR && recurse) {
- 			char *tmp;
--			tmp = malloc(BUFSIZ);
--			if (!tmp) {
--				fprintf(stderr, "memory exhausted\n");
--				exit(EXIT_FAILURE);
--			}
-+			tmp = xmalloc(BUFSIZ);
- 			sprintf(tmp, "%s/%s", path, d->name);
- 			lsdir(o, size, tmp, recurse);		/* Go recursive */
- 			free(tmp);
-@@ -817,11 +810,8 @@ void lsdir(char *o, size_t size, char *path, int recurse)
- 	dd = resolvepath(o, size, 1, path, &ino);
+-  Common file for machines of spear3xx family is mach-spear3xx/spear3xx.c and for
+-  spear6xx is mach-spear6xx/spear6xx.c. mach-spear* also contain soc/machine
++  Common file for machines of spear3xx family is mach-spear3xx/spear3xx.c, for
++  spear6xx is mach-spear6xx/spear6xx.c and similarly for spear13xx is
++  mach-spear13xx/spear13xx.c. mach-spear* also contain soc/machine
+   specific files, like spear300.c, spear310.c, spear320.c and spear600.c.
+-  mach-spear* also contains board specific files for each machine type.
++  Board specific files for each machine type is also contained in mach-spear*
++  folder.
  
- 	if (ino == 0 ||
--			(dd == NULL && ino == 0) || (dd != NULL && dd->type != DT_DIR)) {
--		fprintf(stderr, "%s: %s: No such file or directory\n",
--				PROGRAM_NAME, path);
--		exit(EXIT_FAILURE);
--	}
-+			(dd == NULL && ino == 0) || (dd != NULL && dd->type != DT_DIR))
-+		errmsg_dir("%s: No such file or directory", path);
  
- 	d = collectdir(o, size, ino, d);
- 	printdir(o, size, d, path, recurse);
-@@ -848,15 +838,11 @@ void catfile(char *o, size_t size, char *path, char *b, size_t bsize,
+   Document Author
+   ---------------
  
- 	dd = resolvepath(o, size, 1, path, &ino);
+-  Viresh Kumar, (c) 2010 ST Microelectronics
++  Viresh Kumar, Shiraz Hashim (c) 2010 ST Microelectronics
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 668682d..97520d9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5462,6 +5462,12 @@ W:	http://www.st.com/spear
+ S:	Maintained
+ F:	arch/arm/plat-spear/
  
--	if (ino == 0) {
--		fprintf(stderr, "%s: No such file or directory\n", path);
--		exit(EXIT_FAILURE);
--	}
-+	if (ino == 0)
-+		errmsg_die("%s: No such file or directory", path);
- 
--	if (dd == NULL || dd->type != DT_REG) {
--		fprintf(stderr, "%s: Not a regular file\n", path);
--		exit(EXIT_FAILURE);
--	}
-+	if (dd == NULL || dd->type != DT_REG)
-+		errmsg_die("%s: Not a regular file", path);
- 
- 	ri = find_raw_inode(o, size, ino);
- 	putblock(b, bsize, rsize, ri);
-@@ -896,36 +882,22 @@ int main(int argc, char **argv)
- 	}
- 
- 	fd = open(argv[optind], O_RDONLY);
--	if (fd == -1) {
--		fprintf(stderr, "%s: %s\n", argv[optind], strerror(errno));
--		exit(2);
--	}
-+	if (fd == -1)
-+		sys_errmsg_die("%s", argv[optind]);
- 
--	if (fstat(fd, &st)) {
--		fprintf(stderr, "%s: %s\n", argv[optind], strerror(errno));
--		exit(3);
--	}
-+	if (fstat(fd, &st))
-+		sys_errmsg_die("%s", argv[optind]);
- 
--	buf = malloc((size_t) st.st_size);
--	if (buf == NULL) {
--		fprintf(stderr, "%s: memory exhausted\n", argv[optind]);
--		exit(4);
--	}
-+	buf = xmalloc((size_t) st.st_size);
- 
--	if (read(fd, buf, st.st_size) != (ssize_t) st.st_size) {
--		fprintf(stderr, "%s: %s\n", argv[optind], strerror(errno));
--		exit(5);
--	}
-+	if (read(fd, buf, st.st_size) != (ssize_t) st.st_size)
-+		sys_errmsg_die("%s", argv[optind]);
- 
- 	if (dir)
- 		lsdir(buf, st.st_size, dir, recurse);
- 
- 	if (file) {
--		scratch = malloc(SCRATCH_SIZE);
--		if (scratch == NULL) {
--			fprintf(stderr, "%s: memory exhausted\n", argv[optind]);
--			exit(6);
--		}
-+		scratch = xmalloc(SCRATCH_SIZE);
- 
- 		catfile(buf, st.st_size, file, scratch, SCRATCH_SIZE, &ssize);
- 		free(scratch);
++SPEAR13XX MACHINE SUPPORT
++M:	Shiraz Hashim <shiraz.hashim@st.com>
++W:	http://www.st.com/spear
++S:	Maintained
++F:	arch/arm/mach-spear13xx/
++
+ SPEAR3XX MACHINE SUPPORT
+ M:	Viresh Kumar <viresh.kumar@st.com>
+ W:	http://www.st.com/spear
 -- 
-1.7.3.1
+1.7.2.2
