@@ -1,18 +1,16 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by bombadil.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1j7x-0000nb-DQ
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 17:10:37 +0000
+	id 1P1j9a-0002V0-Al
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 17:12:15 +0000
 Received: from localhost.localdomain (localhost [127.0.0.1])
-	by smtp.gentoo.org (Postfix) with ESMTP id F1BDE1B4063
+	by smtp.gentoo.org (Postfix) with ESMTP id C4C4C1B4205
 	for <linux-mtd@lists.infradead.org>;
-	Fri,  1 Oct 2010 17:10:31 +0000 (UTC)
+	Fri,  1 Oct 2010 17:12:12 +0000 (UTC)
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 2/2] sumtool/libfec: convert "()" to "(void)" in func defs
-Date: Fri,  1 Oct 2010 13:11:28 -0400
-Message-Id: <1285953088-19593-2-git-send-email-vapier@gentoo.org>
-In-Reply-To: <1285953088-19593-1-git-send-email-vapier@gentoo.org>
-References: <1285953088-19593-1-git-send-email-vapier@gentoo.org>
+Subject: [PATCH] libmtd: make malloc failures fatal
+Date: Fri,  1 Oct 2010 13:13:10 -0400
+Message-Id: <1285953190-19669-1-git-send-email-vapier@gentoo.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,134 +20,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since these functions take no parameters, declare them as such.  The
-subtle difference here is that gcc allows (without warning) people to
-accidentally call funcs declared with "()" with arguments.  Using void
-makes sure that gcc will reject such typos at compile time.
+This converts libmtd to the common xalloc helpers and in doing so, makes
+memory allocation failures fatal rather than returning an error to the
+caller.  I think this is acceptable behavior.
 
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- lib/libfec.c |    6 +++---
- sumtool.c    |   20 ++++++++++----------
- 2 files changed, 13 insertions(+), 13 deletions(-)
+ lib/libmtd.c        |   26 ++++++--------------------
+ lib/libmtd_legacy.c |    8 +-------
+ 2 files changed, 7 insertions(+), 27 deletions(-)
 
-diff --git a/lib/libfec.c b/lib/libfec.c
-index b19ed6e..c89a180 100644
---- a/lib/libfec.c
-+++ b/lib/libfec.c
-@@ -185,7 +185,7 @@ static gf gf_mul_table[GF_SIZE + 1][GF_SIZE + 1];
- #define GF_ADDMULC(dst, x) dst ^= __gf_mulc_[x]
- 
- static void
--init_mul_table()
-+init_mul_table(void)
+diff --git a/lib/libmtd.c b/lib/libmtd.c
+index 83ae812..e0c0934 100644
+--- a/lib/libmtd.c
++++ b/lib/libmtd.c
+@@ -48,14 +48,10 @@
+ static char *mkpath(const char *path, const char *name)
  {
-     int i, j;
-     for (i=0; i< GF_SIZE+1; i++)
-@@ -603,7 +603,7 @@ invert_vdm(gf *src, int k)
+ 	char *n;
+-	int len1 = strlen(path);
+-	int len2 = strlen(name);
++	size_t len1 = strlen(path);
++	size_t len2 = strlen(name);
  
- static int fec_initialized = 0 ;
- static void
--init_fec()
-+init_fec(void)
+-	n = malloc(len1 + len2 + 2);
+-	if (!n) {
+-		sys_errmsg("cannot allocate %d bytes", len1 + len2 + 2);
+-		return NULL;
+-	}
++	n = xmalloc(len1 + len2 + 2);
+ 
+ 	memcpy(n, path, len1);
+ 	if (n[len1 - 1] != '/')
+@@ -556,9 +552,7 @@ libmtd_t libmtd_open(void)
  {
-     TICK(ticks[0]);
-     generate_gf();
-@@ -882,7 +882,7 @@ fec_decode(struct fec_parms *code, gf *pkt[], int index[], int sz)
+ 	struct libmtd *lib;
  
- #if (TEST || DEBUG)
- void
--test_gf()
-+test_gf(void)
- {
-     int i ;
-     /*
-diff --git a/sumtool.c b/sumtool.c
-index 51e4173..886b545 100644
---- a/sumtool.c
-+++ b/sumtool.c
-@@ -122,7 +122,7 @@ static unsigned char ffbuf[16] = {
+-	lib = calloc(1, sizeof(struct libmtd));
+-	if (!lib)
+-		return NULL;
++	lib = xzalloc(sizeof(*lib));
  
- static void full_write(void *target_buff, const void *buf, int len);
+ 	lib->offs64_ioctls = OFFS64_IOCTLS_UNKNOWN;
  
--void setup_cleanmarker()
-+void setup_cleanmarker(void)
- {
- 	cleanmarker.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
- 	cleanmarker.nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER);
-@@ -226,24 +226,24 @@ void process_options (int argc, char **argv)
- }
+@@ -917,11 +911,7 @@ int mtd_torture(libmtd_t desc, const struct mtd_dev_info *mtd, int fd, int eb)
+ 	normsg("run torture test for PEB %d", eb);
+ 	patt_count = ARRAY_SIZE(patterns);
  
+-	buf = malloc(mtd->eb_size);
+-	if (!buf) {
+-		errmsg("cannot allocate %d bytes of memory", mtd->eb_size);
+-		return -1;
+-	}
++	buf = xmalloc(mtd->eb_size);
  
--void init_buffers()
-+void init_buffers(void)
- {
- 	data_buffer = xmalloc(erase_block_size);
- 	file_buffer = xmalloc(erase_block_size);
- }
- 
--void init_sumlist()
-+void init_sumlist(void)
- {
- 	sum_collected = xzalloc(sizeof(*sum_collected));
- }
- 
--void clean_buffers()
-+void clean_buffers(void)
- {
- 	free(data_buffer);
- 	free(file_buffer);
- }
- 
--void clean_sumlist()
-+void clean_sumlist(void)
- {
- 	union jffs2_sum_mem *temp;
- 
-@@ -263,7 +263,7 @@ void clean_sumlist()
+ 	for (i = 0; i < patt_count; i++) {
+ 		err = mtd_erase(desc, mtd, fd, eb);
+@@ -1240,11 +1230,7 @@ int mtd_write_img(const struct mtd_dev_info *mtd, int fd, int eb, int offs,
+ 		goto out_close;
  	}
+ 
+-	buf = malloc(mtd->eb_size);
+-	if (!buf) {
+-		sys_errmsg("cannot allocate %d bytes of memory", mtd->eb_size);
+-		goto out_close;
+-	}
++	buf = xmalloc(mtd->eb_size);
+ 
+ 	while (written < len) {
+ 		int rd = 0;
+diff --git a/lib/libmtd_legacy.c b/lib/libmtd_legacy.c
+index 3d129c1..7488275 100644
+--- a/lib/libmtd_legacy.c
++++ b/lib/libmtd_legacy.c
+@@ -75,12 +75,7 @@ static int proc_parse_start(struct proc_parse_info *pi)
+ 	if (fd == -1)
+ 		return -1;
+ 
+-	pi->buf = malloc(PROC_MTD_MAX_LEN);
+-	if (!pi->buf) {
+-		sys_errmsg("cannot allocate %d bytes of memory",
+-			   PROC_MTD_MAX_LEN);
+-		goto out_close;
+-	}
++	pi->buf = xmalloc(PROC_MTD_MAX_LEN);
+ 
+ 	ret = read(fd, pi->buf, PROC_MTD_MAX_LEN);
+ 	if (ret == -1) {
+@@ -103,7 +98,6 @@ static int proc_parse_start(struct proc_parse_info *pi)
+ 
+ out_free:
+ 	free(pi->buf);
+-out_close:
+ 	close(fd);
+ 	return -1;
  }
- 
--int load_next_block()
-+int load_next_block(void)
- {
- 	int ret;
- 	ret = read(in_fd, file_buffer, erase_block_size);
-@@ -274,7 +274,7 @@ int load_next_block()
- 	return ret;
- }
- 
--void write_buff_to_file()
-+void write_buff_to_file(void)
- {
- 	int ret;
- 	int len = data_ofs;
-@@ -298,7 +298,7 @@ void write_buff_to_file()
- 	data_ofs = 0;
- }
- 
--void dump_sum_records()
-+void dump_sum_records(void)
- {
- 
- 	struct jffs2_raw_summary isum;
-@@ -447,7 +447,7 @@ static void pad(int req)
- 	}
- }
- 
--static inline void padword()
-+static inline void padword(void)
- {
- 	if (data_ofs % 4)
- 		full_write(data_buffer + data_ofs, ffbuf, 4 - (data_ofs % 4));
-@@ -474,7 +474,7 @@ static inline void pad_block_if_less_than(int req,int plus)
- 	}
- }
- 
--void flush_buffers()
-+void flush_buffers(void)
- {
- 
- 	if ((add_cleanmarkers == 1) && (found_cleanmarkers == 1)) { /* CLEANMARKER */
 -- 
 1.7.3.1
