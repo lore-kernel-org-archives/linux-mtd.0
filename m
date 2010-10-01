@@ -1,21 +1,25 @@
+Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
+	by casper.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P1eFs-00086j-EQ
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 11:58:25 +0000
 From: Viresh KUMAR <viresh.kumar@st.com>
 To: linux-arm-kernel@lists.infradead.org, rtc-linux@googlegroups.com,
 	a.zummo@towertech.it, dbrownell@users.sourceforge.net,
 	linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
 	dmitry.torokhov@gmail.com, linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org
-Subject: [PATCH V2 44/69] SPEAr CPU freq: Adding support for CPU Freq framework
-Date: Fri,  1 Oct 2010 17:26:04 +0530
-Message-Id: <0260f7ebc3d1dd80c3bb40faefc946e35f9436fd.1285933332.git.viresh.kumar@st.com>
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org
+Subject: [PATCH V2 46/69] ST SPEAr13xx: Adding machine support for pci gadget
+Date: Fri,  1 Oct 2010 17:26:06 +0530
+Message-Id: <52b8b1701090d726b3af6b79b98cd967229113d8.1285933332.git.viresh.kumar@st.com>
 In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
 References: <cover.1285933331.git.viresh.kumar@st.com>
 In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
 References: <cover.1285933331.git.viresh.kumar@st.com>
-Cc: pratyush.anand@st.com, Viresh Kumar <viresh.kumar@st.com>,
+Cc: Pratyush Anand <pratyush.anand@st.com>, Viresh Kumar <viresh.kumar@st.com>,
 	vipulkumar.samar@st.com, bhupesh.sharma@st.com,
 	armando.visconti@st.com, vipin.kumar@st.com,
-	shiraz.hashim@st.com, rajeev-dlh.kumar@st.com,
-	Deepak Sikri <deepak.sikri@st.com>
+	shiraz.hashim@st.com, rajeev-dlh.kumar@st.com, deepak.sikri@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,247 +29,174 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Deepak Sikri <deepak.sikri@st.com>
+From: Pratyush Anand <pratyush.anand@st.com>
 
-Signed-off-by: Deepak Sikri <deepak.sikri@st.com>
-Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
-Signed-off-by: shiraz hashim <shiraz.hashim@st.com>
+Signed-off-by: Pratyush Anand <pratyush.anand@st.com>
+Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
 Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
 ---
- arch/arm/Kconfig                |    1 +
- arch/arm/mach-spear13xx/clock.c |    1 +
- arch/arm/mach-spear3xx/clock.c  |    1 +
- arch/arm/mach-spear6xx/clock.c  |    1 +
- arch/arm/plat-spear/Makefile    |    2 +-
- arch/arm/plat-spear/cpufreq.c   |  159 +++++++++++++++++++++++++++++++++++++++
- 6 files changed, 164 insertions(+), 1 deletions(-)
- create mode 100644 arch/arm/plat-spear/cpufreq.c
+ arch/arm/mach-spear13xx/include/mach/generic.h |    3 +
+ arch/arm/mach-spear13xx/include/mach/spear.h   |    2 +-
+ arch/arm/mach-spear13xx/spear1300_evb.c        |    1 +
+ arch/arm/mach-spear13xx/spear1310_evb.c        |    1 +
+ arch/arm/mach-spear13xx/spear13xx.c            |   94 ++++++++++++++++++++++++
+ 5 files changed, 100 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index 158bf06..cdd0a2b 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -821,6 +821,7 @@ config PLAT_SPEAR
- 	select COMMON_CLKDEV
- 	select GENERIC_CLOCKEVENTS
- 	select HAVE_CLK
-+	select ARCH_HAS_CPUFREQ
- 	help
- 	  Support for ST's SPEAr platform (SPEAr3xx, SPEAr6xx and SPEAr13xx).
+diff --git a/arch/arm/mach-spear13xx/include/mach/generic.h b/arch/arm/mach-spear13xx/include/mach/generic.h
+index 9b0f009..56ed7a7 100644
+--- a/arch/arm/mach-spear13xx/include/mach/generic.h
++++ b/arch/arm/mach-spear13xx/include/mach/generic.h
+@@ -40,6 +40,9 @@ extern struct platform_device spear13xx_kbd_device;
+ extern struct platform_device spear13xx_nand_device;
+ extern struct platform_device spear13xx_ohci0_device;
+ extern struct platform_device spear13xx_ohci1_device;
++extern struct platform_device spear13xx_pcie_gadget0_device;
++extern struct platform_device spear13xx_pcie_gadget1_device;
++extern struct platform_device spear13xx_pcie_gadget2_device;
+ extern struct platform_device spear13xx_rtc_device;
+ extern struct platform_device spear13xx_sdhci_device;
+ extern struct platform_device spear13xx_smi_device;
+diff --git a/arch/arm/mach-spear13xx/include/mach/spear.h b/arch/arm/mach-spear13xx/include/mach/spear.h
+index cf25eb5..d043280 100644
+--- a/arch/arm/mach-spear13xx/include/mach/spear.h
++++ b/arch/arm/mach-spear13xx/include/mach/spear.h
+@@ -60,7 +60,7 @@
+ #define SPEAR13XX_SYS_LOCATION		(SPEAR13XX_SYSRAM0_BASE + 0x600)
  
-diff --git a/arch/arm/mach-spear13xx/clock.c b/arch/arm/mach-spear13xx/clock.c
-index 4f320fa..79942a9 100644
---- a/arch/arm/mach-spear13xx/clock.c
-+++ b/arch/arm/mach-spear13xx/clock.c
-@@ -91,6 +91,7 @@ static struct pll_clk_config pll1_config = {
- /* pll rate configuration table, in ascending order of rates */
- struct pll_rate_tbl pll_rtbl[] = {
- 	/* PCLK 24MHz */
-+	{.mode = 0, .m = 0x64, .n = 0x03, .p = 0x2}, /* 400 MHz */
- 	{.mode = 0, .m = 0x7D, .n = 0x03, .p = 0x2}, /* 500 MHz */
- 	{.mode = 0, .m = 0xA6, .n = 0x03, .p = 0x2}, /* 664 MHz */
- 	{.mode = 0, .m = 0xC8, .n = 0x03, .p = 0x2}, /* 800 MHz */
-diff --git a/arch/arm/mach-spear3xx/clock.c b/arch/arm/mach-spear3xx/clock.c
-index 4f049fe..64d9cdc 100644
---- a/arch/arm/mach-spear3xx/clock.c
-+++ b/arch/arm/mach-spear3xx/clock.c
-@@ -55,6 +55,7 @@ static struct pll_clk_masks pll_masks = {
- 
- /* pll rate configuration table, in ascending order of rates */
- struct pll_rate_tbl pll_rtbl[] = {
-+	{.mode = 0, .m = 0x53, .n = 0x0C, .p = 0x1}, /* 166 MHz */
- 	{.mode = 0, .m = 0x85, .n = 0x0C, .p = 0x1}, /* 266 MHz */
- 	{.mode = 0, .m = 0xA6, .n = 0x0C, .p = 0x1}, /* 332 MHz */
+ #define SPEAR13XX_SYSRAM1_BASE		UL(0xE0800000)
+-#define SPEAR13XX_SYSRAM1_SIZE		0x00800000
++#define SPEAR13XX_SYSRAM1_SIZE		0x00001000
+ #define SPEAR13XX_CLCD_BASE		UL(0xE1000000)
+ #define SPEAR13XX_C3_BASE		UL(0xE1800000)
+ #define SPEAR13XX_GETH_BASE		UL(0xE2000000)
+diff --git a/arch/arm/mach-spear13xx/spear1300_evb.c b/arch/arm/mach-spear13xx/spear1300_evb.c
+index e56fbd4..34e2647 100644
+--- a/arch/arm/mach-spear13xx/spear1300_evb.c
++++ b/arch/arm/mach-spear13xx/spear1300_evb.c
+@@ -52,6 +52,7 @@ static struct platform_device *plat_devs[] __initdata = {
+ 	&spear13xx_nand_device,
+ 	&spear13xx_ohci0_device,
+ 	&spear13xx_ohci1_device,
++	&spear13xx_pcie_gadget0_device,
+ 	&spear13xx_rtc_device,
+ 	&spear13xx_sdhci_device,
+ 	&spear13xx_smi_device,
+diff --git a/arch/arm/mach-spear13xx/spear1310_evb.c b/arch/arm/mach-spear13xx/spear1310_evb.c
+index f6b4323..1af152f 100644
+--- a/arch/arm/mach-spear13xx/spear1310_evb.c
++++ b/arch/arm/mach-spear13xx/spear1310_evb.c
+@@ -53,6 +53,7 @@ static struct platform_device *plat_devs[] __initdata = {
+ 	&spear13xx_nand_device,
+ 	&spear13xx_ohci0_device,
+ 	&spear13xx_ohci1_device,
++	&spear13xx_pcie_gadget0_device,
+ 	&spear13xx_rtc_device,
+ 	&spear13xx_sdhci_device,
+ 	&spear13xx_smi_device,
+diff --git a/arch/arm/mach-spear13xx/spear13xx.c b/arch/arm/mach-spear13xx/spear13xx.c
+index 08e87d7..c86bd1c 100644
+--- a/arch/arm/mach-spear13xx/spear13xx.c
++++ b/arch/arm/mach-spear13xx/spear13xx.c
+@@ -429,6 +429,100 @@ struct platform_device spear13xx_sdhci_device = {
+ 	.resource = sdhci_resources,
  };
-diff --git a/arch/arm/mach-spear6xx/clock.c b/arch/arm/mach-spear6xx/clock.c
-index 99cc21d..f1429f5 100644
---- a/arch/arm/mach-spear6xx/clock.c
-+++ b/arch/arm/mach-spear6xx/clock.c
-@@ -55,6 +55,7 @@ static struct pll_clk_masks pll_masks = {
  
- /* pll rate configuration table, in ascending order of rates */
- struct pll_rate_tbl pll_rtbl[] = {
-+	{.mode = 0, .m = 0x53, .n = 0x0C, .p = 0x1}, /* 166 MHz */
- 	{.mode = 0, .m = 0x85, .n = 0x0C, .p = 0x1}, /* 266 MHz */
- 	{.mode = 0, .m = 0xA6, .n = 0x0C, .p = 0x1}, /* 332 MHz */
- };
-diff --git a/arch/arm/plat-spear/Makefile b/arch/arm/plat-spear/Makefile
-index 1c8ee4a..c25e5b8 100644
---- a/arch/arm/plat-spear/Makefile
-+++ b/arch/arm/plat-spear/Makefile
-@@ -6,7 +6,7 @@
- obj-y	:= clcd.o clock.o pll_clk.o smi.o time.o
- 
- obj-$(CONFIG_ARCH_SPEAR3XX)	+= shirq.o padmux.o
--
-+obj-$(CONFIG_CPU_FREQ)		+= cpufreq.o
- obj-$(CONFIG_MACH_SPEAR310)	+= plgpio.o
- obj-$(CONFIG_MACH_SPEAR320)	+= plgpio.o
- obj-$(CONFIG_SPEAR_PWM)		+= pwm.o
-diff --git a/arch/arm/plat-spear/cpufreq.c b/arch/arm/plat-spear/cpufreq.c
-new file mode 100644
-index 0000000..9384d65
---- /dev/null
-+++ b/arch/arm/plat-spear/cpufreq.c
-@@ -0,0 +1,159 @@
-+/*
-+ * arch/arm/plat-spear/cpufreq.c
-+ *
-+ * CPU Frequency Scaling for SPEAr platform
-+ *
-+ * Copyright (C) 2010 ST Microelectronics
-+ * Deepak Sikri<deepak.sikri@st.com>
-+ *
-+ *
-+ * This file is licensed under the terms of the GNU General Public
-+ * License version 2. This program is licensed "as is" without any
-+ * warranty of any kind, whether express or implied.
-+ */
-+
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/sched.h>
-+#include <linux/cpufreq.h>
-+#include <linux/delay.h>
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/clk.h>
-+#include <linux/io.h>
-+#include <asm/system.h>
-+#include <mach/hardware.h>
-+
-+#define CPU_CLK		"cpu_clk"
-+
-+#ifdef CONFIG_ARCH_SPEAR13XX
-+#define MIN_CPU_FREQ	200000
-+#define MAX_CPU_FREQ	500000
-+
-+static u32 spear_cpu_freq[] = {
-+	200000,	/* 200 MHZ */
-+	250000,	/* 250 MHZ */
-+	332000,	/* 332 MHZ */
-+	400000,	/* 400 MHZ */
-+	500000,	/* 500 MHZ */
-+};
-+#elif defined(CONFIG_ARCH_SPEAR6XX) || defined(CONFIG_ARCH_SPEAR3XX)
-+#define MIN_CPU_FREQ	166000
-+#define MAX_CPU_FREQ	332000
-+
-+static u32 spear_cpu_freq[] = {
-+	166000,	/* 166 MHZ */
-+	266000,	/* 266 MHZ */
-+	332000,	/* 333 MHZ */
-+};
-+#endif
-+
-+static struct
-+	cpufreq_frequency_table spear_freq_tbl[ARRAY_SIZE(spear_cpu_freq) + 1];
-+static struct clk *cpu_clk;
-+
-+int spear_cpufreq_verify(struct cpufreq_policy *policy)
-+{
-+	return cpufreq_frequency_table_verify(policy, spear_freq_tbl);
-+}
-+
-+unsigned int spear_cpufreq_get(unsigned int cpu)
-+{
-+	unsigned long rate;
-+
-+	if (cpu)
-+		return 0;
-+
-+	rate = clk_get_rate(cpu_clk) / 1000;
-+	return rate;
-+}
-+
-+static int spear_cpufreq_target(struct cpufreq_policy *policy,
-+		unsigned int target_freq, unsigned int relation)
-+{
-+	struct cpufreq_freqs freqs;
-+	int ret = 0;
-+	int index;
-+
-+	if (policy->cpu != 0)
-+		return -EINVAL;
-+
-+	if (cpufreq_frequency_table_target(policy, spear_freq_tbl,
-+				target_freq, relation, &index))
-+		return -EINVAL;
-+
-+	freqs.old = spear_cpufreq_get(0);
-+	freqs.new = spear_cpu_freq[index];
-+	freqs.cpu = policy->cpu;
-+
-+	if (freqs.old == target_freq)
-+		return 0;
-+
-+	cpufreq_notify_transition(&freqs, CPUFREQ_PRECHANGE);
-+	ret = clk_set_rate(cpu_clk, freqs.new * 1000);
-+	cpufreq_notify_transition(&freqs, CPUFREQ_POSTCHANGE);
-+
-+	return ret;
-+}
-+
-+static int spear_cpufreq_init(struct cpufreq_policy *policy)
-+{
-+	int result;
-+	int i = 0;
-+
-+	if (policy->cpu != 0)
-+		return -EINVAL;
-+
-+	cpu_clk = clk_get(NULL, CPU_CLK);
-+	if (IS_ERR(cpu_clk))
-+		return PTR_ERR(cpu_clk);
-+
-+	policy->cpuinfo.min_freq = MIN_CPU_FREQ;
-+	policy->cpuinfo.max_freq = MAX_CPU_FREQ;
-+	policy->cur = policy->min = policy->max = spear_cpufreq_get(0);
-+
-+	for (i = 0; i < ARRAY_SIZE(spear_cpu_freq); i++) {
-+		spear_freq_tbl[i].index = i;
-+		spear_freq_tbl[i].frequency = spear_cpu_freq[i];
-+	}
-+
-+	spear_freq_tbl[i].index = i;
-+	spear_freq_tbl[i].frequency = CPUFREQ_TABLE_END;
-+	result = cpufreq_frequency_table_cpuinfo(policy, spear_freq_tbl);
-+	if (!result)
-+		cpufreq_frequency_table_get_attr(spear_freq_tbl,
-+				policy->cpu);
-+
-+	policy->cpuinfo.transition_latency = 300*1000; /*250 uS*/
-+
-+	return 0;
-+}
-+
-+static int spear_cpufreq_exit(struct cpufreq_policy *policy)
-+{
-+	clk_put(cpu_clk);
-+	return 0;
-+}
-+
-+static struct freq_attr *spear_cpufreq_attr[] = {
-+	 &cpufreq_freq_attr_scaling_available_freqs,
-+	 NULL,
++/* pcie gadget registration */
++static struct resource pcie_gadget0_resources[] = {
++	{
++		.start = SPEAR13XX_PCIE0_APP_BASE,
++		.end = SPEAR13XX_PCIE0_APP_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = SPEAR13XX_PCIE0_BASE,
++		.end = SPEAR13XX_PCIE0_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = IRQ_PCIE0,
++		.flags = IORESOURCE_IRQ,
++	},
 +};
 +
-+static struct cpufreq_driver spear_driver = {
-+	.flags		= CPUFREQ_STICKY,
-+	.verify		= spear_cpufreq_verify,
-+	.target		= spear_cpufreq_target,
-+	.get		= spear_cpufreq_get,
-+	.init		= spear_cpufreq_init,
-+	.exit		= spear_cpufreq_exit,
-+	.name		= "spear_cpufreq",
-+	.attr		= spear_cpufreq_attr,
++/* pcie_gadget0_id defaults to 0, being static variable */
++static int pcie_gadget0_id;
++static u64 pcie_gadget0_dmamask = ~0;
++
++struct platform_device spear13xx_pcie_gadget0_device = {
++	.name = "pcie-gadget-spear",
++	.id = 0,
++	.dev = {
++		.coherent_dma_mask = ~0,
++		.dma_mask = &pcie_gadget0_dmamask,
++		.platform_data = &pcie_gadget0_id,
++	},
++	.num_resources = ARRAY_SIZE(pcie_gadget0_resources),
++	.resource = pcie_gadget0_resources,
 +};
 +
-+static int __init spear_cpufreq_register(void)
-+{
-+	return cpufreq_register_driver(&spear_driver);
-+}
++static struct resource pcie_gadget1_resources[] = {
++	{
++		.start = SPEAR13XX_PCIE1_APP_BASE,
++		.end = SPEAR13XX_PCIE1_APP_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = SPEAR13XX_PCIE1_BASE,
++		.end = SPEAR13XX_PCIE1_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = IRQ_PCIE1,
++		.flags = IORESOURCE_IRQ,
++	},
++};
 +
-+arch_initcall(spear_cpufreq_register);
++/* pcie_gadget1_id defaults to 0, being static variable */
++static int pcie_gadget1_id;
++static u64 pcie_gadget1_dmamask = ~0;
++
++struct platform_device spear13xx_pcie_gadget1_device = {
++	.name = "pcie-gadget-spear",
++	.id = 1,
++	.dev = {
++		.coherent_dma_mask = ~0,
++		.dma_mask = &pcie_gadget1_dmamask,
++		.platform_data = &pcie_gadget1_id,
++	},
++	.num_resources = ARRAY_SIZE(pcie_gadget1_resources),
++	.resource = pcie_gadget1_resources,
++};
++
++static struct resource pcie_gadget2_resources[] = {
++	{
++		.start = SPEAR13XX_PCIE2_APP_BASE,
++		.end = SPEAR13XX_PCIE2_APP_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = SPEAR13XX_PCIE2_BASE,
++		.end = SPEAR13XX_PCIE2_BASE + SZ_8K - 1,
++		.flags = IORESOURCE_MEM,
++	}, {
++		.start = IRQ_PCIE2,
++		.flags = IORESOURCE_IRQ,
++	},
++};
++
++/* pcie_gadget2_id defaults to 0, being static variable */
++static int pcie_gadget2_id;
++static u64 pcie_gadget2_dmamask = ~0;
++
++struct platform_device spear13xx_pcie_gadget2_device = {
++	.name = "pcie-gadget-spear",
++	.id = 2,
++	.dev = {
++		.coherent_dma_mask = ~0,
++		.dma_mask = &pcie_gadget2_dmamask,
++		.platform_data = &pcie_gadget2_id,
++	},
++	.num_resources = ARRAY_SIZE(pcie_gadget2_resources),
++	.resource = pcie_gadget2_resources,
++};
++
+ /* Do spear13xx familiy common initialization part here */
+ void __init spear13xx_init(void)
+ {
 -- 
 1.7.2.2
