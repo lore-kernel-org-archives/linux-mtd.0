@@ -1,26 +1,20 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by bombadil.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P1dgw-0000W3-4V
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2010 11:22:18 +0000
-Received: by ewy9 with SMTP id 9so1415393ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 01 Oct 2010 04:22:16 -0700 (PDT)
-Date: Fri, 1 Oct 2010 15:22:12 +0400
-From: Anton Vorontsov <cbouatmailru@gmail.com>
-To: Mingkai Hu <Mingkai.hu@freescale.com>
-Subject: Re: [PATCH v3 2/7] spi/mpc8xxx: refactor the common code for
-	SPI/eSPI controller
-Message-ID: <20101001112212.GA17505@oksana.dev.rtsoft.ru>
-References: <1285833646-12006-1-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-2-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-3-git-send-email-Mingkai.hu@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1285833646-12006-3-git-send-email-Mingkai.hu@freescale.com>
-Cc: tie-fei.zang@freescale.com, linuxppc-dev@ozlabs.org,
-	kumar.gala@freescale.com, linux-mtd@lists.infradead.org,
-	spi-devel-general@lists.sourceforge.net
+From: Viresh KUMAR <viresh.kumar@st.com>
+To: linux-arm-kernel@lists.infradead.org, rtc-linux@googlegroups.com,
+	a.zummo@towertech.it, dbrownell@users.sourceforge.net,
+	linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+	dmitry.torokhov@gmail.com, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org
+Subject: [PATCH V2 27/69] ST SPEAr: Adding Watchdog support
+Date: Fri,  1 Oct 2010 17:25:47 +0530
+Message-Id: <f6ad85aed3e22835920ff6bb4461ee082611d0c4.1285933331.git.viresh.kumar@st.com>
+In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
+References: <cover.1285933331.git.viresh.kumar@st.com>
+In-Reply-To: <cover.1285933331.git.viresh.kumar@st.com>
+References: <cover.1285933331.git.viresh.kumar@st.com>
+Cc: pratyush.anand@st.com, Viresh Kumar <viresh.kumar@st.com>,
+	vipulkumar.samar@st.com, bhupesh.sharma@st.com,
+	armando.visconti@st.com, vipin.kumar@st.com,
+	shiraz.hashim@st.com, rajeev-dlh.kumar@st.com, deepak.sikri@st.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +24,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 30, 2010 at 04:00:41PM +0800, Mingkai Hu wrote:
-[...]
-> -static void mpc8xxx_spi_change_mode(struct spi_device *spi)
-> +static void fsl_spi_change_mode(struct spi_device *spi)
->  {
->  	struct mpc8xxx_spi *mspi = spi_master_get_devdata(spi->master);
->  	struct spi_mpc8xxx_cs *cs = spi->controller_state;
-> -	__be32 __iomem *mode = &mspi->base->mode;
-> +	struct fsl_spi_reg *reg_base = (struct fsl_spi_reg *)mspi->reg_base;
+Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+Signed-off-by: Rajeev Kumar <rajeev-dlh.kumar@st.com>
+Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
+---
+ arch/arm/mach-spear3xx/include/mach/generic.h |    1 +
+ arch/arm/mach-spear3xx/spear300_evb.c         |    1 +
+ arch/arm/mach-spear3xx/spear310_evb.c         |    1 +
+ arch/arm/mach-spear3xx/spear320_evb.c         |    1 +
+ arch/arm/mach-spear3xx/spear3xx.c             |   12 ++++++++++++
+ arch/arm/mach-spear6xx/include/mach/generic.h |    1 +
+ arch/arm/mach-spear6xx/spear600_evb.c         |    1 +
+ arch/arm/mach-spear6xx/spear6xx.c             |   12 ++++++++++++
+ 8 files changed, 30 insertions(+), 0 deletions(-)
 
-No need for these type casts (the same is for the whole patch).
-
+diff --git a/arch/arm/mach-spear3xx/include/mach/generic.h b/arch/arm/mach-spear3xx/include/mach/generic.h
+index 9317af8..91c0c09 100644
+--- a/arch/arm/mach-spear3xx/include/mach/generic.h
++++ b/arch/arm/mach-spear3xx/include/mach/generic.h
+@@ -33,6 +33,7 @@
+ /* Add spear3xx family device structure declarations here */
+ extern struct amba_device gpio_device;
+ extern struct amba_device uart_device;
++extern struct amba_device wdt_device;
+ extern struct platform_device ehci_device;
+ extern struct platform_device i2c_device;
+ extern struct platform_device ohci0_device;
+diff --git a/arch/arm/mach-spear3xx/spear300_evb.c b/arch/arm/mach-spear3xx/spear300_evb.c
+index c948289..7bd8963 100644
+--- a/arch/arm/mach-spear3xx/spear300_evb.c
++++ b/arch/arm/mach-spear3xx/spear300_evb.c
+@@ -38,6 +38,7 @@ static struct amba_device *amba_devs[] __initdata = {
+ 	/* spear3xx specific devices */
+ 	&gpio_device,
+ 	&uart_device,
++	&wdt_device,
+ 
+ 	/* spear300 specific devices */
+ 	&clcd_device,
+diff --git a/arch/arm/mach-spear3xx/spear310_evb.c b/arch/arm/mach-spear3xx/spear310_evb.c
+index 2a88cd2..cd076c9 100644
+--- a/arch/arm/mach-spear3xx/spear310_evb.c
++++ b/arch/arm/mach-spear3xx/spear310_evb.c
+@@ -45,6 +45,7 @@ static struct amba_device *amba_devs[] __initdata = {
+ 	/* spear3xx specific devices */
+ 	&gpio_device,
+ 	&uart_device,
++	&wdt_device,
+ 
+ 	/* spear310 specific devices */
+ };
+diff --git a/arch/arm/mach-spear3xx/spear320_evb.c b/arch/arm/mach-spear3xx/spear320_evb.c
+index d0cfd96..7f7b5dd 100644
+--- a/arch/arm/mach-spear3xx/spear320_evb.c
++++ b/arch/arm/mach-spear3xx/spear320_evb.c
+@@ -42,6 +42,7 @@ static struct amba_device *amba_devs[] __initdata = {
+ 	/* spear3xx specific devices */
+ 	&gpio_device,
+ 	&uart_device,
++	&wdt_device,
+ 
+ 	/* spear320 specific devices */
+ 	&clcd_device,
+diff --git a/arch/arm/mach-spear3xx/spear3xx.c b/arch/arm/mach-spear3xx/spear3xx.c
+index ff9f6e9..88a6bd4 100644
+--- a/arch/arm/mach-spear3xx/spear3xx.c
++++ b/arch/arm/mach-spear3xx/spear3xx.c
+@@ -54,6 +54,18 @@ struct amba_device uart_device = {
+ 	.irq = {IRQ_UART, NO_IRQ},
+ };
+ 
++/* watchdog device registeration */
++struct amba_device wdt_device = {
++	.dev = {
++		.init_name = "wdt",
++	},
++	.res = {
++		.start = SPEAR3XX_ICM3_WDT_BASE,
++		.end = SPEAR3XX_ICM3_WDT_BASE + SZ_4K - 1,
++		.flags = IORESOURCE_MEM,
++	},
++};
++
+ /* i2c device registeration */
+ static struct resource i2c_resources[] = {
+ 	{
+diff --git a/arch/arm/mach-spear6xx/include/mach/generic.h b/arch/arm/mach-spear6xx/include/mach/generic.h
+index 8aee3ad..f885898 100644
+--- a/arch/arm/mach-spear6xx/include/mach/generic.h
++++ b/arch/arm/mach-spear6xx/include/mach/generic.h
+@@ -32,6 +32,7 @@
+ extern struct amba_device clcd_device;
+ extern struct amba_device gpio_device[];
+ extern struct amba_device uart_device[];
++extern struct amba_device wdt_device;
+ extern struct platform_device ehci0_device;
+ extern struct platform_device ehci1_device;
+ extern struct platform_device i2c_device;
+diff --git a/arch/arm/mach-spear6xx/spear600_evb.c b/arch/arm/mach-spear6xx/spear600_evb.c
+index bd4be34..0eb5f50 100644
+--- a/arch/arm/mach-spear6xx/spear600_evb.c
++++ b/arch/arm/mach-spear6xx/spear600_evb.c
+@@ -24,6 +24,7 @@ static struct amba_device *amba_devs[] __initdata = {
+ 	&gpio_device[2],
+ 	&uart_device[0],
+ 	&uart_device[1],
++	&wdt_device,
+ };
+ 
+ static struct platform_device *plat_devs[] __initdata = {
+diff --git a/arch/arm/mach-spear6xx/spear6xx.c b/arch/arm/mach-spear6xx/spear6xx.c
+index 000b3a8..2eec8ac 100644
+--- a/arch/arm/mach-spear6xx/spear6xx.c
++++ b/arch/arm/mach-spear6xx/spear6xx.c
+@@ -118,6 +118,18 @@ struct amba_device gpio_device[] = {
+ 	}
+ };
+ 
++/* watchdog device registeration */
++struct amba_device wdt_device = {
++	.dev = {
++		.init_name = "wdt",
++	},
++	.res = {
++		.start = SPEAR6XX_ICM3_WDT_BASE,
++		.end = SPEAR6XX_ICM3_WDT_BASE + SZ_4K - 1,
++		.flags = IORESOURCE_MEM,
++	},
++};
++
+ /* i2c device registeration */
+ static struct resource i2c_resources[] = {
+ 	{
 -- 
-Anton Vorontsov
-email: cbouatmailru@gmail.com
-irc://irc.freenode.net/bd2
+1.7.2.2
