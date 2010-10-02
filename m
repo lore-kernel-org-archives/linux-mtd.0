@@ -1,18 +1,18 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P22rK-0003iy-5Y
-	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2010 14:14:42 +0000
-Received: by bwz19 with SMTP id 19so3766258bwz.36
+	id 1P22so-0003kV-UF
+	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2010 14:16:15 +0000
+Received: by bwz19 with SMTP id 19so3767044bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 02 Oct 2010 07:14:41 -0700 (PDT)
-Subject: Re: [PATCH] mkfs.jffs2: convert to xalloc.h helpers
+	Sat, 02 Oct 2010 07:16:14 -0700 (PDT)
+Subject: Re: [PATCH 1/2] sumtool: convert to common.h helpers
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1285953030-19539-1-git-send-email-vapier@gentoo.org>
-References: <1285953030-19539-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1285953088-19593-1-git-send-email-vapier@gentoo.org>
+References: <1285953088-19593-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 02 Oct 2010 17:14:38 +0300
-Message-ID: <1286028878.32172.19.camel@brekeke>
+Date: Sat, 02 Oct 2010 17:16:11 +0300
+Message-ID: <1286028971.32172.20.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,13 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-01 at 13:10 -0400, Mike Frysinger wrote:
+On Fri, 2010-10-01 at 13:11 -0400, Mike Frysinger wrote:
 > Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 > ---
->  mkfs.jffs2.c |   13 +++----------
->  1 files changed, 3 insertions(+), 10 deletions(-)
+>  sumtool.c |  237 ++++++++++++++++++++----------------------------------------
+>  1 files changed, 79 insertions(+), 158 deletions(-)
+> 
+> diff --git a/sumtool.c b/sumtool.c
+> index d0e2a7b..51e4173 100644
+> --- a/sumtool.c
+> +++ b/sumtool.c
 
-Pushed to mtd-utils.git, thanks!
+Pushed, thanks!
 
 -- 
 Best Regards,
