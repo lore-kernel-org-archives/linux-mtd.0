@@ -1,17 +1,23 @@
-Subject: Re: [patch 1/2] mtdpart: memory accessor interface for MTD layer
-From: David Woodhouse <dwmw2@infradead.org>
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
+	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P25uZ-0007O8-0n
+	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2010 17:30:15 +0000
+Received: by qwe4 with SMTP id 4so72626qwe.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 02 Oct 2010 10:30:13 -0700 (PDT)
+MIME-Version: 1.0
+Sender: vapier.adi@gmail.com
+In-Reply-To: <1286029198.32172.23.camel@brekeke>
+References: <1285953190-19669-1-git-send-email-vapier@gentoo.org>
+	<1286029198.32172.23.camel@brekeke>
+From: Mike Frysinger <vapier@gentoo.org>
+Date: Sat, 2 Oct 2010 13:29:52 -0400
+Message-ID: <AANLkTim8DMm6dYpW6Ot4yrR+m4XaywyTrk1m_n6k6ovX@mail.gmail.com>
+Subject: Re: [PATCH] libmtd: make malloc failures fatal
 To: dedekind1@gmail.com
-In-Reply-To: <1286028592.32172.14.camel@brekeke>
-References: <201010012116.o91LGRGn021118@imap1.linux-foundation.org>
-	<1286028592.32172.14.camel@brekeke>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 02 Oct 2010 23:44:32 +0900
-Message-ID: <1286030672.26080.2.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: sudhakar.raj@ti.com, khilman@deeprootsystems.com, david-b@pacbell.net,
-	linux-mtd@lists.infradead.org, cbouatmailru@gmail.com,
-	akpm@linux-foundation.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-10-02 at 17:09 +0300, Artem Bityutskiy wrote:
-> 
-> > Implement a memory accessor interface in the MTD layer which enables
-> the
-> > kernel to access flash data.
-> > 
-> > This patch adds two new members to the mtd_partition structure, a
-> function
-> > handler which will be called during setup of the partition and an
-> argument
-> > to be passed to this setup function.
-> 
-> This patch does not apply to my l2-mtd-2.6.git tree
+On Sat, Oct 2, 2010 at 10:19, Artem Bityutskiy wrote:
+> On Fri, 2010-10-01 at 13:13 -0400, Mike Frysinger wrote:
+>> This converts libmtd to the common xalloc helpers and in doing so, makes
+>> memory allocation failures fatal rather than returning an error to the
+>> caller. =C2=A0I think this is acceptable behavior.
+>>
+>> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+>> ---
+>> =C2=A0lib/libmtd.c =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=A0 26 ++++++--------=
+------------
+>> =C2=A0lib/libmtd_legacy.c | =C2=A0 =C2=A08 +-------
+>> =C2=A02 files changed, 7 insertions(+), 27 deletions(-)
+>
+> I am not 100% sure this is a good idea, but probably for allocations it
+> is ok - they are so unlikely to fail, and if they do, we are screwed
+> anyway. But for other situation we should return errors, I think.
 
-Wasn't there going to be a much nicer version of this patch coming
-anyway?
-
--- 
-dwmw2
+right, i'm only thinking of OOM errors should we simply die.  all
+other errors should return.
+-mike
