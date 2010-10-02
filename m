@@ -1,41 +1,23 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
-	helo=TX2EHSOBE007.bigfish.com)
-	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P21Ky-0000Jp-6S
-	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2010 12:37:14 +0000
-Received: from mail118-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail118-tx2-R.bigfish.com (Postfix) with ESMTP id 5423AAA84F7	for
-	<linux-mtd@lists.infradead.org>; Sat,  2 Oct 2010 12:36:48 +0000 (UTC)
-Received: from TX2EHSMHS015.bigfish.com (unknown [10.9.14.243])	by
-	mail118-tx2.bigfish.com (Postfix) with ESMTP id 2FBD95F804E	for
-	<linux-mtd@lists.infradead.org>; Sat,  2 Oct 2010 12:36:48 +0000 (UTC)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by az33egw01.freescale.net (8.14.3/8.14.3) with ESMTP id
-	o92CaVYb010971	for
-	<linux-mtd@lists.infradead.org>; Sat, 2 Oct 2010 05:36:31 -0700 (MST)
-Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
-	[10.192.129.207])	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP
-	id o92CpFYa015605	for <linux-mtd@lists.infradead.org>;
-	Sat, 2 Oct 2010 07:51:16 -0500 (CDT)
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Subject: RE: [PATCH 2/3 v4] P4080/mtd: Only make elbc nand driver detect nand
-	flash partitions
-Date: Sat, 2 Oct 2010 20:36:27 +0800
-Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A256099@zch01exm23.fsl.freescale.net>
-In-Reply-To: <20100920131907.GA2184@oksana.dev.rtsoft.ru>
-References: <1284706869-12555-1-git-send-email-tie-fei.zang@freescale.com>
-	<1284706869-12555-2-git-send-email-tie-fei.zang@freescale.com>
-	<20100920131907.GA2184@oksana.dev.rtsoft.ru>
-From: Zang Roy-R61911 <r61911@freescale.com>
-To: Anton Vorontsov <cbouatmailru@gmail.com>
-Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
-	Lan Chunhe-B25806 <B25806@freescale.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, dwmw2@infradead.org,
-	Gala Kumar-B11780 <B11780@freescale.com>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P22kq-0003bL-2Z
+	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2010 14:08:00 +0000
+Received: by bwz19 with SMTP id 19so3763021bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 02 Oct 2010 07:07:59 -0700 (PDT)
+Subject: Re: [patch 2/2] jffs2: use cond_resched() instead of yield()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: akpm@linux-foundation.org
+In-Reply-To: <201010012116.o91LGSlt021122@imap1.linux-foundation.org>
+References: <201010012116.o91LGSlt021122@imap1.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 02 Oct 2010 17:07:55 +0300
+Message-ID: <1286028475.32172.12.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Artem.Bityutskiy@nokia.com, dedekind@infradead.org, w.sang@pengutronix.de,
+	linux-mtd@lists.infradead.org, mingo@elte.hu, dwmw2@infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,21 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW50b24gVm9yb250c292
-IFttYWlsdG86Y2JvdWF0bWFpbHJ1QGdtYWlsLmNvbV0NCj4gU2VudDogTW9uZGF5LCBTZXB0ZW1i
-ZXIgMjAsIDIwMTAgMjE6MTkgUE0NCj4gVG86IFphbmcgUm95LVI2MTkxMQ0KPiBDYzogbGludXgt
-bXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGR3bXcyQGluZnJhZGVhZC5vcmc7IGRlZGVraW5kMUBn
-bWFpbC5jb207DQo+IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7IExhbiBDaHVuaGUtQjI1ODA2
-OyBXb29kIFNjb3R0LUIwNzQyMTsgR2FsYSBLdW1hci0NCj4gQjExNzgwOyBsaW51eHBwYy1kZXZA
-b3psYWJzLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDIvMyB2NF0gUDQwODAvbXRkOiBPbmx5
-IG1ha2UgZWxiYyBuYW5kIGRyaXZlciBkZXRlY3QgbmFuZA0KPiBmbGFzaCBwYXJ0aXRpb25zDQo+
-IA0KPiBPbiBGcmksIFNlcCAxNywgMjAxMCBhdCAwMzowMTowOFBNICswODAwLCBSb3kgWmFuZyB3
-cm90ZToNCj4gWy4uLl0NCj4gPiArc3RhdGljIHN0cnVjdCBtdXRleCBmc2xfZWxiY19uYW5kX211
-dGV4Ow0KPiA+ICsNCj4gPiArc3RhdGljIGludCBfX2RldmluaXQgZnNsX2VsYmNfbmFuZF9wcm9i
-ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQo+ID4gIHsNCj4gPiAtCXN0cnVjdCBmc2xf
-bGJjX3JlZ3MgX19pb21lbSAqbGJjID0gY3RybC0+cmVnczsNCj4gPiArCXN0cnVjdCBmc2xfbGJj
-X3JlZ3MgX19pb21lbSAqbGJjOw0KPiA+ICAJc3RydWN0IGZzbF9lbGJjX210ZCAqcHJpdjsNCj4g
-PiAgCXN0cnVjdCByZXNvdXJjZSByZXM7DQo+ID4gKwlzdHJ1Y3QgZnNsX2VsYmNfZmNtX2N0cmwg
-KmVsYmNfZmNtX2N0cmwgPSBOVUxMOw0KPiANCj4gTm8gbmVlZCBmb3IgPSBOVUxMLg0KQW55IGhh
-cm0/IE9yIGp1c3QgcGVyc29uYWwgaGFiaXQgb3Igc3R5bGU/IENhbiB5b3UgZXhwbGFpbiBhYm91
-dCB3aHk/DQpUaGFua3MuDQpSb3kNCg==
+On Fri, 2010-10-01 at 14:16 -0700, akpm@linux-foundation.org wrote:
+> From: Wolfram Sang <w.sang@pengutronix.de>
+> 
+> yield() has different semantics meanwhile and even causes RT-kernels to
+> BUG.  Replace the only appearance left in jffs2.
+> 
+
+This patch is also in my l2-mtd-2.6.git tree.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
