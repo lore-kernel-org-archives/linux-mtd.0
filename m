@@ -1,25 +1,19 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P2ezw-00038F-G6
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 06:58:09 +0000
-Date: Mon, 4 Oct 2010 08:58:02 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: mxc_nand: do not depend on disabling the irq in
-	the interrupt handler
-Message-ID: <20101004065802.GA13948@pengutronix.de>
-References: <1285054802-21388-1-git-send-email-s.hauer@pengutronix.de>
-	<1285054802-21388-2-git-send-email-s.hauer@pengutronix.de>
-	<1285240612.29268.76.camel@localhost>
-	<20100929072843.GC23406@pengutronix.de>
+	id 1P2fUO-0004NM-6X
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 07:29:36 +0000
+From: "Ghorai, Sukumar" <s-ghorai@ti.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Mon, 4 Oct 2010 12:59:29 +0530
+Subject: RE: Issue : jffs2 and ecc layout
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B0356594397@dbde02.ent.ti.com>
+References: <2A3DCF3DA181AD40BDE86A3150B27B6B03560990E3@dbde02.ent.ti.com>
+In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B03560990E3@dbde02.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20100929072843.GC23406@pengutronix.de>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,36 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 29, 2010 at 09:28:43AM +0200, Sascha Hauer wrote:
-> David,
-> 
-> On Thu, Sep 23, 2010 at 02:16:52PM +0300, Artem Bityutskiy wrote:
-> > On Tue, 2010-09-21 at 09:40 +0200, Sascha Hauer wrote:
-> > > This patch reverts the driver to enabling/disabling the NFC interrupt
-> > > mask rather than enabling/disabling the system interrupt. This cleans
-> > > up the driver so that it doesn't rely on interrupts being disabled
-> > > within the interrupt handler.
-> > > For i.MX21 we keep the current behaviour, that is calling
-> > > enable_irq/disable_irq_nosync to enable/disable interrupts.
-> > > This patch is based on earlier work by John Ogness.
-> > > 
-> > > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > > Acked-by: John Ogness <john.ogness@linutronix.de>
-> > > Tested-by: John Ogness <john.ogness@linutronix.de>
-> > 
-> > I've created l2-mtd-2.6.git/for-2.6.36 branch, pushed your patch there,
-> > pinged dwmw2 for you. I do not give you any guarantees this will reach
-> > 2.6.36, you have to ping dwmw2.
-> 
-> Any chance to get this in? The mxc-nand driver is nonfunctional at the
-> moment and 2.6.36 is getting closer.
 
-Acked-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 
-(for the patch and the request to get it in before 2.6.36.)
+> -----Original Message-----
+> From: linux-omap-owner@vger.kernel.org [mailto:linux-omap-
+> owner@vger.kernel.org] On Behalf Of Ghorai, Sukumar
+> Sent: Tuesday, September 28, 2010 6:17 PM
+> To: linux-mtd@lists.infradead.org
+> Cc: linux-omap@vger.kernel.org
+> Subject: Issue : jffs2 and ecc layout
+>=20
+> Hi,
+> I was using the following ecc layout which is not working to mount the
+> jffs2 File-system. I was in 2.6.32 kernel and working; but same layout is
+> not working with latest 2.6 kernel.
+>=20
+> Observation is that - no read request issued to the driver (say omap2.c).
+>=20
+> # mount -t jffs2 /dev/mtdblock4 /mnt/nand
+> [=A0=A0 32.505218] cannot read OOB for EB at 00000000, requested 8 bytes,=
+ read
+> 0 bytes, error -22
+> mount: Mounting /dev/mtdblock4 on /mnt/nand failed: Input/output error
+>=20
+> # dmesg
+> <3>[=A0=A0 32.505218] cannot read OOB for EB at 00000000, requested 8 byt=
+es,
+> read 0 bytes, error -22
+>=20
+> Code:
+> =A0178 static struct nand_ecclayout hw_x16_romcode_oob_64 =3D {
+> =A0179=A0=A0=A0=A0=A0=A0=A0=A0 .eccbytes =3D 12,
+> =A0180=A0=A0=A0=A0=A0=A0=A0=A0 .eccpos =3D {
+> =A0181=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 2, 3, =
+4, 5, 6, 7, 8, 9, 10, 11, 12, 13
+> =A0182=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 },
+> =A0183=A0=A0=A0=A0=A0=A0=A0=A0 .oobfree =3D {
+> =A0184=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0=
+=A0=A0{.offset =3D 14,
+> =A0185=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0 .length =3D 50}
+> =A0186=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
+> =A0187 };
+>=20
+> =A01188=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info->nand.ecc.layout =3D =
+&hw_x16_romcode_oob_64;
+[Ghorai]=20
+Does anyone using similar layout for Jffs2? i.e. ECC store at beginning of =
+the spare area?
 
-Uwe
 
--- 
-Pengutronix e.K.                           | Uwe Kleine-König            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+>=20
+> Regards,
+> Ghorai
+>=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
