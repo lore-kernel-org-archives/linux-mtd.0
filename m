@@ -1,20 +1,35 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
-	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P27Sl-0000Zw-Lo
-	for linux-mtd@lists.infradead.org; Sat, 02 Oct 2010 19:09:40 +0000
-Date: Sat, 2 Oct 2010 12:10:39 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: dedekind1@gmail.com
-Subject: Re: [patch 2/2] jffs2: use cond_resched() instead of yield()
-Message-Id: <20101002121039.5e0676f6.akpm@linux-foundation.org>
-In-Reply-To: <1286028475.32172.12.camel@brekeke>
-References: <201010012116.o91LGSlt021122@imap1.linux-foundation.org>
-	<1286028475.32172.12.camel@brekeke>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <4CA96DA1.7040301@st.com>
+Date: Mon, 4 Oct 2010 11:31:05 +0530
+From: viresh kumar <viresh.kumar@st.com>
+MIME-Version: 1.0
+To: viresh kumar <viresh.linux@gmail.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>
+Subject: Re: [PATCH V2 62/69] ST SPEAr: Appending spear3** with global
+	structures
+References: <cover.1285933331.git.viresh.kumar@st.com>	<f4787f6021bf3a8c009595749894332c05e656df.1285933332.git.viresh.kumar@st.com>
+	<AANLkTi=xNoG2T1Q2JqB7TH+O7AjW++UnSt1Q85VgPbzp@mail.gmail.com>
+In-Reply-To: <AANLkTi=xNoG2T1Q2JqB7TH+O7AjW++UnSt1Q85VgPbzp@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: Artem.Bityutskiy@nokia.com, dedekind@infradead.org, w.sang@pengutronix.de,
-	linux-mtd@lists.infradead.org, mingo@elte.hu, dwmw2@infradead.org
+Cc: "a.zummo@towertech.it" <a.zummo@towertech.it>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dbrownell@users.sourceforge.net" <dbrownell@users.sourceforge.net>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	"rtc-linux@googlegroups.com" <rtc-linux@googlegroups.com>,
+	Pratyush ANAND <pratyush.anand@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	"dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +39,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 02 Oct 2010 17:07:55 +0300 Artem Bityutskiy <dedekind1@gmail.com> wrote:
-
-> On Fri, 2010-10-01 at 14:16 -0700, akpm@linux-foundation.org wrote:
-> > From: Wolfram Sang <w.sang@pengutronix.de>
-> > 
-> > yield() has different semantics meanwhile and even causes RT-kernels to
-> > BUG.  Replace the only appearance left in jffs2.
-> > 
+On 10/01/2010 09:51 PM, viresh kumar wrote:
+> Hello everybody,
 > 
-> This patch is also in my l2-mtd-2.6.git tree.
+> I have used an latest patch on git for sending this patch series. I
+> think there is some bug
+> there, due to which all of you have received some mails which are not
+> intended for all of you.
+> There was a bugfix in git which enables to send mail to "recipients
+> mentioned in TO field", of patch
+> itself.
+> 
+> After creating patches (with git format-patch ---), i have added To
+> and CC lists in patches.
+> But when i sent patches the TO field was carried away in later patches
+> too. So due to this
+> all patches send after rtc patches have following recipients added:
+> rtc-linux@googlegroups.com,
+> a.zummo@towertech.it. Similarly for other patches too.
+> 
 
-And I'll keep sending it and you'll keep telling me it's in your tree
-until this situation gets fixed.
+Hello,
+
+Should i resend my patches (with correct list of people in To:)??
+
+-- 
+viresh
