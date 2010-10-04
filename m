@@ -1,22 +1,22 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P2fej-0005Mv-Ff
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 07:40:17 +0000
-Received: by fxm15 with SMTP id 15so3783513fxm.36
+	id 1P2fgG-0005YE-HQ
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 07:41:52 +0000
+Received: by fxm15 with SMTP id 15so3783953fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 04 Oct 2010 00:40:15 -0700 (PDT)
-Subject: Re: [PATCH v2] jffs2reader: convert to common.h helpers
+	Mon, 04 Oct 2010 00:41:51 -0700 (PDT)
+Subject: Re: [PATCH] nand: omap2: Missing arg to gpmc_prefetch_reset()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier@gentoo.org>
-In-Reply-To: <1286045889-25811-1-git-send-email-vapier@gentoo.org>
-References: <1285953246-19729-1-git-send-email-vapier@gentoo.org>
-	<1286045889-25811-1-git-send-email-vapier@gentoo.org>
+To: =?ISO-8859-1?Q?Lo=EFc?= Minier <loic.minier@linaro.org>
+In-Reply-To: <1285364702-13922-1-git-send-email-loic.minier@linaro.org>
+References: <1285364702-13922-1-git-send-email-loic.minier@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 04 Oct 2010 10:37:29 +0300
-Message-ID: <1286177849.11684.76.camel@localhost>
+Date: Mon, 04 Oct 2010 10:39:05 +0300
+Message-ID: <1286177945.11684.77.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,16 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-10-02 at 14:58 -0400, Mike Frysinger wrote:
-> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
-> ---
-> v2
-> 	- fix a few thinkos in previous patch
+On Fri, 2010-09-24 at 23:45 +0200, Loïc Minier wrote:
+> Fix missing cs arg to gpmc_prefetch_reset() when
+> CONFIG_MTD_NAND_OMAP_PREFETCH_DMA=y which caused a build failure since
+> 948d38e799f0ab87cf8ed9113fcdaaee61acf321:
+> drivers/mtd/nand/omap2.c: In function 'omap_nand_dma_transfer':
+> drivers/mtd/nand/omap2.c:416: error: too few arguments to function 'gpmc_prefetch_reset'
 > 
->  jffs2reader.c |   71 +++++++++++++++++---------------------------------------
->  1 files changed, 22 insertions(+), 49 deletions(-)
+> Signed-off-by: Loïc Minier <loic.minier@linaro.org>
+> ---
+>  drivers/mtd/nand/omap2.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 
-Pushed, thanks!
+FYI, a similar patch is already in Linus' tree, so I'm dropping it from
+my tree:
+
+commit f12f662f29d5801e598c6bb4a71e54b2de218f72
+Author: Daniel J Blueman <daniel.blueman@gmail.com>
+Date:   Wed Sep 29 21:01:55 2010 +0100
+
+    fix OMAP2 MTD build failure
+    
+    Fix build failure from recent interface change and merge.
+    
+    Tested on OMAP3430.
+    
+    Signed-off-by: Daniel J Blueman <daniel.blueman@gmail.com>
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 
 -- 
 Best Regards,
