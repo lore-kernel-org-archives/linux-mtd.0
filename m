@@ -1,19 +1,23 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P2fUO-0004NM-6X
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 07:29:36 +0000
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Mon, 4 Oct 2010 12:59:29 +0530
-Subject: RE: Issue : jffs2 and ecc layout
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B0356594397@dbde02.ent.ti.com>
-References: <2A3DCF3DA181AD40BDE86A3150B27B6B03560990E3@dbde02.ent.ti.com>
-In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B03560990E3@dbde02.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P2fej-0005Mv-Ff
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 07:40:17 +0000
+Received: by fxm15 with SMTP id 15so3783513fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 04 Oct 2010 00:40:15 -0700 (PDT)
+Subject: Re: [PATCH v2] jffs2reader: convert to common.h helpers
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1286045889-25811-1-git-send-email-vapier@gentoo.org>
+References: <1285953246-19729-1-git-send-email-vapier@gentoo.org>
+	<1286045889-25811-1-git-send-email-vapier@gentoo.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 04 Oct 2010 10:37:29 +0300
+Message-ID: <1286177849.11684.76.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +27,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sat, 2010-10-02 at 14:58 -0400, Mike Frysinger wrote:
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+> v2
+> 	- fix a few thinkos in previous patch
+> 
+>  jffs2reader.c |   71 +++++++++++++++++---------------------------------------
+>  1 files changed, 22 insertions(+), 49 deletions(-)
 
+Pushed, thanks!
 
-> -----Original Message-----
-> From: linux-omap-owner@vger.kernel.org [mailto:linux-omap-
-> owner@vger.kernel.org] On Behalf Of Ghorai, Sukumar
-> Sent: Tuesday, September 28, 2010 6:17 PM
-> To: linux-mtd@lists.infradead.org
-> Cc: linux-omap@vger.kernel.org
-> Subject: Issue : jffs2 and ecc layout
->=20
-> Hi,
-> I was using the following ecc layout which is not working to mount the
-> jffs2 File-system. I was in 2.6.32 kernel and working; but same layout is
-> not working with latest 2.6 kernel.
->=20
-> Observation is that - no read request issued to the driver (say omap2.c).
->=20
-> # mount -t jffs2 /dev/mtdblock4 /mnt/nand
-> [=A0=A0 32.505218] cannot read OOB for EB at 00000000, requested 8 bytes,=
- read
-> 0 bytes, error -22
-> mount: Mounting /dev/mtdblock4 on /mnt/nand failed: Input/output error
->=20
-> # dmesg
-> <3>[=A0=A0 32.505218] cannot read OOB for EB at 00000000, requested 8 byt=
-es,
-> read 0 bytes, error -22
->=20
-> Code:
-> =A0178 static struct nand_ecclayout hw_x16_romcode_oob_64 =3D {
-> =A0179=A0=A0=A0=A0=A0=A0=A0=A0 .eccbytes =3D 12,
-> =A0180=A0=A0=A0=A0=A0=A0=A0=A0 .eccpos =3D {
-> =A0181=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 2, 3, =
-4, 5, 6, 7, 8, 9, 10, 11, 12, 13
-> =A0182=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 },
-> =A0183=A0=A0=A0=A0=A0=A0=A0=A0 .oobfree =3D {
-> =A0184=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =A0=
-=A0=A0{.offset =3D 14,
-> =A0185=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 .length =3D 50}
-> =A0186=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }
-> =A0187 };
->=20
-> =A01188=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 info->nand.ecc.layout =3D =
-&hw_x16_romcode_oob_64;
-[Ghorai]=20
-Does anyone using similar layout for Jffs2? i.e. ECC store at beginning of =
-the spare area?
-
-
->=20
-> Regards,
-> Ghorai
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
