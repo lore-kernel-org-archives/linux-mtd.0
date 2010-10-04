@@ -1,24 +1,23 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P2kpu-0001jy-1b
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 13:12:10 +0000
-Message-ID: <4CA9D2A0.6010508@parrot.com>
-Date: Mon, 4 Oct 2010 15:12:00 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from devils.ext.ti.com ([198.47.26.153])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P2m8a-0004mf-Uh
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2010 14:35:33 +0000
+From: "Sudhakar Rajashekhara" <sudhakar.raj@ti.com>
+To: "'David Woodhouse'" <dwmw2@infradead.org>, <dedekind1@gmail.com>
+References: <201010012116.o91LGRGn021118@imap1.linux-foundation.org>	
+	<1286028592.32172.14.camel@brekeke>
+	<1286030672.26080.2.camel@macbook.infradead.org>
+In-Reply-To: <1286030672.26080.2.camel@macbook.infradead.org>
+Subject: RE: [patch 1/2] mtdpart: memory accessor interface for MTD layer
+Date: Mon, 4 Oct 2010 19:58:37 +0530
+Message-ID: <004b01cb63d0$6ee7e630$4cb7b290$@raj@ti.com>
 MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: RE : UBI/UBIFS interrupted write page handling
-References: <4C88DDD5.4060507@parrot.com>	 <1284054669.11335.21.camel@brekeke>
-	<1285006478.1762.1.camel@brekeke>	 <4C9B7CD8.4070806@parrot.com>,
-	<1285266914.1766.1.camel@brekeke>	
-	<F5C24FC168F95048BB6B9E0B13EB33152BA6F5304E@DIAMANT.xi-lite.lan>	
-	<1285523911.1776.9.camel@brekeke>
-	<1285657088.2437.23.camel@localhost>	 <4CA19DAE.7030402@parrot.com>
-	<1285660934.2437.44.camel@localhost>
-In-Reply-To: <1285660934.2437.44.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Cc: khilman@deeprootsystems.com, david-b@pacbell.net, akpm@linux-foundation.org,
+	linux-mtd@lists.infradead.org, cbouatmailru@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy a écrit :
-> On Tue, 2010-09-28 at 09:47 +0200, Matthieu CASTET wrote:
->> Artem Bityutskiy a écrit :
->>> On Sun, 2010-09-26 at 20:58 +0300, Artem Bityutskiy wrote:
->>>
->> That's better : interrupt erased page are not put anymore in corrupted list.
->> But I have problem with interrupt write :
->> this night the test crashed [1].
+All,
+
+On Sat, Oct 02, 2010 at 20:14:32, David Woodhouse wrote:
+> On Sat, 2010-10-02 at 17:09 +0300, Artem Bityutskiy wrote:
+> > 
+> > > Implement a memory accessor interface in the MTD layer which enables
+> > the
+> > > kernel to access flash data.
+> > > 
+> > > This patch adds two new members to the mtd_partition structure, a
+> > function
+> > > handler which will be called during setup of the partition and an
+> > argument
+> > > to be passed to this setup function.
+> > 
+> > This patch does not apply to my l2-mtd-2.6.git tree
 > 
-> Yeah, this should be fixed by forcing LEB refresh for the last LEBs of
-> journal heads. This problem exists long time. I'll work on this and send
-> you patches.
-UBI will need also some patch.
-For example in case of wear leveling, ubi could move a leb from a peb to 
-another and the write can be interrupted.
-
-
+> Wasn't there going to be a much nicer version of this patch coming
+> anyway?
 > 
-> We also have the outstanding gc_lnum problem - did you see it in new
-> ubifs?
-No, I find the cause of that. I was missing a patch in my backport tree.
 
-Matthieu
+This patch can be dropped. Please see the discussion at [1] regarding this.
+
+[1] http://lists.infradead.org/pipermail/linux-mtd/2010-August/031483.html
+
+Thanks,
+Sudhakar
