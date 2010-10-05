@@ -1,17 +1,32 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P33cZ-0003VK-NQ
-	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2010 09:15:41 +0000
-Received: by pzk32 with SMTP id 32so2157897pzk.36
+	id 1P33zN-0007F3-Fv
+	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2010 09:39:14 +0000
+Received: by qwe4 with SMTP id 4so101899qwe.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Oct 2010 02:15:37 -0700 (PDT)
+	Tue, 05 Oct 2010 02:39:11 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 5 Oct 2010 02:15:37 -0700
-Message-ID: <AANLkTinZLNERwwQ2xZASRzVs7+ny-ZsTO3Gm8ceh8kVE@mail.gmail.com>
-Subject: questions about inval_cache_and_wait_for_operation
-From: Aaron Nabil <krellboy@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Sender: foxcore@gmail.com
+In-Reply-To: <DB610A768D2B46C7A888B2DBECEBEC79@THOR>
+References: <E73F778B634944A0B8D4333B7BD012E4@THOR>
+	<AANLkTin2b-QovauogfjMZP_7KeChY5oWsMPFBAiC2ERE@mail.gmail.com>
+	<74A5BE60138147F696E151AACD52EDEE@THOR>
+	<AANLkTintkdKGpkUGMkgGbVK6Pb3cttspwnuPQR=DJxnm@mail.gmail.com>
+	<D3A375B91F5944B38630B07214914DF8@THOR>
+	<AANLkTinotjfB26VPmF7_vx8M1kX5cYMzygFMk8X6exww@mail.gmail.com>
+	<341EADF720C14B4F86C63204D9C60723@THOR>
+	<AANLkTikXbKZLFOCBDkrwgVPJEYTwF88xBtYFnwaTQH+5@mail.gmail.com>
+	<6E1A182A06054C5A99BD3C0D3202C24F@THOR>
+	<AANLkTi=qZ_wYcHHfKjaJsvf-ODgnECDOTEHmuorpA7K2@mail.gmail.com>
+	<DB610A768D2B46C7A888B2DBECEBEC79@THOR>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Tue, 5 Oct 2010 11:38:46 +0200
+Message-ID: <AANLkTi=7WAJL4S5jJQQAHSp=KK2t5a5BwSow5r7Mco99@mail.gmail.com>
+Subject: Re: [Help] SST39VF6401B Support
+To: =?UTF-8?Q?Fl=C3=A1vio_Silveira?= <fggs@terra.com.br>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,119 +36,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I apologize in advance for my newbie-ness and potential lack of
-critical missing information, please correct me off-list and I will do
-better.
+2010/9/24 Fl=C3=A1vio Silveira <fggs@terra.com.br>:
+> Hi Guillaume,
+>
+> =C2=A0I tried another router firmware with kernel 2.6.34.5, downloaded
+> mtd-2.6.git and pasted chips folder and "linux/mtd" headers, applied your
+> last patch and kernel compiled fine.
+> =C2=A0I've also enabled debug in kernel and cfi. Should I paste console l=
+og in
+> message body or should I attach a file with the log?
+> =C2=A0I had an error but I don't know if it's related to mtd or the firmw=
+are,
+> because my router is not officialy supported.
 
-I'm trying to fix a lock-up problem I'm seeing with jffs2, we run the
-system with a cpu-hog for 8 hrs and somewhere between the GC thread
-and sync the filesystems lock up.  I can supply more details about
-this but I wanted to have all of my ducks in a row first.
+Any news on this one ?
 
-While looking for the hang I ran across some code in
-inval_cache_and_wait_for_operation I don't understand, and since it's
-very close to the problem code I thought I'd ask.
-
-
-First question....
-
-
-
-        unsigned int timeo, sleep_time, reset_timeo;
-
-( . . .)
-
-        sleep_time = chip_op_time / 2;
-
-        for (;;) {
-
-( . . .)
-
-                /* OK Still waiting. Drop the lock, wait a while and retry. */
-                spin_unlock(chip->mutex);
-                if (sleep_time >= 1000000/HZ) {
-                        /*
-                         * Half of the normal delay still remaining
-                         * can be performed with a sleeping delay instead
-                         * of busy waiting.
-                         */
-                        msleep(sleep_time/1000);
-                        timeo -= sleep_time;
-                        sleep_time = 1000000/HZ;
-                } else {
-                        udelay(1);
-                        cond_resched();
-                        timeo--;
-                }
-
-( . . . )
-         }
-
-
-If the execution path EVER takes the (sleep_time >= 1000000/HZ)
-branch, it will ALWAYS take that branch every iteration thru the for
-loop because the last statement sleep_time = 1000000/HZ sets
-sleep_time explicitly to the value which is being tested for as
-greater than OR EQUAL to.  Sleep_time is not otherwise changed
-elsewhere in the loop.
-
-
-
-Second question....
-
-        unsigned int timeo, sleep_time, reset_timeo;
-
-( . . . )
-
-        timeo = chip_op_time_max;
-        if (!timeo)
-                timeo = 500000;
-
-        sleep_time = chip_op_time / 2;
-
-( . . .)
-
-
-        for (;;) {
-
-( . . . )
-
-                if (!timeo) {
-            // test if timeo is exactly 0
-                        map_write(map, CMD(0x70), cmd_adr);
-                        chip->state = FL_STATUS;
-                        return -ETIME;
-                }
-
-                /* OK Still waiting. Drop the lock, wait a while and retry. */
-                spin_unlock(chip->mutex);
-                if (sleep_time >= 1000000/HZ) {
-                        /*
-                         * Half of the normal delay still remaining
-                         * can be performed with a sleeping delay instead
-                         * of busy waiting.
-                         */
-                        msleep(sleep_time/1000);
-                        timeo -= sleep_time;
-     //  timeo can underflow
-                        sleep_time = 1000000/HZ;
-                } else {
-                        udelay(1);
-                        cond_resched();
-                        timeo--;
-          // timeo will always hit 0 before underflow
-                }
-
-( . . .)
-
-
-As timeo is an unsigned int and the timeo test is for exactly 0, the
-timeo -= sleep_time can underflow and wrap timeo around. If this code
-branch was executed only once and sleep_time < timeo this won't be a
-problem, but, see first problem above.
-
-
-Thanks in advance for extending me newbie latitude.
-
-
-Aaron
+--=20
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
