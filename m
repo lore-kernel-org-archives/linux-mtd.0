@@ -1,24 +1,17 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3CYz-0003UM-Dq
-	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2010 18:48:34 +0000
-Received: by bwz19 with SMTP id 19so6544863bwz.36
+	id 1P3Efw-0003HT-9P
+	for linux-mtd@lists.infradead.org; Tue, 05 Oct 2010 21:03:53 +0000
+Received: by gxk27 with SMTP id 27so2916442gxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Oct 2010 11:48:31 -0700 (PDT)
-Subject: Re: [PATCH] mtd/nand.h: cleanups
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <20101005182656.GA21067@pengutronix.de>
-References: <20101005104101.GA18714@www.tglx.de>
-	<20101005182656.GA21067@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Oct 2010 21:48:26 +0300
-Message-ID: <1286304506.1797.2.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Tue, 05 Oct 2010 14:03:50 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 5 Oct 2010 14:03:49 -0700
+Message-ID: <AANLkTikttX8kwa2upG1_T78y=r_cOZgoUrt4PWOZWv3i@mail.gmail.com>
+Subject: questions about jffs2 jffs2_erase_pending_blocks in erase.c
+From: Aaron Nabil <krellboy@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-10-05 at 20:26 +0200, Wolfram Sang wrote:
-> Hi Sebastian,
-> 
-> just a minor comment.
+Again apologies if I'm doing this wrong, I rarely poke at the kernel
+and only have a few days experience looking at jffs2 and don't
+understand the "big picture" yet, but I'm seeing some things I don't
+understand and would be grateful for any help.  Please contact me
+off-list if you want to send me a "you are so stupid, it's supposed to
+be doing that", in fact I'd welcome that over silence.  I'd even thank
+you.
 
-[Side note: it is much more reader-friendly to avoid citing whole patch
-and making the readers search where you put the comment, like this:]
+My question:
 
-> > @@ -457,24 +492,32 @@ struct nand_chip {
-> >  
-> >  	uint8_t		(*read_byte)(struct mtd_info *mtd);
-> >  	u16		(*read_word)(struct mtd_info *mtd);
-> > -	void		(*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
-> > -	void		(*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
-> > -	int		(*verify_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
-> > +	void		(*write_buf)(struct mtd_info *mtd, const uint8_t *buf,
-> > +			int len);
-> 
-> It might be more readable to get rid of the tabs after the type and keep the
-> arguments in one line?
+jffs2_erase_pending_blocks is only called with 1 or 0 as count arguments.
 
-I agree with this. Sebastian, I'll put your patch to my l2 tree when
-git.infradead.org is back. But if you could send a separate follow up
-patch which kills these ugly tabs - it would be nice.
+ nodemgmt.c jffs2_reserve_space  121 jffs2_erase_pending_blocks(c, 1);
+ nodemgmt.c jffs2_find_nextblock 248 jffs2_erase_pending_blocks(c, 1);
+ super.c    jffs2_write_super     67 jffs2_erase_pending_blocks(c, 0);
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+The test  if (!--count) seems to be testing for (count == 1) as the
+decrement happens first.  If count is 0 it will be decremented
+negative, underflow and wrap around to positive, and then eventually
+hit 0 4 billion loop interations later.
+
+Thanks in advance to anyone looking at this,
+
+Aaron
+
+void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
+{
+        struct jffs2_eraseblock *jeb;
+
+        mutex_lock(&c->erase_free_sem);
+
+        spin_lock(&c->erase_completion_lock);
+
+        while (!list_empty(&c->erase_complete_list) ||
+               !list_empty(&c->erase_pending_list)) {
+
+                if (!list_empty(&c->erase_complete_list)) {
+                        jeb = list_entry(c->erase_complete_list.next,
+struct jffs2_eraseblock, list);
+                        list_move(&jeb->list, &c->erase_checking_list);
+                        spin_unlock(&c->erase_completion_lock);
+                        mutex_unlock(&c->erase_free_sem);
+                        jffs2_mark_erased_block(c, jeb);
+
+                        if (!--count) {            //  decrement then
+test is equiv to (count == 1)
+                                D1(printk(KERN_DEBUG "Count reached.
+jffs2_erase_pending_blocks leaving\n"));
+                                goto done;
+                        }
