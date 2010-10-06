@@ -1,13 +1,22 @@
-Received: from sand.ocn.ne.jp ([122.28.30.136] helo=smtp.sand.ocn.ne.jp)
+Received: from mtaout02-winn.ispmail.ntl.com ([81.103.221.48])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3KaQ-0004Fm-Dh
-	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2010 03:22:36 +0000
-From: Jon Povey <jon.povey@racelogic.co.uk>
+	id 1P3b6S-0002Sy-Bp
+	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2010 21:00:45 +0000
+Received: from aamtaout01-winn.ispmail.ntl.com ([81.103.221.35])
+	by mtaout02-winn.ispmail.ntl.com
+	(InterMail vM.7.08.04.00 201-2186-134-20080326) with ESMTP id
+	<20101006210038.ZUHT7723.mtaout02-winn.ispmail.ntl.com@aamtaout01-winn.ispmail.ntl.com>
+	for <linux-mtd@lists.infradead.org>; Wed, 6 Oct 2010 22:00:38 +0100
+Received: from zog.reactivated.net ([86.14.215.141])
+	by aamtaout01-winn.ispmail.ntl.com
+	(InterMail vG.3.00.04.00 201-2196-133-20080908) with ESMTP id
+	<20101006210038.ZDFG16999.aamtaout01-winn.ispmail.ntl.com@zog.reactivated.net>
+	for <linux-mtd@lists.infradead.org>; Wed, 6 Oct 2010 22:00:38 +0100
+From: Daniel Drake <dsd@laptop.org>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC] mtd: add MEMSETGOODBLOCK ioctl
-Date: Wed,  6 Oct 2010 12:21:58 +0900
-Message-Id: <1286335318-17542-1-git-send-email-jon.povey@racelogic.co.uk>
-Cc: Jon Povey <jon.povey@racelogic.co.uk>
+Subject: [doesn't work] JFFS2: Dynamically choose inocache hash size
+Message-Id: <20101006210036.92C229D401B@zog.reactivated.net>
+Date: Wed,  6 Oct 2010 22:00:36 +0100 (BST)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,230 +26,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adds the MEMSETGOODBLOCK ioctl, inverse operation of MEMSETBADBLOCK for
-times when you really are sure that a block is good, but was marked bad
-in error.
+I'm trying to upstream an old OLPC patch which greatly speeds up mounting
+of large jffs2 volumes.
+Took a stab at a suggestion from David (shown here) but it crashes badly.
+Causes lots of WARNINGs to be triggered from __mark_inode_dirty.
 
-WARNING: This ioctl should not be casually used, you can't magically
-fix unreliable blocks, and causing the system to try and use them may
-cause you problems. Manufacturer-marked bad blocks may be forgotten
-and impossible to find again later. Be careful.
+I'm not going to spend any more time on this for the time being,
+just archiving the patch here, just in case someone has interest in
+finishing it off.
 
-This ioctl is for situations where you know what you are doing, for
-example your bootloader has to be written with a different OOB layout
-and scanned as bad when the BBT was generated, but you know it's good
-and want to rewrite it from Linux.
 
-Signed-off-by: Jon Povey <jon.povey@racelogic.co.uk>
+
+When JFFS2 is used for large volumes, the mount times are quite long.
+Increasing the hash size provides a significant speed boost on the OLPC
+XO-1 laptop.
+
+Add logic that dynamically selects a hash size based on the size of
+the medium. A 64mb medium will result in a hash size of 128, and a 512mb
+medium will result in a hash size of 1024.
+
+Signed-off-by: Daniel Drake <dsd@laptop.org>
 ---
-This is a request for comment on this approach to bad blocks, this patch
-only considers the nand driver and only versions with a BBT on flash.
+ fs/jffs2/build.c       |    2 +-
+ fs/jffs2/fs.c          |   22 +++++++++++++++++++++-
+ fs/jffs2/jffs2_fs_sb.h |    1 +
+ fs/jffs2/nodelist.c    |    8 ++++----
+ fs/jffs2/nodelist.h    |    3 ++-
+ 5 files changed, 29 insertions(+), 7 deletions(-)
 
-This works for me on davinci DM355 with 2K page NAND flash.
-
- drivers/mtd/mtdchar.c        |   13 +++++++++
- drivers/mtd/mtdpart.c        |   18 ++++++++++++
- drivers/mtd/nand/nand_base.c |   60 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/mtd.h      |    1 +
- include/linux/mtd/nand.h     |    2 +
- include/mtd/mtd-abi.h        |    1 +
- 6 files changed, 95 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index a825002..20250ae 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -750,6 +750,19 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		break;
+diff --git a/fs/jffs2/build.c b/fs/jffs2/build.c
+index a906f53..85c6be2 100644
+--- a/fs/jffs2/build.c
++++ b/fs/jffs2/build.c
+@@ -23,7 +23,7 @@ static void jffs2_build_remove_unlinked_inode(struct jffs2_sb_info *,
+ static inline struct jffs2_inode_cache *
+ first_inode_chain(int *i, struct jffs2_sb_info *c)
+ {
+-	for (; *i < INOCACHE_HASHSIZE; (*i)++) {
++	for (; *i < c->inocache_hashsize; (*i)++) {
+ 		if (c->inocache_list[*i])
+ 			return c->inocache_list[*i];
  	}
- 
-+	case MEMSETGOODBLOCK:
-+	{
-+		loff_t offs;
-+
-+		if (copy_from_user(&offs, argp, sizeof(loff_t)))
-+			return -EFAULT;
-+		if (!mtd->block_markgood)
-+			ret = -EOPNOTSUPP;
-+		else
-+			return mtd->block_markgood(mtd, offs);
-+		break;
-+	}
-+
- #ifdef CONFIG_HAVE_MTD_OTP
- 	case OTPSELECT:
- 	{
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 0090690..cd03c29 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -327,6 +327,22 @@ static int part_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	return res;
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 6b2964a..2701b37 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -478,6 +478,25 @@ struct inode *jffs2_new_inode (struct inode *dir_i, int mode, struct jffs2_raw_i
+ 	return inode;
  }
  
-+static int part_block_markgood(struct mtd_info *mtd, loff_t ofs)
++static int calculate_inocache_hashsize(uint32_t flash_size)
 +{
-+	struct mtd_part *part = PART(mtd);
-+	int res;
++	/*
++	 * Pick a inocache hash size based on the size of the medium.
++	 * Count how many megabytes we're dealing with, apply a hashsize twice
++	 * that size, but rounding down to the usual big powers of 2. And keep
++	 * to sensible bounds.
++	 */
 +
-+	if (!(mtd->flags & MTD_WRITEABLE))
-+		return -EROFS;
-+	if (ofs >= mtd->size)
-+		return -EINVAL;
-+	ofs += part->offset;
-+	res = part->master->block_markgood(part->master, ofs);
-+	if (!res)
-+		mtd->ecc_stats.badblocks--;
-+	return res;
++	int size_mb = flash_size / 1024 / 1024;
++	int hashsize = (size_mb * 2) & ~0x3f;
++
++	if (hashsize < INOCACHE_HASHSIZE_MIN)
++		return INOCACHE_HASHSIZE_MIN;
++	if (hashsize > INOCACHE_HASHSIZE_MAX)
++		return INOCACHE_HASHSIZE_MAX;
++
++	return hashsize;
 +}
-+
- /*
-  * This function unregisters and destroy all slave MTD objects which are
-  * attached to the given master MTD object.
-@@ -464,6 +480,8 @@ static struct mtd_part *add_one_partition(struct mtd_info *master,
- 		slave->mtd.block_isbad = part_block_isbad;
- 	if (master->block_markbad)
- 		slave->mtd.block_markbad = part_block_markbad;
-+	if (master->block_markgood)
-+		slave->mtd.block_markgood = part_block_markgood;
- 	slave->mtd.erase = part_erase;
- 	slave->master = master;
- 	slave->offset = part->offset;
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index b3469a7..c2c6211 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -444,6 +444,40 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- }
  
- /**
-+ * nand_default_block_markgood - [DEFAULT] mark a block good
-+ * @mtd:	MTD device structure
-+ * @ofs:	offset from device start
-+ *
-+ * This is the default implementation, which can be overridden by
-+ * a hardware specific driver.
-+*/
-+static int nand_default_block_markgood(struct mtd_info *mtd, loff_t ofs)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int block, ret;
-+
-+	if (chip->options & NAND_BBT_SCANLASTPAGE)
-+		ofs += mtd->erasesize - mtd->writesize;
-+
-+	/* Get block number */
-+	block = (int)(ofs >> chip->bbt_erase_shift);
-+	if (chip->bbt)
-+		chip->bbt[block >> 2] &= ~(0x03 << ((block & 0x03) << 1));
-+
-+	/* Do we have a flash based bad block table ? */
-+	if (chip->options & NAND_USE_FLASH_BBT) {
-+		ret = nand_update_bbt(mtd, ofs);
-+	} else {
-+		WARN_ONCE(1, "Attempt to NAND markgood without flash BBT");
-+		ret = -EOPNOTSUPP;
-+	}
-+	if (!ret)
-+		mtd->ecc_stats.badblocks--;
-+
-+	return ret;
-+}
-+
-+/**
-  * nand_check_wp - [GENERIC] check if the chip is write protected
-  * @mtd:	MTD device structure
-  * Check, if the device is write protected
-@@ -2736,6 +2770,29 @@ static int nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
- }
+ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
+ {
+@@ -524,7 +543,8 @@ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (ret)
+ 		return ret;
  
- /**
-+ * nand_block_markgood - [MTD Interface] Mark block at the given offset as good
-+ * @mtd:	MTD device structure
-+ * @ofs:	offset relative to mtd start
-+ */
-+static int nand_block_markgood(struct mtd_info *mtd, loff_t ofs)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	int ret;
-+
-+	printk(KERN_INFO "markgood 0x%llx\n", ofs);
-+	ret = nand_block_isbad(mtd, ofs);
-+	if (ret < 0)
-+		return ret;
-+	else if (ret == 0) {
-+		printk(KERN_INFO "is good, do nothing\n");
-+		/* Good already, return success and do nothing */
-+		return 0;
-+	}
-+
-+	return chip->block_markgood(mtd, ofs);
-+}
-+
-+/**
-  * nand_suspend - [MTD Interface] Suspend the NAND flash
-  * @mtd:	MTD device structure
-  */
-@@ -2788,6 +2845,8 @@ static void nand_set_defaults(struct nand_chip *chip, int busw)
- 		chip->block_bad = nand_block_bad;
- 	if (!chip->block_markbad)
- 		chip->block_markbad = nand_default_block_markbad;
-+	if (!chip->block_markgood)
-+		chip->block_markgood = nand_default_block_markgood;
- 	if (!chip->write_buf)
- 		chip->write_buf = busw ? nand_write_buf16 : nand_write_buf;
- 	if (!chip->read_buf)
-@@ -3302,6 +3361,7 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	mtd->resume = nand_resume;
- 	mtd->block_isbad = nand_block_isbad;
- 	mtd->block_markbad = nand_block_markbad;
-+	mtd->block_markgood = nand_block_markgood;
+-	c->inocache_list = kcalloc(INOCACHE_HASHSIZE, sizeof(struct jffs2_inode_cache *), GFP_KERNEL);
++	c->inocache_hashsize = calculate_inocache_hashsize(c->flash_size);
++	c->inocache_list = kcalloc(c->inocache_hashsize, sizeof(struct jffs2_inode_cache *), GFP_KERNEL);
+ 	if (!c->inocache_list) {
+ 		ret = -ENOMEM;
+ 		goto out_wbuf;
+diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
+index 6784bc8..f864005 100644
+--- a/fs/jffs2/jffs2_fs_sb.h
++++ b/fs/jffs2/jffs2_fs_sb.h
+@@ -100,6 +100,7 @@ struct jffs2_sb_info {
+ 	wait_queue_head_t erase_wait;		/* For waiting for erases to complete */
  
- 	/* propagate ecc.layout to mtd_info */
- 	mtd->ecclayout = chip->ecc.layout;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 8485e42..c71276f 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -237,6 +237,7 @@ struct mtd_info {
- 	/* Bad block management functions */
- 	int (*block_isbad) (struct mtd_info *mtd, loff_t ofs);
- 	int (*block_markbad) (struct mtd_info *mtd, loff_t ofs);
-+	int (*block_markgood) (struct mtd_info *mtd, loff_t ofs);
+ 	wait_queue_head_t inocache_wq;
++	int inocache_hashsize;
+ 	struct jffs2_inode_cache **inocache_list;
+ 	spinlock_t inocache_lock;
  
- 	struct notifier_block reboot_notifier;  /* default mode before reboot */
+diff --git a/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
+index af02bd1..5e03233 100644
+--- a/fs/jffs2/nodelist.c
++++ b/fs/jffs2/nodelist.c
+@@ -420,7 +420,7 @@ struct jffs2_inode_cache *jffs2_get_ino_cache(struct jffs2_sb_info *c, uint32_t
+ {
+ 	struct jffs2_inode_cache *ret;
  
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index e41d377..9744a51 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -332,6 +332,7 @@ struct nand_buffers {
-  * @select_chip:	[REPLACEABLE] select chip nr
-  * @block_bad:		[REPLACEABLE] check, if the block is bad
-  * @block_markbad:	[REPLACEABLE] mark the block bad
-+ * @block_markgood:	[REPLACEABLE] mark the block good
-  * @cmd_ctrl:		[BOARDSPECIFIC] hardwarespecific funtion for controlling
-  *			ALE/CLE/nCE. Also used to write command and address
-  * @dev_ready:		[BOARDSPECIFIC] hardwarespecific function for accesing device ready/busy line
-@@ -386,6 +387,7 @@ struct nand_chip {
- 	void		(*select_chip)(struct mtd_info *mtd, int chip);
- 	int		(*block_bad)(struct mtd_info *mtd, loff_t ofs, int getchip);
- 	int		(*block_markbad)(struct mtd_info *mtd, loff_t ofs);
-+	int		(*block_markgood)(struct mtd_info *mtd, loff_t ofs);
- 	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
- 				    unsigned int ctrl);
- 	int		(*dev_ready)(struct mtd_info *mtd);
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index 4debb45..d32bea8 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -126,6 +126,7 @@ struct otp_info {
- #define MEMWRITEOOB64		_IOWR('M', 21, struct mtd_oob_buf64)
- #define MEMREADOOB64		_IOWR('M', 22, struct mtd_oob_buf64)
- #define MEMISLOCKED		_IOR('M', 23, struct erase_info_user)
-+#define MEMSETGOODBLOCK		_IOW('M', 24, __kernel_loff_t)
+-	ret = c->inocache_list[ino % INOCACHE_HASHSIZE];
++	ret = c->inocache_list[ino % c->inocache_hashsize];
+ 	while (ret && ret->ino < ino) {
+ 		ret = ret->next;
+ 	}
+@@ -441,7 +441,7 @@ void jffs2_add_ino_cache (struct jffs2_sb_info *c, struct jffs2_inode_cache *new
  
- /*
-  * Obsolete legacy interface. Keep it in order not to break userspace
+ 	dbg_inocache("add %p (ino #%u)\n", new, new->ino);
+ 
+-	prev = &c->inocache_list[new->ino % INOCACHE_HASHSIZE];
++	prev = &c->inocache_list[new->ino % c->inocache_hashsize];
+ 
+ 	while ((*prev) && (*prev)->ino < new->ino) {
+ 		prev = &(*prev)->next;
+@@ -462,7 +462,7 @@ void jffs2_del_ino_cache(struct jffs2_sb_info *c, struct jffs2_inode_cache *old)
+ 	dbg_inocache("del %p (ino #%u)\n", old, old->ino);
+ 	spin_lock(&c->inocache_lock);
+ 
+-	prev = &c->inocache_list[old->ino % INOCACHE_HASHSIZE];
++	prev = &c->inocache_list[old->ino % c->inocache_hashsize];
+ 
+ 	while ((*prev) && (*prev)->ino < old->ino) {
+ 		prev = &(*prev)->next;
+@@ -487,7 +487,7 @@ void jffs2_free_ino_caches(struct jffs2_sb_info *c)
+ 	int i;
+ 	struct jffs2_inode_cache *this, *next;
+ 
+-	for (i=0; i<INOCACHE_HASHSIZE; i++) {
++	for (i=0; i < c->inocache_hashsize; i++) {
+ 		this = c->inocache_list[i];
+ 		while (this) {
+ 			next = this->next;
+diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
+index 523a916..5a53d9b 100644
+--- a/fs/jffs2/nodelist.h
++++ b/fs/jffs2/nodelist.h
+@@ -199,7 +199,8 @@ struct jffs2_inode_cache {
+ #define RAWNODE_CLASS_XATTR_DATUM	1
+ #define RAWNODE_CLASS_XATTR_REF		2
+ 
+-#define INOCACHE_HASHSIZE 128
++#define INOCACHE_HASHSIZE_MIN 128
++#define INOCACHE_HASHSIZE_MAX 1024
+ 
+ #define write_ofs(c) ((c)->nextblock->offset + (c)->sector_size - (c)->nextblock->free_size)
+ 
 -- 
-1.6.3.3
+1.7.2.3
