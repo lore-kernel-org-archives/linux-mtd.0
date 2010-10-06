@@ -1,22 +1,22 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3bQS-0002iC-B4
-	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2010 21:21:25 +0000
-Date: Wed, 6 Oct 2010 23:21:16 +0200
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH] mtd/nand.h: little more cleanup
-Message-ID: <20101006212116.GB9722@pengutronix.de>
-References: <20101005104101.GA18714@www.tglx.de>
-	<20101005182656.GA21067@pengutronix.de>
-	<1286304506.1797.2.camel@brekeke>
-	<20101006210614.GA18551@www.tglx.de>
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P3bRV-0002zp-4o
+	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2010 21:22:30 +0000
+Received: by vws11 with SMTP id 11so18804vws.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 06 Oct 2010 14:22:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
-Content-Disposition: inline
-In-Reply-To: <20101006210614.GA18551@www.tglx.de>
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
+References: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
+Date: Wed, 6 Oct 2010 23:22:27 +0200
+Message-ID: <AANLkTi=1j-N-VdJ0=tF5Sf8B8tasvtBYaWteoHCuxnkD@mail.gmail.com>
+Subject: Re: [RFC] do_mounts: Allow mtd names for non-flash block filesystems
+From: Karl Beldan <karl.beldan@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Karl Beldan <karl.beldan@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +26,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Edit for my off-by-one typo:
 
---oLBj+sq0vYjzfsbl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 6, 2010 at 11:02 PM, Karl Beldan <karl.beldan@gmail.com> wrote:
+> Hi,
+>
+> I have been using this tweak for some time now, and I am getting tired of
+> having to resort to it so often.
+> It allows to pass such cmdline root as:
+> =C2=A0"root=3Dmtdb:ubivolx rootfstype=3Dsquashfs"
+> I am pretty sure many people use squashfs/cramfs filesystems on top of na=
+nd,
+> for example, and I thought that this might initiate discussion.
+>
+> --
+> Karl
+>
+> Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
+> ---
+> =C2=A0init/do_mounts.c | =C2=A0 15 +++++++++++++--
+> =C2=A01 files changed, 13 insertions(+), 2 deletions(-)
+>
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index 02e3ca4..20d9380 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -20,6 +20,7 @@
+> =C2=A0#include <linux/nfs_fs.h>
+> =C2=A0#include <linux/nfs_fs_sb.h>
+> =C2=A0#include <linux/nfs_mount.h>
+> +#include <linux/mtd/mtd.h>
+>
+> =C2=A0#include "do_mounts.h"
+>
+> @@ -386,8 +387,18 @@ void __init prepare_namespace(void)
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (saved_root_name[0]) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0root_device_name =
+=3D saved_root_name;
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (!strncmp(root_devi=
+ce_name, "mtd", 3) ||
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 !strncmp=
+(root_device_name, "ubi", 3)) {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (!strncmp(root_devi=
+ce_name, "mtdb:", 4)) {
+Here, it is 5 not 4
 
-On Wed, Oct 06, 2010 at 11:06:14PM +0200, Sebastian Andrzej Siewior wrote:
-> - remove tabs between type and name.
->=20
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 struct mtd_info *mtd =3D get_mtd_device_nm(root_device_name + 4);
+same here
 
-Thanks!
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 if (!IS_ERR(mtd))
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sprintf(root_device_name, "/dev/mtdblock=
+%d", mtd->index);
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 else {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "VFS: Unable to find mtd=
+ \"%s\"\n", root_device_name + 4);
+and here
 
-Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk("List of all partitions:\n");
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk_all_partitions();
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 panic("VFS: Unable to mount root fs");
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 }
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 } else if (!strncmp(ro=
+ot_device_name, "mtd", 3) ||
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0!strncmp(root_device_name, "ubi", 3)) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0mount_block_root(root_device_name, root_mountflags);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0goto out;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> --
+> 1.7.1.422.g049e9
+>
 
 --=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---oLBj+sq0vYjzfsbl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEARECAAYFAkys6EwACgkQD27XaX1/VRvYawCeMGI/RNXosd/qQZuRq/75nMgT
-Jw4AoIy2oawQf7WqjoOzOdzGMckabVOs
-=FBfW
------END PGP SIGNATURE-----
-
---oLBj+sq0vYjzfsbl--
+Karl
