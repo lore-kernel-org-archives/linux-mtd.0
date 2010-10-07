@@ -1,24 +1,21 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3wAk-0000Vs-Jk
-	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 19:30:35 +0000
-Received: by bwz2 with SMTP id 2so204577bwz.36
+	id 1P3wCT-0000gJ-Jb
+	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 19:32:22 +0000
+Received: by bwz2 with SMTP id 2so206144bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Oct 2010 12:30:32 -0700 (PDT)
-Subject: Re: [PATCH] mtd/nand.h: little more cleanup
+	Thu, 07 Oct 2010 12:32:20 -0700 (PDT)
+Subject: Re: [PATCH] JFFS2: Dynamically choose inocache hash size
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-In-Reply-To: <20101006210614.GA18551@www.tglx.de>
-References: <20101005104101.GA18714@www.tglx.de>
-	<20101005182656.GA21067@pengutronix.de>
-	<1286304506.1797.2.camel@brekeke>
-	<20101006210614.GA18551@www.tglx.de>
+To: Daniel Drake <dsd@laptop.org>
+In-Reply-To: <20101007181402.982199D401B@zog.reactivated.net>
+References: <20101007181402.982199D401B@zog.reactivated.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 07 Oct 2010 22:30:29 +0300
-Message-ID: <1286479829.1797.12.camel@brekeke>
+Date: Thu, 07 Oct 2010 22:32:15 +0300
+Message-ID: <1286479935.1797.14.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,40 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-10-06 at 23:06 +0200, Sebastian Andrzej Siewior wrote:
-> - remove tabs between type and name.
+On Thu, 2010-10-07 at 19:14 +0100, Daniel Drake wrote:
+> When JFFS2 is used for large volumes, the mount times are quite long.
+> Increasing the hash size provides a significant speed boost on the OLPC
+> XO-1 laptop.
 > 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
->  include/linux/mtd/nand.h |  315 +++++++++++++++++++++------------------------
->  1 files changed, 147 insertions(+), 168 deletions(-)
+> Add logic that dynamically selects a hash size based on the size of
+> the medium. A 64mb medium will result in a hash size of 128, and a 512mb
+> medium will result in a hash size of 1024.
+> 
+> Signed-off-by: Daniel Drake <dsd@laptop.org>
 
-This one was not compile-tested:
+Why is this complication needed? Unless there is a very good reason, I'd
+just stick with older patch you sent, which I BTW also have in my
+l2-mtd-2.6.git tree:
 
-[dedekind@brekeke l2-mtd-2.6]$ make -j2
-  CHK     include/linux/version.h
-  CHK     include/generated/utsrelease.h
-  CALL    scripts/checksyscalls.sh
-  CHK     include/generated/compile.h
-  CC [M]  drivers/mtd/devices/doc2000.o
-  CC [M]  drivers/mtd/devices/doc2001.o
-  CC [M]  drivers/mtd/devices/doc2001plus.o
-  CC [M]  drivers/mtd/devices/docprobe.o
-  CC [M]  drivers/mtd/nand/nand_base.o
-drivers/mtd/nand/nand_base.c: In function ‘nand_command’:
-drivers/mtd/nand/nand_base.c:589: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c: In function ‘nand_command_lp’:
-drivers/mtd/nand/nand_base.c:680: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c: In function ‘nand_flash_detect_onfi’:
-drivers/mtd/nand/nand_base.c:2890: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c: In function ‘nand_get_flash_type’:
-drivers/mtd/nand/nand_base.c:2977: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c:3099: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c:3103: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c:3104: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c:3106: error: ‘struct nand_chip’ has no member named ‘chipsize’
-drivers/mtd/nand/nand_base.c: In function ‘nand_scan_ident’:
-drivers/mtd/nand/nand_base.c:3216: error: ‘struct nand_chip’ has no member named ‘chipsize’
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/22cf48a8673a8eabfd014de032e426452cce0fc9
+
 
 -- 
 Best Regards,
