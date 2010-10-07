@@ -1,16 +1,16 @@
 Received: from gw1.transmode.se ([213.115.205.20])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3tLq-00045P-8T
-	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 16:29:50 +0000
+	id 1P3tyQ-0003mq-4i
+	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 17:09:42 +0000
 Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
-	by gw1.transmode.se (Postfix) with ESMTP id 2A3002597D6
+	by gw1.transmode.se (Postfix) with ESMTP id AB5842597D6
 	for <linux-mtd@lists.infradead.org>;
-	Thu,  7 Oct 2010 18:29:48 +0200 (CEST)
+	Thu,  7 Oct 2010 19:09:39 +0200 (CEST)
 From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] jffs2: Do not assume erase will fail
-Date: Thu, 7 Oct 2010 18:29:46 +0200
-Message-Id: <1286468986-24627-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Subject: [PATCH] jffs2: Reduce excessive scan of empty blocks
+Date: Thu, 7 Oct 2010 19:09:34 +0200
+Message-Id: <1286471374-25840-1-git-send-email-Joakim.Tjernlund@transmode.se>
 Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,29 +21,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Test if it did and then abort.
+Scanning 1024 bytes to see if an EB is empty is a bit much.
+Lower it to 256 bytes and make sure the while loop is
+optimized.
 
 Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 ---
- fs/jffs2/nodemgmt.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ fs/jffs2/scan.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-index 694aa5b..49ee5de 100644
---- a/fs/jffs2/nodemgmt.c
-+++ b/fs/jffs2/nodemgmt.c
-@@ -260,9 +260,9 @@ static int jffs2_find_nextblock(struct jffs2_sb_info *c)
- 		spin_lock(&c->erase_completion_lock);
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 3131860..4657918 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -20,7 +20,7 @@
+ #include "summary.h"
+ #include "debug.h"
  
- 		/* An erase may have failed, decreasing the
--		   amount of free space available. So we must
--		   restart from the beginning */
--		return -EAGAIN;
-+		   amount of free space available. */
-+		if (list_empty(&c->free_list))
-+			return -EAGAIN; /* restart from the beginning */
- 	}
+-#define DEFAULT_EMPTY_SCAN_SIZE 1024
++#define DEFAULT_EMPTY_SCAN_SIZE 256
  
- 	next = c->free_list.next;
+ #define noisy_printk(noise, args...) do { \
+ 	if (*(noise)) { \
+@@ -435,7 +435,7 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
+ 				  unsigned char *buf, uint32_t buf_size, struct jffs2_summary *s) {
+ 	struct jffs2_unknown_node *node;
+ 	struct jffs2_unknown_node crcnode;
+-	uint32_t ofs, prevofs;
++	uint32_t ofs, prevofs, max_ofs;
+ 	uint32_t hdr_crc, buf_ofs, buf_len;
+ 	int err;
+ 	int noise = 0;
+@@ -550,12 +550,12 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
+ 
+ 	/* We temporarily use 'ofs' as a pointer into the buffer/jeb */
+ 	ofs = 0;
+-
+-	/* Scan only 4KiB of 0xFF before declaring it's empty */
+-	while(ofs < EMPTY_SCAN_SIZE(c->sector_size) && *(uint32_t *)(&buf[ofs]) == 0xFFFFFFFF)
++	max_ofs = EMPTY_SCAN_SIZE(c->sector_size);
++	/* Scan only EMPTY_SCAN_SIZE of 0xFF before declaring it's empty */
++	while(ofs < max_ofs && *(uint32_t *)(&buf[ofs]) == 0xFFFFFFFF)
+ 		ofs += 4;
+ 
+-	if (ofs == EMPTY_SCAN_SIZE(c->sector_size)) {
++	if (ofs == max_ofs) {
+ #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+ 		if (jffs2_cleanmarker_oob(c)) {
+ 			/* scan oob, take care of cleanmarker */
 -- 
 1.7.2.2
