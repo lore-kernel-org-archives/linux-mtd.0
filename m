@@ -1,15 +1,22 @@
-Subject: Re: [PATCH] JFFS2: Dynamically choose inocache hash size
-From: David Woodhouse <dwmw2@infradead.org>
+Received: from www.tglx.de ([62.245.132.106])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P3wL7-00027X-Kc
+	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 19:41:20 +0000
+Message-ID: <4CAE2256.6000700@linutronix.de>
+Date: Thu, 07 Oct 2010 21:41:10 +0200
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+MIME-Version: 1.0
 To: dedekind1@gmail.com
-In-Reply-To: <1286479935.1797.14.camel@brekeke>
-References: <20101007181402.982199D401B@zog.reactivated.net>
-	<1286479935.1797.14.camel@brekeke>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 07 Oct 2010 20:35:23 +0100
-Message-ID: <1286480123.3757.2.camel@i7.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Daniel Drake <dsd@laptop.org>
+Subject: Re: [PATCH] mtd/nand.h: little more cleanup
+References: <20101005104101.GA18714@www.tglx.de>	
+	<20101005182656.GA21067@pengutronix.de>
+	<1286304506.1797.2.camel@brekeke>	
+	<20101006210614.GA18551@www.tglx.de>
+	<1286479829.1797.12.camel@brekeke>
+In-Reply-To: <1286479829.1797.12.camel@brekeke>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,13 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-10-07 at 22:32 +0300, Artem Bityutskiy wrote:
-> Why is this complication needed? Unless there is a very good reason, I'd
-> just stick with older patch you sent, which I BTW also have in my
-> l2-mtd-2.6.git tree: 
+Artem Bityutskiy wrote:
+> drivers/mtd/nand/nand_base.c: In function ‘nand_command’:
+> drivers/mtd/nand/nand_base.c:589: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c: In function ‘nand_command_lp’:
+> drivers/mtd/nand/nand_base.c:680: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c: In function ‘nand_flash_detect_onfi’:
+> drivers/mtd/nand/nand_base.c:2890: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c: In function ‘nand_get_flash_type’:
+> drivers/mtd/nand/nand_base.c:2977: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c:3099: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c:3103: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c:3104: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c:3106: error: ‘struct nand_chip’ has no member named ‘chipsize’
+> drivers/mtd/nand/nand_base.c: In function ‘nand_scan_ident’:
+> drivers/mtd/nand/nand_base.c:3216: error: ‘struct nand_chip’ has no member named ‘chipsize’
 
-I asked for it. With smaller file systems, a huge increase buys nothing
-and is just bloat.
+I'm very sorry for that. I fix is coming in a jiffy or two.
 
--- 
-dwmw2
+Sebastian
