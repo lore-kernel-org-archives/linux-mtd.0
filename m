@@ -1,22 +1,30 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mailout4.samsung.com ([203.254.224.34])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3bRV-0002zp-4o
-	for linux-mtd@lists.infradead.org; Wed, 06 Oct 2010 21:22:30 +0000
-Received: by vws11 with SMTP id 11so18804vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 06 Oct 2010 14:22:28 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
-References: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
-Date: Wed, 6 Oct 2010 23:22:27 +0200
-Message-ID: <AANLkTi=1j-N-VdJ0=tF5Sf8B8tasvtBYaWteoHCuxnkD@mail.gmail.com>
-Subject: Re: [RFC] do_mounts: Allow mtd names for non-flash block filesystems
-From: Karl Beldan <karl.beldan@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Karl Beldan <karl.beldan@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	id 1P3i9R-0002T6-St
+	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 04:32:25 +0000
+Received: from epmmp1 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0L9W00GC1KLIFL40@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 13:32:06 +0900 (KST)
+Received: from roh83 ([107.108.214.183])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0L9W00BU6KLF4Q@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 13:32:06 +0900 (KST)
+Date: Thu, 07 Oct 2010 10:02:02 +0530
+From: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
+Subject: RE: [PATCH RESEND][MTD]MLC device check in OneNAND driver
+In-reply-to: <1285329124.29268.175.camel@localhost>
+To: dedekind1@gmail.com
+Message-id: <000f01cb65d8$984b15b0$c8e14110$%hs@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-language: en-us
+Content-transfer-encoding: quoted-printable
+References: <001701cb5bdd$3fd69a80$bf83cf80$%hs@samsung.com>
+	<1285329124.29268.175.camel@localhost>
+Cc: v.dalal@samsung.com, gupta.raghav@samsung.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,88 +34,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Edit for my off-by-one typo:
+Hi Artem,
 
-On Wed, Oct 6, 2010 at 11:02 PM, Karl Beldan <karl.beldan@gmail.com> wrote:
-> Hi,
->
-> I have been using this tweak for some time now, and I am getting tired of
-> having to resort to it so often.
-> It allows to pass such cmdline root as:
-> =C2=A0"root=3Dmtdb:ubivolx rootfstype=3Dsquashfs"
-> I am pretty sure many people use squashfs/cramfs filesystems on top of na=
-nd,
-> for example, and I thought that this might initiate discussion.
->
+> -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
+> Sent: Friday, September 24, 2010 5:22 PM
+> To: Rohit Hassan Sathyanarayan
+> Cc: linux-mtd@lists.infradead.org; gupta.raghav@samsung.com; =
+v.dalal@samsung.com
+> Subject: Re: [PATCH RESEND][MTD]MLC device check in OneNAND driver
+>=20
+> On Fri, 2010-09-24 at 17:10 +0530, Rohit Hassan Sathyanarayan wrote:
+> > Signed-off-by: Rohit HS <rohit.hs@samsung.com>
+> > Signed-off-by: Raghav Gupta <gupta.raghav@samsung.com>
+>=20
+> Almost perfect. However:
+>=20
+> 1. All mtd patches should have "mtd:" prefix.
+> 2. Add some description about what you do and why into the commit
+> message.
+> 3. I think combining is not good, better do it old way - first patch
+> introduces the flag, second uses it in OneNAND
+>=20
+
+  We made changes as per your comments and have posted two patches,
+  Links of two patches,
+  =
+http://lists.infradead.org/pipermail/linux-mtd/2010-September/032333.html=
+
+  =
+http://lists.infradead.org/pipermail/linux-mtd/2010-September/032334.html=
+
+
+   =09
+> Sorry for being picky, but I really want to show you how to send =
+patches
+> properly once and later get good series from you.
+>=20
 > --
-> Karl
->
-> Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
-> ---
-> =C2=A0init/do_mounts.c | =C2=A0 15 +++++++++++++--
-> =C2=A01 files changed, 13 insertions(+), 2 deletions(-)
->
-> diff --git a/init/do_mounts.c b/init/do_mounts.c
-> index 02e3ca4..20d9380 100644
-> --- a/init/do_mounts.c
-> +++ b/init/do_mounts.c
-> @@ -20,6 +20,7 @@
-> =C2=A0#include <linux/nfs_fs.h>
-> =C2=A0#include <linux/nfs_fs_sb.h>
-> =C2=A0#include <linux/nfs_mount.h>
-> +#include <linux/mtd/mtd.h>
->
-> =C2=A0#include "do_mounts.h"
->
-> @@ -386,8 +387,18 @@ void __init prepare_namespace(void)
->
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (saved_root_name[0]) {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0root_device_name =
-=3D saved_root_name;
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (!strncmp(root_devi=
-ce_name, "mtd", 3) ||
-> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 !strncmp=
-(root_device_name, "ubi", 3)) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (!strncmp(root_devi=
-ce_name, "mtdb:", 4)) {
-Here, it is 5 not 4
-
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 struct mtd_info *mtd =3D get_mtd_device_nm(root_device_name + 4);
-same here
-
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 if (!IS_ERR(mtd))
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 sprintf(root_device_name, "/dev/mtdblock=
-%d", mtd->index);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 else {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk(KERN_ERR "VFS: Unable to find mtd=
- \"%s\"\n", root_device_name + 4);
-and here
-
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk("List of all partitions:\n");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printk_all_partitions();
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 panic("VFS: Unable to mount root fs");
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 } else if (!strncmp(ro=
-ot_device_name, "mtd", 3) ||
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0!strncmp(root_device_name, "ubi", 3)) {
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0mount_block_root(root_device_name, root_mountflags);
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0goto out;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0}
-> --
-> 1.7.1.422.g049e9
->
-
---=20
-Karl
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =
+=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9)
