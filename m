@@ -1,18 +1,17 @@
 Received: from gw1.transmode.se ([213.115.205.20])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3tKt-0003V4-IH
-	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 16:28:52 +0000
-In-Reply-To: <AANLkTikGL87-J-EbRiStmRaVN=g-rH7XL6SNB0zYwuaQ@mail.gmail.com>
-References: <20101006210036.92C229D401B@zog.reactivated.net>	<OFB9367F81.DD135AF9-ONC12577B5.00550D41-C12577B5.00557990@transmode.se>
-	<AANLkTikGL87-J-EbRiStmRaVN=g-rH7XL6SNB0zYwuaQ@mail.gmail.com>
-Subject: Re: [doesn't work] JFFS2: Dynamically choose inocache hash size
-To: Daniel Drake <dsd@laptop.org>
-Message-ID: <OF67B76228.51E20AF7-ONC12577B5.0059D5BD-C12577B5.005A1FBE@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 7 Oct 2010 18:24:23 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: dsd.olpc@gmail.com, linux-mtd@lists.infradead.org
+	id 1P3tLq-00045P-8T
+	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 16:29:50 +0000
+Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
+	by gw1.transmode.se (Postfix) with ESMTP id 2A3002597D6
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  7 Oct 2010 18:29:48 +0200 (CEST)
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] jffs2: Do not assume erase will fail
+Date: Thu, 7 Oct 2010 18:29:46 +0200
+Message-Id: <1286468986-24627-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-dsd.olpc@gmail.com wrote on 2010/10/07 18:09:59:
->
-> On 7 October 2010 16:33, Joakim Tjernlund <joakim.tjernlund@transmode.se> wrote:
-> > Does #define INOCACHE_HASHSIZE <something bigger> work?
->
-> Yes. Tested for years as value 1024 in OLPC builds.
+Test if it did and then abort.
 
-OK, Good.
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+ fs/jffs2/nodemgmt.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
->
-> > if so I would guess something is using inocache_hashsize before
-> > it is initialized.
->
-> Me too. But it's initialized early, at the same time as inocache_list.
-> And all users of inocache_hashsize use the list at the same time. So
-> if that were as obvious as it sounds, we'd be seeing bigger problems.
-
-Sure, but something might still use it before. Try adding an
-assert(inocache_hashsize) wherever you use inocache_hashsize.
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index 694aa5b..49ee5de 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -260,9 +260,9 @@ static int jffs2_find_nextblock(struct jffs2_sb_info *c)
+ 		spin_lock(&c->erase_completion_lock);
+ 
+ 		/* An erase may have failed, decreasing the
+-		   amount of free space available. So we must
+-		   restart from the beginning */
+-		return -EAGAIN;
++		   amount of free space available. */
++		if (list_empty(&c->free_list))
++			return -EAGAIN; /* restart from the beginning */
+ 	}
+ 
+ 	next = c->free_list.next;
+-- 
+1.7.2.2
