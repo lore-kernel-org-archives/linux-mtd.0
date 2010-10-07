@@ -1,21 +1,24 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3vxo-0005yx-Na
-	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 19:17:13 +0000
-Received: by bwz2 with SMTP id 2so192193bwz.36
+	id 1P3vyf-0006B1-44
+	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 19:18:06 +0000
+Received: by bwz2 with SMTP id 2so192985bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Oct 2010 12:17:10 -0700 (PDT)
-Subject: Re: [PATCH] mtd/nand.h: cleanups
+	Thu, 07 Oct 2010 12:18:04 -0700 (PDT)
+Subject: RE: [PATCH RESEND][MTD]MLC device check in OneNAND driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-In-Reply-To: <20101005104101.GA18714@www.tglx.de>
-References: <20101005104101.GA18714@www.tglx.de>
+To: Rohit Hassan Sathyanarayan <rohit.hs@samsung.com>
+In-Reply-To: <000f01cb65d8$984b15b0$c8e14110$%hs@samsung.com>
+References: <001701cb5bdd$3fd69a80$bf83cf80$%hs@samsung.com>
+	<1285329124.29268.175.camel@localhost>
+	<000f01cb65d8$984b15b0$c8e14110$%hs@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 07 Oct 2010 22:17:06 +0300
-Message-ID: <1286479026.1797.3.camel@brekeke>
+Date: Thu, 07 Oct 2010 22:18:00 +0300
+Message-ID: <1286479080.1797.4.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: v.dalal@samsung.com, gupta.raghav@samsung.com,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,19 +29,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-10-05 at 12:41 +0200, Sebastian Andrzej Siewior wrote:
-> - *var instead of * var
-> - proper multiline comment
-> - func(args) instead of func (args)
-> - 80 lines
-> 
-> So from
-> |total: 2 errors, 37 warnings, 654 lines checked
-> we got to one warning.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Thu, 2010-10-07 at 10:02 +0530, Rohit Hassan Sathyanarayan wrote:
+>   We made changes as per your comments and have posted two patches,
+>   Links of two patches,
+>   http://lists.infradead.org/pipermail/linux-mtd/2010-September/032333.html
+>   http://lists.infradead.org/pipermail/linux-mtd/2010-September/032334.html
 
-Pushed both patches to l2-mtd-2.6.git, thanks.
+Yes, I have them in my l2-mtd-2.6.git tree.
 
 -- 
 Best Regards,
