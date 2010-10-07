@@ -1,21 +1,17 @@
-Received: from gw1.transmode.se ([213.115.205.20])
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P3pAP-0005Oa-St
-	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 12:01:46 +0000
-Received: from sesr04.transmode.se (sesr04.transmode.se [192.168.201.15])
-	by gw1.transmode.se (Postfix) with ESMTP id A53252597D6
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  7 Oct 2010 14:01:43 +0200 (CEST)
-In-Reply-To: <OF2426448C.2DD5559B-ONC12577B5.002AC992-C12577B5.002B0177@transmode.se>
-References: <OF23585AD5.AC5BB50F-ONC12577B5.0025413E-C12577B5.00263D39@transmode.se>
-	<OF2426448C.2DD5559B-ONC12577B5.002AC992-C12577B5.002B0177@transmode.se>
-Subject: Re: JFFS2 very slow when erasing
-Cc: linux-mtd@lists.infradead.org
-Message-ID: <OFFCEBB9A1.311BB67A-ONC12577B5.0041BA45-C12577B5.0041F321@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 7 Oct 2010 14:00:20 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+	id 1P3pJ6-0006R7-Rn
+	for linux-mtd@lists.infradead.org; Thu, 07 Oct 2010 12:10:46 +0000
+From: Savinay Dharmappa <savinay.dharmappa@ti.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: NOR flash driver for OMAP-L137/AM17x
+Date: Thu,  7 Oct 2010 17:01:14 +0530
+Message-Id: <1286451074-12765-1-git-send-email-savinay.dharmappa@ti.com>
+Cc: Aleksey Makarov <amakarov@ru.mvista.com>,
+	Sergei Shtylyov <sshtylyov@ru.mvista.com>,
+	davinci-linux-open-source@linux.davincidsp.com,
+	David Griego <dgriego@mvista.com>,
+	Savinay Dharmappa <savinay.dharmappa@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +21,371 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > With 2.6.35 JFFS2 takes a very long time cp files while it erases:
-> >  cp big_file test
-> >  rm test
-> >  cp big_file test
-> > The last cp op. takes several times longer because JFFS2 is erasing.
-> > Revering the patches I helped out with make JFFS2 go fast again:
-> >   jffs2: Stop triggering block erases from jffs2_write_super()
-> >   jffs2: Rename jffs2_erase_pending_trigger() to jffs2_dirty_trigger()
-> >   jffs2: Use jffs2_garbage_collect_trigger() to trigger pending erases
-> >   jffs2: Require jffs2_garbage_collect_trigger() to be called with lock held
-> >   jffs2: Wake GC thread when there are blocks to be erased
-> >   jffs2: Erase pending blocks in GC pass, avoid invalid -EIO return
-> >
-> > The final patches were somewhat different than the ones I originally wrote
-> > and I THINK those didn't make JFFS2 go this slow.
-> >
-> > I suspect there is a locking problem somewhere.
->
-> Commenting out this makes JFFS2 fast again:
-> diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-> index f5e96bd..bce3a30 100644
-> --- a/fs/jffs2/gc.c
-> +++ b/fs/jffs2/gc.c
-> @@ -213,7 +213,7 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
->        mutex_unlock(&c->alloc_sem);
->        return ret;
->     }
-> -
-> +#if 0
->     /* If there are any blocks which need erasing, erase them now */
->     if (!list_empty(&c->erase_complete_list) ||
->         !list_empty(&c->erase_pending_list)) {
-> @@ -226,7 +226,7 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
->        D1(printk(KERN_DEBUG "No progress from erasing blocks; doing GC anyway\n"));
->        spin_lock(&c->erase_completion_lock);
->     }
-> -
-> +#endif
->     /* First, work out which block we're garbage-collecting */
->     jeb = c->gcblock;
->
-> Seems to me that jffs2_garbage_collect_pass() is trying too much.
-> David?
+From: David Griego <dgriego@mvista.com>
 
-So, if I release the alloc_sem before erase thing gets back to normal.
-Is releasing the alloc_sem bad here?
+OMAP-L137/AM17x has limited number of dedicated EMIFA
+address pins, enough to interface directly to an SDRAM.
+If a device such as an asynchronous flash needs to be
+attached to the EMIFA, then either GPIO pins or a chip
+select may be used to control the flash device's upper
+address lines.
 
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index f5e96bd..042ac66 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -218,13 +218,14 @@ int jffs2_garbage_collect_pass(struct jffs2_sb_info *c)
- 	if (!list_empty(&c->erase_complete_list) ||
- 	    !list_empty(&c->erase_pending_list)) {
- 		spin_unlock(&c->erase_completion_lock);
-+		mutex_unlock(&c->alloc_sem);
- 		D1(printk(KERN_DEBUG "jffs2_garbage_collect_pass() erasing pending blocks\n"));
- 		if (jffs2_erase_pending_blocks(c, 1)) {
--			mutex_unlock(&c->alloc_sem);
- 			return 0;
- 		}
- 		D1(printk(KERN_DEBUG "No progress from erasing blocks; doing GC anyway\n"));
- 		spin_lock(&c->erase_completion_lock);
-+		mutex_lock(&c->alloc_sem);
- 	}
+This patch adds support for the NOR flash on the OMAP-L137/
+AM17x user interface daughter board using the latch-addr-flash
+MTD mapping driver which allows flashes to be partially
+physically addressed. The upper address lines are set by
+a board specific code which is a separate patch.
 
- 	/* First, work out which block we're garbage-collecting */
+Signed-off-by: Aleksey Makarov <amakarov@ru.mvista.com>
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Signed-off-by: Savinay Dharmappa <savinay.dharmappa@ti.com>
+---
+ drivers/mtd/maps/Kconfig             |    9 +
+ drivers/mtd/maps/Makefile            |    1 +
+ drivers/mtd/maps/latch-addr-flash.c  |  271 ++++++++++++++++++++++++++++++++++
+ include/linux/mtd/latch-addr-flash.h |   29 ++++
+ 4 files changed, 310 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/latch-addr-flash.c
+ create mode 100644 include/linux/mtd/latch-addr-flash.h
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 701d942..b794ea2 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -543,4 +543,13 @@ config MTD_PISMO
+ 
+ 	  When built as a module, it will be called pismo.ko
+ 
++config MTD_LATCH_ADDR
++        tristate "Latch-assisted Flash Chip Support"
++        depends on MTD_COMPLEX_MAPPINGS
++        help
++          Map driver which allows flashes to be partially physically addressed
++          and have the upper address lines set by a board specific code.
++
++          If compiled as a module, it will be called latch-addr-flash.
++
+ endmenu
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index f216bb5..35c3573 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -58,3 +58,4 @@ obj-$(CONFIG_MTD_BFIN_ASYNC)	+= bfin-async-flash.o
+ obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
+ obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
++obj-$(CONFIG_MTD_LATCH_ADDR)	+= latch-addr-flash.o
+diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
+new file mode 100644
+index 0000000..e3a7f91
+--- /dev/null
++++ b/drivers/mtd/maps/latch-addr-flash.c
+@@ -0,0 +1,271 @@
++/*
++ * Interface for NOR flash driver whose high address lines are latched
++ *
++ * Copyright 2000 Nicolas Pitre <nico@cam.org>
++ * Copyright 2005-2008 Analog Devices Inc.
++ * Coyright (C) 2008 MontaVista Software, Inc. <source@mvista.com>
++ *
++ * This file is licensed under the terms of the GNU General Public License
++ * version 2. This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/latch-addr-flash.h>
++#include <linux/slab.h>
++
++#define DRIVER_NAME "latch-addr-flash"
++
++struct latch_addr_flash_info {
++	struct mtd_info		*mtd;
++	struct map_info		map;
++	struct resource		*res;
++
++	void			(*set_window)(unsigned long offset, void *data);
++	void			*data;
++
++	/* cache; could be found out of res */
++	unsigned long		win_mask;
++
++	int			nr_parts;
++	struct mtd_partition	*parts;
++
++	spinlock_t		lock;
++};
++
++static map_word lf_read(struct map_info *map, unsigned long ofs)
++{
++	struct latch_addr_flash_info *info;
++	map_word datum;
++
++	info = (struct latch_addr_flash_info *)map->map_priv_1;
++
++	spin_lock(&info->lock);
++
++	info->set_window(ofs, info->data);
++	datum = inline_map_read(map, info->win_mask & ofs);
++
++	spin_unlock(&info->lock);
++
++	return datum;
++}
++
++static void lf_write(struct map_info *map, map_word datum, unsigned long ofs)
++{
++	struct latch_addr_flash_info *info;
++
++	info = (struct latch_addr_flash_info *)map->map_priv_1;
++
++	spin_lock(&info->lock);
++
++	info->set_window(ofs, info->data);
++	inline_map_write(map, datum, info->win_mask & ofs);
++
++	spin_unlock(&info->lock);
++}
++
++static void lf_copy_from(struct map_info *map, void *to,
++		unsigned long from, ssize_t len)
++{
++	struct latch_addr_flash_info *info =
++		(struct latch_addr_flash_info *) map->map_priv_1;
++	unsigned n;
++
++	while (len > 0) {
++		n = info->win_mask + 1 - (from & info->win_mask);
++		if (n > len)
++			n = len;
++
++		spin_lock(&info->lock);
++
++		info->set_window(from, info->data);
++		memcpy_fromio(to, map->virt + (from & info->win_mask), n);
++
++		spin_unlock(&info->lock);
++
++		to += n;
++		from += n;
++		len -= n;
++	}
++}
++
++static const char *rom_probe_types[] = { "cfi_probe", NULL };
++
++static const char *part_probe_types[] = { "cmdlinepart", NULL };
++
++static int latch_addr_flash_remove(struct platform_device *dev)
++{
++	struct latch_addr_flash_info *info;
++	struct latch_addr_flash_data *latch_addr_data;
++
++	info = platform_get_drvdata(dev);
++	if (info == NULL)
++		return 0;
++	platform_set_drvdata(dev, NULL);
++
++	latch_addr_data = dev->dev.platform_data;
++
++	if (info->mtd != NULL) {
++		if (mtd_has_partitions()) {
++			if (info->nr_parts) {
++				del_mtd_partitions(info->mtd);
++				kfree(info->parts);
++			} else if (latch_addr_data->nr_parts) {
++				del_mtd_partitions(info->mtd);
++			} else {
++				del_mtd_device(info->mtd);
++			}
++		} else {
++			del_mtd_device(info->mtd);
++		}
++		map_destroy(info->mtd);
++	}
++
++	if (info->map.virt != NULL)
++		iounmap(info->map.virt);
++
++	if (info->res != NULL)
++		release_mem_region(info->res->start, resource_size(info->res));
++
++	kfree(info);
++
++	if (latch_addr_data->done)
++		latch_addr_data->done(latch_addr_data->data);
++
++	return 0;
++}
++
++static int __devinit latch_addr_flash_probe(struct platform_device *dev)
++{
++	struct latch_addr_flash_data *latch_addr_data;
++	struct latch_addr_flash_info *info;
++	resource_size_t win_base = dev->resource->start;
++	resource_size_t win_size = resource_size(dev->resource);
++	const char **probe_type;
++	int chipsel;
++	int err;
++
++	latch_addr_data = dev->dev.platform_data;
++	if (latch_addr_data == NULL)
++		return -ENODEV;
++
++	pr_notice("latch-addr platform flash device: %#llx byte "
++		  "window at %#.8llx\n",
++		  (unsigned long long)win_size, (unsigned long long)win_base);
++
++	chipsel = dev->id;
++
++	if (latch_addr_data->init) {
++		err = latch_addr_data->init(latch_addr_data->data, chipsel);
++		if (err != 0)
++			return err;
++	}
++
++	info = kzalloc(sizeof(struct latch_addr_flash_info), GFP_KERNEL);
++	if (info == NULL) {
++		err = -ENOMEM;
++		goto done;
++	}
++
++	platform_set_drvdata(dev, info);
++
++	info->res = request_mem_region(win_base, win_size, DRIVER_NAME);
++	if (info->res == NULL) {
++		dev_err(&dev->dev, "Could not reserve memory region\n");
++		err = -EBUSY;
++		goto free_info;
++	}
++
++	info->map.name		= DRIVER_NAME;
++	info->map.size		= latch_addr_data->size;
++	info->map.bankwidth	= latch_addr_data->width;
++
++	info->map.phys		= NO_XIP;
++	info->map.virt		= ioremap(win_base, win_size);
++	if (!info->map.virt) {
++		err = -ENOMEM;
++		goto free_res;
++	}
++
++	info->map.map_priv_1	= (unsigned long)info;
++
++	info->map.read		= lf_read;
++	info->map.copy_from	= lf_copy_from;
++	info->map.write		= lf_write;
++	info->set_window	= latch_addr_data->set_window;
++	info->data		= latch_addr_data->data;
++	info->win_mask		= win_size - 1;
++
++	spin_lock_init(&info->lock);
++
++	for (probe_type = rom_probe_types; !info->mtd && *probe_type;
++		probe_type++)
++		info->mtd = do_map_probe(*probe_type, &info->map);
++
++	if (info->mtd == NULL) {
++		dev_err(&dev->dev, "map_probe failed\n");
++		err = -ENODEV;
++		goto iounmap;
++	}
++	info->mtd->owner = THIS_MODULE;
++
++	if (mtd_has_partitions()) {
++
++		err = parse_mtd_partitions(info->mtd, part_probe_types,
++					   &info->parts, 0);
++		if (err > 0) {
++			add_mtd_partitions(info->mtd, info->parts, err);
++			return 0;
++		}
++		if (latch_addr_data->nr_parts) {
++			pr_notice("Using latch-addr-flash partition information\n");
++			add_mtd_partitions(info->mtd, latch_addr_data->parts,
++					latch_addr_data->nr_parts);
++			return 0;
++		}
++	}
++	add_mtd_device(info->mtd);
++	return 0;
++
++iounmap:
++	iounmap(info->map.virt);
++free_res:
++	release_mem_region(info->res->start, resource_size(info->res));
++free_info:
++	kfree(info);
++done:
++	if (latch_addr_data->done)
++		latch_addr_data->done(latch_addr_data->data);
++	return err;
++}
++
++static struct platform_driver latch_addr_flash_driver = {
++	.probe		= latch_addr_flash_probe,
++	.remove		= __devexit_p(latch_addr_flash_remove),
++	.driver		= {
++		.name	= DRIVER_NAME,
++	},
++};
++
++static int __init latch_addr_flash_init(void)
++{
++	return platform_driver_register(&latch_addr_flash_driver);
++}
++module_init(latch_addr_flash_init);
++
++static void __exit latch_addr_flash_exit(void)
++{
++	platform_driver_unregister(&latch_addr_flash_driver);
++}
++module_exit(latch_addr_flash_exit);
++
++MODULE_AUTHOR("David Griego <dgriego@mvista.com>");
++MODULE_DESCRIPTION("MTD map driver for flashes addressed physically with upper "
++		"address lines being set board specifically");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/mtd/latch-addr-flash.h b/include/linux/mtd/latch-addr-flash.h
+new file mode 100644
+index 0000000..c77e7c9
+--- /dev/null
++++ b/include/linux/mtd/latch-addr-flash.h
+@@ -0,0 +1,29 @@
++/*
++ * Interface for NOR flash driver whose high address lines are latched
++ *
++ * Copyright (C) 2008 MontaVista Software, Inc. <source@mvista.com>
++ *
++ * This file is licensed underthe terms of the GNU General Public License
++ * version 2. This program is licensed "as is" without any warranty of any
++ * kind, whether express or implied.
++ */
++#ifndef __LATCH_ADDR_FLASH__
++#define __LATCH_ADDR_FLASH__
++
++struct map_info;
++struct mtd_partition;
++
++struct latch_addr_flash_data {
++	unsigned int		width;
++	unsigned int		size;
++
++	int			(*init)(void *data, int cs);
++	void			(*done)(void *data);
++	void			(*set_window)(unsigned long offset, void *data);
++	void			*data;
++
++	unsigned int		nr_parts;
++	struct mtd_partition	*parts;
++};
++
++#endif
+-- 
+1.5.6
