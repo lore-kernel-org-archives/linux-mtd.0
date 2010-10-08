@@ -1,43 +1,26 @@
-Received: from db3ehsobe005.messaging.microsoft.com ([213.199.154.143]
-	helo=DB3EHSOBE005.bigfish.com)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P42uP-00035E-99
-	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 02:42:11 +0000
-Received: from mail32-db3 (localhost.localdomain [127.0.0.1])	by
-	mail32-db3-R.bigfish.com (Postfix) with ESMTP id 5D2C62787B3	for
-	<linux-mtd@lists.infradead.org>; Fri,  8 Oct 2010 02:42:07 +0000 (UTC)
-Received: from DB3EHSMHS006.bigfish.com (unknown [10.3.81.248])	by
-	mail32-db3.bigfish.com (Postfix) with ESMTP id CF0266E0052	for
-	<linux-mtd@lists.infradead.org>; Fri,  8 Oct 2010 02:42:06 +0000 (UTC)
-Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
-	by az33egw01.freescale.net (8.14.3/8.14.3) with ESMTP id
-	o982g2wU015945	for
-	<linux-mtd@lists.infradead.org>; Thu, 7 Oct 2010 19:42:02 -0700 (MST)
-Received: from zmy16exm20.fsl.freescale.net (zmy16exm20.ap.freescale.net
-	[10.211.3.23])	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id
-	o982uxKd021825	for <linux-mtd@lists.infradead.org>;
-	Thu, 7 Oct 2010 21:57:00 -0500 (CDT)
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+	id 1P44yy-0006ZN-FB
+	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 04:55:01 +0000
+From: "Nori, Sekhar" <nsekhar@ti.com>
+To: Sergei Shtylyov <sshtylyov@mvista.com>, "Dharmappa, Savinay"
+	<savinay.dharmappa@ti.com>
+Date: Fri, 8 Oct 2010 10:24:48 +0530
+Subject: RE: [PATCH 2/2] davinci: Platform support for OMAP-L137/AM17x NOR
+	flash driver
+Message-ID: <B85A65D85D7EB246BE421B3FB0FBB59302342ADE9D@dbde02.ent.ti.com>
+References: <1286451272-12988-1-git-send-email-savinay.dharmappa@ti.com>
+	<4CADE1B8.50800@mvista.com>
+In-Reply-To: <4CADE1B8.50800@mvista.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: [PATCH v3 5/7] mtd: m25p80: add support to parse the SPI flash's
-	partitions
-Date: Fri, 8 Oct 2010 10:42:10 +0800
-Message-ID: <73839B4A0818E747864426270AC332C3057F616A@zmy16exm20.fsl.freescale.net>
-In-Reply-To: <AANLkTi=eBA+i7kCOrEPao1AXofKUjBQokWLXFpgx3WND@mail.gmail.com>
-References: <1285833646-12006-1-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-2-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-3-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-4-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-5-git-send-email-Mingkai.hu@freescale.com>
-	<1285833646-12006-6-git-send-email-Mingkai.hu@freescale.com>
-	<AANLkTi=eBA+i7kCOrEPao1AXofKUjBQokWLXFpgx3WND@mail.gmail.com>
-From: Hu Mingkai-B21284 <B21284@freescale.com>
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: linuxppc-dev@ozlabs.org, Gala Kumar-B11780 <B11780@freescale.com>,
-	linux-mtd@lists.infradead.org, Zang Roy-R61911 <R61911@freescale.com>,
-	spi-devel-general@lists.sourceforge.net
+MIME-Version: 1.0
+Cc: Aleksey Makarov <amakarov@ru.mvista.com>,
+	"davinci-linux-open-source@linux.davincidsp.com"
+	<davinci-linux-open-source@linux.davincidsp.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Griego <dgriego@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -47,168 +30,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Sergei,
 
+On Thu, Oct 07, 2010 at 20:35:28, Sergei Shtylyov wrote:
 
-> -----Original Message-----
-> From: glikely@secretlab.ca [mailto:glikely@secretlab.ca] On Behalf Of =
-Grant
-> Likely
-> Sent: Friday, October 01, 2010 5:35 AM
-> To: Hu Mingkai-B21284
-> Cc: linuxppc-dev@ozlabs.org; spi-devel-general@lists.sourceforge.net; =
-linux-
-> mtd@lists.infradead.org; Gala Kumar-B11780; Zang Roy-R61911
-> Subject: Re: [PATCH v3 5/7] mtd: m25p80: add support to parse the SPI =
-flash's
-> partitions
->=20
-> On Thu, Sep 30, 2010 at 5:00 PM, Mingkai Hu <Mingkai.hu@freescale.com> =
-wrote:
-> > Signed-off-by: Mingkai Hu <Mingkai.hu@freescale.com>
-> > ---
-> > v3:
-> > =A0- Move the SPI flash partition code to the probe function.
-> >
-> > =A0drivers/mtd/devices/m25p80.c | =A0 39 =
-+++++++++++++++++++++++++++------------
-> > =A01 files changed, 27 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/mtd/devices/m25p80.c =
-b/drivers/mtd/devices/m25p80.c
-> > index 6f512b5..47d53c7 100644
-> > --- a/drivers/mtd/devices/m25p80.c
-> > +++ b/drivers/mtd/devices/m25p80.c
-> > @@ -772,7 +772,7 @@ static const struct spi_device_id *__devinit
-> jedec_probe(struct spi_device *spi)
-> > =A0static int __devinit m25p_probe(struct spi_device *spi)
-> > =A0{
-> > =A0 =A0 =A0 =A0const struct spi_device_id =A0 =A0 =A0*id =3D =
-spi_get_device_id(spi);
-> > - =A0 =A0 =A0 struct flash_platform_data =A0 =A0 =A0*data;
-> > + =A0 =A0 =A0 struct flash_platform_data =A0 =A0 =A0data, *pdata;
-> > =A0 =A0 =A0 =A0struct m25p =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-*flash;
-> > =A0 =A0 =A0 =A0struct flash_info =A0 =A0 =A0 =A0 =A0 =A0 =A0 *info;
-> > =A0 =A0 =A0 =A0unsigned =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0i;
-> > @@ -782,13 +782,27 @@ static int __devinit m25p_probe(struct =
-spi_device *spi)
-> > =A0 =A0 =A0 =A0 * a chip ID, try the JEDEC id commands; they'll work =
-for most
-> > =A0 =A0 =A0 =A0 * newer chips, even if we don't recognize the =
-particular chip.
-> > =A0 =A0 =A0 =A0 */
-> > - =A0 =A0 =A0 data =3D spi->dev.platform_data;
-> > - =A0 =A0 =A0 if (data && data->type) {
-> > + =A0 =A0 =A0 pdata =3D spi->dev.platform_data;
-> > + =A0 =A0 =A0 if (!pdata && spi->dev.of_node) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 int nr_parts;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct mtd_partition *parts;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct device_node *np =3D =
-spi->dev.of_node;
-> > +
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 nr_parts =3D =
-of_mtd_parse_partitions(&spi->dev, np, &parts);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (nr_parts) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pdata =3D &data;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 memset(pdata, 0, =
-sizeof(*pdata));
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pdata->parts =3D =
-parts;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 pdata->nr_parts =3D =
-nr_parts;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 }
-> > + =A0 =A0 =A0 }
->=20
-> Yes, this is the correct way to go about adding the partitions.
-> However, this patch can be made simpler by not renaming 'data' to
-> 'pdata' and by moving the above code down to just before the partition
-> information is actually used.  in the OF case, only the parts and the
-> nr_parts values written into data, and those values aren't used until
-> the last part of the probe function.
->=20
-> Regardless, in principle this patch is correct:
->=20
-> Acked-by: Grant Likely <grant.likely@secretlab.ca>
->=20
-> > +
-> > + =A0 =A0 =A0 if (pdata && pdata->type) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0const struct spi_device_id *plat_id;
-> >
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0for (i =3D 0; i < =
-ARRAY_SIZE(m25p_ids) - 1; i++) {
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0plat_id =3D =
-&m25p_ids[i];
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (strcmp(data->type, =
-plat_id->name))
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if =
-(strcmp(pdata->type, plat_id->name))
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0continue;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> > @@ -796,7 +810,8 @@ static int __devinit m25p_probe(struct =
-spi_device *spi)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (i < ARRAY_SIZE(m25p_ids) - 1)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0id =3D plat_id;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_warn(&spi->dev, =
-"unrecognized id %s\n", data-
-> >type);
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 dev_warn(&spi->dev, =
-"unrecognized id %s\n",
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 pdata->type);
-> > =A0 =A0 =A0 =A0}
-> >
-> > =A0 =A0 =A0 =A0info =3D (void *)id->driver_data;
-> > @@ -847,8 +862,8 @@ static int __devinit m25p_probe(struct =
-spi_device *spi)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0write_sr(flash, 0);
-> > =A0 =A0 =A0 =A0}
-> >
-> > - =A0 =A0 =A0 if (data && data->name)
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 flash->mtd.name =3D data->name;
-> > + =A0 =A0 =A0 if (pdata && pdata->name)
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 flash->mtd.name =3D pdata->name;
-> > =A0 =A0 =A0 =A0else
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0flash->mtd.name =3D =
-dev_name(&spi->dev);
-> >
-> > @@ -919,9 +934,9 @@ static int __devinit m25p_probe(struct =
-spi_device *spi)
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0part_probes, &parts, 0);
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> >
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (nr_parts <=3D 0 && data && =
-data->parts) {
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 parts =3D data->parts;
-> > - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 nr_parts =3D =
-data->nr_parts;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (nr_parts <=3D 0 && pdata && =
-pdata->parts) {
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 parts =3D =
-pdata->parts;
-> > + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 nr_parts =3D =
-pdata->nr_parts;
-> > =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
->=20
-> As per my comment earlier; since parts and nr_parts isn't needed
-> before this point, this block could simply be:
->=20
-> if (nr_parts <=3D 0 && data && data->parts) {
->         parts =3D data->parts;
->         nr_parts =3D data->nr_parts;
-> }
-> if (nr_parts <=3D 0 && spi->dev.of_node)
->   =A0 =A0 =A0 nr_parts =3D of_mtd_parse_partitions(&spi->dev, np, =
-&parts);
->=20
-> And most of the other changes to this file goes away.  Simpler, yes?
->=20
+> > +static void da830_evm_nor_done(void *data)
+> > +{
+> > +   clk_disable(da830_evm_nor.clk);
+> > +   clk_put(da830_evm_nor.clk);
+> > +   iounmap(da830_evm_nor.latch.addr);
+> > +   release_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
+> > +   iounmap(da830_evm_nor.aemif.addr);
+> > +   release_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K);
+> > +}
+>
+>     Why you've changed this function which was useful also for the error =
+cleanup
+> before?
 
-Yes, you're right, I'll fix it. Also thanks for your suggestion and ACK.
+The issues down below aside, I think goto based error handling
+is clearer to follow. Any objections to using goto based
+error handing per-se?
 
 Thanks,
-Mingkai
+Sekhar
+
+>
+> > +static int da830_evm_nor_init(void *data, int cs)
+> > +{
+> > +   /* Turn on AEMIF clocks */
+> > +   da830_evm_nor.clk =3D clk_get(NULL, "aemif");
+> > +   if (IS_ERR(da830_evm_nor.clk)) {
+> > +           pr_err("%s: could not get AEMIF clock\n", __func__);
+> > +           da830_evm_nor.clk =3D NULL;
+> > +           return -ENODEV;
+> > +   }
+> > +   clk_enable(da830_evm_nor.clk);
+> > +
+> > +   da830_evm_nor.aemif.res =3D request_mem_region(DA8XX_AEMIF_CTL_BASE=
+,
+> > +                                                SZ_32K, "AEMIF control=
+");
+> > +   if (da830_evm_nor.aemif.res =3D=3D NULL) {
+> > +           pr_err("%s: could not request AEMIF control region\n",
+> > +                   __func__);
+> > +           goto err_aemif_region;
+>
+>     I wonder why you used goto's at all. Anyway, the error cleanup code i=
+s
+> completely broken now.
+>
+> > +   }
+> > +
+> > +   da830_evm_nor.aemif.addr =3D ioremap_nocache(DA8XX_AEMIF_CTL_BASE,
+> > +                                              SZ_32K);
+> > +   if (da830_evm_nor.aemif.addr =3D=3D NULL) {
+> > +           pr_err("%s: could not remap AEMIF control region\n", __func=
+__);
+> > +           goto err_aemif_ioremap;
+> > +   }
+> > +
+> > +   /* Setup AEMIF -- timings, etc. */
+> > +
+> > +   /* Set maximum wait cycles */
+> > +   davinci_aemif_setup_timing(&da830_evm_norflash_timing,
+> > +                                           da830_evm_nor.aemif.addr, c=
+s);
+> > +
+> > +   davinci_aemif_setup_timing(&da830_evm_norflash_timing,
+> > +                                   da830_evm_nor.aemif.addr, cs + 1);
+> > +
+> > +   /* Setup the window to access the latch */
+> > +   da830_evm_nor.latch.res =3D
+> > +           request_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE,
+> > +                              "DA830 UI NOR address latch");
+> > +   if (da830_evm_nor.latch.res =3D=3D NULL) {
+> > +           pr_err("%s: could not request address latch region\n",
+> > +                   __func__);
+> > +           goto err_latch_region;
+> > +   }
+> > +
+> > +   da830_evm_nor.latch.addr =3D
+> > +           ioremap_nocache(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
+> > +   if (da830_evm_nor.latch.addr =3D=3D NULL) {
+> > +           pr_err("%s: could not remap address latch region\n", __func=
+__);
+> > +           goto err_latch_ioremap;
+> > +   }
+> > +   return 0;
+> > +
+> > +err_aemif_region:
+> > +   release_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K);
+>
+>     Why release what you've just failed to request?!
+>
+> > +   da830_evm_nor.aemif.res =3D NULL;
+>
+>     Useless assignment.
+>
+> > +   return -EBUSY;
+>
+>     And you're not calling clk_disable().
+>
+> > +err_aemif_ioremap:
+> > +   iounmap(da830_evm_nor.aemif.addr);
+>
+>     Why unmap what you've just failed to map?! da830_evm_nor.aemif.addr i=
+s NULL.
+>
+> > +   da830_evm_nor.aemif.addr =3D NULL;
+>
+>     Useless assignment.
+>
+> > +   return -ENOMEM;
+>
+>     You're not calling release_mem_region() and clk_disable().
+>
+> > +err_latch_region:
+> > +   release_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
+>
+>     Why release what you've just failed to request?!
+>
+> > +   da830_evm_nor.latch.res =3D NULL;
+>
+>     Useless assginment.
+>
+> > +   return -EBUSY;
+>
+>     You're not calling iounmap() and release_mem_region() for the NOR fla=
+sh
+> region and also not calling clk_disable().
+>
+> > +
+> > +err_latch_ioremap:
+> > +   iounmap(da830_evm_nor.latch.addr);
+>
+>     Why unmap what you've just failed to map?! da830_evm_nor.latch.addr i=
+s NULL.
+>
+> > +   da830_evm_nor.latch.addr =3D NULL;
+>
+>     Useless assginment.
+>
+> > +   return -ENOMEM;
+>
+>     You're not release_mem_region() for the latch region, not calling iou=
+nmap()
+> and release_mem_region() for the NOR flash region and also not calling
+> clk_disable().
+>
+> > +}
+> [...]
+>
+>     Your changes made me doubt that you actually understood the code well=
+ enough
+> before doing them...
+>
+> WBR, Sergei
+>
+> _______________________________________________
+> Davinci-linux-open-source mailing list
+> Davinci-linux-open-source@linux.davincidsp.com
+> http://linux.davincidsp.com/mailman/listinfo/davinci-linux-open-source
+>
