@@ -1,22 +1,37 @@
-Message-ID: <4CAE2475.4090607@ti.com>
-Date: Thu, 7 Oct 2010 14:50:13 -0500
-From: Nishanth Menon <nm@ti.com>
+Received: from db3ehsobe003.messaging.microsoft.com ([213.199.154.141]
+	helo=DB3EHSOBE003.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P42Sa-0006m5-RP
+	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 02:13:26 +0000
+Received: from mail12-db3 (localhost.localdomain [127.0.0.1])	by
+	mail12-db3-R.bigfish.com (Postfix) with ESMTP id 04EC01A70521	for
+	<linux-mtd@lists.infradead.org>; Fri,  8 Oct 2010 02:13:22 +0000 (UTC)
+Received: from DB3EHSMHS001.bigfish.com (unknown [10.3.81.249])	by
+	mail12-db3.bigfish.com (Postfix) with ESMTP id 890AC1118053	for
+	<linux-mtd@lists.infradead.org>; Fri,  8 Oct 2010 02:13:21 +0000 (UTC)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by az33egw01.freescale.net (8.14.3/8.14.3) with ESMTP id
+	o982D1Yb013090	for
+	<linux-mtd@lists.infradead.org>; Thu, 7 Oct 2010 19:13:02 -0700 (MST)
+Received: from zmy16exm20.fsl.freescale.net (zmy16exm20.ap.freescale.net
+	[10.211.3.23])	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id
+	o982T19R018874	for <linux-mtd@lists.infradead.org>;
+	Thu, 7 Oct 2010 21:29:02 -0500 (CDT)
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v2 09/10] OMAP2/3: Convert write/read functions to raw
-	read/write
-References: <1285063280-4057-1-git-send-email-manjugk@ti.com>
-	<1285063280-4057-10-git-send-email-manjugk@ti.com>
-	<7A436F7769CA33409C6B44B358BFFF0C014F74831E@dlee02.ent.ti.com>
-	<20101007185630.GA26435@n2100.arm.linux.org.uk>
-In-Reply-To: <20101007185630.GA26435@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "G, Manjunath Kondaiah" <manjugk@ti.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH v3 6/7] mtd: m25p80: add a read function to read page by
+	page
+Date: Fri, 8 Oct 2010 10:13:08 +0800
+Message-ID: <73839B4A0818E747864426270AC332C3057F6134@zmy16exm20.fsl.freescale.net>
+In-Reply-To: <841976.76219.qm@web180306.mail.gq1.yahoo.com>
+References: <841976.76219.qm@web180306.mail.gq1.yahoo.com>
+From: Hu Mingkai-B21284 <B21284@freescale.com>
+To: David Brownell <david-b@pacbell.net>, <linuxppc-dev@ozlabs.org>,
+	<spi-devel-general@lists.sourceforge.net>, <linux-mtd@lists.infradead.org>
+Cc: Gala Kumar-B11780 <B11780@freescale.com>,
+	Zang Roy-R61911 <R61911@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,55 +41,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Russell King - ARM Linux had written, on 10/07/2010 01:56 PM, the following:
-> On Thu, Oct 07, 2010 at 07:17:08AM -0500, Menon, Nishanth wrote:
->>> -----Original Message-----
->>> From: linux-omap-owner@vger.kernel.org [mailto:linux-omap-
->>> owner@vger.kernel.org] On Behalf Of G, Manjunath Kondaiah
->>> Sent: Tuesday, September 21, 2010 5:01 AM
->>> To: linux-omap@vger.kernel.org
->>> Cc: linux-arm-kernel@lists.infradead.org; linux-mtd@lists.infradead.org
->>> Subject: [PATCH v2 09/10] OMAP2/3: Convert write/read functions to raw
->>> read/write
->>>
->>> Following sparse warnings exists due to use of writel/w and readl/w
->>> functions.
->>>
->>> This patch fixes the sparse warnings by converting readl/w functions usage
->>> into
->>> __raw_readl/__raw_readw functions.
->> Apologies on bringing up an old topic here -> Is'nt it better to fix
->> readl/w or writel/w than replacing it with __raw_readl/w etc?
-> 
-> No.  If you're getting sparse warnings its because _you_ are using
-> readl/writel wrongly.
-> 
-> They take a void __iomem pointer, not a u32, unsigned long, int, or
-> even a void pointer.
-void __iomem *p;
-...
 
-readl(p);
 
-unrolls to:
-({ u32 __v = ({ u32 __v = (( __u32)(__le32)(( __le32) ((void)0, 
-*(volatile unsigned int *)((p))))); __v; }); __asm__ __volatile__ ("mcr 
-p15,
-, %0, c7, c10, 5" : : "r" (0) : "memory"); __v; });
+> -----Original Message-----
+> From: David Brownell [mailto:david-b@pacbell.net]
+> Sent: Thursday, September 30, 2010 6:46 PM
+> To: linuxppc-dev@ozlabs.org; spi-devel-general@lists.sourceforge.net; =
+linux-
+> mtd@lists.infradead.org; Hu Mingkai-B21284
+> Cc: Gala Kumar-B11780; Zang Roy-R61911; Hu Mingkai-B21284
+> Subject: Re: [PATCH v3 6/7] mtd: m25p80: add a read function to read =
+page by
+> page
+>=20
+>=20
+> --- On Thu, 9/30/10, Mingkai Hu <Mingkai.hu@freescale.com> wrote:
+>=20
+> > From: Mingkai Hu <Mingkai.hu@freescale.com>
+> > Subject: [PATCH v3 6/7] mtd: m25p80: add a read function to read =
+page
+> > by page
+>=20
+> NAK.
+>=20
+> We went over this before.
+>=20
+> =A0 The bug is in your SPI master controller driver, and the fix there =
+involves
+> mapping large reads  into multiple smaller reads.=A0 (Example, 128K =
+read as two
+> 64K reads instead of one of 128K.
+>=20
+> It's *NEVER* appropriate to commit to patching all upper level drivers =
+in order
+> to work around bugs in lower level ones.=A0 The set of such upper =
+level drivers
+> that may need bugfixing is quite large, most will never be used with =
+your buggy
+> controller driver, and all such patches will need testing (but the =
+test
+> resources are probably not available).
+>=20
+> Whatever SPI controller driver you're working with is clearly buggy =
+... but not
+> unfixably so.
+>=20
+> DO NOT head down the path of requiring every SPI device driver to =
+include
+> workarounds for this odd little SPI master driver bug.
+>=20
+> - Dave
+>=20
 
-({ u32 __v = ({ u32 __v
+Thanks for your comments, the controller driver is the proper place to =
+handle this, I'll fix it.
 
-seems to be the obvious cause of sparse warnings such as that attempted 
-to be fixed in [1]
-
-  warning: symbol '__v' shadows an earlier one
-
-my comment being that by moving {read,write}[wlb] to __raw versions dont 
-solve the real issue of namespace here. fix should be in 
-arch/arm/include/asm/io.h IMHO. so that there are no overlaps as this.
-
-[1]http://marc.info/?l=linux-omap&m=128506333803725&w=2
-
--- 
-Regards,
-Nishanth Menon
+Thanks,
+Mingkai
