@@ -1,16 +1,19 @@
-Received: from mo-p05-ob.rzone.de ([81.169.146.180])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P4CGV-0003IY-Ob
-	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 12:41:37 +0000
-Received: from quad.fritz.box (p57BD4AAE.dip.t-dialin.net [87.189.74.174])
-	by post.strato.de (mrclete mo37) (RZmta 23.5)
-	with ESMTP id 403186m98BA59L for <linux-mtd@lists.infradead.org>;
-	Fri, 8 Oct 2010 14:41:29 +0200 (MEST)
-From: Stefan Roese <sr@denx.de>
+Received: from [67.215.48.194] (helo=koko.iders.ca)
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P4HIp-00077l-15
+	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 18:04:19 +0000
+Received: from [172.16.22.4] (zen.iders.ca [172.16.22.4])
+	by koko.iders.ca (Postfix) with ESMTP id 1C681C45002E
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  8 Oct 2010 13:26:07 -0500 (CDT)
+Message-ID: <4CAF5D21.2050103@iders.ca>
+Date: Fri, 08 Oct 2010 13:04:17 -0500
+From: Andrew McKay <amckay@iders.ca>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: physmap_of: Loop through all "reg" tuples for mapping
-Date: Fri,  8 Oct 2010 14:41:27 +0200
-Message-Id: <1286541687-5706-1-git-send-email-sr@denx.de>
+Subject: JFFS2 Summary warnings on large block NAND device
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch changes the loop over the "reg" tuples to not exit
-directly upon of_address_to_resource() failure but to continue
-with the next "reg" tuple instead. This failure could be due to
-size = 0, which might be passed via the device-tree.
+Hello,
 
-This is needed for boards, where a "reg" tuple might have size 0
-(of_address_to_resource() returns with EINVAL when size = 0).
+I've been using JFFS2 for a little while now, and I'm just going through 
+the warning and error messages that JFFS2 sometimes reports to see if we 
+have any issues with our system.  We've moved to a new NAND part from 
+Micron that has 4K pages and 512K erase blocks and I'm getting some new 
+warnings from JFFS2 that I've never seen before and am wondering if I 
+have an issue.
 
-Example:
+Here's the three messages I'm worried about:
+JFFS2 warning: (1) jffs2_sum_scan_sumnode: Summary node crc error, 
+skipping summary information.
+JFFS2 warning: (633) jffs2_sum_write_data: Summary too big (-32 data, 
+-2794 pad) in eraseblock at 27b80000
+JFFS2 warning: (739) jffs2_sum_write_data: Not enough space for summary, 
+padsize = -1324
 
-Fully equipped board:
+Presumably, these messages are all related and are because summary 
+information is limited to 64K so that kmalloc can be used for 
+allocation.  With the larger sized erase block I assume that the summary 
+information is often exceeding 64K.  Should I be worried about these 
+messages?  As far as I understand summary information is only used so 
+that JFFS2 can mount quickly.  Without it mount times will be a bit 
+longer as it has to scan each page in the device instead of the summary 
+page at the end of the erase block.
 
-	reg = <0 0x00000000 0x00400000
-	       0 0x00400000 0x00400000>;
+Is there a fix for this issue? Admittedly my kernel is a little old. 
+2.6.30.9, so I may not have the most up to date JFFS2 code.  Though I 
+did some searching online and I haven't found mention of solution to 
+this problem, or if it is something that I should be concerned about.
 
-Partially equipped board:
+Thanks for your time
 
-	reg = <0 0x00000000 0x00400000
-	       0 0x00400000 0x00000000>;
-
-This could be the case on boards with runtime detection of
-multiple NOR flash configurations where the detected flash size
-is inserted into the dtb in U-Boot.
-
-Signed-off-by: Stefan Roese <sr@denx.de>
----
- drivers/mtd/maps/physmap_of.c |    8 +++++---
- 1 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index fe63f6b..6967348 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -267,9 +267,11 @@ static int __devinit of_flash_probe(struct platform_device *dev,
- 	for (i = 0; i < count; i++) {
- 		err = -ENXIO;
- 		if (of_address_to_resource(dp, i, &res)) {
--			dev_err(&dev->dev, "Can't get IO address from device"
--				" tree\n");
--			goto err_out;
-+			/*
-+			 * Continue with next register tuple if this
-+			 * one is not mappable
-+			 */
-+			continue;
- 		}
- 
- 		dev_dbg(&dev->dev, "of_flash device: %.8llx-%.8llx\n",
 -- 
-1.7.3.1
+Andrew McKay
+IDERS Inc.
