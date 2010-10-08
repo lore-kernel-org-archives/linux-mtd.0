@@ -1,26 +1,28 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P463T-0004QI-HQ
-	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 06:03:47 +0000
-Received: by mail-fx0-f49.google.com with SMTP id 15so451532fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Oct 2010 23:03:43 -0700 (PDT)
-Subject: Re: [PATCH v2] mtd/nand.h: little more cleanup
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-In-Reply-To: <20101007194827.GA5512@www.tglx.de>
-References: <20101005104101.GA18714@www.tglx.de>
-	<20101005182656.GA21067@pengutronix.de>
-	<1286304506.1797.2.camel@brekeke>
-	<20101006210614.GA18551@www.tglx.de> <1286479829.1797.12.camel@brekeke>
-	<20101007194827.GA5512@www.tglx.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 08 Oct 2010 09:00:54 +0300
-Message-ID: <1286517654.2095.30.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Wolfram Sang <w.sang@pengutronix.de>
-Reply-To: dedekind1@gmail.com
+Received: from gate.crashing.org ([63.228.1.57])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P46DV-0005yz-TC
+	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 06:14:06 +0000
+Subject: Re: [PATCH v3 6/7] mtd: m25p80: add a read function to read page by
+	page
+Mime-Version: 1.0 (Apple Message framework v1081)
+Content-Type: text/plain; charset=us-ascii
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <73839B4A0818E747864426270AC332C3057F6138@zmy16exm20.fsl.freescale.net>
+Date: Fri, 8 Oct 2010 01:11:49 -0500
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <5FE2FD44-A491-4E7C-86E9-5247B9598AD2@kernel.crashing.org>
+References: <841976.76219.qm@web180306.mail.gq1.yahoo.com>
+	<AANLkTinBDdEyMDt3KoauNdmTCz1ZAJ5mZ23iMWiwsUm4@mail.gmail.com>
+	<AANLkTi=GydTyhf3TOzCZOtrme1Jh0UmNDHqTVP59q=LH@mail.gmail.com>
+	<20100930150633.GA13741@oksana.dev.rtsoft.ru>
+	<73839B4A0818E747864426270AC332C3057F6138@zmy16exm20.fsl.freescale.net>
+To: Hu Mingkai-B21284 <B21284@freescale.com>
+Cc: David Brownell <david-b@pacbell.net>,
+	Grant Likely <grant.likely@secretlab.ca>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Anton Vorontsov <cbouatmailru@gmail.com>,
+	spi-devel-general@lists.sourceforge.net,
+	Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-10-07 at 21:48 +0200, Sebastian Andrzej Siewior wrote:
-> - remove tabs between type and name.
-> 
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> ---
-> - replaced hipsize with chipsize.
-> 
->  include/linux/mtd/nand.h |  315 +++++++++++++++++++++------------------------
->  1 files changed, 147 insertions(+), 168 deletions(-)
 
-Pushed to l2-mtd-2.6.git, thanks!
+On Oct 7, 2010, at 9:15 PM, Hu Mingkai-B21284 wrote:
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+>>>> Yes, I agree with David on this.  If large transfers don't work,
+>>>> then it is the SPI master driver that is buggy.
+>>>=20
+>>> By the way, does this fix your problem?
+>>>=20
+>>> https://patchwork.kernel.org/patch/184752/
+>>=20
+>> It shouldn't. AFAIK, eSPI is PIO-only controller, and the overrun fix =
+is for the
+>> DMA mode.
+>>=20
+>> Thanks,
+>>=20
+>> p.s. Btw, in patch 3/7, is_dma_mapped argument of fsl_espi_bufs() is =
+unneeded.
+>>=20
+>=20
+> Yes, the is_dma_mapped isn't needed, I'll remove it.
+>=20
+> Thanks,
+> Mingkai
+
+I'd be really nice if we could close on this patchset in time for .37 =
+acceptance.  I'm guessing that cutoff is quickly approaching.
+
+- k=
