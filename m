@@ -1,23 +1,21 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P45uC-00040u-Sy
-	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 05:54:09 +0000
-Received: by fxm15 with SMTP id 15so449308fxm.36
+	id 1P463I-0004QI-4c
+	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2010 06:03:32 +0000
+Received: by fxm15 with SMTP id 15so451532fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Oct 2010 22:54:07 -0700 (PDT)
+	Thu, 07 Oct 2010 23:03:30 -0700 (PDT)
 Subject: Re: [PATCH] JFFS2: Dynamically choose inocache hash size
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1286480123.3757.2.camel@i7.infradead.org>
+To: Daniel Drake <dsd@laptop.org>
+In-Reply-To: <20101007181402.982199D401B@zog.reactivated.net>
 References: <20101007181402.982199D401B@zog.reactivated.net>
-	<1286479935.1797.14.camel@brekeke>
-	<1286480123.3757.2.camel@i7.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 08 Oct 2010 08:51:18 +0300
-Message-ID: <1286517078.2095.15.camel@localhost>
+Date: Fri, 08 Oct 2010 09:00:42 +0300
+Message-ID: <1286517642.2095.29.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Daniel Drake <dsd@laptop.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,21 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-10-07 at 20:35 +0100, David Woodhouse wrote:
-> On Thu, 2010-10-07 at 22:32 +0300, Artem Bityutskiy wrote:
-> > Why is this complication needed? Unless there is a very good reason, I'd
-> > just stick with older patch you sent, which I BTW also have in my
-> > l2-mtd-2.6.git tree: 
+On Thu, 2010-10-07 at 19:14 +0100, Daniel Drake wrote:
+> When JFFS2 is used for large volumes, the mount times are quite long.
+> Increasing the hash size provides a significant speed boost on the OLPC
+> XO-1 laptop.
 > 
-> I asked for it. With smaller file systems, a huge increase buys nothing
-> and is just bloat.
+> Add logic that dynamically selects a hash size based on the size of
+> the medium. A 64mb medium will result in a hash size of 128, and a 512mb
+> medium will result in a hash size of 1024.
+> 
+> Signed-off-by: Daniel Drake <dsd@laptop.org>
 
-OK, I looked closer to the code and I see that I misunderstood this
-constant. I though it is only about increasing the size of an array of
-integers, but this is about increasing the size of an array of
-struct jffs2_inode_cache.
-
-Fair enough.
+Pushed to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
