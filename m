@@ -1,13 +1,14 @@
-Received: from tango.tkos.co.il ([62.219.50.35])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P5EYI-0004Lp-1Y
-	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2010 09:20:16 +0000
-From: Baruch Siach <baruch@tkos.co.il>
+	id 1P5Gru-00071L-BR
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2010 11:48:39 +0000
+From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] nanddump: fix initialization of bad blocks oob data buffer
-Date: Mon, 11 Oct 2010 11:19:38 +0200
-Message-Id: <0870ac8ab250ec91dceb2cc461fe82c0d7995bc8.1286788714.git.baruch@tkos.co.il>
-Cc: Baruch Siach <baruch@tkos.co.il>
+Subject: [PATCH] mtd: onenand: fix 4KB page onenand chip recognition
+Date: Mon, 11 Oct 2010 14:47:32 +0300
+Message-Id: <1286797652-13610-1-git-send-email-roman.tereshonkov@nokia.com>
+Cc: rohit.hs@samsung.com, kyungmin.park@samsung.com,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +18,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When dumping oob data of a bad block, initialize oobbuf with 0xff, instead of
-readbuf.  This avoids bogus oob data on output.
+For 4Gb non-DDP chip it does not follow that it is always 4KB page chip.
+The number of data buffers is checked and if it is equal to 1
+we suppose that it is 4KB page onenand chip.
 
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
 ---
- nanddump.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/nanddump.c b/nanddump.c
-index 3589931..0fdf736 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -452,7 +452,7 @@ int main(int argc, char * const argv[])
- 			continue;
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index a2bb520..3684313 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -3365,18 +3365,19 @@ static int onenand_lock_user_prot_reg(struct mtd_info *mtd, loff_t from,
+ static void onenand_check_features(struct mtd_info *mtd)
+ {
+ 	struct onenand_chip *this = mtd->priv;
+-	unsigned int density, process;
++	unsigned int density, process, numbufs;
  
- 		if (badblock) {
--			memset (readbuf, 0xff, meminfo.oobsize);
-+			memset (oobbuf, 0xff, meminfo.oobsize);
- 		} else {
- 			/* Read OOB data and exit on failure */
- 			oob.start = ofs;
+ 	/* Lock scheme depends on density and process */
+ 	density = onenand_get_density(this->device_id);
+ 	process = this->version_id >> ONENAND_VERSION_PROCESS_SHIFT;
++	numbufs = this->read_word(this->base + ONENAND_REG_NUM_BUFFERS) >> 8;
+ 
+ 	/* Lock scheme */
+ 	switch (density) {
+ 	case ONENAND_DEVICE_DENSITY_4Gb:
+ 		if (ONENAND_IS_DDP(this))
+ 			this->options |= ONENAND_HAS_2PLANE;
+-		else
++		else if (numbufs == 1)
+ 			this->options |= ONENAND_HAS_4KB_PAGE;
+ 
+ 	case ONENAND_DEVICE_DENSITY_2Gb:
 -- 
-1.7.1
+1.7.0.4
