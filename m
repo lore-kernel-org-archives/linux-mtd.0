@@ -1,17 +1,21 @@
-Subject: Re: [PATCH v3] OMAP2/3: NAND: Convert write/read functions to raw
-	read/write
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P5Nz3-0004Hy-Af
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2010 19:24:30 +0000
+Received: by bwz7 with SMTP id 7so897802bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Oct 2010 12:24:27 -0700 (PDT)
+Subject: Re: [RFC] do_mounts: Allow mtd names for non-flash block filesystems
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "G, Manjunath Kondaiah" <manjugk@ti.com>
-In-Reply-To: <1286315819-5906-3-git-send-email-manjugk@ti.com>
-References: <1286315819-5906-1-git-send-email-manjugk@ti.com>
-	<1286315819-5906-3-git-send-email-manjugk@ti.com>
+To: Karl Beldan <karl.beldan@gmail.com>
+In-Reply-To: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
+References: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 11 Oct 2010 21:59:20 +0300
-Message-ID: <1286823560.1742.2.camel@brekeke>
+Date: Mon, 11 Oct 2010 22:24:23 +0300
+Message-ID: <1286825063.1742.13.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,23 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-10-06 at 03:26 +0530, G, Manjunath Kondaiah wrote:
-> Following sparse warnings exists due to use of writel/w and readl/w functions.
+On Wed, 2010-10-06 at 23:02 +0200, Karl Beldan wrote:
+> Hi,
 > 
-> This patch fixes the sparse warnings by converting readl/w functions usage into
-> __raw_readl/__raw_readw functions.
+> I have been using this tweak for some time now, and I am getting tired of 
+> having to resort to it so often.
+> It allows to pass such cmdline root as: 
+>  "root=mtdb:ubivolx rootfstype=squashfs"
+> I am pretty sure many people use squashfs/cramfs filesystems on top of nand, 
+> for example, and I thought that this might initiate discussion.
 > 
-> drivers/mtd/nand/omap2.c:484:15: warning: symbol '__v' shadows an earlier one
-> drivers/mtd/nand/omap2.c:484:15: originally declared here
+> -- 
+> Karl
 > 
-> drivers/mtd/onenand/omap2.c:86:9: warning: symbol '__v' shadows an earlier one
-> drivers/mtd/onenand/omap2.c:86:9: originally declared here
-> 
-> Signed-off-by: G, Manjunath Kondaiah <manjugk@ti.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
+> ---
+>  init/do_mounts.c |   15 +++++++++++++--
+>  1 files changed, 13 insertions(+), 2 deletions(-)
 
-I've pushed this patch to my l2-mtd-2.6.git.
+Dunno... 
+
+First of all, if you have to do this, let it be mtdblock, not mtdb - no
+need to breed aliases.
+
+But how about teaching squashfs to understand mtdX and mtd:name syntax
+instead?
 
 -- 
 Best Regards,
