@@ -1,22 +1,32 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P5bjN-00015R-79
-	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 10:05:13 +0000
-Received: by ewy7 with SMTP id 7so808756ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Oct 2010 03:05:11 -0700 (PDT)
-Subject: Re: [PATCH] nanddump: fix initialization of bad blocks oob data buffer
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Baruch Siach <baruch@tkos.co.il>
-In-Reply-To: <0870ac8ab250ec91dceb2cc461fe82c0d7995bc8.1286788714.git.baruch@tkos.co.il>
-References: <0870ac8ab250ec91dceb2cc461fe82c0d7995bc8.1286788714.git.baruch@tkos.co.il>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 12 Oct 2010 13:02:22 +0300
-Message-ID: <1286877742.2164.40.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
+	helo=TX2EHSOBE004.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P5cMg-00034B-Pe
+	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 10:45:51 +0000
+Received: from mail137-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail137-tx2-R.bigfish.com (Postfix) with ESMTP id 8893FAE8151	for
+	<linux-mtd@lists.infradead.org>; Tue, 12 Oct 2010 10:45:48 +0000 (UTC)
+Received: from TX2EHSMHS012.bigfish.com (unknown [10.9.14.241])	by
+	mail137-tx2.bigfish.com (Postfix) with ESMTP id 6227B1A70056	for
+	<linux-mtd@lists.infradead.org>; Tue, 12 Oct 2010 10:45:48 +0000 (UTC)
+Received: from az33smr01.freescale.net (az33smr01.freescale.net
+	[10.64.34.199])	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP
+	id o9CAjk9J007242	for <linux-mtd@lists.infradead.org>;
+	Tue, 12 Oct 2010 03:45:46 -0700 (MST)
+Received: from zch01exm21.fsl.freescale.net (zch01exm21.ap.freescale.net
+	[10.192.129.205])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP
+	id o9CAjiFq025881	for <linux-mtd@lists.infradead.org>;
+	Tue, 12 Oct 2010 05:45:45 -0500 (CDT)
+From: Mingkai Hu <Mingkai.hu@freescale.com>
+To: <linuxppc-dev@ozlabs.org>, <spi-devel-general@lists.sourceforge.net>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH v4 0/5] refactor spi_mpc8xxx.c and add eSPI controller support
+Date: Tue, 12 Oct 2010 18:18:29 +0800
+Message-ID: <1286878714-13090-1-git-send-email-Mingkai.hu@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: grant.likely@secretlab.ca, david-b@pacbell.net, kumar.gala@freescale.com,
+	tie-fei.zang@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +36,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-11 at 11:19 +0200, Baruch Siach wrote:
-> When dumping oob data of a bad block, initialize oobbuf with 0xff, instead of
-> readbuf.  This avoids bogus oob data on output.
-> 
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> ---
->  nanddump.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/nanddump.c b/nanddump.c
-> index 3589931..0fdf736 100644
-> --- a/nanddump.c
-> +++ b/nanddump.c
-> @@ -452,7 +452,7 @@ int main(int argc, char * const argv[])
->  			continue;
->  
->  		if (badblock) {
-> -			memset (readbuf, 0xff, meminfo.oobsize);
-> +			memset (oobbuf, 0xff, meminfo.oobsize);
-Removed junk white-space
->  		} else {
->  			/* Read OOB data and exit on failure */
->  			oob.start = ofs;
+This patchset refactor the file spi_mpc8xxx.c to abstract some common 
+code as a lib used by the SPI/eSPI controller driver, move the SPI 
+controller driver code to spi_fsl_spi.c, and add the eSPI controller 
+support with spi_fsl_espi.c.
 
-and push to mtd-utils.git, thanks!
+v4 main change:
+ - Update to the latest kernel base(Linux 2.6.36-rc7).
+ - Add support to the transaction that the length is grater than 0xFFFF
+   in the eSPI controller's driver.
+ - Some changes according to Grant and Anton's comments.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Tested on P4080DS and MPC8536DS board.
+
+[PATCH v4 1/5] spi/mpc8xxx: rename spi_mpc8xxx.c to spi_fsl_spi.c
+[PATCH v4 2/5] spi/mpc8xxx: refactor the common code for SPI/eSPI controller
+[PATCH v4 3/5] eSPI: add eSPI controller support
+[PATCH v4 4/5] powerpc/of: add eSPI controller dts bindings and DTS modification
+[PATCH v4 5/5] mtd: m25p80: add support to parse the partitions by OF node
+
+Thanks,
+Mingkai
