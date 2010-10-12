@@ -1,13 +1,22 @@
-Received: from tango.tkos.co.il ([62.219.50.35])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P5a9x-0007HW-KR
-	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 08:24:34 +0000
-From: Baruch Siach <baruch@tkos.co.il>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/2] nanddump: verify that start address is page aligned
-Date: Tue, 12 Oct 2010 10:23:54 +0200
-Message-Id: <50168b5d486e28a9d7f7685537710e05242c4f12.1286871735.git.baruch@tkos.co.il>
-Cc: Baruch Siach <baruch@tkos.co.il>
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P5aUD-0001UU-Px
+	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 08:45:30 +0000
+Received: by ewy7 with SMTP id 7so779755ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 12 Oct 2010 01:45:27 -0700 (PDT)
+Subject: Re: [PATCH] jffs2: Fix serious write stall due to erase
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+In-Reply-To: <1286467304-23370-1-git-send-email-Joakim.Tjernlund@transmode.se>
+References: <1286467304-23370-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 12 Oct 2010 11:42:39 +0300
+Message-ID: <1286872959.2164.5.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,30 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Make nanddump consistent with nandwrite, which does not accept non page aligned
-start addresses. Thus, non page aligned dumps are useless.
+On Thu, 2010-10-07 at 18:01 +0200, Joakim Tjernlund wrote:
+> Drop the alloc_sem before erasing flash in
+> jffs2_garbage_collect_pass().
+> Otherwise writes are put on hold until the erase
+> has finised.
+> 
+> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> ---
+> 
+>  I am fairly sure it is safe to unlock the alloc_sem before
+>  calling jffs2_erase_pending_blocks(). Extra confirmation
+>  would be great though.
+> 
+>  This problem was introduced in 2.6.35
 
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- nanddump.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+This looks safe for me as well, but I do not remember JFFS2 locking
+rules anymore, so I'm not 100% sure. I've pushed your patch to my
+l2-mtd-2.6.git.
 
-diff --git a/nanddump.c b/nanddump.c
-index 0fdf736..d6d1352 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -377,6 +377,12 @@ int main(int argc, char * const argv[])
- 	}
- 
- 	/* Initialize start/end addresses and block size */
-+	if (start_addr & (meminfo.writesize - 1)) {
-+		fprintf(stderr, "The start address is not page-aligned !\n"
-+				"The pagesize of this NAND Flash is 0x%x.\n",
-+				meminfo.writesize);
-+		goto closeall;
-+	}
- 	if (length)
- 		end_addr = start_addr + length;
- 	if (!length || end_addr > meminfo.size)
 -- 
-1.7.1
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
