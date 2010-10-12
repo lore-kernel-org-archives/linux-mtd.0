@@ -1,22 +1,18 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P5aaI-0001zp-NI
-	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 08:51:49 +0000
-Received: by ewy7 with SMTP id 7so781900ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Oct 2010 01:51:45 -0700 (PDT)
-Subject: Re: [PATCH] jffs2: Do not assume erase will fail
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-In-Reply-To: <1286468986-24627-1-git-send-email-Joakim.Tjernlund@transmode.se>
-References: <1286468986-24627-1-git-send-email-Joakim.Tjernlund@transmode.se>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 12 Oct 2010 11:48:57 +0300
-Message-ID: <1286873337.2164.6.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from gw1.transmode.se ([213.115.205.20])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P5aeK-0002h8-14
+	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 08:55:56 +0000
+In-Reply-To: <1286872959.2164.5.camel@localhost>
+References: <1286467304-23370-1-git-send-email-Joakim.Tjernlund@transmode.se>
+	<1286872959.2164.5.camel@localhost>
+Subject: Re: [PATCH] jffs2: Fix serious write stall due to erase
+To: dedekind1@gmail.com
+Message-ID: <OFA79EFC65.D894AD39-ONC12577BA.0030F160-C12577BA.00310669@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Tue, 12 Oct 2010 10:55:29 +0200
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-10-07 at 18:29 +0200, Joakim Tjernlund wrote:
-> Test if it did and then abort.
-> 
-> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> ---
->  fs/jffs2/nodemgmt.c |    6 +++---
->  1 files changed, 3 insertions(+), 3 deletions(-)
+Artem Bityutskiy <dedekind1@gmail.com> wrote on 2010/10/12 10:42:39:
+>
+> On Thu, 2010-10-07 at 18:01 +0200, Joakim Tjernlund wrote:
+> > Drop the alloc_sem before erasing flash in
+> > jffs2_garbage_collect_pass().
+> > Otherwise writes are put on hold until the erase
+> > has finised.
+> >
+> > Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> > ---
+> >
+> >  I am fairly sure it is safe to unlock the alloc_sem before
+> >  calling jffs2_erase_pending_blocks(). Extra confirmation
+> >  would be great though.
+> >
+> >  This problem was introduced in 2.6.35
+>
+> This looks safe for me as well, but I do not remember JFFS2 locking
+> rules anymore, so I'm not 100% sure. I've pushed your patch to my
+> l2-mtd-2.6.git.
 
-Pushed to l2-mtd-2.6.git, thanks.
+Thanks, now if just David could weigh in :)
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+      Jocke
