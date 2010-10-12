@@ -1,26 +1,21 @@
-Received: from mail-px0-f177.google.com ([209.85.212.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P5h8e-00032e-Nz
-	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 15:51:41 +0000
-Received: by pxi12 with SMTP id 12so1250013pxi.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Oct 2010 08:51:38 -0700 (PDT)
+Received: from postdiluvian.org ([128.30.54.21] helo=porklips.postdiluvian.org)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P5hMK-000405-RK
+	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 16:05:49 +0000
+Date: Tue, 12 Oct 2010 12:05:45 -0400
+From: Mark Mason <mason@postdiluvian.org>
+To: Iwo Mergler <iwo@call-direct.com.au>
+Subject: Re: Scheduler latency problems when using NAND
+Message-ID: <20101012160544.GB16683@postdiluvian.org>
+References: <20100929221401.GA32583@postdiluvian.org>
+	<4CA3D92E.9060109@call-direct.com.au>
+	<20101009174246.GA19591@postdiluvian.org>
+	<4CB39590.3070404@call-direct.com.au>
 MIME-Version: 1.0
-In-Reply-To: <1286897248.1742.28.camel@brekeke>
-References: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
-	<1286825063.1742.13.camel@brekeke>
-	<AANLkTi=A6djk8hOgLOg045f5XiiwkOYS2QtzOUwiT+Bo@mail.gmail.com>
-	<1286893627.2164.65.camel@localhost>
-	<AANLkTikghhYSDY=EamGvPpWfc_FqBrBw7Ua6jnO8Xx+q@mail.gmail.com>
-	<1286897248.1742.28.camel@brekeke>
-Date: Tue, 12 Oct 2010 17:51:38 +0200
-Message-ID: <AANLkTimoFbf9Y9q4u32uFi8wvORsS6RFjY2P4MRmRNFZ@mail.gmail.com>
-Subject: Re: [RFC] do_mounts: Allow mtd names for non-flash block filesystems
-From: Karl Beldan <karl.beldan@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4CB39590.3070404@call-direct.com.au>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,82 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 12, 2010 at 5:27 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Tue, 2010-10-12 at 17:11 +0200, Karl Beldan wrote:
->> On Tue, Oct 12, 2010 at 4:27 PM, Artem Bityutskiy <dedekind1@gmail.com> =
-wrote:
->> > On Tue, 2010-10-12 at 15:16 +0200, Karl Beldan wrote:
->> >> On Mon, Oct 11, 2010 at 9:24 PM, Artem Bityutskiy <dedekind1@gmail.co=
-m> wrote:
->> >> > On Wed, 2010-10-06 at 23:02 +0200, Karl Beldan wrote:
->> >> >> Hi,
->> >> >>
->> >> >> I have been using this tweak for some time now, and I am getting t=
-ired of
->> >> >> having to resort to it so often.
->> >> >> It allows to pass such cmdline root as:
->> >> >> =C2=A0"root=3Dmtdb:ubivolx rootfstype=3Dsquashfs"
->> >> >> I am pretty sure many people use squashfs/cramfs filesystems on to=
-p of nand,
->> >> >> for example, and I thought that this might initiate discussion.
->> >> >>
->> >> >> --
->> >> >> Karl
->> >> >>
->> >> >> Signed-off-by: Karl Beldan <karl.beldan@gmail.com>
->> >> >> ---
->> >> >> =C2=A0init/do_mounts.c | =C2=A0 15 +++++++++++++--
->> >> >> =C2=A01 files changed, 13 insertions(+), 2 deletions(-)
->> >> >
->> >> > Dunno...
->> >> >
->> >> > First of all, if you have to do this, let it be mtdblock, not mtdb =
-- no
->> >> > need to breed aliases.
->> >> >
->> >> > But how about teaching squashfs to understand mtdX and mtd:name syn=
-tax
->> >> > instead?
->> >> >
->> >>
->> >> Hi Artem,
->> >>
->> >> I would not do that, squashfs and co just ask for a block device, put=
-ting mtdx
->> >> syntax awareness in each of them just does not seem a good fit to me.
->> >
->> > Right. But the same arguments applies to do_mounts.c which you hack:
->> To a far lesser extent, moreover do_mounts has similar hacks in that
->> regard, plus doing
->> this into squashfs you would have to do it everywhere else (e.g cramfs).
->> I just cannot agree, sorry.
->
-> No, they are not similar. They are for devices of different type, not
-> for _block_ devices. So those are about adding base support for MTD and
-> UBI devices.
->
-Well, I don't disagree with this one.
+Iwo Mergler <iwo@call-direct.com.au> wrote:
 
-> In your case this is about block devices, which are already supported.
-> What you do is you say - mtd block devices are very special, they should
-> have own hack. Why not scsii block devices or any other types?
+> Mark Mason wrote:
 >
-I am just throwing light on _a_ blatant example of the need of such
-name handling.
-My pointing you towards https://patchwork.kernel.org/patch/145681/,
-which discusses uuids,
-is explicit enough to show the pb this tweak addresses goes beyond mtd
-block devices.
-Said otherwise, pointing to the above patchwork patch was like 'please
-don't go ''you are
-assuming mtd block devices are very special'', see I checked other
-people had similar issues
-with different devices'.
-Please, assume my pointing to the above patchwork is very
-intentionnal, so that you do not
-assume an 'a priori' misunderstanding nor mistake what is being discussed.
+> > What I see on a logic analyzer is the BUSY line held by the flash for
+> > 200us, a single 32 bit read of the video chip (broken up into two 16
+> > bit reads for the 16 bit bus), then another 200us BUSY from the flash,
+> > two more 16 bit reads, etc, all the way to the end of the logic
+> > analyzer screen.
+> 
+> I don't know your controller, but I'm surprised that the FLASH write
+> can stall the bus like that. It seems a high price to pay for not
+> having to implement some FLASH write interrupt or wait. Are you sure
+> that this is the recommended way to connect a FLASH?
 
+I don't think it's the controller's fault, it's a signal provided by
+the flash, and its purpose is to hold off the controller while the
+NAND is busy.  It seems strange that the signal remains asserted when
+the chip isn't selected, but if it didn't then the controller would
+have to poll the chip by periodically selecting the chip and see if
+BUSY had deasserted.  The controller, running in flash mode, requires
+the BUSY line to work.
 
---=20
-Karl
+A saner approach might be to connect the BUSY line to an interrupt,
+and have the interrupt wake the NAND BGT up, but it's too late for
+that now, since the hardware's already built.
+
+Usually NAND is used for things like booting, config and log files,
+etc, which is just 200us every now and then, so this wouldn't be a
+problem.  It's only a problem since we need really high bandwidth to
+the flash.
+
+I got a fast reply from Freescale - this is the way it works and there
+is no workaround.
+
+I'll try shutting the FCM off and acccessing the device as a plain
+memory device.
+
+Thanks for the help!
