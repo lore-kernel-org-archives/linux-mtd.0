@@ -1,18 +1,22 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P5aeK-0002h8-14
-	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 08:55:56 +0000
-In-Reply-To: <1286872959.2164.5.camel@localhost>
-References: <1286467304-23370-1-git-send-email-Joakim.Tjernlund@transmode.se>
-	<1286872959.2164.5.camel@localhost>
-Subject: Re: [PATCH] jffs2: Fix serious write stall due to erase
-To: dedekind1@gmail.com
-Message-ID: <OFA79EFC65.D894AD39-ONC12577BA.0030F160-C12577BA.00310669@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Tue, 12 Oct 2010 10:55:29 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P5afi-0002yA-Q1
+	for linux-mtd@lists.infradead.org; Tue, 12 Oct 2010 08:57:23 +0000
+Received: by ewy7 with SMTP id 7so783889ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 12 Oct 2010 01:57:21 -0700 (PDT)
+Subject: Re: [PATCH] jffs2: Reduce excessive scan of empty blocks
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+In-Reply-To: <1286471374-25840-1-git-send-email-Joakim.Tjernlund@transmode.se>
+References: <1286471374-25840-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 12 Oct 2010 11:54:33 +0300
+Message-ID: <1286873673.2164.7.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind1@gmail.com> wrote on 2010/10/12 10:42:39:
->
-> On Thu, 2010-10-07 at 18:01 +0200, Joakim Tjernlund wrote:
-> > Drop the alloc_sem before erasing flash in
-> > jffs2_garbage_collect_pass().
-> > Otherwise writes are put on hold until the erase
-> > has finised.
-> >
-> > Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> > ---
-> >
-> >  I am fairly sure it is safe to unlock the alloc_sem before
-> >  calling jffs2_erase_pending_blocks(). Extra confirmation
-> >  would be great though.
-> >
-> >  This problem was introduced in 2.6.35
->
-> This looks safe for me as well, but I do not remember JFFS2 locking
-> rules anymore, so I'm not 100% sure. I've pushed your patch to my
-> l2-mtd-2.6.git.
+On Thu, 2010-10-07 at 19:09 +0200, Joakim Tjernlund wrote:
+> Scanning 1024 bytes to see if an EB is empty is a bit much.
+> Lower it to 256 bytes and make sure the while loop is
+> optimized.
+> 
+> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> ---
+>  fs/jffs2/scan.c |   12 ++++++------
+>  1 files changed, 6 insertions(+), 6 deletions(-)
 
-Thanks, now if just David could weigh in :)
+Pushed to l2-mtd-2.6.git, thanks.
 
-      Jocke
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
