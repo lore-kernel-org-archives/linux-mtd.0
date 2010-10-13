@@ -1,13 +1,20 @@
-Received: from mail.southpole.se ([193.12.106.18])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6jmw-00033p-3f
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 12:53:35 +0000
-From: Jonas Bonn <jonas@southpole.se>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] mtd: m25p80 -- parse partitions from OF tree
-Date: Fri, 15 Oct 2010 14:53:28 +0200
-Message-Id: <1287147208-11588-1-git-send-email-jonas@southpole.se>
-Cc: Jonas Bonn <jonas@southpole.se>, devicetree-discuss@lists.ozlabs.org
+	id 1P6kKh-00085x-27
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 13:28:27 +0000
+Received: by gyf1 with SMTP id 1so377424gyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 15 Oct 2010 06:28:26 -0700 (PDT)
+From: zhangyd <zhangyd6@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] [MTD] [CHIPS] Add JEDEC probe support for the SST38VF6401
+	flash chip
+Date: Wed, 13 Oct 2010 13:54:42 -0400
+Message-Id: <1286992482-6009-1-git-send-email-zhangyd6@gmail.com>
+Cc: Artem.Bityutskiy@nokia.com, ladis@linux-mips.org,
+	zhangyd <zhangyd6@gmail.com>, jkosina@suse.cz,
+	w.sang@pengutronix.de, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,54 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It needs to be possible to define the partitions of an MTD device from an OF
-devicetree.  This patch adds a call to of_mtd_parse_partitions if:
+Add SST38VF6401(64Mbit) chip to jedec_probe. Sorry for the wrong description of the flash size in last patch. 
 
-i)   there are no commandline partitions defined
-ii)  there are no partitions set up by platform_data
-iii) and an of_node is present on the device
-
-This permits the following devicetree structure:
-
-flash0: mtd@0 {
-	compatible = "st,m25p10";
-	reg = <0>;
-	spi-max-frequency = <100000000>;
-
-	#address-cells = <1>;
-	#size-cells = <1>;
-
-	partition@0 {
-		label = "bootloader";
-		reg = <0x00000000 0x00018000>;
-		read-only;
-	}
-
-	partition@18000 {
-		label = "data";
-		reg = <0x00018000 0x00008000>;
-	};
-};
-
-Signed-off-by: Jonas Bonn <jonas@southpole.se>
+Signed-off-by: yidong zhang<zhangyd6@gmail.com>
 ---
- drivers/mtd/devices/m25p80.c |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ drivers/mtd/chips/jedec_probe.c |   13 +++++++++++++
+ 1 files changed, 13 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index 6f512b5..a349498 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -924,6 +924,10 @@ static int __devinit m25p_probe(struct spi_device *spi)
- 			nr_parts = data->nr_parts;
- 		}
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index d72a5fb..b7a1016 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -163,6 +163,7 @@
+ #define SST49LF030A	0x001C
+ #define SST49LF040A	0x0051
+ #define SST49LF080A	0x005B
++#define SST38VF6401	0x536B
+ #define SST36VF3203	0x7354
  
-+		if (nr_parts <= 0 && spi->dev.of_node) {
-+			nr_parts = of_mtd_parse_partitions(&spi->dev, spi->dev.of_node, &parts);
+ /* Toshiba */
+@@ -1569,6 +1570,18 @@ static const struct amd_flash_info jedec_table[] = {
+ 		}
+ 	}, {
+ 		.mfr_id		= CFI_MFR_ST,
++		.dev_id		= SST38VF6401,
++		.name		= "SST 38VF6401",
++		.devtypes	= CFI_DEVICETYPE_X16,
++		.uaddr		= MTD_UADDR_0X0AAA_0x555,
++		.dev_size	= SIZE_8MiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x10000,128),
 +		}
-+
- 		if (nr_parts > 0) {
- 			for (i = 0; i < nr_parts; i++) {
- 				DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
++	}, {
++		.mfr_id		= CFI_MFR_ST,
+ 		.dev_id		= M29F800AB,
+ 		.name		= "ST M29F800AB",
+ 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
 -- 
-1.7.1
+1.7.2.3
