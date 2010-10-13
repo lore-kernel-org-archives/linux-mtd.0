@@ -1,31 +1,25 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P5sGh-0005zF-2A
-	for linux-mtd@lists.infradead.org; Wed, 13 Oct 2010 03:44:48 +0000
-Received: by yxf34 with SMTP id 34so434466yxf.36
+	id 1P5ygm-0005Z5-T9
+	for linux-mtd@lists.infradead.org; Wed, 13 Oct 2010 10:36:09 +0000
+Received: by wyg36 with SMTP id 36so134933wyg.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Oct 2010 20:44:40 -0700 (PDT)
-Sender: Grant Likely <glikely@secretlab.ca>
-Date: Tue, 12 Oct 2010 21:44:37 -0600
-From: Grant Likely <grant.likely@secretlab.ca>
-To: Mingkai Hu <Mingkai.hu@freescale.com>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH v4 5/5] mtd: m25p80: add support to parse the
-	partitions by OF node
-Message-ID: <20101013034437.GE7254@angua.secretlab.ca>
-References: <1286878714-13090-1-git-send-email-Mingkai.hu@freescale.com>
-	<1286878714-13090-2-git-send-email-Mingkai.hu@freescale.com>
-	<1286878714-13090-3-git-send-email-Mingkai.hu@freescale.com>
-	<1286878714-13090-4-git-send-email-Mingkai.hu@freescale.com>
-	<1286878714-13090-5-git-send-email-Mingkai.hu@freescale.com>
-	<1286878714-13090-6-git-send-email-Mingkai.hu@freescale.com>
+	Wed, 13 Oct 2010 03:36:02 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: Karl Beldan <karl.beldan@gmail.com>
+Subject: Re: [RFC] do_mounts: Allow mtd names for non-flash block filesystems
+References: <1286398974-12114-1-git-send-email-karl.beldan@gmail.com>
+	<1286825063.1742.13.camel@brekeke>
+	<AANLkTi=A6djk8hOgLOg045f5XiiwkOYS2QtzOUwiT+Bo@mail.gmail.com>
+Date: Wed, 13 Oct 2010 12:35:56 +0200
+In-Reply-To: <AANLkTi=A6djk8hOgLOg045f5XiiwkOYS2QtzOUwiT+Bo@mail.gmail.com>
+	(Karl Beldan's message of "Tue, 12 Oct 2010 15:16:40 +0200")
+Message-ID: <87zkui2xdf.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1286878714-13090-6-git-send-email-Mingkai.hu@freescale.com>
-Cc: kumar.gala@freescale.com, david-b@pacbell.net, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, spi-devel-general@lists.sourceforge.net,
-	tie-fei.zang@freescale.com
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,41 +29,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 12, 2010 at 06:18:34PM +0800, Mingkai Hu wrote:
-> Signed-off-by: Mingkai Hu <Mingkai.hu@freescale.com>
-> Acked-by: Grant Likely <grant.likely@secretlab.ca>
+>>>>> "Karl" == Karl Beldan <karl.beldan@gmail.com> writes:
 
-dwmw2: what are your thoughts on this one?
+Hi,
 
-g.
+ >> But how about teaching squashfs to understand mtdX and mtd:name syntax
+ >> instead?
 
+ Karl> I would not do that, squashfs and co just ask for a block device,
+ Karl> putting mtdx syntax awareness in each of them just does not seem
+ Karl> a good fit to me.
 
+FYI, patches for direct mtd access in squashfs (E.G. for systems not
+needing the block layer at all) were posted a while ago:
 
-> ---
-> v4:
->  - Updated to latest kernel base(Linux 2.6.36-rc7).
->  - Made changes according to Grant's comments.
-> 
->  drivers/mtd/devices/m25p80.c |    5 +++++
->  1 files changed, 5 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 6f512b5..9d20738 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -924,6 +924,11 @@ static int __devinit m25p_probe(struct spi_device *spi)
->  			nr_parts = data->nr_parts;
->  		}
->  
-> +		if (nr_parts <= 0 && spi->dev.of_node) {
-> +			nr_parts = of_mtd_parse_partitions(&spi->dev,
-> +					spi->dev.of_node, &parts);
-> +		}
-> +
->  		if (nr_parts > 0) {
->  			for (i = 0; i < nr_parts; i++) {
->  				DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
-> -- 
-> 1.6.4
-> 
-> 
+http://thread.gmane.org/gmane.linux.kernel/962226/focus=968074
+
+-- 
+Bye, Peter Korsgaard
