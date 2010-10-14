@@ -1,39 +1,39 @@
-Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
-	helo=TX2EHSOBE008.bigfish.com)
+Received: from am1ehsobe005.messaging.microsoft.com ([213.199.154.208]
+	helo=AM1EHSOBE005.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6ECG-0006xR-2R
-	for linux-mtd@lists.infradead.org; Thu, 14 Oct 2010 03:09:44 +0000
-Received: from mail47-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail47-tx2-R.bigfish.com (Postfix) with ESMTP id 97CAD15D0509	for
-	<linux-mtd@lists.infradead.org>; Thu, 14 Oct 2010 03:09:29 +0000 (UTC)
-Received: from TX2EHSMHS025.bigfish.com (unknown [10.9.14.254])	by
-	mail47-tx2.bigfish.com (Postfix) with ESMTP id D0B7B1A38052	for
-	<linux-mtd@lists.infradead.org>; Thu, 14 Oct 2010 03:08:55 +0000 (UTC)
+	id 1P6FCi-0000gO-OG
+	for linux-mtd@lists.infradead.org; Thu, 14 Oct 2010 04:14:10 +0000
+Received: from mail60-am1 (localhost.localdomain [127.0.0.1])	by
+	mail60-am1-R.bigfish.com (Postfix) with ESMTP id 835231038427	for
+	<linux-mtd@lists.infradead.org>; Thu, 14 Oct 2010 04:14:04 +0000 (UTC)
+Received: from am1ehsmhs006.bigfish.com (unknown [10.3.201.252])	by
+	mail60-am1.bigfish.com (Postfix) with ESMTP id 089D8E7005C	for
+	<linux-mtd@lists.infradead.org>; Thu, 14 Oct 2010 04:14:04 +0000 (UTC)
 Received: from az33smr02.freescale.net (az33smr02.freescale.net
-	[10.64.34.200])	by de01egw01.freescale.net (8.14.3/8.14.3) with ESMTP
-	id o9E39BgP025686	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Oct 2010 20:09:11 -0700 (MST)
+	[10.64.34.200])	by az33egw01.freescale.net (8.14.3/8.14.3) with ESMTP
+	id o9E4Dx8O015841	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Oct 2010 21:13:59 -0700 (MST)
 Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
 	[10.192.129.207])	by az33smr02.freescale.net (8.13.1/8.13.0) with ESMTP
-	id o9E38qdp016289	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Oct 2010 22:08:53 -0500 (CDT)
+	id o9E4Dveg011026	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Oct 2010 23:13:58 -0500 (CDT)
 Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Subject: RE: [PATCH 2/3 v4] P4080/mtd: Only make elbc nand driver detect nand
 	flash partitions
-Date: Thu, 14 Oct 2010 11:09:02 +0800
-Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A2B02B7@zch01exm23.fsl.freescale.net>
-In-Reply-To: <20101004103813.14d04956@udp111988uds.am.freescale.net>
-References: <20100920131907.GA2184@oksana.dev.rtsoft.ru><3850A844E6A3854C827AC5C0BEC7B60A256099@zch01exm23.fsl.freescale.net>
-	<20101004103813.14d04956@udp111988uds.am.freescale.net>
+Date: Thu, 14 Oct 2010 12:14:12 +0800
+Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A2B02EF@zch01exm23.fsl.freescale.net>
+In-Reply-To: <20100920131907.GA2184@oksana.dev.rtsoft.ru>
+References: <1284706869-12555-1-git-send-email-tie-fei.zang@freescale.com>
+	<1284706869-12555-2-git-send-email-tie-fei.zang@freescale.com>
+	<20100920131907.GA2184@oksana.dev.rtsoft.ru>
 From: Zang Roy-R61911 <r61911@freescale.com>
-To: Wood Scott-B07421 <B07421@freescale.com>
-Cc: dedekind1@gmail.com, Hu Mingkai-B21284 <B21284@freescale.com>,
+To: Anton Vorontsov <cbouatmailru@gmail.com>
+Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
 	Lan Chunhe-B25806 <B25806@freescale.com>,
 	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Anton Vorontsov <cbouatmailru@gmail.com>,
 	akpm@linux-foundation.org, dwmw2@infradead.org,
 	Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -45,86 +45,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-> -----Original Message-----
-> From: Wood Scott-B07421
-> Sent: Monday, October 04, 2010 23:38 PM
-> To: Zang Roy-R61911
-> Cc: Anton Vorontsov; linux-mtd@lists.infradead.org;
-dwmw2@infradead.org;
-> dedekind1@gmail.com; akpm@linux-foundation.org; Lan Chunhe-B25806;
-Wood Scott-
-> B07421; Gala Kumar-B11780; linuxppc-dev@ozlabs.org
-> Subject: Re: [PATCH 2/3 v4] P4080/mtd: Only make elbc nand driver
-detect nand
-> flash partitions
->=20
-> On Sat, 2 Oct 2010 05:36:27 -0700
-> "Zang Roy-R61911" <r61911@freescale.com> wrote:
->=20
-> >
-> >
-> > > -----Original Message-----
-> > > From: Anton Vorontsov [mailto:cbouatmailru@gmail.com]
-> > > Sent: Monday, September 20, 2010 21:19 PM
-> > > To: Zang Roy-R61911
-> > > Cc: linux-mtd@lists.infradead.org; dwmw2@infradead.org;
-> dedekind1@gmail.com;
-> > > akpm@linux-foundation.org; Lan Chunhe-B25806; Wood Scott-B07421;
-Gala
-> Kumar-
-> > > B11780; linuxppc-dev@ozlabs.org
-> > > Subject: Re: [PATCH 2/3 v4] P4080/mtd: Only make elbc nand driver
-detect
-> nand
-> > > flash partitions
-> > >
-> > > On Fri, Sep 17, 2010 at 03:01:08PM +0800, Roy Zang wrote:
-> > > [...]
-> > > > +static struct mutex fsl_elbc_nand_mutex;
-> > > > +
-> > > > +static int __devinit fsl_elbc_nand_probe(struct platform_device
-*dev)
-> > > >  {
-> > > > -	struct fsl_lbc_regs __iomem *lbc =3D ctrl->regs;
-> > > > +	struct fsl_lbc_regs __iomem *lbc;
-> > > >  	struct fsl_elbc_mtd *priv;
-> > > >  	struct resource res;
-> > > > +	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl =3D NULL;
-> > >
-> > > No need for =3D NULL.
-> > Any harm? Or just personal habit or style? Can you explain about
-why?
->=20
-> Besides not wanting superfluous code on general principle, it could
-> hide a bug if in the future the real initialization is missing on some
-> code path.  It would become a runtime NULL dereference rather than a
-> compiler warning.
-
-Not exactly.
-Per my understand, if the pointer will definitely be assigned in code
-path,
-it is not necessary to init it when define. for example,
-
-char c;
-char b;
-char *a;
-if (condition)
-	a =3D &c;
-else
-	a =3D &b;
-...
-
-for other case, if the path will not ensure the pointer assignment, it
-will be inited
-when define to avoid warning. for example,
-
-char c;
-char *a =3D NULL;
-if (condition)
-	a =3D &c;
-...
-
-Thanks.
-Roy
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQW50b24gVm9yb250c292
+IFttYWlsdG86Y2JvdWF0bWFpbHJ1QGdtYWlsLmNvbV0NCj4gU2VudDogTW9uZGF5LCBTZXB0ZW1i
+ZXIgMjAsIDIwMTAgMjE6MTkgUE0NCj4gVG86IFphbmcgUm95LVI2MTkxMQ0KPiBDYzogbGludXgt
+bXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGR3bXcyQGluZnJhZGVhZC5vcmc7IGRlZGVraW5kMUBn
+bWFpbC5jb207DQo+IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7IExhbiBDaHVuaGUtQjI1ODA2
+OyBXb29kIFNjb3R0LUIwNzQyMTsgR2FsYSBLdW1hci0NCj4gQjExNzgwOyBsaW51eHBwYy1kZXZA
+b3psYWJzLm9yZw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDIvMyB2NF0gUDQwODAvbXRkOiBPbmx5
+IG1ha2UgZWxiYyBuYW5kIGRyaXZlciBkZXRlY3QgbmFuZA0KPiBmbGFzaCBwYXJ0aXRpb25zDQo+
+IA0KPiBPbiBGcmksIFNlcCAxNywgMjAxMCBhdCAwMzowMTowOFBNICswODAwLCBSb3kgWmFuZyB3
+cm90ZToNCj4gWy4uLl0NCj4gPiArc3RhdGljIHN0cnVjdCBtdXRleCBmc2xfZWxiY19uYW5kX211
+dGV4Ow0KPiA+ICsNCj4gPiArc3RhdGljIGludCBfX2RldmluaXQgZnNsX2VsYmNfbmFuZF9wcm9i
+ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQo+ID4gIHsNCj4gPiAtCXN0cnVjdCBmc2xf
+bGJjX3JlZ3MgX19pb21lbSAqbGJjID0gY3RybC0+cmVnczsNCj4gPiArCXN0cnVjdCBmc2xfbGJj
+X3JlZ3MgX19pb21lbSAqbGJjOw0KPiA+ICAJc3RydWN0IGZzbF9lbGJjX210ZCAqcHJpdjsNCj4g
+PiAgCXN0cnVjdCByZXNvdXJjZSByZXM7DQo+ID4gKwlzdHJ1Y3QgZnNsX2VsYmNfZmNtX2N0cmwg
+KmVsYmNfZmNtX2N0cmwgPSBOVUxMOw0KPiANCj4gTm8gbmVlZCBmb3IgPSBOVUxMLg0KPiANCj4g
+Wy4uLl0NCj4gPiAtCWN0cmwtPmNoaXBzW2JhbmtdID0gcHJpdjsNCj4gPiArCW11dGV4X2luaXQo
+JmZzbF9lbGJjX25hbmRfbXV0ZXgpOw0KPiANCj4gVGhpcyBtYXkgY2F1c2UgYWxsIHNvcnRzIG9m
+IG1pc2JlaGF2aW91cnMsIGUuZy4NCj4gDQo+IEE6IG11dGV4X2luaXQoZm9vKQ0KPiBBOiBtdXRl
+eF9sb2NrKGZvbykNCj4gQjogbXV0ZXhfaW5pdChmb28pICAgPC0gZGVzdHJveWVkICJBIi1jb250
+ZXh0IG11dGV4Lg0KPiBBOiBtdXRleF91bmxvY2soZm9vKSA8LSBvb3BzDQo+IA0KPiBJbnN0ZWFk
+IG9mIGR5bmFtaWNhbGx5IGluaXRpYWxpemluZyB0aGUgbXV0ZXgsIGp1c3QgZGVmaW5lIGl0DQo+
+IHdpdGggREVGSU5FX01VVEVYKCkgYWJvdmUuDQo+IA0KPiAoQnR3LCAjaW5jbHVkZSA8bGludXgv
+bXV0ZXguaD4gaXMgbmVlZGVkLikNCj4gDQo+ID4gKw0KPiA+ICsJbXV0ZXhfbG9jaygmZnNsX2Vs
+YmNfbmFuZF9tdXRleCk7DQo+IFsuLi5dDQo+ID4gLXN0YXRpYyBpbnQgX19kZXZpbml0IGZzbF9l
+bGJjX2N0cmxfaW5pdChzdHJ1Y3QgZnNsX2VsYmNfY3RybCAqY3RybCkNCj4gPiArc3RhdGljIGlu
+dCBmc2xfZWxiY19uYW5kX3JlbW92ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpkZXYpDQo+IFsu
+Li5dDQo+ID4gKwlzdHJ1Y3QgZnNsX2VsYmNfZmNtX2N0cmwgKmVsYmNfZmNtX2N0cmwgPSBmc2xf
+bGJjX2N0cmxfZGV2LT5uYW5kOw0KPiBbLi4uXQ0KPiA+ICsJCWlmIChlbGJjX2ZjbV9jdHJsLT5j
+aGlwc1tpXSkNCj4gPiArCQkJZnNsX2VsYmNfY2hpcF9yZW1vdmUoZWxiY19mY21fY3RybC0+Y2hp
+cHNbaV0pOw0KPiBbLi4uXQ0KPiA+ICsJZnNsX2xiY19jdHJsX2Rldi0+bmFuZCA9IE5VTEw7DQo+
+ID4gKwlrZnJlZShlbGJjX2ZjbV9jdHJsKTsNCj4gDQo+IFdpbGwgY2F1c2UgTlVMTCBkZXJlZmVy
+ZW5jZSBhbmQvb3IgdXNlLWFmdGVyLWZyZWUgZm9yIG90aGVyDQo+IGVsYmMgbmFuZCBpbnN0YW5j
+ZXMuIFRvIGF2b2lkIHRoYXQsIHJlZmVyZW5jZSBjb3VudGluZyBmb3INCj4gZWxiY19mY21fY3Ry
+bCBpcyByZXF1aXJlZC4NCk1ha2Ugc2Vuc2UuDQp3aWxsIHVwZGF0ZS4NClJveQ0K
