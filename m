@@ -1,40 +1,16 @@
-Received: from tx2ehsobe005.messaging.microsoft.com ([65.55.88.15]
-	helo=TX2EHSOBE010.bigfish.com)
+Received: from p01c12o141.mxlogic.net ([208.65.145.64])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6QGc-0006P5-Ig
-	for linux-mtd@lists.infradead.org; Thu, 14 Oct 2010 16:02:56 +0000
-Received: from mail17-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail17-tx2-R.bigfish.com (Postfix) with ESMTP id 126A818282DC	for
-	<linux-mtd@lists.infradead.org>; Thu, 14 Oct 2010 16:02:44 +0000 (UTC)
-Received: from TX2EHSMHS040.bigfish.com (unknown [10.9.14.240])	by
-	mail17-tx2.bigfish.com (Postfix) with ESMTP id 038B412D804D	for
-	<linux-mtd@lists.infradead.org>; Thu, 14 Oct 2010 16:02:44 +0000 (UTC)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net
-	[10.64.34.199])	by az33egw01.freescale.net (8.14.3/8.14.3) with ESMTP
-	id o9EG2fAO015472	for <linux-mtd@lists.infradead.org>;
-	Thu, 14 Oct 2010 09:02:41 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id
-	o9EG2f25020724	for <linux-mtd@lists.infradead.org>;
-	Thu, 14 Oct 2010 11:02:41 -0500 (CDT)
-Date: Thu, 14 Oct 2010 11:02:39 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: Zang Roy-R61911 <r61911@freescale.com>
-Subject: Re: [PATCH 1/3 v4] P4080/eLBC: Make Freescale elbc interrupt common
-	to elbc devices
-Message-ID: <20101014110239.466072be@udp111988uds.am.freescale.net>
-In-Reply-To: <3850A844E6A3854C827AC5C0BEC7B60A2B0329@zch01exm23.fsl.freescale.net>
-References: <20100920153718.GA4411@oksana.dev.rtsoft.ru>
-	<3850A844E6A3854C827AC5C0BEC7B60A2B0329@zch01exm23.fsl.freescale.net>
+	id 1P6Vlo-0000Jr-8V
+	for linux-mtd@lists.infradead.org; Thu, 14 Oct 2010 21:55:29 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Date: Thu, 14 Oct 2010 16:54:57 -0500
+Subject: Latest mkfs.jffs2 is broken.
+Message-ID: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
-	Lan Chunhe-B25806 <B25806@freescale.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Anton Vorontsov <cbouatmailru@gmail.com>,
-	akpm@linux-foundation.org, dwmw2@infradead.org,
-	Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,16 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 13 Oct 2010 23:43:38 -0700
-"Zang Roy-R61911" <r61911@freescale.com> wrote:
-
-> > Plus, I think the patch is not runtime bisectable (i.e. you
-> > now do request_irq() here, but not removing it from the nand
-> > driver, so nand will fail to probe).
-> Nand driver does not need to request irq. It will use the irq requested by lbc.
-> remember, other lbc device may also need to use this registered irq. 
-> It should not be removed in nand driver.
-
-The point is that you need to make both changes in the same patch.
-
--Scott
+SGVsbG8gYWxsLA0KDQpCdWlsZHJvb3QgcmVjZW50bHkgYnVtcGVkIHRoZSBtdGQtdXRpbHMgcGFj
+a2FnZSBmcm9tIHZlcnNpb24gMS4zLjEgdG8gMS40LjAuDQoNCldpdGggdGhlIG1rZnMuamZmczIg
+dXRpbGl0eSBpbiAxLjMuMSBJIGFtIGFibGUgdG8gY3JlYXRlIHJvb3Rmcy5qZmZzIGltYWdlcyB0
+aGF0DQp3b3JrIGZpbmUgb24gbXkgaS5teDM1IGFybSBzeXN0ZW0uICBCdXQsIHdpdGggdGhlIDEu
+NC4wIHZlcnNpb24gYWxsIHRoZSBpbWFnZXMNCmRvIG5vdCB3b3JrLg0KDQpXaXRoIHRoZSAxLjQu
+MCBidWlsdCBpbWFnZXMgSSBnZXQgbWVzc2FnZXMgbGlrZSB0aGlzIGR1cmluZyB0aGUga2VybmVs
+IGJvb3Q6DQoNCmpmZnMyX3NjYW5fZXJhc2VibG9jaygpOiBOb2RlIGF0IDB4MDAwMDAwMDAgezB4
+MTk4NSwgMHgyMDAzLCAweDAwMDAwMDBjKSBoYXMgaW52YWxpZCBDUkMgMHg4MTNjNmZkOCAoY2Fs
+Y3VsYXRlZCAweGU0MWViMGIxKQ0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1h
+c2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAwMDAwMDA0OiAweDAwMGMgaW5zdGVhZA0KamZmczJf
+c2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAw
+MDAwMDA4OiAweDZmZDggaW5zdGVhZA0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE5vZGUgYXQg
+MHgwMDAwMDAwYyB7MHgxOTg1LCAweGUwMDEsIDB4MDAwMDAwMmIpIGhhcyBpbnZhbGlkIENSQyAw
+eDE4MDRiMThmIChjYWxjdWxhdGVkIDB4N2QyNjZlZTYpDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2so
+KTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMTA6IDB4MDAyYiBp
+bnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90
+IGZvdW5kIGF0IDB4MDAwMDAwMTQ6IDB4YjE4ZiBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxv
+Y2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMTg6IDB4MDAw
+MSBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUg
+bm90IGZvdW5kIGF0IDB4MDAwMDAwMjA6IDB4MDAwMiBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNl
+YmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMjQ6IDB4
+MWE4ZCBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5
+ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMjg6IDB4MDQwMyBpbnN0ZWFkDQpGdXJ0aGVyIHN1Y2gg
+ZXZlbnRzIGZvciB0aGlzIGVyYXNlIGJsb2NrIHdpbGwgbm90IGJlIHByaW50ZWQNCk9sZCBKRkZT
+MiBiaXRtYXNrIGZvdW5kIGF0IDB4MDAwMDAwNzgNCllvdSBjYW5ub3QgdXNlIG9sZGVyIEpGRlMy
+IGZpbGVzeXN0ZW1zIHdpdGggbmV3ZXIga2VybmVscw0KRW1wdHkgZmxhc2ggYXQgMHgwMDAwYTQ2
+YyBlbmRzIGF0IDB4MDAwMGE0NzANCg0KQW5kLCBpZiBJIGNoZWNrIHRoZSBpbWFnZXMgd2l0aCBq
+ZmZzMmR1bXAgSSBnZXQgc3R1ZmYgbGlrZToNCg0KV3JvbmcgaGRyX2NyYyAgYXQgIDB4MDAwMWY4
+MDgsIDB4NzgzZjQ0ZDIgaW5zdGVhZCBvZiAweDFkMWQ5YmJiDQpXcm9uZyBiaXRtYXNrICBhdCAg
+MHgwMDAxZjgwYywgMHgwN2YzDQpFbXB0eSBzcGFjZSBmb3VuZCBmcm9tIDB4MDAwMWZmZmMgdG8g
+MHgwMDAyMDAwMA0KDQpBbnkgaWRlYXMgd2hhdCBjb3VsZCBiZSB3cm9uZyB3aXRoIHRoZSAxLjQu
+MCByZWxlYXNlPw0KDQpUaGFua3MsDQpIYXJ0bGV5DQo=
