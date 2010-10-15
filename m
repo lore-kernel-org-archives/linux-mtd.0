@@ -1,19 +1,18 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6oVd-0001ns-Jn
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 17:56:02 +0000
-Received: by ewy7 with SMTP id 7so702082ewy.36
+	id 1P6pb1-0004Qa-DP
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 19:05:40 +0000
+Received: by wyi11 with SMTP id 11so1166424wyi.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Oct 2010 10:56:00 -0700 (PDT)
+	Fri, 15 Oct 2010 12:05:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1287128665-6573-2-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1287128665-6573-3-git-send-email-computersforpeace@gmail.com>
 References: <1287128665-6573-1-git-send-email-computersforpeace@gmail.com>
-	<1287128665-6573-2-git-send-email-computersforpeace@gmail.com>
+	<1287128665-6573-3-git-send-email-computersforpeace@gmail.com>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Fri, 15 Oct 2010 13:55:39 -0400
-Message-ID: <AANLkTi=XdvN2vGu7Z5M7jj=z_qrx=9F93WiDnPYkcDgY@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mtd-utils: nanddump: Dynamic buffer,
-	increase pagesize/oobsize
+Date: Fri, 15 Oct 2010 14:58:09 -0400
+Message-ID: <AANLkTik2v8=Lx+HKFTQdgh4czjYuz6P5uevThvAOFcAE@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mtd-utils: nandwrite: Large page+oob support
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -29,33 +28,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Fri, Oct 15, 2010 at 03:44, Brian Norris wrote:
-> + =C2=A0 =C2=A0 =C2=A0 static unsigned char *readbuf, *oobbuf;
-
-no need to make these static still
-
-> + =C2=A0 =C2=A0 =C2=A0 oobbuf =3D malloc(sizeof(oobbuf) * meminfo.oobsize=
+> + =C2=A0 =C2=A0 =C2=A0 oobbuf =3D (unsigned char *)malloc(meminfo.oobsize=
 );
-> +       readbuf =3D malloc(sizeof(readbuf) * meminfo.writesize);
 
-include common.h and use xmalloc
-
-> - =C2=A0 =C2=A0 =C2=A0 close(fd);
-> - =C2=A0 =C2=A0 =C2=A0 close(ofd);
-> + =C2=A0 =C2=A0 =C2=A0 if (fd) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 close(fd);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ofd) {
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 close(ofd);
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
-> + =C2=A0 =C2=A0 =C2=A0 }
-
-0 is a valid fd, thus these checks on the value of the fd dont make
-much sense.  i would leave the code as it was.
-
+include common.h and use xmalloc.  also, the malloc cast is useless, so dro=
+p it.
+> - =C2=A0 =C2=A0 =C2=A0 if (filebuf) {
+> + =C2=A0 =C2=A0 =C2=A0 if (filebuf)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0free(filebuf);
+> - =C2=A0 =C2=A0 =C2=A0 }
 > + =C2=A0 =C2=A0 =C2=A0 if (oobbuf)
 > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 free(oobbuf);
-> + =C2=A0 =C2=A0 =C2=A0 if (readbuf)
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 free(readbuf);
 
-drop the "if".  free(NULL) works just fine.
+free(NULL) works fine, so drop the "if" check.
 -mike
