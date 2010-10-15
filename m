@@ -1,17 +1,19 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6iTu-00060N-9d
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 11:29:51 +0000
-Received: by ywp6 with SMTP id 6so320796ywp.36
+Received: from mx04.teleca.com ([212.92.145.6])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P6itD-0006iE-3o
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 11:55:59 +0000
+Received: from RUNNAS001.global.ad.teleca.com (unknown [10.13.11.16])
+	by mx04.teleca.com (Postfix) with ESMTP id 99EA84EECE9
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Oct 2010 04:29:49 -0700 (PDT)
+	Fri, 15 Oct 2010 15:43:11 +0400 (MSD)
+Message-ID: <4CB8422C.7000409@nokia.com>
+Date: Fri, 15 Oct 2010 15:59:40 +0400
+From: Roman Borisov <ext-roman.borisov@nokia.com>
 MIME-Version: 1.0
-Date: Fri, 15 Oct 2010 12:29:48 +0100
-Message-ID: <AANLkTi=+2kVMg+YegwRe1SkWWWfF3-=4ZRmvciBZLkCy@mail.gmail.com>
-Subject: Understanding OOB data read implementation (II)
-From: David Peverley <pev@sketchymonkey.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: question about jffs2: jffs2_scan_dirty_space() return value
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi again...!
+hello,
 
-I've also noticed after blindly copying it that in the DoC drivers
-that the OOB reads use the ops->len for size :
-    static int doc_read_oob(struct mtd_info *mtd, loff_t ofs,
-                            struct mtd_oob_ops *ops)
-        ...
-        uint8_t *buf = ops->oobbuf;
-        size_t len = ops->len;
-        ...
+The question was born when I discovered that in fs/jffs2/scan.c 
+jffs2_scan_medium() a return value from fs/jffs2/nodelist.c 
+jffs2_scan_dirty_space() is not checked;
+However return value from jffs2_scan_dirty_space() is checked anywhere else.
+jffs2_scan_dirty_space() investigation showed that it can't return 
+anything except 0;
 
-Reading mtd.h and the following patch summary :
-    http://www.mail-archive.com/git-commits-head@vger.kernel.org/msg03799.html
+The question is: should the jffs2_scan_dirty_space() be changed to 
+return some error instead BUG() macro for example?
+<code>
+     if (unlikely(size > jeb->free_size)) {
+         printk(KERN_CRIT "Dirty space 0x%x larger then free_size 0x%x 
+(wasted 0x%x)\n",
+                size, jeb->free_size, jeb->wasted_size);
+-        BUG();
++    return some_error;
+     }
+</code>
+In this case we also should update jffs2_scan_medium() to check the 
+error code.
 
-I suspect this is wrong and should be using ops->ooblen instead. This
-is especially true given that mtdchar.c leaves ops->len
-uninitialised....! (should mtdchar.c:mtd_do_readoob() not zero the ops
-structure as it's a local automatic so not zero-initialised?) Again
-this is copied in doc2001.c and doc2001plus.c.
-
-Cheers,
-
-~Pev
+Thanks,
+Roman
