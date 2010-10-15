@@ -1,25 +1,26 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6fw4-00026H-Cp
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 08:46:45 +0000
-Received: by gyf1 with SMTP id 1so242335gyf.36
+	id 1P6g1b-0002H6-DO
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 08:52:28 +0000
+Received: by wwd20 with SMTP id 20so427995wwd.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Oct 2010 01:46:43 -0700 (PDT)
+	Fri, 15 Oct 2010 01:52:25 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: dedekind1@gmail.com
 Subject: Re: Latest mkfs.jffs2 is broken.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Peter Korsgaard <jacmet@sunsite.dk>
-In-Reply-To: <87pqvbetux.fsf@macbook.be.48ers.dk>
 References: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
 	<1287123245.18576.2.camel@localhost>
 	<87pqvbetux.fsf@macbook.be.48ers.dk>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 Oct 2010 11:43:38 +0300
-Message-ID: <1287132218.18576.12.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	<1287132218.18576.12.camel@localhost>
+Date: Fri, 15 Oct 2010 10:52:21 +0200
+In-Reply-To: <1287132218.18576.12.camel@localhost> (Artem Bityutskiy's message
+	of "Fri, 15 Oct 2010 11:43:38 +0300")
+Message-ID: <87lj5zet2y.fsf@macbook.be.48ers.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Cc: H Hartley Sweeten <hartleys@visionengravers.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +30,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-15 at 10:35 +0200, Peter Korsgaard wrote:
-> commit b864c387e8f16273aad1453d6457d847e29c3d25
-> Author: Mike Frysinger <vapier@gentoo.org>
-> Date:   Wed Sep 22 22:32:56 2010 -0400
-> 
->     mtd-utils: clean up zlib.h usage a bit
->     
->     Hide zlib's crc32 in compr_zlib.c and mkfs.ubifs/compr.c.
->     
->     jffs2reader.c and mkfs.jffs2.c don't actually use zlib, so punt the
->     include from the file.
->     
->     mkfs.jffs2.c is implicitly using crc32 from zlib.h instead of the
->     local mtd_crc32, so fix the local usage.  otherwise we get warnings
->     about undefined crc32 because the file was redirecting the prototype.
->     
->     Signed-off-by: Mike Frysinger <vapier@gentoo.org>
->     Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> 
-> Hartley, that commit applies OK to 1.4.0, could you give it a try?
-> 
-> Artem: Time for a v1.4.1 release?
+>>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-Thanks. If it works, I'll back-port Mike's patch to 1.4.0 and tag it as
-1.4.1. So 1.4.1 won't include tons of irrelevant commits.
+ >> Artem: Time for a v1.4.1 release?
+
+ Artem> Thanks. If it works, I'll back-port Mike's patch to 1.4.0 and tag it as
+ Artem> 1.4.1. So 1.4.1 won't include tons of irrelevant commits.
+
+Great. An easy way to test:
+
+git checkout v1.4.0
+make WITHOUT_XATTR=1
+./mkfs.jffs2 -e 0x20000 -b -s 0x1000 -d include -o test.jffs2
+/usr/sbin/jffs2dump -b -c test.jffs2|head -n 4
+Wrong hdr_crc  at  0x00000000, 0x954203f1 instead of 0xf060dc98
+Wrong bitmask  at  0x00000004, 0x0000
+Wrong hdr_crc  at  0x0000000c, 0xd10532a2 instead of 0xb427edcb
+Wrong bitmask  at  0x00000010, 0x0000
+
+git cherry-pick b864c387e8f1
+make WITHOUT_XATTR=1
+./mkfs.jffs2 -e 0x20000 -b -s 0x1000 -d include -o test.jffs2
+/usr/sbin/jffs2dump -b -c test.jffs2|head -n 4
+         Dirent     node at 0x0000000c, totlen 0x00000030, #pino     1, version     0, #ino         2, nsize        8, name common.h
+         Inode      node at 0x0000003c, totlen 0x00000489, #ino      2, version     1, isize     2939, csize     1093, dsize     2939, offset        0
+         Dirent     node at 0x000004c8, totlen 0x0000002f, #pino     1, version     1, #ino         3, nsize        7, name crc32.h
+         Inode      node at 0x000004f8, totlen 0x0000011d, #ino      3, version     1, isize      294, csize      217, dsize      294, offset        0
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Bye, Peter Korsgaard
