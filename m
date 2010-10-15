@@ -1,16 +1,41 @@
-Received: from p01c12o141.mxlogic.net ([208.65.145.64])
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
+	helo=VA3EHSOBE005.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6Vlo-0000Jr-8V
-	for linux-mtd@lists.infradead.org; Thu, 14 Oct 2010 21:55:29 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Date: Thu, 14 Oct 2010 16:54:57 -0500
-Subject: Latest mkfs.jffs2 is broken.
-Message-ID: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	id 1P6ZpK-0005hW-Tl
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 02:15:28 +0000
+Received: from mail170-va3 (localhost.localdomain [127.0.0.1])	by
+	mail170-va3-R.bigfish.com (Postfix) with ESMTP id 426A4EE0485	for
+	<linux-mtd@lists.infradead.org>; Fri, 15 Oct 2010 02:15:09 +0000 (UTC)
+Received: from VA3EHSMHS016.bigfish.com (unknown [10.7.14.252])	by
+	mail170-va3.bigfish.com (Postfix) with ESMTP id 03EF91A60053	for
+	<linux-mtd@lists.infradead.org>; Fri, 15 Oct 2010 02:15:08 +0000 (UTC)
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by de01egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
+	o9F2F66h016892	for
+	<linux-mtd@lists.infradead.org>; Thu, 14 Oct 2010 19:15:06 -0700 (MST)
+Received: from zch01exm23.fsl.freescale.net (zch01exm23.ap.freescale.net
+	[10.192.129.207])	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id
+	o9F2VMcO000683	for <linux-mtd@lists.infradead.org>;
+	Thu, 14 Oct 2010 21:31:22 -0500 (CDT)
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH 2/3 v4] P4080/mtd: Only make elbc nand driver detect nand
+	flash partitions
+Date: Fri, 15 Oct 2010 10:15:20 +0800
+Message-ID: <3850A844E6A3854C827AC5C0BEC7B60A2B0445@zch01exm23.fsl.freescale.net>
+In-Reply-To: <20101014110118.11fabed5@udp111988uds.am.freescale.net>
+References: <20101004103813.14d04956@udp111988uds.am.freescale.net><3850A844E6A3854C827AC5C0BEC7B60A2B02B7@zch01exm23.fsl.freescale.net>
+	<20101014110118.11fabed5@udp111988uds.am.freescale.net>
+From: Zang Roy-R61911 <r61911@freescale.com>
+To: Wood Scott-B07421 <B07421@freescale.com>
+Cc: dedekind1@gmail.com, Hu Mingkai-B21284 <B21284@freescale.com>,
+	Lan Chunhe-B25806 <B25806@freescale.com>,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Anton Vorontsov <cbouatmailru@gmail.com>,
+	akpm@linux-foundation.org, dwmw2@infradead.org,
+	Gala Kumar-B11780 <B11780@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +45,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gYWxsLA0KDQpCdWlsZHJvb3QgcmVjZW50bHkgYnVtcGVkIHRoZSBtdGQtdXRpbHMgcGFj
-a2FnZSBmcm9tIHZlcnNpb24gMS4zLjEgdG8gMS40LjAuDQoNCldpdGggdGhlIG1rZnMuamZmczIg
-dXRpbGl0eSBpbiAxLjMuMSBJIGFtIGFibGUgdG8gY3JlYXRlIHJvb3Rmcy5qZmZzIGltYWdlcyB0
-aGF0DQp3b3JrIGZpbmUgb24gbXkgaS5teDM1IGFybSBzeXN0ZW0uICBCdXQsIHdpdGggdGhlIDEu
-NC4wIHZlcnNpb24gYWxsIHRoZSBpbWFnZXMNCmRvIG5vdCB3b3JrLg0KDQpXaXRoIHRoZSAxLjQu
-MCBidWlsdCBpbWFnZXMgSSBnZXQgbWVzc2FnZXMgbGlrZSB0aGlzIGR1cmluZyB0aGUga2VybmVs
-IGJvb3Q6DQoNCmpmZnMyX3NjYW5fZXJhc2VibG9jaygpOiBOb2RlIGF0IDB4MDAwMDAwMDAgezB4
-MTk4NSwgMHgyMDAzLCAweDAwMDAwMDBjKSBoYXMgaW52YWxpZCBDUkMgMHg4MTNjNmZkOCAoY2Fs
-Y3VsYXRlZCAweGU0MWViMGIxKQ0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1h
-c2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAwMDAwMDA0OiAweDAwMGMgaW5zdGVhZA0KamZmczJf
-c2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAw
-MDAwMDA4OiAweDZmZDggaW5zdGVhZA0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE5vZGUgYXQg
-MHgwMDAwMDAwYyB7MHgxOTg1LCAweGUwMDEsIDB4MDAwMDAwMmIpIGhhcyBpbnZhbGlkIENSQyAw
-eDE4MDRiMThmIChjYWxjdWxhdGVkIDB4N2QyNjZlZTYpDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2so
-KTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMTA6IDB4MDAyYiBp
-bnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90
-IGZvdW5kIGF0IDB4MDAwMDAwMTQ6IDB4YjE4ZiBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxv
-Y2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMTg6IDB4MDAw
-MSBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUg
-bm90IGZvdW5kIGF0IDB4MDAwMDAwMjA6IDB4MDAwMiBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNl
-YmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMjQ6IDB4
-MWE4ZCBpbnN0ZWFkDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5
-ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMjg6IDB4MDQwMyBpbnN0ZWFkDQpGdXJ0aGVyIHN1Y2gg
-ZXZlbnRzIGZvciB0aGlzIGVyYXNlIGJsb2NrIHdpbGwgbm90IGJlIHByaW50ZWQNCk9sZCBKRkZT
-MiBiaXRtYXNrIGZvdW5kIGF0IDB4MDAwMDAwNzgNCllvdSBjYW5ub3QgdXNlIG9sZGVyIEpGRlMy
-IGZpbGVzeXN0ZW1zIHdpdGggbmV3ZXIga2VybmVscw0KRW1wdHkgZmxhc2ggYXQgMHgwMDAwYTQ2
-YyBlbmRzIGF0IDB4MDAwMGE0NzANCg0KQW5kLCBpZiBJIGNoZWNrIHRoZSBpbWFnZXMgd2l0aCBq
-ZmZzMmR1bXAgSSBnZXQgc3R1ZmYgbGlrZToNCg0KV3JvbmcgaGRyX2NyYyAgYXQgIDB4MDAwMWY4
-MDgsIDB4NzgzZjQ0ZDIgaW5zdGVhZCBvZiAweDFkMWQ5YmJiDQpXcm9uZyBiaXRtYXNrICBhdCAg
-MHgwMDAxZjgwYywgMHgwN2YzDQpFbXB0eSBzcGFjZSBmb3VuZCBmcm9tIDB4MDAwMWZmZmMgdG8g
-MHgwMDAyMDAwMA0KDQpBbnkgaWRlYXMgd2hhdCBjb3VsZCBiZSB3cm9uZyB3aXRoIHRoZSAxLjQu
-MCByZWxlYXNlPw0KDQpUaGFua3MsDQpIYXJ0bGV5DQo=
+
+
+> -----Original Message-----
+> From: Wood Scott-B07421
+> Sent: Friday, October 15, 2010 0:01 AM
+> To: Zang Roy-R61911
+> Cc: Wood Scott-B07421; Anton Vorontsov; linux-mtd@lists.infradead.org;
+> dwmw2@infradead.org; dedekind1@gmail.com; akpm@linux-foundation.org;
+Lan
+> Chunhe-B25806; Gala Kumar-B11780; linuxppc-dev@ozlabs.org; Hu
+Mingkai-B21284
+> Subject: Re: [PATCH 2/3 v4] P4080/mtd: Only make elbc nand driver
+detect nand
+> flash partitions
+>=20
+> On Wed, 13 Oct 2010 20:09:02 -0700
+> "Zang Roy-R61911" <r61911@freescale.com> wrote:
+>=20
+> > > > > > +	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl =3D NULL;
+> > > > >
+> > > > > No need for =3D NULL.
+> > > > Any harm? Or just personal habit or style? Can you explain about
+> > why?
+> > >
+> > > Besides not wanting superfluous code on general principle, it
+could
+> > > hide a bug if in the future the real initialization is missing on
+some
+> > > code path.  It would become a runtime NULL dereference rather than
+a
+> > > compiler warning.
+> >
+> > Not exactly.
+> > Per my understand, if the pointer will definitely be assigned in
+code
+> > path,
+> > it is not necessary to init it when define. for example,
+> >
+> > char c;
+> > char b;
+> > char *a;
+> > if (condition)
+> > 	a =3D &c;
+> > else
+> > 	a =3D &b;
+> > ...
+> >
+> > for other case, if the path will not ensure the pointer assignment,
+it
+> > will be inited
+> > when define to avoid warning. for example,
+> >
+> > char c;
+> > char *a =3D NULL;
+> > if (condition)
+> > 	a =3D &c;
+> > ...
+>=20
+> Yes, but this patch looks like the former case, not the
+> latter.=20
+That is right.
+> Is GCC giving a warning without the initializer?
+no.
+we are on the same point.
+Thanks.
+Roy
