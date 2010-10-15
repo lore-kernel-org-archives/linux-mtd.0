@@ -1,26 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6g1b-0002H6-DO
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 08:52:28 +0000
-Received: by wwd20 with SMTP id 20so427995wwd.18
+	id 1P6iDq-0004IV-G3
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 11:13:15 +0000
+Received: by gxk7 with SMTP id 7so313379gxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Oct 2010 01:52:25 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: dedekind1@gmail.com
-Subject: Re: Latest mkfs.jffs2 is broken.
-References: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
-	<1287123245.18576.2.camel@localhost>
-	<87pqvbetux.fsf@macbook.be.48ers.dk>
-	<1287132218.18576.12.camel@localhost>
-Date: Fri, 15 Oct 2010 10:52:21 +0200
-In-Reply-To: <1287132218.18576.12.camel@localhost> (Artem Bityutskiy's message
-	of "Fri, 15 Oct 2010 11:43:38 +0300")
-Message-ID: <87lj5zet2y.fsf@macbook.be.48ers.dk>
+	Fri, 15 Oct 2010 04:13:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: H Hartley Sweeten <hartleys@visionengravers.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+Date: Fri, 15 Oct 2010 12:13:11 +0100
+Message-ID: <AANLkTi=dc4TSda9218MDJjtqNbGH=wTykt2kEppwLWck@mail.gmail.com>
+Subject: Understanding OOB data read implementation
+From: David Peverley <pev@sketchymonkey.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +21,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
+Hello!
 
- >> Artem: Time for a v1.4.1 release?
+I've been adding OOB data read support into a driver I'm working with
+and I'm trying to understand how the offset works. As a starting point
+I picked the doc2000.c driver (From the latest kernel.org 2.6.35.7
+kernel)
 
- Artem> Thanks. If it works, I'll back-port Mike's patch to 1.4.0 and tag it as
- Artem> 1.4.1. So 1.4.1 won't include tons of irrelevant commits.
+The following happens in the driver :
+    static int doc_read_oob(struct mtd_info *mtd, loff_t ofs,
+                            struct mtd_oob_ops *ops)
+    {
+            ...
+            ofs += ops->ooboffs;
+            ...
 
-Great. An easy way to test:
+This is what I don't understand - why does ofs have ooboffs added? In
+the MTD char driver mtdchar.c the oob's read gets set up thus :
+    static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+            uint32_t length, void __user *ptr, uint32_t __user *retp)
+    {
+        ...
+        ops.ooboffs = start & (mtd->oobsize - 1);
+        ...
+        start &= ~((uint64_t)mtd->oobsize - 1);
+        ret = mtd->read_oob(mtd, start, &ops);
+        ...
 
-git checkout v1.4.0
-make WITHOUT_XATTR=1
-./mkfs.jffs2 -e 0x20000 -b -s 0x1000 -d include -o test.jffs2
-/usr/sbin/jffs2dump -b -c test.jffs2|head -n 4
-Wrong hdr_crc  at  0x00000000, 0x954203f1 instead of 0xf060dc98
-Wrong bitmask  at  0x00000004, 0x0000
-Wrong hdr_crc  at  0x0000000c, 0xd10532a2 instead of 0xb427edcb
-Wrong bitmask  at  0x00000010, 0x0000
+So... my reading of this is that the requested OOB read offset is
+passed into mtd_do_readoob() as the "start" parameter. This is then
+copied into the ops structure and passed in to read_oob() as two
+copies (via start and again inside the ops structure). This same logic
+is also followed in doc2001.c and doc2001plus.c.
 
-git cherry-pick b864c387e8f1
-make WITHOUT_XATTR=1
-./mkfs.jffs2 -e 0x20000 -b -s 0x1000 -d include -o test.jffs2
-/usr/sbin/jffs2dump -b -c test.jffs2|head -n 4
-         Dirent     node at 0x0000000c, totlen 0x00000030, #pino     1, version     0, #ino         2, nsize        8, name common.h
-         Inode      node at 0x0000003c, totlen 0x00000489, #ino      2, version     1, isize     2939, csize     1093, dsize     2939, offset        0
-         Dirent     node at 0x000004c8, totlen 0x0000002f, #pino     1, version     1, #ino         3, nsize        7, name crc32.h
-         Inode      node at 0x000004f8, totlen 0x0000011d, #ino      3, version     1, isize      294, csize      217, dsize      294, offset        0
+If that's the case, I don't understand why in doc2000.c it's being
+added - is this not effectively using *double* the requested offset?
 
--- 
-Bye, Peter Korsgaard
+Also as a side note I suspect that mtd_do_readoob() would be a smidge
+clearer if the above was re-factored to avoid the duplication of the
+masking to oobsize :
+    static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
+            uint32_t length, void __user *ptr, uint32_t __user *retp)
+    {
+        ...
+        start &= ~((uint64_t)mtd->oobsize - 1);
+        ...
+        ops.ooboffs = start;
+        ...
+        ret = mtd->read_oob(mtd, start, &ops);
+        ...
+
+Cheers all!
+
+~Pev
