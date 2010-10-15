@@ -1,22 +1,24 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6mG5-0002Qg-M0
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 15:31:50 +0000
-Received: by pzk26 with SMTP id 26so33142pzk.36
+	id 1P6oVd-0001ns-Jn
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 17:56:02 +0000
+Received: by ewy7 with SMTP id 7so702082ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Oct 2010 08:31:48 -0700 (PDT)
-Sender: Grant Likely <glikely@secretlab.ca>
-Date: Fri, 15 Oct 2010 09:31:45 -0600
-From: Grant Likely <grant.likely@secretlab.ca>
-To: Jonas Bonn <jonas@southpole.se>
-Subject: Re: [PATCH 1/1] mtd: m25p80 -- parse partitions from OF tree
-Message-ID: <20101015153145.GD2429@angua.secretlab.ca>
-References: <1287147208-11588-1-git-send-email-jonas@southpole.se>
+	Fri, 15 Oct 2010 10:56:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1287147208-11588-1-git-send-email-jonas@southpole.se>
-Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org
+In-Reply-To: <1287128665-6573-2-git-send-email-computersforpeace@gmail.com>
+References: <1287128665-6573-1-git-send-email-computersforpeace@gmail.com>
+	<1287128665-6573-2-git-send-email-computersforpeace@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Fri, 15 Oct 2010 13:55:39 -0400
+Message-ID: <AANLkTi=XdvN2vGu7Z5M7jj=z_qrx=9F93WiDnPYkcDgY@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mtd-utils: nanddump: Dynamic buffer,
+	increase pagesize/oobsize
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,74 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 15, 2010 at 02:53:28PM +0200, Jonas Bonn wrote:
-> It needs to be possible to define the partitions of an MTD device from an OF
-> devicetree.  This patch adds a call to of_mtd_parse_partitions if:
+On Fri, Oct 15, 2010 at 03:44, Brian Norris wrote:
+> + =C2=A0 =C2=A0 =C2=A0 static unsigned char *readbuf, *oobbuf;
 
-Thanks Jonas.  I've actually already got a patch that does the exact
-ame thing in my private tree.  However, it requires an ugly #ifdef
-statement because the of_node pointer is not available when CONFIG_OF
-is not selected.  Before I commit to this patch, I want to see if I
-can come up with a cleaner way for drivers to reference of_node when
-CONFIG_OF is not set.  I could use a macro, but I'd rather not have to
-wrap every reference with a macro.
+no need to make these static still
 
-Regardless, it is on my radar, and I hope to settle on a solution
-sometime in the next week.
+> + =C2=A0 =C2=A0 =C2=A0 oobbuf =3D malloc(sizeof(oobbuf) * meminfo.oobsize=
+);
+> +       readbuf =3D malloc(sizeof(readbuf) * meminfo.writesize);
 
-g.
+include common.h and use xmalloc
 
-> 
-> i)   there are no commandline partitions defined
-> ii)  there are no partitions set up by platform_data
-> iii) and an of_node is present on the device
-> 
-> This permits the following devicetree structure:
-> 
-> flash0: mtd@0 {
-> 	compatible = "st,m25p10";
-> 	reg = <0>;
-> 	spi-max-frequency = <100000000>;
-> 
-> 	#address-cells = <1>;
-> 	#size-cells = <1>;
-> 
-> 	partition@0 {
-> 		label = "bootloader";
-> 		reg = <0x00000000 0x00018000>;
-> 		read-only;
-> 	}
-> 
-> 	partition@18000 {
-> 		label = "data";
-> 		reg = <0x00018000 0x00008000>;
-> 	};
-> };
-> 
-> Signed-off-by: Jonas Bonn <jonas@southpole.se>
-> ---
->  drivers/mtd/devices/m25p80.c |    4 ++++
->  1 files changed, 4 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 6f512b5..a349498 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
-> @@ -924,6 +924,10 @@ static int __devinit m25p_probe(struct spi_device *spi)
->  			nr_parts = data->nr_parts;
->  		}
->  
-> +		if (nr_parts <= 0 && spi->dev.of_node) {
-> +			nr_parts = of_mtd_parse_partitions(&spi->dev, spi->dev.of_node, &parts);
-> +		}
-> +
->  		if (nr_parts > 0) {
->  			for (i = 0; i < nr_parts; i++) {
->  				DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
-> -- 
-> 1.7.1
-> 
-> _______________________________________________
-> devicetree-discuss mailing list
-> devicetree-discuss@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/devicetree-discuss
+> - =C2=A0 =C2=A0 =C2=A0 close(fd);
+> - =C2=A0 =C2=A0 =C2=A0 close(ofd);
+> + =C2=A0 =C2=A0 =C2=A0 if (fd) {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 close(fd);
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 if (ofd) {
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 close(ofd);
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 }
+> + =C2=A0 =C2=A0 =C2=A0 }
+
+0 is a valid fd, thus these checks on the value of the fd dont make
+much sense.  i would leave the code as it was.
+
+> + =C2=A0 =C2=A0 =C2=A0 if (oobbuf)
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 free(oobbuf);
+> + =C2=A0 =C2=A0 =C2=A0 if (readbuf)
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 free(readbuf);
+
+drop the "if".  free(NULL) works just fine.
+-mike
