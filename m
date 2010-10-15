@@ -1,14 +1,14 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P6iDq-0004IV-G3
-	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 11:13:15 +0000
-Received: by gxk7 with SMTP id 7so313379gxk.36
+	id 1P6iTu-00060N-9d
+	for linux-mtd@lists.infradead.org; Fri, 15 Oct 2010 11:29:51 +0000
+Received: by ywp6 with SMTP id 6so320796ywp.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Oct 2010 04:13:12 -0700 (PDT)
+	Fri, 15 Oct 2010 04:29:49 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 15 Oct 2010 12:13:11 +0100
-Message-ID: <AANLkTi=dc4TSda9218MDJjtqNbGH=wTykt2kEppwLWck@mail.gmail.com>
-Subject: Understanding OOB data read implementation
+Date: Fri, 15 Oct 2010 12:29:48 +0100
+Message-ID: <AANLkTi=+2kVMg+YegwRe1SkWWWfF3-=4ZRmvciBZLkCy@mail.gmail.com>
+Subject: Understanding OOB data read implementation (II)
 From: David Peverley <pev@sketchymonkey.com>
 To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
@@ -21,56 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+Hi again...!
 
-I've been adding OOB data read support into a driver I'm working with
-and I'm trying to understand how the offset works. As a starting point
-I picked the doc2000.c driver (From the latest kernel.org 2.6.35.7
-kernel)
-
-The following happens in the driver :
+I've also noticed after blindly copying it that in the DoC drivers
+that the OOB reads use the ops->len for size :
     static int doc_read_oob(struct mtd_info *mtd, loff_t ofs,
                             struct mtd_oob_ops *ops)
-    {
-            ...
-            ofs += ops->ooboffs;
-            ...
-
-This is what I don't understand - why does ofs have ooboffs added? In
-the MTD char driver mtdchar.c the oob's read gets set up thus :
-    static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
-            uint32_t length, void __user *ptr, uint32_t __user *retp)
-    {
         ...
-        ops.ooboffs = start & (mtd->oobsize - 1);
-        ...
-        start &= ~((uint64_t)mtd->oobsize - 1);
-        ret = mtd->read_oob(mtd, start, &ops);
+        uint8_t *buf = ops->oobbuf;
+        size_t len = ops->len;
         ...
 
-So... my reading of this is that the requested OOB read offset is
-passed into mtd_do_readoob() as the "start" parameter. This is then
-copied into the ops structure and passed in to read_oob() as two
-copies (via start and again inside the ops structure). This same logic
-is also followed in doc2001.c and doc2001plus.c.
+Reading mtd.h and the following patch summary :
+    http://www.mail-archive.com/git-commits-head@vger.kernel.org/msg03799.html
 
-If that's the case, I don't understand why in doc2000.c it's being
-added - is this not effectively using *double* the requested offset?
+I suspect this is wrong and should be using ops->ooblen instead. This
+is especially true given that mtdchar.c leaves ops->len
+uninitialised....! (should mtdchar.c:mtd_do_readoob() not zero the ops
+structure as it's a local automatic so not zero-initialised?) Again
+this is copied in doc2001.c and doc2001plus.c.
 
-Also as a side note I suspect that mtd_do_readoob() would be a smidge
-clearer if the above was re-factored to avoid the duplication of the
-masking to oobsize :
-    static int mtd_do_readoob(struct mtd_info *mtd, uint64_t start,
-            uint32_t length, void __user *ptr, uint32_t __user *retp)
-    {
-        ...
-        start &= ~((uint64_t)mtd->oobsize - 1);
-        ...
-        ops.ooboffs = start;
-        ...
-        ret = mtd->read_oob(mtd, start, &ops);
-        ...
-
-Cheers all!
+Cheers,
 
 ~Pev
