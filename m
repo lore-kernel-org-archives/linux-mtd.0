@@ -1,24 +1,21 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7CWs-0002xw-Lo
-	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:34:55 +0000
-Received: by bwz7 with SMTP id 7so2569106bwz.36
+	id 1P7CZM-00038h-78
+	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:37:28 +0000
+Received: by bwz7 with SMTP id 7so2570436bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Oct 2010 12:34:53 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] mtd-utils: nanddump: Dynamic buffer, increase
-	pagesize/oobsize
+	Sat, 16 Oct 2010 12:37:27 -0700 (PDT)
+Subject: Re: Understanding OOB data read implementation (II)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1287189331-9475-1-git-send-email-computersforpeace@gmail.com>
-References: <AANLkTi%3DXdvN2vGu7Z5M7jj%3Dz_qrx%3D9F93WiDnPYkcDgY@mail.gmail.com>
-	<1287189331-9475-1-git-send-email-computersforpeace@gmail.com>
+To: David Peverley <pev@sketchymonkey.com>
+In-Reply-To: <AANLkTi=+2kVMg+YegwRe1SkWWWfF3-=4ZRmvciBZLkCy@mail.gmail.com>
+References: <AANLkTi=+2kVMg+YegwRe1SkWWWfF3-=4ZRmvciBZLkCy@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 16 Oct 2010 22:34:48 +0300
-Message-ID: <1287257688.1781.42.camel@brekeke>
+Date: Sat, 16 Oct 2010 22:37:22 +0300
+Message-ID: <1287257842.1781.43.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Mike Frysinger <vapier.adi@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,24 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-15 at 17:35 -0700, Brian Norris wrote:
-> The buffers used for dumping page and OOB data needed dynamic
-> allocation to help eliminate burdens for updating (i.e., every
-> time there's a new OOB size we don't have to increase the sizes).
+On Fri, 2010-10-15 at 12:29 +0100, David Peverley wrote:
+> Hi again...!
 > 
-> Also, there is no need to check flash chips for "standard sizes."
-> With recent changes to the printing codebase, we should be able to
-> handle arbitrary sizes with no problem.
+> I've also noticed after blindly copying it that in the DoC drivers
+> that the OOB reads use the ops->len for size :
+>     static int doc_read_oob(struct mtd_info *mtd, loff_t ofs,
+>                             struct mtd_oob_ops *ops)
+>         ...
+>         uint8_t *buf = ops->oobbuf;
+>         size_t len = ops->len;
+>         ...
 > 
-> More exit operations are now necessary on program failure, so
-> "goto closeall" is used more liberally.
+> Reading mtd.h and the following patch summary :
+>     http://www.mail-archive.com/git-commits-head@vger.kernel.org/msg03799.html
 > 
-> Also, common.h is included for the use of xmalloc.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> I suspect this is wrong and should be using ops->ooblen instead. This
+> is especially true given that mtdchar.c leaves ops->len
+> uninitialised....! (should mtdchar.c:mtd_do_readoob() not zero the ops
+> structure as it's a local automatic so not zero-initialised?) Again
+> this is copied in doc2001.c and doc2001plus.c.
 
-The patches look OK for me, but I'll wait a little in case there is
-going to be more review.
+If you can test the change - please send a patch.
 
 -- 
 Best Regards,
