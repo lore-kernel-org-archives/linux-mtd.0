@@ -1,23 +1,27 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7Cca-0003Mp-Ee
-	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:40:49 +0000
-Received: by bwz7 with SMTP id 7so2571849bwz.36
+	id 1P7DEB-000449-Tt
+	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 20:19:41 +0000
+Received: by ewy7 with SMTP id 7so1282096ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Oct 2010 12:40:47 -0700 (PDT)
-Subject: Re: [PATCH] [MTD] cfi_cmdset_0002: code cleanups
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <1287233782-21319-1-git-send-email-w.sang@pengutronix.de>
-References: <1287233782-21319-1-git-send-email-w.sang@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 16 Oct 2010 22:40:43 +0300
-Message-ID: <1287258043.1781.45.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Guillaume LECERF <glecerf@gmail.com>, yidong zhang <zhangyd6@gmail.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>
-Reply-To: dedekind1@gmail.com
+	Sat, 16 Oct 2010 13:19:36 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: dedekind1@gmail.com
+Subject: Re: Latest mkfs.jffs2 is broken.
+References: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
+	<1287123245.18576.2.camel@localhost>
+	<87pqvbetux.fsf@macbook.be.48ers.dk>
+	<1287132218.18576.12.camel@localhost>
+	<87lj5zet2y.fsf@macbook.be.48ers.dk> <1287244167.1781.2.camel@brekeke>
+Date: Sat, 16 Oct 2010 22:19:33 +0200
+In-Reply-To: <1287244167.1781.2.camel@brekeke> (Artem Bityutskiy's message of
+	"Sat, 16 Oct 2010 18:49:27 +0300")
+Message-ID: <878w1xevqi.fsf@macbook.be.48ers.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: H Hartley Sweeten <hartleys@visionengravers.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-10-16 at 14:56 +0200, Wolfram Sang wrote:
-> - remove disabled code (hasn't been touched since the beginning of git
->   and should be reimplemented if really needed)
-> - convert remaining c++-comments to plain c-style
-> 
-> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-> Cc: yidong zhang <zhangyd6@gmail.com>
-> Cc: Guillaume LECERF <glecerf@gmail.com>
-> Cc: David Woodhouse <David.Woodhouse@intel.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0002.c |   47 ++++++-----------------------------
->  1 files changed, 8 insertions(+), 39 deletions(-)
+>>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-Pushed to l2-mtd-2.6.git.
+Hi,
 
-Just FYI, we use "mtd:" prefix for MTD patches. Please, do not use [MTD]
-- git am kills it. I think [SUBSYSTEM] prefixes is some ancient pre-git
-era stuff. Modern way is to use "SUBSYSTEM:".
+ >> Great. An easy way to test:
+
+ Artem> Done. You can find v1.4.1 tag, tarball, and announcement in the "news"
+ Artem> section of the web site.
+
+Wow, a tarball right away - Thanks ;)
 
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Bye, Peter Korsgaard
