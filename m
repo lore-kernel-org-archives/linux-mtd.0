@@ -1,23 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P75w9-00018J-W1
-	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 12:32:37 +0000
-Received: by wwd20 with SMTP id 20so1550140wwd.18
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Oct 2010 05:32:30 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20101016100744.GA10815@pengutronix.de>
-References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
-	<20101016100744.GA10815@pengutronix.de>
-Date: Sat, 16 Oct 2010 20:25:44 +0800
-Message-ID: <AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
-Subject: Re: Re :Re: [Help] SST39VF6401B Support
-From: yidong zhang <zhangyd6@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, taliaferro62@gmail.com,
-	David.Woodhouse@intel.com, yegorslists@googlemail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P76JO-0001WV-Ca
+	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 12:56:35 +0000
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] cfi_cmdset_0002: code cleanups
+Date: Sat, 16 Oct 2010 14:56:22 +0200
+Message-Id: <1287233782-21319-1-git-send-email-w.sang@pengutronix.de>
+Cc: Guillaume LECERF <glecerf@gmail.com>, yidong zhang <zhangyd6@gmail.com>,
+	Wolfram Sang <w.sang@pengutronix.de>,
+	David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,70 +19,131 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-  Thanks for your reply. In the cfi_nopri_fixup_table, i added the
-below code as you did.
-{ CFI_MFR_SST, 0x236D, fixup_sst39vf_rev_b, NULL, }, // SST39VF6401B
-And the flash can get detected. But i still have one confusion.
-According to the  data sheets Table 6, in the 6th bus write cycle.
-39VF6401B uses 0x50 and 39VF6401 uses 0x30. If 39VF6401B uses 0x30 in
-the 6th bus write cycle, it will erase a block-size(64KByte). When you
-want to erase one sector-size(4KByte), the driver actually erases one
-block-size(64KByte).
+- remove disabled code (hasn't been touched since the beginning of git
+  and should be reimplemented if really needed)
+- convert remaining c++-comments to plain c-style
 
-On Sat, Oct 16, 2010 at 6:07 PM, Wolfram Sang <w.sang@pengutronix.de> wrote=
-:
-> Hi,
->
-> On Sat, Oct 16, 2010 at 03:08:46PM +0800, yidong zhang wrote:
->> hi
->>
->> >Just to apply the patch and see what happens. The most important part
->> >of this patch is:
->> >
->> >Please refer to the data sheets Table 6:
->> >39VF6401B data sheet http://www.sst.com/downloads/datasheet/S71288.pdf
->> >39VF6401 data sheet http://www.sst.com/downloads/datasheet/S71223-03.pd=
-f
->> >
->> >The difference in the 6th bus write cycle. 39VF6401B uses 0x50 and
->> >39VF6401 uses 0x30.
->> >
->> >Without this even if the chip gets detected you cannot write to it.
->> >
->> >I haven't look at this since my try to submit this patch, so I don't
->> >know how to fix the stuff for cfi_probe.
->>
->> =A0Recently, i use the 39VF6401B flash, and i apply your patch. The chip
->> can be get detected. But when i erase one sector, it use 0x30 to erase
->> one block. The size of a block is much bigger than a sector as we
->> know.So i use the JEDEC probe to detect the flash. And i make the
->> erase size to one block-erase size. And it works fine. So i think
->> the =A0chip(39VF6401B) =A0should not be CFI compliant, maybe the =A0JEDE=
-C
->> mode is better.
->
-> Please have a look at cfi_cmdset_0002.c, especially the table
-> cfi_nopri_fixup_table. Without verifying the details, I assume you just h=
-ave to
-> add the IDs there and then you can have CFI.
->
-> Kind regards,
->
-> =A0 Wolfram
->
-> --
-> Pengutronix e.K. =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | Wo=
-lfram Sang =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|
-> Industrial Linux Solutions =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | http://www.p=
-engutronix.de/ =A0|
->
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.9 (GNU/Linux)
->
-> iEYEARECAAYFAky5eXAACgkQD27XaX1/VRs0SwCfe5vFN1rR5mJ+c6agYoJPRYw2
-> OksAoJy1j0EZTRN0FYHyfWRONIbaOSZj
-> =3DMipu
-> -----END PGP SIGNATURE-----
->
->
+Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+Cc: yidong zhang <zhangyd6@gmail.com>
+Cc: Guillaume LECERF <glecerf@gmail.com>
+Cc: David Woodhouse <David.Woodhouse@intel.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   47 ++++++-----------------------------
+ 1 files changed, 8 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 3e6c47b..1934476 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -317,14 +317,14 @@ static void fixup_s29gl032n_sectors(struct mtd_info *mtd, void *param)
+ 
+ /* Used to fix CFI-Tables of chips without Extended Query Tables */
+ static struct cfi_fixup cfi_nopri_fixup_table[] = {
+-	{ CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, // SST39VF1602
+-	{ CFI_MFR_SST, 0x234B, fixup_sst39vf, NULL, }, // SST39VF1601
+-	{ CFI_MFR_SST, 0x235A, fixup_sst39vf, NULL, }, // SST39VF3202
+-	{ CFI_MFR_SST, 0x235B, fixup_sst39vf, NULL, }, // SST39VF3201
+-	{ CFI_MFR_SST, 0x235C, fixup_sst39vf_rev_b, NULL, }, // SST39VF3202B
+-	{ CFI_MFR_SST, 0x235D, fixup_sst39vf_rev_b, NULL, }, // SST39VF3201B
+-	{ CFI_MFR_SST, 0x236C, fixup_sst39vf_rev_b, NULL, }, // SST39VF6402B
+-	{ CFI_MFR_SST, 0x236D, fixup_sst39vf_rev_b, NULL, }, // SST39VF6401B
++	{ CFI_MFR_SST, 0x234A, fixup_sst39vf, NULL, }, /* SST39VF1602 */
++	{ CFI_MFR_SST, 0x234B, fixup_sst39vf, NULL, }, /* SST39VF1601 */
++	{ CFI_MFR_SST, 0x235A, fixup_sst39vf, NULL, }, /* SST39VF3202 */
++	{ CFI_MFR_SST, 0x235B, fixup_sst39vf, NULL, }, /* SST39VF3201 */
++	{ CFI_MFR_SST, 0x235C, fixup_sst39vf_rev_b, NULL, }, /* SST39VF3202B */
++	{ CFI_MFR_SST, 0x235D, fixup_sst39vf_rev_b, NULL, }, /* SST39VF3201B */
++	{ CFI_MFR_SST, 0x236C, fixup_sst39vf_rev_b, NULL, }, /* SST39VF6402B */
++	{ CFI_MFR_SST, 0x236D, fixup_sst39vf_rev_b, NULL, }, /* SST39VF6401B */
+ 	{ 0, 0, NULL, NULL }
+ };
+ 
+@@ -545,15 +545,6 @@ static struct mtd_info *cfi_amdstd_setup(struct mtd_info *mtd)
+ 		printk(KERN_WARNING "Sum of regions (%lx) != total size of set of interleaved chips (%lx)\n", offset, devsize);
+ 		goto setup_err;
+ 	}
+-#if 0
+-	// debug
+-	for (i=0; i<mtd->numeraseregions;i++){
+-		printk("%d: offset=0x%x,size=0x%x,blocks=%d\n",
+-		       i,mtd->eraseregions[i].offset,
+-		       mtd->eraseregions[i].erasesize,
+-		       mtd->eraseregions[i].numblocks);
+-	}
+-#endif
+ 
+ 	__module_get(THIS_MODULE);
+ 	register_reboot_notifier(&mtd->reboot_notifier);
+@@ -1025,9 +1016,6 @@ static inline int do_read_secsi_onechip(struct map_info *map, struct flchip *chi
+ 	mutex_lock(&chip->mutex);
+ 
+ 	if (chip->state != FL_READY){
+-#if 0
+-		printk(KERN_DEBUG "Waiting for chip to read, status = %d\n", chip->state);
+-#endif
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		add_wait_queue(&chip->wq, &wait);
+ 
+@@ -1035,10 +1023,6 @@ static inline int do_read_secsi_onechip(struct map_info *map, struct flchip *chi
+ 
+ 		schedule();
+ 		remove_wait_queue(&chip->wq, &wait);
+-#if 0
+-		if(signal_pending(current))
+-			return -EINTR;
+-#endif
+ 		timeo = jiffies + HZ;
+ 
+ 		goto retry;
+@@ -1246,9 +1230,6 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+ 		mutex_lock(&cfi->chips[chipnum].mutex);
+ 
+ 		if (cfi->chips[chipnum].state != FL_READY) {
+-#if 0
+-			printk(KERN_DEBUG "Waiting for chip to write, status = %d\n", cfi->chips[chipnum].state);
+-#endif
+ 			set_current_state(TASK_UNINTERRUPTIBLE);
+ 			add_wait_queue(&cfi->chips[chipnum].wq, &wait);
+ 
+@@ -1256,10 +1237,6 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 			schedule();
+ 			remove_wait_queue(&cfi->chips[chipnum].wq, &wait);
+-#if 0
+-			if(signal_pending(current))
+-				return -EINTR;
+-#endif
+ 			goto retry;
+ 		}
+ 
+@@ -1324,9 +1301,6 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+ 		mutex_lock(&cfi->chips[chipnum].mutex);
+ 
+ 		if (cfi->chips[chipnum].state != FL_READY) {
+-#if 0
+-			printk(KERN_DEBUG "Waiting for chip to write, status = %d\n", cfi->chips[chipnum].state);
+-#endif
+ 			set_current_state(TASK_UNINTERRUPTIBLE);
+ 			add_wait_queue(&cfi->chips[chipnum].wq, &wait);
+ 
+@@ -1334,10 +1308,6 @@ static int cfi_amdstd_write_words(struct mtd_info *mtd, loff_t to, size_t len,
+ 
+ 			schedule();
+ 			remove_wait_queue(&cfi->chips[chipnum].wq, &wait);
+-#if 0
+-			if(signal_pending(current))
+-				return -EINTR;
+-#endif
+ 			goto retry1;
+ 		}
+ 
+@@ -1396,7 +1366,6 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
+ 
+ 	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+ 	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
+-	//cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
+ 
+ 	/* Write Buffer Load */
+ 	map_write(map, CMD(0x25), cmd_adr);
+-- 
+1.7.1
