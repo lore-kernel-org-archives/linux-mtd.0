@@ -1,18 +1,19 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7C7h-0001gB-ID
-	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:08:54 +0000
-Received: by bwz7 with SMTP id 7so2558628bwz.36
+	id 1P7C9s-0001jX-7H
+	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:11:08 +0000
+Received: by bwz7 with SMTP id 7so2559691bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Oct 2010 12:08:51 -0700 (PDT)
-Subject: Re: [PATCH 1/2] nanddump: verify that start address is page aligned
+	Sat, 16 Oct 2010 12:11:07 -0700 (PDT)
+Subject: Re: [PATCH 2/2] nanddump: always check the first erase block
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Baruch Siach <baruch@tkos.co.il>
-In-Reply-To: <50168b5d486e28a9d7f7685537710e05242c4f12.1286871735.git.baruch@tkos.co.il>
+In-Reply-To: <c0bf28b432c6f1e6e5ed634ff64afcf46762503a.1286871735.git.baruch@tkos.co.il>
 References: <50168b5d486e28a9d7f7685537710e05242c4f12.1286871735.git.baruch@tkos.co.il>
+	<c0bf28b432c6f1e6e5ed634ff64afcf46762503a.1286871735.git.baruch@tkos.co.il>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 16 Oct 2010 22:08:47 +0300
-Message-ID: <1287256127.1781.32.camel@brekeke>
+Date: Sat, 16 Oct 2010 22:11:02 +0300
+Message-ID: <1287256262.1781.33.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,39 +28,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2010-10-12 at 10:23 +0200, Baruch Siach wrote:
-> Make nanddump consistent with nandwrite, which does not accept non page aligned
-> start addresses. Thus, non page aligned dumps are useless.
+> Check the first block even when start_addr is not eraseblock aligned.
 > 
 > Signed-off-by: Baruch Siach <baruch@tkos.co.il>
 > ---
->  nanddump.c |    6 ++++++
->  1 files changed, 6 insertions(+), 0 deletions(-)
-> 
-> diff --git a/nanddump.c b/nanddump.c
-> index 0fdf736..d6d1352 100644
-> --- a/nanddump.c
-> +++ b/nanddump.c
-> @@ -377,6 +377,12 @@ int main(int argc, char * const argv[])
->  	}
->  
->  	/* Initialize start/end addresses and block size */
-> +	if (start_addr & (meminfo.writesize - 1)) {
-> +		fprintf(stderr, "The start address is not page-aligned !\n"
-> +				"The pagesize of this NAND Flash is 0x%x.\n",
-> +				meminfo.writesize);
-> +		goto closeall;
-> +	}
+>  nanddump.c |    6 ++++--
+>  1 files changed, 4 insertions(+), 2 deletions(-)
 
-I'm fine with this change in general, but theoretically we may have a
-user who relies on this. Could you please instead print a warning but
-preserve the old behavior. Then in after the next release we can make
-remove the warning and turn it into an error, just like this patch do.
-This will potentially be user-friendly.
-
-Add a new record to the feature-removal-schedule.txt file. I'll then
-turn the warning into an error at some point.
-
-Thanks!
+Pushed to mtd-utils, thanks!
 
 -- 
 Best Regards,
