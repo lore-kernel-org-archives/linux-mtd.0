@@ -1,14 +1,15 @@
 Received: from smtp.gentoo.org ([140.211.166.183])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7FDn-0007J3-UW
-	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 22:27:25 +0000
+	id 1P7FHo-0007RH-Kh
+	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 22:31:33 +0000
 From: Mike Frysinger <vapier@gentoo.org>
 To: linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: Blackfin NFC: fix badblock location with BootROM OOB
-Date: Sat, 16 Oct 2010 18:26:59 -0400
-Message-Id: <1287268019-9426-1-git-send-email-vapier@gentoo.org>
-Cc: uclinux-dist-devel@blackfin.uclinux.org
+Subject: [PATCH] mtd/maps: gpio-addr-flash: fix warnings and make more portable
+Date: Sat, 16 Oct 2010 18:31:14 -0400
+Message-Id: <1287268274-9750-1-git-send-email-vapier@gentoo.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+	Alan Cox <alan@linux.intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,54 +19,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The bbt structure isn't actually used, just the badblockpos.  This lets
-the driver correctly handle badblocks with the different OOB layout with
-certain sized flashes.  Previously, the blocks would all be reported as
-bad and be completely unusable.
+As reported on lkml, building this module for HIMEM systems spews warnings
+about mismatch in pointer types.  Further, we need to use ioremap() in order
+to properly access the flash memory on most systems rather than just doing
+it directly.
 
+Reported-by: Alan Cox <alan@linux.intel.com>
 Signed-off-by: Mike Frysinger <vapier@gentoo.org>
 ---
- drivers/mtd/nand/bf5xx_nand.c |   14 ++++----------
- 1 files changed, 4 insertions(+), 10 deletions(-)
+ drivers/mtd/maps/gpio-addr-flash.c |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 6fbeefa..79947be 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -110,15 +110,6 @@ static const unsigned short bfin_nfc_pin_req[] =
- 	 0};
+diff --git a/drivers/mtd/maps/gpio-addr-flash.c b/drivers/mtd/maps/gpio-addr-flash.c
+index 32e89d7..af5707a 100644
+--- a/drivers/mtd/maps/gpio-addr-flash.c
++++ b/drivers/mtd/maps/gpio-addr-flash.c
+@@ -208,10 +208,14 @@ static int __devinit gpio_flash_probe(struct platform_device *pdev)
+ 	if (!state)
+ 		return -ENOMEM;
  
- #ifdef CONFIG_MTD_NAND_BF5XX_BOOTROM_ECC
--static uint8_t bbt_pattern[] = { 0xff };
--
--static struct nand_bbt_descr bootrom_bbt = {
--	.options = 0,
--	.offs = 63,
--	.len = 1,
--	.pattern = bbt_pattern,
--};
--
- static struct nand_ecclayout bootrom_ecclayout = {
- 	.eccbytes = 24,
- 	.eccpos = {
-@@ -809,7 +800,6 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
- 	/* setup hardware ECC data struct */
- 	if (hardware_ecc) {
- #ifdef CONFIG_MTD_NAND_BF5XX_BOOTROM_ECC
--		chip->badblock_pattern = &bootrom_bbt;
- 		chip->ecc.layout = &bootrom_ecclayout;
- #endif
- 		chip->read_buf      = bf5xx_nand_dma_read_buf;
-@@ -830,6 +820,10 @@ static int __devinit bf5xx_nand_probe(struct platform_device *pdev)
- 		goto out_err_nand_scan;
- 	}
++	/*
++	 * We cast start/end to known types in the boards file, so cast
++	 * away their pointer types here to the known types (gpios->xxx).
++	 */
+ 	state->gpio_count     = gpios->end;
+-	state->gpio_addrs     = (void *)gpios->start;
++	state->gpio_addrs     = (void *)(unsigned long)gpios->start;
+ 	state->gpio_values    = (void *)(state + 1);
+-	state->win_size       = memory->end - memory->start + 1;
++	state->win_size       = resource_size(memory);
+ 	memset(state->gpio_values, 0xff, arr_size);
  
-+#ifdef CONFIG_MTD_NAND_BF5XX_BOOTROM_ECC
-+	chip->badblockpos = 63;
-+#endif
-+
- 	/* add NAND partition */
- 	bf5xx_nand_add_partition(info);
+ 	state->map.name       = DRIVER_NAME;
+@@ -221,7 +225,7 @@ static int __devinit gpio_flash_probe(struct platform_device *pdev)
+ 	state->map.copy_to    = gf_copy_to;
+ 	state->map.bankwidth  = pdata->width;
+ 	state->map.size       = state->win_size * (1 << state->gpio_count);
+-	state->map.virt       = (void __iomem *)memory->start;
++	state->map.virt       = ioremap_nocache(memory->start, state->map.size);
+ 	state->map.phys       = NO_XIP;
+ 	state->map.map_priv_1 = (unsigned long)state;
  
 -- 
 1.7.3.1
