@@ -1,21 +1,22 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7CZM-00038h-78
-	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:37:28 +0000
-Received: by bwz7 with SMTP id 7so2570436bwz.36
+	id 1P7Cca-0003Mp-Ee
+	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:40:49 +0000
+Received: by bwz7 with SMTP id 7so2571849bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Oct 2010 12:37:27 -0700 (PDT)
-Subject: Re: Understanding OOB data read implementation (II)
+	Sat, 16 Oct 2010 12:40:47 -0700 (PDT)
+Subject: Re: [PATCH] [MTD] cfi_cmdset_0002: code cleanups
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Peverley <pev@sketchymonkey.com>
-In-Reply-To: <AANLkTi=+2kVMg+YegwRe1SkWWWfF3-=4ZRmvciBZLkCy@mail.gmail.com>
-References: <AANLkTi=+2kVMg+YegwRe1SkWWWfF3-=4ZRmvciBZLkCy@mail.gmail.com>
+To: Wolfram Sang <w.sang@pengutronix.de>
+In-Reply-To: <1287233782-21319-1-git-send-email-w.sang@pengutronix.de>
+References: <1287233782-21319-1-git-send-email-w.sang@pengutronix.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 16 Oct 2010 22:37:22 +0300
-Message-ID: <1287257842.1781.43.camel@brekeke>
+Date: Sat, 16 Oct 2010 22:40:43 +0300
+Message-ID: <1287258043.1781.45.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Guillaume LECERF <glecerf@gmail.com>, yidong zhang <zhangyd6@gmail.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <David.Woodhouse@intel.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,28 +27,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-15 at 12:29 +0100, David Peverley wrote:
-> Hi again...!
+On Sat, 2010-10-16 at 14:56 +0200, Wolfram Sang wrote:
+> - remove disabled code (hasn't been touched since the beginning of git
+>   and should be reimplemented if really needed)
+> - convert remaining c++-comments to plain c-style
 > 
-> I've also noticed after blindly copying it that in the DoC drivers
-> that the OOB reads use the ops->len for size :
->     static int doc_read_oob(struct mtd_info *mtd, loff_t ofs,
->                             struct mtd_oob_ops *ops)
->         ...
->         uint8_t *buf = ops->oobbuf;
->         size_t len = ops->len;
->         ...
-> 
-> Reading mtd.h and the following patch summary :
->     http://www.mail-archive.com/git-commits-head@vger.kernel.org/msg03799.html
-> 
-> I suspect this is wrong and should be using ops->ooblen instead. This
-> is especially true given that mtdchar.c leaves ops->len
-> uninitialised....! (should mtdchar.c:mtd_do_readoob() not zero the ops
-> structure as it's a local automatic so not zero-initialised?) Again
-> this is copied in doc2001.c and doc2001plus.c.
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: yidong zhang <zhangyd6@gmail.com>
+> Cc: Guillaume LECERF <glecerf@gmail.com>
+> Cc: David Woodhouse <David.Woodhouse@intel.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c |   47 ++++++-----------------------------
+>  1 files changed, 8 insertions(+), 39 deletions(-)
 
-If you can test the change - please send a patch.
+Pushed to l2-mtd-2.6.git.
+
+Just FYI, we use "mtd:" prefix for MTD patches. Please, do not use [MTD]
+- git am kills it. I think [SUBSYSTEM] prefixes is some ancient pre-git
+era stuff. Modern way is to use "SUBSYSTEM:".
 
 -- 
 Best Regards,
