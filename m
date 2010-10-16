@@ -1,21 +1,24 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7CQg-0002h8-H6
-	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:28:31 +0000
-Received: by bwz7 with SMTP id 7so2566472bwz.36
+	id 1P7CWs-0002xw-Lo
+	for linux-mtd@lists.infradead.org; Sat, 16 Oct 2010 19:34:55 +0000
+Received: by bwz7 with SMTP id 7so2569106bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Oct 2010 12:28:28 -0700 (PDT)
-Subject: Re: [PATCH 1/3] mtd-utils: nanddump/nandwrite: Style fixups
+	Sat, 16 Oct 2010 12:34:53 -0700 (PDT)
+Subject: Re: [PATCH v2 2/3] mtd-utils: nanddump: Dynamic buffer, increase
+	pagesize/oobsize
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1287128665-6573-1-git-send-email-computersforpeace@gmail.com>
-References: <1287128665-6573-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1287189331-9475-1-git-send-email-computersforpeace@gmail.com>
+References: <AANLkTi%3DXdvN2vGu7Z5M7jj%3Dz_qrx%3D9F93WiDnPYkcDgY@mail.gmail.com>
+	<1287189331-9475-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 16 Oct 2010 22:28:25 +0300
-Message-ID: <1287257305.1781.40.camel@brekeke>
+Date: Sat, 16 Oct 2010 22:34:48 +0300
+Message-ID: <1287257688.1781.42.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,14 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-15 at 00:44 -0700, Brian Norris wrote:
+On Fri, 2010-10-15 at 17:35 -0700, Brian Norris wrote:
+> The buffers used for dumping page and OOB data needed dynamic
+> allocation to help eliminate burdens for updating (i.e., every
+> time there's a new OOB size we don't have to increase the sizes).
+> 
+> Also, there is no need to check flash chips for "standard sizes."
+> With recent changes to the printing codebase, we should be able to
+> handle arbitrary sizes with no problem.
+> 
+> More exit operations are now necessary on program failure, so
+> "goto closeall" is used more liberally.
+> 
+> Also, common.h is included for the use of xmalloc.
+> 
 > Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  nanddump.c  |   58 ++++++++++++++----------------
->  nandwrite.c |  114 +++++++++++++++++++++++++++++------------------------------
->  2 files changed, 83 insertions(+), 89 deletions(-)
 
-Pushed to mtd-utils.git, thanks!
+The patches look OK for me, but I'll wait a little in case there is
+going to be more review.
 
 -- 
 Best Regards,
