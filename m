@@ -1,27 +1,16 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7Xto-0006yW-SH
-	for linux-mtd@lists.infradead.org; Sun, 17 Oct 2010 18:24:01 +0000
-Received: by fxm15 with SMTP id 15so98977fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 Oct 2010 11:23:58 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] mtd-utils: nanddump: Dynamic buffer, increase
-	pagesize/oobsize
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1287338610.1781.67.camel@brekeke>
-References: <AANLkTi%3DXdvN2vGu7Z5M7jj%3Dz_qrx%3D9F93WiDnPYkcDgY@mail.gmail.com>
-	<1287189331-9475-1-git-send-email-computersforpeace@gmail.com>
-	<1287302434.1951.2.camel@localhost>  <4CBB21F4.4030105@gmail.com>
-	<1287338610.1781.67.camel@brekeke>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 17 Oct 2010 21:23:55 +0300
-Message-ID: <1287339835.1781.68.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Mike Frysinger <vapier.adi@gmail.com>
-Reply-To: dedekind1@gmail.com
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P7YBp-0007Iz-92
+	for linux-mtd@lists.infradead.org; Sun, 17 Oct 2010 18:42:38 +0000
+From: Julia Lawall <julia@diku.dk>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 3/3] fs/jffs2/dir.c: Use kasprintf
+Date: Sun, 17 Oct 2010 20:48:31 +0200
+Message-Id: <1287341311-11161-4-git-send-email-julia@diku.dk>
+In-Reply-To: <1287341311-11161-1-git-send-email-julia@diku.dk>
+References: <1287341311-11161-1-git-send-email-julia@diku.dk>
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-10-17 at 21:03 +0300, Artem Bityutskiy wrote:
-> On Sun, 2010-10-17 at 09:19 -0700, Brian Norris wrote:
-> > On 10/17/2010 1:00 AM, Artem Bityutskiy wrote:
-> > > Patches did not apply cleanly, but I've resolved conflicts an pushed
-> > > them, thank you.
-> > 
-> > Perhaps this is because (as far as I can tell) you didn't actually push
-> > the first one (style fixups) like you said you did? :) I can rebase it
-> > and resend if that's a problem.
-> 
-> Uhhh, I'll sort it out, apologies.
+Convert a sequence of kmalloc and memcpy to use kasprintf.  The argument is
+checked for being a string by the presence of a previous call to strlen.
 
-Done. Now pushed for real.
+The semantic patch that performs this transformation is:
+(http://coccinelle.lip6.fr/)
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+// <smpl>
+@@
+expression a,flag,len;
+expression arg,e1,e2;
+statement S;
+@@
+
+  len = strlen(arg)
+  ... when != len = e1
+      when != arg = e2
+  a =
+-  \(kmalloc\|kzalloc\)(len+1,flag)
++  kasprintf(flag,"%s",arg)
+  <... when != a
+  if (a == NULL || ...) S
+  ...>
+- memcpy(a,arg,len+1);
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
+
+---
+ fs/jffs2/dir.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index ed78a3c..8ee5675 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -367,7 +367,7 @@ static int jffs2_symlink (struct inode *dir_i, struct dentry *dentry, const char
+ 	}
+ 
+ 	/* We use f->target field to store the target path. */
+-	f->target = kmalloc(targetlen + 1, GFP_KERNEL);
++	f->target = kasprintf(GFP_KERNEL, "%s", target);
+ 	if (!f->target) {
+ 		printk(KERN_WARNING "Can't allocate %d bytes of memory\n", targetlen + 1);
+ 		mutex_unlock(&f->sem);
+@@ -376,7 +376,6 @@ static int jffs2_symlink (struct inode *dir_i, struct dentry *dentry, const char
+ 		goto fail;
+ 	}
+ 
+-	memcpy(f->target, target, targetlen + 1);
+ 	D1(printk(KERN_DEBUG "jffs2_symlink: symlink's target '%s' cached\n", (char *)f->target));
+ 
+ 	/* No data here. Only a metadata node, which will be
