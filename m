@@ -1,22 +1,22 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7OH2-0004Lp-6c
-	for linux-mtd@lists.infradead.org; Sun, 17 Oct 2010 08:07:20 +0000
-Received: by bwz7 with SMTP id 7so2808205bwz.36
+	id 1P7OzA-00054q-UB
+	for linux-mtd@lists.infradead.org; Sun, 17 Oct 2010 08:52:57 +0000
+Received: by bwz7 with SMTP id 7so2823648bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 Oct 2010 01:07:19 -0700 (PDT)
-Subject: Re: [PATCH] mtd-utils: flash_erase: Fix output of offsets
+	Sun, 17 Oct 2010 01:52:55 -0700 (PDT)
+Subject: Re: [PATCH] mtd: Blackfin NFC: fix badblock location with BootROM OOB
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1287262445-19654-1-git-send-email-computersforpeace@gmail.com>
-References: <1287262445-19654-1-git-send-email-computersforpeace@gmail.com>
+To: Mike Frysinger <vapier@gentoo.org>
+In-Reply-To: <1287268019-9426-1-git-send-email-vapier@gentoo.org>
+References: <1287268019-9426-1-git-send-email-vapier@gentoo.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 17 Oct 2010 11:04:15 +0300
-Message-ID: <1287302655.1951.3.camel@localhost>
+Date: Sun, 17 Oct 2010 11:49:51 +0300
+Message-ID: <1287305391.1951.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
-	linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	uclinux-dist-devel@blackfin.uclinux.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,30 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-10-16 at 13:54 -0700, Brian Norris wrote:
-> Need to use unsigned arithmetic and a 64-bit cast in order to
-> calculate and output the correct offset for eraseblocks at large
-> offsets. Signed integer arithmetic does not produce the correct
-> result "uint64_t" result, so for offsets over 2GB we get
-> messages like:
+On Sat, 2010-10-16 at 18:26 -0400, Mike Frysinger wrote:
+> The bbt structure isn't actually used, just the badblockpos.  This lets
+> the driver correctly handle badblocks with the different OOB layout with
+> certain sized flashes.  Previously, the blocks would all be reported as
+> bad and be completely unusable.
 > 
-> 	Erasing 512 Kibyte @ ffffffff83180000 -- 4308642136 % complete.
-> 
-> Note that this error was not affecting proper erasure; it just
-> produced incorrect status messages.
-> 
-> Also, we should not add an extra eraseblock for the final status
-> message; this gives misleading output when, for example, the
-> following statement is executed:
-> 
-> 	$ flash_erase /dev/mtd0 0 1
-> 	Erasing 512 Kibyte @ 80000 -- 100 % complete
-> 
-> We aren't erasing at offset 0x80000; it should display offset 0.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+> ---
+>  drivers/mtd/nand/bf5xx_nand.c |   14 ++++----------
+>  1 files changed, 4 insertions(+), 10 deletions(-)
 
-Pushed, thanks!
+Taken both patches to l2-mtd-2.6.git.
 
 -- 
 Best Regards,
