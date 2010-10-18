@@ -1,25 +1,18 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7gu1-0007gP-TU
-	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 04:00:50 +0000
-Received: by ewy7 with SMTP id 7so318430ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 Oct 2010 21:00:47 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20101016131752.GA2676@pengutronix.de>
-References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
-	<20101016100744.GA10815@pengutronix.de>
-	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
-	<20101016131752.GA2676@pengutronix.de>
-Date: Mon, 18 Oct 2010 12:00:46 +0800
-Message-ID: <AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
-Subject: Re: Re :Re: [Help] SST39VF6401B Support
-From: yidong zhang <zhangyd6@gmail.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, glecerf@gmail.com, taliaferro62@gmail.com,
-	David.Woodhouse@intel.com, yegorslists@googlemail.com
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P7iXQ-0001ks-4L
+	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 05:45:37 +0000
+Received: from vaebh106.NOE.Nokia.com (vaebh106.europe.nokia.com
+	[10.160.244.32])
+	by mgw-mx03.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	o9I5jVjM004228
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Oct 2010 08:45:32 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Subject: [PATCH 1/2] UBIFS: remove a bit of unneeded code
+Date: Mon, 18 Oct 2010 08:46:08 +0300
+Message-Id: <1287380769-8250-1-git-send-email-dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,49 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi
-   The 39VF*-B-Version flashes in the cfi_nopri_fixup_table don't work
-well in the current code.  Because of the mistaken use of
-command(0x30) in the 6th bus cycle, which should be 0x50. I think the
-39VF*-B-Version flashes should be removed form the CFI probe mode. Or
-maybe the erase operation should be changed for the Compatibility.
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-On Sat, Oct 16, 2010 at 9:17 PM, Wolfram Sang <w.sang@pengutronix.de> wrote=
-:
-> On Sat, Oct 16, 2010 at 08:25:44PM +0800, yidong zhang wrote:
->> Hi
->> =A0 Thanks for your reply. In the cfi_nopri_fixup_table, i added the
->> below code as you did.
->> { CFI_MFR_SST, 0x236D, fixup_sst39vf_rev_b, NULL, }, // SST39VF6401B
->
-> OK, please just use C-style comments (I just sent another patch
-> converting the others). Also, would be nice if you could check the
-> datasheet for other IDs mentioned there and add them, too.
->
->> And the flash can get detected. But i still have one confusion.
->> According to the =A0data sheets Table 6, in the 6th bus write cycle.
->> 39VF6401B uses 0x50 and 39VF6401 uses 0x30. If 39VF6401B uses 0x30 in
->
-> Ouch! Is this true for the other 39VF*-non-B and B-versions, too?
->
-> Adding Guillaume to CC...
->
-> Regards,
->
-> =A0 Wolfram
->
-> --
-> Pengutronix e.K. =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | Wo=
-lfram Sang =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|
-> Industrial Linux Solutions =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 | http://www.p=
-engutronix.de/ =A0|
->
-> -----BEGIN PGP SIGNATURE-----
-> Version: GnuPG v1.4.10 (GNU/Linux)
->
-> iEYEARECAAYFAky5pgAACgkQD27XaX1/VRuEjQCeNCz+zi5WcYZkPqs2e5qPHn2C
-> 4dYAn20dlxN5m+SdRDqtaspFiEFR0KAY
-> =3Dq/e2
-> -----END PGP SIGNATURE-----
->
->
+This is a clean-up patch which:
+
+1. Removes explicite 'hrtimer_cancel()' after 'ubifs_wbuf_sync()' in
+   'ubifs_remount_ro()', because the timers will be canceled by
+   'ubifs_wbuf_sync()', no need to cancel them for the second time.
+2. Remove "if (c->jheads)" check from 'ubifs_put_super()', because
+   at journal heads must always be allocated there, since we checked
+   earlier that we were mounted R/W, and the olny situation when
+   journal heads are not allocated is when mounter or re-mounted R/O.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/super.c |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index bb6ed5d..6ff2f80 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1686,10 +1686,8 @@ static void ubifs_remount_ro(struct ubifs_info *c)
+ 
+ 	dbg_save_space_info(c);
+ 
+-	for (i = 0; i < c->jhead_cnt; i++) {
++	for (i = 0; i < c->jhead_cnt; i++)
+ 		ubifs_wbuf_sync(&c->jheads[i].wbuf);
+-		hrtimer_cancel(&c->jheads[i].wbuf.timer);
+-	}
+ 
+ 	c->mst_node->flags &= ~cpu_to_le32(UBIFS_MST_DIRTY);
+ 	c->mst_node->flags |= cpu_to_le32(UBIFS_MST_NO_ORPHS);
+@@ -1754,9 +1752,8 @@ static void ubifs_put_super(struct super_block *sb)
+ 			int err;
+ 
+ 			/* Synchronize write-buffers */
+-			if (c->jheads)
+-				for (i = 0; i < c->jhead_cnt; i++)
+-					ubifs_wbuf_sync(&c->jheads[i].wbuf);
++			for (i = 0; i < c->jhead_cnt; i++)
++				ubifs_wbuf_sync(&c->jheads[i].wbuf);
+ 
+ 			/*
+ 			 * We are being cleanly unmounted which means the
+-- 
+1.7.2.3
