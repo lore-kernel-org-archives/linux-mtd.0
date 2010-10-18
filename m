@@ -1,27 +1,22 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7mt9-0001lF-R7
-	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 10:24:21 +0000
-Received: by fxm15 with SMTP id 15so463187fxm.36
+	id 1P7n34-0002bX-6H
+	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 10:34:35 +0000
+Received: by fxm15 with SMTP id 15so469391fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Oct 2010 03:24:17 -0700 (PDT)
-Subject: Re: RE : UBI/UBIFS interrupted write page handling
+	Mon, 18 Oct 2010 03:34:32 -0700 (PDT)
+Subject: Re: [PATCH] nanddump: warn when the start address is not page aligned
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4CA9D2A0.6010508@parrot.com>
-References: <4C88DDD5.4060507@parrot.com>
-	<1284054669.11335.21.camel@brekeke> <1285006478.1762.1.camel@brekeke>
-	<4C9B7CD8.4070806@parrot.com>,<1285266914.1766.1.camel@brekeke>
-	<F5C24FC168F95048BB6B9E0B13EB33152BA6F5304E@DIAMANT.xi-lite.lan>
-	<1285523911.1776.9.camel@brekeke> <1285657088.2437.23.camel@localhost>
-	<4CA19DAE.7030402@parrot.com> <1285660934.2437.44.camel@localhost>
-	<4CA9D2A0.6010508@parrot.com>
+To: Baruch Siach <baruch@tkos.co.il>
+In-Reply-To: <1909cbad57553279212f156a0c7cb20178981909.1287386497.git.baruch@tkos.co.il>
+References: <1287256127.1781.32.camel@brekeke>
+	<1909cbad57553279212f156a0c7cb20178981909.1287386497.git.baruch@tkos.co.il>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 18 Oct 2010 13:21:13 +0300
-Message-ID: <1287397273.1972.37.camel@localhost>
+Date: Mon, 18 Oct 2010 13:31:29 +0300
+Message-ID: <1287397889.1972.46.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,29 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-04 at 15:12 +0200, Matthieu CASTET wrote:
-> Artem Bityutskiy a écrit :
-> > On Tue, 2010-09-28 at 09:47 +0200, Matthieu CASTET wrote:
-> >> Artem Bityutskiy a écrit :
-> >>> On Sun, 2010-09-26 at 20:58 +0300, Artem Bityutskiy wrote:
-> >>>
-> >> That's better : interrupt erased page are not put anymore in corrupted list.
-> >> But I have problem with interrupt write :
-> >> this night the test crashed [1].
-> > 
-> > Yeah, this should be fixed by forcing LEB refresh for the last LEBs of
-> > journal heads. This problem exists long time. I'll work on this and send
-> > you patches.
-> UBI will need also some patch.
-> For example in case of wear leveling, ubi could move a leb from a peb to 
-> another and the write can be interrupted.
+On Mon, 2010-10-18 at 09:23 +0200, Baruch Siach wrote:
+> nanddump should be consistent with nandwrite, which does not accept non page
+> aligned start addresses. Thus, non page aligned dumps are useless.
+> 
+> To ease migration only warn for now. Add the plan of making this an error to
+> feature-removal-schedule.txt.
+> 
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> ---
+>  feature-removal-schedule.txt |   12 +++++++++++-
+>  nanddump.c                   |    7 +++++++
+>  2 files changed, 18 insertions(+), 1 deletions(-)
+> 
+> diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
+> index 21bc8d4..f4ed2a3 100644
+> --- a/feature-removal-schedule.txt
+> +++ b/feature-removal-schedule.txt
+> @@ -27,5 +27,15 @@ So the plan is (to be done by Artem Bityutskiy):
+>  3.1 adding a warning to make users stop using them
+>  3.2 removing both options.
+>  ---------------------------
+> -2.
+> +2. nanddump: fail when the -s parameter is not page aligned
+> +
+> +nanddump should be consistent with nandwrite, and refuse accepting non page 
+> +aligned start addresses. These dumps are most likely useless, since nandwrite 
+> +won't write then at this location. Currently only a warning is issued to keep 
+> +backward compatibility during a transition period. This should become an error 
+> +after 1.5.0.
 
-Hmm, yeah, we have CRC in this case and we rely on CRC. However, if the
-write to the last page was interrupted, it can be unstable and can
-sometimes be read correctly, but sometimes incorrectly. So UBI should
-refresh such PEBs.
+I tweaked this and removed 1.5.0 - it is better to not specify exact
+version. Also, fixed the following trailing white-spaces issue for the
+feature-removal-schedule.txt part:
 
-I guess it is easier to start with UBI first.
+Applying: nanddump: warn when the start address is not page aligned
+/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:17: trailing whitespace.
+nanddump should be consistent with nandwrite, and refuse accepting non page 
+/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:18: trailing whitespace.
+aligned start addresses. These dumps are most likely useless, since nandwrite 
+/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:19: trailing whitespace.
+won't write then at this location. Currently only a warning is issued to keep 
+/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:20: trailing whitespace.
+backward compatibility during a transition period. This should become an error 
+warning: 4 lines add whitespace errors.
+
+And pushed, thanks.
 
 -- 
 Best Regards,
