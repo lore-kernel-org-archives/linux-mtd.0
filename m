@@ -1,38 +1,27 @@
-Received: from tx2ehsobe002.messaging.microsoft.com ([65.55.88.12]
-	helo=TX2EHSOBE004.bigfish.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7sES-0003o0-3f
-	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 16:06:40 +0000
-Received: from mail173-tx2 (localhost.localdomain [127.0.0.1])	by
-	mail173-tx2-R.bigfish.com (Postfix) with ESMTP id 95CB58A8618	for
-	<linux-mtd@lists.infradead.org>; Mon, 18 Oct 2010 16:06:38 +0000 (UTC)
-Received: from TX2EHSMHS012.bigfish.com (unknown [10.9.14.250])	by
-	mail173-tx2.bigfish.com (Postfix) with ESMTP id E0212F80058	for
-	<linux-mtd@lists.infradead.org>; Mon, 18 Oct 2010 16:06:37 +0000 (UTC)
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by az33egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
-	o9IG6YFJ011368	for
-	<linux-mtd@lists.infradead.org>; Mon, 18 Oct 2010 09:06:34 -0700 (MST)
-Received: from az33exm25.fsl.freescale.net (az33exm25.am.freescale.net
-	[10.64.32.16])	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id
-	o9IGMvIM023311	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Oct 2010 11:22:57 -0500 (CDT)
-Date: Mon, 18 Oct 2010 11:06:31 -0500
-From: Scott Wood <scottwood@freescale.com>
-To: tiejun.chen <tiejun.chen@windriver.com>
-Subject: Re: [PATCH 1/2] P4080/eLBC: Make Freescale elbc interrupt common to
-	elbc	devices
-Message-ID: <20101018110631.22d6f081@udp111988uds.am.freescale.net>
-In-Reply-To: <4CBC0B95.9010300@windriver.com>
-References: <1287386552-10647-1-git-send-email-tie-fei.zang@freescale.com>
-	<4CBC0B95.9010300@windriver.com>
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P7wga-0006sU-Gg
+	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 20:52:02 +0000
+Received: by ewy7 with SMTP id 7so1014788ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 18 Oct 2010 13:51:52 -0700 (PDT)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: dedekind1@gmail.com
+Subject: Re: Latest mkfs.jffs2 is broken.
+References: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
+	<1287123245.18576.2.camel@localhost>
+	<87pqvbetux.fsf@macbook.be.48ers.dk>
+	<1287132218.18576.12.camel@localhost>
+	<87lj5zet2y.fsf@macbook.be.48ers.dk> <1287244167.1781.2.camel@brekeke>
+Date: Mon, 18 Oct 2010 22:51:48 +0200
+In-Reply-To: <1287244167.1781.2.camel@brekeke> (Artem Bityutskiy's message of
+	"Sat, 16 Oct 2010 18:49:27 +0300")
+Message-ID: <871v7n442j.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-Cc: B07421@freescale.com, dedekind1@gmail.com, dwmw2@infradead.org,
-	B25806@freescale.com, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
-	Roy Zang <tie-fei.zang@freescale.com>, B11780@freescale.com
+Content-Type: text/plain; charset=us-ascii
+Cc: H Hartley Sweeten <hartleys@visionengravers.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,18 +31,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 18 Oct 2010 16:55:49 +0800
-"tiejun.chen" <tiejun.chen@windriver.com> wrote:
+>>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 
-> Looks you always iounmap(fsl_lbc_ctrl_dev->regs) on position 'err' but here
-> of_iomap() is already failed you should skip iounmap() fsl_lbc_ctrl_dev->regs
-> again. So you should improve that as the following on 'err', or layout 'err' in
-> gain.
-> ------
-> 	if(fsl_lbc_ctrl_dev->regs)
-> 		iounmap(fsl_lbc_ctrl_dev->regs);
-> 
+ Artem> On Fri, 2010-10-15 at 10:52 +0200, Peter Korsgaard wrote:
+ >> >>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
+ >> 
+ >> >> Artem: Time for a v1.4.1 release?
+ >> 
+ Artem> Thanks. If it works, I'll back-port Mike's patch to 1.4.0 and tag it as
+ Artem> 1.4.1. So 1.4.1 won't include tons of irrelevant commits.
+ >> 
+ >> Great. An easy way to test:
 
-It looks like iounmap(NULL) is a no-op, just like kfree(NULL).
+ Artem> Done. You can find v1.4.1 tag, tarball, and announcement in the "news"
+ Artem> section of the web site.
 
--Scott
+Thanks, but the 1.4.1 tarball is screwed - It contains a bunch of build
+files which breaks the build if they aren't removed first.
+
+diff -urpN mtd-utils-1.4.?|diffstat
+ compr_zlib.c                       |    2 
+ cscope.out                         |314340 +++++++++++++++++++++++++++++++++++++
+ jffs2reader.c                      |    1 
+ mkfs.jffs2.c                       |   49 
+ mkfs.ubifs/compr.c                 |    1 
+ tests/fs-tests/lib/tests.o         |binary
+ tests/ubi-tests/.common.c.dep      |   38 
+ tests/ubi-tests/.integ.c.dep       |   38 
+ tests/ubi-tests/.io_basic.c.dep    |   33 
+ tests/ubi-tests/.io_paral.c.dep    |   32 
+ tests/ubi-tests/.io_read.c.dep     |   33 
+ tests/ubi-tests/.io_update.c.dep   |   33 
+ tests/ubi-tests/.mkvol_bad.c.dep   |   24 
+ tests/ubi-tests/.mkvol_basic.c.dep |   24 
+ tests/ubi-tests/.mkvol_paral.c.dep |   27 
+ tests/ubi-tests/.rsvol.c.dep       |   33 
+ tests/ubi-tests/.volrefcnt.c.dep   |   31 
+ tests/ubi-tests/common.o           |binary
+ tests/ubi-tests/integ              |binary
+ tests/ubi-tests/io_basic           |binary
+ tests/ubi-tests/io_paral           |binary
+ tests/ubi-tests/io_read            |binary
+ tests/ubi-tests/io_update          |binary
+ tests/ubi-tests/libubi.a           |binary
+ tests/ubi-tests/libubi.o           |binary
+ tests/ubi-tests/mkvol_bad          |binary
+ tests/ubi-tests/mkvol_basic        |binary
+ tests/ubi-tests/mkvol_paral        |binary
+ tests/ubi-tests/rsvol              |binary
+ tests/ubi-tests/volrefcnt          |binary
+ ubi-utils/cscope.out               |164861 +++++++++++++++++++
+ ubi-utils/libmtd.a                 |binary
+ 32 files changed, 479573 insertions(+), 27 deletions(-)
+
+Care to fix that?
+
+-- 
+Bye, Peter Korsgaard
