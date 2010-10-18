@@ -1,23 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7n34-0002bX-6H
-	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 10:34:35 +0000
-Received: by fxm15 with SMTP id 15so469391fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Oct 2010 03:34:32 -0700 (PDT)
-Subject: Re: [PATCH] nanddump: warn when the start address is not page aligned
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Baruch Siach <baruch@tkos.co.il>
-In-Reply-To: <1909cbad57553279212f156a0c7cb20178981909.1287386497.git.baruch@tkos.co.il>
-References: <1287256127.1781.32.camel@brekeke>
-	<1909cbad57553279212f156a0c7cb20178981909.1287386497.git.baruch@tkos.co.il>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 18 Oct 2010 13:31:29 +0300
-Message-ID: <1287397889.1972.46.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P7o5U-0005jX-5N
+	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 11:41:09 +0000
+Date: Mon, 18 Oct 2010 13:41:04 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: yidong zhang <zhangyd6@gmail.com>
+Subject: Re: Re :Re: [Help] SST39VF6401B Support
+Message-ID: <20101018114104.GC15440@pengutronix.de>
+References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
+	<20101016100744.GA10815@pengutronix.de>
+	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
+	<20101016131752.GA2676@pengutronix.de>
+	<AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
+Content-Disposition: inline
+In-Reply-To: <AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
+Cc: glecerf@gmail.com, taliaferro62@gmail.com, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com, yegorslists@googlemail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,53 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-18 at 09:23 +0200, Baruch Siach wrote:
-> nanddump should be consistent with nandwrite, which does not accept non page
-> aligned start addresses. Thus, non page aligned dumps are useless.
-> 
-> To ease migration only warn for now. Add the plan of making this an error to
-> feature-removal-schedule.txt.
-> 
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> ---
->  feature-removal-schedule.txt |   12 +++++++++++-
->  nanddump.c                   |    7 +++++++
->  2 files changed, 18 insertions(+), 1 deletions(-)
-> 
-> diff --git a/feature-removal-schedule.txt b/feature-removal-schedule.txt
-> index 21bc8d4..f4ed2a3 100644
-> --- a/feature-removal-schedule.txt
-> +++ b/feature-removal-schedule.txt
-> @@ -27,5 +27,15 @@ So the plan is (to be done by Artem Bityutskiy):
->  3.1 adding a warning to make users stop using them
->  3.2 removing both options.
->  ---------------------------
-> -2.
-> +2. nanddump: fail when the -s parameter is not page aligned
-> +
-> +nanddump should be consistent with nandwrite, and refuse accepting non page 
-> +aligned start addresses. These dumps are most likely useless, since nandwrite 
-> +won't write then at this location. Currently only a warning is issued to keep 
-> +backward compatibility during a transition period. This should become an error 
-> +after 1.5.0.
 
-I tweaked this and removed 1.5.0 - it is better to not specify exact
-version. Also, fixed the following trailing white-spaces issue for the
-feature-removal-schedule.txt part:
+--7qSK/uQB79J36Y4o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Applying: nanddump: warn when the start address is not page aligned
-/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:17: trailing whitespace.
-nanddump should be consistent with nandwrite, and refuse accepting non page 
-/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:18: trailing whitespace.
-aligned start addresses. These dumps are most likely useless, since nandwrite 
-/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:19: trailing whitespace.
-won't write then at this location. Currently only a warning is issued to keep 
-/home/dedekind/git/mtd-utils/.git/rebase-apply/patch:20: trailing whitespace.
-backward compatibility during a transition period. This should become an error 
-warning: 4 lines add whitespace errors.
+On Mon, Oct 18, 2010 at 12:00:46PM +0800, yidong zhang wrote:
+> hi
+>    The 39VF*-B-Version flashes in the cfi_nopri_fixup_table don't work
+> well in the current code.  Because of the mistaken use of
+> command(0x30) in the 6th bus cycle, which should be 0x50. I think the
+> 39VF*-B-Version flashes should be removed form the CFI probe mode. Or
+> maybe the erase operation should be changed for the Compatibility.
 
-And pushed, thanks.
+Or we put in a variable like the unlock-address?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--7qSK/uQB79J36Y4o
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAky8Mk8ACgkQD27XaX1/VRtD1QCgvhKREHwzceC1STdpZXJ2qrum
+Wg4An0JXJSQTkr5eShXUdykOn6lhlvbt
+=3BkZ
+-----END PGP SIGNATURE-----
+
+--7qSK/uQB79J36Y4o--
