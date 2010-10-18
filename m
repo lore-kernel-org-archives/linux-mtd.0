@@ -1,27 +1,18 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7wga-0006sU-Gg
-	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 20:52:02 +0000
-Received: by ewy7 with SMTP id 7so1014788ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Oct 2010 13:51:52 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: dedekind1@gmail.com
-Subject: Re: Latest mkfs.jffs2 is broken.
-References: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
-	<1287123245.18576.2.camel@localhost>
-	<87pqvbetux.fsf@macbook.be.48ers.dk>
-	<1287132218.18576.12.camel@localhost>
-	<87lj5zet2y.fsf@macbook.be.48ers.dk> <1287244167.1781.2.camel@brekeke>
-Date: Mon, 18 Oct 2010 22:51:48 +0200
-In-Reply-To: <1287244167.1781.2.camel@brekeke> (Artem Bityutskiy's message of
-	"Sat, 16 Oct 2010 18:49:27 +0300")
-Message-ID: <871v7n442j.fsf@macbook.be.48ers.dk>
+Received: from smtp.mailix.net ([66.11.225.183])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P7xAJ-0000MI-1o
+	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 21:22:43 +0000
+Received: from [77.66.67.178] (helo=[192.168.0.10])
+	by smtp.mailix.net with asmtp (Exim 4.24-CA) id 1P7xAX-0004rs-EM
+	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 14:22:57 -0700
+Message-ID: <4CBCBA9D.4040202@jeppesens.com>
+Date: Mon, 18 Oct 2010 23:22:37 +0200
+From: Karsten Jeppesen <karsten@jeppesens.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: H Hartley Sweeten <hartleys@visionengravers.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Expanding UBI fs to maxavailable size
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,60 +22,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
+Hi there,
+....I think I found an error :-)
 
- Artem> On Fri, 2010-10-15 at 10:52 +0200, Peter Korsgaard wrote:
- >> >>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
- >> 
- >> >> Artem: Time for a v1.4.1 release?
- >> 
- Artem> Thanks. If it works, I'll back-port Mike's patch to 1.4.0 and tag it as
- Artem> 1.4.1. So 1.4.1 won't include tons of irrelevant commits.
- >> 
- >> Great. An easy way to test:
+I have an ARM platform with either 32 or 64MB FLASH, and I want to make 
+an image that I can burn more or less directly (ie: not tar) into the 
+flash regardless if its the 32 or the 64MB edition.
+So I assumed that is what the autoresize flag is about, but maybe I am 
+wrong here.
+I can get ubiformat to burn the image to the flash, but subsequently the 
+filesystem doesn't expand to occupy the max available area.
+What am I doing wrong - and how is it supposed to be achieved? Or is 
+this an error or a missing feature?
 
- Artem> Done. You can find v1.4.1 tag, tarball, and announcement in the "news"
- Artem> section of the web site.
+Content of ubinize.cfg is>
+---
+[kjp_ubi]
+mode=ubi
+image=kjp.img
+vol_id=0
+vol_type=dynamic
+vol_name=rootfs
+vol_flags=autoresize
+---
 
-Thanks, but the 1.4.1 tarball is screwed - It contains a bunch of build
-files which breaks the build if they aren't removed first.
+and my generation script looks like this:
+---
+#!/bin/sh
+rm -rf work *.img 2>/dev/null
+mkdir work
+tar xzf armroot-stripped.tar.gz --directory work
+mkfs.ubifs --root=work --min-io-size=1 --leb-size=130944 
+--max-leb-cnt=232 -o kjp.img -x zlib
+ubinize -o ubi.img --min-io-size=1 --peb-size=131072 ubinize.cfg
+---
 
-diff -urpN mtd-utils-1.4.?|diffstat
- compr_zlib.c                       |    2 
- cscope.out                         |314340 +++++++++++++++++++++++++++++++++++++
- jffs2reader.c                      |    1 
- mkfs.jffs2.c                       |   49 
- mkfs.ubifs/compr.c                 |    1 
- tests/fs-tests/lib/tests.o         |binary
- tests/ubi-tests/.common.c.dep      |   38 
- tests/ubi-tests/.integ.c.dep       |   38 
- tests/ubi-tests/.io_basic.c.dep    |   33 
- tests/ubi-tests/.io_paral.c.dep    |   32 
- tests/ubi-tests/.io_read.c.dep     |   33 
- tests/ubi-tests/.io_update.c.dep   |   33 
- tests/ubi-tests/.mkvol_bad.c.dep   |   24 
- tests/ubi-tests/.mkvol_basic.c.dep |   24 
- tests/ubi-tests/.mkvol_paral.c.dep |   27 
- tests/ubi-tests/.rsvol.c.dep       |   33 
- tests/ubi-tests/.volrefcnt.c.dep   |   31 
- tests/ubi-tests/common.o           |binary
- tests/ubi-tests/integ              |binary
- tests/ubi-tests/io_basic           |binary
- tests/ubi-tests/io_paral           |binary
- tests/ubi-tests/io_read            |binary
- tests/ubi-tests/io_update          |binary
- tests/ubi-tests/libubi.a           |binary
- tests/ubi-tests/libubi.o           |binary
- tests/ubi-tests/mkvol_bad          |binary
- tests/ubi-tests/mkvol_basic        |binary
- tests/ubi-tests/mkvol_paral        |binary
- tests/ubi-tests/rsvol              |binary
- tests/ubi-tests/volrefcnt          |binary
- ubi-utils/cscope.out               |164861 +++++++++++++++++++
- ubi-utils/libmtd.a                 |binary
- 32 files changed, 479573 insertions(+), 27 deletions(-)
+Burning the image to flash using:
+ubiformat /dev/mtd4 -e 0 --yes -f ubi.img
 
-Care to fix that?
+The resulting filesystem will in the 64 MB edition be about 470 leb's. 
+But the stupid thing wont expand. Sigh.
 
--- 
-Bye, Peter Korsgaard
+Enlightenment will be greatly appreciated
+
+Sincerely,
+Karsten Jeppesen
