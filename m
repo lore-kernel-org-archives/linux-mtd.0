@@ -1,21 +1,13 @@
-Received: from gate.crashing.org ([63.228.1.57])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8C60-0000VQ-Lw
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2010 13:19:17 +0000
-Subject: Re: [PATCH 1/2] P4080/eLBC: Make Freescale elbc interrupt common to
-	elbc devices
-Mime-Version: 1.0 (Apple Message framework v1081)
-Content-Type: text/plain; charset=us-ascii
-From: Kumar Gala <galak@kernel.crashing.org>
-In-Reply-To: <1287386552-10647-1-git-send-email-tie-fei.zang@freescale.com>
-Date: Tue, 19 Oct 2010 08:18:30 -0500
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2D2A6B88-DA17-467D-BB43-919C1CAAB894@kernel.crashing.org>
-References: <1287386552-10647-1-git-send-email-tie-fei.zang@freescale.com>
-To: Roy Zang <tie-fei.zang@freescale.com>
-Cc: B07421@freescale.com, dedekind1@gmail.com, B25806@freescale.com,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, dwmw2@infradead.org, B11780@freescale.com
+Received: from mailrelay008.isp.belgacom.be ([195.238.6.174])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P8D81-00037r-9M
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2010 14:25:28 +0000
+From: Philippe De Muyter <phdm@macqel.be>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: Apply Numonyx Axcell P33/P30 workaround for Lock/Unlock
+	bug.
+Date: Tue, 19 Oct 2010 16:24:23 +0200
+Message-Id: <1287498263-5561-1-git-send-email-phdm@macqel.be>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +17,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+    Some flash chips have a small but annoying bug, documented in
+    "Numonyx Axcell P33/P30 256-Mbit Specification Update"
 
-On Oct 18, 2010, at 2:22 AM, Roy Zang wrote:
+    It states :
+    When customer uses [...] block unlock, the block lock status might
+    be altered inadvertently. Lock status might be set to either 01h
+    or 03h unexpectedly (00h as expected data), which leads to
+    program/erase failure on certain blocks.
 
-> Move Freescale elbc interrupt from nand dirver to elbc driver.
-> Then all elbc devices can use the interrupt instead of ONLY nand.
->=20
-> For former nand driver, it had the two functions:
->=20
-> 1. detecting nand flash partitions;
-> 2. registering elbc interrupt.
->=20
-> Now, second function is removed to fsl_lbc.c.
->=20
-> Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
-> Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
-> Reviewed-by: Anton Vorontsov <cbouatmailru@gmail.com>
-> Cc: Wood Scott-B07421 <B07421@freescale.com>
-> ---
+    A workaround is given, (summary : issue a "Read Lock Status" before
+    the "Lock" or "Unlock" command) which I have applied and tested
+    with success.
 
-Roy, this is a nit, but are these really p4080 specific?  just wondering =
-why the subject is P4080/eLBC:...
+Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
-- k=
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 9e2b7e9..0d0ae41 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2047,6 +2047,7 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+ {
+ 	struct cfi_private *cfi = map->fldrv_priv;
+ 	struct cfi_pri_intelext *extp = cfi->cmdset_priv;
++	int ofs_factor = cfi->interleave * cfi->device_type;
+ 	int udelay;
+ 	int ret;
+ 
+@@ -2062,6 +2063,14 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+ 	ENABLE_VPP(map);
+ 	xip_disable(map, chip, adr);
+ 
++	/*
++	 * Issue a "Read Lock Status" before the "Lock" or "Unlock" :
++	 * see errata "Numonyx Axcell P33/P30 Specification Update" :)
++	 */
++	map_write(map, CMD(0x90), adr+(2*ofs_factor));
++	chip->state = FL_JEDEC_QUERY;
++	cfi_read_query(map, adr+(2*ofs_factor));
++
+ 	map_write(map, CMD(0x60), adr);
+ 	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
+ 		map_write(map, CMD(0x01), adr);
+-- 
+1.7.1
