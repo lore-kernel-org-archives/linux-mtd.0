@@ -1,29 +1,18 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from mail-px0-f177.google.com ([209.85.212.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P7pyS-000629-3t
-	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 13:42:02 +0000
-Received: by qwj8 with SMTP id 8so595102qwj.36
+	id 1P7qNH-0004ZH-Bg
+	for linux-mtd@lists.infradead.org; Mon, 18 Oct 2010 14:07:39 +0000
+Received: by pxi12 with SMTP id 12so170848pxi.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Oct 2010 06:41:57 -0700 (PDT)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <20101018114104.GC15440@pengutronix.de>
-References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
-	<20101016100744.GA10815@pengutronix.de>
-	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
-	<20101016131752.GA2676@pengutronix.de>
-	<AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
-	<20101018114104.GC15440@pengutronix.de>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Mon, 18 Oct 2010 15:41:34 +0200
-Message-ID: <AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
-Subject: Re: Re :Re: [Help] SST39VF6401B Support
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, taliaferro62@gmail.com,
-	yidong zhang <zhangyd6@gmail.com>, David.Woodhouse@intel.com,
-	yegorslists@googlemail.com
+	Mon, 18 Oct 2010 07:07:36 -0700 (PDT)
+From: zhangyd <zhangyd6@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: chips: Add SST38VF640x NOR-flashes
+Date: Mon, 18 Oct 2010 22:06:50 -0400
+Message-Id: <1287454010-2718-1-git-send-email-zhangyd6@gmail.com>
+Cc: Artem.Bityutskiy@nokia.com, ladis@linux-mips.org,
+	zhangyd <zhangyd6@gmail.com>, w.sang@pengutronix.de,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,20 +22,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/10/18 Wolfram Sang <w.sang@pengutronix.de>:
->> =C2=A0 =C2=A0The 39VF*-B-Version flashes in the cfi_nopri_fixup_table do=
-n't work
->> well in the current code. =C2=A0Because of the mistaken use of
->> command(0x30) in the 6th bus cycle, which should be 0x50. I think the
->> 39VF*-B-Version flashes should be removed form the CFI probe mode. Or
->> maybe the erase operation should be changed for the Compatibility.
->
-> Or we put in a variable like the unlock-address?
+Du to the wrong sector size description(The actual sector size is
+8KBytes/sector, but the reporting size is 64KBytes/sector),you can get
+the wrong size of the memory. So they should be moved to the jedec_probe.
 
-I'm OK with solution, that's what I try to implement atm, but I'm
-still looking for the right place to put this variable.
+Signed-off-by: yidong zhang<zhangyd6@gmail.com>
+---
+ drivers/mtd/chips/jedec_probe.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
-
---=20
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index d72a5fb..0e8df3b 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -163,6 +163,7 @@
+ #define SST49LF030A	0x001C
+ #define SST49LF040A	0x0051
+ #define SST49LF080A	0x005B
++#define SST38VF6401	0x536B
+ #define SST36VF3203	0x7354
+ 
+ /* Toshiba */
+@@ -1568,6 +1569,16 @@ static const struct amd_flash_info jedec_table[] = {
+ 			ERASEINFO(0x10000,64),
+ 		}
+ 	}, {
++		.mfr_id		= CFI_MFR_SST,
++		.dev_id		= SST38VF6401,
++		.name		= "SST 38VF6401",
++		.devtypes	= CFI_DEVICETYPE_X16,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 1,
++		.regions	= {
++			ERASEINFO(0x10000,128),
++		}
++	}, {
+ 		.mfr_id		= CFI_MFR_ST,
+ 		.dev_id		= M29F800AB,
+ 		.name		= "ST M29F800AB",
+-- 
+1.7.2.3
