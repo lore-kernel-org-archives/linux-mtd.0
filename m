@@ -1,28 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P87iH-0001Gq-9w
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2010 08:38:29 +0000
-Received: by wyi11 with SMTP id 11so2418717wyi.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Oct 2010 01:38:26 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-From: Peter Korsgaard <jacmet@sunsite.dk>
-To: dedekind1@gmail.com
-Subject: Re: Latest mkfs.jffs2 is broken.
-References: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
-	<1287123245.18576.2.camel@localhost>
-	<87pqvbetux.fsf@macbook.be.48ers.dk>
-	<1287132218.18576.12.camel@localhost>
-	<87lj5zet2y.fsf@macbook.be.48ers.dk> <1287244167.1781.2.camel@brekeke>
-	<871v7n442j.fsf@macbook.be.48ers.dk> <1287463754.1911.0.camel@brekeke>
-Date: Tue, 19 Oct 2010 10:38:22 +0200
-In-Reply-To: <1287463754.1911.0.camel@brekeke> (Artem Bityutskiy's message of
-	"Tue, 19 Oct 2010 07:49:14 +0300")
-Message-ID: <87tykia875.fsf@macbook.be.48ers.dk>
-MIME-Version: 1.0
+Received: from gate.crashing.org ([63.228.1.57])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P8C60-0000VQ-Lw
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2010 13:19:17 +0000
+Subject: Re: [PATCH 1/2] P4080/eLBC: Make Freescale elbc interrupt common to
+	elbc devices
+Mime-Version: 1.0 (Apple Message framework v1081)
 Content-Type: text/plain; charset=us-ascii
-Cc: H Hartley Sweeten <hartleys@visionengravers.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+From: Kumar Gala <galak@kernel.crashing.org>
+In-Reply-To: <1287386552-10647-1-git-send-email-tie-fei.zang@freescale.com>
+Date: Tue, 19 Oct 2010 08:18:30 -0500
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2D2A6B88-DA17-467D-BB43-919C1CAAB894@kernel.crashing.org>
+References: <1287386552-10647-1-git-send-email-tie-fei.zang@freescale.com>
+To: Roy Zang <tie-fei.zang@freescale.com>
+Cc: B07421@freescale.com, dedekind1@gmail.com, B25806@freescale.com,
+	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	akpm@linux-foundation.org, dwmw2@infradead.org, B11780@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,14 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>>> "Artem" == Artem Bityutskiy <dedekind1@gmail.com> writes:
 
- Artem> On Mon, 2010-10-18 at 22:51 +0200, Peter Korsgaard wrote:
- >> Care to fix that?
+On Oct 18, 2010, at 2:22 AM, Roy Zang wrote:
 
- Artem> Re-uploaded fixed tarball.
+> Move Freescale elbc interrupt from nand dirver to elbc driver.
+> Then all elbc devices can use the interrupt instead of ONLY nand.
+>=20
+> For former nand driver, it had the two functions:
+>=20
+> 1. detecting nand flash partitions;
+> 2. registering elbc interrupt.
+>=20
+> Now, second function is removed to fsl_lbc.c.
+>=20
+> Signed-off-by: Lan Chunhe-B25806 <b25806@freescale.com>
+> Signed-off-by: Roy Zang <tie-fei.zang@freescale.com>
+> Reviewed-by: Anton Vorontsov <cbouatmailru@gmail.com>
+> Cc: Wood Scott-B07421 <B07421@freescale.com>
+> ---
 
-Thanks!
+Roy, this is a nit, but are these really p4080 specific?  just wondering =
+why the subject is P4080/eLBC:...
 
--- 
-Bye, Peter Korsgaard
+- k=
