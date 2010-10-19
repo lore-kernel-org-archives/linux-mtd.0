@@ -1,22 +1,28 @@
-Received: from mail.windriver.com ([147.11.1.11])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P814m-0002tI-R5
-	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2010 01:33:17 +0000
-Message-ID: <4CBCF5C9.5070209@windriver.com>
-Date: Tue, 19 Oct 2010 09:35:05 +0800
-From: "tiejun.chen" <tiejun.chen@windriver.com>
-MIME-Version: 1.0
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH 1/2] P4080/eLBC: Make Freescale elbc interrupt common
-	to	elbc	devices
-References: <1287386552-10647-1-git-send-email-tie-fei.zang@freescale.com>	<4CBC0B95.9010300@windriver.com>
-	<20101018110631.22d6f081@udp111988uds.am.freescale.net>
-In-Reply-To: <20101018110631.22d6f081@udp111988uds.am.freescale.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: B07421@freescale.com, dedekind1@gmail.com, B25806@freescale.com,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, dwmw2@infradead.org, B11780@freescale.com
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P848W-0008FV-VE
+	for linux-mtd@lists.infradead.org; Tue, 19 Oct 2010 04:49:21 +0000
+Received: by bwz7 with SMTP id 7so1535756bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 18 Oct 2010 21:49:18 -0700 (PDT)
+Subject: Re: Latest mkfs.jffs2 is broken.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+In-Reply-To: <871v7n442j.fsf@macbook.be.48ers.dk>
+References: <0D753D10438DA54287A00B02708426976450C42B27@AUSP01VMBX24.collaborationhost.net>
+	<1287123245.18576.2.camel@localhost>
+	<87pqvbetux.fsf@macbook.be.48ers.dk>
+	<1287132218.18576.12.camel@localhost>
+	<87lj5zet2y.fsf@macbook.be.48ers.dk>
+	<1287244167.1781.2.camel@brekeke> <871v7n442j.fsf@macbook.be.48ers.dk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 19 Oct 2010 07:49:14 +0300
+Message-ID: <1287463754.1911.0.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: H Hartley Sweeten <hartleys@visionengravers.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +32,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Scott Wood wrote:
-> On Mon, 18 Oct 2010 16:55:49 +0800
-> "tiejun.chen" <tiejun.chen@windriver.com> wrote:
-> 
->> Looks you always iounmap(fsl_lbc_ctrl_dev->regs) on position 'err' but here
->> of_iomap() is already failed you should skip iounmap() fsl_lbc_ctrl_dev->regs
->> again. So you should improve that as the following on 'err', or layout 'err' in
->> gain.
->> ------
->> 	if(fsl_lbc_ctrl_dev->regs)
->> 		iounmap(fsl_lbc_ctrl_dev->regs);
->>
-> 
-> It looks like iounmap(NULL) is a no-op, just like kfree(NULL).
-> 
+On Mon, 2010-10-18 at 22:51 +0200, Peter Korsgaard wrote:
+> Care to fix that?
 
-Absolutely, I know what you mean :)
+Re-uploaded fixed tarball.
 
-But I think we should take care of every line as one normal progress/rule. That
-will make us understand easily, and maybe we also would benefit a little good
-performance from those codes.
-
-Tiejun
-
-> -Scott
-> 
-> _______________________________________________
-> Linuxppc-dev mailing list
-> Linuxppc-dev@lists.ozlabs.org
-> https://lists.ozlabs.org/listinfo/linuxppc-dev
-> 
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
