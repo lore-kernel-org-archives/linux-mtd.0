@@ -1,24 +1,27 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8Sga-0007pl-22
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 07:02:08 +0000
-Received: by wwb24 with SMTP id 24so2730781wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Oct 2010 00:02:06 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1287557125-2672-2-git-send-email-computersforpeace@gmail.com>
-References: <1287557125-2672-1-git-send-email-computersforpeace@gmail.com>
-	<1287557125-2672-2-git-send-email-computersforpeace@gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Wed, 20 Oct 2010 03:01:45 -0400
-Message-ID: <AANLkTikXF5CV8SFOC5Ygzw4fNBvgzbifQK2eeH7D1bbM@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd-utils: nanddump: add 64-bit support,
-	utilize libmtd
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	id 1P8U4p-0008TZ-8H
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 08:31:16 +0000
+Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0LAK00D5XYC09X60@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 17:31:12 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LAK006V3YC06O@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 17:31:12 +0900 (KST)
+Date: Wed, 20 Oct 2010 17:31:02 +0900
+From: Kyungmin Park <kmpark@infradead.org>
+Subject: [PATCH] mtd: OneNAND: S5PC110: Fix double call suspend & resume
+	function
+To: linux-mtd@lists.infradead.org
+Message-id: <20101020083102.GA30414@july>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Cc: Artem.Bityutskiy@nokia.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gV2VkLCBPY3QgMjAsIDIwMTAgYXQgMDI6NDUsIEJyaWFuIE5vcnJpcyB3cm90ZToKPiAtc3Rh
-dGljIGJvb2wgwqAgwqAgwqAgwqAgwqAgwqBwcmV0dHlfcHJpbnQgPSBmYWxzZTsgwqAgLy8gcHJp
-bnQgbmljZQo+IC1zdGF0aWMgYm9vbCDCoCDCoCDCoCDCoCDCoCDCoG5vZWNjID0gZmFsc2U7IMKg
-IMKgIMKgIMKgIMKgLy8gZG9uJ3QgZXJyb3IgY29ycmVjdAo+IC1zdGF0aWMgYm9vbCDCoCDCoCDC
-oCDCoCDCoCDCoG5vc2tpcGJhZCA9IGZhbHNlOyDCoCDCoCDCoC8vIGRvbid0IHNraXAgYmFkIGJs
-b2Nrcwo+IC1zdGF0aWMgYm9vbCDCoCDCoCDCoCDCoCDCoCDCoG9taXRvb2IgPSBmYWxzZTsgwqAg
-wqAgwqAgwqAvLyBvbWl0IG9vYiBkYXRhCj4gLXN0YXRpYyB1bnNpZ25lZCBsb25nIMKgIHN0YXJ0
-X2FkZHI7IMKgIMKgIMKgIMKgIMKgIMKgIC8vIHN0YXJ0IGFkZHJlc3MKPiAtc3RhdGljIHVuc2ln
-bmVkIGxvbmcgwqAgbGVuZ3RoOyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAvLyBkdW1wIGxlbmd0
-aAo+IC1zdGF0aWMgY29uc3QgY2hhciDCoCDCoCDCoCptdGRkZXY7IMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgLy8gbXRkIGRldmljZSBuYW1lCj4gLXN0YXRpYyBjb25zdCBjaGFyIMKgIMKgIMKgKmR1
-bXBmaWxlOyDCoCDCoCDCoCDCoCDCoCDCoCDCoC8vIGR1bXAgZmlsZSBuYW1lCj4gLXN0YXRpYyBi
-b29sIMKgIMKgIMKgIMKgIMKgIMKgb21pdGJhZCA9IGZhbHNlOwo+IC1zdGF0aWMgYm9vbCDCoCDC
-oCDCoCDCoCDCoCDCoHF1aWV0ID0gZmFsc2U7IMKgIMKgIMKgIMKgIMKgLy8gc3VwcHJlc3MgZGlh
-Z25vc3RpYyBvdXRwdXQKPiAtc3RhdGljIGJvb2wgwqAgwqAgwqAgwqAgwqAgwqBjYW5vbmljYWwg
-PSBmYWxzZTsgwqAgwqAgwqAvLyBwcmludCBuaWNlICsgYXNjaWkKPiAtc3RhdGljIGJvb2wgwqAg
-wqAgwqAgwqAgwqAgwqBmb3JjZWJpbmFyeSA9IGZhbHNlOyDCoCDCoC8vIGZvcmNlIHByaW50aW5n
-IGJpbmFyeSB0byB0dHkKPiArc3RhdGljIGJvb2wgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqBwcmV0dHlfcHJpbnQgPSBmYWxzZTsgwqAgLy8gcHJpbnQgbmljZQo+ICtzdGF0aWMgYm9vbCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoG5vZWNjID0gZmFsc2U7IMKgIMKgIMKgIMKgIMKg
-Ly8gZG9uJ3QgZXJyb3IgY29ycmVjdAo+ICtzdGF0aWMgYm9vbCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoG5vc2tpcGJhZCA9IGZhbHNlOyDCoCDCoCDCoC8vIGRvbid0IHNraXAgYmFkIGJs
-b2Nrcwo+ICtzdGF0aWMgYm9vbCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoG9taXRvb2Ig
-PSBmYWxzZTsgwqAgwqAgwqAgwqAvLyBvbWl0IG9vYiBkYXRhCj4gK3N0YXRpYyB1bnNpZ25lZCBs
-b25nIGxvbmcgwqAgwqAgwqBzdGFydF9hZGRyOyDCoCDCoCDCoCDCoCDCoCDCoCAvLyBzdGFydCBh
-ZGRyZXNzCj4gK3N0YXRpYyB1bnNpZ25lZCBsb25nIMKgIMKgIMKgIMKgIMKgIGxlbmd0aDsgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgLy8gZHVtcCBsZW5ndGgKPiArc3RhdGljIGNvbnN0IGNoYXIg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAqbXRkZGV2OyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoC8vIG10
-ZCBkZXZpY2UgbmFtZQo+ICtzdGF0aWMgY29uc3QgY2hhciDCoCDCoCDCoCDCoCDCoCDCoCDCoCpk
-dW1wZmlsZTsgwqAgwqAgwqAgwqAgwqAgwqAgwqAvLyBkdW1wIGZpbGUgbmFtZQo+ICtzdGF0aWMg
-Ym9vbCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoG9taXRiYWQgPSBmYWxzZTsKPiArc3Rh
-dGljIGJvb2wgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBxdWlldCA9IGZhbHNlOyDCoCDC
-oCDCoCDCoCDCoC8vIHN1cHByZXNzIGRpYWdub3N0aWMgb3V0cHV0Cj4gK3N0YXRpYyBib29sIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgY2Fub25pY2FsID0gZmFsc2U7IMKgIMKgIMKgLy8g
-cHJpbnQgbmljZSArIGFzY2lpCj4gK3N0YXRpYyBib29sIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgZm9yY2ViaW5hcnkgPSBmYWxzZTsgwqAgwqAvLyBmb3JjZSBwcmludGluZyBiaW5hcnkg
-dG8gdHR5Cgpvbmx5IG9uZSBvZiB0aGVzZSBsaW5lcyBhcmUgZnVuY3Rpb25hbC4gIHBsZWFzZSBm
-b2xkIHRoZSByZXN0IGludG8KeW91ciAic3R5bGUgZml4dXAiIHBhdGNoLgoKPiBAQCAtMzE4LDcg
-KzMxOCw2IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICogY29uc3QgYXJndltdKQo+Cj4gwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAvLyBhdXRvcGxhY2UgRUNDID8KPiDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoGlmIChvbGRfb29iaW5mby51c2VlY2MgIT0gTVREX05BTkRFQ0NfQVVUT1BMQUNFKSB7
-Cj4gLQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgaWYgKGlvY3RsKGZkLCBN
-RU1TRVRPT0JTRUwsICZhdXRvcGxhY2Vfb29iaW5mbykgIT0gMCkgewo+IMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgcGVycm9yKCJNRU1TRVRPT0JTRUwiKTsK
-PiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGNsb3NlKGZk
-KTsKCnNhbWUgaGVyZQoKPiBAQCAtNDgwLDcgKzQ3OSw3IEBAIGludCBtYWluKGludCBhcmdjLCBj
-aGFyICogY29uc3QgYXJndltdKQo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-aWYgKG5vc2tpcGJhZCkKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoGNvbnRpbnVlOwo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgZG8g
-ewo+IC0gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKChy
-ZXQgPSBpb2N0bChmZCwgTUVNR0VUQkFEQkxPQ0ssICZvZmZzKSkgPCAwKSB7Cj4gKyDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAoKHJldCA9IDAgLyppb2N0
-bChmZCwgTUVNR0VUQkFEQkxPQ0ssICZvZmZzKSovKSA8IDApIHsKPiDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHBlcnJvcigiaW9jdGwo
-TUVNR0VUQkFEQkxPQ0spIik7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBnb3RvIGNsb3NlYWxsOwo+IMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfQoKZG9lc250IHNlZW0gdG8gYmVsb25nLiAg
-dGhlbiBhZ2Fpbiwgbm9uZSBvZiB0aGUgY2hhbmdlcyB0byB0aGlzIGZpbGUKbG9vayBsaWtlIHRo
-ZXkgYmVsb25nIGluIHRoaXMgcGF0Y2guCi1taWtlCg==
+From: Kyungmin Park <kyungmin.park@samsung.com>
+
+The suspend & resume called from mtd core. So no need to call at driver.
+
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 214ed1e..0de7a05 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -1098,7 +1098,7 @@ static int s3c_pm_ops_suspend(struct device *dev)
+ 	struct onenand_chip *this = mtd->priv;
+ 
+ 	this->wait(mtd, FL_PM_SUSPENDED);
+-	return mtd->suspend(mtd);
++	return 0;
+ }
+ 
+ static  int s3c_pm_ops_resume(struct device *dev)
+@@ -1107,7 +1107,6 @@ static  int s3c_pm_ops_resume(struct device *dev)
+ 	struct mtd_info *mtd = platform_get_drvdata(pdev);
+ 	struct onenand_chip *this = mtd->priv;
+ 
+-	mtd->resume(mtd);
+ 	this->unlock_all(mtd);
+ 	return 0;
+ }
