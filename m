@@ -1,25 +1,17 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
+Received: from mail.perches.com ([173.55.12.10])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8ZGc-0000WT-Fl
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 14:03:47 +0000
-Received: by pvg3 with SMTP id 3so776078pvg.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Oct 2010 07:03:44 -0700 (PDT)
-Message-ID: <4CBEF6BA.8080103@gmail.com>
-Date: Wed, 20 Oct 2010 07:03:38 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH 2/2] mtd-utils: nanddump: add 64-bit support, utilize
-	libmtd
-References: <1287557125-2672-1-git-send-email-computersforpeace@gmail.com>
-	<1287557125-2672-2-git-send-email-computersforpeace@gmail.com>
-	<AANLkTikXF5CV8SFOC5Ygzw4fNBvgzbifQK2eeH7D1bbM@mail.gmail.com>
-In-Reply-To: <AANLkTikXF5CV8SFOC5Ygzw4fNBvgzbifQK2eeH7D1bbM@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+	id 1P8cdN-0002ff-2P
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 17:39:31 +0000
+Subject: [PATCH] drivers/mtd/devices/phram.c: Use KBUILD_MODNAME
+From: Joe Perches <joe@perches.com>
+To: Joern Engel <joern@lazybastard.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 20 Oct 2010 10:39:22 -0700
+Message-ID: <1287596362.1813.205.camel@Joe-Laptop>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike,
+Use the more standard #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+No change in output strings.
 
-On 10/20/2010 12:01 AM, Mike Frysinger wrote:
-> On Wed, Oct 20, 2010 at 02:45, Brian Norris wrote:
->> ...
->> -static unsigned long   start_addr;             // start address
->> ...
->> -static bool            forcebinary = false;    // force printing binary to tty
-...
->> +static unsigned long long      start_addr;             // start address
-...
->> +static bool                    forcebinary = false;    // force printing binary to tty
-> 
-> only one of these lines are functional.  please fold the rest into
-> your "style fixup" patch.
-
-True, except that they are not "style fixups" until after start_addr has
-a longer data type (pun intended). I'll respin though.
-
->> @@ -480,7 +479,7 @@ int main(int argc, char * const argv[])
->>                        if (noskipbad)
->>                                continue;
->>                        do {
->> -                               if ((ret = ioctl(fd, MEMGETBADBLOCK, &offs)) < 0) {
->> +                               if ((ret = 0 /*ioctl(fd, MEMGETBADBLOCK, &offs)*/) < 0) {
->>                                        perror("ioctl(MEMGETBADBLOCK)");
->>                                        goto closeall;
->>                                }
-> 
-> doesnt seem to belong.  then again, none of the changes to this file
-> look like they belong in this patch.
-
-Wow, I really thought I had fixed this. Sorry, I will definitely respin.
-I must have been in a hurry to send this out.
-
-Still, despite my inability/failure to fully proofread my patches, most
-of the patch *is* intentional and *does* belong, IMO. I will try to
-document it better in the next patch description, but do you have
-specifics on what you meant?
-
-Thanks,
-Brian
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index 1696bbe..5239328 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -15,7 +15,7 @@
+  *	phram=swap,64Mi,128Mi phram=test,900Mi,1Mi
+  */
+ 
+-#define pr_fmt(fmt) "phram: " fmt
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
+ #include <asm/io.h>
+ #include <linux/init.h>
