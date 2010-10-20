@@ -1,22 +1,22 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8Wl6-0008EE-I5
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 11:23:05 +0000
-Received: by fxm15 with SMTP id 15so2548877fxm.36
+	id 1P8Yk8-0000V2-Kp
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 13:30:13 +0000
+Received: by eyf18 with SMTP id 18so525646eyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Oct 2010 04:23:03 -0700 (PDT)
-Subject: Re: Expanding UBI fs to maxavailable size
+	Wed, 20 Oct 2010 06:30:09 -0700 (PDT)
+Subject: Re: ubifs: sync() causes writes even if nothing is changed
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Karsten Jeppesen <arm9263@yahoo.com>
-In-Reply-To: <968604.60195.qm@web120213.mail.ne1.yahoo.com>
-References: <4CBCBA9D.4040202@jeppesens.com> <1287465154.1911.2.camel@brekeke>
-	<968604.60195.qm@web120213.mail.ne1.yahoo.com>
+To: "Hans J. Koch" <hjk@linutronix.de>
+In-Reply-To: <20101013163005.GB1889@silverbox.local>
+References: <20101013163005.GB1889@silverbox.local>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 20 Oct 2010 14:19:54 +0300
-Message-ID: <1287573594.9272.64.camel@localhost>
+Date: Wed, 20 Oct 2010 16:26:58 +0300
+Message-ID: <1287581218.9272.67.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,34 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-10-19 at 01:17 -0700, Karsten Jeppesen wrote:
-> Hi Artem,
+On Wed, 2010-10-13 at 18:30 +0200, Hans J. Koch wrote:
+> Running this command:
 > 
-> This is Karsten Jeppesen, just using an out-of-the-house account,
-> and thanks for your very quick reply.
+> # while true ; do sync; sleep 1; done
+> 
+> causes two eraseblocks being erased every second, although there
+> are no writes to the ubifs filesystem. I hacked some printks into
+> my NAND driver that print page_address and column for each erase.
+> With that, I get this output every second:
+> 
+> ...
+> [   63.701765] erase p=0x0000ae40 c=0xffffffff
+> [   63.706534] erase p=0xffffffff c=0xffffffff
+> [   63.725492] erase p=0x0000ae80 c=0xffffffff
+> [   63.730260] erase p=0xffffffff c=0xffffffff
+> ...
+> 
+> From a quick glance at the ubifs code, this might come out of the
+> garbage collector that is triggered on every sync() and writes
+> something even if nothing has changed.
+> 
+> Is that really needed?
 
-UBI and UBIFS always print something, refer:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
-item 3.
-
-Anyway, AFAICS, UBI auto-resize the UBI volume correctly, because of
-this:
-
-> ubi0
-> Volumes count:                           1
-> Logical eraseblock size:                 130944 bytes, 127.9 KiB
-> Total amount of logical eraseblocks:     486 (63638784 bytes, 60.7 MiB)
-
-I re-sized.
-
-However, UBIFS file-system did not re-size, because you specified too
-small maximum UBIFS LEB count: --max-leb-cnt=232
-
-Try --max-leb-cnt=511 and it should work. Take a look here:
-http://www.linux-mtd.infradead.org/faq/ubifs.html#L_max_leb_cnt
-
-I agree this all stuff is not as user-friendly as it could, but you have
-a good chance to make it user-friendlier by contributing docs or code.
+I briefly looked, and UBIFS is doing a lot of I/O in that case, which is
+unnecessary and should not be done, I'll need to investigate this.
 
 -- 
 Best Regards,
