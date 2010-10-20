@@ -1,23 +1,21 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8Uda-0004X5-7Y
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 09:07:13 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx09.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o9K96uRT030672
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Oct 2010 04:07:02 -0500
+	id 1P8Udj-0004Xz-24
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 09:07:23 +0000
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-mx03.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
+	o9K96wFs004018
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Oct 2010 12:07:09 +0300
 Received: from eru.research.nokia.com (helruo-dhcp022226.ntc.nokia.com
 	[172.21.22.226])
 	by mgw-da02.ext.nokia.com (Switch-3.3.3/Switch-3.3.3) with ESMTP id
-	o9K96aq0014311
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Oct 2010 12:06:38 +0300
+	o9K96apw014311
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Oct 2010 12:06:36 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] UBI: tighten the corrupted PEB criteria
-Date: Wed, 20 Oct 2010 12:07:16 +0300
-Message-Id: <1287565636-18825-3-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1287565636-18825-1-git-send-email-dedekind1@gmail.com>
-References: <1287565636-18825-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 1/3] UBI: remember copy_flag while scanning
+Date: Wed, 20 Oct 2010 12:07:14 +0300
+Message-Id: <1287565636-18825-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,107 +27,98 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-If we get a bit-flip of ECC error while reading the data area, do not add it to
-corrupted list, because it is possible that this is just unstable PEB with
-corruptions caused by unclean reboots.
-
-This patch also improves commentaries.
+While scanning the flash we read all VID headers and store some important
+information in 'struct ubi_scan_leb'. Store also the 'copy_flag' value there
+as it is needed when comparing LEBs. We do not increase memory consumption
+because this is just one bit and we have plenty of spare bits in
+'struct ubi_scan_leb' (sizeof(struct ubi_scan_leb) is 48 both with and
+without this patch).
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/scan.c |   41 ++++++++++++++++++++++++++++++++---------
- 1 files changed, 32 insertions(+), 9 deletions(-)
+ drivers/mtd/ubi/scan.c |   20 ++++++++++----------
+ drivers/mtd/ubi/scan.h |    4 +++-
+ 2 files changed, 13 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index e7b800b..c1191b7 100644
+index 30b7102..2fbb571 100644
 --- a/drivers/mtd/ubi/scan.c
 +++ b/drivers/mtd/ubi/scan.c
-@@ -45,14 +45,26 @@
-  *    many warnings and error messages. The idea is that we do not lose
-  *    important data in these case - we may lose only the data which was being
-  *    written to the media just before the power cut happened, and the upper
-- *    layers are supposed to handle these situations. UBI puts these PEBs to
-- *    the head of the @erase list and they are scheduled for erasure.
-+ *    layers (e.g., UBIFS) are supposed to handle these situations. UBI puts
-+ *    these PEBs to the head of the @erase list and they are scheduled for
-+ *    erasure.
-  *
-  * 2. Unexpected corruptions which are not caused by power cuts. During
-  *    scanning, such PEBs are put to the @corr list and UBI preserves them.
-  *    Obviously, this lessens the amount of available PEBs, and if at some
-  *    point UBI runs out of free PEBs, it switches to R/O mode. UBI also loudly
-  *    informs about such PEBs every time the MTD device is attached.
-+ *
-+ * However, it is difficult to reliably distinguish between these types of
-+ * corruptions and UBI's strategy is as follows. UBI assumes (2.) if the VID
-+ * header is corrupted and the data area does not contain all 0xFFs, and there
-+ * were not bit-flips or integrity errors while reading the data area. Otherwise
-+ * UBI assumes (1.). The assumptions are:
-+ *   o if the data area contains only 0xFFs, there is no data, and it is safe
-+ *     to just erase this PEB.
-+ *   o if the data area has bit-flips and data integrity errors (ECC errors on
-+ *     NAND), it is probably a PEB which was being erased when power cut
-+ *     happened.
-  */
+@@ -330,12 +330,18 @@ static int compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
+ 			return 1;
+ 		}
+ 	} else {
+-		pnum = seb->pnum;
++		if (!seb->copy_flag) {
++			/* It is not a copy, so it is newer */
++			dbg_bld("first PEB %d is newer, copy_flag is unset",
++				pnum);
++			return bitflips << 1;
++		}
  
- #include <linux/err.h>
-@@ -741,23 +753,23 @@ struct ubi_scan_leb *ubi_scan_get_free_peb(struct ubi_device *ubi,
- }
+ 		vh = ubi_zalloc_vid_hdr(ubi, GFP_KERNEL);
+ 		if (!vh)
+ 			return -ENOMEM;
  
- /**
-- * check_data_ff - make sure PEB contains only 0xFF data.
-+ * check_corruption - check the data area of PEB.
-  * @ubi: UBI device description object
-  * @vid_hrd: the (corrupted) VID header of this PEB
-  * @pnum: the physical eraseblock number to check
-  *
-  * This is a helper function which is used to distinguish between VID header
-  * corruptions caused by power cuts and other reasons. If the PEB contains only
-- * 0xFF bytes at the data area, the VID header is most probably corrupted
-+ * 0xFF bytes in the data area, the VID header is most probably corrupted
-  * because of a power cut (%0 is returned in this case). Otherwise, it was
-- * corrupted for some other reasons (%1 is returned in this case). A negative
-- * error code is returned if a read error occurred.
-+ * probably corrupted for some other reasons (%1 is returned in this case). A
-+ * negative error code is returned if a read error occurred.
-  *
-  * If the corruption reason was a power cut, UBI can safely erase this PEB.
-  * Otherwise, it should preserve it to avoid possibly destroying important
-  * information.
-  */
--static int check_data_ff(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
-+static int check_corruption(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
- 			 int pnum)
- {
- 	int err;
-@@ -767,7 +779,18 @@ static int check_data_ff(struct ubi_device *ubi, struct ubi_vid_hdr *vid_hdr,
++		pnum = seb->pnum;
+ 		err = ubi_io_read_vid_hdr(ubi, pnum, vh, 0);
+ 		if (err) {
+ 			if (err == UBI_IO_BITFLIPS)
+@@ -350,14 +356,6 @@ static int compare_lebs(struct ubi_device *ubi, const struct ubi_scan_leb *seb,
+ 			}
+ 		}
  
- 	err = ubi_io_read(ubi, ubi->peb_buf1, pnum, ubi->leb_start,
- 			  ubi->leb_size);
--	if (err && err != UBI_IO_BITFLIPS && err != -EBADMSG)
-+	if (err == UBI_IO_BITFLIPS || err == -EBADMSG) {
-+		/*
-+		 * Bit-flips or integrity errors while reading the data area.
-+		 * It is difficult to say for sure what type of corruption is
-+		 * this, but presumably a power cut happened while this PEB was
-+		 * erased, so it became unstable and corrupted, and should be
-+		 * erased.
-+		 */
-+		return 0;
-+	}
-+
-+	if (err)
- 		return err;
+-		if (!vh->copy_flag) {
+-			/* It is not a copy, so it is newer */
+-			dbg_bld("first PEB %d is newer, copy_flag is unset",
+-				pnum);
+-			err = bitflips << 1;
+-			goto out_free_vidh;
+-		}
+-
+ 		vid_hdr = vh;
+ 	}
  
- 	if (ubi_check_pattern(ubi->peb_buf1, 0xFF, ubi->leb_size)) {
-@@ -926,7 +949,7 @@ static int process_eb(struct ubi_device *ubi, struct ubi_scan_info *si,
- 			 * that this a valid UBI PEB which has corresponding
- 			 * LEB, but the headers are corrupted. However, it is
- 			 * impossible to distinguish it from a PEB which just
--			 * contains garbage because a power cut during erase
-+			 * contains garbage because of a power cut during erase
- 			 * operation. So we just schedule this PEB for erasure.
- 			 */
- 			err = 0;
+@@ -516,6 +514,7 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 			seb->ec = ec;
+ 			seb->pnum = pnum;
+ 			seb->scrub = ((cmp_res & 2) || bitflips);
++			seb->copy_flag = vid_hdr->copy_flag;
+ 			seb->sqnum = sqnum;
+ 
+ 			if (sv->highest_lnum == lnum)
+@@ -549,8 +548,9 @@ int ubi_scan_add_used(struct ubi_device *ubi, struct ubi_scan_info *si,
+ 	seb->ec = ec;
+ 	seb->pnum = pnum;
+ 	seb->lnum = lnum;
+-	seb->sqnum = sqnum;
+ 	seb->scrub = bitflips;
++	seb->copy_flag = vid_hdr->copy_flag;
++	seb->sqnum = sqnum;
+ 
+ 	if (sv->highest_lnum <= lnum) {
+ 		sv->highest_lnum = lnum;
+diff --git a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
+index 12ac852..a3264f0 100644
+--- a/drivers/mtd/ubi/scan.h
++++ b/drivers/mtd/ubi/scan.h
+@@ -30,6 +30,7 @@
+  * @pnum: physical eraseblock number
+  * @lnum: logical eraseblock number
+  * @scrub: if this physical eraseblock needs scrubbing
++ * @copy_flag: this LEB is a copy (@copy_flag is set in VID header of this LEB)
+  * @sqnum: sequence number
+  * @u: unions RB-tree or @list links
+  * @u.rb: link in the per-volume RB-tree of &struct ubi_scan_leb objects
+@@ -42,7 +43,8 @@ struct ubi_scan_leb {
+ 	int ec;
+ 	int pnum;
+ 	int lnum;
+-	int scrub;
++	unsigned int scrub:1;
++	unsigned int copy_flag:1;
+ 	unsigned long long sqnum;
+ 	union {
+ 		struct rb_node rb;
 -- 
 1.7.2.3
