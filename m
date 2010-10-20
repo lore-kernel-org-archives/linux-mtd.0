@@ -1,17 +1,18 @@
 Received: from smtp1.linux-foundation.org ([140.211.169.13])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8hcu-000145-Vy
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 22:59:24 +0000
-Message-Id: <201010202259.o9KMx8tG009573@imap1.linux-foundation.org>
-Subject: [patch 2/2] jffs2: use cond_resched() instead of yield()
+	id 1P8hcu-00013x-Vt
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 22:59:25 +0000
+Message-Id: <201010202259.o9KMx7jc009570@imap1.linux-foundation.org>
+Subject: [patch 1/2] mtdpart: memory accessor interface for MTD layer
 To: dwmw2@infradead.org
 From: akpm@linux-foundation.org
-Date: Wed, 20 Oct 2010 15:59:08 -0700
+Date: Wed, 20 Oct 2010 15:59:07 -0700
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ANSI_X3.4-1968
 Content-Transfer-Encoding: 8bit
-Cc: Artem.Bityutskiy@nokia.com, dedekind@infradead.org, w.sang@pengutronix.de,
-	linux-mtd@lists.infradead.org, akpm@linux-foundation.org, mingo@elte.hu
+Cc: sudhakar.raj@ti.com, khilman@deeprootsystems.com, david-b@pacbell.net,
+	linux-mtd@lists.infradead.org, cbouatmailru@gmail.com,
+	akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +22,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Wolfram Sang <w.sang@pengutronix.de>
+From: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
 
-yield() has different semantics meanwhile and even causes RT-kernels to
-BUG.  Replace the only appearance left in jffs2.
+Implement a memory accessor interface in the MTD layer which enables the
+kernel to access flash data.
 
-Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: Ingo Molnar <mingo@elte.hu>
+This patch adds two new members to the mtd_partition structure, a function
+handler which will be called during setup of the partition and an argument
+to be passed to this setup function.
+
+Example:
++static struct mtd_partition spi_flash_partitions[] = {
++       [0] = {
++               .name       = "U-Boot",
++               .offset     = 0,
++               .size       = SZ_256K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [1] = {
++               .name       = "U-Boot Environment",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = MTD_WRITEABLE,
++       },
++       [2] = {
++               .name       = "Linux",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_7M,
++               .mask_flags = 0,
++       },
++       [3] = {
++               .name       = "MAC Address",
++               .offset     = MTDPART_OFS_NXTBLK,
++               .size       = SZ_64K,
++               .mask_flags = 0,
++               .setup      = davinci_get_mac_addr,
++               .context    = (void *)0,
++       },
++};
+
+The davinci_get_mac_addr function reads the MAC address from
+offset ZERO of last MTD partition.
+
+Signed-off-by: Sudhakar Rajashekhara <sudhakar.raj@ti.com>
+Acked-by: Kevin Hilman <khilman@deeprootsystems.com>
+Cc: David Brownell <david-b@pacbell.net>
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <dedekind@infradead.org>
+Cc: Anton Vorontsov <cbouatmailru@gmail.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- fs/jffs2/erase.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/mtdpart.c          |   40 +++++++++++++++++++++++++++++++
+ include/linux/mtd/partitions.h |    3 ++
+ 2 files changed, 43 insertions(+)
 
-diff -puN fs/jffs2/erase.c~jffs2-use-cond_resched-instead-of-yield fs/jffs2/erase.c
---- a/fs/jffs2/erase.c~jffs2-use-cond_resched-instead-of-yield
-+++ a/fs/jffs2/erase.c
-@@ -151,7 +151,7 @@ int jffs2_erase_pending_blocks(struct jf
- 		}
+diff -puN drivers/mtd/mtdpart.c~mtdpart-memory-accessor-interface-for-mtd-layer drivers/mtd/mtdpart.c
+--- a/drivers/mtd/mtdpart.c~mtdpart-memory-accessor-interface-for-mtd-layer
++++ a/drivers/mtd/mtdpart.c
+@@ -37,6 +37,7 @@ static LIST_HEAD(mtd_partitions);
+ struct mtd_part {
+ 	struct mtd_info mtd;
+ 	struct mtd_info *master;
++	struct memory_accessor macc;
+ 	uint64_t offset;
+ 	struct list_head list;
+ };
+@@ -346,6 +347,39 @@ int del_mtd_partitions(struct mtd_info *
+ }
+ EXPORT_SYMBOL(del_mtd_partitions);
  
- 		/* Be nice */
--		yield();
-+		cond_resched();
- 		mutex_lock(&c->erase_free_sem);
- 		spin_lock(&c->erase_completion_lock);
- 	}
++/*
++ * This lets other kernel code access the flash data. For example, it
++ * might hold a board's Ethernet address, or board-specific calibration
++ * data generated on the manufacturing floor.
++ */
++static ssize_t mtd_macc_read(struct memory_accessor *macc, char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
++
++	if (part_read((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
++
++	return ret;
++}
++
++static ssize_t mtd_macc_write(struct memory_accessor *macc, const char *buf,
++			off_t offset, size_t count)
++{
++	struct mtd_part *part = container_of(macc, struct mtd_part, macc);
++	ssize_t ret = -EIO;
++	size_t retlen;
++
++	if (part_write((struct mtd_info *)part, offset, count,
++			&retlen, buf) == 0)
++		ret = retlen;
++
++	return ret;
++}
++
+ static struct mtd_part *add_one_partition(struct mtd_info *master,
+ 		const struct mtd_partition *part, int partno,
+ 		uint64_t cur_offset)
+@@ -383,6 +417,9 @@ static struct mtd_part *add_one_partitio
+ 	slave->mtd.read = part_read;
+ 	slave->mtd.write = part_write;
+ 
++	slave->macc.read = mtd_macc_read;
++	slave->macc.write = mtd_macc_write;
++
+ 	if (master->panic_write)
+ 		slave->mtd.panic_write = part_panic_write;
+ 
+@@ -449,6 +486,9 @@ static struct mtd_part *add_one_partitio
+ 	printk(KERN_NOTICE "0x%012llx-0x%012llx : \"%s\"\n", (unsigned long long)slave->offset,
+ 		(unsigned long long)(slave->offset + slave->mtd.size), slave->mtd.name);
+ 
++	if (part->setup)
++		part->setup(&slave->macc, (void *)part->context);
++
+ 	/* let's do some sanity checks */
+ 	if (slave->offset >= master->size) {
+ 		/* let's register it anyway to preserve ordering */
+diff -puN include/linux/mtd/partitions.h~mtdpart-memory-accessor-interface-for-mtd-layer include/linux/mtd/partitions.h
+--- a/include/linux/mtd/partitions.h~mtdpart-memory-accessor-interface-for-mtd-layer
++++ a/include/linux/mtd/partitions.h
+@@ -10,6 +10,7 @@
+ #define MTD_PARTITIONS_H
+ 
+ #include <linux/types.h>
++#include <linux/memory.h>
+ 
+ 
+ /*
+@@ -40,6 +41,8 @@ struct mtd_partition {
+ 	uint64_t offset;		/* offset within the master MTD space */
+ 	uint32_t mask_flags;		/* master MTD flags to mask out for this partition */
+ 	struct nand_ecclayout *ecclayout;	/* out of band layout for this partition (NAND only)*/
++	void (*setup)(struct memory_accessor *, void *context);
++	void *context;
+ };
+ 
+ #define MTDPART_OFS_NXTBLK	(-2)
 _
