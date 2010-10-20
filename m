@@ -1,16 +1,23 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from devils.ext.ti.com ([198.47.26.153])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8VW1-000557-69
-	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 10:03:29 +0000
-From: Savinay Dharmappa <savinay.dharmappa@ti.com>
-To: sudhakar.raj@ti.com
-Subject: [PATCH] davinci: Platform support for OMAP-L137/AM17x NOR flash driver
-Date: Wed, 20 Oct 2010 14:50:24 +0530
-Message-Id: <1287566424-9851-1-git-send-email-savinay.dharmappa@ti.com>
-Cc: Aleksey Makarov <amakarov@ru.mvista.com>,
-	Sergei Shtylyov <sshtylyov@ru.mvista.com>,
-	David Griego <dgriego@mvista.com>, linux-mtd@lists.infradead.org,
-	Savinay Dharmappa <savinay.dharmappa@ti.com>
+	id 1P8WXD-0006Pa-P3
+	for linux-mtd@lists.infradead.org; Wed, 20 Oct 2010 11:08:46 +0000
+From: "Savinay Dharmappa" <savinay.dharmappa@ti.com>
+To: "'Savinay Dharmappa'" <savinay.dharmappa@ti.com>, <sudhakar.raj@ti.com>
+References: <1287566424-9851-1-git-send-email-savinay.dharmappa@ti.com>
+In-Reply-To: <1287566424-9851-1-git-send-email-savinay.dharmappa@ti.com>
+Subject: RE: [PATCH] davinci: Platform support for OMAP-L137/AM17x NOR flash
+	driver
+Date: Wed, 20 Oct 2010 16:32:34 +0530
+Message-ID: <000301cb7046$4c5bfe30$e513fa90$@dharmappa@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Cc: 'Aleksey Makarov' <amakarov@ru.mvista.com>,
+	'Sergei Shtylyov' <sshtylyov@ru.mvista.com>,
+	'David Griego' <dgriego@mvista.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,6 +26,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+Hi all,
+		Please ignore this patch, as this was sent accidentally.
+Thanks
+Savinay
+
+-----Original Message-----
+From: Savinay Dharmappa [mailto:savinay.dharmappa@ti.com] 
+Sent: Wednesday, October 20, 2010 2:50 PM
+To: sudhakar.raj@ti.com
+Cc: linux-mtd@lists.infradead.org; David Griego; Aleksey Makarov; Sergei
+Shtylyov; Savinay Dharmappa
+Subject: [PATCH] davinci: Platform support for OMAP-L137/AM17x NOR flash
+driver
 
 From: David Griego <dgriego@mvista.com>
 
@@ -32,7 +53,8 @@ Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 Signed-off-by: Savinay Dharmappa <savinay.dharmappa@ti.com>
 ---
  arch/arm/mach-davinci/Kconfig           |    8 +
- arch/arm/mach-davinci/board-da830-evm.c |  220 +++++++++++++++++++++++++++++++
+ arch/arm/mach-davinci/board-da830-evm.c |  220
++++++++++++++++++++++++++++++++
  2 files changed, 228 insertions(+), 0 deletions(-)
 
 diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
@@ -47,14 +69,17 @@ index 9aca60c..baa39ee 100644
 +config DA830_UI_NOR
 +        bool "NOR flash"
 +        help
-+          Configure this option to specify the that AEMIF CE2/CE3 will be used to
-+          communicate to the NOR flash. Do not forget to setup the switch SW1
++          Configure this option to specify the that AEMIF CE2/CE3 will be
+used to
++          communicate to the NOR flash. Do not forget to setup the switch
+SW1
 +          on UI card correctly.
 +
  endchoice
  
  config MACH_DAVINCI_DA850_EVM
-diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+diff --git a/arch/arm/mach-davinci/board-da830-evm.c
+b/arch/arm/mach-davinci/board-da830-evm.c
 index 1bb89d3..c8a5d4b 100644
 --- a/arch/arm/mach-davinci/board-da830-evm.c
 +++ b/arch/arm/mach-davinci/board-da830-evm.c
@@ -101,13 +126,18 @@ index 1bb89d3..c8a5d4b 100644
 +{
 +	/*
 +	 * CS2 and CS3 address lines are used to address nor flash. Address
-+	 * line A0-A14 going to the NOR flash are latched using AEMIF address
++	 * line A0-A14 going to the NOR flash are latched using AEMIF
+address
 +	 * lines B_EMIF_BA0-B_EMIF_A12 on CS2. Address lines A15-A23 of the
-+	 * NOR flash are latched using AEMIF address lines B_EMIF_A0-B_EMIF_A6
-+	 * on CS3. The offset argument received by this function is the offset
-+	 * within NOR flash. Upper address is obtained  by shifting the offset
++	 * NOR flash are latched using AEMIF address lines
+B_EMIF_A0-B_EMIF_A6
++	 * on CS3. The offset argument received by this function is the
+offset
++	 * within NOR flash. Upper address is obtained  by shifting the
+offset
 +	 * by the number of CS2 address lines used (13) and masking it with
-+	 * complement of 3 (2 address lines used to address banks) and adding
++	 * complement of 3 (2 address lines used to address banks) and
+adding
 +	 * the resultant offset value to CS3 base address. Writing a zero to
 +	 * this address will latch the upper address lines.
 +	 */
@@ -137,7 +167,8 @@ index 1bb89d3..c8a5d4b 100644
 +	clk_enable(da830_evm_nor.clk);
 +
 +	da830_evm_nor.aemif.res = request_mem_region(DA8XX_AEMIF_CTL_BASE,
-+						     SZ_32K, "AEMIF control");
++						     SZ_32K, "AEMIF
+control");
 +	if (da830_evm_nor.aemif.res == NULL) {
 +		pr_err("%s: could not request AEMIF control region\n",
 +			__func__);
@@ -147,7 +178,8 @@ index 1bb89d3..c8a5d4b 100644
 +	da830_evm_nor.aemif.addr = ioremap_nocache(DA8XX_AEMIF_CTL_BASE,
 +						   SZ_32K);
 +	if (da830_evm_nor.aemif.addr == NULL) {
-+		pr_err("%s: could not remap AEMIF control region\n", __func__);
++		pr_err("%s: could not remap AEMIF control region\n",
+__func__);
 +		goto err_aemif_region;
 +	}
 +
@@ -155,7 +187,8 @@ index 1bb89d3..c8a5d4b 100644
 +
 +	/* Set maximum wait cycles */
 +	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
-+						da830_evm_nor.aemif.addr, cs);
++						da830_evm_nor.aemif.addr,
+cs);
 +
 +	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
 +					da830_evm_nor.aemif.addr, cs + 1);
@@ -173,7 +206,8 @@ index 1bb89d3..c8a5d4b 100644
 +	da830_evm_nor.latch.addr =
 +		ioremap_nocache(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
 +	if (da830_evm_nor.latch.addr == NULL) {
-+		pr_err("%s: could not remap address latch region\n", __func__);
++		pr_err("%s: could not remap address latch region\n",
+__func__);
 +		goto err_latch_region;
 +	}
 +	return 0;
@@ -268,7 +302,8 @@ index 1bb89d3..c8a5d4b 100644
 +	if (HAS_MMC) {
 +		pr_warning("WARNING: both MMC/SD and NOR are "
 +				"enabled, but they share AEMIF pins.\n"
-+					"\tDisable MMC/SD for NOR support.\n");
++					"\tDisable MMC/SD for NOR
+support.\n");
 +		return;
 +	}
 +
@@ -290,7 +325,8 @@ index 1bb89d3..c8a5d4b 100644
  #ifdef CONFIG_DA830_UI_LCD
  static inline void da830_evm_init_lcdc(int mux_mode)
  {
-@@ -469,6 +687,8 @@ static int __init da830_evm_ui_expander_setup(struct i2c_client *client,
+@@ -469,6 +687,8 @@ static int __init da830_evm_ui_expander_setup(struct
+i2c_client *client,
  
  	da830_evm_init_nand(gpio + 6);
  
