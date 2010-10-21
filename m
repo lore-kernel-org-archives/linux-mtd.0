@@ -1,19 +1,20 @@
 Received: from isilmar-3.linta.de ([188.40.101.200] helo=linta.de)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8xFH-0004WR-FL
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 15:41:01 +0000
+	id 1P8xFK-0004X0-5R
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 15:41:05 +0000
 From: Dominik Brodowski <linux@dominikbrodowski.net>
 To: <linux-pcmcia@lists.infradead.org>
-Subject: [PATCH 08/22] pcmcia: convert pcmcia_request_configuration to
-	pcmcia_enable_device
-Date: Thu, 21 Oct 2010 17:35:24 +0200
-Message-Id: <1287675338-12588-8-git-send-email-linux@dominikbrodowski.net>
+Subject: [PATCH 11/22] pcmcia: use autoconfiguration feature for ioports and
+	iomem
+Date: Thu, 21 Oct 2010 17:35:27 +0200
+Message-Id: <1287675338-12588-11-git-send-email-linux@dominikbrodowski.net>
 In-Reply-To: <20101021153450.GA12405@comet.dominikbrodowski.net>
 References: <20101021153450.GA12405@comet.dominikbrodowski.net>
 Cc: alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org,
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org, laforge@gnumonks.org,
-	linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+	laforge@gnumonks.org, linux-ide@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
 	Dominik Brodowski <linux@dominikbrodowski.net>,
 	linux-serial@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,13 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-pcmcia_enable_device() now replaces pcmcia_request_configuration().
-Instead of config_req_t, all necessary flags are either passed as
-a parameter to pcmcia_enable_device(), or (in rare circumstances)
-set in struct pcmcia_device -> flags.
-
-With the last remaining user of include/pcmcia/cs.h gone, remove
-all references.
+When CONF_AUTO_SET_IO or CONF_AUTO_SET_IOMEM are set, the corresponding
+fields in struct pcmcia_device *p_dev->resource[0,1,2] are set
+accordinly. Drivers wishing to override certain settings may do so in
+the callback function, but they no longer need to parse the CIS entries
+stored in cistpl_cftable_entry_t themselves.
 
 CC: netdev@vger.kernel.org
 CC: linux-wireless@vger.kernel.org
@@ -39,2788 +38,2820 @@ CC: linux-ide@vger.kernel.org
 CC: linux-usb@vger.kernel.org
 CC: laforge@gnumonks.org
 CC: linux-mtd@lists.infradead.org
+CC: linux-bluetooth@vger.kernel.org
 CC: alsa-devel@alsa-project.org
 CC: linux-serial@vger.kernel.org
 CC: Jiri Kosina <jkosina@suse.cz>
 CC: linux-scsi@vger.kernel.org
-Acked-by: Gustavo F. Padovan <padovan@profusion.mobi> (for drivers/bluetooth)
 Tested-by: Wolfram Sang <w.sang@pengutronix.de>
 Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
 ---
- Documentation/pcmcia/driver-changes.txt          |    6 ++++
- drivers/ata/pata_pcmcia.c                        |    5 +--
- drivers/bluetooth/bluecard_cs.c                  |    5 +--
- drivers/bluetooth/bt3c_cs.c                      |    5 +--
- drivers/bluetooth/btuart_cs.c                    |    5 +--
- drivers/bluetooth/dtl1_cs.c                      |    5 +--
- drivers/char/pcmcia/cm4000_cs.c                  |    3 +-
- drivers/char/pcmcia/cm4040_cs.c                  |    5 +--
- drivers/char/pcmcia/ipwireless/main.c            |    6 +--
- drivers/char/pcmcia/ipwireless/main.h            |    1 -
- drivers/char/pcmcia/ipwireless/tty.h             |    1 -
- drivers/char/pcmcia/synclink_cs.c                |   10 ++----
- drivers/ide/ide-cs.c                             |    6 ++--
- drivers/isdn/hardware/avm/avm_cs.c               |    5 +--
- drivers/isdn/hisax/avma1_cs.c                    |    5 +--
- drivers/isdn/hisax/elsa_cs.c                     |    8 +----
- drivers/isdn/hisax/sedlbauer_cs.c                |   12 ++-----
- drivers/isdn/hisax/teles_cs.c                    |    8 ++---
- drivers/mmc/host/sdricoh_cs.c                    |    1 -
- drivers/mtd/maps/pcmciamtd.c                     |    6 +---
- drivers/net/pcmcia/3c574_cs.c                    |    5 +--
- drivers/net/pcmcia/3c589_cs.c                    |    5 +--
- drivers/net/pcmcia/axnet_cs.c                    |   10 +++---
- drivers/net/pcmcia/com20020_cs.c                 |    5 +--
- drivers/net/pcmcia/fmvj18x_cs.c                  |    5 +--
- drivers/net/pcmcia/ibmtr_cs.c                    |    5 +--
- drivers/net/pcmcia/nmclan_cs.c                   |    5 +--
- drivers/net/pcmcia/pcnet_cs.c                    |    7 ++--
- drivers/net/pcmcia/smc91c92_cs.c                 |    9 ++---
- drivers/net/pcmcia/xirc2ps_cs.c                  |   12 ++++----
- drivers/net/wireless/airo_cs.c                   |   16 ++--------
- drivers/net/wireless/atmel_cs.c                  |   16 ++--------
- drivers/net/wireless/b43/pcmcia.c                |    5 +--
- drivers/net/wireless/hostap/hostap_cs.c          |   10 ++----
- drivers/net/wireless/libertas/if_cs.c            |   10 ++----
- drivers/net/wireless/orinoco/orinoco_cs.c        |   12 +------
- drivers/net/wireless/orinoco/spectrum_cs.c       |   12 +------
- drivers/net/wireless/ray_cs.c                    |    5 +--
- drivers/net/wireless/wl3501_cs.c                 |    5 +--
- drivers/parport/parport_cs.c                     |    5 +--
- drivers/pcmcia/au1000_generic.h                  |    1 -
- drivers/pcmcia/au1000_pb1x00.c                   |    1 -
- drivers/pcmcia/cistpl.c                          |    1 -
- drivers/pcmcia/cs.c                              |    1 -
- drivers/pcmcia/cs_internal.h                     |    5 ---
- drivers/pcmcia/ds.c                              |    3 +-
- drivers/pcmcia/i82092.c                          |    1 -
- drivers/pcmcia/i82365.c                          |    1 -
- drivers/pcmcia/m32r_cfc.c                        |    1 -
- drivers/pcmcia/m32r_pcc.c                        |    1 -
- drivers/pcmcia/m8xx_pcmcia.c                     |    1 -
- drivers/pcmcia/pcmcia_cis.c                      |    1 -
- drivers/pcmcia/pcmcia_resource.c                 |   33 ++++++++++----------
- drivers/pcmcia/pd6729.c                          |    1 -
- drivers/pcmcia/rsrc_iodyn.c                      |    1 -
- drivers/pcmcia/rsrc_mgr.c                        |    1 -
- drivers/pcmcia/rsrc_nonstatic.c                  |    1 -
- drivers/pcmcia/sa1100_generic.c                  |    1 -
- drivers/pcmcia/soc_common.h                      |    1 -
- drivers/pcmcia/socket_sysfs.c                    |    1 -
- drivers/pcmcia/tcic.c                            |    1 -
- drivers/pcmcia/xxs1500_ss.c                      |    1 -
- drivers/pcmcia/yenta_socket.c                    |    1 -
- drivers/scsi/pcmcia/aha152x_stub.c               |    5 +--
- drivers/scsi/pcmcia/fdomain_stub.c               |    5 +--
- drivers/scsi/pcmcia/nsp_cs.c                     |   13 +++-----
- drivers/scsi/pcmcia/qlogic_stub.c                |    7 ++--
- drivers/scsi/pcmcia/sym53c500_cs.c               |    5 +--
- drivers/serial/serial_cs.c                       |   11 +++----
- drivers/ssb/main.c                               |    1 -
- drivers/ssb/pcmcia.c                             |    1 -
- drivers/ssb/scan.c                               |    1 -
- drivers/staging/comedi/drivers/cb_das16_cs.c     |   11 ++-----
- drivers/staging/comedi/drivers/das08_cs.c        |   17 ++---------
- drivers/staging/comedi/drivers/ni_daq_700.c      |   19 ++---------
- drivers/staging/comedi/drivers/ni_daq_dio24.c    |   19 ++---------
- drivers/staging/comedi/drivers/ni_labpc_cs.c     |   20 +++---------
- drivers/staging/comedi/drivers/ni_mio_cs.c       |    5 +--
- drivers/staging/comedi/drivers/quatech_daqp_cs.c |   17 ++---------
- drivers/staging/wlags49_h2/wl_cs.c               |    7 ++--
- drivers/staging/wlags49_h2/wl_internal.h         |    1 -
- drivers/telephony/ixj_pcmcia.c                   |    3 +-
- drivers/usb/host/sl811_cs.c                      |    7 +---
- include/pcmcia/cs.h                              |   35 ----------------------
- include/pcmcia/ds.h                              |   17 +++++++----
- include/pcmcia/ss.h                              |    1 -
- sound/pcmcia/pdaudiocf/pdaudiocf.c               |    5 ++-
- sound/pcmcia/pdaudiocf/pdaudiocf.h               |    1 -
- sound/pcmcia/vx/vxpocket.c                       |    6 ++--
- sound/pcmcia/vx/vxpocket.h                       |    1 -
- 90 files changed, 179 insertions(+), 395 deletions(-)
- delete mode 100644 include/pcmcia/cs.h
+ Documentation/pcmcia/driver-changes.txt          |   12 ++
+ drivers/ata/pata_pcmcia.c                        |   81 +++++---------
+ drivers/bluetooth/bt3c_cs.c                      |   53 +++++-----
+ drivers/bluetooth/btuart_cs.c                    |   51 +++++----
+ drivers/bluetooth/dtl1_cs.c                      |   18 +--
+ drivers/char/pcmcia/cm4000_cs.c                  |   15 +--
+ drivers/char/pcmcia/cm4040_cs.c                  |   22 +---
+ drivers/char/pcmcia/ipwireless/main.c            |   26 +---
+ drivers/char/pcmcia/synclink_cs.c                |   16 +--
+ drivers/ide/ide-cs.c                             |   82 ++++---------
+ drivers/isdn/hardware/avm/avm_cs.c               |   19 +---
+ drivers/isdn/hisax/avma1_cs.c                    |   22 +---
+ drivers/isdn/hisax/elsa_cs.c                     |   23 +---
+ drivers/isdn/hisax/sedlbauer_cs.c                |   38 +-----
+ drivers/isdn/hisax/teles_cs.c                    |   16 +--
+ drivers/net/pcmcia/axnet_cs.c                    |   32 +----
+ drivers/net/pcmcia/fmvj18x_cs.c                  |    5 +-
+ drivers/net/pcmcia/pcnet_cs.c                    |   38 ++-----
+ drivers/net/pcmcia/smc91c92_cs.c                 |   39 +++----
+ drivers/net/pcmcia/xirc2ps_cs.c                  |   69 ++++++-----
+ drivers/net/wireless/airo_cs.c                   |   34 +-----
+ drivers/net/wireless/atmel_cs.c                  |   28 +----
+ drivers/net/wireless/hostap/hostap_cs.c          |   43 +-------
+ drivers/net/wireless/libertas/if_cs.c            |   16 +--
+ drivers/net/wireless/orinoco/orinoco_cs.c        |   41 +------
+ drivers/net/wireless/orinoco/spectrum_cs.c       |   45 +-------
+ drivers/parport/parport_cs.c                     |   34 ++----
+ drivers/pcmcia/pcmcia_cis.c                      |   78 +++++++++++--
+ drivers/scsi/pcmcia/aha152x_stub.c               |   34 +++---
+ drivers/scsi/pcmcia/fdomain_stub.c               |   13 +--
+ drivers/scsi/pcmcia/nsp_cs.c                     |   47 ++------
+ drivers/scsi/pcmcia/qlogic_stub.c                |   13 +--
+ drivers/scsi/pcmcia/sym53c500_cs.c               |   13 +--
+ drivers/serial/serial_cs.c                       |  132 +++++++++++-----------
+ drivers/staging/comedi/drivers/cb_das16_cs.c     |   31 +-----
+ drivers/staging/comedi/drivers/das08_cs.c        |   33 +-----
+ drivers/staging/comedi/drivers/ni_daq_700.c      |   32 +-----
+ drivers/staging/comedi/drivers/ni_daq_dio24.c    |   32 +-----
+ drivers/staging/comedi/drivers/ni_labpc_cs.c     |   32 +-----
+ drivers/staging/comedi/drivers/ni_mio_cs.c       |   14 +--
+ drivers/staging/comedi/drivers/quatech_daqp_cs.c |   32 +-----
+ drivers/telephony/ixj_pcmcia.c                   |   32 ++----
+ drivers/usb/host/sl811_cs.c                      |   28 +----
+ include/pcmcia/ds.h                              |   30 ++----
+ 44 files changed, 517 insertions(+), 1027 deletions(-)
 
 diff --git a/Documentation/pcmcia/driver-changes.txt b/Documentation/pcmcia/driver-changes.txt
-index 86e0f49..62a029f 100644
+index 62a029f..dd04361 100644
 --- a/Documentation/pcmcia/driver-changes.txt
 +++ b/Documentation/pcmcia/driver-changes.txt
-@@ -1,4 +1,10 @@
+@@ -1,4 +1,16 @@
  This file details changes in 2.6 which affect PCMCIA card driver authors:
-+* pcmcia_request_configuration -> pcmcia_enable_device (as of 2.6.36)
-+   pcmcia_request_configuration() got renamed to pcmcia_enable_device(),
-+   as it mirrors pcmcia_disable_device(). Configuration settings are now
-+   stored in struct pcmcia_device, e.g. in the fields config_flags,
-+   config_index, config_base, vpp.
++* pcmcia_loop_config() and autoconfiguration (as of 2.6.36)
++   If struct pcmcia_device *p_dev->config_flags is set accordingly,
++   pcmcia_loop_config() now sets up certain configuration values
++   automatically, though the driver may still override the settings
++   in the callback function. The following autoconfiguration options
++   are provided at the moment:
++	CONF_AUTO_CHECK_VCC : check for matching Vcc
++	CONF_AUTO_SET_VPP   : set Vpp
++	CONF_AUTO_AUDIO     : auto-enable audio line, if required
++	CONF_AUTO_SET_IO    : set ioport resources (->resource[0,1])
++	CONF_AUTO_SET_IOMEM : set first iomem resource (->resource[2])
 +
- * pcmcia_request_window changes (as of 2.6.36)
-    Instead of win_req_t, drivers are now requested to fill out
-    struct pcmcia_device *p_dev->resource[2,3,4,5] for up to four ioport
+ * pcmcia_request_configuration -> pcmcia_enable_device (as of 2.6.36)
+    pcmcia_request_configuration() got renamed to pcmcia_enable_device(),
+    as it mirrors pcmcia_disable_device(). Configuration settings are now
 diff --git a/drivers/ata/pata_pcmcia.c b/drivers/ata/pata_pcmcia.c
-index c2679c0..76da55d 100644
+index 954f43c..88cb03c 100644
 --- a/drivers/ata/pata_pcmcia.c
 +++ b/drivers/ata/pata_pcmcia.c
-@@ -34,7 +34,6 @@
- #include <linux/ata.h>
- #include <linux/libata.h>
+@@ -167,45 +167,26 @@ static struct ata_port_operations pcmcia_8bit_port_ops = {
+ };
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include <pcmcia/cisreg.h>
-@@ -249,7 +248,7 @@ static int pcmcia_init_one(struct pcmcia_device *pdev)
+ 
+-struct pcmcia_config_check {
+-	unsigned long ctl_base;
+-	int is_kme;
+-};
+-
+-static int pcmcia_check_one_config(struct pcmcia_device *pdev,
+-				   cistpl_cftable_entry_t *cfg,
+-				   cistpl_cftable_entry_t *dflt,
+-				   void *priv_data)
++static int pcmcia_check_one_config(struct pcmcia_device *pdev, void *priv_data)
+ {
+-	struct pcmcia_config_check *stk = priv_data;
+-
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		pdev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		pdev->resource[0]->start = io->win[0].base;
+-		if (!(io->flags & CISTPL_IO_16BIT)) {
+-			pdev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-			pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-		}
+-		if (io->nwin == 2) {
+-			pdev->resource[0]->end = 8;
+-			pdev->resource[1]->start = io->win[1].base;
+-			pdev->resource[1]->end = (stk->is_kme) ? 2 : 1;
+-			if (pcmcia_request_io(pdev) != 0)
+-				return -ENODEV;
+-			stk->ctl_base = pdev->resource[1]->start;
+-		} else if ((io->nwin == 1) && (io->win[0].len >= 16)) {
+-			pdev->resource[0]->end = io->win[0].len;
+-			pdev->resource[1]->end = 0;
+-			if (pcmcia_request_io(pdev) != 0)
+-				return -ENODEV;
+-			stk->ctl_base = pdev->resource[0]->start + 0x0e;
+-		} else
++	int *is_kme = priv_data;
++
++	if (!(pdev->resource[0]->flags & IO_DATA_PATH_WIDTH_8)) {
++		pdev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++		pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
++	}
++	pdev->resource[1]->flags &= ~IO_DATA_PATH_WIDTH;
++	pdev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
++
++	if (pdev->resource[1]->end) {
++		pdev->resource[0]->end = 8;
++		pdev->resource[1]->end = (*is_kme) ? 2 : 1;
++	} else {
++		if (pdev->resource[0]->end < 16)
+ 			return -ENODEV;
+-		/* If we've got this far, we're done */
+-		return 0;
+ 	}
+-	return -ENODEV;
++
++	return pcmcia_request_io(pdev);
+ }
+ 
+ /**
+@@ -220,7 +201,6 @@ static int pcmcia_init_one(struct pcmcia_device *pdev)
+ {
+ 	struct ata_host *host;
+ 	struct ata_port *ap;
+-	struct pcmcia_config_check *stk = NULL;
+ 	int is_kme = 0, ret = -ENOMEM, p;
+ 	unsigned long io_base, ctl_base;
+ 	void __iomem *io_addr, *ctl_addr;
+@@ -228,10 +208,8 @@ static int pcmcia_init_one(struct pcmcia_device *pdev)
+ 	struct ata_port_operations *ops = &pcmcia_port_ops;
+ 
  	/* Set up attributes in order to probe card and get resources */
- 	pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
- 	pdev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
--	pdev->conf.Attributes = CONF_ENABLE_IRQ;
-+	pdev->config_flags |= CONF_ENABLE_IRQ;
+-	pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-	pdev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
+-	pdev->config_flags |= CONF_ENABLE_IRQ;
+-	pdev->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC;
++	pdev->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO |
++		CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC;
  
  	/* See if we have a manufacturer identifier. Use it to set is_kme for
  	   vendor quirks */
-@@ -275,7 +274,7 @@ static int pcmcia_init_one(struct pcmcia_device *pdev)
+@@ -239,21 +217,17 @@ static int pcmcia_init_one(struct pcmcia_device *pdev)
+ 		  ((pdev->card_id == PRODID_KME_KXLC005_A) ||
+ 		   (pdev->card_id == PRODID_KME_KXLC005_B)));
+ 
+-	/* Allocate resoure probing structures */
+-
+-	stk = kzalloc(sizeof(*stk), GFP_KERNEL);
+-	if (!stk)
+-		goto out1;
+-	stk->is_kme = is_kme;
+-	io_base = ctl_base = 0;
+-
+-	if (pcmcia_loop_config(pdev, pcmcia_check_one_config, stk)) {
++	if (pcmcia_loop_config(pdev, pcmcia_check_one_config, &is_kme)) {
+ 		pdev->config_flags &= ~CONF_AUTO_CHECK_VCC;
+-		if (pcmcia_loop_config(pdev, pcmcia_check_one_config, stk))
++		if (pcmcia_loop_config(pdev, pcmcia_check_one_config, &is_kme))
+ 			goto failed; /* No suitable config found */
+ 	}
+ 	io_base = pdev->resource[0]->start;
+-	ctl_base = stk->ctl_base;
++	if (pdev->resource[1]->end)
++		ctl_base = pdev->resource[1]->start;
++	else
++		ctl_base = pdev->resource[0]->start + 0x0e;
++
  	if (!pdev->irq)
  		goto failed;
  
--	ret = pcmcia_request_configuration(pdev, &pdev->conf);
-+	ret = pcmcia_enable_device(pdev);
- 	if (ret)
+@@ -310,13 +284,10 @@ static int pcmcia_init_one(struct pcmcia_device *pdev)
  		goto failed;
  
-diff --git a/drivers/bluetooth/bluecard_cs.c b/drivers/bluetooth/bluecard_cs.c
-index 08f4818..c9dd5b7 100644
---- a/drivers/bluetooth/bluecard_cs.c
-+++ b/drivers/bluetooth/bluecard_cs.c
-@@ -39,7 +39,6 @@
- #include <linux/skbuff.h>
- #include <linux/io.h>
+ 	pdev->priv = host;
+-	kfree(stk);
+ 	return 0;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -865,7 +864,7 @@ static int bluecard_probe(struct pcmcia_device *link)
+ failed:
+-	kfree(stk);
+ 	pcmcia_disable_device(pdev);
+-out1:
+ 	return ret;
+ }
+ 
+diff --git a/drivers/bluetooth/bt3c_cs.c b/drivers/bluetooth/bt3c_cs.c
+index 97338a3..8b8be35 100644
+--- a/drivers/bluetooth/bt3c_cs.c
++++ b/drivers/bluetooth/bt3c_cs.c
+@@ -656,10 +656,8 @@ static int bt3c_probe(struct pcmcia_device *link)
  	info->p_dev = link;
  	link->priv = info;
  
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
- 
- 	return bluecard_config(link);
- }
-@@ -905,7 +904,7 @@ static int bluecard_config(struct pcmcia_device *link)
- 	if (i != 0)
- 		goto failed;
- 
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0)
- 		goto failed;
- 
-diff --git a/drivers/bluetooth/bt3c_cs.c b/drivers/bluetooth/bt3c_cs.c
-index fb01807..3db9588 100644
---- a/drivers/bluetooth/bt3c_cs.c
-+++ b/drivers/bluetooth/bt3c_cs.c
-@@ -45,7 +45,6 @@
- #include <linux/device.h>
- #include <linux/firmware.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -660,7 +659,7 @@ static int bt3c_probe(struct pcmcia_device *link)
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
- 	link->resource[0]->end = 8;
- 
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-	link->resource[0]->end = 8;
+-
+-	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_VPP;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_VPP |
++		CONF_AUTO_SET_IO;
  
  	return bt3c_config(link);
  }
-@@ -741,7 +740,7 @@ found_port:
- 	if (i != 0)
- 		goto failed;
+@@ -673,38 +671,41 @@ static void bt3c_detach(struct pcmcia_device *link)
+ 	kfree(info);
+ }
  
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0)
- 		goto failed;
+-static int bt3c_check_config(struct pcmcia_device *p_dev,
+-			     cistpl_cftable_entry_t *cf,
+-			     cistpl_cftable_entry_t *dflt,
+-			     void *priv_data)
++static int bt3c_check_config(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	unsigned long try = (unsigned long) priv_data;
+-	p_dev->io_lines = (try == 0) ? 16 : cf->io.flags & CISTPL_IO_LINES_MASK;
++	int *try = priv_data;
  
+-	if ((cf->io.nwin > 0) && (cf->io.win[0].len == 8) &&
+-	    (cf->io.win[0].base != 0)) {
+-		p_dev->resource[0]->start = cf->io.win[0].base;
+-		if (!pcmcia_request_io(p_dev))
+-			return 0;
+-	}
+-	return -ENODEV;
++	if (try == 0)
++		p_dev->io_lines = 16;
++
++	if ((p_dev->resource[0]->end != 8) || (p_dev->resource[0]->start == 0))
++		return -EINVAL;
++
++	p_dev->resource[0]->end = 8;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ static int bt3c_check_config_notpicky(struct pcmcia_device *p_dev,
+-				      cistpl_cftable_entry_t *cf,
+-				      cistpl_cftable_entry_t *dflt,
+ 				      void *priv_data)
+ {
+ 	static unsigned int base[5] = { 0x3f8, 0x2f8, 0x3e8, 0x2e8, 0x0 };
+ 	int j;
+ 
+-	if ((cf->io.nwin > 0) && ((cf->io.flags & CISTPL_IO_LINES_MASK) <= 3)) {
+-		for (j = 0; j < 5; j++) {
+-			p_dev->resource[0]->start = base[j];
+-			p_dev->io_lines = base[j] ? 16 : 3;
+-			if (!pcmcia_request_io(p_dev))
+-				return 0;
+-		}
++	if (p_dev->io_lines > 3)
++		return -ENODEV;
++
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->resource[0]->end = 8;
++
++	for (j = 0; j < 5; j++) {
++		p_dev->resource[0]->start = base[j];
++		p_dev->io_lines = base[j] ? 16 : 3;
++		if (!pcmcia_request_io(p_dev))
++			return 0;
+ 	}
+ 	return -ENODEV;
+ }
 diff --git a/drivers/bluetooth/btuart_cs.c b/drivers/bluetooth/btuart_cs.c
-index 897c7c7..c5c4359 100644
+index 8a6864f..9f9bb69 100644
 --- a/drivers/bluetooth/btuart_cs.c
 +++ b/drivers/bluetooth/btuart_cs.c
-@@ -41,7 +41,6 @@
- #include <asm/system.h>
- #include <asm/io.h>
+@@ -585,10 +585,8 @@ static int btuart_probe(struct pcmcia_device *link)
+ 	info->p_dev = link;
+ 	link->priv = info;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -589,7 +588,7 @@ static int btuart_probe(struct pcmcia_device *link)
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
- 	link->resource[0]->end = 8;
- 
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-	link->resource[0]->end = 8;
+-
+-	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_VPP;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_VPP |
++		CONF_AUTO_SET_IO;
  
  	return btuart_config(link);
  }
-@@ -670,7 +669,7 @@ found_port:
- 	if (i != 0)
- 		goto failed;
+@@ -602,38 +600,41 @@ static void btuart_detach(struct pcmcia_device *link)
+ 	kfree(info);
+ }
  
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0)
- 		goto failed;
+-static int btuart_check_config(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cf,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int btuart_check_config(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	int *try = priv_data;
+-	p_dev->io_lines = (try == 0) ? 16 : cf->io.flags & CISTPL_IO_LINES_MASK;
  
+-	if ((cf->io.nwin > 0) && (cf->io.win[0].len == 8) &&
+-	    (cf->io.win[0].base != 0)) {
+-		p_dev->resource[0]->start = cf->io.win[0].base;
+-		if (!pcmcia_request_io(p_dev))
+-			return 0;
+-	}
+-	return -ENODEV;
++	if (try == 0)
++		p_dev->io_lines = 16;
++
++	if ((p_dev->resource[0]->end != 8) || (p_dev->resource[0]->start == 0))
++		return -EINVAL;
++
++	p_dev->resource[0]->end = 8;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ static int btuart_check_config_notpicky(struct pcmcia_device *p_dev,
+-					cistpl_cftable_entry_t *cf,
+-					cistpl_cftable_entry_t *dflt,
+ 					void *priv_data)
+ {
+ 	static unsigned int base[5] = { 0x3f8, 0x2f8, 0x3e8, 0x2e8, 0x0 };
+ 	int j;
+ 
+-	if ((cf->io.nwin > 0) && ((cf->io.flags & CISTPL_IO_LINES_MASK) <= 3)) {
+-		for (j = 0; j < 5; j++) {
+-			p_dev->resource[0]->start = base[j];
+-			p_dev->io_lines = base[j] ? 16 : 3;
+-			if (!pcmcia_request_io(p_dev))
+-				return 0;
+-		}
++	if (p_dev->io_lines > 3)
++		return -ENODEV;
++
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->resource[0]->end = 8;
++
++	for (j = 0; j < 5; j++) {
++		p_dev->resource[0]->start = base[j];
++		p_dev->io_lines = base[j] ? 16 : 3;
++		if (!pcmcia_request_io(p_dev))
++			return 0;
+ 	}
+ 	return -ENODEV;
+ }
 diff --git a/drivers/bluetooth/dtl1_cs.c b/drivers/bluetooth/dtl1_cs.c
-index b4c9a2e..38206df 100644
+index 4620cc3..12cd177 100644
 --- a/drivers/bluetooth/dtl1_cs.c
 +++ b/drivers/bluetooth/dtl1_cs.c
-@@ -41,7 +41,6 @@
- #include <asm/system.h>
- #include <asm/io.h>
+@@ -571,10 +571,7 @@ static int dtl1_probe(struct pcmcia_device *link)
+ 	info->p_dev = link;
+ 	link->priv = info;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -575,7 +574,7 @@ static int dtl1_probe(struct pcmcia_device *link)
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
- 	link->resource[0]->end = 8;
- 
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-	link->resource[0]->end = 8;
+-
+-	link->config_flags |= CONF_ENABLE_IRQ;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
  
  	return dtl1_config(link);
  }
-@@ -619,7 +618,7 @@ static int dtl1_config(struct pcmcia_device *link)
- 	if (i != 0)
- 		goto failed;
+@@ -589,17 +586,14 @@ static void dtl1_detach(struct pcmcia_device *link)
+ 	kfree(info);
+ }
  
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0)
- 		goto failed;
+-static int dtl1_confcheck(struct pcmcia_device *p_dev,
+-			  cistpl_cftable_entry_t *cf,
+-			  cistpl_cftable_entry_t *dflt,
+-			  void *priv_data)
++static int dtl1_confcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if ((cf->io.nwin != 1) || (cf->io.win[0].len <= 8))
++	if ((p_dev->resource[1]->end) || (p_dev->resource[1]->end < 8))
+ 		return -ENODEV;
+ 
+-	p_dev->resource[0]->start = cf->io.win[0].base;
+-	p_dev->resource[0]->end = cf->io.win[0].len;	/*yo */
+-	p_dev->io_lines = cf->io.flags & CISTPL_IO_LINES_MASK;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++
+ 	return pcmcia_request_io(p_dev);
+ }
  
 diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
-index d2accd6..75caa8c 100644
+index 0b2f3b9..79de9cc 100644
 --- a/drivers/char/pcmcia/cm4000_cs.c
 +++ b/drivers/char/pcmcia/cm4000_cs.c
-@@ -34,7 +34,6 @@
- #include <linux/uaccess.h>
- #include <linux/io.h>
+@@ -1741,19 +1741,8 @@ static void cmm_cm4000_release(struct pcmcia_device * link)
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-@@ -1767,7 +1766,7 @@ static int cm4000_config(struct pcmcia_device * link, int devno)
+ /*==== Interface to PCMCIA Layer =======================================*/
+ 
+-static int cm4000_config_check(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cfg,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int cm4000_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (!cfg->io.nwin)
+-		return -ENODEV;
+-
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
+-	p_dev->resource[0]->flags |= pcmcia_io_cfg_data_width(cfg->io.flags);
+-	p_dev->io_lines = cfg->io.flags & CISTPL_IO_LINES_MASK;
+-
+ 	return pcmcia_request_io(p_dev);
+ }
+ 
+@@ -1761,6 +1750,8 @@ static int cm4000_config(struct pcmcia_device * link, int devno)
+ {
+ 	struct cm4000_dev *dev;
+ 
++	link->config_flags |= CONF_AUTO_SET_IO;
++
+ 	/* read the config-tuples */
  	if (pcmcia_loop_config(link, cm4000_config_check, NULL))
  		goto cs_release;
- 
--	if (pcmcia_request_configuration(link, &link->conf))
-+	if (pcmcia_enable_device(link))
- 		goto cs_release;
- 
- 	dev = link->priv;
 diff --git a/drivers/char/pcmcia/cm4040_cs.c b/drivers/char/pcmcia/cm4040_cs.c
-index a32eba0..0c87b80 100644
+index acf88d5..bf012d2 100644
 --- a/drivers/char/pcmcia/cm4040_cs.c
 +++ b/drivers/char/pcmcia/cm4040_cs.c
-@@ -29,7 +29,6 @@
- #include <asm/uaccess.h>
- #include <asm/io.h>
+@@ -515,25 +515,9 @@ static void cm4040_reader_release(struct pcmcia_device *link)
+ 	return;
+ }
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-@@ -547,10 +546,10 @@ static int reader_config(struct pcmcia_device *link, int devno)
+-static int cm4040_config_check(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cfg,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int cm4040_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	int rc;
+-	if (!cfg->io.nwin)
+-		return -ENODEV;
+-
+-	/* Get the IOaddr */
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
+-	p_dev->resource[0]->flags |= pcmcia_io_cfg_data_width(cfg->io.flags);
+-	p_dev->io_lines = cfg->io.flags & CISTPL_IO_LINES_MASK;
+-	rc = pcmcia_request_io(p_dev);
+-
+-	dev_printk(KERN_INFO, &p_dev->dev,
+-		   "pcmcia_request_io returned 0x%x\n", rc);
+-	return rc;
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ 
+@@ -542,6 +526,8 @@ static int reader_config(struct pcmcia_device *link, int devno)
+ 	struct reader_dev *dev;
+ 	int fail_rc;
+ 
++	link->config_flags |= CONF_AUTO_SET_IO;
++
  	if (pcmcia_loop_config(link, cm4040_config_check, NULL))
  		goto cs_release;
  
--	fail_rc = pcmcia_request_configuration(link, &link->conf);
-+	fail_rc = pcmcia_enable_device(link);
- 	if (fail_rc != 0) {
- 		dev_printk(KERN_INFO, &link->dev,
--			   "pcmcia_request_configuration failed 0x%x\n",
-+			   "pcmcia_enable_device failed 0x%x\n",
- 			   fail_rc);
- 		goto cs_release;
- 	}
 diff --git a/drivers/char/pcmcia/ipwireless/main.c b/drivers/char/pcmcia/ipwireless/main.c
-index 05c4e68..cd21b2b 100644
+index 1b7f092..594c23b 100644
 --- a/drivers/char/pcmcia/ipwireless/main.c
 +++ b/drivers/char/pcmcia/ipwireless/main.c
-@@ -32,7 +32,6 @@
- #include <pcmcia/device_id.h>
- #include <pcmcia/ss.h>
- #include <pcmcia/ds.h>
--#include <pcmcia/cs.h>
+@@ -75,22 +75,18 @@ static void signalled_reboot_callback(void *callback_data)
+ 	schedule_work(&ipw->work_reboot);
+ }
  
- static struct pcmcia_device_id ipw_ids[] = {
- 	PCMCIA_DEVICE_MANF_CARD(0x02f2, 0x0100),
-@@ -172,7 +171,7 @@ static int config_ipwireless(struct ipw_dev *ipw)
+-static int ipwireless_probe(struct pcmcia_device *p_dev,
+-			    cistpl_cftable_entry_t *cfg,
+-			    cistpl_cftable_entry_t *dflt,
+-			    void *priv_data)
++static int ipwireless_probe(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	struct ipw_dev *ipw = priv_data;
+ 	struct resource *io_resource;
+ 	int ret;
+ 
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+ 	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
+ 
+ 	/* 0x40 causes it to generate level mode interrupts. */
+ 	/* 0x04 enables IREQ pin. */
+-	p_dev->config_index = cfg->index | 0x44;
++	p_dev->config_index |= 0x44;
+ 	p_dev->io_lines = 16;
+ 	ret = pcmcia_request_io(p_dev);
+ 	if (ret)
+@@ -100,26 +96,18 @@ static int ipwireless_probe(struct pcmcia_device *p_dev,
+ 				resource_size(p_dev->resource[0]),
+ 				IPWIRELESS_PCCARD_NAME);
+ 
+-	if (cfg->mem.nwin == 0)
+-		return 0;
+-
+ 	p_dev->resource[2]->flags |=
+ 		WIN_DATA_WIDTH_16 | WIN_MEMORY_TYPE_CM | WIN_ENABLE;
+-	p_dev->resource[2]->start = cfg->mem.win[0].host_addr;
+-	p_dev->resource[2]->end = cfg->mem.win[0].len;
+-	if (p_dev->resource[2]->end < 0x1000)
+-		p_dev->resource[2]->end = 0x1000;
+ 
+ 	ret = pcmcia_request_window(p_dev, p_dev->resource[2], 0);
+ 	if (ret != 0)
+ 		goto exit1;
+ 
+-	ret = pcmcia_map_mem_page(p_dev, p_dev->resource[2],
+-				cfg->mem.win[0].card_addr);
++	ret = pcmcia_map_mem_page(p_dev, p_dev->resource[2], p_dev->card_addr);
+ 	if (ret != 0)
+ 		goto exit2;
+ 
+-	ipw->is_v2_card = cfg->mem.win[0].len == 0x100;
++	ipw->is_v2_card = resource_size(p_dev->resource[2]) == 0x100;
+ 
+ 	ipw->attr_memory = ioremap(p_dev->resource[2]->start,
+ 				resource_size(p_dev->resource[2]));
+@@ -165,13 +153,13 @@ static int config_ipwireless(struct ipw_dev *ipw)
+ 	int ret = 0;
+ 
+ 	ipw->is_v2_card = 0;
++	link->config_flags |= CONF_AUTO_SET_IO | CONF_AUTO_SET_IOMEM |
++		CONF_ENABLE_IRQ;
+ 
+ 	ret = pcmcia_loop_config(link, ipwireless_probe, ipw);
  	if (ret != 0)
  		return ret;
  
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
- 
+-	link->config_flags |= CONF_ENABLE_IRQ;
+-
  	INIT_WORK(&ipw->work_reboot, signalled_reboot_work);
  
-@@ -210,8 +209,7 @@ static int config_ipwireless(struct ipw_dev *ipw)
- 	 * Do the RequestConfiguration last, because it enables interrupts.
- 	 * Then we don't get any interrupts before we're ready for them.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
--
-+	ret = pcmcia_enable_device(link);
- 	if (ret != 0)
- 		goto exit;
- 
-diff --git a/drivers/char/pcmcia/ipwireless/main.h b/drivers/char/pcmcia/ipwireless/main.h
-index 9040219..f2cbb11 100644
---- a/drivers/char/pcmcia/ipwireless/main.h
-+++ b/drivers/char/pcmcia/ipwireless/main.h
-@@ -21,7 +21,6 @@
- #include <linux/sched.h>
- #include <linux/types.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-diff --git a/drivers/char/pcmcia/ipwireless/tty.h b/drivers/char/pcmcia/ipwireless/tty.h
-index 3e163d4..747b2d6 100644
---- a/drivers/char/pcmcia/ipwireless/tty.h
-+++ b/drivers/char/pcmcia/ipwireless/tty.h
-@@ -21,7 +21,6 @@
- #include <linux/types.h>
- #include <linux/sched.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
+ 	ipwireless_init_hardware_v1(ipw->hardware, link->resource[0]->start,
 diff --git a/drivers/char/pcmcia/synclink_cs.c b/drivers/char/pcmcia/synclink_cs.c
-index 535aa08..99feaed 100644
+index c701434..a343b8f 100644
 --- a/drivers/char/pcmcia/synclink_cs.c
 +++ b/drivers/char/pcmcia/synclink_cs.c
-@@ -70,7 +70,6 @@
- #include <linux/workqueue.h>
- #include <linux/hdlc.h>
+@@ -561,19 +561,8 @@ static int mgslpc_probe(struct pcmcia_device *link)
+ /* Card has been inserted.
+  */
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -550,8 +549,6 @@ static int mgslpc_probe(struct pcmcia_device *link)
- 
-     /* Initialize the struct pcmcia_device structure */
- 
--    link->conf.Attributes = 0;
+-static int mgslpc_ioprobe(struct pcmcia_device *p_dev,
+-			  cistpl_cftable_entry_t *cfg,
+-			  cistpl_cftable_entry_t *dflt,
+-			  void *priv_data)
++static int mgslpc_ioprobe(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (!cfg->io.nwin)
+-		return -ENODEV;
 -
-     ret = mgslpc_config(link);
-     if (ret)
- 	    return ret;
-@@ -593,14 +590,14 @@ static int mgslpc_config(struct pcmcia_device *link)
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
+-	p_dev->resource[0]->flags |= pcmcia_io_cfg_data_width(cfg->io.flags);
+-	p_dev->io_lines = cfg->io.flags & CISTPL_IO_LINES_MASK;
+-
+ 	return pcmcia_request_io(p_dev);
+ }
+ 
+@@ -585,11 +574,12 @@ static int mgslpc_config(struct pcmcia_device *link)
+     if (debug_level >= DEBUG_LEVEL_INFO)
+ 	    printk("mgslpc_config(0x%p)\n", link);
+ 
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
++
+     ret = pcmcia_loop_config(link, mgslpc_ioprobe, NULL);
      if (ret != 0)
  	    goto failed;
  
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->config_flags |= CONF_ENABLE_IRQ;
      link->config_index = 8;
      link->config_regs = PRESENT_OPTION;
  
-     ret = pcmcia_request_irq(link, mgslpc_isr);
-     if (ret)
- 	    goto failed;
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
- 
-@@ -609,8 +606,7 @@ static int mgslpc_config(struct pcmcia_device *link)
- 
-     dev_info(&link->dev, "index 0x%02x:",
- 	    link->config_index);
--    if (link->conf.Attributes & CONF_ENABLE_IRQ)
--	    printk(", irq %d", link->irq);
-+    printk(", irq %d", link->irq);
-     if (link->resource[0])
- 	    printk(", io %pR", link->resource[0]);
-     printk("\n");
 diff --git a/drivers/ide/ide-cs.c b/drivers/ide/ide-cs.c
-index 07e3787..87ad049 100644
+index 25b8a10..c389d9a 100644
 --- a/drivers/ide/ide-cs.c
 +++ b/drivers/ide/ide-cs.c
-@@ -43,7 +43,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
+@@ -96,10 +96,8 @@ static int ide_probe(struct pcmcia_device *link)
+     info->p_dev = link;
+     link->priv = info;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include <pcmcia/cisreg.h>
-@@ -99,7 +98,7 @@ static int ide_probe(struct pcmcia_device *link)
- 
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
-     link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-    link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
+-    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC;
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO |
++	    CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC;
  
      return ide_config(link);
  } /* ide_attach */
-@@ -284,7 +283,8 @@ static int ide_config(struct pcmcia_device *link)
+@@ -194,52 +192,31 @@ out_release:
+ 
+ ======================================================================*/
+ 
+-struct pcmcia_config_check {
+-	unsigned long ctl_base;
+-	int is_kme;
+-};
+-
+-static int pcmcia_check_one_config(struct pcmcia_device *pdev,
+-				   cistpl_cftable_entry_t *cfg,
+-				   cistpl_cftable_entry_t *dflt,
+-				   void *priv_data)
++static int pcmcia_check_one_config(struct pcmcia_device *pdev, void *priv_data)
+ {
+-	struct pcmcia_config_check *stk = priv_data;
+-
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		pdev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		pdev->config_index = cfg->index;
+-		pdev->resource[0]->start = io->win[0].base;
+-		if (!(io->flags & CISTPL_IO_16BIT)) {
+-			pdev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-			pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-		}
+-		if (io->nwin == 2) {
+-			pdev->resource[0]->end = 8;
+-			pdev->resource[1]->start = io->win[1].base;
+-			pdev->resource[1]->end = (stk->is_kme) ? 2 : 1;
+-			if (pcmcia_request_io(pdev) != 0)
+-				return -ENODEV;
+-			stk->ctl_base = pdev->resource[1]->start;
+-		} else if ((io->nwin == 1) && (io->win[0].len >= 16)) {
+-			pdev->resource[0]->end = io->win[0].len;
+-			pdev->resource[1]->end = 0;
+-			if (pcmcia_request_io(pdev) != 0)
+-				return -ENODEV;
+-			stk->ctl_base = pdev->resource[0]->start + 0x0e;
+-		} else
++	int *is_kme = priv_data;
++
++	if (!(pdev->resource[0]->flags & IO_DATA_PATH_WIDTH_8)) {
++		pdev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++		pdev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
++	}
++	pdev->resource[1]->flags &= ~IO_DATA_PATH_WIDTH;
++	pdev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
++
++	if (pdev->resource[1]->end) {
++		pdev->resource[0]->end = 8;
++		pdev->resource[1]->end = (*is_kme) ? 2 : 1;
++	} else {
++		if (pdev->resource[0]->end < 16)
+ 			return -ENODEV;
+-		/* If we've got this far, we're done */
+-		return 0;
+ 	}
+-	return -ENODEV;
++
++	return pcmcia_request_io(pdev);
+ }
+ 
+ static int ide_config(struct pcmcia_device *link)
+ {
+     ide_info_t *info = link->priv;
+-    struct pcmcia_config_check *stk = NULL;
+     int ret = 0, is_kme = 0;
+     unsigned long io_base, ctl_base;
+     struct ide_host *host;
+@@ -250,19 +227,16 @@ static int ide_config(struct pcmcia_device *link)
+ 	      ((link->card_id == PRODID_KME_KXLC005_A) ||
+ 	       (link->card_id == PRODID_KME_KXLC005_B)));
+ 
+-    stk = kzalloc(sizeof(*stk), GFP_KERNEL);
+-    if (!stk)
+-	    goto err_mem;
+-    stk->is_kme = is_kme;
+-    io_base = ctl_base = 0;
+-
+-    if (pcmcia_loop_config(link, pcmcia_check_one_config, stk)) {
++    if (pcmcia_loop_config(link, pcmcia_check_one_config, &is_kme)) {
+ 	    link->config_flags &= ~CONF_AUTO_CHECK_VCC;
+-	    if (pcmcia_loop_config(link, pcmcia_check_one_config, stk))
++	    if (pcmcia_loop_config(link, pcmcia_check_one_config, &is_kme))
+ 		    goto failed; /* No suitable config found */
+     }
+     io_base = link->resource[0]->start;
+-    ctl_base = stk->ctl_base;
++    if (link->resource[1]->end)
++	    ctl_base = link->resource[1]->start;
++    else
++	    ctl_base = link->resource[0]->start + 0x0e;
  
      if (!link->irq)
  	    goto failed;
--    ret = pcmcia_request_configuration(link, &link->conf);
-+
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
+@@ -294,15 +268,9 @@ static int ide_config(struct pcmcia_device *link)
+ 	    'a' + host->ports[0]->index * 2,
+ 	    link->vpp / 10, link->vpp % 10);
  
+-    kfree(stk);
+     return 0;
+ 
+-err_mem:
+-    printk(KERN_NOTICE "ide-cs: ide_config failed memory allocation\n");
+-    goto failed;
+-
+ failed:
+-    kfree(stk);
+     ide_release(link);
+     return -ENODEV;
+ } /* ide_config */
 diff --git a/drivers/isdn/hardware/avm/avm_cs.c b/drivers/isdn/hardware/avm/avm_cs.c
-index 2d8bbbf..6ea5cd2 100644
+index 9dbab9c..403a995 100644
 --- a/drivers/isdn/hardware/avm/avm_cs.c
 +++ b/drivers/isdn/hardware/avm/avm_cs.c
-@@ -20,7 +20,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
+@@ -72,13 +72,8 @@ static void avmcs_detach(struct pcmcia_device *p_dev);
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -79,7 +78,7 @@ static int avmcs_probe(struct pcmcia_device *p_dev)
-     p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
- 
+ static int avmcs_probe(struct pcmcia_device *p_dev)
+ {
+-
+-    /* The io structure describes IO port mapping */
+-    p_dev->resource[0]->end = 16;
+-    p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-
      /* General socket configuration */
--    p_dev->conf.Attributes = CONF_ENABLE_IRQ;
-+    p_dev->config_flags |= CONF_ENABLE_IRQ;
+-    p_dev->config_flags |= CONF_ENABLE_IRQ;
++    p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
      p_dev->config_index = 1;
      p_dev->config_regs = PRESENT_OPTION;
  
-@@ -149,7 +148,7 @@ static int avmcs_config(struct pcmcia_device *link)
- 	/*
-          * configure the PCMCIA socket
- 	  */
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0) {
- 	    pcmcia_disable_device(link);
- 	    break;
+@@ -107,16 +102,12 @@ static void avmcs_detach(struct pcmcia_device *link)
+     
+ ======================================================================*/
+ 
+-static int avmcs_configcheck(struct pcmcia_device *p_dev,
+-			     cistpl_cftable_entry_t *cf,
+-			     cistpl_cftable_entry_t *dflt,
+-			     void *priv_data)
++static int avmcs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cf->io.nwin <= 0)
+-		return -ENODEV;
++	p_dev->resource[0]->end = 16;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+ 
+-	p_dev->resource[0]->start = cf->io.win[0].base;
+-	p_dev->resource[0]->end = cf->io.win[0].len;
+ 	return pcmcia_request_io(p_dev);
+ }
+ 
 diff --git a/drivers/isdn/hisax/avma1_cs.c b/drivers/isdn/hisax/avma1_cs.c
-index e25f6c7..5dd47ad 100644
+index 2f2b000..cb09f0c 100644
 --- a/drivers/isdn/hisax/avma1_cs.c
 +++ b/drivers/isdn/hisax/avma1_cs.c
-@@ -20,7 +20,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
+@@ -76,14 +76,8 @@ static int __devinit avma1cs_probe(struct pcmcia_device *p_dev)
+ {
+     dev_dbg(&p_dev->dev, "avma1cs_attach()\n");
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include "hisax_cfg.h"
-@@ -84,7 +83,7 @@ static int __devinit avma1cs_probe(struct pcmcia_device *p_dev)
-     p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_16;
- 
+-    /* The io structure describes IO port mapping */
+-    p_dev->resource[0]->end = 16;
+-    p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-    p_dev->resource[1]->end = 16;
+-    p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_16;
+-
      /* General socket configuration */
--    p_dev->conf.Attributes = CONF_ENABLE_IRQ;
-+    p_dev->config_flags |= CONF_ENABLE_IRQ;
+-    p_dev->config_flags |= CONF_ENABLE_IRQ;
++    p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
      p_dev->config_index = 1;
      p_dev->config_regs = PRESENT_OPTION;
  
-@@ -160,7 +159,7 @@ static int __devinit avma1cs_config(struct pcmcia_device *link)
- 	/*
- 	 * configure the PCMCIA socket
- 	 */
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0) {
- 	    pcmcia_disable_device(link);
- 	    break;
+@@ -114,17 +108,13 @@ static void __devexit avma1cs_detach(struct pcmcia_device *link)
+     
+ ======================================================================*/
+ 
+-static int avma1cs_configcheck(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cf,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int avma1cs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cf->io.nwin <= 0)
+-		return -ENODEV;
+-
+-	p_dev->resource[0]->start = cf->io.win[0].base;
+-	p_dev->resource[0]->end = cf->io.win[0].len;
++	p_dev->resource[0]->end = 16;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+ 	p_dev->io_lines = 5;
++
+ 	return pcmcia_request_io(p_dev);
+ }
+ 
 diff --git a/drivers/isdn/hisax/elsa_cs.c b/drivers/isdn/hisax/elsa_cs.c
-index f276e84..368c8a2 100644
+index 0a65280..f203a52 100644
 --- a/drivers/isdn/hisax/elsa_cs.c
 +++ b/drivers/isdn/hisax/elsa_cs.c
-@@ -46,7 +46,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
+@@ -118,16 +118,6 @@ static int __devinit elsa_cs_probe(struct pcmcia_device *link)
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -129,8 +128,6 @@ static int __devinit elsa_cs_probe(struct pcmcia_device *link)
-     link->resource[0]->end = 8;
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+     local->cardnr = -1;
  
--    link->conf.Attributes = CONF_ENABLE_IRQ;
+-    /*
+-      General socket configuration defaults can go here.  In this
+-      client, we assume very little, and rely on the CIS for almost
+-      everything.  In most clients, many details (i.e., number, sizes,
+-      and attributes of IO windows) are fixed by the nature of the
+-      device, and can be hard-wired here.
+-    */
+-    link->resource[0]->end = 8;
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
 -
      return elsa_cs_config(link);
  } /* elsa_cs_attach */
  
-@@ -205,15 +202,14 @@ static int __devinit elsa_cs_config(struct pcmcia_device *link)
-     if (!link->irq)
- 	goto failed;
+@@ -160,18 +150,17 @@ static void __devexit elsa_cs_detach(struct pcmcia_device *link)
  
--    i = pcmcia_request_configuration(link, &link->conf);
-+    i = pcmcia_enable_device(link);
+ ======================================================================*/
+ 
+-static int elsa_cs_configcheck(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cf,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int elsa_cs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	int j;
+ 
+ 	p_dev->io_lines = 3;
++	p_dev->resource[0]->end = 8;
++	p_dev->resource[0]->flags &= IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+ 
+-	if ((cf->io.nwin > 0) && cf->io.win[0].base) {
++	if ((p_dev->resource[0]->end) && p_dev->resource[0]->start) {
+ 		printk(KERN_INFO "(elsa_cs: looks like the 96 model)\n");
+-		p_dev->resource[0]->start = cf->io.win[0].base;
+ 		if (!pcmcia_request_io(p_dev))
+ 			return 0;
+ 	} else {
+@@ -194,6 +183,8 @@ static int __devinit elsa_cs_config(struct pcmcia_device *link)
+     dev_dbg(&link->dev, "elsa_config(0x%p)\n", link);
+     dev = link->priv;
+ 
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
++
+     i = pcmcia_loop_config(link, elsa_cs_configcheck, NULL);
      if (i != 0)
  	goto failed;
- 
-     /* Finally, report what we've done */
-     dev_info(&link->dev, "index 0x%02x: ",
- 	    link->config_index);
--    if (link->conf.Attributes & CONF_ENABLE_IRQ)
--	printk(", irq %d", link->irq);
-+    printk(", irq %d", link->irq);
-     if (link->resource[0])
- 	printk(" & %pR", link->resource[0]);
-     if (link->resource[1])
 diff --git a/drivers/isdn/hisax/sedlbauer_cs.c b/drivers/isdn/hisax/sedlbauer_cs.c
-index 43d0a4e..791e23a 100644
+index b69eccf..a88c88f 100644
 --- a/drivers/isdn/hisax/sedlbauer_cs.c
 +++ b/drivers/isdn/hisax/sedlbauer_cs.c
-@@ -46,7 +46,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
+@@ -128,8 +128,6 @@ static int __devinit sedlbauer_probe(struct pcmcia_device *link)
+     /* from old sedl_cs 
+     */
+     /* The io structure describes IO port mapping */
+-    link->resource[0]->end = 8;
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -132,8 +131,6 @@ static int __devinit sedlbauer_probe(struct pcmcia_device *link)
-     link->resource[0]->end = 8;
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
- 
--    link->conf.Attributes = 0;
--
      return sedlbauer_config(link);
  } /* sedlbauer_attach */
+@@ -161,35 +159,13 @@ static void __devexit sedlbauer_detach(struct pcmcia_device *link)
+     device available to the system.
+     
+ ======================================================================*/
+-static int sedlbauer_config_check(struct pcmcia_device *p_dev,
+-				  cistpl_cftable_entry_t *cfg,
+-				  cistpl_cftable_entry_t *dflt,
+-				  void *priv_data)
++static int sedlbauer_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
+-
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-					pcmcia_io_cfg_data_width(io->flags);
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		/* This reserves IO space but doesn't actually enable it */
+-		p_dev->io_lines = 3;
+-		if (pcmcia_request_io(p_dev) != 0)
+-			return -ENODEV;
+-	}
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
-@@ -175,7 +172,7 @@ static int sedlbauer_config_check(struct pcmcia_device *p_dev,
+-	return 0;
++	p_dev->io_lines = 3;
++	return pcmcia_request_io(p_dev);
+ }
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
  
- 	/* Use power settings for Vcc and Vpp if present */
- 	/*  Note that the CIS values need to be rescaled */
-@@ -192,7 +189,7 @@ static int sedlbauer_config_check(struct pcmcia_device *p_dev,
- 	else if (dflt->vpp1.present & (1<<CISTPL_POWER_VNOM))
- 		p_dev->vpp = dflt->vpp1.param[CISTPL_POWER_VNOM]/10000;
+@@ -202,7 +178,7 @@ static int __devinit sedlbauer_config(struct pcmcia_device *link)
+     dev_dbg(&link->dev, "sedlbauer_config(0x%p)\n", link);
  
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
+     link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_CHECK_VCC |
+-	    CONF_AUTO_SET_VPP | CONF_AUTO_AUDIO;
++	    CONF_AUTO_SET_VPP | CONF_AUTO_AUDIO | CONF_AUTO_SET_IO;
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -247,7 +244,7 @@ static int __devinit sedlbauer_config(struct pcmcia_device *link)
-        the I/O windows and the interrupt mapping, and putting the
-        card and host interface into "Memory and IO" mode.
-     */
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
- 
-@@ -256,8 +253,7 @@ static int __devinit sedlbauer_config(struct pcmcia_device *link)
- 	   link->config_index);
-     if (link->vpp)
- 	printk(", Vpp %d.%d", link->vpp/10, link->vpp%10);
--    if (link->conf.Attributes & CONF_ENABLE_IRQ)
--	printk(", irq %d", link->irq);
-+    printk(", irq %d", link->irq);
-     if (link->resource[0])
- 	printk(" & %pR", link->resource[0]);
-     if (link->resource[1])
+     /*
+       In this loop, we scan the CIS for configuration table entries,
 diff --git a/drivers/isdn/hisax/teles_cs.c b/drivers/isdn/hisax/teles_cs.c
-index 614afc6..2ae71e3 100644
+index 6605480..05a5631 100644
 --- a/drivers/isdn/hisax/teles_cs.c
 +++ b/drivers/isdn/hisax/teles_cs.c
-@@ -27,7 +27,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -109,7 +108,7 @@ static int __devinit teles_probe(struct pcmcia_device *link)
-     link->resource[0]->end = 96;
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
- 
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+@@ -105,10 +105,7 @@ static int __devinit teles_probe(struct pcmcia_device *link)
+       and attributes of IO windows) are fixed by the nature of the
+       device, and can be hard-wired here.
+     */
+-    link->resource[0]->end = 96;
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-
+-    link->config_flags |= CONF_ENABLE_IRQ;
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
  
      return teles_cs_config(link);
  } /* teles_attach */
-@@ -185,15 +184,14 @@ static int __devinit teles_cs_config(struct pcmcia_device *link)
-     if (!link->irq)
-         goto cs_failed;
+@@ -142,18 +139,17 @@ static void __devexit teles_detach(struct pcmcia_device *link)
  
--    i = pcmcia_request_configuration(link, &link->conf);
-+    i = pcmcia_enable_device(link);
-     if (i != 0)
-       goto cs_failed;
+ ======================================================================*/
  
-     /* Finally, report what we've done */
-     dev_info(&link->dev, "index 0x%02x:",
- 	    link->config_index);
--    if (link->conf.Attributes & CONF_ENABLE_IRQ)
--	    printk(", irq %d", link->irq);
-+    printk(", irq %d", link->irq);
-     if (link->resource[0])
- 	printk(" & %pR", link->resource[0]);
-     if (link->resource[1])
-diff --git a/drivers/mmc/host/sdricoh_cs.c b/drivers/mmc/host/sdricoh_cs.c
-index 7aa65bb..7a7273b 100644
---- a/drivers/mmc/host/sdricoh_cs.c
-+++ b/drivers/mmc/host/sdricoh_cs.c
-@@ -30,7 +30,6 @@
- #include <linux/ioport.h>
- #include <linux/scatterlist.h>
+-static int teles_cs_configcheck(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cf,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int teles_cs_configcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	int j;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include <linux/io.h>
-diff --git a/drivers/mtd/maps/pcmciamtd.c b/drivers/mtd/maps/pcmciamtd.c
-index 99c7257..388db9e 100644
---- a/drivers/mtd/maps/pcmciamtd.c
-+++ b/drivers/mtd/maps/pcmciamtd.c
-@@ -16,7 +16,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
+ 	p_dev->io_lines = 5;
++	p_dev->resource[0]->end = 96;
++	p_dev->resource[0]->flags &= IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-@@ -568,7 +567,6 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 	dev->pcmcia_map.map_priv_2 = (unsigned long)link->resource[2];
- 
- 	dev->vpp = (vpp) ? vpp : link->socket->socket.Vpp;
--	link->conf.Attributes = 0;
- 	if(setvpp == 2) {
- 		link->vpp = dev->vpp;
+-	if ((cf->io.nwin > 0) && cf->io.win[0].base) {
++	if ((p_dev->resource[0]->end) && p_dev->resource[0]->start) {
+ 		printk(KERN_INFO "(teles_cs: looks like the 96 model)\n");
+-		p_dev->resource[0]->start = cf->io.win[0].base;
+ 		if (!pcmcia_request_io(p_dev))
+ 			return 0;
  	} else {
-@@ -577,7 +575,7 @@ static int pcmciamtd_config(struct pcmcia_device *link)
- 
- 	link->config_index = 0;
- 	DEBUG(2, "Setting Configuration");
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret != 0) {
- 		if (dev->win_base) {
- 			iounmap(dev->win_base);
-@@ -718,8 +716,6 @@ static int pcmciamtd_probe(struct pcmcia_device *link)
- 	dev->p_dev = link;
- 	link->priv = dev;
- 
--	link->conf.Attributes = 0;
--
- 	return pcmciamtd_config(link);
- }
- 
-diff --git a/drivers/net/pcmcia/3c574_cs.c b/drivers/net/pcmcia/3c574_cs.c
-index 4b670b3..8abce76 100644
---- a/drivers/net/pcmcia/3c574_cs.c
-+++ b/drivers/net/pcmcia/3c574_cs.c
-@@ -87,7 +87,6 @@ earlier 3Com products.
- #include <linux/bitops.h>
- #include <linux/mii.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-@@ -280,7 +279,7 @@ static int tc574_probe(struct pcmcia_device *link)
- 	spin_lock_init(&lp->window_lock);
- 	link->resource[0]->end = 32;
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
- 	link->config_index = 1;
- 
- 	dev->netdev_ops = &el3_netdev_ops;
-@@ -351,7 +350,7 @@ static int tc574_config(struct pcmcia_device *link)
- 	if (ret)
- 		goto failed;
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-diff --git a/drivers/net/pcmcia/3c589_cs.c b/drivers/net/pcmcia/3c589_cs.c
-index 6549e2c..34195c4 100644
---- a/drivers/net/pcmcia/3c589_cs.c
-+++ b/drivers/net/pcmcia/3c589_cs.c
-@@ -41,7 +41,6 @@
- #include <linux/bitops.h>
- #include <linux/jiffies.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-@@ -216,7 +215,7 @@ static int tc589_probe(struct pcmcia_device *link)
-     link->resource[0]->end = 16;
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
- 
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
-     link->config_index = 1;
- 
-     dev->netdev_ops = &el3_netdev_ops;
-@@ -293,7 +292,7 @@ static int tc589_config(struct pcmcia_device *link)
-     if (ret)
- 	    goto failed;
- 
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
- 
 diff --git a/drivers/net/pcmcia/axnet_cs.c b/drivers/net/pcmcia/axnet_cs.c
-index 2c273ce..f361d28 100644
+index 17f1040..9d9d997 100644
 --- a/drivers/net/pcmcia/axnet_cs.c
 +++ b/drivers/net/pcmcia/axnet_cs.c
-@@ -39,7 +39,6 @@
- #include <linux/mii.h>
- #include "../8390.h"
+@@ -284,34 +284,16 @@ static int try_io_port(struct pcmcia_device *link)
+     }
+ }
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -166,7 +165,7 @@ static int axnet_probe(struct pcmcia_device *link)
-     info = PRIV(dev);
-     info->p_dev = link;
-     link->priv = dev;
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-static int axnet_configcheck(struct pcmcia_device *p_dev,
+-			     cistpl_cftable_entry_t *cfg,
+-			     cistpl_cftable_entry_t *dflt,
+-			     void *priv_data)
++static int axnet_configcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	int i;
+-	cistpl_io_t *io = &cfg->io;
+-
+-	if (cfg->index == 0 || cfg->io.nwin == 0)
+-		return -ENODEV;
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
-     dev->netdev_ops = &axnet_netdev_ops;
+ 	p_dev->config_index = 0x05;
+-	/* For multifunction cards, by convention, we configure the
+-	   network function with window 0, and serial with window 1 */
+-	if (io->nwin > 1) {
+-		i = (io->win[1].len > io->win[0].len);
+-		p_dev->resource[1]->start = io->win[1-i].base;
+-		p_dev->resource[1]->end = io->win[1-i].len;
+-	} else {
+-		i = p_dev->resource[1]->end = 0;
+-	}
+-	p_dev->resource[0]->start = io->win[i].base;
+-	p_dev->resource[0]->end = io->win[i].len;
+-	p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-	if (p_dev->resource[0]->end + p_dev->resource[1]->end >= 32)
+-		return try_io_port(p_dev);
++	if (p_dev->resource[0]->end + p_dev->resource[1]->end < 32)
++		return -ENODEV;
  
-@@ -332,11 +331,12 @@ static int axnet_config(struct pcmcia_device *link)
+-	return -ENODEV;
++	return try_io_port(p_dev);
+ }
  
+ static int axnet_config(struct pcmcia_device *link)
+@@ -324,6 +306,7 @@ static int axnet_config(struct pcmcia_device *link)
+ 
+     /* don't trust the CIS on this; Linksys got it wrong */
+     link->config_regs = 0x63;
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
+     ret = pcmcia_loop_config(link, axnet_configcheck, NULL);
+     if (ret != 0)
+ 	goto failed;
+@@ -331,7 +314,6 @@ static int axnet_config(struct pcmcia_device *link)
      if (!link->irq)
  	    goto failed;
--    
-+
-+    link->config_flags |= CONF_ENABLE_IRQ;
+ 
+-    link->config_flags |= CONF_ENABLE_IRQ;
      if (resource_size(link->resource[1]) == 8)
--	link->conf.Attributes |= CONF_ENABLE_SPKR;
-+	link->config_flags |= CONF_ENABLE_SPKR;
+ 	link->config_flags |= CONF_ENABLE_SPKR;
      
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
- 
-diff --git a/drivers/net/pcmcia/com20020_cs.c b/drivers/net/pcmcia/com20020_cs.c
-index a58eafe..039731b 100644
---- a/drivers/net/pcmcia/com20020_cs.c
-+++ b/drivers/net/pcmcia/com20020_cs.c
-@@ -43,7 +43,6 @@
- #include <linux/arcdevice.h>
- #include <linux/com20020.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-@@ -160,7 +159,7 @@ static int com20020_probe(struct pcmcia_device *p_dev)
- 
-     p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
-     p_dev->resource[0]->end = 16;
--    p_dev->conf.Attributes = CONF_ENABLE_IRQ;
-+    p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
-     info->dev = dev;
-     p_dev->priv = info;
-@@ -281,7 +280,7 @@ static int com20020_config(struct pcmcia_device *link)
- 
-     dev->irq = link->irq;
- 
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
- 
 diff --git a/drivers/net/pcmcia/fmvj18x_cs.c b/drivers/net/pcmcia/fmvj18x_cs.c
-index 23f5333..f6865ad 100644
+index c1479e3..792ab38 100644
 --- a/drivers/net/pcmcia/fmvj18x_cs.c
 +++ b/drivers/net/pcmcia/fmvj18x_cs.c
-@@ -49,7 +49,6 @@
- #include <linux/ioport.h>
- #include <linux/crc32.h>
+@@ -319,10 +319,7 @@ static int ungermann_try_io_port(struct pcmcia_device *link)
+     return ret;	/* RequestIO failed */
+ }
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -252,7 +251,7 @@ static int fmvj18x_probe(struct pcmcia_device *link)
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
- 
-     /* General socket configuration */
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
- 
-     dev->netdev_ops = &fjn_netdev_ops;
-     dev->watchdog_timeo = TX_TIMEOUT;
-@@ -431,7 +430,7 @@ static int fmvj18x_config(struct pcmcia_device *link)
-     ret = pcmcia_request_irq(link, fjn_interrupt);
-     if (ret)
- 	    goto failed;
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
- 
-diff --git a/drivers/net/pcmcia/ibmtr_cs.c b/drivers/net/pcmcia/ibmtr_cs.c
-index feedeeb..b298a3d 100644
---- a/drivers/net/pcmcia/ibmtr_cs.c
-+++ b/drivers/net/pcmcia/ibmtr_cs.c
-@@ -57,7 +57,6 @@
- #include <linux/trdevice.h>
- #include <linux/ibmtr.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-@@ -152,7 +151,7 @@ static int __devinit ibmtr_attach(struct pcmcia_device *link)
- 
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
-     link->resource[0]->end = 4;
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
-     link->config_regs = PRESENT_OPTION;
- 
-     info->dev = dev;
-@@ -269,7 +268,7 @@ static int __devinit ibmtr_config(struct pcmcia_device *link)
- 		    resource_size(link->resource[3]));
-     ti->sram_phys = link->resource[3]->start;
- 
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
- 
-diff --git a/drivers/net/pcmcia/nmclan_cs.c b/drivers/net/pcmcia/nmclan_cs.c
-index 98c4a69..51bf76d 100644
---- a/drivers/net/pcmcia/nmclan_cs.c
-+++ b/drivers/net/pcmcia/nmclan_cs.c
-@@ -146,7 +146,6 @@ Include Files
- #include <linux/ioport.h>
- #include <linux/bitops.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
-@@ -460,7 +459,7 @@ static int nmclan_probe(struct pcmcia_device *link)
-     spin_lock_init(&lp->bank_lock);
-     link->resource[0]->end = 32;
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
-     link->config_index = 1;
-     link->config_regs = PRESENT_OPTION;
- 
-@@ -649,7 +648,7 @@ static int nmclan_config(struct pcmcia_device *link)
-   ret = pcmcia_request_exclusive_irq(link, mace_interrupt);
-   if (ret)
- 	  goto failed;
--  ret = pcmcia_request_configuration(link, &link->conf);
-+  ret = pcmcia_enable_device(link);
-   if (ret)
- 	  goto failed;
- 
+-static int fmvj18x_ioprobe(struct pcmcia_device *p_dev,
+-			   cistpl_cftable_entry_t *cfg,
+-			   cistpl_cftable_entry_t *dflt,
+-			   void *priv_data)
++static int fmvj18x_ioprobe(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	return 0; /* strange, but that's what the code did already before... */
+ }
 diff --git a/drivers/net/pcmcia/pcnet_cs.c b/drivers/net/pcmcia/pcnet_cs.c
-index 68c4675..4a3b6a4 100644
+index 12b028c..ffe2587 100644
 --- a/drivers/net/pcmcia/pcnet_cs.c
 +++ b/drivers/net/pcmcia/pcnet_cs.c
-@@ -42,7 +42,6 @@
- #include <linux/mii.h>
- #include "../8390.h"
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -260,7 +259,7 @@ static int pcnet_probe(struct pcmcia_device *link)
+@@ -259,7 +259,7 @@ static int pcnet_probe(struct pcmcia_device *link)
      info->p_dev = link;
      link->priv = dev;
  
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->config_flags |= CONF_ENABLE_IRQ;
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
  
      dev->netdev_ops = &pcnet_netdev_ops;
  
-@@ -560,13 +559,13 @@ static hw_info_t *pcnet_try_config(struct pcmcia_device *link,
- 		return NULL;
+@@ -500,42 +500,22 @@ static int try_io_port(struct pcmcia_device *link)
+     }
+ }
  
- 	if (resource_size(link->resource[1]) == 8)
--		link->conf.Attributes |= CONF_ENABLE_SPKR;
-+		link->config_flags |= CONF_ENABLE_SPKR;
+-static int pcnet_confcheck(struct pcmcia_device *p_dev,
+-			   cistpl_cftable_entry_t *cfg,
+-			   cistpl_cftable_entry_t *dflt,
+-			   void *priv_data)
++static int pcnet_confcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	int *priv = priv_data;
+ 	int try = (*priv & 0x1);
+-	int i;
+-	cistpl_io_t *io = &cfg->io;
  
- 	if ((link->manf_id == MANFID_IBM) &&
- 	    (link->card_id == PRODID_IBM_HOME_AND_AWAY))
- 		link->config_index |= 0x10;
+-	if (cfg->index == 0 || cfg->io.nwin == 0)
+-		return -EINVAL;
++	*priv &= (p_dev->resource[2]->end >= 0x4000) ? 0x10 : ~0x10;
  
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		return NULL;
+-	/* For multifunction cards, by convention, we configure the
+-	   network function with window 0, and serial with window 1 */
+-	if (io->nwin > 1) {
+-		i = (io->win[1].len > io->win[0].len);
+-		p_dev->resource[1]->start = io->win[1-i].base;
+-		p_dev->resource[1]->end = io->win[1-i].len;
+-	} else {
+-		i = p_dev->resource[1]->end = 0;
+-	}
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
+-	*priv &= ((cfg->mem.nwin == 1) &&
+-		  (cfg->mem.win[0].len >= 0x4000)) ? 0x10 : ~0x10;
++	if (p_dev->resource[0]->end + p_dev->resource[1]->end < 32)
++		return -EINVAL;
+ 
+-	p_dev->resource[0]->start = io->win[i].base;
+-	p_dev->resource[0]->end = io->win[i].len;
+-	if (!try)
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-	else
++	if (try)
+ 		p_dev->io_lines = 16;
+-	if (p_dev->resource[0]->end + p_dev->resource[1]->end >= 32)
+-		return try_io_port(p_dev);
+-
+-	return -EINVAL;
++	return try_io_port(p_dev);
+ }
+ 
+ static hw_info_t *pcnet_try_config(struct pcmcia_device *link,
 diff --git a/drivers/net/pcmcia/smc91c92_cs.c b/drivers/net/pcmcia/smc91c92_cs.c
-index 59f5034..8c16ba6 100644
+index e127d2b..a8cef28 100644
 --- a/drivers/net/pcmcia/smc91c92_cs.c
 +++ b/drivers/net/pcmcia/smc91c92_cs.c
-@@ -44,7 +44,6 @@
- #include <linux/jiffies.h>
- #include <linux/firmware.h>
+@@ -323,9 +323,6 @@ static int smc91c92_probe(struct pcmcia_device *link)
+     link->priv = dev;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-@@ -326,7 +325,7 @@ static int smc91c92_probe(struct pcmcia_device *link)
      spin_lock_init(&smc->lock);
-     link->resource[0]->end = 16;
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->resource[0]->end = 16;
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-    link->config_flags |= CONF_ENABLE_IRQ;
  
      /* The SMC91c92-specific entries in the device structure. */
      dev->netdev_ops = &smc_netdev_ops;
-@@ -444,7 +443,7 @@ static int mhz_mfc_config(struct pcmcia_device *link)
+@@ -417,18 +414,21 @@ static int mhz_3288_power(struct pcmcia_device *link)
+     return 0;
+ }
+ 
+-static int mhz_mfc_config_check(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cf,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int mhz_mfc_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	int k;
+-	p_dev->resource[1]->start = cf->io.win[0].base;
++	p_dev->io_lines = 16;
++	p_dev->resource[1]->start = p_dev->resource[0]->start;
++	p_dev->resource[1]->end = 8;
++	p_dev->resource[1]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->resource[0]->end = 16;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+ 	for (k = 0; k < 0x400; k += 0x10) {
+ 		if (k & 0x80)
+ 			continue;
+ 		p_dev->resource[0]->start = k ^ 0x300;
+-		p_dev->io_lines = 16;
+ 		if (!pcmcia_request_io(p_dev))
+ 			return 0;
+ 	}
+@@ -442,9 +442,8 @@ static int mhz_mfc_config(struct pcmcia_device *link)
      unsigned int offset;
      int i;
  
--    link->conf.Attributes |= CONF_ENABLE_SPKR;
-+    link->config_flags |= CONF_ENABLE_SPKR;
-     link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
-     link->resource[1]->end = 8;
+-    link->config_flags |= CONF_ENABLE_SPKR;
+-    link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
+-    link->resource[1]->end = 8;
++    link->config_flags |= CONF_ENABLE_SPKR | CONF_ENABLE_IRQ |
++	    CONF_AUTO_SET_IO;
  
-@@ -637,7 +636,7 @@ static int osi_config(struct pcmcia_device *link)
+     /* The Megahertz combo cards have modem-like CIS entries, so
+        we have to explicitly try a bunch of port combinations. */
+@@ -586,13 +585,12 @@ static int mot_setup(struct pcmcia_device *link)
+ 
+ /*====================================================================*/
+ 
+-static int smc_configcheck(struct pcmcia_device *p_dev,
+-			   cistpl_cftable_entry_t *cf,
+-			   cistpl_cftable_entry_t *dflt,
+-			   void *priv_data)
++static int smc_configcheck(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	p_dev->resource[0]->start = cf->io.win[0].base;
+-	p_dev->io_lines = cf->io.flags & CISTPL_IO_LINES_MASK;
++	p_dev->resource[0]->end = 16;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
++
+ 	return pcmcia_request_io(p_dev);
+ }
+ 
+@@ -601,7 +599,8 @@ static int smc_config(struct pcmcia_device *link)
+     struct net_device *dev = link->priv;
+     int i;
+ 
+-    link->resource[0]->end = 16;
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
++
+     i = pcmcia_loop_config(link, smc_configcheck, NULL);
+     if (!i)
+ 	    dev->base_addr = link->resource[0]->start;
+@@ -634,7 +633,7 @@ static int osi_config(struct pcmcia_device *link)
      static const unsigned int com[4] = { 0x3f8, 0x2f8, 0x3e8, 0x2e8 };
      int i, j;
  
--    link->conf.Attributes |= CONF_ENABLE_SPKR;
-+    link->config_flags |= CONF_ENABLE_SPKR;
+-    link->config_flags |= CONF_ENABLE_SPKR;
++    link->config_flags |= CONF_ENABLE_SPKR | CONF_ENABLE_IRQ;
      link->resource[0]->end = 64;
      link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
      link->resource[1]->end = 8;
-@@ -862,7 +861,7 @@ static int smc91c92_config(struct pcmcia_device *link)
-     i = pcmcia_request_irq(link, smc_interrupt);
-     if (i)
- 	    goto config_failed;
--    i = pcmcia_request_configuration(link, &link->conf);
-+    i = pcmcia_enable_device(link);
-     if (i)
- 	    goto config_failed;
- 
 diff --git a/drivers/net/pcmcia/xirc2ps_cs.c b/drivers/net/pcmcia/xirc2ps_cs.c
-index 1c8ebf2..7a4a99b 100644
+index 2bc2eb8..cecc074 100644
 --- a/drivers/net/pcmcia/xirc2ps_cs.c
 +++ b/drivers/net/pcmcia/xirc2ps_cs.c
-@@ -82,7 +82,6 @@
- #include <linux/bitops.h>
- #include <linux/mii.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-@@ -529,7 +528,7 @@ xirc2ps_probe(struct pcmcia_device *link)
+@@ -528,7 +528,6 @@ xirc2ps_probe(struct pcmcia_device *link)
      link->priv = dev;
  
      /* General socket configuration */
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->config_flags |= CONF_ENABLE_IRQ;
      link->config_index = 1;
  
      /* Fill in card specific entries */
-@@ -811,9 +810,6 @@ xirc2ps_config(struct pcmcia_device * link)
+@@ -665,42 +664,53 @@ has_ce2_string(struct pcmcia_device * p_dev)
+ }
+ 
+ static int
+-xirc2ps_config_modem(struct pcmcia_device *p_dev,
+-		     cistpl_cftable_entry_t *cf,
+-		     cistpl_cftable_entry_t *dflt,
+-		     void *priv_data)
++xirc2ps_config_modem(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	unsigned int ioaddr;
+ 
+-	if (cf->io.nwin > 0  &&  (cf->io.win[0].base & 0xf) == 8) {
+-		for (ioaddr = 0x300; ioaddr < 0x400; ioaddr += 0x10) {
+-			p_dev->resource[1]->start = cf->io.win[0].base;
+-			p_dev->resource[0]->start = ioaddr;
+-			if (!pcmcia_request_io(p_dev))
+-				return 0;
+-		}
++	if ((p_dev->resource[0]->start & 0xf) == 8)
++		return -ENODEV;
++
++	p_dev->resource[0]->end = 16;
++	p_dev->resource[1]->end = 8;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
++	p_dev->resource[1]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->io_lines = 10;
++
++	p_dev->resource[1]->start = p_dev->resource[0]->start;
++	for (ioaddr = 0x300; ioaddr < 0x400; ioaddr += 0x10) {
++		p_dev->resource[0]->start = ioaddr;
++		if (!pcmcia_request_io(p_dev))
++			return 0;
+ 	}
+ 	return -ENODEV;
+ }
+ 
+ static int
+-xirc2ps_config_check(struct pcmcia_device *p_dev,
+-		     cistpl_cftable_entry_t *cf,
+-		     cistpl_cftable_entry_t *dflt,
+-		     void *priv_data)
++xirc2ps_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	int *pass = priv_data;
++	resource_size_t tmp = p_dev->resource[1]->start;
+ 
+-	if (cf->io.nwin > 0 && (cf->io.win[0].base & 0xf) == 8) {
+-		p_dev->resource[1]->start = cf->io.win[0].base;
+-		p_dev->resource[0]->start = p_dev->resource[1]->start
+-			+ (*pass ? (cf->index & 0x20 ? -24:8)
+-			   : (cf->index & 0x20 ?   8:-24));
+-		if (!pcmcia_request_io(p_dev))
+-			return 0;
+-	}
+-	return -ENODEV;
++	tmp += (*pass ? (p_dev->config_index & 0x20 ? -24 : 8)
++		: (p_dev->config_index & 0x20 ?   8 : -24));
++
++	if ((p_dev->resource[0]->start & 0xf) == 8)
++		return -ENODEV;
++
++	p_dev->resource[0]->end = 18;
++	p_dev->resource[1]->end = 8;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
++	p_dev->resource[1]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->io_lines = 10;
+ 
++	p_dev->resource[1]->start = p_dev->resource[0]->start;
++	p_dev->resource[0]->start = tmp;
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ 
+@@ -803,21 +813,16 @@ xirc2ps_config(struct pcmcia_device * link)
+ 	goto failure;
+     }
+ 
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
+-    link->io_lines = 10;
      if (local->modem) {
  	int pass;
++	link->config_flags |= CONF_AUTO_SET_IO;
  
--	if (do_sound)
--	    link->conf.Attributes |= CONF_ENABLE_SPKR;
--
- 	link->resource[1]->end = 8;
- 	link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
+-	link->resource[1]->end = 8;
+-	link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
  	if (local->dingo) {
-@@ -863,7 +859,11 @@ xirc2ps_config(struct pcmcia_device * link)
-      * This actually configures the PCMCIA socket -- setting up
-      * the I/O windows and the interrupt mapping.
-      */
--    if ((err=pcmcia_request_configuration(link, &link->conf)))
-+    link->config_flags |= CONF_ENABLE_IRQ;
-+    if (do_sound)
-+	    link->config_flags |= CONF_ENABLE_SPKR;
-+
-+    if ((err = pcmcia_enable_device(link)))
- 	goto config_error;
- 
-     if (local->dingo) {
+ 	    /* Take the Modem IO port from the CIS and scan for a free
+ 	     * Ethernet port */
+-	    link->resource[0]->end = 16; /* no Mako stuff anymore */
+ 	    if (!pcmcia_loop_config(link, xirc2ps_config_modem, NULL))
+ 		    goto port_found;
+ 	} else {
+-	    link->resource[0]->end = 18;
+ 	    /* We do 2 passes here: The first one uses the regular mapping and
+ 	     * the second tries again, thereby considering that the 32 ports are
+ 	     * mirrored every 32 bytes. Actually we use a mirrored port for
+@@ -833,7 +838,9 @@ xirc2ps_config(struct pcmcia_device * link)
+ 	}
+ 	printk(KNOT_XIRC "no ports available\n");
+     } else {
++	link->io_lines = 10;
+ 	link->resource[0]->end = 16;
++	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
+ 	for (ioaddr = 0x300; ioaddr < 0x400; ioaddr += 0x10) {
+ 	    link->resource[0]->start = ioaddr;
+ 	    if (!(err = pcmcia_request_io(link)))
 diff --git a/drivers/net/wireless/airo_cs.c b/drivers/net/wireless/airo_cs.c
-index 40f9ed7..5939d0c 100644
+index 63bf662..77682f2 100644
 --- a/drivers/net/wireless/airo_cs.c
 +++ b/drivers/net/wireless/airo_cs.c
-@@ -32,7 +32,6 @@
- #include <linux/timer.h>
- #include <linux/netdevice.h>
+@@ -137,36 +137,12 @@ static void airo_detach(struct pcmcia_device *link)
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -96,15 +95,6 @@ static int airo_probe(struct pcmcia_device *p_dev)
+   ======================================================================*/
  
- 	dev_dbg(&p_dev->dev, "airo_attach()\n");
- 
--	/*
--	  General socket configuration defaults can go here.  In this
--	  client, we assume very little, and rely on the CIS for almost
--	  everything.  In most clients, many details (i.e., number, sizes,
--	  and attributes of IO windows) are fixed by the nature of the
--	  device, and can be hard-wired here.
--	*/
--	p_dev->conf.Attributes = 0;
+-static int airo_cs_config_check(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int airo_cs_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
 -
- 	/* Allocate space for private device-specific data */
- 	local = kzalloc(sizeof(local_info_t), GFP_KERNEL);
- 	if (!local) {
-@@ -158,7 +148,7 @@ static int airo_cs_config_check(struct pcmcia_device *p_dev,
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-					pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-	}
+-
+-	/* This reserves IO space but doesn't actually enable it */
+-	if (pcmcia_request_io(p_dev) != 0)
+-		return -ENODEV;
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
+-	/* If we got this far, we're cool! */
+-	return 0;
++	return pcmcia_request_io(p_dev);
+ }
  
- 	/* Use power settings for Vcc and Vpp if present */
- 	/*  Note that the CIS values need to be rescaled */
-@@ -167,7 +157,7 @@ static int airo_cs_config_check(struct pcmcia_device *p_dev,
- 	else if (dflt->vpp1.present & (1<<CISTPL_POWER_VNOM))
- 		p_dev->vpp = dflt->vpp1.param[CISTPL_POWER_VNOM]/10000;
  
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
+@@ -180,7 +156,7 @@ static int airo_config(struct pcmcia_device *link)
+ 	dev_dbg(&link->dev, "airo_config\n");
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -229,7 +219,7 @@ static int airo_config(struct pcmcia_device *link)
- 	  the I/O windows and the interrupt mapping, and putting the
- 	  card and host interface into "Memory and IO" mode.
- 	*/
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 	((local_info_t *)link->priv)->eth_dev =
+ 	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_VPP |
+-		CONF_AUTO_AUDIO;
++		CONF_AUTO_AUDIO | CONF_AUTO_SET_IO;
+ 
+ 	/*
+ 	 * In this loop, we scan the CIS for configuration table
 diff --git a/drivers/net/wireless/atmel_cs.c b/drivers/net/wireless/atmel_cs.c
-index 8b75158..080266e 100644
+index 812decd..2029380 100644
 --- a/drivers/net/wireless/atmel_cs.c
 +++ b/drivers/net/wireless/atmel_cs.c
-@@ -42,7 +42,6 @@
- #include <linux/moduleparam.h>
- #include <linux/device.h>
+@@ -154,31 +154,11 @@ static int card_present(void *arg)
+ 	return 0;
+ }
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -106,15 +105,6 @@ static int atmel_probe(struct pcmcia_device *p_dev)
- 
- 	dev_dbg(&p_dev->dev, "atmel_attach()\n");
- 
--	/*
--	  General socket configuration defaults can go here.  In this
--	  client, we assume very little, and rely on the CIS for almost
--	  everything.  In most clients, many details (i.e., number, sizes,
--	  and attributes of IO windows) are fixed by the nature of the
--	  device, and can be hard-wired here.
--	*/
--	p_dev->conf.Attributes = 0;
+-static int atmel_config_check(struct pcmcia_device *p_dev,
+-			      cistpl_cftable_entry_t *cfg,
+-			      cistpl_cftable_entry_t *dflt,
+-			      void *priv_data)
++static int atmel_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
 -
- 	/* Allocate space for private device-specific data */
- 	local = kzalloc(sizeof(local_info_t), GFP_KERNEL);
- 	if (!local) {
-@@ -175,7 +165,7 @@ static int atmel_config_check(struct pcmcia_device *p_dev,
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-					pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-	}
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
+-	/* This reserves IO space but doesn't actually enable it */
+ 	return pcmcia_request_io(p_dev);
+ }
  
- 	/* Use power settings for Vcc and Vpp if present */
- 	/*  Note that the CIS values need to be rescaled */
-@@ -184,7 +174,7 @@ static int atmel_config_check(struct pcmcia_device *p_dev,
- 	else if (dflt->vpp1.present & (1<<CISTPL_POWER_VNOM))
- 		p_dev->vpp = dflt->vpp1.param[CISTPL_POWER_VNOM]/10000;
+@@ -194,7 +174,7 @@ static int atmel_config(struct pcmcia_device *link)
+ 	dev_dbg(&link->dev, "atmel_config\n");
  
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
+ 	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_VPP |
+-		CONF_AUTO_AUDIO;
++		CONF_AUTO_AUDIO | CONF_AUTO_SET_IO;
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -242,7 +232,7 @@ static int atmel_config(struct pcmcia_device *link)
- 	  the I/O windows and the interrupt mapping, and putting the
- 	  card and host interface into "Memory and IO" mode.
- 	*/
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-diff --git a/drivers/net/wireless/b43/pcmcia.c b/drivers/net/wireless/b43/pcmcia.c
-index 138b26f..61abab1 100644
---- a/drivers/net/wireless/b43/pcmcia.c
-+++ b/drivers/net/wireless/b43/pcmcia.c
-@@ -26,7 +26,6 @@
- #include <linux/ssb/ssb.h>
- #include <linux/slab.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -72,7 +71,7 @@ static int __devinit b43_pcmcia_probe(struct pcmcia_device *dev)
- 
- 	err = -ENODEV;
- 
--	dev->conf.Attributes = CONF_ENABLE_IRQ;
-+	dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 	dev->resource[2]->flags |=  WIN_ENABLE | WIN_DATA_WIDTH_16 |
- 			 WIN_USE_WAIT;
-@@ -89,7 +88,7 @@ static int __devinit b43_pcmcia_probe(struct pcmcia_device *dev)
- 	if (!dev->irq)
- 		goto err_disable;
- 
--	res = pcmcia_request_configuration(dev, &dev->conf);
-+	res = pcmcia_enable_device(dev);
- 	if (res != 0)
- 		goto err_disable;
- 
+ 	/*
+ 	  In this loop, we scan the CIS for configuration table entries,
 diff --git a/drivers/net/wireless/hostap/hostap_cs.c b/drivers/net/wireless/hostap/hostap_cs.c
-index 5704d3f..5b0b582 100644
+index d4f19af..e57b201 100644
 --- a/drivers/net/wireless/hostap/hostap_cs.c
 +++ b/drivers/net/wireless/hostap/hostap_cs.c
-@@ -12,7 +12,6 @@
- #include <linux/wireless.h>
- #include <net/iw_handler.h>
+@@ -469,46 +469,11 @@ static void prism2_detach(struct pcmcia_device *link)
+ /* run after a CARD_INSERTION event is received to configure the PCMCIA
+  * socket and make the device available to the system */
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -484,7 +483,7 @@ static int prism2_config_check(struct pcmcia_device *p_dev,
+-static int prism2_config_check(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cfg,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int prism2_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
+-
+-	PDEBUG(DEBUG_EXTRA, "Checking CFTABLE_ENTRY 0x%02X "
+-	       "(default 0x%02X)\n", cfg->index, dflt->index);
+-
+-	if (cfg->vpp1.present & (1 << CISTPL_POWER_VNOM))
+-		p_dev->vpp = cfg->vpp1.param[CISTPL_POWER_VNOM] / 10000;
+-	else if (dflt->vpp1.present & (1 << CISTPL_POWER_VNOM))
+-		p_dev->vpp = dflt->vpp1.param[CISTPL_POWER_VNOM] / 10000;
+-
+-	/* Do we need to allocate an interrupt? */
+-	p_dev->config_flags |= CONF_ENABLE_IRQ;
+-
+-	/* IO window settings */
+-	PDEBUG(DEBUG_EXTRA, "IO window settings: cfg->io.nwin=%d "
+-	       "dflt->io.nwin=%d\n",
+-	       cfg->io.nwin, dflt->io.nwin);
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-					pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-	}
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
+-	/* This reserves IO space but doesn't actually enable it */
+ 	return pcmcia_request_io(p_dev);
+ }
  
- 	/* Use power settings for Vcc and Vpp if present */
- 	/*  Note that the CIS values need to be rescaled */
-@@ -510,7 +509,7 @@ static int prism2_config_check(struct pcmcia_device *p_dev,
- 		p_dev->vpp = dflt->vpp1.param[CISTPL_POWER_VNOM] / 10000;
+@@ -531,7 +496,7 @@ static int prism2_config(struct pcmcia_device *link)
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 	/* IO window settings */
- 	PDEBUG(DEBUG_EXTRA, "IO window settings: cfg->io.nwin=%d "
-@@ -590,7 +589,7 @@ static int prism2_config(struct pcmcia_device *link)
- 	 * the I/O windows and the interrupt mapping, and putting the
- 	 * card and host interface into "Memory and IO" mode.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed_unlock;
- 
-@@ -605,8 +604,7 @@ static int prism2_config(struct pcmcia_device *link)
- 	if (link->vpp)
- 		printk(", Vpp %d.%d", link->vpp / 10,
- 		       link->vpp % 10);
--	if (link->conf.Attributes & CONF_ENABLE_IRQ)
--		printk(", irq %d", link->irq);
-+	printk(", irq %d", link->irq);
- 	if (link->resource[0])
- 		printk(" & %pR", link->resource[0]);
- 	if (link->resource[1])
+ 	/* Look for an appropriate configuration table entry in the CIS */
+ 	link->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_AUDIO |
+-		CONF_AUTO_CHECK_VCC;
++		CONF_AUTO_CHECK_VCC | CONF_AUTO_SET_IO | CONF_ENABLE_IRQ;
+ 	if (ignore_cis_vcc)
+ 		link->config_flags &= ~CONF_AUTO_CHECK_VCC;
+ 	ret = pcmcia_loop_config(link, prism2_config_check, NULL);
 diff --git a/drivers/net/wireless/libertas/if_cs.c b/drivers/net/wireless/libertas/if_cs.c
-index 814b7fa..6020c19 100644
+index 031f3e6..2c6f28a 100644
 --- a/drivers/net/wireless/libertas/if_cs.c
 +++ b/drivers/net/wireless/libertas/if_cs.c
-@@ -28,7 +28,6 @@
- #include <linux/firmware.h>
- #include <linux/netdevice.h>
+@@ -794,20 +794,12 @@ static void if_cs_release(struct pcmcia_device *p_dev)
+  * insertion event.
+  */
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
+-static int if_cs_ioprobe(struct pcmcia_device *p_dev,
+-			 cistpl_cftable_entry_t *cfg,
+-			 cistpl_cftable_entry_t *dflt,
+-			 void *priv_data)
++static int if_cs_ioprobe(struct pcmcia_device *p_dev, void *priv_data)
+ {
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+ 	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
  
-@@ -806,7 +805,7 @@ static int if_cs_ioprobe(struct pcmcia_device *p_dev,
- 	p_dev->resource[0]->end = cfg->io.win[0].len;
- 
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 	/* IO window settings */
- 	if (cfg->io.nwin != 1) {
-@@ -835,14 +834,11 @@ static int if_cs_probe(struct pcmcia_device *p_dev)
+-	/* Do we need to allocate an interrupt? */
+-	p_dev->config_flags |= CONF_ENABLE_IRQ;
+-
+-	/* IO window settings */
+-	if (cfg->io.nwin != 1) {
++	if (p_dev->resource[1]->end) {
+ 		lbs_pr_err("wrong CIS (check number of IO windows)\n");
+ 		return -ENODEV;
+ 	}
+@@ -833,6 +825,8 @@ static int if_cs_probe(struct pcmcia_device *p_dev)
  	card->p_dev = p_dev;
  	p_dev->priv = card;
  
--	p_dev->conf.Attributes = 0;
--
++	p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
++
  	if (pcmcia_loop_config(p_dev, if_cs_ioprobe, NULL)) {
  		lbs_pr_err("error in pcmcia_loop_config\n");
  		goto out1;
- 	}
- 
--
- 	/*
- 	 * Allocate an interrupt line.  Note that this does not assign
- 	 * a handler to the interrupt, unless the 'Handler' member of
-@@ -865,9 +861,9 @@ static int if_cs_probe(struct pcmcia_device *p_dev)
- 	 * the I/O windows and the interrupt mapping, and putting the
- 	 * card and host interface into "Memory and IO" mode.
- 	 */
--	ret = pcmcia_request_configuration(p_dev, &p_dev->conf);
-+	ret = pcmcia_enable_device(p_dev);
- 	if (ret) {
--		lbs_pr_err("error in pcmcia_request_configuration\n");
-+		lbs_pr_err("error in pcmcia_enable_device\n");
- 		goto out2;
- 	}
- 
 diff --git a/drivers/net/wireless/orinoco/orinoco_cs.c b/drivers/net/wireless/orinoco/orinoco_cs.c
-index 1147d6b..00316a1 100644
+index b921738..263dfe9 100644
 --- a/drivers/net/wireless/orinoco/orinoco_cs.c
 +++ b/drivers/net/wireless/orinoco/orinoco_cs.c
-@@ -17,7 +17,6 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -117,13 +116,6 @@ orinoco_cs_probe(struct pcmcia_device *link)
- 	card->p_dev = link;
- 	link->priv = priv;
+@@ -142,42 +142,12 @@ static void orinoco_cs_detach(struct pcmcia_device *link)
+  * device available to the system.
+  */
  
--	/* General socket configuration defaults can go here.  In this
--	 * client, we assume very little, and rely on the CIS for
--	 * almost everything.  In most clients, many details (i.e.,
--	 * number, sizes, and attributes of IO windows) are fixed by
--	 * the nature of the device, and can be hard-wired here. */
--	link->conf.Attributes = 0;
+-static int orinoco_cs_config_check(struct pcmcia_device *p_dev,
+-				   cistpl_cftable_entry_t *cfg,
+-				   cistpl_cftable_entry_t *dflt,
+-				   void *priv_data)
++static int orinoco_cs_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		goto next_entry;
 -
- 	return orinoco_cs_config(link);
- }				/* orinoco_cs_attach */
+-	/* Do we need to allocate an interrupt? */
+-	p_dev->config_flags |= CONF_ENABLE_IRQ;
+-
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-
+-		/* This reserves IO space but doesn't actually enable it */
+-		if (pcmcia_request_io(p_dev) != 0)
+-			goto next_entry;
+-	}
+-	return 0;
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
-@@ -187,7 +179,7 @@ static int orinoco_cs_config_check(struct pcmcia_device *p_dev,
- 			dflt->vpp1.param[CISTPL_POWER_VNOM] / 10000;
+-next_entry:
+-	pcmcia_disable_device(p_dev);
+-	return -ENODEV;
++	return pcmcia_request_io(p_dev);
+ };
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -266,7 +258,7 @@ orinoco_cs_config(struct pcmcia_device *link)
- 	 * the I/O windows and the interrupt mapping, and putting the
- 	 * card and host interface into "Memory and IO" mode.
+ static int
+@@ -202,7 +172,8 @@ orinoco_cs_config(struct pcmcia_device *link)
+ 	 * and most client drivers will only use the CIS to fill in
+ 	 * implementation-defined details.
  	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
+-	link->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC;
++	link->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC |
++		CONF_AUTO_SET_IO | CONF_ENABLE_IRQ;
+ 	if (ignore_cis_vcc)
+ 		link->config_flags &= ~CONF_AUTO_CHECK_VCC;
+ 	ret = pcmcia_loop_config(link, orinoco_cs_config_check, NULL);
 diff --git a/drivers/net/wireless/orinoco/spectrum_cs.c b/drivers/net/wireless/orinoco/spectrum_cs.c
-index 20b08ab..ca2c6c0 100644
+index f462c78..7844650 100644
 --- a/drivers/net/wireless/orinoco/spectrum_cs.c
 +++ b/drivers/net/wireless/orinoco/spectrum_cs.c
-@@ -25,7 +25,6 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -179,13 +178,6 @@ spectrum_cs_probe(struct pcmcia_device *link)
- 	card->p_dev = link;
- 	link->priv = priv;
+@@ -205,48 +205,12 @@ static void spectrum_cs_detach(struct pcmcia_device *link)
+  */
  
--	/* General socket configuration defaults can go here.  In this
--	 * client, we assume very little, and rely on the CIS for
--	 * almost everything.  In most clients, many details (i.e.,
--	 * number, sizes, and attributes of IO windows) are fixed by
--	 * the nature of the device, and can be hard-wired here. */
--	link->conf.Attributes = 0;
+ static int spectrum_cs_config_check(struct pcmcia_device *p_dev,
+-				    cistpl_cftable_entry_t *cfg,
+-				    cistpl_cftable_entry_t *dflt,
+ 				    void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		goto next_entry;
 -
- 	return spectrum_cs_config(link);
- }				/* spectrum_cs_attach */
+-	if (cfg->vpp1.present & (1 << CISTPL_POWER_VNOM))
+-		p_dev->vpp =
+-			cfg->vpp1.param[CISTPL_POWER_VNOM] / 10000;
+-	else if (dflt->vpp1.present & (1 << CISTPL_POWER_VNOM))
+-		p_dev->vpp =
+-			dflt->vpp1.param[CISTPL_POWER_VNOM] / 10000;
+-
+-	/* Do we need to allocate an interrupt? */
+-	p_dev->config_flags |= CONF_ENABLE_IRQ;
+-
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-
+-		/* This reserves IO space but doesn't actually enable it */
+-		if (pcmcia_request_io(p_dev) != 0)
+-			goto next_entry;
+-	}
+-	return 0;
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
-@@ -249,7 +241,7 @@ static int spectrum_cs_config_check(struct pcmcia_device *p_dev,
- 			dflt->vpp1.param[CISTPL_POWER_VNOM] / 10000;
+-next_entry:
+-	pcmcia_disable_device(p_dev);
+-	return -ENODEV;
++	return pcmcia_request_io(p_dev);
+ };
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -329,7 +321,7 @@ spectrum_cs_config(struct pcmcia_device *link)
- 	 * the I/O windows and the interrupt mapping, and putting the
- 	 * card and host interface into "Memory and IO" mode.
+ static int
+@@ -271,7 +235,8 @@ spectrum_cs_config(struct pcmcia_device *link)
+ 	 * and most client drivers will only use the CIS to fill in
+ 	 * implementation-defined details.
  	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-diff --git a/drivers/net/wireless/ray_cs.c b/drivers/net/wireless/ray_cs.c
-index 7fb66cc..1457f34 100644
---- a/drivers/net/wireless/ray_cs.c
-+++ b/drivers/net/wireless/ray_cs.c
-@@ -46,7 +46,6 @@
- #include <linux/ethtool.h>
- #include <linux/ieee80211.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -318,7 +317,7 @@ static int ray_probe(struct pcmcia_device *p_dev)
- 	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
- 
- 	/* General socket configuration */
--	p_dev->conf.Attributes = CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
- 	p_dev->config_index = 1;
- 
- 	p_dev->priv = dev;
-@@ -413,7 +412,7 @@ static int ray_config(struct pcmcia_device *link)
- 	/* This actually configures the PCMCIA socket -- setting up
- 	   the I/O windows and the interrupt mapping.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
-index 3947cf8..101b6ff 100644
---- a/drivers/net/wireless/wl3501_cs.c
-+++ b/drivers/net/wireless/wl3501_cs.c
-@@ -48,7 +48,6 @@
- 
- #include <net/iw_handler.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -1888,7 +1887,7 @@ static int wl3501_probe(struct pcmcia_device *p_dev)
- 	p_dev->resource[0]->flags	= IO_DATA_PATH_WIDTH_8;
- 
- 	/* General socket configuration */
--	p_dev->conf.Attributes	= CONF_ENABLE_IRQ;
-+	p_dev->config_flags	= CONF_ENABLE_IRQ;
- 	p_dev->config_index	= 1;
- 
- 	dev = alloc_etherdev(sizeof(struct wl3501_card));
-@@ -1954,7 +1953,7 @@ static int wl3501_config(struct pcmcia_device *link)
- 	/* This actually configures the PCMCIA socket -- setting up the I/O
- 	 * windows and the interrupt mapping.  */
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
+-	link->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC;
++	link->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_CHECK_VCC |
++		CONF_AUTO_SET_IO | CONF_ENABLE_IRQ;
+ 	if (ignore_cis_vcc)
+ 		link->config_flags &= ~CONF_AUTO_CHECK_VCC;
+ 	ret = pcmcia_loop_config(link, spectrum_cs_config_check, NULL);
 diff --git a/drivers/parport/parport_cs.c b/drivers/parport/parport_cs.c
-index 8faf634..63b3d3c 100644
+index 8c2a473..3730184 100644
 --- a/drivers/parport/parport_cs.c
 +++ b/drivers/parport/parport_cs.c
-@@ -48,7 +48,6 @@
- #include <linux/parport.h>
- #include <linux/parport_pc.h>
+@@ -100,9 +100,7 @@ static int parport_probe(struct pcmcia_device *link)
+     link->priv = info;
+     info->p_dev = link;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include <pcmcia/cisreg.h>
-@@ -103,7 +102,7 @@ static int parport_probe(struct pcmcia_device *link)
- 
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
-     link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-    link->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
+-    link->config_flags |= CONF_ENABLE_IRQ;
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
  
      return parport_config(link);
  } /* parport_attach */
-@@ -172,7 +171,7 @@ static int parport_config(struct pcmcia_device *link)
+@@ -133,27 +131,14 @@ static void parport_detach(struct pcmcia_device *link)
  
-     if (!link->irq)
- 	    goto failed;
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
+ ======================================================================*/
+ 
+-static int parport_config_check(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int parport_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		if (epp_mode)
+-			p_dev->config_index |= FORCE_EPP_MODE;
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin == 2) {
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		if (pcmcia_request_io(p_dev) != 0)
+-			return -ENODEV;
+-		return 0;
+-	}
+-	return -ENODEV;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->resource[1]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
++
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ static int parport_config(struct pcmcia_device *link)
+@@ -164,6 +149,9 @@ static int parport_config(struct pcmcia_device *link)
+ 
+     dev_dbg(&link->dev, "parport_config\n");
+ 
++    if (epp_mode)
++	    link->config_index |= FORCE_EPP_MODE;
++
+     ret = pcmcia_loop_config(link, parport_config_check, NULL);
      if (ret)
  	    goto failed;
- 
-diff --git a/drivers/pcmcia/au1000_generic.h b/drivers/pcmcia/au1000_generic.h
-index 67530ce..5c36bda 100644
---- a/drivers/pcmcia/au1000_generic.h
-+++ b/drivers/pcmcia/au1000_generic.h
-@@ -23,7 +23,6 @@
- 
- /* include the world */
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/ss.h>
- #include <pcmcia/cistpl.h>
- #include "cs_internal.h"
-diff --git a/drivers/pcmcia/au1000_pb1x00.c b/drivers/pcmcia/au1000_pb1x00.c
-index 807f2d7..b239664 100644
---- a/drivers/pcmcia/au1000_pb1x00.c
-+++ b/drivers/pcmcia/au1000_pb1x00.c
-@@ -31,7 +31,6 @@
- #include <linux/proc_fs.h>
- #include <linux/types.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/ss.h>
- #include <pcmcia/cistpl.h>
- 
-diff --git a/drivers/pcmcia/cistpl.c b/drivers/pcmcia/cistpl.c
-index 91414a0..884a984 100644
---- a/drivers/pcmcia/cistpl.c
-+++ b/drivers/pcmcia/cistpl.c
-@@ -28,7 +28,6 @@
- #include <asm/unaligned.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/cistpl.h>
- #include "cs_internal.h"
-diff --git a/drivers/pcmcia/cs.c b/drivers/pcmcia/cs.c
-index 2ec8ac9..d8189d4 100644
---- a/drivers/pcmcia/cs.c
-+++ b/drivers/pcmcia/cs.c
-@@ -33,7 +33,6 @@
- #include <asm/irq.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-diff --git a/drivers/pcmcia/cs_internal.h b/drivers/pcmcia/cs_internal.h
-index 42eef43..7f1953f 100644
---- a/drivers/pcmcia/cs_internal.h
-+++ b/drivers/pcmcia/cs_internal.h
-@@ -33,14 +33,9 @@
- typedef struct config_t {
- 	struct kref	ref;
- 	unsigned int	state;
--	unsigned int	Attributes;
- 
- 	struct resource io[MAX_IO_WIN]; /* io ports */
- 	struct resource mem[MAX_WIN];   /* mem areas */
--
--	struct {
--		u_int	Attributes;
--	} irq;
- } config_t;
- 
- 
-diff --git a/drivers/pcmcia/ds.c b/drivers/pcmcia/ds.c
-index 00db600..dd43bd3 100644
---- a/drivers/pcmcia/ds.c
-+++ b/drivers/pcmcia/ds.c
-@@ -26,7 +26,6 @@
- #include <linux/dma-mapping.h>
- #include <linux/slab.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include <pcmcia/ss.h>
-@@ -1178,7 +1177,7 @@ static int pcmcia_dev_resume(struct device *dev)
- 
- 	if (p_dev->device_no == p_dev->func) {
- 		dev_dbg(dev, "requesting configuration\n");
--		ret = pcmcia_request_configuration(p_dev, &p_dev->conf);
-+		ret = pcmcia_enable_device(p_dev);
- 		if (ret)
- 			goto out;
- 	}
-diff --git a/drivers/pcmcia/i82092.c b/drivers/pcmcia/i82092.c
-index 05d0879..fc7906e 100644
---- a/drivers/pcmcia/i82092.c
-+++ b/drivers/pcmcia/i82092.c
-@@ -16,7 +16,6 @@
- #include <linux/device.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- 
- #include <asm/system.h>
- #include <asm/io.h>
-diff --git a/drivers/pcmcia/i82365.c b/drivers/pcmcia/i82365.c
-index 61746bd..72a033a 100644
---- a/drivers/pcmcia/i82365.c
-+++ b/drivers/pcmcia/i82365.c
-@@ -51,7 +51,6 @@
- #include <asm/system.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- 
- #include <linux/isapnp.h>
- 
-diff --git a/drivers/pcmcia/m32r_cfc.c b/drivers/pcmcia/m32r_cfc.c
-index 24de499..2adb010 100644
---- a/drivers/pcmcia/m32r_cfc.c
-+++ b/drivers/pcmcia/m32r_cfc.c
-@@ -27,7 +27,6 @@
- #include <asm/system.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- 
- #undef MAX_IO_WIN	/* FIXME */
- #define MAX_IO_WIN 1
-diff --git a/drivers/pcmcia/m32r_pcc.c b/drivers/pcmcia/m32r_pcc.c
-index 8e47238..1511ff7 100644
---- a/drivers/pcmcia/m32r_pcc.c
-+++ b/drivers/pcmcia/m32r_pcc.c
-@@ -28,7 +28,6 @@
- #include <asm/addrspace.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- 
- /* XXX: should be moved into asm/irq.h */
- #define PCC0_IRQ 24
-diff --git a/drivers/pcmcia/m8xx_pcmcia.c b/drivers/pcmcia/m8xx_pcmcia.c
-index f0ecad9..99d4f23 100644
---- a/drivers/pcmcia/m8xx_pcmcia.c
-+++ b/drivers/pcmcia/m8xx_pcmcia.c
-@@ -59,7 +59,6 @@
- #include <asm/irq.h>
- #include <asm/fs_pd.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/ss.h>
- 
- #define pcmcia_info(args...) printk(KERN_INFO "m8xx_pcmcia: "args)
 diff --git a/drivers/pcmcia/pcmcia_cis.c b/drivers/pcmcia/pcmcia_cis.c
-index ac47cc4..ce8b94a 100644
+index 160da06..e2c9241 100644
 --- a/drivers/pcmcia/pcmcia_cis.c
 +++ b/drivers/pcmcia/pcmcia_cis.c
-@@ -22,7 +22,6 @@
- #include <pcmcia/cisreg.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/ds.h>
- #include "cs_internal.h"
- 
-diff --git a/drivers/pcmcia/pcmcia_resource.c b/drivers/pcmcia/pcmcia_resource.c
-index a1fb0dc..28de5e6 100644
---- a/drivers/pcmcia/pcmcia_resource.c
-+++ b/drivers/pcmcia/pcmcia_resource.c
-@@ -26,7 +26,6 @@
- #include <asm/irq.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -230,7 +229,7 @@ EXPORT_SYMBOL(pcmcia_map_mem_page);
-  * pcmcia_fixup_iowidth() - reduce io width to 8bit
+@@ -6,7 +6,7 @@
+  * are Copyright (C) 1999 David A. Hinds.  All Rights Reserved.
   *
-  * pcmcia_fixup_iowidth() allows a PCMCIA device driver to reduce the
-- * IO width to 8bit after having called pcmcia_request_configuration()
-+ * IO width to 8bit after having called pcmcia_enable_device()
-  * previously.
-  */
- int pcmcia_fixup_iowidth(struct pcmcia_device *p_dev)
-@@ -278,7 +277,7 @@ EXPORT_SYMBOL(pcmcia_fixup_iowidth);
-  * pcmcia_fixup_vpp() - set Vpp to a new voltage level
+  * Copyright (C) 1999	     David A. Hinds
+- * Copyright (C) 2004-2009   Dominik Brodowski
++ * Copyright (C) 2004-2010   Dominik Brodowski
   *
-  * pcmcia_fixup_vpp() allows a PCMCIA device driver to set Vpp to
-- * a new voltage level between calls to pcmcia_request_configuration()
-+ * a new voltage level between calls to pcmcia_enable_device()
-  * and pcmcia_disable_device().
-  */
- int pcmcia_fixup_vpp(struct pcmcia_device *p_dev, unsigned char new_vpp)
-@@ -432,18 +431,21 @@ int pcmcia_release_window(struct pcmcia_device *p_dev, struct resource *res)
- } /* pcmcia_release_window */
- EXPORT_SYMBOL(pcmcia_release_window);
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+@@ -125,13 +125,24 @@ next_entry:
+ 	return ret;
+ }
  
--
--int pcmcia_request_configuration(struct pcmcia_device *p_dev,
--				 config_req_t *req)
++
 +/**
-+ * pcmcia_enable_device() - set up and activate a PCMCIA device
-+ *
++ * pcmcia_io_cfg_data_width() - convert cfgtable to data path width parameter
 + */
-+int pcmcia_enable_device(struct pcmcia_device *p_dev)
- {
- 	int i;
--	u_int base;
-+	unsigned int base;
- 	struct pcmcia_socket *s = p_dev->socket;
- 	config_t *c;
- 	pccard_io_map iomap;
- 	unsigned char status = 0;
- 	unsigned char ext_status = 0;
- 	unsigned char option = 0;
-+	unsigned int flags = p_dev->config_flags;
++static int pcmcia_io_cfg_data_width(unsigned int flags)
++{
++	if (!(flags & CISTPL_IO_8BIT))
++		return IO_DATA_PATH_WIDTH_16;
++	if (!(flags & CISTPL_IO_16BIT))
++		return IO_DATA_PATH_WIDTH_8;
++	return IO_DATA_PATH_WIDTH_AUTO;
++}
++
++
+ struct pcmcia_cfg_mem {
+ 	struct pcmcia_device *p_dev;
++	int (*conf_check) (struct pcmcia_device *p_dev, void *priv_data);
+ 	void *priv_data;
+-	int (*conf_check) (struct pcmcia_device *p_dev,
+-			   cistpl_cftable_entry_t *cfg,
+-			   cistpl_cftable_entry_t *dflt,
+-			   void *priv_data);
+ 	cisparse_t parse;
+ 	cistpl_cftable_entry_t dflt;
+ };
+@@ -184,16 +195,63 @@ static int pcmcia_do_loop_config(tuple_t *tuple, cisparse_t *parse, void *priv)
+ 	if ((flags & CONF_AUTO_AUDIO) && (cfg->flags & CISTPL_CFTABLE_AUDIO))
+ 		p_dev->config_flags |= CONF_ENABLE_SPKR;
  
- 	if (!(s->state & SOCKET_PRESENT))
- 		return -ENODEV;
-@@ -466,23 +468,20 @@ int pcmcia_request_configuration(struct pcmcia_device *p_dev,
- 	}
- 
- 	/* Pick memory or I/O card, DMA mode, interrupt */
--	c->Attributes = req->Attributes;
- 	if (p_dev->_io)
- 		s->socket.flags |= SS_IOCARD;
--	if (req->Attributes & CONF_ENABLE_DMA)
--		s->socket.flags |= SS_DMA_MODE;
--	if (req->Attributes & CONF_ENABLE_SPKR) {
-+	if (flags & CONF_ENABLE_SPKR) {
- 		s->socket.flags |= SS_SPKR_ENA;
- 		status = CCSR_AUDIO_ENA;
- 		if (!(p_dev->config_regs & PRESENT_STATUS))
- 			dev_warn(&p_dev->dev, "speaker requested, but "
- 					      "PRESENT_STATUS not set!\n");
- 	}
--	if (req->Attributes & CONF_ENABLE_IRQ)
-+	if (flags & CONF_ENABLE_IRQ)
- 		s->socket.io_irq = s->pcmcia_irq;
- 	else
- 		s->socket.io_irq = 0;
--	if (req->Attributes & CONF_ENABLE_ESR) {
-+	if (flags & CONF_ENABLE_ESR) {
- 		p_dev->config_regs |= PRESENT_EXT_STATUS;
- 		ext_status = ESR_REQ_ATTN_ENA;
- 	}
-@@ -510,8 +509,8 @@ int pcmcia_request_configuration(struct pcmcia_device *p_dev,
- 			if (p_dev->config_regs & PRESENT_IOBASE_0)
- 				option |= COR_ADDR_DECODE;
- 		}
--		if ((req->Attributes & CONF_ENABLE_IRQ) &&
--			!(req->Attributes & CONF_ENABLE_PULSE_IRQ))
-+		if ((flags & CONF_ENABLE_IRQ) &&
-+			!(flags & CONF_ENABLE_PULSE_IRQ))
- 			option |= COR_LEVEL_REQ;
- 		pcmcia_write_cis_mem(s, 1, (base + CISREG_COR)>>1, 1, &option);
- 		mdelay(40);
-@@ -560,8 +559,8 @@ int pcmcia_request_configuration(struct pcmcia_device *p_dev,
- 	p_dev->_locked = 1;
- 	mutex_unlock(&s->ops_mutex);
- 	return 0;
--} /* pcmcia_request_configuration */
--EXPORT_SYMBOL(pcmcia_request_configuration);
-+} /* pcmcia_enable_device */
-+EXPORT_SYMBOL(pcmcia_enable_device);
- 
+-	return cfg_mem->conf_check(cfg_mem->p_dev, cfg, &cfg_mem->dflt,
+-				   cfg_mem->priv_data);
++
++	/* IO window settings? */
++	if (flags & CONF_AUTO_SET_IO) {
++		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
++		int i = 0;
++
++		p_dev->resource[0]->start = p_dev->resource[0]->end = 0;
++		p_dev->resource[1]->start = p_dev->resource[1]->end = 0;
++		if (io->nwin == 0)
++			return -ENODEV;
++
++		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++		p_dev->resource[0]->flags |=
++					pcmcia_io_cfg_data_width(io->flags);
++		if (io->nwin > 1) {
++			/* For multifunction cards, by convention, we
++			 * configure the network function with window 0,
++			 * and serial with window 1 */
++			i = (io->win[1].len > io->win[0].len);
++			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
++			p_dev->resource[1]->start = io->win[1-i].base;
++			p_dev->resource[1]->end = io->win[1-i].len;
++		}
++		p_dev->resource[0]->start = io->win[i].base;
++		p_dev->resource[0]->end = io->win[i].len;
++		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
++	}
++
++	/* MEM window settings? */
++	if (flags & CONF_AUTO_SET_IOMEM) {
++		/* so far, we only set one memory window */
++		cistpl_mem_t *mem = (cfg->mem.nwin) ? &cfg->mem : &dflt->mem;
++
++		p_dev->resource[2]->start = p_dev->resource[2]->end = 0;
++		if (mem->nwin == 0)
++			return -ENODEV;
++
++		p_dev->resource[2]->start = mem->win[0].host_addr;
++		p_dev->resource[2]->end = mem->win[0].len;
++		if (p_dev->resource[2]->end < 0x1000)
++			p_dev->resource[2]->end = 0x1000;
++		p_dev->card_addr = mem->win[0].card_addr;
++	}
++
++	dev_dbg(&p_dev->dev,
++		"checking configuration %x: %pr %pr %pr (%d lines)\n",
++		p_dev->config_index, p_dev->resource[0], p_dev->resource[1],
++		p_dev->resource[2], p_dev->io_lines);
++
++	return cfg_mem->conf_check(p_dev, cfg_mem->priv_data);
+ }
  
  /**
-diff --git a/drivers/pcmcia/pd6729.c b/drivers/pcmcia/pd6729.c
-index deef665..8cbfa06 100644
---- a/drivers/pcmcia/pd6729.c
-+++ b/drivers/pcmcia/pd6729.c
-@@ -18,7 +18,6 @@
- #include <linux/io.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- 
- #include <asm/system.h>
- 
-diff --git a/drivers/pcmcia/rsrc_iodyn.c b/drivers/pcmcia/rsrc_iodyn.c
-index 8510c35..523eb69 100644
---- a/drivers/pcmcia/rsrc_iodyn.c
-+++ b/drivers/pcmcia/rsrc_iodyn.c
-@@ -17,7 +17,6 @@
- #include <linux/kernel.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include "cs_internal.h"
- 
-diff --git a/drivers/pcmcia/rsrc_mgr.c b/drivers/pcmcia/rsrc_mgr.c
-index 4e80421..aa628ed 100644
---- a/drivers/pcmcia/rsrc_mgr.c
-+++ b/drivers/pcmcia/rsrc_mgr.c
-@@ -17,7 +17,6 @@
- #include <linux/kernel.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include "cs_internal.h"
- 
-diff --git a/drivers/pcmcia/rsrc_nonstatic.c b/drivers/pcmcia/rsrc_nonstatic.c
-index 96f348b..b187555 100644
---- a/drivers/pcmcia/rsrc_nonstatic.c
-+++ b/drivers/pcmcia/rsrc_nonstatic.c
-@@ -29,7 +29,6 @@
- #include <asm/irq.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include "cs_internal.h"
- 
-diff --git a/drivers/pcmcia/sa1100_generic.c b/drivers/pcmcia/sa1100_generic.c
-index e098514..945857f 100644
---- a/drivers/pcmcia/sa1100_generic.c
-+++ b/drivers/pcmcia/sa1100_generic.c
-@@ -35,7 +35,6 @@
- #include <linux/slab.h>
- #include <linux/platform_device.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/ss.h>
- 
- #include <asm/hardware/scoop.h>
-diff --git a/drivers/pcmcia/soc_common.h b/drivers/pcmcia/soc_common.h
-index 3fba3a6..bbcd538 100644
---- a/drivers/pcmcia/soc_common.h
-+++ b/drivers/pcmcia/soc_common.h
-@@ -11,7 +11,6 @@
- 
- /* include the world */
- #include <linux/cpufreq.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/ss.h>
- #include <pcmcia/cistpl.h>
- 
-diff --git a/drivers/pcmcia/socket_sysfs.c b/drivers/pcmcia/socket_sysfs.c
-index cb0d3ac..71aeed9 100644
---- a/drivers/pcmcia/socket_sysfs.c
-+++ b/drivers/pcmcia/socket_sysfs.c
-@@ -27,7 +27,6 @@
- #include <asm/irq.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-diff --git a/drivers/pcmcia/tcic.c b/drivers/pcmcia/tcic.c
-index be0d841..310160b 100644
---- a/drivers/pcmcia/tcic.c
-+++ b/drivers/pcmcia/tcic.c
-@@ -49,7 +49,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/ss.h>
- #include "tcic.h"
- 
-diff --git a/drivers/pcmcia/xxs1500_ss.c b/drivers/pcmcia/xxs1500_ss.c
-index fa88c36..3b67a1b 100644
---- a/drivers/pcmcia/xxs1500_ss.c
-+++ b/drivers/pcmcia/xxs1500_ss.c
-@@ -17,7 +17,6 @@
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/ss.h>
- #include <pcmcia/cistpl.h>
- 
-diff --git a/drivers/pcmcia/yenta_socket.c b/drivers/pcmcia/yenta_socket.c
-index 414d9a6..408dbaa 100644
---- a/drivers/pcmcia/yenta_socket.c
-+++ b/drivers/pcmcia/yenta_socket.c
-@@ -20,7 +20,6 @@
- #include <linux/slab.h>
- 
- #include <pcmcia/ss.h>
--#include <pcmcia/cs.h>
- 
- #include "yenta_socket.h"
- #include "i82365.h"
+  * pcmcia_loop_config() - loop over configuration options
+  * @p_dev:	the struct pcmcia_device which we need to loop for.
+  * @conf_check:	function to call for each configuration option.
+- *		It gets passed the struct pcmcia_device, the CIS data
+- *		describing the configuration option, and private data
++ *		It gets passed the struct pcmcia_device and private data
+  *		being passed to pcmcia_loop_config()
+  * @priv_data:	private data to be passed to the conf_check function.
+  *
+@@ -203,8 +261,6 @@ static int pcmcia_do_loop_config(tuple_t *tuple, cisparse_t *parse, void *priv)
+  */
+ int pcmcia_loop_config(struct pcmcia_device *p_dev,
+ 		       int	(*conf_check)	(struct pcmcia_device *p_dev,
+-						 cistpl_cftable_entry_t *cfg,
+-						 cistpl_cftable_entry_t *dflt,
+ 						 void *priv_data),
+ 		       void *priv_data)
+ {
 diff --git a/drivers/scsi/pcmcia/aha152x_stub.c b/drivers/scsi/pcmcia/aha152x_stub.c
-index c368249..e1f7485 100644
+index 0b5fc2f..bd9ce09 100644
 --- a/drivers/scsi/pcmcia/aha152x_stub.c
 +++ b/drivers/scsi/pcmcia/aha152x_stub.c
-@@ -49,7 +49,6 @@
- #include <scsi/scsi_host.h>
- #include "aha152x.h"
+@@ -99,9 +99,7 @@ static int aha152x_probe(struct pcmcia_device *link)
+     info->p_dev = link;
+     link->priv = info;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-@@ -102,7 +101,7 @@ static int aha152x_probe(struct pcmcia_device *link)
- 
-     link->resource[0]->end = 0x20;
-     link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
--    link->conf.Attributes = CONF_ENABLE_IRQ;
-+    link->config_flags |= CONF_ENABLE_IRQ;
+-    link->resource[0]->end = 0x20;
+-    link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-    link->config_flags |= CONF_ENABLE_IRQ;
++    link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
      link->config_regs = PRESENT_OPTION;
  
      return aha152x_config_cs(link);
-@@ -159,7 +158,7 @@ static int aha152x_config_cs(struct pcmcia_device *link)
-     if (!link->irq)
- 	    goto failed;
+@@ -121,24 +119,24 @@ static void aha152x_detach(struct pcmcia_device *link)
  
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
-     
+ /*====================================================================*/
+ 
+-static int aha152x_config_check(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int aha152x_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	p_dev->io_lines = 10;
++
+ 	/* For New Media T&J, look for a SCSI window */
+-	if (cfg->io.win[0].len >= 0x20)
+-		p_dev->resource[0]->start = cfg->io.win[0].base;
+-	else if ((cfg->io.nwin > 1) &&
+-		 (cfg->io.win[1].len >= 0x20))
+-		p_dev->resource[0]->start = cfg->io.win[1].base;
+-	if ((cfg->io.nwin > 0) &&
+-	    (p_dev->resource[0]->start < 0xffff)) {
+-		if (!pcmcia_request_io(p_dev))
+-			return 0;
+-	}
+-	return -EINVAL;
++	if ((p_dev->resource[0]->end < 0x20) &&
++		(p_dev->resource[1]->end >= 0x20))
++		p_dev->resource[0]->start = p_dev->resource[1]->start;
++
++	if (p_dev->resource[0]->start >= 0xffff)
++		return -EINVAL;
++
++	p_dev->resource[1]->start = p_dev->resource[1]->end = 0;
++	p_dev->resource[0]->end = 0x20;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
++
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ static int aha152x_config_cs(struct pcmcia_device *link)
 diff --git a/drivers/scsi/pcmcia/fdomain_stub.c b/drivers/scsi/pcmcia/fdomain_stub.c
-index bb909e1..ae263b1 100644
+index 3b9f311..f2dc627 100644
 --- a/drivers/scsi/pcmcia/fdomain_stub.c
 +++ b/drivers/scsi/pcmcia/fdomain_stub.c
-@@ -46,7 +46,6 @@
- #include <scsi/scsi_host.h>
- #include "fdomain.h"
+@@ -82,9 +82,7 @@ static int fdomain_probe(struct pcmcia_device *link)
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-@@ -85,7 +84,7 @@ static int fdomain_probe(struct pcmcia_device *link)
+ 	info->p_dev = link;
  	link->priv = info;
- 	link->resource[0]->end = 0x10;
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
+-	link->resource[0]->end = 0x10;
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-	link->config_flags |= CONF_ENABLE_IRQ;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
  	link->config_regs = PRESENT_OPTION;
  
  	return fdomain_config(link);
-@@ -131,7 +130,7 @@ static int fdomain_config(struct pcmcia_device *link)
+@@ -103,13 +101,12 @@ static void fdomain_detach(struct pcmcia_device *link)
  
-     if (!link->irq)
- 	    goto failed;
--    ret = pcmcia_request_configuration(link, &link->conf);
-+    ret = pcmcia_enable_device(link);
-     if (ret)
- 	    goto failed;
+ /*====================================================================*/
+ 
+-static int fdomain_config_check(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int fdomain_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	p_dev->io_lines = 10;
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
++	p_dev->resource[0]->end = 0x10;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+ 	return pcmcia_request_io(p_dev);
+ }
  
 diff --git a/drivers/scsi/pcmcia/nsp_cs.c b/drivers/scsi/pcmcia/nsp_cs.c
-index a5648e9..d0546c0 100644
+index 344d499..3b90ad9 100644
 --- a/drivers/scsi/pcmcia/nsp_cs.c
 +++ b/drivers/scsi/pcmcia/nsp_cs.c
-@@ -47,7 +47,6 @@
- #include <scsi/scsi.h>
- #include <scsi/scsi_ioctl.h>
+@@ -1556,13 +1556,6 @@ static int nsp_cs_probe(struct pcmcia_device *link)
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -1562,7 +1561,7 @@ static int nsp_cs_probe(struct pcmcia_device *link)
- 	link->resource[0]->flags = IO_DATA_PATH_WIDTH_AUTO;
+ 	nsp_dbg(NSP_DEBUG_INIT, "info=0x%p", info);
  
- 	/* General socket configuration */
--	link->conf.Attributes	 = CONF_ENABLE_IRQ;
-+	link->config_flags	 |= CONF_ENABLE_IRQ;
- 
+-	/* The io structure describes IO port mapping */
+-	link->resource[0]->end	 = 0x10;
+-	link->resource[0]->flags = IO_DATA_PATH_WIDTH_AUTO;
+-
+-	/* General socket configuration */
+-	link->config_flags	 |= CONF_ENABLE_IRQ;
+-
  	ret = nsp_cs_config(link);
  
-@@ -1608,7 +1607,7 @@ static int nsp_cs_config_check(struct pcmcia_device *p_dev,
+ 	nsp_dbg(NSP_DEBUG_INIT, "link=0x%p", link);
+@@ -1594,50 +1587,27 @@ static void nsp_cs_detach(struct pcmcia_device *link)
+     ethernet device available to the system.
+ ======================================================================*/
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
+-static int nsp_cs_config_check(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cfg,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int nsp_cs_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	nsp_hw_data		*data = priv_data;
  
- 	/* Use power settings for Vcc and Vpp if present */
- 	/*  Note that the CIS values need to be rescaled */
-@@ -1629,7 +1628,7 @@ static int nsp_cs_config_check(struct pcmcia_device *p_dev,
- 		}
+-	if (cfg->index == 0)
++	if (p_dev->config_index == 0)
+ 		return -ENODEV;
  
- 		/* Do we need to allocate an interrupt? */
--		p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+		p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 		/* IO window settings */
- 		p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -1700,7 +1699,7 @@ static int nsp_cs_config(struct pcmcia_device *link)
- 	if (pcmcia_request_irq(link, nspintr))
- 		goto cs_failed;
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto cs_failed;
- 
-@@ -1749,9 +1748,7 @@ static int nsp_cs_config(struct pcmcia_device *link)
- 	if (link->vpp) {
- 		printk(", Vpp %d.%d", link->vpp/10, link->vpp%10);
- 	}
--	if (link->conf.Attributes & CONF_ENABLE_IRQ) {
--		printk(", irq %d", link->irq);
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-					pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		/* This reserves IO space but doesn't actually enable it */
+-		if (pcmcia_request_io(p_dev) != 0)
+-			goto next_entry;
 -	}
-+	printk(", irq %d", link->irq);
- 	if (link->resource[0])
- 		printk(", io %pR", link->resource[0]);
- 	if (link->resource[1])
++	/* This reserves IO space but doesn't actually enable it */
++	if (pcmcia_request_io(p_dev) != 0)
++		goto next_entry;
+ 
+-	if ((cfg->mem.nwin > 0) || (dflt->mem.nwin > 0)) {
+-		cistpl_mem_t	*mem =
+-			(cfg->mem.nwin) ? &cfg->mem : &dflt->mem;
++	if (resource_size(p_dev->resource[2])) {
+ 		p_dev->resource[2]->flags |= (WIN_DATA_WIDTH_16 |
+ 					WIN_MEMORY_TYPE_CM |
+ 					WIN_ENABLE);
+-		p_dev->resource[2]->start = mem->win[0].host_addr;
+-		p_dev->resource[2]->end = mem->win[0].len;
+ 		if (p_dev->resource[2]->end < 0x1000)
+ 			p_dev->resource[2]->end = 0x1000;
+ 		if (pcmcia_request_window(p_dev, p_dev->resource[2], 0) != 0)
+ 			goto next_entry;
+ 		if (pcmcia_map_mem_page(p_dev, p_dev->resource[2],
+-						mem->win[0].card_addr) != 0)
++						p_dev->card_addr) != 0)
+ 			goto next_entry;
+ 
+ 		data->MmioAddress = (unsigned long)
+@@ -1664,7 +1634,8 @@ static int nsp_cs_config(struct pcmcia_device *link)
+ 	nsp_dbg(NSP_DEBUG_INIT, "in");
+ 
+ 	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_CHECK_VCC |
+-		CONF_AUTO_SET_VPP | CONF_AUTO_AUDIO;
++		CONF_AUTO_SET_VPP | CONF_AUTO_AUDIO | CONF_AUTO_SET_IOMEM |
++		CONF_AUTO_SET_IO;
+ 
+ 	ret = pcmcia_loop_config(link, nsp_cs_config_check, data);
+ 	if (ret)
 diff --git a/drivers/scsi/pcmcia/qlogic_stub.c b/drivers/scsi/pcmcia/qlogic_stub.c
-index 5e2cbe0..7d3f49c 100644
+index 468fd12..e8a06e3 100644
 --- a/drivers/scsi/pcmcia/qlogic_stub.c
 +++ b/drivers/scsi/pcmcia/qlogic_stub.c
-@@ -48,7 +48,6 @@
- #include <scsi/scsi_host.h>
- #include "../qlogicfas408.h"
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include <pcmcia/ciscode.h>
-@@ -158,7 +157,7 @@ static int qlogic_probe(struct pcmcia_device *link)
+@@ -155,9 +155,7 @@ static int qlogic_probe(struct pcmcia_device *link)
+ 		return -ENOMEM;
+ 	info->p_dev = link;
  	link->priv = info;
- 	link->resource[0]->end = 16;
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
+-	link->resource[0]->end = 16;
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-	link->config_flags |= CONF_ENABLE_IRQ;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
  	link->config_regs = PRESENT_OPTION;
  
  	return qlogic_config(link);
-@@ -208,7 +207,7 @@ static int qlogic_config(struct pcmcia_device * link)
- 	if (!link->irq)
- 		goto failed;
+@@ -176,14 +174,11 @@ static void qlogic_detach(struct pcmcia_device *link)
  
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
+ /*====================================================================*/
  
-@@ -263,7 +262,7 @@ static int qlogic_resume(struct pcmcia_device *link)
+-static int qlogic_config_check(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cfg,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int qlogic_config_check(struct pcmcia_device *p_dev, void *priv_data)
  {
- 	scsi_info_t *info = link->priv;
+ 	p_dev->io_lines = 10;
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
  
--	pcmcia_request_configuration(link, &link->conf);
-+	pcmcia_enable_device(link);
- 	if ((info->manf_id == MANFID_MACNICA) ||
- 	    (info->manf_id == MANFID_PIONEER) ||
- 	    (info->manf_id == 0x0098)) {
+ 	if (p_dev->resource[0]->start == 0)
+ 		return -ENODEV;
 diff --git a/drivers/scsi/pcmcia/sym53c500_cs.c b/drivers/scsi/pcmcia/sym53c500_cs.c
-index 9aaf974..600630e 100644
+index 7a0bb9a..6ceb57c 100644
 --- a/drivers/scsi/pcmcia/sym53c500_cs.c
 +++ b/drivers/scsi/pcmcia/sym53c500_cs.c
-@@ -71,7 +71,6 @@
- #include <scsi/scsi.h>
- #include <scsi/scsi_host.h>
+@@ -683,14 +683,11 @@ static struct scsi_host_template sym53c500_driver_template = {
+      .shost_attrs		= SYM53C500_shost_attrs
+ };
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- #include <pcmcia/ciscode.h>
-@@ -721,7 +720,7 @@ SYM53C500_config(struct pcmcia_device *link)
- 	if (!link->irq)
- 		goto failed;
+-static int SYM53C500_config_check(struct pcmcia_device *p_dev,
+-				  cistpl_cftable_entry_t *cfg,
+-				  cistpl_cftable_entry_t *dflt,
+-				  void *priv_data)
++static int SYM53C500_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	p_dev->io_lines = 10;
+-	p_dev->resource[0]->start = cfg->io.win[0].base;
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
  
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-@@ -861,7 +860,7 @@ SYM53C500_probe(struct pcmcia_device *link)
+ 	if (p_dev->resource[0]->start == 0)
+ 		return -ENODEV;
+@@ -857,9 +854,7 @@ SYM53C500_probe(struct pcmcia_device *link)
+ 		return -ENOMEM;
+ 	info->p_dev = link;
  	link->priv = info;
- 	link->resource[0]->end = 16;
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
+-	link->resource[0]->end = 16;
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
+-	link->config_flags |= CONF_ENABLE_IRQ;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
  
  	return SYM53C500_config(link);
  } /* SYM53C500_attach */
 diff --git a/drivers/serial/serial_cs.c b/drivers/serial/serial_cs.c
-index ee19f2d..47b1869 100644
+index a796a93..4225203 100644
 --- a/drivers/serial/serial_cs.c
 +++ b/drivers/serial/serial_cs.c
-@@ -45,7 +45,6 @@
- #include <asm/io.h>
- #include <asm/system.h>
+@@ -424,41 +424,45 @@ static int pfc_config(struct pcmcia_device *p_dev)
+ 	return -ENODEV;
+ }
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-@@ -184,7 +183,7 @@ static void quirk_config_socket(struct pcmcia_device *link)
+-static int simple_config_check(struct pcmcia_device *p_dev,
+-			       cistpl_cftable_entry_t *cf,
+-			       cistpl_cftable_entry_t *dflt,
+-			       void *priv_data)
++static int simple_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	static const int size_table[2] = { 8, 16 };
+ 	int *try = priv_data;
+ 
+-	p_dev->io_lines = ((*try & 0x1) == 0) ?
+-			16 : cf->io.flags & CISTPL_IO_LINES_MASK;
++	if (p_dev->resource[0]->start == 0)
++		return -ENODEV;
+ 
+-	if ((cf->io.nwin > 0) && (cf->io.win[0].len == size_table[(*try >> 1)])
+-	    && (cf->io.win[0].base != 0)) {
+-		p_dev->resource[0]->start = cf->io.win[0].base;
+-		if (!pcmcia_request_io(p_dev))
+-			return 0;
+-	}
+-	return -EINVAL;
++	if ((*try & 0x1) == 0)
++		p_dev->io_lines = 16;
++
++	if (p_dev->resource[0]->end != size_table[(*try >> 1)])
++		return -ENODEV;
++
++	p_dev->resource[0]->end = 8;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ static int simple_config_check_notpicky(struct pcmcia_device *p_dev,
+-					cistpl_cftable_entry_t *cf,
+-					cistpl_cftable_entry_t *dflt,
+ 					void *priv_data)
+ {
+ 	static const unsigned int base[5] = { 0x3f8, 0x2f8, 0x3e8, 0x2e8, 0x0 };
+ 	int j;
+ 
+-	if ((cf->io.nwin > 0) && ((cf->io.flags & CISTPL_IO_LINES_MASK) <= 3)) {
+-		for (j = 0; j < 5; j++) {
+-			p_dev->resource[0]->start = base[j];
+-			p_dev->io_lines = base[j] ? 16 : 3;
+-			if (!pcmcia_request_io(p_dev))
+-				return 0;
+-		}
++	if (p_dev->io_lines > 3)
++		return -ENODEV;
++
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->resource[0]->end = 8;
++
++	for (j = 0; j < 5; j++) {
++		p_dev->resource[0]->start = base[j];
++		p_dev->io_lines = base[j] ? 16 : 3;
++		if (!pcmcia_request_io(p_dev))
++			return 0;
+ 	}
+ 	return -ENODEV;
+ }
+@@ -468,12 +472,9 @@ static int simple_config(struct pcmcia_device *link)
  	struct serial_info *info = link->priv;
+ 	int i = -ENODEV, try;
  
- 	if (info->multi)
--		link->conf.Attributes |= CONF_ENABLE_ESR;
-+		link->config_flags |= CONF_ENABLE_ESR;
- }
- 
- static const struct serial_quirk quirks[] = {
-@@ -333,9 +332,9 @@ static int serial_probe(struct pcmcia_device *link)
- 	info->p_dev = link;
- 	link->priv = info;
- 
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
- 	if (do_sound)
--		link->conf.Attributes |= CONF_ENABLE_SPKR;
-+		link->config_flags |= CONF_ENABLE_SPKR;
- 
- 	return serial_config(link);
- }
-@@ -503,7 +502,7 @@ found_port:
- 	if (info->quirk && info->quirk->config)
- 		info->quirk->config(link);
- 
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0)
- 		return -1;
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-	link->resource[0]->end = 8;
+-
+ 	/* First pass: look for a config entry that looks normal.
+ 	 * Two tries: without IO aliases, then with aliases */
+-	link->config_flags |= CONF_AUTO_SET_VPP;
++	link->config_flags |= CONF_AUTO_SET_VPP | CONF_AUTO_SET_IO;
+ 	for (try = 0; try < 4; try++)
+ 		if (!pcmcia_loop_config(link, simple_config_check, &try))
+ 			goto found_port;
+@@ -503,43 +504,44 @@ found_port:
  	return setup_serial(link, info, link->resource[0]->start, link->irq);
-@@ -579,7 +578,7 @@ static int multi_config(struct pcmcia_device *link)
- 	if (info->quirk && info->quirk->config)
- 		info->quirk->config(link);
+ }
  
--	i = pcmcia_request_configuration(link, &link->conf);
-+	i = pcmcia_enable_device(link);
- 	if (i != 0)
- 		return -ENODEV;
+-static int multi_config_check(struct pcmcia_device *p_dev,
+-			      cistpl_cftable_entry_t *cf,
+-			      cistpl_cftable_entry_t *dflt,
+-			      void *priv_data)
++static int multi_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	int *base2 = priv_data;
++	int *multi = priv_data;
++
++	if (p_dev->resource[1]->end)
++		return -EINVAL;
  
-diff --git a/drivers/ssb/main.c b/drivers/ssb/main.c
-index 7892ac1..c68b3dc 100644
---- a/drivers/ssb/main.c
-+++ b/drivers/ssb/main.c
-@@ -20,7 +20,6 @@
- #include <linux/mmc/sdio_func.h>
- #include <linux/slab.h>
+ 	/* The quad port cards have bad CIS's, so just look for a
+ 	   window larger than 8 ports and assume it will be right */
+-	if ((cf->io.nwin == 1) && (cf->io.win[0].len > 8)) {
+-		p_dev->resource[0]->start = cf->io.win[0].base;
+-		p_dev->io_lines = cf->io.flags & CISTPL_IO_LINES_MASK;
+-		if (!pcmcia_request_io(p_dev)) {
+-			*base2 = p_dev->resource[0]->start + 8;
+-			return 0;
+-		}
+-	}
+-	return -ENODEV;
++	if (p_dev->resource[0]->end <= 8)
++		return -EINVAL;
++
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->resource[0]->end = *multi * 8;
++
++	if (pcmcia_request_io(p_dev))
++		return -ENODEV;
++	return 0;
+ }
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
+ static int multi_config_check_notpicky(struct pcmcia_device *p_dev,
+-				       cistpl_cftable_entry_t *cf,
+-				       cistpl_cftable_entry_t *dflt,
+ 				       void *priv_data)
+ {
+ 	int *base2 = priv_data;
  
-diff --git a/drivers/ssb/pcmcia.c b/drivers/ssb/pcmcia.c
-index 526682d..c7345db 100644
---- a/drivers/ssb/pcmcia.c
-+++ b/drivers/ssb/pcmcia.c
-@@ -13,7 +13,6 @@
- #include <linux/io.h>
- #include <linux/etherdevice.h>
+-	if (cf->io.nwin == 2) {
+-		p_dev->resource[0]->start = cf->io.win[0].base;
+-		p_dev->resource[1]->start = cf->io.win[1].base;
+-		p_dev->io_lines = cf->io.flags & CISTPL_IO_LINES_MASK;
+-		if (!pcmcia_request_io(p_dev)) {
+-			*base2 = p_dev->resource[1]->start;
+-			return 0;
+-		}
+-	}
+-	return -ENODEV;
++	if (!p_dev->resource[0]->end || !p_dev->resource[1]->end)
++		return -ENODEV;
++
++	p_dev->resource[0]->end = p_dev->resource[1]->end = 8;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++
++	if (pcmcia_request_io(p_dev))
++		return -ENODEV;
++
++	*base2 = p_dev->resource[0]->start + 8;
++	return 0;
+ }
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ciscode.h>
- #include <pcmcia/ds.h>
-diff --git a/drivers/ssb/scan.c b/drivers/ssb/scan.c
-index 9738cad..ee079ab 100644
---- a/drivers/ssb/scan.c
-+++ b/drivers/ssb/scan.c
-@@ -17,7 +17,6 @@
- #include <linux/pci.h>
- #include <linux/io.h>
+ static int multi_config(struct pcmcia_device *link)
+@@ -547,12 +549,12 @@ static int multi_config(struct pcmcia_device *link)
+ 	struct serial_info *info = link->priv;
+ 	int i, base2 = 0;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
++	link->config_flags |= CONF_AUTO_SET_IO;
+ 	/* First, look for a generic full-sized window */
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-	link->resource[0]->end = info->multi * 8;
+-	if (pcmcia_loop_config(link, multi_config_check, &base2)) {
++	if (!pcmcia_loop_config(link, multi_config_check, &info->multi))
++		base2 = link->resource[0]->start + 8;
++	else {
+ 		/* If that didn't work, look for two windows */
+-		link->resource[0]->end = link->resource[1]->end = 8;
+ 		info->multi = 2;
+ 		if (pcmcia_loop_config(link, multi_config_check_notpicky,
+ 				       &base2)) {
+@@ -587,7 +589,7 @@ static int multi_config(struct pcmcia_device *link)
+ 		    link->config_index == 3) {
+ 			err = setup_serial(link, info, base2,
+ 					link->irq);
+-			base2 = link->resource[0]->start;;
++			base2 = link->resource[0]->start;
+ 		} else {
+ 			err = setup_serial(link, info, link->resource[0]->start,
+ 					link->irq);
+@@ -611,18 +613,18 @@ static int multi_config(struct pcmcia_device *link)
+ 	return 0;
+ }
  
+-static int serial_check_for_multi(struct pcmcia_device *p_dev,
+-				  cistpl_cftable_entry_t *cf,
+-				  cistpl_cftable_entry_t *dflt,
+-				  void *priv_data)
++static int serial_check_for_multi(struct pcmcia_device *p_dev,  void *priv_data)
+ {
+ 	struct serial_info *info = p_dev->priv;
+ 
+-	if ((cf->io.nwin == 1) && (cf->io.win[0].len % 8 == 0))
+-		info->multi = cf->io.win[0].len >> 3;
++	if (!p_dev->resource[0]->end)
++		return -EINVAL;
++
++	if ((!p_dev->resource[1]->end) && (p_dev->resource[0]->end % 8 == 0))
++		info->multi = p_dev->resource[0]->end >> 3;
+ 
+-	if ((cf->io.nwin == 2) && (cf->io.win[0].len == 8) &&
+-		(cf->io.win[1].len == 8))
++	if ((p_dev->resource[1]->end) && (p_dev->resource[0]->end == 8)
++		&& (p_dev->resource[1]->end == 8))
+ 		info->multi = 2;
+ 
+ 	return 0; /* break */
 diff --git a/drivers/staging/comedi/drivers/cb_das16_cs.c b/drivers/staging/comedi/drivers/cb_das16_cs.c
-index 034cbfc..ee91c89 100644
+index 678fbf6..c43c689 100644
 --- a/drivers/staging/comedi/drivers/cb_das16_cs.c
 +++ b/drivers/staging/comedi/drivers/cb_das16_cs.c
-@@ -37,7 +37,6 @@ Status: experimental
- #include <linux/delay.h>
- #include <linux/pci.h>
+@@ -710,36 +710,12 @@ static void das16cs_pcmcia_detach(struct pcmcia_device *link)
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
  
-@@ -692,9 +691,6 @@ static int das16cs_pcmcia_attach(struct pcmcia_device *link)
- 	local->link = link;
- 	link->priv = local;
- 
--	/* Initialize the pcmcia_device structure */
--	link->conf.Attributes = 0;
--
- 	cur_dev = link;
- 
- 	das16cs_pcmcia_config(link);
-@@ -723,7 +719,7 @@ static int das16cs_pcmcia_config_loop(struct pcmcia_device *p_dev,
+ static int das16cs_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+ 				void *priv_data)
+ {
+-	if (cfg->index == 0)
++	if (p_dev->config_index == 0)
  		return -EINVAL;
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
+-	/* Do we need to allocate an interrupt? */
+-	p_dev->config_flags |= CONF_ENABLE_IRQ;
+-
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		/* This reserves IO space but doesn't actually enable it */
+-		return pcmcia_request_io(p_dev);
+-	}
+-
+-	return 0;
++	return pcmcia_request_io(p_dev);
+ }
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -767,14 +763,13 @@ static void das16cs_pcmcia_config(struct pcmcia_device *link)
- 	   the I/O windows and the interrupt mapping, and putting the
- 	   card and host interface into "Memory and IO" mode.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
+ static void das16cs_pcmcia_config(struct pcmcia_device *link)
+@@ -748,6 +724,9 @@ static void das16cs_pcmcia_config(struct pcmcia_device *link)
  
- 	/* Finally, report what we've done */
- 	dev_info(&link->dev, "index 0x%02x", link->config_index);
--	if (link->conf.Attributes & CONF_ENABLE_IRQ)
--		printk(", irq %u", link->irq);
-+	printk(", irq %u", link->irq);
- 	if (link->resource[0])
- 		printk(", io %pR", link->resource[0]);
- 	if (link->resource[1])
+ 	dev_dbg(&link->dev, "das16cs_pcmcia_config\n");
+ 
++	/* Do we need to allocate an interrupt? */
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
++
+ 	ret = pcmcia_loop_config(link, das16cs_pcmcia_config_loop, NULL);
+ 	if (ret) {
+ 		dev_warn(&link->dev, "no configuration found\n");
 diff --git a/drivers/staging/comedi/drivers/das08_cs.c b/drivers/staging/comedi/drivers/das08_cs.c
-index e37ea79..f8f3de5 100644
+index 12a96b7..d395909 100644
 --- a/drivers/staging/comedi/drivers/das08_cs.c
 +++ b/drivers/staging/comedi/drivers/das08_cs.c
-@@ -48,7 +48,6 @@ Command support does not exist, but could be added for this board.
- #include "das08.h"
+@@ -192,35 +192,12 @@ static void das08_pcmcia_detach(struct pcmcia_device *link)
  
- /* pcmcia includes */
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
  
-@@ -162,15 +161,6 @@ static int das08_pcmcia_attach(struct pcmcia_device *link)
- 	local->link = link;
- 	link->priv = local;
- 
--	/*
--	   General socket configuration defaults can go here.  In this
--	   client, we assume very little, and rely on the CIS for almost
--	   everything.  In most clients, many details (i.e., number, sizes,
--	   and attributes of IO windows) are fixed by the nature of the
--	   device, and can be hard-wired here.
--	 */
--	link->conf.Attributes = 0;
+ static int das08_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+ 				void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
 -
- 	cur_dev = link;
+-	/* Do we need to allocate an interrupt? */
+-	p_dev->config_flags |= CONF_ENABLE_IRQ;
+-
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		/* This reserves IO space but doesn't actually enable it */
+-		return pcmcia_request_io(p_dev);
+-	}
+-	return 0;
++	if (p_dev->config_index == 0)
++		return -EINVAL;
++
++	return pcmcia_request_io(p_dev);
+ }
  
- 	das08_pcmcia_config(link);
-@@ -211,7 +201,7 @@ static int das08_pcmcia_config_loop(struct pcmcia_device *p_dev,
- 		return -ENODEV;
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
+@@ -238,6 +215,8 @@ static void das08_pcmcia_config(struct pcmcia_device *link)
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -263,14 +253,13 @@ static void das08_pcmcia_config(struct pcmcia_device *link)
- 	   the I/O windows and the interrupt mapping, and putting the
- 	   card and host interface into "Memory and IO" mode.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
+ 	dev_dbg(&link->dev, "das08_pcmcia_config\n");
  
- 	/* Finally, report what we've done */
- 	dev_info(&link->dev, "index 0x%02x", link->config_index);
--	if (link->conf.Attributes & CONF_ENABLE_IRQ)
--		printk(", irq %u", link->irq);
-+	printk(", irq %u", link->irq);
- 	if (link->resource[0])
- 		printk(", io %pR", link->resource[0]);
- 	if (link->resource[1])
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
++
+ 	ret = pcmcia_loop_config(link, das08_pcmcia_config_loop, NULL);
+ 	if (ret) {
+ 		dev_warn(&link->dev, "no configuration found\n");
 diff --git a/drivers/staging/comedi/drivers/ni_daq_700.c b/drivers/staging/comedi/drivers/ni_daq_700.c
-index 8107e40..803683b 100644
+index f22dc0f..7129b0c 100644
 --- a/drivers/staging/comedi/drivers/ni_daq_700.c
 +++ b/drivers/staging/comedi/drivers/ni_daq_700.c
-@@ -47,7 +47,6 @@ IRQ is assigned but not used.
+@@ -530,35 +530,12 @@ static void dio700_cs_detach(struct pcmcia_device *link)
+ ======================================================================*/
  
- #include <linux/ioport.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -491,15 +490,6 @@ static int dio700_cs_attach(struct pcmcia_device *link)
- 	local->link = link;
- 	link->priv = local;
- 
--	/*
--	   General socket configuration defaults can go here.  In this
--	   client, we assume very little, and rely on the CIS for almost
--	   everything.  In most clients, many details (i.e., number, sizes,
--	   and attributes of IO windows) are fixed by the nature of the
--	   device, and can be hard-wired here.
--	 */
--	link->conf.Attributes = 0;
+ static int dio700_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+ 				void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
 -
- 	pcmcia_cur_dev = link;
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		/* This reserves IO space but doesn't actually enable it */
+-		if (pcmcia_request_io(p_dev) != 0)
+-			return -ENODEV;
+-	}
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
- 	dio700_config(link);
-@@ -550,10 +540,10 @@ static int dio700_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-	/* If we got this far, we're cool! */
+-	return 0;
++	return pcmcia_request_io(p_dev);
+ }
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
+ static void dio700_config(struct pcmcia_device *link)
+@@ -570,7 +547,8 @@ static void dio700_config(struct pcmcia_device *link)
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
+ 	dev_dbg(&link->dev, "dio700_config\n");
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -602,14 +592,13 @@ static void dio700_config(struct pcmcia_device *link)
- 	   the I/O windows and the interrupt mapping, and putting the
- 	   card and host interface into "Memory and IO" mode.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret != 0)
- 		goto failed;
+-	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_AUDIO;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_AUDIO |
++		CONF_AUTO_SET_IO;
  
- 	/* Finally, report what we've done */
- 	dev_info(&link->dev, "index 0x%02x", link->config_index);
--	if (link->conf.Attributes & CONF_ENABLE_IRQ)
--		printk(", irq %d", link->irq);
-+	printk(", irq %d", link->irq);
- 	if (link->resource[0])
- 		printk(", io %pR", link->resource[0]);
- 	if (link->resource[1])
+ 	ret = pcmcia_loop_config(link, dio700_pcmcia_config_loop, NULL);
+ 	if (ret) {
 diff --git a/drivers/staging/comedi/drivers/ni_daq_dio24.c b/drivers/staging/comedi/drivers/ni_daq_dio24.c
-index 4f9daa3..6512f7a 100644
+index 6dc2b06..4defdda 100644
 --- a/drivers/staging/comedi/drivers/ni_daq_dio24.c
 +++ b/drivers/staging/comedi/drivers/ni_daq_dio24.c
-@@ -48,7 +48,6 @@ the PCMCIA interface.
+@@ -282,35 +282,12 @@ static void dio24_cs_detach(struct pcmcia_device *link)
+ ======================================================================*/
  
- #include "8255.h"
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -243,15 +242,6 @@ static int dio24_cs_attach(struct pcmcia_device *link)
- 	local->link = link;
- 	link->priv = local;
- 
--	/*
--	   General socket configuration defaults can go here.  In this
--	   client, we assume very little, and rely on the CIS for almost
--	   everything.  In most clients, many details (i.e., number, sizes,
--	   and attributes of IO windows) are fixed by the nature of the
--	   device, and can be hard-wired here.
--	 */
--	link->conf.Attributes = 0;
+ static int dio24_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+ 				void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
 -
- 	pcmcia_cur_dev = link;
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		/* This reserves IO space but doesn't actually enable it */
+-		if (pcmcia_request_io(p_dev) != 0)
+-			return -ENODEV;
+-	}
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
- 	dio24_config(link);
-@@ -302,10 +292,10 @@ static int dio24_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-	/* If we got this far, we're cool! */
+-	return 0;
++	return pcmcia_request_io(p_dev);
+ }
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
+ static void dio24_config(struct pcmcia_device *link)
+@@ -321,7 +298,8 @@ static void dio24_config(struct pcmcia_device *link)
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
+ 	dev_dbg(&link->dev, "dio24_config\n");
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -353,14 +343,13 @@ static void dio24_config(struct pcmcia_device *link)
- 	   the I/O windows and the interrupt mapping, and putting the
- 	   card and host interface into "Memory and IO" mode.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
+-	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_AUDIO;
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_AUDIO |
++		CONF_AUTO_SET_IO;
  
- 	/* Finally, report what we've done */
- 	dev_info(&link->dev, "index 0x%02x", link->config_index);
--	if (link->conf.Attributes & CONF_ENABLE_IRQ)
--		printk(", irq %d", link->irq);
-+	printk(", irq %d", link->irq);
- 	if (link->resource[0])
- 		printk(" & %pR", link->resource[0]);
- 	if (link->resource[1])
+ 	ret = pcmcia_loop_config(link, dio24_pcmcia_config_loop, NULL);
+ 	if (ret) {
 diff --git a/drivers/staging/comedi/drivers/ni_labpc_cs.c b/drivers/staging/comedi/drivers/ni_labpc_cs.c
-index 2e27a30..255cf40 100644
+index 6eacbd7..5123b31 100644
 --- a/drivers/staging/comedi/drivers/ni_labpc_cs.c
 +++ b/drivers/staging/comedi/drivers/ni_labpc_cs.c
-@@ -71,7 +71,6 @@ NI manuals:
- #include "comedi_fc.h"
- #include "ni_labpc.h"
+@@ -261,35 +261,12 @@ static void labpc_cs_detach(struct pcmcia_device *link)
+ ======================================================================*/
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -219,15 +218,6 @@ static int labpc_cs_attach(struct pcmcia_device *link)
- 	local->link = link;
- 	link->priv = local;
- 
--	/*
--	   General socket configuration defaults can go here.  In this
--	   client, we assume very little, and rely on the CIS for almost
--	   everything.  In most clients, many details (i.e., number, sizes,
--	   and attributes of IO windows) are fixed by the nature of the
--	   device, and can be hard-wired here.
--	 */
--	link->conf.Attributes = 0;
+ static int labpc_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+ 				void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
 -
- 	pcmcia_cur_dev = link;
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		/* This reserves IO space but doesn't actually enable it */
+-		if (pcmcia_request_io(p_dev) != 0)
+-			return -ENODEV;
+-	}
++	if (p_dev->config_index == 0)
++		return -EINVAL;
  
- 	labpc_config(link);
-@@ -281,10 +271,10 @@ static int labpc_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-	/* If we got this far, we're cool! */
+-	return 0;
++	return pcmcia_request_io(p_dev);
+ }
  
- 	/* Does this card need audio output? */
- 	if (cfg->flags & CISTPL_CFTABLE_AUDIO)
--		p_dev->conf.Attributes |= CONF_ENABLE_SPKR;
-+		p_dev->config_flags |= CONF_ENABLE_SPKR;
  
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
+@@ -300,7 +277,7 @@ static void labpc_config(struct pcmcia_device *link)
+ 	dev_dbg(&link->dev, "labpc_config\n");
  
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -331,14 +321,14 @@ static void labpc_config(struct pcmcia_device *link)
+ 	link->config_flags |= CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ |
+-		CONF_AUTO_AUDIO;
++		CONF_AUTO_AUDIO | CONF_AUTO_SET_IO;
+ 
+ 	ret = pcmcia_loop_config(link, labpc_pcmcia_config_loop, NULL);
+ 	if (ret) {
+@@ -316,7 +293,6 @@ static void labpc_config(struct pcmcia_device *link)
  	   the I/O windows and the interrupt mapping, and putting the
  	   card and host interface into "Memory and IO" mode.
  	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
-+	ret = pcmcia_enable_device(link);
+-	p_dev->config_flags |= CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
+ 	ret = pcmcia_enable_device(link);
  	if (ret)
  		goto failed;
- 
- 	/* Finally, report what we've done */
- 	dev_info(&link->dev, "index 0x%02x", link->config_index);
--	if (link->conf.Attributes & CONF_ENABLE_IRQ)
--		printk(", irq %d", link->irq);
-+	printk(", irq %d", link->irq);
- 	if (link->resource[0])
- 		printk(" & %pR", link->resource[0]);
- 	if (link->resource[1])
 diff --git a/drivers/staging/comedi/drivers/ni_mio_cs.c b/drivers/staging/comedi/drivers/ni_mio_cs.c
-index be7e021..b88f52d 100644
+index da4e2a2..f1e31d3 100644
 --- a/drivers/staging/comedi/drivers/ni_mio_cs.c
 +++ b/drivers/staging/comedi/drivers/ni_mio_cs.c
-@@ -48,7 +48,6 @@ See the notes in the ni_atmio.o driver.
- #include "ni_stc.h"
- #include "8255.h"
+@@ -262,10 +262,6 @@ static struct pcmcia_device *cur_dev = NULL;
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-@@ -265,7 +264,7 @@ static int cs_attach(struct pcmcia_device *link)
+ static int cs_attach(struct pcmcia_device *link)
  {
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
- 	link->resource[0]->end = 16;
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
- 
+-	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
+-	link->resource[0]->end = 16;
+-	link->config_flags |= CONF_ENABLE_IRQ;
+-
  	cur_dev = link;
  
-@@ -336,7 +335,7 @@ static void mio_cs_config(struct pcmcia_device *link)
- 	if (!link->irq)
- 		dev_info(&link->dev, "no IRQ available\n");
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
+ 	mio_cs_config(link);
+@@ -299,15 +295,12 @@ static int mio_cs_resume(struct pcmcia_device *link)
  }
  
- static int mio_cs_attach(struct comedi_device *dev, struct comedi_devconfig *it)
+ 
+-static int mio_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int mio_pcmcia_config_loop(struct pcmcia_device *p_dev, void *priv_data)
+ {
+ 	int base, ret;
+ 
+-	p_dev->resource[0]->end = cfg->io.win[0].len;
+-	p_dev->io_lines = cfg->io.flags & CISTPL_IO_LINES_MASK;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_16;
+ 
+ 	for (base = 0x000; base < 0x400; base += 0x20) {
+ 		p_dev->resource[0]->start = base;
+@@ -324,6 +317,7 @@ static void mio_cs_config(struct pcmcia_device *link)
+ 	int ret;
+ 
+ 	DPRINTK("mio_cs_config(link=%p)\n", link);
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
+ 
+ 	ret = pcmcia_loop_config(link, mio_pcmcia_config_loop, NULL);
+ 	if (ret) {
 diff --git a/drivers/staging/comedi/drivers/quatech_daqp_cs.c b/drivers/staging/comedi/drivers/quatech_daqp_cs.c
-index a2a32de..b8940d7 100644
+index 03a72d7..afd283d 100644
 --- a/drivers/staging/comedi/drivers/quatech_daqp_cs.c
 +++ b/drivers/staging/comedi/drivers/quatech_daqp_cs.c
-@@ -50,7 +50,6 @@ Devices: [Quatech] DAQP-208 (daqp), DAQP-308
- #include "../comedidev.h"
- #include <linux/semaphore.h>
+@@ -1068,35 +1068,11 @@ static void daqp_cs_detach(struct pcmcia_device *link)
+ ======================================================================*/
  
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -1031,15 +1030,6 @@ static int daqp_cs_attach(struct pcmcia_device *link)
- 	local->link = link;
- 	link->priv = local;
  
--	/*
--	   General socket configuration defaults can go here.  In this
--	   client, we assume very little, and rely on the CIS for almost
--	   everything.  In most clients, many details (i.e., number, sizes,
--	   and attributes of IO windows) are fixed by the nature of the
--	   device, and can be hard-wired here.
--	 */
--	link->conf.Attributes = 0;
+-static int daqp_pcmcia_config_loop(struct pcmcia_device *p_dev,
+-				cistpl_cftable_entry_t *cfg,
+-				cistpl_cftable_entry_t *dflt,
+-				void *priv_data)
++static int daqp_pcmcia_config_loop(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
++	if (p_dev->config_index == 0)
++		return -EINVAL;
+ 
+-	/* Do we need to allocate an interrupt? */
+-	p_dev->config_flags |= CONF_ENABLE_IRQ;
 -
- 	daqp_cs_config(link);
- 
- 	return 0;
-@@ -1088,7 +1078,7 @@ static int daqp_pcmcia_config_loop(struct pcmcia_device *p_dev,
- 		return -ENODEV;
- 
- 	/* Do we need to allocate an interrupt? */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -1132,14 +1122,13 @@ static void daqp_cs_config(struct pcmcia_device *link)
- 	   the I/O windows and the interrupt mapping, and putting the
- 	   card and host interface into "Memory and IO" mode.
- 	 */
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
- 	/* Finally, report what we've done */
- 	dev_info(&link->dev, "index 0x%02x", link->config_index);
--	if (link->conf.Attributes & CONF_ENABLE_IRQ)
--		printk(", irq %u", link->irq);
-+	printk(", irq %u", link->irq);
- 	if (link->resource[0])
- 		printk(" & %pR", link->resource[0]);
- 	if (link->resource[1])
-diff --git a/drivers/staging/wlags49_h2/wl_cs.c b/drivers/staging/wlags49_h2/wl_cs.c
-index 778800f..62a70af 100644
---- a/drivers/staging/wlags49_h2/wl_cs.c
-+++ b/drivers/staging/wlags49_h2/wl_cs.c
-@@ -83,7 +83,6 @@
- #include <linux/if_arp.h>
- #include <linux/ioport.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-@@ -147,7 +146,7 @@ static int wl_adapter_attach(struct pcmcia_device *link)
- 
- 	link->resource[0]->end  = HCF_NUM_IO_PORTS;
- 	link->resource[0]->flags= IO_DATA_PATH_WIDTH_16;
--	link->conf.Attributes   = CONF_ENABLE_IRQ;
-+	link->config_flags     |= CONF_ENABLE_IRQ;
- 	link->config_index      = 5;
- 	link->config_regs       = PRESENT_OPTION;
- 
-@@ -301,7 +300,7 @@ void wl_adapter_insert(struct pcmcia_device *link)
- 	dev     = link->priv;
- 
- 	/* Do we need to allocate an interrupt? */
--	link->conf.Attributes |= CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
- 	link->io_lines = 6;
- 
- 	ret = pcmcia_request_io(link);
-@@ -312,7 +311,7 @@ void wl_adapter_insert(struct pcmcia_device *link)
- 	if (ret != 0)
- 		goto failed;
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret != 0)
- 		goto failed;
- 
-diff --git a/drivers/staging/wlags49_h2/wl_internal.h b/drivers/staging/wlags49_h2/wl_internal.h
-index 02f0a20..cd129b3 100644
---- a/drivers/staging/wlags49_h2/wl_internal.h
-+++ b/drivers/staging/wlags49_h2/wl_internal.h
-@@ -69,7 +69,6 @@
-  ******************************************************************************/
- #include <linux/version.h>
- #ifdef BUS_PCMCIA
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ciscode.h>
-diff --git a/drivers/telephony/ixj_pcmcia.c b/drivers/telephony/ixj_pcmcia.c
-index 5ccc6d0..e23270d 100644
---- a/drivers/telephony/ixj_pcmcia.c
-+++ b/drivers/telephony/ixj_pcmcia.c
-@@ -8,7 +8,6 @@
- #include <linux/errno.h>	/* error codes */
- #include <linux/slab.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-@@ -143,7 +142,7 @@ static int ixj_config(struct pcmcia_device * link)
- 	if (pcmcia_loop_config(link, ixj_config_check, &dflt))
- 		goto failed;
- 
--	if (pcmcia_request_configuration(link, &link->conf))
-+	if (pcmcia_enable_device(link))
- 		goto failed;
- 
- 	/*
-diff --git a/drivers/usb/host/sl811_cs.c b/drivers/usb/host/sl811_cs.c
-index 5904053..744c2cd 100644
---- a/drivers/usb/host/sl811_cs.c
-+++ b/drivers/usb/host/sl811_cs.c
-@@ -20,7 +20,6 @@
- #include <linux/ioport.h>
- #include <linux/platform_device.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/cisreg.h>
- #include <pcmcia/ds.h>
-@@ -159,7 +158,7 @@ static int sl811_cs_config_check(struct pcmcia_device *p_dev,
- 			dflt->vpp1.param[CISTPL_POWER_VNOM]/10000;
- 
- 	/* we need an interrupt */
--	p_dev->conf.Attributes |= CONF_ENABLE_IRQ;
-+	p_dev->config_flags |= CONF_ENABLE_IRQ;
- 
- 	/* IO window settings */
- 	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
-@@ -195,7 +194,7 @@ static int sl811_cs_config(struct pcmcia_device *link)
- 	if (!link->irq)
- 		goto failed;
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-@@ -227,8 +226,6 @@ static int sl811_cs_probe(struct pcmcia_device *link)
- 	local->p_dev = link;
- 	link->priv = local;
- 
--	link->conf.Attributes = 0;
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
+-		p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
+-		p_dev->resource[0]->flags |=
+-			pcmcia_io_cfg_data_width(io->flags);
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		if (io->nwin > 1) {
+-			p_dev->resource[1]->flags = p_dev->resource[0]->flags;
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-	}
 -
- 	return sl811_cs_config(link);
+-	/* This reserves IO space but doesn't actually enable it */
+ 	return pcmcia_request_io(p_dev);
  }
  
-diff --git a/include/pcmcia/cs.h b/include/pcmcia/cs.h
-deleted file mode 100644
-index 47b6092..0000000
---- a/include/pcmcia/cs.h
-+++ /dev/null
-@@ -1,35 +0,0 @@
--/*
-- * cs.h
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-- * The initial developer of the original code is David A. Hinds
-- * <dahinds@users.sourceforge.net>.  Portions created by David A. Hinds
-- * are Copyright (C) 1999 David A. Hinds.  All Rights Reserved.
-- *
-- * (C) 1999             David A. Hinds
-- */
+@@ -1106,6 +1082,8 @@ static void daqp_cs_config(struct pcmcia_device *link)
+ 
+ 	dev_dbg(&link->dev, "daqp_cs_config\n");
+ 
++	link->config_flags |= CONF_ENABLE_IRQ | CONF_AUTO_SET_IO;
++
+ 	ret = pcmcia_loop_config(link, daqp_pcmcia_config_loop, NULL);
+ 	if (ret) {
+ 		dev_warn(&link->dev, "no configuration found\n");
+diff --git a/drivers/telephony/ixj_pcmcia.c b/drivers/telephony/ixj_pcmcia.c
+index 670a76b..76edd39 100644
+--- a/drivers/telephony/ixj_pcmcia.c
++++ b/drivers/telephony/ixj_pcmcia.c
+@@ -31,8 +31,6 @@ static int ixj_probe(struct pcmcia_device *p_dev)
+ {
+ 	dev_dbg(&p_dev->dev, "ixj_attach()\n");
+ 	/* Create new ixj device */
+-	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-	p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
+ 	p_dev->priv = kzalloc(sizeof(struct ixj_info_t), GFP_KERNEL);
+ 	if (!p_dev->priv) {
+ 		return -ENOMEM;
+@@ -109,36 +107,28 @@ failed:
+ 	return;
+ }
+ 
+-static int ixj_config_check(struct pcmcia_device *p_dev,
+-			    cistpl_cftable_entry_t *cfg,
+-			    cistpl_cftable_entry_t *dflt,
+-			    void *priv_data)
++static int ixj_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
+-		p_dev->io_lines = 3;
+-		if (io->nwin == 2) {
+-			p_dev->resource[1]->start = io->win[1].base;
+-			p_dev->resource[1]->end = io->win[1].len;
+-		}
+-		if (!pcmcia_request_io(p_dev))
+-			return 0;
+-	}
+-	return -ENODEV;
++	p_dev->resource[0]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->resource[1]->flags &= ~IO_DATA_PATH_WIDTH;
++	p_dev->resource[1]->flags |= IO_DATA_PATH_WIDTH_8;
++	p_dev->io_lines = 3;
++
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ static int ixj_config(struct pcmcia_device * link)
+ {
+ 	IXJ *j;
+ 	ixj_info_t *info;
+-	cistpl_cftable_entry_t dflt = { 0 };
+ 
+ 	info = link->priv;
+ 	dev_dbg(&link->dev, "ixj_config\n");
+ 
+-	if (pcmcia_loop_config(link, ixj_config_check, &dflt))
++	link->config_flags = CONF_AUTO_SET_IO;
++
++	if (pcmcia_loop_config(link, ixj_config_check, NULL))
+ 		goto failed;
+ 
+ 	if (pcmcia_enable_device(link))
+diff --git a/drivers/usb/host/sl811_cs.c b/drivers/usb/host/sl811_cs.c
+index d960629..81d7eea 100644
+--- a/drivers/usb/host/sl811_cs.c
++++ b/drivers/usb/host/sl811_cs.c
+@@ -131,28 +131,12 @@ static void sl811_cs_release(struct pcmcia_device * link)
+ 	platform_device_unregister(&platform_dev);
+ }
+ 
+-static int sl811_cs_config_check(struct pcmcia_device *p_dev,
+-				 cistpl_cftable_entry_t *cfg,
+-				 cistpl_cftable_entry_t *dflt,
+-				 void *priv_data)
++static int sl811_cs_config_check(struct pcmcia_device *p_dev, void *priv_data)
+ {
+-	if (cfg->index == 0)
+-		return -ENODEV;
++	if (p_dev->config_index == 0)
++		return -EINVAL;
+ 
+-	/* IO window settings */
+-	p_dev->resource[0]->end = p_dev->resource[1]->end = 0;
+-	if ((cfg->io.nwin > 0) || (dflt->io.nwin > 0)) {
+-		cistpl_io_t *io = (cfg->io.nwin) ? &cfg->io : &dflt->io;
+-		p_dev->io_lines = io->flags & CISTPL_IO_LINES_MASK;
 -
--#ifndef _LINUX_CS_H
--#define _LINUX_CS_H
+-		p_dev->resource[0]->flags |= IO_DATA_PATH_WIDTH_8;
+-		p_dev->resource[0]->start = io->win[0].base;
+-		p_dev->resource[0]->end = io->win[0].len;
 -
--#ifdef __KERNEL__
--#include <linux/interrupt.h>
--#endif
--
--/* For RequestConfiguration */
--typedef struct config_req_t {
--    u_int	Attributes;
--} config_req_t;
--
--/* Attributes for RequestConfiguration */
--#define CONF_ENABLE_IRQ		0x01
--#define CONF_ENABLE_DMA		0x02
--#define CONF_ENABLE_SPKR	0x04
--#define CONF_ENABLE_PULSE_IRQ	0x08
--#define CONF_ENABLE_ESR		0x10
--#define CONF_VALID_CLIENT	0x100
--
--#endif /* _LINUX_CS_H */
+-		return pcmcia_request_io(p_dev);
+-	}
+-	pcmcia_disable_device(p_dev);
+-	return -ENODEV;
++	return pcmcia_request_io(p_dev);
+ }
+ 
+ 
+@@ -164,7 +148,7 @@ static int sl811_cs_config(struct pcmcia_device *link)
+ 	dev_dbg(&link->dev, "sl811_cs_config\n");
+ 
+ 	link->config_flags |= CONF_ENABLE_IRQ |	CONF_AUTO_SET_VPP |
+-		CONF_AUTO_CHECK_VCC;
++		CONF_AUTO_CHECK_VCC | CONF_AUTO_SET_IO;
+ 
+ 	if (pcmcia_loop_config(link, sl811_cs_config_check, NULL))
+ 		goto failed;
 diff --git a/include/pcmcia/ds.h b/include/pcmcia/ds.h
-index bc28f96..50b03fd 100644
+index 0577e5f..0b8c8d4 100644
 --- a/include/pcmcia/ds.h
 +++ b/include/pcmcia/ds.h
-@@ -24,9 +24,11 @@
- 
- #ifdef __KERNEL__
- #include <linux/device.h>
-+#include <linux/interrupt.h>
- #include <pcmcia/ss.h>
- #include <asm/atomic.h>
- 
-+
- /*
-  * PCMCIA device drivers (16-bit cards only; 32-bit cards require CardBus
-  * a.k.a. PCI drivers
-@@ -88,18 +90,16 @@ struct pcmcia_device {
- 
- 	struct list_head	socket_device_list;
- 
--	/* deprecated, will be cleaned up soon */
--	config_req_t		conf;
--
+@@ -93,6 +93,7 @@ struct pcmcia_device {
  	/* device setup */
  	unsigned int		irq;
  	struct resource		*resource[PCMCIA_NUM_RESOURCES];
++	resource_size_t		card_addr;	/* for the 1st IOMEM resource */
  	unsigned int		vpp;
  
--	unsigned int		io_lines; /* number of I/O lines */
-+	unsigned int		config_flags;	/* CONF_ENABLE_ flags below */
- 	unsigned int		config_base;
- 	unsigned int		config_index;
- 	unsigned int		config_regs;	/* PRESENT_ flags below */
-+	unsigned int		io_lines;	/* number of I/O lines */
+ 	unsigned int		config_flags;	/* CONF_ENABLE_ flags below */
+@@ -175,8 +176,6 @@ int pcmcia_parse_tuple(tuple_t *tuple, cisparse_t *parse);
+ /* loop CIS entries for valid configuration */
+ int pcmcia_loop_config(struct pcmcia_device *p_dev,
+ 		       int	(*conf_check)	(struct pcmcia_device *p_dev,
+-						 cistpl_cftable_entry_t *cf,
+-						 cistpl_cftable_entry_t *dflt,
+ 						 void *priv_data),
+ 		       void *priv_data);
  
- 	/* Is the device suspended? */
- 	u16			suspended:1;
-@@ -207,8 +207,7 @@ pcmcia_request_exclusive_irq(struct pcmcia_device *p_dev,
- int __must_check pcmcia_request_irq(struct pcmcia_device *p_dev,
- 				irq_handler_t handler);
+@@ -225,16 +224,6 @@ void pcmcia_disable_device(struct pcmcia_device *p_dev);
+ #define IO_DATA_PATH_WIDTH_16	0x08
+ #define IO_DATA_PATH_WIDTH_AUTO	0x10
  
--int pcmcia_request_configuration(struct pcmcia_device *p_dev,
--				 config_req_t *req);
-+int pcmcia_enable_device(struct pcmcia_device *p_dev);
- 
- int pcmcia_request_window(struct pcmcia_device *p_dev, struct resource *res,
- 			unsigned int speed);
-@@ -265,6 +264,12 @@ static inline int pcmcia_io_cfg_data_width(unsigned int flags)
- #define PRESENT_IOBASE_3	0x100
+-/* convert flag found in cfgtable to data path width parameter */
+-static inline int pcmcia_io_cfg_data_width(unsigned int flags)
+-{
+-	if (!(flags & CISTPL_IO_8BIT))
+-		return IO_DATA_PATH_WIDTH_16;
+-	if (!(flags & CISTPL_IO_16BIT))
+-		return IO_DATA_PATH_WIDTH_8;
+-	return IO_DATA_PATH_WIDTH_AUTO;
+-}
+-
+ /* IO memory */
+ #define WIN_MEMORY_TYPE_CM	0x00 /* default */
+ #define WIN_MEMORY_TYPE_AM	0x20 /* MAP_ATTRIB */
+@@ -264,16 +253,17 @@ static inline int pcmcia_io_cfg_data_width(unsigned int flags)
  #define PRESENT_IOSIZE		0x200
  
-+/* flags to be passed to pcmcia_enable_device() */
-+#define CONF_ENABLE_IRQ         0x01
-+#define CONF_ENABLE_SPKR        0x02
-+#define CONF_ENABLE_PULSE_IRQ   0x04
-+#define CONF_ENABLE_ESR         0x08
-+
+ /* flags to be passed to pcmcia_enable_device() */
+-#define CONF_ENABLE_IRQ         0x01
+-#define CONF_ENABLE_SPKR        0x02
+-#define CONF_ENABLE_PULSE_IRQ   0x04
+-#define CONF_ENABLE_ESR         0x08
++#define CONF_ENABLE_IRQ         0x0001
++#define CONF_ENABLE_SPKR        0x0002
++#define CONF_ENABLE_PULSE_IRQ   0x0004
++#define CONF_ENABLE_ESR         0x0008
+ 
+ /* flags used by pcmcia_loop_config() autoconfiguration */
+-#define CONF_AUTO_CHECK_VCC	0x10 /* check for matching Vcc? */
+-#define CONF_AUTO_SET_VPP	0x20 /* set Vpp? */
+-#define CONF_AUTO_AUDIO		0x40 /* enable audio line? */
+-
++#define CONF_AUTO_CHECK_VCC	0x0100 /* check for matching Vcc? */
++#define CONF_AUTO_SET_VPP	0x0200 /* set Vpp? */
++#define CONF_AUTO_AUDIO		0x0400 /* enable audio line? */
++#define CONF_AUTO_SET_IO	0x0800 /* set ->resource[0,1] */
++#define CONF_AUTO_SET_IOMEM	0x1000 /* set ->resource[2] */
+ 
  #endif /* __KERNEL__ */
- 
- #endif /* _LINUX_DS_H */
-diff --git a/include/pcmcia/ss.h b/include/pcmcia/ss.h
-index 626b63c..731cde0 100644
---- a/include/pcmcia/ss.h
-+++ b/include/pcmcia/ss.h
-@@ -19,7 +19,6 @@
- #include <linux/sched.h>	/* task_struct, completion */
- #include <linux/mutex.h>
- 
--#include <pcmcia/cs.h>
- #ifdef CONFIG_CARDBUS
- #include <linux/pci.h>
- #endif
-diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf.c b/sound/pcmcia/pdaudiocf/pdaudiocf.c
-index 4df07fc..2476d5f 100644
---- a/sound/pcmcia/pdaudiocf/pdaudiocf.c
-+++ b/sound/pcmcia/pdaudiocf/pdaudiocf.c
-@@ -142,7 +142,7 @@ static int snd_pdacf_probe(struct pcmcia_device *link)
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
- 	link->resource[0]->end = 16;
- 
--	link->conf.Attributes = CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
-+	link->config_flags = CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
- 	link->config_index = 1;
- 	link->config_regs = PRESENT_OPTION;
- 
-@@ -217,6 +217,7 @@ static int pdacf_config(struct pcmcia_device *link)
- 
- 	snd_printdd(KERN_DEBUG "pdacf_config called\n");
- 	link->config_index = 0x5;
-+	link->config_flags |= CONF_ENABLE_IRQ | CONF_ENABLE_PULSE_IRQ;
- 
- 	ret = pcmcia_request_io(link);
- 	if (ret)
-@@ -226,7 +227,7 @@ static int pdacf_config(struct pcmcia_device *link)
- 	if (ret)
- 		goto failed;
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-diff --git a/sound/pcmcia/pdaudiocf/pdaudiocf.h b/sound/pcmcia/pdaudiocf/pdaudiocf.h
-index 5cc3e45..bd26e09 100644
---- a/sound/pcmcia/pdaudiocf/pdaudiocf.h
-+++ b/sound/pcmcia/pdaudiocf/pdaudiocf.h
-@@ -24,7 +24,6 @@
- #include <sound/pcm.h>
- #include <asm/io.h>
- #include <linux/interrupt.h>
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
- 
-diff --git a/sound/pcmcia/vx/vxpocket.c b/sound/pcmcia/vx/vxpocket.c
-index 16186ad..017a8d6 100644
---- a/sound/pcmcia/vx/vxpocket.c
-+++ b/sound/pcmcia/vx/vxpocket.c
-@@ -2,7 +2,7 @@
-  * Driver for Digigram VXpocket V2/440 soundcards
-  *
-  * Copyright (c) 2002 by Takashi Iwai <tiwai@suse.de>
-- *
-+
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-  *   the Free Software Foundation; either version 2 of the License, or
-@@ -162,7 +162,7 @@ static int snd_vxpocket_new(struct snd_card *card, int ibl,
- 	link->resource[0]->flags |= IO_DATA_PATH_WIDTH_AUTO;
- 	link->resource[0]->end = 16;
- 
--	link->conf.Attributes = CONF_ENABLE_IRQ;
-+	link->config_flags |= CONF_ENABLE_IRQ;
- 	link->config_index = 1;
- 	link->config_regs = PRESENT_OPTION;
- 
-@@ -233,7 +233,7 @@ static int vxpocket_config(struct pcmcia_device *link)
- 	if (ret)
- 		goto failed;
- 
--	ret = pcmcia_request_configuration(link, &link->conf);
-+	ret = pcmcia_enable_device(link);
- 	if (ret)
- 		goto failed;
- 
-diff --git a/sound/pcmcia/vx/vxpocket.h b/sound/pcmcia/vx/vxpocket.h
-index d911066..13d658c 100644
---- a/sound/pcmcia/vx/vxpocket.h
-+++ b/sound/pcmcia/vx/vxpocket.h
-@@ -23,7 +23,6 @@
- 
- #include <sound/vx_core.h>
- 
--#include <pcmcia/cs.h>
- #include <pcmcia/cistpl.h>
- #include <pcmcia/ds.h>
  
 -- 
 1.7.0.4
