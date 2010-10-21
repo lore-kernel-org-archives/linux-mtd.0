@@ -1,34 +1,23 @@
-Date: Thu, 21 Oct 2010 10:25:34 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Pratyush ANAND <pratyush.anand@st.com>
-Subject: Re: [PATCH V2 45/69] ST SPEAr: PCIE gadget suppport
-Message-Id: <20101021102534.5845ac4a.akpm@linux-foundation.org>
-In-Reply-To: <0901B62280FF37468247D8348744254F449565AA97@EAPEX1MAIL1.st.com>
-References: <cover.1285933331.git.viresh.kumar@st.com>
-	<c91308e26397dbe49f384c7d3cf168593e1fe8b0.1285933332.git.viresh.kumar@st.com>
-	<20101019144725.977297f5.akpm@linux-foundation.org>
-	<0901B62280FF37468247D8348744254F449565AA97@EAPEX1MAIL1.st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: "a.zummo@towertech.it" <a.zummo@towertech.it>,
-	Viresh KUMAR <viresh.kumar@st.com>,
-	"dbrownell@users.sourceforge.net" <dbrownell@users.sourceforge.net>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	"rtc-linux@googlegroups.com" <rtc-linux@googlegroups.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	"dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mailrelay006.isp.belgacom.be ([195.238.6.172])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P90ur-0004q4-6b
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 19:35:15 +0000
+Date: Thu, 21 Oct 2010 21:34:41 +0200
+From: Philippe De Muyter <phdm@macqel.be>
+To: Nicolas Pitre <nico@fluxnic.net>
+Subject: Re: [PATCH] mtd: Apply Numonyx Axcell P33/P30 workaround for
+	Lock/Unlock bug.
+Message-ID: <20101021193441.GA17855@frolo.macqel>
+References: <1287498263-5561-1-git-send-email-phdm@macqel.be>
+	<1287650398.2932.5.camel@localhost>
+	<20101021093343.GA17631@frolo.macqel>
+	<1287656983.2932.14.camel@localhost>
+	<alpine.LFD.2.00.1010211226120.2764@xanadu.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.00.1010211226120.2764@xanadu.home>
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,54 +27,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 21 Oct 2010 22:18:28 +0800 Pratyush ANAND <pratyush.anand@st.com> wrote:
+Hello Nicolas,
 
-> > > +static ssize_t pcie_gadget_show_help(struct device *dev,
-> > > +           struct device_attribute *attr, char *buf)
-> > > +{
-> > > +   char text[] = "\t\tlink read->ltssm status\n \
-> > > +           link write->arg1 = UP to enable ltsmm DOWN to disable\n \
-> > > +           int_type read->type of supported interrupt\n \
-> > > +           int_type write->arg1 = interrupt type to be configured and\n \
-> > > +           can be INTA, MSI or NO_INT\n \
-> > > +           (select MSI only when you have programmed no_of_msi)\n \
-> > > +           no_of_msi read->zero if MSI is not enabled by host\n \
-> > > +           and positive value is the number of MSI vector granted\n \
-> > > +           no_of_msi write->arg1 = number of MSI vector needed\n \
-> > > +           inta write->arg1 = 1 to assert INTA and 0 to de-assert\n \
-> > > +           send_msi write->arg1 = MSI vector to be send\n \
-> > > +           vendor_id read->programmed vendor id (hex)\n\
-> > > +           vendor_id write->arg1 = vendor id(hex) to be programmed\n \
-> > > +           device_id read->programmed device id(hex)\n \
-> > > +           device_id write->arg1 = device id(hex) to be programmed\n \
-> > > +           bar0_size read->size of bar0 in hex\n \
-> > > +           bar0_size write->arg1= size of bar0 in hex\n \
-> > > +           (default bar0 size is 1000 (hex) bytes)\n \
-> > > +           bar0_address read->address of bar0 mapped area in hex\n \
-> > > +           bar0_address write->arg1 = address of bar0 mapped area in
-> > hex\n\
-> > > +           (default mapping of bar0 is SYSRAM1(E0800000)\n \
-> > > +           (always program bar size before bar address)\n \
-> > > +           (kernel might modify bar size and address to align)\n \
-> > > +           (read back bar size and address after writing to check)\n \
-> > > +           bar0_rw_offset read->offset of bar0 for which bar0_data \n \
-> > > +           will return value\n \
-> > > +           bar0_rw_offset write->arg1 = offset of bar0 for which\n \
-> > > +           bar0_data will write value\n \
-> > > +           bar0_data read->data at bar0_rw_offset\n \
-> > > +           bar0_data write->arg1 = data to be written at\n \
-> > > +           bar0_rw_offset\n";
-> > > +
-> > > +   int size = (sizeof(text) < PAGE_SIZE) ? sizeof(text) : PAGE_SIZE;
-> > > +
-> > > +   return snprintf(buf, size, "%s", text);
-> > > +}
-> >
-> > What the heck is this??
-> >
+On Thu, Oct 21, 2010 at 12:32:02PM -0400, Nicolas Pitre wrote:
+> On Thu, 21 Oct 2010, Artem Bityutskiy wrote:
 > 
-> This was just to provide help for different sysfs nodes. What could be the other
-> Way to do it? Should it be better to remove help node from here provide all the help
-> In a separate document?
+> > On Thu, 2010-10-21 at 11:33 +0200, Philippe De Muyter wrote:
+> > > On Thu, Oct 21, 2010 at 11:39:58AM +0300, Artem Bityutskiy wrote:
+> > > > On Tue, 2010-10-19 at 16:24 +0200, Philippe De Muyter wrote:
+> > > > > Some flash chips have a small but annoying bug, documented in
+> > > > >     "Numonyx Axcell P33/P30 256-Mbit Specification Update"
+> > > > > 
+> > > > >     It states :
+> > > > >     When customer uses [...] block unlock, the block lock status might
+> > > > >     be altered inadvertently. Lock status might be set to either 01h
+> > > > >     or 03h unexpectedly (00h as expected data), which leads to
+> > > > >     program/erase failure on certain blocks.
+> > > > > 
+> > > > >     A workaround is given, (summary : issue a "Read Lock Status" before
+> > > > >     the "Lock" or "Unlock" command) which I have applied and tested
+> > > > >     with success.
+> > > > > 
+> > > > > Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+> > > > 
+> > > > Is this Numonyx-specific issue? Should there be some kind of "if
+> > > > (numonyx)" statement?
+> > > 
+> > > This is clearly a bug specific to some Numonyx flashes.
+> > > My chips have Manufacturer ID: 0x89, Device ID: 0x881B, but there are
+> > > other chips in the same family.  The errata
+> > > http://www.numonyx.com/Documents/Specification%20Updates/509003_P3X_65nm_3V_256Mbit_Discrete.pdf does not list the ManufacturerIDs/DeviceIDs of the affected
+> > > chips.
+> > 
+> > CCed Nicolas correctly.
+> > 
+> > Anyway, if this affects only subset of chips, it make sense to make this
+> > quirk conditional, because this might affect boot speed, e.g., if some
+> > systems unlock all blocks on boot-up.
+> 
+> That is probably quite unlikely to make a difference given that there is 
+> no result delay involved.
+> 
+> However, does the erratum workaround imply that the status actually has 
+> to be read?  In other words, can you simply issue CMD 90 without calling 
+> cfi_read_query()?
 
-Yes, documenting it externally would be more typical.
+Here is the relevant excerpt of the errata :
+
+Workaround:  If the interval between 60h and its subsequent command
+             can be guaranteed within 20us, Option I is recommended,
+             otherwise Option II (involves hardware) should be selected.
+Option I: The table below lists the detail command sequences:
+Command
+              Data bus           Address bus       Remarks
+Sequence
+  1              90h            Block Address
+                                                   Read Lock Status
+  2             Read         Block Address + 02h
+ (2)(3)                                      (1)
+3                60h           Block Address
+ (2)(3)                                      (1)   Lock/Unlock/RCR Configuration
+4           D0h/01h/03h        Block Address
+Notes:
+(1) Block Address refers to RCR configuration data only when the 60h
+    command sequence is used to set RCR register combined with 03h
+    subsequent command.
+(2) For the third and fourth command sequences, the Block Address must
+    be the same.
+(3) The interval between 60h command and its subsequent D0h/01h/2Fh/03h
+    commands should be less than 20us.
+
+Philippe
+
+-- 
+Philippe De Muyter  phdm at macqel dot be  Tel +32 27029044
+Macq Electronique SA  rue de l'Aeronef 2  B-1140 Bruxelles  Fax +32 27029077
