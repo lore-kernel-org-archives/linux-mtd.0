@@ -1,29 +1,24 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8sT7-0004gK-CM
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 10:33:59 +0000
-Received: by qwi4 with SMTP id 4so211098qwi.36
+	id 1P8sZi-0005oO-Kc
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 10:40:47 +0000
+Received: by fxm15 with SMTP id 15so3642570fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Oct 2010 03:33:55 -0700 (PDT)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
-References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
-	<20101016100744.GA10815@pengutronix.de>
-	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
-	<20101016131752.GA2676@pengutronix.de>
-	<AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
-	<20101018114104.GC15440@pengutronix.de>
-	<AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Thu, 21 Oct 2010 12:33:33 +0200
-Message-ID: <AANLkTi=jNvWZe-bED0fZa-XbvoLmpu7VcFN7nUN=4Tru@mail.gmail.com>
-Subject: Re: Re :Re: [Help] SST39VF6401B Support
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: multipart/mixed; boundary=001636283fea028b6f04931e104c
-Cc: linux-mtd@lists.infradead.org, taliaferro62@gmail.com,
-	yidong zhang <zhangyd6@gmail.com>, David.Woodhouse@intel.com,
-	yegorslists@googlemail.com
+	Thu, 21 Oct 2010 03:40:45 -0700 (PDT)
+Subject: Re: [PATCH] drivers/mtd/devices/phram.c: Use KBUILD_MODNAME
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Joe Perches <joe@perches.com>
+In-Reply-To: <1287596362.1813.205.camel@Joe-Laptop>
+References: <1287596362.1813.205.camel@Joe-Laptop>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 21 Oct 2010 13:37:32 +0300
+Message-ID: <1287657452.2932.15.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, Joern Engel <joern@lazybastard.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,109 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001636283fea028b6f04931e104c
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Wed, 2010-10-20 at 10:39 -0700, Joe Perches wrote:
+> Use the more standard #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> No change in output strings.
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-2010/10/18 Guillaume LECERF <glecerf@gmail.com>:
-> 2010/10/18 Wolfram Sang <w.sang@pengutronix.de>:
->>> =C2=A0 =C2=A0The 39VF*-B-Version flashes in the cfi_nopri_fixup_table d=
-on't work
->>> well in the current code. =C2=A0Because of the mistaken use of
->>> command(0x30) in the 6th bus cycle, which should be 0x50. I think the
->>> 39VF*-B-Version flashes should be removed form the CFI probe mode. Or
->>> maybe the erase operation should be changed for the Compatibility.
->>
->> Or we put in a variable like the unlock-address?
->
-> I'm OK with solution, that's what I try to implement atm, but I'm
-> still looking for the right place to put this variable.
+Pushed to l2-mtd-2.6.git, thanks.
 
-Hi.
-Could you try the attached patches ?
-Note: it's totally untested.
-
---=20
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
-
---001636283fea028b6f04931e104c
-Content-Type: application/octet-stream; name="erase-command.patch"
-Content-Disposition: attachment; filename="erase-command.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gfjhugky0
-
-bXRkOiBjZmlfY21kc2V0XzAwMDI6IG1ha2Ugc2VjdG9yIGVyYXNlIGNvbW1hbmQgdmFyaWFibGUK
-CkZyb206IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgoKU1NUMzlWRnh4eHhC
-IGNoaXBzIHVzZSAweDUwIGFzIHNlY3RvciBlcmFzZSBjb21tYW5kLCBpbnN0ZWFkIG9mIDB4MzAu
-Ck1ha2UgdGhpcyB2YWx1ZSB2YXJpYWJsZSB0byBoYW5kbGUgc3VjaCBjaGlwcy4KClNpZ25lZC1v
-ZmYtYnk6IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgotLS0KIGRyaXZlcnMv
-bXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgICAxMSArKysrKysrLS0tLQogMSBmaWxlcyBj
-aGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlf
-Y21kc2V0XzAwMDIuYwppbmRleCAzZTZjNDdiLi5hMzU5OTY3IDEwMDY0NAotLS0gYS9kcml2ZXJz
-L210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYworKysgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlf
-Y21kc2V0XzAwMDIuYwpAQCAtNzgsNiArNzgsNyBAQCBzdGF0aWMgc3RydWN0IG10ZF9jaGlwX2Ry
-aXZlciBjZmlfYW1kc3RkX2NoaXBkcnYgPSB7CiAJLm1vZHVsZQkJPSBUSElTX01PRFVMRQogfTsK
-IAorc3RhdGljIG1hcF93b3JkIHNlY3Rvcl9lcmFzZV9jbWQgPSBDTUQoMHgzMCk7CiAKIC8qICNk
-ZWZpbmUgREVCVUdfQ0ZJX0ZFQVRVUkVTICovCiAKQEAgLTI5MSw2ICsyOTIsOCBAQCBzdGF0aWMg
-dm9pZCBmaXh1cF9zc3QzOXZmX3Jldl9iKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB2b2lkICpwYXJh
-bSkKIAogCWNmaS0+YWRkcl91bmxvY2sxID0gMHg1NTU7CiAJY2ZpLT5hZGRyX3VubG9jazIgPSAw
-eDJBQTsKKworCXNlY3Rvcl9lcmFzZV9jbWQgPSBDTUQoMHg1MCk7CiB9CiAKIHN0YXRpYyB2b2lk
-IGZpeHVwX3MyOWdsMDY0bl9zZWN0b3JzKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB2b2lkICpwYXJh
-bSkKQEAgLTY3NCw3ICs2NzcsNyBAQCBzdGF0aWMgaW50IGdldF9jaGlwKHN0cnVjdCBtYXBfaW5m
-byAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25lZCBsb25nIGFkcgogCQkJCSAqIHRo
-ZXJlIHdhcyBhbiBlcnJvciAoc28gbGVhdmUgdGhlIGVyYXNlCiAJCQkJICogcm91dGluZSB0byBy
-ZWNvdmVyIGZyb20gaXQpIG9yIHdlIHRyeWluZyB0bwogCQkJCSAqIHVzZSB0aGUgZXJhc2UtaW4t
-cHJvZ3Jlc3Mgc2VjdG9yLiAqLwotCQkJCW1hcF93cml0ZShtYXAsIENNRCgweDMwKSwgY2hpcC0+
-aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7CisJCQkJbWFwX3dyaXRlKG1hcCwgc2VjdG9yX2VyYXNl
-X2NtZCwgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7CiAJCQkJY2hpcC0+c3RhdGUgPSBG
-TF9FUkFTSU5HOwogCQkJCWNoaXAtPm9sZHN0YXRlID0gRkxfUkVBRFk7CiAJCQkJcHJpbnRrKEtF
-Uk5fRVJSICJNVEQgJXMoKTogY2hpcCBub3QgcmVhZHkgYWZ0ZXIgZXJhc2Ugc3VzcGVuZFxuIiwg
-X19mdW5jX18pOwpAQCAtNzI3LDcgKzczMCw3IEBAIHN0YXRpYyB2b2lkIHB1dF9jaGlwKHN0cnVj
-dCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25lZCBsb25nIGFkCiAJ
-c3dpdGNoKGNoaXAtPm9sZHN0YXRlKSB7CiAJY2FzZSBGTF9FUkFTSU5HOgogCQljaGlwLT5zdGF0
-ZSA9IGNoaXAtPm9sZHN0YXRlOwotCQltYXBfd3JpdGUobWFwLCBDTUQoMHgzMCksIGNoaXAtPmlu
-X3Byb2dyZXNzX2Jsb2NrX2FkZHIpOworCQltYXBfd3JpdGUobWFwLCBzZWN0b3JfZXJhc2VfY21k
-LCBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyKTsKIAkJY2hpcC0+b2xkc3RhdGUgPSBGTF9S
-RUFEWTsKIAkJY2hpcC0+c3RhdGUgPSBGTF9FUkFTSU5HOwogCQlicmVhazsKQEAgLTg3MCw3ICs4
-NzMsNyBAQCBzdGF0aWMgdm9pZCBfX3hpcHJhbSB4aXBfdWRlbGF5KHN0cnVjdCBtYXBfaW5mbyAq
-bWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAogCQkJbG9jYWxfaXJxX2Rpc2FibGUoKTsKIAogCQkJ
-LyogUmVzdW1lIHRoZSB3cml0ZSBvciBlcmFzZSBvcGVyYXRpb24gKi8KLQkJCW1hcF93cml0ZSht
-YXAsIENNRCgweDMwKSwgYWRyKTsKKwkJCW1hcF93cml0ZShtYXAsIHNlY3Rvcl9lcmFzZV9jbWQs
-IGFkcik7CiAJCQljaGlwLT5zdGF0ZSA9IG9sZHN0YXRlOwogCQkJc3RhcnQgPSB4aXBfY3VycnRp
-bWUoKTsKIAkJfSBlbHNlIGlmICh1c2VjID49IDEwMDAwMDAvSFopIHsKQEAgLTE2NzUsNyArMTY3
-OCw3IEBAIHN0YXRpYyBpbnQgX194aXByYW0gZG9fZXJhc2Vfb25lYmxvY2soc3RydWN0IG1hcF9p
-bmZvICptYXAsIHN0cnVjdCBmbGNoaXAgKmNoaXAsCiAJY2ZpX3NlbmRfZ2VuX2NtZCgweDgwLCBj
-ZmktPmFkZHJfdW5sb2NrMSwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLCBjZmktPmRldmljZV90eXBl
-LCBOVUxMKTsKIAljZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlw
-LT5zdGFydCwgbWFwLCBjZmksIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOwogCWNmaV9zZW5kX2dl
-bl9jbWQoMHg1NSwgY2ZpLT5hZGRyX3VubG9jazIsIGNoaXAtPnN0YXJ0LCBtYXAsIGNmaSwgY2Zp
-LT5kZXZpY2VfdHlwZSwgTlVMTCk7Ci0JbWFwX3dyaXRlKG1hcCwgQ01EKDB4MzApLCBhZHIpOwor
-CW1hcF93cml0ZShtYXAsIHNlY3Rvcl9lcmFzZV9jbWQsIGFkcik7CiAKIAljaGlwLT5zdGF0ZSA9
-IEZMX0VSQVNJTkc7CiAJY2hpcC0+ZXJhc2Vfc3VzcGVuZGVkID0gMDsK
---001636283fea028b6f04931e104c
-Content-Type: application/octet-stream; name="sst38vf640x.patch"
-Content-Disposition: attachment; filename="sst38vf640x.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gfjhulbm1
-
-U1NUMzhWRjY0MHgKCkZyb206IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgoK
-Ci0tLQogZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgfCAgICA0ICsrKysKIDEg
-ZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
-dCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hp
-cHMvY2ZpX2NtZHNldF8wMDAyLmMKaW5kZXggYTM1OTk2Ny4uMzJiMDQwMiAxMDA2NDQKLS0tIGEv
-ZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKKysrIGIvZHJpdmVycy9tdGQvY2hp
-cHMvY2ZpX2NtZHNldF8wMDAyLmMKQEAgLTMyOCw2ICszMjgsMTAgQEAgc3RhdGljIHN0cnVjdCBj
-ZmlfZml4dXAgY2ZpX25vcHJpX2ZpeHVwX3RhYmxlW10gPSB7CiAJeyBDRklfTUZSX1NTVCwgMHgy
-MzVELCBmaXh1cF9zc3QzOXZmX3Jldl9iLCBOVUxMLCB9LCAvLyBTU1QzOVZGMzIwMUIKIAl7IENG
-SV9NRlJfU1NULCAweDIzNkMsIGZpeHVwX3NzdDM5dmZfcmV2X2IsIE5VTEwsIH0sIC8vIFNTVDM5
-VkY2NDAyQgogCXsgQ0ZJX01GUl9TU1QsIDB4MjM2RCwgZml4dXBfc3N0Mzl2Zl9yZXZfYiwgTlVM
-TCwgfSwgLy8gU1NUMzlWRjY0MDFCCisJeyBDRklfTUZSX1NTVCwgMHg1MzZBLCBmaXh1cF9zc3Qz
-OXZmX3Jldl9iLCBOVUxMLCB9LCAvKiBTU1QzOFZGNjQwMiAqLworCXsgQ0ZJX01GUl9TU1QsIDB4
-NTM2QiwgZml4dXBfc3N0Mzl2Zl9yZXZfYiwgTlVMTCwgfSwgLyogU1NUMzhWRjY0MDEgKi8KKwl7
-IENGSV9NRlJfU1NULCAweDUzNkMsIGZpeHVwX3NzdDM5dmZfcmV2X2IsIE5VTEwsIH0sIC8qIFNT
-VDM4VkY2NDA0ICovCisJeyBDRklfTUZSX1NTVCwgMHg1MzZELCBmaXh1cF9zc3QzOXZmX3Jldl9i
-LCBOVUxMLCB9LCAvKiBTU1QzOFZGNjQwMyAqLwogCXsgMCwgMCwgTlVMTCwgTlVMTCB9CiB9Owog
-Cg==
---001636283fea028b6f04931e104c--
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
