@@ -1,24 +1,22 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8qcI-0003dR-L9
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 08:35:20 +0000
-Received: by fxm15 with SMTP id 15so3562341fxm.36
+	id 1P8qjo-0004kN-WC
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 08:43:05 +0000
+Received: by fxm15 with SMTP id 15so3566785fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Oct 2010 01:35:17 -0700 (PDT)
-Subject: Re: ubifs: sync() causes writes even if nothing is changed
+	Thu, 21 Oct 2010 01:43:03 -0700 (PDT)
+Subject: Re: [PATCH] mtd: Apply Numonyx Axcell P33/P30 workaround for
+	Lock/Unlock bug.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Adrian Hunter
-	<adrian.hunter@nokia.com>
-In-Reply-To: <4CBFF865.9010706@linutronix.de>
-References: <20101013163005.GB1889@silverbox.local>
-	<1287581218.9272.67.camel@localhost> <4CBFF865.9010706@linutronix.de>
+To: Philippe De Muyter <phdm@macqel.be>
+In-Reply-To: <1287498263-5561-1-git-send-email-phdm@macqel.be>
+References: <1287498263-5561-1-git-send-email-phdm@macqel.be>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 21 Oct 2010 11:32:11 +0300
-Message-ID: <1287649931.2932.3.camel@localhost>
+Date: Thu, 21 Oct 2010 11:39:58 +0300
+Message-ID: <1287650398.2932.5.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "Hans J. Koch" <hjk@linutronix.de>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Nicolas Pitre <nico@cam.org>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,36 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-10-21 at 10:23 +0200, Sebastian Andrzej Siewior wrote:
-> Artem Bityutskiy wrote:
-> >> From a quick glance at the ubifs code, this might come out of the
-> >> garbage collector that is triggered on every sync() and writes
-> >> something even if nothing has changed.
-> >>
-> >> Is that really needed?
-> > 
-> > I briefly looked, and UBIFS is doing a lot of I/O in that case, which is
-> > unnecessary and should not be done, I'll need to investigate this.
+On Tue, 2010-10-19 at 16:24 +0200, Philippe De Muyter wrote:
+> Some flash chips have a small but annoying bug, documented in
+>     "Numonyx Axcell P33/P30 256-Mbit Specification Update"
 > 
->  From what I've seen from the code there are two parts:
-> - writing "unwritten" data (the write back part I guess). Nothing is done
->    here as long as no data is queued
-> - writing the journal. The first step seems to be to write a node "begin
->    write" and the last one is "end write".
+>     It states :
+>     When customer uses [...] block unlock, the block lock status might
+>     be altered inadvertently. Lock status might be set to either 01h
+>     or 03h unexpectedly (00h as expected data), which leads to
+>     program/erase failure on certain blocks.
 > 
-> Since hjk sees only two erases I would guess that they are initiated by 
-> the "journal begin" & "end" requests.
+>     A workaround is given, (summary : issue a "Read Lock Status" before
+>     the "Lock" or "Unlock" command) which I have applied and tested
+>     with success.
+> 
+> Signed-off-by: Philippe De Muyter <phdm@macqel.be>
 
-Yeah, the UBIFS must be writing the commit start and commit end nodes,
-and then erasing the previous log LEB (all this is done in log.c). As
-soon as I have time I'll look at this, I really do not have time right
-now. And there is Matthiew's problem which is actually quite big, but
-for some reasons affects only him :-)
+Is this Numonyx-specific issue? Should there be some kind of "if
+(numonyx)" statement?
 
-May be it is just matter of looking at all journal heads and if they are
-empty, do nothing and return from ubifs_commit().
+May be Nicolas could validate the patch?
 
-Adrian, would you help with this, may be?
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0001.c |    9 +++++++++
+>  1 files changed, 9 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> index 9e2b7e9..0d0ae41 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> @@ -2047,6 +2047,7 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+>  {
+>  	struct cfi_private *cfi = map->fldrv_priv;
+>  	struct cfi_pri_intelext *extp = cfi->cmdset_priv;
+> +	int ofs_factor = cfi->interleave * cfi->device_type;
+>  	int udelay;
+>  	int ret;
+>  
+> @@ -2062,6 +2063,14 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+>  	ENABLE_VPP(map);
+>  	xip_disable(map, chip, adr);
+>  
+> +	/*
+> +	 * Issue a "Read Lock Status" before the "Lock" or "Unlock" :
+> +	 * see errata "Numonyx Axcell P33/P30 Specification Update" :)
+> +	 */
+> +	map_write(map, CMD(0x90), adr+(2*ofs_factor));
+> +	chip->state = FL_JEDEC_QUERY;
+> +	cfi_read_query(map, adr+(2*ofs_factor));
+> +
+>  	map_write(map, CMD(0x60), adr);
+>  	if (thunk == DO_XXLOCK_ONEBLOCK_LOCK) {
+>  		map_write(map, CMD(0x01), adr);
 
 -- 
 Best Regards,
