@@ -1,17 +1,33 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8wXK-0006YK-Gm
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 14:54:36 +0000
-Received: by iwn8 with SMTP id 8so2727995iwn.36
+	id 1P8x0L-0002ia-VL
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 15:24:34 +0000
+Received: by qyk4 with SMTP id 4so4164030qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Oct 2010 07:54:32 -0700 (PDT)
-From: zhangyd <zhangyd6@gmail.com>
-To: glecerf@gmail.com
-Subject: [PATCH] mtd: chips: add SST38VF640x nor-flashes
-Date: Thu, 21 Oct 2010 22:53:42 -0400
-Message-Id: <1287716022-2792-1-git-send-email-zhangyd6@gmail.com>
-Cc: linux-mtd@lists.infradead.org, zhangyd <zhangyd6@gmail.com>,
-	dwmw2@infradead.org, w.sang@pengutronix.de
+	Thu, 21 Oct 2010 08:24:32 -0700 (PDT)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <AANLkTin-4fGYzD8a9rDp9M7YEk1y7JbXmZVLjA=3iU3Q@mail.gmail.com>
+References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
+	<20101016100744.GA10815@pengutronix.de>
+	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
+	<20101016131752.GA2676@pengutronix.de>
+	<AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
+	<20101018114104.GC15440@pengutronix.de>
+	<AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
+	<AANLkTi=jNvWZe-bED0fZa-XbvoLmpu7VcFN7nUN=4Tru@mail.gmail.com>
+	<AANLkTinLTW25faUTBfKBVcpFXFrtv1UhWWDN9Dgm1jOH@mail.gmail.com>
+	<AANLkTiknoWR_v-TfV5M5ZwsV3Lsk=EDDD185kXp4B96V@mail.gmail.com>
+	<AANLkTin-4fGYzD8a9rDp9M7YEk1y7JbXmZVLjA=3iU3Q@mail.gmail.com>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Thu, 21 Oct 2010 17:24:11 +0200
+Message-ID: <AANLkTimwhvNmfz5rVjzCTc5_GaNzCg185v+NLD6bLgno@mail.gmail.com>
+Subject: Re: Re :Re: [Help] SST39VF6401B Support
+To: yidong zhang <zhangyd6@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: taliaferro62@gmail.com, yegorslists@googlemail.com,
+	linux-mtd@lists.infradead.org,
+	Wolfram Sang <w.sang@pengutronix.de>, David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +37,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Due to broken CFI, these flashes should be operated in jedec probe mode.
-When you operate them in the CFI probe mode, you will get the wrong sector
-size.And it will fail to set up the flash during the probe(CFI mode).
-And i have tested it on my platform.
+2010/10/21 yidong zhang <zhangyd6@gmail.com>:
+>> Hi.
+>> The patch use the fixup_sst39vf_rev_b() function which calls
+>> fixup_old_sst_eraseregion().
+>> It sets the NumEraseRegions to 1, thus CFI reports only the 1st erase
+>> region, i.e. the one calculated with the sector information (8KByte).
+>>
+>> Did you actually tested it with a real chip ?
+>
+> Yes, i did test both SST39VF6401B and SST38VF6401 a moment ago; The
+> SST39VF6401B works fine. But the SST38VF6401 couldn't work because of
+> the sector-size.It was 64KByte when i displayed the erase size.
 
-Signed-off-by: yidong zhang <zhangyd6@gmail.com>
----
- drivers/mtd/chips/jedec_probe.c |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+Could you send me your log with SST38VF6401 please ?
+I need to investigate on this.
 
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-index d72a5fb..21f07da 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -163,6 +163,7 @@
- #define SST49LF030A	0x001C
- #define SST49LF040A	0x0051
- #define SST49LF080A	0x005B
-+#define SST38VF6401	0x536B
- #define SST36VF3203	0x7354
- 
- /* Toshiba */
-@@ -1557,6 +1558,18 @@ static const struct amd_flash_info jedec_table[] = {
- 		}
- 	}, {
- 		.mfr_id		= CFI_MFR_SST,
-+		.dev_id		= SST38VF6401,
-+		.name		= "SST 38VF6401",
-+		.devtypes	= CFI_DEVICETYPE_X16,
-+		.uaddr		= MTD_UADDR_0x0AAA_0x0555,
-+		.dev_size	= SIZE_8MiB,
-+		.cmd_set	= P_ID_AMD_STD,
-+		.nr_regions	= 1,
-+		.regions	= {
-+			ERASEINFO(0x10000,128),
-+		}
-+	}, {
-+		.mfr_id		= CFI_MFR_SST,
- 		.dev_id		= SST36VF3203,
- 		.name		= "SST 36VF3203",
- 		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
 -- 
-1.7.2.3
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
