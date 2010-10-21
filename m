@@ -1,21 +1,19 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8yZA-0008LU-Ky
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 17:04:38 +0000
-Message-ID: <4CC0729B.7060109@parrot.com>
-Date: Thu, 21 Oct 2010 19:04:27 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from metis.ext.pengutronix.de ([92.198.50.35])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P8yfh-0000ip-79
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 17:11:25 +0000
+Date: Thu, 21 Oct 2010 19:10:45 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: zhangyd <zhangyd6@gmail.com>
+Subject: Re: [PATCH] mtd: chips: add SST38VF640x nor-flashes
+Message-ID: <20101021171045.GE11131@pengutronix.de>
+References: <1287716022-2792-1-git-send-email-zhangyd6@gmail.com>
 MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: Re: ubifs: sync() causes writes even if nothing is changed
-References: <20101013163005.GB1889@silverbox.local>	<1287581218.9272.67.camel@localhost>
-	<4CBFF865.9010706@linutronix.de>
-	<1287649931.2932.3.camel@localhost>
-In-Reply-To: <1287649931.2932.3.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KuLpqunXa7jZSBt+"
+Content-Disposition: inline
+In-Reply-To: <1287716022-2792-1-git-send-email-zhangyd6@gmail.com>
+Cc: dwmw2@infradead.org, glecerf@gmail.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-Artem Bityutskiy a écrit :
-> On Thu, 2010-10-21 at 10:23 +0200, Sebastian Andrzej Siewior wrote:
->> Artem Bityutskiy wrote:
->>>> From a quick glance at the ubifs code, this might come out of the
->>>> garbage collector that is triggered on every sync() and writes
->>>> something even if nothing has changed.
-> 
-> Yeah, the UBIFS must be writing the commit start and commit end nodes,
-> and then erasing the previous log LEB (all this is done in log.c). As
-> soon as I have time I'll look at this, I really do not have time right
-> now. And there is Matthiew's problem which is actually quite big, but
-> for some reasons affects only him :-)
-It could be interesting to know which nand flash are tested.
+--KuLpqunXa7jZSBt+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On our boards ST 256MB chip work fine, but micron flash got unstable 
-page problem (sorry I don't have the model number ATM).
+On Thu, Oct 21, 2010 at 10:53:42PM -0400, zhangyd wrote:
+> Due to broken CFI, these flashes should be operated in jedec probe mode.
+> When you operate them in the CFI probe mode, you will get the wrong sector
+> size.And it will fail to set up the flash during the probe(CFI mode).
+> And i have tested it on my platform.
+>=20
+> Signed-off-by: yidong zhang <zhangyd6@gmail.com>
 
-And it is getting worse, new SLC flash can now get up to 4 bits error 
-per 512.
+Still NACK. Unless Guillaume doesn't come to the conclusion that JEDEC is
+better, supporting him is the preferred option IMO.
 
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
 
-Matthieu
+--KuLpqunXa7jZSBt+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkzAdBUACgkQD27XaX1/VRu1xQCeM56/hUv2iMcQ0JnwdY9iFjEw
+HSkAoIsk79geAC2EeM2/6vwrbH4eEyT2
+=4wio
+-----END PGP SIGNATURE-----
+
+--KuLpqunXa7jZSBt+--
