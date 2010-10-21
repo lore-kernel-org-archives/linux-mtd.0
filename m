@@ -1,26 +1,27 @@
-Received: from mail-px0-f177.google.com ([209.85.212.177])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8xV1-000805-0J
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 15:56:15 +0000
-Received: by pxi13 with SMTP id 13so584903pxi.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Oct 2010 08:56:13 -0700 (PDT)
-Message-ID: <4CC0621E.9040102@gmail.com>
-Date: Thu, 21 Oct 2010 08:54:06 -0700
-From: Brian Norris <computersforpeace@gmail.com>
-MIME-Version: 1.0
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH v2 1/2] mtd-utils: nanddump/nandwrite: style, signed-ness,
-	printing fixups
-References: <1287645577-13538-1-git-send-email-computersforpeace@gmail.com>
-	<1287645577-13538-2-git-send-email-computersforpeace@gmail.com>
-	<AANLkTikthtaMh0qjFVLu29ZbageANnd_JsbB7wLqiMSM@mail.gmail.com>
-In-Reply-To: <AANLkTikthtaMh0qjFVLu29ZbageANnd_JsbB7wLqiMSM@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	id 1P8y3g-0003R9-Fm
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 16:32:05 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([66.130.28.92]) by VL-MR-MRZ20.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-8.01 (built Dec 16 2008;
+	32bit))
+	with ESMTP id <0LAN00GABF99PIE0@VL-MR-MRZ20.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 12:31:58 -0400 (EDT)
+Date: Thu, 21 Oct 2010 12:32:02 -0400 (EDT)
+From: Nicolas Pitre <nico@fluxnic.net>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd: Apply Numonyx Axcell P33/P30 workaround for
+	Lock/Unlock bug.
+In-reply-to: <1287656983.2932.14.camel@localhost>
+Message-id: <alpine.LFD.2.00.1010211226120.2764@xanadu.home>
+References: <1287498263-5561-1-git-send-email-phdm@macqel.be>
+	<1287650398.2932.5.camel@localhost>
+	<20101021093343.GA17631@frolo.macqel>
+	<1287656983.2932.14.camel@localhost>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,38 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 21 Oct 2010, Artem Bityutskiy wrote:
 
-I just want to be clear in communication this time, so I have a few
-clarification questions.
-
-On 10/21/2010 12:37 AM, Mike Frysinger wrote:
-> On Thu, Oct 21, 2010 at 03:19, Brian Norris wrote:
->> There were some signed/unsigned integer comparisons. Their types were
->> changed for safety. Also, "strtol" was improperly used for unsigned
->> data types.
+> On Thu, 2010-10-21 at 11:33 +0200, Philippe De Muyter wrote:
+> > On Thu, Oct 21, 2010 at 11:39:58AM +0300, Artem Bityutskiy wrote:
+> > > On Tue, 2010-10-19 at 16:24 +0200, Philippe De Muyter wrote:
+> > > > Some flash chips have a small but annoying bug, documented in
+> > > >     "Numonyx Axcell P33/P30 256-Mbit Specification Update"
+> > > > 
+> > > >     It states :
+> > > >     When customer uses [...] block unlock, the block lock status might
+> > > >     be altered inadvertently. Lock status might be set to either 01h
+> > > >     or 03h unexpectedly (00h as expected data), which leads to
+> > > >     program/erase failure on certain blocks.
+> > > > 
+> > > >     A workaround is given, (summary : issue a "Read Lock Status" before
+> > > >     the "Lock" or "Unlock" command) which I have applied and tested
+> > > >     with success.
+> > > > 
+> > > > Signed-off-by: Philippe De Muyter <phdm@macqel.be>
+> > > 
+> > > Is this Numonyx-specific issue? Should there be some kind of "if
+> > > (numonyx)" statement?
+> > 
+> > This is clearly a bug specific to some Numonyx flashes.
+> > My chips have Manufacturer ID: 0x89, Device ID: 0x881B, but there are
+> > other chips in the same family.  The errata
+> > http://www.numonyx.com/Documents/Specification%20Updates/509003_P3X_65nm_3V_256Mbit_Discrete.pdf does not list the ManufacturerIDs/DeviceIDs of the affected
+> > chips.
 > 
-> dont really like these being merged, but that's obviously Artem's call, not mine
-
-What exactly do you not like? The use of unsigned types, the use of
-strtoul, a lack of consistency, or something else? I'm open to changing
-my type usages if you have ideas that make more sense.
-
->> -       while (lx < (linebuflen - 1) && lx < (ascii_column - 1))
->> +       do {
->>                linebuf[lx++] = ' ';
->> +       } while (lx < (linebuflen - 1) && lx < (ascii_column - 1));
+> CCed Nicolas correctly.
 > 
-> hmm, unrelated to your changes, but i'm pretty sure this can be
-> rewritten into a sprintf ...
->   sprintf(linebuf + lx, "%*s", (linebuflen - 1) - lx, "")
-> and integrating the ascii_column stuff too.  or maybe that's too complicated.
+> Anyway, if this affects only subset of chips, it make sense to make this
+> quirk conditional, because this might affect boot speed, e.g., if some
+> systems unlock all blocks on boot-up.
+
+That is probably quite unlikely to make a difference given that there is 
+no result delay involved.
+
+However, does the erratum workaround imply that the status actually has 
+to be read?  In other words, can you simply issue CMD 90 without calling 
+cfi_read_query()?
 
 
-I can look try that in the future. You're probably right though. When I
-wrote this, I really just copied/pasted/fixed the library hexdump code
-from the linux kernel, so I didn't spend time making it the simplest
-possible.
-
-Thanks,
-Brian
+Nicolas
