@@ -1,22 +1,21 @@
 Received: from co202.xi-lite.net ([149.6.83.202])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8yNK-0006F3-Kn
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 16:52:23 +0000
-Message-ID: <4CC06FC2.2060406@parrot.com>
-Date: Thu, 21 Oct 2010 18:52:18 +0200
+	id 1P8yZA-0008LU-Ky
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 17:04:38 +0000
+Message-ID: <4CC0729B.7060109@parrot.com>
+Date: Thu, 21 Oct 2010 19:04:27 +0200
 From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-To: Florian Fainelli <florian@openwrt.org>
-Subject: Re: [PATCH 3/3 v3] NAND: add support for reading ONFI parameters
-	from NAND device
-References: <201008301832.24672.florian@openwrt.org>
-In-Reply-To: <201008301832.24672.florian@openwrt.org>
+To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Subject: Re: ubifs: sync() causes writes even if nothing is changed
+References: <20101013163005.GB1889@silverbox.local>	<1287581218.9272.67.camel@localhost>
+	<4CBFF865.9010706@linutronix.de>
+	<1287649931.2932.3.camel@localhost>
+In-Reply-To: <1287649931.2932.3.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brian Norris <norris@broadcom.com>, Maxime Bizon <mbizon@freebox.fr>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +27,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-Florian Fainelli a écrit :
-> This patch adds support for reading NAND device ONFI parameters and use
-> the ONFI informations to define its geometry. In case the device supports
-> ONFI, the onfi_version field in struct nand_chip contains the version (BCD)
-> and the onfi_params structure can be used by drivers to set up timings and
-> such. We currently only support ONFI 1.0 parameters.
+Artem Bityutskiy a écrit :
+> On Thu, 2010-10-21 at 10:23 +0200, Sebastian Andrzej Siewior wrote:
+>> Artem Bityutskiy wrote:
+>>>> From a quick glance at the ubifs code, this might come out of the
+>>>> garbage collector that is triggered on every sync() and writes
+>>>> something even if nothing has changed.
 > 
-> Signed-off-by: Brian Norris <norris@broadcom.com>
-> Signed-off-by: Matthieu Castet <matthieu.castet@parrot.com>
-> Signed-off-by: Maxime Bizon <mbizon@freebox.fr>
-> Signed-off-by: Florian Fainelli <ffainelli@freebox.fr>
-> ---
-                 chip->cmdfunc = nand_command_lp;
-> 
-> +       /* TODO onfi flash name */
->         printk(KERN_INFO "NAND device: Manufacturer ID:"
-> -              " 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, dev_id,
-> -              nand_manuf_ids[maf_idx].name, type->name);
-> +               " 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
-> +               nand_manuf_ids[maf_idx].name,
-> +               chip->onfi_version ? type->name:chip->onfi_params.model);
-> 
-I don't know if it has been noticed but it should be
-chip->onfi_version ? chip->onfi_params.model : type->name
+> Yeah, the UBIFS must be writing the commit start and commit end nodes,
+> and then erasing the previous log LEB (all this is done in log.c). As
+> soon as I have time I'll look at this, I really do not have time right
+> now. And there is Matthiew's problem which is actually quite big, but
+> for some reasons affects only him :-)
+It could be interesting to know which nand flash are tested.
+
+On our boards ST 256MB chip work fine, but micron flash got unstable 
+page problem (sorry I don't have the model number ATM).
+
+And it is getting worse, new SLC flash can now get up to 4 bits error 
+per 512.
+
 
 Matthieu
