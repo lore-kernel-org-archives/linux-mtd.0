@@ -1,24 +1,23 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8sZi-0005oO-Kc
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 10:40:47 +0000
-Received: by fxm15 with SMTP id 15so3642570fxm.36
+	id 1P8sZz-0005p0-LP
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 10:41:04 +0000
+Received: by qwi4 with SMTP id 4so216595qwi.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Oct 2010 03:40:45 -0700 (PDT)
-Subject: Re: [PATCH] drivers/mtd/devices/phram.c: Use KBUILD_MODNAME
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Joe Perches <joe@perches.com>
-In-Reply-To: <1287596362.1813.205.camel@Joe-Laptop>
-References: <1287596362.1813.205.camel@Joe-Laptop>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 21 Oct 2010 13:37:32 +0300
-Message-ID: <1287657452.2932.15.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Joern Engel <joern@lazybastard.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Thu, 21 Oct 2010 03:41:02 -0700 (PDT)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <1287233782-21319-1-git-send-email-w.sang@pengutronix.de>
+References: <1287233782-21319-1-git-send-email-w.sang@pengutronix.de>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Thu, 21 Oct 2010 12:40:41 +0200
+Message-ID: <AANLkTi=kX7aAbY-5XNF0dKngXmAPXL-UisGGfjOimKdo@mail.gmail.com>
+Subject: Re: [PATCH] [MTD] cfi_cmdset_0002: code cleanups
+To: Wolfram Sang <w.sang@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: yidong zhang <zhangyd6@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,14 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-10-20 at 10:39 -0700, Joe Perches wrote:
-> Use the more standard #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> No change in output strings.
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+2010/10/16 Wolfram Sang <w.sang@pengutronix.de>:
+> - remove disabled code (hasn't been touched since the beginning of git
+> =C2=A0and should be reimplemented if really needed)
+> - convert remaining c++-comments to plain c-style
+>
+> Signed-off-by: Wolfram Sang <w.sang@pengutronix.de>
+> Cc: yidong zhang <zhangyd6@gmail.com>
+> Cc: Guillaume LECERF <glecerf@gmail.com>
+> Cc: David Woodhouse <David.Woodhouse@intel.com>
 
-Pushed to l2-mtd-2.6.git, thanks.
+Acked-by: Guillaume LECERF <glecerf@gmail.com>
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+--=20
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
