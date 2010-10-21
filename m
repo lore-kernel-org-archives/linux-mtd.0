@@ -1,25 +1,29 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P8sS2-0004Rv-PY
-	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 10:32:52 +0000
-Received: by fxm15 with SMTP id 15so3637236fxm.36
+	id 1P8sT7-0004gK-CM
+	for linux-mtd@lists.infradead.org; Thu, 21 Oct 2010 10:33:59 +0000
+Received: by qwi4 with SMTP id 4so211098qwi.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Oct 2010 03:32:48 -0700 (PDT)
-Subject: Re: [PATCH] mtd: Apply Numonyx Axcell P33/P30 workaround for
-	Lock/Unlock bug.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Philippe De Muyter <phdm@macqel.be>
-In-Reply-To: <20101021093343.GA17631@frolo.macqel>
-References: <1287498263-5561-1-git-send-email-phdm@macqel.be>
-	<1287650398.2932.5.camel@localhost>
-	<20101021093343.GA17631@frolo.macqel>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 21 Oct 2010 13:29:43 +0300
-Message-ID: <1287656983.2932.14.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Nicolas Pitre <nico@fluxnic.net>
-Reply-To: dedekind1@gmail.com
+	Thu, 21 Oct 2010 03:33:55 -0700 (PDT)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
+References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
+	<20101016100744.GA10815@pengutronix.de>
+	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
+	<20101016131752.GA2676@pengutronix.de>
+	<AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
+	<20101018114104.GC15440@pengutronix.de>
+	<AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Thu, 21 Oct 2010 12:33:33 +0200
+Message-ID: <AANLkTi=jNvWZe-bED0fZa-XbvoLmpu7VcFN7nUN=4Tru@mail.gmail.com>
+Subject: Re: Re :Re: [Help] SST39VF6401B Support
+To: Wolfram Sang <w.sang@pengutronix.de>
+Content-Type: multipart/mixed; boundary=001636283fea028b6f04931e104c
+Cc: linux-mtd@lists.infradead.org, taliaferro62@gmail.com,
+	yidong zhang <zhangyd6@gmail.com>, David.Woodhouse@intel.com,
+	yegorslists@googlemail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +33,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-10-21 at 11:33 +0200, Philippe De Muyter wrote:
-> On Thu, Oct 21, 2010 at 11:39:58AM +0300, Artem Bityutskiy wrote:
-> > On Tue, 2010-10-19 at 16:24 +0200, Philippe De Muyter wrote:
-> > > Some flash chips have a small but annoying bug, documented in
-> > >     "Numonyx Axcell P33/P30 256-Mbit Specification Update"
-> > > 
-> > >     It states :
-> > >     When customer uses [...] block unlock, the block lock status might
-> > >     be altered inadvertently. Lock status might be set to either 01h
-> > >     or 03h unexpectedly (00h as expected data), which leads to
-> > >     program/erase failure on certain blocks.
-> > > 
-> > >     A workaround is given, (summary : issue a "Read Lock Status" before
-> > >     the "Lock" or "Unlock" command) which I have applied and tested
-> > >     with success.
-> > > 
-> > > Signed-off-by: Philippe De Muyter <phdm@macqel.be>
-> > 
-> > Is this Numonyx-specific issue? Should there be some kind of "if
-> > (numonyx)" statement?
-> 
-> This is clearly a bug specific to some Numonyx flashes.
-> My chips have Manufacturer ID: 0x89, Device ID: 0x881B, but there are
-> other chips in the same family.  The errata
-> http://www.numonyx.com/Documents/Specification%20Updates/509003_P3X_65nm_3V_256Mbit_Discrete.pdf does not list the ManufacturerIDs/DeviceIDs of the affected
-> chips.
+--001636283fea028b6f04931e104c
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-CCed Nicolas correctly.
+2010/10/18 Guillaume LECERF <glecerf@gmail.com>:
+> 2010/10/18 Wolfram Sang <w.sang@pengutronix.de>:
+>>> =C2=A0 =C2=A0The 39VF*-B-Version flashes in the cfi_nopri_fixup_table d=
+on't work
+>>> well in the current code. =C2=A0Because of the mistaken use of
+>>> command(0x30) in the 6th bus cycle, which should be 0x50. I think the
+>>> 39VF*-B-Version flashes should be removed form the CFI probe mode. Or
+>>> maybe the erase operation should be changed for the Compatibility.
+>>
+>> Or we put in a variable like the unlock-address?
+>
+> I'm OK with solution, that's what I try to implement atm, but I'm
+> still looking for the right place to put this variable.
 
-Anyway, if this affects only subset of chips, it make sense to make this
-quirk conditional, because this might affect boot speed, e.g., if some
-systems unlock all blocks on boot-up.
+Hi.
+Could you try the attached patches ?
+Note: it's totally untested.
 
-Nicolas, the original patch was here, would you validate it please?
-http://lists.infradead.org/pipermail/linux-mtd/2010-October/032783.html
+--=20
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+--001636283fea028b6f04931e104c
+Content-Type: application/octet-stream; name="erase-command.patch"
+Content-Disposition: attachment; filename="erase-command.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gfjhugky0
+
+bXRkOiBjZmlfY21kc2V0XzAwMDI6IG1ha2Ugc2VjdG9yIGVyYXNlIGNvbW1hbmQgdmFyaWFibGUK
+CkZyb206IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgoKU1NUMzlWRnh4eHhC
+IGNoaXBzIHVzZSAweDUwIGFzIHNlY3RvciBlcmFzZSBjb21tYW5kLCBpbnN0ZWFkIG9mIDB4MzAu
+Ck1ha2UgdGhpcyB2YWx1ZSB2YXJpYWJsZSB0byBoYW5kbGUgc3VjaCBjaGlwcy4KClNpZ25lZC1v
+ZmYtYnk6IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgotLS0KIGRyaXZlcnMv
+bXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgICAxMSArKysrKysrLS0tLQogMSBmaWxlcyBj
+aGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlf
+Y21kc2V0XzAwMDIuYwppbmRleCAzZTZjNDdiLi5hMzU5OTY3IDEwMDY0NAotLS0gYS9kcml2ZXJz
+L210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYworKysgYi9kcml2ZXJzL210ZC9jaGlwcy9jZmlf
+Y21kc2V0XzAwMDIuYwpAQCAtNzgsNiArNzgsNyBAQCBzdGF0aWMgc3RydWN0IG10ZF9jaGlwX2Ry
+aXZlciBjZmlfYW1kc3RkX2NoaXBkcnYgPSB7CiAJLm1vZHVsZQkJPSBUSElTX01PRFVMRQogfTsK
+IAorc3RhdGljIG1hcF93b3JkIHNlY3Rvcl9lcmFzZV9jbWQgPSBDTUQoMHgzMCk7CiAKIC8qICNk
+ZWZpbmUgREVCVUdfQ0ZJX0ZFQVRVUkVTICovCiAKQEAgLTI5MSw2ICsyOTIsOCBAQCBzdGF0aWMg
+dm9pZCBmaXh1cF9zc3QzOXZmX3Jldl9iKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB2b2lkICpwYXJh
+bSkKIAogCWNmaS0+YWRkcl91bmxvY2sxID0gMHg1NTU7CiAJY2ZpLT5hZGRyX3VubG9jazIgPSAw
+eDJBQTsKKworCXNlY3Rvcl9lcmFzZV9jbWQgPSBDTUQoMHg1MCk7CiB9CiAKIHN0YXRpYyB2b2lk
+IGZpeHVwX3MyOWdsMDY0bl9zZWN0b3JzKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCB2b2lkICpwYXJh
+bSkKQEAgLTY3NCw3ICs2NzcsNyBAQCBzdGF0aWMgaW50IGdldF9jaGlwKHN0cnVjdCBtYXBfaW5m
+byAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25lZCBsb25nIGFkcgogCQkJCSAqIHRo
+ZXJlIHdhcyBhbiBlcnJvciAoc28gbGVhdmUgdGhlIGVyYXNlCiAJCQkJICogcm91dGluZSB0byBy
+ZWNvdmVyIGZyb20gaXQpIG9yIHdlIHRyeWluZyB0bwogCQkJCSAqIHVzZSB0aGUgZXJhc2UtaW4t
+cHJvZ3Jlc3Mgc2VjdG9yLiAqLwotCQkJCW1hcF93cml0ZShtYXAsIENNRCgweDMwKSwgY2hpcC0+
+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7CisJCQkJbWFwX3dyaXRlKG1hcCwgc2VjdG9yX2VyYXNl
+X2NtZCwgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7CiAJCQkJY2hpcC0+c3RhdGUgPSBG
+TF9FUkFTSU5HOwogCQkJCWNoaXAtPm9sZHN0YXRlID0gRkxfUkVBRFk7CiAJCQkJcHJpbnRrKEtF
+Uk5fRVJSICJNVEQgJXMoKTogY2hpcCBub3QgcmVhZHkgYWZ0ZXIgZXJhc2Ugc3VzcGVuZFxuIiwg
+X19mdW5jX18pOwpAQCAtNzI3LDcgKzczMCw3IEBAIHN0YXRpYyB2b2lkIHB1dF9jaGlwKHN0cnVj
+dCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25lZCBsb25nIGFkCiAJ
+c3dpdGNoKGNoaXAtPm9sZHN0YXRlKSB7CiAJY2FzZSBGTF9FUkFTSU5HOgogCQljaGlwLT5zdGF0
+ZSA9IGNoaXAtPm9sZHN0YXRlOwotCQltYXBfd3JpdGUobWFwLCBDTUQoMHgzMCksIGNoaXAtPmlu
+X3Byb2dyZXNzX2Jsb2NrX2FkZHIpOworCQltYXBfd3JpdGUobWFwLCBzZWN0b3JfZXJhc2VfY21k
+LCBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyKTsKIAkJY2hpcC0+b2xkc3RhdGUgPSBGTF9S
+RUFEWTsKIAkJY2hpcC0+c3RhdGUgPSBGTF9FUkFTSU5HOwogCQlicmVhazsKQEAgLTg3MCw3ICs4
+NzMsNyBAQCBzdGF0aWMgdm9pZCBfX3hpcHJhbSB4aXBfdWRlbGF5KHN0cnVjdCBtYXBfaW5mbyAq
+bWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLAogCQkJbG9jYWxfaXJxX2Rpc2FibGUoKTsKIAogCQkJ
+LyogUmVzdW1lIHRoZSB3cml0ZSBvciBlcmFzZSBvcGVyYXRpb24gKi8KLQkJCW1hcF93cml0ZSht
+YXAsIENNRCgweDMwKSwgYWRyKTsKKwkJCW1hcF93cml0ZShtYXAsIHNlY3Rvcl9lcmFzZV9jbWQs
+IGFkcik7CiAJCQljaGlwLT5zdGF0ZSA9IG9sZHN0YXRlOwogCQkJc3RhcnQgPSB4aXBfY3VycnRp
+bWUoKTsKIAkJfSBlbHNlIGlmICh1c2VjID49IDEwMDAwMDAvSFopIHsKQEAgLTE2NzUsNyArMTY3
+OCw3IEBAIHN0YXRpYyBpbnQgX194aXByYW0gZG9fZXJhc2Vfb25lYmxvY2soc3RydWN0IG1hcF9p
+bmZvICptYXAsIHN0cnVjdCBmbGNoaXAgKmNoaXAsCiAJY2ZpX3NlbmRfZ2VuX2NtZCgweDgwLCBj
+ZmktPmFkZHJfdW5sb2NrMSwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLCBjZmktPmRldmljZV90eXBl
+LCBOVUxMKTsKIAljZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlw
+LT5zdGFydCwgbWFwLCBjZmksIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOwogCWNmaV9zZW5kX2dl
+bl9jbWQoMHg1NSwgY2ZpLT5hZGRyX3VubG9jazIsIGNoaXAtPnN0YXJ0LCBtYXAsIGNmaSwgY2Zp
+LT5kZXZpY2VfdHlwZSwgTlVMTCk7Ci0JbWFwX3dyaXRlKG1hcCwgQ01EKDB4MzApLCBhZHIpOwor
+CW1hcF93cml0ZShtYXAsIHNlY3Rvcl9lcmFzZV9jbWQsIGFkcik7CiAKIAljaGlwLT5zdGF0ZSA9
+IEZMX0VSQVNJTkc7CiAJY2hpcC0+ZXJhc2Vfc3VzcGVuZGVkID0gMDsK
+--001636283fea028b6f04931e104c
+Content-Type: application/octet-stream; name="sst38vf640x.patch"
+Content-Disposition: attachment; filename="sst38vf640x.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gfjhulbm1
+
+U1NUMzhWRjY0MHgKCkZyb206IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgoK
+Ci0tLQogZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMgfCAgICA0ICsrKysKIDEg
+ZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdp
+dCBhL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hp
+cHMvY2ZpX2NtZHNldF8wMDAyLmMKaW5kZXggYTM1OTk2Ny4uMzJiMDQwMiAxMDA2NDQKLS0tIGEv
+ZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKKysrIGIvZHJpdmVycy9tdGQvY2hp
+cHMvY2ZpX2NtZHNldF8wMDAyLmMKQEAgLTMyOCw2ICszMjgsMTAgQEAgc3RhdGljIHN0cnVjdCBj
+ZmlfZml4dXAgY2ZpX25vcHJpX2ZpeHVwX3RhYmxlW10gPSB7CiAJeyBDRklfTUZSX1NTVCwgMHgy
+MzVELCBmaXh1cF9zc3QzOXZmX3Jldl9iLCBOVUxMLCB9LCAvLyBTU1QzOVZGMzIwMUIKIAl7IENG
+SV9NRlJfU1NULCAweDIzNkMsIGZpeHVwX3NzdDM5dmZfcmV2X2IsIE5VTEwsIH0sIC8vIFNTVDM5
+VkY2NDAyQgogCXsgQ0ZJX01GUl9TU1QsIDB4MjM2RCwgZml4dXBfc3N0Mzl2Zl9yZXZfYiwgTlVM
+TCwgfSwgLy8gU1NUMzlWRjY0MDFCCisJeyBDRklfTUZSX1NTVCwgMHg1MzZBLCBmaXh1cF9zc3Qz
+OXZmX3Jldl9iLCBOVUxMLCB9LCAvKiBTU1QzOFZGNjQwMiAqLworCXsgQ0ZJX01GUl9TU1QsIDB4
+NTM2QiwgZml4dXBfc3N0Mzl2Zl9yZXZfYiwgTlVMTCwgfSwgLyogU1NUMzhWRjY0MDEgKi8KKwl7
+IENGSV9NRlJfU1NULCAweDUzNkMsIGZpeHVwX3NzdDM5dmZfcmV2X2IsIE5VTEwsIH0sIC8qIFNT
+VDM4VkY2NDA0ICovCisJeyBDRklfTUZSX1NTVCwgMHg1MzZELCBmaXh1cF9zc3QzOXZmX3Jldl9i
+LCBOVUxMLCB9LCAvKiBTU1QzOFZGNjQwMyAqLwogCXsgMCwgMCwgTlVMTCwgTlVMTCB9CiB9Owog
+Cg==
+--001636283fea028b6f04931e104c--
