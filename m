@@ -1,24 +1,21 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P9KFg-00089I-9G
-	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 16:13:57 +0000
-Received: by bwz5 with SMTP id 5so1173738bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Oct 2010 09:13:54 -0700 (PDT)
-Subject: Re: [PATCH] block2mtd: dubious assignment
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20101022143416.GA12737@logfs.org>
-References: <20101022124724.59eba464@absol.kitzblitz>
-	<20101022143416.GA12737@logfs.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 22 Oct 2010 19:13:50 +0300
-Message-ID: <1287764030.7480.1.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Nicolas Kaiser <nikai@nikai.net>, linux-mtd@lists.infradead.org,
-	Joern Engel <joern@lazybastard.org>, linux-kernel@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+Received: from kroah.org ([198.145.64.141] helo=coco.kroah.org)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P9KyK-0006Qu-E2
+	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 17:00:05 +0000
+Date: Fri, 22 Oct 2010 08:54:16 -0700
+From: Greg KH <greg@kroah.com>
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [stable] [Uclinux-dist-devel] [PATCH] mtd: Blackfin NFC: fix
+	build error after nand_scan_ident() change
+Message-ID: <20101022155416.GA18595@kroah.com>
+References: <1282974300-11664-1-git-send-email-vapier@gentoo.org>
+	<AANLkTiktR-zNsv4KrnOBh3PxXZTHa6UypzqnwSBpE1=R@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AANLkTiktR-zNsv4KrnOBh3PxXZTHa6UypzqnwSBpE1=R@mail.gmail.com>
+Cc: uclinux-dist-devel@blackfin.uclinux.org, linux-mtd@lists.infradead.org,
+	stable@kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-10-22 at 16:34 +0200, Jörn Engel wrote:
-> On Fri, 22 October 2010 12:47:24 +0200, Nicolas Kaiser wrote:
-> > 
-> > When block2mtd_erase fails, a duplicated assignment instantly
-> > changes instr->state from MTD_ERASE_FAILED to MTD_ERASE_DONE.
-> > 
-> > It looks to me like this might not be intended, or is it?
+On Sat, Oct 16, 2010 at 05:14:53AM -0400, Mike Frysinger wrote:
+> stable team: could you pick this up for 2.6.35.x ?
 > 
-> Definitely not.  Just proves how well block device errors are tested.
-> 
-> > Signed-off-by: Nicolas Kaiser <nikai@nikai.net>
-> Acked-By: Joern Engel <joern@logfs.org>
-> 
-> Artem, can I leave this patch to you as well?
+> it has been merged in mainline as eac15a429a27cb74115daaf4c1127c5e854d50e4
 
-Yes, I'll put it to my l2 tree of course, thanks.
+But it doesn't apply at all to .35-stable.  There is no call to
+nand_scan_ident() in that file in the .35 tree.
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+So, no, sorry, I can't apply it :)
+
+thanks,
+
+greg k-h
