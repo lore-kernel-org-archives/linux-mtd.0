@@ -1,34 +1,31 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P95K8-0000Eb-Ih
-	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 00:17:33 +0000
-Received: by wyf22 with SMTP id 22so295985wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Oct 2010 17:17:30 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTimwhvNmfz5rVjzCTc5_GaNzCg185v+NLD6bLgno@mail.gmail.com>
-References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
-	<20101016100744.GA10815@pengutronix.de>
-	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
-	<20101016131752.GA2676@pengutronix.de>
-	<AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
-	<20101018114104.GC15440@pengutronix.de>
-	<AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
-	<AANLkTi=jNvWZe-bED0fZa-XbvoLmpu7VcFN7nUN=4Tru@mail.gmail.com>
-	<AANLkTinLTW25faUTBfKBVcpFXFrtv1UhWWDN9Dgm1jOH@mail.gmail.com>
-	<AANLkTiknoWR_v-TfV5M5ZwsV3Lsk=EDDD185kXp4B96V@mail.gmail.com>
-	<AANLkTin-4fGYzD8a9rDp9M7YEk1y7JbXmZVLjA=3iU3Q@mail.gmail.com>
-	<AANLkTimwhvNmfz5rVjzCTc5_GaNzCg185v+NLD6bLgno@mail.gmail.com>
-Date: Fri, 22 Oct 2010 08:17:27 +0800
-Message-ID: <AANLkTinjcF_4wDGXN+Jg43Pjq=iM++1YQ9+evHrgxPaa@mail.gmail.com>
-Subject: Re: Re :Re: [Help] SST39VF6401B Support
-From: yidong zhang <zhangyd6@gmail.com>
-To: Guillaume LECERF <glecerf@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from tx2ehsobe003.messaging.microsoft.com ([65.55.88.13]
+	helo=TX2EHSOBE006.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1P9Agp-0004jT-2q
+	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 06:01:21 +0000
+Subject: Re: [PATCH v4 5/5] mtd: m25p80: add support to parse the partitions
+	by OF node
+MIME-Version: 1.0 (Apple Message framework v1081)
+Content-Type: text/plain; charset="us-ascii"
+From: Kumar Gala <kumar.gala@freescale.com>
+In-Reply-To: <1287301490.1951.0.camel@localhost>
+Date: Fri, 22 Oct 2010 01:01:12 -0500
 Content-Transfer-Encoding: quoted-printable
-Cc: taliaferro62@gmail.com, yegorslists@googlemail.com,
-	linux-mtd@lists.infradead.org,
-	Wolfram Sang <w.sang@pengutronix.de>, David.Woodhouse@intel.com
+Message-ID: <3AE1F37D-F328-40EF-8B35-F94CC074D384@freescale.com>
+References: <1286878714-13090-1-git-send-email-Mingkai.hu@freescale.com>
+	<1286878714-13090-2-git-send-email-Mingkai.hu@freescale.com>
+	<1286878714-13090-3-git-send-email-Mingkai.hu@freescale.com>
+	<1286878714-13090-4-git-send-email-Mingkai.hu@freescale.com>
+	<1286878714-13090-5-git-send-email-Mingkai.hu@freescale.com>
+	<1286878714-13090-6-git-send-email-Mingkai.hu@freescale.com>
+	<1287256647.1781.34.camel@brekeke>
+	<AANLkTimr03KAKnz5sfwm19=KzB-ik95WM_qQO0YP9qVs@mail.gmail.com>
+	<1287301490.1951.0.camel@localhost>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: dedekind1@gmail.com, David Brownell <david-b@pacbell.net>,
+	Linuxppc-dev list <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
+	spi-devel-general@lists.sourceforge.net,
+	Mingkai Hu <Mingkai.hu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,52 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Oct 21, 2010 at 11:24 PM, Guillaume LECERF <glecerf@gmail.com> wrot=
-e:
-> 2010/10/21 yidong zhang <zhangyd6@gmail.com>:
->>> Hi.
->>> The patch use the fixup_sst39vf_rev_b() function which calls
->>> fixup_old_sst_eraseregion().
->>> It sets the NumEraseRegions to 1, thus CFI reports only the 1st erase
->>> region, i.e. the one calculated with the sector information (8KByte).
->>>
->>> Did you actually tested it with a real chip ?
->>
->> Yes, i did test both SST39VF6401B and SST38VF6401 a moment ago; The
->> SST39VF6401B works fine. But the SST38VF6401 couldn't work because of
->> the sector-size.It was 64KByte when i displayed the erase size.
->
-> Could you send me your log with SST38VF6401 please ?
-> I need to investigate on this.
 
+On Oct 17, 2010, at 2:44 AM, Artem Bityutskiy wrote:
 
-Typical byte/word write timeout: 8 =B5s
-Maximum byte/word write timeout: 16 =B5s
-Typical full buffer write timeout: 8 =B5s
-Maximum full buffer write timeout: 64 =B5s
-Typical block erase timeout: 16 ms
-Maximum block erase timeout: 32 ms
-Typical chip erase timeout: 32 ms
-Maximum chip erase timeout: 64 ms
-Device size: 0x800000 bytes (8 MiB)
-Flash Device Interface description: 0x0001
-  - x16-only asynchronous interface
-Max. bytes in buffer write: 0x20
-Number of Erase Block Regions: 2
-  Erase Region #0: BlockSize 0x10000 bytes, 1024 blocks
-cif->cfiq->EraseRegionInfo[i] =3D 10003ff
-  Erase Region #1: BlockSize 0x10000 bytes, 128 blocks
-cif->cfiq->EraseRegionInfo[i] =3D 100007f
-mb86hxx_pflash: Found 1 x16 devices at 0x0 in 16-bit bank
-number of CFI chips: 1
-ersize is 10000, ernum is 400
-Sum of regions (4000000) !=3D total size of set of interleaved chips (80000=
-0)
+> On Sat, 2010-10-16 at 19:05 -0600, Grant Likely wrote:
+>> On Sat, Oct 16, 2010 at 1:17 PM, Artem Bityutskiy =
+<dedekind1@gmail.com> wrote:
+>>> On Tue, 2010-10-12 at 18:18 +0800, Mingkai Hu wrote:
+>>>> Signed-off-by: Mingkai Hu <Mingkai.hu@freescale.com>
+>>>> Acked-by: Grant Likely <grant.likely@secretlab.ca>
+>>>> ---
+>>>> v4:
+>>>> - Updated to latest kernel base(Linux 2.6.36-rc7).
+>>>> - Made changes according to Grant's comments.
+>>>=20
+>>> Looks good to me, pushed to l2-mtd-2.6.git, thanks.
+>>=20
+>> Wait!  It will break whenever CONFIG_OF is not set.  I broke
+>> linux-next with this patch.  It can be solved by wrapping the block
+>> with #ifdef CONFIG_OF, but I'd like to find a better solution.
+>=20
+> OK, removed.
 
+Grant, poke.  Would like to see this either resolved or have this patch =
+go in for .37 w/CONFIG_OF and fix properly for .38.
 
-
->
-> --
-> Guillaume LECERF
-> GeeXboX developer - www.geexbox.org
->
+- k=
