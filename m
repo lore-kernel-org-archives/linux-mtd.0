@@ -1,40 +1,24 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P9JlR-0002tu-2l
-	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 15:42:41 +0000
-Received: by ewy19 with SMTP id 19so521903ewy.36
+	id 1P9KFg-00089I-9G
+	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 16:13:57 +0000
+Received: by bwz5 with SMTP id 5so1173738bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Oct 2010 08:42:39 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTinQ=vHZgQ5B2YnsDkKzmCD288JwzTUgTUP-9whV@mail.gmail.com>
-References: <AANLkTinaRHUmLHeTqcDeVMDQyHfYm7B6vPbUGVkebK2_@mail.gmail.com>
-	<20101016100744.GA10815@pengutronix.de>
-	<AANLkTikOKx7hhF9jffRF+HvfwYFDghZAzNBgO-pZpAFv@mail.gmail.com>
-	<20101016131752.GA2676@pengutronix.de>
-	<AANLkTim+RBZRsYFyqXRD65tPw69s3rKogEnBFBQr4E5q@mail.gmail.com>
-	<20101018114104.GC15440@pengutronix.de>
-	<AANLkTimcpMb6-VykL0jSsocVF4z19TLMUi4c6dvvbNtF@mail.gmail.com>
-	<AANLkTi=jNvWZe-bED0fZa-XbvoLmpu7VcFN7nUN=4Tru@mail.gmail.com>
-	<AANLkTinLTW25faUTBfKBVcpFXFrtv1UhWWDN9Dgm1jOH@mail.gmail.com>
-	<AANLkTiknoWR_v-TfV5M5ZwsV3Lsk=EDDD185kXp4B96V@mail.gmail.com>
-	<AANLkTin-4fGYzD8a9rDp9M7YEk1y7JbXmZVLjA=3iU3Q@mail.gmail.com>
-	<AANLkTimwhvNmfz5rVjzCTc5_GaNzCg185v+NLD6bLgno@mail.gmail.com>
-	<AANLkTinjcF_4wDGXN+Jg43Pjq=iM++1YQ9+evHrgxPaa@mail.gmail.com>
-	<AANLkTinr5E2E4Nth_-XybNPKfHnrgSFPWtVqxkMdQa-Y@mail.gmail.com>
-	<AANLkTi=NKDPhdoDYE0ZdM2tuqWdFBNbui1AHZw_wXx97@mail.gmail.com>
-	<AANLkTikG5KWJwm2MFCX+-j2f4JiVTsiG1qsgh4T8aoZQ@mail.gmail.com>
-	<AANLkTimrtKYLi9trbM7+t7gLqsSTme=_t--7nxdLkmAd@mail.gmail.com>
-	<AANLkTinQ=vHZgQ5B2YnsDkKzmCD288JwzTUgTUP-9whV@mail.gmail.com>
-Date: Fri, 22 Oct 2010 23:42:39 +0800
-Message-ID: <AANLkTimUVCRZLQma2xRChr51y1Fi5E2p31qFQS=B20Sw@mail.gmail.com>
-Subject: Re: Re :Re: [Help] SST39VF6401B Support
-From: yidong zhang <zhangyd6@gmail.com>
-To: Guillaume LECERF <glecerf@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: taliaferro62@gmail.com, yegorslists@googlemail.com,
-	linux-mtd@lists.infradead.org,
-	Wolfram Sang <w.sang@pengutronix.de>, David.Woodhouse@intel.com
+	Fri, 22 Oct 2010 09:13:54 -0700 (PDT)
+Subject: Re: [PATCH] block2mtd: dubious assignment
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20101022143416.GA12737@logfs.org>
+References: <20101022124724.59eba464@absol.kitzblitz>
+	<20101022143416.GA12737@logfs.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 22 Oct 2010 19:13:50 +0300
+Message-ID: <1287764030.7480.1.camel@brekeke>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Nicolas Kaiser <nikai@nikai.net>, linux-mtd@lists.infradead.org,
+	Joern Engel <joern@lazybastard.org>, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -44,22 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Oct 22, 2010 at 11:36 PM, Guillaume LECERF <glecerf@gmail.com> wrot=
-e:
-> 2010/10/22 yidong zhang <zhangyd6@gmail.com>:
->>> Could you try setting cif->cfiq->EraseRegionInfo[0] to 0x02003FF in
->>> fixup_sst39vf_rev_b() ?
->>>
->> Hi
->> =A0how about this attached patch.
->
-> If it works for you, I'll send a patch series for SST 39VF640xB and
-> 38VF640x, because both chips needs 0x50 as erase command.
+On Fri, 2010-10-22 at 16:34 +0200, Jörn Engel wrote:
+> On Fri, 22 October 2010 12:47:24 +0200, Nicolas Kaiser wrote:
+> > 
+> > When block2mtd_erase fails, a duplicated assignment instantly
+> > changes instr->state from MTD_ERASE_FAILED to MTD_ERASE_DONE.
+> > 
+> > It looks to me like this might not be intended, or is it?
+> 
+> Definitely not.  Just proves how well block device errors are tested.
+> 
+> > Signed-off-by: Nicolas Kaiser <nikai@nikai.net>
+> Acked-By: Joern Engel <joern@logfs.org>
+> 
+> Artem, can I leave this patch to you as well?
 
-Sorry, i cannot test it right now.  I will sent the result as soon as i can=
-.
->
-> --
-> Guillaume LECERF
-> GeeXboX developer - www.geexbox.org
->
+Yes, I'll put it to my l2 tree of course, thanks.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
