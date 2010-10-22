@@ -1,20 +1,18 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P9Igp-0004LI-0o
-	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 14:33:51 +0000
-Date: Fri, 22 Oct 2010 16:34:16 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Nicolas Kaiser <nikai@nikai.net>
-Subject: Re: [PATCH] block2mtd: dubious assignment
-Message-ID: <20101022143416.GA12737@logfs.org>
-References: <20101022124724.59eba464@absol.kitzblitz>
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P9J21-0006xJ-TZ
+	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 14:55:46 +0000
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
+	by co202.xi-lite.net (Postfix) with ESMTPS id BF056260334
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Oct 2010 17:21:38 +0200 (CEST)
+Message-ID: <4CC1A5EE.9080605@parrot.com>
+Date: Fri, 22 Oct 2010 16:55:42 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20101022124724.59eba464@absol.kitzblitz>
-Cc: linux-mtd@lists.infradead.org, Joern Engel <joern@lazybastard.org>,
-	linux-kernel@vger.kernel.org
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [RFC] write bad block marker even with BBT
+Content-Type: multipart/mixed; boundary="------------020102000309020207050504"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 22 October 2010 12:47:24 +0200, Nicolas Kaiser wrote:
-> 
-> When block2mtd_erase fails, a duplicated assignment instantly
-> changes instr->state from MTD_ERASE_FAILED to MTD_ERASE_DONE.
-> 
-> It looks to me like this might not be intended, or is it?
+--------------020102000309020207050504
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Definitely not.  Just proves how well block device errors are tested.
+Hi,
 
-> Signed-off-by: Nicolas Kaiser <nikai@nikai.net>
-Acked-By: Joern Engel <joern@logfs.org>
+do you think a patch like that make sense ?
 
-Artem, can I leave this patch to you as well?
+This allow to solve problem where bootloader don't support reading BBT.
 
-Jörn
+We could also add a new flag and do this only if this flag is set.
 
--- 
-Eighty percent of success is showing up.
--- Woody Allen
+
+Matthieu
+
+--------------020102000309020207050504
+Content-Type: text/x-diff; name="btt.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="btt.diff"
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ddffe76..71052d0 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -409,7 +409,10 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	/* Do we have a flash based bad block table ? */
+ 	if (chip->options & NAND_USE_FLASH_BBT)
+ 		ret = nand_update_bbt(mtd, ofs);
+-	else {
++	/* put also the bad block marker in case we loose BBT or
++	   the bootloader doesn't support reading it
++	 */
++	{
+ 		nand_get_device(chip, mtd, FL_WRITING);
+ 
+ 		/* Write to first two pages and to byte 1 and 6 if necessary.
+
+--------------020102000309020207050504--
