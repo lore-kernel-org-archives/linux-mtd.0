@@ -1,22 +1,16 @@
-Received: from [85.183.114.52] (helo=Dublin.logfs.org)
+Received: from dakia2.marvell.com ([65.219.4.35])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1P9Dh2-0005k0-Ki
-	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 09:13:45 +0000
-Date: Fri, 22 Oct 2010 10:39:52 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] drivers/mtd/devices/phram.c: Use KBUILD_MODNAME
-Message-ID: <20101022083952.GJ16783@logfs.org>
-References: <1287596362.1813.205.camel@Joe-Laptop>
-	<1287657452.2932.15.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1287657452.2932.15.camel@localhost>
-Cc: Joe Perches <joe@perches.com>, David Woodhouse <dwmw2@infradead.org>,
-	Joern Engel <joern@lazybastard.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
+	id 1P9EVn-0003eN-7x
+	for linux-mtd@lists.infradead.org; Fri, 22 Oct 2010 10:06:11 +0000
+From: Lei Wen <leiwen@marvell.com>
+To: Eric Miao <eric.y.miao@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	adrian.wenl@gmail.com
+Subject: [PATCH V3 0/6] pxa3xx_nand update series set
+Date: Fri, 22 Oct 2010 18:14:38 +0800
+Message-Id: <1287742484-4276-1-git-send-email-leiwen@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +20,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 21 October 2010 13:37:32 +0300, Artem Bityutskiy wrote:
-> On Wed, 2010-10-20 at 10:39 -0700, Joe Perches wrote:
-> > Use the more standard #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > No change in output strings.
-> > 
-> > Signed-off-by: Joe Perches <joe@perches.com>
-> 
-> Pushed to l2-mtd-2.6.git, thanks.
-
-Fine with me. (aka Acked-By:)
-
-Jörn
-
--- 
-"Error protection by error detection and correction."
--- from a university class
+[PATCH V3 1/6] pxa3xx_nand: make scan procedure more clear
+[PATCH V3 2/6] pxa3xx_nand: rework irq logic 
+[PATCH V3 3/6] pxa3xx_nand: discard wait_for_event,write_cmd,__readid function
+[PATCH V3 4/6] pxa3xx_nand: unify prepare command
+[PATCH V3 5/6] pxa3xx_nand: mtd scan id process could be defined by driver itself
+[PATCH V3 6/6] pxa3xx_nand: clean the keep configure code
