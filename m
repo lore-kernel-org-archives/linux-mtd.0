@@ -1,17 +1,22 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P9hne-0001vI-5j
-	for linux-mtd@lists.infradead.org; Sat, 23 Oct 2010 17:22:34 +0000
-Received: by wwb34 with SMTP id 34so2172093wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 23 Oct 2010 10:22:30 -0700 (PDT)
+Received: from mail03s-old.hostcenter.com ([195.186.64.160]
+	helo=mail03s.hostcenter.com)
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P9i2G-0002DD-Cm
+	for linux-mtd@lists.infradead.org; Sat, 23 Oct 2010 17:37:41 +0000
+Received: from 82-81.186-195.bluewin.ch (195.186.81.82)
+	by mail03s-old.hostcenter.com (RS ver 1.0.95vs) with SMTP id
+	0-040915455 for <linux-mtd@lists.infradead.org>;
+	Sat, 23 Oct 2010 19:37:35 +0200 (CEST)
+Message-ID: <20101023172830.10156.qmail@lxb03033.hostcenter.com>
 MIME-Version: 1.0
-Date: Sun, 24 Oct 2010 02:22:30 +0900
-Message-ID: <AANLkTinM24JAP+ZQwZub1sCzNsGiiizGbF0EQngWNP1m@mail.gmail.com>
-Subject: where is the guideline of the development of the mtd layer
-From: =?ISO-2022-JP?B?GyRCJD8kbSU1GyhC?= <tarosa.y@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="US-ASCII"
+From: "Mr.Thomas Woth" <thomwoth@expey.com>
+To: thomwoth@expey.com
+Subject: =?US-ASCII?B?IEkgbG9vayBmb3J3YXJkIHRvIGhlYXJpbmcgZnJvbSB5b3Ugc29vbg==?=
+Date: Sat, 23 Oct 2010 13:28:30 -0400
+Reply-To: "Mr.Thomas Woth" <thomwoth@w.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,10 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello. I am Tarosa.
-I am studying the mechanism of the ubi layer.
-Is there the one like the guideline of the development of the mtd
-layer anywhere?
-It concerns the interface of the mtd layer and the ubi layer.
-I am looking for it.
-My best regards.
+
+I believe we can do this transaction together in good faith. The share would be 30% for you and 70% for me. I would want to take care of the needy and less privileged, as this is my primary objective. It is a legacy of 4.4million pounds legacy. Upon the acknowledgement of this email, details of this proposal would be given to you. 
+
+I look forward to hearing from you soon 
+
+Yours truly 
+
+Mr. Thomas Woth
