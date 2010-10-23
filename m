@@ -1,22 +1,17 @@
-Received: from mail03b-old.hostcenter.com ([195.186.64.34]
-	helo=mail03b.hostcenter.com)
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1P9gX6-0004Ta-8p
-	for linux-mtd@lists.infradead.org; Sat, 23 Oct 2010 16:01:24 +0000
-Received: from lxb03033.hostcenter.com (195.186.81.82)
-	by mail03b-old.hostcenter.com (RS ver 1.0.95vs) with SMTP id
-	3-0478609553 for <linux-mtd@lists.infradead.org>;
-	Sat, 23 Oct 2010 17:59:13 +0200 (CEST)
-Message-ID: <20101023155239.28709.qmail@lxb03033.hostcenter.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1P9hne-0001vI-5j
+	for linux-mtd@lists.infradead.org; Sat, 23 Oct 2010 17:22:34 +0000
+Received: by wwb34 with SMTP id 34so2172093wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 23 Oct 2010 10:22:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="US-ASCII"
-From: "Mr.Thomas Woth" <thomaswoth@expey.com>
-To: thomaswoth@expey.com
-Subject: =?US-ASCII?B?IEkgbG9vayBmb3J3YXJkIHRvIGhlYXJpbmcgZnJvbSB5b3Ugc29vbg==?=
-Date: Sat, 23 Oct 2010 11:52:39 -0400
-Reply-To: "Mr.Thomas Woth" <thomas.woth@w.cn>
+Date: Sun, 24 Oct 2010 02:22:30 +0900
+Message-ID: <AANLkTinM24JAP+ZQwZub1sCzNsGiiizGbF0EQngWNP1m@mail.gmail.com>
+Subject: where is the guideline of the development of the mtd layer
+From: =?ISO-2022-JP?B?GyRCJD8kbSU1GyhC?= <tarosa.y@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +21,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-I believe we can do this transaction together in good faith. The share would be 30% for you and 70% for me. I would want to take care of the needy and less privileged, as this is my primary objective. It is a legacy of 4.4million pounds legacy. Upon the acknowledgement of this email, details of this proposal would be given to you. 
-
-I look forward to hearing from you soon 
-
-Yours truly 
-
-Mr. Thomas Woth
+Hello. I am Tarosa.
+I am studying the mechanism of the ubi layer.
+Is there the one like the guideline of the development of the mtd
+layer anywhere?
+It concerns the interface of the mtd layer and the ubi layer.
+I am looking for it.
+My best regards.
