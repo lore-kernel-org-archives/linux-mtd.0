@@ -1,14 +1,16 @@
-Subject: Re: [PATCH] mtd: add Broadcom BCM63xx image tag partition parser
+Subject: Re: [PATCH 1/2] MTD: generic FSMC NAND MTD driver
 From: David Woodhouse <dwmw2@infradead.org>
-To: Florian Fainelli <florian@openwrt.org>
-In-Reply-To: <201009121553.01374.florian@openwrt.org>
-References: <201009121553.01374.florian@openwrt.org>
+To: Linus Walleij <linus.walleij@stericsson.com>
+In-Reply-To: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
+References: <1284330922-3569-1-git-send-email-linus.walleij@stericsson.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 Oct 2010 00:11:49 +0100
-Message-ID: <1287961909.5674.15.camel@macbook.infradead.org>
+Date: Mon, 25 Oct 2010 00:28:20 +0100
+Message-ID: <1287962900.5674.21.camel@macbook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Viresh Kumar <viresh.kumar@st.com>, Rajeev Kumar <rajeev-dlh.kumar@st.com>,
+	Vipin Kumar <vipin.kumar@st.com>, Shiraz Hashim <shiraz.hashim@st.com>,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-09-12 at 15:52 +0200, Florian Fainelli wrote:
+On Mon, 2010-09-13 at 00:35 +0200, Linus Walleij wrote:
 > 
-> +       ret = master->read(master, master->erasesize, sizeof(struct bcm_tag),
-> +                                                       &retlen, (void *)buf);
-> +       if (retlen != sizeof(struct bcm_tag)) {
-> +               vfree(buf);
-> +               return -EIO;
-> +       }
+> +#define PARTITION(n, off, sz)  {.name = n, .offset = off, .size = sz}
 > +
-> +       sscanf(buf->kernel_address, "%u", &kerneladdr);
-> +       sscanf(buf->kernel_length, "%u", &kernellen);
-> +       sscanf(buf->total_length, "%u", &totallen);
-> +       tagversion = &(buf->tag_version[0]);
-> +       boardid = &(buf->board_id[0]);
-> +
-> +       printk(KERN_INFO PFX "CFE boot tag found with version %s "
-> +                               "and board type %s\n", tagversion, boardid); 
+> +/*
+> + * Default partition layout for small page(= 512 bytes) devices
+> + * Size for "Root file system" is updated in driver based on actual device size
+> + */
+> +static struct mtd_partition partition_info_16KB_blk[] = {
+> +       PARTITION("X-loader", 0, 4 * 0x4000),
+> +       PARTITION("U-Boot", 0x10000, 20 * 0x4000),
+> +       PARTITION("Kernel", 0x60000, 256 * 0x4000),
+> +       PARTITION("Root File System", 0x460000, 0),
+> +}; 
 
-Um, that looks easy to crash, given that you aren't even checking the
-CRC before you do this, and you aren't checking that any of these
-strings are actually NUL-terminated.
+Er, you use a macro just so that you can use order-dependent non-C99
+structure initialisation? You realise that this would do the same thing:
+ #define PARTITION(a,b,c) {a,c,b}
 
-I'm applying it as-is, since I'm extremely late -- I've been slacking.
-But please could I have a fix?
+And no, I don't think *that* would be a good idea either :)
+
+Please fix.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
