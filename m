@@ -1,18 +1,27 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mail-qy0-f170.google.com ([209.85.216.170])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAIaB-00066P-Sg
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 08:39:08 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
-	by co202.xi-lite.net (Postfix) with ESMTPS id DF7782602BA
+	id 1PAJBe-0002fb-D2
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 09:17:53 +0000
+Received: by qyk32 with SMTP id 32so1359614qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 11:05:58 +0200 (CEST)
-Message-ID: <4CC54223.2050401@parrot.com>
-Date: Mon, 25 Oct 2010 10:38:59 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+	Mon, 25 Oct 2010 02:17:46 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH] write bad block marker even with BBT
-Content-Type: multipart/mixed; boundary="------------060305050001030305010700"
+Sender: foxcore@gmail.com
+In-Reply-To: <AANLkTinRiF4rnrhKDO79Cp9L=3=oS8-fsw6Y-f+x9N9-@mail.gmail.com>
+References: <20101022154015.11097.94660.stgit@dev.siriade.com>
+	<20101022154030.11097.40767.stgit@dev.siriade.com>
+	<AANLkTinTpHtLRU_cXYsvc0EmBCcxDG+e1i9bY1Es7=fp@mail.gmail.com>
+	<AANLkTi=s1AbuKGALhb6zjbo5KTRaTVY8B2P3-PwnZvsm@mail.gmail.com>
+	<AANLkTinRiF4rnrhKDO79Cp9L=3=oS8-fsw6Y-f+x9N9-@mail.gmail.com>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Mon, 25 Oct 2010 11:17:25 +0200
+Message-ID: <AANLkTinyoLrwmu63USS6OQXEuF3YXob95v30hggvvuKx@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mtd: cfi_cmdset_0002: add CFI detection for SST
+	38VF640x chips
+To: yidong zhang <zhangyd6@gmail.com>
+Content-Type: multipart/mixed; boundary=00163646d6a819d0a504936d77b8
+Cc: fggs@terra.com.br, linux-mtd@lists.infradead.org, David.Woodhouse@intel.com,
+	Wolfram Sang <w.sang@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,59 +31,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------060305050001030305010700
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
+--00163646d6a819d0a504936d77b8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Add a new flag to force writing bad block marker if we use bad block table.
-This allow to solve problem where bootloader don't support reading BBT.
+2010/10/25 yidong zhang <zhangyd6@gmail.com>:
+> Oh, sorry, my mistake. I tested the patch right now. But it didn't
+> work, please the logs below.
+>
+> Amd/Fujitsu Extended Query Table at 0x0040
+> =C2=A0Unknown Amd/Fujitsu Extended Query version =C2=A0. =C2=A0(0xff/0xff=
+).
 
-Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
+This chip does not have a valid Major/MinorVersion.
+Could you please try the attached patch ?
 
---------------060305050001030305010700
-Content-Type: text/x-diff; name="mtd_btt.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="mtd_btt.diff"
+--=20
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index ddffe76..4d79a8d 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -396,7 +396,7 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- {
- 	struct nand_chip *chip = mtd->priv;
- 	uint8_t buf[2] = { 0, 0 };
--	int block, ret, i = 0;
-+	int block, ret = 0, i = 0;
- 
- 	if (chip->options & NAND_BBT_SCANLASTPAGE)
- 		ofs += mtd->erasesize - mtd->writesize;
-@@ -409,7 +409,12 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
- 	/* Do we have a flash based bad block table ? */
- 	if (chip->options & NAND_USE_FLASH_BBT)
- 		ret = nand_update_bbt(mtd, ofs);
--	else {
-+
-+	/* Write the bad block marker if we don't have BBT, or driver
-+	 * request it (in case the bootloader doesn't support reading it
-+	 * or we loose BBT).
-+	 */
-+	if (!(chip->options & NAND_USE_FLASH_BBT) || chip->options & NAND_WRITE_BB) {
- 		nand_get_device(chip, mtd, FL_WRITING);
- 
- 		/* Write to first two pages and to byte 1 and 6 if necessary.
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 102e12c..2efd2f9 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -215,6 +215,8 @@ typedef enum {
- #define NAND_OWN_BUFFERS	0x00040000
- /* Chip may not exist, so silence any errors in scan */
- #define NAND_SCAN_SILENT_NODEV	0x00080000
-+/* in case of NAND_USE_FLASH_BBT, write also bad block marker */
-+#define NAND_WRITE_BB	0x00100000
- 
- /* Options set by nand scan */
- /* Nand scan has allocated controller struct */
+--00163646d6a819d0a504936d77b8
+Content-Type: application/octet-stream; name="03-sst38vf640x.patch"
+Content-Disposition: attachment; filename="03-sst38vf640x.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gfp4uf7p0
 
---------------060305050001030305010700--
+bXRkOiBjZmlfY21kc2V0XzAwMDI6IGFkZCBDRkkgZGV0ZWN0aW9uIGZvciBTU1QgMzhWRjY0MHgg
+Y2hpcHMKCkZyb206IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgoKQWRkIHN1
+cHBvcnQgZm9yIFNTVDM4VkY2NDB4IGNoaXBzIGluIENGSSBtb2RlLgoKU2lnbmVkLW9mZi1ieTog
+R3VpbGxhdW1lIExFQ0VSRiA8Z2xlY2VyZkBnbWFpbC5jb20+ClNpZ25lZC1vZmYtYnk6IHlpZG9u
+ZyB6aGFuZyA8emhhbmd5ZDZAZ21haWwuY29tPgotLS0KIGRyaXZlcnMvbXRkL2NoaXBzL2NmaV9j
+bWRzZXRfMDAwMi5jIHwgICAyMyArKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlcyBjaGFu
+Z2VkLCAyMyBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2Nt
+ZHNldF8wMDAyLmMKaW5kZXggYTM1OTk2Ny4uMWJkNTY4YiAxMDA2NDQKLS0tIGEvZHJpdmVycy9t
+dGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2Nt
+ZHNldF8wMDAyLmMKQEAgLTI5Niw2ICsyOTYsMjEgQEAgc3RhdGljIHZvaWQgZml4dXBfc3N0Mzl2
+Zl9yZXZfYihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgdm9pZCAqcGFyYW0pCiAJc2VjdG9yX2VyYXNl
+X2NtZCA9IENNRCgweDUwKTsKIH0KIAorc3RhdGljIHZvaWQgZml4dXBfc3N0Mzh2ZjY0MHhfc2Vj
+dG9yc2l6ZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgdm9pZCAqcGFyYW0pCit7CisJc3RydWN0IG1h
+cF9pbmZvICptYXAgPSBtdGQtPnByaXY7CisJc3RydWN0IGNmaV9wcml2YXRlICpjZmkgPSBtYXAt
+PmZsZHJ2X3ByaXY7CisKKwlmaXh1cF9zc3QzOXZmX3Jldl9iKG10ZCwgcGFyYW0pOworCisJLyoK
+KwkgKiBDRkkgcmVwb3J0cyAxMDI0IHNlY3RvcnMgKDB4MDNmZiArMSkgb2YgNjRLQnl0ZXMgKDB4
+MDEwMCAqMjU2KSB3aGVyZQorCSAqIGl0IHNob3VsZCByZXBvcnQgYSBzaXplIG9mIDhLQnl0ZXMg
+KDB4MDAyMCAqMjU2KS4KKwkgKi8KKwljZmktPmNmaXEtPkVyYXNlUmVnaW9uSW5mb1swXSA9IDB4
+MDAyMDAzZmY7CisJcHJfd2FybmluZygiJXM6IEJhZCAzOFZGNjQweCBDRkkgZGF0YSwgYWRqdXN0
+IHNlY3RvciBzaXplIGZyb20gNjQgdG8gOEtCeXRlc1xuIiwgbXRkLT5uYW1lKTsKK30KKwogc3Rh
+dGljIHZvaWQgZml4dXBfczI5Z2wwNjRuX3NlY3RvcnMoc3RydWN0IG10ZF9pbmZvICptdGQsIHZv
+aWQgKnBhcmFtKQogewogCXN0cnVjdCBtYXBfaW5mbyAqbWFwID0gbXRkLT5wcml2OwpAQCAtMzQ3
+LDYgKzM2MiwxMCBAQCBzdGF0aWMgc3RydWN0IGNmaV9maXh1cCBjZmlfZml4dXBfdGFibGVbXSA9
+IHsKIAl7IENGSV9NRlJfQU1ELCAweDEzMDEsIGZpeHVwX3MyOWdsMDY0bl9zZWN0b3JzLCBOVUxM
+LCB9LAogCXsgQ0ZJX01GUl9BTUQsIDB4MWEwMCwgZml4dXBfczI5Z2wwMzJuX3NlY3RvcnMsIE5V
+TEwsIH0sCiAJeyBDRklfTUZSX0FNRCwgMHgxYTAxLCBmaXh1cF9zMjlnbDAzMm5fc2VjdG9ycywg
+TlVMTCwgfSwKKwl7IENGSV9NRlJfU1NULCAweDUzNkEsIGZpeHVwX3NzdDM4dmY2NDB4X3NlY3Rv
+cnNpemUsIE5VTEwsIH0sIC8qIFNTVDM4VkY2NDAyICovCisJeyBDRklfTUZSX1NTVCwgMHg1MzZC
+LCBmaXh1cF9zc3QzOHZmNjQweF9zZWN0b3JzaXplLCBOVUxMLCB9LCAvKiBTU1QzOFZGNjQwMSAq
+LworCXsgQ0ZJX01GUl9TU1QsIDB4NTM2QywgZml4dXBfc3N0Mzh2ZjY0MHhfc2VjdG9yc2l6ZSwg
+TlVMTCwgfSwgLyogU1NUMzhWRjY0MDQgKi8KKwl7IENGSV9NRlJfU1NULCAweDUzNkQsIGZpeHVw
+X3NzdDM4dmY2NDB4X3NlY3RvcnNpemUsIE5VTEwsIH0sIC8qIFNTVDM4VkY2NDAzICovCiAjaWYg
+IUZPUkNFX1dPUkRfV1JJVEUKIAl7IENGSV9NRlJfQU5ZLCBDRklfSURfQU5ZLCBmaXh1cF91c2Vf
+d3JpdGVfYnVmZmVycywgTlVMTCwgfSwKICNlbmRpZgpAQCAtMzc3LDYgKzM5NiwxMCBAQCBzdGF0
+aWMgdm9pZCBjZmlfZml4dXBfbWFqb3JfbWlub3Ioc3RydWN0IGNmaV9wcml2YXRlICpjZmksCiAJ
+aWYgKGNmaS0+bWZyID09IENGSV9NRlJfU0FNU1VORyAmJiBjZmktPmlkID09IDB4MjU3ZSAmJgog
+CSAgICBleHRwLT5NYWpvclZlcnNpb24gPT0gJzAnKQogCQlleHRwLT5NYWpvclZlcnNpb24gPSAn
+MSc7CisJaWYgKGNmaS0+bWZyID09IENGSV9NRlJfU1NUICYmIChjZmktPmlkID4+IDQpID09IDB4
+MDUzNikgeworCQlleHRwLT5NYWpvclZlcnNpb24gPSAnMSc7CisJCWV4dHAtPk1pbm9yVmVyc2lv
+biA9ICcwJzsKKwl9CiB9CiAKIHN0cnVjdCBtdGRfaW5mbyAqY2ZpX2NtZHNldF8wMDAyKHN0cnVj
+dCBtYXBfaW5mbyAqbWFwLCBpbnQgcHJpbWFyeSkK
+--00163646d6a819d0a504936d77b8--
