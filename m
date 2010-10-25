@@ -1,24 +1,22 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAT8Q-0005Kr-7p
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 19:55:10 +0000
-Received: by wyf22 with SMTP id 22so3840271wyf.36
+	id 1PATvl-00068T-7Y
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 20:46:09 +0000
+Received: by ewy19 with SMTP id 19so1860749ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 12:55:08 -0700 (PDT)
+	Mon, 25 Oct 2010 13:46:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1288034427.1865.9.camel@brekeke>
-References: <1287645577-13538-1-git-send-email-computersforpeace@gmail.com>
-	<1287645577-13538-3-git-send-email-computersforpeace@gmail.com>
-	<1288034427.1865.9.camel@brekeke>
+In-Reply-To: <1288033416.1865.2.camel@brekeke>
+References: <201010211643.33332.manningc2@actrix.gen.nz>
+	<1288033416.1865.2.camel@brekeke>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 25 Oct 2010 15:54:45 -0400
-Message-ID: <AANLkTikG52xr1sj9TabRckrCOLk9Np=PgsSidXR+TyZ6@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mtd-utils: nanddump: add 64-bit support,
-	utilize libmtd
+Date: Mon, 25 Oct 2010 16:45:46 -0400
+Message-ID: <AANLkTikd9uTV+8bRhjKt8P0vXC6p0FUbWd=bb6k2FGKi@mail.gmail.com>
+Subject: Re: Issues with ubi utils Makefile
 To: dedekind1@gmail.com
 Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,10 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 25, 2010 at 15:20, Artem Bityutskiy wrote:
-> Mike, thanks for reviewing. You did not provide formal "Reviewed-by"
-> though, so I did not add this tag, assuming you did this for purposes,
-> because for other patches you provide ready to copy-paste tags.
+On Mon, Oct 25, 2010 at 15:03, Artem Bityutskiy wrote:
+> Commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e broke 'make install'.
+> Before that commit, $DESTDIR was undefined, so =C2=A0${DESTDIR}/${SBINDIR=
+}
+> was /usr/sbin, and after the commit $DESTDIR became /usr/local, so
+> ${DESTDIR}/${SBINDIR} became /usr/local//usr/sbin, which is wrong.
 
-i'm not in the habit of using that tag, so i dont remember to post it
+that isnt really true.  DESTDIR had value in makefiles before my changes.
+
+> Fix this by making $DESTDIR become the distination directory of installin=
+g,
+> i.e. 'DESTDIR ?=3D /usr' and making SBINDIR become just 'sbin'.
+
+i'd rather we change DESTDIR to match the standard -- it's a "root"
+prefix only.  so the default should be:
+DESTDIR ?=3D
 -mike
