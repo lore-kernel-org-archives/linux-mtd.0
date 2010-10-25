@@ -1,25 +1,26 @@
-Received: from mail-qy0-f170.google.com ([209.85.216.170])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAI9g-0005IU-DP
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 08:11:45 +0000
-Received: by qyk32 with SMTP id 32so1327563qyk.15
+	id 1PAIZn-00065i-DT
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 08:38:44 +0000
+Received: by fxm15 with SMTP id 15so2003162fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 01:11:43 -0700 (PDT)
+	Mon, 25 Oct 2010 01:38:40 -0700 (PDT)
 MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <20101023102449.GB31623@pengutronix.de>
+In-Reply-To: <AANLkTi=s1AbuKGALhb6zjbo5KTRaTVY8B2P3-PwnZvsm@mail.gmail.com>
 References: <20101022154015.11097.94660.stgit@dev.siriade.com>
-	<20101022154020.11097.4024.stgit@dev.siriade.com>
-	<20101023102449.GB31623@pengutronix.de>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Mon, 25 Oct 2010 10:11:21 +0200
-Message-ID: <AANLkTim0ZnKoOmP3ZurS-wgZWTuB6QD5tXnYRsfyXqip@mail.gmail.com>
-Subject: Re: [PATCH 2/4] mtd: cfi_cmdset_0002: make sector erase command
-	variable
-To: Wolfram Sang <w.sang@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: zhangyd6@gmail.com, fggs@terra.com.br, linux-mtd@lists.infradead.org,
-	David.Woodhouse@intel.com
+	<20101022154030.11097.40767.stgit@dev.siriade.com>
+	<AANLkTinTpHtLRU_cXYsvc0EmBCcxDG+e1i9bY1Es7=fp@mail.gmail.com>
+	<AANLkTi=s1AbuKGALhb6zjbo5KTRaTVY8B2P3-PwnZvsm@mail.gmail.com>
+Date: Mon, 25 Oct 2010 16:38:38 +0800
+Message-ID: <AANLkTinRiF4rnrhKDO79Cp9L=3=oS8-fsw6Y-f+x9N9-@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mtd: cfi_cmdset_0002: add CFI detection for SST
+	38VF640x chips
+From: yidong zhang <zhangyd6@gmail.com>
+To: Guillaume LECERF <glecerf@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: fggs@terra.com.br, linux-mtd@lists.infradead.org, David.Woodhouse@intel.com,
+	Wolfram Sang <w.sang@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/10/23 Wolfram Sang <w.sang@pengutronix.de>:
->> +static map_word sector_erase_cmd = CMD(0x30);
+On Mon, Oct 25, 2010 at 4:09 PM, Guillaume LECERF <glecerf@gmail.com> wrote=
+:
+> 2010/10/25 yidong zhang <zhangyd6@gmail.com>:
+>> The SST38VF640x chips have no Extended Query table. I think we should
+>> move them to the
+>> =A0cfi_nopri_fixup_table.
 >
-> Uh? A static one? Why not per device?
+> According to the datasheet [1], it has.
+>
+> [1] http://www.sst.com/dotAsset/39749.pdf, table 13
 
-Hi Wolfram.
-I knew it was ugly, but where would you store this value ?
+Oh, sorry, my mistake. I tested the patch right now. But it didn't
+work, please the logs below.
 
-> I'd also suggest to fold the next patch into this one, so the need for the
-> change is more obvious.
 
-Done locally.
+Amd/Fujitsu Extended Query Table at 0x0040
+  Unknown Amd/Fujitsu Extended Query version  .  (0xff/0xff).
 
--- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+
+> --
+> Guillaume LECERF
+> GeeXboX developer - www.geexbox.org
+>
