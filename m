@@ -1,25 +1,25 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAC7R-00068S-L3
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 01:45:02 +0000
-Received: by bwz5 with SMTP id 5so2609279bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 24 Oct 2010 18:44:58 -0700 (PDT)
-Subject: Re: [PATCH 3/5] MTD: blktrans: fix a race vs kthread_stop.
-From: Maxim Levitsky <maximlevitsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1287966711.5674.26.camel@macbook.infradead.org>
-References: <1287156047-17439-1-git-send-email-maximlevitsky@gmail.com>
-	<1287156047-17439-4-git-send-email-maximlevitsky@gmail.com>
-	<1287966711.5674.26.camel@macbook.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 Oct 2010 03:44:54 +0200
-Message-ID: <1287971094.5205.11.camel@maxim-laptop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	Maxim Levitsky <maximlevisky@gmail.com>,
-	Maciej Rutecki <maciej.rutecki@gmail.com>
+From: "G, Manjunath Kondaiah" <manjugk@ti.com>
+To: David Woodhouse <dwmw2@infradead.org>, "Menon, Nishanth" <nm@ti.com>
+Date: Mon, 25 Oct 2010 11:04:57 +0530
+Subject: RE: [PATCH v2 09/10] OMAP2/3: Convert write/read functions to raw
+	read/write
+Message-ID: <E0D41E29EB0DAC4E9F3FF173962E9E9402DBDDEFAA@dbde02.ent.ti.com>
+References: <1285063280-4057-1-git-send-email-manjugk@ti.com>
+	<1285063280-4057-10-git-send-email-manjugk@ti.com>
+	<7A436F7769CA33409C6B44B358BFFF0C014F74831E@dlee02.ent.ti.com>
+	<20101007185630.GA26435@n2100.arm.linux.org.uk>
+	<4CAE2475.4090607@ti.com>
+	<1287964909.5674.22.camel@macbook.infradead.org>
+In-Reply-To: <1287964909.5674.22.camel@macbook.infradead.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-25 at 01:31 +0100, David Woodhouse wrote:
-> On Fri, 2010-10-15 at 17:20 +0200, Maxim Levitsky wrote:
-> > There is small race window that could make kthread_stop hang forever.
-> > I found that while hacking the IR subsystem.
-> > 
-> > Signed-off-by: Maxim Levitsky <maximlevisky@gmail.com>
-> > ---
-> >  drivers/mtd/mtd_blkdevs.c |    4 ++++
-> >  1 files changed, 4 insertions(+), 0 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-> > index 040c2d9..a919587 100644
-> > --- a/drivers/mtd/mtd_blkdevs.c
-> > +++ b/drivers/mtd/mtd_blkdevs.c
-> > @@ -133,6 +133,10 @@ static int mtd_blktrans_thread(void *arg)
-> >  
-> >  		if (!req && !(req = blk_fetch_request(rq))) {
-> >  			set_current_state(TASK_INTERRUPTIBLE);
-> > +
-> > +			if (kthread_should_stop())
-> > +				set_current_state(TASK_RUNNING);
-> > +
-> >  			spin_unlock_irq(rq->queue_lock);
-> >  			schedule();
-> >  			spin_lock_irq(rq->queue_lock);
-> 
-> 
-> Shouldn't we add a break in there too, so it immediately breaks out of
-> the loop (with the lock held)?
-It doesn't matter here, as schedule() won't make task sleep, so the
-thread will break at next iteration.
-
-
-Best regards
-	Maxim Levitsky
+RGF2aWQsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogRGF2aWQgV29v
+ZGhvdXNlIFttYWlsdG86ZHdtdzJAaW5mcmFkZWFkLm9yZ10gDQo+IFNlbnQ6IE1vbmRheSwgT2N0
+b2JlciAyNSwgMjAxMCA1OjMyIEFNDQo+IFRvOiBNZW5vbiwgTmlzaGFudGgNCj4gQ2M6IFJ1c3Nl
+bGwgS2luZyAtIEFSTSBMaW51eDsgRywgTWFuanVuYXRoIEtvbmRhaWFoOyANCj4gbGludXgtb21h
+cEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnOyANCj4gbGlu
+dXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0gg
+djIgMDkvMTBdIE9NQVAyLzM6IENvbnZlcnQgd3JpdGUvcmVhZCANCj4gZnVuY3Rpb25zIHRvIHJh
+dyByZWFkL3dyaXRlDQo+IA0KPiBPbiBUaHUsIDIwMTAtMTAtMDcgYXQgMTQ6NTAgLTA1MDAsIE5p
+c2hhbnRoIE1lbm9uIHdyb3RlOg0KPiA+IG15IGNvbW1lbnQgYmVpbmcgdGhhdCBieSBtb3Zpbmcg
+e3JlYWQsd3JpdGV9W3dsYl0gdG8gX19yYXcgdmVyc2lvbnMgDQo+ID4gZG9udCBzb2x2ZSB0aGUg
+cmVhbCBpc3N1ZSBvZiBuYW1lc3BhY2UgaGVyZS4gZml4IHNob3VsZCBiZSBpbiANCj4gPiBhcmNo
+L2FybS9pbmNsdWRlL2FzbS9pby5oIElNSE8uIHNvIHRoYXQgdGhlcmUgYXJlIG5vIA0KPiBvdmVy
+bGFwcyBhcyB0aGlzLg0KPiANCj4gSW5kZWVkLiBUaGlzIHBhdGNoIGlzIGNvbXBsZXRlIG5vbnNl
+bnNlLg0KDQpub25zZW5zZT8gVGhlcmUgYXJlIHR3byB0eXBlcyBvZiBmaXhlcyBwcm9wb3NlZCB0
+byBmaXggdGhlc2Ugc3BhcnNlIHdhcm5pbmdzLg0KMS4gd2l0aCB0aGlzIHBhdGNoDQoyLiBmaXhp
+bmcgaW4gaW8uaA0KaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8yNTAxNzEvDQoN
+CjFzdCBvcHRpb24gaXMgYWxyZWFkeSBtZXJnZWQgd2l0aCAyLjYuMzcgbWVyZ2Ugd2luZG93Lg0K
+DQpJZiAyIGdldCBhY2NlcHRlZCwgYWxsIF9fcmF3X3JlYWQvd3JpdGUgd2lsbCBnZXQgcmVwbGFj
+ZWQgd2l0aCByZWFkbC93cml0ZWwuDQoNCkFwYXJ0IGZyb20gdGhvc2UgdHdvLCBkbyB5b3UgaGF2
+ZSBhbnkgb3RoZXIgYWx0ZXJuYXRlIGlkZWEgdG8gZml4IHRoZXNlIHNwYXJzZSB3YXJuaW5ncz8N
+Cg0KLU1hbmp1bmF0aA==
