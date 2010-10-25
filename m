@@ -1,22 +1,26 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-gw0-f49.google.com ([74.125.83.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAI6x-0004xB-K7
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 08:08:56 +0000
-Received: by bwz5 with SMTP id 5so2762146bwz.36
+	id 1PAI82-00054k-Sp
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 08:10:04 +0000
+Received: by gwj17 with SMTP id 17so2581852gwj.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 01:08:54 -0700 (PDT)
-Subject: Re: [RFC] write bad block marker even with BBT
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4CC1A5EE.9080605@parrot.com>
-References: <4CC1A5EE.9080605@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 Oct 2010 11:05:45 +0300
-Message-ID: <1287993945.2224.9.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Mon, 25 Oct 2010 01:10:00 -0700 (PDT)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <AANLkTinTpHtLRU_cXYsvc0EmBCcxDG+e1i9bY1Es7=fp@mail.gmail.com>
+References: <20101022154015.11097.94660.stgit@dev.siriade.com>
+	<20101022154030.11097.40767.stgit@dev.siriade.com>
+	<AANLkTinTpHtLRU_cXYsvc0EmBCcxDG+e1i9bY1Es7=fp@mail.gmail.com>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Mon, 25 Oct 2010 10:09:39 +0200
+Message-ID: <AANLkTi=s1AbuKGALhb6zjbo5KTRaTVY8B2P3-PwnZvsm@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mtd: cfi_cmdset_0002: add CFI detection for SST
+	38VF640x chips
+To: yidong zhang <zhangyd6@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: fggs@terra.com.br, linux-mtd@lists.infradead.org, David.Woodhouse@intel.com,
+	w.sang@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index ddffe76..71052d0 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -409,7 +409,10 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
->  	/* Do we have a flash based bad block table ? */
->  	if (chip->options & NAND_USE_FLASH_BBT)
->  		ret = nand_update_bbt(mtd, ofs);
-> -	else {
-> +	/* put also the bad block marker in case we loose BBT or
-> +	   the bootloader doesn't support reading it
-> +	 */
+2010/10/25 yidong zhang <zhangyd6@gmail.com>:
+> The SST38VF640x chips have no Extended Query table. I think we should
+> move them to the
+> =C2=A0cfi_nopri_fixup_table.
 
-Nitpick: please, use kernel commenting style:
-/*
- * Multi-line
- * comment
- */
+According to the datasheet [1], it has.
 
-> +	{
->  		nand_get_device(chip, mtd, FL_WRITING);
-
-I think this makes sense, but this may break some setups, so this should
-be yet another chip->option.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+[1] http://www.sst.com/dotAsset/39749.pdf, table 13
+--=20
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
