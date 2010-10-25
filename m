@@ -1,26 +1,17 @@
-Subject: RE: [PATCH v2 09/10] OMAP2/3: Convert write/read functions to raw
-	read/write
+Subject: Re: [PATCH] jffs2: Do not assume erase will fail
 From: David Woodhouse <dwmw2@infradead.org>
-To: "G, Manjunath Kondaiah" <manjugk@ti.com>
-In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9402DBDDEFAA@dbde02.ent.ti.com>
-References: <1285063280-4057-1-git-send-email-manjugk@ti.com>
-	<1285063280-4057-10-git-send-email-manjugk@ti.com>
-	<7A436F7769CA33409C6B44B358BFFF0C014F74831E@dlee02.ent.ti.com>
-	<20101007185630.GA26435@n2100.arm.linux.org.uk>
-	<4CAE2475.4090607@ti.com>
-	<1287964909.5674.22.camel@macbook.infradead.org>
-	<E0D41E29EB0DAC4E9F3FF173962E9E9402DBDDEFAA@dbde02.ent.ti.com>
+To: dedekind1@gmail.com
+In-Reply-To: <1287993709.2224.6.camel@localhost>
+References: <1286468986-24627-1-git-send-email-Joakim.Tjernlund@transmode.se>
+	<1287965485.5674.25.camel@macbook.infradead.org>
+	<1287993709.2224.6.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 Oct 2010 11:11:30 +0100
-Message-ID: <1288001490.26820.46.camel@i7.infradead.org>
+Date: Mon, 25 Oct 2010 11:56:48 +0100
+Message-ID: <1288004208.26820.57.camel@i7.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Menon, Nishanth" <nm@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org,
+	Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,48 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-25 at 11:04 +0530, G, Manjunath Kondaiah wrote:
-> David,
+On Mon, 2010-10-25 at 11:01 +0300, Artem Bityutskiy wrote:
 > 
-> > -----Original Message-----
-> > From: David Woodhouse [mailto:dwmw2@infradead.org] 
-> > Sent: Monday, October 25, 2010 5:32 AM
-> > To: Menon, Nishanth
-> > Cc: Russell King - ARM Linux; G, Manjunath Kondaiah; 
-> > linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; 
-> > linux-arm-kernel@lists.infradead.org
-> > Subject: Re: [PATCH v2 09/10] OMAP2/3: Convert write/read 
-> > functions to raw read/write
-> > 
-> > On Thu, 2010-10-07 at 14:50 -0500, Nishanth Menon wrote:
-> > > my comment being that by moving {read,write}[wlb] to __raw versions 
-> > > dont solve the real issue of namespace here. fix should be in 
-> > > arch/arm/include/asm/io.h IMHO. so that there are no 
-> > overlaps as this.
-> > 
-> > Indeed. This patch is complete nonsense.
-> 
-> nonsense? There are two types of fixes proposed to fix these sparse warnings.
-> 1. with this patch
-> 2. fixing in io.h
-> https://patchwork.kernel.org/patch/250171/
-> 
-> 1st option is already merged with 2.6.37 merge window.
-> 
-> If 2 get accepted, all __raw_read/write will get replaced with readl/writel.
-> 
-> Apart from those two, do you have any other alternate idea to fix these sparse warnings?
+> there are 2 patches which you seem to miss. I've re-based my l2 tree
+> against your today's mtd tree, and applied them on top. I've also
+> preserved this patch. Please, look at those. 
 
-The latter is obviously the better approach. The problem that sparse is
-complaining about is the fact that you have two nested C blocks, both of
-which contain a local variable called '__v'. By changing the variable
-names so that they're actually unique, we fix the real problem.
+The 'fix NAND pwrite in raw mode' patch is redundant -- the problem is
+fixed by Jon Povey's patch in commit cdcf12b2, which looks almost
+identical to the way I suggested it be fixed.
 
-The answer is not that *all* drivers which call cpu_to_le16(readw())
-must be changed, which is what you seem to have assumed. And you
-*certainly* can't change them to use __raw_readw(), which has
-*different* semantics (and endianness in some cases), without a clear
-comment in the changelog entry saying *why* that change was OK.
+The callback from m25p80 was dropped by its author, and rightly so.
+
+Thanks, again, for keeping track.
 
 -- 
 dwmw2
