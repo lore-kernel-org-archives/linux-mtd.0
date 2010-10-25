@@ -1,26 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from co202.xi-lite.net ([149.6.83.202])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAIZn-00065i-DT
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 08:38:44 +0000
-Received: by fxm15 with SMTP id 15so2003162fxm.36
+	id 1PAIaB-00066P-Sg
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 08:39:08 +0000
+Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
+	by co202.xi-lite.net (Postfix) with ESMTPS id DF7782602BA
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 01:38:40 -0700 (PDT)
+	Mon, 25 Oct 2010 11:05:58 +0200 (CEST)
+Message-ID: <4CC54223.2050401@parrot.com>
+Date: Mon, 25 Oct 2010 10:38:59 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=s1AbuKGALhb6zjbo5KTRaTVY8B2P3-PwnZvsm@mail.gmail.com>
-References: <20101022154015.11097.94660.stgit@dev.siriade.com>
-	<20101022154030.11097.40767.stgit@dev.siriade.com>
-	<AANLkTinTpHtLRU_cXYsvc0EmBCcxDG+e1i9bY1Es7=fp@mail.gmail.com>
-	<AANLkTi=s1AbuKGALhb6zjbo5KTRaTVY8B2P3-PwnZvsm@mail.gmail.com>
-Date: Mon, 25 Oct 2010 16:38:38 +0800
-Message-ID: <AANLkTinRiF4rnrhKDO79Cp9L=3=oS8-fsw6Y-f+x9N9-@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mtd: cfi_cmdset_0002: add CFI detection for SST
-	38VF640x chips
-From: yidong zhang <zhangyd6@gmail.com>
-To: Guillaume LECERF <glecerf@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: fggs@terra.com.br, linux-mtd@lists.infradead.org, David.Woodhouse@intel.com,
-	Wolfram Sang <w.sang@pengutronix.de>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH] write bad block marker even with BBT
+Content-Type: multipart/mixed; boundary="------------060305050001030305010700"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +22,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 25, 2010 at 4:09 PM, Guillaume LECERF <glecerf@gmail.com> wrote=
-:
-> 2010/10/25 yidong zhang <zhangyd6@gmail.com>:
->> The SST38VF640x chips have no Extended Query table. I think we should
->> move them to the
->> =A0cfi_nopri_fixup_table.
->
-> According to the datasheet [1], it has.
->
-> [1] http://www.sst.com/dotAsset/39749.pdf, table 13
+--------------060305050001030305010700
+Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Oh, sorry, my mistake. I tested the patch right now. But it didn't
-work, please the logs below.
+Add a new flag to force writing bad block marker if we use bad block table.
+This allow to solve problem where bootloader don't support reading BBT.
 
+Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.com>
 
-Amd/Fujitsu Extended Query Table at 0x0040
-  Unknown Amd/Fujitsu Extended Query version  .  (0xff/0xff).
+--------------060305050001030305010700
+Content-Type: text/x-diff; name="mtd_btt.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline; filename="mtd_btt.diff"
 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index ddffe76..4d79a8d 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -396,7 +396,7 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ {
+ 	struct nand_chip *chip = mtd->priv;
+ 	uint8_t buf[2] = { 0, 0 };
+-	int block, ret, i = 0;
++	int block, ret = 0, i = 0;
+ 
+ 	if (chip->options & NAND_BBT_SCANLASTPAGE)
+ 		ofs += mtd->erasesize - mtd->writesize;
+@@ -409,7 +409,12 @@ static int nand_default_block_markbad(struct mtd_info *mtd, loff_t ofs)
+ 	/* Do we have a flash based bad block table ? */
+ 	if (chip->options & NAND_USE_FLASH_BBT)
+ 		ret = nand_update_bbt(mtd, ofs);
+-	else {
++
++	/* Write the bad block marker if we don't have BBT, or driver
++	 * request it (in case the bootloader doesn't support reading it
++	 * or we loose BBT).
++	 */
++	if (!(chip->options & NAND_USE_FLASH_BBT) || chip->options & NAND_WRITE_BB) {
+ 		nand_get_device(chip, mtd, FL_WRITING);
+ 
+ 		/* Write to first two pages and to byte 1 and 6 if necessary.
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index 102e12c..2efd2f9 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -215,6 +215,8 @@ typedef enum {
+ #define NAND_OWN_BUFFERS	0x00040000
+ /* Chip may not exist, so silence any errors in scan */
+ #define NAND_SCAN_SILENT_NODEV	0x00080000
++/* in case of NAND_USE_FLASH_BBT, write also bad block marker */
++#define NAND_WRITE_BB	0x00100000
+ 
+ /* Options set by nand scan */
+ /* Nand scan has allocated controller struct */
 
-> --
-> Guillaume LECERF
-> GeeXboX developer - www.geexbox.org
->
+--------------060305050001030305010700--
