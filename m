@@ -1,20 +1,26 @@
-Received: from gw1.transmode.se ([213.115.205.20])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAJrv-00069m-2k
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 10:01:38 +0000
-In-Reply-To: <1288000201.26820.38.camel@i7.infradead.org>
-References: <1286468986-24627-1-git-send-email-Joakim.Tjernlund@transmode.se>	
-	<1287965485.5674.25.camel@macbook.infradead.org>
-	<OFC10FE113.61700EC9-ONC12577C7.002267AD-C12577C7.002576D4@transmode.se>
-	<1288000201.26820.38.camel@i7.infradead.org>
-Subject: Re: [PATCH] jffs2: Do not assume erase will fail
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <OFEC5B9F23.EE0D161D-ONC12577C7.0036D8F4-C12577C7.00370F7B@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Mon, 25 Oct 2010 12:01:24 +0200
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+Subject: RE: [PATCH v2 09/10] OMAP2/3: Convert write/read functions to raw
+	read/write
+From: David Woodhouse <dwmw2@infradead.org>
+To: "G, Manjunath Kondaiah" <manjugk@ti.com>
+In-Reply-To: <E0D41E29EB0DAC4E9F3FF173962E9E9402DBDDEFAA@dbde02.ent.ti.com>
+References: <1285063280-4057-1-git-send-email-manjugk@ti.com>
+	<1285063280-4057-10-git-send-email-manjugk@ti.com>
+	<7A436F7769CA33409C6B44B358BFFF0C014F74831E@dlee02.ent.ti.com>
+	<20101007185630.GA26435@n2100.arm.linux.org.uk>
+	<4CAE2475.4090607@ti.com>
+	<1287964909.5674.22.camel@macbook.infradead.org>
+	<E0D41E29EB0DAC4E9F3FF173962E9E9402DBDDEFAA@dbde02.ent.ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 25 Oct 2010 11:11:30 +0100
+Message-ID: <1288001490.26820.46.camel@i7.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: "Menon, Nishanth" <nm@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +30,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse <dwmw2@infradead.org> wrote on 2010/10/25 11:50:01:
->
-> On Mon, 2010-10-25 at 08:49 +0200, Joakim Tjernlund wrote:
-> > David Woodhouse <dwmw2@infradead.org> wrote on 2010/10/25 02:11:25:
-> > >
-> > > On Thu, 2010-10-07 at 18:29 +0200, Joakim Tjernlund wrote:
-> > > >
-> > > > Test if it did and then abort.
-> > > >
-> > > > Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> > > > ---
-> > > >  fs/jffs2/nodemgmt.c |    6 +++---
-> > > >  1 files changed, 3 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-> > > > index 694aa5b..49ee5de 100644
-> > > > --- a/fs/jffs2/nodemgmt.c
-> > > > +++ b/fs/jffs2/nodemgmt.c
-> > > > @@ -260,9 +260,9 @@ static int jffs2_find_nextblock(struct jffs2_sb_info *c)
-> > > >                 spin_lock(&c->erase_completion_lock);
-> > > >
-> > > >                 /* An erase may have failed, decreasing the
-> > > > -                  amount of free space available. So we must
-> > > > -                  restart from the beginning */
-> > > > -               return -EAGAIN;
-> > > > +                  amount of free space available. */
-> > > > +               if (list_empty(&c->free_list))
-> > > > +                       return -EAGAIN; /* restart from the beginning */
-> > >
-> > > Hm, but there could have been more than one erase pending (or in
-> > > progress). And if one fails and another succeeds then you could have a
-> > > non-empty free_list but you could *also* now have run short of
-> > > free/freeable space so that a userspace write should now receive
-> > > -ENOSPC.
-> >
-> > I don't see how my patch changes that, if !list_empty(&c->free_list)
-> > then you have at least one free block so you should not run into -ENOSPC
->
-> Not for jffs2_reserve_space_gc(), you're right. But for non-GC
-> allocations it's different -- jffs2_reserve_space() will only allow an
-> allocation if you have more than a certain amount of freeable space,
-> according to the type of operation. And that amount of freeable space
-> can be reduced if an erase fails.
+On Mon, 2010-10-25 at 11:04 +0530, G, Manjunath Kondaiah wrote:
+> David,
+> 
+> > -----Original Message-----
+> > From: David Woodhouse [mailto:dwmw2@infradead.org] 
+> > Sent: Monday, October 25, 2010 5:32 AM
+> > To: Menon, Nishanth
+> > Cc: Russell King - ARM Linux; G, Manjunath Kondaiah; 
+> > linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; 
+> > linux-arm-kernel@lists.infradead.org
+> > Subject: Re: [PATCH v2 09/10] OMAP2/3: Convert write/read 
+> > functions to raw read/write
+> > 
+> > On Thu, 2010-10-07 at 14:50 -0500, Nishanth Menon wrote:
+> > > my comment being that by moving {read,write}[wlb] to __raw versions 
+> > > dont solve the real issue of namespace here. fix should be in 
+> > > arch/arm/include/asm/io.h IMHO. so that there are no 
+> > overlaps as this.
+> > 
+> > Indeed. This patch is complete nonsense.
+> 
+> nonsense? There are two types of fixes proposed to fix these sparse warnings.
+> 1. with this patch
+> 2. fixing in io.h
+> https://patchwork.kernel.org/patch/250171/
+> 
+> 1st option is already merged with 2.6.37 merge window.
+> 
+> If 2 get accepted, all __raw_read/write will get replaced with readl/writel.
+> 
+> Apart from those two, do you have any other alternate idea to fix these sparse warnings?
 
-But jffs2_find_nextblock is only about finding ONE block, isn't it?
+The latter is obviously the better approach. The problem that sparse is
+complaining about is the fact that you have two nested C blocks, both of
+which contain a local variable called '__v'. By changing the variable
+names so that they're actually unique, we fix the real problem.
 
-     Jocke
+The answer is not that *all* drivers which call cpu_to_le16(readw())
+must be changed, which is what you seem to have assumed. And you
+*certainly* can't change them to use __raw_readw(), which has
+*different* semantics (and endianness in some cases), without a clear
+comment in the changelog entry saying *why* that change was OK.
+
+-- 
+dwmw2
