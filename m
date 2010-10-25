@@ -1,22 +1,23 @@
-Subject: Re: [PATCH 1/2] P4080/eLBC: Make Freescale elbc interrupt common
-	to elbc	devices
-From: David Woodhouse <dwmw2@infradead.org>
-To: "tiejun.chen" <tiejun.chen@windriver.com>
-In-Reply-To: <4CBC1775.6000706@windriver.com>
-References: <1287386552-10647-1-git-send-email-tie-fei.zang@freescale.com>
-	<4CBC0B95.9010300@windriver.com>
-	<3850A844E6A3854C827AC5C0BEC7B60A2B0708@zch01exm23.fsl.freescale.net>
-	<4CBC16FD.6030507@windriver.com>  <4CBC1775.6000706@windriver.com>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PASKd-0007GS-KS
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 19:03:49 +0000
+Received: by fxm15 with SMTP id 15so2653519fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Oct 2010 12:03:41 -0700 (PDT)
+Subject: Re: Issues with ubi utils Makefile
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Charles Manning <manningc2@actrix.gen.nz>, Mike Frysinger
+	<vapier.adi@gmail.com>
+In-Reply-To: <201010211643.33332.manningc2@actrix.gen.nz>
+References: <201010211643.33332.manningc2@actrix.gen.nz>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 Oct 2010 15:15:27 +0100
-Message-ID: <1288016127.5674.45.camel@macbook.infradead.org>
+Date: Mon, 25 Oct 2010 22:03:36 +0300
+Message-ID: <1288033416.1865.2.camel@brekeke>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Wood Scott-B07421 <B07421@freescale.com>, dedekind1@gmail.com,
-	Zang Roy-R61911 <r61911@freescale.com>,
-	Lan Chunhe-B25806 <B25806@freescale.com>,
-	linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, Gala Kumar-B11780 <B11780@freescale.com>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +27,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-18 at 17:46 +0800, tiejun.chen wrote:
+On Thu, 2010-10-21 at 16:43 +1300, Charles Manning wrote:
+> Hi All
 > 
-> >>> Looks you always iounmap(fsl_lbc_ctrl_dev->regs) on position 'err' but here
-> >>> of_iomap() is already failed you should skip iounmap() fsl_lbc_ctrl_dev->regs
-> >>> again. So you should improve that as the following on 'err', or layout 'err'
-> >>> in
-> >>> gain.
-> >>> ------
-> >>>     if(fsl_lbc_ctrl_dev->regs)
-> >>>             iounmap(fsl_lbc_ctrl_dev->regs);
-> >>>
-> >>> Tiejun
-> >> You are right!
-> >> How about
-> >>  
-> >>         if (!fsl_lbc_ctrl_dev->regs) {
-> >>                 dev_err(&dev->dev, "failed to get memory region\n");
-> >>                 kfree(fsl_lbc_ctrl_dev);
-> >>                 return -ENOMEM;
-> >>         }
-> > 
-> > Although this is a big problem, I prefer to return 'ENXIO' :)
->                 ^
->                 Typo: is not a ...... 
+> I'm getting some errors trying to mount a ubinized volume with a more recent 
+> kernel and think it might be due to problems in the ubi utils distributed 
+> with Ubuntu Meerkat.
+> 
+> I thus thought I'd build from git
+> 
+> When I do a make install from inside the mtd-utils/ubi-utils it tries to place 
+> the binaries in /usr/local//usr/sbin.
+> 
+> Same happens if I try make install from mtd-utils/
+> 
+> Is something broken or am I driving it incorrectly?
 
-My God! Why did you *both* repeat over 400 lines of patch, over and over
-again, just for this?
+Looks like Mike's commit broke it:
 
-Please, make sure you quote *only* what you actually need to quote for
-context. Don't make me implement a filter for the list which rejects
-messages that are more than 90% quotation.
+commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e
+Author: Mike Frysinger <vapier@gentoo.org>
+
+    Unify all common build system parts
+
+I've quickly cooked this fix, does it work for you? Mike, are you ok
+with this?
+
+>From 69148e5bb5b0aa546c097a76e293585b3a839e0c Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Mon, 25 Oct 2010 21:54:47 +0300
+Subject: [PATCH] mtd-utils: fix make install
+
+Commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e broke 'make install'.
+Before that commit, $DESTDIR was undefined, so  ${DESTDIR}/${SBINDIR}
+was /usr/sbin, and after the commit $DESTDIR became /usr/local, so
+${DESTDIR}/${SBINDIR} became /usr/local//usr/sbin, which is wrong.
+
+Fix this by making $DESTDIR become the distination directory of installing,
+i.e. 'DESTDIR ?= /usr' and making SBINDIR become just 'sbin'.
+
+While we are on it, fix $MANDIR similarly, and remove $PREFIX and
+$EXEC_PREFIX variables, which become unneeded.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Reported-by: Charles Manning <manningc2@actrix.gen.nz>
+---
+ common.mk |    9 +++------
+ 1 files changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/common.mk b/common.mk
+index a55c548..2e4452f 100644
+--- a/common.mk
++++ b/common.mk
+@@ -20,12 +20,9 @@ ifneq ($(WITHOUT_LARGEFILE), 1)
+   CPPFLAGS += -D_FILE_OFFSET_BITS=64
+ endif
+ 
+-DESTDIR ?= /usr/local
+-PREFIX=/usr
+-EXEC_PREFIX=$(PREFIX)
+-SBINDIR=$(EXEC_PREFIX)/sbin
+-MANDIR=$(PREFIX)/share/man
+-INCLUDEDIR=$(PREFIX)/include
++DESTDIR ?= /usr
++SBINDIR=sbin
++MANDIR=share/man
+ 
+ ifndef BUILDDIR
+ ifeq ($(origin CROSS),undefined)
+-- 
+1.7.2.3
 
 -- 
-dwmw2
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
