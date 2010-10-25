@@ -1,22 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PASKd-0007GS-KS
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 19:03:49 +0000
-Received: by fxm15 with SMTP id 15so2653519fxm.36
+	id 1PASVq-0001g5-NV
+	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 19:15:19 +0000
+Received: by vws2 with SMTP id 2so80281vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 12:03:41 -0700 (PDT)
-Subject: Re: Issues with ubi utils Makefile
+	Mon, 25 Oct 2010 12:15:17 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] mtd-utils: nanddump/nandwrite: style,
+	signed-ness, printing fixups
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Charles Manning <manningc2@actrix.gen.nz>, Mike Frysinger
-	<vapier.adi@gmail.com>
-In-Reply-To: <201010211643.33332.manningc2@actrix.gen.nz>
-References: <201010211643.33332.manningc2@actrix.gen.nz>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1287645577-13538-2-git-send-email-computersforpeace@gmail.com>
+References: <1287645577-13538-1-git-send-email-computersforpeace@gmail.com>
+	<1287645577-13538-2-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 25 Oct 2010 22:03:36 +0300
-Message-ID: <1288033416.1865.2.camel@brekeke>
+Date: Mon, 25 Oct 2010 22:15:12 +0300
+Message-ID: <1288034112.1865.7.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,76 +29,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-10-21 at 16:43 +1300, Charles Manning wrote:
-> Hi All
+On Thu, 2010-10-21 at 00:19 -0700, Brian Norris wrote:
+> There were some signed/unsigned integer comparisons. Their types were
+> changed for safety. Also, "strtol" was improperly used for unsigned
+> data types.
 > 
-> I'm getting some errors trying to mount a ubinized volume with a more recent 
-> kernel and think it might be due to problems in the ubi utils distributed 
-> with Ubuntu Meerkat.
+> Nanddump's pretty print options needed a slight reformat to prepare for
+> printing offsets that are more than 32 bits (8 hex characters) wide.
+> This prevents overlap of output and ensures that at least one space is
+> printed between hex and ascii printouts. Perhaps this could use some
+> better alignment in the future.
 > 
-> I thus thought I'd build from git
+> Other fixes:
+> * Corrected several simple spacing issues
+> * Changed indentation of some global variable declarations in
+>   order to prepare for the next patch, which makes those
+>   declarations longer
+> * Used macro for PRETTY_ROW_SIZE instead of constant 16
+> * Reformatted, edited a multi-line comment
+> * Removed some unnecessary casts
 > 
-> When I do a make install from inside the mtd-utils/ubi-utils it tries to place 
-> the binaries in /usr/local//usr/sbin.
-> 
-> Same happens if I try make install from mtd-utils/
-> 
-> Is something broken or am I driving it incorrectly?
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  nanddump.c  |   55 +++++++++++++++++++++++++++----------------------------
+>  nandwrite.c |   28 ++++++++++++++--------------
+>  2 files changed, 41 insertions(+), 42 deletions(-)
 
-Looks like Mike's commit broke it:
+Mike is right, it is much better to separate functional and cleanup
+changes, even split different clean-up changes into several patches.
+Maintaining this stuff and reviewing patches takes time, and splitting
+helps a lot. Let's push this patch but please, try to splint patches on
+more smaller pieces. Yes, it'll be more work for you, but less for me.
+But when submitters take more burden and maintainer less - the system
+scales better. Take into account that I'm doing this stuff just because
+I like MTD and do not like see people's patches lost, so little help in
+form of perfectly split micro-patches is appreciated.
 
-commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e
-Author: Mike Frysinger <vapier@gentoo.org>
-
-    Unify all common build system parts
-
-I've quickly cooked this fix, does it work for you? Mike, are you ok
-with this?
-
->From 69148e5bb5b0aa546c097a76e293585b3a839e0c Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Mon, 25 Oct 2010 21:54:47 +0300
-Subject: [PATCH] mtd-utils: fix make install
-
-Commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e broke 'make install'.
-Before that commit, $DESTDIR was undefined, so  ${DESTDIR}/${SBINDIR}
-was /usr/sbin, and after the commit $DESTDIR became /usr/local, so
-${DESTDIR}/${SBINDIR} became /usr/local//usr/sbin, which is wrong.
-
-Fix this by making $DESTDIR become the distination directory of installing,
-i.e. 'DESTDIR ?= /usr' and making SBINDIR become just 'sbin'.
-
-While we are on it, fix $MANDIR similarly, and remove $PREFIX and
-$EXEC_PREFIX variables, which become unneeded.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Reported-by: Charles Manning <manningc2@actrix.gen.nz>
----
- common.mk |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/common.mk b/common.mk
-index a55c548..2e4452f 100644
---- a/common.mk
-+++ b/common.mk
-@@ -20,12 +20,9 @@ ifneq ($(WITHOUT_LARGEFILE), 1)
-   CPPFLAGS += -D_FILE_OFFSET_BITS=64
- endif
- 
--DESTDIR ?= /usr/local
--PREFIX=/usr
--EXEC_PREFIX=$(PREFIX)
--SBINDIR=$(EXEC_PREFIX)/sbin
--MANDIR=$(PREFIX)/share/man
--INCLUDEDIR=$(PREFIX)/include
-+DESTDIR ?= /usr
-+SBINDIR=sbin
-+MANDIR=share/man
- 
- ifndef BUILDDIR
- ifeq ($(origin CROSS),undefined)
--- 
-1.7.2.3
+Pushed, thanks!
 
 -- 
 Best Regards,
