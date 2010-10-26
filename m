@@ -1,19 +1,32 @@
-Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAaWM-00018s-L8
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 03:48:25 +0000
-From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Frank Li <Frank.Li@freescale.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Content-Class: urn:content-classes:message
-Date: Tue, 26 Oct 2010 04:48:11 +0100
-Subject: RE: [PATCH 1/1] MTD: Fix MTD_MODE_RAW write fail
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EEF8EAC@Cloud.RL.local>
-In-Reply-To: <1288061660-23363-1-git-send-email-Frank.Li@freescale.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-out.m-online.net ([212.18.0.10])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PAcTY-0004wu-Nu
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 05:53:37 +0000
+Received: from frontend1.mail.m-online.net (unknown [192.168.8.180])
+	by mail-out.m-online.net (Postfix) with ESMTP id 225D41C00418
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
+Received: from diddl.denx.de (ppp-88-217-49-37.dynamic.mnet-online.de
+	[88.217.49.37])
+	by smtp-auth.mnet-online.de (Postfix) with ESMTPA id DA9A71C001FF
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
+Received: from gemini.denx.de (unknown [10.0.0.2])
+	by diddl.denx.de (Postfix) with ESMTP id BCA7B3364F87
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
+Received: from gemini.denx.de (localhost.localdomain [127.0.0.1])
+	by gemini.denx.de (Postfix) with ESMTP id B14FD152451
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
+To: linux-mtd@lists.infradead.org
+Subject: UBIFS: mount based on UUID?
+From: Wolfgang Denk <wd@denx.de>
 MIME-Version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+Date: Tue, 26 Oct 2010 07:53:32 +0200
+Message-Id: <20101026055332.B14FD152451@gemini.denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +36,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-linux-mtd-bounces@lists.infradead.org wrote:
-> mtdchar have not initilized all field of struct mtd_oob_ops
-> in mtd_write when mode is MTD_MODE_RAW.
->
-> function nand_do_write_ops
->         if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
->                 return -EINVAL;
->
-> ooboffs is not initilized at mtd_write.
-> So random data cause nand_do_write_ops return fail.
+Hi,
 
-Looks like you have found the same thing:
+is there any way to mount UBIFS based on the UUID like we can do for
+"normal" file systems, i. e. by using "UUID=..." instead of a device
+name in /etc/fstab ?
 
-http://lists.infradead.org/pipermail/linux-mtd/2010-September/032453.html
-http://lists.infradead.org/pipermail/linux-mtd/2010-October/032538.html
+I see there is a UUID in the file system's super block, but I can't
+see it is exposed to any sort of regular user interface.
 
-> Signed-off-by: Frank Li <Frank.Li@freescale.com>
-> ---
->  drivers/mtd/mtdchar.c |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
->
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index b7ed09c..58839fa 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -319,6 +319,7 @@ static ssize_t mtd_write(struct file
-> *file, const char __user *buf, size_t count
->                 case MTD_MODE_RAW:
->                 {
->                         struct mtd_oob_ops ops;
-> +                       memset(&ops, 0, sizeof(struct mtd_oob_ops));
->
->                         ops.mode =3D MTD_OOB_RAW;
->                         ops.datbuf =3D kbuf;
+Am I missing something?
 
+Best regards,
 
+Wolfgang Denk
 
---
-Jon Povey
-jon.povey@racelogic.co.uk
-
-Racelogic is a limited company registered in England. Registered number 274=
-3719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
-ks, MK18 1TB .
-
-The information contained in this electronic mail transmission is intended =
-by Racelogic Ltd for the use of the named individual or entity to which it =
-is directed and may contain information that is confidential or privileged.=
- If you have received this electronic mail transmission in error, please de=
-lete it from your system without copying or forwarding it, and notify the s=
-ender of the error by reply email so that the sender's address records can =
-be corrected. The views expressed by the sender of this communication do no=
-t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
-reserves the right to monitor e-mail communications passing through its net=
-work
+-- 
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+People with narrow minds usually have broad tongues.
