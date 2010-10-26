@@ -1,24 +1,27 @@
-Received: from mga02.intel.com ([134.134.136.20])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAgmW-0005Uw-A5
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 10:29:29 +0000
-Subject: Re: [PATCH 2 2/3] mtd: cfi_cmdset_0002: add CFI detection for SST
-	38VF640x chips
-From: David Woodhouse <david.woodhouse@intel.com>
-To: Wolfram Sang <w.sang@pengutronix.de>
-In-Reply-To: <20101026102548.GB31843@pengutronix.de>
-References: <20101026092626.5790.91523.stgit@dev.siriade.com>
-	<20101026092631.5790.95453.stgit@dev.siriade.com>
-	<20101026102548.GB31843@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 26 Oct 2010 11:29:17 +0100
-Message-ID: <1288088957.29264.24.camel@macbook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"zhangyd6@gmail.com" <zhangyd6@gmail.com>,
-	"fggs@terra.com.br" <fggs@terra.com.br>,
-	Guillaume LECERF <glecerf@gmail.com>
+	id 1PAgmh-0005VU-CI
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 10:29:40 +0000
+Received: by wwb34 with SMTP id 34so4964823wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Oct 2010 03:29:38 -0700 (PDT)
+MIME-Version: 1.0
+Sender: kyungmin78@gmail.com
+In-Reply-To: <1288085761.2227.40.camel@localhost>
+References: <1287841434-3349-1-git-send-email-eballetbo@gmail.com>
+	<1287841434-3349-2-git-send-email-eballetbo@gmail.com>
+	<1288085761.2227.40.camel@localhost>
+Date: Tue, 26 Oct 2010 19:29:38 +0900
+Message-ID: <AANLkTikKNNgnzYZ50XcB+TqEGs=RBXUet=L5PsVy+r02@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mtd: OneNAND: fix bufferram management when chip has
+	2-planes.
+From: Kyungmin Park <kyungmin.park@samsung.com>
+To: Artem.Bityutskiy@nokia.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: Enric Balletbo i Serra <eballetbo@gmail.com>, adrian.hunter@nokia.com,
+	linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+	dwmw2@infradead.org, m.szyprowski@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-10-26 at 11:25 +0100, Wolfram Sang wrote:
-> > +	/*
-> > +	 * CFI reports 1024 sectors (0x03ff +1) of 64KBytes (0x0100 *256) where
-> > +	 * it should report a size of 8KBytes (0x0020 *256).
-> 
-> Spaces after operators?
-> 
-> > +	 */
-> > +	cfi->cfiq->EraseRegionInfo[0] = 0x002003ff;
-> > +	pr_warning("%s: Bad 38VF640x CFI data, adjust sector size from 64 to 8KBytes\n", mtd->name);
-> 
-> Should be "adjusting", otherwise it sounds like a task for the user to do.
+On Tue, Oct 26, 2010 at 6:36 PM, Artem Bityutskiy
+<Artem.Bityutskiy@nokia.com> wrote:
+> On Sat, 2010-10-23 at 15:43 +0200, Enric Balletbo i Serra wrote:
+>> This patch adds code that I think was lost when it was applied the commi=
+t
+>> =C2=A0 5988af2319781bc8e0ce418affec4e09cfa77907 - mtd: Flex-OneNAND supp=
+ort
+>>
+>> Test case:
+>> =C2=A01. Stress a jffs2 filesystem using
+>> =C2=A0 =C2=A0 bonnie++ -u 0:0 -s 32 -m 16 -r 16
+>> =C2=A02. dmesg shows various 'Header CRC failed' errors like:
+>> =C2=A0 =C2=A0 Header CRC failed on REF_PRISTINE node at 0x1e81315c: Read=
+ 0x000000e0,
+>> =C2=A0 =C2=A0 calculated 0x564fc9e8
+>>
+>> Tested on IGEP v2 board with a Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x5=
+8)
+>> with 2 planes from Numonyx and CONFIG_MTD_ONENAND_2X_PROGRAM set to y
+>>
+>> Signed-off-by: Enric Balletbo i Serra <eballetbo@gmail.com>
+>
+> Kyungmin, would be nice to have your ack/nack.
+Sorry for late reply
 
-And s/KBytes/KiB/ while we're nitpicking.
+One more check, it seems to use the invalidate instead of update bufferram.
+In case of 2X PROGRAM, it always uses the BUFFERRAM0 so invalidate
+another bufferram.
 
--- 
-David Woodhouse                            Open Source Technology Centre
-David.Woodhouse@intel.com                              Intel Corporation
+Don't set the bufferram index.
+
+Thank you,
+Kyungmin Park
+>
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.html
+>
