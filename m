@@ -1,27 +1,22 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mga11.intel.com ([192.55.52.93])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAg8n-0003vf-Jw
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 09:48:26 +0000
-Received: by fxm15 with SMTP id 15so3314655fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Oct 2010 02:48:24 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] mtd-utils: nanddump: add 64-bit support,
-	utilize libmtd
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <AANLkTikG52xr1sj9TabRckrCOLk9Np=PgsSidXR+TyZ6@mail.gmail.com>
-References: <1287645577-13538-1-git-send-email-computersforpeace@gmail.com>
-	<1287645577-13538-3-git-send-email-computersforpeace@gmail.com>
-	<1288034427.1865.9.camel@brekeke>
-	<AANLkTikG52xr1sj9TabRckrCOLk9Np=PgsSidXR+TyZ6@mail.gmail.com>
+	id 1PAg8s-0003wJ-1L
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 09:48:31 +0000
+Subject: Re: [PATCH v3] mtd: cfi_cmdset_0002: make sector erase command
+	variable
+From: David Woodhouse <david.woodhouse@intel.com>
+To: Guillaume LECERF <glecerf@gmail.com>
+In-Reply-To: <20101026094523.6578.44863.stgit@dev.siriade.com>
+References: <20101026094523.6578.44863.stgit@dev.siriade.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 26 Oct 2010 12:45:11 +0300
-Message-ID: <1288086311.2227.44.camel@localhost>
+Date: Tue, 26 Oct 2010 10:48:24 +0100
+Message-ID: <1288086504.29264.22.camel@macbook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: "zhangyd6@gmail.com" <zhangyd6@gmail.com>,
+	"fggs@terra.com.br" <fggs@terra.com.br>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"w.sang@pengutronix.de" <w.sang@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-25 at 15:54 -0400, Mike Frysinger wrote:
-> On Mon, Oct 25, 2010 at 15:20, Artem Bityutskiy wrote:
-> > Mike, thanks for reviewing. You did not provide formal "Reviewed-by"
-> > though, so I did not add this tag, assuming you did this for purposes,
-> > because for other patches you provide ready to copy-paste tags.
+On Tue, 2010-10-26 at 10:45 +0100, Guillaume LECERF wrote:
+> Some old SST chips use 0x50 as sector erase command, instead
+> of 0x30. Make this value variable to handle such chips.
 > 
-> i'm not in the habit of using that tag, so i dont remember to post it
+> Signed-off-by: Guillaume LECERF <glecerf@gmail.com> 
 
-Well, you did answer with proper Acked-by recently. But if you do not
-provide tag, I cannot make it myself and add it to the patch, because
-you might not want it.
 
-Anyway, if you want to have your reviewed-by or acked by tags in any
-patch I deal with, send them explicitly. and I'll add them.
+Looks good. Let me know when it's tested :)
+
+Thanks.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+David Woodhouse                            Open Source Technology Centre
+David.Woodhouse@intel.com                              Intel Corporation
