@@ -1,17 +1,21 @@
-Received: from smtp1-g21.free.fr ([212.27.42.1])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAgGr-0004YG-Ft
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 09:56:46 +0000
-Subject: [PATCH] mtd: cfi_cmdset_0001: use defined value of
-	P_ID_INTEL_PERFORMANCE instead of hardcoded one
-To: linux-mtd@lists.infradead.org
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Tue, 26 Oct 2010 11:55:29 +0200
-Message-ID: <20101026095529.6964.80927.stgit@dev.siriade.com>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PAgf4-0005Af-Nc
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 10:21:47 +0000
+Date: Tue, 26 Oct 2010 12:21:40 +0200
+From: Wolfram Sang <w.sang@pengutronix.de>
+To: Guillaume LECERF <glecerf@gmail.com>
+Subject: Re: [PATCH v3] mtd: cfi_cmdset_0002: make sector erase command
+	variable
+Message-ID: <20101026102140.GA31843@pengutronix.de>
+References: <20101026094523.6578.44863.stgit@dev.siriade.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Cc: David.Woodhouse@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
+Content-Disposition: inline
+In-Reply-To: <20101026094523.6578.44863.stgit@dev.siriade.com>
+Cc: zhangyd6@gmail.com, fggs@terra.com.br, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 9e2b7e9..ad9268b 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1496,7 +1496,7 @@ static int __xipram do_write_oneword(struct map_info *map, struct flchip *chip,
- 
- 	switch (mode) {
- 	case FL_WRITING:
--		write_cmd = (cfi->cfiq->P_ID != 0x0200) ? CMD(0x40) : CMD(0x41);
-+		write_cmd = (cfi->cfiq->P_ID != P_ID_INTEL_PERFORMANCE) ? CMD(0x40) : CMD(0x41);
- 		break;
- 	case FL_OTP_WRITE:
- 		write_cmd = CMD(0xc0);
-@@ -1661,7 +1661,7 @@ static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
- 	cmd_adr = adr & ~(wbufsize-1);
- 
- 	/* Let's determine this according to the interleave only once */
--	write_cmd = (cfi->cfiq->P_ID != 0x0200) ? CMD(0xe8) : CMD(0xe9);
-+	write_cmd = (cfi->cfiq->P_ID != P_ID_INTEL_PERFORMANCE) ? CMD(0xe8) : CMD(0xe9);
- 
- 	mutex_lock(&chip->mutex);
- 	ret = get_chip(map, chip, cmd_adr, FL_WRITING);
+--y0ulUmNC+osPPQO6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Oct 26, 2010 at 11:45:23AM +0200, Guillaume LECERF wrote:
+> Some old SST chips use 0x50 as sector erase command, instead
+> of 0x30. Make this value variable to handle such chips.
+>=20
+> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+
+I like that :)
+
+Acked-by: Wolfram Sang <w.sang@pengutronix.de>
+
+--=20
+Pengutronix e.K.                           | Wolfram Sang                |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+
+--y0ulUmNC+osPPQO6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkzGq7QACgkQD27XaX1/VRtCGgCfap5hHo35ubW01Exn2qxKo3vU
+InEAoKznUJTP60UOrKZordMVK2sVx/Vi
+=krQZ
+-----END PGP SIGNATURE-----
+
+--y0ulUmNC+osPPQO6--
