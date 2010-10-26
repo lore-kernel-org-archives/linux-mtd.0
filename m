@@ -1,32 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAcTY-0004wu-Nu
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 05:53:37 +0000
-Received: from frontend1.mail.m-online.net (unknown [192.168.8.180])
-	by mail-out.m-online.net (Postfix) with ESMTP id 225D41C00418
+	id 1PAezx-0007IA-MU
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 08:35:14 +0000
+Received: by qwh6 with SMTP id 6so2383858qwh.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
-Received: from diddl.denx.de (ppp-88-217-49-37.dynamic.mnet-online.de
-	[88.217.49.37])
-	by smtp-auth.mnet-online.de (Postfix) with ESMTPA id DA9A71C001FF
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
-Received: from gemini.denx.de (unknown [10.0.0.2])
-	by diddl.denx.de (Postfix) with ESMTP id BCA7B3364F87
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
-Received: from gemini.denx.de (localhost.localdomain [127.0.0.1])
-	by gemini.denx.de (Postfix) with ESMTP id B14FD152451
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Oct 2010 07:53:32 +0200 (CEST)
-To: linux-mtd@lists.infradead.org
-Subject: UBIFS: mount based on UUID?
-From: Wolfgang Denk <wd@denx.de>
+	Tue, 26 Oct 2010 01:35:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-Date: Tue, 26 Oct 2010 07:53:32 +0200
-Message-Id: <20101026055332.B14FD152451@gemini.denx.de>
+Sender: foxcore@gmail.com
+In-Reply-To: <20101023102449.GB31623@pengutronix.de>
+References: <20101022154015.11097.94660.stgit@dev.siriade.com>
+	<20101022154020.11097.4024.stgit@dev.siriade.com>
+	<20101023102449.GB31623@pengutronix.de>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Tue, 26 Oct 2010 10:34:51 +0200
+Message-ID: <AANLkTikv7nO3uUBtO=1zrxiPuyGEzwu1HoUNMAF9SfVy@mail.gmail.com>
+Subject: Re: [PATCH 2/4] mtd: cfi_cmdset_0002: make sector erase command
+	variable
+To: Wolfram Sang <w.sang@pengutronix.de>
+Content-Type: multipart/mixed; boundary=20cf300fb101b212c2049380fc3f
+Cc: zhangyd6@gmail.com, fggs@terra.com.br, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,23 +29,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+--20cf300fb101b212c2049380fc3f
+Content-Type: text/plain; charset=UTF-8
 
-is there any way to mount UBIFS based on the UUID like we can do for
-"normal" file systems, i. e. by using "UUID=..." instead of a device
-name in /etc/fstab ?
+2010/10/23 Wolfram Sang <w.sang@pengutronix.de>:
+>> +static map_word sector_erase_cmd = CMD(0x30);
+>
+> Uh? A static one? Why not per device?
 
-I see there is a UUID in the file system's super block, but I can't
-see it is exposed to any sort of regular user interface.
-
-Am I missing something?
-
-Best regards,
-
-Wolfgang Denk
+Something like that ?
 
 -- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-People with narrow minds usually have broad tongues.
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
+
+--20cf300fb101b212c2049380fc3f
+Content-Type: application/octet-stream;
+	name="02-mtd-cfi_cmdset_0002-make-secto.patch"
+Content-Disposition: attachment;
+	filename="02-mtd-cfi_cmdset_0002-make-secto.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gfqiphm61
+
+bXRkOiBjZmlfY21kc2V0XzAwMDI6IG1ha2Ugc2VjdG9yIGVyYXNlIGNvbW1hbmQgdmFyaWFibGUK
+CkZyb206IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgoKU29tZSBvbGQgU1NU
+IGNoaXBzIHVzZSAweDUwIGFzIHNlY3RvciBlcmFzZSBjb21tYW5kLCBpbnN0ZWFkCm9mIDB4MzAu
+IE1ha2UgdGhpcyB2YWx1ZSB2YXJpYWJsZSB0byBoYW5kbGUgc3VjaCBjaGlwcy4KClNpZ25lZC1v
+ZmYtYnk6IEd1aWxsYXVtZSBMRUNFUkYgPGdsZWNlcmZAZ21haWwuY29tPgotLS0KIGRyaXZlcnMv
+bXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jIHwgICAxMCArKysrKystLS0tCiBkcml2ZXJzL210
+ZC9jaGlwcy9jZmlfcHJvYmUuYyAgICAgICB8ICAgIDIgKysKIGluY2x1ZGUvbGludXgvbXRkL2Nm
+aS5oICAgICAgICAgICAgIHwgICAgMSArCiAzIGZpbGVzIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygr
+KSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21k
+c2V0XzAwMDIuYyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jCmluZGV4IDNl
+NmM0N2IuLjQ4MTViODgzNCAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNl
+dF8wMDAyLmMKKysrIGIvZHJpdmVycy9tdGQvY2hpcHMvY2ZpX2NtZHNldF8wMDAyLmMKQEAgLTI5
+MSw2ICsyOTEsOCBAQCBzdGF0aWMgdm9pZCBmaXh1cF9zc3QzOXZmX3Jldl9iKHN0cnVjdCBtdGRf
+aW5mbyAqbXRkLCB2b2lkICpwYXJhbSkKIAogCWNmaS0+YWRkcl91bmxvY2sxID0gMHg1NTU7CiAJ
+Y2ZpLT5hZGRyX3VubG9jazIgPSAweDJBQTsKKworCWNmaS0+c2VjdG9yX2VyYXNlX2NtZCA9IDB4
+NTA7CiB9CiAKIHN0YXRpYyB2b2lkIGZpeHVwX3MyOWdsMDY0bl9zZWN0b3JzKHN0cnVjdCBtdGRf
+aW5mbyAqbXRkLCB2b2lkICpwYXJhbSkKQEAgLTY3NCw3ICs2NzYsNyBAQCBzdGF0aWMgaW50IGdl
+dF9jaGlwKHN0cnVjdCBtYXBfaW5mbyAqbWFwLCBzdHJ1Y3QgZmxjaGlwICpjaGlwLCB1bnNpZ25l
+ZCBsb25nIGFkcgogCQkJCSAqIHRoZXJlIHdhcyBhbiBlcnJvciAoc28gbGVhdmUgdGhlIGVyYXNl
+CiAJCQkJICogcm91dGluZSB0byByZWNvdmVyIGZyb20gaXQpIG9yIHdlIHRyeWluZyB0bwogCQkJ
+CSAqIHVzZSB0aGUgZXJhc2UtaW4tcHJvZ3Jlc3Mgc2VjdG9yLiAqLwotCQkJCW1hcF93cml0ZSht
+YXAsIENNRCgweDMwKSwgY2hpcC0+aW5fcHJvZ3Jlc3NfYmxvY2tfYWRkcik7CisJCQkJbWFwX3dy
+aXRlKG1hcCwgQ01EKGNmaS0+c2VjdG9yX2VyYXNlX2NtZCksIGNoaXAtPmluX3Byb2dyZXNzX2Js
+b2NrX2FkZHIpOwogCQkJCWNoaXAtPnN0YXRlID0gRkxfRVJBU0lORzsKIAkJCQljaGlwLT5vbGRz
+dGF0ZSA9IEZMX1JFQURZOwogCQkJCXByaW50ayhLRVJOX0VSUiAiTVREICVzKCk6IGNoaXAgbm90
+IHJlYWR5IGFmdGVyIGVyYXNlIHN1c3BlbmRcbiIsIF9fZnVuY19fKTsKQEAgLTcyNyw3ICs3Mjks
+NyBAQCBzdGF0aWMgdm9pZCBwdXRfY2hpcChzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgc3RydWN0IGZs
+Y2hpcCAqY2hpcCwgdW5zaWduZWQgbG9uZyBhZAogCXN3aXRjaChjaGlwLT5vbGRzdGF0ZSkgewog
+CWNhc2UgRkxfRVJBU0lORzoKIAkJY2hpcC0+c3RhdGUgPSBjaGlwLT5vbGRzdGF0ZTsKLQkJbWFw
+X3dyaXRlKG1hcCwgQ01EKDB4MzApLCBjaGlwLT5pbl9wcm9ncmVzc19ibG9ja19hZGRyKTsKKwkJ
+bWFwX3dyaXRlKG1hcCwgQ01EKGNmaS0+c2VjdG9yX2VyYXNlX2NtZCksIGNoaXAtPmluX3Byb2dy
+ZXNzX2Jsb2NrX2FkZHIpOwogCQljaGlwLT5vbGRzdGF0ZSA9IEZMX1JFQURZOwogCQljaGlwLT5z
+dGF0ZSA9IEZMX0VSQVNJTkc7CiAJCWJyZWFrOwpAQCAtODcwLDcgKzg3Miw3IEBAIHN0YXRpYyB2
+b2lkIF9feGlwcmFtIHhpcF91ZGVsYXkoc3RydWN0IG1hcF9pbmZvICptYXAsIHN0cnVjdCBmbGNo
+aXAgKmNoaXAsCiAJCQlsb2NhbF9pcnFfZGlzYWJsZSgpOwogCiAJCQkvKiBSZXN1bWUgdGhlIHdy
+aXRlIG9yIGVyYXNlIG9wZXJhdGlvbiAqLwotCQkJbWFwX3dyaXRlKG1hcCwgQ01EKDB4MzApLCBh
+ZHIpOworCQkJbWFwX3dyaXRlKG1hcCwgQ01EKGNmaS0+c2VjdG9yX2VyYXNlX2NtZCksIGFkcik7
+CiAJCQljaGlwLT5zdGF0ZSA9IG9sZHN0YXRlOwogCQkJc3RhcnQgPSB4aXBfY3VycnRpbWUoKTsK
+IAkJfSBlbHNlIGlmICh1c2VjID49IDEwMDAwMDAvSFopIHsKQEAgLTE2NzUsNyArMTY3Nyw3IEBA
+IHN0YXRpYyBpbnQgX194aXByYW0gZG9fZXJhc2Vfb25lYmxvY2soc3RydWN0IG1hcF9pbmZvICpt
+YXAsIHN0cnVjdCBmbGNoaXAgKmNoaXAsCiAJY2ZpX3NlbmRfZ2VuX2NtZCgweDgwLCBjZmktPmFk
+ZHJfdW5sb2NrMSwgY2hpcC0+c3RhcnQsIG1hcCwgY2ZpLCBjZmktPmRldmljZV90eXBlLCBOVUxM
+KTsKIAljZmlfc2VuZF9nZW5fY21kKDB4QUEsIGNmaS0+YWRkcl91bmxvY2sxLCBjaGlwLT5zdGFy
+dCwgbWFwLCBjZmksIGNmaS0+ZGV2aWNlX3R5cGUsIE5VTEwpOwogCWNmaV9zZW5kX2dlbl9jbWQo
+MHg1NSwgY2ZpLT5hZGRyX3VubG9jazIsIGNoaXAtPnN0YXJ0LCBtYXAsIGNmaSwgY2ZpLT5kZXZp
+Y2VfdHlwZSwgTlVMTCk7Ci0JbWFwX3dyaXRlKG1hcCwgQ01EKDB4MzApLCBhZHIpOworCW1hcF93
+cml0ZShtYXAsIENNRChjZmktPnNlY3Rvcl9lcmFzZV9jbWQpLCBhZHIpOwogCiAJY2hpcC0+c3Rh
+dGUgPSBGTF9FUkFTSU5HOwogCWNoaXAtPmVyYXNlX3N1c3BlbmRlZCA9IDA7CmRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfcHJvYmUuYyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9w
+cm9iZS5jCmluZGV4IDhmNWI5NmEuLmYwMzAzMDAgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL2No
+aXBzL2NmaV9wcm9iZS5jCisrKyBiL2RyaXZlcnMvbXRkL2NoaXBzL2NmaV9wcm9iZS5jCkBAIC0x
+NzcsNiArMTc3LDggQEAgc3RhdGljIGludCBfX3hpcHJhbSBjZmlfY2hpcF9zZXR1cChzdHJ1Y3Qg
+bWFwX2luZm8gKm1hcCwKIAogCWNmaS0+Y2ZpX21vZGUgPSBDRklfTU9ERV9DRkk7CiAKKwljZmkt
+PnNlY3Rvcl9lcmFzZV9jbWQgPSAweDMwOworCiAJLyogUmVhZCB0aGUgQ0ZJIGluZm8gc3RydWN0
+dXJlICovCiAJeGlwX2Rpc2FibGVfcXJ5KGJhc2UsIG1hcCwgY2ZpKTsKIAlmb3IgKGk9MDsgaTwo
+c2l6ZW9mKHN0cnVjdCBjZmlfaWRlbnQpICsgbnVtX2VyYXNlX3JlZ2lvbnMgKiA0KTsgaSsrKQpk
+aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvY2ZpLmggYi9pbmNsdWRlL2xpbnV4L210ZC9j
+ZmkuaAppbmRleCBkMjExOGIwLi5iOTdhMGY4IDEwMDY0NAotLS0gYS9pbmNsdWRlL2xpbnV4L210
+ZC9jZmkuaAorKysgYi9pbmNsdWRlL2xpbnV4L210ZC9jZmkuaApAQCAtMjg5LDYgKzI4OSw3IEBA
+IHN0cnVjdCBjZmlfcHJpdmF0ZSB7CiAJCQkJICBtdXN0IGJlIG9mIHRoZSBzYW1lIHR5cGUuICov
+CiAJaW50IG1mciwgaWQ7CiAJaW50IG51bWNoaXBzOworCWludCBzZWN0b3JfZXJhc2VfY21kOwog
+CXVuc2lnbmVkIGxvbmcgY2hpcHNoaWZ0OyAvKiBCZWNhdXNlIHRoZXkncmUgb2YgdGhlIHNhbWUg
+dHlwZSAqLwogCWNvbnN0IGNoYXIgKmltX25hbWU7CSAvKiBpbnRlcl9tb2R1bGUgbmFtZSBmb3Ig
+Y21kc2V0X3NldHVwICovCiAJc3RydWN0IGZsY2hpcCBjaGlwc1swXTsgIC8qIHBlci1jaGlwIGRh
+dGEgc3RydWN0dXJlIGZvciBlYWNoIGNoaXAgKi8K
+--20cf300fb101b212c2049380fc3f--
