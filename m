@@ -1,22 +1,18 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from smtp1-g21.free.fr ([212.27.42.1])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAfUK-0004aT-0W
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 09:06:36 +0000
-Received: by fxm15 with SMTP id 15so3272089fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Oct 2010 02:06:33 -0700 (PDT)
-Subject: Re: UBIFS: mount based on UUID?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfgang Denk <wd@denx.de>
-In-Reply-To: <20101026055332.B14FD152451@gemini.denx.de>
-References: <20101026055332.B14FD152451@gemini.denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 26 Oct 2010 12:03:15 +0300
-Message-ID: <1288083795.2227.28.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1PAfon-00022W-2M
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 09:27:46 +0000
+Subject: [PATCH 2 1/3] mtd: cfi_util: add support for switching SST 39VF640xB
+	chips into QRY mode
+To: linux-mtd@lists.infradead.org
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Tue, 26 Oct 2010 11:26:26 +0200
+Message-ID: <20101026092626.5790.91523.stgit@dev.siriade.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: fggs@terra.com.br, zhangyd6@gmail.com, w.sang@pengutronix.de,
+	David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-10-26 at 07:53 +0200, Wolfgang Denk wrote:
-> Hi,
-> 
-> is there any way to mount UBIFS based on the UUID like we can do for
-> "normal" file systems, i. e. by using "UUID=..." instead of a device
-> name in /etc/fstab ?
-> 
-> I see there is a UUID in the file system's super block, but I can't
-> see it is exposed to any sort of regular user interface.
-> 
-> Am I missing something?
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+---
+ drivers/mtd/chips/cfi_util.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-No, you are right, we do have UUID, but we added it just in case we need
-it in the future, e.g., for NFS support, but we do not use it currently
-because we did not need it. And we did not look at mounting by UUID - it
-should be possible to do.
-
-I'm a bit overloaded at the moment, but if I have time later, I can look
-at it.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+diff --git a/drivers/mtd/chips/cfi_util.c b/drivers/mtd/chips/cfi_util.c
+index e503b2c..360525c 100644
+--- a/drivers/mtd/chips/cfi_util.c
++++ b/drivers/mtd/chips/cfi_util.c
+@@ -77,6 +77,13 @@ int __xipram cfi_qry_mode_on(uint32_t base, struct map_info *map,
+ 	cfi_send_gen_cmd(0x98, 0x5555, base, map, cfi, cfi->device_type, NULL);
+ 	if (cfi_qry_present(map, base, cfi))
+ 		return 1;
++	/* SST 39VF640xB */
++	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0xAA, 0x555, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x55, 0x2AA, base, map, cfi, cfi->device_type, NULL);
++	cfi_send_gen_cmd(0x98, 0x555, base, map, cfi, cfi->device_type, NULL);
++	if (cfi_qry_present(map, base, cfi))
++		return 1;
+ 	/* QRY not found */
+ 	return 0;
+ }
