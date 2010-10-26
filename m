@@ -1,27 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from smtp1-g21.free.fr ([212.27.42.1])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAgmh-0005VU-CI
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 10:29:40 +0000
-Received: by wwb34 with SMTP id 34so4964823wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Oct 2010 03:29:38 -0700 (PDT)
+	id 1PAgq8-0005oJ-BI
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 10:33:13 +0000
+Subject: [PATCH] mtd: cfi_cmdset_0002: add CFI detection for SST 38VF640x chips
+To: linux-mtd@lists.infradead.org
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Tue, 26 Oct 2010 12:31:55 +0200
+Message-ID: <20101026103155.8202.76596.stgit@dev.siriade.com>
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1288085761.2227.40.camel@localhost>
-References: <1287841434-3349-1-git-send-email-eballetbo@gmail.com>
-	<1287841434-3349-2-git-send-email-eballetbo@gmail.com>
-	<1288085761.2227.40.camel@localhost>
-Date: Tue, 26 Oct 2010 19:29:38 +0900
-Message-ID: <AANLkTikKNNgnzYZ50XcB+TqEGs=RBXUet=L5PsVy+r02@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mtd: OneNAND: fix bufferram management when chip has
-	2-planes.
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: Artem.Bityutskiy@nokia.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Enric Balletbo i Serra <eballetbo@gmail.com>, adrian.hunter@nokia.com,
-	linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
-	dwmw2@infradead.org, m.szyprowski@samsung.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: fggs@terra.com.br, zhangyd6@gmail.com, David.Woodhouse@intel.com,
+	w.sang@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +21,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 26, 2010 at 6:36 PM, Artem Bityutskiy
-<Artem.Bityutskiy@nokia.com> wrote:
-> On Sat, 2010-10-23 at 15:43 +0200, Enric Balletbo i Serra wrote:
->> This patch adds code that I think was lost when it was applied the commi=
-t
->> =C2=A0 5988af2319781bc8e0ce418affec4e09cfa77907 - mtd: Flex-OneNAND supp=
-ort
->>
->> Test case:
->> =C2=A01. Stress a jffs2 filesystem using
->> =C2=A0 =C2=A0 bonnie++ -u 0:0 -s 32 -m 16 -r 16
->> =C2=A02. dmesg shows various 'Header CRC failed' errors like:
->> =C2=A0 =C2=A0 Header CRC failed on REF_PRISTINE node at 0x1e81315c: Read=
- 0x000000e0,
->> =C2=A0 =C2=A0 calculated 0x564fc9e8
->>
->> Tested on IGEP v2 board with a Muxed OneNAND(DDP) 512MB 1.8V 16-bit (0x5=
-8)
->> with 2 planes from Numonyx and CONFIG_MTD_ONENAND_2X_PROGRAM set to y
->>
->> Signed-off-by: Enric Balletbo i Serra <eballetbo@gmail.com>
->
-> Kyungmin, would be nice to have your ack/nack.
-Sorry for late reply
+Add support for SST38VF640x chips in CFI mode.
 
-One more check, it seems to use the invalidate instead of update bufferram.
-In case of 2X PROGRAM, it always uses the BUFFERRAM0 so invalidate
-another bufferram.
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+Signed-off-by: yidong zhang <zhangyd6@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   26 ++++++++++++++++++++++++++
+ 1 files changed, 26 insertions(+), 0 deletions(-)
 
-Don't set the bufferram index.
-
-Thank you,
-Kyungmin Park
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.html
->
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 1934476..2da3818 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -293,6 +293,21 @@ static void fixup_sst39vf_rev_b(struct mtd_info *mtd, void *param)
+ 	cfi->addr_unlock2 = 0x2AA;
+ }
+ 
++static void fixup_sst38vf640x_sectorsize(struct mtd_info *mtd, void *param)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++
++	fixup_sst39vf_rev_b(mtd, param);
++
++	/*
++	 * CFI reports 1024 sectors (0x03ff+1) of 64KBytes (0x0100*256) where
++	 * it should report a size of 8KBytes (0x0020*256).
++	 */
++	cfi->cfiq->EraseRegionInfo[0] = 0x002003ff;
++	pr_warning("%s: Bad 38VF640x CFI data, adjusting sector size from 64 to 8KiB\n", mtd->name);
++}
++
+ static void fixup_s29gl064n_sectors(struct mtd_info *mtd, void *param)
+ {
+ 	struct map_info *map = mtd->priv;
+@@ -344,6 +359,10 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_AMD, 0x1301, fixup_s29gl064n_sectors, NULL, },
+ 	{ CFI_MFR_AMD, 0x1a00, fixup_s29gl032n_sectors, NULL, },
+ 	{ CFI_MFR_AMD, 0x1a01, fixup_s29gl032n_sectors, NULL, },
++	{ CFI_MFR_SST, 0x536A, fixup_sst38vf640x_sectorsize, NULL, }, /* SST38VF6402 */
++	{ CFI_MFR_SST, 0x536B, fixup_sst38vf640x_sectorsize, NULL, }, /* SST38VF6401 */
++	{ CFI_MFR_SST, 0x536C, fixup_sst38vf640x_sectorsize, NULL, }, /* SST38VF6404 */
++	{ CFI_MFR_SST, 0x536D, fixup_sst38vf640x_sectorsize, NULL, }, /* SST38VF6403 */
+ #if !FORCE_WORD_WRITE
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL, },
+ #endif
+@@ -374,6 +393,13 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
+ 	if (cfi->mfr == CFI_MFR_SAMSUNG && cfi->id == 0x257e &&
+ 	    extp->MajorVersion == '0')
+ 		extp->MajorVersion = '1';
++	/*
++	 * SST 38VF640x chips report major=0xFF / minor=0xFF.
++	 */
++	if (cfi->mfr == CFI_MFR_SST && (cfi->id >> 4) == 0x0536) {
++		extp->MajorVersion = '1';
++		extp->MinorVersion = '0';
++	}
+ }
+ 
+ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
