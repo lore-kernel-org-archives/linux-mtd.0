@@ -1,27 +1,27 @@
-Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
-	helo=AM1EHSOBE004.bigfish.com)
+Received: from am1ehsobe006.messaging.microsoft.com ([213.199.154.209]
+	helo=AM1EHSOBE006.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAZb9-0006lR-4X
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 02:49:16 +0000
-Received: from mail72-am1 (localhost.localdomain [127.0.0.1])	by
-	mail72-am1-R.bigfish.com (Postfix) with ESMTP id A477018601D4	for
-	<linux-mtd@lists.infradead.org>; Tue, 26 Oct 2010 02:49:12 +0000 (UTC)
-Received: from AM1EHSMHS001.bigfish.com (unknown [10.3.201.244])	by
-	mail72-am1.bigfish.com (Postfix) with ESMTP id 10FA712A004C	for
-	<linux-mtd@lists.infradead.org>; Tue, 26 Oct 2010 02:49:12 +0000 (UTC)
-Received: from az33smr01.freescale.net (az33smr01.freescale.net
-	[10.64.34.199])	by de01egw02.freescale.net (8.14.3/8.14.3) with ESMTP
-	id o9Q2n8Je023864	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 19:49:09 -0700 (MST)
+	id 1PAZir-0007Th-9u
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 02:57:14 +0000
+Received: from mail61-am1 (localhost.localdomain [127.0.0.1])	by
+	mail61-am1-R.bigfish.com (Postfix) with ESMTP id 88F4215E81C9	for
+	<linux-mtd@lists.infradead.org>; Tue, 26 Oct 2010 02:57:10 +0000 (UTC)
+Received: from AM1EHSMHS002.bigfish.com (unknown [10.3.201.250])	by
+	mail61-am1.bigfish.com (Postfix) with ESMTP id 1E2C7E90050	for
+	<linux-mtd@lists.infradead.org>; Tue, 26 Oct 2010 02:57:10 +0000 (UTC)
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw02.freescale.net (8.14.3/8.14.3) with ESMTP id
+	o9Q2v7Oj024155	for
+	<linux-mtd@lists.infradead.org>; Mon, 25 Oct 2010 19:57:07 -0700 (MST)
 Received: from shlinux1.ap.freescale.net (shlinux1.ap.freescale.net
-	[10.192.225.216])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP
-	id o9Q2n775014226	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 21:49:08 -0500 (CDT)
+	[10.192.225.216])	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP
+	id o9Q3CfCV022885	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Oct 2010 22:12:42 -0500 (CDT)
 From: Frank Li <Frank.Li@freescale.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/1] MTD: Fix MTD_MODE_RAW write fail
-Date: Tue, 26 Oct 2010 10:54:20 +0800
-Message-ID: <1288061660-23363-1-git-send-email-Frank.Li@freescale.com>
+Subject: [PATCH 1/1] MTD: Fix wrong check register_blkdev return value
+Date: Tue, 26 Oct 2010 11:02:19 +0800
+Message-ID: <1288062139-2192-1-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Frank Li <Frank.Li@freescale.com>
@@ -34,32 +34,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtdchar have not initilized all field of struct mtd_oob_ops
-in mtd_write when mode is MTD_MODE_RAW.
+register_blkdev return 1..255 when major = 0.
 
-function nand_do_write_ops
-	if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
-		return -EINVAL;
+if (ret ) {
+	printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+		tr->name, tr->major, ret);
+	      mutex_unlock(&mtd_table_mutex);
+	return ret;
+}
 
-ooboffs is not initilized at mtd_write.
-So random data cause nand_do_write_ops return fail.
+Above code will return fail when register_blkdev return allocated major number.
 
 Signed-off-by: Frank Li <Frank.Li@freescale.com>
 ---
- drivers/mtd/mtdchar.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ drivers/mtd/mtd_blkdevs.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index b7ed09c..58839fa 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -319,6 +319,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
- 		case MTD_MODE_RAW:
- 		{
- 			struct mtd_oob_ops ops;
-+			memset(&ops, 0, sizeof(struct mtd_oob_ops));
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index a919587..63790e9 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -502,13 +502,16 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+ 	mutex_lock(&mtd_table_mutex);
  
- 			ops.mode = MTD_OOB_RAW;
- 			ops.datbuf = kbuf;
+ 	ret = register_blkdev(tr->major, tr->name);
+-	if (ret) {
++	if (ret < 0) {
+ 		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+ 		       tr->name, tr->major, ret);
+ 		mutex_unlock(&mtd_table_mutex);
+ 		return ret;
+ 	}
+ 
++	if (ret)
++		tr->major = ret;
++
+ 	tr->blkshift = ffs(tr->blksize) - 1;
+ 
+ 	INIT_LIST_HEAD(&tr->devs);
 -- 
 1.7.1
