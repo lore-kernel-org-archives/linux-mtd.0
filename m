@@ -1,23 +1,30 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAU6k-0006Xx-Ok
-	for linux-mtd@lists.infradead.org; Mon, 25 Oct 2010 20:57:31 +0000
-Received: by wyf22 with SMTP id 22so3900175wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 25 Oct 2010 13:57:29 -0700 (PDT)
+Received: from am1ehsobe004.messaging.microsoft.com ([213.199.154.207]
+	helo=AM1EHSOBE004.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PAZb9-0006lR-4X
+	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 02:49:16 +0000
+Received: from mail72-am1 (localhost.localdomain [127.0.0.1])	by
+	mail72-am1-R.bigfish.com (Postfix) with ESMTP id A477018601D4	for
+	<linux-mtd@lists.infradead.org>; Tue, 26 Oct 2010 02:49:12 +0000 (UTC)
+Received: from AM1EHSMHS001.bigfish.com (unknown [10.3.201.244])	by
+	mail72-am1.bigfish.com (Postfix) with ESMTP id 10FA712A004C	for
+	<linux-mtd@lists.infradead.org>; Tue, 26 Oct 2010 02:49:12 +0000 (UTC)
+Received: from az33smr01.freescale.net (az33smr01.freescale.net
+	[10.64.34.199])	by de01egw02.freescale.net (8.14.3/8.14.3) with ESMTP
+	id o9Q2n8Je023864	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Oct 2010 19:49:09 -0700 (MST)
+Received: from shlinux1.ap.freescale.net (shlinux1.ap.freescale.net
+	[10.192.225.216])	by az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP
+	id o9Q2n775014226	for <linux-mtd@lists.infradead.org>;
+	Mon, 25 Oct 2010 21:49:08 -0500 (CDT)
+From: Frank Li <Frank.Li@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1] MTD: Fix MTD_MODE_RAW write fail
+Date: Tue, 26 Oct 2010 10:54:20 +0800
+Message-ID: <1288061660-23363-1-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTikd9uTV+8bRhjKt8P0vXC6p0FUbWd=bb6k2FGKi@mail.gmail.com>
-References: <201010211643.33332.manningc2@actrix.gen.nz>
-	<1288033416.1865.2.camel@brekeke>
-	<AANLkTikd9uTV+8bRhjKt8P0vXC6p0FUbWd=bb6k2FGKi@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 25 Oct 2010 16:57:04 -0400
-Message-ID: <AANLkTinDuG62AapBDGvcjjJFUDxQDxcik3zEs2Gkm_st@mail.gmail.com>
-Subject: Re: Issues with ubi utils Makefile
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Cc: Frank Li <Frank.Li@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +34,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Oct 25, 2010 at 16:45, Mike Frysinger wrote:
-> On Mon, Oct 25, 2010 at 15:03, Artem Bityutskiy wrote:
->> Commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e broke 'make install'.
->> Before that commit, $DESTDIR was undefined, so =C2=A0${DESTDIR}/${SBINDI=
-R}
->> was /usr/sbin, and after the commit $DESTDIR became /usr/local, so
->> ${DESTDIR}/${SBINDIR} became /usr/local//usr/sbin, which is wrong.
->
-> that isnt really true. =C2=A0DESTDIR had value in makefiles before my cha=
-nges.
->
->> Fix this by making $DESTDIR become the distination directory of installi=
-ng,
->> i.e. 'DESTDIR ?=3D /usr' and making SBINDIR become just 'sbin'.
->
-> i'd rather we change DESTDIR to match the standard -- it's a "root"
-> prefix only. =C2=A0so the default should be:
-> DESTDIR ?=3D
+mtdchar have not initilized all field of struct mtd_oob_ops
+in mtd_write when mode is MTD_MODE_RAW.
 
-i guess this is also why i never noticed before.  i never do plain
-`make install` since i'm not root and i dont want it clobbering
-things.  i always do `make install DESTDIR=3D$PWD/foo` when testing and
-in that regard, it works fine.  so i guess we want this simple change:
---- a/common.mk
-+++ b/common.mk
-@@ -20,7 +20,7 @@ ifneq ($(WITHOUT_LARGEFILE), 1)
-   CPPFLAGS +=3D -D_FILE_OFFSET_BITS=3D64
- endif
+function nand_do_write_ops
+	if (ops->ooboffs && (ops->ooboffs + ops->ooblen > oobmaxlen))
+		return -EINVAL;
 
--DESTDIR ?=3D /usr/local
-+DESTDIR?=3D
- PREFIX=3D/usr
- EXEC_PREFIX=3D$(PREFIX)
- SBINDIR=3D$(EXEC_PREFIX)/sbin
--mike
+ooboffs is not initilized at mtd_write.
+So random data cause nand_do_write_ops return fail.
+
+Signed-off-by: Frank Li <Frank.Li@freescale.com>
+---
+ drivers/mtd/mtdchar.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index b7ed09c..58839fa 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -319,6 +319,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
+ 		case MTD_MODE_RAW:
+ 		{
+ 			struct mtd_oob_ops ops;
++			memset(&ops, 0, sizeof(struct mtd_oob_ops));
+ 
+ 			ops.mode = MTD_OOB_RAW;
+ 			ops.datbuf = kbuf;
+-- 
+1.7.1
