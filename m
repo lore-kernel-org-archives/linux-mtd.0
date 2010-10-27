@@ -1,19 +1,24 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PAmOU-0005lH-Ie
-	for linux-mtd@lists.infradead.org; Tue, 26 Oct 2010 16:29:05 +0000
-To: dedekind1@gmail.com
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: UBIFS: mount based on UUID?
+	id 1PAyeZ-0006QJ-7P
+	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2010 05:34:28 +0000
+Received: by wyf22 with SMTP id 22so289549wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Oct 2010 22:34:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: <1288083795.2227.28.camel@localhost>
+Sender: kyungmin78@gmail.com
+In-Reply-To: <20101026162900.423EC1365D8@gemini.denx.de>
 References: <20101026055332.B14FD152451@gemini.denx.de>
 	<1288083795.2227.28.camel@localhost>
-Date: Tue, 26 Oct 2010 18:29:00 +0200
-Message-Id: <20101026162900.423EC1365D8@gemini.denx.de>
-Cc: linux-mtd@lists.infradead.org
+	<20101026162900.423EC1365D8@gemini.denx.de>
+Date: Wed, 27 Oct 2010 14:34:24 +0900
+Message-ID: <AANLkTikc8fpTtTUXs2KaF3h4Bd6TH6kjPr_F3pN=e5u=@mail.gmail.com>
+Subject: Re: UBIFS: mount based on UUID?
+From: Kyungmin Park <kmpark@infradead.org>
+To: Wolfgang Denk <wd@denx.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem,
-
-In message <1288083795.2227.28.camel@localhost> you wrote:
+On Wed, Oct 27, 2010 at 1:29 AM, Wolfgang Denk <wd@denx.de> wrote:
+> Dear Artem,
 >
-> No, you are right, we do have UUID, but we added it just in case we need
-> it in the future, e.g., for NFS support, but we do not use it currently
-> because we did not need it. And we did not look at mounting by UUID - it
-> should be possible to do.
+> In message <1288083795.2227.28.camel@localhost> you wrote:
+>>
+>> No, you are right, we do have UUID, but we added it just in case we need
+>> it in the future, e.g., for NFS support, but we do not use it currently
+>> because we did not need it. And we did not look at mounting by UUID - it
+>> should be possible to do.
+>
+> I see.
+>
+>> I'm a bit overloaded at the moment, but if I have time later, I can look
+>> at it.
 
-I see.
+Hi Artem,
+I'm also waiting this feature. now it used for script for parsing
+mount ubifs. but if support UUID, I will use this one.
 
-> I'm a bit overloaded at the moment, but if I have time later, I can look
-> at it.
-
-Thanks a lot.
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-Quote from a recent meeting:   "We are going to continue having these
-meetings everyday until I find out why no work is getting done."
+Thank you,
+Kyungmin Park
+>
+> Thanks a lot.
+>
+> Best regards,
+>
+> Wolfgang Denk
+>
+> --
+> DENX Software Engineering GmbH, =A0 =A0 MD: Wolfgang Denk & Detlev Zundel
+> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+> Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+> Quote from a recent meeting: =A0 "We are going to continue having these
+> meetings everyday until I find out why no work is getting done."
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
