@@ -1,25 +1,20 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PB2Ht-0000Hn-Dd
-	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2010 09:27:18 +0000
-Received: by fxm15 with SMTP id 15so521028fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Oct 2010 02:27:15 -0700 (PDT)
-Subject: Re: UBIFS: mount based on UUID?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kyungmin Park <kmpark@infradead.org>
-In-Reply-To: <AANLkTikc8fpTtTUXs2KaF3h4Bd6TH6kjPr_F3pN=e5u=@mail.gmail.com>
-References: <20101026055332.B14FD152451@gemini.denx.de>
-	<1288083795.2227.28.camel@localhost>
-	<20101026162900.423EC1365D8@gemini.denx.de>
-	<AANLkTikc8fpTtTUXs2KaF3h4Bd6TH6kjPr_F3pN=e5u=@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 Oct 2010 10:57:47 +0300
-Message-ID: <1288166267.2195.0.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from p01c11o144.mxlogic.net ([208.65.144.67])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PB8iS-0007rz-Rl
+	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2010 16:19:09 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 27 Oct 2010 11:18:50 -0500
+Subject: RE: commit 432dc821 breaks machines
+Message-ID: <0D753D10438DA54287A00B027084269764819C5D74@AUSP01VMBX24.collaborationhost.net>
+References: <Pine.LNX.4.64.1010270842580.7190@axis700.grange>
+In-Reply-To: <Pine.LNX.4.64.1010270842580.7190@axis700.grange>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: linux-embedded <linux-embedded@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-10-27 at 14:34 +0900, Kyungmin Park wrote:
-> On Wed, Oct 27, 2010 at 1:29 AM, Wolfgang Denk <wd@denx.de> wrote:
-> > Dear Artem,
-> >
-> > In message <1288083795.2227.28.camel@localhost> you wrote:
-> >>
-> >> No, you are right, we do have UUID, but we added it just in case we need
-> >> it in the future, e.g., for NFS support, but we do not use it currently
-> >> because we did not need it. And we did not look at mounting by UUID - it
-> >> should be possible to do.
-> >
-> > I see.
-> >
-> >> I'm a bit overloaded at the moment, but if I have time later, I can look
-> >> at it.
-> 
-> Hi Artem,
-> I'm also waiting this feature. now it used for script for parsing
-> mount ubifs. but if support UUID, I will use this one.
+On Tuesday, October 26, 2010 11:52 PM, Guennadi Liakhovetski wrote:
+>
+> Hi
+>
+> commit 432dc821c90114f9b0e00f6752a700e937516ade
+> Author: H Hartley Sweeten <hartleys@visionengravers.com>
+> Date:   Thu Aug 19 18:18:21 2010 -0700
+>
+>     mtd: cleanup Kconfig dependencies
+>
+> breaks machines by undefining macros like CONFIG_MTD_MAP_BANK_WIDTH_*.=20
+> Previously the Kconfig entries like
+>
+> config MTD_MAP_BANK_WIDTH_1
+> 	bool "Support  8-bit buswidth" if MTD_CFI_GEOMETRY
+> 	default y
+>
+> meant, that if MTD_CFI_GEOMETRY is not selected, this config entry is not=
+=20
+> _displayed_, and default selections are used. Now, with that "if" removed=
+=20
+> and all these Kconfig entries put under a common
 
-I see. But there is always an option to just do it and submit a patch,
-do not forget about this :-)
+Yah, I overlooked that part.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+>
+> if MTD_CFI_GEOMETRY
+>
+> none of these options get selected by default. Please, revert or otherwis=
+e=20
+> fix this part.
+
+I believe David Woodhouse has already reverted the commit.
+
+Sorry for the trouble,
+Hartley=
