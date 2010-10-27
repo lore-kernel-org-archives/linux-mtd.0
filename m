@@ -1,21 +1,24 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PBAhj-0005uL-5U
-	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2010 18:26:31 +0000
-Received: by bwz5 with SMTP id 5so912616bwz.36
+	id 1PBAlj-00062V-1E
+	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2010 18:30:39 +0000
+Received: by bwz5 with SMTP id 5so916874bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Oct 2010 11:26:28 -0700 (PDT)
-Subject: Re: [PATCH] write bad block marker even with BBT
+	Wed, 27 Oct 2010 11:30:38 -0700 (PDT)
+Subject: Re: Issues with ubi utils Makefile
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4CC54223.2050401@parrot.com>
-References: <4CC54223.2050401@parrot.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <AANLkTinDuG62AapBDGvcjjJFUDxQDxcik3zEs2Gkm_st@mail.gmail.com>
+References: <201010211643.33332.manningc2@actrix.gen.nz>
+	<1288033416.1865.2.camel@brekeke>
+	<AANLkTikd9uTV+8bRhjKt8P0vXC6p0FUbWd=bb6k2FGKi@mail.gmail.com>
+	<AANLkTinDuG62AapBDGvcjjJFUDxQDxcik3zEs2Gkm_st@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 Oct 2010 21:26:25 +0300
-Message-ID: <1288203985.1766.6.camel@brekeke>
+Date: Wed, 27 Oct 2010 21:30:30 +0300
+Message-ID: <1288204230.1766.7.camel@brekeke>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,41 +29,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry for being PITA, but
+On Mon, 2010-10-25 at 16:57 -0400, Mike Frysinger wrote:
+> On Mon, Oct 25, 2010 at 16:45, Mike Frysinger wrote:
+> > On Mon, Oct 25, 2010 at 15:03, Artem Bityutskiy wrote:
+> >> Commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e broke 'make install'.
+> >> Before that commit, $DESTDIR was undefined, so  ${DESTDIR}/${SBINDIR}
+> >> was /usr/sbin, and after the commit $DESTDIR became /usr/local, so
+> >> ${DESTDIR}/${SBINDIR} became /usr/local//usr/sbin, which is wrong.
+> >
+> > that isnt really true.  DESTDIR had value in makefiles before my changes.
+> >
+> >> Fix this by making $DESTDIR become the distination directory of installing,
+> >> i.e. 'DESTDIR ?= /usr' and making SBINDIR become just 'sbin'.
+> >
+> > i'd rather we change DESTDIR to match the standard -- it's a "root"
+> > prefix only.  so the default should be:
+> > DESTDIR ?=
+> 
+> i guess this is also why i never noticed before.  i never do plain
+> `make install` since i'm not root and i dont want it clobbering
+> things.  i always do `make install DESTDIR=$PWD/foo` when testing and
+> in that regard, it works fine.  so i guess we want this simple change:
+> --- a/common.mk
+> +++ b/common.mk
+> @@ -20,7 +20,7 @@ ifneq ($(WITHOUT_LARGEFILE), 1)
+>    CPPFLAGS += -D_FILE_OFFSET_BITS=64
+>  endif
+> 
+> -DESTDIR ?= /usr/local
+> +DESTDIR?=
+>  PREFIX=/usr
+>  EXEC_PREFIX=$(PREFIX)
+>  SBINDIR=$(EXEC_PREFIX)/sbin
 
-On Mon, 2010-10-25 at 10:38 +0200, Matthieu CASTET wrote:
-> +
-> +	/* Write the bad block marker if we don't have BBT, or driver
-> +	 * request it (in case the bootloader doesn't support reading it
-> +	 * or we loose BBT).
-> +	 */
-
-Still not proper comment :-)
-
-> +	if (!(chip->options & NAND_USE_FLASH_BBT) || chip->options & NAND_WRITE_BB) {
->  		nand_get_device(chip, mtd, FL_WRITING);
->  
->  		/* Write to first two pages and to byte 1 and 6 if necessary.
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index 102e12c..2efd2f9 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -215,6 +215,8 @@ typedef enum {
->  #define NAND_OWN_BUFFERS	0x00040000
->  /* Chip may not exist, so silence any errors in scan */
->  #define NAND_SCAN_SILENT_NODEV	0x00080000
-> +/* in case of NAND_USE_FLASH_BBT, write also bad block marker */
-> +#define NAND_WRITE_BB	0x00100000
-
-I think the comment should be a bit more descriptive and tell that this
-is about using BBT _and_ writing BB marker to OOB area. Use proper
-comment style, start with capital letter.
-
-Also, add a BUG_ON to catch misuse cases when NAND_WRITE_BB is used
-without NAND_USE_FLASH_BBT - they should go in pair.
-
-And also, how about cases when BBT is updated, but OOB did not because
-of a power cut :-)) ?
+Ok, pushed, made you the author, fabricated your signed-off-by as well.
+Thanks.
 
 -- 
 Best Regards,
