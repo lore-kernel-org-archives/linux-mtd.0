@@ -1,25 +1,25 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PBAlj-00062V-1E
-	for linux-mtd@lists.infradead.org; Wed, 27 Oct 2010 18:30:39 +0000
-Received: by bwz5 with SMTP id 5so916874bwz.36
+	id 1PBGzT-0002hW-N9
+	for linux-mtd@lists.infradead.org; Thu, 28 Oct 2010 01:09:16 +0000
+Received: by gxk25 with SMTP id 25so982462gxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Oct 2010 11:30:38 -0700 (PDT)
-Subject: Re: Issues with ubi utils Makefile
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <AANLkTinDuG62AapBDGvcjjJFUDxQDxcik3zEs2Gkm_st@mail.gmail.com>
-References: <201010211643.33332.manningc2@actrix.gen.nz>
-	<1288033416.1865.2.camel@brekeke>
-	<AANLkTikd9uTV+8bRhjKt8P0vXC6p0FUbWd=bb6k2FGKi@mail.gmail.com>
-	<AANLkTinDuG62AapBDGvcjjJFUDxQDxcik3zEs2Gkm_st@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 27 Oct 2010 21:30:30 +0300
-Message-ID: <1288204230.1766.7.camel@brekeke>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Wed, 27 Oct 2010 18:09:13 -0700 (PDT)
+Message-ID: <4CC8CD2B.2040801@gmail.com>
+Date: Wed, 27 Oct 2010 18:08:59 -0700
+From: Brian Norris <computersforpeace@gmail.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v2 1/2] mtd-utils: nanddump/nandwrite: style, signed-ness,
+	printing fixups
+References: <1287645577-13538-1-git-send-email-computersforpeace@gmail.com>	
+	<1287645577-13538-2-git-send-email-computersforpeace@gmail.com>
+	<1288034112.1865.7.camel@brekeke>
+In-Reply-To: <1288034112.1865.7.camel@brekeke>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-10-25 at 16:57 -0400, Mike Frysinger wrote:
-> On Mon, Oct 25, 2010 at 16:45, Mike Frysinger wrote:
-> > On Mon, Oct 25, 2010 at 15:03, Artem Bityutskiy wrote:
-> >> Commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e broke 'make install'.
-> >> Before that commit, $DESTDIR was undefined, so  ${DESTDIR}/${SBINDIR}
-> >> was /usr/sbin, and after the commit $DESTDIR became /usr/local, so
-> >> ${DESTDIR}/${SBINDIR} became /usr/local//usr/sbin, which is wrong.
-> >
-> > that isnt really true.  DESTDIR had value in makefiles before my changes.
-> >
-> >> Fix this by making $DESTDIR become the distination directory of installing,
-> >> i.e. 'DESTDIR ?= /usr' and making SBINDIR become just 'sbin'.
-> >
-> > i'd rather we change DESTDIR to match the standard -- it's a "root"
-> > prefix only.  so the default should be:
-> > DESTDIR ?=
+On 10/25/2010 12:15 PM, Artem Bityutskiy wrote:
+> Mike is right, it is much better to separate functional and cleanup
+> changes, even split different clean-up changes into several patches.
+> Maintaining this stuff and reviewing patches takes time, and splitting
+> helps a lot. Let's push this patch but please, try to splint patches on
+> more smaller pieces. Yes, it'll be more work for you, but less for me.
+> But when submitters take more burden and maintainer less - the system
+> scales better. Take into account that I'm doing this stuff just because
+> I like MTD and do not like see people's patches lost, so little help in
+> form of perfectly split micro-patches is appreciated.
 > 
-> i guess this is also why i never noticed before.  i never do plain
-> `make install` since i'm not root and i dont want it clobbering
-> things.  i always do `make install DESTDIR=$PWD/foo` when testing and
-> in that regard, it works fine.  so i guess we want this simple change:
-> --- a/common.mk
-> +++ b/common.mk
-> @@ -20,7 +20,7 @@ ifneq ($(WITHOUT_LARGEFILE), 1)
->    CPPFLAGS += -D_FILE_OFFSET_BITS=64
->  endif
-> 
-> -DESTDIR ?= /usr/local
-> +DESTDIR?=
->  PREFIX=/usr
->  EXEC_PREFIX=$(PREFIX)
->  SBINDIR=$(EXEC_PREFIX)/sbin
+> Pushed, thanks!
 
-Ok, pushed, made you the author, fabricated your signed-off-by as well.
-Thanks.
+Right, this makes perfect sense. I will remind myself of this for future
+patches. I certainly don't want to make things more difficult than
+necessary for you!
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Oh, and thanks for the push.
+
+Brian
