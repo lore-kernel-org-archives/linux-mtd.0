@@ -1,50 +1,34 @@
-From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
-Date: Mon, 25 Oct 2010 21:54:47 +0300
-Subject: [PATCH] mtd-utils: fix make install
-Message-ID: <mailman.2.1288033431.1530.linux-mtd@lists.infradead.org>
+From: postmaster@lists.infradead.org (Post Office)
+Date: Fri, 29 Oct 2010 11:35:16 +0530
+Subject: Returned mail: see transcript for details
+Message-ID: <mailman.7.1288332840.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Commit 96a4f76f2e9dad7fdbd6fd7740de44bc90d5769e broke 'make install'.
-Before that commit, $DESTDIR was undefined, so  ${DESTDIR}/${SBINDIR}
-was /usr/sbin, and after the commit $DESTDIR became /usr/local, so
-${DESTDIR}/${SBINDIR} became /usr/local//usr/sbin, which is wrong.
+This message was not delivered due to the following reason(s):
 
-Fix this by making $DESTDIR become the distination directory of installing,
-i.e. 'DESTDIR ?= /usr' and making SBINDIR become just 'sbin'.
+Your message could not be delivered because the destination server was
+not reachable within the allowed queue period. The amount of time
+a message is queued before it is returned depends on local configura-
+tion parameters.
 
-While we are on it, fix $MANDIR similarly, and remove $PREFIX and
-$EXEC_PREFIX variables, which become unneeded.
+Most likely there is a network problem that prevented delivery, but
+it is also possible that the computer is turned off, or does not
+have a mail system running right now.
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Reported-by: Charles Manning <manningc2@actrix.gen.nz>
----
- common.mk |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
+Your message was not delivered within 8 days:
+Host 174.72.41.103 is not responding.
 
-diff --git a/common.mk b/common.mk
-index a55c548..2e4452f 100644
---- a/common.mk
-+++ b/common.mk
-@@ -20,12 +20,9 @@ ifneq ($(WITHOUT_LARGEFILE), 1)
-   CPPFLAGS += -D_FILE_OFFSET_BITS=64
- endif
- 
--DESTDIR ?= /usr/local
--PREFIX=/usr
--EXEC_PREFIX=$(PREFIX)
--SBINDIR=$(EXEC_PREFIX)/sbin
--MANDIR=$(PREFIX)/share/man
--INCLUDEDIR=$(PREFIX)/include
-+DESTDIR ?= /usr
-+SBINDIR=sbin
-+MANDIR=share/man
- 
- ifndef BUILDDIR
- ifeq ($(origin CROSS),undefined)
--- 
-1.7.2.3
+The following recipients did not receive this message:
+<linux-mtd@lists.infradead.org>
 
--- 
-Best Regards,
-Artem Bityutskiy (???????????????? ??????????)
+Please reply to postmaster at lists.infradead.org
+if you feel this message to be in error.
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: message.zip
+Type: application/octet-stream
+Size: 49432 bytes
+Desc: not available
+URL: <http://lists.infradead.org/pipermail/linux-mtd/attachments/20101029/7f9ae7e3/attachment.obj>
