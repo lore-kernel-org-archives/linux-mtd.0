@@ -1,27 +1,17 @@
-Received: from eu1sys200aog105.obsmtp.com ([207.126.144.119])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PBnTP-0007IS-7X
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2010 11:50:20 +0000
-Message-ID: <4CCAB4D8.90807@st.com>
-Date: Fri, 29 Oct 2010 17:19:44 +0530
-From: viresh kumar <viresh.kumar@st.com>
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PBoBM-0000lP-JG
+	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2010 12:35:45 +0000
+Received: by qwh6 with SMTP id 6so2952296qwh.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 29 Oct 2010 05:35:43 -0700 (PDT)
 MIME-Version: 1.0
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>
-Subject: Re: [PATCH V2 25/69] ST SPEAr: Add smi driver for serial NOR flash
-References: <cover.1285933331.git.viresh.kumar@st.com>
-	<238bd0ff57f8530c597157bc07f6c46dc362e1bc.1285933331.git.viresh.kumar@st.com>
-	<4CBD32EB.5050409@st.com>
-In-Reply-To: <4CBD32EB.5050409@st.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
-	Amit VIRDI <amit.virdi@st.com>, Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>
+Date: Fri, 29 Oct 2010 14:35:42 +0200
+Message-ID: <AANLkTinNUrQKg_8EgwW5k7BZFiik5ish6-z+qK-=3qpU@mail.gmail.com>
+Subject: Cross compiling mtd-utils for Android and pread errors
+From: Ketil Froyn <ketil@froyn.name>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,37 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/19/2010 11:25 AM, viresh kumar wrote:
-> On 10/01/2010 05:25 PM, Viresh KUMAR wrote:
->> From: Shiraz Hashim <shiraz.hashim@st.com>
->>
->> SPEAr platforms(spear3xx/spear6xx/spear13xx) provide SMI(Serial Memory
->> Interface) controller to access serial NOR flash. SMI provides a simple
->> interface for SPI/serial NOR flashes and has certain inbuilt commands
->> and features to support these flashes easily. It also makes it possible
->> to map an address range in order to directly access (read/write) the SNOR
->> over address bus. This patch intends to provide serial nor driver support
->> for spear platforms which are accessed through SMI.
->>
->> Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
->> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
->> ---
->>  arch/arm/plat-spear/include/plat/smi.h |   68 ++
->>  drivers/mtd/devices/Kconfig            |    7 +
->>  drivers/mtd/devices/Makefile           |    1 +
->>  drivers/mtd/devices/spear_smi.c        | 1122 ++++++++++++++++++++++++++++++++
->>  4 files changed, 1198 insertions(+), 0 deletions(-)
->>  create mode 100644 arch/arm/plat-spear/include/plat/smi.h
->>  create mode 100644 drivers/mtd/devices/spear_smi.c
-> 
-> David,
-> 
-> Any review comments on this patch??
-> 
+Hi,
 
-David,
+I'm trying to cross compile the mtd-utils package for Android, and I
+was wondering if anyone has been able to do this before, because I'm
+finding it difficult.
 
-Any review comments??
+I have a working cross compiler toolchain (works with agcc, a wrapper
+that takes care of all the necessary compiler flags) but I'm having
+trouble getting this working to compile mtd-utils. I have been able to
+compile single programs manually with the agcc wrapper, for example:
 
--- 
-viresh
+agcc -I include -o nanddump nanddump.c
+
+but when I transfer this executable to the device and run it, I get:
+
+/ # /sdcard/nanddump -a /dev/mtd/mtd0
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 56
+Dumping data starting at 0x00000000 and ending at 0x0a5c0000...
+pread: Unknown error: 0
+/ #
+
+or
+
+/ # /sdcard/nanddump -f /sdcard/testdump /dev/mtd/mtd0
+ECC failed: 0
+ECC corrected: 0
+Number of bad blocks: 0
+Number of bbt blocks: 0
+Block size 131072, page size 2048, OOB size 56
+Dumping data starting at 0x00000000 and ending at 0x00040000...
+pread: Not a typewriter
+/ #
+
+I'm grateful for any tips that can nudge me in the right direction.
+
+Cheers, Ketil
