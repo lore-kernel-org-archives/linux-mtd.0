@@ -1,17 +1,19 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PBoBM-0000lP-JG
-	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2010 12:35:45 +0000
-Received: by qwh6 with SMTP id 6so2952296qwh.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Oct 2010 05:35:43 -0700 (PDT)
+Received: from relay2.mail.timico.net ([62.121.20.90] helo=relay.timico.net)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PBoqu-0002gw-7p
+	for linux-mtd@lists.infradead.org; Fri, 29 Oct 2010 13:18:41 +0000
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: Ketil Froyn <ketil@froyn.name>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+Content-Class: urn:content-classes:message
+Date: Fri, 29 Oct 2010 14:18:37 +0100
+Subject: RE: Cross compiling mtd-utils for Android and pread errors
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EEF9619@Cloud.RL.local>
+In-Reply-To: <AANLkTinNUrQKg_8EgwW5k7BZFiik5ish6-z+qK-=3qpU@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Date: Fri, 29 Oct 2010 14:35:42 +0200
-Message-ID: <AANLkTinNUrQKg_8EgwW5k7BZFiik5ish6-z+qK-=3qpU@mail.gmail.com>
-Subject: Cross compiling mtd-utils for Android and pread errors
-From: Ketil Froyn <ketil@froyn.name>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+linux-mtd-bounces@lists.infradead.org wrote:
+> pread: Not a typewriter / #
+>
+> I'm grateful for any tips that can nudge me in the right direction.
 
-I'm trying to cross compile the mtd-utils package for Android, and I
-was wondering if anyone has been able to do this before, because I'm
-finding it difficult.
+"Not a typewriter" is ENOTTY, i.e. ioctl not supported.
 
-I have a working cross compiler toolchain (works with agcc, a wrapper
-that takes care of all the necessary compiler flags) but I'm having
-trouble getting this working to compile mtd-utils. I have been able to
-compile single programs manually with the agcc wrapper, for example:
+Seems your android mtd devices don't support those ioctls.
 
-agcc -I include -o nanddump nanddump.c
 
-but when I transfer this executable to the device and run it, I get:
+--
+Jon Povey
+jon.povey@racelogic.co.uk
 
-/ # /sdcard/nanddump -a /dev/mtd/mtd0
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 0
-Block size 131072, page size 2048, OOB size 56
-Dumping data starting at 0x00000000 and ending at 0x0a5c0000...
-pread: Unknown error: 0
-/ #
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
 
-or
-
-/ # /sdcard/nanddump -f /sdcard/testdump /dev/mtd/mtd0
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 0
-Block size 131072, page size 2048, OOB size 56
-Dumping data starting at 0x00000000 and ending at 0x00040000...
-pread: Not a typewriter
-/ #
-
-I'm grateful for any tips that can nudge me in the right direction.
-
-Cheers, Ketil
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
