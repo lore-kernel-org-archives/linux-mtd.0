@@ -1,34 +1,79 @@
-From: postmaster@lists.infradead.org (Post Office)
-Date: Fri, 29 Oct 2010 11:35:16 +0530
-Subject: Returned mail: see transcript for details
-Message-ID: <mailman.7.1288332840.1530.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Received: from hera.kernel.org ([140.211.167.34])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PCx3Y-00078b-B9
+	for linux-mtd@lists.infradead.org; Mon, 01 Nov 2010 16:16:24 +0000
+From: Tejun Heo <tj@kernel.org>
+To: axboe@kernel.dk, hch@infradead.org, linux-kernel@vger.kernel.org,
+	petero2@telia.com, schwidefsky@de.ibm.com, heiko.carstens@de.ibm.com,
+	jack@suse.cz, akpm@linux-foundation.org, adilger.kernel@dilger.ca,
+	tytso@mit.edu, mfasheh@suse.com, joel.becker@oracle.com,
+	aelder@sgi.com, dm-devel@redhat.com, drbd-dev@lists.linbit.com,
+	neilb@suse.de, leochen@broadcom.com, sbranden@broadcom.com,
+	chris.mason@oracle.com, swhiteho@redhat.com, shaggy@linux.vnet.ibm.com,
+	joern@logfs.org, konishi.ryusuke@lab.ntt.co.jp,
+	reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk
+Subject: [PATCH 1/5] mtd: fix bdev exclusive open bugs in
+	block2mtd::add_device()
+Date: Mon,  1 Nov 2010 17:15:25 +0100
+Message-Id: <1288628129-12811-2-git-send-email-tj@kernel.org>
+In-Reply-To: <1288628129-12811-1-git-send-email-tj@kernel.org>
+References: <1288628129-12811-1-git-send-email-tj@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>, linux-mtd@lists.infradead.org
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This message was not delivered due to the following reason(s):
+There are two bdev exclusive open bugs.
 
-Your message could not be delivered because the destination server was
-not reachable within the allowed queue period. The amount of time
-a message is queued before it is returned depends on local configura-
-tion parameters.
+* open_bdev_exclusive() must not be called with NULL holder.  Use dev
+  as the holder.
 
-Most likely there is a network problem that prevented delivery, but
-it is also possible that the computer is turned off, or does not
-have a mail system running right now.
+* open_by_devnum() doesn't open the bdev exclusively but
+  block2mtd_free_device() always assumes it.  Explicitly claim the
+  bdev.
 
-Your message was not delivered within 8 days:
-Host 174.72.41.103 is not responding.
+The latter is rather clumsy but will be simplified with future
+blkdev_get/put() cleanups.
 
-The following recipients did not receive this message:
-<linux-mtd@lists.infradead.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: linux-mtd@lists.infradead.org
+---
+ drivers/mtd/devices/block2mtd.c |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
 
-Please reply to postmaster at lists.infradead.org
-if you feel this message to be in error.
-
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: message.zip
-Type: application/octet-stream
-Size: 49432 bytes
-Desc: not available
-URL: <http://lists.infradead.org/pipermail/linux-mtd/attachments/20101029/7f9ae7e3/attachment.obj>
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index 2cf0cc6..806a9ed 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -246,7 +246,7 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ 		return NULL;
+ 
+ 	/* Get a handle on the device */
+-	bdev = open_bdev_exclusive(devname, FMODE_READ|FMODE_WRITE, NULL);
++	bdev = open_bdev_exclusive(devname, FMODE_READ|FMODE_WRITE, dev);
+ #ifndef MODULE
+ 	if (IS_ERR(bdev)) {
+ 
+@@ -256,6 +256,15 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
+ 		dev_t devt = name_to_dev_t(devname);
+ 		if (devt) {
+ 			bdev = open_by_devnum(devt, FMODE_WRITE | FMODE_READ);
++			if (!IS_ERR(bdev)) {
++				int ret;
++				ret = bd_claim(bdev, dev);
++				if (ret) {
++					blkdev_put(bdev,
++						   FMODE_READ | FMODE_WRITE);
++					bdev = ERR_PTR(ret);
++				}
++			}
+ 		}
+ 	}
+ #endif
+-- 
+1.7.1
