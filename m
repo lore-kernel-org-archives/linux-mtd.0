@@ -1,17 +1,22 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDHzA-0005Du-88
-	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 14:37:17 +0000
-Received: by gxk25 with SMTP id 25so4408035gxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 02 Nov 2010 07:37:14 -0700 (PDT)
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PDI07-0005FB-J0
+	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 14:38:18 +0000
+Date: Tue, 2 Nov 2010 16:37:59 +0200
+From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+To: ext Kyungmin Park <kmpark@infradead.org>
+Subject: Re: [PATCH 3/3] mtd: onenand: implement cache program feature for
+	4kb page onenand
+Message-ID: <20101102143759.GA15222@nokia.com>
+References: <1288697130-12772-1-git-send-email-roman.tereshonkov@nokia.com>
+	<1288697130-12772-4-git-send-email-roman.tereshonkov@nokia.com>
+	<AANLkTinq7HS5VHww8aq2XPKCwGnjEYSintsN4qRFJq1o@mail.gmail.com>
 MIME-Version: 1.0
-Date: Tue, 2 Nov 2010 15:37:13 +0100
-Message-ID: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
-Subject: Suggested patch: reset errno after isatty()
-From: Ketil Froyn <ketil@froyn.name>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AANLkTinq7HS5VHww8aq2XPKCwGnjEYSintsN4qRFJq1o@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +26,177 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-isatty() uses an ioctl and the resulting error code to determine if an
-fd is a tty or not. If it isn't, errno is set to ENOTTY. Later in the
-code, pread() fails, or rather returns 0 immediately. When this
-happens, the following perror("pread") tells me:
+On Tue, Nov 02, 2010 at 03:00:41PM +0100, ext Kyungmin Park wrote:
+> Hi,
+> 
+> On Tue, Nov 2, 2010 at 8:25 PM, Roman Tereshonkov
+> <roman.tereshonkov@nokia.com> wrote:
+> > Implement cache program feature for 4KB page onenand.
+> > This feature improves the write data performance.
+> > The observed 128KB data program speed change is
+> > from 8827KB/s to 14156 KB/s when the feature is enabled.
+> >
+> > Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+> > ---
+> >  drivers/mtd/onenand/omap2.c        |   12 ++++++++--
+> >  drivers/mtd/onenand/onenand_base.c |   39 ++++++++++++++++++++++++++++++++++-
+> >  2 files changed, 46 insertions(+), 5 deletions(-)
+> 
+> Please make separate the two patches, one for OMAP, another is for
+> onenand_base.c
+> 
+> >
+> > diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+> > index 9f322f1..da25a90 100644
+> > --- a/drivers/mtd/onenand/omap2.c
+> > +++ b/drivers/mtd/onenand/omap2.c
+> > @@ -108,8 +108,9 @@ static void wait_warn(char *msg, int state, unsigned int ctrl,
+> >  static int omap2_onenand_wait(struct mtd_info *mtd, int state)
+> >  {
+> >        struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+> > +       struct onenand_chip *this = mtd->priv;
+> >        unsigned int intr = 0;
+> > -       unsigned int ctrl;
+> > +       unsigned int ctrl, ctrl_mask;
+> >        unsigned long timeout;
+> >        u32 syscfg;
+> >
+> > @@ -180,7 +181,8 @@ retry:
+> >                        if (result == 0) {
+> >                                /* Timeout after 20ms */
+> >                                ctrl = read_reg(c, ONENAND_REG_CTRL_STATUS);
+> > -                               if (ctrl & ONENAND_CTRL_ONGO) {
+> > +                               if (ctrl & ONENAND_CTRL_ONGO &&
+> > +                                   !this->ongoing) {
+> >                                        /*
+> >                                         * The operation seems to be still going
+> >                                         * so give it some more time.
+> > @@ -269,7 +271,11 @@ retry:
+> >                return -EIO;
+> >        }
+> >
+> > -       if (ctrl & 0xFE9F)
+> > +       ctrl_mask = 0xFE9F;
+> > +       if (this->ongoing)
+> > +               ctrl_mask &= ~0x8000;
+> > +
+> > +       if (ctrl & ctrl_mask)
+> >                wait_warn("unexpected controller status", state, ctrl, intr);
+> >
+> >        return 0;
+> > diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+> > index 6b3a875..b2c3e97 100644
+> > --- a/drivers/mtd/onenand/onenand_base.c
+> > +++ b/drivers/mtd/onenand/onenand_base.c
+> > @@ -440,6 +440,19 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
+> >                default:
+> >                        if (ONENAND_IS_2PLANE(this) && cmd == ONENAND_CMD_PROG)
+> >                                cmd = ONENAND_CMD_2X_PROG;
+> > +
+> > +                       /* Exclude 1st OTP and OTP blocks */
+> Are there any reason? I think 1st OTP block is just block 0 so no need
+> to consider block 0 case.
 
-pread: Not a typewriter
 
-which is the wrong error. Here's strace showing the issue:
+Specification tells:
+3.9.1 Cache Program Operation
+"Note that Cache Program command cannot be performed on OTP block and 1st block OTP"
 
-open("/sdcard/mtd5.dump", O_WRONLY|O_CREAT|O_TRUNC|O_LARGEFILE, 0644) = 4
-ioctl(4, TCGETS or SNDCTL_TMR_TIMEBASE, 0xbee43ab0) = -1 ENOTTY (Not a
-typewriter)
-write(2, "Block size 131072, page size 204"..., 47) = 47
-write(2, "Dumping data starting at 0x00000"..., 64) = 64
-ioctl(3, 0x40084d0b, 0xbee43c30)        = 0
-pread(3, "", 2048, 0)                   = 0
-write(2, "pread", 5)                    = 5
-write(2, ": ", 2)                       = 2
-write(2, "Not a typewriter", 16)        = 16
-write(2, "\n", 1)                       = 1
 
-And the included patch (below, against v1.4.1, but simple enough)
-should take care of it.
+> > +                       if (ONENAND_IS_CACHE_PROGRAM(this) &&
+> > +                           likely(onenand_block(this, addr) != 0) &&
+> > +                           ONENAND_IS_4KB_PAGE(this)) {
+> and I think no need to check 4KB_PAGE.
 
-Though if someone knows what could be causing the pread() to keep
-failing, I'd be interested in hearing it! And the mtd device is
-reported as having a page size of 2048 and oob size 56, so to get even
-this far I added that as a valid page size. Isn't it?
 
-diff --git a/nanddump.c b/nanddump.c
-index 709b2db..ba370ad 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -374,6 +374,7 @@ int main(int argc, char * const argv[])
-                close(fd);
-                exit(EXIT_FAILURE);
-        }
-+       errno = 0;
+This patch is for 4kb page onenand only. The 2kb page onenand uses different
+commands for cache program. Also 2kb page case cache program depends on
+CONFIG_MTD_ONENAND_2X_PROGRAM.
 
-        /* Initialize start/end addresses and block size */
-        if (length)
+
+> > +
+> > +                               if (cmd == ONENAND_CMD_CACHE_PROG)
+> > +                                       cmd = ONENAND_CMD_2X_CACHE_PROG;
+> > +                               else if (cmd == ONENAND_CMD_CACHE_PROG_LAST)
+> > +                                       cmd = ONENAND_CMD_PROG;
+> > +
+> > +                       }
+> > +
+> >                        dataram = ONENAND_CURRENT_BUFFERRAM(this);
+> >                        break;
+> >                }
+> > @@ -1845,7 +1858,7 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+> >        const u_char *buf = ops->datbuf;
+> >        const u_char *oob = ops->oobbuf;
+> >        u_char *oobbuf;
+> > -       int ret = 0;
+> > +       int ret = 0, cmd;
+> >
+> >        DEBUG(MTD_DEBUG_LEVEL3, "%s: to = 0x%08x, len = %i\n",
+> >                __func__, (unsigned int) to, (int) len);
+> > @@ -1954,7 +1967,25 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
+> >                        ONENAND_SET_NEXT_BUFFERRAM(this);
+> >                }
+> >
+> > -               this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
+> > +               this->ongoing = 0;
+> > +
+> > +               /* Exclude 1st OTP and OTP blocks */
+> > +               if (ONENAND_IS_CACHE_PROGRAM(this) &&
+> > +                   likely(onenand_block(this, to) != 0) &&
+> > +                   ONENAND_IS_4KB_PAGE(this)) {
+> check the length here instead of 4KB_PAGE.
+
+
+This patch is for 4kb page onenand only. The 2kb page onenand uses different
+commands for cache program.
+
+
+> > +
+> > +                       if ((written + thislen) < len) {
+> > +                               cmd = ONENAND_CMD_CACHE_PROG;
+> > +                               this->ongoing = 1;
+> > +                       } else {
+> > +                               cmd = ONENAND_CMD_CACHE_PROG_LAST;
+> > +                       }
+> Need to check how to pass the cmd properly. How/When send the CACHE_PROG_LAST?
+
+
+CACHE_PROG_LAST command must be sent for last programmed piece of data, that is
+(written + thislen) >= len.
+
+
+> > +
+> > +               } else {
+> > +                       cmd = ONENAND_CMD_PROG;
+> > +               }
+> > +
+> > +               this->command(mtd, cmd, to, mtd->writesize);
+> >
+> >                /*
+> >                 * 2 PLANE, MLC, and Flex-OneNAND wait here
+> > @@ -3380,6 +3411,8 @@ static void onenand_check_features(struct mtd_info *mtd)
+> >                else if (numbufs == 1)
+> >                        this->options |= ONENAND_HAS_4KB_PAGE;
+> >
+> > +               this->options |= ONENAND_HAS_CACHE_PROGRAM;
+> It also needs to set CACHE_PROGRAM option.
+
+
+Sorry. What do mean here?
+
+
+> > +
+> >        case ONENAND_DEVICE_DENSITY_2Gb:
+> >                /* 2Gb DDP does not have 2 plane */
+> >                if (!ONENAND_IS_DDP(this))
+> > @@ -3415,6 +3448,8 @@ static void onenand_check_features(struct mtd_info *mtd)
+> >                printk(KERN_DEBUG "Chip has 2 plane\n");
+> >        if (this->options & ONENAND_HAS_4KB_PAGE)
+> >                printk(KERN_DEBUG "Chip has 4KiB pagesize\n");
+> > +       if (this->options & ONENAND_HAS_CACHE_PROGRAM)
+> > +               printk(KERN_DEBUG "Chip has cache program feature\n");
+> >  }
+> 
+> Thank you,
+> Kyungmin Park
