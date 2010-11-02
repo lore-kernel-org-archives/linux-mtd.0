@@ -1,20 +1,26 @@
-Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PD5cR-0000jZ-L9
-	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 01:25:00 +0000
-From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>,
-	"kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Content-Class: urn:content-classes:message
-Date: Tue, 2 Nov 2010 01:24:54 +0000
-Subject: RE: [PATCH] trivial: nandsim.c spell fixes in comments
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EEF9923@Cloud.RL.local>
-In-Reply-To: <AANLkTimGScstLNC2Hs1v-h6BF0y8GFTw4TJw8JEt+j8X@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PD5gd-0000oV-Hz
+	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 01:29:21 +0000
+Received: from epmmp2 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(Sun Java(tm) System Messaging Server 7u3-15.01 64bit (built Feb 12
+	2010)) with ESMTP id <0LB800A7VHGBMB80@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 10:28:59 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LB8007QSHGC0D@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 10:29:00 +0900 (KST)
+Date: Tue, 02 Nov 2010 10:28:46 +0900
+From: Kyungmin Park <kmpark@infradead.org>
+Subject: [PATCH] mtd: OneNAND: Fix page offset handling at 2KiB pagesize
+To: linux-mtd@lists.infradead.org
+Message-id: <20101102012846.GA2470@july>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
+Cc: dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-linux-mtd-bounces@lists.infradead.org wrote:
-> attached patch has trivial spell fixes in comments in nandsim.c
-> Signed-off-by: srimugunthan  <srimugunthan.dhandapani@gmail.com>
->
-> ------
-> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-> index a6a73aa..697979c 100644 --- a/drivers/mtd/nand/nandsim.c
-> +++ b/drivers/mtd/nand/nandsim.c
+From: Kyungmin Park <kyungmin.park@samsung.com>
 
-...
+When use the 2KiB pagesize, it should be set the correct page offset.
 
-> - * only needed for page programm operation with preceeded read command
-> + * only needed for page programm operation with preceded read command
-
-Might as well fix programm -> program while you are there?
-
---
-Jon Povey
-jon.povey@racelogic.co.uk
-
-Racelogic is a limited company registered in England. Registered number 274=
-3719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
-ks, MK18 1TB .
-
-The information contained in this electronic mail transmission is intended =
-by Racelogic Ltd for the use of the named individual or entity to which it =
-is directed and may contain information that is confidential or privileged.=
- If you have received this electronic mail transmission in error, please de=
-lete it from your system without copying or forwarding it, and notify the s=
-ender of the error by reply email so that the sender's address records can =
-be corrected. The views expressed by the sender of this communication do no=
-t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
-reserves the right to monitor e-mail communications passing through its net=
-work
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+diff --git a/drivers/mtd/onenand/samsung.c b/drivers/mtd/onenand/samsung.c
+index 0de7a05..a4c74a9 100644
+--- a/drivers/mtd/onenand/samsung.c
++++ b/drivers/mtd/onenand/samsung.c
+@@ -651,7 +651,7 @@ static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
+ 	void __iomem *p;
+ 	void *buf = (void *) buffer;
+ 	dma_addr_t dma_src, dma_dst;
+-	int err, page_dma = 0;
++	int err, ofs, page_dma = 0;
+ 	struct device *dev = &onenand->pdev->dev;
+ 
+ 	p = this->base + area;
+@@ -677,10 +677,13 @@ static int s5pc110_read_bufferram(struct mtd_info *mtd, int area,
+ 		if (!page)
+ 			goto normal;
+ 
++		/* Page offset */
++		ofs = ((size_t) buf & ~PAGE_MASK);
+ 		page_dma = 1;
++
+ 		/* DMA routine */
+ 		dma_src = onenand->phys_base + (p - this->base);
+-		dma_dst = dma_map_page(dev, page, 0, count, DMA_FROM_DEVICE);
++		dma_dst = dma_map_page(dev, page, ofs, count, DMA_FROM_DEVICE);
+ 	} else {
+ 		/* DMA routine */
+ 		dma_src = onenand->phys_base + (p - this->base);
