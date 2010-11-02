@@ -1,16 +1,20 @@
-Received: from rcsinet10.oracle.com ([148.87.113.121])
+Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PD2Fc-0006VM-Ur
-	for linux-mtd@lists.infradead.org; Mon, 01 Nov 2010 21:49:17 +0000
-Date: Mon, 1 Nov 2010 14:47:29 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: lkml <linux-kernel@vger.kernel.org>
-Subject: [PATCH] mtd: fix nand kernel-doc warnings
-Message-Id: <20101101144729.e0c58fec.randy.dunlap@oracle.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+	id 1PD5cR-0000jZ-L9
+	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 01:25:00 +0000
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: srimugunthan dhandapani <srimugunthan.dhandapani@gmail.com>,
+	"kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Content-Class: urn:content-classes:message
+Date: Tue, 2 Nov 2010 01:24:54 +0000
+Subject: RE: [PATCH] trivial: nandsim.c spell fixes in comments
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093EEF9923@Cloud.RL.local>
+In-Reply-To: <AANLkTimGScstLNC2Hs1v-h6BF0y8GFTw4TJw8JEt+j8X@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+linux-mtd-bounces@lists.infradead.org wrote:
+> attached patch has trivial spell fixes in comments in nandsim.c
+> Signed-off-by: srimugunthan  <srimugunthan.dhandapani@gmail.com>
+>
+> ------
+> diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+> index a6a73aa..697979c 100644 --- a/drivers/mtd/nand/nandsim.c
+> +++ b/drivers/mtd/nand/nandsim.c
 
-Warning(include/linux/mtd/nand.h:543): No description found for parameter 'badblockbits'
-Warning(drivers/mtd/nand/nand_bbt.c:1101): No description found for parameter 'mtd'
+...
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
----
- drivers/mtd/nand/nand_bbt.c |    3 ++-
- include/linux/mtd/nand.h    |    2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+> - * only needed for page programm operation with preceeded read command
+> + * only needed for page programm operation with preceded read command
 
---- linux-2.6.36-git17.orig/include/linux/mtd/nand.h
-+++ linux-2.6.36-git17/include/linux/mtd/nand.h
-@@ -448,6 +448,8 @@ struct nand_buffers {
-  *			See the defines for further explanation.
-  * @badblockpos:	[INTERN] position of the bad block marker in the oob
-  *			area.
-+ * @badblockbits:	[INTERN] number of bits to left-shift the bad block
-+ *			number
-  * @cellinfo:		[INTERN] MLC/multichip data from chip ident
-  * @numchips:		[INTERN] number of physical chips
-  * @chipsize:		[INTERN] the size of one chip for multichip arrays
---- linux-2.6.36-git17.orig/drivers/mtd/nand/nand_bbt.c
-+++ linux-2.6.36-git17/drivers/mtd/nand/nand_bbt.c
-@@ -1092,7 +1092,8 @@ static void mark_bbt_region(struct mtd_i
- 
- /**
-  * verify_bbt_descr - verify the bad block description
-- * @bd:			the table to verify
-+ * @mtd:	MTD device structure
-+ * @bd:		the table to verify
-  *
-  * This functions performs a few sanity checks on the bad block description
-  * table.
+Might as well fix programm -> program while you are there?
+
+--
+Jon Povey
+jon.povey@racelogic.co.uk
+
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
+
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
