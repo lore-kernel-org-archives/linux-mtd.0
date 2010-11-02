@@ -1,23 +1,17 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDHQe-0000SN-CC
-	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 14:01:38 +0000
-Received: by pvg7 with SMTP id 7so917321pvg.36
+	id 1PDHzA-0005Du-88
+	for linux-mtd@lists.infradead.org; Tue, 02 Nov 2010 14:37:17 +0000
+Received: by gxk25 with SMTP id 25so4408035gxk.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 02 Nov 2010 07:01:35 -0700 (PDT)
+	Tue, 02 Nov 2010 07:37:14 -0700 (PDT)
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1288697130-12772-1-git-send-email-roman.tereshonkov@nokia.com>
-References: <1288697130-12772-1-git-send-email-roman.tereshonkov@nokia.com>
-Date: Tue, 2 Nov 2010 23:01:35 +0900
-Message-ID: <AANLkTikxkdX4CGn5ofMRzwoHch-PoOEgPaYXrg_50cpx@mail.gmail.com>
-Subject: Re: [PATCH 0/3] mtd: onenand: add cache program feature for 4kb page
-	onenand
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+Date: Tue, 2 Nov 2010 15:37:13 +0100
+Message-ID: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
+Subject: Suggested patch: reset errno after isatty()
+From: Ketil Froyn <ketil@froyn.name>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,37 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+isatty() uses an ioctl and the resulting error code to determine if an
+fd is a tty or not. If it isn't, errno is set to ENOTTY. Later in the
+code, pread() fails, or rather returns 0 immediately. When this
+happens, the following perror("pread") tells me:
 
-Thank you for your works.
+pread: Not a typewriter
 
-I'll check your patch in my board, 2KiB & 4KiB pagesize.
+which is the wrong error. Here's strace showing the issue:
 
-Thank you,
-Kyungmin Park
+open("/sdcard/mtd5.dump", O_WRONLY|O_CREAT|O_TRUNC|O_LARGEFILE, 0644) = 4
+ioctl(4, TCGETS or SNDCTL_TMR_TIMEBASE, 0xbee43ab0) = -1 ENOTTY (Not a
+typewriter)
+write(2, "Block size 131072, page size 204"..., 47) = 47
+write(2, "Dumping data starting at 0x00000"..., 64) = 64
+ioctl(3, 0x40084d0b, 0xbee43c30)        = 0
+pread(3, "", 2048, 0)                   = 0
+write(2, "pread", 5)                    = 5
+write(2, ": ", 2)                       = 2
+write(2, "Not a typewriter", 16)        = 16
+write(2, "\n", 1)                       = 1
 
-On Tue, Nov 2, 2010 at 8:25 PM, Roman Tereshonkov
-<roman.tereshonkov@nokia.com> wrote:
-> Implement cache program feature for 4KB page onenand.
-> This feature improves the write data performance.
-> The observed 128KB data program speed change is
-> from 8827KB/s to 14156 KB/s when the feature is enabled.
->
-> Roman Tereshonkov (3):
-> =A0mtd: onenand: add option and variable for cache program feature
-> =A0mtd: onenand: introduce not "real" commands for cache program
-> =A0 =A0feature.
-> =A0mtd: onenand: implement cache program feature for 4kb page onenand
->
-> =A0drivers/mtd/onenand/omap2.c =A0 =A0 =A0 =A0| =A0 12 ++++++++--
-> =A0drivers/mtd/onenand/onenand_base.c | =A0 39 ++++++++++++++++++++++++++=
-++++++++-
-> =A0include/linux/mtd/onenand.h =A0 =A0 =A0 =A0| =A0 12 +++++++++++
-> =A0include/linux/mtd/onenand_regs.h =A0 | =A0 =A02 +
-> =A04 files changed, 60 insertions(+), 5 deletions(-)
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+And the included patch (below, against v1.4.1, but simple enough)
+should take care of it.
+
+Though if someone knows what could be causing the pread() to keep
+failing, I'd be interested in hearing it! And the mtd device is
+reported as having a page size of 2048 and oob size 56, so to get even
+this far I added that as a valid page size. Isn't it?
+
+diff --git a/nanddump.c b/nanddump.c
+index 709b2db..ba370ad 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -374,6 +374,7 @@ int main(int argc, char * const argv[])
+                close(fd);
+                exit(EXIT_FAILURE);
+        }
++       errno = 0;
+
+        /* Initialize start/end addresses and block size */
+        if (length)
