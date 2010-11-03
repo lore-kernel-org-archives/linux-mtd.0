@@ -1,21 +1,19 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDdC6-0007La-HD
-	for linux-mtd@lists.infradead.org; Wed, 03 Nov 2010 13:16:03 +0000
-Received: by qwh6 with SMTP id 6so17110qwh.36
+	id 1PDkuD-0008SW-8z
+	for linux-mtd@lists.infradead.org; Wed, 03 Nov 2010 21:30:06 +0000
+Received: by qyk32 with SMTP id 32so552650qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 03 Nov 2010 06:16:01 -0700 (PDT)
+	Wed, 03 Nov 2010 14:30:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4CD11C03.3090207@parrot.com>
-References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
-	<4CD11C03.3090207@parrot.com>
-Date: Wed, 3 Nov 2010 14:16:01 +0100
-Message-ID: <AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
-Subject: Re: Suggested patch: reset errno after isatty()
-From: Ketil Froyn <ketil@froyn.name>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 3 Nov 2010 23:30:02 +0200
+Message-ID: <AANLkTimKc_EtT6NEwbga8g7AKoGnDSt7UMQwgou_jCXD@mail.gmail.com>
+Subject: ubi deadlock on .36+
+From: Grazvydas Ignotas <notasas@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 3, 2010 at 9:23 AM, Matthieu CASTET
-<matthieu.castet@parrot.com> wrote:
+Hi,
 
-> Why errno is checked when pread return 0 ?
-> Errno should be checked only when return is -1.
+there seems to be some issue with NAND on my OMAP3 board that causes
+CRC errors on 2.6.36 and 2.6.37-rc1. Those seem to be triggering a bug
+in UBI that makes it loop forever (or very long) printing this:
 
-Good point, and I guess that was why I was getting weird errors in the
-first place, because errno was checked when no error had occurred. Odd
-that pread() returned 0 when trying to read on my android device -
-maybe a bionic bug?
+uncorrectable error :
+UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes
+from PEB 0:512, read 512 bytes
+uncorrectable error :
+UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes
+from PEB 68:512, read 512 bytes
+UBI: run torture test for PEB 68
+UBI: PEB 68 passed torture test, do not mark it a bad
 
-This code has been rewritten, but the new master isn't working for me
-(yet). This patch against v1.4.1 seems to have solved my problems for
-now. I've just replaced pread() with read(), because it works, and
-fixed up the error checking.
 
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -412,10 +412,25 @@ int main(int argc, char * const argv[])
-                        memset (readbuf, 0xff, bs);
-                } else {
-                        /* Read page data and exit on failure */
--                       if (pread(fd, readbuf, bs, ofs) != bs) {
--                               perror("pread");
--                               goto closeall;
--                       }
-+                       do {
-+                               ret = read(fd, readbuf, bs);
-+                               if (ret == -1) {
-+                                       if (errno == EAGAIN || errno == EINTR) {
-+                                               continue;
-+                                       }
-+                                       perror("read");
-+                                       goto closeall;
-+                               }
-+                               if (ret == 0) {
-+                                       printf("No more data to read\n");
-+                                       break;
-+                               }
-+                               if (ret != bs) {
-+                                       fprintf(stderr, "read() got
-wrong number of bytes: got %i, expected %i\n", ret, bs);
-+                                       goto closeall;
-+                               }
-+                               break;
-+                       } while (1);
-                }
+here is full log of one minute session, after which I killed power:
+http://notaz.gp2x.de/misc/pnd/logs/linux_20101103_ubi_lockup
 
-                /* ECC stats available ? */
+
+Gra=C5=BEvydas
