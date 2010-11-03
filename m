@@ -1,12 +1,14 @@
 Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDYjt-0007lK-6u
+	id 1PDYjt-0007lM-69
 	for linux-mtd@lists.infradead.org; Wed, 03 Nov 2010 08:30:37 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 01/10] mtd-utils: nanddump: Allow 64-bit lengths
-Date: Wed, 3 Nov 2010 01:27:18 -0700
-Message-ID: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 04/10] mtd-utils: nandwrite: switch "oobsize" for "writesize"
+Date: Wed, 3 Nov 2010 01:27:21 -0700
+Message-ID: <1288772847-8120-4-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
+References: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -23,26 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We should allow the dump length to be 64-bit, especially since the value
-was read in as a "long long" by strtoll().
+The text of a printf() states that we're printing OOB area, but the
+corresponding argument passes writesize. That probably wasn't the intent.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nanddump.c |    2 +-
+ nandwrite.c |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/nanddump.c b/nanddump.c
-index 86a71c9..fe29596 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -83,7 +83,7 @@ static bool			noecc = false;		// don't error correct
- static bool			noskipbad = false;	// don't skip bad blocks
- static bool			omitoob = false;	// omit oob data
- static unsigned long long	start_addr;		// start address
--static unsigned long		length;			// dump length
-+static unsigned long long	length;			// dump length
- static const char		*mtddev;		// mtd device name
- static const char		*dumpfile;		// dump file name
- static bool			omitbad = false;
+diff --git a/nandwrite.c b/nandwrite.c
+index 66a9ef7..a3ac968 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -433,7 +433,7 @@ int main(int argc, char * const argv[])
+ 	// Check, if length fits into device
+ 	if (((imglen / pagelen) * meminfo.writesize) > (meminfo.size - mtdoffset)) {
+ 		fprintf(stderr, "Image %d bytes, NAND page %d bytes, OOB area %u bytes, device size %u bytes\n",
+-				imglen, pagelen, meminfo.writesize, meminfo.size);
++				imglen, pagelen, meminfo.oobsize, meminfo.size);
+ 		perror("Input file does not fit into device");
+ 		goto closeall;
+ 	}
 -- 
 1.7.0.4
