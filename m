@@ -1,12 +1,13 @@
 Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDYk0-0007nG-A6
-	for linux-mtd@lists.infradead.org; Wed, 03 Nov 2010 08:30:48 +0000
+	id 1PDYk0-0007nF-9u
+	for linux-mtd@lists.infradead.org; Wed, 03 Nov 2010 08:30:49 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 02/10] mtd-utils: nandwrite: Comment, style fixups
-Date: Wed, 3 Nov 2010 01:27:19 -0700
-Message-ID: <1288772847-8120-2-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 03/10] mtd-utils: nandwrite: Clarify usage of aligned
+	"erasesize"
+Date: Wed, 3 Nov 2010 01:27:20 -0700
+Message-ID: <1288772847-8120-3-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
 References: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -25,58 +26,115 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Comment on "blockalign" default value is incorrect; it only defaults
-to a 1x multiplier of the actual block size. Perhaps this is a relic
-of early NAND where all block sizes were 16KB?
-
-Reformatted a multi-line comment.
-
-Changed separete "if" statements to a combined "if-else-if" since they
-were logically combinable. Should have no effect on results with minor
-effect on efficiency.
+Due to the presence of the "--block-align" flag, nandwrite uses a
+blocksize throughout that, depeding on the execution parameters, may
+not be the actual erasesize of the NAND flash. In order to clarify
+this situation for the untrained viewer of nandwrite's code, we should
+not change the value of "meminfo.erasesize" itself; rather, we can
+utilize a separate, calculated "ebsize_aligned". Then, when a user
+actually wants to refer to the physical erasesize, it's straightforward.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nandwrite.c |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
+ nandwrite.c |   30 +++++++++++++++++-------------
+ 1 files changed, 17 insertions(+), 13 deletions(-)
 
 diff --git a/nandwrite.c b/nandwrite.c
-index b0c4366..3fbfca9 100644
+index 3fbfca9..66a9ef7 100644
 --- a/nandwrite.c
 +++ b/nandwrite.c
-@@ -120,7 +120,7 @@ static bool		forcelegacy = false;
- static bool		noecc = false;
- static bool		noskipbad = false;
- static bool		pad = false;
--static int		blockalign = 1; /* default to using 16K block size */
-+static int		blockalign = 1; /* default to using actual block size */
+@@ -275,6 +275,7 @@ int main(int argc, char * const argv[])
+ 	// points to the OOB for the current page in filebuf
+ 	unsigned char *oobreadbuf = NULL;
+ 	unsigned char *oobbuf = NULL;
++	int ebsize_aligned;
  
- static void process_options(int argc, char * const argv[])
- {
-@@ -483,8 +483,7 @@ int main(int argc, char * const argv[])
- 				if ((ret = ioctl(fd, MEMGETBADBLOCK, &offs)) < 0) {
- 					perror("ioctl(MEMGETBADBLOCK)");
- 					goto closeall;
--				}
--				if (ret == 1) {
-+				} else if (ret == 1) {
- 					baderaseblock = true;
- 					if (!quiet)
- 						fprintf(stderr, "Bad block at %x, %u block(s) "
-@@ -520,9 +519,11 @@ int main(int argc, char * const argv[])
+ 	process_options(argc, argv);
  
- 			/* No padding needed - we are done */
- 			if (tinycnt == 0) {
--				// For standard input, set the imglen to 0 to signal
--				// the end of the "file". For non standard input, leave
--				// it as-is to detect an early EOF
-+				/*
-+				 * For standard input, set imglen to 0 to signal
-+				 * the end of the "file". For nonstandard input,
-+				 * leave it as-is to detect an early EOF.
-+				 */
- 				if (ifd == STDIN_FILENO) {
- 					imglen = 0;
+@@ -296,9 +297,12 @@ int main(int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
+-	/* Set erasesize to specified number of blocks - to match jffs2
+-	 * (virtual) block size */
+-	meminfo.erasesize *= blockalign;
++	/*
++	 * Pretend erasesize is specified number of blocks - to match jffs2
++	 *   (virtual) block size
++	 * Use this value throughout unless otherwise necessary
++	 */
++	ebsize_aligned = meminfo.erasesize * blockalign;
+ 
+ 	if (mtdoffset & (meminfo.writesize - 1)) {
+ 		fprintf(stderr, "The start address is not page-aligned !\n"
+@@ -435,7 +439,7 @@ int main(int argc, char * const argv[])
+ 	}
+ 
+ 	// Allocate a buffer big enough to contain all the data (OOB included) for one eraseblock
+-	filebuf_max = pagelen * meminfo.erasesize / meminfo.writesize;
++	filebuf_max = pagelen * ebsize_aligned / meminfo.writesize;
+ 	filebuf = xmalloc(filebuf_max);
+ 	erase_buffer(filebuf, filebuf_max);
+ 
+@@ -459,8 +463,8 @@ int main(int argc, char * const argv[])
+ 		 * skipped block(s) is also bad (number of blocks depending on
+ 		 * the blockalign).
+ 		 */
+-		while (blockstart != (mtdoffset & (~meminfo.erasesize + 1))) {
+-			blockstart = mtdoffset & (~meminfo.erasesize + 1);
++		while (blockstart != (mtdoffset & (~ebsize_aligned + 1))) {
++			blockstart = mtdoffset & (~ebsize_aligned + 1);
+ 			offs = blockstart;
+ 
+ 			// if writebuf == filebuf, we are rewinding so we must not
+@@ -474,7 +478,7 @@ int main(int argc, char * const argv[])
+ 			baderaseblock = false;
+ 			if (!quiet)
+ 				fprintf(stdout, "Writing data to block %d at offset 0x%x\n",
+-						 blockstart / meminfo.erasesize, blockstart);
++						 blockstart / ebsize_aligned, blockstart);
+ 
+ 			/* Check all the blocks in an erase block for bad blocks */
+ 			if (noskipbad)
+@@ -492,10 +496,10 @@ int main(int argc, char * const argv[])
  				}
+ 
+ 				if (baderaseblock) {
+-					mtdoffset = blockstart + meminfo.erasesize;
++					mtdoffset = blockstart + ebsize_aligned;
+ 				}
+-				offs +=  meminfo.erasesize / blockalign;
+-			} while (offs < blockstart + meminfo.erasesize);
++				offs +=  ebsize_aligned / blockalign;
++			} while (offs < blockstart + ebsize_aligned);
+ 
+ 		}
+ 
+@@ -642,7 +646,7 @@ int main(int argc, char * const argv[])
+ 			writebuf = filebuf;
+ 
+ 			erase.start = blockstart;
+-			erase.length = meminfo.erasesize;
++			erase.length = ebsize_aligned;
+ 			fprintf(stderr, "Erasing failed write from %08lx-%08lx\n",
+ 				(long)erase.start, (long)erase.start+erase.length-1);
+ 			if (ioctl(fd, MEMERASE, &erase) != 0) {
+@@ -654,14 +658,14 @@ int main(int argc, char * const argv[])
+ 			}
+ 
+ 			if (markbad) {
+-				loff_t bad_addr = mtdoffset & (~(meminfo.erasesize / blockalign) + 1);
++				loff_t bad_addr = mtdoffset & (~meminfo.erasesize + 1);
+ 				fprintf(stderr, "Marking block at %08lx bad\n", (long)bad_addr);
+ 				if (ioctl(fd, MEMSETBADBLOCK, &bad_addr)) {
+ 					perror("MEMSETBADBLOCK");
+ 					goto closeall;
+ 				}
+ 			}
+-			mtdoffset = blockstart + meminfo.erasesize;
++			mtdoffset = blockstart + ebsize_aligned;
+ 
+ 			continue;
+ 		}
 -- 
 1.7.0.4
