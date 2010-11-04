@@ -1,19 +1,23 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDkuD-0008SW-8z
-	for linux-mtd@lists.infradead.org; Wed, 03 Nov 2010 21:30:06 +0000
-Received: by qyk32 with SMTP id 32so552650qyk.15
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 03 Nov 2010 14:30:03 -0700 (PDT)
-MIME-Version: 1.0
-Date: Wed, 3 Nov 2010 23:30:02 +0200
-Message-ID: <AANLkTimKc_EtT6NEwbga8g7AKoGnDSt7UMQwgou_jCXD@mail.gmail.com>
-Subject: ubi deadlock on .36+
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+From: "Ghorai, Sukumar" <s-ghorai@ti.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+Date: Thu, 4 Nov 2010 06:32:17 +0530
+Subject: RE: [PATCH RESEND v5 4/5] omap: nand: ecc layout select from board
+	file
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B0356BABFAE@dbde02.ent.ti.com>
+References: <1285596710-25658-1-git-send-email-s-ghorai@ti.com>
+	<1285596710-25658-5-git-send-email-s-ghorai@ti.com>
+	<AANLkTikKMnzHR5DZqzGdJJbnCXhCpxKA7K2C2ZtPhNke@mail.gmail.com>
+In-Reply-To: <AANLkTikKMnzHR5DZqzGdJJbnCXhCpxKA7K2C2ZtPhNke@mail.gmail.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
+	Vimal Singh <vimalsingh@ti.com>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-there seems to be some issue with NAND on my OMAP3 board that causes
-CRC errors on 2.6.36 and 2.6.37-rc1. Those seem to be triggering a bug
-in UBI that makes it loop forever (or very long) printing this:
-
-uncorrectable error :
-UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes
-from PEB 0:512, read 512 bytes
-uncorrectable error :
-UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes
-from PEB 68:512, read 512 bytes
-UBI: run torture test for PEB 68
-UBI: PEB 68 passed torture test, do not mark it a bad
 
 
-here is full log of one minute session, after which I killed power:
-http://notaz.gp2x.de/misc/pnd/logs/linux_20101103_ubi_lockup
-
-
-Gra=C5=BEvydas
+> -----Original Message-----
+> From: Grazvydas Ignotas [mailto:notasas@gmail.com]
+> Sent: Wednesday, November 03, 2010 6:33 PM
+> To: Ghorai, Sukumar
+> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
+> kernel@lists.infradead.org; Vimal Singh; Artem.Bityutskiy@nokia.com
+> Subject: Re: [PATCH RESEND v5 4/5] omap: nand: ecc layout select from
+> board file
+>=20
+> On Mon, Sep 27, 2010 at 5:11 PM, Sukumar Ghorai <s-ghorai@ti.com> wrote:
+> > This patch makes it possible to select sw or hw (different layout
+> options)
+> > ecc scheme supported by omap nand driver. =A0And hw ecc layout selected
+> for
+> > sdp and zoom boards, by default.
+> >
+> > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+> > Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+>=20
+> Any news on this? Commit 2c01946c accidentally (?) enabled hardware
+> ECC and now my board is broken, as the driver always used sw ecc and
+> my NAND partitions are formatted accordingly. We should at least
+> switch the default back to sw ecc, don't you think?
+[Ghorai]=20
+1. which board you are working.=20
+2. and the default layout is the same as previous=20
++       board_nand_data.ecc_opt         =3D OMAP_ECC_HAMMING_CODE_DIFF_LAYO=
+UT;
