@@ -1,23 +1,22 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDoPr-0005t4-RF
-	for linux-mtd@lists.infradead.org; Thu, 04 Nov 2010 01:15:01 +0000
-Received: by pvg7 with SMTP id 7so510336pvg.36
+	id 1PDuJF-00022M-Td
+	for linux-mtd@lists.infradead.org; Thu, 04 Nov 2010 07:32:35 +0000
+Received: by bwz5 with SMTP id 5so1349451bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 03 Nov 2010 18:14:57 -0700 (PDT)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1288781721-31771-1-git-send-email-roman.tereshonkov@nokia.com>
-References: <1288781721-31771-1-git-send-email-roman.tereshonkov@nokia.com>
-Date: Thu, 4 Nov 2010 10:14:57 +0900
-Message-ID: <AANLkTikUSTnPedgdP19_bNbhOtSdfApdyCLKMyn+6Ext@mail.gmail.com>
-Subject: Re: [PATCHv2 0/3] mtd: onenand: add cache program feature for 4kb
-	page onenand
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+	Thu, 04 Nov 2010 00:32:31 -0700 (PDT)
+Subject: Re: ubi deadlock on .36+
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Grazvydas Ignotas <notasas@gmail.com>
+In-Reply-To: <AANLkTimKc_EtT6NEwbga8g7AKoGnDSt7UMQwgou_jCXD@mail.gmail.com>
+References: <AANLkTimKc_EtT6NEwbga8g7AKoGnDSt7UMQwgou_jCXD@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 04 Nov 2010 09:29:09 +0200
+Message-ID: <1288855749.2075.7.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2010-11-03 at 23:30 +0200, Grazvydas Ignotas wrote:
+> Hi,
+> 
+> there seems to be some issue with NAND on my OMAP3 board that causes
+> CRC errors on 2.6.36 and 2.6.37-rc1. Those seem to be triggering a bug
+> in UBI that makes it loop forever (or very long) printing this:
+> 
+> uncorrectable error :
+> UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes
+> from PEB 0:512, read 512 bytes
+> uncorrectable error :
+> UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes
+> from PEB 68:512, read 512 bytes
+> UBI: run torture test for PEB 68
+> UBI: PEB 68 passed torture test, do not mark it a bad
+> 
+> 
+> here is full log of one minute session, after which I killed power:
+> http://notaz.gp2x.de/misc/pnd/logs/linux_20101103_ubi_lockup
 
-One concern is that after apply patch, there are some 1-bit ECC
-warnings so UBI scrubbing messages are displayed.
+Hmm, could you please enable UBI debugging and provide me the logs? See
+here for some hints:
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_how_send_bugreport
 
-Are there these message at your board?
-
-Thank you,
-Kyungmin Park
-
-On Wed, Nov 3, 2010 at 7:55 PM, Roman Tereshonkov
-<roman.tereshonkov@nokia.com> wrote:
-> Implement cache program feature for 4KB page onenand.
-> This feature improves the write data performance.
-> The observed 128KB data program speed change is
-> from 8827KB/s to 14156 KB/s when the feature is enabled.
->
-> Roman Tereshonkov (3):
-> =A0mtd: onenand: add option and variable for cache program feature
-> =A0mtd: onenand: fix omap2 code to handle cache program feature
-> =A0mtd: onenand: implement cache program feature for 4kb page onenand
->
-> =A0drivers/mtd/onenand/omap2.c =A0 =A0 =A0 =A0| =A0 12 +++++++++---
-> =A0drivers/mtd/onenand/onenand_base.c | =A0 22 +++++++++++++++++++---
-> =A0include/linux/mtd/onenand.h =A0 =A0 =A0 =A0| =A0 12 ++++++++++++
-> =A03 files changed, 40 insertions(+), 6 deletions(-)
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
