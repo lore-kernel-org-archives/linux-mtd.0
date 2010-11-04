@@ -1,23 +1,23 @@
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Grazvydas Ignotas <notasas@gmail.com>
-Date: Thu, 4 Nov 2010 06:32:17 +0530
-Subject: RE: [PATCH RESEND v5 4/5] omap: nand: ecc layout select from board
-	file
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B0356BABFAE@dbde02.ent.ti.com>
-References: <1285596710-25658-1-git-send-email-s-ghorai@ti.com>
-	<1285596710-25658-5-git-send-email-s-ghorai@ti.com>
-	<AANLkTikKMnzHR5DZqzGdJJbnCXhCpxKA7K2C2ZtPhNke@mail.gmail.com>
-In-Reply-To: <AANLkTikKMnzHR5DZqzGdJJbnCXhCpxKA7K2C2ZtPhNke@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PDoPr-0005t4-RF
+	for linux-mtd@lists.infradead.org; Thu, 04 Nov 2010 01:15:01 +0000
+Received: by pvg7 with SMTP id 7so510336pvg.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 03 Nov 2010 18:14:57 -0700 (PDT)
 MIME-Version: 1.0
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	Vimal Singh <vimalsingh@ti.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Sender: kyungmin78@gmail.com
+In-Reply-To: <1288781721-31771-1-git-send-email-roman.tereshonkov@nokia.com>
+References: <1288781721-31771-1-git-send-email-roman.tereshonkov@nokia.com>
+Date: Thu, 4 Nov 2010 10:14:57 +0900
+Message-ID: <AANLkTikUSTnPedgdP19_bNbhOtSdfApdyCLKMyn+6Ext@mail.gmail.com>
+Subject: Re: [PATCHv2 0/3] mtd: onenand: add cache program feature for 4kb
+	page onenand
+From: Kyungmin Park <kyungmin.park@samsung.com>
+To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+One concern is that after apply patch, there are some 1-bit ECC
+warnings so UBI scrubbing messages are displayed.
 
-> -----Original Message-----
-> From: Grazvydas Ignotas [mailto:notasas@gmail.com]
-> Sent: Wednesday, November 03, 2010 6:33 PM
-> To: Ghorai, Sukumar
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
-> kernel@lists.infradead.org; Vimal Singh; Artem.Bityutskiy@nokia.com
-> Subject: Re: [PATCH RESEND v5 4/5] omap: nand: ecc layout select from
-> board file
->=20
-> On Mon, Sep 27, 2010 at 5:11 PM, Sukumar Ghorai <s-ghorai@ti.com> wrote:
-> > This patch makes it possible to select sw or hw (different layout
-> options)
-> > ecc scheme supported by omap nand driver. =A0And hw ecc layout selected
-> for
-> > sdp and zoom boards, by default.
-> >
-> > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> > Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
->=20
-> Any news on this? Commit 2c01946c accidentally (?) enabled hardware
-> ECC and now my board is broken, as the driver always used sw ecc and
-> my NAND partitions are formatted accordingly. We should at least
-> switch the default back to sw ecc, don't you think?
-[Ghorai]=20
-1. which board you are working.=20
-2. and the default layout is the same as previous=20
-+       board_nand_data.ecc_opt         =3D OMAP_ECC_HAMMING_CODE_DIFF_LAYO=
-UT;
+Are there these message at your board?
+
+Thank you,
+Kyungmin Park
+
+On Wed, Nov 3, 2010 at 7:55 PM, Roman Tereshonkov
+<roman.tereshonkov@nokia.com> wrote:
+> Implement cache program feature for 4KB page onenand.
+> This feature improves the write data performance.
+> The observed 128KB data program speed change is
+> from 8827KB/s to 14156 KB/s when the feature is enabled.
+>
+> Roman Tereshonkov (3):
+> =A0mtd: onenand: add option and variable for cache program feature
+> =A0mtd: onenand: fix omap2 code to handle cache program feature
+> =A0mtd: onenand: implement cache program feature for 4kb page onenand
+>
+> =A0drivers/mtd/onenand/omap2.c =A0 =A0 =A0 =A0| =A0 12 +++++++++---
+> =A0drivers/mtd/onenand/onenand_base.c | =A0 22 +++++++++++++++++++---
+> =A0include/linux/mtd/onenand.h =A0 =A0 =A0 =A0| =A0 12 ++++++++++++
+> =A03 files changed, 40 insertions(+), 6 deletions(-)
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
