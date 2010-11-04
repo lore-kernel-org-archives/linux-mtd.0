@@ -1,25 +1,24 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PDvqD-0004U6-6M
-	for linux-mtd@lists.infradead.org; Thu, 04 Nov 2010 09:10:42 +0000
-Received: by pwi3 with SMTP id 3so567078pwi.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 Nov 2010 02:10:38 -0700 (PDT)
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <E1C7579D1379824DAE67858071C810383717438EEF@NOK-EUMSG-02.mgdnok.nokia.com>
-References: <1288781721-31771-1-git-send-email-roman.tereshonkov@nokia.com>
-	<AANLkTikUSTnPedgdP19_bNbhOtSdfApdyCLKMyn+6Ext@mail.gmail.com>
-	<E1C7579D1379824DAE67858071C810383717438EEF@NOK-EUMSG-02.mgdnok.nokia.com>
-Date: Thu, 4 Nov 2010 18:10:36 +0900
-Message-ID: <AANLkTikrO1BC7LuUCzuNg7b3gAuC=DYLKLRnFh4rPoco@mail.gmail.com>
-Subject: Re: [PATCHv2 0/3] mtd: onenand: add cache program feature for 4kb
-	page onenand
-From: Kyungmin Park <kmpark@infradead.org>
-To: roman.tereshonkov@nokia.com
+In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B0356BABFAE@dbde02.ent.ti.com>
+References: <1285596710-25658-1-git-send-email-s-ghorai@ti.com>
+	<1285596710-25658-5-git-send-email-s-ghorai@ti.com>
+	<AANLkTikKMnzHR5DZqzGdJJbnCXhCpxKA7K2C2ZtPhNke@mail.gmail.com>
+	<2A3DCF3DA181AD40BDE86A3150B27B6B0356BABFAE@dbde02.ent.ti.com>
+Date: Thu, 4 Nov 2010 11:52:10 +0200
+Message-ID: <AANLkTinOhBNUt+gvNb0MWiyHD8ZYgLDJPz8tc=p+CsVW@mail.gmail.com>
+Subject: Re: [PATCH RESEND v5 4/5] omap: nand: ecc layout select from board
+	file
+From: Grazvydas Ignotas <notasas@gmail.com>
+To: "Ghorai, Sukumar" <s-ghorai@ti.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
+	Tony Lindgren <tony@atomide.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Vimal Singh <vimal.newwork@gmail.com>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,75 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 4, 2010 at 5:58 PM,  <roman.tereshonkov@nokia.com> wrote:
->
-> Hi,
->
->
-> I used driver/mtd/tests and did not observe any warnings except a couple =
-of bad blocks for some boards.
-Yes in case of mtd_test* there's no messages.
->
-> Can you discribe your test case for me to reproduce it. And show your ker=
-nel log when it happens if possible?
-> Is it for 2kb or 4kb page onenand?
+On Thu, Nov 4, 2010 at 3:02 AM, Ghorai, Sukumar <s-ghorai@ti.com> wrote:
+>> -----Original Message-----
+>> From: Grazvydas Ignotas [mailto:notasas@gmail.com]
+>> Sent: Wednesday, November 03, 2010 6:33 PM
+>> To: Ghorai, Sukumar
+>> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm=
+-
+>> kernel@lists.infradead.org; Vimal Singh; Artem.Bityutskiy@nokia.com
+>> Subject: Re: [PATCH RESEND v5 4/5] omap: nand: ecc layout select from
+>> board file
+>>
+>> On Mon, Sep 27, 2010 at 5:11 PM, Sukumar Ghorai <s-ghorai@ti.com> wrote:
+>> > This patch makes it possible to select sw or hw (different layout
+>> options)
+>> > ecc scheme supported by omap nand driver. =A0And hw ecc layout selecte=
+d
+>> for
+>> > sdp and zoom boards, by default.
+>> >
+>> > Signed-off-by: Vimal Singh <vimalsingh@ti.com>
+>> > Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+>>
+>> Any news on this? Commit 2c01946c accidentally (?) enabled hardware
+>> ECC and now my board is broken, as the driver always used sw ecc and
+>> my NAND partitions are formatted accordingly. We should at least
+>> switch the default back to sw ecc, don't you think?
+> [Ghorai]
+> 1. which board you are working.
+> 2. and the default layout is the same as previous
+> + =A0 =A0 =A0 board_nand_data.ecc_opt =A0 =A0 =A0 =A0 =3D OMAP_ECC_HAMMIN=
+G_CODE_DIFF_LAYOUT;
 
-Mount ubifs on OneNAND which has 4KiB pagesize and run fsstress -p 3
--n 1000000000 -d /ubifs
-
-then you can or maybe see the UBI scrubbing message.
-
-Thank you,
-Kyungmin Park
->
->
-> Regards
-> Roman Tereshonkov
->
->
->>-----Original Message-----
->>From: kyungmin78@gmail.com [mailto:kyungmin78@gmail.com] On
->>Behalf Of ext Kyungmin Park
->>Sent: 04 November, 2010 03:15
->>To: Tereshonkov Roman (Nokia-MS/Helsinki)
->>Cc: linux-mtd@lists.infradead.org
->>Subject: Re: [PATCHv2 0/3] mtd: onenand: add cache program
->>feature for 4kb page onenand
->>
->>Hi,
->>
->>One concern is that after apply patch, there are some 1-bit ECC
->>warnings so UBI scrubbing messages are displayed.
->>
->>Are there these message at your board?
->>
->>Thank you,
->>Kyungmin Park
->>
->>On Wed, Nov 3, 2010 at 7:55 PM, Roman Tereshonkov
->><roman.tereshonkov@nokia.com> wrote:
->>> Implement cache program feature for 4KB page onenand.
->>> This feature improves the write data performance.
->>> The observed 128KB data program speed change is
->>> from 8827KB/s to 14156 KB/s when the feature is enabled.
->>>
->>> Roman Tereshonkov (3):
->>> =A0mtd: onenand: add option and variable for cache program feature
->>> =A0mtd: onenand: fix omap2 code to handle cache program feature
->>> =A0mtd: onenand: implement cache program feature for 4kb page onenand
->>>
->>> =A0drivers/mtd/onenand/omap2.c =A0 =A0 =A0 =A0| =A0 12 +++++++++---
->>> =A0drivers/mtd/onenand/onenand_base.c | =A0 22 +++++++++++++++++++---
->>> =A0include/linux/mtd/onenand.h =A0 =A0 =A0 =A0| =A0 12 ++++++++++++
->>> =A03 files changed, 40 insertions(+), 6 deletions(-)
->>>
->>>
->>> ______________________________________________________
->>> Linux MTD discussion mailing list
->>> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>>
->>
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+OMAP3 pandora.
+What I wanted to say is that current mainline code has hw ECC forced
+which is wrong for some boards, and this patch did not make into last
+merge window, so NAND is broken. It would be good to take this patch
+out of larger series you sent earlier and resend as a fix for -rc1, so
+that NAND works on 2.6.37.  It's not too large and should probably be
+ok for -rc2.
