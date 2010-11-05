@@ -1,31 +1,33 @@
-MIME-Version: 1.0
-In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B0356BAC3BB@dbde02.ent.ti.com>
-References: <1285596710-25658-1-git-send-email-s-ghorai@ti.com>
-	<1285596710-25658-5-git-send-email-s-ghorai@ti.com>
-	<AANLkTikKMnzHR5DZqzGdJJbnCXhCpxKA7K2C2ZtPhNke@mail.gmail.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B0356BABFAE@dbde02.ent.ti.com>
-	<AANLkTinOhBNUt+gvNb0MWiyHD8ZYgLDJPz8tc=p+CsVW@mail.gmail.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B0356BAC2B6@dbde02.ent.ti.com>
-	<AANLkTinNrZNuZnFfJKGLF9J3zsHsOTK0+VmUmYH88+c3@mail.gmail.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B0356BAC323@dbde02.ent.ti.com>
-	<AANLkTik3gO1Rm2U8-Rm2t2M83sdCjz_Oktpve_gDrbNM@mail.gmail.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B0356BAC331@dbde02.ent.ti.com>
-	<AANLkTinfO5e9JewdTDxasTRrUAXhGaQs=n6=HnqOQP7S@mail.gmail.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B0356BAC3BB@dbde02.ent.ti.com>
-Date: Thu, 4 Nov 2010 17:54:00 +0200
-Message-ID: <AANLkTikbcHM4MpWm9ar-hLZBh3g5PkD3PK6FxY_bGd8u@mail.gmail.com>
-Subject: Re: [PATCH RESEND v5 4/5] omap: nand: ecc layout select from board
-	file
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: "Ghorai, Sukumar" <s-ghorai@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	Tony Lindgren <tony@atomide.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Vimal Singh <vimal.newwork@gmail.com>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mail.perches.com ([173.55.12.10])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PECfP-00013R-ON
+	for linux-mtd@lists.infradead.org; Fri, 05 Nov 2010 03:08:40 +0000
+From: Joe Perches <joe@perches.com>
+To: Jiri Kosina <trivial@kernel.org>
+Subject: [PATCH 00/49] Use vzalloc not vmalloc/kmemset
+Date: Thu,  4 Nov 2010 20:07:24 -0700
+Message-Id: <cover.1288925424.git.joe@perches.com>
+In-Reply-To: <alpine.DEB.2.00.1011031108260.11625@router.home>
+References: <alpine.DEB.2.00.1011031108260.11625@router.home>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org,
+	linux-ia64@vger.kernel.org, kvm@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
+	dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+	devel@driverdev.osuosl.org, linux-s390@vger.kernel.org,
+	rds-devel@oss.oracle.com, linux-scsi@vger.kernel.org,
+	linux-rdma@vger.kernel.org, linux-atm-general@lists.sourceforge.net,
+	codalist@coda.cs.cmu.edu, virtualization@lists.osdl.org,
+	coreteam@netfilter.org, linux-input@vger.kernel.org,
+	osst-users@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+	linux-media@vger.kernel.org, cbe-oss-dev@lists.ozlabs.org,
+	amd64-microcode@amd64.org, reiserfs-devel@vger.kernel.org,
+	kvm-ppc@vger.kernel.org, xfs@oss.sgi.com,
+	linux-raid@vger.kernel.org, netfilter@vger.kernel.org,
+	netdev@vger.kernel.org, containers@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xen.org,
+	e1000-devel@lists.sourceforge.net,
+	netfilter-devel@vger.kernel.org, linux-crypto@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, drbd-user@lists.linbit.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,37 +37,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 4, 2010 at 2:52 PM, Ghorai, Sukumar <s-ghorai@ti.com> wrote:
->> -----Original Message-----
->> It has changed in 2.5.36, take a look how it was in 2.6.35, when it
->> worked for me:
->> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-
->> 2.6.git;a=blob;f=drivers/mtd/nand/omap2.c;h=ee87325c7712a8eeee4bbc683f9301
->> 4c9901f337;hb=9fe6206f400646a2322096b56c59891d530e8d51
->>
->> notice how 2.5.36 has CONFIG_MTD_NAND_OMAP_HWECC defined and 2.6.35
->> doesn't.
->>
->> The test case is simple:
->> format and use NAND on 2.6.35 or earlier, works fine.
->> upgrade to 2.6.36 or 2.6.37-rc1 and try to mount the same NAND
->> partition - lots of ECC errors.
->
-> [Ghorai] I tested this and working fine in zoom3.
->
-> And as you mentioned there may be an issue we need to identify,
-> So remove this #define form 2.6.36 and let me know the test result.
+Converted vmalloc/memset and vmalloc_node/memset to
+vzalloc or vzalloc_node using a cocci script and some editing
 
-After removing #define it works, but only without
-CONFIG_MTD_NAND_OMAP_PREFETCH. With prefetch enabled, sub-page reads
-return ECC errors, for example:
+Reduces text a little bit.
 
-nanddump -p -l 1024 -s 512 /dev/mtd3
-ECC: 3 uncorrectable bitflip(s) at offset 0x00000200
+Compiled x86 only.
 
-nanddump -p -l 1024 -s 0 /dev/mtd3
-nanddump -p -l 1024 -s 1024 /dev/mtd3
-works ok.
+There are still vmalloc_32 with memset calls still around.
 
-Sub-pages need to be working for UBI, my NAND partitions are formatted
-with UBIFS.
+Broken out to multiple patches to cc appropriate maintainers.
+
+Joe Perches (49):
+  arch/ia64: Use vzalloc
+  arch/mips: Use vzalloc
+  arch/powerpc: Use vzalloc
+  arch/s390: Use vzalloc
+  arch/x86: Use vzalloc
+  crypto: Use vzalloc
+  drivers/atm: Use vzalloc
+  drivers/block: Use vzalloc
+  drivers/char: Use vzalloc
+  drivers/gpu: Use vzalloc
+  drivers/hid: Use vzalloc
+  drivers/infiniband: Use vzalloc
+  drivers/isdn: Use vzalloc
+  drivers/md: Use vzalloc
+  drivers/media: Use vzalloc
+  drivers/mtd: Use vzalloc
+  drivers/net/cxgb3: Use vzalloc
+  drivers/net/cxgb4: Use vzalloc
+  drivers/net/e1000: Use vzalloc
+  drivers/net/e1000e: Use vzalloc
+  drivers/net/ehea: Use vzalloc
+  drivers/net/igb: Use vzalloc
+  drivers/net/igbvf: Use vzalloc
+  drivers/net/ixgb: Use vzalloc
+  drivers/net/ixgbe: Use vzalloc
+  drivers/net/ixgbevf: Use vzalloc
+  drivers/net/netxen: Use vzalloc
+  drivers/net/pch_gbe: Use vzalloc
+  drivers/net/qlcnic: Use vzalloc
+  drivers/net/sfc: Use vzalloc
+  drivers/net/vxge: Use vzalloc
+  drivers/net/bnx2.c: Use vzalloc
+  drivers/s390: Use vzalloc
+  drivers/scsi: Use vzalloc
+  drivers/staging: Use vzalloc
+  drivers/video: Use vzalloc
+  fs/ext4: Use vzalloc
+  fs/jffs2: Use vzalloc
+  fs/reiserfs: Use vzalloc
+  fs/udf: Use vzalloc
+  fs/xfs: Use vzalloc
+  include/linux/coda_linux.h: Use vzalloc
+  kernel: Use vzalloc
+  mm: Use vzalloc
+  net/core/pktgen.c: Use vzalloc
+  net/netfilter: Use vzalloc
+  net/rds: Use vzalloc
+  sound/oss/dev_table.c: Use vzalloc
+  virt/kvm/kvm_main.c: Use vzalloc
+
+ arch/ia64/kernel/perfmon.c                      |    3 +-
+ arch/mips/sibyte/common/sb_tbprof.c             |    3 +-
+ arch/powerpc/kvm/book3s.c                       |    6 +--
+ arch/powerpc/platforms/cell/spufs/lscsa_alloc.c |    3 +-
+ arch/s390/hypfs/hypfs_diag.c                    |    3 +-
+ arch/x86/kernel/microcode_amd.c                 |    3 +-
+ arch/x86/kvm/x86.c                              |    3 +-
+ arch/x86/mm/pageattr-test.c                     |    3 +-
+ crypto/deflate.c                                |    3 +-
+ crypto/zlib.c                                   |    3 +-
+ drivers/atm/idt77252.c                          |   11 ++++---
+ drivers/atm/lanai.c                             |    3 +-
+ drivers/block/drbd/drbd_bitmap.c                |    5 +--
+ drivers/char/agp/backend.c                      |    3 +-
+ drivers/char/mspec.c                            |    5 +--
+ drivers/gpu/drm/via/via_dmablit.c               |    4 +-
+ drivers/hid/hid-core.c                          |    3 +-
+ drivers/infiniband/hw/amso1100/c2_rnic.c        |    5 +--
+ drivers/infiniband/hw/ehca/ipz_pt_fn.c          |    5 +--
+ drivers/infiniband/hw/ipath/ipath_driver.c      |    3 +-
+ drivers/infiniband/hw/ipath/ipath_file_ops.c    |   11 ++-----
+ drivers/infiniband/hw/ipath/ipath_init_chip.c   |    5 +--
+ drivers/infiniband/hw/qib/qib_init.c            |    7 +---
+ drivers/infiniband/ulp/ipoib/ipoib_cm.c         |   10 ++----
+ drivers/infiniband/ulp/ipoib/ipoib_main.c       |    3 +-
+ drivers/isdn/i4l/isdn_common.c                  |    4 +-
+ drivers/isdn/mISDN/dsp_core.c                   |    3 +-
+ drivers/isdn/mISDN/l1oip_codec.c                |    6 +--
+ drivers/md/dm-log.c                             |    3 +-
+ drivers/md/dm-snap-persistent.c                 |    3 +-
+ drivers/md/dm-table.c                           |    4 +--
+ drivers/media/dvb/ngene/ngene-core.c            |    3 +-
+ drivers/media/video/mx3_camera.c                |    3 +-
+ drivers/media/video/pwc/pwc-if.c                |    3 +-
+ drivers/media/video/videobuf-dma-sg.c           |    3 +-
+ drivers/mtd/nand/nandsim.c                      |    3 +-
+ drivers/mtd/ubi/vtbl.c                          |    6 +--
+ drivers/net/bnx2.c                              |   10 +-----
+ drivers/net/cxgb3/cxgb3_offload.c               |    7 ++--
+ drivers/net/cxgb4/cxgb4_main.c                  |    7 ++--
+ drivers/net/e1000/e1000_main.c                  |    6 +--
+ drivers/net/e1000e/netdev.c                     |    6 +--
+ drivers/net/ehea/ehea_main.c                    |    4 +--
+ drivers/net/igb/igb_main.c                      |    6 +--
+ drivers/net/igbvf/netdev.c                      |    6 +--
+ drivers/net/ixgb/ixgb_main.c                    |    6 +--
+ drivers/net/ixgbe/ixgbe_main.c                  |   10 ++----
+ drivers/net/ixgbevf/ixgbevf_main.c              |    6 +--
+ drivers/net/netxen/netxen_nic_init.c            |    7 +---
+ drivers/net/pch_gbe/pch_gbe_main.c              |    6 +--
+ drivers/net/qlcnic/qlcnic_init.c                |    7 +---
+ drivers/net/sfc/filter.c                        |    3 +-
+ drivers/net/vxge/vxge-config.c                  |   37 +++++-----------------
+ drivers/s390/cio/blacklist.c                    |    3 +-
+ drivers/scsi/bfa/bfad.c                         |    3 +-
+ drivers/scsi/bfa/bfad_debugfs.c                 |    8 +----
+ drivers/scsi/cxgbi/libcxgbi.h                   |    9 ++----
+ drivers/scsi/osst.c                             |    3 +-
+ drivers/scsi/qla2xxx/qla_attr.c                 |    3 +-
+ drivers/scsi/qla2xxx/qla_bsg.c                  |    3 +-
+ drivers/scsi/scsi_debug.c                       |    7 +---
+ drivers/staging/comedi/drivers.c                |    4 +--
+ drivers/staging/rtl8192e/r8192E_core.c          |    4 +--
+ drivers/staging/udlfb/udlfb.c                   |    5 +--
+ drivers/staging/xgifb/XGI_main_26.c             |    3 +-
+ drivers/staging/zram/zram_drv.c                 |    3 +-
+ drivers/video/arcfb.c                           |    5 +--
+ drivers/video/broadsheetfb.c                    |    4 +--
+ drivers/video/hecubafb.c                        |    5 +--
+ drivers/video/metronomefb.c                     |    4 +--
+ drivers/video/xen-fbfront.c                     |    3 +-
+ fs/ext4/super.c                                 |    4 +--
+ fs/jffs2/build.c                                |    5 +--
+ fs/reiserfs/journal.c                           |    9 ++----
+ fs/reiserfs/resize.c                            |    4 +--
+ fs/udf/super.c                                  |    5 +--
+ fs/xfs/linux-2.6/kmem.h                         |    7 +----
+ include/linux/coda_linux.h                      |   26 ++++++++++------
+ kernel/profile.c                                |    6 +--
+ kernel/relay.c                                  |    4 +--
+ mm/memcontrol.c                                 |    5 +--
+ mm/page_cgroup.c                                |    3 +-
+ mm/percpu.c                                     |    8 +----
+ mm/swapfile.c                                   |    3 +-
+ net/core/pktgen.c                               |    3 +-
+ net/netfilter/x_tables.c                        |    5 +--
+ net/rds/ib_cm.c                                 |    6 +--
+ sound/oss/dev_table.c                           |    6 +--
+ virt/kvm/kvm_main.c                             |   13 ++------
+ 89 files changed, 167 insertions(+), 328 deletions(-)
+
+-- 
+1.7.3.1.g432b3.dirty
