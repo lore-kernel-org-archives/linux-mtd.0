@@ -1,20 +1,24 @@
-Date: Fri, 5 Nov 2010 14:12:39 -0700
-From: Tony Lindgren <tony@atomide.com>
-To: "Ghorai, Sukumar" <s-ghorai@ti.com>
-Subject: Re: [PATCH v5 1/5] omap gpmc: enable irq mode in gpmc
-Message-ID: <20101105211238.GT9264@atomide.com>
-References: <1285594634-19277-1-git-send-email-s-ghorai@ti.com>
-	<1285594634-19277-2-git-send-email-s-ghorai@ti.com>
-	<20100928222727.GS3117@atomide.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B0356AEEDE2@dbde02.ent.ti.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PEeXq-000659-GE
+	for linux-mtd@lists.infradead.org; Sat, 06 Nov 2010 08:54:43 +0000
+Received: by wwe15 with SMTP id 15so4670284wwe.18
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 06 Nov 2010 01:54:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B0356AEEDE2@dbde02.ent.ti.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
+References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
+	<4CD11C03.3090207@parrot.com>
+	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Sat, 6 Nov 2010 04:54:20 -0400
+Message-ID: <AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
+Subject: Re: Suggested patch: reset errno after isatty()
+To: Ketil Froyn <ketil@froyn.name>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +28,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ghorai, Sukumar <s-ghorai@ti.com> [101028 07:02]:
-> Tony,
-> 
-> > -----Original Message-----
-> > From: Ghorai, Sukumar
-> > Sent: Wednesday, September 29, 2010 12:08 PM
-> > To: 'Tony Lindgren'
-> > Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
-> > kernel@lists.infradead.org
-> > Subject: RE: [PATCH v5 1/5] omap gpmc: enable irq mode in gpmc
-> > 
-> > 
-> [..snip..]
-> 
-> > > > diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-
-> > > omap2/board-3430sdp.c
-> > > > index 67b95b5..549cd62 100644
-> > > > --- a/arch/arm/mach-omap2/board-3430sdp.c
-> > > > +++ b/arch/arm/mach-omap2/board-3430sdp.c
-> > > > @@ -328,6 +328,7 @@ static void __init omap_3430sdp_init_irq(void)
-> > > >  	omap3_pm_init_cpuidle(omap3_cpuidle_params_table);
-> > > >  	omap2_init_common_hw(hyb18m512160af6_sdrc_params, NULL);
-> > > >  	omap_init_irq();
-> > > > +	gpmc_init();
-> > > >  	omap_gpio_init();
-> > > >  }
-> > > ...
-> > >
-> > > You can avoid adding gpmc_init() by making it a subsys_initcall().
-> > > Just make sure you return early from it with if (!cpu_class_is_omap2()).
-> > [Ghorai] will do
-> > >
-> [Ghorai] I was trying this and no success, as nand_init() get called before  subsys_initcall(gpmc_init);
-> 
-> 126 MACHINE_START(OMAP_ZOOM3, "OMAP Zoom3 board") 
-> ..
-> 130         .init_irq       = omap_zoom_init_irq,
-> 131         .init_machine   = omap_zoom_init,
-> ..
-> 
-> Step-(n):
-> 	kernel_init() -> customize_machine() 
->              -> omap_zoom_init() -> gpmc_nand_init() -> which call gpmc
->                 functions, that's crashing, as gpmc is not initialized.
-> 
-> Step-(n+1):
-> 	Followed by subsys_initcall(gpmc_init)
-> 
-> So I will incorporate the other input and will re-submit.
-> [..snip..]
-
-I don't see why you could not make gpmc_nand_init happen later?
-Also, some of these calls can be moved to omap2_init_common_hw()?
-
-Tony
+T24gV2VkLCBOb3YgMywgMjAxMCBhdCAwOToxNiwgS2V0aWwgRnJveW4gd3JvdGU6Cj4gT24gV2Vk
+LCBOb3YgMywgMjAxMCBhdCA5OjIzIEFNLCBNYXR0aGlldSBDQVNURVQgd3JvdGU6Cj4gVGhpcyBj
+b2RlIGhhcyBiZWVuIHJld3JpdHRlbiwgYnV0IHRoZSBuZXcgbWFzdGVyIGlzbid0IHdvcmtpbmcg
+Zm9yIG1lCj4gKHlldCkuIFRoaXMgcGF0Y2ggYWdhaW5zdCB2MS40LjEgc2VlbXMgdG8gaGF2ZSBz
+b2x2ZWQgbXkgcHJvYmxlbXMgZm9yCj4gbm93LiBJJ3ZlIGp1c3QgcmVwbGFjZWQgcHJlYWQoKSB3
+aXRoIHJlYWQoKSwgYmVjYXVzZSBpdCB3b3JrcywgYW5kCj4gZml4ZWQgdXAgdGhlIGVycm9yIGNo
+ZWNraW5nLgo+Cj4gLS0tIGEvbmFuZGR1bXAuYwo+ICsrKyBiL25hbmRkdW1wLmMKPiBAQCAtNDEy
+LDEwICs0MTIsMjUgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiBjb25zdCBhcmd2W10pCj4g
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBtZW1zZXQgKHJlYWRidWYsIDB4ZmYs
+IGJzKTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0gZWxzZSB7Cj4gwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAvKiBSZWFkIHBhZ2UgZGF0YSBhbmQgZXhpdCBvbiBmYWlsdXJl
+ICovCj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocHJlYWQoZmQsIHJl
+YWRidWYsIGJzLCBvZnMpICE9IGJzKSB7Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCBwZXJyb3IoInByZWFkIik7Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBnb3RvIGNsb3NlYWxsOwo+IC0gwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgZG8gewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+cmV0ID0gcmVhZChmZCwgcmVhZGJ1ZiwgYnMpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHJldCA9PSAtMSkgewo+ICsgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKGVycm5vID09IEVB
+R0FJTiB8fCBlcnJubyA9PSBFSU5UUikgewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY29udGludWU7Cj4gKyDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9
+Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCBwZXJyb3IoInJlYWQiKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGdvdG8gY2xvc2VhbGw7Cj4gKyDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmV0ID09IDApIHsKPiArIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ZigiTm8g
+bW9yZSBkYXRhIHRvIHJlYWRcbiIpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmV0ICE9IGJzKSB7Cj4gKyDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBmcHJpbnRmKHN0ZGVyciwg
+InJlYWQoKSBnb3QKPiB3cm9uZyBudW1iZXIgb2YgYnl0ZXM6IGdvdCAlaSwgZXhwZWN0ZWQgJWlc
+biIsIHJldCwgYnMpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgZ290byBjbG9zZWFsbDsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0KPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgfSB3aGlsZSAoMSk7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9Cgpkb2VzbnQgbGli
+bXRkIHByb3ZpZGUgcmVhZCBmdW5jdGlvbnMgYWxyZWFkeSA/Ci1taWtlCg==
