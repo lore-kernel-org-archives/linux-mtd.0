@@ -1,24 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PEeXq-000659-GE
-	for linux-mtd@lists.infradead.org; Sat, 06 Nov 2010 08:54:43 +0000
-Received: by wwe15 with SMTP id 15so4670284wwe.18
+	id 1PEjxT-0008QZ-NS
+	for linux-mtd@lists.infradead.org; Sat, 06 Nov 2010 14:41:32 +0000
+Received: by ewy19 with SMTP id 19so2157527ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 06 Nov 2010 01:54:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
-References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
-	<4CD11C03.3090207@parrot.com>
-	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Sat, 6 Nov 2010 04:54:20 -0400
-Message-ID: <AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
-Subject: Re: Suggested patch: reset errno after isatty()
-To: Ketil Froyn <ketil@froyn.name>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+	Sat, 06 Nov 2010 07:41:28 -0700 (PDT)
+From: Vasiliy Kulikov <segooon@gmail.com>
+To: kernel-janitors@vger.kernel.org
+Subject: [PATCH] mtd: mtdchar: fix information leak to userland
+Date: Sat,  6 Nov 2010 17:41:24 +0300
+Message-Id: <1289054485-18190-1-git-send-email-segooon@gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,44 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gV2VkLCBOb3YgMywgMjAxMCBhdCAwOToxNiwgS2V0aWwgRnJveW4gd3JvdGU6Cj4gT24gV2Vk
-LCBOb3YgMywgMjAxMCBhdCA5OjIzIEFNLCBNYXR0aGlldSBDQVNURVQgd3JvdGU6Cj4gVGhpcyBj
-b2RlIGhhcyBiZWVuIHJld3JpdHRlbiwgYnV0IHRoZSBuZXcgbWFzdGVyIGlzbid0IHdvcmtpbmcg
-Zm9yIG1lCj4gKHlldCkuIFRoaXMgcGF0Y2ggYWdhaW5zdCB2MS40LjEgc2VlbXMgdG8gaGF2ZSBz
-b2x2ZWQgbXkgcHJvYmxlbXMgZm9yCj4gbm93LiBJJ3ZlIGp1c3QgcmVwbGFjZWQgcHJlYWQoKSB3
-aXRoIHJlYWQoKSwgYmVjYXVzZSBpdCB3b3JrcywgYW5kCj4gZml4ZWQgdXAgdGhlIGVycm9yIGNo
-ZWNraW5nLgo+Cj4gLS0tIGEvbmFuZGR1bXAuYwo+ICsrKyBiL25hbmRkdW1wLmMKPiBAQCAtNDEy
-LDEwICs0MTIsMjUgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiBjb25zdCBhcmd2W10pCj4g
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBtZW1zZXQgKHJlYWRidWYsIDB4ZmYs
-IGJzKTsKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoH0gZWxzZSB7Cj4gwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAvKiBSZWFkIHBhZ2UgZGF0YSBhbmQgZXhpdCBvbiBmYWlsdXJl
-ICovCj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocHJlYWQoZmQsIHJl
-YWRidWYsIGJzLCBvZnMpICE9IGJzKSB7Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCBwZXJyb3IoInByZWFkIik7Cj4gLSDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBnb3RvIGNsb3NlYWxsOwo+IC0gwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgfQo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgZG8gewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-cmV0ID0gcmVhZChmZCwgcmVhZGJ1ZiwgYnMpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKHJldCA9PSAtMSkgewo+ICsgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgaWYgKGVycm5vID09IEVB
-R0FJTiB8fCBlcnJubyA9PSBFSU5UUikgewo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgY29udGludWU7Cj4gKyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9
-Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCBwZXJyb3IoInJlYWQiKTsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIGdvdG8gY2xvc2VhbGw7Cj4gKyDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmV0ID09IDApIHsKPiArIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIHByaW50ZigiTm8g
-bW9yZSBkYXRhIHRvIHJlYWRcbiIpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgYnJlYWs7Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCB9Cj4gKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCBpZiAocmV0ICE9IGJzKSB7Cj4gKyDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBmcHJpbnRmKHN0ZGVyciwg
-InJlYWQoKSBnb3QKPiB3cm9uZyBudW1iZXIgb2YgYnl0ZXM6IGdvdCAlaSwgZXhwZWN0ZWQgJWlc
-biIsIHJldCwgYnMpOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgZ290byBjbG9zZWFsbDsKPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIH0KPiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIGJyZWFrOwo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgfSB3aGlsZSAoMSk7Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB9Cgpkb2VzbnQgbGli
-bXRkIHByb3ZpZGUgcmVhZCBmdW5jdGlvbnMgYWxyZWFkeSA/Ci1taWtlCg==
+Structure mtd_info_user is copied to userland with padding byted
+between "type" and "flags" fields uninitialized.  It leads to leaking
+of contents of kernel stack memory.
+
+Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
+---
+ Compile tested.
+
+ drivers/mtd/mtdchar.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 3eff1e5..2a0bc9e 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -601,6 +601,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 	}
+ 
+ 	case MEMGETINFO:
++		memset(&info, 0, sizeof(info));
+ 		info.type	= mtd->type;
+ 		info.flags	= mtd->flags;
+ 		info.size	= mtd->size;
+@@ -609,7 +610,6 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
+ 		info.oobsize	= mtd->oobsize;
+ 		/* The below fields are obsolete */
+ 		info.ecctype	= -1;
+-		info.eccsize	= 0;
+ 		if (copy_to_user(argp, &info, sizeof(struct mtd_info_user)))
+ 			return -EFAULT;
+ 		break;
+-- 
+1.7.0.4
