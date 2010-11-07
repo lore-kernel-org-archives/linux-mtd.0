@@ -1,17 +1,24 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PEjxT-0008QZ-NS
-	for linux-mtd@lists.infradead.org; Sat, 06 Nov 2010 14:41:32 +0000
-Received: by ewy19 with SMTP id 19so2157527ewy.36
+	id 1PFDqJ-0008AM-09
+	for linux-mtd@lists.infradead.org; Sun, 07 Nov 2010 22:36:07 +0000
+Received: by qyk9 with SMTP id 9so40412qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 06 Nov 2010 07:41:28 -0700 (PDT)
-From: Vasiliy Kulikov <segooon@gmail.com>
-To: kernel-janitors@vger.kernel.org
-Subject: [PATCH] mtd: mtdchar: fix information leak to userland
-Date: Sat,  6 Nov 2010 17:41:24 +0300
-Message-Id: <1289054485-18190-1-git-send-email-segooon@gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
+	Sun, 07 Nov 2010 14:36:05 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
+References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
+	<4CD11C03.3090207@parrot.com>
+	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
+	<AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
+Date: Sun, 7 Nov 2010 23:36:04 +0100
+Message-ID: <AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
+Subject: Re: Suggested patch: reset errno after isatty()
+From: Ketil Froyn <ketil@froyn.name>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Structure mtd_info_user is copied to userland with padding byted
-between "type" and "flags" fields uninitialized.  It leads to leaking
-of contents of kernel stack memory.
+On Sat, Nov 6, 2010 at 9:54 AM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+>
+> doesnt libmtd provide read functions already ?
+> -mike
 
-Signed-off-by: Vasiliy Kulikov <segooon@gmail.com>
----
- Compile tested.
+I'm not familiar with libmtd, but the latest release (v1.4.1) just did
+it itself with pread, and since that failed I fixed it.
 
- drivers/mtd/mtdchar.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+The new code in the repo, which appears to use libmtd, didn't work for
+me, and the fix appeared more complicated. My patch is for v1.4.1,
+which should also make it easier to integrate for package maintainers,
+if they wish, pending a working rewrite.
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 3eff1e5..2a0bc9e 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -601,6 +601,7 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 	}
- 
- 	case MEMGETINFO:
-+		memset(&info, 0, sizeof(info));
- 		info.type	= mtd->type;
- 		info.flags	= mtd->flags;
- 		info.size	= mtd->size;
-@@ -609,7 +610,6 @@ static int mtd_ioctl(struct file *file, u_int cmd, u_long arg)
- 		info.oobsize	= mtd->oobsize;
- 		/* The below fields are obsolete */
- 		info.ecctype	= -1;
--		info.eccsize	= 0;
- 		if (copy_to_user(argp, &info, sizeof(struct mtd_info_user)))
- 			return -EFAULT;
- 		break;
--- 
-1.7.0.4
+Ketil
