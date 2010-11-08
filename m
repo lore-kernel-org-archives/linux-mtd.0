@@ -1,20 +1,17 @@
-Received: from smtp-4.concepts.nl ([2001:838:2:1::30:111])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PFa2p-00074f-Jk
-	for linux-mtd@lists.infradead.org; Mon, 08 Nov 2010 22:18:32 +0000
-From: pieterg <pieterg@gmx.com>
-To: openpxa-users@lists.sourceforge.net
-Subject: Re: [Openpxa-users] PXA310: double bit errors on NAND
-Date: Mon, 8 Nov 2010 23:18:21 +0100
-References: <AANLkTin86UQe8Q4PNqSnU7M0x4kVPUehcBRpS0HhHKRh@mail.gmail.com>
-In-Reply-To: <AANLkTin86UQe8Q4PNqSnU7M0x4kVPUehcBRpS0HhHKRh@mail.gmail.com>
+Received: from swampdragon.chaosbits.net ([90.184.90.115])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PFb0r-0001MM-Om
+	for linux-mtd@lists.infradead.org; Mon, 08 Nov 2010 23:20:34 +0000
+Date: Tue, 9 Nov 2010 00:09:02 +0100 (CET)
+From: Jesper Juhl <jj@chaosbits.net>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 06/17][trivial] mtd: Remove unnecessary casts of void ptr
+	returning alloc function return values
+Message-ID: <alpine.LNX.2.00.1011082327290.23697@swampdragon.chaosbits.net>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201011082318.21748.pieterg@gmx.com>
-Cc: =?utf-8?q?Bj=C3=B8rn_Forsman?= <bjorn.forsman@gmail.com>,
-	linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Kirk Lee <kirk@hpc.ee.ntu.edu.tw>, linux-mtd@lists.infradead.org,
+	trivial@kernel.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, November 08, 2010 15:54:43 Bj=C3=B8rn Forsman wrote:
-> I get "double bit error @ page" messages while working with NAND on a
-> Colibri PXA310 module. Basically, when I write an UBI image to NAND,
-> either with U-Boot "nand write" or "nandwrite" from mtd-utils,
-> everything is OK on the *first* mount. But on the second mount I get
-> several "double bit error @ page" messages and mount fails.
+Hi,
 
-You are not erase-block padding your image, when you write it?
-That's the mistake I made (with jffs2 in my case), in that openpxa-users
-thread you mention.
-As soon as I found out my image was eraseblock padded, and fixed that,
-the number of single/double bit errors was reduced dramatically,=20
-but some errors remained.
+The [vk][cmz]alloc(_node) family of functions return void pointers which
+it's completely unnecessary/pointless to cast to other pointer types since
+that happens implicitly.
 
-I haven't yet had the time to further investigate this, my preliminary=20
-conclusion is that the Samsung K9K's, though advertised as SLC,=20
-are very poor quality, and they probably need a better ecc than=20
-Hamming (as the pxa nand controller implements).
-And also that jffs2 seems to care less than ubi(fs) when double bit errors=
-=20
-do happen.(ubifs often refused to even mount when biterrors occurred,=20
-jffs2 so far always continued with what remained)
-That's the reason why I'm using jffs2 for the time being, a non-booting=20
-device is worse than a device with a corrupted file.
-(from a theoretical point of view however both are equally bad of course,=20
-this issue does need to be resolved)
+This patch removes such casts from drivers/mtd/
 
-Rgds, Pieter
+
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ tqm8xxl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mtd/maps/tqm8xxl.c b/drivers/mtd/maps/tqm8xxl.c
+index 6014698..c08e140 100644
+--- a/drivers/mtd/maps/tqm8xxl.c
++++ b/drivers/mtd/maps/tqm8xxl.c
+@@ -139,7 +139,7 @@ static int __init init_tqm_mtd(void)
+ 			goto error_mem;
+ 		}
+ 
+-		map_banks[idx]->name = (char *)kmalloc(16, GFP_KERNEL);
++		map_banks[idx]->name = kmalloc(16, GFP_KERNEL);
+ 
+ 		if (!map_banks[idx]->name) {
+ 			ret = -ENOMEM;
+
+
+
+-- 
+Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+Plain text mails only, please.
