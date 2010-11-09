@@ -1,18 +1,18 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PFkrv-0005tk-Ld
-	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2010 09:52:00 +0000
-Received: by wyf22 with SMTP id 22so6539269wyf.36
+	id 1PFksh-0005y1-9z
+	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2010 09:52:48 +0000
+Received: by wwb39 with SMTP id 39so1060957wwb.0
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 09 Nov 2010 01:51:58 -0800 (PST)
+	Tue, 09 Nov 2010 01:52:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1288772847-8120-8-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1288772847-8120-9-git-send-email-computersforpeace@gmail.com>
 References: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
-	<1288772847-8120-8-git-send-email-computersforpeace@gmail.com>
+	<1288772847-8120-9-git-send-email-computersforpeace@gmail.com>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 9 Nov 2010 04:48:53 -0500
-Message-ID: <AANLkTikCjW=P2ncq7E_4WLJtxzwPdaU4SWi1s-7Us7ZP@mail.gmail.com>
-Subject: Re: [PATCH 08/10] mtd-utils: nandwrite: prevent 32-bit overflow
+Date: Tue, 9 Nov 2010 04:51:36 -0500
+Message-ID: <AANLkTinGe84r8mo84HQVikPqQxLrKnwrXa20E_rfN=0f@mail.gmail.com>
+Subject: Re: [PATCH 09/10] mtd-utils: nanddump: type consistency
 To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
@@ -28,17 +28,23 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Wed, Nov 3, 2010 at 04:27, Brian Norris wrote:
-> For large block- and page-sizes, the multiplication of ebsize_aligned
-> and pagelen can overflow a 32-bit integer. =C2=A0This overflow can be
-> prevented by a simple change in order of operations (i.e., do division
-> first).
->
-> - =C2=A0 =C2=A0 =C2=A0 filebuf_max =3D pagelen * ebsize_aligned / mtd.min=
-_io_size;
-> + =C2=A0 =C2=A0 =C2=A0 filebuf_max =3D ebsize_aligned / mtd.min_io_size *=
- pagelen;
+> =C2=A0nandwrite.c | =C2=A0 =C2=A06 +++---
 
-i'd insert a comment noting that order of operations matters to avoid
-32bit overflow so someone doesnt switch it back by accident in the
-future
+the subject says "nanddump" ...
+
+> --- a/nandwrite.c
+> +++ b/nandwrite.c
+> @@ -262,7 +262,7 @@ int main(int argc, char * const argv[])
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0long long blockstart =3D -1;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct mtd_dev_info mtd;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct mtd_oob_buf oob;
+> - =C2=A0 =C2=A0 =C2=A0 loff_t offs;
+> + =C2=A0 =C2=A0 =C2=A0 long long offs;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0int ret;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0int oobinfochanged =3D 0;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct nand_oobinfo old_oobinfo;
+
+i dont think this is quite right.  "offs" is given to an ioctl which
+takes __kernel_loff_t ... we shouldnt assume "long long" and
+"__kernel_loff_t" are always the same.
 -mike
