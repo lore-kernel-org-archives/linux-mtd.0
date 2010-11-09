@@ -1,21 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PFkuU-0006Do-Ql
-	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2010 09:54:39 +0000
-Received: by wyf22 with SMTP id 22so6542116wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 09 Nov 2010 01:54:37 -0800 (PST)
+Received: from smtp-1.concepts.nl ([2001:838:2:1::30:124])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PFkxy-0006ib-Df
+	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2010 09:58:15 +0000
+From: pieterg <pieterg@gmx.com>
+To: =?utf-8?q?Bj=C3=B8rn_Forsman?= <bjorn.forsman@gmail.com>
+Subject: Re: [Openpxa-users] PXA310: double bit errors on NAND
+Date: Tue, 9 Nov 2010 10:58:03 +0100
+References: <AANLkTin86UQe8Q4PNqSnU7M0x4kVPUehcBRpS0HhHKRh@mail.gmail.com>
+	<201011082318.21748.pieterg@gmx.com>
+	<AANLkTikJrAaR-Fh-yS+jDyTdPFeGAU16fW1R08dW3DBt@mail.gmail.com>
+In-Reply-To: <AANLkTikJrAaR-Fh-yS+jDyTdPFeGAU16fW1R08dW3DBt@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
-References: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 9 Nov 2010 04:54:16 -0500
-Message-ID: <AANLkTi=KYdoM1cWouFAhPdyFWJn-RL2m51i=g=3higu8@mail.gmail.com>
-Subject: Re: [PATCH 01/10] mtd-utils: nanddump: Allow 64-bit lengths
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>, Jehan Bing <jehan@orb.com>,
-	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <201011091058.04193.pieterg@gmx.com>
+Cc: linux-mtd@lists.infradead.org, openpxa-users@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,7 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-most of these changes look sane ... i commented on the ones that i
-think need tweaking, but for the rest, Acked-by: Mike Frysinger
-<vapier@gentoo.org>
--mike
+On Tuesday, November 09, 2010 10:15:40 Bj=C3=B8rn Forsman wrote:
+> I've tried nandwrite with or without the --pad option. Is that the
+> padding you are referring to? Or is it the --blockalign option? How
+> exactly did you flash your rootfs?
+
+nandwrite -p pads to pagesize, which is ok.
+But I was using a --pad=3D0x800 (=3Dpagesize) option for mkfs.jffs2 instead=
+,=20
+which somehow resulted in eraseblock padding.
+
+> Thanks for the info. Note that I've had *zero* trouble with ubifs when
+> it's flashed with ubiformat and ubiupdatevol. I did some more googling
+> and found some other threads about the "ubiformat + ubiupdatevol works
+> but not direct UBI image flashing" issue. I'll take a closer look.
+
+Interesting. In that case I might give that a try as well, as jffs2 is still
+far from perfect, even with correct pagesize padding.
+
+I've added a single bit debug message in the nand driver by the way,
+which shows a lot of lucky escapes, before the first double bit error
+eventually occurs. Which seems inevitable, as the driver takes
+no action (such as refreshing a page) when single bit errors occur.
+
+Rgds, Pieter
