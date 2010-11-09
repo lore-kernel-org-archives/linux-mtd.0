@@ -1,25 +1,23 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PFkhq-0004vD-Nh
-	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2010 09:41:36 +0000
-Received: by wwe15 with SMTP id 15so7809800wwe.18
+	id 1PFkrv-0005tk-Ld
+	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2010 09:52:00 +0000
+Received: by wyf22 with SMTP id 22so6539269wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 09 Nov 2010 01:41:31 -0800 (PST)
+	Tue, 09 Nov 2010 01:51:58 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
-References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
-	<4CD11C03.3090207@parrot.com>
-	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
-	<AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
-	<AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
+In-Reply-To: <1288772847-8120-8-git-send-email-computersforpeace@gmail.com>
+References: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
+	<1288772847-8120-8-git-send-email-computersforpeace@gmail.com>
 From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 9 Nov 2010 04:40:04 -0500
-Message-ID: <AANLkTikW9=FUvM9CeqABUdB098PMeC9s3+94V2Ae=LiL@mail.gmail.com>
-Subject: Re: Suggested patch: reset errno after isatty()
-To: Ketil Froyn <ketil@froyn.name>
+Date: Tue, 9 Nov 2010 04:48:53 -0500
+Message-ID: <AANLkTikCjW=P2ncq7E_4WLJtxzwPdaU4SWi1s-7Us7ZP@mail.gmail.com>
+Subject: Re: [PATCH 08/10] mtd-utils: nandwrite: prevent 32-bit overflow
+To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, Jehan Bing <jehan@orb.com>,
+	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 7, 2010 at 17:36, Ketil Froyn wrote:
-> On Sat, Nov 6, 2010 at 9:54 AM, Mike Frysinger wrote:
->> doesnt libmtd provide read functions already ?
+On Wed, Nov 3, 2010 at 04:27, Brian Norris wrote:
+> For large block- and page-sizes, the multiplication of ebsize_aligned
+> and pagelen can overflow a 32-bit integer. =C2=A0This overflow can be
+> prevented by a simple change in order of operations (i.e., do division
+> first).
 >
-> I'm not familiar with libmtd, but the latest release (v1.4.1) just did
-> it itself with pread, and since that failed I fixed it.
->
-> The new code in the repo, which appears to use libmtd, didn't work for
-> me, and the fix appeared more complicated. My patch is for v1.4.1,
-> which should also make it easier to integrate for package maintainers,
-> if they wish, pending a working rewrite.
+> - =C2=A0 =C2=A0 =C2=A0 filebuf_max =3D pagelen * ebsize_aligned / mtd.min=
+_io_size;
+> + =C2=A0 =C2=A0 =C2=A0 filebuf_max =3D ebsize_aligned / mtd.min_io_size *=
+ pagelen;
 
-the focus is on the master branch.  stable fixes should largely be
-back ports, not a complete fork.
+i'd insert a comment noting that order of operations matters to avoid
+32bit overflow so someone doesnt switch it back by accident in the
+future
 -mike
