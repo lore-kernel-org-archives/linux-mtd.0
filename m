@@ -1,25 +1,31 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PFy7h-0008Dh-As
-	for linux-mtd@lists.infradead.org; Wed, 10 Nov 2010 00:01:14 +0000
-Received: by eyd9 with SMTP id 9so28215eyd.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 09 Nov 2010 16:01:04 -0800 (PST)
+Received: from tx2ehsobe004.messaging.microsoft.com ([65.55.88.14]
+	helo=TX2EHSOBE007.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PG82v-0005qL-Ee
+	for linux-mtd@lists.infradead.org; Wed, 10 Nov 2010 10:36:55 +0000
+Received: from mail45-tx2 (localhost.localdomain [127.0.0.1])	by
+	mail45-tx2-R.bigfish.com (Postfix) with ESMTP id 60A69970400	for
+	<linux-mtd@lists.infradead.org>; Wed, 10 Nov 2010 10:36:50 +0000 (UTC)
+Received: from TX2EHSMHS014.bigfish.com (unknown [10.9.14.242])	by
+	mail45-tx2.bigfish.com (Postfix) with ESMTP id EFEC46A8052	for
+	<linux-mtd@lists.infradead.org>; Wed, 10 Nov 2010 10:36:49 +0000 (UTC)
+Received: from az33smr01.freescale.net (az33smr01.freescale.net
+	[10.64.34.199])	by az33egw01.freescale.net (8.14.3/8.14.3) with ESMTP
+	id oAAAaE87022954	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Nov 2010 03:36:14 -0700 (MST)
+Received: from shlinux (shlinux.ap.freescale.net [10.192.224.203])	by
+	az33smr01.freescale.net (8.13.1/8.13.0) with ESMTP id
+	oAAAaDW1015722	for
+	<linux-mtd@lists.infradead.org>; Wed, 10 Nov 2010 04:36:14 -0600 (CST)
+From: Frank Li <Frank.Li@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/1] [MTD]:CORE Fix wrong check register_blkdev return value
+Date: Wed, 10 Nov 2010 18:52:29 +0800
+Message-ID: <1289386349-29033-1-git-send-email-Frank.Li@freescale.com>
 MIME-Version: 1.0
-In-Reply-To: <4CD990BC.6040800@gmail.com>
-References: <1288772847-8120-1-git-send-email-computersforpeace@gmail.com>
-	<1288772847-8120-9-git-send-email-computersforpeace@gmail.com>
-	<AANLkTinGe84r8mo84HQVikPqQxLrKnwrXa20E_rfN=0f@mail.gmail.com>
-	<4CD990BC.6040800@gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 9 Nov 2010 19:00:43 -0500
-Message-ID: <AANLkTimUr8Dvmz7=Owk9dEgWt7hdTFFT+NDXczWd9DfV@mail.gmail.com>
-Subject: Re: [PATCH 09/10] mtd-utils: nanddump: type consistency
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, Jehan Bing <jehan@orb.com>,
-	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain
+Cc: Frank Li <Frank.Li@freescale.com>, dwmw2@infradead.org,
+	linux-kernel.vger.kernel.org@shlinux.ap.freescale.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +35,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Nov 9, 2010 at 13:19, Brian Norris wrote:
-> On 11/9/2010 1:51 AM, Mike Frysinger wrote:
->> On Wed, Nov 3, 2010 at 04:27, Brian Norris wrote:
->>> --- a/nandwrite.c
->>> +++ b/nandwrite.c
->>> @@ -262,7 +262,7 @@ int main(int argc, char * const argv[])
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0long long blockstart =3D -1;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct mtd_dev_info mtd;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct mtd_oob_buf oob;
->>> - =C2=A0 =C2=A0 =C2=A0 loff_t offs;
->>> + =C2=A0 =C2=A0 =C2=A0 long long offs;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0int ret;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0int oobinfochanged =3D 0;
->>> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct nand_oobinfo old_oobinfo;
->>
->> i dont think this is quite right. =C2=A0"offs" is given to an ioctl whic=
-h
->> takes __kernel_loff_t ... we shouldnt assume "long long" and
->> "__kernel_loff_t" are always the same.
->
-> This problem is sort of a "which comes first" question for me: I put
-> this patch before patch 10, where in patch 10, the ioctl in question is
-> replaced with an entirely different call to "mtd_is_bad".
->
-> In the new usage (patch 10), "mtd_is_bad" needs the eraseblock number as
-> an int, so there's some arithmetic going on ("offs" divided by ebsize)
-> that passes an int to "mtd_is_bad".
->
-> I was just trying to unify the usage of different 64-bit data types, and
-> after patch 10, there's no need to be using the "loff_t" type. However,
-> if it makes more sense, I can rearrange patch 9 and 10 such that the
-> type change comes after the ioctl is no longer called directly.
+register_blkdev return 1..255 when major = 0.
 
-i'd leave the type unchanged when using the ioctl() and change it only
-when moving to a different API
--mike
+if (ret ) {
+	printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+		tr->name, tr->major, ret);
+	      mutex_unlock(&mtd_table_mutex);
+	return ret;
+}
+
+Above code will return fail when register_blkdev return allocated major number.
+
+Signed-off-by: Frank Li <Frank.Li@freescale.com>
+---
+ drivers/mtd/mtd_blkdevs.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index a919587..63790e9 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -502,13 +502,16 @@ int register_mtd_blktrans(struct mtd_blktrans_ops *tr)
+ 	mutex_lock(&mtd_table_mutex);
+ 
+ 	ret = register_blkdev(tr->major, tr->name);
+-	if (ret) {
++	if (ret < 0) {
+ 		printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+ 		       tr->name, tr->major, ret);
+ 		mutex_unlock(&mtd_table_mutex);
+ 		return ret;
+ 	}
+ 
++	if (ret)
++		tr->major = ret;
++
+ 	tr->blkshift = ffs(tr->blksize) - 1;
+ 
+ 	INIT_LIST_HEAD(&tr->devs);
+-- 
+1.7.1
