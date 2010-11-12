@@ -1,17 +1,17 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail.perches.com ([173.55.12.10])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PGyew-00020B-54
-	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2010 18:47:39 +0000
-Received: by ewy19 with SMTP id 19so1991815ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 Nov 2010 10:47:34 -0800 (PST)
-MIME-Version: 1.0
-Date: Fri, 12 Nov 2010 13:47:33 -0500
-Message-ID: <AANLkTi=rE+u0OiGXj=HxGYRB9F4p228GpHzGadJm+982@mail.gmail.com>
-Subject: change in how ubiformat works
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1PH1K0-00063L-EB
+	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2010 21:38:13 +0000
+From: Joe Perches <joe@perches.com>
+To: Jiri Kosina <trivial@kernel.org>
+Subject: [PATCH 00/14] Use printf extension %pR for struct resource
+Date: Fri, 12 Nov 2010 13:37:50 -0800
+Message-Id: <cover.1289597644.git.joe@perches.com>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org,
+	linux-parisc@vger.kernel.org, linux-rdma@vger.kernel.org,
+	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org, socketcan-core@lists.berlios.de,
+	linux-mtd@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +21,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I use a sequence as follows: " flash_erase - ubiformat - nanddump -
-verify " to confirm that a UBI image was properly stored in NAND
-flash.  I realize that flash_erase is not recommended because it
-destroys erase counters, but this is only done on virgin flash so
-should not be an issue.
+Yet more trivia...
 
-However, I recently upgraded the mtd-utils, and particularly ubiformat
-from 1.4 to 1.5, and now I see that what I read back (via nanddump)
-does not match the original UBI image.  Can anyone confirm whether
-ubiformat.c changes sometime between 1.4 and 1.5 would result in this
-behavior?  I have looked at ubiformat.c changes and am wondering if it
-has to do with image sequence number support.
+Joe Perches (14):
+  arch/frv: Use printf extension %pR for struct resource
+  arch/mips: Use printf extension %pR for struct resource
+  arch/powerpc: Use printf extension %pR for struct resource
+  drivers/dma/ppc4xx: Use printf extension %pR for struct resource
+  drivers/infiniband: Use printf extension %pR for struct resource
+  drivers/mfd: Use printf extension %pR for struct resource
+  drivers/mtd/maps: Use printf extension %pR for struct resource
+  drivers/mtd/nand: Use printf extension %pR for struct resource
+  drivers/net/can/sja1000: Use printf extension %pR for struct resource
+  drivers/parisc: Use printf extension %pR for struct resource
+  drivers/rapidio: Use printf extension %pR for struct resource
+  drivers/uwb: Use printf extension %pR for struct resource
+  drivers/video: Use printf extension %pR for struct resource
+  sound/ppc: Use printf extension %pR for struct resource
 
-Thanks,
-twebb
+ arch/frv/mb93090-mb00/pci-vdk.c               |    8 ++------
+ arch/mips/txx9/generic/pci.c                  |    7 ++-----
+ arch/powerpc/kernel/pci_64.c                  |    3 +--
+ arch/powerpc/sysdev/tsi108_dev.c              |    8 ++++----
+ drivers/dma/ppc4xx/adma.c                     |    5 ++---
+ drivers/infiniband/hw/ipath/ipath_driver.c    |    5 ++---
+ drivers/mfd/sm501.c                           |    7 ++-----
+ drivers/mtd/maps/amd76xrom.c                  |    7 ++-----
+ drivers/mtd/maps/ck804xrom.c                  |    7 ++-----
+ drivers/mtd/maps/esb2rom.c                    |    9 +++------
+ drivers/mtd/maps/ichxrom.c                    |    9 +++------
+ drivers/mtd/maps/physmap_of.c                 |    4 +---
+ drivers/mtd/maps/scx200_docflash.c            |    5 ++---
+ drivers/mtd/nand/pasemi_nand.c                |    2 +-
+ drivers/net/can/sja1000/sja1000_of_platform.c |    8 ++------
+ drivers/parisc/dino.c                         |   13 +++++--------
+ drivers/parisc/hppb.c                         |    6 ++----
+ drivers/rapidio/rio.c                         |    4 ++--
+ drivers/uwb/umc-dev.c                         |    7 ++-----
+ drivers/video/platinumfb.c                    |    8 ++------
+ sound/ppc/pmac.c                              |   12 ++++--------
+ 21 files changed, 48 insertions(+), 96 deletions(-)
+
+-- 
+1.7.3.1.g432b3.dirty
