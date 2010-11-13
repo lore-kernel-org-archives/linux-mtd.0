@@ -1,23 +1,33 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PHDIO-0008Ow-VS
-	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 10:25:21 +0000
-Received: by bwz5 with SMTP id 5so3930008bwz.36
+	id 1PHDVp-0000gK-VN
+	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 10:39:14 +0000
+Received: by bwz5 with SMTP id 5so3936285bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 13 Nov 2010 02:25:19 -0800 (PST)
-Subject: Re: [PATCH 1/3] mtd: m25p80: Reinstate error print on unrecognized
-	flash
+	Sat, 13 Nov 2010 02:39:12 -0800 (PST)
+Subject: Re: [PATCH 1/5] mtd: fix bdev exclusive open bugs in
+	block2mtd::add_device()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <fbcf2b0a4d8ebff3378b9522ce81ad82@localhost>
-References: <fbcf2b0a4d8ebff3378b9522ce81ad82@localhost>
+To: Tejun Heo <tj@kernel.org>
+In-Reply-To: <1288628129-12811-2-git-send-email-tj@kernel.org>
+References: <1288628129-12811-1-git-send-email-tj@kernel.org>
+	<1288628129-12811-2-git-send-email-tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 13 Nov 2010 12:25:07 +0200
-Message-ID: <1289643907.2218.5.camel@localhost>
+Date: Sat, 13 Nov 2010 12:38:55 +0200
+Message-ID: <1289644735.2218.8.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
+Cc: jack@suse.cz, leochen@broadcom.com, neilb@suse.de,
+	heiko.carstens@de.ibm.com, dm-devel@redhat.com,
+	adilger.kernel@dilger.ca, konishi.ryusuke@lab.ntt.co.jp,
+	shaggy@linux.vnet.ibm.com, drbd-dev@lists.linbit.com,
+	joel.becker@oracle.com, hch@infradead.org, aelder@sgi.com,
+	mfasheh@suse.com, joern@logfs.org,
+	reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk,
+	swhiteho@redhat.com, chris.mason@oracle.com, axboe@kernel.dk,
+	tytso@mit.edu, petero2@telia.com, linux-kernel@vger.kernel.org,
+	schwidefsky@de.ibm.com, linux-mtd@lists.infradead.org,
+	akpm@linux-foundation.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,15 +38,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-10-30 at 21:11 -0700, Kevin Cernekee wrote:
-> Commit b34bc037b26e621e5fc13466767e4da110a7b3d3 removed the
-> "unrecognized JEDEC id" error message, causing the probe function to
-> silently abort if the flash ID is unrecognized.
-> 
-> It is desirable to produce diagnostic output in this situation so that
-> the user has some idea what went wrong.
+Hi,
 
-Pushed the series to l2-mtd-2.6.git, thanks!
+On Mon, 2010-11-01 at 17:15 +0100, Tejun Heo wrote:
+> +			if (!IS_ERR(bdev)) {
+> +				int ret;
+> +				ret = bd_claim(bdev, dev);
+> +				if (ret) {
+> +					blkdev_put(bdev,
+> +						   FMODE_READ | FMODE_WRITE);
+
+Would be a bit cleaner to define ea temporary variable:
+
+fmode_t mode = FMODE_READ | FMODE_WRITE;
+
+Would you to re-send with this little change please?
+
+And ideally, 2 independent patches would be nicer because you fix 2
+independent issues.
 
 -- 
 Best Regards,
