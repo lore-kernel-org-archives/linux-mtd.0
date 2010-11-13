@@ -1,68 +1,72 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMEAo-0000vR-6i
-	for linux-mtd@lists.infradead.org; Sat, 27 Nov 2010 06:22:14 +0000
-Received: by mail-yx0-f177.google.com with SMTP id 34so1339163yxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Nov 2010 22:22:14 -0800 (PST)
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-To: trivial@kernel.org
-Subject: [RFC 9/9]include:linux Change the copyright info.
-Message-Id: <1290838879-11038-10-git-send-email-justinmattock@gmail.com>
-In-Reply-To: <1290838879-11038-1-git-send-email-justinmattock@gmail.com>
-References: <1290838879-11038-1-git-send-email-justinmattock@gmail.com>
-Cc: linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	"Justin P. Mattock" <justinmattock@gmail.com>
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Sat, 27 Nov 2010 06:22:15 -0000
+From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
+Date: Sat, 13 Nov 2010 15:08:29 +0200
+Subject: [PATCH] UBI: improve UBI robustness
+Message-ID: <mailman.17.1289654122.1530.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-Change the copyright info from Sun Microsystems to Oracle since Oracle now owns them.
+When reading data from the flash, corrupt the buffer we are about to
+read to before reading. The idea is to fix the following possible
+situation:
 
-Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
+1. The buffer contains data from previous operation, e.g., read from
+   another PEB previously. The data looks like expected, e.g., if we
+   just do not read anything and return - the caller would not
+   notice this. E.g., if we are reading a VID header, the buffer may
+   contain a valid VID header from another PEB.
+2. The driver is buggy and returns use success or -EBADMSG or
+   -EUCLEAN, but it does not actually put any data to the buffer.
 
+This may confuse UBI or upper layers - they may think the buffer
+contains valid data while in fact it is just old data. This is
+especially possible because UBI (and UBIFS) relies on CRC, and
+treats data as correct even in case of ECC errors if the CRC is
+correct.
+
+Try to prevent this situation by changing the first byte of the
+buffer.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- include/linux/ethtool.h       |    4 ++--
- include/linux/mlx4/doorbell.h |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/ubi/io.c |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 6628a50..2d895be 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -3,11 +3,11 @@
-  *
-  * Copyright (C) 1998 David S. Miller (davem@redhat.com)
-  * Copyright 2001 Jeff Garzik <jgarzik@pobox.com>
-- * Portions Copyright 2001 Sun Microsystems (thockin@sun.com)
-+ * Portions Copyright 2001 Oracle and/or its affiliates. (thockin@sun.com)
-  * Portions Copyright 2002 Intel (eli.kupermann@intel.com,
-  *                                christopher.leech@intel.com,
-  *                                scott.feldman@intel.com)
-- * Portions Copyright (C) Sun Microsystems 2008
-+ * Portions Copyright (C) 2008 Oracle and/or its affiliates. 
-  */
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index c2960ac..9ab1a33 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -146,6 +146,28 @@ int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
+ 	if (err)
+ 		return err;
  
- #ifndef _LINUX_ETHTOOL_H
-diff --git a/include/linux/mlx4/doorbell.h b/include/linux/mlx4/doorbell.h
-index f31bba2..d251ee8 100644
---- a/include/linux/mlx4/doorbell.h
-+++ b/include/linux/mlx4/doorbell.h
-@@ -1,6 +1,6 @@
- /*
-  * Copyright (c) 2004 Topspin Communications.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
++	/*
++	 * Deliberately corrupt the buffer to improve robustness. Indeed, if we
++	 * do not do this, the following may happen:
++	 * 1. The buffer contains data from previous operation, e.g., read from
++	 *    another PEB previously. The data looks like expected, e.g., if we
++	 *    just do not read anything and return - the caller would not
++	 *    notice this. E.g., if we are reading a VID header, the buffer may
++	 *    contain a valid VID header from another PEB.
++	 * 2. The driver is buggy and returns us success or -EBADMSG or
++	 *    -EUCLEAN, but it does not actually put any data to the buffer.
++	 *
++	 * This may confuse UBI or upper layers - they may think the buffer
++	 * contains valid data while in fact it is just old data. This is
++	 * especially possible because UBI (and UBIFS) relies on CRC, and
++	 * treats data as correct even in case of ECC errors if the CRC is
++	 * correct.
++	 *
++	 * Try to prevent this situation by changing the first byte of the
++	 * buffer.
++	 */
++	*((uint8_t *)buf) ^= 0xFF;
++
+ 	addr = (loff_t)pnum * ubi->peb_size + offset;
+ retry:
+ 	err = ubi->mtd->read(ubi->mtd, addr, len, &read, buf);
 -- 
-1.7.1
+1.7.2.3
+
+-- 
+Best Regards,
+Artem Bityutskiy (?????????? ????????????????)
