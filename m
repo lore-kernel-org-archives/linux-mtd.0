@@ -1,17 +1,24 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PH1f4-0000xV-46
-	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2010 21:59:58 +0000
-Received: by wwi17 with SMTP id 17so2560325wwi.18
+	id 1PHCa4-000755-1N
+	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 09:39:34 +0000
+Received: by bwz5 with SMTP id 5so3910613bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 Nov 2010 13:59:56 -0800 (PST)
-MIME-Version: 1.0
-Date: Fri, 12 Nov 2010 16:59:55 -0500
-Message-ID: <AANLkTinOknf6VGWwPXjmcRv6Bhg=Qw4ErrXuuuK4OF0X@mail.gmail.com>
-Subject: severity of bug fixed with commit 180c09d
-From: twebb <taliaferro62@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	Sat, 13 Nov 2010 01:39:29 -0800 (PST)
+Subject: Re: [PATCH] mtd: bcm963xx-flash: try JEDEC probe if CFI fails
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Guillaume LECERF <glecerf@gmail.com>
+In-Reply-To: <20101029141749.23774.90495.stgit@dev.siriade.com>
+References: <20101029141749.23774.90495.stgit@dev.siriade.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 13 Nov 2010 11:39:17 +0200
+Message-ID: <1289641157.2218.3.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Mike Albon <malbon@openwrt.org>, Daniel Dickinson <cshore@csolve.net>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Florian Fainelli <florian@openwrt.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,12 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Can someone explain the severity of this bug?  It was fixed in
-ubiformat.c in mid-January of this year.  I'm using ubiformat from
-prior to this fix and do not see the problem that is described in the
-commit log.  I'm trying to understand the bug in order to explain why
-I'm not seeing the problem and to determine if I'm susceptible to the
-bug.
+On Fri, 2010-10-29 at 16:17 +0200, Guillaume LECERF wrote:
+> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+> ---
+>  drivers/mtd/maps/bcm963xx-flash.c |    5 +++++
+>  1 files changed, 5 insertions(+), 0 deletions(-)
 
-Thanks,
-twebb
+Pushed to l2-mtd-2.6.git, thanks you.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
