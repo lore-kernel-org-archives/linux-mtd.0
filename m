@@ -1,30 +1,28 @@
-Received: from hera.kernel.org ([140.211.167.34])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PHDqs-0001zv-Io
-	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 11:00:58 +0000
-Message-ID: <4CDE6FAA.9030605@kernel.org>
-Date: Sat, 13 Nov 2010 11:59:54 +0100
-From: Tejun Heo <tj@kernel.org>
-MIME-Version: 1.0
-To: axboe@kernel.dk, dedekind1@gmail.com
-Subject: [PATCH UPDATED 1/5] mtd: fix bdev exclusive open bugs in
-	block2mtd::add_device()
-References: <1288628129-12811-1-git-send-email-tj@kernel.org>
-	<1288628129-12811-2-git-send-email-tj@kernel.org>
-In-Reply-To: <1288628129-12811-2-git-send-email-tj@kernel.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: jack@suse.cz, leochen@broadcom.com, neilb@suse.de,
-	heiko.carstens@de.ibm.com, dm-devel@redhat.com,
-	adilger.kernel@dilger.ca, konishi.ryusuke@lab.ntt.co.jp,
-	shaggy@linux.vnet.ibm.com, drbd-dev@lists.linbit.com,
-	joel.becker@oracle.com, hch@infradead.org, aelder@sgi.com,
-	mfasheh@suse.com, joern@logfs.org,
-	reiserfs-devel@vger.kernel.org, viro@zeniv.linux.org.uk,
-	swhiteho@redhat.com, chris.mason@oracle.com, tytso@mit.edu,
-	petero2@telia.com, linux-kernel@vger.kernel.org,
-	schwidefsky@de.ibm.com, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PHDx9-0002G6-5v
+	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 11:07:27 +0000
+Received: by bwz5 with SMTP id 5so3948345bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 13 Nov 2010 03:07:25 -0800 (PST)
+Subject: Re: Suggested patch: reset errno after isatty()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ketil Froyn <ketil@froyn.name>
+In-Reply-To: <AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
+References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
+	<4CD11C03.3090207@parrot.com>
+	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
+	<AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
+	<AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 13 Nov 2010 13:07:13 +0200
+Message-ID: <1289646433.2218.22.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Mike Frysinger <vapier.adi@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,73 +32,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are two bdev exclusive open bugs.
+On Sun, 2010-11-07 at 23:36 +0100, Ketil Froyn wrote:
+> On Sat, Nov 6, 2010 at 9:54 AM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> >
+> > doesnt libmtd provide read functions already ?
+> > -mike
+> 
+> I'm not familiar with libmtd, but the latest release (v1.4.1) just did
+> it itself with pread, and since that failed I fixed it.
+> 
+> The new code in the repo, which appears to use libmtd, didn't work for
+> me, and the fix appeared more complicated. My patch is for v1.4.1,
+> which should also make it easier to integrate for package maintainers,
+> if they wish, pending a working rewrite.
 
-* open_bdev_exclusive() must not be called with NULL holder.  Use dev
-  as the holder.
+Ketil, you have a point, 
 
-* open_by_devnum() doesn't open the bdev exclusively but
-  block2mtd_free_device() always assumes it.  Explicitly claim the
-  bdev.
+however, Mike is right, fixes should be back-ports, or if you fix a
+problem in the older release, you should fix it in the master branch as
+well, or show that it does not exist in the master branch. This is the
+only way it is possible to keep development under control.
 
-The latter is rather clumsy but will be simplified with future
-blkdev_get/put() cleanups.
+We really need to be sure that whatever is fixed in older releases is
+also fixed in the newer. Yes, this is more work for you but hey, I'm
+also doing this stuff in my spare time.
 
-- Updated to use local variable @mode to cache FMODE_* masks as
-  suggested by Artem Bityutskiy.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: linux-mtd@lists.infradead.org
-Cc: Artem Bityutskiy <dedekind1@gmail.com>
----
-
-This change will cause two conflicts in the series.  I'm not reposting
-them now as they're mostly trivial.  Git tree is fully updated.
-
- git://git.kernel.org/pub/scm/linux/kernel/git/tj/misc.git cleanup-bd_claim
-
-Jens, please let me know when/if you want the full series reposted.
-
-Thanks.
-
- drivers/mtd/devices/block2mtd.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-Index: work/drivers/mtd/devices/block2mtd.c
-===================================================================
---- work.orig/drivers/mtd/devices/block2mtd.c
-+++ work/drivers/mtd/devices/block2mtd.c
-@@ -234,6 +234,7 @@ static void block2mtd_free_device(struct
- /* FIXME: ensure that mtd->size % erase_size == 0 */
- static struct block2mtd_dev *add_device(char *devname, int erase_size)
- {
-+	const fmode_t mode = FMODE_READ | FMODE_WRITE;
- 	struct block_device *bdev;
- 	struct block2mtd_dev *dev;
- 	char *name;
-@@ -246,7 +247,7 @@ static struct block2mtd_dev *add_device(
- 		return NULL;
-
- 	/* Get a handle on the device */
--	bdev = open_bdev_exclusive(devname, FMODE_READ|FMODE_WRITE, NULL);
-+	bdev = open_bdev_exclusive(devname, mode, dev);
- #ifndef MODULE
- 	if (IS_ERR(bdev)) {
-
-@@ -255,7 +256,15 @@ static struct block2mtd_dev *add_device(
-
- 		dev_t devt = name_to_dev_t(devname);
- 		if (devt) {
--			bdev = open_by_devnum(devt, FMODE_WRITE | FMODE_READ);
-+			bdev = open_by_devnum(devt, mode);
-+			if (!IS_ERR(bdev)) {
-+				int ret;
-+				ret = bd_claim(bdev, dev);
-+				if (ret) {
-+					blkdev_put(bdev, mode);
-+					bdev = ERR_PTR(ret);
-+				}
-+			}
- 		}
- 	}
- #endif
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
