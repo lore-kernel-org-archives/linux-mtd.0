@@ -1,21 +1,21 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PHE0S-0002Q7-S2
-	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 11:10:53 +0000
-Received: by bwz5 with SMTP id 5so3949926bwz.36
+	id 1PHE4B-0002hL-GM
+	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 11:14:47 +0000
+Received: by bwz5 with SMTP id 5so3951801bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 13 Nov 2010 03:10:51 -0800 (PST)
-Subject: Re: [PATCH 1/5] mtd: fix bdev exclusive open bugs in
+	Sat, 13 Nov 2010 03:14:42 -0800 (PST)
+Subject: Re: [PATCH UPDATED 1/5] mtd: fix bdev exclusive open bugs in
 	block2mtd::add_device()
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Tejun Heo <tj@kernel.org>
-In-Reply-To: <4CDE6BB2.5070806@kernel.org>
+In-Reply-To: <4CDE6FAA.9030605@kernel.org>
 References: <1288628129-12811-1-git-send-email-tj@kernel.org>
 	<1288628129-12811-2-git-send-email-tj@kernel.org>
-	<1289644735.2218.8.camel@localhost>  <4CDE6BB2.5070806@kernel.org>
+	<4CDE6FAA.9030605@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 13 Nov 2010 13:10:34 +0200
-Message-ID: <1289646634.2218.25.camel@localhost>
+Date: Sat, 13 Nov 2010 13:14:25 +0200
+Message-ID: <1289646865.2218.27.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: jack@suse.cz, leochen@broadcom.com, neilb@suse.de,
@@ -39,15 +39,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-11-13 at 11:42 +0100, Tejun Heo wrote:
-> Hmmm... not really.  The patch is small enough and splitting it won't
-> really buy as any better bisectability.  Splitting patches into
-> logical changes is a good thing but it's no religious dogma.  Let's
-> apply it to the point it actually helps.
+On Sat, 2010-11-13 at 11:59 +0100, Tejun Heo wrote:
+> There are two bdev exclusive open bugs.
+> 
+> * open_bdev_exclusive() must not be called with NULL holder.  Use dev
+>   as the holder.
+> 
+> * open_by_devnum() doesn't open the bdev exclusively but
+>   block2mtd_free_device() always assumes it.  Explicitly claim the
+>   bdev.
+> 
+> The latter is rather clumsy but will be simplified with future
+> blkdev_get/put() cleanups.
+> 
+> - Updated to use local variable @mode to cache FMODE_* masks as
+>   suggested by Artem Bityutskiy.
 
-Well, it is more about if your second fix is buggy, we could revert it
-without reverting the first fix. But anyway, this is not a big deal, so
-let's forget about this indeed.
+Do you want this patch to go in via Jens' tree with the rest of the
+series, or as an independent patch via the mtd tree?
+
+Anyway,
+
+Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
+Thanks!
 
 -- 
 Best Regards,
