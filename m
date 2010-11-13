@@ -1,19 +1,19 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PHE8w-0003AV-VP
-	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 11:19:43 +0000
-Received: by bwz5 with SMTP id 5so3954601bwz.36
+	id 1PHE94-0003AV-Mh
+	for linux-mtd@lists.infradead.org; Sat, 13 Nov 2010 11:19:50 +0000
+Received: by mail-bw0-f49.google.com with SMTP id 5so3954601bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 13 Nov 2010 03:19:37 -0800 (PST)
-Subject: Re: [PATCH 16/49] drivers/mtd: Use vzalloc
+	Sat, 13 Nov 2010 03:19:46 -0800 (PST)
+Subject: Re: [PATCH 38/49] fs/jffs2: Use vzalloc
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Joe Perches <joe@perches.com>
-In-Reply-To: <61af073f284d2169834120889a641cd11c370643.1288925424.git.joe@perches.com>
+In-Reply-To: <1c6caf522ea9088919a89c8c23c54436c7020cdb.1288925425.git.joe@perches.com>
 References: <alpine.DEB.2.00.1011031108260.11625@router.home>
-	<61af073f284d2169834120889a641cd11c370643.1288925424.git.joe@perches.com>
+	<1c6caf522ea9088919a89c8c23c54436c7020cdb.1288925425.git.joe@perches.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 13 Nov 2010 13:19:25 +0200
-Message-ID: <1289647165.2218.29.camel@localhost>
+Date: Sat, 13 Nov 2010 13:19:34 +0200
+Message-ID: <1289647174.2218.30.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: David Woodhouse <dwmw2@infradead.org>, Jiri Kosina <trivial@kernel.org>,
@@ -28,12 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-11-04 at 20:07 -0700, Joe Perches wrote:
+On Thu, 2010-11-04 at 20:08 -0700, Joe Perches wrote:
 > Signed-off-by: Joe Perches <joe@perches.com>
 > ---
->  drivers/mtd/nand/nandsim.c |    3 +--
->  drivers/mtd/ubi/vtbl.c     |    6 ++----
->  2 files changed, 3 insertions(+), 6 deletions(-)
+>  fs/jffs2/build.c |    5 ++---
+>  1 files changed, 2 insertions(+), 3 deletions(-)
 
 Pushed to l2-mtd-2.6.git, thanks.
 
