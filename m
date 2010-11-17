@@ -1,28 +1,17 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PIkHa-00034L-8M
-	for linux-mtd@lists.infradead.org; Wed, 17 Nov 2010 15:50:50 +0000
-Received: by yxj4 with SMTP id 4so835634yxj.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Nov 2010 07:50:48 -0800 (PST)
+Received: from smtp.scorch.co.nz ([27.110.127.199] helo=scorch.co.nz)
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PIrfi-0006r3-AO
+	for linux-mtd@lists.infradead.org; Wed, 17 Nov 2010 23:44:15 +0000
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Subject: Are there UBI layout changes between 2.6.35 and 2.6.36?
+Date: Thu, 18 Nov 2010 12:44:04 +1300
 MIME-Version: 1.0
-In-Reply-To: <1289649338.2218.42.camel@localhost>
-References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
-	<4CD11C03.3090207@parrot.com>
-	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
-	<AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
-	<AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
-	<1289646433.2218.22.camel@localhost>
-	<1289649338.2218.42.camel@localhost>
-Date: Wed, 17 Nov 2010 16:50:47 +0100
-Message-ID: <AANLkTink+0WvCmQWwd4+Vf8TETjR5-6BsGU=a071Rk0+@mail.gmail.com>
-Subject: Re: Suggested patch: reset errno after isatty()
-From: Ketil Froyn <ketil@froyn.name>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <201011181244.04745.manningc2@actrix.gen.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,58 +21,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Nov 13, 2010 at 12:55 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> On Sat, 2010-11-13 at 13:07 +0200, Artem Bityutskiy wrote:
->>
->> however, Mike is right, fixes should be back-ports, or if you fix a
->> problem in the older release, you should fix it in the master branch as
->> well, or show that it does not exist in the master branch. This is the
->> only way it is possible to keep development under control.
->>
->> We really need to be sure that whatever is fixed in older releases is
->> also fixed in the newer. Yes, this is more work for you but hey, I'm
->> also doing this stuff in my spare time.
->
-> BTW, with patches from Brian Norris which I just pushed the master
-> branch may work better for you.
+Folk
 
-I've managed to build mtd-utils for my android device, using
-codesourcery's toolchain. I built a static nanddump executable, copied
-it to my device, and ran it. Here's what happened:
+I have been helping some people get an omap3 overo-based system going. 
+Everything is working fine using 2.6.35 and software ECC, but when I changed 
+I change to 2.6.36 and hwecc things stop working. I get the following 
+problem, and obviously no boot :-(.
 
-# nanddump -f /sdcard/mtd5.dump /dev/mtd/mtd5
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 0
-Block size 131072, page size 2048, OOB size 0
-Dumping data starting at 0x00000000 and ending at 0x0a5c0000...
-Segmentation fault
+UBI: attaching mtd7 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    129024 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          512 (aligned 512)
+UBI: data offset:                2048
+UBI: corrupted PEBs will be formatted
+UBI: max. sequence number:       0
+UBI error: vtbl_check: bad CRC at record 0: 0xc4ef3d92, not 0x639e7026
+UBI error: vtbl_check: bad CRC at record 0: 0xc4ef3d92, not 0x639e7026
+UBI error: process_lvol: both volume tables are corrupted
+UBI error: ubi_attach_mtd_dev: failed to attach by scanning, error -22
+UBI error: ubi_init: cannot attach mtd7
 
-The OOB size shown is 0, which is wrong, while the detected block size
-and page size are correct. The old version used to complain:
+I don't think this is just a straight forward software/hardware ECC issue I 
+don't get the ECC error reports I would get if I load the NAND using software 
+ECC.
 
-# nanddump -f /sdcard/mtd5.dump /dev/mtd/mtd5
-Unknown flash (not normal NAND)
+OK, the background...
 
-until I did some debugging and found out that my device has an OOB
-size of 56... This patch against v1.4.1 fixed that version:
+The roofts is created by mkfs.ubifs, then ubinized, then programmed via u-boot 
+using hw or sw ecc as appropriate.
 
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -308,6 +308,7 @@ int main(int argc, char * const argv[])
-                        !(meminfo.oobsize == 128 && meminfo.writesize == 4096) &
-                        !(meminfo.oobsize == 64 && meminfo.writesize == 4096) &&
-                        !(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
-+                       !(meminfo.oobsize == 56 && meminfo.writesize == 2048) &&
-                        !(meminfo.oobsize == 32 && meminfo.writesize == 1024) &&
-                        !(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
-                        !(meminfo.oobsize == 8 && meminfo.writesize == 256)) {
+The following are used to create the image:
 
+ubinize.cmd is
+[rootfs-volume]
+mode=ubi
+image=ubifs.tmp
+vol_name=root
+vol_size=20MiB
+vol_id=0
+EOF
 
-I've done some digging around in the new code, but I haven't worked
-out exactly why the OOB size is set to 0. I haven't figured out
-exactly what it does yet... Or could it have anything to do with my
-build environment?
+mkfs.ubifs  -m 2048 -e 126KiB -c 1000 -r .  $tmp_dir/ubifs.tmp	
+ubinize -o $out_file -p 128KiB -s 512 -m 2048 ubinize.cmd
 
-Cheers, Ketil
+Has something changed between 2.6.35 and 2.6.36 that will mess up the way the 
+volumes are managed?
+
+Thanks
+
+Charles
