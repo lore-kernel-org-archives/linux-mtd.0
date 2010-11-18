@@ -1,29 +1,23 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJ2Qr-0000o7-Pu
-	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2010 11:13:38 +0000
-Received: by qwf6 with SMTP id 6so802964qwf.36
+	id 1PJ2b1-00023a-Fc
+	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2010 11:24:11 +0000
+Received: by eyd9 with SMTP id 9so1825061eyd.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Nov 2010 03:13:36 -0800 (PST)
+	Thu, 18 Nov 2010 03:24:03 -0800 (PST)
+Message-ID: <4CE50C64.60001@mvista.com>
+Date: Thu, 18 Nov 2010 14:22:12 +0300
+From: Sergei Shtylyov <sshtylyov@mvista.com>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTink+0WvCmQWwd4+Vf8TETjR5-6BsGU=a071Rk0+@mail.gmail.com>
-References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
-	<4CD11C03.3090207@parrot.com>
-	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
-	<AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
-	<AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
-	<1289646433.2218.22.camel@localhost>
-	<1289649338.2218.42.camel@localhost>
-	<AANLkTink+0WvCmQWwd4+Vf8TETjR5-6BsGU=a071Rk0+@mail.gmail.com>
-Date: Thu, 18 Nov 2010 12:13:36 +0100
-Message-ID: <AANLkTim7TT8ydMiSX8B2ehJP2kQ6jtGSnEZU98AZjWUf@mail.gmail.com>
-Subject: Re: Suggested patch: reset errno after isatty()
-From: Ketil Froyn <ketil@froyn.name>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	Mike Frysinger <vapier.adi@gmail.com>
+To: Savinay Dharmappa <savinay.dharmappa@ti.com>
+Subject: Re: [PATCH v2 1/2] mtd: NOR flash driver for OMAP-L137/AM17x
+References: <1289548911-21243-1-git-send-email-savinay.dharmappa@ti.com>
+In-Reply-To: <1289548911-21243-1-git-send-email-savinay.dharmappa@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: sshtylyov@ru.mvista.com, amakarov@ru.mvista.com,
+	davinci-linux-open-source@linux.davincidsp.com,
+	linux-mtd@lists.infradead.org, David Griego <dgriego@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,30 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Nov 17, 2010 at 4:50 PM, Ketil Froyn <ketil@froyn.name> wrote:
+Hello.
+
+On 12-11-2010 11:01, Savinay Dharmappa wrote:
+
+> From: David Griego <dgriego@mvista.com>
+
+> OMAP-L137/AM17x has limited number of dedicated EMIFA
+> address pins, enough to interface directly to an SDRAM.
+> If a device such as an asynchronous flash needs to be
+> attached to the EMIFA, then either GPIO pins or a chip
+> select may be used to control the flash device's upper
+> address lines.
 >
-> I've done some digging around in the new code, but I haven't worked
-> out exactly why the OOB size is set to 0. I haven't figured out
-> exactly what it does yet... Or could it have anything to do with my
-> build environment?
+> This patch adds support for the NOR flash on the OMAP-L137/
+> AM17x user interface daughter board using the latch-addr-flash
+> MTD mapping driver which allows flashes to be partially
+> physically addressed. The upper address lines are set by
+> a board specific code which is a separate patch.
 
-I rebuilt nanddump from v1.4.1 with my patches using the CodeSourcery
-toolchain (I'd been using the AOSP toolchain before). It works fine,
-so I guess that rules out problems in my build environment. Here's
-what the run looks like:
+    Please add back my signoff, omitted in this version. Some of the code, 
+including a bug fix, was authored by me.
 
-/ # nanddump-old -f /sdcard/mtd5.dump /dev/mtd/mtd5
-ECC failed: 0
-ECC corrected: 0
-Number of bad blocks: 0
-Number of bbt blocks: 0
-Block size 131072, page size 2048, OOB size 56
-Dumping data starting at 0x00000000 and ending at 0x0a5c0000...
-/ #
+> Signed-off-by: David Griego <dgriego@mvista.com>
 
-This particular system appears to use MTD partitioning, maybe
-redboot(?) or something like that. I haven't had the opportunity to
-delve into how that works yet - could it be that the partitioning
-takes 8 bytes of the OOB?
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 
-Cheers, Ketil
+> Signed-off-by: Savinay Dharmappa <savinay.dharmappa@ti.com>
+
+ > diff --git a/include/linux/mtd/latch-addr-flash.h 
+b/include/linux/mtd/latch-addr-flash.h
+ > new file mode 100644
+ > index 0000000..c77e7c9
+ > --- /dev/null
+ > +++ b/include/linux/mtd/latch-addr-flash.h
+ > @@ -0,0 +1,29 @@
+ > +/*
+ > + * Interface for NOR flash driver whose high address lines are latched
+ > + *
+ > + * Copyright (C) 2008 MontaVista Software, Inc.<source@mvista.com>
+ > + *
+ > + * This file is licensed underthe terms of the GNU General Public License
+                                  ^
+    Oops, forgot a space here.
+
+WBR, Sergei
