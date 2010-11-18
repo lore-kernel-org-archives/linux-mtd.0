@@ -1,18 +1,16 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
+Received: from rcsinet10.oracle.com ([148.87.113.121])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJ8nv-000817-Be
-	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2010 18:01:56 +0000
-Date: Thu, 18 Nov 2010 10:01:37 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Sukumar Ghorai <s-ghorai@ti.com>
-Subject: Re: [PATCH] omap: nand: remove hardware ECC as default
-Message-ID: <20101118180137.GG9264@atomide.com>
-References: <1290090130-20835-1-git-send-email-s-ghorai@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1290090130-20835-1-git-send-email-s-ghorai@ti.com>
-Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+	id 1PJDVJ-0005Gc-Fd
+	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2010 23:02:58 +0000
+Date: Thu, 18 Nov 2010 15:02:21 -0800
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] mtd: fix nand kernel-doc warnings
+Message-Id: <20101118150221.2f38e9b0.randy.dunlap@oracle.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +20,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Sukumar Ghorai <s-ghorai@ti.com> [101118 06:12]:
-> CONFIG_MTD_NAND_OMAP_HWECC defined wronly in patch submitted during 2.6.36
-> that using the hardware ECC by default
-> 
-> Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
-> ---
->  drivers/mtd/nand/omap2.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index cd41c58..15682ec 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -7,7 +7,6 @@
->   * it under the terms of the GNU General Public License version 2 as
->   * published by the Free Software Foundation.
->   */
-> -#define CONFIG_MTD_NAND_OMAP_HWECC
->  
->  #include <linux/platform_device.h>
->  #include <linux/dma-mapping.h>
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-This looks like a fix for the -rc cycle. Can you please update
-the description a bit to specify which commit broke it and
-what the error is now?
+Warning(include/linux/mtd/nand.h:543): No description found for parameter 'badblockbits'
+Warning(drivers/mtd/nand/nand_bbt.c:1101): No description found for parameter 'mtd'
 
-Regards,
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+Cc:	David Woodhouse <dwmw2@infradead.org>
+Cc:	linux-mtd@lists.infradead.org
+---
+ drivers/mtd/nand/nand_bbt.c |    3 ++-
+ include/linux/mtd/nand.h    |    2 ++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-Tony
+--- lnx-2637-r2g4-kerndoc.orig/include/linux/mtd/nand.h
++++ lnx-2637-r2g4-kerndoc/include/linux/mtd/nand.h
+@@ -448,6 +448,8 @@ struct nand_buffers {
+  *			See the defines for further explanation.
+  * @badblockpos:	[INTERN] position of the bad block marker in the oob
+  *			area.
++ * @badblockbits:	[INTERN] number of bits to left-shift the bad block
++ *			number
+  * @cellinfo:		[INTERN] MLC/multichip data from chip ident
+  * @numchips:		[INTERN] number of physical chips
+  * @chipsize:		[INTERN] the size of one chip for multichip arrays
+--- lnx-2637-r2g4-kerndoc.orig/drivers/mtd/nand/nand_bbt.c
++++ lnx-2637-r2g4-kerndoc/drivers/mtd/nand/nand_bbt.c
+@@ -1092,7 +1092,8 @@ static void mark_bbt_region(struct mtd_i
+ 
+ /**
+  * verify_bbt_descr - verify the bad block description
+- * @bd:			the table to verify
++ * @mtd:	MTD device structure
++ * @bd:		the table to verify
+  *
+  * This functions performs a few sanity checks on the bad block description
+  * table.
