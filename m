@@ -1,24 +1,16 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJ3KG-00028t-99
-	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2010 12:10:53 +0000
-Received: by ewy19 with SMTP id 19so1839015ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Nov 2010 04:10:51 -0800 (PST)
-Message-ID: <4CE5175C.2080505@mvista.com>
-Date: Thu, 18 Nov 2010 15:09:00 +0300
-From: Sergei Shtylyov <sshtylyov@mvista.com>
+Received: from p02c11o142.mxlogic.net ([208.65.144.75])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PJ4GE-0004t0-4M
+	for linux-mtd@lists.infradead.org; Thu, 18 Nov 2010 13:10:47 +0000
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-To: Savinay Dharmappa <savinay.dharmappa@ti.com>
-Subject: Re: [PATCH v2 1/2] mtd: NOR flash driver for OMAP-L137/AM17x
-References: <1289548911-21243-1-git-send-email-savinay.dharmappa@ti.com>
-	<4CE50C64.60001@mvista.com>
-	<003c01cb8716$ce4bb750$6ae325f0$@dharmappa@ti.com>
-In-Reply-To: <003c01cb8716$ce4bb750$6ae325f0$@dharmappa@ti.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: amakarov@ru.mvista.com, davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org, 'David Griego' <dgriego@mvista.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: mtdparts question
+Date: Thu, 18 Nov 2010 07:11:49 -0600
+Message-ID: <9AC3F0E75060224C8BBC5BA2DDC8853A1E133300@EXV1.corp.adtran.com>
+From: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+Attempting to configure mtdparts from the command line.  The parts are
+set statically in the kernel, however, the COMMENT prior to the config
+declares that the this is what will happen IF there is no definition on
+the command line.
 
-On 18-11-2010 14:50, Savinay Dharmappa wrote:
+Bootup info shows:
 
->>> OMAP-L137/AM17x has limited number of dedicated EMIFA
->>> address pins, enough to interface directly to an SDRAM.
->>> If a device such as an asynchronous flash needs to be
->>> attached to the EMIFA, then either GPIO pins or a chip
->>> select may be used to control the flash device's upper
->>> address lines.
+<snip>
+Kernel command line: mtdparts=3DNAND 128MiB 3,3V
+8-bit:256k(hidden),-(root) ip=3D192.168.1.10 root=3D/dev/ram
+console=3DttyS0,115200n8r <snip> Scanning for NAND chip NAND device:
+Manufacturer ID: 0x20, Chip ID: 0xf1 (ST Micro NAND 128MiB 3,3V 8-bit)
+Scanning device for bad blocks Bad eraseblock 1012 at 0x000007e80000
+Setting up NAND partitions Creating 2 MTD partitions on "NAND 128MiB
+3,3V 8-bit":
+0x000000000000-0x000000400000 : "Kernel partition"
+0x000000400000-0x000008000000 : "Root partition"
+<snip>
+physmap platform flash device: 01000000 at 1f000000
+physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank  Amd/Fujitsu
+Extended Query Table at 0x0040
+physmap-flash.0: CFI does not contain boot bank location. Assuming top.
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+cmdlinepart partition parsing not available RedBoot partition parsing
+not available Using physmap partition information Creating 1 MTD
+partitions on "physmap-flash.0":
+0x000000440000-0x000000a40000 : "filesystem"
+<snip>
 
->>> This patch adds support for the NOR flash on the OMAP-L137/
->>> AM17x user interface daughter board using the latch-addr-flash
->>> MTD mapping driver which allows flashes to be partially
->>> physically addressed. The upper address lines are set by
->>> a board specific code which is a separate patch.
+The system has two flash chips, one a NOR and the other a NAND.
 
->>      Please add back my signoff, omitted in this version. Some of the code,
->> including a bug fix, was authored by me.
+Q1:  Can we configure mtdparts from the command line if the definition
+is already in arch/mips/<mysys>/platform.c.
+Q2:  Is the definition `mtdparts=3DNAND 128MiB 3,3V
+8-bit:256k(hidden),-(root)` correct to do this for the NAND?
+Q3:  Can we define partitions for BOTH of these flash on the command
+line? (my answer=3D NO -- am I correct?)
 
-> I'll surely do this. What about your Sign-off on 2/2 patch?
+If this has been asked prior, I could not locate it.  Sorry for the
+repeat if it has been asked previously.
 
-    Already replied.
-
-> Also shall I add
-> Aleksey's Sign-off on this patch
-
-    AFAIR, there was his signoff on it, so yes.
-
-> and David's Sign-off on 2/2 patch?
-
-    David didn't touch patch 2/2.
-
-> Thanks,
-> Savinay.
-
-WBR, Sergei
+Thanks,
+Andy
