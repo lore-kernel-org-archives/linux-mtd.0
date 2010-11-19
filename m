@@ -1,16 +1,16 @@
-Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
-	helo=VA3EHSOBE006.bigfish.com)
+Received: from mail.windriver.com ([147.11.1.11])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJMlC-0005YP-KA
-	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 08:55:59 +0000
-From: Jason Liu <r64343@freescale.com>
-To: <David.Woodhouse@intel.com>
-Subject: [PATCH 1/1] mtd: nand: add check for out of page read
-Date: Fri, 19 Nov 2010 16:40:45 +0800
-Message-ID: <1290156045-11719-1-git-send-email-r64343@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+	id 1PJNMO-00017u-N1
+	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 09:34:25 +0000
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.windriver.com (8.14.3/8.14.3) with ESMTP id oAJ9YMv5021892
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Nov 2010 01:34:22 -0800 (PST)
+From: jgq516@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: 
+Date: Fri, 19 Nov 2010 17:35:42 +0800
+Message-Id: <1290159342-20528-1-git-send-email-jgq516@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When run mtd_oobtest case, there will be one error for step(4),
-which turned out it need add one check for out of page read in
-nand_do_read_oob just like mtd_do_write_oob did it already.
-This commit also fix one typo error for comments in mtd_do_write_oob
+Hello,
 
-Signed-off-by: Jason Liu <r64343@freescale.com>
----
- drivers/mtd/nand/nand_base.c |    9 ++++++++-
- 1 files changed, 8 insertions(+), 1 deletions(-)
+I encountered the kernel warning "MTD do_write_buffer(): software timeout" when copy 20KB file to nor flash with flashcp cmd. The flash type is s29gl256p, and the suitable driver for the flash is cfi_cmdset_0002.c.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 1f75a1b..75d199e 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -1782,6 +1782,13 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
- 	else
- 		len = mtd->oobsize;
- 
-+	/* Do not allow read past end of page */
-+	if ((ops->ooboffs + readlen) > len) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to read "
-+				"past end of page\n", __func__);
-+		return -EINVAL;
-+	}
-+
- 	if (unlikely(ops->ooboffs >= len)) {
- 		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start read "
- 					"outside oob\n", __func__);
-@@ -2377,7 +2384,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 		return -EINVAL;
- 	}
- 
--	/* Do not allow reads past end of device */
-+	/* Do not allow write past end of device */
- 	if (unlikely(to >= mtd->size ||
- 		     ops->ooboffs + ops->ooblen >
- 			((mtd->size >> chip->page_shift) -
--- 
-1.7.0.4
+I think the issue should caused by the following codes in do_write_buffer func.
+
+if (time_after(jiffies, timeo) && !chip_ready(map, adr))
+                        break;
+[snip]
+printk(KERN_WARNING "MTD %s(): software timeout\n",
+               __func__ );
+
+After experiments, I found if flashcp a file less than 12kB, the warning is disappeared. Or add some delay before check the chip is ready or not, then I could flashcp a larger size file, more delay can flashcp more size.
+
+However I don't think add delay it is a good solution, from Figure"Write Buffer Programming Operation" of the flash datasheet, we should perform polling algorithm and check the polling status after write buffer program confirm. and xip_udelay implement the polling algorithm, is it right?  But it seems only the arch which support MTD_XIP can use xip_udelay, otherwise UDELAY is defined with cfi_udelay rather than xip_udelay,.
+
+Unfortunately, the cpu in my board doesn't support MTD_XIP now, is this means these archs without MTD_XIP support don't need poll after write buffer?  or is there any good idea to handle the warning? Thanks.
+Ps: I used 2.6.34 kernel, and the driver doesn't have obviously change after compare with the latest version.
+
+Best Regards,
+Xiao Jiang
