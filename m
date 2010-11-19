@@ -1,16 +1,23 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJNqz-0001ao-9W
-	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 10:06:02 +0000
-From: Savinay Dharmappa <savinay.dharmappa@ti.com>
-To: davinci-linux-open-source@linux.davincidsp.com
-Subject: [PATCH v3 2/2] davinci: Platform support for OMAP-L137/AM17x NOR
-	flash driver
-Date: Fri, 19 Nov 2010 15:24:48 +0530
-Message-Id: <1290160488-10344-1-git-send-email-savinay.dharmappa@ti.com>
-Cc: Aleksey Makarov <amakarov@ru.mvista.com>,
-	Sergei Shtylyov <sshtylyov@ru.mvista.com>, linux-mtd@lists.infradead.org,
-	Savinay Dharmappa <savinay.dharmappa@ti.com>
+Received: from mail-qw0-f49.google.com ([209.85.216.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PJORu-0002tz-AZ
+	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 10:44:12 +0000
+Received: by qwb8 with SMTP id 8so31672qwb.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Nov 2010 02:44:08 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <20101118180137.GG9264@atomide.com>
+References: <1290090130-20835-1-git-send-email-s-ghorai@ti.com>
+	<20101118180137.GG9264@atomide.com>
+Date: Fri, 19 Nov 2010 12:44:07 +0200
+Message-ID: <AANLkTik8rX+wYWQ8VmRGb6cxZrUHQmoPm5mGOvk=Z80j@mail.gmail.com>
+Subject: Re: [PATCH] omap: nand: remove hardware ECC as default
+From: Grazvydas Ignotas <notasas@gmail.com>
+To: Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,289 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Aleksey Makarov <amakarov@ru.mvista.com>
+On Thu, Nov 18, 2010 at 8:01 PM, Tony Lindgren <tony@atomide.com> wrote:
+> * Sukumar Ghorai <s-ghorai@ti.com> [101118 06:12]:
+>> CONFIG_MTD_NAND_OMAP_HWECC defined wronly in patch submitted during 2.6.=
+36
+>> that using the hardware ECC by default
 
-Adds platform support for OMAP-L137/AM17x NOR flash driver.
+wrongly
 
-Also, configures chip select 3 to control NOR flash's upper
-address lines.
+>>
+>> Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+>> ---
+>> =A0drivers/mtd/nand/omap2.c | =A0 =A01 -
+>> =A01 files changed, 0 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+>> index cd41c58..15682ec 100644
+>> --- a/drivers/mtd/nand/omap2.c
+>> +++ b/drivers/mtd/nand/omap2.c
+>> @@ -7,7 +7,6 @@
+>> =A0 * it under the terms of the GNU General Public License version 2 as
+>> =A0 * published by the Free Software Foundation.
+>> =A0 */
+>> -#define CONFIG_MTD_NAND_OMAP_HWECC
+>>
+>> =A0#include <linux/platform_device.h>
+>> =A0#include <linux/dma-mapping.h>
+>
+> This looks like a fix for the -rc cycle. Can you please update
+> the description a bit to specify which commit broke it and
+> what the error is now?
 
-Signed-off-by: Aleksey Makarov <amakarov@ru.mvista.com>
-Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Signed-off-by: Savinay Dharmappa <savinay.dharmappa@ti.com>
----
-Since v2:
-a. Added signoff from Sergei Shtylyov.
-b. Removed resource member from the da830_evm_nor structure
-   and used a local member inside the da830_evm_nor_init()
-   function.
-c. Fixed few commenting/indenting issues. 
-
- arch/arm/mach-davinci/Kconfig           |    8 +
- arch/arm/mach-davinci/board-da830-evm.c |  218 +++++++++++++++++++++++++++++++
- 2 files changed, 226 insertions(+), 0 deletions(-)
-
-diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
-index b77b860..89cc62e 100644
---- a/arch/arm/mach-davinci/Kconfig
-+++ b/arch/arm/mach-davinci/Kconfig
-@@ -142,6 +142,14 @@ config DA830_UI_NAND
- 	help
- 	  Say Y here to use the NAND flash. Do not forget to setup
- 	  the switch correctly.
-+
-+config DA830_UI_NOR
-+        bool "NOR flash"
-+        help
-+          Configure this option to specify the that AEMIF CE2/CE3 will be used to
-+          communicate to the NOR flash. Do not forget to setup the switch SW1
-+          on UI card correctly.
-+
- endchoice
- 
- config MACH_DAVINCI_DA850_EVM
-diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
-index b52a3a1..c807c1b 100644
---- a/arch/arm/mach-davinci/board-da830-evm.c
-+++ b/arch/arm/mach-davinci/board-da830-evm.c
-@@ -20,6 +20,8 @@
- #include <linux/i2c/at24.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/mtd/latch-addr-flash.h>
-+#include <linux/clk.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -429,6 +431,220 @@ static inline void da830_evm_init_nand(int mux_mode)
- static inline void da830_evm_init_nand(int mux_mode) { }
- #endif
- 
-+#ifdef CONFIG_DA830_UI_NOR
-+/*
-+ * Number of lines going to the NOR flash that are latched using
-+ * AEMIF address lines B_EMIF_BA0-B_EMIF_A12 on CS2.
-+ */
-+#define NOR_WINDOW_SIZE_LOG2     15
-+#define NOR_WINDOW_SIZE         (1 << NOR_WINDOW_SIZE_LOG2)
-+
-+static struct {
-+	struct clk *clk;
-+	struct {
-+		void __iomem *addr;
-+	} latch, aemif;
-+} da830_evm_nor;
-+
-+static struct davinci_aemif_timing da830_evm_norflash_timing = {
-+	.wsetup		= 0,
-+	.wstrobe	= 40,
-+	.whold		= 0,
-+	.rsetup		= 0,
-+	.rstrobe	= 130,
-+	.rhold		= 0,
-+	.ta		= 20,
-+};
-+
-+static void da830_evm_nor_set_window(unsigned long offset, void *data)
-+{
-+	/*
-+	 * CS2 and CS3 address lines are used to address NOR flash. Address
-+	 * line A0-A14 going to the NOR flash are connected to AEMIF address
-+	 * lines B_EMIF_BA0-B_EMIF_A12 on CS2. Address lines A15-A23 of the
-+	 * NOR flash are connected to AEMIF address lines B_EMIF_A0-B_EMIF_A6
-+	 * on CS3. The offset argument received by this function is the offset
-+	 * within NOR flash. Upper address is obtained  by shifting the offset
-+	 * by the number of CS2 address lines used (13) and masking it with
-+	 * complement of 3 (2 address lines used to address banks) and adding
-+	 * the resultant offset value to CS3 base address. Writing to this
-+	 * address will latch the upper address lines.
-+	 */
-+	writeb(0x0, da830_evm_nor.latch.addr +
-+		(~3UL & (offset >> (NOR_WINDOW_SIZE_LOG2 - 2))));
-+}
-+
-+static void da830_evm_nor_done(void *data)
-+{
-+	clk_disable(da830_evm_nor.clk);
-+	clk_put(da830_evm_nor.clk);
-+	iounmap(da830_evm_nor.latch.addr);
-+	release_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
-+	iounmap(da830_evm_nor.aemif.addr);
-+	release_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K);
-+}
-+
-+static int da830_evm_nor_init(void *data, int cs)
-+{
-+	struct resource *res = NULL;
-+
-+	/* Turn on AEMIF clocks */
-+	da830_evm_nor.clk = clk_get(NULL, "aemif");
-+	if (IS_ERR(da830_evm_nor.clk)) {
-+		pr_err("%s: could not get AEMIF clock\n", __func__);
-+		da830_evm_nor.clk = NULL;
-+		return -ENODEV;
-+	}
-+	clk_enable(da830_evm_nor.clk);
-+
-+	res = request_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K, "AEMIF control");
-+	if (res == NULL) {
-+		pr_err("%s: could not request AEMIF control region\n",
-+			__func__);
-+		goto err_clk;
-+	}
-+
-+	da830_evm_nor.aemif.addr = ioremap_nocache(DA8XX_AEMIF_CTL_BASE,
-+						   SZ_32K);
-+	if (da830_evm_nor.aemif.addr == NULL) {
-+		pr_err("%s: could not remap AEMIF control region\n", __func__);
-+		goto err_aemif_region;
-+	}
-+
-+	/* Setup AEMIF -- timings, etc. */
-+
-+	/* Set maximum wait cycles */
-+	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
-+						da830_evm_nor.aemif.addr, cs);
-+
-+	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
-+					da830_evm_nor.aemif.addr, cs + 1);
-+
-+	/* Setup the window to access the latch */
-+	res = request_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE,
-+				"DA830 UI NOR address latch");
-+	if (res == NULL) {
-+		pr_err("%s: could not request address latch region\n",
-+			__func__);
-+		goto err_aemif_ioremap;
-+	}
-+
-+	da830_evm_nor.latch.addr =
-+		ioremap_nocache(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
-+	if (da830_evm_nor.latch.addr == NULL) {
-+		pr_err("%s: could not remap address latch region\n", __func__);
-+		goto err_latch_region;
-+	}
-+	return 0;
-+
-+err_latch_region:
-+	release_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
-+
-+err_aemif_ioremap:
-+	iounmap(da830_evm_nor.aemif.addr);
-+
-+err_aemif_region:
-+	release_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K);
-+
-+err_clk:
-+	clk_disable(da830_evm_nor.clk);
-+	clk_put(da830_evm_nor.clk);
-+
-+	return -EBUSY;
-+}
-+
-+static struct mtd_partition da830_evm_nor_partitions[] = {
-+	/* bootloader (U-Boot, etc) in first 2 sectors */
-+	[0] = {
-+		.name           = "bootloader",
-+		.offset		= 0,
-+		.size           = SZ_128K,
-+		.mask_flags     = MTD_WRITEABLE, /* force read-only */
-+	},
-+	/* bootloader parameters in the next 1 sector */
-+	[1] = {
-+		.name           = "params",
-+		.offset         = MTDPART_OFS_APPEND,
-+		.size           = SZ_64K,
-+	},
-+	/* kernel */
-+	[2] = {
-+		.name           = "kernel",
-+		.offset         = MTDPART_OFS_APPEND,
-+		.size           = SZ_2M,
-+	},
-+	/* file system */
-+	[3] = {
-+		.name           = "filesystem",
-+		.offset         = MTDPART_OFS_APPEND,
-+		.size           = MTDPART_SIZ_FULL,
-+	}
-+};
-+
-+static struct latch_addr_flash_data da830_evm_nor_pdata = {
-+	.width          = 1,
-+	.size           = SZ_4M,
-+	.init           = da830_evm_nor_init,
-+	.done           = da830_evm_nor_done,
-+	.set_window     = da830_evm_nor_set_window,
-+	.nr_parts       = ARRAY_SIZE(da830_evm_nor_partitions),
-+	.parts          = da830_evm_nor_partitions,
-+};
-+
-+static struct resource da830_evm_nor_resource[] = {
-+	[0] = {
-+		.start  = DA8XX_AEMIF_CS2_BASE,
-+		.end    = DA8XX_AEMIF_CS2_BASE + NOR_WINDOW_SIZE - 1,
-+		.flags  = IORESOURCE_MEM,
-+	},
-+	[1] = {
-+		.start  = DA8XX_AEMIF_CS3_BASE,
-+		.end    = DA8XX_AEMIF_CS3_BASE + PAGE_SIZE - 1,
-+		.flags  = IORESOURCE_MEM,
-+	},
-+	[2] = {
-+		.start  = DA8XX_AEMIF_CTL_BASE,
-+		.end    = DA8XX_AEMIF_CTL_BASE + SZ_32K - 1,
-+		.flags  = IORESOURCE_MEM,
-+	}
-+};
-+
-+static struct platform_device da830_evm_nor_device = {
-+	.name           = "latch-addr-flash",
-+	.id             = 0,
-+	.dev            = {
-+		.platform_data  = &da830_evm_nor_pdata,
-+	},
-+	.num_resources  = ARRAY_SIZE(da830_evm_nor_resource),
-+	.resource       = da830_evm_nor_resource,
-+};
-+
-+static inline void da830_evm_init_nor(int mux_mode)
-+{
-+	int ret;
-+
-+	if (HAS_MMC) {
-+		pr_warning("WARNING: both MMC/SD and NOR are "
-+			   "enabled, but they share AEMIF pins.\n"
-+			   "\tDisable MMC/SD for NOR support.\n");
-+		return;
-+	}
-+
-+	ret = davinci_cfg_reg_list(da830_evm_emif25_pins);
-+	if (ret)
-+		pr_warning("da830_evm_init: EMIF 2.5 mux setup failed: %d\n",
-+			  ret);
-+
-+	ret = platform_device_register(&da830_evm_nor_device);
-+	if (ret)
-+		pr_warning("da830_evm_init: NOR device not registered.\n");
-+
-+	gpio_direction_output(mux_mode, 1);
-+}
-+#else
-+static inline void da830_evm_init_nor(int mux_mode) { }
-+#endif  /* CONFIG_DA830_UI_NOR */
-+
- #ifdef CONFIG_DA830_UI_LCD
- static inline void da830_evm_init_lcdc(int mux_mode)
- {
-@@ -469,6 +685,8 @@ static int __init da830_evm_ui_expander_setup(struct i2c_client *client,
- 
- 	da830_evm_init_nand(gpio + 6);
- 
-+	da830_evm_init_nor(gpio + 6);
-+
- 	return 0;
- }
- 
--- 
-1.5.6
+Well it broke NAND for beagle and pandora at least, as those have been
+using sw ecc, all IO simply results in ECC errors with that define.
