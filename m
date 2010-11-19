@@ -1,13 +1,14 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJSDY-0007j3-Rb
-	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 14:45:39 +0000
-From: Sukumar Ghorai <s-ghorai@ti.com>
-To: linux-omap@vger.kernel.org
-Subject: [PATCH V2] omap: nand: remove hardware ECC as default
-Date: Fri, 19 Nov 2010 20:15:26 +0530
-Message-Id: <1290177926-3526-1-git-send-email-s-ghorai@ti.com>
-Cc: linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
+From: Linus Walleij <linus.walleij@stericsson.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/4] mtd: FSMC NAND remove PARTITION macro and fix compile
+	noise
+Date: Fri, 19 Nov 2010 22:11:42 +0100
+Message-ID: <1290201102-15227-1-git-send-email-linus.walleij@stericsson.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Linus Walleij <linus.walleij@stericsson.com>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,27 +18,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CONFIG_MTD_NAND_OMAP_HWECC defined wrongly in patch submitted for 2.6.36.
-This flag enables hw ecc by default. Boards like beagle and pandora uses
-sw ecc for write (e.g. binary flushed from u-boot) and read from kernel.
-https://patchwork.kernel.org/patch/111036/
+This removes the PARTITION macro that David didn't like and also
+removes a local variable that was dangling unused in some #ifdefs
+by being a bit more clever.
 
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
 ---
- drivers/mtd/nand/omap2.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |   66 ++++++++++++++++++++++++++++++-----------
+ 1 files changed, 48 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index cd41c58..15682ec 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -7,7 +7,6 @@
-  * it under the terms of the GNU General Public License version 2 as
-  * published by the Free Software Foundation.
-  */
--#define CONFIG_MTD_NAND_OMAP_HWECC
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 02edfba..5af4b3c 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -119,21 +119,36 @@ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
+ 	}
+ };
  
- #include <linux/platform_device.h>
- #include <linux/dma-mapping.h>
+-/*
+- * Default partition tables to be used if the partition information not
+- * provided through platform data
+- */
+-#define PARTITION(n, off, sz)	{.name = n, .offset = off, .size = sz}
+ 
++#ifdef CONFIG_MTD_PARTITIONS
+ /*
++ * Default partition tables to be used if the partition information not
++ * provided through platform data.
++ *
+  * Default partition layout for small page(= 512 bytes) devices
+  * Size for "Root file system" is updated in driver based on actual device size
+  */
+ static struct mtd_partition partition_info_16KB_blk[] = {
+-	PARTITION("X-loader", 0, 4 * 0x4000),
+-	PARTITION("U-Boot", 0x10000, 20 * 0x4000),
+-	PARTITION("Kernel", 0x60000, 256 * 0x4000),
+-	PARTITION("Root File System", 0x460000, 0),
++	{
++		.name = "X-loader",
++		.offset = 0,
++		.size = 4*0x4000,
++	},
++	{
++		.name = "U-Boot",
++		.offset = 0x10000,
++		.size = 20*0x4000,
++	},
++	{
++		.name = "Kernel",
++		.offset = 0x60000,
++		.size = 256*0x4000,
++	},
++	{
++		.name = "Root File System",
++		.offset = 0x460000,
++		.size = 0,
++	},
+ };
+ 
+ /*
+@@ -141,15 +156,32 @@ static struct mtd_partition partition_info_16KB_blk[] = {
+  * Size for "Root file system" is updated in driver based on actual device size
+  */
+ static struct mtd_partition partition_info_128KB_blk[] = {
+-	PARTITION("X-loader", 0, 4 * 0x20000),
+-	PARTITION("U-Boot", 0x80000, 12 * 0x20000),
+-	PARTITION("Kernel", 0x200000, 48 * 0x20000),
+-	PARTITION("Root File System", 0x800000, 0),
++	{
++		.name = "X-loader",
++		.offset = 0,
++		.size = 4*0x20000,
++	},
++	{
++		.name = "U-Boot",
++		.offset = 0x80000,
++		.size = 12*0x20000,
++	},
++	{
++		.name = "Kernel",
++		.offset = 0x200000,
++		.size = 48*0x20000,
++	},
++	{
++		.name = "Root File System",
++		.offset = 0x800000,
++		.size = 0,
++	},
+ };
+ 
+ #ifdef CONFIG_MTD_CMDLINE_PARTS
+ const char *part_probes[] = { "cmdlinepart", NULL };
+ #endif
++#endif
+ 
+ /**
+  * struct fsmc_nand_data - atructure for FSMC NAND device state
+@@ -508,7 +540,7 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	struct nand_chip *nand;
+ 	struct fsmc_regs *regs;
+ 	struct resource *res;
+-	int nr_parts, ret = 0;
++	int ret = 0;
+ 
+ 	if (!pdata) {
+ 		dev_err(&pdev->dev, "platform data is NULL\n");
+@@ -676,11 +708,9 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	 * Check if partition info passed via command line
+ 	 */
+ 	host->mtd.name = "nand";
+-	nr_parts = parse_mtd_partitions(&host->mtd, part_probes,
++	host->nr_partitions = parse_mtd_partitions(&host->mtd, part_probes,
+ 			&host->partitions, 0);
+-	if (nr_parts > 0) {
+-		host->nr_partitions = nr_parts;
+-	} else {
++	if (host->nr_partitions <= 0) {
+ #endif
+ 		/*
+ 		 * Check if partition info passed via command line
 -- 
-1.7.0.4
+1.7.3.2
