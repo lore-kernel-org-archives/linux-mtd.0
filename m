@@ -1,23 +1,25 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJORu-0002tz-AZ
-	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 10:44:12 +0000
-Received: by qwb8 with SMTP id 8so31672qwb.36
+	id 1PJPOA-0005iQ-8G
+	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 11:44:23 +0000
+Received: by ewy19 with SMTP id 19so2560389ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Nov 2010 02:44:08 -0800 (PST)
+	Fri, 19 Nov 2010 03:44:19 -0800 (PST)
+Message-ID: <4CE662A4.6060204@mvista.com>
+Date: Fri, 19 Nov 2010 14:42:28 +0300
+From: Sergei Shtylyov <sshtylyov@mvista.com>
 MIME-Version: 1.0
-In-Reply-To: <20101118180137.GG9264@atomide.com>
-References: <1290090130-20835-1-git-send-email-s-ghorai@ti.com>
-	<20101118180137.GG9264@atomide.com>
-Date: Fri, 19 Nov 2010 12:44:07 +0200
-Message-ID: <AANLkTik8rX+wYWQ8VmRGb6cxZrUHQmoPm5mGOvk=Z80j@mail.gmail.com>
-Subject: Re: [PATCH] omap: nand: remove hardware ECC as default
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
+To: Savinay Dharmappa <savinay.dharmappa@ti.com>
+Subject: Re: [PATCH v3 2/2] davinci: Platform support for OMAP-L137/AM17x
+	NOR flash driver
+References: <1290160488-10344-1-git-send-email-savinay.dharmappa@ti.com>
+In-Reply-To: <1290160488-10344-1-git-send-email-savinay.dharmappa@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Aleksey Makarov <amakarov@ru.mvista.com>,
+	Sergei Shtylyov <sshtylyov@ru.mvista.com>,
+	davinci-linux-open-source@linux.davincidsp.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +29,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 18, 2010 at 8:01 PM, Tony Lindgren <tony@atomide.com> wrote:
-> * Sukumar Ghorai <s-ghorai@ti.com> [101118 06:12]:
->> CONFIG_MTD_NAND_OMAP_HWECC defined wronly in patch submitted during 2.6.=
-36
->> that using the hardware ECC by default
+Hello.
 
-wrongly
+On 19-11-2010 12:54, Savinay Dharmappa wrote:
 
->>
->> Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
->> ---
->> =A0drivers/mtd/nand/omap2.c | =A0 =A01 -
->> =A01 files changed, 0 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
->> index cd41c58..15682ec 100644
->> --- a/drivers/mtd/nand/omap2.c
->> +++ b/drivers/mtd/nand/omap2.c
->> @@ -7,7 +7,6 @@
->> =A0 * it under the terms of the GNU General Public License version 2 as
->> =A0 * published by the Free Software Foundation.
->> =A0 */
->> -#define CONFIG_MTD_NAND_OMAP_HWECC
->>
->> =A0#include <linux/platform_device.h>
->> =A0#include <linux/dma-mapping.h>
+> From: Aleksey Makarov <amakarov@ru.mvista.com>
+
+> Adds platform support for OMAP-L137/AM17x NOR flash driver.
+
+> Also, configures chip select 3 to control NOR flash's upper
+> address lines.
+
+> Signed-off-by: Aleksey Makarov <amakarov@ru.mvista.com>
+> Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+> Signed-off-by: Savinay Dharmappa <savinay.dharmappa@ti.com>
+[...]
+
+> diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+> index b52a3a1..c807c1b 100644
+> --- a/arch/arm/mach-davinci/board-da830-evm.c
+> +++ b/arch/arm/mach-davinci/board-da830-evm.c
+> @@ -20,6 +20,8 @@
+>   #include<linux/i2c/at24.h>
+>   #include<linux/mtd/mtd.h>
+>   #include<linux/mtd/partitions.h>
+> +#include<linux/mtd/latch-addr-flash.h>
+> +#include<linux/clk.h>
 >
-> This looks like a fix for the -rc cycle. Can you please update
-> the description a bit to specify which commit broke it and
-> what the error is now?
+>   #include<asm/mach-types.h>
+>   #include<asm/mach/arch.h>
+> @@ -429,6 +431,220 @@ static inline void da830_evm_init_nand(int mux_mode)
+>   static inline void da830_evm_init_nand(int mux_mode) { }
+>   #endif
+>
+> +#ifdef CONFIG_DA830_UI_NOR
+> +/*
+> + * Number of lines going to the NOR flash that are latched using
+> + * AEMIF address lines B_EMIF_BA0-B_EMIF_A12 on CS2.
 
-Well it broke NAND for beagle and pandora at least, as those have been
-using sw ecc, all IO simply results in ECC errors with that define.
+    You still left the words about latching the low address bytes...
+
+> + */
+> +#define NOR_WINDOW_SIZE_LOG2     15
+> +#define NOR_WINDOW_SIZE         (1<<  NOR_WINDOW_SIZE_LOG2)
+> +
+> +static struct {
+> +	struct clk *clk;
+> +	struct {
+> +		void __iomem *addr;
+> +	} latch, aemif;
+
+    Don't need a structure here anymore.
+
+> +static void da830_evm_nor_set_window(unsigned long offset, void *data)
+> +{
+> +	/*
+> +	 * CS2 and CS3 address lines are used to address NOR flash. Address
+> +	 * line
+
+    Only "lines".
+
+> A0-A14 going to
+
+    Rather "from"...
+
+> the NOR flash are connected to AEMIF address
+> +	 * lines B_EMIF_BA0-B_EMIF_A12 on CS2. Address lines A15-A23 of the
+> +	 * NOR flash are connected to AEMIF address lines B_EMIF_A0-B_EMIF_A6
+> +	 * on CS3.
+
+    They are not connected but latched from B_EMIF_A0-B_EMIF_A6 on CS3.
+
+> +	/* Setup AEMIF -- timings, etc. */
+> +
+> +	/* Set maximum wait cycles */
+> +	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
+> +						da830_evm_nor.aemif.addr, cs);
+> +
+> +	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
+> +					da830_evm_nor.aemif.addr, cs + 1);
+> +
+> +	/* Setup the window to access the latch */
+> +	res = request_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE,
+> +				"DA830 UI NOR address latch");
+> +	if (res == NULL) {
+> +		pr_err("%s: could not request address latch region\n",
+> +			__func__);
+> +		goto err_aemif_ioremap;
+> +	}
+> +
+> +	da830_evm_nor.latch.addr =
+> +		ioremap_nocache(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
+> +	if (da830_evm_nor.latch.addr == NULL) {
+> +		pr_err("%s: could not remap address latch region\n", __func__);
+> +		goto err_latch_region;
+> +	}
+> +	return 0;
+> +
+> +err_latch_region:
+> +	release_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
+> +
+> +err_aemif_ioremap:
+> +	iounmap(da830_evm_nor.aemif.addr);
+> +
+> +err_aemif_region:
+> +	release_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K);
+> +
+> +err_clk:
+> +	clk_disable(da830_evm_nor.clk);
+> +	clk_put(da830_evm_nor.clk);
+> +
+> +	return -EBUSY;
+
+    You should return -ENOMEM for ioremap() failures...
+
+WBR, Sergei
