@@ -1,24 +1,16 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
+Received: from va3ehsobe006.messaging.microsoft.com ([216.32.180.16]
+	helo=VA3EHSOBE006.bigfish.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PJJoG-0000RD-PK
-	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 05:46:58 +0000
-From: "Savinay Dharmappa" <savinay.dharmappa@ti.com>
-To: "'Sergei Shtylyov'" <sshtylyov@mvista.com>
-References: <1289548975-21296-1-git-send-email-savinay.dharmappa@ti.com>
-	<4CE5137A.8060507@mvista.com>
-In-Reply-To: <4CE5137A.8060507@mvista.com>
-Subject: RE: [PATCH v2 2/2] davinci: Platform support for OMAP-L137/AM17x NOR
-	flash driver
-Date: Fri, 19 Nov 2010 11:09:58 +0530
-Message-ID: <004601cb87ac$33a1d680$9ae58380$@dharmappa@ti.com>
+	id 1PJMlC-0005YP-KA
+	for linux-mtd@lists.infradead.org; Fri, 19 Nov 2010 08:55:59 +0000
+From: Jason Liu <r64343@freescale.com>
+To: <David.Woodhouse@intel.com>
+Subject: [PATCH 1/1] mtd: nand: add check for out of page read
+Date: Fri, 19 Nov 2010 16:40:45 +0800
+Message-ID: <1290156045-11719-1-git-send-email-r64343@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-us
-Cc: sshtylyov@ru.mvista.com, 'Aleksey Makarov' <amakarov@ru.mvista.com>,
-	davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org, dgriego@mvista.com
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,144 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergei,
+When run mtd_oobtest case, there will be one error for step(4),
+which turned out it need add one check for out of page read in
+nand_do_read_oob just like mtd_do_write_oob did it already.
+This commit also fix one typo error for comments in mtd_do_write_oob
 
-On Thu, Nov 18, 2010 at 17:22:26, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 12-11-2010 11:02, Savinay Dharmappa wrote:
-> 
-> > From: Aleksey Makarov<amakarov@ru.mvista.com>
-> 
-> > Adds platform support for OMAP-L137/AM17x NOR flash driver.
-> 
-> > Also, configures chip select 3 to control NOR flash's upper
-> > address lines.
-> 
->     Please add back my signoff, omitted in this version. Some of the code,
+Signed-off-by: Jason Liu <r64343@freescale.com>
+---
+ drivers/mtd/nand/nand_base.c |    9 ++++++++-
+ 1 files changed, 8 insertions(+), 1 deletions(-)
 
-> including bug fixes, was authored by me.
-> 
-
-I'll add your sign-off.
-
-> > Signed-off-by: Aleksey Makarov <amakarov@ru.mvista.com>
-> 
-> Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-> 
-> > Signed-off-by: Savinay Dharmappa <savinay.dharmappa@ti.com>
-> 
-> > diff --git a/arch/arm/mach-davinci/board-da830-evm.c
-b/arch/arm/mach-davinci/board-da830-evm.c
-> > index 1bb89d3..cd35198 100644
-> > --- a/arch/arm/mach-davinci/board-da830-evm.c
-> > +++ b/arch/arm/mach-davinci/board-da830-evm.c
-> [...]
-> > @@ -429,6 +431,221 @@ static inline void da830_evm_init_nand(int
-mux_mode)
-> >   static inline void da830_evm_init_nand(int mux_mode) { }
-> >   #endif
-> >
-> > +#ifdef CONFIG_DA830_UI_NOR
-> > +/*
-> > + * Number of Address line
-> 
->     Only "lines".
-> 
-
-Ok.
-
-> > going to the NOR flash that are latched using
-> > + * AEMIF address lines  B_EMIF_BA0-B_EMIF_A12  on CS2.
-> > +#define NOR_WINDOW_SIZE_LOG2     15
-> > +#define NOR_WINDOW_SIZE         (1 << NOR_WINDOW_SIZE_LOG2)
-> > +
-> > +static struct {
-> > +	struct clk *clk;
-> > +	struct {
-> > +		struct resource *res;
-> 
->     You're not using this field outside da830_evm_nor_init() now, so
-there's 
-> not much point in keeping it...
-> 
-
-Ok. I'll use it as a local variable in da830_evm_nor_init().
-
-> > +		void __iomem *addr;
-> > +	} latch, aemif;
-> > +} da830_evm_nor;
-> 
-> > +static void da830_evm_nor_set_window(unsigned long offset, void *data)
-> > +{
-> > +	/*
-> > +	 * CS2 and CS3 address lines are used to address NOR flash. Address
-> > +	 * line A0-A14 going to the NOR flash are latched using AEMIF
-address
-> > +	 * lines B_EMIF_BA0-B_EMIF_A12 on CS2.
-> 
->     Are they really latched, and not just used live when the NOR chip is 
-> accessed? What's the point of latching them?
-> 
-
-You are right. I'll correct the comment.
-
-> > +static int da830_evm_nor_init(void *data, int cs)
-> > +{
-> > +	/* Turn on AEMIF clocks */
-> > +	da830_evm_nor.clk = clk_get(NULL, "aemif");
-> > +	if (IS_ERR(da830_evm_nor.clk)) {
-> > +		pr_err("%s: could not get AEMIF clock\n", __func__);
-> > +		da830_evm_nor.clk = NULL;
-> > +		return -ENODEV;
-> > +	}
-> > +	clk_enable(da830_evm_nor.clk);
-> > +
-> > +	da830_evm_nor.aemif.res = request_mem_region(DA8XX_AEMIF_CTL_BASE,
-> > +						     SZ_32K, "AEMIF
-control");
-> 
->     No need to store it -- you don't use it afterwards.
-> 
-
-Ok.
-
-> > +	if (da830_evm_nor.aemif.res == NULL) {
-> > +		pr_err("%s: could not request AEMIF control region\n",
-> > +			__func__);
-> > +		goto err_clk;
-> > +	}
-> 
-> [...]
-> 
-> > +	/* Setup the window to access the latch */
-> > +	da830_evm_nor.latch.res =
-> > +		request_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE,
-> > +				   "DA830 UI NOR address latch");
-> 
->     Same comment here...
-> 
-> > +	if (da830_evm_nor.latch.res == NULL) {
-> > +		pr_err("%s: could not request address latch region\n",
-> > +			__func__);
-> > +		goto err_aemif_ioremap;
-> > +	}
-> 
-> [...]
-> 
-> > +static inline void da830_evm_init_nor(int mux_mode)
-> > +{
-> > +	int ret;
-> > +
-> > +	if (HAS_MMC) {
-> > +		pr_warning("WARNING: both MMC/SD and NOR are "
-> > +				"enabled, but they share AEMIF pins.\n"
-> > +					"\tDisable MMC/SD for NOR
-support.\n");
-> 
->     This line is over-indented.
-
-Ok. Will address your comments and send an updated an version
-
-Thanks,
-Savinay
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 1f75a1b..75d199e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1782,6 +1782,13 @@ static int nand_do_read_oob(struct mtd_info *mtd, loff_t from,
+ 	else
+ 		len = mtd->oobsize;
+ 
++	/* Do not allow read past end of page */
++	if ((ops->ooboffs + readlen) > len) {
++		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to read "
++				"past end of page\n", __func__);
++		return -EINVAL;
++	}
++
+ 	if (unlikely(ops->ooboffs >= len)) {
+ 		DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt to start read "
+ 					"outside oob\n", __func__);
+@@ -2377,7 +2384,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Do not allow reads past end of device */
++	/* Do not allow write past end of device */
+ 	if (unlikely(to >= mtd->size ||
+ 		     ops->ooboffs + ops->ooblen >
+ 			((mtd->size >> chip->page_shift) -
+-- 
+1.7.0.4
