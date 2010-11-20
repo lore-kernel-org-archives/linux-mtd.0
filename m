@@ -1,13 +1,13 @@
-From: Linus Walleij <linus.walleij@stericsson.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	<linux-mtd@lists.infradead.org>
-Subject: [PATCH 4/4] mtd: FSMC NAND fix obvious speling errors
-Date: Fri, 19 Nov 2010 22:12:23 +0100
-Message-ID: <1290201143-15332-1-git-send-email-linus.walleij@stericsson.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Linus Walleij <linus.walleij@stericsson.com>,
-	linux-arm-kernel@lists.infradead.org
+Received: from 75-63-111-50.uvs.hstntx.sbcglobal.net ([75.63.111.50]
+	helo=smail.wildrice.com)
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PJdFo-0000Qi-Hf
+	for linux-mtd@lists.infradead.org; Sat, 20 Nov 2010 02:32:41 +0000
+From: halloween-l-request@wildrice.com
+Subject: dlist_confirm linux-mtd@lists.infradead.org 32533
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 19 Nov 2010 20:15:58 -0600
+Message-ID: <1290219358_4487@smail.wildrice.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,43 +17,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix spelling in the interface file.
+To activate your list membership, reply with 
+just the following line:
+	activate linux-mtd@lists.infradead.org 32533
+or simply preserve the subject above
 
-Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
----
- include/linux/mtd/fsmc.h |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
-index 91f5e6f..4dd8114 100644
---- a/include/linux/mtd/fsmc.h
-+++ b/include/linux/mtd/fsmc.h
-@@ -27,7 +27,7 @@
- 
- /*
-  * The placement of the Command Latch Enable (CLE) and
-- * Address Latch Enable (ALE) is twised around in the
-+ * Address Latch Enable (ALE) is twisted around in the
-  * SPEAR310 implementation.
-  */
- #if defined(CONFIG_MACH_SPEAR310)
-@@ -62,7 +62,7 @@ struct fsmc_nor_bank_regs {
- 
- /* ctrl_tim register definitions */
- 
--struct fsms_nand_bank_regs {
-+struct fsmc_nand_bank_regs {
- 	u32 pc;
- 	u32 sts;
- 	u32 comm;
-@@ -78,7 +78,7 @@ struct fsms_nand_bank_regs {
- struct fsmc_regs {
- 	struct fsmc_nor_bank_regs nor_bank_regs[FSMC_MAX_NOR_BANKS];
- 	u8 reserved_1[0x40 - 0x20];
--	struct fsms_nand_bank_regs bank_regs[FSMC_MAX_NAND_BANKS];
-+	struct fsmc_nand_bank_regs bank_regs[FSMC_MAX_NAND_BANKS];
- 	u8 reserved_2[0xfe0 - 0xc0];
- 	u32 peripid0;			/* 0xfe0 */
- 	u32 peripid1;			/* 0xfe4 */
--- 
-1.7.3.2
++----------------------------------------------------------------------------------
+| Control your membership by using these special email addresses:
+|    halloween-l@wildrice.com              Send a post to the list.
+|    halloween-l-join@wildrice.com         Join the list.
+|    halloween-l-digest@wildrice.com       Join the list in digest mode.
+|    halloween-l-leave@wildrice.com        Leave the list.
