@@ -1,29 +1,22 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PKTmZ-00023J-In
-	for linux-mtd@lists.infradead.org; Mon, 22 Nov 2010 10:38:00 +0000
-Received: by wyf22 with SMTP id 22so6999835wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Nov 2010 02:37:58 -0800 (PST)
-Date: Mon, 22 Nov 2010 11:37:52 +0100
-From: =?iso-8859-1?Q?Llu=EDs?= Batlle i Rossell <viriketo@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: block2mtd and ubi
-Message-ID: <20101122103751.GM9645@vicerveza.homeunix.net>
-References: <20101120175856.GD9645@vicerveza.homeunix.net>
-	<20101121000145.GF9645@vicerveza.homeunix.net>
-	<1290413562.2289.14.camel@localhost>
-	<20101122090940.GK9645@vicerveza.homeunix.net>
-	<1290418365.2289.25.camel@localhost>
-	<20101122100008.GL9645@vicerveza.homeunix.net>
-	<1290421283.2289.32.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1290421283.2289.32.camel@localhost>
-Cc: =?iso-8859-1?Q?Llu=EDs?= Batlle i Rossell <viriketo@gmail.com>,
-	linux-mtd@lists.infradead.org
+Received: from nm9.bullet.mail.ne1.yahoo.com ([98.138.90.72])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PKWvg-00030v-E0
+	for linux-mtd@lists.infradead.org; Mon, 22 Nov 2010 13:59:38 +0000
+Subject: Re: [PATCH] Renaming 'struct flash_platform_data' into 'struct
+	spi_flash_platform_data' in include/linux/spi/flash.h
+From: David Brownell <david-b@pacbell.net>
+To: Alexis RODET <alexis.rodet@bvs-tech.com>
+In-Reply-To: <4CEA3EAE.4080700@bvs-tech.com>
+References: <20101117160514.GA5308@n2100.arm.linux.org.uk>
+	<4CE6B27D.2000909@bvs-tech.com> <20101121044720.GA6088@tarshish>
+	<4CEA3EAE.4080700@bvs-tech.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Date: Mon, 22 Nov 2010 05:59:29 -0800
+Message-ID: <1290434369.2529.38.camel@helium>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: spi-devel-general@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,44 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 22, 2010 at 12:21:23PM +0200, Artem Bityutskiy wrote:
-> On Mon, 2010-11-22 at 11:00 +0100, Lluís Batlle i Rossell wrote:
-> > On Mon, Nov 22, 2010 at 11:32:45AM +0200, Artem Bityutskiy wrote:
-> > > On Mon, 2010-11-22 at 10:09 +0100, Lluís Batlle i Rossell wrote:
-> > > > On Mon, Nov 22, 2010 at 10:12:42AM +0200, Artem Bityutskiy wrote:
-> > > > > On Sun, 2010-11-21 at 01:01 +0100, Lluís Batlle i Rossell wrote:
-> > > > > > On Sat, Nov 20, 2010 at 06:58:56PM +0100, Lluís Batlle i Rossell wrote:
-> > > > > > It's a pity that the same 'ubinize' cannot do that job automatically, and give
-> > > > > > an image filling all the memory blocks. That would easy down a lot the job for
-> > > > > > block2mtd.
-> > > > > 
-> > > > > Use ubiformat - it should get it right:
-> > > > > 
-> > > > > http://www.linux-mtd.infradead.org/faq/ubi.html#L_flash_img
-> > > > 
-> > > > I know, but I cannot do that on a block2mtd, if the block2mtd device I use is
-> > > > the rootfs of the system. All I have is a kernel, qemu, and a rootfs in a
-> > > > 'ubinize' ubi image.
-> > > 
-> > > Why you can dd buy cannot ubiformat? What is the fundamental difference?
-> > ubiformat works on a mtd character device, while dd works on a block device.
+On Mon, 2010-11-22 at 10:58 +0100, Alexis RODET wrote:
+> Hello,
 > 
-> But you can turn a block device into mtd device using block2mtd, so I do
-> not still see the fundamental difference.
+>  there is a problem with the double
+> definition of 'struct flash_platform_data' that are incompatible:
+> 
+> in arch/arm/include/asm/mach/flash.h:
+> in include/linux/spi/flash.h:
 
-That requires root access in the machine, which is something I want to avoid.
-And quite a complex setup for the host system:
-- make a file of the size I want
-- set up a loop device
-- load a block2mtd for it
-- ubiformat it
-- unload block2mtd
-- detach loop device
+> 
+> 
+> Both headers are included in a number of machines or driver.
 
-Notice that I use block2mtd as rootfs in a qemu guest passing something like
-"-hda flash_image -append blockmtd.blockmtd=/dev/hda". Appending 0xff to the
-ubinized image is for me a far easier solution than that above requiring road
-access.
+And this patch doesn't touch machine or driver code, so it's incomplete.
 
-Regards,
-Lluís.
+ISTR the last time this issue was raised, a similar incomplete patch was
+proposed.
+
+How about a patch that does the full rename??
+
+- Dave
