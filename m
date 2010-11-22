@@ -1,20 +1,23 @@
-Received: from smtp.scorch.co.nz ([27.110.127.199] helo=scorch.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PKGNf-0004sw-7j
-	for linux-mtd@lists.infradead.org; Sun, 21 Nov 2010 20:19:24 +0000
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Jon Povey <Jon.Povey@racelogic.co.uk>
-Subject: Re: Are there UBI layout changes between 2.6.35 and 2.6.36?
-Date: Mon, 22 Nov 2010 09:19:16 +1300
-References: <70E876B0EA86DD4BAF101844BC814DFE093EF69021@Cloud.RL.local>
-In-Reply-To: <70E876B0EA86DD4BAF101844BC814DFE093EF69021@Cloud.RL.local>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201011220919.17031.manningc2@actrix.gen.nz>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PKRWY-0000ph-H5
+	for linux-mtd@lists.infradead.org; Mon, 22 Nov 2010 08:13:19 +0000
+Received: by bwz5 with SMTP id 5so6079781bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 Nov 2010 00:13:16 -0800 (PST)
+Subject: Re: block2mtd and ubi
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?ISO-8859-1?Q?Llu=EDs?= Batlle i Rossell <viriketo@gmail.com>
+In-Reply-To: <20101121000145.GF9645@vicerveza.homeunix.net>
+References: <20101120175856.GD9645@vicerveza.homeunix.net>
+	<20101121000145.GF9645@vicerveza.homeunix.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 22 Nov 2010 10:12:42 +0200
+Message-ID: <1290413562.2289.14.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +27,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 18 November 2010 22:41:55 Jon Povey wrote:
-> linux-mtd-bounces@lists.infradead.org wrote:
-> > Folk
-> >
-> > I have been helping some people get an omap3 overo-based system going.
-> > Everything is working fine using 2.6.35 and software ECC, but
-> > when I changed
-> > I change to 2.6.36 and hwecc things stop working. I get the following
-> > problem, and obviously no boot :-(.
-> >
-> > UBI: attaching mtd7 to ubi0
-> > UBI: physical eraseblock size:   131072 bytes (128 KiB)
-> > UBI: logical eraseblock size:    129024 bytes
-> > UBI: smallest flash I/O unit:    2048
-> > UBI: sub-page size:              512
-> > UBI: VID header offset:          512 (aligned 512)
-> > UBI: data offset:                2048
-> > UBI: corrupted PEBs will be formatted
-> > UBI: max. sequence number:       0
-> > UBI error: vtbl_check: bad CRC at record 0: 0xc4ef3d92, not 0x639e7026
-> > UBI error: vtbl_check: bad CRC at record 0: 0xc4ef3d92, not 0x639e7026
-> > UBI error: process_lvol: both volume tables are corrupted
-> > UBI error: ubi_attach_mtd_dev: failed to attach by scanning, error -22
-> > UBI error: ubi_init: cannot attach mtd7
->
-> ...
->
-> > mkfs.ubifs  -m 2048 -e 126KiB -c 1000 -r .  $tmp_dir/ubifs.tmp
-> > ubinize -o $out_file -p 128KiB -s 512 -m 2048 ubinize.cmd
-> >
-> > Has something changed between 2.6.35 and 2.6.36 that will
-> > mess up the way the
-> > volumes are managed?
->
-> A couple of months ago there was a bad patch to mtd.utils that
-> caused mkfs.ubifs to generate bogus CRCs. That cause similar
-> symptoms for me. It was fixed before 2.6.36 came out of -rc.
->
-> Did you update your mtd.utils as well as the kernel?
->
+On Sun, 2010-11-21 at 01:01 +0100, Lluís Batlle i Rossell wrote:
+> On Sat, Nov 20, 2010 at 06:58:56PM +0100, Lluís Batlle i Rossell wrote:
+> > Hello,
+> > 
+> > I'm trying to use the qemu mipsel malta board to boot an ubifs image, prepared
+> > with 'ubinize', and using block2mtd on /dev/hda, where qemu receives the image
+> > through -hda ubifs.img.
+> > 
+> > The problem I have summarizes in this UBI complain while booting:
+> > block2mtd: mtd0: [/dev/hda] erase_size = 512KiB [524288]
+> > UBI: attaching mtd0 to ubi0
+> > UBI: physical eraseblock size:   524288 bytes (512 KiB)
+> > UBI: logical eraseblock size:    524160 bytes
+> > UBI: smallest flash I/O unit:    1
+> > UBI: VID header offset:          64 (aligned 64)
+> > UBI: data offset:                128
+> > UBI warning: check_what_we_have: 1008 PEBs are corrupted
+> > corrupted PEBs are: 0 1 2 3 4 5 6 7 .....
+> > UBI error: check_what_we_have: too many corrupted PEBs, refusing this device
+> > UBI error: ubi_init: cannot attach mtd0
+> Solved!
+> 
+> The first PEBs were corrupt because I was using 'dd' wrong. Nevertheless,
+> filling the rest of image with zeros gave corrupt PEBs on the rest. joer on #mtd
+> (oftc irc) helped me suggesting maybe 0xff would work. And appending 0xff
+> instead of 0x00 worked great.
+> 
+> It's a pity that the same 'ubinize' cannot do that job automatically, and give
+> an image filling all the memory blocks. That would easy down a lot the job for
+> block2mtd.
 
-I too stumbled across that bug.
-I am using the latest utils from git with both .35 and .36 so that should not 
-be the problem unless there was a volume format change.
+Use ubiformat - it should get it right:
 
-I shall investigate further.
+http://www.linux-mtd.infradead.org/faq/ubi.html#L_flash_img
 
-Thanks
-
-Charles
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
