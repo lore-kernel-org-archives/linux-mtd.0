@@ -1,19 +1,17 @@
-Received: from ares.ids.de ([88.79.252.171])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PKwsG-0005yh-Q7
-	for linux-mtd@lists.infradead.org; Tue, 23 Nov 2010 17:41:49 +0000
-From: <Sergej.Stepanov@ids.de>
-To: <linuxppc-dev@lists.ozlabs.org>, <linux-mtd@lists.infradead.org>,
-	<dwmw2@infradead.org>
-Date: Tue, 23 Nov 2010 18:38:36 +0100
-Subject: [PATCH][v2] Fixing the garbage collector problem after NAND-flash
-	image record in u-boot
-Message-ID: <4206182445660643B9AEB8D4E55BBD0A106A0AA93A@HERMES2>
+Received: from va3ehsobe005.messaging.microsoft.com ([216.32.180.31]
+	helo=VA3EHSOBE005.bigfish.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PKy53-0007S7-An
+	for linux-mtd@lists.infradead.org; Tue, 23 Nov 2010 18:59:08 +0000
+From: Fabio Estevam <fabio.estevam@freescale.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: [PATCH] mtd: mxc_nand: Fix warning on nr_parts unused variable
+Date: Tue, 23 Nov 2010 17:02:13 -0200
+Message-ID: <1290538933-12607-1-git-send-email-fabio.estevam@freescale.com>
 MIME-Version: 1.0
-Content-Language: de-DE
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Cc: scottwood@freescale.com, Rolf.Riehle@ids.de
+Content-Type: text/plain
+Cc: Fabio Estevam <fabio.estevam@freescale.com>, dwmw2@infradead.org,
+	u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch should fix the following problem:
- 1. the  jffs2-image update in the u-boot was ok
- 2. first restart and first mount of the NAND-flash-partition was also ok
- 3. before the restart of controller there are no any activity on NAND-flas=
-h except of the jffs2_gcd_mtdX-process ...
- 4. BUT after the second restart the NAND-flash-partition could not be real=
-ly used after the second mount,
-    dmesg filled with messages:
-...
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03ce0000: 0xc0=
-ff instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03d00000: 0xc0=
-ff instead
-....
-Just for for info:
-the behaviour observed on mpc8313-based board with the large-page NAND.
-The only activity on NAND-flash was the garbage collector process, that loo=
-ks for CLEANMARKER-nodes
+If CONFIG_MTD_PARTITIONS is not selected, then the following warning is generated:
 
-As Scott said it was broken by commit 3ab8f2a2e7011c5e83363b42950757e46ef06=
-824
+  CC      drivers/mtd/nand/mxc_nand.o
+drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_probe':
+drivers/mtd/nand/mxc_nand.c:1014: warning: unused variable 'nr_parts'
 
-Signed-off-by: Sergej Stepanov <Sergej.Stepanov@ids.de>
-Cc: Rolf Riehle <Rolf.Riehle@ids.de>
-Cc: Scott Wood <scottwood@freescale.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
---
+Fix it by marking nr_parts as __maybe_unused.
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_n=
-and.c
-index c141b07..7a13d42 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -388,6 +388,8 @@ static void fsl_elbc_cmdfunc(struct mtd_info *mtd, unsi=
-gned int command,
- 		         "page_addr: 0x%x, column: 0x%x.\n",
- 		         page_addr, column);
-=20
-+		elbc_fcm_ctrl->column =3D column;
-+		elbc_fcm_ctrl->oob =3D 0;
- 		elbc_fcm_ctrl->use_mdr =3D 1;
-=20
- 		fcr =3D (NAND_CMD_STATUS   << FCR_CMD1_SHIFT) |
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+---
+ drivers/mtd/nand/mxc_nand.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 214b03a..ef932ba 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -1009,7 +1009,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	struct mxc_nand_platform_data *pdata = pdev->dev.platform_data;
+ 	struct mxc_nand_host *host;
+ 	struct resource *res;
+-	int err = 0, nr_parts = 0;
++	int err = 0, __maybe_unused nr_parts = 0;
+ 	struct nand_ecclayout *oob_smallpage, *oob_largepage;
+ 
+ 	/* Allocate memory for MTD device structure and private data */
+-- 
+1.6.0.4
