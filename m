@@ -1,21 +1,22 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PM0mH-00027S-GR
-	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:04:02 +0000
-Received: by bwz5 with SMTP id 5so2044417bwz.36
+	id 1PM0ok-00036z-Ax
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:06:35 +0000
+Received: by fxm16 with SMTP id 16so1093506fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Nov 2010 08:04:00 -0800 (PST)
-Subject: Re: change in how ubiformat works
+	Fri, 26 Nov 2010 08:06:32 -0800 (PST)
+Subject: Re: [PATCH] fs: jffs2: fix error value sign
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: twebb <taliaferro62@gmail.com>
-In-Reply-To: <AANLkTi=rE+u0OiGXj=HxGYRB9F4p228GpHzGadJm+982@mail.gmail.com>
-References: <AANLkTi=rE+u0OiGXj=HxGYRB9F4p228GpHzGadJm+982@mail.gmail.com>
+To: Vasiliy Kulikov <segoon@openwall.com>
+In-Reply-To: <1289765320-6071-1-git-send-email-segoon@openwall.com>
+References: <1289765320-6071-1-git-send-email-segoon@openwall.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Nov 2010 18:03:28 +0200
-Message-ID: <1290787408.2552.28.camel@localhost>
+Date: Fri, 26 Nov 2010 18:05:59 +0200
+Message-ID: <1290787559.2552.29.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,23 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-11-12 at 13:47 -0500, twebb wrote:
-> I use a sequence as follows: " flash_erase - ubiformat - nanddump -
-> verify " to confirm that a UBI image was properly stored in NAND
-> flash.  I realize that flash_erase is not recommended because it
-> destroys erase counters, but this is only done on virgin flash so
-> should not be an issue.
+On Sun, 2010-11-14 at 23:08 +0300, Vasiliy Kulikov wrote:
+> do_verify_xattr_datum(), do_load_xattr_datum(), load_xattr_datum()
+> and verify_xattr_ref() should return negative value on error.
+> Sometimes they return EIO that is positive.  Change this to -EIO.
 > 
-> However, I recently upgraded the mtd-utils, and particularly ubiformat
-> from 1.4 to 1.5, and now I see that what I read back (via nanddump)
-> does not match the original UBI image.  Can anyone confirm whether
-> ubiformat.c changes sometime between 1.4 and 1.5 would result in this
-> behavior?  I have looked at ubiformat.c changes and am wondering if it
-> has to do with image sequence number support.
+> Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
 
-
-Ok, just define your own sequence number. Use, say, --image-seq=100 both
-with ubinize and ubiformat.
+Pushed to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
