@@ -1,23 +1,20 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PM0ok-00036z-Ax
-	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:06:35 +0000
-Received: by fxm16 with SMTP id 16so1093506fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Nov 2010 08:06:32 -0800 (PST)
-Subject: Re: [PATCH] fs: jffs2: fix error value sign
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vasiliy Kulikov <segoon@openwall.com>
-In-Reply-To: <1289765320-6071-1-git-send-email-segoon@openwall.com>
-References: <1289765320-6071-1-git-send-email-segoon@openwall.com>
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PM0rz-0004SA-8m
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:09:55 +0000
+Subject: Re: [PATCH] mtd: cfi_fixup: remove unused 'param' parameter
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Guillaume LECERF <glecerf@gmail.com>
+In-Reply-To: <20101117113550.15860.31152.stgit@dev.siriade.com>
+References: <20101117113550.15860.31152.stgit@dev.siriade.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Nov 2010 18:05:59 +0200
-Message-ID: <1290787559.2552.29.camel@localhost>
+Date: Fri, 26 Nov 2010 18:09:15 +0200
+Message-ID: <1290787755.2552.31.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Wolfram Sang <w.sang@pengutronix.de>, Nicolas Pitre <nico@fluxnic.net>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-11-14 at 23:08 +0300, Vasiliy Kulikov wrote:
-> do_verify_xattr_datum(), do_load_xattr_datum(), load_xattr_datum()
-> and verify_xattr_ref() should return negative value on error.
-> Sometimes they return EIO that is positive.  Change this to -EIO.
+On Wed, 2010-11-17 at 12:35 +0100, Guillaume LECERF wrote:
+> The 'param' parameter has never been used since its introduction, so
+> simply remove it.
 > 
-> Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
+> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
 
-Pushed to l2-mtd-2.6.git, thanks.
+Pushed to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
