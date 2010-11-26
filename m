@@ -1,20 +1,17 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PLeT6-0000Ii-1t
-	for linux-mtd@lists.infradead.org; Thu, 25 Nov 2010 16:14:44 +0000
-Message-ID: <4CEE8B70.4070500@suse.cz>
-Date: Thu, 25 Nov 2010 17:14:40 +0100
-From: Michal Marek <mmarek@suse.cz>
+	id 1PLyWn-0000kT-2z
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 13:39:53 +0000
+Received: by pwj8 with SMTP id 8so458959pwj.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Nov 2010 05:39:50 -0800 (PST)
 MIME-Version: 1.0
-To: "Robert P. J. Day" <rpjday@crashcourse.ca>
-Subject: Unused config options in drivers/mtd (Re: running my kernel scanning
-	scripts on your favourite part of the tree)
-References: <alpine.DEB.2.00.1011090711410.5783@localhost6.localdomain6>
-In-Reply-To: <alpine.DEB.2.00.1011090711410.5783@localhost6.localdomain6>
+Date: Fri, 26 Nov 2010 22:39:50 +0900
+Message-ID: <AANLkTinzy-qTsYfbZhkhoFN6Tz9G47+JUWsa97KCUAke@mail.gmail.com>
+Subject: Flashing UBIFS over fastboot
+From: Leo Barnes <barnes.leo@gmail.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +21,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CC the mtd maintainer and mailinglist and adjusted subject. Robert, you
-should report such bugs to the maintainer / author of the code in
-question, otherwise your mail might end up unnoticed on LKML.
+Hello!
 
-Michal
+I am trying to get UBIFS to work on a fastboot-based Android device.
+So far, I have managed to create a working UBIFS partition on a
+running device using ubiformat/nandwrite, but whenever I try to flash
+images with fastboot, the flashing process fails. I assume that this
+is because fastboot expects YAFFS2 images (which contain OOB-data)
+while what I am trying to flash is UBIFS images (which do not). So my
+question:
 
-On 9.11.2010 13:16, Robert P. J. Day wrote:
-> 
->   not sure when i'll get the time to do another pass over the kernel
-> source tree with my kernel cleanup scripts but anyone who's
-> interested is welcome to download the scripts from here:
-> 
->   http://www.crashcourse.ca/wiki/index.php/Kernel_cleanup_scripts
-> 
-> to check out whatever part of the tree they want.
-> 
->   as a simple example, i can run the script to find "badref" config
-> variables on, say, the drivers/mtd part of the tree:
-> 
-> $ ../s/find_badref_configs.sh drivers/mtd
->>>>>> MTD_SUPERH_RESERVE
-> drivers/mtd/maps/solutionengine.c:38:#ifdef CONFIG_MTD_SUPERH_RESERVE
-> drivers/mtd/maps/solutionengine.c:44:		.size = CONFIG_MTD_SUPERH_RESERVE,
-> drivers/mtd/maps/solutionengine.c:54:#endif /* CONFIG_MTD_SUPERH_RESERVE */
-> drivers/mtd/maps/solutionengine.c:97:#ifdef CONFIG_MTD_SUPERH_RESERVE
-> drivers/mtd/maps/solutionengine.c:100:		       CONFIG_MTD_SUPERH_RESERVE);
-> drivers/mtd/maps/solutionengine.c:104:#endif /* CONFIG_MTD_SUPERH_RESERVE */
-> $
-> 
->   that tells me that, under drivers/mtd, there's some file that
-> insists on testing CONFIG_MTD_SUPERH_RESERVE even though no Kconfig
-> file defines such a variable.
-> 
->   the other common check is to look for the exact opposite --
-> variables defined in a Kconfig file that are never tested anywhere.
-> once again, let's pick on drivers/mtd:
-> 
-> $ ../s/find_unused_configs.sh drivers/mtd
-> ===== MTD_NAND_ATMEL_ECC_SOFT
-> drivers/mtd/nand/Kconfig:375:config MTD_NAND_ATMEL_ECC_SOFT
-> $
-> 
->   that should be self-explanatory.  anyway, have at it if it interests
-> you.
-> 
-> rday
-> 
-> 
+Has anyone either got fastboot to work directly with UBIFS images, or
+is it possible to somehow create UBIFS images that "look like" YAFFS2
+images (by creating dummy OOB-data for instance)? As it is, fastboot
+obviously misinterprets the images. Or does anyone have any data on
+exactly how the UBIFS and YAFFS2 image formats look like? In that case
+I might be able to figure out some way of doing it.
+
+Best regards,
+//Leo
