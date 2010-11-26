@@ -1,17 +1,20 @@
-Received: from db3ehsobe003.messaging.microsoft.com ([213.199.154.141]
-	helo=DB3EHSOBE003.bigfish.com)
+Received: from astoria.ccjclearline.com ([64.235.106.9])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PM1A1-0006ei-Ds
-	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:28:41 +0000
-From: Fabio Estevam <fabio.estevam@freescale.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH v2] mtd: Fix section mismatch on sst25l
-Date: Fri, 26 Nov 2010 14:31:44 -0200
-Message-ID: <1290789104-1097-1-git-send-email-fabio.estevam@freescale.com>
+	id 1PM1BD-0006mS-Vg
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:29:51 +0000
+Date: Fri, 26 Nov 2010 11:29:29 -0500 (EST)
+From: "Robert P. J. Day" <rpjday@crashcourse.ca>
+To: Michal Marek <mmarek@suse.cz>
+Subject: Re: Unused config options in drivers/mtd (Re: running my kernel
+	scanning scripts on your favourite part of the tree)
+In-Reply-To: <4CEE8B70.4070500@suse.cz>
+Message-ID: <alpine.DEB.2.00.1011261122140.13435@localhost6.localdomain6>
+References: <alpine.DEB.2.00.1011090711410.5783@localhost6.localdomain6>
+	<4CEE8B70.4070500@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Fabio Estevam <fabio.estevam@freescale.com>, dwmw2@infradead.org,
-	dedekind1@gmail.com
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Building the kernel with 'make CONFIG_DEBUG_SECTION_MISMATCH=y´
+On Thu, 25 Nov 2010, Michal Marek wrote:
 
-resulted in:
+> CC the mtd maintainer and mailinglist and adjusted subject. Robert, you
+> should report such bugs to the maintainer / author of the code in
+> question, otherwise your mail might end up unnoticed on LKML.
+>
+> Michal
 
-WARNING: vmlinux.o(.data+0x15938): Section mismatch in reference from
-the variable sst25l_driver to the function .init.text:sst25l_probe()
-The variable sst25l_driver references
-the function __init sst25l_probe()
-If the reference is valid then annotate the
-variable with __init* or __refdata (see linux/init.h) or name the variable:
-*_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console,
+ {sigh}.  the point of my earlier post was not specifically to point
+out unused kernel config vars in the MTD code; rather, it was to
+suggest that anyone who's interested can run my scanning scripts to
+locate such things for themselves in their favourite subsystem(s) -- i
+simply used the MTD code as a working example.
 
-Fix the section mismatch.
+  and, BTW, there are still dead config variables in the code that go
+back *several* major versions, even though i've documented them just
+as many times here:
 
-Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
----
-Changes since v1:
-- also mark sst25l_match_device as __devinit
+  http://www.crashcourse.ca/wiki/index.php/Kernel_cleanup
 
- drivers/mtd/devices/sst25l.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+so if you're curious, the scripts are here:
 
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index 684247a..c163e61 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -335,7 +335,7 @@ out:
- 	return ret;
- }
- 
--static struct flash_info *__init sst25l_match_device(struct spi_device *spi)
-+static struct flash_info *__devinit sst25l_match_device(struct spi_device *spi)
- {
- 	struct flash_info *flash_info = NULL;
- 	struct spi_message m;
-@@ -375,7 +375,7 @@ static struct flash_info *__init sst25l_match_device(struct spi_device *spi)
- 	return flash_info;
- }
- 
--static int __init sst25l_probe(struct spi_device *spi)
-+static int __devinit sst25l_probe(struct spi_device *spi)
- {
- 	struct flash_info *flash_info;
- 	struct sst25l_flash *flash;
--- 
-1.6.0.4
+  http://www.crashcourse.ca/wiki/index.php/Kernel_cleanup_scripts
+
+rday
+
+--
+
+========================================================================
+Robert P. J. Day                               Waterloo, Ontario, CANADA
+                        http://crashcourse.ca
+
+Twitter:                                       http://twitter.com/rpjday
+LinkedIn:                               http://ca.linkedin.com/in/rpjday
+========================================================================
