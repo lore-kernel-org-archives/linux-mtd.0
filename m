@@ -1,15 +1,22 @@
-Subject: Re: [PATCH 2/4] mtd: FSMC NAND replace all use of uintNN_t with uN
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PM18J-0006Wx-Q4
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:26:48 +0000
+Received: by bwz5 with SMTP id 5so2066101bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Nov 2010 08:26:41 -0800 (PST)
+Subject: Re: [patch] jffs2: typo in comment
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Linus Walleij <linus.walleij@stericsson.com>
-In-Reply-To: <1290201121-15263-1-git-send-email-linus.walleij@stericsson.com>
-References: <1290201121-15263-1-git-send-email-linus.walleij@stericsson.com>
+To: Dan Carpenter <error27@gmail.com>
+In-Reply-To: <20101115182005.GA3941@bicker>
+References: <20101115182005.GA3941@bicker>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Nov 2010 18:24:55 +0200
-Message-ID: <1290788695.2552.35.camel@localhost>
+Date: Fri, 26 Nov 2010 18:26:08 +0200
+Message-ID: <1290788768.2552.36.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,18 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-11-19 at 22:12 +0100, Linus Walleij wrote:
-> The short kernel versions of the basic types makes the world more
-> readable.
+On Mon, 2010-11-15 at 21:20 +0300, Dan Carpenter wrote:
+> It says FB instead of FS (file system).
 > 
-> Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
+> Signed-off-by: Dan Carpenter <error27@gmail.com>
 
-I do not think dwmw2 will merge this one because he often claimed that
-u32 cannot be better than uint32_t, because the latter is C99 standard,
-but the former is not. So I'd not do this, at least not at the area he
-looks after.
-
-:-)
+Pushed to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
