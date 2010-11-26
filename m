@@ -1,24 +1,23 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PM0Q2-0001lf-4x
-	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 15:41:03 +0000
-Received: by fxm16 with SMTP id 16so1073527fxm.36
+	id 1PM0SY-0002SD-W8
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 15:43:42 +0000
+Received: by bwz5 with SMTP id 5so2026338bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Nov 2010 07:41:01 -0800 (PST)
-Subject: Re: [PATCH 06/17][trivial] mtd: Remove unnecessary casts of void
-	ptr returning alloc function return values
+	Fri, 26 Nov 2010 07:43:37 -0800 (PST)
+Subject: Re: [PATCH 1/1] [MTD]:CORE Fix wrong check register_blkdev return
+	value
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jesper Juhl <jj@chaosbits.net>
-In-Reply-To: <alpine.LNX.2.00.1011082327290.23697@swampdragon.chaosbits.net>
-References: <alpine.LNX.2.00.1011082327290.23697@swampdragon.chaosbits.net>
+To: Frank Li <Frank.Li@freescale.com>
+In-Reply-To: <1289386349-29033-1-git-send-email-Frank.Li@freescale.com>
+References: <1289386349-29033-1-git-send-email-Frank.Li@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Nov 2010 17:40:28 +0200
-Message-ID: <1290786028.2552.20.camel@localhost>
+Date: Fri, 26 Nov 2010 17:43:04 +0200
+Message-ID: <1290786184.2552.21.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Kirk Lee <kirk@hpc.ee.ntu.edu.tw>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, trivial@kernel.org,
-	linux-kernel@vger.kernel.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel.vger.kernel.org@shlinux.ap.freescale.net
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,17 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-11-09 at 00:09 +0100, Jesper Juhl wrote:
-> Hi,
+On Wed, 2010-11-10 at 18:52 +0800, Frank Li wrote:
+> register_blkdev return 1..255 when major = 0.
 > 
-> The [vk][cmz]alloc(_node) family of functions return void pointers which
-> it's completely unnecessary/pointless to cast to other pointer types since
-> that happens implicitly.
+> if (ret ) {
+> 	printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
+> 		tr->name, tr->major, ret);
+> 	      mutex_unlock(&mtd_table_mutex);
+> 	return ret;
+> }
 > 
-> This patch removes such casts from drivers/mtd/
+> Above code will return fail when register_blkdev return allocated major number.
+> 
+> Signed-off-by: Frank Li <Frank.Li@freescale.com>
 
-Pushed to l2-mtd-2.6.git, thanks.
-
+This patch is already in upstream.
 
 -- 
 Best Regards,
