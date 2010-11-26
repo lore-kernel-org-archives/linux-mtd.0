@@ -1,21 +1,21 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PM0ed-0006ep-A3
-	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 15:56:08 +0000
-Received: by bwz5 with SMTP id 5so2037702bwz.36
+	id 1PM0fZ-0006sZ-Rl
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 15:57:07 +0000
+Received: by bwz5 with SMTP id 5so2038538bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Nov 2010 07:56:05 -0800 (PST)
-Subject: Re: [PATCH] mtd: Fix section mismatch on sst25l
+	Fri, 26 Nov 2010 07:57:05 -0800 (PST)
+Subject: Re: change in how ubiformat works
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Fabio Estevam <fabioestevam@yahoo.com>
-In-Reply-To: <843351.91050.qm@web51004.mail.re2.yahoo.com>
-References: <843351.91050.qm@web51004.mail.re2.yahoo.com>
+To: twebb <taliaferro62@gmail.com>
+In-Reply-To: <AANLkTi=rE+u0OiGXj=HxGYRB9F4p228GpHzGadJm+982@mail.gmail.com>
+References: <AANLkTi=rE+u0OiGXj=HxGYRB9F4p228GpHzGadJm+982@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Nov 2010 17:55:33 +0200
-Message-ID: <1290786933.2552.23.camel@localhost>
+Date: Fri, 26 Nov 2010 17:56:32 +0200
+Message-ID: <1290786992.2552.24.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,41 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-11-12 at 08:03 -0800, Fabio Estevam wrote:
-> Building the kernel with 'make CONFIG_DEBUG_SECTION_MISMATCH=y´
+On Fri, 2010-11-12 at 13:47 -0500, twebb wrote:
+> I use a sequence as follows: " flash_erase - ubiformat - nanddump -
+> verify " to confirm that a UBI image was properly stored in NAND
+> flash.  I realize that flash_erase is not recommended because it
+> destroys erase counters, but this is only done on virgin flash so
+> should not be an issue.
 > 
-> resulted in:
-> 
-> WARNING: vmlinux.o(.data+0x15938): Section mismatch in reference from
-> the variable sst25l_driver to the function .init.text:sst25l_probe()
-> The variable sst25l_driver references
-> the function __init sst25l_probe()
-> If the reference is valid then annotate the
-> variable with __init* or __refdata (see linux/init.h) or name the variable:
-> *_template, *_timer, *_sht, *_ops, *_probe, *_probe_one, *_console,
-> 
-> Fix the section mismatch.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
-> ---
->  drivers/mtd/devices/sst25l.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-> index 684247a..925b1a9 100644
-> --- a/drivers/mtd/devices/sst25l.c
-> +++ b/drivers/mtd/devices/sst25l.c
-> @@ -375,7 +375,7 @@ static struct flash_info *__init sst25l_match_device(struct spi_device *spi)
->  	return flash_info;
->  }
->  
-> -static int __init sst25l_probe(struct spi_device *spi)
-> +static int __devinit sst25l_probe(struct spi_device *spi)
->  {
->  	struct flash_info *flash_info;
->  	struct sst25l_flash *flash;
+> However, I recently upgraded the mtd-utils, and particularly ubiformat
+> from 1.4 to 1.5, and now I see that what I read back (via nanddump)
+> does not match the original UBI image.  Can anyone confirm whether
+> ubiformat.c changes sometime between 1.4 and 1.5 would result in this
+> behavior?  I have looked at ubiformat.c changes and am wondering if it
+> has to do with image sequence number support.
 
-Should then sst25l_match_device be __devinit as well?
+Try to bisect it and find the commit id which changed the behavior.
 
 -- 
 Best Regards,
