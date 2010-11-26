@@ -1,24 +1,20 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PM0SY-0002SD-W8
-	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 15:43:42 +0000
-Received: by bwz5 with SMTP id 5so2026338bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Nov 2010 07:43:37 -0800 (PST)
-Subject: Re: [PATCH 1/1] [MTD]:CORE Fix wrong check register_blkdev return
-	value
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Frank Li <Frank.Li@freescale.com>
-In-Reply-To: <1289386349-29033-1-git-send-email-Frank.Li@freescale.com>
-References: <1289386349-29033-1-git-send-email-Frank.Li@freescale.com>
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PM0V6-0003GN-9E
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 15:46:19 +0000
+Subject: Re: [PATCH] MTD: NAND: jz4740: Make 'struct platform_driver
+	jz_nand_driver' static
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Lars-Peter Clausen <lars@metafoo.de>
+In-Reply-To: <1289498568-12191-1-git-send-email-lars@metafoo.de>
+References: <1289498568-12191-1-git-send-email-lars@metafoo.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 26 Nov 2010 17:43:04 +0200
-Message-ID: <1290786184.2552.21.camel@localhost>
+Date: Fri, 26 Nov 2010 17:45:30 +0200
+Message-ID: <1290786330.2552.22.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel.vger.kernel.org@shlinux.ap.freescale.net
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-11-10 at 18:52 +0800, Frank Li wrote:
-> register_blkdev return 1..255 when major = 0.
+On Thu, 2010-11-11 at 19:02 +0100, Lars-Peter Clausen wrote:
+> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> ---
+>  drivers/mtd/nand/jz4740_nand.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 > 
-> if (ret ) {
-> 	printk(KERN_WARNING "Unable to register %s block device on major %d: %d\n",
-> 		tr->name, tr->major, ret);
-> 	      mutex_unlock(&mtd_table_mutex);
-> 	return ret;
-> }
-> 
-> Above code will return fail when register_blkdev return allocated major number.
-> 
-> Signed-off-by: Frank Li <Frank.Li@freescale.com>
 
-This patch is already in upstream.
+Pushed both patches to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
