@@ -1,22 +1,19 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PM1XC-0001LE-Oi
-	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 16:52:31 +0000
-Date: Fri, 26 Nov 2010 11:52:18 -0500 (EST)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: Michal Marek <mmarek@suse.cz>
-Subject: Re: Unused config options in drivers/mtd (Re: running my kernel
-	scanning scripts on your favourite part of the tree)
-In-Reply-To: <4CEFE370.9030505@suse.cz>
-Message-ID: <alpine.DEB.2.00.1011261151410.13688@localhost6.localdomain6>
-References: <alpine.DEB.2.00.1011090711410.5783@localhost6.localdomain6>
-	<4CEE8B70.4070500@suse.cz>
-	<alpine.DEB.2.00.1011261122140.13435@localhost6.localdomain6>
-	<4CEFE370.9030505@suse.cz>
+Received: from lilly.ping.de ([83.97.42.2])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PM2B4-0006N5-4g
+	for linux-mtd@lists.infradead.org; Fri, 26 Nov 2010 17:33:42 +0000
+Date: Fri, 26 Nov 2010 18:29:12 +0100
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBIFS oops after remount ro
+Message-ID: <20101126172912.GX23237@leila.ping.de>
+References: <20101126135005.GV23237@leila.ping.de>
+	<1290785057.2552.14.camel@localhost>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1290785057.2552.14.camel@localhost>
+From: wolfgang@leila.ping.de (Wolfgang Wegner)
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 26 Nov 2010, Michal Marek wrote:
+Hi,
 
-> On 26.11.2010 17:29, Robert P. J. Day wrote:
-> >   and, BTW, there are still dead config variables in the code that go
-> > back *several* major versions, even though i've documented them just
-> > as many times here:
-> >
-> >   http://www.crashcourse.ca/wiki/index.php/Kernel_cleanup
->
-> That might be the problem - that you are document the bugs in your
-> wiki, instead of sending reports to the maintainers directly :).
+thank you for the hints!
 
-  yes, the obvious problem here is that i clearly haven't been putting
-enough effort into this.  i'll keep that in mind.
+I am currently trying to reproduce the error even without modified
+kernel - it seems I changed enough of my init procedure to somehow
+avoid the trigger condition. :-(
 
-rday
+As soon as I can reproduce the error, I will try what you suggested.
 
--- 
-
-========================================================================
-Robert P. J. Day                               Waterloo, Ontario, CANADA
-                        http://crashcourse.ca
-
-Twitter:                                       http://twitter.com/rpjday
-LinkedIn:                               http://ca.linkedin.com/in/rpjday
-========================================================================
+Best regards,
+Wolfgang
