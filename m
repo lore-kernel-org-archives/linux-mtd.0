@@ -1,14 +1,14 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMEAH-0000vN-Nx
-	for linux-mtd@lists.infradead.org; Sat, 27 Nov 2010 06:21:43 +0000
-Received: by mail-yw0-f49.google.com with SMTP id 7so1339547ywf.36
+	id 1PMEAW-0000xd-5w
+	for linux-mtd@lists.infradead.org; Sat, 27 Nov 2010 06:21:56 +0000
+Received: by gyg4 with SMTP id 4so1337535gyg.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Nov 2010 22:21:41 -0800 (PST)
+	Fri, 26 Nov 2010 22:21:54 -0800 (PST)
 From: "Justin P. Mattock" <justinmattock@gmail.com>
 To: trivial@kernel.org
-Subject: [RFC 2/9]drivers:infiniband:core Change the copyright info.
-Message-Id: <1290838879-11038-3-git-send-email-justinmattock@gmail.com>
+Subject: [RFC 3/9]drivers:infiniband:ulp Change the copyright info.
+Message-Id: <1290838879-11038-4-git-send-email-justinmattock@gmail.com>
 In-Reply-To: <1290838879-11038-1-git-send-email-justinmattock@gmail.com>
 References: <1290838879-11038-1-git-send-email-justinmattock@gmail.com>
 Cc: linux-rdma@vger.kernel.org, linux-wireless@vger.kernel.org,
@@ -23,191 +23,65 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Sat, 27 Nov 2010 06:21:43 -0000
+Date: Sat, 27 Nov 2010 06:21:57 -0000
 
 Change the copyright info from Sun Microsystems to Oracle since Oracle now owns them.
 
 Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
 
 ---
- drivers/infiniband/core/agent.c     |    2 +-
- drivers/infiniband/core/cache.c     |    2 +-
- drivers/infiniband/core/cm.c        |    2 +-
- drivers/infiniband/core/device.c    |    2 +-
- drivers/infiniband/core/fmr_pool.c  |    2 +-
- drivers/infiniband/core/iwcm.c      |    2 +-
- drivers/infiniband/core/mad_priv.h  |    2 +-
- drivers/infiniband/core/packer.c    |    2 +-
- drivers/infiniband/core/smi.c       |    2 +-
- drivers/infiniband/core/sysfs.c     |    2 +-
- drivers/infiniband/core/ud_header.c |    2 +-
- drivers/infiniband/core/user_mad.c  |    2 +-
- drivers/infiniband/core/verbs.c     |    2 +-
- 13 files changed, 13 insertions(+), 13 deletions(-)
+ drivers/infiniband/ulp/ipoib/ipoib.h           |    2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_ib.c        |    2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_main.c      |    2 +-
+ drivers/infiniband/ulp/ipoib/ipoib_multicast.c |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/agent.c b/drivers/infiniband/core/agent.c
-index 91916a8..5152553 100644
---- a/drivers/infiniband/core/agent.c
-+++ b/drivers/infiniband/core/agent.c
-@@ -4,7 +4,7 @@
-  * Copyright (c) 2004, 2005 Intel Corporation.  All rights reserved.
-  * Copyright (c) 2004, 2005 Topspin Corporation.  All rights reserved.
-  * Copyright (c) 2004-2007 Voltaire Corporation.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-index 6888356..dcf17a1 100644
---- a/drivers/infiniband/core/cache.c
-+++ b/drivers/infiniband/core/cache.c
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2004 Topspin Communications.  All rights reserved.
-  * Copyright (c) 2005 Intel Corporation. All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  * Copyright (c) 2005 Voltaire, Inc. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 64e0903..d0f37d5 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -2,7 +2,7 @@
-  * Copyright (c) 2004-2007 Intel Corporation.  All rights reserved.
-  * Copyright (c) 2004 Topspin Corporation.  All rights reserved.
-  * Copyright (c) 2004, 2005 Voltaire Corporation.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-index a19effa..73cab4c 100644
---- a/drivers/infiniband/core/device.c
-+++ b/drivers/infiniband/core/device.c
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib.h b/drivers/infiniband/ulp/ipoib/ipoib.h
+index 753a983..bdf2efb 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib.h
++++ b/drivers/infiniband/ulp/ipoib/ipoib.h
 @@ -1,6 +1,6 @@
- /*
-  * Copyright (c) 2004 Topspin Communications.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/fmr_pool.c b/drivers/infiniband/core/fmr_pool.c
-index 4507043..44eac01 100644
---- a/drivers/infiniband/core/fmr_pool.c
-+++ b/drivers/infiniband/core/fmr_pool.c
-@@ -1,6 +1,6 @@
- /*
-  * Copyright (c) 2004 Topspin Communications.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/iwcm.c b/drivers/infiniband/core/iwcm.c
-index 2a1e9ae..8cc6f01 100644
---- a/drivers/infiniband/core/iwcm.c
-+++ b/drivers/infiniband/core/iwcm.c
-@@ -2,7 +2,7 @@
-  * Copyright (c) 2004, 2005 Intel Corporation.  All rights reserved.
-  * Copyright (c) 2004 Topspin Corporation.  All rights reserved.
-  * Copyright (c) 2004, 2005 Voltaire Corporation.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  * Copyright (c) 2005 Open Grid Computing, Inc. All rights reserved.
-  * Copyright (c) 2005 Network Appliance, Inc. All rights reserved.
-  *
-diff --git a/drivers/infiniband/core/mad_priv.h b/drivers/infiniband/core/mad_priv.h
-index 9430ab4..ec30aea 100644
---- a/drivers/infiniband/core/mad_priv.h
-+++ b/drivers/infiniband/core/mad_priv.h
-@@ -1,7 +1,7 @@
- /*
-  * Copyright (c) 2004, 2005, Voltaire, Inc. All rights reserved.
-  * Copyright (c) 2005 Intel Corporation. All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  * Copyright (c) 2009 HNR Consulting. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-diff --git a/drivers/infiniband/core/packer.c b/drivers/infiniband/core/packer.c
-index 019bd4b..32754d2 100644
---- a/drivers/infiniband/core/packer.c
-+++ b/drivers/infiniband/core/packer.c
-@@ -1,6 +1,6 @@
- /*
-  * Copyright (c) 2004 Topspin Corporation.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/smi.c b/drivers/infiniband/core/smi.c
-index 5855e44..9687b80 100644
---- a/drivers/infiniband/core/smi.c
-+++ b/drivers/infiniband/core/smi.c
-@@ -4,7 +4,7 @@
-  * Copyright (c) 2004, 2005 Intel Corporation.  All rights reserved.
-  * Copyright (c) 2004, 2005 Topspin Corporation.  All rights reserved.
-  * Copyright (c) 2004-2007 Voltaire Corporation.  All rights reserved.
-- * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
-+ * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index 9ab5df7..010ea2d 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -1,7 +1,7 @@
  /*
   * Copyright (c) 2004, 2005 Topspin Communications.  All rights reserved.
-  * Copyright (c) 2005 Mellanox Technologies Ltd.  All rights reserved.
 - * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
 + * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
+  * Copyright (c) 2004 Voltaire, Inc. All rights reserved.
   *
   * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/ud_header.c b/drivers/infiniband/core/ud_header.c
-index bb7e192..50f7b56 100644
---- a/drivers/infiniband/core/ud_header.c
-+++ b/drivers/infiniband/core/ud_header.c
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_ib.c b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
+index dfa7190..87ff9eb 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_ib.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_ib.c
 @@ -1,6 +1,6 @@
  /*
-  * Copyright (c) 2004 Topspin Corporation.  All rights reserved.
+  * Copyright (c) 2004, 2005 Topspin Communications.  All rights reserved.
 - * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
 + * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
+  * Copyright (c) 2005 Mellanox Technologies. All rights reserved.
+  * Copyright (c) 2004, 2005 Voltaire, Inc. All rights reserved.
   *
-  * This software is available to you under a choice of one of two
-  * licenses.  You may choose to be licensed under the terms of the GNU
-diff --git a/drivers/infiniband/core/user_mad.c b/drivers/infiniband/core/user_mad.c
-index cd1996d..5ec2937 100644
---- a/drivers/infiniband/core/user_mad.c
-+++ b/drivers/infiniband/core/user_mad.c
-@@ -1,7 +1,7 @@
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+index 9ff7bc7..43df433 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+@@ -1,6 +1,6 @@
  /*
   * Copyright (c) 2004 Topspin Communications.  All rights reserved.
-  * Copyright (c) 2005 Voltaire, Inc. All rights reserved.
 - * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
 + * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  * Copyright (c) 2008 Cisco. All rights reserved.
+  * Copyright (c) 2004 Voltaire, Inc. All rights reserved.
   *
   * This software is available to you under a choice of one of two
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index af7a8b0..02d9581 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -4,7 +4,7 @@
-  * Copyright (c) 2004 Intel Corporation.  All rights reserved.
-  * Copyright (c) 2004 Topspin Corporation.  All rights reserved.
-  * Copyright (c) 2004 Voltaire Corporation.  All rights reserved.
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+index 3871ac6..af52828 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_multicast.c
+@@ -1,6 +1,6 @@
+ /*
+  * Copyright (c) 2004, 2005 Topspin Communications.  All rights reserved.
 - * Copyright (c) 2005 Sun Microsystems, Inc. All rights reserved.
 + * Copyright (c) 2005 Oracle and/or its affiliates. All rights reserved.
-  * Copyright (c) 2005, 2006 Cisco Systems.  All rights reserved.
+  * Copyright (c) 2004 Voltaire, Inc. All rights reserved.
   *
   * This software is available to you under a choice of one of two
 -- 
