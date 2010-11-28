@@ -1,21 +1,24 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMhOw-0003uz-I7
-	for linux-mtd@lists.infradead.org; Sun, 28 Nov 2010 13:34:47 +0000
-Received: by wyf22 with SMTP id 22so3552718wyf.36
+	id 1PMifY-0004a9-Bq
+	for linux-mtd@lists.infradead.org; Sun, 28 Nov 2010 14:56:01 +0000
+Received: by bwz5 with SMTP id 5so3322262bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 28 Nov 2010 05:34:44 -0800 (PST)
-Message-ID: <4CF25A3C.2080307@gmail.com>
-Date: Sun, 28 Nov 2010 14:33:48 +0100
-From: Marek Skuczynski <mareksk7@gmail.com>
-MIME-Version: 1.0
-To: Vladimir Khmelnitsky <vladimir@broadlight.com>
-Subject: Re: simple ubi reader
-References: <AFC5977FF9FA3E449BB7803E9BA754EF01D8AF55@mailsrv.broadlight.com>
-In-Reply-To: <AFC5977FF9FA3E449BB7803E9BA754EF01D8AF55@mailsrv.broadlight.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+	Sun, 28 Nov 2010 06:55:57 -0800 (PST)
+Subject: Re: Flashing UBIFS over fastboot
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Leo Barnes <barnes.leo@gmail.com>
+In-Reply-To: <AANLkTinxyagZ+_5_fv2ei0bF=N3Ww0KJhjSNKqNmQHpr@mail.gmail.com>
+References: <AANLkTinzy-qTsYfbZhkhoFN6Tz9G47+JUWsa97KCUAke@mail.gmail.com>
+	<1290779883.2552.4.camel@localhost>
+	<AANLkTinxyagZ+_5_fv2ei0bF=N3Ww0KJhjSNKqNmQHpr@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 28 Nov 2010 16:55:52 +0200
+Message-ID: <1290956152.2032.15.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +28,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vladimir,
-> But may be you know some simpler code performing ubi read. It looks to
-> me rather complicated to cut out from u-boot, and even from barebox -
-> code responsible only for ubi read dropping mtd staff.
+On Sun, 2010-11-28 at 17:46 +0900, Leo Barnes wrote:
+> Hello again,
+> 
+> New problem:
+> 
+> On Fri, Nov 26, 2010 at 10:58 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> >
+> > I think you can hack ubinize and teach it to add OOB bytes.
+> >
+> 
+> I have now managed to transform a UBIFS image so that it is flashable
+> by fastboot. The system then boots once without any trouble (at least
+> any immediate trouble), but when I reboot, it refuses to start. I have
+> narrowed the problem down to the fact that fastboot does not strip
+> trailing 0xFF pages from the blocks and instead writes them as usual.
+> As explained in the FAQ this has some nasty consequences. I have no
+> way (currently at least) of modifying how fastboot works on the
+> device. Is it somehow possible to fill these pages with dummy data and
+> tell UBI/UBIFS that it is ok to discard this data when the block is
+> erased sometime in the future? Or is there any other way of doing it?
 
-Unfortunately, I don't know any simpler implementation of UBI driver.
-However, I know that reading of an UBI volume content is not so
-difficult to implement.
-This should take about 2 days, which may be faster than adapting any
-existing implementation.
+I guess for data and indexing eraseblocks you can just pad the left
+space with UBIFS padding nodes (struct ubifs_pad_node).
 
-Good luck,
-  Marek
+But then there are special UBIFS areas which go before the data area.
+Things might me trickier there. I am not sure the padding node trick
+will work there, but it might. If this does not work for some areas,
+they can be tricked a different way.
 
-> Regards,
-> Vladimir
->
-> -----Original Message-----
-> From: Marek Skuczynski [mailto:mareksk7@gmail.com] 
-> Sent: Sunday, November 28, 2010 12:29 PM
-> To: Vladimir Khmelnitsky
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: simple ubi reader
->
-> Hi Vladimir,
->> I need to write bootloader which should read its second stage binary
->> from ubi volume.
->> I wonder if there is some simple open source code I can use to
-> implement
->> ubi volume reader?
-> I can take a look at these places:
-> - U-boot <http://git.denx.de/?p=u-boot.git>
-> - Barebox aka U-boot2 <http://git.pengutronix.de/?p=barebox.git>
->
-> Regards,
->  Marek
->
->
+The other ugly option would be to make UBI do ubi_leb_change() for each
+eraseblock after scanning. Or only for those which have 0xFFs at the
+end.
+
+But I do not have ready solution for this.
+
+> If UBI/UBIFS clones/remaps a block, does it strip empty trailing
+> pages?
+
+Yes, it does, this is why ubi_leb_change() will work.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
