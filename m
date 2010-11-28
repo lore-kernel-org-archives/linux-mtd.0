@@ -1,23 +1,17 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMifY-0004a9-Bq
-	for linux-mtd@lists.infradead.org; Sun, 28 Nov 2010 14:56:01 +0000
-Received: by bwz5 with SMTP id 5so3322262bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 28 Nov 2010 06:55:57 -0800 (PST)
-Subject: Re: Flashing UBIFS over fastboot
+Subject: Re: [PATCH 2/4] mtd: FSMC NAND replace all use of uintNN_t with uN
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Leo Barnes <barnes.leo@gmail.com>
-In-Reply-To: <AANLkTinxyagZ+_5_fv2ei0bF=N3Ww0KJhjSNKqNmQHpr@mail.gmail.com>
-References: <AANLkTinzy-qTsYfbZhkhoFN6Tz9G47+JUWsa97KCUAke@mail.gmail.com>
-	<1290779883.2552.4.camel@localhost>
-	<AANLkTinxyagZ+_5_fv2ei0bF=N3Ww0KJhjSNKqNmQHpr@mail.gmail.com>
+To: Linus Walleij <linus.walleij@stericsson.com>
+In-Reply-To: <AANLkTi=ks+ekjgJnb2pv0LaDzPZike+M+QLeOZKkb3iW@mail.gmail.com>
+References: <1290201121-15263-1-git-send-email-linus.walleij@stericsson.com>
+	<1290788695.2552.35.camel@localhost>
+	<AANLkTi=ks+ekjgJnb2pv0LaDzPZike+M+QLeOZKkb3iW@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 28 Nov 2010 16:55:52 +0200
-Message-ID: <1290956152.2032.15.camel@koala>
+Date: Sun, 28 Nov 2010 19:55:17 +0200
+Message-ID: <1290966917.2032.17.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,45 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-11-28 at 17:46 +0900, Leo Barnes wrote:
-> Hello again,
+On Sun, 2010-11-28 at 11:20 +0100, Linus Walleij wrote:
+> 2010/11/26 Artem Bityutskiy <dedekind1@gmail.com>:
 > 
-> New problem:
-> 
-> On Fri, Nov 26, 2010 at 10:58 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Fri, 2010-11-19 at 22:12 +0100, Linus Walleij wrote:
+> >> The short kernel versions of the basic types makes the world more
+> >> readable.
+> >>
+> >> Signed-off-by: Linus Walleij <linus.walleij@stericsson.com>
 > >
-> > I think you can hack ubinize and teach it to add OOB bytes.
-> >
+> > I do not think dwmw2 will merge this one because he often claimed that
+> > u32 cannot be better than uint32_t, because the latter is C99 standard,
+> > but the former is not. So I'd not do this, at least not at the area he
+> > looks after.
 > 
-> I have now managed to transform a UBIFS image so that it is flashable
-> by fastboot. The system then boots once without any trouble (at least
-> any immediate trouble), but when I reboot, it refuses to start. I have
-> narrowed the problem down to the fact that fastboot does not strip
-> trailing 0xFF pages from the blocks and instead writes them as usual.
-> As explained in the FAQ this has some nasty consequences. I have no
-> way (currently at least) of modifying how fastboot works on the
-> device. Is it somehow possible to fill these pages with dummy data and
-> tell UBI/UBIFS that it is ok to discard this data when the block is
-> erased sometime in the future? Or is there any other way of doing it?
+> Oh man. Whatever, David shall I respin the patch series without
+> this one? The latter patches will surely clash so an early indication
+> is appreciated.
 
-I guess for data and indexing eraseblocks you can just pad the left
-space with UBIFS padding nodes (struct ubifs_pad_node).
-
-But then there are special UBIFS areas which go before the data area.
-Things might me trickier there. I am not sure the padding node trick
-will work there, but it might. If this does not work for some areas,
-they can be tricked a different way.
-
-The other ugly option would be to make UBI do ubi_leb_change() for each
-eraseblock after scanning. Or only for those which have 0xFFs at the
-end.
-
-But I do not have ready solution for this.
-
-> If UBI/UBIFS clones/remaps a block, does it strip empty trailing
-> pages?
-
-Yes, it does, this is why ubi_leb_change() will work.
+I do not know if David will respond, but I recommend to respin without
+that path, then I'll take the series to my l2-mtd-2.6 tree, and will
+take care of them.
 
 -- 
 Best Regards,
