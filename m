@@ -1,24 +1,21 @@
-Received: from fwil.voltaire.com ([193.47.165.2] helo=exil.voltaire.com)
+Received: from mail-pv0-f177.google.com ([74.125.83.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMbu8-0005SC-5p
-	for linux-mtd@lists.infradead.org; Sun, 28 Nov 2010 07:42:36 +0000
-Message-ID: <4CF207E1.8070404@Voltaire.com>
-Date: Sun, 28 Nov 2010 09:42:25 +0200
-From: Or Gerlitz <ogerlitz@Voltaire.com>
+	id 1PMcu2-0005xH-TA
+	for linux-mtd@lists.infradead.org; Sun, 28 Nov 2010 08:46:35 +0000
+Received: by pvg7 with SMTP id 7so681000pvg.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 28 Nov 2010 00:46:32 -0800 (PST)
 MIME-Version: 1.0
-To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-	"Justin P. Mattock" <justinmattock@gmail.com>
-Subject: Re: [RFC 0/9] Change the copyright info.
-References: <1290838879-11038-1-git-send-email-justinmattock@gmail.com>	<adaoc9afout.fsf@cisco.com>
-	<4CF18853.1000402@gmail.com>
-	<AANLkTi=BxGFjLV6fO7GbyedX1b3xnXKW4Ss=qNDOLDjy@mail.gmail.com>
-In-Reply-To: <AANLkTi=BxGFjLV6fO7GbyedX1b3xnXKW4Ss=qNDOLDjy@mail.gmail.com>
+In-Reply-To: <1290779883.2552.4.camel@localhost>
+References: <AANLkTinzy-qTsYfbZhkhoFN6Tz9G47+JUWsa97KCUAke@mail.gmail.com>
+	<1290779883.2552.4.camel@localhost>
+Date: Sun, 28 Nov 2010 17:46:32 +0900
+Message-ID: <AANLkTinxyagZ+_5_fv2ei0bF=N3Ww0KJhjSNKqNmQHpr@mail.gmail.com>
+Subject: Re: Flashing UBIFS over fastboot
+From: Leo Barnes <barnes.leo@gmail.com>
+To: dedekind1@gmail.com
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: trivial@kernel.org, linux-rdma@vger.kernel.org,
-	Roland Dreier <rdreier@cisco.com>,
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,10 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Miguel Ojeda wrote:
-> [...] you have to maintain the original copyright 
+Hello again,
 
-Yes, this copyright change, e.g five years after merging the relevant patches is like asking a school 
-to change the family name posted on a graduate diploma just b/c few years later she got married and decided to adopt the family name of her spouse.
+New problem:
 
-Or.
+On Fri, Nov 26, 2010 at 10:58 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>
+> I think you can hack ubinize and teach it to add OOB bytes.
+>
+
+I have now managed to transform a UBIFS image so that it is flashable
+by fastboot. The system then boots once without any trouble (at least
+any immediate trouble), but when I reboot, it refuses to start. I have
+narrowed the problem down to the fact that fastboot does not strip
+trailing 0xFF pages from the blocks and instead writes them as usual.
+As explained in the FAQ this has some nasty consequences. I have no
+way (currently at least) of modifying how fastboot works on the
+device. Is it somehow possible to fill these pages with dummy data and
+tell UBI/UBIFS that it is ok to discard this data when the block is
+erased sometime in the future? Or is there any other way of doing it?
+If UBI/UBIFS clones/remaps a block, does it strip empty trailing
+pages?
+
+Best regards,
+//Leo
