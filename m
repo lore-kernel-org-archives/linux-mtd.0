@@ -1,14 +1,12 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mms3.broadcom.com ([216.31.210.19])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMygt-0004mU-2i
-	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:02:29 +0000
+	id 1PMygw-0004lz-Eb
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:02:34 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 5/8] nanddump: check for negative inputs
-Date: Mon, 29 Nov 2010 00:01:59 -0800
-Message-ID: <1291017722-23985-5-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
-References: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 1/8] nanddump/nandwrite: use "simple_" str functions
+Date: Mon, 29 Nov 2010 00:01:55 -0800
+Message-ID: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -25,28 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Per Mike Frysinger's suggestion, we check for strtoll() and strtoull()
+errors by using the "common.h" helper functions simple_strtoll() and
+simple_strtoull().
+
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nanddump.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+ nanddump.c  |    4 ++--
+ nandwrite.c |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/nanddump.c b/nanddump.c
-index b0dd7dc..96b46d4 100644
+index fe29596..bf95e81 100644
 --- a/nanddump.c
 +++ b/nanddump.c
-@@ -173,6 +173,13 @@ static void process_options(int argc, char * const argv[])
- 		}
- 	}
- 
-+	if (start_addr < 0)
-+		errmsg_die("Can't specify a negative device offset '%lld'",
-+				start_addr);
-+
-+	if (length < 0)
-+		errmsg_die("Can't specify a negative length '%lld'", length);
-+
- 	if (quiet && pretty_print) {
- 		fprintf(stderr, "The quiet and pretty print options are mutually-\n"
- 				"exclusive. Choose one or the other.\n");
+@@ -136,7 +136,7 @@ static void process_options(int argc, char * const argv[])
+ 				omitbad = true;
+ 				break;
+ 			case 's':
+-				start_addr = strtoull(optarg, NULL, 0);
++				start_addr = simple_strtoull(optarg, &error);
+ 				break;
+ 			case 'f':
+ 				if (!(dumpfile = strdup(optarg))) {
+@@ -145,7 +145,7 @@ static void process_options(int argc, char * const argv[])
+ 				}
+ 				break;
+ 			case 'l':
+-				length = strtoull(optarg, NULL, 0);
++				length = simple_strtoull(optarg, &error);
+ 				break;
+ 			case 'o':
+ 				omitoob = true;
+diff --git a/nandwrite.c b/nandwrite.c
+index bbe69b0..5373a89 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -201,7 +201,7 @@ static void process_options(int argc, char * const argv[])
+ 				writeoob = true;
+ 				break;
+ 			case 's':
+-				mtdoffset = strtoll(optarg, NULL, 0);
++				mtdoffset = simple_strtoll(optarg, &error);
+ 				break;
+ 			case 'b':
+ 				blockalign = atoi(optarg);
 -- 
 1.7.0.4
