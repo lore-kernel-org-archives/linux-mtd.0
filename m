@@ -1,21 +1,22 @@
-Received: from mms3.broadcom.com ([216.31.210.19])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMyit-0004m1-U8
-	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:04:32 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/8] nanddump: Refactor pretty print code into an
- sprintf()
-Date: Mon, 29 Nov 2010 00:01:57 -0800
-Message-ID: <1291017722-23985-3-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
-References: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
+	id 1PMykh-0005Aj-0x
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:06:24 +0000
+Received: by wyf22 with SMTP id 22so4193106wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 29 Nov 2010 00:06:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>,
+In-Reply-To: <1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
+References: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
+	<1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 29 Nov 2010 03:05:59 -0500
+Message-ID: <AANLkTi==NGjgX38mUKfziKQAknmOJyZmB4Db3WPEh5MJ@mail.gmail.com>
+Subject: Re: [PATCH 7/8] nandwrite: add check for negative blockalign
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
 	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,35 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A do-while loop in pretty_dump_to_buffer() can be refactored into a
-single sprintf() statement. MAX() and MIN() are used to ensure that:
-(1) We have at least a single space between hex and ASCII output
-(2) We don't overflow the line buffer
+On Mon, Nov 29, 2010 at 03:02, Brian Norris wrote:
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 errmsg_die("Can't spec=
+ify a negative blockalign '%d'",
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 blockalign);
 
-This patch was suggested by Mike Frysinger.
+personally, i'd avoid quotes on non-string types.  maybe also mention
+the command line option that is "blockalign" ?
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- nanddump.c |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/nanddump.c b/nanddump.c
-index bf95e81..14a8816 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -252,9 +252,10 @@ static void pretty_dump_to_buffer(const unsigned char *buf, size_t len,
- 	if (!ascii)
- 		goto nil;
- 
--	do {
--		linebuf[lx++] = ' ';
--	} while (lx < (linebuflen - 1) && lx < (ascii_column - 1));
-+	/* Spacing between hex and ASCII - ensure at least one space */
-+	lx += sprintf(linebuf + lx, "%*s",
-+			MAX((int)MIN(linebuflen, ascii_column) - 1 - lx, 1),
-+			" ");
- 
- 	linebuf[lx++] = '|';
- 	for (j = 0; (j < len) && (lx + 2) < linebuflen; j++)
--- 
-1.7.0.4
+otherwise, these changes all look fine to me
+-mike
