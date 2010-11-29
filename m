@@ -1,23 +1,22 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMykh-0005Aj-0x
-	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:06:24 +0000
-Received: by wyf22 with SMTP id 22so4193106wyf.36
+	id 1PN0R5-0004Na-VZ
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 09:54:18 +0000
+Received: by wyf22 with SMTP id 22so4285070wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 29 Nov 2010 00:06:20 -0800 (PST)
+	Mon, 29 Nov 2010 01:54:14 -0800 (PST)
+Sender: Peter Korsgaard <jacmet@gmail.com>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: "Vladimir Khmelnitsky" <vladimir@broadlight.com>
+Subject: Re: simple ubi reader
+References: <AFC5977FF9FA3E449BB7803E9BA754EF01D8AE25@mailsrv.broadlight.com>
+Date: Mon, 29 Nov 2010 10:54:04 +0100
+In-Reply-To: <AFC5977FF9FA3E449BB7803E9BA754EF01D8AE25@mailsrv.broadlight.com>
+	(Vladimir Khmelnitsky's message of "Sun, 28 Nov 2010 11:27:04 +0200")
+Message-ID: <874ob0zc8z.fsf@macbook.be.48ers.dk>
 MIME-Version: 1.0
-In-Reply-To: <1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
-References: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
-	<1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 29 Nov 2010 03:05:59 -0500
-Message-ID: <AANLkTi==NGjgX38mUKfziKQAknmOJyZmB4Db3WPEh5MJ@mail.gmail.com>
-Subject: Re: [PATCH 7/8] nandwrite: add check for negative blockalign
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Nov 29, 2010 at 03:02, Brian Norris wrote:
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 errmsg_die("Can't spec=
-ify a negative blockalign '%d'",
-> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 blockalign);
+>>>>> "Vladimir" == Vladimir Khmelnitsky <vladimir@broadlight.com> writes:
 
-personally, i'd avoid quotes on non-string types.  maybe also mention
-the command line option that is "blockalign" ?
+ Vladimir> Hi,
 
-otherwise, these changes all look fine to me
--mike
+ Vladimir> I need to write bootloader which should read its second stage
+ Vladimir> binary from ubi volume.  I wonder if there is some simple
+ Vladimir> open source code I can use to implement ubi volume reader?
+
+John Ogness from Linuxtronic did a short presentation about a small
+bootloader doing this at ELCE:
+
+http://www.elinux.org/images/4/45/Ipl_and_ubi.pdf
+
+I don't know if his code is available online, but you could try mailing
+him.
+
+-- 
+Bye, Peter Korsgaard
