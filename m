@@ -1,22 +1,27 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMlkx-0007Bb-0q
-	for linux-mtd@lists.infradead.org; Sun, 28 Nov 2010 18:13:47 +0000
-Received: by fxm16 with SMTP id 16so2146404fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 28 Nov 2010 10:13:45 -0800 (PST)
-Subject: Re: simple ubi reader
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Vladimir Khmelnitsky <vladimir@broadlight.com>
-In-Reply-To: <AFC5977FF9FA3E449BB7803E9BA754EF01D8AE25@mailsrv.broadlight.com>
-References: <AFC5977FF9FA3E449BB7803E9BA754EF01D8AE25@mailsrv.broadlight.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 28 Nov 2010 20:13:39 +0200
-Message-ID: <1290968019.2032.25.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-ID: <4CF32A62.4030205@st.com>
+Date: Mon, 29 Nov 2010 09:51:54 +0530
+From: viresh kumar <viresh.kumar@st.com>
+MIME-Version: 1.0
+To: stanley.miao <stanley.miao@windriver.com>
+Subject: Re: [PATCH V2 28/69] ST SPEAr: Adding machine support for nand
+References: <cover.1285933331.git.viresh.kumar@st.com>
+	<1076320a0194c19ef0b4beefdf3c43a44e200439.1285933331.git.viresh.kumar@st.com>
+	<4CF1F650.8080505@windriver.com>
+In-Reply-To: <4CF1F650.8080505@windriver.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Pratyush ANAND <pratyush.anand@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	"dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Deepak SIKRI <deepak.sikri@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-11-28 at 11:27 +0200, Vladimir Khmelnitsky wrote:
-> Hi,
+On 11/28/2010 11:57 AM, stanley.miao wrote:
+> Hi, Viresh,
 > 
-> I need to write bootloader which should read its second stage binary
-> from ubi volume.
-> I wonder if there is some simple open source code I can use to implement
-> ubi volume reader?
+> It looked you missed the file include/mtd/fsmc.h in this patch.
+> 
+> Stanley.
 
-I know people doing small bootloader code (closed source) with 4KiB
-constraint for whole code, and it supported UBI R/O. That was clever
-code made by clever people though. But here are some points:
+Hi Stanley,
 
-1. You do not have to read EC headers when scanning
-2. You do not really need to read the volume table
-3. If you can assume you need only one volume, say, with vol ID 0, this
-simplifies things further.
+I sent this patchset after linus walleij has submitted patchset for fsmc.
+In that patchset fsmc.h was at include/mtd/fsmc.h, but later it was placed
+at include/linux/mtd/fsmc.h.
 
-Also, AFAIR, some people found that placing VID header at the very end
-of the NAND page made ECC calculations easier and faster. This is
-actually why UBI has 'vid_hdr_offs' option which is not widely used,
-though.
-
-Anyway, this is the original old design document, which may contain some
-hints, but I'm not sure:
-
-http://linux-mtd.infradead.org/doc/ubidesign/ubidesign.pdf
-
-The doc is not up-to-date, but all the design principles are valid.
+I am waiting for few of our drivers to be pushed in mainline, then i will
+send final V3 version for this patchset.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+viresh
