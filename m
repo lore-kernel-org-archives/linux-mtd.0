@@ -1,12 +1,12 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PMygt-0004mW-0z
-	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:02:28 +0000
+	id 1PMygt-0004mU-2i
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:02:29 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 4/8] nanddump: change "unsigned" to "signed"
-Date: Mon, 29 Nov 2010 00:01:58 -0800
-Message-ID: <1291017722-23985-4-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH 5/8] nanddump: check for negative inputs
+Date: Mon, 29 Nov 2010 00:01:59 -0800
+Message-ID: <1291017722-23985-5-git-send-email-computersforpeace@gmail.com>
 In-Reply-To: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
 References: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
@@ -25,59 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For consistency between nanddump and nandwrite and in order to provide
-better means for checking for negative inputs, the "offset" and "length"
-types in nanddump should be changed to signed integer types. This also
-solves a signed/unsigned comparison warning.
-
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nanddump.c |   12 ++++++------
- 1 files changed, 6 insertions(+), 6 deletions(-)
+ nanddump.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
 diff --git a/nanddump.c b/nanddump.c
-index 14a8816..b0dd7dc 100644
+index b0dd7dc..96b46d4 100644
 --- a/nanddump.c
 +++ b/nanddump.c
-@@ -82,8 +82,8 @@ static bool			pretty_print = false;	// print nice
- static bool			noecc = false;		// don't error correct
- static bool			noskipbad = false;	// don't skip bad blocks
- static bool			omitoob = false;	// omit oob data
--static unsigned long long	start_addr;		// start address
--static unsigned long long	length;			// dump length
-+static long long		start_addr;		// start address
-+static long long		length;			// dump length
- static const char		*mtddev;		// mtd device name
- static const char		*dumpfile;		// dump file name
- static bool			omitbad = false;
-@@ -136,7 +136,7 @@ static void process_options(int argc, char * const argv[])
- 				omitbad = true;
- 				break;
- 			case 's':
--				start_addr = simple_strtoull(optarg, &error);
-+				start_addr = simple_strtoll(optarg, &error);
- 				break;
- 			case 'f':
- 				if (!(dumpfile = strdup(optarg))) {
-@@ -145,7 +145,7 @@ static void process_options(int argc, char * const argv[])
- 				}
- 				break;
- 			case 'l':
--				length = simple_strtoull(optarg, &error);
-+				length = simple_strtoll(optarg, &error);
- 				break;
- 			case 'o':
- 				omitoob = true;
-@@ -273,8 +273,8 @@ nil:
-  */
- int main(int argc, char * const argv[])
- {
--	unsigned long long ofs, end_addr = 0;
--	unsigned long long blockstart = 1;
-+	long long ofs, end_addr = 0;
-+	long long blockstart = 1;
- 	int ret, i, fd, ofd = 0, bs, badblock = 0;
- 	struct mtd_dev_info mtd;
- 	char pretty_buf[PRETTY_BUF_LEN];
+@@ -173,6 +173,13 @@ static void process_options(int argc, char * const argv[])
+ 		}
+ 	}
+ 
++	if (start_addr < 0)
++		errmsg_die("Can't specify a negative device offset '%lld'",
++				start_addr);
++
++	if (length < 0)
++		errmsg_die("Can't specify a negative length '%lld'", length);
++
+ 	if (quiet && pretty_print) {
+ 		fprintf(stderr, "The quiet and pretty print options are mutually-\n"
+ 				"exclusive. Choose one or the other.\n");
 -- 
 1.7.0.4
