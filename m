@@ -1,27 +1,21 @@
-Message-ID: <4CF32A62.4030205@st.com>
-Date: Mon, 29 Nov 2010 09:51:54 +0530
-From: viresh kumar <viresh.kumar@st.com>
+Received: from mms1.broadcom.com ([216.31.210.17])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PMygr-0004mH-TO
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 08:02:26 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH 7/8] nandwrite: add check for negative blockalign
+Date: Mon, 29 Nov 2010 00:02:01 -0800
+Message-ID: <1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
+References: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: stanley.miao <stanley.miao@windriver.com>
-Subject: Re: [PATCH V2 28/69] ST SPEAr: Adding machine support for nand
-References: <cover.1285933331.git.viresh.kumar@st.com>
-	<1076320a0194c19ef0b4beefdf3c43a44e200439.1285933331.git.viresh.kumar@st.com>
-	<4CF1F650.8080505@windriver.com>
-In-Reply-To: <4CF1F650.8080505@windriver.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	"dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
-	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
-	Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Deepak SIKRI <deepak.sikri@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/28/2010 11:57 AM, stanley.miao wrote:
-> Hi, Viresh,
-> 
-> It looked you missed the file include/mtd/fsmc.h in this patch.
-> 
-> Stanley.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ nandwrite.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-Hi Stanley,
-
-I sent this patchset after linus walleij has submitted patchset for fsmc.
-In that patchset fsmc.h was at include/mtd/fsmc.h, but later it was placed
-at include/linux/mtd/fsmc.h.
-
-I am waiting for few of our drivers to be pushed in mainline, then i will
-send final V3 version for this patchset.
-
+diff --git a/nandwrite.c b/nandwrite.c
+index 5373a89..c409878 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -218,6 +218,10 @@ static void process_options(int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
+ 	}
+ 
++	if (blockalign < 0)
++		errmsg_die("Can't specify a negative blockalign '%d'",
++				blockalign);
++
+ 	argc -= optind;
+ 	argv += optind;
+ 
 -- 
-viresh
+1.7.0.4
