@@ -1,23 +1,37 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PN56h-0002Wa-5e
-	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 14:53:33 +0000
-Received: by mail-fx0-f49.google.com with SMTP id 19so55582fxm.36
+	id 1PN5Jv-0004Xp-1d
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 15:07:13 +0000
+Received: by bwz5 with SMTP id 5so4181106bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 29 Nov 2010 06:53:30 -0800 (PST)
-Subject: Re: [PATCH][v2] Fixing the garbage collector problem after
-	NAND-flash image record in u-boot
+	Mon, 29 Nov 2010 07:07:08 -0800 (PST)
+Subject: Re: Suggested patch: reset errno after isatty()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Sergej.Stepanov@ids.de
-In-Reply-To: <4206182445660643B9AEB8D4E55BBD0A106A0AA93A@HERMES2>
-References: <4206182445660643B9AEB8D4E55BBD0A106A0AA93A@HERMES2>
+To: Ketil Froyn <ketil@froyn.name>
+In-Reply-To: <AANLkTikSEH4SOTYv9oqniP6-pPtRc0Y=M2+8hvdAirRg@mail.gmail.com>
+References: <AANLkTimwumfui-_T1ScDYwMLKbNh1ia-SDMUg56wTfN5@mail.gmail.com>
+	<4CD11C03.3090207@parrot.com>
+	<AANLkTimfxjrtV4eks5tK68h6TQ20soib+6gaTC+QyB4a@mail.gmail.com>
+	<AANLkTinSj2vAJJjeSxF-rvq08OVsnw3YcpRSpuOfv9pQ@mail.gmail.com>
+	<AANLkTikQtNwsPkJSkmpmC=kMZpmdqHDW0HROeUBNDOEi@mail.gmail.com>
+	<1289646433.2218.22.camel@localhost>
+	<1289649338.2218.42.camel@localhost>
+	<AANLkTink+0WvCmQWwd4+Vf8TETjR5-6BsGU=a071Rk0+@mail.gmail.com>
+	<AANLkTim7TT8ydMiSX8B2ehJP2kQ6jtGSnEZU98AZjWUf@mail.gmail.com>
+	<AANLkTimHCBNCcc3suXv4kJ4+MXUSf5Tw2r876A7tqtoL@mail.gmail.com>
+	<AANLkTinzqwsEFoG+Z0S0ep7JN3p4jHugkHhN-J19Y3cn@mail.gmail.com>
+	<1290607959.2793.11.camel@localhost>
+	<AANLkTinTpe=niqS87JRR4h53TJ803ohs3e2MwiVFstgR@mail.gmail.com>
+	<AANLkTi=sKOzXnr-CZLvu_XP4gm5y15pL0HxS+=-=2ij7@mail.gmail.com>
+	<AANLkTikSEH4SOTYv9oqniP6-pPtRc0Y=M2+8hvdAirRg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 29 Nov 2010 16:53:26 +0200
-Message-ID: <1291042406.2141.14.camel@koala>
+Date: Mon, 29 Nov 2010 17:07:03 +0200
+Message-ID: <1291043223.2141.15.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: scottwood@freescale.com, linux-mtd@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, dwmw2@infradead.org, Rolf.Riehle@ids.de
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,29 +42,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-11-23 at 18:38 +0100, Sergej.Stepanov@ids.de wrote:
-> This patch should fix the following problem:
->  1. the  jffs2-image update in the u-boot was ok
->  2. first restart and first mount of the NAND-flash-partition was also ok
->  3. before the restart of controller there are no any activity on NAND-flash except of the jffs2_gcd_mtdX-process ...
->  4. BUT after the second restart the NAND-flash-partition could not be really used after the second mount,
->     dmesg filled with messages:
-> ...
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03ce0000: 0xc0ff instead
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x03d00000: 0xc0ff instead
-> ....
-> Just for for info:
-> the behaviour observed on mpc8313-based board with the large-page NAND.
-> The only activity on NAND-flash was the garbage collector process, that looks for CLEANMARKER-nodes
+On Thu, 2010-11-25 at 09:58 +0100, Ketil Froyn wrote:
+> On Wed, Nov 24, 2010 at 10:36 PM, Mike Frysinger <vapier.adi@gmail.com> wrote:
+> >
+> > awesome.  can you post your signed-off-by tag and/or a proper git patch please ?
+> > -mike
 > 
-> As Scott said it was broken by commit 3ab8f2a2e7011c5e83363b42950757e46ef06824
-> 
-> Signed-off-by: Sergej Stepanov <Sergej.Stepanov@ids.de>
-> Cc: Rolf Riehle <Rolf.Riehle@ids.de>
-> Cc: Scott Wood <scottwood@freescale.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
+> I'm pretty new to git. Hope this is right.
 
-Pusehd to l2-mtd-2.6.git, thanks.
+Pushed this patch to the mtd-utils tree, thanks!
 
 -- 
 Best Regards,
