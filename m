@@ -1,23 +1,22 @@
-Received: from mail-yx0-f177.google.com ([209.85.213.177])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PN4bU-00013C-OU
-	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 14:21:17 +0000
-Received: by yxm34 with SMTP id 34so2225096yxm.36
+	id 1PN554-0002Ss-JW
+	for linux-mtd@lists.infradead.org; Mon, 29 Nov 2010 14:51:53 +0000
+Received: by fxm19 with SMTP id 19so54198fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 29 Nov 2010 06:21:15 -0800 (PST)
-Subject: Re: UBIFS oops after remount ro
+	Mon, 29 Nov 2010 06:51:45 -0800 (PST)
+Subject: Re: [PATCH] mtd: mxc_nand: Fix warning on nr_parts unused variable
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Wolfgang Wegner <wolfgang@leila.ping.de>
-In-Reply-To: <20101129131807.GB23237@leila.ping.de>
-References: <20101126135005.GV23237@leila.ping.de>
-	<1290785057.2552.14.camel@localhost>
-	<20101129131807.GB23237@leila.ping.de>
+To: Fabio Estevam <fabio.estevam@freescale.com>
+In-Reply-To: <1290538933-12607-1-git-send-email-fabio.estevam@freescale.com>
+References: <1290538933-12607-1-git-send-email-fabio.estevam@freescale.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 29 Nov 2010 16:21:09 +0200
-Message-ID: <1291040469.2141.10.camel@koala>
+Date: Mon, 29 Nov 2010 16:51:27 +0200
+Message-ID: <1291042287.2141.12.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	u.kleine-koenig@pengutronix.de
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,60 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-11-29 at 14:18 +0100, Wolfgang Wegner wrote:
-> Hi Artem,
+On Tue, 2010-11-23 at 17:02 -0200, Fabio Estevam wrote:
+> If CONFIG_MTD_PARTITIONS is not selected, then the following warning is generated:
 > 
-> I can now reproduce the Oops with CONFIG_UBIFS_FS_DEBUG and your
-> patch.
+>   CC      drivers/mtd/nand/mxc_nand.o
+> drivers/mtd/nand/mxc_nand.c: In function 'mxcnd_probe':
+> drivers/mtd/nand/mxc_nand.c:1014: warning: unused variable 'nr_parts'
+> 
+> Fix it by marking nr_parts as __maybe_unused.
+> 
+> Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
 
-OK, I thought one of ubi_asserts() would trigger. They do not.
+I'm curious, do you really use MTD without CONFIG_MTD_PARTITIONS ? Or
+you found just random warning? I'm asking because I believed this config
+option has to be killed, because it causes more harm in form of mess,
+than good.
 
->  However, I had to manually apply the hunks because my tree
-> seems to differ enough for patch to not apply it automatically...
-
-I sent the patch against the ubifs-v2.6.32 tree, which has all the UBIFS
-patches back-ported, and which I recommend to use:
-
-http://linux-mtd.infradead.org/doc/ubifs.html#L_source
-
-(hmm, need to update that page, now there are more back-port trees)
-
-> And here is the complete console log in case I missed some
-> important information:
-
-Well, because of the ps output, it is difficult to read kernel prints.
-Also, the situation becomes more difficult because you have several
-UBIFS file-systems, so many messages are irrelevant. Would be nice to
-print them only for the instance which oopses.
-
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-> qqq: kupdated for ubifs
-
-So, not 100% sure, but probably this is kuptdated writeback. For some
-reason mm thinks ubifs has dirty data, although it should not have,
-because re-mounting path has full sync.
-
-> qqq: writing inode 3298
-
-Does this always happen for inode 3298? Or the inode number changes?
+Anyway, putting this to my l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
