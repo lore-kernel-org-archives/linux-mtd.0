@@ -1,16 +1,15 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PNNFw-0004zF-1R
-	for linux-mtd@lists.infradead.org; Tue, 30 Nov 2010 10:16:17 +0000
+	id 1PNNGW-000533-2P
+	for linux-mtd@lists.infradead.org; Tue, 30 Nov 2010 10:16:55 +0000
 From: Savinay Dharmappa <savinay.dharmappa@ti.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v4 1/2] mtd: NOR flash driver for OMAP-L137/AM17x
-Date: Tue, 30 Nov 2010 15:32:05 +0530
-Message-Id: <1291111325-25784-1-git-send-email-savinay.dharmappa@ti.com>
+To: davinci-linux-open-source@linux.davincidsp.com
+Subject: [PATCH v4 2/2] davinci: Platform support for OMAP-L137/AM17x NOR
+	flash driver
+Date: Tue, 30 Nov 2010 15:32:41 +0530
+Message-Id: <1291111361-25848-1-git-send-email-savinay.dharmappa@ti.com>
 Cc: Aleksey Makarov <amakarov@ru.mvista.com>,
-	Sergei Shtylyov <sshtylyov@ru.mvista.com>,
-	davinci-linux-open-source@linux.davincidsp.com,
-	David Griego <dgriego@mvista.com>,
+	Sergei Shtylyov <sshtylyov@ru.mvista.com>, linux-mtd@lists.infradead.org,
 	Savinay Dharmappa <savinay.dharmappa@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,377 +20,286 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Griego <dgriego@mvista.com>
+From: Aleksey Makarov <amakarov@ru.mvista.com>
 
-OMAP-L137/AM17x has limited number of dedicated EMIFA
-address pins, enough to interface directly to an SDRAM.
-If a device such as an asynchronous flash needs to be
-attached to the EMIFA, then either GPIO pins or a chip
-select may be used to control the flash device's upper
+Adds platform support for OMAP-L137/AM17x NOR flash driver.
+
+Also, configures chip select 3 to control NOR flash's upper
 address lines.
 
-This patch adds support for the NOR flash on the OMAP-L137/
-AM17x user interface daughter board using the latch-addr-flash
-MTD mapping driver which allows flashes to be partially
-physically addressed. The upper address lines are set by
-a board specific code which is a separate patch.
-
-Signed-off-by: David Griego <dgriego@mvista.com>
 Signed-off-by: Aleksey Makarov <amakarov@ru.mvista.com>
 Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 Signed-off-by: Savinay Dharmappa <savinay.dharmappa@ti.com>
 ---
 Since v3:
-No modifications in this patch. Reposting, as other patch in
-this series has been modified.
+Addressed comments from Sergei Shtylyov at [1].
 
- drivers/mtd/maps/Kconfig             |    9 +
- drivers/mtd/maps/Makefile            |    1 +
- drivers/mtd/maps/latch-addr-flash.c  |  272 ++++++++++++++++++++++++++++++++++
- include/linux/mtd/latch-addr-flash.h |   29 ++++
- 4 files changed, 311 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/maps/latch-addr-flash.c
- create mode 100644 include/linux/mtd/latch-addr-flash.h
+[1]http://linux.davincidsp.com/pipermail/davinci-linux-open-source/2010-November/021105.html
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index a0dd7bb..c0993d0 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -552,4 +552,13 @@ config MTD_PISMO
- 
- 	  When built as a module, it will be called pismo.ko
- 
-+config MTD_LATCH_ADDR
-+        tristate "Latch-assisted Flash Chip Support"
-+        depends on MTD_COMPLEX_MAPPINGS
+ arch/arm/mach-davinci/Kconfig           |    8 +
+ arch/arm/mach-davinci/board-da830-evm.c |  217 +++++++++++++++++++++++++++++++
+ 2 files changed, 225 insertions(+), 0 deletions(-)
+
+diff --git a/arch/arm/mach-davinci/Kconfig b/arch/arm/mach-davinci/Kconfig
+index 84066e8..72d4fd0 100644
+--- a/arch/arm/mach-davinci/Kconfig
++++ b/arch/arm/mach-davinci/Kconfig
+@@ -142,6 +142,14 @@ config DA830_UI_NAND
+ 	help
+ 	  Say Y here to use the NAND flash. Do not forget to setup
+ 	  the switch correctly.
++
++config DA830_UI_NOR
++        bool "NOR flash"
 +        help
-+          Map driver which allows flashes to be partially physically addressed
-+          and have the upper address lines set by a board specific code.
++          Configure this option to specify the that AEMIF CE2/CE3 will be used to
++          communicate to the NOR flash. Do not forget to setup the switch SW1
++          on UI card correctly.
 +
-+          If compiled as a module, it will be called latch-addr-flash.
-+
- endmenu
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index c7869c7..08533bd 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -59,3 +59,4 @@ obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
- obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
- obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
- obj-$(CONFIG_MTD_BCM963XX)	+= bcm963xx-flash.o
-+obj-$(CONFIG_MTD_LATCH_ADDR)	+= latch-addr-flash.o
-diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
-new file mode 100644
-index 0000000..2f91291
---- /dev/null
-+++ b/drivers/mtd/maps/latch-addr-flash.c
-@@ -0,0 +1,272 @@
-+/*
-+ * Interface for NOR flash driver whose high address lines are latched
-+ *
-+ * Copyright 2000 Nicolas Pitre <nico@cam.org>
-+ * Copyright 2005-2008 Analog Devices Inc.
-+ * Coyright (C) 2008 MontaVista Software, Inc. <source@mvista.com>
-+ *
-+ * This file is licensed under the terms of the GNU General Public License
-+ * version 2. This program is licensed "as is" without any warranty of any
-+ * kind, whether express or implied.
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/platform_device.h>
+ endchoice
+ 
+ config MACH_DAVINCI_DA850_EVM
+diff --git a/arch/arm/mach-davinci/board-da830-evm.c b/arch/arm/mach-davinci/board-da830-evm.c
+index b52a3a1..93daf52 100644
+--- a/arch/arm/mach-davinci/board-da830-evm.c
++++ b/arch/arm/mach-davinci/board-da830-evm.c
+@@ -20,6 +20,8 @@
+ #include <linux/i2c/at24.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
 +#include <linux/mtd/latch-addr-flash.h>
-+#include <linux/slab.h>
-+
-+#define DRIVER_NAME "latch-addr-flash"
-+
-+struct latch_addr_flash_info {
-+	struct mtd_info		*mtd;
-+	struct map_info		map;
-+	struct resource		*res;
-+
-+	void			(*set_window)(unsigned long offset, void *data);
-+	void			*data;
-+
-+	/* cache; could be found out of res */
-+	unsigned long		win_mask;
-+
-+	int			nr_parts;
-+	struct mtd_partition	*parts;
-+
-+	spinlock_t		lock;
-+};
-+
-+static map_word lf_read(struct map_info *map, unsigned long ofs)
-+{
-+	struct latch_addr_flash_info *info;
-+	map_word datum;
-+
-+	info = (struct latch_addr_flash_info *)map->map_priv_1;
-+
-+	spin_lock(&info->lock);
-+
-+	info->set_window(ofs, info->data);
-+	datum = inline_map_read(map, info->win_mask & ofs);
-+
-+	spin_unlock(&info->lock);
-+
-+	return datum;
-+}
-+
-+static void lf_write(struct map_info *map, map_word datum, unsigned long ofs)
-+{
-+	struct latch_addr_flash_info *info;
-+
-+	info = (struct latch_addr_flash_info *)map->map_priv_1;
-+
-+	spin_lock(&info->lock);
-+
-+	info->set_window(ofs, info->data);
-+	inline_map_write(map, datum, info->win_mask & ofs);
-+
-+	spin_unlock(&info->lock);
-+}
-+
-+static void lf_copy_from(struct map_info *map, void *to,
-+		unsigned long from, ssize_t len)
-+{
-+	struct latch_addr_flash_info *info =
-+		(struct latch_addr_flash_info *) map->map_priv_1;
-+	unsigned n;
-+
-+	while (len > 0) {
-+		n = info->win_mask + 1 - (from & info->win_mask);
-+		if (n > len)
-+			n = len;
-+
-+		spin_lock(&info->lock);
-+
-+		info->set_window(from, info->data);
-+		memcpy_fromio(to, map->virt + (from & info->win_mask), n);
-+
-+		spin_unlock(&info->lock);
-+
-+		to += n;
-+		from += n;
-+		len -= n;
-+	}
-+}
-+
-+static char *rom_probe_types[] = { "cfi_probe", NULL };
-+
-+static char *part_probe_types[] = { "cmdlinepart", NULL };
-+
-+static int latch_addr_flash_remove(struct platform_device *dev)
-+{
-+	struct latch_addr_flash_info *info;
-+	struct latch_addr_flash_data *latch_addr_data;
-+
-+	info = platform_get_drvdata(dev);
-+	if (info == NULL)
-+		return 0;
-+	platform_set_drvdata(dev, NULL);
-+
-+	latch_addr_data = dev->dev.platform_data;
-+
-+	if (info->mtd != NULL) {
-+		if (mtd_has_partitions()) {
-+			if (info->nr_parts) {
-+				del_mtd_partitions(info->mtd);
-+				kfree(info->parts);
-+			} else if (latch_addr_data->nr_parts) {
-+				del_mtd_partitions(info->mtd);
-+			} else {
-+				del_mtd_device(info->mtd);
-+			}
-+		} else {
-+			del_mtd_device(info->mtd);
-+		}
-+		map_destroy(info->mtd);
-+	}
-+
-+	if (info->map.virt != NULL)
-+		iounmap(info->map.virt);
-+
-+	if (info->res != NULL)
-+		release_mem_region(info->res->start, resource_size(info->res));
-+
-+	kfree(info);
-+
-+	if (latch_addr_data->done)
-+		latch_addr_data->done(latch_addr_data->data);
-+
-+	return 0;
-+}
-+
-+static int __devinit latch_addr_flash_probe(struct platform_device *dev)
-+{
-+	struct latch_addr_flash_data *latch_addr_data;
-+	struct latch_addr_flash_info *info;
-+	resource_size_t win_base = dev->resource->start;
-+	resource_size_t win_size = resource_size(dev->resource);
-+	char **probe_type;
-+	int chipsel;
-+	int err;
-+
-+	latch_addr_data = dev->dev.platform_data;
-+	if (latch_addr_data == NULL)
-+		return -ENODEV;
-+
-+	pr_notice("latch-addr platform flash device: %#llx byte "
-+		  "window at %#.8llx\n",
-+		  (unsigned long long)win_size, (unsigned long long)win_base);
-+
-+	chipsel = dev->id;
-+
-+	if (latch_addr_data->init) {
-+		err = latch_addr_data->init(latch_addr_data->data, chipsel);
-+		if (err != 0)
-+			return err;
-+	}
-+
-+	info = kzalloc(sizeof(struct latch_addr_flash_info), GFP_KERNEL);
-+	if (info == NULL) {
-+		err = -ENOMEM;
-+		goto done;
-+	}
-+
-+	platform_set_drvdata(dev, info);
-+
-+	info->res = request_mem_region(win_base, win_size, DRIVER_NAME);
-+	if (info->res == NULL) {
-+		dev_err(&dev->dev, "Could not reserve memory region\n");
-+		err = -EBUSY;
-+		goto free_info;
-+	}
-+
-+	info->map.name		= DRIVER_NAME;
-+	info->map.size		= latch_addr_data->size;
-+	info->map.bankwidth	= latch_addr_data->width;
-+
-+	info->map.phys		= NO_XIP;
-+	info->map.virt		= ioremap(win_base, win_size);
-+	if (!info->map.virt) {
-+		err = -ENOMEM;
-+		goto free_res;
-+	}
-+
-+	info->map.map_priv_1	= (unsigned long)info;
-+
-+	info->map.read		= lf_read;
-+	info->map.copy_from	= lf_copy_from;
-+	info->map.write		= lf_write;
-+	info->set_window	= latch_addr_data->set_window;
-+	info->data		= latch_addr_data->data;
-+	info->win_mask		= win_size - 1;
-+
-+	spin_lock_init(&info->lock);
-+
-+	for (probe_type = rom_probe_types; !info->mtd && *probe_type;
-+		probe_type++)
-+		info->mtd = do_map_probe(*probe_type, &info->map);
-+
-+	if (info->mtd == NULL) {
-+		dev_err(&dev->dev, "map_probe failed\n");
-+		err = -ENODEV;
-+		goto iounmap;
-+	}
-+	info->mtd->owner = THIS_MODULE;
-+
-+	if (mtd_has_partitions()) {
-+
-+		err = parse_mtd_partitions(info->mtd,
-+					   (const char **)part_probe_types,
-+					   &info->parts, 0);
-+		if (err > 0) {
-+			add_mtd_partitions(info->mtd, info->parts, err);
-+			return 0;
-+		}
-+		if (latch_addr_data->nr_parts) {
-+			pr_notice("Using latch-addr-flash partition information\n");
-+			add_mtd_partitions(info->mtd, latch_addr_data->parts,
-+					latch_addr_data->nr_parts);
-+			return 0;
-+		}
-+	}
-+	add_mtd_device(info->mtd);
-+	return 0;
-+
-+iounmap:
-+	iounmap(info->map.virt);
-+free_res:
-+	release_mem_region(info->res->start, resource_size(info->res));
-+free_info:
-+	kfree(info);
-+done:
-+	if (latch_addr_data->done)
-+		latch_addr_data->done(latch_addr_data->data);
-+	return err;
-+}
-+
-+static struct platform_driver latch_addr_flash_driver = {
-+	.probe		= latch_addr_flash_probe,
-+	.remove		= __devexit_p(latch_addr_flash_remove),
-+	.driver		= {
-+		.name	= DRIVER_NAME,
-+	},
-+};
-+
-+static int __init latch_addr_flash_init(void)
-+{
-+	return platform_driver_register(&latch_addr_flash_driver);
-+}
-+module_init(latch_addr_flash_init);
-+
-+static void __exit latch_addr_flash_exit(void)
-+{
-+	platform_driver_unregister(&latch_addr_flash_driver);
-+}
-+module_exit(latch_addr_flash_exit);
-+
-+MODULE_AUTHOR("David Griego <dgriego@mvista.com>");
-+MODULE_DESCRIPTION("MTD map driver for flashes addressed physically with upper "
-+		"address lines being set board specifically");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/mtd/latch-addr-flash.h b/include/linux/mtd/latch-addr-flash.h
-new file mode 100644
-index 0000000..d35d070
---- /dev/null
-+++ b/include/linux/mtd/latch-addr-flash.h
-@@ -0,0 +1,29 @@
++#include <linux/clk.h>
+ 
+ #include <asm/mach-types.h>
+ #include <asm/mach/arch.h>
+@@ -429,6 +431,219 @@ static inline void da830_evm_init_nand(int mux_mode)
+ static inline void da830_evm_init_nand(int mux_mode) { }
+ #endif
+ 
++#ifdef CONFIG_DA830_UI_NOR
 +/*
-+ * Interface for NOR flash driver whose high address lines are latched
-+ *
-+ * Copyright (C) 2008 MontaVista Software, Inc. <source@mvista.com>
-+ *
-+ * This file is licensed under the terms of the GNU General Public License
-+ * version 2. This program is licensed "as is" without any warranty of any
-+ * kind, whether express or implied.
++ * Number of lines going to the NOR flash that are used as
++ * AEMIF address lines B_EMIF_BA0-B_EMIF_A12 on CS2.
 + */
-+#ifndef __LATCH_ADDR_FLASH__
-+#define __LATCH_ADDR_FLASH__
++#define NOR_WINDOW_SIZE_LOG2     15
++#define NOR_WINDOW_SIZE         (1 << NOR_WINDOW_SIZE_LOG2)
 +
-+struct map_info;
-+struct mtd_partition;
++static struct {
++	struct clk *clk;
++	void __iomem *latch_addr;
++	void __iomem *aemif_addr;
++} da830_evm_nor;
 +
-+struct latch_addr_flash_data {
-+	unsigned int		width;
-+	unsigned int		size;
-+
-+	int			(*init)(void *data, int cs);
-+	void			(*done)(void *data);
-+	void			(*set_window)(unsigned long offset, void *data);
-+	void			*data;
-+
-+	unsigned int		nr_parts;
-+	struct mtd_partition	*parts;
++static struct davinci_aemif_timing da830_evm_norflash_timing = {
++	.wsetup		= 0,
++	.wstrobe	= 40,
++	.whold		= 0,
++	.rsetup		= 0,
++	.rstrobe	= 130,
++	.rhold		= 0,
++	.ta		= 20,
 +};
 +
-+#endif
++static void da830_evm_nor_set_window(unsigned long offset, void *data)
++{
++	/*
++	 * CS2 and CS3 lines are used to address NOR flash. Address lines
++	 * A0-A14 from NOR flash are connected to AEMIF address lines
++	 * B_EMIF_BA0-B_EMIF_A12 on CS2. Address lines A15-A23 of the NOR
++	 * flash are latched from AEMIF address lines B_EMIF_A0-B_EMIF_A6
++	 * on CS3. The offset argument received by this function is the offset
++	 * within NOR flash. Upper address is obtained  by shifting the offset
++	 * by the number of CS2 address lines used (13) and masking it with
++	 * complement of 3 (2 address lines used to address banks) and adding
++	 * the resultant offset value to CS3 base address. Writing to this
++	 * address will latch the upper address lines.
++	 */
++	writeb(0x0, da830_evm_nor.latch_addr +
++		(~3UL & (offset >> (NOR_WINDOW_SIZE_LOG2 - 2))));
++}
++
++static void da830_evm_nor_done(void *data)
++{
++	clk_disable(da830_evm_nor.clk);
++	clk_put(da830_evm_nor.clk);
++	iounmap(da830_evm_nor.latch_addr);
++	release_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
++	iounmap(da830_evm_nor.aemif_addr);
++	release_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K);
++}
++
++static int da830_evm_nor_init(void *data, int cs)
++{
++	struct resource *res = NULL;
++
++	/* Turn on AEMIF clocks */
++	da830_evm_nor.clk = clk_get(NULL, "aemif");
++	if (IS_ERR(da830_evm_nor.clk)) {
++		pr_err("%s: could not get AEMIF clock\n", __func__);
++		da830_evm_nor.clk = NULL;
++		return -ENODEV;
++	}
++	clk_enable(da830_evm_nor.clk);
++
++	res = request_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K, "AEMIF control");
++	if (res == NULL) {
++		pr_err("%s: could not request AEMIF control region\n",
++			__func__);
++		goto err_clk;
++	}
++
++	da830_evm_nor.aemif_addr = ioremap_nocache(DA8XX_AEMIF_CTL_BASE,
++						   SZ_32K);
++	if (da830_evm_nor.aemif_addr == NULL) {
++		pr_err("%s: could not remap AEMIF control region\n", __func__);
++		goto err_aemif_region;
++	}
++
++	/* Setup AEMIF -- timings, etc. */
++
++	/* Set maximum wait cycles */
++	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
++						da830_evm_nor.aemif_addr, cs);
++
++	davinci_aemif_setup_timing(&da830_evm_norflash_timing,
++					da830_evm_nor.aemif_addr, cs + 1);
++
++	/* Setup the window to access the latch */
++	res = request_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE,
++				"DA830 UI NOR address latch");
++	if (res == NULL) {
++		pr_err("%s: could not request address latch region\n",
++			__func__);
++		goto err_aemif_ioremap;
++	}
++
++	da830_evm_nor.latch_addr =
++		ioremap_nocache(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
++	if (da830_evm_nor.latch_addr == NULL) {
++		pr_err("%s: could not remap address latch region\n", __func__);
++		goto err_latch_region;
++	}
++	return 0;
++
++err_latch_region:
++	release_mem_region(DA8XX_AEMIF_CS3_BASE, PAGE_SIZE);
++
++err_aemif_ioremap:
++	iounmap(da830_evm_nor.aemif_addr);
++
++err_aemif_region:
++	release_mem_region(DA8XX_AEMIF_CTL_BASE, SZ_32K);
++
++err_clk:
++	clk_disable(da830_evm_nor.clk);
++	clk_put(da830_evm_nor.clk);
++
++	return -ENOMEM;
++}
++
++static struct mtd_partition da830_evm_nor_partitions[] = {
++	/* bootloader (U-Boot, etc) in first 2 sectors */
++	[0] = {
++		.name           = "bootloader",
++		.offset		= 0,
++		.size           = SZ_128K,
++		.mask_flags     = MTD_WRITEABLE, /* force read-only */
++	},
++	/* bootloader parameters in the next 1 sector */
++	[1] = {
++		.name           = "params",
++		.offset         = MTDPART_OFS_APPEND,
++		.size           = SZ_64K,
++	},
++	/* kernel */
++	[2] = {
++		.name           = "kernel",
++		.offset         = MTDPART_OFS_APPEND,
++		.size           = SZ_2M,
++	},
++	/* file system */
++	[3] = {
++		.name           = "filesystem",
++		.offset         = MTDPART_OFS_APPEND,
++		.size           = MTDPART_SIZ_FULL,
++	}
++};
++
++static struct latch_addr_flash_data da830_evm_nor_pdata = {
++	.width          = 1,
++	.size           = SZ_4M,
++	.init           = da830_evm_nor_init,
++	.done           = da830_evm_nor_done,
++	.set_window     = da830_evm_nor_set_window,
++	.nr_parts       = ARRAY_SIZE(da830_evm_nor_partitions),
++	.parts          = da830_evm_nor_partitions,
++};
++
++static struct resource da830_evm_nor_resource[] = {
++	[0] = {
++		.start  = DA8XX_AEMIF_CS2_BASE,
++		.end    = DA8XX_AEMIF_CS2_BASE + NOR_WINDOW_SIZE - 1,
++		.flags  = IORESOURCE_MEM,
++	},
++	[1] = {
++		.start  = DA8XX_AEMIF_CS3_BASE,
++		.end    = DA8XX_AEMIF_CS3_BASE + PAGE_SIZE - 1,
++		.flags  = IORESOURCE_MEM,
++	},
++	[2] = {
++		.start  = DA8XX_AEMIF_CTL_BASE,
++		.end    = DA8XX_AEMIF_CTL_BASE + SZ_32K - 1,
++		.flags  = IORESOURCE_MEM,
++	}
++};
++
++static struct platform_device da830_evm_nor_device = {
++	.name           = "latch-addr-flash",
++	.id             = 0,
++	.dev            = {
++		.platform_data  = &da830_evm_nor_pdata,
++	},
++	.num_resources  = ARRAY_SIZE(da830_evm_nor_resource),
++	.resource       = da830_evm_nor_resource,
++};
++
++static inline void da830_evm_init_nor(int mux_mode)
++{
++	int ret;
++
++	if (HAS_MMC) {
++		pr_warning("WARNING: both MMC/SD and NOR are "
++			   "enabled, but they share AEMIF pins.\n"
++			   "\tDisable MMC/SD for NOR support.\n");
++		return;
++	}
++
++	ret = davinci_cfg_reg_list(da830_evm_emif25_pins);
++	if (ret)
++		pr_warning("da830_evm_init: EMIF 2.5 mux setup failed: %d\n",
++			  ret);
++
++	ret = platform_device_register(&da830_evm_nor_device);
++	if (ret)
++		pr_warning("da830_evm_init: NOR device not registered.\n");
++
++	gpio_direction_output(mux_mode, 1);
++}
++#else
++static inline void da830_evm_init_nor(int mux_mode) { }
++#endif  /* CONFIG_DA830_UI_NOR */
++
+ #ifdef CONFIG_DA830_UI_LCD
+ static inline void da830_evm_init_lcdc(int mux_mode)
+ {
+@@ -469,6 +684,8 @@ static int __init da830_evm_ui_expander_setup(struct i2c_client *client,
+ 
+ 	da830_evm_init_nand(gpio + 6);
+ 
++	da830_evm_init_nor(gpio + 6);
++
+ 	return 0;
+ }
+ 
 -- 
 1.5.6
