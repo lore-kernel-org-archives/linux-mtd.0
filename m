@@ -1,19 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PNj8e-0002gO-Av
-	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 09:38:13 +0000
-Date: Wed, 1 Dec 2010 10:38:07 +0100
-From: Anatolij Gustschin <agust@denx.de>
-To: Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org
+Received: from mika.eatserver.nl ([195.20.9.75])
+	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PNjHI-0007YT-30
+	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 09:47:09 +0000
+Message-ID: <4CF61995.9080609@aimvalley.nl>
+Date: Wed, 01 Dec 2010 10:47:01 +0100
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+MIME-Version: 1.0
+To: boaz ben david <boazbd@gmail.com>
 Subject: Re: UBIFS partition on NOR flash not mountable after power cut test
-Message-ID: <20101201103807.1e432cfb@wker>
-In-Reply-To: <20101130163541.44c48a94@wker>
-References: <20101129195014.19224240@wker> <4CF4D4CA.8040906@aimvalley.nl>
-	<20101130163541.44c48a94@wker>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20101129195014.19224240@wker>	<4CF4D4CA.8040906@aimvalley.nl>	<20101130163541.44c48a94@wker>
+	<AANLkTikEDQyNttTcKgHLwhR53sYSFbtVK-oy2S3END46@mail.gmail.com>
+In-Reply-To: <AANLkTikEDQyNttTcKgHLwhR53sYSFbtVK-oy2S3END46@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Detlev Zundel <dzu@denx.de>, Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Cc: Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org,
+	Detlev Zundel <dzu@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 Nov 2010 16:35:41 +0100
-Anatolij Gustschin <agust@denx.de> wrote:
-...
-> On Tue, 30 Nov 2010 11:41:14 +0100
-> Norbert van Bolhuis <nvbolhuis@aimvalley.nl> wrote:
+boaz ben david wrote:
+> Sorry to bump the thread but I'm having issues which I think are similiar
+> with MLC NAND flash.
+> Will reducing the write buffer help here too?
 > 
-> > Did you read the mail discussions
-> > "UBIFS Corrupt during power failure"
-> > dated april 2009 from Eric Holmberg.
-> > 
-> > He did some great work in making UBIFS on NOR flash
-> > more reliable for power-cuts.
+> Thanks.
 > 
-> I have partially read the thread "UBIFS Corrupt during power 
-> failure", especially the discussion from March, May, June and July
-> 2009 but not the whole discussion from April.
+> Boaz.
 > 
-> > One of the problems was UBI/UBIFS assumes a (CFI) write
-> > buffer size of 8 bytes. Maybe this is still the case.
-> > I think for your NOR flash it is 64 bytes though.
-> 
-> Thanks for the hint!
-> 
-> Yes, I remember Eric saying that he used 8 byte write buffers but
-> still had some failures. Therefore I didn't try to reduce the write
-> buffer size up to now. But these problems seem to be fixed meanwhile.
-> 
-> The write buffer size used in the CFI driver is indeed 64 bytes. Now
-> I'm running the tests with write buffer size reduced to 8 bytes and
-> it looks much better now. After 295 test cycles I haven't seen the
-> issue so far.
 
-Further testing with a CFI 8 byte write buffer shows that there are
-other issues. Now we end up with the corrupted VID header and cannot
-attach the MTD device. I'm going to send the debug log to the list.
 
-Thanks,
-Anatolij
+no.
+The CFI write buffer size is an attribute specific for NOR flash only.
 
---
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+---
+N. van Bolhuis
