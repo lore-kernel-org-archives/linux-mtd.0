@@ -1,14 +1,14 @@
 Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PNg1S-00036f-AS
-	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 06:18:35 +0000
+	id 1PNg2t-0003ef-5l
+	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 06:20:04 +0000
 From: "Brian Norris" <computersforpeace@gmail.com>
 To: "Mike Frysinger" <vapier.adi@gmail.com>
-Subject: [PATCH v2 5/8] nanddump: check for negative inputs
-Date: Tue, 30 Nov 2010 22:18:23 -0800
-Message-ID: <1291184303-4596-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1291017722-23985-5-git-send-email-computersforpeace@gmail.com>
-References: <1291017722-23985-5-git-send-email-computersforpeace@gmail.com>
+Subject: [PATCH v2 7/8] nandwrite: add check for negative blockalign
+Date: Tue, 30 Nov 2010 22:19:44 -0800
+Message-ID: <1291184384-4665-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
+References: <1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -24,31 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Includes error messages for negative device offsets and negative lengths,
-telling the user what the offending option and value were.
+Includes error messages for negative blockalign, telling the user what
+the offending option and value were.
 
 Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- nanddump.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+ nandwrite.c |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/nanddump.c b/nanddump.c
-index b0dd7dc..9f52878 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -173,6 +173,13 @@ static void process_options(int argc, char * const argv[])
- 		}
+diff --git a/nandwrite.c b/nandwrite.c
+index 5373a89..2e45136 100644
+--- a/nandwrite.c
++++ b/nandwrite.c
+@@ -218,6 +218,10 @@ static void process_options(int argc, char * const argv[])
+ 		exit(EXIT_FAILURE);
  	}
  
-+	if (start_addr < 0)
-+		errmsg_die("Can't specify negative offset with option -s: %lld",
-+				start_addr);
++	if (blockalign < 0)
++		errmsg_die("Can't specify negative blockalign with option -b:"
++				" %d", blockalign);
 +
-+	if (length < 0)
-+		errmsg_die("Can't specify length with option -l: %lld", length);
-+
- 	if (quiet && pretty_print) {
- 		fprintf(stderr, "The quiet and pretty print options are mutually-\n"
- 				"exclusive. Choose one or the other.\n");
+ 	argc -= optind;
+ 	argv += optind;
+ 
 -- 
 1.7.0.4
