@@ -1,21 +1,19 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
+Received: from mail-out.m-online.net ([212.18.0.10])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PNgsb-0000iB-9X
-	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 07:13:29 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH v3 5/8] nanddump: check for negative inputs
-Date: Tue, 30 Nov 2010 23:12:30 -0800
-Message-ID: <1291187550-17545-1-git-send-email-computersforpeace@gmail.com>
-References: <1291184303-4596-1-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1291184303-4596-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+	id 1PNj8e-0002gO-Av
+	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 09:38:13 +0000
+Date: Wed, 1 Dec 2010 10:38:07 +0100
+From: Anatolij Gustschin <agust@denx.de>
+To: Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org
+Subject: Re: UBIFS partition on NOR flash not mountable after power cut test
+Message-ID: <20101201103807.1e432cfb@wker>
+In-Reply-To: <20101130163541.44c48a94@wker>
+References: <20101129195014.19224240@wker> <4CF4D4CA.8040906@aimvalley.nl>
+	<20101130163541.44c48a94@wker>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Detlev Zundel <dzu@denx.de>, Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Includes error messages for negative device offsets and negative lengths,
-telling the user what the offending option and value were.
+On Tue, 30 Nov 2010 16:35:41 +0100
+Anatolij Gustschin <agust@denx.de> wrote:
+...
+> On Tue, 30 Nov 2010 11:41:14 +0100
+> Norbert van Bolhuis <nvbolhuis@aimvalley.nl> wrote:
+> 
+> > Did you read the mail discussions
+> > "UBIFS Corrupt during power failure"
+> > dated april 2009 from Eric Holmberg.
+> > 
+> > He did some great work in making UBIFS on NOR flash
+> > more reliable for power-cuts.
+> 
+> I have partially read the thread "UBIFS Corrupt during power 
+> failure", especially the discussion from March, May, June and July
+> 2009 but not the whole discussion from April.
+> 
+> > One of the problems was UBI/UBIFS assumes a (CFI) write
+> > buffer size of 8 bytes. Maybe this is still the case.
+> > I think for your NOR flash it is 64 bytes though.
+> 
+> Thanks for the hint!
+> 
+> Yes, I remember Eric saying that he used 8 byte write buffers but
+> still had some failures. Therefore I didn't try to reduce the write
+> buffer size up to now. But these problems seem to be fixed meanwhile.
+> 
+> The write buffer size used in the CFI driver is indeed 64 bytes. Now
+> I'm running the tests with write buffer size reduced to 8 bytes and
+> it looks much better now. After 295 test cycles I haven't seen the
+> issue so far.
 
-Previous patch left out the "negative" in the error message.
+Further testing with a CFI 8 byte write buffer shows that there are
+other issues. Now we end up with the corrupted VID header and cannot
+attach the MTD device. I'm going to send the debug log to the list.
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- nanddump.c |    7 +++++++
- 1 files changed, 7 insertions(+), 0 deletions(-)
+Thanks,
+Anatolij
 
-diff --git a/nanddump.c b/nanddump.c
-index b0dd7dc..6a6f904 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -173,6 +173,13 @@ static void process_options(int argc, char * const argv[])
- 		}
- 	}
- 
-+	if (start_addr < 0)
-+		errmsg_die("Can't specify negative offset with option -s: %lld",
-+				start_addr);
-+
-+	if (length < 0)
-+		errmsg_die("Can't specify negative length with option -l: %lld", length);
-+
- 	if (quiet && pretty_print) {
- 		fprintf(stderr, "The quiet and pretty print options are mutually-\n"
- 				"exclusive. Choose one or the other.\n");
--- 
-1.7.0.4
+--
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
