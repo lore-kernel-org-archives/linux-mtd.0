@@ -1,21 +1,16 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PNfv4-0002FV-Vp
-	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 06:11:59 +0000
-Received: by pzk30 with SMTP id 30so1238846pzk.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 30 Nov 2010 22:11:56 -0800 (PST)
-Message-ID: <4CF5E726.3010501@gmail.com>
-Date: Tue, 30 Nov 2010 22:11:50 -0800
-From: Brian Norris <computersforpeace@gmail.com>
+	id 1PNg1S-00036f-AS
+	for linux-mtd@lists.infradead.org; Wed, 01 Dec 2010 06:18:35 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: "Mike Frysinger" <vapier.adi@gmail.com>
+Subject: [PATCH v2 5/8] nanddump: check for negative inputs
+Date: Tue, 30 Nov 2010 22:18:23 -0800
+Message-ID: <1291184303-4596-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <1291017722-23985-5-git-send-email-computersforpeace@gmail.com>
+References: <1291017722-23985-5-git-send-email-computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH 7/8] nandwrite: add check for negative blockalign
-References: <1291017722-23985-1-git-send-email-computersforpeace@gmail.com>
-	<1291017722-23985-7-git-send-email-computersforpeace@gmail.com>
-	<AANLkTi==NGjgX38mUKfziKQAknmOJyZmB4Db3WPEh5MJ@mail.gmail.com>
-In-Reply-To: <AANLkTi==NGjgX38mUKfziKQAknmOJyZmB4Db3WPEh5MJ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Cc: David Woodhouse <dwmw2@infradead.org>,
 	Brian Norris <computersforpeace@gmail.com>, linux-mtd@lists.infradead.org,
@@ -29,15 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/29/2010 12:05 AM, Mike Frysinger wrote:
-> On Mon, Nov 29, 2010 at 03:02, Brian Norris wrote:
->> +               errmsg_die("Can't specify a negative blockalign '%d'",
->> +                               blockalign);
-> 
-> personally, i'd avoid quotes on non-string types.  maybe also mention
-> the command line option that is "blockalign" ?
+Includes error messages for negative device offsets and negative lengths,
+telling the user what the offending option and value were.
 
-I'm sending some "v2" patches related to these err messages. I'm not
-sure what the best, descriptive messages are, but I tried.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ nanddump.c |    7 +++++++
+ 1 files changed, 7 insertions(+), 0 deletions(-)
 
-Brian
+diff --git a/nanddump.c b/nanddump.c
+index b0dd7dc..9f52878 100644
+--- a/nanddump.c
++++ b/nanddump.c
+@@ -173,6 +173,13 @@ static void process_options(int argc, char * const argv[])
+ 		}
+ 	}
+ 
++	if (start_addr < 0)
++		errmsg_die("Can't specify negative offset with option -s: %lld",
++				start_addr);
++
++	if (length < 0)
++		errmsg_die("Can't specify length with option -l: %lld", length);
++
+ 	if (quiet && pretty_print) {
+ 		fprintf(stderr, "The quiet and pretty print options are mutually-\n"
+ 				"exclusive. Choose one or the other.\n");
+-- 
+1.7.0.4
