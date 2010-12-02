@@ -1,20 +1,14 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PO98S-00064B-JX
-	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2010 13:23:45 +0000
-Date: Thu, 2 Dec 2010 14:23:51 +0100
-From: Anatolij Gustschin <agust@denx.de>
-To: dedekind1@gmail.com
-Subject: Re: UBIFS partition on NOR flash not mountable after power cut test
-Message-ID: <20101202142351.197abbde@wker>
-In-Reply-To: <1291292325.2526.23.camel@localhost>
-References: <20101129195014.19224240@wker> <20101201130534.5b95ce83@wker>
-	<20101201164447.2215bc58@wker> <1291264926.14534.32.camel@koala>
-	<20101202105729.04c25fc1@wker> <1291292325.2526.23.camel@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Detlev Zundel <dzu@denx.de>
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PO9E5-0006Sa-9i
+	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2010 13:29:34 +0000
+From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: onenand: bugfix for 2x mode bad block handling
+Date: Thu,  2 Dec 2010 15:28:38 +0200
+Message-Id: <1291296518-31566-1-git-send-email-roman.tereshonkov@nokia.com>
+Cc: kyungmin.park@samsung.com, dwmw2@infradead.org,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +18,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 02 Dec 2010 14:18:45 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
+This bug becomes visible in 2x mode when chip->writesize
+is different from mtd->writesize (= 2 * chip->writesize).
+At this case the bad block information is read from
+the first and the third physical pages instead of
+the first and the second as specification states.
 
-> On Thu, 2010-12-02 at 10:57 +0100, Anatolij Gustschin wrote:
-> > UBIFS DBG (pid 1290): no_more_nodes: unexpected bad common header at 37:157472
-> > UBIFS error (pid 1290): ubifs_recover_leb: bad node
-> > UBIFS error (pid 1290): ubifs_scanned_corruption: corruption at LEB 37:157472
-> > UBIFS error (pid 1290): ubifs_scanned_corruption: first 8192 bytes from LEB 37:157472
-> > 00000000: 31181006 270758c8 0c331500 00000000 ffffffff ffffffff ff4fffff f3428020  1...'.X..3...............O...B. 
-> 
-> But this looks exactly like you have 64-bit write-buffer, but UBIFS
-> c->min_io_unit is not 64, but it should be 64. Or you need a NOR hack to
-> force 8-bytes write-buffer.
+Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+---
+ drivers/mtd/onenand/onenand_bbt.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-This looks exactly like I have a 16 byte write buffer. The first
-16 bytes of the common header node have been written correctly but
-the remaining 8 bytes of the common header and then the 8 bytes of
-the data are corrupt.
-> 
-> Are you sure you did not miss your NOR write-buffer hacks?
-
-I'm sure that the kernel running this test uses the modification in
-the CFI code as follows:
-diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
-index e63e674..9eb47b8 100644
---- a/drivers/mtd/chips/cfi_probe.c
-+++ b/drivers/mtd/chips/cfi_probe.c
-@@ -213,6 +213,12 @@ static int __xipram cfi_chip_setup(struct map_info *map,
-        cfi->cfiq->InterfaceDesc = le16_to_cpu(cfi->cfiq->InterfaceDesc);
-        cfi->cfiq->MaxBufWriteSize = le16_to_cpu(cfi->cfiq->MaxBufWriteSize);
+diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onenand_bbt.c
+index 01ab5b3..905209b 100644
+--- a/drivers/mtd/onenand/onenand_bbt.c
++++ b/drivers/mtd/onenand/onenand_bbt.c
+@@ -91,13 +91,15 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_descr
+ 		for (j = 0; j < len; j++) {
+ 			/* No need to read pages fully,
+ 			 * just read required OOB bytes */
+-			ret = onenand_bbt_read_oob(mtd, from + j * mtd->writesize + bd->offs, &ops);
++			ret = onenand_bbt_read_oob(mtd,
++				from + j * this->writesize + bd->offs, &ops);
  
-+       /*printk("NOTE: change CFI MaxBufWriteSize from 2^%d to 2^%d\n",*/
-+       /*cfi->cfiq->MaxBufWriteSize, 3);*/
-+       if (cfi->cfiq->MaxBufWriteSize) {
-+               cfi->cfiq->MaxBufWriteSize = 3;
-+       }
-+
-
-But I'm not sure whether the CFI driver is really using 8 byte
-write buffer since the error pattern indicates the usage of a
-bigger buffer. I'll check the actual size used in the CFI driver
-at runtime.
-
-Thanks,
-Anatolij
+ 			/* If it is a initial bad block, just ignore it */
+ 			if (ret == ONENAND_BBT_READ_FATAL_ERROR)
+ 				return -EIO;
+ 
+-			if (ret || check_short_pattern(&buf[j * scanlen], scanlen, mtd->writesize, bd)) {
++			if (ret || check_short_pattern(&buf[j * scanlen],
++					       scanlen, this->writesize, bd)) {
+ 				bbm->bbt[i >> 3] |= 0x03 << (i & 0x6);
+ 				printk(KERN_WARNING "Bad eraseblock %d at 0x%08x\n",
+ 					i >> 1, (unsigned int) from);
+-- 
+1.7.0.4
