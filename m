@@ -1,22 +1,25 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
-	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PO5JH-0001bT-Dm
-	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2010 09:18:40 +0000
-From: Detlev Zundel <dzu@denx.de>
-To: Mark Mason <mason@postdiluvian.org>
-Subject: Re: UBIFS partition on NOR flash not mountable after power cut test
-References: <20101129195014.19224240@wker>
-	<20101129203306.GA22692@postdiluvian.org>
-	<1291261659.14534.13.camel@koala>
-	<20101202041048.GA5998@postdiluvian.org>
-Date: Thu, 02 Dec 2010 10:17:36 +0100
-In-Reply-To: <20101202041048.GA5998@postdiluvian.org> (Mark Mason's message of
-	"Wed, 1 Dec 2010 23:10:48 -0500")
-Message-ID: <m2hbew355b.fsf@ohwell.denx.de>
+Received: from lilly.ping.de ([83.97.42.2])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PO5OE-00022t-Lf
+	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2010 09:23:47 +0000
+Date: Thu, 2 Dec 2010 10:17:33 +0100
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: UBIFS oops after remount ro
+Message-ID: <20101202091733.GM23237@leila.ping.de>
+References: <20101126135005.GV23237@leila.ping.de>
+	<1290785057.2552.14.camel@localhost>
+	<20101129131807.GB23237@leila.ping.de>
+	<1291040469.2141.10.camel@koala>
+	<20101129151729.GE23237@leila.ping.de>
+	<1291049157.2141.17.camel@koala>
+	<20101129170223.GF23237@leila.ping.de>
+	<1291260934.14534.6.camel@koala>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1291260934.14534.6.camel@koala>
+From: wolfgang@leila.ping.de (Wolfgang Wegner)
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mark,
+Hi Artem,
 
-[...]
+On Thu, Dec 02, 2010 at 05:35:34AM +0200, Artem Bityutskiy wrote:
+> 
+> Mostly vendors change drivers and board files. They usually do not touch
+> core functionality. So you can try to merge 2.6.32
 
->>From the same project, I do have some improvements to the MPC8315 NAND
-> driver that allows higher bus throughput during erase cycles.  There's
-> a chance that this is applicable to other NAND controllers, but my
-> experience is limited.  I'd be more than happy to share my work with
-> someone who has an interest in the 83xx, and I promise that I will do
-> a better job at the details than I did with the CPUs in question.
+there had in fact been some special ARM and/or kirkwood things in this
+2.6.32 release, but meanwhile this is all integrated into mainline, as
+far as I can see.
 
-Please do post your changes to the linuxppc-dev[1] mailing list.  There
-are a lot of people with interst on the 83xx chips there.
+> Probably 2.6.35 would be good.
 
-Thanks!
-  Detlev
+I merged our (very few) local changes into 2.6.36 and am now running
+this.
 
-[1] https://lists.ozlabs.org/listinfo/linuxppc-dev
+> Anyway, the problem is that I do not really have time to drive you
+> through debugging of your issue. I only have time to get "big" results
+> from you and provide some help in form of my opinion :-(
 
---
-DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-40 Fax: (+49)-8142-66989-80 Email: dzu@denx.de
+Thank you very much for your hints and help so far!
+
+The big result I can give is that I already got this oops once with
+2.6.36, too - but could not reproduce it. I also have some other thing
+to fix right now, but in case I get back to the problem, I will of
+course post results (if any) - thanks to you I now got some pointers
+where I can start debugging, this is already great and valuable help.
+
+Regards,
+Wolfgang
