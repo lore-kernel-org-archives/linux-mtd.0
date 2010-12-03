@@ -1,22 +1,22 @@
 Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1POYHq-0005t4-Rg
-	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2010 16:15:07 +0000
-Received: by bwz5 with SMTP id 5so8811707bwz.36
+	id 1POYI3-0005t4-JV
+	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2010 16:15:20 +0000
+Received: by mail-bw0-f49.google.com with SMTP id 5so8811707bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Dec 2010 08:15:05 -0800 (PST)
-Subject: Re: bud_replay size question
+	Fri, 03 Dec 2010 08:15:19 -0800 (PST)
+Subject: Re: [PATCH] mtd: onenand: bugfix for 2x mode bad block handling
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Steve Iribarne <siribarne@grid-net.com>
-In-Reply-To: <1291392477.2365.64.camel@localhost>
-References: <4CF691F0.9010607@grid-net.com>
-	<1291392477.2365.64.camel@localhost>
+To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+In-Reply-To: <1291296518-31566-1-git-send-email-roman.tereshonkov@nokia.com>
+References: <1291296518-31566-1-git-send-email-roman.tereshonkov@nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 03 Dec 2010 18:14:34 +0200
-Message-ID: <1291392874.2365.67.camel@localhost>
+Date: Fri, 03 Dec 2010 18:14:36 +0200
+Message-ID: <1291392876.2365.68.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,16 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-12-03 at 18:07 +0200, Artem Bityutskiy wrote:
-> Alternatively, you can try to look at all UBIFS allocations. I will not
-> be surprized if it allocates some buffers which are not really neaded in
-> R/O mode, although we did do some work to allocate less resources when
-> we are in R/O mode. You can experiment in Linux, because it is easier,
-> and if you find unneeded buffers, fix this, and then port your changes
-> to u-boot.
+On Thu, 2010-12-02 at 15:28 +0200, Roman Tereshonkov wrote:
+> This bug becomes visible in 2x mode when chip->writesize
+> is different from mtd->writesize (= 2 * chip->writesize).
+> At this case the bad block information is read from
+> the first and the third physical pages instead of
+> the first and the second as specification states.
+> 
+> Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
 
-And you can try to look at UBI - in R/O mode we probably need less than
-we allocate, but again dunno for sure, should be checke.
+Pushed to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
