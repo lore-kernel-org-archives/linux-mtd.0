@@ -1,22 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1POIVY-0001gW-W0
-	for linux-mtd@lists.infradead.org; Thu, 02 Dec 2010 23:24:15 +0000
-Received: by wwb17 with SMTP id 17so677076wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 02 Dec 2010 15:24:09 -0800 (PST)
-MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <1291296518-31566-1-git-send-email-roman.tereshonkov@nokia.com>
-References: <1291296518-31566-1-git-send-email-roman.tereshonkov@nokia.com>
-Date: Fri, 3 Dec 2010 08:24:09 +0900
-Message-ID: <AANLkTinu52rJ_JMhibaxgtqOy=7cg2tVGGKVeZ7imGhO@mail.gmail.com>
-Subject: Re: [PATCH] mtd: onenand: bugfix for 2x mode bad block handling
-From: Kyungmin Park <kmpark@infradead.org>
-To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+	id 1POSXp-0007Gz-NM
+	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2010 10:07:14 +0000
+Date: Fri, 3 Dec 2010 11:07:19 +0100
+From: Anatolij Gustschin <agust@denx.de>
+To: dedekind1@gmail.com
+Subject: Re: UBIFS partition on NOR flash not mountable after power cut test
+Message-ID: <20101203110719.3a9d14f2@wker>
+In-Reply-To: <1291264926.14534.32.camel@koala>
+References: <20101129195014.19224240@wker> <20101201130534.5b95ce83@wker>
+	<20101201164447.2215bc58@wker> <1291264926.14534.32.camel@koala>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Detlev Zundel <dzu@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,64 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+Hi Artem,
 
-On Thu, Dec 2, 2010 at 10:28 PM, Roman Tereshonkov
-<roman.tereshonkov@nokia.com> wrote:
-> This bug becomes visible in 2x mode when chip->writesize
-> is different from mtd->writesize (=3D 2 * chip->writesize).
-> At this case the bad block information is read from
-> the first and the third physical pages instead of
-> the first and the second as specification states.
->
-> Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-> ---
-> =A0drivers/mtd/onenand/onenand_bbt.c | =A0 =A06 ++++--
-> =A01 files changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onen=
-and_bbt.c
-> index 01ab5b3..905209b 100644
-> --- a/drivers/mtd/onenand/onenand_bbt.c
-> +++ b/drivers/mtd/onenand/onenand_bbt.c
-> @@ -91,13 +91,15 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *=
-buf, struct nand_bbt_descr
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0for (j =3D 0; j < len; j++) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* No need to read pages f=
-ully,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 * just read required OOB =
-bytes */
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D onenand_bbt_read_oo=
-b(mtd, from + j * mtd->writesize + bd->offs, &ops);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ret =3D onenand_bbt_read_oo=
-b(mtd,
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 from + j * =
-this->writesize + bd->offs, &ops);
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* If it is a initial bad =
-block, just ignore it */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ret =3D=3D ONENAND_BBT=
-_READ_FATAL_ERROR)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return -EI=
-O;
->
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret || check_short_patt=
-ern(&buf[j * scanlen], scanlen, mtd->writesize, bd)) {
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (ret || check_short_patt=
-ern(&buf[j * scanlen],
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0scanlen, this->writesize, bd)) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0bbm->bbt[i=
- >> 3] |=3D 0x03 << (i & 0x6);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0printk(KER=
-N_WARNING "Bad eraseblock %d at 0x%08x\n",
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0i >> 1, (unsigned int) from);
-> --
-> 1.7.0.4
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+On Thu, 02 Dec 2010 06:42:06 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
+...
+> Looking closer to my own code, I see that I treat PEB as
+> "corrupted and should be preserved" if:
+> 
+> 1. EC header is OK.
+> 2. VID header is corrupted.
+> 3. data area is not "all 0xFFs".
+> 
+> And in 'nor_erase_prepare()' we first invalidate the VID header, and
+> then invalidate the EC header. So there is a small window where you can
+> end up with all 3 conditions to be true.
+> 
+> The solution is to first invalidate the EC header, and only then the VID
+> header. Then in case of the race, we just lose the EC header, but VID
+> header will be all-right, and UBI will handle this - it'll move the data
+> from this PEB to another one, re-create EC header and use average EC
+> count. But if you test this scenario, it will be great!!
+> 
+> This patch should help (compile-tested only).
+
+This reset after clearing EC header and before clearing the VID
+seems to be quite rare event. I tested with your patch and with
+the mtd->writebuffer set to 64. Since no issues appeared while running
+a nightly test (1662 test cycles succeeded), I interrupted the test
+and simulated the reset in nor_erase_prepare() by adding a call of the
+machine restart callback before clearing the VID header's magic:
+
+nor_erase_prepare: ### RESET while clearing VID magic in peb # 149, off: 0xf6080000
+
+After subsequent booting (reset simulation in nor_erase_prepare() has
+been removed again) and mounting the partition I see following
+message from wear_leveling_worker():
+
+UBI: scrubbed PEB 149 (LEB 0:19), data moved to PEB 40
+
+My question is: should this PEB really be preserved? I think, no.
+It was prepared for erasure and would be entirely erased if no
+interruption would occur.
+
+Thanks,
+Anatolij
