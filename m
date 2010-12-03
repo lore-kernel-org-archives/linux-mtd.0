@@ -1,20 +1,24 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
-	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1POT6T-0000Dc-EL
-	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2010 10:43:03 +0000
-Date: Fri, 3 Dec 2010 11:41:57 +0100
-From: Anatolij Gustschin <agust@denx.de>
-To: dedekind1@gmail.com
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1POTDA-0005zL-7R
+	for linux-mtd@lists.infradead.org; Fri, 03 Dec 2010 10:49:56 +0000
+Received: by bwz5 with SMTP id 5so8509440bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 03 Dec 2010 02:49:54 -0800 (PST)
 Subject: Re: UBIFS partition on NOR flash not mountable after power cut test
-Message-ID: <20101203114157.5edaf24c@mw.dip.t-dialin.net>
-In-Reply-To: <1291372085.2365.49.camel@localhost>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Anatolij Gustschin <agust@denx.de>
+In-Reply-To: <20101203110719.3a9d14f2@wker>
 References: <20101129195014.19224240@wker> <20101201130534.5b95ce83@wker>
 	<20101201164447.2215bc58@wker> <1291264926.14534.32.camel@koala>
-	<20101203110719.3a9d14f2@wker> <1291372085.2365.49.camel@localhost>
+	<20101203110719.3a9d14f2@wker>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 03 Dec 2010 12:49:21 +0200
+Message-ID: <1291373361.2365.52.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, Detlev Zundel <dzu@denx.de>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 03 Dec 2010 12:28:05 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Fri, 2010-12-03 at 11:07 +0100, Anatolij Gustschin wrote:
+> This reset after clearing EC header and before clearing the VID
+> seems to be quite rare event. I tested with your patch and with
+> the mtd->writebuffer set to 64. Since no issues appeared while running
+> a nightly test (1662 test cycles succeeded), I interrupted the test
+> and simulated the reset in nor_erase_prepare() by adding a call of the
+> machine restart callback before clearing the VID header's magic:
 
-> On Fri, 2010-12-03 at 11:07 +0100, Anatolij Gustschin wrote:
-> > UBI: scrubbed PEB 149 (LEB 0:19), data moved to PEB 40
-> > 
-> > My question is: should this PEB really be preserved? I think, no.
-> > It was prepared for erasure and would be entirely erased if no
-> > interruption would occur.
-> 
-> Well, in general, my thinking is, if only the EC header is corrupted, we
-> do not know why - may be this was just because of some bit-flips or
-> radiation, and UBI better preserves it, just in case. I mean, there is a
-> risk to destroy useful data otherwise.
-> 
-> Then the upper layer SW like UBIFS should know what it was erasing, and
-> should re-issue the erasure. This is also a requirement made by the
-> "unstable bits" problem Matthiew found on NAND, and challenged me with.
-> 
-> To put is simple: I think it is saver for UBI to preserve it. Upper
-> layers will erase it again if it is not needed.
+Let's merge it upstream as a bugfix then? Can I have your Tested-by:
+Anatolij Gustschin <agust@denx.de> ? Or you want to do more testing for
+it?
 
-OK, thanks for the clarification!
-
-Anatolij
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
