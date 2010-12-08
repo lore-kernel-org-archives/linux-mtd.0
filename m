@@ -1,13 +1,13 @@
 Received: from smtp1-g21.free.fr ([212.27.42.1])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PQLiQ-0000yv-8X
-	for linux-mtd@lists.infradead.org; Wed, 08 Dec 2010 15:13:59 +0000
-Subject: [PATCH 1/2] mtd: cfi_cmdset_0002: add support for Samsung K8D6x16UxM
-	NOR chips
+	id 1PQLto-0002Jg-O3
+	for linux-mtd@lists.infradead.org; Wed, 08 Dec 2010 15:25:46 +0000
+Subject: [PATCH v2 1/2] mtd: cfi_cmdset_0002: add support for Samsung
+	K8D6x16UxM NOR chips
 To: linux-mtd@lists.infradead.org
 From: Guillaume LECERF <glecerf@gmail.com>
-Date: Wed, 08 Dec 2010 16:07:10 +0100
-Message-ID: <20101208150710.19706.92098.stgit@dev.siriade.com>
+Date: Wed, 08 Dec 2010 16:19:01 +0100
+Message-ID: <20101208151901.20317.30721.stgit@dev.siriade.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -35,7 +35,7 @@ Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
  1 files changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 9d68ab9..28e05ad 100644
+index 9d68ab9..bca69d4 100644
 --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
 @@ -392,9 +392,19 @@ static struct cfi_fixup fixup_table[] = {
@@ -48,7 +48,7 @@ index 9d68ab9..28e05ad 100644
 +	if (cfi->mfr == CFI_MFR_SAMSUNG) {
 +		if (extp->MajorVersion == '0') {
 +			/*
-+			 * Samsung K8P2815UQB and K8D6x16UxM report major=0 / minor=0
++			 * Samsung K8P2815UQB and K8D6x16UxM chips report major=0 / minor=0
 +			 */
 +			printk("  Fixed Samsung's Amd/Fujitsu Extended Query version from %c.%c to 1.0",
 +			       extp->MajorVersion, extp->MinorVersion);
