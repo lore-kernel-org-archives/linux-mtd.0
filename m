@@ -1,21 +1,20 @@
-Received: from zixvpm.uphs.upenn.edu ([165.123.243.181])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PQAA2-0005Ns-Pu
-	for linux-mtd@lists.infradead.org; Wed, 08 Dec 2010 02:53:45 +0000
-Received: from zixvpm03.uphs.upenn.edu (ZixVPM [127.0.0.1])
-	by Outbound.uphs.upenn.edu (Proprietary) with ESMTP id 4161D4C204
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  7 Dec 2010 21:53:38 -0500 (EST)
-Content-class: urn:content-classes:message
+Received: from smtp1-g21.free.fr ([212.27.42.1])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PQLiQ-0000zV-BV
+	for linux-mtd@lists.infradead.org; Wed, 08 Dec 2010 15:13:59 +0000
+Subject: [PATCH 2/2] mtd: cfi_cmdset_0002: add support for Samsung K8D3x16UxC
+	NOR chips
+To: linux-mtd@lists.infradead.org
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Wed, 08 Dec 2010 16:07:15 +0100
+Message-ID: <20101208150715.19706.65528.stgit@dev.siriade.com>
+In-Reply-To: <20101208150710.19706.92098.stgit@dev.siriade.com>
+References: <20101208150710.19706.92098.stgit@dev.siriade.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Contact me on chris-rodehaver406 @hotmail.com
-Date: Tue, 7 Dec 2010 21:53:04 -0500
-Message-ID: <8F7E819DAB630B42876CB27A0EF223503DB63C@uphsmbx2.UPHS.PENNHEALTH.PRV>
-From: "Reed, Ritajean" <Ritajean.Reed@uphs.upenn.edu>
-To: undisclosed-recipients:;
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: Matthias Buecher / Germany <mail@maddes.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +24,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+These chips report CFI v3.3 [1], so patch them on the fly to the more
+correct v1.3.
+Discussed and tested by the OpenWRT people [2].
 
+[1] http://www.samsung.com/global/system/business/semiconductor/product/2007/6/11/NORFlash/32Mbit/K8D3216UBC/ds_K8D3x16UxC_rev17.pdf
+[2] https://dev.openwrt.org/ticket/866
 
+Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |   15 ++++++++++++++-
+ 1 files changed, 14 insertions(+), 1 deletions(-)
 
-Hello,
-I am Chris Rodehaver, an American diplomat Special Representative and hea=
-d of the UN mission working under the United nations. I am presently at B=
-ishop International Airport with your consignments trunk boxes which had =
-been cleared from Customs. You are hereby advice to re-confirm your addre=
-ss and telephone number for delivery of your consignments funds and for f=
-urther details do contact me on my private email ( chris-rodehaver406@hot=
-mail.com ) and can be reach at (517) 610-7900.
-
-Best Regards,
-Chris Rodehaver.
-chris-rodehaver406@hotmail.com
-Sent via BlackBerry from T-Mobile
-
-
-The information contained in this e-mail message is intended only for the=
- personal and confidential use of the recipient(s) named above. If the re=
-ader of this message is not the intended recipient or an agent responsibl=
-e for delivering it to the intended recipient, you are hereby notified th=
-at you have received this document in error and that any review, dissemin=
-ation, distribution, or copying of this message is strictly prohibited. I=
-f you have received this communication in error, please notify us immedia=
-tely by e-mail, and delete the original message.
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 28e05ad..bf015e7 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -395,7 +395,7 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
+ 	if (cfi->mfr == CFI_MFR_SAMSUNG) {
+ 		if (extp->MajorVersion == '0') {
+ 			/*
+-			 * Samsung K8P2815UQB and K8D6x16UxM report major=0 / minor=0
++			 * Samsung K8P2815UQB and K8D6x16UxM chips report major=0 / minor=0
+ 			 */
+ 			printk("  Fixed Samsung's Amd/Fujitsu Extended Query version from %c.%c to 1.0",
+ 			       extp->MajorVersion, extp->MinorVersion);
+@@ -403,6 +403,19 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
+ 			extp->MajorVersion = '1';
+ 			extp->MinorVersion = '0';
+ 		}
++		if (extp->MajorVersion == '3' && extp->MinorVersion == '3') {
++			/*
++			 * Samsung K8D3x16UxC chips report major=3 / minor=3
++			 */
++			printk(KERN_NOTICE "  Newer Samsung flash detected, "
++			                   "should be compatibile with Amd/Fujitsu.\n");
++
++			printk("  Fixed Samsung's Amd/Fujitsu Extended Query version from %c.%c to 1.3",
++			       extp->MajorVersion, extp->MinorVersion);
++
++			extp->MajorVersion = '1'; // set to 1.3
++			extp->MinorVersion = '3';
++		}
+ 	}
+ 
+ 	/*
