@@ -1,97 +1,51 @@
 From: adrian.hunter@nokia.com (Adrian Hunter)
-Date: Thu, 9 Dec 2010 12:56:24 +0200
-Subject: [PATCH 6/7] OMAP2/3: OneNAND: add platform data callback for PM constraints
-Message-ID: <mailman.46.1292242375.1530.linux-mtd@lists.infradead.org>
+Date: Thu, 9 Dec 2010 11:22:50 +0200
+Subject: [PATCH 5/7] OMAP2/3: OneNAND: add 104MHz support
+Message-ID: <mailman.48.1292242380.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Make it possible for boards to set PM constraints such as maximum wakeup
-latency.
+Add GPMC timings for 104MHz OneNAND.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 ---
- arch/arm/plat-omap/include/plat/onenand.h |    8 ++++++++
- drivers/mtd/onenand/omap2.c               |   16 +++++++++++++++-
- 2 files changed, 23 insertions(+), 1 deletions(-)
+ arch/arm/mach-omap2/gpmc-onenand.c |    9 +++++++++
+ drivers/mtd/onenand/omap2.c        |    3 +++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/plat-omap/include/plat/onenand.h b/arch/arm/plat-omap/include/plat/onenand.h
-index affe87e..1d07119 100644
---- a/arch/arm/plat-omap/include/plat/onenand.h
-+++ b/arch/arm/plat-omap/include/plat/onenand.h
-@@ -15,12 +15,20 @@
- #define ONENAND_SYNC_READ	(1 << 0)
- #define ONENAND_SYNC_READWRITE	(1 << 1)
- 
-+enum {
-+	ONENAND_PM_CONSTRAINT_OFF,
-+	ONENAND_PM_CONSTRAINT_ERASING,
-+	ONENAND_PM_CONSTRAINT_OTHER,
-+};
-+
- struct omap_onenand_platform_data {
- 	int			cs;
- 	int			gpio_irq;
- 	struct mtd_partition	*parts;
- 	int			nr_parts;
- 	int                     (*onenand_setup)(void __iomem *, int freq);
-+	void			(*set_pm_constraints)(struct device *dev,
-+						      int on);
- 	int			dma_channel;
- 	u8			flags;
- 	u8			regulator_can_sleep;
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index ac31f46..866b9f9 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -64,6 +64,7 @@ struct omap2_onenand {
- 	int dma_channel;
- 	int freq;
- 	int (*setup)(void __iomem *base, int freq);
-+	void (*set_pm_constraints)(struct device *dev, int on);
- 	struct regulator *regulator;
- };
- 
-@@ -605,13 +606,21 @@ static void omap2_onenand_shutdown(struct platform_device *pdev)
- 
- static int omap2_onenand_enable(struct mtd_info *mtd)
- {
--	int ret;
-+	int ret, on;
- 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
- 
- 	ret = regulator_enable(c->regulator);
- 	if (ret != 0)
- 		dev_err(&c->pdev->dev, "cant enable regulator\n");
- 
-+	if (c->set_pm_constraints) {
-+		if (c->onenand.state == FL_ERASING)
-+			on = ONENAND_PM_CONSTRAINT_ERASING;
-+		else
-+			on = ONENAND_PM_CONSTRAINT_OTHER;
-+		c->set_pm_constraints(&c->pdev->dev, on);
-+	}
-+
- 	return ret;
- }
- 
-@@ -620,6 +629,9 @@ static int omap2_onenand_disable(struct mtd_info *mtd)
- 	int ret;
- 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
- 
-+	if (c->set_pm_constraints)
-+		c->set_pm_constraints(&c->pdev->dev, ONENAND_PM_CONSTRAINT_OFF);
-+
- 	ret = regulator_disable(c->regulator);
- 	if (ret != 0)
- 		dev_err(&c->pdev->dev, "cant disable regulator\n");
-@@ -682,6 +694,8 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 		c->setup = pdata->onenand_setup;
+diff --git a/arch/arm/mach-omap2/gpmc-onenand.c b/arch/arm/mach-omap2/gpmc-onenand.c
+index 1db606c..3a7d25f 100644
+--- a/arch/arm/mach-omap2/gpmc-onenand.c
++++ b/arch/arm/mach-omap2/gpmc-onenand.c
+@@ -173,6 +173,15 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
  	}
  
-+	c->set_pm_constraints = pdata->set_pm_constraints;
-+
- 	if (c->gpio_irq) {
- 		if ((r = gpio_request(c->gpio_irq, "OneNAND irq")) < 0) {
- 			dev_err(&pdev->dev,  "Failed to request GPIO%d for "
+ 	switch (freq) {
++	case 104:
++		min_gpmc_clk_period = 9600; /* 104 MHz */
++		t_ces   = 3;
++		t_avds  = 4;
++		t_avdh  = 2;
++		t_ach   = 3;
++		t_aavdh = 6;
++		t_rdyo  = 9;
++		break;
+ 	case 83:
+ 		min_gpmc_clk_period = 12000; /* 83 MHz */
+ 		t_ces   = 5;
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 1a07bfc..ac31f46 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -767,6 +767,9 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 	case 3:
+ 		c->freq = 83;
+ 		break;
++	case 4:
++		c->freq = 104;
++		break;
+ 	}
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
 -- 
 1.7.0.4
