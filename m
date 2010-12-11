@@ -1,17 +1,16 @@
-Received: from mail-iw0-f172.google.com ([209.85.214.172])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PRPPY-0004k7-55
-	for linux-mtd@lists.infradead.org; Sat, 11 Dec 2010 13:22:52 +0000
-Received: by iwn40 with SMTP id 40so7494668iwn.31
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 11 Dec 2010 05:22:50 -0800 (PST)
-MIME-Version: 1.0
-Date: Sat, 11 Dec 2010 21:22:50 +0800
-Message-ID: <AANLkTi=-L0DuQziSkzzock8LOJEDY2z37t2bLWQQ_YXG@mail.gmail.com>
-Subject: About MTD Testing suite included in the Linux kernel.
-From: os user <gnusercn@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
+Received: from hera.kernel.org ([140.211.167.34])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PRSfz-0005si-Su
+	for linux-mtd@lists.infradead.org; Sat, 11 Dec 2010 16:52:04 +0000
+From: Tejun Heo <tj@kernel.org>
+To: linux-kernel@vger.kernel.org
+Subject: [PATCH 27/30] mtd: don't use flush_scheduled_work()
+Date: Sat, 11 Dec 2010 17:51:44 +0100
+Message-Id: <1292086307-19211-28-git-send-email-tj@kernel.org>
+In-Reply-To: <1292086307-19211-1-git-send-email-tj@kernel.org>
+References: <1292086307-19211-1-git-send-email-tj@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+flush_scheduled_work() is deprecated and scheduled to be removed.
+Directly flush cxt->work_{erase|write} on removal instead.
 
-When I work on MTD testing tool (drivers/mtd/tests) included in the
-Linux kernel, I found a problem.
-For mtd_oobtest, I failed at the testing '4 of 5'. This testing case
-will test 'reading past the device'.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+---
+This is part of a series to remove flush_scheduled_work() usage to
+prepare for deprecation of flush_scheduled_work().  Patches in this
+series are self contained and mostly straight-forward.
 
-Since for my Nandflash controller, no special function is provided for
-reading OOB, I looked into the standard implementation 'nand_do_read_oob'.
-The logic below seems a little bit confusing for me,
+Please feel free to take it into the appropriate tree, or just ack it.
+In the latter case, I'll merge the patch through the workqueue tree
+during the next merge window.
 
-/* Do not allow reads past end of device */
-       if (unlikely(from >= mtd->size ||
-                    ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
-                                       (from >> chip->page_shift)) * len)) {
-               DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read beyond end "
-                                       "of device\n", __func__);
-               return -EINVAL;
-       }
+If you're seeing this patch for the second time, it's because the
+commit hasn't showed up in mainline yet.  Please let me know what
+should be done.
 
+Thank you.
 
-In mtd_oobtest program, the testing code looks like,
+ drivers/mtd/mtdoops.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
-/* Attempt to read off end of device */
-               ops.mode      = MTD_OOB_AUTO;
-               ops.len       = 0;
-               ops.retlen    = 0;
-               ops.ooblen    = mtd->ecclayout->oobavail + 1;
-               ops.oobretlen = 0;
-               ops.ooboffs   = 0;
-               ops.datbuf    = NULL;
-               ops.oobbuf    = readbuf;
-               printk(PRINT_PREF "attempting to read past end of device\n");
-               printk(PRINT_PREF "an error is expected...\n");
-               err = mtd->read_oob(mtd, mtd->size - mtd->writesize, &ops);
-               if (err) {
-                       printk(PRINT_PREF "error occurred as expected\n");
-                       err = 0;
-               } else {
-                       printk(PRINT_PREF "error: read past end of device\n");
-                       errcnt += 1;
-               }
-
-It seems, according to the logic in MTD testing suite, MTD should
-return an error. But I do not observed any error reported.
-
-Could anyone please have a look at the two code pieces and tell me which
-side needs a modification?
-
-Thanks.
-
-BR
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 1ee72f3..8b10273 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -396,7 +396,8 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
+ 		printk(KERN_WARNING "mtdoops: could not unregister kmsg_dumper\n");
+ 
+ 	cxt->mtd = NULL;
+-	flush_scheduled_work();
++	flush_work_sync(&cxt->work_erase);
++	flush_work_sync(&cxt->work_write);
+ }
+ 
+ 
+-- 
+1.7.1
