@@ -1,15 +1,14 @@
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PS7Gs-0001Gh-T2
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:12:52 +0000
+	id 1PS7Gs-0001Ge-P0
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:12:53 +0000
 From: Adrian Hunter <adrian.hunter@nokia.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 13 Dec 2010 14:12:17 +0200
-Message-Id: <20101213121217.20650.88237.sendpatchset@ahunter-work.research.nokia.com>
+Date: Mon, 13 Dec 2010 14:12:30 +0200
+Message-Id: <20101213121230.20650.33730.sendpatchset@ahunter-work.research.nokia.com>
 In-Reply-To: <20101213121144.20650.27903.sendpatchset@ahunter-work.research.nokia.com>
 References: <20101213121144.20650.27903.sendpatchset@ahunter-work.research.nokia.com>
-Subject: [PATCH 3/7] mtd: OneNAND: OMAP2/3: prevent regulator sleeping while
-	OneNAND is in use
+Subject: [PATCH 5/7] OMAP2/3: OneNAND: add 104MHz support
 Cc: Tony Lindgren <tony@atomide.com>, Kyungmin Park <kyungmin.park@samsung.com>,
 	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
 	Artem.Bityutskiy.dedekind1@gmail.com,
@@ -23,120 +22,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 0781d7d541e0c93e2ef60fbe0a21f08f6228e68a Mon Sep 17 00:00:00 2001
+>From ab0260a2cc3b17b98fa918dee34e129c3ff2b9b6 Mon Sep 17 00:00:00 2001
 From: Adrian Hunter <adrian.hunter@nokia.com>
-Date: Fri, 19 Feb 2010 15:39:53 +0100
-Subject: [PATCH 3/7] mtd: OneNAND: OMAP2/3: prevent regulator sleeping while OneNAND is in use
+Date: Thu, 9 Dec 2010 11:22:50 +0200
+Subject: [PATCH 5/7] OMAP2/3: OneNAND: add 104MHz support
 
-Prevent OneNAND's voltage regulator from going to sleep while
-OneNAND is in use, by explicitly enabling and disabling the
-regulator as appropriate.
+Add GPMC timings for 104MHz OneNAND.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 ---
- arch/arm/plat-omap/include/plat/onenand.h |    1 +
- drivers/mtd/onenand/omap2.c               |   41 ++++++++++++++++++++++++++++-
- 2 files changed, 41 insertions(+), 1 deletions(-)
+ arch/arm/mach-omap2/gpmc-onenand.c |    9 +++++++++
+ drivers/mtd/onenand/omap2.c        |    3 +++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
 
-diff --git a/arch/arm/plat-omap/include/plat/onenand.h b/arch/arm/plat-omap/include/plat/onenand.h
-index 72f433d..affe87e 100644
---- a/arch/arm/plat-omap/include/plat/onenand.h
-+++ b/arch/arm/plat-omap/include/plat/onenand.h
-@@ -23,6 +23,7 @@ struct omap_onenand_platform_data {
- 	int                     (*onenand_setup)(void __iomem *, int freq);
- 	int			dma_channel;
- 	u8			flags;
-+	u8			regulator_can_sleep;
- };
- 
- #define ONENAND_MAX_PARTITIONS 8
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 324402f..1a07bfc 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -35,6 +35,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/io.h>
- #include <linux/slab.h>
-+#include <linux/regulator/consumer.h>
- 
- #include <asm/mach/flash.h>
- #include <plat/gpmc.h>
-@@ -63,6 +64,7 @@ struct omap2_onenand {
- 	int dma_channel;
- 	int freq;
- 	int (*setup)(void __iomem *base, int freq);
-+	struct regulator *regulator;
- };
- 
- #ifdef CONFIG_MTD_PARTITIONS
-@@ -601,6 +603,30 @@ static void omap2_onenand_shutdown(struct platform_device *pdev)
- 	memset((__force void *)c->onenand.base, 0, ONENAND_BUFRAM_SIZE);
- }
- 
-+static int omap2_onenand_enable(struct mtd_info *mtd)
-+{
-+	int ret;
-+	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
-+
-+	ret = regulator_enable(c->regulator);
-+	if (ret != 0)
-+		dev_err(&c->pdev->dev, "cant enable regulator\n");
-+
-+	return ret;
-+}
-+
-+static int omap2_onenand_disable(struct mtd_info *mtd)
-+{
-+	int ret;
-+	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
-+
-+	ret = regulator_disable(c->regulator);
-+	if (ret != 0)
-+		dev_err(&c->pdev->dev, "cant disable regulator\n");
-+
-+	return ret;
-+}
-+
- static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- {
- 	struct omap_onenand_platform_data *pdata;
-@@ -715,8 +741,18 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 		}
+diff --git a/arch/arm/mach-omap2/gpmc-onenand.c b/arch/arm/mach-omap2/gpmc-onenand.c
+index 1db606c..3a7d25f 100644
+--- a/arch/arm/mach-omap2/gpmc-onenand.c
++++ b/arch/arm/mach-omap2/gpmc-onenand.c
+@@ -173,6 +173,15 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
  	}
  
-+	if (pdata->regulator_can_sleep) {
-+		c->regulator = regulator_get(&pdev->dev, "vonenand");
-+		if (IS_ERR(c->regulator)) {
-+			dev_err(&pdev->dev,  "Failed to get regulator\n");
-+			goto err_release_dma;
-+		}
-+		c->onenand.enable = omap2_onenand_enable;
-+		c->onenand.disable = omap2_onenand_disable;
-+	}
-+
- 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
--		goto err_release_dma;
-+		goto err_release_regulator;
+ 	switch (freq) {
++	case 104:
++		min_gpmc_clk_period = 9600; /* 104 MHz */
++		t_ces   = 3;
++		t_avds  = 4;
++		t_avdh  = 2;
++		t_ach   = 3;
++		t_aavdh = 6;
++		t_rdyo  = 9;
++		break;
+ 	case 83:
+ 		min_gpmc_clk_period = 12000; /* 83 MHz */
+ 		t_ces   = 5;
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 1a07bfc..ac31f46 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -767,6 +767,9 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 	case 3:
+ 		c->freq = 83;
+ 		break;
++	case 4:
++		c->freq = 104;
++		break;
+ 	}
  
- 	switch ((c->onenand.version_id >> 4) & 0xf) {
- 	case 0:
-@@ -751,6 +787,8 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 
- err_release_onenand:
- 	onenand_release(&c->mtd);
-+err_release_regulator:
-+	regulator_put(c->regulator);
- err_release_dma:
- 	if (c->dma_channel != -1)
- 		omap_free_dma(c->dma_channel);
-@@ -777,6 +815,7 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
- 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
- 
- 	onenand_release(&c->mtd);
-+	regulator_put(c->regulator);
- 	if (c->dma_channel != -1)
- 		omap_free_dma(c->dma_channel);
- 	omap2_onenand_shutdown(pdev);
+ #ifdef CONFIG_MTD_PARTITIONS
 -- 
 1.7.0.4
