@@ -1,15 +1,15 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PS7P6-00033w-4f
+	id 1PS7P5-00033l-Pk
 	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:21:22 +0000
 From: Adrian Hunter <adrian.hunter@nokia.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 13 Dec 2010 14:21:08 +0200
-Message-Id: <20101213122108.20685.1920.sendpatchset@ahunter-work.research.nokia.com>
+Date: Mon, 13 Dec 2010 14:20:51 +0200
+Message-Id: <20101213122051.20685.46383.sendpatchset@ahunter-work.research.nokia.com>
 In-Reply-To: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
 References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
-Subject: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds instead
-	of nanoseconds
+Subject: [PATCH 1/7] mtd: OneNAND: OMAP2/3: add support for command line
+	partitioning
 Cc: Tony Lindgren <tony@atomide.com>, Kyungmin Park <kyungmin.park@samsung.com>,
 	Adrian Hunter <adrian.hunter@nokia.com>,
 	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
@@ -23,153 +23,94 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From c52e0cdeedffb7a0f9818ad3d6296d1f51b8669d Mon Sep 17 00:00:00 2001
+>From d27a88c5f9f18a7c38784c085889c3e1053340cf Mon Sep 17 00:00:00 2001
 From: Adrian Hunter <adrian.hunter@nokia.com>
-Date: Thu, 9 Dec 2010 10:48:27 +0200
-Subject: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds instead of nanoseconds
+Date: Wed, 30 Dec 2009 07:40:16 +0100
+Subject: [PATCH 1/7] mtd: OneNAND: OMAP2/3: add support for command line partitioning
 
-The calculations done with sync_clk are anyway in picoseconds
-and switching to picoseconds allows sync_clk values that are
-not a whole number of nanoseconds - which is sometimes the
-case.
+Add the ability to parse MTD partition information from the
+kernel command line.
+
+Note that a pointless BUG_ON is removed, as are redundant
+calls to 'del_mtd_partitions()' and 'del_mtd_device()'
+because they are also done by 'onenand_release()'.
+
+Finally note that 'add_mtd_device()' returns 1 on failure
+so the error condition was incorrect.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 ---
- arch/arm/mach-omap2/gpmc-nand.c        |    2 +-
- arch/arm/mach-omap2/gpmc-onenand.c     |   10 +++++-----
- arch/arm/mach-omap2/gpmc.c             |   12 +++++++++++-
- arch/arm/mach-omap2/usb-tusb6010.c     |    4 ++--
- arch/arm/plat-omap/include/plat/gpmc.h |    9 +++++----
- 5 files changed, 24 insertions(+), 13 deletions(-)
+ drivers/mtd/onenand/omap2.c |   27 ++++++++++++---------------
+ 1 files changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
-index 7222096..2bb29c1 100644
---- a/arch/arm/mach-omap2/gpmc-nand.c
-+++ b/arch/arm/mach-omap2/gpmc-nand.c
-@@ -41,7 +41,7 @@ static int omap2_nand_gpmc_retime(void)
- 		return 0;
- 
- 	memset(&t, 0, sizeof(t));
--	t.sync_clk = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->sync_clk);
-+	t.sync_clk = gpmc_nand_data->gpmc_t->sync_clk;
- 	t.cs_on = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->cs_on);
- 	t.adv_on = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->adv_on);
- 
-diff --git a/arch/arm/mach-omap2/gpmc-onenand.c b/arch/arm/mach-omap2/gpmc-onenand.c
-index 7bb6922..1db606c 100644
---- a/arch/arm/mach-omap2/gpmc-onenand.c
-+++ b/arch/arm/mach-omap2/gpmc-onenand.c
-@@ -174,7 +174,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
- 
- 	switch (freq) {
- 	case 83:
--		min_gpmc_clk_period = 12; /* 83 MHz */
-+		min_gpmc_clk_period = 12000; /* 83 MHz */
- 		t_ces   = 5;
- 		t_avds  = 4;
- 		t_avdh  = 2;
-@@ -183,7 +183,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
- 		t_rdyo  = 9;
- 		break;
- 	case 66:
--		min_gpmc_clk_period = 15; /* 66 MHz */
-+		min_gpmc_clk_period = 15000; /* 66 MHz */
- 		t_ces   = 6;
- 		t_avds  = 5;
- 		t_avdh  = 2;
-@@ -192,7 +192,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
- 		t_rdyo  = 11;
- 		break;
- 	default:
--		min_gpmc_clk_period = 18; /* 54 MHz */
-+		min_gpmc_clk_period = 18500; /* 54 MHz */
- 		t_ces   = 7;
- 		t_avds  = 7;
- 		t_avdh  = 7;
-@@ -271,8 +271,8 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
- 		t.wr_cycle  = t.rd_cycle;
- 		if (cpu_is_omap34xx()) {
- 			t.wr_data_mux_bus = gpmc_ticks_to_ns(fclk_offset +
--					gpmc_ns_to_ticks(min_gpmc_clk_period +
--					t_rdyo));
-+					gpmc_ps_to_ticks(min_gpmc_clk_period +
-+					t_rdyo * 1000));
- 			t.wr_access = t.access;
- 		}
- 	} else {
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index f46933b..1b7b3e7 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -168,6 +168,16 @@ unsigned int gpmc_ns_to_ticks(unsigned int time_ns)
- 	return (time_ns * 1000 + tick_ps - 1) / tick_ps;
- }
- 
-+unsigned int gpmc_ps_to_ticks(unsigned int time_ps)
-+{
-+	unsigned long tick_ps;
-+
-+	/* Calculate in picosecs to yield more exact results */
-+	tick_ps = gpmc_get_fclk_period();
-+
-+	return (time_ps + tick_ps - 1) / tick_ps;
-+}
-+
- unsigned int gpmc_ticks_to_ns(unsigned int ticks)
- {
- 	return ticks * gpmc_get_fclk_period() / 1000;
-@@ -235,7 +245,7 @@ int gpmc_cs_calc_divider(int cs, unsigned int sync_clk)
- 	int div;
- 	u32 l;
- 
--	l = sync_clk * 1000 + (gpmc_get_fclk_period() - 1);
-+	l = sync_clk + (gpmc_get_fclk_period() - 1);
- 	div = l / gpmc_get_fclk_period();
- 	if (div > 4)
- 		return -1;
-diff --git a/arch/arm/mach-omap2/usb-tusb6010.c b/arch/arm/mach-omap2/usb-tusb6010.c
-index 64a0112..1e998ea 100644
---- a/arch/arm/mach-omap2/usb-tusb6010.c
-+++ b/arch/arm/mach-omap2/usb-tusb6010.c
-@@ -120,8 +120,8 @@ static int tusb_set_sync_mode(unsigned sysclk_ps, unsigned fclk_ps)
- 	t.adv_on = next_clk(t.cs_on, t_scsnh_advnh - 7000, fclk_ps);
- 
- 	/* GPMC_CLK rate = fclk rate / div */
--	t.sync_clk = 12 /* 11.1 nsec */;
--	tmp = (t.sync_clk * 1000 + fclk_ps - 1) / fclk_ps;
-+	t.sync_clk = 11100 /* 11.1 nsec */;
-+	tmp = (t.sync_clk + fclk_ps - 1) / fclk_ps;
- 	if (tmp > 4)
- 		return -ERANGE;
- 	if (tmp <= 0)
-diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
-index 9fd99b9..85ded59 100644
---- a/arch/arm/plat-omap/include/plat/gpmc.h
-+++ b/arch/arm/plat-omap/include/plat/gpmc.h
-@@ -80,12 +80,12 @@
- #define GPMC_PREFETCH_STATUS_COUNT(val)	(val & 0x00003fff)
- 
- /*
-- * Note that all values in this struct are in nanoseconds, while
-- * the register values are in gpmc_fck cycles.
-+ * Note that all values in this struct are in nanoseconds except sync_clk
-+ * (which is in picoseconds), while the register values are in gpmc_fck cycles.
-  */
- struct gpmc_timings {
--	/* Minimum clock period for synchronous mode */
--	u16 sync_clk;
-+	/* Minimum clock period for synchronous mode (in picoseconds) */
-+	u32 sync_clk;
- 
- 	/* Chip-select signal timings corresponding to GPMC_CS_CONFIG2 */
- 	u16 cs_on;		/* Assertion time */
-@@ -117,6 +117,7 @@ struct gpmc_timings {
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index da25a90..324402f 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -65,6 +65,10 @@ struct omap2_onenand {
+ 	int (*setup)(void __iomem *base, int freq);
  };
  
- extern unsigned int gpmc_ns_to_ticks(unsigned int time_ns);
-+extern unsigned int gpmc_ps_to_ticks(unsigned int time_ps);
- extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
- extern unsigned int gpmc_round_ns_to_ticks(unsigned int time_ns);
- extern unsigned long gpmc_get_fclk_period(void);
++#ifdef CONFIG_MTD_PARTITIONS
++static const char *part_probes[] = { "cmdlinepart", NULL,  };
++#endif
++
+ static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
+ {
+ 	struct omap2_onenand *c = data;
+@@ -730,13 +734,15 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 	}
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+-	if (pdata->parts != NULL)
+-		r = add_mtd_partitions(&c->mtd, pdata->parts,
+-				       pdata->nr_parts);
++	r = parse_mtd_partitions(&c->mtd, part_probes, &c->parts, 0);
++	if (r > 0)
++		r = add_mtd_partitions(&c->mtd, c->parts, r);
++	else if (pdata->parts != NULL)
++		r = add_mtd_partitions(&c->mtd, pdata->parts, pdata->nr_parts);
+ 	else
+ #endif
+ 		r = add_mtd_device(&c->mtd);
+-	if (r < 0)
++	if (r)
+ 		goto err_release_onenand;
+ 
+ 	platform_set_drvdata(pdev, c);
+@@ -760,6 +766,7 @@ err_release_mem_region:
+ err_free_cs:
+ 	gpmc_cs_free(c->gpmc_cs);
+ err_kfree:
++	kfree(c->parts);
+ 	kfree(c);
+ 
+ 	return r;
+@@ -769,17 +776,6 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+ {
+ 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
+ 
+-	BUG_ON(c == NULL);
+-
+-#ifdef CONFIG_MTD_PARTITIONS
+-	if (c->parts)
+-		del_mtd_partitions(&c->mtd);
+-	else
+-		del_mtd_device(&c->mtd);
+-#else
+-	del_mtd_device(&c->mtd);
+-#endif
+-
+ 	onenand_release(&c->mtd);
+ 	if (c->dma_channel != -1)
+ 		omap_free_dma(c->dma_channel);
+@@ -792,6 +788,7 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+ 	iounmap(c->onenand.base);
+ 	release_mem_region(c->phys_base, ONENAND_IO_SIZE);
+ 	gpmc_cs_free(c->gpmc_cs);
++	kfree(c->parts);
+ 	kfree(c);
+ 
+ 	return 0;
 -- 
 1.7.0.4
