@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PS7HH-0001Kb-KM
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:13:16 +0000
+	id 1PS7P5-00033o-Ji
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:21:20 +0000
 From: Adrian Hunter <adrian.hunter@nokia.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 13 Dec 2010 14:11:44 +0200
-Message-Id: <20101213121144.20650.27903.sendpatchset@ahunter-work.research.nokia.com>
-Subject: [PATCH 0/7] OneNAND OMAP patches
+Date: Mon, 13 Dec 2010 14:20:42 +0200
+Message-Id: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
+Subject: [PATCH 0/7] OneNAND OMAP patches (resent)
 Cc: Tony Lindgren <tony@atomide.com>, Kyungmin Park <kyungmin.park@samsung.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>,
 	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	Artem.Bityutskiy.dedekind1@gmail.com,
 	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,6 +21,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi
+
+(resent with corrected email for Artem)
 
 Here are some OneNAND and related OMAP patches.
 
