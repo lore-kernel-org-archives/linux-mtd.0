@@ -1,15 +1,15 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PS7P5-00033l-Pk
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:21:22 +0000
+	id 1PS7P7-00034G-HZ
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:21:24 +0000
 From: Adrian Hunter <adrian.hunter@nokia.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 13 Dec 2010 14:20:51 +0200
-Message-Id: <20101213122051.20685.46383.sendpatchset@ahunter-work.research.nokia.com>
+Date: Mon, 13 Dec 2010 14:21:03 +0200
+Message-Id: <20101213122103.20685.4205.sendpatchset@ahunter-work.research.nokia.com>
 In-Reply-To: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
 References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
-Subject: [PATCH 1/7] mtd: OneNAND: OMAP2/3: add support for command line
-	partitioning
+Subject: [PATCH 3/7] mtd: OneNAND: OMAP2/3: prevent regulator sleeping while
+	OneNAND is in use
 Cc: Tony Lindgren <tony@atomide.com>, Kyungmin Park <kyungmin.park@samsung.com>,
 	Adrian Hunter <adrian.hunter@nokia.com>,
 	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
@@ -23,94 +23,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From d27a88c5f9f18a7c38784c085889c3e1053340cf Mon Sep 17 00:00:00 2001
+>From 0781d7d541e0c93e2ef60fbe0a21f08f6228e68a Mon Sep 17 00:00:00 2001
 From: Adrian Hunter <adrian.hunter@nokia.com>
-Date: Wed, 30 Dec 2009 07:40:16 +0100
-Subject: [PATCH 1/7] mtd: OneNAND: OMAP2/3: add support for command line partitioning
+Date: Fri, 19 Feb 2010 15:39:53 +0100
+Subject: [PATCH 3/7] mtd: OneNAND: OMAP2/3: prevent regulator sleeping while OneNAND is in use
 
-Add the ability to parse MTD partition information from the
-kernel command line.
-
-Note that a pointless BUG_ON is removed, as are redundant
-calls to 'del_mtd_partitions()' and 'del_mtd_device()'
-because they are also done by 'onenand_release()'.
-
-Finally note that 'add_mtd_device()' returns 1 on failure
-so the error condition was incorrect.
+Prevent OneNAND's voltage regulator from going to sleep while
+OneNAND is in use, by explicitly enabling and disabling the
+regulator as appropriate.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 ---
- drivers/mtd/onenand/omap2.c |   27 ++++++++++++---------------
- 1 files changed, 12 insertions(+), 15 deletions(-)
+ arch/arm/plat-omap/include/plat/onenand.h |    1 +
+ drivers/mtd/onenand/omap2.c               |   41 ++++++++++++++++++++++++++++-
+ 2 files changed, 41 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index da25a90..324402f 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -65,6 +65,10 @@ struct omap2_onenand {
- 	int (*setup)(void __iomem *base, int freq);
+diff --git a/arch/arm/plat-omap/include/plat/onenand.h b/arch/arm/plat-omap/include/plat/onenand.h
+index 72f433d..affe87e 100644
+--- a/arch/arm/plat-omap/include/plat/onenand.h
++++ b/arch/arm/plat-omap/include/plat/onenand.h
+@@ -23,6 +23,7 @@ struct omap_onenand_platform_data {
+ 	int                     (*onenand_setup)(void __iomem *, int freq);
+ 	int			dma_channel;
+ 	u8			flags;
++	u8			regulator_can_sleep;
  };
  
-+#ifdef CONFIG_MTD_PARTITIONS
-+static const char *part_probes[] = { "cmdlinepart", NULL,  };
-+#endif
-+
- static void omap2_onenand_dma_cb(int lch, u16 ch_status, void *data)
- {
- 	struct omap2_onenand *c = data;
-@@ -730,13 +734,15 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 	}
+ #define ONENAND_MAX_PARTITIONS 8
+diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
+index 324402f..1a07bfc 100644
+--- a/drivers/mtd/onenand/omap2.c
++++ b/drivers/mtd/onenand/omap2.c
+@@ -35,6 +35,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/io.h>
+ #include <linux/slab.h>
++#include <linux/regulator/consumer.h>
+ 
+ #include <asm/mach/flash.h>
+ #include <plat/gpmc.h>
+@@ -63,6 +64,7 @@ struct omap2_onenand {
+ 	int dma_channel;
+ 	int freq;
+ 	int (*setup)(void __iomem *base, int freq);
++	struct regulator *regulator;
+ };
  
  #ifdef CONFIG_MTD_PARTITIONS
--	if (pdata->parts != NULL)
--		r = add_mtd_partitions(&c->mtd, pdata->parts,
--				       pdata->nr_parts);
-+	r = parse_mtd_partitions(&c->mtd, part_probes, &c->parts, 0);
-+	if (r > 0)
-+		r = add_mtd_partitions(&c->mtd, c->parts, r);
-+	else if (pdata->parts != NULL)
-+		r = add_mtd_partitions(&c->mtd, pdata->parts, pdata->nr_parts);
- 	else
- #endif
- 		r = add_mtd_device(&c->mtd);
--	if (r < 0)
-+	if (r)
- 		goto err_release_onenand;
+@@ -601,6 +603,30 @@ static void omap2_onenand_shutdown(struct platform_device *pdev)
+ 	memset((__force void *)c->onenand.base, 0, ONENAND_BUFRAM_SIZE);
+ }
  
- 	platform_set_drvdata(pdev, c);
-@@ -760,6 +766,7 @@ err_release_mem_region:
- err_free_cs:
- 	gpmc_cs_free(c->gpmc_cs);
- err_kfree:
-+	kfree(c->parts);
- 	kfree(c);
- 
- 	return r;
-@@ -769,17 +776,6 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
++static int omap2_onenand_enable(struct mtd_info *mtd)
++{
++	int ret;
++	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
++
++	ret = regulator_enable(c->regulator);
++	if (ret != 0)
++		dev_err(&c->pdev->dev, "cant enable regulator\n");
++
++	return ret;
++}
++
++static int omap2_onenand_disable(struct mtd_info *mtd)
++{
++	int ret;
++	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
++
++	ret = regulator_disable(c->regulator);
++	if (ret != 0)
++		dev_err(&c->pdev->dev, "cant disable regulator\n");
++
++	return ret;
++}
++
+ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
  {
- 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
+ 	struct omap_onenand_platform_data *pdata;
+@@ -715,8 +741,18 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 		}
+ 	}
  
--	BUG_ON(c == NULL);
--
--#ifdef CONFIG_MTD_PARTITIONS
--	if (c->parts)
--		del_mtd_partitions(&c->mtd);
--	else
--		del_mtd_device(&c->mtd);
--#else
--	del_mtd_device(&c->mtd);
--#endif
--
++	if (pdata->regulator_can_sleep) {
++		c->regulator = regulator_get(&pdev->dev, "vonenand");
++		if (IS_ERR(c->regulator)) {
++			dev_err(&pdev->dev,  "Failed to get regulator\n");
++			goto err_release_dma;
++		}
++		c->onenand.enable = omap2_onenand_enable;
++		c->onenand.disable = omap2_onenand_disable;
++	}
++
+ 	if ((r = onenand_scan(&c->mtd, 1)) < 0)
+-		goto err_release_dma;
++		goto err_release_regulator;
+ 
+ 	switch ((c->onenand.version_id >> 4) & 0xf) {
+ 	case 0:
+@@ -751,6 +787,8 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 
+ err_release_onenand:
  	onenand_release(&c->mtd);
++err_release_regulator:
++	regulator_put(c->regulator);
+ err_release_dma:
  	if (c->dma_channel != -1)
  		omap_free_dma(c->dma_channel);
-@@ -792,6 +788,7 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
- 	iounmap(c->onenand.base);
- 	release_mem_region(c->phys_base, ONENAND_IO_SIZE);
- 	gpmc_cs_free(c->gpmc_cs);
-+	kfree(c->parts);
- 	kfree(c);
+@@ -777,6 +815,7 @@ static int __devexit omap2_onenand_remove(struct platform_device *pdev)
+ 	struct omap2_onenand *c = dev_get_drvdata(&pdev->dev);
  
- 	return 0;
+ 	onenand_release(&c->mtd);
++	regulator_put(c->regulator);
+ 	if (c->dma_channel != -1)
+ 		omap_free_dma(c->dma_channel);
+ 	omap2_onenand_shutdown(pdev);
 -- 
 1.7.0.4
