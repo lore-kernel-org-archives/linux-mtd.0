@@ -1,14 +1,15 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PS7PP-00039q-Ew
-	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:21:44 +0000
+	id 1PS7PZ-0003CQ-Jw
+	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:21:54 +0000
 From: Adrian Hunter <adrian.hunter@nokia.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 13 Dec 2010 14:21:14 +0200
-Message-Id: <20101213122114.20685.55182.sendpatchset@ahunter-work.research.nokia.com>
+Date: Mon, 13 Dec 2010 14:21:22 +0200
+Message-Id: <20101213122122.20685.93183.sendpatchset@ahunter-work.research.nokia.com>
 In-Reply-To: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
 References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
-Subject: [PATCH 5/7] OMAP2/3: OneNAND: add 104MHz support
+Subject: [PATCH 6/7] OMAP2/3: OneNAND: add platform data callback for PM
+	constraints
 Cc: Tony Lindgren <tony@atomide.com>, Kyungmin Park <kyungmin.park@samsung.com>,
 	Adrian Hunter <adrian.hunter@nokia.com>,
 	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
@@ -22,52 +23,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From ab0260a2cc3b17b98fa918dee34e129c3ff2b9b6 Mon Sep 17 00:00:00 2001
+>From b93b44d7463b3a3f6d5d1021681596de1881a62b Mon Sep 17 00:00:00 2001
 From: Adrian Hunter <adrian.hunter@nokia.com>
-Date: Thu, 9 Dec 2010 11:22:50 +0200
-Subject: [PATCH 5/7] OMAP2/3: OneNAND: add 104MHz support
+Date: Thu, 9 Dec 2010 12:56:24 +0200
+Subject: [PATCH 6/7] OMAP2/3: OneNAND: add platform data callback for PM constraints
 
-Add GPMC timings for 104MHz OneNAND.
+Make it possible for boards to set PM constraints such as maximum wakeup
+latency.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 ---
- arch/arm/mach-omap2/gpmc-onenand.c |    9 +++++++++
- drivers/mtd/onenand/omap2.c        |    3 +++
- 2 files changed, 12 insertions(+), 0 deletions(-)
+ arch/arm/plat-omap/include/plat/onenand.h |    8 ++++++++
+ drivers/mtd/onenand/omap2.c               |   16 +++++++++++++++-
+ 2 files changed, 23 insertions(+), 1 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/gpmc-onenand.c b/arch/arm/mach-omap2/gpmc-onenand.c
-index 1db606c..3a7d25f 100644
---- a/arch/arm/mach-omap2/gpmc-onenand.c
-+++ b/arch/arm/mach-omap2/gpmc-onenand.c
-@@ -173,6 +173,15 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
- 	}
+diff --git a/arch/arm/plat-omap/include/plat/onenand.h b/arch/arm/plat-omap/include/plat/onenand.h
+index affe87e..1d07119 100644
+--- a/arch/arm/plat-omap/include/plat/onenand.h
++++ b/arch/arm/plat-omap/include/plat/onenand.h
+@@ -15,12 +15,20 @@
+ #define ONENAND_SYNC_READ	(1 << 0)
+ #define ONENAND_SYNC_READWRITE	(1 << 1)
  
- 	switch (freq) {
-+	case 104:
-+		min_gpmc_clk_period = 9600; /* 104 MHz */
-+		t_ces   = 3;
-+		t_avds  = 4;
-+		t_avdh  = 2;
-+		t_ach   = 3;
-+		t_aavdh = 6;
-+		t_rdyo  = 9;
-+		break;
- 	case 83:
- 		min_gpmc_clk_period = 12000; /* 83 MHz */
- 		t_ces   = 5;
++enum {
++	ONENAND_PM_CONSTRAINT_OFF,
++	ONENAND_PM_CONSTRAINT_ERASING,
++	ONENAND_PM_CONSTRAINT_OTHER,
++};
++
+ struct omap_onenand_platform_data {
+ 	int			cs;
+ 	int			gpio_irq;
+ 	struct mtd_partition	*parts;
+ 	int			nr_parts;
+ 	int                     (*onenand_setup)(void __iomem *, int freq);
++	void			(*set_pm_constraints)(struct device *dev,
++						      int on);
+ 	int			dma_channel;
+ 	u8			flags;
+ 	u8			regulator_can_sleep;
 diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 1a07bfc..ac31f46 100644
+index ac31f46..866b9f9 100644
 --- a/drivers/mtd/onenand/omap2.c
 +++ b/drivers/mtd/onenand/omap2.c
-@@ -767,6 +767,9 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 	case 3:
- 		c->freq = 83;
- 		break;
-+	case 4:
-+		c->freq = 104;
-+		break;
+@@ -64,6 +64,7 @@ struct omap2_onenand {
+ 	int dma_channel;
+ 	int freq;
+ 	int (*setup)(void __iomem *base, int freq);
++	void (*set_pm_constraints)(struct device *dev, int on);
+ 	struct regulator *regulator;
+ };
+ 
+@@ -605,13 +606,21 @@ static void omap2_onenand_shutdown(struct platform_device *pdev)
+ 
+ static int omap2_onenand_enable(struct mtd_info *mtd)
+ {
+-	int ret;
++	int ret, on;
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 
+ 	ret = regulator_enable(c->regulator);
+ 	if (ret != 0)
+ 		dev_err(&c->pdev->dev, "cant enable regulator\n");
+ 
++	if (c->set_pm_constraints) {
++		if (c->onenand.state == FL_ERASING)
++			on = ONENAND_PM_CONSTRAINT_ERASING;
++		else
++			on = ONENAND_PM_CONSTRAINT_OTHER;
++		c->set_pm_constraints(&c->pdev->dev, on);
++	}
++
+ 	return ret;
+ }
+ 
+@@ -620,6 +629,9 @@ static int omap2_onenand_disable(struct mtd_info *mtd)
+ 	int ret;
+ 	struct omap2_onenand *c = container_of(mtd, struct omap2_onenand, mtd);
+ 
++	if (c->set_pm_constraints)
++		c->set_pm_constraints(&c->pdev->dev, ONENAND_PM_CONSTRAINT_OFF);
++
+ 	ret = regulator_disable(c->regulator);
+ 	if (ret != 0)
+ 		dev_err(&c->pdev->dev, "cant disable regulator\n");
+@@ -682,6 +694,8 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
+ 		c->setup = pdata->onenand_setup;
  	}
  
- #ifdef CONFIG_MTD_PARTITIONS
++	c->set_pm_constraints = pdata->set_pm_constraints;
++
+ 	if (c->gpio_irq) {
+ 		if ((r = gpio_request(c->gpio_irq, "OneNAND irq")) < 0) {
+ 			dev_err(&pdev->dev,  "Failed to request GPIO%d for "
 -- 
 1.7.0.4
