@@ -1,14 +1,15 @@
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PS7Gs-0001Ge-P0
+	id 1PS7Gt-0001Gf-Ct
 	for linux-mtd@lists.infradead.org; Mon, 13 Dec 2010 12:12:53 +0000
 From: Adrian Hunter <adrian.hunter@nokia.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Date: Mon, 13 Dec 2010 14:12:30 +0200
-Message-Id: <20101213121230.20650.33730.sendpatchset@ahunter-work.research.nokia.com>
+Date: Mon, 13 Dec 2010 14:12:24 +0200
+Message-Id: <20101213121224.20650.11839.sendpatchset@ahunter-work.research.nokia.com>
 In-Reply-To: <20101213121144.20650.27903.sendpatchset@ahunter-work.research.nokia.com>
 References: <20101213121144.20650.27903.sendpatchset@ahunter-work.research.nokia.com>
-Subject: [PATCH 5/7] OMAP2/3: OneNAND: add 104MHz support
+Subject: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds instead
+	of nanoseconds
 Cc: Tony Lindgren <tony@atomide.com>, Kyungmin Park <kyungmin.park@samsung.com>,
 	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
 	Artem.Bityutskiy.dedekind1@gmail.com,
@@ -22,52 +23,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From ab0260a2cc3b17b98fa918dee34e129c3ff2b9b6 Mon Sep 17 00:00:00 2001
+>From c52e0cdeedffb7a0f9818ad3d6296d1f51b8669d Mon Sep 17 00:00:00 2001
 From: Adrian Hunter <adrian.hunter@nokia.com>
-Date: Thu, 9 Dec 2010 11:22:50 +0200
-Subject: [PATCH 5/7] OMAP2/3: OneNAND: add 104MHz support
+Date: Thu, 9 Dec 2010 10:48:27 +0200
+Subject: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds instead of nanoseconds
 
-Add GPMC timings for 104MHz OneNAND.
+The calculations done with sync_clk are anyway in picoseconds
+and switching to picoseconds allows sync_clk values that are
+not a whole number of nanoseconds - which is sometimes the
+case.
 
 Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 ---
- arch/arm/mach-omap2/gpmc-onenand.c |    9 +++++++++
- drivers/mtd/onenand/omap2.c        |    3 +++
- 2 files changed, 12 insertions(+), 0 deletions(-)
+ arch/arm/mach-omap2/gpmc-nand.c        |    2 +-
+ arch/arm/mach-omap2/gpmc-onenand.c     |   10 +++++-----
+ arch/arm/mach-omap2/gpmc.c             |   12 +++++++++++-
+ arch/arm/mach-omap2/usb-tusb6010.c     |    4 ++--
+ arch/arm/plat-omap/include/plat/gpmc.h |    9 +++++----
+ 5 files changed, 24 insertions(+), 13 deletions(-)
 
+diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+index 7222096..2bb29c1 100644
+--- a/arch/arm/mach-omap2/gpmc-nand.c
++++ b/arch/arm/mach-omap2/gpmc-nand.c
+@@ -41,7 +41,7 @@ static int omap2_nand_gpmc_retime(void)
+ 		return 0;
+ 
+ 	memset(&t, 0, sizeof(t));
+-	t.sync_clk = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->sync_clk);
++	t.sync_clk = gpmc_nand_data->gpmc_t->sync_clk;
+ 	t.cs_on = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->cs_on);
+ 	t.adv_on = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->adv_on);
+ 
 diff --git a/arch/arm/mach-omap2/gpmc-onenand.c b/arch/arm/mach-omap2/gpmc-onenand.c
-index 1db606c..3a7d25f 100644
+index 7bb6922..1db606c 100644
 --- a/arch/arm/mach-omap2/gpmc-onenand.c
 +++ b/arch/arm/mach-omap2/gpmc-onenand.c
-@@ -173,6 +173,15 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
- 	}
+@@ -174,7 +174,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
  
  	switch (freq) {
-+	case 104:
-+		min_gpmc_clk_period = 9600; /* 104 MHz */
-+		t_ces   = 3;
-+		t_avds  = 4;
-+		t_avdh  = 2;
-+		t_ach   = 3;
-+		t_aavdh = 6;
-+		t_rdyo  = 9;
-+		break;
  	case 83:
- 		min_gpmc_clk_period = 12000; /* 83 MHz */
+-		min_gpmc_clk_period = 12; /* 83 MHz */
++		min_gpmc_clk_period = 12000; /* 83 MHz */
  		t_ces   = 5;
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index 1a07bfc..ac31f46 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -767,6 +767,9 @@ static int __devinit omap2_onenand_probe(struct platform_device *pdev)
- 	case 3:
- 		c->freq = 83;
+ 		t_avds  = 4;
+ 		t_avdh  = 2;
+@@ -183,7 +183,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
+ 		t_rdyo  = 9;
  		break;
-+	case 4:
-+		c->freq = 104;
-+		break;
- 	}
+ 	case 66:
+-		min_gpmc_clk_period = 15; /* 66 MHz */
++		min_gpmc_clk_period = 15000; /* 66 MHz */
+ 		t_ces   = 6;
+ 		t_avds  = 5;
+ 		t_avdh  = 2;
+@@ -192,7 +192,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
+ 		t_rdyo  = 11;
+ 		break;
+ 	default:
+-		min_gpmc_clk_period = 18; /* 54 MHz */
++		min_gpmc_clk_period = 18500; /* 54 MHz */
+ 		t_ces   = 7;
+ 		t_avds  = 7;
+ 		t_avdh  = 7;
+@@ -271,8 +271,8 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
+ 		t.wr_cycle  = t.rd_cycle;
+ 		if (cpu_is_omap34xx()) {
+ 			t.wr_data_mux_bus = gpmc_ticks_to_ns(fclk_offset +
+-					gpmc_ns_to_ticks(min_gpmc_clk_period +
+-					t_rdyo));
++					gpmc_ps_to_ticks(min_gpmc_clk_period +
++					t_rdyo * 1000));
+ 			t.wr_access = t.access;
+ 		}
+ 	} else {
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index f46933b..1b7b3e7 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -168,6 +168,16 @@ unsigned int gpmc_ns_to_ticks(unsigned int time_ns)
+ 	return (time_ns * 1000 + tick_ps - 1) / tick_ps;
+ }
  
- #ifdef CONFIG_MTD_PARTITIONS
++unsigned int gpmc_ps_to_ticks(unsigned int time_ps)
++{
++	unsigned long tick_ps;
++
++	/* Calculate in picosecs to yield more exact results */
++	tick_ps = gpmc_get_fclk_period();
++
++	return (time_ps + tick_ps - 1) / tick_ps;
++}
++
+ unsigned int gpmc_ticks_to_ns(unsigned int ticks)
+ {
+ 	return ticks * gpmc_get_fclk_period() / 1000;
+@@ -235,7 +245,7 @@ int gpmc_cs_calc_divider(int cs, unsigned int sync_clk)
+ 	int div;
+ 	u32 l;
+ 
+-	l = sync_clk * 1000 + (gpmc_get_fclk_period() - 1);
++	l = sync_clk + (gpmc_get_fclk_period() - 1);
+ 	div = l / gpmc_get_fclk_period();
+ 	if (div > 4)
+ 		return -1;
+diff --git a/arch/arm/mach-omap2/usb-tusb6010.c b/arch/arm/mach-omap2/usb-tusb6010.c
+index 64a0112..1e998ea 100644
+--- a/arch/arm/mach-omap2/usb-tusb6010.c
++++ b/arch/arm/mach-omap2/usb-tusb6010.c
+@@ -120,8 +120,8 @@ static int tusb_set_sync_mode(unsigned sysclk_ps, unsigned fclk_ps)
+ 	t.adv_on = next_clk(t.cs_on, t_scsnh_advnh - 7000, fclk_ps);
+ 
+ 	/* GPMC_CLK rate = fclk rate / div */
+-	t.sync_clk = 12 /* 11.1 nsec */;
+-	tmp = (t.sync_clk * 1000 + fclk_ps - 1) / fclk_ps;
++	t.sync_clk = 11100 /* 11.1 nsec */;
++	tmp = (t.sync_clk + fclk_ps - 1) / fclk_ps;
+ 	if (tmp > 4)
+ 		return -ERANGE;
+ 	if (tmp <= 0)
+diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
+index 9fd99b9..85ded59 100644
+--- a/arch/arm/plat-omap/include/plat/gpmc.h
++++ b/arch/arm/plat-omap/include/plat/gpmc.h
+@@ -80,12 +80,12 @@
+ #define GPMC_PREFETCH_STATUS_COUNT(val)	(val & 0x00003fff)
+ 
+ /*
+- * Note that all values in this struct are in nanoseconds, while
+- * the register values are in gpmc_fck cycles.
++ * Note that all values in this struct are in nanoseconds except sync_clk
++ * (which is in picoseconds), while the register values are in gpmc_fck cycles.
+  */
+ struct gpmc_timings {
+-	/* Minimum clock period for synchronous mode */
+-	u16 sync_clk;
++	/* Minimum clock period for synchronous mode (in picoseconds) */
++	u32 sync_clk;
+ 
+ 	/* Chip-select signal timings corresponding to GPMC_CS_CONFIG2 */
+ 	u16 cs_on;		/* Assertion time */
+@@ -117,6 +117,7 @@ struct gpmc_timings {
+ };
+ 
+ extern unsigned int gpmc_ns_to_ticks(unsigned int time_ns);
++extern unsigned int gpmc_ps_to_ticks(unsigned int time_ps);
+ extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
+ extern unsigned int gpmc_round_ns_to_ticks(unsigned int time_ns);
+ extern unsigned long gpmc_get_fclk_period(void);
 -- 
 1.7.0.4
