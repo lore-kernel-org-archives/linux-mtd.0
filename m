@@ -1,21 +1,21 @@
-Received: from cpanel5.proisp.no ([209.85.100.29])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSR3J-00082z-6R
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 09:20:10 +0000
-Received: from mail-gx0-f171.google.com ([209.85.161.171]:40516)
-	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
-	(envelope-from <oyvind.harboe@zylin.com>) id 1PSR3D-0002eW-Gl
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 10:20:03 +0100
-Received: by gxk8 with SMTP id 8so229182gxk.16
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSWFg-00024D-O2
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 14:53:17 +0000
+Received: by wyf22 with SMTP id 22so546588wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 01:20:03 -0800 (PST)
+	Tue, 14 Dec 2010 06:53:14 -0800 (PST)
 MIME-Version: 1.0
-Date: Tue, 14 Dec 2010 10:20:03 +0100
-Message-ID: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
-Subject: Faster flash_eraseall for NOR flash
-From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=0023547c8c335a48f004975b5346
+In-Reply-To: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
+References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 14 Dec 2010 09:52:53 -0500
+Message-ID: <AANLkTikJ3UTQ-D01FX8fSEGgcuG-fXEhAw6h4z9pwkRX@mail.gmail.com>
+Subject: Re: Faster flash_eraseall for NOR flash
+To: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,117 +25,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0023547c8c335a48f004975b5346
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, Dec 14, 2010 at 04:20, =C3=98yvind Harboe wrote:
+> CFI erase performance can be 10x slower than write
+> performance on CFI flashes.
+>
+> I've added an option to skip already erased CFI blocks. This
+> includes checking if the JFFS2 cleanmarker is written.
 
-CFI erase performance can be 10x slower than write
-performance on CFI flashes.
+i dont think -f/--fast is the right name.  how about something a bit
+more explicit like --skip-erased ?
 
-I've added an option to skip already erased CFI blocks. This
-includes checking if the JFFS2 cleanmarker is written.
+why cant this also be used for NAND ?  all the NAND devices i use have
+0xff when erased.
 
-
---
-=C3=98yvind Harboe
-
-Can Zylin Consulting help on your project?
-
-US toll free 1-866-980-3434 / International +47 51 63 25 00
-
-http://www.zylin.com/zy1000.html
-ARM7 ARM9 ARM11 XScale Cortex
-JTAG debugger and flash programmer
-
-
-
---=20
-=C3=98yvind Harboe
-
-Can Zylin Consulting help on your project?
-
-US toll free 1-866-980-3434 / International +47 51 63 25 00
-
-http://www.zylin.com/zy1000.html
-ARM7 ARM9 ARM11 XScale Cortex
-JTAG debugger and flash programmer
-
---0023547c8c335a48f004975b5346
-Content-Type: text/x-patch; charset=UTF-8;
-	name="0001-mtd-utils-add-fast-NOR-flash-erase.patch"
-Content-Disposition: attachment;
-	filename="0001-mtd-utils-add-fast-NOR-flash-erase.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ghnx58q00
-
-RnJvbSAwNjZmNTAxYjI1M2M4NDU1MGU2OTU5YmU1MjdhYTBhYTc1ZmZmNjMxIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P1VURi04P3E/PUMzPTk4eXZpbmQ9MjBIYXJib2U/PSA8b3l2
-aW5kLmhhcmJvZUB6eWxpbi5jb20+CkRhdGU6IEZyaSwgMTAgRGVjIDIwMTAgMTA6MDU6NDMgKzAx
-MDAKU3ViamVjdDogW1BBVENIXSBtdGQtdXRpbHM6IGFkZCBmYXN0IE5PUiBmbGFzaCBlcmFzZQpN
-SU1FLVZlcnNpb246IDEuMApDb250ZW50LVR5cGU6IHRleHQvcGxhaW47IGNoYXJzZXQ9VVRGLTgK
-Q29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogOGJpdAoKZG8gbm90IGVyYXNlIHNlY3RvciAod2hp
-Y2ggY2FuIGJlIDEweCBzbG93ZXIgdGhhbiB3cml0ZSdzIG9uCkNGSSdzKSBpZiBpdCBpcyBhbHJl
-YWR5IGVyYXNlZC4gVGhpcyBpbmNsdWRlcyBhIGNoZWNrIGZvciBhCmNsZWFubWFya2VyLgoKU2ln
-bmVkLW9mZi1ieTogw5h5dmluZCBIYXJib2UgPG95dmluZC5oYXJib2VAenlsaW4uY29tPgotLS0K
-IC4uLi9mbGFzaF9lcmFzZWFsbC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2
-MCArKysrKysrKysrKysrKysrKysrLQogMSBmaWxlcyBjaGFuZ2VkLCA1OSBpbnNlcnRpb25zKCsp
-LCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3VzZXIvbXRkLXV0aWxzLzYwNmYzOGEyMjIx
-NjQ4Y2E1YzVmYTI5MmM5ZjcxZDJkZGQ1OWZhNjYvZmxhc2hfZXJhc2VhbGwuYyBiL3VzZXIvbXRk
-LXV0aWxzLzYwNmYzOGEyMjIxNjQ4Y2E1YzVmYTI5MmM5ZjcxZDJkZGQ1OWZhNjYvZmxhc2hfZXJh
-c2VhbGwuYwppbmRleCBhMjJmYzQ5Li5mNmRhMWZmIDEwMDY0NAotLS0gYS91c2VyL210ZC11dGls
-cy82MDZmMzhhMjIyMTY0OGNhNWM1ZmEyOTJjOWY3MWQyZGRkNTlmYTY2L2ZsYXNoX2VyYXNlYWxs
-LmMKKysrIGIvdXNlci9tdGQtdXRpbHMvNjA2ZjM4YTIyMjE2NDhjYTVjNWZhMjkyYzlmNzFkMmRk
-ZDU5ZmE2Ni9mbGFzaF9lcmFzZWFsbC5jCkBAIC00Nyw2ICs0Nyw3IEBAIHN0YXRpYyBjb25zdCBj
-aGFyICpleGVfbmFtZTsKIHN0YXRpYyBjb25zdCBjaGFyICptdGRfZGV2aWNlOwogc3RhdGljIGlu
-dCBxdWlldDsJCS8qIHRydWUgLS0gZG9uJ3Qgb3V0cHV0IHByb2dyZXNzICovCiBzdGF0aWMgaW50
-IGpmZnMyOwkJLy8gZm9ybWF0IGZvciBqZmZzMiB1c2FnZQorc3RhdGljIGludCBmYXN0OwkJLy8g
-RmFzdCAtIGNoZWNrIGlmIHRoZSBibG9jayBpcyBlcmFzZWQgYmVmb3JlIGVyYXNpbmcKIAogc3Rh
-dGljIHZvaWQgcHJvY2Vzc19vcHRpb25zIChpbnQgYXJnYywgY2hhciAqYXJndltdKTsKIHZvaWQg
-c2hvd19wcm9ncmVzcyAobXRkX2luZm9fdCAqbWVtaW5mbywgZXJhc2VfaW5mb190ICplcmFzZSk7
-CkBAIC0xNDYsOSArMTQ3LDYxIEBAIGludCBtYWluIChpbnQgYXJnYywgY2hhciAqYXJndltdKQog
-CQkJfQogCQl9CiAKKwkJLyogQ2FuIHdlIHNraXAgdGhpcyBvbmUgaWYgaXQgaXMgYWxyZWFkeSBl
-cmFzZWQ/CisJCSAqIFBlcmhhcHMgTkFORCBwZXJmb3JtYW5jZSBjb3VsZCBiZSBpbXByb3ZlZCBi
-eSBhZGRpbmcgc3VwcG9ydCBmb3IKKwkJICogdGhvc2UgY2xlYW5tYXJrZXJzIGFzIHdlbGw/CisJ
-CSAqCisJCSAqIEN1cnJlbnRseSB0aGlzIG9ubHkgd29ya3Mgd2l0aCBKRkZTMiBOT1IgY2xlYW4g
-bWFya2VycworCQkgKi8KKwkJaW50IHNraXAgPSAwOworCQlpZiAoZmFzdCAmJiAhaXNOQU5EKSB7
-CisJCQlpZiAobHNlZWsgKGZkLCBlcmFzZS5zdGFydCwgU0VFS19TRVQpIDwgMCkgeworCQkJCWZw
-cmludGYoc3RkZXJyLCAiXG4lczogJXM6IE1URCBsc2VlayBmYWlsdXJlOiAlc1xuIiwgZXhlX25h
-bWUsIG10ZF9kZXZpY2UsIHN0cmVycm9yKGVycm5vKSk7CisJCQkJcmV0dXJuIDE7CisJCQl9CisJ
-CQl1aW50OF90ICp0bXAgPSBtYWxsb2MobWVtaW5mby5lcmFzZXNpemUpOworCQkJaWYgKHRtcCA9
-PSBOVUxMKQorCQkJeworCQkJCWZwcmludGYoc3RkZXJyLCAiT3V0IG9mIG1lbW9yeVxuIik7CisJ
-CQkJcmV0dXJuIDE7CisJCQl9CisJCQlzc2l6ZV90IGFjdHVhbCA9IHJlYWQoZmQsIHRtcCwgbWVt
-aW5mby5lcmFzZXNpemUpOworCQkJaWYgKGFjdHVhbCAhPSBtZW1pbmZvLmVyYXNlc2l6ZSkgewor
-CQkJCWZwcmludGYoc3RkZXJyLCAiXG4lczogJXM6IE1URCByZWFkIGZhaWx1cmU6ICVzXG4iLCBl
-eGVfbmFtZSwgbXRkX2RldmljZSwgc3RyZXJyb3IoZXJybm8pKTsKKwkJCQlyZXR1cm4gMTsKKwkJ
-CX0KKwkJCXNzaXplX3QgaSA9IDA7CisJCQlpbnQgb2sgPSAxOworCisJCQlpZiAoamZmczIpIHsK
-KwkJCQlvayA9IG1lbWNtcCh0bXAsICZjbGVhbm1hcmtlciwgc2l6ZW9mIChjbGVhbm1hcmtlcikp
-ID09IDA7CisJCQkJaSA9IHNpemVvZiAoY2xlYW5tYXJrZXIpOworCQkJfQorCisJCQlpZiAob2sp
-CisJCQl7CisJCQkJZm9yICg7IGkgPCBtZW1pbmZvLmVyYXNlc2l6ZTsgaSsrKQorCQkJCXsKKwkJ
-CQkJaWYgKHRtcFtpXSAhPSAweGZmKQorCQkJCQkJYnJlYWs7CisJCQkJfQorCQkJCWlmIChpID09
-IG1lbWluZm8uZXJhc2VzaXplKQorCQkJCXsKKwkJCQkJLyogWXVwISB3ZSBjYW4gc2tpcCEgSGVy
-ZSB3ZSBjb3VsZCBpbXByb3ZlIHRoaW5ncyBieQorCQkJCQkgKiBhZGRpbmcgc3VwcG9ydCBmb3Ig
-TkFORCBjbGVhbm1hcmtlcnMKKwkJCQkJICovCisJCQkJCXNraXAgPSAxOworCQkJCX0KKwkJCX0K
-KwkJCWZyZWUodG1wKTsKKwkJfQorCiAJCWlmICghcXVpZXQpCiAJCQlzaG93X3Byb2dyZXNzKCZt
-ZW1pbmZvLCAmZXJhc2UpOwogCisJCWlmIChza2lwKQorCQkJY29udGludWU7CisKIAkJaWYgKGlv
-Y3RsKGZkLCBNRU1FUkFTRSwgJmVyYXNlKSAhPSAwKSB7CiAJCQlmcHJpbnRmKHN0ZGVyciwgIlxu
-JXM6ICVzOiBNVEQgRXJhc2UgZmFpbHVyZTogJXNcbiIsIGV4ZV9uYW1lLCBtdGRfZGV2aWNlLCBz
-dHJlcnJvcihlcnJubykpOwogCQkJY29udGludWU7CkBAIC0xOTgsMTEgKzI1MSwxMiBAQCB2b2lk
-IHByb2Nlc3Nfb3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAogCWZvciAoOzspIHsK
-IAkJaW50IG9wdGlvbl9pbmRleCA9IDA7Ci0JCXN0YXRpYyBjb25zdCBjaGFyICpzaG9ydF9vcHRp
-b25zID0gImpxIjsKKwkJc3RhdGljIGNvbnN0IGNoYXIgKnNob3J0X29wdGlvbnMgPSAianFmIjsK
-IAkJc3RhdGljIGNvbnN0IHN0cnVjdCBvcHRpb24gbG9uZ19vcHRpb25zW10gPSB7CiAJCQl7Imhl
-bHAiLCBub19hcmd1bWVudCwgMCwgMH0sCiAJCQl7InZlcnNpb24iLCBub19hcmd1bWVudCwgMCwg
-MH0sCiAJCQl7ImpmZnMyIiwgbm9fYXJndW1lbnQsIDAsICdqJ30sCisJCQl7ImZhc3QiLCBub19h
-cmd1bWVudCwgMCwgJ2YnfSwKIAkJCXsicXVpZXQiLCBub19hcmd1bWVudCwgMCwgJ3EnfSwKIAkJ
-CXsic2lsZW50Iiwgbm9fYXJndW1lbnQsIDAsICdxJ30sCiAKQEAgLTIzMiw2ICsyODYsOSBAQCB2
-b2lkIHByb2Nlc3Nfb3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAkJCWNhc2UgJ2on
-OgogCQkJCWpmZnMyID0gMTsKIAkJCQlicmVhazsKKwkJCWNhc2UgJ2YnOgorCQkJCWZhc3QgPSAx
-OworCQkJCWJyZWFrOwogCQkJY2FzZSAnPyc6CiAJCQkJZXJyb3IgPSAxOwogCQkJCWJyZWFrOwpA
-QCAtMjY1LDYgKzMyMiw3IEBAIHZvaWQgZGlzcGxheV9oZWxwICh2b2lkKQogCQkJIlxuIgogCQkJ
-IiAgLWosIC0tamZmczIgICAgZm9ybWF0IHRoZSBkZXZpY2UgZm9yIGpmZnMyXG4iCiAJCQkiICAt
-cSwgLS1xdWlldCAgICBkb24ndCBkaXNwbGF5IHByb2dyZXNzIG1lc3NhZ2VzXG4iCisJCQkiICAt
-ZiwgLS1mYXN0ICAgICBkbyBub3QgcmUtZXJhc2Ugc2VjdG9ycyB0aGF0IGFyZSBlcmFzZWRcbiIK
-IAkJCSIgICAgICAtLXNpbGVudCAgIHNhbWUgYXMgLS1xdWlldFxuIgogCQkJIiAgICAgIC0taGVs
-cCAgICAgZGlzcGxheSB0aGlzIGhlbHAgYW5kIGV4aXRcbiIKIAkJCSIgICAgICAtLXZlcnNpb24g
-IG91dHB1dCB2ZXJzaW9uIGluZm9ybWF0aW9uIGFuZCBleGl0XG4iLAotLSAKMS43LjAuNAoK
---0023547c8c335a48f004975b5346--
+other random problems:
+ - the coding style of this patch is incorrect.  please review the
+style found in the rest of the file.  such as brace placement and
+spaces in function calls.
+ - your patch is not against the master branch -- there is no
+"flash_eraseall.c" file anymore.
+ - once you update, your code will look vastly different as there are
+helpers to do memory allocation/error output/etc...
+ - better to use pread() rather than lseek()/read().
+-mike
