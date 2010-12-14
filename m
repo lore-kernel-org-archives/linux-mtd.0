@@ -1,33 +1,32 @@
-Received: from cpanel5.proisp.no ([209.85.100.29])
+Received: from smtp.falooley.org ([66.180.170.91])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSaX2-0003jR-2V
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 19:27:29 +0000
-Received: from mail-gx0-f176.google.com ([209.85.161.176]:38586)
-	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
-	(envelope-from <oyvind.harboe@zylin.com>) id 1PSaWz-0006WT-Aj
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 20:27:25 +0100
-Received: by gxk4 with SMTP id 4so717692gxk.21
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 11:27:24 -0800 (PST)
+	id 1PSauw-0004xm-GJ
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 19:52:13 +0000
+Date: Tue, 14 Dec 2010 11:51:24 -0800
+From: Jason Lunz <lunz@acm.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+Message-ID: <20101214195124.GA6010@falooley.org>
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<20071024011712.GA3762@falooley.org>
+	<1193208689.26096.48.camel@pmac.infradead.org>
+	<20071227181524.GA19051@falooley.org>
+	<20071228174853.GA4252@uranus.ravnborg.org>
+	<20101207072919.GA8511@falooley.org>
+	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
+	<20101207182012.GA10546@falooley.org>
+	<1292343878.2538.80.camel@localhost>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTimOmMNeg2Ni92CmaTt2RAk-m=HVSNdNuO8sTJ8q@mail.gmail.com>
-References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
-	<AANLkTikJ3UTQ-D01FX8fSEGgcuG-fXEhAw6h4z9pwkRX@mail.gmail.com>
-	<AANLkTinBpNA9VGB3druyijTKVhK4aDLDc-f=MgKZ4NK6@mail.gmail.com>
-	<AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
-	<AANLkTimNx5EqicJEAX_wZaz39paKusrDd4CemLcMQ3Qe@mail.gmail.com>
-	<AANLkTi=w+zKPxdwWZ+-=8zbaagqjGPJyKRxOcku6kM7Y@mail.gmail.com>
-	<AANLkTim-GWLaibEL1O=fcCcuG0qgrO2=qY1k_iKdxJQi@mail.gmail.com>
-	<AANLkTikvRdCuPHkxt7=uz7MsVDugaZ4JRO=u_iVJfR4M@mail.gmail.com>
-	<AANLkTincaN6in-9F-jUFygCx6-=DGW_9ju=Ve1QbXWSf@mail.gmail.com>
-	<AANLkTimOmMNeg2Ni92CmaTt2RAk-m=HVSNdNuO8sTJ8q@mail.gmail.com>
-Date: Tue, 14 Dec 2010 20:27:18 +0100
-Message-ID: <AANLkTim7-ZpO5nQ1Up=rxLJVbCLNJqfbiUGvSnsrONay@mail.gmail.com>
-Subject: Re: Faster flash_eraseall for NOR flash
-From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Content-Type: multipart/mixed; boundary=0023547c8ad3282ae4049763cf2f
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1292343878.2538.80.camel@localhost>
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net,
+	richard -rw- weinberger <richard.weinberger@gmail.com>,
+	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,100 +36,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0023547c8ad3282ae4049763cf2f
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 14, 2010 at 4:47 PM, Mike Frysinger <vapier.adi@gmail.com> wrot=
-e:
-> On Tue, Dec 14, 2010 at 10:46, =C3=98yvind Harboe wrote:
->> I'll see about getting this done. Don't know when though, if
->> someone beats me to the punch here, no loss :-)
->
-> np; take your time. =C2=A0thanks for the improvements!
+On Tue, Dec 14, 2010 at 06:24:38PM +0200, Artem Bityutskiy wrote:
+> But I think your solution is a bit dirty, because it adds a great deal
+> of little 'if HAS_IOMEM' and '#ifdef CONFIG_HAS_IOMEM' to many places.
+> This is error-prone.
 
-This is the server, right?
+The intent of that patch was to allow as much of the mtd subsystem to
+compile as possible. My thinking was to try and rectify the fact that
+uml has gone without mtd (and hence jffs2) support for years even though
+much of it works just fine. I think the entire subsystem being marked
+BROKEN in kconfig kept anyone from experimenting with it.
 
-http://git.infradead.org/mtd-utils.git
+The patch I sent was actually a reaction to feedback I got from Sam
+Ravnborg on my last attempt (um, three years ago :/ ) in which he
+suggested pushing down the ifdefs closer to their points of use. But I
+agree, the minimal version has a much smaller footprint.
 
-I made a stab at trying to get something to build at least.
+The version below still meets the goal of allowing jffs2-on-block2mtd
+usage under uml but is much smaller because only the mtd core is
+included. Compile-tested on i386, x86_64, um/i386, and um/x86_64.
 
---=20
-=C3=98yvind Harboe
+> Instead, you should solve this problem in UML code. I do not know how,
+> but may be you can add readb/writeb there which actually do nothing or
+> print a scary warning, or do BUG(), and let things which use them just
+> fail run-time.
 
-Can Zylin Consulting help on your project?
+Something like this could work, but it would be error-prone for anyone
+else who attempts using iomem-requiring drivers on uml. Instead of
+getting obvious compile failures we'd have broken drivers that BUG() or
+emit scary warnings. That doesn't seem to me like an improvement.
 
-US toll free 1-866-980-3434 / International +47 51 63 25 00
+Jason
 
-http://www.zylin.com/zy1000.html
-ARM7 ARM9 ARM11 XScale Cortex
-JTAG debugger and flash programmer
+--
 
---0023547c8ad3282ae4049763cf2f
-Content-Type: text/x-patch; charset=US-ASCII;
-	name="0001-flash_erase-wip-to-add-NOR-skip-erased-block-option.patch"
-Content-Disposition: attachment;
-	filename="0001-flash_erase-wip-to-add-NOR-skip-erased-block-option.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ghp6lzpo0
+Allow parts of drivers/mtd to compile on uml by pushing the HAS_IOMEM
+dependencies down closer to the parts of mtd that actually need it.
+This allows enough of mtd to build to let jffs2 be used on uml.
 
-RnJvbSA4OWFhYTVkYzgwMWMwNWUxZDExMTQxZmE3ZDA3ODliMDcyYmRlNjU1IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiA9P1VURi04P3E/PUMzPTk4eXZpbmQ9MjBIYXJib2U/PSA8b3l2
-aW5kLmhhcmJvZUB6eWxpbi5jb20+CkRhdGU6IFR1ZSwgMTQgRGVjIDIwMTAgMjA6MjQ6MTAgKzAx
-MDAKU3ViamVjdDogW1BBVENIXSBmbGFzaF9lcmFzZTogd2lwIHRvIGFkZCBOT1Igc2tpcCBlcmFz
-ZWQgYmxvY2sgb3B0aW9uCgotLS0KIGZsYXNoX2VyYXNlLmMgfCAgIDUzICsrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystCiAxIGZpbGVzIGNoYW5nZWQs
-IDUyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZmxhc2hfZXJh
-c2UuYyBiL2ZsYXNoX2VyYXNlLmMKaW5kZXggMWE3YjUyZS4uMTAwMDM5NyAxMDA2NDQKLS0tIGEv
-Zmxhc2hfZXJhc2UuYworKysgYi9mbGFzaF9lcmFzZS5jCkBAIC00Niw2ICs0Niw3IEBAIHN0YXRp
-YyBpbnQgcXVpZXQ7CQkvKiB0cnVlIC0tIGRvbid0IG91dHB1dCBwcm9ncmVzcyAqLwogc3RhdGlj
-IGludCBqZmZzMjsJCS8qIGZvcm1hdCBmb3IgamZmczIgdXNhZ2UgKi8KIHN0YXRpYyBpbnQgbm9z
-a2lwYmFkOwkJLyogZG8gbm90IHNraXAgYmFkIGJsb2NrcyAqLwogc3RhdGljIGludCB1bmxvY2s7
-CQkvKiB1bmxvY2sgc2VjdG9ycyBiZWZvcmUgZXJhc2luZyAqLworc3RhdGljIGludCBza2lwX2Vy
-YXNlZDsJCS8qIFNraXAgZXJhc2VkIE5PUiBmbGFzaCBibG9ja3MsIGluY2x1ZGluZyBjbGVhbm1h
-cmtlciBjaGVjayAqLwogCiBzdGF0aWMgc3RydWN0IGpmZnMyX3Vua25vd25fbm9kZSBjbGVhbm1h
-cmtlcjsKIGludCB0YXJnZXRfZW5kaWFuID0gX19CWVRFX09SREVSOwpAQCAtNjgsNiArNjksNyBA
-QCBzdGF0aWMgdm9pZCBkaXNwbGF5X2hlbHAgKHZvaWQpCiAJCQkiICAtTiwgLS1ub3NraXBiYWQg
-ICBkb24ndCBza2lwIGJhZCBibG9ja3NcbiIKIAkJCSIgIC11LCAtLXVubG9jayAgICAgIHVubG9j
-ayBzZWN0b3JzIGJlZm9yZSBlcmFzaW5nXG4iCiAJCQkiICAtcSwgLS1xdWlldCAgICAgICBkaXNw
-bGF5IHByb2dyZXNzIG1lc3NhZ2VzXG4iCisJCQkiICAtcywgLS1za2lwLWVyYXNlZCBza2lwIGVy
-YXNlZCBOT1Igc2VjdG9yc1xuIgogCQkJIiAgICAgIC0tc2lsZW50ICAgICAgc2FtZSBhcyAtLXF1
-aWV0XG4iCiAJCQkiICAgICAgLS1oZWxwICAgICAgICBkaXNwbGF5IHRoaXMgaGVscCBhbmQgZXhp
-dFxuIgogCQkJIiAgICAgIC0tdmVyc2lvbiAgICAgb3V0cHV0IHZlcnNpb24gaW5mb3JtYXRpb24g
-YW5kIGV4aXRcbiIsCkBAIC0xMDQsNyArMTA2LDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIg
-KmFyZ3ZbXSkKIAkgKi8KIAlmb3IgKDs7KSB7CiAJCWludCBvcHRpb25faW5kZXggPSAwOwotCQlz
-dGF0aWMgY29uc3QgY2hhciAqc2hvcnRfb3B0aW9ucyA9ICJqTnF1IjsKKwkJc3RhdGljIGNvbnN0
-IGNoYXIgKnNob3J0X29wdGlvbnMgPSAic2pOcXUiOwogCQlzdGF0aWMgY29uc3Qgc3RydWN0IG9w
-dGlvbiBsb25nX29wdGlvbnNbXSA9IHsKIAkJCXsiaGVscCIsIG5vX2FyZ3VtZW50LCAwLCAwfSwK
-IAkJCXsidmVyc2lvbiIsIG5vX2FyZ3VtZW50LCAwLCAwfSwKQEAgLTExMyw2ICsxMTUsNyBAQCBp
-bnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCQkJeyJxdWlldCIsIG5vX2FyZ3VtZW50
-LCAwLCAncSd9LAogCQkJeyJzaWxlbnQiLCBub19hcmd1bWVudCwgMCwgJ3EnfSwKIAkJCXsidW5s
-b2NrIiwgbm9fYXJndW1lbnQsIDAsICd1J30sCisJCQl7InNraXAtZXJhc2VkIiwgbm9fYXJndW1l
-bnQsIDAsICdzJ30sCiAKIAkJCXswLCAwLCAwLCAwfSwKIAkJfTsKQEAgLTE0NSw2ICsxNDgsOSBA
-QCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCQljYXNlICd1JzoKIAkJCXVubG9j
-ayA9IDE7CiAJCQlicmVhazsKKwkJY2FzZSAncyc6CisJCQlza2lwX2VyYXNlZCA9IDE7CisJCQli
-cmVhazsKIAkJY2FzZSAnPyc6CiAJCQllcnJvciA9IDE7CiAJCQlicmVhazsKQEAgLTI1MCw4ICsy
-NTYsNTMgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAkJCX0KIAkJfQogCisJ
-CS8qIENhbiB3ZSBza2lwIHRoaXMgb25lIGlmIGl0IGlzIGFscmVhZHkgZXJhc2VkPworCQkgKiBQ
-ZXJoYXBzIE5BTkQgcGVyZm9ybWFuY2UgY291bGQgYmUgaW1wcm92ZWQgYnkgYWRkaW5nIHN1cHBv
-cnQgZm9yCisJCSAqIHRob3NlIGNsZWFubWFya2VycyBhcyB3ZWxsPworCQkgKgorCQkgKiBDdXJy
-ZW50bHkgdGhpcyBvbmx5IHdvcmtzIHdpdGggSkZGUzIgTk9SIGNsZWFuIG1hcmtlcnMKKwkJICov
-CisJCWludCBza2lwID0gMDsKKwkJaWYgKHNraXBfZXJhc2VkICYmICFpc05BTkQpIHsKKwkJCXVp
-bnQ4X3QgKnRtcCA9IG1hbGxvYyhtdGQuZWJfc2l6ZSk7CisJCQlpZiAodG1wID09IE5VTEwpIHsK
-KwkJCSAgcmV0dXJuIGVycm1zZygiT3V0IG9mIG1lbW9yeSIpOworCQkJfQorCQkJc3NpemVfdCBh
-Y3R1YWwgPSBwcmVhZChmZCwgdG1wLCBtdGQuZWJfc2l6ZSwgb2Zmc2V0KTsKKwkJCWlmIChhY3R1
-YWwgIT0gbXRkLmViX3NpemUpIHsKKwkJCSAgcmV0dXJuIGVycm1zZygiJXM6IE1URCByZWFkIGZh
-aWx1cmU6ICVzIiwgbXRkX2RldmljZSwgc3RyZXJyb3IoZXJybm8pKTsKKwkJCX0KKwkJCXNzaXpl
-X3QgaSA9IDA7CisJCQlpbnQgb2sgPSAxOworCisJCQlpZiAoamZmczIpIHsKKwkJCQlvayA9IG1l
-bWNtcCh0bXAsICZjbGVhbm1hcmtlciwgc2l6ZW9mIChjbGVhbm1hcmtlcikpID09IDA7CisJCQkJ
-aSA9IHNpemVvZiAoY2xlYW5tYXJrZXIpOworCQkJfQorCisJCQlpZiAob2spCisJCQl7CisJCQkJ
-Zm9yICg7IGkgPCBtdGQuZWJfc2l6ZTsgaSsrKQorCQkJCXsKKwkJCQkJaWYgKHRtcFtpXSAhPSAw
-eGZmKQorCQkJCQkJYnJlYWs7CisJCQkJfQorCQkJCWlmIChpID09IG10ZC5lYl9zaXplKQorCQkJ
-CXsKKwkJCQkJLyogWXVwISB3ZSBjYW4gc2tpcCEgSGVyZSB3ZSBjb3VsZCBpbXByb3ZlIHRoaW5n
-cyBieQorCQkJCQkgKiBhZGRpbmcgc3VwcG9ydCBmb3IgTkFORCBjbGVhbm1hcmtlcnMKKwkJCQkJ
-ICovCisJCQkJCXNraXAgPSAxOworCQkJCX0KKwkJCX0KKwkJCWZyZWUodG1wKTsKKwkJfQorCiAJ
-CXNob3dfcHJvZ3Jlc3MoJm10ZCwgb2Zmc2V0LCBlYiwgZWJfc3RhcnQsIGViX2NudCk7CiAKKwkJ
-aWYgKHNraXApCisJCQljb250aW51ZTsKKwogCQlpZiAodW5sb2NrKSB7CiAJCQlpZiAobXRkX3Vu
-bG9jaygmbXRkLCBmZCwgZWIpICE9IDApIHsKIAkJCQlzeXNfZXJybXNnKCIlczogTVREIHVubG9j
-ayBmYWlsdXJlIiwgbXRkX2RldmljZSk7Ci0tIAoxLjcuMC40Cgo=
---0023547c8ad3282ae4049763cf2f--
+Signed-off-by: Jason Lunz <lunz@acm.org>
+---
+ arch/um/Kconfig.rest    |    4 +---
+ drivers/mtd/Kconfig     |    7 +++++--
+ drivers/mtd/Makefile    |    3 ++-
+ drivers/mtd/mtdchar.c   |    4 ++++
+ include/linux/mtd/map.h |   18 +++++++++---------
+ 5 files changed, 21 insertions(+), 15 deletions(-)
+
+diff --git a/arch/um/Kconfig.rest b/arch/um/Kconfig.rest
+index 0ccad0f..e34f399 100644
+--- a/arch/um/Kconfig.rest
++++ b/arch/um/Kconfig.rest
+@@ -28,9 +28,7 @@ source "drivers/scsi/Kconfig"
+ 
+ source "drivers/md/Kconfig"
+ 
+-if BROKEN
+-	source "drivers/mtd/Kconfig"
+-endif
++source "drivers/mtd/Kconfig"
+ 
+ source "drivers/leds/Kconfig"
+ 
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 1e2cbf5..7537654 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -1,6 +1,5 @@
+ menuconfig MTD
+ 	tristate "Memory Technology Device (MTD) support"
+-	depends on HAS_IOMEM
+ 	help
+ 	  Memory Technology Devices are flash, RAM and similar chips, often
+ 	  used for solid state file systems on embedded devices. This option
+@@ -307,7 +306,7 @@ config SSFDC
+ 
+ config SM_FTL
+ 	tristate "SmartMedia/xD new translation layer"
+-	depends on EXPERIMENTAL && BLOCK
++	depends on EXPERIMENTAL && BLOCK && HAS_IOMEM
+ 	select MTD_BLKDEVS
+ 	select MTD_NAND_ECC
+ 	help
+@@ -330,6 +329,8 @@ config MTD_OOPS
+ 	  To use, add console=ttyMTDx to the kernel command line,
+ 	  where x is the MTD device number to use.
+ 
++if HAS_IOMEM
++
+ source "drivers/mtd/chips/Kconfig"
+ 
+ source "drivers/mtd/maps/Kconfig"
+@@ -342,6 +343,8 @@ source "drivers/mtd/onenand/Kconfig"
+ 
+ source "drivers/mtd/lpddr/Kconfig"
+ 
++endif # HAS_IOMEM
++
+ source "drivers/mtd/ubi/Kconfig"
+ 
+ endif # MTD
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 760abc5..74a03bd 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -30,6 +30,7 @@ obj-$(CONFIG_MTD_OOPS)		+= mtdoops.o
+ nftl-objs		:= nftlcore.o nftlmount.o
+ inftl-objs		:= inftlcore.o inftlmount.o
+ 
+-obj-y		+= chips/ lpddr/ maps/ devices/ nand/ onenand/ tests/
++obj-y			+= tests/
++obj-$(CONFIG_HAS_IOMEM)	+= chips/ lpddr/ maps/ devices/ nand/ onenand/
+ 
+ obj-$(CONFIG_MTD_UBI)		+= ubi/
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 4759d82..a434354 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -1075,6 +1075,7 @@ static unsigned long mtd_get_unmapped_area(struct file *file,
+ /*
+  * set up a mapping for shared memory segments
+  */
++#ifdef CONFIG_HAS_IOMEM
+ static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
+ {
+ #ifdef CONFIG_MMU
+@@ -1113,6 +1114,7 @@ static int mtd_mmap(struct file *file, struct vm_area_struct *vma)
+ 	return vma->vm_flags & VM_SHARED ? 0 : -ENOSYS;
+ #endif
+ }
++#endif
+ 
+ static const struct file_operations mtd_fops = {
+ 	.owner		= THIS_MODULE,
+@@ -1125,7 +1127,9 @@ static const struct file_operations mtd_fops = {
+ #endif
+ 	.open		= mtd_open,
+ 	.release	= mtd_close,
++#ifdef CONFIG_HAS_IOMEM
+ 	.mmap		= mtd_mmap,
++#endif
+ #ifndef CONFIG_MMU
+ 	.get_unmapped_area = mtd_get_unmapped_area,
+ #endif
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
+index a9e6ba4..3d9f7e0 100644
+--- a/include/linux/mtd/map.h
++++ b/include/linux/mtd/map.h
+@@ -388,6 +388,15 @@ static inline map_word map_word_ff(struct map_info *map)
+ 	return r;
+ }
+ 
++#ifdef CONFIG_MTD_COMPLEX_MAPPINGS
++#define map_read(map, ofs) (map)->read(map, ofs)
++#define map_copy_from(map, to, from, len) (map)->copy_from(map, to, from, len)
++#define map_write(map, datum, ofs) (map)->write(map, datum, ofs)
++#define map_copy_to(map, to, from, len) (map)->copy_to(map, to, from, len)
++
++extern void simple_map_init(struct map_info *);
++#define map_is_linear(map) (map->phys != NO_XIP)
++
+ static inline map_word inline_map_read(struct map_info *map, unsigned long ofs)
+ {
+ 	map_word r;
+@@ -440,15 +449,6 @@ static inline void inline_map_copy_to(struct map_info *map, unsigned long to, co
+ 	memcpy_toio(map->virt + to, from, len);
+ }
+ 
+-#ifdef CONFIG_MTD_COMPLEX_MAPPINGS
+-#define map_read(map, ofs) (map)->read(map, ofs)
+-#define map_copy_from(map, to, from, len) (map)->copy_from(map, to, from, len)
+-#define map_write(map, datum, ofs) (map)->write(map, datum, ofs)
+-#define map_copy_to(map, to, from, len) (map)->copy_to(map, to, from, len)
+-
+-extern void simple_map_init(struct map_info *);
+-#define map_is_linear(map) (map->phys != NO_XIP)
+-
+ #else
+ #define map_read(map, ofs) inline_map_read(map, ofs)
+ #define map_copy_from(map, to, from, len) inline_map_copy_from(map, to, from, len)
+-- 
+1.7.2.3
