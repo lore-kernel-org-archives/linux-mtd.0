@@ -1,27 +1,24 @@
-Received: from cpanel5.proisp.no ([209.85.100.29])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSWt7-0000Ra-GN
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 15:34:02 +0000
-Received: from mail-yw0-f49.google.com ([209.85.213.49]:62449)
-	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
-	(envelope-from <oyvind.harboe@zylin.com>) id 1PSWt6-0004b6-0D
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:34:00 +0100
-Received: by ywf7 with SMTP id 7so433006ywf.36
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSWxb-0001HK-KN
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 15:38:40 +0000
+Received: by wwb17 with SMTP id 17so643541wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 07:33:59 -0800 (PST)
+	Tue, 14 Dec 2010 07:38:38 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTi=w+zKPxdwWZ+-=8zbaagqjGPJyKRxOcku6kM7Y@mail.gmail.com>
+In-Reply-To: <AANLkTim-GWLaibEL1O=fcCcuG0qgrO2=qY1k_iKdxJQi@mail.gmail.com>
 References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
 	<AANLkTikJ3UTQ-D01FX8fSEGgcuG-fXEhAw6h4z9pwkRX@mail.gmail.com>
 	<AANLkTinBpNA9VGB3druyijTKVhK4aDLDc-f=MgKZ4NK6@mail.gmail.com>
 	<AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
 	<AANLkTimNx5EqicJEAX_wZaz39paKusrDd4CemLcMQ3Qe@mail.gmail.com>
 	<AANLkTi=w+zKPxdwWZ+-=8zbaagqjGPJyKRxOcku6kM7Y@mail.gmail.com>
-Date: Tue, 14 Dec 2010 16:33:59 +0100
-Message-ID: <AANLkTim-GWLaibEL1O=fcCcuG0qgrO2=qY1k_iKdxJQi@mail.gmail.com>
+	<AANLkTim-GWLaibEL1O=fcCcuG0qgrO2=qY1k_iKdxJQi@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 14 Dec 2010 10:38:17 -0500
+Message-ID: <AANLkTikvRdCuPHkxt7=uz7MsVDugaZ4JRO=u_iVJfR4M@mail.gmail.com>
 Subject: Re: Faster flash_eraseall for NOR flash
-From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
+To: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -34,19 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> the only thing it changes in your original patch is to remove the type
-> checking ?
+On Tue, Dec 14, 2010 at 10:33, =C3=98yvind Harboe wrote:
+>> the only thing it changes in your original patch is to remove the type
+>> checking ?
+>
+> No. There is a different code path for writing the cleanmarkers.
 
-No. There is a different code path for writing the cleanmarkers.
+OK, i missed that.  just change the code to issue a warning when
+someone tries to use this option on a NAND device.  something like
+"--skip-erased: sorry, no support (yet) for NAND devices".
 
-
---=20
-=C3=98yvind Harboe
-
-Can Zylin Consulting help on your project?
-
-US toll free 1-866-980-3434 / International +47 51 63 25 00
-
-http://www.zylin.com/zy1000.html
-ARM7 ARM9 ARM11 XScale Cortex
-JTAG debugger and flash programmer
+in looking at the original patch, i noticed something else ... dont
+mix variable decls and code.  i dont think mtd-utils has moved on to
+newer C standards/styles yet and support that.  for example, the
+"ssize_t i" decl after a bunch of if statements.
+-mike
