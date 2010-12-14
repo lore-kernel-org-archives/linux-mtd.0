@@ -1,20 +1,35 @@
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSXMx-0003XO-JY
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:04:52 +0000
-Subject: Re: [PATCH] mtd: add NOR flash write buffer size reporting for
-	UBI/UBIFS
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Anatolij Gustschin <agust@denx.de>
-In-Reply-To: <1291667217-13097-1-git-send-email-agust@denx.de>
-References: <1291667217-13097-1-git-send-email-agust@denx.de>
+	id 1PSXgp-0005EM-AW
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:25:24 +0000
+Received: by eyd9 with SMTP id 9so527284eyd.22
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Dec 2010 08:25:21 -0800 (PST)
+Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jason Lunz <lunz@acm.org>
+In-Reply-To: <20101207182012.GA10546@falooley.org>
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<20071024011712.GA3762@falooley.org>
+	<1193208689.26096.48.camel@pmac.infradead.org>
+	<20071227181524.GA19051@falooley.org>
+	<20071228174853.GA4252@uranus.ravnborg.org>
+	<20101207072919.GA8511@falooley.org>
+	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
+	<20101207182012.GA10546@falooley.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 14 Dec 2010 18:01:40 +0200
-Message-ID: <1292342500.2538.65.camel@localhost>
+Date: Tue, 14 Dec 2010 18:24:38 +0200
+Message-ID: <1292343878.2538.80.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: Artem.Bityutskiy@nokia.com
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net,
+	richard -rw- weinberger <richard.weinberger@gmail.com>,
+	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,96 +39,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, thank you for the patch, but I have few requests.
-
-On Mon, 2010-12-06 at 21:26 +0100, Anatolij Gustschin wrote:
-> Add "write_buffer_size" field to struct mtd_info. This field
-> will be used to set minimal I/O unit size (min_io_size) for UBI
-> on NOR flash. In case of NOR flash minimal I/O size must be equal
-> to the maximal size of the write buffer used by embedded flash
-> programming algorithm.
+On Tue, 2010-12-07 at 10:20 -0800, Jason Lunz wrote:
+> On Tue, Dec 07, 2010 at 10:39:41AM +0100, richard -rw- weinberger wrote:
+> > On Tue, Dec 7, 2010 at 8:29 AM, Jason Lunz <lunz@acm.org> wrote:
+> > >
+> > > Allow parts of drivers/mtd to compile on uml by pushing the HAS_IOMEM
+> > > dependencies down closer to the parts of mtd that actually need it.
+> > > This allows enough of mtd to build to let jffs2 be used on uml.
+> > >
+> > > Signed-off-by: Jason Lunz <lunz@acm.org>
+> > > ---
+> > >  arch/um/Kconfig.rest        |    4 +---
+> > >  drivers/mtd/Kconfig         |    1 -
+> > >  drivers/mtd/Makefile        |    3 ++-
+> > >  drivers/mtd/chips/Kconfig   |    4 ++++
+> > >  drivers/mtd/devices/Kconfig |    8 ++++++++
+> > >  drivers/mtd/maps/Kconfig    |    4 ++++
+> > >  drivers/mtd/mtdchar.c       |    4 ++++
+> > >  drivers/mtd/nand/Kconfig    |    3 +++
+> > >  drivers/mtd/onenand/Kconfig |    3 +++
+> > >  include/linux/mtd/map.h     |    2 ++
+> > >  10 files changed, 31 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/arch/um/Kconfig.rest b/arch/um/Kconfig.rest
+> > > index 0ccad0f..e34f399 100644
+> > > --- a/arch/um/Kconfig.rest
+> > > +++ b/arch/um/Kconfig.rest
+> > > @@ -28,9 +28,7 @@ source "drivers/scsi/Kconfig"
+> > >
+> > >  source "drivers/md/Kconfig"
+> > >
+> > > -if BROKEN
+> > > -       source "drivers/mtd/Kconfig"
+> > > -endif
+> > > +source "drivers/mtd/Kconfig"
+> > 
+> > drivers/mtd was already marked as broken when we moved over to git (2.6.12-rc2).
+> > 
+> > Do you exactly know why it was marked and fixes this patch all issues?
 > 
-> Flash programming from prepared write buffer performed in one
-> programming operation could be interrupted by a power cut or
-> a system reset causing corrupted (partially written) areas in
-> a flash sector. Knowing the size of potentially corrupted areas
-> UBIFS scanning and recovery algorithms are able to perform
-> successful recovery.
+> I don't know exactly why it was originally marked BROKEN. I imagine it
+> was because most of the low-level mtd drivers need readb/writeb and
+> friends, which don't exist on uml. But now that mtd has virtual ram- and
+> blockdev-backed drivers, that's no longer sufficient reason to omit the
+> whole subsystem.
 > 
-> Signed-off-by: Anatolij Gustschin <agust@denx.de>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c |    1 +
->  drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++++
->  drivers/mtd/chips/cfi_cmdset_0020.c |    1 +
->  drivers/mtd/mtdconcat.c             |    1 +
->  drivers/mtd/mtdpart.c               |    1 +
->  drivers/mtd/ubi/build.c             |    5 ++++-
->  include/linux/mtd/mtd.h             |   12 ++++++++++++
->  7 files changed, 24 insertions(+), 1 deletions(-)
+> I can't claim that this fixes all possible issues of course, but I've
+> privately been using this patch to run block2mtd under uml for years. My
+> original motivation was to allow the use of jffs2 in a uml-based test
+> environment and for that it's worked very well.
 
-Could you please keep MTD and UBI changes in separate patches?
+But I think your solution is a bit dirty, because it adds a great deal
+of little 'if HAS_IOMEM' and '#ifdef CONFIG_HAS_IOMEM' to many places.
+This is error-prone.
 
->  	/*
-> diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-> index fe8d77e..cb902d1 100644
-> --- a/include/linux/mtd/mtd.h
-> +++ b/include/linux/mtd/mtd.h
-> @@ -144,6 +144,18 @@ struct mtd_info {
->  	 */
->  	uint32_t writesize;
->  
-> +	/*
-> +	 * Sets minimal I/O unit size (min_io_size) for UBI on NOR flash.
-> +	 * In case of NOR flash minimal I/O size must be equal to the size
-> +	 * of the write buffer used by internal flash programming algorithm.
-> +	 * This requirement results from the fact that the flash programming
-> +	 * operation could be interrupted by a power cut or a system reset
-> +	 * causing corrupted (partially written) areas in a flash sector.
-> +	 * Knowing the size of potentially corrupted areas UBIFS scanning
-> +	 * and recovery algorithms are able to perform successful recovery.
-> +	 */
-> +	uint32_t write_buffer_size;
+Instead, you should solve this problem in UML code. I do not know how,
+but may be you can add readb/writeb there which actually do nothing or
+print a scary warning, or do BUG(), and let things which use them just
+fail run-time.
 
-Err, no, please, add comment like that to UBI, because it MTD subsystem
-is wrong place to discuss UBIFS issues.
+Anyway, please, think about a solution which needs few changes in UML
+code instead of myriads of small little changes in many places.
 
-But here, instead, explain what is this and how is it different to
-writesize.
-
-Also, what write_buffer_size is in case of NAND? I think it should be
-equivalent to mtd->writesize.
-
-If we think in terms of general MTD device model:
-
-1. mtd->writesize is the minimal amount of bytes you can write at a
-time.
-
-2. but the MTD device can have a "write-buffer", which means it can
-write multiple mtd->writesize chunks at a time. And the size of this
-buffer has to be "mtd->write_buffer_size" bytes.
-
-So if you write 4 * mtd->writesize bytes, and mtd->write_buffer_size is
-2*mtd->writesize, then MTD driver can (but does not have to) do 2
-mtd->writesize write operations, not 4.
-
-So I expect a comment like that instead.
-
-To conclude, can you please:
-
-0. Submit an mtd.h patch which just adds the field and nice comment.
-1. Submit a NOR-specific patch.
-2. Submit a NAND-specific patch - just do mtd->write_buffer_size =
-mtd->writesuze in 'nand_scan_tail()'.
-3. Submit a OneNAND-specific patch - do the same in 'onenand_scan()'.
-4. Submit a patch for mtdpart and mtdconcat.
-5. Submit an UBI patch
-
-Yes, it is more job for you, but I hope I'll not scary you off with this
-request :-) Thanks!
-
-N.B. And actually, looking at other fields in mtd_info (e.g.,
-numeraseregions) makes me think that it is better to name the new field
-"writebufsize" instead. This would be more consistent and shorter.
+Thanks!
 
 -- 
 Best Regards,
