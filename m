@@ -1,17 +1,33 @@
-Subject: Re: [PATCH] MTD: NAND: ams-delta: convert to platform driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-In-Reply-To: <201012111840.05270.jkrzyszt@tis.icnet.pl>
-References: <201012111840.05270.jkrzyszt@tis.icnet.pl>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 14 Dec 2010 19:00:23 +0200
-Message-ID: <1292346023.2538.103.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Tony Lindgren <tony@atomide.com>, David Woodhouse <dwmw2@infradead.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from cpanel5.proisp.no ([209.85.100.29])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSaX2-0003jR-2V
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 19:27:29 +0000
+Received: from mail-gx0-f176.google.com ([209.85.161.176]:38586)
+	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
+	(envelope-from <oyvind.harboe@zylin.com>) id 1PSaWz-0006WT-Aj
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 20:27:25 +0100
+Received: by gxk4 with SMTP id 4so717692gxk.21
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 14 Dec 2010 11:27:24 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTimOmMNeg2Ni92CmaTt2RAk-m=HVSNdNuO8sTJ8q@mail.gmail.com>
+References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
+	<AANLkTikJ3UTQ-D01FX8fSEGgcuG-fXEhAw6h4z9pwkRX@mail.gmail.com>
+	<AANLkTinBpNA9VGB3druyijTKVhK4aDLDc-f=MgKZ4NK6@mail.gmail.com>
+	<AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
+	<AANLkTimNx5EqicJEAX_wZaz39paKusrDd4CemLcMQ3Qe@mail.gmail.com>
+	<AANLkTi=w+zKPxdwWZ+-=8zbaagqjGPJyKRxOcku6kM7Y@mail.gmail.com>
+	<AANLkTim-GWLaibEL1O=fcCcuG0qgrO2=qY1k_iKdxJQi@mail.gmail.com>
+	<AANLkTikvRdCuPHkxt7=uz7MsVDugaZ4JRO=u_iVJfR4M@mail.gmail.com>
+	<AANLkTincaN6in-9F-jUFygCx6-=DGW_9ju=Ve1QbXWSf@mail.gmail.com>
+	<AANLkTimOmMNeg2Ni92CmaTt2RAk-m=HVSNdNuO8sTJ8q@mail.gmail.com>
+Date: Tue, 14 Dec 2010 20:27:18 +0100
+Message-ID: <AANLkTim7-ZpO5nQ1Up=rxLJVbCLNJqfbiUGvSnsrONay@mail.gmail.com>
+Subject: Re: Faster flash_eraseall for NOR flash
+From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+Content-Type: multipart/mixed; boundary=0023547c8ad3282ae4049763cf2f
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +37,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2010-12-11 at 18:40 +0100, Janusz Krzysztofik wrote:
-> In its current form, the driver may break unrelated machines if built into the 
-> kernel, hence is not suitable for inclusion into a kernel built for multiple 
-> OMAP1 machines. Convert it to a platform driver, that should be free from that 
-> issue.
-> 
-> While being at it, get rid of depreciated omap_read/write(), use ioremap() 
-> instead.
-> 
-> Created and tested against linux-2.6.37-rc5 on Amstrad Delta.
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+--0023547c8ad3282ae4049763cf2f
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, but would it please be possible to split this few small patches -
-this one is too difficult to review, at least for me.
+On Tue, Dec 14, 2010 at 4:47 PM, Mike Frysinger <vapier.adi@gmail.com> wrot=
+e:
+> On Tue, Dec 14, 2010 at 10:46, =C3=98yvind Harboe wrote:
+>> I'll see about getting this done. Don't know when though, if
+>> someone beats me to the punch here, no loss :-)
+>
+> np; take your time. =C2=A0thanks for the improvements!
 
-Thanks!
+This is the server, right?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+http://git.infradead.org/mtd-utils.git
+
+I made a stab at trying to get something to build at least.
+
+--=20
+=C3=98yvind Harboe
+
+Can Zylin Consulting help on your project?
+
+US toll free 1-866-980-3434 / International +47 51 63 25 00
+
+http://www.zylin.com/zy1000.html
+ARM7 ARM9 ARM11 XScale Cortex
+JTAG debugger and flash programmer
+
+--0023547c8ad3282ae4049763cf2f
+Content-Type: text/x-patch; charset=US-ASCII;
+	name="0001-flash_erase-wip-to-add-NOR-skip-erased-block-option.patch"
+Content-Disposition: attachment;
+	filename="0001-flash_erase-wip-to-add-NOR-skip-erased-block-option.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ghp6lzpo0
+
+RnJvbSA4OWFhYTVkYzgwMWMwNWUxZDExMTQxZmE3ZDA3ODliMDcyYmRlNjU1IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiA9P1VURi04P3E/PUMzPTk4eXZpbmQ9MjBIYXJib2U/PSA8b3l2
+aW5kLmhhcmJvZUB6eWxpbi5jb20+CkRhdGU6IFR1ZSwgMTQgRGVjIDIwMTAgMjA6MjQ6MTAgKzAx
+MDAKU3ViamVjdDogW1BBVENIXSBmbGFzaF9lcmFzZTogd2lwIHRvIGFkZCBOT1Igc2tpcCBlcmFz
+ZWQgYmxvY2sgb3B0aW9uCgotLS0KIGZsYXNoX2VyYXNlLmMgfCAgIDUzICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystCiAxIGZpbGVzIGNoYW5nZWQs
+IDUyIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZmxhc2hfZXJh
+c2UuYyBiL2ZsYXNoX2VyYXNlLmMKaW5kZXggMWE3YjUyZS4uMTAwMDM5NyAxMDA2NDQKLS0tIGEv
+Zmxhc2hfZXJhc2UuYworKysgYi9mbGFzaF9lcmFzZS5jCkBAIC00Niw2ICs0Niw3IEBAIHN0YXRp
+YyBpbnQgcXVpZXQ7CQkvKiB0cnVlIC0tIGRvbid0IG91dHB1dCBwcm9ncmVzcyAqLwogc3RhdGlj
+IGludCBqZmZzMjsJCS8qIGZvcm1hdCBmb3IgamZmczIgdXNhZ2UgKi8KIHN0YXRpYyBpbnQgbm9z
+a2lwYmFkOwkJLyogZG8gbm90IHNraXAgYmFkIGJsb2NrcyAqLwogc3RhdGljIGludCB1bmxvY2s7
+CQkvKiB1bmxvY2sgc2VjdG9ycyBiZWZvcmUgZXJhc2luZyAqLworc3RhdGljIGludCBza2lwX2Vy
+YXNlZDsJCS8qIFNraXAgZXJhc2VkIE5PUiBmbGFzaCBibG9ja3MsIGluY2x1ZGluZyBjbGVhbm1h
+cmtlciBjaGVjayAqLwogCiBzdGF0aWMgc3RydWN0IGpmZnMyX3Vua25vd25fbm9kZSBjbGVhbm1h
+cmtlcjsKIGludCB0YXJnZXRfZW5kaWFuID0gX19CWVRFX09SREVSOwpAQCAtNjgsNiArNjksNyBA
+QCBzdGF0aWMgdm9pZCBkaXNwbGF5X2hlbHAgKHZvaWQpCiAJCQkiICAtTiwgLS1ub3NraXBiYWQg
+ICBkb24ndCBza2lwIGJhZCBibG9ja3NcbiIKIAkJCSIgIC11LCAtLXVubG9jayAgICAgIHVubG9j
+ayBzZWN0b3JzIGJlZm9yZSBlcmFzaW5nXG4iCiAJCQkiICAtcSwgLS1xdWlldCAgICAgICBkaXNw
+bGF5IHByb2dyZXNzIG1lc3NhZ2VzXG4iCisJCQkiICAtcywgLS1za2lwLWVyYXNlZCBza2lwIGVy
+YXNlZCBOT1Igc2VjdG9yc1xuIgogCQkJIiAgICAgIC0tc2lsZW50ICAgICAgc2FtZSBhcyAtLXF1
+aWV0XG4iCiAJCQkiICAgICAgLS1oZWxwICAgICAgICBkaXNwbGF5IHRoaXMgaGVscCBhbmQgZXhp
+dFxuIgogCQkJIiAgICAgIC0tdmVyc2lvbiAgICAgb3V0cHV0IHZlcnNpb24gaW5mb3JtYXRpb24g
+YW5kIGV4aXRcbiIsCkBAIC0xMDQsNyArMTA2LDcgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIg
+KmFyZ3ZbXSkKIAkgKi8KIAlmb3IgKDs7KSB7CiAJCWludCBvcHRpb25faW5kZXggPSAwOwotCQlz
+dGF0aWMgY29uc3QgY2hhciAqc2hvcnRfb3B0aW9ucyA9ICJqTnF1IjsKKwkJc3RhdGljIGNvbnN0
+IGNoYXIgKnNob3J0X29wdGlvbnMgPSAic2pOcXUiOwogCQlzdGF0aWMgY29uc3Qgc3RydWN0IG9w
+dGlvbiBsb25nX29wdGlvbnNbXSA9IHsKIAkJCXsiaGVscCIsIG5vX2FyZ3VtZW50LCAwLCAwfSwK
+IAkJCXsidmVyc2lvbiIsIG5vX2FyZ3VtZW50LCAwLCAwfSwKQEAgLTExMyw2ICsxMTUsNyBAQCBp
+bnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCQkJeyJxdWlldCIsIG5vX2FyZ3VtZW50
+LCAwLCAncSd9LAogCQkJeyJzaWxlbnQiLCBub19hcmd1bWVudCwgMCwgJ3EnfSwKIAkJCXsidW5s
+b2NrIiwgbm9fYXJndW1lbnQsIDAsICd1J30sCisJCQl7InNraXAtZXJhc2VkIiwgbm9fYXJndW1l
+bnQsIDAsICdzJ30sCiAKIAkJCXswLCAwLCAwLCAwfSwKIAkJfTsKQEAgLTE0NSw2ICsxNDgsOSBA
+QCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqYXJndltdKQogCQljYXNlICd1JzoKIAkJCXVubG9j
+ayA9IDE7CiAJCQlicmVhazsKKwkJY2FzZSAncyc6CisJCQlza2lwX2VyYXNlZCA9IDE7CisJCQli
+cmVhazsKIAkJY2FzZSAnPyc6CiAJCQllcnJvciA9IDE7CiAJCQlicmVhazsKQEAgLTI1MCw4ICsy
+NTYsNTMgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAkJCX0KIAkJfQogCisJ
+CS8qIENhbiB3ZSBza2lwIHRoaXMgb25lIGlmIGl0IGlzIGFscmVhZHkgZXJhc2VkPworCQkgKiBQ
+ZXJoYXBzIE5BTkQgcGVyZm9ybWFuY2UgY291bGQgYmUgaW1wcm92ZWQgYnkgYWRkaW5nIHN1cHBv
+cnQgZm9yCisJCSAqIHRob3NlIGNsZWFubWFya2VycyBhcyB3ZWxsPworCQkgKgorCQkgKiBDdXJy
+ZW50bHkgdGhpcyBvbmx5IHdvcmtzIHdpdGggSkZGUzIgTk9SIGNsZWFuIG1hcmtlcnMKKwkJICov
+CisJCWludCBza2lwID0gMDsKKwkJaWYgKHNraXBfZXJhc2VkICYmICFpc05BTkQpIHsKKwkJCXVp
+bnQ4X3QgKnRtcCA9IG1hbGxvYyhtdGQuZWJfc2l6ZSk7CisJCQlpZiAodG1wID09IE5VTEwpIHsK
+KwkJCSAgcmV0dXJuIGVycm1zZygiT3V0IG9mIG1lbW9yeSIpOworCQkJfQorCQkJc3NpemVfdCBh
+Y3R1YWwgPSBwcmVhZChmZCwgdG1wLCBtdGQuZWJfc2l6ZSwgb2Zmc2V0KTsKKwkJCWlmIChhY3R1
+YWwgIT0gbXRkLmViX3NpemUpIHsKKwkJCSAgcmV0dXJuIGVycm1zZygiJXM6IE1URCByZWFkIGZh
+aWx1cmU6ICVzIiwgbXRkX2RldmljZSwgc3RyZXJyb3IoZXJybm8pKTsKKwkJCX0KKwkJCXNzaXpl
+X3QgaSA9IDA7CisJCQlpbnQgb2sgPSAxOworCisJCQlpZiAoamZmczIpIHsKKwkJCQlvayA9IG1l
+bWNtcCh0bXAsICZjbGVhbm1hcmtlciwgc2l6ZW9mIChjbGVhbm1hcmtlcikpID09IDA7CisJCQkJ
+aSA9IHNpemVvZiAoY2xlYW5tYXJrZXIpOworCQkJfQorCisJCQlpZiAob2spCisJCQl7CisJCQkJ
+Zm9yICg7IGkgPCBtdGQuZWJfc2l6ZTsgaSsrKQorCQkJCXsKKwkJCQkJaWYgKHRtcFtpXSAhPSAw
+eGZmKQorCQkJCQkJYnJlYWs7CisJCQkJfQorCQkJCWlmIChpID09IG10ZC5lYl9zaXplKQorCQkJ
+CXsKKwkJCQkJLyogWXVwISB3ZSBjYW4gc2tpcCEgSGVyZSB3ZSBjb3VsZCBpbXByb3ZlIHRoaW5n
+cyBieQorCQkJCQkgKiBhZGRpbmcgc3VwcG9ydCBmb3IgTkFORCBjbGVhbm1hcmtlcnMKKwkJCQkJ
+ICovCisJCQkJCXNraXAgPSAxOworCQkJCX0KKwkJCX0KKwkJCWZyZWUodG1wKTsKKwkJfQorCiAJ
+CXNob3dfcHJvZ3Jlc3MoJm10ZCwgb2Zmc2V0LCBlYiwgZWJfc3RhcnQsIGViX2NudCk7CiAKKwkJ
+aWYgKHNraXApCisJCQljb250aW51ZTsKKwogCQlpZiAodW5sb2NrKSB7CiAJCQlpZiAobXRkX3Vu
+bG9jaygmbXRkLCBmZCwgZWIpICE9IDApIHsKIAkJCQlzeXNfZXJybXNnKCIlczogTVREIHVubG9j
+ayBmYWlsdXJlIiwgbXRkX2RldmljZSk7Ci0tIAoxLjcuMC40Cgo=
+--0023547c8ad3282ae4049763cf2f--
