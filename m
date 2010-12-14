@@ -1,31 +1,19 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSbKV-0008SV-VT
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 20:18:36 +0000
-Received: by wyf22 with SMTP id 22so841173wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 12:18:34 -0800 (PST)
+From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH v2] MTD: NAND: ams-delta: convert to platform driver
+Date: Tue, 14 Dec 2010 21:09:40 +0100
+References: <201012111840.05270.jkrzyszt@tis.icnet.pl>
+	<1292346023.2538.103.camel@localhost>
+In-Reply-To: <1292346023.2538.103.camel@localhost>
 MIME-Version: 1.0
-In-Reply-To: <AANLkTim7-ZpO5nQ1Up=rxLJVbCLNJqfbiUGvSnsrONay@mail.gmail.com>
-References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
-	<AANLkTikJ3UTQ-D01FX8fSEGgcuG-fXEhAw6h4z9pwkRX@mail.gmail.com>
-	<AANLkTinBpNA9VGB3druyijTKVhK4aDLDc-f=MgKZ4NK6@mail.gmail.com>
-	<AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
-	<AANLkTimNx5EqicJEAX_wZaz39paKusrDd4CemLcMQ3Qe@mail.gmail.com>
-	<AANLkTi=w+zKPxdwWZ+-=8zbaagqjGPJyKRxOcku6kM7Y@mail.gmail.com>
-	<AANLkTim-GWLaibEL1O=fcCcuG0qgrO2=qY1k_iKdxJQi@mail.gmail.com>
-	<AANLkTikvRdCuPHkxt7=uz7MsVDugaZ4JRO=u_iVJfR4M@mail.gmail.com>
-	<AANLkTincaN6in-9F-jUFygCx6-=DGW_9ju=Ve1QbXWSf@mail.gmail.com>
-	<AANLkTimOmMNeg2Ni92CmaTt2RAk-m=HVSNdNuO8sTJ8q@mail.gmail.com>
-	<AANLkTim7-ZpO5nQ1Up=rxLJVbCLNJqfbiUGvSnsrONay@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 14 Dec 2010 15:18:11 -0500
-Message-ID: <AANLkTikp7oFzYLVhtgh+jS1Y023FAns18rgP3p_TM4iA@mail.gmail.com>
-Subject: Re: Faster flash_eraseall for NOR flash
-To: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <201012142109.42784.jkrzyszt@tis.icnet.pl>
+Cc: Tony Lindgren <tony@atomide.com>, David Woodhouse <dwmw2@infradead.org>,
+	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,10 +23,114 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 14, 2010 at 14:27, =C3=98yvind Harboe wrote:
-> This is the server, right?
->
-> http://git.infradead.org/mtd-utils.git
+In its current form, the driver may interfere with different hardware on 
+different boards if built into the kernel, hence is not suitable for 
+inclusion into a defconfig, inteded to be usable with multiple OMAP1 cpu and 
+machine types.
 
-yes
--mike
+Convert it to a platform driver, that should be free from this issue.
+
+Created and tested against linux-2.6.37-rc5 on Amstrad Delta.
+
+Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+---
+Tuesday 14 December 2010 18:00:23 Artem Bityutskiy wrote:
+> Sorry, but would it please be possible to split this few small patches -
+> this one is too difficult to review, at least for me.
+
+v1 -> v2 changes:
+- remove any changes that were not essential for actually converting the 
+  driver to a platform driver and modifying its user, ie. the Amstrad Delta 
+  board, to register a corresponding platform device on startup,
+- re-word the commit message a little bit.
+
+ arch/arm/mach-omap1/board-ams-delta.c |    6 ++++++
+ drivers/mtd/nand/ams-delta.c          |   31 ++++++++++++++++++++++++++-----
+ 2 files changed, 32 insertions(+), 5 deletions(-)
+
+--- linux-2.6.37-rc5/drivers/mtd/nand/ams-delta.c.orig	2010-12-14 20:25:58.000000000 +0100
++++ linux-2.6.37-rc5/drivers/mtd/nand/ams-delta.c	2010-12-14 20:26:40.000000000 +0100
+@@ -4,6 +4,7 @@
+  *  Copyright (C) 2006 Jonathan McDowell <noodles@earth.li>
+  *
+  *  Derived from drivers/mtd/toto.c
++ *  Converted to platform driver by Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+@@ -151,7 +152,7 @@ static int ams_delta_nand_ready(struct m
+ /*
+  * Main initialization routine
+  */
+-static int __init ams_delta_init(void)
++static int __devinit ams_delta_init(struct platform_device *pdev)
+ {
+ 	struct nand_chip *this;
+ 	int err = 0;
+@@ -219,20 +222,40 @@ static int __init ams_delta_init(void)
+ 	return err;
+ }
+ 
+-module_init(ams_delta_init);
+-
+ /*
+  * Clean up routine
+  */
+-static void __exit ams_delta_cleanup(void)
++static int __devexit ams_delta_cleanup(struct platform_device *pdev)
+ {
+ 	/* Release resources, unregister device */
+ 	nand_release(ams_delta_mtd);
+ 
+ 	/* Free the MTD device structure */
+ 	kfree(ams_delta_mtd);
++
++	return 0;
++}
++
++static struct platform_driver ams_delta_nand_driver = {
++	.probe		= ams_delta_init,
++	.remove		= __devexit_p(ams_delta_cleanup),
++	.driver		= {
++		.name	= "ams-delta-nand",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init ams_delta_nand_init(void)
++{
++	return platform_driver_register(&ams_delta_nand_driver);
++}
++module_init(ams_delta_nand_init);
++
++static void __exit ams_delta_nand_exit(void)
++{
++	platform_driver_unregister(&ams_delta_nand_driver);
+ }
+-module_exit(ams_delta_cleanup);
++module_exit(ams_delta_nand_exit);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Jonathan McDowell <noodles@earth.li>");
+--- linux-2.6.37-rc5/arch/arm/mach-omap1/board-ams-delta.c.orig	2010-12-09 23:13:04.000000000 +0100
++++ linux-2.6.37-rc5/arch/arm/mach-omap1/board-ams-delta.c	2010-12-14 20:26:40.000000000 +0100
+@@ -181,6 +181,11 @@ static struct omap_board_config_kernel a
+ 	{ OMAP_TAG_LCD,		&ams_delta_lcd_config },
+ };
+ 
++static struct platform_device ams_delta_nand_device = {
++	.name	= "ams-delta-nand",
++	.id	= -1
++};
++
+ static struct resource ams_delta_kp_resources[] = {
+ 	[0] = {
+ 		.start	= INT_KEYBOARD,
+@@ -273,6 +278,7 @@ void __init amsdelta_reserve(void)
+ }
+ 
+ static struct platform_device *ams_delta_devices[] __initdata = {
++	&ams_delta_nand_device,
+ 	&ams_delta_kp_device,
+ 	&ams_delta_lcd_device,
+ 	&ams_delta_led_device,
