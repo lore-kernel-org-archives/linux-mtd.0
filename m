@@ -1,20 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSIaa-00025k-OS
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 00:17:58 +0000
-Received: by wwb17 with SMTP id 17so41929wwb.18
+	id 1PSIdo-0002IB-80
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 00:21:17 +0000
+Received: by wyf22 with SMTP id 22so37546wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Dec 2010 16:17:54 -0800 (PST)
+	Mon, 13 Dec 2010 16:21:14 -0800 (PST)
 MIME-Version: 1.0
 Sender: kyungmin78@gmail.com
-In-Reply-To: <20101213122057.20685.68480.sendpatchset@ahunter-work.research.nokia.com>
+In-Reply-To: <20101213122128.20685.9312.sendpatchset@ahunter-work.research.nokia.com>
 References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
-	<20101213122057.20685.68480.sendpatchset@ahunter-work.research.nokia.com>
-Date: Tue, 14 Dec 2010 09:17:54 +0900
-Message-ID: <AANLkTi=0W8NuF3SNhWwjwDZtuCzyOM8219_pXG=9pU6O@mail.gmail.com>
-Subject: Re: [PATCH 2/7] mtd: OneNAND: add enable / disable methods to
-	onenand_chip
-From: Kyungmin Park <kyungmin.park@samsung.com>
+	<20101213122128.20685.9312.sendpatchset@ahunter-work.research.nokia.com>
+Date: Tue, 14 Dec 2010 09:21:14 +0900
+Message-ID: <AANLkTimaoZOPjqh80gnEdz6Qz4YzdkQGTaYqv0mu2GeM@mail.gmail.com>
+Subject: Re: [PATCH 7/7] mtd: OneNAND: lighten scary initial bad block messages
+From: Kyungmin Park <kmpark@infradead.org>
 To: Adrian Hunter <adrian.hunter@nokia.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
@@ -31,132 +30,125 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
 
-Now I'm used the clock gating for OneNAND instead of regulator.
-so I think the mechanism is similar.
-
-On Mon, Dec 13, 2010 at 9:20 PM, Adrian Hunter <adrian.hunter@nokia.com> wr=
+On Mon, Dec 13, 2010 at 9:21 PM, Adrian Hunter <adrian.hunter@nokia.com> wr=
 ote:
-> From 16b760999cb79f9cf71728c9253f1399717be63a Mon Sep 17 00:00:00 2001
+> From 5fa7a6377683aabd617f78518cd6cd49eae1679e Mon Sep 17 00:00:00 2001
 > From: Adrian Hunter <adrian.hunter@nokia.com>
-> Date: Fri, 19 Feb 2010 15:39:52 +0100
-> Subject: [PATCH 2/7] mtd: OneNAND: add enable / disable methods to onenan=
-d_chip
+> Date: Fri, 10 Dec 2010 12:04:20 +0200
+> Subject: [PATCH 7/7] mtd: OneNAND: lighten scary initial bad block messag=
+es
 >
-> Add enable / disable methods called from get_device() / release_device().
-> These can be used, for example, to allow the driver to prevent the voltag=
-e
-> regulator from being put to sleep while OneNAND is in use.
+> Initial bad blocks are normal but the messages look like
+> errors. =A0Make the messages less scary, make the main
+> message an informational message not a warning, make the
+> message displaying registers a debug message and include
+> the address there instead of in the informational message.
 >
 > Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 > ---
-> =A0drivers/mtd/onenand/onenand_base.c | =A0 =A04 ++++
-> =A0include/linux/mtd/onenand.h =A0 =A0 =A0 =A0| =A0 =A02 ++
-> =A02 files changed, 6 insertions(+), 0 deletions(-)
+> =A0drivers/mtd/onenand/onenand_base.c | =A0 22 ++++++++++++----------
+> =A0drivers/mtd/onenand/onenand_bbt.c =A0| =A0 =A04 ++--
+> =A02 files changed, 14 insertions(+), 12 deletions(-)
 >
 > diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/one=
 nand_base.c
-> index c38bf9c..bde274f 100644
+> index bde274f..5065fc7 100644
 > --- a/drivers/mtd/onenand/onenand_base.c
 > +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -948,6 +948,8 @@ static int onenand_get_device(struct mtd_info *mtd, i=
-nt new_state)
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (this->state =3D=3D FL_READY) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0this->state =3D new_state;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0spin_unlock(&this->chip_lo=
-ck);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 if (this->enable)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 this->enabl=
-e(mtd);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (new_state =3D=3D FL_PM_SUSPENDED) {
-
-I put the code the end of function like:
-
-static int onenand_get_device(struct mtd_info *mtd, int new_state)
-{
-        struct onenand_chip *this =3D mtd->priv;
-        DECLARE_WAITQUEUE(wait, current);
-
-        /*
-         * Grab the lock and see if the device is available
-         */
-        while (1) {
-                spin_lock(&this->chip_lock);
-                if (this->state =3D=3D FL_READY) {
-                        this->state =3D new_state;
-                        spin_unlock(&this->chip_lock);
-                        break;
-                }
-                if (new_state =3D=3D FL_PM_SUSPENDED) {
-                        spin_unlock(&this->chip_lock);
-                        return (this->state =3D=3D FL_PM_SUSPENDED) ? 0 : -=
-EAGAIN;
-                }
-                set_current_state(TASK_UNINTERRUPTIBLE);
-                add_wait_queue(&this->wq, &wait);
-                spin_unlock(&this->chip_lock);
-                schedule();
-                remove_wait_queue(&this->wq, &wait);
-        }
-
-        if (this->clk)
-                clk_enable(this->clk);
-
-        return 0;
-}
-
-
-> @@ -974,6 +976,8 @@ static void onenand_release_device(struct mtd_info *m=
-td)
+> @@ -1488,8 +1488,7 @@ static int onenand_bbt_wait(struct mtd_info *mtd, i=
+nt state)
 > =A0{
 > =A0 =A0 =A0 =A0struct onenand_chip *this =3D mtd->priv;
+> =A0 =A0 =A0 =A0unsigned long timeout;
+> - =A0 =A0 =A0 unsigned int interrupt;
+> - =A0 =A0 =A0 unsigned int ctrl;
+> + =A0 =A0 =A0 unsigned int interrupt, ctrl, ecc, addr1, addr8;
 >
-> + =A0 =A0 =A0 if (this->state !=3D FL_PM_SUSPENDED && this->disable)
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 this->disable(mtd);
-Need to check the SUSPENDED at here? when enter the suspend get_device
-is called.
-release device is called when resume. so no need to check
-FL_PM_SUSPENDED in my case.
-
-> =A0 =A0 =A0 =A0/* Release the chip */
-> =A0 =A0 =A0 =A0spin_lock(&this->chip_lock);
-> =A0 =A0 =A0 =A0this->state =3D FL_READY;
-
-and put the same as like:
-
-static void onenand_release_device(struct mtd_info *mtd)
-{
-        struct onenand_chip *this =3D mtd->priv;
-
-        /* Release the chip */
-        spin_lock(&this->chip_lock);
-        this->state =3D FL_READY;
-        wake_up(&this->wq);
-        spin_unlock(&this->chip_lock);
-
-        if (this->clk)
-                clk_disable(this->clk);
-}
-
-Thank you,
-Kyungmin Park
-
-> diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-> index 6da3fe3..ae418e4 100644
-> --- a/include/linux/mtd/onenand.h
-> +++ b/include/linux/mtd/onenand.h
-> @@ -118,6 +118,8 @@ struct onenand_chip {
-> =A0 =A0 =A0 =A0int (*chip_probe)(struct mtd_info *mtd);
-> =A0 =A0 =A0 =A0int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
-> =A0 =A0 =A0 =A0int (*scan_bbt)(struct mtd_info *mtd);
-> + =A0 =A0 =A0 int (*enable)(struct mtd_info *mtd);
-> + =A0 =A0 =A0 int (*disable)(struct mtd_info *mtd);
+> =A0 =A0 =A0 =A0/* The 20 msec is enough */
+> =A0 =A0 =A0 =A0timeout =3D jiffies + msecs_to_jiffies(20);
+> @@ -1501,25 +1500,28 @@ static int onenand_bbt_wait(struct mtd_info *mtd,=
+ int state)
+> =A0 =A0 =A0 =A0/* To get correct interrupt status in timeout case */
+> =A0 =A0 =A0 =A0interrupt =3D this->read_word(this->base + ONENAND_REG_INT=
+ERRUPT);
+> =A0 =A0 =A0 =A0ctrl =3D this->read_word(this->base + ONENAND_REG_CTRL_STA=
+TUS);
+> + =A0 =A0 =A0 addr1 =3D this->read_word(this->base + ONENAND_REG_START_AD=
+DRESS1);
+> + =A0 =A0 =A0 addr8 =3D this->read_word(this->base + ONENAND_REG_START_AD=
+DRESS8);
 >
-> =A0 =A0 =A0 =A0struct completion =A0 =A0 =A0 complete;
-> =A0 =A0 =A0 =A0int =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 irq;
+> =A0 =A0 =A0 =A0if (interrupt & ONENAND_INT_READ) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 int ecc =3D onenand_read_ecc(this);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ecc =3D onenand_read_ecc(this);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ecc & ONENAND_ECC_2BIT_ALL) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_WARNING "%s: ec=
+c error =3D 0x%04x, "
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "controller=
+ error 0x%04x\n",
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, e=
+cc, ctrl);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_DEBUG "%s: ecc =
+0x%04x ctrl 0x%04x "
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"intr 0x%04x=
+ addr1 %#x addr8 %#x\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__func__, ec=
+c, ctrl, interrupt, addr1, addr8);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ONENAND_BBT_READ_EC=
+C_ERROR;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
+> =A0 =A0 =A0 =A0} else {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "%s: read timeout! ctrl=3D0=
+x%04x intr=3D0x%04x\n",
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, ctrl, interrupt);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "%s: read timeout! ctrl 0x%=
+04x "
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"intr 0x%04x addr1 %#x addr8=
+ %#x\n",
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__func__, ctrl, interrupt, a=
+ddr1, addr8);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ONENAND_BBT_READ_FATAL_ERROR;
+> =A0 =A0 =A0 =A0}
+>
+> =A0 =A0 =A0 =A0/* Initial bad block case: 0x2400 or 0x0400 */
+> =A0 =A0 =A0 =A0if (ctrl & ONENAND_CTRL_ERROR) {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_DEBUG "%s: controller error =3D=
+ 0x%04x\n",
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, ctrl);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_DEBUG "%s: ctrl 0x%04x intr 0x%=
+04x addr1 %#x "
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"addr8 %#x\n", __func__, ctr=
+l, interrupt, addr1, addr8);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ONENAND_BBT_READ_ERROR;
+> =A0 =A0 =A0 =A0}
+>
+> diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onen=
+and_bbt.c
+> index 905209b..fc2c16a 100644
+> --- a/drivers/mtd/onenand/onenand_bbt.c
+> +++ b/drivers/mtd/onenand/onenand_bbt.c
+> @@ -101,8 +101,8 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *=
+buf, struct nand_bbt_descr
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ret || check_short_pat=
+tern(&buf[j * scanlen],
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 scanlen, this->writesize, bd)) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0bbm->bbt[i=
+ >> 3] |=3D 0x03 << (i & 0x6);
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN=
+_WARNING "Bad eraseblock %d at 0x%08x\n",
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 i >> 1, (unsigned int) from);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN=
+_INFO "OneNAND eraseblock %d is an "
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
+ =A0 "initial bad block\n", i >> 1);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mtd->ecc_s=
+tats.badblocks++;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
 > --
 > 1.7.0.4
 >
