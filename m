@@ -1,20 +1,25 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSWeg-0005Yc-9N
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 15:19:06 +0000
-Received: by wyf22 with SMTP id 22so570740wyf.36
+Received: from cpanel5.proisp.no ([209.85.100.29])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSWmA-0007AE-NC
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 15:26:51 +0000
+Received: from mail-gx0-f171.google.com ([209.85.161.171]:55224)
+	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
+	(envelope-from <oyvind.harboe@zylin.com>) id 1PSWm9-00041X-Ix
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:26:49 +0100
+Received: by gxk8 with SMTP id 8so447063gxk.16
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 07:19:03 -0800 (PST)
+	Tue, 14 Dec 2010 07:26:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <AANLkTinBpNA9VGB3druyijTKVhK4aDLDc-f=MgKZ4NK6@mail.gmail.com>
+In-Reply-To: <AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
 References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
 	<AANLkTikJ3UTQ-D01FX8fSEGgcuG-fXEhAw6h4z9pwkRX@mail.gmail.com>
 	<AANLkTinBpNA9VGB3druyijTKVhK4aDLDc-f=MgKZ4NK6@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 14 Dec 2010 10:18:43 -0500
-Message-ID: <AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
+	<AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
+Date: Tue, 14 Dec 2010 16:26:37 +0100
+Message-ID: <AANLkTimNx5EqicJEAX_wZaz39paKusrDd4CemLcMQ3Qe@mail.gmail.com>
 Subject: Re: Faster flash_eraseall for NOR flash
-To: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
+From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -27,22 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 14, 2010 at 10:09, =C3=98yvind Harboe wrote:
->> why cant this also be used for NAND ? =C2=A0all the NAND devices i use h=
-ave
->> 0xff when erased.
->
-> I don't have any NAND to test with, nor am I terribly familiar with
-> NAND.
->
-> I think it would be good to limit this patch to NOR flash that I
-> can actually test and know something about. Also NAND flash
-> doesn't have the horrible erase performance issues, so it
-> might not be worth it from the point of view that it adds a new
-> code path.
+> i think it's fine to let the option operate on NAND devices. =C2=A0if
+> someone has a problem with how it operates, then they can post a fix
+> for their use case. =C2=A0i wouldnt worry about trying to come up with a
+> bullet proof solution at the first try.
 
-i think it's fine to let the option operate on NAND devices.  if
-someone has a problem with how it operates, then they can post a fix
-for their use case.  i wouldnt worry about trying to come up with a
-bullet proof solution at the first try.
--mike
+I'd rather pass the buck, because NAND is using a different code
+path. Also this is an optimization that makes little difference on
+NAND.
+
+
+--=20
+=C3=98yvind Harboe
+
+Can Zylin Consulting help on your project?
+
+US toll free 1-866-980-3434 / International +47 51 63 25 00
+
+http://www.zylin.com/zy1000.html
+ARM7 ARM9 ARM11 XScale Cortex
+JTAG debugger and flash programmer
