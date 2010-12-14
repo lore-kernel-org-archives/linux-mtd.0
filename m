@@ -1,29 +1,23 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ew0-f43.google.com ([209.85.215.43])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSX6g-0002JM-UZ
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 15:48:03 +0000
-Received: by wyf22 with SMTP id 22so604812wyf.36
+	id 1PSXKc-0003W6-Q3
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:02:27 +0000
+Received: by ewy22 with SMTP id 22so434618ewy.30
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 07:48:01 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTincaN6in-9F-jUFygCx6-=DGW_9ju=Ve1QbXWSf@mail.gmail.com>
-References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
-	<AANLkTikJ3UTQ-D01FX8fSEGgcuG-fXEhAw6h4z9pwkRX@mail.gmail.com>
-	<AANLkTinBpNA9VGB3druyijTKVhK4aDLDc-f=MgKZ4NK6@mail.gmail.com>
-	<AANLkTin7OwjwSyMbnOg+RnYEN5gd1Qzspn6RUE1vLzRR@mail.gmail.com>
-	<AANLkTimNx5EqicJEAX_wZaz39paKusrDd4CemLcMQ3Qe@mail.gmail.com>
-	<AANLkTi=w+zKPxdwWZ+-=8zbaagqjGPJyKRxOcku6kM7Y@mail.gmail.com>
-	<AANLkTim-GWLaibEL1O=fcCcuG0qgrO2=qY1k_iKdxJQi@mail.gmail.com>
-	<AANLkTikvRdCuPHkxt7=uz7MsVDugaZ4JRO=u_iVJfR4M@mail.gmail.com>
-	<AANLkTincaN6in-9F-jUFygCx6-=DGW_9ju=Ve1QbXWSf@mail.gmail.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Tue, 14 Dec 2010 10:47:40 -0500
-Message-ID: <AANLkTimOmMNeg2Ni92CmaTt2RAk-m=HVSNdNuO8sTJ8q@mail.gmail.com>
-Subject: Re: Faster flash_eraseall for NOR flash
-To: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+	Tue, 14 Dec 2010 08:02:24 -0800 (PST)
+Subject: Re: [PATCH] mtd: OneNAND: Fix multi block erase support at 4KiB
+	pagesize
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kyungmin Park <kmpark@infradead.org>
+In-Reply-To: <20101206000518.GA18352@july>
+References: <20101206000518.GA18352@july>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 14 Dec 2010 18:01:55 +0200
+Message-ID: <1292342515.2538.66.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,9 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 14, 2010 at 10:46, =C3=98yvind Harboe wrote:
-> I'll see about getting this done. Don't know when though, if
-> someone beats me to the punch here, no loss :-)
+On Mon, 2010-12-06 at 09:05 +0900, Kyungmin Park wrote:
+> From: Kyungmin Park <kyungmin.park@samsung.com>
+> 
+> Original 4KiB pagesize chip (SLC) doesn't support Multi block erase at Spec.
+> 
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 
-np; take your time.  thanks for the improvements!
--mike
+Pushed to l2-mtd-2.6.git, thank you!
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
