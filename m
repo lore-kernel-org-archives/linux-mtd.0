@@ -1,19 +1,20 @@
 Received: from mail-bw0-f43.google.com ([209.85.214.43])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSXmb-0005wZ-PS
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:31:22 +0000
-Received: by bwz14 with SMTP id 14so982550bwz.30
+	id 1PSXnc-000662-AO
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:32:25 +0000
+Received: by bwz14 with SMTP id 14so983719bwz.30
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 08:31:19 -0800 (PST)
-Subject: Re: [PATCH v4 1/2] mtd: cfi_cmdset_0002: add support for Samsung
-	K8D6x16UxM NOR chips
+	Tue, 14 Dec 2010 08:32:23 -0800 (PST)
+Subject: Re: [PATCH v4 2/2] mtd: cfi_cmdset_0002: add support for Samsung
+	K8D3x16UxC NOR chips
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Guillaume LECERF <glecerf@gmail.com>
-In-Reply-To: <20101209140410.26049.51539.stgit@dev.siriade.com>
+In-Reply-To: <20101209140416.26049.54282.stgit@dev.siriade.com>
 References: <20101209140410.26049.51539.stgit@dev.siriade.com>
+	<20101209140416.26049.54282.stgit@dev.siriade.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 14 Dec 2010 18:30:47 +0200
-Message-ID: <1292344247.2538.84.camel@localhost>
+Date: Tue, 14 Dec 2010 18:31:53 +0200
+Message-ID: <1292344313.2538.86.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Matthias Buecher / Germany <mail@maddes.net>, linux-mtd@lists.infradead.org,
@@ -29,51 +30,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thu, 2010-12-09 at 15:04 +0100, Guillaume LECERF wrote:
-> These chips report CFI v0.0 [1], so extend cfi_fixup_major_minor()
-> to patch all Samsung chips from 0.0 to 1.0.
+> These chips report CFI v3.3 [1], so patch them on the fly to the more
+> correct v1.3.
 > Discussed and tested by the OpenWRT people [2].
 > 
-> [1] http://www.samsung.com/global/system/business/semiconductor/product/2007/6/11/NORFlash/64Mbit/K8D6316UTM/ds_K8D6x16UxM_rev16.pdf
-> [2] https://dev.openwrt.org/ticket/7348
+> [1] http://www.samsung.com/global/system/business/semiconductor/product/2007/6/11/NORFlash/32Mbit/K8D3216UBC/ds_K8D3x16UxC_rev17.pdf
+> [2] https://dev.openwrt.org/ticket/866
 > 
 > Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+> Acked-by: Wolfram Sang <w.sang@pengutronix.de>
 > ---
->  drivers/mtd/chips/cfi_cmdset_0002.c |   14 +++++++++++---
->  1 files changed, 11 insertions(+), 3 deletions(-)
+>  drivers/mtd/chips/cfi_cmdset_0002.c |    8 ++++++++
+>  1 files changed, 8 insertions(+), 0 deletions(-)
 > 
 > diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-> index 9d68ab9..bf457a4 100644
+> index bf457a4..13cee2b 100644
 > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
 > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -392,9 +392,17 @@ static struct cfi_fixup fixup_table[] = {
->  static void cfi_fixup_major_minor(struct cfi_private *cfi,
->  				  struct cfi_pri_amdstd *extp)
->  {
-> -	if (cfi->mfr == CFI_MFR_SAMSUNG && cfi->id == 0x257e &&
-> -	    extp->MajorVersion == '0')
-> -		extp->MajorVersion = '1';
-> +	if (cfi->mfr == CFI_MFR_SAMSUNG) {
-> +		if (extp->MajorVersion == '0' && extp->MinorVersion == '0') {
+> @@ -401,6 +401,14 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
+>  
+>  			extp->MajorVersion = '1';
+>  		}
+> +		if (extp->MajorVersion == '3' && extp->MinorVersion == '3') {
 > +			/*
-> +			 * Samsung K8P2815UQB and K8D6x16UxM chips report major=0 / minor=0
+> +			 * Samsung K8D3x16UxC chips report major=3 / minor=3
 > +			 */
-> +			printk(KERN_NOTICE "  Fixed Samsung's Amd/Fujitsu Extended Query version from 0.0 to 1.0\n");
+> +			printk(KERN_NOTICE "  Fixed Samsung's Amd/Fujitsu Extended Query version from 3.3 to 1.3\n");
 > +
 > +			extp->MajorVersion = '1';
 > +		}
 
-I'm sorry for this nit-pick, but could you please make checkpatch.pl
-happy:
-
-WARNING: line over 80 characters
-#97: FILE: drivers/mtd/chips/cfi_cmdset_0002.c:398:
-+                        * Samsung K8P2815UQB and K8D6x16UxM chips
-report major=0 / minor=0
-
-Also, I do not see any reason for a newline between printk() and
-extp->MajorVersion = '1' - it only makes code unnecessary sparse.
-Newlines ar good between logically independent things, but not between 2
-things which are about the same - print about X and then do X.
+Similar, I think this newline is unneeded. Sorry for nit-picking
+again :-)
 
 -- 
 Best Regards,
