@@ -1,26 +1,21 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSIdo-0002IB-80
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 00:21:17 +0000
-Received: by wyf22 with SMTP id 22so37546wyf.36
+Received: from cpanel5.proisp.no ([209.85.100.29])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSR3J-00082z-6R
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 09:20:10 +0000
+Received: from mail-gx0-f171.google.com ([209.85.161.171]:40516)
+	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
+	(envelope-from <oyvind.harboe@zylin.com>) id 1PSR3D-0002eW-Gl
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 10:20:03 +0100
+Received: by gxk8 with SMTP id 8so229182gxk.16
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Dec 2010 16:21:14 -0800 (PST)
+	Tue, 14 Dec 2010 01:20:03 -0800 (PST)
 MIME-Version: 1.0
-Sender: kyungmin78@gmail.com
-In-Reply-To: <20101213122128.20685.9312.sendpatchset@ahunter-work.research.nokia.com>
-References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
-	<20101213122128.20685.9312.sendpatchset@ahunter-work.research.nokia.com>
-Date: Tue, 14 Dec 2010 09:21:14 +0900
-Message-ID: <AANLkTimaoZOPjqh80gnEdz6Qz4YzdkQGTaYqv0mu2GeM@mail.gmail.com>
-Subject: Re: [PATCH 7/7] mtd: OneNAND: lighten scary initial bad block messages
-From: Kyungmin Park <kmpark@infradead.org>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: Tony Lindgren <tony@atomide.com>,
-	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Date: Tue, 14 Dec 2010 10:20:03 +0100
+Message-ID: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
+Subject: Faster flash_eraseall for NOR flash
+From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary=0023547c8c335a48f004975b5346
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,130 +25,117 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+--0023547c8c335a48f004975b5346
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Dec 13, 2010 at 9:21 PM, Adrian Hunter <adrian.hunter@nokia.com> wr=
-ote:
-> From 5fa7a6377683aabd617f78518cd6cd49eae1679e Mon Sep 17 00:00:00 2001
-> From: Adrian Hunter <adrian.hunter@nokia.com>
-> Date: Fri, 10 Dec 2010 12:04:20 +0200
-> Subject: [PATCH 7/7] mtd: OneNAND: lighten scary initial bad block messag=
-es
->
-> Initial bad blocks are normal but the messages look like
-> errors. =A0Make the messages less scary, make the main
-> message an informational message not a warning, make the
-> message displaying registers a debug message and include
-> the address there instead of in the informational message.
->
-> Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
-> ---
-> =A0drivers/mtd/onenand/onenand_base.c | =A0 22 ++++++++++++----------
-> =A0drivers/mtd/onenand/onenand_bbt.c =A0| =A0 =A04 ++--
-> =A02 files changed, 14 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/one=
-nand_base.c
-> index bde274f..5065fc7 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -1488,8 +1488,7 @@ static int onenand_bbt_wait(struct mtd_info *mtd, i=
-nt state)
-> =A0{
-> =A0 =A0 =A0 =A0struct onenand_chip *this =3D mtd->priv;
-> =A0 =A0 =A0 =A0unsigned long timeout;
-> - =A0 =A0 =A0 unsigned int interrupt;
-> - =A0 =A0 =A0 unsigned int ctrl;
-> + =A0 =A0 =A0 unsigned int interrupt, ctrl, ecc, addr1, addr8;
->
-> =A0 =A0 =A0 =A0/* The 20 msec is enough */
-> =A0 =A0 =A0 =A0timeout =3D jiffies + msecs_to_jiffies(20);
-> @@ -1501,25 +1500,28 @@ static int onenand_bbt_wait(struct mtd_info *mtd,=
- int state)
-> =A0 =A0 =A0 =A0/* To get correct interrupt status in timeout case */
-> =A0 =A0 =A0 =A0interrupt =3D this->read_word(this->base + ONENAND_REG_INT=
-ERRUPT);
-> =A0 =A0 =A0 =A0ctrl =3D this->read_word(this->base + ONENAND_REG_CTRL_STA=
-TUS);
-> + =A0 =A0 =A0 addr1 =3D this->read_word(this->base + ONENAND_REG_START_AD=
-DRESS1);
-> + =A0 =A0 =A0 addr8 =3D this->read_word(this->base + ONENAND_REG_START_AD=
-DRESS8);
->
-> =A0 =A0 =A0 =A0if (interrupt & ONENAND_INT_READ) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 int ecc =3D onenand_read_ecc(this);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 ecc =3D onenand_read_ecc(this);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ecc & ONENAND_ECC_2BIT_ALL) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_WARNING "%s: ec=
-c error =3D 0x%04x, "
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 "controller=
- error 0x%04x\n",
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, e=
-cc, ctrl);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_DEBUG "%s: ecc =
-0x%04x ctrl 0x%04x "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"intr 0x%04x=
- addr1 %#x addr8 %#x\n",
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__func__, ec=
-c, ctrl, interrupt, addr1, addr8);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ONENAND_BBT_READ_EC=
-C_ERROR;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> =A0 =A0 =A0 =A0} else {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "%s: read timeout! ctrl=3D0=
-x%04x intr=3D0x%04x\n",
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, ctrl, interrupt);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_ERR "%s: read timeout! ctrl 0x%=
-04x "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"intr 0x%04x addr1 %#x addr8=
- %#x\n",
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0__func__, ctrl, interrupt, a=
-ddr1, addr8);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ONENAND_BBT_READ_FATAL_ERROR;
-> =A0 =A0 =A0 =A0}
->
-> =A0 =A0 =A0 =A0/* Initial bad block case: 0x2400 or 0x0400 */
-> =A0 =A0 =A0 =A0if (ctrl & ONENAND_CTRL_ERROR) {
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_DEBUG "%s: controller error =3D=
- 0x%04x\n",
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 __func__, ctrl);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN_DEBUG "%s: ctrl 0x%04x intr 0x%=
-04x addr1 %#x "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0"addr8 %#x\n", __func__, ctr=
-l, interrupt, addr1, addr8);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0return ONENAND_BBT_READ_ERROR;
-> =A0 =A0 =A0 =A0}
->
-> diff --git a/drivers/mtd/onenand/onenand_bbt.c b/drivers/mtd/onenand/onen=
-and_bbt.c
-> index 905209b..fc2c16a 100644
-> --- a/drivers/mtd/onenand/onenand_bbt.c
-> +++ b/drivers/mtd/onenand/onenand_bbt.c
-> @@ -101,8 +101,8 @@ static int create_bbt(struct mtd_info *mtd, uint8_t *=
-buf, struct nand_bbt_descr
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (ret || check_short_pat=
-tern(&buf[j * scanlen],
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 scanlen, this->writesize, bd)) {
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0bbm->bbt[i=
- >> 3] |=3D 0x03 << (i & 0x6);
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN=
-_WARNING "Bad eraseblock %d at 0x%08x\n",
-> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 i >> 1, (unsigned int) from);
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 printk(KERN=
-_INFO "OneNAND eraseblock %d is an "
-> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 "initial bad block\n", i >> 1);
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0mtd->ecc_s=
-tats.badblocks++;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0break;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0}
-> --
-> 1.7.0.4
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+CFI erase performance can be 10x slower than write
+performance on CFI flashes.
+
+I've added an option to skip already erased CFI blocks. This
+includes checking if the JFFS2 cleanmarker is written.
+
+
+--
+=C3=98yvind Harboe
+
+Can Zylin Consulting help on your project?
+
+US toll free 1-866-980-3434 / International +47 51 63 25 00
+
+http://www.zylin.com/zy1000.html
+ARM7 ARM9 ARM11 XScale Cortex
+JTAG debugger and flash programmer
+
+
+
+--=20
+=C3=98yvind Harboe
+
+Can Zylin Consulting help on your project?
+
+US toll free 1-866-980-3434 / International +47 51 63 25 00
+
+http://www.zylin.com/zy1000.html
+ARM7 ARM9 ARM11 XScale Cortex
+JTAG debugger and flash programmer
+
+--0023547c8c335a48f004975b5346
+Content-Type: text/x-patch; charset=UTF-8;
+	name="0001-mtd-utils-add-fast-NOR-flash-erase.patch"
+Content-Disposition: attachment;
+	filename="0001-mtd-utils-add-fast-NOR-flash-erase.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ghnx58q00
+
+RnJvbSAwNjZmNTAxYjI1M2M4NDU1MGU2OTU5YmU1MjdhYTBhYTc1ZmZmNjMxIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiA9P1VURi04P3E/PUMzPTk4eXZpbmQ9MjBIYXJib2U/PSA8b3l2
+aW5kLmhhcmJvZUB6eWxpbi5jb20+CkRhdGU6IEZyaSwgMTAgRGVjIDIwMTAgMTA6MDU6NDMgKzAx
+MDAKU3ViamVjdDogW1BBVENIXSBtdGQtdXRpbHM6IGFkZCBmYXN0IE5PUiBmbGFzaCBlcmFzZQpN
+SU1FLVZlcnNpb246IDEuMApDb250ZW50LVR5cGU6IHRleHQvcGxhaW47IGNoYXJzZXQ9VVRGLTgK
+Q29udGVudC1UcmFuc2Zlci1FbmNvZGluZzogOGJpdAoKZG8gbm90IGVyYXNlIHNlY3RvciAod2hp
+Y2ggY2FuIGJlIDEweCBzbG93ZXIgdGhhbiB3cml0ZSdzIG9uCkNGSSdzKSBpZiBpdCBpcyBhbHJl
+YWR5IGVyYXNlZC4gVGhpcyBpbmNsdWRlcyBhIGNoZWNrIGZvciBhCmNsZWFubWFya2VyLgoKU2ln
+bmVkLW9mZi1ieTogw5h5dmluZCBIYXJib2UgPG95dmluZC5oYXJib2VAenlsaW4uY29tPgotLS0K
+IC4uLi9mbGFzaF9lcmFzZWFsbC5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA2
+MCArKysrKysrKysrKysrKysrKysrLQogMSBmaWxlcyBjaGFuZ2VkLCA1OSBpbnNlcnRpb25zKCsp
+LCAxIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3VzZXIvbXRkLXV0aWxzLzYwNmYzOGEyMjIx
+NjQ4Y2E1YzVmYTI5MmM5ZjcxZDJkZGQ1OWZhNjYvZmxhc2hfZXJhc2VhbGwuYyBiL3VzZXIvbXRk
+LXV0aWxzLzYwNmYzOGEyMjIxNjQ4Y2E1YzVmYTI5MmM5ZjcxZDJkZGQ1OWZhNjYvZmxhc2hfZXJh
+c2VhbGwuYwppbmRleCBhMjJmYzQ5Li5mNmRhMWZmIDEwMDY0NAotLS0gYS91c2VyL210ZC11dGls
+cy82MDZmMzhhMjIyMTY0OGNhNWM1ZmEyOTJjOWY3MWQyZGRkNTlmYTY2L2ZsYXNoX2VyYXNlYWxs
+LmMKKysrIGIvdXNlci9tdGQtdXRpbHMvNjA2ZjM4YTIyMjE2NDhjYTVjNWZhMjkyYzlmNzFkMmRk
+ZDU5ZmE2Ni9mbGFzaF9lcmFzZWFsbC5jCkBAIC00Nyw2ICs0Nyw3IEBAIHN0YXRpYyBjb25zdCBj
+aGFyICpleGVfbmFtZTsKIHN0YXRpYyBjb25zdCBjaGFyICptdGRfZGV2aWNlOwogc3RhdGljIGlu
+dCBxdWlldDsJCS8qIHRydWUgLS0gZG9uJ3Qgb3V0cHV0IHByb2dyZXNzICovCiBzdGF0aWMgaW50
+IGpmZnMyOwkJLy8gZm9ybWF0IGZvciBqZmZzMiB1c2FnZQorc3RhdGljIGludCBmYXN0OwkJLy8g
+RmFzdCAtIGNoZWNrIGlmIHRoZSBibG9jayBpcyBlcmFzZWQgYmVmb3JlIGVyYXNpbmcKIAogc3Rh
+dGljIHZvaWQgcHJvY2Vzc19vcHRpb25zIChpbnQgYXJnYywgY2hhciAqYXJndltdKTsKIHZvaWQg
+c2hvd19wcm9ncmVzcyAobXRkX2luZm9fdCAqbWVtaW5mbywgZXJhc2VfaW5mb190ICplcmFzZSk7
+CkBAIC0xNDYsOSArMTQ3LDYxIEBAIGludCBtYWluIChpbnQgYXJnYywgY2hhciAqYXJndltdKQog
+CQkJfQogCQl9CiAKKwkJLyogQ2FuIHdlIHNraXAgdGhpcyBvbmUgaWYgaXQgaXMgYWxyZWFkeSBl
+cmFzZWQ/CisJCSAqIFBlcmhhcHMgTkFORCBwZXJmb3JtYW5jZSBjb3VsZCBiZSBpbXByb3ZlZCBi
+eSBhZGRpbmcgc3VwcG9ydCBmb3IKKwkJICogdGhvc2UgY2xlYW5tYXJrZXJzIGFzIHdlbGw/CisJ
+CSAqCisJCSAqIEN1cnJlbnRseSB0aGlzIG9ubHkgd29ya3Mgd2l0aCBKRkZTMiBOT1IgY2xlYW4g
+bWFya2VycworCQkgKi8KKwkJaW50IHNraXAgPSAwOworCQlpZiAoZmFzdCAmJiAhaXNOQU5EKSB7
+CisJCQlpZiAobHNlZWsgKGZkLCBlcmFzZS5zdGFydCwgU0VFS19TRVQpIDwgMCkgeworCQkJCWZw
+cmludGYoc3RkZXJyLCAiXG4lczogJXM6IE1URCBsc2VlayBmYWlsdXJlOiAlc1xuIiwgZXhlX25h
+bWUsIG10ZF9kZXZpY2UsIHN0cmVycm9yKGVycm5vKSk7CisJCQkJcmV0dXJuIDE7CisJCQl9CisJ
+CQl1aW50OF90ICp0bXAgPSBtYWxsb2MobWVtaW5mby5lcmFzZXNpemUpOworCQkJaWYgKHRtcCA9
+PSBOVUxMKQorCQkJeworCQkJCWZwcmludGYoc3RkZXJyLCAiT3V0IG9mIG1lbW9yeVxuIik7CisJ
+CQkJcmV0dXJuIDE7CisJCQl9CisJCQlzc2l6ZV90IGFjdHVhbCA9IHJlYWQoZmQsIHRtcCwgbWVt
+aW5mby5lcmFzZXNpemUpOworCQkJaWYgKGFjdHVhbCAhPSBtZW1pbmZvLmVyYXNlc2l6ZSkgewor
+CQkJCWZwcmludGYoc3RkZXJyLCAiXG4lczogJXM6IE1URCByZWFkIGZhaWx1cmU6ICVzXG4iLCBl
+eGVfbmFtZSwgbXRkX2RldmljZSwgc3RyZXJyb3IoZXJybm8pKTsKKwkJCQlyZXR1cm4gMTsKKwkJ
+CX0KKwkJCXNzaXplX3QgaSA9IDA7CisJCQlpbnQgb2sgPSAxOworCisJCQlpZiAoamZmczIpIHsK
+KwkJCQlvayA9IG1lbWNtcCh0bXAsICZjbGVhbm1hcmtlciwgc2l6ZW9mIChjbGVhbm1hcmtlcikp
+ID09IDA7CisJCQkJaSA9IHNpemVvZiAoY2xlYW5tYXJrZXIpOworCQkJfQorCisJCQlpZiAob2sp
+CisJCQl7CisJCQkJZm9yICg7IGkgPCBtZW1pbmZvLmVyYXNlc2l6ZTsgaSsrKQorCQkJCXsKKwkJ
+CQkJaWYgKHRtcFtpXSAhPSAweGZmKQorCQkJCQkJYnJlYWs7CisJCQkJfQorCQkJCWlmIChpID09
+IG1lbWluZm8uZXJhc2VzaXplKQorCQkJCXsKKwkJCQkJLyogWXVwISB3ZSBjYW4gc2tpcCEgSGVy
+ZSB3ZSBjb3VsZCBpbXByb3ZlIHRoaW5ncyBieQorCQkJCQkgKiBhZGRpbmcgc3VwcG9ydCBmb3Ig
+TkFORCBjbGVhbm1hcmtlcnMKKwkJCQkJICovCisJCQkJCXNraXAgPSAxOworCQkJCX0KKwkJCX0K
+KwkJCWZyZWUodG1wKTsKKwkJfQorCiAJCWlmICghcXVpZXQpCiAJCQlzaG93X3Byb2dyZXNzKCZt
+ZW1pbmZvLCAmZXJhc2UpOwogCisJCWlmIChza2lwKQorCQkJY29udGludWU7CisKIAkJaWYgKGlv
+Y3RsKGZkLCBNRU1FUkFTRSwgJmVyYXNlKSAhPSAwKSB7CiAJCQlmcHJpbnRmKHN0ZGVyciwgIlxu
+JXM6ICVzOiBNVEQgRXJhc2UgZmFpbHVyZTogJXNcbiIsIGV4ZV9uYW1lLCBtdGRfZGV2aWNlLCBz
+dHJlcnJvcihlcnJubykpOwogCQkJY29udGludWU7CkBAIC0xOTgsMTEgKzI1MSwxMiBAQCB2b2lk
+IHByb2Nlc3Nfb3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAogCWZvciAoOzspIHsK
+IAkJaW50IG9wdGlvbl9pbmRleCA9IDA7Ci0JCXN0YXRpYyBjb25zdCBjaGFyICpzaG9ydF9vcHRp
+b25zID0gImpxIjsKKwkJc3RhdGljIGNvbnN0IGNoYXIgKnNob3J0X29wdGlvbnMgPSAianFmIjsK
+IAkJc3RhdGljIGNvbnN0IHN0cnVjdCBvcHRpb24gbG9uZ19vcHRpb25zW10gPSB7CiAJCQl7Imhl
+bHAiLCBub19hcmd1bWVudCwgMCwgMH0sCiAJCQl7InZlcnNpb24iLCBub19hcmd1bWVudCwgMCwg
+MH0sCiAJCQl7ImpmZnMyIiwgbm9fYXJndW1lbnQsIDAsICdqJ30sCisJCQl7ImZhc3QiLCBub19h
+cmd1bWVudCwgMCwgJ2YnfSwKIAkJCXsicXVpZXQiLCBub19hcmd1bWVudCwgMCwgJ3EnfSwKIAkJ
+CXsic2lsZW50Iiwgbm9fYXJndW1lbnQsIDAsICdxJ30sCiAKQEAgLTIzMiw2ICsyODYsOSBAQCB2
+b2lkIHByb2Nlc3Nfb3B0aW9ucyAoaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkKIAkJCWNhc2UgJ2on
+OgogCQkJCWpmZnMyID0gMTsKIAkJCQlicmVhazsKKwkJCWNhc2UgJ2YnOgorCQkJCWZhc3QgPSAx
+OworCQkJCWJyZWFrOwogCQkJY2FzZSAnPyc6CiAJCQkJZXJyb3IgPSAxOwogCQkJCWJyZWFrOwpA
+QCAtMjY1LDYgKzMyMiw3IEBAIHZvaWQgZGlzcGxheV9oZWxwICh2b2lkKQogCQkJIlxuIgogCQkJ
+IiAgLWosIC0tamZmczIgICAgZm9ybWF0IHRoZSBkZXZpY2UgZm9yIGpmZnMyXG4iCiAJCQkiICAt
+cSwgLS1xdWlldCAgICBkb24ndCBkaXNwbGF5IHByb2dyZXNzIG1lc3NhZ2VzXG4iCisJCQkiICAt
+ZiwgLS1mYXN0ICAgICBkbyBub3QgcmUtZXJhc2Ugc2VjdG9ycyB0aGF0IGFyZSBlcmFzZWRcbiIK
+IAkJCSIgICAgICAtLXNpbGVudCAgIHNhbWUgYXMgLS1xdWlldFxuIgogCQkJIiAgICAgIC0taGVs
+cCAgICAgZGlzcGxheSB0aGlzIGhlbHAgYW5kIGV4aXRcbiIKIAkJCSIgICAgICAtLXZlcnNpb24g
+IG91dHB1dCB2ZXJzaW9uIGluZm9ybWF0aW9uIGFuZCBleGl0XG4iLAotLSAKMS43LjAuNAoK
+--0023547c8c335a48f004975b5346--
