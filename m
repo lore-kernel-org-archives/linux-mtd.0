@@ -1,33 +1,22 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSXgp-0005EM-AW
-	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:25:24 +0000
-Received: by eyd9 with SMTP id 9so527284eyd.22
+Received: from mail-bw0-f43.google.com ([209.85.214.43])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSXmb-0005wZ-PS
+	for linux-mtd@lists.infradead.org; Tue, 14 Dec 2010 16:31:22 +0000
+Received: by bwz14 with SMTP id 14so982550bwz.30
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 08:25:21 -0800 (PST)
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+	Tue, 14 Dec 2010 08:31:19 -0800 (PST)
+Subject: Re: [PATCH v4 1/2] mtd: cfi_cmdset_0002: add support for Samsung
+	K8D6x16UxM NOR chips
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jason Lunz <lunz@acm.org>
-In-Reply-To: <20101207182012.GA10546@falooley.org>
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<20071024011712.GA3762@falooley.org>
-	<1193208689.26096.48.camel@pmac.infradead.org>
-	<20071227181524.GA19051@falooley.org>
-	<20071228174853.GA4252@uranus.ravnborg.org>
-	<20101207072919.GA8511@falooley.org>
-	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
-	<20101207182012.GA10546@falooley.org>
+To: Guillaume LECERF <glecerf@gmail.com>
+In-Reply-To: <20101209140410.26049.51539.stgit@dev.siriade.com>
+References: <20101209140410.26049.51539.stgit@dev.siriade.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 14 Dec 2010 18:24:38 +0200
-Message-ID: <1292343878.2538.80.camel@localhost>
+Date: Tue, 14 Dec 2010 18:30:47 +0200
+Message-ID: <1292344247.2538.84.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net,
-	richard -rw- weinberger <richard.weinberger@gmail.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+Cc: Matthias Buecher / Germany <mail@maddes.net>, linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -39,69 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-12-07 at 10:20 -0800, Jason Lunz wrote:
-> On Tue, Dec 07, 2010 at 10:39:41AM +0100, richard -rw- weinberger wrote:
-> > On Tue, Dec 7, 2010 at 8:29 AM, Jason Lunz <lunz@acm.org> wrote:
-> > >
-> > > Allow parts of drivers/mtd to compile on uml by pushing the HAS_IOMEM
-> > > dependencies down closer to the parts of mtd that actually need it.
-> > > This allows enough of mtd to build to let jffs2 be used on uml.
-> > >
-> > > Signed-off-by: Jason Lunz <lunz@acm.org>
-> > > ---
-> > >  arch/um/Kconfig.rest        |    4 +---
-> > >  drivers/mtd/Kconfig         |    1 -
-> > >  drivers/mtd/Makefile        |    3 ++-
-> > >  drivers/mtd/chips/Kconfig   |    4 ++++
-> > >  drivers/mtd/devices/Kconfig |    8 ++++++++
-> > >  drivers/mtd/maps/Kconfig    |    4 ++++
-> > >  drivers/mtd/mtdchar.c       |    4 ++++
-> > >  drivers/mtd/nand/Kconfig    |    3 +++
-> > >  drivers/mtd/onenand/Kconfig |    3 +++
-> > >  include/linux/mtd/map.h     |    2 ++
-> > >  10 files changed, 31 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/arch/um/Kconfig.rest b/arch/um/Kconfig.rest
-> > > index 0ccad0f..e34f399 100644
-> > > --- a/arch/um/Kconfig.rest
-> > > +++ b/arch/um/Kconfig.rest
-> > > @@ -28,9 +28,7 @@ source "drivers/scsi/Kconfig"
-> > >
-> > >  source "drivers/md/Kconfig"
-> > >
-> > > -if BROKEN
-> > > -       source "drivers/mtd/Kconfig"
-> > > -endif
-> > > +source "drivers/mtd/Kconfig"
-> > 
-> > drivers/mtd was already marked as broken when we moved over to git (2.6.12-rc2).
-> > 
-> > Do you exactly know why it was marked and fixes this patch all issues?
+On Thu, 2010-12-09 at 15:04 +0100, Guillaume LECERF wrote:
+> These chips report CFI v0.0 [1], so extend cfi_fixup_major_minor()
+> to patch all Samsung chips from 0.0 to 1.0.
+> Discussed and tested by the OpenWRT people [2].
 > 
-> I don't know exactly why it was originally marked BROKEN. I imagine it
-> was because most of the low-level mtd drivers need readb/writeb and
-> friends, which don't exist on uml. But now that mtd has virtual ram- and
-> blockdev-backed drivers, that's no longer sufficient reason to omit the
-> whole subsystem.
+> [1] http://www.samsung.com/global/system/business/semiconductor/product/2007/6/11/NORFlash/64Mbit/K8D6316UTM/ds_K8D6x16UxM_rev16.pdf
+> [2] https://dev.openwrt.org/ticket/7348
 > 
-> I can't claim that this fixes all possible issues of course, but I've
-> privately been using this patch to run block2mtd under uml for years. My
-> original motivation was to allow the use of jffs2 in a uml-based test
-> environment and for that it's worked very well.
+> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
+> ---
+>  drivers/mtd/chips/cfi_cmdset_0002.c |   14 +++++++++++---
+>  1 files changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+> index 9d68ab9..bf457a4 100644
+> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> @@ -392,9 +392,17 @@ static struct cfi_fixup fixup_table[] = {
+>  static void cfi_fixup_major_minor(struct cfi_private *cfi,
+>  				  struct cfi_pri_amdstd *extp)
+>  {
+> -	if (cfi->mfr == CFI_MFR_SAMSUNG && cfi->id == 0x257e &&
+> -	    extp->MajorVersion == '0')
+> -		extp->MajorVersion = '1';
+> +	if (cfi->mfr == CFI_MFR_SAMSUNG) {
+> +		if (extp->MajorVersion == '0' && extp->MinorVersion == '0') {
+> +			/*
+> +			 * Samsung K8P2815UQB and K8D6x16UxM chips report major=0 / minor=0
+> +			 */
+> +			printk(KERN_NOTICE "  Fixed Samsung's Amd/Fujitsu Extended Query version from 0.0 to 1.0\n");
+> +
+> +			extp->MajorVersion = '1';
+> +		}
 
-But I think your solution is a bit dirty, because it adds a great deal
-of little 'if HAS_IOMEM' and '#ifdef CONFIG_HAS_IOMEM' to many places.
-This is error-prone.
+I'm sorry for this nit-pick, but could you please make checkpatch.pl
+happy:
 
-Instead, you should solve this problem in UML code. I do not know how,
-but may be you can add readb/writeb there which actually do nothing or
-print a scary warning, or do BUG(), and let things which use them just
-fail run-time.
+WARNING: line over 80 characters
+#97: FILE: drivers/mtd/chips/cfi_cmdset_0002.c:398:
++                        * Samsung K8P2815UQB and K8D6x16UxM chips
+report major=0 / minor=0
 
-Anyway, please, think about a solution which needs few changes in UML
-code instead of myriads of small little changes in many places.
-
-Thanks!
+Also, I do not see any reason for a newline between printk() and
+extp->MajorVersion = '1' - it only makes code unnecessary sparse.
+Newlines ar good between logically independent things, but not between 2
+things which are about the same - print about X and then do X.
 
 -- 
 Best Regards,
