@@ -1,26 +1,23 @@
-Received: from smtp.falooley.org ([66.180.170.91])
+Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSg1h-0003oO-U2
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 01:19:32 +0000
-Date: Tue, 14 Dec 2010 17:19:05 -0800
-From: Jason Lunz <lunz@acm.org>
-To: Rob Landley <rob@landley.net>
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
-Message-ID: <20101215011904.GA24292@falooley.org>
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<20101214195124.GA6010@falooley.org>
-	<1292356893.29257.1.camel@koala>
-	<201012141849.03926.rob@landley.net>
+	id 1PSgBK-0006o4-Kr
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 01:29:27 +0000
+Date: Tue, 14 Dec 2010 17:29:15 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+Subject: Re: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds
+	instead of nanoseconds
+Message-ID: <20101215012914.GE3190@atomide.com>
+References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
+	<20101213122108.20685.1920.sendpatchset@ahunter-work.research.nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <201012141849.03926.rob@landley.net>
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net, dedekind1@gmail.com,
-	richard -rw- weinberger <richard.weinberger@gmail.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20101213122108.20685.1920.sendpatchset@ahunter-work.research.nokia.com>
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 14, 2010 at 06:49:02PM -0600, Rob Landley wrote:
-> The problem is that jffs2 is a filesystem, and thus something people would 
-> really like to be able to loopback mount, but it's hardwired to assume it's 
-> only ever stored on a certain type of hardware, and thus requies incestuous 
-> knowledge of the erase granularity of the flash layer in order to function.
+* Adrian Hunter <adrian.hunter@nokia.com> [101213 04:21]:
+> From c52e0cdeedffb7a0f9818ad3d6296d1f51b8669d Mon Sep 17 00:00:00 2001
+> From: Adrian Hunter <adrian.hunter@nokia.com>
+> Date: Thu, 9 Dec 2010 10:48:27 +0200
+> Subject: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds instead of nanoseconds
+> 
+> The calculations done with sync_clk are anyway in picoseconds
+> and switching to picoseconds allows sync_clk values that are
+> not a whole number of nanoseconds - which is sometimes the
+> case.
+> 
+> Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
+> ---
+>  arch/arm/mach-omap2/gpmc-nand.c        |    2 +-
+>  arch/arm/mach-omap2/gpmc-onenand.c     |   10 +++++-----
+>  arch/arm/mach-omap2/gpmc.c             |   12 +++++++++++-
+>  arch/arm/mach-omap2/usb-tusb6010.c     |    4 ++--
+>  arch/arm/plat-omap/include/plat/gpmc.h |    9 +++++----
+>  5 files changed, 24 insertions(+), 13 deletions(-)
 
-I assume you can turn your jffs2 image file into a block dev using
-losetup, then turn the corresponding loop device into an mtd device
-using block2mtd, at which point you ought to be able to mount it with
-jffs2. I've never tried it.
+Hmm I think I already replied to this.. But looks like not so here's
+a new attempt..
 
-> What any of this has to do with UML is an open question.  I don't want to 
-> require UML to loopback mount a jffs2 image, I want to be able to do it from my 
-> host.  From my perspective, you're solving the wrong problem.
+This one you should send to linux-omap and linux-arm-kernel and
+Cc Felipe Balbi so we can make sure the timing changes work
+with tusb6010. Then we can ack it an it can go via the MTD
+list.
 
-There's more than just loopback-mounting jffs2 images. I use this to
-make entire uml+jffs2 virtual machines for testing purposes.
+Regards,
 
-Jason
+Tony
