@@ -1,20 +1,15 @@
-Received: from d1.icnet.pl ([212.160.220.21])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSq1a-0003TO-7f
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 12:00:10 +0000
-From: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: NAND: ams-delta: select for built-in by default
-Date: Wed, 15 Dec 2010 12:58:15 +0100
+Message-ID: <4D08C1C8.3090100@ru.mvista.com>
+Date: Wed, 15 Dec 2010 16:25:28 +0300
+From: Sergei Shtylyov <sshtylyov@mvista.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <201012151258.16764.jkrzyszt@tis.icnet.pl>
-Content-Type: text/plain;
-  charset="us-ascii"
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+Subject: Re: [PATCH] MTD: m25p80: add debugging trace in sst_write()
+References: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
+In-Reply-To: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now that the Amstrad Delta NAND driver is converted to a platform driver, 
-which prevents it from interfering with other unrelated hardware in multiple 
-OMAP1 cpu and machine configurations, it can be automatically configured for 
-being built into the kernel if the Amstrad Delta board is also selected.
+Hello.
 
-Created against linux-2.6.37-rc5.
+On 15-12-2010 14:59, Nicolas Ferre wrote:
 
-Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
----
+> Add a DEBUG(MTD_DEBUG_LEVEL2, ..) trace at beginning of sst_write() function as
+> it is done in m25p80_write() function.
 
- drivers/mtd/nand/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+> Signed-off-by: Nicolas Ferre<nicolas.ferre@atmel.com>
+[...]
 
---- linux-2.6.37-rc5/drivers/mtd/nand/Kconfig.orig	2010-12-09 23:08:16.000000000 +0100
-+++ linux-2.6.37-rc5/drivers/mtd/nand/Kconfig	2010-12-11 15:58:12.000000000 +0100
-@@ -96,6 +96,7 @@ config MTD_NAND_SPIA
- config MTD_NAND_AMS_DELTA
- 	tristate "NAND Flash device on Amstrad E3"
- 	depends on MACH_AMS_DELTA
-+	default y
- 	help
- 	  Support for NAND flash on Amstrad E3 (Delta).
- 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index bf5a002..e6b5707 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
+> @@ -482,6 +482,10 @@ static int sst_write(struct mtd_info *mtd, loff_t to, size_t len,
+>   	size_t actual;
+>   	int cmd_sz, ret;
+>
+> +	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %zd\n",
+> +			dev_name(&flash->spi->dev), __func__, "to",
+
+    What's the point of printing "to" as variable? :-)
+
+> +			(u32)to, len);
+> +
+
+WBR, Sergei
