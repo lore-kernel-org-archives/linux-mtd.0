@@ -1,10 +1,10 @@
-Received: from mail-fx0-f48.google.com ([209.85.161.48])
+Received: from mail-bw0-f67.google.com ([209.85.214.67])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSryW-00009d-Cz
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 14:05:03 +0000
-Received: by fxm2 with SMTP id 2so2065144fxm.21
+	id 1PSs0l-0000eD-CI
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 14:07:22 +0000
+Received: by bwz3 with SMTP id 3so704989bwz.6
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2010 06:04:58 -0800 (PST)
+	Wed, 15 Dec 2010 06:07:15 -0800 (PST)
 Subject: Re: [PATCH 1/7] mtd: OneNAND: OMAP2/3: add support for command
 	line partitioning
 From: Artem Bityutskiy <dedekind1@gmail.com>
@@ -13,8 +13,8 @@ In-Reply-To: <20101213122051.20685.46383.sendpatchset@ahunter-work.research.noki
 References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
 	<20101213122051.20685.46383.sendpatchset@ahunter-work.research.nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 15 Dec 2010 16:04:29 +0200
-Message-ID: <1292421869.2512.56.camel@localhost>
+Date: Wed, 15 Dec 2010 16:06:46 +0200
+Message-ID: <1292422006.2512.57.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: Tony Lindgren <tony@atomide.com>,
@@ -49,13 +49,7 @@ On Mon, 2010-12-13 at 14:20 +0200, Adrian Hunter wrote:
 > 
 > Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 
-I've pushed patches 1 and 7 to l2-mtd-2.6, but patch #2 is not
-applicable. I think this is because of changes Kyungmin made recently.
-Could you please re-send patches 2 and 3 on top of the l2 tree?
-
-I guess I can apply 2 and 3 now. Patch 4 should wait for comments from
-Tony, AFAICS. Patches 5 and 6 are dependent, and hence should wait as
-well, AFAICS.
+Pushed this one to l2-mtd-2.6.git, thank you.
 
 -- 
 Best Regards,
