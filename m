@@ -1,31 +1,23 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSktd-0000PU-Nm
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 06:31:30 +0000
-Received: by gyg4 with SMTP id 4so903509gyg.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 22:31:28 -0800 (PST)
-From: Rob Landley <rob@landley.net>
-To: Jason Lunz <lunz@acm.org>,
- Denys Vlasenko <vda.linux@googlemail.com>
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
-Date: Wed, 15 Dec 2010 00:31:18 -0600
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<201012141849.03926.rob@landley.net>
-	<20101215011904.GA24292@falooley.org>
-In-Reply-To: <20101215011904.GA24292@falooley.org>
+Message-ID: <4D086635.2010109@nokia.com>
+Date: Wed, 15 Dec 2010 08:54:45 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
+To: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds
+	instead of nanoseconds
+References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
+	<20101213122108.20685.1920.sendpatchset@ahunter-work.research.nokia.com>
+	<20101215012914.GE3190@atomide.com>
+In-Reply-To: <20101215012914.GE3190@atomide.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201012150031.21417.rob@landley.net>
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net, dedekind1@gmail.com,
-	richard -rw- weinberger <richard.weinberger@gmail.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: Artem Bityutskiy <dedekind1@gmail.com>, "Balbi, Felipe" <balbi@ti.com>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	linux-omap Mailing List <linux-omap@vger.kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,86 +27,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 14 December 2010 19:19:05 Jason Lunz wrote:
-> On Tue, Dec 14, 2010 at 06:49:02PM -0600, Rob Landley wrote:
-> > The problem is that jffs2 is a filesystem, and thus something people
-> > would really like to be able to loopback mount, but it's hardwired to
-> > assume it's only ever stored on a certain type of hardware, and thus
-> > requies incestuous knowledge of the erase granularity of the flash layer
-> > in order to function.
->
-> I assume you can turn your jffs2 image file into a block dev using
-> losetup, then turn the corresponding loop device into an mtd device
-> using block2mtd, at which point you ought to be able to mount it with
-> jffs2. I've never tried it.
+>From c52e0cdeedffb7a0f9818ad3d6296d1f51b8669d Mon Sep 17 00:00:00 2001
+From: Adrian Hunter <adrian.hunter@nokia.com>
+Date: Thu, 9 Dec 2010 10:48:27 +0200
+Subject: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds instead of nanoseconds
 
-That is awesome and I'm not finding any documentation on it...  Ah:
+The calculations done with sync_clk are anyway in picoseconds
+and switching to picoseconds allows sync_clk values that are
+not a whole number of nanoseconds - which is sometimes the
+case.
 
-  http://wiki.maemo.org/Modifying_the_root_image#Block_device_emulating_an_MTD_device
+Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
+---
+  arch/arm/mach-omap2/gpmc-nand.c        |    2 +-
+  arch/arm/mach-omap2/gpmc-onenand.c     |   10 +++++-----
+  arch/arm/mach-omap2/gpmc.c             |   12 +++++++++++-
+  arch/arm/mach-omap2/usb-tusb6010.c     |    4 ++--
+  arch/arm/plat-omap/include/plat/gpmc.h |    9 +++++----
+  5 files changed, 24 insertions(+), 13 deletions(-)
 
-Wow that's awkward.  Let's see, that says...
-
-  mknod /tmp/mtdblock0 b 31 0
-  modprobe loop
-  losetup /dev/loop0 rootfs.jffs2
-  modprobe mtdblock
-  modprobe block2mtd
-  # Note the ,128KiB is needed (on 2.6.26 at least) to set the
-  # eraseblock  size.
-  echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
-  modprobe jffs2
-  mount -t jffs2 /tmp/mtdblock0 /media/jffs2
-
-So the system isn't automatically loading mtdblock, udev isn't creating any 
-/dev nodes for it even thought it is for loop, the associations are created by 
-writing strings into a filesystem with a _notoriously_ unstable API (and it 
-expects a three letter mixed case suffix to specify units), and despite 
-"mtdblock0" I have no idea how that echo syntax would specify more than one 
-association at a time.
-
-I'm trying to figure out whether creating a shell script for this or trying to 
-modify the busybox mount command would be a better approach to beating some 
-sort of usability out of doing this.
-
-Hmmm, mkfs.jffs2 is named as a mkfs but acts a a generator ala genext2fs.  How 
-about...
-
-  mkdir empty
-  mkfs.jffs2 -r empty -o rootfs.jffs2 -e 128 -l -n
-
-And it created an empty (zero byte) file.  That's nice.  If I touch a file in 
-"empty" now 116 bytes.  Adding -p makes it one erase block, but adding "-p 
-2048" doesn't specify a multiple of the erase block size, it instead rounded 
-rounded it _down_ to that many bytes.  But --pad=$((2048*1024*1024)) was 
-apparently ignored...?  How do I specify a _size_ for this thing so it has 
-empty space I can write into after the fact?  (The man page says pad with 
-0xFF.  Am I going to have to do this by hand?)
-
-  mkdir empty
-  touch empty/hello
-  mkfs.jffs2 -r empty -o temp.jffs2 -e 128 -l -n -p
-  python -c "import sys; sys.stdout.write(131072*63*chr(0xff))" >> temp.jffs2
-  losetup /dev/loop0 temp.jffs2
-  echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
-  mount -t jffs2 mtdblock0 empty
-
-Yay!  I have a filesystem!  And df claims it's 8 megabytes.
-
-Woot.
-
-> > What any of this has to do with UML is an open question.  I don't want to
-> > require UML to loopback mount a jffs2 image, I want to be able to do it
-> > from my host.  From my perspective, you're solving the wrong problem.
->
-> There's more than just loopback-mounting jffs2 images. I use this to
-> make entire uml+jffs2 virtual machines for testing purposes.
-
-As I said, I'm almost exclusively using qemu/kvm these days, but this is 
-fun...
-
-> Jason
-
-Rob
--- 
-GPLv3: as worthy a successor as The Phantom Menace, as timely as Duke Nukem 
-Forever, and as welcome as New Coke.
+diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
+index 7222096..2bb29c1 100644
+--- a/arch/arm/mach-omap2/gpmc-nand.c
++++ b/arch/arm/mach-omap2/gpmc-nand.c
+@@ -41,7 +41,7 @@ static int omap2_nand_gpmc_retime(void)
+  		return 0;
+  
+  	memset(&t, 0, sizeof(t));
+-	t.sync_clk = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->sync_clk);
++	t.sync_clk = gpmc_nand_data->gpmc_t->sync_clk;
+  	t.cs_on = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->cs_on);
+  	t.adv_on = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->adv_on);
+  
+diff --git a/arch/arm/mach-omap2/gpmc-onenand.c b/arch/arm/mach-omap2/gpmc-onenand.c
+index 7bb6922..1db606c 100644
+--- a/arch/arm/mach-omap2/gpmc-onenand.c
++++ b/arch/arm/mach-omap2/gpmc-onenand.c
+@@ -174,7 +174,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
+  
+  	switch (freq) {
+  	case 83:
+-		min_gpmc_clk_period = 12; /* 83 MHz */
++		min_gpmc_clk_period = 12000; /* 83 MHz */
+  		t_ces   = 5;
+  		t_avds  = 4;
+  		t_avdh  = 2;
+@@ -183,7 +183,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
+  		t_rdyo  = 9;
+  		break;
+  	case 66:
+-		min_gpmc_clk_period = 15; /* 66 MHz */
++		min_gpmc_clk_period = 15000; /* 66 MHz */
+  		t_ces   = 6;
+  		t_avds  = 5;
+  		t_avdh  = 2;
+@@ -192,7 +192,7 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
+  		t_rdyo  = 11;
+  		break;
+  	default:
+-		min_gpmc_clk_period = 18; /* 54 MHz */
++		min_gpmc_clk_period = 18500; /* 54 MHz */
+  		t_ces   = 7;
+  		t_avds  = 7;
+  		t_avdh  = 7;
+@@ -271,8 +271,8 @@ static int omap2_onenand_set_sync_mode(struct omap_onenand_platform_data *cfg,
+  		t.wr_cycle  = t.rd_cycle;
+  		if (cpu_is_omap34xx()) {
+  			t.wr_data_mux_bus = gpmc_ticks_to_ns(fclk_offset +
+-					gpmc_ns_to_ticks(min_gpmc_clk_period +
+-					t_rdyo));
++					gpmc_ps_to_ticks(min_gpmc_clk_period +
++					t_rdyo * 1000));
+  			t.wr_access = t.access;
+  		}
+  	} else {
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index f46933b..1b7b3e7 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -168,6 +168,16 @@ unsigned int gpmc_ns_to_ticks(unsigned int time_ns)
+  	return (time_ns * 1000 + tick_ps - 1) / tick_ps;
+  }
+  
++unsigned int gpmc_ps_to_ticks(unsigned int time_ps)
++{
++	unsigned long tick_ps;
++
++	/* Calculate in picosecs to yield more exact results */
++	tick_ps = gpmc_get_fclk_period();
++
++	return (time_ps + tick_ps - 1) / tick_ps;
++}
++
+  unsigned int gpmc_ticks_to_ns(unsigned int ticks)
+  {
+  	return ticks * gpmc_get_fclk_period() / 1000;
+@@ -235,7 +245,7 @@ int gpmc_cs_calc_divider(int cs, unsigned int sync_clk)
+  	int div;
+  	u32 l;
+  
+-	l = sync_clk * 1000 + (gpmc_get_fclk_period() - 1);
++	l = sync_clk + (gpmc_get_fclk_period() - 1);
+  	div = l / gpmc_get_fclk_period();
+  	if (div > 4)
+  		return -1;
+diff --git a/arch/arm/mach-omap2/usb-tusb6010.c b/arch/arm/mach-omap2/usb-tusb6010.c
+index 64a0112..1e998ea 100644
+--- a/arch/arm/mach-omap2/usb-tusb6010.c
++++ b/arch/arm/mach-omap2/usb-tusb6010.c
+@@ -120,8 +120,8 @@ static int tusb_set_sync_mode(unsigned sysclk_ps, unsigned fclk_ps)
+  	t.adv_on = next_clk(t.cs_on, t_scsnh_advnh - 7000, fclk_ps);
+  
+  	/* GPMC_CLK rate = fclk rate / div */
+-	t.sync_clk = 12 /* 11.1 nsec */;
+-	tmp = (t.sync_clk * 1000 + fclk_ps - 1) / fclk_ps;
++	t.sync_clk = 11100 /* 11.1 nsec */;
++	tmp = (t.sync_clk + fclk_ps - 1) / fclk_ps;
+  	if (tmp > 4)
+  		return -ERANGE;
+  	if (tmp <= 0)
+diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
+index 9fd99b9..85ded59 100644
+--- a/arch/arm/plat-omap/include/plat/gpmc.h
++++ b/arch/arm/plat-omap/include/plat/gpmc.h
+@@ -80,12 +80,12 @@
+  #define GPMC_PREFETCH_STATUS_COUNT(val)	(val & 0x00003fff)
+  
+  /*
+- * Note that all values in this struct are in nanoseconds, while
+- * the register values are in gpmc_fck cycles.
++ * Note that all values in this struct are in nanoseconds except sync_clk
++ * (which is in picoseconds), while the register values are in gpmc_fck cycles.
+   */
+  struct gpmc_timings {
+-	/* Minimum clock period for synchronous mode */
+-	u16 sync_clk;
++	/* Minimum clock period for synchronous mode (in picoseconds) */
++	u32 sync_clk;
+  
+  	/* Chip-select signal timings corresponding to GPMC_CS_CONFIG2 */
+  	u16 cs_on;		/* Assertion time */
+@@ -117,6 +117,7 @@ struct gpmc_timings {
+  };
+  
+  extern unsigned int gpmc_ns_to_ticks(unsigned int time_ns);
++extern unsigned int gpmc_ps_to_ticks(unsigned int time_ps);
+  extern unsigned int gpmc_ticks_to_ns(unsigned int ticks);
+  extern unsigned int gpmc_round_ns_to_ticks(unsigned int time_ns);
+  extern unsigned long gpmc_get_fclk_period(void);
+-- 1.7.0.4
