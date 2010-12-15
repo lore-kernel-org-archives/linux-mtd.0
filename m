@@ -1,23 +1,31 @@
-Received: from mail-fx0-f48.google.com ([209.85.161.48])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSgaU-0003kJ-IU
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 01:55:32 +0000
-Received: by fxm2 with SMTP id 2so1495229fxm.21
+	id 1PSktd-0000PU-Nm
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 06:31:30 +0000
+Received: by gyg4 with SMTP id 4so903509gyg.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Dec 2010 17:55:10 -0800 (PST)
+	Tue, 14 Dec 2010 22:31:28 -0800 (PST)
+From: Rob Landley <rob@landley.net>
+To: Jason Lunz <lunz@acm.org>,
+ Denys Vlasenko <vda.linux@googlemail.com>
+Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+Date: Wed, 15 Dec 2010 00:31:18 -0600
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<201012141849.03926.rob@landley.net>
+	<20101215011904.GA24292@falooley.org>
+In-Reply-To: <20101215011904.GA24292@falooley.org>
 MIME-Version: 1.0
-In-Reply-To: <1292340409.2538.40.camel@localhost>
-References: <1290156045-11719-1-git-send-email-r64343@freescale.com>
-	<1292340409.2538.40.camel@localhost>
-Date: Wed, 15 Dec 2010 09:55:08 +0800
-Message-ID: <AANLkTi=zB7UBjkvGYv_wdwZpH1Ghatn6eye1z5616h4X@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mtd: nand: add check for out of page read
-From: Jason Liu <liu.h.jason@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: quoted-printable
-Cc: Jason Liu <r64343@freescale.com>, linux-mtd@lists.infradead.org,
-	David.Woodhouse@intel.com, linux-kernel@vger.kernel.org
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <201012150031.21417.rob@landley.net>
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net, dedekind1@gmail.com,
+	richard -rw- weinberger <richard.weinberger@gmail.com>,
+	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
+	lkml <linux-kernel@vger.kernel.org>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,100 +35,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem,
+On Tuesday 14 December 2010 19:19:05 Jason Lunz wrote:
+> On Tue, Dec 14, 2010 at 06:49:02PM -0600, Rob Landley wrote:
+> > The problem is that jffs2 is a filesystem, and thus something people
+> > would really like to be able to loopback mount, but it's hardwired to
+> > assume it's only ever stored on a certain type of hardware, and thus
+> > requies incestuous knowledge of the erase granularity of the flash layer
+> > in order to function.
+>
+> I assume you can turn your jffs2 image file into a block dev using
+> losetup, then turn the corresponding loop device into an mtd device
+> using block2mtd, at which point you ought to be able to mount it with
+> jffs2. I've never tried it.
 
-2010/12/14 Artem Bityutskiy <dedekind1@gmail.com>:
-> On Fri, 2010-11-19 at 16:40 +0800, Jason Liu wrote:
->> When run mtd_oobtest case, there will be one error for step(4),
->> which turned out it need add one check for out of page read in
->> nand_do_read_oob just like mtd_do_write_oob did it already.
->> This commit also fix one typo error for comments in mtd_do_write_oob
->>
->> Signed-off-by: Jason Liu <r64343@freescale.com>
->
-> I cannot reproduce this with nandsim, can you?
->
-> I tried:
->
-> 1. sudo modprobe nandsim
-> =9A sudo modprobe mtd_oobtest dev=3D0
->
-> 2. sudo ./load_nandsim.sh 128 128 2048
-> =9A sudo modprobe mtd_oobtest dev=3D0
->
-> In both cases the test passes: "mtd_oobtest: finished with 0 errors"
->
-> And in 'nand_do_read_oob()' I see the following piece of code:
->
-> =9A =9A =9A =9A/* Do not allow reads past end of device */
-> =9A =9A =9A =9Aif (unlikely(from >=3D mtd->size ||
-> =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A ops->ooboffs + readlen > ((mtd->s=
-ize >> chip->page_shift) -
-> =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =
-=9A =9A(from >> chip->page_shift)) * len)) {
-> =9A =9A =9A =9A =9A =9A =9A =9ADEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read =
-beyond end "
-> =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =
-=9A =9A"of device\n", __func__);
-> =9A =9A =9A =9A =9A =9A =9A =9Areturn -EINVAL;
-> =9A =9A =9A =9A}
+That is awesome and I'm not finding any documentation on it...  Ah:
 
-Here the mtd->size in nand_base.c should be the NAND flash chip size,
-while in nand_oobtest,
+  http://wiki.maemo.org/Modifying_the_root_image#Block_device_emulating_an_MTD_device
 
-              /* Attempt to read off end of device */
-                ops.mode      =3D MTD_OOB_AUTO;
-                ops.len       =3D 0;
-                ops.retlen    =3D 0;
-                ops.ooblen    =3D mtd->ecclayout->oobavail;
-                ops.oobretlen =3D 0;
-                ops.ooboffs   =3D 1;
-                ops.datbuf    =3D NULL;
-                ops.oobbuf    =3D readbuf;
-                printk(PRINT_PREF "attempting to read past end of device\n"=
-);
-                printk(PRINT_PREF "an error is expected...\n");
-                err =3D mtd->read_oob(mtd, mtd->size - mtd->writesize, &ops=
-);
-                if (err) {
-                        printk(PRINT_PREF "error occurred as expected\n");
-                        err =3D 0;
-                } else {
-                        printk(PRINT_PREF "error: read past end of device\n=
-");
-                        errcnt +=3D 1;
-                }
-        }
+Wow that's awkward.  Let's see, that says...
 
-here, mtd->size is mtd partition size right? when the mtd partition is
-not the last MTD partition, the error will happen.
+  mknod /tmp/mtdblock0 b 31 0
+  modprobe loop
+  losetup /dev/loop0 rootfs.jffs2
+  modprobe mtdblock
+  modprobe block2mtd
+  # Note the ,128KiB is needed (on 2.6.26 at least) to set the
+  # eraseblock  size.
+  echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
+  modprobe jffs2
+  mount -t jffs2 /tmp/mtdblock0 /media/jffs2
 
-I have tested on real NAND, while not on nandsim.
+So the system isn't automatically loading mtdblock, udev isn't creating any 
+/dev nodes for it even thought it is for loop, the associations are created by 
+writing strings into a filesystem with a _notoriously_ unstable API (and it 
+expects a three letter mixed case suffix to specify units), and despite 
+"mtdblock0" I have no idea how that echo syntax would specify more than one 
+association at a time.
 
+I'm trying to figure out whether creating a shell script for this or trying to 
+modify the busybox mount command would be a better approach to beating some 
+sort of usability out of doing this.
+
+Hmmm, mkfs.jffs2 is named as a mkfs but acts a a generator ala genext2fs.  How 
+about...
+
+  mkdir empty
+  mkfs.jffs2 -r empty -o rootfs.jffs2 -e 128 -l -n
+
+And it created an empty (zero byte) file.  That's nice.  If I touch a file in 
+"empty" now 116 bytes.  Adding -p makes it one erase block, but adding "-p 
+2048" doesn't specify a multiple of the erase block size, it instead rounded 
+rounded it _down_ to that many bytes.  But --pad=$((2048*1024*1024)) was 
+apparently ignored...?  How do I specify a _size_ for this thing so it has 
+empty space I can write into after the fact?  (The man page says pad with 
+0xFF.  Am I going to have to do this by hand?)
+
+  mkdir empty
+  touch empty/hello
+  mkfs.jffs2 -r empty -o temp.jffs2 -e 128 -l -n -p
+  python -c "import sys; sys.stdout.write(131072*63*chr(0xff))" >> temp.jffs2
+  losetup /dev/loop0 temp.jffs2
+  echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
+  mount -t jffs2 mtdblock0 empty
+
+Yay!  I have a filesystem!  And df claims it's 8 megabytes.
+
+Woot.
+
+> > What any of this has to do with UML is an open question.  I don't want to
+> > require UML to loopback mount a jffs2 image, I want to be able to do it
+> > from my host.  From my perspective, you're solving the wrong problem.
 >
-> which should handle the case AFAICS.
->
-> So, although I did think hard about this, it looks like there is no
-> problem. What is the kernel version you are looking at? I checked it
-> with my l2-mtd-2.6.git, which is the latest mtd-2.6.git plus a revert
-> commit of your patch:
->
-> http://git.infradead.org/users/dedekind/l2-mtd-2.6.git
+> There's more than just loopback-mounting jffs2 images. I use this to
+> make entire uml+jffs2 virtual machines for testing purposes.
 
-Yes, as I have written the email to you before in a private email to
-tell that this patch has issue and please drop it.
+As I said, I'm almost exclusively using qemu/kvm these days, but this is 
+fun...
 
-Thanks,
+> Jason
 
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" i=
-n
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =9Ahttp://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at =9Ahttp://www.tux.org/lkml/
->
+Rob
+-- 
+GPLv3: as worthy a successor as The Phantom Menace, as timely as Duke Nukem 
+Forever, and as welcome as New Coke.
