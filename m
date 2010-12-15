@@ -1,18 +1,24 @@
-Subject: Re: [PATCH v2] MTD: NAND: ams-delta: convert to platform driver
+Received: from mail-bw0-f67.google.com ([209.85.214.67])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSnrO-0001s8-2N
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 09:41:22 +0000
+Received: by bwz3 with SMTP id 3so597601bwz.6
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Dec 2010 01:41:20 -0800 (PST)
+Subject: Re: [PATCH 1/2] mtd: nand: choose correct chip name (ONFI bug)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-In-Reply-To: <201012142109.42784.jkrzyszt@tis.icnet.pl>
-References: <201012111840.05270.jkrzyszt@tis.icnet.pl>
-	<1292346023.2538.103.camel@localhost>
-	<201012142109.42784.jkrzyszt@tis.icnet.pl>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1292142213-645-1-git-send-email-computersforpeace@gmail.com>
+References: <1292142213-645-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 15 Dec 2010 11:37:45 +0200
-Message-ID: <1292405865.2512.28.camel@localhost>
+Date: Wed, 15 Dec 2010 11:40:51 +0200
+Message-ID: <1292406051.2512.29.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Tony Lindgren <tony@atomide.com>, David Woodhouse <dwmw2@infradead.org>,
-	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Matthieu Castet <matthieu.castet@parrot.com>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Florian Fainelli <ffainelli@freebox.fr>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,19 +29,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-12-14 at 21:09 +0100, Janusz Krzysztofik wrote:
-> In its current form, the driver may interfere with different hardware on 
-> different boards if built into the kernel, hence is not suitable for 
-> inclusion into a defconfig, inteded to be usable with multiple OMAP1 cpu and 
-> machine types.
+On Sun, 2010-12-12 at 00:23 -0800, Brian Norris wrote:
+> We have the order of the conditional wrong for choosing the ONFI chip name
+> vs. the ID table name. Without this fix, we will almost *always* choose a
+> NULL string to print out instead of the correct one.
 > 
-> Convert it to a platform driver, that should be free from this issue.
+> This has already been suggested by Matthieu Castet.
 > 
-> Created and tested against linux-2.6.37-rc5 on Amstrad Delta.
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Pushed to l2-mtd-2.6.git, thanks!
+Pushed both to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
