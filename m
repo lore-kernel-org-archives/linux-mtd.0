@@ -1,16 +1,26 @@
-Message-ID: <4D08C61B.8010006@atmel.com>
-Date: Wed, 15 Dec 2010 14:43:55 +0100
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
-MIME-Version: 1.0
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Subject: Re: [PATCH] MTD: m25p80: add debugging trace in sst_write()
-References: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
-	<4D08C1C8.3090100@ru.mvista.com>
-In-Reply-To: <4D08C1C8.3090100@ru.mvista.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Received: from mail-bw0-f67.google.com ([209.85.214.67])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSrsH-00071M-BM
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 13:58:34 +0000
+Received: by bwz3 with SMTP id 3so701397bwz.6
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Dec 2010 05:58:30 -0800 (PST)
+Subject: Re: [PATCH 7/7] mtd: OneNAND: lighten scary initial bad block messages
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+In-Reply-To: <20101213122128.20685.9312.sendpatchset@ahunter-work.research.nokia.com>
+References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
+	<20101213122128.20685.9312.sendpatchset@ahunter-work.research.nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 15 Dec 2010 15:58:01 +0200
+Message-ID: <1292421481.2512.52.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Tony Lindgren <tony@atomide.com>,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Le 15/12/2010 14:25, Sergei Shtylyov :
-> Hello.
+On Mon, 2010-12-13 at 14:21 +0200, Adrian Hunter wrote:
+> From 5fa7a6377683aabd617f78518cd6cd49eae1679e Mon Sep 17 00:00:00 2001
+> From: Adrian Hunter <adrian.hunter@nokia.com>
+> Date: Fri, 10 Dec 2010 12:04:20 +0200
+> Subject: [PATCH 7/7] mtd: OneNAND: lighten scary initial bad block messages
 > 
-> On 15-12-2010 14:59, Nicolas Ferre wrote:
+> Initial bad blocks are normal but the messages look like
+> errors.  Make the messages less scary, make the main
+> message an informational message not a warning, make the
+> message displaying registers a debug message and include
+> the address there instead of in the informational message.
 > 
->> Add a DEBUG(MTD_DEBUG_LEVEL2, ..) trace at beginning of sst_write()
->> function as
->> it is done in m25p80_write() function.
-> 
->> Signed-off-by: Nicolas Ferre<nicolas.ferre@atmel.com>
-> [...]
-> 
->> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
->> index bf5a002..e6b5707 100644
->> --- a/drivers/mtd/devices/m25p80.c
->> +++ b/drivers/mtd/devices/m25p80.c
->> @@ -482,6 +482,10 @@ static int sst_write(struct mtd_info *mtd, loff_t
->> to, size_t len,
->>       size_t actual;
->>       int cmd_sz, ret;
->>
->> +    DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %zd\n",
->> +            dev_name(&flash->spi->dev), __func__, "to",
-> 
->    What's the point of printing "to" as variable? :-)
+> Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
 
-Good question... Maybe a way to have the same shape of messages...
+Pushed this one to l2-mtd-2.6.git, thanks.
 
-In my patch it is for sure to comply with this driver way of dealing
-with DEBUG messages.
-It is "to" in this function like its sister m25p80_write(). But it is
-also "from" or "at" in others...
-
->> +            (u32)to, len);
->> +
-
-Cheers,
 -- 
-Nicolas Ferre
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
