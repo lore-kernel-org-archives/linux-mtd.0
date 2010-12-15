@@ -1,31 +1,22 @@
-Received: from mail-fx0-f48.google.com ([209.85.161.48])
+Received: from mail-bw0-f43.google.com ([209.85.214.43])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSmZH-0005pU-Gk
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 08:18:36 +0000
-Received: by fxm2 with SMTP id 2so1727091fxm.21
+	id 1PSnbP-0000vl-6e
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 09:24:51 +0000
+Received: by bwz14 with SMTP id 14so1913591bwz.30
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2010 00:18:33 -0800 (PST)
-MIME-Version: 1.0
-Sender: geert.uytterhoeven@gmail.com
-In-Reply-To: <20101215011904.GA24292@falooley.org>
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<20101214195124.GA6010@falooley.org>
-	<1292356893.29257.1.camel@koala>
-	<201012141849.03926.rob@landley.net>
-	<20101215011904.GA24292@falooley.org>
-Date: Wed, 15 Dec 2010 09:18:33 +0100
-Message-ID: <AANLkTinaXvc=3r9gRNkSnttay-2yD9BDtXo0mOmMff0H@mail.gmail.com>
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-To: Jason Lunz <lunz@acm.org>
-Content-Type: multipart/mixed; boundary=20cf3054a4b1486d4704976e9515
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net, dedekind1@gmail.com,
-	richard -rw- weinberger <richard.weinberger@gmail.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
-	David Woodhouse <dwmw2@infradead.org>
+	Wed, 15 Dec 2010 01:24:49 -0800 (PST)
+Subject: Re: About NAND Simulator question
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: =?UTF-8?Q?=E8=98=87=E5=81=89=E6=88=A9?= <jian3695963@gmail.com>
+In-Reply-To: <AANLkTimDuh_HOpBfSQf9nC5N0wQBh0Zb3aBz49o0Kk26@mail.gmail.com>
+References: <AANLkTimDuh_HOpBfSQf9nC5N0wQBh0Zb3aBz49o0Kk26@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 15 Dec 2010 11:24:21 +0200
+Message-ID: <1292405061.2512.26.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,107 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---20cf3054a4b1486d4704976e9515
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On Wed, Dec 15, 2010 at 02:19, Jason Lunz <lunz@acm.org> wrote:
-> On Tue, Dec 14, 2010 at 06:49:02PM -0600, Rob Landley wrote:
->> The problem is that jffs2 is a filesystem, and thus something people wou=
-ld
->> really like to be able to loopback mount, but it's hardwired to assume i=
-t's
->> only ever stored on a certain type of hardware, and thus requies incestu=
-ous
->> knowledge of the erase granularity of the flash layer in order to functi=
-on.
->
-> I assume you can turn your jffs2 image file into a block dev using
-> losetup, then turn the corresponding loop device into an mtd device
-> using block2mtd, at which point you ought to be able to mount it with
-> jffs2. I've never tried it.
+please, send all e-mails concerning nandsim to
+linux-mtd@lists.infradead.org, you can also CC me, I prefer using "Artem
+Bityutskiy <dedekind1@gmail.com>"
 
-And block2mtd is part of mtd, so you have to get mtd compiled first.
+On Tue, 2010-11-30 at 17:57 +0800, 蘇偉戩 wrote:
+> When i read your code,I can understand the Simulator has file-base and
+> RAM-backed emulation
 
-BTW, the patch I used in the past was less intrusive than yours.
-I attached it, as I can't send it inline from here.
-Note that it was against 2.6.31-rc4.
+Yes.
 
-Gr{oetje,eeting}s,
+> But I have question is weather the file-base emulation can simulate
+> the flash memory's performance.
 
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 Geert
+No, I do not think so. Originally I added some things like delays
+emulation, but then never used that, and I do not think that is correct.
+I think we better remove that functionality to confuse people less. Or
+someone should actually fix that.
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-.org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
-
---20cf3054a4b1486d4704976e9515
-Content-Type: text/x-patch; charset=US-ASCII; name="uml-mtd.diff"
-Content-Disposition: attachment; filename="uml-mtd.diff"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_ghpy4g330
-
-Y29tbWl0IDU3ZmNlMGYxN2Y0OTc1ODMyNjZhMjYzMjg2OTBmNDBmMzNhZjA4YzUKQXV0aG9yOiBH
-ZWVydCBVeXR0ZXJob2V2ZW4gPEdlZXJ0LlV5dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KRGF0ZTog
-ICBNb24gRGVjIDE1IDE1OjIxOjE1IDIwMDggKzAxMDAKCiAgICBVTUw6IEVuYWJsZSBNVEQsIGJ5
-IG1vdmluZyB0aGUgZGVwZW5kZW5jeSBvbiBIQVNfSU9NRU0KCiAgICBTaWduZWQtb2ZmLWJ5OiBH
-ZWVydCBVeXR0ZXJob2V2ZW4gPEdlZXJ0LlV5dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KCmRpZmYg
-LS1naXQgYS9hcmNoL3VtL0tjb25maWcucmVzdCBiL2FyY2gvdW0vS2NvbmZpZy5yZXN0CmluZGV4
-IDBjY2FkMGYuLmUzNGYzOTkgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0vS2NvbmZpZy5yZXN0CisrKyBi
-L2FyY2gvdW0vS2NvbmZpZy5yZXN0CkBAIC0yOCw5ICsyOCw3IEBAIHNvdXJjZSAiZHJpdmVycy9z
-Y3NpL0tjb25maWciCiAKIHNvdXJjZSAiZHJpdmVycy9tZC9LY29uZmlnIgogCi1pZiBCUk9LRU4K
-LQlzb3VyY2UgImRyaXZlcnMvbXRkL0tjb25maWciCi1lbmRpZgorc291cmNlICJkcml2ZXJzL210
-ZC9LY29uZmlnIgogCiBzb3VyY2UgImRyaXZlcnMvbGVkcy9LY29uZmlnIgogCmRpZmYgLS1naXQg
-YS9kcml2ZXJzL210ZC9LY29uZmlnIGIvZHJpdmVycy9tdGQvS2NvbmZpZwppbmRleCBiOGUzNWEw
-Li4wNTJiMDBjIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9LY29uZmlnCisrKyBiL2RyaXZlcnMv
-bXRkL0tjb25maWcKQEAgLTEsNiArMSw1IEBACiBtZW51Y29uZmlnIE1URAogCXRyaXN0YXRlICJN
-ZW1vcnkgVGVjaG5vbG9neSBEZXZpY2UgKE1URCkgc3VwcG9ydCIKLQlkZXBlbmRzIG9uIEhBU19J
-T01FTQogCWhlbHAKIAkgIE1lbW9yeSBUZWNobm9sb2d5IERldmljZXMgYXJlIGZsYXNoLCBSQU0g
-YW5kIHNpbWlsYXIgY2hpcHMsIG9mdGVuCiAJICB1c2VkIGZvciBzb2xpZCBzdGF0ZSBmaWxlIHN5
-c3RlbXMgb24gZW1iZWRkZWQgZGV2aWNlcy4gVGhpcyBvcHRpb24KQEAgLTMxNSwxNSArMzE0LDE3
-IEBAIGNvbmZpZyBNVERfT09QUwogCSAgVG8gdXNlLCBhZGQgY29uc29sZT10dHlNVER4IHRvIHRo
-ZSBrZXJuZWwgY29tbWFuZCBsaW5lLAogCSAgd2hlcmUgeCBpcyB0aGUgTVREIGRldmljZSBudW1i
-ZXIgdG8gdXNlLgogCi1zb3VyY2UgImRyaXZlcnMvbXRkL2NoaXBzL0tjb25maWciCi0KLXNvdXJj
-ZSAiZHJpdmVycy9tdGQvbWFwcy9LY29uZmlnIgoraWYgSEFTX0lPTUVNCisJc291cmNlICJkcml2
-ZXJzL210ZC9jaGlwcy9LY29uZmlnIgorCXNvdXJjZSAiZHJpdmVycy9tdGQvbWFwcy9LY29uZmln
-IgorZW5kaWYKIAogc291cmNlICJkcml2ZXJzL210ZC9kZXZpY2VzL0tjb25maWciCiAKLXNvdXJj
-ZSAiZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnIgotCi1zb3VyY2UgImRyaXZlcnMvbXRkL29uZW5h
-bmQvS2NvbmZpZyIKK2lmIEhBU19JT01FTQorCXNvdXJjZSAiZHJpdmVycy9tdGQvbmFuZC9LY29u
-ZmlnIgorCXNvdXJjZSAiZHJpdmVycy9tdGQvb25lbmFuZC9LY29uZmlnIgorZW5kaWYKIAogc291
-cmNlICJkcml2ZXJzL210ZC9scGRkci9LY29uZmlnIgogCmRpZmYgLS1naXQgYS9kcml2ZXJzL210
-ZC9NYWtlZmlsZSBiL2RyaXZlcnMvbXRkL01ha2VmaWxlCmluZGV4IDgyZDFlNGQuLjA5ZmI1NDgg
-MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL01ha2VmaWxlCisrKyBiL2RyaXZlcnMvbXRkL01ha2Vm
-aWxlCkBAIC0yOSw2ICsyOSw3IEBAIG9iai0kKENPTkZJR19NVERfT09QUykJCSs9IG10ZG9vcHMu
-bwogbmZ0bC1vYmpzCQk6PSBuZnRsY29yZS5vIG5mdGxtb3VudC5vCiBpbmZ0bC1vYmpzCQk6PSBp
-bmZ0bGNvcmUubyBpbmZ0bG1vdW50Lm8KIAotb2JqLXkJCSs9IGNoaXBzLyBscGRkci8gbWFwcy8g
-ZGV2aWNlcy8gbmFuZC8gb25lbmFuZC8gdGVzdHMvCitvYmoteQkJCQkrPSBkZXZpY2VzLyB0ZXN0
-cy8KIAorb2JqLSQoQ09ORklHX0hBU19JT01FTSkJCSs9IGNoaXBzLyBscGRkci8gbWFwcy8gbmFu
-ZC8gb25lbmFuZC8KIG9iai0kKENPTkZJR19NVERfVUJJKQkJKz0gdWJpLwpkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9tdGQvZGV2aWNlcy9LY29uZmlnIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9LY29uZmln
-CmluZGV4IDMyNWZhYjkuLjg4OTM3ZDYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL2RldmljZXMv
-S2NvbmZpZworKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL0tjb25maWcKQEAgLTEwNiw2ICsxMDYs
-NyBAQCBjb25maWcgTTI1UFhYX1VTRV9GQVNUX1JFQUQKIAogY29uZmlnIE1URF9TTFJBTQogCXRy
-aXN0YXRlICJVbmNhY2hlZCBzeXN0ZW0gUkFNIgorCWRlcGVuZHMgb24gSEFTX0lPTUVNCiAJaGVs
-cAogCSAgSWYgeW91ciBDUFUgY2Fubm90IGNhY2hlIGFsbCBvZiB0aGUgcGh5c2ljYWwgbWVtb3J5
-IGluIHlvdXIgbWFjaGluZSwKIAkgIHlvdSBjYW4gc3RpbGwgdXNlIGl0IGZvciBzdG9yYWdlIG9y
-IHN3YXAgYnkgdXNpbmcgdGhpcyBkcml2ZXIgdG8KQEAgLTExMyw2ICsxMTQsNyBAQCBjb25maWcg
-TVREX1NMUkFNCiAKIGNvbmZpZyBNVERfUEhSQU0KIAl0cmlzdGF0ZSAiUGh5c2ljYWwgc3lzdGVt
-IFJBTSIKKwlkZXBlbmRzIG9uIEhBU19JT01FTQogCWhlbHAKIAkgIFRoaXMgaXMgYSByZS1pbXBs
-ZW1lbnRhdGlvbiBvZiB0aGUgc2xyYW0gZHJpdmVyIGFib3ZlLgogCkBAIC0xNzksNiArMTgxLDcg
-QEAgY29uZmlnIE1URF9CTE9DSzJNVEQKIAkgIFRlc3RpbmcgTVREIHVzZXJzIChlZyBKRkZTMikg
-b24gbGFyZ2UgbWVkaWEgYW5kIG1lZGlhIHRoYXQgbWlnaHQKIAkgIGJlIHJlbW92ZWQgZHVyaW5n
-IGEgd3JpdGUgKHVzaW5nIHRoZSBmbG9wcHkgZHJpdmUpLgogCitpZiBIQVNfSU9NRU0KIGNvbW1l
-bnQgIkRpc2stT24tQ2hpcCBEZXZpY2UgRHJpdmVycyIKIAogY29uZmlnIE1URF9ET0MyMDAwCkBA
-IC0yOTcsNSArMzAwLDYgQEAgY29uZmlnIE1URF9ET0NQUk9CRV81NUFBCiAJICBMaW51eEJJT1Mg
-b3IgaWYgeW91IG5lZWQgdG8gcmVjb3ZlciBhIERpc2tPbkNoaXAgTWlsbGVubml1bSBvbiB3aGlj
-aAogCSAgeW91IGhhdmUgbWFuYWdlZCB0byB3aXBlIHRoZSBmaXJzdCBibG9jay4KIAorZW5kaWYK
-IGVuZG1lbnUKIAo=
---20cf3054a4b1486d4704976e9515--
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
