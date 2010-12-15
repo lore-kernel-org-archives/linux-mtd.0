@@ -1,35 +1,31 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
+Received: from mail-fx0-f48.google.com ([209.85.161.48])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSmO3-0004lP-Nd
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 08:07:01 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by anubis.se.axis.com (Postfix) with ESMTP id 6741919D20
+	id 1PSmZH-0005pU-Gk
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 08:18:36 +0000
+Received: by fxm2 with SMTP id 2so1727091fxm.21
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2010 09:06:57 +0100 (CET)
-Received: from anubis.se.axis.com ([127.0.0.1])
-	by localhost (anubis.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id tpUi+AInxULS for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2010 09:06:56 +0100 (CET)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
-	by anubis.se.axis.com (Postfix) with ESMTP id 3F94C19D1D
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2010 09:06:56 +0100 (CET)
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
-	by thoth.se.axis.com (Postfix) with ESMTP id 323F8340D0
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2010 09:06:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
-	oBF86uwt006555
-	for <linux-mtd@lists.infradead.org>; Wed, 15 Dec 2010 09:06:56 +0100
-Date: Wed, 15 Dec 2010 09:06:56 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Static UBI volumes and ubiupdatevol ?
-Message-ID: <Pine.LNX.4.64.1012150855090.6187@lnxricardw.se.axis.com>
+	Wed, 15 Dec 2010 00:18:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Sender: geert.uytterhoeven@gmail.com
+In-Reply-To: <20101215011904.GA24292@falooley.org>
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<20101214195124.GA6010@falooley.org>
+	<1292356893.29257.1.camel@koala>
+	<201012141849.03926.rob@landley.net>
+	<20101215011904.GA24292@falooley.org>
+Date: Wed, 15 Dec 2010 09:18:33 +0100
+Message-ID: <AANLkTinaXvc=3r9gRNkSnttay-2yD9BDtXo0mOmMff0H@mail.gmail.com>
+Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+To: Jason Lunz <lunz@acm.org>
+Content-Type: multipart/mixed; boundary=20cf3054a4b1486d4704976e9515
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net, dedekind1@gmail.com,
+	richard -rw- weinberger <richard.weinberger@gmail.com>,
+	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,64 +35,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+--20cf3054a4b1486d4704976e9515
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Dec 15, 2010 at 02:19, Jason Lunz <lunz@acm.org> wrote:
+> On Tue, Dec 14, 2010 at 06:49:02PM -0600, Rob Landley wrote:
+>> The problem is that jffs2 is a filesystem, and thus something people wou=
+ld
+>> really like to be able to loopback mount, but it's hardwired to assume i=
+t's
+>> only ever stored on a certain type of hardware, and thus requies incestu=
+ous
+>> knowledge of the erase granularity of the flash layer in order to functi=
+on.
+>
+> I assume you can turn your jffs2 image file into a block dev using
+> losetup, then turn the corresponding loop device into an mtd device
+> using block2mtd, at which point you ought to be able to mount it with
+> jffs2. I've never tried it.
 
-I've looked through the documentation on=20
-http://www.linux-mtd.infradead.org but I can't find the answer to the=20
-following question(s):
+And block2mtd is part of mtd, so you have to get mtd compiled first.
 
-Using 'static' UBI volumes seems to be the preferred way of creating read=
-=20
-only file systems.
+BTW, the patch I used in the past was less intrusive than yours.
+I attached it, as I can't send it inline from here.
+Note that it was against 2.6.31-rc4.
 
-While it seems possible to use ubinize to make a complete ubi image=20
-containing static volumes and then write it to the flash using ubiformat,=
-=20
-is it possible to update just a single volume using ubiupdatevol?
+Gr{oetje,eeting}s,
 
-I've tried using ubimkvol to create a static volume, then using=20
-ubiupdatevol to write an ubifs image to it. That works, but when I try to=
-=20
-mount it subsequently I get things like
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 Geert
 
-[ 6656.114000] UBIFS: static UBI volume - read-only mode
-[ 6656.129000] UBIFS error (pid 866): mount_ubifs: can't format empty UBI=
-=20
-volume: read-only UBI volume
-mount: mounting ubi1_0 on /volume1/ failed: Read-only file system
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
 
-which in a way makes sense to me; if the volume is static =3D read only the=
-n=20
-it shouldn't be possible to write to it.
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 =C2=A0=C2=A0 -- Linus Torvalds
 
-The only thing I haven't tried is matching the size of the image I'm=20
-writing to the size of the partition. With dynamic volumes that doesn't=20
-seem to be an issue; as long as there is space for the data in the target=
-=20
-volume. The free space just seems to get truncated to the available free=20
-space in the flash volume. (On the other hand, writing an image that is=20
-smaller than the flash volume doesn't seem to 'grow' to fit the available=
-=20
-space according to df; it remains the same no matter how large the target=
-=20
-volume is). So I've been rather careless with the size of the image vs.=20
-the size of the target volume.
+--20cf3054a4b1486d4704976e9515
+Content-Type: text/x-patch; charset=US-ASCII; name="uml-mtd.diff"
+Content-Disposition: attachment; filename="uml-mtd.diff"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_ghpy4g330
 
-A related question: With static volumes, I assume you still get the=20
-benefit of scrubbing, which in turn means that UBI can move the data=20
-around if it deems necessary?
-
-Which begs a final question: is it possible to verify the integrity of a=20
-static UBI volume? Even with JFFS2, if mounted readonly the flash in that=
-=20
-particular partition is never written to, so it is possible to use a=20
-simple checksum to verify data integrity. With JFFS2 this can be=20
-important, as missing JFFS2 nodes don't necessarily result in mount time=20
-or run time failures, it just results in missing files or parts of files.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Y29tbWl0IDU3ZmNlMGYxN2Y0OTc1ODMyNjZhMjYzMjg2OTBmNDBmMzNhZjA4YzUKQXV0aG9yOiBH
+ZWVydCBVeXR0ZXJob2V2ZW4gPEdlZXJ0LlV5dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KRGF0ZTog
+ICBNb24gRGVjIDE1IDE1OjIxOjE1IDIwMDggKzAxMDAKCiAgICBVTUw6IEVuYWJsZSBNVEQsIGJ5
+IG1vdmluZyB0aGUgZGVwZW5kZW5jeSBvbiBIQVNfSU9NRU0KCiAgICBTaWduZWQtb2ZmLWJ5OiBH
+ZWVydCBVeXR0ZXJob2V2ZW4gPEdlZXJ0LlV5dHRlcmhvZXZlbkBzb255Y29tLmNvbT4KCmRpZmYg
+LS1naXQgYS9hcmNoL3VtL0tjb25maWcucmVzdCBiL2FyY2gvdW0vS2NvbmZpZy5yZXN0CmluZGV4
+IDBjY2FkMGYuLmUzNGYzOTkgMTAwNjQ0Ci0tLSBhL2FyY2gvdW0vS2NvbmZpZy5yZXN0CisrKyBi
+L2FyY2gvdW0vS2NvbmZpZy5yZXN0CkBAIC0yOCw5ICsyOCw3IEBAIHNvdXJjZSAiZHJpdmVycy9z
+Y3NpL0tjb25maWciCiAKIHNvdXJjZSAiZHJpdmVycy9tZC9LY29uZmlnIgogCi1pZiBCUk9LRU4K
+LQlzb3VyY2UgImRyaXZlcnMvbXRkL0tjb25maWciCi1lbmRpZgorc291cmNlICJkcml2ZXJzL210
+ZC9LY29uZmlnIgogCiBzb3VyY2UgImRyaXZlcnMvbGVkcy9LY29uZmlnIgogCmRpZmYgLS1naXQg
+YS9kcml2ZXJzL210ZC9LY29uZmlnIGIvZHJpdmVycy9tdGQvS2NvbmZpZwppbmRleCBiOGUzNWEw
+Li4wNTJiMDBjIDEwMDY0NAotLS0gYS9kcml2ZXJzL210ZC9LY29uZmlnCisrKyBiL2RyaXZlcnMv
+bXRkL0tjb25maWcKQEAgLTEsNiArMSw1IEBACiBtZW51Y29uZmlnIE1URAogCXRyaXN0YXRlICJN
+ZW1vcnkgVGVjaG5vbG9neSBEZXZpY2UgKE1URCkgc3VwcG9ydCIKLQlkZXBlbmRzIG9uIEhBU19J
+T01FTQogCWhlbHAKIAkgIE1lbW9yeSBUZWNobm9sb2d5IERldmljZXMgYXJlIGZsYXNoLCBSQU0g
+YW5kIHNpbWlsYXIgY2hpcHMsIG9mdGVuCiAJICB1c2VkIGZvciBzb2xpZCBzdGF0ZSBmaWxlIHN5
+c3RlbXMgb24gZW1iZWRkZWQgZGV2aWNlcy4gVGhpcyBvcHRpb24KQEAgLTMxNSwxNSArMzE0LDE3
+IEBAIGNvbmZpZyBNVERfT09QUwogCSAgVG8gdXNlLCBhZGQgY29uc29sZT10dHlNVER4IHRvIHRo
+ZSBrZXJuZWwgY29tbWFuZCBsaW5lLAogCSAgd2hlcmUgeCBpcyB0aGUgTVREIGRldmljZSBudW1i
+ZXIgdG8gdXNlLgogCi1zb3VyY2UgImRyaXZlcnMvbXRkL2NoaXBzL0tjb25maWciCi0KLXNvdXJj
+ZSAiZHJpdmVycy9tdGQvbWFwcy9LY29uZmlnIgoraWYgSEFTX0lPTUVNCisJc291cmNlICJkcml2
+ZXJzL210ZC9jaGlwcy9LY29uZmlnIgorCXNvdXJjZSAiZHJpdmVycy9tdGQvbWFwcy9LY29uZmln
+IgorZW5kaWYKIAogc291cmNlICJkcml2ZXJzL210ZC9kZXZpY2VzL0tjb25maWciCiAKLXNvdXJj
+ZSAiZHJpdmVycy9tdGQvbmFuZC9LY29uZmlnIgotCi1zb3VyY2UgImRyaXZlcnMvbXRkL29uZW5h
+bmQvS2NvbmZpZyIKK2lmIEhBU19JT01FTQorCXNvdXJjZSAiZHJpdmVycy9tdGQvbmFuZC9LY29u
+ZmlnIgorCXNvdXJjZSAiZHJpdmVycy9tdGQvb25lbmFuZC9LY29uZmlnIgorZW5kaWYKIAogc291
+cmNlICJkcml2ZXJzL210ZC9scGRkci9LY29uZmlnIgogCmRpZmYgLS1naXQgYS9kcml2ZXJzL210
+ZC9NYWtlZmlsZSBiL2RyaXZlcnMvbXRkL01ha2VmaWxlCmluZGV4IDgyZDFlNGQuLjA5ZmI1NDgg
+MTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL01ha2VmaWxlCisrKyBiL2RyaXZlcnMvbXRkL01ha2Vm
+aWxlCkBAIC0yOSw2ICsyOSw3IEBAIG9iai0kKENPTkZJR19NVERfT09QUykJCSs9IG10ZG9vcHMu
+bwogbmZ0bC1vYmpzCQk6PSBuZnRsY29yZS5vIG5mdGxtb3VudC5vCiBpbmZ0bC1vYmpzCQk6PSBp
+bmZ0bGNvcmUubyBpbmZ0bG1vdW50Lm8KIAotb2JqLXkJCSs9IGNoaXBzLyBscGRkci8gbWFwcy8g
+ZGV2aWNlcy8gbmFuZC8gb25lbmFuZC8gdGVzdHMvCitvYmoteQkJCQkrPSBkZXZpY2VzLyB0ZXN0
+cy8KIAorb2JqLSQoQ09ORklHX0hBU19JT01FTSkJCSs9IGNoaXBzLyBscGRkci8gbWFwcy8gbmFu
+ZC8gb25lbmFuZC8KIG9iai0kKENPTkZJR19NVERfVUJJKQkJKz0gdWJpLwpkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9tdGQvZGV2aWNlcy9LY29uZmlnIGIvZHJpdmVycy9tdGQvZGV2aWNlcy9LY29uZmln
+CmluZGV4IDMyNWZhYjkuLjg4OTM3ZDYgMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvbXRkL2RldmljZXMv
+S2NvbmZpZworKysgYi9kcml2ZXJzL210ZC9kZXZpY2VzL0tjb25maWcKQEAgLTEwNiw2ICsxMDYs
+NyBAQCBjb25maWcgTTI1UFhYX1VTRV9GQVNUX1JFQUQKIAogY29uZmlnIE1URF9TTFJBTQogCXRy
+aXN0YXRlICJVbmNhY2hlZCBzeXN0ZW0gUkFNIgorCWRlcGVuZHMgb24gSEFTX0lPTUVNCiAJaGVs
+cAogCSAgSWYgeW91ciBDUFUgY2Fubm90IGNhY2hlIGFsbCBvZiB0aGUgcGh5c2ljYWwgbWVtb3J5
+IGluIHlvdXIgbWFjaGluZSwKIAkgIHlvdSBjYW4gc3RpbGwgdXNlIGl0IGZvciBzdG9yYWdlIG9y
+IHN3YXAgYnkgdXNpbmcgdGhpcyBkcml2ZXIgdG8KQEAgLTExMyw2ICsxMTQsNyBAQCBjb25maWcg
+TVREX1NMUkFNCiAKIGNvbmZpZyBNVERfUEhSQU0KIAl0cmlzdGF0ZSAiUGh5c2ljYWwgc3lzdGVt
+IFJBTSIKKwlkZXBlbmRzIG9uIEhBU19JT01FTQogCWhlbHAKIAkgIFRoaXMgaXMgYSByZS1pbXBs
+ZW1lbnRhdGlvbiBvZiB0aGUgc2xyYW0gZHJpdmVyIGFib3ZlLgogCkBAIC0xNzksNiArMTgxLDcg
+QEAgY29uZmlnIE1URF9CTE9DSzJNVEQKIAkgIFRlc3RpbmcgTVREIHVzZXJzIChlZyBKRkZTMikg
+b24gbGFyZ2UgbWVkaWEgYW5kIG1lZGlhIHRoYXQgbWlnaHQKIAkgIGJlIHJlbW92ZWQgZHVyaW5n
+IGEgd3JpdGUgKHVzaW5nIHRoZSBmbG9wcHkgZHJpdmUpLgogCitpZiBIQVNfSU9NRU0KIGNvbW1l
+bnQgIkRpc2stT24tQ2hpcCBEZXZpY2UgRHJpdmVycyIKIAogY29uZmlnIE1URF9ET0MyMDAwCkBA
+IC0yOTcsNSArMzAwLDYgQEAgY29uZmlnIE1URF9ET0NQUk9CRV81NUFBCiAJICBMaW51eEJJT1Mg
+b3IgaWYgeW91IG5lZWQgdG8gcmVjb3ZlciBhIERpc2tPbkNoaXAgTWlsbGVubml1bSBvbiB3aGlj
+aAogCSAgeW91IGhhdmUgbWFuYWdlZCB0byB3aXBlIHRoZSBmaXJzdCBibG9jay4KIAorZW5kaWYK
+IGVuZG1lbnUKIAo=
+--20cf3054a4b1486d4704976e9515--
