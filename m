@@ -1,25 +1,23 @@
-Received: from mail-bw0-f67.google.com ([209.85.214.67])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PSnrO-0001s8-2N
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 09:41:22 +0000
-Received: by bwz3 with SMTP id 3so597601bwz.6
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Dec 2010 01:41:20 -0800 (PST)
-Subject: Re: [PATCH 1/2] mtd: nand: choose correct chip name (ONFI bug)
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1292142213-645-1-git-send-email-computersforpeace@gmail.com>
-References: <1292142213-645-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 15 Dec 2010 11:40:51 +0200
-Message-ID: <1292406051.2512.29.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Matthieu Castet <matthieu.castet@parrot.com>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Florian Fainelli <ffainelli@freebox.fr>
-Reply-To: dedekind1@gmail.com
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PSnrN-0001rw-V4
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 09:41:23 +0000
+Message-ID: <4D088B81.2000804@nokia.com>
+Date: Wed, 15 Dec 2010 11:33:53 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [PATCH 2/7] mtd: OneNAND: add enable / disable methods to
+	onenand_chip
+References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>	<20101213122057.20685.68480.sendpatchset@ahunter-work.research.nokia.com>
+	<AANLkTi=0W8NuF3SNhWwjwDZtuCzyOM8219_pXG=9pU6O@mail.gmail.com>
+In-Reply-To: <AANLkTi=0W8NuF3SNhWwjwDZtuCzyOM8219_pXG=9pU6O@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Tony Lindgren <tony@atomide.com>,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +27,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2010-12-12 at 00:23 -0800, Brian Norris wrote:
-> We have the order of the conditional wrong for choosing the ONFI chip name
-> vs. the ID table name. Without this fix, we will almost *always* choose a
-> NULL string to print out instead of the correct one.
-> 
-> This has already been suggested by Matthieu Castet.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-Pushed both to l2-mtd-2.6.git, thanks!
+ From ece28a7fdec36fb40d60d35a5639326871c162f6 Mon Sep 17 00:00:00 2001
+From: Adrian Hunter <adrian.hunter@nokia.com>
+Date: Fri, 19 Feb 2010 15:39:52 +0100
+Subject: [PATCH V2 2/7] mtd: OneNAND: add enable / disable methods to onenand_chip
 
+Add enable / disable methods called from get_device() / release_device().
+These can be used, for example, to allow the driver to prevent the voltage
+regulator from being put to sleep while OneNAND is in use.
+
+Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
+---
+  drivers/mtd/onenand/onenand_base.c |    4 ++++
+  include/linux/mtd/onenand.h        |    2 ++
+  2 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index c38bf9c..5639e43 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -948,6 +948,8 @@ static int onenand_get_device(struct mtd_info *mtd, int new_state)
+  		if (this->state == FL_READY) {
+  			this->state = new_state;
+  			spin_unlock(&this->chip_lock);
++			if (new_state != FL_PM_SUSPENDED && this->enable)
++				this->enable(mtd);
+  			break;
+  		}
+  		if (new_state == FL_PM_SUSPENDED) {
+@@ -974,6 +976,8 @@ static void onenand_release_device(struct mtd_info *mtd)
+  {
+  	struct onenand_chip *this = mtd->priv;
+  
++	if (this->state != FL_PM_SUSPENDED && this->disable)
++		this->disable(mtd);
+  	/* Release the chip */
+  	spin_lock(&this->chip_lock);
+  	this->state = FL_READY;
+diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
+index 6da3fe3..ae418e4 100644
+--- a/include/linux/mtd/onenand.h
++++ b/include/linux/mtd/onenand.h
+@@ -118,6 +118,8 @@ struct onenand_chip {
+  	int (*chip_probe)(struct mtd_info *mtd);
+  	int (*block_markbad)(struct mtd_info *mtd, loff_t ofs);
+  	int (*scan_bbt)(struct mtd_info *mtd);
++	int (*enable)(struct mtd_info *mtd);
++	int (*disable)(struct mtd_info *mtd);
+  
+  	struct completion	complete;
+  	int			irq;
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.0.4
