@@ -1,22 +1,31 @@
-Received: from caramon.arm.linux.org.uk ([78.32.30.218])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PStyJ-0007mF-K3
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2010 16:12:58 +0000
-Date: Wed, 15 Dec 2010 16:12:13 +0000
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Sergei Shtylyov <sshtylyov@mvista.com>
-Subject: Re: [PATCH] MTD: m25p80: add debugging trace in sst_write()
-Message-ID: <20101215161213.GC9937@n2100.arm.linux.org.uk>
-References: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
-	<4D08C1C8.3090100@ru.mvista.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4D08C1C8.3090100@ru.mvista.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-mtd@lists.infradead.org, Nicolas Ferre <nicolas.ferre@atmel.com>,
-	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Received: from mail-bw0-f67.google.com ([209.85.214.67])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PTFbn-0003tG-GL
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2010 15:19:08 +0000
+Received: by bwz3 with SMTP id 3so1144890bwz.6
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Dec 2010 07:19:05 -0800 (PST)
+Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Rob Landley <rob@landley.net>
+In-Reply-To: <201012150031.21417.rob@landley.net>
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<201012141849.03926.rob@landley.net>
+	<20101215011904.GA24292@falooley.org>
+	<201012150031.21417.rob@landley.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 16 Dec 2010 17:18:31 +0200
+Message-ID: <1292512711.2364.85.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net,
+	Denys Vlasenko <vda.linux@googlemail.com>,
+	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
+	Jason Lunz <lunz@acm.org>, lkml <linux-kernel@vger.kernel.org>,
+	richard -rw- weinberger <richard.weinberger@gmail.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +35,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 15, 2010 at 04:25:28PM +0300, Sergei Shtylyov wrote:
->> +	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %zd\n",
->> +			dev_name(&flash->spi->dev), __func__, "to",
->
->    What's the point of printing "to" as variable? :-)
+On Wed, 2010-12-15 at 00:31 -0600, Rob Landley wrote:
+> That is awesome and I'm not finding any documentation on it...  Ah:
+> 
+>   http://wiki.maemo.org/Modifying_the_root_image#Block_device_emulating_an_MTD_device
+> 
+> Wow that's awkward.  Let's see, that says...
+> 
+>   mknod /tmp/mtdblock0 b 31 0
+>   modprobe loop
+>   losetup /dev/loop0 rootfs.jffs2
+>   modprobe mtdblock
+>   modprobe block2mtd
+>   # Note the ,128KiB is needed (on 2.6.26 at least) to set the
+>   # eraseblock  size.
+>   echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
+>   modprobe jffs2
+>   mount -t jffs2 /tmp/mtdblock0 /media/jffs2
 
-One valid reason to do this is if you have several formatting strings
-all the same.  GCC can merge identical strings together.
+You should not need mtdblock in modern kernels, it is legacy. You should
+be abole to mount jffs2 on top of mtd0 with
 
-So, if you have:
+mount -t jffs2 mtd0 /media/jffs2
 
- "%s: %s %s 0x%08x, len %zd", dev_name(), __func__, "to"
- "%s: %s %s 0x%08x, len %zd", dev_name(), __func__, "from"
- "%s: %s %s 0x%08x, len %zd", dev_name(), __func__, "foo"
-
-Then you end up with one long string and three short strings instead of
-
- "%s: %s to 0x%08x, len %zd", dev_name(), __func__
- "%s: %s from 0x%08x, len %zd", dev_name(), __func__
- "%s: %s foo 0x%08x, len %zd", dev_name(), __func__
-
-which'd be three long strings.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
