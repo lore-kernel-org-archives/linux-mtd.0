@@ -1,12 +1,12 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PTMWc-0006dI-VO
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2010 22:42:16 +0000
+	id 1PTMWe-0006dn-V8
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2010 22:42:18 +0000
 From: Anatolij Gustschin <agust@denx.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2 1/6] mtd: add writebufsize field to mtd_info struct
-Date: Thu, 16 Dec 2010 23:42:14 +0100
-Message-Id: <1292539339-25111-2-git-send-email-agust@denx.de>
+Subject: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
+Date: Thu, 16 Dec 2010 23:42:15 +0100
+Message-Id: <1292539339-25111-3-git-send-email-agust@denx.de>
 In-Reply-To: <292342500.2538.65.camel@localhost>
 References: <292342500.2538.65.camel@localhost>
 Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
@@ -20,58 +20,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This field will be used to indicate the write buffer size
-of the MTD device. UBI will set it's minimal I/O unit size
-(min_io_size) to the indicated write buffer size. By this
-change we intend to fix failed recovery of UBIFS partitions
-we currently observe on NOR flash when mounting the partition
-after unclean unmount.
-
-Currently the min_io_size is set to mtd->writesize (which is 1
-byte for NOR flash). But flash programming is often done from
-prepared write buffer containing multiple bytes and is performed
-in one programming operation which could be interrupted by a power
-cut or a system reset causing corrupted (partially written) areas
-in a flash sector. Knowing the size of potentially corrupted areas
-UBIFS scanning and recovery algorithms are able to perform
-successful recovery.
-
-In case of NOR flash minimal I/O size must be equal to the
-maximal size of the write buffer used by embedded flash
-programming algorithm. In case of NAND flash mtd->writebufsize
-should be equivalent to mtd->writesize.
-
-The subsequent patches will add mtd->writebufsize initialization
-where needed.
+Initialize mtd->writebufsize to the value obtained
+by CFI query command at probe time.
 
 Signed-off-by: Anatolij Gustschin <agust@denx.de>
 ---
- include/linux/mtd/mtd.h |   13 +++++++++++++
- 1 files changed, 13 insertions(+), 0 deletions(-)
+ drivers/mtd/chips/cfi_cmdset_0001.c |    1 +
+ drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++++
+ drivers/mtd/chips/cfi_cmdset_0020.c |    1 +
+ 3 files changed, 6 insertions(+), 0 deletions(-)
 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index fe8d77e..3c6db0c 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -144,6 +144,19 @@ struct mtd_info {
- 	 */
- 	uint32_t writesize;
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 44cbfc0..a8c3e1c 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -455,6 +455,7 @@ struct mtd_info *cfi_cmdset_0001(struct map_info *map, int primary)
+ 	mtd->flags   = MTD_CAP_NORFLASH;
+ 	mtd->name    = map->name;
+ 	mtd->writesize = 1;
++	mtd->writebufsize = 1 << cfi->cfiq->MaxBufWriteSize;
  
-+	/*
-+	 * Size of the write buffer used by the MTD.
-+	 * MTD devices having a write buffer can write multiple writesize
-+	 * chunks at a time. E.g. while writing 4 * writesize bytes to a
-+	 * device with 2 * writesize bytes buffer the MTD driver can (but
-+	 * doesn't have to) do 2 writesize operations, but not 4.
-+	 * In case of NAND flash writebufsize should be equivalent to
-+	 * writesize. In case of NOR flash writebufsize is the size of the
-+	 * write buffer used by the MTD device to program multiple bytes
-+	 * at a time (in one programming operation).
-+	 */
-+	uint32_t writebufsize;
+ 	mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
+ 
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 9d68ab9..54dbd28 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -428,6 +428,10 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+ 	mtd->flags   = MTD_CAP_NORFLASH;
+ 	mtd->name    = map->name;
+ 	mtd->writesize = 1;
++	mtd->writebufsize = 1 << cfi->cfiq->MaxBufWriteSize;
 +
- 	uint32_t oobsize;   // Amount of OOB data per block (e.g. 16)
- 	uint32_t oobavail;  // Available OOB bytes per block
++	DEBUG(MTD_DEBUG_LEVEL3, "MTD %s(): write buffer size %d\n",
++		__func__, mtd->writebufsize);
  
+ 	mtd->reboot_notifier.notifier_call = cfi_amdstd_reboot;
+ 
+diff --git a/drivers/mtd/chips/cfi_cmdset_0020.c b/drivers/mtd/chips/cfi_cmdset_0020.c
+index 314af1f..c04b765 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0020.c
++++ b/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -238,6 +238,7 @@ static struct mtd_info *cfi_staa_setup(struct map_info *map)
+ 	mtd->resume = cfi_staa_resume;
+ 	mtd->flags = MTD_CAP_NORFLASH & ~MTD_BIT_WRITEABLE;
+ 	mtd->writesize = 8; /* FIXME: Should be 0 for STMicro flashes w/out ECC */
++	mtd->writebufsize = 1 << cfi->cfiq->MaxBufWriteSize;
+ 	map->fldrv = &cfi_staa_chipdrv;
+ 	__module_get(THIS_MODULE);
+ 	mtd->name = map->name;
 -- 
 1.7.1
