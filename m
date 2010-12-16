@@ -1,36 +1,21 @@
 Received: from mail-bw0-f43.google.com ([209.85.214.43])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PTFi8-0004X2-8A
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2010 15:25:41 +0000
-Received: by bwz14 with SMTP id 14so3591286bwz.30
+	id 1PTGYU-0006s8-LO
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2010 16:19:47 +0000
+Received: by bwz14 with SMTP id 14so3656589bwz.30
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 16 Dec 2010 07:25:38 -0800 (PST)
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+	Thu, 16 Dec 2010 08:19:45 -0800 (PST)
+Subject: Re: Static UBI volumes and ubiupdatevol ?
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jason Lunz <lunz@acm.org>
-In-Reply-To: <20101214195124.GA6010@falooley.org>
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<20071024011712.GA3762@falooley.org>
-	<1193208689.26096.48.camel@pmac.infradead.org>
-	<20071227181524.GA19051@falooley.org>
-	<20071228174853.GA4252@uranus.ravnborg.org>
-	<20101207072919.GA8511@falooley.org>
-	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
-	<20101207182012.GA10546@falooley.org>
-	<1292343878.2538.80.camel@localhost>
-	<20101214195124.GA6010@falooley.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <Pine.LNX.4.64.1012150855090.6187@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1012150855090.6187@lnxricardw.se.axis.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 16 Dec 2010 17:25:06 +0200
-Message-ID: <1292513106.2364.86.camel@localhost>
+Date: Thu, 16 Dec 2010 18:19:13 +0200
+Message-ID: <1292516353.2364.101.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net,
-	richard -rw- weinberger <richard.weinberger@gmail.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -41,38 +26,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-12-14 at 11:51 -0800, Jason Lunz wrote:
-> On Tue, Dec 14, 2010 at 06:24:38PM +0200, Artem Bityutskiy wrote:
-> > But I think your solution is a bit dirty, because it adds a great deal
-> > of little 'if HAS_IOMEM' and '#ifdef CONFIG_HAS_IOMEM' to many places.
-> > This is error-prone.
+On Wed, 2010-12-15 at 09:06 +0100, Ricard Wanderlof wrote:
+> Hi,
 > 
-> The intent of that patch was to allow as much of the mtd subsystem to
-> compile as possible. My thinking was to try and rectify the fact that
-> uml has gone without mtd (and hence jffs2) support for years even though
-> much of it works just fine. I think the entire subsystem being marked
-> BROKEN in kconfig kept anyone from experimenting with it.
+> I've looked through the documentation on 
+> http://www.linux-mtd.infradead.org but I can't find the answer to the 
+> following question(s):
 > 
-> The patch I sent was actually a reaction to feedback I got from Sam
-> Ravnborg on my last attempt (um, three years ago :/ ) in which he
-> suggested pushing down the ifdefs closer to their points of use. But I
-> agree, the minimal version has a much smaller footprint.
-> 
-> The version below still meets the goal of allowing jffs2-on-block2mtd
-> usage under uml but is much smaller because only the mtd core is
-> included. Compile-tested on i386, x86_64, um/i386, and um/x86_64.
-> 
-> > Instead, you should solve this problem in UML code. I do not know how,
-> > but may be you can add readb/writeb there which actually do nothing or
-> > print a scary warning, or do BUG(), and let things which use them just
-> > fail run-time.
-> 
-> Something like this could work, but it would be error-prone for anyone
-> else who attempts using iomem-requiring drivers on uml. Instead of
-> getting obvious compile failures we'd have broken drivers that BUG() or
-> emit scary warnings. That doesn't seem to me like an improvement.
+> Using 'static' UBI volumes seems to be the preferred way of creating read 
+> only file systems.
 
-OK, pushed this patch to l2-mtd-2.6.git.
+No, I think the _original_ idea behind static volumes was storing some
+important r/o blobs there without any FS. So UBI static volumes simplify
+this by making the volume size being = the contents size, even if the
+contents size is not multiple of LEB size, and static volumes also
+protect the data with CRC-32.
+
+But UBIFS has its own CRC32 protection, so does not need UBI static
+volume services.
+
+> While it seems possible to use ubinize to make a complete ubi image 
+> containing static volumes and then write it to the flash using ubiformat, 
+> is it possible to update just a single volume using ubiupdatevol
+> 
+> I've tried using ubimkvol to create a static volume, then using 
+> ubiupdatevol to write an ubifs image to it. That works, but when I try to 
+> mount it subsequently I get things like
+> 
+> [ 6656.114000] UBIFS: static UBI volume - read-only mode
+> [ 6656.129000] UBIFS error (pid 866): mount_ubifs: can't format empty UBI 
+> volume: read-only UBI volume
+> mount: mounting ubi1_0 on /volume1/ failed: Read-only file system
+> 
+> which in a way makes sense to me; if the volume is static = read only then 
+> it shouldn't be possible to write to it.
+
+This should work. You somehow wiped the volume instead of updating it,
+may be used the -t option for ubiupdatevol.
+
+> A related question: With static volumes, I assume you still get the 
+> benefit of scrubbing, which in turn means that UBI can move the data 
+> around if it deems necessary?
+
+Yes, sure.
+
+> Which begs a final question: is it possible to verify the integrity of a 
+> static UBI volume?
+
+All eraseblocks are protected with CRC-32. Fist time the static volume
+is openend, it is checked. See the 'ubi_check_volume()' function. It is
+also checked after it has been updated.
+
+To force checking, you need to detach the whole mtd device, and
+re-attach it. Or implement an ioctl for this, which is trivial to do.
+
+>  Even with JFFS2, if mounted readonly the flash in that 
+> particular partition is never written to,
+
+The same with UBIFS - we never write when we are mounted R/O. There are
+many ubifs_assert()s to check this as well.
+
+>  so it is possible to use a 
+> simple checksum to verify data integrity.
+
+You can do this with UBIFS I think, did not try though.
+
+>  With JFFS2 this can be 
+> important, as missing JFFS2 nodes don't necessarily result in mount time 
+> or run time failures, it just results in missing files or parts of files.
+
+Yeah, I think UBIFS will yell and  switch to R/O mode if one of the
+nodes is missing or corrupted.
+
+The difference between JFFS2 and UBIFS is that JFFS2 cannot distinguish
+between nodes corrupted because of power cuts, and nodes corrupted
+because something bad happened to the flash. UBIFS does better job here
+- it recovers only from errors which could possibly be caused by power
+cuts, and it switches to R/O mode for other errors.
 
 -- 
 Best Regards,
