@@ -1,22 +1,27 @@
-Received: from smtp1-g21.free.fr ([212.27.42.1])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PTX6U-0004vm-5x
-	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2010 09:59:59 +0000
-Subject: [PATCH v5 2/2] mtd: cfi_cmdset_0002: add support for Samsung
-	K8D3x16UxC NOR chips
-To: linux-mtd@lists.infradead.org
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Fri, 17 Dec 2010 10:59:47 +0100
-Message-ID: <20101217095947.8560.45288.stgit@shiryu>
-In-Reply-To: <20101217095941.8560.75355.stgit@shiryu>
-References: <20101217095941.8560.75355.stgit@shiryu>
+Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
+	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PTY1X-0000xt-70
+	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2010 10:59:06 +0000
+Message-ID: <4D0B424A.2020105@st.com>
+Date: Fri, 17 Dec 2010 16:28:18 +0530
+From: viresh kumar <viresh.kumar@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+To: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH V2 25/69] ST SPEAr: Add smi driver for serial NOR flash
+References: <cover.1285933331.git.viresh.kumar@st.com>
+	<238bd0ff57f8530c597157bc07f6c46dc362e1bc.1285933331.git.viresh.kumar@st.com>
+	<4CBD32EB.5050409@st.com> <4CCAB4D8.90807@st.com>
+In-Reply-To: <4CCAB4D8.90807@st.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Matthias Buecher / Germany <mail@maddes.net>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Wolfram Sang <w.sang@pengutronix.de>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Cc: Pratyush ANAND <pratyush.anand@st.com>, viresh kumar <viresh.kumar@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Bhupesh SHARMA <bhupesh.sharma@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+	Amit VIRDI <amit.virdi@st.com>, Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	Deepak SIKRI <deepak.sikri@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +31,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-These chips report CFI v3.3 [1], so patch them on the fly to the more
-correct v1.3.
-Discussed and tested by the OpenWRT people [2].
+On 10/29/2010 05:19 PM, viresh kumar wrote:
+> On 10/19/2010 11:25 AM, viresh kumar wrote:
+>> On 10/01/2010 05:25 PM, Viresh KUMAR wrote:
+>>> From: Shiraz Hashim <shiraz.hashim@st.com>
+>>>
+>>> SPEAr platforms(spear3xx/spear6xx/spear13xx) provide SMI(Serial Memory
+>>> Interface) controller to access serial NOR flash. SMI provides a simple
+>>> interface for SPI/serial NOR flashes and has certain inbuilt commands
+>>> and features to support these flashes easily. It also makes it possible
+>>> to map an address range in order to directly access (read/write) the SNOR
+>>> over address bus. This patch intends to provide serial nor driver support
+>>> for spear platforms which are accessed through SMI.
+>>>
+>>> Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
+>>> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+>>> ---
+>>>  arch/arm/plat-spear/include/plat/smi.h |   68 ++
+>>>  drivers/mtd/devices/Kconfig            |    7 +
+>>>  drivers/mtd/devices/Makefile           |    1 +
+>>>  drivers/mtd/devices/spear_smi.c        | 1122 ++++++++++++++++++++++++++++++++
+>>>  4 files changed, 1198 insertions(+), 0 deletions(-)
+>>>  create mode 100644 arch/arm/plat-spear/include/plat/smi.h
+>>>  create mode 100644 drivers/mtd/devices/spear_smi.c
+>>
+>> David,
+>>
+>> Any review comments on this patch??
+>>
+> 
+> David,
+> 
+> Any review comments??
+> 
 
-[1] http://www.samsung.com/global/system/business/semiconductor/product/2007/6/11/NORFlash/32Mbit/K8D3216UBC/ds_K8D3x16UxC_rev17.pdf
-[2] https://dev.openwrt.org/ticket/866
+David,
 
-Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |    4 +++-
- 1 files changed, 3 insertions(+), 1 deletions(-)
+Is this patch OK? Actually i have sent this patch as part of a big patchset.
+And my whole patchset is on hold untill i get this acked.
+Please see if you can get some time to review this patch.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 324fee4..a43ab45 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -393,10 +393,12 @@ static void cfi_fixup_major_minor(struct cfi_private *cfi,
- 				  struct cfi_pri_amdstd *extp)
- {
- 	if (cfi->mfr == CFI_MFR_SAMSUNG) {
--		if (extp->MajorVersion == '0' && extp->MinorVersion == '0') {
-+		if ((extp->MajorVersion == '0' && extp->MinorVersion == '0') ||
-+		    (extp->MajorVersion == '3' && extp->MinorVersion == '3')) {
- 			/*
- 			 * Samsung K8P2815UQB and K8D6x16UxM chips
- 			 * report major=0 / minor=0.
-+			 * K8D3x16UxC chips report major=3 / minor=3.
- 			 */
- 			printk(KERN_NOTICE "  Fixing Samsung's Amd/Fujitsu"
- 			       " Extended Query version to 1.%c\n",
+--
+viresh
