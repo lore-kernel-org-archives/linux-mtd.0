@@ -1,27 +1,25 @@
-Received: from eu1sys200aog103.obsmtp.com ([207.126.144.115])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PTY1X-0000xt-70
-	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2010 10:59:06 +0000
-Message-ID: <4D0B424A.2020105@st.com>
-Date: Fri, 17 Dec 2010 16:28:18 +0530
-From: viresh kumar <viresh.kumar@st.com>
-MIME-Version: 1.0
-To: "dwmw2@infradead.org" <dwmw2@infradead.org>,
+Received: from mail-bw0-f43.google.com ([209.85.214.43])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PTZPL-0006Vk-Qx
+	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2010 12:27:46 +0000
+Received: by bwz14 with SMTP id 14so801261bwz.30
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 17 Dec 2010 04:27:31 -0800 (PST)
+Subject: Re: Static UBI volumes and ubiupdatevol ?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <Pine.LNX.4.64.1012170946190.7024@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1012150855090.6187@lnxricardw.se.axis.com>
+	<1292516353.2364.101.camel@localhost>
+	<Pine.LNX.4.64.1012170946190.7024@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 17 Dec 2010 14:26:57 +0200
+Message-ID: <1292588817.2412.7.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Ricard =?ISO-8859-1?Q?Wanderl=F6f?= <ricardw@axis.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH V2 25/69] ST SPEAr: Add smi driver for serial NOR flash
-References: <cover.1285933331.git.viresh.kumar@st.com>
-	<238bd0ff57f8530c597157bc07f6c46dc362e1bc.1285933331.git.viresh.kumar@st.com>
-	<4CBD32EB.5050409@st.com> <4CCAB4D8.90807@st.com>
-In-Reply-To: <4CCAB4D8.90807@st.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Pratyush ANAND <pratyush.anand@st.com>, viresh kumar <viresh.kumar@st.com>,
-	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
-	Bhupesh SHARMA <bhupesh.sharma@st.com>,
-	Armando VISCONTI <armando.visconti@st.com>,
-	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
-	Amit VIRDI <amit.virdi@st.com>, Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
-	Deepak SIKRI <deepak.sikri@st.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,45 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/29/2010 05:19 PM, viresh kumar wrote:
-> On 10/19/2010 11:25 AM, viresh kumar wrote:
->> On 10/01/2010 05:25 PM, Viresh KUMAR wrote:
->>> From: Shiraz Hashim <shiraz.hashim@st.com>
->>>
->>> SPEAr platforms(spear3xx/spear6xx/spear13xx) provide SMI(Serial Memory
->>> Interface) controller to access serial NOR flash. SMI provides a simple
->>> interface for SPI/serial NOR flashes and has certain inbuilt commands
->>> and features to support these flashes easily. It also makes it possible
->>> to map an address range in order to directly access (read/write) the SNOR
->>> over address bus. This patch intends to provide serial nor driver support
->>> for spear platforms which are accessed through SMI.
->>>
->>> Signed-off-by: Shiraz Hashim <shiraz.hashim@st.com>
->>> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
->>> ---
->>>  arch/arm/plat-spear/include/plat/smi.h |   68 ++
->>>  drivers/mtd/devices/Kconfig            |    7 +
->>>  drivers/mtd/devices/Makefile           |    1 +
->>>  drivers/mtd/devices/spear_smi.c        | 1122 ++++++++++++++++++++++++++++++++
->>>  4 files changed, 1198 insertions(+), 0 deletions(-)
->>>  create mode 100644 arch/arm/plat-spear/include/plat/smi.h
->>>  create mode 100644 drivers/mtd/devices/spear_smi.c
->>
->> David,
->>
->> Any review comments on this patch??
->>
+On Fri, 2010-12-17 at 10:33 +0100, Ricard Wanderlof wrote:
+> > The same with UBIFS - we never write when we are mounted R/O. There are
+> > many ubifs_assert()s to check this as well.
 > 
-> David,
+> ... but UBI might still do writes during the course of scrubbing I guess, 
+> unless ...
+
+Yes, you are right.
+
+> > >  so it is possible to use a 
+> > > simple checksum to verify data integrity.
+> > 
+> > You can do this with UBIFS I think, did not try though.
 > 
-> Any review comments??
-> 
+> What I meant was 'a simple checksum on the raw mtd partition', which can't 
+> work with UBIFS as the UBI erase counters etc can change over time as a 
+> result of scrubbing.
 
-David,
+Ah, yes, you see, you know the things quite well yourself :-)
 
-Is this patch OK? Actually i have sent this patch as part of a big patchset.
-And my whole patchset is on hold untill i get this acked.
-Please see if you can get some time to review this patch.
+> I guess I could read from the /dev/ubix_y device to just get the raw UBIFS 
+> data which shouldn't change even in the event of scrubbing? Or should I 
+> use gluebi to get both a raw mtd partition corresponding to the raw UBIFS 
+> data, as well as using UBIFS (on /dev/ubix_y) for the file system?
 
---
-viresh
+No, gluebi is not needed, it would just give you an /dev/mtdZ device
+with contents equivalent to /dev/ubiX_Y
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
