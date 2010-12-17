@@ -1,22 +1,21 @@
 Received: from mail-bw0-f43.google.com ([209.85.214.43])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PTZcX-0001Dl-Ng
-	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2010 12:41:18 +0000
-Received: by bwz14 with SMTP id 14so812591bwz.30
+	id 1PTZzg-0007FK-K6
+	for linux-mtd@lists.infradead.org; Fri, 17 Dec 2010 13:05:13 +0000
+Received: by bwz14 with SMTP id 14so833628bwz.30
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Dec 2010 04:41:08 -0800 (PST)
+	Fri, 17 Dec 2010 05:05:03 -0800 (PST)
 Subject: Re: Static UBI volumes and ubiupdatevol ?
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.1012171328380.7024@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.1012171036510.7024@lnxricardw.se.axis.com>
 References: <Pine.LNX.4.64.1012150855090.6187@lnxricardw.se.axis.com>
-	<1292516353.2364.101.camel@localhost>
-	<Pine.LNX.4.64.1012170946190.7024@lnxricardw.se.axis.com>
-	<1292588817.2412.7.camel@localhost>
-	<Pine.LNX.4.64.1012171328380.7024@lnxricardw.se.axis.com>
+	<Pine.LNX.4.64.1012151129250.7024@lnxricardw.se.axis.com>
+	<1292516775.2364.108.camel@localhost>
+	<Pine.LNX.4.64.1012171036510.7024@lnxricardw.se.axis.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 17 Dec 2010 14:40:34 +0200
-Message-ID: <1292589634.2412.11.camel@localhost>
+Date: Fri, 17 Dec 2010 15:04:29 +0200
+Message-ID: <1292591069.2412.25.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -30,33 +29,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-12-17 at 13:31 +0100, Ricard Wanderlof wrote:
-> On Fri, 17 Dec 2010, Artem Bityutskiy wrote:
+On Fri, 2010-12-17 at 10:39 +0100, Ricard Wanderlof wrote:
+> (Crud, I was trying to concatenate both replies into one message to avoid 
+> two threads on the same issue but then I thought of something else after 
+> sending the first one off).
 > 
-> > Ah, yes, you see, you know the things quite well yourself :-)
+> On Thu, 16 Dec 2010, Artem Bityutskiy wrote:
 > 
-> Well, I try to convince myself that I think I know, but there's always the 
-> very real and likely possibilty that I'm wrong because I've misunderstood 
-> something.
-> 
-> >> I guess I could read from the /dev/ubix_y device to just get the raw UBIFS
-> >> data which shouldn't change even in the event of scrubbing? Or should I
-> >> use gluebi to get both a raw mtd partition corresponding to the raw UBIFS
-> >> data, as well as using UBIFS (on /dev/ubix_y) for the file system?
+> >> With a system based on mtd+jffs2 it is actually possible to reflash the
+> >> partition with the [read only] root file system on it without unmounting,
+> >> as long as no accesses are made to the physical flash during the rewrite
+> >> or afterwards. In other words, immediately after reflashing the system
+> >> must be rebooted.
 > >
-> > No, gluebi is not needed, it would just give you an /dev/mtdZ device
-> > with contents equivalent to /dev/ubiX_Y
+> > Hmm, I presume you can do this with UBIFS, but you need to make sure all
+> > the backgound stuff like moving and eraseing eraseblocs is done before
+> > doing this by doing fsync() on your /dev/ubiX_Y device (UBI volume
+> > character device), see the 'vol_cdev_fsync()' function. Ah, and of
+> > course you need to sync UBIFS before this.
+> >
+> > Then if you can guarantee that no one is reading writing to it, you can
+> > change the flash.
 > 
-> So what does gluebi in fact add, does it just supply all the necessary 
-> ioctl's to make /dev/ubiX_Y look like a /dev/mtdZ device, in addition to 
-> the already existing functionality of being able to read and write to the 
-> volume using read and write? (Yes, I could dig through the code, but even 
-> though it might give me the answer on what it looks like right now, it 
-> might not tell what the intention was...).
+> It would be nice to use ubiupdatevol to do this, but it won't let me do 
+> that if the volume is mounted (naturally). I don't know if this is 
+> something that is enforced by ubiupdatevol or ubi. I would assume the 
+> latter but I haven't checked the code.
+> 
+> Of course I could always write my own "ubiupdatevol" to deal with this but 
+> it's always nice to use existing and supported tools.
 
-Original idea was to put JFFS2 on top of UBI volumes. Gluebi is doing
-just that - turns UBI volume into an MTD device, then you have mount it
-with JFFS2.
+This is UBI - it does not allow updating if someone keeps the volume
+open. When UBI is mounted, it keeps the volume open. It closes the
+volume when unmounted.
+
+It looks error-prone to allow updating while there are users, from UBI
+POW, I think.
+
+And I cannot think of a nice way of doing this.
+
+Why can't you just
+1. lazily unmount UBIFS
+2. find all users of UBIFS and kill them
+3. this will make UBIFS finally unmount
+4. you safely update the UBI volume
 
 -- 
 Best Regards,
