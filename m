@@ -1,19 +1,31 @@
-Received: from mho-01-ewr.mailhop.org ([204.13.248.71])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PTkx1-0001kt-Az
-	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2010 00:47:08 +0000
-Date: Fri, 17 Dec 2010 15:52:19 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-Subject: Re: [PATCH] MTD: NAND: ams-delta: drop omap_read/write, use ioremap
-Message-ID: <20101217235218.GU5941@atomide.com>
-References: <201012151543.46341.jkrzyszt@tis.icnet.pl>
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PTo5o-0003fn-DD
+	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2010 04:08:25 +0000
+Received: by gyg4 with SMTP id 4so572402gyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 17 Dec 2010 20:08:22 -0800 (PST)
+From: Rob Landley <rob@landley.net>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+Date: Fri, 17 Dec 2010 22:08:16 -0600
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<201012150031.21417.rob@landley.net>
+	<1292512711.2364.85.camel@localhost>
+In-Reply-To: <1292512711.2364.85.camel@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <201012151543.46341.jkrzyszt@tis.icnet.pl>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+Message-Id: <201012172208.17937.rob@landley.net>
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net,
+	Denys Vlasenko <vda.linux@googlemail.com>,
+	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
+	Jason Lunz <lunz@acm.org>, lkml <linux-kernel@vger.kernel.org>,
+	richard -rw- weinberger <richard.weinberger@gmail.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +35,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Janusz Krzysztofik <jkrzyszt@tis.icnet.pl> [101215 06:44]:
-> There is a common requirement for not using OMAP specific omap_readw() / 
-> omap_writew() function calls in drivers/, but replace them with 
-> readw() / writew() on ioremap()ped addresses passed from arch/ instead.
-> 
-> The patch implements this idea for the Amstrad Delta NAND driver. To be 
-> able to use the modified driver, the board file is updated with the 
-> platform device I/O resource declaration, which is passed from there.
-> 
-> Created and tested against linux-2.6.37-rc5, on top of recent patch 
-> 'MTD: NAND: ams-delta: convert to platform driver'.
+On Thursday 16 December 2010 09:18:31 Artem Bityutskiy wrote:
+> On Wed, 2010-12-15 at 00:31 -0600, Rob Landley wrote:
+> > That is awesome and I'm not finding any documentation on it...  Ah:
+> >
+> >  
+> > http://wiki.maemo.org/Modifying_the_root_image#Block_device_emulating_an_
+> >MTD_device
+> >
+> > Wow that's awkward.  Let's see, that says...
+> >
+> >   mknod /tmp/mtdblock0 b 31 0
+> >   modprobe loop
+> >   losetup /dev/loop0 rootfs.jffs2
+> >   modprobe mtdblock
+> >   modprobe block2mtd
+> >   # Note the ,128KiB is needed (on 2.6.26 at least) to set the
+> >   # eraseblock  size.
+> >   echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
+> >   modprobe jffs2
+> >   mount -t jffs2 /tmp/mtdblock0 /media/jffs2
+>
+> You should not need mtdblock in modern kernels, it is legacy. You should
+> be abole to mount jffs2 on top of mtd0 with
+>
+> mount -t jffs2 mtd0 /media/jffs2
 
-Acked-by: Tony Lindgren <tony@atomide.com>
+How does one associate the mtd0 with the loopback device?  (I thought mtd0 was 
+for actual flash memory.)
+
+Rob
+-- 
+GPLv3: as worthy a successor as The Phantom Menace, as timely as Duke Nukem 
+Forever, and as welcome as New Coke.
