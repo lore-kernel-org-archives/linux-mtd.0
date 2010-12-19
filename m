@@ -1,22 +1,15 @@
-Received: from mail-bw0-f43.google.com ([209.85.214.43])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PUMd7-0003Q8-Rt
-	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 17:01:09 +0000
-Received: by bwz14 with SMTP id 14so2449685bwz.30
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 19 Dec 2010 09:01:03 -0800 (PST)
-Subject: Re: [PATCH] MTD: NAND: ams-delta: select for built-in by default
+Subject: Re: [PATCH] MTD: m25p80: add debugging trace in sst_write()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
-In-Reply-To: <201012151258.16764.jkrzyszt@tis.icnet.pl>
-References: <201012151258.16764.jkrzyszt@tis.icnet.pl>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+In-Reply-To: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
+References: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 19 Dec 2010 19:00:53 +0200
-Message-ID: <1292778053.13362.7.camel@koala>
+Date: Sun, 19 Dec 2010 19:00:55 +0200
+Message-ID: <1292778055.13362.8.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Tony Lindgren <tony@atomide.com>, David Woodhouse <dwmw2@infradead.org>,
-	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,17 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-12-15 at 12:58 +0100, Janusz Krzysztofik wrote:
-> Now that the Amstrad Delta NAND driver is converted to a platform driver, 
-> which prevents it from interfering with other unrelated hardware in multiple 
-> OMAP1 cpu and machine configurations, it can be automatically configured for 
-> being built into the kernel if the Amstrad Delta board is also selected.
+On Wed, 2010-12-15 at 12:59 +0100, Nicolas Ferre wrote:
+> Add a DEBUG(MTD_DEBUG_LEVEL2, ..) trace at beginning of sst_write() function as
+> it is done in m25p80_write() function.
 > 
-> Created against linux-2.6.37-rc5.
-> 
-> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
 
-Pushed to l2-mtd-2.6.git, thanks.
+So do you do this only becaus it is done in m25p80_write()? This is what
+the commit message suggests... Have you found these DEBUG macros useful
+for you? (I never found them any useful).
+
+Anyway, I've put this to my l2-mtd-2.6.git tree, thanks.
 
 -- 
 Best Regards,
