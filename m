@@ -1,15 +1,22 @@
-Subject: Re: [PATCH] MTD: m25p80: add debugging trace in sst_write()
+Received: from mail-fx0-f48.google.com ([209.85.161.48])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PUMff-0003WN-3o
+	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 17:03:45 +0000
+Received: by fxm2 with SMTP id 2so2375589fxm.21
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 19 Dec 2010 09:03:40 -0800 (PST)
+Subject: Re: [PATCH] MTD: NAND: ams-delta: drop omap_read/write, use ioremap
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-In-Reply-To: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
-References: <1292414372-17085-1-git-send-email-nicolas.ferre@atmel.com>
+To: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
+In-Reply-To: <201012151543.46341.jkrzyszt@tis.icnet.pl>
+References: <201012151543.46341.jkrzyszt@tis.icnet.pl>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 19 Dec 2010 19:00:55 +0200
-Message-ID: <1292778055.13362.8.camel@koala>
+Date: Sun, 19 Dec 2010 19:03:33 +0200
+Message-ID: <1292778213.13362.9.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Tony Lindgren <tony@atomide.com>, David Woodhouse <dwmw2@infradead.org>,
+	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -20,17 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2010-12-15 at 12:59 +0100, Nicolas Ferre wrote:
-> Add a DEBUG(MTD_DEBUG_LEVEL2, ..) trace at beginning of sst_write() function as
-> it is done in m25p80_write() function.
+On Wed, 2010-12-15 at 15:43 +0100, Janusz Krzysztofik wrote:
+> There is a common requirement for not using OMAP specific omap_readw() / 
+> omap_writew() function calls in drivers/, but replace them with 
+> readw() / writew() on ioremap()ped addresses passed from arch/ instead.
 > 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+> The patch implements this idea for the Amstrad Delta NAND driver. To be 
+> able to use the modified driver, the board file is updated with the 
+> platform device I/O resource declaration, which is passed from there.
+> 
+> Created and tested against linux-2.6.37-rc5, on top of recent patch 
+> 'MTD: NAND: ams-delta: convert to platform driver'.
+> 
+> Signed-off-by: Janusz Krzysztofik <jkrzyszt@tis.icnet.pl>
 
-So do you do this only becaus it is done in m25p80_write()? This is what
-the commit message suggests... Have you found these DEBUG macros useful
-for you? (I never found them any useful).
-
-Anyway, I've put this to my l2-mtd-2.6.git tree, thanks.
+Pushed to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
