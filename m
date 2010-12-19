@@ -1,29 +1,22 @@
-Received: from mail-fx0-f48.google.com ([209.85.161.48])
+Received: from mail-bw0-f43.google.com ([209.85.214.43])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PUMkG-00042y-MM
-	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 17:08:31 +0000
-Received: by fxm2 with SMTP id 2so2378501fxm.21
+	id 1PUNKH-00061H-1A
+	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 17:45:41 +0000
+Received: by bwz14 with SMTP id 14so2470097bwz.30
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 19 Dec 2010 09:08:27 -0800 (PST)
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+	Sun, 19 Dec 2010 09:45:39 -0800 (PST)
+Subject: Re: [PATCH v2 1/6] mtd: add writebufsize field to mtd_info struct
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Rob Landley <rob@landley.net>
-In-Reply-To: <201012172208.17937.rob@landley.net>
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<201012150031.21417.rob@landley.net>
-	<1292512711.2364.85.camel@localhost>
-	<201012172208.17937.rob@landley.net>
+To: Anatolij Gustschin <agust@denx.de>
+In-Reply-To: <1292539339-25111-2-git-send-email-agust@denx.de>
+References: <292342500.2538.65.camel@localhost>
+	<1292539339-25111-2-git-send-email-agust@denx.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 19 Dec 2010 19:08:22 +0200
-Message-ID: <1292778502.13362.13.camel@koala>
+Date: Sun, 19 Dec 2010 19:45:31 +0200
+Message-ID: <1292780731.13362.16.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net,
-	Denys Vlasenko <vda.linux@googlemail.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
-	Jason Lunz <lunz@acm.org>, lkml <linux-kernel@vger.kernel.org>,
-	richard -rw- weinberger <richard.weinberger@gmail.com>,
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
 	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -35,41 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-12-17 at 22:08 -0600, Rob Landley wrote:
-> On Thursday 16 December 2010 09:18:31 Artem Bityutskiy wrote:
-> > On Wed, 2010-12-15 at 00:31 -0600, Rob Landley wrote:
-> > > That is awesome and I'm not finding any documentation on it...  Ah:
-> > >
-> > >  
-> > > http://wiki.maemo.org/Modifying_the_root_image#Block_device_emulating_an_
-> > >MTD_device
-> > >
-> > > Wow that's awkward.  Let's see, that says...
-> > >
-> > >   mknod /tmp/mtdblock0 b 31 0
-> > >   modprobe loop
-> > >   losetup /dev/loop0 rootfs.jffs2
-> > >   modprobe mtdblock
-> > >   modprobe block2mtd
-> > >   # Note the ,128KiB is needed (on 2.6.26 at least) to set the
-> > >   # eraseblock  size.
-> > >   echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
-> > >   modprobe jffs2
-> > >   mount -t jffs2 /tmp/mtdblock0 /media/jffs2
-> >
-> > You should not need mtdblock in modern kernels, it is legacy. You should
-> > be abole to mount jffs2 on top of mtd0 with
-> >
-> > mount -t jffs2 mtd0 /media/jffs2
+On Thu, 2010-12-16 at 23:42 +0100, Anatolij Gustschin wrote:
+> This field will be used to indicate the write buffer size
+> of the MTD device. UBI will set it's minimal I/O unit size
+> (min_io_size) to the indicated write buffer size. By this
+> change we intend to fix failed recovery of UBIFS partitions
+> we currently observe on NOR flash when mounting the partition
+> after unclean unmount.
 > 
-> How does one associate the mtd0 with the loopback device?  (I thought mtd0 was 
-> for actual flash memory.)
+> Currently the min_io_size is set to mtd->writesize (which is 1
+> byte for NOR flash). But flash programming is often done from
+> prepared write buffer containing multiple bytes and is performed
+> in one programming operation which could be interrupted by a power
+> cut or a system reset causing corrupted (partially written) areas
+> in a flash sector. Knowing the size of potentially corrupted areas
+> UBIFS scanning and recovery algorithms are able to perform
+> successful recovery.
+> 
+> In case of NOR flash minimal I/O size must be equal to the
+> maximal size of the write buffer used by embedded flash
+> programming algorithm. In case of NAND flash mtd->writebufsize
+> should be equivalent to mtd->writesize.
+> 
+> The subsequent patches will add mtd->writebufsize initialization
+> where needed.
+> 
+> Signed-off-by: Anatolij Gustschin <agust@denx.de>
 
-You do not need loopback devices, just flash your rootfs.jffs2 directly
-to /dev/mtd0, e.g., with nandwrite. You can emulate nand with nandsim.
-
-But your method should also work, I just wanted to point that JFFS2 does
-not depend on mtdblock in any way.
+I've tweaked your commentary a bit and pushed to l2-mtd-2.6.git, please,
+check.
 
 -- 
 Best Regards,
