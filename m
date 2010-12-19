@@ -1,22 +1,18 @@
 Received: from smtp.scorch.co.nz ([27.110.127.199] helo=scorch.co.nz)
 	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PUR8v-0003D8-3r
-	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 21:50:14 +0000
+	id 1PURZs-00042j-Tz
+	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 22:18:06 +0000
 From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v6 2/3] omap3 nand: cleanup virtual address usages
-Date: Mon, 20 Dec 2010 10:50:10 +1300
-References: <1278660308-8689-1-git-send-email-s-ghorai@ti.com>
-	<1278660308-8689-2-git-send-email-s-ghorai@ti.com>
-	<1278660308-8689-3-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1278660308-8689-3-git-send-email-s-ghorai@ti.com>
+To: linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org
+Subject: UBIFS not mounting on linux-omap 2.6.36
+Date: Mon, 20 Dec 2010 11:18:01 +1300
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <201012201050.10726.manningc2@actrix.gen.nz>
-Cc: linux-omap@vger.kernel.org, Sukumar Ghorai <s-ghorai@ti.com>
+Message-Id: <201012201118.01766.manningc2@actrix.gen.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +22,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 09 July 2010 19:25:07 Sukumar Ghorai wrote:
+Hi All
 
-> +++ b/arch/arm/plat-omap/include/plat/nand.h
-> @@ -21,13 +21,11 @@ struct omap_nand_platform_data {
->  	int			(*dev_ready)(struct omap_nand_platform_data *);
->  	int			dma_channel;
->  	unsigned long		phys_base;
-> -	void __iomem		*gpmc_cs_baseaddr;
-> -	void __iomem		*gpmc_baseaddr;
->  	int			devsize;
->  };
->
-> -/* size (4 KiB) for IO mapping */
-> -#define	NAND_IO_SIZE	SZ_4K
-> +/* minimum size for IO mapping */
-> +#define	NAND_IO_SIZE	4
+I am trying to nail down an omap3 ubifs  performance regression, but cannot 
+get Steve Sakoman's 2.6.35 or 2.6.36 kernels
+http://www.sakoman.com/cgi-bin/gitweb.cgi?p=linux-omap-2.6.git
+ to mount ubifs although the same procedure works with older kernels and works 
+with the linux-omap 2.6.37 master.
 
-Is this really only for a 4-byte region? I would have expected that this 
-controls access to a multi-register NAND controller and should really be 
-larger. 
+Any hints?
 
--- Charles
+Thanks
+
+Charles
+
+
+The NAND had been initilised with:
+
+ubiformat /dev/mtd4 -s 512
+
+ubimkvol /dev/ubi0 -m -N foo
+
+Herewith log
+
+root@omap3-multi:~# ubiattach /dev/ubi_ctrl -m4 -d4
+UBI: attaching mtd4 to ubi4
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    129024 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          512 (aligned 512)
+UBI: data offset:                2048
+UBI: max. sequence number:       2
+UBI: attached mtd4 to ubi4
+UBI: MTD device name:            "rootfs"
+UBI: MTD device size:            249 MiB
+UBI: number of good PEBs:        1996
+UBI: number of bad PEBs:         0
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     1
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 1996
+UBI: number of PEBs reserved for bad PEB handling: 19
+UBI: max/mean erase counter: 8195/11
+UBI: image sequence number:  1842873171
+UBI: background thread "ubi_bgt4d" started, PID 407
+UBI device number 4, total 1996 LEBs (257531904 bytes, 245.6 MiB), available 0 
+LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
+root@omap3-multi:~# dmesg
+...
+UBI: attaching mtd4 to ubi4
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    129024 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: sub-page size:              512
+UBI: VID header offset:          512 (aligned 512)
+UBI: data offset:                2048
+UBI: max. sequence number:       2
+UBI: attached mtd4 to ubi4
+UBI: MTD device name:            "rootfs"
+UBI: MTD device size:            249 MiB
+UBI: number of good PEBs:        1996
+UBI: number of bad PEBs:         0
+UBI: max. allowed volumes:       128
+UBI: wear-leveling threshold:    4096
+UBI: number of internal volumes: 1
+UBI: number of user volumes:     1
+UBI: available PEBs:             0
+UBI: total number of reserved PEBs: 1996
+UBI: number of PEBs reserved for bad PEB handling: 19
+UBI: max/mean erase counter: 8195/11
+UBI: image sequence number:  1842873171
+UBI: background thread "ubi_bgt4d" started, PID 407
+
+root@omap3-multi:~# ubinfo -a              
+UBI version:                    1
+Count of UBI devices:           1
+UBI control device major/minor: 10:62
+Present UBI devices:            ubi4
+
+ubi4
+Volumes count:                           1
+Logical eraseblock size:                 129024 bytes, 126.0 KiB
+Total amount of logical eraseblocks:     1996 (257531904 bytes, 245.6 MiB)
+Amount of available logical eraseblocks: 0 (0 bytes)
+Maximum count of volumes                 128
+Count of bad physical eraseblocks:       0
+Count of reserved physical eraseblocks:  19
+Current maximum erase counter value:     8195
+Minimum input/output unit size:          2048 bytes
+Character device major/minor:            250:0
+Present volumes:                         0
+
+Volume ID:   0 (on ubi4)
+Type:        dynamic
+Alignment:   1
+Size:        1973 LEBs (254564352 bytes, 242.8 MiB)
+State:       OK
+Name:        foo
+Character device major/minor: 250:1
+root@omap3-multi:~# mount -t ubifs ubi4:foo ss/
+mount: ubi4:foo already mounted or ss/ busy
+root@omap3-multi:~# dmesg
+...
+UBIFS DBG (pid 429): ubifs_get_sb: name ubi4:foo, flags 0x0
+UBIFS DBG (pid 429): ubifs_get_sb: opened ubi4_0
+...
