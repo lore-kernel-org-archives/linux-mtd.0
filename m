@@ -1,36 +1,24 @@
 Received: from mail-fx0-f48.google.com ([209.85.161.48])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PUMWV-000358-6O
-	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 16:54:15 +0000
-Received: by fxm2 with SMTP id 2so2370217fxm.21
+	id 1PUMWc-000358-KM
+	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 16:54:23 +0000
+Received: by mail-fx0-f48.google.com with SMTP id 2so2370217fxm.21
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 19 Dec 2010 08:54:13 -0800 (PST)
-Subject: Re: mtd: fix CONFIG_MTD_COMPLEX_MAPPINGS=n compile
+	Sun, 19 Dec 2010 08:54:22 -0800 (PST)
+Subject: Re: [PATCH 1/1] mtd: nand: add check for out of page read
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jason Lunz <lunz@acm.org>
-In-Reply-To: <20101217042759.GA3148@falooley.org>
-References: <20071024011712.GA3762@falooley.org>
-	<1193208689.26096.48.camel@pmac.infradead.org>
-	<20071227181524.GA19051@falooley.org>
-	<20071228174853.GA4252@uranus.ravnborg.org>
-	<20101207072919.GA8511@falooley.org>
-	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
-	<20101207182012.GA10546@falooley.org>
-	<1292343878.2538.80.camel@localhost>
-	<20101214195124.GA6010@falooley.org> <20101216230110.65156c55@wker>
-	<20101217042759.GA3148@falooley.org>
+To: Jason Liu <liu.h.jason@gmail.com>
+In-Reply-To: <AANLkTi=zB7UBjkvGYv_wdwZpH1Ghatn6eye1z5616h4X@mail.gmail.com>
+References: <1290156045-11719-1-git-send-email-r64343@freescale.com>
+	<1292340409.2538.40.camel@localhost>
+	<AANLkTi=zB7UBjkvGYv_wdwZpH1Ghatn6eye1z5616h4X@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 19 Dec 2010 18:47:56 +0200
-Message-ID: <1292777276.2140.1.camel@koala>
+Date: Sun, 19 Dec 2010 18:54:05 +0200
+Message-ID: <1292777645.13362.3.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net,
-	richard -rw- weinberger <richard.weinberger@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
-	Anatolij Gustschin <agust@denx.de>, Sam Ravnborg <sam@ravnborg.org>
+Cc: Jason Liu <r64343@freescale.com>, linux-mtd@lists.infradead.org,
+	David.Woodhouse@intel.com, linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -41,15 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-12-16 at 20:27 -0800, Jason Lunz wrote:
-> On Thu, Dec 16, 2010 at 11:01:10PM +0100, Anatolij Gustschin wrote:
-> > This change breaks compiling when CONFIG_MTD_COMPLEX_MAPPINGS is not
-> > defined in the kernel configuration. Please fix!
+On Wed, 2010-12-15 at 09:55 +0800, Jason Liu wrote:
+> >        /* Do not allow reads past end of device */
+> >        if (unlikely(from >= mtd->size ||
+> >                     ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
+> >                                        (from >> chip->page_shift)) * len)) {
+> >                DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read beyond end "
+> >                                        "of device\n", __func__);
+> >                return -EINVAL;
+> >        }
 > 
-> Sorry, sloppy of me. This reverts all changes to mtd.h while keeping the
-> ability to compile mtd on ARCH=um, with the exception mtdchar.
+> Here the mtd->size in nand_base.c should be the NAND flash chip size,
 
-Merged with the previous patch, thanks.
+I think this is partition size as well.
+
+> while in nand_oobtest,
+> 
+>               /* Attempt to read off end of device */
+>                 ops.mode      = MTD_OOB_AUTO;
+>                 ops.len       = 0;
+>                 ops.retlen    = 0;
+>                 ops.ooblen    = mtd->ecclayout->oobavail;
+>                 ops.oobretlen = 0;
+>                 ops.ooboffs   = 1;
+>                 ops.datbuf    = NULL;
+>                 ops.oobbuf    = readbuf;
+>                 printk(PRINT_PREF "attempting to read past end of device\n");
+>                 printk(PRINT_PREF "an error is expected...\n");
+>                 err = mtd->read_oob(mtd, mtd->size - mtd->writesize, &ops);
+>                 if (err) {
+>                         printk(PRINT_PREF "error occurred as expected\n");
+>                         err = 0;
+>                 } else {
+>                         printk(PRINT_PREF "error: read past end of device\n");
+>                         errcnt += 1;
+>                 }
+>         }
+> 
+> here, mtd->size is mtd partition size right? when the mtd partition is
+> not the last MTD partition, the error will happen.
+
+I think this is the same in both. Try to debug this with printks().
+
+> 
+> I have tested on real NAND, while not on nandsim.
+
+Please, try to reproduce this with nandsim as well, and if it works, try
+to find out why (using printk debugging)
 
 -- 
 Best Regards,
