@@ -1,31 +1,37 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-fx0-f48.google.com ([209.85.161.48])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PTo5o-0003fn-DD
-	for linux-mtd@lists.infradead.org; Sat, 18 Dec 2010 04:08:25 +0000
-Received: by gyg4 with SMTP id 4so572402gyg.36
+	id 1PUMWV-000358-6O
+	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 16:54:15 +0000
+Received: by fxm2 with SMTP id 2so2370217fxm.21
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Dec 2010 20:08:22 -0800 (PST)
-From: Rob Landley <rob@landley.net>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
-Date: Fri, 17 Dec 2010 22:08:16 -0600
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<201012150031.21417.rob@landley.net>
-	<1292512711.2364.85.camel@localhost>
-In-Reply-To: <1292512711.2364.85.camel@localhost>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201012172208.17937.rob@landley.net>
+	Sun, 19 Dec 2010 08:54:13 -0800 (PST)
+Subject: Re: mtd: fix CONFIG_MTD_COMPLEX_MAPPINGS=n compile
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jason Lunz <lunz@acm.org>
+In-Reply-To: <20101217042759.GA3148@falooley.org>
+References: <20071024011712.GA3762@falooley.org>
+	<1193208689.26096.48.camel@pmac.infradead.org>
+	<20071227181524.GA19051@falooley.org>
+	<20071228174853.GA4252@uranus.ravnborg.org>
+	<20101207072919.GA8511@falooley.org>
+	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
+	<20101207182012.GA10546@falooley.org>
+	<1292343878.2538.80.camel@localhost>
+	<20101214195124.GA6010@falooley.org> <20101216230110.65156c55@wker>
+	<20101217042759.GA3148@falooley.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 19 Dec 2010 18:47:56 +0200
+Message-ID: <1292777276.2140.1.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: atom ota <atomota@sleepyhammer.com>,
 	user-mode-linux-devel@lists.sourceforge.net,
-	Denys Vlasenko <vda.linux@googlemail.com>,
-	Sam Ravnborg <sam@ravnborg.org>, Jeff Dike <jdike@addtoit.com>,
-	Jason Lunz <lunz@acm.org>, lkml <linux-kernel@vger.kernel.org>,
 	richard -rw- weinberger <richard.weinberger@gmail.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+	David Woodhouse <dwmw2@infradead.org>, Jeff Dike <jdike@addtoit.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+	Anatolij Gustschin <agust@denx.de>, Sam Ravnborg <sam@ravnborg.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,36 +41,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 16 December 2010 09:18:31 Artem Bityutskiy wrote:
-> On Wed, 2010-12-15 at 00:31 -0600, Rob Landley wrote:
-> > That is awesome and I'm not finding any documentation on it...  Ah:
-> >
-> >  
-> > http://wiki.maemo.org/Modifying_the_root_image#Block_device_emulating_an_
-> >MTD_device
-> >
-> > Wow that's awkward.  Let's see, that says...
-> >
-> >   mknod /tmp/mtdblock0 b 31 0
-> >   modprobe loop
-> >   losetup /dev/loop0 rootfs.jffs2
-> >   modprobe mtdblock
-> >   modprobe block2mtd
-> >   # Note the ,128KiB is needed (on 2.6.26 at least) to set the
-> >   # eraseblock  size.
-> >   echo "/dev/loop0,128KiB" > /sys/module/block2mtd/parameters/block2mtd
-> >   modprobe jffs2
-> >   mount -t jffs2 /tmp/mtdblock0 /media/jffs2
->
-> You should not need mtdblock in modern kernels, it is legacy. You should
-> be abole to mount jffs2 on top of mtd0 with
->
-> mount -t jffs2 mtd0 /media/jffs2
+On Thu, 2010-12-16 at 20:27 -0800, Jason Lunz wrote:
+> On Thu, Dec 16, 2010 at 11:01:10PM +0100, Anatolij Gustschin wrote:
+> > This change breaks compiling when CONFIG_MTD_COMPLEX_MAPPINGS is not
+> > defined in the kernel configuration. Please fix!
+> 
+> Sorry, sloppy of me. This reverts all changes to mtd.h while keeping the
+> ability to compile mtd on ARCH=um, with the exception mtdchar.
 
-How does one associate the mtd0 with the loopback device?  (I thought mtd0 was 
-for actual flash memory.)
+Merged with the previous patch, thanks.
 
-Rob
 -- 
-GPLv3: as worthy a successor as The Phantom Menace, as timely as Duke Nukem 
-Forever, and as welcome as New Coke.
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
