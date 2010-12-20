@@ -1,24 +1,18 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PUijg-0006aT-8Z
-	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2010 16:37:24 +0000
-Received: by qyk27 with SMTP id 27so3590850qyk.15
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Dec 2010 08:37:17 -0800 (PST)
+Received: from smtp.scorch.co.nz ([27.110.127.199] helo=scorch.co.nz)
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PUoLI-0004jO-7z
+	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2010 22:36:36 +0000
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org,
+ linux-omap@vger.kernel.org
+Subject: Huge ubi or ubifs sync slowdown since 2.6.32
+Date: Tue, 21 Dec 2010 11:36:22 +1300
 MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <1292539339-25111-3-git-send-email-agust@denx.de>
-References: <292342500.2538.65.camel@localhost>
-	<1292539339-25111-3-git-send-email-agust@denx.de>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Mon, 20 Dec 2010 17:36:57 +0100
-Message-ID: <AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
-To: Anatolij Gustschin <agust@denx.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <201012211136.22254.manningc2@actrix.gen.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
 
-2010/12/16 Anatolij Gustschin <agust@denx.de>:
-> Initialize mtd->writebufsize to the value obtained
-> by CFI query command at probe time.
->
-> Signed-off-by: Anatolij Gustschin <agust@denx.de>
-> ---
-> --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> @@ -428,6 +428,10 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *ma=
-p, int primary)
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd->flags =C2=A0 =3D MTD_CAP_NORFLASH;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd->name =C2=A0 =C2=A0=3D map->name;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0mtd->writesize =3D 1;
-> + =C2=A0 =C2=A0 =C2=A0 mtd->writebufsize =3D 1 << cfi->cfiq->MaxBufWriteS=
-ize;
+Hi All
 
-What about wbufsize initialized in cfi_amdstd_write_buffers() to
-"cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize" ?
-I don't know this piece of code, but I just wanted to point it to you.
+I've been looking into a ubifs performance regression on linux-omap 2.6.37.
 
---=20
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+My test is pretty simple, copy a 2Mbyte file and sync.
+
+# sync; date; cp 2Mbyte-file foo; sync; date
+
+On 2.6.32 and earler, the time between the two dates was around 3 seconds.
+On linux-omap master it is around 14 seconds. Ouch!
+
+At first I thought the problem was due to changes in the OMAP nand drivers, 
+but raw randwrite speed is actually a bit faster. This suggest the finger 
+should be pointed at ubi or ubifs.
+
+I then thought that perhaps the layout of my ubinized image might be a 
+contributing factor so I erased the partition, ubiformatted and ubimkvoled. 
+The problem persisted,
+
+Any suggestions as to what might be broken or how to debug this deeper?
+
+Thanks
+
+Charles
