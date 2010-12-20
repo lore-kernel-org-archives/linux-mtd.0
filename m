@@ -1,18 +1,21 @@
-Received: from smtp.scorch.co.nz ([27.110.127.199] helo=scorch.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PURZs-00042j-Tz
-	for linux-mtd@lists.infradead.org; Sun, 19 Dec 2010 22:18:06 +0000
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org,
- linux-omap@vger.kernel.org
-Subject: UBIFS not mounting on linux-omap 2.6.36
-Date: Mon, 20 Dec 2010 11:18:01 +1300
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PUbsQ-0007J1-5o
+	for linux-mtd@lists.infradead.org; Mon, 20 Dec 2010 09:18:00 +0000
+Date: Mon, 20 Dec 2010 10:15:39 +0100
+From: Anatolij Gustschin <agust@denx.de>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH v2 1/6] mtd: add writebufsize field to mtd_info struct
+Message-ID: <20101220101539.62f05a61@wker>
+In-Reply-To: <1292780731.13362.16.camel@koala>
+References: <292342500.2538.65.camel@localhost>
+	<1292539339-25111-2-git-send-email-agust@denx.de>
+	<1292780731.13362.16.camel@koala>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201012201118.01766.manningc2@actrix.gen.nz>
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,111 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All
+On Sun, 19 Dec 2010 19:45:31 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-I am trying to nail down an omap3 ubifs  performance regression, but cannot 
-get Steve Sakoman's 2.6.35 or 2.6.36 kernels
-http://www.sakoman.com/cgi-bin/gitweb.cgi?p=linux-omap-2.6.git
- to mount ubifs although the same procedure works with older kernels and works 
-with the linux-omap 2.6.37 master.
+> I've tweaked your commentary a bit and pushed to l2-mtd-2.6.git, please,
+> check.
 
-Any hints?
+It is ok. Thanks!
 
-Thanks
-
-Charles
-
-
-The NAND had been initilised with:
-
-ubiformat /dev/mtd4 -s 512
-
-ubimkvol /dev/ubi0 -m -N foo
-
-Herewith log
-
-root@omap3-multi:~# ubiattach /dev/ubi_ctrl -m4 -d4
-UBI: attaching mtd4 to ubi4
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    129024 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          512 (aligned 512)
-UBI: data offset:                2048
-UBI: max. sequence number:       2
-UBI: attached mtd4 to ubi4
-UBI: MTD device name:            "rootfs"
-UBI: MTD device size:            249 MiB
-UBI: number of good PEBs:        1996
-UBI: number of bad PEBs:         0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 1996
-UBI: number of PEBs reserved for bad PEB handling: 19
-UBI: max/mean erase counter: 8195/11
-UBI: image sequence number:  1842873171
-UBI: background thread "ubi_bgt4d" started, PID 407
-UBI device number 4, total 1996 LEBs (257531904 bytes, 245.6 MiB), available 0 
-LEBs (0 bytes), LEB size 129024 bytes (126.0 KiB)
-root@omap3-multi:~# dmesg
-...
-UBI: attaching mtd4 to ubi4
-UBI: physical eraseblock size:   131072 bytes (128 KiB)
-UBI: logical eraseblock size:    129024 bytes
-UBI: smallest flash I/O unit:    2048
-UBI: sub-page size:              512
-UBI: VID header offset:          512 (aligned 512)
-UBI: data offset:                2048
-UBI: max. sequence number:       2
-UBI: attached mtd4 to ubi4
-UBI: MTD device name:            "rootfs"
-UBI: MTD device size:            249 MiB
-UBI: number of good PEBs:        1996
-UBI: number of bad PEBs:         0
-UBI: max. allowed volumes:       128
-UBI: wear-leveling threshold:    4096
-UBI: number of internal volumes: 1
-UBI: number of user volumes:     1
-UBI: available PEBs:             0
-UBI: total number of reserved PEBs: 1996
-UBI: number of PEBs reserved for bad PEB handling: 19
-UBI: max/mean erase counter: 8195/11
-UBI: image sequence number:  1842873171
-UBI: background thread "ubi_bgt4d" started, PID 407
-
-root@omap3-multi:~# ubinfo -a              
-UBI version:                    1
-Count of UBI devices:           1
-UBI control device major/minor: 10:62
-Present UBI devices:            ubi4
-
-ubi4
-Volumes count:                           1
-Logical eraseblock size:                 129024 bytes, 126.0 KiB
-Total amount of logical eraseblocks:     1996 (257531904 bytes, 245.6 MiB)
-Amount of available logical eraseblocks: 0 (0 bytes)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  19
-Current maximum erase counter value:     8195
-Minimum input/output unit size:          2048 bytes
-Character device major/minor:            250:0
-Present volumes:                         0
-
-Volume ID:   0 (on ubi4)
-Type:        dynamic
-Alignment:   1
-Size:        1973 LEBs (254564352 bytes, 242.8 MiB)
-State:       OK
-Name:        foo
-Character device major/minor: 250:1
-root@omap3-multi:~# mount -t ubifs ubi4:foo ss/
-mount: ubi4:foo already mounted or ss/ busy
-root@omap3-multi:~# dmesg
-...
-UBIFS DBG (pid 429): ubifs_get_sb: name ubi4:foo, flags 0x0
-UBIFS DBG (pid 429): ubifs_get_sb: opened ubi4_0
-...
+Anatolij
