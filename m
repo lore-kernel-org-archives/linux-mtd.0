@@ -1,24 +1,21 @@
-Received: from mail-bw0-f43.google.com ([209.85.214.43])
+Received: from mail-fx0-f48.google.com ([209.85.161.48])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PV3TX-00027h-4b
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2010 14:46:03 +0000
-Received: by bwz14 with SMTP id 14so4402510bwz.30
+	id 1PV68R-0006c3-Kj
+	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2010 17:36:28 +0000
+Received: by fxm2 with SMTP id 2so4583770fxm.21
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Dec 2010 06:46:00 -0800 (PST)
-Subject: Re: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
+	Tue, 21 Dec 2010 09:36:25 -0800 (PST)
+Subject: Re: UBIFS not mounting on linux-omap 2.6.36
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: ext Guillaume LECERF <glecerf@gmail.com>
-In-Reply-To: <AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
-References: <292342500.2538.65.camel@localhost>
-	<1292539339-25111-3-git-send-email-agust@denx.de>
-	<AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
+To: Charles Manning <manningc2@actrix.gen.nz>
+In-Reply-To: <201012201118.01766.manningc2@actrix.gen.nz>
+References: <201012201118.01766.manningc2@actrix.gen.nz>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 21 Dec 2010 16:45:24 +0200
-Message-ID: <1292942724.2286.57.camel@localhost>
+Date: Tue, 21 Dec 2010 19:36:22 +0200
+Message-ID: <1292952982.13362.21.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, Anatolij Gustschin <agust@denx.de>,
-	linux-mtd@lists.infradead.org
+Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,29 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-12-20 at 17:36 +0100, ext Guillaume LECERF wrote:
-> Hello.
+On Mon, 2010-12-20 at 11:18 +1300, Charles Manning wrote:
+> Hi All
 > 
-> 2010/12/16 Anatolij Gustschin <agust@denx.de>:
-> > Initialize mtd->writebufsize to the value obtained
-> > by CFI query command at probe time.
-> >
-> > Signed-off-by: Anatolij Gustschin <agust@denx.de>
-> > ---
-> > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > @@ -428,6 +428,10 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
-> >        mtd->flags   = MTD_CAP_NORFLASH;
-> >        mtd->name    = map->name;
-> >        mtd->writesize = 1;
-> > +       mtd->writebufsize = 1 << cfi->cfiq->MaxBufWriteSize;
-> 
-> What about wbufsize initialized in cfi_amdstd_write_buffers() to
-> "cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize" ?
-> I don't know this piece of code, but I just wanted to point it to you.
+> I am trying to nail down an omap3 ubifs  performance regression, but cannot 
+> get Steve Sakoman's 2.6.35 or 2.6.36 kernels
+> http://www.sakoman.com/cgi-bin/gitweb.cgi?p=linux-omap-2.6.git
+>  to mount ubifs although the same procedure works with older kernels and works 
+> with the linux-omap 2.6.37 master.
 
-Yes, fair question, Anatolij?
+Well, the only hint I can give is some kind of bisecting, but probably
+you do not need such hint :-)
 
 -- 
 Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Artem Bityutskiy (Битюцкий Артём)
