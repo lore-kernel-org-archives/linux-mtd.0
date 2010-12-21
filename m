@@ -1,23 +1,25 @@
-Received: from mho-02-ewr.mailhop.org ([204.13.248.72])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PUqxQ-00026a-VR
-	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2010 01:24:07 +0000
-Date: Mon, 20 Dec 2010 17:23:52 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Subject: Re: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds
-	instead of nanoseconds
-Message-ID: <20101221012352.GI5941@atomide.com>
-References: <20101213122042.20685.52929.sendpatchset@ahunter-work.research.nokia.com>
-	<20101213122108.20685.1920.sendpatchset@ahunter-work.research.nokia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20101213122108.20685.1920.sendpatchset@ahunter-work.research.nokia.com>
-Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	Kyungmin Park <kyungmin.park@samsung.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Received: from mail-bw0-f43.google.com ([209.85.214.43])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PV3TX-00027h-4b
+	for linux-mtd@lists.infradead.org; Tue, 21 Dec 2010 14:46:03 +0000
+Received: by bwz14 with SMTP id 14so4402510bwz.30
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 21 Dec 2010 06:46:00 -0800 (PST)
+Subject: Re: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: ext Guillaume LECERF <glecerf@gmail.com>
+In-Reply-To: <AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
+References: <292342500.2538.65.camel@localhost>
+	<1292539339-25111-3-git-send-email-agust@denx.de>
+	<AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 21 Dec 2010 16:45:24 +0200
+Message-ID: <1292942724.2286.57.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, Anatolij Gustschin <agust@denx.de>,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Adrian Hunter <adrian.hunter@nokia.com> [101213 04:21]:
-> From c52e0cdeedffb7a0f9818ad3d6296d1f51b8669d Mon Sep 17 00:00:00 2001
-> From: Adrian Hunter <adrian.hunter@nokia.com>
-> Date: Thu, 9 Dec 2010 10:48:27 +0200
-> Subject: [PATCH 4/7] OMAP2/3: GPMC: put sync_clk value in picoseconds instead of nanoseconds
+On Mon, 2010-12-20 at 17:36 +0100, ext Guillaume LECERF wrote:
+> Hello.
 > 
-> The calculations done with sync_clk are anyway in picoseconds
-> and switching to picoseconds allows sync_clk values that are
-> not a whole number of nanoseconds - which is sometimes the
+> 2010/12/16 Anatolij Gustschin <agust@denx.de>:
+> > Initialize mtd->writebufsize to the value obtained
+> > by CFI query command at probe time.
+> >
+> > Signed-off-by: Anatolij Gustschin <agust@denx.de>
+> > ---
+> > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
+> > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+> > @@ -428,6 +428,10 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
+> >        mtd->flags   = MTD_CAP_NORFLASH;
+> >        mtd->name    = map->name;
+> >        mtd->writesize = 1;
+> > +       mtd->writebufsize = 1 << cfi->cfiq->MaxBufWriteSize;
+> 
+> What about wbufsize initialized in cfi_amdstd_write_buffers() to
+> "cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize" ?
+> I don't know this piece of code, but I just wanted to point it to you.
 
-Can you please post patches 4 - 5 of this series as separate
-patches and Cc linux-omap and linux-arm-kernel mailing lists?
+Yes, fair question, Anatolij?
 
-This is assuming patches 4 - 5 do not have dependencies to
-the other patches in the series..
-
-Thanks,
-
-Tony
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
