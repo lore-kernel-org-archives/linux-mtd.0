@@ -1,29 +1,21 @@
-Received: from mail-bw0-f43.google.com ([209.85.214.43])
+Received: from mail-fx0-f48.google.com ([209.85.161.48])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PVPsd-0000xc-5b
-	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2010 14:41:27 +0000
-Received: by bwz14 with SMTP id 14so5515295bwz.30
+	id 1PVPv1-0001CG-IM
+	for linux-mtd@lists.infradead.org; Wed, 22 Dec 2010 14:43:56 +0000
+Received: by fxm2 with SMTP id 2so5664657fxm.21
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 22 Dec 2010 06:41:25 -0800 (PST)
-Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
+	Wed, 22 Dec 2010 06:43:54 -0800 (PST)
+Subject: Re: Huge ubi or ubifs sync slowdown since 2.6.32
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jason Lunz <lunz@acm.org>
-In-Reply-To: <20101220140454.GA26229@falooley.org>
-References: <20101207072919.GA8511@falooley.org>
-	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
-	<20101207182012.GA10546@falooley.org>
-	<1292343878.2538.80.camel@localhost>
-	<20101214195124.GA6010@falooley.org> <20101216230110.65156c55@wker>
-	<20101217042759.GA3148@falooley.org> <1292777276.2140.1.camel@koala>
-	<20101219190720.GA16710@falooley.org> <1292844216.13362.19.camel@koala>
-	<20101220140454.GA26229@falooley.org>
+To: Charles Manning <manningc2@actrix.gen.nz>
+In-Reply-To: <201012211136.22254.manningc2@actrix.gen.nz>
+References: <201012211136.22254.manningc2@actrix.gen.nz>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 22 Dec 2010 16:40:42 +0200
-Message-ID: <1293028842.12773.15.camel@localhost>
+Date: Wed, 22 Dec 2010 16:43:12 +0200
+Message-ID: <1293028992.12773.18.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org,
-	lkml <linux-kernel@vger.kernel.org>
+Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,21 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2010-12-20 at 09:04 -0500, Jason Lunz wrote:
-> On Mon, Dec 20, 2010 at 01:23:36PM +0200, Artem Bityutskiy wrote:
-> > Ok, could you please re-sent the final patch with the commit message
-> > etc?
+On Tue, 2010-12-21 at 11:36 +1300, Charles Manning wrote:
+> Hi All
 > 
-> Sure, here's everything as a single patch.
+> I've been looking into a ubifs performance regression on linux-omap 2.6.37.
 > 
-> ------------------------------------->8
-> Allow parts of drivers/mtd to compile on uml by pushing the HAS_IOMEM
-> dependencies down closer to the parts of mtd that actually need it.
-> This allows enough of mtd to build to let jffs2 be used on uml.
+> My test is pretty simple, copy a 2Mbyte file and sync.
 > 
-> Signed-off-by: Jason Lunz <lunz@acm.org>
+> # sync; date; cp 2Mbyte-file foo; sync; date
+> 
+> On 2.6.32 and earler, the time between the two dates was around 3 seconds.
+> On linux-omap master it is around 14 seconds. Ouch!
+> 
+> At first I thought the problem was due to changes in the OMAP nand drivers, 
+> but raw randwrite speed is actually a bit faster. This suggest the finger 
+> should be pointed at ubi or ubifs.
+> 
+> I then thought that perhaps the layout of my ubinized image might be a 
+> contributing factor so I erased the partition, ubiformatted and ubimkvoled. 
+> The problem persisted,
+> 
+> Any suggestions as to what might be broken or how to debug this deeper?
 
-OK, taken this one, thanks.
+Can you try this on nandsim and see if there are still differences? You
+can make nandsim slower by injecting an udelay somewhere. Try this on
+your x86 host - this way you'll narrow this down to an OMAP-specific or
+platform-independent problem.
 
 -- 
 Best Regards,
