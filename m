@@ -1,24 +1,21 @@
-Received: from smtp.scorch.co.nz ([27.110.127.199] helo=scorch.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PVxvZ-0001Jd-1b
-	for linux-mtd@lists.infradead.org; Fri, 24 Dec 2010 03:02:46 +0000
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Ming Lei <tom.leiming@gmail.com>
-Subject: Re: Issue : jffs2 and ecc layout
-Date: Fri, 24 Dec 2010 16:02:36 +1300
-References: <ActfCy0cZc3bW9yIT5u5fx8oZO9GQw==>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B03560990E3@dbde02.ent.ti.com>
-	<AANLkTimJFsjLT15FA+TqDKzjvPXgxUAvovWpWKP3NCK4@mail.gmail.com>
-In-Reply-To: <AANLkTimJFsjLT15FA+TqDKzjvPXgxUAvovWpWKP3NCK4@mail.gmail.com>
+Received: from cnshjsmin03.alcatel-sbell.com.cn ([211.144.215.47])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PVyFV-0001c0-Hs
+	for linux-mtd@lists.infradead.org; Fri, 24 Dec 2010 03:23:22 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+	charset="koi8-r"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <201012241602.36582.manningc2@actrix.gen.nz>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Ghorai, Sukumar" <s-ghorai@ti.com>
+Subject: RE: UBIFS reboots issue
+Date: Fri, 24 Dec 2010 11:23:20 +0800
+Message-ID: <EF949E0CEB6551499A3643069FE41ACB034B6DFC@CNSHGSMBS01.ad4.ad.alcatel.com>
+In-Reply-To: <39A4B204C321D34DA3490E3B119D5A6C68BF77674A@SBS2008.wellsense.local>
+References: <39A4B204C321D34DA3490E3B119D5A6C68BF77673F@SBS2008.wellsense.local><1293049245.2051.4.camel@koala>
+	<39A4B204C321D34DA3490E3B119D5A6C68BF77674A@SBS2008.wellsense.local>
+From: "ZHOU Zhongjun" <Zhongjun.Zhou@alcatel-sbell.com.cn>
+To: "Boaz Ben-David" <boaz.bd@wellsense-tech.com>,
+	<linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 23 December 2010 21:24:35 Ming Lei wrote:
-> Hi,
->
-> 2010/9/28 Ghorai, Sukumar <s-ghorai@ti.com>:
-> > Hi,
-> > I was using the following ecc layout which is not working to mount the
-> > jffs2 File-system. I was in 2.6.32 kernel and working; but same layout =
-is
-> > not working with latest 2.6 kernel.
-> >
-> > Observation is that - no read request issued to the driver (say omap2.c=
-).
-> >
-> > # mount -t jffs2 /dev/mtdblock4 /mnt/nand
-> > [=A0=A0 32.505218] cannot read OOB for EB at 00000000, requested 8 byte=
-s,
-> > read 0 bytes, error -22 mount: Mounting /dev/mtdblock4 on /mnt/nand
-> > failed: Input/output error
->
-> I meet the issue too, kernel is  2.6.37-rc6-next-20101217+, and board is
-> beagle B5.
->
-> Is there any way to fix or workaround the issue?
->
->
-> thanks,
+Why do you not to use YAFFS2 for NAND flash?  It seems that Yaffs2 is =
+more popularity.
 
-THis might be due to the way the omap2.c driver is now screwed up so that i=
-t=20
-does not read when not u32 aligned.
 
-Try this:
-http://www.spinics.net/linux/lists/linux-omap/msg42422.html
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org =
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Boaz =
+Ben-David
+Sent: Thursday, December 23, 2010 8:52 PM
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBIFS reboots issue
 
-Please report back if that fixes the problem for you.
+I am using kernel 2.6.31 for iMX35 and I'm not sure what version of =
+UBIFS is patched in there.
+What do I need to do in order to patch to the latest version?=20
+Is is enough to clone UBIFS 2.6.31 and copy over the fs/ubifs and =
+mtd/ubi directories or are there any other directories I need to take =
+into account?
 
-=2D- Charles
+Thanks,
+
+Boaz.
+
+On Wed, 2010-12-22 at 22:20 +0200, Artem Bityutskiy wrote:
+> On Wed, 2010-12-22 at 16:36 +0200, Boaz Ben-David wrote:
+> > Hi all,
+> >=20
+> > We have an embedded system using a Samsung 2GB MLC NAND and are=20
+> > using UBIFS as the file system on it.
+> > I have a question regarding UBIFS and hard reboots.
+> > After some work with the flash (doing reads and writes to it), some=20
+> > times one of our partitions would fail to mount.
+> > I suspected this has something to do with a reboot which happens=20
+> > during a write to the flash.
+> > In order to test this I created a simple script which copies a file=20
+> > from to the partition, syncs, then deletes it and does this=20
+> > repeatedly until a hard reboot occurs (using the watch dog to cause =
+the boot).
+> > This process repeats itself until the partition fails to mount.
+> > When I performed the test mentioned above, after about 3-4 times the =
+
+> > partition would fail.
+> > I am not sure if this behaviour is normal or not.
+> > Did someone encounter similiar behaviour?
+>=20
+> Just curious, did you see this:
+>=20
+> http://linux-mtd.infradead.org/faq/ubifs.html#L_ubifs_mlc
+>=20
+> I do not think you can just use UBI/UBIFS on MLC as is, you'd need to=20
+> make sure MLC-specific behavior is handled properly.
+>=20
+> --
+> Best Regards,
+> Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
+>=20
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
