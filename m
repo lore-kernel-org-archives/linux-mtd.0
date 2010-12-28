@@ -1,29 +1,27 @@
-Received: from am1ehsobe002.messaging.microsoft.com ([213.199.154.205]
-	helo=AM1EHSOBE002.bigfish.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PX2Xd-0004Fd-V8
-	for linux-mtd@lists.infradead.org; Mon, 27 Dec 2010 02:10:31 +0000
-From: Liu Hui-R64343 <r64343@freescale.com>
-To: Ming Lei <tom.leiming@gmail.com>, "David.Woodhouse@intel.com"
-	<David.Woodhouse@intel.com>
-Subject: RE: Issue : jffs2 and ecc layout
-Date: Mon, 27 Dec 2010 02:12:10 +0000
-Message-ID: <2CF7613B9822A943BEF13EF7ACEC5BD106D221@039-SN1MPN1-001.039d.mgd.msft.net>
-References: <2A3DCF3DA181AD40BDE86A3150B27B6B03560990E3@dbde02.ent.ti.com>
-	<AANLkTimJFsjLT15FA+TqDKzjvPXgxUAvovWpWKP3NCK4@mail.gmail.com>
-	<201012241602.36582.manningc2@actrix.gen.nz>
-	<AANLkTi=DfzP5mkwJ3zWePSp+gthWV-OT1_kBVFtkpNWU@mail.gmail.com>
-	<AANLkTi=YM2ONPfA9g4tFDQcJwfstGi_FLsrXTEcyby7b@mail.gmail.com>
-	<AANLkTikNP4HU3cHHQXjSBCXqxz0ES1AhCZpt3ZqKu9KT@mail.gmail.com>
-In-Reply-To: <AANLkTikNP4HU3cHHQXjSBCXqxz0ES1AhCZpt3ZqKu9KT@mail.gmail.com>
+Received: from out10.bezeqint.net ([192.115.188.217])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PXbmG-000569-Qy
+	for linux-mtd@lists.infradead.org; Tue, 28 Dec 2010 15:47:58 +0000
+Received: from mail.wellsense-tech.com (bzq-218-140-171.cablep.bezeqint.net
+	[81.218.140.171])
+	by out10.bezeqint.net (Postfix) with ESMTPA id E680E3A0193
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Dec 2010 17:47:50 +0200 (IST)
+From: Boaz Ben-David <boaz.bd@wellsense-tech.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 28 Dec 2010 17:47:49 +0200
+Subject: RE: UBIFS reboots issue
+Message-ID: <39A4B204C321D34DA3490E3B119D5A6C68BF776758@SBS2008.wellsense.local>
+References: <39A4B204C321D34DA3490E3B119D5A6C68BF77673F@SBS2008.wellsense.local>
+	<1293049245.2051.4.camel@koala>
+	<39A4B204C321D34DA3490E3B119D5A6C68BF77674A@SBS2008.wellsense.local> ,
+	<EF949E0CEB6551499A3643069FE41ACB034B6DFC@CNSHGSMBS01.ad4.ad.alcatel.com>
+	<39A4B204C321D34DA3490E3B119D5A6C68BF77573E@SBS2008.wellsense.local>
+In-Reply-To: <39A4B204C321D34DA3490E3B119D5A6C68BF77573E@SBS2008.wellsense.local>
 Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Cc: Charles Manning <manningc2@actrix.gen.nz>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Ghorai, Sukumar" <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,68 +31,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Ming,=20
-Yes, this patch has some issues and Artem has reverted it.
-This patch is intent to fix the mtd_oobtest, step 4 issue, but it's wrong.
-Please revert it. Sorry for that.
-
-
-Best Regards,
-Jason Liu
-
-
->-----Original Message-----
->From: Ming Lei [mailto:tom.leiming@gmail.com]
->Sent: Friday, December 24, 2010 10:11 PM
->To: Liu Hui-R64343; David.Woodhouse@intel.com
->Cc: Ghorai, Sukumar; linux-mtd@lists.infradead.org; linux-
->omap@vger.kernel.org; Charles Manning
->Subject: Re: Issue : jffs2 and ecc layout
->
->Hi Jason,
->
->2010/12/24 Ming Lei <tom.leiming@gmail.com>:
->> 2010/12/24 Ming Lei <tom.leiming@gmail.com>:
->>> Hi,
->>>
->>> 2010/12/24 Charles Manning <manningc2@actrix.gen.nz>:
->>>
->>>> THis might be due to the way the omap2.c driver is now screwed up so
->>>> that it does not read when not u32 aligned.
->>>>
->>>> Try this:
->>>> http://www.spinics.net/linux/lists/linux-omap/msg42422.html
->>>>
->>>> Please report back if that fixes the problem for you.
->>>
->>> No, the patch doesn't fix the issue.
->>
->> #mount -t jffs2 /dev/mtdblock4 /mnt/cf
->>
->> mount: /dev/mtdblock4: can't read superblock
->>
->> [ =A0 41.216796] nand_do_read_oob: Attempt to read past end of page [
->> 41.216827] cannot read OOB for EB at 00000000, requested 152 bytes,
->> read 0 bytes, error -22
->
->When I revert the patch below from Jason,
->
->       http://marc.info/?l=3Dlinux-kernel&m=3D129015697513966&w=3D2
->
->mount will be OK but with some info printed, see below:
->
->root@beagleboard:~# mount -t jffs2 /dev/mtdblock4 /mnt/cf
->[   39.662963] JFFS2 notice: (1324) jffs2_build_xattr_subsystem:
->complete building xattr subsystem, 0
->of xdatum (0 unchecked, 0 orphan) and 0 of xref (0 dead, 0 orphan) found.
->
->#mount
->......
->/dev/mtdblock4 on /media/cf type jffs2 (rw,relatime)
->
->So seems the patch from Jason does cause the issue, maybe should be
->dropped or fixed further.
->
->thanks,
->--
->Lei Ming
+SSdtIHNvcnJ5IGZvciBjaGFuZ2luZyB0aGUgdGhyZWFkIHN1YmplY3QgaW4gdGhlIHByZXZpb3Vz
+IG1haWwuLgoKSSBndWVzcyBpdCBzdW1zIHVwIHRvIG9uZSBtYWluIHF1ZXN0aW9uIChhbmQgSSB3
+b3VsZCBiZSB2ZXJ5IGdyZWF0ZnVsIGlmCnNvbWVvbmUgY291bGQgYW5zd2VyKToKCglPdmVyYWxs
+LCBmb3IgdXNlIG9uIE1MQyBOQU5ELCBpcyBVQklGUyBvciBKRkZTMiBtb3JlIHN1aXRhYmxlPwoJ
+RnJvbSB3aGF0IEkgdW5kZXJzdGFuZCwgSkZGUzIgZG9lc24ndCBkbyB3ZWFyLWxldmVsaW5nIHZl
+cnkKCWdvb2Qgd2hpY2ggd2lsbCBzaG9ydGVuIHRoZSBmbGFzaCBsaWZldGltZSwgYnV0IG9uIHRo
+ZSBvdGhlcgoJaGFuZCwgYXMgQXJ0ZW0gc2FpZCBhbmQgaXMgd3JpdHRlbiBpbiB0aGUgVUJJRlMg
+d2ViLXNpdGUsIFVCSUZTCgluZWVkcyBzb21lIHdvcmsgdG8gYmUgdXNlZCBvbiBNTEMuIAoKT24g
+YW5vdGhlciBub3RlLCBJIHdvdWxkIGxpa2UgdG8gYWxzbyB0cnkgeWFmZnMyIGJ1dCBJIGNhbid0
+IGdldCBpdCB0bwp3b3JrIChjYW4ndCBzZWVtIHRvIGNyZWF0ZSBhbnkgZmlsZXMpLiBEb2VzIGFu
+eW9uZSBoYXMgYW55IGV4cGVyaWVuY2UKdXNpbmcgaXQgb24gdGhlIEZyZWVzY2FsZSBpTVgzNSBQ
+REs/CgpUaGFua3MuCgoKCk9uIEZyaSwgMjAxMC0xMi0yNCBhdCAxMjo0MCArMDIwMCwgQm9heiBC
+ZW4tRGF2aWQgd3JvdGU6Cj4gSSB3b3VsZCB2ZXJ5IG11Y2ggd2FudCB0byB0cnkgeWFmZnMyLiBJ
+IGNsb25lZCB0aGUgZ2l0IHJlcG8gYW5kIHBhdGNoZWQgbXkga2VybmVsIHVzaW5nIHRoZSBzY3Jp
+cHQgcHJvdmlkZWQKPiB3aXRoIHRoZSB5YWZmcyBjb2RlLiBUaGUga2VybmVsIGNvbXBpbGVkIHdp
+dGggbm8gZXJyb3JzIGJ1dCBhZnRlciBJIG1vdW50ZWQgYSB5YWZmcyBwYXJ0aXRpb24gSSBjb3Vs
+ZCBub3QgY3JlYXRlIGFueSBuZXcgZmlsZXMgb24gaXQuCj4gRWFjaCB0aW1lIEkgdHJ5IHRvIGNy
+ZWF0ZSBhIGZpbGUgb24gdGhlIHBhcnRpdGlvbiBJIGdldCAiY2Fubm90IGFsbG9jYXRlIG1lbW9y
+eSIsLCwKPiBJIGhhdmVuJ3QgaGFkIG11Y2ggdGltZSB0byBpbnZlc3RpZ2F0ZSB0aGlzIHNvIGlm
+IGFueW9uZSBoYXMgYW55IGlkZWEgd2h5IHRoaXMgaXMgaGFwcGVuaW5nLCB0aGlzIGlzIGFsc28g
+YSB2ZXJ5IGdvb2QgZGlyZWN0aW9uIGZvciBtZSB0byBnbyB3aXRoICh1c2luZyB5YWZmcykuCj4g
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEZyb206IFpIT1UgWmhv
+bmdqdW4gW1pob25nanVuLlpob3VAYWxjYXRlbC1zYmVsbC5jb20uY25dCj4gU2VudDogRnJpZGF5
+LCBEZWNlbWJlciAyNCwgMjAxMCA1OjIzIEFNCj4gVG86IEJvYXogQmVuLURhdmlkOyBsaW51eC1t
+dGRAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IFN1YmplY3Q6IFJFOiBVQklGUyByZWJvb3RzIGlzc3Vl
+Cj4gCj4gV2h5IGRvIHlvdSBub3QgdG8gdXNlIFlBRkZTMiBmb3IgTkFORCBmbGFzaD8gIEl0IHNl
+ZW1zIHRoYXQgWWFmZnMyIGlzIG1vcmUgcG9wdWxhcml0eS4KPiAKPiAKPiAtLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQo+IEZyb206IGxpbnV4LW10ZC1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5v
+cmcgW21haWx0bzpsaW51eC1tdGQtYm91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnXSBPbiBCZWhh
+bGYgT2YgQm9heiBCZW4tRGF2aWQKPiBTZW50OiBUaHVyc2RheSwgRGVjZW1iZXIgMjMsIDIwMTAg
+ODo1MiBQTQo+IFRvOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IFN1YmplY3Q6IFJl
+OiBVQklGUyByZWJvb3RzIGlzc3VlCj4gCj4gSSBhbSB1c2luZyBrZXJuZWwgMi42LjMxIGZvciBp
+TVgzNSBhbmQgSSdtIG5vdCBzdXJlIHdoYXQgdmVyc2lvbiBvZiBVQklGUyBpcyBwYXRjaGVkIGlu
+IHRoZXJlLgo+IFdoYXQgZG8gSSBuZWVkIHRvIGRvIGluIG9yZGVyIHRvIHBhdGNoIHRvIHRoZSBs
+YXRlc3QgdmVyc2lvbj8KPiBJcyBpcyBlbm91Z2ggdG8gY2xvbmUgVUJJRlMgMi42LjMxIGFuZCBj
+b3B5IG92ZXIgdGhlIGZzL3ViaWZzIGFuZCBtdGQvdWJpIGRpcmVjdG9yaWVzIG9yIGFyZSB0aGVy
+ZSBhbnkgb3RoZXIgZGlyZWN0b3JpZXMgSSBuZWVkIHRvIHRha2UgaW50byBhY2NvdW50Pwo+IAo+
+IFRoYW5rcywKPiAKPiBCb2F6Lgo+IAo+IE9uIFdlZCwgMjAxMC0xMi0yMiBhdCAyMjoyMCArMDIw
+MCwgQXJ0ZW0gQml0eXV0c2tpeSB3cm90ZToKPiA+IE9uIFdlZCwgMjAxMC0xMi0yMiBhdCAxNjoz
+NiArMDIwMCwgQm9heiBCZW4tRGF2aWQgd3JvdGU6Cj4gPiA+IEhpIGFsbCwKPiA+ID4KPiA+ID4g
+V2UgaGF2ZSBhbiBlbWJlZGRlZCBzeXN0ZW0gdXNpbmcgYSBTYW1zdW5nIDJHQiBNTEMgTkFORCBh
+bmQgYXJlCj4gPiA+IHVzaW5nIFVCSUZTIGFzIHRoZSBmaWxlIHN5c3RlbSBvbiBpdC4KPiA+ID4g
+SSBoYXZlIGEgcXVlc3Rpb24gcmVnYXJkaW5nIFVCSUZTIGFuZCBoYXJkIHJlYm9vdHMuCj4gPiA+
+IEFmdGVyIHNvbWUgd29yayB3aXRoIHRoZSBmbGFzaCAoZG9pbmcgcmVhZHMgYW5kIHdyaXRlcyB0
+byBpdCksIHNvbWUKPiA+ID4gdGltZXMgb25lIG9mIG91ciBwYXJ0aXRpb25zIHdvdWxkIGZhaWwg
+dG8gbW91bnQuCj4gPiA+IEkgc3VzcGVjdGVkIHRoaXMgaGFzIHNvbWV0aGluZyB0byBkbyB3aXRo
+IGEgcmVib290IHdoaWNoIGhhcHBlbnMKPiA+ID4gZHVyaW5nIGEgd3JpdGUgdG8gdGhlIGZsYXNo
+Lgo+ID4gPiBJbiBvcmRlciB0byB0ZXN0IHRoaXMgSSBjcmVhdGVkIGEgc2ltcGxlIHNjcmlwdCB3
+aGljaCBjb3BpZXMgYSBmaWxlCj4gPiA+IGZyb20gdG8gdGhlIHBhcnRpdGlvbiwgc3luY3MsIHRo
+ZW4gZGVsZXRlcyBpdCBhbmQgZG9lcyB0aGlzCj4gPiA+IHJlcGVhdGVkbHkgdW50aWwgYSBoYXJk
+IHJlYm9vdCBvY2N1cnMgKHVzaW5nIHRoZSB3YXRjaCBkb2cgdG8gY2F1c2UgdGhlIGJvb3QpLgo+
+ID4gPiBUaGlzIHByb2Nlc3MgcmVwZWF0cyBpdHNlbGYgdW50aWwgdGhlIHBhcnRpdGlvbiBmYWls
+cyB0byBtb3VudC4KPiA+ID4gV2hlbiBJIHBlcmZvcm1lZCB0aGUgdGVzdCBtZW50aW9uZWQgYWJv
+dmUsIGFmdGVyIGFib3V0IDMtNCB0aW1lcyB0aGUKPiA+ID4gcGFydGl0aW9uIHdvdWxkIGZhaWwu
+Cj4gPiA+IEkgYW0gbm90IHN1cmUgaWYgdGhpcyBiZWhhdmlvdXIgaXMgbm9ybWFsIG9yIG5vdC4K
+PiA+ID4gRGlkIHNvbWVvbmUgZW5jb3VudGVyIHNpbWlsaWFyIGJlaGF2aW91cj8KPiA+Cj4gPiBK
+dXN0IGN1cmlvdXMsIGRpZCB5b3Ugc2VlIHRoaXM6Cj4gPgo+ID4gaHR0cDovL2xpbnV4LW10ZC5p
+bmZyYWRlYWQub3JnL2ZhcS91Ymlmcy5odG1sI0xfdWJpZnNfbWxjCj4gPgo+ID4gSSBkbyBub3Qg
+dGhpbmsgeW91IGNhbiBqdXN0IHVzZSBVQkkvVUJJRlMgb24gTUxDIGFzIGlzLCB5b3UnZCBuZWVk
+IHRvCj4gPiBtYWtlIHN1cmUgTUxDLXNwZWNpZmljIGJlaGF2aW9yIGlzIGhhbmRsZWQgcHJvcGVy
+bHkuCj4gPgo+ID4gLS0KPiA+IEJlc3QgUmVnYXJkcywKPiA+IEFydGVtIEJpdHl1dHNraXkgKNCR
+0LjRgtGO0YbQutC40Lkg0JDRgNGC0ZHQvCkKPiA+Cj4gCj4gX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24g
+bWFpbGluZyBsaXN0Cj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9saW51eC1tdGQvCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cj4gaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCgo=
