@@ -1,12 +1,26 @@
-From: Sukumar Ghorai <s-ghorai@ti.com>
-To: linux-omap@vger.kernel.org
-Subject: [PATCH v7 3/7] omap: gpmc: enable irq mode in gpmc
-Date: Wed, 29 Dec 2010 19:02:22 +0530
-Message-Id: <1293629546-18831-4-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1293629546-18831-1-git-send-email-s-ghorai@ti.com>
-References: <1293629546-18831-1-git-send-email-s-ghorai@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Sukumar Ghorai <s-ghorai@ti.com>
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PY2bt-0003gj-In
+	for linux-mtd@lists.infradead.org; Wed, 29 Dec 2010 20:27:03 +0000
+Received: by qyk27 with SMTP id 27so12251939qyk.15
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Dec 2010 12:26:59 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1012171555320.7024@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1012150855090.6187@lnxricardw.se.axis.com>
+	<Pine.LNX.4.64.1012151129250.7024@lnxricardw.se.axis.com>
+	<1292516775.2364.108.camel@localhost>
+	<Pine.LNX.4.64.1012171036510.7024@lnxricardw.se.axis.com>
+	<1292591069.2412.25.camel@localhost>
+	<Pine.LNX.4.64.1012171555320.7024@lnxricardw.se.axis.com>
+Date: Wed, 29 Dec 2010 13:26:58 -0700
+Message-ID: <AANLkTi=_FUG2_SO5yKn1Sj9ksi6DzTw7W=zS9jujNjtV@mail.gmail.com>
+Subject: Re: Static UBI volumes and ubiupdatevol ?
+From: Russ Dill <russ.dill@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,544 +30,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add support the irq mode in GPMC.
-gpmc_init() function move after omap_init_irq() as it has dependecy on irq.
+On Fri, Dec 17, 2010 at 8:02 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Fri, 17 Dec 2010, Artem Bityutskiy wrote:
+>
+>>>>> With a system based on mtd+jffs2 it is actually possible to reflash the
+>>>>> partition with the [read only] root file system on it without
+>>>>> unmounting,
+>>>>> as long as no accesses are made to the physical flash during the
+>>>>> rewrite
+>>>>> or afterwards. In other words, immediately after reflashing the system
+>>>>> must be rebooted.
+>>>>
+>>>> Hmm, I presume you can do this with UBIFS, but you need to make sure all
+>>>> the backgound stuff like moving and eraseing eraseblocs is done before
+>>>> doing this by doing fsync() on your /dev/ubiX_Y device (UBI volume
+>>>> character device), see the 'vol_cdev_fsync()' function. Ah, and of
+>>>> course you need to sync UBIFS before this.
+>>>>
+>>>> Then if you can guarantee that no one is reading writing to it, you can
+>>>> change the flash.
+>>>
+>>> It would be nice to use ubiupdatevol to do this, but it won't let me do
+>>> that if the volume is mounted (naturally). I don't know if this is
+>>> something that is enforced by ubiupdatevol or ubi. I would assume the
+>>> latter but I haven't checked the code.
+>>>
+>>> Of course I could always write my own "ubiupdatevol" to deal with this
+>>> but
+>>> it's always nice to use existing and supported tools.
+>>
+>> This is UBI - it does not allow updating if someone keeps the volume
+>> open. When UBI is mounted, it keeps the volume open. It closes the
+>> volume when unmounted.
+>
+> Yes, it make definitely makes sense to have it work this way to avoid
+> problems.
+>
+>> It looks error-prone to allow updating while there are users, from UBI
+>> POW, I think.
+>
+> I agree. It just happens to be the way our firmware update process works
+> currently ... :-)
+>
+>> And I cannot think of a nice way of doing this.
+>>
+>> Why can't you just
+>> 1. lazily unmount UBIFS
+>> 2. find all users of UBIFS and kill them
+>> 3. this will make UBIFS finally unmount
+>> 4. you safely update the UBI volume
+>
+> The problem is that in this case it is our root file system which is to be
+> reflashed, so we can't just unmount it. I have an idea about using
+> pivot_root though, in a similar manner to the way the root file system is
+> switched from initrd to disk during an ordinary Linux boot with initrd.
+>
+> Something like
+> 1. Close down everything.
+> 2. Create a tmpfs and mount it.
+> 3. Copy all necessary binaries and libraries to the tmpfs.
+> 4. Use pivot_root to switch root file systems.
+> 5. Unmount the original (UBIFS) root file system.
+> 6. Rewrite the root file system using ubiupdatevol.
+> 7. Reboot.
+>
+> Right now I'm stumped at how to restart init in order for it to relase its
+> stdin,stdout and stderr, which still refer to the (old) /dev/console, but
+> there must be a solution somehow as the same situation must occur with an
+> ordinary (initrd) kernel booting.
+>
 
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
----
- arch/arm/mach-omap2/board-2430sdp.c        |    1 +
- arch/arm/mach-omap2/board-3430sdp.c        |    1 +
- arch/arm/mach-omap2/board-3630sdp.c        |    1 +
- arch/arm/mach-omap2/board-4430sdp.c        |    2 +
- arch/arm/mach-omap2/board-am3517evm.c      |    2 +
- arch/arm/mach-omap2/board-apollon.c        |    1 +
- arch/arm/mach-omap2/board-cm-t35.c         |    1 +
- arch/arm/mach-omap2/board-devkit8000.c     |    1 +
- arch/arm/mach-omap2/board-generic.c        |    2 +
- arch/arm/mach-omap2/board-h4.c             |    1 +
- arch/arm/mach-omap2/board-igep0020.c       |    1 +
- arch/arm/mach-omap2/board-ldp.c            |    1 +
- arch/arm/mach-omap2/board-n8x0.c           |    2 +
- arch/arm/mach-omap2/board-omap3beagle.c    |    1 +
- arch/arm/mach-omap2/board-omap3evm.c       |    2 +
- arch/arm/mach-omap2/board-omap3pandora.c   |    2 +
- arch/arm/mach-omap2/board-omap3stalker.c   |    1 +
- arch/arm/mach-omap2/board-omap3touchbook.c |    1 +
- arch/arm/mach-omap2/board-omap4panda.c     |    2 +
- arch/arm/mach-omap2/board-overo.c          |    1 +
- arch/arm/mach-omap2/board-rx51.c           |    1 +
- arch/arm/mach-omap2/board-zoom2.c          |    2 +
- arch/arm/mach-omap2/board-zoom3.c          |    2 +
- arch/arm/mach-omap2/gpmc.c                 |   39 ++++++++++++++++++++++++++-
- arch/arm/mach-omap2/io.c                   |    2 -
- arch/arm/plat-omap/include/plat/gpmc.h     |    4 +++
- arch/arm/plat-omap/include/plat/irqs.h     |    9 +++++-
- 27 files changed, 81 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm/mach-omap2/board-2430sdp.c b/arch/arm/mach-omap2/board-2430sdp.c
-index b527f8d..11c89dc 100644
---- a/arch/arm/mach-omap2/board-2430sdp.c
-+++ b/arch/arm/mach-omap2/board-2430sdp.c
-@@ -145,6 +145,7 @@ static void __init omap_2430sdp_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(sdp2430_config);
- 	omap2_init_common_hw(NULL, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
-index 470872e..690fecd 100644
---- a/arch/arm/mach-omap2/board-3430sdp.c
-+++ b/arch/arm/mach-omap2/board-3430sdp.c
-@@ -328,6 +328,7 @@ static void __init omap_3430sdp_init_irq(void)
- 	omap3_pm_init_cpuidle(omap3_cpuidle_params_table);
- 	omap2_init_common_hw(hyb18m512160af6_sdrc_params, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-3630sdp.c b/arch/arm/mach-omap2/board-3630sdp.c
-index 0a74141..46c1755 100644
---- a/arch/arm/mach-omap2/board-3630sdp.c
-+++ b/arch/arm/mach-omap2/board-3630sdp.c
-@@ -77,6 +77,7 @@ static void __init omap_sdp_init_irq(void)
- 	omap2_init_common_hw(h8mbx00u0mer0em_sdrc_params,
- 			h8mbx00u0mer0em_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-4430sdp.c b/arch/arm/mach-omap2/board-4430sdp.c
-index df5a425..8d15604 100644
---- a/arch/arm/mach-omap2/board-4430sdp.c
-+++ b/arch/arm/mach-omap2/board-4430sdp.c
-@@ -34,6 +34,7 @@
- #include <plat/common.h>
- #include <plat/usb.h>
- #include <plat/mmc.h>
-+#include <plat/gpmc.h>
- 
- #include "hsmmc.h"
- #include "timer-gp.h"
-@@ -222,6 +223,7 @@ static void __init omap_4430sdp_init_irq(void)
- 	omap2_gp_clockevent_set_gptimer(1);
- #endif
- 	gic_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-am3517evm.c b/arch/arm/mach-omap2/board-am3517evm.c
-index 0739950..460e3d1 100644
---- a/arch/arm/mach-omap2/board-am3517evm.c
-+++ b/arch/arm/mach-omap2/board-am3517evm.c
-@@ -35,6 +35,7 @@
- #include <plat/common.h>
- #include <plat/usb.h>
- #include <plat/display.h>
-+#include <plat/gpmc.h>
- 
- #include "mux.h"
- #include "control.h"
-@@ -392,6 +393,7 @@ static void __init am3517_evm_init_irq(void)
- 
- 	omap2_init_common_hw(NULL, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-apollon.c b/arch/arm/mach-omap2/board-apollon.c
-index 2c6db1a..8264e7a 100644
---- a/arch/arm/mach-omap2/board-apollon.c
-+++ b/arch/arm/mach-omap2/board-apollon.c
-@@ -280,6 +280,7 @@ static void __init omap_apollon_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(apollon_config);
- 	omap2_init_common_hw(NULL, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- 	apollon_init_smc91x();
- }
-diff --git a/arch/arm/mach-omap2/board-cm-t35.c b/arch/arm/mach-omap2/board-cm-t35.c
-index 63f764e..7c9a834 100644
---- a/arch/arm/mach-omap2/board-cm-t35.c
-+++ b/arch/arm/mach-omap2/board-cm-t35.c
-@@ -686,6 +686,7 @@ static void __init cm_t35_init_irq(void)
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-devkit8000.c b/arch/arm/mach-omap2/board-devkit8000.c
-index 53ac762..f82d3b7 100644
---- a/arch/arm/mach-omap2/board-devkit8000.c
-+++ b/arch/arm/mach-omap2/board-devkit8000.c
-@@ -447,6 +447,7 @@ static void __init devkit8000_init_irq(void)
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- #ifdef CONFIG_OMAP_32K_TIMER
- 	omap2_gp_clockevent_set_gptimer(12);
- #endif
-diff --git a/arch/arm/mach-omap2/board-generic.c b/arch/arm/mach-omap2/board-generic.c
-index b1c2c9a..0b0d2cb 100644
---- a/arch/arm/mach-omap2/board-generic.c
-+++ b/arch/arm/mach-omap2/board-generic.c
-@@ -29,6 +29,7 @@
- #include <plat/usb.h>
- #include <plat/board.h>
- #include <plat/common.h>
-+#include <plat/gpmc.h>
- 
- static struct omap_board_config_kernel generic_config[] = {
- };
-@@ -39,6 +40,7 @@ static void __init omap_generic_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(generic_config);
- 	omap2_init_common_hw(NULL, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- }
- 
- static void __init omap_generic_init(void)
-diff --git a/arch/arm/mach-omap2/board-h4.c b/arch/arm/mach-omap2/board-h4.c
-index 929993b..41b04c4 100644
---- a/arch/arm/mach-omap2/board-h4.c
-+++ b/arch/arm/mach-omap2/board-h4.c
-@@ -293,6 +293,7 @@ static void __init omap_h4_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(h4_config);
- 	omap2_init_common_hw(NULL, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- 	h4_init_flash();
- }
-diff --git a/arch/arm/mach-omap2/board-igep0020.c b/arch/arm/mach-omap2/board-igep0020.c
-index 5e035a5..c4de273 100644
---- a/arch/arm/mach-omap2/board-igep0020.c
-+++ b/arch/arm/mach-omap2/board-igep0020.c
-@@ -497,6 +497,7 @@ static void __init igep2_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(igep2_config);
- 	omap2_init_common_hw(m65kxxxxam_sdrc_params, m65kxxxxam_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-ldp.c b/arch/arm/mach-omap2/board-ldp.c
-index b088b1d..489f40d 100644
---- a/arch/arm/mach-omap2/board-ldp.c
-+++ b/arch/arm/mach-omap2/board-ldp.c
-@@ -294,6 +294,7 @@ static void __init omap_ldp_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(ldp_config);
- 	omap2_init_common_hw(NULL, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- 	ldp_init_smsc911x();
- }
-diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
-index e823c70..4f7c714 100644
---- a/arch/arm/mach-omap2/board-n8x0.c
-+++ b/arch/arm/mach-omap2/board-n8x0.c
-@@ -33,6 +33,7 @@
- #include <plat/onenand.h>
- #include <plat/mmc.h>
- #include <plat/serial.h>
-+#include <plat/gpmc.h>
- 
- #include "mux.h"
- 
-@@ -641,6 +642,7 @@ static void __init n8x0_init_irq(void)
- {
- 	omap2_init_common_hw(NULL, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
-index 14f4224..a83c3f3 100644
---- a/arch/arm/mach-omap2/board-omap3beagle.c
-+++ b/arch/arm/mach-omap2/board-omap3beagle.c
-@@ -487,6 +487,7 @@ static void __init omap3_beagle_init_irq(void)
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- #ifdef CONFIG_OMAP_32K_TIMER
- 	omap2_gp_clockevent_set_gptimer(12);
- #endif
-diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
-index b04365c..21cc9e5 100644
---- a/arch/arm/mach-omap2/board-omap3evm.c
-+++ b/arch/arm/mach-omap2/board-omap3evm.c
-@@ -43,6 +43,7 @@
- #include <plat/common.h>
- #include <plat/mcspi.h>
- #include <plat/display.h>
-+#include <plat/gpmc.h>
- 
- #include "mux.h"
- #include "sdram-micron-mt46h32m32lf-6.h"
-@@ -625,6 +626,7 @@ static void __init omap3_evm_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(omap3_evm_config);
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-omap3pandora.c b/arch/arm/mach-omap2/board-omap3pandora.c
-index 89ed1be..e095f1d 100644
---- a/arch/arm/mach-omap2/board-omap3pandora.c
-+++ b/arch/arm/mach-omap2/board-omap3pandora.c
-@@ -47,6 +47,7 @@
- #include <plat/mcspi.h>
- #include <plat/usb.h>
- #include <plat/display.h>
-+#include <plat/gpmc.h>
- #include <plat/nand.h>
- 
- #include "mux.h"
-@@ -639,6 +640,7 @@ static void __init omap3pandora_init_irq(void)
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-omap3stalker.c b/arch/arm/mach-omap2/board-omap3stalker.c
-index f252721..c07ba77 100644
---- a/arch/arm/mach-omap2/board-omap3stalker.c
-+++ b/arch/arm/mach-omap2/board-omap3stalker.c
-@@ -586,6 +586,7 @@ static void __init omap3_stalker_init_irq(void)
- 	omap_board_config_size = ARRAY_SIZE(omap3_stalker_config);
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params, NULL);
- 	omap_init_irq();
-+	gpmc_init();
- #ifdef CONFIG_OMAP_32K_TIMER
- 	omap2_gp_clockevent_set_gptimer(12);
- #endif
-diff --git a/arch/arm/mach-omap2/board-omap3touchbook.c b/arch/arm/mach-omap2/board-omap3touchbook.c
-index 41104bb..d549763 100644
---- a/arch/arm/mach-omap2/board-omap3touchbook.c
-+++ b/arch/arm/mach-omap2/board-omap3touchbook.c
-@@ -425,6 +425,7 @@ static void __init omap3_touchbook_init_irq(void)
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- #ifdef CONFIG_OMAP_32K_TIMER
- 	omap2_gp_clockevent_set_gptimer(12);
- #endif
-diff --git a/arch/arm/mach-omap2/board-omap4panda.c b/arch/arm/mach-omap2/board-omap4panda.c
-index 1ecd0a6..a03a021 100644
---- a/arch/arm/mach-omap2/board-omap4panda.c
-+++ b/arch/arm/mach-omap2/board-omap4panda.c
-@@ -36,6 +36,7 @@
- #include <plat/common.h>
- #include <plat/usb.h>
- #include <plat/mmc.h>
-+#include <plat/gpmc.h>
- #include "timer-gp.h"
- 
- #include "hsmmc.h"
-@@ -78,6 +79,7 @@ static void __init omap4_panda_init_irq(void)
- {
- 	omap2_init_common_hw(NULL, NULL);
- 	gic_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
-index 7053bc0..c5fe2b0 100644
---- a/arch/arm/mach-omap2/board-overo.c
-+++ b/arch/arm/mach-omap2/board-overo.c
-@@ -416,6 +416,7 @@ static void __init overo_init_irq(void)
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 			     mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-rx51.c b/arch/arm/mach-omap2/board-rx51.c
-index 36f2cf4..3be8729 100644
---- a/arch/arm/mach-omap2/board-rx51.c
-+++ b/arch/arm/mach-omap2/board-rx51.c
-@@ -107,6 +107,7 @@ static void __init rx51_init_irq(void)
- 	omap3_pm_init_cpuidle(rx51_cpuidle_params);
- 	sdrc_params = rx51_get_sdram_timings();
- 	omap2_init_common_hw(sdrc_params, sdrc_params);
-+	gpmc_init();
- 	omap_init_irq();
- 	omap_gpio_init();
- }
-diff --git a/arch/arm/mach-omap2/board-zoom2.c b/arch/arm/mach-omap2/board-zoom2.c
-index 994d286..b77802b 100644
---- a/arch/arm/mach-omap2/board-zoom2.c
-+++ b/arch/arm/mach-omap2/board-zoom2.c
-@@ -22,6 +22,7 @@
- 
- #include <plat/common.h>
- #include <plat/board.h>
-+#include <plat/gpmc.h>
- 
- #include <mach/board-zoom.h>
- 
-@@ -34,6 +35,7 @@ static void __init omap_zoom2_init_irq(void)
- 	omap2_init_common_hw(mt46h32m32lf6_sdrc_params,
- 				 mt46h32m32lf6_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-zoom3.c b/arch/arm/mach-omap2/board-zoom3.c
-index 0c9c15e..d56024f 100644
---- a/arch/arm/mach-omap2/board-zoom3.c
-+++ b/arch/arm/mach-omap2/board-zoom3.c
-@@ -22,6 +22,7 @@
- #include <plat/common.h>
- #include <plat/board.h>
- #include <plat/usb.h>
-+#include <plat/gpmc.h>
- 
- #include "board-flash.h"
- #include "mux.h"
-@@ -78,6 +79,7 @@ static void __init omap_zoom_init_irq(void)
- 	omap2_init_common_hw(h8mbx00u0mer0em_sdrc_params,
- 			h8mbx00u0mer0em_sdrc_params);
- 	omap_init_irq();
-+	gpmc_init();
- 	omap_gpio_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-index f46933b..cfaf357 100644
---- a/arch/arm/mach-omap2/gpmc.c
-+++ b/arch/arm/mach-omap2/gpmc.c
-@@ -14,6 +14,7 @@
-  */
- #undef DEBUG
- 
-+#include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/err.h>
-@@ -22,12 +23,12 @@
- #include <linux/spinlock.h>
- #include <linux/io.h>
- #include <linux/module.h>
-+#include <linux/interrupt.h>
- 
- #include <asm/mach-types.h>
- #include <plat/gpmc.h>
- 
- #include <plat/sdrc.h>
--
- /* GPMC register offsets */
- #define GPMC_REVISION		0x00
- #define GPMC_SYSCONFIG		0x10
-@@ -100,6 +101,8 @@ static void __iomem *gpmc_base;
- 
- static struct clk *gpmc_l3_clk;
- 
-+static irqreturn_t gpmc_handle_irq(int irq, void *dev);
-+
- static void gpmc_write_reg(int idx, u32 val)
- {
- 	__raw_writel(val, gpmc_base + idx);
-@@ -487,6 +490,10 @@ int gpmc_cs_configure(int cs, int cmd, int wval)
- 	u32 regval = 0;
- 
- 	switch (cmd) {
-+	case GPMC_ENABLE_IRQ:
-+		gpmc_write_reg(GPMC_IRQENABLE, wval);
-+		break;
-+
- 	case GPMC_SET_IRQ_STATUS:
- 		gpmc_write_reg(GPMC_IRQSTATUS, wval);
- 		break;
-@@ -670,7 +677,8 @@ static void __init gpmc_mem_init(void)
- 
- void __init gpmc_init(void)
- {
--	u32 l;
-+	u32 l, irq;
-+	int cs;
- 	char *ck = NULL;
- 
- 	if (cpu_is_omap24xx()) {
-@@ -713,6 +721,33 @@ void __init gpmc_init(void)
- 	l |= (0x02 << 3) | (1 << 0);
- 	gpmc_write_reg(GPMC_SYSCONFIG, l);
- 	gpmc_mem_init();
-+
-+	/* initalize the irq_chained */
-+	irq = OMAP_GPMC_IRQ_BASE;
-+	for (cs = 0; cs < GPMC_CS_NUM; cs++) {
-+		set_irq_handler(irq, handle_simple_irq);
-+		set_irq_flags(irq, IRQF_VALID);
-+		irq++;
-+	}
-+
-+	if (request_irq(INT_34XX_GPMC_IRQ,
-+			gpmc_handle_irq, IRQF_SHARED, "gpmc", gpmc_base))
-+		printk(KERN_ERR "gpmc: irq-%d could not claim: err %d\n",
-+						INT_34XX_GPMC_IRQ, irq);
-+}
-+
-+static irqreturn_t gpmc_handle_irq(int irq, void *dev)
-+{
-+	u8 cs;
-+
-+	if (irq != INT_34XX_GPMC_IRQ)
-+		return IRQ_HANDLED;
-+	/* check cs to invoke the irq */
-+	cs = ((gpmc_read_reg(GPMC_PREFETCH_CONFIG1)) >> CS_NUM_SHIFT) & 0x7;
-+	if (OMAP_GPMC_IRQ_BASE+cs <= OMAP_GPMC_IRQ_END)
-+		generic_handle_irq(OMAP_GPMC_IRQ_BASE+cs);
-+
-+	return IRQ_HANDLED;
- }
- 
- #ifdef CONFIG_ARCH_OMAP3
-diff --git a/arch/arm/mach-omap2/io.c b/arch/arm/mach-omap2/io.c
-index a1939b1..3e67a67 100644
---- a/arch/arm/mach-omap2/io.c
-+++ b/arch/arm/mach-omap2/io.c
-@@ -30,7 +30,6 @@
- 
- #include <plat/sram.h>
- #include <plat/sdrc.h>
--#include <plat/gpmc.h>
- #include <plat/serial.h>
- 
- #include "clock2xxx.h"
-@@ -351,5 +350,4 @@ void __init omap2_init_common_hw(struct omap_sdrc_params *sdrc_cs0,
- 		omap2_sdrc_init(sdrc_cs0, sdrc_cs1);
- 		_omap2_init_reprogram_sdrc();
- 	}
--	gpmc_init();
- }
-diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
-index 9fd99b9..054e704 100644
---- a/arch/arm/plat-omap/include/plat/gpmc.h
-+++ b/arch/arm/plat-omap/include/plat/gpmc.h
-@@ -41,6 +41,8 @@
- #define GPMC_NAND_ADDRESS	0x0000000b
- #define GPMC_NAND_DATA		0x0000000c
- 
-+#define GPMC_ENABLE_IRQ		0x0000000d
-+
- /* ECC commands */
- #define GPMC_ECC_READ		0 /* Reset Hardware ECC for read */
- #define GPMC_ECC_WRITE		1 /* Reset Hardware ECC for write */
-@@ -78,6 +80,8 @@
- #define WR_RD_PIN_MONITORING		0x00600000
- #define GPMC_PREFETCH_STATUS_FIFO_CNT(val)	((val >> 24) & 0x7F)
- #define GPMC_PREFETCH_STATUS_COUNT(val)	(val & 0x00003fff)
-+#define GPMC_IRQ_FIFOEVENTENABLE	0x01
-+#define GPMC_IRQ_COUNT_EVENT		0x02
- 
- /*
-  * Note that all values in this struct are in nanoseconds, while
-diff --git a/arch/arm/plat-omap/include/plat/irqs.h b/arch/arm/plat-omap/include/plat/irqs.h
-index 65e20a6..b90b9ef 100644
---- a/arch/arm/plat-omap/include/plat/irqs.h
-+++ b/arch/arm/plat-omap/include/plat/irqs.h
-@@ -318,6 +318,7 @@
- #define INT_34XX_PRCM_MPU_IRQ	11
- #define INT_34XX_MCBSP1_IRQ	16
- #define INT_34XX_MCBSP2_IRQ	17
-+#define INT_34XX_GPMC_IRQ	20
- #define INT_34XX_MCBSP3_IRQ	22
- #define INT_34XX_MCBSP4_IRQ	23
- #define INT_34XX_CAM_IRQ	24
-@@ -411,7 +412,13 @@
- #define TWL_IRQ_END		TWL6030_IRQ_END
- #endif
- 
--#define NR_IRQS			TWL_IRQ_END
-+/* GPMC related */
-+#define OMAP_GPMC_IRQ_BASE	(TWL_IRQ_END)
-+#define OMAP_GPMC_NR_IRQS	7
-+#define OMAP_GPMC_IRQ_END	(OMAP_GPMC_IRQ_BASE + OMAP_GPMC_NR_IRQS)
-+
-+
-+#define NR_IRQS			OMAP_GPMC_IRQ_END
- 
- #define OMAP_IRQ_BIT(irq)	(1 << ((irq) % 32))
- 
--- 
-1.7.0.4
+Busybox init knows how to do this operation. If not, a straightforward
+alternative is to kexec your kernel with a small initrd that can do
+the work.
