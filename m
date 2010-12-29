@@ -1,27 +1,24 @@
-Received: from out10.bezeqint.net ([192.115.188.217])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PXbmG-000569-Qy
-	for linux-mtd@lists.infradead.org; Tue, 28 Dec 2010 15:47:58 +0000
-Received: from mail.wellsense-tech.com (bzq-218-140-171.cablep.bezeqint.net
-	[81.218.140.171])
-	by out10.bezeqint.net (Postfix) with ESMTPA id E680E3A0193
+Received: from cpanel5.proisp.no ([209.85.100.29])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PXrLf-0003eK-Ed
+	for linux-mtd@lists.infradead.org; Wed, 29 Dec 2010 08:25:36 +0000
+Received: from mail-gy0-f177.google.com ([209.85.160.177]:39503)
+	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
+	(envelope-from <oyvind.harboe@zylin.com>) id 1PXrLU-0002jg-4R
+	for linux-mtd@lists.infradead.org; Wed, 29 Dec 2010 09:25:20 +0100
+Received: by gyg4 with SMTP id 4so4506089gyg.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 28 Dec 2010 17:47:50 +0200 (IST)
-From: Boaz Ben-David <boaz.bd@wellsense-tech.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Tue, 28 Dec 2010 17:47:49 +0200
-Subject: RE: UBIFS reboots issue
-Message-ID: <39A4B204C321D34DA3490E3B119D5A6C68BF776758@SBS2008.wellsense.local>
-References: <39A4B204C321D34DA3490E3B119D5A6C68BF77673F@SBS2008.wellsense.local>
-	<1293049245.2051.4.camel@koala>
-	<39A4B204C321D34DA3490E3B119D5A6C68BF77674A@SBS2008.wellsense.local> ,
-	<EF949E0CEB6551499A3643069FE41ACB034B6DFC@CNSHGSMBS01.ad4.ad.alcatel.com>
-	<39A4B204C321D34DA3490E3B119D5A6C68BF77573E@SBS2008.wellsense.local>
-In-Reply-To: <39A4B204C321D34DA3490E3B119D5A6C68BF77573E@SBS2008.wellsense.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	Wed, 29 Dec 2010 00:25:19 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
+References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
+Date: Wed, 29 Dec 2010 09:25:19 +0100
+Message-ID: <AANLkTimivRigmfgNK8mm+WTXeYALnp+1vwWDc4LuJM6n@mail.gmail.com>
+Subject: Re: Faster flash_eraseall for NOR flash
+From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,70 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSdtIHNvcnJ5IGZvciBjaGFuZ2luZyB0aGUgdGhyZWFkIHN1YmplY3QgaW4gdGhlIHByZXZpb3Vz
-IG1haWwuLgoKSSBndWVzcyBpdCBzdW1zIHVwIHRvIG9uZSBtYWluIHF1ZXN0aW9uIChhbmQgSSB3
-b3VsZCBiZSB2ZXJ5IGdyZWF0ZnVsIGlmCnNvbWVvbmUgY291bGQgYW5zd2VyKToKCglPdmVyYWxs
-LCBmb3IgdXNlIG9uIE1MQyBOQU5ELCBpcyBVQklGUyBvciBKRkZTMiBtb3JlIHN1aXRhYmxlPwoJ
-RnJvbSB3aGF0IEkgdW5kZXJzdGFuZCwgSkZGUzIgZG9lc24ndCBkbyB3ZWFyLWxldmVsaW5nIHZl
-cnkKCWdvb2Qgd2hpY2ggd2lsbCBzaG9ydGVuIHRoZSBmbGFzaCBsaWZldGltZSwgYnV0IG9uIHRo
-ZSBvdGhlcgoJaGFuZCwgYXMgQXJ0ZW0gc2FpZCBhbmQgaXMgd3JpdHRlbiBpbiB0aGUgVUJJRlMg
-d2ViLXNpdGUsIFVCSUZTCgluZWVkcyBzb21lIHdvcmsgdG8gYmUgdXNlZCBvbiBNTEMuIAoKT24g
-YW5vdGhlciBub3RlLCBJIHdvdWxkIGxpa2UgdG8gYWxzbyB0cnkgeWFmZnMyIGJ1dCBJIGNhbid0
-IGdldCBpdCB0bwp3b3JrIChjYW4ndCBzZWVtIHRvIGNyZWF0ZSBhbnkgZmlsZXMpLiBEb2VzIGFu
-eW9uZSBoYXMgYW55IGV4cGVyaWVuY2UKdXNpbmcgaXQgb24gdGhlIEZyZWVzY2FsZSBpTVgzNSBQ
-REs/CgpUaGFua3MuCgoKCk9uIEZyaSwgMjAxMC0xMi0yNCBhdCAxMjo0MCArMDIwMCwgQm9heiBC
-ZW4tRGF2aWQgd3JvdGU6Cj4gSSB3b3VsZCB2ZXJ5IG11Y2ggd2FudCB0byB0cnkgeWFmZnMyLiBJ
-IGNsb25lZCB0aGUgZ2l0IHJlcG8gYW5kIHBhdGNoZWQgbXkga2VybmVsIHVzaW5nIHRoZSBzY3Jp
-cHQgcHJvdmlkZWQKPiB3aXRoIHRoZSB5YWZmcyBjb2RlLiBUaGUga2VybmVsIGNvbXBpbGVkIHdp
-dGggbm8gZXJyb3JzIGJ1dCBhZnRlciBJIG1vdW50ZWQgYSB5YWZmcyBwYXJ0aXRpb24gSSBjb3Vs
-ZCBub3QgY3JlYXRlIGFueSBuZXcgZmlsZXMgb24gaXQuCj4gRWFjaCB0aW1lIEkgdHJ5IHRvIGNy
-ZWF0ZSBhIGZpbGUgb24gdGhlIHBhcnRpdGlvbiBJIGdldCAiY2Fubm90IGFsbG9jYXRlIG1lbW9y
-eSIsLCwKPiBJIGhhdmVuJ3QgaGFkIG11Y2ggdGltZSB0byBpbnZlc3RpZ2F0ZSB0aGlzIHNvIGlm
-IGFueW9uZSBoYXMgYW55IGlkZWEgd2h5IHRoaXMgaXMgaGFwcGVuaW5nLCB0aGlzIGlzIGFsc28g
-YSB2ZXJ5IGdvb2QgZGlyZWN0aW9uIGZvciBtZSB0byBnbyB3aXRoICh1c2luZyB5YWZmcykuCj4g
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEZyb206IFpIT1UgWmhv
-bmdqdW4gW1pob25nanVuLlpob3VAYWxjYXRlbC1zYmVsbC5jb20uY25dCj4gU2VudDogRnJpZGF5
-LCBEZWNlbWJlciAyNCwgMjAxMCA1OjIzIEFNCj4gVG86IEJvYXogQmVuLURhdmlkOyBsaW51eC1t
-dGRAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IFN1YmplY3Q6IFJFOiBVQklGUyByZWJvb3RzIGlzc3Vl
-Cj4gCj4gV2h5IGRvIHlvdSBub3QgdG8gdXNlIFlBRkZTMiBmb3IgTkFORCBmbGFzaD8gIEl0IHNl
-ZW1zIHRoYXQgWWFmZnMyIGlzIG1vcmUgcG9wdWxhcml0eS4KPiAKPiAKPiAtLS0tLU9yaWdpbmFs
-IE1lc3NhZ2UtLS0tLQo+IEZyb206IGxpbnV4LW10ZC1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5v
-cmcgW21haWx0bzpsaW51eC1tdGQtYm91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnXSBPbiBCZWhh
-bGYgT2YgQm9heiBCZW4tRGF2aWQKPiBTZW50OiBUaHVyc2RheSwgRGVjZW1iZXIgMjMsIDIwMTAg
-ODo1MiBQTQo+IFRvOiBsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IFN1YmplY3Q6IFJl
-OiBVQklGUyByZWJvb3RzIGlzc3VlCj4gCj4gSSBhbSB1c2luZyBrZXJuZWwgMi42LjMxIGZvciBp
-TVgzNSBhbmQgSSdtIG5vdCBzdXJlIHdoYXQgdmVyc2lvbiBvZiBVQklGUyBpcyBwYXRjaGVkIGlu
-IHRoZXJlLgo+IFdoYXQgZG8gSSBuZWVkIHRvIGRvIGluIG9yZGVyIHRvIHBhdGNoIHRvIHRoZSBs
-YXRlc3QgdmVyc2lvbj8KPiBJcyBpcyBlbm91Z2ggdG8gY2xvbmUgVUJJRlMgMi42LjMxIGFuZCBj
-b3B5IG92ZXIgdGhlIGZzL3ViaWZzIGFuZCBtdGQvdWJpIGRpcmVjdG9yaWVzIG9yIGFyZSB0aGVy
-ZSBhbnkgb3RoZXIgZGlyZWN0b3JpZXMgSSBuZWVkIHRvIHRha2UgaW50byBhY2NvdW50Pwo+IAo+
-IFRoYW5rcywKPiAKPiBCb2F6Lgo+IAo+IE9uIFdlZCwgMjAxMC0xMi0yMiBhdCAyMjoyMCArMDIw
-MCwgQXJ0ZW0gQml0eXV0c2tpeSB3cm90ZToKPiA+IE9uIFdlZCwgMjAxMC0xMi0yMiBhdCAxNjoz
-NiArMDIwMCwgQm9heiBCZW4tRGF2aWQgd3JvdGU6Cj4gPiA+IEhpIGFsbCwKPiA+ID4KPiA+ID4g
-V2UgaGF2ZSBhbiBlbWJlZGRlZCBzeXN0ZW0gdXNpbmcgYSBTYW1zdW5nIDJHQiBNTEMgTkFORCBh
-bmQgYXJlCj4gPiA+IHVzaW5nIFVCSUZTIGFzIHRoZSBmaWxlIHN5c3RlbSBvbiBpdC4KPiA+ID4g
-SSBoYXZlIGEgcXVlc3Rpb24gcmVnYXJkaW5nIFVCSUZTIGFuZCBoYXJkIHJlYm9vdHMuCj4gPiA+
-IEFmdGVyIHNvbWUgd29yayB3aXRoIHRoZSBmbGFzaCAoZG9pbmcgcmVhZHMgYW5kIHdyaXRlcyB0
-byBpdCksIHNvbWUKPiA+ID4gdGltZXMgb25lIG9mIG91ciBwYXJ0aXRpb25zIHdvdWxkIGZhaWwg
-dG8gbW91bnQuCj4gPiA+IEkgc3VzcGVjdGVkIHRoaXMgaGFzIHNvbWV0aGluZyB0byBkbyB3aXRo
-IGEgcmVib290IHdoaWNoIGhhcHBlbnMKPiA+ID4gZHVyaW5nIGEgd3JpdGUgdG8gdGhlIGZsYXNo
-Lgo+ID4gPiBJbiBvcmRlciB0byB0ZXN0IHRoaXMgSSBjcmVhdGVkIGEgc2ltcGxlIHNjcmlwdCB3
-aGljaCBjb3BpZXMgYSBmaWxlCj4gPiA+IGZyb20gdG8gdGhlIHBhcnRpdGlvbiwgc3luY3MsIHRo
-ZW4gZGVsZXRlcyBpdCBhbmQgZG9lcyB0aGlzCj4gPiA+IHJlcGVhdGVkbHkgdW50aWwgYSBoYXJk
-IHJlYm9vdCBvY2N1cnMgKHVzaW5nIHRoZSB3YXRjaCBkb2cgdG8gY2F1c2UgdGhlIGJvb3QpLgo+
-ID4gPiBUaGlzIHByb2Nlc3MgcmVwZWF0cyBpdHNlbGYgdW50aWwgdGhlIHBhcnRpdGlvbiBmYWls
-cyB0byBtb3VudC4KPiA+ID4gV2hlbiBJIHBlcmZvcm1lZCB0aGUgdGVzdCBtZW50aW9uZWQgYWJv
-dmUsIGFmdGVyIGFib3V0IDMtNCB0aW1lcyB0aGUKPiA+ID4gcGFydGl0aW9uIHdvdWxkIGZhaWwu
-Cj4gPiA+IEkgYW0gbm90IHN1cmUgaWYgdGhpcyBiZWhhdmlvdXIgaXMgbm9ybWFsIG9yIG5vdC4K
-PiA+ID4gRGlkIHNvbWVvbmUgZW5jb3VudGVyIHNpbWlsaWFyIGJlaGF2aW91cj8KPiA+Cj4gPiBK
-dXN0IGN1cmlvdXMsIGRpZCB5b3Ugc2VlIHRoaXM6Cj4gPgo+ID4gaHR0cDovL2xpbnV4LW10ZC5p
-bmZyYWRlYWQub3JnL2ZhcS91Ymlmcy5odG1sI0xfdWJpZnNfbWxjCj4gPgo+ID4gSSBkbyBub3Qg
-dGhpbmsgeW91IGNhbiBqdXN0IHVzZSBVQkkvVUJJRlMgb24gTUxDIGFzIGlzLCB5b3UnZCBuZWVk
-IHRvCj4gPiBtYWtlIHN1cmUgTUxDLXNwZWNpZmljIGJlaGF2aW9yIGlzIGhhbmRsZWQgcHJvcGVy
-bHkuCj4gPgo+ID4gLS0KPiA+IEJlc3QgUmVnYXJkcywKPiA+IEFydGVtIEJpdHl1dHNraXkgKNCR
-0LjRgtGO0YbQutC40Lkg0JDRgNGC0ZHQvCkKPiA+Cj4gCj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24g
-bWFpbGluZyBsaXN0Cj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9saW51eC1tdGQvCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4gTGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0Cj4gaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvCgo=
+I don't think this feature is going to work very well as-is.
+
+To make this effective in real life, I think I'll have to add in an
+option to read in a binary file, which is written to flash after
+erase.
+
+Only those erase blocks which changed should be
+erased + written.
+
+The cleanmarkers would be written for erase blocks after
+the end of the binary file.
+
+This fixes two things: even faster for blocks that don't change,
+if the cleanmarker is not supposed to be there for certain
+blocks, then it will currently fail.
+
+--=20
+=C3=98yvind Harboe
+
+Can Zylin Consulting help on your project?
+
+US toll free 1-866-980-3434 / International +47 51 87 40 27
+
+http://www.zylin.com/zy1000.html
+ARM7 ARM9 ARM11 XScale Cortex
+JTAG debugger and flash programmer
