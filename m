@@ -1,24 +1,10 @@
-Received: from cpanel5.proisp.no ([209.85.100.29])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PXrLf-0003eK-Ed
-	for linux-mtd@lists.infradead.org; Wed, 29 Dec 2010 08:25:36 +0000
-Received: from mail-gy0-f177.google.com ([209.85.160.177]:39503)
-	by cpanel5.proisp.no with esmtpsa (TLSv1:RC4-MD5:128) (Exim 4.69)
-	(envelope-from <oyvind.harboe@zylin.com>) id 1PXrLU-0002jg-4R
-	for linux-mtd@lists.infradead.org; Wed, 29 Dec 2010 09:25:20 +0100
-Received: by gyg4 with SMTP id 4so4506089gyg.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 29 Dec 2010 00:25:19 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
-References: <AANLkTi=DmECiCVyZ61Cc0=66VANyrQV9xwzYjDceA8=M@mail.gmail.com>
-Date: Wed, 29 Dec 2010 09:25:19 +0100
-Message-ID: <AANLkTimivRigmfgNK8mm+WTXeYALnp+1vwWDc4LuJM6n@mail.gmail.com>
-Subject: Re: Faster flash_eraseall for NOR flash
-From: =?UTF-8?Q?=C3=98yvind_Harboe?= <oyvind.harboe@zylin.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v7 0/7] nand prefetch-irq support and ecc layout chanage
+Date: Wed, 29 Dec 2010 19:02:19 +0530
+Message-Id: <1293629546-18831-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +14,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I don't think this feature is going to work very well as-is.
+The following set of patches applies on linux-2.6.
 
-To make this effective in real life, I think I'll have to add in an
-option to read in a binary file, which is written to flash after
-erase.
+The main motivations behind this patch series are -
+        1. support NAND I/O in irq mode.
+        2. support of different ECC schema.
+        3. also add support ecc layout as like in romcode ecc layout, but not enabled
 
-Only those erase blocks which changed should be
-erased + written.
+v7: NAND type (x16 or x8) is board specific and not omap specific; this passed form board file.
+    
+v6: configurable transfer type from board file; 
+    #define irq number used for nand-irq
+    http://www.mail-archive.com/linux-omap@vger.kernel.org/msg39397.html
+    
+v5: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg35860.html
+This address the input as to support the irq_chained in GPMC.
+And resend of
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg35848.html
 
-The cleanmarkers would be written for erase blocks after
-the end of the binary file.
+v4: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg34882.html
+and resend of
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32689.html
 
-This fixes two things: even faster for blocks that don't change,
-if the cleanmarker is not supposed to be there for certain
-blocks, then it will currently fail.
+v3: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32071.html
+Rebase on latest codebase and previous patch(posted).
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31963.html
 
---=20
-=C3=98yvind Harboe
+v2: Rebase on latest codebase and previous patch(posted).
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
 
-Can Zylin Consulting help on your project?
+v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg26666.html
 
-US toll free 1-866-980-3434 / International +47 51 87 40 27
+Sukumar Ghorai (7):
+  omap3630: nand: fix device size to work in polled mode
+  omap3: nand: configurable transfer type per board
+  omap: gpmc: enable irq mode in gpmc
+  omap3: nand: prefetch in irq mode support
+  omap3: nand: configurable fifo threshold to gain the throughput
+  omap3: nand: ecc layout select from board file
+  omap3: nand: making ecc layout as compatible with romcode ecc
 
-http://www.zylin.com/zy1000.html
-ARM7 ARM9 ARM11 XScale Cortex
-JTAG debugger and flash programmer
+ arch/arm/mach-omap2/board-2430sdp.c        |    1 +
+ arch/arm/mach-omap2/board-3430sdp.c        |    3 +-
+ arch/arm/mach-omap2/board-3630sdp.c        |    4 +-
+ arch/arm/mach-omap2/board-4430sdp.c        |    2 +
+ arch/arm/mach-omap2/board-am3517evm.c      |    2 +
+ arch/arm/mach-omap2/board-apollon.c        |    1 +
+ arch/arm/mach-omap2/board-cm-t35.c         |    1 +
+ arch/arm/mach-omap2/board-devkit8000.c     |    1 +
+ arch/arm/mach-omap2/board-flash.c          |   13 +-
+ arch/arm/mach-omap2/board-flash.h          |    4 +-
+ arch/arm/mach-omap2/board-generic.c        |    2 +
+ arch/arm/mach-omap2/board-h4.c             |    1 +
+ arch/arm/mach-omap2/board-igep0020.c       |    1 +
+ arch/arm/mach-omap2/board-ldp.c            |    3 +-
+ arch/arm/mach-omap2/board-n8x0.c           |    2 +
+ arch/arm/mach-omap2/board-omap3beagle.c    |    1 +
+ arch/arm/mach-omap2/board-omap3evm.c       |    2 +
+ arch/arm/mach-omap2/board-omap3pandora.c   |    2 +
+ arch/arm/mach-omap2/board-omap3stalker.c   |    1 +
+ arch/arm/mach-omap2/board-omap3touchbook.c |    1 +
+ arch/arm/mach-omap2/board-omap4panda.c     |    2 +
+ arch/arm/mach-omap2/board-overo.c          |    1 +
+ arch/arm/mach-omap2/board-rx51.c           |    1 +
+ arch/arm/mach-omap2/board-zoom2.c          |    7 +-
+ arch/arm/mach-omap2/board-zoom3.c          |    7 +-
+ arch/arm/mach-omap2/gpmc-nand.c            |    7 +-
+ arch/arm/mach-omap2/gpmc.c                 |   50 ++++-
+ arch/arm/mach-omap2/io.c                   |    2 -
+ arch/arm/plat-omap/include/plat/gpmc.h     |   17 ++-
+ arch/arm/plat-omap/include/plat/irqs.h     |    9 +-
+ arch/arm/plat-omap/include/plat/nand.h     |   11 +
+ drivers/mtd/nand/Kconfig                   |   17 --
+ drivers/mtd/nand/omap2.c                   |  336 +++++++++++++++++++++-------
+ 33 files changed, 396 insertions(+), 119 deletions(-)
