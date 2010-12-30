@@ -1,18 +1,20 @@
-Received: from www.wytron.com.tw ([211.75.82.101])
+Received: from rs1.rw-gmbh.net ([213.239.201.58])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PYCy1-0006LU-DC
-	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2010 07:30:34 +0000
-Received: from [192.168.1.15] (helo=darkstar.wytron.com.tw)
-	by www.wytron.com.tw with esmtp (Exim 4.69)
-	(envelope-from <thomas@wytron.com.tw>) id 1PYCxu-00075f-TN
-	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2010 15:30:26 +0800
-Message-ID: <4D1C3565.1030800@wytron.com.tw>
-Date: Thu, 30 Dec 2010 15:31:49 +0800
-From: Thomas Chou <thomas@wytron.com.tw>
+	id 1PYDuO-0007iZ-W2
+	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2010 08:30:53 +0000
+Received: from pd951a5d2.dip0.t-ipconnect.de ([217.81.165.210]
+	helo=[192.168.178.24])
+	by rs1.rw-gmbh.net with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.72) (envelope-from <ralf.roesch@rw-gmbh.de>)
+	id 1PYDuK-0000eW-Hx
+	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2010 09:30:48 +0100
+Message-ID: <4D1C4338.2030003@rw-gmbh.de>
+Date: Thu, 30 Dec 2010 09:30:48 +0100
+From: =?UTF-8?B?UmFsZiBSw7ZzY2g=?= <ralf.roesch@rw-gmbh.de>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: mkfs.jffs2 failed to create repeated dev nodes from device_table.txt
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [PATCH] mtd: nand: fix for printing NAND model
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,31 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi experts,
+Signed-off-by: Ralf Roesch <ralf.roesch@rw-gmbh.de>
+---
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-I found an issue with the latest git head. The mkfs.jffs2 failed to 
-create repeated dev nodes from the device_table.txt in the git tree, 
-such as hda1-15, tty0-5.
-
-It happened with this pattern,
-
-/dev/tty	c	666	0	0	5	0	0	0	-
-/dev/tty	c	666	0	0	4	0	0	1	6
-
-# IDE Devices
-/dev/hda	b	640	0	0	3	0	0	0	-
-/dev/hda	b	640	0	0	3	1	1	1	15
-/dev/hdb	b	640	0	0	3	64	0	0	-
-/dev/hdb	b	640	0	0	3	65	1	1	15
-
-
-Using jffs2dump -c, I could see only hda,
-
-          Dirent     node at 0x004d3970, totlen 0x0000002b, #pino    14, 
-version   274, #ino       276, nsize        3, name hda
-          Inode      node at 0x004d399c, totlen 0x00000046, #ino    276, 
-version     1, isize        0, csize        2, dsize        2, offset 
-      0
-
-Best regards,
-Thomas
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 1f75a1b..f29183a 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3157,7 +3157,7 @@ ident_done:
+ 	printk(KERN_INFO "NAND device: Manufacturer ID:"
+ 		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
+ 		nand_manuf_ids[maf_idx].name,
+-	chip->onfi_version ? type->name : chip->onfi_params.model);
++	chip->onfi_version ? chip->onfi_params.model : type->name);
+  	return type;
+ }
+-- 
+1.7.2.3
