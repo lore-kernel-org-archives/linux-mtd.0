@@ -1,19 +1,17 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PYEFP-0000j2-Rs
-	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2010 08:52:37 +0000
-From: Florian Fainelli <ffainelli@freebox.fr>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd: nand: fix for printing NAND model
-Date: Thu, 30 Dec 2010 09:52:30 +0100
-References: <4D1C4338.2030003@rw-gmbh.de>
-In-Reply-To: <4D1C4338.2030003@rw-gmbh.de>
+Received: from rs1.rw-gmbh.net ([213.239.201.58])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PYEpq-0002im-OW
+	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2010 09:30:15 +0000
+Message-ID: <4D1C5123.4050804@rw-gmbh.de>
+Date: Thu, 30 Dec 2010 10:30:11 +0100
+From: =?UTF-8?B?UmFsZiBSw7ZzY2g=?= <ralf.roesch@rw-gmbh.de>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <201012300952.30921.ffainelli@freebox.fr>
-Cc: Ralf =?iso-8859-1?q?R=F6sch?= <ralf.roesch@rw-gmbh.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] txx9ndfmc: limit transfer bytes to 512 (ECC provides 6 bytes
+	max)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+See commit: c0cbfd0e81d879a950ba6f0df3f75ea30c5ab16e
+Using __nand_correct_data() helper function, this driver can read 512
+byte (with 6 byte ECC) at a time.
 
-On Thursday 30 December 2010 09:30:48 Ralf R=F6sch wrote:
-> Signed-off-by: Ralf Roesch <ralf.roesch@rw-gmbh.de>
-> ---
->  drivers/mtd/nand/nand_base.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
->=20
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 1f75a1b..f29183a 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -3157,7 +3157,7 @@ ident_done:
->  	printk(KERN_INFO "NAND device: Manufacturer ID:"
->  		" 0x%02x, Chip ID: 0x%02x (%s %s)\n", *maf_id, *dev_id,
->  		nand_manuf_ids[maf_idx].name,
-> -	chip->onfi_version ? type->name : chip->onfi_params.model);
-> +	chip->onfi_version ? chip->onfi_params.model : type->name);
->   	return type;
->  }
+This is correct, but not more:
+With NAND chips providing page sizes > 512 Bytes
+chip->ecc.bytes are calculated > 6 in txx9ndfmc_nand_scan.
+According the data sheet there are (only) 6 bytes ECC available.
 
-The same fix has already been submitted and applied a couple of days ago:=20
-http://patchwork.ozlabs.org/patch/75222/
-=2D-
-=46lorian
+After applying the patch a Hynix 512M*8 with 2k page size could be
+successfully formatted and used with an ubifs file system.
+
+Signed-off-by: Ralf Roesch <ralf.roesch@rw-gmbh.de>
+---
+ drivers/mtd/nand/txx9ndfmc.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/txx9ndfmc.c b/drivers/mtd/nand/txx9ndfmc.c
+index 054a41c..ca270a4 100644
+--- a/drivers/mtd/nand/txx9ndfmc.c
++++ b/drivers/mtd/nand/txx9ndfmc.c
+@@ -277,8 +277,9 @@ static int txx9ndfmc_nand_scan(struct mtd_info *mtd)
+ 	ret = nand_scan_ident(mtd, 1, NULL);
+ 	if (!ret) {
+ 		if (mtd->writesize >= 512) {
+-			chip->ecc.size = mtd->writesize;
+-			chip->ecc.bytes = 3 * (mtd->writesize / 256);
++			/* Hardware ECC 6 byte ECC per 512 Byte data */
++			chip->ecc.size = 512;
++			chip->ecc.bytes = 6;
+ 		}
+ 		ret = nand_scan_tail(mtd);
+ 	}
+-- 
+1.7.2.3
