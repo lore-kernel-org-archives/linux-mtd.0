@@ -1,26 +1,16 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from www.wytron.com.tw ([211.75.82.101])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PYH0n-0006UT-NX
-	for linux-mtd@lists.infradead.org; Thu, 30 Dec 2010 11:49:42 +0000
-Received: by eyd9 with SMTP id 9so5957435eyd.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Dec 2010 03:49:39 -0800 (PST)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <AANLkTikmbbECMLNZ-3d=Z32RcFvsiv=eDyAwJ2=n1sHi@mail.gmail.com>
-References: <292342500.2538.65.camel@localhost>
-	<1292539339-25111-3-git-send-email-agust@denx.de>
-	<AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
-	<1292942724.2286.57.camel@localhost>
-	<AANLkTikmbbECMLNZ-3d=Z32RcFvsiv=eDyAwJ2=n1sHi@mail.gmail.com>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Thu, 30 Dec 2010 12:49:18 +0100
-Message-ID: <AANLkTinWtEmu9nwcww4JKang+cNoHsrETT_Mojz7FF0L@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Cc: David Woodhouse <dwmw2@infradead.org>, Anatolij Gustschin <agust@denx.de>,
-	linux-mtd@lists.infradead.org
+	id 1PYU36-0003XM-Cf
+	for linux-mtd@lists.infradead.org; Fri, 31 Dec 2010 01:45:00 +0000
+From: Thomas Chou <thomas@wytron.com.tw>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mkfs.jffs2: fix repeated dev nodes
+Date: Fri, 31 Dec 2010 09:45:19 +0800
+Message-Id: <1293759919-3297-1-git-send-email-thomas@wytron.com.tw>
+In-Reply-To: <4D1C3565.1030800@wytron.com.tw>
+References: <4D1C3565.1030800@wytron.com.tw>
+Cc: linux-mtd@lists.infradead.org, Mike Frysinger <vapier@gentoo.org>,
+	Thomas Chou <thomas@wytron.com.tw>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,13 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2010/12/30 Guillaume LECERF <glecerf@gmail.com>:
-> Anatolij, what about such patches ?
-> Note : this is totally untested ;)
+Fix the repeated nodes with the same primary name in device_table.txt.
+They were not generated correctly.
 
-Please disregard 08-patch.patch, I think it does not even compile :(
+/dev/tty    c    666    0    0    5    0    0    0    -
+/dev/tty    c    666    0    0    4    0    0    1    6
 
+# IDE Devices
+/dev/hda    b    640    0    0    3    0    0    0    -
+/dev/hda    b    640    0    0    3    1    1    1    15
+/dev/hdb    b    640    0    0    3    64    0    0    -
+/dev/hdb    b    640    0    0    3    65    1    1    15
 
+Only created,
+/dev/tty
+/dev/hda
+/dev/hdb
+
+Signed-off-by: Thomas Chou <thomas@wytron.com.tw>
+---
+ mkfs.jffs2.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index 256eec4..717e1cc 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -457,7 +457,7 @@ static int interpret_table_entry(struct filesystem_entry *root, char *line)
+ 			errmsg_die("Unsupported file type '%c'", type);
+ 	}
+ 	entry = find_filesystem_entry(root, name, mode);
+-	if (entry) {
++	if (entry && !(count > 0 && (type == 'c' || type == 'b'))) {
+ 		/* Ok, we just need to fixup the existing entry
+ 		 * and we will be all done... */
+ 		entry->sb.st_uid = uid;
 -- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+1.7.3.4
