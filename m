@@ -1,16 +1,15 @@
-From: Murali Nalajala <mnalajal@codeaurora.org>
-To: dwmw2@infradead.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] mtd: msm_nand: Add initial msm nand driver support.
-Date: Fri, 31 Dec 2010 14:24:40 +0530
-Message-Id: <1293785680-19850-1-git-send-email-mnalajal@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org,
-	=?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-	Murali Nalajala <mnalajal@codeaurora.org>,
-	linux-arm-kernel@lists.infradead.org, swetland@google.com
+Received: from www84.your-server.de ([213.133.104.84])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PYbu1-0000cu-Dg
+	for linux-mtd@lists.infradead.org; Fri, 31 Dec 2010 10:08:07 +0000
+From: stefani@seibold.net
+To: linux-mtd@lists.infradead.org, dedekind1@gmail.com, dwmw2@infradead.org,
+	Artem.Bityutskiy@nokia.com
+Subject: [PATCH] New ubitunefs command to adjust tunable filesystem parameters
+	on ubifs
+Date: Fri, 31 Dec 2010 11:08:48 +0100
+Message-Id: <1293790128-4986-1-git-send-email-stefani@seibold.net>
+Cc: stefani@seibold.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,1431 +19,550 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Arve Hjønnevåg <arve@android.com>
+From: Stefani Seibold <stefani@seibold.net>
 
-Add initial msm nand driver support for Qualcomm MSM and QSD platforms.
-This driver is currently capable of handling 2K page nand devices.
+ubitunefs allows the system administrator to adjust various tunable
+filesystem  parameters on Linux ubifs filesystems. The current values of these
+parameters can be displayed by using the -v or calling without any option.
 
-This driver is originally
-developed by Google and its source is available at
-http://android.git.kernel.org/?p=kernel/experimental.git
+Currently the ubitunefs supports the following parameters:
 
-CC: Brian Swetland <swetland@google.com>
-Signed-off-by: Arve Hjønnevåg <arve@android.com>
-Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
+-x, --compr=<none|lzo|zlib>    compression type
+-R, --reserved=SIZE            how much space should be reserved for super-user
+
+Maybe it will be nice to adjust also the uid and gid of the reserved owner,
+or the increase the max. size of the ubi filesystem. This will be very simple
+to implement.
+
+Signed-off-by: Stefani Seibold <stefani@seibold.net>
 ---
- drivers/mtd/devices/Kconfig    |   10 +
- drivers/mtd/devices/Makefile   |    1 +
- drivers/mtd/devices/msm_nand.c | 1281 ++++++++++++++++++++++++++++++++++++++++
- drivers/mtd/devices/msm_nand.h |   75 +++
- 4 files changed, 1367 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/devices/msm_nand.c
- create mode 100644 drivers/mtd/devices/msm_nand.h
+ ubi-utils/Makefile        |    5 +-
+ ubi-utils/src/ubitunefs.c |  494 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 498 insertions(+), 1 deletions(-)
+ create mode 100644 ubi-utils/src/ubitunefs.c
 
-diff --git a/drivers/mtd/devices/Kconfig b/drivers/mtd/devices/Kconfig
-index 35081ce..bcf851f 100644
---- a/drivers/mtd/devices/Kconfig
-+++ b/drivers/mtd/devices/Kconfig
-@@ -49,6 +49,16 @@ config MTD_MS02NV
- 	  say M here and read <file:Documentation/kbuild/modules.txt>.
- 	  The module will be called ms02-nv.
+diff --git a/ubi-utils/Makefile b/ubi-utils/Makefile
+index df81cd9..35260be 100644
+--- a/ubi-utils/Makefile
++++ b/ubi-utils/Makefile
+@@ -8,7 +8,7 @@ KERNELHDR := ../include
+ CPPFLAGS += -Iinclude -Isrc -I$(KERNELHDR)
  
-+config MTD_MSM_NAND
-+	tristate "MSM on-chip NAND Flash Controller driver"
-+	depends on MTD && ARCH_MSM
-+	help
-+	  This enables the on-chip NAND flash controller driver on Qualcomm's
-+	  MSM and QSD platforms.
+ LIBS = libubi libubigen libiniparser libscan
+-TARGETS = ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
++TARGETS = ubitunefs ubiupdatevol ubimkvol ubirmvol ubicrc32 ubinfo ubiattach \
+           ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol
+ 
+ VPATH = src
+@@ -37,6 +37,9 @@ $(BUILDDIR)/ubiformat: $(addprefix $(BUILDDIR)/,\
+ 	ubiformat.o ubiutils-common.o libscan.a libubi.a libubigen.a)
+ #	$(CC) $(CFLAGS) $(filter %.o, $^) -L. -lmtd -lscan -lubi -lubigen -o $@
+ 
++$(BUILDDIR)/ubitunefs: $(addprefix $(BUILDDIR)/,\
++	ubitunefs.o ubiutils-common.o libscan.a libubi.a libubigen.a)
 +
-+	  MSM NAND controller is capable of interface to all leading nand
-+	  flash vendor devices ie Samsung, Micron, Hynix etc.
-+
- config MTD_DATAFLASH
- 	tristate "Support for AT45xxx DataFlash"
- 	depends on SPI_MASTER && EXPERIMENTAL
-diff --git a/drivers/mtd/devices/Makefile b/drivers/mtd/devices/Makefile
-index f3226b1..fe959e8 100644
---- a/drivers/mtd/devices/Makefile
-+++ b/drivers/mtd/devices/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_MTD_SLRAM)		+= slram.o
- obj-$(CONFIG_MTD_PHRAM)		+= phram.o
- obj-$(CONFIG_MTD_PMC551)	+= pmc551.o
- obj-$(CONFIG_MTD_MS02NV)	+= ms02-nv.o
-+obj-$(CONFIG_MTD_MSM_NAND)	+= msm_nand.o
- obj-$(CONFIG_MTD_MTDRAM)	+= mtdram.o
- obj-$(CONFIG_MTD_LART)		+= lart.o
- obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
-diff --git a/drivers/mtd/devices/msm_nand.c b/drivers/mtd/devices/msm_nand.c
+ $(BUILDDIR)/libubi.a: $(BUILDDIR)/libubi.o
+ 
+ $(BUILDDIR)/libubigen.a: $(BUILDDIR)/libubigen.o
+diff --git a/ubi-utils/src/ubitunefs.c b/ubi-utils/src/ubitunefs.c
 new file mode 100644
-index 0000000..89b7e03
+index 0000000..f8b6161
 --- /dev/null
-+++ b/drivers/mtd/devices/msm_nand.c
-@@ -0,0 +1,1281 @@
++++ b/ubi-utils/src/ubitunefs.c
+@@ -0,0 +1,494 @@
 +/*
-+ * Copyright (C) 2007 Google, Inc.
++ * Copyright (C) 2007, 2008, 2010 Nokia Corporation.
 + *
-+ * This software is licensed under the terms of the GNU General Public
-+ * License version 2, as published by the Free Software Foundation, and
-+ * may be copied, distributed, and modified under those terms.
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published by
++ * the Free Software Foundation.
 + *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License along with
++ * this program; if not, write to the Free Software Foundation, Inc., 51
++ * Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
++ */
++
++/*
++ * An utility to tune a UBI filesystem.
++ *
++ * Author: Stefani Seibold <stefani@seibold.net>
++ *         in order of NSN Nokia Siemens Networks Ulm/Germany
++ * 	   based on work by Artem Bityutskiy
 + *
 + */
 +
-+#define pr_fmt(fmt) "%s:" fmt, __func__
++#define PROGRAM_VERSION "0.3"
++#define PROGRAM_NAME    "ubitunefs"
 +
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/platform_device.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+#include <linux/dma-mapping.h>
-+#include <asm/mach/flash.h>
-+#include <mach/dma.h>
++#define _GNU_SOURCE
++#define _LARGEFILE64_SOURCE
++#include <getopt.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <limits.h>
++#include <string.h>
++#include <stdint.h>
++#include <endian.h>
++#include <byteswap.h>
++#include <linux/types.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
 +
-+#include "msm_nand.h"
++#include <libubi.h>
++#include <crc32.h>
++#include "common.h"
++#include "ubiutils-common.h"
++#include "../mkfs.ubifs/ubifs-media.h"
++#include "../mkfs.ubifs/defs.h"
 +
-+unsigned long msm_nand_phys;
++static void *super_buf;
++struct ubi_dev_info dev_info;
 +
-+#define CFG1_WIDE_FLASH (1U << 1)
-+#define MSM_NAND_DMA_BUFFER_SIZE SZ_4K
-+#define MSM_NAND_DMA_BUFFER_SLOTS \
-+	(MSM_NAND_DMA_BUFFER_SIZE / (sizeof(((atomic_t *)0)->counter) * 8))
++/* The variables below are set by command line arguments */
++struct args {
++	int devn;
++	int vol_id;
++	const char *node;
++	const char *vol_name;
++	int compr;
++	long long reserved;
++	int verbose;
++};
 +
-+#define SRC_CRCI_NAND_CMD  CMD_SRC_CRCI(DMOV_NAND_CRCI_CMD)
-+#define DST_CRCI_NAND_CMD  CMD_DST_CRCI(DMOV_NAND_CRCI_CMD)
-+#define SRC_CRCI_NAND_DATA CMD_SRC_CRCI(DMOV_NAND_CRCI_DATA)
-+#define DST_CRCI_NAND_DATA CMD_DST_CRCI(DMOV_NAND_CRCI_DATA)
++static struct args args = {
++	.vol_id = -1,
++	.devn = -1,
++	.node = NULL,
++	.vol_name = NULL,
++	.compr = -1,
++	.reserved = -1,
++	.verbose = 0,
++};
 +
-+#define msm_virt_to_dma(chip, vaddr) \
-+		 ((chip)->dma_addr + \
-+		 ((uint8_t *)(vaddr) - (chip)->dma_buffer))
++static const char doc[] = PROGRAM_NAME " version " PROGRAM_VERSION
++			 " - a tool for UBI filesystem tuning.";
 +
-+/**
-+ * struct msm_nand_chip - Describe the msm nand chip and dma properties
-+ * @dev:                Holds the device structure pointer
-+ * @wait_queue:         Wait queue for handling DMA buffer requests
-+ * @dma_buffer_busy:    Check DMA buffer status
-+ * @dma_channel:        DMA channel number
-+ * @dma_buffer:         Allocated dma buffer address
-+ * @dma_addr:           Bus-specific DMA address
-+ * @cfg0:               Nand controller configuration0 register value
-+ * @cfg1:               Nand controller configuration1 register value
-+ * @ecc_buf_cfg:        Stores ECC buffer configuration
-+ *
-+ * This structure is used to store the DMA and nand controller information
-+ */
-+struct msm_nand_chip {
-+	struct device *dev;
-+	wait_queue_head_t wait_queue;
-+	atomic_t dma_buffer_busy;
-+	unsigned dma_channel;
-+	uint8_t *dma_buffer;
-+	dma_addr_t dma_addr;
-+	unsigned cfg0, cfg1;
-+	uint32_t ecc_buf_cfg;
++static const char optionsstr[] =
++"-d, --devn=<UBI device number>  UBI device number to get information about\n"
++"-n, --vol_id=<volume ID>        ID of UBI volume to print information about\n"
++"-N, --name=<volume name>        name of UBI volume to print information about\n"
++"-x, --compr=<none|lzo|zlib>     compression type\n"
++"-R, --reserved=SIZE             how much space should be reserved for super-user\n"
++"-v, --verbose                   verbose output\n"
++"-h, --help                      print help message\n"
++"-V, --version                   print program version";
++
++static const char usage[] =
++"Usage 1: " PROGRAM_NAME " [-d <UBI device number>] [-n <volume ID> | -N <volume name>]\n"
++"\t\t[-h] [-V] [--vol_id=<volume ID> | --name <volume name>]\n"
++"\t\t[--devn <UBI device number>] [--help] [--version]\n"
++"Usage 2: " PROGRAM_NAME " <UBI volume node file name> [-h] [-V] [--help] [--version]\n\n";
++
++static const struct option long_options[] = {
++	{ .name = "devn",      .has_arg = 1, .flag = NULL, .val = 'd' },
++	{ .name = "vol_id",    .has_arg = 1, .flag = NULL, .val = 'n' },
++	{ .name = "name",      .has_arg = 1, .flag = NULL, .val = 'N' },
++	{ .name = "help",      .has_arg = 0, .flag = NULL, .val = 'h' },
++	{ .name = "version",   .has_arg = 0, .flag = NULL, .val = 'V' },
++	{ .name = "compr",     .has_arg = 1, .flag = NULL, .val = 'c' },
++	{ .name = "reserved",  .has_arg = 1, .flag = NULL, .val = 'r' },
++	{ .name = "verbose",   .has_arg = 0, .flag = NULL, .val = 'v' },
++	{ NULL, 0, NULL, 0},
 +};
 +
 +/**
-+ * struct msm_nand_info - Stores the mtd and nand device information
-+ * @mtd:         MTD device structure
-+ * @parts:       Pointer to the MTD partitions
-+ * @msm_nand:    Holds the nand device information
++ * get_multiplier - convert size specifier to an integer multiplier.
++ * @str: the size specifier string
 + *
-+ * It stores the mtd properties associted to the nand device and also
-+ * mtd partition details.
++ * This function parses the @str size specifier, which may be one of
++ * 'KiB', 'MiB', or 'GiB' into an integer multiplier. Returns positive
++ * size multiplier in case of success and %-1 in case of failure.
 + */
-+struct msm_nand_info {
-+	struct mtd_info         mtd;
-+	struct mtd_partition    *parts;
-+	struct msm_nand_chip    msm_nand;
-+};
++static int get_multiplier(const char *str)
++{
++	if (!str)
++		return 1;
++
++	/* Remove spaces before the specifier */
++	while (*str == ' ' || *str == '\t')
++		str++;
++
++	if (!strcasecmp(str, "KB"))
++		return 1000;
++	if (!strcasecmp(str, "MB"))
++		return 1000 * 1000;
++	if (!strcasecmp(str, "GB"))
++		return 1000 * 1000 * 1000;
++	if (!strcasecmp(str, "KiB"))
++		return 1024;
++	if (!strcasecmp(str, "MiB"))
++		return 1024 * 1024;
++	if (!strcasecmp(str, "GiB"))
++		return 1024 * 1024 * 1024;
++
++	return -1;
++}
 +
 +/**
-+ * msm_nand_oob_64 - oob info for large (2KB) page
++ * get_bytes - convert a string containing amount of bytes into an
++ *             integer.
++ * @str: string to convert
++ *
++ * This function parses @str which may have one of 'KiB', 'MiB', or 'GiB' size
++ * specifiers. Returns positive amount of bytes in case of success and %-1 in
++ * case of failure.
 + */
-+static struct nand_ecclayout msm_nand_oob_64 = {
-+	.eccbytes	= 40,
-+	.eccpos		= {
-+		0,  1,  2,  3,  4,  5,  6,  7,  8,  9,
-+		10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-+		20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-+		46, 47, 48, 49, 50, 51, 52, 53, 54, 55,
-+		},
-+	.oobavail	= 16,
-+	.oobfree	= {
-+		{30, 16},
++static long long get_bytes(const char *str)
++{
++	char *endp;
++	long long bytes = strtoull(str, &endp, 0);
++
++	if (endp == str || bytes < 0)
++		return errmsg("incorrect amount of bytes: \"%s\"", str);
++
++	if (*endp != '\0') {
++		int mult = get_multiplier(endp);
++
++		if (mult == -1)
++			return errmsg("bad size specifier: \"%s\" - "
++				       "should be 'KiB', 'MiB' or 'GiB'", endp);
++		bytes *= mult;
 +	}
-+};
 +
-+static void *msm_nand_get_dma_buffer(struct msm_nand_chip *chip, size_t size)
++	return bytes;
++}
++
++static int parse_opt(int argc, char * const argv[])
 +{
-+	unsigned int bitmask, free_bitmask, old_bitmask;
-+	unsigned int need_mask, current_need_mask;
-+	int free_index;
++	while (1) {
++		int key;
++		char *endp;
 +
-+	need_mask = (1UL << DIV_ROUND_UP(size, MSM_NAND_DMA_BUFFER_SLOTS)) - 1;
-+	bitmask = atomic_read(&chip->dma_buffer_busy);
-+	free_bitmask = ~bitmask;
-+	do {
-+		free_index = __ffs(free_bitmask);
-+		current_need_mask = need_mask << free_index;
-+		if ((bitmask & current_need_mask) == 0) {
-+			old_bitmask =
-+				atomic_cmpxchg(&chip->dma_buffer_busy,
-+					       bitmask,
-+					       bitmask | current_need_mask);
-+			if (old_bitmask == bitmask)
-+				return chip->dma_buffer +
-+					free_index * MSM_NAND_DMA_BUFFER_SLOTS;
-+			free_bitmask = 0; /* force return */
++		key = getopt_long(argc, argv, "an:N:d:hVx:R:v", long_options, NULL);
++		if (key == -1)
++			break;
++
++		switch (key) {
++		case 'n':
++			args.vol_id = strtoul(optarg, &endp, 0);
++			if (*endp != '\0' || endp == optarg || args.vol_id < 0)
++				return errmsg("bad volume ID: " "\"%s\"", optarg);
++			break;
++
++		case 'N':
++			args.vol_name = optarg;
++			break;
++
++		case 'd':
++			args.devn = strtoul(optarg, &endp, 0);
++			if (*endp != '\0' || endp == optarg || args.devn < 0)
++				return errmsg("bad UBI device number: \"%s\"", optarg);
++
++			break;
++
++		case 'h':
++			fprintf(stderr, "%s\n\n", doc);
++			fprintf(stderr, "%s\n\n", usage);
++			fprintf(stderr, "%s\n", optionsstr);
++			exit(EXIT_SUCCESS);
++
++		case 'V':
++			fprintf(stderr, "%s\n", PROGRAM_VERSION);
++			exit(EXIT_SUCCESS);
++
++		case 'x':
++			if (!strcmp(optarg, "none"))
++				args.compr = UBIFS_COMPR_NONE;
++			else
++			if (!strcmp(optarg, "lzo"))
++				args.compr = UBIFS_COMPR_LZO;
++			else
++			if (!strcmp(optarg, "zlib"))
++				args.compr = UBIFS_COMPR_ZLIB;
++			else
++				return errmsg("bad compr type: \"%s\"", optarg);
++
++			break;
++
++		case 'R':
++			args.reserved = get_bytes(optarg);
++			break;
++
++		case 'v':
++			args.verbose = 1;
++			break;
++
++		case ':':
++			return errmsg("parameter is missing");
++
++		default:
++			fprintf(stderr, "Use -h for help\n");
++			return -1;
 +		}
-+		/* current free range was too small, clear all free bits */
-+		/* below the top busy bit within current_need_mask */
-+		free_bitmask &=
-+			~(~0U >> (32 - fls(bitmask & current_need_mask)));
-+	} while (free_bitmask);
++	}
 +
-+	return NULL;
-+}
-+
-+static void msm_nand_release_dma_buffer(struct msm_nand_chip *chip,
-+					void *buffer, size_t size)
-+{
-+	int index;
-+	unsigned int used_mask;
-+
-+	used_mask = (1UL << DIV_ROUND_UP(size, MSM_NAND_DMA_BUFFER_SLOTS)) - 1;
-+	index = ((uint8_t *)buffer - chip->dma_buffer) /
-+		MSM_NAND_DMA_BUFFER_SLOTS;
-+	atomic_sub(used_mask << index, &chip->dma_buffer_busy);
-+
-+	wake_up(&chip->wait_queue);
-+}
-+
-+static uint32_t flash_read_id(struct msm_nand_chip *chip)
-+{
-+	struct {
-+		dmov_s cmd[5];
-+		unsigned cmdptr;
-+		unsigned data[5];
-+	} *dma_buffer;
-+	uint32_t rv;
-+
-+	wait_event(chip->wait_queue,
-+		   (dma_buffer = msm_nand_get_dma_buffer(
-+			    chip, sizeof(*dma_buffer))));
-+
-+	dma_buffer->data[0] = NAND_DEV_SEL_CS0 | DM_ENABLE;
-+	dma_buffer->data[1] = NAND_CMD_FETCH_ID;
-+	dma_buffer->data[2] = 1;
-+	dma_buffer->data[3] = MSM_NAND_STATS_INIT;
-+	dma_buffer->data[4] = MSM_NAND_STATS_INIT;
-+	/* verify the array size statically to avoid array overflow access */
-+	BUILD_BUG_ON(4 != ARRAY_SIZE(dma_buffer->data) - 1);
-+
-+	dma_buffer->cmd[0].cmd = 0 | CMD_OCB;
-+	dma_buffer->cmd[0].src = msm_virt_to_dma(chip, &dma_buffer->data[0]);
-+	dma_buffer->cmd[0].dst = NAND_FLASH_CHIP_SELECT;
-+	dma_buffer->cmd[0].len = 4;
-+
-+	dma_buffer->cmd[1].cmd = DST_CRCI_NAND_CMD;
-+	dma_buffer->cmd[1].src = msm_virt_to_dma(chip, &dma_buffer->data[1]);
-+	dma_buffer->cmd[1].dst = NAND_FLASH_CMD;
-+	dma_buffer->cmd[1].len = 4;
-+
-+	dma_buffer->cmd[2].cmd = 0;
-+	dma_buffer->cmd[2].src = msm_virt_to_dma(chip, &dma_buffer->data[2]);
-+	dma_buffer->cmd[2].dst = NAND_EXEC_CMD;
-+	dma_buffer->cmd[2].len = 4;
-+
-+	dma_buffer->cmd[3].cmd = SRC_CRCI_NAND_DATA;
-+	dma_buffer->cmd[3].src = NAND_FLASH_STATUS;
-+	dma_buffer->cmd[3].dst = msm_virt_to_dma(chip, &dma_buffer->data[3]);
-+	dma_buffer->cmd[3].len = 4;
-+
-+	dma_buffer->cmd[4].cmd = CMD_OCU | CMD_LC;
-+	dma_buffer->cmd[4].src = NAND_READ_ID;
-+	dma_buffer->cmd[4].dst = msm_virt_to_dma(chip, &dma_buffer->data[4]);
-+	dma_buffer->cmd[4].len = 4;
-+	/* verify the array size statically to avoid array overflow access */
-+	BUILD_BUG_ON(4 != ARRAY_SIZE(dma_buffer->cmd) - 1);
-+
-+	dma_buffer->cmdptr =
-+		(msm_virt_to_dma(chip, dma_buffer->cmd) >> 3) | CMD_PTR_LP;
-+
-+	msm_dmov_exec_cmd(
-+		chip->dma_channel, DMOV_CMD_PTR_LIST |
-+		DMOV_CMD_ADDR(msm_virt_to_dma(chip, &dma_buffer->cmdptr)));
-+
-+	pr_debug("status: %x\n", dma_buffer->data[3]);
-+	pr_debug("nandid: %x maker %02x device %02x\n",
-+		dma_buffer->data[4], dma_buffer->data[4] & 0xff,
-+		(dma_buffer->data[4] >> 8) & 0xff);
-+	rv = dma_buffer->data[4];
-+	msm_nand_release_dma_buffer(chip, dma_buffer, sizeof(*dma_buffer));
-+	return rv;
-+}
-+
-+static int flash_read_config(struct msm_nand_chip *chip)
-+{
-+	struct {
-+		dmov_s cmd[2];
-+		unsigned cmdptr;
-+		unsigned cfg0;
-+		unsigned cfg1;
-+	} *dma_buffer;
-+
-+	wait_event(chip->wait_queue,
-+		   (dma_buffer = msm_nand_get_dma_buffer(
-+			    chip, sizeof(*dma_buffer))));
-+	dma_buffer->cfg0 = 0;
-+	dma_buffer->cfg1 = 0;
-+
-+	dma_buffer->cmd[0].cmd = CMD_OCB;
-+	dma_buffer->cmd[0].src = NAND_DEV0_CFG0;
-+	dma_buffer->cmd[0].dst = msm_virt_to_dma(chip, &dma_buffer->cfg0);
-+	dma_buffer->cmd[0].len = 4;
-+
-+	dma_buffer->cmd[1].cmd = CMD_OCU | CMD_LC;
-+	dma_buffer->cmd[1].src = NAND_DEV0_CFG1;
-+	dma_buffer->cmd[1].dst = msm_virt_to_dma(chip, &dma_buffer->cfg1);
-+	dma_buffer->cmd[1].len = 4;
-+	/* verify the array size statically to avoid array overflow access */
-+	BUILD_BUG_ON(1 != ARRAY_SIZE(dma_buffer->cmd) - 1);
-+
-+	dma_buffer->cmdptr =
-+		(msm_virt_to_dma(chip, dma_buffer->cmd) >> 3) | CMD_PTR_LP;
-+
-+	msm_dmov_exec_cmd(
-+		chip->dma_channel, DMOV_CMD_PTR_LIST |
-+		DMOV_CMD_ADDR(msm_virt_to_dma(chip, &dma_buffer->cmdptr)));
-+
-+	chip->cfg0 = dma_buffer->cfg0;
-+	chip->cfg1 = dma_buffer->cfg1;
-+
-+	pr_info("read cfg0 = %x, cfg1 = %x\n", chip->cfg0, chip->cfg1);
-+	msm_nand_release_dma_buffer(chip, dma_buffer, sizeof(*dma_buffer));
-+
-+	if ((chip->cfg0 == 0) || (chip->cfg1 == 0))
-+		return -ENODEV;
-+
-+	chip->cfg0 = (3 <<  6)  /* 4 codeword per page for 2k nand */
-+		|  (516 <<  9)  /* 516 user data bytes */
-+		|   (10 << 19)  /* 10 parity bytes */
-+		|    (5 << 27)  /* 5 address cycles */
-+		|    (1 << 30)  /* Read status before data */
-+		|    (1 << 31)  /* Send read cmd */
-+		/* 0 spare bytes for 16 bit nand or 1 spare bytes for 8 bit */
-+		| ((chip->cfg1 & CFG1_WIDE_FLASH) ? (0 << 23) : (1 << 23));
-+	chip->cfg1 = (0 <<  0)  /* Enable ecc */
-+		|    (7 <<  2)  /* 8 recovery cycles */
-+		|    (0 <<  5)  /* Allow CS deassertion */
-+		|  (465 <<  6)  /* Bad block marker location */
-+		|    (0 << 16)  /* Bad block in user data area */
-+		|    (2 << 17)  /* 6 cycle tWB/tRB */
-+		| (chip->cfg1 & CFG1_WIDE_FLASH); /* preserve wide flag */
++	if (optind == argc - 1)
++		args.node = argv[optind];
++	else if (optind < argc)
++		return errmsg("more then one UBI device specified (use -h for help)");
 +
 +	return 0;
 +}
 +
-+static unsigned flash_rd_reg(struct msm_nand_chip *chip, unsigned addr)
++static int translate_dev(libubi_t libubi, const char *node)
 +{
-+	struct {
-+		dmov_s cmd;
-+		unsigned cmdptr;
-+		unsigned data;
-+	} *dma_buffer;
-+	unsigned rv;
-+
-+	wait_event(chip->wait_queue,
-+		   (dma_buffer = msm_nand_get_dma_buffer(
-+			    chip, sizeof(*dma_buffer))));
-+
-+	dma_buffer->cmd.cmd = CMD_LC;
-+	dma_buffer->cmd.src = addr;
-+	dma_buffer->cmd.dst = msm_virt_to_dma(chip, &dma_buffer->data);
-+	dma_buffer->cmd.len = 4;
-+
-+	dma_buffer->cmdptr =
-+		(msm_virt_to_dma(chip, &dma_buffer->cmd) >> 3) | CMD_PTR_LP;
-+	dma_buffer->data = MSM_NAND_STATS_INIT;
-+
-+	msm_dmov_exec_cmd(
-+		chip->dma_channel, DMOV_CMD_PTR_LIST |
-+		DMOV_CMD_ADDR(msm_virt_to_dma(chip, &dma_buffer->cmdptr)));
-+	rv = dma_buffer->data;
-+
-+	msm_nand_release_dma_buffer(chip, dma_buffer, sizeof(*dma_buffer));
-+
-+	return rv;
-+}
-+
-+static void flash_wr_reg(struct msm_nand_chip *chip, unsigned addr,
-+			 unsigned val)
-+{
-+	struct {
-+		dmov_s cmd;
-+		unsigned cmdptr;
-+		unsigned data;
-+	} *dma_buffer;
-+
-+	wait_event(chip->wait_queue,
-+		   (dma_buffer = msm_nand_get_dma_buffer(
-+			    chip, sizeof(*dma_buffer))));
-+
-+	dma_buffer->cmd.cmd = CMD_LC;
-+	dma_buffer->cmd.src = msm_virt_to_dma(chip, &dma_buffer->data);
-+	dma_buffer->cmd.dst = addr;
-+	dma_buffer->cmd.len = 4;
-+
-+	dma_buffer->cmdptr =
-+		(msm_virt_to_dma(chip, &dma_buffer->cmd) >> 3) | CMD_PTR_LP;
-+	dma_buffer->data = val;
-+
-+	msm_dmov_exec_cmd(
-+		chip->dma_channel, DMOV_CMD_PTR_LIST |
-+		DMOV_CMD_ADDR(msm_virt_to_dma(chip, &dma_buffer->cmdptr)));
-+
-+	msm_nand_release_dma_buffer(chip, dma_buffer, sizeof(*dma_buffer));
-+}
-+
-+static int msm_nand_read_oob(struct mtd_info *mtd, loff_t from,
-+			     struct mtd_oob_ops *ops)
-+{
-+	struct msm_nand_chip *chip = mtd->priv;
-+
-+	struct {
-+		dmov_s cmd[4 * 5 + 3];
-+		unsigned cmdptr;
-+		struct {
-+			uint32_t cmd;
-+			uint32_t addr0;
-+			uint32_t addr1;
-+			uint32_t chipsel;
-+			uint32_t cfg0;
-+			uint32_t cfg1;
-+			uint32_t exec;
-+			uint32_t ecccfg;
-+			struct {
-+				uint32_t flash_status;
-+				uint32_t buffer_status;
-+			} result[4];
-+		} data;
-+	} *dma_buffer;
-+	dmov_s *cmd;
-+	unsigned n;
-+	unsigned page = from / NAND_PAGE_SIZE;
-+	uint32_t oob_len = ops->ooblen;
-+	uint32_t sectordatasize;
-+	uint32_t sectoroobsize;
-+	int err, pageerr, rawerr;
-+	dma_addr_t data_dma_addr = 0;
-+	dma_addr_t oob_dma_addr = 0;
-+	dma_addr_t data_dma_addr_curr = 0;
-+	dma_addr_t oob_dma_addr_curr = 0;
-+	uint32_t oob_col = 0;
-+	unsigned page_count;
-+	unsigned pages_read = 0;
-+	unsigned start_sector = 0;
-+	uint32_t ecc_errors;
-+	uint32_t total_ecc_errors = 0;
-+
-+	if (from & (mtd->writesize - 1)) {
-+		pr_err("unsupported from, 0x%llx\n", from);
-+		return -EINVAL;
-+	}
-+	if (ops->datbuf != NULL && (ops->len % mtd->writesize) != 0) {
-+		/* when ops->datbuf is NULL, ops->len may refer to ooblen */
-+		pr_err("unsupported ops->len, %d\n", ops->len);
-+		return -EINVAL;
-+	}
-+	if (ops->ooblen != 0 && ops->ooboffs != 0) {
-+		pr_err("unsupported ops->ooboffs, %d\n", ops->ooboffs);
-+		return -EINVAL;
-+	}
-+
-+	if (ops->oobbuf && !ops->datbuf && ops->mode == MTD_OOB_AUTO)
-+		start_sector = 3;
-+
-+	if (ops->oobbuf && !ops->datbuf)
-+		page_count = ops->ooblen / ((ops->mode == MTD_OOB_AUTO) ?
-+			mtd->oobavail : mtd->oobsize);
-+	else
-+		page_count = ops->len / mtd->writesize;
-+
-+	pr_debug("%llx %p %x %p %x\n",
-+		from, ops->datbuf, ops->len, ops->oobbuf, ops->ooblen);
-+
-+	if (ops->datbuf) {
-+		data_dma_addr_curr = data_dma_addr =
-+			dma_map_single(chip->dev, ops->datbuf, ops->len,
-+				       DMA_FROM_DEVICE);
-+		if (dma_mapping_error(chip->dev, data_dma_addr)) {
-+			pr_err("msm_nand_read_oob: failed to get dma addr "
-+			       "for %p\n", ops->datbuf);
-+			return -EIO;
-+		}
-+	}
-+	if (ops->oobbuf) {
-+		memset(ops->oobbuf, 0xff, ops->ooblen);
-+		oob_dma_addr_curr = oob_dma_addr =
-+			dma_map_single(chip->dev, ops->oobbuf,
-+				       ops->ooblen, DMA_BIDIRECTIONAL);
-+		if (dma_mapping_error(chip->dev, oob_dma_addr)) {
-+			pr_err("msm_nand_read_oob: failed to get dma addr "
-+			       "for %p\n", ops->oobbuf);
-+			err = -EIO;
-+			goto err_dma_map_oobbuf_failed;
-+		}
-+	}
-+
-+	wait_event(chip->wait_queue,
-+		   (dma_buffer = msm_nand_get_dma_buffer(
-+			    chip, sizeof(*dma_buffer))));
-+
-+	oob_col = start_sector * 0x210;
-+	if (chip->cfg1 & CFG1_WIDE_FLASH)
-+		oob_col >>= 1;
-+
-+	err = 0;
-+	while (page_count-- > 0) {
-+		cmd = dma_buffer->cmd;
-+
-+		/* CMD / ADDR0 / ADDR1 / CHIPSEL program values */
-+		dma_buffer->data.cmd = NAND_CMD_PAGE_READ_ECC;
-+		dma_buffer->data.addr0 = (page << 16) | oob_col;
-+		dma_buffer->data.addr1 = (page >> 16) & 0xff;
-+		/* flash0 + undoc bit */
-+		dma_buffer->data.chipsel = NAND_DEV_SEL_CS0 | DM_ENABLE;
-+
-+
-+		dma_buffer->data.cfg0 =
-+			(chip->cfg0 & ~(7U << 6)) | ((3U - start_sector) << 6);
-+		dma_buffer->data.cfg1 = chip->cfg1;
-+
-+		/* GO bit for the EXEC register */
-+		dma_buffer->data.exec = 1;
-+
-+		/* verify the array size statically to avoid array
-+		 * overflow access
-+		 */
-+		BUILD_BUG_ON(4 != ARRAY_SIZE(dma_buffer->data.result));
-+
-+		for (n = start_sector; n < 4; n++) {
-+			/* flash + buffer status return words */
-+			dma_buffer->data.result[n].flash_status =
-+							 MSM_NAND_STATS_INIT;
-+			dma_buffer->data.result[n].buffer_status =
-+							 MSM_NAND_STATS_INIT;
-+
-+			/* block on cmd ready, then
-+			 * write CMD / ADDR0 / ADDR1 / CHIPSEL
-+			 * regs in a burst
-+			 */
-+			cmd->cmd = DST_CRCI_NAND_CMD;
-+			cmd->src = msm_virt_to_dma(chip, &dma_buffer->data.cmd);
-+			cmd->dst = NAND_FLASH_CMD;
-+			if (n == start_sector)
-+				cmd->len = 16;
-+			else
-+				cmd->len = 4;
-+			cmd++;
-+
-+			if (n == start_sector) {
-+				cmd->cmd = 0;
-+				cmd->src = msm_virt_to_dma(chip,
-+							&dma_buffer->data.cfg0);
-+				cmd->dst = NAND_DEV0_CFG0;
-+				cmd->len = 8;
-+				cmd++;
-+			}
-+
-+			/* kick the execute register */
-+			cmd->cmd = 0;
-+			cmd->src =
-+				msm_virt_to_dma(chip, &dma_buffer->data.exec);
-+			cmd->dst = NAND_EXEC_CMD;
-+			cmd->len = 4;
-+			cmd++;
-+
-+			/* block on data ready, then
-+			 * read the status register
-+			 */
-+			cmd->cmd = SRC_CRCI_NAND_DATA;
-+			cmd->src = NAND_FLASH_STATUS;
-+			cmd->dst = msm_virt_to_dma(chip,
-+						   &dma_buffer->data.result[n]);
-+			/* NAND_FLASH_STATUS + NAND_BUFFER_STATUS */
-+			cmd->len = 8;
-+			cmd++;
-+
-+			/* read data block
-+			 * (only valid if status says success)
-+			 */
-+			if (ops->datbuf) {
-+				sectordatasize = (n < 3) ? 516 : 500;
-+				cmd->cmd = 0;
-+				cmd->src = NAND_FLASH_BUFFER;
-+				cmd->dst = data_dma_addr_curr;
-+				data_dma_addr_curr += sectordatasize;
-+				cmd->len = sectordatasize;
-+				cmd++;
-+			}
-+
-+			if (ops->oobbuf &&
-+			    (n == 3 || ops->mode != MTD_OOB_AUTO)) {
-+				cmd->cmd = 0;
-+				if (n == 3) {
-+					cmd->src = NAND_FLASH_BUFFER + 500;
-+					sectoroobsize = 16;
-+					if (ops->mode != MTD_OOB_AUTO)
-+						sectoroobsize += 10;
-+				} else {
-+					cmd->src = NAND_FLASH_BUFFER + 516;
-+					sectoroobsize = 10;
-+				}
-+
-+				cmd->dst = oob_dma_addr_curr;
-+				if (sectoroobsize < oob_len)
-+					cmd->len = sectoroobsize;
-+				else
-+					cmd->len = oob_len;
-+				oob_dma_addr_curr += cmd->len;
-+				oob_len -= cmd->len;
-+				if (cmd->len > 0)
-+					cmd++;
-+			}
-+		}
-+
-+		/* verify the array size statically to avoid array
-+		 * overflow access
-+		 */
-+		BUILD_BUG_ON(4 * 5 + 3 != ARRAY_SIZE(dma_buffer->cmd));
-+		BUG_ON(cmd - dma_buffer->cmd > ARRAY_SIZE(dma_buffer->cmd));
-+		dma_buffer->cmd[0].cmd |= CMD_OCB;
-+		cmd[-1].cmd |= CMD_OCU | CMD_LC;
-+
-+		dma_buffer->cmdptr =
-+			(msm_virt_to_dma(chip, dma_buffer->cmd) >> 3)
-+			| CMD_PTR_LP;
-+
-+		msm_dmov_exec_cmd(
-+			chip->dma_channel, DMOV_CMD_PTR_LIST | DMOV_CMD_ADDR(
-+				msm_virt_to_dma(chip, &dma_buffer->cmdptr)));
-+
-+		/* if any of the writes failed (0x10), or there
-+		 * was a protection violation (0x100), we lose
-+		 */
-+		pageerr = rawerr = 0;
-+		for (n = start_sector; n < 4; n++) {
-+			if (dma_buffer->data.result[n].flash_status & 0x110) {
-+				rawerr = -EIO;
-+				break;
-+			}
-+		}
-+		if (rawerr) {
-+			if (ops->datbuf) {
-+				uint8_t *datbuf =
-+				ops->datbuf + pages_read * mtd->writesize;
-+				for (n = 0; n < mtd->writesize; n++) {
-+					/* empty blocks read 0x54 at
-+					 * these offsets
-+					 */
-+					if (n % 516 == 3 && datbuf[n] == 0x54)
-+						datbuf[n] = 0xff;
-+					if (datbuf[n] != 0xff) {
-+						pageerr = rawerr;
-+						break;
-+					}
-+				}
-+			}
-+			if (ops->oobbuf) {
-+				for (n = 0; n < ops->ooblen; n++) {
-+					if (ops->oobbuf[n] != 0xff) {
-+						pageerr = rawerr;
-+						break;
-+					}
-+				}
-+			}
-+		}
-+		if (pageerr) {
-+			for (n = start_sector; n < 4; n++) {
-+				if (dma_buffer->data.result[n].buffer_status
-+						& 0x8) {
-+					/* not thread safe */
-+					mtd->ecc_stats.failed++;
-+					pageerr = -EBADMSG;
-+					break;
-+				}
-+			}
-+		}
-+		if (!rawerr) { /* check for corretable errors */
-+			for (n = start_sector; n < 4; n++) {
-+				ecc_errors = dma_buffer->data.
-+					result[n].buffer_status & 0x7;
-+				if (ecc_errors) {
-+					total_ecc_errors += ecc_errors;
-+					/* not thread safe */
-+					mtd->ecc_stats.corrected += ecc_errors;
-+					if (ecc_errors > 1)
-+						pageerr = -EUCLEAN;
-+				}
-+			}
-+		}
-+		if (pageerr && (pageerr != -EUCLEAN || err == 0))
-+			err = pageerr;
-+
-+		if (rawerr && !pageerr) {
-+			pr_err("msm_nand_read_oob %llx %x %x empty page\n",
-+			       (loff_t)page * mtd->writesize, ops->len,
-+			       ops->ooblen);
-+		} else {
-+			pr_debug("status: %x %x %x %x %x %x %x %x\n",
-+				dma_buffer->data.result[0].flash_status,
-+				dma_buffer->data.result[0].buffer_status,
-+				dma_buffer->data.result[1].flash_status,
-+				dma_buffer->data.result[1].buffer_status,
-+				dma_buffer->data.result[2].flash_status,
-+				dma_buffer->data.result[2].buffer_status,
-+				dma_buffer->data.result[3].flash_status,
-+				dma_buffer->data.result[3].buffer_status);
-+		}
-+
-+		if (err && err != -EUCLEAN && err != -EBADMSG)
-+			break;
-+		pages_read++;
-+		page++;
-+	}
-+	msm_nand_release_dma_buffer(chip, dma_buffer, sizeof(*dma_buffer));
-+
-+	if (ops->oobbuf) {
-+		dma_unmap_single(chip->dev, oob_dma_addr,
-+				 ops->ooblen, DMA_FROM_DEVICE);
-+	}
-+err_dma_map_oobbuf_failed:
-+	if (ops->datbuf) {
-+		dma_unmap_single(chip->dev, data_dma_addr,
-+				 ops->len, DMA_FROM_DEVICE);
-+	}
-+
-+	ops->retlen = mtd->writesize * pages_read;
-+	ops->oobretlen = ops->ooblen - oob_len;
-+	if (err)
-+		pr_err("msm_nand_read_oob %llx %x %x failed %d, corrected %d\n",
-+		       from, ops->datbuf ? ops->len : 0, ops->ooblen, err,
-+		       total_ecc_errors);
-+	return err;
-+}
-+
-+static int
-+msm_nand_read(struct mtd_info *mtd, loff_t from, size_t len,
-+	      size_t *retlen, u_char *buf)
-+{
-+	int ret;
-+	struct mtd_oob_ops ops;
-+
-+
-+	ops.mode = MTD_OOB_PLACE;
-+	ops.len = len;
-+	ops.retlen = 0;
-+	ops.ooblen = 0;
-+	ops.datbuf = buf;
-+	ops.oobbuf = NULL;
-+	ret =  msm_nand_read_oob(mtd, from, &ops);
-+	*retlen = ops.retlen;
-+	return ret;
-+}
-+
-+static int
-+msm_nand_write_oob(struct mtd_info *mtd, loff_t to, struct mtd_oob_ops *ops)
-+{
-+	struct msm_nand_chip *chip = mtd->priv;
-+	struct {
-+		dmov_s cmd[4 * 5 + 3];
-+		unsigned cmdptr;
-+		struct {
-+			uint32_t cmd;
-+			uint32_t addr0;
-+			uint32_t addr1;
-+			uint32_t chipsel;
-+			uint32_t cfg0;
-+			uint32_t cfg1;
-+			uint32_t exec;
-+			uint32_t ecccfg;
-+			uint32_t flash_status[4];
-+		} data;
-+	} *dma_buffer;
-+	dmov_s *cmd;
-+	unsigned n;
-+	unsigned page = to / NAND_PAGE_SIZE;
-+	uint32_t oob_len = ops->ooblen;
-+	uint32_t sectordatawritesize;
 +	int err;
-+	dma_addr_t data_dma_addr = 0;
-+	dma_addr_t oob_dma_addr = 0;
-+	dma_addr_t data_dma_addr_curr = 0;
-+	dma_addr_t oob_dma_addr_curr = 0;
-+	unsigned page_count;
-+	unsigned pages_written = 0;
 +
-+	if (to & (mtd->writesize - 1)) {
-+		pr_err("unsupported to, 0x%llx\n", to);
-+		return -EINVAL;
-+	}
-+	if (ops->ooblen != 0 && ops->mode != MTD_OOB_AUTO) {
-+		pr_err("unsupported ops->mode, %d\n", ops->mode);
-+		return -EINVAL;
++	err = ubi_probe_node(libubi, node);
++	if (err == -1) {
++		if (errno != ENODEV)
++			return sys_errmsg("error while probing \"%s\"", node);
++		return errmsg("\"%s\" does not correspond to any UBI device or volume", node);
 +	}
 +
-+	if (ops->datbuf == NULL) {
-+		pr_err("unsupported ops->datbuf == NULL\n");
-+		return -EINVAL;
-+	}
-+	if ((ops->len % mtd->writesize) != 0) {
-+		pr_err("unsupported ops->len, %d\n", ops->len);
-+		return -EINVAL;
-+	}
++	if (err == 1) {
++		struct ubi_dev_info dev_info;
 +
-+	if (ops->ooblen != 0 && ops->ooboffs != 0) {
-+		pr_err("unsupported ops->ooboffs, %d\n", ops->ooboffs);
-+		return -EINVAL;
-+	}
-+
-+	if (ops->datbuf) {
-+		data_dma_addr_curr = data_dma_addr =
-+			dma_map_single(chip->dev, ops->datbuf,
-+				       ops->len, DMA_TO_DEVICE);
-+		if (dma_mapping_error(chip->dev, data_dma_addr)) {
-+			pr_err("msm_nand_write_oob: failed to get dma addr "
-+			       "for %p\n", ops->datbuf);
-+			return -EIO;
-+		}
-+	}
-+	if (ops->oobbuf) {
-+		oob_dma_addr_curr = oob_dma_addr =
-+			dma_map_single(chip->dev, ops->oobbuf,
-+				       ops->ooblen, DMA_TO_DEVICE);
-+		if (dma_mapping_error(chip->dev, oob_dma_addr)) {
-+			pr_err("msm_nand_write_oob: failed to get dma addr "
-+			       "for %p\n", ops->oobbuf);
-+			err = -EIO;
-+			goto err_dma_map_oobbuf_failed;
-+		}
-+	}
-+
-+	page_count = ops->len / mtd->writesize;
-+
-+	wait_event(chip->wait_queue, (dma_buffer =
-+			msm_nand_get_dma_buffer(chip, sizeof(*dma_buffer))));
-+
-+	while (page_count-- > 0) {
-+		cmd = dma_buffer->cmd;
-+
-+		/* CMD / ADDR0 / ADDR1 / CHIPSEL program values */
-+		dma_buffer->data.cmd = NAND_CMD_PRG_PAGE;
-+		dma_buffer->data.addr0 = page << 16;
-+		dma_buffer->data.addr1 = (page >> 16) & 0xff;
-+		dma_buffer->data.chipsel = NAND_DEV_SEL_CS0 | DM_ENABLE;
-+
-+		dma_buffer->data.cfg0 = chip->cfg0;
-+		dma_buffer->data.cfg1 = chip->cfg1;
-+
-+		/* GO bit for the EXEC register */
-+		dma_buffer->data.exec = 1;
-+
-+		/* verify the array size statically to avoid array
-+		 * overflow access
-+		 */
-+		BUILD_BUG_ON(4 != ARRAY_SIZE(dma_buffer->data.flash_status));
-+
-+		for (n = 0; n < 4; n++) {
-+			/* status return words */
-+			dma_buffer->data.flash_status[n] = MSM_NAND_STATS_INIT;
-+			/* block on cmd ready, then
-+			 * write CMD / ADDR0 / ADDR1 / CHIPSEL regs in a burst
-+			 */
-+			cmd->cmd = DST_CRCI_NAND_CMD;
-+			cmd->src =
-+				msm_virt_to_dma(chip, &dma_buffer->data.cmd);
-+			cmd->dst = NAND_FLASH_CMD;
-+			if (n == 0)
-+				cmd->len = 16;
-+			else
-+				cmd->len = 4;
-+			cmd++;
-+
-+			if (n == 0) {
-+				cmd->cmd = 0;
-+				cmd->src = msm_virt_to_dma(chip,
-+							&dma_buffer->data.cfg0);
-+				cmd->dst = NAND_DEV0_CFG0;
-+				cmd->len = 8;
-+				cmd++;
-+			}
-+
-+				/* write data block */
-+			sectordatawritesize = (n < 3) ? 516 : 500;
-+			cmd->cmd = 0;
-+			cmd->src = data_dma_addr_curr;
-+			data_dma_addr_curr += sectordatawritesize;
-+			cmd->dst = NAND_FLASH_BUFFER;
-+			cmd->len = sectordatawritesize;
-+			cmd++;
-+
-+			if (ops->oobbuf) {
-+				if (n == 3) {
-+					cmd->cmd = 0;
-+					cmd->src = oob_dma_addr_curr;
-+					cmd->dst = NAND_FLASH_BUFFER + 500;
-+					if (16 < oob_len)
-+						cmd->len = 16;
-+					else
-+						cmd->len = oob_len;
-+					oob_dma_addr_curr += cmd->len;
-+					oob_len -= cmd->len;
-+					if (cmd->len > 0)
-+						cmd++;
-+				}
-+				if (ops->mode != MTD_OOB_AUTO) {
-+					/* skip ecc bytes in oobbuf */
-+					if (oob_len < 10) {
-+						oob_dma_addr_curr += 10;
-+						oob_len -= 10;
-+					} else {
-+						oob_dma_addr_curr += oob_len;
-+						oob_len = 0;
-+					}
-+				}
-+			}
-+
-+			/* kick the execute register */
-+			cmd->cmd = 0;
-+			cmd->src =
-+				msm_virt_to_dma(chip, &dma_buffer->data.exec);
-+			cmd->dst = NAND_EXEC_CMD;
-+			cmd->len = 4;
-+			cmd++;
-+
-+			/* block on data ready, then
-+			 * read the status register
-+			 */
-+			cmd->cmd = SRC_CRCI_NAND_DATA;
-+			cmd->src = NAND_FLASH_STATUS;
-+			cmd->dst = msm_virt_to_dma(chip,
-+					     &dma_buffer->data.flash_status[n]);
-+			cmd->len = 4;
-+			cmd++;
-+		}
-+
-+		dma_buffer->cmd[0].cmd |= CMD_OCB;
-+		cmd[-1].cmd |= CMD_OCU | CMD_LC;
-+		/* verify the array size statically to avoid array
-+		 * overflow access
-+		 */
-+		BUILD_BUG_ON(4 * 5 + 3 != ARRAY_SIZE(dma_buffer->cmd));
-+		BUG_ON(cmd - dma_buffer->cmd > ARRAY_SIZE(dma_buffer->cmd));
-+		dma_buffer->cmdptr =
-+			(msm_virt_to_dma(chip, dma_buffer->cmd) >> 3) |
-+			CMD_PTR_LP;
-+
-+		msm_dmov_exec_cmd(chip->dma_channel,
-+			DMOV_CMD_PTR_LIST | DMOV_CMD_ADDR(
-+				msm_virt_to_dma(chip, &dma_buffer->cmdptr)));
-+
-+		/* if any of the writes failed (0x10), or there was a
-+		 * protection violation (0x100), or the program success
-+		 * bit (0x80) is unset, we lose
-+		 */
-+		err = 0;
-+		for (n = 0; n < 4; n++) {
-+			if (dma_buffer->data.flash_status[n] & 0x110) {
-+				err = -EIO;
-+				break;
-+			}
-+			if (!(dma_buffer->data.flash_status[n] & 0x80)) {
-+				err = -EIO;
-+				break;
-+			}
-+		}
-+
-+		pr_debug("write page %d: status: %x %x %x %x\n", page,
-+			dma_buffer->data.flash_status[0],
-+			dma_buffer->data.flash_status[1],
-+			dma_buffer->data.flash_status[2],
-+			dma_buffer->data.flash_status[3]);
-+
++		err = ubi_get_dev_info(libubi, node, &dev_info);
 +		if (err)
-+			break;
-+		pages_written++;
-+		page++;
-+	}
-+	ops->retlen = mtd->writesize * pages_written;
-+	ops->oobretlen = ops->ooblen - oob_len;
++			return sys_errmsg("cannot get information about UBI device \"%s\"", node);
 +
-+	msm_nand_release_dma_buffer(chip, dma_buffer, sizeof(*dma_buffer));
-+
-+	if (ops->oobbuf)
-+		dma_unmap_single(chip->dev, oob_dma_addr,
-+				 ops->ooblen, DMA_TO_DEVICE);
-+err_dma_map_oobbuf_failed:
-+	if (ops->datbuf)
-+		dma_unmap_single(chip->dev, data_dma_addr,
-+				 mtd->writesize, DMA_TO_DEVICE);
-+	if (err)
-+		pr_err("msm_nand_write_oob %llx %x %x failed %d\n",
-+		       to, ops->len, ops->ooblen, err);
-+	return err;
-+}
-+
-+static int msm_nand_write(struct mtd_info *mtd, loff_t to, size_t len,
-+			  size_t *retlen, const u_char *buf)
-+{
-+	int ret;
-+	struct mtd_oob_ops ops;
-+
-+	ops.mode = MTD_OOB_PLACE;
-+	ops.len = len;
-+	ops.retlen = 0;
-+	ops.ooblen = 0;
-+	ops.datbuf = (uint8_t *)buf;
-+	ops.oobbuf = NULL;
-+	ret =  msm_nand_write_oob(mtd, to, &ops);
-+	*retlen = ops.retlen;
-+	return ret;
-+}
-+
-+static int
-+msm_nand_erase(struct mtd_info *mtd, struct erase_info *instr)
-+{
-+	int err;
-+	struct msm_nand_chip *chip = mtd->priv;
-+	struct {
-+		dmov_s cmd[4];
-+		unsigned cmdptr;
-+		unsigned data[8];
-+	} *dma_buffer;
-+	unsigned page = instr->addr / NAND_PAGE_SIZE;
-+
-+	if (instr->addr & (mtd->erasesize - 1)) {
-+		pr_err("unsupported erase address, 0x%llx\n",
-+		       instr->addr);
-+		return -EINVAL;
-+	}
-+	if (instr->len != mtd->erasesize) {
-+		pr_err("unsupported erase len, %lld\n",
-+		       instr->len);
-+		return -EINVAL;
-+	}
-+
-+	wait_event(chip->wait_queue,
-+		   (dma_buffer = msm_nand_get_dma_buffer(
-+			    chip, sizeof(*dma_buffer))));
-+
-+	dma_buffer->data[0] = NAND_CMD_BLOCK_ERASE;
-+	dma_buffer->data[1] = page;
-+	dma_buffer->data[2] = 0;
-+	dma_buffer->data[3] = NAND_DEV_SEL_CS0 | DM_ENABLE;
-+	dma_buffer->data[4] = 1;
-+	dma_buffer->data[5] = MSM_NAND_STATS_INIT;
-+	dma_buffer->data[6] = chip->cfg0 & (~(7 << 6));  /* CW_PER_PAGE = 0 */
-+	dma_buffer->data[7] = chip->cfg1;
-+	/* verify the array size statically to avoid array overflow access */
-+	BUILD_BUG_ON(7 != ARRAY_SIZE(dma_buffer->data) - 1);
-+
-+	dma_buffer->cmd[0].cmd = DST_CRCI_NAND_CMD | CMD_OCB;
-+	dma_buffer->cmd[0].src = msm_virt_to_dma(chip, &dma_buffer->data[0]);
-+	dma_buffer->cmd[0].dst = NAND_FLASH_CMD;
-+	dma_buffer->cmd[0].len = 16;
-+
-+	dma_buffer->cmd[1].cmd = 0;
-+	dma_buffer->cmd[1].src = msm_virt_to_dma(chip, &dma_buffer->data[6]);
-+	dma_buffer->cmd[1].dst = NAND_DEV0_CFG0;
-+	dma_buffer->cmd[1].len = 8;
-+
-+	dma_buffer->cmd[2].cmd = 0;
-+	dma_buffer->cmd[2].src = msm_virt_to_dma(chip, &dma_buffer->data[4]);
-+	dma_buffer->cmd[2].dst = NAND_EXEC_CMD;
-+	dma_buffer->cmd[2].len = 4;
-+
-+	dma_buffer->cmd[3].cmd = SRC_CRCI_NAND_DATA | CMD_OCU | CMD_LC;;
-+	dma_buffer->cmd[3].src = NAND_FLASH_STATUS;
-+	dma_buffer->cmd[3].dst = msm_virt_to_dma(chip, &dma_buffer->data[5]);
-+	dma_buffer->cmd[3].len = 4;
-+
-+	/* verify the array size statically to avoid array overflow access */
-+	BUILD_BUG_ON(3 != ARRAY_SIZE(dma_buffer->cmd) - 1);
-+
-+	dma_buffer->cmdptr =
-+		(msm_virt_to_dma(chip, dma_buffer->cmd) >> 3) | CMD_PTR_LP;
-+
-+	msm_dmov_exec_cmd(
-+		chip->dma_channel, DMOV_CMD_PTR_LIST |
-+		DMOV_CMD_ADDR(msm_virt_to_dma(chip, &dma_buffer->cmdptr)));
-+
-+	/* we fail if there was an operation error, a mpu error, or the
-+	 * erase success bit was not set.
-+	 */
-+
-+	if (dma_buffer->data[5] & 0x110 || !(dma_buffer->data[5] & 0x80))
-+		err = -EIO;
-+	else
-+		err = 0;
-+
-+	msm_nand_release_dma_buffer(chip, dma_buffer, sizeof(*dma_buffer));
-+	if (err) {
-+		pr_err("erase failed, 0x%llx\n", instr->addr);
-+		instr->fail_addr = instr->addr;
-+		instr->state = MTD_ERASE_FAILED;
++		args.devn = dev_info.dev_num;
 +	} else {
-+		instr->state = MTD_ERASE_DONE;
-+		instr->fail_addr = 0xffffffff;
-+		mtd_erase_callback(instr);
-+	}
-+	return err;
-+}
++		struct ubi_vol_info vol_info;
 +
-+static int
-+msm_nand_block_isbad(struct mtd_info *mtd, loff_t ofs)
-+{
-+	/* Check for invalid offset */
-+	if (ofs > mtd->size)
-+		return -EINVAL;
++		err = ubi_get_vol_info(libubi, node, &vol_info);
++		if (err)
++			return sys_errmsg("cannot get information about UBI volume \"%s\"", node);
++
++		if (args.vol_id != -1)
++			return errmsg("both volume character device node (\"%s\") and "
++				      "volume ID (%d) are specify, use only one of them"
++				      "(use -h for help)", node, args.vol_id);
++
++		args.devn = vol_info.dev_num;
++		args.vol_id = vol_info.vol_id;
++	}
 +
 +	return 0;
 +}
 +
-+
-+static int
-+msm_nand_block_markbad(struct mtd_info *mtd, loff_t ofs)
++static int get_vol_id_by_name(libubi_t libubi, int dev_num, const char *name)
 +{
-+	int ret;
-+
-+	ret = msm_nand_block_isbad(mtd, ofs);
-+	if (ret) {
-+		/* If it was bad already, return success and do nothing */
-+		if (ret > 0)
-+			return 0;
-+		return ret;
-+	}
-+
-+	return -EIO;
-+}
-+
-+/**
-+ * msm_nand_scan - [msm_nand Interface] Scan for the msm_nand device
-+ * @mtd:        MTD device structure
-+ * @maxchips:   Number of chips to scan for
-+ *
-+ * This fills out all the not initialized function pointers
-+ * with the defaults.
-+ * The flash ID is read and the mtd/chip structures are
-+ * filled with the appropriate values.
-+ */
-+static int msm_nand_scan(struct mtd_info *mtd, int maxchips)
-+{
-+	unsigned n;
-+	struct msm_nand_chip *chip = mtd->priv;
-+	uint32_t flash_id;
-+
-+
-+	if (flash_read_config(chip)) {
-+		pr_err("ERROR: could not save cfg0 & cfg1 state\n");
-+		return -ENODEV;
-+	}
-+	pr_info("cfg0 = %x, cfg1 = %x\n", chip->cfg0, chip->cfg1);
-+	pr_info("cfg0: cw/page=%d ud_sz=%d ecc_sz=%d spare_sz=%d "
-+		"num_addr_cycles=%d\n", (chip->cfg0 >> 6) & 7,
-+		(chip->cfg0 >> 9) & 0x3ff, (chip->cfg0 >> 19) & 15,
-+		(chip->cfg0 >> 23) & 15, (chip->cfg0 >> 27) & 7);
-+
-+	pr_info("NAND_READ_ID = %x\n", flash_rd_reg(chip, NAND_READ_ID));
-+	flash_wr_reg(chip, NAND_READ_ID, 0x12345678);
-+
-+	flash_id = flash_read_id(chip);
-+
-+	n = flash_rd_reg(chip, NAND_DEV0_CFG0);
-+	pr_info("cfg0: cw/page=%d ud_sz=%d ecc_sz=%d spare_sz=%d\n",
-+		(n >> 6) & 7, (n >> 9) & 0x3ff, (n >> 19) & 15,
-+		(n >> 23) & 15);
-+
-+	n = flash_rd_reg(chip, NAND_DEV_CMD1);
-+	pr_info("DEV_CMD1: %x\n", n);
-+
-+	n = flash_rd_reg(chip, NAND_EBI2_ECC_BUF_CFG);
-+	pr_info("NAND_EBI2_ECC_BUF_CFG: %x\n", n);
-+
-+	chip->ecc_buf_cfg = 0x203;
-+
-+	if ((flash_id & 0xffff) == 0xaaec) /* 2Gbit Samsung chip */
-+		mtd->size = 256 << 20; /* * num_chips */
-+	else if (flash_id == 0x5580baad) /* 2Gbit Hynix chip */
-+		mtd->size = 256 << 20; /* * num_chips */
-+	else if (flash_id == 0x5510baad) /* 2Gbit Hynix chip */
-+		mtd->size = 256 << 20; /* * num_chips */
-+	pr_info("flash_id: %x size %llx\n", flash_id, mtd->size);
-+
-+	mtd->writesize = 2048;
-+	mtd->oobsize = msm_nand_oob_64.eccbytes + msm_nand_oob_64.oobavail;
-+	mtd->oobavail = msm_nand_oob_64.oobavail;
-+	mtd->erasesize = mtd->writesize << 6;
-+	mtd->ecclayout = &msm_nand_oob_64;
-+
-+	/* Fill in remaining MTD driver data */
-+	mtd->type = MTD_NANDFLASH;
-+	mtd->flags = MTD_CAP_NANDFLASH;
-+	mtd->erase = msm_nand_erase;
-+	mtd->point = NULL;
-+	mtd->unpoint = NULL;
-+	mtd->read = msm_nand_read;
-+	mtd->write = msm_nand_write;
-+	mtd->read_oob = msm_nand_read_oob;
-+	mtd->write_oob = msm_nand_write_oob;
-+	mtd->lock = NULL;
-+	mtd->suspend = NULL;
-+	mtd->resume = NULL;
-+	mtd->block_isbad = msm_nand_block_isbad;
-+	mtd->block_markbad = msm_nand_block_markbad;
-+	mtd->owner = THIS_MODULE;
-+
-+	return 0;
-+}
-+
-+/**
-+ * msm_nand_release - [msm_nand Interface] Free resources held by the msm_nand device
-+ * @mtd:    MTD device structure
-+ */
-+static void msm_nand_release(struct mtd_info *mtd)
-+{
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	/* Deregister partitions */
-+	del_mtd_partitions(mtd);
-+#endif
-+	/* Deregister the device */
-+	del_mtd_device(mtd);
-+}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+static const char const *part_probes[] = { "cmdlinepart", NULL,  };
-+#endif
-+
-+static int __devinit msm_nand_probe(struct platform_device *pdev)
-+{
-+	struct msm_nand_info *info;
-+	struct resource *res;
-+	struct flash_platform_data const *pdata = pdev->dev.platform_data;
 +	int err;
++	struct ubi_vol_info vol_info;
 +
-+	res = platform_get_resource_byname(pdev,
-+					IORESOURCE_MEM, "msm_nand_phys");
-+	if (!res || !res->start) {
-+		pr_err("msm_nand_phys resource invalid/absent\n");
-+		return -EINVAL;
-+	}
-+	msm_nand_phys = res->start;
-+	pr_debug("phys addr 0x%lx\n", msm_nand_phys);
++	err = ubi_get_vol_info1_nm(libubi, dev_num, name, &vol_info);
++	if (err)
++		return sys_errmsg("cannot get information about volume \"%s\" on ubi%d\n", name, dev_num);
 +
-+	res = platform_get_resource_byname(pdev,
-+					IORESOURCE_DMA, "msm_nand_dmac");
-+	if (!res || !res->start) {
-+		pr_err("Invalid msm_nand_dmac resource\n");
-+		return -EINVAL;
-+	}
-+
-+	info = kzalloc(sizeof(struct msm_nand_info), GFP_KERNEL);
-+	if (!info) {
-+		pr_err("No memory for msm_nand_info\n");
-+		return -ENOMEM;
-+	}
-+
-+	info->msm_nand.dev = &pdev->dev;
-+
-+	init_waitqueue_head(&info->msm_nand.wait_queue);
-+
-+	info->msm_nand.dma_channel = res->start;
-+	pr_debug("dma channel 0x%x\n", info->msm_nand.dma_channel);
-+	info->msm_nand.dma_buffer =
-+		dma_alloc_coherent(NULL, MSM_NAND_DMA_BUFFER_SIZE,
-+				   &info->msm_nand.dma_addr, GFP_KERNEL);
-+	if (info->msm_nand.dma_buffer == NULL) {
-+		err = -ENOMEM;
-+		goto out_free_info;
-+	}
-+
-+	pr_debug("allocated dma buffer at %p, dma_addr %x\n",
-+		info->msm_nand.dma_buffer, info->msm_nand.dma_addr);
-+
-+	info->mtd.name = dev_name(&pdev->dev);
-+	info->mtd.priv = &info->msm_nand;
-+	info->mtd.owner = THIS_MODULE;
-+
-+	if (msm_nand_scan(&info->mtd, 1)) {
-+		err = -ENXIO;
-+		goto out_free_dma_buffer;
-+	}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
-+	if (err > 0)
-+		err = add_mtd_partitions(&info->mtd, info->parts, err);
-+	else if (err <= 0 && pdata && pdata->parts)
-+		err = add_mtd_partitions(&info->mtd, pdata->parts,
-+					 pdata->nr_parts);
-+	else
-+#endif
-+		err = add_mtd_device(&info->mtd);
-+
-+	if (err != 0)
-+		goto out_free_dma_buffer;
-+
-+	platform_set_drvdata(pdev, info);
-+
-+	return 0;
-+
-+out_free_dma_buffer:
-+	dma_free_coherent(NULL, MSM_NAND_DMA_BUFFER_SIZE,
-+			  info->msm_nand.dma_buffer, info->msm_nand.dma_addr);
-+out_free_info:
-+	kfree(info);
-+
-+	return err;
-+}
-+
-+static int __devexit msm_nand_remove(struct platform_device *pdev)
-+{
-+	struct msm_nand_info *info = platform_get_drvdata(pdev);
-+
-+	platform_set_drvdata(pdev, NULL);
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	if (info->parts)
-+		del_mtd_partitions(&info->mtd);
-+	else
-+#endif
-+		del_mtd_device(&info->mtd);
-+
-+	msm_nand_release(&info->mtd);
-+	dma_free_coherent(NULL, MSM_NAND_DMA_BUFFER_SIZE,
-+			  info->msm_nand.dma_buffer, info->msm_nand.dma_addr);
-+	kfree(info);
++	args.vol_id = vol_info.vol_id;
 +
 +	return 0;
 +}
 +
-+static struct platform_driver msm_nand_driver = {
-+	.probe		= msm_nand_probe,
-+	.remove		= __devexit_p(msm_nand_remove),
-+	.driver = {
-+		.name	= "msm_nand",
-+		.owner	= THIS_MODULE,
-+	}
-+};
-+
-+static int __init msm_nand_init(void)
-+{
-+	return platform_driver_register(&msm_nand_driver);
-+}
-+module_init(msm_nand_init);
-+
-+static void __exit msm_nand_exit(void)
-+{
-+	platform_driver_unregister(&msm_nand_driver);
-+}
-+module_exit(msm_nand_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("msm_nand flash driver code");
-+MODULE_ALIAS("platform:msm_nand");
-diff --git a/drivers/mtd/devices/msm_nand.h b/drivers/mtd/devices/msm_nand.h
-new file mode 100644
-index 0000000..c57d297
---- /dev/null
-+++ b/drivers/mtd/devices/msm_nand.h
-@@ -0,0 +1,75 @@
-+/*
-+ * Copyright (C) 2007 Google, Inc.
-+ *
-+ * This software is licensed under the terms of the GNU General Public
-+ * License version 2, as published by the Free Software Foundation, and
-+ * may be copied, distributed, and modified under those terms.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
++/**
++ * read_super - read the ubifs super block
++ * @fd: device node file handle
++ * @buf: buffer (must be at least leb_size bytes)
 + */
++static int read_super(int fd, void *buf)
++{
++	struct ubifs_sb_node *sup = buf;
++	off64_t pos = UBIFS_SB_LNUM * dev_info.leb_size;
 +
-+#ifndef __DRIVERS_MTD_DEVICES_MSM_NAND_H
-+#define __DRIVERS_MTD_DEVICES_MSM_NAND_H
++	if (lseek64(fd, pos, SEEK_SET) != pos)
++		return sys_errmsg("failed seeking super block");
 +
-+extern unsigned long msm_nand_phys;
-+#define NAND_REG(off) (msm_nand_phys + (off))
++	if (read(fd, buf, UBIFS_SB_NODE_SZ) != UBIFS_SB_NODE_SZ)
++		return sys_errmsg("read super block failed");
 +
-+#define NAND_FLASH_CMD            NAND_REG(0x0000)
-+#define NAND_ADDR0                NAND_REG(0x0004)
-+#define NAND_ADDR1                NAND_REG(0x0008)
-+#define NAND_FLASH_CHIP_SELECT    NAND_REG(0x000C)
-+#define NAND_EXEC_CMD             NAND_REG(0x0010)
-+#define NAND_FLASH_STATUS         NAND_REG(0x0014)
-+#define NAND_BUFFER_STATUS        NAND_REG(0x0018)
-+#define NAND_DEV0_CFG0            NAND_REG(0x0020)
-+#define NAND_DEV0_CFG1            NAND_REG(0x0024)
-+#define NAND_DEV1_CFG0            NAND_REG(0x0030)
-+#define NAND_DEV1_CFG1            NAND_REG(0x0034)
-+#define NAND_READ_ID              NAND_REG(0x0040)
-+#define NAND_READ_STATUS          NAND_REG(0x0044)
-+#define NAND_CONFIG_DATA          NAND_REG(0x0050)
-+#define NAND_CONFIG               NAND_REG(0x0054)
-+#define NAND_CONFIG_MODE          NAND_REG(0x0058)
-+#define NAND_CONFIG_STATUS        NAND_REG(0x0060)
-+#define NAND_MACRO1_REG           NAND_REG(0x0064)
-+#define NAND_XFR_STEP1            NAND_REG(0x0070)
-+#define NAND_XFR_STEP2            NAND_REG(0x0074)
-+#define NAND_XFR_STEP3            NAND_REG(0x0078)
-+#define NAND_XFR_STEP4            NAND_REG(0x007C)
-+#define NAND_XFR_STEP5            NAND_REG(0x0080)
-+#define NAND_XFR_STEP6            NAND_REG(0x0084)
-+#define NAND_XFR_STEP7            NAND_REG(0x0088)
-+#define NAND_DEV_CMD0             NAND_REG(0x00A0)
-+#define NAND_DEV_CMD1             NAND_REG(0x00A4)
-+#define NAND_DEV_CMD2             NAND_REG(0x00A8)
-+#define NAND_DEV_CMD_VLD          NAND_REG(0x00AC)
-+#define NAND_EBI2_MISR_SIG_REG    NAND_REG(0x00B0)
-+#define NAND_EBI2_ECC_BUF_CFG     NAND_REG(0x00F0)
-+#define NAND_FLASH_BUFFER         NAND_REG(0x0100)
++	if (le32_to_cpu(sup->ch.magic) != UBIFS_NODE_MAGIC)
++		return sys_errmsg("invalid super block magic");
 +
-+/* device commands */
++	if (le32_to_cpu(sup->ch.crc) !=  mtd_crc32(UBIFS_CRC32_INIT, buf + 8, le32_to_cpu(sup->ch.len) - 8))
++		return sys_errmsg("invalid super block crc");
 +
-+#define NAND_CMD_SOFT_RESET         0x01
-+#define NAND_CMD_PAGE_READ          0x32
-+#define NAND_CMD_PAGE_READ_ECC      0x33
-+#define NAND_CMD_PAGE_READ_ALL      0x34
-+#define NAND_CMD_SEQ_PAGE_READ      0x15
-+#define NAND_CMD_PRG_PAGE           0x36
-+#define NAND_CMD_PRG_PAGE_ECC       0x37
-+#define NAND_CMD_PRG_PAGE_ALL       0x39
-+#define NAND_CMD_BLOCK_ERASE        0x3A
-+#define NAND_CMD_FETCH_ID           0x0B
-+#define NAND_CMD_STATUS             0x0C
-+#define NAND_CMD_RESET              0x0D
++	if (le32_to_cpu(sup->leb_size) != dev_info.leb_size)
++		return sys_errmsg("invalid super block leb_size");
 +
-+#define MSM_NAND_STATS_INIT	    0xeeeeeeee
-+#define DM_ENABLE		    (1 << 2)
-+#define NAND_DEV_SEL_CS0	    (0 << 0)
++	return 0;
++}
 +
-+#define NAND_PAGE_SIZE		    2048
++/**
++ * update_super - write the super block.
++ * @ubi: ubi descriptor
++ * @fd: device node file handle
++ * @buf: buffer (must be at least leb_size bytes)
++ */
++static int update_super(libubi_t ubi, int fd, void *buf)
++{
++	int len;
++	struct ubifs_sb_node *sup = buf;
++	off64_t pos = (off64_t)UBIFS_SB_LNUM * dev_info.leb_size;
++	int update = 0;
 +
-+#endif
---
++	if (args.compr != -1) {
++		if (args.compr != le16_to_cpu(sup->default_compr)) {
++			sup->default_compr = cpu_to_le16(args.compr);
++			update = 1;
++		}
++	}
++
++	if (args.reserved != -1) {
++		if (args.reserved != le64_to_cpu(sup->rp_size)) {
++			sup->rp_size = cpu_to_le64(args.reserved);
++			update = 1;
++		}
++	}
++
++	if (!update) {
++		puts("Nothing changed, hence super block NOT written to flash!");
++		return 1;
++	}
++
++	len = ALIGN(ALIGN(UBIFS_SB_NODE_SZ, 8), dev_info.min_io_size);
++	memset(buf + len, 0xff, dev_info.leb_size - len);
++
++	sup->ch.crc = cpu_to_le32(mtd_crc32(UBIFS_CRC32_INIT, buf + 8, le32_to_cpu(sup->ch.len) - 8));
++
++	if (ubi_leb_change_start(ubi, fd, UBIFS_SB_LNUM, dev_info.leb_size, UBI_LONGTERM))
++		return sys_errmsg("ubi_leb_change_start failed");
++
++	if (lseek64(fd, pos, SEEK_SET) != pos)
++		return sys_errmsg("failed seeking super block");
++
++	if (write(fd, buf, dev_info.leb_size) != dev_info.leb_size)
++		return sys_errmsg("write super block failed");
++
++	return 0;
++}
++
++/**
++ * show_super - show the super block.
++ */
++static void show_super(void *buf)
++{
++	struct ubifs_sb_node *sup = buf;
++	const char *p;
++
++	switch(le16_to_cpu(sup->default_compr)) {
++	case UBIFS_COMPR_NONE:
++		p = "none";
++		break;
++	case UBIFS_COMPR_LZO:
++		p = "lzo";
++		break;
++	case UBIFS_COMPR_ZLIB:
++		p = "zlib";
++		break;
++	default:
++		p = "unknown";
++		break;
++	}
++
++	printf("UBIFS:\n");
++	printf(" default compressor: %s\n", p);
++	printf(" reserved for root: %llu bytes\n", le64_to_cpu(sup->rp_size));
++}
++
++int main(int argc, char * const argv[])
++{
++	int err;
++	libubi_t libubi;
++	char devname[128];
++	int fd;
++
++	err = parse_opt(argc, argv);
++	if (err)
++		return -1;
++
++	libubi = libubi_open();
++	if (!libubi) {
++		if (errno == 0)
++			return errmsg("UBI is not present in the system");
++		return sys_errmsg("cannot open libubi");
++	}
++
++	if (args.node) {
++		/*
++		 * A character device was specified, translate this into UBI
++		 * device number and volume ID.
++		 */
++		err = translate_dev(libubi, args.node);
++		if (err)
++			goto out_libubi;
++	}
++
++	if (args.devn == -1) {
++		errmsg("device number is missing "
++		       "(use -h for help)\n");
++		goto out_libubi;
++	}
++
++	err = ubi_get_dev_info1(libubi, args.devn, &dev_info);
++	if (err) {
++		errmsg("cannot get information about UBI device %d", args.devn);
++		goto out_libubi;
++	}
++
++	if (args.vol_name) {
++		err = get_vol_id_by_name(libubi, args.devn, args.vol_name);
++		if (err)
++			goto out_libubi;
++	}
++
++	if (args.vol_id == -1) {
++		errmsg("volume ID is missing "
++		       "(use -h for help)\n");
++		goto out_libubi;
++	}
++
++	if (!args.node) {
++		sprintf(devname, "/dev/ubi%d_%d", args.devn, args.vol_id);
++		args.node = devname;
++	}
++
++	super_buf = malloc(dev_info.leb_size);
++	if (!super_buf) {
++		errmsg("out of memory");
++		goto out_libubi;
++	}
++
++	fd = open(args.node, O_RDWR|O_EXCL);
++	if (fd == -1) {
++		errmsg("cannot open the UBI volume '%s'", args.node);
++		goto out_libubi;
++	}
++
++	err = read_super(fd, super_buf);
++	if (err)
++		goto out_libubi;
++
++	if (args.compr != -1 || args.reserved != -1)
++		update_super(libubi, fd, super_buf);
++	else
++		args.verbose = 1;
++
++	if (args.verbose)
++		show_super(super_buf);
++
++	if (err)
++		goto out_libubi;
++
++	libubi_close(libubi);
++	return 0;
++
++out_libubi:
++	libubi_close(libubi);
++	return -1;
++}
+-- 
 1.7.3.4
-
---
-Sent by a consultant of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
