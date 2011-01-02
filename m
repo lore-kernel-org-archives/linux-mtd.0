@@ -1,17 +1,17 @@
 Received: from mail-qw0-f73.google.com ([209.85.216.73])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PZSFq-0003QM-5K
-	for linux-mtd@lists.infradead.org; Sun, 02 Jan 2011 18:02:07 +0000
-Received: by mail-qw0-f73.google.com with SMTP id 7so1255740qwd.0
+	by casper.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PZSFP-0005mi-J2
+	for linux-mtd@lists.infradead.org; Sun, 02 Jan 2011 18:01:42 +0000
+Received: by qwd7 with SMTP id 7so1255764qwd.0
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 02 Jan 2011 10:01:44 -0800 (PST)
+	Sun, 02 Jan 2011 10:01:36 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <00163628353e0c34980498e0d4fe@google.com>
-Date: Sun, 02 Jan 2011 18:01:44 +0000
-Subject: =?GB2312?B?uf3IpcquxOrTw0IyQqOsz9bU2sTYo6E=?=
+Message-ID: <0016364eecd292cbad0498e0d32b@google.com>
+Date: Sun, 02 Jan 2011 18:01:36 +0000
+Subject: =?GB2312?B?1rvT0LLO1bm1xMK3wvCjvw==?=
 From: Picasa Web Albums <picasawebalbums-noreply@google.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=00163628353e0d17160498e0d406
+Content-Type: multipart/mixed; boundary=0016364eecd295715b0498e0d34f
 Reply-To: =?GB2312?B?x66w/L38?= <1443556842@qq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,16 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---00163628353e0d17160498e0d406
+--0016364eecd295715b0498e0d34f
 Content-Type: text/plain; charset=GB2312; format=flowed; delsp=yes
 Content-Transfer-Encoding: base64
 
-w7/E6ruo1NpCMkLGvcyotcTHrqOsvr++udPQw7vT0LrD0Ke5+6O/w7/M7LXItP2jrMrHsrvKx7jD
-u7u49re9t6ijrM/W1NrX9s3iIA0Kw7MNCtOmuMPW97avoaPL0cv30v3H5se/tPO7ucrHQjJCo7/P
-1tTav8nS1MvRy/e1vcirx/LEv7Hqv827p7XE0ru/7sjtvP6jrMrHsrvKxyANCtKquMSx5A0Kst/C
-1KOs1ve2r7P2u/ehow0KDQpRICBRo7oxNzU0MTMyMTQ0o6jR3cq+1ebKtdCnufujqQ0Ktee7sKO6
-MTM1NTY4MzU2ODcozfXPyMn6KQ0K
---00163628353e0d17160498e0d406
+ytCzob661fm086OszeLDs7K7xNzU2bXItP3By7DJo6G9+MC0v7S/tKGjDQoNCg0KDQq7qLfRwcu2
+4MnZyMvBpqO/ytW78cP3z9TC8KO/DQoNCtK7t9bW08vRy/cxMDAwuPa/zbunzfjVvqOssOu49tCh
+yrG/ydLUsNHV4jEwMDC49s341b61xNPKz+SjrL/Nu6fBqs+10MXPosCtyKEgDQrPwsC0oaMxMbj2
+zajTw8vRy/fS/cfmo6wxNzC24Lj2ufq80rXEtbG12MvRy/fS/cfmo6y7ub/J0tTH+NPyy9HL96Os
+1eu21NDUy9EgDQrL98S/seq/zbunoaPL0cv3zerBor/MvfjQ0Mi6t6LQxc+ioaMNCg0KDQpRIFE6
+MTc1NDEzMjE0NKOo0d3KvtXmyrXQp7n7o6kNClRlbDogMTM1NTY4MzU2ODcNCsGqz7XIy6O6zfXP
+yMn6DQo=
+--0016364eecd295715b0498e0d34f
 Content-Type: image/jpeg; name="@L_8WBMAWQTHZGM%(7NTP64.jpg"
 Content-Disposition: attachment; filename="@L_8WBMAWQTHZGM%(7NTP64.jpg"
 Content-Transfer-Encoding: base64
@@ -516,4 +518,4 @@ eG/ErX7fXNbDQKGtLOP7LbO6jd5eTkk46sSSe2TXqHibWZdH8FXN8CWvNTmNvvH/ACzQDL49zwPp
 XgGozl3J9qTlKUrFUqNPD0m7LTZdDOEMUbZjhjj5zlEA59eKsWNnDHJI0cSo0jbn2jqf8/55piJv
 P0ya6Lwzp0V3fbp8m3hR55VX7zIil2A9yFIH1q51JKNmzHDYSm6nNyrTyRPqEv8AYXh4W4JF7qC7
 nz1SDPA9t7Ln6L6GuNlfexNaWt6pLq19PdS4DyMTtHRQMAKPYDAHsBWQ5OeKqnHqzmxVbneh/9k=
---00163628353e0d17160498e0d406--
+--0016364eecd295715b0498e0d34f--
