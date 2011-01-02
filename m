@@ -1,17 +1,17 @@
-Received: from mail-gw0-f73.google.com ([74.125.83.73])
+Received: from mail-qw0-f73.google.com ([209.85.216.73])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PZSFj-0003Qg-TL
-	for linux-mtd@lists.infradead.org; Sun, 02 Jan 2011 18:02:03 +0000
-Received: by gwb1 with SMTP id 1so1256865gwb.0
+	id 1PZSFq-0003QM-5K
+	for linux-mtd@lists.infradead.org; Sun, 02 Jan 2011 18:02:07 +0000
+Received: by mail-qw0-f73.google.com with SMTP id 7so1255740qwd.0
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 02 Jan 2011 10:01:28 -0800 (PST)
+	Sun, 02 Jan 2011 10:01:44 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <0016364c5d1518321b0498e0d3e6@google.com>
-Date: Sun, 02 Jan 2011 18:01:28 +0000
-Subject: =?GB2312?B?yOe6zsTcubu/qrei09DWysG/tcS/zbuno78=?=
+Message-ID: <00163628353e0c34980498e0d4fe@google.com>
+Date: Sun, 02 Jan 2011 18:01:44 +0000
+Subject: =?GB2312?B?uf3IpcquxOrTw0IyQqOsz9bU2sTYo6E=?=
 From: Picasa Web Albums <picasawebalbums-noreply@google.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary=0016364c5d151a2e390498e0d330
+Content-Type: multipart/mixed; boundary=00163628353e0d17160498e0d406
 Reply-To: =?GB2312?B?x66w/L38?= <1443556842@qq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -22,22 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0016364c5d151a2e390498e0d330
+--00163628353e0d17160498e0d406
 Content-Type: text/plain; charset=GB2312; format=flowed; delsp=yes
 Content-Transfer-Encoding: base64
 
-z+vU2tXizeLDs7661fnW0M3R07G2+LP2o7/P68TjtcSy+sa3z8jVvMHsytCzoaO/v+y9+L+0v7Sw
-yQ0KDQoNCsbkyrXP1tTazeLDs9Xi0fm+utX5tPMgILrctuC1xNK1zvHUsba81NrV0tGw0MK1xLe9
-yr0g09DQwre9t6jSu7ao0qq4z9Tn08MgsrsgDQrSqrTtuf3Ksbv6DQoNCr3ivva1xM7KzOKjqDGj
-qaO61dK/zbunxNGjrM3GueO5q8u+xNGhow0KDQq94r72tcTOyszio6gyo6mjus/dyOtCMkLGvcyo
-IrymwN8iDQoNCr3ivva1xM7KzOKjqDOjqaO6s8m9u7zbuPG1zaGiv827p9bSs8+2yLLuDQoNCr3i
-vva1xM7KzOKjqDSjqaO61dKyu7W908XWysex1NrC8rzSDQoNCr3ivva1xM7KzOKjqDWjqaO6v827
-p7+qt6LQp8LKtc2hor/Nu6fXqruvwsq1zQ0KDQrI57n7xPrSstPQ0/a1vdLUyc/Oyszio6zEx7/s
-warPtb3wx66xqsjtvP7P+srbyMvUsXd6bLDJo6zO0r2r1Nq12tK7yrG85LDvxPogDQq94r72y/nT
-0M7KzOKhow0KDQoNCrfHs6O40NC7o6zG2rT90+vE+rrP1/ejoQ0KuePW3e7a9s7I7bz+v6q3otPQ
-z965q8u+DQoNCsrWICC7+qO6MTM1NTY4MzU2ODcgIKOoIM31z8jJ+iB3emyjqQ0KDQrBqs+1o9Eg
-o9GjujE3NTQxMzIxNDSjqNHdyr7V5sq10Ke5+6OpDQo=
---0016364c5d151a2e390498e0d330
+w7/E6ruo1NpCMkLGvcyotcTHrqOsvr++udPQw7vT0LrD0Ke5+6O/w7/M7LXItP2jrMrHsrvKx7jD
+u7u49re9t6ijrM/W1NrX9s3iIA0Kw7MNCtOmuMPW97avoaPL0cv30v3H5se/tPO7ucrHQjJCo7/P
+1tTav8nS1MvRy/e1vcirx/LEv7Hqv827p7XE0ru/7sjtvP6jrMrHsrvKxyANCtKquMSx5A0Kst/C
+1KOs1ve2r7P2u/ehow0KDQpRICBRo7oxNzU0MTMyMTQ0o6jR3cq+1ebKtdCnufujqQ0Ktee7sKO6
+MTM1NTY4MzU2ODcozfXPyMn6KQ0K
+--00163628353e0d17160498e0d406
 Content-Type: image/jpeg; name="@L_8WBMAWQTHZGM%(7NTP64.jpg"
 Content-Disposition: attachment; filename="@L_8WBMAWQTHZGM%(7NTP64.jpg"
 Content-Transfer-Encoding: base64
@@ -522,4 +516,4 @@ eG/ErX7fXNbDQKGtLOP7LbO6jd5eTkk46sSSe2TXqHibWZdH8FXN8CWvNTmNvvH/ACzQDL49zwPp
 XgGozl3J9qTlKUrFUqNPD0m7LTZdDOEMUbZjhjj5zlEA59eKsWNnDHJI0cSo0jbn2jqf8/55piJv
 P0ya6Lwzp0V3fbp8m3hR55VX7zIil2A9yFIH1q51JKNmzHDYSm6nNyrTyRPqEv8AYXh4W4JF7qC7
 nz1SDPA9t7Ln6L6GuNlfexNaWt6pLq19PdS4DyMTtHRQMAKPYDAHsBWQ5OeKqnHqzmxVbneh/9k=
---0016364c5d151a2e390498e0d330--
+--00163628353e0d17160498e0d406--
