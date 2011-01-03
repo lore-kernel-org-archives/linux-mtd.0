@@ -1,21 +1,14 @@
-From: "Nori, Sekhar" <nsekhar@ti.com>
-To: "Ghorai, Sukumar" <s-ghorai@ti.com>, "linux-omap@vger.kernel.org"
-	<linux-omap@vger.kernel.org>
-Date: Mon, 3 Jan 2011 17:55:30 +0530
-Subject: RE: [PATCH v7 5/7] omap3: nand: configurable fifo threshold to gain
-	the	throughput
-Message-ID: <B85A65D85D7EB246BE421B3FB0FBB593024816D671@dbde02.ent.ti.com>
-References: <1293629546-18831-1-git-send-email-s-ghorai@ti.com>
-	<1293629546-18831-6-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1293629546-18831-6-git-send-email-s-ghorai@ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Vimal Singh <vimalsingh@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from www84.your-server.de ([213.133.104.84])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PZmUe-00070D-Th
+	for linux-mtd@lists.infradead.org; Mon, 03 Jan 2011 15:38:46 +0000
+From: stefani@seibold.net
+To: dedekind1@gmail.com, dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	Artem.Bityutskiy@nokia.com
+Subject: [PATCH] Add an option do not erase pristine blocks in ubiformat
+Date: Mon,  3 Jan 2011 16:39:36 +0100
+Message-Id: <1294069176-27123-1-git-send-email-stefani@seibold.net>
+Cc: stefani@seibold.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,171 +18,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sukumar,
+From: Stefani Seibold <stefani@seibold.net>
 
-On Wed, Dec 29, 2010 at 19:02:24, Ghorai, Sukumar wrote:
-> Configure the FIFO THREASHOLD value different for read and write to keep =
-busy
-> both filling and to drain out of FIFO at reading and writing.
->=20
-> Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-> Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
-> ---
->  arch/arm/mach-omap2/gpmc.c             |   11 +++++++----
->  arch/arm/plat-omap/include/plat/gpmc.h |    5 ++++-
->  drivers/mtd/nand/omap2.c               |   22 ++++++++++++++--------
->  3 files changed, 25 insertions(+), 13 deletions(-)
->=20
-> diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
-> index cfaf357..b26b1a5 100644
-> --- a/arch/arm/mach-omap2/gpmc.c
-> +++ b/arch/arm/mach-omap2/gpmc.c
-> @@ -59,7 +59,6 @@
->  #define GPMC_CHUNK_SHIFT	24		/* 16 MB */
->  #define GPMC_SECTION_SHIFT	28		/* 128 MB */
-> =20
-> -#define PREFETCH_FIFOTHRESHOLD	(0x40 << 8)
->  #define CS_NUM_SHIFT		24
->  #define ENABLE_PREFETCH		(0x1 << 7)
->  #define DMA_MPU_MODE		2
-> @@ -595,15 +594,19 @@ EXPORT_SYMBOL(gpmc_nand_write);
->  /**
->   * gpmc_prefetch_enable - configures and starts prefetch transfer
->   * @cs: cs (chip select) number
-> + * @fifo_th: fifo threshold to be used for read/ write
->   * @dma_mode: dma mode enable (1) or disable (0)
->   * @u32_count: number of bytes to be transferred
->   * @is_write: prefetch read(0) or write post(1) mode
->   */
-> -int gpmc_prefetch_enable(int cs, int dma_mode,
-> +int gpmc_prefetch_enable(int cs, int fifo_th, int dma_mode,
->  				unsigned int u32_count, int is_write)
->  {
-> =20
-> -	if (!(gpmc_read_reg(GPMC_PREFETCH_CONTROL))) {
-> +	if (fifo_th > PREFETCH_FIFOTHRESHOLD_MAX) {
-> +		printk(KERN_ERR "PREFETCH Fifo Threshold is not supported\n");
-> +		return -1;
+This patch add a pristine option which skips erasing of pristine flash blocks.
+This is useful for first time production environments where the flash arrived
+erased.
 
-Please consider using pr_err(). Also, adding function/device name=20
-prefix helps locate which module caused the error from logs.
+The patch is against the current mtd git tree.
 
-Also, is "operation not permitted" the best error we can give back=20
-here?
+Signed-off-by: Stefani Seibold <stefani@seibold.net>
+---
+ ubi-utils/src/ubiformat.c |   34 +++++++++++++++++++++++++++++-----
+ 1 files changed, 29 insertions(+), 5 deletions(-)
 
-> +	} else if (!(gpmc_read_reg(GPMC_PREFETCH_CONTROL))) {
->  		/* Set the amount of bytes to be prefetched */
->  		gpmc_write_reg(GPMC_PREFETCH_CONFIG2, u32_count);
-> =20
-> @@ -611,7 +614,7 @@ int gpmc_prefetch_enable(int cs, int dma_mode,
->  		 * enable the engine. Set which cs is has requested for.
->  		 */
->  		gpmc_write_reg(GPMC_PREFETCH_CONFIG1, ((cs << CS_NUM_SHIFT) |
-> -					PREFETCH_FIFOTHRESHOLD |
-> +					PREFETCH_FIFOTHRESHOLD(fifo_th) |
->  					ENABLE_PREFETCH |
->  					(dma_mode << DMA_MPU_MODE) |
->  					(0x1 & is_write)));
-> diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/=
-include/plat/gpmc.h
-> index 054e704..fb82335 100644
-> --- a/arch/arm/plat-omap/include/plat/gpmc.h
-> +++ b/arch/arm/plat-omap/include/plat/gpmc.h
-> @@ -83,6 +83,9 @@
->  #define GPMC_IRQ_FIFOEVENTENABLE	0x01
->  #define GPMC_IRQ_COUNT_EVENT		0x02
-> =20
-> +#define PREFETCH_FIFOTHRESHOLD_MAX	0x40
-> +#define PREFETCH_FIFOTHRESHOLD(val)	(val << 8)
-
-Parenthesize val please.
-
-> +
->  /*
->   * Note that all values in this struct are in nanoseconds, while
->   * the register values are in gpmc_fck cycles.
-> @@ -133,7 +136,7 @@ extern int gpmc_cs_request(int cs, unsigned long size=
-, unsigned long *base);
->  extern void gpmc_cs_free(int cs);
->  extern int gpmc_cs_set_reserved(int cs, int reserved);
->  extern int gpmc_cs_reserved(int cs);
-> -extern int gpmc_prefetch_enable(int cs, int dma_mode,
-> +extern int gpmc_prefetch_enable(int cs, int fifo_th, int dma_mode,
->  					unsigned int u32_count, int is_write);
->  extern int gpmc_prefetch_reset(int cs);
->  extern void omap3_gpmc_save_context(void);
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 007862e..384d89b 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -243,7 +243,8 @@ static void omap_read_buf_pref(struct mtd_info *mtd, =
-u_char *buf, int len)
->  	}
-> =20
->  	/* configure and start prefetch transfer */
-> -	ret =3D gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
-> +	ret =3D gpmc_prefetch_enable(info->gpmc_cs,
-> +			PREFETCH_FIFOTHRESHOLD_MAX, 0x0, len, 0x0);
->  	if (ret) {
->  		/* PFPW engine is busy, use cpu copy method */
->  		if (info->nand.options & NAND_BUSWIDTH_16)
-> @@ -287,7 +288,8 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
->  	}
-> =20
->  	/*  configure and start prefetch transfer */
-> -	ret =3D gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x1);
-> +	ret =3D gpmc_prefetch_enable(info->gpmc_cs,
-> +			PREFETCH_FIFOTHRESHOLD_MAX, 0x0, len, 0x1);
->  	if (ret) {
->  		/* PFPW engine is busy, use cpu copy method */
->  		if (info->nand.options & NAND_BUSWIDTH_16)
-> @@ -340,8 +342,9 @@ static inline int omap_nand_dma_transfer(struct mtd_i=
-nfo *mtd, void *addr,
->  	dma_addr_t dma_addr;
->  	int ret;
-> =20
-> -	/* The fifo depth is 64 bytes. We have a sync at each frame and frame
-> -	 * length is 64 bytes.
-> +	/* The fifo depth is 64 bytes max.
-> +	 * But configure the FIFO-threahold to 32 to get a sync at each frame
-> +	 * and frame length is 32 bytes.
->  	 */
->  	int buf_len =3D len >> 6;
-> =20
-> @@ -382,7 +385,8 @@ static inline int omap_nand_dma_transfer(struct mtd_i=
-nfo *mtd, void *addr,
->  					OMAP24XX_DMA_GPMC, OMAP_DMA_SRC_SYNC);
->  	}
->  	/*  configure and start prefetch transfer */
-> -	ret =3D gpmc_prefetch_enable(info->gpmc_cs, 0x1, len, is_write);
-> +	ret =3D gpmc_prefetch_enable(info->gpmc_cs,
-> +			PREFETCH_FIFOTHRESHOLD_MAX, 0x1, len, is_write);
->  	if (ret)
->  		/* PFPW engine is busy, use cpu copy methode */
->  		goto out_copy;
-> @@ -518,7 +522,8 @@ static void omap_read_buf_irq_pref(struct mtd_info *m=
-td, u_char *buf, int len)
->  	init_completion(&info->comp);
-> =20
->  	/*  configure and start prefetch transfer */
-> -	ret =3D gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
-> +	ret =3D gpmc_prefetch_enable(info->gpmc_cs,
-> +			PREFETCH_FIFOTHRESHOLD_MAX/2, 0x0, len, 0x0);
->  	if (ret)
->  		/* PFPW engine is busy, use cpu copy methode */
->  		goto out_copy;
-> @@ -563,8 +568,9 @@ static void omap_write_buf_irq_pref(struct mtd_info *=
-mtd,
->  	info->buf =3D (u_char *) buf;
->  	init_completion(&info->comp);
-> =20
-> -	/*  configure and start prefetch transfer */
-> -	ret =3D gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x1);
-> +	/* configure and start prefetch transfer : size=3D24 */
-> +	ret =3D gpmc_prefetch_enable(info->gpmc_cs,
-> +			(PREFETCH_FIFOTHRESHOLD_MAX*3)/8, 0x0, len, 0x1);
-
-Spaces around binary '*'
-
-Thanks,
-Sekhar
+diff --git a/ubi-utils/src/ubiformat.c b/ubi-utils/src/ubiformat.c
+index 098da7d..83e3485 100644
+--- a/ubi-utils/src/ubiformat.c
++++ b/ubi-utils/src/ubiformat.c
+@@ -29,7 +29,7 @@
+  */
+ #define MAX_CONSECUTIVE_BAD_BLOCKS 4
+ 
+-#define PROGRAM_VERSION "1.5"
++#define PROGRAM_VERSION "1.6"
+ #define PROGRAM_NAME    "ubiformat"
+ 
+ #include <sys/stat.h>
+@@ -55,6 +55,7 @@ struct args {
+ 	unsigned int verbose:1;
+ 	unsigned int override_ec:1;
+ 	unsigned int novtbl:1;
++	unsigned int pristine:1;
+ 	unsigned int manual_subpage;
+ 	int subpage_size;
+ 	int vid_hdr_offs;
+@@ -94,6 +95,7 @@ static const char optionsstr[] =
+ "                             (default is 1)\n"
+ "-Q, --image-seq=<num>        32-bit UBI image sequence number to use\n"
+ "                             (by default a random number is picked)\n"
++"-P, --pristine               do not erase pristine blocks\n"
+ "-y, --yes                    assume the answer is \"yes\" for all question\n"
+ "                             this program would otherwise ask\n"
+ "-q, --quiet                  suppress progress percentage information\n"
+@@ -106,7 +108,7 @@ static const char usage[] =
+ "\t\t\t[-f <file>] [-S <bytes>] [-e <value>] [-x <num>] [-y] [-q] [-v] [-h] [-v]\n"
+ "\t\t\t[--sub-page-size=<bytes>] [--vid-hdr-offset=<offs>] [--no-volume-table]\n"
+ "\t\t\t[--flash-image=<file>] [--image-size=<bytes>] [--erase-counter=<value>]\n"
+-"\t\t\t[--ubi-ver=<num>] [--yes] [--quiet] [--verbose] [--help] [--version]\n\n"
++"\t\t\t[--ubi-ver=<num>] [--pristine] [--yes] [--quiet] [--verbose] [--help] [--version]\n\n"
+ "Example 1: " PROGRAM_NAME " /dev/mtd0 -y - format MTD device number 0 and do\n"
+ "           not ask questions.\n"
+ "Example 2: " PROGRAM_NAME " /dev/mtd0 -q -e 0 - format MTD device number 0,\n"
+@@ -125,6 +127,7 @@ static const struct option long_options[] = {
+ 	{ .name = "ubi-ver",         .has_arg = 1, .flag = NULL, .val = 'x' },
+ 	{ .name = "help",            .has_arg = 0, .flag = NULL, .val = 'h' },
+ 	{ .name = "version",         .has_arg = 0, .flag = NULL, .val = 'V' },
++	{ .name = "pristine",        .has_arg = 0, .flag = NULL, .val = 'P' },
+ 	{ NULL, 0, NULL, 0},
+ };
+ 
+@@ -138,7 +141,7 @@ static int parse_opt(int argc, char * const argv[])
+ 		char *endp;
+ 		unsigned long int image_seq;
+ 
+-		key = getopt_long(argc, argv, "nh?Vyqve:x:s:O:f:S:", long_options, NULL);
++		key = getopt_long(argc, argv, "nh?Vyqve:x:s:O:f:S:P:", long_options, NULL);
+ 		if (key == -1)
+ 			break;
+ 
+@@ -202,6 +205,10 @@ static int parse_opt(int argc, char * const argv[])
+ 			break;
+ 
+ 
++		case 'P':
++			args.pristine = 1;
++			break;
++
+ 		case 'v':
+ 			args.verbose = 1;
+ 			break;
+@@ -577,7 +584,7 @@ static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+ 	write_size = UBI_EC_HDR_SIZE + mtd->subpage_size - 1;
+ 	write_size /= mtd->subpage_size;
+ 	write_size *= mtd->subpage_size;
+-	hdr = malloc(write_size);
++	hdr = malloc(mtd->eb_size);
+ 	if (!hdr)
+ 		return sys_errmsg("cannot allocate %d bytes of memory", write_size);
+ 	memset(hdr, 0xFF, write_size);
+@@ -600,7 +607,21 @@ static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+ 			ec = si->ec[eb] + 1;
+ 		else
+ 			ec = si->mean_ec;
+-		ubigen_init_ec_hdr(ui, hdr, ec);
++
++		if (args.pristine) {
++			err = mtd_read(mtd, args.node_fd, eb, 0, hdr, mtd->eb_size);
++			if (!err) {
++				int i;
++
++				for(i = 0; i != mtd->eb_size; i++) {
++					if (((unsigned char *)hdr)[i] != 0xff)
++						break;
++				}
++				if (i == mtd->eb_size)
++					goto skip_erase;
++			}
++			memset(hdr, 0xFF, write_size);
++		}
+ 
+ 		if (args.verbose) {
+ 			normsg_cont("eraseblock %d: erase", eb);
+@@ -621,6 +642,9 @@ static int format(libmtd_t libmtd, const struct mtd_dev_info *mtd,
+ 			continue;
+ 		}
+ 
++skip_erase:
++		ubigen_init_ec_hdr(ui, hdr, ec);
++
+ 		if ((eb1 == -1 || eb2 == -1) && !novtbl) {
+ 			if (eb1 == -1) {
+ 				eb1 = eb;
+-- 
+1.7.3.4
