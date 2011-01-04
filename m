@@ -1,13 +1,21 @@
-Received: from ebi0.eke.fi ([213.140.179.212] helo=smtp.ebi)
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pa2Th-0007Wn-Rv
-	for linux-mtd@lists.infradead.org; Tue, 04 Jan 2011 08:42:51 +0000
-From: Aleksandr Koltsoff <aleksandr.koltsoff@ebts.fi>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] m25p80: Fix JEDEC ID for AT26DF321
-Date: Tue,  4 Jan 2011 10:42:35 +0200
-Message-Id: <1294130555-12762-1-git-send-email-aleksandr.koltsoff@ebts.fi>
-Cc: g.chen@freescale.com, Aleksandr Koltsoff <aleksandr.koltsoff@ebts.fi>
+From: "Ghorai, Sukumar" <s-ghorai@ti.com>
+To: "Nori, Sekhar" <nsekhar@ti.com>, "linux-omap@vger.kernel.org"
+	<linux-omap@vger.kernel.org>
+Date: Tue, 4 Jan 2011 14:20:17 +0530
+Subject: RE: [PATCH v7 4/7] omap3: nand: prefetch in irq mode support
+Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B036A57ACC7@dbde02.ent.ti.com>
+References: <1293629546-18831-1-git-send-email-s-ghorai@ti.com>
+	<1293629546-18831-5-git-send-email-s-ghorai@ti.com>
+	<B85A65D85D7EB246BE421B3FB0FBB593024816D63C@dbde02.ent.ti.com>
+In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593024816D63C@dbde02.ent.ti.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Vimal Singh <vimalsingh@ti.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,27 +25,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The last byte of the ID should be zero for this chip. Was added in
-commit d0e8c47c58575b9131e786edb488fd029eba443e . Reported by Tomi
-Varjo.
 
-Signed-off-by: Aleksandr Koltsoff <aleksandr.koltsoff@ebts.fi>
----
- drivers/mtd/devices/m25p80.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-index bf5a002..513b202 100644
---- a/drivers/mtd/devices/m25p80.c
-+++ b/drivers/mtd/devices/m25p80.c
-@@ -635,7 +635,7 @@ static const struct spi_device_id m25p_ids[] = {
- 	{ "at26f004",   INFO(0x1f0400, 0, 64 * 1024,  8, SECT_4K) },
- 	{ "at26df081a", INFO(0x1f4501, 0, 64 * 1024, 16, SECT_4K) },
- 	{ "at26df161a", INFO(0x1f4601, 0, 64 * 1024, 32, SECT_4K) },
--	{ "at26df321",  INFO(0x1f4701, 0, 64 * 1024, 64, SECT_4K) },
-+	{ "at26df321",  INFO(0x1f4700, 0, 64 * 1024, 64, SECT_4K) },
- 
- 	/* EON -- en25pxx */
- 	{ "en25p32", INFO(0x1c2016, 0, 64 * 1024,  64, 0) },
--- 
-1.7.3.4
+[..snip...]
+> > +		if (info->buf_len & (info->buf_len < bytes))
+>=20
+> Meant to use logical AND here?
+[Ghorai] thanks, you are right.
+
+[..snip..]
+> > +	init_completion(&info->comp);
+>=20
+> You can use INIT_COMPLETION to reset the completion variable.
+> Same change can be done in write below.
+[..snip..]
+> s/methode/method
+>=20
+[Ghorai] yes. I will do this=20
+
+[..snip..]
+> > +	/* waiting for write to complete */
+> > +	wait_for_completion(&info->comp);
+> > +	/* wait for data to flushed-out before reset the prefetch */
+> > +	do {
+> > +		ret =3D gpmc_read_status(GPMC_PREFETCH_COUNT);
+> > +	} while (ret);
+>=20
+> Please have a timeout for this while loop in case hardware does
+> not become ready. Also, consider using cpu_relax() inside the
+> tight loop.
+>=20
+[Ghorai] Thanks. I will send again.
