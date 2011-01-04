@@ -1,12 +1,12 @@
 From: Sukumar Ghorai <s-ghorai@ti.com>
 To: linux-omap@vger.kernel.org
-Subject: [PATCH v8 1/7] omap3630: nand: fix device size to work in polled mode
-Date: Tue,  4 Jan 2011 19:03:18 +0530
-Message-Id: <1294148004-10789-2-git-send-email-s-ghorai@ti.com>
+Subject: [PATCH v8 4/7] omap3: nand: prefetch in irq mode support
+Date: Tue,  4 Jan 2011 19:03:21 +0530
+Message-Id: <1294148004-10789-5-git-send-email-s-ghorai@ti.com>
 In-Reply-To: <1294148004-10789-1-git-send-email-s-ghorai@ti.com>
 References: <1294148004-10789-1-git-send-email-s-ghorai@ti.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	Sukumar Ghorai <s-ghorai@ti.com>
+Cc: Vimal Singh <vimalsingh@ti.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,202 +16,343 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-zoom3 and 3630-sdp having the x16 nand device.
-This patch configure gpmc as x16 and select the currect function in driver
-for polled mode (without prefetch enable) transfer.
+This patch enable prefetch-irq mode for nand transfer(read, write)
 
+Signed-off-by: Vimal Singh <vimalsingh@ti.com>
 Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
 ---
- arch/arm/mach-omap2/board-3430sdp.c |    2 +-
- arch/arm/mach-omap2/board-3630sdp.c |    3 ++-
- arch/arm/mach-omap2/board-flash.c   |   10 ++++++----
- arch/arm/mach-omap2/board-flash.h   |    4 ++--
- arch/arm/mach-omap2/board-ldp.c     |    2 +-
- arch/arm/mach-omap2/board-zoom2.c   |    5 +++--
- arch/arm/mach-omap2/board-zoom3.c   |    5 +++--
- arch/arm/mach-omap2/gpmc-nand.c     |    7 +++++--
- drivers/mtd/nand/omap2.c            |    2 +-
- 9 files changed, 24 insertions(+), 16 deletions(-)
+ arch/arm/mach-omap2/board-flash.c      |    2 +
+ arch/arm/plat-omap/include/plat/nand.h |    4 +-
+ drivers/mtd/nand/omap2.c               |  198 ++++++++++++++++++++++++++++++--
+ 3 files changed, 194 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
-index 4e3742c..470872e 100644
---- a/arch/arm/mach-omap2/board-3430sdp.c
-+++ b/arch/arm/mach-omap2/board-3430sdp.c
-@@ -809,7 +809,7 @@ static void __init omap_3430sdp_init(void)
- 	omap_serial_init();
- 	usb_musb_init(&musb_board_data);
- 	board_smc91x_init();
--	board_flash_init(sdp_flash_partitions, chip_sel_3430);
-+	board_flash_init(sdp_flash_partitions, chip_sel_3430, 0);
- 	sdp3430_display_init();
- 	enable_board_wakeup_source();
- 	usb_ehci_init(&ehci_pdata);
-diff --git a/arch/arm/mach-omap2/board-3630sdp.c b/arch/arm/mach-omap2/board-3630sdp.c
-index bbcf580..0a74141 100644
---- a/arch/arm/mach-omap2/board-3630sdp.c
-+++ b/arch/arm/mach-omap2/board-3630sdp.c
-@@ -11,6 +11,7 @@
- #include <linux/platform_device.h>
- #include <linux/input.h>
- #include <linux/gpio.h>
-+#include <linux/mtd/nand.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -210,7 +211,7 @@ static void __init omap_sdp_init(void)
- 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBP);
- 	zoom_peripherals_init();
- 	board_smc91x_init();
--	board_flash_init(sdp_flash_partitions, chip_sel_sdp);
-+	board_flash_init(sdp_flash_partitions, chip_sel_sdp, NAND_BUSWIDTH_16);
- 	enable_board_wakeup_source();
- 	usb_ehci_init(&ehci_pdata);
- }
 diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
-index fd38c05..f6b7253 100644
+index f6b7253..1964509 100644
 --- a/arch/arm/mach-omap2/board-flash.c
 +++ b/arch/arm/mach-omap2/board-flash.c
-@@ -139,11 +139,13 @@ static struct omap_nand_platform_data board_nand_data = {
- };
+@@ -16,6 +16,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/mtd/physmap.h>
+ #include <linux/io.h>
++#include <plat/irqs.h>
  
- void
--__init board_nand_init(struct mtd_partition *nand_parts, u8 nr_parts, u8 cs)
-+__init board_nand_init(struct mtd_partition *nand_parts,
-+			u8 nr_parts, u8 cs, int nand_type)
- {
- 	board_nand_data.cs		= cs;
- 	board_nand_data.parts		= nand_parts;
--	board_nand_data.nr_parts		= nr_parts;
-+	board_nand_data.nr_parts	= nr_parts;
-+	board_nand_data.devsize		= nand_type;
+ #include <plat/gpmc.h>
+ #include <plat/nand.h>
+@@ -147,6 +148,7 @@ __init board_nand_init(struct mtd_partition *nand_parts,
+ 	board_nand_data.nr_parts	= nr_parts;
+ 	board_nand_data.devsize		= nand_type;
  
++	board_nand_data.gpmc_irq = OMAP_GPMC_IRQ_BASE + cs;
  	gpmc_nand_init(&board_nand_data);
  }
-@@ -194,7 +196,7 @@ unmap:
-  * @return - void.
-  */
- void board_flash_init(struct flash_partitions partition_info[],
--					char chip_sel_board[][GPMC_CS_NUM])
-+			char chip_sel_board[][GPMC_CS_NUM], int nand_type)
- {
- 	u8		cs = 0;
- 	u8		norcs = GPMC_CS_NUM + 1;
-@@ -250,5 +252,5 @@ void board_flash_init(struct flash_partitions partition_info[],
- 				"in GPMC\n");
- 	else
- 		board_nand_init(partition_info[2].parts,
--				partition_info[2].nr_parts, nandcs);
-+			partition_info[2].nr_parts, nandcs, nand_type);
- }
-diff --git a/arch/arm/mach-omap2/board-flash.h b/arch/arm/mach-omap2/board-flash.h
-index 69befe0..c240a3f 100644
---- a/arch/arm/mach-omap2/board-flash.h
-+++ b/arch/arm/mach-omap2/board-flash.h
-@@ -25,6 +25,6 @@ struct flash_partitions {
+ #else
+diff --git a/arch/arm/plat-omap/include/plat/nand.h b/arch/arm/plat-omap/include/plat/nand.h
+index 78c0bdb..ae5e053 100644
+--- a/arch/arm/plat-omap/include/plat/nand.h
++++ b/arch/arm/plat-omap/include/plat/nand.h
+@@ -13,7 +13,8 @@
+ enum nand_io {
+ 	NAND_OMAP_PREFETCH_POLLED = 0,	/* prefetch polled mode, default */
+ 	NAND_OMAP_POLLED,		/* polled mode, without prefetch */
+-	NAND_OMAP_PREFETCH_DMA		/* prefetch enabled sDMA mode */
++	NAND_OMAP_PREFETCH_DMA,		/* prefetch enabled sDMA mode */
++	NAND_OMAP_PREFETCH_IRQ		/* prefetch enabled irq mode */
  };
  
- extern void board_flash_init(struct flash_partitions [],
--				char chip_sel[][GPMC_CS_NUM]);
-+				char chip_sel[][GPMC_CS_NUM], int nand_type);
- extern void board_nand_init(struct mtd_partition *nand_parts,
--					u8 nr_parts, u8 cs);
-+					u8 nr_parts, u8 cs, int nand_type);
-diff --git a/arch/arm/mach-omap2/board-ldp.c b/arch/arm/mach-omap2/board-ldp.c
-index 001fd97..b088b1d 100644
---- a/arch/arm/mach-omap2/board-ldp.c
-+++ b/arch/arm/mach-omap2/board-ldp.c
-@@ -436,7 +436,7 @@ static void __init omap_ldp_init(void)
- 	omap_serial_init();
- 	usb_musb_init(&musb_board_data);
- 	board_nand_init(ldp_nand_partitions,
--		ARRAY_SIZE(ldp_nand_partitions), ZOOM_NAND_CS);
-+		ARRAY_SIZE(ldp_nand_partitions), ZOOM_NAND_CS, 0);
- 
- 	omap2_hsmmc_init(mmc);
- 	/* link regulators to MMC adapters */
-diff --git a/arch/arm/mach-omap2/board-zoom2.c b/arch/arm/mach-omap2/board-zoom2.c
-index 2992a9f..994d286 100644
---- a/arch/arm/mach-omap2/board-zoom2.c
-+++ b/arch/arm/mach-omap2/board-zoom2.c
-@@ -15,6 +15,7 @@
- #include <linux/input.h>
- #include <linux/gpio.h>
- #include <linux/i2c/twl.h>
-+#include <linux/mtd/nand.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -102,8 +103,8 @@ static void __init omap_zoom2_init(void)
- {
- 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBB);
- 	zoom_peripherals_init();
--	board_nand_init(zoom_nand_partitions,
--			ARRAY_SIZE(zoom_nand_partitions), ZOOM_NAND_CS);
-+	board_nand_init(zoom_nand_partitions, ARRAY_SIZE(zoom_nand_partitions),
-+						ZOOM_NAND_CS, NAND_BUSWIDTH_16);
- 	zoom_debugboard_init();
- }
- 
-diff --git a/arch/arm/mach-omap2/board-zoom3.c b/arch/arm/mach-omap2/board-zoom3.c
-index 5adde12..0c9c15e 100644
---- a/arch/arm/mach-omap2/board-zoom3.c
-+++ b/arch/arm/mach-omap2/board-zoom3.c
-@@ -12,6 +12,7 @@
- #include <linux/platform_device.h>
- #include <linux/input.h>
- #include <linux/gpio.h>
-+#include <linux/mtd/nand.h>
- 
- #include <asm/mach-types.h>
- #include <asm/mach/arch.h>
-@@ -115,8 +116,8 @@ static void __init omap_zoom_init(void)
- {
- 	omap3_mux_init(board_mux, OMAP_PACKAGE_CBP);
- 	zoom_peripherals_init();
--	board_nand_init(zoom_nand_partitions,
--			 ARRAY_SIZE(zoom_nand_partitions), ZOOM_NAND_CS);
-+	board_nand_init(zoom_nand_partitions, ARRAY_SIZE(zoom_nand_partitions),
-+						ZOOM_NAND_CS, NAND_BUSWIDTH_16);
- 	zoom_debugboard_init();
- 
- 	omap_mux_init_gpio(64, OMAP_PIN_OUTPUT);
-diff --git a/arch/arm/mach-omap2/gpmc-nand.c b/arch/arm/mach-omap2/gpmc-nand.c
-index 7222096..5d58f57 100644
---- a/arch/arm/mach-omap2/gpmc-nand.c
-+++ b/arch/arm/mach-omap2/gpmc-nand.c
-@@ -12,6 +12,7 @@
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
- #include <linux/io.h>
-+#include <linux/mtd/nand.h>
- 
- #include <asm/mach/flash.h>
- 
-@@ -69,8 +70,10 @@ static int omap2_nand_gpmc_retime(void)
- 	t.wr_cycle  = gpmc_round_ns_to_ticks(gpmc_nand_data->gpmc_t->wr_cycle);
- 
- 	/* Configure GPMC */
--	gpmc_cs_configure(gpmc_nand_data->cs,
--				GPMC_CONFIG_DEV_SIZE, gpmc_nand_data->devsize);
-+	if (gpmc_nand_data->devsize == NAND_BUSWIDTH_16)
-+		gpmc_cs_configure(gpmc_nand_data->cs, GPMC_CONFIG_DEV_SIZE, 1);
-+	else
-+		gpmc_cs_configure(gpmc_nand_data->cs, GPMC_CONFIG_DEV_SIZE, 0);
- 	gpmc_cs_configure(gpmc_nand_data->cs,
- 			GPMC_CONFIG_DEV_TYPE, GPMC_DEVICETYPE_NAND);
- 	err = gpmc_cs_set_timings(gpmc_nand_data->cs, &t);
+ struct omap_nand_platform_data {
+@@ -26,6 +27,7 @@ struct omap_nand_platform_data {
+ 	int			(*nand_setup)(void);
+ 	int			(*dev_ready)(struct omap_nand_platform_data *);
+ 	int			dma_channel;
++	int			gpmc_irq;
+ 	enum nand_io		xfer_type;
+ 	unsigned long		phys_base;
+ 	int			devsize;
 diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 15682ec..7c04cd6 100644
+index 60bac8e..fbe8414 100644
 --- a/drivers/mtd/nand/omap2.c
 +++ b/drivers/mtd/nand/omap2.c
-@@ -804,7 +804,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	info->mtd.name		= dev_name(&pdev->dev);
- 	info->mtd.owner		= THIS_MODULE;
+@@ -11,6 +11,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/delay.h>
++#include <linux/interrupt.h>
+ #include <linux/jiffies.h>
+ #include <linux/sched.h>
+ #include <linux/mtd/mtd.h>
+@@ -24,6 +25,7 @@
+ #include <plat/nand.h>
  
--	info->nand.options	|= pdata->devsize ? NAND_BUSWIDTH_16 : 0;
-+	info->nand.options	= pdata->devsize;
- 	info->nand.options	|= NAND_SKIP_BBTSCAN;
+ #define	DRIVER_NAME	"omap2-nand"
++#define	OMAP_NAND_TIMEOUT_MS	5000
  
- 	/* NAND write protect off */
+ #define NAND_Ecc_P1e		(1 << 0)
+ #define NAND_Ecc_P2e		(1 << 1)
+@@ -108,6 +110,13 @@ struct omap_nand_info {
+ 	unsigned long			phys_base;
+ 	struct completion		comp;
+ 	int				dma_ch;
++	int				gpmc_irq;
++	enum {
++		OMAP_NAND_IO_READ = 0,	/* read */
++		OMAP_NAND_IO_WRITE,	/* write */
++	} iomode;
++	u_char				*buf;
++	int					buf_len;
+ };
+ 
+ /**
+@@ -267,9 +276,10 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
+ {
+ 	struct omap_nand_info *info = container_of(mtd,
+ 						struct omap_nand_info, mtd);
+-	uint32_t pref_count = 0, w_count = 0;
++	uint32_t w_count = 0;
+ 	int i = 0, ret = 0;
+ 	u16 *p;
++	unsigned long tim, limit;
+ 
+ 	/* take care of subpage writes */
+ 	if (len % 2 != 0) {
+@@ -295,9 +305,12 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
+ 				iowrite16(*p++, info->nand.IO_ADDR_W);
+ 		}
+ 		/* wait for data to flushed-out before reset the prefetch */
+-		do {
+-			pref_count = gpmc_read_status(GPMC_PREFETCH_COUNT);
+-		} while (pref_count);
++		tim = 0;
++		limit = (loops_per_jiffy *
++					msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
++		while (gpmc_read_status(GPMC_PREFETCH_COUNT) && (tim++ < limit))
++			cpu_relax();
++
+ 		/* disable and stop the PFPW engine */
+ 		gpmc_prefetch_reset(info->gpmc_cs);
+ 	}
+@@ -326,11 +339,11 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+ {
+ 	struct omap_nand_info *info = container_of(mtd,
+ 					struct omap_nand_info, mtd);
+-	uint32_t prefetch_status = 0;
+ 	enum dma_data_direction dir = is_write ? DMA_TO_DEVICE :
+ 							DMA_FROM_DEVICE;
+ 	dma_addr_t dma_addr;
+ 	int ret;
++	unsigned long tim, limit;
+ 
+ 	/* The fifo depth is 64 bytes. We have a sync at each frame and frame
+ 	 * length is 64 bytes.
+@@ -376,7 +389,7 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+ 	/*  configure and start prefetch transfer */
+ 	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x1, len, is_write);
+ 	if (ret)
+-		/* PFPW engine is busy, use cpu copy methode */
++		/* PFPW engine is busy, use cpu copy method */
+ 		goto out_copy;
+ 
+ 	init_completion(&info->comp);
+@@ -385,10 +398,11 @@ static inline int omap_nand_dma_transfer(struct mtd_info *mtd, void *addr,
+ 
+ 	/* setup and start DMA using dma_addr */
+ 	wait_for_completion(&info->comp);
++	tim = 0;
++	limit = (loops_per_jiffy * msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
++	while (gpmc_read_status(GPMC_PREFETCH_COUNT) && (tim++ < limit))
++		cpu_relax();
+ 
+-	do {
+-		prefetch_status = gpmc_read_status(GPMC_PREFETCH_COUNT);
+-	} while (prefetch_status);
+ 	/* disable and stop the PFPW engine */
+ 	gpmc_prefetch_reset(info->gpmc_cs);
+ 
+@@ -436,6 +450,155 @@ static void omap_write_buf_dma_pref(struct mtd_info *mtd,
+ 		omap_nand_dma_transfer(mtd, (u_char *) buf, len, 0x1);
+ }
+ 
++/*
++ * omap_nand_irq - GMPC irq handler
++ * @this_irq: gpmc irq number
++ * @dev: omap_nand_info structure pointer is passed here
++ */
++static irqreturn_t omap_nand_irq(int this_irq, void *dev)
++{
++	struct omap_nand_info *info = (struct omap_nand_info *) dev;
++	u32 bytes;
++	u32 irq_stat;
++
++	irq_stat = gpmc_read_status(GPMC_GET_IRQ_STATUS);
++	bytes = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
++	bytes = bytes  & 0xFFFC; /* io in multiple of 4 bytes */
++	if (info->iomode == OMAP_NAND_IO_WRITE) { /* checks for write io */
++		if (irq_stat & 0x2)
++			goto done;
++
++		if (info->buf_len && (info->buf_len < bytes))
++			bytes = info->buf_len;
++		else if (!info->buf_len)
++			bytes = 0;
++		iowrite32_rep(info->nand.IO_ADDR_W,
++						(u32 *)info->buf, bytes >> 2);
++		info->buf = info->buf + bytes;
++		info->buf_len -= bytes;
++
++	} else {
++		ioread32_rep(info->nand.IO_ADDR_R,
++						(u32 *)info->buf, bytes >> 2);
++		info->buf = info->buf + bytes;
++
++		if (irq_stat & 0x2)
++			goto done;
++	}
++	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
++
++	return IRQ_HANDLED;
++
++done:
++	complete(&info->comp);
++	/* disable irq */
++	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ, 0);
++
++	/* clear status */
++	gpmc_cs_configure(info->gpmc_cs, GPMC_SET_IRQ_STATUS, irq_stat);
++
++	return IRQ_HANDLED;
++}
++
++/*
++ * omap_read_buf_irq_pref - read data from NAND controller into buffer
++ * @mtd: MTD device structure
++ * @buf: buffer to store date
++ * @len: number of bytes to read
++ */
++static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
++{
++	struct omap_nand_info *info = container_of(mtd,
++						struct omap_nand_info, mtd);
++	int ret = 0;
++
++	if (len <= mtd->oobsize) {
++		omap_read_buf_pref(mtd, buf, len);
++		return;
++	}
++
++	info->iomode = OMAP_NAND_IO_READ;
++	info->buf = buf;
++	init_completion(&info->comp);
++
++	/*  configure and start prefetch transfer */
++	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x0);
++	if (ret)
++		/* PFPW engine is busy, use cpu copy method */
++		goto out_copy;
++
++	info->buf_len = len;
++	/* enable irq */
++	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
++		(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
++
++	/* waiting for read to complete */
++	wait_for_completion(&info->comp);
++
++	/* disable and stop the PFPW engine */
++	gpmc_prefetch_reset(info->gpmc_cs);
++	return;
++
++out_copy:
++	if (info->nand.options & NAND_BUSWIDTH_16)
++		omap_read_buf16(mtd, buf, len);
++	else
++		omap_read_buf8(mtd, buf, len);
++}
++
++/*
++ * omap_write_buf_irq_pref - write buffer to NAND controller
++ * @mtd: MTD device structure
++ * @buf: data buffer
++ * @len: number of bytes to write
++ */
++static void omap_write_buf_irq_pref(struct mtd_info *mtd,
++					const u_char *buf, int len)
++{
++	struct omap_nand_info *info = container_of(mtd,
++						struct omap_nand_info, mtd);
++	int ret = 0;
++	unsigned long tim, limit;
++
++	if (len <= mtd->oobsize) {
++		omap_write_buf_pref(mtd, buf, len);
++		return;
++	}
++
++	info->iomode = OMAP_NAND_IO_WRITE;
++	info->buf = (u_char *) buf;
++	init_completion(&info->comp);
++
++	/*  configure and start prefetch transfer */
++	ret = gpmc_prefetch_enable(info->gpmc_cs, 0x0, len, 0x1);
++	if (ret)
++		/* PFPW engine is busy, use cpu copy method */
++		goto out_copy;
++
++	info->buf_len = len;
++	/* enable irq */
++	gpmc_cs_configure(info->gpmc_cs, GPMC_ENABLE_IRQ,
++			(GPMC_IRQ_FIFOEVENTENABLE | GPMC_IRQ_COUNT_EVENT));
++
++	/* waiting for write to complete */
++	wait_for_completion(&info->comp);
++	/* wait for data to flushed-out before reset the prefetch */
++	tim = 0;
++	limit = (loops_per_jiffy *  msecs_to_jiffies(OMAP_NAND_TIMEOUT_MS));
++	while (gpmc_read_status(GPMC_PREFETCH_COUNT) && (tim++ < limit))
++		cpu_relax();
++
++	/* disable and stop the PFPW engine */
++	gpmc_prefetch_reset(info->gpmc_cs);
++	return;
++
++out_copy:
++	if (info->nand.options & NAND_BUSWIDTH_16)
++		omap_write_buf16(mtd, buf, len);
++	else
++		omap_write_buf8(mtd, buf, len);
++}
++
+ /**
+  * omap_verify_buf - Verify chip data against buffer
+  * @mtd: MTD device structure
+@@ -846,6 +1009,20 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		}
+ 		break;
+ 
++	case NAND_OMAP_PREFETCH_IRQ:
++		err = request_irq(pdata->gpmc_irq,
++				omap_nand_irq, IRQF_SHARED, "gpmc-nand", info);
++		if (err) {
++			dev_err(&pdev->dev, "requesting irq(%d) error:%d",
++							pdata->gpmc_irq, err);
++			goto out_release_mem_region;
++		} else {
++			info->gpmc_irq	     = pdata->gpmc_irq;
++			info->nand.read_buf  = omap_read_buf_irq_pref;
++			info->nand.write_buf = omap_write_buf_irq_pref;
++		}
++		break;
++
+ 	default:
+ 		dev_err(&pdev->dev,
+ 			"xfer_type(%d) not supported!\n", pdata->xfer_type);
+@@ -911,6 +1088,9 @@ static int omap_nand_remove(struct platform_device *pdev)
+ 	if (info->dma_ch != -1)
+ 		omap_free_dma(info->dma_ch);
+ 
++	if (info->gpmc_irq)
++		free_irq(info->gpmc_irq, info);
++
+ 	/* Release NAND device, its internal structures and partitions */
+ 	nand_release(&info->mtd);
+ 	iounmap(info->nand.IO_ADDR_R);
 -- 
 1.7.0.4
