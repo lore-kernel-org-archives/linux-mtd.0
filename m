@@ -1,21 +1,10 @@
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: "Nori, Sekhar" <nsekhar@ti.com>, "linux-omap@vger.kernel.org"
-	<linux-omap@vger.kernel.org>
-Date: Tue, 4 Jan 2011 14:20:17 +0530
-Subject: RE: [PATCH v7 4/7] omap3: nand: prefetch in irq mode support
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B036A57ACC7@dbde02.ent.ti.com>
-References: <1293629546-18831-1-git-send-email-s-ghorai@ti.com>
-	<1293629546-18831-5-git-send-email-s-ghorai@ti.com>
-	<B85A65D85D7EB246BE421B3FB0FBB593024816D63C@dbde02.ent.ti.com>
-In-Reply-To: <B85A65D85D7EB246BE421B3FB0FBB593024816D63C@dbde02.ent.ti.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Vimal Singh <vimalsingh@ti.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH v8 0/7] nand prefetch-irq support and ecc layout chanage
+Date: Tue,  4 Jan 2011 19:03:17 +0530
+Message-Id: <1294148004-10789-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +14,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The following set of patches applies on linux-2.6.
 
+The main motivations behind this patch series are -
+        1. support NAND I/O in irq mode.
+        2. support of different ECC schema.
+        3. also add support ecc layout as like in romcode ecc layout, but not enabled
 
-[..snip...]
-> > +		if (info->buf_len & (info->buf_len < bytes))
->=20
-> Meant to use logical AND here?
-[Ghorai] thanks, you are right.
+v8: free_irq() added; usedtimeout for this while loop
 
-[..snip..]
-> > +	init_completion(&info->comp);
->=20
-> You can use INIT_COMPLETION to reset the completion variable.
-> Same change can be done in write below.
-[..snip..]
-> s/methode/method
->=20
-[Ghorai] yes. I will do this=20
+v7: NAND type (x16 or x8) is board specific and not omap specific; this passed form board file.
+    http://www.mail-archive.com/linux-omap@vger.kernel.org/msg41469.html
 
-[..snip..]
-> > +	/* waiting for write to complete */
-> > +	wait_for_completion(&info->comp);
-> > +	/* wait for data to flushed-out before reset the prefetch */
-> > +	do {
-> > +		ret =3D gpmc_read_status(GPMC_PREFETCH_COUNT);
-> > +	} while (ret);
->=20
-> Please have a timeout for this while loop in case hardware does
-> not become ready. Also, consider using cpu_relax() inside the
-> tight loop.
->=20
-[Ghorai] Thanks. I will send again.
+v6: configurable transfer type from board file; 
+    #define irq number used for nand-irq
+    http://www.mail-archive.com/linux-omap@vger.kernel.org/msg39397.html
+    
+v5: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg35860.html
+This address the input as to support the irq_chained in GPMC.
+And resend of
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg35848.html
+
+v4: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg34882.html
+and resend of
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32689.html
+
+v3: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg32071.html
+Rebase on latest codebase and previous patch(posted).
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31963.html
+
+v2: Rebase on latest codebase and previous patch(posted).
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg31471.html
+
+v1: http://www.mail-archive.com/linux-omap@vger.kernel.org/msg26666.html
+
+Sukumar Ghorai (7):
+  omap3630: nand: fix device size to work in polled mode
+  omap3: nand: configurable transfer type per board
+  omap: gpmc: enable irq mode in gpmc
+  omap3: nand: prefetch in irq mode support
+  omap3: nand: configurable fifo threshold to gain the throughput
+  omap3: nand: ecc layout select from board file
+  omap3: nand: making ecc layout as compatible with romcode ecc
+
+ arch/arm/mach-omap2/board-2430sdp.c        |    1 +
+ arch/arm/mach-omap2/board-3430sdp.c        |    3 +-
+ arch/arm/mach-omap2/board-3630sdp.c        |    4 +-
+ arch/arm/mach-omap2/board-4430sdp.c        |    2 +
+ arch/arm/mach-omap2/board-am3517evm.c      |    2 +
+ arch/arm/mach-omap2/board-apollon.c        |    1 +
+ arch/arm/mach-omap2/board-cm-t35.c         |    1 +
+ arch/arm/mach-omap2/board-devkit8000.c     |    1 +
+ arch/arm/mach-omap2/board-flash.c          |   13 +-
+ arch/arm/mach-omap2/board-flash.h          |    4 +-
+ arch/arm/mach-omap2/board-generic.c        |    2 +
+ arch/arm/mach-omap2/board-h4.c             |    1 +
+ arch/arm/mach-omap2/board-igep0020.c       |    1 +
+ arch/arm/mach-omap2/board-ldp.c            |    3 +-
+ arch/arm/mach-omap2/board-n8x0.c           |    2 +
+ arch/arm/mach-omap2/board-omap3beagle.c    |    1 +
+ arch/arm/mach-omap2/board-omap3evm.c       |    2 +
+ arch/arm/mach-omap2/board-omap3pandora.c   |    2 +
+ arch/arm/mach-omap2/board-omap3stalker.c   |    1 +
+ arch/arm/mach-omap2/board-omap3touchbook.c |    1 +
+ arch/arm/mach-omap2/board-omap4panda.c     |    2 +
+ arch/arm/mach-omap2/board-overo.c          |    1 +
+ arch/arm/mach-omap2/board-rx51.c           |    1 +
+ arch/arm/mach-omap2/board-zoom2.c          |    7 +-
+ arch/arm/mach-omap2/board-zoom3.c          |    7 +-
+ arch/arm/mach-omap2/gpmc-nand.c            |    7 +-
+ arch/arm/mach-omap2/gpmc.c                 |   50 ++++-
+ arch/arm/mach-omap2/io.c                   |    2 -
+ arch/arm/plat-omap/include/plat/gpmc.h     |   17 ++-
+ arch/arm/plat-omap/include/plat/irqs.h     |    9 +-
+ arch/arm/plat-omap/include/plat/nand.h     |   11 +
+ drivers/mtd/nand/Kconfig                   |   17 --
+ drivers/mtd/nand/omap2.c                   |  336 +++++++++++++++++++++-------
+ 33 files changed, 396 insertions(+), 119 deletions(-)
+
+Sukumar Ghorai (7):
+  omap3630: nand: fix device size to work in polled mode
+  omap3: nand: configurable transfer type per board
+  omap: gpmc: enable irq mode in gpmc
+  omap3: nand: prefetch in irq mode support
+  omap3: nand: configurable fifo threshold to gain the throughput
+  omap3: nand: ecc layout select from board file
+  omap3: nand: making ecc layout as compatible with romcode ecc
+
+ arch/arm/mach-omap2/board-2430sdp.c        |    1 +
+ arch/arm/mach-omap2/board-3430sdp.c        |    3 +-
+ arch/arm/mach-omap2/board-3630sdp.c        |    4 +-
+ arch/arm/mach-omap2/board-4430sdp.c        |    2 +
+ arch/arm/mach-omap2/board-am3517evm.c      |    2 +
+ arch/arm/mach-omap2/board-apollon.c        |    1 +
+ arch/arm/mach-omap2/board-cm-t35.c         |    1 +
+ arch/arm/mach-omap2/board-devkit8000.c     |    1 +
+ arch/arm/mach-omap2/board-flash.c          |   13 +-
+ arch/arm/mach-omap2/board-flash.h          |    4 +-
+ arch/arm/mach-omap2/board-generic.c        |    2 +
+ arch/arm/mach-omap2/board-h4.c             |    1 +
+ arch/arm/mach-omap2/board-igep0020.c       |    1 +
+ arch/arm/mach-omap2/board-ldp.c            |    3 +-
+ arch/arm/mach-omap2/board-n8x0.c           |    2 +
+ arch/arm/mach-omap2/board-omap3beagle.c    |    1 +
+ arch/arm/mach-omap2/board-omap3evm.c       |    2 +
+ arch/arm/mach-omap2/board-omap3pandora.c   |    2 +
+ arch/arm/mach-omap2/board-omap3stalker.c   |    1 +
+ arch/arm/mach-omap2/board-omap3touchbook.c |    1 +
+ arch/arm/mach-omap2/board-omap4panda.c     |    2 +
+ arch/arm/mach-omap2/board-overo.c          |    1 +
+ arch/arm/mach-omap2/board-rx51.c           |    1 +
+ arch/arm/mach-omap2/board-zoom2.c          |    7 +-
+ arch/arm/mach-omap2/board-zoom3.c          |    7 +-
+ arch/arm/mach-omap2/gpmc-nand.c            |    7 +-
+ arch/arm/mach-omap2/gpmc.c                 |   50 ++++-
+ arch/arm/mach-omap2/io.c                   |    2 -
+ arch/arm/plat-omap/include/plat/gpmc.h     |   17 ++-
+ arch/arm/plat-omap/include/plat/irqs.h     |    9 +-
+ arch/arm/plat-omap/include/plat/nand.h     |   11 +
+ drivers/mtd/nand/Kconfig                   |   17 --
+ drivers/mtd/nand/omap2.c                   |  367 +++++++++++++++++++++-------
+ 33 files changed, 416 insertions(+), 130 deletions(-)
