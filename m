@@ -1,22 +1,16 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PaOsW-0001EK-9g
-	for linux-mtd@lists.infradead.org; Wed, 05 Jan 2011 08:37:57 +0000
-Received: by fxm19 with SMTP id 19so14153380fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 05 Jan 2011 00:37:55 -0800 (PST)
-Subject: Re: [PATCH] txx9ndfmc: limit transfer bytes to 512 (ECC provides 6
-	bytes max)
+Subject: Re: [PATCH 1/1] mtd: msm_nand: Add initial msm nand driver support.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ralf =?ISO-8859-1?Q?R=F6sch?= <ralf.roesch@rw-gmbh.de>
-In-Reply-To: <4D1C5123.4050804@rw-gmbh.de>
-References: <4D1C5123.4050804@rw-gmbh.de>
+To: Murali Nalajala <mnalajal@codeaurora.org>
+In-Reply-To: <1293785680-19850-1-git-send-email-mnalajal@codeaurora.org>
+References: <1293785680-19850-1-git-send-email-mnalajal@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 05 Jan 2011 10:37:51 +0200
-Message-ID: <1294216671.2179.10.camel@koala>
+Date: Wed, 05 Jan 2011 10:41:57 +0200
+Message-ID: <1294216917.2179.11.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org
+Cc: swetland@google.com, Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
+	linux-mtd@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,22 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-12-30 at 10:30 +0100, Ralf Rösch wrote:
-> See commit: c0cbfd0e81d879a950ba6f0df3f75ea30c5ab16e
-> Using __nand_correct_data() helper function, this driver can read 512
-> byte (with 6 byte ECC) at a time.
+On Fri, 2010-12-31 at 14:24 +0530, Murali Nalajala wrote:
+> From: Arve Hjønnevåg <arve@android.com>
 > 
-> This is correct, but not more:
-> With NAND chips providing page sizes > 512 Bytes
-> chip->ecc.bytes are calculated > 6 in txx9ndfmc_nand_scan.
-> According the data sheet there are (only) 6 bytes ECC available.
+> Add initial msm nand driver support for Qualcomm MSM and QSD platforms.
+> This driver is currently capable of handling 2K page nand devices.
 > 
-> After applying the patch a Hynix 512M*8 with 2k page size could be
-> successfully formatted and used with an ubifs file system.
+> This driver is originally
+> developed by Google and its source is available at
+> http://android.git.kernel.org/?p=kernel/experimental.git
 > 
-> Signed-off-by: Ralf Roesch <ralf.roesch@rw-gmbh.de>
+> CC: Brian Swetland <swetland@google.com>
+> Signed-off-by: Arve Hjønnevåg <arve@android.com>
+> Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
 
-Pushed to l2-mtd-2.6.git, thanks!
+Pushed to l2-mtd-2.6.git.
 
 -- 
 Best Regards,
