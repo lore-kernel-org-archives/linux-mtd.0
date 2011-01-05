@@ -1,27 +1,22 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PaOnl-0000SH-P2
-	for linux-mtd@lists.infradead.org; Wed, 05 Jan 2011 08:33:02 +0000
-Received: by fxm19 with SMTP id 19so14151110fxm.36
+	id 1PaOsW-0001EK-9g
+	for linux-mtd@lists.infradead.org; Wed, 05 Jan 2011 08:37:57 +0000
+Received: by fxm19 with SMTP id 19so14153380fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 05 Jan 2011 00:33:00 -0800 (PST)
-Subject: RE: UBIFS reboots issue
+	Wed, 05 Jan 2011 00:37:55 -0800 (PST)
+Subject: Re: [PATCH] txx9ndfmc: limit transfer bytes to 512 (ECC provides 6
+	bytes max)
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Boaz Ben-David <boaz.bd@wellsense-tech.com>
-In-Reply-To: <39A4B204C321D34DA3490E3B119D5A6C68BF776758@SBS2008.wellsense.local>
-References: <39A4B204C321D34DA3490E3B119D5A6C68BF77673F@SBS2008.wellsense.local>
-	<1293049245.2051.4.camel@koala>
-	<39A4B204C321D34DA3490E3B119D5A6C68BF77674A@SBS2008.wellsense.local>
-	,
-	<EF949E0CEB6551499A3643069FE41ACB034B6DFC@CNSHGSMBS01.ad4.ad.alcatel.com>
-	<39A4B204C321D34DA3490E3B119D5A6C68BF77573E@SBS2008.wellsense.local>
-	<39A4B204C321D34DA3490E3B119D5A6C68BF776758@SBS2008.wellsense.local>
+To: Ralf =?ISO-8859-1?Q?R=F6sch?= <ralf.roesch@rw-gmbh.de>
+In-Reply-To: <4D1C5123.4050804@rw-gmbh.de>
+References: <4D1C5123.4050804@rw-gmbh.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 05 Jan 2011 10:32:57 +0200
-Message-ID: <1294216377.2179.9.camel@koala>
+Date: Wed, 05 Jan 2011 10:37:51 +0200
+Message-ID: <1294216671.2179.10.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: Atsushi Nemoto <anemo@mba.ocn.ne.jp>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -32,21 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2010-12-28 at 17:47 +0200, Boaz Ben-David wrote:
-> I'm sorry for changing the thread subject in the previous mail..
+On Thu, 2010-12-30 at 10:30 +0100, Ralf Rösch wrote:
+> See commit: c0cbfd0e81d879a950ba6f0df3f75ea30c5ab16e
+> Using __nand_correct_data() helper function, this driver can read 512
+> byte (with 6 byte ECC) at a time.
 > 
-> I guess it sums up to one main question (and I would be very greatful if
-> someone could answer):
+> This is correct, but not more:
+> With NAND chips providing page sizes > 512 Bytes
+> chip->ecc.bytes are calculated > 6 in txx9ndfmc_nand_scan.
+> According the data sheet there are (only) 6 bytes ECC available.
 > 
-> 	Overall, for use on MLC NAND, is UBIFS or JFFS2 more suitable?
+> After applying the patch a Hynix 512M*8 with 2k page size could be
+> successfully formatted and used with an ubifs file system.
+> 
+> Signed-off-by: Ralf Roesch <ralf.roesch@rw-gmbh.de>
 
-None, because no one with clue analyzed them WRT MLC-specific aspects.
-And no-one seriously stress-tested them on MLC, at least no-one sent any
-public report about this. UBIFS may appear to work, but then fail
-horribly when you have an unclean power cut.
-
-So again, you cannot use UBIFS as-is on MLC and sleep well. You need to
-spend time and test/analyze them.
+Pushed to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
