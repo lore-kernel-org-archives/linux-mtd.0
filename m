@@ -1,23 +1,16 @@
-Subject: Re: [PATCH 1/1] mtd: msm_nand: Add initial msm nand driver support.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daniel Walker <dwalker@codeaurora.org>
-In-Reply-To: <1294335542.24440.4.camel@c-dwalke-linux.qualcomm.com>
-References: <1293785680-19850-1-git-send-email-mnalajal@codeaurora.org>
-	<1294216917.2179.11.camel@koala>
-	<1294247531.16744.0.camel@c-dwalke-linux.qualcomm.com>
-	<1294259965.2179.23.camel@koala>
-	<1294335542.24440.4.camel@c-dwalke-linux.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 06 Jan 2011 20:49:18 +0200
-Message-ID: <1294339758.2219.10.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org,
-	Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-	Murali Nalajala <mnalajal@codeaurora.org>, swetland@google.com,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail.multitech.com ([65.126.90.84])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PaxV3-0004L7-6d
+	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 21:36:01 +0000
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: New NAND flash die rev recommends 4 bit ECC
+Date: Thu, 6 Jan 2011 15:34:31 -0600
+Message-ID: <1CD05B980C94AC408B37C82BBABAA3E6149861DA@mtsexchange.dc.multitech.prv>
+From: "Tim Barr" <tbarr@multitech.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-01-06 at 09:39 -0800, Daniel Walker wrote:
-> On Wed, 2011-01-05 at 22:39 +0200, Artem Bityutskiy wrote:
-> > On Wed, 2011-01-05 at 09:12 -0800, Daniel Walker wrote:
-> > > On Wed, 2011-01-05 at 10:41 +0200, Artem Bityutskiy wrote:
-> > > > On Fri, 2010-12-31 at 14:24 +0530, Murali Nalajala wrote:
-> > > > > From: Arve Hjønnevåg <arve@android.com>
-> > > > > 
-> > > > > Add initial msm nand driver support for Qualcomm MSM and QSD platforms.
-> > > > > This driver is currently capable of handling 2K page nand devices.
-> > > > > 
-> > > > > This driver is originally
-> > > > > developed by Google and its source is available at
-> > > > > http://android.git.kernel.org/?p=kernel/experimental.git
-> > > > > 
-> > > > > CC: Brian Swetland <swetland@google.com>
-> > > > > Signed-off-by: Arve Hjønnevåg <arve@android.com>
-> > > > > Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
-> > > > 
-> > > > Pushed to l2-mtd-2.6.git.
-> > > 
-> > > This patch had incorrect authorship .. Can you replace it with the
-> > > second one that was sent ?
-> > 
-> > Yes, I did that actually, noticed the second one later.
-> 
-> Is it too late for you to drop this ? It's got some additional issues
-> that we need some time to address ..
+I just got a notice from Micron that they are making changes to the
+29F2G08/16 (2 Gbit SLC device). For instance, the 29F2G0816AAD is going
+EOL this month and is being replaced by the MT29F2G08ABAEA. The problem
+is that the new data sheet is recommending 4 bit per 526 byte ECC
+instead of 1 bit per 526 byte ECC. As far as I can tell, the processor
+we are using (AT91SAM9G20) only does 1 bit HW ECC and the software ECC
+code for MTD is also 1 bit. The new NAND Flash die does have a HW 4 bit
+ECC engine added in, which probably would need to have code written to
+support it in order to be able to use it.
 
-Sure, I do not merge stuff to upstream, I barely take it to my tree to
-make sure David Woodhouse does not miss it. Everything he does not merge
-to mtd tree is automatically dropped from my l2-mtd then.
+So, is anyone working on a 4 bit software ECC code or code modifications
+to utilize the on chip HW ECC engine?
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Right now we can use a part from an alternate vendor or do a lifetime
+buy, but I am wondering if this is a trend as die size shrinks and other
+vendors will soon require higher level ECC as well.
+
+Tim Barr=20
+Development Engineer=20
+Multi-Tech Systems, Inc.=20
+=20
