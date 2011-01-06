@@ -1,22 +1,23 @@
 Received: from mail-out.m-online.net ([212.18.0.10])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PanPk-00029r-0y
-	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 10:49:54 +0000
-Date: Thu, 6 Jan 2011 11:49:48 +0100
+	id 1PanZd-000454-C6
+	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 11:00:05 +0000
+Date: Thu, 6 Jan 2011 12:00:03 +0100
 From: Anatolij Gustschin <agust@denx.de>
-To: dedekind1@gmail.com
+To: Guillaume LECERF <glecerf@gmail.com>
 Subject: Re: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
-Message-ID: <20110106114948.37ca06d0@wker>
-In-Reply-To: <1292942724.2286.57.camel@localhost>
+Message-ID: <20110106120003.0ba35de9@wker>
+In-Reply-To: <AANLkTikmbbECMLNZ-3d=Z32RcFvsiv=eDyAwJ2=n1sHi@mail.gmail.com>
 References: <292342500.2538.65.camel@localhost>
 	<1292539339-25111-3-git-send-email-agust@denx.de>
 	<AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
 	<1292942724.2286.57.camel@localhost>
+	<AANLkTikmbbECMLNZ-3d=Z32RcFvsiv=eDyAwJ2=n1sHi@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, ext Guillaume LECERF <glecerf@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +29,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Tue, 21 Dec 2010 16:45:24 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
+On Thu, 30 Dec 2010 11:32:11 +0100
+Guillaume LECERF <glecerf@gmail.com> wrote:
 
-> On Mon, 2010-12-20 at 17:36 +0100, ext Guillaume LECERF wrote:
-> > Hello.
-> > 
-> > 2010/12/16 Anatolij Gustschin <agust@denx.de>:
-> > > Initialize mtd->writebufsize to the value obtained
-> > > by CFI query command at probe time.
-> > >
-> > > Signed-off-by: Anatolij Gustschin <agust@denx.de>
-> > > ---
-> > > --- a/drivers/mtd/chips/cfi_cmdset_0002.c
-> > > +++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-> > > @@ -428,6 +428,10 @@ struct mtd_info *cfi_cmdset_0002(struct map_info *map, int primary)
-> > >        mtd->flags   = MTD_CAP_NORFLASH;
-> > >        mtd->name    = map->name;
-> > >        mtd->writesize = 1;
-> > > +       mtd->writebufsize = 1 << cfi->cfiq->MaxBufWriteSize;
-> > 
-> > What about wbufsize initialized in cfi_amdstd_write_buffers() to
-> > "cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize" ?
-> > I don't know this piece of code, but I just wanted to point it to you.
+> 2010/12/21 Artem Bityutskiy <dedekind1@gmail.com>:
+> > Yes, fair question, Anatolij?
 > 
-> Yes, fair question, Anatolij?
+> Hi all.
+> 
+> Anatolij, what about such patches ?
+> Note : this is totally untested ;)
 
-Just answered it.
+NACK. This is wrong. We need to export the real physical write buffer
+size of _one_ chip to UBI. Otherwise we will run into the same trouble
+and will end up with an unmountable UBIFS partition again.
+It doesn't even make sense to test your two patches, it won't work.
 
 Thanks,
 Anatolij
