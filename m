@@ -1,28 +1,24 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PannU-0005xf-Ne
-	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 11:14:35 +0000
-Received: by bwz5 with SMTP id 5so16513363bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 06 Jan 2011 03:14:07 -0800 (PST)
-Subject: Re: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
+Subject: Re: Hit BUG_ON in dma-mapping.c:425
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Anatolij Gustschin <agust@denx.de>
-In-Reply-To: <20110106121316.1b98c132@wker>
-References: <292342500.2538.65.camel@localhost>
-	<1292539339-25111-3-git-send-email-agust@denx.de>
-	<AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
-	<1292942724.2286.57.camel@localhost>
-	<AANLkTikmbbECMLNZ-3d=Z32RcFvsiv=eDyAwJ2=n1sHi@mail.gmail.com>
-	<AANLkTinWtEmu9nwcww4JKang+cNoHsrETT_Mojz7FF0L@mail.gmail.com>
-	<1294216041.2179.4.camel@koala>  <20110106121316.1b98c132@wker>
+To: Nicolas Ferre <nicolas.ferre@atmel.com>
+In-Reply-To: <4D259B9C.6060409@atmel.com>
+References: <4D24A108.2080609@atmel.com>
+	<20110105165551.GE8638@n2100.arm.linux.org.uk>
+	<4D259B9C.6060409@atmel.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 06 Jan 2011 13:14:04 +0200
-Message-ID: <1294312444.2219.2.camel@koala>
+Date: Thu, 06 Jan 2011 13:19:29 +0200
+Message-ID: <1294312769.2219.7.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Guillaume LECERF <glecerf@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: Hong XU <hong.xu@atmel.com>,
+	Russell King - ARM Linux <linux@arm.linux.org.uk>,
+	Patrice VILCHEZ <patrice.vilchez@atmel.com>,
+	Linux Kernel list <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+	Andrew Victor <linux@maxim.org.za>,
+	"'linux-arm-kernel@lists.infradead.org'"
+	<linux-arm-kernel@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,29 +29,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-01-06 at 12:13 +0100, Anatolij Gustschin wrote:
-> Hi,
+On Thu, 2011-01-06 at 11:38 +0100, Nicolas Ferre wrote:
+> (I include MTD mailing-list now)
 > 
-> On Wed, 05 Jan 2011 10:27:21 +0200
-> Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> 
-> > On Thu, 2010-12-30 at 12:49 +0100, Guillaume LECERF wrote:
-> > > 2010/12/30 Guillaume LECERF <glecerf@gmail.com>:
-> > > > Anatolij, what about such patches ?
-> > > > Note : this is totally untested ;)
-> > > 
-> > > Please disregard 08-patch.patch, I think it does not even compile :(
+> Le 05/01/2011 17:55, Russell King - ARM Linux :
+> > On Wed, Jan 05, 2011 at 05:49:12PM +0100, Nicolas Ferre wrote:
+> >> Hi,
+> >>
+> >> While running mtd_stresstest on a dataflash (atmel_spi 
+> >> + mtd_dataflash drivers) I hit the BUG_ON directive that 
+> >> is at the beginning of ___dma_single_cpu_to_dev() function.
+> >> This function is called from the SPI driver that do a 
+> >> dma_map_single() before DMA operations on the buffer 
+> >> transmitted from upper layers.
+> >>
+> >> It seems that this address is above "high_memory" limit because 
+> >> it is allocated by vmalloc (in mtd_stresstest.c:285)...
 > > 
-> > Anatolij is not answering, probably he is just very busy or having
-> > holidays or something. I think it is better to wait a little with these
-> > patches and let Anatolij look at this. So I'm removing them from my l2
-> > tree so far and save them in the 'anatolij' branch of the l2 tree.
+> > Well, its telling you is that you're not allowed to DMA to vmalloc
+> > addresses.  Whether that's the fault of the map driver or not is a
+> > question for mtd folk.
 > 
-> Sorry for not answering quickly, I was very busy and then was very
-> ill. The two patches from Guillaume are wrong. Please apply my patches
-> again.
+> So you mean that those vmalloc calls should be changed to kmalloc in
+> MTD like this:
+> 
+> --- a/drivers/mtd/tests/mtd_stresstest.c
+> +++ b/drivers/mtd/tests/mtd_stresstest.c
+> @@ -26,7 +26,6 @@
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/slab.h>
+>  #include <linux/sched.h>
+> -#include <linux/vmalloc.h>
+>  
+>  #define PRINT_PREF KERN_INFO "mtd_stresstest: "
+>  
+> @@ -281,8 +280,8 @@ static int __init mtd_stresstest_init(void)
+>         bufsize = mtd->erasesize * 2;
+>  
+>         err = -ENOMEM;
+> -       readbuf = vmalloc(bufsize);
+> -       writebuf = vmalloc(bufsize);
+> +       readbuf = kmalloc(bufsize, GFP_KERNEL);
+> +       writebuf = kmalloc(bufsize, GFP_KERNEL);
+>         offsets = kmalloc(ebcnt * sizeof(int), GFP_KERNEL);
+>         if (!readbuf || !writebuf || !offsets) {
+>                 printk(PRINT_PREF "error: cannot allocate memory\n");
+> @@ -313,8 +312,8 @@ static int __init mtd_stresstest_init(void)
+>  out:
+>         kfree(offsets);
+>         kfree(bbt);
+> -       vfree(writebuf);
+> -       vfree(readbuf);
+> +       kfree(writebuf);
+> +       kfree(readbuf);
+>         put_mtd_device(mtd);
+>         if (err)
+>                 printk(PRINT_PREF "error %d occurred\n", err);
+> 
+> 
+> I also discovered the same issue while trying to write with "dd"
+> on /dev/mtdblockx
+> 
+> Same vmalloc'ed memory seems to be used in mtdblock_writesect():
+> mtdblk->cache_data = vmalloc(mtdblk->mbd.mtd->erasesize);
+> 
+> I know that using "dd" on a block device is not the common case but it
+> should work instead of not being able to transmit buffer with DMA...
+> So what it implies to switch this to kmalloc? Is it regression-free to
+> do this?
 
-Yes, done, thanks.
+Unfortunatelly not. These are about allocating eraseblock-sized buffers,
+which may be as large as 512KiB, and kmalloc can easily fail, this is
+why vmalloc is used.
+
+What you should do instead is to change the code and make it use smaller
+kmalloc-ed buffers instead, in a loop. Or use an array of pointers, each
+pointing to smaller buffers, and teach mtd to understand them. Then we
+could reuse this infrastructure in UBI and UBIFS and JFFS2 as well.
 
 -- 
 Best Regards,
