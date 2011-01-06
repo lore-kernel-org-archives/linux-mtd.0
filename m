@@ -1,17 +1,29 @@
-Subject: Re: [PATCH 1/1] mtd: msm_nand: Add initial msm nand driver support.
+Subject: Re: [PATCH] mtd: allow mtd and jffs2 when ARCH=um
 From: David Woodhouse <dwmw2@infradead.org>
-To: Murali Nalajala <mnalajal@codeaurora.org>
-Date: Thu, 06 Jan 2011 15:33:44 +0000
-In-Reply-To: <1293785680-19850-1-git-send-email-mnalajal@codeaurora.org>
-References: <1293785680-19850-1-git-send-email-mnalajal@codeaurora.org>
+To: Jason Lunz <lunz@acm.org>
+Date: Thu, 06 Jan 2011 15:45:34 +0000
+In-Reply-To: <20101214195124.GA6010@falooley.org>
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<20071024011712.GA3762@falooley.org>
+	<1193208689.26096.48.camel@pmac.infradead.org>
+	<20071227181524.GA19051@falooley.org>
+	<20071228174853.GA4252@uranus.ravnborg.org>
+	<20101207072919.GA8511@falooley.org>
+	<AANLkTineLxHdcDKZEUGiqVNAauSX_xyQrs49kKaqhiWo@mail.gmail.com>
+	<20101207182012.GA10546@falooley.org>
+	<1292343878.2538.80.camel@localhost>
+	<20101214195124.GA6010@falooley.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <1294328027.20779.6.camel@i7.infradead.org>
+Message-ID: <1294328738.20779.10.camel@i7.infradead.org>
 Mime-Version: 1.0
-Cc: linux-arm-msm@vger.kernel.org,
-	Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, swetland@google.com
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net,
+	Artem Bityutskiy <dedekind1@gmail.com>,
+	richard -rw- weinberger <richard.weinberger@gmail.com>,
+	Jeff Dike <jdike@addtoit.com>, lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
+	Sam Ravnborg <sam@ravnborg.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,12 +33,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2010-12-31 at 14:24 +0530, Murali Nalajala wrote:
+On Tue, 2010-12-14 at 11:51 -0800, Jason Lunz wrote:
 > 
-> +#define NAND_CMD_STATUS             0x0C
-> +#define NAND_CMD_RESET              0x0D 
+> > Instead, you should solve this problem in UML code. I do not know how,
+> > but may be you can add readb/writeb there which actually do nothing or
+> > print a scary warning, or do BUG(), and let things which use them just
+> > fail run-time.
+> 
+> Something like this could work, but it would be error-prone for anyone
+> else who attempts using iomem-requiring drivers on uml. Instead of
+> getting obvious compile failures we'd have broken drivers that BUG() or
+> emit scary warnings. That doesn't seem to me like an improvement. 
 
-Er, what?
+Drivers should *never* BUG() or crash, or busy-loop, on getting 0xFF
+when they read from hardware. That can happen anyway in some
+circumstances.
+
+Doesn't iSeries take this approach?
+
+I don't much like the patch that Artem took into his l2-mtd tree; it
+doesn't even let you build mtdchar, which really *ought* to be
+permitted. It also didn't allow the nandsim or mtdram devices, which are
+purely virtual.
+
+I think I'd prefer something similar to your original, Jason. I don't
+think the HAS_IOMEM dependencies have to be *so* complex to maintain. If
+anything we're just going to err on the side of inclusion and you'll
+occasionally have to send us patches to "hide" things from you again.
 
 -- 
 David Woodhouse                            Open Source Technology Centre
