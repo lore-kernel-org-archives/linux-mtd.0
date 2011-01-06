@@ -1,19 +1,20 @@
-Received: from mail-px0-f177.google.com ([209.85.212.177])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PaepF-0007hS-4u
-	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 01:39:37 +0000
-Received: by pxi7 with SMTP id 7so3836483pxi.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 05 Jan 2011 17:39:35 -0800 (PST)
-From: Charles Manning <cdhmanning@gmail.com>
-To: linux-mtd@lists.infradead.org,
-	linux-omap@vger.kernel.org
-Subject: [PATCH 2/2] omap2 nand: Align subpage reads.
-Date: Thu,  6 Jan 2011 14:39:02 +1300
-Message-Id: <1294277942-1252-3-git-send-email-cdhmanning@gmail.com>
-In-Reply-To: <1294277942-1252-1-git-send-email-cdhmanning@gmail.com>
-References: <1294277942-1252-1-git-send-email-cdhmanning@gmail.com>
-Cc: Charles Manning <cdhmanning@gmail.com>
+Received: from nbd.name ([46.4.11.11])
+	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pamj0-0006N7-98
+	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 10:05:42 +0000
+Message-ID: <4D25941E.80702@openwrt.org>
+Date: Thu, 06 Jan 2011 11:06:22 +0100
+From: John Crispin <blogic@openwrt.org>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 07/10] MIPS: lantiq: add NOR flash CFI address swizzle
+References: <1294257379-417-1-git-send-email-blogic@openwrt.org>
+	<1294257379-417-8-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1294257379-417-8-git-send-email-blogic@openwrt.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mips@linux-mips.org, Ralph Hempel <ralph.hempel@lantiq.com>,
+	linux-mtd@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Set align_subpage to align buffer to u32 to use the prefetch engine.
+On 05/01/11 20:56, John Crispin wrote:
+>  
+>  	adr += chip->start;
+> +#ifdef CONFIG_MTD_CFI_CMD_SWIZZLE
+> +	adr ^= 2;
+> +#endif
+>  
+>  	mutex_lock(&chip->mutex);
+>  	ret = get_chip(map, chip, adr, FL_WRITING);
+>   
 
-Signed-off-by: Charles Manning <cdhmanning@gmail.com>
----
- drivers/mtd/nand/omap2.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Hi,
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index cd41c58..3630971 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -886,6 +886,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- #else
- 	info->nand.ecc.mode = NAND_ECC_SOFT;
- #endif
-+	info->nand.align_subpage = nand_align_subpage32;
- 
- 	/* DIP switches on some boards change between 8 and 16 bit
- 	 * bus widths for flash.  Try the other width if the first try fails.
--- 
-1.7.1.5.g49342
+What this patch essentially does is to make sure to pass a addr with the
+^=2 hack already applied, so that the complex map ends up with an un
+swizzled addr as it applies the hack internally again.
+
+I think it would be cleanest to extend the read/write callbacks of
+struct map_info; with a flag indicating whether we are doing a CMD or
+DATA action. as the 2 following macros are used anyway, it should not be
+too hard to implement this.
+
+#define map_read(map, ofs) (map)->read(map, ofs)
+#define map_write(map, datum, ofs) (map)->write(map, datum, ofs)
+
+I am not sure however if this is the correct fix.
+
+Thanks,
+John
