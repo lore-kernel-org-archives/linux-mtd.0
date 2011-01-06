@@ -1,25 +1,18 @@
-Subject: Re: Hit BUG_ON in dma-mapping.c:425
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Nicolas Ferre <nicolas.ferre@atmel.com>
-In-Reply-To: <4D259B9C.6060409@atmel.com>
-References: <4D24A108.2080609@atmel.com>
-	<20110105165551.GE8638@n2100.arm.linux.org.uk>
-	<4D259B9C.6060409@atmel.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 06 Jan 2011 13:19:29 +0200
-Message-ID: <1294312769.2219.7.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Hong XU <hong.xu@atmel.com>,
-	Russell King - ARM Linux <linux@arm.linux.org.uk>,
-	Patrice VILCHEZ <patrice.vilchez@atmel.com>,
-	Linux Kernel list <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
-	Andrew Victor <linux@maxim.org.za>,
-	"'linux-arm-kernel@lists.infradead.org'"
-	<linux-arm-kernel@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Date: Thu, 6 Jan 2011 15:45:25 +0300
+From: Dan Carpenter <error27@gmail.com>
+To: Sven Neumann <s.neumann@raumfeld.com>
+Subject: [patch] mtd: pxa3xx_nand: NULL dereference in pxa3xx_nand_probe
+Message-ID: <20110106124525.GA1717@bicker>
+References: <1294227801.3996.62.camel@sven>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1294227801.3996.62.camel@sven>
+Cc: Artem.Bityutskiy@nokia.com, eric.y.miao@gmail.com,
+	David.Woodhouse@intel.com, leiwen@marvell.com,
+	linux-kernel@vger.kernel.org, haojian.zhuang@marvell.com,
+	linux-mtd@lists.infradead.org, Daniel Mack <daniel@caiaq.de>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,84 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-01-06 at 11:38 +0100, Nicolas Ferre wrote:
-> (I include MTD mailing-list now)
-> 
-> Le 05/01/2011 17:55, Russell King - ARM Linux :
-> > On Wed, Jan 05, 2011 at 05:49:12PM +0100, Nicolas Ferre wrote:
-> >> Hi,
-> >>
-> >> While running mtd_stresstest on a dataflash (atmel_spi 
-> >> + mtd_dataflash drivers) I hit the BUG_ON directive that 
-> >> is at the beginning of ___dma_single_cpu_to_dev() function.
-> >> This function is called from the SPI driver that do a 
-> >> dma_map_single() before DMA operations on the buffer 
-> >> transmitted from upper layers.
-> >>
-> >> It seems that this address is above "high_memory" limit because 
-> >> it is allocated by vmalloc (in mtd_stresstest.c:285)...
-> > 
-> > Well, its telling you is that you're not allowed to DMA to vmalloc
-> > addresses.  Whether that's the fault of the map driver or not is a
-> > question for mtd folk.
-> 
-> So you mean that those vmalloc calls should be changed to kmalloc in
-> MTD like this:
-> 
-> --- a/drivers/mtd/tests/mtd_stresstest.c
-> +++ b/drivers/mtd/tests/mtd_stresstest.c
-> @@ -26,7 +26,6 @@
->  #include <linux/mtd/mtd.h>
->  #include <linux/slab.h>
->  #include <linux/sched.h>
-> -#include <linux/vmalloc.h>
->  
->  #define PRINT_PREF KERN_INFO "mtd_stresstest: "
->  
-> @@ -281,8 +280,8 @@ static int __init mtd_stresstest_init(void)
->         bufsize = mtd->erasesize * 2;
->  
->         err = -ENOMEM;
-> -       readbuf = vmalloc(bufsize);
-> -       writebuf = vmalloc(bufsize);
-> +       readbuf = kmalloc(bufsize, GFP_KERNEL);
-> +       writebuf = kmalloc(bufsize, GFP_KERNEL);
->         offsets = kmalloc(ebcnt * sizeof(int), GFP_KERNEL);
->         if (!readbuf || !writebuf || !offsets) {
->                 printk(PRINT_PREF "error: cannot allocate memory\n");
-> @@ -313,8 +312,8 @@ static int __init mtd_stresstest_init(void)
->  out:
->         kfree(offsets);
->         kfree(bbt);
-> -       vfree(writebuf);
-> -       vfree(readbuf);
-> +       kfree(writebuf);
-> +       kfree(readbuf);
->         put_mtd_device(mtd);
->         if (err)
->                 printk(PRINT_PREF "error %d occurred\n", err);
-> 
-> 
-> I also discovered the same issue while trying to write with "dd"
-> on /dev/mtdblockx
-> 
-> Same vmalloc'ed memory seems to be used in mtdblock_writesect():
-> mtdblk->cache_data = vmalloc(mtdblk->mbd.mtd->erasesize);
-> 
-> I know that using "dd" on a block device is not the common case but it
-> should work instead of not being able to transmit buffer with DMA...
-> So what it implies to switch this to kmalloc? Is it regression-free to
-> do this?
+Hi Sven,
 
-Unfortunatelly not. These are about allocating eraseblock-sized buffers,
-which may be as large as 512KiB, and kmalloc can easily fail, this is
-why vmalloc is used.
+Could you test this patch?  I don't have an arm so I can't compile this.
 
-What you should do instead is to change the code and make it use smaller
-kmalloc-ed buffers instead, in a loop. Or use an array of pointers, each
-pointing to smaller buffers, and teach mtd to understand them. Then we
-could reuse this infrastructure in UBI and UBIFS and JFFS2 as well.
+This was introduced in 18c81b1828f8 "mtd: pxa3xx_nand: remove the flash
+info in driver structure"
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Signed-off-by: Dan Carpenter <error27@gmail.com>
+
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index 17f8518..ea2c288 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -885,6 +885,7 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+ 	/* set info fields needed to __readid */
+ 	info->read_id_bytes = (info->page_size == 2048) ? 4 : 2;
+ 	info->reg_ndcr = ndcr;
++	info->cmdset = &default_cmdset;
+ 
+ 	if (__readid(info, &id))
+ 		return -ENODEV;
+@@ -915,7 +916,6 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+ 
+ 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
+ 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
+-	info->cmdset = &default_cmdset;
+ 
+ 	return 0;
+ }
