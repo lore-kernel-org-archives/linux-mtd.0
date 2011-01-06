@@ -1,23 +1,25 @@
 Received: from mail-out.m-online.net ([212.18.0.10])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PanZd-000454-C6
-	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 11:00:05 +0000
-Date: Thu, 6 Jan 2011 12:00:03 +0100
+	id 1PanmQ-0005vZ-VS
+	for linux-mtd@lists.infradead.org; Thu, 06 Jan 2011 11:13:20 +0000
+Date: Thu, 6 Jan 2011 12:13:16 +0100
 From: Anatolij Gustschin <agust@denx.de>
-To: Guillaume LECERF <glecerf@gmail.com>
+To: dedekind1@gmail.com
 Subject: Re: [PATCH v2 2/6] mtd: cfi: add writebufsize initialization
-Message-ID: <20110106120003.0ba35de9@wker>
-In-Reply-To: <AANLkTikmbbECMLNZ-3d=Z32RcFvsiv=eDyAwJ2=n1sHi@mail.gmail.com>
+Message-ID: <20110106121316.1b98c132@wker>
+In-Reply-To: <1294216041.2179.4.camel@koala>
 References: <292342500.2538.65.camel@localhost>
 	<1292539339-25111-3-git-send-email-agust@denx.de>
 	<AANLkTi=DHrBiBd8j3fFR5zmuX2cXC05sEFFRdF_btK3Y@mail.gmail.com>
 	<1292942724.2286.57.camel@localhost>
 	<AANLkTikmbbECMLNZ-3d=Z32RcFvsiv=eDyAwJ2=n1sHi@mail.gmail.com>
+	<AANLkTinWtEmu9nwcww4JKang+cNoHsrETT_Mojz7FF0L@mail.gmail.com>
+	<1294216041.2179.4.camel@koala>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, Guillaume LECERF <glecerf@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +31,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Thu, 30 Dec 2010 11:32:11 +0100
-Guillaume LECERF <glecerf@gmail.com> wrote:
+On Wed, 05 Jan 2011 10:27:21 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-> 2010/12/21 Artem Bityutskiy <dedekind1@gmail.com>:
-> > Yes, fair question, Anatolij?
+> On Thu, 2010-12-30 at 12:49 +0100, Guillaume LECERF wrote:
+> > 2010/12/30 Guillaume LECERF <glecerf@gmail.com>:
+> > > Anatolij, what about such patches ?
+> > > Note : this is totally untested ;)
+> > 
+> > Please disregard 08-patch.patch, I think it does not even compile :(
 > 
-> Hi all.
-> 
-> Anatolij, what about such patches ?
-> Note : this is totally untested ;)
+> Anatolij is not answering, probably he is just very busy or having
+> holidays or something. I think it is better to wait a little with these
+> patches and let Anatolij look at this. So I'm removing them from my l2
+> tree so far and save them in the 'anatolij' branch of the l2 tree.
 
-NACK. This is wrong. We need to export the real physical write buffer
-size of _one_ chip to UBI. Otherwise we will run into the same trouble
-and will end up with an unmountable UBIFS partition again.
-It doesn't even make sense to test your two patches, it won't work.
+Sorry for not answering quickly, I was very busy and then was very
+ill. The two patches from Guillaume are wrong. Please apply my patches
+again.
 
 Thanks,
 Anatolij
