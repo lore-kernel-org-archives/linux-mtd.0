@@ -1,18 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PcFRw-0002Bw-Q6
-	for linux-mtd@lists.infradead.org; Mon, 10 Jan 2011 10:58:12 +0000
-Date: Mon, 10 Jan 2011 11:54:33 +0100
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Tim Barr <tbarr@multitech.com>
-Subject: Re: New NAND flash die rev recommends 4 bit ECC
-Message-ID: <20110110105432.GA11157@parrot.com>
-References: <1CD05B980C94AC408B37C82BBABAA3E6149861DA@mtsexchange.dc.multitech.prv>
+Received: from mo-p05-ob.rzone.de ([81.169.146.180])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PcFSq-0002Ex-54
+	for linux-mtd@lists.infradead.org; Mon, 10 Jan 2011 10:59:09 +0000
+From: Stefan Roese <sr@denx.de>
+To: dedekind1@gmail.com
+Subject: Re: [PATCH] physmap: fix mtdconcat support if physmap/mtdconcat were
+	compiled as modules
+Date: Mon, 10 Jan 2011 11:58:29 +0100
+References: <1294192813-23549-1-git-send-email-dbaryshkov@gmail.com>
+	<1294218473.2179.16.camel@koala>
+In-Reply-To: <1294218473.2179.16.camel@koala>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1CD05B980C94AC408B37C82BBABAA3E6149861DA@mtsexchange.dc.multitech.prv>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201101101158.29870.sr@denx.de>
+Cc: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jan 06, 2011 at 09:34:31PM +0000, Tim Barr wrote:
-> I just got a notice from Micron that they are making changes to the
-> 29F2G08/16 (2 Gbit SLC device). For instance, the 29F2G0816AAD is going
-> EOL this month and is being replaced by the MT29F2G08ABAEA. The problem
-> is that the new data sheet is recommending 4 bit per 526 byte ECC
-> instead of 1 bit per 526 byte ECC. As far as I can tell, the processor
-> we are using (AT91SAM9G20) only does 1 bit HW ECC and the software ECC
-> code for MTD is also 1 bit. The new NAND Flash die does have a HW 4 bit
-> ECC engine added in, which probably would need to have code written to
-> support it in order to be able to use it.
-> 
-> So, is anyone working on a 4 bit software ECC code or code modifications
-> to utilize the on chip HW ECC engine?
+On Wednesday 05 January 2011 10:07:53 Artem Bityutskiy wrote:
+> On Wed, 2011-01-05 at 05:00 +0300, Dmitry Eremin-Solenikov wrote:
+> > physmap/physmap_of contained compile-time check for mtd concatenation.
+> > However thos modules did not consider that mtd concatenation can be
+> > built as modules. Fix physmap/physmap_of to also support
+> > CONFIG_MTD_CONCAT=m
 
-Hello Tim,
+<snip>
 
-I am currently working on a generic software BCH encoder/decoder that can
-handle modern NAND ECC requirements (4 bits, or actually any number of bits per
-any number of bytes). This BCH engine can also to be used on "hybrid" systems
-in which a NAND controller can compute BCH parity bits (such as OMAP3630 GPMC),
-but is not able to perform error correction (which is quite more involved than
-Hamming 1 bit correction).
+> Can we do something else to avoid these complex ifdefs? I'd vote for
+> making mtdconcat integral part of mtd core and just always have it
+> built-in - remove the Kconfig option and all the ifdefs all over the
+> place. Indeed, this is tiny piece of code, I believe this micro-modules
+> make little sense nowadays.
 
-If you need to use the on-die ecc of your NAND device, this wiki has a few
-interesting bits: http://processors.wiki.ti.com/index.php/GPMC_ECC
-One of the main issues is spare area utilization: if you plan to use YAFFS2,
-you'll need to squeeze its metadata into the remaining available spare space
-once the NAND on-die ecc is enabled (still possible with 4bit ecc, probably
-impossible with 8bit ecc ?). An alternative is to use UBIFS, as it does not
-store any information in spare area.
-BR,
+Yes, I like this suggestion.
 
-Ivan
+Dmitry, can you cook up such a patch? Otherwise I'll put it on my to-do 
+list...
+ 
+> The same for mtdparts - but this is a different story.
+
+Yep.
+
+Cheers,
+Stefan
