@@ -1,25 +1,25 @@
-Received: from mail127.messagelabs.com ([216.82.250.115])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PcQMD-0000X0-0L
-	for linux-mtd@lists.infradead.org; Mon, 10 Jan 2011 22:36:58 +0000
-From: H Hartley Sweeten <hartleys@visionengravers.com>
-To: David Brownell <david-b@pacbell.net>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>, "spi-devel-general@lists.sourceforge.net"
-	<spi-devel-general@lists.sourceforge.net>
-Date: Mon, 10 Jan 2011 16:36:50 -0600
-Subject: RE: [PATCH] mtd: sst25l: fix reads with broken spi-masters
-Message-ID: <0D753D10438DA54287A00B027084269764CDF41635@AUSP01VMBX24.collaborationhost.net>
-References: <0D753D10438DA54287A00B027084269764CDF4146A@AUSP01VMBX24.collaborationhost.net>
-	<909411.87280.qm@web180312.mail.gq1.yahoo.com>
-In-Reply-To: <909411.87280.qm@web180312.mail.gq1.yahoo.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: Grant Likely <grant.likely@secretlab.ca>,
-	"Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from lo.gmane.org ([80.91.229.12])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PcSRB-0003be-2M
+	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 00:50:13 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1PcSR3-0008JV-NB
+	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 01:50:06 +0100
+Received: from S01060013461abac3.gv.shawcable.net ([24.108.1.199])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Jan 2011 01:50:05 +0100
+Received: from jbarlow by S01060013461abac3.gv.shawcable.net with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Jan 2011 01:50:05 +0100
+To: linux-mtd@lists.infradead.org
+From: J Barlow <jbarlow@ivl.com>
+Subject: What if the UBI flasher can't skip all-FF pages?
+Date: Mon, 10 Jan 2011 22:47:05 +0000 (UTC)
+Message-ID: <loom.20110110T205414-506@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +29,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday, January 10, 2011 3:20 PM, David Brownell wrote:
-> --- On Mon, 1/10/11, H Hartley Sweeten <hartleys@visionengravers.com> wro=
-te:
-> NAK.  I'm surprised you even thought to submit
-> such a clearly-wrong patch.
->
-> The bug is in the SPI master driver, and thus
-> so should the fix be.  Or make your system use
-> the GPIO based SPI master driver.
+Hi everyone,
 
-Sorry.
+I am developing an embedded system with a NAND flash.  We're intending to 
+program all of the NAND flashes in a factory programmer.  I've read "how the UBI 
+flash should work" and I suspect that the UBI flasher doesn't work that way.  
+Specifically, I'm pretty sure it doesn't know how to skip pages containing only 
+FFs.  Unfortunately, the flasher's software is proprietary, not to mention only 
+available in Chinese.  It might well work as expected, but testing this would 
+also be difficult and expensive since the flasher is in a factory in China. 
 
-The bug _is_ in the spi peripheral on the ep93xx.
+I believe that UBIFS is doing the right thing.  I blame the flasher, but I don't 
+think I can do anything about it.
 
-Unfortunately, hardware does exist that uses the SFRMOUT signal as part of
-the chip select to access the device.  The only way to get this signal to
-do anything is by using the spi peripheral.  The SFRMOUT signal cannot be
-accessed using GPIO so the GPIO based SPI master driver is not an option.
+I'd prefer to use UBIFS as a writable root file system, if possible.  But maybe 
+this won't work in my situation.
 
-If the SFRMOUT signal is _not_ used in the chip select logic then everythin=
-g
-works fine.
+Is there any reasonable way to let UBIFS know all pages have been programmed 
+initially?  For example, maybe I could deliberate replace all-FF pages with all-
+00 pages in the flashed image.  Or will that just cause UBI/UBIFS to find 
+corrupt empty space and fail?  Or perhaps someone could direct me how to make a 
+patch that would help with UBIFS/UBI/ubinize with this specific situation.  It 
+does seem like other people have run into problems with poorly written flashers 
+problem, and in some cases like mine changing the flasher is not an option.
 
-But... If it's a NAK.. It's a NAK...  I'll try to figure out a way to handl=
-e
-this in the SPI master driver.
+Also, if I use a read-only UBIFS in a dynamic UBI volume, will UBIFS ever 
+attempt to double-program an all-FF page?  I would imagine if I used a read-only 
+UBIFS in a static UBI volume I won't have trouble -- except that I also need to 
+update the firmware.  Is it possible to ubiupdatevol a static UBI volume, or do 
+I need something more aggressive to modify a static UBI volume?
 
-Regards,
-Hartley
+
+Thanks.
+J Barlow
