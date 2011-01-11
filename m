@@ -1,22 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pcada-00070O-Fr
-	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 09:35:35 +0000
-Received: by fxm19 with SMTP id 19so19135402fxm.36
+Received: from mail-qy0-f177.google.com ([209.85.216.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PcapW-0008F4-VX
+	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 09:47:56 +0000
+Received: by qyk27 with SMTP id 27so24062416qyk.15
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Jan 2011 01:35:32 -0800 (PST)
-Subject: Re: What if the UBI flasher can't skip all-FF pages?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: J Barlow <jbarlow@ivl.com>
-In-Reply-To: <loom.20110110T205414-506@post.gmane.org>
-References: <loom.20110110T205414-506@post.gmane.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 11 Jan 2011 11:35:28 +0200
-Message-ID: <1294738528.2266.12.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Tue, 11 Jan 2011 01:47:53 -0800 (PST)
+MIME-Version: 1.0
+Date: Tue, 11 Jan 2011 09:47:52 +0000
+Message-ID: <AANLkTikGddyMhxph92Dz7vpRNRKa2haQne7yxKBTKw3N@mail.gmail.com>
+Subject: validate_sb: bad superblock, error 8 (Minimum UBI volume size for
+	UBIFS image)
+From: Andrew Murray <amurray@mpcdata.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +23,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-On Mon, 2011-01-10 at 22:47 +0000, J Barlow wrote:
-> Hi everyone,
-> 
-> I am developing an embedded system with a NAND flash.  We're intending to 
-> program all of the NAND flashes in a factory programmer.  I've read "how the UBI 
-> flash should work" and I suspect that the UBI flasher doesn't work that way.  
-> Specifically, I'm pretty sure it doesn't know how to skip pages containing only 
-> FFs.  Unfortunately, the flasher's software is proprietary, not to mention only 
-> available in Chinese.  It might well work as expected, but testing this would 
-> also be difficult and expensive since the flasher is in a factory in China.
+Is there a way to determine the minimum UBI volume size which will
+support a given UBIFS filesystem image?
 
-First of all, is this a problem for your flash? If yes, why is it a
-problem and why you cannot test this?
+I've read the infradead.org FAQ's and browsed the source - however can
+not find a suitable answer. My current conclusion is that the minimum
+UBI volume is somehow dependant on the filesystem size, the log and
+the journal. I'm working on an upgrade mechanism which uses UBI/UBIFS
+and only creates UBI volumes of the minimum size to support a UBIFS
+filesystem and thus struggling to determine the safest minimum size.
 
-The original reason for writing this article was that some flashes have
-write non-0xFF ECC to the OOB area when programmed with all 0xFFs. But
-this case is easily testable.
+This is what I've attempted. In these examples UBIFS is claiming that
+the journal size is 71 LEB's - however the filesystem will only mount
+if my UBI volume is 77 LEB's - how do I account for this difference?
 
-> Is there any reasonable way to let UBIFS know all pages have been programmed 
-> initially? For example, maybe I could deliberate replace all-FF pages with all-
-> 00 pages in the flashed image.  Or will that just cause UBI/UBIFS to find 
-> corrupt empty space and fail?  Or perhaps someone could direct me how to make a 
-> patch that would help with UBIFS/UBI/ubinize with this specific situation.  It 
-> does seem like other people have run into problems with poorly written flashers 
-> problem, and in some cases like mine changing the flasher is not an option.
+# ubinfo -a
+UBI version: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A01
+Count of UBI devices: =A0 =A0 =A0 =A0 =A0 1
+UBI control device major/minor: 10:63
+Present UBI devices: =A0 =A0 =A0 =A0 =A0 =A0ubi0
+ubi0
+Volumes count: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 1
+Logical eraseblock size: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 129024 bytes, 126.=
+0 KiB
+Total amount of logical eraseblocks: =A0 =A0 911 (117540864 bytes, 112.1 Mi=
+B)
+Amount of available logical eraseblocks: 401 (51738624 bytes, 49.3 MiB)
+Maximum count of volumes =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 128
+Count of bad physical eraseblocks: =A0 =A0 =A0 1
+Count of reserved physical eraseblocks: =A09
+Current maximum erase counter value: =A0 =A0 350
+Minimum input/output unit size: =A0 =A0 =A0 =A0 =A02048 bytes
+Character device major/minor: =A0 =A0 =A0 =A0 =A0 =A0251:0
+Present volumes: =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 0
+Volume ID: =A0 0 (on ubi0)
+Type: =A0 =A0 =A0 =A0dynamic
+Alignment: =A0 1
+Size: =A0 =A0 =A0 =A0497 LEBs (64124928 bytes, 61.2 MiB)
+State: =A0 =A0 =A0 OK
+Name: =A0 =A0 =A0 =A0rootfs
+Character device major/minor: 251:1
 
-The easiest way is to introduce a bit to UBI EC headers which would mean
-"I'm an LEB flashed in production, and empty pages were programmed with
-0xFFs, do something". Then for each of such LEBs UBI would do full
-re-write and would clean the flag. It is very easy to implement, but
-would mean that the first boot basically needs full re-write of the
-flashed data, which may be very slow.
+# ls -l rootfs.ubifs
+-rw-r--r-- =A0 =A01 default =A0default =A0 6838272 Jan 10 =A02011 rootfs.ub=
+ifs
+# ubimkvol /dev/ubi0 -N test -s 6838272
+Volume ID 1, size 53 LEBs (6838272 bytes, 6.5 MiB), LEB size 129024
+bytes (126.0 KiB), dynamic, name "test", alignment 1
+# ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+# mount -t ubifs ubi0:test /tmp/a/
+c->max_bud_bytes: 8388608 > c->leb_size * c->main_lebs: 5419008
+UBIFS error (pid 1109): validate_sb: bad superblock, error 8
+mount: mounting ubi0:test on /tmp/a/ failed: Invalid argument
 
-With more work and thought it is also possible to invent better
-solution, though. But I do not have time to think about this and
-describe this right now (vacation) :-)
+# ubirmvol =A0/dev/ubi0 -N test
+# ubimkvol /dev/ubi0 -N test --lebs=3D77
+Volume ID 1, size 77 LEBs (9934848 bytes, 9.5 MiB), LEB size 129024
+bytes (126.0 KiB), dynamic, name "test", alignment 1
+# ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+# mount -t ubifs ubi0:test /tmp/a/
+c->max_bud_bytes: 8388608 < c->leb_size * c->main_lebs: 8515584
+UBIFS: mounted UBI device 0, volume 1, name "test"
+UBIFS: file system size: =A0 8515584 bytes (8316 KiB, 8 MiB, 66 LEBs)
+UBIFS: journal size: =A0 =A0 =A0 9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
+UBIFS: media format: =A0 =A0 =A0 w4/r0 (latest is w4/r0)
+UBIFS: default compressor: lzo
+UBIFS: reserved for root: =A00 bytes (0 KiB)
+# umount /tmp/a
+UBIFS: un-mount UBI device 0, volume 1
 
-> Also, if I use a read-only UBIFS in a dynamic UBI volume, will UBIFS ever 
-> attempt to double-program an all-FF page?
+# ubimkvol /dev/ubi0 -N test --lebs=3D71
+Volume ID 1, size 71 LEBs (9160704 bytes, 8.7 MiB), LEB size 129024
+bytes (126.0 KiB), dynamic, name "test", alignment 1
+# ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+# mount -t ubifs ubi0:test /tmp/a/
+c->max_bud_bytes: 8388608 > c->leb_size * c->main_lebs: 7741440
+UBIFS error (pid 1136): validate_sb: bad superblock, error 8
+mount: mounting ubi0:test on /tmp/a/ failed: Invalid argument
 
-Depends. But yes, for some of them, not all.
+# ubirmvol /dev/ubi0 -N test
+# ubimkvol /dev/ubi0 -N test --lebs=3D72
+Volume ID 1, size 72 LEBs (9289728 bytes, 8.9 MiB), LEB size 129024
+bytes (126.0 KiB), dynamic, name "test", alignment 1
+# ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+# mount -t ubifs ubi0:test /tmp/a/
+c->max_bud_bytes: 8388608 > c->leb_size * c->main_lebs: 7870464
+UBIFS error (pid 1144): validate_sb: bad superblock, error 8
+mount: mounting ubi0:test on /tmp/a/ failed: Invalid argument
 
->   I would imagine if I used a read-only 
-> UBIFS in a static UBI volume I won't have trouble -- except that I also need to 
-> update the firmware.
+# ubirmvol /dev/ubi0 -N test
+# ubimkvol /dev/ubi0 -N test --lebs=3D76
+Volume ID 1, size 76 LEBs (9805824 bytes, 9.4 MiB), LEB size 129024
+bytes (126.0 KiB), dynamic, name "test", alignment 1
+# ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+# mount -t ubifs ubi0:test /tmp/a/
+c->max_bud_bytes: 8388608 > c->leb_size * c->main_lebs: 8386560
+UBIFS error (pid 1152): validate_sb: bad superblock, error 8
+mount: mounting ubi0:test on /tmp/a/ failed: Invalid argument
 
-Yes, in case of R/O usage I do not see issues.
+# ubirmvol /dev/ubi0 -N test
+# ubimkvol /dev/ubi0 -N test --lebs=3D77
+Volume ID 1, size 77 LEBs (9934848 bytes, 9.5 MiB), LEB size 129024
+bytes (126.0 KiB), dynamic, name "test", alignment 1
+# ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+# mount -t ubifs ubi0:test /tmp/a/
+c->max_bud_bytes: 8388608 < c->leb_size * c->main_lebs: 8515584
+UBIFS: mounted UBI device 0, volume 1, name "test"
+UBIFS: file system size: =A0 8515584 bytes (8316 KiB, 8 MiB, 66 LEBs)
+UBIFS: journal size: =A0 =A0 =A0 9033728 bytes (8822 KiB, 8 MiB, 71 LEBs)
+UBIFS: media format: =A0 =A0 =A0 w4/r0 (latest is w4/r0)
+UBIFS: default compressor: lzo
+UBIFS: reserved for root: =A00 bytes (0 KiB)
 
->   Is it possible to ubiupdatevol a static UBI volume, or do 
-> I need something more aggressive to modify a static UBI volume?
+Many Thanks,
 
-You can use ubiupdatevol
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+Andrew Murray
