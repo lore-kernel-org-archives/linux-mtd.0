@@ -1,15 +1,17 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PccTy-0001tq-Sm
-	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 11:33:47 +0000
-Received: by fxm19 with SMTP id 19so19231221fxm.36
+	id 1PccTz-0001u1-EA
+	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 11:33:48 +0000
+Received: by fxm19 with SMTP id 19so19231252fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Jan 2011 03:33:44 -0800 (PST)
+	Tue, 11 Jan 2011 03:33:46 -0800 (PST)
 From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 1/5] MTD: make MTD_CONCAT support mandatory
-Date: Tue, 11 Jan 2011 14:33:35 +0300
-Message-Id: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>
+Subject: [PATCH 2/5] MTD: drop MTD_CONCAT dependencies from Kconfig
+Date: Tue, 11 Jan 2011 14:33:36 +0300
+Message-Id: <1294745619-7142-2-git-send-email-dbaryshkov@gmail.com>
+In-Reply-To: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>
+References: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>
 Cc: Stefan Roese <sr@denx.de>, linux-mtd@lists.infradead.org,
 	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,53 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Move mtdconcat to be an integral part of the mtd core. It's a tiny bit
-of code, which bears 'say Y if you don't know what to do' note in the
-Kconfig. OTOH there are several ugly ifdefs depending on the MTD_CONCAT.
-So, making MTD_CONCAT support mandatory will allow us to clean up code a
-lot.
-
-Kconfig entry is changed to be a bool defaulting to Y, so all code
-pieces depending on it, will have MTD_CONCAT Kconfig symbol and
-CONFIG_MTD_CONCAT define. This will be removed in one of next patches.
+As MTD_CONCAT is becoming a part of mtd core, it's no longer necessary
+to depend on it in Kconfig scripts. Drop such references.
 
 Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Cc: Stefan Roese <sr@denx.de>
 ---
- drivers/mtd/Kconfig  |    3 ++-
- drivers/mtd/Makefile |    3 +--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/maps/Kconfig |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 1e2cbf5..38ca5f2 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -34,7 +34,8 @@ config MTD_TESTS
- 	  various checks and verifications when loaded.
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index a0dd7bb..a34e969 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -114,7 +114,7 @@ config MTD_SUN_UFLASH
  
- config MTD_CONCAT
--	tristate "MTD concatenating support"
-+	bool
-+	default y
+ config MTD_SC520CDP
+ 	tristate "CFI Flash device mapped on AMD SC520 CDP"
+-	depends on X86 && MTD_CFI && MTD_CONCAT
++	depends on X86 && MTD_CFI
  	help
- 	  Support for concatenating several MTD devices into a single
- 	  (virtual) one. This allows you to have -for example- a JFFS(2)
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 760abc5..a166b71 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -4,10 +4,9 @@
+ 	  The SC520 CDP board has two banks of CFI-compliant chips and one
+ 	  Dual-in-line JEDEC chip. This 'mapping' driver supports that
+@@ -262,7 +262,7 @@ config MTD_BCM963XX
  
- # Core functionality.
- obj-$(CONFIG_MTD)		+= mtd.o
--mtd-y				:= mtdcore.o mtdsuper.o
-+mtd-y				:= mtdcore.o mtdsuper.o mtdconcat.o
- mtd-$(CONFIG_MTD_PARTITIONS)	+= mtdpart.o
- 
--obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
- obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
- obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
- obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
+ config MTD_DILNETPC
+ 	tristate "CFI Flash device mapped on DIL/Net PC"
+-	depends on X86 && MTD_CONCAT && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
++	depends on X86 && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
+ 	help
+ 	  MTD map driver for SSV DIL/Net PC Boards "DNP" and "ADNP".
+ 	  For details, see <http://www.ssv-embedded.de/ssv/pc104/p169.htm>
 -- 
 1.7.2.3
