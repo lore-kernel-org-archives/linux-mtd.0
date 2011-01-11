@@ -1,19 +1,22 @@
-Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pca1y-0001oY-ML
-	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 08:56:43 +0000
-From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: David Lambert <dave@lambsys.com>, "linux-mtd@lists.infradead.org"
-	<linux-mtd@lists.infradead.org>
-Content-Class: urn:content-classes:message
-Date: Tue, 11 Jan 2011 08:56:36 +0000
-Subject: RE: Confusion over mkfs.ubifs versions
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093F92FD0E@Cloud.RL.local>
-In-Reply-To: <4D2B79BF.6080304@lambsys.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pcada-00070O-Fr
+	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 09:35:35 +0000
+Received: by fxm19 with SMTP id 19so19135402fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 11 Jan 2011 01:35:32 -0800 (PST)
+Subject: Re: What if the UBI flasher can't skip all-FF pages?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: J Barlow <jbarlow@ivl.com>
+In-Reply-To: <loom.20110110T205414-506@post.gmane.org>
+References: <loom.20110110T205414-506@post.gmane.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 11 Jan 2011 11:35:28 +0200
+Message-ID: <1294738528.2266.12.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-linux-mtd-bounces@lists.infradead.org wrote:
-> After upgrading to Ubuntu 10.10 I noticed that the stock mkfs.ubifs
-> (version 1.3) failed to compute checksums correctly. I compiled my own
-> version from the git source of mtd-utils which announces itself as
-> version 1.4; this worked fine. Being curious I logged onto a machine
-> running Ubuntu 10.4 and checked the version of mkfs.ubifs and
-> also found
-> it to be 1.3, but this version computes checksums correctly!
-> Is there a
-> sub-version of mkfs.ubifs between 1.3 and 1.4 that is not
-> shown by using
-> --version? Am I missing something critical here?
+Hi,
 
-There was a time period a few months ago (not very specific, sorry)
-when mkfs.ubifs checksums were indeed broken.
+On Mon, 2011-01-10 at 22:47 +0000, J Barlow wrote:
+> Hi everyone,
+> 
+> I am developing an embedded system with a NAND flash.  We're intending to 
+> program all of the NAND flashes in a factory programmer.  I've read "how the UBI 
+> flash should work" and I suspect that the UBI flasher doesn't work that way.  
+> Specifically, I'm pretty sure it doesn't know how to skip pages containing only 
+> FFs.  Unfortunately, the flasher's software is proprietary, not to mention only 
+> available in Chinese.  It might well work as expected, but testing this would 
+> also be difficult and expensive since the flasher is in a factory in China.
 
-Unfortunate if the Ubuntu 10.10 stock version has that bug :/
+First of all, is this a problem for your flash? If yes, why is it a
+problem and why you cannot test this?
 
-Not tried it myself, though just put Ubuntu 10.10 on a machine here
-and might be using it for dev so I'll bear that in mind. Thanks.
+The original reason for writing this article was that some flashes have
+write non-0xFF ECC to the OOB area when programmed with all 0xFFs. But
+this case is easily testable.
 
---
-Jon Povey
-jon.povey@racelogic.co.uk
+> Is there any reasonable way to let UBIFS know all pages have been programmed 
+> initially? For example, maybe I could deliberate replace all-FF pages with all-
+> 00 pages in the flashed image.  Or will that just cause UBI/UBIFS to find 
+> corrupt empty space and fail?  Or perhaps someone could direct me how to make a 
+> patch that would help with UBIFS/UBI/ubinize with this specific situation.  It 
+> does seem like other people have run into problems with poorly written flashers 
+> problem, and in some cases like mine changing the flasher is not an option.
 
-Racelogic is a limited company registered in England. Registered number 274=
-3719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
-ks, MK18 1TB .
+The easiest way is to introduce a bit to UBI EC headers which would mean
+"I'm an LEB flashed in production, and empty pages were programmed with
+0xFFs, do something". Then for each of such LEBs UBI would do full
+re-write and would clean the flag. It is very easy to implement, but
+would mean that the first boot basically needs full re-write of the
+flashed data, which may be very slow.
 
-The information contained in this electronic mail transmission is intended =
-by Racelogic Ltd for the use of the named individual or entity to which it =
-is directed and may contain information that is confidential or privileged.=
- If you have received this electronic mail transmission in error, please de=
-lete it from your system without copying or forwarding it, and notify the s=
-ender of the error by reply email so that the sender's address records can =
-be corrected. The views expressed by the sender of this communication do no=
-t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
-reserves the right to monitor e-mail communications passing through its net=
-work
+With more work and thought it is also possible to invent better
+solution, though. But I do not have time to think about this and
+describe this right now (vacation) :-)
+
+> Also, if I use a read-only UBIFS in a dynamic UBI volume, will UBIFS ever 
+> attempt to double-program an all-FF page?
+
+Depends. But yes, for some of them, not all.
+
+>   I would imagine if I used a read-only 
+> UBIFS in a static UBI volume I won't have trouble -- except that I also need to 
+> update the firmware.
+
+Yes, in case of R/O usage I do not see issues.
+
+>   Is it possible to ubiupdatevol a static UBI volume, or do 
+> I need something more aggressive to modify a static UBI volume?
+
+You can use ubiupdatevol
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
