@@ -1,24 +1,19 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pd01L-0001uA-Ci
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2011 12:41:48 +0000
-Received: by fxm19 with SMTP id 19so489171fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Jan 2011 04:41:40 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20110112124033.GF7105@axis.com>
+Received: from mo-p05-ob.rzone.de ([81.169.146.182])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pd0i4-0006TK-2r
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2011 13:25:56 +0000
+From: Stefan Roese <sr@denx.de>
+To: "Dmitry Eremin-Solenikov" <dbaryshkov@gmail.com>
+Subject: Re: [PATCH 1/5] MTD: make MTD_CONCAT support mandatory
+Date: Wed, 12 Jan 2011 14:25:49 +0100
 References: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>
-	<1294745619-7142-4-git-send-email-dbaryshkov@gmail.com>
-	<20110112124033.GF7105@axis.com>
-Date: Wed, 12 Jan 2011 15:41:40 +0300
-Message-ID: <AANLkTinrQ_V6ueOgLpTcEMK2obFq=LMSfw-83K_Vvi=6@mail.gmail.com>
-Subject: Re: [PATCH 4/5] CRIS: stop checking for MTD_CONCAT
-From: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-To: Jesper Nilsson <jesper.nilsson@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Stefan Roese <sr@denx.de>, David Woodhouse <dwmw2@infradead.org>,
-	linux-cris-kernel <linux-cris-kernel@axis.com>,
+In-Reply-To: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201101121425.49587.sr@denx.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
 	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,24 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 12, 2011 at 3:40 PM, Jesper Nilsson <jesper.nilsson@axis.com> wrote:
-> On Tue, Jan 11, 2011 at 12:33:38PM +0100, Dmitry Eremin-Solenikov wrote:
->> As MTD_CONCAT support is becoming an integral part of MTD core,
->> there is no need for it's special treatment. So stop checking for
->> MTD_CONCAT availability.
->>
->> Signed-off-by: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
->
-> Looks good, I'll pull this patch into the cris-tree.
+On Tuesday 11 January 2011 12:33:35 Dmitry Eremin-Solenikov wrote:
+> Move mtdconcat to be an integral part of the mtd core. It's a tiny bit
+> of code, which bears 'say Y if you don't know what to do' note in the
+> Kconfig. OTOH there are several ugly ifdefs depending on the MTD_CONCAT.
+> So, making MTD_CONCAT support mandatory will allow us to clean up code a
+> lot.
+> 
+> Kconfig entry is changed to be a bool defaulting to Y, so all code
+> pieces depending on it, will have MTD_CONCAT Kconfig symbol and
+> CONFIG_MTD_CONCAT define. This will be removed in one of next patches.
 
-Thanks! Please note that it depends however on other MTD patches from
-this serie.
+Whole patch series looks good. Thanks. I'm not sure if it makes more sense to 
+squash the MTD patches into one patch. Either way I'm fine with it, so:
 
->
-> Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
->
+Acked-by: Stefan Roese <sr@denx.de>
 
-
--- 
-With best wishes
-Dmitry
+for the whole patch series.
+ 
+Cheers,
+Stefan
