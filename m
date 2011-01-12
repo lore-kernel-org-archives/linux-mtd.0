@@ -1,21 +1,18 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail127.messagelabs.com ([216.82.250.115])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pcfwb-0001GU-B0
-	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2011 15:15:34 +0000
-Date: Tue, 11 Jan 2011 16:15:28 +0100
-From: Wolfram Sang <w.sang@pengutronix.de>
-To: Jamie Iles <jamie@jamieiles.com>
-Subject: Re: [PATCH 12/16] mtd: mpc5121_nfc: don't treat NULL clk as an error
-Message-ID: <20110111151528.GB25741@pengutronix.de>
-References: <1294749833-32019-1-git-send-email-jamie@jamieiles.com>
-	<1294749833-32019-13-git-send-email-jamie@jamieiles.com>
+	id 1Pcoln-0006pW-QA
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2011 00:41:01 +0000
+From: H Hartley Sweeten <hartleys@visionengravers.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date: Tue, 11 Jan 2011 18:37:25 -0600
+Subject: [PATCH] mtdcore.c: local symbols should be static
+Message-ID: <0D753D10438DA54287A00B027084269764CE0E54FC@AUSP01VMBX24.collaborationhost.net>
+Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="eAbsdosE1cNLO4uF"
-Content-Disposition: inline
-In-Reply-To: <1294749833-32019-13-git-send-email-jamie@jamieiles.com>
-Cc: Vincent Sanders <support@simtec.co.uk>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---eAbsdosE1cNLO4uF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Jan 11, 2011 at 12:43:49PM +0000, Jamie Iles wrote:
-> clk_get() returns a struct clk cookie to the driver and some platforms
-> may return NULL if they only support a single clock.  clk_get() has only
-> failed if it returns a ERR_PTR() encoded pointer.
->=20
-> Cc: Vincent Sanders <support@simtec.co.uk>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Jamie Iles <jamie@jamieiles.com>
-
-Reviewed-by: Wolfram Sang <w.sang@pengutronix.de>
-
---=20
-Pengutronix e.K.                           | Wolfram Sang                |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
-
---eAbsdosE1cNLO4uF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk0sdBAACgkQD27XaX1/VRvKDACeJn3lvW2SQdz1ysVcRupikh5Q
-/isAnir2WsLgJx0cTB1uXmP8YH4Sol+N
-=4GrT
------END PGP SIGNATURE-----
-
---eAbsdosE1cNLO4uF--
+VGhlIHRocmVlIGJhY2tpbmdfZGV2X2luZm8gc3ltYm9scyBhcmUgb25seSB1c2VkIGluIHRoaXMg
+ZmlsZSBhbmQNCnNob3VsZCBiZSBzdGF0aWMuDQoNClNpZ25lZC1vZmYtYnk6IEggSGFydGxleSBT
+d2VldGVuIDxoc3dlZXRlbkB2aXNpb25lbmdyYXZlcnMuY29tPg0KQ2M6IERhdmlkIFdvb2Rob3Vz
+ZSA8ZHdtdzJAaW5mcmFkZWFkLm9yZz4NCg0KLS0tDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL210
+ZC9tdGRjb3JlLmMgYi9kcml2ZXJzL210ZC9tdGRjb3JlLmMNCmluZGV4IDUyN2NlYmYuLmRhNjli
+YzggMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC9tdGRjb3JlLmMNCisrKyBiL2RyaXZlcnMvbXRk
+L210ZGNvcmUuYw0KQEAgLTQzLDcgKzQzLDcgQEANCiAgKiBiYWNraW5nIGRldmljZSBjYXBhYmls
+aXRpZXMgZm9yIG5vbi1tYXBwYWJsZSBkZXZpY2VzIChzdWNoIGFzIE5BTkQgZmxhc2gpDQogICog
+LSBwZXJtaXRzIHByaXZhdGUgbWFwcGluZ3MsIGNvcGllcyBhcmUgdGFrZW4gb2YgdGhlIGRhdGEN
+CiAgKi8NCi1zdHJ1Y3QgYmFja2luZ19kZXZfaW5mbyBtdGRfYmRpX3VubWFwcGFibGUgPSB7DQor
+c3RhdGljIHN0cnVjdCBiYWNraW5nX2Rldl9pbmZvIG10ZF9iZGlfdW5tYXBwYWJsZSA9IHsNCiAJ
+LmNhcGFiaWxpdGllcwk9IEJESV9DQVBfTUFQX0NPUFksDQogfTsNCiANCkBAIC01Miw3ICs1Miw3
+IEBAIHN0cnVjdCBiYWNraW5nX2Rldl9pbmZvIG10ZF9iZGlfdW5tYXBwYWJsZSA9IHsNCiAgKiAt
+IHBlcm1pdHMgcHJpdmF0ZSBtYXBwaW5ncywgY29waWVzIGFyZSB0YWtlbiBvZiB0aGUgZGF0YQ0K
+ICAqIC0gcGVybWl0cyBub24td3JpdGFibGUgc2hhcmVkIG1hcHBpbmdzDQogICovDQotc3RydWN0
+IGJhY2tpbmdfZGV2X2luZm8gbXRkX2JkaV9yb19tYXBwYWJsZSA9IHsNCitzdGF0aWMgc3RydWN0
+IGJhY2tpbmdfZGV2X2luZm8gbXRkX2JkaV9yb19tYXBwYWJsZSA9IHsNCiAJLmNhcGFiaWxpdGll
+cwk9IChCRElfQ0FQX01BUF9DT1BZIHwgQkRJX0NBUF9NQVBfRElSRUNUIHwNCiAJCQkgICBCRElf
+Q0FQX0VYRUNfTUFQIHwgQkRJX0NBUF9SRUFEX01BUCksDQogfTsNCkBAIC02Miw3ICs2Miw3IEBA
+IHN0cnVjdCBiYWNraW5nX2Rldl9pbmZvIG10ZF9iZGlfcm9fbWFwcGFibGUgPSB7DQogICogLSBw
+ZXJtaXRzIHByaXZhdGUgbWFwcGluZ3MsIGNvcGllcyBhcmUgdGFrZW4gb2YgdGhlIGRhdGENCiAg
+KiAtIHBlcm1pdHMgbm9uLXdyaXRhYmxlIHNoYXJlZCBtYXBwaW5ncw0KICAqLw0KLXN0cnVjdCBi
+YWNraW5nX2Rldl9pbmZvIG10ZF9iZGlfcndfbWFwcGFibGUgPSB7DQorc3RhdGljIHN0cnVjdCBi
+YWNraW5nX2Rldl9pbmZvIG10ZF9iZGlfcndfbWFwcGFibGUgPSB7DQogCS5jYXBhYmlsaXRpZXMJ
+PSAoQkRJX0NBUF9NQVBfQ09QWSB8IEJESV9DQVBfTUFQX0RJUkVDVCB8DQogCQkJICAgQkRJX0NB
+UF9FWEVDX01BUCB8IEJESV9DQVBfUkVBRF9NQVAgfA0KIAkJCSAgIEJESV9DQVBfV1JJVEVfTUFQ
+KSwNCg0K
