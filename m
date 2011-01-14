@@ -1,27 +1,23 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PdVZt-0007vY-Rs
-	for linux-mtd@lists.infradead.org; Thu, 13 Jan 2011 22:23:34 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1PdVZq-0000pR-7V
-	for linux-mtd@lists.infradead.org; Thu, 13 Jan 2011 23:23:30 +0100
-Received: from S01060013461abac3.gv.shawcable.net ([24.108.1.199])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Jan 2011 23:23:30 +0100
-Received: from jbarlow by S01060013461abac3.gv.shawcable.net with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 13 Jan 2011 23:23:30 +0100
-To: linux-mtd@lists.infradead.org
-From: J Barlow <jbarlow@ivl.com>
-Subject: Re: What if the UBI flasher can't skip all-FF pages?
-Date: Thu, 13 Jan 2011 22:23:07 +0000 (UTC)
-Message-ID: <loom.20110113T232225-210@post.gmane.org>
-References: <loom.20110110T205414-506@post.gmane.org>
-	<1294738528.2266.12.camel@koala>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <4D2FDD62.4040106@st.com>
+Date: Fri, 14 Jan 2011 10:51:38 +0530
+From: viresh kumar <viresh.kumar@st.com>
+MIME-Version: 1.0
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linus.walleij@stericsson.com" <linus.walleij@stericsson.com>
+Subject: Re: [PATCH V3 25/63 resend] Newly erased page read workaround
+References: <cover.1292833228.git.viresh.kumar@st.com>
+	<6187de0568d1ea8a6aeb6c3ca54ac6684bee9973.1292833228.git.viresh.kumar@st.com>
+In-Reply-To: <6187de0568d1ea8a6aeb6c3ca54ac6684bee9973.1292833228.git.viresh.kumar@st.com>
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: 7bit
+Cc: Rajeev KUMAR <rajeev-dlh.kumar@st.com>,
+	Armando VISCONTI <armando.visconti@st.com>,
+	Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
+	Amit VIRDI <Amit.VIRDI@st.com>,
+	Vipul Kumar SAMAR <vipulkumar.samar@st.com>,
+	Deepak SIKRI <deepak.sikri@st.com>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,61 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind1 <at> gmail.com> writes:
-
+On 12/20/2010 02:49 PM, Viresh KUMAR wrote:
+> From: Vipin Kumar <vipin.kumar@st.com>
 > 
-> Hi,
+> A newly erased page contains ff in data as well as spare area. While reading an
+> erased page, the read out ecc from spare area does not match the ecc generated
+> by fsmc ecc hardware accelarator. This is because ecc of data ff ff is not ff
+> ff. This leads to errors when jffs2 fs erases and reads back the pages to
+> ensure consistency.
 > 
-> On Mon, 2011-01-10 at 22:47 +0000, J Barlow wrote:
-> > I am developing an embedded system with a NAND flash.  We're intending to 
-> > program all of the NAND flashes in a factory programmer.
-[snip]
-> 
-> First of all, is this a problem for your flash? If yes, why is it a
-> problem and why you cannot test this?
+> This patch adds a software workaround to ensure that the ecc check is not
+> performed for erased pages. An erased page is checked by checking data as ff ff.
 
-Good point.  But unfortunately I did find out it was a problem.  I have
-development tools which didn't follow the UBI flasher instructions, so I
-ran into various ECC errors and found the solution on this list.  I've fixed
-my development flasher tool, but I suspect the production flasher won't do the
-right thing.  For other reasons we do need the production flasher.
+David,
 
-> The original reason for writing this article was that some flashes have
-> write non-0xFF ECC to the OOB area when programmed with all 0xFFs. But
-> this case is easily testable.
+Does this patch looks fine to you??
 
-Isn't that possible for all ECC algorithms?  If the page has a bit stuck at 0,
-and is programmed to all 0xFFs, the ECC cannot possibly be all 0xFFs.
-
-> > Is there any reasonable way to let UBIFS know all pages have been programmed 
-> > initially? For example, maybe I could deliberate replace all-FF pages with 
-all-
-> > 00 pages in the flashed image.  Or will that just cause UBI/UBIFS to find 
-> > corrupt empty space and fail?  Or perhaps someone could direct me how to 
-make a 
-> > patch that would help with UBIFS/UBI/ubinize with this specific situation.  
-It 
-> > does seem like other people have run into problems with poorly written 
-flashers 
-> > problem, and in some cases like mine changing the flasher is not an option.
-> 
-> The easiest way is to introduce a bit to UBI EC headers which would mean
-> "I'm an LEB flashed in production, and empty pages were programmed with
-> 0xFFs, do something". Then for each of such LEBs UBI would do full
-> re-write and would clean the flag. It is very easy to implement, but
-> would mean that the first boot basically needs full re-write of the
-> flashed data, which may be very slow.
-
-A long initial boot is not really a problem.  I was seriously considering this,
-but I realized that I could set up a platform specific workaround.  My 
-bootloader can write UBIFS correctly, so all I need to do is reprogram every
-PEB in the UBI volume on the first boot before attempting to load Linux.
-
-> With more work and thought it is also possible to invent better
-> solution, though. But I do not have time to think about this and
-> describe this right now (vacation) 
-
-Enjoy your vacation.  I really appreciate your comments and work on UBI/UBIFS.
-It's a great system.
-
-J Barlow
+--
+viresh
