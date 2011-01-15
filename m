@@ -1,23 +1,20 @@
-Received: from nm7-vm0.bullet.mail.sp2.yahoo.com ([98.139.91.192])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PdsE9-0006Ou-H4
-	for linux-mtd@lists.infradead.org; Fri, 14 Jan 2011 22:34:39 +0000
-Message-ID: <605049.78283.qm@web180310.mail.gq1.yahoo.com>
-Date: Fri, 14 Jan 2011 14:34:33 -0800 (PST)
-From: David Brownell <david-b@pacbell.net>
-Subject: Re: [PATCH] mtd: sst25l: fix reads with broken spi-masters
-To: H Hartley Sweeten <hartleys@visionengravers.com>,
-	Grant Likely <grant.likely@secretlab.ca>
-In-Reply-To: <20110114222401.GA10504@angua.secretlab.ca>
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pe3gZ-0000RL-QQ
+	for linux-mtd@lists.infradead.org; Sat, 15 Jan 2011 10:48:45 +0000
+Received: by fxm19 with SMTP id 19so3683978fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 15 Jan 2011 02:48:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "spi-devel-general@lists.sourceforge.net"
-	<spi-devel-general@lists.sourceforge.net>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
+In-Reply-To: <AANLkTikGddyMhxph92Dz7vpRNRKa2haQne7yxKBTKw3N@mail.gmail.com>
+References: <AANLkTikGddyMhxph92Dz7vpRNRKa2haQne7yxKBTKw3N@mail.gmail.com>
+Date: Sat, 15 Jan 2011 10:48:40 +0000
+Message-ID: <AANLkTikhFt32NA9Lhzh0LDCzQmem3tjJZTG1TnP6ugnK@mail.gmail.com>
+Subject: Re: validate_sb: bad superblock, error 8 (Minimum UBI volume size for
+	UBIFS image)
+From: Andrew Murray <amurray@mpcdata.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,10 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=0A--- On Fri, 1/14/11, Grant Likely <grant.likely@secretlab.ca> wrote:=
-=0A=0A> > The bug _is_ in the spi peripheral on the ep93xx.=0A> > =0A=0A> =
-=0A> No, David is correct.=A0 The fault is in the master=0A> driver.=A0 It =
-is perfectly valid (and common) for spi=0A> peripherals to required the SS =
-line to remain asserted over=0A> the entire transfer.=A0=0A=0AAnd that's wh=
-at the Linux SPI stack requires,=0Aso any master driver that doesn't keep t=
-he=0Aslave selected during the entiretransfer is buggy.
+On 11 January 2011 09:47, Andrew Murray <amurray@mpcdata.com> wrote:
+>
+> Is there a way to determine the minimum UBI volume size which will
+> support a given UBIFS filesystem image?
+>
+
+My conclusion is this (with my version of kernel and mkfs.ubifs tool):
+
+(Min No. UBI Volume LEBS) = (jrn_lebs) + 3 + (log lebs) + (lpt_lebs) +
+(orph_lebs)
+
+And these values can all be determined (or specified) by the
+mkfs.ubifs tool by using the verbose -v flag.
+
+This seems to hold true - Does this seem reasonable?
+
+Thanks,
+
+Andrew Murray
