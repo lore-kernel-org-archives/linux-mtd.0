@@ -1,21 +1,25 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PeEJV-0005Nb-Gc
-	for linux-mtd@lists.infradead.org; Sat, 15 Jan 2011 22:09:38 +0000
-Received: by fxm19 with SMTP id 19so4244366fxm.36
+	id 1PeEWM-0005u1-UZ
+	for linux-mtd@lists.infradead.org; Sat, 15 Jan 2011 22:22:55 +0000
+Received: by fxm19 with SMTP id 19so4254444fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 15 Jan 2011 14:09:35 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTikhFt32NA9Lhzh0LDCzQmem3tjJZTG1TnP6ugnK@mail.gmail.com>
+	Sat, 15 Jan 2011 14:22:53 -0800 (PST)
+Subject: Re: validate_sb: bad superblock, error 8 (Minimum UBI volume size
+	for UBIFS image)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Andrew Murray <amurray@mpcdata.com>
+In-Reply-To: <AANLkTinyjaXqfWBSXzG2jg8wWiVbXA6ZhZ=RUgtue=qO@mail.gmail.com>
 References: <AANLkTikGddyMhxph92Dz7vpRNRKa2haQne7yxKBTKw3N@mail.gmail.com>
 	<AANLkTikhFt32NA9Lhzh0LDCzQmem3tjJZTG1TnP6ugnK@mail.gmail.com>
-Date: Sat, 15 Jan 2011 22:09:34 +0000
-Message-ID: <AANLkTinyjaXqfWBSXzG2jg8wWiVbXA6ZhZ=RUgtue=qO@mail.gmail.com>
-Subject: Re: validate_sb: bad superblock, error 8 (Minimum UBI volume size for
-	UBIFS image)
-From: Andrew Murray <amurray@mpcdata.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	<AANLkTinyjaXqfWBSXzG2jg8wWiVbXA6ZhZ=RUgtue=qO@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sun, 16 Jan 2011 00:22:49 +0200
+Message-ID: <1295130169.2516.4.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +29,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 15 January 2011 10:48, Andrew Murray <amurray@mpcdata.com> wrote:
-> On 11 January 2011 09:47, Andrew Murray <amurray@mpcdata.com> wrote:
->>
->> Is there a way to determine the minimum UBI volume size which will
->> support a given UBIFS filesystem image?
->>
->
-> My conclusion is this (with my version of kernel and mkfs.ubifs tool):
->
-> (Min No. UBI Volume LEBS) = (jrn_lebs) + 3 + (log lebs) + (lpt_lebs) +
-> (orph_lebs)
->
-> And these values can all be determined (or specified) by the
-> mkfs.ubifs tool by using the verbose -v flag.
->
-> This seems to hold true - Does this seem reasonable?
+On Sat, 2011-01-15 at 22:09 +0000, Andrew Murray wrote:
+> On 15 January 2011 10:48, Andrew Murray <amurray@mpcdata.com> wrote:
+> > On 11 January 2011 09:47, Andrew Murray <amurray@mpcdata.com> wrote:
+> >>
+> >> Is there a way to determine the minimum UBI volume size which will
+> >> support a given UBIFS filesystem image?
+> >>
+> >
+> > My conclusion is this (with my version of kernel and mkfs.ubifs tool):
+> >
+> > (Min No. UBI Volume LEBS) = (jrn_lebs) + 3 + (log lebs) + (lpt_lebs) +
+> > (orph_lebs)
+> >
+> > And these values can all be determined (or specified) by the
+> > mkfs.ubifs tool by using the verbose -v flag.
+> >
+> > This seems to hold true - Does this seem reasonable?
+> 
+> After reading the ODP presentation, white paper and reading the source
+> - I do not understand the purpose of the second condition in the
+> following test case in validate_sb:
+> 
+>         if (c->max_bud_bytes < (long long)c->leb_size * UBIFS_MIN_BUD_LEBS ||
+>             c->max_bud_bytes > (long long)c->leb_size * c->main_lebs
+> 
+> It seems to be asserting that there is enough space on the volume to
+> cater for the maximum size of the journal. However in the case where
+> the UBI volume is similar in size to the UBIFS image data -
+> 'main_lebs' will mostly be absent of free space lebs. Therefore there
+> may not be enough room for max_bud_bytes amounts of journal. And in
+> any case the journal code seems to cater well for there not being
+> enough free lebs. (Presumably it copes when the volume is nearly
+> full).
+> 
+> Therefore is this condition superfluous?
 
-After reading the ODP presentation, white paper and reading the source
-- I do not understand the purpose of the second condition in the
-following test case in validate_sb:
+Hi, I'm not able to give you any reasonable answer right now (vacation,
+and already have long backlog of e-mails to answer), sorry for this. But
+the space calculations may have issues - we did not work on that well
+enough, and did not test them with different journal sizes, etc. Just
+did not spend much time on those things - wrote the code which
+calculates some default sizes and used that all the time. AFSIK,
+mkfs.ubifs is mostly copy-paste of the kernel code, including the
+default geometry calculations.
 
-        if (c->max_bud_bytes < (long long)c->leb_size * UBIFS_MIN_BUD_LEBS ||
-            c->max_bud_bytes > (long long)c->leb_size * c->main_lebs
+Please, feel free to send patches.
 
-It seems to be asserting that there is enough space on the volume to
-cater for the maximum size of the journal. However in the case where
-the UBI volume is similar in size to the UBIFS image data -
-'main_lebs' will mostly be absent of free space lebs. Therefore there
-may not be enough room for max_bud_bytes amounts of journal. And in
-any case the journal code seems to cater well for there not being
-enough free lebs. (Presumably it copes when the volume is nearly
-full).
-
-Therefore is this condition superfluous?
-
-Thanks,
-
-Andrew Murray
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
