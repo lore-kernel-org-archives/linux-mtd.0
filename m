@@ -1,72 +1,69 @@
 From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
-Date: Sun, 16 Jan 2011 17:50:54 +0200
-Subject: [PATCH] mtd: mtdpart: disallow reading OOB past the end of the partition
-Message-ID: <mailman.119.1295193522.1530.linux-mtd@lists.infradead.org>
+Date: Sun, 16 Jan 2011 19:22:02 +0200
+Subject: [PATCH] UBIFS: do not start the commit if there is nothing to commit
+Message-ID: <mailman.120.1295200113.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-This patch fixes the mtdpart bug which allows users reading OOB past the
-end of the partition. This happens because 'part_read_oob()' allows reading
-multiple OOB areas in one go, and mtdparts does not validate the OOB
-length in the request.
+This patch fixes suboptimal UBIFS 'sync_fs()' implementation which causes
+flash I/O even if the file-system is synchronized. E.g., a 'printk()'
+in the MTD erasure function (e.g., 'nand_erase_nand()') can show that
+for every 'sync' shell command UBIFS erases at least one eraseblock.
 
-Although there is such check in 'nand_do_read_oob()' in nand_base.c, but
-it checks that we do not read past the flash chip, not the partition,
-because in nand_base.c we work with the whole chip (e.g., mtd->size
-in nand_base.c is the size of the whole chip). So this check cannot
-be done correctly in nand_base.c and should be instead done in mtdparts.c.
+So '$ while true; do sync; done' will cause huge amount of flash I/O.
 
-This problem was reported by Jason Liu <r64343@freescale.com> and reproduced
-with nandsim:
+The reason for this is that UBIFS commits in 'sync_fs()', and starts the
+commit even if there is nothing to commit, e.g., it anyway changes the
+log. This patch adds a check in the 'do_commit()' UBIFS functions which
+prevents the commit if there are not dirty znodes (hence, nothing to
+commit).
 
-$ modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa third_id_byte=0x00 \
-                   fourth_id_byte=0x15 parts=0x400,0x400
-$ modprobe nandsim mtd_oobtest.ko dev=0
-$ dmesg
-= snip =
-mtd_oobtest: attempting to read past end of device
-mtd_oobtest: an error is expected...
-mtd_oobtest: error: read past end of device
-= snip =
-mtd_oobtest: finished with 2 errors
-
-Reported-by: Jason Liu <liu.h.jason@gmail.com>
+Reported-by: Hans J. Koch <hjk@linutronix.de>
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/mtdpart.c |   19 ++++++++++++++++++-
- 1 files changed, 18 insertions(+), 1 deletions(-)
+ fs/ubifs/commit.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 79e3689..d2b932f 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -120,8 +120,25 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 		return -EINVAL;
- 	if (ops->datbuf && from + ops->len > mtd->size)
- 		return -EINVAL;
--	res = part->master->read_oob(part->master, from + part->offset, ops);
+diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
+index 02429d8..a963d96 100644
+--- a/fs/ubifs/commit.c
++++ b/fs/ubifs/commit.c
+@@ -70,6 +70,21 @@ static int do_commit(struct ubifs_info *c)
+ 		goto out_up;
+ 	}
  
 +	/*
-+	 * If OOB is also requested, make sure that we do not read past the end
-+	 * of this partition.
++	 * Every file-system change changes the TNC, and makes the root znode
++	 * dirty. So if the root znode is clean we can just return immediately
++	 * because there must be nothing to commit. Note, se do not have to
++	 * lock @c->tnc_mutex because we have @c->commit_sem in write mode,
++	 * which guarantees that no one else can access TNC functions
++	 * concurrently.
 +	 */
-+	if (ops->oobbuf) {
-+		size_t len, pages;
-+
-+		if (ops->mode == MTD_OOB_AUTO)
-+			len = mtd->oobavail;
-+		else
-+			len = mtd->oobsize;
-+		pages = mtd_div_by_ws(mtd->size, mtd);
-+		pages -= mtd_div_by_ws(from, mtd);
-+		if (ops->ooboffs + ops->ooblen > pages * len)
-+			return -EINVAL;
++	if (!c->zroot.znode || !test_bit(DIRTY_ZNODE, &c->zroot.znode->flags)) {
++		ubifs_assert(atomic_long_read(&c->dirty_zn_cnt) == 0);
++		err = 0;
++		up_write(&c->commit_sem);
++		goto out_cancel;
 +	}
 +
-+	res = part->master->read_oob(part->master, from + part->offset, ops);
- 	if (unlikely(res)) {
- 		if (res == -EUCLEAN)
- 			mtd->ecc_stats.corrected++;
+ 	/* Sync all write buffers (necessary for recovery) */
+ 	for (i = 0; i < c->jhead_cnt; i++) {
+ 		err = ubifs_wbuf_sync(&c->jheads[i].wbuf);
+@@ -162,12 +177,12 @@ static int do_commit(struct ubifs_info *c)
+ 	if (err)
+ 		goto out;
+ 
++out_cancel:
+ 	spin_lock(&c->cs_lock);
+ 	c->cmt_state = COMMIT_RESTING;
+ 	wake_up(&c->cmt_wq);
+ 	dbg_cmt("commit end");
+ 	spin_unlock(&c->cs_lock);
+-
+ 	return 0;
+ 
+ out_up:
 -- 
 1.7.3.4
 
