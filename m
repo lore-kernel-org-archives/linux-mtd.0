@@ -1,65 +1,75 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pk0Hb-0002lq-Sw
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2011 20:23:32 +0000
-Received: by wwb17 with SMTP id 17so6405055wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Jan 2011 12:23:29 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTimkjy7KcO=QULXYubEPnrh4H1gPpYBL3yE7NDSy@mail.gmail.com>
-References: <AANLkTimVCusWk1qkeY4geXBQ0Bw=rM0mUAaFO32tyoy=@mail.gmail.com>
-	<AANLkTimSqWO_7hBhmBsRKtmm-S=dtJK1wjDv8ekby+3H@mail.gmail.com>
-	<AANLkTimkjy7KcO=QULXYubEPnrh4H1gPpYBL3yE7NDSy@mail.gmail.com>
-Date: Mon, 31 Jan 2011 15:23:29 -0500
-Message-ID: <AANLkTikAJ+NgaZ8-_WJSNZ=QJyh0qNM5WqPnem44D3Sw@mail.gmail.com>
-Subject: Re: Question about CFI allocation
-From: Josh Boyer <jwboyer@gmail.com>
-To: Mitsutaka Amano <mitsutaka.amano@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
+Date: Sun, 16 Jan 2011 17:50:54 +0200
+Subject: [PATCH] mtd: mtdpart: disallow reading OOB past the end of the partition
+Message-ID: <mailman.119.1295193522.1530.linux-mtd@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+List-Id: linux-mtd.lists.infradead.org
 
-On Mon, Jan 31, 2011 at 12:48 AM, Mitsutaka Amano
-<mitsutaka.amano@gmail.com> wrote:
-> On Wed, Jan 26, 2011 at 11:43 PM, Josh Boyer <jwboyer@gmail.com> wrote:
->> On Wed, Jan 26, 2011 at 6:09 AM, Mitsutaka Amano
->> <mitsutaka.amano@gmail.com> wrote:
->>> Hi all, I'm a newbie about mtd.
->>>
->>> I'm trying to use the cfi on the mpc85xx board. Part of mtdblock is
->>> used by rootfs. So I have questions.
->>>
->>> Why does CFI(or other flash memory) have to alloc to the vmalloc
->>> area(such as PHYSMAP or PHYSMAP_OF)?
->>
->> The CFI code is not calling vmalloc explicitly. =A0It's calling ioremap,
->> which happens to come from vmalloc space on most (all?) architectures.
->> =A0It has to do that because otherwise the CFI driver can't get access
->> to the physical flash because of the MMU.
-> I understand that CFI needs ioremap() -> vmalloc space for accessing
-> to the physical flash via MMU.
->
-> Why allocate amount of flash memory size? my board has 256MB flash
-> memory and be allocated 256MB over by of_flash_probe.
+This patch fixes the mtdpart bug which allows users reading OOB past the
+end of the partition. This happens because 'part_read_oob()' allows reading
+multiple OOB areas in one go, and mtdparts does not validate the OOB
+length in the request.
 
-It's either do that so you can address the whole flash space, or
-implement a sliding window in the mapping driver.  That can be rather
-complicated when you consider concurrent access to the flash, and
-doing repeated ioremap/iounmap calls so I would guess simplicity is
-why.
+Although there is such check in 'nand_do_read_oob()' in nand_base.c, but
+it checks that we do not read past the flash chip, not the partition,
+because in nand_base.c we work with the whole chip (e.g., mtd->size
+in nand_base.c is the size of the whole chip). So this check cannot
+be done correctly in nand_base.c and should be instead done in mtdparts.c.
 
-That is mostly applicable for NOR flash directly accessible.  If there
-is a controller in front of the flash that only needs a small area
-ioremapped, then it shouldn't use physmap_of.c and should write a
-proper driver for it.  The NDFC driver is an example of something like
-that.
+This problem was reported by Jason Liu <r64343@freescale.com> and reproduced
+with nandsim:
 
-josh
+$ modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa third_id_byte=0x00 \
+                   fourth_id_byte=0x15 parts=0x400,0x400
+$ modprobe nandsim mtd_oobtest.ko dev=0
+$ dmesg
+= snip =
+mtd_oobtest: attempting to read past end of device
+mtd_oobtest: an error is expected...
+mtd_oobtest: error: read past end of device
+= snip =
+mtd_oobtest: finished with 2 errors
+
+Reported-by: Jason Liu <liu.h.jason@gmail.com>
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/mtdpart.c |   19 ++++++++++++++++++-
+ 1 files changed, 18 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 79e3689..d2b932f 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -120,8 +120,25 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+ 		return -EINVAL;
+ 	if (ops->datbuf && from + ops->len > mtd->size)
+ 		return -EINVAL;
+-	res = part->master->read_oob(part->master, from + part->offset, ops);
+ 
++	/*
++	 * If OOB is also requested, make sure that we do not read past the end
++	 * of this partition.
++	 */
++	if (ops->oobbuf) {
++		size_t len, pages;
++
++		if (ops->mode == MTD_OOB_AUTO)
++			len = mtd->oobavail;
++		else
++			len = mtd->oobsize;
++		pages = mtd_div_by_ws(mtd->size, mtd);
++		pages -= mtd_div_by_ws(from, mtd);
++		if (ops->ooboffs + ops->ooblen > pages * len)
++			return -EINVAL;
++	}
++
++	res = part->master->read_oob(part->master, from + part->offset, ops);
+ 	if (unlikely(res)) {
+ 		if (res == -EUCLEAN)
+ 			mtd->ecc_stats.corrected++;
+-- 
+1.7.3.4
+
+-- 
+Best Regards,
+Artem Bityutskiy (???????????????? ??????????)
