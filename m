@@ -1,26 +1,23 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PeV03-0003Uj-0O
-	for linux-mtd@lists.infradead.org; Sun, 16 Jan 2011 15:58:40 +0000
-Received: by fxm19 with SMTP id 19so4904565fxm.36
+	id 1PeWiN-0000DY-MB
+	for linux-mtd@lists.infradead.org; Sun, 16 Jan 2011 17:48:32 +0000
+Received: by fxm19 with SMTP id 19so5004008fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 16 Jan 2011 07:58:34 -0800 (PST)
-Subject: Re: [PATCH 1/1] mtd: nand: add check for out of page read
+	Sun, 16 Jan 2011 09:48:30 -0800 (PST)
+Subject: Re: ubifs: sync() causes writes even if nothing is changed
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jason Liu <liu.h.jason@gmail.com>
-In-Reply-To: <AANLkTikSVLNaFOT55piRosOCyJ9uXQ85QD0u3w75UimU@mail.gmail.com>
-References: <1290156045-11719-1-git-send-email-r64343@freescale.com>
-	<1292340409.2538.40.camel@localhost>
-	<AANLkTi=zB7UBjkvGYv_wdwZpH1Ghatn6eye1z5616h4X@mail.gmail.com>
-	<1292777645.13362.3.camel@koala>
-	<AANLkTikSVLNaFOT55piRosOCyJ9uXQ85QD0u3w75UimU@mail.gmail.com>
+To: "Hans J. Koch" <hjk@linutronix.de>, "Adrian.Hunter"
+	<Adrian.Hunter@nokia.com>
+In-Reply-To: <20101013163005.GB1889@silverbox.local>
+References: <20101013163005.GB1889@silverbox.local>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 16 Jan 2011 17:58:30 +0200
-Message-ID: <1295193510.2470.2.camel@koala>
+Date: Sun, 16 Jan 2011 19:48:24 +0200
+Message-ID: <1295200104.2470.5.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Jason Liu <r64343@freescale.com>, linux-mtd@lists.infradead.org,
-	David.Woodhouse@intel.com, linux-kernel@vger.kernel.org
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,101 +28,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2010-12-23 at 14:06 +0800, Jason Liu wrote:
-> Hi, Artem,
+On Wed, 2010-10-13 at 18:30 +0200, Hans J. Koch wrote:
+> Running this command:
 > 
-> 2010/12/20 Artem Bityutskiy <dedekind1@gmail.com>:
-> > On Wed, 2010-12-15 at 09:55 +0800, Jason Liu wrote:
-> >> >        /* Do not allow reads past end of device */
-> >> >        if (unlikely(from >= mtd->size ||
-> >> >                     ops->ooboffs + readlen > ((mtd->size >> chip->page_shift) -
-> >> >                                        (from >> chip->page_shift)) * len)) {
-> >> >                DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt read beyond end "
-> >> >                                        "of device\n", __func__);
-> >> >                return -EINVAL;
-> >> >        }
-> >>
-> >> Here the mtd->size in nand_base.c should be the NAND flash chip size,
-> >
-> > I think this is partition size as well.
+> # while true ; do sync; sleep 1; done
 > 
-> I think you are wrong. This should be the NAND flash chip size not the
-> partition size.
+> causes two eraseblocks being erased every second, although there
+> are no writes to the ubifs filesystem. I hacked some printks into
+> my NAND driver that print page_address and column for each erase.
+> With that, I get this output every second:
+> 
+> ...
+> [   63.701765] erase p=0x0000ae40 c=0xffffffff
+> [   63.706534] erase p=0xffffffff c=0xffffffff
+> [   63.725492] erase p=0x0000ae80 c=0xffffffff
+> [   63.730260] erase p=0xffffffff c=0xffffffff
+> ...
+> 
+> From a quick glance at the ubifs code, this might come out of the
+> garbage collector that is triggered on every sync() and writes
+> something even if nothing has changed.
 
-Yes, thanks for pointing this.
-
-The patch below fixes the issue you found. I've also pushed this patch
-to my l2-mtd-2.6 tree. If you can test it, please, do, but it fixes the
-issue when nandsim is used.
+With nandsim I only can see one erase, but this is anyway suboptimal.
+The below patch should fix the issue, please, test if you can. I've also
+pushed it to ubifs-2.6.git.
 
 
->From 2b6dc448005afdfe48ac2096d24694b8ea3ac88b Mon Sep 17 00:00:00 2001
+>From dca0fe61489805e0eb4ada7c6922856ca91eae52 Mon Sep 17 00:00:00 2001
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Sun, 16 Jan 2011 17:50:54 +0200
-Subject: [PATCH] mtd: mtdpart: disallow reading OOB past the end of the partition
+Date: Sun, 16 Jan 2011 19:22:02 +0200
+Subject: [PATCH] UBIFS: do not start the commit if there is nothing to commit
 
-This patch fixes the mtdpart bug which allows users reading OOB past the
-end of the partition. This happens because 'part_read_oob()' allows reading
-multiple OOB areas in one go, and mtdparts does not validate the OOB
-length in the request.
+This patch fixes suboptimal UBIFS 'sync_fs()' implementation which causes
+flash I/O even if the file-system is synchronized. E.g., a 'printk()'
+in the MTD erasure function (e.g., 'nand_erase_nand()') can show that
+for every 'sync' shell command UBIFS erases at least one eraseblock.
 
-Although there is such check in 'nand_do_read_oob()' in nand_base.c, but
-it checks that we do not read past the flash chip, not the partition,
-because in nand_base.c we work with the whole chip (e.g., mtd->size
-in nand_base.c is the size of the whole chip). So this check cannot
-be done correctly in nand_base.c and should be instead done in mtdparts.c.
+So '$ while true; do sync; done' will cause huge amount of flash I/O.
 
-This problem was reported by Jason Liu <r64343@freescale.com> and reproduced
-with nandsim:
+The reason for this is that UBIFS commits in 'sync_fs()', and starts the
+commit even if there is nothing to commit, e.g., it anyway changes the
+log. This patch adds a check in the 'do_commit()' UBIFS functions which
+prevents the commit if there are not dirty znodes (hence, nothing to
+commit).
 
-$ modprobe nandsim first_id_byte=0x20 second_id_byte=0xaa third_id_byte=0x00 \
-                   fourth_id_byte=0x15 parts=0x400,0x400
-$ modprobe nandsim mtd_oobtest.ko dev=0
-$ dmesg
-= snip =
-mtd_oobtest: attempting to read past end of device
-mtd_oobtest: an error is expected...
-mtd_oobtest: error: read past end of device
-= snip =
-mtd_oobtest: finished with 2 errors
-
-Reported-by: Jason Liu <liu.h.jason@gmail.com>
+Reported-by: Hans J. Koch <hjk@linutronix.de>
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/mtdpart.c |   19 ++++++++++++++++++-
- 1 files changed, 18 insertions(+), 1 deletions(-)
+ fs/ubifs/commit.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 79e3689..d2b932f 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -120,8 +120,25 @@ static int part_read_oob(struct mtd_info *mtd, loff_t from,
- 		return -EINVAL;
- 	if (ops->datbuf && from + ops->len > mtd->size)
- 		return -EINVAL;
--	res = part->master->read_oob(part->master, from + part->offset, ops);
+diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
+index 02429d8..a963d96 100644
+--- a/fs/ubifs/commit.c
++++ b/fs/ubifs/commit.c
+@@ -70,6 +70,21 @@ static int do_commit(struct ubifs_info *c)
+ 		goto out_up;
+ 	}
  
 +	/*
-+	 * If OOB is also requested, make sure that we do not read past the end
-+	 * of this partition.
++	 * Every file-system change changes the TNC, and makes the root znode
++	 * dirty. So if the root znode is clean we can just return immediately
++	 * because there must be nothing to commit. Note, se do not have to
++	 * lock @c->tnc_mutex because we have @c->commit_sem in write mode,
++	 * which guarantees that no one else can access TNC functions
++	 * concurrently.
 +	 */
-+	if (ops->oobbuf) {
-+		size_t len, pages;
-+
-+		if (ops->mode == MTD_OOB_AUTO)
-+			len = mtd->oobavail;
-+		else
-+			len = mtd->oobsize;
-+		pages = mtd_div_by_ws(mtd->size, mtd);
-+		pages -= mtd_div_by_ws(from, mtd);
-+		if (ops->ooboffs + ops->ooblen > pages * len)
-+			return -EINVAL;
++	if (!c->zroot.znode || !test_bit(DIRTY_ZNODE, &c->zroot.znode->flags)) {
++		ubifs_assert(atomic_long_read(&c->dirty_zn_cnt) == 0);
++		err = 0;
++		up_write(&c->commit_sem);
++		goto out_cancel;
 +	}
 +
-+	res = part->master->read_oob(part->master, from + part->offset, ops);
- 	if (unlikely(res)) {
- 		if (res == -EUCLEAN)
- 			mtd->ecc_stats.corrected++;
+ 	/* Sync all write buffers (necessary for recovery) */
+ 	for (i = 0; i < c->jhead_cnt; i++) {
+ 		err = ubifs_wbuf_sync(&c->jheads[i].wbuf);
+@@ -162,12 +177,12 @@ static int do_commit(struct ubifs_info *c)
+ 	if (err)
+ 		goto out;
+ 
++out_cancel:
+ 	spin_lock(&c->cs_lock);
+ 	c->cmt_state = COMMIT_RESTING;
+ 	wake_up(&c->cmt_wq);
+ 	dbg_cmt("commit end");
+ 	spin_unlock(&c->cs_lock);
+-
+ 	return 0;
+ 
+ out_up:
 -- 
 1.7.3.4
 
