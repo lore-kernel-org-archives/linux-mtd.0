@@ -1,12 +1,20 @@
-From: Hong Xu <hong.xu@atmel.com>
-To: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, jamie@jamieiles.com, jacmet@sunsite.dk
-Subject: [PATCH] MTD: atmel_nand: Add DMA support to access Nandflash
-Date: Mon, 17 Jan 2011 15:20:09 +0800
-Message-Id: <1295248809-30334-2-git-send-email-hong.xu@atmel.com>
-In-Reply-To: <hong.xu@atmel.com>
-References: <hong.xu@atmel.com>
-Cc: hong.xu@atmel.com, nicolas.ferre@atmel.com
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PekJA-00069u-JI
+	for linux-mtd@lists.infradead.org; Mon, 17 Jan 2011 08:19:27 +0000
+Message-ID: <4D33FB78.5010208@nokia.com>
+Date: Mon, 17 Jan 2011 10:19:04 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: ubifs: sync() causes writes even if nothing is changed
+References: <20101013163005.GB1889@silverbox.local>
+	<1295200104.2470.5.camel@koala>
+In-Reply-To: <1295200104.2470.5.camel@koala>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Hans J. Koch" <hjk@linutronix.de>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,245 +24,102 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some SAM9 chips have the ability to perform DMA between CPU and SMC controller.
-This patch adds DMA support for SAM9RL, SAM9G45, SSAM9G46,AM9M10, SAM9M11.
+On 16/01/11 19:48, ext Artem Bityutskiy wrote:
+> On Wed, 2010-10-13 at 18:30 +0200, Hans J. Koch wrote:
+>> Running this command:
+>>
+>> # while true ; do sync; sleep 1; done
+>>
+>> causes two eraseblocks being erased every second, although there
+>> are no writes to the ubifs filesystem. I hacked some printks into
+>> my NAND driver that print page_address and column for each erase.
+>> With that, I get this output every second:
+>>
+>> ...
+>> [   63.701765] erase p=0x0000ae40 c=0xffffffff
+>> [   63.706534] erase p=0xffffffff c=0xffffffff
+>> [   63.725492] erase p=0x0000ae80 c=0xffffffff
+>> [   63.730260] erase p=0xffffffff c=0xffffffff
+>> ...
+>>
+>>  From a quick glance at the ubifs code, this might come out of the
+>> garbage collector that is triggered on every sync() and writes
+>> something even if nothing has changed.
+>
+> With nandsim I only can see one erase, but this is anyway suboptimal.
+> The below patch should fix the issue, please, test if you can. I've also
+> pushed it to ubifs-2.6.git.
+>
+>
+>> From dca0fe61489805e0eb4ada7c6922856ca91eae52 Mon Sep 17 00:00:00 2001
+> From: Artem Bityutskiy<Artem.Bityutskiy@nokia.com>
+> Date: Sun, 16 Jan 2011 19:22:02 +0200
+> Subject: [PATCH] UBIFS: do not start the commit if there is nothing to commit
+>
+> This patch fixes suboptimal UBIFS 'sync_fs()' implementation which causes
+> flash I/O even if the file-system is synchronized. E.g., a 'printk()'
+> in the MTD erasure function (e.g., 'nand_erase_nand()') can show that
+> for every 'sync' shell command UBIFS erases at least one eraseblock.
+>
+> So '$ while true; do sync; done' will cause huge amount of flash I/O.
+>
+> The reason for this is that UBIFS commits in 'sync_fs()', and starts the
+> commit even if there is nothing to commit, e.g., it anyway changes the
+> log. This patch adds a check in the 'do_commit()' UBIFS functions which
+> prevents the commit if there are not dirty znodes (hence, nothing to
+> commit).
 
-Signed-off-by: Hong Xu <hong.xu@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c |  160 ++++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 158 insertions(+), 2 deletions(-)
+Possibly the LPT should be checked also.  Perhaps it can be dirty due
+to trivial garbage collection.
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index ccce0f0..ba59913 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -48,6 +48,9 @@
- #define no_ecc		0
- #endif
- 
-+static int use_dma = 1;
-+module_param(use_dma, int, 0);
-+
- static int on_flash_bbt = 0;
- module_param(on_flash_bbt, int, 0);
- 
-@@ -89,11 +92,21 @@ struct atmel_nand_host {
- 	struct nand_chip	nand_chip;
- 	struct mtd_info		mtd;
- 	void __iomem		*io_base;
-+	dma_addr_t		io_phys;
- 	struct atmel_nand_data	*board;
- 	struct device		*dev;
- 	void __iomem		*ecc;
-+
-+	int dma_ready;
-+	struct completion comp;
-+	struct dma_chan *dma_chan;
- };
- 
-+static int cpu_has_dma(void)
-+{
-+	return cpu_is_at91sam9rl() || cpu_is_at91sam9g45();
-+}
-+
- /*
-  * Enable NAND.
-  */
-@@ -150,7 +163,7 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
- /*
-  * Minimal-overhead PIO for data access.
-  */
--static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-+static void atmel_read_buf8(struct mtd_info *mtd, u8 *buf, int len)
- {
- 	struct nand_chip	*nand_chip = mtd->priv;
- 
-@@ -164,7 +177,7 @@ static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
- 	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
- }
- 
--static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-+static void atmel_write_buf8(struct mtd_info *mtd, const u8 *buf, int len)
- {
- 	struct nand_chip	*nand_chip = mtd->priv;
- 
-@@ -178,6 +191,123 @@ static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
- 	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
- }
- 
-+static void dma_complete_func(void *completion)
-+{
-+	complete(completion);
-+}
-+
-+static int atmel_nand_dma_op(struct mtd_info *mtd, void *buf, int len,
-+			       int is_read)
-+{
-+	struct dma_device *dma_dev;
-+	enum dma_ctrl_flags flags;
-+	dma_addr_t dma_src_addr, dma_dst_addr, phys_addr;
-+	struct dma_async_tx_descriptor *tx = NULL;
-+	dma_cookie_t cookie;
-+	struct nand_chip *chip = mtd->priv;
-+	struct atmel_nand_host *host = chip->priv;
-+	void *p = buf;
-+
-+	if (buf >= high_memory) {
-+		struct page *pg;
-+
-+		if (((size_t)buf & PAGE_MASK) !=
-+		    ((size_t)(buf + len - 1) & PAGE_MASK))
-+			goto err_dma;
-+
-+		pg = vmalloc_to_page(buf);
-+		if (pg == 0)
-+			goto err_dma;
-+		p = page_address(pg) + ((size_t)buf & ~PAGE_MASK);
-+	}
-+
-+	dma_dev = host->dma_chan->device;
-+
-+	flags = DMA_CTRL_ACK | DMA_COMPL_SKIP_DEST_UNMAP | DMA_PREP_INTERRUPT |
-+			DMA_COMPL_SKIP_SRC_UNMAP;
-+
-+	if (is_read)
-+		phys_addr = dma_map_single(dma_dev->dev, p, len,
-+					   DMA_FROM_DEVICE);
-+	else
-+		phys_addr = dma_map_single(dma_dev->dev, p, len,
-+					   DMA_TO_DEVICE);
-+	if (dma_mapping_error(dma_dev->dev, phys_addr)) {
-+		dev_err(host->dev, "Failed to dma_map_single\n");
-+		goto err_dma;
-+	}
-+
-+	if (is_read) {
-+		dma_src_addr = host->io_phys;
-+		dma_dst_addr = phys_addr;
-+	} else {
-+		dma_src_addr = phys_addr;
-+		dma_dst_addr = host->io_phys;
-+	}
-+
-+	tx = dma_dev->device_prep_dma_memcpy(host->dma_chan, dma_dst_addr,
-+					     dma_src_addr, len, flags);
-+	if (!tx) {
-+		dev_err(host->dev, "Failed to prepare DMA memcpy\n");
-+		goto err;
-+	}
-+
-+	init_completion(&host->comp);
-+	tx->callback = dma_complete_func;
-+	tx->callback_param = &host->comp;
-+
-+	cookie = tx->tx_submit(tx);
-+	if (dma_submit_error(cookie)) {
-+		dev_err(host->dev, "Failed to do DMA tx_submit\n");
-+		goto err;
-+	}
-+
-+	dma_async_issue_pending(host->dma_chan);
-+
-+	wait_for_completion(&host->comp);
-+
-+	return 0;
-+
-+err:
-+	if (is_read)
-+		dma_unmap_single(dma_dev->dev, phys_addr, len, DMA_FROM_DEVICE);
-+	else
-+		dma_unmap_single(dma_dev->dev, phys_addr, len, DMA_TO_DEVICE);
-+err_dma:
-+	/* Fall back to CPU I/O */
-+	return -1;
-+}
-+
-+static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct atmel_nand_host *host = chip->priv;
-+
-+	if (host->dma_ready && len >= mtd->oobsize)
-+		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
-+			return;
-+
-+	if (host->board->bus_width_16)
-+		atmel_read_buf16(mtd, buf, len);
-+	else
-+		atmel_read_buf8(mtd, buf, len);
-+}
-+
-+static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-+{
-+	struct nand_chip *chip = mtd->priv;
-+	struct atmel_nand_host *host = chip->priv;
-+
-+	if (host->dma_ready && len >= mtd->oobsize)
-+		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) == 0)
-+			return;
-+
-+	if (host->board->bus_width_16)
-+		atmel_write_buf16(mtd, buf, len);
-+	else
-+		atmel_write_buf8(mtd, buf, len);
-+}
-+
- /*
-  * Calculate HW ECC
-  *
-@@ -398,6 +528,8 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 	}
- 
-+	host->io_phys = (dma_addr_t)mem->start;
-+
- 	host->io_base = ioremap(mem->start, mem->end - mem->start + 1);
- 	if (host->io_base == NULL) {
- 		printk(KERN_ERR "atmel_nand: ioremap failed\n");
-@@ -516,6 +648,24 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	if (cpu_has_dma() && use_dma) {
-+		dma_cap_mask_t mask;
-+
-+		dma_cap_zero(mask);
-+		dma_cap_set(DMA_MEMCPY, mask);
-+		host->dma_chan = dma_request_channel(mask, 0, NULL);
-+
-+		if (!host->dma_chan) {
-+			dev_err(host->dev, "Failed to request DMA channel\n");
-+			host->dma_ready = 0;
-+		} else
-+			host->dma_ready = 1;
-+	}
-+	if (host->dma_ready)
-+		dev_info(host->dev, "Using DMA for NAND access.\n");
-+	else
-+		dev_info(host->dev, "No DMA support for NAND access.\n");
-+
- 	/* second phase scan */
- 	if (nand_scan_tail(mtd)) {
- 		res = -ENXIO;
-@@ -555,6 +705,8 @@ err_scan_ident:
- err_no_card:
- 	atmel_nand_disable(host);
- 	platform_set_drvdata(pdev, NULL);
-+	if (host->dma_chan)
-+		dma_release_channel(host->dma_chan);
- 	if (host->ecc)
- 		iounmap(host->ecc);
- err_ecc_ioremap:
-@@ -578,6 +730,10 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
- 
- 	if (host->ecc)
- 		iounmap(host->ecc);
-+
-+	if (host->dma_chan)
-+		dma_release_channel(host->dma_chan);
-+
- 	iounmap(host->io_base);
- 	kfree(host);
- 
--- 
-1.7.3.3
+Also, have you checked there are no degenerate cases where the commit
+is required for some other reason such as consolidating the log or the
+recovery  commit?
+
+>
+> Reported-by: Hans J. Koch<hjk@linutronix.de>
+> Signed-off-by: Artem Bityutskiy<Artem.Bityutskiy@nokia.com>
+> ---
+>   fs/ubifs/commit.c |   17 ++++++++++++++++-
+>   1 files changed, 16 insertions(+), 1 deletions(-)
+>
+> diff --git a/fs/ubifs/commit.c b/fs/ubifs/commit.c
+> index 02429d8..a963d96 100644
+> --- a/fs/ubifs/commit.c
+> +++ b/fs/ubifs/commit.c
+> @@ -70,6 +70,21 @@ static int do_commit(struct ubifs_info *c)
+>   		goto out_up;
+>   	}
+>
+> +	/*
+> +	 * Every file-system change changes the TNC, and makes the root znode
+> +	 * dirty. So if the root znode is clean we can just return immediately
+> +	 * because there must be nothing to commit. Note, se do not have to
+> +	 * lock @c->tnc_mutex because we have @c->commit_sem in write mode,
+> +	 * which guarantees that no one else can access TNC functions
+> +	 * concurrently.
+> +	 */
+> +	if (!c->zroot.znode || !test_bit(DIRTY_ZNODE,&c->zroot.znode->flags)) {
+> +		ubifs_assert(atomic_long_read(&c->dirty_zn_cnt) == 0);
+> +		err = 0;
+> +		up_write(&c->commit_sem);
+> +		goto out_cancel;
+> +	}
+> +
+>   	/* Sync all write buffers (necessary for recovery) */
+>   	for (i = 0; i<  c->jhead_cnt; i++) {
+>   		err = ubifs_wbuf_sync(&c->jheads[i].wbuf);
+> @@ -162,12 +177,12 @@ static int do_commit(struct ubifs_info *c)
+>   	if (err)
+>   		goto out;
+>
+> +out_cancel:
+>   	spin_lock(&c->cs_lock);
+>   	c->cmt_state = COMMIT_RESTING;
+>   	wake_up(&c->cmt_wq);
+>   	dbg_cmt("commit end");
+>   	spin_unlock(&c->cs_lock);
+> -
+>   	return 0;
+>
+>   out_up:
