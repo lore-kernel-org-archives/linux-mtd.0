@@ -1,10 +1,10 @@
 Received: from mail.bluewatersys.com ([202.124.120.130]
 	helo=hayes.bluewaternz.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PevUY-0001y6-CX
-	for linux-mtd@lists.infradead.org; Mon, 17 Jan 2011 20:15:56 +0000
-Message-ID: <4D34A37E.1060300@bluewatersys.com>
-Date: Tue, 18 Jan 2011 09:15:58 +1300
+	id 1PewjH-0005hq-4z
+	for linux-mtd@lists.infradead.org; Mon, 17 Jan 2011 21:35:12 +0000
+Message-ID: <4D34B614.3000909@bluewatersys.com>
+Date: Tue, 18 Jan 2011 10:35:16 +1300
 From: Ryan Mallon <ryan@bluewatersys.com>
 MIME-Version: 1.0
 To: Hong Xu <hong.xu@atmel.com>
@@ -29,254 +29,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On 01/17/2011 08:20 PM, Hong Xu wrote:
 > Some SAM9 chips have the ability to perform DMA between CPU and SMC controller.
 > This patch adds DMA support for SAM9RL, SAM9G45, SSAM9G46,AM9M10, SAM9M11.
-
-Hi Hong,
-
-A few comments below.
-
-~Ryan
-
+> 
 > Signed-off-by: Hong Xu <hong.xu@atmel.com>
 > ---
->  drivers/mtd/nand/atmel_nand.c |  160 ++++++++++++++++++++++++++++++++++++++++-
->  1 files changed, 158 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index ccce0f0..ba59913 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -48,6 +48,9 @@
->  #define no_ecc		0
->  #endif
->  
-> +static int use_dma = 1;
-> +module_param(use_dma, int, 0);
-> +
->  static int on_flash_bbt = 0;
->  module_param(on_flash_bbt, int, 0);
->  
-> @@ -89,11 +92,21 @@ struct atmel_nand_host {
->  	struct nand_chip	nand_chip;
->  	struct mtd_info		mtd;
->  	void __iomem		*io_base;
-> +	dma_addr_t		io_phys;
->  	struct atmel_nand_data	*board;
->  	struct device		*dev;
->  	void __iomem		*ecc;
-> +
-> +	int dma_ready;
 
-The name dma_ready implies that it is used as a flag to indicate when
-the dma engine is ready to do a transfer, but you are using it to
-indicate that the host supports dma. Would be more clear to call it
-'use_dma'.
+One more comment:
 
-> +	struct completion comp;
-> +	struct dma_chan *dma_chan;
->  };
->  
-> +static int cpu_has_dma(void)
-> +{
-> +	return cpu_is_at91sam9rl() || cpu_is_at91sam9g45();
-> +}
-> +
->  /*
->   * Enable NAND.
->   */
-> @@ -150,7 +163,7 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
->  /*
->   * Minimal-overhead PIO for data access.
->   */
-> -static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-> +static void atmel_read_buf8(struct mtd_info *mtd, u8 *buf, int len)
->  {
->  	struct nand_chip	*nand_chip = mtd->priv;
->  
-> @@ -164,7 +177,7 @@ static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
->  	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
->  }
->  
-> -static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-> +static void atmel_write_buf8(struct mtd_info *mtd, const u8 *buf, int len)
->  {
->  	struct nand_chip	*nand_chip = mtd->priv;
->  
-> @@ -178,6 +191,123 @@ static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
->  	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
->  }
->  
-> +static void dma_complete_func(void *completion)
-> +{
-> +	complete(completion);
-> +}
-
-You can make the function below a bit more concise:
-
-> +static int atmel_nand_dma_op(struct mtd_info *mtd, void *buf, int len,
-> +			       int is_read)
-> +{
-> +	struct dma_device *dma_dev;
-> +	enum dma_ctrl_flags flags;
-> +	dma_addr_t dma_src_addr, dma_dst_addr, phys_addr;
-> +	struct dma_async_tx_descriptor *tx = NULL;
-> +	dma_cookie_t cookie;
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct atmel_nand_host *host = chip->priv;
-> +	void *p = buf;
-
-	int dir = is_read ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
-
-> +
-> +	if (buf >= high_memory) {
-> +		struct page *pg;
-> +
-> +		if (((size_t)buf & PAGE_MASK) !=
-> +		    ((size_t)(buf + len - 1) & PAGE_MASK))
-
-Print a warning here? The other failures all have warning messages.
-
-> +			goto err_dma;
-> +
-> +		pg = vmalloc_to_page(buf);
-> +		if (pg == 0)
-> +			goto err_dma;
-> +		p = page_address(pg) + ((size_t)buf & ~PAGE_MASK);
-> +	}
-> +
-> +	dma_dev = host->dma_chan->device;
-> +
-> +	flags = DMA_CTRL_ACK | DMA_COMPL_SKIP_DEST_UNMAP | DMA_PREP_INTERRUPT |
-> +			DMA_COMPL_SKIP_SRC_UNMAP;
-> +
-> +	if (is_read)
-> +		phys_addr = dma_map_single(dma_dev->dev, p, len,
-> +					   DMA_FROM_DEVICE);
-> +	else
-> +		phys_addr = dma_map_single(dma_dev->dev, p, len,
-> +					   DMA_TO_DEVICE);
-
-	phys_addr = dma_map_single(dma_dev->dev, p, len, dir);
-
-> +	if (dma_mapping_error(dma_dev->dev, phys_addr)) {
-> +		dev_err(host->dev, "Failed to dma_map_single\n");
-> +		goto err_dma;
-> +	}
-> +
-> +	if (is_read) {
-> +		dma_src_addr = host->io_phys;
-> +		dma_dst_addr = phys_addr;
-> +	} else {
-> +		dma_src_addr = phys_addr;
-> +		dma_dst_addr = host->io_phys;
-> +	}
-
-> +
-> +	tx = dma_dev->device_prep_dma_memcpy(host->dma_chan, dma_dst_addr,
-> +					     dma_src_addr, len, flags);
-> +	if (!tx) {
-> +		dev_err(host->dev, "Failed to prepare DMA memcpy\n");
-> +		goto err;
-> +	}
-> +
-> +	init_completion(&host->comp);
-> +	tx->callback = dma_complete_func;
-> +	tx->callback_param = &host->comp;
-> +
-> +	cookie = tx->tx_submit(tx);
-> +	if (dma_submit_error(cookie)) {
-> +		dev_err(host->dev, "Failed to do DMA tx_submit\n");
-> +		goto err;
-> +	}
-> +
-> +	dma_async_issue_pending(host->dma_chan);
-> +
-> +	wait_for_completion(&host->comp);
-
-	dma_unmap_single(dma_dev->dev, phys_addr, len, dir);
-
-> +	return 0;
-> +
-> +err:
-> +	if (is_read)
-> +		dma_unmap_single(dma_dev->dev, phys_addr, len, DMA_FROM_DEVICE);
-> +	else
-> +		dma_unmap_single(dma_dev->dev, phys_addr, len, DMA_TO_DEVICE);
-
-	dma_unmap_single(dma_dev->dev, phys_addr, len, dir);
-
-> +err_dma:
-> +	/* Fall back to CPU I/O */
-> +	return -1;
-
-Return a proper error code.
-
-> +}
-> +
-> +static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct atmel_nand_host *host = chip->priv;
-> +
-> +	if (host->dma_ready && len >= mtd->oobsize)
-> +		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
-> +			return;
-> +
-> +	if (host->board->bus_width_16)
-> +		atmel_read_buf16(mtd, buf, len);
-> +	else
-> +		atmel_read_buf8(mtd, buf, len);
-> +}
-> +
-> +static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct atmel_nand_host *host = chip->priv;
-> +
-> +	if (host->dma_ready && len >= mtd->oobsize)
-> +		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) == 0)
-> +			return;
-> +
-> +	if (host->board->bus_width_16)
-> +		atmel_write_buf16(mtd, buf, len);
-> +	else
-> +		atmel_write_buf8(mtd, buf, len);
-> +}
-
-In atmel_nand_probe you have the following:
-
-    if (host->board->bus_width_16) {    /* 16-bit bus width */
-        nand_chip->options |= NAND_BUSWIDTH_16;
-        nand_chip->read_buf = atmel_read_buf16;
-        nand_chip->write_buf = atmel_write_buf16;
-    } else {
-        nand_chip->read_buf = atmel_read_buf;
-        nand_chip->write_buf = atmel_write_buf;
-    }
-
-So DMA is not supported when the bus width is 16? Possibly you just want
-to use atmel_[read|write]_buf in all cases?
-
-> +
->  /*
->   * Calculate HW ECC
->   *
-> @@ -398,6 +528,8 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->  		return -ENOMEM;
->  	}
->  
-> +	host->io_phys = (dma_addr_t)mem->start;
-> +
-
-host->io_phys can be replaced by a stack variable in atmel_nand_probe,
-or just (dma_addr_t)mem->start, since it is only used in this function.
-
->  	host->io_base = ioremap(mem->start, mem->end - mem->start + 1);
->  	if (host->io_base == NULL) {
->  		printk(KERN_ERR "atmel_nand: ioremap failed\n");
-> @@ -516,6 +648,24 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->  		}
->  	}
->  
 > +	if (cpu_has_dma() && use_dma) {
 > +		dma_cap_mask_t mask;
 > +
@@ -284,47 +42,14 @@ or just (dma_addr_t)mem->start, since it is only used in this function.
 > +		dma_cap_set(DMA_MEMCPY, mask);
 > +		host->dma_chan = dma_request_channel(mask, 0, NULL);
 > +
-
-Nitpick: don't have blank lines between a function call and its error check.
-
 > +		if (!host->dma_chan) {
 > +			dev_err(host->dev, "Failed to request DMA channel\n");
 > +			host->dma_ready = 0;
-> +		} else
-> +			host->dma_ready = 1;
 
-Nitpick: the else should have braces since the if statement does.
+Because host is kzalloc'ed above, you do not need to set host->dma_ready
+to zero here.
 
-> +	}
-> +	if (host->dma_ready)
-> +		dev_info(host->dev, "Using DMA for NAND access.\n");
-> +	else
-> +		dev_info(host->dev, "No DMA support for NAND access.\n");
-> +
->  	/* second phase scan */
->  	if (nand_scan_tail(mtd)) {
->  		res = -ENXIO;
-> @@ -555,6 +705,8 @@ err_scan_ident:
->  err_no_card:
->  	atmel_nand_disable(host);
->  	platform_set_drvdata(pdev, NULL);
-> +	if (host->dma_chan)
-> +		dma_release_channel(host->dma_chan);
->  	if (host->ecc)
->  		iounmap(host->ecc);
->  err_ecc_ioremap:
-> @@ -578,6 +730,10 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
->  
->  	if (host->ecc)
->  		iounmap(host->ecc);
-> +
-> +	if (host->dma_chan)
-> +		dma_release_channel(host->dma_chan);
-> +
->  	iounmap(host->io_base);
->  	kfree(host);
->  
-
+~Ryan
 
 -- 
 Bluewater Systems Ltd - ARM Technology Solution Centre
