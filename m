@@ -1,22 +1,23 @@
-Received: from mail.bluewatersys.com ([202.124.120.130]
-	helo=hayes.bluewaternz.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pf7WT-0005cu-Ue
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 09:06:48 +0000
-Message-ID: <4D3557F8.4000008@bluewatersys.com>
-Date: Tue, 18 Jan 2011 22:06:00 +1300
-From: Ryan Mallon <ryan@bluewatersys.com>
-MIME-Version: 1.0
-To: Hong Xu <hong.xu@atmel.com>
-Subject: Re: [PATCH] MTD: atmel_nand: Add DMA support to access Nandflash
-References: <hong.xu@atmel.com>
-	<1295332565-25610-2-git-send-email-hong.xu@atmel.com>
-In-Reply-To: <1295332565-25610-2-git-send-email-hong.xu@atmel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: nicolas.ferre@atmel.com, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, jamie@jamieiles.com,
-	linux-arm-kernel@lists.infradead.org
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pf7gi-0000az-H0
+	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 09:17:21 +0000
+Received: by fxm19 with SMTP id 19so6949287fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 18 Jan 2011 01:16:49 -0800 (PST)
+Subject: Re: validate_sb: bad superblock, error 8 (Minimum UBI volume size
+	for UBIFS image)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Andrew Murray <amurray@mpcdata.com>
+In-Reply-To: <AANLkTikGddyMhxph92Dz7vpRNRKa2haQne7yxKBTKw3N@mail.gmail.com>
+References: <AANLkTikGddyMhxph92Dz7vpRNRKa2haQne7yxKBTKw3N@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 18 Jan 2011 11:16:40 +0200
+Message-ID: <1295342200.2470.97.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,262 +27,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 18/01/11 19:36, Hong Xu wrote:
-> Some SAM9 chips have the ability to perform DMA between CPU and SMC controller.
-> This patch adds DMA support for SAM9RL, SAM9G45, SSAM9G46,AM9M10, SAM9M11.
->
-> Signed-off-by: Hong Xu<hong.xu@atmel.com>
+On Tue, 2011-01-11 at 09:47 +0000, Andrew Murray wrote:
+> Hello,
+> 
+> Is there a way to determine the minimum UBI volume size which will
+> support a given UBIFS filesystem image?
+> 
+> I've read the infradead.org FAQ's and browsed the source - however can
+> not find a suitable answer. My current conclusion is that the minimum
+> UBI volume is somehow dependant on the filesystem size, the log and
+> the journal. I'm working on an upgrade mechanism which uses UBI/UBIFS
+> and only creates UBI volumes of the minimum size to support a UBIFS
+> filesystem and thus struggling to determine the safest minimum size.
+> 
+> This is what I've attempted. In these examples UBIFS is claiming that
+> the journal size is 71 LEB's - however the filesystem will only mount
+> if my UBI volume is 77 LEB's - how do I account for this difference?
 
-Tested-by: Ryan Mallon <ryan@bluewatersys.com>
-Acked-by: Ryan Mallon <ryan@bluewatersys.com>
+There are 5 (AFAIR) areas in UBIFS:
 
-> ---
->   drivers/mtd/nand/atmel_nand.c |  166 ++++++++++++++++++++++++++++++++++++++--
->   1 files changed, 157 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-> index ccce0f0..6fae04b 100644
-> --- a/drivers/mtd/nand/atmel_nand.c
-> +++ b/drivers/mtd/nand/atmel_nand.c
-> @@ -48,6 +48,9 @@
->   #define no_ecc		0
->   #endif
->
-> +static int use_dma = 1;
-> +module_param(use_dma, int, 0);
-> +
->   static int on_flash_bbt = 0;
->   module_param(on_flash_bbt, int, 0);
->
-> @@ -89,11 +92,20 @@ struct atmel_nand_host {
->   	struct nand_chip	nand_chip;
->   	struct mtd_info		mtd;
->   	void __iomem		*io_base;
-> +	dma_addr_t		io_phys;
->   	struct atmel_nand_data	*board;
->   	struct device		*dev;
->   	void __iomem		*ecc;
-> +
-> +	struct completion	comp;
-> +	struct dma_chan		*dma_chan;
->   };
->
-> +static int cpu_has_dma(void)
-> +{
-> +	return cpu_is_at91sam9rl() || cpu_is_at91sam9g45();
-> +}
-> +
->   /*
->    * Enable NAND.
->    */
-> @@ -150,7 +162,7 @@ static int atmel_nand_device_ready(struct mtd_info *mtd)
->   /*
->    * Minimal-overhead PIO for data access.
->    */
-> -static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-> +static void atmel_read_buf8(struct mtd_info *mtd, u8 *buf, int len)
->   {
->   	struct nand_chip	*nand_chip = mtd->priv;
->
-> @@ -164,7 +176,7 @@ static void atmel_read_buf16(struct mtd_info *mtd, u8 *buf, int len)
->   	__raw_readsw(nand_chip->IO_ADDR_R, buf, len / 2);
->   }
->
-> -static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-> +static void atmel_write_buf8(struct mtd_info *mtd, const u8 *buf, int len)
->   {
->   	struct nand_chip	*nand_chip = mtd->priv;
->
-> @@ -178,6 +190,121 @@ static void atmel_write_buf16(struct mtd_info *mtd, const u8 *buf, int len)
->   	__raw_writesw(nand_chip->IO_ADDR_W, buf, len / 2);
->   }
->
-> +static void dma_complete_func(void *completion)
-> +{
-> +	complete(completion);
-> +}
-> +
-> +static int atmel_nand_dma_op(struct mtd_info *mtd, void *buf, int len,
-> +			       int is_read)
-> +{
-> +	struct dma_device *dma_dev;
-> +	enum dma_ctrl_flags flags;
-> +	dma_addr_t dma_src_addr, dma_dst_addr, phys_addr;
-> +	struct dma_async_tx_descriptor *tx = NULL;
-> +	dma_cookie_t cookie;
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct atmel_nand_host *host = chip->priv;
-> +	void *p = buf;
-> +	int err = -EIO;
-> +	enum dma_data_direction dir = is_read ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
-> +
-> +	if (buf>= high_memory) {
-> +		struct page *pg;
-> +
-> +		if (((size_t)buf&  PAGE_MASK) !=
-> +		    ((size_t)(buf + len - 1)&  PAGE_MASK)) {
-> +			dev_warn(host->dev, "Buffer not fit in one page\n");
-> +			goto err_buf;
-> +		}
-> +
-> +		pg = vmalloc_to_page(buf);
-> +		if (pg == 0) {
-> +			dev_err(host->dev, "Failed to vmalloc_to_page\n");
-> +			goto err_buf;
-> +		}
-> +		p = page_address(pg) + ((size_t)buf&  ~PAGE_MASK);
-> +	}
-> +
-> +	dma_dev = host->dma_chan->device;
-> +
-> +	flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT | DMA_COMPL_SKIP_SRC_UNMAP |
-> +		DMA_COMPL_SKIP_DEST_UNMAP;
-> +
-> +	phys_addr = dma_map_single(dma_dev->dev, p, len, dir);
-> +	if (dma_mapping_error(dma_dev->dev, phys_addr)) {
-> +		dev_err(host->dev, "Failed to dma_map_single\n");
-> +		goto err_buf;
-> +	}
-> +
-> +	if (is_read) {
-> +		dma_src_addr = host->io_phys;
-> +		dma_dst_addr = phys_addr;
-> +	} else {
-> +		dma_src_addr = phys_addr;
-> +		dma_dst_addr = host->io_phys;
-> +	}
-> +
-> +	tx = dma_dev->device_prep_dma_memcpy(host->dma_chan, dma_dst_addr,
-> +					     dma_src_addr, len, flags);
-> +	if (!tx) {
-> +		dev_err(host->dev, "Failed to prepare DMA memcpy\n");
-> +		goto err_dma;
-> +	}
-> +
-> +	init_completion(&host->comp);
-> +	tx->callback = dma_complete_func;
-> +	tx->callback_param =&host->comp;
-> +
-> +	cookie = tx->tx_submit(tx);
-> +	if (dma_submit_error(cookie)) {
-> +		dev_err(host->dev, "Failed to do DMA tx_submit\n");
-> +		goto err_dma;
-> +	}
-> +
-> +	dma_async_issue_pending(host->dma_chan);
-> +	wait_for_completion(&host->comp);
-> +
-> +	err = 0;
-> +
-> +err_dma:
-> +	dma_unmap_single(dma_dev->dev, phys_addr, len, dir);
-> +err_buf:
-> +	if (err != 0)
-> +		dev_warn(host->dev, "Fall back to CPU I/O\n");
-> +	return err;
-> +}
-> +
-> +static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct atmel_nand_host *host = chip->priv;
-> +
-> +	if (use_dma&&  len>= mtd->oobsize)
-> +		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
-> +			return;
-> +
-> +	if (host->board->bus_width_16)
-> +		atmel_read_buf16(mtd, buf, len);
-> +	else
-> +		atmel_read_buf8(mtd, buf, len);
-> +}
-> +
-> +static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
-> +{
-> +	struct nand_chip *chip = mtd->priv;
-> +	struct atmel_nand_host *host = chip->priv;
-> +
-> +	if (use_dma&&  len>= mtd->oobsize)
-> +		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) == 0)
-> +			return;
-> +
-> +	if (host->board->bus_width_16)
-> +		atmel_write_buf16(mtd, buf, len);
-> +	else
-> +		atmel_write_buf8(mtd, buf, len);
-> +}
-> +
->   /*
->    * Calculate HW ECC
->    *
-> @@ -398,6 +525,8 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->   		return -ENOMEM;
->   	}
->
-> +	host->io_phys = (dma_addr_t)mem->start;
-> +
->   	host->io_base = ioremap(mem->start, mem->end - mem->start + 1);
->   	if (host->io_base == NULL) {
->   		printk(KERN_ERR "atmel_nand: ioremap failed\n");
-> @@ -448,14 +577,11 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->
->   	nand_chip->chip_delay = 20;		/* 20us command delay time */
->
-> -	if (host->board->bus_width_16) {	/* 16-bit bus width */
-> +	if (host->board->bus_width_16)	/* 16-bit bus width */
->   		nand_chip->options |= NAND_BUSWIDTH_16;
-> -		nand_chip->read_buf = atmel_read_buf16;
-> -		nand_chip->write_buf = atmel_write_buf16;
-> -	} else {
-> -		nand_chip->read_buf = atmel_read_buf;
-> -		nand_chip->write_buf = atmel_write_buf;
-> -	}
-> +
-> +	nand_chip->read_buf = atmel_read_buf;
-> +	nand_chip->write_buf = atmel_write_buf;
->
->   	platform_set_drvdata(pdev, host);
->   	atmel_nand_enable(host);
-> @@ -473,6 +599,22 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
->   		nand_chip->options |= NAND_USE_FLASH_BBT;
->   	}
->
-> +	if (cpu_has_dma()&&  use_dma) {
-> +		dma_cap_mask_t mask;
-> +
-> +		dma_cap_zero(mask);
-> +		dma_cap_set(DMA_MEMCPY, mask);
-> +		host->dma_chan = dma_request_channel(mask, 0, NULL);
-> +		if (!host->dma_chan) {
-> +			dev_err(host->dev, "Failed to request DMA channel\n");
-> +			use_dma = 0;
-> +		}
-> +	}
-> +	if (use_dma)
-> +		dev_info(host->dev, "Using DMA for NAND access.\n");
-> +	else
-> +		dev_info(host->dev, "No DMA support for NAND access.\n");
-> +
->   	/* first scan to find the device and get the page size */
->   	if (nand_scan_ident(mtd, 1, NULL)) {
->   		res = -ENXIO;
-> @@ -555,6 +697,8 @@ err_scan_ident:
->   err_no_card:
->   	atmel_nand_disable(host);
->   	platform_set_drvdata(pdev, NULL);
-> +	if (host->dma_chan)
-> +		dma_release_channel(host->dma_chan);
->   	if (host->ecc)
->   		iounmap(host->ecc);
->   err_ecc_ioremap:
-> @@ -578,6 +722,10 @@ static int __exit atmel_nand_remove(struct platform_device *pdev)
->
->   	if (host->ecc)
->   		iounmap(host->ecc);
-> +
-> +	if (host->dma_chan)
-> +		dma_release_channel(host->dma_chan);
-> +
->   	iounmap(host->io_base);
->   	kfree(host);
->
+1. Superblock - always 1 LEB.
+2. Log - depends on maximum flash size (-c mkfs.ubifs option) and LEB
+   size
+3. Lprops - depends on maximum flash size and LEB size.
+3. Orphans - I think 1 LEB is enough 
+4. Main area - used for various purposes:
+   1. the FS index needs at least 3 LEBs for the FS index
+   2. 1 LEB for GC
+   3. 1 for deletions (because deleting stuff, e.g., file, needs
+      writing deletion entries to flash, which also needs space,
+      so we need to reserve it to make sure that if your FS is full,
+      you still can delete your files).
+   4. buds which are part of the journal - need at least 3
+
+Note, Log + buds = the journal.
+
+As you have already found out the journal size is configurable, so you
+can make it to be of minimum size.
+
+Also you have already found that there are some functions which try to
+calculate default sizes.
+
+In fs/ubifs/ubifs-media.h you can find constants and comments about
+minimum required LEBs [1]
+
+Anyway, the only way for the user to affect the minimum FS size is the
+--jrn-size option of mkfs.ubifs. How to calculate what will be the
+minimum? Not sure, probably UBIFS_MIN_JNL_LEBS = 5 LEBs or something
+close to this.
+
+I agree that this is a bit complex, feel free to contribute some piece
+of documentation to the mtd web site - you'll find the web site source
+here: http://git.infradead.org/mtd-www.git
+
+Just clone it and send a patch.
+
+> 
+> # ubinfo -a
+> UBI version:                    1
+> Count of UBI devices:           1
+> UBI control device major/minor: 10:63
+> Present UBI devices:            ubi0
+> ubi0
+> Volumes count:                           1
+> Logical eraseblock size:                 129024 bytes, 126.0 KiB
+> Total amount of logical eraseblocks:     911 (117540864 bytes, 112.1 MiB)
+> Amount of available logical eraseblocks: 401 (51738624 bytes, 49.3 MiB)
+> Maximum count of volumes                 128
+> Count of bad physical eraseblocks:       1
+> Count of reserved physical eraseblocks:  9
+> Current maximum erase counter value:     350
+> Minimum input/output unit size:          2048 bytes
+> Character device major/minor:            251:0
+> Present volumes:                         0
+> Volume ID:   0 (on ubi0)
+> Type:        dynamic
+> Alignment:   1
+> Size:        497 LEBs (64124928 bytes, 61.2 MiB)
+> State:       OK
+> Name:        rootfs
+> Character device major/minor: 251:1
+
+
+> 
+> # ls -l rootfs.ubifs
+> -rw-r--r--    1 default  default   6838272 Jan 10  2011 rootfs.ubifs
+> # ubimkvol /dev/ubi0 -N test -s 6838272
+> Volume ID 1, size 53 LEBs (6838272 bytes, 6.5 MiB), LEB size 129024
+> bytes (126.0 KiB), dynamic, name "test", alignment 1
+> # ubiupdatevol /dev/ubi0_1 rootfs.ubifs
+
+If you did not use mkfs.ubifs, then UBIFS is doing "auto-formatting" and
+just picks some "reasonable" default journal size, which is not the
+minimum possible. You can make it smaller with "mkfs.ubifs --jrn-size".
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
