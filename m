@@ -1,23 +1,21 @@
 Received: from mail-fx0-f67.google.com ([209.85.161.67])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PfAQ6-0008Bo-62
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 12:12:19 +0000
-Received: by mail-fx0-f67.google.com with SMTP id 17so2571785fxm.6
+	id 1PfASh-0000s8-TV
+	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 12:15:10 +0000
+Received: by fxm17 with SMTP id 17so2573063fxm.6
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Jan 2011 04:12:17 -0800 (PST)
-Subject: Re: [PATCH] mtd_blkdevs: local symbols should be static
+	Tue, 18 Jan 2011 04:14:47 -0800 (PST)
+Subject: Re: [PATCH] UBIFS FAQ: fix grammar, style, spelling
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: H Hartley Sweeten <hartleys@visionengravers.com>
-In-Reply-To: <0D753D10438DA54287A00B027084269764CE0E550B@AUSP01VMBX24.collaborationhost.net>
-References: <0D753D10438DA54287A00B027084269764CE0E550B@AUSP01VMBX24.collaborationhost.net>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1294822388-28396-1-git-send-email-computersforpeace@gmail.com>
+References: <1294822388-28396-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 18 Jan 2011 14:12:09 +0200
-Message-ID: <1295352729.2470.134.camel@koala>
+Date: Tue, 18 Jan 2011 14:14:44 +0200
+Message-ID: <1295352884.2470.135.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,14 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-01-11 at 18:46 -0600, H Hartley Sweeten wrote:
-> The function blktrans_dev_release and blktrans_dev_put are only used
-> locally in this file and should be static.
-> 
-> Signed-off-by: H Hartley Sweeten <hsweeten@visionengravers.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
+On Wed, 2011-01-12 at 00:53 -0800, Brian Norris wrote:
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+> ---
+>  doc/ubifs.xml |   70 ++++++++++++++++++++++++++++----------------------------
+>  1 files changed, 35 insertions(+), 35 deletions(-)
 
-Pushed to l2-mtd-2.6.git, thanks.
+Pushed, thank you!
 
 -- 
 Best Regards,
