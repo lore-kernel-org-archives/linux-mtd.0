@@ -1,23 +1,21 @@
 Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pf769-0004tR-1U
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 08:39:33 +0000
-Received: by fxm19 with SMTP id 19so6919760fxm.36
+	id 1Pf78B-0005cj-0Z
+	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 08:41:35 +0000
+Received: by fxm19 with SMTP id 19so6921164fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Jan 2011 00:39:25 -0800 (PST)
-Subject: Re: [PATCH] New tuneubifs command to adjust tunable filesystem
-	parameters on ubifs
+	Tue, 18 Jan 2011 00:41:28 -0800 (PST)
+Subject: Re: Confusion over mkfs.ubifs versions
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: stefani@seibold.net
-In-Reply-To: <1295339326-1720-1-git-send-email-stefani@seibold.net>
-References: <1295339326-1720-1-git-send-email-stefani@seibold.net>
+To: David Lambert <dave@lambsys.com>
+In-Reply-To: <4D2B79BF.6080304@lambsys.com>
+References: <4D2B79BF.6080304@lambsys.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 18 Jan 2011 10:39:20 +0200
-Message-ID: <1295339960.2470.70.camel@koala>
+Date: Tue, 18 Jan 2011 10:41:24 +0200
+Message-ID: <1295340084.2470.72.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	Artem.Bityutskiy@nokia.com
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,44 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-01-18 at 09:28 +0100, stefani@seibold.net wrote:
-> From: Stefani Seibold <stefani@seibold.net>
-> 
-> ChangeLog:
-> 31.12.2010 first proposal
-> 18.01.2011 fixes suggested by Artem:
->            - fix help message
-> 	   - rename the tool into tuneubifs
-> 	   - rename mkfs.ubifs" directory into "ubifs-utils"
-> 	   - move the tool to ubifs-utils/tuneubifs
-> 	   - code cleanup
-> 
-> tuneubifs allows the system administrator to adjust various tunable filesystem
-> parameters on Linux ubifs filesystems. The current values of these parameters
-> can be displayed by using the -v or calling without any option.
-> 
-> Currently the tuneubifs supports the following parameters:
-> 
-> -x, --compr=<none|lzo|zlib>    compression type
-> -R, --reserved=SIZE            how much space should be reserved for super-user
-> 
-> Maybe it will be nice to adjust also the uid and gid of the reserved owner,
-> or the increase the max. size of the ubi filesystem. This will be very
-> simple to implement.
-> 
-> Signed-off-by: Stefani Seibold <stefani@seibold.net>
+On Mon, 2011-01-10 at 15:27 -0600, David Lambert wrote:
+> After upgrading to Ubuntu 10.10 I noticed that the stock mkfs.ubifs 
+> (version 1.3) failed to compute checksums correctly. I compiled my own 
+> version from the git source of mtd-utils which announces itself as 
+> version 1.4; this worked fine. Being curious I logged onto a machine 
+> running Ubuntu 10.4 and checked the version of mkfs.ubifs and also found 
+> it to be 1.3, but this version computes checksums correctly! Is there a 
+> sub-version of mkfs.ubifs between 1.3 and 1.4 that is not shown by using 
+> --version? Am I missing something critical here?
 
-Stefani, I'm sorry for bothering you with small things, but it is really
-bead idea to combine the re-naming and the new utility in one patch.
-These are really 2 separate steps: 1 - prepare things by re-naming, 2 -
-add new utility.
-
-Please, make it 2 separate patches, not one patch.
-
-Also, it is very helpful when people add v2 v3 etc to the subject. This
-is just another "friendly hacker's practice".
-
-Thanks!
+Since mtd-utils are not managed very well, and we were not tagging them
+regularly enough, I think Ubuntu guys just picked a non-tagged snapshot
+which had that bug. Just take newer version please, or ask Ubunto folks
+to do this.
 
 -- 
 Best Regards,
