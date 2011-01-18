@@ -1,22 +1,22 @@
-Received: from mail-fx0-f67.google.com ([209.85.161.67])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PfASh-0000s8-TV
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 12:15:10 +0000
-Received: by fxm17 with SMTP id 17so2573063fxm.6
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Jan 2011 04:14:47 -0800 (PST)
-Subject: Re: [PATCH] UBIFS FAQ: fix grammar, style, spelling
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1294822388-28396-1-git-send-email-computersforpeace@gmail.com>
-References: <1294822388-28396-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 18 Jan 2011 14:14:44 +0200
-Message-ID: <1295352884.2470.135.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from www.tglx.de ([62.245.132.106])
+	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PfAiz-0000u2-8b
+	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 12:31:49 +0000
+To: dedekind1@gmail.com
+Subject: [PATCH v2 3/3] UBIFS: do not start the commit if there is nothing to
+	commit
+From: John Ogness <john.ogness@linutronix.de>
+References: <20101013163005.GB1889@silverbox.local>
+	<1295200104.2470.5.camel@koala> <4D33FB78.5010208@nokia.com>
+	<1295335817.2470.31.camel@koala> <1295336185.2470.33.camel@koala>
+Date: Tue, 18 Jan 2011 13:29:25 +0100
+In-Reply-To: <1295336185.2470.33.camel@koala> (Artem Bityutskiy's message of
+	"Tue\, 18 Jan 2011 09\:36\:25 +0200")
+Message-ID: <87ei8apf8a.fsf@vostro.fn.ogness.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-01-12 at 00:53 -0800, Brian Norris wrote:
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  doc/ubifs.xml |   70 ++++++++++++++++++++++++++++----------------------------
->  1 files changed, 35 insertions(+), 35 deletions(-)
+Hi,
 
-Pushed, thank you!
+With these patches, there is no longer an erase for _every_
+sync. However, there is still one erase that occurs when ubifs is
+mounted. The following script will cause an erase with each sync.
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+while true; do
+    mount -t ubifs ubi0_2 /tmp/mnt
+    sync
+    umount /tmp/mnt
+done
+
+John Ogness
