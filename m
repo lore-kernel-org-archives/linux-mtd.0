@@ -1,17 +1,14 @@
-Received: from edge.colpos.mx ([38.98.245.76])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PfcNH-0002jv-Ib
-	for linux-mtd@lists.infradead.org; Wed, 19 Jan 2011 18:03:16 +0000
-From: Sonia Rojas Chavez <xsony@colpos.mx>
-Date: Wed, 19 Jan 2011 11:56:36 -0600
-Subject: CONTACT THE PUBLIC RELATIONS OFFICER VIA
-	EMAIL:compensaton.org@gncn.net
-Message-ID: <962248286EF52A4B8027947BF43317700282B839C6ED@exchange>
-Content-Language: es-MX
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from nm2.bullet.mail.sg1.yahoo.com ([115.178.12.224])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PffIH-0004qD-LR
+	for linux-mtd@lists.infradead.org; Wed, 19 Jan 2011 21:10:20 +0000
+Message-ID: <218573.76141.qm@smtp116.mail.sg1.yahoo.com>
+From: "zhan.com" <fishburne79342@yahoo.com.ph>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: =?GB2312?B?ODczMjEzNjU4Nzk2OTU2MzMwMsr9tLQ=?=
+Date: Thu, 20 Jan 2011 05:10:13 +0800
 MIME-Version: 1.0
-To: Undisclosed recipients:;
+Content-Type: multipart/mixed; boundary="----=vsv117_8761_355374330.441955"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +19,126 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+This is a multi-part message in MIME format.
 
+------=vsv117_8761_355374330.441955
+Content-Type: text/plain;
+	charset="GB2312"
+Content-Transfer-Encoding: base64
 
-ATLANTCI CITY BANK PLC 2011 SCAM VICTIMS COMPENSATION PAYMENT.
-YOUR REF/PAYMENTS CODE: ACB/06654 FOR $800,000.00 USD ONLY.
+MjYzLmNvbQ0KOTQuMTc1LjIuMTE=
 
-This is to bring to your notice that our bank (ATLANTCI CITY BANK PLC) has =
-been
-delegated by the UNITED NATIONS in Conjunction with HSBC Bank Malaysia to
-pay victims of scam $800,000.00 (Eight Hundred Thousand Dollars Only). For
-verification you are to view the following link.
+------=vsv117_8761_355374330.441955
+Content-Type: image/gif;
+	name="Znwfcfw6894.gif"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="Znwfcfw6894.gif"
 
-http://www.un.org/News/Press/docs/2003/ik344.doc.htm
-You are expected to send the following informations for remittance. Do
-ensure they are listed correctly.
+R0lGODdhcwEQAXcAACwAAAAAcwEQAYcAAAAAADMAAGYAAJkAAMwAAP8AMwAAMzMAM2YAM5kAM8wA
+M/8AZgAAZjMAZmYAZpkAZswAZv8AmQAAmTMAmWYAmZkAmcwAmf8AzAAAzDMAzGYAzJkAzMwAzP8A
+/wAA/zMA/2YA/5kA/8wA//8zAAAzADMzAGYzAJkzAMwzAP8zMwAzMzMzM2YzM5kzM8wzM/8zZgAz
+ZjMzZmYzZpkzZswzZv8zmQAzmTMzmWYzmZkzmcwzmf8zzAAzzDMzzGYzzJkzzMwzzP8z/wAz/zMz
+/2Yz/5kz/8wz//9mAABmADNmAGZmAJlmAMxmAP9mMwBmMzNmM2ZmM5lmM8xmM/9mZgBmZjNmZmZm
+ZplmZsxmZv9mmQBmmTNmmWZmmZlmmcxmmf9mzABmzDNmzGZmzJlmzMxmzP9m/wBm/zNm/2Zm/5lm
+/8xm//+ZAACZADOZAGaZAJmZAMyZAP+ZMwCZMzOZM2aZM5mZM8yZM/+ZZgCZZjOZZmaZZpmZZsyZ
+Zv+ZmQCZmTOZmWaZmZmZmcyZmf+ZzACZzDOZzGaZzJmZzMyZzP+Z/wCZ/zOZ/2aZ/5mZ/8yZ///M
+AADMADPMAGbMAJnMAMzMAP/MMwDMMzPMM2bMM5nMM8zMM//MZgDMZjPMZmbMZpnMZszMZv/MmQDM
+mTPMmWbMmZnMmczMmf/MzADMzDPMzGbMzJnMzMzMzP/M/wDM/zPM/2bM/5nM/8zM////AAD/ADP/
+AGb/AJn/AMz/AP//MwD/MzP/M2b/M5n/M8z/M///ZgD/ZjP/Zmb/Zpn/Zsz/Zv//mQD/mTP/mWb/
+mZn/mcz/mf//zAD/zDP/zGb/zJn/zMz/zP///wD//zP//2b//5n//8z///8AAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAABWbmlGaXBVNTlsWTF5WnRhcXd2WDVNVTZtemVobTRwa3RkTk5WbkFk
+Q24NcVRkV2pTYjV1OERPSG5uMjc3c2pJamNvK2NkMmFDZG5UNHpnUCtRZTBWVnV4MmsI/wBbCRxI
+sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlxIBAEAoE6bN
+mzhz6tw5cObBmhZ9dhTKs6jRo0ghEh36cWnSp1CjUpRJtSBVolUXzszaimvXrUAFXu05NmFNr2W/
+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
++Ol0TvNAH/RCn99DX/S7GxAAOw==
 
-Your Name.__________________________
-Address.__________________________
-___________________________
-Phone .___________________________
-Amount Defrauded.__________________________
-Country._______________________
-Send a copy of your response with the PAYMENT CODE
-NUMBER(ACB/06654) to:
-
-NAME: MR.KEN OSAZUWA
-SCAMMED VICTIM/REF/PAYMENTS CODE:
-ECB/06654 $800,000.00 USD
-
-Email:ecompensaton.org@gncn.net=20
-
-CONTACT THE PUBLIC RELATIONS OFFICER VIA EMAIL:compensaton.org@gncn.net=20
-
-Yours Faithfully,
-Mrs. Doris Mike
-PUBLIC RELATIONS OFFICER
-Copy right 2010GI=
+------=vsv117_8761_355374330.441955--
