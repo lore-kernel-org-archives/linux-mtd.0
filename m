@@ -1,12 +1,17 @@
-From: Sukumar Ghorai <s-ghorai@ti.com>
-To: linux-omap@vger.kernel.org
-Subject: [PATCH RESEND v8 6/7] omap3: nand: ecc layout select from board file
-Date: Wed, 19 Jan 2011 18:55:02 +0530
-Message-Id: <1295443503-14515-7-git-send-email-s-ghorai@ti.com>
-In-Reply-To: <1295443503-14515-1-git-send-email-s-ghorai@ti.com>
-References: <1295443503-14515-1-git-send-email-s-ghorai@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Sukumar Ghorai <s-ghorai@ti.com>
+Received: from edge.colpos.mx ([38.98.245.76])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PfcNH-0002jv-Ib
+	for linux-mtd@lists.infradead.org; Wed, 19 Jan 2011 18:03:16 +0000
+From: Sonia Rojas Chavez <xsony@colpos.mx>
+Date: Wed, 19 Jan 2011 11:56:36 -0600
+Subject: CONTACT THE PUBLIC RELATIONS OFFICER VIA
+	EMAIL:compensaton.org@gncn.net
+Message-ID: <962248286EF52A4B8027947BF43317700282B839C6ED@exchange>
+Content-Language: es-MX
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+To: Undisclosed recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,117 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes it possible to select sw or hw (different layout options)
-ecc scheme supported by omap nand driver.
 
-Signed-off-by: Vimal Singh <vimalsingh@ti.com>
-Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
----
- arch/arm/mach-omap2/board-flash.c      |    1 +
- arch/arm/plat-omap/include/plat/gpmc.h |    6 ++++++
- arch/arm/plat-omap/include/plat/nand.h |    2 ++
- drivers/mtd/nand/omap2.c               |   26 +++++++++++---------------
- 4 files changed, 20 insertions(+), 15 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/board-flash.c b/arch/arm/mach-omap2/board-flash.c
-index 1964509..a768198 100644
---- a/arch/arm/mach-omap2/board-flash.c
-+++ b/arch/arm/mach-omap2/board-flash.c
-@@ -148,6 +148,7 @@ __init board_nand_init(struct mtd_partition *nand_parts,
- 	board_nand_data.nr_parts	= nr_parts;
- 	board_nand_data.devsize		= nand_type;
- 
-+	board_nand_data.ecc_opt = OMAP_ECC_HAMMING_CODE_DEFAULT;
- 	board_nand_data.gpmc_irq = OMAP_GPMC_IRQ_BASE + cs;
- 	gpmc_nand_init(&board_nand_data);
- }
-diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
-index 1b4a095..4626e7a 100644
---- a/arch/arm/plat-omap/include/plat/gpmc.h
-+++ b/arch/arm/plat-omap/include/plat/gpmc.h
-@@ -86,6 +86,12 @@
- #define PREFETCH_FIFOTHRESHOLD_MAX	0x40
- #define PREFETCH_FIFOTHRESHOLD(val)	((val) << 8)
- 
-+enum omap_ecc {
-+		/* 1-bit ecc: stored at end of spare area */
-+	OMAP_ECC_HAMMING_CODE_DEFAULT = 0, /* Default, s/w method */
-+	OMAP_ECC_HAMMING_CODE_HW, /* gpmc to detect the error */
-+};
-+
- /*
-  * Note that all values in this struct are in nanoseconds except sync_clk
-  * (which is in picoseconds), while the register values are in gpmc_fck cycles.
-diff --git a/arch/arm/plat-omap/include/plat/nand.h b/arch/arm/plat-omap/include/plat/nand.h
-index ae5e053..d86d1ec 100644
---- a/arch/arm/plat-omap/include/plat/nand.h
-+++ b/arch/arm/plat-omap/include/plat/nand.h
-@@ -8,6 +8,7 @@
-  * published by the Free Software Foundation.
-  */
- 
-+#include <plat/gpmc.h>
- #include <linux/mtd/partitions.h>
- 
- enum nand_io {
-@@ -31,6 +32,7 @@ struct omap_nand_platform_data {
- 	enum nand_io		xfer_type;
- 	unsigned long		phys_base;
- 	int			devsize;
-+	enum omap_ecc           ecc_opt;
- };
- 
- /* minimum size for IO mapping */
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index f1648fd..6d4a42e 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -626,8 +626,6 @@ static int omap_verify_buf(struct mtd_info *mtd, const u_char * buf, int len)
- 	return 0;
- }
- 
--#ifdef CONFIG_MTD_NAND_OMAP_HWECC
--
- /**
-  * gen_true_ecc - This function will generate true ECC value
-  * @ecc_buf: buffer to store ecc code
-@@ -847,8 +845,6 @@ static void omap_enable_hwecc(struct mtd_info *mtd, int mode)
- 	gpmc_enable_hwecc(info->gpmc_cs, mode, dev_width, info->nand.ecc.size);
- }
- 
--#endif
--
- /**
-  * omap_wait - wait until the command is done
-  * @mtd: MTD device structure
-@@ -1038,17 +1034,17 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 
- 	info->nand.verify_buf = omap_verify_buf;
- 
--#ifdef CONFIG_MTD_NAND_OMAP_HWECC
--	info->nand.ecc.bytes		= 3;
--	info->nand.ecc.size		= 512;
--	info->nand.ecc.calculate	= omap_calculate_ecc;
--	info->nand.ecc.hwctl		= omap_enable_hwecc;
--	info->nand.ecc.correct		= omap_correct_data;
--	info->nand.ecc.mode		= NAND_ECC_HW;
--
--#else
--	info->nand.ecc.mode = NAND_ECC_SOFT;
--#endif
-+	/* selsect the ecc type */
-+	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_DEFAULT)
-+		info->nand.ecc.mode = NAND_ECC_SOFT;
-+	else if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW) {
-+		info->nand.ecc.bytes            = 3;
-+		info->nand.ecc.size             = 512;
-+		info->nand.ecc.calculate        = omap_calculate_ecc;
-+		info->nand.ecc.hwctl            = omap_enable_hwecc;
-+		info->nand.ecc.correct          = omap_correct_data;
-+		info->nand.ecc.mode             = NAND_ECC_HW;
-+	}
- 
- 	/* DIP switches on some boards change between 8 and 16 bit
- 	 * bus widths for flash.  Try the other width if the first try fails.
--- 
-1.7.0.4
+
+ATLANTCI CITY BANK PLC 2011 SCAM VICTIMS COMPENSATION PAYMENT.
+YOUR REF/PAYMENTS CODE: ACB/06654 FOR $800,000.00 USD ONLY.
+
+This is to bring to your notice that our bank (ATLANTCI CITY BANK PLC) has =
+been
+delegated by the UNITED NATIONS in Conjunction with HSBC Bank Malaysia to
+pay victims of scam $800,000.00 (Eight Hundred Thousand Dollars Only). For
+verification you are to view the following link.
+
+http://www.un.org/News/Press/docs/2003/ik344.doc.htm
+You are expected to send the following informations for remittance. Do
+ensure they are listed correctly.
+
+Your Name.__________________________
+Address.__________________________
+___________________________
+Phone .___________________________
+Amount Defrauded.__________________________
+Country._______________________
+Send a copy of your response with the PAYMENT CODE
+NUMBER(ACB/06654) to:
+
+NAME: MR.KEN OSAZUWA
+SCAMMED VICTIM/REF/PAYMENTS CODE:
+ECB/06654 $800,000.00 USD
+
+Email:ecompensaton.org@gncn.net=20
+
+CONTACT THE PUBLIC RELATIONS OFFICER VIA EMAIL:compensaton.org@gncn.net=20
+
+Yours Faithfully,
+Mrs. Doris Mike
+PUBLIC RELATIONS OFFICER
+Copy right 2010GI=
