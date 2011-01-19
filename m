@@ -1,24 +1,15 @@
-Received: from smtp.scorch.co.nz ([27.110.127.199] helo=scorch.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PfFZy-0007la-Do
-	for linux-mtd@lists.infradead.org; Tue, 18 Jan 2011 17:42:55 +0000
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 1/2] mtd: Add nand_base feature to align subpage read
-	buffers
-Date: Wed, 19 Jan 2011 06:42:28 +1300
-References: <1294277942-1252-1-git-send-email-cdhmanning@gmail.com>
-	<1294277942-1252-2-git-send-email-cdhmanning@gmail.com>
-	<1295338423.2470.54.camel@koala>
-In-Reply-To: <1295338423.2470.54.camel@koala>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <201101190642.29009.manningc2@actrix.gen.nz>
-Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
-	Charles Manning <cdhmanning@gmail.com>
+Received: from www.wytron.com.tw ([211.75.82.101])
+	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PfOwB-0006VT-RQ
+	for linux-mtd@lists.infradead.org; Wed, 19 Jan 2011 03:42:24 +0000
+From: Thomas Chou <thomas@wytron.com.tw>
+To: Artem Bityutskiy <dedekind1@gmail.com>,
+	Grant Likely <grant.likely@secretlab.ca>
+Subject: [PATCH] mtd/of: allow MTD_OF_PARTS and MTD_PHYSMAP_OF config to others
+Date: Wed, 19 Jan 2011 11:43:59 +0800
+Message-Id: <1295408639-14742-1-git-send-email-thomas@wytron.com.tw>
+Cc: devicetree-discuss@lists.ozlabs.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Thomas Chou <thomas@wytron.com.tw>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,125 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 18 January 2011 21:13:43 Artem Bityutskiy wrote:
-> Hi,
->
-> would it please be possible improve comments and the commit message and
-> make them explain better which problem the patch solves, what is the
-> problem with the current code, how exactly you solve the problem, and
-> why your solution is the best among other alternative solutions?
->
-> I think the below commit messages is too short and does not explain
-> this.
+As devicetree support is added to more arch, these config should
+be allowed to other arch.
 
-OK. I will resubmit this done a different way. The patch I submitted does not 
-work as generally as it should.
+Signed-off-by: Thomas Chou <thomas@wytron.com.tw>
+---
+ drivers/mtd/Kconfig      |    2 +-
+ drivers/mtd/maps/Kconfig |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-
->
-> On Thu, 2011-01-06 at 14:39 +1300, Charles Manning wrote:
-> > Some nand controllers (eg. omap2) need to have their buffers u32 aligned
-> > to use high speed transfer mechanisms.
-> >
-> > This commit provides a way to plug in an alignment function and provides
-> > a 32-bit algnment function.
-> >
-> > Signed-off-by: Charles Manning <cdhmanning@gmail.com>
-> > ---
-> >  drivers/mtd/nand/nand_base.c |   22 +++++++++++++++++++++-
-> >  include/linux/mtd/nand.h     |    5 +++--
-> >  2 files changed, 24 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index 1f75a1b..e8c2432 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -1156,6 +1156,22 @@ static int nand_read_page_swecc(struct mtd_info
-> > *mtd, struct nand_chip *chip, }
-> >
-> >  /**
-> > + * nand_align_subpage32 - function to align subpage read to 32-bits
-> > + * @mtd:	mtd info structure
-> > + * @buf:	pointer to pointer of buffer that needs to be aligned
-> > + * @len:	pointer to length that needs to be aligned.
-> > + */
-> > +
->
-> Why blank line here?
->
-> > +void nand_align_subpage32(uint8_t **buf, int *len)
-> > +{
-> > +	int diff = (int)(*buf) & 3;
-> > +	*buf =  *buf - diff;
->
-> It is really not obvious that this buffer does not come from user-space,
-> but it is some internal chip->buffers->databuf, so you actually can step
-> back. Cold you please put some comment about this?
->
-> > +	*len = *len + diff;
-> > +	*len = (*len + 3) & ~3;
-> > +}
-> > +EXPORT_SYMBOL(nand_align_subpage32);
->
-> In general, do you think it is a good thing that MTD NAND core always
-> reads to internal buffer first, then copies the data to the user buffer?
-> To me it looks like bad idea because we end up with unwanted overhead.
-> There is a benefit - if you read the same NAND page twice, you get the
-> data from the buffer the second time. But this does not work with
-> sub-pages, and I think this MTD core is wrong place for this. If someone
-> wants caching, he could use the Linux page cache as a layer on top of
-> MTD core, instead of this castrated one NAND page cache.
->
-> Anyway, what I want to say is that the current architecture is bad, IMO.
-> Namely, this "always read to own buffer" thing is bad. But your patch
-> relays on this, so if some one some day wants to improve MTD NAND core
-> in this respect, he'll end up with more job.
->
-> Is it possible to invent some solution which does not rely on the fact
-> that you deal with an internal buffer, but instead, assumes that you may
-> be dealing with a user buffer?
->
-> > +
-> > +/**
-> >   * nand_read_subpage - [REPLACABLE] software ecc based sub-page read
-> > function * @mtd:	mtd info structure
-> >   * @chip:	nand chip info structure
-> > @@ -1169,6 +1185,7 @@ static int nand_read_subpage(struct mtd_info *mtd,
-> > struct nand_chip *chip, int start_step, end_step, num_steps;
-> >  	uint32_t *eccpos = chip->ecc.layout->eccpos;
-> >  	uint8_t *p;
-> > +	uint8_t *b;
->
-> The current style prefers
-> uint8_t *p, *b;
-> for some reasons.
->
-> >  	int data_col_addr, i, gaps = 0;
-> >  	int datafrag_len, eccfrag_len, aligned_len, aligned_pos;
-> >  	int busw = (chip->options & NAND_BUSWIDTH_16) ? 2 : 1;
-> > @@ -1222,7 +1239,10 @@ static int nand_read_subpage(struct mtd_info *mtd,
-> > struct nand_chip *chip,
-> >
-> >  		chip->cmdfunc(mtd, NAND_CMD_RNDOUT,
-> >  					mtd->writesize + aligned_pos, -1);
-> > -		chip->read_buf(mtd, &chip->oob_poi[aligned_pos], aligned_len);
-> > +		b =  &chip->oob_poi[aligned_pos];
-> > +		if(chip->align_subpage)
-> > +			chip->align_subpage(&b, &aligned_len);
-> > +		chip->read_buf(mtd, b, aligned_len);
-> >  	}
-> >
-> >  	for (i = 0; i < eccfrag_len; i++)
-> > diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> > index 63e17d0..6ea6177 100644
-> > --- a/include/linux/mtd/nand.h
-> > +++ b/include/linux/mtd/nand.h
-> > @@ -474,6 +474,7 @@ struct nand_buffers {
-> >   *			additional error status checks (determine if errors are
-> >   *			correctable).
-> >   * @write_page:		[REPLACEABLE] High-level page write function
-> > + * @align_subpage:	[OPTIONAL] Aligns subpage read buffer.
-> >   */
->
-> Would it please be possible to add more comments to the code about this
-> align_subpage stuff, for people who try to read it in the future?
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 1e2cbf5..b1f7689 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -159,7 +159,7 @@ config MTD_AFS_PARTS
+ 
+ config MTD_OF_PARTS
+ 	tristate "Flash partition map based on OF description"
+-	depends on (MICROBLAZE || PPC_OF) && MTD_PARTITIONS
++	depends on OF && MTD_PARTITIONS
+ 	help
+ 	  This provides a partition parsing function which derives
+ 	  the partition map from the children of the flash node,
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index a0dd7bb..5d37d31 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -72,7 +72,7 @@ config MTD_PHYSMAP_BANKWIDTH
+ 
+ config MTD_PHYSMAP_OF
+ 	tristate "Flash device in physical memory map based on OF description"
+-	depends on (MICROBLAZE || PPC_OF) && (MTD_CFI || MTD_JEDECPROBE || MTD_ROM)
++	depends on OF && (MTD_CFI || MTD_JEDECPROBE || MTD_ROM)
+ 	help
+ 	  This provides a 'mapping' driver which allows the NOR Flash and
+ 	  ROM driver code to communicate with chips which are mapped
+-- 
+1.7.3.4
