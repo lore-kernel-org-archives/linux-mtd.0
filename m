@@ -1,14 +1,10 @@
-Received: from nm2.bullet.mail.sg1.yahoo.com ([115.178.12.224])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PffIH-0004qD-LR
-	for linux-mtd@lists.infradead.org; Wed, 19 Jan 2011 21:10:20 +0000
-Message-ID: <218573.76141.qm@smtp116.mail.sg1.yahoo.com>
-From: "zhan.com" <fishburne79342@yahoo.com.ph>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: =?GB2312?B?ODczMjEzNjU4Nzk2OTU2MzMwMsr9tLQ=?=
-Date: Thu, 20 Jan 2011 05:10:13 +0800
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=vsv117_8761_355374330.441955"
+From: Sukumar Ghorai <s-ghorai@ti.com>
+To: linux-omap@vger.kernel.org
+Subject: [PATCH] omap3: nand: bch ecc support added
+Date: Thu, 20 Jan 2011 15:48:00 +0530
+Message-Id: <1295518680-8737-1-git-send-email-s-ghorai@ti.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	Sukumar Ghorai <s-ghorai@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,127 +14,854 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+bch error correction (t=4 and t=8) for 512 bytes support added.
+Tested in omap-3630 es-1.1 silicon.
 
-This is a multi-part message in MIME format.
+Need to select the bch-ecc from board file. E.g.
+arch/arm/mach-omap2/board-flash.c: board_nand_init()
+board_nand_data.ecc_opt = OMAP_ECC_BCH4_CODE_HW
 
-------=vsv117_8761_355374330.441955
-Content-Type: text/plain;
-	charset="GB2312"
-Content-Transfer-Encoding: base64
+This patch has dependency on -
+http://www.mail-archive.com/linux-omap@vger.kernel.org/msg42658.html
 
-MjYzLmNvbQ0KOTQuMTc1LjIuMTE=
+Signed-off-by: Sukumar Ghorai <s-ghorai@ti.com>
+---
+ arch/arm/mach-omap2/gpmc.c             |  126 ++++++++---
+ arch/arm/plat-omap/include/plat/gpmc.h |    6 +-
+ drivers/mtd/nand/Makefile              |    1 +
+ drivers/mtd/nand/omap2.c               |  119 ++++++++--
+ drivers/mtd/nand/omap_bch_decoder.c    |  393 ++++++++++++++++++++++++++++++++
+ 5 files changed, 583 insertions(+), 62 deletions(-)
+ create mode 100644 drivers/mtd/nand/omap_bch_decoder.c
 
-------=vsv117_8761_355374330.441955
-Content-Type: image/gif;
-	name="Znwfcfw6894.gif"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="Znwfcfw6894.gif"
-
-R0lGODdhcwEQAXcAACwAAAAAcwEQAYcAAAAAADMAAGYAAJkAAMwAAP8AMwAAMzMAM2YAM5kAM8wA
-M/8AZgAAZjMAZmYAZpkAZswAZv8AmQAAmTMAmWYAmZkAmcwAmf8AzAAAzDMAzGYAzJkAzMwAzP8A
-/wAA/zMA/2YA/5kA/8wA//8zAAAzADMzAGYzAJkzAMwzAP8zMwAzMzMzM2YzM5kzM8wzM/8zZgAz
-ZjMzZmYzZpkzZswzZv8zmQAzmTMzmWYzmZkzmcwzmf8zzAAzzDMzzGYzzJkzzMwzzP8z/wAz/zMz
-/2Yz/5kz/8wz//9mAABmADNmAGZmAJlmAMxmAP9mMwBmMzNmM2ZmM5lmM8xmM/9mZgBmZjNmZmZm
-ZplmZsxmZv9mmQBmmTNmmWZmmZlmmcxmmf9mzABmzDNmzGZmzJlmzMxmzP9m/wBm/zNm/2Zm/5lm
-/8xm//+ZAACZADOZAGaZAJmZAMyZAP+ZMwCZMzOZM2aZM5mZM8yZM/+ZZgCZZjOZZmaZZpmZZsyZ
-Zv+ZmQCZmTOZmWaZmZmZmcyZmf+ZzACZzDOZzGaZzJmZzMyZzP+Z/wCZ/zOZ/2aZ/5mZ/8yZ///M
-AADMADPMAGbMAJnMAMzMAP/MMwDMMzPMM2bMM5nMM8zMM//MZgDMZjPMZmbMZpnMZszMZv/MmQDM
-mTPMmWbMmZnMmczMmf/MzADMzDPMzGbMzJnMzMzMzP/M/wDM/zPM/2bM/5nM/8zM////AAD/ADP/
-AGb/AJn/AMz/AP//MwD/MzP/M2b/M5n/M8z/M///ZgD/ZjP/Zmb/Zpn/Zsz/Zv//mQD/mTP/mWb/
-mZn/mcz/mf//zAD/zDP/zGb/zJn/zMz/zP///wD//zP//2b//5n//8z///8AAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAABWbmlGaXBVNTlsWTF5WnRhcXd2WDVNVTZtemVobTRwa3RkTk5WbkFk
-Q24NcVRkV2pTYjV1OERPSG5uMjc3c2pJamNvK2NkMmFDZG5UNHpnUCtRZTBWVnV4MmsI/wBbCRxI
-sKDBgwgTKlzIsKHDhxAjSpxIsaLFixgzatzIsaPHjyBDihxJsqTJkyhTqlzJsqXLlxIBAEAoE6bN
-mzhz6tw5cObBmhZ9dhTKs6jRo0ghEh36cWnSp1CjUpRJtSBVolUXzszaimvXrUAFXu05NmFNr2W/
-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
-+Ol0TvNAH/RCn99DX/S7GxAAOw==
-
-------=vsv117_8761_355374330.441955--
+diff --git a/arch/arm/mach-omap2/gpmc.c b/arch/arm/mach-omap2/gpmc.c
+index 29c9732..91cfdca 100644
+--- a/arch/arm/mach-omap2/gpmc.c
++++ b/arch/arm/mach-omap2/gpmc.c
+@@ -48,6 +48,7 @@
+ #define GPMC_ECC_CONTROL	0x1f8
+ #define GPMC_ECC_SIZE_CONFIG	0x1fc
+ #define GPMC_ECC1_RESULT        0x200
++#define GPMC_ECC_BCH_RESULT_0	0x240
+ 
+ #define GPMC_CS0_OFFSET		0x60
+ #define GPMC_CS_SIZE		0x30
+@@ -94,7 +95,6 @@ static struct resource	gpmc_mem_root;
+ static struct resource	gpmc_cs_mem[GPMC_CS_NUM];
+ static DEFINE_SPINLOCK(gpmc_mem_lock);
+ static unsigned int gpmc_cs_map;	/* flag for cs which are initialized */
+-static int gpmc_ecc_used = -EINVAL;	/* cs using ecc engine */
+ 
+ static void __iomem *gpmc_base;
+ 
+@@ -832,52 +832,77 @@ void omap3_gpmc_restore_context(void)
+ 
+ /**
+  * gpmc_enable_hwecc - enable hardware ecc functionality
++ * @ecc_type: ecc type e.g. Hamming, BCH
+  * @cs: chip select number
+  * @mode: read/write mode
+  * @dev_width: device bus width(1 for x16, 0 for x8)
+  * @ecc_size: bytes for which ECC will be generated
+  */
+-int gpmc_enable_hwecc(int cs, int mode, int dev_width, int ecc_size)
++int gpmc_enable_hwecc(int ecc_type, int cs, int mode,
++			int dev_width, int ecc_size)
+ {
+-	unsigned int val;
+-
+-	/* check if ecc module is in used */
+-	if (gpmc_ecc_used != -EINVAL)
+-		return -EINVAL;
+-
+-	gpmc_ecc_used = cs;
+-
+-	/* clear ecc and enable bits */
+-	val = ((0x00000001<<8) | 0x00000001);
+-	gpmc_write_reg(GPMC_ECC_CONTROL, val);
+-
+-	/* program ecc and result sizes */
+-	val = ((((ecc_size >> 1) - 1) << 22) | (0x0000000F));
+-	gpmc_write_reg(GPMC_ECC_SIZE_CONFIG, val);
++	unsigned int bch_mod = 0, bch_wrapmode = 0, eccsize1 = 0, eccsize0 = 0;
++	unsigned int ecc_conf_val = 0, ecc_size_conf_val = 0;
+ 
+ 	switch (mode) {
+ 	case GPMC_ECC_READ:
+-		gpmc_write_reg(GPMC_ECC_CONTROL, 0x101);
++		if (ecc_type == OMAP_ECC_BCH4_CODE_HW) {
++			eccsize1 = 0xD; eccsize0 = 0x48;
++			bch_mod = 0;
++			bch_wrapmode = 0x09;
++		} else if (ecc_type == OMAP_ECC_BCH8_CODE_HW) {
++			eccsize1 = 0x1A; eccsize0 = 0x18;
++			bch_mod = 1;
++			bch_wrapmode = 0x04;
++		} else
++			eccsize1 = ((ecc_size >> 1) - 1) << 22;
+ 		break;
++
+ 	case GPMC_ECC_READSYN:
+-		 gpmc_write_reg(GPMC_ECC_CONTROL, 0x100);
+ 		break;
++
+ 	case GPMC_ECC_WRITE:
+-		gpmc_write_reg(GPMC_ECC_CONTROL, 0x101);
++		if (ecc_type == OMAP_ECC_BCH4_CODE_HW) {
++			eccsize1 = 0x20; eccsize0 = 0x00;
++			bch_mod = 0;
++			bch_wrapmode = 0x06;
++		} else if (ecc_type == OMAP_ECC_BCH8_CODE_HW) {
++			eccsize1 = 0x20; eccsize0 = 0x00;
++			bch_mod = 1;
++			bch_wrapmode = 0x06;
++		} else
++			eccsize1 = ((ecc_size >> 1) - 1) << 22;
+ 		break;
++
+ 	default:
+ 		printk(KERN_INFO "Error: Unrecognized Mode[%d]!\n", mode);
+ 		break;
+ 	}
+ 
+-	/* (ECC 16 or 8 bit col) | ( CS  )  | ECC Enable */
+-	val = (dev_width << 7) | (cs << 1) | (0x1);
+-	gpmc_write_reg(GPMC_ECC_CONFIG, val);
++	/* clear ecc and enable bits */
++	if ((ecc_type == OMAP_ECC_BCH4_CODE_HW) ||
++		(ecc_type == OMAP_ECC_BCH8_CODE_HW)) {
++		gpmc_write_reg(GPMC_ECC_CONTROL, 0x00000001);
++		ecc_size_conf_val = (eccsize1 << 22) | (eccsize0 << 12);
++		ecc_conf_val = ((0x01 << 16) | (bch_mod << 12)
++			| (bch_wrapmode << 8) | (dev_width << 7)
++			| (0x03 << 4) | (cs << 1) | (0x1));
++	} else {
++		gpmc_write_reg(GPMC_ECC_CONTROL, 0x00000101);
++		ecc_size_conf_val = (eccsize1 << 22) | 0x0000000F;
++		ecc_conf_val = (dev_width << 7) | (cs << 1) | (0x1);
++	}
++
++	gpmc_write_reg(GPMC_ECC_SIZE_CONFIG, ecc_size_conf_val);
++	gpmc_write_reg(GPMC_ECC_CONFIG, ecc_conf_val);
++	gpmc_write_reg(GPMC_ECC_CONTROL, 0x00000101);
++
+ 	return 0;
+ }
+ 
+ /**
+  * gpmc_calculate_ecc - generate non-inverted ecc bytes
++ * @ecc_type: ecc type e.g. Hamming, BCH
+  * @cs: chip select number
+  * @dat: data pointer over which ecc is computed
+  * @ecc_code: ecc code buffer
+@@ -888,20 +913,51 @@ int gpmc_enable_hwecc(int cs, int mode, int dev_width, int ecc_size)
+  * an erased page will produce an ECC mismatch between generated and read
+  * ECC bytes that has to be dealt with separately.
+  */
+-int gpmc_calculate_ecc(int cs, const u_char *dat, u_char *ecc_code)
++int gpmc_calculate_ecc(int ecc_type, int cs,
++			const u_char *dat, u_char *ecc_code)
+ {
+-	unsigned int val = 0x0;
+-
+-	if (gpmc_ecc_used != cs)
+-		return -EINVAL;
++	unsigned int reg;
++	unsigned int val1 = 0x0, val2 = 0x0;
++	unsigned int val3 = 0x0, val4 = 0x0;
++	int i;
+ 
+-	/* read ecc result */
+-	val = gpmc_read_reg(GPMC_ECC1_RESULT);
+-	*ecc_code++ = val;          /* P128e, ..., P1e */
+-	*ecc_code++ = val >> 16;    /* P128o, ..., P1o */
+-	/* P2048o, P1024o, P512o, P256o, P2048e, P1024e, P512e, P256e */
+-	*ecc_code++ = ((val >> 8) & 0x0f) | ((val >> 20) & 0xf0);
++	if ((ecc_type == OMAP_ECC_BCH4_CODE_HW) ||
++		(ecc_type == OMAP_ECC_BCH8_CODE_HW)) {
++		for (i = 0; i < 4; i++) {
++			/*
++			 * Reading HW ECC_BCH_Results
++			 * 0x240-0x24C, 0x250-0x25C, 0x260-0x26C, 0x270-0x27C
++			 */
++			reg =  GPMC_ECC_BCH_RESULT_0 + (0x10 * i);
++			val1 = gpmc_read_reg(reg);
++			val2 = gpmc_read_reg(reg + 4);
++			if (ecc_type == OMAP_ECC_BCH8_CODE_HW) {
++				val3 = gpmc_read_reg(reg + 8);
++				val4 = gpmc_read_reg(reg + 12);
++
++				*ecc_code++ = (val4 & 0xFF);
++				*ecc_code++ = ((val3 >> 24) & 0xFF);
++				*ecc_code++ = ((val3 >> 16) & 0xFF);
++				*ecc_code++ = ((val3 >> 8) & 0xFF);
++				*ecc_code++ = (val3 & 0xFF);
++				*ecc_code++ = ((val2 >> 24) & 0xFF);
++			}
++			*ecc_code++ = ((val2 >> 16) & 0xFF);
++			*ecc_code++ = ((val2 >> 8) & 0xFF);
++			*ecc_code++ = (val2 & 0xFF);
++			*ecc_code++ = ((val1 >> 24) & 0xFF);
++			*ecc_code++ = ((val1 >> 16) & 0xFF);
++			*ecc_code++ = ((val1 >> 8) & 0xFF);
++			*ecc_code++ = (val1 & 0xFF);
++		}
++	} else {
++		/* read ecc result */
++		val1 = gpmc_read_reg(GPMC_ECC1_RESULT);
++		*ecc_code++ = val1;          /* P128e, ..., P1e */
++		*ecc_code++ = val1 >> 16;    /* P128o, ..., P1o */
++		/* P2048o, P1024o, P512o, P256o, P2048e, P1024e, P512e, P256e */
++		*ecc_code++ = ((val1 >> 8) & 0x0f) | ((val1 >> 20) & 0xf0);
++	}
+ 
+-	gpmc_ecc_used = -EINVAL;
+ 	return 0;
+ }
+diff --git a/arch/arm/plat-omap/include/plat/gpmc.h b/arch/arm/plat-omap/include/plat/gpmc.h
+index 49aea09..838c185 100644
+--- a/arch/arm/plat-omap/include/plat/gpmc.h
++++ b/arch/arm/plat-omap/include/plat/gpmc.h
+@@ -92,6 +92,8 @@ enum omap_ecc {
+ 	OMAP_ECC_HAMMING_CODE_HW, /* gpmc to detect the error */
+ 		/* 1-bit ecc: stored at begining of spare area as romcode */
+ 	OMAP_ECC_HAMMING_CODE_HW_ROMCODE, /* gpmc method & romcode layout */
++	OMAP_ECC_BCH4_CODE_HW, /* gpmc bch detection & s/w method correction */
++	OMAP_ECC_BCH8_CODE_HW, /* gpmc bch detection & s/w method correction */
+ };
+ 
+ /*
+@@ -156,6 +158,6 @@ extern int gpmc_cs_configure(int cs, int cmd, int wval);
+ extern int gpmc_nand_read(int cs, int cmd);
+ extern int gpmc_nand_write(int cs, int cmd, int wval);
+ 
+-int gpmc_enable_hwecc(int cs, int mode, int dev_width, int ecc_size);
+-int gpmc_calculate_ecc(int cs, const u_char *dat, u_char *ecc_code);
++int gpmc_enable_hwecc(int ecc, int cs, int mode, int dev_width, int ecc_size);
++int gpmc_calculate_ecc(int ecc, int cs, const u_char *dat, u_char *ecc_code);
+ #endif
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 8ad6fae..ae02711 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -29,6 +29,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
+ obj-$(CONFIG_MTD_NAND_ATMEL)		+= atmel_nand.o
+ obj-$(CONFIG_MTD_NAND_GPIO)		+= gpio.o
+ obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap2.o
++obj-$(CONFIG_MTD_NAND_OMAP2) 		+= omap_bch_decoder.o
+ obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
+ obj-$(CONFIG_MTD_NAND_PXA3xx)		+= pxa3xx_nand.o
+ obj-$(CONFIG_MTD_NAND_TMIO)		+= tmio_nand.o
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 4e33972..14c7dfe 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -98,6 +98,8 @@
+ static const char *part_probes[] = { "cmdlinepart", NULL };
+ #endif
+ 
++int decode_bch(int select_4_8, unsigned char *ecc, unsigned int *err_loc);
++
+ /* oob info generated runtime depending on ecc algorithm and layout selected */
+ static struct nand_ecclayout omap_oobinfo;
+ /* Define some generic bad / good block scan pattern which are used
+@@ -130,7 +132,8 @@ struct omap_nand_info {
+ 		OMAP_NAND_IO_WRITE,	/* write */
+ 	} iomode;
+ 	u_char				*buf;
+-	int					buf_len;
++	int				buf_len;
++	int				ecc_opt;
+ };
+ 
+ /**
+@@ -529,7 +532,6 @@ static void omap_read_buf_irq_pref(struct mtd_info *mtd, u_char *buf, int len)
+ 	struct omap_nand_info *info = container_of(mtd,
+ 						struct omap_nand_info, mtd);
+ 	int ret = 0;
+-
+ 	if (len <= mtd->oobsize) {
+ 		omap_read_buf_pref(mtd, buf, len);
+ 		return;
+@@ -803,6 +805,8 @@ static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 							mtd);
+ 	int blockCnt = 0, i = 0, ret = 0;
++	int j, eccsize, eccflag, count;
++	unsigned int err_loc[8];
+ 
+ 	/* Ex NAND_ECC_HW12_2048 */
+ 	if ((info->nand.ecc.mode == NAND_ECC_HW) &&
+@@ -811,16 +815,57 @@ static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
+ 	else
+ 		blockCnt = 1;
+ 
+-	for (i = 0; i < blockCnt; i++) {
+-		if (memcmp(read_ecc, calc_ecc, 3) != 0) {
+-			ret = omap_compare_ecc(read_ecc, calc_ecc, dat);
+-			if (ret < 0)
+-				return ret;
++	switch (info->ecc_opt) {
++	case OMAP_ECC_HAMMING_CODE_HW:
++	case OMAP_ECC_HAMMING_CODE_HW_ROMCODE:
++		for (i = 0; i < blockCnt; i++) {
++			if (memcmp(read_ecc, calc_ecc, 3) != 0) {
++				ret = omap_compare_ecc(read_ecc, calc_ecc, dat);
++				if (ret < 0)
++					return ret;
++			}
++			read_ecc += 3;
++			calc_ecc += 3;
++			dat      += 512;
+ 		}
+-		read_ecc += 3;
+-		calc_ecc += 3;
+-		dat      += 512;
++		break;
++
++	case OMAP_ECC_BCH4_CODE_HW:
++		eccsize = 7;
++		gpmc_calculate_ecc(info->ecc_opt, info->gpmc_cs, dat, calc_ecc);
++		for (i = 0; i < blockCnt; i++) {
++			/* check if any ecc error */
++			eccflag = 0;
++			for (j = 0; (j < eccsize) && (eccflag == 0); j++)
++				if (calc_ecc[j] != 0)
++					eccflag = 1;
++
++			if (eccflag == 1) {
++				eccflag = 0;
++				for (j = 0; (j < eccsize) &&
++						(eccflag == 0); j++)
++					if (read_ecc[j] != 0xFF)
++						eccflag = 1;
++			}
++
++			count = 0;
++			if (eccflag == 1)
++				count = decode_bch(0, calc_ecc, err_loc);
++
++			for (j = 0; j < count; j++) {
++				if (err_loc[j] < 4096)
++					dat[err_loc[j] >> 3] ^=
++							1 << (err_loc[j] & 7);
++				/* else, not interested to correct ecc */
++			}
++
++			calc_ecc = calc_ecc + eccsize;
++			read_ecc = read_ecc + eccsize;
++			dat += 512;
++		}
++		break;
+ 	}
++
+ 	return 0;
+ }
+ 
+@@ -841,7 +886,7 @@ static int omap_calculate_ecc(struct mtd_info *mtd, const u_char *dat,
+ {
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 							mtd);
+-	return gpmc_calculate_ecc(info->gpmc_cs, dat, ecc_code);
++	return gpmc_calculate_ecc(info->ecc_opt, info->gpmc_cs, dat, ecc_code);
+ }
+ 
+ /**
+@@ -856,7 +901,8 @@ static void omap_enable_hwecc(struct mtd_info *mtd, int mode)
+ 	struct nand_chip *chip = mtd->priv;
+ 	unsigned int dev_width = (chip->options & NAND_BUSWIDTH_16) ? 1 : 0;
+ 
+-	gpmc_enable_hwecc(info->gpmc_cs, mode, dev_width, info->nand.ecc.size);
++	gpmc_enable_hwecc(info->ecc_opt, info->gpmc_cs, mode,
++				dev_width, info->nand.ecc.size);
+ }
+ 
+ /**
+@@ -953,6 +999,7 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 	info->mtd.priv		= &info->nand;
+ 	info->mtd.name		= dev_name(&pdev->dev);
+ 	info->mtd.owner		= THIS_MODULE;
++	info->ecc_opt		= pdata->ecc_opt;
+ 
+ 	info->nand.options	= pdata->devsize;
+ 	info->nand.options	|= NAND_SKIP_BBTSCAN;
+@@ -991,7 +1038,6 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		info->nand.waitfunc = omap_wait;
+ 		info->nand.chip_delay = 50;
+ 	}
+-
+ 	switch (pdata->xfer_type) {
+ 	case NAND_OMAP_PREFETCH_POLLED:
+ 		info->nand.read_buf   = omap_read_buf_pref;
+@@ -1052,10 +1098,17 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 	/* selsect the ecc type */
+ 	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_DEFAULT)
+ 		info->nand.ecc.mode = NAND_ECC_SOFT;
+-	else if ((pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW) ||
+-		(pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE)) {
+-		info->nand.ecc.bytes            = 3;
+-		info->nand.ecc.size             = 512;
++	else {
++		if (pdata->ecc_opt == OMAP_ECC_BCH4_CODE_HW) {
++			info->nand.ecc.bytes    = 4*7;
++			info->nand.ecc.size     = 4*512;
++		} else if (pdata->ecc_opt == OMAP_ECC_BCH8_CODE_HW) {
++			info->nand.ecc.bytes    = 13;
++			info->nand.ecc.size     = 4*512;
++		} else {
++			info->nand.ecc.bytes    = 3;
++			info->nand.ecc.size     = 512;
++		}
+ 		info->nand.ecc.calculate        = omap_calculate_ecc;
+ 		info->nand.ecc.hwctl            = omap_enable_hwecc;
+ 		info->nand.ecc.correct          = omap_correct_data;
+@@ -1073,8 +1126,8 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	/* rom code layout */
+-	if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE) {
++	/* select ecc lyout */
++	if (info->nand.ecc.mode != NAND_ECC_SOFT) {
+ 
+ 		if (info->nand.options & NAND_BUSWIDTH_16)
+ 			offset = 2;
+@@ -1082,15 +1135,31 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 			offset = 1;
+ 			info->nand.badblock_pattern = &bb_descrip_flashbased;
+ 		}
+-		omap_oobinfo.eccbytes = 3 * (info->mtd.oobsize/16);
+-		for (i = 0; i < omap_oobinfo.eccbytes; i++)
+-			omap_oobinfo.eccpos[i] = i+offset;
+ 
+-		omap_oobinfo.oobfree->offset = offset + omap_oobinfo.eccbytes;
+-		omap_oobinfo.oobfree->length = info->mtd.oobsize -
+-					(offset + omap_oobinfo.eccbytes);
++		if (info->mtd.oobsize == 64)
++			omap_oobinfo.eccbytes = info->nand.ecc.bytes *
++						2048/info->nand.ecc.size;
++		else
++			omap_oobinfo.eccbytes = info->nand.ecc.bytes;
++
++		if (pdata->ecc_opt == OMAP_ECC_HAMMING_CODE_HW_ROMCODE) {
++			for (i = 0; i < omap_oobinfo.eccbytes; i++)
++				omap_oobinfo.eccpos[i] = i + offset;
++			omap_oobinfo.oobfree->offset =
++						offset + omap_oobinfo.eccbytes;
++			omap_oobinfo.oobfree->length = info->mtd.oobsize -
++						offset - omap_oobinfo.eccbytes;
++		} else {
+ 
++			omap_oobinfo.oobfree->offset = offset;
++			omap_oobinfo.oobfree->length = info->mtd.oobsize -
++						offset - omap_oobinfo.eccbytes;
++			offset = info->mtd.oobsize - omap_oobinfo.eccbytes;
++			for (i = 0; i < omap_oobinfo.eccbytes; i++)
++				omap_oobinfo.eccpos[i] = i + offset;
++		}
+ 		info->nand.ecc.layout = &omap_oobinfo;
++
+ 	}
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+diff --git a/drivers/mtd/nand/omap_bch_decoder.c b/drivers/mtd/nand/omap_bch_decoder.c
+new file mode 100644
+index 0000000..da42bda
+--- /dev/null
++++ b/drivers/mtd/nand/omap_bch_decoder.c
+@@ -0,0 +1,393 @@
++/*
++ * drivers/mtd/nand/omap_omap_bch_decoder.c
++ *
++ * Whole BCH ECC Decoder (Post hardware generated syndrome decoding)
++ *
++ * Copyright (c) 2007 Texas Instruments
++ *
++ * Author: Sukumar Ghorai <s-ghorai@ti.com
++ *		   Michael Fillinger <m-fillinger@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#undef DEBUG
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++
++#define mm		13
++#define kk_shorten	4096
++#define nn		8191	/* Length of codeword, n = 2**mm - 1 */
++
++#define PPP	0x201B	/* Primary Polynomial : x^13 + x^4 + x^3 + x + 1 */
++#define P	0x001B	/* With omitted x^13 */
++#define POLY	12	/* degree of the primary Polynomial less one */
++
++/**
++ * mpy_mod_gf - GALOIS field multiplier
++ * Input  : A(x), B(x)
++ * Output : A(x)*B(x) mod P(x)
++ */
++static unsigned int mpy_mod_gf(unsigned int a, unsigned int b)
++{
++	unsigned int R = 0;
++	unsigned int R1 = 0;
++	unsigned int k = 0;
++
++	for (k = 0; k < mm; k++) {
++
++		R = (R << 1) & 0x1FFE;
++		if (R1 == 1)
++			R ^= P;
++
++		if (((a >> (POLY - k)) & 1) == 1)
++			R ^= b;
++
++		if (k < POLY)
++			R1 = (R >> POLY) & 1;
++	}
++	return R;
++}
++
++/**
++ * chien - CHIEN search
++ *
++ * @location - Error location vector pointer
++ *
++ * Inputs  : ELP(z)
++ *	     No. of found errors
++ *	     Size of input codeword
++ * Outputs : Up to 8 locations
++ *	     No. of errors
++ */
++static int chien(unsigned int select_4_8, int err_nums,
++				unsigned int err[], unsigned int *location)
++{
++	int i, count; /* Number of dectected errors */
++	/* Contains accumulation of evaluation at x^i (i:1->8) */
++	unsigned int gammas[8] = {0};
++	unsigned int alpha;
++	unsigned int bit, ecc_bits;
++	unsigned int elp_sum;
++
++	ecc_bits = (select_4_8 == 0) ? 52 : 104;
++
++	/* Start evaluation at Alpha**8192 and decreasing */
++	for (i = 0; i < 8; i++)
++		gammas[i] = err[i];
++
++	count = 0;
++	for (i = 1; (i <= nn) && (count < err_nums); i++) {
++
++		/* Result of evaluation at root */
++		elp_sum = 1 ^ gammas[0] ^ gammas[1] ^
++				gammas[2] ^ gammas[3] ^
++				gammas[4] ^ gammas[5] ^
++				gammas[6] ^ gammas[7];
++
++		alpha = PPP >> 1;
++		gammas[0] = mpy_mod_gf(gammas[0], alpha);
++		alpha = mpy_mod_gf(alpha, (PPP >> 1));	/* x alphha^-2 */
++		gammas[1] = mpy_mod_gf(gammas[1], alpha);
++		alpha = mpy_mod_gf(alpha, (PPP >> 1));	/* x alphha^-2 */
++		gammas[2] = mpy_mod_gf(gammas[2], alpha);
++		alpha = mpy_mod_gf(alpha, (PPP >> 1));	/* x alphha^-3 */
++		gammas[3] = mpy_mod_gf(gammas[3], alpha);
++		alpha = mpy_mod_gf(alpha, (PPP >> 1));	/* x alphha^-4 */
++		gammas[4] = mpy_mod_gf(gammas[4], alpha);
++		alpha = mpy_mod_gf(alpha, (PPP >> 1));	/* x alphha^-5 */
++		gammas[5] = mpy_mod_gf(gammas[5], alpha);
++		alpha = mpy_mod_gf(alpha, (PPP >> 1));	/* x alphha^-6 */
++		gammas[6] = mpy_mod_gf(gammas[6], alpha);
++		alpha = mpy_mod_gf(alpha, (PPP >> 1));	/* x alphha^-7 */
++		gammas[7] = mpy_mod_gf(gammas[7], alpha);
++
++		if (elp_sum == 0) {
++			/* calculate bit position in main data area */
++			bit = ((i-1) & ~7)|(7-((i-1) & 7));
++			if (i >= 2 * ecc_bits)
++				location[count++] =
++					kk_shorten - (bit - 2 * ecc_bits) - 1;
++		}
++	}
++
++	/* Failure: No. of detected errors != No. or corrected errors */
++	if (count != err_nums) {
++		count = -1;
++		printk(KERN_ERR "BCH decoding failed\n");
++	}
++	for (i = 0; i < count; i++)
++		pr_debug("%d ", location[i]);
++
++	return count;
++}
++
++/* synd : 16 Syndromes
++ * return: gamaas - Coefficients to the error polynomial
++ * return: : Number of detected errors
++*/
++static unsigned int berlekamp(unsigned int select_4_8,
++			unsigned int synd[], unsigned int err[])
++{
++	int loop, iteration;
++	unsigned int LL = 0;		/* Detected errors */
++	unsigned int d = 0;	/* Distance between Syndromes and ELP[n](z) */
++	unsigned int invd = 0;		/* Inverse of d */
++	/* Intermediate ELP[n](z).
++	 * Final ELP[n](z) is Error Location Polynomial
++	 */
++	unsigned int gammas[16] = {0};
++	/* Intermediate normalized ELP[n](z) : D[n](z) */
++	unsigned int D[16] = {0};
++	/* Temporary value that holds an ELP[n](z) coefficient */
++	unsigned int next_gamma = 0;
++
++	int e = 0;
++	unsigned int sign = 0;
++	unsigned int u = 0;
++	unsigned int v = 0;
++	unsigned int C1 = 0, C2 = 0;
++	unsigned int ss = 0;
++	unsigned int tmp_v = 0, tmp_s = 0;
++	unsigned int tmp_poly;
++
++	/*-------------- Step 0 ------------------*/
++	for (loop = 0; loop < 16; loop++)
++		gammas[loop] = 0;
++	gammas[0] = 1;
++	D[1] = 1;
++
++	iteration = 0;
++	LL = 0;
++	while ((iteration < ((select_4_8+1)*2*4)) &&
++			(LL <= ((select_4_8+1)*4))) {
++
++		pr_debug("\nIteration.............%d\n", iteration);
++		d = 0;
++		/* Step: 0 */
++		for (loop = 0; loop <= LL; loop++) {
++			tmp_poly = mpy_mod_gf(
++					gammas[loop], synd[iteration - loop]);
++			d ^= tmp_poly;
++			pr_debug("%02d. s=0 LL=%x poly %x\n",
++					loop, LL, tmp_poly);
++		}
++
++		/* Step 1: 1 cycle only to perform inversion */
++		v = d << 1;
++		e = -1;
++		sign = 1;
++		ss = 0x2000;
++		invd = 0;
++		u = PPP;
++		for (loop = 0; (d != 0) && (loop <= (2 * POLY)); loop++) {
++			pr_debug("%02d. s=1 LL=%x poly NULL\n",
++						loop, LL);
++			C1 = (v >> 13) & 1;
++			C2 = C1 & sign;
++
++			sign ^= C2 ^ (e == 0);
++
++			tmp_v = v;
++			tmp_s = ss;
++
++			if (C1 == 1) {
++				v ^= u;
++				ss ^= invd;
++			}
++			v = (v << 1) & 0x3FFF;
++			if (C2 == 1) {
++				u = tmp_v;
++				invd = tmp_s;
++				e = -e;
++			}
++			invd >>= 1;
++			e--;
++		}
++
++		for (loop = 0; (d != 0) && (loop <= (iteration + 1)); loop++) {
++			/* Step 2
++			 * Interleaved with Step 3, if L<(n-k)
++			 * invd: Update of ELP[n](z) = ELP[n-1](z) - d.D[n-1](z)
++			 */
++
++			/* Holds value of ELP coefficient until precedent
++			 * value does not have to be used anymore
++			 */
++			tmp_poly = mpy_mod_gf(d, D[loop]);
++			pr_debug("%02d. s=2 LL=%x poly %x\n",
++						loop, LL, tmp_poly);
++
++			next_gamma = gammas[loop] ^ tmp_poly;
++			if ((2 * LL) < (iteration + 1)) {
++				/* Interleaving with Step 3
++				 * for parallelized update of ELP(z) and D(z)
++				 */
++			} else {
++				/* Update of ELP(z) only -> stay in Step 2 */
++				gammas[loop] = next_gamma;
++				if (loop == (iteration + 1)) {
++					/* to step 4 */
++					break;
++				}
++			}
++
++			/* Step 3
++			 * Always interleaved with Step 2 (case when L<(n-k))
++			 * Update of D[n-1](z) = ELP[n-1](z)/d
++			 */
++			D[loop] = mpy_mod_gf(gammas[loop], invd);
++			pr_debug("%02d. s=3 LL=%x poly %x\n",
++					loop, LL, D[loop]);
++
++			/* Can safely update ELP[n](z) */
++			gammas[loop] = next_gamma;
++
++			if (loop == (iteration + 1)) {
++				/* If update finished */
++				LL = iteration - LL + 1;
++				/* to step 4 */
++				break;
++			}
++			/* Else, interleaving to step 2*/
++		}
++
++		/* Step 4: Update D(z): i:0->L */
++		/* Final update of D[n](z) = D[n](z).z*/
++		for (loop = 0; loop < 15; loop++) /* Left Shift */
++			D[15 - loop] = D[14 - loop];
++
++		D[0] = 0;
++
++		iteration++;
++	} /* while */
++
++	/* Processing finished, copy ELP to final registers : 0->2t-1*/
++	for (loop = 0; loop < 8; loop++)
++		err[loop] = gammas[loop+1];
++
++	pr_debug("\n Err poly:");
++	for (loop = 0; loop < 8; loop++)
++		pr_debug("0x%x ", err[loop]);
++
++	return LL;
++}
++
++/*
++ * syndrome - Generate syndrome components from hw generate syndrome
++ * r(x) = c(x) + e(x)
++ * s(x) = c(x) mod g(x) + e(x) mod g(x) =  e(x) mod g(x)
++ * so receiver checks if the syndrome s(x) = r(x) mod g(x) is equal to zero.
++ * unsigned int s[16]; - Syndromes
++ */
++static void syndrome(unsigned int select_4_8,
++					unsigned char *ecc, unsigned int syn[])
++{
++	unsigned int k, l, t;
++	unsigned int alpha_bit, R_bit;
++	int ecc_pos, ecc_min;
++
++	/* 2t-1 = 15 (for t=8) minimal polynomials of the first 15 powers of a
++	 * primitive elemmants of GF(m); Even powers minimal polynomials are
++	 * duplicate of odd powers' minimal polynomials.
++	 * Odd powers of alpha (1 to 15)
++	 */
++	unsigned int pow_alpha[8] = {0x0002, 0x0008, 0x0020, 0x0080,
++				 0x0200, 0x0800, 0x001B, 0x006C};
++
++	pr_debug("\n ECC[0..n]: ");
++	for (k = 0; k < 13; k++)
++		pr_debug("0x%x ", ecc[k]);
++
++	if (select_4_8 == 0) {
++		t = 4;
++		ecc_pos = 55; /* bits(52-bits): 55->4 */
++		ecc_min = 4;
++	} else {
++		t = 8;
++		ecc_pos = 103; /* bits: 103->0 */
++		ecc_min = 0;
++	}
++
++	/* total numbber of syndrom to be used is 2t */
++	/* Step1: calculate the odd syndrome(s) */
++	R_bit = ((ecc[ecc_pos/8] >> (7 - ecc_pos%8)) & 1);
++	ecc_pos--;
++	for (k = 0; k < t; k++)
++		syn[2 * k] = R_bit;
++
++	while (ecc_pos >= ecc_min) {
++		R_bit = ((ecc[ecc_pos/8] >> (7 - ecc_pos%8)) & 1);
++		ecc_pos--;
++
++		for (k = 0; k < t; k++) {
++			/* Accumulate value of x^i at alpha^(2k+1) */
++			if (R_bit == 1)
++				syn[2*k] ^= pow_alpha[k];
++
++			/* Compute a**(2k+1), using LSFR */
++			for (l = 0; l < (2 * k + 1); l++) {
++				alpha_bit = (pow_alpha[k] >> POLY) & 1;
++				pow_alpha[k] = (pow_alpha[k] << 1) & 0x1FFF;
++				if (alpha_bit == 1)
++					pow_alpha[k] ^= P;
++			}
++		}
++	}
++
++	/* Step2: calculate the even syndrome(s)
++	 * Compute S(a), where a is an even power of alpha
++	 * Evenry even power of primitive element has the same minimal
++	 * polynomial as some odd power of elemets.
++	 * And based on S(a^2) = S^2(a)
++	 */
++	for (k = 0; k < t; k++)
++		syn[2*k+1] = mpy_mod_gf(syn[k], syn[k]);
++
++	pr_debug("\n Syndromes: ");
++	for (k = 0; k < 16; k++)
++		pr_debug("0x%x ", syn[k]);
++}
++
++/**
++ * decode_bch - BCH decoder for 4- and 8-bit error correction
++ *
++ * @ecc - ECC syndrome generated by hw BCH engine
++ * @err_loc - pointer to error location array
++ *
++ * This function does post sydrome generation (hw generated) decoding
++ * for:-
++ * Dimension of Galoise Field: m = 13
++ * Length of codeword: n = 2**m - 1
++ * Number of errors that can be corrected: 4- or 8-bits
++ * Length of information bit: kk = nn - rr
++ */
++int decode_bch(int select_4_8, unsigned char *ecc, unsigned int *err_loc)
++{
++	int no_of_err;
++	unsigned int syn[16] = {0,};	/* 16 Syndromes */
++	unsigned int err_poly[8] = {0,};
++	/* Coefficients to the error polynomial
++	 * ELP(x) = 1 + err0.x + err1.x^2 + ... + err7.x^8
++	 */
++
++	/* Decoting involes three steps
++	 * 1. Compute the syndrom from teh received codeword,
++	 * 2. Find the error location polynomial from a set of equations
++	 *     derived from the syndrome,
++	 * 3. Use the error location polynomial to identify errants bits,
++	 *
++	 * And correcttion done by bit flips using error locaiton and expected
++	 * to be outseide of this implementation.
++	 */
++	syndrome(select_4_8, ecc, syn);
++	no_of_err = berlekamp(select_4_8, syn, err_poly);
++	if (no_of_err <= (4 << select_4_8))
++		no_of_err = chien(select_4_8, no_of_err, err_poly, err_loc);
++
++	return no_of_err;
++}
++EXPORT_SYMBOL(decode_bch);
++
+-- 
+1.7.0.4
