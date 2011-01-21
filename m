@@ -1,18 +1,16 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from www.tglx.de ([62.245.132.106])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PgH2q-0001Fx-1S
-	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2011 13:28:52 +0000
-Received: by wyf22 with SMTP id 22so1782720wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 Jan 2011 05:28:49 -0800 (PST)
+	id 1PgI99-0000kD-A8
+	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2011 14:39:28 +0000
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] UBI: fix unaligned leb_start value
+From: John Ogness <john.ogness@linutronix.de>
+Date: Fri, 21 Jan 2011 15:39:02 +0100
+Message-ID: <87zkqu1fuh.fsf@vostro.fn.ogness.net>
 MIME-Version: 1.0
-Date: Fri, 21 Jan 2011 18:58:49 +0530
-Message-ID: <AANLkTin1xCqRhbisnK00-i_sZNKctB6GDtsQPjZh4YQu@mail.gmail.com>
-Subject: NAND with UBI - MTBF calculation
-From: Navaneethan P <pnavanee@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: navaneethan.p@aricent.com
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi linux-mtd users,
+From: John Ogness <john.ogness@linutronix.de>
 
-We are using the Samsung's NAND (128MB) in our system. We are running
-ubi over the NAND device.
-It is divided into 9 ubi volumes.
-Now, we would like to calculate the MTBF of the system (especially
-NAND with UBI).
-I request you to give the inputs in this regard.
+The wrong header size was used in calculating the data offset. The
+data offset should be VID header offset + VID header size (aligned to
+the minimum I/O unit).
 
-Thanks in advance.
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+This patch is against linux-next-20110121.
 
-Thanks and Regards,
-Navaneethan P
+Since the value is later aligned, this patch does not fix any real
+world problem. But it should be fixed nonetheless.
+
+ drivers/mtd/ubi/build.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index f49e49d..a4f47dd 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -737,7 +737,7 @@ static int io_init(struct ubi_device *ubi)
+ 	}
+ 
+ 	/* Similar for the data offset */
+-	ubi->leb_start = ubi->vid_hdr_offset + UBI_EC_HDR_SIZE;
++	ubi->leb_start = ubi->vid_hdr_offset + UBI_VID_HDR_SIZE;
+ 	ubi->leb_start = ALIGN(ubi->leb_start, ubi->min_io_size);
+ 
+ 	dbg_msg("vid_hdr_offset   %d", ubi->vid_hdr_offset);
+-- 
+1.5.6.5
