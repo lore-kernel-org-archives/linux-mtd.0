@@ -1,16 +1,16 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PgI99-0000kD-A8
-	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2011 14:39:28 +0000
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBI: fix unaligned leb_start value
-From: John Ogness <john.ogness@linutronix.de>
-Date: Fri, 21 Jan 2011 15:39:02 +0100
-Message-ID: <87zkqu1fuh.fsf@vostro.fn.ogness.net>
+Date: Fri, 21 Jan 2011 10:40:21 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Sukumar Ghorai <s-ghorai@ti.com>
+Subject: Re: [PATCH RESEND v8 3/7] omap: gpmc: enable irq mode in gpmc
+Message-ID: <20110121184020.GD11678@atomide.com>
+References: <1295443503-14515-1-git-send-email-s-ghorai@ti.com>
+	<1295443503-14515-4-git-send-email-s-ghorai@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
+Content-Disposition: inline
+In-Reply-To: <1295443503-14515-4-git-send-email-s-ghorai@ti.com>
+Cc: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: John Ogness <john.ogness@linutronix.de>
+* Sukumar Ghorai <s-ghorai@ti.com> [110119 05:24]:
+> add support the irq mode in GPMC.
+> gpmc_init() function move after omap_init_irq() as it has dependecy on irq.
+> 
+> diff --git a/arch/arm/mach-omap2/board-2430sdp.c b/arch/arm/mach-omap2/board-2430sdp.c
+> index e066177..527374f 100644
+> --- a/arch/arm/mach-omap2/board-2430sdp.c
+> +++ b/arch/arm/mach-omap2/board-2430sdp.c
+> @@ -146,6 +146,7 @@ static void __init omap_2430sdp_init_irq(void)
+>  	omap2_init_common_infrastructure();
+>  	omap2_init_common_devices(NULL, NULL);
+>  	omap_init_irq();
+> +	gpmc_init();
+>  }
+>  
+>  static struct twl4030_gpio_platform_data sdp2430_gpio_data = {
+> diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-omap2/board-3430sdp.c
+> index 8fb5f43..8304d16 100644
+> --- a/arch/arm/mach-omap2/board-3430sdp.c
+> +++ b/arch/arm/mach-omap2/board-3430sdp.c
+> @@ -335,6 +335,7 @@ static void __init omap_3430sdp_init_irq(void)
+>  	omap2_init_common_infrastructure();
+>  	omap2_init_common_devices(hyb18m512160af6_sdrc_params, NULL);
+>  	omap_init_irq();
+> +	gpmc_init();
+>  }
+...
 
-The wrong header size was used in calculating the data offset. The
-data offset should be VID header offset + VID header size (aligned to
-the minimum I/O unit).
+I think I've commented on this before, but why don't you make gpmc_init
+a subsys_initcall? There should be no reason to call this earlier.
+If something does not work because of that, then that issue must be
+fixed.
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
-This patch is against linux-next-20110121.
-
-Since the value is later aligned, this patch does not fix any real
-world problem. But it should be fixed nonetheless.
-
- drivers/mtd/ubi/build.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
-
-diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index f49e49d..a4f47dd 100644
---- a/drivers/mtd/ubi/build.c
-+++ b/drivers/mtd/ubi/build.c
-@@ -737,7 +737,7 @@ static int io_init(struct ubi_device *ubi)
- 	}
- 
- 	/* Similar for the data offset */
--	ubi->leb_start = ubi->vid_hdr_offset + UBI_EC_HDR_SIZE;
-+	ubi->leb_start = ubi->vid_hdr_offset + UBI_VID_HDR_SIZE;
- 	ubi->leb_start = ALIGN(ubi->leb_start, ubi->min_io_size);
- 
- 	dbg_msg("vid_hdr_offset   %d", ubi->vid_hdr_offset);
--- 
-1.5.6.5
+Tony
