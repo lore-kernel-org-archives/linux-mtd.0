@@ -1,19 +1,27 @@
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Kishore Kadiyala <kishorek.kadiyala@gmail.com>
-Date: Fri, 21 Jan 2011 13:54:05 +0530
-Subject: RE: [PATCH] omap3: nand: bch ecc support added
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B036A8DB174@dbde02.ent.ti.com>
-References: <1295518680-8737-1-git-send-email-s-ghorai@ti.com>
-	<AANLkTimsD1108ASF3H9Y8pjaTsfv0D33K11KOXDmypvJ@mail.gmail.com>
-In-Reply-To: <AANLkTimsD1108ASF3H9Y8pjaTsfv0D33K11KOXDmypvJ@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PgEvs-0005dc-Ht
+	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2011 11:13:34 +0000
+Received: by bwz5 with SMTP id 5so1386224bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 21 Jan 2011 03:13:24 -0800 (PST)
+Subject: Re: [PATCH v2 3/3] UBIFS: do not start the commit if there is
+	nothing to commit
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: John Ogness <john.ogness@linutronix.de>
+In-Reply-To: <87ei8apf8a.fsf@vostro.fn.ogness.net>
+References: <20101013163005.GB1889@silverbox.local>
+	<1295200104.2470.5.camel@koala> <4D33FB78.5010208@nokia.com>
+	<1295335817.2470.31.camel@koala> <1295336185.2470.33.camel@koala>
+	<87ei8apf8a.fsf@vostro.fn.ogness.net>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 21 Jan 2011 13:13:20 +0200
+Message-ID: <1295608400.3186.2.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +31,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 2011-01-18 at 13:29 +0100, John Ogness wrote:
+> Hi,
+> 
+> With these patches, there is no longer an erase for _every_
+> sync. However, there is still one erase that occurs when ubifs is
+> mounted. The following script will cause an erase with each sync.
+> 
+> while true; do
+>     mount -t ubifs ubi0_2 /tmp/mnt
+>     sync
+>     umount /tmp/mnt
+> done
 
+Hi, thanks, I need to look why there are still erases after mount.
+Probably this is actually part of mounting, not part of the first sync.
+But otherwise it sounds like you are satisfied, right? But I also have
+to do power cut tests emulation before really pushing this forward.
 
-> -----Original Message-----
-> From: Kishore Kadiyala [mailto:kishorek.kadiyala@gmail.com]
-> Sent: Friday, January 21, 2011 1:42 PM
-> To: Ghorai, Sukumar
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
-> kernel@lists.infradead.org
-> Subject: Re: [PATCH] omap3: nand: bch ecc support added
->=20
-> Ghorai,
->=20
-> <snip>
->=20
-> > =A0#ifdef CONFIG_MTD_PARTITIONS
-> > diff --git a/drivers/mtd/nand/omap_bch_decoder.c
-> b/drivers/mtd/nand/omap_bch_decoder.c
-> > new file mode 100644
-> > index 0000000..da42bda
-> > --- /dev/null
-> > +++ b/drivers/mtd/nand/omap_bch_decoder.c
-> > @@ -0,0 +1,393 @@
-> > +/*
-> > + * drivers/mtd/nand/omap_omap_bch_decoder.c
-> > + *
-> > + * Whole BCH ECC Decoder (Post hardware generated syndrome decoding)
-> > + *
-> > + * Copyright (c) 2007 Texas Instruments
-> > + *
-> > + * Author: Sukumar Ghorai <s-ghorai@ti.com
-> > + * =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0Michael Fillinger <m-fillinger@ti.co=
-m>
->=20
-> Vimal was the original author who has created this file
-> [No change in file name/directory hierarchy].
-> It's not fair to remove Vimal's author and add your's.
->=20
-> Instead you should have kept his name and added your's.
-[Ghorai] Ok.  I will do ..=20
-But can you send me working version of these? At least comipled version for=
- any kernel?
-
->=20
-> <snip>
->=20
-> Regards,
-> Kishore
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
