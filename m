@@ -1,23 +1,18 @@
-Received: from www.tglx.de ([62.245.132.106])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PgFAb-0000ry-7o
-	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2011 11:28:47 +0000
-To: dedekind1@gmail.com
-Subject: Re: [PATCH v2 3/3] UBIFS: do not start the commit if there is nothing
-	to commit
-From: John Ogness <john.ogness@linutronix.de>
-References: <20101013163005.GB1889@silverbox.local>
-	<1295200104.2470.5.camel@koala> <4D33FB78.5010208@nokia.com>
-	<1295335817.2470.31.camel@koala> <1295336185.2470.33.camel@koala>
-	<87ei8apf8a.fsf@vostro.fn.ogness.net> <1295608400.3186.2.camel@koala>
-Date: Fri, 21 Jan 2011 12:28:36 +0100
-In-Reply-To: <1295608400.3186.2.camel@koala> (Artem Bityutskiy's message of
-	"Fri\, 21 Jan 2011 13\:13\:20 +0200")
-Message-ID: <87d3nq338b.fsf@vostro.fn.ogness.net>
+	id 1PgH2q-0001Fx-1S
+	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2011 13:28:52 +0000
+Received: by wyf22 with SMTP id 22so1782720wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 21 Jan 2011 05:28:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
+Date: Fri, 21 Jan 2011 18:58:49 +0530
+Message-ID: <AANLkTin1xCqRhbisnK00-i_sZNKctB6GDtsQPjZh4YQu@mail.gmail.com>
+Subject: NAND with UBI - MTBF calculation
+From: Navaneethan P <pnavanee@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: navaneethan.p@aricent.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2011-01-21, Artem Bityutskiy wrote:
-> I need to look why there are still erases after mount.  Probably
-> this is actually part of mounting, not part of the first sync.  But
-> otherwise it sounds like you are satisfied, right?
+Hi linux-mtd users,
 
-Yes, it is definately a big improvement. Thanks!
+We are using the Samsung's NAND (128MB) in our system. We are running
+ubi over the NAND device.
+It is divided into 9 ubi volumes.
+Now, we would like to calculate the MTBF of the system (especially
+NAND with UBI).
+I request you to give the inputs in this regard.
 
-> But I also have to do power cut tests emulation before really
-> pushing this forward.
+Thanks in advance.
 
-OK.
-
-BTW: The return value description for the function nothing_to_commit()
-is backwards. It says that it returns 1 if there is something to
-commit, but actually it returns 1 if there is nothing to commit.
-
-John Ogness
+Thanks and Regards,
+Navaneethan P
