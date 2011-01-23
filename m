@@ -1,20 +1,20 @@
-From: "Ghorai, Sukumar" <s-ghorai@ti.com>
-To: Tony Lindgren <tony@atomide.com>
-Date: Sat, 22 Jan 2011 23:24:09 +0530
-Subject: RE: [PATCH RESEND v8 3/7] omap: gpmc: enable irq mode in gpmc
-Message-ID: <2A3DCF3DA181AD40BDE86A3150B27B6B036A8DB549@dbde02.ent.ti.com>
-References: <1295443503-14515-1-git-send-email-s-ghorai@ti.com>
-	<1295443503-14515-4-git-send-email-s-ghorai@ti.com>
-	<20110121184020.GD11678@atomide.com>
-In-Reply-To: <20110121184020.GD11678@atomide.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ph2LM-0000OH-6p
+	for linux-mtd@lists.infradead.org; Sun, 23 Jan 2011 15:59:08 +0000
+Received: by wyf22 with SMTP id 22so3307913wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 23 Jan 2011 07:59:05 -0800 (PST)
 MIME-Version: 1.0
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <AANLkTin1xCqRhbisnK00-i_sZNKctB6GDtsQPjZh4YQu@mail.gmail.com>
+References: <AANLkTin1xCqRhbisnK00-i_sZNKctB6GDtsQPjZh4YQu@mail.gmail.com>
+Date: Sun, 23 Jan 2011 10:59:05 -0500
+Message-ID: <AANLkTinZ_cTX7V1yFcejS3=+s7DVCYc8abeWQyXmGA+r@mail.gmail.com>
+Subject: Re: NAND with UBI - MTBF calculation
+From: Josh Boyer <jwboyer@gmail.com>
+To: Navaneethan P <pnavanee@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: navaneethan.p@aricent.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Jan 21, 2011 at 8:28 AM, Navaneethan P <pnavanee@gmail.com> wrote:
+> Hi linux-mtd users,
+>
+> We are using the Samsung's NAND (128MB) in our system. We are running
+> ubi over the NAND device.
+> It is divided into 9 ubi volumes.
+> Now, we would like to calculate the MTBF of the system (especially
+> NAND with UBI).
+> I request you to give the inputs in this regard.
 
+This isn't enough information to even start.  MTBF will depend on the
+exact part number, the frequency and size of writes (translated to
+erases), the filesystems in use on top of the volumes, etc.  Even the
+frequency of reads can matter, due to the read disturb issue found in
+NAND.
 
-> -----Original Message-----
-> From: Tony Lindgren [mailto:tony@atomide.com]
-> Sent: Saturday, January 22, 2011 12:10 AM
-> To: Ghorai, Sukumar
-> Cc: linux-omap@vger.kernel.org; linux-mtd@lists.infradead.org; linux-arm-
-> kernel@lists.infradead.org
-> Subject: Re: [PATCH RESEND v8 3/7] omap: gpmc: enable irq mode in gpmc
->=20
-> * Sukumar Ghorai <s-ghorai@ti.com> [110119 05:24]:
-> > add support the irq mode in GPMC.
-> > gpmc_init() function move after omap_init_irq() as it has dependecy on
-> irq.
-> >
-[..snip..]
-
-> >
-> >  static struct twl4030_gpio_platform_data sdp2430_gpio_data =3D {
-> > diff --git a/arch/arm/mach-omap2/board-3430sdp.c b/arch/arm/mach-
-> omap2/board-3430sdp.c
-> > index 8fb5f43..8304d16 100644
-> > --- a/arch/arm/mach-omap2/board-3430sdp.c
-> > +++ b/arch/arm/mach-omap2/board-3430sdp.c
-> > @@ -335,6 +335,7 @@ static void __init omap_3430sdp_init_irq(void)
-> >  	omap2_init_common_infrastructure();
-> >  	omap2_init_common_devices(hyb18m512160af6_sdrc_params, NULL);
-> >  	omap_init_irq();
-> > +	gpmc_init();
-> >  }
-> ...
->=20
-> I think I've commented on this before, but why don't you make gpmc_init
-> a subsys_initcall? There should be no reason to call this earlier.
-> If something does not work because of that, then that issue must be
-> fixed.
-
-[Ghorai] You suggested the same in previous v5 and v6; and I mentioned=20
-the issues [1] that - nand_init()called before subsys_initcall(gpmc_init);
-Let me know if I am missing anything again.
-=20
-[1] https://patchwork.kernel.org/patch/212452/
-[2] https://patchwork.kernel.org/patch/359152/
-
-
->=20
-> Tony
+josh
