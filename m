@@ -1,13 +1,32 @@
-Received: from mail.de.keymile.com ([195.8.104.1])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PhPY4-0000CK-K0
-	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2011 16:45:49 +0000
-From: Holger Brunck <holger.brunck@keymile.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: adapt writebufsize calculation for concat
-Date: Mon, 24 Jan 2011 17:45:42 +0100
-Message-Id: <1295887542-22785-1-git-send-email-holger.brunck@keymile.com>
-Cc: Holger Brunck <holger.brunck@keymile.com>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PhQaq-0000sT-Ex
+	for linux-mtd@lists.infradead.org; Mon, 24 Jan 2011 17:52:45 +0000
+Received: by iyj21 with SMTP id 21so4354930iyj.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Jan 2011 09:52:42 -0800 (PST)
+MIME-Version: 1.0
+Sender: glikely@secretlab.ca
+In-Reply-To: <4D3D9FA6.3050900@bvs-tech.com>
+References: <327178.68946.qm@web180303.mail.gq1.yahoo.com>
+	<4CEB89C6.3080603@bvs-tech.com>
+	<20101123093643.GC6156@jasper.tkos.co.il>
+	<4CEB8C39.1060801@bvs-tech.com>
+	<20101123094414.GD6156@jasper.tkos.co.il>
+	<4CEB8F7C.6070102@bvs-tech.com>
+	<20110121192819.GA32112@angua.secretlab.ca>
+	<4D3D6472.8030505@bvs-tech.com> <4D3D9FA6.3050900@bvs-tech.com>
+From: Grant Likely <grant.likely@secretlab.ca>
+Date: Mon, 24 Jan 2011 10:52:22 -0700
+Message-ID: <AANLkTikDHbKt5q+o2LK89hHZ3EUeeYzmQVJj8jXgQ+pB@mail.gmail.com>
+Subject: Re: [PATCH 0/1] Renaming 'struct flash_platform_data' into 'struct
+	spi_flash_platform_data' in include/linux/spi/flash.h
+To: Alexis RODET <alexis.rodet@bvs-tech.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: David Brownell <david-b@pacbell.net>,
+	spi-devel-general@lists.sourceforge.net,
+	Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +36,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If different chips with different writebufsize are concatenated,
-the writebufsize from the concat device has to be taken from
-the device with the largest writebuffer. This writebufsize
-is used later on in the UBI layer for the min I/O size.
+On Mon, Jan 24, 2011 at 8:49 AM, Alexis RODET <alexis.rodet@bvs-tech.com> wrote:
+> Hi again,
+>
+> In facts I don't know which git URL to clone for getting linux-next as patch base, can you tell me ?
+> I'm working on last stable release from git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-2.6-stable.git.
 
-Signed-off-by: Holger Brunck <holger.brunck@keymile.com>
----
- drivers/mtd/mtdconcat.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index b84dadb..951883d 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -733,6 +733,7 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	struct mtd_concat *concat;
- 	uint32_t max_erasesize, curr_erasesize;
- 	int num_erase_region;
-+	int max_writebufsize = 0;
- 
- 	printk(KERN_NOTICE "Concatenating MTD devices:\n");
- 	for (i = 0; i < num_devs; i++)
-@@ -759,7 +760,12 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	concat->mtd.size = subdev[0]->size;
- 	concat->mtd.erasesize = subdev[0]->erasesize;
- 	concat->mtd.writesize = subdev[0]->writesize;
--	concat->mtd.writebufsize = subdev[0]->writebufsize;
-+
-+	for (i = 0; i < num_devs; i++)
-+		if (max_writebufsize < subdev[i]->writebufsize)
-+			max_writebufsize = subdev[i]->writebufsize;
-+	concat->mtd.writebufsize = max_writebufsize;
-+
- 	concat->mtd.subpage_sft = subdev[0]->subpage_sft;
- 	concat->mtd.oobsize = subdev[0]->oobsize;
- 	concat->mtd.oobavail = subdev[0]->oobavail;
+Be warned, it is rebased every night.
+
+> I wonder also what to do if people keep committing new files with old structure name:
+> What should I put to make the define generate a "deprecated" warning ?
+
+The spi flash_platform_data structure is almost a complete subset of
+the arm one.  Rather than renaming everything, why not simply
+consolidate the structure definition?  Consolidating will have much
+lower impact.
+
+g.
+
 -- 
-1.7.0.5
+Grant Likely, B.Sc., P.Eng.
+Secret Lab Technologies Ltd.
