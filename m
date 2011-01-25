@@ -1,9 +1,9 @@
 Received: from 27.mail-out.ovh.net ([91.121.30.210])
 	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Phf7a-00074i-Ni
-	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2011 09:23:31 +0000
-Message-ID: <4D3E9683.5090906@bvs-tech.com>
-Date: Tue, 25 Jan 2011 10:23:15 +0100
+	id 1PhfOk-0007Aq-HH
+	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2011 09:41:15 +0000
+Message-ID: <4D3E9AA1.4020308@bvs-tech.com>
+Date: Tue, 25 Jan 2011 10:40:49 +0100
 From: Alexis RODET <alexis.rodet@bvs-tech.com>
 MIME-Version: 1.0
 To: Grant Likely <grant.likely@secretlab.ca>
@@ -19,7 +19,7 @@ References: <327178.68946.qm@web180303.mail.gq1.yahoo.com>
 	<4D3D6472.8030505@bvs-tech.com> <4D3D9FA6.3050900@bvs-tech.com>
 	<AANLkTikDHbKt5q+o2LK89hHZ3EUeeYzmQVJj8jXgQ+pB@mail.gmail.com>
 In-Reply-To: <AANLkTikDHbKt5q+o2LK89hHZ3EUeeYzmQVJj8jXgQ+pB@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="------------000404060002010001040609"
+Content-Type: multipart/mixed; boundary="------------050000090903090609070807"
 Cc: David Brownell <david-b@pacbell.net>,
 	spi-devel-general@lists.sourceforge.net,
 	Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
@@ -34,24 +34,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is a multi-part message in MIME format.
---------------000404060002010001040609
+--------------050000090903090609070807
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Le 24/01/2011 18:52, Grant Likely a écrit :
->
-> The spi flash_platform_data structure is almost a complete subset of
-> the arm one.  Rather than renaming everything, why not simply
-> consolidate the structure definition?  Consolidating will have much
-> lower impact.
-Then I should create a common flash.h file, let's tell include/linux/mtd/flash.h, and make both existing flash.h file point to it.
-This is actually an easy work.
-I'll do this.
+Hello,
 
-BR,
+Le 24/01/2011 18:52, Grant Likely a écrit :
+> On Mon, Jan 24, 2011 at 8:49 AM, Alexis RODET <alexis.rodet@bvs-tech.com> wrote:
+>> Hi again,
+>>
+>> In facts I don't know which git URL to clone for getting linux-next as patch base, can you tell me ?
+>> I'm working on last stable release from git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-2.6-stable.git.
+> git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+>
+> Be warned, it is rebased every night.
+>
+It seems to have been frozen for 4 days and to have become late behind git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git
+
 Alexis
 
---------------000404060002010001040609
+--------------050000090903090609070807
 Content-Type: text/x-vcard; charset=utf-8;
  name="alexis_rodet.vcf"
 Content-Transfer-Encoding: base64
@@ -64,4 +67,4 @@ O0ZSQU5DRQ0KZW1haWw7aW50ZXJuZXQ6YWxleGlzLnJvZGV0QGJ2cy10ZWNoLmNvbQ0KdGl0
 bGU6SGFyZHdhcmUgRW5naW5lZXINCnRlbDt3b3JrOiszMyA5IDUzIDkyIDE0IDQxDQp0ZWw7
 ZmF4OiszMyA5IDU4IDkyIDE0IDQxDQp4LW1vemlsbGEtaHRtbDpGQUxTRQ0KdXJsOmh0dHA6
 Ly93d3cuYnZzLXRlY2guY29tDQp2ZXJzaW9uOjIuMQ0KZW5kOnZjYXJkDQoNCg==
---------------000404060002010001040609--
+--------------050000090903090609070807--
