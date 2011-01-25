@@ -1,28 +1,29 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Phe9I-0006jl-QS
-	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2011 08:21:13 +0000
-Received: by fxm19 with SMTP id 19so5111039fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 25 Jan 2011 00:21:10 -0800 (PST)
-Subject: Re: [PATCH v2 3/3] UBIFS: do not start the commit if there is
-	nothing to commit
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Ogness <john.ogness@linutronix.de>
-In-Reply-To: <87d3nq338b.fsf@vostro.fn.ogness.net>
-References: <20101013163005.GB1889@silverbox.local>
-	<1295200104.2470.5.camel@koala> <4D33FB78.5010208@nokia.com>
-	<1295335817.2470.31.camel@koala> <1295336185.2470.33.camel@koala>
-	<87ei8apf8a.fsf@vostro.fn.ogness.net> <1295608400.3186.2.camel@koala>
-	<87d3nq338b.fsf@vostro.fn.ogness.net>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 25 Jan 2011 10:20:34 +0200
-Message-ID: <1295943634.2227.1.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	linux-mtd@lists.infradead.org, Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+Received: from 27.mail-out.ovh.net ([91.121.30.210])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Phf7a-00074i-Ni
+	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2011 09:23:31 +0000
+Message-ID: <4D3E9683.5090906@bvs-tech.com>
+Date: Tue, 25 Jan 2011 10:23:15 +0100
+From: Alexis RODET <alexis.rodet@bvs-tech.com>
+MIME-Version: 1.0
+To: Grant Likely <grant.likely@secretlab.ca>
+Subject: Re: [PATCH 0/1] Renaming 'struct flash_platform_data' into 'struct
+	spi_flash_platform_data' in include/linux/spi/flash.h
+References: <327178.68946.qm@web180303.mail.gq1.yahoo.com>
+	<4CEB89C6.3080603@bvs-tech.com>
+	<20101123093643.GC6156@jasper.tkos.co.il>
+	<4CEB8C39.1060801@bvs-tech.com>
+	<20101123094414.GD6156@jasper.tkos.co.il>
+	<4CEB8F7C.6070102@bvs-tech.com>
+	<20110121192819.GA32112@angua.secretlab.ca>
+	<4D3D6472.8030505@bvs-tech.com> <4D3D9FA6.3050900@bvs-tech.com>
+	<AANLkTikDHbKt5q+o2LK89hHZ3EUeeYzmQVJj8jXgQ+pB@mail.gmail.com>
+In-Reply-To: <AANLkTikDHbKt5q+o2LK89hHZ3EUeeYzmQVJj8jXgQ+pB@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="------------000404060002010001040609"
+Cc: David Brownell <david-b@pacbell.net>,
+	spi-devel-general@lists.sourceforge.net,
+	Baruch Siach <baruch@tkos.co.il>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +33,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-01-21 at 12:28 +0100, John Ogness wrote:
-> On 2011-01-21, Artem Bityutskiy wrote:
-> > I need to look why there are still erases after mount.  Probably
-> > this is actually part of mounting, not part of the first sync.  But
-> > otherwise it sounds like you are satisfied, right?
-> 
-> Yes, it is definately a big improvement. Thanks!
-> 
-> > But I also have to do power cut tests emulation before really
-> > pushing this forward.
+This is a multi-part message in MIME format.
+--------------000404060002010001040609
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The power cut simulation test is running.
+Le 24/01/2011 18:52, Grant Likely a écrit :
+>
+> The spi flash_platform_data structure is almost a complete subset of
+> the arm one.  Rather than renaming everything, why not simply
+> consolidate the structure definition?  Consolidating will have much
+> lower impact.
+Then I should create a common flash.h file, let's tell include/linux/mtd/flash.h, and make both existing flash.h file point to it.
+This is actually an easy work.
+I'll do this.
 
-> BTW: The return value description for the function nothing_to_commit()
-> is backwards. It says that it returns 1 if there is something to
-> commit, but actually it returns 1 if there is nothing to commit.
+BR,
+Alexis
 
-Amended, thanks. Also added:
+--------------000404060002010001040609
+Content-Type: text/x-vcard; charset=utf-8;
+ name="alexis_rodet.vcf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="alexis_rodet.vcf"
 
-Tested-by: John Ogness <john.ogness@linutronix.de>
-
-Thanks.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+YmVnaW46dmNhcmQNCmZuOkFsZXhpcyBST0RFVA0KbjpST0RFVDtBbGV4aXMNCm9yZzpCcmFp
+biBWaXNpb24gU3lzdGVtcw0KYWRyOjs7MzIgcnVlIGR1IEphdmVsb3Q7UEFSSVM7Ozc1MDEz
+O0ZSQU5DRQ0KZW1haWw7aW50ZXJuZXQ6YWxleGlzLnJvZGV0QGJ2cy10ZWNoLmNvbQ0KdGl0
+bGU6SGFyZHdhcmUgRW5naW5lZXINCnRlbDt3b3JrOiszMyA5IDUzIDkyIDE0IDQxDQp0ZWw7
+ZmF4OiszMyA5IDU4IDkyIDE0IDQxDQp4LW1vemlsbGEtaHRtbDpGQUxTRQ0KdXJsOmh0dHA6
+Ly93d3cuYnZzLXRlY2guY29tDQp2ZXJzaW9uOjIuMQ0KZW5kOnZjYXJkDQoNCg==
+--------------000404060002010001040609--
