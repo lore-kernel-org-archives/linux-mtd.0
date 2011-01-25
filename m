@@ -1,20 +1,16 @@
-Date: Tue, 25 Jan 2011 08:57:35 -0800
-From: Tony Lindgren <tony@atomide.com>
-To: "Ghorai, Sukumar" <s-ghorai@ti.com>
-Subject: Re: [PATCH RESEND v8 3/7] omap: gpmc: enable irq mode in gpmc
-Message-ID: <20110125165735.GL13589@atomide.com>
-References: <1295443503-14515-1-git-send-email-s-ghorai@ti.com>
-	<1295443503-14515-4-git-send-email-s-ghorai@ti.com>
-	<20110121184020.GD11678@atomide.com>
-	<2A3DCF3DA181AD40BDE86A3150B27B6B036A8DB549@dbde02.ent.ti.com>
+Received: from p02c12o144.mxlogic.net ([208.65.145.77])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Phn6n-0003Fi-BW
+	for linux-mtd@lists.infradead.org; Tue, 25 Jan 2011 17:55:13 +0000
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2A3DCF3DA181AD40BDE86A3150B27B6B036A8DB549@dbde02.ent.ti.com>
-Cc: "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Cannot see NAND flash in 2.6.36.1
+Date: Tue, 25 Jan 2011 11:56:02 -0600
+Message-ID: <9AC3F0E75060224C8BBC5BA2DDC8853A1F10CADE@EXV1.corp.adtran.com>
+From: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Ghorai, Sukumar <s-ghorai@ti.com> [110122 09:53]:
-> > 
-> > I think I've commented on this before, but why don't you make gpmc_init
-> > a subsys_initcall? There should be no reason to call this earlier.
-> > If something does not work because of that, then that issue must be
-> > fixed.
-> 
-> [Ghorai] You suggested the same in previous v5 and v6; and I mentioned 
-> the issues [1] that - nand_init()called before subsys_initcall(gpmc_init);
-> Let me know if I am missing anything again.
+I have pulled most of the Board support information from my working
+2.6.29 kernel to (at the time) the latest 2.6.36.1 kernel from
+Linux-MIPS.  In 2.6.29, nand_scan finds the flash as
 
-There should not be any need to call nand_init early either. We want
-to initialize as much as possible late so we have proper console
-error messages.
+NAND device: Manufacturer ID: 0x20, Chip ID: 0xf1 (ST Micro NAND 128MiB
+3,3V 8-bit)
 
-Tony
+However, the nand_get_flash_type fails to read _ANYTHING_ from the flash
+chip.
+
+What do I need to look for to fix this for my port?  I've gone through
+most of the nand_base.c and can find nothing that jumps right out there
+as being wrong.
+
+If you have any ideas, please pass it along to me.
+
+Thanks,
+Andy
