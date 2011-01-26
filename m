@@ -1,17 +1,21 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pi4BZ-0000bZ-PW
-	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2011 12:09:18 +0000
-Received: by iyj21 with SMTP id 21so302779iyj.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 26 Jan 2011 04:09:15 -0800 (PST)
+Received: from mail.de.keymile.com ([195.8.104.1])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pi6EV-0001ek-8U
+	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2011 14:20:28 +0000
+Received: from srvdehan1003.de.keymile.net (srvdehan1003.de.keymile.net
+	[10.9.1.108]) by mailrelay.de.keymile.net (8.12.2/8.12.2)
+	with ESMTP id p0QEFc06016649 for <linux-mtd@lists.infradead.org>;
+	Wed, 26 Jan 2011 15:15:38 +0100 (MET)
+Message-ID: <4D402DA7.8050101@keymile.com>
+Date: Wed, 26 Jan 2011 15:20:23 +0100
+From: Holger Brunck <holger.brunck@keymile.com>
 MIME-Version: 1.0
-Date: Wed, 26 Jan 2011 13:09:15 +0100
-Message-ID: <AANLkTikjt-=81o4dTo2+PKYrL4+N_ae02oNNYtuy0ekN@mail.gmail.com>
-Subject: mtd-utils bug in mkjffs2 : owner info not part of fs
-From: Arno Steffen <arno.steffen@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: UBIFS incompatibilities due to min_io_size adaptions?
+Content-Type: text/plain;
+	charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Andreas Huber <andreas.huber@keymile.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I use mkfs.jffs2 to generate a partition out of a directory tree (not
-the hole root-filesystem).
-It seems that the owner of the root point of this directory tree is always
-root:root, althouh it might have other owners.
+Hi all,
+we use UBI and UBIFS on NOR and NAND based systems and kernel 2.6.33. In the
+last days we applied the latest UBI and MTD patches for the min I/O size.
 
-Example
+Due to commit  a121f643993474548fe98144514c50dd4f3dbe76 UBI: use
+mtd->writebufsize to set minimal I/O unit size
+now the min I/O size is equal to the writebuffersize of the flash.
 
-mkfs.jffs2 -lnp -e 0x20000 -r /opt/rootfs/opt -o /mnt/hgfs/share/fs_opt.jffs2
+This caused incompatibilites in the UBIFS. We have an UBIFS on a board on a NOR
+flash created in the past without the patches. Now with a newer SW and a newer
+kernel which has the latest fixes we can't mount the old UBIFS anymore.
 
-In my NFS-rootfs /opt/rootfs/opt is owned by user but flashing the
-created jffs file will be mounted as owner root.
->From my point of view this is a bug, as it doesn't care about the real
-owner of this part of filetree.
+UBIFS error (pid 865): validate_sb: min. I/O unit mismatch: 8 in superblock, 64 real
+UBIFS error (pid 865): validate_sb: bad superblock, error 1
+mount: wrong fs type, bad option, bad superblock on ubi0:cfg,
+        missing codepage or other error
 
+If we reformate the UBIFS everything is ok, but we got a problem with the older
+SW image:
+UBIFS error (pid 865): validate_sb: min. I/O unit mismatch: 64 in
+superblock, 8 real
+UBIFS error (pid 865): validate_sb: bad superblock, error 1
+mount: wrong fs type, bad option, bad superblock on ubi0:cfg,
+        missing codepage or other error
 
-To make this situation more clean: My flash has 2 partitions
-/ and /opt
+Is there a way to solve this problem? I do not hope that the only solution is to
+remove these patch.
 
-And I also create two jffs2 files, one for each partition: root.jffs2
-and opt.jffs2
-
-If I mount /opt - the ownership of /opt is root, although it has been
-"user" in the tree I generated the jffs2 files from.
-
-As I am not familiar with internal design, I hope you can fix this bug.
+Any help is appreciated.
 
 Best regards
-Arno
+Holger Brunck
