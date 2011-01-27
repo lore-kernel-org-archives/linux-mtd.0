@@ -1,18 +1,31 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PiOUc-0007t8-2E
-	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2011 09:50:18 +0000
-Message-ID: <4D413FBC.4080403@nokia.com>
-Date: Thu, 27 Jan 2011 11:49:48 +0200
-From: Adrian Hunter <adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: Kyungmin Park <kmpark@infradead.org>,
-	Kyungmin Park <kyungmin.park@samsung.com>
-Subject: 4KiB page OneNAND OOB
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	"Tereshonkov Roman \(Nokia-D/Helsinki\)" <roman.tereshonkov@nokia.com>
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PiOdk-0007yK-TV
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2011 09:59:46 +0000
+Received: from epmmp2 (mailout4.samsung.com [203.254.224.34])
+	by mailout4.samsung.com
+	(Oracle Communications Messaging Exchange Server 7u4-19.01 64bit (built
+	Sep 7
+	2010)) with ESMTP id <0LFO00K1NEFGSSD0@mailout4.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 27 Jan 2011 18:59:40 +0900 (KST)
+Received: from TNRNDGASPAPP1.tn.corp.samsungelectronics.net ([165.213.149.150])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0LFO00E36EFHA6@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 27 Jan 2011 18:59:41 +0900 (KST)
+Date: Thu, 27 Jan 2011 18:59:40 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: RE: 4KiB page OneNAND OOB
+In-reply-to: <4D413FBC.4080403@nokia.com>
+To: 'Adrian Hunter' <adrian.hunter@nokia.com>,
+	'Kyungmin Park' <kmpark@infradead.org>
+Message-id: <0a2301cbbe08$ea2d8a60$be889f20$%park@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-language: ko
+Content-transfer-encoding: 7BIT
+References: <4D413FBC.4080403@nokia.com>
+Cc: 'linux-mtd Mailing List' <linux-mtd@lists.infradead.org>,
+	"'Tereshonkov Roman \(Nokia-D/Helsinki\)'" <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,6 +34,24 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+Hi Adrian,
+
+Umm strange, I also got the 4KiB page OneNAND, but it has 4 bytes free from
+2 at each spare area, So current code is right. 
+
+8011h 10022h Managed by internal ECC logic
+8012h 10024h Managed by internal ECC logic
+
+Thank you,
+Kyungmin Park
+
+-----Original Message-----
+From: Adrian Hunter [mailto:adrian.hunter@nokia.com] 
+Sent: Thursday, January 27, 2011 6:50 PM
+To: Kyungmin Park; Kyungmin Park
+Cc: linux-mtd Mailing List; Tereshonkov Roman (Nokia-D/Helsinki)
+Subject: 4KiB page OneNAND OOB
 
 Hi
 
