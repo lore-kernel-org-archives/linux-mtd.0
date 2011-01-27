@@ -1,24 +1,18 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pi7nB-0002Rm-D4
-	for linux-mtd@lists.infradead.org; Wed, 26 Jan 2011 16:00:22 +0000
-Received: by bwz5 with SMTP id 5so1531196bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 26 Jan 2011 08:00:13 -0800 (PST)
-Subject: Re: UBIFS incompatibilities due to min_io_size adaptions?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Holger Brunck <holger.brunck@keymile.com>
-In-Reply-To: <4D402DA7.8050101@keymile.com>
-References: <4D402DA7.8050101@keymile.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 26 Jan 2011 17:49:51 +0200
-Message-ID: <1296056991.2606.10.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Andreas Huber <andreas.huber@keymile.com>,
-	Anatolij Gustschin <agust@denx.de>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	id 1PiOUc-0007t8-2E
+	for linux-mtd@lists.infradead.org; Thu, 27 Jan 2011 09:50:18 +0000
+Message-ID: <4D413FBC.4080403@nokia.com>
+Date: Thu, 27 Jan 2011 11:49:48 +0200
+From: Adrian Hunter <adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: Kyungmin Park <kmpark@infradead.org>,
+	Kyungmin Park <kyungmin.park@samsung.com>
+Subject: 4KiB page OneNAND OOB
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	"Tereshonkov Roman \(Nokia-D/Helsinki\)" <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +22,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-01-26 at 15:20 +0100, Holger Brunck wrote:
-> Hi all,
-> we use UBI and UBIFS on NOR and NAND based systems and kernel 2.6.33. In the
-> last days we applied the latest UBI and MTD patches for the min I/O size.
-> 
-> Due to commit  a121f643993474548fe98144514c50dd4f3dbe76 UBI: use
-> mtd->writebufsize to set minimal I/O unit size
-> now the min I/O size is equal to the writebuffersize of the flash.
+Hi
 
-Oh, this is really bad. Thankfully we still have time to revert the
-change and think about proper backward-compatible solution.
+Current onenand_base.c has
 
-> This caused incompatibilites in the UBIFS. We have an UBIFS on a board on a NOR
-> flash created in the past without the patches. Now with a newer SW and a newer
-> kernel which has the latest fixes we can't mount the old UBIFS anymore.
-> 
-> UBIFS error (pid 865): validate_sb: min. I/O unit mismatch: 8 in superblock, 64 real
-> UBIFS error (pid 865): validate_sb: bad superblock, error 1
-> mount: wrong fs type, bad option, bad superblock on ubi0:cfg,
->         missing codepage or other error
-> 
-> If we reformate the UBIFS everything is ok, but we got a problem with the older
-> SW image:
-> UBIFS error (pid 865): validate_sb: min. I/O unit mismatch: 64 in
-> superblock, 8 real
-> UBIFS error (pid 865): validate_sb: bad superblock, error 1
-> mount: wrong fs type, bad option, bad superblock on ubi0:cfg,
->         missing codepage or other error
-> 
-> Is there a way to solve this problem? I do not hope that the only solution is to
-> remove these patch.
+/**
+  *  onenand_oob_128 - oob info for Flex-Onenand with 4KB page
+  *  For now, we expose only 64 out of 80 ecc bytes
+  */
+static struct nand_ecclayout onenand_oob_128 = {
+	.eccbytes	= 64,
+	.eccpos		= {
+		6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+		22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+		38, 39, 40, 41, 42, 43, 44, 45, 46, 47,
+		54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
+		70, 71, 72, 73, 74, 75, 76, 77, 78, 79,
+		86, 87, 88, 89, 90, 91, 92, 93, 94, 95,
+		102, 103, 104, 105
+		},
+	.oobfree	= {
+		{2, 4}, {18, 4}, {34, 4}, {50, 4},
+		{66, 4}, {82, 4}, {98, 4}, {114, 4}
+	}
+};
 
-Yes, the first solution is to revert the UBI patch. There seems to be
-more work than we thought. Probably we need to add notion of
-writebufsize to UBI and UBIFS as well.
+but our manual for a 4KiB Samsung OneNAND specifies
+that each 512 byte sector has 16 bytes of OOB
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+0-1 bad block info
+2-3 free
+5-6 reserved
+7-15 ecc
+
+which implies ecc layout should be as follows for
+4KiB pageOneNAND.
+
+/**
+  *  onenand_oob_128 - oob info for Onenand with 4KB page
+  *  For now, we expose only 64 out of 72 ecc bytes
+  */
+static struct nand_ecclayout onenand_oob_128 = {
+	.eccbytes	= 64,
+	.eccpos		= {
+		7, 8, 9, 10, 11, 12, 13, 14, 15,
+		23, 24, 25, 26, 27, 28, 29, 30, 31,
+		39, 40, 41, 42, 43, 44, 45, 46, 47,
+		55, 56, 57, 58, 59, 60, 61, 62, 63,
+		71, 72, 73, 74, 75, 76, 77, 78, 79,
+		87, 88, 89, 90, 91, 92, 93, 94, 95,
+		103, 104, 105, 106, 107, 108, 109, 110, 111,
+		119
+		},
+	.oobfree	= {
+		{2, 3}, {18, 3}, {34, 3}, {50, 3},
+		{66, 3}, {82, 3}, {98, 3}, {114, 3}
+	}
+};
+
+Do 4KiB OneNANDs need a different onenand_oob_128 from
+FlexOneNAND?
+
+
+Regards
+Adrian
