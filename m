@@ -1,22 +1,20 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PjDZv-00047C-Aw
-	for linux-mtd@lists.infradead.org; Sat, 29 Jan 2011 16:23:13 +0000
-Received: by mail-fx0-f49.google.com with SMTP id 19so4965266fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 29 Jan 2011 08:23:11 -0800 (PST)
-Subject: Re: [PATCH] mtd: adapt writebufsize calculation for concat
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Holger Brunck <holger.brunck@keymile.com>
-In-Reply-To: <1295887542-22785-1-git-send-email-holger.brunck@keymile.com>
-References: <1295887542-22785-1-git-send-email-holger.brunck@keymile.com>
+	id 1PjEIb-0004Om-Nk
+	for linux-mtd@lists.infradead.org; Sat, 29 Jan 2011 17:09:23 +0000
+Subject: Re: incompatible libmtd.a when compiling the mtd-utils
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Peter Korsgaard <jacmet@sunsite.dk>
+In-Reply-To: <87pqrislh0.fsf@macbook.be.48ers.dk>
+References: <201101262351090621559@163.com>
+	<87pqrislh0.fsf@macbook.be.48ers.dk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 29 Jan 2011 18:22:27 +0200
-Message-ID: <1296318147.2400.4.camel@localhost>
+Date: Sat, 29 Jan 2011 19:08:32 +0200
+Message-ID: <1296320912.2400.6.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: wxzzzh@163.com, linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-01-24 at 17:45 +0100, Holger Brunck wrote:
-> If different chips with different writebufsize are concatenated,
-> the writebufsize from the concat device has to be taken from
-> the device with the largest writebuffer. This writebufsize
-> is used later on in the UBI layer for the min I/O size.
-> 
-> Signed-off-by: Holger Brunck <holger.brunck@keymile.com>
+On Thu, 2011-01-27 at 11:13 +0100, Peter Korsgaard wrote:
+> Artem, there has been quite some changes since mtd-utils-1.4.1, time for
+> a new release?
 
-Pushed to l2-mtd-2.6.git, thanks!
+Done.
+
+ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.4.2.tar.bz2
+
+Thanks for reminding.
 
 -- 
 Best Regards,
