@@ -1,19 +1,23 @@
-Received: from mail-ww0-f67.google.com ([74.125.82.67])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pjvr3-0000IG-Bz
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2011 15:39:51 +0000
-Received: by wwb31 with SMTP id 31so910982wwb.6
+	id 1Pk0Hb-0002lq-Sw
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2011 20:23:32 +0000
+Received: by wwb17 with SMTP id 17so6405055wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Jan 2011 07:39:46 -0800 (PST)
-Sender: Ivantchek Ivantchek <ivantchek@gmail.com>
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH 3/3] mtd: nand: enable software BCH ECC in nand simulator
-Date: Mon, 31 Jan 2011 16:38:28 +0100
-Message-Id: <2329a7d83e963cebbf349cabe236e9870005e5b5.1296488121.git.ivan.djelic@parrot.com>
-In-Reply-To: <f96a39de325329b08875dc89307a275e51666df8.1296488121.git.ivan.djelic@parrot.com>
-References: <f96a39de325329b08875dc89307a275e51666df8.1296488121.git.ivan.djelic@parrot.com>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>
+	Mon, 31 Jan 2011 12:23:29 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTimkjy7KcO=QULXYubEPnrh4H1gPpYBL3yE7NDSy@mail.gmail.com>
+References: <AANLkTimVCusWk1qkeY4geXBQ0Bw=rM0mUAaFO32tyoy=@mail.gmail.com>
+	<AANLkTimSqWO_7hBhmBsRKtmm-S=dtJK1wjDv8ekby+3H@mail.gmail.com>
+	<AANLkTimkjy7KcO=QULXYubEPnrh4H1gPpYBL3yE7NDSy@mail.gmail.com>
+Date: Mon, 31 Jan 2011 15:23:29 -0500
+Message-ID: <AANLkTikAJ+NgaZ8-_WJSNZ=QJyh0qNM5WqPnem44D3Sw@mail.gmail.com>
+Subject: Re: Question about CFI allocation
+From: Josh Boyer <jwboyer@gmail.com>
+To: Mitsutaka Amano <mitsutaka.amano@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,93 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds option 'bch' to nandsim, which can be used to enable
-software BCH ECC (introduced in previous patches) and select BCH error
-correction capability.
+On Mon, Jan 31, 2011 at 12:48 AM, Mitsutaka Amano
+<mitsutaka.amano@gmail.com> wrote:
+> On Wed, Jan 26, 2011 at 11:43 PM, Josh Boyer <jwboyer@gmail.com> wrote:
+>> On Wed, Jan 26, 2011 at 6:09 AM, Mitsutaka Amano
+>> <mitsutaka.amano@gmail.com> wrote:
+>>> Hi all, I'm a newbie about mtd.
+>>>
+>>> I'm trying to use the cfi on the mpc85xx board. Part of mtdblock is
+>>> used by rootfs. So I have questions.
+>>>
+>>> Why does CFI(or other flash memory) have to alloc to the vmalloc
+>>> area(such as PHYSMAP or PHYSMAP_OF)?
+>>
+>> The CFI code is not calling vmalloc explicitly. =A0It's calling ioremap,
+>> which happens to come from vmalloc space on most (all?) architectures.
+>> =A0It has to do that because otherwise the CFI driver can't get access
+>> to the physical flash because of the MMU.
+> I understand that CFI needs ioremap() -> vmalloc space for accessing
+> to the physical flash via MMU.
+>
+> Why allocate amount of flash memory size? my board has 256MB flash
+> memory and be allocated 256MB over by of_flash_probe.
 
-Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
----
- drivers/mtd/nand/nandsim.c |   40 +++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 39 insertions(+), 1 deletions(-)
+It's either do that so you can address the whole flash space, or
+implement a sliding window in the mapping driver.  That can be rather
+complicated when you consider concurrent access to the flash, and
+doing repeated ioremap/iounmap calls so I would guess simplicity is
+why.
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index a5aa99f..974c646 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -34,6 +34,7 @@
- #include <linux/string.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
-+#include <linux/mtd/nand_bch.h>
- #include <linux/mtd/partitions.h>
- #include <linux/delay.h>
- #include <linux/list.h>
-@@ -108,6 +109,7 @@ static unsigned int rptwear = 0;
- static unsigned int overridesize = 0;
- static char *cache_file = NULL;
- static unsigned int bbt;
-+static unsigned int bch;
- 
- module_param(first_id_byte,  uint, 0400);
- module_param(second_id_byte, uint, 0400);
-@@ -132,6 +134,7 @@ module_param(rptwear,        uint, 0400);
- module_param(overridesize,   uint, 0400);
- module_param(cache_file,     charp, 0400);
- module_param(bbt,	     uint, 0400);
-+module_param(bch,	     uint, 0400);
- 
- MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID)");
- MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
-@@ -165,6 +168,7 @@ MODULE_PARM_DESC(overridesize,   "Specifies the NAND Flash size overriding the I
- 				 " e.g. 5 means a size of 32 erase blocks");
- MODULE_PARM_DESC(cache_file,     "File to use to cache nand pages instead of memory");
- MODULE_PARM_DESC(bbt,		 "0 OOB, 1 BBT with marker in OOB, 2 BBT with marker in data area");
-+MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should be correctable in 512-byte blocks");
- 
- /* The largest possible page size */
- #define NS_LARGEST_PAGE_SIZE	4096
-@@ -2309,7 +2313,41 @@ static int __init ns_init_module(void)
- 	if ((retval = parse_gravepages()) != 0)
- 		goto error;
- 
--	if ((retval = nand_scan(nsmtd, 1)) != 0) {
-+	if ((retval = nand_scan_ident(nsmtd, 1, NULL)) != 0) {
-+		NS_ERR("cannot scan NAND Simulator device\n");
-+		if (retval > 0)
-+			retval = -ENXIO;
-+		goto error;
-+	}
-+
-+	if (bch) {
-+		unsigned int eccsteps, eccbytes;
-+		if (!mtd_nand_has_bch()) {
-+			NS_ERR("BCH ECC support is disabled\n");
-+			retval = -EINVAL;
-+			goto error;
-+		}
-+		/* use 512-byte ecc blocks */
-+		eccsteps = nsmtd->writesize/512;
-+		eccbytes = (bch*13+7)/8;
-+		/* do not bother supporting old devices with smaller pages */
-+		if (eccsteps == 0) {
-+			NS_ERR("bch not available on 256-byte page devices\n");
-+			retval = -EINVAL;
-+			goto error;
-+		}
-+		if ((eccbytes*eccsteps+2) > nsmtd->oobsize) {
-+			NS_ERR("invalid bch value %u\n", bch);
-+			retval = -EINVAL;
-+			goto error;
-+		}
-+		chip->ecc.mode = NAND_ECC_SOFT_BCH;
-+		chip->ecc.size = 512;
-+		chip->ecc.bytes = eccbytes;
-+		NS_INFO("using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
-+	}
-+
-+	if ((retval = nand_scan_tail(nsmtd)) != 0) {
- 		NS_ERR("can't register NAND Simulator\n");
- 		if (retval > 0)
- 			retval = -ENXIO;
--- 
-1.7.2.3
+That is mostly applicable for NOR flash directly accessible.  If there
+is a controller in front of the flash that only needs a small area
+ioremapped, then it shouldn't use physmap_of.c and should write a
+proper driver for it.  The NDFC driver is an example of something like
+that.
+
+josh
