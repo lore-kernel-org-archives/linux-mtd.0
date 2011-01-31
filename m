@@ -1,15 +1,21 @@
-Received: from web30207.mail.mud.yahoo.com ([209.191.69.54])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pjr6k-0005l1-LJ
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2011 10:35:43 +0000
-Message-ID: <194189.91256.qm@web30207.mail.mud.yahoo.com>
-Date: Mon, 31 Jan 2011 02:35:41 -0800 (PST)
-From: Lars Michael <lh_post@yahoo.com>
-Subject: mount ubi volume fails: No such device
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Received: from smtp1-g21.free.fr ([212.27.42.1])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PjrxA-00068D-L5
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2011 11:29:54 +0000
+From: Alexis RODET <alexis.rodet@bvs-tech.com>
+To: 
+Subject: [PATCH 1/1] merging arch/arm/include/asm/mach/flash.h and
+	include/linux/spi/flash.h into single header file
+	include/linux/mtd/flash.h
+Date: Mon, 31 Jan 2011 12:29:11 +0100
+Message-Id: <1296473351-22771-1-git-send-email-alexis.rodet@bvs-tech.com>
+In-Reply-To: <4D3E9683.5090906@bvs-tech.com>
+References: <4D3E9683.5090906@bvs-tech.com>
+To: Grant Likely <grant.likely@secretlab.ca>
+Cc: Baruch Siach <baruch@tkos.co.il>, Alexis RODET <alexis.rodet@bvs-tech.com>,
+	David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
+	spi-devel-general@lists.sourceforge.net,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +25,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,=0A=0AI am trying to mount an UBI volume, but it fails:=0A=0A# mount -t =
-ubifs ubi0_0 /mnt/ubi=0Amount: mounting ubi0_0 on /mnt/ubi failed: No such =
-device=0A =0AUsing mkfs.ubifs and ubinize I have prepared an image containi=
-ng three volumes. On the target I have used ubiformat to flash the image an=
-d ubiattach to attach to mtd1.=0A=0ATarget kernel: 2.6.29, platform m68k (m=
-cf54418). The UBI tools on the host are built from git://git.infradead.org/=
-mtd-utils.git.=0A=0AEverything looks fine to me, see below, but how do I mo=
-unt a volume? I have tried various ways to refer to the device (like ubi0:d=
-atafs, ubi0_0) without luck.=0A=0AThanks for any help!=0A=0A[root@M54418TWR=
- /]# ls -l /dev/ubi*=0A=0Acrw-rw---- 1 root root 252,  0 Nov 24 17:54 /dev/=
-ubi0=0Acrw-rw---- 1 root root 252,  1 Nov 24 17:54 /dev/ubi0_0=0Acrw-rw----=
- 1 root root 252,  2 Nov 24 17:54 /dev/ubi0_1=0Acrw-rw---- 1 root root 252,=
-  3 Nov 24 17:54 /dev/ubi0_2=0Acrw-rw---- 1 root root  10, 63 Nov 24 17:31 =
-/dev/ubi_ctrl=0A =0A[root@M54418TWR /]# ubinfo -a=0AUBI version:           =
-         1=0ACount of UBI devices:           1=0AUBI control device major/m=
-inor: 10:63=0APresent UBI devices:            ubi0=0A =0Aubi0:=0AVolumes co=
-unt:                           3=0ALogical eraseblock size:                =
- 126976=0ATotal amount of logical eraseblocks:     2036 (258523136 bytes, 2=
-46.5 MiB)=0AAmount of available logical eraseblocks: 0 (0 bytes)=0AMaximum =
-count of volumes                 128=0ACount of bad physical eraseblocks:  =
-     4=0ACount of reserved physical eraseblocks:  20=0ACurrent maximum eras=
-e counter value:     5=0AMinimum input/output unit size:          2048 byte=
-s=0ACharacter device major/minor:            252:0=0APresent volumes:      =
-                   0, 1, 2=0A =0AVolume ID:   0 (on ubi0)=0AType:        dy=
-namic=0AAlignment:   1=0ASize:        1058 LEBs (134340608 bytes, 128.1 MiB=
-)=0AState:       OK=0AName:        rootfs=0ACharacter device major/minor: 2=
-52:1=0A-----------------------------------=0AVolume ID:   1 (on ubi0)=0ATyp=
-e:        dynamic=0AAlignment:   1=0ASize:        133 LEBs (16887808 bytes,=
- 16.1 MiB)=0AState:       OK=0AName:        progfs=0ACharacter device major=
-/minor: 252:2=0A-----------------------------------=0AVolume ID:   2 (on ub=
-i0)=0AType:        dynamic=0AAlignment:   1=0ASize:        821 LEBs (104247=
-296 bytes, 99.4 MiB)=0AState:       OK=0AName:        datafs=0ACharacter de=
-vice major/minor: 252:3=0A =0A=0A=0A=0A      
+
+Signed-off-by: Alexis RODET <alexis.rodet@bvs-tech.com>
+---
+ arch/arm/include/asm/mach/flash.h |   35 +------------------------
+ include/linux/mtd/flash.h         |   51 +++++++++++++++++++++++++++++++++++++
+ include/linux/spi/flash.h         |   27 +-------------------
+ 3 files changed, 53 insertions(+), 60 deletions(-)
+
+diff --git a/arch/arm/include/asm/mach/flash.h b/arch/arm/include/asm/mach/flash.h
+index 4ca69fe..28bd58b 100644
+--- a/arch/arm/include/asm/mach/flash.h
++++ b/arch/arm/include/asm/mach/flash.h
+@@ -1,39 +1,6 @@
+-/*
+- *  arch/arm/include/asm/mach/flash.h
+- *
+- *  Copyright (C) 2003 Russell King, All Rights Reserved.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+ #ifndef ASMARM_MACH_FLASH_H
+ #define ASMARM_MACH_FLASH_H
+ 
+-struct mtd_partition;
+-struct mtd_info;
+-
+-/*
+- * map_name:	the map probe function name
+- * name:	flash device name (eg, as used with mtdparts=)
+- * width:	width of mapped device
+- * init:	method called at driver/device initialisation
+- * exit:	method called at driver/device removal
+- * set_vpp:	method called to enable or disable VPP
+- * mmcontrol:	method called to enable or disable Sync. Burst Read in OneNAND
+- * parts:	optional array of mtd_partitions for static partitioning
+- * nr_parts:	number of mtd_partitions for static partitoning
+- */
+-struct flash_platform_data {
+-	const char	*map_name;
+-	const char	*name;
+-	unsigned int	width;
+-	int		(*init)(void);
+-	void		(*exit)(void);
+-	void		(*set_vpp)(int on);
+-	void		(*mmcontrol)(struct mtd_info *mtd, int sync_read);
+-	struct mtd_partition *parts;
+-	unsigned int	nr_parts;
+-};
++#include <linux/mtd/flash.h>
+ 
+ #endif
+diff --git a/include/linux/mtd/flash.h b/include/linux/mtd/flash.h
+new file mode 100644
+index 0000000..5379eee
+--- /dev/null
++++ b/include/linux/mtd/flash.h
+@@ -0,0 +1,51 @@
++/*
++ *  include/linux/mtd/flash.h
++ *  merged from arch/arm/include/asm/mach/flash.h and include/linux/spi/flash.h
++ *
++ *  Copyright (C) 2003 Russell King, All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++#ifndef LINUX_MTD_FLASH_H
++#define LINUX_MTD_FLASH_H
++
++struct mtd_partition;
++struct mtd_info;
++
++/**
++ * struct flash_platform_data: board-specific flash data
++ * @map_name:	the map probe function name
++ * @name:	optional flash device name (eg, as used with mtdparts=)
++ * @width:	width of mapped device
++ * @init:	method called at driver/device initialisation
++ * @exit:	method called at driver/device removal
++ * @set_vpp:	method called to enable or disable VPP
++ * @mmcontrol:	method called to enable or disable Sync. Burst Read in OneNAND
++ * @parts:	optional array of mtd_partitions for static partitioning
++ * @nr_parts:	number of mtd_partitions for static partitoning
++ * @type:	optional flash device type (e.g. m25p80 vs m25p64), for use
++ *	with chips that can't be queried for JEDEC or other IDs
++ *
++ * Board init code (in arch/.../mach-xxx/board-yyy.c files) can
++ * provide information about SPI flash parts (such as DataFlash) to
++ * help set up the device and its appropriate default partitioning.
++ *
++ * Note that for DataFlash, sizes for pages, blocks, and sectors are
++ * rarely powers of two; and partitions should be sector-aligned.
++ */
++struct flash_platform_data {
++	const char	*map_name;
++	const char	*name;
++	unsigned int	width;
++	int		(*init)(void);
++	void		(*exit)(void);
++	void		(*set_vpp)(int on);
++	void		(*mmcontrol)(struct mtd_info *mtd, int sync_read);
++	struct mtd_partition *parts;
++	unsigned int	nr_parts;
++	const char	*type;
++};
++
++#endif
+diff --git a/include/linux/spi/flash.h b/include/linux/spi/flash.h
+index 3f22932..c7ed65e 100644
+--- a/include/linux/spi/flash.h
++++ b/include/linux/spi/flash.h
+@@ -1,31 +1,6 @@
+ #ifndef LINUX_SPI_FLASH_H
+ #define LINUX_SPI_FLASH_H
+ 
+-struct mtd_partition;
+-
+-/**
+- * struct flash_platform_data: board-specific flash data
+- * @name: optional flash device name (eg, as used with mtdparts=)
+- * @parts: optional array of mtd_partitions for static partitioning
+- * @nr_parts: number of mtd_partitions for static partitoning
+- * @type: optional flash device type (e.g. m25p80 vs m25p64), for use
+- *	with chips that can't be queried for JEDEC or other IDs
+- *
+- * Board init code (in arch/.../mach-xxx/board-yyy.c files) can
+- * provide information about SPI flash parts (such as DataFlash) to
+- * help set up the device and its appropriate default partitioning.
+- *
+- * Note that for DataFlash, sizes for pages, blocks, and sectors are
+- * rarely powers of two; and partitions should be sector-aligned.
+- */
+-struct flash_platform_data {
+-	char		*name;
+-	struct mtd_partition *parts;
+-	unsigned int	nr_parts;
+-
+-	char		*type;
+-
+-	/* we'll likely add more ... use JEDEC IDs, etc */
+-};
++#include <linux/mtd/flash.h>
+ 
+ #endif
+-- 
+1.7.1
