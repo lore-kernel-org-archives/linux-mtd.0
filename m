@@ -1,21 +1,17 @@
-Received: from smtp1-g21.free.fr ([212.27.42.1])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PjrxA-00068D-L5
-	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2011 11:29:54 +0000
-From: Alexis RODET <alexis.rodet@bvs-tech.com>
-To: 
-Subject: [PATCH 1/1] merging arch/arm/include/asm/mach/flash.h and
-	include/linux/spi/flash.h into single header file
-	include/linux/mtd/flash.h
-Date: Mon, 31 Jan 2011 12:29:11 +0100
-Message-Id: <1296473351-22771-1-git-send-email-alexis.rodet@bvs-tech.com>
-In-Reply-To: <4D3E9683.5090906@bvs-tech.com>
-References: <4D3E9683.5090906@bvs-tech.com>
-To: Grant Likely <grant.likely@secretlab.ca>
-Cc: Baruch Siach <baruch@tkos.co.il>, Alexis RODET <alexis.rodet@bvs-tech.com>,
-	David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
-	spi-devel-general@lists.sourceforge.net,
-	David Woodhouse <dwmw2@infradead.org>
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PjscF-0006gz-Nm
+	for linux-mtd@lists.infradead.org; Mon, 31 Jan 2011 12:12:20 +0000
+Received: by iwn38 with SMTP id 38so5508008iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 31 Jan 2011 04:12:18 -0800 (PST)
+MIME-Version: 1.0
+Date: Mon, 31 Jan 2011 12:12:17 +0000
+Message-ID: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
+Subject: Testing a device using mtd_stresstest
+From: David Peverley <pev@sketchymonkey.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,152 +21,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
-Signed-off-by: Alexis RODET <alexis.rodet@bvs-tech.com>
----
- arch/arm/include/asm/mach/flash.h |   35 +------------------------
- include/linux/mtd/flash.h         |   51 +++++++++++++++++++++++++++++++++++++
- include/linux/spi/flash.h         |   27 +-------------------
- 3 files changed, 53 insertions(+), 60 deletions(-)
+I've got a new board that has been experiencing occasional issues that
+look to be MTD related so I've been running the tests from linux
+2.6.31.12 from under drivers/mtd/tests to see if I can trigger
+failures. It's worth mentioning also that I've built our kernel with
+CONFIG_MTD_NAND_VERIFY_WRITE enabled. The flash we're using is a
+Micron MT29F2G08AADWP, see datasheet :
+    http://download.micron.com/pdf/datasheets/flash/nand/2_4_8gb_nand_m49a.pdf
+(Same part but different operating voltage)
+The only caveat is that that this new board has changed to our
+previous board in that the R/B line is now fixed high and  instead of
+being connected to a GPIO and a 25uS chip_delay has been specified.
 
-diff --git a/arch/arm/include/asm/mach/flash.h b/arch/arm/include/asm/mach/flash.h
-index 4ca69fe..28bd58b 100644
---- a/arch/arm/include/asm/mach/flash.h
-+++ b/arch/arm/include/asm/mach/flash.h
-@@ -1,39 +1,6 @@
--/*
-- *  arch/arm/include/asm/mach/flash.h
-- *
-- *  Copyright (C) 2003 Russell King, All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
- #ifndef ASMARM_MACH_FLASH_H
- #define ASMARM_MACH_FLASH_H
- 
--struct mtd_partition;
--struct mtd_info;
--
--/*
-- * map_name:	the map probe function name
-- * name:	flash device name (eg, as used with mtdparts=)
-- * width:	width of mapped device
-- * init:	method called at driver/device initialisation
-- * exit:	method called at driver/device removal
-- * set_vpp:	method called to enable or disable VPP
-- * mmcontrol:	method called to enable or disable Sync. Burst Read in OneNAND
-- * parts:	optional array of mtd_partitions for static partitioning
-- * nr_parts:	number of mtd_partitions for static partitoning
-- */
--struct flash_platform_data {
--	const char	*map_name;
--	const char	*name;
--	unsigned int	width;
--	int		(*init)(void);
--	void		(*exit)(void);
--	void		(*set_vpp)(int on);
--	void		(*mmcontrol)(struct mtd_info *mtd, int sync_read);
--	struct mtd_partition *parts;
--	unsigned int	nr_parts;
--};
-+#include <linux/mtd/flash.h>
- 
- #endif
-diff --git a/include/linux/mtd/flash.h b/include/linux/mtd/flash.h
-new file mode 100644
-index 0000000..5379eee
---- /dev/null
-+++ b/include/linux/mtd/flash.h
-@@ -0,0 +1,51 @@
-+/*
-+ *  include/linux/mtd/flash.h
-+ *  merged from arch/arm/include/asm/mach/flash.h and include/linux/spi/flash.h
-+ *
-+ *  Copyright (C) 2003 Russell King, All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+#ifndef LINUX_MTD_FLASH_H
-+#define LINUX_MTD_FLASH_H
-+
-+struct mtd_partition;
-+struct mtd_info;
-+
-+/**
-+ * struct flash_platform_data: board-specific flash data
-+ * @map_name:	the map probe function name
-+ * @name:	optional flash device name (eg, as used with mtdparts=)
-+ * @width:	width of mapped device
-+ * @init:	method called at driver/device initialisation
-+ * @exit:	method called at driver/device removal
-+ * @set_vpp:	method called to enable or disable VPP
-+ * @mmcontrol:	method called to enable or disable Sync. Burst Read in OneNAND
-+ * @parts:	optional array of mtd_partitions for static partitioning
-+ * @nr_parts:	number of mtd_partitions for static partitoning
-+ * @type:	optional flash device type (e.g. m25p80 vs m25p64), for use
-+ *	with chips that can't be queried for JEDEC or other IDs
-+ *
-+ * Board init code (in arch/.../mach-xxx/board-yyy.c files) can
-+ * provide information about SPI flash parts (such as DataFlash) to
-+ * help set up the device and its appropriate default partitioning.
-+ *
-+ * Note that for DataFlash, sizes for pages, blocks, and sectors are
-+ * rarely powers of two; and partitions should be sector-aligned.
-+ */
-+struct flash_platform_data {
-+	const char	*map_name;
-+	const char	*name;
-+	unsigned int	width;
-+	int		(*init)(void);
-+	void		(*exit)(void);
-+	void		(*set_vpp)(int on);
-+	void		(*mmcontrol)(struct mtd_info *mtd, int sync_read);
-+	struct mtd_partition *parts;
-+	unsigned int	nr_parts;
-+	const char	*type;
-+};
-+
-+#endif
-diff --git a/include/linux/spi/flash.h b/include/linux/spi/flash.h
-index 3f22932..c7ed65e 100644
---- a/include/linux/spi/flash.h
-+++ b/include/linux/spi/flash.h
-@@ -1,31 +1,6 @@
- #ifndef LINUX_SPI_FLASH_H
- #define LINUX_SPI_FLASH_H
- 
--struct mtd_partition;
--
--/**
-- * struct flash_platform_data: board-specific flash data
-- * @name: optional flash device name (eg, as used with mtdparts=)
-- * @parts: optional array of mtd_partitions for static partitioning
-- * @nr_parts: number of mtd_partitions for static partitoning
-- * @type: optional flash device type (e.g. m25p80 vs m25p64), for use
-- *	with chips that can't be queried for JEDEC or other IDs
-- *
-- * Board init code (in arch/.../mach-xxx/board-yyy.c files) can
-- * provide information about SPI flash parts (such as DataFlash) to
-- * help set up the device and its appropriate default partitioning.
-- *
-- * Note that for DataFlash, sizes for pages, blocks, and sectors are
-- * rarely powers of two; and partitions should be sector-aligned.
-- */
--struct flash_platform_data {
--	char		*name;
--	struct mtd_partition *parts;
--	unsigned int	nr_parts;
--
--	char		*type;
--
--	/* we'll likely add more ... use JEDEC IDs, etc */
--};
-+#include <linux/mtd/flash.h>
- 
- #endif
--- 
-1.7.1
+I was wondering if anyone might have experienced anything similar and
+might be able to nudge me in the right direction on this one :
+
+Question 1 : The  mtd_subpagetest (which I suspect should fail as the
+device doesn't support sub-pages). I googled around and found a
+reference that maybe I should add NAND_NO_SUBPAGE_WRITE to the
+options. I tried this and it made no difference. Out of curiosity I
+grepped through drivers/mtd and found that *no* drivers actully use
+this bit anyway...! Is it reasonable to ignore this or ought I address
+it? Should I set the flag and expect it to have an effect?
+
+Question 2 : The mtd_stresstest test fails after anywhere between 1000
+and 200,000 operations. I'm certain this is a Bad Sign. It fails in
+nand_base.c:nand_write_page() in the verification step enabled by
+MTD_NAND_VERIFY_WRITE. When I tested this on our previous board (that
+ostensibly works fine) it failed the stress test after 2.6M operations
+instead. Should I be expecting to never see a failure of the stress
+test or is an occasional verify failure reasonably expected?
+
+Thanks for any suggestions!
+
+~Pev
