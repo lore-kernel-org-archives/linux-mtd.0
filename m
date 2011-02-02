@@ -1,16 +1,17 @@
-Received: from p02c12o147.mxlogic.net ([208.65.145.80])
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PkOPp-0001Vu-C9
-	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2011 22:09:38 +0000
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Kernel panic using add_mtd_partitions
-Date: Tue, 1 Feb 2011 16:13:15 -0600
-Message-ID: <9AC3F0E75060224C8BBC5BA2DDC8853A1F2A4421@EXV1.corp.adtran.com>
-From: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>
-To: <linux-mtd@lists.infradead.org>
+	id 1PkWbE-0004Lk-PV
+	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 06:53:57 +0000
+Received: from eru.research.nokia.com (helruo-dhcp021230.ntc.nokia.com
+	[172.21.21.230])
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p126rroB011982
+	for <linux-mtd@lists.infradead.org>; Wed, 2 Feb 2011 08:53:54 +0200
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: mtdram: initialize writebufsize field
+Date: Wed,  2 Feb 2011 08:56:14 +0200
+Message-Id: <1296629774-22498-1-git-send-email-Artem.Bityutskiy@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-123456789012345678901234567890123456789012345678901234567890123456789012
-I have gotten past the issue of not being able to see the NAND chip and
-am working that issue (a symptom of an unrelated issue).
+Set the 'mtd->writebufsize' field to 64 to mimic modern CFI flashes.
 
-Now I'm attempting to use add_mtd_partitions() to specify the
-partitions.
-In the original kernel I was using (2.6.29) this worked without any
-issue.  In 2.6.36.1, the kernel panics.  The code I'm attempting to use
-to configure the partitions is as follows:
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/devices/mtdram.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-__maybe_unused static struct    mtd_partition   nand_partition_info[] =
-=3D
-{
-        { .name =3D  "Kernel partition",
-          .offset =3D 0,
-          .size =3D   4 * 1024 * 1024,
-        },
-        { .name =3D  "Root partition",
-          .offset =3D MTDPART_OFS_APPEND,
-          .size =3D   MTDPART_SIZ_FULL,
-        },
-};
-
-
-
-        add_mtd_partitions(&board_mtd, nand_partition_info,
-ARRAY_SIZE(nand_partition_info));
-
-Any help would be great!
-
-Thanks,
-Andy
+diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
+index 26a6e80..1483e18 100644
+--- a/drivers/mtd/devices/mtdram.c
++++ b/drivers/mtd/devices/mtdram.c
+@@ -121,6 +121,7 @@ int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
+ 	mtd->flags = MTD_CAP_RAM;
+ 	mtd->size = size;
+ 	mtd->writesize = 1;
++	mtd->writebufsize = 64; /* Mimic CFI NOR flashes */
+ 	mtd->erasesize = MTDRAM_ERASE_SIZE;
+ 	mtd->priv = mapped_address;
+ 
+-- 
+1.7.2.3
