@@ -1,20 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from aa013-1msr.fastwebnet.it ([62.101.93.133])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pkc7D-0006wq-Hj
-	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 12:47:21 +0000
-Date: Wed, 2 Feb 2011 13:48:12 +0100
-From: Anatolij Gustschin <agust@denx.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 0/7] UBIFS: fix recovery on CFI NOR
-Message-ID: <20110202134812.6c8cc619@wker>
-In-Reply-To: <1296634917-19335-1-git-send-email-dedekind1@gmail.com>
-References: <1296634917-19335-1-git-send-email-dedekind1@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1PkcxV-0007Vp-Lz
+	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 13:41:22 +0000
+From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Support for SST 39VF6402B has been officially added or I need to
+	patch the kernel?
+Date: Wed, 2 Feb 2011 14:41:17 +0100
+References: <201101301935.38730.fabio.giovagnini@aurion-tech.com>
+	<AANLkTiktds1RAAZK6ynUOL3L0hsqXjR99mcBsCeagD5B@mail.gmail.com>
+In-Reply-To: <AANLkTiktds1RAAZK6ynUOL3L0hsqXjR99mcBsCeagD5B@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Holger Brunck <holger.brunck@keymile.com>, Detlev Zundel <dzu@denx.de>,
-	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Message-Id: <201102021441.17956.fabio.giovagnini@aurion-tech.com>
+Cc: Guillaume LECERF <glecerf@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,101 +25,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Guillaume,
+with configuration I need to select in mtd kernel configuration?
+No I see;
+physmap platform flash device: 00400001 at 20400000
+physmap-flash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 
+0x0000bf Chip ID 0x00236c
+NOR chip too large to fit in mapping. Attempting to cope...
+number of CFI chips: 1
+Reducing visibility of 8192KiB chip to 4096KiB
+cmdlinepart partition parsing not available
+Searching for RedBoot partition table in physmap-flash at offset 0x3ff001
+No RedBoot partition table detected in physmap-flash
+Using physmap partition information
+Creating 3 MTD partitions on "physmap-flash":
+0x000000000000-0x000000040000 : "Bootloader"
+0x000000040000-0x000000200000 : "Kernel"
+0x000000200000-0x000000400001 : "Flash_FS"
+mtd: partition "Flash_FS" doesn't end on an erase block -- force read-only
+sh-rtc sh-rtc: rtc core: registered sh as rtc0
+cpuidle: using governor ladder
+sh_cmt sh_cmt.0: kept as earlytimer
+sh_cmt sh_cmt.1: used for clock events
+sh_mtu2 sh_mtu2.0: kept as earlytimer
+sh_mtu2 sh_mtu2.1: used for clock events
+heartbeat: version 0.1.2 loaded
+oprofile: using timer interrupt.
+sh-rtc sh-rtc: setting system clock to 1970-01-01 00:00:00 UTC (0)
+jffs2: Flash size not aligned to erasesize, reducing to 2048KiB
+Node at 0x00000fe8 with length 0x0000002c would run over the end of the erase 
+block
+Perhaps the file system was created with the wrong erase size?
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000ff0: 0xa026 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001000: 0x4d49 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001004: 0x0402 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001008: 0xdd74 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000100c: 0xcd96 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001010: 0x6d74 
+instead
+Node at 0x00001fe0 with length 0x0000002d would run over the end of the erase 
+block
+Perhaps the file system was created with the wrong erase size?
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001fe8: 0xd721 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002000: 0x6f62 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002004: 0xbd2b 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002008: 0x7074 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000200c: 0x63ff 
+instead
+Node at 0x00002fd0 with length 0x00000046 would run over the end of the erase 
+block
+Perhaps the file system was created with the wrong erase size?
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002fd8: 0x4ae1 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002ff0: 0x4d49 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002ff4: 0x4d49 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000300c: 0x559c 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003010: 0x5e2e 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003014: 0x030d 
+instead
+Node at 0x00003e24 with length 0x00000480 would run over the end of the erase 
+block
+Perhaps the file system was created with the wrong erase size?
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e2c: 0x5c8a 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e3c: 0x03e8 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e44: 0x4d49 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e48: 0x4d49 
+instead
 
-On Wed,  2 Feb 2011 10:21:51 +0200
-Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Could you suggest me what iI have to investigate?
+
+
+Thanks in advance
+
+
+On Sunday 30 January 2011 19:57:31 Guillaume LECERF wrote:
+> 2011/1/30 Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>:
+> >        Thanks
 > 
-> Hi,
-> 
-> here is the patch-set against the latest Linux kernel (e.g. 2.6.38-rc3)
-> which should fix CFI NOR flash recovery.
+> Yes.
 
-Great! Thanks!
+-- 
+Ing. Fabio Giovagnini
 
-> The previous attempt was not entirely successful - it broke backward
-> compatibility and was reverted:
-> 
-> http://marc.info/?l=linux-kernel&m=129631939419818&w=2
-> 
-> This patch-set goes the following way:
-> 1. Incorporates the notion of 'writebufsize' into UBI and UBIFS as
->    'max_write_size', because using term write-buffer would be confusing, as
->    UBIFS has its own write-buffers.
-> 2. Changes UBIFS write-buffer and makes it of 'max_write_size', instead of
->    'min_io_size'. This presumably leads to better performance because we
->    accumulate more data and write them in larger chunks and faster.
->    And we do not waste space when synchronizing UBIFS write-buffers because we
->    write only the used amount of bytes aligned to 'min_io_size'. So this is an
->    improvement.
-> 3. Tweak UBIFS recovery and make it aware of the fact that we can write in
->    chunks larger than 'min_io_size'. Namely, we can write in 'max_write_size'
->    chunks.
-> 
-> Could you guys please test this WRT power cuts and let me know if it solves the
-> issues?
-
-I'm going to test these patches next days. When using write buffer
-size as min_io_size for UBI we still have some issues with UBIFS
-recovery while running power cut tests on S29GL512P NOR flash.
-Mounting an UBIFS partition fails as there are CRC errors in the
-UBIFS data node. A few data bytes following the UBIFS data node
-header are corrupted. Sometimes the data node header itself is
-corrupted:
-...
-UBIFS DBG (pid 1416): ubifs_scan_a_node: scanning data node
-UBIFS DBG (pid 1416): ubifs_recover_leb: look at LEB 139:111944 (150072 bytes left)
-UBIFS DBG (pid 1416): ubifs_scan_a_node: scanning data node
-UBIFS DBG (pid 1416): ubifs_recover_leb: look at LEB 139:116088 (145928 bytes left)
-UBIFS DBG (pid 1416): ubifs_scan_a_node: scanning unknown node
-UBIFS DBG (pid 1416): no_more_nodes: unexpected bad common header at 139:116088
-UBIFS DBG (pid 1416): ubifs_recover_leb: look at LEB 139:116088 (145928 bytes left)
-UBIFS DBG (pid 1416): ubifs_scan_a_node: scanning unknown node
-UBIFS error (pid 1416): ubifs_check_node: bad node type 255
-UBIFS error (pid 1416): ubifs_check_node: bad node at LEB 139:116088
-        magic          0x6101831
-        crc            0x46a2df3b
-        node_type      255 (unknown node)
-        group_type     255 (unknown)
-        sqnum          18446744073709551615
-        len            4294967295
-node type 255 was not recognized
-Call Trace:
-[df7f3b80] [c0007ecc] show_stack+0x4c/0x16c (unreliable)
-[df7f3bc0] [c013e4c8] ubifs_check_node+0x17c/0x308
-[df7f3be0] [c0147934] ubifs_scan_a_node+0x15c/0x2d8
-[df7f3c10] [c015cd08] ubifs_recover_leb+0x3f0/0x940
-[df7f3c80] [c0148244] replay_buds+0xb4/0xb4c
-[df7f3d20] [c01493dc] ubifs_replay_journal+0x700/0xf48
-[df7f3da0] [c013aba8] ubifs_fill_super+0xd9c/0x15fc
-[df7f3e00] [c013c6fc] ubifs_get_sb+0x10c/0x344
-[df7f3e80] [c007b4d0] vfs_kern_mount+0x60/0x150
-[df7f3ea0] [c007b610] do_kern_mount+0x40/0x100
-[df7f3ec0] [c0092210] do_mount+0x40c/0x718
-[df7f3f10] [c00925ac] sys_mount+0x90/0xd8
-[df7f3f40] [c0010b44] ret_from_syscall+0x0/0x38
---- Exception: c01 at 0xfe93d18
-    LR = 0x1000347c
-UBIFS DBG (pid 1416): no_more_nodes: unexpected bad common header at 139:116088
-UBIFS error (pid 1416): ubifs_recover_leb: bad node
-UBIFS error (pid 1416): ubifs_scanned_corruption: corruption at LEB 139:116088
-UBIFS error (pid 1416): ubifs_scanned_corruption: first 8192 bytes from LEB 139:116088
-00000000: 31181006 3bdfa246 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff  1...;..F........................
-00000020: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff  ................................
-00000040: ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff  ................................
-00000060: ffffffff ffffffff 4647fdeb ee4bdded 4e4f50d1 5253f675 56577d59 5a5b7d5f  ........FG...K..NOP.RS.uVW}YZ[}_
-00000080: 5e5f6061 62636465 ffffffff ffffffff ffffffff ffffffff ffffffff ffffffff  ^_`abcde........................
-...
-
-I'm still looking for a reason for this behaviour and can't explain
-it yet. Maybe we have a problem in the CFI driver.
-
-Thanks,
-Anatolij
-
---
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+Aurion s.r.l.
+P.I e C.F.
+00885711200
+skype: aurion.giovagnini
+Tel. +39.051.594.78.24
+Fax. +39.051.082.14.49
+Cell. +39.335.83.50.919
+www.aurion-tech.com
