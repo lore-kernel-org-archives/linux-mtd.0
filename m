@@ -1,21 +1,19 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PkaKk-0005YY-At
-	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 10:53:11 +0000
-Received: by mail-bw0-f49.google.com with SMTP id 5so400574bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 Feb 2011 02:53:10 -0800 (PST)
-Sender: Ivan Djelic <ivantchek@gmail.com>
-From: Ivan Djelic <ivan.djelic@parrot.com>
+Received: from mail.ch.keymile.com ([193.17.201.103])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pkajf-0005rK-Lc
+	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 11:18:56 +0000
+Message-ID: <4D493D95.6090005@keymile.com>
+Date: Wed, 02 Feb 2011 12:18:45 +0100
+From: Stefan Bigler <stefan.bigler@keymile.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH/RFC v2 3/3] mtd: nand: enable software BCH ECC in nand
-	simulator
-Date: Wed,  2 Feb 2011 11:51:57 +0100
-Message-Id: <3b66f37e95b304381d76f06c405398f59a07ac6a.1296641159.git.ivan.djelic@parrot.com>
-In-Reply-To: <181c9a1c88b781116615761109cccdf89ea877a1.1296641159.git.ivan.djelic@parrot.com>
-References: <181c9a1c88b781116615761109cccdf89ea877a1.1296641159.git.ivan.djelic@parrot.com>
-Cc: Ivan Djelic <ivan.djelic@parrot.com>, Tim Barr <tbarr@multitech.com>,
-	Sukumar Ghorai <s-ghorai@ti.com>
+Subject: Numonyx NOR flash mutex problem when creating UBI volumes
+Content-Type: text/plain;
+	charset=ISO-8859-15;
+	format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Holger brunck <holger.brunck@keymile.com>, joakim.tjernlund@transmode.se,
+	mboards@prograde.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,96 +23,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds option 'bch' to nandsim, which can be used to enable
-software BCH ECC (introduced in previous patches) and select BCH error
-correction capability.
 
-Signed-off-by: Ivan Djelic <ivan.djelic@parrot.com>
----
-v2 changelog
-- do not handle small page devices
+Hi all,
+we have on a powerpc based board with a new Numonyx P30 65nm 1GBit flash and
+we see have problems with write errors when we create an ubi volume.
 
- drivers/mtd/nand/nandsim.c |   40 +++++++++++++++++++++++++++++++++++++++-
- 1 files changed, 39 insertions(+), 1 deletions(-)
+To find the problem I added few printk in the cfi_cmdset_0001.c
+Adding a printk for erase suspend make the problem show always.
+I expect a problem with the protection as discussed already in the thread
+Numonyx NOR and chip->mutex bug?
 
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index a5aa99f..e4ed5d7 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -34,6 +34,7 @@
- #include <linux/string.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
-+#include <linux/mtd/nand_bch.h>
- #include <linux/mtd/partitions.h>
- #include <linux/delay.h>
- #include <linux/list.h>
-@@ -108,6 +109,7 @@ static unsigned int rptwear = 0;
- static unsigned int overridesize = 0;
- static char *cache_file = NULL;
- static unsigned int bbt;
-+static unsigned int bch;
- 
- module_param(first_id_byte,  uint, 0400);
- module_param(second_id_byte, uint, 0400);
-@@ -132,6 +134,7 @@ module_param(rptwear,        uint, 0400);
- module_param(overridesize,   uint, 0400);
- module_param(cache_file,     charp, 0400);
- module_param(bbt,	     uint, 0400);
-+module_param(bch,	     uint, 0400);
- 
- MODULE_PARM_DESC(first_id_byte,  "The first byte returned by NAND Flash 'read ID' command (manufacturer ID)");
- MODULE_PARM_DESC(second_id_byte, "The second byte returned by NAND Flash 'read ID' command (chip ID)");
-@@ -165,6 +168,7 @@ MODULE_PARM_DESC(overridesize,   "Specifies the NAND Flash size overriding the I
- 				 " e.g. 5 means a size of 32 erase blocks");
- MODULE_PARM_DESC(cache_file,     "File to use to cache nand pages instead of memory");
- MODULE_PARM_DESC(bbt,		 "0 OOB, 1 BBT with marker in OOB, 2 BBT with marker in data area");
-+MODULE_PARM_DESC(bch,		 "Enable BCH ecc and set how many bits should be correctable in 512-byte blocks");
- 
- /* The largest possible page size */
- #define NS_LARGEST_PAGE_SIZE	4096
-@@ -2309,7 +2313,41 @@ static int __init ns_init_module(void)
- 	if ((retval = parse_gravepages()) != 0)
- 		goto error;
- 
--	if ((retval = nand_scan(nsmtd, 1)) != 0) {
-+	if ((retval = nand_scan_ident(nsmtd, 1, NULL)) != 0) {
-+		NS_ERR("cannot scan NAND Simulator device\n");
-+		if (retval > 0)
-+			retval = -ENXIO;
-+		goto error;
-+	}
-+
-+	if (bch) {
-+		unsigned int eccsteps, eccbytes;
-+		if (!mtd_nand_has_bch()) {
-+			NS_ERR("BCH ECC support is disabled\n");
-+			retval = -EINVAL;
-+			goto error;
-+		}
-+		/* use 512-byte ecc blocks */
-+		eccsteps = nsmtd->writesize/512;
-+		eccbytes = (bch*13+7)/8;
-+		/* do not bother supporting small page devices */
-+		if ((nsmtd->oobsize < 64) || !eccsteps) {
-+			NS_ERR("bch not available on small page devices\n");
-+			retval = -EINVAL;
-+			goto error;
-+		}
-+		if ((eccbytes*eccsteps+2) > nsmtd->oobsize) {
-+			NS_ERR("invalid bch value %u\n", bch);
-+			retval = -EINVAL;
-+			goto error;
-+		}
-+		chip->ecc.mode = NAND_ECC_SOFT_BCH;
-+		chip->ecc.size = 512;
-+		chip->ecc.bytes = eccbytes;
-+		NS_INFO("using %u-bit/%u bytes BCH ECC\n", bch, chip->ecc.size);
-+	}
-+
-+	if ((retval = nand_scan_tail(nsmtd)) != 0) {
- 		NS_ERR("can't register NAND Simulator\n");
- 		if (retval > 0)
- 			retval = -ENXIO;
--- 
-1.7.2.3
+I printed the time (using jiffies), the tid, the operation and address 
+of the operation.
+
+
+-bash-3.2# ubimkvol /dev/ubi0 -s 6MiB -N test_volume
+
+  time   tid  operation               address of operation       my comments
+--------------------------------------------------------------------------------- 
+
+[0179][0209] do_erase_oneblock start adr=0x00000000             start 
+erase block
+[0187][0465] erase suspend           adr=0x01125000             erase 
+suspend (strange adr)
+[0191][0209] erase resumed           adr=0x00000000             erase 
+resume  (correct adr)
+[0199][0209] do_erase_oneblock end   adr=0x00000000             erase end
+[1175][0465] 50000000.flash: buffer write error status 0xb0 
+adr=0x01125400 len=0x400
+
+program failed status (0xb0) ready & cmd sequence error
+
+In addition I added all cmd sent to the flash in a buffer and print it 
+in case of error.
+Here is the log:
+
+  time   tid  operation                                  my comments
+--------------------------------------------------------------------------------- 
+
+[0187][0209] do_erase_oneblock start adr=0x00000000     first thread  
+Start with erasing adr=0
+[0187][0209] map_write 0x50 to 0x00000000                             
+Clr Status Reg
+[0187][0209] map_write 0x20 to 0x00000000                      Block 
+Erase adr=0
+[0187][0209] map_write 0xd0 to 0x00000000                      Block 
+Erase Confirm adr=0
+[0187][0465] map_write 0xb0 to 0x01125000               second thread 
+Erase suspend
+[0191][0465] map_write 0x70 to 0x01125000                      Read 
+Status Reg
+[0191][0465] map_write 0xe8 to 0x01125000                             
+Buffered Prog  adr=0x01125000
+[0191][0209] map_write 0x70 to 0x00000000               first thread  
+Read Status Reg
+[0191][0209] map_write 0xd0 to 0x00000000                             
+Resume (what!?!)
+[0191][0209] map_write 0x70 to 0x00000000                             
+Read Status Reg
+[0199][0209] erase resumed 2b        adr=0x00000000                   
+(Erase) Resumed Finsh
+[0207][0209] do_erase_oneblock end   adr=0x00000000                   
+Erase finished
+[0207][0465] map_write 0x1ff to 0x01125000              second thread 
+!!! contiune with Buffer Prog, write size
+[0207][0465] map_write 0xc03c0000 to 0x01125000                       
+write 512 word data to buf
+[0207][0465] map_write 0xc03c0000 to 0x01125002
+..
+[0211][0465] map_write 0xc03c0000 to 0x011253fc
+[0211][0465] map_write 0xc03c0000 to 0x011253fe
+[0211][0465] map_write 0xd0 to 0x01125000                             
+Buffered Prog Confirm
+[1175][0465] map_write 0x50 to 0x01125000                  Clr Status Reg
+[1175][0465] map_write 0x70 to 0x01125000                             
+Read Status Reg
+[1183][0465] 50000000.flash: buffer write error status 0xb0 
+adr=0x01125400 len=0x0 (0x400)  Buffered Prog failed status (0xb0) ready 
+& cmd sequence error
+
+Conclusion:
+I expect is a protection problem. A running erase is suspended due to 
+write. But the write is not finished.
+The erase is resumed in the middle of the buffered Prog preparation.
+
+Do you have any ideas why this can happen?
+
+Best Regards
+Stefan Bigler
