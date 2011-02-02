@@ -1,21 +1,19 @@
-Received: from aa013-1msr.fastwebnet.it ([62.101.93.133])
+Received: from gateway.prograde.net ([66.92.163.78] helo=sol.prograde.net)
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PkcxV-0007Vp-Lz
-	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 13:41:22 +0000
-From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Support for SST 39VF6402B has been officially added or I need to
-	patch the kernel?
-Date: Wed, 2 Feb 2011 14:41:17 +0100
-References: <201101301935.38730.fabio.giovagnini@aurion-tech.com>
-	<AANLkTiktds1RAAZK6ynUOL3L0hsqXjR99mcBsCeagD5B@mail.gmail.com>
-In-Reply-To: <AANLkTiktds1RAAZK6ynUOL3L0hsqXjR99mcBsCeagD5B@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201102021441.17956.fabio.giovagnini@aurion-tech.com>
-Cc: Guillaume LECERF <glecerf@gmail.com>
+	id 1Pke5i-00080F-Aj
+	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 14:53:55 +0000
+Subject: Re: Numonyx NOR flash mutex problem when creating UBI volumes
+Mime-Version: 1.0 (Apple Message framework v1082)
+Content-Type: text/plain; charset=us-ascii
+From: Michael Cashwell <mboards@prograde.net>
+In-Reply-To: <4D493D95.6090005@keymile.com>
+Date: Wed, 2 Feb 2011 09:54:39 -0500
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <43A4A174-AEE7-449B-9EAC-A7986BD3CA2C@prograde.net>
+References: <4D493D95.6090005@keymile.com>
+To: Stefan Bigler <stefan.bigler@keymile.com>
+Cc: Holger brunck <holger.brunck@keymile.com>, linux-mtd@lists.infradead.org,
+	Joakim Tjernlund <joakim.tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,110 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Guillaume,
-with configuration I need to select in mtd kernel configuration?
-No I see;
-physmap platform flash device: 00400001 at 20400000
-physmap-flash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID 
-0x0000bf Chip ID 0x00236c
-NOR chip too large to fit in mapping. Attempting to cope...
-number of CFI chips: 1
-Reducing visibility of 8192KiB chip to 4096KiB
-cmdlinepart partition parsing not available
-Searching for RedBoot partition table in physmap-flash at offset 0x3ff001
-No RedBoot partition table detected in physmap-flash
-Using physmap partition information
-Creating 3 MTD partitions on "physmap-flash":
-0x000000000000-0x000000040000 : "Bootloader"
-0x000000040000-0x000000200000 : "Kernel"
-0x000000200000-0x000000400001 : "Flash_FS"
-mtd: partition "Flash_FS" doesn't end on an erase block -- force read-only
-sh-rtc sh-rtc: rtc core: registered sh as rtc0
-cpuidle: using governor ladder
-sh_cmt sh_cmt.0: kept as earlytimer
-sh_cmt sh_cmt.1: used for clock events
-sh_mtu2 sh_mtu2.0: kept as earlytimer
-sh_mtu2 sh_mtu2.1: used for clock events
-heartbeat: version 0.1.2 loaded
-oprofile: using timer interrupt.
-sh-rtc sh-rtc: setting system clock to 1970-01-01 00:00:00 UTC (0)
-jffs2: Flash size not aligned to erasesize, reducing to 2048KiB
-Node at 0x00000fe8 with length 0x0000002c would run over the end of the erase 
-block
-Perhaps the file system was created with the wrong erase size?
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000ff0: 0xa026 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001000: 0x4d49 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001004: 0x0402 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001008: 0xdd74 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000100c: 0xcd96 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001010: 0x6d74 
-instead
-Node at 0x00001fe0 with length 0x0000002d would run over the end of the erase 
-block
-Perhaps the file system was created with the wrong erase size?
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00001fe8: 0xd721 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002000: 0x6f62 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002004: 0xbd2b 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002008: 0x7074 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000200c: 0x63ff 
-instead
-Node at 0x00002fd0 with length 0x00000046 would run over the end of the erase 
-block
-Perhaps the file system was created with the wrong erase size?
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002fd8: 0x4ae1 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002ff0: 0x4d49 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00002ff4: 0x4d49 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000300c: 0x559c 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003010: 0x5e2e 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003014: 0x030d 
-instead
-Node at 0x00003e24 with length 0x00000480 would run over the end of the erase 
-block
-Perhaps the file system was created with the wrong erase size?
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e2c: 0x5c8a 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e3c: 0x03e8 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e44: 0x4d49 
-instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003e48: 0x4d49 
-instead
+On Feb 2, 2011, at 6:18 AM, Stefan Bigler wrote:
 
+> To find the problem I added few printk in the cfi_cmdset_0001.c
+> Adding a printk for erase suspend make the problem show always.
 
-Could you suggest me what iI have to investigate?
+Interestingly, I've tended to see the problem also when doing UBI, but =
+during writes, not formatting. And in my case adding printks to any =
+relevant hot path tended to make the problem vanish.
 
+> I expect a problem with the protection as discussed already in the =
+thread Numonyx NOR and chip->mutex bug?
 
-Thanks in advance
+I believe I've found the issue. It was not a mutex bug as I originally =
+thought though it was true that not dropping the chip mutex while =
+waiting for lengthy commands to complete did mask the problem.
 
+I was going to post my results later today anyway but as you are also =
+struggling I'll endeavor to do this soon. I will also make the post as a =
+follow-on to the message thread I originally started.
 
-On Sunday 30 January 2011 19:57:31 Guillaume LECERF wrote:
-> 2011/1/30 Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>:
-> >        Thanks
-> 
-> Yes.
+Just a few minutes, please.
 
--- 
-Ing. Fabio Giovagnini
-
-Aurion s.r.l.
-P.I e C.F.
-00885711200
-skype: aurion.giovagnini
-Tel. +39.051.594.78.24
-Fax. +39.051.082.14.49
-Cell. +39.335.83.50.919
-www.aurion-tech.com
+-Mike Cashwell
