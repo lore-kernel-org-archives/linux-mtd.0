@@ -1,14 +1,14 @@
 Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PkXwI-0004eh-Fo
+	id 1PkXwI-0004eg-FT
 	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 08:19:50 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Anatolij Gustschin <agust@denx.de>,
 	Holger Brunck <holger.brunck@keymile.com>,
 	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-Subject: [PATCH 6/7] UBIFS: amend commentaries in io.c to match new situation
-Date: Wed,  2 Feb 2011 10:21:56 +0200
-Message-Id: <1296634917-19335-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 1/7] UBI: incorporate maximum write size
+Date: Wed,  2 Feb 2011 10:21:52 +0200
+Message-Id: <1296634917-19335-2-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1296634917-19335-1-git-send-email-dedekind1@gmail.com>
 References: <1296634917-19335-1-git-send-email-dedekind1@gmail.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -23,102 +23,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Now write-buffer size is 'c->max_write_size', and some comments
-are out-of-date. This patch fixes them as well as adds few new
-comments.
+Incorporate MTD write buffer size into UBI device information
+because UBIFS needs this field. UBI does not use it ATM, just
+provides to upper layers in 'struct ubi_device_info'.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/io.c |   35 ++++++++++++++++++++++++++---------
- 1 files changed, 26 insertions(+), 9 deletions(-)
+ drivers/mtd/ubi/build.c |   13 +++++++++++++
+ drivers/mtd/ubi/kapi.c  |    1 +
+ drivers/mtd/ubi/ubi.h   |    3 +++
+ include/linux/mtd/ubi.h |   15 +++++++++++++++
+ 4 files changed, 32 insertions(+), 0 deletions(-)
 
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 37866b6..c122bc5 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -31,6 +31,16 @@
-  * buffer is full or when it is not used for some time (by timer). This is
-  * similar to the mechanism is used by JFFS2.
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 5ebe280..d7fa52e 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -690,6 +690,19 @@ static int io_init(struct ubi_device *ubi)
+ 	ubi_assert(ubi->hdrs_min_io_size <= ubi->min_io_size);
+ 	ubi_assert(ubi->min_io_size % ubi->hdrs_min_io_size == 0);
+ 
++	ubi->max_write_size = ubi->mtd->writebufsize;
++	/*
++	 * Maximum write size has to be greater or equivalent to min. I/O
++	 * size, and be multiple of min. I/O size.
++	 */
++	if (ubi->max_write_size < ubi->min_io_size ||
++	    ubi->max_write_size % ubi->min_io_size ||
++	    !is_power_of_2(ubi->max_write_size)) {
++		ubi_err("bad write buffer size %d for %d min. I/O unit",
++			ubi->max_write_size, ubi->min_io_size);
++		return -EINVAL;
++	}
++
+ 	/* Calculate default aligned sizes of EC and VID headers */
+ 	ubi->ec_hdr_alsize = ALIGN(UBI_EC_HDR_SIZE, ubi->hdrs_min_io_size);
+ 	ubi->vid_hdr_alsize = ALIGN(UBI_VID_HDR_SIZE, ubi->hdrs_min_io_size);
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 69fa4ef0..701df4f 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -41,6 +41,7 @@ void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di)
+ 	di->ubi_num = ubi->ubi_num;
+ 	di->leb_size = ubi->leb_size;
+ 	di->min_io_size = ubi->min_io_size;
++	di->max_write_size = ubi->max_write_size;
+ 	di->ro_mode = ubi->ro_mode;
+ 	di->cdev = ubi->cdev.dev;
+ }
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 0b0149c..b789943 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -381,6 +381,8 @@ struct ubi_wl_entry;
+  * @bad_allowed: whether the MTD device admits of bad physical eraseblocks or
+  *               not
+  * @nor_flash: non-zero if working on top of NOR flash
++ * @max_write_size: maximum amount of bytes the underlying flash can write at a
++ *                  time (MTD write buffer size)
+  * @mtd: MTD device descriptor
   *
-+ * UBIFS distinguishes between minimum write size (@c->min_io_size) and maximum
-+ * write size (@c->max_write_size). The latter is the maximum amount of bytes
-+ * the underlying flash is able to program at a time, and writing in
-+ * @c->max_write_size units should presumably be faster. Obviously,
-+ * @c->min_io_size <= @c->max_write_size. Write-buffers are of
-+ * @c->max_write_size bytes in size for maximum performance. However, when a
-+ * write-buffer is flushed, only the portion of it (aligned to @c->min_io_size
-+ * boundary) which contains data is written, not the whole write-buffer,
-+ * because this is more space-efficient.
+  * @peb_buf1: a buffer of PEB size used for different purposes
+@@ -464,6 +466,7 @@ struct ubi_device {
+ 	int vid_hdr_shift;
+ 	unsigned int bad_allowed:1;
+ 	unsigned int nor_flash:1;
++	int max_write_size;
+ 	struct mtd_info *mtd;
+ 
+ 	void *peb_buf1;
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index b31bd9e..238b32c 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -117,17 +117,32 @@ struct ubi_volume_info {
+  * @ubi_num: ubi device number
+  * @leb_size: logical eraseblock size on this UBI device
+  * @min_io_size: minimal I/O unit size
++ * @max_write_size: maximum amount of bytes the underlying flash can write at a
++ *                  time (MTD write buffer size)
+  * @ro_mode: if this device is in read-only mode
+  * @cdev: UBI character device major and minor numbers
+  *
+  * Note, @leb_size is the logical eraseblock size offered by the UBI device.
+  * Volumes of this UBI device may have smaller logical eraseblock size if their
+  * alignment is not equivalent to %1.
 + *
-  * Write-buffers are defined by 'struct ubifs_wbuf' objects and protected by
-  * mutexes defined inside these objects. Since sometimes upper-level code
-  * has to lock the write-buffer (e.g. journal space reservation code), many
-@@ -46,8 +56,8 @@
-  * UBIFS uses padding when it pads to the next min. I/O unit. In this case it
-  * uses padding nodes or padding bytes, if the padding node does not fit.
-  *
-- * All UBIFS nodes are protected by CRC checksums and UBIFS checks all nodes
-- * every time they are read from the flash media.
-+ * All UBIFS nodes are protected by CRC checksums and UBIFS checks CRC when
-+ * they are read from the flash media.
-  */
- 
- #include <linux/crc32.h>
-@@ -347,6 +357,12 @@ static void cancel_wbuf_timer_nolock(struct ubifs_wbuf *wbuf)
-  *
-  * This function synchronizes write-buffer @buf and returns zero in case of
-  * success or a negative error code in case of failure.
++ * The @max_write_size field describes flash write maximum write unit. For
++ * example, NOR flash allows for changing individual bytes, so @min_io_size is
++ * %1. However, it does not mean than NOR flash has to write data byte-by-byte.
++ * Instead, CFI NOR flashes have a write-buffer of, e.g., 64 bytes, and when
++ * writing large chunks of data, they write 64-bytes at a time. Obviously, this
++ * improves write throughput.
 + *
-+ * Note, although write-buffers are of @c->max_write_size, this function does
-+ * not necessarily writes all @c->max_write_size bytes to the flash. Instead,
-+ * if the write-buffer is only partially filled with data, only the used part
-+ * of the write-buffer (aligned on @c->min_io_size boundary) is synchronized.
-+ * This way we waste less space.
++ * The @max_write_size field is always greater or equivalent to @min_io_size.
++ * E.g., some NOR flashes may have (@min_io_size = 1, @max_write_size = 64). In
++ * contrast, NAND flashes usually have @min_io_size = @max_write_size = NAND
++ * page size.
   */
- int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
- {
-@@ -518,8 +534,9 @@ out_timers:
-  *
-  * This function writes data to flash via write-buffer @wbuf. This means that
-  * the last piece of the node won't reach the flash media immediately if it
-- * does not take whole minimal I/O unit. Instead, the node will sit in RAM
-- * until the write-buffer is synchronized (e.g., by timer).
-+ * does not take whole max. write unit (@c->max_write_size). Instead, the node
-+ * will sit in RAM until the write-buffer is synchronized (e.g., by timer, or
-+ * because more data are appended to the write-buffer).
-  *
-  * This function returns zero in case of success and a negative error code in
-  * case of failure. If the node cannot be written because there is no more
-@@ -590,8 +607,8 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 
- 	/*
- 	 * The node is large enough and does not fit entirely within current
--	 * minimal I/O unit. We have to fill and flush write-buffer and switch
--	 * to the next min. I/O unit.
-+	 * available space. We have to fill and flush write-buffer and switch
-+	 * to the next max. write unit.
- 	 */
- 	dbg_io("flush jhead %s wbuf to LEB %d:%d",
- 	       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs);
-@@ -607,8 +624,8 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 	written = wbuf->avail;
- 
- 	/*
--	 * The remaining data may take more whole min. I/O units, so write the
--	 * remains multiple to min. I/O unit size directly to the flash media.
-+	 * The remaining data may take more whole max. write units, so write the
-+	 * remains multiple to max. write unit size directly to the flash media.
- 	 * We align node length to 8-byte boundary because we anyway flash wbuf
- 	 * if the remaining space is less than 8 bytes.
- 	 */
-@@ -630,7 +647,7 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 	if (aligned_len)
- 		/*
- 		 * And now we have what's left and what does not take whole
--		 * min. I/O unit, so write it to the write-buffer and we are
-+		 * max. write unit, so write it to the write-buffer and we are
- 		 * done.
- 		 */
- 		memcpy(wbuf->buf, buf + written, len);
+ struct ubi_device_info {
+ 	int ubi_num;
+ 	int leb_size;
+ 	int min_io_size;
++	int max_write_size;
+ 	int ro_mode;
+ 	dev_t cdev;
+ };
 -- 
 1.7.2.3
