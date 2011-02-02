@@ -1,17 +1,17 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PkWbE-0004Lk-PV
-	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 06:53:57 +0000
-Received: from eru.research.nokia.com (helruo-dhcp021230.ntc.nokia.com
-	[172.21.21.230])
-	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p126rroB011982
-	for <linux-mtd@lists.infradead.org>; Wed, 2 Feb 2011 08:53:54 +0200
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: mtdram: initialize writebufsize field
-Date: Wed,  2 Feb 2011 08:56:14 +0200
-Message-Id: <1296629774-22498-1-git-send-email-Artem.Bityutskiy@nokia.com>
+	id 1PkXwI-0004ek-Fk
+	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2011 08:19:47 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Anatolij Gustschin <agust@denx.de>,
+	Holger Brunck <holger.brunck@keymile.com>,
+	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Subject: [PATCH 2/7] UBIFS: incorporate maximum write size
+Date: Wed,  2 Feb 2011 10:21:53 +0200
+Message-Id: <1296634917-19335-3-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1296634917-19335-1-git-send-email-dedekind1@gmail.com>
+References: <1296634917-19335-1-git-send-email-dedekind1@gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +21,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Set the 'mtd->writebufsize' field to 64 to mimic modern CFI flashes.
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+
+Incorporate maximum write size into the UBIFS description data
+structure. This patch just introduces new 'c->max_write_size'
+and 'c->max_write_shift' fields as a preparation for the following
+patches.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/devices/mtdram.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ fs/ubifs/super.c |   19 +++++++++++++++++++
+ fs/ubifs/ubifs.h |    5 +++++
+ 2 files changed, 24 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/mtd/devices/mtdram.c b/drivers/mtd/devices/mtdram.c
-index 26a6e80..1483e18 100644
---- a/drivers/mtd/devices/mtdram.c
-+++ b/drivers/mtd/devices/mtdram.c
-@@ -121,6 +121,7 @@ int mtdram_init_device(struct mtd_info *mtd, void *mapped_address,
- 	mtd->flags = MTD_CAP_RAM;
- 	mtd->size = size;
- 	mtd->writesize = 1;
-+	mtd->writebufsize = 64; /* Mimic CFI NOR flashes */
- 	mtd->erasesize = MTDRAM_ERASE_SIZE;
- 	mtd->priv = mapped_address;
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index d203c99..6747b59 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -515,6 +515,8 @@ static int init_constants_early(struct ubifs_info *c)
+ 	c->half_leb_size = c->leb_size / 2;
+ 	c->min_io_size = c->di.min_io_size;
+ 	c->min_io_shift = fls(c->min_io_size) - 1;
++	c->max_write_size = c->di.max_write_size;
++	c->max_write_shift = fls(c->max_write_size) - 1;
  
+ 	if (c->leb_size < UBIFS_MIN_LEB_SZ) {
+ 		ubifs_err("too small LEBs (%d bytes), min. is %d bytes",
+@@ -533,6 +535,18 @@ static int init_constants_early(struct ubifs_info *c)
+ 		return -EINVAL;
+ 	}
+ 
++ 	/*
++	 * Maximum write size has to be greater or equivalent to min. I/O
++	 * size, and be multiple of min. I/O size.
++	 */
++	if (c->max_write_size < c->min_io_size ||
++	    c->max_write_size % c->min_io_size ||
++	    !is_power_of_2(c->max_write_size)) {
++		ubifs_err("bad write buffer size %d for %d min. I/O unit",
++			  c->max_write_size, c->min_io_size);
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * UBIFS aligns all node to 8-byte boundary, so to make function in
+ 	 * io.c simpler, assume minimum I/O unit size to be 8 bytes if it is
+@@ -541,6 +555,10 @@ static int init_constants_early(struct ubifs_info *c)
+ 	if (c->min_io_size < 8) {
+ 		c->min_io_size = 8;
+ 		c->min_io_shift = 3;
++		if (c->max_write_size < c->min_io_size) {
++			c->max_write_size = c->min_io_size;
++			c->max_write_shift = c->min_io_shift;
++		}
+ 	}
+ 
+ 	c->ref_node_alsz = ALIGN(UBIFS_REF_NODE_SZ, c->min_io_size);
+@@ -1399,6 +1417,7 @@ static int mount_ubifs(struct ubifs_info *c)
+ 
+ 	dbg_msg("compiled on:         " __DATE__ " at " __TIME__);
+ 	dbg_msg("min. I/O unit size:  %d bytes", c->min_io_size);
++	dbg_msg("max. write size:     %d bytes", c->max_write_size);
+ 	dbg_msg("LEB size:            %d bytes (%d KiB)",
+ 		c->leb_size, c->leb_size >> 10);
+ 	dbg_msg("data journal heads:  %d",
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index d182354..8b51949 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1024,6 +1024,9 @@ struct ubifs_debug_info;
+  *
+  * @min_io_size: minimal input/output unit size
+  * @min_io_shift: number of bits in @min_io_size minus one
++ * @max_write_size: maximum amount of bytes the underlying flash can write at a
++ *                  time (MTD write buffer size)
++ * @max_write_shift: number of bits in @max_write_size minus one
+  * @leb_size: logical eraseblock size in bytes
+  * @half_leb_size: half LEB size
+  * @idx_leb_size: how many bytes of an LEB are effectively available when it is
+@@ -1270,6 +1273,8 @@ struct ubifs_info {
+ 
+ 	int min_io_size;
+ 	int min_io_shift;
++	int max_write_size;
++	int max_write_shift;
+ 	int leb_size;
+ 	int half_leb_size;
+ 	int idx_leb_size;
 -- 
 1.7.2.3
