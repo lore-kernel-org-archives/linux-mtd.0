@@ -1,20 +1,28 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from gw1.transmode.se ([213.115.205.20])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PlKi7-00016y-PO
-	for linux-mtd@lists.infradead.org; Fri, 04 Feb 2011 12:24:24 +0000
-Received: by fxm19 with SMTP id 19so2379311fxm.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 Feb 2011 04:24:22 -0800 (PST)
-Sender: Vasiliy Kulikov <segooon@gmail.com>
-From: Vasiliy Kulikov <segoon@openwall.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH 20/20] fs: ubifs: world-writable debugfs dump_* files
-Date: Fri,  4 Feb 2011 15:24:19 +0300
-Message-Id: <cd575609cc07581a71ba925308d9d69c6e0c6d79.1296818921.git.segoon@openwall.com>
-In-Reply-To: <cover.1296818921.git.segoon@openwall.com>
-References: <cover.1296818921.git.segoon@openwall.com>
-Cc: security@kernel.org, Adrian Hunter <adrian.hunter@nokia.com>,
-	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
+	id 1PlKjz-0001B5-7U
+	for linux-mtd@lists.infradead.org; Fri, 04 Feb 2011 12:26:20 +0000
+In-Reply-To: <4D4BDD48.6040600@keymile.com>
+References: <16826B66-31FE-41AD-A6EF-E668A45AF1FE@prograde.net>			
+	<F4EC0B87-B4D8-4577-A36B-64E1723634BC@prograde.net>
+	<OF669CD6B0.87299771-ONC1257823.007EE3A7-C1257823.007F2FD2@transmode.se>
+	<25631ED7-C6A0-44B1-B33D-F48DC48C812E@prograde.net>	<OF695F4526.1DB1C212-ONC125782B.00602EFA-C125782B.006F0621@transmode.se>
+	<626D0191-85FC-41E2-94C7-CBFF9D9629BE@prograde.net>
+	<OFAEC8E64A.F4C40EA8-ONC125782C.002A10F5-C125782C.002D0641@transmode.se>
+	<OF562F5C46.D2EDB17F-ONC125782C.00358774-C125782C.0036154D@transmode.se>
+	<6FC0E416-EEBD-453F-AAB9-88BB6D90BFAB@prograde.net>
+	<4D4AD9ED.8060104@keymile.com> <4D4B37D4.4050204@keymile.com>
+	<OF0B032533.FA33B99E-ONC125782D.003AF89B-C125782D.003B43AA@transmode.se>
+	<4D4BDD48.6040600@keymile.com>
+Subject: Re: Numonyx NOR and chip->mutex bug?
+To: stefan.bigler@keymile.com
+Message-ID: <OFD03FCD17.DAB1BF0D-ONC125782D.0044023C-C125782D.004452F0@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Fri, 4 Feb 2011 13:26:16 +0100
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, Holger brunck <holger.brunck@keymile.com>,
+	Michael Cashwell <mboards@prograde.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +32,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Don't allow everybody to dump sensitive information about filesystems.
+Stefan Bigler <stefan.bigler@keymile.com> wrote on 2011/02/04 12:04:40:
+>
+> Hi Jocke
+>
+> The code does the same, but is much nicer :-)
+> My test is also working again.
 
-Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
----
- Compile tested only.
+Thinking a little more one could do:
+if (chip->state == chip_state) {
+	status = map_read(map, cmd_adr);
+		if (map_word_andequal(map, status, status_OK, status_OK))
+			break;
+}
+>
+> Im on the way to find out why our old P30 (130nm) Flash worked
+> without the fix.
 
- fs/ubifs/debug.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+Good.
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 0bee4db..bcb1acb 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2813,19 +2813,19 @@ int dbg_debugfs_init_fs(struct ubifs_info *c)
- 	}
- 
- 	fname = "dump_lprops";
--	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
-+	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, c, &dfs_fops);
- 	if (IS_ERR(dent))
- 		goto out_remove;
- 	d->dfs_dump_lprops = dent;
- 
- 	fname = "dump_budg";
--	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
-+	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, c, &dfs_fops);
- 	if (IS_ERR(dent))
- 		goto out_remove;
- 	d->dfs_dump_budg = dent;
- 
- 	fname = "dump_tnc";
--	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
-+	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, c, &dfs_fops);
- 	if (IS_ERR(dent))
- 		goto out_remove;
- 	d->dfs_dump_tnc = dent;
--- 
-1.7.0.4
+ Jocke
