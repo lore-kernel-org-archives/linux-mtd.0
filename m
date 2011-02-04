@@ -1,33 +1,20 @@
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PlKi7-00016y-PO
+	for linux-mtd@lists.infradead.org; Fri, 04 Feb 2011 12:24:24 +0000
+Received: by fxm19 with SMTP id 19so2379311fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 04 Feb 2011 04:24:22 -0800 (PST)
 Sender: Vasiliy Kulikov <segooon@gmail.com>
-Date: Fri, 4 Feb 2011 15:22:29 +0300
 From: Vasiliy Kulikov <segoon@openwall.com>
 To: linux-kernel@vger.kernel.org
-Subject: [PATCH 00/20] world-writable files in sysfs and debugfs
-Message-ID: <cover.1296818921.git.segoon@openwall.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: Mike Christie <michaelc@cs.wisc.edu>,
-	Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
-	Tony Lindgren <tony@atomide.com>, platform-driver-x86@vger.kernel.org,
-	socketcan-core@lists.berlios.de, Corentin Chary <corentincj@iksaif.net>,
-	"James E.J. Bottomley" <James.Bottomley@suse.de>,
-	Julia Lawall <julia@diku.dk>, Russell King <linux@arm.linux.org.uk>,
-	Samuel Ortiz <sameo@linux.intel.com>, linux-scsi@vger.kernel.org,
-	Karol Kozimor <sziwan@users.sourceforge.net>,
-	Kevin Hilman <khilman@deeprootsystems.com>,
-	Luca Risolia <luca.risolia@studio.unibo.it>, open-iscsi@googlegroups.com,
-	Wolfgang Grandegger <wg@grandegger.com>, Matthew Garrett <mjg@redhat.com>,
-	acpi4asus-user@lists.sourceforge.net, rtc-linux@googlegroups.com,
-	Carlos Corbacho <carlos@strangeworlds.co.uk>,
-	Mauro Carvalho Chehab <mchehab@infradead.org>,
-	linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Alessandro Zummo <a.zummo@towertech.it>, security@kernel.org,
-	Linus Walleij <linus.walleij@stericsson.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>, netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	linux-media@vger.kernel.org, Adrian Hunter <adrian.hunter@nokia.com>
+Subject: [PATCH 20/20] fs: ubifs: world-writable debugfs dump_* files
+Date: Fri,  4 Feb 2011 15:24:19 +0300
+Message-Id: <cd575609cc07581a71ba925308d9d69c6e0c6d79.1296818921.git.segoon@openwall.com>
+In-Reply-To: <cover.1296818921.git.segoon@openwall.com>
+References: <cover.1296818921.git.segoon@openwall.com>
+Cc: security@kernel.org, Adrian Hunter <adrian.hunter@nokia.com>,
+	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,64 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The search was made with trivial shell commands:
+Don't allow everybody to dump sensitive information about filesystems.
 
-find | xargs grep S_IWUGO
-find | xargs grep S_IWOTH
+Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
+---
+ Compile tested only.
 
-I didn't precisely investigate how exactly one may damage the
-system/hardware because of issues number, maybe the harm is very limited
-in case of some of these drivers.
+ fs/ubifs/debug.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-One suspicious file is ./staging/speakup/speakup.h, but it explitly calls
-macros as world-writable.  I didn't check what speakup's world-writable
-files provide because it requires some knowledge about the hardware.
-
-
-Vasiliy Kulikov (20):
-  mach-omap2: mux: world-writable debugfs files
-  mach-omap2: pm: world-writable debugfs timer files
-  mach-omap2: smartreflex: world-writable debugfs voltage files
-  mach-ux500: mbox-db5500: world-writable sysfs fifo file
-  leds: lp5521: world-writable sysfs engine* files
-  leds: lp5523: world-writable engine* sysfs files
-  video: sn9c102: world-wirtable sysfs files
-  mfd: ab3100: world-writable debugfs *_priv files
-  mfd: ab3500: world-writable debugfs register-* files
-  mfd: ab8500: world-writable debugfs register-* files
-  misc: ep93xx_pwm: world-writable sysfs files
-  net: can: at91_can: world-writable sysfs files
-  net: can: janz-ican3: world-writable sysfs termination file
-  platform: x86: acer-wmi: world-writable sysfs threeg file
-  platform: x86: asus_acpi: world-writable procfs files
-  platform: x86: tc1100-wmi: world-writable sysfs wireless and jogdial files
-  rtc: rtc-ds1511: world-writable sysfs nvram file
-  scsi: aic94xx: world-writable sysfs update_bios file
-  scsi: iscsi: world-writable sysfs priv_sess file
-  fs: ubifs: world-writable debugfs dump_* files
-
- arch/arm/mach-omap2/mux.c                  |    2 +-
- arch/arm/mach-omap2/pm-debug.c             |    8 ++++----
- arch/arm/mach-omap2/smartreflex.c          |    4 ++--
- arch/arm/mach-ux500/mbox-db5500.c          |    2 +-
- drivers/leds/leds-lp5521.c                 |   14 +++++++-------
- drivers/leds/leds-lp5523.c                 |   20 ++++++++++----------
- drivers/media/video/sn9c102/sn9c102_core.c |    6 +++---
- drivers/mfd/ab3100-core.c                  |    4 ++--
- drivers/mfd/ab3550-core.c                  |    6 +++---
- drivers/mfd/ab8500-debugfs.c               |    6 +++---
- drivers/misc/ep93xx_pwm.c                  |    6 +++---
- drivers/net/can/at91_can.c                 |    2 +-
- drivers/net/can/janz-ican3.c               |    2 +-
- drivers/platform/x86/acer-wmi.c            |    2 +-
- drivers/platform/x86/asus_acpi.c           |    8 +-------
- drivers/platform/x86/tc1100-wmi.c          |    2 +-
- drivers/rtc/rtc-ds1511.c                   |    2 +-
- drivers/scsi/aic94xx/aic94xx_init.c        |    2 +-
- drivers/scsi/scsi_transport_iscsi.c        |    2 +-
- fs/ubifs/debug.c                           |    6 +++---
- 20 files changed, 50 insertions(+), 56 deletions(-)
-
---
-Vasiliy Kulikov
-http://www.openwall.com - bringing security into open computing environments
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index 0bee4db..bcb1acb 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2813,19 +2813,19 @@ int dbg_debugfs_init_fs(struct ubifs_info *c)
+ 	}
+ 
+ 	fname = "dump_lprops";
+-	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
++	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, c, &dfs_fops);
+ 	if (IS_ERR(dent))
+ 		goto out_remove;
+ 	d->dfs_dump_lprops = dent;
+ 
+ 	fname = "dump_budg";
+-	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
++	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, c, &dfs_fops);
+ 	if (IS_ERR(dent))
+ 		goto out_remove;
+ 	d->dfs_dump_budg = dent;
+ 
+ 	fname = "dump_tnc";
+-	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
++	dent = debugfs_create_file(fname, S_IWUSR, d->dfs_dir, c, &dfs_fops);
+ 	if (IS_ERR(dent))
+ 		goto out_remove;
+ 	d->dfs_dump_tnc = dent;
+-- 
+1.7.0.4
