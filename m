@@ -1,15 +1,15 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pm4St-0007t7-Ln
-	for linux-mtd@lists.infradead.org; Sun, 06 Feb 2011 13:15:45 +0000
+	id 1Pm4St-0007t5-Lj
+	for linux-mtd@lists.infradead.org; Sun, 06 Feb 2011 13:15:46 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Anatolij Gustschin <agust@denx.de>,
 	Holger Brunck <holger.brunck@keymile.com>,
 	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>,
 	Adrian Hunter <adrian.hunter@nokia.com>
-Subject: [PATCH v2 2/5] UBIFS: incorporate maximum write size
-Date: Sun,  6 Feb 2011 15:17:47 +0200
-Message-Id: <1296998270-19853-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH v2 5/5] UBIFS: use max_write_size during recovery
+Date: Sun,  6 Feb 2011 15:17:50 +0200
+Message-Id: <1296998270-19853-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
 References: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -24,90 +24,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Incorporate maximum write size into the UBIFS description data
-structure. This patch just introduces new 'c->max_write_size'
-and 'c->max_write_shift' fields as a preparation for the following
-patches.
+When recovering from unclean reboots UBIFS scans the journal and checks nodes.
+If a corrupted node is found, UBIFS tries to check if this is the last node
+in the LEB or not. This is is done by checking if there only 0xFF bytes
+starting from the next min. I/O unit. However, since now we write in
+c->max_write_size, we should actually check for 0xFFs starting from the
+next max. write unit.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/super.c |   19 +++++++++++++++++++
- fs/ubifs/ubifs.h |    5 +++++
- 2 files changed, 24 insertions(+), 0 deletions(-)
+ fs/ubifs/recovery.c |   17 +++++++----------
+ 1 files changed, 7 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index d203c99..6a38174 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -515,6 +515,8 @@ static int init_constants_early(struct ubifs_info *c)
- 	c->half_leb_size = c->leb_size / 2;
- 	c->min_io_size = c->di.min_io_size;
- 	c->min_io_shift = fls(c->min_io_size) - 1;
-+	c->max_write_size = c->di.max_write_size;
-+	c->max_write_shift = fls(c->max_write_size) - 1;
- 
- 	if (c->leb_size < UBIFS_MIN_LEB_SZ) {
- 		ubifs_err("too small LEBs (%d bytes), min. is %d bytes",
-@@ -534,6 +536,18 @@ static int init_constants_early(struct ubifs_info *c)
- 	}
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 77e9b87..4278ae7 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -362,8 +362,9 @@ int ubifs_write_rcvrd_mst_node(struct ubifs_info *c)
+  * @offs: offset to check
+  *
+  * This function returns %1 if @offs was in the last write to the LEB whose data
+- * is in @buf, otherwise %0 is returned.  The determination is made by checking
+- * for subsequent empty space starting from the next @c->min_io_size boundary.
++ * is in @buf, otherwise %0 is returned. The determination is made by checking
++ * for subsequent empty space starting from the next @c->max_write_size
++ * boundary.
+  */
+ static int is_last_write(const struct ubifs_info *c, void *buf, int offs)
+ {
+@@ -371,10 +372,10 @@ static int is_last_write(const struct ubifs_info *c, void *buf, int offs)
+ 	uint8_t *p;
  
  	/*
-+	 * Maximum write size has to be greater or equivalent to min. I/O
-+	 * size, and be multiple of min. I/O size.
-+	 */
-+	if (c->max_write_size < c->min_io_size ||
-+	    c->max_write_size % c->min_io_size ||
-+	    !is_power_of_2(c->max_write_size)) {
-+		ubifs_err("bad write buffer size %d for %d min. I/O unit",
-+			  c->max_write_size, c->min_io_size);
-+		return -EINVAL;
-+	}
-+
-+	/*
- 	 * UBIFS aligns all node to 8-byte boundary, so to make function in
- 	 * io.c simpler, assume minimum I/O unit size to be 8 bytes if it is
- 	 * less than 8.
-@@ -541,6 +555,10 @@ static int init_constants_early(struct ubifs_info *c)
- 	if (c->min_io_size < 8) {
- 		c->min_io_size = 8;
- 		c->min_io_shift = 3;
-+		if (c->max_write_size < c->min_io_size) {
-+			c->max_write_size = c->min_io_size;
-+			c->max_write_shift = c->min_io_shift;
-+		}
- 	}
+-	 * Round up to the next @c->min_io_size boundary i.e. @offs is in the
+-	 * last wbuf written. After that should be empty space.
++	 * Round up to the next @c->max_write_size boundary i.e. @offs is in
++	 * the last wbuf written. After that should be empty space.
+ 	 */
+-	empty_offs = ALIGN(offs + 1, c->min_io_size);
++	empty_offs = ALIGN(offs + 1, c->max_write_size);
+ 	check_len = c->leb_size - empty_offs;
+ 	p = buf + empty_offs - offs;
+ 	return is_empty(p, check_len);
+@@ -836,12 +837,8 @@ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
+ static int recover_head(const struct ubifs_info *c, int lnum, int offs,
+ 			void *sbuf)
+ {
+-	int len, err;
++	int len = c->max_write_size, err;
  
- 	c->ref_node_alsz = ALIGN(UBIFS_REF_NODE_SZ, c->min_io_size);
-@@ -1399,6 +1417,7 @@ static int mount_ubifs(struct ubifs_info *c)
+-	if (c->min_io_size > 1)
+-		len = c->min_io_size;
+-	else
+-		len = 512;
+ 	if (offs + len > c->leb_size)
+ 		len = c->leb_size - offs;
  
- 	dbg_msg("compiled on:         " __DATE__ " at " __TIME__);
- 	dbg_msg("min. I/O unit size:  %d bytes", c->min_io_size);
-+	dbg_msg("max. write size:     %d bytes", c->max_write_size);
- 	dbg_msg("LEB size:            %d bytes (%d KiB)",
- 		c->leb_size, c->leb_size >> 10);
- 	dbg_msg("data journal heads:  %d",
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index d182354..8b51949 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -1024,6 +1024,9 @@ struct ubifs_debug_info;
-  *
-  * @min_io_size: minimal input/output unit size
-  * @min_io_shift: number of bits in @min_io_size minus one
-+ * @max_write_size: maximum amount of bytes the underlying flash can write at a
-+ *                  time (MTD write buffer size)
-+ * @max_write_shift: number of bits in @max_write_size minus one
-  * @leb_size: logical eraseblock size in bytes
-  * @half_leb_size: half LEB size
-  * @idx_leb_size: how many bytes of an LEB are effectively available when it is
-@@ -1270,6 +1273,8 @@ struct ubifs_info {
- 
- 	int min_io_size;
- 	int min_io_shift;
-+	int max_write_size;
-+	int max_write_shift;
- 	int leb_size;
- 	int half_leb_size;
- 	int idx_leb_size;
 -- 
 1.7.2.3
