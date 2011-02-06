@@ -1,23 +1,22 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pm6Eq-0000bc-8N
-	for linux-mtd@lists.infradead.org; Sun, 06 Feb 2011 15:09:21 +0000
-Received: by eyd9 with SMTP id 9so1805912eyd.36
+	id 1Pm6IL-0000eK-UP
+	for linux-mtd@lists.infradead.org; Sun, 06 Feb 2011 15:12:58 +0000
+Received: by ewy20 with SMTP id 20so1797328ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 06 Feb 2011 07:09:18 -0800 (PST)
-Subject: Re: [PATCH] drivers/mtd/maps/ts5500_flash.c: avoid calling
-	map_destroy on NULL
+	Sun, 06 Feb 2011 07:12:56 -0800 (PST)
+Subject: Re: [PATCH] mtd: tests : move ebcnt and pgcnt definitions before
+	usage in printing.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Julia Lawall <julia@diku.dk>
-In-Reply-To: <1296666816-21610-1-git-send-email-julia@diku.dk>
-References: <1296666816-21610-1-git-send-email-julia@diku.dk>
+To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+In-Reply-To: <1296733556-22196-1-git-send-email-roman.tereshonkov@nokia.com>
+References: <1296733556-22196-1-git-send-email-roman.tereshonkov@nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 06 Feb 2011 17:08:24 +0200
-Message-ID: <1297004904.4460.31.camel@localhost>
+Date: Sun, 06 Feb 2011 17:12:04 +0200
+Message-ID: <1297005124.4460.32.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,12 +27,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-02-02 at 18:13 +0100, Julia Lawall wrote:
-> map_destroy dereferences its argument.  The call is furthermore only
-> reachable when this argument is NULL.  Thus the call is dropped.
+On Thu, 2011-02-03 at 13:45 +0200, Roman Tereshonkov wrote:
+> ebcnt and pgcnt variable initialization is moved before printk which
+> uses them.
 > 
-> The semantic match that finds this problem is as follows:
-> (http://coccinelle.lip6.fr/)
+> Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
 
 Pushed to l2-mtd-2.6.git, thanks!
 
