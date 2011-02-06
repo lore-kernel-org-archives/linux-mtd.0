@@ -1,15 +1,15 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pm4St-0007t5-Lj
+	id 1Pm4St-0007t6-M0
 	for linux-mtd@lists.infradead.org; Sun, 06 Feb 2011 13:15:46 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Anatolij Gustschin <agust@denx.de>,
 	Holger Brunck <holger.brunck@keymile.com>,
 	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>,
 	Adrian Hunter <adrian.hunter@nokia.com>
-Subject: [PATCH v2 5/5] UBIFS: use max_write_size during recovery
-Date: Sun,  6 Feb 2011 15:17:50 +0200
-Message-Id: <1296998270-19853-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH v2 1/5] UBI: incorporate maximum write size
+Date: Sun,  6 Feb 2011 15:17:46 +0200
+Message-Id: <1296998270-19853-2-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
 References: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
@@ -24,61 +24,117 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-When recovering from unclean reboots UBIFS scans the journal and checks nodes.
-If a corrupted node is found, UBIFS tries to check if this is the last node
-in the LEB or not. This is is done by checking if there only 0xFF bytes
-starting from the next min. I/O unit. However, since now we write in
-c->max_write_size, we should actually check for 0xFFs starting from the
-next max. write unit.
+Incorporate MTD write buffer size into UBI device information
+because UBIFS needs this field. UBI does not use it ATM, just
+provides to upper layers in 'struct ubi_device_info'.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/recovery.c |   17 +++++++----------
- 1 files changed, 7 insertions(+), 10 deletions(-)
+ drivers/mtd/ubi/build.c |   14 ++++++++++++++
+ drivers/mtd/ubi/kapi.c  |    1 +
+ drivers/mtd/ubi/ubi.h   |    3 +++
+ include/linux/mtd/ubi.h |   15 +++++++++++++++
+ 4 files changed, 33 insertions(+), 0 deletions(-)
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 77e9b87..4278ae7 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -362,8 +362,9 @@ int ubifs_write_rcvrd_mst_node(struct ubifs_info *c)
-  * @offs: offset to check
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 5ebe280..f38e8de 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -690,11 +690,25 @@ static int io_init(struct ubi_device *ubi)
+ 	ubi_assert(ubi->hdrs_min_io_size <= ubi->min_io_size);
+ 	ubi_assert(ubi->min_io_size % ubi->hdrs_min_io_size == 0);
+ 
++	ubi->max_write_size = ubi->mtd->writebufsize;
++	/*
++	 * Maximum write size has to be greater or equivalent to min. I/O
++	 * size, and be multiple of min. I/O size.
++	 */
++	if (ubi->max_write_size < ubi->min_io_size ||
++	    ubi->max_write_size % ubi->min_io_size ||
++	    !is_power_of_2(ubi->max_write_size)) {
++		ubi_err("bad write buffer size %d for %d min. I/O unit",
++			ubi->max_write_size, ubi->min_io_size);
++		return -EINVAL;
++	}
++
+ 	/* Calculate default aligned sizes of EC and VID headers */
+ 	ubi->ec_hdr_alsize = ALIGN(UBI_EC_HDR_SIZE, ubi->hdrs_min_io_size);
+ 	ubi->vid_hdr_alsize = ALIGN(UBI_VID_HDR_SIZE, ubi->hdrs_min_io_size);
+ 
+ 	dbg_msg("min_io_size      %d", ubi->min_io_size);
++	dbg_msg("max_write_size   %d", ubi->max_write_size);
+ 	dbg_msg("hdrs_min_io_size %d", ubi->hdrs_min_io_size);
+ 	dbg_msg("ec_hdr_alsize    %d", ubi->ec_hdr_alsize);
+ 	dbg_msg("vid_hdr_alsize   %d", ubi->vid_hdr_alsize);
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 69fa4ef0..701df4f 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -41,6 +41,7 @@ void ubi_do_get_device_info(struct ubi_device *ubi, struct ubi_device_info *di)
+ 	di->ubi_num = ubi->ubi_num;
+ 	di->leb_size = ubi->leb_size;
+ 	di->min_io_size = ubi->min_io_size;
++	di->max_write_size = ubi->max_write_size;
+ 	di->ro_mode = ubi->ro_mode;
+ 	di->cdev = ubi->cdev.dev;
+ }
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 0b0149c..b789943 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -381,6 +381,8 @@ struct ubi_wl_entry;
+  * @bad_allowed: whether the MTD device admits of bad physical eraseblocks or
+  *               not
+  * @nor_flash: non-zero if working on top of NOR flash
++ * @max_write_size: maximum amount of bytes the underlying flash can write at a
++ *                  time (MTD write buffer size)
+  * @mtd: MTD device descriptor
   *
-  * This function returns %1 if @offs was in the last write to the LEB whose data
-- * is in @buf, otherwise %0 is returned.  The determination is made by checking
-- * for subsequent empty space starting from the next @c->min_io_size boundary.
-+ * is in @buf, otherwise %0 is returned. The determination is made by checking
-+ * for subsequent empty space starting from the next @c->max_write_size
-+ * boundary.
+  * @peb_buf1: a buffer of PEB size used for different purposes
+@@ -464,6 +466,7 @@ struct ubi_device {
+ 	int vid_hdr_shift;
+ 	unsigned int bad_allowed:1;
+ 	unsigned int nor_flash:1;
++	int max_write_size;
+ 	struct mtd_info *mtd;
+ 
+ 	void *peb_buf1;
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index b31bd9e..238b32c 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -117,17 +117,32 @@ struct ubi_volume_info {
+  * @ubi_num: ubi device number
+  * @leb_size: logical eraseblock size on this UBI device
+  * @min_io_size: minimal I/O unit size
++ * @max_write_size: maximum amount of bytes the underlying flash can write at a
++ *                  time (MTD write buffer size)
+  * @ro_mode: if this device is in read-only mode
+  * @cdev: UBI character device major and minor numbers
+  *
+  * Note, @leb_size is the logical eraseblock size offered by the UBI device.
+  * Volumes of this UBI device may have smaller logical eraseblock size if their
+  * alignment is not equivalent to %1.
++ *
++ * The @max_write_size field describes flash write maximum write unit. For
++ * example, NOR flash allows for changing individual bytes, so @min_io_size is
++ * %1. However, it does not mean than NOR flash has to write data byte-by-byte.
++ * Instead, CFI NOR flashes have a write-buffer of, e.g., 64 bytes, and when
++ * writing large chunks of data, they write 64-bytes at a time. Obviously, this
++ * improves write throughput.
++ *
++ * The @max_write_size field is always greater or equivalent to @min_io_size.
++ * E.g., some NOR flashes may have (@min_io_size = 1, @max_write_size = 64). In
++ * contrast, NAND flashes usually have @min_io_size = @max_write_size = NAND
++ * page size.
   */
- static int is_last_write(const struct ubifs_info *c, void *buf, int offs)
- {
-@@ -371,10 +372,10 @@ static int is_last_write(const struct ubifs_info *c, void *buf, int offs)
- 	uint8_t *p;
- 
- 	/*
--	 * Round up to the next @c->min_io_size boundary i.e. @offs is in the
--	 * last wbuf written. After that should be empty space.
-+	 * Round up to the next @c->max_write_size boundary i.e. @offs is in
-+	 * the last wbuf written. After that should be empty space.
- 	 */
--	empty_offs = ALIGN(offs + 1, c->min_io_size);
-+	empty_offs = ALIGN(offs + 1, c->max_write_size);
- 	check_len = c->leb_size - empty_offs;
- 	p = buf + empty_offs - offs;
- 	return is_empty(p, check_len);
-@@ -836,12 +837,8 @@ struct ubifs_scan_leb *ubifs_recover_log_leb(struct ubifs_info *c, int lnum,
- static int recover_head(const struct ubifs_info *c, int lnum, int offs,
- 			void *sbuf)
- {
--	int len, err;
-+	int len = c->max_write_size, err;
- 
--	if (c->min_io_size > 1)
--		len = c->min_io_size;
--	else
--		len = 512;
- 	if (offs + len > c->leb_size)
- 		len = c->leb_size - offs;
- 
+ struct ubi_device_info {
+ 	int ubi_num;
+ 	int leb_size;
+ 	int min_io_size;
++	int max_write_size;
+ 	int ro_mode;
+ 	dev_t cdev;
+ };
 -- 
 1.7.2.3
