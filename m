@@ -1,18 +1,18 @@
 Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pm5TG-000095-5Q
-	for linux-mtd@lists.infradead.org; Sun, 06 Feb 2011 14:20:11 +0000
-Received: by eyd9 with SMTP id 9so1797144eyd.36
+	id 1Pm5YW-0000CF-Kq
+	for linux-mtd@lists.infradead.org; Sun, 06 Feb 2011 14:25:37 +0000
+Received: by eyd9 with SMTP id 9so1798098eyd.36
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 06 Feb 2011 06:20:08 -0800 (PST)
-Subject: Re: mount ubi volume fails: No such device
+	Sun, 06 Feb 2011 06:25:34 -0800 (PST)
+Subject: Re: Testing a device using mtd_stresstest
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lars Michael <lh_post@yahoo.com>
-In-Reply-To: <194189.91256.qm@web30207.mail.mud.yahoo.com>
-References: <194189.91256.qm@web30207.mail.mud.yahoo.com>
+To: David Peverley <pev@sketchymonkey.com>
+In-Reply-To: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
+References: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 06 Feb 2011 16:19:14 +0200
-Message-ID: <1297001954.4460.2.camel@localhost>
+Date: Sun, 06 Feb 2011 16:24:41 +0200
+Message-ID: <1297002281.4460.6.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,28 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-01-31 at 02:35 -0800, Lars Michael wrote:
-> Hi,
-> 
-> I am trying to mount an UBI volume, but it fails:
-> 
-> # mount -t ubifs ubi0_0 /mnt/ubi
-> mount: mounting ubi0_0 on /mnt/ubi failed: No such device
->  
-> Using mkfs.ubifs and ubinize I have prepared an image containing three
-> volumes. On the target I have used ubiformat to flash the image and
-> ubiattach to attach to mtd1.
-> 
-> Target kernel: 2.6.29, platform m68k (mcf54418). The UBI tools on the
-> host are built from git://git.infradead.org/mtd-utils.git.
-> 
-> Everything looks fine to me, see below, but how do I mount a volume? I
-> have tried various ways to refer to the device (like ubi0:datafs,
-> ubi0_0) without luck.
-> 
-> Thanks for any help!
+Hi,
 
-Do you have ubifs in /proc/filesystems?
+On Mon, 2011-01-31 at 12:12 +0000, David Peverley wrote:
+> Question 1 : The  mtd_subpagetest (which I suspect should fail as the
+> device doesn't support sub-pages). I googled around and found a
+> reference that maybe I should add NAND_NO_SUBPAGE_WRITE to the
+> options. I tried this and it made no difference. Out of curiosity I
+> grepped through drivers/mtd and found that *no* drivers actully use
+> this bit anyway...! Is it reasonable to ignore this or ought I address
+> it? Should I set the flag and expect it to have an effect?
+
+MTD code is currently broken and CONFIG_MTD_NAND_VERIFY_WRITE causes
+errors when sub-pages are used. You should either disable this
+configuration option or fix MTD. We have this in our FAQ:
+
+http://www.linux-mtd.infradead.org/faq/ubi.html#L_subpage_verify_fail
+
+
+> Question 2 : The mtd_stresstest test fails after anywhere between 1000
+> and 200,000 operations. I'm certain this is a Bad Sign. It fails in
+> nand_base.c:nand_write_page() in the verification step enabled by
+> MTD_NAND_VERIFY_WRITE. When I tested this on our previous board (that
+> ostensibly works fine) it failed the stress test after 2.6M operations
+> instead. Should I be expecting to never see a failure of the stress
+> test or is an occasional verify failure reasonably expected?
+
+Yes, the test is expected to never fail. You should try to dig and
+understand why is it failing and what is the reason.
 
 -- 
 Best Regards,
