@@ -1,20 +1,20 @@
-Date: Mon, 7 Feb 2011 19:38:28 +0000
-From: Matthew Garrett <mjg59@srcf.ucam.org>
-To: Vasiliy Kulikov <segoon@openwall.com>
-Subject: Re: [PATCH 00/20] world-writable files in sysfs and debugfs
-Message-ID: <20110207193828.GB19838@srcf.ucam.org>
-References: <20110204140033.GA31184@albatros>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PmY0i-0003y2-8F
+	for linux-mtd@lists.infradead.org; Mon, 07 Feb 2011 20:48:37 +0000
+Received: by bwz5 with SMTP id 5so5613623bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 07 Feb 2011 12:48:32 -0800 (PST)
+Date: Mon, 7 Feb 2011 23:48:25 +0300
+From: Stanislav Fomichev <kernel@fomichev.me>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd/nand: move pointer dereferencing after the actual
+	check in verify_bbt_descr
+Message-ID: <4d505a9f.918acc0a.1584.ffffbfd6@mx.google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20110204140033.GA31184@albatros>
-Cc: security@kernel.org, acpi4asus-user@lists.sourceforge.net,
-	linux-scsi@vger.kernel.org, rtc-linux@googlegroups.com,
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-	socketcan-core@lists.berlios.de, linux-mtd@lists.infradead.org,
-	open-iscsi@googlegroups.com, linux-omap@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,7 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks, I've applied the x86 platform driver ones.
+Signed-off-by: Stanislav Fomichev <kernel@fomichev.me>
+---
+ drivers/mtd/nand/nand_bbt.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 6ebd869..a1e8b30 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1101,12 +1101,16 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
+ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ {
+ 	struct nand_chip *this = mtd->priv;
+-	u32 pattern_len = bd->len;
+-	u32 bits = bd->options & NAND_BBT_NRBITS_MSK;
++	u32 pattern_len;
++	u32 bits;
+ 	u32 table_size;
+ 
+ 	if (!bd)
+ 		return;
++
++	pattern_len = bd->len;
++	bits = bd->options & NAND_BBT_NRBITS_MSK;
++
+ 	BUG_ON((this->options & NAND_USE_FLASH_BBT_NO_OOB) &&
+ 			!(this->options & NAND_USE_FLASH_BBT));
+ 	BUG_ON(!bits);
 -- 
-Matthew Garrett | mjg59@srcf.ucam.org
+1.7.1
