@@ -1,19 +1,20 @@
-Received: from aa012-1msr.fastwebnet.it ([62.101.93.132])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PmsRc-0005EV-Qo
-	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2011 18:37:45 +0000
-Received: from aurio01.localnet (39.225.70.39) by aa012-1msr.fastwebnet.it
-	(8.5.016.6) id 4D510A1D0026A8AB for linux-mtd@lists.infradead.org;
-	Tue, 8 Feb 2011 19:37:43 +0100
-From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
-To: linux-mtd@lists.infradead.org
-Subject: Sorry guys, but why it not allowed erasesize less than 8KiB?
-Date: Tue, 8 Feb 2011 19:37:41 +0100
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pmsa5-0005L1-98
+	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2011 18:46:29 +0000
+Received: by gyg4 with SMTP id 4so2443654gyg.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 Feb 2011 10:46:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <201102081937.41482.fabio.giovagnini@aurion-tech.com>
+In-Reply-To: <201102081937.41482.fabio.giovagnini@aurion-tech.com>
+References: <201102081937.41482.fabio.giovagnini@aurion-tech.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 8 Feb 2011 13:46:07 -0500
+Message-ID: <AANLkTi=4SztR-A8TzaFfgVo5-3mxACMZCOvOo4twnwd9@mail.gmail.com>
+Subject: Re: Sorry guys, but why it not allowed erasesize less than 8KiB?
+To: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +24,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks a lot
-
--- 
-Ing. Fabio Giovagnini
-
-Aurion s.r.l.
-P.I e C.F.
-00885711200
-skype: aurion.giovagnini
-Tel. +39.051.594.78.24
-Fax. +39.051.082.14.49
-Cell. +39.335.83.50.919
-www.aurion-tech.com
+ask your flash vendor
+-mike
