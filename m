@@ -1,16 +1,17 @@
-Received: from p02c12o143.mxlogic.net ([208.65.145.76])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pmpml-0003ny-99
-	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2011 15:47:24 +0000
-Content-Class: urn:content-classes:message
+Received: from aa012-1msr.fastwebnet.it ([62.101.93.132])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PmqT7-0004H7-Es
+	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2011 16:31:10 +0000
+From: Fabio Giovagnini <fabio.giovagnini@aurion-tech.com>
+To: linux-mtd@lists.infradead.org
+Subject: Prolem with CFI probe and make.jffs2 erase size
+Date: Tue, 8 Feb 2011 17:31:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Subject: Kernel panic using add_mtd_partitions
-Date: Tue, 8 Feb 2011 09:47:46 -0600
-Message-ID: <9AC3F0E75060224C8BBC5BA2DDC8853A1F3B0C88@EXV1.corp.adtran.com>
-From: ANDY KENNEDY <ANDY.KENNEDY@adtran.com>
-To: <linux-mtd@lists.infradead.org>
+Message-Id: <201102081731.02548.fabio.giovagnini@aurion-tech.com>
+Cc: Guillaume LECERF <glecerf@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,128 +21,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For some reason, I don't get e-mails I send to the list (though this is
-set in my options), so sorry for the "new" thread.
+Hi guys.
+when I boot my kernel I read:
+(DEBUG_CFI enabled as suggestied by Guillaume)
 
-> -----Original Message-----
-> From: ANDY KENNEDY
-> Sent: Tuesday, February 01, 2011 4:13 PM
-> To: 'linux-mtd@lists.infradead.org'
-> Subject: Kernel panic using add_mtd_partitions
->=20
->
-123456789012345678901234567890123456789012345678901234567890123456789012
-> I have gotten past the issue of not being able to see the NAND chip
-and
-> am working that issue (a symptom of an unrelated issue).
->=20
-> Now I'm attempting to use add_mtd_partitions() to specify the
-partitions.
-> In the original kernel I was using (2.6.29) this worked without any
-> issue.  In 2.6.36.1, the kernel panics.  The code I'm attempting to
-use
-> to configure the partitions is as follows:
->=20
-> __maybe_unused static struct    mtd_partition   nand_partition_info[]
-=3D {
->         { .name =3D  "Kernel partition",
->           .offset =3D 0,
->           .size =3D   4 * 1024 * 1024,
->         },
->         { .name =3D  "Root partition",
->           .offset =3D MTDPART_OFS_APPEND,
->           .size =3D   MTDPART_SIZ_FULL,
->         },
-> };
->=20
->=20
->=20
->         add_mtd_partitions(&board_mtd, nand_partition_info,
-ARRAY_SIZE(nand_partition_info));
->=20
-> Any help would be great!
->=20
-> Thanks,
-> Andy
+=2E...
+physmap platform flash device: 00400001 at 20400000
+Number of erase regions: 2
+Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
+No Primary Algorithm Table
+Alternative Vendor Command Set: 0000 (None)
+No Alternate Algorithm Table
+Vcc Minimum:  2.7 V
+Vcc Maximum:  3.6 V
+No Vpp line
+Typical byte/word write timeout: 8 =EF=BF=BD=C2=B5s
+Maximum byte/word write timeout: 16 =EF=BF=BD=C2=B5s
+=46ull buffer write not supported
+Typical block erase timeout: 16 ms
+Maximum block erase timeout: 32 ms
+Typical chip erase timeout: 32 ms
+Maximum chip erase timeout: 64 ms
+Device size: 0x800000 bytes (8 MiB)
+=46lash Device Interface description: 0x0001
+  - x16-only asynchronous interface
+Max. bytes in buffer write: 0x1
+Number of Erase Block Regions: 2
+  Erase Region #0: BlockSize 0x1000 bytes, 2048 blocks
+  Erase Region #1: BlockSize 0x10000 bytes, 128 blocks
+physmap-flash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer ID=20
+0x0000bf Chip ID 0x00236c
+NOR chip too large to fit in mapping. Attempting to cope...
+number of CFI chips: 1
+Reducing visibility of 8192KiB chip to 4096KiB
+cmdlinepart partition parsing not available
+RedBoot partition parsing not available
+Using physmap partition information
+Creating 3 MTD partitions on "physmap-flash":
+0x000000000000-0x000000040000 : "Bootloader"
+0x000000040000-0x000000200000 : "Kernel"
+0x000000200000-0x000000400001 : "Flash_FS"
+mtd: partition "Flash_FS" doesn't end on an erase block -- force read-only
+=2E...
 
+when I create my jffs2 FS for my sh2a 7203 uP I execute
+mkfs.jffs2 --big-endian --eraseblock=3D65536 --pad=3D2097152 --root=3D$(ROO=
+T_FS) --
+output=3D$(IMAGE_DIR)/sh7203-filesystem.bin
 
-I believe I have isolated the issue, but I don't know how to fix it:
+Now: the flash tells me it has 2 erase regions: one with 0x00001000 size, a=
+nd=20
+another with 0x00010000 size.
+With of them I need to specify in my --eraseblock option?
 
-In the file drivers/base/core.c, around line 685, there is the code:
+I tried to specify 0x1000 but the make.jffs2 commadn told me that it is too=
+=20
+small size (I'm using ubuntu 10.4 and the mdt-utils coming with it)
 
-        list_for_each_entry(k, &dev->class->p->class_dirs.list, entry)
-                if (k->parent =3D=3D parent_kobj) {
-                        kobj =3D kobject_get(k);
-                        break;
-                }
-The seg fault occurs at dev->class->p->class_dirs.list as
-dev->class->p =3D=3D NULL.
+Thanks a lot in advance
 
-In the file drivers/mtd/mtdcore.c around line 351/74 is the code:
+=2D-=20
+Ing. Fabio Giovagnini
 
-static struct class mtd_class =3D {  // This is line ~74
-        .name =3D "mtd",
-        .owner =3D THIS_MODULE,
-        .suspend =3D mtd_cls_suspend,
-        .resume =3D mtd_cls_resume,
-};
-
-<snip to line 351>
-        /* Caller should have set dev.parent to match the
-         * physical device.
-         */
-        mtd->dev.type =3D &mtd_devtype;
-        mtd->dev.class =3D &mtd_class;
-        mtd->dev.devt =3D MTD_DEVT(i);
-
-
-So, as we see, the mtd_class doesn't set p to anything, though it is
-used very shortly after this call in get_device_parent.  The actual
-dump is:
-
-CPU 0 Unable to handle kernel paging request at virtual address
-0000004c, epc =3D=3D 802a90d0, ra =3D=3D 802a90b8
-Oops[#1]:
-Cpu 0
-$ 0   : 00000000 0000006e 00000000 00000000
-$ 4   : 0000004c 87829d68 00000001 0000004c
-$ 8   : 80473d19 00000000 00000001 0000000b
-$12   : 23232323 f0000000 ff000000 23232323
-$16   : 87819cd0 803a0000 87804700 803e0000
-$20   : 8040e318 00000000 80420000 00000002
-$24   : 00000002 8010881c
-$28   : 87828000 87829d58 80410000 802a90b8
-Hi    : 00000000
-Lo    : 00000015
-epc   : 802a90d0 get_device_parent+0x158/0x34c
-    Not tainted
-ra    : 802a90b8 get_device_parent+0x140/0x34c
-Status: 11008403    KERNEL EXL IE
-Cause : 00800008
-BadVA : 0000004c
-PrId  : 0a019554 (MIPS 34Kc)
-Modules linked in:
-Process swapper (pid: 1, threadinfo=3D87828000, task=3D87820000,
-tls=3D00000000)
-Stack : 10020aff 803a29a0 000002b4 00000000 87819cd0 803a0000 00000000
-803e0000
-        8040e318 00000000 80420000 00000002 80410000 80105144 80410000
-802a8f28
-        87819cd0 803a0000 00000000 803e0000 8040e318 802aa0b8 87819cd0
-803a29c0
-        000003e1 00000025 87819cd0 802a99b8 87819c00 87819cd0 87819c00
-87819cd0
-        8041ce14 05a00000 8040e318 00000000 80420000 00000002 80410000
-802b1af8
-        ...
-Call Trace:
-[<802a90d0>] get_device_parent+0x158/0x34c
-[<802aa0b8>] device_add+0x128/0x68c
-[<802b1af8>] add_mtd_device+0x2d8/0x394
-[<804263a8>] my_nand_init+0x1b8/0x1d4
-
-
-Again, any light you can shed on my problem would be welcomed.
-
-Thanks,
-Andy=20
+Aurion s.r.l.
+P.I e C.F.
+00885711200
+skype: aurion.giovagnini
+Tel. +39.051.594.78.24
+=46ax. +39.051.082.14.49
+Cell. +39.335.83.50.919
+www.aurion-tech.com
