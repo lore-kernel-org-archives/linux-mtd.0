@@ -1,20 +1,19 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PmY0i-0003y2-8F
-	for linux-mtd@lists.infradead.org; Mon, 07 Feb 2011 20:48:37 +0000
-Received: by bwz5 with SMTP id 5so5613623bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Feb 2011 12:48:32 -0800 (PST)
-Date: Mon, 7 Feb 2011 23:48:25 +0300
-From: Stanislav Fomichev <kernel@fomichev.me>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd/nand: move pointer dereferencing after the actual
-	check in verify_bbt_descr
-Message-ID: <4d505a9f.918acc0a.1584.ffffbfd6@mx.google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+	id 1PmkPh-0000H8-Lf
+	for linux-mtd@lists.infradead.org; Tue, 08 Feb 2011 10:03:14 +0000
+From: Adrian Hunter <adrian.hunter@nokia.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 1/5] mtd: OneNAND: return read error for 4KiB page read
+Date: Tue,  8 Feb 2011 12:02:38 +0200
+Message-Id: <1297159362-8407-2-git-send-email-adrian.hunter@nokia.com>
+In-Reply-To: <1297159362-8407-1-git-send-email-adrian.hunter@nokia.com>
+References: <1297159362-8407-1-git-send-email-adrian.hunter@nokia.com>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>,
+	Adrian Hunter <adrian.hunter@nokia.com>,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Stanislav Fomichev <kernel@fomichev.me>
----
- drivers/mtd/nand/nand_bbt.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+When reading using the 4KiB page read function, I/O
+errors could be ignored if more than 1 page was read
+at a time.
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 6ebd869..a1e8b30 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -1101,12 +1101,16 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
- static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
- {
- 	struct nand_chip *this = mtd->priv;
--	u32 pattern_len = bd->len;
--	u32 bits = bd->options & NAND_BBT_NRBITS_MSK;
-+	u32 pattern_len;
-+	u32 bits;
- 	u32 table_size;
+Signed-off-by: Adrian Hunter <adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index bac41ca..38e6d76 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1132,6 +1132,8 @@ static int onenand_mlc_read_ops_nolock(struct mtd_info *mtd, loff_t from,
+ 			onenand_update_bufferram(mtd, from, !ret);
+ 			if (ret == -EBADMSG)
+ 				ret = 0;
++			if (ret)
++				break;
+ 		}
  
- 	if (!bd)
- 		return;
-+
-+	pattern_len = bd->len;
-+	bits = bd->options & NAND_BBT_NRBITS_MSK;
-+
- 	BUG_ON((this->options & NAND_USE_FLASH_BBT_NO_OOB) &&
- 			!(this->options & NAND_USE_FLASH_BBT));
- 	BUG_ON(!bits);
+ 		this->read_bufferram(mtd, ONENAND_DATARAM, buf, column, thislen);
 -- 
-1.7.1
+1.7.0.4
