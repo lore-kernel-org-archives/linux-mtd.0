@@ -1,18 +1,24 @@
-Message-ID: <20110209030426.47732w58rhxktd96@10.0.0.201>
-Date: Wed, 09 Feb 2011 03:04:26 -0200
-From: GOOGLE UK ANNIVERSARY P-R-O-M-O <enquiries.grahamsbenfield@gmail.com>
-To: undisclosed-recipients:;
-Subject: Your E-mail has W O N =?iso-8859-1?b?ozg1MCwwMDA=?= UK Pounds
-	(Your Ticket:00869575733664, Lucky#:12-12-23-35-40-41(12) &
-	CGPN:7-22-71-00-66-12),
-	Contact our verification Unit for full information:
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=ISO-8859-1;
- DelSp="Yes";
- format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Received: from relmlor4.renesas.com ([210.160.252.174])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pn4yg-0000Mm-T7
+	for linux-mtd@lists.infradead.org; Wed, 09 Feb 2011 08:00:43 +0000
+Received: from relmlir4.idc.renesas.com ([10.200.68.154])
+	by relmlor4.idc.renesas.com ( SJSMS)
+	with ESMTP id <0LGC007FDBL0P960@relmlor4.idc.renesas.com> for
+	linux-mtd@lists.infradead.org; Wed, 09 Feb 2011 17:00:36 +0900 (JST)
+Received: from relmlac2.idc.renesas.com ([10.200.69.22])
+	by relmlir4.idc.renesas.com ( SJSMS)
+	with ESMTP id <0LGC00M7DBKXY8A0@relmlir4.idc.renesas.com> for
+	linux-mtd@lists.infradead.org; Wed, 09 Feb 2011 17:00:36 +0900 (JST)
+Message-id: <4D5249A1.3090605@renesas.com>
+Date: Wed, 09 Feb 2011 17:00:33 +0900
+From: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+MIME-version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 02/11] mtd: m25p80: add support for M25PX64
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Signed-off-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+---
+ drivers/mtd/devices/m25p80.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index e4eba6c..e35a370 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -728,6 +728,8 @@ static const struct spi_device_id m25p_ids[] = {
+ 	{ "m25pe80", INFO(0x208014,  0, 64 * 1024, 16,       0) },
+ 	{ "m25pe16", INFO(0x208015,  0, 64 * 1024, 32, SECT_4K) },
 
-
-VERIFICATION UNIT E-MAIL:
-: giveawayteampromo4@ gmail.com
-: info.ukgiveawaypromo@ bigmir.net
-  Hotline + 44 -703 -18239 68
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-------------------------------------------------------
-     Esse e-mail foi enviado pelo WebMail da UFF
-NTi - N=FAcleo de Tecnologia da Informa=E7=E3o e Comunica=E7=E3o
-
-
---=20
-Esta mensagem foi verificada pelo sistema de antiv=EDrus e
- acredita-se estar livre de perigo.
++	{ "m25px64", INFO(0x207117,  0, 64 * 1024, 128, 0) },
++
+ 	/* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
+ 	{ "w25x10", INFO(0xef3011, 0, 64 * 1024,  2,  SECT_4K) },
+ 	{ "w25x20", INFO(0xef3012, 0, 64 * 1024,  4,  SECT_4K) },
+-- 
+1.7.1
