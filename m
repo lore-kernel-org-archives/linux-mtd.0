@@ -1,16 +1,23 @@
-Received: from nm17-vm0.bullet.mail.bf1.yahoo.com ([98.139.213.157])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PnMON-000056-MY
-	for linux-mtd@lists.infradead.org; Thu, 10 Feb 2011 02:36:24 +0000
-Date: Thu, 10 Feb 2011 10:32:16 +0800
-From: "Pqitmj" <broner82309@yahoo.dk>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: Pjzsli Hs O%RAN_
-Message-ID: <201102101032166257348@yahoo.dk>
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PnVfQ-0003nM-6l
+	for linux-mtd@lists.infradead.org; Thu, 10 Feb 2011 12:30:37 +0000
+Received: by iwn38 with SMTP id 38so1224361iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 10 Feb 2011 04:30:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+In-Reply-To: <AANLkTi=UgsLq3=7ma9MPJJBVxtNvyr=ThtLPy8qzC3Bk@mail.gmail.com>
+References: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
+	<1297002281.4460.6.camel@localhost>
+	<AANLkTi=M58XrQYEhN1JGX3brBu2aV5h=oAv+Wb9oe46q@mail.gmail.com>
+	<AANLkTi=UgsLq3=7ma9MPJJBVxtNvyr=ThtLPy8qzC3Bk@mail.gmail.com>
+Date: Thu, 10 Feb 2011 12:30:33 +0000
+Message-ID: <AANLkTi=2vgGGUdD71c4P8MASyC1zuKTKrqTpidF2i-R6@mail.gmail.com>
+Subject: Re: Testing a device using mtd_stresstest
+From: David Peverley <pev@sketchymonkey.com>
+To: Andrew Murray <amurray@mpcdata.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,13 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-M7G+yczQ0Neo0rW5qdOmuPfA4L6rt8LP49HMoaOyydPD1K2zp9HMy7/F5NbGo6yw/New0+vV5sa3
-zt631rHwo6y/2rjQtL/V/aGjIL6tuf224MTqtcTK0LOhtLjBtqOssru2z7XE1srBv7jEvfijrLfC
-1ea2yLTvtb05MCXS1MnPoaPKx7OjxOrX1LPpoaLLzcDxoaK1yMrX0aGhow0KWrj3xrfFxs/j0cy8
-27jxo7rUqi/M9Si6rNPKt9EpICANCjPI7dbQu6qjpDI2MCAg07LW0Luqo6QyMzAgICDL1dHMo6Qy
-MjAgICAgu8a618KlMTkxNqOkNTAwICC67LrTtcCjpDU1MCAgvsXO5dau1/CjpDUwMCAgus3M7M/C
-o6Q0ODAgIL3w3L3I2KOkMTMwICAgwLbI7dy9yNijpDMwMCAgIMjt0/HPqqOkMTMwICANCsn6svrB
-tLXE16jStbuvo6y8vMr1tcS9+LK9o6zWysG/vfG3x870sciho9Pr1ebRzMTRt9ayrtbZoaPN6sir
-v8nS1MqkyM7I1bOjvbu8yqGjDQpiuPy24Ma3xcbAtLXn18nRr6O6MTM1IDkwNDQgMTg0NiAgUVE6
-MTU5Nzc5Mzg2OA0KwarPtcjLo7qzwrHzDQrIq7n6v+y13cj9zOzE2r/Jtb2ho7v1tb24tr/uoaPH
-67fF0MS5usLyo6Fa
+Hi Andy!
+
+Actually, we're using SW ECC so I'd assumed that we should be free of
+this particular issue. It in our configuration MTD is controlling the
+OOB area which reserves the first two bytes for BB marking and the
+last 24 bytes for ECC. The remaining 38 bytes are in oobfree for YAFFS
+to use. As I understand it the yaffs packed tags struct stored there
+is 12 bytes so I *think* it's OK?
+
+Cheers,
+
+~Pev
+
+On 7 February 2011 13:56, Andrew Murray <amurray@mpcdata.com> wrote:
+> On 7 February 2011 13:44, David Peverley <pev@sketchymonkey.com> wrote:
+>>
+>> We've also noticed that every so often we see "uncorrectable error:"
+>> messages from nand_ecc.c - do you have any suggestions as to where to
+>> start investigating here? So far I can't find a pattern to occurrences
+>> or a regular way to reproduce.
+>
+> Are you using hardware ECC?
+> We switched from SW ECC to HW ECC and discovered that YAFFS2 was writing
+> over the ECC in the OOB. It may be wroth checking for any such overlap of
+> OOB use between the kernel-mtd/YAFFS2 and whatever boot loaders you may
+> have.
+> We worked around this issue by using in-band tags in our YAFFS2 image.
+> Thanks,
+> Andrew Murray
