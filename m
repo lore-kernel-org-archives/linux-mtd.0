@@ -1,22 +1,14 @@
-In-Reply-To: <OF4712116F.F6D6711D-ONC1257833.0060F6D7-C1257833.0061BCF8@transmode.se>
-References: <16826B66-31FE-41AD-A6EF-E668A45AF1FE@prograde.net>	<OFFF2C6D34.91E5D6C3-ONC1257
-	<96BD3889-E8AD-408D-8275-ED1A5FD55F1B@prograde.net>	<OF9738D658.F46	<4C117A67-5057-4ACD-8EBE-04E9C782570C@prograde.net>
-	<OF6D40AC82.1008D3DD-ONC1	<4D53E660.4020305@users.sourceforge.net>	<OF4E49CFD6.F0E578FE-ONC1257833.004BF8B1-C1257833.004D48AA@transmode.se>
-	<85661EDC-9882-41B1-A926-0A88EF1CEF2E@prograde.net>	<OFEF05BB2C.A2E3BADF-O
-	<97165996-D766-468D-AB90-974E29ABCFB7@prograde.net>	<OFBD6C1723.E5530FEB-ONC1257833.005BF5C1-C1257833.005C2C61@transmode.se>
-	<OF4FEF6422.2B862198-ONC125783	<3B106371-0DA1-4F15-9482-7307110A86E2@prograde.net>
-	<OF626FDFE6.CA621532-ONC1257833.005E857C-C1257833.005F4BE2@transmode.se>
-	<OF4712116F.F6D6711D-ONC1257833.0060F6D7-C1257833.0061BCF8@transmode.se>
-Subject: Re: Numonyx NOR and chip->mutex bug?
-Message-ID: <OF7426521D.A5E8E752-ONC1257833.00648ED3-C1257833.00654F5A@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 10 Feb 2011 19:26:34 +0100
-MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd-bounces@lists.infradead.org, stefan.bigler@keymile.com,
-	Michael Cashwell <mboards@prograde.net>, linux-mtd@lists.infradead.org,
-	=?ISO-8859-15?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>,
-	Holger brunck <holger.brunck@keymile.com>
+Received: from t111.niisi.ras.ru ([193.232.173.111])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PndnR-0000s9-AU
+	for linux-mtd@lists.infradead.org; Thu, 10 Feb 2011 21:11:28 +0000
+From: Antony Pavlov <antony@niisi.msk.ru>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: cfi_cmdset_0002: fix sector erase command for AM29LV040B
+Date: Fri, 11 Feb 2011 00:04:37 +0300
+Message-Id: <1297371877-32123-1-git-send-email-antony@niisi.msk.ru>
+Cc: Antony Pavlov <antony@niisi.msk.ru>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The AM29LV040B chips use 0x50 as sector erase command instead of 0x30 [1].
 
->
-> >
-> > Michael Cashwell <mboards@prograde.net> wrote on 2011/02/10 18:10:18:
-> > >
-> > > On Feb 10, 2011, at 12:02 PM, Joakim Tjernlund wrote:
-> > >
-> > > > And this reminds me that if the spec is to be trusted, the delay should be just before erase suspend, otherwise you miss the time between the initial erase and the first suspend.
-> > >
-> > > Probably true to be completely sure. I bet the need for "repeated violations" is why I've been able to make it work by delaying after. But I agree.
-> >
-> > Yes, but you also indicated that a throw away status read made the problem go away?
-> > Can you move that status read to just before suspend and get the same results?
->
-> hmm, Figure 31: Program Suspend/Resume Flowchart and
-> Figure 36: Erase Suspend/Resume Flowchart actually specifies
-> a read status(0x70) before suspend(0xb0)
+[1] http://www.datasheetcatalog.com/datasheets_pdf/A/M/2/9/AM29LV040B.shtml
 
-Furthermore, the read status has to be to the same "partition" and you have
-to end the resume with a read status too
- "If the suspended partition was placed in Read Array mode or a Program Loop"
+Signed-off-by: Antony Pavlov <antony@niisi.msk.ru>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
 
-Mike, I think some of this supports your findings.
-I guess we need to save the block address which are being erased
-to fulfil "same partition"
-
-         Jocke
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index f072fcf..a401dbe 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -332,6 +332,14 @@ static void fixup_s29gl032n_sectors(struct mtd_info *mtd)
+ 	}
+ }
+ 
++static void fixup_use_sector_erase_cmd_30(struct mtd_info *mtd)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++
++	cfi->sector_erase_cmd = CMD(0x30);
++}
++
+ /* Used to fix CFI-Tables of chips without Extended Query Tables */
+ static struct cfi_fixup cfi_nopri_fixup_table[] = {
+ 	{ CFI_MFR_SST, 0x234a, fixup_sst39vf }, /* SST39VF1602 */
+@@ -374,6 +382,7 @@ static struct cfi_fixup jedec_fixup_table[] = {
+ 	{ CFI_MFR_SST, SST49LF004B, fixup_use_fwh_lock },
+ 	{ CFI_MFR_SST, SST49LF040B, fixup_use_fwh_lock },
+ 	{ CFI_MFR_SST, SST49LF008A, fixup_use_fwh_lock },
++	{ CFI_MFR_AMD, 0x004F, fixup_use_sector_erase_cmd_30 }, /* AM29LV040B */
+ 	{ 0, 0, NULL }
+ };
+ 
+-- 
+1.7.1
