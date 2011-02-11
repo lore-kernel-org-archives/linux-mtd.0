@@ -1,25 +1,26 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
+Received: from gw1.transmode.se ([213.115.205.20])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pnw54-00017Z-88
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 16:42:50 +0000
-Received: by iwn38 with SMTP id 38so2565176iwn.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Feb 2011 08:42:48 -0800 (PST)
+	id 1PnwMO-0001G5-7W
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 17:00:44 +0000
+In-Reply-To: <4D542657.2060903@users.sourceforge.net>
+References: <16826B66-31FE-41AD-A6EF-E668A45AF1FE@prograde.net>	<4D4BDD48.6040600@keymile.com>
+	<OF5A6BB547.3462D591-ONC125782D.00475578-C125782D.0047EC74@transmode.se>	<541E19B8-D428-4F59-B6BB-A3BD8F455AE4@prograde.net>
+	<OF42EF<F66AF016-8A2B-4116-BE49-CE05B91BE50F@prograde.net>	<OF56DD046D.3279E067
+	<9098074B-C8F0-4608-BE25-D99A4C22176B@prograde.net>	<0488D3BA-7BA3-4E98-B289-3F3D1DB485D4@prograde.net>
+	<OF2C1ABD39	<4D5005E4.1040506@keymile.com>	<OFFF2C6D34.91E5D6C3-ONC1257	<96BD3889-E8AD-408D-8275-ED1A5FD55F1B@prograde.net>
+	<OF9738D658.F46	<4C117A67-5057-4ACD-8EBE-04E9C782570C@prograde.net>	<OF6D40AC82.1008D3DD-ONC1
+	<4D53E660.4020305@users.sourceforge.net>	<OF4E49CFD6.F0E578FE-ONC1257833.004BF8B1-C1257833.004D48AA@transmode.se>
+	<4D542657.2060903@users.sourceforge.net>
+Subject: Re: Numonyx NOR and chip->mutex bug?
+To: =?ISO-8859-15?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Message-ID: <OFA7D0B3BB.07082EA1-ONC1257834.005CB18D-C1257834.005D71DA@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Fri, 11 Feb 2011 18:00:39 +0100
 MIME-Version: 1.0
-In-Reply-To: <1297437362.2760.57.camel@localhost>
-References: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
-	<1297002281.4460.6.camel@localhost>
-	<AANLkTi=M58XrQYEhN1JGX3brBu2aV5h=oAv+Wb9oe46q@mail.gmail.com>
-	<AANLkTimJFv1Uy2c70ewPUHYH58rQHT=VsDa3ioU9hJZh@mail.gmail.com>
-	<AANLkTikH6AtyN45Z7wA4tpaxXsLhGUnZZj=bpC18F=xn@mail.gmail.com>
-	<1297437362.2760.57.camel@localhost>
-Date: Fri, 11 Feb 2011 16:42:47 +0000
-Message-ID: <AANLkTimuASijpXoxJj75=0-a7kqGFGSXGvGDkQuLXDVj@mail.gmail.com>
-Subject: Re: Testing a device using mtd_stresstest
-From: David Peverley <pev@sketchymonkey.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Karl Beldan <karl.beldan@gmail.com>, linux-mtd@lists.infradead.org
+Content-type: text/plain; charset=ISO-8859-15
+Content-transfer-encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Holger brunck <holger.brunck@keymile.com>,
+	stefan.bigler@keymile.com, Michael Cashwell <mboards@prograde.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,48 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+Anders Grafstr=F6m <grfstrm@users.sourceforge.net> wrote on 2011/02/10 =
+18:54:31:
+>
+> On 2011-02-10 17:43, Michael Cashwell wrote:
+> > On Feb 10, 2011, at 10:59 AM, Michael Cashwell wrote:
+> > Troublesome 65nm parts:
+> > run 1:
+> > NOR Flash: block erase suspended and resumed 29 times.
+> > buffered write fails.
+>
+> Buffered write fails with SR[4] set?
+>
+> Have you configured with CONFIG_MTD_UBI_DEBUG_PARANOID
+> so that UBI does the all 0xff check after erase?
+>
+> I'm wondering if the blocks being written to are in a properly erased=
+ state.
 
-Thanks for the useful feedback!
+Looking at the write buffer flow chart for Numonyx I noted that it
+specifies that while waiting for the write buffer one have to retry the=
 
-> I do not know YAFFS, ask Charles, but I _think_ YAFFS does not use
-> sub-pages, so you han have that option enabled.
-Yep, I posted to the YAFFS list ; interestingly the write verify
-failure found a case in yaffs where a write failure wasn't tested and
-(I believe) erroneously completes a checkpoint write as a result...!
-Having said that from
+WB cmd each time, a la:
 
-> For sure, if you do not use sub-pages and it catches problems - have it
-> enabled and nail the problems down.
-Sure, that makes sense. Although I'm having fun trying to
-differentiate issues ; I get both the write verify failures and the
-"uncorrectable errors" and there's not necessarily a direct
-correlation between occurrences so my gut tells me they're to separate
-issues...!
+	for (;;) {
+		map_write(map, CMD(0xe8), cmd_adr);
+		status =3D map_read(map, cmd_adr);
+		if (map_word_andequal(map, status, CMD(0x80), CMD(0x80)))
+			break;
+		if (timeout) abort write
+	}
 
-> Yeah, I think the tests should not do this, they should just test and
-> report you issues.
-Ok, so to summarise my understanding so far, a failure during the
-stresstest is likely to be one of two things ; either a failure due to
-a bad block developing which is not unexpected or an actual failure of
-the test case per-se, or it could be due to Something Else Bad which
-is not expected and IS a test failure. The only way I can see to
-differentiate between these two situations is via statistics. i.e. if
-a block is repeatedly failing its likely bad. If random blocks are
-failing separately its probably something else warranting
-investigation. Is that correct?
+What does other specs say?
 
-If so would it be more useful to adapt the (kernel) stresstest so that
-it doesn't abort the test run on a failure but instead keeps a tally
-of blocks within which failures have occurred and runs to completion.
-Does that sound like a beneficial change? I'm not sure what strategy
-is used for discerning if a block is bad or not but nandtest.c from
-mtd-utils simply marks if an erase or write fails at all so this would
-hopefully give more useful feedback from the stresstest. Aborting the
-test on what could be a normal bad block seems a little misleading,
-although I'm admittedly an unusually ardent fan of tests being
-unambiguous... :-)
-
-Thanks!
-
-~Pev
+ Jocke=
