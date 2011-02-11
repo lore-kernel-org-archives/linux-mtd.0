@@ -1,24 +1,23 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PnpqH-0005TH-7Z
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 10:03:10 +0000
-Received: by iwn38 with SMTP id 38so2225841iwn.36
+Received: from mail-out.m-online.net ([212.18.0.10])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PnrSH-00062Z-UZ
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 11:46:31 +0000
+Received: from frontend1.mail.m-online.net (frontend1.mail.intern.m-online.net
+	[192.168.8.180])
+	by mail-out.m-online.net (Postfix) with ESMTP id 94119186DEC6
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Feb 2011 02:03:06 -0800 (PST)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <1297418437-23553-1-git-send-email-antony@niisi.msk.ru>
-References: <1297418437-23553-1-git-send-email-antony@niisi.msk.ru>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Fri, 11 Feb 2011 11:02:46 +0100
-Message-ID: <AANLkTik_KdzX-3CTyE1CxyOauHgd5p75VApuTX7DGZn1@mail.gmail.com>
-Subject: Re: [PATCH] mtd: jedec_probe: initialise make sector erase command
-	variable
-To: Antony Pavlov <antony@niisi.msk.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, w.sang@pengutronix.de,
-	linux-kernel@vger.kernel.org
+	Fri, 11 Feb 2011 12:46:27 +0100 (CET)
+Received: from localhost (p4FE3D9F7.dip.t-dialin.net [79.227.217.247])
+	(using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+	(No client certificate requested)
+	by mail.mnet-online.de (Postfix) with ESMTPSA id C0E2B1C000F3
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 11 Feb 2011 12:46:27 +0100 (CET)
+From: Anatolij Gustschin <agust@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: export mtd->writebufsize attribute over sysfs
+Date: Fri, 11 Feb 2011 12:46:29 +0100
+Message-Id: <1297424789-4144-1-git-send-email-agust@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +27,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+Also allow to change mtd->writebufsize for MTD ram test
+device dynamicaly.
 
-2011/2/11 Antony Pavlov <antony@niisi.msk.ru>:
-> In the commit 08968041bef437ec363623cd3218c2b083537ada
-> =C2=A0(mtd: cfi_cmdset_0002: make sector erase command variable)
-> introdused a field sector_erase_cmd. In the same commit initialisation
-> of cfi->sector_erase_cmd made in cfi_chip_setup()
-> (file drivers/mtd/chips/cfi_probe.c), so the CFI chip has no problem:
->
-> ...
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0cfi->cfi_mode =3D CFI_MODE_CFI;
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0cfi->sector_erase_cmd =3D CMD(0x30);
-> ...
->
-> But for the JEDEC chips this initialisation is not carried out,
-> so the JEDEC chips have sector_erase_cmd =3D=3D 0.
->
-> It's not possible symply add the line
-> =C2=A0 =C2=A0 =C2=A0 =C2=A0p_cfi->sector_erase_cmd =3D CMD(0x30);
-> to the cfi_jedec_setup() function be cause CMD() macros needs
-> map and cfi variables. So this patch makes necessary changes.
->
-> Signed-off-by: Antony Pavlov <antony@niisi.msk.ru>
+Signed-off-by: Anatolij Gustschin <agust@denx.de>
+---
+ drivers/mtd/mtdcore.c |   52 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 52 insertions(+), 0 deletions(-)
 
-Acked-by: Guillaume LECERF <glecerf@gmail.com>
-
---=20
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index b177e75..282ad41 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -230,12 +230,40 @@ static ssize_t mtd_name_show(struct device *dev,
+ }
+ static DEVICE_ATTR(name, S_IRUGO, mtd_name_show, NULL);
+ 
++static ssize_t mtd_writebufsize_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct mtd_info *mtd = dev_to_mtd(dev);
++
++	return snprintf(buf, PAGE_SIZE, "%lu\n",
++			(unsigned long)mtd->writebufsize);
++}
++
++static ssize_t mtd_writebufsize_store(struct device *dev,
++				struct device_attribute *attr,
++				const char *buf, size_t size)
++{
++	struct mtd_info *mtd = dev_to_mtd(dev);
++	unsigned long value;
++	int ret;
++
++	ret = strict_strtoul(buf, 0, &value);
++	if (ret < 0)
++		return ret;
++
++	mtd->writebufsize = value;
++	return size;
++}
++static DEVICE_ATTR(writebufsize, S_IRUGO, mtd_writebufsize_show,
++		   mtd_writebufsize_store);
++
+ static struct attribute *mtd_attrs[] = {
+ 	&dev_attr_type.attr,
+ 	&dev_attr_flags.attr,
+ 	&dev_attr_size.attr,
+ 	&dev_attr_erasesize.attr,
+ 	&dev_attr_writesize.attr,
++	&dev_attr_writebufsize.attr,
+ 	&dev_attr_subpagesize.attr,
+ 	&dev_attr_oobsize.attr,
+ 	&dev_attr_numeraseregions.attr,
+@@ -258,6 +286,28 @@ static struct device_type mtd_devtype = {
+ 	.release	= mtd_release,
+ };
+ 
++/*
++ * Make attributes of the mtdram test device writable.
++ * Useful for testing different UBIFS images.
++ */
++static inline void mtd_fixup_attr(struct mtd_info *mtd)
++{
++	struct attribute *attr = mtd_attrs[0];
++	int i = 0;
++
++	if (mtd->type != MTD_RAM)
++		return;
++
++	for (i = 0; mtd_attrs[i]; i++) {
++		attr = mtd_attrs[i];
++		if (!strcmp(attr->name, "writebufsize")) {
++			sysfs_chmod_file(&mtd->dev.kobj, attr,
++					 S_IRUGO | S_IWUSR | S_IWGRP);
++			break;
++		}
++	}
++}
++
+ /**
+  *	add_mtd_device - register an MTD device
+  *	@mtd: pointer to new MTD device info structure
+@@ -339,6 +389,8 @@ int add_mtd_device(struct mtd_info *mtd)
+ 						MTD_DEVT(i) + 1,
+ 						NULL, "mtd%dro", i);
+ 
++			mtd_fixup_attr(mtd);
++
+ 			DEBUG(0, "mtd: Giving out device %d to %s\n",i, mtd->name);
+ 			/* No need to get a refcount on the module containing
+ 			   the notifier, since we hold the mtd_table_mutex */
+-- 
+1.7.4
