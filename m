@@ -1,22 +1,24 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-yx0-f177.google.com ([209.85.213.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PnueG-0008Nx-P5
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 15:11:05 +0000
-Received: by fxm19 with SMTP id 19so2871520fxm.36
+	id 1PnugT-0008R1-I9
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 15:13:22 +0000
+Received: by yxd30 with SMTP id 30so1081630yxd.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Feb 2011 07:11:03 -0800 (PST)
-Subject: Re: [PATCH] mtd: export mtd->writebufsize attribute over sysfs
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Anatolij Gustschin <agust@denx.de>
-In-Reply-To: <1297424789-4144-1-git-send-email-agust@denx.de>
-References: <1297424789-4144-1-git-send-email-agust@denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 11 Feb 2011 17:09:54 +0200
-Message-ID: <1297436994.2760.51.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Fri, 11 Feb 2011 07:13:20 -0800 (PST)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <1297435008.2760.37.camel@localhost>
+References: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
+	<1297350106-16383-3-git-send-email-agust@denx.de>
+	<1297435008.2760.37.camel@localhost>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Fri, 11 Feb 2011 16:05:25 +0100
+Message-ID: <AANLkTikuutRc7r2kh7vU_MpZLsryf_5gFWME58EYb8qk@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mtd: cfi: fix writebufsize initialization
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org,
+	Detlev Zundel <dzu@denx.de>, Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-02-11 at 12:46 +0100, Anatolij Gustschin wrote:
-> +static ssize_t mtd_writebufsize_store(struct device *dev,
-> +				struct device_attribute *attr,
-> +				const char *buf, size_t size)
-> +{
-> +	struct mtd_info *mtd = dev_to_mtd(dev);
-> +	unsigned long value;
-> +	int ret;
-> +
-> +	ret = strict_strtoul(buf, 0, &value);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	mtd->writebufsize = value;
-> +	return size;
-> +}
-> +static DEVICE_ATTR(writebufsize, S_IRUGO, mtd_writebufsize_show,
-> +		   mtd_writebufsize_store);
+Hello Artem.
 
+2011/2/11 Artem Bityutskiy <dedekind1@gmail.com>:
+> So should I put this patch to l2 tree or you'll send another one.
+>
+> Guillaume, does this patch have your acked-by? For me it looks good.
 
-I think writebufsize should be read-only. This is characteristic of the
-flash and should not be changed. OK, if the chip allows to change it, it
-could be done, but this is not what the patch seems to be about.
+I see no objection.
 
-I mean, writebufsize is like writesize. Why writesize sysfs attribut is
-R/O but writebufsize should be RW?
+Acked-by: Guillaume LECERF <glecerf@gmail.com>
+
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
