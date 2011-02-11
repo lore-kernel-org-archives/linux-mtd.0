@@ -1,25 +1,25 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pns4u-0006Mq-Gf
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 12:26:25 +0000
-Received: by ywf7 with SMTP id 7so1017866ywf.36
+	id 1PntKA-0006tq-1u
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 13:46:14 +0000
+Received: by wwb17 with SMTP id 17so2532589wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Feb 2011 04:26:23 -0800 (PST)
-MIME-Version: 1.0
-Sender: foxcore@gmail.com
-In-Reply-To: <20110211130413.1de915e5@wker>
-References: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
-	<1297350106-16383-3-git-send-email-agust@denx.de>
-	<AANLkTi=Jtc7cUZ3puU_krmxm34P1LB605i8FE6Rti1jp@mail.gmail.com>
-	<20110211130413.1de915e5@wker>
-From: Guillaume LECERF <glecerf@gmail.com>
-Date: Fri, 11 Feb 2011 13:25:42 +0100
-Message-ID: <AANLkTinaXUqdPsSyqa9aKi1JOWXHVgBrFQvA=3-Pzanj@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mtd: cfi: fix writebufsize initialization
+	Fri, 11 Feb 2011 05:46:12 -0800 (PST)
+Subject: Re: [PATCH v2 0/5] UBIFS: fix recovery on CFI NOR
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Anatolij Gustschin <agust@denx.de>
-Content-Type: text/plain; charset=UTF-8
-Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
-	Detlev Zundel <dzu@denx.de>, Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
+References: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 11 Feb 2011 15:45:01 +0200
+Message-ID: <1297431901.2760.7.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Holger Brunck <holger.brunck@keymile.com>,
+	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +29,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Anatolij.
+On Sun, 2011-02-06 at 15:17 +0200, Artem Bityutskiy wrote:
+> Hi,
+> 
+> here is a better patch for recovery fix. Comparing to the previous
+> patch-set now we make sure we keep write-buffer offset aligned to
+> @c->max_write_size (64 in case of CFI NOR) as much as possible.
+> 
+> Also, I've merged the "Add comments" patch with the patch which adds
+> the code.
+> 
+> You can find these patches also in the UBIFS git tree, 'cfi-nor-fix-v2'
+> branch:
+> git://git.infradead.org/ubifs-2.6.git cfi-nor-fix-v2
+> 
+> Please, test. These patches may break NAND setups as well, so anyone
+> who is interested in having stable UBIFS in the next release, please,
+> also test.
 
-2011/2/11 Anatolij Gustschin <agust@denx.de>:
-> Currently we are seeing two other issues with UBIFS recovery after
-> power cuts, but these seem not to be caused by to big write buffer.
-> I'm looking for the reason for the observed corruptions now and
-> will look at your patches later.
+Just wanted to let everyone know that I'll need to work on a bit better
+solution.
 
-There is no hurry for you to review my patch, as it is just a
-simplification over your modifications.
-BTW I will resend it once yours is in.
-
+The reason is that LEB does not have to start at the max_write_size
+boundary, and my v2 does not take that into account. Although for CFI
+NOR case this should not matter, because LEB starts at offset 128 (UBI
+headers take 64 bytes each). However, this might matter on some other
+flash.
 
 -- 
-Guillaume LECERF
-GeeXboX developer - www.geexbox.org
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
