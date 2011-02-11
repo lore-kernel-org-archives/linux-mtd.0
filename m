@@ -1,23 +1,25 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pnuh6-0008SD-9C
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 15:14:01 +0000
-Received: by fxm19 with SMTP id 19so2874426fxm.36
+	id 1PnukC-0008Vb-Uj
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 15:17:13 +0000
+Received: by wyf22 with SMTP id 22so2462829wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Feb 2011 07:13:58 -0800 (PST)
+	Fri, 11 Feb 2011 07:17:11 -0800 (PST)
 Subject: Re: Testing a device using mtd_stresstest
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: David Peverley <pev@sketchymonkey.com>
-In-Reply-To: <AANLkTi=M58XrQYEhN1JGX3brBu2aV5h=oAv+Wb9oe46q@mail.gmail.com>
+In-Reply-To: <AANLkTikH6AtyN45Z7wA4tpaxXsLhGUnZZj=bpC18F=xn@mail.gmail.com>
 References: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
 	<1297002281.4460.6.camel@localhost>
 	<AANLkTi=M58XrQYEhN1JGX3brBu2aV5h=oAv+Wb9oe46q@mail.gmail.com>
+	<AANLkTimJFv1Uy2c70ewPUHYH58rQHT=VsDa3ioU9hJZh@mail.gmail.com>
+	<AANLkTikH6AtyN45Z7wA4tpaxXsLhGUnZZj=bpC18F=xn@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 11 Feb 2011 17:12:49 +0200
-Message-ID: <1297437169.2760.54.camel@localhost>
+Date: Fri, 11 Feb 2011 17:16:02 +0200
+Message-ID: <1297437362.2760.57.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Karl Beldan <karl.beldan@gmail.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,28 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-02-07 at 13:44 +0000, David Peverley wrote:
-> I'm not sure what the implication of this is ; I understand that this
-> will cause the subpage test to fail with CONFIG_MTD_NAND_VERIFY_WRITE
-> enabled. However, the FAQ I had discounted as we use YAFFS2 and not
-> UBIFS. Given that should I still disable the write verify? At the
-> moment I'm inclined to leave it enabled as it seems to be regularly
-> catching failures that should not occur, such as the stress-test
-> failures noted.
+On Fri, 2011-02-11 at 14:25 +0000, David Peverley wrote:
+> Sometimes... When they are I've manually marked blocks as bad and
+> re-started the test run :-D I had wondered about whether it was blocks
+> naturally failing with use, but some of these blocks haven't been (Ok,
+> SHOULDNT have been!) erased anywhere near 100,000 times so I'm
+> suspicious about this. When I looked into it I noted that the
+> mtd_stresstest.ko doesn't mark blocks as bad ever so this is
+> potentially something that would occur.
 
-I do not know YAFFS, ask Charles, but I _think_ YAFFS does not use
-sub-pages, so you han have that option enabled.
+Yeah, I think the tests should not do this, they should just test and
+report you issues.
 
-For sure, if you do not use sub-pages and it catches problems - have it
-enabled and nail the problems down.
+>  However, nandtest.c in
+> mtd-utils I notice *does* support marking of bad blocks during
+> testing. Should I consider using this instead? I'm not sure what the
+> relationship between these test tools is...? 
 
-> We've also noticed that every so often we see "uncorrectable error:"
-> messages from nand_ecc.c - do you have any suggestions as to where to
-> start investigating here? So far I can't find a pattern to occurrences
-> or a regular way to reproduce.
-
-Not really - this can be incorrect timings or bad HW. I cannot give you
-good suggestions.
+These are tools wirtten by different people at different times. Kernel
+MTD tests were written by Nokia guys and I think the tests are more or
+less consistent in how they behave.
 
 -- 
 Best Regards,
