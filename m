@@ -1,16 +1,27 @@
-Received: from web30203.mail.mud.yahoo.com ([209.191.69.50])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pntrs-0007MI-D7
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 14:21:05 +0000
-Message-ID: <571902.81856.qm@web30203.mail.mud.yahoo.com>
-Date: Fri, 11 Feb 2011 06:21:02 -0800 (PST)
-From: Lars Michael <lars.michael@yahoo.com>
-Subject: mount ubi volume fails: No such device
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <9186EF1D8AB86E40B9C8009D36864D0403CA4342@dhreinsvxb03.messaging.danaherad.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PntuN-0007OG-ML
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 14:23:40 +0000
+Received: by wyf22 with SMTP id 22so2405230wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 11 Feb 2011 06:23:37 -0800 (PST)
+Subject: Re: [PATCH 4/5] mtd: tests : move ebcnt and pgcnt definitions
+	before usage in printing.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Adrian Hunter <adrian.hunter@nokia.com>
+In-Reply-To: <1297159362-8407-5-git-send-email-adrian.hunter@nokia.com>
+References: <1297159362-8407-1-git-send-email-adrian.hunter@nokia.com>
+	<1297159362-8407-5-git-send-email-adrian.hunter@nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 11 Feb 2011 16:22:27 +0200
+Message-ID: <1297434147.2760.27.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	Kyungmin Park <kyungmin.park@samsung.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Roman Tereshonkov <roman.tereshonkov@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +31,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > On Mon, 2011-02-07 at 07:05 -0800, Lars Michael=0A> wrote:=0A> > > UBI:=
- scrubbed PEB 863, data moved to PEB 1097 UBI=0A> warning:=0A> > ubi_eba_co=
-py_leb: read data back from PEB 1092 and it=0A> is different UBI=0A> > erro=
-r: wear_leveling_worker: error -22 while moving=0A> PEB 868 to PEB=0A> 1092=
-=0A> > UBI warning: ubi_ro_mode: switch to read-only mode UBI=0A> error: do=
-_work:=0A> > work failed with error code -22 UBI error: ubi_thread:=0A> ubi=
-_bgt0d: work=0A> > failed with error code -22=0A> > =0A> > It says you that=
- it wrote some date, then read it=0A> back, compared, and=0A> > the data di=
-d not match. You need to start with=0A> validating your falash=0A> > driver=
-s - use mtd tests:=0A> > =0A> > http://www.linux-mtd.infradead.org/doc/gene=
-ral.html#L_mtd_tests=0A> > =0A> =0A> I formatted and wrote the image again.=
- ubiattach=0A> _sometimes_ completes=0A> without the error code -22. In thi=
-s case the mount went ok.=0A> But mount=0A> sometimes fails completely (str=
-ucture needs cleaning),=0A> other times=0A> errors are reported but success=
-fully recovered. So it seems=0A> to work, but=0A> no in=0A> a reliable way.=
- Any suggestions on how to improve it? My=0A> kernel is=0A> 2.6.29 so perha=
-ps some patches are needed?=0A> =0A=0ASo I got 167 patches from the ubifs 2=
-.6.29 back port tree, some of them=0Alooking very relevant. I did manage to=
- format, attach and mount once, but it appears very unstable reporting more=
- and more errors, like:=0A=0AUBI warning: process_eb: valid VID header but =
-corrupted EC header at PEB 959=0A=0AUBI error: check_corruption: PEB 1065 c=
-ontains corrupted VID header, and the data does not contain all 0xFF, this =
-may be a non-UBI PEB or a severe VID header corruption which requires manua=
-l inspection=0A=0AI will make a new post with more details, using another m=
-ail client that dont screw the header info.=0A=0A=0A      
+On Tue, 2011-02-08 at 12:02 +0200, Adrian Hunter wrote:
+> From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+> 
+> ebcnt and pgcnt variable initialization is moved before printk which
+> uses them.
+> 
+> Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+
+Pushed all patches to l2-mtd-2.6.git except of this one, because Roman
+had already sent it and I already applied it.
+
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
