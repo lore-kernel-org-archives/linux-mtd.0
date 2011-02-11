@@ -1,23 +1,25 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PnvM1-0000a3-ME
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 15:56:18 +0000
-Received: by eyd9 with SMTP id 9so1322024eyd.36
+	id 1Pnw54-00017Z-88
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 16:42:50 +0000
+Received: by iwn38 with SMTP id 38so2565176iwn.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Feb 2011 07:56:16 -0800 (PST)
-Subject: Re: [PATCH] Simplify write buffer size calculation by using
-	mtd->writebufsize.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Guillaume LECERF <glecerf@gmail.com>
-In-Reply-To: <20110211155302.25154.10206.stgit@dev.siriade.com>
-References: <20110211155302.25154.10206.stgit@dev.siriade.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 11 Feb 2011 17:55:07 +0200
-Message-ID: <1297439707.2760.65.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Anatolij Gustschin <agust@denx.de>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Fri, 11 Feb 2011 08:42:48 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1297437362.2760.57.camel@localhost>
+References: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
+	<1297002281.4460.6.camel@localhost>
+	<AANLkTi=M58XrQYEhN1JGX3brBu2aV5h=oAv+Wb9oe46q@mail.gmail.com>
+	<AANLkTimJFv1Uy2c70ewPUHYH58rQHT=VsDa3ioU9hJZh@mail.gmail.com>
+	<AANLkTikH6AtyN45Z7wA4tpaxXsLhGUnZZj=bpC18F=xn@mail.gmail.com>
+	<1297437362.2760.57.camel@localhost>
+Date: Fri, 11 Feb 2011 16:42:47 +0000
+Message-ID: <AANLkTimuASijpXoxJj75=0-a7kqGFGSXGvGDkQuLXDVj@mail.gmail.com>
+Subject: Re: Testing a device using mtd_stresstest
+From: David Peverley <pev@sketchymonkey.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Karl Beldan <karl.beldan@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-02-11 at 16:53 +0100, Guillaume LECERF wrote:
-> This patch applies on top of "[PATCH 2/2] mtd: cfi: fix writebufsize initialization" by Anatolij Gustschin <agust@denx.de>.
-> 
-> 
-> Signed-off-by: Guillaume LECERF <glecerf@gmail.com>
-> ---
->  drivers/mtd/chips/cfi_cmdset_0001.c |   13 ++++++-------
->  drivers/mtd/chips/cfi_cmdset_0002.c |    3 +--
->  drivers/mtd/chips/cfi_cmdset_0020.c |   16 ++++++++--------
->  3 files changed, 15 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 178f87b..7d6a752 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -1643,23 +1643,23 @@ static int cfi_intelext_write_words (struct mtd_info *mtd, loff_t to , size_t le
->  }
->  
-> 
-> -static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
-> +static int __xipram do_write_buffer(struct mtd_info *mtd, struct flchip *chip,
->  				    unsigned long adr, const struct kvec **pvec,
->  				    unsigned long *pvec_seek, int len)
->  {
-> +	struct map_info *map = mtd->priv;
->  	struct cfi_private *cfi = map->fldrv_priv;
->  	map_word status, write_cmd, datum;
->  	unsigned long cmd_adr;
-> -	int ret, wbufsize, word_gap, words;
-> +	int ret, word_gap, words;
->  	const struct kvec *vec;
->  	unsigned long vec_seek;
->  	unsigned long initial_adr;
->  	int initial_len = len;
->  
-> -	wbufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
->  	adr += chip->start;
->  	initial_adr = adr;
-> -	cmd_adr = adr & ~(wbufsize-1);
-> +	cmd_adr = adr & ~(mtd->writebufsize - 1);
+Hi Artem,
 
-It feels like bad layering when drivers use fields like
-'mtd->writesize'. I know we do this all over the place, but I think
-drivers should not really rely on the contents of the "mtd->" object and
-has all the needed data in private objects.
+Thanks for the useful feedback!
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> I do not know YAFFS, ask Charles, but I _think_ YAFFS does not use
+> sub-pages, so you han have that option enabled.
+Yep, I posted to the YAFFS list ; interestingly the write verify
+failure found a case in yaffs where a write failure wasn't tested and
+(I believe) erroneously completes a checkpoint write as a result...!
+Having said that from
+
+> For sure, if you do not use sub-pages and it catches problems - have it
+> enabled and nail the problems down.
+Sure, that makes sense. Although I'm having fun trying to
+differentiate issues ; I get both the write verify failures and the
+"uncorrectable errors" and there's not necessarily a direct
+correlation between occurrences so my gut tells me they're to separate
+issues...!
+
+> Yeah, I think the tests should not do this, they should just test and
+> report you issues.
+Ok, so to summarise my understanding so far, a failure during the
+stresstest is likely to be one of two things ; either a failure due to
+a bad block developing which is not unexpected or an actual failure of
+the test case per-se, or it could be due to Something Else Bad which
+is not expected and IS a test failure. The only way I can see to
+differentiate between these two situations is via statistics. i.e. if
+a block is repeatedly failing its likely bad. If random blocks are
+failing separately its probably something else warranting
+investigation. Is that correct?
+
+If so would it be more useful to adapt the (kernel) stresstest so that
+it doesn't abort the test run on a failure but instead keeps a tally
+of blocks within which failures have occurred and runs to completion.
+Does that sound like a beneficial change? I'm not sure what strategy
+is used for discerning if a block is bad or not but nandtest.c from
+mtd-utils simply marks if an erase or write fails at all so this would
+hopefully give more useful feedback from the stresstest. Aborting the
+test on what could be a normal bad block seems a little misleading,
+although I'm admittedly an unusually ardent fan of tests being
+unambiguous... :-)
+
+Thanks!
+
+~Pev
