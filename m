@@ -1,18 +1,18 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pnu09-0007Vr-NS
-	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 14:29:38 +0000
-Received: by wyf22 with SMTP id 22so2411112wyf.36
+	id 1Pnu4Q-0007Yx-Vb
+	for linux-mtd@lists.infradead.org; Fri, 11 Feb 2011 14:34:03 +0000
+Received: by wyf22 with SMTP id 22so2415476wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Feb 2011 06:29:36 -0800 (PST)
+	Fri, 11 Feb 2011 06:34:01 -0800 (PST)
 Subject: Re: mount ubi volume fails: No such device
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Lars Michael <lh_post@yahoo.com>
-In-Reply-To: <421430.70003.qm@web30207.mail.mud.yahoo.com>
-References: <421430.70003.qm@web30207.mail.mud.yahoo.com>
+In-Reply-To: <771706.3446.qm@web30204.mail.mud.yahoo.com>
+References: <771706.3446.qm@web30204.mail.mud.yahoo.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 11 Feb 2011 16:28:27 +0200
-Message-ID: <1297434507.2760.30.camel@localhost>
+Date: Fri, 11 Feb 2011 16:32:51 +0200
+Message-ID: <1297434771.2760.33.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -26,34 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-02-09 at 00:32 -0800, Lars Michael wrote:
-> > On Mon, 2011-02-07 at 07:05 -0800, Lars Michael wrote:
-> > > UBI: scrubbed PEB 863, data moved to PEB 1097 UBI warning:
-> > ubi_eba_copy_leb: read data back from PEB 1092 and it is different UBI
-> > error: wear_leveling_worker: error -22 while moving PEB 868 to PEB 1092
-> > UBI warning: ubi_ro_mode: switch to read-only mode UBI error: do_work:
-> > work failed with error code -22 UBI error: ubi_thread: ubi_bgt0d: work
-> > failed with error code -22
-> > 
-> > It says you that it wrote some date, then read it back, compared, and
-> > the data did not match. You need to start with validating your falash
-> > drivers - use mtd tests:
-> > 
-> > http://www.linux-mtd.infradead.org/doc/general.html#L_mtd_tests
-> > 
-> 
-> The speedtest, stresstest, readtest, pagetest ran ok, but showing 1
-> bad eraseblock. I guess that is acceptable?
+On Wed, 2011-02-09 at 04:34 -0800, Lars Michael wrote:
+> I formatted and wrote the image again. ubiattach _sometimes_ completes
+> without the error code -22. In this case the mount went ok. But mount
+> sometimes fails completely (structure needs cleaning), other times
+> errors are reported but successfully recovered. So it seems to work,
+> but no in
+> a reliable way. Any suggestions on how to improve it? My kernel is
+> 2.6.29 so perhaps some patches are needed?
 
-Yes.
+You really need to make the subpage test work. You can ask UBI to not
+use sub-pages using the 'vid_hdr_offs' parameter of the 'ubi.ko' module.
+I cannot tell you the exact value because you did not provide enough
+information about your flash. Ideally, reporters should read these
+instructions:
 
-> The oobtest and subpagetest found 3 errors, see below. Does it explain
-> my initial problem?
-
-Yes. You cannot go forward with UBIFS before you have fixed those.
-Esepcially subpage test is relevant to you, you really have to have it
-fixed, or you can just ask UBIFS to not use sub-pages and see how it
-behaves, but this is less optimal.
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+http://www.linux-mtd.infradead.org/doc/ubi.html#L_how_send_bugreport
 
 -- 
 Best Regards,
