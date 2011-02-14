@@ -1,16 +1,18 @@
 Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PozEm-00020y-8U
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2011 14:17:13 +0000
+	id 1PozEm-00020z-8Y
+	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2011 14:17:14 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p1EEFb3W006655
+	p1EEH9RJ008249
 	for <linux-mtd@lists.infradead.org>; Mon, 14 Feb 2011 16:17:09 +0200
 From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 To: linux-mtd@lists.infradead.org
-Subject: 
-Date: Mon, 14 Feb 2011 16:16:08 +0200
-Message-Id: <1297692971-7399-1-git-send-email-jarkko.lavinen@nokia.com>
+Subject: [PATCH 1/3] mtd_blkdevs: Add background processing support
+Date: Mon, 14 Feb 2011 16:16:09 +0200
+Message-Id: <1297692971-7399-2-git-send-email-jarkko.lavinen@nokia.com>
+In-Reply-To: <1297692971-7399-1-git-send-email-jarkko.lavinen@nokia.com>
+References: <1297692971-7399-1-git-send-email-jarkko.lavinen@nokia.com>
 Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,56 +23,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Happy Valentine's day
+Add a new background method into mtd_blktrans_ops, add background support
+into mtd_blktrans_thread(), and add mtd_blktrans_cease_background().
 
-Mtdswap is a volatile block driver on top flash partition meant to be
-used as a swap.  Its like FTL but without stored mapping.
+If the mtd blktrans dev has the background support, the thread will
+call backgroudn function when the request queue becomes empty. The background
+operation may run as long as needs to until
+mtd_blktrans_cease_background() tells to stop.
 
-Use example. The header option will use builtin swap header, avoids mkswap and
-saves 4KiB.
-  modprobe onenand_sim
-  modprobe mtdswap partitions=0 header=1
-  swapon /dev/mtdswap0
+Signed-off-by: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+---
+ drivers/mtd/mtd_blkdevs.c    |   26 ++++++++++++++++++++++++++
+ include/linux/mtd/blktrans.h |    2 ++
+ 2 files changed, 28 insertions(+), 0 deletions(-)
 
-Erase blocks have clean and dirty markers stored in the OOB.  Clean
-markers contain an erase counter for wear leveling. The current
-implementation assumes OOB can be written once before writing to main
-area.
-
-A new background method is added into struct mtd_blktrans_ops and
-background support to mtd_blkdevs thread.  The idea is to allow
-garbage collection to run as a background job when the request queue
-is empty. This allows the mtdswap to be single threaded and avoids
-messy locking. It also increases GC performance.
-
-MTdswap tries to recover from read and write errors and erase
-failures. Soft read error, write error and erase failures are normally
-not returned to user. Only hard read errors cause data loss and an error
-to be returned to the user.
-
-Bitflips are considered normal behavior.  Erase blocks with read or
-write errors schedule the erase block to be garbage collected. With
-hard read error the GC may fail and data is lost. Hard read errors
-cause the erase block to be pattern tested before taken back into use.
-
-Write errors cause the erase block to marked bad immediately. Erase
-failure tolerance is a compile time option. With strict handling the
-erase block is marked bad immediately, otherwise after several
-retries.
-
-Potential improvements could be:
-- Buffering for faster IO and and pages larger than 4KiB.
-- Using device names rather than number as a module parameter.
-- Erasing more than one erase block at a time.
-- Scan the erase blocks after startup to make faster startup.
-- Storing the mapping information to make it yet another FTL and allow
-  hibernation into swap partition.
-
-Jarkko Lavinen
-
- drivers/mtd/Kconfig          |   18 
- drivers/mtd/Makefile         |    1 
- drivers/mtd/mtd_blkdevs.c    |   33 
- drivers/mtd/mtdswap.c        | 1593 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/blktrans.h |    2 
- 5 files changed, 1644 insertions(+), 3 deletions(-)
+diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
+index cb20c67..69d8c27 100644
+--- a/drivers/mtd/mtd_blkdevs.c
++++ b/drivers/mtd/mtd_blkdevs.c
+@@ -119,11 +119,22 @@ static int do_blktrans_request(struct mtd_blktrans_ops *tr,
+ 	}
+ }
+ 
++int mtd_blktrans_cease_background(struct mtd_blktrans_dev *dev)
++{
++	if (kthread_should_stop())
++		return 1;
++
++	return !elv_queue_empty(dev->rq);
++}
++EXPORT_SYMBOL_GPL(mtd_blktrans_cease_background);
++
+ static int mtd_blktrans_thread(void *arg)
+ {
+ 	struct mtd_blktrans_dev *dev = arg;
++	struct mtd_blktrans_ops *tr = dev->tr;
+ 	struct request_queue *rq = dev->rq;
+ 	struct request *req = NULL;
++	int background_done = 0;
+ 
+ 	spin_lock_irq(rq->queue_lock);
+ 
+@@ -131,6 +142,19 @@ static int mtd_blktrans_thread(void *arg)
+ 		int res;
+ 
+ 		if (!req && !(req = blk_fetch_request(rq))) {
++			if (tr->background && !background_done) {
++				spin_unlock_irq(rq->queue_lock);
++				mutex_lock(&dev->lock);
++				tr->background(dev);
++				mutex_unlock(&dev->lock);
++				spin_lock_irq(rq->queue_lock);
++				/*
++				 * Do background processing just once per idle
++				 * period.
++				 */
++				background_done = 1;
++				continue;
++			}
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 
+ 			if (kthread_should_stop())
+@@ -152,6 +176,8 @@ static int mtd_blktrans_thread(void *arg)
+ 
+ 		if (!__blk_end_request_cur(req, res))
+ 			req = NULL;
++
++		background_done = 0;
+ 	}
+ 
+ 	if (req)
+diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
+index 26529eb..66bec4b 100644
+--- a/include/linux/mtd/blktrans.h
++++ b/include/linux/mtd/blktrans.h
+@@ -62,6 +62,7 @@ struct mtd_blktrans_ops {
+ 		     unsigned long block, char *buffer);
+ 	int (*discard)(struct mtd_blktrans_dev *dev,
+ 		       unsigned long block, unsigned nr_blocks);
++	void (*background)(struct mtd_blktrans_dev *dev);
+ 
+ 	/* Block layer ioctls */
+ 	int (*getgeo)(struct mtd_blktrans_dev *dev, struct hd_geometry *geo);
+@@ -85,6 +86,7 @@ extern int register_mtd_blktrans(struct mtd_blktrans_ops *tr);
+ extern int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr);
+ extern int add_mtd_blktrans_dev(struct mtd_blktrans_dev *dev);
+ extern int del_mtd_blktrans_dev(struct mtd_blktrans_dev *dev);
++extern int mtd_blktrans_cease_background(struct mtd_blktrans_dev *dev);
+ 
+ 
+ #endif /* __MTD_TRANS_H__ */
+-- 
+1.7.2.3
