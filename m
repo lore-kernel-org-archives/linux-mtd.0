@@ -1,28 +1,17 @@
-Received: from gateway.prograde.net ([66.92.163.78] helo=sol.prograde.net)
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pp13d-0003Fh-9c
-	for linux-mtd@lists.infradead.org; Mon, 14 Feb 2011 16:13:50 +0000
-Subject: Re: Numonyx NOR and chip->mutex bug?
-Mime-Version: 1.0 (Apple Message framework v1082)
-Content-Type: text/plain; charset=us-ascii
-From: Michael Cashwell <mboards@prograde.net>
-In-Reply-To: <OF24342672.F4BEF9FA-ONC1257834.0055AEE1-C1257834.00560756@transmode.se>
-Date: Mon, 14 Feb 2011 11:15:09 -0500
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7DE2ED04-84FC-4D37-965B-15D7B5AAE9A2@prograde.net>
-References: <16826B66-31FE-41AD-A6EF-E668A45AF1FE@prograde.net>	<4D4BDD48.6040600@keymile.com>
-	<OF5A6BB547.3462D591-ONC125782D.00475578-C125782D.0047EC74@transmode.se>	<541E19B8-D428-4F59-B6BB-A3BD8F455AE4@prograde.net>
-	<OF42EF<F66AF016-8A2B-4116-BE49-CE05B91BE50F@prograde.net>	<OF56DD046D.3279E067
-	<9098074B-C8F0-4608-BE25-D99A4C22176B@prograde.net>	<0488D3BA-7BA3-4E98-B289-3F3D1DB485D4@prograde.net>
-	<OF2C1ABD39	<4D5005E4.1040506@keymile.com>	<OFFF2C6D34.91E5D6C3-ONC1257	<96BD3889-E8AD-408D-8275-ED1A5FD55F1B@prograde.net>
-	<OF9738D658.F46	<4C117A67-5057-4ACD-8EBE-04E9C782570C@prograde.net>	<OF6D40AC82.1008D3DD-ONC1
-	<4D53E660.4020305@users.sourceforge.net>	<OF4E49CFD6.F0E578FE-ONC1257833.004BF8B1-C1257833.004D48AA@transmode.se>
-	<F0DA0AC2-A143-4A11-BE83-CF514BC6F678@prograde.net>
-	<OF24342672.F4BEF9FA-ONC1257834.0055AEE1-C1257834.00560756@transmode.se>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Cc: stefan.bigler@keymile.com, Holger brunck <holger.brunck@keymile.com>,
-	linux-mtd@lists.infradead.org,
-	=?iso-8859-1?Q?Anders_Grafstr=F6m?= <grfstrm@users.sourceforge.net>
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PpK7a-0002Mu-Cv
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2011 12:35:10 +0000
+Received: by iwn38 with SMTP id 38so99263iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Feb 2011 04:35:07 -0800 (PST)
+MIME-Version: 1.0
+Date: Tue, 15 Feb 2011 12:35:07 +0000
+Message-ID: <AANLkTikWMGSCzGdPUBgtZKY2F6=pZ=6X+p7LUUmuKhp+@mail.gmail.com>
+Subject: CONFIG_MTD_NAND_VERIFY_WRITE with Software ECC
+From: David Peverley <pev@sketchymonkey.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +21,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Feb 11, 2011, at 10:39 AM, Joakim Tjernlund wrote:
+Hi all,
 
->>> I'm wondering if the blocks being written to are in a properly =
-erased state.
->>=20
->> Yes, it's a possibility. However, I've never seen an erase report any =
-error.
->=20
-> Mike, does this small patch change anything:
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c =
-b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 9772a62..bdcd8c1 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -808,7 +808,8 @@ static int chip_ready (struct map_info *map, =
-struct flchip *chip, unsigned long
-> 		     (mode =3D=3D FL_WRITING && (cfip->SuspendCmdSupport =
-& 1))))
-> 			goto sleep;
->=20
-> -
-> +		/* Numonyx Axcell chips needs a Read Status */
-> +		map_write(map, CMD(0x70), adr);
-> 		/* Erase suspend */
-> 		map_write(map, CMD(0xB0), adr);
+I've noticed that some of the problems we see are exacerbated further
+by us having CONFIG_MTD_NAND_VERIFY_WRITE enabled. In the case where
+blocks have occasional 1-bit ECC failures (i.e. normally correctable
+and not enough to warrant marking as bad) the generic verify routine
+will cause nand_write_page() to return failure. I've prototyped a
+verify routine that uses an ECC corrected read in our driver and it
+seems to do the job correctly.
 
-No, this doesn't change the failures I see.
+I think that there's a good argument to address this by changing the
+generic verify routine(s) by doing something along the lines of the
+following :
 
--Mike
+static uint8_t readbackbuf[NAND_MAX_PAGESIZE];
+
+static int nand_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+{
+    int err;
+    struct nand_chip *chip = mtd->priv;
+
+    /* Read back page using ECC read */
+    err = chip->ecc.read_page(mtd, this, readbackbuf_ecc);
+    if (err < 0) {
+        printk(KERN_NOTICE "nand_verify_buf: ERROR: ecc.read_page() failed.\n");
+        return -EFAULT;
+    }
+
+    if (memcmp(readbackbuf, buf, len) != 0)
+        return -EFAULT;
+
+    return 0;
+}
+
+which would use the appropriate page read mechanism based on what was
+configured as a result of ecc.mode. Does this make sense to you guys?
+If so I'll put together a patch to submit. This would also
+nand_verify_buf16() becomes obsolete as the bus width differences are
+taken care of within the call to read_page().
+
+Of course it adds a little more overhead but will avoid writes failing
+and possibly causing some blocks to be marked as bad before their
+time...
+
+Cheers,
+
+~Pev
