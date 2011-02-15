@@ -1,23 +1,17 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PpPAJ-0005ra-Ca
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2011 17:58:20 +0000
-Received: by gxk21 with SMTP id 21so208151gxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Feb 2011 09:58:17 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1102151536400.2784@lnxricardw.se.axis.com>
-References: <AANLkTikWMGSCzGdPUBgtZKY2F6=pZ=6X+p7LUUmuKhp+@mail.gmail.com>
-	<Pine.LNX.4.64.1102151355160.2784@lnxricardw.se.axis.com>
-	<AANLkTimS2Dqn9W+1zMsb=wgQAPKZaPZ+UePUmAGbQLCz@mail.gmail.com>
-	<Pine.LNX.4.64.1102151536400.2784@lnxricardw.se.axis.com>
-Date: Tue, 15 Feb 2011 17:58:17 +0000
-Message-ID: <AANLkTi=zwmN2T7T=dePB0PJk_+Ahdvzjrn9t-rA7TtVa@mail.gmail.com>
-Subject: Re: CONFIG_MTD_NAND_VERIFY_WRITE with Software ECC
-From: David Peverley <pev@sketchymonkey.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from lunge.mit.edu ([18.54.1.69] helo=lunge.queued.net)
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PpTL1-0008EV-96
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2011 22:25:39 +0000
+From: Andres Salomon <dilinger@queued.net>
+To: Samuel Ortiz <sameo@linux.intel.com>
+Subject: [PATCH 6/9] tmio-nand: use mfd_data instead of driver_data
+Date: Tue, 15 Feb 2011 14:25:26 -0800
+Message-Id: <1297808729-21110-7-git-send-email-dilinger@queued.net>
+In-Reply-To: <1297808729-21110-1-git-send-email-dilinger@queued.net>
+References: <1297808729-21110-1-git-send-email-dilinger@queued.net>
+Cc: linux-mtd@lists.infradead.org,
+	Mark Brown <broonie@opensource.wolfsonmicro.com>,
+	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +21,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ricard,
+Use mfd_data for passing information from mfd drivers to mfd
+clients.  The mfd_cell's driver_data field is being phased out.
 
-I did some more Googling and found a couple more interesting articles
-; I don't know if you've read them (I assume you probably have!) but
-thought I'd repost for anyone else interested as this seems to be a
-really fascinating and not often discussed topic! :
-  http://www.broadbandreports.com/r0/download/1507743~59e7b9dda2c0e0a0f7ff119a7611c641/flash_mem_summit_jcooke_inconvenient_truths_nand.pdf
+Clients that were using driver_data now access .mfd_data
+via mfd_get_data().  This changes tmio-nand only; mfd drivers with
+other cells are not modified.
 
-I found the following also really interesting, especially for the
-analysis of lots of devices with a plot of numbers of initial bad
-blocks marked which I'd always wondered about! :
-  http://trs-new.jpl.nasa.gov/dspace/bitstream/2014/40761/1/08-07.pdf
+Signed-off-by: Andres Salomon <dilinger@queued.net>
+---
+ drivers/mfd/t7l66xb.c        |    2 +-
+ drivers/mfd/tc6393xb.c       |    2 +-
+ drivers/mtd/nand/tmio_nand.c |    3 +--
+ 3 files changed, 3 insertions(+), 4 deletions(-)
 
-> Either the file system, or some flash management layer such as UBI should
-> take care of this, but I know that jffs2 doesn't at any rate. I'd agree it
-> makes sense for the lower level to to the best of its capability guarantee
-> that the data written actually does get written on the flash.
-Well, we're using YAFFS2 - I haven't looked into how it deals with
-these scenarios though... I'll see if I can figure out how it behaves.
-
-> I think that the application note in some respects simplifies matters a bit.
-> If you have a block that is wearing out, due to a large number of
-> erase/write cycles, it will exhibit several failure modes at an increasing
-> rate, in particular long-term data loss. At some point one could argue that
-> the block is essentially worn out, and mark it as bad, even though an
-> erase/write/verify cycle actually might be successful. I don't think that is
-> what is happening in your case though.
-That's all to do with what one considers a "Bad Block" - I'd agree
-that the repeated failures can show that there might be an issue but
-all the literature I've read today state that only permanent failures
-are regarded as showing a bad block and these are reported via the
-flashes status read. In fact I found a Micron Appnote AN1819
-
-> I don't know if anyone else here on this list has any experiences to share.
-> Frankly, if I saw errors of that type I would start looking for hardware
-> problems, or some sort of hardware or software induced contention on the
-> flash chip bus. Not that that would necessarily be the right approach, but
-> I've seen errors of that type occurring as the result of out-of-spec level
-> shifters between the MCU and flash chip, or incorrectly set up bus timing
-> towards the flash.
-We're looking into these possibilities as well - However as is often
-the case, such problems provoke testing of less used code paths so
-it's quite a good thing to look at the right thing to do in this event
-in conjunction with fixing the root cause of the problem...
-
-Thanks again!
-
-~Pev
+diff --git a/drivers/mfd/t7l66xb.c b/drivers/mfd/t7l66xb.c
+index 3c9e389..af57fc7 100644
+--- a/drivers/mfd/t7l66xb.c
++++ b/drivers/mfd/t7l66xb.c
+@@ -383,7 +383,7 @@ static int t7l66xb_probe(struct platform_device *dev)
+ 
+ 	t7l66xb_attach_irq(dev);
+ 
+-	t7l66xb_cells[T7L66XB_CELL_NAND].driver_data = pdata->nand_data;
++	t7l66xb_cells[T7L66XB_CELL_NAND].mfd_data = pdata->nand_data;
+ 
+ 	ret = mfd_add_devices(&dev->dev, dev->id,
+ 			      t7l66xb_cells, ARRAY_SIZE(t7l66xb_cells),
+diff --git a/drivers/mfd/tc6393xb.c b/drivers/mfd/tc6393xb.c
+index 7f7b9fa..ecb045b 100644
+--- a/drivers/mfd/tc6393xb.c
++++ b/drivers/mfd/tc6393xb.c
+@@ -693,7 +693,7 @@ static int __devinit tc6393xb_probe(struct platform_device *dev)
+ 			goto err_setup;
+ 	}
+ 
+-	tc6393xb_cells[TC6393XB_CELL_NAND].driver_data = tcpd->nand_data;
++	tc6393xb_cells[TC6393XB_CELL_NAND].mfd_data = tcpd->nand_data;
+ 	tc6393xb_cells[TC6393XB_CELL_FB].driver_data = tcpd->fb_data;
+ 
+ 	ret = mfd_add_devices(&dev->dev, dev->id,
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index 5bf63e3..2383b8f 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -372,8 +372,7 @@ static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
+ 
+ static int tmio_probe(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
+-	struct tmio_nand_data *data = cell->driver_data;
++	struct tmio_nand_data *data = mfd_get_data(dev);
+ 	struct resource *fcr = platform_get_resource(dev,
+ 			IORESOURCE_MEM, 0);
+ 	struct resource *ccr = platform_get_resource(dev,
+-- 
+1.7.2.3
