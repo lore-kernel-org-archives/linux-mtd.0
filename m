@@ -1,19 +1,22 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PpMPi-0003xA-5g
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2011 15:02:03 +0000
-Date: Tue, 15 Feb 2011 16:01:58 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: David Peverley <pev@sketchymonkey.com>
-Subject: Re: CONFIG_MTD_NAND_VERIFY_WRITE with Software ECC
-In-Reply-To: <AANLkTimS2Dqn9W+1zMsb=wgQAPKZaPZ+UePUmAGbQLCz@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.1102151536400.2784@lnxricardw.se.axis.com>
+Received: from mail-gx0-f177.google.com ([209.85.161.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PpPAJ-0005ra-Ca
+	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2011 17:58:20 +0000
+Received: by gxk21 with SMTP id 21so208151gxk.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Feb 2011 09:58:17 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1102151536400.2784@lnxricardw.se.axis.com>
 References: <AANLkTikWMGSCzGdPUBgtZKY2F6=pZ=6X+p7LUUmuKhp+@mail.gmail.com>
 	<Pine.LNX.4.64.1102151355160.2784@lnxricardw.se.axis.com>
 	<AANLkTimS2Dqn9W+1zMsb=wgQAPKZaPZ+UePUmAGbQLCz@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+	<Pine.LNX.4.64.1102151536400.2784@lnxricardw.se.axis.com>
+Date: Tue, 15 Feb 2011 17:58:17 +0000
+Message-ID: <AANLkTi=zwmN2T7T=dePB0PJk_+Ahdvzjrn9t-rA7TtVa@mail.gmail.com>
+Subject: Re: CONFIG_MTD_NAND_VERIFY_WRITE with Software ECC
+From: David Peverley <pev@sketchymonkey.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,95 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Ricard,
 
-On Tue, 15 Feb 2011, David Peverley wrote:
+I did some more Googling and found a couple more interesting articles
+; I don't know if you've read them (I assume you probably have!) but
+thought I'd repost for anyone else interested as this seems to be a
+really fascinating and not often discussed topic! :
+  http://www.broadbandreports.com/r0/download/1507743~59e7b9dda2c0e0a0f7ff119a7611c641/flash_mem_summit_jcooke_inconvenient_truths_nand.pdf
 
-> Thats a good analysis ; I've dug around as a result and found an
-> interesting tech note from Micron at :
->    http://download.micron.com/pdf/technotes/nand/tn2917.pdf
+I found the following also really interesting, especially for the
+analysis of lots of devices with a plot of numbers of initial bad
+blocks marked which I'd always wondered about! :
+  http://trs-new.jpl.nasa.gov/dspace/bitstream/2014/40761/1/08-07.pdf
 
-Yes, that's a good (and one of the few) notes on failure mechanisms.
+> Either the file system, or some flash management layer such as UBI should
+> take care of this, but I know that jffs2 doesn't at any rate. I'd agree it
+> makes sense for the lower level to to the best of its capability guarantee
+> that the data written actually does get written on the flash.
+Well, we're using YAFFS2 - I haven't looked into how it deals with
+these scenarios though... I'll see if I can figure out how it behaves.
 
-> They classify NAND failures into various types ; Permanent Failures
-> and Temporary Failures, with the temporary failures being split into
-> "Program Disturb", "Read disturb", "Over-programming" and "Data loss"
-> ...
-> From the description of read disturb, it occurs due to many reads
-> (hundreds of thousands or millions) prior to an erase. Currently my
-> testing is using nandtestc.c and mtd_stresstest.ko - the former tests
-> one cycle before re-programming and the latter is random but not
-> expected to be more than tens of reads before a re-programme becomes
-> statistically likely.
+> I think that the application note in some respects simplifies matters a bit.
+> If you have a block that is wearing out, due to a large number of
+> erase/write cycles, it will exhibit several failure modes at an increasing
+> rate, in particular long-term data loss. At some point one could argue that
+> the block is essentially worn out, and mark it as bad, even though an
+> erase/write/verify cycle actually might be successful. I don't think that is
+> what is happening in your case though.
+That's all to do with what one considers a "Bad Block" - I'd agree
+that the repeated failures can show that there might be an issue but
+all the literature I've read today state that only permanent failures
+are regarded as showing a bad block and these are reported via the
+flashes status read. In fact I found a Micron Appnote AN1819
 
-I agree, it doesn't sound like that is your problem.
+> I don't know if anyone else here on this list has any experiences to share.
+> Frankly, if I saw errors of that type I would start looking for hardware
+> problems, or some sort of hardware or software induced contention on the
+> flash chip bus. Not that that would necessarily be the right approach, but
+> I've seen errors of that type occurring as the result of out-of-spec level
+> shifters between the MCU and flash chip, or incorrectly set up bus timing
+> towards the flash.
+We're looking into these possibilities as well - However as is often
+the case, such problems provoke testing of less used code paths so
+it's quite a good thing to look at the right thing to do in this event
+in conjunction with fixing the root cause of the problem...
 
-> Potentially program disturb sounds like it _could_ be the behaviour I=20
-> observe but it's not clear.
+Thanks again!
 
-It seems to fit in with the description, i.e. you get bits programmed that=
-=20
-were not intended to be programmed. It seems to get worse when not=20
-programming whole pages at once (partial page programming).
-
-> My general take on this is that only the permanent type failures i.e.=20
-> those involving permanently stuck bits, require marking as bad blocks.=20
-> The recovery recommended for the other scenarios is always to erase and=
-=20
-> re-programme. This potentially opens up a whole can of worms... My=20
-> interpretation of this is that if we verify a write and we've had a=20
-> (correctable and non-permanent) single bit error the Right Thing To Do=20
-> would be to erase and re-programme the block, probably with a very small=
-=20
-> retry limit. We could argue that it's the responsibility of the=20
-> file-system to do this but programatically I think nand_write_page() is=
-=20
-> best placed to be able to do this.
-
-Either the file system, or some flash management layer such as UBI should=
-=20
-take care of this, but I know that jffs2 doesn't at any rate. I'd agree it=
-=20
-makes sense for the lower level to to the best of its capability guarantee=
-=20
-that the data written actually does get written on the flash.
-
-I think that the application note in some respects simplifies matters a=20
-bit. If you have a block that is wearing out, due to a large number of=20
-erase/write cycles, it will exhibit several failure modes at an increasing=
-=20
-rate, in particular long-term data loss. At some point one could argue=20
-that the block is essentially worn out, and mark it as bad, even though an=
-=20
-erase/write/verify cycle actually might be successful. I don't think that=
-=20
-is what is happening in your case though.
-
-> Certainly the verify failures we see here with a raw read are
-> occasional (and not consistently the same blocks) and hence not
-> indicative of stuck bits and generally after the block is re-written
-> the read is correct. What do you reckon?
-
-It would seem that if you have only occasional faults in arbitrary blocks=
-=20
-it wouldn't be a wear problem; if the blame is with the flash I would=20
-agree it fits in with the 'Program Disturb' description. I must admit I've=
-=20
-not come across this type of error myself, but that could be because of=20
-limited experience or that it occurs extremely infrequently in the types=20
-of flash that I've been exposed to so I've never noticed it.
-
-I don't know if anyone else here on this list has any experiences to=20
-share. Frankly, if I saw errors of that type I would start looking for=20
-hardware problems, or some sort of hardware or software induced contention=
-=20
-on the flash chip bus. Not that that would necessarily be the right=20
-approach, but I've seen errors of that type occurring as the result of=20
-out-of-spec level shifters between the MCU and flash chip, or incorrectly=
-=20
-set up bus timing towards the flash.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+~Pev
