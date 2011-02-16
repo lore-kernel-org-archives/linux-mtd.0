@@ -1,17 +1,20 @@
-Received: from lunge.mit.edu ([18.54.1.69] helo=lunge.queued.net)
+Received: from mms2.broadcom.com ([216.31.210.18])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PpTL1-0008EV-96
-	for linux-mtd@lists.infradead.org; Tue, 15 Feb 2011 22:25:39 +0000
-From: Andres Salomon <dilinger@queued.net>
-To: Samuel Ortiz <sameo@linux.intel.com>
-Subject: [PATCH 6/9] tmio-nand: use mfd_data instead of driver_data
-Date: Tue, 15 Feb 2011 14:25:26 -0800
-Message-Id: <1297808729-21110-7-git-send-email-dilinger@queued.net>
-In-Reply-To: <1297808729-21110-1-git-send-email-dilinger@queued.net>
-References: <1297808729-21110-1-git-send-email-dilinger@queued.net>
-Cc: linux-mtd@lists.infradead.org,
-	Mark Brown <broonie@opensource.wolfsonmicro.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+	id 1PpWSs-0002NK-QF
+	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2011 01:45:59 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: common.h: simple_strtoll type usage
+Date: Tue, 15 Feb 2011 17:47:58 -0800
+Message-ID: <1297820878-2582-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: Kevin Cernekee <cernekee@gmail.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Mike Frysinger <vapier.adi@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use mfd_data for passing information from mfd drivers to mfd
-clients.  The mfd_cell's driver_data field is being phased out.
+We must use "long long" and "unsigned long long" types when
+implementing the functions "simple_strtoll()" and "simple_strtoull()",
+respectively. This prevents casting/truncation errors on systems where
+"long" is not the same size as "long long" (that is, on most systems).
 
-Clients that were using driver_data now access .mfd_data
-via mfd_get_data().  This changes tmio-nand only; mfd drivers with
-other cells are not modified.
-
-Signed-off-by: Andres Salomon <dilinger@queued.net>
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 ---
- drivers/mfd/t7l66xb.c        |    2 +-
- drivers/mfd/tc6393xb.c       |    2 +-
- drivers/mtd/nand/tmio_nand.c |    3 +--
- 3 files changed, 3 insertions(+), 4 deletions(-)
+ include/common.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/t7l66xb.c b/drivers/mfd/t7l66xb.c
-index 3c9e389..af57fc7 100644
---- a/drivers/mfd/t7l66xb.c
-+++ b/drivers/mfd/t7l66xb.c
-@@ -383,7 +383,7 @@ static int t7l66xb_probe(struct platform_device *dev)
+diff --git a/include/common.h b/include/common.h
+index eb8d5fc..2e5c2a0 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -108,9 +108,9 @@ static inline type simple_##func(const char *snum, int *error) \
+ 	return ret; \
+ }
+ simple_strtoX(strtol, long int)
+-simple_strtoX(strtoll, long int)
++simple_strtoX(strtoll, long long int)
+ simple_strtoX(strtoul, unsigned long int)
+-simple_strtoX(strtoull, unsigned long int)
++simple_strtoX(strtoull, unsigned long long int)
  
- 	t7l66xb_attach_irq(dev);
+ #include "xalloc.h"
  
--	t7l66xb_cells[T7L66XB_CELL_NAND].driver_data = pdata->nand_data;
-+	t7l66xb_cells[T7L66XB_CELL_NAND].mfd_data = pdata->nand_data;
- 
- 	ret = mfd_add_devices(&dev->dev, dev->id,
- 			      t7l66xb_cells, ARRAY_SIZE(t7l66xb_cells),
-diff --git a/drivers/mfd/tc6393xb.c b/drivers/mfd/tc6393xb.c
-index 7f7b9fa..ecb045b 100644
---- a/drivers/mfd/tc6393xb.c
-+++ b/drivers/mfd/tc6393xb.c
-@@ -693,7 +693,7 @@ static int __devinit tc6393xb_probe(struct platform_device *dev)
- 			goto err_setup;
- 	}
- 
--	tc6393xb_cells[TC6393XB_CELL_NAND].driver_data = tcpd->nand_data;
-+	tc6393xb_cells[TC6393XB_CELL_NAND].mfd_data = tcpd->nand_data;
- 	tc6393xb_cells[TC6393XB_CELL_FB].driver_data = tcpd->fb_data;
- 
- 	ret = mfd_add_devices(&dev->dev, dev->id,
-diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
-index 5bf63e3..2383b8f 100644
---- a/drivers/mtd/nand/tmio_nand.c
-+++ b/drivers/mtd/nand/tmio_nand.c
-@@ -372,8 +372,7 @@ static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
- 
- static int tmio_probe(struct platform_device *dev)
- {
--	struct mfd_cell *cell = mfd_get_cell(dev);
--	struct tmio_nand_data *data = cell->driver_data;
-+	struct tmio_nand_data *data = mfd_get_data(dev);
- 	struct resource *fcr = platform_get_resource(dev,
- 			IORESOURCE_MEM, 0);
- 	struct resource *ccr = platform_get_resource(dev,
 -- 
-1.7.2.3
+1.7.0.4
