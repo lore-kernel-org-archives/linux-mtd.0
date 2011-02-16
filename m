@@ -1,20 +1,21 @@
-Received: from mms2.broadcom.com ([216.31.210.18])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PpWSs-0002NK-QF
-	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2011 01:45:59 +0000
-From: "Brian Norris" <computersforpeace@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd-utils: common.h: simple_strtoll type usage
-Date: Tue, 15 Feb 2011 17:47:58 -0800
-Message-ID: <1297820878-2582-1-git-send-email-computersforpeace@gmail.com>
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PpXRv-00039Y-1G
+	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2011 02:49:03 +0000
+Received: by iyh42 with SMTP id 42so744207iyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Feb 2011 18:49:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: Kevin Cernekee <cernekee@gmail.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1297820878-2582-1-git-send-email-computersforpeace@gmail.com>
+References: <1297820878-2582-1-git-send-email-computersforpeace@gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 15 Feb 2011 21:48:40 -0500
+Message-ID: <AANLkTikecSEAs_mjKY6XXHeN86iJsWrLfUB6Ydxbu=2B@mail.gmail.com>
+Subject: Re: [PATCH] mtd-utils: common.h: simple_strtoll type usage
+To: Brian Norris <computersforpeace@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
+	linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We must use "long long" and "unsigned long long" types when
-implementing the functions "simple_strtoll()" and "simple_strtoull()",
-respectively. This prevents casting/truncation errors on systems where
-"long" is not the same size as "long long" (that is, on most systems).
+On Tue, Feb 15, 2011 at 20:47, Brian Norris wrote:
+> We must use "long long" and "unsigned long long" types when
+> implementing the functions "simple_strtoll()" and "simple_strtoull()",
+> respectively. This prevents casting/truncation errors on systems where
+> "long" is not the same size as "long long" (that is, on most systems).
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
----
- include/common.h |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/common.h b/include/common.h
-index eb8d5fc..2e5c2a0 100644
---- a/include/common.h
-+++ b/include/common.h
-@@ -108,9 +108,9 @@ static inline type simple_##func(const char *snum, int *error) \
- 	return ret; \
- }
- simple_strtoX(strtol, long int)
--simple_strtoX(strtoll, long int)
-+simple_strtoX(strtoll, long long int)
- simple_strtoX(strtoul, unsigned long int)
--simple_strtoX(strtoull, unsigned long int)
-+simple_strtoX(strtoull, unsigned long long int)
- 
- #include "xalloc.h"
- 
--- 
-1.7.0.4
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+-mike
