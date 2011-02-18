@@ -1,22 +1,16 @@
-Subject: Re: [PATCH 4/4] mtd: OneNAND: OMAP2: increase multiblock erase
-	verify timeout
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Tony Lindgren <tony@atomide.com>
-In-Reply-To: <20110217234603.GI20795@atomide.com>
-References: <1297068421-14430-1-git-send-email-adrian.hunter@nokia.com>
-	<1297068421-14430-5-git-send-email-adrian.hunter@nokia.com>
-	<20110217234603.GI20795@atomide.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 18 Feb 2011 06:31:38 +0200
-Message-ID: <1298003498.2735.4.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kyungmin Park <kyungmin.park@samsung.com>,
-	linux-omap Mailing List <linux-omap@vger.kernel.org>,
-	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
-	linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: dedekind1@gmail.com
+Received: from dakia2.marvell.com ([65.219.4.35])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PqM5m-0001uG-MI
+	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2011 08:53:35 +0000
+From: Lei Wen <leiwen@marvell.com>
+To: Eric Miao <eric.y.miao@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>,
+	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	adrian.wenl@gmail.com
+Subject: [PATCH V4 0/6] pxa3xx_nand update series set version 4
+Date: Fri, 18 Feb 2011 16:57:02 +0800
+Message-Id: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Change from previous version:
+rework the patch set accroding to Eric's suggestion.
+Move the recode judgement to the after command execution.
 
-On Thu, 2011-02-17 at 15:46 -0800, Tony Lindgren wrote:
-> * Adrian Hunter <adrian.hunter@nokia.com> [110207 00:45]:
-> > From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-> > 
-> > The current multiblock erase verify read timeout 100us is the maximum
-> > for none-error case. If errors happen during multibock erase then
-> > the specification recommends to run multiblock erase verify command
-> > with maximum timeout 10ms (see specs. for KFM4G16Q2A and KFN8G16Q2A).
-> > 
-> > For the most common non-error case we wait 100us in udelay polling
-> > loop. In case of timeout the interrupt mode is used to wait for the
-> > command end.
-> > 
-> > Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-> 
-> I'll queue this series. Anybody from MTD list care to ack this patch?
+Lei Wen (6):
+  pxa3xx_nand: make scan procedure more clear
+  pxa3xx_nand: rework irq logic
+  pxa3xx_nand: discard wait_for_event,write_cmd,__readid function
+  pxa3xx_nand: unify prepare command
+  pxa3xx_nand: mtd scan id process could be defined by driver itself
+  pxa3xx_nand: clean the keep configure code
 
-Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+ arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |    1 +
+ drivers/mtd/nand/pxa3xx_nand.c               | 1010 ++++++++++++--------------
+ 2 files changed, 473 insertions(+), 538 deletions(-)
