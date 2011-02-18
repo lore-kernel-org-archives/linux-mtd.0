@@ -1,16 +1,25 @@
-Received: from web30201.mail.mud.yahoo.com ([209.191.69.48])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PqO1s-0003Eu-Kw
-	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2011 10:57:41 +0000
-Message-ID: <664335.29092.qm@web30201.mail.mud.yahoo.com>
-Date: Fri, 18 Feb 2011 02:57:38 -0800 (PST)
-From: Lars Michael <lh_post@yahoo.com>
-Subject: mount ubi volume fails: No such device
-To: dedekind1@gmail.com
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PqO3k-0003GJ-Qe
+	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2011 10:59:37 +0000
+Received: by iwn38 with SMTP id 38so3405675iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Feb 2011 02:59:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <AANLkTinSUdKvfN3eRgmRVmL6ZqKXDWMgtQCR_5dyRr7b@mail.gmail.com>
+References: <AANLkTikxCVO5Qs4amo1cCgnYVD3fYZdKh2in4e+X5EFV@mail.gmail.com>
+	<1297002281.4460.6.camel@localhost>
+	<AANLkTi=M58XrQYEhN1JGX3brBu2aV5h=oAv+Wb9oe46q@mail.gmail.com>
+	<AANLkTinUJUqgX00UiMHjF5bR_avNLQWuWscfCb+1E2Lf@mail.gmail.com>
+	<AANLkTinSUdKvfN3eRgmRVmL6ZqKXDWMgtQCR_5dyRr7b@mail.gmail.com>
+Date: Fri, 18 Feb 2011 11:59:32 +0100
+Message-ID: <AANLkTi=SjbZo799PZ5SoEVdLV5J5CwHFZPDTXvo1mJch@mail.gmail.com>
+Subject: Re: Testing a device using mtd_stresstest
+From: Arno Steffen <arno.steffen@googlemail.com>
+To: David Peverley <pev@sketchymonkey.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---- On Mon, 14/2/11, Lars Michael <lh_post@yahoo.com> wrote:=0A> Unfortunat=
-ely, booting Linux the NAND flash is now detected=0A> bad, so I do not have=
- an mtd1! what is the best way to try=0A> to recover? I do not understand h=
-ow the flash can suddenly=0A> become bad!=0A> =0A> NAND device: Manufacture=
-r ID: 0x2c, Chip ID: 0xca (Micron=0A> NAND 256MiB 3,3V 16-bit)=0A> Bad bloc=
-k table not found for chip 0=0A> Bad block table not found for chip 0=0A> S=
-canning device for bad blocks=0A> Bad eraseblock 0 at 0x000000000000=0A> Ba=
-d eraseblock 1 at 0x000000020000=0A> Bad eraseblock 2 at 0x000000040000=0A>=
- Bad eraseblock 3 at 0x000000060000=0A> Bad eraseblock 4 at 0x000000080000=
-=0A> Bad eraseblock 5 at 0x0000000a0000=0A> Bad eraseblock 6 at 0x0000000c0=
-000=0A> <cut>=0A> Bad eraseblock 2046 at 0x00000ffc0000=0A> Bad eraseblock =
-2047 at 0x00000ffe0000=0A> No space left to write bad block table=0A> fsl_n=
-fc: NAND Flash not found !=0A> m25p80 spi1.1: at26df081a (1024 Kbytes)=0A> =
-Creating 1 MTD partitions on "Atmel at26df081a SPI Flash=0A> chip":=0A> 0x0=
-00000000000-0x000000100000 : "at26df081a"=0A> DSPI: Coldfire master initial=
-ized=0A> ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver=0A> =0A=
-=0AI try to diagnose the flash from U-Boot. When I e.g. try to read from th=
-e=0Aflash I get:=0A=0ANAND read: device 0 offset 0x1, size 0xfffffff=0ASkip=
-ping bad block 0x00000000=0ASkipping bad block 0x00020000=0ASkipping bad bl=
-ock 0x00040000=0A<cut>=0ASkipping bad block 0x0ffa0000=0ASkipping bad block=
- 0x0ffc0000=0ASkipping bad block 0x0ffe0000=0ANAND read from offset 1000000=
-0 failed -22=0A 0 bytes read: ERROR=0A-> nand =0A=0AI am really stuck here,=
- and don't know how to proceed. Is it normal that=0Athe flash can suddenly =
-go totally bad? At one moment in Linux the device=0Ajust had a few bad bloc=
-ks and after a reboot, all went bad. I am really=0Aworried about this issue=
-!=0A=0ADo I need to replace the device?=0A=0AAny comments on this is apprec=
-iated.=0A=0AThanks and regards,=0A- Lars=0A=0A=0A      
+2011/2/10 David Peverley <pev@sketchymonkey.com>:
+> Hi Arno,
+>
+> Is the patch you refer to the addition of dmb() to nand_command_lp()
+> that I found discussed on TI's E2E board? :
+> =A0http://e2e.ti.com/support/embedded/f/354/p/56710/234039.aspx
+>
+> Digging around I managed to find someones GIT commit with some descriptio=
+n at :
+> =A0http://arago-project.org/git/people/?p=3Dsriram/ti-psp-omap.git;a=3Dco=
+mmitdiff;h=3D76319aa1a321c4b5981e412bf489cfb617186c2f
+>
+
+Yepp, that's exactly what helps me. Before that patch it was a nightmare.
+
+I still have one issue with jffs2 - and I don't know - which of the
+behaviours is right or wrong.
+Generating a jffs2 will end with data , lets say at 0x140 (it's an
+almost empty filesystem).  Rest of partition is 0xff. If I do changes
+in filesystem it writes blocks of 0x800 bytes, and the not used data
+are set to 0x00.
+And then I get a message from mdt module, that there is empty flash
+between 0x140 and 0x800. As kernel writes always blocks of 0x800 byte,
+this message will not occure here.
+So does my mkfs.jffs2 should pad from 0x140 .. 0x800 with 0x00 to work
+properly? Or does my kernel / mtd driver misbehaves ?
+I am courious whether you know, what is right or wrong.
