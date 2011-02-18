@@ -1,23 +1,22 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PqR7g-0004gC-Hn
-	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2011 14:15:53 +0000
-Received: by wwb17 with SMTP id 17so3851716wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 18 Feb 2011 06:15:50 -0800 (PST)
-Subject: Re: [PATCH 3/3] mtd: Add mtdswap block driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-In-Reply-To: <1297692971-7399-4-git-send-email-jarkko.lavinen@nokia.com>
-References: <1297692971-7399-1-git-send-email-jarkko.lavinen@nokia.com>
-	<1297692971-7399-4-git-send-email-jarkko.lavinen@nokia.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 18 Feb 2011 16:14:30 +0200
-Message-ID: <1298038470.5623.50.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Date: Fri, 18 Feb 2011 09:34:47 -0800
+From: Tony Lindgren <tony@atomide.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 4/4] mtd: OneNAND: OMAP2: increase multiblock erase
+	verify timeout
+Message-ID: <20110218173447.GT20795@atomide.com>
+References: <1297068421-14430-1-git-send-email-adrian.hunter@nokia.com>
+	<1297068421-14430-5-git-send-email-adrian.hunter@nokia.com>
+	<20110217234603.GI20795@atomide.com>
+	<1298003498.2735.4.camel@localhost>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1298003498.2735.4.camel@localhost>
+Cc: Kyungmin Park <kyungmin.park@samsung.com>,
+	linux-omap Mailing List <linux-omap@vger.kernel.org>,
+	linux-mtd Mailing List <linux-mtd@lists.infradead.org>,
+	linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-02-14 at 16:16 +0200, Jarkko Lavinen wrote:
-> +config MTD_SWAP_STRICT
-> +       bool "Strict erase error handling"
-> +       depends on MTD_SWAP
-> +       help
-> +        Enables strict tolerance on failed erasures, marking erase blocks bad
-> +        right after the first failed operation. With non-strict mode the
-> +        erase operation is retried. 
+* Artem Bityutskiy <dedekind1@gmail.com> [110217 20:31]:
+> Hi,
+> 
+> On Thu, 2011-02-17 at 15:46 -0800, Tony Lindgren wrote:
+> > * Adrian Hunter <adrian.hunter@nokia.com> [110207 00:45]:
+> > > From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+> > > 
+> > > The current multiblock erase verify read timeout 100us is the maximum
+> > > for none-error case. If errors happen during multibock erase then
+> > > the specification recommends to run multiblock erase verify command
+> > > with maximum timeout 10ms (see specs. for KFM4G16Q2A and KFN8G16Q2A).
+> > > 
+> > > For the most common non-error case we wait 100us in udelay polling
+> > > loop. In case of timeout the interrupt mode is used to wait for the
+> > > command end.
+> > > 
+> > > Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+> > 
+> > I'll queue this series. Anybody from MTD list care to ack this patch?
+> 
+> Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This is too small thing to deserve a separate config option. And the
-help text does not explain what for is this needed, what's the problem
-with re-trying the erase operation - it looks like over-design.
+Thanks!
 
-Is it please possible to remove this config option?
-
-Otherwise I'm fine with the patches, thanks! I'm putting them to my l2
-tree but I wait an updated version from you without this option. In the
-worst case, if you can prove the need for this option, make it a module
-parameter instead please.
-
-Thanks a lot! This is good stuff and I know it works.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Tony
