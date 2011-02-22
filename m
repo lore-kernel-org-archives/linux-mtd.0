@@ -1,15 +1,18 @@
-Received: from www.tglx.de ([62.245.132.106])
+Received: from mail-qy0-f170.google.com ([209.85.216.170])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Prppz-0005aS-JT
-	for linux-mtd@lists.infradead.org; Tue, 22 Feb 2011 10:51:24 +0000
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 1/1] omap3: nand: report corrected ecc errors
-From: John Ogness <john.ogness@linutronix.de>
-Date: Tue, 22 Feb 2011 11:50:56 +0100
-Message-ID: <87oc64qr5b.fsf@vostro.fn.ogness.net>
+	id 1Prssl-0007aG-NQ
+	for linux-mtd@lists.infradead.org; Tue, 22 Feb 2011 14:06:29 +0000
+Received: by qyk32 with SMTP id 32so2634172qyk.15
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Feb 2011 06:06:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+From: Tiago Maluta <tiago.maluta@gmail.com>
+Date: Tue, 22 Feb 2011 11:06:05 -0300
+Message-ID: <AANLkTin9WY0sj5ZYNkf+CHgHabj7Z2qAmER8dfhKAQRm@mail.gmail.com>
+Subject: mxc_nand support on i.MX51
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: John Ogness <john.ogness@linutronix.de>
+Hi,
 
-The number of corrected ECC errors should be reported since other MTD
-systems make use of this information (such as UBI data scrubbing).
+I'm having issues when trying to flash my i.MX51 board with nandwrite
+[1]. This topic was previously discussed on u-boot maillist [2] and it
+seems that NFC version needed by i.MX51 processor isn't supported yet.
+Looking at the code [3] it seems that is already ported [4] but
+Freescale code (2.6.35) [5] differs from mainline (mxc_nand.c)
+although copyright seems to be more recent. I'm Cc Sascha since he is
+driver creator and I'd like to ask if somebody in the list have
+problems to flash NAND on i.MX51 boards? By now I can note [6] that
+the _same_ u-boot.bin flashed by Freescale proprietary tool (ATK) is
+different [purposely changes some bytes from original .bin file] from
+flashing by "nandwrite" or even "dd" [7].
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
----
-Patch against linux-next-20110221.
+[1] nandwrite -p /dev/mtd0 u-boot.bin
+[2] http://lists.denx.de/pipermail/u-boot/2011-January/084949.html
+[3] http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=blob;f=drivers/mtd/nand/mxc_nand.c;h=ef932ba55a0b34967a8fcd48a1f6f43d75ad20b3;hb=f5412be599602124d2bdd49947b231dd77c0bf99
+[4] 44: #define nfc_is_v3_2()           cpu_is_mx51()
+[5] http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=IMX51ANDROID_V92&nodeId=018rH3ZrDR633B&fpsp=1&tab=Design_Tools_Tab
+(link Linux 2.6.35 Source Code Files 2010.11 for i.MX51. Engineering
+Release)
+[6] comparing using u-boot "nand dump 0"
+[7] http://farm6.static.flickr.com/5130/5320148028_7da19d3cf2_o.png
 
- drivers/mtd/nand/omap2.c |    6 ++++--
- 1 files changed, 4 insertions(+), 2 deletions(-)
+Thanks,
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 4e33972..a58465c 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -773,7 +773,7 @@ static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
- 
- 		page_data[find_byte] ^= (1 << find_bit);
- 
--		return 0;
-+		return 1;
- 	default:
- 		if (isEccFF) {
- 			if (ecc_data2[0] == 0 &&
-@@ -803,6 +803,7 @@ static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
- 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
- 							mtd);
- 	int blockCnt = 0, i = 0, ret = 0;
-+	int stat = 0;
- 
- 	/* Ex NAND_ECC_HW12_2048 */
- 	if ((info->nand.ecc.mode == NAND_ECC_HW) &&
-@@ -816,12 +817,13 @@ static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
- 			ret = omap_compare_ecc(read_ecc, calc_ecc, dat);
- 			if (ret < 0)
- 				return ret;
-+			stat += ret;
- 		}
- 		read_ecc += 3;
- 		calc_ecc += 3;
- 		dat      += 512;
- 	}
--	return 0;
-+	return stat;
- }
- 
- /**
--- 
-1.5.6.5
+--tm
