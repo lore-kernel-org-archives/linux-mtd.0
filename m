@@ -1,18 +1,18 @@
-Received: from mail-qy0-f170.google.com ([209.85.216.170])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Prssl-0007aG-NQ
-	for linux-mtd@lists.infradead.org; Tue, 22 Feb 2011 14:06:29 +0000
-Received: by qyk32 with SMTP id 32so2634172qyk.15
+Received: from hm4319.locaweb.com.br ([186.202.9.66])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PruDm-0008QB-6N
+	for linux-mtd@lists.infradead.org; Tue, 22 Feb 2011 15:32:15 +0000
+Received: from hm1540.locaweb.com.br (hm1540.locaweb.com.br [200.234.200.173])
+	by hm4319.locaweb.com.br (Postfix) with ESMTP id 4C268EF88284A
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Feb 2011 06:06:26 -0800 (PST)
-MIME-Version: 1.0
-From: Tiago Maluta <tiago.maluta@gmail.com>
-Date: Tue, 22 Feb 2011 11:06:05 -0300
-Message-ID: <AANLkTin9WY0sj5ZYNkf+CHgHabj7Z2qAmER8dfhKAQRm@mail.gmail.com>
-Subject: mxc_nand support on i.MX51
+	Tue, 22 Feb 2011 12:32:12 -0300 (BRT)
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Subject: DescontosMil - Novo Site de Compras Coletivas
+MIME-version: 1.0
+From: DescontosMil <descontosmil@gmail.com>
+Content-type: MULTIPART/MIXED; BOUNDARY="------------MSG-BOUNDARY-VM2"
+Message-Id: <20110222153027.14DD71BC651@hm1540.locaweb.com.br>
+Date: Tue, 22 Feb 2011 12:30:27 -0300 (BRT)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I'm having issues when trying to flash my i.MX51 board with nandwrite
-[1]. This topic was previously discussed on u-boot maillist [2] and it
-seems that NFC version needed by i.MX51 processor isn't supported yet.
-Looking at the code [3] it seems that is already ported [4] but
-Freescale code (2.6.35) [5] differs from mainline (mxc_nand.c)
-although copyright seems to be more recent. I'm Cc Sascha since he is
-driver creator and I'd like to ask if somebody in the list have
-problems to flash NAND on i.MX51 boards? By now I can note [6] that
-the _same_ u-boot.bin flashed by Freescale proprietary tool (ATK) is
-different [purposely changes some bytes from original .bin file] from
-flashing by "nandwrite" or even "dd" [7].
+Return-Path: descontosmil@gmail.com
 
-[1] nandwrite -p /dev/mtd0 u-boot.bin
-[2] http://lists.denx.de/pipermail/u-boot/2011-January/084949.html
-[3] http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=blob;f=drivers/mtd/nand/mxc_nand.c;h=ef932ba55a0b34967a8fcd48a1f6f43d75ad20b3;hb=f5412be599602124d2bdd49947b231dd77c0bf99
-[4] 44: #define nfc_is_v3_2()           cpu_is_mx51()
-[5] http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=IMX51ANDROID_V92&nodeId=018rH3ZrDR633B&fpsp=1&tab=Design_Tools_Tab
-(link Linux 2.6.35 Source Code Files 2010.11 for i.MX51. Engineering
-Release)
-[6] comparing using u-boot "nand dump 0"
-[7] http://farm6.static.flickr.com/5130/5320148028_7da19d3cf2_o.png
 
-Thanks,
 
---tm
+--------------MSG-BOUNDARY-VM2
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+
+Ol&aacute;, <br />Sou o Rafael do www.descontosmil.com.br. <br />Pe&ccedil;o a permiss&atilde;o para te apresentar uma oportunidade de anunciar produtos e servi&ccedil;os para alavancar suas vendas e/ou para receber nossas ofertas. <br />Ser&aacute; lan&ccedil;ado em mar&ccedil;o, com base nos tradicionais sites de compras coletivas, mas com alguns diferenciais a serem implantados logo de sa&iacute;da. <br />Fa&ccedil;o o convite para estar conosco neste m&ecirc;s de lan&ccedil;amento, acesse www.descontosmil.com.br e se cadastre, &eacute; r&aacute;pido e com certeza, poder&aacute; te trazer grandes vantagens. <br /><br /><br />Um abra&ccedil;o, <br /><br />Rafael Moreno <br />www.descontosmil.com.br <br />Diretor Comercial <br />rafael@descontosmil.com.br <br /><img src='http://webmarketing.cadastroweb.com.br/leitura.php?idNews=1161&idEmail=6378763' border='0' width='0' height='0'>
+
+--------------MSG-BOUNDARY-VM2--
