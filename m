@@ -1,22 +1,16 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ps6P9-0006Ma-IZ
-	for linux-mtd@lists.infradead.org; Wed, 23 Feb 2011 04:32:49 +0000
-Received: by ewy23 with SMTP id 23so1399455ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Feb 2011 20:32:45 -0800 (PST)
-Subject: Re: UBI power cut
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marco Cesarano <mcesaran@broadcom.com>
-In-Reply-To: <2B8D104E6375C044820294EF730F789F582C219247@IRVEXCHCCR01.corp.ad.broadcom.com>
-References: <2B8D104E6375C044820294EF730F789F582C219247@IRVEXCHCCR01.corp.ad.broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 23 Feb 2011 06:32:39 +0200
-Message-ID: <1298435559.2431.2.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
+	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Ps8Xz-0006r0-GF
+	for linux-mtd@lists.infradead.org; Wed, 23 Feb 2011 06:50:04 +0000
+From: Viresh Kumar <viresh.kumar@st.com>
+To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+	<Artem.Bityutskiy@nokia.com>, <linus.walleij@stericsson.com>
+Subject: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
+Date: Wed, 23 Feb 2011 12:19:29 +0530
+Message-ID: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Vipin Kumar <vipin.kumar@st.com>, Viresh Kumar <viresh.kumar@st.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-02-22 at 14:21 -0800, Marco Cesarano wrote:
-> Hi,
-> 
-> I tested UBI/UBIFS on Linux 2.6.31 and I experienced some issues in
-> case of power cut. I've pasted some logs below. You can see that the
-> driver returns a code that means that a page is partially written on
-> the flash, and at the boot phase the driver detects corrupted data.
+In most of the cases partitions info, width, etc comes from board files. And
+device structure may be defined in machine files, common to all board files.
+Thus, we need to set platform data from board file, for which
+fsmc_nand_set_plat_data routine is required.
 
-Do you still have this corrupted media? Could you please enable UBIFS
-debugging and reproduce the issue and send the UBIFS logs? This may
-help: http://linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+---
+ include/linux/mtd/fsmc.h |   17 +++++++++++++++++
+ 1 files changed, 17 insertions(+), 0 deletions(-)
 
+diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
+index 6987995..0cba324 100644
+--- a/include/linux/mtd/fsmc.h
++++ b/include/linux/mtd/fsmc.h
+@@ -160,4 +160,21 @@ extern void __init fsmc_init_board_info(struct platform_device *pdev,
+ 		struct mtd_partition *partitions, unsigned int nr_partitions,
+ 		unsigned int width);
+ 
++/* This function is used to set platform data field of pdev->dev */
++static inline void fsmc_nand_set_plat_data(struct platform_device *pdev,
++		struct mtd_partition *partitions, unsigned int nr_partitions,
++		unsigned int options, unsigned int width)
++{
++	struct fsmc_nand_platform_data *plat_data;
++	plat_data = dev_get_platdata(&pdev->dev);
++
++	if (partitions) {
++		plat_data->partitions = partitions;
++		plat_data->nr_partitions = nr_partitions;
++	}
++
++	plat_data->options = options;
++	plat_data->width = width;
++}
++
+ #endif /* __MTD_FSMC_H */
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.7.2.2
