@@ -1,13 +1,13 @@
-Received: from eu1sys200aog120.obsmtp.com ([207.126.144.149])
+Received: from eu1sys200aog106.obsmtp.com ([207.126.144.121])
 	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ps8Xz-0006r0-GF
-	for linux-mtd@lists.infradead.org; Wed, 23 Feb 2011 06:50:04 +0000
+	id 1PsUQ6-0008UE-T0
+	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2011 06:11:27 +0000
 From: Viresh Kumar <viresh.kumar@st.com>
-To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
-	<Artem.Bityutskiy@nokia.com>, <linus.walleij@stericsson.com>
-Subject: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
-Date: Wed, 23 Feb 2011 12:19:29 +0530
-Message-ID: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
+To: <Artem.Bityutskiy@nokia.com>, <David.Woodhouse@intel.com>,
+	<linux-mtd@lists.infradead.org>
+Subject: [PATCH] Newly erased page read workaround
+Date: Thu, 24 Feb 2011 11:40:16 +0530
+Message-ID: <c7baa4a77775b54f2ef8450d8d1f44d1dc011b41.1298527669.git.viresh.kumar@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Cc: Vipin Kumar <vipin.kumar@st.com>, Viresh Kumar <viresh.kumar@st.com>
@@ -20,42 +20,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In most of the cases partitions info, width, etc comes from board files. And
-device structure may be defined in machine files, common to all board files.
-Thus, we need to set platform data from board file, for which
-fsmc_nand_set_plat_data routine is required.
+From: Vipin Kumar <vipin.kumar@st.com>
 
-Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+A newly erased page contains ff in data as well as spare area. While reading an
+erased page, the read out ecc from spare area does not match the ecc generated
+by fsmc ecc hardware accelarator. This is because ecc of data ff ff is not ff
+ff. This leads to errors when jffs2 fs erases and reads back the pages to
+ensure consistency.
+
+This patch adds a software workaround to ensure that the ecc check is not
+performed for erased pages. An erased page is checked by checking data as ff ff.
+
 Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+Acked-by: Linus Walleij <linus.walleij@stericsson.com>
 ---
- include/linux/mtd/fsmc.h |   17 +++++++++++++++++
- 1 files changed, 17 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |   28 ++++++++++++++++++++++------
+ 1 files changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
-index 6987995..0cba324 100644
---- a/include/linux/mtd/fsmc.h
-+++ b/include/linux/mtd/fsmc.h
-@@ -160,4 +160,21 @@ extern void __init fsmc_init_board_info(struct platform_device *pdev,
- 		struct mtd_partition *partitions, unsigned int nr_partitions,
- 		unsigned int width);
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 205b10b..7df270a 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -420,7 +420,7 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 	struct fsmc_nand_data *host = container_of(mtd,
+ 					struct fsmc_nand_data, mtd);
+ 	struct fsmc_eccplace *ecc_place = host->ecc_place;
+-	int i, j, s, stat, eccsize = chip->ecc.size;
++	int i, j, k, s, stat, eccsize = chip->ecc.size;
+ 	int eccbytes = chip->ecc.bytes;
+ 	int eccsteps = chip->ecc.steps;
+ 	uint8_t *p = buf;
+@@ -460,11 +460,27 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		memcpy(&ecc_code[i], oob, 13);
+ 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
  
-+/* This function is used to set platform data field of pdev->dev */
-+static inline void fsmc_nand_set_plat_data(struct platform_device *pdev,
-+		struct mtd_partition *partitions, unsigned int nr_partitions,
-+		unsigned int options, unsigned int width)
-+{
-+	struct fsmc_nand_platform_data *plat_data;
-+	plat_data = dev_get_platdata(&pdev->dev);
+-		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+-		if (stat < 0)
+-			mtd->ecc_stats.failed++;
+-		else
+-			mtd->ecc_stats.corrected += stat;
++		/*
++		 * This is a temporary erase check. A newly erased page read
++		 * would result in an ecc error because the oob data is also
++		 * erased to FF and the calculated ecc for an FF data is not
++		 * FF..FF.
++		 * This is a workaround to skip performing correction in case
++		 * data is FF..FF
++		 */
++		for (k = 0; k < eccsize; k++) {
++			if (*(p + k) != 0xff)
++				break;
++		}
 +
-+	if (partitions) {
-+		plat_data->partitions = partitions;
-+		plat_data->nr_partitions = nr_partitions;
-+	}
-+
-+	plat_data->options = options;
-+	plat_data->width = width;
-+}
-+
- #endif /* __MTD_FSMC_H */
++		if (k < eccsize) {
++			stat = chip->ecc.correct(mtd, p, &ecc_code[i],
++					&ecc_calc[i]);
++			if (stat < 0)
++				mtd->ecc_stats.failed++;
++			else
++				mtd->ecc_stats.corrected += stat;
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 1.7.2.2
