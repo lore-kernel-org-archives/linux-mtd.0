@@ -1,22 +1,18 @@
-Received: from mail-iw0-f177.google.com ([209.85.214.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PsaTA-0002W2-FF
-	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2011 12:38:57 +0000
-Received: by iwn36 with SMTP id 36so274156iwn.36
+	id 1PsaUz-0002Xp-4q
+	for linux-mtd@lists.infradead.org; Thu, 24 Feb 2011 12:40:50 +0000
+Received: by wwb29 with SMTP id 29so444038wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Feb 2011 04:38:54 -0800 (PST)
+	Thu, 24 Feb 2011 04:40:47 -0800 (PST)
 MIME-Version: 1.0
-Sender: linus.ml.walleij@gmail.com
-In-Reply-To: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
-References: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
-Date: Thu, 24 Feb 2011 13:38:54 +0100
-Message-ID: <AANLkTim3yTG-ZEZdhj=ccvd_tXm4XNG7x5uT6qS54sqQ@mail.gmail.com>
-Subject: Re: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
-From: Linus Walleij <linus.walleij@linaro.org>
-To: Viresh Kumar <viresh.kumar@st.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Vipin Kumar <vipin.kumar@st.com>, linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org, Artem.Bityutskiy@nokia.com
+Date: Thu, 24 Feb 2011 18:09:31 +0530
+Message-ID: <AANLkTimPpD=M2pyfm3iV2Hbr61Jgzk8avMebN9LdYmyK@mail.gmail.com>
+Subject: Mean Time Between Failure - UBI clarifications
+From: Navaneethan P <pnavanee@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2011/2/23 Viresh Kumar <viresh.kumar@st.com>:
+Hi Linux-mtd users,
 
-> In most of the cases partitions info, width, etc comes from board files. And
-> device structure may be defined in machine files, common to all board files.
-> Thus, we need to set platform data from board file, for which
-> fsmc_nand_set_plat_data routine is required.
 
-Hm you create a new function, but where is it used? If it's used by a later
-patch perhaps you should make a patch series instead?
+In our product, we are using 128MB of NAND Flash (Samsung / Micron).
+The whole NAND flash is configured as a single MTD partition. We are
+using UBI over the MTD partition.
 
-Yours,
-Linus Walleij
+With this input, we wanted to calculate the Mean Time between failures
+(MTBF) of our product. In this context,
+
+1) We wanted to term =92bitflip=92 as a failure. Is our understanding
+correct or should we only consider a bad block as a failure?
+
+2) Is there any standard way to findout the number of bitflips from
+the UBI? If no, is it suggested to modify the UBI subsystem of the
+Linux kernel to get the bit flip counter?
+
+3) Is there any standard software / approach which can be used to find
+out the reliability / MTBF / MTTF (Mean Time To Failure) of our NAND
+Flash?
+
+
+Could some one clarify in this regard?
+
+Thanks in advance.
+
+Regards,
+Navaneethan
