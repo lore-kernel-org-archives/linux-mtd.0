@@ -1,26 +1,18 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Psv2A-0002mx-Cd
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 10:36:27 +0000
-Received: by wwb29 with SMTP id 29so1325494wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Feb 2011 02:36:24 -0800 (PST)
-Subject: Re: [PATCH 1/5] MTD: make MTD_CONCAT support mandatory
+Subject: Re: [PATCH V4 0/6] pxa3xx_nand update series set version 4
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <AANLkTi=euRE_EsBRrSOsOtNysPT0MpOXQKM-LZ6-07LC@mail.gmail.com>
-References: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>
-	<201101121425.49587.sr@denx.de>
-	<AANLkTi=TP7T-vt_vgacRPOgGWvhHPqKkEggQNDmPDkY3@mail.gmail.com>
-	<1298623638.2798.11.camel@localhost>
-	<AANLkTi=euRE_EsBRrSOsOtNysPT0MpOXQKM-LZ6-07LC@mail.gmail.com>
+To: Lei Wen <leiwen@marvell.com>
+In-Reply-To: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
+References: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 25 Feb 2011 12:35:02 +0200
-Message-ID: <1298630102.2798.40.camel@localhost>
+Date: Fri, 25 Feb 2011 12:39:31 +0200
+Message-ID: <1298630371.2798.43.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: Eric Miao <eric.y.miao@gmail.com>,
+	Haojian Zhuang <haojian.zhuang@marvell.com>,
+	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, adrian.wenl@gmail.com,
+	linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -31,30 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-02-25 at 13:05 +0300, Dmitry Eremin-Solenikov wrote:
-> On 2/25/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Tue, 2011-02-15 at 17:07 +0300, Dmitry Eremin-Solenikov wrote:
-> >> What about this series? Will it find it's way to kernel or should I do
-> >> some more steps?
-> >
-> > They still sit in my l2-mtd-2.6.git tree. You are not expected to do
-> > anything, David should look at them an pick them (or reject with an
-> > e-mail explaining the reasons) later. Usually he does this closer to the
-> > merge window.
+On Fri, 2011-02-18 at 16:57 +0800, Lei Wen wrote:
+> Change from previous version:
+> rework the patch set accroding to Eric's suggestion.
+> Move the recode judgement to the after command execution.
 > 
-> Fine, thank you for the explanation. I was just asking because I did not
-> know the process behind MTD subsystem.
-> 
-> BTW: I've heard the idea about making MTD partitions also a mandatory
-> functionality of MTD subsystem. If I make such patches, will stand a chance
-> to be accepted, or it's still better to keep MTD parts an option?
+> Lei Wen (6):
+>   pxa3xx_nand: make scan procedure more clear
+>   pxa3xx_nand: rework irq logic
+>   pxa3xx_nand: discard wait_for_event,write_cmd,__readid function
+>   pxa3xx_nand: unify prepare command
+>   pxa3xx_nand: mtd scan id process could be defined by driver itself
+>   pxa3xx_nand: clean the keep configure code
 
-Yeah, it is obvious that CONFIG_MTD_PARTITIONS is a problem:
+Hi, could you please make checkpatch.pl happy and re-send the patches?
 
-[dedekind@eru linux-2.6 (master)]$ grep -r CONFIG_MTD_PARTITIONS drivers/mtd/* | wc -l
-128
+There are many issues. OK, some are fine, do not try to fix them, e.g.:
 
-If you could clean this up, that would be great!
+WARNING: line over 80 characters
+#127: FILE: drivers/mtd/nand/pxa3xx_nand.c:221:
++{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &default_cmdset, &timing[2] },
+
+but some are clearly stylistic errors:
+
+ERROR: else should follow close brace '}'
+#249: FILE: drivers/mtd/nand/pxa3xx_nand.c:539:
++                }
++                else {
+
+etc.
+
+Thanks!
 
 -- 
 Best Regards,
