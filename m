@@ -1,25 +1,24 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PsvU2-00032M-TB
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 11:05:15 +0000
-Received: by wyf23 with SMTP id 23so1531102wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Feb 2011 03:05:13 -0800 (PST)
-Subject: Re: [PATCH 3/3] mtd: Add mtdswap block driver
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-In-Reply-To: <20110222162143.GA13529@angel.research.nokia.com>
-References: <1297692971-7399-1-git-send-email-jarkko.lavinen@nokia.com>
-	<1297692971-7399-4-git-send-email-jarkko.lavinen@nokia.com>
-	<1298038470.5623.50.camel@localhost>
-	<20110222162143.GA13529@angel.research.nokia.com>
+	id 1PsvXG-00033u-OQ
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 11:08:37 +0000
+Subject: Re: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: viresh kumar <viresh.kumar@st.com>
+In-Reply-To: <4D6725AA.3070204@st.com>
+References: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
+	<AANLkTim3yTG-ZEZdhj=ccvd_tXm4XNG7x5uT6qS54sqQ@mail.gmail.com>
+	<4D6725AA.3070204@st.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 25 Feb 2011 13:03:49 +0200
-Message-ID: <1298631829.2798.59.camel@localhost>
+Date: Fri, 25 Feb 2011 13:07:01 +0200
+Message-ID: <1298632021.2798.62.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: Vipin KUMAR <vipin.kumar@st.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,38 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-02-22 at 18:21 +0200, Jarkko Lavinen wrote:
-> On Fri, Feb 18, 2011 at 04:14:30PM +0200, ext Artem Bityutskiy wrote:
-> > ... what's the problem with re-trying the erase operation - it
-> > looks like over-design.
+On Fri, 2011-02-25 at 09:14 +0530, viresh kumar wrote:
+> On 02/24/2011 06:08 PM, Linus Walleij wrote:
+> > 2011/2/23 Viresh Kumar <viresh.kumar@st.com>:
+> > 
+> >> > In most of the cases partitions info, width, etc comes from board files. And
+> >> > device structure may be defined in machine files, common to all board files.
+> >> > Thus, we need to set platform data from board file, for which
+> >> > fsmc_nand_set_plat_data routine is required.
+> > Hm you create a new function, but where is it used? If it's used by a later
+> > patch perhaps you should make a patch series instead?
 > 
-> > Is it please possible to remove this config option?
+> Linus,
 > 
-> I have a Hynix SLC OneNand spec which says an erase block with an
-> erase failure or a write error should not be re-written or erased
-> again but instead just garbage collected and marked bad.
-> 
-> If I switch permanently to the strict erase failure handling, bad
-> block marking could be too sensitive for some devices expecting
-> retries.
-> 
-> If I switch permanently to the lenient mode, mtdswap would retry
-> failed erases which would be against chip spec of at least the one
-> OneNand chip I am working with.
-> 
-> If I remove the config option it would then mean strict handling
-> only.
+> Actually it will be used in SPEAr patches, which will be sent separately. I could
+> have kept it as part of that series also, but just thought to send it separately.
+> You want me to keep it in spear patch series instead?
 
-Please, make the option to be a module parameter.
-
-And add this description to the parameter description. Probably this
-amount of text is too much for MODULE_PARM_DESC() - put less there, and
-put the details to a comment near that MODULE_PARM_DESC().
-
-IOW, I'm not against this option, I'm against making it Kconfig option.
-
-Thanks a lot!
-
+I think this is important piece of information which should be in the
+patch commit message.
 -- 
 Best Regards,
 Artem Bityutskiy (Артём Битюцкий)
