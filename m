@@ -1,12 +1,25 @@
-From: Jason Liu <r64343@freescale.com>
-To: <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH] mtd: nand: fix one typo in the comments
-Date: Fri, 25 Feb 2011 13:06:18 +0800
-Message-ID: <1298610378-3105-1-git-send-email-r64343@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: dedekind1@gmail.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, David.Woodhouse@intel.com
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pst6a-00024C-UN
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 08:32:53 +0000
+Received: by wyf23 with SMTP id 23so1431843wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Feb 2011 00:32:51 -0800 (PST)
+Subject: Re: CONFIG_MTD_NAND_VERIFY_WRITE with Software ECC
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: David Peverley <pev@sketchymonkey.com>
+In-Reply-To: <AANLkTimS2Dqn9W+1zMsb=wgQAPKZaPZ+UePUmAGbQLCz@mail.gmail.com>
+References: <AANLkTikWMGSCzGdPUBgtZKY2F6=pZ=6X+p7LUUmuKhp+@mail.gmail.com>
+	<Pine.LNX.4.64.1102151355160.2784@lnxricardw.se.axis.com>
+	<AANLkTimS2Dqn9W+1zMsb=wgQAPKZaPZ+UePUmAGbQLCz@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 25 Feb 2011 10:31:27 +0200
+Message-ID: <1298622687.2798.7.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ricard Wanderlof <ricard.wanderlof@axis.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,37 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In the function nand_do_write_oob, the comments
-has one typo, this patch fix it.
+Hi,
 
-- /* Do not allow reads past end of device */
-+ /* Do not allow write past end of device */
-if (unlikely(to >= mtd->size ||
-	     ops->ooboffs + ops->ooblen >
-		((mtd->size >> chip->page_shift) -
-		 (to >> chip->page_shift)) * len)) {
-	DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
-			"end of device\n", __func__);
-	return -EINVAL;
-}
+On Tue, 2011-02-15 at 14:00 +0000, David Peverley wrote:
+> From the description of read disturb, it occurs due to many reads
+> (hundreds of thousands or millions) prior to an erase. Currently my
+> testing is using nandtestc.c and mtd_stresstest.ko - the former tests
+> one cycle before re-programming and the latter is random but not
+> expected to be more than tens of reads before a re-programme becomes
+> statistically likely. Potentially program disturb sounds like it
+> _could_ be the behaviour I observe but it's not clear.
 
-Signed-off-by: Jason Liu <r64343@freescale.com>
----
- drivers/mtd/nand/nand_base.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+If you verify the page just after you have programmed it, then program
+disturb is out of the picture. AFAIK, program disturb is about
+"disturbing" other NAND pages while programming.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index a9c6ce7..da76040 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2377,7 +2377,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 		return -EINVAL;
- 	}
- 
--	/* Do not allow reads past end of device */
-+	/* Do not allow write past end of device */
- 	if (unlikely(to >= mtd->size ||
- 		     ops->ooboffs + ops->ooblen >
- 			((mtd->size >> chip->page_shift) -
+> My general take on this is that only the permanent type failures i.e.
+> those involving permanently stuck bits, require marking as bad blocks.
+> The recovery recommended for the other scenarios is always to erase
+> and re-programme. This potentially opens up a whole can of worms... My
+> interpretation of this is that if we verify a write and we've had a
+> (correctable and non-permanent) single bit error the Right Thing To Do
+> would be to erase and re-programme the block, probably with a very
+> small retry limit. We could argue that it's the responsibility of the
+> file-system to do this but programatically I think nand_write_page()
+> is best placed to be able to do this.
+
+Yeah, UBI does this for example. If we program an eraseblock, and we get
+and error while writing a NAND page, we try to recover:
+
+1. We pick another eraseblock.
+2. We move the data from the faulty eraseblock to the new one.
+3. We erase and torture the faulty eraseblock.
+
 -- 
-1.7.0.4
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
