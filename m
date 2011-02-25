@@ -1,24 +1,22 @@
-Received: from mga11.intel.com ([192.55.52.93])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PsvCt-0002qZ-Sv
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 10:47:32 +0000
-Date: Fri, 25 Feb 2011 11:47:27 +0100
-From: Samuel Ortiz <sameo@linux.intel.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH 09/29] t7166xb: mfd_cell is now implicitly available to
-	drivers
-Message-ID: <20110225104726.GB2693@sortiz-mobl>
-References: <1297998456-7615-1-git-send-email-dilinger@queued.net>
-	<1297998456-7615-10-git-send-email-dilinger@queued.net>
-	<1298624712.2798.21.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1298624712.2798.21.camel@localhost>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Mark Brown <broonie@opensource.wolfsonmicro.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Andres Salomon <dilinger@queued.net>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PsvDj-0002rq-RR
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 10:48:24 +0000
+Received: by wyf23 with SMTP id 23so1518959wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Feb 2011 02:48:22 -0800 (PST)
+Subject: Re: [PATCH] jffs2reader fix
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Benedikt Heinz <zn000h@gmail.com>
+In-Reply-To: <AANLkTinNObFTNzS6PPuiZc+cS_Hh-WKY6+=Nxama7=yc@mail.gmail.com>
+References: <AANLkTinNObFTNzS6PPuiZc+cS_Hh-WKY6+=Nxama7=yc@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 25 Feb 2011 12:47:00 +0200
+Message-ID: <1298630820.2798.47.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
-
-On Fri, Feb 25, 2011 at 11:05:12AM +0200, Artem Bityutskiy wrote:
-> On Thu, 2011-02-17 at 19:07 -0800, Andres Salomon wrote:
-> > No need to explicitly set the cell's platform_data/data_size.
-> > 
-> > Modify clients to use mfd_get_cell helper function instead of
-> > accessing platform_data directly.
-> > 
-> > Signed-off-by: Andres Salomon <dilinger@queued.net>
+On Fri, 2011-02-18 at 14:29 +0100, Benedikt Heinz wrote:
+> Hi!
 > 
-> Just to re-confirm, I suggest to merge these MTD changes via Samuel's
-> tree, thanks.
-Thanks, I'll take them.
+> I changed the jffs2reader.c so it'll compile again.
+> Seems to work - I successfully tested it on a few jffs2 images.
+> 
+> Attached you'll find the patch and the full file.
+> 
+> Reply directly to me as I'm not on the list.
 
-Cheers,
-Samuel.
+Would you please split your patch on several smaller patches, add proper
+comment and send them as a nice series of patches?
 
 -- 
-Intel Open Source Technology Centre
-http://oss.intel.com/
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
