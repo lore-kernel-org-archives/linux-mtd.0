@@ -1,22 +1,26 @@
-Received: from eu1sys200aog106.obsmtp.com ([207.126.144.121])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PsvlQ-0003Ac-FF
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 11:23:13 +0000
-Message-ID: <4D6790FD.9060807@st.com>
-Date: Fri, 25 Feb 2011 16:52:37 +0530
-From: viresh kumar <viresh.kumar@st.com>
-MIME-Version: 1.0
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Psvp8-0003C7-Q5
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 11:27:03 +0000
+Received: by wwb29 with SMTP id 29so1358896wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Feb 2011 03:27:01 -0800 (PST)
 Subject: Re: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: viresh kumar <viresh.kumar@st.com>
+In-Reply-To: <4D6790FD.9060807@st.com>
 References: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
-	<1298632262.2798.66.camel@localhost>
-In-Reply-To: <1298632262.2798.66.camel@localhost>
+	<1298632262.2798.66.camel@localhost>  <4D6790FD.9060807@st.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Date: Fri, 25 Feb 2011 13:25:38 +0200
+Message-ID: <1298633138.2798.72.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: Vipin KUMAR <vipin.kumar@st.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	"dwmw2@infradead.org" <dwmw2@infradead.org>,
 	Linus WALLEIJ <linus.walleij@stericsson.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +30,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/25/2011 04:41 PM, Artem Bityutskiy wrote:
->> > diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
->> > index 6987995..0cba324 100644
->> > --- a/include/linux/mtd/fsmc.h
->> > +++ b/include/linux/mtd/fsmc.h
->> > @@ -160,4 +160,21 @@ extern void __init fsmc_init_board_info(struct platform_device *pdev,
->> >  		struct mtd_partition *partitions, unsigned int nr_partitions,
->> >  		unsigned int width);
->> >  
->> > +/* This function is used to set platform data field of pdev->dev */
->> > +static inline void fsmc_nand_set_plat_data(struct platform_device *pdev,
->> > +		struct mtd_partition *partitions, unsigned int nr_partitions,
->> > +		unsigned int options, unsigned int width)
->> > +{
->> > +	struct fsmc_nand_platform_data *plat_data;
->> > +	plat_data = dev_get_platdata(&pdev->dev);
->> > +
->> > +	if (partitions) {
->> > +		plat_data->partitions = partitions;
->> > +		plat_data->nr_partitions = nr_partitions;
->> > +	}
->> > +
->> > +	plat_data->options = options;
->> > +	plat_data->width = width;
->> > +}
-> Isn't this function too big to be an inline func in a header file?
-> 
+On Fri, 2011-02-25 at 16:52 +0530, viresh kumar wrote:
+> Actually this routine will not be called many times.
 
-Sorry, i have already resent this patch with change in commit message.
+Which means it is not on the hot path which means inline is not really
+needed. Also, today it is not called too many times, tomorrow it could
+be called more often...
 
-Actually this routine will not be called many times. Only for setting
-plat_data of few devices (depending on board). So i thought keeping
-it inline would be better. But will change if you want. Should i move
-it in fsmc-nand.c??
+>  Only for setting
+> plat_data of few devices (depending on board). So i thought keeping
+> it inline would be better. But will change if you want. Should i move
+> it in fsmc-nand.c??
+
+Hi, up to you, I would not keep it in a header file, this is more about
+personal taste, I guess.
 
 -- 
-viresh
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
