@@ -1,22 +1,26 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PstZZ-0002My-O2
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 09:02:50 +0000
-Received: by wyf23 with SMTP id 23so1449837wyf.36
+	id 1PstdL-0002Oo-Rm
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 09:06:44 +0000
+Received: by wwb29 with SMTP id 29so1272389wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Feb 2011 01:02:48 -0800 (PST)
-Subject: Re: [PATCH 0/2] mtd: new option is added to control onenand init
-	unlocking
+	Fri, 25 Feb 2011 01:06:42 -0800 (PST)
+Subject: Re: [PATCH 09/29] t7166xb: mfd_cell is now implicitly available to
+	drivers
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
-In-Reply-To: <1297943082-398-1-git-send-email-roman.tereshonkov@nokia.com>
-References: <1297943082-398-1-git-send-email-roman.tereshonkov@nokia.com>
+To: Andres Salomon <dilinger@queued.net>
+In-Reply-To: <1297998456-7615-10-git-send-email-dilinger@queued.net>
+References: <1297998456-7615-1-git-send-email-dilinger@queued.net>
+	<1297998456-7615-10-git-send-email-dilinger@queued.net>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 25 Feb 2011 11:01:14 +0200
-Message-ID: <1298624474.2798.19.camel@localhost>
+Date: Fri, 25 Feb 2011 11:05:12 +0200
+Message-ID: <1298624712.2798.21.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	Mark Brown <broonie@opensource.wolfsonmicro.com>,
+	linux-mtd@lists.infradead.org, Samuel Ortiz <sameo@linux.intel.com>,
+	linux-kernel@vger.kernel.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,12 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-02-17 at 13:44 +0200, Roman Tereshonkov wrote:
-> New variable skip_initial_unlocking is added to the omap_onenand_platform_data and
-> new option ONENAND_SKIP_INITIAL_UNLOCKING is added to struct onenand_chip. 
-> This is used to to skip onenand unlocking when it is initialized.
+On Thu, 2011-02-17 at 19:07 -0800, Andres Salomon wrote:
+> No need to explicitly set the cell's platform_data/data_size.
+> 
+> Modify clients to use mfd_get_cell helper function instead of
+> accessing platform_data directly.
+> 
+> Signed-off-by: Andres Salomon <dilinger@queued.net>
 
-Pushed both patches to l2-mtd-2.6.git, thanks!
+Just to re-confirm, I suggest to merge these MTD changes via Samuel's
+tree, thanks.
 
 -- 
 Best Regards,
