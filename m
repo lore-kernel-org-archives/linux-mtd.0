@@ -1,22 +1,12 @@
-Received: from eu2sys200bog112.obsmtp.com ([207.126.150.240])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Psocf-00013f-JC
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 03:45:42 +0000
-Message-ID: <4D6725AA.3070204@st.com>
-Date: Fri, 25 Feb 2011 09:14:42 +0530
-From: viresh kumar <viresh.kumar@st.com>
+From: Jason Liu <r64343@freescale.com>
+To: <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH] mtd: nand: fix one typo in the comments
+Date: Fri, 25 Feb 2011 13:06:18 +0800
+Message-ID: <1298610378-3105-1-git-send-email-r64343@freescale.com>
 MIME-Version: 1.0
-To: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
-References: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
-	<AANLkTim3yTG-ZEZdhj=ccvd_tXm4XNG7x5uT6qS54sqQ@mail.gmail.com>
-In-Reply-To: <AANLkTim3yTG-ZEZdhj=ccvd_tXm4XNG7x5uT6qS54sqQ@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: Vipin KUMAR <vipin.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
+Content-Type: text/plain
+Cc: dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +16,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/24/2011 06:08 PM, Linus Walleij wrote:
-> 2011/2/23 Viresh Kumar <viresh.kumar@st.com>:
-> 
->> > In most of the cases partitions info, width, etc comes from board files. And
->> > device structure may be defined in machine files, common to all board files.
->> > Thus, we need to set platform data from board file, for which
->> > fsmc_nand_set_plat_data routine is required.
-> Hm you create a new function, but where is it used? If it's used by a later
-> patch perhaps you should make a patch series instead?
+In the function nand_do_write_oob, the comments
+has one typo, this patch fix it.
 
-Linus,
+- /* Do not allow reads past end of device */
++ /* Do not allow write past end of device */
+if (unlikely(to >= mtd->size ||
+	     ops->ooboffs + ops->ooblen >
+		((mtd->size >> chip->page_shift) -
+		 (to >> chip->page_shift)) * len)) {
+	DEBUG(MTD_DEBUG_LEVEL0, "%s: Attempt write beyond "
+			"end of device\n", __func__);
+	return -EINVAL;
+}
 
-Actually it will be used in SPEAr patches, which will be sent separately. I could
-have kept it as part of that series also, but just thought to send it separately.
-You want me to keep it in spear patch series instead?
+Signed-off-by: Jason Liu <r64343@freescale.com>
+---
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index a9c6ce7..da76040 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2377,7 +2377,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
+ 		return -EINVAL;
+ 	}
+ 
+-	/* Do not allow reads past end of device */
++	/* Do not allow write past end of device */
+ 	if (unlikely(to >= mtd->size ||
+ 		     ops->ooboffs + ops->ooblen >
+ 			((mtd->size >> chip->page_shift) -
 -- 
-viresh
+1.7.0.4
