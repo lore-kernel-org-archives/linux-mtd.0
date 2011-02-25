@@ -1,17 +1,28 @@
-Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Psvg0-00037X-UY
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 11:17:37 +0000
-From: Viresh Kumar <viresh.kumar@st.com>
-To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
-	<Artem.Bityutskiy@nokia.com>, <linus.walleij@stericsson.com>
-Subject: [PATCH resend] fsmc-nand: Add fsmc_nand_set_plat_data in
-	linux/mtd/fsmc.h
-Date: Fri, 25 Feb 2011 16:47:08 +0530
-Message-ID: <8e22b9ab2d4ade0607fe530d818b2a951227de8e.1298632523.git.viresh.kumar@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Vipin Kumar <vipin.kumar@st.com>, Viresh Kumar <viresh.kumar@st.com>
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PsviE-00039T-L4
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 11:19:55 +0000
+Received: by wyf23 with SMTP id 23so1542048wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Feb 2011 03:19:53 -0800 (PST)
+Subject: Re: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: viresh kumar <viresh.kumar@st.com>
+In-Reply-To: <4D678E56.8050908@st.com>
+References: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
+	<AANLkTim3yTG-ZEZdhj=ccvd_tXm4XNG7x5uT6qS54sqQ@mail.gmail.com>
+	<4D6725AA.3070204@st.com> <1298632021.2798.62.camel@localhost>
+	<4D678E56.8050908@st.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 25 Feb 2011 13:12:20 +0200
+Message-ID: <1298632340.2798.68.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Vipin KUMAR <vipin.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +32,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In most of the cases partitions info, width, etc comes from board files. And
-device structure may be defined in machine files, common to all board files.
-Thus, we need to set platform data from board file, for which
-fsmc_nand_set_plat_data routine is required.
+On Fri, 2011-02-25 at 16:41 +0530, viresh kumar wrote:
+> On 02/25/2011 04:37 PM, Artem Bityutskiy wrote:
+> > On Fri, 2011-02-25 at 09:14 +0530, viresh kumar wrote:
+> >> > On 02/24/2011 06:08 PM, Linus Walleij wrote:
+> >>> > > 2011/2/23 Viresh Kumar <viresh.kumar@st.com>:
+> >>> > > 
+> >>>>> > >> > In most of the cases partitions info, width, etc comes from board files. And
+> >>>>> > >> > device structure may be defined in machine files, common to all board files.
+> >>>>> > >> > Thus, we need to set platform data from board file, for which
+> >>>>> > >> > fsmc_nand_set_plat_data routine is required.
+> >>> > > Hm you create a new function, but where is it used? If it's used by a later
+> >>> > > patch perhaps you should make a patch series instead?
+> >> > 
+> >> > Linus,
+> >> > 
+> >> > Actually it will be used in SPEAr patches, which will be sent separately. I could
+> >> > have kept it as part of that series also, but just thought to send it separately.
+> >> > You want me to keep it in spear patch series instead?
+> > I think this is important piece of information which should be in the
+> > patch commit message.
+> 
+> Ok. I will resend it.
 
-This routine will be used in SPEAr fsmc patches which are sent in a different
-patchset.
+To elaborate, imagine I put this patch to my l2 tree, then David has the
+same question when he decides whether to pick it or not.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
-Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
----
- include/linux/mtd/fsmc.h |   17 +++++++++++++++++
- 1 files changed, 17 insertions(+), 0 deletions(-)
-
-diff --git a/include/linux/mtd/fsmc.h b/include/linux/mtd/fsmc.h
-index 6987995..0cba324 100644
---- a/include/linux/mtd/fsmc.h
-+++ b/include/linux/mtd/fsmc.h
-@@ -160,4 +160,21 @@ extern void __init fsmc_init_board_info(struct platform_device *pdev,
- 		struct mtd_partition *partitions, unsigned int nr_partitions,
- 		unsigned int width);
- 
-+/* This function is used to set platform data field of pdev->dev */
-+static inline void fsmc_nand_set_plat_data(struct platform_device *pdev,
-+		struct mtd_partition *partitions, unsigned int nr_partitions,
-+		unsigned int options, unsigned int width)
-+{
-+	struct fsmc_nand_platform_data *plat_data;
-+	plat_data = dev_get_platdata(&pdev->dev);
-+
-+	if (partitions) {
-+		plat_data->partitions = partitions;
-+		plat_data->nr_partitions = nr_partitions;
-+	}
-+
-+	plat_data->options = options;
-+	plat_data->width = width;
-+}
-+
- #endif /* __MTD_FSMC_H */
 -- 
-1.7.2.2
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
