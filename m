@@ -1,24 +1,22 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PstLv-0002Cu-JB
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 08:48:44 +0000
-Received: by wwb29 with SMTP id 29so1262085wwb.18
+	id 1PstNz-0002ER-UH
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 08:50:52 +0000
+Received: by wwb29 with SMTP id 29so1263402wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Feb 2011 00:48:41 -0800 (PST)
-Subject: Re: [PATCH 1/5] MTD: make MTD_CONCAT support mandatory
+	Fri, 25 Feb 2011 00:50:50 -0800 (PST)
+Subject: Re: [PATCH] mtd-utils: common.h: simple_strtoll type usage
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dmitry Eremin-Solenikov <dbaryshkov@gmail.com>
-In-Reply-To: <AANLkTi=TP7T-vt_vgacRPOgGWvhHPqKkEggQNDmPDkY3@mail.gmail.com>
-References: <1294745619-7142-1-git-send-email-dbaryshkov@gmail.com>
-	<201101121425.49587.sr@denx.de>
-	<AANLkTi=TP7T-vt_vgacRPOgGWvhHPqKkEggQNDmPDkY3@mail.gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
+In-Reply-To: <1297820878-2582-1-git-send-email-computersforpeace@gmail.com>
+References: <1297820878-2582-1-git-send-email-computersforpeace@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 25 Feb 2011 10:47:18 +0200
-Message-ID: <1298623638.2798.11.camel@localhost>
+Date: Fri, 25 Feb 2011 10:49:28 +0200
+Message-ID: <1298623768.2798.12.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Stefan Roese <sr@denx.de>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Kevin Cernekee <cernekee@gmail.com>,
+	linux-mtd@lists.infradead.org, Mike Frysinger <vapier.adi@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,35 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-02-15 at 17:07 +0300, Dmitry Eremin-Solenikov wrote:
-> Hello,
+On Tue, 2011-02-15 at 17:47 -0800, Brian Norris wrote:
+> We must use "long long" and "unsigned long long" types when
+> implementing the functions "simple_strtoll()" and "simple_strtoull()",
+> respectively. This prevents casting/truncation errors on systems where
+> "long" is not the same size as "long long" (that is, on most systems).
 > 
-> On Wed, Jan 12, 2011 at 4:25 PM, Stefan Roese <sr@denx.de> wrote:
-> > On Tuesday 11 January 2011 12:33:35 Dmitry Eremin-Solenikov wrote:
-> >> Move mtdconcat to be an integral part of the mtd core. It's a tiny bit
-> >> of code, which bears 'say Y if you don't know what to do' note in the
-> >> Kconfig. OTOH there are several ugly ifdefs depending on the MTD_CONCAT.
-> >> So, making MTD_CONCAT support mandatory will allow us to clean up code a
-> >> lot.
-> >>
-> >> Kconfig entry is changed to be a bool defaulting to Y, so all code
-> >> pieces depending on it, will have MTD_CONCAT Kconfig symbol and
-> >> CONFIG_MTD_CONCAT define. This will be removed in one of next patches.
-> >
-> > Whole patch series looks good. Thanks. I'm not sure if it makes more sense to
-> > squash the MTD patches into one patch. Either way I'm fine with it, so:
-> >
-> > Acked-by: Stefan Roese <sr@denx.de>
-> >
-> > for the whole patch series.
-> 
-> What about this series? Will it find it's way to kernel or should I do
-> some more steps?
+> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
 
-They still sit in my l2-mtd-2.6.git tree. You are not expected to do
-anything, David should look at them an pick them (or reject with an
-e-mail explaining the reasons) later. Usually he does this closer to the
-merge window.
+Pushed, thank you!
 
 -- 
 Best Regards,
