@@ -1,18 +1,21 @@
-Subject: Re: [PATCH V4 0/6] pxa3xx_nand update series set version 4
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PsvCd-0002q1-1c
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 10:47:15 +0000
+Received: by wyf23 with SMTP id 23so1518155wyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Feb 2011 02:47:13 -0800 (PST)
+Subject: Re: mount ubi volume fails: No such device
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lei Wen <leiwen@marvell.com>
-In-Reply-To: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
-References: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
+To: Lars Michael <lh_post@yahoo.com>
+In-Reply-To: <664335.29092.qm@web30201.mail.mud.yahoo.com>
+References: <664335.29092.qm@web30201.mail.mud.yahoo.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 25 Feb 2011 12:39:31 +0200
-Message-ID: <1298630371.2798.43.camel@localhost>
+Date: Fri, 25 Feb 2011 12:45:02 +0200
+Message-ID: <1298630702.2798.45.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, adrian.wenl@gmail.com,
-	linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,37 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-02-18 at 16:57 +0800, Lei Wen wrote:
-> Change from previous version:
-> rework the patch set accroding to Eric's suggestion.
-> Move the recode judgement to the after command execution.
+On Fri, 2011-02-18 at 02:57 -0800, Lars Michael wrote:
+> NAND read: device 0 offset 0x1, size 0xfffffff
+> Skipping bad block 0x00000000
+> Skipping bad block 0x00020000
+> Skipping bad block 0x00040000
+> <cut>
+> Skipping bad block 0x0ffa0000
+> Skipping bad block 0x0ffc0000
+> Skipping bad block 0x0ffe0000
+> NAND read from offset 10000000 failed -22
+>  0 bytes read: ERROR
+> -> nand 
 > 
-> Lei Wen (6):
->   pxa3xx_nand: make scan procedure more clear
->   pxa3xx_nand: rework irq logic
->   pxa3xx_nand: discard wait_for_event,write_cmd,__readid function
->   pxa3xx_nand: unify prepare command
->   pxa3xx_nand: mtd scan id process could be defined by driver itself
->   pxa3xx_nand: clean the keep configure code
+> I am really stuck here, and don't know how to proceed. Is it normal that
+> the flash can suddenly go totally bad?
 
-Hi, could you please make checkpatch.pl happy and re-send the patches?
+Most likely not. Probably this is due to a bug somewhere.      
 
-There are many issues. OK, some are fine, do not try to fix them, e.g.:
-
-WARNING: line over 80 characters
-#127: FILE: drivers/mtd/nand/pxa3xx_nand.c:221:
-+{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &default_cmdset, &timing[2] },
-
-but some are clearly stylistic errors:
-
-ERROR: else should follow close brace '}'
-#249: FILE: drivers/mtd/nand/pxa3xx_nand.c:539:
-+                }
-+                else {
-
-etc.
-
-Thanks!
 
 -- 
 Best Regards,
