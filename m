@@ -1,21 +1,22 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PstXD-0002K5-5r
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 09:00:23 +0000
-Received: by wwb29 with SMTP id 29so1268675wwb.18
+	id 1PstZZ-0002My-O2
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 09:02:50 +0000
+Received: by wyf23 with SMTP id 23so1449837wyf.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Feb 2011 01:00:21 -0800 (PST)
-Subject: Re: xattr question AGAIN!
+	Fri, 25 Feb 2011 01:02:48 -0800 (PST)
+Subject: Re: [PATCH 0/2] mtd: new option is added to control onenand init
+	unlocking
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Steve Iribarne <siribarne@grid-net.com>
-In-Reply-To: <4D5C200C.3010007@grid-net.com>
-References: <4D5C200C.3010007@grid-net.com>
+To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+In-Reply-To: <1297943082-398-1-git-send-email-roman.tereshonkov@nokia.com>
+References: <1297943082-398-1-git-send-email-roman.tereshonkov@nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 25 Feb 2011 10:58:59 +0200
-Message-ID: <1298624339.2798.18.camel@localhost>
+Date: Fri, 25 Feb 2011 11:01:14 +0200
+Message-ID: <1298624474.2798.19.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,21 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-02-16 at 11:05 -0800, Steve Iribarne wrote:
-> Sorry for the repeat but I just want to be sure I'm getting this right.
-> 
-> So the UBIFS supports most of the SELinux xattrs.  I believe the only 
-> exception is ACL.
-> 
-> Is this a correct assumption? 
+On Thu, 2011-02-17 at 13:44 +0200, Roman Tereshonkov wrote:
+> New variable skip_initial_unlocking is added to the omap_onenand_platform_data and
+> new option ONENAND_SKIP_INITIAL_UNLOCKING is added to struct onenand_chip. 
+> This is used to to skip onenand unlocking when it is initialized.
 
-Yes. However, we never tried selinux, so there may be some issues. We
-might forget to do some small thing.
-
-> And we are going to start doing some extensive testing on this, so I'll 
-> report any issues we find.  I also may have resources to add ACL support.
-
-Just try if selinux xattrs are supported or not and report back please.
+Pushed both patches to l2-mtd-2.6.git, thanks!
 
 -- 
 Best Regards,
