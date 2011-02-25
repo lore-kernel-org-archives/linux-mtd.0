@@ -1,23 +1,29 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pt1CD-0006Dv-9Z
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 17:11:13 +0000
-Received: by wyf23 with SMTP id 23so1885818wyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Feb 2011 09:11:11 -0800 (PST)
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pt2Po-0006t5-EB
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 18:29:21 +0000
+Date: Fri, 25 Feb 2011 19:27:49 +0100
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: David Peverley <pev@sketchymonkey.com>
+Subject: Re: CONFIG_MTD_NAND_VERIFY_WRITE with Software ECC
+Message-ID: <20110225182749.GB25636@parrot.com>
+References: <AANLkTimS2Dqn9W+1zMsb=wgQAPKZaPZ+UePUmAGbQLCz@mail.gmail.com>
+	<Pine.LNX.4.64.1102151536400.2784@lnxricardw.se.axis.com>
+	<AANLkTi=zwmN2T7T=dePB0PJk_+Ahdvzjrn9t-rA7TtVa@mail.gmail.com>
+	<Pine.LNX.4.64.1102171013090.2784@lnxricardw.se.axis.com>
+	<1298623342.2798.9.camel@localhost>
+	<Pine.LNX.4.64.1102250956200.2784@lnxricardw.se.axis.com>
+	<1298629762.2798.38.camel@localhost>
+	<20110225113609.GB21841@parrot.com>
+	<1298635930.2798.96.camel@localhost>
+	<AANLkTikKe2ub8CZ+vP-1gXjtr=-BDJ6nc8aEG_9iJj6K@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1298651278.2346.2.camel@koala>
-References: <AANLkTimN5eBifpcyfJYo9s51U+kEi1ZemFnOm7p2rcxQ@mail.gmail.com>
-	<1298637524.2798.103.camel@localhost>
-	<AANLkTimvqdu1k3ZL4rqC-DBiMkNmytBXZ1YWXNE0Gs6F@mail.gmail.com>
-	<1298651278.2346.2.camel@koala>
-Date: Fri, 25 Feb 2011 11:11:11 -0600
-Message-ID: <AANLkTikT13ZM0fKHL9tdMei2txxS5a4MzQ8e6ccXFErc@mail.gmail.com>
-Subject: Re: Slab memory leak in JFFS2 filesystems
-From: Johns Daniel <johns.daniel@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <AANLkTikKe2ub8CZ+vP-1gXjtr=-BDJ6nc8aEG_9iJj6K@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	"dedekind1@gmail.com" <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +33,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Feb 25, 2011 at 10:27 AM, Artem Bityutskiy <dedekind1@gmail.com> wr=
-ote:
-> On Fri, 2011-02-25 at 10:12 -0600, Johns Daniel wrote:
->> On Fri, Feb 25, 2011 at 6:38 AM, Artem Bityutskiy <dedekind1@gmail.com> =
-wrote:
->> > On Thu, 2011-02-24 at 18:41 -0600, Johns Daniel wrote:
->> >> I have discovered a kernel memory leak associated with JFFS2
->> >> filesystems. I have verified the leak in kernels 2.6.28 and 2.6.36 on
->> >> a Freescale PowerPC board using this script:
->> >>
->> >> while :; do FN=3D$(mktemp /jffs2fs/TMP.XXXXXXXX); \
->> >> =C2=A0 =C2=A0cat /proc/slabinfo |grep "dentry\|size-64 "; sleep 1; /b=
-in/rm $FN; done
->> >
->> > Please, check whether they go away after:
->> >
->> > echo 3 > /proc/sys/vm/drop_caches
->> >
->> > See Documentation/sysctl/vm.txt for more information about what this
->> > means.
->>
->> Thanks for that suggestion, Artem! Here is what I tried:
->
-> Hi, you can try to play with kmemleak - this is a kernel feature which
-> slows down the system a lot but is great in catching memory leaks. It
-> may have false positives sometimes, though. You can read about kmemleak
-> in the Documentation/ directory. I think if there are leaks in JFFS2 -
-> kmemleak would spot them.
->
+On Fri, Feb 25, 2011 at 12:59:01PM +0000, David Peverley wrote:
+(...)
+> Something else to consider - what about bit-flips during writes? These
+> are currently only spotted if you enable write verify (and also not
+> dealt with or even notified beyond a generic errcode) and ought to be
+> handled / notified in a similar manner to the read but it's a lot
+> harder to decide how to split this functionality between the MTD and
+> FS layers as they're both closely involved. Not everyone wants to
+> enable the additional overhead of verifys. Would it be reasonable just
+> to leave it to the ECC check on the next read to that block instead?
 
-Unfortunately, the kmemleak feature is not supported on PPC even in
-2.6.36. And I don't have a supported system available with the JFFS2
-filesystem.
+It is reasonable only if you can guarantee that each page you program belongs to
+a properly erased block, and has never been programmed before.
 
-One more data point. After running the script like this:
+Power failure during erase or programming can produce seemingly erased pages,
+but, in reality, unstable pages showing a random (i.e. large), changing amount
+of bitflips. At least on recent (<= 50 nm technology) devices.
 
-while :; do FN=3D$(mktemp /jffs2fs/TMP.XXXXXXXX); \
-   echo 3 > /proc/sys/vm/drop_caches; sleep 1; \
-   grep  "dentry\|size-64 " /proc/slabinfo; /bin/rm $FN; done
+As of today, the above safety condition is not guaranteed by mtd+ubi+ubifs in
+the presence of power failures; in which case enabling write verify is necessary
+to avoid data corruption.
 
-it looks like the leak may only be in "size-64" (and not "dentry").
+> In many ways it would be a lot easier (and involve only a single
+> implementation) to provide a config option where if a read or write in
+> MTD fails with a (correctable) bit flip or flips that the MTD itself
+> takes it on itself to erase the block and re-write the data cleanly.
 
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
->
->
+In order to do that in a safe, atomic way, you need to move data from one block
+to another; and to do it in a transparent way, you need some kind of block
+management layer, hence UBI...
+
+BR,
+
+Ivan
