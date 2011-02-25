@@ -1,17 +1,22 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PslkJ-0008R1-Tt
-	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 00:41:24 +0000
-Received: by wwb29 with SMTP id 29so1038921wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 24 Feb 2011 16:41:20 -0800 (PST)
+Received: from eu2sys200bog112.obsmtp.com ([207.126.150.240])
+	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Psocf-00013f-JC
+	for linux-mtd@lists.infradead.org; Fri, 25 Feb 2011 03:45:42 +0000
+Message-ID: <4D6725AA.3070204@st.com>
+Date: Fri, 25 Feb 2011 09:14:42 +0530
+From: viresh kumar <viresh.kumar@st.com>
 MIME-Version: 1.0
-Date: Thu, 24 Feb 2011 18:41:20 -0600
-Message-ID: <AANLkTimN5eBifpcyfJYo9s51U+kEi1ZemFnOm7p2rcxQ@mail.gmail.com>
-Subject: Slab memory leak in JFFS2 filesystems
-From: Johns Daniel <johns.daniel@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+To: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH] fsmc-nand: Add fsmc_nand_set_plat_data in linux/mtd/fsmc.h
+References: <e63303f4cd51aa61f08e2b026b6a80dc0d9cd54a.1298442421.git.viresh.kumar@st.com>
+	<AANLkTim3yTG-ZEZdhj=ccvd_tXm4XNG7x5uT6qS54sqQ@mail.gmail.com>
+In-Reply-To: <AANLkTim3yTG-ZEZdhj=ccvd_tXm4XNG7x5uT6qS54sqQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Vipin KUMAR <vipin.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have discovered a kernel memory leak associated with JFFS2
-filesystems. I have verified the leak in kernels 2.6.28 and 2.6.36 on
-a Freescale PowerPC board using this script:
+On 02/24/2011 06:08 PM, Linus Walleij wrote:
+> 2011/2/23 Viresh Kumar <viresh.kumar@st.com>:
+> 
+>> > In most of the cases partitions info, width, etc comes from board files. And
+>> > device structure may be defined in machine files, common to all board files.
+>> > Thus, we need to set platform data from board file, for which
+>> > fsmc_nand_set_plat_data routine is required.
+> Hm you create a new function, but where is it used? If it's used by a later
+> patch perhaps you should make a patch series instead?
 
-while :; do FN=$(mktemp /jffs2fs/TMP.XXXXXXXX); \
-   cat /proc/slabinfo |grep "dentry\|size-64 "; sleep 1; /bin/rm $FN; done
+Linus,
 
-The "dentry" and "size-64" slabs grow continuously with this script --
-and the memory is not reclaimed even after the script is stopped.
+Actually it will be used in SPEAr patches, which will be sent separately. I could
+have kept it as part of that series also, but just thought to send it separately.
+You want me to keep it in spear patch series instead?
 
-Basically, JFFS2 does not do a complete slab cleanup when a file is
-deleted. If the old filename is reused, you don't notice the leak
-because it is very small. However, if you use a new filename each
-time, the memory leak is pretty obvious.
-
-Is this a JFFS2 feature or is this a bug?
-If it is a bug, does anybody have a fix for it?
-
--- Johns
+-- 
+viresh
