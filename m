@@ -1,24 +1,20 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PtCXb-0003hz-Rh
-	for linux-mtd@lists.infradead.org; Sat, 26 Feb 2011 05:18:04 +0000
-Received: by ewy23 with SMTP id 23so780633ewy.36
+	id 1PtMne-0006Pc-Gx
+	for linux-mtd@lists.infradead.org; Sat, 26 Feb 2011 16:15:19 +0000
+Received: by vws7 with SMTP id 7so2300248vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Feb 2011 21:18:01 -0800 (PST)
-Subject: RE: UBI power cut
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Marco Cesarano <mcesaran@broadcom.com>
-In-Reply-To: <2B8D104E6375C044820294EF730F789F582C219251@IRVEXCHCCR01.corp.ad.broadcom.com>
-References: <2B8D104E6375C044820294EF730F789F582C219247@IRVEXCHCCR01.corp.ad.broadcom.com>
-	,<1298435559.2431.2.camel@koala>
-	<2B8D104E6375C044820294EF730F789F582C219251@IRVEXCHCCR01.corp.ad.broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 26 Feb 2011 07:17:58 +0200
-Message-ID: <1298697478.2467.1.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Sat, 26 Feb 2011 08:15:16 -0800 (PST)
+Date: Sat, 26 Feb 2011 11:15:13 -0500
+From: Tracey Dent <tdent48227@gmail.com>
+To: tdent48227@gmail.com
+Subject: [PATCH] fs/jffs2/xattr: Fix coding style
+Message-ID: <20110226161513.GA6782@c-68-60-162-129.hsd1.mi.comcast.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-02-25 at 13:03 -0800, Marco Cesarano wrote:
-> Hi Artem,
-> 
-> thanks for your answer. I enabled the debugging mode and I pasted the logs:
+Remove the trailing white space.
 
-Sorry, but you unfortunately failed to provide full output - KERN_DEBUG
-messages are omitted. The article I gave you discusses this in item 4.
-E.g., try ignore_loglevel.
+Signed-off-by: Tracey Dent <tdent48227@gmail.com>
+---
+ fs/jffs2/xattr.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
+diff --git a/fs/jffs2/xattr.c b/fs/jffs2/xattr.c
+index 4f9cc04..3e93cdd 100644
+--- a/fs/jffs2/xattr.c
++++ b/fs/jffs2/xattr.c
+@@ -31,7 +31,7 @@
+  *   is used to release xattr name/value pair and detach from c->xattrindex.
+  * reclaim_xattr_datum(c)
+  *   is used to reclaim xattr name/value pairs on the xattr name/value pair cache when
+- *   memory usage by cache is over c->xdatum_mem_threshold. Currently, this threshold 
++ *   memory usage by cache is over c->xdatum_mem_threshold. Currently, this threshold
+  *   is hard coded as 32KiB.
+  * do_verify_xattr_datum(c, xd)
+  *   is used to load the xdatum informations without name/value pair from the medium.
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.7.4.1.53.ga66ce
