@@ -1,17 +1,16 @@
 Received: from dakia2.marvell.com ([65.219.4.35])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ptsrk-0005rR-RQ
-	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 02:29:51 +0000
+	id 1Ptsrm-0005rw-B9
+	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 02:29:53 +0000
 From: Lei Wen <leiwen@marvell.com>
 To: Artem Bityutskiy <dedekind1@gmail.com>, Eric Miao <eric.y.miao@gmail.com>,
 	David Woodhouse <dwmw2@infradead.org>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
 	Haojian Zhuang <haojian.zhuang@marvell.com>,
 	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH V5 5/6] pxa3xx_nand: mtd scan id process could be defined by
-	driver itself
-Date: Mon, 28 Feb 2011 10:32:14 +0800
-Message-Id: <1298860335-18638-6-git-send-email-leiwen@marvell.com>
+Subject: [PATCH V5 6/6] pxa3xx_nand: clean the keep configure code
+Date: Mon, 28 Feb 2011 10:32:15 +0800
+Message-Id: <1298860335-18638-7-git-send-email-leiwen@marvell.com>
 In-Reply-To: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
 References: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,329 +22,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Different NAND driver may require its unique detection. For pxa3xx_nand,
-it use its self id database to get the necessary info.
-
 Signed-off-by: Lei Wen <leiwen@marvell.com>
 Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
 Cc: Eric Miao <eric.y.miao@gmail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/nand/pxa3xx_nand.c |  216 +++++++++++++++++++++++-----------------
- 1 files changed, 123 insertions(+), 93 deletions(-)
+ arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |    2 +-
+ drivers/mtd/nand/pxa3xx_nand.c               |  103 +++++++++-----------------
+ 2 files changed, 36 insertions(+), 69 deletions(-)
 
+diff --git a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+index 01a8448..442301f 100644
+--- a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
++++ b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
+@@ -30,6 +30,7 @@ struct pxa3xx_nand_cmdset {
+ };
+ 
+ struct pxa3xx_nand_flash {
++	char		*name;
+ 	uint32_t	chip_id;
+ 	unsigned int	page_per_block; /* Pages per block (PG_PER_BLK) */
+ 	unsigned int	page_size;	/* Page size in bytes (PAGE_SZ) */
+@@ -37,7 +38,6 @@ struct pxa3xx_nand_flash {
+ 	unsigned int	dfc_width;	/* Width of flash controller(DWIDTH_C) */
+ 	unsigned int	num_blocks;	/* Number of physical blocks in Flash */
+ 
+-	struct pxa3xx_nand_cmdset *cmdset;	/* NAND command set */
+ 	struct pxa3xx_nand_timing *timing;	/* NAND Flash timing */
+ };
+ 
 diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index de0a2a2..bb50cf2 100644
+index bb50cf2..ab7f4c3 100644
 --- a/drivers/mtd/nand/pxa3xx_nand.c
 +++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -123,6 +123,7 @@ enum {
- struct pxa3xx_nand_info {
- 	struct nand_chip	nand_chip;
+@@ -211,15 +211,15 @@ static struct pxa3xx_nand_timing timing[] = {
+ };
  
-+	struct nand_hw_control	controller;
- 	struct platform_device	 *pdev;
- 	struct pxa3xx_nand_cmdset *cmdset;
+ static struct pxa3xx_nand_flash builtin_flash_types[] = {
+-	{      0,   0, 2048,  8,  8,    0, &default_cmdset, &timing[0] },
+-	{ 0x46ec,  32,  512, 16, 16, 4096, &default_cmdset, &timing[1] },
+-	{ 0xdaec,  64, 2048,  8,  8, 2048, &default_cmdset, &timing[1] },
+-	{ 0xd7ec, 128, 4096,  8,  8, 8192, &default_cmdset, &timing[1] },
+-	{ 0xa12c,  64, 2048,  8,  8, 1024, &default_cmdset, &timing[2] },
+-	{ 0xb12c,  64, 2048, 16, 16, 1024, &default_cmdset, &timing[2] },
+-	{ 0xdc2c,  64, 2048,  8,  8, 4096, &default_cmdset, &timing[2] },
+-	{ 0xcc2c,  64, 2048, 16, 16, 4096, &default_cmdset, &timing[2] },
+-	{ 0xba20,  64, 2048, 16, 16, 2048, &default_cmdset, &timing[3] },
++{ "DEFAULT FLASH",      0,   0, 2048,  8,  8,    0, &timing[0] },
++{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, 4096, &timing[1] },
++{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, 2048, &timing[1] },
++{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
++{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, 1024, &timing[2] },
++{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, 1024, &timing[2] },
++{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
++{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
++{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
+ };
  
-@@ -157,6 +158,7 @@ struct pxa3xx_nand_info {
- 
- 	int			use_ecc;	/* use HW ECC ? */
- 	int			use_dma;	/* use DMA ? */
-+	int			is_ready;
- 
- 	unsigned int		page_size;	/* page size of attached chip */
- 	unsigned int		data_size;	/* data size in FIFO */
-@@ -223,6 +225,8 @@ static struct pxa3xx_nand_flash builtin_flash_types[] = {
  /* Define a default flash type setting serve as flash detecting only */
- #define DEFAULT_FLASH_TYPE (&builtin_flash_types[0])
+@@ -779,9 +779,8 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
+ 		return -EINVAL;
  
-+const char *mtd_names[] = {"pxa3xx_nand-0", NULL};
-+
- #define NDTR0_tCH(c)	(min((c), 7) << 19)
- #define NDTR0_tCS(c)	(min((c), 7) << 16)
- #define NDTR0_tWH(c)	(min((c), 7) << 11)
-@@ -437,8 +441,10 @@ static irqreturn_t pxa3xx_nand_irq(int irq, void *devid)
- 		info->state = STATE_CMD_DONE;
- 		is_completed = 1;
- 	}
--	if (status & NDSR_FLASH_RDY)
-+	if (status & NDSR_FLASH_RDY) {
-+		info->is_ready = 1;
- 		info->state = STATE_READY;
-+	}
+ 	/* calculate flash information */
+-	info->cmdset = f->cmdset;
++	info->cmdset = &default_cmdset;
+ 	info->page_size = f->page_size;
+-	info->oob_buff = info->data_buff + f->page_size;
+ 	info->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
  
- 	if (status & NDSR_WRCMDREQ) {
- 		nand_writel(info, NDSR, NDSR_WRCMDREQ);
-@@ -483,10 +489,11 @@ static int prepare_command_pool(struct pxa3xx_nand_info *info, int command,
- 	exec_cmd = 1;
- 
- 	/* reset data and oob column point to handle data */
--	info->buf_start	= 0;
--	info->buf_count	= 0;
-+	info->buf_start		= 0;
-+	info->buf_count		= 0;
- 	info->oob_size		= 0;
- 	info->use_ecc		= 0;
-+	info->is_ready		= 0;
- 	info->retcode		= ERR_NONE;
- 
- 	switch (command) {
-@@ -849,42 +856,6 @@ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- 	return 0;
- }
- 
--static int pxa3xx_nand_detect_flash(struct pxa3xx_nand_info *info,
--				    const struct pxa3xx_nand_platform_data *pdata)
--{
--	const struct pxa3xx_nand_flash *f;
--	uint32_t id = -1;
+ 	/* calculate addressing information */
+@@ -811,45 +810,12 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
+ static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
+ {
+ 	uint32_t ndcr = nand_readl(info, NDCR);
+-	struct nand_flash_dev *type = NULL;
+-	uint32_t id = -1, page_per_block, num_blocks;
 -	int i;
 -
--	if (pdata->keep_config)
--		if (pxa3xx_nand_detect_config(info) == 0)
--			return 0;
--
--	/* we use default timing to detect id */
--	f = DEFAULT_FLASH_TYPE;
--	pxa3xx_nand_config_flash(info, f);
+-	page_per_block = ndcr & NDCR_PG_PER_BLK ? 64 : 32;
+ 	info->page_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
+ 	/* set info fields needed to read id */
+ 	info->read_id_bytes = (info->page_size == 2048) ? 4 : 2;
+ 	info->reg_ndcr = ndcr;
+ 	info->cmdset = &default_cmdset;
+ 
 -	pxa3xx_nand_cmdfunc(info->mtd, NAND_CMD_READID, 0, 0);
 -	id = *((uint16_t *)(info->data_buff));
+-	if (id == 0)
+-		return -ENODEV;
 -
--	for (i=0; i<ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1; i++) {
--		/* we first choose the flash definition from platfrom */
--		if (i < pdata->num_flash)
--			f = pdata->flash + i;
--		else
--			f = &builtin_flash_types[i - pdata->num_flash + 1];
--		if (f->chip_id == id) {
--			dev_info(&info->pdev->dev, "detect chip id: 0x%x\n", id);
--			pxa3xx_nand_config_flash(info, f);
--			return 0;
+-	/* Lookup the flash id */
+-	for (i = 0; nand_flash_ids[i].name != NULL; i++) {
+-		if (id == nand_flash_ids[i].id) {
+-			type =  &nand_flash_ids[i];
+-			break;
 -		}
 -	}
 -
--	dev_warn(&info->pdev->dev,
--		 "failed to detect configured nand flash; found %04x instead of\n",
--		 id);
--	return -ENODEV;
--}
+-	if (!type)
+-		return -ENODEV;
 -
- /* the maximum possible buffer size for large page with OOB data
-  * is: 2048 + 64 = 2112 bytes, allocate a page here for both the
-  * data buffer and the DMA descriptor
-@@ -926,57 +897,110 @@ static int pxa3xx_nand_init_buff(struct pxa3xx_nand_info *info)
- 	return 0;
- }
- 
--static struct nand_ecclayout hw_smallpage_ecclayout = {
--	.eccbytes = 6,
--	.eccpos = {8, 9, 10, 11, 12, 13 },
--	.oobfree = { {2, 6} }
--};
-+static int pxa3xx_nand_sensing(struct pxa3xx_nand_info *info)
-+{
-+	struct mtd_info *mtd = info->mtd;
-+	struct nand_chip *chip = mtd->priv;
- 
--static struct nand_ecclayout hw_largepage_ecclayout = {
--	.eccbytes = 24,
--	.eccpos = {
--		40, 41, 42, 43, 44, 45, 46, 47,
--		48, 49, 50, 51, 52, 53, 54, 55,
--		56, 57, 58, 59, 60, 61, 62, 63},
--	.oobfree = { {2, 38} }
--};
-+	/* use the common timing to make a try */
-+	pxa3xx_nand_config_flash(info, &builtin_flash_types[0]);
-+	chip->cmdfunc(mtd, NAND_CMD_RESET, 0, 0);
-+	if (info->is_ready)
-+		return 1;
-+	else
-+		return 0;
-+}
- 
--static void pxa3xx_nand_init_mtd(struct mtd_info *mtd,
--				 struct pxa3xx_nand_info *info)
-+static int pxa3xx_nand_scan(struct mtd_info *mtd)
- {
--	struct nand_chip *this = &info->nand_chip;
+-	/* fill the missing flash information */
+-	i = __ffs(page_per_block * info->page_size);
+-	num_blocks = type->chipsize << (20 - i);
 -
--	this->options = (info->reg_ndcr & NDCR_DWIDTH_C) ? NAND_BUSWIDTH_16: 0;
--	this->options |= NAND_NO_AUTOINCR;
+-	/* calculate addressing information */
+-	info->col_addr_cycles = (info->page_size == 2048) ? 2 : 1;
 -
--	this->waitfunc		= pxa3xx_nand_waitfunc;
--	this->select_chip	= pxa3xx_nand_select_chip;
--	this->dev_ready		= pxa3xx_nand_dev_ready;
--	this->cmdfunc		= pxa3xx_nand_cmdfunc;
--	this->ecc.read_page	= pxa3xx_nand_read_page_hwecc;
--	this->ecc.write_page	= pxa3xx_nand_write_page_hwecc;
--	this->read_word		= pxa3xx_nand_read_word;
--	this->read_byte		= pxa3xx_nand_read_byte;
--	this->read_buf		= pxa3xx_nand_read_buf;
--	this->write_buf		= pxa3xx_nand_write_buf;
--	this->verify_buf	= pxa3xx_nand_verify_buf;
--
--	this->ecc.mode		= NAND_ECC_HW;
--	this->ecc.size		= info->page_size;
--
--	if (info->page_size == 2048)
--		this->ecc.layout = &hw_largepage_ecclayout;
+-	if (num_blocks * page_per_block > 65536)
+-		info->row_addr_cycles = 3;
 -	else
--		this->ecc.layout = &hw_smallpage_ecclayout;
-+	struct pxa3xx_nand_info *info = mtd->priv;
-+	struct platform_device *pdev = info->pdev;
-+	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
-+	const struct pxa3xx_nand_flash *f = NULL;
-+	struct nand_chip *chip = mtd->priv;
-+	uint32_t id = -1;
-+	int i, ret, num;
-+
-+	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
-+		return 0;
-+
-+	ret = pxa3xx_nand_sensing(info);
-+	if (!ret) {
-+		kfree(mtd);
-+		info->mtd = NULL;
-+		printk(KERN_INFO "There is no nand chip on cs 0!\n");
-+
-+		return -EINVAL;
-+	}
-+
-+	chip->cmdfunc(mtd, NAND_CMD_READID, 0, 0);
-+	id = *((uint16_t *)(info->data_buff));
-+	if (id != 0)
-+		printk(KERN_INFO "Detect a flash id %x\n", id);
-+	else {
-+		kfree(mtd);
-+		info->mtd = NULL;
-+		printk(KERN_WARNING "Read out ID 0, potential timing set wrong!!\n");
-+
-+		return -EINVAL;
-+	}
-+
-+	num = ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1;
-+	for (i = 0; i < num; i++) {
-+		if (i < pdata->num_flash)
-+			f = pdata->flash + i;
-+		else
-+			f = &builtin_flash_types[i - pdata->num_flash + 1];
-+
-+		/* find the chip in default list */
-+		if (f->chip_id == id) {
-+			pxa3xx_nand_config_flash(info, f);
-+			mtd->writesize = f->page_size;
-+			mtd->writesize_shift = ffs(mtd->writesize) - 1;
-+			mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
-+			mtd->oobsize = mtd->writesize / 32;
-+			mtd->erasesize = f->page_size * f->page_per_block;
-+			mtd->erasesize_shift = ffs(mtd->erasesize) - 1;
-+			mtd->erasesize_mask = (1 << mtd->erasesize_shift) - 1;
-+
-+			mtd->name = mtd_names[0];
-+			break;
-+		}
-+	}
-+
-+	if (i >= (ARRAY_SIZE(builtin_flash_types) + pdata->num_flash)) {
-+		kfree(mtd);
-+		info->mtd = NULL;
-+		printk(KERN_ERR "ERROR!! flash not defined!!!\n");
-+
-+		return -EINVAL;
-+	}
-+
-+	chip->ecc.mode = NAND_ECC_HW;
-+	chip->ecc.size = f->page_size;
-+	chip->chipsize = (uint64_t)f->num_blocks * f->page_per_block
-+				    * f->page_size;
-+	mtd->size = chip->chipsize;
-+
-+	/* Calculate the address shift from the page size */
-+	chip->page_shift = ffs(mtd->writesize) - 1;
-+	chip->pagemask = mtd_div_by_ws(chip->chipsize, mtd) - 1;
-+	chip->numchips = 1;
-+	chip->phys_erase_shift = ffs(mtd->erasesize) - 1;
-+	chip->bbt_erase_shift = chip->phys_erase_shift;
-+
-+	chip->options = (f->flash_width == 16) ? NAND_BUSWIDTH_16 : 0;
-+	chip->options |= NAND_NO_AUTOINCR;
-+	chip->options |= NAND_NO_READRDY;
+-		info->row_addr_cycles = 2;
+-
+ 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
+ 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
  
--	this->chip_delay = 25;
-+	return nand_scan_tail(mtd);
- }
+@@ -916,13 +882,15 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 	struct pxa3xx_nand_info *info = mtd->priv;
+ 	struct platform_device *pdev = info->pdev;
+ 	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
++	struct nand_flash_dev pxa3xx_flash_ids[2] = { {NULL,}, {NULL,} };
+ 	const struct pxa3xx_nand_flash *f = NULL;
+ 	struct nand_chip *chip = mtd->priv;
+ 	uint32_t id = -1;
++	uint64_t chipsize;
+ 	int i, ret, num;
  
- static
- struct pxa3xx_nand_info *alloc_nand_resource(struct platform_device *pdev)
- {
--	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
- 	struct pxa3xx_nand_info *info;
-+	struct nand_chip *chip;
- 	struct mtd_info *mtd;
- 	struct resource *r;
- 	int ret, irq;
-@@ -989,12 +1013,27 @@ struct pxa3xx_nand_info *alloc_nand_resource(struct platform_device *pdev)
+ 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
+-		return 0;
++		goto KEEP_CONFIG;
+ 
+ 	ret = pxa3xx_nand_sensing(info);
+ 	if (!ret) {
+@@ -953,22 +921,11 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 			f = &builtin_flash_types[i - pdata->num_flash + 1];
+ 
+ 		/* find the chip in default list */
+-		if (f->chip_id == id) {
+-			pxa3xx_nand_config_flash(info, f);
+-			mtd->writesize = f->page_size;
+-			mtd->writesize_shift = ffs(mtd->writesize) - 1;
+-			mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
+-			mtd->oobsize = mtd->writesize / 32;
+-			mtd->erasesize = f->page_size * f->page_per_block;
+-			mtd->erasesize_shift = ffs(mtd->erasesize) - 1;
+-			mtd->erasesize_mask = (1 << mtd->erasesize_shift) - 1;
+-
+-			mtd->name = mtd_names[0];
++		if (f->chip_id == id)
+ 			break;
+-		}
  	}
  
- 	info = (struct pxa3xx_nand_info *)(&mtd[1]);
-+	chip = (struct nand_chip *)(&mtd[1]);
- 	info->pdev = pdev;
--
--	mtd->priv = info;
- 	info->mtd = mtd;
-+	mtd->priv = info;
- 	mtd->owner = THIS_MODULE;
- 
-+	chip->ecc.read_page	= pxa3xx_nand_read_page_hwecc;
-+	chip->ecc.write_page	= pxa3xx_nand_write_page_hwecc;
-+	chip->controller        = &info->controller;
-+	chip->waitfunc		= pxa3xx_nand_waitfunc;
-+	chip->select_chip	= pxa3xx_nand_select_chip;
-+	chip->dev_ready		= pxa3xx_nand_dev_ready;
-+	chip->cmdfunc		= pxa3xx_nand_cmdfunc;
-+	chip->read_word		= pxa3xx_nand_read_word;
-+	chip->read_byte		= pxa3xx_nand_read_byte;
-+	chip->read_buf		= pxa3xx_nand_read_buf;
-+	chip->write_buf		= pxa3xx_nand_write_buf;
-+	chip->verify_buf	= pxa3xx_nand_verify_buf;
-+
-+	spin_lock_init(&chip->controller->lock);
-+	init_waitqueue_head(&chip->controller->wq);
- 	info->clk = clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(info->clk)) {
- 		dev_err(&pdev->dev, "failed to get nand clock\n");
-@@ -1062,21 +1101,12 @@ struct pxa3xx_nand_info *alloc_nand_resource(struct platform_device *pdev)
- 		goto fail_free_buf;
+-	if (i >= (ARRAY_SIZE(builtin_flash_types) + pdata->num_flash)) {
++	if (i >= (ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1)) {
+ 		kfree(mtd);
+ 		info->mtd = NULL;
+ 		printk(KERN_ERR "ERROR!! flash not defined!!!\n");
+@@ -976,18 +933,28 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
+ 		return -EINVAL;
  	}
  
--	ret = pxa3xx_nand_detect_flash(info, pdata);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to detect flash\n");
--		ret = -ENODEV;
--		goto fail_free_irq;
--	}
++	pxa3xx_nand_config_flash(info, f);
++	pxa3xx_flash_ids[0].name = f->name;
++	pxa3xx_flash_ids[0].id = (f->chip_id >> 8) & 0xffff;
++	pxa3xx_flash_ids[0].pagesize = f->page_size;
++	chipsize = (uint64_t)f->num_blocks * f->page_per_block * f->page_size;
++	pxa3xx_flash_ids[0].chipsize = chipsize >> 20;
++	pxa3xx_flash_ids[0].erasesize = f->page_size * f->page_per_block;
++	if (f->flash_width == 16)
++		pxa3xx_flash_ids[0].options = NAND_BUSWIDTH_16;
++KEEP_CONFIG:
++	if (nand_scan_ident(mtd, 1, pxa3xx_flash_ids))
++		return -ENODEV;
++	/* calculate addressing information */
++	info->col_addr_cycles = (mtd->writesize >= 2048) ? 2 : 1;
++	info->oob_buff = info->data_buff + mtd->writesize;
++	if ((mtd->size >> chip->page_shift) > 65536)
++		info->row_addr_cycles = 3;
++	else
++		info->row_addr_cycles = 2;
++	mtd->name = mtd_names[0];
+ 	chip->ecc.mode = NAND_ECC_HW;
+ 	chip->ecc.size = f->page_size;
+-	chip->chipsize = (uint64_t)f->num_blocks * f->page_per_block
+-				    * f->page_size;
+-	mtd->size = chip->chipsize;
 -
--	pxa3xx_nand_init_mtd(mtd, info);
- 	platform_set_drvdata(pdev, info);
+-	/* Calculate the address shift from the page size */
+-	chip->page_shift = ffs(mtd->writesize) - 1;
+-	chip->pagemask = mtd_div_by_ws(chip->chipsize, mtd) - 1;
+-	chip->numchips = 1;
+-	chip->phys_erase_shift = ffs(mtd->erasesize) - 1;
+-	chip->bbt_erase_shift = chip->phys_erase_shift;
  
- 	return info;
- 
--fail_free_irq:
--	free_irq(irq, info);
- fail_free_buf:
-+	free_irq(irq, info);
- 	if (use_dma) {
- 		pxa_free_dma(info->data_dma_ch);
- 		dma_free_coherent(&pdev->dev, info->data_buff_size,
-@@ -1146,7 +1176,7 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
- 	if (info == NULL)
- 		return -ENOMEM;
- 
--	if (nand_scan(info->mtd, 1)) {
-+	if (pxa3xx_nand_scan(info->mtd)) {
- 		dev_err(&pdev->dev, "failed to scan nand\n");
- 		pxa3xx_nand_remove(pdev);
- 		return -ENODEV;
+ 	chip->options = (f->flash_width == 16) ? NAND_BUSWIDTH_16 : 0;
+ 	chip->options |= NAND_NO_AUTOINCR;
 -- 
 1.7.0.4
