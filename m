@@ -1,19 +1,23 @@
-Subject: Re: [PATCH V5 6/6] pxa3xx_nand: clean the keep configure code
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lei Wen <leiwen@marvell.com>
-In-Reply-To: <1298860335-18638-7-git-send-email-leiwen@marvell.com>
-References: <1298019428-7809-1-git-send-email-leiwen@marvell.com>
-	<1298860335-18638-7-git-send-email-leiwen@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 28 Feb 2011 15:57:43 +0200
-Message-ID: <1298901463.2809.27.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Eric Miao <eric.y.miao@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pu4vy-0003Q6-Mi
+	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 15:22:53 +0000
+Received: by wwj40 with SMTP id 40so1659719wwj.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 28 Feb 2011 07:22:48 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <Pine.LNX.4.64.1102241445050.2784@lnxricardw.se.axis.com>
+References: <AANLkTimPpD=M2pyfm3iV2Hbr61Jgzk8avMebN9LdYmyK@mail.gmail.com>
+	<Pine.LNX.4.64.1102241445050.2784@lnxricardw.se.axis.com>
+Date: Mon, 28 Feb 2011 20:52:19 +0530
+Message-ID: <AANLkTi=Vq0NjLO2TqKADzF+pA++UroeKbGPg1Gzqpd+d@mail.gmail.com>
+Subject: Re: Mean Time Between Failure - UBI clarifications
+From: Navaneethan P <pnavanee@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Stefan.Bigler@keymile.com, navaneethan.p@aricent.com,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Sundararajan.Somasundaram@aricent.com, Shenbaga.Nathan@aricent.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-02-28 at 10:32 +0800, Lei Wen wrote:
-> Signed-off-by: Lei Wen <leiwen@marvell.com>
-> Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
-> Cc: Eric Miao <eric.y.miao@gmail.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> ---
->  arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |    2 +-
->  drivers/mtd/nand/pxa3xx_nand.c               |  103 +++++++++-----------------
->  2 files changed, 36 insertions(+), 69 deletions(-)
+Thank you for your response.
 
-Similarly, could you please improve the commit message a bit?
+On Thu, Feb 24, 2011 at 7:34 PM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+> mtd supplies statistics counters that might help. For each mtd partition
+> there is one counter which is increased every time a read operation requires
+> ECC to correct a bit (i.e. a correctable single bit error), and one counter
+> for ECC failures (two-bit errors).
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+I checked the mtd directory of sysfs and also the source code of mtd.
+However I could not find the mtd statistics counter from the available
+source mtd-2.6.28. Could you please guide me as to where the
+statistics counters are implemented inside mtd source.
+
+Thanks and Regards,
+Navaneethan P
