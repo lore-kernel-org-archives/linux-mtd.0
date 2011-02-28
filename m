@@ -1,9 +1,9 @@
 Received: from mx2.etu.univ-montp1.fr ([193.51.157.14])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PtuhS-0006QW-DJ
-	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 04:27:11 +0000
-Message-ID: <20110228051707.37wtjj1688lcso4g@webmailum1.univ-montp1.fr>
-Date: Mon, 28 Feb 2011 05:17:07 +0100
+	id 1Ptuhf-0006R0-B2
+	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 04:27:23 +0000
+Message-ID: <20110228052720.wjeer9mxacbo44cg@webmailum1.univ-montp1.fr>
+Date: Mon, 28 Feb 2011 05:27:20 +0100
 From: System Administrator <alert@sysmaintaiance.net>
 To: undisclosed-recipients:;
 Subject: Dernier avertissement!
