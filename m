@@ -1,17 +1,21 @@
-Received: from web30207.mail.mud.yahoo.com ([209.191.69.54])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Ptymx-0007l3-Ow
-	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 08:49:08 +0000
-Message-ID: <312621.60695.qm@web30207.mail.mud.yahoo.com>
-Date: Mon, 28 Feb 2011 00:49:06 -0800 (PST)
-From: Lars Michael <lh_post@yahoo.com>
-Subject: Re: mount ubi volume fails: No such device
+Received: from www.tglx.de ([62.245.132.106])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pu1yP-0001Q2-Fd
+	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 12:13:10 +0000
 To: dedekind1@gmail.com
-In-Reply-To: <1298630702.2798.45.camel@localhost>
+Subject: [PATCH v2 1/1] omap3: nand: report corrected ecc errors
+From: John Ogness <john.ogness@linutronix.de>
+References: <87oc64qr5b.fsf@vostro.fn.ogness.net>
+	<1298631549.2798.56.camel@localhost>
+Date: Mon, 28 Feb 2011 13:12:46 +0100
+In-Reply-To: <1298631549.2798.56.camel@localhost> (Artem Bityutskiy's message
+	of "Fri\, 25 Feb 2011 12\:59\:09 +0200")
+Message-ID: <87y650pdc1.fsf_-_@vostro.fn.ogness.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org, s-ghorai@ti.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,23 +25,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=0A--- On Fri, 25/2/11, Artem Bityutskiy <dedekind1@gmail.com> wrote:=0A=
-=0A> From: Artem Bityutskiy <dedekind1@gmail.com>=0A> Subject: Re: mount ub=
-i volume fails: No such device=0A> To: "Lars Michael" <lh_post@yahoo.com>=
-=0A> Cc: linux-mtd@lists.infradead.org=0A> Date: Friday, 25 February, 2011,=
- 11:45=0A> On Fri, 2011-02-18 at 02:57 -0800,=0A> Lars Michael wrote:=0A> >=
- NAND read: device 0 offset 0x1, size 0xfffffff=0A> > Skipping bad block 0x=
-00000000=0A> > Skipping bad block 0x00020000=0A> > Skipping bad block 0x000=
-40000=0A> > <cut>=0A> > Skipping bad block 0x0ffa0000=0A> > Skipping bad bl=
-ock 0x0ffc0000=0A> > Skipping bad block 0x0ffe0000=0A> > NAND read from off=
-set 10000000 failed -22=0A> >=A0 0 bytes read: ERROR=0A> > -> nand =0A> > =
-=0A> > I am really stuck here, and don't know how to proceed.=0A> Is it nor=
-mal that=0A> > the flash can suddenly go totally bad?=0A> =0A> Most likely =
-not. Probably this is due to a bug=0A> somewhere.=A0 =A0 =A0 =0A> =0A=0ALet=
- us assume this is a software problem and that the NAND device is=0Aok. Not=
-e: I did not cycle the power during a flash operation, and I =0Adid not wri=
-te (e.g. format or erase) the flash prior to it going bad.=0A=0ACan the bbt=
- somehow be corrupt, reporting all blocks bad even if they=0Aare not?=0A=0A=
-Is the problem likely to be in the UBI layer or in the NAND driver=0A(I sus=
-pect the first) and how can I troubleshoot this?=0A=0AAny help is appreciat=
-ed,=0A=0A- Lars=0A=0A=0A      
+From: John Ogness <john.ogness@linutronix.de>
+
+The number of corrected ECC errors should be reported since other MTD
+systems make use of this information (such as UBI data scrubbing).
+
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+---
+Patch v2:
+o Patch against linux-next-20110225.
+o Added comments explaining return codes.
+
+ drivers/mtd/nand/omap2.c |   16 ++++++++++++----
+ 1 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index 4e33972..6324230 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -668,6 +668,8 @@ static void gen_true_ecc(u8 *ecc_buf)
+  *
+  * This function compares two ECC's and indicates if there is an error.
+  * If the error can be corrected it will be corrected to the buffer.
++ * If there is no error, %0 is returned. If there is an error but it
++ * was corrected, %1 is returned. Otherwise, %-1 is returned.
+  */
+ static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
+ 			    u8 *ecc_data2,	/* read from register */
+@@ -773,7 +775,7 @@ static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
+ 
+ 		page_data[find_byte] ^= (1 << find_bit);
+ 
+-		return 0;
++		return 1;
+ 	default:
+ 		if (isEccFF) {
+ 			if (ecc_data2[0] == 0 &&
+@@ -794,8 +796,11 @@ static int omap_compare_ecc(u8 *ecc_data1,	/* read from NAND memory */
+  * @calc_ecc: ecc read from HW ECC registers
+  *
+  * Compares the ecc read from nand spare area with ECC registers values
+- * and if ECC's mismached, it will call 'omap_compare_ecc' for error detection
+- * and correction.
++ * and if ECC's mismatched, it will call 'omap_compare_ecc' for error
++ * detection and correction. If there are no errors, %0 is returned. If
++ * there were errors and all of the errors were corrected, the number of
++ * corrected errors is returned. If uncorrectable errors exist, %-1 is
++ * returned.
+  */
+ static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
+ 				u_char *read_ecc, u_char *calc_ecc)
+@@ -803,6 +808,7 @@ static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
+ 	struct omap_nand_info *info = container_of(mtd, struct omap_nand_info,
+ 							mtd);
+ 	int blockCnt = 0, i = 0, ret = 0;
++	int stat = 0;
+ 
+ 	/* Ex NAND_ECC_HW12_2048 */
+ 	if ((info->nand.ecc.mode == NAND_ECC_HW) &&
+@@ -816,12 +822,14 @@ static int omap_correct_data(struct mtd_info *mtd, u_char *dat,
+ 			ret = omap_compare_ecc(read_ecc, calc_ecc, dat);
+ 			if (ret < 0)
+ 				return ret;
++			/* keep track of the number of corrected errors */
++			stat += ret;
+ 		}
+ 		read_ecc += 3;
+ 		calc_ecc += 3;
+ 		dat      += 512;
+ 	}
+-	return 0;
++	return stat;
+ }
+ 
+ /**
+-- 
+1.5.6.5
