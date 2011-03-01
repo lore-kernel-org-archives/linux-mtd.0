@@ -1,24 +1,16 @@
-Received: from eu1sys200aog119.obsmtp.com ([207.126.144.147])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PuGsG-0000VT-36
-	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2011 04:07:48 +0000
-Message-ID: <4D6C7105.6040406@st.com>
-Date: Tue, 1 Mar 2011 09:37:33 +0530
-From: viresh kumar <viresh.kumar@st.com>
+Received: from mail3.tridentmicro.com ([212.250.142.51])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PuI3D-0000oG-Hk
+	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2011 05:23:12 +0000
+From: Sankara Narayanan Balasubramanian <sankara.narayanan@tridentmicro.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 1 Mar 2011 05:23:04 +0000
+Subject: JFFS2_WBUF_VERIFY patch clarification
+Message-ID: <C7C7E27CD4B28D47A856D6DA52BA5D9E8E2557FE@eu-exh-02.EU.TRID.COM>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-To: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
-Subject: Re: [PATCH V2 resend] fsmc-nand: Add fsmc_nand_set_plat_data in
-	drivers/mtd/nand/fsmc_nand.c
-References: <8b8879499520ac641f7e38ac0e40182eb7f32f85.1298866118.git.viresh.kumar@st.com>
-	<1298897478.2809.12.camel@localhost> <4D6C6D79.80502@st.com>
-In-Reply-To: <4D6C6D79.80502@st.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Cc: Vipin KUMAR <vipin.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	viresh kumar <viresh.kumar@st.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	Linus WALLEIJ <linus.walleij@stericsson.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,64 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/01/2011 09:22 AM, viresh kumar wrote:
-> On 02/28/2011 06:21 PM, Artem Bityutskiy wrote:
->> On Mon, 2011-02-28 at 09:39 +0530, Viresh Kumar wrote:
->>> In most of the cases partitions info, width, etc comes from board files. And
->>> device structure may be defined in machine files, common to all board files.
->>> Thus, we need to set platform data from board file, for which
->>> fsmc_nand_set_plat_data routine is required.
->>
->> Hi, sorry, but after looking a bit closer I do not see why you need this
->> function.
->>
->> Why could not you set up the width, options, and partitions in the
->> straight in board file, e.g., like arch/arm/mach-omap2/board-igep0030.c
->> sets partitions for onenand driver? Also, for partitions you can use
->> command line arguments, like this is done in
->> drivers/mtd/onenand/generic.c
->>  
-> 
-> This is what i explained in the commit message also. We don't declare device
-> structures in board files, as this information is machine dependent, so this is present
-> in common machine file to all boards.
-> Now we have to set platform data. This can be be done in board_init() routine in
-> the board specific file. But then this routine will contain below mentioned code,
-> and so will not look clean enough. so we thought of creating this function which can
-> simply be reused by all board files.
-> 
->>> +/* This function is used to set platform data field of pdev->dev */
->>> +void fsmc_nand_set_plat_data(struct platform_device *pdev,
->>> +		struct mtd_partition *partitions, unsigned int nr_partitions,
->>> +		unsigned int options, unsigned int width)
->>> +{
->>> +	struct fsmc_nand_platform_data *plat_data;
->>> +	plat_data = dev_get_platdata(&pdev->dev);
->>> +
->>> +	if (partitions) {
->>> +		plat_data->partitions = partitions;
->>> +		plat_data->nr_partitions = nr_partitions;
->>> +	}
->>> +
->>> +	plat_data->options = options;
->>> +	plat_data->width = width;
->>> +}
->>> +EXPORT_SYMBOL_GPL(fsmc_nand_set_plat_data);
->>
->> Just looks a bit too much to add a function which simply assigns
->> parameters and then export it. If you'll need to initialize more
->> parameters later, will you add more arguments there?
->>
-> 
-> Almost all plat_data fields are filled here. But yes your question
-> still stands valid. Obviously we must not have a large number of parameters
-> here.
-> 
+Hi,
 
-Ok. I think one thing can be done. We can define a routine in device.h
-static inline void *dev_set_platdata(const struct device *dev, void *pdata);
+We are using JFFS2 as part of our linux kernel v2.6.18 in our product. We a=
+re using JFFS2 file system on top of the MTD Driver for NAND Flash (SLC Nan=
+d flash). We observe the problem during our long duration file write tests =
+(endurance tests) that occasionally the data written through the fwrite fun=
+ction call is not present in the flash.=20
 
-Now, we can define plat_data in boards file and then call this routine.
+We checked the latest kernel sources (2.6.37) and observed a similar proble=
+m being resolved through the JFFS2_WBUF_VERIFY patch. We took only that pat=
+ch (implementation into our wbuf.c file) and we observe that the problem is=
+ resolved. We request you to provide the feedback for the following.
 
--- 
-viresh
+1.	Can this patch be taken as a stand-alone patch into our existing JFFS2 a=
+s part of linux 2.6.18 release.
+2.	What is the exact behavior of the patch? We observe that the patch ensur=
+es that the jffs2_wbuf_recovery is called once more if the first attempt to=
+ verify fails. How does it ensure that the data is written into the flash p=
+roperly?=20
+3.	Are there any chances / known instances that the patch may fail (if the =
+second attempt to recovery also fail)?
+
+Pls note that we cannot move to the latest version of kernel as this produc=
+t is in maintenance phase.
+
+With regards,
+Sankara Narayanan B
