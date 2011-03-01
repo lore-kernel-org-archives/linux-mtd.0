@@ -1,26 +1,12 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pu55k-0003Xv-DJ
-	for linux-mtd@lists.infradead.org; Mon, 28 Feb 2011 15:32:57 +0000
-Date: Mon, 28 Feb 2011 16:32:53 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Navaneethan P <pnavanee@gmail.com>
-Subject: Re: Mean Time Between Failure - UBI clarifications
-In-Reply-To: <AANLkTi=Vq0NjLO2TqKADzF+pA++UroeKbGPg1Gzqpd+d@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.1102281631010.2784@lnxricardw.se.axis.com>
-References: <AANLkTimPpD=M2pyfm3iV2Hbr61Jgzk8avMebN9LdYmyK@mail.gmail.com>
-	<Pine.LNX.4.64.1102241445050.2784@lnxricardw.se.axis.com>
-	<AANLkTi=Vq0NjLO2TqKADzF+pA++UroeKbGPg1Gzqpd+d@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "Stefan.Bigler@keymile.com" <Stefan.Bigler@keymile.com>,
-	"navaneethan.p@aricent.com" <navaneethan.p@aricent.com>,
-	=?iso-8859-1?Q?Ricard_Wanderl=F6f?= <ricardw@axis.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Sundararajan.Somasundaram@aricent.com"
-	<Sundararajan.Somasundaram@aricent.com>,
-	"Shenbaga.Nathan@aricent.com" <Shenbaga.Nathan@aricent.com>
+From: Murali Nalajala <mnalajal@codeaurora.org>
+To: dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH 1/2] mtd: nand: Allow NAND chip ids to be included standalone.
+Date: Tue,  1 Mar 2011 06:17:29 +0530
+Message-Id: <1298940450-27365-1-git-send-email-mnalajal@codeaurora.org>
+Cc: linux-arm-msm@vger.kernel.org, Murali Nalajala <mnalajal@codeaurora.org>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	Dima Zavin <dima@android.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +16,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Lets non-standard NAND drivers take advantage of known NAND
+chip information.
 
-On Mon, 28 Feb 2011, Navaneethan P wrote:
+Signed-off-by: Dima Zavin <dima@android.com>
+Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
+---
+ drivers/mtd/nand/Kconfig |   10 +++++++---
+ 1 files changed, 7 insertions(+), 3 deletions(-)
 
-> Thank you for your response.
->
-> On Thu, Feb 24, 2011 at 7:34 PM, Ricard Wanderlof
-> <ricard.wanderlof@axis.com> wrote:
->> mtd supplies statistics counters that might help. For each mtd partition
->> there is one counter which is increased every time a read operation requ=
-ires
->> ECC to correct a bit (i.e. a correctable single bit error), and one coun=
-ter
->> for ECC failures (two-bit errors).
->
-> I checked the mtd directory of sysfs and also the source code of mtd.
-> However I could not find the mtd statistics counter from the available
-> source mtd-2.6.28. Could you please guide me as to where the
-> statistics counters are implemented inside mtd source.
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index c895922..782275e 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -1,3 +1,10 @@
++config MTD_NAND_IDS
++	tristate "Include chip ids for known NAND devices."
++	depends on MTD
++	help
++	  Useful for NAND drivers that do not use the NAND subsystem but
++	  still like to take advantage of the known chip information.
++
+ config MTD_NAND_ECC
+ 	tristate
+ 
+@@ -123,9 +130,6 @@ config MTD_NAND_OMAP_PREFETCH_DMA
+ 	 or in DMA interrupt mode.
+ 	 Say y for DMA mode or MPU mode will be used
+ 
+-config MTD_NAND_IDS
+-	tristate
+-
+ config MTD_NAND_RICOH
+ 	tristate "Ricoh xD card reader"
+ 	default n
+-- 
+1.7.1.1
 
-They're in mtd->ecc_stats . See drivers/mtd/nand/nand_base.c for=20
-instance. drivers/mtd/mtdchar.c:mtd_ioctl (case ECCGETSTATS) retrievs the=
-=20
-statistics to userspace for the ECCGETSTATS ioctl.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--
+Sent by a consultant of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
