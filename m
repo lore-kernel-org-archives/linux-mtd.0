@@ -1,18 +1,25 @@
-Received: from nbd.name ([46.4.11.11])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PuSBl-0003pG-Fg
-	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2011 16:12:43 +0000
-From: John Crispin <blogic@openwrt.org>
-To: Ralf Baechle <ralf@linux-mips.org>
-Subject: [PATCH V2 06/10] MIPS: lantiq: add NOR flash support
-Date: Tue,  1 Mar 2011 17:13:22 +0100
-Message-Id: <1298996006-15960-7-git-send-email-blogic@openwrt.org>
-In-Reply-To: <1298996006-15960-1-git-send-email-blogic@openwrt.org>
-References: <1298996006-15960-1-git-send-email-blogic@openwrt.org>
-Cc: linux-mips@linux-mips.org, Ralph Hempel <ralph.hempel@lantiq.com>,
-	linux-mtd@lists.infradead.org,
-	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
-	David Woodhouse <dwmw2@infradead.org>, John Crispin <blogic@openwrt.org>
+Received: from lunge.mit.edu ([18.54.1.69] helo=lunge.queued.net)
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PuWF9-00064r-KQ
+	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2011 20:32:29 +0000
+Date: Tue, 1 Mar 2011 12:32:20 -0800
+From: Andres Salomon <dilinger@queued.net>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH] tmio: silence warnings introduced by mfd changes
+Message-ID: <20110301123220.705d3368@debxo>
+In-Reply-To: <20110301105322.48754094@debxo>
+References: <20110301154230.df32be17.sfr@canb.auug.org.au>
+	<20110301105322.48754094@debxo>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-fbdev@vger.kernel.org,
+	David Brownell <dbrownell@users.sourceforge.net>,
+	Samuel Ortiz <sameo@linux.intel.com>, linux-usb@vger.kernel.org,
+	linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Ian Molton <ian@mnementh.co.uk>, linux-next@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Chris Ball <cjb@laptop.org>,
+	David Woodhouse <dwmw2@infradead.org>, Greg Kroah-Hartman <gregkh@suse.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,248 +29,247 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NOR flash is attached to the same EBU (External Bus Unit) as PCI. As described
-in the PCI patch, the EBU is a little buggy, resulting in the upper and lower
-16 bit of the data on a 32 bit read are swapped. (essentially we have a addr^=2)
+On Tue, 1 Mar 2011 10:53:22 -0800
+Andres Salomon <dilinger@queued.net> wrote:
 
-To work around this we do a addr^=2 during the probe. Once probed we adapt
-cfi->addr_unlock1 and cfi->addr_unlock2 to represent the endianess bug.
+> On Tue, 1 Mar 2011 15:42:30 +1100
+> Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> 
+> > Hi Samuel,
+> > 
+> > After merging the mfd tree, today's linux-next build (x86_64
+> > allmodconfig) produced these warnings:
+> > 
+> > drivers/video/tmiofb.c: In function 'tmiofb_hw_init':
+> > drivers/video/tmiofb.c:270: warning: initialization discards
+> > qualifiers from pointer target type drivers/video/tmiofb.c: In
+> > function 'tmiofb_hw_mode': drivers/video/tmiofb.c:314: warning:
+> > initialization discards qualifiers from pointer target type
+> > drivers/video/tmiofb.c:314: warning: unused variable 'cell'
+> > drivers/video/tmiofb.c: In function 'tmiofb_probe':
+> > drivers/video/tmiofb.c:683: warning: initialization discards
+> > qualifiers from pointer target type drivers/video/tmiofb.c: In
+> > function 'tmiofb_remove': drivers/video/tmiofb.c:811: warning:
+> > initialization discards qualifiers from pointer target type
+> > drivers/video/tmiofb.c: In function 'tmiofb_suspend':
+> > drivers/video/tmiofb.c:941: warning: initialization discards
+> > qualifiers from pointer target type drivers/video/tmiofb.c: In
+> > function 'tmiofb_resume': drivers/video/tmiofb.c:973: warning:
+> > initialization discards qualifiers from pointer target type
+> > 
+> > Introduced by commits 2a79bb1d72f5ac22dff96de340d90d512f852ecb
+> > ("mfd: mfd_cell is now implicitly available to tc6393xb drivers")
+> > and b6361637190e6cb7acb84509499942ada69e7136 ("fb: Use mfd_data
+> > instead of driver_data for tmio-fb").
+> > 
+> 
+> Oops, this should fix that.
+> 
+> 
+> 
 
-Changes in V2
-* handle the endianess bug inside the map code and not in the generic cfi code
-* remove the addr swizzle patch
 
-Signed-off-by: John Crispin <blogic@openwrt.org>
-Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
-Cc: linux-mips@linux-mips.org
-Cc: linux-mtd@lists.infradead.org
+Actually, I noticed that I screwed this up for the other tmio drivers
+as well.  Here's a patch that addresses them all (you can
+ignore the previous patch).
+
+
+From: Andres Salomon <dilinger@queued.net>
+
+This silences warnings such as
+
+drivers/video/tmiofb.c: In function 'tmiofb_hw_init':
+drivers/video/tmiofb.c:270: warning: initialization discards qualifiers from pointer target type
+
+These were added by me in commit 2a79bb1d.
+
+Signed-off-by: Andres Salomon <dilinger@queued.net>
+
+moo
+Signed-off-by: Andres Salomon <dilinger@queued.net>
 ---
- drivers/mtd/maps/Kconfig  |    7 ++
- drivers/mtd/maps/Makefile |    1 +
- drivers/mtd/maps/lantiq.c |  186 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 194 insertions(+), 0 deletions(-)
- create mode 100644 drivers/mtd/maps/lantiq.c
+ drivers/mmc/host/tmio_mmc.c  |    8 ++++----
+ drivers/mtd/nand/tmio_nand.c |    8 ++++----
+ drivers/usb/host/ohci-tmio.c |    8 ++++----
+ drivers/video/tmiofb.c       |   11 +++++------
+ 4 files changed, 17 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 5d37d31..587468e 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -260,6 +260,13 @@ config MTD_BCM963XX
- 	  Support for parsing CFE image tag and creating MTD partitions on
- 	  Broadcom BCM63xx boards.
+diff --git a/drivers/mmc/host/tmio_mmc.c b/drivers/mmc/host/tmio_mmc.c
+index 4d34fbd..39918cc 100644
+--- a/drivers/mmc/host/tmio_mmc.c
++++ b/drivers/mmc/host/tmio_mmc.c
+@@ -1191,7 +1191,7 @@ static const struct mmc_host_ops tmio_mmc_ops = {
+ #ifdef CONFIG_PM
+ static int tmio_mmc_suspend(struct platform_device *dev, pm_message_t state)
+ {
+-	struct mfd_cell	*cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct mmc_host *mmc = platform_get_drvdata(dev);
+ 	int ret;
  
-+config MTD_LANTIQ
-+	bool "Lantiq SoC NOR support"
-+	depends on LANTIQ && MTD_PARTITIONS
-+	help
-+	  Support for NOR flash chips on Lantiq SoC. The Chips are connected
-+	  to the SoCs EBU (External Bus Unit)
-+
- config MTD_DILNETPC
- 	tristate "CFI Flash device mapped on DIL/Net PC"
- 	depends on X86 && MTD_CONCAT && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index c7869c7..bb2ce2f 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -59,3 +59,4 @@ obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
- obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
- obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
- obj-$(CONFIG_MTD_BCM963XX)	+= bcm963xx-flash.o
-+obj-$(CONFIG_MTD_LANTIQ)	+= lantiq.o
-diff --git a/drivers/mtd/maps/lantiq.c b/drivers/mtd/maps/lantiq.c
-new file mode 100644
-index 0000000..a630804
---- /dev/null
-+++ b/drivers/mtd/maps/lantiq.c
-@@ -0,0 +1,186 @@
-+/*
-+ *  This program is free software; you can redistribute it and/or modify it
-+ *  under the terms of the GNU General Public License version 2 as published
-+ *  by the Free Software Foundation.
-+ *
-+ *  Copyright (C) 2004 Liu Peng Infineon IFAP DC COM CPE
-+ *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/io.h>
-+#include <linux/init.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/mtd/cfi.h>
-+#include <linux/magic.h>
-+#include <linux/platform_device.h>
-+#include <linux/mtd/physmap.h>
-+
-+#include <lantiq_soc.h>
-+#include <lantiq_platform.h>
-+
-+/* the NOR flash is connected to the same external bus unit (EBU) as PCI
-+   to make PCI work we need to enable the endianess swapping of the addr
-+   written to the EBU. this however has some limitations and breaks when
-+   using NOR. it does not really matter if the onflash data is in a swapped
-+   order, however cfi sequences also fail. to workaround this we need to use
-+   a complex map. We essentially software swap all addresses during probe
-+   and then swizzle the unlock addresses.
-+ */
-+static int ltq_mtd_probing;
-+
-+static map_word
-+ltq_read16(struct map_info *map, unsigned long adr)
-+{
-+	unsigned long flags;
-+	map_word temp;
-+	if (ltq_mtd_probing)
-+		adr ^= 2;
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	temp.x[0] = *((__u16 *)(map->virt + adr));
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+	return temp;
-+}
-+
-+static void
-+ltq_write16(struct map_info *map, map_word d, unsigned long adr)
-+{
-+	unsigned long flags;
-+	if (ltq_mtd_probing)
-+		adr ^= 2;
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	*((__u16 *)(map->virt + adr)) = d.x[0];
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+}
-+
-+void
-+ltq_copy_from(struct map_info *map, void *to,
-+	unsigned long from, ssize_t len)
-+{
-+	unsigned char *p;
-+	unsigned char *to_8;
-+	unsigned long flags;
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	from = (unsigned long) (map->virt + from);
-+	p = (unsigned char *) from;
-+	to_8 = (unsigned char *) to;
-+	while (len--)
-+		*to_8++ = *p++;
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+}
-+
-+void
-+ltq_copy_to(struct map_info *map, unsigned long to,
-+	const void *from, ssize_t len)
-+{
-+	unsigned char *p =  (unsigned char *)from;
-+	unsigned char *to_8;
-+	unsigned long flags;
-+	spin_lock_irqsave(&ebu_lock, flags);
-+	to += (unsigned long) map->virt;
-+	to_8 = (unsigned char *)to;
-+	while (len--)
-+		*p++ = *to_8++;
-+	spin_unlock_irqrestore(&ebu_lock, flags);
-+}
-+
-+static const char *part_probe_types[] = {
-+	"cmdlinepart", NULL };
-+
-+static struct map_info ltq_map = {
-+	.name = "ltq_nor",
-+	.bankwidth = 2,
-+	.read = ltq_read16,
-+	.write = ltq_write16,
-+	.copy_from = ltq_copy_from,
-+	.copy_to = ltq_copy_to,
-+};
-+
-+static int
-+ltq_mtd_probe(struct platform_device *pdev)
-+{
-+	struct physmap_flash_data *ltq_mtd_data =
-+		(struct physmap_flash_data *) dev_get_platdata(&pdev->dev);
-+	struct mtd_info *ltq_mtd = NULL;
-+	struct mtd_partition *parts = NULL;
-+	struct resource *res = 0;
-+	int nr_parts = 0;
-+	struct cfi_private *cfi;
-+
-+#ifdef CONFIG_SOC_TYPE_XWAY
-+	ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_BUSCON0) & ~EBU_WRDIS, LTQ_EBU_BUSCON0);
-+#endif
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "failed to get memory resource");
-+		return -ENOENT;
-+	}
-+	res = devm_request_mem_region(&pdev->dev, res->start,
-+		resource_size(res), dev_name(&pdev->dev));
-+	if (!res) {
-+		dev_err(&pdev->dev, "failed to request mem resource");
-+		return -EBUSY;
-+	}
-+
-+	ltq_map.phys = res->start;
-+	ltq_map.size = resource_size(res);
-+	ltq_map.virt = devm_ioremap_nocache(&pdev->dev, ltq_map.phys,
-+		ltq_map.size);
-+	if (!ltq_map.virt) {
-+		dev_err(&pdev->dev, "failed to ioremap!\n");
-+		return -EIO;
-+	}
-+
-+	ltq_mtd_probing = 1;
-+	ltq_mtd = (struct mtd_info *) do_map_probe("cfi_probe", &ltq_map);
-+	ltq_mtd_probing = 0;
-+	if (!ltq_mtd) {
-+		iounmap(ltq_map.virt);
-+		dev_err(&pdev->dev, "probing failed\n");
-+		return -ENXIO;
-+	}
-+	ltq_mtd->owner = THIS_MODULE;
-+
-+	cfi = (struct cfi_private *)ltq_map.fldrv_priv;
-+	cfi->addr_unlock1 ^= 1;
-+	cfi->addr_unlock2 ^= 1;
-+
-+	nr_parts = parse_mtd_partitions(ltq_mtd, part_probe_types, &parts, 0);
-+	if (nr_parts > 0) {
-+		dev_info(&pdev->dev,
-+			"using %d partitions from cmdline", nr_parts);
-+	} else {
-+		nr_parts = ltq_mtd_data->nr_parts;
-+		parts = ltq_mtd_data->parts;
-+	}
-+
-+	add_mtd_partitions(ltq_mtd, parts, nr_parts);
-+	return 0;
-+}
-+
-+static struct platform_driver ltq_mtd_driver = {
-+	.probe = ltq_mtd_probe,
-+	.driver = {
-+		.name = "ltq_nor",
-+		.owner = THIS_MODULE,
-+	},
-+};
-+
-+int __init
-+init_ltq_mtd(void)
-+{
-+	int ret = platform_driver_register(&ltq_mtd_driver);
-+	if (ret)
-+		printk(KERN_INFO "ltq_nor: error registering platfom driver");
-+	return ret;
-+}
-+
-+module_init(init_ltq_mtd);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
-+MODULE_DESCRIPTION("Lantiq SoC NOR");
+@@ -1206,7 +1206,7 @@ static int tmio_mmc_suspend(struct platform_device *dev, pm_message_t state)
+ 
+ static int tmio_mmc_resume(struct platform_device *dev)
+ {
+-	struct mfd_cell	*cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct mmc_host *mmc = platform_get_drvdata(dev);
+ 	int ret = 0;
+ 
+@@ -1229,7 +1229,7 @@ out:
+ 
+ static int __devinit tmio_mmc_probe(struct platform_device *dev)
+ {
+-	struct mfd_cell	*cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct tmio_mmc_data *pdata;
+ 	struct resource *res_ctl;
+ 	struct tmio_mmc_host *host;
+@@ -1344,7 +1344,7 @@ out:
+ 
+ static int __devexit tmio_mmc_remove(struct platform_device *dev)
+ {
+-	struct mfd_cell	*cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct mmc_host *mmc = platform_get_drvdata(dev);
+ 
+ 	platform_set_drvdata(dev, NULL);
+diff --git a/drivers/mtd/nand/tmio_nand.c b/drivers/mtd/nand/tmio_nand.c
+index 2383b8f..38fb167 100644
+--- a/drivers/mtd/nand/tmio_nand.c
++++ b/drivers/mtd/nand/tmio_nand.c
+@@ -319,7 +319,7 @@ static int tmio_nand_correct_data(struct mtd_info *mtd, unsigned char *buf,
+ 
+ static int tmio_hw_init(struct platform_device *dev, struct tmio_nand *tmio)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	int ret;
+ 
+ 	if (cell->enable) {
+@@ -363,7 +363,7 @@ static int tmio_hw_init(struct platform_device *dev, struct tmio_nand *tmio)
+ 
+ static void tmio_hw_stop(struct platform_device *dev, struct tmio_nand *tmio)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 
+ 	tmio_iowrite8(FCR_MODE_POWER_OFF, tmio->fcr + FCR_MODE);
+ 	if (cell->disable)
+@@ -515,7 +515,7 @@ static int tmio_remove(struct platform_device *dev)
+ #ifdef CONFIG_PM
+ static int tmio_suspend(struct platform_device *dev, pm_message_t state)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 
+ 	if (cell->suspend)
+ 		cell->suspend(dev);
+@@ -526,7 +526,7 @@ static int tmio_suspend(struct platform_device *dev, pm_message_t state)
+ 
+ static int tmio_resume(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 
+ 	/* FIXME - is this required or merely another attack of the broken
+ 	 * SHARP platform? Looks suspicious.
+diff --git a/drivers/usb/host/ohci-tmio.c b/drivers/usb/host/ohci-tmio.c
+index eeed164..3558491 100644
+--- a/drivers/usb/host/ohci-tmio.c
++++ b/drivers/usb/host/ohci-tmio.c
+@@ -185,7 +185,7 @@ static struct platform_driver ohci_hcd_tmio_driver;
+ 
+ static int __devinit ohci_hcd_tmio_drv_probe(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct resource *regs = platform_get_resource(dev, IORESOURCE_MEM, 0);
+ 	struct resource *config = platform_get_resource(dev, IORESOURCE_MEM, 1);
+ 	struct resource *sram = platform_get_resource(dev, IORESOURCE_MEM, 2);
+@@ -274,7 +274,7 @@ static int __devexit ohci_hcd_tmio_drv_remove(struct platform_device *dev)
+ {
+ 	struct usb_hcd *hcd = platform_get_drvdata(dev);
+ 	struct tmio_hcd *tmio = hcd_to_tmio(hcd);
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 
+ 	usb_remove_hcd(hcd);
+ 	tmio_stop_hc(dev);
+@@ -293,7 +293,7 @@ static int __devexit ohci_hcd_tmio_drv_remove(struct platform_device *dev)
+ #ifdef CONFIG_PM
+ static int ohci_hcd_tmio_drv_suspend(struct platform_device *dev, pm_message_t state)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct usb_hcd *hcd = platform_get_drvdata(dev);
+ 	struct ohci_hcd *ohci = hcd_to_ohci(hcd);
+ 	struct tmio_hcd *tmio = hcd_to_tmio(hcd);
+@@ -326,7 +326,7 @@ static int ohci_hcd_tmio_drv_suspend(struct platform_device *dev, pm_message_t s
+ 
+ static int ohci_hcd_tmio_drv_resume(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct usb_hcd *hcd = platform_get_drvdata(dev);
+ 	struct ohci_hcd *ohci = hcd_to_ohci(hcd);
+ 	struct tmio_hcd *tmio = hcd_to_tmio(hcd);
+diff --git a/drivers/video/tmiofb.c b/drivers/video/tmiofb.c
+index 7e57d3b..9710bf8 100644
+--- a/drivers/video/tmiofb.c
++++ b/drivers/video/tmiofb.c
+@@ -267,7 +267,7 @@ static int tmiofb_hw_stop(struct platform_device *dev)
+  */
+ static int tmiofb_hw_init(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct fb_info *info = platform_get_drvdata(dev);
+ 	struct tmiofb_par *par = info->par;
+ 	const struct resource *nlcr = &cell->resources[0];
+@@ -311,7 +311,6 @@ static int tmiofb_hw_init(struct platform_device *dev)
+  */
+ static void tmiofb_hw_mode(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct tmio_fb_data *data = mfd_get_data(dev);
+ 	struct fb_info *info = platform_get_drvdata(dev);
+ 	struct fb_videomode *mode = info->mode;
+@@ -680,7 +679,7 @@ static struct fb_ops tmiofb_ops = {
+ 
+ static int __devinit tmiofb_probe(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct tmio_fb_data *data = mfd_get_data(dev);
+ 	struct resource *ccr = platform_get_resource(dev, IORESOURCE_MEM, 1);
+ 	struct resource *lcr = platform_get_resource(dev, IORESOURCE_MEM, 0);
+@@ -808,7 +807,7 @@ err_ioremap_ccr:
+ 
+ static int __devexit tmiofb_remove(struct platform_device *dev)
+ {
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	struct fb_info *info = platform_get_drvdata(dev);
+ 	int irq = platform_get_irq(dev, 0);
+ 	struct tmiofb_par *par;
+@@ -938,7 +937,7 @@ static int tmiofb_suspend(struct platform_device *dev, pm_message_t state)
+ #ifdef CONFIG_FB_TMIO_ACCELL
+ 	struct tmiofb_par *par = info->par;
+ #endif
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	int retval = 0;
+ 
+ 	console_lock();
+@@ -970,7 +969,7 @@ static int tmiofb_suspend(struct platform_device *dev, pm_message_t state)
+ static int tmiofb_resume(struct platform_device *dev)
+ {
+ 	struct fb_info *info = platform_get_drvdata(dev);
+-	struct mfd_cell *cell = mfd_get_cell(dev);
++	const struct mfd_cell *cell = mfd_get_cell(dev);
+ 	int retval = 0;
+ 
+ 	console_lock();
 -- 
 1.7.2.3
