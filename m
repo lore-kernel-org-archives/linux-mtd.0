@@ -1,18 +1,18 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PuYFT-00079Y-G9
-	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2011 22:40:56 +0000
-Received: from dlep35.itg.ti.com ([157.170.170.118])
-	by comal.ext.ti.com (8.13.7/8.13.7) with ESMTP id p21MesWK011557
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Tue, 1 Mar 2011 16:40:54 -0600
-From: s-paulraj@ti.com
-To: davinci-linux-open-source@linux.davincidsp.com,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH] NAND: DaVinci: Removed header file that is not required
-Date: Tue,  1 Mar 2011 17:40:51 -0500
-Message-Id: <1299019251-19518-1-git-send-email-s-paulraj@ti.com>
-Cc: Sandeep Paulraj <s-paulraj@ti.com>
+	id 1PuiJ9-000229-3I
+	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2011 09:25:23 +0000
+Received: by pzk7 with SMTP id 7so1060389pzk.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 02 Mar 2011 01:25:20 -0800 (PST)
+MIME-Version: 1.0
+Date: Wed, 2 Mar 2011 10:25:20 +0100
+Message-ID: <AANLkTime=pOiKBaw4sP9jZsRzOSso09jfz1qHmnGwKbL@mail.gmail.com>
+Subject: Hang in mlockall() when using JFFS2 blocks having CRC errors
+From: thommy <thommy.nice@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Sandeep Paulraj <s-paulraj@ti.com>
+Hi,
 
-The DaVinci NAND driver was including the mach-types.h header
-file.
-This prevented the DaVinci NAND driver from getting used
-in a DSP only device. The linux port on c6x devices can make
-use of the same driver and does not define a corresponding
-header file; so removing it.
+>From time to time my JFFS2 file system under 2.6.24.7-rt27
+seems to hang the system in a live lock.
 
-Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
----
- drivers/mtd/nand/davinci_nand.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+Situation:
+=A0* immediately after boot an executable is started which calls mlockall()
+   to commit all pages into RAM (this is a real time application)
+=A0* the executable is read from a JFFS2 file system on NOR flash
+=A0* mlockall() never terminates
+=A0* console output is 'Data CRC f7e8ddd1 !=3D calculated CRC 47cee9c9
+   for node at 00edc5cc' in an endless loop
 
-diff --git a/drivers/mtd/nand/davinci_nand.c b/drivers/mtd/nand/davinci_nand.c
-index a90fde3..aff3468 100644
---- a/drivers/mtd/nand/davinci_nand.c
-+++ b/drivers/mtd/nand/davinci_nand.c
-@@ -37,9 +37,6 @@
- #include <mach/nand.h>
- #include <mach/aemif.h>
- 
--#include <asm/mach-types.h>
--
--
- /*
-  * This is a device driver for the NAND flash controller found on the
-  * various DaVinci family chips.  It handles up to four SoC chipselects,
--- 
-1.6.0.4
+My investigations are so far:
+=A0* during boot some log output is written into a log file on the JFFS2
+   that manipulates the file system --> no read only mount possible
+=A0* the system is switched off at arbitrary times without clean unmount
+   --> this clearly may leave behind blocks with data CRC errors
+=A0* due to some reorganization (garbage collector?) my executable file
+   data is moved across the flash
+=A0* if such a move takes place exactly during power off two data frags
+   carrying a portion of my executable file data are left behind, one "old"
+   and correct frag and one "new" and incomplete frag with CRC error
+=A0* during next boot mlockall() tries to read in all pages from the
+   executable and fails on this point of CRC error
+
+My questions:
+=A0* is this a known behavior?
+=A0* why is the fragment which has the CRC error relevant although
+   the old and correct fragment is still in place?
+=A0* are there relevant fixes in newer kernel versions which I should
+   use? (I cannot update the kernel, but I may apply a patch)
+
+Thanks a lot in advance!
+Thommy
