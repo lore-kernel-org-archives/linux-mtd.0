@@ -1,18 +1,18 @@
-Received: from dakia2.marvell.com ([65.219.4.35])
+Received: from nbd.name ([46.4.11.11])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Puz9Y-0002zp-Dt
-	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2011 03:24:37 +0000
-From: Lei Wen <leiwen@marvell.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>, Eric Miao <eric.y.miao@gmail.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH V5 6/6] pxa3xx_nand: clean the keep configure code
-Date: Thu,  3 Mar 2011 11:27:01 +0800
-Message-Id: <1299122821-7509-1-git-send-email-leiwen@marvell.com>
-In-Reply-To: <1298901463.2809.27.camel@localhost>
-References: <1298901463.2809.27.camel@localhost>
+	id 1Pv5Mq-0005C2-VU
+	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2011 10:02:46 +0000
+From: John Crispin <blogic@openwrt.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH V3 06/10] MIPS: lantiq: add NOR flash support
+Date: Thu,  3 Mar 2011 11:03:42 +0100
+Message-Id: <1299146626-17428-7-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1299146626-17428-1-git-send-email-blogic@openwrt.org>
+References: <1299146626-17428-1-git-send-email-blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org, Ralph Hempel <ralph.hempel@lantiq.com>,
+	linux-mtd@lists.infradead.org,
+	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
+	David Woodhouse <dwmw2@infradead.org>, John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,208 +22,256 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use nand_scan_ident to unify the need of mtd member initilization
-for both normal detection and keep configuration method.
+NOR flash is attached to the same EBU (External Bus Unit) as PCI. As described
+in the PCI patch, the EBU is a little buggy, resulting in the upper and lower
+16 bit of the data on a 32 bit read are swapped. (essentially we have a addr^=2)
 
-Signed-off-by: Lei Wen <leiwen@marvell.com>
-Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
-Cc: Eric Miao <eric.y.miao@gmail.com>
+To work around this we do a addr^=2 during the probe. Once probed we adapt
+cfi->addr_unlock1 and cfi->addr_unlock2 to represent the endianess bug.
+
+Signed-off-by: John Crispin <blogic@openwrt.org>
+Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-mtd@lists.infradead.org
 ---
-Change log:
-V5.1: Add comment for this patch
+Changes in V2
+* handle the endianess bug inside the map code and not in the generic cfi code
+* remove the addr swizzle patch
 
- arch/arm/plat-pxa/include/plat/pxa3xx_nand.h |    2 +-
- drivers/mtd/nand/pxa3xx_nand.c               |  103 +++++++++-----------------
- 2 files changed, 36 insertions(+), 69 deletions(-)
+Changes in V3
+* whitespace
+* change __iomem void to void __iomem
 
-diff --git a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
-index 01a8448..442301f 100644
---- a/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
-+++ b/arch/arm/plat-pxa/include/plat/pxa3xx_nand.h
-@@ -30,6 +30,7 @@ struct pxa3xx_nand_cmdset {
- };
+ drivers/mtd/maps/Kconfig  |    7 ++
+ drivers/mtd/maps/Makefile |    1 +
+ drivers/mtd/maps/lantiq.c |  190 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 198 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/lantiq.c
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 5d37d31..587468e 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -260,6 +260,13 @@ config MTD_BCM963XX
+ 	  Support for parsing CFE image tag and creating MTD partitions on
+ 	  Broadcom BCM63xx boards.
  
- struct pxa3xx_nand_flash {
-+	char		*name;
- 	uint32_t	chip_id;
- 	unsigned int	page_per_block; /* Pages per block (PG_PER_BLK) */
- 	unsigned int	page_size;	/* Page size in bytes (PAGE_SZ) */
-@@ -37,7 +38,6 @@ struct pxa3xx_nand_flash {
- 	unsigned int	dfc_width;	/* Width of flash controller(DWIDTH_C) */
- 	unsigned int	num_blocks;	/* Number of physical blocks in Flash */
- 
--	struct pxa3xx_nand_cmdset *cmdset;	/* NAND command set */
- 	struct pxa3xx_nand_timing *timing;	/* NAND Flash timing */
- };
- 
-diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
-index bb50cf2..ab7f4c3 100644
---- a/drivers/mtd/nand/pxa3xx_nand.c
-+++ b/drivers/mtd/nand/pxa3xx_nand.c
-@@ -211,15 +211,15 @@ static struct pxa3xx_nand_timing timing[] = {
- };
- 
- static struct pxa3xx_nand_flash builtin_flash_types[] = {
--	{      0,   0, 2048,  8,  8,    0, &default_cmdset, &timing[0] },
--	{ 0x46ec,  32,  512, 16, 16, 4096, &default_cmdset, &timing[1] },
--	{ 0xdaec,  64, 2048,  8,  8, 2048, &default_cmdset, &timing[1] },
--	{ 0xd7ec, 128, 4096,  8,  8, 8192, &default_cmdset, &timing[1] },
--	{ 0xa12c,  64, 2048,  8,  8, 1024, &default_cmdset, &timing[2] },
--	{ 0xb12c,  64, 2048, 16, 16, 1024, &default_cmdset, &timing[2] },
--	{ 0xdc2c,  64, 2048,  8,  8, 4096, &default_cmdset, &timing[2] },
--	{ 0xcc2c,  64, 2048, 16, 16, 4096, &default_cmdset, &timing[2] },
--	{ 0xba20,  64, 2048, 16, 16, 2048, &default_cmdset, &timing[3] },
-+{ "DEFAULT FLASH",      0,   0, 2048,  8,  8,    0, &timing[0] },
-+{ "64MiB 16-bit",  0x46ec,  32,  512, 16, 16, 4096, &timing[1] },
-+{ "256MiB 8-bit",  0xdaec,  64, 2048,  8,  8, 2048, &timing[1] },
-+{ "4GiB 8-bit",    0xd7ec, 128, 4096,  8,  8, 8192, &timing[1] },
-+{ "128MiB 8-bit",  0xa12c,  64, 2048,  8,  8, 1024, &timing[2] },
-+{ "128MiB 16-bit", 0xb12c,  64, 2048, 16, 16, 1024, &timing[2] },
-+{ "512MiB 8-bit",  0xdc2c,  64, 2048,  8,  8, 4096, &timing[2] },
-+{ "512MiB 16-bit", 0xcc2c,  64, 2048, 16, 16, 4096, &timing[2] },
-+{ "256MiB 16-bit", 0xba20,  64, 2048, 16, 16, 2048, &timing[3] },
- };
- 
- /* Define a default flash type setting serve as flash detecting only */
-@@ -779,9 +779,8 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- 		return -EINVAL;
- 
- 	/* calculate flash information */
--	info->cmdset = f->cmdset;
-+	info->cmdset = &default_cmdset;
- 	info->page_size = f->page_size;
--	info->oob_buff = info->data_buff + f->page_size;
- 	info->read_id_bytes = (f->page_size == 2048) ? 4 : 2;
- 
- 	/* calculate addressing information */
-@@ -811,45 +810,12 @@ static int pxa3xx_nand_config_flash(struct pxa3xx_nand_info *info,
- static int pxa3xx_nand_detect_config(struct pxa3xx_nand_info *info)
- {
- 	uint32_t ndcr = nand_readl(info, NDCR);
--	struct nand_flash_dev *type = NULL;
--	uint32_t id = -1, page_per_block, num_blocks;
--	int i;
--
--	page_per_block = ndcr & NDCR_PG_PER_BLK ? 64 : 32;
- 	info->page_size = ndcr & NDCR_PAGE_SZ ? 2048 : 512;
- 	/* set info fields needed to read id */
- 	info->read_id_bytes = (info->page_size == 2048) ? 4 : 2;
- 	info->reg_ndcr = ndcr;
- 	info->cmdset = &default_cmdset;
- 
--	pxa3xx_nand_cmdfunc(info->mtd, NAND_CMD_READID, 0, 0);
--	id = *((uint16_t *)(info->data_buff));
--	if (id == 0)
--		return -ENODEV;
--
--	/* Lookup the flash id */
--	for (i = 0; nand_flash_ids[i].name != NULL; i++) {
--		if (id == nand_flash_ids[i].id) {
--			type =  &nand_flash_ids[i];
--			break;
--		}
--	}
--
--	if (!type)
--		return -ENODEV;
--
--	/* fill the missing flash information */
--	i = __ffs(page_per_block * info->page_size);
--	num_blocks = type->chipsize << (20 - i);
--
--	/* calculate addressing information */
--	info->col_addr_cycles = (info->page_size == 2048) ? 2 : 1;
--
--	if (num_blocks * page_per_block > 65536)
--		info->row_addr_cycles = 3;
--	else
--		info->row_addr_cycles = 2;
--
- 	info->ndtr0cs0 = nand_readl(info, NDTR0CS0);
- 	info->ndtr1cs0 = nand_readl(info, NDTR1CS0);
- 
-@@ -916,13 +882,15 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 	struct pxa3xx_nand_info *info = mtd->priv;
- 	struct platform_device *pdev = info->pdev;
- 	struct pxa3xx_nand_platform_data *pdata = pdev->dev.platform_data;
-+	struct nand_flash_dev pxa3xx_flash_ids[2] = { {NULL,}, {NULL,} };
- 	const struct pxa3xx_nand_flash *f = NULL;
- 	struct nand_chip *chip = mtd->priv;
- 	uint32_t id = -1;
-+	uint64_t chipsize;
- 	int i, ret, num;
- 
- 	if (pdata->keep_config && !pxa3xx_nand_detect_config(info))
--		return 0;
-+		goto KEEP_CONFIG;
- 
- 	ret = pxa3xx_nand_sensing(info);
- 	if (!ret) {
-@@ -953,22 +921,11 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 			f = &builtin_flash_types[i - pdata->num_flash + 1];
- 
- 		/* find the chip in default list */
--		if (f->chip_id == id) {
--			pxa3xx_nand_config_flash(info, f);
--			mtd->writesize = f->page_size;
--			mtd->writesize_shift = ffs(mtd->writesize) - 1;
--			mtd->writesize_mask = (1 << mtd->writesize_shift) - 1;
--			mtd->oobsize = mtd->writesize / 32;
--			mtd->erasesize = f->page_size * f->page_per_block;
--			mtd->erasesize_shift = ffs(mtd->erasesize) - 1;
--			mtd->erasesize_mask = (1 << mtd->erasesize_shift) - 1;
--
--			mtd->name = mtd_names[0];
-+		if (f->chip_id == id)
- 			break;
--		}
- 	}
- 
--	if (i >= (ARRAY_SIZE(builtin_flash_types) + pdata->num_flash)) {
-+	if (i >= (ARRAY_SIZE(builtin_flash_types) + pdata->num_flash - 1)) {
- 		kfree(mtd);
- 		info->mtd = NULL;
- 		printk(KERN_ERR "ERROR!! flash not defined!!!\n");
-@@ -976,18 +933,28 @@ static int pxa3xx_nand_scan(struct mtd_info *mtd)
- 		return -EINVAL;
- 	}
- 
-+	pxa3xx_nand_config_flash(info, f);
-+	pxa3xx_flash_ids[0].name = f->name;
-+	pxa3xx_flash_ids[0].id = (f->chip_id >> 8) & 0xffff;
-+	pxa3xx_flash_ids[0].pagesize = f->page_size;
-+	chipsize = (uint64_t)f->num_blocks * f->page_per_block * f->page_size;
-+	pxa3xx_flash_ids[0].chipsize = chipsize >> 20;
-+	pxa3xx_flash_ids[0].erasesize = f->page_size * f->page_per_block;
-+	if (f->flash_width == 16)
-+		pxa3xx_flash_ids[0].options = NAND_BUSWIDTH_16;
-+KEEP_CONFIG:
-+	if (nand_scan_ident(mtd, 1, pxa3xx_flash_ids))
-+		return -ENODEV;
-+	/* calculate addressing information */
-+	info->col_addr_cycles = (mtd->writesize >= 2048) ? 2 : 1;
-+	info->oob_buff = info->data_buff + mtd->writesize;
-+	if ((mtd->size >> chip->page_shift) > 65536)
-+		info->row_addr_cycles = 3;
-+	else
-+		info->row_addr_cycles = 2;
-+	mtd->name = mtd_names[0];
- 	chip->ecc.mode = NAND_ECC_HW;
- 	chip->ecc.size = f->page_size;
--	chip->chipsize = (uint64_t)f->num_blocks * f->page_per_block
--				    * f->page_size;
--	mtd->size = chip->chipsize;
--
--	/* Calculate the address shift from the page size */
--	chip->page_shift = ffs(mtd->writesize) - 1;
--	chip->pagemask = mtd_div_by_ws(chip->chipsize, mtd) - 1;
--	chip->numchips = 1;
--	chip->phys_erase_shift = ffs(mtd->erasesize) - 1;
--	chip->bbt_erase_shift = chip->phys_erase_shift;
- 
- 	chip->options = (f->flash_width == 16) ? NAND_BUSWIDTH_16 : 0;
- 	chip->options |= NAND_NO_AUTOINCR;
++config MTD_LANTIQ
++	bool "Lantiq SoC NOR support"
++	depends on LANTIQ && MTD_PARTITIONS
++	help
++	  Support for NOR flash chips on Lantiq SoC. The Chips are connected
++	  to the SoCs EBU (External Bus Unit)
++
+ config MTD_DILNETPC
+ 	tristate "CFI Flash device mapped on DIL/Net PC"
+ 	depends on X86 && MTD_CONCAT && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index c7869c7..bb2ce2f 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -59,3 +59,4 @@ obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
+ obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
+ obj-$(CONFIG_MTD_BCM963XX)	+= bcm963xx-flash.o
++obj-$(CONFIG_MTD_LANTIQ)	+= lantiq.o
+diff --git a/drivers/mtd/maps/lantiq.c b/drivers/mtd/maps/lantiq.c
+new file mode 100644
+index 0000000..674be0a
+--- /dev/null
++++ b/drivers/mtd/maps/lantiq.c
+@@ -0,0 +1,190 @@
++/*
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License version 2 as published
++ *  by the Free Software Foundation.
++ *
++ *  Copyright (C) 2004 Liu Peng Infineon IFAP DC COM CPE
++ *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/io.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/cfi.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/physmap.h>
++
++#include <lantiq_soc.h>
++#include <lantiq_platform.h>
++
++/* the NOR flash is connected to the same external bus unit (EBU) as PCI
++ * to make PCI work we need to enable the endianess swapping of the addr
++ * written to the EBU. this however has some limitations and breaks when
++ * using NOR. it does not really matter if the onflash data is in a swapped
++ * order, however cfi sequences also fail. to workaround this we need to use
++ * a complex map. We essentially software swap all addresses during probe
++ * and then swizzle the unlock addresses.
++ */
++static int ltq_mtd_probing;
++
++static map_word
++ltq_read16(struct map_info *map, unsigned long adr)
++{
++	unsigned long flags;
++
++	map_word temp;
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	temp.x[0] = *((__u16 *)(map->virt + adr));
++	spin_unlock_irqrestore(&ebu_lock, flags);
++	return temp;
++}
++
++static void
++ltq_write16(struct map_info *map, map_word d, unsigned long adr)
++{
++	unsigned long flags;
++
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	*((__u16 *)(map->virt + adr)) = d.x[0];
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++void
++ltq_copy_from(struct map_info *map, void *to,
++	unsigned long from, ssize_t len)
++{
++	unsigned char *p;
++	unsigned char *to_8;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	from = (unsigned long) (map->virt + from);
++	p = (unsigned char *) from;
++	to_8 = (unsigned char *) to;
++	while (len--)
++		*to_8++ = *p++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++void
++ltq_copy_to(struct map_info *map, unsigned long to,
++	const void *from, ssize_t len)
++{
++	unsigned char *p =  (unsigned char *)from;
++	unsigned char *to_8;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	to += (unsigned long) map->virt;
++	to_8 = (unsigned char *)to;
++	while (len--)
++		*p++ = *to_8++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static const char *part_probe_types[] = {
++	"cmdlinepart", NULL };
++
++static struct map_info ltq_map = {
++	.name = "ltq_nor",
++	.bankwidth = 2,
++	.read = ltq_read16,
++	.write = ltq_write16,
++	.copy_from = ltq_copy_from,
++	.copy_to = ltq_copy_to,
++};
++
++static int
++ltq_mtd_probe(struct platform_device *pdev)
++{
++	struct physmap_flash_data *ltq_mtd_data =
++		(struct physmap_flash_data *) dev_get_platdata(&pdev->dev);
++	struct mtd_info *ltq_mtd = NULL;
++	struct mtd_partition *parts = NULL;
++	struct resource *res = 0;
++	int nr_parts = 0;
++	struct cfi_private *cfi;
++
++#ifdef CONFIG_SOC_TYPE_XWAY
++	ltq_ebu_w32(ltq_ebu_r32(LTQ_EBU_BUSCON0) & ~EBU_WRDIS, LTQ_EBU_BUSCON0);
++#endif
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "failed to get memory resource");
++		return -ENOENT;
++	}
++	res = devm_request_mem_region(&pdev->dev, res->start,
++		resource_size(res), dev_name(&pdev->dev));
++	if (!res) {
++		dev_err(&pdev->dev, "failed to request mem resource");
++		return -EBUSY;
++	}
++
++	ltq_map.phys = res->start;
++	ltq_map.size = resource_size(res);
++	ltq_map.virt = devm_ioremap_nocache(&pdev->dev, ltq_map.phys,
++		ltq_map.size);
++	if (!ltq_map.virt) {
++		dev_err(&pdev->dev, "failed to ioremap!\n");
++		return -EIO;
++	}
++
++	ltq_mtd_probing = 1;
++	ltq_mtd = (struct mtd_info *) do_map_probe("cfi_probe", &ltq_map);
++	ltq_mtd_probing = 0;
++	if (!ltq_mtd) {
++		iounmap(ltq_map.virt);
++		dev_err(&pdev->dev, "probing failed\n");
++		return -ENXIO;
++	}
++	ltq_mtd->owner = THIS_MODULE;
++
++	cfi = (struct cfi_private *)ltq_map.fldrv_priv;
++	cfi->addr_unlock1 ^= 1;
++	cfi->addr_unlock2 ^= 1;
++
++	nr_parts = parse_mtd_partitions(ltq_mtd, part_probe_types, &parts, 0);
++	if (nr_parts > 0) {
++		dev_info(&pdev->dev,
++			"using %d partitions from cmdline", nr_parts);
++	} else {
++		nr_parts = ltq_mtd_data->nr_parts;
++		parts = ltq_mtd_data->parts;
++	}
++
++	add_mtd_partitions(ltq_mtd, parts, nr_parts);
++	return 0;
++}
++
++static struct platform_driver ltq_mtd_driver = {
++	.probe = ltq_mtd_probe,
++	.driver = {
++		.name = "ltq_nor",
++		.owner = THIS_MODULE,
++	},
++};
++
++int __init
++init_ltq_mtd(void)
++{
++	int ret = platform_driver_register(&ltq_mtd_driver);
++
++	if (ret)
++		printk(KERN_INFO "ltq_nor: error registering platfom driver");
++	return ret;
++}
++
++module_init(init_ltq_mtd);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
++MODULE_DESCRIPTION("Lantiq SoC NOR");
 -- 
-1.7.0.4
+1.7.2.3
