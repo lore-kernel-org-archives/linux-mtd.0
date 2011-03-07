@@ -1,25 +1,22 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwWIS-0007Qq-Dh
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 09:00:10 +0000
-Received: by wyf23 with SMTP id 23so4157622wyf.36
+	id 1PwWKo-0007TN-8N
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 09:02:35 +0000
+Received: by ewy23 with SMTP id 23so1267470ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Mar 2011 01:00:06 -0800 (PST)
-Subject: Re: [PATCH V2 06/10] MIPS: lantiq: add NOR flash support
+	Mon, 07 Mar 2011 01:02:32 -0800 (PST)
+Subject: Re: [PATCH] NAND: DaVinci: Removed header file that is not required
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-In-Reply-To: <1298996006-15960-7-git-send-email-blogic@openwrt.org>
-References: <1298996006-15960-1-git-send-email-blogic@openwrt.org>
-	<1298996006-15960-7-git-send-email-blogic@openwrt.org>
+To: s-paulraj@ti.com
+In-Reply-To: <1299019251-19518-1-git-send-email-s-paulraj@ti.com>
+References: <1299019251-19518-1-git-send-email-s-paulraj@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 07 Mar 2011 10:58:40 +0200
-Message-ID: <1299488320.2746.5.camel@localhost>
+Date: Mon, 07 Mar 2011 11:01:08 +0200
+Message-ID: <1299488468.2746.7.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
-	Ralph Hempel <ralph.hempel@lantiq.com>, linux-mtd@lists.infradead.org,
-	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: davinci-linux-open-source@linux.davincidsp.com,
+	linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,27 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-03-01 at 17:13 +0100, John Crispin wrote:
-> NOR flash is attached to the same EBU (External Bus Unit) as PCI. As described
-> in the PCI patch, the EBU is a little buggy, resulting in the upper and lower
-> 16 bit of the data on a 32 bit read are swapped. (essentially we have a addr^=2)
+On Tue, 2011-03-01 at 17:40 -0500, s-paulraj@ti.com wrote:
+> From: Sandeep Paulraj <s-paulraj@ti.com>
 > 
-> To work around this we do a addr^=2 during the probe. Once probed we adapt
-> cfi->addr_unlock1 and cfi->addr_unlock2 to represent the endianess bug.
+> The DaVinci NAND driver was including the mach-types.h header
+> file.
+> This prevented the DaVinci NAND driver from getting used
+> in a DSP only device. The linux port on c6x devices can make
+> use of the same driver and does not define a corresponding
+> header file; so removing it.
 > 
-> Changes in V2
-> * handle the endianess bug inside the map code and not in the generic cfi code
-> * remove the addr swizzle patch
-> 
-> Signed-off-by: John Crispin <blogic@openwrt.org>
-> Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
-> Cc: linux-mips@linux-mips.org
-> Cc: linux-mtd@lists.infradead.org
+> Signed-off-by: Sandeep Paulraj <s-paulraj@ti.com>
 
-There are a couple checkpatch.pl warnings, would you please address them
-and resend?
+Hi,
+
+you explain why this include is bad for DSP. Buy you do not explain why
+this include is there and why removing it is harmless for Linux.
 
 -- 
 Best Regards,
