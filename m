@@ -1,23 +1,22 @@
-Received: from nbd.name ([46.4.11.11])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwZUG-00019H-Av
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 12:24:33 +0000
-Message-ID: <4D74CEC2.4040506@openwrt.org>
-Date: Mon, 07 Mar 2011 13:25:38 +0100
-From: John Crispin <blogic@openwrt.org>
-MIME-Version: 1.0
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pwa8I-0001UO-Ds
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 13:05:55 +0000
+Date: Mon, 7 Mar 2011 14:05:54 +0100
+From: Anatolij Gustschin <agust@denx.de>
 To: dedekind1@gmail.com
-Subject: Re: [PATCH V2 06/10] MIPS: lantiq: add NOR flash support
-References: <1298996006-15960-1-git-send-email-blogic@openwrt.org>
-	<1298996006-15960-7-git-send-email-blogic@openwrt.org>
-	<1299488320.2746.5.camel@localhost>
-In-Reply-To: <1299488320.2746.5.camel@localhost>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v2 0/5] UBIFS: fix recovery on CFI NOR
+Message-ID: <20110307140554.13ff94aa@wker>
+In-Reply-To: <1299497990.2746.31.camel@localhost>
+References: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
+	<1299497990.2746.31.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
-	Ralph Hempel <ralph.hempel@lantiq.com>, linux-mtd@lists.infradead.org,
-	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Holger Brunck <holger.brunck@keymile.com>,
+	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +26,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/03/11 09:58, Artem Bityutskiy wrote:
-> On Tue, 2011-03-01 at 17:13 +0100, John Crispin wrote:
->   
->> NOR flash is attached to the same EBU (External Bus Unit) as PCI. As described
->> in the PCI patch, the EBU is a little buggy, resulting in the upper and lower
->> 16 bit of the data on a 32 bit read are swapped. (essentially we have a addr^=2)
->>
->> To work around this we do a addr^=2 during the probe. Once probed we adapt
->> cfi->addr_unlock1 and cfi->addr_unlock2 to represent the endianess bug.
->>
->> Changes in V2
->> * handle the endianess bug inside the map code and not in the generic cfi code
->> * remove the addr swizzle patch
->>
->> Signed-off-by: John Crispin <blogic@openwrt.org>
->> Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
->> Cc: David Woodhouse <dwmw2@infradead.org>
->> Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
->> Cc: linux-mips@linux-mips.org
->> Cc: linux-mtd@lists.infradead.org
->>     
-> There are a couple checkpatch.pl warnings, would you please address them
-> and resend?
->
->   
-Hi,
+On Mon, 07 Mar 2011 13:39:50 +0200
+Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
-of course.
+> On Sun, 2011-02-06 at 15:17 +0200, Artem Bityutskiy wrote:
+> > Hi,
+> > 
+> > here is a better patch for recovery fix. Comparing to the previous
+> > patch-set now we make sure we keep write-buffer offset aligned to
+> > @c->max_write_size (64 in case of CFI NOR) as much as possible.
+> > 
+> > Also, I've merged the "Add comments" patch with the patch which adds
+> > the code.
+> > 
+> > You can find these patches also in the UBIFS git tree, 'cfi-nor-fix-v2'
+> > branch:
+> > git://git.infradead.org/ubifs-2.6.git cfi-nor-fix-v2
+> > 
+> > Please, test. These patches may break NAND setups as well, so anyone
+> > who is interested in having stable UBIFS in the next release, please,
+> > also test.
+> 
+> Anatolij,
+> 
+> did these patches fix your issues. I know you found another one related
+> to unstable bits, but it is a separate issue. I need to make a decision
+> whether my patches go upstream the next merge window or they should
+> wait.
+> 
+> I have v3 of the patches, but they are not very different from v2. I
+> will send them out as well.
 
-thanks,
-John
+Hi Artem,
+
+Yes, together with both patches from
+"[PATCH 0/2] Further fixes for UBIFS recovery on CFI NOR" series
+these patches fix UBIFS recovery issues on our NOR flash. Remaining
+issue seems to be CRC-Error due to unstable bits in UBIFS data node.
+
+Best regards,
+Anatolij
