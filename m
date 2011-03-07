@@ -1,25 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwW8g-0007K5-1g
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 08:50:02 +0000
-Received: by wwj40 with SMTP id 40so3589023wwj.18
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Mar 2011 00:50:00 -0800 (PST)
-Subject: Re: [PATCH v2 1/1] omap3: nand: report corrected ecc errors
+Subject: Re: [PATCH 1/2] mtd: nand: Allow NAND chip ids to be included
+	standalone.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Ogness <john.ogness@linutronix.de>
-In-Reply-To: <87y650pdc1.fsf_-_@vostro.fn.ogness.net>
-References: <87oc64qr5b.fsf@vostro.fn.ogness.net>
-	<1298631549.2798.56.camel@localhost>
-	<87y650pdc1.fsf_-_@vostro.fn.ogness.net>
+To: Murali Nalajala <mnalajal@codeaurora.org>
+In-Reply-To: <1298940450-27365-1-git-send-email-mnalajal@codeaurora.org>
+References: <1298940450-27365-1-git-send-email-mnalajal@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 07 Mar 2011 10:48:35 +0200
-Message-ID: <1299487715.2746.1.camel@localhost>
+Date: Mon, 07 Mar 2011 10:53:12 +0200
+Message-ID: <1299487992.2746.3.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-omap@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, s-ghorai@ti.com
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Dima Zavin <dima@android.com>, linux-mtd@lists.infradead.org,
+	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,19 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-02-28 at 13:12 +0100, John Ogness wrote:
-> From: John Ogness <john.ogness@linutronix.de>
+On Tue, 2011-03-01 at 06:17 +0530, Murali Nalajala wrote:
+> Lets non-standard NAND drivers take advantage of known NAND
+> chip information.
 > 
-> The number of corrected ECC errors should be reported since other MTD
-> systems make use of this information (such as UBI data scrubbing).
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
-> ---
-> Patch v2:
-> o Patch against linux-next-20110225.
-> o Added comments explaining return codes.
+> Signed-off-by: Dima Zavin <dima@android.com>
+> Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
 
-Pushed to l2-mtd-2.6.git, thanks.
+Please, make the description more descriptive. Please, make it explain
+which problem you are solving and how. What do you mean by non-standard
+drivers? Why they are non-standard?
 
 -- 
 Best Regards,
