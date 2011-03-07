@@ -1,17 +1,25 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwXbf-0008Sh-61
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 10:24:03 +0000
-Received: by eyh6 with SMTP id 6so1278770eyh.36
+	id 1PwYoS-0000lj-65
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 11:41:21 +0000
+Received: by wwj40 with SMTP id 40so3689440wwj.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 07 Mar 2011 02:24:01 -0800 (PST)
-MIME-Version: 1.0
-Date: Mon, 7 Mar 2011 15:54:01 +0530
-Message-ID: <AANLkTin4FHcpvhsQJkU7pOUPk3-gV+N+1cb0W6_3KC8P@mail.gmail.com>
-Subject: Perf issue with UBIFS
-From: Bhavesh Parekh <bhaveshparekh1@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	Mon, 07 Mar 2011 03:41:18 -0800 (PST)
+Subject: Re: [PATCH v2 0/5] UBIFS: fix recovery on CFI NOR
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Anatolij Gustschin <agust@denx.de>
+In-Reply-To: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
+References: <1296998270-19853-1-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 07 Mar 2011 13:39:50 +0200
+Message-ID: <1299497990.2746.31.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Holger Brunck <holger.brunck@keymile.com>,
+	Norbert van Bolhuis <nvbolhuis@aimvalley.nl>,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I am facing performance issue wil using the UBIFS on our platform.
+On Sun, 2011-02-06 at 15:17 +0200, Artem Bityutskiy wrote:
+> Hi,
+> 
+> here is a better patch for recovery fix. Comparing to the previous
+> patch-set now we make sure we keep write-buffer offset aligned to
+> @c->max_write_size (64 in case of CFI NOR) as much as possible.
+> 
+> Also, I've merged the "Add comments" patch with the patch which adds
+> the code.
+> 
+> You can find these patches also in the UBIFS git tree, 'cfi-nor-fix-v2'
+> branch:
+> git://git.infradead.org/ubifs-2.6.git cfi-nor-fix-v2
+> 
+> Please, test. These patches may break NAND setups as well, so anyone
+> who is interested in having stable UBIFS in the next release, please,
+> also test.
 
-Kernel version 2.6.36
-Nand device info : Micron chip with 2K page size & 128K erase-size
-ECC : ECC is done by the NAnd-controller.
+Anatolij,
 
-We have YAFFS2 working on our platform and recently tried UBIFS on our
-platform. YAFF2 Perf is 18MB/s and UBIFS is 11.2 MB/s. Looking at the
-driver log we found that the UBIFS access pattern to the device is
-4096+48 byte read in the main area, which means that there are lots of
-unaligned read. Our platform only support aligned read, so we did an
-optimization by simplying storing the last read page in the buffer
-hopping that on the next read we will be reading the same page and
-gain the perf. Doing this we were able to increase the perf to 14.5
-MB/s
+did these patches fix your issues. I know you found another one related
+to unstable bits, but it is a separate issue. I need to make a decision
+whether my patches go upstream the next merge window or they should
+wait.
 
-Is there any way we can make UBI to have the access in the aligned way
-only ? Other wise perf will be lesser than YAFFS2.
+I have v3 of the patches, but they are not very different from v2. I
+will send them out as well.
 
-Further we twick the nand-driver and implemented the page-cache mode
-support in the driver. And change the mtd->writesize to 16K so that
-request from the upper layer comes in 16K. It work fine with the
-YAFFS2 and we see a perf gain of 3-4MB/s but UBIFS request pattern
-remains same 4K +48 byte. Is there anything we can do here so that
-UBIFS respect mtd->writesize
-
--Thanks
-Bhavesh
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
