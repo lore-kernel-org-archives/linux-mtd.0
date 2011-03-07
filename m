@@ -1,24 +1,19 @@
-Received: from mail-qw0-f49.google.com ([209.85.216.49])
+Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwQfy-0004oq-GU
-	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 03:00:03 +0000
-Received: by qwj9 with SMTP id 9so3015145qwj.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 06 Mar 2011 19:00:00 -0800 (PST)
-Subject: [PATCH 2/3] mtd: add "platform:" prefix for platform modalias
-From: Axel Lin <axel.lin@gmail.com>
-To: linux-kernel@vger.kernel.org
-In-Reply-To: <1299466949.3879.0.camel@mola>
-References: <1299466949.3879.0.camel@mola>
-Content-Type: text/plain
-Date: Mon, 07 Mar 2011 11:04:24 +0800
-Message-Id: <1299467064.3879.3.camel@mola>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Kyungmin Park <kyungmin.park@samsung.com>,
-	linux-mtd@lists.infradead.org, Jian Zhang <jzhang@ti.com>,
-	Vimal Singh <vimalsingh@ti.com>, Jarkko Lavinen <jarkko.lavinen@nokia.com>
+	id 1PwRnK-0005DM-6c
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 04:11:43 +0000
+From: Jon Povey <Jon.Povey@racelogic.co.uk>
+To: David Lambert <dave@lambsys.com>
+Content-Class: urn:content-classes:message
+Date: Mon, 7 Mar 2011 04:11:31 +0000
+Subject: RE: Bug in mtd_speedtest?
+Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093FA495CC@Cloud.RL.local>
+In-Reply-To: <4D71270E.9030204@lambsys.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,57 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since 43cc71eed1250755986da4c0f9898f9a635cb3bf (platform: prefix MODALIAS
-with "platform:"), the platform modalias is prefixed with "platform:".
+linux-mtd-bounces@lists.infradead.org wrote:
+> Artem,
+>      Please find attached patch.
 
-Signed-off-by: Axel Lin <axel.lin@gmail.com>
-Cc: Jian Zhang <jzhang@ti.com>
-Cc: Vimal Singh <vimalsingh@ti.com>
-Cc: Kyungmin Park <kyungmin.park@samsung.com>
-Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>
----
- drivers/mtd/nand/omap2.c      |    2 +-
- drivers/mtd/onenand/generic.c |    2 +-
- drivers/mtd/onenand/omap2.c   |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+The comments make lines over 80 chars and are not needed,
+it is clear enough from the code what it does.
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index 4e33972..7b8f1ff 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1159,6 +1159,6 @@ static void __exit omap_nand_exit(void)
- module_init(omap_nand_init);
- module_exit(omap_nand_exit);
- 
--MODULE_ALIAS(DRIVER_NAME);
-+MODULE_ALIAS("platform:" DRIVER_NAME);
- MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Glue layer for NAND flash on TI OMAP boards");
-diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
-index e789149..ac08750 100644
---- a/drivers/mtd/onenand/generic.c
-+++ b/drivers/mtd/onenand/generic.c
-@@ -131,7 +131,7 @@ static struct platform_driver generic_onenand_driver = {
- 	.remove		= __devexit_p(generic_onenand_remove),
- };
- 
--MODULE_ALIAS(DRIVER_NAME);
-+MODULE_ALIAS("platform:" DRIVER_NAME);
- 
- static int __init generic_onenand_init(void)
- {
-diff --git a/drivers/mtd/onenand/omap2.c b/drivers/mtd/onenand/omap2.c
-index ec26399..14a49ab 100644
---- a/drivers/mtd/onenand/omap2.c
-+++ b/drivers/mtd/onenand/omap2.c
-@@ -840,7 +840,7 @@ static void __exit omap2_onenand_exit(void)
- module_init(omap2_onenand_init);
- module_exit(omap2_onenand_exit);
- 
--MODULE_ALIAS(DRIVER_NAME);
-+MODULE_ALIAS("platform:" DRIVER_NAME);
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Jarkko Lavinen <jarkko.lavinen@nokia.com>");
- MODULE_DESCRIPTION("Glue layer for OneNAND flash on OMAP2 / OMAP3");
--- 
-1.7.2
+--
+Jon Povey
+jon.povey@racelogic.co.uk
+
+Racelogic is a limited company registered in England. Registered number 274=
+3719 .
+Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
+ks, MK18 1TB .
+
+The information contained in this electronic mail transmission is intended =
+by Racelogic Ltd for the use of the named individual or entity to which it =
+is directed and may contain information that is confidential or privileged.=
+ If you have received this electronic mail transmission in error, please de=
+lete it from your system without copying or forwarding it, and notify the s=
+ender of the error by reply email so that the sender's address records can =
+be corrected. The views expressed by the sender of this communication do no=
+t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
+reserves the right to monitor e-mail communications passing through its net=
+work
