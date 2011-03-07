@@ -1,21 +1,17 @@
-Subject: Re: [PATCH V5 1/6] pxa3xx_nand: make scan procedure more clear
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Lei Wen <adrian.wenl@gmail.com>
-In-Reply-To: <AANLkTik2px-jmz0CSq03dYWjQWp2pMpdSmkKYwNWHjt=@mail.gmail.com>
-References: <AANLkTinb7oZDzvD94RWLZqnLnaX5kY97CxJ+34eVJNmU@mail.gmail.com>
-	<1299121710-6263-1-git-send-email-leiwen@marvell.com>
-	<1299491371.2746.14.camel@localhost>
-	<AANLkTik2px-jmz0CSq03dYWjQWp2pMpdSmkKYwNWHjt=@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 07 Mar 2011 12:21:12 +0200
-Message-ID: <1299493272.2746.26.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Eric Miao <eric.y.miao@gmail.com>, Lei Wen <leiwen@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@marvell.com>,
-	Haojian Zhuang <haojian.zhuang@gmail.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PwXbf-0008Sh-61
+	for linux-mtd@lists.infradead.org; Mon, 07 Mar 2011 10:24:03 +0000
+Received: by eyh6 with SMTP id 6so1278770eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 07 Mar 2011 02:24:01 -0800 (PST)
+MIME-Version: 1.0
+Date: Mon, 7 Mar 2011 15:54:01 +0530
+Message-ID: <AANLkTin4FHcpvhsQJkU7pOUPk3-gV+N+1cb0W6_3KC8P@mail.gmail.com>
+Subject: Perf issue with UBIFS
+From: Bhavesh Parekh <bhaveshparekh1@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-03-07 at 18:00 +0800, Lei Wen wrote:
-> Hi Artem,
-> 
-> On Mon, Mar 7, 2011 at 5:49 PM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Thu, 2011-03-03 at 11:08 +0800, Lei Wen wrote:
-> >> The previous probe function is some kind of big part.
-> >> This patch seperate the resource allocation to keep the probe process
-> >> more clear than before.
-> >>
-> >> Signed-off-by: Lei Wen <leiwen@marvell.com>
-> >> Signed-off-by: Haojian Zhuang <haojian.zhuang@marvell.com>
-> >
-> > It is a bit confusing that you sent 2 patches 1 and 6. What is in the
-> > middle? Is it save to apply these 2 only?
-> >
-> 
-> I just update the patch 1 and 6, since it add the comment as you mentioned.
+Hi all,
+I am facing performance issue wil using the UBIFS on our platform.
 
-Ah, I see, pushed the series to my l2-mtd-2.6.git, thanks.
+Kernel version 2.6.36
+Nand device info : Micron chip with 2K page size & 128K erase-size
+ECC : ECC is done by the NAnd-controller.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+We have YAFFS2 working on our platform and recently tried UBIFS on our
+platform. YAFF2 Perf is 18MB/s and UBIFS is 11.2 MB/s. Looking at the
+driver log we found that the UBIFS access pattern to the device is
+4096+48 byte read in the main area, which means that there are lots of
+unaligned read. Our platform only support aligned read, so we did an
+optimization by simplying storing the last read page in the buffer
+hopping that on the next read we will be reading the same page and
+gain the perf. Doing this we were able to increase the perf to 14.5
+MB/s
+
+Is there any way we can make UBI to have the access in the aligned way
+only ? Other wise perf will be lesser than YAFFS2.
+
+Further we twick the nand-driver and implemented the page-cache mode
+support in the driver. And change the mtd->writesize to 16K so that
+request from the upper layer comes in 16K. It work fine with the
+YAFFS2 and we see a perf gain of 3-4MB/s but UBIFS request pattern
+remains same 4K +48 byte. Is there anything we can do here so that
+UBIFS respect mtd->writesize
+
+-Thanks
+Bhavesh
