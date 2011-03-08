@@ -1,19 +1,22 @@
-Received: from ra.se.axis.com ([195.60.68.13])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwyJG-0003VD-P6
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 14:54:52 +0000
-Date: Tue, 8 Mar 2011 15:54:45 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Daniel Hobi <daniel.hobi@schmid-telecom.ch>
-Subject: Re: Tool to generate NAN_ECC_SOFT OOB data?
-In-Reply-To: <4D76400D.7070408@schmid-telecom.ch>
-Message-ID: <Pine.LNX.4.64.1103081550510.10128@lnxricardw.se.axis.com>
-References: <4D76400D.7070408@schmid-telecom.ch>
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PwzKp-0004Fa-Vo
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 16:00:32 +0000
+Received: from gallifrey.ext.pengutronix.de
+	([2001:6f8:1178:4:5054:ff:fe8d:eefb] helo=localhost)
+	by metis.ext.pengutronix.de with esmtp (Exim 4.72)
+	(envelope-from <jbe@pengutronix.de>) id 1PwzKm-0003Lg-2H
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 17:00:28 +0100
+From: Juergen Beisert <jbe@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Subject: S3C24xx NFC: Bad oob layout and partial write count violation
+Date: Tue, 8 Mar 2011 16:58:03 +0100
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Frank Haverkamp <haver@vnet.ibm.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <201103081658.03969.jbe@pengutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Tue, 8 Mar 2011, Daniel Hobi wrote:
+when I tried to get the NAND memory on my S3C2440 based mini2440 to work, I 
+noticed the NFC driver uses its own 'nand_ecclayout' for small page NANDs and 
+this layout may overwrites the bad block markers.
+On the other hand this driver sets up the 'ecc.size' to 256 bytes for large 
+page NANDs which ends up with 8 partial writes into one 2048 byte page. This 
+violates the spec of at least my NAND device, which only allows 4 partial 
+writes per page.
+Does anyone know why the setup is done in this way?
 
-> Hi list,
->
-> what is the preferred way to generate ECC data during manufacturing when=
-=20
-> using software ECC (NAND_ECC_SOFT)?
+For both cases I see no hardware restriction. I think for small page NANDs the 
+generic OOB layout can be used, and for large page NANDs the 'ecc.size' 
+should be increased at least to 512 (to be compatible with the S3C2410) to 
+decrease the partial write count. But a change of these settings would break 
+existing installations. How to proceed in this case?
 
-I don't know if there is a preferred way, but one way would be to download=
-=20
-a kernel image + file systems to RAM, boot it as an ordinary system, and
-then use ordinary mtd tools on that system to flash the image. You then=20
-get the benefit of using the same mtd algorithms etc as will be used when=
-=20
-the system is subsequently up and running.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+jbe
