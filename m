@@ -1,26 +1,16 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail.schmid-telecom.ch ([213.173.183.22])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwwDK-00027c-2L
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 12:40:34 +0000
-Received: by wwi17 with SMTP id 17so841309wwi.0
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 08 Mar 2011 04:40:32 -0800 (PST)
-Subject: Re: [PATCH/RFC v2 1/3] Shared BCH ECC library
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-In-Reply-To: <20110308111548.GA6628@parrot.com>
-References: <181c9a1c88b781116615761109cccdf89ea877a1.2296641159.git.ivan.djelic@parrot.com>
-	<20110308111548.GA6628@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 08 Mar 2011 14:39:05 +0200
-Message-ID: <1299587945.2754.32.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	linux-kernel <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+	id 1Pwy6F-0003Km-Hx
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 14:41:24 +0000
+Message-ID: <4D76400D.7070408@schmid-telecom.ch>
+Date: Tue, 08 Mar 2011 15:41:17 +0100
+From: Daniel Hobi <daniel.hobi@schmid-telecom.ch>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Tool to generate NAN_ECC_SOFT OOB data?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Frank Haverkamp <haver@vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,20 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-03-08 at 12:15 +0100, Ivan Djelic wrote:
-> On Mon, Feb 07, 2011 at 02:09:30PM +0000, Ivan Djelic wrote:
-> > Hello,
-> > 
-> > The first patch of this series contains a new generic BCH ECC library.
-> 
-> Hi,
-> 
-> It has been a month since this patch was posted, and I did not receive any
-> comment/review yet.
+Hi list,
 
-I can add it to my l2 tree and may be dwmw2 can merge it then. But could
-you please re-send a version with better Kconfig help messages?
+what is the preferred way to generate ECC data during manufacturing when
+using software ECC (NAND_ECC_SOFT)?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Reading "Can I program NAND via JTAG?" on
+http://www.linux-mtd.infradead.org/faq/nand.html, I assume some JTAG
+tools are capable of generating ECC data during programming. However, I
+would prefer to generate the ECC data beforehand and use a "raw"
+programming mode (still skipping bad blocks). Ideally the OOB/ECC layout
+is defined only once for both the MTD NAND driver and a userspace tool
+to generate image files containing OOB data.
+
+mtd-utils.git once contained such a tool called bin2nand which was
+removed with commit 94a20240 (ubi-utils: remove old ubi-utils) on
+2010-09-28. Does anyone know a replacement tool?
+
+@Frank: a long time ago (2008-02-18), you tried to move bin2nand to the
+top-level directory. Do you still use such a tool?
+
+Best regards,
+Daniel
