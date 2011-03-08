@@ -1,12 +1,12 @@
 Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PwsIz-0008RF-Nq
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 08:30:10 +0000
+	id 1PwsJ1-0008Rl-VT
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 08:30:13 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Anatolij Gustschin <agust@denx.de>
-Subject: [PATCH v3 4/7] UBI: incorporate LEB offset information
-Date: Tue,  8 Mar 2011 10:32:45 +0200
-Message-Id: <1299573168-27760-5-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH v3 5/7] UBIFS: introduce write-buffer size field
+Date: Tue,  8 Mar 2011 10:32:46 +0200
+Message-Id: <1299573168-27760-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1299573168-27760-1-git-send-email-dedekind1@gmail.com>
 References: <1299573168-27760-1-git-send-email-dedekind1@gmail.com>
 Cc: MTD list <linux-mtd@lists.infradead.org>
@@ -21,49 +21,148 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Incorporate the LEB offset information into UBIFS. We'll use this
-information in one of the next patches to figure out what are the
-max. write size offsets relative to the PEB. So this patch is just
-a preparation.
+Currently we assume write-buffer size is always min_io_size. But
+this is about to change and write-buffers may be of variable size.
+Namely, they will be of max_write_size at the beginning, but will
+get smaller when we are approaching the end of LEB.
+
+This is a preparation patch which introduces 'size' field in
+the write-buffer structure which carries the current write-buffer
+size.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/super.c |    1 +
- fs/ubifs/ubifs.h |    3 +++
- 2 files changed, 4 insertions(+), 0 deletions(-)
+ fs/ubifs/io.c    |   28 +++++++++++++++++++---------
+ fs/ubifs/ubifs.h |    2 ++
+ 2 files changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 6a38174..c20c6d2 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -512,6 +512,7 @@ static int init_constants_early(struct ubifs_info *c)
+diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
+index d1fe562..7c2a014 100644
+--- a/fs/ubifs/io.c
++++ b/fs/ubifs/io.c
+@@ -361,7 +361,10 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
+ 	dbg_io("LEB %d:%d, %d bytes, jhead %s",
+ 	       wbuf->lnum, wbuf->offs, wbuf->used, dbg_jhead(wbuf->jhead));
+ 	ubifs_assert(!(wbuf->avail & 7));
+-	ubifs_assert(wbuf->offs + c->min_io_size <= c->leb_size);
++	ubifs_assert(wbuf->offs + wbuf->size <= c->leb_size);
++	ubifs_assert(wbuf->size >= c->min_io_size);
++	ubifs_assert(wbuf->size <= c->max_write_size);
++	ubifs_assert(wbuf->size % c->min_io_size == 0);
+ 	ubifs_assert(!c->ro_media && !c->ro_mount);
  
- 	c->leb_cnt = c->vi.size;
- 	c->leb_size = c->vi.usable_leb_size;
-+	c->leb_start = c->di.leb_start;
- 	c->half_leb_size = c->leb_size / 2;
- 	c->min_io_size = c->di.min_io_size;
- 	c->min_io_shift = fls(c->min_io_size) - 1;
+ 	if (c->ro_error)
+@@ -369,10 +372,10 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
+ 
+ 	ubifs_pad(c, wbuf->buf + wbuf->used, wbuf->avail);
+ 	err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf, wbuf->offs,
+-			    c->min_io_size, wbuf->dtype);
++			    wbuf->size, wbuf->dtype);
+ 	if (err) {
+ 		ubifs_err("cannot write %d bytes to LEB %d:%d",
+-			  c->min_io_size, wbuf->lnum, wbuf->offs);
++			  wbuf->size, wbuf->lnum, wbuf->offs);
+ 		dbg_dump_stack();
+ 		return err;
+ 	}
+@@ -380,8 +383,9 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
+ 	dirt = wbuf->avail;
+ 
+ 	spin_lock(&wbuf->lock);
+-	wbuf->offs += c->min_io_size;
++	wbuf->offs += wbuf->size;
+ 	wbuf->avail = c->min_io_size;
++	wbuf->size = c->min_io_size;
+ 	wbuf->used = 0;
+ 	wbuf->next_ino = 0;
+ 	spin_unlock(&wbuf->lock);
+@@ -425,6 +429,7 @@ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
+ 	wbuf->lnum = lnum;
+ 	wbuf->offs = offs;
+ 	wbuf->avail = c->min_io_size;
++	wbuf->size = c->min_io_size;
+ 	wbuf->used = 0;
+ 	spin_unlock(&wbuf->lock);
+ 	wbuf->dtype = dtype;
+@@ -522,7 +527,10 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 	ubifs_assert(len > 0 && wbuf->lnum >= 0 && wbuf->lnum < c->leb_cnt);
+ 	ubifs_assert(wbuf->offs >= 0 && wbuf->offs % c->min_io_size == 0);
+ 	ubifs_assert(!(wbuf->offs & 7) && wbuf->offs <= c->leb_size);
+-	ubifs_assert(wbuf->avail > 0 && wbuf->avail <= c->min_io_size);
++	ubifs_assert(wbuf->avail > 0 && wbuf->avail <= wbuf->size);
++	ubifs_assert(wbuf->size >= c->min_io_size);
++	ubifs_assert(wbuf->size <= c->max_write_size);
++	ubifs_assert(wbuf->size % c->min_io_size == 0);
+ 	ubifs_assert(mutex_is_locked(&wbuf->io_mutex));
+ 	ubifs_assert(!c->ro_media && !c->ro_mount);
+ 
+@@ -547,7 +555,7 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 			dbg_io("flush jhead %s wbuf to LEB %d:%d",
+ 			       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs);
+ 			err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf,
+-					    wbuf->offs, c->min_io_size,
++					    wbuf->offs, wbuf->size,
+ 					    wbuf->dtype);
+ 			if (err)
+ 				goto out;
+@@ -555,6 +563,7 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 			spin_lock(&wbuf->lock);
+ 			wbuf->offs += c->min_io_size;
+ 			wbuf->avail = c->min_io_size;
++			wbuf->size = c->min_io_size;
+ 			wbuf->used = 0;
+ 			wbuf->next_ino = 0;
+ 			spin_unlock(&wbuf->lock);
+@@ -577,11 +586,11 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 	       dbg_jhead(wbuf->jhead), wbuf->lnum, wbuf->offs);
+ 	memcpy(wbuf->buf + wbuf->used, buf, wbuf->avail);
+ 	err = ubi_leb_write(c->ubi, wbuf->lnum, wbuf->buf, wbuf->offs,
+-			    c->min_io_size, wbuf->dtype);
++			    wbuf->size, wbuf->dtype);
+ 	if (err)
+ 		goto out;
+ 
+-	offs = wbuf->offs + c->min_io_size;
++	offs = wbuf->offs + wbuf->size;
+ 	len -= wbuf->avail;
+ 	aligned_len -= wbuf->avail;
+ 	written = wbuf->avail;
+@@ -618,6 +627,7 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
+ 	wbuf->offs = offs;
+ 	wbuf->used = aligned_len;
+ 	wbuf->avail = c->min_io_size - aligned_len;
++	wbuf->size = c->min_io_size;
+ 	wbuf->next_ino = 0;
+ 	spin_unlock(&wbuf->lock);
+ 
+@@ -855,7 +865,7 @@ int ubifs_wbuf_init(struct ubifs_info *c, struct ubifs_wbuf *wbuf)
+ 
+ 	wbuf->used = 0;
+ 	wbuf->lnum = wbuf->offs = -1;
+-	wbuf->avail = c->min_io_size;
++	wbuf->avail = wbuf->size = c->min_io_size;
+ 	wbuf->dtype = UBI_UNKNOWN;
+ 	wbuf->sync_callback = NULL;
+ 	mutex_init(&wbuf->io_mutex);
 diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 8b51949..942c1d3 100644
+index 942c1d3..3624950 100644
 --- a/fs/ubifs/ubifs.h
 +++ b/fs/ubifs/ubifs.h
-@@ -1028,6 +1028,8 @@ struct ubifs_debug_info;
-  *                  time (MTD write buffer size)
-  * @max_write_shift: number of bits in @max_write_size minus one
-  * @leb_size: logical eraseblock size in bytes
-+ * @leb_start: starting offset of logical eraseblocks within physical
-+ *             eraseblocks
-  * @half_leb_size: half LEB size
-  * @idx_leb_size: how many bytes of an LEB are effectively available when it is
-  *                used to store indexing nodes (@leb_size - @max_idx_node_sz)
-@@ -1276,6 +1278,7 @@ struct ubifs_info {
- 	int max_write_size;
- 	int max_write_shift;
- 	int leb_size;
-+	int leb_start;
- 	int half_leb_size;
- 	int idx_leb_size;
- 	int leb_cnt;
+@@ -646,6 +646,7 @@ typedef int (*ubifs_lpt_scan_callback)(struct ubifs_info *c,
+  * @offs: write-buffer offset in this logical eraseblock
+  * @avail: number of bytes available in the write-buffer
+  * @used:  number of used bytes in the write-buffer
++ * @size: write-buffer size (in [@c->min_io_size, @c->max_write_size] range)
+  * @dtype: type of data stored in this LEB (%UBI_LONGTERM, %UBI_SHORTTERM,
+  * %UBI_UNKNOWN)
+  * @jhead: journal head the mutex belongs to (note, needed only to shut lockdep
+@@ -680,6 +681,7 @@ struct ubifs_wbuf {
+ 	int offs;
+ 	int avail;
+ 	int used;
++	int size;
+ 	int dtype;
+ 	int jhead;
+ 	int (*sync_callback)(struct ubifs_info *c, int lnum, int free, int pad);
 -- 
 1.7.2.3
