@@ -1,20 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pwuvf-0001NJ-Kp
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 11:18:16 +0000
-Date: Tue, 8 Mar 2011 12:15:48 +0100
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH/RFC v2 1/3] Shared BCH ECC library
-Message-ID: <20110308111548.GA6628@parrot.com>
-References: <181c9a1c88b781116615761109cccdf89ea877a1.2296641159.git.ivan.djelic@parrot.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <181c9a1c88b781116615761109cccdf89ea877a1.2296641159.git.ivan.djelic@parrot.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pwvh3-0001qS-HG
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 12:07:14 +0000
+Received: by wwi17 with SMTP id 17so803867wwi.0
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 Mar 2011 04:07:11 -0800 (PST)
+Subject: Re: [PATCH] nandwrite: add only write oob option
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Lei Wen <leiwen@marvell.com>
+In-Reply-To: <1299491086-27109-1-git-send-email-leiwen@marvell.com>
+References: <1299491086-27109-1-git-send-email-leiwen@marvell.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 08 Mar 2011 14:05:45 +0200
+Message-ID: <1299585945.2754.19.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Feb 07, 2011 at 02:09:30PM +0000, Ivan Djelic wrote:
-> Hello,
+On Mon, 2011-03-07 at 01:44 -0800, Lei Wen wrote:
+> Write only oob part goes different path in nand_base.c, it is better
+> to have userland program so that we could easy debug this path when
+> the write only oob fail like the mtd_oobtest in mtd_test suit.
 > 
-> The first patch of this series contains a new generic BCH ECC library.
+> Signed-off-by: Lei Wen <leiwen@marvell.com>
 
-Hi,
+Pushed, thanks.
 
-It has been a month since this patch was posted, and I did not receive any
-comment/review yet.
-
-Could anyone give me any feedback, or maybe point me to people I should sent
-the patch to ? A few MTD patches that I submitted depend on this library.
-
-Also cc-ing Thomas Gleixner, as he is the author of the Reed-Solomon shared
-library.
-
-Thanks!
-
---
-Ivan
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
