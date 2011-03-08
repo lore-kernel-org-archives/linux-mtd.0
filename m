@@ -1,18 +1,22 @@
-Message-ID: <4D766A2F.9080001@codeaurora.org>
-Date: Tue, 08 Mar 2011 10:41:03 -0700
-From: Murali Nalajala <mnalajal@codeaurora.org>
+Received: from www.tglx.de ([62.245.132.106])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Px49c-0006u0-MY
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 21:09:17 +0000
+Date: Tue, 8 Mar 2011 22:08:36 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH/RFC v2 1/3] Shared BCH ECC library
+In-Reply-To: <1299587945.2754.32.camel@localhost>
+Message-ID: <alpine.LFD.2.00.1103082206270.2787@localhost6.localdomain6>
+References: <181c9a1c88b781116615761109cccdf89ea877a1.2296641159.git.ivan.djelic@parrot.com>
+	<20110308111548.GA6628@parrot.com>
+	<1299587945.2754.32.camel@localhost>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH V2 1/2] mtd: nand: Allow NAND chip ids to be included
-	standalone.
-References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-	<1299570622.2754.4.camel@localhost>
-In-Reply-To: <1299570622.2754.4.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mtd@lists.infradead.org, Dima Zavin <dima@android.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Ivan Djelic <ivan.djelic@parrot.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/8/2011 12:50 AM, Artem Bityutskiy wrote:
-> On Tue, 2011-03-08 at 05:38 +0530, Murali Nalajala wrote:
->> Lets non-standard NAND drivers take advantage of known NAND
->> chip information.
->>
->> The initial development of msm nand driver, driver uses the supported
->> NAND devices information as a hardcoded table. Remove the existing
->> hardcoded supported flash device table and read the flash device
->> information from the flash id table which are part of the mtd subsystem.
->
-> Why this initial version should be upstream? Why wouldn't you make it
-> "standard" first?
->
+On Tue, 8 Mar 2011, Artem Bityutskiy wrote:
 
-Currently we are not fully using the MTD nand subsystem. That's the 
-intention author has introduced "non-standard" here!!!
+> On Tue, 2011-03-08 at 12:15 +0100, Ivan Djelic wrote:
+> > On Mon, Feb 07, 2011 at 02:09:30PM +0000, Ivan Djelic wrote:
+> > > Hello,
+> > > 
+> > > The first patch of this series contains a new generic BCH ECC library.
+> > 
+> > Hi,
+> > 
+> > It has been a month since this patch was posted, and I did not receive any
+> > comment/review yet.
+> 
+> I can add it to my l2 tree and may be dwmw2 can merge it then. But could
+> you please re-send a version with better Kconfig help messages?
+
+I had a quick look. The code looks pretty clean and well documented,
+though I did not dig into the details. There are a few comments
+"lifted from ...", I hope the code which is copied does not cause any
+license issues.
 
 Thanks,
-Murali N
 
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+	tglx
