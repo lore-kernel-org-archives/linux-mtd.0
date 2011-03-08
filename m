@@ -1,18 +1,13 @@
-Subject: Re: [PATCH V2 1/2] mtd: nand: Allow NAND chip ids to be included
-	standalone.
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PwsIs-0008Pu-BJ
+	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 08:30:02 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Murali Nalajala <mnalajal@codeaurora.org>
-In-Reply-To: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 08 Mar 2011 09:50:22 +0200
-Message-ID: <1299570622.2754.4.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mtd@lists.infradead.org, Dima Zavin <dima@android.com>
-Reply-To: dedekind1@gmail.com
+To: Anatolij Gustschin <agust@denx.de>
+Subject: [PATCH v3 0/7] UBIFS: fix recovery on CFI NOR
+Date: Tue,  8 Mar 2011 10:32:41 +0200
+Message-Id: <1299573168-27760-1-git-send-email-dedekind1@gmail.com>
+Cc: MTD list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +17,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-03-08 at 05:38 +0530, Murali Nalajala wrote:
-> Lets non-standard NAND drivers take advantage of known NAND
-> chip information.
-> 
-> The initial development of msm nand driver, driver uses the supported
-> NAND devices information as a hardcoded table. Remove the existing
-> hardcoded supported flash device table and read the flash device
-> information from the flash id table which are part of the mtd subsystem.
+Hi,
 
-Why this initial version should be upstream? Why wouldn't you make it
-"standard" first?
+here is the third version of the patches. The differences to v2 are
+as follows.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1. UBI now exports the LEB start offset. UBIFS uses this to figure out
+   whether the LEB starts at the max_write_size-aligned boundary or
+   not.
+2. The bugfix in recovery.c is included.
+
+I've also pushed these patches to the master and linux-next branches of
+the ubifs-2.6.git tree, and the plan is to merge them upstream.
+
+Note, the "mtd: cfi: fix writebufsize initialization" patch from Anatolij,
+which fixes mtd->writebufsize when there is interleaving and which is also
+necessary to fix UBIFS recovery on CFI NOR, should be merged upstream via
+the MTD tree, and it is currently sitting in my l2-mtd-2.6.git tree.
+
+Artem.
