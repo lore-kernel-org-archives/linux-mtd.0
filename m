@@ -1,22 +1,22 @@
-Received: from www.tglx.de ([62.245.132.106])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Px49c-0006u0-MY
-	for linux-mtd@lists.infradead.org; Tue, 08 Mar 2011 21:09:17 +0000
-Date: Tue, 8 Mar 2011 22:08:36 +0100 (CET)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH/RFC v2 1/3] Shared BCH ECC library
-In-Reply-To: <1299587945.2754.32.camel@localhost>
-Message-ID: <alpine.LFD.2.00.1103082206270.2787@localhost6.localdomain6>
-References: <181c9a1c88b781116615761109cccdf89ea877a1.2296641159.git.ivan.djelic@parrot.com>
-	<20110308111548.GA6628@parrot.com>
-	<1299587945.2754.32.camel@localhost>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Ivan Djelic <ivan.djelic@parrot.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel <linux-kernel@vger.kernel.org>
+	id 1PxERS-0002DF-R2
+	for linux-mtd@lists.infradead.org; Wed, 09 Mar 2011 08:08:23 +0000
+Received: by ewy3 with SMTP id 3so75783ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 09 Mar 2011 00:08:20 -0800 (PST)
+Subject: Re: Tool to generate NAN_ECC_SOFT OOB data?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Daniel Hobi <daniel.hobi@schmid-telecom.ch>
+In-Reply-To: <4D76400D.7070408@schmid-telecom.ch>
+References: <4D76400D.7070408@schmid-telecom.ch>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 09 Mar 2011 10:06:53 +0200
+Message-ID: <1299658013.2741.0.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Frank Haverkamp <haver@vnet.ibm.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 Mar 2011, Artem Bityutskiy wrote:
-
-> On Tue, 2011-03-08 at 12:15 +0100, Ivan Djelic wrote:
-> > On Mon, Feb 07, 2011 at 02:09:30PM +0000, Ivan Djelic wrote:
-> > > Hello,
-> > > 
-> > > The first patch of this series contains a new generic BCH ECC library.
-> > 
-> > Hi,
-> > 
-> > It has been a month since this patch was posted, and I did not receive any
-> > comment/review yet.
+On Tue, 2011-03-08 at 15:41 +0100, Daniel Hobi wrote:
+> mtd-utils.git once contained such a tool called bin2nand which was
+> removed with commit 94a20240 (ubi-utils: remove old ubi-utils) on
+> 2010-09-28. Does anyone know a replacement tool?
 > 
-> I can add it to my l2 tree and may be dwmw2 can merge it then. But could
-> you please re-send a version with better Kconfig help messages?
+> @Frank: a long time ago (2008-02-18), you tried to move bin2nand to the
+> top-level directory. Do you still use such a tool?
 
-I had a quick look. The code looks pretty clean and well documented,
-though I did not dig into the details. There are a few comments
-"lifted from ...", I hope the code which is copied does not cause any
-license issues.
+Daniel, the best you can do is to pick that utility, massage it, and
+submit a patch!
 
-Thanks,
-
-	tglx
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
