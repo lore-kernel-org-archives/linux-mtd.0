@@ -1,21 +1,25 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PxERS-0002DF-R2
-	for linux-mtd@lists.infradead.org; Wed, 09 Mar 2011 08:08:23 +0000
-Received: by ewy3 with SMTP id 3so75783ewy.36
+	id 1PxETQ-0002EH-A5
+	for linux-mtd@lists.infradead.org; Wed, 09 Mar 2011 08:10:24 +0000
+Received: by ewy3 with SMTP id 3so76149ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 09 Mar 2011 00:08:20 -0800 (PST)
-Subject: Re: Tool to generate NAN_ECC_SOFT OOB data?
+	Wed, 09 Mar 2011 00:10:23 -0800 (PST)
+Subject: Re: [PATCH 3/3] mtd: Add mtdswap block driver
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daniel Hobi <daniel.hobi@schmid-telecom.ch>
-In-Reply-To: <4D76400D.7070408@schmid-telecom.ch>
-References: <4D76400D.7070408@schmid-telecom.ch>
+To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+In-Reply-To: <1298631829.2798.59.camel@localhost>
+References: <1297692971-7399-1-git-send-email-jarkko.lavinen@nokia.com>
+	<1297692971-7399-4-git-send-email-jarkko.lavinen@nokia.com>
+	<1298038470.5623.50.camel@localhost>
+	<20110222162143.GA13529@angel.research.nokia.com>
+	<1298631829.2798.59.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 09 Mar 2011 10:06:53 +0200
-Message-ID: <1299658013.2741.0.camel@localhost>
+Date: Wed, 09 Mar 2011 10:08:54 +0200
+Message-ID: <1299658134.2741.1.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Frank Haverkamp <haver@vnet.ibm.com>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,16 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-03-08 at 15:41 +0100, Daniel Hobi wrote:
-> mtd-utils.git once contained such a tool called bin2nand which was
-> removed with commit 94a20240 (ubi-utils: remove old ubi-utils) on
-> 2010-09-28. Does anyone know a replacement tool?
-> 
-> @Frank: a long time ago (2008-02-18), you tried to move bin2nand to the
-> top-level directory. Do you still use such a tool?
+Jarkko,
 
-Daniel, the best you can do is to pick that utility, massage it, and
-submit a patch!
+On Fri, 2011-02-25 at 13:03 +0200, Artem Bityutskiy wrote:
+> > If I remove the config option it would then mean strict handling
+> > only.
+> 
+> Please, make the option to be a module parameter.
+
+Is an updated patch coming?
 
 -- 
 Best Regards,
