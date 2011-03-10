@@ -1,23 +1,14 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PxZwl-0002dg-3i
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2011 07:06:08 +0000
-Received: by ewy3 with SMTP id 3so411545ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 09 Mar 2011 23:06:05 -0800 (PST)
-Subject: Re: UBIFS defaults?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Hunter Adrian (Nokia-MS/Helsinki)" <adrian.hunter@nokia.com>
-In-Reply-To: <1299675687.2741.14.camel@localhost>
-References: <1299675687.2741.14.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 10 Mar 2011 09:04:36 +0200
-Message-ID: <1299740676.2766.0.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Bhavesh Parekh <bhaveshparekh1@gmail.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from proxy.dresearch.de ([87.193.137.100] helo=mail.dresearch.de)
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1PxasA-0002vP-Ai
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2011 08:05:27 +0000
+From: Steffen Sledz <sledz@dresearch.de>
+To: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] cfi: add support for AMIC flashes (e.g. A29L160AT)
+Date: Thu, 10 Mar 2011 09:05:12 +0100
+Message-Id: <1299744312-6291-1-git-send-email-sledz@dresearch.de>
+Cc: Steffen Sledz <sledz@dresearch.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-03-09 at 15:01 +0200, Artem Bityutskiy wrote:
-> Hi,
-> 
-> currently, UBIFS checks data CRC on read by default, i.e., the
-> 'chk_data_crc' mount option is the default one. This makes people who
-> apply benchmarks less happy, because they just use the defaults.
-> 
-> Should we make the 'no_chk_data_crc' mount option to be the default
-> instead? The rationale is that people who do care to read the
-> documentation can switch to 'chk_data_crc' if they need, and people who
-> do quick UBIFS evaluation will end up with faster read speed by default.
-> 
-> See this section for more information about the 'no_chk_data_crc' mount
-> option: http://www.linux-mtd.infradead.org/doc/ubifs.html#L_checksumming
-> 
-> Would be nice to hear UBIFS users' opinion.
+Signed-off-by: Steffen Sledz <sledz@dresearch.de>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    1 +
+ include/linux/mtd/cfi.h             |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
 
-I'm  going to change the default if no one objects.
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index f072fcf..8338d33 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -349,6 +349,7 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri },
+ #ifdef AMD_BOOTLOC_BUG
+ 	{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock },
++	{ CFI_MFR_AMIC, CFI_ID_ANY, fixup_amd_bootblock },
+ 	{ CFI_MFR_MACRONIX, CFI_ID_ANY, fixup_amd_bootblock },
+ #endif
+ 	{ CFI_MFR_AMD, 0x0050, fixup_use_secsi },
+diff --git a/include/linux/mtd/cfi.h b/include/linux/mtd/cfi.h
+index a9baee6..0d823f2 100644
+--- a/include/linux/mtd/cfi.h
++++ b/include/linux/mtd/cfi.h
+@@ -535,6 +535,7 @@ struct cfi_fixup {
+ #define CFI_MFR_CONTINUATION	0x007F
+ 
+ #define CFI_MFR_AMD		0x0001
++#define CFI_MFR_AMIC		0x0037
+ #define CFI_MFR_ATMEL		0x001F
+ #define CFI_MFR_EON		0x001C
+ #define CFI_MFR_FUJITSU		0x0004
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.1
