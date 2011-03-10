@@ -1,20 +1,19 @@
-Received: from tango.tkos.co.il ([62.219.50.35])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PxOxq-0007BX-Kq
-	for linux-mtd@lists.infradead.org; Wed, 09 Mar 2011 19:22:33 +0000
-Date: Wed, 9 Mar 2011 21:22:10 +0200
-From: Baruch Siach <baruch@tkos.co.il>
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [RFC PATCH] mtd: mxc_nand: fix OOB corruption when page size > 2k
-Message-ID: <20110309192210.GA3128@tarshish>
-References: <c3d5dae673b532b4a4dbdb8edc6626aa49d7a626.1299679613.git.baruch@tkos.co.il>
-	<20110309143845.GZ29521@pengutronix.de>
+	id 1PxYa2-0002Ji-Jy
+	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2011 05:38:35 +0000
+Received: by iyf40 with SMTP id 40so1361353iyf.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 09 Mar 2011 21:38:33 -0800 (PST)
+Date: Thu, 10 Mar 2011 13:42:30 +0800
+From: Xiaochen Wang <wangxiaochen0@gmail.com>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] check kmalloc return value in mtd/sm_rtl.c
+Message-ID: <20110310054230.GA6022@chii>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20110309143845.GZ29521@pengutronix.de>
-Cc: linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>
+Reply-To: Xiaochen Wang <wangxiaochen0@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,100 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sascha,
+Description:
+Because malloc/kzalloc may fail, we should check kmalloc/kzalloc return value 
+ in sm_create_sysfs_attributes(), mtd/sm_rtl.c and do error handling.
+Meanwhile, we should check sm_create_sysfs_attributes return value.
 
-On Wed, Mar 09, 2011 at 03:38:45PM +0100, Sascha Hauer wrote:
-> On Wed, Mar 09, 2011 at 04:12:20PM +0200, Baruch Siach wrote:
-> > When page size is 4k, ecc.total is set to 8*9, and this causes
-> > nand_write_page_hwecc() to read past the initialized part of the eccpos array,
-> > which corrupts chip->oob_poi with bogus values from ecc_calc.
-> > 
-> > Fix this by creating a proper nand_ecclayout for 4k flashes.
-> > 
-> > Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-> > ---
-> > 
-> > I'm not sure if this is the right fix. The proposed nandv2_hw_eccoob_4k is just 
-> > a natural extension of nandv2_hw_eccoob_largepage. However, I'm not convinced 
-> > that this actually matches the hardware behaviour. Anyway, this fixed a real 
-> > OOB corruption in BBT, which is the only place I know of where the OOB area is 
-> > actually used.
-> 
-> Does this work on barebox aswell?
+Signed-off-by: Xiaochen Wang <wangxiaochen0@gmail.com>
+---
+ drivers/mtd/sm_ftl.c |   18 ++++++++++++++++++
+ 1 files changed, 18 insertions(+), 0 deletions(-)
 
-I haven't tested barebox yet. The trouble is that the eccpos field in struct 
-nand_ecclayout of barebox is still limited to 64 < 8*9. This has changed in 
-Linux since cc26c3cd (mtd: nand: expand nand_ecc_layout, deprecate ioctl 
-ECCGETLAYOUTmtd: nand: expand nand_ecc_layout, deprecate ioctl ECCGETLAYOUT).  
-That is why I had to upgrade .38 for this fix. The barebox NAND code needs an 
-update if we are to port this fix, assuming that this is the correct fix.
-
-> If yes you could verify the oob layout
-> by looking at md /dev/nand0_oob and verify that the ecc postitions
-> specified in your patch match the ecc positions written from the
-> hardware.
-
-The current nandv2_hw_eccoob_largepage seem to match the documentation of 
-neither i.MX25 (RM §36.3.1, table 36-4), nor i.MX51 (RM §45.6.1, tables 45-8 
-and 45-9). This makes me unsure about my proposed fix. What is the source of 
-information for the nandv2_hw_eccoob_largepage layout?
-
-baruch
-
-> > Comments are welcome.
-> > 
-> >  drivers/mtd/nand/mxc_nand.c |   27 +++++++++++++++++++++++++++
-> >  1 files changed, 27 insertions(+), 0 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-> > index ef932ba..0fc80db 100644
-> > --- a/drivers/mtd/nand/mxc_nand.c
-> > +++ b/drivers/mtd/nand/mxc_nand.c
-> > @@ -211,6 +211,31 @@ static struct nand_ecclayout nandv2_hw_eccoob_largepage = {
-> >  	}
-> >  };
-> >  
-> > +/* OOB description for 4096 byte pages with 128 byte OOB */
-> > +static struct nand_ecclayout nandv2_hw_eccoob_4k = {
-> > +	.eccbytes = 8 * 9,
-> > +	.eccpos = {
-> > +		7,  8,  9, 10, 11, 12, 13, 14, 15,
-> > +		23, 24, 25, 26, 27, 28, 29, 30, 31,
-> > +		39, 40, 41, 42, 43, 44, 45, 46, 47,
-> > +		55, 56, 57, 58, 59, 60, 61, 62, 63,
-> > +		71, 72, 73, 74, 75, 76, 77, 78, 79,
-> > +		87, 88, 89, 90, 91, 92, 93, 94, 95,
-> > +		103, 104, 105, 106, 107, 108, 109, 110, 111,
-> > +		119, 120, 121, 122, 123, 124, 125, 126, 127,
-> > +	},
-> > +	.oobfree = {
-> > +		{.offset = 2, .length = 4},
-> > +		{.offset = 16, .length = 7},
-> > +		{.offset = 32, .length = 7},
-> > +		{.offset = 48, .length = 7},
-> > +		{.offset = 64, .length = 7},
-> > +		{.offset = 80, .length = 7},
-> > +		{.offset = 96, .length = 7},
-> > +		{.offset = 112, .length = 7},
-> > +	}
-> > +};
-> > +
-> >  #ifdef CONFIG_MTD_PARTITIONS
-> >  static const char *part_probes[] = { "RedBoot", "cmdlinepart", NULL };
-> >  #endif
-> > @@ -1186,6 +1211,8 @@ static int __init mxcnd_probe(struct platform_device *pdev)
-> >  
-> >  	if (mtd->writesize == 2048)
-> >  		this->ecc.layout = oob_largepage;
-> > +	if (nfc_is_v21() && mtd->writesize == 4096)
-> > +		this->ecc.layout = &nandv2_hw_eccoob_4k;
-> >  
-> >  	/* second phase scan */
-> >  	if (nand_scan_tail(mtd)) {
-> > -- 
-> > 1.7.2.3
-
+diff --git a/drivers/mtd/sm_ftl.c b/drivers/mtd/sm_ftl.c
+index ac0d6a8..02bdfe4 100644
+--- a/drivers/mtd/sm_ftl.c
++++ b/drivers/mtd/sm_ftl.c
+@@ -64,12 +64,16 @@ struct attribute_group *sm_create_sysfs_attributes(struct sm_ftl *ftl)
+ 					SM_SMALL_PAGE - SM_CIS_VENDOR_OFFSET);
+ 
+ 	char *vendor = kmalloc(vendor_len, GFP_KERNEL);
++	if (!vendor)
++		goto error1;
+ 	memcpy(vendor, ftl->cis_buffer + SM_CIS_VENDOR_OFFSET, vendor_len);
+ 	vendor[vendor_len] = 0;
+ 
+ 	/* Initialize sysfs attributes */
+ 	vendor_attribute =
+ 		kzalloc(sizeof(struct sm_sysfs_attribute), GFP_KERNEL);
++	if (!vendor_attribute)
++		goto error2;
+ 
+ 	sysfs_attr_init(&vendor_attribute->dev_attr.attr);
+ 
+@@ -83,12 +87,24 @@ struct attribute_group *sm_create_sysfs_attributes(struct sm_ftl *ftl)
+ 	/* Create array of pointers to the attributes */
+ 	attributes = kzalloc(sizeof(struct attribute *) * (NUM_ATTRIBUTES + 1),
+ 								GFP_KERNEL);
++	if (!attributes)
++		got error3;
+ 	attributes[0] = &vendor_attribute->dev_attr.attr;
+ 
+ 	/* Finally create the attribute group */
+ 	attr_group = kzalloc(sizeof(struct attribute_group), GFP_KERNEL);
++	if (!attr_group)
++		goto error4;
+ 	attr_group->attrs = attributes;
+ 	return attr_group;
++error4:
++	kfree(attributes);
++error3:
++	kfree(vendor_attribute);
++error2:
++	kfree(vendor);
++error1:
++	return NULL;
+ }
+ 
+ void sm_delete_sysfs_attributes(struct sm_ftl *ftl)
+@@ -1178,6 +1194,8 @@ static void sm_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ 	}
+ 
+ 	ftl->disk_attributes = sm_create_sysfs_attributes(ftl);
++	if (!ftl->disk_attributes)
++		goto error6;
+ 	trans->disk_attributes = ftl->disk_attributes;
+ 
+ 	sm_printk("Found %d MiB xD/SmartMedia FTL on mtd%d",
 -- 
-                                                     ~. .~   Tk Open Systems
-=}------------------------------------------------ooO--U--Ooo------------{=
-   - baruch@tkos.co.il - tel: +972.2.679.5364, http://www.tkos.co.il -
+1.7.2.3
