@@ -1,29 +1,23 @@
-Received: from mika.eatserver.nl ([195.20.9.75])
-	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pxxfb-0004Pi-Kk
-	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2011 08:26:00 +0000
-Received: from [195.242.97.150] (qore.networks.above.net [195.242.97.150] (may
-	be forged)) (authenticated bits=0)
-	by mika.eatserver.nl (8.13.8/8.13.8) with ESMTP id p2B8Prt8004287
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Mar 2011 09:25:53 +0100
-Received: from localhost (localhost.localhost [127.0.0.1])
-	by router38.aimvalley.nl (Postfix) with ESMTP id 38797818103
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pxxyd-0005CI-UQ
+	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2011 08:45:40 +0000
+Received: by wwc33 with SMTP id 33so2018927wwc.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Mar 2011 09:25:53 +0100 (CET)
-Received: from mail3.aimsys.nl (mail.aimsys.nl [10.10.0.114])
-	by router38.aimvalley.nl (Postfix) with ESMTP id BDE54818102
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Mar 2011 09:25:52 +0100 (CET)
-Message-ID: <4D79DC90.6070600@aimvalley.nl>
-Date: Fri, 11 Mar 2011 09:25:52 +0100
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] Handling of errors for AMD NOR (cfi_cmdset_0002) chips
-References: <4D797E23.6070409@emcraft.com>
-In-Reply-To: <4D797E23.6070409@emcraft.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	Fri, 11 Mar 2011 00:45:37 -0800 (PST)
+Subject: Re: [PATCH] check kmalloc return value in mtd/sm_rtl.c
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Xiaochen Wang <wangxiaochen0@gmail.com>
+In-Reply-To: <20110310143139.GA15778@chii>
+References: <20110310054230.GA6022@chii>
+	<1299763298.6676.12.camel@localhost>  <20110310143139.GA15778@chii>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 11 Mar 2011 10:44:05 +0200
+Message-ID: <1299833045.2732.6.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,20 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/11/11 02:42, Ilya Yanok wrote:
-> Hello,
->
-> current cfi_cmdset_0002.c code does not implement handling of error statuses reported by the chip during write/erase and just waits for a software timeout instead.
->
-> We think that proper handling of these conditions could help us to debug the issue we have with the NOR flash and UBIFS so we'd like to implement such handling.
->
-> I've tried to do this, please see my initial patch below. For now errors are just reported via pr_debug().
->
-> I'd like to hear any comments. Am I doing things right or not? Maybe I'm missing something?
->
+On Thu, 2011-03-10 at 22:31 +0800, Xiaochen Wang wrote:
+> Hi, Artem
+> > > +	if (!attributes)
+> > > +		got error3;
+> I'm so sorry for that:(
+> > Please, compile-check patches before sending them out :-)
+> Thanks for your advice, I'll do it.
+> 
+> The new patch , which has been compile-checked, is here:
+> 
+> Description:
+> Because malloc/kzalloc may fail, we should check kmalloc/kzalloc return value 
+>  in sm_create_sysfs_attributes(), mtd/sm_rtl.c and do error handling.
+> Meanwhile, we should check sm_create_sysfs_attributes return value.
+> 
+> Signed-off-by: Xiaochen Wang <wangxiaochen0@gmail.com>
 
+Pushed to l2-mtd-2.6.git, thanks.
 
-What issue you have with NOR flash and UBIFS ?
-
----
-N. van Bolhuis.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
