@@ -1,23 +1,19 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from ocean.emcraft.com ([213.221.7.182])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PxgsK-0006dP-Ae
-	for linux-mtd@lists.infradead.org; Thu, 10 Mar 2011 14:30:01 +0000
-Received: by ewy3 with SMTP id 3so610054ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Mar 2011 06:29:58 -0800 (PST)
-Subject: Re: UBIFS defaults?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Hunter Adrian (Nokia-MS/Helsinki)" <adrian.hunter@nokia.com>
-In-Reply-To: <1299675687.2741.14.camel@localhost>
-References: <1299675687.2741.14.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 10 Mar 2011 16:28:15 +0200
-Message-ID: <1299767295.6676.26.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Bhavesh Parekh <bhaveshparekh1@gmail.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	id 1PxrNe-0003fH-9z
+	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2011 01:43:03 +0000
+Received: from localhost ([127.0.0.1] helo=[IPv6:::1])
+	by ocean.emcraft.com with esmtp (Exim 4.71)
+	(envelope-from <yanok@emcraft.com>) id 1PxrNZ-0002jf-Mb
+	for linux-mtd@lists.infradead.org; Fri, 11 Mar 2011 04:42:57 +0300
+Message-ID: <4D797E23.6070409@emcraft.com>
+Date: Fri, 11 Mar 2011 04:42:59 +0300
+From: Ilya Yanok <yanok@emcraft.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [RFC] Handling of errors for AMD NOR (cfi_cmdset_0002) chips
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,85 +23,135 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-03-09 at 15:01 +0200, Artem Bityutskiy wrote:
-> Hi,
-> 
-> currently, UBIFS checks data CRC on read by default, i.e., the
-> 'chk_data_crc' mount option is the default one. This makes people who
-> apply benchmarks less happy, because they just use the defaults.
-> 
-> Should we make the 'no_chk_data_crc' mount option to be the default
-> instead? The rationale is that people who do care to read the
-> documentation can switch to 'chk_data_crc' if they need, and people who
-> do quick UBIFS evaluation will end up with faster read speed by default.
-> 
-> See this section for more information about the 'no_chk_data_crc' mount
-> option: http://www.linux-mtd.infradead.org/doc/ubifs.html#L_checksumming
-> 
-> Would be nice to hear UBIFS users' opinion.
+Hello,
 
+current cfi_cmdset_0002.c code does not implement handling of error 
+statuses reported by the chip during write/erase and just waits for a 
+software timeout instead.
 
->From f7a2d4a6dea3fcec4612aa81baabf8aae0040896 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Thu, 10 Mar 2011 16:26:32 +0200
-Subject: [PATCH] UBIFS: do not check data crc by default
+We think that proper handling of these conditions could help us to debug 
+the issue we have with the NOR flash and UBIFS so we'd like to implement 
+such handling.
 
-Change the default UBIFS behavior WRT data CRC checking. Currently,
-UBIFS checks data CRC when reading, which slows it down quite a bit,
-and this is the default option. However, it looks like in average
-user does not need this feature and would prefer faster read speed
-over extra reliability. And this seems to be de-facto standard that
-file-systems do not check data CRC every time they read from the
-media.
+I've tried to do this, please see my initial patch below. For now errors 
+are just reported via pr_debug().
 
-Thus, make UBIFS default behavior so that it does not check data
-CRC. This corresponds to the no_chk_data_crc mount option. Those users
-who need extra protection can always enable it using the chk_data_crc
-option.
+I'd like to hear any comments. Am I doing things right or not? Maybe I'm 
+missing something?
 
-Please, read more information about this feature here:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_checksumming
+Here is the patch:
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- Documentation/filesystems/ubifs.txt |    4 ++--
- fs/ubifs/super.c                    |    1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c 
+b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 156aaa6..804cfc9 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -507,6 +507,78 @@ static struct mtd_info *cfi_amdstd_setup(struct 
+mtd_info *mtd)
+         return NULL;
+  }
 
-diff --git a/Documentation/filesystems/ubifs.txt b/Documentation/filesystems/ubifs.txt
-index 12fedb7..d7b13b0 100644
---- a/Documentation/filesystems/ubifs.txt
-+++ b/Documentation/filesystems/ubifs.txt
-@@ -82,12 +82,12 @@ Mount options
- bulk_read		read more in one go to take advantage of flash
- 			media that read faster sequentially
- no_bulk_read (*)	do not bulk-read
--no_chk_data_crc		skip checking of CRCs on data nodes in order to
-+no_chk_data_crc (*)	skip checking of CRCs on data nodes in order to
- 			improve read performance. Use this option only
- 			if the flash media is highly reliable. The effect
- 			of this option is that corruption of the contents
- 			of a file can go unnoticed.
--chk_data_crc (*)	do not skip checking CRCs on data nodes
-+chk_data_crc		do not skip checking CRCs on data nodes
- compr=none              override default compressor and set it to "none"
- compr=lzo               override default compressor and set it to "lzo"
- compr=zlib              override default compressor and set it to "zlib"
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index b722ebc..e5dc1e1 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1985,6 +1985,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 	INIT_LIST_HEAD(&c->old_buds);
- 	INIT_LIST_HEAD(&c->orph_list);
- 	INIT_LIST_HEAD(&c->orph_new);
-+	c->no_chk_data_crc = 1;
- 
- 	c->vfs_sb = sb;
- 	c->highest_inum = UBIFS_FIRST_INO;
--- 
-1.7.2.3
++static u32 get_chip_status(struct map_info *map, map_word val, int n)
++{
++       struct cfi_private *cfi = map->fldrv_priv;
++       int wordwidth, words_per_bus, chip_mode, chips_per_word;
++       unsigned long onestat;
++       u32 res;
++
++       BUG_ON(n >= cfi_interleave(cfi));
++
++       if (map_bankwidth_is_large(map)) {
++               wordwidth = sizeof(unsigned long);
++               words_per_bus = (map_bankwidth(map)) / wordwidth; // 
+i.e. normally 1
++       } else {
++               wordwidth = map_bankwidth(map);
++               words_per_bus = 1;
++       }
++
++       chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
++       chips_per_word = wordwidth * cfi_interleave(cfi) / 
+map_bankwidth(map);
++
++       onestat = val.x[n/chips_per_word];
++       onestat >>= chip_mode * 8 * (n % chips_per_word);
++
++       res = (u32) onestat;
++
++       /* Last, determine what the bit-pattern should be for a single
++          device, according to chip mode and endianness... */
++       switch (chip_mode) {
++       case 1:
++               break;
++       case 2:
++               res = cfi16_to_cpu(res);
++               break;
++       case 4:
++               res = cfi32_to_cpu(res);
++               break;
++       default: BUG();
++       }
++       return res;
++}
++
++/*
++ * Chip statuses
++ */
++#define CHIP_READY     0
++#define CHIP_BUSY      1
++#define CHIP_TIMEOUT   2
++#define CHIP_ABORT     3
++
++static int check_chip(struct map_info *map, int n, map_word read_1,
++               map_word read_2, map_word read_3)
++{
++       u32 r1 = get_chip_status(map, read_1, n);
++       u32 r2 = get_chip_status(map, read_2, n);
++       u32 r3 = get_chip_status(map, read_3, n);
++
++       if ((r1 == r2) && (r2 == r3))
++               return CHIP_READY;
++
++       if (r1 & (1 << 1)) {
++               pr_debug("Write abort on chip %d\n", n);
++               return CHIP_ABORT;
++       }
++
++       if (r1 & (1 << 5)) {
++               pr_debug("Timeout on chip %d\n",n);
++               return CHIP_TIMEOUT;
++       }
++
++       return CHIP_BUSY;
++}
++
+  /*
+   * Return true if the chip is ready.
+   *
+@@ -520,12 +592,17 @@ static struct mtd_info *cfi_amdstd_setup(struct 
+mtd_info *mtd)
+   */
+  static int __xipram chip_ready(struct map_info *map, unsigned long addr)
+  {
+-       map_word d, t;
++       struct cfi_private *cfi = map->fldrv_priv;
++       map_word r1, r2, r3;
++       int i, res = 0;
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+-       d = map_read(map, addr);
+-       t = map_read(map, addr);
++       r1 = map_read(map, addr);
++       r2 = map_read(map, addr);
++       r3 = map_read(map, addr);
+
+-       return map_word_equal(map, d, t);
++       for (i = 0; i < cfi_interleave(cfi); i++)
++               res += check_chip(map, i, r1, r2, r3);
++       return !res;
+  }
+
+  /*
+
+Thanks!
+
+Regards, Ilya.
