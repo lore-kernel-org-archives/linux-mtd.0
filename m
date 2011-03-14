@@ -1,17 +1,17 @@
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pz3LU-0006Ih-M4
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 08:41:46 +0000
-Subject: Re: [PATCH 01/02] mtdswap: kill strip error handling option
+	id 1Pz3P8-0006Kb-EM
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 08:45:31 +0000
+Subject: Re: [PATCH 02/02] force module loaded with partitions set
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 To: Yang Ruirui <ruirui.r.yang@tieto.com>
-In-Reply-To: <20110314015056.GA6819@darkstar>
-References: <20110314015056.GA6819@darkstar>
+In-Reply-To: <20110314015148.GA6827@darkstar>
+References: <20110314015148.GA6827@darkstar>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 14 Mar 2011 10:39:58 +0200
-Message-ID: <1300091998.2727.3.camel@localhost>
+Date: Mon, 14 Mar 2011 10:43:15 +0200
+Message-ID: <1300092195.2727.4.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, ext-phil.2.carmody@nokia.com,
 	dwmw2@infradead.org, ruirui.r.yang@tietoenator.com,
 	ext-jani.1.nikula@nokia.com
@@ -25,25 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-03-14 at 09:50 +0800, Yang Ruirui wrote:
+On Mon, 2011-03-14 at 09:51 +0800, Yang Ruirui wrote:
 > From: Yang Ruirui<ruirui.r.yang@tieto.com>
 > 
-> As Artem Bityutskiy's suggestion, The strict erase error handling option
-> does not make much sense.
-
-Well, I does make sense, but we just have no prove it is any useful,
-this is why I suggested to kill it.
-
+> partitions can not be set after module loaded, the moduel param mode is 0444.
 > 
-> Here kill the option, and still keep the retry times as before.
+> this patch force module loaded with param partitions set, if user does not
+> set partitions then give out a warning and return -EINVAL
 > 
 > Signed-off-by: Yang Ruirui<ruirui.r.yang@tieto.com>
+> Tested-by: Shao Yanqing<yanqing.shao@tieto.com>
+> Tested-by: Xiao Yang<yang.xiao@tieto.com>
 > ---
->  drivers/mtd/Kconfig   |    8 --------
->  drivers/mtd/mtdswap.c |    8 +-------
->  2 files changed, 1 insertion(+), 15 deletions(-)
+>  drivers/mtd/mtdswap.c |    6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> --- mtd-2.6-fc2ff59.orig/drivers/mtd/mtdswap.c	2011-03-14 09:36:09.283329099 +0800
+> +++ mtd-2.6-fc2ff59/drivers/mtd/mtdswap.c	2011-03-14 09:46:30.229993534 +0800
+> @@ -1569,6 +1569,12 @@ static struct mtd_blktrans_ops mtdswap_o
+>  
+>  static int __init mtdswap_modinit(void)
+>  {
+> +	if (!partitions[0]) {
+> +		printk(KERN_WARNING
+> +			"Please load mtdswap with correct partitions param\n");
+> +		return -EINVAL;
+> +	}
 
-Thank, I've amended the commit message and pushed to my l2-mtd-2.6.git
-tree.
+I think a similar check is done in mtdswap_add_mtd() ?
 
-Artem.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
