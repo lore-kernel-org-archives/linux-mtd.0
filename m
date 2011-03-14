@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Pz8ze-0000nI-94
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 14:43:37 +0000
+	id 1Pz8ze-0000nJ-8z
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 14:43:38 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2EEhT11004527
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2011 16:43:29 +0200
+	p2EEfwM9002819
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2011 16:43:30 +0200
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Adrian Hunter <adrian.hunter@nokia.com>
-Subject: [PATCH 2/6] UBIFS: allocate scanning buffer on demand
-Date: Mon, 14 Mar 2011 16:46:08 +0200
-Message-Id: <1300113972-4507-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 3/6] UBIFS: allocate ltab checking buffer on demand
+Date: Mon, 14 Mar 2011 16:46:09 +0200
+Message-Id: <1300113972-4507-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1300113972-4507-1-git-send-email-dedekind1@gmail.com>
 References: <1300113972-4507-1-git-send-email-dedekind1@gmail.com>
 Cc: MTD list <linux-mtd@lists.infradead.org>
@@ -26,90 +26,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
 Instead of using pre-allocated 'c->dbg->buf' buffer in
-'scan_check_cb()', dynamically allocate it when needed. The intend
-is to get rid of the pre-allocated 'c->dbg->buf' buffer and save
-128KiB of RAM (or more if PEB size is larger). Indeed, currently we
-allocate this memory even if the user never enables any self-check,
-which is wasteful.
+'dbg_check_ltab_lnum()', dynamically allocate it when needed. The
+intend is to get rid of the pre-allocated 'c->dbg->buf' buffer and
+save 128KiB of RAM (or more if PEB size is larger). Indeed,
+currently we allocate this memory even if the user never enables
+any self-check, which is wasteful.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/lprops.c |   26 ++++++++++++++++++++------
- 1 files changed, 20 insertions(+), 6 deletions(-)
+ fs/ubifs/lpt_commit.c |   29 ++++++++++++++++++++---------
+ 1 files changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
-index 4d4ca38..c7b25e2 100644
---- a/fs/ubifs/lprops.c
-+++ b/fs/ubifs/lprops.c
-@@ -1035,7 +1035,8 @@ static int scan_check_cb(struct ubifs_info *c,
- 	struct ubifs_scan_leb *sleb;
- 	struct ubifs_scan_node *snod;
- 	struct ubifs_lp_stats *lst = &data->lst;
--	int cat, lnum = lp->lnum, is_idx = 0, used = 0, free, dirty;
-+	int cat, lnum = lp->lnum, is_idx = 0, used = 0, free, dirty, ret;
-+	void *buf = NULL;
+diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
+index 5c90dec..62a38d9 100644
+--- a/fs/ubifs/lpt_commit.c
++++ b/fs/ubifs/lpt_commit.c
+@@ -1628,29 +1628,35 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
+ {
+ 	int err, len = c->leb_size, dirty = 0, node_type, node_num, node_len;
+ 	int ret;
+-	void *buf = c->dbg->buf;
++	void *buf, *p;
  
- 	cat = lp->flags & LPROPS_CAT_MASK;
- 	if (cat != LPROPS_UNCAT) {
-@@ -1093,7 +1094,13 @@ static int scan_check_cb(struct ubifs_info *c,
- 		}
- 	}
+ 	if (!(ubifs_chk_flags & UBIFS_CHK_LPROPS))
+ 		return 0;
  
--	sleb = ubifs_scan(c, lnum, 0, c->dbg->buf, 0);
-+	buf = __vmalloc(c->leb_size, GFP_KERNEL | GFP_NOFS, PAGE_KERNEL);
++	buf = p = __vmalloc(c->leb_size, GFP_KERNEL | GFP_NOFS, PAGE_KERNEL);
 +	if (!buf) {
-+		ubifs_err("cannot allocate memory to scan LEB %d", lnum);
-+		goto out;
++		ubifs_err("cannot allocate memory for ltab checking");
++		return 0;
 +	}
 +
-+	sleb = ubifs_scan(c, lnum, 0, buf, 0);
- 	if (IS_ERR(sleb)) {
- 		/*
- 		 * After an unclean unmount, empty and freeable LEBs
-@@ -1105,7 +1112,8 @@ static int scan_check_cb(struct ubifs_info *c,
- 			lst->empty_lebs += 1;
- 			lst->total_free += c->leb_size;
- 			lst->total_dark += ubifs_calc_dark(c, c->leb_size);
--			return LPT_SCAN_CONTINUE;
-+			ret = LPT_SCAN_CONTINUE;
-+			goto exit;
- 		}
- 
- 		if (lp->free + lp->dirty == c->leb_size &&
-@@ -1115,10 +1123,12 @@ static int scan_check_cb(struct ubifs_info *c,
- 			lst->total_free  += lp->free;
- 			lst->total_dirty += lp->dirty;
- 			lst->total_dark  +=  ubifs_calc_dark(c, c->leb_size);
--			return LPT_SCAN_CONTINUE;
-+			ret = LPT_SCAN_CONTINUE;
-+			goto exit;
- 		}
- 		data->err = PTR_ERR(sleb);
--		return LPT_SCAN_STOP;
-+		ret = LPT_SCAN_STOP;
-+		goto exit;
+ 	dbg_lp("LEB %d", lnum);
+ 	err = ubi_read(c->ubi, lnum, buf, 0, c->leb_size);
+ 	if (err) {
+ 		dbg_msg("ubi_read failed, LEB %d, error %d", lnum, err);
+-		return err;
++		goto out;
  	}
+ 	while (1) {
+-		if (!is_a_node(c, buf, len)) {
++		if (!is_a_node(c, p, len)) {
+ 			int i, pad_len;
  
- 	is_idx = -1;
-@@ -1236,7 +1246,10 @@ static int scan_check_cb(struct ubifs_info *c,
+-			pad_len = get_pad_len(c, buf, len);
++			pad_len = get_pad_len(c, p, len);
+ 			if (pad_len) {
+-				buf += pad_len;
++				p += pad_len;
+ 				len -= pad_len;
+ 				dirty += pad_len;
+ 				continue;
+ 			}
+-			if (!dbg_is_all_ff(buf, len)) {
++			if (!dbg_is_all_ff(p, len)) {
+ 				dbg_msg("invalid empty space in LEB %d at %d",
+ 					lnum, c->leb_size - len);
+ 				err = -EINVAL;
+@@ -1668,16 +1674,21 @@ static int dbg_check_ltab_lnum(struct ubifs_info *c, int lnum)
+ 					lnum, dirty, c->ltab[i].dirty);
+ 				err = -EINVAL;
+ 			}
+-			return err;
++			goto out;
+ 		}
+-		node_type = get_lpt_node_type(c, buf, &node_num);
++		node_type = get_lpt_node_type(c, p, &node_num);
+ 		node_len = get_lpt_node_len(c, node_type);
+ 		ret = dbg_is_node_dirty(c, node_type, lnum, c->leb_size - len);
+ 		if (ret == 1)
+ 			dirty += node_len;
+-		buf += node_len;
++		p += node_len;
+ 		len -= node_len;
  	}
- 
- 	ubifs_scan_destroy(sleb);
--	return LPT_SCAN_CONTINUE;
-+	ret = LPT_SCAN_CONTINUE;
-+exit:
++
++	err = 0;
++out:
 +	vfree(buf);
-+	return ret;
- 
- out_print:
- 	ubifs_err("bad accounting of LEB %d: free %d, dirty %d flags %#x, "
-@@ -1246,6 +1259,7 @@ out_print:
- out_destroy:
- 	ubifs_scan_destroy(sleb);
- out:
-+	vfree(buf);
- 	data->err = -EINVAL;
- 	return LPT_SCAN_STOP;
++	return err;
  }
+ 
+ /**
 -- 
 1.7.2.3
