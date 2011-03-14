@@ -1,10 +1,22 @@
-From: Baruch Siach <baruch@tkos.co.il>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd/mxc_nand: add support for multiple chips on V21 devices
-Date: Mon, 14 Mar 2011 09:01:56 +0200
-Message-Id: <2731521d2fd2224b7b28cc9ced044fc026d4fdb7.1300085993.git.baruch@tkos.co.il>
-Cc: Baruch Siach <baruch@tkos.co.il>, linux-arm-kernel@lists.infradead.org,
-	Sascha Hauer <kernel@pengutronix.de>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pz3Ad-0006Bx-3S
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 08:30:31 +0000
+Received: by wwc33 with SMTP id 33so3878840wwc.18
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Mar 2011 01:30:28 -0700 (PDT)
+Subject: Re: fix warning in fs/ubifs compiled with gcc-4.5
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Jian Peng <jipeng@broadcom.com>
+In-Reply-To: <E18F441196CA634DB8E1F1C56A50A87432421E2F50@IRVEXCHCCR01.corp.ad.broadcom.com>
+References: <E18F441196CA634DB8E1F1C56A50A87432421E2F50@IRVEXCHCCR01.corp.ad.broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 14 Mar 2011 10:29:00 +0200
+Message-ID: <1300091340.2727.1.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,138 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Do the following to add support for up to 4 chips on V21 devices (i.MX25 and
-i.MX35):
+Hi
 
-* implement .select_chip for V21
-* adjust existing NFC_V1_V2_BUF_ADDR writes to take chip select into account
-* unlock all chip selects at preset_v1_v2()
-* scan up to 4 devices at .probe
+On Fri, 2011-03-11 at 16:35 -0800, Jian Peng wrote:
+> -#define ubifs_debugging_init(c)                0
+> -#define ubifs_debugging_exit(c)                ({})
+> +#define	ARG1(a)			a
+> +#define	ARG2(a1, a2)		a1, a2
+> +#define	ARG3(a1, a2, a3)	a1, a2, a3
+> +#define	ARG4(a1, a2, a3, a4)	a1, a2, a3, a4
+> +
+> +#define void_F(name, x)		\
+> +static inline void name(x)	\
+> +{				\
+> +	return;			\
+> +}
+> +
+> +#define int_F(name, x)		\
+> +static inline int name(x)	\
+> +{				\
+> +	return 0;		\
+> +}
+> +
+> +int_F(ubifs_debugging_init, ARG1(struct ubifs_info *c))
+> +void_F(ubifs_debugging_exit, ARG1(struct ubifs_info *c))
+> +
+> +/* Dump functions */
+> +void_F(dbg_dump_inode, ARG2(const struct ubifs_info *c,
+> +				const struct inode *inode))
 
-This has been tested on i.MX25 with two attached NAND chip (on one die).
+Thanks, but this is a too complex solution, I think. It turns easy to
+read code into some cryptic and difficult to read code, IMO May be we
+can invent something simpler?
 
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
----
- drivers/mtd/nand/mxc_nand.c |   51 +++++++++++++++++++++++++++----------------
- 1 files changed, 32 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
-index 0fc80db..55c5ac4 100644
---- a/drivers/mtd/nand/mxc_nand.c
-+++ b/drivers/mtd/nand/mxc_nand.c
-@@ -56,8 +56,14 @@
- #define NFC_V1_V2_WRPROT		(host->regs + 0x12)
- #define NFC_V1_UNLOCKSTART_BLKADDR	(host->regs + 0x14)
- #define NFC_V1_UNLOCKEND_BLKADDR	(host->regs + 0x16)
--#define NFC_V21_UNLOCKSTART_BLKADDR	(host->regs + 0x20)
--#define NFC_V21_UNLOCKEND_BLKADDR	(host->regs + 0x22)
-+#define NFC_V21_UNLOCKSTART_BLKADDR0	(host->regs + 0x20)
-+#define NFC_V21_UNLOCKSTART_BLKADDR1	(host->regs + 0x24)
-+#define NFC_V21_UNLOCKSTART_BLKADDR2	(host->regs + 0x28)
-+#define NFC_V21_UNLOCKSTART_BLKADDR3	(host->regs + 0x2c)
-+#define NFC_V21_UNLOCKEND_BLKADDR0	(host->regs + 0x22)
-+#define NFC_V21_UNLOCKEND_BLKADDR1	(host->regs + 0x26)
-+#define NFC_V21_UNLOCKEND_BLKADDR2	(host->regs + 0x2a)
-+#define NFC_V21_UNLOCKEND_BLKADDR3	(host->regs + 0x2e)
- #define NFC_V1_V2_NF_WRPRST		(host->regs + 0x18)
- #define NFC_V1_V2_CONFIG1		(host->regs + 0x1a)
- #define NFC_V1_V2_CONFIG2		(host->regs + 0x1c)
-@@ -152,6 +158,7 @@ struct mxc_nand_host {
- 	int			clk_act;
- 	int			irq;
- 	int			eccsize;
-+	int			active_cs;
- 
- 	struct completion	op_completion;
- 
-@@ -445,7 +452,7 @@ static void send_page_v1_v2(struct mtd_info *mtd, unsigned int ops)
- 	for (i = 0; i < bufs; i++) {
- 
- 		/* NANDFC buffer 0 is used for page read/write */
--		writew(i, NFC_V1_V2_BUF_ADDR);
-+		writew((host->active_cs << 4) | i, NFC_V1_V2_BUF_ADDR);
- 
- 		writew(ops, NFC_V1_V2_CONFIG2);
- 
-@@ -470,7 +477,7 @@ static void send_read_id_v1_v2(struct mxc_nand_host *host)
- 	struct nand_chip *this = &host->nand;
- 
- 	/* NANDFC buffer 0 is used for device ID output */
--	writew(0x0, NFC_V1_V2_BUF_ADDR);
-+	writew(host->active_cs << 4, NFC_V1_V2_BUF_ADDR);
- 
- 	writew(NFC_ID, NFC_V1_V2_CONFIG2);
- 
-@@ -505,7 +512,7 @@ static uint16_t get_dev_status_v1_v2(struct mxc_nand_host *host)
- 	uint32_t store;
- 	uint16_t ret;
- 
--	writew(0x0, NFC_V1_V2_BUF_ADDR);
-+	writew(host->active_cs << 4, NFC_V1_V2_BUF_ADDR);
- 
- 	/*
- 	 * The device status is stored in main_area0. To
-@@ -686,24 +693,24 @@ static void mxc_nand_select_chip(struct mtd_info *mtd, int chip)
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct mxc_nand_host *host = nand_chip->priv;
- 
--	switch (chip) {
--	case -1:
-+	if (chip == -1) {
- 		/* Disable the NFC clock */
- 		if (host->clk_act) {
- 			clk_disable(host->clk);
- 			host->clk_act = 0;
- 		}
--		break;
--	case 0:
-+		return;
-+	}
-+
-+	if (!host->clk_act) {
- 		/* Enable the NFC clock */
--		if (!host->clk_act) {
--			clk_enable(host->clk);
--			host->clk_act = 1;
--		}
--		break;
-+		clk_enable(host->clk);
-+		host->clk_act = 1;
-+	}
- 
--	default:
--		break;
-+	if (nfc_is_v21()) {
-+		host->active_cs = chip;
-+		writew(host->active_cs << 4, NFC_V1_V2_BUF_ADDR);
- 	}
- }
- 
-@@ -835,8 +842,14 @@ static void preset_v1_v2(struct mtd_info *mtd)
- 
- 	/* Blocks to be unlocked */
- 	if (nfc_is_v21()) {
--		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR);
--		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR);
-+		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR0);
-+		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR1);
-+		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR2);
-+		writew(0x0, NFC_V21_UNLOCKSTART_BLKADDR3);
-+		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR0);
-+		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR1);
-+		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR2);
-+		writew(0xffff, NFC_V21_UNLOCKEND_BLKADDR3);
- 	} else if (nfc_is_v1()) {
- 		writew(0x0, NFC_V1_UNLOCKSTART_BLKADDR);
- 		writew(0x4000, NFC_V1_UNLOCKEND_BLKADDR);
-@@ -1201,7 +1214,7 @@ static int __init mxcnd_probe(struct platform_device *pdev)
- 		irq_control_v1_v2(host, 1);
- 
- 	/* first scan to find the device and get the page size */
--	if (nand_scan_ident(mtd, 1, NULL)) {
-+	if (nand_scan_ident(mtd, nfc_is_v21() ? 4 : 1, NULL)) {
- 		err = -ENXIO;
- 		goto escan;
- 	}
 -- 
-1.7.2.3
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
