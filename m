@@ -1,16 +1,17 @@
-Received: from nm28-vm0.bullet.mail.bf1.yahoo.com ([98.139.213.149])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PyIbF-0005Zx-NP
-	for linux-mtd@lists.infradead.org; Sat, 12 Mar 2011 06:46:54 +0000
-From: "Lolita Symon" <law_chambers2016@att.net>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Sat, 12 Mar 2011 11:47:06 +0800
-Subject: Looking for Product
+Received: from ebb06.tieto.com ([131.207.168.38])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pywms-0004zv-Ek
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 01:41:36 +0000
+Date: Mon, 14 Mar 2011 09:50:56 +0800
+From: Yang Ruirui <ruirui.r.yang@tieto.com>
+To: <dwmw2@infradead.org>, <linux-mtd@lists.infradead.org>,
+	<Artem.Bityutskiy@nokia.com>, <ext-jani.1.nikula@nokia.com>,
+	<ext-phil.2.carmody@nokia.com>, <ruirui.r.yang@tietoenator.com>
+Subject: [PATCH 01/02] mtdswap: kill strip error handling option
+Message-ID: <20110314015056.GA6819@darkstar>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <USERPCff3d90600a6341c18aad4401957f01b3@userPC>
-Reply-To: anaaveterinary@consultant.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +21,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ANAA VETERINARY COMPANY PLC=2E=0D=0ACtra M117, km 4,800,=0D=0AValdetorres=
- del Jarama,=0D=0A28750 Spain=2E=0D=0A=0D=0A=0D=0AHello Dear,=0D=0A=0D=0A=
-Nice meeting you, how is your day, i hope all is well with you and your f=
-amily, well I am  Mis=2ELolita Symon, i work with Anaa Veterinary Company=
- Plc=2E here in Spain, I am  looking for a dependable individual that I c=
-an trust, someone who will be willing and  honest enough to carry out thi=
-s transaction with diligent to the best of his/her  ability=2E=0D=0A =0D=0A=
-Actually, I Normally Travel to Asia to Purchase a Product Called (ADEVILI=
-N) is a new  scientific vaccination chemical for Horses=2E=0D=0A=0D=0AYou=
-r reply is of great important, all information needed is intact, and all =
-that  matters now is your respond if you are interested Kindly get back t=
-o me with your  contact, fax number, phone number, i hope to hear from yo=
-u soon Through my  Email:anaaveterinary=40consultant=2Ecom =0D=0A=0D=0A=0D=
-=0AMis=2E Lolita Symon=2E
+From: Yang Ruirui<ruirui.r.yang@tieto.com>
+
+As Artem Bityutskiy's suggestion, The strict erase error handling option
+does not make much sense.
+
+Here kill the option, and still keep the retry times as before.
+
+Signed-off-by: Yang Ruirui<ruirui.r.yang@tieto.com>
+---
+ drivers/mtd/Kconfig   |    8 --------
+ drivers/mtd/mtdswap.c |    8 +-------
+ 2 files changed, 1 insertion(+), 15 deletions(-)
+
+--- mtd-2.6-fc2ff59.orig/drivers/mtd/mtdswap.c	2011-03-12 01:49:31.000000000 +0800
++++ mtd-2.6-fc2ff59/drivers/mtd/mtdswap.c	2011-03-14 09:36:09.283329099 +0800
+@@ -156,12 +156,6 @@ struct mtdswap_oobdata {
+ #define MTDSWAP_ERASE_RETRIES	3 /* Before marking erase block bad */
+ #define MTDSWAP_IO_RETRIES	3
+ 
+-#ifdef CONFIG_MTD_SWAP_STRICT
+-#define MTDSWAP_STRICT		1
+-#else
+-#define MTDSWAP_STRICT		0
+-#endif
+-
+ enum {
+ 	MTDSWAP_SCANNED_CLEAN,
+ 	MTDSWAP_SCANNED_DIRTY,
+@@ -575,7 +569,7 @@ retry:
+ 
+ 	ret = mtd->erase(mtd, &erase);
+ 	if (ret) {
+-		if (retries++ < MTDSWAP_ERASE_RETRIES && !MTDSWAP_STRICT) {
++		if (retries++ < MTDSWAP_ERASE_RETRIES) {
+ 			dev_warn(d->dev,
+ 				"erase of erase block %#llx on %s failed",
+ 				erase.addr, mtd->name);
+--- mtd-2.6-fc2ff59.orig/drivers/mtd/Kconfig	2011-03-12 01:49:31.000000000 +0800
++++ mtd-2.6-fc2ff59/drivers/mtd/Kconfig	2011-03-14 09:36:45.269995898 +0800
+@@ -335,14 +335,6 @@ config MTD_SWAP
+ 	  The driver provides wear leveling by storing erase counter into the
+ 	  OOB.
+ 
+-config MTD_SWAP_STRICT
+-       bool "Strict erase error handling"
+-       depends on MTD_SWAP
+-       help
+-	 Enables strict tolerance on failed erasures, marking erase blocks bad
+-	 right after the first failed operation. With non-strict mode the
+-	 erase operation is retried.
+-
+ source "drivers/mtd/chips/Kconfig"
+ 
+ source "drivers/mtd/maps/Kconfig"
