@@ -1,17 +1,18 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PzA5d-0001Rb-VK
-	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 15:53:50 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2EFrld4030468
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Mar 2011 17:53:47 +0200
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Adrian Hunter <adrian.hunter@nokia.com>
-Subject: [PATCH] UBIFS: clean-up commentaries
-Date: Mon, 14 Mar 2011 17:56:38 +0200
-Message-Id: <1300118198-12682-1-git-send-email-dedekind1@gmail.com>
-Cc: MTD list <linux-mtd@lists.infradead.org>
+	id 1PzAmI-0001kD-KV
+	for linux-mtd@lists.infradead.org; Mon, 14 Mar 2011 16:37:55 +0000
+Received: by fxm16 with SMTP id 16so3419265fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Mar 2011 09:37:53 -0700 (PDT)
+Message-ID: <4D7E4437.70300@googlemail.com>
+Date: Mon, 14 Mar 2011 17:37:11 +0100
+From: Andre Naujoks <nautsch2@googlemail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: gcc 4.5 and copy_flag in libubigen.c
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +22,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Hi all.
 
-Clean-up commentaries in debug.h and remove references to non-existing
-symblols.
+I am compiling a board support package with mtd-utils-1.3.1.
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- fs/ubifs/debug.h |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+After a gcc update to version 4.5 on my host the build fails and it
+tells me that:
 
-diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
-index 4efbba7..919f0de 100644
---- a/fs/ubifs/debug.h
-+++ b/fs/ubifs/debug.h
-@@ -171,7 +171,7 @@ const char *dbg_key_str1(const struct ubifs_info *c,
- #define dbg_rcvry(fmt, ...) dbg_do_msg(UBIFS_MSG_RCVRY, fmt, ##__VA_ARGS__)
- 
- /*
-- * Debugging message type flags (must match msg_type_names in debug.c).
-+ * Debugging message type flags.
-  *
-  * UBIFS_MSG_GEN: general messages
-  * UBIFS_MSG_JNL: journal messages
-@@ -204,7 +204,7 @@ enum {
- };
- 
- /*
-- * Debugging check flags (must match chk_names in debug.c).
-+ * Debugging check flags.
-  *
-  * UBIFS_CHK_GEN: general checks
-  * UBIFS_CHK_TNC: check TNC
-@@ -225,7 +225,7 @@ enum {
- };
- 
- /*
-- * Special testing flags (must match tst_names in debug.c).
-+ * Special testing flags.
-  *
-  * UBIFS_TST_FORCE_IN_THE_GAPS: force the use of in-the-gaps method
-  * UBIFS_TST_RCVRY: failure mode for recovery testing
--- 
-1.7.2.3
+./src/libubigen.c: In function 'ubigen_write_leb':
+./src/libubigen.c:204:19: error: operation on 'u->v->copy_flag' may be
+undefined.
+
+This seems like a recently introduced warning by the new gcc version,
+but because of the -Werror halts my build.
+
+I had a look into the source at ubi-utils/old-utils/src/libubigen.c and
+it says:
+
+int
+ubigen_write_leb(ubi_info_t u, ubigen_action_t action)
+{
+        int rc = 0;
+        size_t read = 0;
+
+        clear_buf(u);
+        write_ec_hdr(u);
+
+        rc = fill_data_buffer_from_file(u, &read);
+        if (rc != 0)
+                return rc;
+
+        if (u->v->vol_type == UBI_VID_STATIC)  {
+                add_static_info(u, read, action);
+        }
+
+        u->v->lnum = cpu_to_be32(u->blks_written);
+
+// This is the part gcc 4.5 complains about
+// ---------------------
+
+        if (action & MARK_AS_UPDATE) {
+                u->v->copy_flag = (u->v->copy_flag)++;
+        }
+
+// --------------------
+
+        write_vid_hdr(u, action);
+        rc = write_to_output_stream(u);
+        if (rc != 0)
+                return rc;
+
+        /* Update current handle */
+        u->bytes_read += read;
+        u->blks_written++;
+        return 0;
+}
+
+My question is this. If this is indeed just a flag, can I just set
+copy_flag to 1 instead of incrementing it? Witout breaking anything?
+
+I found no other references to the copy_flag ecxept in this file and in
+the struct definition in include/mtd/ubi-media.h. So the warning may be
+right, but I really have no idea about the whole ubifs thing.
+
+I think the -Werror in the build is intentional, so I would rather not
+disable it without knowing that this is not a bug or anything.
+
+I would really be grateful for any advice on this.
+
+Regards and thanks in advance.
+  Andre
