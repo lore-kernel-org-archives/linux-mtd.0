@@ -1,18 +1,19 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1PzPsN-0007MP-V8
-	for linux-mtd@lists.infradead.org; Tue, 15 Mar 2011 08:45:13 +0000
-Date: Tue, 15 Mar 2011 09:45:08 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Andre Naujoks <nautsch2@googlemail.com>
-Subject: Re: gcc 4.5 and copy_flag in libubigen.c
-In-Reply-To: <4D7E4437.70300@googlemail.com>
-Message-ID: <Pine.LNX.4.64.1103150930350.25520@lnxricardw.se.axis.com>
-References: <4D7E4437.70300@googlemail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1PzQ4m-0007UN-TU
+	for linux-mtd@lists.infradead.org; Tue, 15 Mar 2011 08:58:02 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p2F8vwUb031816
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Mar 2011 10:57:58 +0200
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 2/7] UBI: allocate erase checking buffer on demand
+Date: Tue, 15 Mar 2011 11:00:31 +0200
+Message-Id: <1300179636-12183-3-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1300179636-12183-1-git-send-email-dedekind1@gmail.com>
+References: <1300179636-12183-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,101 +23,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-On Mon, 14 Mar 2011, Andre Naujoks wrote:
+Instead of using pre-allocated 'ubi->dbg_peb_buf' buffer in
+'ubi_dbg_check_all_ff()', dynamically allocate it when needed. The
+intend is to get rid of the pre-allocated 'ubi->dbg_peb_buf' buffer
+completely. And the need for this arises because we want to change
+to dynamic debugging control instead of compile-time control, i.e.,
+we are going to kill the CONFIG_MTD_UBI_DEBUG_PARANOID Kconfig
+option, which would mean that 'ubi->dbg_peb_buf' is always allocated,
+which would be wasteful.
 
-> I am compiling a board support package with mtd-utils-1.3.1.
->
-> After a gcc update to version 4.5 on my host the build fails and it
-> tells me that:
->
-> ./src/libubigen.c: In function 'ubigen_write_leb':
-> ./src/libubigen.c:204:19: error: operation on 'u->v->copy_flag' may be
-> undefined.
->
-> This seems like a recently introduced warning by the new gcc version,
-> but because of the -Werror halts my build.
+Thus, we are getting rid of 'ubi->dbg_peb_buf', and this is a
+preparation for that.
 
-> // This is the part gcc 4.5 complains about
-> // ---------------------
->
->        if (action & MARK_AS_UPDATE) {
->                u->v->copy_flag =3D (u->v->copy_flag)++;
->        }
->
-> // --------------------
->
+signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/io.c |   19 ++++++++++++-------
+ 1 files changed, 12 insertions(+), 7 deletions(-)
 
-I can understand why gcc warns about this, the operation is undefined. I=20
-would think the problem is not with the pointer dereference, it is the way=
-=20
-the copy flag is used both before and after the ++. What you have is
-
-   foo =3D foo++;
-
-which is an undefined operation, for the following reason. While
-
-   foo++;
-
-says that foo has one value before this operation and the value +1 after=20
-(the C standard talks about 'sequence points', i.e points in the code=20
-where all variables have well defined values),
-
-   foo =3D foo++;
-
-is ambiguous in that it is not clear whether the ++ takes place after
-the assignment or vice versa. Should the compiler bump the value of foo,=20
-but return the old value, assign it to foo, and then assign foo the=20
-incremented value, or increment the value, return the old value, and=20
-assign it to foo, in effect not changing the value?
-
-It might have worked by chance on an older compiler that didn't notice the=
-=20
-problem and consistently picked one of the two possibilities above=20
-(preferebly the first one); however, according to the C standard, once an=
-=20
-operation becomes undefined all aspects of it become undefined so the=20
-compiler could technically stuff any value in foo (or none at all).
-
-Anyhow, technicalities aside, it looks like someone made a mental error=20
-when simply trying to set the copy_flag. I'm fairly convinced that the=20
-author simply meant:
-
-   (u->v->copy_flag)++;
-
-> My question is this. If this is indeed just a flag, can I just set
-> copy_flag to 1 instead of incrementing it? Witout breaking anything?
-
-It is (or perhaps was?) commonplace to set flags by incrementing them. I'm=
-=20
-not sure why this is considered a good idea. Possibly because
-
-   flag++;
-
-looks more elegant and cool than
-
-   flag =3D 1;
-
-although the latter is most certainly faster; in the first case the value=
-=20
-must be read, incremented and copied back to the variable. Of course, if=20
-the variable is in a register there's no real overhead, but most=20
-processors have fast ways of loading small immediate values so the latter=
-=20
-version will probably be just as quick and not need more code either.
-
-I don't know if it could have something to do with the machines on which=20
-Unix was originally written, that it was faster, or, more likely, used up=
-=20
-less code space, to increment something than to load it with 1.
-
-I would agree with you in principle, especially since the variable is=20
-called 'flag' something, then again, without a thorough understanding of=20
-what the flag is used for, someone could conceivably have decided to use=20
-it as a counter instead of a flag, but retain the name.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index b4d34ba..35da5aa 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -1387,35 +1387,40 @@ int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len)
+ {
+ 	size_t read;
+ 	int err;
++	void *buf;
+ 	loff_t addr = (loff_t)pnum * ubi->peb_size + offset;
+ 
+-	mutex_lock(&ubi->dbg_buf_mutex);
+-	err = ubi->mtd->read(ubi->mtd, addr, len, &read, ubi->dbg_peb_buf);
++	buf = __vmalloc(len, GFP_KERNEL | GFP_NOFS, PAGE_KERNEL);
++	if (!buf) {
++		ubi_err("cannot allocate memory to check for 0xFFs");
++		return 0;
++	}
++
++	err = ubi->mtd->read(ubi->mtd, addr, len, &read, buf);
+ 	if (err && err != -EUCLEAN) {
+ 		ubi_err("error %d while reading %d bytes from PEB %d:%d, "
+ 			"read %zd bytes", err, len, pnum, offset, read);
+ 		goto error;
+ 	}
+ 
+-	err = ubi_check_pattern(ubi->dbg_peb_buf, 0xFF, len);
++	err = ubi_check_pattern(buf, 0xFF, len);
+ 	if (err == 0) {
+ 		ubi_err("flash region at PEB %d:%d, length %d does not "
+ 			"contain all 0xFF bytes", pnum, offset, len);
+ 		goto fail;
+ 	}
+-	mutex_unlock(&ubi->dbg_buf_mutex);
+ 
++	vfree(buf);
+ 	return 0;
+ 
+ fail:
+ 	ubi_err("paranoid check failed for PEB %d", pnum);
+ 	ubi_msg("hex dump of the %d-%d region", offset, offset + len);
+-	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1,
+-		       ubi->dbg_peb_buf, len, 1);
++	print_hex_dump(KERN_DEBUG, "", DUMP_PREFIX_OFFSET, 32, 1, buf, len, 1);
+ 	err = -EINVAL;
+ error:
+ 	ubi_dbg_dump_stack();
+-	mutex_unlock(&ubi->dbg_buf_mutex);
++	vfree(buf);
+ 	return err;
+ }
+ 
+-- 
+1.7.2.3
