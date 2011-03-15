@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PzQ4n-0007UR-7f
-	for linux-mtd@lists.infradead.org; Tue, 15 Mar 2011 08:58:05 +0000
+	id 1PzQ4n-0007US-8D
+	for linux-mtd@lists.infradead.org; Tue, 15 Mar 2011 08:58:06 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2F8vvpS031804
+	p2F8vwUc031816
 	for <linux-mtd@lists.infradead.org>; Tue, 15 Mar 2011 10:57:59 +0200
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 5/7] UBI: make debugging messages dynamic
-Date: Tue, 15 Mar 2011 11:00:34 +0200
-Message-Id: <1300179636-12183-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 7/7] UBI: make tests modes dynamic
+Date: Tue, 15 Mar 2011 11:00:36 +0200
+Message-Id: <1300179636-12183-8-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1300179636-12183-1-git-send-email-dedekind1@gmail.com>
 References: <1300179636-12183-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,166 +25,229 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This patch adds a possibility to dynamically select UBI debugging
-messages, instead of selecting them compile-time from the configuration
-menu. This is much more flexible, and consistent with UBIFS, and this
-also simplifies UBI Kconfig menu and the code.
+Similarly to the debugging checks and message, make the test modes
+be dynamically selected via the "debug_tsts" module parameter or
+via the "/sys/module/ubi/parameters/debug_tsts" sysfs file. This
+is consistent with UBIFS as well.
+
+And now, since all the Kconfig knobs became dynamic, we can remove
+the Kconfig.debug file completely.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/Kconfig.debug |   30 ----------------------
- drivers/mtd/ubi/debug.c       |    8 ++++++
- drivers/mtd/ubi/debug.h       |   54 ++++++++++++++++++++++-------------------
- 3 files changed, 37 insertions(+), 55 deletions(-)
+ drivers/mtd/ubi/Kconfig       |    8 ++++++-
+ drivers/mtd/ubi/Kconfig.debug |   37 ---------------------------------
+ drivers/mtd/ubi/build.c       |    3 +-
+ drivers/mtd/ubi/debug.c       |    3 ++
+ drivers/mtd/ubi/debug.h       |   46 +++++++++++++++++++++++++----------------
+ drivers/mtd/ubi/wl.c          |    4 +-
+ 6 files changed, 41 insertions(+), 60 deletions(-)
+ delete mode 100644 drivers/mtd/ubi/Kconfig.debug
 
+diff --git a/drivers/mtd/ubi/Kconfig b/drivers/mtd/ubi/Kconfig
+index 3cf193f..6abeb4f 100644
+--- a/drivers/mtd/ubi/Kconfig
++++ b/drivers/mtd/ubi/Kconfig
+@@ -52,6 +52,12 @@ config MTD_UBI_GLUEBI
+ 	   work on top of UBI. Do not enable this unless you use legacy
+ 	   software.
+ 
+-source "drivers/mtd/ubi/Kconfig.debug"
++config MTD_UBI_DEBUG
++	bool "UBI debugging"
++	depends on SYSFS
++	select DEBUG_FS
++	select KALLSYMS_ALL if KALLSYMS && DEBUG_KERNEL
++	help
++	  This option enables UBI debugging.
+ 
+ endif # MTD_UBI
 diff --git a/drivers/mtd/ubi/Kconfig.debug b/drivers/mtd/ubi/Kconfig.debug
-index fad4adc..d40134e 100644
+deleted file mode 100644
+index d8d33dd..0000000
 --- a/drivers/mtd/ubi/Kconfig.debug
-+++ b/drivers/mtd/ubi/Kconfig.debug
-@@ -10,11 +10,6 @@ config MTD_UBI_DEBUG
++++ /dev/null
+@@ -1,37 +0,0 @@
+-comment "UBI debugging options"
+-
+-config MTD_UBI_DEBUG
+-	bool "UBI debugging"
+-	depends on SYSFS
+-	select DEBUG_FS
+-	select KALLSYMS_ALL if KALLSYMS && DEBUG_KERNEL
+-	help
+-	  This option enables UBI debugging.
+-
+-if MTD_UBI_DEBUG
+-
+-config MTD_UBI_DEBUG_DISABLE_BGT
+-	bool "Do not enable the UBI background thread"
+-	help
+-	  This option switches the background thread off by default. The thread
+-	  may be also be enabled/disabled via UBI sysfs.
+-
+-config MTD_UBI_DEBUG_EMULATE_BITFLIPS
+-	bool "Emulate flash bit-flips"
+-	help
+-	  This option emulates bit-flips with probability 1/50, which in turn
+-	  causes scrubbing. Useful for debugging and stressing UBI.
+-
+-config MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES
+-	bool "Emulate flash write failures"
+-	help
+-	  This option emulates write failures with probability 1/100. Useful for
+-	  debugging and testing how UBI handlines errors.
+-
+-config MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES
+-	bool "Emulate flash erase failures"
+-	help
+-	  This option emulates erase failures with probability 1/100. Useful for
+-	  debugging and testing how UBI handlines errors.
+-
+-endif # MTD_UBI_DEBUG
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 3a04719..a801ea6 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -986,8 +986,7 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	 * checks @ubi->thread_enabled. Otherwise we may fail to wake it up.
+ 	 */
+ 	spin_lock(&ubi->wl_lock);
+-	if (!DBG_DISABLE_BGT)
+-		ubi->thread_enabled = 1;
++	ubi->thread_enabled = 1;
+ 	wake_up_process(ubi->bgt_thread);
+ 	spin_unlock(&ubi->wl_lock);
  
- if MTD_UBI_DEBUG
- 
--config MTD_UBI_DEBUG_MSG
--	bool "UBI debugging messages"
--	help
--	  This option enables UBI debugging messages.
--
- config MTD_UBI_DEBUG_PARANOID
- 	bool "Extra self-checks"
- 	help
-@@ -45,29 +40,4 @@ config MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES
- 	  This option emulates erase failures with probability 1/100. Useful for
- 	  debugging and testing how UBI handlines errors.
- 
--comment "Additional UBI debugging messages"
--
--config MTD_UBI_DEBUG_MSG_BLD
--	bool "Additional UBI initialization and build messages"
--	help
--	  This option enables detailed UBI initialization and device build
--	  debugging messages.
--
--config MTD_UBI_DEBUG_MSG_EBA
--	bool "Eraseblock association unit messages"
--	help
--	  This option enables debugging messages from the UBI eraseblock
--	  association unit.
--
--config MTD_UBI_DEBUG_MSG_WL
--	bool "Wear-leveling unit messages"
--	help
--	  This option enables debugging messages from the UBI wear-leveling
--	  unit.
--
--config MTD_UBI_DEBUG_MSG_IO
--	bool "Input/output unit messages"
--	help
--	  This option enables debugging messages from the UBI input/output unit.
--
- endif # MTD_UBI_DEBUG
 diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
-index 4876977..8ae0bc7 100644
+index 4c7a3f6..d4d07e5 100644
 --- a/drivers/mtd/ubi/debug.c
 +++ b/drivers/mtd/ubi/debug.c
-@@ -27,6 +27,14 @@
- #ifdef CONFIG_MTD_UBI_DEBUG
+@@ -32,12 +32,15 @@
  
- #include "ubi.h"
-+#include <linux/module.h>
-+#include <linux/moduleparam.h>
-+
-+unsigned int ubi_msg_flags;
-+
-+module_param_named(debug_msgs, ubi_msg_flags, uint, S_IRUGO | S_IWUSR);
-+
-+MODULE_PARM_DESC(debug_msgs, "Debug message type flags");
+ unsigned int ubi_msg_flags;
+ unsigned int ubi_chk_flags;
++unsigned int ubi_tst_flags;
+ 
+ module_param_named(debug_msgs, ubi_msg_flags, uint, S_IRUGO | S_IWUSR);
+ module_param_named(debug_chks, ubi_chk_flags, uint, S_IRUGO | S_IWUSR);
++module_param_named(debug_tsts, ubi_chk_flags, uint, S_IRUGO | S_IWUSR);
+ 
+ MODULE_PARM_DESC(debug_msgs, "Debug message type flags");
+ MODULE_PARM_DESC(debug_chks, "Debug check flags");
++MODULE_PARM_DESC(debug_tsts, "Debug special test flags");
  
  /**
   * ubi_dbg_dump_ec_hdr - dump an erase counter header.
 diff --git a/drivers/mtd/ubi/debug.h b/drivers/mtd/ubi/debug.h
-index 8bd1d17..bee6fa1 100644
+index 2511b58..c713f0b 100644
 --- a/drivers/mtd/ubi/debug.h
 +++ b/drivers/mtd/ubi/debug.h
-@@ -38,6 +38,11 @@
- 	printk(KERN_DEBUG "UBI DBG (pid %d): %s: " fmt "\n", \
- 	       current->pid, __func__, ##__VA_ARGS__)
+@@ -116,13 +116,34 @@ int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len);
+ int ubi_dbg_check_write(struct ubi_device *ubi, const void *buf, int pnum,
+ 			int offset, int len);
  
-+#define dbg_do_msg(typ, fmt, ...) do {                       \
-+	if (ubi_msg_flags & typ)                             \
-+		dbg_msg(fmt, ##__VA_ARGS__);                 \
-+} while (0)
-+
- #define ubi_dbg_dump_stack() dump_stack()
- 
- struct ubi_ec_hdr;
-@@ -57,43 +62,42 @@ void ubi_dbg_dump_seb(const struct ubi_scan_leb *seb, int type);
- void ubi_dbg_dump_mkvol_req(const struct ubi_mkvol_req *req);
- void ubi_dbg_dump_flash(struct ubi_device *ubi, int pnum, int offset, int len);
- 
-+extern unsigned int ubi_msg_flags;
+-#ifdef CONFIG_MTD_UBI_DEBUG_DISABLE_BGT
+-#define DBG_DISABLE_BGT 1
+-#else
+-#define DBG_DISABLE_BGT 0
+-#endif
++extern unsigned int ubi_tst_flags;
 +
 +/*
-+ * Debugging message type flags (must match msg_type_names in debug.c).
++ * Special testing flags.
 + *
-+ * UBI_MSG_GEN: general messages
-+ * UBI_MSG_EBA: journal messages
-+ * UBI_MSG_WL: mount messages
-+ * UBI_MSG_IO: commit messages
-+ * UBI_MSG_BLD: LEB find messages
++ * UBIFS_TST_DISABLE_BGT: disable the background thread
++ * UBI_TST_EMULATE_BITFLIPS: emulate bit-flips
++ * UBI_TST_EMULATE_WRITE_FAILURES: emulate write failures
++ * UBI_TST_EMULATE_ERASE_FAILURES: emulate erase failures
 + */
 +enum {
-+	UBI_MSG_GEN  = 0x1,
-+	UBI_MSG_EBA  = 0x2,
-+	UBI_MSG_WL   = 0x4,
-+	UBI_MSG_IO   = 0x8,
-+	UBI_MSG_BLD  = 0x10,
++	UBI_TST_DISABLE_BGT            = 0x1,
++	UBI_TST_EMULATE_BITFLIPS       = 0x2,
++	UBI_TST_EMULATE_WRITE_FAILURES = 0x4,
++	UBI_TST_EMULATE_ERASE_FAILURES = 0x8,
 +};
 +
- #define ubi_dbg_print_hex_dump(l, ps, pt, r, g, b, len, a)  \
- 		print_hex_dump(l, ps, pt, r, g, b, len, a)
++/**
++ * ubi_dbg_is_bgt_disabled - if the background thread is disabled.
++ *
++ * Returns non-zero if the UBI background thread is disabled for testing
++ * purposes.
++ */
++static inline int ubi_dbg_is_bgt_disabled(void)
++{
++	return ubi_tst_flags & UBI_TST_DISABLE_BGT;
++}
  
--#ifdef CONFIG_MTD_UBI_DEBUG_MSG
- /* General debugging messages */
--#define dbg_gen(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
+-#ifdef CONFIG_MTD_UBI_DEBUG_EMULATE_BITFLIPS
+ /**
+  * ubi_dbg_is_bitflip - if it is time to emulate a bit-flip.
+  *
+@@ -132,11 +153,7 @@ static inline int ubi_dbg_is_bitflip(void)
+ {
+ 	return !(random32() % 200);
+ }
 -#else
--#define dbg_gen(fmt, ...) ({})
+-#define ubi_dbg_is_bitflip() 0
 -#endif
-+#define dbg_gen(fmt, ...) dbg_do_msg(UBI_MSG_GEN, fmt, ##__VA_ARGS__)
  
--#ifdef CONFIG_MTD_UBI_DEBUG_MSG_EBA
- /* Messages from the eraseblock association sub-system */
--#define dbg_eba(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
+-#ifdef CONFIG_MTD_UBI_DEBUG_EMULATE_WRITE_FAILURES
+ /**
+  * ubi_dbg_is_write_failure - if it is time to emulate a write failure.
+  *
+@@ -147,11 +164,7 @@ static inline int ubi_dbg_is_write_failure(void)
+ {
+ 	return !(random32() % 500);
+ }
 -#else
--#define dbg_eba(fmt, ...) ({})
+-#define ubi_dbg_is_write_failure() 0
 -#endif
-+#define dbg_eba(fmt, ...) dbg_do_msg(UBI_MSG_EBA, fmt, ##__VA_ARGS__)
  
--#ifdef CONFIG_MTD_UBI_DEBUG_MSG_WL
- /* Messages from the wear-leveling sub-system */
--#define dbg_wl(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
+-#ifdef CONFIG_MTD_UBI_DEBUG_EMULATE_ERASE_FAILURES
+ /**
+  * ubi_dbg_is_erase_failure - if its time to emulate an erase failure.
+  *
+@@ -162,9 +175,6 @@ static inline int ubi_dbg_is_erase_failure(void)
+ {
+ 		return !(random32() % 400);
+ }
 -#else
--#define dbg_wl(fmt, ...) ({})
+-#define ubi_dbg_is_erase_failure() 0
 -#endif
-+#define dbg_wl(fmt, ...) dbg_do_msg(UBI_MSG_WL, fmt, ##__VA_ARGS__)
  
--#ifdef CONFIG_MTD_UBI_DEBUG_MSG_IO
- /* Messages from the input/output sub-system */
--#define dbg_io(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
--#else
--#define dbg_io(fmt, ...) ({})
--#endif
-+#define dbg_io(fmt, ...) dbg_do_msg(UBI_MSG_IO, fmt, ##__VA_ARGS__)
+ #else
  
--#ifdef CONFIG_MTD_UBI_DEBUG_MSG_BLD
- /* Initialization and build messages */
--#define dbg_bld(fmt, ...) dbg_msg(fmt, ##__VA_ARGS__)
--#else
--#define dbg_bld(fmt, ...) ({})
--#endif
-+#define dbg_bld(fmt, ...) dbg_do_msg(UBI_MSG_BLD, fmt, ##__VA_ARGS__)
+@@ -187,7 +197,7 @@ static inline int ubi_dbg_is_erase_failure(void)
+ #define ubi_dbg_dump_flash(ubi, pnum, offset, len) ({})
+ #define ubi_dbg_print_hex_dump(l, ps, pt, r, g, b, len, a)  ({})
  
- #ifdef CONFIG_MTD_UBI_DEBUG_PARANOID
- int ubi_dbg_check_all_ff(struct ubi_device *ubi, int pnum, int offset, int len);
+-#define DBG_DISABLE_BGT            0
++#define ubi_dbg_is_bgt_disabled()  0
+ #define ubi_dbg_is_bitflip()       0
+ #define ubi_dbg_is_write_failure() 0
+ #define ubi_dbg_is_erase_failure() 0
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index 4e55290..b4cf57d 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -613,7 +613,7 @@ static void schedule_ubi_work(struct ubi_device *ubi, struct ubi_work *wrk)
+ 	list_add_tail(&wrk->list, &ubi->works);
+ 	ubi_assert(ubi->works_count >= 0);
+ 	ubi->works_count += 1;
+-	if (ubi->thread_enabled)
++	if (ubi->thread_enabled && !ubi_dbg_is_bgt_disabled())
+ 		wake_up_process(ubi->bgt_thread);
+ 	spin_unlock(&ubi->wl_lock);
+ }
+@@ -1364,7 +1364,7 @@ int ubi_thread(void *u)
+ 
+ 		spin_lock(&ubi->wl_lock);
+ 		if (list_empty(&ubi->works) || ubi->ro_mode ||
+-			       !ubi->thread_enabled) {
++		    !ubi->thread_enabled || ubi_dbg_is_bgt_disabled()) {
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 			spin_unlock(&ubi->wl_lock);
+ 			schedule();
 -- 
 1.7.2.3
