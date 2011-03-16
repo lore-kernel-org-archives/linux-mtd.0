@@ -1,22 +1,13 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PzQZ3-0007iu-LG
-	for linux-mtd@lists.infradead.org; Tue, 15 Mar 2011 09:29:18 +0000
-Received: by bwz1 with SMTP id 1so396609bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Mar 2011 02:29:14 -0700 (PDT)
-Message-ID: <4D7F3168.9010300@googlemail.com>
-Date: Tue, 15 Mar 2011 10:29:12 +0100
-From: Andre Naujoks <nautsch2@googlemail.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 0/7] add the GPMI controller driver for IMX23/IMX28
+Date: Wed, 16 Mar 2011 09:55:14 +0800
+Message-ID: <1300240521-4344-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: gcc 4.5 and copy_flag in libubigen.c
-References: <4D7E4437.70300@googlemail.com>
-	<Pine.LNX.4.64.1103150930350.25520@lnxricardw.se.axis.com>
-In-Reply-To: <Pine.LNX.4.64.1103150930350.25520@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: linux@arm.linux.org.uk, Huang Shijie <b32955@freescale.com>,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	David.Woodhouse@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,100 +17,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 15.03.2011 09:45, schrieb Ricard Wanderlof:
-> 
-> On Mon, 14 Mar 2011, Andre Naujoks wrote:
-> 
->> I am compiling a board support package with mtd-utils-1.3.1.
->>
->> After a gcc update to version 4.5 on my host the build fails and it
->> tells me that:
->>
->> ./src/libubigen.c: In function 'ubigen_write_leb':
->> ./src/libubigen.c:204:19: error: operation on 'u->v->copy_flag' may be
->> undefined.
->>
->> This seems like a recently introduced warning by the new gcc version,
->> but because of the -Werror halts my build.
-> 
->> // This is the part gcc 4.5 complains about
->> // ---------------------
->>
->>        if (action & MARK_AS_UPDATE) {
->>                u->v->copy_flag = (u->v->copy_flag)++;
->>        }
->>
->> // --------------------
->>
-> 
-> I can understand why gcc warns about this, the operation is undefined. I
-> would think the problem is not with the pointer dereference, it is the
-> way the copy flag is used both before and after the ++. What you have is
-> 
->   foo = foo++;
-> 
-> which is an undefined operation, for the following reason. While
-> 
->   foo++;
-> 
-> says that foo has one value before this operation and the value +1 after
-> (the C standard talks about 'sequence points', i.e points in the code
-> where all variables have well defined values),
-> 
->   foo = foo++;
-> 
-> is ambiguous in that it is not clear whether the ++ takes place after
-> the assignment or vice versa. Should the compiler bump the value of foo,
-> but return the old value, assign it to foo, and then assign foo the
-> incremented value, or increment the value, return the old value, and
-> assign it to foo, in effect not changing the value?
-> 
-> It might have worked by chance on an older compiler that didn't notice
-> the problem and consistently picked one of the two possibilities above
-> (preferebly the first one); however, according to the C standard, once
-> an operation becomes undefined all aspects of it become undefined so the
-> compiler could technically stuff any value in foo (or none at all).
-> 
-> Anyhow, technicalities aside, it looks like someone made a mental error
-> when simply trying to set the copy_flag. I'm fairly convinced that the
-> author simply meant:
-> 
->   (u->v->copy_flag)++;
-> 
->> My question is this. If this is indeed just a flag, can I just set
->> copy_flag to 1 instead of incrementing it? Witout breaking anything?
-> 
-> It is (or perhaps was?) commonplace to set flags by incrementing them.
-> I'm not sure why this is considered a good idea. Possibly because
-> 
->   flag++;
-> 
-> looks more elegant and cool than
-> 
->   flag = 1;
-> 
-> although the latter is most certainly faster; in the first case the
-> value must be read, incremented and copied back to the variable. Of
-> course, if the variable is in a register there's no real overhead, but
-> most processors have fast ways of loading small immediate values so the
-> latter version will probably be just as quick and not need more code
-> either.
-> 
-> I don't know if it could have something to do with the machines on which
-> Unix was originally written, that it was faster, or, more likely, used
-> up less code space, to increment something than to load it with 1.
-> 
-> I would agree with you in principle, especially since the variable is
-> called 'flag' something, then again, without a thorough understanding of
-> what the flag is used for, someone could conceivably have decided to use
-> it as a counter instead of a flag, but retain the name.
-> 
-> /Ricard
+The general-purpose media interface(GPMI) controller is a flexible interface
+to up to several NAND flashs.
 
-Thanks for the detailed answer. At least I learned something today :-).
-Since this code is considered old and no longer used I was able to just
-disable this part in the build without consequences (AFAICS).
+The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelerator.
 
-Thanks a lot anyway. I really appreciate it.
+With the help of BCH, the GPMI controller can choose to do the hardware ECC or
+not.
 
-Andre
+This driver is based the Shawn Guo's DMA patches for IMX23/IMX28,
+please refer to :
+	http://git.infradead.org/users/vkoul/slave-dma.git/commit/a580b8c5429a624d120cd603e1498bf676e2b4da
+
+add the mtd maillist.	
+
+Huang Shijie (7):
+  ARM: add GPMI support for imx23/imx28
+  add the common code for GPMI driver
+  add the database for the NANDs
+  add GPMI support for imx23
+  add GPMI support for imx28
+  dmaengine: change the flags of request_irq()
+  MTD : add GPMI driver in the config and Makefile
+
+ arch/arm/mach-mxs/Kconfig                       |    2 +
+ arch/arm/mach-mxs/clock-mx23.c                  |    3 +
+ arch/arm/mach-mxs/clock-mx28.c                  |    3 +
+ arch/arm/mach-mxs/devices-mx23.h                |    3 +
+ arch/arm/mach-mxs/devices-mx28.h                |    3 +
+ arch/arm/mach-mxs/devices/Kconfig               |    3 +
+ arch/arm/mach-mxs/devices/Makefile              |    1 +
+ arch/arm/mach-mxs/devices/platform-gpmi.c       |  144 +++
+ arch/arm/mach-mxs/include/mach/devices-common.h |    4 +
+ arch/arm/mach-mxs/include/mach/gpmi-nfc.h       |   75 ++
+ arch/arm/mach-mxs/mach-mx23evk.c                |   37 +
+ arch/arm/mach-mxs/mach-mx28evk.c                |   37 +
+ drivers/dma/mxs-dma.c                           |    2 +-
+ drivers/mtd/nand/Kconfig                        |   10 +
+ drivers/mtd/nand/Makefile                       |    1 +
+ drivers/mtd/nand/gpmi-nfc/Makefile              |   10 +
+ drivers/mtd/nand/gpmi-nfc/bch-regs-imx23.h      |  550 +++++++++++
+ drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h      |  557 ++++++++++++
+ drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c       |  524 +++++++++++
+ drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h            |  520 +++++++++++
+ drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx23.h     |  416 +++++++++
+ drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h     |  421 +++++++++
+ drivers/mtd/nand/gpmi-nfc/hal-common.c          |  816 +++++++++++++++++
+ drivers/mtd/nand/gpmi-nfc/hal-imx23.c           |  556 ++++++++++++
+ drivers/mtd/nand/gpmi-nfc/hal-imx28.c           |  503 +++++++++++
+ drivers/mtd/nand/gpmi-nfc/mil.c                 | 1104 +++++++++++++++++++++++
+ drivers/mtd/nand/gpmi-nfc/nand_device_info.c    |  181 ++++
+ drivers/mtd/nand/gpmi-nfc/nand_device_info.h    |  145 +++
+ drivers/mtd/nand/gpmi-nfc/rom-common.c          |   48 +
+ drivers/mtd/nand/gpmi-nfc/rom-imx23.c           |  300 ++++++
+ drivers/mtd/nand/gpmi-nfc/rom-imx28.c           |   66 ++
+ 31 files changed, 7044 insertions(+), 1 deletions(-)
+ create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi.c
+ create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/Makefile
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/bch-regs-imx23.h
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx23.h
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/hal-common.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/hal-imx23.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/hal-imx28.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/mil.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/nand_device_info.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/nand_device_info.h
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-common.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-imx23.c
+ create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-imx28.c
