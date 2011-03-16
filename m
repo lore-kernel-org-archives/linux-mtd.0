@@ -1,21 +1,14 @@
-From: Huang Shijie-B32955 <B32955@freescale.com>
-To: "dedekind1@gmail.com" <dedekind1@gmail.com>
-Subject: RE: [PATCH 0/7] add the GPMI controller driver for IMX23/IMX28
-Date: Wed, 16 Mar 2011 07:30:59 +0000
-Message-ID: <14C4E31473AF7E4B98176CB73615181C0FDDB5@039-SN1MPN1-001.039d.mgd.msft.net>
-References: <1300240521-4344-1-git-send-email-b32955@freescale.com>
-	<1300259538.2817.0.camel@localhost>
-In-Reply-To: <1300259538.2817.0.camel@localhost>
-Content-Language: en-US
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux@arm.linux.org.uk" <linux@arm.linux.org.uk>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
+Received: from smtp-vbr9.xs4all.nl ([194.109.24.29])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Pzs1c-0005WN-JI
+	for linux-mtd@lists.infradead.org; Wed, 16 Mar 2011 14:48:37 +0000
+From: Maarten ter Huurne <maarten@treewalker.org>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] mtd: nand: Fixed null pointer dereference.
+Date: Wed, 16 Mar 2011 15:47:55 +0100
+Message-Id: <1300286875-21426-1-git-send-email-maarten@treewalker.org>
+Cc: Maarten ter Huurne <maarten@treewalker.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +18,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGk6DQogICBZZXMuDQoNCiAgIFlvdSBjYW4gZG93bmxvYWQgdGhlIGRvY3VtZW50cyBmb3IgaW14
-MjMvaW14MjggaW4gdGhlIGZvbGxvd2luZyBsaW5rczoNCg0KRk9SIElNWDIzOg0KICBodHRwOi8v
-d3d3LmZyZWVzY2FsZS5jb20vZmlsZXMvZHNwL2RvYy9yZWZfbWFudWFsL0lNWDIzUk0ucGRmP2Zw
-c3A9MSZXVF9UWVBFPVJlZmVyZW5jZSUyME1hbnVhbHMmV1RfVkVORE9SPUZSRUVTQ0FMRSZXVF9G
-SUxFX0ZPUk1BVD1wZGYmV1RfQVNTRVQ9RG9jdW1lbnRhdGlvbg0KDQpGT1IgSU1YMjg6DQogIGh0
-dHA6Ly9jYWNoZS5mcmVlc2NhbGUuY29tL2ZpbGVzL2RzcC9kb2MvcmVmX21hbnVhbC9NQ0lNWDI4
-Uk0ucGRmP2ZyPWcNCg0KDQogIFlvdSBjYW4gZmluZCB0aGUgcmVsZXZhbnQgY2hhcHRlcnMgYWJv
-dXQgdGhlIEdQTUkgaW4gdGhlIGRvY3VtZW50cy4NCg0KQmVzdCBSZWdhcmRzDQpIdWFuZyBTaGlq
-aWUNCiAgIA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQXJ0ZW0gQml0eXV0
-c2tpeSBbbWFpbHRvOmRlZGVraW5kMUBnbWFpbC5jb21dIA0KU2VudDogV2VkbmVzZGF5LCBNYXJj
-aCAxNiwgMjAxMSAzOjEyIFBNDQpUbzogSHVhbmcgU2hpamllLUIzMjk1NQ0KQ2M6IGxpbnV4LWFy
-bS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZzsgbGludXhAYXJtLmxpbnV4Lm9yZy51azsgbGlu
-dXgtbXRkQGxpc3RzLmluZnJhZGVhZC5vcmc7IGR3bXcyQGluZnJhZGVhZC5vcmc7IERhdmlkLldv
-b2Rob3VzZUBpbnRlbC5jb20NClN1YmplY3Q6IFJlOiBbUEFUQ0ggMC83XSBhZGQgdGhlIEdQTUkg
-Y29udHJvbGxlciBkcml2ZXIgZm9yIElNWDIzL0lNWDI4DQoNCk9uIFdlZCwgMjAxMS0wMy0xNiBh
-dCAwOTo1NSArMDgwMCwgSHVhbmcgU2hpamllIHdyb3RlOg0KPiBUaGUgZ2VuZXJhbC1wdXJwb3Nl
-IG1lZGlhIGludGVyZmFjZShHUE1JKSBjb250cm9sbGVyIGlzIGEgZmxleGlibGUgDQo+IGludGVy
-ZmFjZSB0byB1cCB0byBzZXZlcmFsIE5BTkQgZmxhc2hzLg0KDQpJcyB0aGVyZSBhbnkgcHVibGlj
-IGRvY3VtZW50YXRpb24gZm9yIHRoaXMgY29udHJvbGxlcj8NCg0KLS0NCkJlc3QgUmVnYXJkcywN
-CkFydGVtIEJpdHl1dHNraXkgKNCQ0YDRgtGR0Lwg0JHQuNGC0Y7RhtC60LjQuSkNCg0KDQo=
+The "bd" argument of verify_bbt_descr() was dereferenced before it was checked for NULL.
+
+Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
+---
+ drivers/mtd/nand/nand_bbt.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
+index 6ebd869..fc05f51 100644
+--- a/drivers/mtd/nand/nand_bbt.c
++++ b/drivers/mtd/nand/nand_bbt.c
+@@ -1101,12 +1101,14 @@ static void mark_bbt_region(struct mtd_info *mtd, struct nand_bbt_descr *td)
+ static void verify_bbt_descr(struct mtd_info *mtd, struct nand_bbt_descr *bd)
+ {
+ 	struct nand_chip *this = mtd->priv;
+-	u32 pattern_len = bd->len;
+-	u32 bits = bd->options & NAND_BBT_NRBITS_MSK;
+-	u32 table_size;
++	u32 pattern_len, bits, table_size;
+ 
+ 	if (!bd)
+ 		return;
++
++	pattern_len = bd->len;
++	bits = bd->options & NAND_BBT_NRBITS_MSK;
++
+ 	BUG_ON((this->options & NAND_USE_FLASH_BBT_NO_OOB) &&
+ 			!(this->options & NAND_USE_FLASH_BBT));
+ 	BUG_ON(!bits);
+-- 
+1.7.1
