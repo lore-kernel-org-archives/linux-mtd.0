@@ -1,20 +1,15 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1PzuWc-0006lA-5F
-	for linux-mtd@lists.infradead.org; Wed, 16 Mar 2011 17:28:47 +0000
-Received: by gxk2 with SMTP id 2so816109gxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 16 Mar 2011 10:28:42 -0700 (PDT)
-Date: Wed, 16 Mar 2011 10:28:33 -0700
-Subject: Recommendations on System Tuning for JFFS2/MTD 128 KiB Block Page
-	Allocation Failures
-From: Grant Erickson <marathon96@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Message-ID: <C9A64151.264E1%marathon96@gmail.com>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
+Message-ID: <4D816FA3.2080202@freescale.com>
+Date: Thu, 17 Mar 2011 10:19:15 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH 1/7] ARM: add GPMI support for imx23/imx28
+References: <1300239773-4222-1-git-send-email-b32955@freescale.com>	<1300239773-4222-2-git-send-email-b32955@freescale.com>	<19840.36163.967469.53941@ipc1.ka-ro>	<4D809453.4090603@freescale.com>
+	<19840.43943.592336.854865@ipc1.ka-ro>
+In-Reply-To: <19840.43943.592336.854865@ipc1.ka-ro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,108 +19,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've an OMAP3 ARM-based embedded system with 256 MiB of NAND flash and 64
-MiB of RAM on Linux 2.6.32 in which both sys_mount (via mount) and sys_read
-(via fw_setenv) occasionally fail with "page allocation failure. order:5,
-mode:0xd0".
+Hi:
 
-In the analysis I've done so far, sys_mount funnels down to
-jffs2_scan_medium which eventually calls kmalloc with a size of 128 KiB (to
-cover a single NAND erase block) and flag GFP_KERNEL:
+> Huang Shijie writes:
+>> Hi Lothar:
+>>> Hi,
+>>>
+>>> All in all I do not like this driver in any way. I already vomitted
+>>> over it, when I saw it in the Freescale BSP.
+>> :)  I have already removed a lot of code.
+>>
+>>> There is no need for the multiple layers of abstraction that are
+>>> papered over the MTD layer.
+>> I think this is good. Make the code clear.
+>>
+> I'll comment when the remaining patch has got through.
+>
+thanks a lot .
 
-    sw/tps/linux/linux/fs/jffs2/scan.c:
-    ...
-    120         /* Respect kmalloc limitations */
-    121         if (buf_size > 128*1024)
-    122             buf_size = 128*1024;
-    123 
-    124         D1(printk(KERN_DEBUG "Allocating readbuf of %d bytes\n",
-buf_si
-   124 ze));
-    125         flashbuf = kmalloc(buf_size, GFP_KERNEL);
-    126         if (!flashbuf)
-    127             return -ENOMEM;
-    128     }
-    ...
 
-The sys_read case winds down to mtd_read which eventually calls kmalloc with
-a size of 128 KiB (to cover a single NAND erase blcok) and flag GFP_KERNEL:
+>>> There is no need for spilling the driver over a dozen files.
+>> I can merge some files into one. thanks.
+>>
+> IMO all the source code could be kept in one file (except for the
+> include files of course) and the gpmi-nfc subdirectory removed.
+I really can merge some files, but IMHO, it's not a good solution to 
+keep all in one file.
 
-    sw/tps/linux/linux/drivers/mtd/mtdchar:
-    ...
-    161     if (count > MAX_KMALLOC_SIZE)
-    162         kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
-    163     else
-    164         kbuf=kmalloc(count, GFP_KERNEL);
-    ...
+The reasons are :
+[1] The GPMI support the NAND boot mode,but the imx23 and imx28 is a 
+little different in
+the NAND boot procedure due the different firmwares in the chips. If I 
+merge the rom-imx23.c
+rom-imx28.c to one file, the code will very mess. ugly enough!
 
-Both of these kmallocs ultimate funnel down to __alloc_pages_nodemask in
-linux/mm/page_alloc.c and falling down to the very bottom of that routine,
-we find that we eventually fall through to the bottom of
-__alloc_pages_slowpath at the 'nopage' label because, ostensibly, no free
-pages could be found on the free page list. The memory information dump
-seems to bear this out with '0' 128 KiB page blocks/slabs available:
+[2]The GPMI driver is just a mini version against the version in the 
+FREESCALE BSP.
+The original GPMI driver also support the IMX508 which is different from 
+the imx23 and imx28.
+The imx508 supports the ONFI NAND and TOGGLE NAND which are DDR mode 
+NAND.So the implement of
+ECC read_page/write_page is much different from the IMX23/IMX28. Because 
+I want to support the
+IMX508 in future, this is why the hal-imx23.c and hal-imx28.c share most 
+the same code,but i still
+remain them in separate, the reason is simple : I will add a 
+hal-imx508.c in future.
 
-    Mem-info:
-    Normal per-cpu:
-    CPU    0: hi:   18, btch:   3 usd:   0
-    active_anon:160 inactive_anon:610 isolated_anon:0
-     active_file:7364 inactive_file:3946 isolated_file:0
-     unevictable:0 dirty:0 writeback:0 unstable:0
-     free:468 slab_reclaimable:257 slab_unreclaimable:1146
-     mapped:1611 shmem:6 pagetables:69 bounce:0
-    Normal free:1872kB min:1016kB low:1268kB high:1524kB active_anon:640kB
-inactive_anon:2440kB active_file:29456kB inactive_file:15784kB
-unevictable:0kB
-isolated(anon):0kB     isolated(file):0kB present:65024kB mlocked:0kB
-dirty:0kB
-writeback:0kB mapped:6444kB shmem:24kB slab_reclaimable:1028kB
-slab_unreclaimable:4584kB kernel_stack:368kB         pagetables:276kB
-unstable:0kB bounce:0kB writeback_tmp:0kB pages_scanned:0 all_unreclaimable?
-no
-    lowmem_reserve[]: 0 0
-    Normal: 58*4kB 15*8kB 25*16kB 21*32kB 7*64kB 0*128kB 0*256kB 0*512kB
-0*1024kB 0*2048kB 0*4096kB = 1872kB
-    11316 total pagecache pages
-    0 pages in swap cache
-    Swap cache stats: add 0, delete 0, find 0/0
-    Free swap  = 0kB
-    Total swap = 0kB
-    16384 pages of RAM
-    562 free pages
-    1915 reserved pages
-    1403 slab pages
-    4075 pages shared
-    0 pages swap cached
+[3]The GPMI driver is a little complicated. The GPMI controller needs 
+other two hardware module to
+work :the BCH module, and the DMA mode.
+      Yes, i can merge the DMA code into other files, but the BCH module 
+should occupy a separate file to
+make the logic clear.
 
-Ostensibly this occurs because of memory fragmentation where any of the
-lower order blocks are are available must be non-contiguous.
+[4] If i packet all the code in one, the gentlemen of MTD mailist, such 
+as David Woodhouse, Artem Bityutskiy ,
+will kill me, :).  what's more the big boy even can not be emailed to 
+arm-kernel maillist.
 
-As an experiment, I call:
 
-    sync
-    sysctl -w vm.drop_caches=3
+> I've been working on this too, but had to abandone it for other tasks
+> several times. :(
+>
+I really apreciate for your review and comments. I just want to make the 
+drive tidy and grace.
 
-and free memory changes accordingly:
+Please point out the ugly part that you regards in free.
 
-    System free memory is currently 10,004 KiB.
-    System free memory is now 39,428 KiB.
+I am very glad you had ever tried to work on this. :)
 
-as reported by /proc/meminfo, before running:
 
-    fw_setenv foo bar
-
-and still see the page allocation failure.
-
-The system is currently configured with the SLAB allocator. Has anyone found
-better fragmentation and low-memory performance with the default SLUB or
-embedded SLOB allocators? How about tweaking:
-
-    vm.min_free_kbytes
-    vm.vfs_cache_pressure
-
-Anyone met with success there?
-
-Best,
-
-Grant Erickson
+Best Regards
+Huang Shijie
