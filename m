@@ -1,26 +1,18 @@
-Received: from ebb06.tieto.com ([131.207.168.38])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q09II-0004jm-06
-	for linux-mtd@lists.infradead.org; Thu, 17 Mar 2011 09:14:58 +0000
-Message-ID: <4D81D35E.5090602@tieto.com>
-Date: Thu, 17 Mar 2011 17:24:46 +0800
-From: Yang Rui Rui <ruirui.r.yang@tieto.com>
-MIME-Version: 1.0
-To: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
-Subject: Re: [PATCH 02/02] force module loaded with partitions set
-References: <20110314015148.GA6827@darkstar>	
-	<1300092195.2727.4.camel@localhost> <4D7DD878.5090903@tieto.com>	
-	<1300092812.2727.9.camel@localhost> <4D7DDC19.6080404@tieto.com>	
-	<1300095199.2727.10.camel@localhost> <4D81CB3E.9030001@tieto.com>
-	<1300351905.2794.7.camel@localhost>
-In-Reply-To: <1300351905.2794.7.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Yang Ruirui R <ruirui.r.yang@tietoenator.com>,
-	"ext-phil.2.carmody@nokia.com" <ext-phil.2.carmody@nokia.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"ext-jani.1.nikula@nokia.com" <ext-jani.1.nikula@nokia.com>
+Message-ID: <19841.58406.756435.967812@ipc1.ka-ro>
+Date: Thu, 17 Mar 2011 11:36:22 +0100
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/7] ARM: add GPMI support for imx23/imx28
+In-Reply-To: <4D816FA3.2080202@freescale.com>
+References: <1300239773-4222-1-git-send-email-b32955@freescale.com>
+	<1300239773-4222-2-git-send-email-b32955@freescale.com>
+	<19840.36163.967469.53941@ipc1.ka-ro>
+	<4D809453.4090603@freescale.com>
+	<19840.43943.592336.854865@ipc1.ka-ro>
+	<4D816FA3.2080202@freescale.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,34 +22,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/17/2011 04:51 PM, Artem Bityutskiy wrote:
-> On Thu, 2011-03-17 at 16:50 +0800, Yang Rui Rui wrote:
->> On 03/14/2011 05:33 PM, Artem Bityutskiy wrote:
->>> On Mon, 2011-03-14 at 17:12 +0800, Yang Rui Rui wrote:
->>>>> I think you should rather re-work the framework a bit and make the
->>>>> "->add_mtd()" call-back return an integer error code. Then we could just
->>>>> return errors on error and prevent the module from being loaded.
->>>>>
->>>>
->>>> I'm thinking is it possible to pass partitions param later? ie. use sysfs attribute?
->>>
->>> It may be possible, but would probably require some work.
->>>
->>
->> mainline mtd&  mtd_blkdev changes a lot since 2.6.32, but there's no
->> way for me to test with linux-mtd tree due to lack real hardware.
->>
->> work on this with 2.6.32 seems not so necessary,
->> So I think I will give up, sorry about that.
->
-> No problem, but as a side note, you can always test on a PC with
-> nandsim. Here is some UBI-related doc, but it gives the idea:
->
-> http://www.linux-mtd.infradead.org/faq/ubi.html#L_how_debug
->
+Hi,
 
-very useful for playing with mtd, thank you.
+Huang Shijie writes:
+> Hi:
+> 
+> > Huang Shijie writes:
+> >> Hi Lothar:
+> >>> Hi,
+> >>>
+> >>> All in all I do not like this driver in any way. I already vomitted
+> >>> over it, when I saw it in the Freescale BSP.
+> >> :)  I have already removed a lot of code.
+> >>
+> >>> There is no need for the multiple layers of abstraction that are
+> >>> papered over the MTD layer.
+> >> I think this is good. Make the code clear.
+> >>
+> > I'll comment when the remaining patch has got through.
+> >
+> thanks a lot .
+> 
+> 
+> >>> There is no need for spilling the driver over a dozen files.
+> >> I can merge some files into one. thanks.
+> >>
+> > IMO all the source code could be kept in one file (except for the
+> > include files of course) and the gpmi-nfc subdirectory removed.
+> I really can merge some files, but IMHO, it's not a good solution to 
+> keep all in one file.
+> 
+> The reasons are :
+> [1] The GPMI support the NAND boot mode,but the imx23 and imx28 is a 
+> little different in
+> the NAND boot procedure due the different firmwares in the chips. If I 
+> merge the rom-imx23.c
+> rom-imx28.c to one file, the code will very mess. ugly enough!
+> 
+You can use platform_ids to differentiate between the versions and
+have separate functions for imx23 and imx28 where appropriate and
+select between those depending on the platform_id.
 
+
+Lothar Waßmann
 -- 
-Thanks
-Yang Ruirui
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
