@@ -1,20 +1,19 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q0aWV-00085B-Kd
-	for linux-mtd@lists.infradead.org; Fri, 18 Mar 2011 14:19:28 +0000
-Received: by wwc33 with SMTP id 33so3464357wwc.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 18 Mar 2011 07:19:25 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 18 Mar 2011 19:49:25 +0530
-Message-ID: <AANLkTi=hrqqOZEu8DF8jm9q0E44fRG5_y9j-sdnBorgP@mail.gmail.com>
-Subject: UBI - EBA table (Erase block association table) - wear leveling
-From: Navaneethan P <pnavanee@gmail.com>
+Received: from mms3.broadcom.com ([216.31.210.19])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q0oCk-0004tg-FG
+	for linux-mtd@lists.infradead.org; Sat, 19 Mar 2011 04:55:59 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: navaneethan.p@aricent.com, "shenbaga.nathan" <shenbaga.nathan@aricent.com>,
-	Stefan.Bigler@keymile.com, Sundararajan.Somasundaram@aricent.com
+Subject: [PATCH 1/2] mtd: nand: renumber conflicting BBT flags
+Date: Fri, 18 Mar 2011 21:53:41 -0700
+Message-ID: <1300510422-4841-1-git-send-email-computersforpeace@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=A0Hi Linux-Mtd users,
+The NAND_USE_FLASH_BBT_NO_OOB and NAND_CREATE_EMPTY_BBT flags conflict
+with the NAND_BBT_SCANBYTE1AND6 and NAND_BBT_DYNAMICSTRUCT flags,
+respectively. This change will allow us to utilize these options
+independently.
 
-We are using UBI over NAND Flash. I have the following dubts.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ include/linux/mtd/nand.h |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-1) UBI stores the volume id table & EBA table in some PEB of the NAND Flash=
-.
-My assumption is that volume id table will always be stored in LEB
-'X'. and UBI will go & read the information during initialization.
-Is my undersatnding correct?
-
-2) One of the assumption is that EBA table is always stored in an PEB.
-Is my assumption correct?
-
-3) I read from the wear leveling subsystem (wl.c), the maximum
-difference between the erase counters of erase blocks will be
-CONFIG_MTD_UBI_WL_THRESHOLD (defined as 4096).
-If the difference exceeds then it will move the data from high EC
-block to low EC block.
-Let me take the case of PEB 'A' stores the EBA table. Because of the
-writting to the flash, EC of PEB 'A' reaches to 4096. As per the
-documentation, it has to be wear leveled to lower EC block. Let me
-assume that this PEB is 'B'. My doubt is "In the next initialization,
-how does the UBI understands that EBA is stored in PEB 'B' instead of
-PEB 'A'?"
-
-4) What happens when PEB which holds EBA table, becomes bad? At that
-time, will system become unusable?
-
-Please help us to clarify the doubt.
-thanks in advance for helping us.
-
-Regards,
-Navaneethan
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index ae67ef5..80b471b 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -237,9 +237,9 @@ typedef enum {
+  * If passed additionally to NAND_USE_FLASH_BBT then BBT code will not touch
+  * the OOB area.
+  */
+-#define NAND_USE_FLASH_BBT_NO_OOB	0x00100000
++#define NAND_USE_FLASH_BBT_NO_OOB	0x00800000
+ /* Create an empty BBT with no vendor information if the BBT is available */
+-#define NAND_CREATE_EMPTY_BBT		0x00200000
++#define NAND_CREATE_EMPTY_BBT		0x01000000
+ 
+ /* Options set by nand scan */
+ /* Nand scan has allocated controller struct */
+-- 
+1.7.0.4
