@@ -1,20 +1,21 @@
+Message-ID: <4D87053A.70701@codeaurora.org>
+Date: Mon, 21 Mar 2011 13:28:50 +0530
+From: Murali Nalajala <mnalajal@codeaurora.org>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
 Subject: Re: [PATCH V2 1/2] mtd: nand: Allow NAND chip ids to be included
 	standalone.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Murali Nalajala <mnalajal@codeaurora.org>
-In-Reply-To: <4D86F295.8040409@codeaurora.org>
-References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-	<1299570622.2754.4.camel@localhost> <4D766A2F.9080001@codeaurora.org>
+References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>	
+	<1299570622.2754.4.camel@localhost>
+	<4D766A2F.9080001@codeaurora.org>	
 	<4D86F295.8040409@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 21 Mar 2011 09:12:31 +0200
-Message-ID: <1300691551.2761.8.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	<1300691551.2761.8.camel@localhost>
+In-Reply-To: <1300691551.2761.8.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-arm-msm@vger.kernel.org, dwmw2@infradead.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mtd@lists.infradead.org, Dima Zavin <dima@android.com>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-03-21 at 12:09 +0530, Murali Nalajala wrote:
-> On 3/8/2011 11:11 PM, Murali Nalajala wrote:
-> > On 3/8/2011 12:50 AM, Artem Bityutskiy wrote:
-> >> On Tue, 2011-03-08 at 05:38 +0530, Murali Nalajala wrote:
-> >>> Lets non-standard NAND drivers take advantage of known NAND
-> >>> chip information.
-> >>>
-> >>> The initial development of msm nand driver, driver uses the supported
-> >>> NAND devices information as a hardcoded table. Remove the existing
-> >>> hardcoded supported flash device table and read the flash device
-> >>> information from the flash id table which are part of the mtd subsystem.
-> >>
-> >> Why this initial version should be upstream? Why wouldn't you make it
-> >> "standard" first?
-> >>
-> >
-> > Currently we are not fully using the MTD nand subsystem. That's the
-> > intention author has introduced "non-standard" here!!!
-> >
-> > Thanks,
-> > Murali N
-> >
-> 
-> Any reviews comments on this change?
+On 3/21/2011 12:42 PM, Artem Bityutskiy wrote:
+> On Mon, 2011-03-21 at 12:09 +0530, Murali Nalajala wrote:
+>> On 3/8/2011 11:11 PM, Murali Nalajala wrote:
+>>> On 3/8/2011 12:50 AM, Artem Bityutskiy wrote:
+>>>> On Tue, 2011-03-08 at 05:38 +0530, Murali Nalajala wrote:
+>>>>> Lets non-standard NAND drivers take advantage of known NAND
+>>>>> chip information.
+>>>>>
+>>>>> The initial development of msm nand driver, driver uses the supported
+>>>>> NAND devices information as a hardcoded table. Remove the existing
+>>>>> hardcoded supported flash device table and read the flash device
+>>>>> information from the flash id table which are part of the mtd subsystem.
+>>>>
+>>>> Why this initial version should be upstream? Why wouldn't you make it
+>>>> "standard" first?
+>>>>
+>>>
+>>> Currently we are not fully using the MTD nand subsystem. That's the
+>>> intention author has introduced "non-standard" here!!!
+>>>
+>>> Thanks,
+>>> Murali N
+>>>
+>>
+>> Any reviews comments on this change?
+>
+> No, I think you should "sell" your driver better than that. Indeed,
+>
+> Q: "Why this initial version should be upstream? Why wouldn't you make
+> it "standard" first?"
+> A: Currently we are not fully using the MTD nand subsystem. That's the
+> intention author has introduced "non-standard" here!!!
+>
 
-No, I think you should "sell" your driver better than that. Indeed,
+The driver (msm_nand.c) is in align to MTD specification.
+But this commit text is bit misleading, initially the driver
+didn't make use of nand flash devices information from the
+flash id table which are part of the MTD subsystem. Hence
+we have enabled this config option to make use of it.
 
-Q: "Why this initial version should be upstream? Why wouldn't you make
-it "standard" first?"
-A: Currently we are not fully using the MTD nand subsystem. That's the
-intention author has introduced "non-standard" here!!!
+Thanks,
+Murali N
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
