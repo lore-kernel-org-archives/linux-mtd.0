@@ -1,21 +1,17 @@
-Message-ID: <4D87053A.70701@codeaurora.org>
-Date: Mon, 21 Mar 2011 13:28:50 +0530
-From: Murali Nalajala <mnalajal@codeaurora.org>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH V2 1/2] mtd: nand: Allow NAND chip ids to be included
-	standalone.
-References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>	
-	<1299570622.2754.4.camel@localhost>
-	<4D766A2F.9080001@codeaurora.org>	
-	<4D86F295.8040409@codeaurora.org>
-	<1300691551.2761.8.camel@localhost>
-In-Reply-To: <1300691551.2761.8.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mtd@lists.infradead.org, Dima Zavin <dima@android.com>
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q1gT9-0006B5-11
+	for linux-mtd@lists.infradead.org; Mon, 21 Mar 2011 14:52:32 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p2LEqPLw024739
+	for <linux-mtd@lists.infradead.org>; Mon, 21 Mar 2011 16:52:26 +0200
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] UBIFS: kill CONFIG_UBIFS_FS_DEBUG_CHKS
+Date: Mon, 21 Mar 2011 16:55:07 +0200
+Message-Id: <1300719307-31169-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,49 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/21/2011 12:42 PM, Artem Bityutskiy wrote:
-> On Mon, 2011-03-21 at 12:09 +0530, Murali Nalajala wrote:
->> On 3/8/2011 11:11 PM, Murali Nalajala wrote:
->>> On 3/8/2011 12:50 AM, Artem Bityutskiy wrote:
->>>> On Tue, 2011-03-08 at 05:38 +0530, Murali Nalajala wrote:
->>>>> Lets non-standard NAND drivers take advantage of known NAND
->>>>> chip information.
->>>>>
->>>>> The initial development of msm nand driver, driver uses the supported
->>>>> NAND devices information as a hardcoded table. Remove the existing
->>>>> hardcoded supported flash device table and read the flash device
->>>>> information from the flash id table which are part of the mtd subsystem.
->>>>
->>>> Why this initial version should be upstream? Why wouldn't you make it
->>>> "standard" first?
->>>>
->>>
->>> Currently we are not fully using the MTD nand subsystem. That's the
->>> intention author has introduced "non-standard" here!!!
->>>
->>> Thanks,
->>> Murali N
->>>
->>
->> Any reviews comments on this change?
->
-> No, I think you should "sell" your driver better than that. Indeed,
->
-> Q: "Why this initial version should be upstream? Why wouldn't you make
-> it "standard" first?"
-> A: Currently we are not fully using the MTD nand subsystem. That's the
-> intention author has introduced "non-standard" here!!!
->
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-The driver (msm_nand.c) is in align to MTD specification.
-But this commit text is bit misleading, initially the driver
-didn't make use of nand flash devices information from the
-flash id table which are part of the MTD subsystem. Hence
-we have enabled this config option to make use of it.
+Simplify UBIFS configuration menu and kill the option to enable self-check
+compile-time. We do not really need this because we can do this run-time
+using the module parameters or the corresponding sysfs interfaces. And
+there is a value in simplifying the kernel configuration menu which becomes
+increasingly large.
 
-Thanks,
-Murali N
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/Kconfig |    9 ---------
+ 1 files changed, 0 insertions(+), 9 deletions(-)
 
+diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+index 1d1859d..d744090 100644
+--- a/fs/ubifs/Kconfig
++++ b/fs/ubifs/Kconfig
+@@ -58,12 +58,3 @@ config UBIFS_FS_DEBUG
+ 	  down UBIFS. You can then further enable / disable individual  debugging
+ 	  features using UBIFS module parameters and the corresponding sysfs
+ 	  interfaces.
+-
+-config UBIFS_FS_DEBUG_CHKS
+-	bool "Enable extra checks"
+-	depends on UBIFS_FS_DEBUG
+-	help
+-	  If extra checks are enabled UBIFS will check the consistency of its
+-	  internal data structures during operation. However, UBIFS performance
+-	  is dramatically slower when this option is selected especially if the
+-	  file system is large.
 -- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+1.7.2.3
