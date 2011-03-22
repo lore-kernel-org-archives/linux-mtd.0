@@ -1,16 +1,18 @@
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q20v0-0006RC-HC
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 12:42:39 +0000
+	id 1Q20va-0006Rz-Rb
+	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 12:43:15 +0000
 Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2MCgaXR030507
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2011 14:42:36 +0200
+	by mgw-da02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p2MChCAM014161
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2011 14:43:12 +0200
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI: check if we are in RO mode in the erase routine
-Date: Tue, 22 Mar 2011 14:45:02 +0200
-Message-Id: <1300797902-1899-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 2/2] UBI: cleanup comments around volume properties
+Date: Tue, 22 Mar 2011 14:45:53 +0200
+Message-Id: <1300797953-1976-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1300797953-1976-1-git-send-email-dedekind1@gmail.com>
+References: <1300797953-1976-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,42 +25,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-'do_sync_erase()' has to check whether we are in R/O mode before
-erasing the PEB. This patch adds the check and while on it, adds an
-assertion which validates the 'pnum' argument, as well as removes
-a check which is always true because it has already been done
-few lines before.
+Cleanup and improve commentaries around the "set volume properties" ioctl,
+make a simple indentation fix as well.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/io.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ include/mtd/ubi-user.h |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index aaa6e1e..9342074 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -344,6 +344,12 @@ static int do_sync_erase(struct ubi_device *ubi, int pnum)
- 	wait_queue_head_t wq;
+diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
+index 8d8484b..e70bd34 100644
+--- a/include/mtd/ubi-user.h
++++ b/include/mtd/ubi-user.h
+@@ -224,13 +224,14 @@ enum {
+ };
  
- 	dbg_io("erase PEB %d", pnum);
-+	ubi_assert(pnum >= 0 && pnum < ubi->peb_count);
-+
-+	if (ubi->ro_mode) {
-+		ubi_err("read-only mode");
-+		return -EROFS;
-+	}
+ /*
+- * UBI set property ioctl constants
++ * UBI set volume property ioctl constants.
+  *
+- * @UBI_VOL_PROP_DIRECT_WRITE: allow / disallow user to directly write and
+- *                             erase individual eraseblocks on dynamic volumes
++ * @UBI_VOL_PROP_DIRECT_WRITE: allow (any non-zero value) or disallow (value 0)
++ *                             user to directly write and erase individual
++ *                             eraseblocks on dynamic volumes
+  */
+ enum {
+-       UBI_VOL_PROP_DIRECT_WRITE = 1,
++	UBI_VOL_PROP_DIRECT_WRITE = 1,
+ };
  
- retry:
- 	init_waitqueue_head(&wq);
-@@ -390,7 +396,7 @@ retry:
- 	if (err)
- 		return err;
+ /**
+@@ -398,7 +399,7 @@ struct ubi_map_req {
  
--	if (ubi_dbg_is_erase_failure() && !err) {
-+	if (ubi_dbg_is_erase_failure()) {
- 		dbg_err("cannot erase PEB %d (emulated)", pnum);
- 		return -EIO;
- 	}
+ 
+ /**
+- * struct ubi_set_vol_prop_req - a data structure used to set an ubi volume
++ * struct ubi_set_vol_prop_req - a data structure used to set an UBI volume
+  *                               property.
+  * @property: property to set (%UBI_VOL_PROP_DIRECT_WRITE)
+  * @padding: reserved for future, not used, has to be zeroed
 -- 
 1.7.2.3
