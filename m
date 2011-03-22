@@ -1,20 +1,21 @@
-Received: from eu1sys200aog114.obsmtp.com ([207.126.144.137])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q1tKo-00039v-PS
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 04:36:48 +0000
-Message-ID: <4D882750.6090706@st.com>
-Date: Tue, 22 Mar 2011 10:06:32 +0530
-From: viresh kumar <viresh.kumar@st.com>
+Message-ID: <4D884489.1040205@codeaurora.org>
+Date: Tue, 22 Mar 2011 12:11:13 +0530
+From: Murali Nalajala <mnalajal@codeaurora.org>
 MIME-Version: 1.0
-To: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>,
-	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
-Subject: Re: [PATCH] Newly erased page read workaround
-References: <c7baa4a77775b54f2ef8450d8d1f44d1dc011b41.1298527669.git.viresh.kumar@st.com>
-In-Reply-To: <c7baa4a77775b54f2ef8450d8d1f44d1dc011b41.1298527669.git.viresh.kumar@st.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+To: dedekind1@gmail.com
+Subject: Re: [PATCH V2 1/2] mtd: nand: Allow NAND chip ids to be included
+	standalone.
+References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>	
+	<1299570622.2754.4.camel@localhost>
+	<4D766A2F.9080001@codeaurora.org>	
+	<4D86F295.8040409@codeaurora.org>
+	<1300691551.2761.8.camel@localhost> <4D87053A.70701@codeaurora.org>
+In-Reply-To: <4D87053A.70701@codeaurora.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Vipin KUMAR <vipin.kumar@st.com>, Shiraz HASHIM <shiraz.hashim@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-arm-msm@vger.kernel.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mtd@lists.infradead.org, Dima Zavin <dima@android.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +25,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/24/2011 11:40 AM, Viresh KUMAR wrote:
-> From: Vipin Kumar <vipin.kumar@st.com>
-> 
-> A newly erased page contains ff in data as well as spare area. While reading an
-> erased page, the read out ecc from spare area does not match the ecc generated
-> by fsmc ecc hardware accelarator. This is because ecc of data ff ff is not ff
-> ff. This leads to errors when jffs2 fs erases and reads back the pages to
-> ensure consistency.
-> 
-> This patch adds a software workaround to ensure that the ecc check is not
-> performed for erased pages. An erased page is checked by checking data as ff ff.
-> 
-> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
-> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
-> Acked-by: Linus Walleij <linus.walleij@stericsson.com>
+On 3/21/2011 1:28 PM, Murali Nalajala wrote:
+> On 3/21/2011 12:42 PM, Artem Bityutskiy wrote:
+>> On Mon, 2011-03-21 at 12:09 +0530, Murali Nalajala wrote:
+>>> On 3/8/2011 11:11 PM, Murali Nalajala wrote:
+>>>> On 3/8/2011 12:50 AM, Artem Bityutskiy wrote:
+>>>>> On Tue, 2011-03-08 at 05:38 +0530, Murali Nalajala wrote:
+>>>>>> Lets non-standard NAND drivers take advantage of known NAND
+>>>>>> chip information.
+>>>>>>
+>>>>>> The initial development of msm nand driver, driver uses the supported
+>>>>>> NAND devices information as a hardcoded table. Remove the existing
+>>>>>> hardcoded supported flash device table and read the flash device
+>>>>>> information from the flash id table which are part of the mtd
+>>>>>> subsystem.
+>>>>>
+>>>>> Why this initial version should be upstream? Why wouldn't you make it
+>>>>> "standard" first?
+>>>>>
+>>>>
+>>>> Currently we are not fully using the MTD nand subsystem. That's the
+>>>> intention author has introduced "non-standard" here!!!
+>>>>
+>>>> Thanks,
+>>>> Murali N
+>>>>
+>>>
+>>> Any reviews comments on this change?
+>>
+>> No, I think you should "sell" your driver better than that. Indeed,
+>>
+>> Q: "Why this initial version should be upstream? Why wouldn't you make
+>> it "standard" first?"
+>> A: Currently we are not fully using the MTD nand subsystem. That's the
+>> intention author has introduced "non-standard" here!!!
+>>
+>
+> The driver (msm_nand.c) is in align to MTD specification.
+> But this commit text is bit misleading, initially the driver
+> didn't make use of nand flash devices information from the
+> flash id table which are part of the MTD subsystem. Hence
+> we have enabled this config option to make use of it.
+>
+> Thanks,
+> Murali N
+>
 
-Artem, David,
+Hi,
+Still you have any issues/comments?
 
-Have you pushed this patch for 39-rc1?
+Thanks,
+Murali N
 
 -- 
-viresh
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
