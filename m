@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q20Sv-00066s-H1
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 12:13:39 +0000
+	id 1Q20v0-0006RC-HC
+	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 12:42:39 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2MCDYdm027148
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2011 14:13:34 +0200
-From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: Use fallback in memory allocation for mtd_{read,write}
-Date: Tue, 22 Mar 2011 14:13:29 +0200
-Message-Id: <1300796009-15019-1-git-send-email-jarkko.lavinen@nokia.com>
-Cc: jarkko.lavinen@nokia.com
+	p2MCgaXR030507
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2011 14:42:36 +0200
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH] UBI: check if we are in RO mode in the erase routine
+Date: Tue, 22 Mar 2011 14:45:02 +0200
+Message-Id: <1300797902-1899-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,107 +21,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kmalloc used in mtd_read() and mtd_write() can fail if the request
-size is large and memory is fragmented.  Use fall-back mechanism which
-will quietly retry the allocation by halving the allocation size in each
-retry.
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Signed-off-by: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+'do_sync_erase()' has to check whether we are in R/O mode before
+erasing the PEB. This patch adds the check and while on it, adds an
+assertion which validates the 'pnum' argument, as well as removes
+a check which is always true because it has already been done
+few lines before.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/mtdchar.c |   44 ++++++++++++++++++++++++++++++--------------
- 1 files changed, 30 insertions(+), 14 deletions(-)
+ drivers/mtd/ubi/io.c |    8 +++++++-
+ 1 files changed, 7 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 145b3d0d..18263d8 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -171,12 +171,33 @@ static int mtd_close(struct inode *inode, struct file *file)
- */
- #define MAX_KMALLOC_SIZE 0x20000
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index aaa6e1e..9342074 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -344,6 +344,12 @@ static int do_sync_erase(struct ubi_device *ubi, int pnum)
+ 	wait_queue_head_t wq;
  
-+static void *mtd_buf_alloc(size_t *size)
-+{
-+	void *kbuf;
-+	size_t next;
+ 	dbg_io("erase PEB %d", pnum);
++	ubi_assert(pnum >= 0 && pnum < ubi->peb_count);
 +
-+	if (*size > MAX_KMALLOC_SIZE)
-+		*size = MAX_KMALLOC_SIZE;
-+
-+	kbuf = kmalloc(*size, GFP_KERNEL | __GFP_NOWARN);
-+	next = 1 << (fls(*size - 1) - 1);
-+
-+	while (!kbuf && next >= PAGE_SIZE) {
-+		*size = next;
-+		next /= 2;
-+		kbuf = kmalloc(*size, GFP_KERNEL | __GFP_NOWARN);
++	if (ubi->ro_mode) {
++		ubi_err("read-only mode");
++		return -EROFS;
 +	}
-+
-+	return kbuf;
-+}
-+
- static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t *ppos)
- {
- 	struct mtd_file_info *mfi = file->private_data;
- 	struct mtd_info *mtd = mfi->mtd;
- 	size_t retlen=0;
- 	size_t total_retlen=0;
-+	size_t alloc;
- 	int ret=0;
- 	int len;
- 	char *kbuf;
-@@ -192,18 +213,14 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
- 	/* FIXME: Use kiovec in 2.5 to lock down the user's buffers
- 	   and pass them directly to the MTD functions */
  
--	if (count > MAX_KMALLOC_SIZE)
--		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
--	else
--		kbuf=kmalloc(count, GFP_KERNEL);
--
-+	alloc = count;
-+	kbuf = mtd_buf_alloc(&alloc);
- 	if (!kbuf)
- 		return -ENOMEM;
+ retry:
+ 	init_waitqueue_head(&wq);
+@@ -390,7 +396,7 @@ retry:
+ 	if (err)
+ 		return err;
  
- 	while (count) {
--
--		if (count > MAX_KMALLOC_SIZE)
--			len = MAX_KMALLOC_SIZE;
-+		if (count > alloc)
-+			len = alloc;
- 		else
- 			len = count;
- 
-@@ -271,6 +288,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
- 	char *kbuf;
- 	size_t retlen;
- 	size_t total_retlen=0;
-+	size_t alloc;
- 	int ret=0;
- 	int len;
- 
-@@ -285,18 +303,16 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
- 	if (!count)
- 		return 0;
- 
--	if (count > MAX_KMALLOC_SIZE)
--		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
--	else
--		kbuf=kmalloc(count, GFP_KERNEL);
-+	alloc = count;
-+	kbuf = mtd_buf_alloc(&alloc);
- 
- 	if (!kbuf)
- 		return -ENOMEM;
- 
- 	while (count) {
- 
--		if (count > MAX_KMALLOC_SIZE)
--			len = MAX_KMALLOC_SIZE;
-+		if (count > alloc)
-+			len = alloc;
- 		else
- 			len = count;
- 
+-	if (ubi_dbg_is_erase_failure() && !err) {
++	if (ubi_dbg_is_erase_failure()) {
+ 		dbg_err("cannot erase PEB %d (emulated)", pnum);
+ 		return -EIO;
+ 	}
 -- 
-1.7.2.5
+1.7.2.3
