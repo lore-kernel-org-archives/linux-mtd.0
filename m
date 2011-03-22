@@ -1,20 +1,17 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q20NV-00063q-KM
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 12:08:02 +0000
-Received: by bwz1 with SMTP id 1so6392051bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Mar 2011 05:07:58 -0700 (PDT)
-Date: Tue, 22 Mar 2011 14:11:02 +0200
-From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] jffs2: unused variables cleanup in jffs2_lookup and
-	jffs2_readdir
-Message-ID: <20110322121102.GC5086@swordfish.minsk.epam.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+	id 1Q20Sv-00066s-H1
+	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 12:13:39 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p2MCDYdm027148
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2011 14:13:34 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: Use fallback in memory allocation for mtd_{read,write}
+Date: Tue, 22 Mar 2011 14:13:29 +0200
+Message-Id: <1300796009-15019-1-git-send-email-jarkko.lavinen@nokia.com>
+Cc: jarkko.lavinen@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +21,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-jffs2: cleanup unused jffs2_sb_info *c variable and JFFS2_SB_INFO call from jffs2_lookup 
-and jffs2_readdir
+Kmalloc used in mtd_read() and mtd_write() can fail if the request
+size is large and memory is fragmented.  Use fall-back mechanism which
+will quietly retry the allocation by halving the allocation size in each
+retry.
 
-Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-
+Signed-off-by: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 ---
+ drivers/mtd/mtdchar.c |   44 ++++++++++++++++++++++++++++++--------------
+ 1 files changed, 30 insertions(+), 14 deletions(-)
 
- fs/jffs2/dir.c |    4 ----
- 1 files changed, 0 insertions(+), 4 deletions(-)
-
-diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index 82faddd..4bca6a2 100644
---- a/fs/jffs2/dir.c
-+++ b/fs/jffs2/dir.c
-@@ -75,7 +75,6 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
- 				   struct nameidata *nd)
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 145b3d0d..18263d8 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -171,12 +171,33 @@ static int mtd_close(struct inode *inode, struct file *file)
+ */
+ #define MAX_KMALLOC_SIZE 0x20000
+ 
++static void *mtd_buf_alloc(size_t *size)
++{
++	void *kbuf;
++	size_t next;
++
++	if (*size > MAX_KMALLOC_SIZE)
++		*size = MAX_KMALLOC_SIZE;
++
++	kbuf = kmalloc(*size, GFP_KERNEL | __GFP_NOWARN);
++	next = 1 << (fls(*size - 1) - 1);
++
++	while (!kbuf && next >= PAGE_SIZE) {
++		*size = next;
++		next /= 2;
++		kbuf = kmalloc(*size, GFP_KERNEL | __GFP_NOWARN);
++	}
++
++	return kbuf;
++}
++
+ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t *ppos)
  {
- 	struct jffs2_inode_info *dir_f;
--	struct jffs2_sb_info *c;
- 	struct jffs2_full_dirent *fd = NULL, *fd_list;
- 	uint32_t ino = 0;
- 	struct inode *inode = NULL;
-@@ -86,7 +85,6 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
- 		return ERR_PTR(-ENAMETOOLONG);
+ 	struct mtd_file_info *mfi = file->private_data;
+ 	struct mtd_info *mtd = mfi->mtd;
+ 	size_t retlen=0;
+ 	size_t total_retlen=0;
++	size_t alloc;
+ 	int ret=0;
+ 	int len;
+ 	char *kbuf;
+@@ -192,18 +213,14 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
+ 	/* FIXME: Use kiovec in 2.5 to lock down the user's buffers
+ 	   and pass them directly to the MTD functions */
  
- 	dir_f = JFFS2_INODE_INFO(dir_i);
--	c = JFFS2_SB_INFO(dir_i->i_sb);
+-	if (count > MAX_KMALLOC_SIZE)
+-		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
+-	else
+-		kbuf=kmalloc(count, GFP_KERNEL);
+-
++	alloc = count;
++	kbuf = mtd_buf_alloc(&alloc);
+ 	if (!kbuf)
+ 		return -ENOMEM;
  
- 	mutex_lock(&dir_f->sem);
+ 	while (count) {
+-
+-		if (count > MAX_KMALLOC_SIZE)
+-			len = MAX_KMALLOC_SIZE;
++		if (count > alloc)
++			len = alloc;
+ 		else
+ 			len = count;
  
-@@ -119,7 +117,6 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
- static int jffs2_readdir(struct file *filp, void *dirent, filldir_t filldir)
- {
- 	struct jffs2_inode_info *f;
--	struct jffs2_sb_info *c;
- 	struct inode *inode = filp->f_path.dentry->d_inode;
- 	struct jffs2_full_dirent *fd;
- 	unsigned long offset, curofs;
-@@ -127,7 +124,6 @@ static int jffs2_readdir(struct file *filp, void *dirent, filldir_t filldir)
- 	D1(printk(KERN_DEBUG "jffs2_readdir() for dir_i #%lu\n", filp->f_path.dentry->d_inode->i_ino));
+@@ -271,6 +288,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
+ 	char *kbuf;
+ 	size_t retlen;
+ 	size_t total_retlen=0;
++	size_t alloc;
+ 	int ret=0;
+ 	int len;
  
- 	f = JFFS2_INODE_INFO(inode);
--	c = JFFS2_SB_INFO(inode->i_sb);
+@@ -285,18 +303,16 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
+ 	if (!count)
+ 		return 0;
  
- 	offset = filp->f_pos;
+-	if (count > MAX_KMALLOC_SIZE)
+-		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
+-	else
+-		kbuf=kmalloc(count, GFP_KERNEL);
++	alloc = count;
++	kbuf = mtd_buf_alloc(&alloc);
  
+ 	if (!kbuf)
+ 		return -ENOMEM;
+ 
+ 	while (count) {
+ 
+-		if (count > MAX_KMALLOC_SIZE)
+-			len = MAX_KMALLOC_SIZE;
++		if (count > alloc)
++			len = alloc;
+ 		else
+ 			len = count;
+ 
+-- 
+1.7.2.5
