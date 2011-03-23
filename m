@@ -1,22 +1,16 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q2DNm-00038S-Jk
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 02:01:11 +0000
-Received: by iyf40 with SMTP id 40so9140956iyf.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Mar 2011 19:01:08 -0700 (PDT)
-From: Valerie Aurora <valerie.aurora@gmail.com>
-To: linux-fsdevel@vger.kernel.org,
-	linux@vger.kernel.org
-Subject: [PATCH 17/74] fallthru: jffs2 fallthru support
-Date: Tue, 22 Mar 2011 18:58:53 -0700
-Message-Id: <1300845590-14184-18-git-send-email-valerie.aurora@gmail.com>
-In-Reply-To: <1300845590-14184-1-git-send-email-valerie.aurora@gmail.com>
-References: <1300845590-14184-1-git-send-email-valerie.aurora@gmail.com>
-Cc: Felix Fietkau <nbd@openwrt.org>, Valerie Aurora <valerie.aurora@gmail.com>,
-	Valerie Aurora <vaurora@redhat.com>,
-	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
-	David Woodhouse <dwmw2@infradead.org>
+Message-ID: <4D8964F4.3070104@freescale.com>
+Date: Wed, 23 Mar 2011 11:11:48 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH 5/7] add GPMI support for imx28
+References: <1300239773-4222-1-git-send-email-b32955@freescale.com>	<1300239773-4222-6-git-send-email-b32955@freescale.com>
+	<19848.39439.380861.195051@ipc1.ka-ro>
+In-Reply-To: <19848.39439.380861.195051@ipc1.ka-ro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux@arm.linux.org.uk, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,142 +20,303 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Felix Fietkau <nbd@openwrt.org>
+Hi Lothar:
 
-Add support for fallthru dentries to jffs2.
+    Thanks a lot for your carefully review.
 
-XXX - untested changes from David Woodhouse and Valerie Aurora.
 
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-Signed-off-by: Valerie Aurora <vaurora@redhat.com>
-Signed-off-by: Valerie Aurora <valerie.aurora@gmail.com>
----
- fs/jffs2/dir.c        |   44 ++++++++++++++++++++++++++++++++++++++++----
- include/linux/jffs2.h |    6 ++++++
- 2 files changed, 46 insertions(+), 4 deletions(-)
+> Hi,
+>
+> some general comments:
+> - Why are you not using the existing nand_ids but inventing your own
+>    database?
+>
+The nand_ids{} contains poor information for me.
+Such as :
+[1]The nand_ids does not have the enough information for the page 
+size,oob size for some new NANDs.
+    And you can not get the information from parsing the NAND ids, such 
+as some Micron NANDs.
 
-diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
-index a5dbf12..dc0e01e 100644
---- a/fs/jffs2/dir.c
-+++ b/fs/jffs2/dir.c
-@@ -36,6 +36,7 @@ static int jffs2_rename (struct inode *, struct dentry *,
- 			 struct inode *, struct dentry *);
- 
- static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
-+static int jffs2_fallthru (struct inode *, struct dentry *);
- 
- const struct file_operations jffs2_dir_operations =
- {
-@@ -60,6 +61,7 @@ const struct inode_operations jffs2_dir_inode_operations =
- 	.rename =	jffs2_rename,
- 	.check_acl =	jffs2_check_acl,
- 	.whiteout =     jffs2_whiteout,
-+	.fallthru =     jffs2_fallthru,
- 	.setattr =	jffs2_setattr,
- 	.setxattr =	jffs2_setxattr,
- 	.getxattr =	jffs2_getxattr,
-@@ -104,10 +106,14 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
- 	}
- 	if (fd) {
- 		spin_lock(&target->d_lock);
--		if (fd->type == DT_WHT)
-+		switch (fd->type) {
-+		case DT_WHT:
- 			target->d_flags |= DCACHE_WHITEOUT;
--		else
-+		case JFFS2_DT_FALLTHRU:
-+			target->d_flags |= DCACHE_FALLTHRU;
-+		default:
- 			ino = fd->ino;
-+		}
- 		spin_unlock(&target->d_lock);
- 	}
- 	mutex_unlock(&dir_f->sem);
-@@ -132,6 +138,8 @@ static int jffs2_readdir(struct file *filp, void *dirent, filldir_t filldir)
- 	struct inode *inode = filp->f_path.dentry->d_inode;
- 	struct jffs2_full_dirent *fd;
- 	unsigned long offset, curofs;
-+	ino_t ino;
-+	char d_type;
- 
- 	D1(printk(KERN_DEBUG "jffs2_readdir() for dir_i #%lu\n", filp->f_path.dentry->d_inode->i_ino));
- 
-@@ -165,13 +173,20 @@ static int jffs2_readdir(struct file *filp, void *dirent, filldir_t filldir)
- 				  fd->name, fd->ino, fd->type, curofs, offset));
- 			continue;
- 		}
--		if (!fd->ino) {
-+		if (fd->type == JFFS2_DT_FALLTHRU) {
-+			/* XXX placeholder until generic_readdir_fallthru() arrives */
-+			ino = 1;
-+			d_type = DT_UNKNOWN;
-+		} else if (!fd->ino && (fd->type != DT_WHT)) {
- 			D2(printk(KERN_DEBUG "Skipping deletion dirent \"%s\"\n", fd->name));
- 			offset++;
- 			continue;
-+		} else {
-+			ino = fd->ino;
-+			d_type = fd->type;
- 		}
- 		D2(printk(KERN_DEBUG "Dirent %ld: \"%s\", ino #%u, type %d\n", offset, fd->name, fd->ino, fd->type));
--		if (filldir(dirent, fd->name, strlen(fd->name), offset, fd->ino, fd->type) < 0)
-+		if (filldir(dirent, fd->name, strlen(fd->name), offset, ino, d_type) < 0)
- 			break;
- 		offset++;
- 	}
-@@ -791,6 +806,26 @@ static int jffs2_mknod (struct inode *dir_i, struct dentry *dentry, int mode, de
- 	return ret;
- }
- 
-+static int jffs2_fallthru (struct inode *dir, struct dentry *dentry)
-+{
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(dir->i_sb);
-+	uint32_t now;
-+	int ret;
-+
-+	now = get_seconds();
-+	ret = jffs2_do_link(c, JFFS2_INODE_INFO(dir), 0, DT_UNKNOWN,
-+			    dentry->d_name.name, dentry->d_name.len, now);
-+	if (ret)
-+		return ret;
-+
-+	d_instantiate(dentry, NULL);
-+	spin_lock(&dentry->d_lock);
-+	dentry->d_flags |= DCACHE_FALLTHRU;
-+	spin_unlock(&dentry->d_lock);
-+
-+	return 0;
-+}
-+
- static int jffs2_whiteout (struct inode *dir, struct dentry *old_dentry,
- 			   struct dentry *new_dentry)
- {
-@@ -823,6 +858,7 @@ static int jffs2_whiteout (struct inode *dir, struct dentry *old_dentry,
- 		return ret;
- 
- 	spin_lock(&new_dentry->d_lock);
-+	new_dentry->d_flags &= ~DCACHE_FALLTHRU;
- 	new_dentry->d_flags |= DCACHE_WHITEOUT;
- 	spin_unlock(&new_dentry->d_lock);
- 	d_add(new_dentry, NULL);
-diff --git a/include/linux/jffs2.h b/include/linux/jffs2.h
-index 6404e01..1749127 100644
---- a/include/linux/jffs2.h
-+++ b/include/linux/jffs2.h
-@@ -115,6 +115,12 @@ struct jffs2_unknown_node
- 	jint32_t hdr_crc;
- };
- 
-+/*
-+ * Non-standard directory entry type(s), for on-disk use
-+ */
-+
-+#define                JFFS2_DT_FALLTHRU       (DT_WHT + 1)
-+
- struct jffs2_raw_dirent
- {
- 	jint16_t magic;
--- 
-1.7.0.4
+[2]I need the timing information of the NAND. The nand_ids DOES not have 
+it. I have to
+    read the datasheet of the NAND, and add it to my database.
+
+[3]I need the information about the error Management for BCH.
+    The BCH module needs to know the ECC information of the NAND, the 
+nand_ids{} does not have it.
+Different NANDs may have different ECC requires such as "Minimum 
+required ECC".
+
+
+> - What is the purpose of the 'rom_helpers'? To me it looks like they
+>    are doing something that should be done in the mtd partition
+>    handlers, not in the flash chip driver.
+>
+We have saled a lot products based the imx23 or imx28.
+All the products support the nand boot mode by flashing the kernel to 
+the kernel partitions of the nands.
+In order to compliant to the old product, the layout of the nand is 
+constraint to the current situation:
+[1] first a boot partition for the kernel.
+[2] the rest is for other uses, such as rootfs.
+
+So I have to use the rom_helpers to split the kernel partition before 
+the real MTD partition initializations.
+
+
+
+> Huang Shijie writes:
+>> These files contain the code to implement the GPMI in the imx28.
+>>
+>> Signed-off-by: Huang Shijie<b32955@freescale.com>
+>> ---
+>>   drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h  |  557 +++++++++++++++++++++++++++
+>>   drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h |  421 ++++++++++++++++++++
+>>   drivers/mtd/nand/gpmi-nfc/hal-imx28.c       |  503 ++++++++++++++++++++++++
+>>   drivers/mtd/nand/gpmi-nfc/rom-imx28.c       |   66 ++++
+>>   4 files changed, 1547 insertions(+), 0 deletions(-)
+>>   create mode 100644 drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h
+>>   create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h
+>>   create mode 100644 drivers/mtd/nand/gpmi-nfc/hal-imx28.c
+>>   create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-imx28.c
+>>
+>> diff --git a/drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h b/drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h
+>> new file mode 100644
+>> index 0000000..692db08
+>> --- /dev/null
+>> +++ b/drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h
+>> @@ -0,0 +1,557 @@
+>> +/*
+>> + * Freescale GPMI NFC NAND Flash Driver
+>> + *
+>> + * Copyright 2008-2010 Freescale Semiconductor, Inc. All Rights Reserved.
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program; if not, write to the Free Software
+>> + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+>> + *
+>> + * Xml Revision: 2.5
+>> + * Template revision: 26195
+>> + */
+>> +
+>> +#ifndef __GPMI_NFC_BCH_REGS_H
+>> +#define __GPMI_NFC_BCH_REGS_H
+>> +
+>> +/*============================================================================*/
+>> +
+>> +#define HW_BCH_CTRL	(0x00000000)
+>> +#define HW_BCH_CTRL_SET	(0x00000004)
+>> +#define HW_BCH_CTRL_CLR	(0x00000008)
+>> +#define HW_BCH_CTRL_TOG	(0x0000000c)
+>>
+> No need for parens around bare numbers.
+>
+Ok. Frankly speaking, the file is auto created by some tools from the 
+hardware info.
+>> +#define BM_BCH_CTRL_SFTRST	0x80000000
+>> +#define BV_BCH_CTRL_SFTRST__RUN   0x0
+>> +#define BV_BCH_CTRL_SFTRST__RESET 0x1
+>> +#define BM_BCH_CTRL_CLKGATE	0x40000000
+>> +#define BV_BCH_CTRL_CLKGATE__RUN     0x0
+>> +#define BV_BCH_CTRL_CLKGATE__NO_CLKS 0x1
+>> +#define BP_BCH_CTRL_RSVD5	23
+>> +#define BM_BCH_CTRL_RSVD5	0x3F800000
+>> +#define BF_BCH_CTRL_RSVD5(v)  \
+>> +		(((v)<<  23)&  BM_BCH_CTRL_RSVD5)
+>> +#define BM_BCH_CTRL_DEBUGSYNDROME	0x00400000
+>> +#define BP_BCH_CTRL_RSVD4	20
+>> +#define BM_BCH_CTRL_RSVD4	0x00300000
+>> +#define BF_BCH_CTRL_RSVD4(v)  \
+>> +		(((v)<<  20)&  BM_BCH_CTRL_RSVD4)
+>> +#define BP_BCH_CTRL_M2M_LAYOUT	18
+>> +#define BM_BCH_CTRL_M2M_LAYOUT	0x000C0000
+>> +#define BF_BCH_CTRL_M2M_LAYOUT(v)  \
+>> +		(((v)<<  18)&  BM_BCH_CTRL_M2M_LAYOUT)
+>> +#define BM_BCH_CTRL_M2M_ENCODE	0x00020000
+>> +#define BM_BCH_CTRL_M2M_ENABLE	0x00010000
+>> +#define BP_BCH_CTRL_RSVD3	11
+>> +#define BM_BCH_CTRL_RSVD3	0x0000F800
+>> +#define BF_BCH_CTRL_RSVD3(v)  \
+>> +		(((v)<<  11)&  BM_BCH_CTRL_RSVD3)
+>> +#define BM_BCH_CTRL_DEBUG_STALL_IRQ_EN	0x00000400
+>> +#define BM_BCH_CTRL_RSVD2	0x00000200
+>> +#define BM_BCH_CTRL_COMPLETE_IRQ_EN	0x00000100
+>> +#define BP_BCH_CTRL_RSVD1	4
+>> +#define BM_BCH_CTRL_RSVD1	0x000000F0
+>> +#define BF_BCH_CTRL_RSVD1(v)  \
+>> +		(((v)<<  4)&  BM_BCH_CTRL_RSVD1)
+>> +#define BM_BCH_CTRL_BM_ERROR_IRQ	0x00000008
+>> +#define BM_BCH_CTRL_DEBUG_STALL_IRQ	0x00000004
+>> +#define BM_BCH_CTRL_RSVD0	0x00000002
+>> +#define BM_BCH_CTRL_COMPLETE_IRQ	0x00000001
+>> +
+> [...]
+> Messed up indentation. Also, use TAB instead of spaces for indentation.
+>
+ditto
+>> diff --git a/drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h b/drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h
+>> new file mode 100644
+>> index 0000000..dcb3b7d
+>> --- /dev/null
+>> +++ b/drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h
+>> @@ -0,0 +1,421 @@
+>> +/*
+>> + * Freescale GPMI NFC NAND Flash Driver
+>> + *
+>> + * Copyright 2008-2010 Freescale Semiconductor, Inc. All Rights Reserved.
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program; if not, write to the Free Software
+>> + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+>> + *
+>> + * Xml Revision: 2.2
+>> + * Template revision: 26195
+>> + */
+>> +
+>> +#ifndef __GPMI_NFC_GPMI_REGS_H
+>> +#define __GPMI_NFC_GPMI_REGS_H
+>> +
+>> +/*============================================================================*/
+>> +
+>> +#define HW_GPMI_CTRL0	(0x00000000)
+>> +#define HW_GPMI_CTRL0_SET	(0x00000004)
+>> +#define HW_GPMI_CTRL0_CLR	(0x00000008)
+>> +#define HW_GPMI_CTRL0_TOG	(0x0000000c)
+>> +
+>> +#define BM_GPMI_CTRL0_SFTRST	0x80000000
+>> +#define BV_GPMI_CTRL0_SFTRST__RUN   0x0
+>> +#define BV_GPMI_CTRL0_SFTRST__RESET 0x1
+>> +#define BM_GPMI_CTRL0_CLKGATE	0x40000000
+>> +#define BV_GPMI_CTRL0_CLKGATE__RUN     0x0
+>> +#define BV_GPMI_CTRL0_CLKGATE__NO_CLKS 0x1
+>> +#define BM_GPMI_CTRL0_RUN	0x20000000
+>> +#define BV_GPMI_CTRL0_RUN__IDLE 0x0
+>> +#define BV_GPMI_CTRL0_RUN__BUSY 0x1
+>> +#define BM_GPMI_CTRL0_DEV_IRQ_EN	0x10000000
+>> +#define BM_GPMI_CTRL0_LOCK_CS	0x08000000
+>> +#define BV_GPMI_CTRL0_LOCK_CS__DISABLED 0x0
+>> +#define BV_GPMI_CTRL0_LOCK_CS__ENABLED  0x1
+>> +#define BM_GPMI_CTRL0_UDMA	0x04000000
+>> +#define BV_GPMI_CTRL0_UDMA__DISABLED 0x0
+>> +#define BV_GPMI_CTRL0_UDMA__ENABLED  0x1
+>> +#define BP_GPMI_CTRL0_COMMAND_MODE	24
+>> +#define BM_GPMI_CTRL0_COMMAND_MODE	0x03000000
+>> +#define BF_GPMI_CTRL0_COMMAND_MODE(v)  \
+>> +		(((v)<<  24)&  BM_GPMI_CTRL0_COMMAND_MODE)
+>> +#define BV_GPMI_CTRL0_COMMAND_MODE__WRITE            0x0
+>> +#define BV_GPMI_CTRL0_COMMAND_MODE__READ             0x1
+>> +#define BV_GPMI_CTRL0_COMMAND_MODE__READ_AND_COMPARE 0x2
+>> +#define BV_GPMI_CTRL0_COMMAND_MODE__WAIT_FOR_READY   0x3
+>> +#define BM_GPMI_CTRL0_WORD_LENGTH	0x00800000
+>> +#define BV_GPMI_CTRL0_WORD_LENGTH__16_BIT 0x0
+>> +#define BV_GPMI_CTRL0_WORD_LENGTH__8_BIT  0x1
+>> +#define BP_GPMI_CTRL0_CS	20
+>> +#define BM_GPMI_CTRL0_CS	0x00700000
+>> +#define BF_GPMI_CTRL0_CS(v)  \
+>> +		(((v)<<  20)&  BM_GPMI_CTRL0_CS)
+>> +#define BP_GPMI_CTRL0_ADDRESS	17
+>> +#define BM_GPMI_CTRL0_ADDRESS	0x000E0000
+>> +#define BF_GPMI_CTRL0_ADDRESS(v)  \
+>> +		(((v)<<  17)&  BM_GPMI_CTRL0_ADDRESS)
+>> +#define BV_GPMI_CTRL0_ADDRESS__NAND_DATA 0x0
+>> +#define BV_GPMI_CTRL0_ADDRESS__NAND_CLE  0x1
+>> +#define BV_GPMI_CTRL0_ADDRESS__NAND_ALE  0x2
+>> +#define BM_GPMI_CTRL0_ADDRESS_INCREMENT	0x00010000
+>> +#define BV_GPMI_CTRL0_ADDRESS_INCREMENT__DISABLED 0x0
+>> +#define BV_GPMI_CTRL0_ADDRESS_INCREMENT__ENABLED  0x1
+>> +#define BP_GPMI_CTRL0_XFER_COUNT	0
+>> +#define BM_GPMI_CTRL0_XFER_COUNT	0x0000FFFF
+>> +#define BF_GPMI_CTRL0_XFER_COUNT(v)  \
+>> +		(((v)<<  0)&  BM_GPMI_CTRL0_XFER_COUNT)
+>>
+> same as above.
+>
+>> diff --git a/drivers/mtd/nand/gpmi-nfc/hal-imx28.c b/drivers/mtd/nand/gpmi-nfc/hal-imx28.c
+>> new file mode 100644
+>> index 0000000..ff87d7f
+>> --- /dev/null
+>> +++ b/drivers/mtd/nand/gpmi-nfc/hal-imx28.c
+>> @@ -0,0 +1,503 @@
+>> +/*
+>> + * Freescale GPMI NFC NAND Flash Driver
+>> + *
+>> + * Copyright (C) 2011 Freescale Semiconductor, Inc.
+>> + * Copyright (C) 2008 Embedded Alley Solutions, Inc.
+>> + *
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+>> + * GNU General Public License for more details.
+>> + *
+>> + * You should have received a copy of the GNU General Public License along
+>> + * with this program; if not, write to the Free Software Foundation, Inc.,
+>> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>> + */
+>> +#include "gpmi-nfc.h"
+>> +#include "gpmi-regs-imx28.h"
+>> +#include "bch-regs-imx28.h"
+>> +
+> [...]
+>> +static int send_command(struct gpmi_nfc_data *this)
+>> +{
+>> +	struct dma_chan *channel = get_dma_chan(this);
+>> +	struct mil *mil	=&this->mil;
+>> +	struct dma_async_tx_descriptor *desc;
+>> +	struct scatterlist *sgl;
+>> +	u32 pio[3];
+>> +
+>> +	/* [1] send out the PIO words */
+>> +	pio[0] = BF_GPMI_CTRL0_COMMAND_MODE(BV_GPMI_CTRL0_COMMAND_MODE__WRITE)
+>> +		| BM_GPMI_CTRL0_WORD_LENGTH
+>> +		| BF_GPMI_CTRL0_CS(mil->current_chip)
+>> +		| BF_GPMI_CTRL0_ADDRESS(BV_GPMI_CTRL0_ADDRESS__NAND_CLE)
+>> +		| BM_GPMI_CTRL0_ADDRESS_INCREMENT
+>> +		| BF_GPMI_CTRL0_XFER_COUNT(mil->command_length);
+>> +	pio[1] = pio[2] = 0;
+>> +	desc = channel->device->device_prep_slave_sg(channel,
+>> +					(struct scatterlist *)pio,
+>> +					ARRAY_SIZE(pio), DMA_NONE, 0);
+>> +	if (!desc) {
+>> +		log("step 1 error");
+>> +		return -1;
+>> +	}
+>> +
+>> +	/* [2] send out the COMMAND + ADDRESS string stored in @buffer */
+>> +	sgl =&mil->cmd_sgl;
+>> +
+>> +	dma_map_sg(this->dev, sgl, 1, DMA_TO_DEVICE);
+>> +	sgl->length = mil->command_length;
+>>
+> this has to be done _before_ dma_map_sg(). With CONFIG_DMA_API_DEBUG
+> enabled you would get:
+> |gpmi-nfc gpmi-nfc: DMA-API: device driver frees DMA memory with different size [device address=0x0000000046e10000] [map size=4096 bytes] [unmap size=1 bytes]
+>
+thanks.
+
+Huang Shijie
