@@ -1,17 +1,22 @@
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q20va-0006Ry-Rf
-	for linux-mtd@lists.infradead.org; Tue, 22 Mar 2011 12:43:15 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-da02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2MChC0b014153
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Mar 2011 14:43:12 +0200
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/2] UBI: re-name set volume properties ioctl
-Date: Tue, 22 Mar 2011 14:45:52 +0200
-Message-Id: <1300797953-1976-1-git-send-email-dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@nokia.com>
+	id 1Q2DNb-00037k-Uc
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 02:01:01 +0000
+Received: by iwn36 with SMTP id 36so9130447iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Mar 2011 19:00:58 -0700 (PDT)
+From: Valerie Aurora <valerie.aurora@gmail.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux@vger.kernel.org
+Subject: [PATCH 13/74] whiteout: jffs2 whiteout support
+Date: Tue, 22 Mar 2011 18:58:49 -0700
+Message-Id: <1300845590-14184-14-git-send-email-valerie.aurora@gmail.com>
+In-Reply-To: <1300845590-14184-1-git-send-email-valerie.aurora@gmail.com>
+References: <1300845590-14184-1-git-send-email-valerie.aurora@gmail.com>
+Cc: Felix Fietkau <nbd@openwrt.org>, Valerie Aurora <valerie.aurora@gmail.com>,
+	Valerie Aurora <vaurora@redhat.com>,
+	linux-mtd@lists.infradead.org, viro@zeniv.linux.org.uk,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,111 +26,185 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+From: Felix Fietkau <nbd@openwrt.org>
 
-Rename the ioctl which sets volume properties from 'UBI_IOCSETPROP' to
-'UBI_IOCSETVOLPROP' to reflect the fact that this ioctl is about volume
-properties, not device properties. This is also consistent with the
-other volume ioctl name - 'UBI_IOCVOLUP'.
+Add support for whiteout dentries to jffs2.
 
-The main motivation for the re-name, however, is that we are going
-to introduce the per-UBI device "set properties" ioctl, so we need
-good and logical naming.
+XXX - David Woodhouse suggests several changes and provides an
+untested patch.  See:
 
-At the same time, re-name the "set volume properties request" data
-structure from 'struct ubi_set_prop_req' to
-'struct ubi_set_vol_prop_req'.
+http://patchwork.ozlabs.org/patch/50466/
 
-And re-name 'UBI_PROP_DIRECT_WRITE' to 'UBI_VOL_PROP_DIRECT_WRITE'.
+XXX - Backward compatibility?  Creating a whiteout on a JFFS2 file
+system can only happen if it is deliberately mounted "-o union" so
+there is some way to prevent creation of whiteouts on a file system
+you want to later mount with an earlier (no support for whiteout) file
+system.  However, ext2/3 has much more robust methods (explicit fs
+feature flag) to prevent such an occurance.
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+Signed-off-by: Valerie Aurora <vaurora@redhat.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Signed-off-by: Valerie Aurora <valerie.aurora@gmail.com>
 ---
- drivers/mtd/ubi/cdev.c |    8 ++++----
- include/mtd/ubi-user.h |   19 ++++++++++---------
- 2 files changed, 14 insertions(+), 13 deletions(-)
+ fs/jffs2/dir.c        |   72 +++++++++++++++++++++++++++++++++++++++++++++++-
+ fs/jffs2/fs.c         |    4 +++
+ fs/jffs2/super.c      |    2 +-
+ include/linux/jffs2.h |    2 +
+ 4 files changed, 77 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index af9fb0f..df5d81a 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -561,18 +561,18 @@ static long vol_cdev_ioctl(struct file *file, unsigned int cmd,
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index ed78a3c..a5dbf12 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -35,6 +35,8 @@ static int jffs2_mknod (struct inode *,struct dentry *,int,dev_t);
+ static int jffs2_rename (struct inode *, struct dentry *,
+ 			 struct inode *, struct dentry *);
+ 
++static int jffs2_whiteout (struct inode *, struct dentry *, struct dentry *);
++
+ const struct file_operations jffs2_dir_operations =
+ {
+ 	.read =		generic_read_dir,
+@@ -57,6 +59,7 @@ const struct inode_operations jffs2_dir_inode_operations =
+ 	.mknod =	jffs2_mknod,
+ 	.rename =	jffs2_rename,
+ 	.check_acl =	jffs2_check_acl,
++	.whiteout =     jffs2_whiteout,
+ 	.setattr =	jffs2_setattr,
+ 	.setxattr =	jffs2_setxattr,
+ 	.getxattr =	jffs2_getxattr,
+@@ -99,8 +102,14 @@ static struct dentry *jffs2_lookup(struct inode *dir_i, struct dentry *target,
+ 			fd = fd_list;
+ 		}
+ 	}
+-	if (fd)
+-		ino = fd->ino;
++	if (fd) {
++		spin_lock(&target->d_lock);
++		if (fd->type == DT_WHT)
++			target->d_flags |= DCACHE_WHITEOUT;
++		else
++			ino = fd->ino;
++		spin_unlock(&target->d_lock);
++	}
+ 	mutex_unlock(&dir_f->sem);
+ 	if (ino) {
+ 		inode = jffs2_iget(dir_i->i_sb, ino);
+@@ -499,6 +508,11 @@ static int jffs2_mkdir (struct inode *dir_i, struct dentry *dentry, int mode)
+ 		return PTR_ERR(inode);
  	}
  
- 	/* Set volume property command */
--	case UBI_IOCSETPROP:
-+	case UBI_IOCSETVOLPROP:
- 	{
--		struct ubi_set_prop_req req;
-+		struct ubi_set_vol_prop_req req;
++	if (dentry->d_flags & DCACHE_WHITEOUT) {
++		inode->i_flags |= S_OPAQUE;
++		ri->flags = cpu_to_je16(JFFS2_INO_FLAG_OPAQUE);
++	}
++
+ 	inode->i_op = &jffs2_dir_inode_operations;
+ 	inode->i_fop = &jffs2_dir_operations;
  
- 		err = copy_from_user(&req, argp,
--				sizeof(struct ubi_set_prop_req));
-+				     sizeof(struct ubi_set_vol_prop_req));
- 		if (err) {
- 			err = -EFAULT;
- 			break;
- 		}
- 		switch (req.property) {
--		case UBI_PROP_DIRECT_WRITE:
-+		case UBI_VOL_PROP_DIRECT_WRITE:
- 			mutex_lock(&ubi->device_mutex);
- 			desc->vol->direct_writes = !!req.value;
- 			mutex_unlock(&ubi->device_mutex);
-diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index c0d47ad..8d8484b 100644
---- a/include/mtd/ubi-user.h
-+++ b/include/mtd/ubi-user.h
-@@ -131,7 +131,7 @@
-  * ~~~~~~~~~~~~~~~~~~~~~~~~~
-  *
-  * To set an UBI volume property the %UBI_IOCSETPROP ioctl command should be
-- * used. A pointer to a &struct ubi_set_prop_req object is expected to be
-+ * used. A pointer to a &struct ubi_set_vol_prop_req object is expected to be
-  * passed. The object describes which property should be set, and to which value
-  * it should be set.
-  */
-@@ -186,7 +186,8 @@
- /* Check if LEB is mapped command */
- #define UBI_IOCEBISMAP _IOR(UBI_VOL_IOC_MAGIC, 5, __s32)
- /* Set an UBI volume property */
--#define UBI_IOCSETPROP _IOW(UBI_VOL_IOC_MAGIC, 6, struct ubi_set_prop_req)
-+#define UBI_IOCSETVOLPROP _IOW(UBI_VOL_IOC_MAGIC, 6, \
-+			       struct ubi_set_vol_prop_req)
+@@ -777,6 +791,60 @@ static int jffs2_mknod (struct inode *dir_i, struct dentry *dentry, int mode, de
+ 	return ret;
+ }
  
- /* Maximum MTD device name length supported by UBI */
- #define MAX_UBI_MTD_NAME_LEN 127
-@@ -225,11 +226,11 @@ enum {
- /*
-  * UBI set property ioctl constants
-  *
-- * @UBI_PROP_DIRECT_WRITE: allow / disallow user to directly write and
-- *                         erase individual eraseblocks on dynamic volumes
-+ * @UBI_VOL_PROP_DIRECT_WRITE: allow / disallow user to directly write and
-+ *                             erase individual eraseblocks on dynamic volumes
-  */
- enum {
--       UBI_PROP_DIRECT_WRITE = 1,
-+       UBI_VOL_PROP_DIRECT_WRITE = 1,
- };
++static int jffs2_whiteout (struct inode *dir, struct dentry *old_dentry,
++			   struct dentry *new_dentry)
++{
++	struct jffs2_sb_info *c = JFFS2_SB_INFO(dir->i_sb);
++	struct jffs2_inode_info *victim_f = NULL;
++	uint32_t now;
++	int ret;
++
++	/* If it's a directory, then check whether it is really empty */
++	if (new_dentry->d_inode) {
++		victim_f = JFFS2_INODE_INFO(old_dentry->d_inode);
++		if (S_ISDIR(old_dentry->d_inode->i_mode)) {
++			struct jffs2_full_dirent *fd;
++
++			mutex_lock(&victim_f->sem);
++			for (fd = victim_f->dents; fd; fd = fd->next) {
++				if (fd->ino) {
++					mutex_unlock(&victim_f->sem);
++					return -ENOTEMPTY;
++				}
++			}
++			mutex_unlock(&victim_f->sem);
++		}
++	}
++
++	now = get_seconds();
++	ret = jffs2_do_link(c, JFFS2_INODE_INFO(dir), 0, DT_WHT,
++			    new_dentry->d_name.name, new_dentry->d_name.len, now);
++	if (ret)
++		return ret;
++
++	spin_lock(&new_dentry->d_lock);
++	new_dentry->d_flags |= DCACHE_WHITEOUT;
++	spin_unlock(&new_dentry->d_lock);
++	d_add(new_dentry, NULL);
++
++	if (victim_f) {
++		/* There was a victim. Kill it off nicely */
++		drop_nlink(old_dentry->d_inode);
++		/* Don't oops if the victim was a dirent pointing to an
++		   inode which didn't exist. */
++		if (victim_f->inocache) {
++			mutex_lock(&victim_f->sem);
++			if (S_ISDIR(old_dentry->d_inode->i_mode))
++				victim_f->inocache->pino_nlink = 0;
++			else
++				victim_f->inocache->pino_nlink--;
++			mutex_unlock(&victim_f->sem);
++		}
++	}
++
++	return 0;
++}
++
+ static int jffs2_rename (struct inode *old_dir_i, struct dentry *old_dentry,
+ 			 struct inode *new_dir_i, struct dentry *new_dentry)
+ {
+diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
+index 6b2964a..9492b9b 100644
+--- a/fs/jffs2/fs.c
++++ b/fs/jffs2/fs.c
+@@ -304,6 +304,10 @@ struct inode *jffs2_iget(struct super_block *sb, unsigned long ino)
  
- /**
-@@ -397,13 +398,13 @@ struct ubi_map_req {
+ 		inode->i_op = &jffs2_dir_inode_operations;
+ 		inode->i_fop = &jffs2_dir_operations;
++
++		if (je16_to_cpu(latest_node.flags) & JFFS2_INO_FLAG_OPAQUE)
++			inode->i_flags |= S_OPAQUE;
++
+ 		break;
+ 	}
+ 	case S_IFREG:
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index 662bba0..69f7479 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -170,7 +170,7 @@ static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
  
+ 	sb->s_op = &jffs2_super_operations;
+ 	sb->s_export_op = &jffs2_export_ops;
+-	sb->s_flags = sb->s_flags | MS_NOATIME;
++	sb->s_flags = sb->s_flags | MS_NOATIME | MS_WHITEOUT;
+ 	sb->s_xattr = jffs2_xattr_handlers;
+ #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+ 	sb->s_flags |= MS_POSIXACL;
+diff --git a/include/linux/jffs2.h b/include/linux/jffs2.h
+index a18b719..6404e01 100644
+--- a/include/linux/jffs2.h
++++ b/include/linux/jffs2.h
+@@ -88,6 +88,8 @@
+ #define JFFS2_INO_FLAG_USERCOMPR  2	/* User has requested a specific
+ 					   compression type */
  
- /**
-- * struct ubi_set_prop_req - a data structure used to set an ubi volume
-- *                           property.
-- * @property: property to set (%UBI_PROP_DIRECT_WRITE)
-+ * struct ubi_set_vol_prop_req - a data structure used to set an ubi volume
-+ *                               property.
-+ * @property: property to set (%UBI_VOL_PROP_DIRECT_WRITE)
-  * @padding: reserved for future, not used, has to be zeroed
-  * @value: value to set
-  */
--struct ubi_set_prop_req {
-+struct ubi_set_vol_prop_req {
-        __u8  property;
-        __u8  padding[7];
-        __u64 value;
++#define JFFS2_INO_FLAG_OPAQUE     4	/* Directory is opaque (for union mounts) */
++
+ 
+ /* These can go once we've made sure we've caught all uses without
+    byteswapping */
 -- 
-1.7.2.3
+1.7.0.4
