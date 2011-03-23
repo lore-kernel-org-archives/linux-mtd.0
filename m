@@ -1,23 +1,27 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q2Rvo-0000m8-QA
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 17:33:18 +0000
-Received: by wwc33 with SMTP id 33so7264630wwc.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Mar 2011 10:33:14 -0700 (PDT)
-Subject: Re: [RFC] Handling of errors for AMD NOR (cfi_cmdset_0002) chips
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Detlev Zundel <dzu@denx.de>
-In-Reply-To: <m27hbpyh36.fsf@ohwell.denx.de>
-References: <4D797E23.6070409@emcraft.com> <4D79DC90.6070600@aimvalley.nl>
-	<m27hbpyh36.fsf@ohwell.denx.de>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 23 Mar 2011 19:33:11 +0200
-Message-ID: <1300901591.2257.3.camel@koala>
+Received: from lo.gmane.org ([80.91.229.12])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q2Sop-0001Bi-HT
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 18:30:10 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1Q2Son-0004BK-2D
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 19:30:05 +0100
+Received: from 92-100-130-122.dynamic.avangarddsl.ru ([92.100.130.122])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2011 19:30:05 +0100
+Received: from yanok by 92-100-130-122.dynamic.avangarddsl.ru with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2011 19:30:05 +0100
+To: linux-mtd@lists.infradead.org
+From: Ilya Yanok <yanok@emcraft.com>
+Subject: Re: [RFC] Handling of errors for AMD NOR
+	=?utf-8?b?KGNmaV9jbWRzZXRfMDAwMik=?= chips
+Date: Wed, 23 Mar 2011 18:27:48 +0000 (UTC)
+Message-ID: <loom.20110323T192107-666@post.gmane.org>
+References: <4D797E23.6070409@emcraft.com> <4D7F1CF3.5010301@tqsc.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +31,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-03-23 at 16:47 +0100, Detlev Zundel wrote:
-> Hi Norbert,
-> 
-> > What issue you have with NOR flash and UBIFS ?
-> 
-> We're still working on the issue initially reported by Anatolij here:
-> 
-> http://thread.gmane.org/gmane.linux.drivers.mtd/33832
+Hello Markus,
 
-Note, I've started implementing the power cut emulation in UBI to
-emulate power cuts and unstable bits. It is work in progress, I keep it
-in the 'devel' branch of ubi-2.6.git tree.
+Markus Niebel <list-09_linux_mtd <at> tqsc.de> writes:
+> what type of chips are causing your problems?
 
-The plan is then to implement user-space test, probably improving the
-integck test, and then start fixing the issues.
+As Detlev has already wrote they are 16-bit Spansion S29GL512P.
 
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+> AFAIK in cfi_cmdset_0002 the use of max timouts from cfi query struct is 
+> missing (support in the per chip struct is prepared). This should be 
+> done first (I think).
+
+Hm, I have to admit I'm not really a flash expert. Could you please give me some
+pointer?
+
+> Regarding the handling of status bits you can use MERGESTATUS / 
+> cfi_merge_status (from linux/mtd/cfi.h)
+
+Well, most of my code is actually stolen from cfi_merge_status implementation.
+Still, I think it's incorrect to use MERGESTATUS directly: we need to filter
+that have already finished (with no toggling bits), otherwise we can take the
+data byte as a status.
+
+> Would it be useful to send rough patches for 2.6.34 for the max timout?
+
+Yes, please do post them. Any information would be useful.
+
+Regards, Ilya.
