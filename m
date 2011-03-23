@@ -1,25 +1,23 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q2QjR-0000Qz-Ul
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 16:16:27 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1Q2QjQ-0001cW-CO
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 17:16:24 +0100
-Received: from p4ff04ab4.dip.t-dialin.net ([79.240.74.180])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2011 17:16:24 +0100
-Received: from dzu by p4ff04ab4.dip.t-dialin.net with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Mar 2011 17:16:24 +0100
-To: linux-mtd@lists.infradead.org
-From: Detlev Zundel <dzu@denx.de>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q2Rvo-0000m8-QA
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 17:33:18 +0000
+Received: by wwc33 with SMTP id 33so7264630wwc.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 23 Mar 2011 10:33:14 -0700 (PDT)
 Subject: Re: [RFC] Handling of errors for AMD NOR (cfi_cmdset_0002) chips
-Date: Wed, 23 Mar 2011 17:16:09 +0100
-Message-ID: <m2zkolx16e.fsf@ohwell.denx.de>
-References: <4D797E23.6070409@emcraft.com> <4D7F1CF3.5010301@tqsc.de>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Detlev Zundel <dzu@denx.de>
+In-Reply-To: <m27hbpyh36.fsf@ohwell.denx.de>
+References: <4D797E23.6070409@emcraft.com> <4D79DC90.6070600@aimvalley.nl>
+	<m27hbpyh36.fsf@ohwell.denx.de>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 23 Mar 2011 19:33:11 +0200
+Message-ID: <1300901591.2257.3.camel@koala>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Markus,
+On Wed, 2011-03-23 at 16:47 +0100, Detlev Zundel wrote:
+> Hi Norbert,
+> 
+> > What issue you have with NOR flash and UBIFS ?
+> 
+> We're still working on the issue initially reported by Anatolij here:
+> 
+> http://thread.gmane.org/gmane.linux.drivers.mtd/33832
 
-> what type of chips are causing your problems?
+Note, I've started implementing the power cut emulation in UBI to
+emulate power cuts and unstable bits. It is work in progress, I keep it
+in the 'devel' branch of ubi-2.6.git tree.
 
-Two 16-bit Spansion S29GL512P interleaved into 32-bit bus width.
+The plan is then to implement user-space test, probably improving the
+integck test, and then start fixing the issues.
 
-> AFAIK in cfi_cmdset_0002 the use of max timouts from cfi query struct
-> is missing (support in the per chip struct is prepared). This should
-> be done first (I think).
-
-I don't think we have this problem.  As can be seen by the link provided
-in my other mail, we are suffering from recovery problems after a reset,
-everything else looks normal.
-
-> Regarding the handling of status bits you can use MERGESTATUS /
-> cfi_merge_status (from linux/mtd/cfi.h)
->
-> Would it be useful to send rough patches for 2.6.34 for the max timout?
-
-It is always uselful to post patches that solve problems for some of us,
-so yes please! ;)
-
-Best wishes
-  Detlev Zundel
-
---
-DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-40 Fax: (+49)-8142-66989-80 Email: dzu@denx.de
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
