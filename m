@@ -1,17 +1,17 @@
-Received: from mail3.tridentmicro.com ([212.250.142.51])
+Received: from mailgate.ruralwales.net ([212.219.229.8] helo=ruralwales.net)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q2Gnv-00041B-DG
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 05:40:24 +0000
-From: Sankara Narayanan Balasubramanian <sankara.narayanan@tridentmicro.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Date: Wed, 23 Mar 2011 05:40:13 +0000
-Subject: JFFS2_WBUF_VERIFY patch clarification (RESENT)
-Message-ID: <C7C7E27CD4B28D47A856D6DA52BA5D9E8E5D8260@eu-exh-02.EU.TRID.COM>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1Q2IBT-0004Hs-KP
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 07:08:49 +0000
+From: <ystradgynlais.sports.centre@powys.gov.uk>
+Message-ID: <f799b4222ab14.4d8939b6@powys.gov.uk>
+Date: Wed, 23 Mar 2011 00:07:18 -0700
 MIME-Version: 1.0
-Cc: Somashekar Umadi <Somashekar.Umadi@tridentmicro.com>
+Content-Language: en
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Reply-To: 2011---happyhour@att.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Congratulations, you are a winner of the Opec Oil Promotion send your name and address for claims
 
-We are using JFFS2 as part of our linux kernel v2.6.18 in our product. We a=
-re using JFFS2 file system on top of the MTD Driver for NAND Flash (SLC Nan=
-d flash). We observe the problem during our long duration file write tests =
-(endurance tests) that occasionally the data written through the fwrite fun=
-ction call is not present in the flash.=20
+-----------------------------------------
+Cyngor Sir Powys County Council
+www.powys.gov.uk
 
-We checked the latest kernel sources (2.6.37) and observed a similar proble=
-m being resolved through the JFFS2_WBUF_VERIFY patch. We took only that pat=
-ch (implementation into our wbuf.c file) and we observe that the problem is=
- resolved. We request you to provide the feedback for the following.
+Mae'r e bost hwn ac unrhyw atodiad iddo yn gyfrinachol ac fe'i
+bwriedir ar gyfer y sawl a enwir arno yn unig. Gall gynnwys
+gwybodaeth freintiedig. Os yw wedi eich cyrraedd trwy gamgymeriad
+ni ellwch ei gopio, ei ddosbarthu na'i ddangos i unrhyw un arall a
+dylech gysylltu gyda Cyngor Sir Powys ar unwaith.
 
-1.	Can this patch be taken as a stand-alone patch into our existing JFFS2 a=
-s part of linux 2.6.18 release.
-2.	What is the exact behavior of the patch? We observe that the patch ensur=
-es that the jffs2_wbuf_recovery is called once more if the first attempt to=
- verify fails. How does it ensure that the data is written into the flash p=
-roperly?=20
-3.	Are there any chances / known instances that the patch may fail (if the =
-second attempt to recovery also fail)?
+Mae unrhyw gynnwys nad yw'n ymwneud gyda busnes swyddogol Cyngor
+Sir Powys yn bersonol i'r awdur ac nid yw'n awdurdodedig gan y
+Cyngor.
 
-Pls note that we cannot move to the latest version of kernel as this produc=
-t is in maintenance phase.
+This e mail and any attachments are confidential and intended for
+the named recipient only. The content may contain privileged
+information. If it has reached you by mistake, you should not copy,
+distribute or show the content to anyone but should contact Powys
+County Council at once.
 
-With regards,
-Sankara Narayanan B
+Any content that is not pertinent to Powys County Council business
+is personal to the author, and is not necessarily the view of the
+Council.
