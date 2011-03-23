@@ -1,17 +1,13 @@
-Received: from mailgate.ruralwales.net ([212.219.229.8] helo=ruralwales.net)
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q2IBT-0004Hs-KP
-	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 07:08:49 +0000
-From: <ystradgynlais.sports.centre@powys.gov.uk>
-Message-ID: <f799b4222ab14.4d8939b6@powys.gov.uk>
-Date: Wed, 23 Mar 2011 00:07:18 -0700
-MIME-Version: 1.0
-Content-Language: en
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset="us-ascii"
-Reply-To: 2011---happyhour@att.net
+	id 1Q2KnP-0005bG-Cw
+	for linux-mtd@lists.infradead.org; Wed, 23 Mar 2011 09:56:08 +0000
+From: Phil Carmody <ext-phil.2.carmody@nokia.com>
+To: dedekind1@gmail.com
+Subject: [PATCH 1/1] ubifs: debugfs operations may return both ERRs and NULLs
+Date: Wed, 23 Mar 2011 11:51:29 +0200
+Message-Id: <1300873889-18336-1-git-send-email-ext-phil.2.carmody@nokia.com>
+Cc: linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +17,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Congratulations, you are a winner of the Opec Oil Promotion send your name and address for claims
+I knew I invented IS_ERR_OR_NULL for something, and this was probably
+it. NULL has lost all information about what the error was, and the most
+appropriate error code is ENODEV. However, that's the only error code
+that the debugfs functions can return. So basically, any error = ENODEV.
 
------------------------------------------
-Cyngor Sir Powys County Council
-www.powys.gov.uk
+Signed-off-by: Phil Carmody <ext-phil.2.carmody@nokia.com>
+---
+ fs/ubifs/debug.c |   24 ++++++++++--------------
+ 1 files changed, 10 insertions(+), 14 deletions(-)
 
-Mae'r e bost hwn ac unrhyw atodiad iddo yn gyfrinachol ac fe'i
-bwriedir ar gyfer y sawl a enwir arno yn unig. Gall gynnwys
-gwybodaeth freintiedig. Os yw wedi eich cyrraedd trwy gamgymeriad
-ni ellwch ei gopio, ei ddosbarthu na'i ddangos i unrhyw un arall a
-dylech gysylltu gyda Cyngor Sir Powys ar unwaith.
-
-Mae unrhyw gynnwys nad yw'n ymwneud gyda busnes swyddogol Cyngor
-Sir Powys yn bersonol i'r awdur ac nid yw'n awdurdodedig gan y
-Cyngor.
-
-This e mail and any attachments are confidential and intended for
-the named recipient only. The content may contain privileged
-information. If it has reached you by mistake, you should not copy,
-distribute or show the content to anyone but should contact Powys
-County Council at once.
-
-Any content that is not pertinent to Powys County Council business
-is personal to the author, and is not necessarily the view of the
-Council.
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index dbc093a..7b41b30 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -2578,11 +2578,10 @@ static struct dentry *dfs_rootdir;
+ int dbg_debugfs_init(void)
+ {
+ 	dfs_rootdir = debugfs_create_dir("ubifs", NULL);
+-	if (IS_ERR(dfs_rootdir)) {
+-		int err = PTR_ERR(dfs_rootdir);
++	if (IS_ERR_OR_NULL(dfs_rootdir)) {
+ 		ubifs_err("cannot create \"ubifs\" debugfs directory, "
+-			  "error %d\n", err);
+-		return err;
++			  "error %d\n", PTR_ERR(dfs_rootdir));
++		return -ENODEV;
+ 	}
+ 
+ 	return 0;
+@@ -2645,47 +2644,44 @@ static const struct file_operations dfs_fops = {
+  */
+ int dbg_debugfs_init_fs(struct ubifs_info *c)
+ {
+-	int err;
+ 	const char *fname;
+ 	struct dentry *dent;
+ 	struct ubifs_debug_info *d = c->dbg;
+ 
+ 	sprintf(d->dfs_dir_name, "ubi%d_%d", c->vi.ubi_num, c->vi.vol_id);
+ 	d->dfs_dir = debugfs_create_dir(d->dfs_dir_name, dfs_rootdir);
+-	if (IS_ERR(d->dfs_dir)) {
+-		err = PTR_ERR(d->dfs_dir);
++	if (IS_ERR_OR_NULL(d->dfs_dir)) {
+ 		ubifs_err("cannot create \"%s\" debugfs directory, error %d\n",
+-			  d->dfs_dir_name, err);
++			  d->dfs_dir_name, PTR_ERR(d->dfs_rootdir));
+ 		goto out;
+ 	}
+ 
+ 	fname = "dump_lprops";
+ 	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
+-	if (IS_ERR(dent))
++	if (IS_ERR_OR_NULL(dent))
+ 		goto out_remove;
+ 	d->dfs_dump_lprops = dent;
+ 
+ 	fname = "dump_budg";
+ 	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
+-	if (IS_ERR(dent))
++	if (IS_ERR_OR_NULL(dent))
+ 		goto out_remove;
+ 	d->dfs_dump_budg = dent;
+ 
+ 	fname = "dump_tnc";
+ 	dent = debugfs_create_file(fname, S_IWUGO, d->dfs_dir, c, &dfs_fops);
+-	if (IS_ERR(dent))
++	if (IS_ERR_OR_NULL(dent))
+ 		goto out_remove;
+ 	d->dfs_dump_tnc = dent;
+ 
+ 	return 0;
+ 
+ out_remove:
+-	err = PTR_ERR(dent);
+ 	ubifs_err("cannot create \"%s\" debugfs directory, error %d\n",
+-		  fname, err);
++		  fname, PTR_ERR(dent));
+ 	debugfs_remove_recursive(d->dfs_dir);
+ out:
+-	return err;
++	return -ENODEV;
+ }
+ 
+ /**
+-- 
+1.7.2.rc1.37.gf8c40
