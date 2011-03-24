@@ -1,16 +1,19 @@
-Message-ID: <4D8B061C.5080200@freescale.com>
-Date: Thu, 24 Mar 2011 16:51:40 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q2gpX-0006fQ-MB
+	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2011 09:27:49 +0000
+From: Detlev Zundel <dzu@denx.de>
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Subject: Re: [RFC] Handling of errors for AMD NOR (cfi_cmdset_0002) chips
+References: <4D797E23.6070409@emcraft.com> <4D79DC90.6070600@aimvalley.nl>
+	<m27hbpyh36.fsf@ohwell.denx.de> <4D8AF428.5010000@aimvalley.nl>
+Date: Thu, 24 Mar 2011 10:27:43 +0100
+In-Reply-To: <4D8AF428.5010000@aimvalley.nl> (Norbert van Bolhuis's message of
+	"Thu, 24 Mar 2011 08:35:04 +0100")
+Message-ID: <m28vw4x3zk.fsf@ohwell.denx.de>
 MIME-Version: 1.0
-To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH 5/7] add GPMI support for imx28
-References: <1300239773-4222-1-git-send-email-b32955@freescale.com>	<1300239773-4222-6-git-send-email-b32955@freescale.com>	<19848.39439.380861.195051@ipc1.ka-ro>	<4D8964F4.3070104@freescale.com>	<19850.2584.566366.251874@ipc1.ka-ro>	<4D8AB490.30408@freescale.com>
-	<19850.62451.678409.328798@ipc1.ka-ro>
-In-Reply-To: <19850.62451.678409.328798@ipc1.ka-ro>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux@arm.linux.org.uk, linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org, yanok@emcraft.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,108 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lothar:
+Hi Norbert,
 
-> Hi,
+> On 03/23/11 16:47, Detlev Zundel wrote:
+>> Hi Norbert,
+>>
+>>> What issue you have with NOR flash and UBIFS ?
+>>
+>> We're still working on the issue initially reported by Anatolij here:
+>>
+>> http://thread.gmane.org/gmane.linux.drivers.mtd/33832
+>>
+>> Cheers
+>>    Detlev
+>>
 >
-> Huang Shijie writes:
->> Hi Lothar:
->>>>> some general comments:
->>>>> - Why are you not using the existing nand_ids but inventing your own
->>>>>      database?
->>>>>
->>>> The nand_ids{} contains poor information for me.
->>>> Such as :
->>>> [1]The nand_ids does not have the enough information for the page
->>>> size,oob size for some new NANDs.
->>>>       And you can not get the information from parsing the NAND ids, such
->>>> as some Micron NANDs.
->>>>
->>> You could use it for the standard chips where you do not need
->>> additional information. That way most NAND chips could be supported
->>> out of the box without having to modify the driver.
->>>
->> What the meaning of "standard chips"?
->>
-> Those chips that are supported by other drivers for long time.
 >
-see belowing.
->> There are many nands in the world. Every vendor has its own rules, some
->> even does has :)
->>
->> Unluckily, the imx23/imx28 supports many nands that the nand_ids{} does
->> not support.
->>
-> That's no reason to scrap support for all chips that every other
-> driver supports.
+> ok, thanks.
 >
-Frankly speaking, Which nand we should to support depends on the 
-customer's requires.
+> But the unstable bit problem is different from software timeout
+> related issues regarding UBI and NOR flash the OP mentioned.
+> It is anyway good to hear work is in progress here.
 
-So we really do not want to support other nands that the customer does 
-not have.
+It is never good to ignore errors reported by the hardware if you are
+looking for problems in higher software layers.  That's why we decided
+to implement such error checks which can then be helpful in our further
+testing.  We are hoping that we can better differentiate between
+software and hardware problems this way.
 
->> I have many nands by my hand. I will add it gradually.
->>
-> So why not add them to the generic database?
->
-I ever thought to change the generic database. But I found it would cost 
-a long time.
+> I asked about the software timeout issue because I've seen false
+> timeouts with powerpc + CONFIG_NO_HZ a while ago.
+> In my case the low-level do_write_buffer (cfi_cmdset_0002.c) timed
+> out too early. See
+> http://lkml.org/lkml/2009/9/3/84
 
-The parsing code in nand_get_flash_type() can not parse out the page 
-size/oob size
-in some cases. And IMHO I do not think to get the page size/oob size by 
-parsing the ids is a good way,
-this really makes the code mess (sorry, David, I really think the 
-current code is ugly.).
+Ok, I see, thanks for the pointer.  The problems you experienced then
+were unneccessary software timeouts, but there was no data corruption,
+correct?
 
-IMHO, the best solution is add a database like mine. Using the id bytes 
-as the keyword to match the nand.
-then to get the page size /oob size , etc, from the database.
+Best wishes
+  Detlev Zundel
 
-I will send a patch about this in future, but now, I do not want to  be 
-stumbled by this problem.
-
-
-
-
->> I want to get the page size/oob size from my own database which can not
->> get from the nand_ids.
->>
-> If there are parameters needed that cannot be obtained from the
-> generic database, it might be worth upgrading that database instead of
-> creating your own local database.
->
->>>> [2]I need the timing information of the NAND. The nand_ids DOES not have
->>>> it. I have to
->>>>       read the datasheet of the NAND, and add it to my database.
->>>>
->>> Do we really need exact timing data for each individual chip?
->>> Or couldn't we live with some sane timing that works for most chips
->>> and provide some means to specify a different timing via
->>> platform_data?
->>>
->> Most of the time, the timing is really based on a safe timing setting.
->> But in the original GPMI driver in the FREESCALE BSP, there exits some
->> nands need to be set with their own timing setting.
->>
->> So I do not use the safe timing for _ALL_ the nand, and i'd better get
->> it from the
->> database.
->>
-> It should be sufficient to provide timing info from platform_data in
-> special cases instead of bloating the nand id database with that
-> stuff. Platforms might need to adjust the timing because of
-> peculiarities in the HW. Thus the timing info should be provided from
-> there, not from the chip database.
-
-The timing information is needed by the GPMI module, not other module. 
-So the
-best way to get this is from the chip database.
-
-Setting the GPMI with the proper timing will make the NAND runs in high 
-performance.
-
-Thanks for your advice, I will use the safe timing for all the nand.
-
-Huang Shijie
+--
+DENX Software Engineering GmbH,      MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich,  Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-40 Fax: (+49)-8142-66989-80 Email: dzu@denx.de
