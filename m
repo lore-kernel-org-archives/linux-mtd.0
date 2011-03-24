@@ -1,25 +1,20 @@
-Subject: Re: Hit BUG_ON in dma-mapping.c:425 (RFC)
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q2ikn-0007Pp-Pp
+	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2011 11:31:02 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p2OBUwbk004218
+	for <linux-mtd@lists.infradead.org>; Thu, 24 Mar 2011 13:30:59 +0200
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-In-Reply-To: <20110324092732.GA19935@n2100.arm.linux.org.uk>
-References: <4D24A108.2080609@atmel.com> <4D8AFE45.8050609@atmel.com>
-	<20110324082521.GB9844@n2100.arm.linux.org.uk>
-	<1300955778.2735.68.camel@localhost>
-	<20110324092732.GA19935@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 24 Mar 2011 13:08:07 +0200
-Message-ID: <1300964887.2735.84.camel@localhost>
-Mime-Version: 1.0
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH] fs-tests: perf: fix compilation warning
+Date: Thu, 24 Mar 2011 13:33:46 +0200
+Message-Id: <1300966426-5760-1-git-send-email-dedekind1@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Cc: Hong XU <hong.xu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
-	Patrice VILCHEZ <patrice.vilchez@atmel.com>,
-	Linux Kernel list <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
-	Andrew Victor <linux@maxim.org.za>,
-	"'linux-arm-kernel@lists.infradead.org'"
-	<linux-arm-kernel@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-03-24 at 09:27 +0000, Russell King - ARM Linux wrote:
-> The only real answer I can give is: if you want to deal with DMA, you
-> absolutely must conform to the restrictions on DMA which means that you
-> can't pass vmalloc addresses to the DMA API.
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-I see, thanks. Well, I do not see any issues with changing MTD-related
-SW (JFFS2, UBI, UBIFS, etc) to use kmalloc. But this would require som
-non-trivial efforts, although I believe this is doable.
+Fix the following compilation warning:
+perf.c: In function ‘perf’:
+perf.c:144: warning: format ‘%lld’ expects type ‘long long int’, but argument 2 has type ‘int64_t’
 
-Basically, we have to work with entire eraseblocks often, which may be
-128KiB or 256KiB or even 512KiB nowadays. And we vmalloc the
-eraseblock-sized buffers in these cases.
+by adding a (long long int) cast.
 
-We could instead work with arrays of pages (or multiple pages), and then
-do things like readv/writev. But this requires a brave knight who'd come
-and just implemented this, or a company who'd fund someone to work on
-this.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ tests/fs-tests/simple/perf.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
+diff --git a/tests/fs-tests/simple/perf.c b/tests/fs-tests/simple/perf.c
+index 43d708d..b98b98b 100644
+--- a/tests/fs-tests/simple/perf.c
++++ b/tests/fs-tests/simple/perf.c
+@@ -141,7 +141,8 @@ void perf(void)
+ 	/* Display timings */
+ 	printf("File system read and write speed\n");
+ 	printf("================================\n");
+-	printf("Specfied file size: %lld\n", tests_size_parameter);
++	printf("Specfied file size: %lld\n",
++	       (unsigned long long)tests_size_parameter);
+ 	printf("Actual file size: %zu\n", actual_size);
+ 	printf("Write time (us): %lld\n", write_time);
+ 	printf("Unmount time (us): %lld\n", unmount_time);
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.2.3
