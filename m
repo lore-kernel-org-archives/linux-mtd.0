@@ -1,21 +1,23 @@
-Message-ID: <19851.474.327087.194875@ipc1.ka-ro>
-Date: Thu, 24 Mar 2011 09:33:30 +0100
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Jason Liu <liu.h.jason@gmail.com>
-Content-Type: text/plain; charset=utf-8
+Subject: Re: Hit BUG_ON in dma-mapping.c:425 (RFC)
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Russell King - ARM Linux <linux@arm.linux.org.uk>
+In-Reply-To: <20110324082521.GB9844@n2100.arm.linux.org.uk>
+References: <4D24A108.2080609@atmel.com> <4D8AFE45.8050609@atmel.com>
+	<20110324082521.GB9844@n2100.arm.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 24 Mar 2011 10:36:18 +0200
+Message-ID: <1300955778.2735.68.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 5/7] add GPMI support for imx28
-In-Reply-To: <AANLkTinjqAcCmQRdAxL+SS0LPVrRUpVBkEJmw0ZDccnq@mail.gmail.com>
-References: <1300239773-4222-1-git-send-email-b32955@freescale.com>
-	<1300239773-4222-6-git-send-email-b32955@freescale.com>
-	<19848.39439.380861.195051@ipc1.ka-ro>
-	<4D8964F4.3070104@freescale.com>
-	<19850.2584.566366.251874@ipc1.ka-ro>
-	<4D8AB490.30408@freescale.com>
-	<19850.62451.678409.328798@ipc1.ka-ro>
-	<AANLkTinjqAcCmQRdAxL+SS0LPVrRUpVBkEJmw0ZDccnq@mail.gmail.com>
-Cc: linux-arm-kernel@lists.infradead.org, Huang Shijie <b32955@freescale.com>,
-	linux@arm.linux.org.uk, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Cc: Hong XU <hong.xu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
+	Patrice VILCHEZ <patrice.vilchez@atmel.com>,
+	Linux Kernel list <linux-kernel@vger.kernel.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
+	Andrew Victor <linux@maxim.org.za>,
+	"'linux-arm-kernel@lists.infradead.org'"
+	<linux-arm-kernel@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,51 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Jason Liu writes:
-> 2011/3/24 Lothar Waßmann <LW@karo-electronics.de>:
-> > Hi,
-> [...]
-> >> Most of the time, the timing is really based on a safe timing setting.
-> >> But in the original GPMI driver in the FREESCALE BSP, there exits some
-> >> nands need to be set with their own timing setting.
-> >>
-> >> So I do not use the safe timing for _ALL_ the nand, and i'd better get
-> >> it from the
-> >> database.
-> >>
-> > It should be sufficient to provide timing info from platform_data in
-> > special cases instead of bloating the nand id database with that
-> > stuff. Platforms might need to adjust the timing because of
-> > peculiarities in the HW. Thus the timing info should be provided from
-> > there, not from the chip database.
+On Thu, 2011-03-24 at 08:25 +0000, Russell King - ARM Linux wrote:
+> On Thu, Mar 24, 2011 at 04:18:13PM +0800, Nicolas Ferre wrote:
+> > diff --git a/drivers/spi/atmel_spi.c b/drivers/spi/atmel_spi.c
+> > --- a/drivers/spi/atmel_spi.c
+> > +++ b/drivers/spi/atmel_spi.c
+> > @@ -647,6 +647,22 @@ static void atmel_spi_next_message(struct spi_master *master)
+> >  	atmel_spi_next_xfer(master, msg);
+> >  }
+> >  
+> > +static void *adjust_buffer_location(struct device *dev, void *buf)
+> > +{
+> > +	if (likely(buf < high_memory)) {
+> > +		return buf;
+> > +	} else {
+> > +		struct page *pg;
+> > +
+> > +		pg = vmalloc_to_page(buf);
+> > +		if (pg == 0) {
+> > +			dev_err(dev, "failed to vmalloc_to_page\n");
+> > +			return NULL;
+> > +		}
+> > +		return page_address(pg) + ((size_t)buf & ~PAGE_MASK);
+> > +	}
+> > +}
+> > +
 > 
-> No, we can't. since some boards only provide one NAND socket, customer
-> can place any NAND flash chip they want. And with the NAND tech evolution, some
-> NAND flash will end-of-line and customer need change another new NAND.
-> As we all know that RAW NAND flash vendor does not follow the same
-> rule to encode
-> ID related information such as page size/oob size/block size etc. Even
-> with same vendor,
-> take Sumsung as example, there is not one generic rule to encode the
-> id information.
-> If you do NAND support with many customers, you will find that
-> currenly linux NAND driver
-> (nand_base.c/nand_ids.c) provide very poor support for that.
+> This really doesn't fix the problem.  If the page is read or written via
+> the vmalloc mapping, you'll have stale data.
 > 
-That's a reason to improve that support, not to invent private fixes
-for each chip driver.
+> DMA to vmalloc areas is dodgy at best.
 
+This topics pops up often. So what is the right fix? And sorry for my
+ignorance.
 
-Lothar Waßmann
 -- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
