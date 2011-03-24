@@ -1,29 +1,20 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q2h3B-0006mf-Fs
-	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2011 09:41:54 +0000
-Date: Thu, 24 Mar 2011 09:41:22 +0000
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: Hit BUG_ON in dma-mapping.c:425 (RFC)
-Message-ID: <20110324094122.GB19935@n2100.arm.linux.org.uk>
-References: <4D24A108.2080609@atmel.com> <4D8AFE45.8050609@atmel.com>
-	<20110324082521.GB9844@n2100.arm.linux.org.uk>
-	<1300955778.2735.68.camel@localhost>
-	<20110324092732.GA19935@n2100.arm.linux.org.uk>
+Received: from mika.eatserver.nl ([195.20.9.75])
+	by casper.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q2i5f-0007bS-1p
+	for linux-mtd@lists.infradead.org; Thu, 24 Mar 2011 10:48:31 +0000
+Message-ID: <4D8B2174.50606@aimvalley.nl>
+Date: Thu, 24 Mar 2011 11:48:20 +0100
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20110324092732.GA19935@n2100.arm.linux.org.uk>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Hong XU <hong.xu@atmel.com>, Nicolas Ferre <nicolas.ferre@atmel.com>,
-	Patrice VILCHEZ <patrice.vilchez@atmel.com>,
-	Linux Kernel list <linux-kernel@vger.kernel.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>,
-	Andrew Victor <linux@maxim.org.za>,
-	"'linux-arm-kernel@lists.infradead.org'"
-	<linux-arm-kernel@lists.infradead.org>
+To: Detlev Zundel <dzu@denx.de>
+Subject: Re: [RFC] Handling of errors for AMD NOR (cfi_cmdset_0002) chips
+References: <4D797E23.6070409@emcraft.com>
+	<4D79DC90.6070600@aimvalley.nl>	<m27hbpyh36.fsf@ohwell.denx.de>
+	<4D8AF428.5010000@aimvalley.nl> <m28vw4x3zk.fsf@ohwell.denx.de>
+In-Reply-To: <m28vw4x3zk.fsf@ohwell.denx.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, yanok@emcraft.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,51 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Mar 24, 2011 at 09:27:32AM +0000, Russell King - ARM Linux wrote:
-> I have no idea.  The problem comes down to MTDs interfaces being designed
-> only for PIO - it's expected that the CPU places data into the virtual
-> address being passed.  This virtual address can be a vmalloc address,
-> a kmalloc'd address or a page address.
-> 
-> As long as that happens, everything all works because there's no cache
-> aliasing problems to consider as the buffers are always accessed through
-> the same mappings.
-> 
-> As soon as there's any attempt to move away from PIO, things get really
-> sticky because, with *any* DMA noncoherent architecture (it's not limited
-> to ARM) you run into issues with cache coherency causing data corruption.
-> 
-> When cache maintainence ends up having to deal with virtual addresses for
-> one level of cache and physical addresses for subseqent levels, the
-> problems are compounded even more.
-> 
-> The only real answer I can give is: if you want to deal with DMA, you
-> absolutely must conform to the restrictions on DMA which means that you
-> can't pass vmalloc addresses to the DMA API.
-> 
-> You can't work around that by converting a vmalloc address to a physical
-> address and then its coresponding virtual page address as that means the
-> DMA API will flush the wrong virtual address range and you'll again have
-> cache incoherency.  That goes for *all* of the DMA API interfaces.
+On 03/24/11 10:27, Detlev Zundel wrote:
+...
+>> But the unstable bit problem is different from software timeout
+>> related issues regarding UBI and NOR flash the OP mentioned.
+>> It is anyway good to hear work is in progress here.
+>
+> It is never good to ignore errors reported by the hardware if you are
+> looking for problems in higher software layers.  That's why we decided
+> to implement such error checks which can then be helpful in our further
+> testing.  We are hoping that we can better differentiate between
+> software and hardware problems this way.
+>
 
-I should add - from asm-generic/dma-mapping-common.h:
+ok, I see.
 
-static inline dma_addr_t dma_map_single_attrs(struct device *dev, void *ptr,
-                                              size_t size,
-                                              enum dma_data_direction dir,
-                                              struct dma_attrs *attrs)
-{
-        struct dma_map_ops *ops = get_dma_ops(dev);
-        dma_addr_t addr;
+>> I asked about the software timeout issue because I've seen false
+>> timeouts with powerpc + CONFIG_NO_HZ a while ago.
+>> In my case the low-level do_write_buffer (cfi_cmdset_0002.c) timed
+>> out too early. See
+>> http://lkml.org/lkml/2009/9/3/84
+>
+> Ok, I see, thanks for the pointer.  The problems you experienced then
+> were unneccessary software timeouts, but there was no data corruption,
+> correct?
+>
 
-        kmemcheck_mark_initialized(ptr, size);
-        BUG_ON(!valid_dma_direction(dir));
-        addr = ops->map_page(dev, virt_to_page(ptr),
-                             (unsigned long)ptr & ~PAGE_MASK, size,
-                             dir, attrs);
+yes that is correct.
+It happened only when system was 'stressed' a bit and it caused false
+software timeouts which made UBIFS remount the fs in read-only mode.
 
-And note that virt_to_page() only works for addresses in the kernel's
-direct mapped memory region (iow, kmalloc et.al, not vmalloc).  The
-above will probably go wrong silently (or maybe oops if you're lucky)
-rather than BUG.  The difference is that on ARM we ensure that such bad
-cases are always caught.
+---
+N. van Bolhuis.
