@@ -1,18 +1,13 @@
-Message-ID: <4D8C3D36.7000703@freescale.com>
-Date: Fri, 25 Mar 2011 14:59:02 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
-Subject: Re: [PATCH 3/7] add the database for the NANDs
-References: <1300240521-4344-1-git-send-email-b32955@freescale.com>	<201103231629.46958.ffainelli@freebox.fr>	<4D8AAC1C.2070709@freescale.com>	<201103241450.50967.ffainelli@freebox.fr>	<4D8C0250.1060604@freescale.com>
-	<19852.15018.820053.918668@ipc1.ka-ro>
-In-Reply-To: <19852.15018.820053.918668@ipc1.ka-ro>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com,
-	linux-mtd@lists.infradead.org,
-	Florian Fainelli <ffainelli@freebox.fr>, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Received: from phoenix3.szarvasnet.hu ([87.101.127.16])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q31lU-0006u2-Pb
+	for linux-mtd@lists.infradead.org; Fri, 25 Mar 2011 07:49:01 +0000
+From: Gabor Juhos <juhosg@openwrt.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] mtd: m25p80: add support for the MX25L1606E chip
+Date: Fri, 25 Mar 2011 08:48:52 +0100
+Message-Id: <1301039332-10141-1-git-send-email-juhosg@openwrt.org>
+Cc: Gabor Juhos <juhosg@openwrt.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +17,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi:
+Signed-off-by: Gabor Juhos <juhosg@openwrt.org>
+---
+ drivers/mtd/devices/m25p80.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
-> Hi,
->
-> Huang Shijie writes:
->> Hi Florian:
->>
->>
->>>>>> +#include "nand_device_info.h"
->>>>>> +
->>>>>> +static struct nand_device_info samsung_nand[] __initdata = {
->>>>>> +	{
->>>>>> +		.id	= { 0xec, 0xd3, 0x14, 0x25, 0x64, 0xec, 0xd3, 0x14 },
->>>>>> +		.desc	= "K9G8G08U0M, K9HAG08U1M",
->>>>>> +		.attr	= ATTR(MLC, 1LL * SZ_1G, 128, 2 * SZ_1K + 64, 4, 512),
->>>>>> +		.timing	= TIMING(20, 15, 20, 6, -1, -1, -1),
->>>>>> +	}, {
->>>>>> +		.id	= { 0xec, 0xd7, 0xd5, 0x29, 0x38, 0x41, 0xec, 0xd7 },
->>>>>> +		.desc	= "K9LBG08U0D",
->>>>>> +		.attr	= ATTR(MLC, 4LL * SZ_1G, 128, 4 * SZ_1K + 218, 8, 512),
->>>>>> +		.timing	= TIMING(20, 10, 25, 6, 20, 5, 15),
->>>>>> +	}, {
->>>>>> +		.id	= { 0xec, 0xd5, 0x14, 0xb6, 0x74, 0xec, 0xd5, 0x14 },
->>>>>> +		.desc	= "K9GAG08U0M",
->>>>>> +		.attr	= ATTR(MLC, 2LL * SZ_1G, 128, 4 * SZ_1K + 218, 4, 512),
->>>>>> +		.timing	= TIMING(15, 10, 20, 6, -1, -1, -1),
->>>>>> +	}, {
->>>>>> +		/* end of the table. */
->>>>>> +		.id	= { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
->>>>>> +	},
->>>>>> +};
->>>>> Such information should be set in platform code, because it is specific
->>>>> to your controller and most likely to a particular board design.
->>>> I prefer to place it here.
->>>>
->>>>     If I move the code to arch/arm/mach-mxs, it will make the arch/ much
->>>> bigger.
->>>> I have nearly 50 different nands information by hand, I will add it
->>>> gradually in later patches.
->>> This certainly makes the code bigger, but this is also the place where the
->>> code belongs. Also, if you mark your structures with __initdata, such memory
->>> can be freed later by the kernel, so I would rather go into that direction.
->>>
->> Please check the emails i talked with Lothar.
->>
-> Maybe you should separate the database from the driver and build it as
-> a separate entity, so that other chip drivers can take advantage of it
-> and in the long run it might replace the current nand_ids database.
->
-ok. a good idea. I will try it.
-
-Huang Shijie
+diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+index 3fb981d..1c17001 100644
+--- a/drivers/mtd/devices/m25p80.c
++++ b/drivers/mtd/devices/m25p80.c
+@@ -668,6 +668,7 @@ static const struct spi_device_id m25p_ids[] = {
+ 	/* Macronix */
+ 	{ "mx25l4005a",  INFO(0xc22013, 0, 64 * 1024,   8, SECT_4K) },
+ 	{ "mx25l8005",   INFO(0xc22014, 0, 64 * 1024,  16, 0) },
++	{ "mx25l1606e",  INFO(0xc22015, 0, 64 * 1024,  32, SECT_4K) },
+ 	{ "mx25l3205d",  INFO(0xc22016, 0, 64 * 1024,  64, 0) },
+ 	{ "mx25l6405d",  INFO(0xc22017, 0, 64 * 1024, 128, 0) },
+ 	{ "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
+-- 
+1.7.2.1
