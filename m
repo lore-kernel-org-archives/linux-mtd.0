@@ -1,22 +1,17 @@
-Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q3Gx7-0005u2-Ue
-	for linux-mtd@lists.infradead.org; Sat, 26 Mar 2011 00:02:03 +0000
-Date: Sat, 26 Mar 2011 00:01:48 +0000
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [ PATCH V2 4/7] MTD : add the common code for GPMI controller
-	driver
-Message-ID: <20110326000148.GB13574@n2100.arm.linux.org.uk>
-References: <1301048581-21321-1-git-send-email-b32955@freescale.com>
-	<1301048581-21321-5-git-send-email-b32955@freescale.com>
+From: Huang Shijie-B32955 <B32955@freescale.com>
+To: Wolfram Sang <w.sang@pengutronix.de>, =?iso-8859-1?Q?Lothar_Wa=DFmann?=
+	<LW@KARO-electronics.de>
+Subject: reply: [ PATCH V2  0/7] add the GPMI controller driver for IMX23/IMX28
+Date: Sat, 26 Mar 2011 14:33:21 +0000
+Message-ID: <14C4E31473AF7E4B98176CB73615181C1124AF@039-SN1MPN1-002.039d.mgd.msft.net>
+Content-Language: zh-CN
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1301048581-21321-5-git-send-email-b32955@freescale.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	ffainelli@freebox.fr
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>,
+	"ffainelli@freebox.fr" <ffainelli@freebox.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 25, 2011 at 06:22:58PM +0800, Huang Shijie wrote:
-> +/* Can we use the upper's buffer directly for DMA? */
-> +void prepare_data_dma(struct gpmi_nfc_data *this, enum dma_data_direction dr)
-> +{
-> +	struct mil *mil = &this->mil;
-> +	struct scatterlist *sgl = &mil->data_sgl;
-> +	int ret;
-> +
-> +	mil->direct_dma_map_ok = true;
-> +
-> +	/* first try to map the upper buffer directly */
-> +	sg_init_one(sgl, mil->upper_buf, mil->upper_len);
-> +	ret = dma_map_sg(this->dev, sgl, 1, dr);
-> +	if (ret == 0) {
-> +		/* We have to use our own DMA buffer. */
-> +		sg_init_one(sgl, mil->data_buffer_dma, PAGE_SIZE);
-> +		ret = dma_map_sg(this->dev, sgl, 1, dr);
-> +		BUG_ON(ret == 0);
-> +
-> +		if (dr == DMA_TO_DEVICE)
-> +			memcpy(mil->data_buffer_dma, mil->upper_buf,
-> +				mil->upper_len);
-
-Buggy.  Ensure data is present in the buffers _before_ mapping.
-
-> +	case DMA_FOR_READ_DATA:
-> +		if (mil->direct_dma_map_ok == false)
-> +			memcpy(mil->upper_buf, (char *)mil->data_buffer_dma,
-> +				mil->upper_len);
-> +		dma_unmap_sg(this->dev, &mil->data_sgl, 1, DMA_FROM_DEVICE);
-
-Buggy.  Only read data from buffers _after_ unmapping.
+=0A=
+=0A=
+>> Further the 'RSVD' entries should be removed from the register=0A=
+>> definitions (even if they are generated from the XML).=0A=
+=0A=
+>Even more, all unused defines should go.=0A=
+Ok, I will remove it in the next version=0A=
+=0A=
+thanks .=0A=
+=0A=
+Huang Shijie=0A=
+=0A=
+=0A=
+--=0A=
+Pengutronix e.K.                           | Wolfram Sang                |=
+=0A=
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |=
+=0A=
