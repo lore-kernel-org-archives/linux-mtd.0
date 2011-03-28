@@ -1,17 +1,16 @@
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q46zQ-00014O-MB
-	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 07:35:55 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2S7Zorn029261
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2011 10:35:50 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/4] UBIFS: fix minor stylistic issues
-Date: Mon, 28 Mar 2011 10:38:31 +0300
-Message-Id: <1301297914-14712-1-git-send-email-dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@nokia.com>
+Message-ID: <4D903B0B.3040401@freescale.com>
+Date: Mon, 28 Mar 2011 15:38:51 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Subject: Re: [ PATCH V2  0/7] add the GPMI controller driver for IMX23/IMX28
+References: <1301048581-21321-1-git-send-email-b32955@freescale.com>	<19852.46690.924051.229009@ipc1.ka-ro>	<4D8FF3D3.6080308@freescale.com>
+	<19856.12896.740492.968150@ipc1.ka-ro>
+In-Reply-To: <19856.12896.740492.968150@ipc1.ka-ro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	ffainelli@freebox.fr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,183 +20,181 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Hi:
+> Hi,
+>
+> Huang Shijie writes:
+>> Hi:
+>>> Hi,
+>>>
+>>> Huang Shijie writes:
+>>>> The general-purpose media interface(GPMI) controller is a flexible i=
+nterface
+>>>> to up to several NAND flashs.
+>>>>
+>>>> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC acc=
+elerator.
+>>>>
+>>>> With the help of BCH, the GPMI controller can choose to do the hardw=
+are ECC or
+>>>> not.
+>>>>
+>>>> This driver is based the Shawn Guo's DMA patches for IMX23/IMX28,
+>>>> please refer to :
+>>>> 	http://git.infradead.org/users/vkoul/slave-dma.git/commit/a580b8c54=
+29a624d120cd603e1498bf676e2b4da
+>>>>
+>>>> v1 -->   v2:
+>>>> 	[0] merge the common files into the gpmi-nfc-main.c
+>>>> 	[1] change the code to get the clock.
+>>>> 	[2] remove the timing in the nand_device_info{}
+>>>> 	[3] fix DMA errors
+>>>> 	[4] add the nand_device_info.[ch] to generic code
+>>>> 	[5] use the chip->onfi_version for the ONFI nand
+>>>> 	[6] useless init
+>>>> 	[7] others
+>>>>
+>>>> Huang Shijie (7):
+>>>>     ARM: add GPMI support for imx23/imx28
+>>>>     dmaengine: change the flags of request_irq()
+>>>>     MTD : add the database for the NANDs
+>>>>     MTD : add the common code for GPMI controller driver
+>>>>     MTD : add GPMI support for imx23
+>>>>     MTD : add GPMI support for imx28
+>>>>     MTD : add GPMI driver in the config and Makefile
+>>>>
+>>>>    arch/arm/mach-mxs/Kconfig                       |    2 +
+>>>>    arch/arm/mach-mxs/clock-mx23.c                  |    3 +
+>>>>    arch/arm/mach-mxs/clock-mx28.c                  |    3 +
+>>>>    arch/arm/mach-mxs/devices-mx23.h                |    3 +
+>>>>    arch/arm/mach-mxs/devices-mx28.h                |    3 +
+>>>>    arch/arm/mach-mxs/devices/Kconfig               |    3 +
+>>>>    arch/arm/mach-mxs/devices/Makefile              |    1 +
+>>>>    arch/arm/mach-mxs/devices/platform-gpmi.c       |  140 ++
+>>>>    arch/arm/mach-mxs/include/mach/devices-common.h |    4 +
+>>>>    arch/arm/mach-mxs/include/mach/gpmi-nfc.h       |   62 +
+>>>>    arch/arm/mach-mxs/mach-mx23evk.c                |   37 +
+>>>>    arch/arm/mach-mxs/mach-mx28evk.c                |   37 +
+>>>>    drivers/dma/mxs-dma.c                           |    2 +-
+>>>>    drivers/mtd/nand/Kconfig                        |   10 +
+>>>>    drivers/mtd/nand/Makefile                       |    1 +
+>>>>    drivers/mtd/nand/gpmi-nfc/Makefile              |    7 +
+>>>>    drivers/mtd/nand/gpmi-nfc/bch-regs-imx23.h      |  342 ++++
+>>>>    drivers/mtd/nand/gpmi-nfc/bch-regs-imx28.h      |  342 ++++
+>>>>
+>>> Those two files are identical except for the file name included in th=
+e
+>>> comment.
+>>> If a new SoC with differences in the register layout pops up, that
+>>> should be handled by using namespace prefixes for the definitions
+>>> rather than by adding new files.
+>>>
+>> I ever thought to merge the headers into one file, such as
+>> "bch-regs-imx23_imx28.h".
+>> But what about the imx508? Do i have to split the header in future.
+>> Or add a separate file such as "bch-regs-imx508.h"?
+>>
+> If it is so much different from the others, that might be necessary.
+> Otherwise you could use the same approach as proposed for i.MX23 and
+> i.MX28.
+>
+ok. thanks.
+>>>>    drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx23.h     |  381 ++++
+>>>>    drivers/mtd/nand/gpmi-nfc/gpmi-regs-imx28.h     |  370 ++++
+>>>>
+>>> These files differ only in a few definitions. They should be combined
+>>> into one file and the differences sorted out using appropriate
+>>> namespace prefixes like:
+>>> |#define MX23_BP_GPMI_CTRL0_LOCK_CS	22
+>>> |#define MX23_BM_GPMI_CTRL0_LOCK_CS	(1<<   MX23_BP_GPMI_CTRL0_LOCK_CS=
+)
+>>> |#define BP_GPMI_CTRL0_CS		20
+>>> |#define MX23_BM_GPMI_CTRL0_CS		(3<<   BP_GPMI_CTRL0_CS)
+>>> |#define MX28_BM_GPMI_CTRL0_CS		(7<<   BP_GPMI_CTRL0_CS)
+>>>
+>>> The code could either use if clauses checking the platform_id to
+>>> decide which definition to use, or use hooked functions and initializ=
+e
+>>> the function pointers depending on the platform_id.
+>>>
+>> The same issue with the imx508.
+>>
+>>> Also, I prefer notations like '(1<<   22)' over '0x00400000' for bit
+>>> masks, because that makes it easier to match the definition with the
+>>> bit numbers given in the documentation.
+>>>
+>>> Further the 'RSVD' entries should be removed from the register
+>>> definitions (even if they are generated from the XML).
+>>>
+>> thanks. I will modify it in next version.
+>>>>    drivers/mtd/nand/gpmi-nfc/hal-imx23.c           |  555 +++++
+>>>>    drivers/mtd/nand/gpmi-nfc/hal-imx28.c           |  503 +++++
+>>>>
+>>> These files are more or less identical. The code should be moved to
+>>> the main file and the differences sorted out using the platform_ids.
+>>>
+>> In actually, the two files are identical.
+>>
+>> It's a big headache to me.
+>>
+>> Do i have to sacrifice the logic clearness for reducing some code to
+>> make the less code lines?
+>>
+> It's not (only) code size, but maintainability. If you have duplicated
+> code it's harder to keep it in sync when something has to be changed.
+> You will not maintain the code forever, so it's important that others
+> can understand the code easily.
+>
+ok.
 
-Fix several minor stylistic issues:
-* lines longer than 80 characters
-* space before closing parenthesis ')'
-* spaces in the indentations
+But I am sure that I will _SUPPORT_ the driver for several years. :)
+>> If I merge the code to the main file, the main file will become bigger=
+.
+>>
+> But much easier to handle. You can find all functions in one file and
+> do not have to search several files when looking for a specific
+> function.
+>
+sorry.
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- fs/ubifs/debug.c      |    3 ++-
- fs/ubifs/file.c       |   17 +++++++++--------
- fs/ubifs/io.c         |    4 ++--
- fs/ubifs/lpt_commit.c |    2 +-
- fs/ubifs/orphan.c     |    3 ++-
- fs/ubifs/super.c      |    4 ++--
- fs/ubifs/tnc.c        |   10 +++++-----
- fs/ubifs/ubifs.h      |    6 +++---
- 8 files changed, 26 insertions(+), 23 deletions(-)
+I do not think it is a good solution to package all the code in a
+file. Every one thinks in different ways.
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index 8dc686e..68cc992 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -2390,7 +2390,8 @@ int dbg_check_nondata_nodes_order(struct ubifs_info *c, struct list_head *head)
- 		hashb = key_block(c, &sb->key);
- 
- 		if (hasha > hashb) {
--			ubifs_err("larger hash %u goes before %u", hasha, hashb);
-+			ubifs_err("larger hash %u goes before %u",
-+				  hasha, hashb);
- 			goto error_dump;
- 		}
- 	}
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index 28be1e6..0f20df5 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -971,11 +971,11 @@ static int do_writepage(struct page *page, int len)
-  * the page locked, and it locks @ui_mutex. However, write-back does take inode
-  * @i_mutex, which means other VFS operations may be run on this inode at the
-  * same time. And the problematic one is truncation to smaller size, from where
-- * we have to call 'truncate_setsize()', which first changes @inode->i_size, then
-- * drops the truncated pages. And while dropping the pages, it takes the page
-- * lock. This means that 'do_truncation()' cannot call 'truncate_setsize()' with
-- * @ui_mutex locked, because it would deadlock with 'ubifs_writepage()'. This
-- * means that @inode->i_size is changed while @ui_mutex is unlocked.
-+ * we have to call 'truncate_setsize()', which first changes @inode->i_size,
-+ * then drops the truncated pages. And while dropping the pages, it takes the
-+ * page lock. This means that 'do_truncation()' cannot call 'truncate_setsize()'
-+ * with @ui_mutex locked, because it would deadlock with 'ubifs_writepage()'.
-+ * This means that @inode->i_size is changed while @ui_mutex is unlocked.
-  *
-  * XXX(truncate): with the new truncate sequence this is not true anymore,
-  * and the calls to truncate_setsize can be move around freely.  They should
-@@ -1429,10 +1429,11 @@ static int ubifs_releasepage(struct page *page, gfp_t unused_gfp_flags)
- }
- 
- /*
-- * mmap()d file has taken write protection fault and is being made
-- * writable. UBIFS must ensure page is budgeted for.
-+ * mmap()d file has taken write protection fault and is being made writable.
-+ * UBIFS must ensure page is budgeted for.
-  */
--static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma, struct vm_fault *vmf)
-+static int ubifs_vm_page_mkwrite(struct vm_area_struct *vma,
-+				 struct vm_fault *vmf)
- {
- 	struct page *page = vmf->page;
- 	struct inode *inode = vma->vm_file->f_path.dentry->d_inode;
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index dfd168b..6cc0931 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -393,7 +393,7 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
- 	ubifs_assert(wbuf->size % c->min_io_size == 0);
- 	ubifs_assert(!c->ro_media && !c->ro_mount);
- 	if (c->leb_size - wbuf->offs >= c->max_write_size)
--		ubifs_assert(!((wbuf->offs + wbuf->size) % c->max_write_size ));
-+		ubifs_assert(!((wbuf->offs + wbuf->size) % c->max_write_size));
- 
- 	if (c->ro_error)
- 		return -EROFS;
-@@ -588,7 +588,7 @@ int ubifs_wbuf_write_nolock(struct ubifs_wbuf *wbuf, void *buf, int len)
- 	ubifs_assert(mutex_is_locked(&wbuf->io_mutex));
- 	ubifs_assert(!c->ro_media && !c->ro_mount);
- 	if (c->leb_size - wbuf->offs >= c->max_write_size)
--		ubifs_assert(!((wbuf->offs + wbuf->size) % c->max_write_size ));
-+		ubifs_assert(!((wbuf->offs + wbuf->size) % c->max_write_size));
- 
- 	if (c->leb_size - wbuf->offs - wbuf->used < aligned_len) {
- 		err = -ENOSPC;
-diff --git a/fs/ubifs/lpt_commit.c b/fs/ubifs/lpt_commit.c
-index 0c9c69b..9fe376a 100644
---- a/fs/ubifs/lpt_commit.c
-+++ b/fs/ubifs/lpt_commit.c
-@@ -586,7 +586,7 @@ static struct ubifs_pnode *next_pnode_to_dirty(struct ubifs_info *c,
- 			if (nnode->nbranch[iip].lnum)
- 				break;
- 		}
--       } while (iip >= UBIFS_LPT_FANOUT);
-+	} while (iip >= UBIFS_LPT_FANOUT);
- 
- 	/* Go right */
- 	nnode = ubifs_get_nnode(c, nnode, iip);
-diff --git a/fs/ubifs/orphan.c b/fs/ubifs/orphan.c
-index 09df318..bd644bf 100644
---- a/fs/ubifs/orphan.c
-+++ b/fs/ubifs/orphan.c
-@@ -673,7 +673,8 @@ static int kill_orphans(struct ubifs_info *c)
- 		sleb = ubifs_scan(c, lnum, 0, c->sbuf, 1);
- 		if (IS_ERR(sleb)) {
- 			if (PTR_ERR(sleb) == -EUCLEAN)
--				sleb = ubifs_recover_leb(c, lnum, 0, c->sbuf, 0);
-+				sleb = ubifs_recover_leb(c, lnum, 0,
-+							 c->sbuf, 0);
- 			if (IS_ERR(sleb)) {
- 				err = PTR_ERR(sleb);
- 				break;
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index 6ddd997..41d560f 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1144,7 +1144,7 @@ static int check_free_space(struct ubifs_info *c)
- {
- 	ubifs_assert(c->dark_wm > 0);
- 	if (c->lst.total_free + c->lst.total_dirty < c->dark_wm) {
--		ubifs_err("insufficient free space to mount in read/write mode");
-+		ubifs_err("insufficient free space to mount in R/W mode");
- 		dbg_dump_budg(c);
- 		dbg_dump_lprops(c);
- 		return -ENOSPC;
-@@ -1456,7 +1456,7 @@ static int mount_ubifs(struct ubifs_info *c)
- 	dbg_msg("node sizes:          ref %zu, cmt. start %zu, orph %zu",
- 		UBIFS_REF_NODE_SZ, UBIFS_CS_NODE_SZ, UBIFS_ORPH_NODE_SZ);
- 	dbg_msg("max. node sizes:     data %zu, inode %zu dentry %zu, idx %d",
--	        UBIFS_MAX_DATA_NODE_SZ, UBIFS_MAX_INO_NODE_SZ,
-+		UBIFS_MAX_DATA_NODE_SZ, UBIFS_MAX_INO_NODE_SZ,
- 		UBIFS_MAX_DENT_NODE_SZ, ubifs_idx_node_sz(c, c->fanout));
- 	dbg_msg("dead watermark:      %d", c->dead_wm);
- 	dbg_msg("dark watermark:      %d", c->dark_wm);
-diff --git a/fs/ubifs/tnc.c b/fs/ubifs/tnc.c
-index de48597..8119b1f 100644
---- a/fs/ubifs/tnc.c
-+++ b/fs/ubifs/tnc.c
-@@ -2557,11 +2557,11 @@ int ubifs_tnc_remove_nm(struct ubifs_info *c, const union ubifs_key *key,
- 		if (err) {
- 			/* Ensure the znode is dirtied */
- 			if (znode->cnext || !ubifs_zn_dirty(znode)) {
--				    znode = dirty_cow_bottom_up(c, znode);
--				    if (IS_ERR(znode)) {
--					    err = PTR_ERR(znode);
--					    goto out_unlock;
--				    }
-+				znode = dirty_cow_bottom_up(c, znode);
-+				if (IS_ERR(znode)) {
-+					err = PTR_ERR(znode);
-+					goto out_unlock;
-+				}
- 			}
- 			err = tnc_delete(c, znode, n);
- 		}
-diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
-index 8c40ad3..d4c07a9 100644
---- a/fs/ubifs/ubifs.h
-+++ b/fs/ubifs/ubifs.h
-@@ -389,9 +389,9 @@ struct ubifs_gced_idx_leb {
-  * The @ui_size is a "shadow" variable for @inode->i_size and UBIFS uses
-  * @ui_size instead of @inode->i_size. The reason for this is that UBIFS cannot
-  * make sure @inode->i_size is always changed under @ui_mutex, because it
-- * cannot call 'truncate_setsize()' with @ui_mutex locked, because it would deadlock
-- * with 'ubifs_writepage()' (see file.c). All the other inode fields are
-- * changed under @ui_mutex, so they do not need "shadow" fields. Note, one
-+ * cannot call 'truncate_setsize()' with @ui_mutex locked, because it would
-+ * deadlock with 'ubifs_writepage()' (see file.c). All the other inode fields
-+ * are changed under @ui_mutex, so they do not need "shadow" fields. Note, one
-  * could consider to rework locking and base it on "shadow" fields.
-  */
- struct ubifs_inode {
--- 
-1.7.2.3
+>> And I have to add the imx508 code in the main file too in future.
+>>
+>> What's more, the GPMI will be the only NAND controller for the IMX cpu=
+,
+>> even in the imx6x,
+>> What should i do about the imx6x? still add it in the main file?
+>>
+> Why not? If it's so much different that this is not feasible, there is
+> no point in merging it into the current driver anyway. In this case it
+> would probably be better to create a completely new driver for it.
+>
+If i create a new driver, there will be more duplicated code. Because the
+new driver can share all the code except that it should have its own=20
+hal-imxXX.c file.
+
+>> An acceptable solution is merge:
+>> [1] merge the imx23/imx28 into one separate file, such as hal-imx23-im=
+x28.c
+>> [2] add the hal-imx508.c or hal-imx6x.c in future.
+>>
+>> What about the solution? I really reluctant to merge them in the main =
+file.
+>>
+> I would keep as many functions identical as possible. If there are
+> simple differences like those between i.MX23 and i.MX28 they should be
+> handled by if clauses inside the affected functions or by hooking
+> individual functions depending on the platform_id.
+> You should have a look at the i.MX CSPI driver (drivers/spi/spi_imx.c)
+> which handles a variety of chips from i.MX1 thru i.MX51 in this way.
+>
+The i.MX cspi driver is just a small driver. GPMI driver is much bigger=20
+then it.
+But still thanks.
+
+> Lothar Wa=C3=9Fmann
+
+Best Regards
+Huang Shijie
