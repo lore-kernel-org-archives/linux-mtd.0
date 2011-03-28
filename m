@@ -1,19 +1,18 @@
-Received: from [2001:470:b:3e:219:66ff:fee3:2c84] (helo=silka.with-linux.com)
+Received: from nbd.name ([46.4.11.11])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q4CoC-0003ih-L9
-	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 13:48:42 +0000
-Received: from [IPv6:2001:470:b:3e:d69a:20ff:fe56:76db] (comer.internal
-	[IPv6:2001:470:b:3e:d69a:20ff:fe56:76db])
-	by silka.with-linux.com (8.14.4/8.14.4) with ESMTP id p2SDmXGb023253
-	for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2011 07:48:38 -0600
-Message-ID: <4D9091B1.80002@silka.with-linux.com>
-Date: Mon, 28 Mar 2011 07:48:33 -0600
-From: Kelly Anderson <kelly@silka.with-linux.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Mtd alignment bug affecting 1.4.X including current git
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Q4D5x-0003sT-47
+	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 14:07:02 +0000
+From: John Crispin <blogic@openwrt.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH V4 06/10] MIPS: lantiq: add NOR flash support
+Date: Mon, 28 Mar 2011 16:07:53 +0200
+Message-Id: <1301321277-6700-7-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1301321277-6700-1-git-send-email-blogic@openwrt.org>
+References: <1301321277-6700-1-git-send-email-blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org, Ralph Hempel <ralph.hempel@lantiq.com>,
+	linux-mtd@lists.infradead.org,
+	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
+	David Woodhouse <dwmw2@infradead.org>, John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,191 +22,255 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+NOR flash is attached to the same EBU (External Bus Unit) as PCI. As described
+in the PCI patch, the EBU is a little buggy, resulting in the upper and lower
+16 bit of the data on a 32 bit read are swapped. (essentially we have a addr^=2)
 
-Hey there's a problem with mtd-utils starting with commit 
-5dd7d09648bd4c1c87e7c155b960e500925571db
-Versions starting with 1.4.X fail.
-A SheevaPlug user report the problem, so I git bisected it.
-The output from flash_eraseall is at the bottom (the alignments are all 
-off by 2).
-I looked at the problem and found (in current git) that it's passing 
-"offset + clmpos".
-I'm pretty sure that clmpos is 2 in this case.  mtd_write_oob is passing 
-this to do_oob_op
-as "start". do_oob_op is verifying alignment, but it's off by 2 so it fails.
-It should be relatively easy to fix.  You probably need to check all of 
-the calls to mtd_write_oob
-and mtd_read_oob for proper behaviour.  If you create a patch I'll test 
-it for you.
+To work around this we do a addr^=2 during the probe. Once probed we adapt
+cfi->addr_unlock1 and cfi->addr_unlock2 to represent the endianess bug.
 
-flash_erase.c:275
-         if (isNAND) {
-             if (mtd_write_oob(mtd_desc, &mtd, fd, offset + clmpos, 
-clmlen, &cleanmarker) != 0) {
-                 sys_errmsg("%s: MTD writeoob failure", mtd_device);
-                 continue;
-             }
-         } else {
+Signed-off-by: John Crispin <blogic@openwrt.org>
+Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-mtd@lists.infradead.org
+---
+Changes in V2
+* handle the endianess bug inside the map code and not in the generic cfi code
+* remove the addr swizzle patch
 
+Changes in V3
+* whitespace
+* change __iomem void to void __iomem
 
-libmtd.c:1166
-int mtd_write_oob(libmtd_t desc, const struct mtd_dev_info *mtd, int fd,
-           uint64_t start, uint64_t length, void *data)
-{
-     return do_oob_op(desc, mtd, fd, start, length, data,
-              MEMWRITEOOB64, MEMWRITEOOB);
-}
+Chanegs in V4
+* fixes a checkpatch.pl bug, the second is a false positive
+* whitespace cleanups
+* remove unused typecasts
+* cleanup ltq_copy_from and ltq_copy_to
 
-libmtd.c:1105
-     if (start % mtd->min_io_size) {
-         errmsg("unaligned address %llu, mtd%d page size is %d",
-                (unsigned long long)start, mtd->mtd_num,
-                mtd->min_io_size);
-         errno = EINVAL;
-         return -1;
-     }
+ drivers/mtd/maps/Kconfig  |    9 ++
+ drivers/mtd/maps/Makefile |    1 +
+ drivers/mtd/maps/lantiq.c |  181 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 191 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/lantiq.c
 
-
-5dd7d09648bd4c1c87e7c155b960e500925571db is the first bad commit
-commit 5dd7d09648bd4c1c87e7c155b960e500925571db
-Author: Kevin Cernekee <cernekee@gmail.com>
-Date:   Fri Jul 23 17:46:15 2010 -0700
-
-     mtd: change flash_eraseall to use libmtd-wrapped ioctls
-
-     ERASE/ERASE64 were tested on 2.6.18 and 2.6.31. OOB is untested.
-
-     Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-     Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-
-:100644 100644 e6f8d50ea41ff99260ef2528e50866380675d866 
-a2a6b0a28ed5e6053c41524f3de686e81fdd5afa M      flash_eraseall.c
-
-
-Erasing 128 Kibyte @ 0 --  0 % complete.libmtd: error!: unaligned 
-address 2, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 20000 --  3 % complete.libmtd: error!: unaligned 
-address 131074, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 40000 --  6 % complete.libmtd: error!: unaligned 
-address 262146, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 60000 --  9 % complete.libmtd: error!: unaligned 
-address 393218, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 80000 -- 12 % complete.libmtd: error!: unaligned 
-address 524290, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ a0000 -- 15 % complete.libmtd: error!: unaligned 
-address 655362, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ c0000 -- 18 % complete.libmtd: error!: unaligned 
-address 786434, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ e0000 -- 21 % complete.libmtd: error!: unaligned 
-address 917506, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 100000 -- 25 % complete.libmtd: error!: unaligned 
-address 1048578, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 120000 -- 28 % complete.libmtd: error!: unaligned 
-address 1179650, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 140000 -- 31 % complete.libmtd: error!: unaligned 
-address 1310722, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 160000 -- 34 % complete.libmtd: error!: unaligned 
-address 1441794, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 180000 -- 37 % complete.libmtd: error!: unaligned 
-address 1572866, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 1a0000 -- 40 % complete.libmtd: error!: unaligned 
-address 1703938, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 1c0000 -- 43 % complete.libmtd: error!: unaligned 
-address 1835010, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 1e0000 -- 46 % complete.libmtd: error!: unaligned 
-address 1966082, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 200000 -- 50 % complete.libmtd: error!: unaligned 
-address 2097154, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 220000 -- 53 % complete.libmtd: error!: unaligned 
-address 2228226, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 240000 -- 56 % complete.libmtd: error!: unaligned 
-address 2359298, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 260000 -- 59 % complete.libmtd: error!: unaligned 
-address 2490370, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 280000 -- 62 % complete.libmtd: error!: unaligned 
-address 2621442, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 2a0000 -- 65 % complete.libmtd: error!: unaligned 
-address 2752514, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 2c0000 -- 68 % complete.libmtd: error!: unaligned 
-address 2883586, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 2e0000 -- 71 % complete.libmtd: error!: unaligned 
-address 3014658, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 300000 -- 75 % complete.libmtd: error!: unaligned 
-address 3145730, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 320000 -- 78 % complete.libmtd: error!: unaligned 
-address 3276802, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 340000 -- 81 % complete.libmtd: error!: unaligned 
-address 3407874, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 360000 -- 84 % complete.libmtd: error!: unaligned 
-address 3538946, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 380000 -- 87 % complete.libmtd: error!: unaligned 
-address 3670018, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 3a0000 -- 90 % complete.libmtd: error!: unaligned 
-address 3801090, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 3c0000 -- 93 % complete.libmtd: error!: unaligned 
-address 3932162, mtd0 page size is 2048
-
-/usr/sbin/flash_eraseall: /dev/mtd0: MTD writeoob failure: Invalid argument
-Erasing 128 Kibyte @ 3e0000 -- 96 % complete.libmtd: error!: unaligned 
-address 4063234, mtd0 page size is 2048
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 5d37d31..d60e92b 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -260,6 +260,15 @@ config MTD_BCM963XX
+ 	  Support for parsing CFE image tag and creating MTD partitions on
+ 	  Broadcom BCM63xx boards.
+ 
++config MTD_LANTIQ
++	bool "Lantiq SoC NOR support"
++	depends on LANTIQ
++	select MTD_PARTITIONS
++	help
++	  Lantiq SoCs have a EBU (External Bus Unit). This IP allows to attach
++	  a number of different peripherals to the SoC. This driver adds
++	  support for NOR chips to be added.
++
+ config MTD_DILNETPC
+ 	tristate "CFI Flash device mapped on DIL/Net PC"
+ 	depends on X86 && MTD_CONCAT && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index c7869c7..bb2ce2f 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -59,3 +59,4 @@ obj-$(CONFIG_MTD_RBTX4939)	+= rbtx4939-flash.o
+ obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
+ obj-$(CONFIG_MTD_BCM963XX)	+= bcm963xx-flash.o
++obj-$(CONFIG_MTD_LANTIQ)	+= lantiq.o
+diff --git a/drivers/mtd/maps/lantiq.c b/drivers/mtd/maps/lantiq.c
+new file mode 100644
+index 0000000..96a0b57
+--- /dev/null
++++ b/drivers/mtd/maps/lantiq.c
+@@ -0,0 +1,181 @@
++/*
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License version 2 as published
++ *  by the Free Software Foundation.
++ *
++ *  Copyright (C) 2004 Liu Peng Infineon IFAP DC COM CPE
++ *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/io.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/cfi.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/physmap.h>
++
++#include <lantiq_soc.h>
++#include <lantiq_platform.h>
++
++/* the NOR flash is connected to the same external bus unit (EBU) as PCI.
++ * To make PCI work we need to enable the endianess swapping of the addr
++ * written to the EBU. this however has some limitations and breaks when
++ * using NOR. it does not really matter if the onflash data is in a swapped
++ * order, however cfi sequences also fail. to workaround this we need to use
++ * a complex map. We essentially software swap all addresses during probe
++ * and then swizzle the unlock addresses.
++ */
++static int ltq_mtd_probing;
++
++static map_word
++ltq_read16(struct map_info *map, unsigned long adr)
++{
++	unsigned long flags;
++	map_word temp;
++
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	temp.x[0] = *((__u16 *)(map->virt + adr));
++	spin_unlock_irqrestore(&ebu_lock, flags);
++	return temp;
++}
++
++static void
++ltq_write16(struct map_info *map, map_word d, unsigned long adr)
++{
++	unsigned long flags;
++
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	*((__u16 *)(map->virt + adr)) = d.x[0];
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static void
++ltq_copy_from(struct map_info *map, void *to,
++	unsigned long from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *) (map->virt + from);
++	unsigned char *t = (unsigned char *) to;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static void
++ltq_copy_to(struct map_info *map, unsigned long to,
++	const void *from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *) from;
++	unsigned char *t = (unsigned char *) (map->virt + to);
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static const char const *part_probe_types[] = {
++	"cmdlinepart", NULL };
++
++static struct map_info ltq_map = {
++	.name = "ltq_nor",
++	.bankwidth = 2,
++	.read = ltq_read16,
++	.write = ltq_write16,
++	.copy_from = ltq_copy_from,
++	.copy_to = ltq_copy_to,
++};
++
++static int __init
++ltq_mtd_probe(struct platform_device *pdev)
++{
++	struct physmap_flash_data *ltq_mtd_data =
++		dev_get_platdata(&pdev->dev);
++	struct mtd_info *ltq_mtd = NULL;
++	struct mtd_partition *parts = NULL;
++	struct resource *res = 0;
++	int nr_parts = 0;
++	struct cfi_private *cfi;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "failed to get memory resource");
++		return -ENOENT;
++	}
++	res = devm_request_mem_region(&pdev->dev, res->start,
++		resource_size(res), dev_name(&pdev->dev));
++	if (!res) {
++		dev_err(&pdev->dev, "failed to request mem resource");
++		return -EBUSY;
++	}
++
++	ltq_map.phys = res->start;
++	ltq_map.size = resource_size(res);
++	ltq_map.virt = devm_ioremap_nocache(&pdev->dev, ltq_map.phys,
++					ltq_map.size);
++	if (!ltq_map.virt) {
++		dev_err(&pdev->dev, "failed to ioremap!\n");
++		return -EIO;
++	}
++
++	ltq_mtd_probing = 1;
++	ltq_mtd = do_map_probe("cfi_probe", &ltq_map);
++	ltq_mtd_probing = 0;
++	if (!ltq_mtd) {
++		iounmap(ltq_map.virt);
++		dev_err(&pdev->dev, "probing failed\n");
++		return -ENXIO;
++	}
++	ltq_mtd->owner = THIS_MODULE;
++
++	cfi = ltq_map.fldrv_priv;
++	cfi->addr_unlock1 ^= 1;
++	cfi->addr_unlock2 ^= 1;
++
++	nr_parts = parse_mtd_partitions(ltq_mtd, part_probe_types, &parts, 0);
++	if (nr_parts > 0) {
++		dev_info(&pdev->dev,
++			"using %d partitions from cmdline", nr_parts);
++	} else {
++		nr_parts = ltq_mtd_data->nr_parts;
++		parts = ltq_mtd_data->parts;
++	}
++
++	add_mtd_partitions(ltq_mtd, parts, nr_parts);
++	return 0;
++}
++
++static struct platform_driver ltq_mtd_driver = {
++	.driver = {
++		.name = "ltq_nor",
++		.owner = THIS_MODULE,
++	},
++};
++
++int __init
++init_ltq_mtd(void)
++{
++	int ret = platform_driver_probe(&ltq_mtd_driver, ltq_mtd_probe);
++
++	if (ret)
++		printk(KERN_INFO "ltq_nor: error registering platfom driver");
++	return ret;
++}
++
++module_init(init_ltq_mtd);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
++MODULE_DESCRIPTION("Lantiq SoC NOR");
+-- 
+1.7.2.3
