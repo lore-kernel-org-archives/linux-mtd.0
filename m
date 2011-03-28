@@ -1,23 +1,17 @@
-Received: from nbd.name ([46.4.11.11])
+Received: from rcsinet10.oracle.com ([148.87.113.121])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q4DCg-0003wc-Az
-	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 14:13:59 +0000
-Message-ID: <4D909800.50701@phrozen.org>
-Date: Mon, 28 Mar 2011 16:15:28 +0200
-From: John Crispin <john@phrozen.org>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH V2 06/10] MIPS: lantiq: add NOR flash support
-References: <1298996006-15960-1-git-send-email-blogic@openwrt.org>
-	<1298996006-15960-7-git-send-email-blogic@openwrt.org>
-	<1299488320.2746.5.camel@localhost> <4D74CEC2.4040506@openwrt.org>
-In-Reply-To: <4D74CEC2.4040506@openwrt.org>
-Content-Type: text/plain; charset=UTF-8
+	id 1Q4JEg-0007g8-24
+	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 20:40:28 +0000
+Date: Mon, 28 Mar 2011 13:40:16 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ubifs: fix kconfig dependency warning
+Message-Id: <20110328134016.deb5d0c8.randy.dunlap@oracle.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
-	Ralph Hempel <ralph.hempel@lantiq.com>, linux-mtd@lists.infradead.org,
-	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 07/03/11 13:25, John Crispin wrote:
-> On 07/03/11 09:58, Artem Bityutskiy wrote:
->> On Tue, 2011-03-01 at 17:13 +0100, John Crispin wrote:
->>   
->>> NOR flash is attached to the same EBU (External Bus Unit) as PCI. As described
->>> in the PCI patch, the EBU is a little buggy, resulting in the upper and lower
->>> 16 bit of the data on a 32 bit read are swapped. (essentially we have a addr^=2)
->>>
->>> To work around this we do a addr^=2 during the probe. Once probed we adapt
->>> cfi->addr_unlock1 and cfi->addr_unlock2 to represent the endianess bug.
->>>
->>> Changes in V2
->>> * handle the endianess bug inside the map code and not in the generic cfi code
->>> * remove the addr swizzle patch
->>>
->>> Signed-off-by: John Crispin <blogic@openwrt.org>
->>> Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
->>> Cc: David Woodhouse <dwmw2@infradead.org>
->>> Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
->>> Cc: linux-mips@linux-mips.org
->>> Cc: linux-mtd@lists.infradead.org
->>>     
->> There are a couple checkpatch.pl warnings, would you please address them
->> and resend?
->>
->>   
-> Hi,
-> 
-> of course.
-> 
-> thanks,
-> John
-> 
-> 
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-Hi,
+Fix another kconfig dependency warning, this time in ubifs.
 
-i fixed one of the warnings. the remaining warning wants me to put at
-least 4 lines into the help section in the Kconfig. However 3 lines were
-enough to explain what the driver does.
+warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
 
-John
+Without this patch, we can have:
+# CONFIG_KALLSYMS is not set
+CONFIG_KALLSYMS_ALL=y
+which is useless (does nothing unless KALLSYMS is enabled).
+
+However, ubifs builds successfully with or without this patch,
+and it builds with this line completely deleted,
+so what was this 'select' for?  Just developer convenience?
+
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+Cc:      Artem Bityutskiy <dedekind1@gmail.com>
+Cc:      Adrian Hunter <adrian.hunter@nokia.com>
+Cc:      linux-mtd@lists.infradead.org
+---
+ fs/ubifs/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-2.6.38-git18.orig/fs/ubifs/Kconfig
++++ linux-2.6.38-git18/fs/ubifs/Kconfig
+@@ -47,7 +47,7 @@ config UBIFS_FS_DEBUG
+ 	bool "Enable debugging support"
+ 	depends on UBIFS_FS
+ 	select DEBUG_FS
+-	select KALLSYMS_ALL
++	select KALLSYMS_ALL if DEBUG_KERNEL && KALLSYMS
+ 	help
+ 	  This option enables UBIFS debugging support. It makes sure various
+ 	  assertions, self-checks, debugging messages and test modes are compiled
