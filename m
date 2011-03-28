@@ -1,18 +1,17 @@
-Message-ID: <4D8FEC9E.1000900@freescale.com>
-Date: Mon, 28 Mar 2011 10:04:14 +0800
+Message-ID: <4D8FED2A.6040507@freescale.com>
+Date: Mon, 28 Mar 2011 10:06:34 +0800
 From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [ PATCH V2 4/7] MTD : add the common code for GPMI controller
-	driver
+To: Wolfram Sang <w.sang@pengutronix.de>
+Subject: Re: [ PATCH V2  0/7] add the GPMI controller driver for IMX23/IMX28
 References: <1301048581-21321-1-git-send-email-b32955@freescale.com>
-	<1301048581-21321-5-git-send-email-b32955@freescale.com>
-	<20110326000148.GB13574@n2100.arm.linux.org.uk>
-In-Reply-To: <20110326000148.GB13574@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+	<19852.46690.924051.229009@ipc1.ka-ro>
+	<20110325153948.GE3302@pengutronix.de>
+In-Reply-To: <20110325153948.GE3302@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	ffainelli@freebox.fr
+Cc: ffainelli@freebox.fr, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +22,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi:
-
-> On Fri, Mar 25, 2011 at 06:22:58PM +0800, Huang Shijie wrote:
->> +/* Can we use the upper's buffer directly for DMA? */
->> +void prepare_data_dma(struct gpmi_nfc_data *this, enum dma_data_direction dr)
->> +{
->> +	struct mil *mil =&this->mil;
->> +	struct scatterlist *sgl =&mil->data_sgl;
->> +	int ret;
->> +
->> +	mil->direct_dma_map_ok = true;
->> +
->> +	/* first try to map the upper buffer directly */
->> +	sg_init_one(sgl, mil->upper_buf, mil->upper_len);
->> +	ret = dma_map_sg(this->dev, sgl, 1, dr);
->> +	if (ret == 0) {
->> +		/* We have to use our own DMA buffer. */
->> +		sg_init_one(sgl, mil->data_buffer_dma, PAGE_SIZE);
->> +		ret = dma_map_sg(this->dev, sgl, 1, dr);
->> +		BUG_ON(ret == 0);
->> +
->> +		if (dr == DMA_TO_DEVICE)
->> +			memcpy(mil->data_buffer_dma, mil->upper_buf,
->> +				mil->upper_len);
-> Buggy.  Ensure data is present in the buffers _before_ mapping.
+>> Further the 'RSVD' entries should be removed from the register
+>> definitions (even if they are generated from the XML).
+> Even more, all unused defines should go.
 >
 thanks.
 
->> +	case DMA_FOR_READ_DATA:
->> +		if (mil->direct_dma_map_ok == false)
->> +			memcpy(mil->upper_buf, (char *)mil->data_buffer_dma,
->> +				mil->upper_len);
->> +		dma_unmap_sg(this->dev,&mil->data_sgl, 1, DMA_FROM_DEVICE);
-> Buggy.  Only read data from buffers _after_ unmapping.
->
-thanks.
-
-Best Regards
 Huang Shijie
