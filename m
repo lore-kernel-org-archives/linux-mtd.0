@@ -1,21 +1,26 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q49u9-0002J7-56
-	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 10:42:37 +0000
-Date: Mon, 28 Mar 2011 13:38:16 +0300
-From: Phil Carmody <ext-phil.2.carmody@nokia.com>
-To: ext Artem Bityutskiy <dedekind1@gmail.com>
+	id 1Q4BJD-0002zs-Un
+	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 12:12:38 +0000
+Received: by fxm14 with SMTP id 14so2363018fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 28 Mar 2011 05:12:33 -0700 (PDT)
 Subject: Re: [PATCH 1/1] ubifs: debugfs operations may return both ERRs and
 	NULLs
-Message-ID: <20110328103816.GC2072@esdhcp04044.research.nokia.com>
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Phil Carmody <ext-phil.2.carmody@nokia.com>
+In-Reply-To: <20110328103816.GC2072@esdhcp04044.research.nokia.com>
 References: <20110323131614.GC18296@esdhcp04044.research.nokia.com>
 	<1300887304-20932-1-git-send-email-ext-phil.2.carmody@nokia.com>
 	<1301295087.2816.2.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1301295087.2816.2.camel@localhost>
+	<20110328103816.GC2072@esdhcp04044.research.nokia.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 28 Mar 2011 15:10:32 +0300
+Message-ID: <1301314232.2816.40.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, adrian.hunter@nokia.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 28/03/11 09:51 +0300, ext Artem Bityutskiy wrote:
-> On Wed, 2011-03-23 at 15:35 +0200, Phil Carmody wrote:
-> > I knew I invented IS_ERR_OR_NULL for something, and this was probably
-> > it. NULL has lost all information about what the error was, and the most
-> > appropriate error code is ENODEV. However, that's the only error code
-> > that the debugfs functions can return. So basically, any error = ENODEV.
+On Mon, 2011-03-28 at 13:38 +0300, Phil Carmody wrote:
+> > I think the right fix would be to fix debugfs and return an error code
+> > in any case.
 > 
-> This is not true that any error is -ENODEV. There are many other errors
-> possible, e.g., due to an invocation of simple_pin_fs().
+> Agree. Alas it might require hitting a lot of both active and dead code.
+> Is that something you want me to look at? If you do it yourself, please
+> Cc: me, I'll happily review it.
 
-I meant that once you've thrown away all information about the actual
-error by turning it into NULL, then the broadest brush that covers the
-failure modes is ENODEV. That's why I was asked "what's the most generic
-'something's gone wrong' code" on the chat channel the other day.
- 
-> I think the right fix would be to fix debugfs and return an error code
-> in any case.
+No, I do not ask you do change debugfs. Do it only if you fare feeling
+enthusiastic about this :-) But I do not feel that way, so won't delve
+into the debugfs story :-)
 
-Agree. Alas it might require hitting a lot of both active and dead code.
-Is that something you want me to look at? If you do it yourself, please
-Cc: me, I'll happily review it.
+All I mean is that we should not do this:
 
-Phil
+-       if (IS_ERR(ptr)) {
++       if (IS_ERR_OR_NULL(ptr))
+-               int err = PTR_ERR(ptr);
+-               return err;
++               return -ENODEV;
+
+But rather
+
+-       if (IS_ERR(ptr)) {
++       if (IS_ERR_OR_NULL(ptr)) {
+-               int err = PTR_ERR(ptr);
++               int err = ptr ? PTR_ERR(ptr) : -ENODEV;
+                return err;
+
+or something like this.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
