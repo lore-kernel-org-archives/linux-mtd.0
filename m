@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q46xD-00011i-Ts
-	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 07:33:37 +0000
+	id 1Q46xD-00011j-U0
+	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 07:33:38 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p2S7XWdi001348
+	p2S7XW3d001371
 	for <linux-mtd@lists.infradead.org>; Mon, 28 Mar 2011 10:33:32 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/3] UBI: use __packed instead of __attribute__((packed))
-Date: Mon, 28 Mar 2011 10:36:10 +0300
-Message-Id: <1301297771-14624-2-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 3/3] UBI: fix minor stylistic issues
+Date: Mon, 28 Mar 2011 10:36:11 +0300
+Message-Id: <1301297771-14624-3-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1301297771-14624-1-git-send-email-dedekind1@gmail.com>
 References: <1301297771-14624-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,112 +25,169 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-There was an attempt to standartize various "__attribute__" and
-other macros in order to have potentially portable and more
-consistent code, see commit 82ddcb040570411fc2d421d96b3e69711c670328.
+Fix checkpatch.pl errors and warnings:
 
-Note, that commit refers Rober Love's blog post, but the URL
-is broken, the valid URL is:
-http://blog.rlove.org/2005/10/with-little-help-from-your-compiler.html
-
-Moreover, nowadays checkpatch.pl warns about using
-__attribute__((packed)):
-
-"WARNING: __packed is preferred over __attribute__((packed))"
-
-It is not a big deal for UBI to use __packed, so let's do it.
+* space before tab
+* line over 80 characters
+* include linux/ioctl.h instead of asm/ioctl.h
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/ubi-media.h |    6 +++---
- include/mtd/ubi-user.h      |   12 ++++++------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ drivers/mtd/ubi/cdev.c  |    4 ++--
+ drivers/mtd/ubi/debug.c |   18 +++++++++---------
+ drivers/mtd/ubi/io.c    |    4 ++--
+ drivers/mtd/ubi/scan.c  |    2 +-
+ drivers/mtd/ubi/ubi.h   |    4 ++--
+ drivers/mtd/ubi/wl.c    |    3 ++-
+ include/linux/mtd/ubi.h |    4 ++--
+ include/mtd/ubi-user.h  |    6 +++---
+ 8 files changed, 23 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/mtd/ubi/ubi-media.h b/drivers/mtd/ubi/ubi-media.h
-index 503ea9b..6fb8ec2 100644
---- a/drivers/mtd/ubi/ubi-media.h
-+++ b/drivers/mtd/ubi/ubi-media.h
-@@ -164,7 +164,7 @@ struct ubi_ec_hdr {
- 	__be32  image_seq;
- 	__u8    padding2[32];
- 	__be32  hdr_crc;
--} __attribute__ ((packed));
-+} __packed;
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 4119cb8..191f3bb 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -115,7 +115,7 @@ static int vol_cdev_open(struct inode *inode, struct file *file)
+ 		mode = UBI_READONLY;
  
- /**
-  * struct ubi_vid_hdr - on-flash UBI volume identifier header.
-@@ -292,7 +292,7 @@ struct ubi_vid_hdr {
- 	__be64  sqnum;
- 	__u8    padding3[12];
- 	__be32  hdr_crc;
--} __attribute__ ((packed));
-+} __packed;
+ 	dbg_gen("open device %d, volume %d, mode %d",
+-	        ubi_num, vol_id, mode);
++		ubi_num, vol_id, mode);
  
- /* Internal UBI volumes count */
- #define UBI_INT_VOL_COUNT 1
-@@ -373,6 +373,6 @@ struct ubi_vtbl_record {
- 	__u8    flags;
- 	__u8    padding[23];
- 	__be32  crc;
--} __attribute__ ((packed));
-+} __packed;
+ 	desc = ubi_open_volume(ubi_num, vol_id, mode);
+ 	if (IS_ERR(desc))
+@@ -158,7 +158,7 @@ static loff_t vol_cdev_llseek(struct file *file, loff_t offset, int origin)
+ 	loff_t new_offset;
  
- #endif /* !__UBI_MEDIA_H__ */
+ 	if (vol->updating) {
+-		 /* Update is in progress, seeking is prohibited */
++		/* Update is in progress, seeking is prohibited */
+ 		dbg_err("updating");
+ 		return -EBUSY;
+ 	}
+diff --git a/drivers/mtd/ubi/debug.c b/drivers/mtd/ubi/debug.c
+index d4d07e5..0cd5bea 100644
+--- a/drivers/mtd/ubi/debug.c
++++ b/drivers/mtd/ubi/debug.c
+@@ -75,15 +75,15 @@ void ubi_dbg_dump_vid_hdr(const struct ubi_vid_hdr *vid_hdr)
+ {
+ 	printk(KERN_DEBUG "Volume identifier header dump:\n");
+ 	printk(KERN_DEBUG "\tmagic     %08x\n", be32_to_cpu(vid_hdr->magic));
+-	printk(KERN_DEBUG "\tversion   %d\n",   (int)vid_hdr->version);
+-	printk(KERN_DEBUG "\tvol_type  %d\n",   (int)vid_hdr->vol_type);
+-	printk(KERN_DEBUG "\tcopy_flag %d\n",   (int)vid_hdr->copy_flag);
+-	printk(KERN_DEBUG "\tcompat    %d\n",   (int)vid_hdr->compat);
+-	printk(KERN_DEBUG "\tvol_id    %d\n",   be32_to_cpu(vid_hdr->vol_id));
+-	printk(KERN_DEBUG "\tlnum      %d\n",   be32_to_cpu(vid_hdr->lnum));
+-	printk(KERN_DEBUG "\tdata_size %d\n",   be32_to_cpu(vid_hdr->data_size));
+-	printk(KERN_DEBUG "\tused_ebs  %d\n",   be32_to_cpu(vid_hdr->used_ebs));
+-	printk(KERN_DEBUG "\tdata_pad  %d\n",   be32_to_cpu(vid_hdr->data_pad));
++	printk(KERN_DEBUG "\tversion   %d\n",  (int)vid_hdr->version);
++	printk(KERN_DEBUG "\tvol_type  %d\n",  (int)vid_hdr->vol_type);
++	printk(KERN_DEBUG "\tcopy_flag %d\n",  (int)vid_hdr->copy_flag);
++	printk(KERN_DEBUG "\tcompat    %d\n",  (int)vid_hdr->compat);
++	printk(KERN_DEBUG "\tvol_id    %d\n",  be32_to_cpu(vid_hdr->vol_id));
++	printk(KERN_DEBUG "\tlnum      %d\n",  be32_to_cpu(vid_hdr->lnum));
++	printk(KERN_DEBUG "\tdata_size %d\n",  be32_to_cpu(vid_hdr->data_size));
++	printk(KERN_DEBUG "\tused_ebs  %d\n",  be32_to_cpu(vid_hdr->used_ebs));
++	printk(KERN_DEBUG "\tdata_pad  %d\n",  be32_to_cpu(vid_hdr->data_pad));
+ 	printk(KERN_DEBUG "\tsqnum     %llu\n",
+ 		(unsigned long long)be64_to_cpu(vid_hdr->sqnum));
+ 	printk(KERN_DEBUG "\thdr_crc   %08x\n", be32_to_cpu(vid_hdr->hdr_crc));
+diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
+index e347cc4..d58ceb1 100644
+--- a/drivers/mtd/ubi/io.c
++++ b/drivers/mtd/ubi/io.c
+@@ -189,8 +189,8 @@ retry:
+ 		}
+ 
+ 		if (retries++ < UBI_IO_RETRIES) {
+-			dbg_io("error %d%s while reading %d bytes from PEB %d:%d,"
+-			       " read only %zd bytes, retry",
++			dbg_io("error %d%s while reading %d bytes from PEB "
++			       "%d:%d, read only %zd bytes, retry",
+ 			       err, errstr, len, pnum, offset, read);
+ 			yield();
+ 			goto retry;
+diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
+index 11eb8ef..5695eb0 100644
+--- a/drivers/mtd/ubi/scan.c
++++ b/drivers/mtd/ubi/scan.c
+@@ -1103,7 +1103,7 @@ static int check_what_we_have(struct ubi_device *ubi, struct ubi_scan_info *si)
+ 		 * otherwise, only print a warning.
+ 		 */
+ 		if (si->corr_peb_count >= max_corr) {
+-			ubi_err("too many corrupted PEBs, refusing this device");
++			ubi_err("too many corrupted PEBs, refusing");
+ 			return -EINVAL;
+ 		}
+ 	}
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index f1be8b7..c6c2229 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -341,8 +341,8 @@ struct ubi_wl_entry;
+  *      protected from the wear-leveling worker)
+  * @pq_head: protection queue head
+  * @wl_lock: protects the @used, @free, @pq, @pq_head, @lookuptbl, @move_from,
+- * 	     @move_to, @move_to_put @erase_pending, @wl_scheduled, @works,
+- * 	     @erroneous, and @erroneous_peb_count fields
++ *	     @move_to, @move_to_put @erase_pending, @wl_scheduled, @works,
++ *	     @erroneous, and @erroneous_peb_count fields
+  * @move_mutex: serializes eraseblock moves
+  * @work_sem: synchronizes the WL worker with use tasks
+  * @wl_scheduled: non-zero if the wear-leveling was scheduled
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index b4cf57d..ff2c495 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1570,7 +1570,8 @@ void ubi_wl_close(struct ubi_device *ubi)
+  * @ec: the erase counter to check
+  *
+  * This function returns zero if the erase counter of physical eraseblock @pnum
+- * is equivalent to @ec, and a negative error code if not or if an error occurred.
++ * is equivalent to @ec, and a negative error code if not or if an error
++ * occurred.
+  */
+ static int paranoid_check_ec(struct ubi_device *ubi, int pnum, int ec)
+ {
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index 84854ed..15da0e9 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -21,7 +21,7 @@
+ #ifndef __LINUX_UBI_H__
+ #define __LINUX_UBI_H__
+ 
+-#include <asm/ioctl.h>
++#include <linux/ioctl.h>
+ #include <linux/types.h>
+ #include <mtd/ubi-user.h>
+ 
+@@ -87,7 +87,7 @@ enum {
+  * physical eraseblock size and on how much bytes UBI headers consume. But
+  * because of the volume alignment (@alignment), the usable size of logical
+  * eraseblocks if a volume may be less. The following equation is true:
+- * 	@usable_leb_size = LEB size - (LEB size mod @alignment),
++ *	@usable_leb_size = LEB size - (LEB size mod @alignment),
+  * where LEB size is the logical eraseblock size defined by the UBI device.
+  *
+  * The alignment is multiple to the minimal flash input/output unit size or %1
 diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index e70bd34..a390342 100644
+index a390342..3c41097 100644
 --- a/include/mtd/ubi-user.h
 +++ b/include/mtd/ubi-user.h
-@@ -310,7 +310,7 @@ struct ubi_mkvol_req {
- 	__s16 name_len;
- 	__s8 padding2[4];
- 	char name[UBI_MAX_VOLUME_NAME + 1];
--} __attribute__ ((packed));
-+} __packed;
- 
- /**
-  * struct ubi_rsvol_req - a data structure used in volume re-size requests.
-@@ -326,7 +326,7 @@ struct ubi_mkvol_req {
- struct ubi_rsvol_req {
- 	__s64 bytes;
- 	__s32 vol_id;
--} __attribute__ ((packed));
-+} __packed;
- 
- /**
-  * struct ubi_rnvol_req - volumes re-name request.
-@@ -368,7 +368,7 @@ struct ubi_rnvol_req {
- 		__s8  padding2[2];
- 		char    name[UBI_MAX_VOLUME_NAME + 1];
- 	} ents[UBI_MAX_RNVOL];
--} __attribute__ ((packed));
-+} __packed;
- 
- /**
-  * struct ubi_leb_change_req - a data structure used in atomic LEB change
-@@ -383,7 +383,7 @@ struct ubi_leb_change_req {
- 	__s32 bytes;
- 	__s8  dtype;
- 	__s8  padding[7];
--} __attribute__ ((packed));
-+} __packed;
- 
- /**
-  * struct ubi_map_req - a data structure used in map LEB requests.
-@@ -395,7 +395,7 @@ struct ubi_map_req {
- 	__s32 lnum;
- 	__s8  dtype;
- 	__s8  padding[3];
--} __attribute__ ((packed));
-+} __packed;
- 
- 
- /**
-@@ -409,6 +409,6 @@ struct ubi_set_vol_prop_req {
-        __u8  property;
-        __u8  padding[7];
-        __u64 value;
--}  __attribute__ ((packed));
-+}  __packed;
+@@ -406,9 +406,9 @@ struct ubi_map_req {
+  * @value: value to set
+  */
+ struct ubi_set_vol_prop_req {
+-       __u8  property;
+-       __u8  padding[7];
+-       __u64 value;
++	__u8  property;
++	__u8  padding[7];
++	__u64 value;
+ }  __packed;
  
  #endif /* __UBI_USER_H__ */
 -- 
