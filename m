@@ -1,24 +1,21 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from rcsinet10.oracle.com ([148.87.113.121])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q4b6R-0006Q3-3z
-	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 15:45:07 +0000
-Received: by ewy3 with SMTP id 3so110882ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Mar 2011 08:45:05 -0700 (PDT)
-Subject: Re: How to write to nand with an image containing oob data,
-	including ECC?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.1103291723240.25520@lnxricardw.se.axis.com>
-References: <Pine.LNX.4.64.1103291723240.25520@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 29 Mar 2011 18:42:51 +0300
-Message-ID: <1301413371.21445.15.camel@localhost>
+	id 1Q4bAE-0006SD-Rq
+	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 15:49:03 +0000
+Date: Tue, 29 Mar 2011 08:48:55 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: dedekind1@gmail.com
+Subject: [PATCH v2] ubifs: fix kconfig dependency warning
+Message-Id: <20110329084855.0de29fff.randy.dunlap@oracle.com>
+In-Reply-To: <1301411055.21445.13.camel@localhost>
+References: <20110328134016.deb5d0c8.randy.dunlap@oracle.com>
+	<1301382178.2816.69.camel@localhost> <4D91F432.2070406@oracle.com>
+	<1301411055.21445.13.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Kelly Anderson <kelly@silka.with-linux.com>,
-	Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,51 +25,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-03-29 at 17:30 +0200, Ricard Wanderlof wrote:
-> Hi,
-> 
-> In order to test an ECC algorithm (BCH in this case, as I recently posted 
-> about), i want to write an image to a nand flash which contains bit 
-> errors.
-> 
-> What I want to do, and I seem to remember doing this in the past, is to 
-> dump the whole image, change a single bit, and write it back, including 
-> the oob.
-> 
-> So what I'm doing is
-> 
-> $ nandwrite -o -n /dev/mtd3 /tmp/mtd3-badimage
-> 
-> where /tmp/mtd3-badimage contains an image including all oobs for all 
-> pages.
-> 
-> However, this fails saying
-> 
-> Writing data to block 0 at offset 0x0
-> libmtd: error!: cannot write 2048 bytes to mtd3 (eraseblock 0, offset 0)
->          error 22 (Invalid argument)
-> nandwrite: error!: /dev/mtd3: MTD write failure
->             error 22 (Invalid argument)
-> Data was only partially written due to error
-> : Invalid argument
-> 
-> Using just -o doesn't work because it seems nandwrite writes the oob, but 
-> then since it doesn't write the main page in raw mode, the ecc gets 
-> overwritten. Strangely enough, the ECC doesn't seem to match the data 
-> written, as I get uncorrectable errors when reading back (not just with 
-> BCH, but also with the standard mtd built-in algorithm). Perhaps the oob 
-> gets written twice, once with my data and once more with the calculated 
-> ecc?
-> 
-> Is this a known bug, or are the some other options I should be using?
+On Tue, 29 Mar 2011 18:04:15 +0300 Artem Bityutskiy wrote:
 
-Check this bug-report, probably it is about the same. Not sure, I did
-not have time to look at this:
+> On Tue, 2011-03-29 at 08:01 -0700, Randy Dunlap wrote:
+> > On 03/29/11 00:02, Artem Bityutskiy wrote:
+> > > On Mon, 2011-03-28 at 13:40 -0700, Randy Dunlap wrote:
+> > >> From: Randy Dunlap <randy.dunlap@oracle.com>
+> > >>
+> > >> Fix another kconfig dependency warning, this time in ubifs.
+> > >>
+> > >> warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
+> > >>
+> > >> Without this patch, we can have:
+> > >> # CONFIG_KALLSYMS is not set
+> > >> CONFIG_KALLSYMS_ALL=y
+> > >> which is useless (does nothing unless KALLSYMS is enabled).
+> > >>
+> > >> However, ubifs builds successfully with or without this patch,
+> > >> and it builds with this line completely deleted,
+> > >> so what was this 'select' for?  Just developer convenience?
+> > > 
+> > > Well, here is the idea. You can compile UBIFS with debugging and without
+> > > debugging. Without debugging the resulting ubifs.ko is much smaller, so
+> > > some embedded people prefer it this way.
+> > > 
+> > > If you select debugging support, then we'll compile it a lot of
+> > > assertions, self-checks, test-modes, extra error messages with detailed
+> > > dumps. And we want to see stackdumps when errors or problems happen,
+> > > this is why we select KALLSYMS_ALL.
+> > > 
+> > > So I guess instead we should do:
+> > > 
+> > > select KALLSYMS
+> > > select KALLSYMS_ALL
+> > 
+> > Yes, that should do it.  Thanks for the explanation.
+> 
+> Will you submit a patch? Alternatively, I can make it myself. What is
+> your preference?
 
-http://lists.infradead.org/pipermail/linux-mtd/2011-March/034505.html
+Here's an updated patch.  But since KALLSYMS_ALL depends on DEBUG_KERNEL,
+the lines above aren't quite sufficient and I don't care to select
+DEBUG_KERNEL.
 
-would be great if someone just sent a fix :-)
+---
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Fix kconfig dependency warning in ubifs:
+
+warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
+
+Without this patch, we can have:
+# CONFIG_KALLSYMS is not set
+CONFIG_KALLSYMS_ALL=y
+which is useless (does nothing unless KALLSYMS is enabled).
+
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+Cc:      Artem Bityutskiy <dedekind1@gmail.com>
+Cc:      Adrian Hunter <adrian.hunter@nokia.com>
+Cc:      linux-mtd@lists.infradead.org
+---
+ fs/ubifs/Kconfig |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- linux-next-20110328.orig/fs/ubifs/Kconfig
++++ linux-next-20110328/fs/ubifs/Kconfig
+@@ -47,7 +47,8 @@ config UBIFS_FS_DEBUG
+ 	bool "Enable debugging support"
+ 	depends on UBIFS_FS
+ 	select DEBUG_FS
+-	select KALLSYMS_ALL
++	select KALLSYMS
++	select KALLSYMS_ALL if DEBUG_KERNEL
+ 	help
+ 	  This option enables UBIFS debugging support. It makes sure various
+ 	  assertions, self-checks, debugging messages and test modes are compiled
