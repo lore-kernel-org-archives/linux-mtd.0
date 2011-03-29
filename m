@@ -1,19 +1,24 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q4aSf-00064c-Rc
-	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 15:04:02 +0000
-Date: Tue, 29 Mar 2011 17:03:13 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH/RFC v4 1/3] Shared BCH ECC library
-Message-ID: <20110329150313.GA15405@parrot.com>
-References: <1fb708d8d49cdd83e62424fb77912418f5c92d69.1299836869.git.ivan.djelic@parrot.com>
-	<Pine.LNX.4.64.1103291534110.25520@lnxricardw.se.axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1103291534110.25520@lnxricardw.se.axis.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q4aV6-000664-Ju
+	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 15:06:33 +0000
+Received: by vxd2 with SMTP id 2so248401vxd.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 29 Mar 2011 08:06:31 -0700 (PDT)
+Subject: Re: [PATCH] ubifs: fix kconfig dependency warning
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+In-Reply-To: <4D91F432.2070406@oracle.com>
+References: <20110328134016.deb5d0c8.randy.dunlap@oracle.com>
+	<1301382178.2816.69.camel@localhost>  <4D91F432.2070406@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 29 Mar 2011 18:04:15 +0300
+Message-ID: <1301411055.21445.13.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
+	Adrian Hunter <adrian.hunter@nokia.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Mar 29, 2011 at 02:55:19PM +0100, Ricard Wanderlof wrote:
-> However, if I introduce a single bit error in the page, bch_decode() fails 
-> with -EBADMSG, and some further debugging reveals that 
-> bch.c:compute_error_locator_polynomial() returns 4 in this particular 
-> case, whereas bch.c:find_poly_roots() returns 0, the two don't match, and 
-> the function exits with an error. I'm no wizard with the algorithms used 
-> so i have no idea what is reasonable. I would assume both would return 1, 
-> as there is one bit error that I've introduced.
-
-Yes you are correct, the computed error locator polynomial seems wrong, it
-should be of degree 1.
-
-> I've dumped the read and calculated ECC and it looks like they are being 
-> generated as expected; indeed, if there was a fault there reading ok pages 
-> would also fail.
+On Tue, 2011-03-29 at 08:01 -0700, Randy Dunlap wrote:
+> On 03/29/11 00:02, Artem Bityutskiy wrote:
+> > On Mon, 2011-03-28 at 13:40 -0700, Randy Dunlap wrote:
+> >> From: Randy Dunlap <randy.dunlap@oracle.com>
+> >>
+> >> Fix another kconfig dependency warning, this time in ubifs.
+> >>
+> >> warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
+> >>
+> >> Without this patch, we can have:
+> >> # CONFIG_KALLSYMS is not set
+> >> CONFIG_KALLSYMS_ALL=y
+> >> which is useless (does nothing unless KALLSYMS is enabled).
+> >>
+> >> However, ubifs builds successfully with or without this patch,
+> >> and it builds with this line completely deleted,
+> >> so what was this 'select' for?  Just developer convenience?
+> > 
+> > Well, here is the idea. You can compile UBIFS with debugging and without
+> > debugging. Without debugging the resulting ubifs.ko is much smaller, so
+> > some embedded people prefer it this way.
+> > 
+> > If you select debugging support, then we'll compile it a lot of
+> > assertions, self-checks, test-modes, extra error messages with detailed
+> > dumps. And we want to see stackdumps when errors or problems happen,
+> > this is why we select KALLSYMS_ALL.
+> > 
+> > So I guess instead we should do:
+> > 
+> > select KALLSYMS
+> > select KALLSYMS_ALL
 > 
-> I'm a bit bewildered, as the algorithm appearently has been tested on a 
-> Mips (albeit under QEMU). Of course it's very likely that I've made a 
-> mistake somewhere, in that case it must be in the set-up, as the two files 
-> which actually implement the algorithm are new and not patches to existing 
-> files. I was thinking it was perhaps an endianess problem (our MIPS is 
-> little-endian), but I see it's been tested on x86 too so it shouldn't be 
-> that.
-> 
-> Any ideas?
+> Yes, that should do it.  Thanks for the explanation.
 
-I should be able to help if you provide me with the following information:
+Will you submit a patch? Alternatively, I can make it myself. What is
+your preference?
 
-- your patch against 2.6.35
-- on an erased page, could you please program just the first byte to 0x7f (in
-raw mode, no ecc), then read the page back normally with ecc, and dump the
-calculated ecc ?
+And I'll merge it upstream this cycle (before 2.6.39) then.
 
-If you wish I can also send you the userland test suite that I use for
-validation.
-
+-- 
 Best Regards,
-
---
-Ivan
+Artem Bityutskiy (Артём Битюцкий)
