@@ -1,17 +1,17 @@
-Received: from rcsinet10.oracle.com ([148.87.113.121])
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q4JEg-0007g8-24
-	for linux-mtd@lists.infradead.org; Mon, 28 Mar 2011 20:40:28 +0000
-Date: Mon, 28 Mar 2011 13:40:16 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: lkml <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ubifs: fix kconfig dependency warning
-Message-Id: <20110328134016.deb5d0c8.randy.dunlap@oracle.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	id 1Q4SmM-0002dJ-Dg
+	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 06:51:51 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-da02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p2T6pmgt013165
+	for <linux-mtd@lists.infradead.org>; Tue, 29 Mar 2011 09:51:48 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH] UBIFS: fix assertion warnings
+Date: Tue, 29 Mar 2011 09:54:56 +0300
+Message-Id: <1301381696-26884-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +21,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Fix another kconfig dependency warning, this time in ubifs.
+This patch fixes UBIFS assertion warnings like:
 
-warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
+UBIFS assert failed in ubifs_leb_unmap at 135 (pid 29365)
+Pid: 29365, comm: integck Tainted: G          I 2.6.37-ubi-2.6+ #34
+Call Trace:
+ [<ffffffffa047c663>] ubifs_lpt_init+0x95e/0x9ee [ubifs]
+ [<ffffffffa04623a7>] ubifs_remount_fs+0x2c7/0x762 [ubifs]
+ [<ffffffff810f066e>] do_remount_sb+0xb6/0x101
+ [<ffffffff81106ff4>] ? do_mount+0x191/0x78e
+ [<ffffffff811070bb>] do_mount+0x258/0x78e
+ [<ffffffff810da1e8>] ? alloc_pages_current+0xa2/0xc5
+ [<ffffffff81107674>] sys_mount+0x83/0xbd
+ [<ffffffff81009a12>] system_call_fastpath+0x16/0x1b
 
-Without this patch, we can have:
-# CONFIG_KALLSYMS is not set
-CONFIG_KALLSYMS_ALL=y
-which is useless (does nothing unless KALLSYMS is enabled).
+They happen when we re-mount from R/O mode to R/W mode. While
+re-mounting, we write to the media, but we still have the c->ro_mount
+flag set. The fix is very simple - just clear the flag before
+starting re-mounting R/W.
 
-However, ubifs builds successfully with or without this patch,
-and it builds with this line completely deleted,
-so what was this 'select' for?  Just developer convenience?
+These warnings are caused by the following commit:
+2ef13294d29bcfb306e0d360f1b97f37b647b0c0
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-Cc:      Artem Bityutskiy <dedekind1@gmail.com>
-Cc:      Adrian Hunter <adrian.hunter@nokia.com>
-Cc:      linux-mtd@lists.infradead.org
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ubifs/super.c |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
 
---- linux-2.6.38-git18.orig/fs/ubifs/Kconfig
-+++ linux-2.6.38-git18/fs/ubifs/Kconfig
-@@ -47,7 +47,7 @@ config UBIFS_FS_DEBUG
- 	bool "Enable debugging support"
- 	depends on UBIFS_FS
- 	select DEBUG_FS
--	select KALLSYMS_ALL
-+	select KALLSYMS_ALL if DEBUG_KERNEL && KALLSYMS
- 	help
- 	  This option enables UBIFS debugging support. It makes sure various
- 	  assertions, self-checks, debugging messages and test modes are compiled
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 91fac54..1c618fa 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1536,6 +1536,7 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	dbg_save_space_info(c);
+ 	c->remounting_rw = 1;
+ 	c->always_chk_crc = 1;
++	c->ro_mount = 0;
+ 
+ 	err = check_free_space(c);
+ 	if (err)
+@@ -1640,7 +1641,6 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	}
+ 
+ 	dbg_gen("re-mounted read-write");
+-	c->ro_mount = 0;
+ 	c->remounting_rw = 0;
+ 	c->always_chk_crc = 0;
+ 	err = dbg_check_space_info(c);
+@@ -1648,6 +1648,7 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	return err;
+ 
+ out:
++	c->ro_mount = 1;
+ 	vfree(c->orph_buf);
+ 	c->orph_buf = NULL;
+ 	if (c->bgt) {
+-- 
+1.7.2.3
