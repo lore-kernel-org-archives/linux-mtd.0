@@ -1,21 +1,18 @@
 Received: from rcsinet10.oracle.com ([148.87.113.121])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q4bAE-0006SD-Rq
-	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 15:49:03 +0000
-Date: Tue, 29 Mar 2011 08:48:55 -0700
+	id 1Q4ehW-00085z-CK
+	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 19:35:39 +0000
+Date: Tue, 29 Mar 2011 12:35:23 -0700
 From: Randy Dunlap <randy.dunlap@oracle.com>
-To: dedekind1@gmail.com
-Subject: [PATCH v2] ubifs: fix kconfig dependency warning
-Message-Id: <20110329084855.0de29fff.randy.dunlap@oracle.com>
-In-Reply-To: <1301411055.21445.13.camel@localhost>
-References: <20110328134016.deb5d0c8.randy.dunlap@oracle.com>
-	<1301382178.2816.69.camel@localhost> <4D91F432.2070406@oracle.com>
-	<1301411055.21445.13.camel@localhost>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtdswap: fix printk format warning
+Message-Id: <20110329123523.74735727.randy.dunlap@oracle.com>
+In-Reply-To: <20110329131133.c74af94d.sfr@canb.auug.org.au>
+References: <20110329131133.c74af94d.sfr@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 29 Mar 2011 18:04:15 +0300 Artem Bityutskiy wrote:
-
-> On Tue, 2011-03-29 at 08:01 -0700, Randy Dunlap wrote:
-> > On 03/29/11 00:02, Artem Bityutskiy wrote:
-> > > On Mon, 2011-03-28 at 13:40 -0700, Randy Dunlap wrote:
-> > >> From: Randy Dunlap <randy.dunlap@oracle.com>
-> > >>
-> > >> Fix another kconfig dependency warning, this time in ubifs.
-> > >>
-> > >> warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
-> > >>
-> > >> Without this patch, we can have:
-> > >> # CONFIG_KALLSYMS is not set
-> > >> CONFIG_KALLSYMS_ALL=y
-> > >> which is useless (does nothing unless KALLSYMS is enabled).
-> > >>
-> > >> However, ubifs builds successfully with or without this patch,
-> > >> and it builds with this line completely deleted,
-> > >> so what was this 'select' for?  Just developer convenience?
-> > > 
-> > > Well, here is the idea. You can compile UBIFS with debugging and without
-> > > debugging. Without debugging the resulting ubifs.ko is much smaller, so
-> > > some embedded people prefer it this way.
-> > > 
-> > > If you select debugging support, then we'll compile it a lot of
-> > > assertions, self-checks, test-modes, extra error messages with detailed
-> > > dumps. And we want to see stackdumps when errors or problems happen,
-> > > this is why we select KALLSYMS_ALL.
-> > > 
-> > > So I guess instead we should do:
-> > > 
-> > > select KALLSYMS
-> > > select KALLSYMS_ALL
-> > 
-> > Yes, that should do it.  Thanks for the explanation.
-> 
-> Will you submit a patch? Alternatively, I can make it myself. What is
-> your preference?
-
-Here's an updated patch.  But since KALLSYMS_ALL depends on DEBUG_KERNEL,
-the lines above aren't quite sufficient and I don't care to select
-DEBUG_KERNEL.
-
----
 From: Randy Dunlap <randy.dunlap@oracle.com>
 
-Fix kconfig dependency warning in ubifs:
+The number is actually a sizeof(), so using %zu for it builds
+cleanly on 32-bit or 64-bit.
 
-warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
-
-Without this patch, we can have:
-# CONFIG_KALLSYMS is not set
-CONFIG_KALLSYMS_ALL=y
-which is useless (does nothing unless KALLSYMS is enabled).
+drivers/mtd/mtdswap.c:1456: warning: format '%lu' expects type 'long unsigned int', but argument 4 has type 'unsigned int'
 
 Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-Cc:      Artem Bityutskiy <dedekind1@gmail.com>
-Cc:      Adrian Hunter <adrian.hunter@nokia.com>
-Cc:      linux-mtd@lists.infradead.org
 ---
- fs/ubifs/Kconfig |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/mtd/mtdswap.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20110328.orig/fs/ubifs/Kconfig
-+++ linux-next-20110328/fs/ubifs/Kconfig
-@@ -47,7 +47,8 @@ config UBIFS_FS_DEBUG
- 	bool "Enable debugging support"
- 	depends on UBIFS_FS
- 	select DEBUG_FS
--	select KALLSYMS_ALL
-+	select KALLSYMS
-+	select KALLSYMS_ALL if DEBUG_KERNEL
- 	help
- 	  This option enables UBIFS debugging support. It makes sure various
- 	  assertions, self-checks, debugging messages and test modes are compiled
+--- linux-next-20110329.orig/drivers/mtd/mtdswap.c
++++ linux-next-20110329/drivers/mtd/mtdswap.c
+@@ -1452,7 +1452,7 @@ static void mtdswap_add_mtd(struct mtd_b
+ 	oinfo = mtd->ecclayout;
+ 	if (!mtd->oobsize || !oinfo || oinfo->oobavail < MTDSWAP_OOBSIZE) {
+ 		printk(KERN_ERR "%s: Not enough free bytes in OOB, "
+-			"%d available, %lu needed.\n",
++			"%d available, %zu needed.\n",
+ 			MTDSWAP_PREFIX, oinfo->oobavail, MTDSWAP_OOBSIZE);
+ 		return;
+ 	}
