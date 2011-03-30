@@ -1,9 +1,14 @@
-From: Hong Xu <hong.xu@atmel.com>
-To: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH 1/3] MTD: atmel_nand: modify test case for using DMA operations
-Date: Wed, 30 Mar 2011 16:26:39 +0800
-Message-Id: <1301473601-29570-1-git-send-email-hong.xu@atmel.com>
-Cc: nicolas.ferre@atmel.com
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q4qtm-0004EJ-Ud
+	for linux-mtd@lists.infradead.org; Wed, 30 Mar 2011 08:37:07 +0000
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: [PATCH 0/2] do not select KALLSYMS_ALL
+Date: Wed, 30 Mar 2011 11:40:14 +0300
+Message-Id: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>
+Cc: MTD list <linux-mtd@lists.infradead.org>,
+	lkml <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -13,37 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+UBI and UBIFS have an option to compile-in debugging support. When we enable
+debugging, compile-in various assertions, self-check functions and test modes.
+We also compile in additional verbose error messages, flash dumps and stack
+dumps.
 
-We have better performances not using DMA for oob operations.
-Modify size test so that it is using DMA for size greater than oobsize.
+When we have debugging support enabled, we want to have nice stackdumps, so
+we selected KALLSYMS_ALL. But this causes various problems like unmet direct
+dependencies, reported by Randy:
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+warning: (UBIFS_FS_DEBUG && LOCKDEP && LATENCYTOP) selects KALLSYMS_ALL which
+has unmet direct dependencies (DEBUG_KERNEL && KALLSYMS)
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 6fae04b..9acecdc 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -280,7 +280,7 @@ static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
- 	struct nand_chip *chip = mtd->priv;
- 	struct atmel_nand_host *host = chip->priv;
- 
--	if (use_dma && len >= mtd->oobsize)
-+	if (use_dma && len > mtd->oobsize)
- 		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
- 			return;
- 
-@@ -295,7 +295,7 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
- 	struct nand_chip *chip = mtd->priv;
- 	struct atmel_nand_host *host = chip->priv;
- 
--	if (use_dma && len >= mtd->oobsize)
-+	if (use_dma && len > mtd->oobsize)
- 		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) == 0)
- 			return;
- 
--- 
-1.7.3.3
+I quickly looked at KALLSYMS_ALL and it is not immediately clear what exactly
+is the difference between KALLSYMS and KALLSYMS_ALL. And there is this
+CONFIG_KALLSYMS_EXTRA_PASS symbol, which is declared "temporary workaround"
+in the Kconfig help. This shows that this stuff is messy.
+
+I personally think KALLSYMS_ALL should be just merged with KALLSYMS and
+disappear - we should have only one option. CONFIG_KALLSYMS_EXTRA_PASS should
+die as well.
+
+But I don't want to delve into that, I choose to just forget about KALLSYMS_ALL
+and select KALLSYMS in UBI/UBIFS which seems to be enough for us.
+
+Artem.
