@@ -1,23 +1,18 @@
-Received: from [2001:470:b:3e:219:66ff:fee3:2c84] (helo=silka.with-linux.com)
+Received: from nbd.name ([46.4.11.11])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q4gxb-0000pD-Gy
-	for linux-mtd@lists.infradead.org; Tue, 29 Mar 2011 22:00:24 +0000
-Received: from [IPv6:2001:470:b:3e:d69a:20ff:fe56:76db] (comer.internal
-	[IPv6:2001:470:b:3e:d69a:20ff:fe56:76db])
-	by silka.with-linux.com (8.14.4/8.14.4) with ESMTP id p2TM0FCS007710
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Mar 2011 16:00:20 -0600
-Message-ID: <4D92566F.7040209@silka.with-linux.com>
-Date: Tue, 29 Mar 2011 16:00:15 -0600
-From: Kelly Anderson <kelly@silka.with-linux.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: How to write to nand with an image containing oob data, including
-	ECC?
-References: <Pine.LNX.4.64.1103291723240.25520@lnxricardw.se.axis.com>
-	<1301413371.21445.15.camel@localhost>
-In-Reply-To: <1301413371.21445.15.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Q4pny-0003id-UU
+	for linux-mtd@lists.infradead.org; Wed, 30 Mar 2011 07:27:04 +0000
+From: John Crispin <blogic@openwrt.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH V5 06/10] MIPS: lantiq: add NOR flash support
+Date: Wed, 30 Mar 2011 09:27:52 +0200
+Message-Id: <1301470076-17279-7-git-send-email-blogic@openwrt.org>
+In-Reply-To: <1301470076-17279-1-git-send-email-blogic@openwrt.org>
+References: <1301470076-17279-1-git-send-email-blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org, Ralph Hempel <ralph.hempel@lantiq.com>,
+	linux-mtd@lists.infradead.org,
+	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
+	David Woodhouse <dwmw2@infradead.org>, John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,82 +22,257 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 03/29/11 09:42, Artem Bityutskiy wrote:
-> On Tue, 2011-03-29 at 17:30 +0200, Ricard Wanderlof wrote:
->> Hi,
->>
->> In order to test an ECC algorithm (BCH in this case, as I recently posted
->> about), i want to write an image to a nand flash which contains bit
->> errors.
->>
->> What I want to do, and I seem to remember doing this in the past, is to
->> dump the whole image, change a single bit, and write it back, including
->> the oob.
->>
->> So what I'm doing is
->>
->> $ nandwrite -o -n /dev/mtd3 /tmp/mtd3-badimage
->>
->> where /tmp/mtd3-badimage contains an image including all oobs for all
->> pages.
->>
->> However, this fails saying
->>
->> Writing data to block 0 at offset 0x0
->> libmtd: error!: cannot write 2048 bytes to mtd3 (eraseblock 0, offset 0)
->>           error 22 (Invalid argument)
->> nandwrite: error!: /dev/mtd3: MTD write failure
->>              error 22 (Invalid argument)
->> Data was only partially written due to error
->> : Invalid argument
->>
->> Using just -o doesn't work because it seems nandwrite writes the oob, but
->> then since it doesn't write the main page in raw mode, the ecc gets
->> overwritten. Strangely enough, the ECC doesn't seem to match the data
->> written, as I get uncorrectable errors when reading back (not just with
->> BCH, but also with the standard mtd built-in algorithm). Perhaps the oob
->> gets written twice, once with my data and once more with the calculated
->> ecc?
->>
->> Is this a known bug, or are the some other options I should be using?
-> Check this bug-report, probably it is about the same. Not sure, I did
-> not have time to look at this:
->
-> http://lists.infradead.org/pipermail/linux-mtd/2011-March/034505.html
->
-> would be great if someone just sent a fix :-)
->
-OK, I'll be nice.
+NOR flash is attached to the same EBU (External Bus Unit) as PCI. As described
+in the PCI patch, the EBU is a little buggy, resulting in the upper and lower
+16 bit of the data on a 32 bit read are swapped. (essentially we have a addr^=2)
 
-When I sent the original bug report I was dog tired.  Now with a good 
-nights sleep I've got the energy to write a fix.
+To work around this we do a addr^=2 during the probe. Once probed we adapt
+cfi->addr_unlock1 and cfi->addr_unlock2 to represent the endianess bug.
 
-Not sure if this is technically correct, or if it handles corner cases 
-adequately.  In any case, it does work.  As far as 16 goes, I selected 
-it based on the code that calls do_oob_op and it looked to be the 
-largest clmpos that was valid.
+Signed-off-by: John Crispin <blogic@openwrt.org>
+Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-mtd@lists.infradead.org
 
---- ./lib/libmtd.c.orig    2011-03-29 15:24:13.000000000 -0600
-+++ ./lib/libmtd.c    2011-03-29 15:42:47.000000000 -0600
-@@ -1085,6 +1085,7 @@ int do_oob_op(libmtd_t desc, const struc
-      unsigned long long max_offs;
-      const char *cmd64_str, *cmd_str;
-      struct libmtd *lib = (struct libmtd *)desc;
-+    uint64_t clmpos = (start % mtd->min_io_size);
+---
 
-      if (cmd64 ==  MEMREADOOB64) {
-          cmd64_str = "MEMREADOOB64";
-@@ -1102,10 +1103,10 @@ int do_oob_op(libmtd_t desc, const struc
-          errno = EINVAL;
-          return -1;
-      }
--    if (start % mtd->min_io_size) {
--        errmsg("unaligned address %llu, mtd%d page size is %d",
-+    if ( clmpos > 16 ) {
-+        errmsg("address %llu, mtd%d page size is %d, clmpos=%llu",
-                 (unsigned long long)start, mtd->mtd_num,
--               mtd->min_io_size);
-+               mtd->min_io_size, clmpos);
-          errno = EINVAL;
-          return -1;
-      }
+Changes in V2
+* handle the endianess bug inside the map code and not in the generic cfi code
+* remove the addr swizzle patch
+
+Changes in V3
+* whitespace
+* change __iomem void to void __iomem
+
+Chanegs in V4
+* fixes a checkpatch.pl bug, the second is a false positive
+* whitespace cleanups
+* remove unused typecasts
+* cleanup ltq_copy_from and ltq_copy_to
+
+ drivers/mtd/maps/Kconfig  |    9 ++
+ drivers/mtd/maps/Makefile |    1 +
+ drivers/mtd/maps/lantiq.c |  181 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 191 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/lantiq.c
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 44b1f46..83376d3 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -260,6 +260,15 @@ config MTD_BCM963XX
+ 	  Support for parsing CFE image tag and creating MTD partitions on
+ 	  Broadcom BCM63xx boards.
+ 
++config MTD_LANTIQ
++	bool "Lantiq SoC NOR support"
++	depends on LANTIQ
++	select MTD_PARTITIONS
++	help
++	  Lantiq SoCs have a EBU (External Bus Unit). This IP allows to attach
++	  a number of different peripherals to the SoC. This driver adds
++	  support for NOR chips to be added.
++
+ config MTD_DILNETPC
+ 	tristate "CFI Flash device mapped on DIL/Net PC"
+ 	depends on X86 && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 08533bd..0db4ba3 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -60,3 +60,4 @@ obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
+ obj-$(CONFIG_MTD_BCM963XX)	+= bcm963xx-flash.o
+ obj-$(CONFIG_MTD_LATCH_ADDR)	+= latch-addr-flash.o
++obj-$(CONFIG_MTD_LANTIQ)	+= lantiq.o
+diff --git a/drivers/mtd/maps/lantiq.c b/drivers/mtd/maps/lantiq.c
+new file mode 100644
+index 0000000..96a0b57
+--- /dev/null
++++ b/drivers/mtd/maps/lantiq.c
+@@ -0,0 +1,181 @@
++/*
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License version 2 as published
++ *  by the Free Software Foundation.
++ *
++ *  Copyright (C) 2004 Liu Peng Infineon IFAP DC COM CPE
++ *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/io.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/cfi.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/physmap.h>
++
++#include <lantiq_soc.h>
++#include <lantiq_platform.h>
++
++/* the NOR flash is connected to the same external bus unit (EBU) as PCI.
++ * To make PCI work we need to enable the endianess swapping of the addr
++ * written to the EBU. this however has some limitations and breaks when
++ * using NOR. it does not really matter if the onflash data is in a swapped
++ * order, however cfi sequences also fail. to workaround this we need to use
++ * a complex map. We essentially software swap all addresses during probe
++ * and then swizzle the unlock addresses.
++ */
++static int ltq_mtd_probing;
++
++static map_word
++ltq_read16(struct map_info *map, unsigned long adr)
++{
++	unsigned long flags;
++	map_word temp;
++
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	temp.x[0] = *((__u16 *)(map->virt + adr));
++	spin_unlock_irqrestore(&ebu_lock, flags);
++	return temp;
++}
++
++static void
++ltq_write16(struct map_info *map, map_word d, unsigned long adr)
++{
++	unsigned long flags;
++
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	*((__u16 *)(map->virt + adr)) = d.x[0];
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static void
++ltq_copy_from(struct map_info *map, void *to,
++	unsigned long from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *) (map->virt + from);
++	unsigned char *t = (unsigned char *) to;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static void
++ltq_copy_to(struct map_info *map, unsigned long to,
++	const void *from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *) from;
++	unsigned char *t = (unsigned char *) (map->virt + to);
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static const char const *part_probe_types[] = {
++	"cmdlinepart", NULL };
++
++static struct map_info ltq_map = {
++	.name = "ltq_nor",
++	.bankwidth = 2,
++	.read = ltq_read16,
++	.write = ltq_write16,
++	.copy_from = ltq_copy_from,
++	.copy_to = ltq_copy_to,
++};
++
++static int __init
++ltq_mtd_probe(struct platform_device *pdev)
++{
++	struct physmap_flash_data *ltq_mtd_data =
++		dev_get_platdata(&pdev->dev);
++	struct mtd_info *ltq_mtd = NULL;
++	struct mtd_partition *parts = NULL;
++	struct resource *res = 0;
++	int nr_parts = 0;
++	struct cfi_private *cfi;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "failed to get memory resource");
++		return -ENOENT;
++	}
++	res = devm_request_mem_region(&pdev->dev, res->start,
++		resource_size(res), dev_name(&pdev->dev));
++	if (!res) {
++		dev_err(&pdev->dev, "failed to request mem resource");
++		return -EBUSY;
++	}
++
++	ltq_map.phys = res->start;
++	ltq_map.size = resource_size(res);
++	ltq_map.virt = devm_ioremap_nocache(&pdev->dev, ltq_map.phys,
++					ltq_map.size);
++	if (!ltq_map.virt) {
++		dev_err(&pdev->dev, "failed to ioremap!\n");
++		return -EIO;
++	}
++
++	ltq_mtd_probing = 1;
++	ltq_mtd = do_map_probe("cfi_probe", &ltq_map);
++	ltq_mtd_probing = 0;
++	if (!ltq_mtd) {
++		iounmap(ltq_map.virt);
++		dev_err(&pdev->dev, "probing failed\n");
++		return -ENXIO;
++	}
++	ltq_mtd->owner = THIS_MODULE;
++
++	cfi = ltq_map.fldrv_priv;
++	cfi->addr_unlock1 ^= 1;
++	cfi->addr_unlock2 ^= 1;
++
++	nr_parts = parse_mtd_partitions(ltq_mtd, part_probe_types, &parts, 0);
++	if (nr_parts > 0) {
++		dev_info(&pdev->dev,
++			"using %d partitions from cmdline", nr_parts);
++	} else {
++		nr_parts = ltq_mtd_data->nr_parts;
++		parts = ltq_mtd_data->parts;
++	}
++
++	add_mtd_partitions(ltq_mtd, parts, nr_parts);
++	return 0;
++}
++
++static struct platform_driver ltq_mtd_driver = {
++	.driver = {
++		.name = "ltq_nor",
++		.owner = THIS_MODULE,
++	},
++};
++
++int __init
++init_ltq_mtd(void)
++{
++	int ret = platform_driver_probe(&ltq_mtd_driver, ltq_mtd_probe);
++
++	if (ret)
++		printk(KERN_INFO "ltq_nor: error registering platfom driver");
++	return ret;
++}
++
++module_init(init_ltq_mtd);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
++MODULE_DESCRIPTION("Lantiq SoC NOR");
+-- 
+1.7.2.3
