@@ -1,20 +1,25 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q58Ek-00058K-Jt
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 03:07:55 +0000
-Received: by iyb39 with SMTP id 39so2290088iyb.36
+	id 1Q5BQU-0006Yt-8z
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 06:32:15 +0000
+Received: by eyh6 with SMTP id 6so688311eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 30 Mar 2011 20:07:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
-References: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
-Date: Thu, 31 Mar 2011 11:07:52 +0800
-Message-ID: <AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
-Subject: Re: UBI memory usage on large page nand
-From: Nicholas <ciliwung36@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+	Wed, 30 Mar 2011 23:32:12 -0700 (PDT)
+Subject: Re: [PATCH 1/2] UBIFS: do not select KALLSYMS_ALL
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+In-Reply-To: <20110330154130.e62e04e0.randy.dunlap@oracle.com>
+References: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>
+	<1301474416-8202-2-git-send-email-dedekind1@gmail.com>
+	<20110330154130.e62e04e0.randy.dunlap@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 31 Mar 2011 09:29:53 +0300
+Message-ID: <1301552993.2828.3.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: MTD list <linux-mtd@lists.infradead.org>,
+	lkml <linux-kernel@vger.kernel.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+On Wed, 2011-03-30 at 15:41 -0700, Randy Dunlap wrote:
+> > diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
+> > index d744090..f8b0160 100644
+> > --- a/fs/ubifs/Kconfig
+> > +++ b/fs/ubifs/Kconfig
+> > @@ -47,7 +47,7 @@ config UBIFS_FS_DEBUG
+> >  	bool "Enable debugging support"
+> >  	depends on UBIFS_FS
+> >  	select DEBUG_FS
+> > -	select KALLSYMS_ALL
+> > +	select KALLSYMS
+> >  	help
+> >  	  This option enables UBIFS debugging support. It makes sure various
+> >  	  assertions, self-checks, debugging messages and test modes are compiled
+> > -- 
+> 
+> Acked-by: Randy Dunlap <randy.dunlap@oracle.com>
 
-I've a short of memory usage issue while using large page size of nand flas=
-h.
-Before, i was using 2KB page size of nand flash, i found UBI/UBIFS memory
-consumption on normal zone are :
+Pushed to UBI / UBIFS trees. These will show-up in linux-next a bit
+later (around -rc2, if it will be usable enough), and then I'll send
+this to Linus.
 
-7 0xC0180858:=A0=A0 1024K, ubi_attach_mtd_de,
-8 0xC0180834:=A0=A0 1024K, ubi_attach_mtd_de,
-9 0xC00ED300:=A0=A0 1008K,=A0=A0=A0=A0=A0 ubifs_get_sb,
-10 0xC00ED31C:=A0=A0 1008K,=A0=A0=A0=A0=A0 ubifs_get_sb,
-11 0xC00FE7EC:=A0=A0 1008K,=A0=A0=A0 ubifs_lpt_init,
-11 0xC00F95AC:=A0=A0 1008K, ubifs_mount_orpha,
-
-Then, i'm using 8KB page size of nand flash, and found the result as below =
-:
-4 0xC0180858:=A0=A0 4096K, ubi_attach_mtd_de,
-5 0xC0180834:=A0=A0 4096K, ubi_attach_mtd_de,
-6 0xC00FE7EC:=A0=A0 4064K,=A0=A0=A0 ubifs_lpt_init,
-7 0xC00ED31C:=A0=A0 4064K,=A0=A0=A0=A0=A0 ubifs_get_sb,
-8 0xC00F95AC:=A0=A0 4064K, ubifs_mount_orpha,
-9 0xC00ED300:=A0=A0 4064K,=A0=A0=A0=A0=A0 ubifs_get_sb,
-
-My environment contains 2 mtd partitions for UBI.
-
-Before, it took 6MB of memory consumption and now it takes 24MB.
-Do you have any suggestion how to reduce the memory consumption since dram =
-size
-is pretty limited for other usage.
-
-Thank you,
-Alex
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
