@@ -1,20 +1,20 @@
-Received: from smtp1.linux-foundation.org ([140.211.169.13])
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q55Br-0003gu-7j
-	for linux-mtd@lists.infradead.org; Wed, 30 Mar 2011 23:52:44 +0000
-Date: Wed, 30 Mar 2011 16:51:40 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: harri@afaics.de
-Subject: Re: [Bugme-new] [Bug 32242] New: irq 18, nobody cared, nor did irqpoll
-Message-Id: <20110330165140.c5ca5705.akpm@linux-foundation.org>
-In-Reply-To: <bug-32242-10286@https.bugzilla.kernel.org/>
-References: <bug-32242-10286@https.bugzilla.kernel.org/>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, bugzilla-daemon@bugzilla.kernel.org,
-	linux-mmc@vger.kernel.org, bugme-daemon@bugzilla.kernel.org,
-	linux-acpi@vger.kernel.org
+	id 1Q58Ek-00058K-Jt
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 03:07:55 +0000
+Received: by iyb39 with SMTP id 39so2290088iyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 30 Mar 2011 20:07:52 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
+References: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
+Date: Thu, 31 Mar 2011 11:07:52 +0800
+Message-ID: <AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
+Subject: Re: UBI memory usage on large page nand
+From: Nicholas <ciliwung36@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,105 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi there,
 
-(switched to email.  Please respond via emailed reply-to-all, not via the
-bugzilla web interface).
+I've a short of memory usage issue while using large page size of nand flas=
+h.
+Before, i was using 2KB page size of nand flash, i found UBI/UBIFS memory
+consumption on normal zone are :
 
-On Wed, 30 Mar 2011 13:06:17 GMT
-bugzilla-daemon@bugzilla.kernel.org wrote:
+7 0xC0180858:=A0=A0 1024K, ubi_attach_mtd_de,
+8 0xC0180834:=A0=A0 1024K, ubi_attach_mtd_de,
+9 0xC00ED300:=A0=A0 1008K,=A0=A0=A0=A0=A0 ubifs_get_sb,
+10 0xC00ED31C:=A0=A0 1008K,=A0=A0=A0=A0=A0 ubifs_get_sb,
+11 0xC00FE7EC:=A0=A0 1008K,=A0=A0=A0 ubifs_lpt_init,
+11 0xC00F95AC:=A0=A0 1008K, ubifs_mount_orpha,
 
-> https://bugzilla.kernel.org/show_bug.cgi?id=32242
-> 
->            Summary: irq 18, nobody cared, nor did irqpoll
->            Product: Drivers
->            Version: 2.5
->     Kernel Version: 2.6.38.2
+Then, i'm using 8KB page size of nand flash, and found the result as below =
+:
+4 0xC0180858:=A0=A0 4096K, ubi_attach_mtd_de,
+5 0xC0180834:=A0=A0 4096K, ubi_attach_mtd_de,
+6 0xC00FE7EC:=A0=A0 4064K,=A0=A0=A0 ubifs_lpt_init,
+7 0xC00ED31C:=A0=A0 4064K,=A0=A0=A0=A0=A0 ubifs_get_sb,
+8 0xC00F95AC:=A0=A0 4064K, ubifs_mount_orpha,
+9 0xC00ED300:=A0=A0 4064K,=A0=A0=A0=A0=A0 ubifs_get_sb,
 
+My environment contains 2 mtd partitions for UBI.
 
-Is this a regression?  Was 2.6.37 OK?
+Before, it took 6MB of memory consumption and now it takes 24MB.
+Do you have any suggestion how to reduce the memory consumption since dram =
+size
+is pretty limited for other usage.
 
->           Platform: All
->         OS/Version: Linux
->               Tree: Mainline
->             Status: NEW
->           Severity: normal
->           Priority: P1
->          Component: Other
->         AssignedTo: drivers_other@kernel-bugs.osdl.org
->         ReportedBy: harri@afaics.de
->         Regression: No
-> 
-> 
-> Created an attachment (id=52622)
->  --> (https://bugzilla.kernel.org/attachment.cgi?id=52622)
-> kernel config file
-> 
-> I got this at boot time of my laptop:
-> 
-> [   11.837498] irq 18: nobody cared (try booting with the "irqpoll" option)
-> [   11.837503] Pid: 1618, comm: echo Not tainted 2.6.38.2 #1
-> [   11.837504] Call Trace:
-> [   11.837506]  <IRQ>  [<ffffffff810723af>] ?
-> __report_bad_irq.clone.2+0x30/0x7c
-> [   11.837515]  [<ffffffff81072502>] ? note_interrupt+0x107/0x179
-> [   11.837518]  [<ffffffff81072f8e>] ? handle_fasteoi_irq+0xa6/0xd4
-> [   11.837522]  [<ffffffff810036cc>] ? call_softirq+0x1c/0x28
-> [   11.837525]  [<ffffffff8100514f>] ? handle_irq+0x17/0x1d
-> [   11.837527]  [<ffffffff81004e80>] ? do_IRQ+0x45/0xad
-> [   11.837532]  [<ffffffff812a2d13>] ? ret_from_intr+0x0/0xe
-> [   11.837533]  <EOI>  [<ffffffff81175b76>] ? cfb_imageblit+0x19e/0x434
-> [   11.837539]  [<ffffffff812a2d0e>] ? common_interrupt+0xe/0x13
-> [   11.837543]  [<ffffffff81170fa7>] ? bit_putcs+0x3c0/0x455
-> [   11.837546]  [<ffffffff81170bcb>] ? bit_cursor+0x439/0x455
-> [   11.837549]  [<ffffffff8116b93b>] ? fbcon_putcs+0xef/0xfe
-> [   11.837551]  [<ffffffff81170be7>] ? bit_putcs+0x0/0x455
-> [   11.837554]  [<ffffffff8116ef5b>] ? fbcon_redraw.clone.15+0xcb/0x160
-> [   11.837557]  [<ffffffff8116f60e>] ? fbcon_scroll+0x61e/0xb9d
-> [   11.837561]  [<ffffffff811b2436>] ? scrup+0x67/0xd4
-> [   11.837563]  [<ffffffff811b25c7>] ? lf+0x25/0x58
-> [   11.837566]  [<ffffffff811b58fb>] ? do_con_write+0x8aa/0x1e40
-> [   11.837569]  [<ffffffff81170792>] ? bit_cursor+0x0/0x455
-> [   11.837572]  [<ffffffff811b6ed5>] ? con_write+0xd/0x23
-> [   11.837575]  [<ffffffff811a5593>] ? do_output_char+0x87/0x199
-> [   11.837578]  [<ffffffff811a56d4>] ? process_output+0x2f/0x43
-> [   11.837580]  [<ffffffff811a6063>] ? n_tty_write+0x26b/0x34d
-> [   11.837584]  [<ffffffff8103018a>] ? default_wake_function+0x0/0x11
-> [   11.837587]  [<ffffffff811a3374>] ? tty_write+0x1ad/0x231
-> [   11.837589]  [<ffffffff811a5df8>] ? n_tty_write+0x0/0x34d
-> [   11.837593]  [<ffffffff810b7b60>] ? vfs_write+0xaf/0x129
-> [   11.837596]  [<ffffffff810b7db3>] ? sys_write+0x45/0x6e
-> [   11.837598]  [<ffffffff8100287b>] ? system_call_fastpath+0x16/0x1b
-> [   11.837600] handlers:
-> [   11.837601] [<ffffffffa01f80a7>] (sdhci_irq+0x0/0x4d5 [sdhci])
-> [   11.837621] [<ffffffffa05bb871>] (r852_irq+0x0/0x201 [r852])
-
-So both sdhci_irq and r852_irq were looking at the IRQ, but neither of
-them were interested in it.
-
-Could be that the bug lies in neither driver, at that something went
-wrong with the system setup.  ACPI?
-
-> [   11.837625] Disabling IRQ #18
-> 
-> Booting with irqpoll as suggested did not help. With this option set I got 
-> 
-> [   31.135445] irq 18: nobody cared (try booting with the "irqpoll" option)
-> [   31.136345] Pid: 0, comm: kworker/0:0 Not tainted 2.6.38.2 #1
-> [   31.136345] Call Trace:
-> [   31.136345]  <IRQ>  [<ffffffff810723af>] ?
-> __report_bad_irq.clone.2+0x30/0x7c
-> [   31.136345]  [<ffffffff81072502>] ? note_interrupt+0x107/0x179
-> [   31.136345]  [<ffffffff81072f8e>] ? handle_fasteoi_irq+0xa6/0xd4
-> [   31.136345]  [<ffffffff8100514f>] ? handle_irq+0x17/0x1d
-> [   31.136345]  [<ffffffff81004e80>] ? do_IRQ+0x45/0xad
-> [   31.136345]  [<ffffffff812a2d13>] ? ret_from_intr+0x0/0xe
-> [   31.136345]  <EOI>  [<ffffffffa0416f7c>] ? acpi_idle_enter_simple+0xd2/0x104
-> [processor]
-> [   31.136345]  [<ffffffffa0416f77>] ? acpi_idle_enter_simple+0xcd/0x104
-> [processor]
-> [   31.136345]  [<ffffffff81208efc>] ? cpuidle_idle_call+0x91/0xce
-> [   31.136345]  [<ffffffff81001182>] ? cpu_idle+0x4a/0x64
-> [   31.136345] handlers:
-> [   31.136345] [<ffffffffa01d80a7>] (sdhci_irq+0x0/0x4d5 [sdhci])
-> [   31.136345] [<ffffffffa06c1871>] (r852_irq+0x0/0x201 [r852])
-> [   31.136345] Disabling IRQ #18
+Thank you,
+Alex
