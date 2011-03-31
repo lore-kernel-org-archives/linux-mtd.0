@@ -1,24 +1,12 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5HUX-0002b1-1L
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 13:00:49 +0000
-Received: by wwb39 with SMTP id 39so1963398wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 31 Mar 2011 06:00:47 -0700 (PDT)
-Subject: Re: [PATCH 1/2] mtd: nand: renumber conflicting BBT flags
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-In-Reply-To: <1300510422-4841-1-git-send-email-computersforpeace@gmail.com>
-References: <1300510422-4841-1-git-send-email-computersforpeace@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 31 Mar 2011 15:58:26 +0300
-Message-ID: <1301576306.2828.68.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Kevin Cernekee <cernekee@gmail.com>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Message-ID: <4D947EC4.4090504@cam.ac.uk>
+Date: Thu, 31 Mar 2011 14:16:52 +0100
+From: Jonathan Cameron <jic23@cam.ac.uk>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Subject: JFFS2 on intel possible recursive locking detected
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +16,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-03-18 at 21:53 -0700, Brian Norris wrote:
-> The NAND_USE_FLASH_BBT_NO_OOB and NAND_CREATE_EMPTY_BBT flags conflict
-> with the NAND_BBT_SCANBYTE1AND6 and NAND_BBT_DYNAMICSTRUCT flags,
-> respectively. This change will allow us to utilize these options
-> independently.
-> 
-> Signed-off-by: Brian Norris <computersforpeace@gmail.com>
-> ---
->  include/linux/mtd/nand.h |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-> index ae67ef5..80b471b 100644
-> --- a/include/linux/mtd/nand.h
-> +++ b/include/linux/mtd/nand.h
-> @@ -237,9 +237,9 @@ typedef enum {
->   * If passed additionally to NAND_USE_FLASH_BBT then BBT code will not touch
->   * the OOB area.
->   */
-> -#define NAND_USE_FLASH_BBT_NO_OOB	0x00100000
-> +#define NAND_USE_FLASH_BBT_NO_OOB	0x00800000
->  /* Create an empty BBT with no vendor information if the BBT is available */
-> -#define NAND_CREATE_EMPTY_BBT		0x00200000
-> +#define NAND_CREATE_EMPTY_BBT		0x01000000
+Hi All, 
 
-Hmm, it seems that the issue is that flags which belong to the same
-"space" should be in a single file. AFAICS, we have 2 spaces:
+This is very much a heads up with far too few details.
 
-1. Chip flags
-2. BBT flags
+Ultimately this doesn't seem to cause any problems on the system
+bar the following warning.
 
-They are 2 different things. But some of the flags are shared. And this
-is quite subtle thing.
+It's with the flash on an intel pxa271.  Not sure exactly when
+it first showed up, but has been around for a few months and
+is still occurring with v2.6.39-rc1
 
-What I think we should do instead is to avoid sharing the same symbolic
-constant between 2 different spaces. Is this possible?
+It'll be a while before I have time to try chasing this down myself
+unfortunately.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+So has anyone else seen this?
+
+[   65.627241] 
+[   65.627306] =============================================
+[   65.634237] [ INFO: possible recursive locking detected ]
+[   65.639628] 2.6.38+ #20
+[   65.642067] ---------------------------------------------
+[   65.647453] jffs2_gcd_mtd2/404 is trying to acquire lock:
+[   65.652838]  (&chip->mutex){+.+...}, at: [<c01ff980>] get_chip+0xf8/0x204
+[   65.659757] 
+[   65.659768] but task is already holding lock:
+[   65.665576]  (&chip->mutex){+.+...}, at: [<c01ff4d4>] chip_ready+0x2d0/0x2f4
+[   65.672654] 
+[   65.672662] other info that might help us debug this:
+[   65.679173] 1 lock held by jffs2_gcd_mtd2/404:
+[   65.683602]  #0:  (&chip->mutex){+.+...}, at: [<c01ff4d4>] chip_ready+0x2d0/0x2f4
+[   65.691123] 
+[   65.691131] stack backtrace:
+[   65.695629] [<c0085220>] (unwind_backtrace+0x0/0xec) from [<c00be760>] (__lock_acquire+0xfbc/0x1930)
+[   65.704747] [<c00be760>] (__lock_acquire+0xfbc/0x1930) from [<c00bf134>] (lock_acquire+0x60/0x74)
+[   65.713650] [<c00bf134>] (lock_acquire+0x60/0x74) from [<c02a9dc8>] (mutex_lock_nested+0x4c/0x2f0)
+[   65.722602] [<c02a9dc8>] (mutex_lock_nested+0x4c/0x2f0) from [<c01ff980>] (get_chip+0xf8/0x204)
+[   65.731303] [<c01ff980>] (get_chip+0xf8/0x204) from [<c0200ab4>] (do_erase_oneblock+0x48/0x1f0)
+[   65.739996] [<c0200ab4>] (do_erase_oneblock+0x48/0x1f0) from [<c01feeb8>] (cfi_varsize_frob+0x198/0x250)
+[   65.749472] [<c01feeb8>] (cfi_varsize_frob+0x198/0x250) from [<c020242c>] (cfi_intelext_erase_varsize+0x2c/0x54)
+[   65.759627] [<c020242c>] (cfi_intelext_erase_varsize+0x2c/0x54) from [<c01f9a50>] (part_erase+0x70/0xc4)
+[   65.769147] [<c01f9a50>] (part_erase+0x70/0xc4) from [<c0185514>] (jffs2_erase_pending_blocks+0x644/0x7a0)
+[   65.778794] [<c0185514>] (jffs2_erase_pending_blocks+0x644/0x7a0) from [<c0183fc0>] (jffs2_garbage_collect_pass+0x22c/0x810)
+[   65.789993] [<c0183fc0>] (jffs2_garbage_collect_pass+0x22c/0x810) from [<c0185a04>] (jffs2_garbage_collect_thread+0x168/0x1a0)
+[   65.801385] [<c0185a04>] (jffs2_garbage_collect_thread+0x168/0x1a0) from [<c00ac238>] (kthread+0x80/0x88)
+[   65.810941] [<c00ac238>] (kthread+0x80/0x88) from [<c0080b64>] (kernel_thread_exit+0x0/0x8)
