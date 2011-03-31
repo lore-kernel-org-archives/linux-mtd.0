@@ -1,25 +1,14 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5BQU-0006Yt-8z
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 06:32:15 +0000
-Received: by eyh6 with SMTP id 6so688311eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 30 Mar 2011 23:32:12 -0700 (PDT)
-Subject: Re: [PATCH 1/2] UBIFS: do not select KALLSYMS_ALL
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Randy Dunlap <randy.dunlap@oracle.com>
-In-Reply-To: <20110330154130.e62e04e0.randy.dunlap@oracle.com>
-References: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>
-	<1301474416-8202-2-git-send-email-dedekind1@gmail.com>
-	<20110330154130.e62e04e0.randy.dunlap@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 31 Mar 2011 09:29:53 +0300
-Message-ID: <1301552993.2828.3.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: MTD list <linux-mtd@lists.infradead.org>,
-	lkml <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+From: Huang Shijie <b32955@freescale.com>
+To: <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH V3 2/6] dmaengine: add interrupt check for GPMI controller
+Date: Thu, 31 Mar 2011 15:02:48 +0800
+Message-ID: <1301554968-29066-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <19858.62649.218523.984252@ipc1.ka-ro>
+References: <19858.62649.218523.984252@ipc1.ka-ro>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	shawn.guo@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,28 +18,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-03-30 at 15:41 -0700, Randy Dunlap wrote:
-> > diff --git a/fs/ubifs/Kconfig b/fs/ubifs/Kconfig
-> > index d744090..f8b0160 100644
-> > --- a/fs/ubifs/Kconfig
-> > +++ b/fs/ubifs/Kconfig
-> > @@ -47,7 +47,7 @@ config UBIFS_FS_DEBUG
-> >  	bool "Enable debugging support"
-> >  	depends on UBIFS_FS
-> >  	select DEBUG_FS
-> > -	select KALLSYMS_ALL
-> > +	select KALLSYMS
-> >  	help
-> >  	  This option enables UBIFS debugging support. It makes sure various
-> >  	  assertions, self-checks, debugging messages and test modes are compiled
-> > -- 
-> 
-> Acked-by: Randy Dunlap <randy.dunlap@oracle.com>
+The GPMI may have many DMA channels, such as the imx23 has
+four DMA channels. All these DMA channels share the same interrupt.
+Add the interrupt check for the GPMI, only the first DMA channel will
+register the irq.
 
-Pushed to UBI / UBIFS trees. These will show-up in linux-next a bit
-later (around -rc2, if it will be usable enough), and then I'll send
-this to Linus.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ drivers/dma/mxs-dma.c |   36 ++++++++++++++++++++++++++++++++----
+ 1 files changed, 32 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
+index 88aad4f..db36bf1 100644
+--- a/drivers/dma/mxs-dma.c
++++ b/drivers/dma/mxs-dma.c
+@@ -26,6 +26,8 @@
+ #include <asm/irq.h>
+ #include <mach/mxs.h>
+ #include <mach/dma.h>
++#include <mach/mx23.h>
++#include <mach/mx28.h>
+ #include <mach/common.h>
+ 
+ /*
+@@ -306,6 +308,30 @@ static irqreturn_t mxs_dma_int_handler(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++/* The GPMI has several DMA channels, only the first can register the irq. */
++static bool irq_check(struct mxs_dma_chan *mxs_chan)
++{
++	int irq_num = mxs_chan->chan_irq;
++
++#ifdef CONFIG_SOC_IMX23
++	if (cpu_is_mx23() && irq_num == MX23_INT_GPMI_DMA) {
++		if (mxs_chan->chan.chan_id == MX23_DMA_GPMI0)
++			return true;
++		else
++			return false;
++	}
++#endif
++#ifdef CONFIG_SOC_IMX28
++	if (cpu_is_mx28() && irq_num == MX28_INT_GPMI_DMA) {
++		if (mxs_chan->chan.chan_id == MX28_DMA_GPMI0)
++			return true;
++		else
++			return false;
++	}
++#endif
++	return true;
++}
++
+ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ {
+ 	struct mxs_dma_chan *mxs_chan = to_mxs_dma_chan(chan);
+@@ -327,10 +353,12 @@ static int mxs_dma_alloc_chan_resources(struct dma_chan *chan)
+ 
+ 	memset(mxs_chan->ccw, 0, PAGE_SIZE);
+ 
+-	ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
+-				0, "mxs-dma", mxs_dma);
+-	if (ret)
+-		goto err_irq;
++	if (irq_check(mxs_chan)) {
++		ret = request_irq(mxs_chan->chan_irq, mxs_dma_int_handler,
++					0, "mxs-dma", mxs_dma);
++		if (ret)
++			goto err_irq;
++	}
+ 
+ 	ret = clk_enable(mxs_dma->clk);
+ 	if (ret)
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.0.4
