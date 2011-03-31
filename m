@@ -1,21 +1,16 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5Ggo-0001vF-9v
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 12:09:27 +0000
-Received: by ewy3 with SMTP id 3so771514ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 31 Mar 2011 05:09:24 -0700 (PDT)
-Subject: Re: [PATCH] mtd: nand: Fixed null pointer dereference.
+Subject: Re: [PATCH] mtd/mxc_nand: add support for multiple chips on V21
+	devices
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Maarten ter Huurne <maarten@treewalker.org>
-In-Reply-To: <1300286875-21426-1-git-send-email-maarten@treewalker.org>
-References: <1300286875-21426-1-git-send-email-maarten@treewalker.org>
+To: Baruch Siach <baruch@tkos.co.il>
+In-Reply-To: <2731521d2fd2224b7b28cc9ced044fc026d4fdb7.1300085993.git.baruch@tkos.co.il>
+References: <2731521d2fd2224b7b28cc9ced044fc026d4fdb7.1300085993.git.baruch@tkos.co.il>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 31 Mar 2011 15:07:04 +0300
-Message-ID: <1301573224.2828.50.camel@localhost>
+Date: Thu, 31 Mar 2011 15:09:53 +0300
+Message-ID: <1301573393.2828.51.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
+	linux-arm-kernel@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,12 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-03-16 at 15:47 +0100, Maarten ter Huurne wrote:
-> The "bd" argument of verify_bbt_descr() was dereferenced before it was checked for NULL.
+On Mon, 2011-03-14 at 09:01 +0200, Baruch Siach wrote:
+> Do the following to add support for up to 4 chips on V21 devices (i.MX25 and
+> i.MX35):
 > 
-> Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
+> * implement .select_chip for V21
+> * adjust existing NFC_V1_V2_BUF_ADDR writes to take chip select into account
+> * unlock all chip selects at preset_v1_v2()
+> * scan up to 4 devices at .probe
+> 
+> This has been tested on i.MX25 with two attached NAND chip (on one die).
+> 
+> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
 
-Hi, this was fixed in upstream already by another person.
+Pushed to l2-mtd-2.6.git, thank you.
 
 -- 
 Best Regards,
