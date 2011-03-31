@@ -1,16 +1,25 @@
-Subject: Re: [PATCH] mtd/mxc_nand: add support for multiple chips on V21
-	devices
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5GkL-00020L-8X
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 12:13:05 +0000
+Received: by wwb39 with SMTP id 39so1925356wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 31 Mar 2011 05:13:04 -0700 (PDT)
+Subject: Re: Perf issue with UBIFS
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Baruch Siach <baruch@tkos.co.il>
-In-Reply-To: <2731521d2fd2224b7b28cc9ced044fc026d4fdb7.1300085993.git.baruch@tkos.co.il>
-References: <2731521d2fd2224b7b28cc9ced044fc026d4fdb7.1300085993.git.baruch@tkos.co.il>
+To: Bhavesh Parekh <bhaveshparekh1@gmail.com>
+In-Reply-To: <AANLkTik9KDEkVT59CqyMM2NUFeBAiAcN_WrnRLqbzaOD@mail.gmail.com>
+References: <AANLkTin4FHcpvhsQJkU7pOUPk3-gV+N+1cb0W6_3KC8P@mail.gmail.com>
+	<1299587464.2754.27.camel@localhost>
+	<AANLkTik_-ZAau27j+7r5EbGyNiPPCH_9a0o9M_H9fsXb@mail.gmail.com>
+	<1299764095.6676.22.camel@localhost>
+	<AANLkTik9KDEkVT59CqyMM2NUFeBAiAcN_WrnRLqbzaOD@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 31 Mar 2011 15:09:53 +0300
-Message-ID: <1301573393.2828.51.camel@localhost>
+Date: Thu, 31 Mar 2011 15:10:44 +0300
+Message-ID: <1301573444.2828.52.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Sascha Hauer <kernel@pengutronix.de>,
-	linux-arm-kernel@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,20 +30,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-03-14 at 09:01 +0200, Baruch Siach wrote:
-> Do the following to add support for up to 4 chips on V21 devices (i.MX25 and
-> i.MX35):
+On Thu, 2011-03-17 at 15:14 +0530, Bhavesh Parekh wrote:
+> Thanks Artem.
+> Patches you mention helped alot. Now the perf is almost same as that
+> of YAFFS2.
 > 
-> * implement .select_chip for V21
-> * adjust existing NFC_V1_V2_BUF_ADDR writes to take chip select into account
-> * unlock all chip selects at preset_v1_v2()
-> * scan up to 4 devices at .probe
-> 
-> This has been tested on i.MX25 with two attached NAND chip (on one die).
-> 
-> Signed-off-by: Baruch Siach <baruch@tkos.co.il>
+> I think there will be changes require in the root-fs creation
+> tool(ubinize) as well to support the writebufsize. Correct ?
 
-Pushed to l2-mtd-2.6.git, thank you.
+No, I do not think so.
 
 -- 
 Best Regards,
