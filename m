@@ -1,10 +1,21 @@
-From: Hong Xu <hong.xu@atmel.com>
-To: linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: atmel_nand: Fall back to CPU I/O when buffer is in
-	vmalloc(ed) region
-Date: Thu, 31 Mar 2011 18:33:15 +0800
-Message-Id: <1301567595-31075-1-git-send-email-hong.xu@atmel.com>
-Cc: Hong Xu <hong.xu@atmel.com>, nicolas.ferre@atmel.com
+Received: from outgoing.selfhost.de ([82.98.87.70])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5Fav-0001Bm-SV
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 10:59:19 +0000
+Message-ID: <4D945E80.8080104@afaics.de>
+Date: Thu, 31 Mar 2011 12:59:12 +0200
+From: Harald Dunkel <harri@afaics.de>
+MIME-Version: 1.0
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [Bugme-new] [Bug 32242] New: irq 18, nobody cared, nor did irqpoll
+References: <bug-32242-10286@https.bugzilla.kernel.org/>
+	<20110330165140.c5ca5705.akpm@linux-foundation.org>
+In-Reply-To: <20110330165140.c5ca5705.akpm@linux-foundation.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, bugzilla-daemon@bugzilla.kernel.org,
+	linux-mmc@vger.kernel.org, bugme-daemon@bugzilla.kernel.org,
+	linux-acpi@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,43 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The previous way of dealing with vmalloc(ed) region by walking though the pages can not work well actually.
-We just fall back to CPU I/O when the buffer address is higher than `high_memory'.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-Signed-off-by: Hong Xu <hong.xu@atmel.com>
----
- drivers/mtd/nand/atmel_nand.c |   18 ++----------------
- 1 files changed, 2 insertions(+), 16 deletions(-)
+On 03/31/11 01:51, Andrew Morton wrote:
+> 
+> So both sdhci_irq and r852_irq were looking at the IRQ, but neither of
+> them were interested in it.
+> 
+> Could be that the bug lies in neither driver, at that something went
+> wrong with the system setup.  ACPI?
+> 
 
-diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
-index 1b43654..ed0863a 100644
---- a/drivers/mtd/nand/atmel_nand.c
-+++ b/drivers/mtd/nand/atmel_nand.c
-@@ -209,22 +209,8 @@ static int atmel_nand_dma_op(struct mtd_info *mtd, void *buf, int len,
- 	int err = -EIO;
- 	enum dma_data_direction dir = is_read ? DMA_FROM_DEVICE : DMA_TO_DEVICE;
- 
--	if (buf >= high_memory) {
--		struct page *pg;
--
--		if (((size_t)buf & PAGE_MASK) !=
--		    ((size_t)(buf + len - 1) & PAGE_MASK)) {
--			dev_warn(host->dev, "Buffer not fit in one page\n");
--			goto err_buf;
--		}
--
--		pg = vmalloc_to_page(buf);
--		if (pg == 0) {
--			dev_err(host->dev, "Failed to vmalloc_to_page\n");
--			goto err_buf;
--		}
--		p = page_address(pg) + ((size_t)buf & ~PAGE_MASK);
--	}
-+	if (buf >= high_memory)
-+		goto err_buf;
- 
- 	dma_dev = host->dma_chan->device;
- 
--- 
-1.7.3.3
+Currently I cannot reproduce it, with or without acpi. /var/log/messages
+shows this morning:
+
+[    1.004550] sdhci: Secure Digital Host Controller Interface driver
+[    1.004552] sdhci: Copyright(c) Pierre Ossman
+[    1.005643] sdhci-pci 0000:03:01.1: SDHCI controller found [1180:0822] (rev 22)
+[    1.005662] sdhci-pci 0000:03:01.1: PCI INT B -> GSI 18 (level, low) -> IRQ 18
+[    1.007252] tg3.c:v3.116 (December 3, 2010)
+[    1.007268] tg3 0000:09:00.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
+[    1.007513] usbcore: registered new interface driver usbfs
+[    1.007537] usbcore: registered new interface driver hub
+[    1.010765] mmc0: SDHCI controller on PCI [0000:03:01.1] using DMA
+[    1.010775] sdhci-pci 0000:03:01.2: SDHCI controller found [1180:0843] (rev 12)
+[    1.010786] sdhci-pci 0000:03:01.2: PCI INT B -> GSI 18 (level, low) -> IRQ 18
+[    1.013877] mmc1: SDHCI controller on PCI [0000:03:01.2] using DMA
+:
+:
+[    8.216702] r852 0000:03:01.4: PCI INT B -> GSI 18 (level, low) -> IRQ 18
+[    8.243648] r852: driver loaded succesfully
+
+
+:-{
+
+When it comes back I will try to reboot with acpi=off.
+
+
+Regards
+
+Harri
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk2UXoAACgkQUTlbRTxpHjcragCghaLRrZJn7pkhbpkzfK0KjstI
+Sw8AniBuFLr0kIpE6ImtJ0b4hdQlILzW
+=ukS3
+-----END PGP SIGNATURE-----
