@@ -1,21 +1,22 @@
-Received: from outgoing.selfhost.de ([82.98.87.70])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5Fav-0001Bm-SV
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 10:59:19 +0000
-Message-ID: <4D945E80.8080104@afaics.de>
-Date: Thu, 31 Mar 2011 12:59:12 +0200
-From: Harald Dunkel <harri@afaics.de>
-MIME-Version: 1.0
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [Bugme-new] [Bug 32242] New: irq 18, nobody cared, nor did irqpoll
-References: <bug-32242-10286@https.bugzilla.kernel.org/>
-	<20110330165140.c5ca5705.akpm@linux-foundation.org>
-In-Reply-To: <20110330165140.c5ca5705.akpm@linux-foundation.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, bugzilla-daemon@bugzilla.kernel.org,
-	linux-mmc@vger.kernel.org, bugme-daemon@bugzilla.kernel.org,
-	linux-acpi@vger.kernel.org
+	id 1Q5Ggo-0001vF-9v
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 12:09:27 +0000
+Received: by ewy3 with SMTP id 3so771514ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 31 Mar 2011 05:09:24 -0700 (PDT)
+Subject: Re: [PATCH] mtd: nand: Fixed null pointer dereference.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Maarten ter Huurne <maarten@treewalker.org>
+In-Reply-To: <1300286875-21426-1-git-send-email-maarten@treewalker.org>
+References: <1300286875-21426-1-git-send-email-maarten@treewalker.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 31 Mar 2011 15:07:04 +0300
+Message-ID: <1301573224.2828.50.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-On 03/31/11 01:51, Andrew Morton wrote:
+On Wed, 2011-03-16 at 15:47 +0100, Maarten ter Huurne wrote:
+> The "bd" argument of verify_bbt_descr() was dereferenced before it was checked for NULL.
 > 
-> So both sdhci_irq and r852_irq were looking at the IRQ, but neither of
-> them were interested in it.
-> 
-> Could be that the bug lies in neither driver, at that something went
-> wrong with the system setup.  ACPI?
-> 
+> Signed-off-by: Maarten ter Huurne <maarten@treewalker.org>
 
-Currently I cannot reproduce it, with or without acpi. /var/log/messages
-shows this morning:
+Hi, this was fixed in upstream already by another person.
 
-[    1.004550] sdhci: Secure Digital Host Controller Interface driver
-[    1.004552] sdhci: Copyright(c) Pierre Ossman
-[    1.005643] sdhci-pci 0000:03:01.1: SDHCI controller found [1180:0822] (rev 22)
-[    1.005662] sdhci-pci 0000:03:01.1: PCI INT B -> GSI 18 (level, low) -> IRQ 18
-[    1.007252] tg3.c:v3.116 (December 3, 2010)
-[    1.007268] tg3 0000:09:00.0: PCI INT A -> GSI 17 (level, low) -> IRQ 17
-[    1.007513] usbcore: registered new interface driver usbfs
-[    1.007537] usbcore: registered new interface driver hub
-[    1.010765] mmc0: SDHCI controller on PCI [0000:03:01.1] using DMA
-[    1.010775] sdhci-pci 0000:03:01.2: SDHCI controller found [1180:0843] (rev 12)
-[    1.010786] sdhci-pci 0000:03:01.2: PCI INT B -> GSI 18 (level, low) -> IRQ 18
-[    1.013877] mmc1: SDHCI controller on PCI [0000:03:01.2] using DMA
-:
-:
-[    8.216702] r852 0000:03:01.4: PCI INT B -> GSI 18 (level, low) -> IRQ 18
-[    8.243648] r852: driver loaded succesfully
-
-
-:-{
-
-When it comes back I will try to reboot with acpi=off.
-
-
-Regards
-
-Harri
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk2UXoAACgkQUTlbRTxpHjcragCghaLRrZJn7pkhbpkzfK0KjstI
-Sw8AniBuFLr0kIpE6ImtJ0b4hdQlILzW
-=ukS3
------END PGP SIGNATURE-----
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
