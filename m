@@ -1,16 +1,21 @@
-Message-ID: <4D94539B.3050908@freescale.com>
-Date: Thu, 31 Mar 2011 18:12:43 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: <dedekind1@gmail.com>
-Subject: Re: [ PATCH V2  3/7] MTD : add the database for the NANDs
-References: <1301048581-21321-1-git-send-email-b32955@freescale.com>	<1301048581-21321-4-git-send-email-b32955@freescale.com>	<201103251134.44731.ffainelli@freebox.fr>	<4D8FEBC2.2030004@freescale.com>
-	<1301565649.2828.33.camel@localhost>
-In-Reply-To: <1301565649.2828.33.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Florian Fainelli <ffainelli@freebox.fr>, linux-mtd@lists.infradead.org,
+Subject: Re: [PATCH V3 3/6] MTD : add the database for the NANDs
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Huang Shijie <b32955@freescale.com>
+In-Reply-To: <4D92F277.7060607@freescale.com>
+References: <1301474413-28821-1-git-send-email-b32955@freescale.com>
+	<1301474413-28821-4-git-send-email-b32955@freescale.com>
+	<201103301046.04357.ffainelli@freebox.fr>
+	<4D92F277.7060607@freescale.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 31 Mar 2011 13:10:48 +0300
+Message-ID: <1301566248.2828.40.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com,
+	linux-mtd@lists.infradead.org,
+	Florian Fainelli <ffainelli@freebox.fr>, shijie8@gmail.com,
 	linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +25,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi:
-> On Mon, 2011-03-28 at 10:00 +0800, Huang Shijie wrote:
->> These nands are only a example. I have other nands to add in future.
->> I will fix nand_get_flash_type() in future, not now. thanks
->>
->> Btw : I forget to add  the `busw` field in my nand_device_info{}.
-> I think you should consider this as a merge criteria - I do not think we
-> can allow people to have their own NAND data-bases, even "for now".
->
-In the version 3, I want to replace the old database.
+Hi,
 
+On Wed, 2011-03-30 at 17:05 +0800, Huang Shijie wrote:
+> > On Wednesday 30 March 2011 10:40:10 Huang Shijie wrote:
+> >> This is a new database for the NANDs which is searched by the id_bytes.
+> > drivers/mtd//nand/nand_base.c will be able to detect all of your chips listed
+> > below based on the ids present in drivers/mtd/nand/nand_ids.c
+> >
+> yes.
+> 
+> But I will use the new database to replace the old one.
+> 
+> I will  submit new patches to modify the generic code if my driver is 
+> accepted.
 
-Thanks
-Huang Shijie
+Sorry, but this is not how the opensource community works. The common
+practice everywhere in the kernel is that if the generic code/framework
+is too limiting, you first change the framework, then start using it. We
+do not do things like - I'll first create my custom solution, and then I
+promise I will change the framework.
+
+Again, this is not just MTD, this is everywhere in the kernel. This is
+how linux goes forward - we force people to improve common code and
+accept their drivers, and everyone benefits form this. Yes, this is more
+work for you, of course, sorry :-)
+
+> > If you have new chips to support in the future, you should add them in
+> > drivers/mtd/nand/nand_ids.c and not keep this file.
+> >
+> The data structure  nand_flash_dev{} does not contain enough information.
+> So I want to the nand_device_info{} to replace it in future.
+
+Just add this information, if it is of generic nature (like SLC/MLC
+flag, required ECC strength, etc).
+
+> > I still do not understand why this would be needed, is it because the generic
+> > code does not provide enough informations for your driver?
+> >
+> yes.
+> 
+> IMHO, the generic code is somehow trapped in a wrong way. :(
+
+Fix this please :-)
+
+> Paring the id bytes is not sufficient to get all the information you 
+> need which is faced by me.
+
+Fix this too :-)
+
+> What's more, I think the paring code is ugly, see the nand_get_flash_type().
+
+You are welcome to fix this. There is _a lot_ of ugly code in MTD
+because no one loves it. Give it some love :-)
+
+> Why not create a new database which contains all the necessary 
+> information for a nand, and can be easy
+> find by the id bytes as the keyword?
+
+You can create this database by extending/improving/cleaning up the
+existing code base with a nice series of patches.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
