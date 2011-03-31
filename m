@@ -1,25 +1,21 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5Iad-0003cF-IB
-	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 14:11:12 +0000
-Received: by bwz1 with SMTP id 1so2079596bwz.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 31 Mar 2011 07:11:09 -0700 (PDT)
-Date: Thu, 31 Mar 2011 17:17:53 +0300
-From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH] jffs2: unused variables cleanup in jffs2_lookup and
-	jffs2_readdir
-Message-ID: <20110331141753.GB4144@swordfish.minsk.epam.com>
-References: <20110322121102.GC5086@swordfish.minsk.epam.com>
-	<1301579908.2828.83.camel@localhost>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="gatW/ieO32f1wygP"
-Content-Disposition: inline
-In-Reply-To: <1301579908.2828.83.camel@localhost>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
+In-Reply-To: <1301566248.2828.40.camel@localhost>
+References: <1301474413-28821-1-git-send-email-b32955@freescale.com>
+	<1301474413-28821-4-git-send-email-b32955@freescale.com>
+	<201103301046.04357.ffainelli@freebox.fr>
+	<4D92F277.7060607@freescale.com>
+	<1301566248.2828.40.camel@localhost>
+Date: Thu, 31 Mar 2011 10:17:14 -0400
+Message-ID: <AANLkTi=59br1KueZupGevB4DgP7UqBKRgbGgRvsjgH-8@mail.gmail.com>
+Subject: Re: [PATCH V3 3/6] MTD : add the database for the NANDs
+From: Huang Shijie <shijie8@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com,
+	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	Florian Fainelli <ffainelli@freebox.fr>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +25,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+hi,
 
---gatW/ieO32f1wygP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+2011/3/31 Artem Bityutskiy <dedekind1@gmail.com>:
+> Hi,
+>
+> On Wed, 2011-03-30 at 17:05 +0800, Huang Shijie wrote:
+>> > On Wednesday 30 March 2011 10:40:10 Huang Shijie wrote:
+>> >> This is a new database for the NANDs which is searched by the id_byte=
+s.
+>> > drivers/mtd//nand/nand_base.c will be able to detect all of your chips=
+ listed
+>> > below based on the ids present in drivers/mtd/nand/nand_ids.c
+>> >
+>> yes.
+>>
+>> But I will use the new database to replace the old one.
+>>
+>> I will =C2=A0submit new patches to modify the generic code if my driver =
+is
+>> accepted.
+>
+> Sorry, but this is not how the opensource community works. The common
+> practice everywhere in the kernel is that if the generic code/framework
+> is too limiting, you first change the framework, then start using it. We
+> do not do things like - I'll first create my custom solution, and then I
+> promise I will change the framework.
+>
 
-On (03/31/11 16:58), Artem Bityutskiy wrote:
-> On Tue, 2011-03-22 at 14:11 +0200, Sergey Senozhatsky wrote:
-> > jffs2: cleanup unused jffs2_sb_info *c variable and JFFS2_SB_INFO call =
-=66rom jffs2_lookup=20
-> > and jffs2_readdir
-> >=20
-> > Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
->=20
-> I amended the commit message and pushed this to l2-mtd-2.6.git, thanks.
->=20
+got it.
 
-Sorry, next time I'll be more accurate.
+> Again, this is not just MTD, this is everywhere in the kernel. This is
+> how linux goes forward - we force people to improve common code and
+> accept their drivers, and everyone benefits form this. Yes, this is more
+> work for you, of course, sorry :-)
+>
+thanks :)
 
-Thanks,
-	Sergey
+>> > If you have new chips to support in the future, you should add them in
+>> > drivers/mtd/nand/nand_ids.c and not keep this file.
+>> >
+>> The data structure =C2=A0nand_flash_dev{} does not contain enough inform=
+ation.
+>> So I want to the nand_device_info{} to replace it in future.
+>
+> Just add this information, if it is of generic nature (like SLC/MLC
+> flag, required ECC strength, etc).
+>
+>> > I still do not understand why this would be needed, is it because the =
+generic
+>> > code does not provide enough informations for your driver?
+>> >
+>> yes.
+>>
+>> IMHO, the generic code is somehow trapped in a wrong way. :(
+>
+> Fix this please :-)
+>
+>> Paring the id bytes is not sufficient to get all the information you
+>> need which is faced by me.
+>
+> Fix this too :-)
+>
+>> What's more, I think the paring code is ugly, see the nand_get_flash_typ=
+e().
+>
+> You are welcome to fix this. There is _a lot_ of ugly code in MTD
+> because no one loves it. Give it some love :-)
+>
+>> Why not create a new database which contains all the necessary
+>> information for a nand, and can be easy
+>> find by the id bytes as the keyword?
+>
+> You can create this database by extending/improving/cleaning up the
+> existing code base with a nice series of patches.
+>
+ok. I will try to fix the generic code before my driver is submitted.
 
---gatW/ieO32f1wygP
-Content-Type: application/pgp-signature
+Best Regards.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iJwEAQECAAYFAk2UjREACgkQfKHnntdSXjTTjQQA5F4KGqLhvbeo2SedRfSIODKD
-lmHXeQBvwYvcUvk75RG0MM+KIs8U3qfxxkvBisPnKDD1qAiwqqAclGbxxJBokHEH
-Enq4BNlu6X/LnHUgoaVEXLwyWb+wxaRAwU61gDMayD7W8o5lBuCb4UDmCi7aIFgx
-TigFCJwX/LDyVAHrjik=
-=JZ2r
------END PGP SIGNATURE-----
-
---gatW/ieO32f1wygP--
+> --
+> Best Regards,
+> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
+=D1=86=D0=BA=D0=B8=D0=B9)
+>
+>
