@@ -1,21 +1,20 @@
+Received: from bipbip.grupopie.com ([195.23.16.24])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5IiE-0003jN-9g
+	for linux-mtd@lists.infradead.org; Thu, 31 Mar 2011 14:19:03 +0000
+Message-ID: <4D948D52.4040708@grupopie.com>
+Date: Thu, 31 Mar 2011 15:18:58 +0100
+From: Paulo Marques <pmarques@grupopie.com>
 MIME-Version: 1.0
-In-Reply-To: <1301566248.2828.40.camel@localhost>
-References: <1301474413-28821-1-git-send-email-b32955@freescale.com>
-	<1301474413-28821-4-git-send-email-b32955@freescale.com>
-	<201103301046.04357.ffainelli@freebox.fr>
-	<4D92F277.7060607@freescale.com>
-	<1301566248.2828.40.camel@localhost>
-Date: Thu, 31 Mar 2011 10:17:14 -0400
-Message-ID: <AANLkTi=59br1KueZupGevB4DgP7UqBKRgbGgRvsjgH-8@mail.gmail.com>
-Subject: Re: [PATCH V3 3/6] MTD : add the database for the NANDs
-From: Huang Shijie <shijie8@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com,
-	Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	Florian Fainelli <ffainelli@freebox.fr>,
-	linux-arm-kernel@lists.infradead.org
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 0/2] do not select KALLSYMS_ALL
+References: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	MTD list <linux-mtd@lists.infradead.org>,
+	lkml <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,88 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
+Artem Bityutskiy wrote:
+> [...]
+> I personally think KALLSYMS_ALL should be just merged with KALLSYMS and
+> disappear - we should have only one option. CONFIG_KALLSYMS_EXTRA_PASS should
+> die as well.
 
-2011/3/31 Artem Bityutskiy <dedekind1@gmail.com>:
-> Hi,
->
-> On Wed, 2011-03-30 at 17:05 +0800, Huang Shijie wrote:
->> > On Wednesday 30 March 2011 10:40:10 Huang Shijie wrote:
->> >> This is a new database for the NANDs which is searched by the id_byte=
-s.
->> > drivers/mtd//nand/nand_base.c will be able to detect all of your chips=
- listed
->> > below based on the ids present in drivers/mtd/nand/nand_ids.c
->> >
->> yes.
->>
->> But I will use the new database to replace the old one.
->>
->> I will =C2=A0submit new patches to modify the generic code if my driver =
-is
->> accepted.
->
-> Sorry, but this is not how the opensource community works. The common
-> practice everywhere in the kernel is that if the generic code/framework
-> is too limiting, you first change the framework, then start using it. We
-> do not do things like - I'll first create my custom solution, and then I
-> promise I will change the framework.
->
+That sounds a little too extreme...
 
-got it.
+KALLSYMS is useful for most kernels, since it provides nice readable
+stack dumps for panics and BUG's.
 
-> Again, this is not just MTD, this is everywhere in the kernel. This is
-> how linux goes forward - we force people to improve common code and
-> accept their drivers, and everyone benefits form this. Yes, this is more
-> work for you, of course, sorry :-)
->
-thanks :)
+KALLSYMS_ALL adds a lot of extra symbols that can be useful mostly to
+development kernels and shouldn't be used to add unnecessary bloat to
+user kernels.
 
->> > If you have new chips to support in the future, you should add them in
->> > drivers/mtd/nand/nand_ids.c and not keep this file.
->> >
->> The data structure =C2=A0nand_flash_dev{} does not contain enough inform=
-ation.
->> So I want to the nand_device_info{} to replace it in future.
->
-> Just add this information, if it is of generic nature (like SLC/MLC
-> flag, required ECC strength, etc).
->
->> > I still do not understand why this would be needed, is it because the =
-generic
->> > code does not provide enough informations for your driver?
->> >
->> yes.
->>
->> IMHO, the generic code is somehow trapped in a wrong way. :(
->
-> Fix this please :-)
->
->> Paring the id bytes is not sufficient to get all the information you
->> need which is faced by me.
->
-> Fix this too :-)
->
->> What's more, I think the paring code is ugly, see the nand_get_flash_typ=
-e().
->
-> You are welcome to fix this. There is _a lot_ of ugly code in MTD
-> because no one loves it. Give it some love :-)
->
->> Why not create a new database which contains all the necessary
->> information for a nand, and can be easy
->> find by the id bytes as the keyword?
->
-> You can create this database by extending/improving/cleaning up the
-> existing code base with a nice series of patches.
->
-ok. I will try to fix the generic code before my driver is submitted.
+Now as for CONFIG_KALLSYMS_EXTRA_PASS: to build the kallsyms table, the
+build process first links a kernel image with an empty kallsyms table
+and use that to fetch information for all the symbols.
 
-Best Regards.
+It then uses that information to build the table with the right size,
+and links it again. If everything goes ok, this new version as all the
+symbols in the correct places and the final table can be built with the
+correct addresses.
 
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+The final linking should produce the same result as only the data on the
+kallsyms table changed, but not its size.
+
+However, there have been bugs in the past with section alignments and
+symbol reordering for symbols with the same address, etc., etc. that
+make this final table not have the exact same size, and the build fails
+with an inconsistent kallsyms data message. At this point, the user can
+turn on the CONFIG_KALLSYMS_EXTRA_PASS and temporarily solve the problem
+while the developers find the correct fix. Without this option, in this
+situation the kernel would simply fail the compilation.
+
+All this has been stable for a while and this option hasn't been needed
+recently (AFAIK), but if there is some bug in some new binutils or
+something, the option might be needed again.
+
+-- 
+Paulo Marques - www.grupopie.com
+
+"Who is general Failure and why is he reading my disk?"
