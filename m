@@ -1,29 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5gZQ-0003KD-A4
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 15:47:33 +0000
-Date: Fri, 1 Apr 2011 17:46:48 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH] Newly erased page read workaround
-Message-ID: <20110401154648.GA21475@parrot.com>
-References: <1301640710.2789.11.camel@localhost> <4D958DC2.5000607@st.com>
-	<1301647180.2789.35.camel@localhost> <4D9595AB.1050604@st.com>
-	<20110401121447.GA19151@parrot.com>
-	<1301663081.2789.65.camel@localhost>
-	<20110401140429.GB19151@parrot.com>
-	<1301667361.2789.84.camel@localhost>
-	<20110401144906.GC19151@parrot.com>
-	<Pine.LNX.4.64.1104011653430.18181@lnxricardw.se.axis.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.1104011653430.18181@lnxricardw.se.axis.com>
-Cc: Vipin Kumar <vipin.kumar@st.com>,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Viresh KUMAR <viresh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5gfp-0003OT-4J
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 15:54:10 +0000
+Received: by ewy3 with SMTP id 3so1212417ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 01 Apr 2011 08:54:07 -0700 (PDT)
+Subject: Re: [PATCH] nand_bbt: convert printks to pr_*
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Bill Gatliff <bgat@billgatliff.com>
+In-Reply-To: <1301585080-6318-1-git-send-email-bgat@billgatliff.com>
+References: <1301585080-6318-1-git-send-email-bgat@billgatliff.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 01 Apr 2011 18:51:38 +0300
+Message-ID: <1301673098.2789.114.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,53 +26,120 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Apr 01, 2011 at 03:58:47PM +0100, Ricard Wanderlof wrote:
-> 
-> On Fri, 1 Apr 2011, Ivan Djelic wrote:
-> 
-> >> I'm curious, if the OOB area is so unreliable, how can we trust it to
-> >> store our ECC? We need a mini-ECC for the ECC then?
-> >
-> > The oob area is no different from the data area (same technology).
-> > Fortunately, Hamming and BCH codes (and usual ECC codes in general) actually
-> > have built-in robustness to corruption.
-> 
-> At least with Hamming, when the ECC has been calculated, if it differs 
-> from the ECC read from the oob, and the difference is just a single bit, 
-> it is assumed that the ECC stored in the oob was subjected to a bitflip, 
-> and the data is in fact ok. (A long time ago there was a bug in this in 
-> mtd, so that a (single) bit flip in the ECC bytes was flagged as an ECC 
-> failure).
+Hi,
 
-Exactly, because a single bitflip in data results in a 12-bit flip in a Hamming
-24-bit code. Therefore you can easily distinguish a single bitflip in data
-(12 bits change) from a single bitflip in the ECC code (1 bit change).
+thanks for the attempt to give this code some love, I really appreciate
+this. But could you please avoid such big patches, even though they are
+doing trivial things? Would it please be possible to do one type of
+changes at a time? Something like this:
 
-> I don't know how BCH (and other multiple-error-bit algorithms) deals with 
-> this though. Does it assume that there will be at most one bitflip within 
-> the ECC data (which is much smaller than the bytes covered by the ECC), or 
-> does it accept multiple bit errors also in the ECC data? One would assume 
-> that it would start to get difficult to distinguish multiple bit errors in 
-> the ECC data with valid ECC indicating bit errors in the data, but perhaps 
-> this isn't so thanks to the algorithm used?
+1. Separate patch for indentation fixes.
+2. Separate patch for printk() -> pr_* changes.
 
-With BCH and Reed-Solomon codes, data bytes and ecc bytes form a single
-codeword. This whole codeword can be corrected, not just the data part.
+On Thu, 2011-03-31 at 10:24 -0500, Bill Gatliff wrote:
+> @@ -121,7 +121,7 @@ static int check_pattern(uint8_t *buf, int len, int paglen, struct nand_bbt_desc
+>  			end += NAND_SMALL_BADBLOCK_POS - td->offs;
+>  			/* Check region between positions 1 and 6 */
+>  			for (i = 0; i < NAND_SMALL_BADBLOCK_POS - td->offs - td->len;
+> -					i++) {
+> +			     i++) {
 
-Think of codewords as points in a space of binary words. In this space of
-binary words, distance is measured as the number of differing bits between two
-words.
+The line anyway is longer than 80 characters, so may be it is nicer to
+introduce a temporary variable for NAND_SMALL_BADBLOCK_POS - td->offs -
+td->len ?
 
-A codeword has a remarkable property: it is distant from other codewords by at
-least 2t+1 bits. You program the codeword to flash, and later read it back as a
-(potentially) corrupted binary word. If you assume that this binary word is
-distant from at most t bits from the original codeword (i.e. no more than t
-bitflips occured in flash), then you can retrieve the original codeword (it is
-the closest to your binary word).
 
-The whole point of BCH (or RS) codes it to build such a codeword from the input
-data, by adding the right ECC bits.
+> @@ -801,14 +801,14 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  			res = mtd->read(mtd, to, len, &retlen, buf);
+>  			if (res < 0) {
+>  				if (retlen != len) {
+> -					printk(KERN_INFO "nand_bbt: Error "
+> -					       "reading block for writing "
+> -					       "the bad block table\n");
+> +					pr_info("nand_bbt: Error "
+> +						"reading block for writing "
+> +						"the bad block table\n");
 
-BR,
+May be the this can be turned into 2-liner from the 3-liner?
 
-Ivan
+>  					return res;
+>  				}
+> -				printk(KERN_WARNING "nand_bbt: ECC error "
+> -				       "while reading block for writing "
+> -				       "bad block table\n");
+> +				pr_warn("nand_bbt: ECC error "
+> +					"while reading block for writing "
+> +					"bad block table\n");
+
+Ditto?
+>  			}
+>  			/* Read oob data */
+>  			ops.ooblen = (len >> this->page_shift) * mtd->oobsize;
+> @@ -878,22 +878,21 @@ static int write_bbt(struct mtd_info *mtd, uint8_t *buf,
+>  			goto outerr;
+>  
+>  		res = scan_write_bbt(mtd, to, len, buf,
+> -				td->options & NAND_BBT_NO_OOB ? NULL :
+> -				&buf[len]);
+> +				     td->options & NAND_BBT_NO_OOB ? NULL :
+> +				     &buf[len]);
+
+Did you try to make 2-liners out of that as well?
+
+>  static struct nand_bbt_descr bbt_main_descr = {
+>  	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+> -		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+> +	| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+
+Err, probably you should align the second line to the beginning of the
+first line?
+
+>  	.offs =	8,
+>  	.len = 4,
+>  	.veroffs = 12,
+> @@ -1312,7 +1311,7 @@ static struct nand_bbt_descr bbt_main_descr = {
+>  
+>  static struct nand_bbt_descr bbt_mirror_descr = {
+>  	.options = NAND_BBT_LASTBLOCK | NAND_BBT_CREATE | NAND_BBT_WRITE
+> -		| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+> +	| NAND_BBT_2BIT | NAND_BBT_VERSION | NAND_BBT_PERCHIP,
+
+Ditto and in other similar places.
+
+> @@ -1419,7 +1418,8 @@ int nand_default_bbt(struct mtd_info *mtd)
+>  			}
+>  		}
+>  		if (!this->badblock_pattern) {
+> -			this->badblock_pattern = (mtd->writesize > 512) ? &largepage_flashbased : &smallpage_flashbased;
+> +			this->badblock_pattern = (mtd->writesize > 512) ?
+> +				&largepage_flashbased : &smallpage_flashbased;
+
+I think it is cleaner to use normal
+if (mtd->writesize > 512)
+	this->badblock_pattern = &largepage_flashbased;
+else
+	this->badblock_pattern = &smallpage_flashbased;
+
+No?
+
+>  int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+>  {
+>  	struct nand_chip *this = mtd->priv;
+> @@ -1447,7 +1447,8 @@ int nand_isbad_bbt(struct mtd_info *mtd, loff_t offs, int allowbbt)
+>  	block = (int)(offs >> (this->bbt_erase_shift - 1));
+>  	res = (this->bbt[block >> 3] >> (block & 0x06)) & 0x03;
+>  
+> -	DEBUG(MTD_DEBUG_LEVEL2, "nand_isbad_bbt(): bbt info for offs 0x%08x: (block %d) 0x%02x\n",
+> +	DEBUG(MTD_DEBUG_LEVEL2, "nand_isbad_bbt(): bbt info for "
+> +	      "offs 0x%08x: (block %d) 0x%02x\n",
+>  	      (unsigned int)offs, block >> 1, res);
+>  
+>  	switch ((int)res) {
+
+If you'd will to love MTD a bit more, you could kill all these ugly
+DEBUG() things and use dev_dbg instead. dev_dbg is way better, and LWM
+made a nice article about this: http://lwn.net/Articles/434833/
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
