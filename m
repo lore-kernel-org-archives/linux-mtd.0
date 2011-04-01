@@ -1,16 +1,24 @@
-Subject: Re: [PATCH] MTD: atmel_nand: Fall back to CPU I/O when buffer is
-	in vmalloc(ed) region
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5fZ0-0002MO-4H
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 14:43:03 +0000
+Received: by wyb28 with SMTP id 28so3669935wyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 01 Apr 2011 07:43:00 -0700 (PDT)
+Subject: Re: [PATCH 0/2] do not select KALLSYMS_ALL
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Hong Xu <hong.xu@atmel.com>
-In-Reply-To: <1301567595-31075-1-git-send-email-hong.xu@atmel.com>
-References: <1301567595-31075-1-git-send-email-hong.xu@atmel.com>
+To: Paulo Marques <pmarques@grupopie.com>
+In-Reply-To: <4D948D52.4040708@grupopie.com>
+References: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>
+	<4D948D52.4040708@grupopie.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Apr 2011 17:20:12 +0300
-Message-ID: <1301667612.2789.86.camel@localhost>
+Date: Fri, 01 Apr 2011 17:40:33 +0300
+Message-ID: <1301668833.2789.90.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	MTD list <linux-mtd@lists.infradead.org>,
+	lkml <linux-kernel@vger.kernel.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,14 +29,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-03-31 at 18:33 +0800, Hong Xu wrote:
-> The previous way of dealing with vmalloc(ed) region by walking though the pages can not work well actually.
-> We just fall back to CPU I/O when the buffer address is higher than `high_memory'.
+On Thu, 2011-03-31 at 15:18 +0100, Paulo Marques wrote:
+> Artem Bityutskiy wrote:
+> > [...]
+> > I personally think KALLSYMS_ALL should be just merged with KALLSYMS and
+> > disappear - we should have only one option. CONFIG_KALLSYMS_EXTRA_PASS should
+> > die as well.
 > 
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
-> Signed-off-by: Hong Xu <hong.xu@atmel.com>
+> That sounds a little too extreme...
+> 
+> KALLSYMS is useful for most kernels, since it provides nice readable
+> stack dumps for panics and BUG's.
+> 
+> KALLSYMS_ALL adds a lot of extra symbols that can be useful mostly to
+> development kernels and shouldn't be used to add unnecessary bloat to
+> user kernels.
 
-Pushed to l2-mtd-2.6.git, thanks!
+OK, thanks.
+
+> Now as for CONFIG_KALLSYMS_EXTRA_PASS: to build the kallsyms table, the
+> build process first links a kernel image with an empty kallsyms table
+> and use that to fetch information for all the symbols.
+> 
+> It then uses that information to build the table with the right size,
+> and links it again. If everything goes ok, this new version as all the
+> symbols in the correct places and the final table can be built with the
+> correct addresses.
+> 
+> The final linking should produce the same result as only the data on the
+> kallsyms table changed, but not its size.
+> 
+> However, there have been bugs in the past with section alignments and
+> symbol reordering for symbols with the same address, etc., etc. that
+> make this final table not have the exact same size, and the build fails
+> with an inconsistent kallsyms data message. At this point, the user can
+> turn on the CONFIG_KALLSYMS_EXTRA_PASS and temporarily solve the problem
+> while the developers find the correct fix. Without this option, in this
+> situation the kernel would simply fail the compilation.
+> 
+> All this has been stable for a while and this option hasn't been needed
+> recently (AFAIK), but if there is some bug in some new binutils or
+> something, the option might be needed again.
+
+Thanks for explanation!
+
+But... why on earth this option is in Kconfig then, if this is only
+about extra pass during the kernel _compilation_ ? This and the vague
+help message in Kconfig help section are very misleading. This should
+not be in Kconfig at all then, it should be purely a Makefile thing!
 
 -- 
 Best Regards,
