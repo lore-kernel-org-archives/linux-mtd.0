@@ -1,12 +1,13 @@
-Subject: Re: [PATCH 1/3] MTD: atmel_nand: modify test case for using DMA
-	operations
+Subject: Re: [PATCH 2/3] MTD: atmel_nand: trivial: change DMA usage
+	information trace
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Hong Xu <hong.xu@atmel.com>
-In-Reply-To: <1301473601-29570-1-git-send-email-hong.xu@atmel.com>
+In-Reply-To: <1301473601-29570-2-git-send-email-hong.xu@atmel.com>
 References: <1301473601-29570-1-git-send-email-hong.xu@atmel.com>
+	<1301473601-29570-2-git-send-email-hong.xu@atmel.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Apr 2011 15:49:48 +0300
-Message-ID: <1301662188.2789.57.camel@localhost>
+Date: Fri, 01 Apr 2011 15:51:21 +0300
+Message-ID: <1301662281.2789.58.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: nicolas.ferre@atmel.com, linux-mtd@lists.infradead.org,
@@ -24,14 +25,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Wed, 2011-03-30 at 16:26 +0800, Hong Xu wrote:
 > From: Nicolas Ferre <nicolas.ferre@atmel.com>
 > 
-> We have better performances not using DMA for oob operations.
-
-Would it be possible to have this comment in the code, not only in the
-commit message?
-
-> Modify size test so that it is using DMA for size greater than oobsize.
-> 
 > Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+
+Pushed this patch to the l2-mtd-2.6.git tree, thanks.
 
 -- 
 Best Regards,
