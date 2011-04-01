@@ -1,17 +1,21 @@
-Received: from eu1sys200aog112.obsmtp.com ([207.126.144.133])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5bYH-00083h-LV
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 10:26:02 +0000
-From: Viresh Kumar <viresh.kumar@st.com>
-To: <Artem.Bityutskiy@nokia.com>, <David.Woodhouse@intel.com>,
-	<linux-mtd@lists.infradead.org>
-Subject: [PATCH resend] Newly erased page read workaround
-Date: Fri, 1 Apr 2011 15:55:34 +0530
-Message-ID: <1301653534-22223-1-git-send-email-viresh.kumar@st.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: amit.goel@st.com, shiraz.hashim@st.com, Viresh Kumar <viresh.kumar@st.com>,
-	armando.visconti@st.com, Vipin Kumar <vipin.kumar@st.com>
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5cbO-0000CP-K6
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 11:33:19 +0000
+Subject: Re: [PATCH resend] Newly erased page read workaround
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: ext Viresh Kumar <viresh.kumar@st.com>
+In-Reply-To: <1301653534-22223-1-git-send-email-viresh.kumar@st.com>
+References: <1301653534-22223-1-git-send-email-viresh.kumar@st.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 01 Apr 2011 14:30:48 +0300
+Message-ID: <1301657448.2789.44.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Vipin Kumar <vipin.kumar@st.com>, David.Woodhouse@intel.com,
+	amit.goel@st.com, armando.visconti@st.com, shiraz.hashim@st.com,
+	linux-mtd@lists.infradead.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,73 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Vipin Kumar <vipin.kumar@st.com>
+On Fri, 2011-04-01 at 15:55 +0530, ext Viresh Kumar wrote:
+> +		/*
+> +		 * This is a temporary erase check. A newly erased page read
+> +		 * would result in an ecc error because the oob data is also
+> +		 * erased to FF and the calculated ecc for an FF data is not
+> +		 * FF..FF.
+> +		 * This is a workaround to skip performing correction in case
+> +		 * data is FF..FF
+> +		 */
 
-A newly erased page contains ff in data as well as spare area. While reading an
-erased page, the read out ecc from spare area does not match the ecc generated
-by fsmc ecc hardware accelarator. This is because ecc of data ff ff is not ff
-ff. This leads to errors when jffs2 fs erases and reads back the pages to
-ensure consistency.
+Sorry, but still questions.
 
-This patch adds a software workaround to ensure that the ecc check is not
-performed for erased pages. This check is a memory comparison of 512 data bytes
-against 0xff. The ecc correction and error reporting algorithm is skipped if the
-check passes.
-It adds a few extra cycles while reading an erased page but is safer to ensure
-that the page is read properly
+The comment says this is temporary - why? When and how this going to be
+change to become "permanent".
 
-Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
-Acked-by: Linus Walleij <linus.walleij@stericsson.com>
----
- drivers/mtd/nand/fsmc_nand.c |   28 ++++++++++++++++++++++------
- 1 files changed, 22 insertions(+), 6 deletions(-)
+And you still did not add words about the problem with bit-flips.
 
-diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
-index 205b10b..7df270a 100644
---- a/drivers/mtd/nand/fsmc_nand.c
-+++ b/drivers/mtd/nand/fsmc_nand.c
-@@ -420,7 +420,7 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 	struct fsmc_nand_data *host = container_of(mtd,
- 					struct fsmc_nand_data, mtd);
- 	struct fsmc_eccplace *ecc_place = host->ecc_place;
--	int i, j, s, stat, eccsize = chip->ecc.size;
-+	int i, j, k, s, stat, eccsize = chip->ecc.size;
- 	int eccbytes = chip->ecc.bytes;
- 	int eccsteps = chip->ecc.steps;
- 	uint8_t *p = buf;
-@@ -460,11 +460,27 @@ static int fsmc_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 		memcpy(&ecc_code[i], oob, 13);
- 		chip->ecc.calculate(mtd, p, &ecc_calc[i]);
- 
--		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
--		if (stat < 0)
--			mtd->ecc_stats.failed++;
--		else
--			mtd->ecc_stats.corrected += stat;
-+		/*
-+		 * This is a temporary erase check. A newly erased page read
-+		 * would result in an ecc error because the oob data is also
-+		 * erased to FF and the calculated ecc for an FF data is not
-+		 * FF..FF.
-+		 * This is a workaround to skip performing correction in case
-+		 * data is FF..FF
-+		 */
-+		for (k = 0; k < eccsize; k++) {
-+			if (*(p + k) != 0xff)
-+				break;
-+		}
-+
-+		if (k < eccsize) {
-+			stat = chip->ecc.correct(mtd, p, &ecc_code[i],
-+					&ecc_calc[i]);
-+			if (stat < 0)
-+				mtd->ecc_stats.failed++;
-+			else
-+				mtd->ecc_stats.corrected += stat;
-+		}
- 	}
- 
- 	return 0;
 -- 
-1.7.3.4
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
