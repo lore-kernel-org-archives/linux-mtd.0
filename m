@@ -1,66 +1,50 @@
-From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
-Date: Thu, 10 Mar 2011 16:26:32 +0200
-Subject: [PATCH] UBIFS: do not check data crc by default
-Message-ID: <mailman.169.1299767402.1530.linux-mtd@lists.infradead.org>
-To: linux-mtd@lists.infradead.org
-List-Id: linux-mtd.lists.infradead.org
+Date: Fri, 1 Apr 2011 11:47:31 +0800
+From: Shawn Guo <shawn.guo@freescale.com>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH V3 2/6] dmaengine: add interrupt check for GPMI controller
+Message-ID: <20110401034730.GE25866@S2100-06.ap.freescale.net>
+References: <19858.62649.218523.984252@ipc1.ka-ro>
+	<1301554968-29066-1-git-send-email-b32955@freescale.com>
+	<19860.13566.651111.241538@ipc1.ka-ro>
+	<4D94403F.6000000@freescale.com>
+	<19860.16442.199644.984424@ipc1.ka-ro>
+	<4D9444A6.2060109@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <4D9444A6.2060109@freescale.com>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
+List-Post: <mailto:linux-mtd@lists.infradead.org>
+List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
+	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Change the default UBIFS behavior WRT data CRC checking. Currently,
-UBIFS checks data CRC when reading, which slows it down quite a bit,
-and this is the default option. However, it looks like in average
-user does not need this feature and would prefer faster read speed
-over extra reliability. And this seems to be de-facto standard that
-file-systems do not check data CRC every time they read from the
-media.
-
-Thus, make UBIFS default behavior so that it does not check data
-CRC. This corresponds to the no_chk_data_crc mount option. Those users
-who need extra protection can always enable it using the chk_data_crc
-option.
-
-Please, read more information about this feature here:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_checksumming
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- Documentation/filesystems/ubifs.txt |    4 ++--
- fs/ubifs/super.c                    |    1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/Documentation/filesystems/ubifs.txt b/Documentation/filesystems/ubifs.txt
-index 12fedb7..d7b13b0 100644
---- a/Documentation/filesystems/ubifs.txt
-+++ b/Documentation/filesystems/ubifs.txt
-@@ -82,12 +82,12 @@ Mount options
- bulk_read		read more in one go to take advantage of flash
- 			media that read faster sequentially
- no_bulk_read (*)	do not bulk-read
--no_chk_data_crc		skip checking of CRCs on data nodes in order to
-+no_chk_data_crc (*)	skip checking of CRCs on data nodes in order to
- 			improve read performance. Use this option only
- 			if the flash media is highly reliable. The effect
- 			of this option is that corruption of the contents
- 			of a file can go unnoticed.
--chk_data_crc (*)	do not skip checking CRCs on data nodes
-+chk_data_crc		do not skip checking CRCs on data nodes
- compr=none              override default compressor and set it to "none"
- compr=lzo               override default compressor and set it to "lzo"
- compr=zlib              override default compressor and set it to "zlib"
-diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
-index b722ebc..e5dc1e1 100644
---- a/fs/ubifs/super.c
-+++ b/fs/ubifs/super.c
-@@ -1985,6 +1985,7 @@ static int ubifs_fill_super(struct super_block *sb, void *data, int silent)
- 	INIT_LIST_HEAD(&c->old_buds);
- 	INIT_LIST_HEAD(&c->orph_list);
- 	INIT_LIST_HEAD(&c->orph_new);
-+	c->no_chk_data_crc = 1;
- 
- 	c->vfs_sb = sb;
- 	c->highest_inum = UBIFS_FIRST_INO;
--- 
-1.7.2.3
+On Thu, Mar 31, 2011 at 05:08:54PM +0800, Huang Shijie wrote:
+[...]
+> >>>You should make the distinction based on the platform_id, which would
+> >>>save you the ugly ifdef's and cpu_is_... macros.
+> >>>
+> >>>
+> >>This in the DMA driver.
+> >>Do you want me to change the DMA driver to add the platform_id?
+> >>The DMA driver has already used the cpu_is_xx() macros.
+> >>
+> >The mxs-dma driver is already using platform ids!
+> >
+> >
+> Do you mean the mxd_dma_type[] ?
+> 
+> How can i distinction the imx23 and imx28 with it ?
+> It seems can not be used to do the work.
+> 
+You can drop the dmaengine patch from your gpmi series.  I will find
+some time to fix this together with removing cpu_is_xx() and inclusion
+of mxs.h, to get it prepared for i.mx50 aphb-dma support.
 
 -- 
-Best Regards,
-Artem Bityutskiy (?????????? ????????????????)
+Regards,
+Shawn
