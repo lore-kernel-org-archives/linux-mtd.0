@@ -1,23 +1,24 @@
-Received: from eu1sys200aog104.obsmtp.com ([207.126.144.117])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5ckx-0000Hu-3o
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 11:43:11 +0000
-Message-ID: <4D95BA32.6040709@st.com>
-Date: Fri, 1 Apr 2011 17:12:42 +0530
-From: Vipin Kumar <vipin.kumar@st.com>
-MIME-Version: 1.0
-To: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5coi-0000Mv-07
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 11:47:04 +0000
 Subject: Re: [PATCH resend] Newly erased page read workaround
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: ext Vipin Kumar <vipin.kumar@st.com>
+In-Reply-To: <4D95BA32.6040709@st.com>
 References: <1301653534-22223-1-git-send-email-viresh.kumar@st.com>
-	<1301657448.2789.44.camel@localhost>
-In-Reply-To: <1301657448.2789.44.camel@localhost>
+	<1301657448.2789.44.camel@localhost>  <4D95BA32.6040709@st.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Date: Fri, 01 Apr 2011 14:44:35 +0300
+Message-ID: <1301658275.2789.45.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: Viresh KUMAR <viresh.kumar@st.com>,
 	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>,
 	amitgoel <amit.goel@st.com>, Armando VISCONTI <armando.visconti@st.com>,
 	Shiraz HASHIM <shiraz.hashim@st.com>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/1/2011 5:00 PM, Artem Bityutskiy wrote:
-> On Fri, 2011-04-01 at 15:55 +0530, ext Viresh Kumar wrote:
->> +		/*
->> +		 * This is a temporary erase check. A newly erased page read
->> +		 * would result in an ecc error because the oob data is also
->> +		 * erased to FF and the calculated ecc for an FF data is not
->> +		 * FF..FF.
->> +		 * This is a workaround to skip performing correction in case
->> +		 * data is FF..FF
->> +		 */
-> 
-> Sorry, but still questions.
-> 
-> The comment says this is temporary - why? When and how this going to be
-> change to become "permanent".
-> 
+On Fri, 2011-04-01 at 17:12 +0530, ext Vipin Kumar wrote:
+> Temporary because the fsmc peripheral itself needs a fix for this problem
 
-Temporary because the fsmc peripheral itself needs a fix for this problem
+Do you mean a hardware fix?
 
-> And you still did not add words about the problem with bit-flips.
-> 
-
-OK, I would add that too
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
