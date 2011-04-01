@@ -1,25 +1,14 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5e4G-0001CY-BQ
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 13:07:13 +0000
-Subject: Re: [PATCH] Newly erased page read workaround
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Ivan Djelic <ivan.djelic@parrot.com>
-In-Reply-To: <20110401121447.GA19151@parrot.com>
-References: <c7baa4a77775b54f2ef8450d8d1f44d1dc011b41.1298527669.git.viresh.kumar@st.com>
-	<1301579475.2828.82.camel@localhost> <4D95708A.7080204@st.com>
-	<1301640710.2789.11.camel@localhost> <4D958DC2.5000607@st.com>
-	<1301647180.2789.35.camel@localhost> <4D9595AB.1050604@st.com>
-	<20110401121447.GA19151@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Apr 2011 16:04:41 +0300
-Message-ID: <1301663081.2789.65.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Vipin Kumar <vipin.kumar@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
-Reply-To: Artem.Bityutskiy@nokia.com
+From: Nicolas Ferre <nicolas.ferre@atmel.com>
+To: dedekind1@gmail.com, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 1/3 v2] MTD: atmel_nand: modify test case for using DMA
+	operations
+Date: Fri,  1 Apr 2011 16:40:44 +0200
+Message-Id: <1301668844-4500-1-git-send-email-nicolas.ferre@atmel.com>
+In-Reply-To: <1301662188.2789.57.camel@localhost>
+References: <1301662188.2789.57.camel@localhost>
+Cc: hong.xu@atmel.com, Nicolas Ferre <nicolas.ferre@atmel.com>,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +18,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-04-01 at 14:14 +0200, Ivan Djelic wrote:
-> Did you consider this idea: if you have an unused byte available in oob,
-> program it to 0x00 when a page is programmed.
+We have better performances not using DMA for oob operations.
+Modify size test so that it is using DMA for size greater than oobsize.
 
-I guess this depends on the the controller, but probably this could mean
-a substantial write  overhead, not?
+Signed-off-by: Nicolas Ferre <nicolas.ferre@atmel.com>
+---
+Artem,
 
-> That way, you just need to check a single byte when you read a page in order
-> to distinguish erased pages from programmed pages. And by counting the number
-> of 1s in the byte, you can be robust to bitflips.
+Here is the v2 version with embedded comment as you suggested.
 
-Could you please explain some more what do you mean? So you write the
-0x00 byte. Then when you read, you count the number of "1" bits in the
-byte. And what exactly this count gives you and to which bitflips you
-become robust?
+Best regards,
 
-> As a special refinement, you could also "cleanup" pages detected as erased, in
-> order to iron out possible bitflips.
+ drivers/mtd/nand/atmel_nand.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
-What do you mean by "cleanup" a page?
-
-Thanks!
-
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 6fae04b..5872f2a 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -280,7 +280,8 @@ static void atmel_read_buf(struct mtd_info *mtd, u8 *buf, int len)
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct atmel_nand_host *host = chip->priv;
+ 
+-	if (use_dma && len >= mtd->oobsize)
++	if (use_dma && len > mtd->oobsize)
++		/* only use DMA for bigger than oob size: better performances */
+ 		if (atmel_nand_dma_op(mtd, buf, len, 1) == 0)
+ 			return;
+ 
+@@ -295,7 +296,8 @@ static void atmel_write_buf(struct mtd_info *mtd, const u8 *buf, int len)
+ 	struct nand_chip *chip = mtd->priv;
+ 	struct atmel_nand_host *host = chip->priv;
+ 
+-	if (use_dma && len >= mtd->oobsize)
++	if (use_dma && len > mtd->oobsize)
++		/* only use DMA for bigger than oob size: better performances */
+ 		if (atmel_nand_dma_op(mtd, (void *)buf, len, 0) == 0)
+ 			return;
+ 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.3
