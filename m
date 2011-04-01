@@ -1,26 +1,29 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5gWy-0003HU-FL
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 15:45:01 +0000
-Received: by eyh6 with SMTP id 6so1204355eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 01 Apr 2011 08:44:58 -0700 (PDT)
-Subject: Re: [PATCH 0/2] do not select KALLSYMS_ALL
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Paulo Marques <pmarques@grupopie.com>
-In-Reply-To: <4D95F092.4080604@grupopie.com>
-References: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>
-	<4D948D52.4040708@grupopie.com>  <1301669776.2789.92.camel@localhost>
-	<1301670104.2789.94.camel@localhost>  <4D95F092.4080604@grupopie.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Apr 2011 18:42:29 +0300
-Message-ID: <1301672549.2789.107.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	MTD list <linux-mtd@lists.infradead.org>,
-	lkml <linux-kernel@vger.kernel.org>
-Reply-To: dedekind1@gmail.com
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5gZQ-0003KD-A4
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 15:47:33 +0000
+Date: Fri, 1 Apr 2011 17:46:48 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH] Newly erased page read workaround
+Message-ID: <20110401154648.GA21475@parrot.com>
+References: <1301640710.2789.11.camel@localhost> <4D958DC2.5000607@st.com>
+	<1301647180.2789.35.camel@localhost> <4D9595AB.1050604@st.com>
+	<20110401121447.GA19151@parrot.com>
+	<1301663081.2789.65.camel@localhost>
+	<20110401140429.GB19151@parrot.com>
+	<1301667361.2789.84.camel@localhost>
+	<20110401144906.GC19151@parrot.com>
+	<Pine.LNX.4.64.1104011653430.18181@lnxricardw.se.axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1104011653430.18181@lnxricardw.se.axis.com>
+Cc: Vipin Kumar <vipin.kumar@st.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Viresh KUMAR <viresh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,45 +33,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-04-01 at 16:34 +0100, Paulo Marques wrote:
-> Artem Bityutskiy wrote:
-> > On Fri, 2011-04-01 at 17:56 +0300, Artem Bityutskiy wrote:
-> >> Well, ok, I've measured how much is this "a lot". On an embedded arm
-> >> platform this makes the kernel only 1.5% larger. 
-> > 
-> > But in absolute numbers this is 70KiB in my case, which is indeed
-> > considerable amount. So, I agree that it makes sense to keep this as a
-> > separate option.
+On Fri, Apr 01, 2011 at 03:58:47PM +0100, Ricard Wanderlof wrote:
 > 
-> Yes, and this depends a lot on the kernel configuration options you've
-> selected (and that 1.5% of the kernel size, might be 50%~100% of the
-> kallsyms table).
+> On Fri, 1 Apr 2011, Ivan Djelic wrote:
 > 
-> IIRC, I had configurations where the KALLSYMS_ALL option was increasing
-> the kallsyms table from something like 150kB to above 500kB (before
-> compression). This was a long time ago though and I can't say exactly
-> what was the configuration that made this happen.
+> >> I'm curious, if the OOB area is so unreliable, how can we trust it to
+> >> store our ECC? We need a mini-ECC for the ECC then?
+> >
+> > The oob area is no different from the data area (same technology).
+> > Fortunately, Hamming and BCH codes (and usual ECC codes in general) actually
+> > have built-in robustness to corruption.
+> 
+> At least with Hamming, when the ECC has been calculated, if it differs 
+> from the ECC read from the oob, and the difference is just a single bit, 
+> it is assumed that the ECC stored in the oob was subjected to a bitflip, 
+> and the data is in fact ok. (A long time ago there was a bug in this in 
+> mtd, so that a (single) bit flip in the ECC bytes was flagged as an ECC 
+> failure).
 
-Yes, thanks, I agree that having 2 separate options is OK.
+Exactly, because a single bitflip in data results in a 12-bit flip in a Hamming
+24-bit code. Therefore you can easily distinguish a single bitflip in data
+(12 bits change) from a single bitflip in the ECC code (1 bit change).
 
-> As for the CONFIG_KALLSYMS_EXTRA_PASS, I think the original idea (it was
-> not mine) was that it should be off by default and then the user would
-> need to turn it on when something went wrong.
+> I don't know how BCH (and other multiple-error-bit algorithms) deals with 
+> this though. Does it assume that there will be at most one bitflip within 
+> the ECC data (which is much smaller than the bytes covered by the ECC), or 
+> does it accept multiple bit errors also in the ECC data? One would assume 
+> that it would start to get difficult to distinguish multiple bit errors in 
+> the ECC data with valid ECC indicating bit errors in the data, but perhaps 
+> this isn't so thanks to the algorithm used?
 
-Yes, but my point is that this feature is about the build and it does
-not affect run-time, so it should not be in Kconfig.
+With BCH and Reed-Solomon codes, data bytes and ecc bytes form a single
+codeword. This whole codeword can be corrected, not just the data part.
 
-> With an automatic makefile mechanism, the problem would go unnoticed and
-> it just wouldn't be fixed, increasing the kernel compile time for
-> everyone who hits the same troublesome configuration.
+Think of codewords as points in a space of binary words. In this space of
+binary words, distance is measured as the number of differing bits between two
+words.
 
-Yes, the build system may print a message:
+A codeword has a remarkable property: it is distant from other codewords by at
+least 2t+1 bits. You program the codeword to flash, and later read it back as a
+(potentially) corrupted binary word. If you assume that this binary word is
+distant from at most t bits from the original codeword (i.e. no more than t
+bitflips occured in flash), then you can retrieve the original codeword (it is
+the closest to your binary word).
 
-Your symbols table is screwed, this is a bug, report about it. As a
-temporary workaround use "make KALLSYMS_EXTRA_PASS=1"
+The whole point of BCH (or RS) codes it to build such a codeword from the input
+data, by adding the right ECC bits.
 
-Or something like that.
+BR,
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Ivan
