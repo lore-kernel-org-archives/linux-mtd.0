@@ -1,20 +1,21 @@
-Message-ID: <4D955662.6010309@freescale.com>
-Date: Fri, 1 Apr 2011 12:36:50 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from eu1sys200aog107.obsmtp.com ([207.126.144.123])
+	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5Xqd-00027K-6M
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 06:28:44 +0000
+Message-ID: <4D95708A.7080204@st.com>
+Date: Fri, 1 Apr 2011 11:58:26 +0530
+From: Vipin Kumar <vipin.kumar@st.com>
 MIME-Version: 1.0
-To: Shawn Guo <shawn.guo@freescale.com>
-Subject: Re: [PATCH V3 2/6] dmaengine: add interrupt check for GPMI controller
-References: <19858.62649.218523.984252@ipc1.ka-ro>
-	<1301554968-29066-1-git-send-email-b32955@freescale.com>
-	<19860.13566.651111.241538@ipc1.ka-ro>
-	<4D94403F.6000000@freescale.com>
-	<19860.16442.199644.984424@ipc1.ka-ro>
-	<4D9444A6.2060109@freescale.com>
-	<20110401034730.GE25866@S2100-06.ap.freescale.net>
-In-Reply-To: <20110401034730.GE25866@S2100-06.ap.freescale.net>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
+To: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
+Subject: Re: [PATCH] Newly erased page read workaround
+References: <c7baa4a77775b54f2ef8450d8d1f44d1dc011b41.1298527669.git.viresh.kumar@st.com>
+	<1301579475.2828.82.camel@localhost>
+In-Reply-To: <1301579475.2828.82.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Viresh KUMAR <viresh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +25,77 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi:
-> On Thu, Mar 31, 2011 at 05:08:54PM +0800, Huang Shijie wrote:
-> [...]
->>>>> You should make the distinction based on the platform_id, which would
->>>>> save you the ugly ifdef's and cpu_is_... macros.
->>>>>
->>>>>
->>>> This in the DMA driver.
->>>> Do you want me to change the DMA driver to add the platform_id?
->>>> The DMA driver has already used the cpu_is_xx() macros.
->>>>
->>> The mxs-dma driver is already using platform ids!
->>>
->>>
->> Do you mean the mxd_dma_type[] ?
->>
->> How can i distinction the imx23 and imx28 with it ?
->> It seems can not be used to do the work.
->>
-> You can drop the dmaengine patch from your gpmi series.  I will find
-> some time to fix this together with removing cpu_is_xx() and inclusion
-> of mxs.h, to get it prepared for i.mx50 aphb-dma support.
->
-ok, thanks.
+On 3/31/2011 7:21 PM, Artem Bityutskiy wrote:
+> Hi,
+> 
 
-Huang Shijie
+Hello Artem,
+
+> sorry for late reply, was too busy and also missed your patch somehow.
+> 
+> On Thu, 2011-02-24 at 11:40 +0530, Viresh Kumar wrote:
+>> From: Vipin Kumar <vipin.kumar@st.com>
+>>
+>> A newly erased page contains ff in data as well as spare area. While reading an
+>> erased page, the read out ecc from spare area does not match the ecc generated
+>> by fsmc ecc hardware accelarator. This is because ecc of data ff ff is not ff
+>> ff. This leads to errors when jffs2 fs erases and reads back the pages to
+>> ensure consistency.
+>>
+>> This patch adds a software workaround to ensure that the ecc check is not
+>> performed for erased pages. An erased page is checked by checking data as ff ff.
+>>
+>> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+>> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+>> Acked-by: Linus Walleij <linus.walleij@stericsson.com>
+> 
+> ...
+> 
+>> +		/*
+>> +		 * This is a temporary erase check. A newly erased page read
+>> +		 * would result in an ecc error because the oob data is also
+>> +		 * erased to FF and the calculated ecc for an FF data is not
+>> +		 * FF..FF.
+>> +		 * This is a workaround to skip performing correction in case
+>> +		 * data is FF..FF
+>> +		 */
+>> +		for (k = 0; k < eccsize; k++) {
+>> +			if (*(p + k) != 0xff)
+>> +				break;
+>> +		}
+>> +
+> 
+> So eccsize is 512, and you are going to compare 512 bytes on every read?
+> Isn't it a very bad and wasteful solution? May be you could invent
+> something less straight-forward but more optimal?
+> 
+> Let's suppose ECC corresponding to all 0xFFs is P. May be you could do
+> this wasteful check only if ECC == P, not all the time?
+> 
+
+Basically, the hardware only reports the flipped bit offset and not the actual ecc 
+at the time of reading. It reports ecc only at the time of writing. So, comparing 
+ECCs is not a possibility while reading.
+
+The other solution can be to write P into OOB every time a page is erased. In that 
+case we put a hook in erase. But since the read implementation was anyway specific 
+for fsmc bch ecc4 scheme, this implementation was more convinient...
+
+> Also, Ivan pointed you the right thing - you might have bit-flips on an
+> erased eraseblock. If not on freshly, then on an erasblock which was
+> erased and then not used for long time. If this is not of your concern,
+
+In that case an ecc error would be reported since the ecc wont match the stored 
+ecc i.e FFFF and the driver would mark it as a normal corrupted page
+
+> then at least write this in the comments and tell that you know about
+> this issue but for reasons X and Y you do not handle them.
+> 
+
+OK. I would add this in the patch comments
+
+> Thanks!
+> 
+
+Regards
+Vipin
