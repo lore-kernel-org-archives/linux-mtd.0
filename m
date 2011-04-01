@@ -1,23 +1,22 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from [2001:470:b:3e:219:66ff:fee3:2c84] (helo=silka.with-linux.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5Zvj-00032v-C5
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 08:42:08 +0000
-Subject: Re: [PATCH] Newly erased page read workaround
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Vipin Kumar <vipin.kumar@st.com>
-In-Reply-To: <4D958DC2.5000607@st.com>
-References: <c7baa4a77775b54f2ef8450d8d1f44d1dc011b41.1298527669.git.viresh.kumar@st.com>
-	<1301579475.2828.82.camel@localhost> <4D95708A.7080204@st.com>
-	<1301640710.2789.11.camel@localhost>  <4D958DC2.5000607@st.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Apr 2011 11:39:40 +0300
-Message-ID: <1301647180.2789.35.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Viresh KUMAR <viresh.kumar@st.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
-Reply-To: Artem.Bityutskiy@nokia.com
+	id 1Q5aG4-0004EQ-QE
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 09:03:25 +0000
+Received: from [IPv6:2001:470:b:3e:d69a:20ff:fe56:76db] (comer.internal
+	[IPv6:2001:470:b:3e:d69a:20ff:fe56:76db])
+	by silka.with-linux.com (8.14.4/8.14.4) with ESMTP id p3192o4s002254
+	for <linux-mtd@lists.infradead.org>; Fri, 1 Apr 2011 03:02:50 -0600
+Message-ID: <4D9594B9.1020402@silka.with-linux.com>
+Date: Fri, 01 Apr 2011 03:02:49 -0600
+From: Kelly Anderson <kelly@silka.with-linux.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: Mtd alignment bug affecting 1.4.X including current git
+References: <4D9091B1.80002@silka.with-linux.com>
+	<1301645767.2789.25.camel@localhost>
+In-Reply-To: <1301645767.2789.25.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +26,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-04-01 at 14:03 +0530, Vipin Kumar wrote:
-> >>> Also, Ivan pointed you the right thing - you might have bit-flips
-> on an
-> >>> erased eraseblock. If not on freshly, then on an erasblock which
-> was
-> >>> erased and then not used for long time. If this is not of your
-> concern,
-> >>
-> >> In that case an ecc error would be reported since the ecc wont
-> match the stored 
-> >> ecc i.e FFFF and the driver would mark it as a normal corrupted
-> page
-> > 
-> > I'm confused. So you erased eraseblock A. Everything there contains
-> > 0xFFs, including the OOB area.
-> > 
-> > Now you have one of the modern lashes. You gen bit-flips in the
-> page.
-> > Say, a couple of bits flip. You read this page. You compare the
-> contents
-> > of the page with 0xFF and find out that the contends in not all
-> 0xFFs.
-> > What do you do then?
-> > 
-> 
-> Then, the normal driver takes over and it reports an error because
-> the 
-> number of errors in the page are beyond 8 bits (maximum the FSMC ecc 
-> logic can correct).
+On 04/01/11 02:16, Artem Bityutskiy wrote:
+> On Mon, 2011-03-28 at 07:48 -0600, Kelly Anderson wrote:
+>> If you create a patch I'll test it for you.
+> Kelly, would you please test the following patch:
 
-Why 8? It may be just 1 single bit-flip. Just one bits becomes 0 instead
-of 1.
+Seems to work fine.
 
->  Effectively speaking, the read page returns an error 
-> indicating that the page could not be read properly
-
-But why? It can be read properly. If this is just 1 wrong bit, you
-should be able to correct it. And as Ivan indicated, modern flashes are
-so crappy that 1 bit-flip on erased eraseblock is just normal there.
-
-> Ideally, any filesystem would mark it as a bad block 
-
-That's the point - no. This is normal on modern flashes.
-
-I think one solution could be that you make your check more
-sophisticated. You check for 0xFFs, if this is not true, you see is this
-"almost all 0xFFs" and count amount of non-0xFF bits. If the count is,
-say, 2, you assume this page contains all 0xFFs plus 2 bit-flips. But
-I'm not sure it would work.
-
-Anyway, If you do not care about such bit-flips for your SoC - fine. I
-just wanted you to understand and accept the issue and write about it in
-the comment. And I also wanted you to _not_ do expensive 0xFF comparison
-every time - but it seems you accepted this :-)
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> From: Artem Bityutskiy<Artem.Bityutskiy@nokia.com>
+> Subject: [PATCH] libmtd: fix OOB read and write interface
+>
+> When reading and writing OOB we specify the address as absolute
+> offset from the beginning of the MTD device. This offset is
+> basically an absolute page offset plus the OOB offset. And it does
+> not have to be aligned to the min. I/O unit size (NAND page size).
+>
+> So fix the 'do_oob_op()' function and remove incorrect checking
+> that the offset is page-aligned. This check leads to the following
+> errors:
+>
+> libmtd: error!: unaligned address 2, mtd0 page size is 2048
+>
+> But obviously, the intent was to write to offset 2 of the OOB area
+> of the very first NAND page.
+>
+> Instead of that incorrect check, we should check that the OOB offset
+> we write to is within the OOB size and the length is withing the OOB
+> size. This patch adds such check.
+>
+> Reported-by: Kelly Anderson<kelly@silka.with-linux.com>
+> Signed-off-by: Artem Bityutskiy<Artem.Bityutskiy@nokia.com>
+> ---
+>   lib/libmtd.c |   12 ++++++++----
+>   1 files changed, 8 insertions(+), 4 deletions(-)
+>
+> diff --git a/lib/libmtd.c b/lib/libmtd.c
+> index e0c0934..e313fc3 100644
+> --- a/lib/libmtd.c
+> +++ b/lib/libmtd.c
+> @@ -1083,6 +1083,7 @@ int do_oob_op(libmtd_t desc, const struct mtd_dev_info *mtd, int fd,
+>   	struct mtd_oob_buf64 oob64;
+>   	struct mtd_oob_buf oob;
+>   	unsigned long long max_offs;
+> +	unsigned int oob_offs;
+>   	const char *cmd64_str, *cmd_str;
+>   	struct libmtd *lib = (struct libmtd *)desc;
+>
+> @@ -1102,10 +1103,13 @@ int do_oob_op(libmtd_t desc, const struct mtd_dev_info *mtd, int fd,
+>   		errno = EINVAL;
+>   		return -1;
+>   	}
+> -	if (start % mtd->min_io_size) {
+> -		errmsg("unaligned address %llu, mtd%d page size is %d",
+> -		       (unsigned long long)start, mtd->mtd_num,
+> -		       mtd->min_io_size);
+> +
+> +	oob_offs = start&  (mtd->min_io_size - 1);
+> +	if (oob_offs + length>  mtd->oob_size) {
+> +		errmsg("Cannot write %llu OOB bytes to address %llu "
+> +		       "(OOB offset %u) - mtd%d OOB size is only %d bytes",
+> +		       (unsigned long long)length, (unsigned long long)start,
+> +		       oob_offs, mtd->mtd_num,  mtd->oob_size);
+>   		errno = EINVAL;
+>   		return -1;
+>   	}
