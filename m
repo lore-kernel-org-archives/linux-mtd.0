@@ -1,23 +1,22 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5ZnB-0002wB-Gh
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 08:33:18 +0000
-Received: by wyb28 with SMTP id 28so3343255wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 01 Apr 2011 01:33:16 -0700 (PDT)
-Subject: Re: [PATCH] mtdswap: fix printk format warning
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Randy Dunlap <randy.dunlap@oracle.com>
-In-Reply-To: <20110329123523.74735727.randy.dunlap@oracle.com>
-References: <20110329131133.c74af94d.sfr@canb.auug.org.au>
-	<20110329123523.74735727.randy.dunlap@oracle.com>
+Received: from eu1sys200aog112.obsmtp.com ([207.126.144.133])
+	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q5ZnD-0002w9-5g
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 08:33:20 +0000
+Message-ID: <4D958DC2.5000607@st.com>
+Date: Fri, 1 Apr 2011 14:03:06 +0530
+From: Vipin Kumar <vipin.kumar@st.com>
+MIME-Version: 1.0
+To: "Artem.Bityutskiy@nokia.com" <Artem.Bityutskiy@nokia.com>
+Subject: Re: [PATCH] Newly erased page read workaround
+References: <c7baa4a77775b54f2ef8450d8d1f44d1dc011b41.1298527669.git.viresh.kumar@st.com>	
+	<1301579475.2828.82.camel@localhost> <4D95708A.7080204@st.com>
+	<1301640710.2789.11.camel@localhost>
+In-Reply-To: <1301640710.2789.11.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 01 Apr 2011 11:30:53 +0300
-Message-ID: <1301646653.2789.29.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: Viresh KUMAR <viresh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +26,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-03-29 at 12:35 -0700, Randy Dunlap wrote:
-> From: Randy Dunlap <randy.dunlap@oracle.com>
-> 
-> The number is actually a sizeof(), so using %zu for it builds
-> cleanly on 32-bit or 64-bit.
-> 
-> drivers/mtd/mtdswap.c:1456: warning: format '%lu' expects type 'long unsigned int', but argument 4 has type 'unsigned int'
-> 
-> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+On 4/1/2011 12:21 PM, Artem Bityutskiy wrote:
+> On Fri, 2011-04-01 at 11:58 +0530, Vipin Kumar wrote:
+>> On 3/31/2011 7:21 PM, Artem Bityutskiy wrote:
+>>> Hi,
+>>>
+>>
+>> Hello Artem,
+>>
 
-Pushed to l2-mtd-2.6.git tree, thanks.
+Hello Artem,
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+>>> sorry for late reply, was too busy and also missed your patch somehow.
+>>>
+>>> On Thu, 2011-02-24 at 11:40 +0530, Viresh Kumar wrote:
+>>>> From: Vipin Kumar <vipin.kumar@st.com>
+>>>>
+>>>> A newly erased page contains ff in data as well as spare area. While reading an
+>>>> erased page, the read out ecc from spare area does not match the ecc generated
+>>>> by fsmc ecc hardware accelarator. This is because ecc of data ff ff is not ff
+>>>> ff. This leads to errors when jffs2 fs erases and reads back the pages to
+>>>> ensure consistency.
+>>>>
+>>>> This patch adds a software workaround to ensure that the ecc check is not
+>>>> performed for erased pages. An erased page is checked by checking data as ff ff.
+>>>>
+>>>> Signed-off-by: Vipin Kumar <vipin.kumar@st.com>
+>>>> Signed-off-by: Viresh Kumar <viresh.kumar@st.com>
+>>>> Acked-by: Linus Walleij <linus.walleij@stericsson.com>
+>>>
+>>> ...
+>>>
+>>>> +		/*
+>>>> +		 * This is a temporary erase check. A newly erased page read
+>>>> +		 * would result in an ecc error because the oob data is also
+>>>> +		 * erased to FF and the calculated ecc for an FF data is not
+>>>> +		 * FF..FF.
+>>>> +		 * This is a workaround to skip performing correction in case
+>>>> +		 * data is FF..FF
+>>>> +		 */
+>>>> +		for (k = 0; k < eccsize; k++) {
+>>>> +			if (*(p + k) != 0xff)
+>>>> +				break;
+>>>> +		}
+>>>> +
+>>>
+>>> So eccsize is 512, and you are going to compare 512 bytes on every read?
+>>> Isn't it a very bad and wasteful solution? May be you could invent
+>>> something less straight-forward but more optimal?
+>>>
+>>> Let's suppose ECC corresponding to all 0xFFs is P. May be you could do
+>>> this wasteful check only if ECC == P, not all the time?
+>>>
+>>
+>> Basically, the hardware only reports the flipped bit offset and not the actual ecc 
+>> at the time of reading. It reports ecc only at the time of writing. So, comparing 
+>> ECCs is not a possibility while reading.
+> 
+> Sorry, my suggestion was stupid.
+> 
+> But can you do like this?
+> 
+> 1. Read ECC.
+> 2. Compare it to all 0xFFs
+> 3. If all 0xFFs, then check the page contents against 0xFF.
+> 4. If not all 0xFFs, then this is not an erased page for sure, because
+> erased pages have to have all 0xFFs in OOB.
+> 
+
+Yes, OK
+
+>> The other solution can be to write P into OOB every time a page is erased. In that 
+>> case we put a hook in erase.
+> 
+> You cannot write anything to the ECC positions in OOB after erasure
+> because if you do this, how are you going to store real ECC in the
+> subsequent writes?
+> 
+
+Yes, you are right...This is not a feasible solution
+
+>>> Also, Ivan pointed you the right thing - you might have bit-flips on an
+>>> erased eraseblock. If not on freshly, then on an erasblock which was
+>>> erased and then not used for long time. If this is not of your concern,
+>>
+>> In that case an ecc error would be reported since the ecc wont match the stored 
+>> ecc i.e FFFF and the driver would mark it as a normal corrupted page
+> 
+> I'm confused. So you erased eraseblock A. Everything there contains
+> 0xFFs, including the OOB area.
+> 
+> Now you have one of the modern lashes. You gen bit-flips in the page.
+> Say, a couple of bits flip. You read this page. You compare the contents
+> of the page with 0xFF and find out that the contends in not all 0xFFs.
+> What do you do then?
+> 
+
+Then, the normal driver takes over and it reports an error because the 
+number of errors in the page are beyond 8 bits (maximum the FSMC ecc 
+logic can correct). Effectively speaking, the read page returns an error 
+indicating that the page could not be read properly
+
+Ideally, any filesystem would mark it as a bad block
+
+Regards
+Vipin
