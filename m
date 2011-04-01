@@ -1,25 +1,26 @@
-Received: from bipbip.grupopie.com ([195.23.16.24])
+Received: from co202.xi-lite.net ([149.6.83.202])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5gga-0003PH-IZ
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 15:54:57 +0000
-Message-ID: <4D95F54D.8020802@grupopie.com>
-Date: Fri, 01 Apr 2011 16:54:53 +0100
-From: Paulo Marques <pmarques@grupopie.com>
+	id 1Q5gvr-0003bD-1J
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 16:10:44 +0000
+Date: Fri, 1 Apr 2011 18:09:40 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: Re: [PATCH] Newly erased page read workaround
+Message-ID: <20110401160940.GB21475@parrot.com>
+References: <1301579475.2828.82.camel@localhost> <4D95708A.7080204@st.com>
+	<1301640710.2789.11.camel@localhost> <4D958DC2.5000607@st.com>
+	<1301647180.2789.35.camel@localhost> <4D9595AB.1050604@st.com>
+	<20110401121447.GA19151@parrot.com>
+	<1301663081.2789.65.camel@localhost>
+	<20110401140429.GB19151@parrot.com>
+	<1301667361.2789.84.camel@localhost>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 0/2] do not select KALLSYMS_ALL
-References: <1301474416-8202-1-git-send-email-dedekind1@gmail.com>	
-	<4D948D52.4040708@grupopie.com>
-	<1301669776.2789.92.camel@localhost>	
-	<1301670104.2789.94.camel@localhost>
-	<4D95F092.4080604@grupopie.com>
-	<1301672549.2789.107.camel@localhost>
-In-Reply-To: <1301672549.2789.107.camel@localhost>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	MTD list <linux-mtd@lists.infradead.org>,
-	lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1301667361.2789.84.camel@localhost>
+Cc: Vipin Kumar <vipin.kumar@st.com>, Viresh KUMAR <viresh.kumar@st.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"David.Woodhouse@intel.com" <David.Woodhouse@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,24 +30,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Fri, 2011-04-01 at 16:34 +0100, Paulo Marques wrote:
->>[...]
->> With an automatic makefile mechanism, the problem would go unnoticed and
->> it just wouldn't be fixed, increasing the kernel compile time for
->> everyone who hits the same troublesome configuration.
+On Fri, Apr 01, 2011 at 03:16:01PM +0100, Artem Bityutskiy wrote:
+> On Fri, 2011-04-01 at 16:04 +0200, Ivan Djelic wrote:
+> > On Fri, Apr 01, 2011 at 02:04:41PM +0100, Artem Bityutskiy wrote:
+> > > On Fri, 2011-04-01 at 14:14 +0200, Ivan Djelic wrote:
+> > > > Did you consider this idea: if you have an unused byte available in oob,
+> > > > program it to 0x00 when a page is programmed.
+> > > 
+> > > I guess this depends on the the controller, but probably this could mean
+> > > a substantial write  overhead, not?
+> > 
+> > Sorry, my explanation was probably not very clear.
+> > 
+> > When you program a page, you send data and oob contents to your NAND controller.
+> > The controller may modify oob contents to add ECC bytes, in a more or less
+> > automatic way, then it will physically program the page.
 > 
-> Yes, the build system may print a message:
-> 
-> Your symbols table is screwed, this is a bug, report about it. As a
-> temporary workaround use "make KALLSYMS_EXTRA_PASS=1"
-> 
-> Or something like that.
+> Right, I just assumed that some controllers allow you to send only data,
+> and programming OOB would be a separate operation. But if this is not
+> the case in ST's HW - then this sounds like a very good approach!
 
-Yes, I think that would work too, and it would even prevent the option
-from being on for no good reason.
+I had a quick look at fsmc_nand.c, and I don't see anything in the controller
+preventing this approach. The driver provides an IO_ADDR_W address for sending
+data to the NAND device, and lets mtd upper layers do the job. By implementing
+the page writing function in the driver, one could clear the marker in the oob
+array before programming (and check it in the page reading function).
 
--- 
-Paulo Marques - www.grupopie.com
+I would be very surprised if the controller did not allow control over oob
+contents other than ecc bytes. By doing so, it would prevent things like
+software bad block marking. But sometimes hardware can be very surprising :)
 
-"Nostalgia isn't what it used to be."
+BR,
+
+Ivan
