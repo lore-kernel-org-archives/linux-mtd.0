@@ -1,24 +1,23 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q5gFK-00033J-Ip
-	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 15:26:47 +0000
-Received: by pvh11 with SMTP id 11so773105pvh.36
+	id 1Q5gMe-00037x-Ui
+	for linux-mtd@lists.infradead.org; Fri, 01 Apr 2011 15:34:21 +0000
+Received: by ewy3 with SMTP id 3so1205256ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 01 Apr 2011 08:26:44 -0700 (PDT)
-Date: Fri, 01 Apr 2011 08:26:41 -0700
-Subject: [RFC] Removing FIXMEs in mtdchar.c: mtd_{read,write} (was Re:
-	Recommendations on System Tuning for JFFS2/MTD 128 KiB Block Page
-	Allocation Failures)
-From: Grant Erickson <marathon96@gmail.com>
-To: <linux-mtd@lists.infradead.org>
-Message-ID: <C9BB3CC1.272A0%marathon96@gmail.com>
-In-Reply-To: <C9A64151.264E1%marathon96@gmail.com>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+	Fri, 01 Apr 2011 08:34:19 -0700 (PDT)
+Subject: Re: UBI memory usage on large page nand
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Nicholas <ciliwung36@gmail.com>
+In-Reply-To: <AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
+References: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
+	<AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 01 Apr 2011 18:31:50 +0300
+Message-ID: <1301671910.2789.98.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,84 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/16/11 10:28 AM, Grant Erickson wrote:
-> I've an OMAP3 ARM-based embedded system with 256 MiB of NAND flash and 64 MiB
-> of RAM on Linux 2.6.32 in which both sys_mount (via mount) and sys_read (via
-> fw_setenv) occasionally fail with "page allocation failure. order:5,
-> mode:0xd0".
+Hi,
+
+I agree UBI/UBIFS uses more memory than it could. There is some room for
+optimizations.
+
+On Thu, 2011-03-31 at 11:07 +0800, Nicholas wrote:
+> Hi there,
 > 
-> In the analysis I've done so far, sys_mount funnels down to jffs2_scan_medium
-> which eventually calls kmalloc with a size of 128 KiB and flag GFP_KERNEL:
+> I've a short of memory usage issue while using large page size of nand flash.
+> Before, i was using 2KB page size of nand flash, i found UBI/UBIFS memory
+> consumption on normal zone are :
 > 
->     sw/tps/linux/linux/fs/jffs2/scan.c:
->     ...
->     120         /* Respect kmalloc limitations */
->     121         if (buf_size > 128*1024)
->     122             buf_size = 128*1024;
->     123 
->     124         D1(printk(KERN_DEBUG "Allocating readbuf of %d bytes\n",
-> buf_size));
->     125         flashbuf = kmalloc(buf_size, GFP_KERNEL);
->     126         if (!flashbuf)
->     127             return -ENOMEM;
->     128     }
->     ...
+> 7 0xC0180858:   1024K, ubi_attach_mtd_de,
+> 8 0xC0180834:   1024K, ubi_attach_mtd_de,
+> 9 0xC00ED300:   1008K,      ubifs_get_sb,
+> 10 0xC00ED31C:   1008K,      ubifs_get_sb,
+> 11 0xC00FE7EC:   1008K,    ubifs_lpt_init,
+> 11 0xC00F95AC:   1008K, ubifs_mount_orpha,
 > 
-> The sys_read case winds down to mtd_read which eventually calls kmalloc with a
-> size of 128 KiB (to cover a single NAND erase blcok) and flag GFP_KERNEL:
+> Then, i'm using 8KB page size of nand flash, and found the result as below :
+> 4 0xC0180858:   4096K, ubi_attach_mtd_de,
+> 5 0xC0180834:   4096K, ubi_attach_mtd_de,
+> 6 0xC00FE7EC:   4064K,    ubifs_lpt_init,
+> 7 0xC00ED31C:   4064K,      ubifs_get_sb,
+> 8 0xC00F95AC:   4064K, ubifs_mount_orpha,
+> 9 0xC00ED300:   4064K,      ubifs_get_sb,
 > 
->     sw/tps/linux/linux/drivers/mtd/mtdchar:
->     ...
->     161     if (count > MAX_KMALLOC_SIZE)
->     162         kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
->     163     else
->     164         kbuf=kmalloc(count, GFP_KERNEL);
->     ...
+> My environment contains 2 mtd partitions for UBI.
 > 
-> Ostensibly this occurs because of memory fragmentation where any of the lower
-> order blocks are are available must be non-contiguous.
-> 
-> ...
->
-> The system is currently configured with the SLAB allocator. Has anyone found
-> better fragmentation and low-memory performance with the default SLUB or
-> embedded SLOB allocators? How about tweaking:
-> 
->     vm.min_free_kbytes
-> 
-> Anyone met with success there?
+> Before, it took 6MB of memory consumption and now it takes 24MB.
+> Do you have any suggestion how to reduce the memory consumption since dram size
+> is pretty limited for other usage.
 
-For anyone following this thread, FWIW, I was able to reduce statistically
-but not eliminate the likelihood of this issue occurring with set in
-sysctl.conf:
+I think this is mainly because your eraseblock size became larger. UBI
+and UBIFS allocate many buffers of eraseblock size for various purposes.
+The buffers are often allocated once on attach/mount and released only
+on detach/unmount. All of these buffers are allocated with vmalloc()
+call, so you can find them by grepping.
 
-    vm.min_free_kybtes = 2048
+The simplest thing you can try is to allocate these buffers when they
+are actually needed, and then free them when they are not needed. This
+should help.
 
-However, this problem is all about fragmentation, so a solution such as this
-will never really guarantee that this problem goes away entirely.
-
-In the meantime, I've been contemplating a more permanent solution in
-mtdchar.c:mtd_{read,write} and, before pressing ahead with either, wanted to
-get some feedback on which might have upstream integration support.
-
-1) Simpler but Use More Memory
-
-This approach keeps the code, more or less, as is; however, rather than
-failing outright, it continues to attempt to allocate smaller and smaller
-blocks (dividing by two each time) until either it succeeds or hits the
-minimum (either count or PAGE_SIZE).
-
-2) More Complex but Use Less Memory
-
-This approach seems to be what was intimated in the "FIXME" comments from
-2005 found in this code and maps in and pins user pages for the read or
-write request using get_user_pages. Where possible, adjacent pages are
-grouped together into iovec extents and then mtd_{read,write} are called in
-a loop for each iovec covering that extent of mapped pages in a manner
-similar to {read,write}v having been called from user space.
-
-Comments welcomed.
-
-Regards,
-
-Grant
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
