@@ -1,13 +1,22 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
+Received: from mail-iy0-f177.google.com ([209.85.210.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q6l8l-0003bo-AU
-	for linux-mtd@lists.infradead.org; Mon, 04 Apr 2011 14:52:31 +0000
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBIFS: fix debugging failure in dbg_check_space_info
-Date: Mon,  4 Apr 2011 17:55:29 +0300
-Message-Id: <1301928929-8429-1-git-send-email-dedekind1@gmail.com>
-Cc: Caizhiyong <caizhiyong@huawei.com>
+	id 1Q6mHM-0004ML-Gv
+	for linux-mtd@lists.infradead.org; Mon, 04 Apr 2011 16:05:28 +0000
+Received: by iyb39 with SMTP id 39so7146518iyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 04 Apr 2011 09:05:23 -0700 (PDT)
+Date: Mon, 04 Apr 2011 09:05:16 -0700
+Subject: Re: [PATCH] MTD: Retry Read/Write Transfer Buffer Allocations
+From: Grant Erickson <marathon96@gmail.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Message-ID: <C9BF3A4C.27686%marathon96@gmail.com>
+In-Reply-To: <1301902050.2760.23.camel@localhost>
+Mime-version: 1.0
+Content-type: text/plain;
+	charset="US-ASCII"
+Content-transfer-encoding: 7bit
+Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org,
+	linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,92 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On 4/4/11 12:27 AM, Artem Bityutskiy wrote:
+> [CCing LKML in a hope to get good suggestions]
+> [The patch: 
+> http://lists.infradead.org/pipermail/linux-mtd/2011-April/034645.html]
+> 
+> Hi Grant,
+> 
+> Just in case, Jarkko was trying to address the same issue recently:
+> 
+> http://lists.infradead.org/pipermail/linux-mtd/2011-March/034416.html
+> 
+> This should be a bit more complex I think. First of all, I think it is
+> better to make this a separate function. Second, you should make sure
+> the system does not print scary warnings when the allocation fails - use
+> __GFP_NOWARN flag, just like Jarkko did.
+> 
+> An third, as I wrote in my answer to Jarkko, allocating large contiguous
+> buffers is bad for performance: if the system memory is fragmented and
+> there is no such large contiguous areas, the kernel will start writing
+> back dirty FS data, killing FS caches, shrinking caches and buggers,
+> probably even swapping out applications. We do not want MTD to cause
+> this at all.
+> 
+> Probably we can mitigate this with kmalloc flags. Now, I'm not sure what
+> flags are the optimal, but I'd do:
+> 
+> __GFP_NOWARN | __GFP_WAIT | __GFP_NORETRY
+> 
+> May be even __GFP_WAIT flag could be kicked out.
 
-This patch fixes a debugging failure with which looks like this:
-UBIFS error (pid 32313): dbg_check_space_info: free space changed from 6019344 to 6022654
+Artem:
 
-The reason for this failure is described in the comment this patch adds
-to the code. But in short - 'c->freeable_cnt' may be different before
-and after re-mounting, and this is normal. So the debugging code should
-make sure that free space calculations do not depend on 'c->freeable_cnt'.
+Thanks for the feedback and the link to Jarkko's very similar patch. Your
+suggestions will be incorporated into a subsequent patch.
 
-A similar issue has been reported here:
-http://lists.infradead.org/pipermail/linux-mtd/2011-April/034647.html
+For reference, I pursued a second uses-less-memory-but-is-more-complex
+approach that does get_user_pages, builds up a series of iovecs for the page
+extents. This worked well for all read cases I could test; however, for the
+write case, the approach required yet more refinement and overhead since the
+head and tail of the transfer need to be deblocked with read-modify-write
+due to the NOTALIGNED checks in nand_base.c:nand_do_write_ops. I am happy to
+share the work-in-progress with the list if anyone is interested.
 
-This patch should fix it.
+I propose a two-stage approach. This issue has been in the kernel for about
+six years. 
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- fs/ubifs/debug.c |   47 +++++++++++++++++++++++++++++++++++++++--------
- 1 files changed, 39 insertions(+), 8 deletions(-)
+Can we take a modified version of Jarkko's or my simpler fixes for the first
+pass and then iterate toward the get_user_pages scatter/gather approach
+later?
 
-diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
-index c04efa8..e5d81b4 100644
---- a/fs/ubifs/debug.c
-+++ b/fs/ubifs/debug.c
-@@ -972,12 +972,40 @@ void dbg_dump_index(struct ubifs_info *c)
- void dbg_save_space_info(struct ubifs_info *c)
- {
- 	struct ubifs_debug_info *d = c->dbg;
-+	int freeable_cnt;
- 
--	ubifs_get_lp_stats(c, &d->saved_lst);
-+ 	spin_lock(&c->space_lock);
-+ 	memcpy(&d->saved_lst, &c->lst, sizeof(struct ubifs_lp_stats));
- 
--	spin_lock(&c->space_lock);
-+	/*
-+	 * We use a dirty hack here and zero out @c->freeable_cnt, because it
-+	 * affects the free space calculations, and UBIFS might not know about
-+	 * all freeable eraseblocks. Indeed, we know about freeable eraseblocks
-+	 * only when we read their lprops, and we do this only lazily, upon the
-+	 * need. So at any given point of time @c->freeable_cnt might be not
-+	 * exactly accurate.
-+	 *
-+	 * Just one example about the issue we hit when we did not zero
-+	 * @c->freeable_cnt.
-+	 * 1. The file-system is mounted R/O, c->freeable_cnt is %0. We save the
-+	 *    amount of free space in @d->saved_free
-+	 * 2. We re-mount R/W, which makes UBIFS to read the "lsave"
-+	 *    information from flash, where we cache LEBs from various
-+	 *    categories ('ubifs_remount_fs()' -> 'ubifs_lpt_init()'
-+	 *    -> 'lpt_init_wr()' -> 'read_lsave()' -> 'ubifs_lpt_lookup()'
-+	 *    -> 'ubifs_get_pnode()' -> 'update_cats()'
-+	 *    -> 'ubifs_add_to_cat()').
-+	 * 3. Lsave contains a freeable eraseblock, and @c->freeable_cnt
-+	 *    becomes %1.
-+	 * 4. We calculate the amount of free space when the re-mount is
-+	 *    finished in 'dbg_check_space_info()' and it does not match
-+	 *    @d->saved_free.
-+	 */
-+	freeable_cnt = c->freeable_cnt;
-+	c->freeable_cnt = 0;
- 	d->saved_free = ubifs_get_free_space_nolock(c);
--	spin_unlock(&c->space_lock);
-+	c->freeable_cnt = freeable_cnt;
-+ 	spin_unlock(&c->space_lock);
- }
- 
- /**
-@@ -993,12 +1021,15 @@ int dbg_check_space_info(struct ubifs_info *c)
- {
- 	struct ubifs_debug_info *d = c->dbg;
- 	struct ubifs_lp_stats lst;
--	long long avail, free;
-+	long long free;
-+	int freeable_cnt;
- 
- 	spin_lock(&c->space_lock);
--	avail = ubifs_calc_available(c, c->min_idx_lebs);
-+	freeable_cnt = c->freeable_cnt;
-+	c->freeable_cnt = 0;
-+	free = ubifs_get_free_space_nolock(c);
-+	c->freeable_cnt = freeable_cnt;
- 	spin_unlock(&c->space_lock);
--	free = ubifs_get_free_space(c);
- 
- 	if (free != d->saved_free) {
- 		ubifs_err("free space changed from %lld to %lld",
--- 
-1.7.2.3
+Best,
+
+Grant
