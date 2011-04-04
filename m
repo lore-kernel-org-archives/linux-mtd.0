@@ -1,21 +1,25 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q6eEc-00087n-3E
-	for linux-mtd@lists.infradead.org; Mon, 04 Apr 2011 07:30:06 +0000
-Received: by ewy3 with SMTP id 3so1710082ewy.36
+	id 1Q6eMi-0008ES-P5
+	for linux-mtd@lists.infradead.org; Mon, 04 Apr 2011 07:38:25 +0000
+Received: by eyh6 with SMTP id 6so1707197eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 04 Apr 2011 00:30:00 -0700 (PDT)
-Subject: Re: [PATCH] MTD: Retry Read/Write Transfer Buffer Allocations
+	Mon, 04 Apr 2011 00:38:23 -0700 (PDT)
+Subject: Re: I meet a problem
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Grant Erickson <marathon96@gmail.com>
-In-Reply-To: <1301705049-15593-1-git-send-email-marathon96@gmail.com>
-References: <1301705049-15593-1-git-send-email-marathon96@gmail.com>
+To: Caizhiyong <caizhiyong@huawei.com>
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F02CDC9@SZXEML506-MBS.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F02CDC9@SZXEML506-MBS.china.huawei.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 04 Apr 2011 10:27:30 +0300
-Message-ID: <1301902050.2760.23.camel@localhost>
+Date: Mon, 04 Apr 2011 10:35:53 +0300
+Message-ID: <1301902553.2760.29.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel <linux-kernel@vger.kernel.org>
+Cc: "tony.taoyong@hisilicon" <tony.taoyong@hisilicon.huawei.com>,
+	Renxincun <renxincun@huawei.com>,
+	"Jiangzhonglin\(Jiangzhonglin\)" <jiangzhonglin@huawei.com>,
+	Quyaxin <quyaxin@huawei.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,123 +30,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[CCing LKML in a hope to get good suggestions]
-[The patch: http://lists.infradead.org/pipermail/linux-mtd/2011-April/034645.html]
+Hi,
 
-Hi Grant,
+On Sat, 2011-04-02 at 02:20 +0000, Caizhiyong wrote:
+> write disk 15091695 file 40023umount: tmpfs busy - remounted read-only
+> write disk 15131718 file 40076UBIFS error (pid 11300): dbg_check_space_info: free space changed from 424404213 to 424396165
 
-Just in case, Jarkko was trying to address the same issue recently:
+Yes, I also saw this recently. I will look at this as soon as I can, and
+will keep you posted. I think this is most probably false alarm and a
+bug in the debugging code itself. So for now just hack your UBIFS and
+disable this debugging check, e.g., like this:
 
-http://lists.infradead.org/pipermail/linux-mtd/2011-March/034416.html
-On Fri, 2011-04-01 at 17:44 -0700, Grant Erickson wrote:
-> When handling user space read or write requests via mtd_{read,write},
-> exponentially back off on the size of the requested kernel transfer
-> buffer until it succeeds or until the requested transfer buffer size
-> falls below the page size.
-> 
-> This helps ensure the operation can succeed under low-memory,
-> highly-fragmented situations albeit somewhat more slowly.
-> 
-> Signed-off-by: Grant Erickson <marathon96@gmail.com>
-> ---
->  drivers/mtd/mtdchar.c |   30 ++++++++++++++----------------
->  1 files changed, 14 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index 145b3d0d..d887b91 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -179,6 +179,7 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
->  	size_t total_retlen=0;
->  	int ret=0;
->  	int len;
-> +	size_t size;
->  	char *kbuf;
->  
->  	DEBUG(MTD_DEBUG_LEVEL0,"MTD_read\n");
-> @@ -192,20 +193,18 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
->  	/* FIXME: Use kiovec in 2.5 to lock down the user's buffers
->  	   and pass them directly to the MTD functions */
->  
-> -	if (count > MAX_KMALLOC_SIZE)
-> -		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
-> -	else
-> -		kbuf=kmalloc(count, GFP_KERNEL);
-> +	size = min_t(size_t, count, MAX_KMALLOC_SIZE);
-> +
-> +	do {
-> +		kbuf=kmalloc(size, GFP_KERNEL);
-> +	} while (!kbuf && ((size >>= 1) >= PAGE_SIZE));
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index c04efa8..1cc760b 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -995,6 +995,8 @@ int dbg_check_space_info(struct ubifs_info *c)
+        struct ubifs_lp_stats lst;
+        long long avail, free;
+ 
++       return 0; /* Temporary work-around hack */
++
+        spin_lock(&c->space_lock);
+        avail = ubifs_calc_available(c, c->min_idx_lebs);
+        spin_unlock(&c->space_lock);
 
-This should be a bit more complex I think. First of all, I think it is
-better to make this a separate function. Second, you should make sure
-the system does not print scary warnings when the allocation fails - use
-__GFP_NOWARN flag, just like Jarkko did.
 
-An third, as I wrote in my answer to Jarkko, allocating large contiguous
-buffers is bad for performance: if the system memory is fragmented and
-there is no such large contiguous areas, the kernel will start writing
-back dirty FS data, killing FS caches, shrinking caches and buggers,
-probably even swapping out applications. We do not want MTD to cause
-this at all.
+> UBIFS: saved lprops statistics dump
+> UBIFS: current lprops statistics dump
+> UBIFS assert failed in dbg_dump_budg at 613 (pid 11300)
+> [<c00284bc>] (unwind_backtrace+0x0/0xfc) from [<c018a770>] (dbg_dump_budg+0x220/0x2dc)
+> [<c018a770>] (dbg_dump_budg+0x220/0x2dc) from [<c018a8dc>] (dbg_check_space_info+0xb0/0xc0)
+> [<c018a8dc>] (dbg_check_space_info+0xb0/0xc0) from [<c015b4ac>] (ubifs_remount_fs+0x428/0x8dc)
+> [<c015b4ac>] (ubifs_remount_fs+0x428/0x8dc) from [<c00949b0>] (do_remount_sb+0x6c/0x11c)
+> [<c00949b0>] (do_remount_sb+0x6c/0x11c) from [<c00aae00>] (do_mount+0x468/0x708)
+> [<c00aae00>] (do_mount+0x468/0x708) from [<c00ab124>] (sys_mount+0x84/0xc4)
+> [<c00ab124>] (sys_mount+0x84/0xc4) from [<c0021ec0>] (ret_fast_syscall+0x0/0x30)
+> [<c00284bc>] (unwind_backtrace+0x0/0xfc) from [<c018a8e0>] (dbg_check_space_info+0xb4/0xc0)
+> [<c018a8e0>] (dbg_check_space_info+0xb4/0xc0) from [<c015b4ac>] (ubifs_remount_fs+0x428/0x8dc)
+> [<c015b4ac>] (ubifs_remount_fs+0x428/0x8dc) from [<c00949b0>] (do_remount_sb+0x6c/0x11c)
+> [<c00949b0>] (do_remount_sb+0x6c/0x11c) from [<c00aae00>] (do_mount+0x468/0x708)
+> [<c00aae00>] (do_mount+0x468/0x708) from [<c00ab124>] (sys_mount+0x84/0xc4)
+> [<c00ab124>] (sys_mount+0x84/0xc4) from [<c0021ec0>] (ret_fast_syscall+0x0/0x30)
+> UBIFS warning (pid 11300): ubifs_ro_mode: switched to read-only mode, error -22
+> [<c00284bc>] (unwind_backtrace+0x0/0xfc) from [<c015b4bc>] (ubifs_remount_fs+0x438/0x8dc)
+> [<c015b4bc>] (ubifs_remount_fs+0x438/0x8dc) from [<c00949b0>] (do_remount_sb+0x6c/0x11c)
+> [<c00949b0>] (do_remount_sb+0x6c/0x11c) from [<c00aae00>] (do_mount+0x468/0x708)
+> [<c00aae00>] (do_mount+0x468/0x708) from [<c00ab124>] (sys_mount+0x84/0xc4)
+> [<c00ab124>] (sys_mount+0x84/0xc4) from [<c0021ec0>] (ret_fast_syscall+0x0/0x30)
+> Unable to handle kernel NULL pointer dereference at virtual address 00000124
 
-Probably we can mitigate this with kmalloc flags. Now, I'm not sure what
-flags are the optimal, but I'd do:
-
-__GFP_NOWARN | __GFP_WAIT | __GFP_NORETRY
-
-May be even __GFP_WAIT flag could be kicked out.
-
->  
->  	if (!kbuf)
->  		return -ENOMEM;
->  
->  	while (count) {
->  
-> -		if (count > MAX_KMALLOC_SIZE)
-> -			len = MAX_KMALLOC_SIZE;
-> -		else
-> -			len = count;
-> +		len = min_t(size_t, count, size);
->  
->  		switch (mfi->mode) {
->  		case MTD_MODE_OTP_FACTORY:
-> @@ -268,6 +267,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
->  {
->  	struct mtd_file_info *mfi = file->private_data;
->  	struct mtd_info *mtd = mfi->mtd;
-> +	size_t size;
->  	char *kbuf;
->  	size_t retlen;
->  	size_t total_retlen=0;
-> @@ -285,20 +285,18 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
->  	if (!count)
->  		return 0;
->  
-> -	if (count > MAX_KMALLOC_SIZE)
-> -		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
-> -	else
-> -		kbuf=kmalloc(count, GFP_KERNEL);
-> +	size = min_t(size_t, count, MAX_KMALLOC_SIZE);
-> +
-> +	do {
-> +		kbuf=kmalloc(size, GFP_KERNEL);
-> +	} while (!kbuf && ((size >>= 1) >= PAGE_SIZE));
->  
->  	if (!kbuf)
->  		return -ENOMEM;
->  
->  	while (count) {
->  
-> -		if (count > MAX_KMALLOC_SIZE)
-> -			len = MAX_KMALLOC_SIZE;
-> -		else
-> -			len = count;
-> +		len = min_t(size_t, count, size);
->  
->  		if (copy_from_user(kbuf, buf, len)) {
->  			kfree(kbuf);
-
+And this oops is a bug in the dumping code, I'll take a look at this as
+well.
 
 -- 
 Best Regards,
