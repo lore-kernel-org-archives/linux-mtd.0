@@ -1,23 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q6yBk-0000Yb-Sg
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 04:48:25 +0000
-Received: by eyh6 with SMTP id 6so1285eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 04 Apr 2011 21:48:23 -0700 (PDT)
-Subject: Re: [PATCH v2] MTD: Retry Read/Write Transfer Buffer Allocations
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Grant Erickson <marathon96@gmail.com>
-In-Reply-To: <1301941174-10050-1-git-send-email-marathon96@gmail.com>
-References: <1301705049-15593-1-git-send-email-marathon96@gmail.com>
-	<1301941174-10050-1-git-send-email-marathon96@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Apr 2011 07:48:21 +0300
-Message-ID: <1301978901.2608.38.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1Q74Uo-0002d6-8j
+	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 11:32:34 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p35BWQ86010158
+	for <linux-mtd@lists.infradead.org>; Tue, 5 Apr 2011 14:32:26 +0300
+From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCHv1 1/3] tests: make jittertest buildable
+Date: Tue,  5 Apr 2011 14:33:08 +0300
+Message-Id: <38fa03e74a299568e73f69b03ffcacd5ee38b62b.1302002802.git.ext-andriy.shevchenko@nokia.com>
+Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,68 +22,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-04-04 at 11:19 -0700, Grant Erickson wrote:
-> When handling user space read or write requests via mtd_{read,write},
-> exponentially back off on the size of the requested kernel transfer
-> buffer until it succeeds or until the requested transfer buffer size
-> falls below the page size.
-> 
-> This helps ensure the operation can succeed under low-memory,
-> highly-fragmented situations albeit somewhat more slowly.
-> 
->   v2: Added __GFP_NOWARN flag and made common retry loop a function
->       as recommended by Artem.
-> 
-> Signed-off-by: Grant Erickson <marathon96@gmail.com>
-> ---
->  drivers/mtd/mtdchar.c |   66 +++++++++++++++++++++++++++++++++---------------
->  1 files changed, 45 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-> index 145b3d0d..df9be51 100644
-> --- a/drivers/mtd/mtdchar.c
-> +++ b/drivers/mtd/mtdchar.c
-> @@ -166,11 +166,44 @@ static int mtd_close(struct inode *inode, struct file *file)
->  	return 0;
->  } /* mtd_close */
->  
-> -/* FIXME: This _really_ needs to die. In 2.5, we should lock the
-> -   userspace buffer down and use it directly with readv/writev.
-> -*/
-> +/* Back in April 2005, Linus wrote:
-> + * 
-> + *   FIXME: This _really_ needs to die. In 2.5, we should lock the
-> + *   userspace buffer down and use it directly with readv/writev.
-> + *
-> + * The implementation below, using mtd_try_alloc, mitigates allocation
-> + * failures when the sytem is under low-memory situations or if memory
-> + * is highly fragmented at the cost of reducing the performance of the
-> + * requested transfer due to a smaller buffer size.
-> + *
-> + * A more complex but more memory-efficient implementation based on
-> + * get_user_pages and iovecs to cover extents of those pages is a
-> + * longer-term goal, as intimated by Linus above. However, for the
-> + * write case, this requires yet more complex head and tail transfer
-> + * handling when those head and tail offsets and sizes are such that
-> + * alignment requirements are not met in the NAND subdriver.
-> + */
->  #define MAX_KMALLOC_SIZE 0x20000
->  
-> +static void *mtd_try_alloc(size_t *size)
+Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+---
+ tests/jittertest/JitterTest.c |    6 +++---
+ tests/jittertest/Makefile     |    2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Also, if you do the changes I request and make this function allow scary
-kmalloc warnings on the last resort PAGE_SIZE allocation, the "try" in
-the function name becomes not very appropriate, because in the kernel
-APIs it is usually used for something like "try, if did not succeed, no
-worry, just return". E.g., mutex_try_lock() or something.
-
-I think it is better to name it mtd_alloc or something like this, but
-without "try".
-
-And probably you want to reuse this function in JFFS2, so we should give
-it some name which is good for exported API function. May be
-mtd_alloc_upto() ? Or mtd_alloc_as_much() ? Or better ideas?
-
+diff --git a/tests/jittertest/JitterTest.c b/tests/jittertest/JitterTest.c
+index 13c64d9..fcf8e0d 100644
+--- a/tests/jittertest/JitterTest.c
++++ b/tests/jittertest/JitterTest.c
+@@ -292,7 +292,7 @@ int main(
+     }
+ 
+     /*------------------------- Initializations --------------------------*/
+-    if((Fd1 = open(OutFileName, O_RDWR|O_CREAT|O_SYNC)) <= 0)
++    if((Fd1 = open(OutFileName, O_RDWR|O_CREAT|O_SYNC, S_IRWXU)) <= 0)
+     {
+         perror("Cannot open outfile for write:");
+         exit(1);
+@@ -304,7 +304,7 @@ int main(
+     if(DoRead)
+     {
+ 
+-        if((Fd2 = open(ReadFile, O_RDWR|O_CREAT|O_SYNC|O_TRUNC)) <= 0)
++        if((Fd2 = open(ReadFile, O_RDWR|O_CREAT|O_SYNC|O_TRUNC, S_IRWXU)) <= 0)
+         {
+             perror("cannot open read file:");
+             exit(1);
+@@ -459,7 +459,7 @@ void doGrabKProfile(int jitterusec, char *fileName)
+     int readBytes;
+     char readBuf[4096];
+ 
+-    if((fdSnapshot = open(fileName, O_WRONLY | O_CREAT)) <= 0)
++    if((fdSnapshot = open(fileName, O_WRONLY | O_CREAT, S_IRWXU)) <= 0)
+     {
+         fprintf(stderr, "Could not open file %s.\n", fileName);
+         perror("Error:");
+diff --git a/tests/jittertest/Makefile b/tests/jittertest/Makefile
+index 2f11329..0209c63 100644
+--- a/tests/jittertest/Makefile
++++ b/tests/jittertest/Makefile
+@@ -1,6 +1,6 @@
+ CC=gcc
+ # uncomment following for performance
+-CCFLAGS=-O3 -Wall -m486 -fomit-frame-pointer
++CCFLAGS=-O3 -Wall -fomit-frame-pointer
+ 
+ # uncomment following for debugging. Uncomment either this or the one above. Not both.
+ # CCFLAGS=-Wall -g
 -- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+1.6.3.3
