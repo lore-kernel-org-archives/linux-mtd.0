@@ -1,23 +1,16 @@
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+Received: from nbd.name ([46.4.11.11])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q74Uz-0002dm-KI
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 11:32:46 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-da02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p35BWclW018497
-	for <linux-mtd@lists.infradead.org>; Tue, 5 Apr 2011 14:32:39 +0300
-From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org
-Subject: [PATCHv1 3/3] tests: fix compiler warnings
-Date: Tue,  5 Apr 2011 14:33:10 +0300
-Message-Id: <bbd26145dfa5e5c63c323e01cbd4917002bdde89.1302002802.git.ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <d47b1aaa839631e454cbfeb14684ca851d941d43.1302002802.git.ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <38fa03e74a299568e73f69b03ffcacd5ee38b62b.1302002802.git.ext-andriy.shevchenko@nokia.com>
-References: <38fa03e74a299568e73f69b03ffcacd5ee38b62b.1302002802.git.ext-andriy.shevchenko@nokia.com>
-	<d47b1aaa839631e454cbfeb14684ca851d941d43.1302002802.git.ext-andriy.shevchenko@nokia.com>
-References: <38fa03e74a299568e73f69b03ffcacd5ee38b62b.1302002802.git.ext-andriy.shevchenko@nokia.com>
-Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+	id 1Q7598-00037X-Le
+	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 12:14:15 +0000
+From: John Crispin <blogic@openwrt.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH V6] MIPS: lantiq: add NOR flash support
+Date: Tue,  5 Apr 2011 14:15:20 +0200
+Message-Id: <1302005720-8508-1-git-send-email-blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org, Ralph Hempel <ralph.hempel@lantiq.com>,
+	linux-mtd@lists.infradead.org,
+	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
+	David Woodhouse <dwmw2@infradead.org>, John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,168 +20,265 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
----
- tests/checkfs/checkfs.c              |    8 ++++----
- tests/checkfs/comm.c                 |    2 +-
- tests/fs-tests/lib/tests.c           |    3 ++-
- tests/fs-tests/stress/atoms/pdfrun.c |    5 ++++-
- tests/jittertest/JitterTest.c        |   11 ++++++++---
- tests/ubi-tests/integ.c              |    5 +++--
- 6 files changed, 22 insertions(+), 12 deletions(-)
+This patch adds the driver/map for NOR devices attached to the SoC via the
+External Bus Unit (EBU).
 
-diff --git a/tests/checkfs/checkfs.c b/tests/checkfs/checkfs.c
-index da2d0c4..3224d2b 100644
---- a/tests/checkfs/checkfs.c
-+++ b/tests/checkfs/checkfs.c
-@@ -167,11 +167,11 @@ int setupSerial (const char *dev) {
+Signed-off-by: John Crispin <blogic@openwrt.org>
+Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-mtd@lists.infradead.org
+
+Changes in V2
+* handle the endianess bug inside the map code and not in the generic cfi code
+* remove the addr swizzle patch
+
+Changes in V3
+* whitespace
+* change __iomem void to void __iomem
+
+Changes in V4
+* fixes a checkpatch.pl bug, the second is a false positive
+* whitespace cleanups
+* remove unused typecasts
+* cleanup ltq_copy_from and ltq_copy_to
+
+Changes in V6
+* cleanup/add comments
+* fix line breaks
+* properly handle return code of add_mtd_partitions()
+* use pr_err instead of printk
+
+This patch should be merged via the MIPS tree
+---
+ drivers/mtd/maps/Kconfig  |    9 ++
+ drivers/mtd/maps/Makefile |    1 +
+ drivers/mtd/maps/lantiq.c |  187 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 197 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/lantiq.c
+
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 44b1f46..83376d3 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -260,6 +260,15 @@ config MTD_BCM963XX
+ 	  Support for parsing CFE image tag and creating MTD partitions on
+ 	  Broadcom BCM63xx boards.
  
-     fd = open(dev,O_RDWR | O_NDELAY );
-     if (fd < 0) {
--        fprintf(stderr, "%s: %s\n", dev, sys_errlist[errno]);
-+        fprintf(stderr, "%s: %s\n", dev, strerror(errno));
-         exit(1);
-     }
-     if (tcgetattr(fd, &tios) < 0) {
--        fprintf(stderr,"Could not get terminal attributes: %s",sys_errlist[errno]);
-+        fprintf(stderr, "Could not get terminal attributes: %s", strerror(errno));
-         exit(1);
-     }
- 
-@@ -197,7 +197,7 @@ int setupSerial (const char *dev) {
-     cfsetispeed (&tios, B9600);
- 
-     if (tcsetattr(fd, TCSAFLUSH, &tios) < 0) {
--        fprintf(stderr,"Could not set attributes: ,%s",sys_errlist[errno]);
-+        fprintf(stderr, "Could not set attributes: ,%s", strerror(errno));
-         exit(1);
-     }
-     return fd;
-@@ -520,7 +520,7 @@ void processCmdLine(int argc, char **argv)
-                 FileSizeMax = (float)atoi(argv[++cnt]);
-                 if(FileSizeMax > (MAX_INTS_ALLOW*sizeof(int)))
-                 {
--                    printf("Max file size allowd is %i.\n",
-+                    printf("Max file size allowed is %lu.\n",
-                            MAX_INTS_ALLOW*sizeof(int));
-                     exit(0);
-                 }
-diff --git a/tests/checkfs/comm.c b/tests/checkfs/comm.c
-index 57fc7ed..f8c43fd 100644
---- a/tests/checkfs/comm.c
-+++ b/tests/checkfs/comm.c
-@@ -28,7 +28,7 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
--
-+#include <string.h>
- 
- 
- /*
-diff --git a/tests/fs-tests/lib/tests.c b/tests/fs-tests/lib/tests.c
-index 00b94f9..8a6a5f5 100644
---- a/tests/fs-tests/lib/tests.c
-+++ b/tests/fs-tests/lib/tests.c
-@@ -1236,7 +1236,8 @@ void tests_try_to_clear_dir(const char *dir_name)
- 			break;
- 		}
- 	}
--	chdir(buf);
-+	if (chdir(buf) < 0)
-+		perror("chdir");
- 	closedir(dir);
- }
- 
-diff --git a/tests/fs-tests/stress/atoms/pdfrun.c b/tests/fs-tests/stress/atoms/pdfrun.c
-index 3536580..46c70e1 100644
---- a/tests/fs-tests/stress/atoms/pdfrun.c
-+++ b/tests/fs-tests/stress/atoms/pdfrun.c
-@@ -40,8 +40,11 @@ void adjust_size(void)
- 
- 	total_memory = 0;
- 	f = fopen("/proc/meminfo", "r");
--	fscanf(f, "%s %lu", dummy, &total_memory);
-+	if (fscanf(f, "%s %lu", dummy, &total_memory) != 2)
-+		perror("fscanf error");
- 	fclose(f);
++config MTD_LANTIQ
++	bool "Lantiq SoC NOR support"
++	depends on LANTIQ
++	select MTD_PARTITIONS
++	help
++	  Lantiq SoCs have a EBU (External Bus Unit). This IP allows to attach
++	  a number of different peripherals to the SoC. This driver adds
++	  support for NOR chips to be added.
 +
+ config MTD_DILNETPC
+ 	tristate "CFI Flash device mapped on DIL/Net PC"
+ 	depends on X86 && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 08533bd..0db4ba3 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -60,3 +60,4 @@ obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
+ obj-$(CONFIG_MTD_BCM963XX)	+= bcm963xx-flash.o
+ obj-$(CONFIG_MTD_LATCH_ADDR)	+= latch-addr-flash.o
++obj-$(CONFIG_MTD_LANTIQ)	+= lantiq.o
+diff --git a/drivers/mtd/maps/lantiq.c b/drivers/mtd/maps/lantiq.c
+new file mode 100644
+index 0000000..e3db055
+--- /dev/null
++++ b/drivers/mtd/maps/lantiq.c
+@@ -0,0 +1,187 @@
++/*
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License version 2 as published
++ *  by the Free Software Foundation.
++ *
++ *  Copyright (C) 2004 Liu Peng Infineon IFAP DC COM CPE
++ *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
++ */
 +
- 	if (total_memory > 0 && tests_size_parameter > total_memory / 2)
- 		tests_size_parameter = total_memory / 2;
- }
-diff --git a/tests/jittertest/JitterTest.c b/tests/jittertest/JitterTest.c
-index fcf8e0d..19392d5 100644
---- a/tests/jittertest/JitterTest.c
-+++ b/tests/jittertest/JitterTest.c
-@@ -82,6 +82,7 @@
- #include <string.h>     /* strcpy, strcmp */
- #include <stdlib.h>     /* exit, atol, atoi */
- #include <sys/time.h>   /* setitimer, settimeofday, gettimeofday */
-+#include <time.h>	/* time */
- #include <signal.h>     /* signal */
- #include <sched.h>      /* sched_setscheduler, sched_get_priority_min,*/
- /*   sched_get_priority_max */
-@@ -475,7 +476,9 @@ void doGrabKProfile(int jitterusec, char *fileName)
- 
-     while((readBytes = read(fdProfile, readBuf, sizeof(readBuf))) > 0)
-     {
--        write(fdSnapshot, readBuf, readBytes);
-+	int writeBytes = write(fdSnapshot, readBuf, readBytes);
-+	if (writeBytes < 0)
-+		perror("write error");
-     }
- 
-     close(fdSnapshot);
-@@ -650,7 +653,9 @@ void AlarmHandler(
-         if(DoRead)
-         {
- 
--            read(Fd2, tmpBuf, 1);
-+            cntr = read(Fd2, tmpBuf, 1);
-+	    if (cntr < 0)
-+		perror("read error");
-             lseek(Fd2, 0, SEEK_SET); /* back to start */
-         }
- 
-@@ -1032,7 +1037,7 @@ int Write(int fd, void *buf, size_t bytes, int lineNo)
-     if(err < bytes)
-     {
- 
--        printf("Write Error at line %i! Wanted to write %i bytes, but wrote only %i bytes.\n",
-+        printf("Write Error at line %i! Wanted to write %zu bytes, but wrote only %i bytes.\n",
-                lineNo, bytes, err);
-         perror("Write did not complete. Error. Bye:"); /* show error from errno. */
- 	exit(1);
-diff --git a/tests/ubi-tests/integ.c b/tests/ubi-tests/integ.c
-index f293444..4e13b73 100644
---- a/tests/ubi-tests/integ.c
-+++ b/tests/ubi-tests/integ.c
-@@ -14,6 +14,7 @@
- #include <sys/stat.h>
- 
- #include "libubi.h"
-+#include "common.h"
- 
- struct erase_block_info;
- struct volume_info;
-@@ -586,7 +587,7 @@ static void reload_ubi(void)
- 	sleep(1);
- }
- 
--static void check_volume(struct volume_info *vol)
-+static void integ_check_volume(struct volume_info *vol)
- {
- 	struct erase_block_info *eb = vol->erase_blocks;
- 	int pos;
-@@ -607,7 +608,7 @@ static void check_ubi_device(struct ubi_device_info *ubi_device)
- 
- 	vol = ubi_device->volumes;
- 	while (vol) {
--		check_volume(vol);
-+		integ_check_volume(vol);
- 		vol = vol->next;
- 	}
- }
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/io.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/cfi.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/physmap.h>
++
++#include <lantiq_soc.h>
++#include <lantiq_platform.h>
++
++/* 
++ * The NOR flash is connected to the same external bus unit (EBU) as PCI.
++ * To make PCI work we need to enable the endianess swapping for the address
++ * written to the EBU. This endianess swapping works for PCI correctly but
++ * fails for attached NOR devices. To workaround this we need to use a complex
++ * map. The workaround involves swapping all addresses whilste probing the chip.
++ * Once probing is complete we stop swapping the addresses but swizzle the
++ * unlock addresses to ensure that access to the NOR device works correctly.
++ */
++
++static int ltq_mtd_probing;
++
++static map_word
++ltq_read16(struct map_info *map, unsigned long adr)
++{
++	unsigned long flags;
++	map_word temp;
++
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	temp.x[0] = *((__u16 *)(map->virt + adr));
++	spin_unlock_irqrestore(&ebu_lock, flags);
++	return temp;
++}
++
++static void
++ltq_write16(struct map_info *map, map_word d, unsigned long adr)
++{
++	unsigned long flags;
++
++	if (ltq_mtd_probing)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	*((__u16 *)(map->virt + adr)) = d.x[0];
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++/*
++ * The following 2 functions copy data between iomem and a cached memory
++ * section. As memcpy() makes use of pre-fetching we cannot use it here.
++ * The normal alternative of using memcpy_{to,from}io also makes use of
++ * memcpy() on MIPS so it is not applicable either. We are therefore stuck
++ * with having to use our own loop.
++ */
++static void
++ltq_copy_from(struct map_info *map, void *to,
++	unsigned long from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *) (map->virt + from);
++	unsigned char *t = (unsigned char *) to;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static void
++ltq_copy_to(struct map_info *map, unsigned long to,
++	const void *from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *) from;
++	unsigned char *t = (unsigned char *) (map->virt + to);
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static const char const *part_probe_types[] = { "cmdlinepart", NULL };
++
++static struct map_info ltq_map = {
++	.name = "ltq_nor",
++	.bankwidth = 2,
++	.read = ltq_read16,
++	.write = ltq_write16,
++	.copy_from = ltq_copy_from,
++	.copy_to = ltq_copy_to,
++};
++
++static int __init
++ltq_mtd_probe(struct platform_device *pdev)
++{
++	struct physmap_flash_data *ltq_mtd_data = dev_get_platdata(&pdev->dev);
++	struct mtd_info *ltq_mtd = NULL;
++	struct mtd_partition *parts = NULL;
++	struct resource *res;
++	int nr_parts = 0;
++	struct cfi_private *cfi;
++
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "failed to get memory resource");
++		return -ENOENT;
++	}
++	res = devm_request_mem_region(&pdev->dev, res->start,
++		resource_size(res), dev_name(&pdev->dev));
++	if (!res) {
++		dev_err(&pdev->dev, "failed to request mem resource");
++		return -EBUSY;
++	}
++
++	ltq_map.phys = res->start;
++	ltq_map.size = resource_size(res);
++	ltq_map.virt = devm_ioremap_nocache(&pdev->dev, ltq_map.phys,
++					ltq_map.size);
++	if (!ltq_map.virt) {
++		dev_err(&pdev->dev, "failed to ioremap!\n");
++		return -EIO;
++	}
++
++	ltq_mtd_probing = 1;
++	ltq_mtd = do_map_probe("cfi_probe", &ltq_map);
++	ltq_mtd_probing = 0;
++	if (!ltq_mtd) {
++		iounmap(ltq_map.virt);
++		dev_err(&pdev->dev, "probing failed\n");
++		return -ENXIO;
++	}
++	ltq_mtd->owner = THIS_MODULE;
++
++	cfi = ltq_map.fldrv_priv;
++	cfi->addr_unlock1 ^= 1;
++	cfi->addr_unlock2 ^= 1;
++
++	nr_parts = parse_mtd_partitions(ltq_mtd, part_probe_types, &parts, 0);
++	if (nr_parts > 0) {
++		dev_info(&pdev->dev,
++			"using %d partitions from cmdline", nr_parts);
++	} else {
++		nr_parts = ltq_mtd_data->nr_parts;
++		parts = ltq_mtd_data->parts;
++	}
++
++	return add_mtd_partitions(ltq_mtd, parts, nr_parts);
++}
++
++static struct platform_driver ltq_mtd_driver = {
++	.driver = {
++		.name = "ltq_nor",
++		.owner = THIS_MODULE,
++	},
++};
++
++int __init
++init_ltq_mtd(void)
++{
++	int ret = platform_driver_probe(&ltq_mtd_driver, ltq_mtd_probe);
++
++	if (ret)
++		pr_err(KERN_INFO "ltq_nor: error registering platfom driver");
++	return ret;
++}
++
++module_init(init_ltq_mtd);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
++MODULE_DESCRIPTION("Lantiq SoC NOR");
 -- 
-1.6.3.3
+1.7.2.3
