@@ -1,25 +1,22 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from nbd.name ([46.4.11.11])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q75DM-0003Aq-QP
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 12:18:33 +0000
-Received: by ewy3 with SMTP id 3so93032ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Apr 2011 05:18:30 -0700 (PDT)
+	id 1Q75Eu-0003Cv-A4
+	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 12:20:08 +0000
+Message-ID: <4D9B0951.3030206@openwrt.org>
+Date: Tue, 05 Apr 2011 14:21:37 +0200
+From: John Crispin <blogic@openwrt.org>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
 Subject: Re: [PATCH V6] MIPS: lantiq: add NOR flash support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-In-Reply-To: <1302005720-8508-1-git-send-email-blogic@openwrt.org>
 References: <1302005720-8508-1-git-send-email-blogic@openwrt.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Apr 2011 15:15:51 +0300
-Message-ID: <1302005751.2760.116.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	<1302005751.2760.116.camel@localhost>
+In-Reply-To: <1302005751.2760.116.camel@localhost>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
 	Ralph Hempel <ralph.hempel@lantiq.com>, linux-mtd@lists.infradead.org,
 	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
 	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-05 at 14:15 +0200, John Crispin wrote:
-> +int __init
-> +init_ltq_mtd(void)
-> +{
-> +	int ret = platform_driver_probe(&ltq_mtd_driver, ltq_mtd_probe);
-> +
-> +	if (ret)
-> +		pr_err(KERN_INFO "ltq_nor: error registering platfom driver");
 
-Sorry, but pr_err is defined as follows:
+> Sorry, but pr_err is defined as follows:
+>
+> #define pr_err(fmt, ...) \
+>         printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+>
+> You should not add KERN_INFO.
+>
+>   
+Hi,
 
-#define pr_err(fmt, ...) \
-        printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+i missed that one :(
+let me resend a fixed version
 
-You should not add KERN_INFO.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+sorry,
+John
