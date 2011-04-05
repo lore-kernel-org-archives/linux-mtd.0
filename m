@@ -1,25 +1,20 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q77Fw-0005F6-ST
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 14:29:21 +0000
-Received: by eyh6 with SMTP id 6so138957eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Apr 2011 07:29:18 -0700 (PDT)
-Subject: Re: [PATCH V8] MIPS: lantiq: add NOR flash support
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: John Crispin <blogic@openwrt.org>
-In-Reply-To: <1302013192-8854-1-git-send-email-blogic@openwrt.org>
-References: <1302013192-8854-1-git-send-email-blogic@openwrt.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Apr 2011 17:26:38 +0300
-Message-ID: <1302013598.2760.140.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
-	Ralph Hempel <ralph.hempel@lantiq.com>, linux-mtd@lists.infradead.org,
-	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+	id 1Q77ID-0005HR-9q
+	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 14:31:45 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p35EVasG010506
+	for <linux-mtd@lists.infradead.org>; Tue, 5 Apr 2011 17:31:39 +0300
+From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCHv2] tests: jittertest: fix set of compiler warnings
+Date: Tue,  5 Apr 2011 17:32:29 +0300
+Message-Id: <7c7a314f7d09b032f4cff10070853ad360588f30.1302013906.git.ext-andriy.shevchenko@nokia.com>
+In-Reply-To: <1302013204.2760.135.camel@localhost>
+References: <1302013204.2760.135.camel@localhost>
+Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,35 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-05 at 16:19 +0200, John Crispin wrote:
+- time() was used without prototype.
+- the return value of read() and write() wasn't checked
+- classificator in printf() was wrong for argument of size_t type
 
-> +/* 
-> + * The NOR flash is connected to the same external bus unit (EBU) as PCI.
-> + * To make PCI work we need to enable the endianess swapping for the address
-> + * written to the EBU. This endianess swapping works for PCI correctly but
-> + * fails for attached NOR devices. To workaround this we need to use a complex
-> + * map. The workaround involves swapping all addresses whilste probing the chip.
-> + * Once probing is complete we stop swapping the addresses but swizzle the
-> + * unlock addresses to ensure that access to the NOR device works correctly.
-> + */
-> +
-> +enum ltq_nor_state {
-> +	LTQ_NOR_PROBING,
-> +	LTQ_NOR_NORMAL
-> +};
+Don't continue to read the /proc/profile in case when write was failed.
 
-You do not have to re-send because of this, just a note that in this
-case it makes more sense to use anonymous enum. Indeed, you do not need
-this 'ltq_nor_state' name at all, and C enums are not proper types
-anyway (no real type-checking), so it is just a tiny bit nicer to do:
+Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+---
+ tests/jittertest/JitterTest.c |   13 ++++++++++---
+ 1 files changed, 10 insertions(+), 3 deletions(-)
 
-enum {
-	LTQ_NOR_PROBING,
-	LTQ_NOR_NORMAL
-};
-
-But this is not important at all, just a side note :-)
-
+diff --git a/tests/jittertest/JitterTest.c b/tests/jittertest/JitterTest.c
+index fcf8e0d..76371e8 100644
+--- a/tests/jittertest/JitterTest.c
++++ b/tests/jittertest/JitterTest.c
+@@ -82,6 +82,7 @@
+ #include <string.h>     /* strcpy, strcmp */
+ #include <stdlib.h>     /* exit, atol, atoi */
+ #include <sys/time.h>   /* setitimer, settimeofday, gettimeofday */
++#include <time.h>	/* time */
+ #include <signal.h>     /* signal */
+ #include <sched.h>      /* sched_setscheduler, sched_get_priority_min,*/
+ /*   sched_get_priority_max */
+@@ -475,7 +476,11 @@ void doGrabKProfile(int jitterusec, char *fileName)
+ 
+     while((readBytes = read(fdProfile, readBuf, sizeof(readBuf))) > 0)
+     {
+-        write(fdSnapshot, readBuf, readBytes);
++	int writeBytes = write(fdSnapshot, readBuf, readBytes);
++	if (writeBytes != readBytes) {
++		perror("write error");
++		break;
++	}
+     }
+ 
+     close(fdSnapshot);
+@@ -650,7 +655,9 @@ void AlarmHandler(
+         if(DoRead)
+         {
+ 
+-            read(Fd2, tmpBuf, 1);
++	    cntr = read(Fd2, tmpBuf, 1);
++	    if (cntr < 0)
++		perror("read error");
+             lseek(Fd2, 0, SEEK_SET); /* back to start */
+         }
+ 
+@@ -1032,7 +1039,7 @@ int Write(int fd, void *buf, size_t bytes, int lineNo)
+     if(err < bytes)
+     {
+ 
+-        printf("Write Error at line %i! Wanted to write %i bytes, but wrote only %i bytes.\n",
++        printf("Write Error at line %i! Wanted to write %zu bytes, but wrote only %i bytes.\n",
+                lineNo, bytes, err);
+         perror("Write did not complete. Error. Bye:"); /* show error from errno. */
+ 	exit(1);
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.3.3
