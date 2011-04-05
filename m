@@ -1,16 +1,17 @@
-Received: from cantor2.suse.de ([195.135.220.15] helo=mx2.suse.de)
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q77jD-0005bJ-CI
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 14:59:39 +0000
-From: Michal Marek <mmarek@suse.cz>
-To: linux-kbuild@vger.kernel.org
-Subject: [PATCH 16/34] nand/denali: Drop __TIME__ usage
-Date: Tue,  5 Apr 2011 16:59:03 +0200
-Message-Id: <1302015561-21047-17-git-send-email-mmarek@suse.cz>
-In-Reply-To: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
-References: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org, Chuanxiao Dong <chuanxiao.dong@intel.com>
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q77mI-0005hn-Gu
+	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 15:02:50 +0000
+From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+To: linux-mtd@lists.infradead.org,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Florian Fainelli <ffainelli@freebox.fr>
+Subject: [PATCHv2] tests: introduce new target tests in Makefile
+Date: Tue,  5 Apr 2011 18:03:19 +0300
+Message-Id: <2016ea1c9296efd368a37e4f869bd8a51f20c537.1302015688.git.ext-andriy.shevchenko@nokia.com>
+In-Reply-To: <BANLkTimsfEKUMGBAfyLoeqSQnB-6u-jWPw@mail.gmail.com>
+References: <BANLkTimsfEKUMGBAfyLoeqSQnB-6u-jWPw@mail.gmail.com>
+Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +21,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The kernel already prints its build timestamp during boot, no need to
-repeat it in random drivers and produce different object files each
-time.
+This patch appends Makefile to the tests subdirectory and introduces tests
+target in the root Makefile.
 
-Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Signed-off-by: Michal Marek <mmarek@suse.cz>
+Additionally the clean target removes temporary stuff under tests subdirectory
+as well.
+
+Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 ---
- drivers/mtd/nand/denali.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+ Makefile       |    7 ++++++-
+ tests/Makefile |    8 ++++++++
+ 2 files changed, 14 insertions(+), 1 deletions(-)
+ create mode 100644 tests/Makefile
 
-diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 8c8d3c8..7a3cf8c 100644
---- a/drivers/mtd/nand/denali.c
-+++ b/drivers/mtd/nand/denali.c
-@@ -1721,8 +1721,7 @@ static struct pci_driver denali_pci_driver = {
+diff --git a/Makefile b/Makefile
+index 7ab9743..b4d4170 100644
+--- a/Makefile
++++ b/Makefile
+@@ -8,6 +8,7 @@ ifeq ($(WITHOUT_XATTR), 1)
+ endif
  
- static int __devinit denali_init(void)
- {
--	printk(KERN_INFO "Spectra MTD driver built on %s @ %s\n",
--			__DATE__, __TIME__);
-+	printk(KERN_INFO "Spectra MTD driver\n");
- 	return pci_register_driver(&denali_pci_driver);
- }
+ SUBDIRS = lib ubi-utils mkfs.ubifs
++TESTS = tests
  
+ TARGETS = ftl_format flash_erase nanddump doc_loadbios \
+ 	ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \
+@@ -38,6 +39,7 @@ ifneq ($(BUILDDIR),$(CURDIR))
+ endif
+ endif
+ endif
++	$(MAKE) -C $(TESTS) clean
+ 
+ $(SYMLINKS):
+ 	ln -sf ../fs/jffs2/$@ $@
+@@ -52,10 +54,13 @@ $(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o
+ LDFLAGS_jffs2reader = $(ZLIBLDFLAGS) $(LZOLDFLAGS)
+ LDLIBS_jffs2reader  = -lz -llzo2
+ 
+-$(BUILDDIR)/lib/libmtd.a: subdirs_lib_all ;
++$(BUILDDIR)/lib/libmtd.a: subdirs_lib_all
+ 
+ install:: ${TARGETS} ${SCRIPTS}
+ 	mkdir -p ${DESTDIR}/${SBINDIR}
+ 	install -m 0755 ${TARGETS} ${SCRIPTS} ${DESTDIR}/${SBINDIR}/
+ 	mkdir -p ${DESTDIR}/${MANDIR}/man1
+ 	gzip -9c mkfs.jffs2.1 > ${DESTDIR}/${MANDIR}/man1/mkfs.jffs2.1.gz
++
++tests::
++	$(MAKE) -C $(TESTS)
+diff --git a/tests/Makefile b/tests/Makefile
+new file mode 100644
+index 0000000..05b37e9
+--- /dev/null
++++ b/tests/Makefile
+@@ -0,0 +1,8 @@
++
++SUBDIRS = checkfs fs-tests jittertest ubi-tests
++
++all clean tests: $(SUBDIRS)
++
++.PHONY: $(SUBDIRS)
++$(SUBDIRS):
++	$(MAKE) -C $@ $(MAKECMDGOALS)
 -- 
-1.7.4.1
+1.6.3.3
