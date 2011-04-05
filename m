@@ -1,29 +1,25 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q77CC-0005As-HK
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 14:25:32 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p35EPQUT004405
-	for <linux-mtd@lists.infradead.org>; Tue, 5 Apr 2011 17:25:26 +0300
-Subject: Re: [PATCHv1 5/5] tests: ubi-tests: seed_random_generator() was
-	used w/o prototype
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <079428894ea293560f65737475e222af2332bfa9.1302011698.git.ext-andriy.shevchenko@nokia.com>
-References: <1302007944.2760.126.camel@localhost>
-	<f17ef71846bf870b69b04127ac0d7d924678ebee.1302011698.git.ext-andriy.shevchenko@nokia.com>
-	<112dd0ed24fca0a1af988a2c99f1258468184d68.1302011698.git.ext-andriy.shevchenko@nokia.com>
-	<aeae7a7b14f785f1bd3ee5fd74dea8e7521a160b.1302011698.git.ext-andriy.shevchenko@nokia.com>
-	<741f4ff14ea8ad70001e78a94e98e01dbe783b3b.1302011698.git.ext-andriy.shevchenko@nokia.com>
-	<079428894ea293560f65737475e222af2332bfa9.1302011698.git.ext-andriy.shevchenko@nokia.com>
+	id 1Q77Fw-0005F6-ST
+	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 14:29:21 +0000
+Received: by eyh6 with SMTP id 6so138957eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 05 Apr 2011 07:29:18 -0700 (PDT)
+Subject: Re: [PATCH V8] MIPS: lantiq: add NOR flash support
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: John Crispin <blogic@openwrt.org>
+In-Reply-To: <1302013192-8854-1-git-send-email-blogic@openwrt.org>
+References: <1302013192-8854-1-git-send-email-blogic@openwrt.org>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Apr 2011 17:22:24 +0300
-Message-ID: <1302013344.2760.136.camel@localhost>
+Date: Tue, 05 Apr 2011 17:26:38 +0300
+Message-ID: <1302013598.2760.140.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: Artem.Bityutskiy@nokia.com
+Cc: linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
+	Ralph Hempel <ralph.hempel@lantiq.com>, linux-mtd@lists.infradead.org,
+	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,13 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-05 at 16:55 +0300, Andy Shevchenko wrote:
-> Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-> ---
->  tests/ubi-tests/integ.c |    5 +++--
->  1 files changed, 3 insertions(+), 2 deletions(-)
+On Tue, 2011-04-05 at 16:19 +0200, John Crispin wrote:
 
-Pushed this one, thanks!
+> +/* 
+> + * The NOR flash is connected to the same external bus unit (EBU) as PCI.
+> + * To make PCI work we need to enable the endianess swapping for the address
+> + * written to the EBU. This endianess swapping works for PCI correctly but
+> + * fails for attached NOR devices. To workaround this we need to use a complex
+> + * map. The workaround involves swapping all addresses whilste probing the chip.
+> + * Once probing is complete we stop swapping the addresses but swizzle the
+> + * unlock addresses to ensure that access to the NOR device works correctly.
+> + */
+> +
+> +enum ltq_nor_state {
+> +	LTQ_NOR_PROBING,
+> +	LTQ_NOR_NORMAL
+> +};
+
+You do not have to re-send because of this, just a note that in this
+case it makes more sense to use anonymous enum. Indeed, you do not need
+this 'ltq_nor_state' name at all, and C enums are not proper types
+anyway (no real type-checking), so it is just a tiny bit nicer to do:
+
+enum {
+	LTQ_NOR_PROBING,
+	LTQ_NOR_NORMAL
+};
+
+But this is not important at all, just a side note :-)
 
 -- 
 Best Regards,
