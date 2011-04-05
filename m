@@ -1,22 +1,33 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q79Z0-00072Z-Oj
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 16:57:11 +0000
-Received: by eyh6 with SMTP id 6so198541eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Apr 2011 09:57:08 -0700 (PDT)
-Subject: Re: [PATCH v2] MTD: Retry Read/Write Transfer Buffer Allocations
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Grant Erickson <marathon96@gmail.com>
-In-Reply-To: <C9C08930.27733%marathon96@gmail.com>
-References: <C9C08930.27733%marathon96@gmail.com>
+Subject: Re: [PATCH 00/34] Make kernel build deterministic
+From: James Bottomley <James.Bottomley@suse.de>
+To: Greg KH <gregkh@suse.de>
+In-Reply-To: <20110405154918.GA31337@suse.de>
+References: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
+	<20110405154918.GA31337@suse.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Apr 2011 19:54:27 +0300
-Message-ID: <1302022467.2760.154.camel@localhost>
+Date: Tue, 05 Apr 2011 11:16:52 -0700
+Message-ID: <1302027412.2924.7.camel@mulgrave.site>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Content-Transfer-Encoding: 7bit
+Cc: anil_ravindranath@pmc-sierra.com, mchehab@redhat.com,
+	benh@kernel.crashing.org, x86@kernel.org, mac@melware.de,
+	aacraid@adaptec.com, linux-mtd@lists.infradead.org,
+	allan.stephens@windriver.com, hpa@zytor.com,
+	netdev@vger.kernel.org, t.sailer@alumni.ethz.ch,
+	gwingerde@gmail.com, IvDoorn@gmail.com, elf@buici.com,
+	cluster-devel@redhat.com, ccaulfie@redhat.com, mingo@redhat.com,
+	dougthompson@xmission.com, linux-media@vger.kernel.org,
+	jon.maloy@ericsson.com, arnaud.giersch@free.fr,
+	linux-kbuild@vger.kernel.org, teigland@redhat.com,
+	tony.olech@elandigitalsystems.com, apw@canonical.com,
+	linux-hams@vger.kernel.org, tglx@linutronix.de,
+	swhiteho@redhat.com, linux-arm-kernel@lists.infradead.org,
+	linux-edac@vger.kernel.org, Michal Marek <mmarek@suse.cz>,
+	linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bluesmoke-devel@lists.sourceforge.net,
+	tipc-discussion@lists.sourceforge.net, chuanxiao.dong@intel.com,
+	paulus@samba.org, dwmw2@infradead.org, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,79 +37,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-05 at 08:54 -0700, Grant Erickson wrote:
-> Artem:
+On Tue, 2011-04-05 at 08:49 -0700, Greg KH wrote:
+> On Tue, Apr 05, 2011 at 04:58:47PM +0200, Michal Marek wrote:
+> > 
+> > Hi,
+> > 
+> > this series makes it possible to build bit-identical kernel image and
+> > modules from identical sources. Of course the build is already
+> > deterministic in terms of behavior of the code, but the various
+> > timestamps embedded in the object files make it hard to compare two
+> > builds, for instance to verify that a makefile cleanup didn't
+> > accidentally change something. A prime example is /proc/config.gz, which
+> > has both a timestamp in the gzip header and a timestamp in the payload
+> > data. With this series applied, a script like this will produce
+> > identical kernels each time:
 > 
-> Thanks for the quick turnaround in feedback. Please see inline below.
-> 
-> On 4/4/11 9:39 PM, Artem Bityutskiy wrote:
-> > On Mon, 2011-04-04 at 11:19 -0700, Grant Erickson wrote:
-> >> + * is highly fragmented at the cost of reducing the performance of the
-> >> + * requested transfer due to a smaller buffer size.
-> >> + *
-> >> + * A more complex but more memory-efficient implementation based on
-> >> + * get_user_pages and iovecs to cover extents of those pages is a
-> >> + * longer-term goal, as intimated by Linus above. However, for the
-> >> + * write case, this requires yet more complex head and tail transfer
-> >> + * handling when those head and tail offsets and sizes are such that
-> >> + * alignment requirements are not met in the NAND subdriver.
-> >> + */
-> >>  #define MAX_KMALLOC_SIZE 0x20000
-> >>  
-> >> +static void *mtd_try_alloc(size_t *size)
-> >> +{
-> >> + const gfp_t flags = (GFP_KERNEL | __GFP_NOWARN);
-> > 
-> > I still think you'll damage the performance when you try to do
-> > 
-> > kmalloc(128KiB, flags)
-> > 
-> > because as I wrote in my previous e-mail your system will start doing
-> > the following to free memory for you:
-> > 
-> > 1. write-back dirty FS data = overall slowdown = e.g., background mp3
-> >    playback glitches
-> > 2. drop FS caches = slow down later because the system will have to
-> >    re-read the dropped data from the media later.
-> > 3. not really sure, needs checking if this is the case, but I think
-> >    the kernel may start swapping out apps.
-> > 
-> > This is why I suggested to use the following flags here:
-> > 
-> > gfp_t flags = __GFP_NOWARN | __GFP_WAIT | __GFP_NORETRY;
-> 
-> On my system (64 MiB RAM, 256 MiB Flash), there is no swap and under these
-> allocation conditions for jffs2_scan_medium, mtd_read or mtd_write, I don't
-> see the kernel doing (1), (2) or (3).
+> Very nice stuff.  Do you want to take the individual patches through one
+> of your trees, or do you mind if the subsystem maintainers take them
+> through theirs?
 
-Well, the code is complex and not easy to follow if you do not know it.
-But I navigated it to the 'do_try_to_free_pages()' function. This
-function can be called by kmalloc(), and it does some of the things I
-described. And yes, kmalloc() may cause kswapd to wake up and start
-swapping, I can see it in '__alloc_pages_slowpath()'. To prevent this we
-need __GFP_NO_KSWAPD flag which I suggest you to also add.
+I'm happy for this to go through a single tree.
 
-> My impression is that the above behaviors are only activated when a swap
-> store exists and, in general, most systems using JFFS2 and MTD do not have
-> swap.
-
-Well, most but not all, I worked with one with swap (N900 phone).
-
-> Regardless, adding the additional flags should not be detrimental for
-> systems with no swap and, it sounds like, helpful for systems with it.
-
-OK. But things 1 and 2 which I described are relevant for non-swap
-systems anyway. Dunno why you did not observe them, probably you did not
-have high enough memory pressure and your flusher threads and other
-things kept the memory within limits (there are watermarks which cause
-background processes to start and free RAM if you cross them).
-
-> Regarding the suggestion of mtd_alloc_upto() or mtd_alloc_as_much(), are you
-> OK exporting these from mtdchar.c or would you rather they be moved to and
-> exported from mtdcore.c?
-
-I guess mtdcore is better place.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+James
