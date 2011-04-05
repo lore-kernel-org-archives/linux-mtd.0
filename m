@@ -1,34 +1,21 @@
-Subject: Re: [PATCH 00/34] Make kernel build deterministic
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q7ByJ-0008Rx-5V
+	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 19:31:28 +0000
+Received: by eyh6 with SMTP id 6so248472eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 05 Apr 2011 12:31:25 -0700 (PDT)
+Subject: Re: [PATCH] Retry Large Buffer Allocations
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Greg KH <gregkh@suse.de>
-In-Reply-To: <20110405154918.GA31337@suse.de>
-References: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
-	<20110405154918.GA31337@suse.de>
+To: Grant Erickson <marathon96@gmail.com>
+In-Reply-To: <1302028464-9519-1-git-send-email-marathon96@gmail.com>
+References: <1302028464-9519-1-git-send-email-marathon96@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Apr 2011 22:24:07 +0300
-Message-ID: <1302031447.2608.41.camel@koala>
+Date: Tue, 05 Apr 2011 22:31:22 +0300
+Message-ID: <1302031882.2608.48.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: anil_ravindranath@pmc-sierra.com, mchehab@redhat.com,
-	benh@kernel.crashing.org, mac@melware.de, aacraid@adaptec.com,
-	linux-mtd@lists.infradead.org, allan.stephens@windriver.com,
-	hpa@zytor.com, t.sailer@alumni.ethz.ch, gwingerde@gmail.com,
-	x86@kernel.org, elf@buici.com, cluster-devel@redhat.com,
-	ccaulfie@redhat.com, mingo@redhat.com, dougthompson@xmission.com,
-	dwmw2@infradead.org, linux-media@vger.kernel.org,
-	jon.maloy@ericsson.com, arnaud.giersch@free.fr,
-	linux-kbuild@vger.kernel.org, IvDoorn@gmail.com,
-	teigland@redhat.com, tony.olech@elandigitalsystems.com,
-	apw@canonical.com, linux-hams@vger.kernel.org,
-	tglx@linutronix.de, swhiteho@redhat.com,
-	linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-	Michal Marek <mmarek@suse.cz>, linux-scsi@vger.kernel.org,
-	netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-	davem@davemloft.net, James.Bottomley@suse.de,
-	tipc-discussion@lists.sourceforge.net, chuanxiao.dong@intel.com,
-	paulus@samba.org, linuxppc-dev@lists.ozlabs.org,
-	bluesmoke-devel@lists.sourceforge.net
+Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -39,32 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-05 at 08:49 -0700, Greg KH wrote:
-> On Tue, Apr 05, 2011 at 04:58:47PM +0200, Michal Marek wrote:
-> > 
-> > Hi,
-> > 
-> > this series makes it possible to build bit-identical kernel image and
-> > modules from identical sources. Of course the build is already
-> > deterministic in terms of behavior of the code, but the various
-> > timestamps embedded in the object files make it hard to compare two
-> > builds, for instance to verify that a makefile cleanup didn't
-> > accidentally change something. A prime example is /proc/config.gz, which
-> > has both a timestamp in the gzip header and a timestamp in the payload
-> > data. With this series applied, a script like this will produce
-> > identical kernels each time:
-> 
-> Very nice stuff.  Do you want to take the individual patches through one
-> of your trees, or do you mind if the subsystem maintainers take them
-> through theirs?
+Just partial review before I go to bed, to keep you busy :-)))
 
-But unfortunately, it is very easy to break this and for sure it'll be
-broken very soon.
+On Tue, 2011-04-05 at 11:34 -0700, Grant Erickson wrote:
+> 			kfree(kbuf);
+> diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+> index da69bc8..d102b96 100644
+> --- a/drivers/mtd/mtdcore.c
+> +++ b/drivers/mtd/mtdcore.c
+> @@ -638,6 +638,36 @@ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+>  	return ret;
+>  }
+>  
+> +/* mtd_alloc_up_to - called, for example by mtd_{read,write} and
+> + *			jffs2_scan_medium, to handle smaller (i.e. degraded) buffer
+> + *			allocations under low- or fragmented-memory situations where
+> + *			such reduced allocations, from a requested ideal, are allowed.
+> + */
 
-So additionally, I'd suggest:
-1. Instrument checkpatch.pl and make it err or warn on timestamps.
-2. Probably instrument linux-next to rise a warning when people break
-   this.
+Please, make the comment to be of proper style. See the CodingStyle
+file. Or even better - make it proper kerneldoc comment, if you can. I'm
+sure you'll find the rules in the "Documentation" directory, but this is
+optional. Also, please, put the comment just above the function. 
+> +#define MAX_KMALLOC_SIZE 0x20000
+> +
+> +void *mtd_alloc_up_to(size_t *size)
+> +{
+> +	gfp_t flags;
+> +	size_t try;
+> +	void *kbuf;
+> +
+> +	try = min_t(size_t, *size, MAX_KMALLOC_SIZE);
+> +
+> +	do {
+> +		flags = ((size == PAGE_SIZE) ?
+
+s/size/try/
+
+> +			 GFP_KERNEL :
+> +			 (__GFP_NOWARN | __GFP_WAIT |
+> +			   __GFP_NORETRY | __GFP_NO_KSWAPD));
+
+Sorry, but this construct is not beautiful and difficult to read. I'd
+call it abuse of ?: operators :-) I think it is much more readable to
+simply:
+
+1. initialize gfp_t flags to (__GFP_NOWARN .... ) when you initialize it
+or just before the loop.
+2. Do
+	if (try == PAGE_SIZE)
+		flags = GFP_KERNEL;
+
+Simple and readable.
+
+And do not forget to check the code with checkpatch.pl before sending
+out :-)
+
+Good night!
 
 -- 
 Best Regards,
