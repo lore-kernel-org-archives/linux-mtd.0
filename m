@@ -1,26 +1,32 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q780w-0005zM-1O
-	for linux-mtd@lists.infradead.org; Tue, 05 Apr 2011 15:17:54 +0000
-Received: by eyh6 with SMTP id 6so160146eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Apr 2011 08:17:52 -0700 (PDT)
-Subject: Re: [PATCH 16/34] nand/denali: Drop __TIME__ usage
-From: Artem Bityutskiy <dedekind1@gmail.com>
+Date: Tue, 5 Apr 2011 08:49:18 -0700
+From: Greg KH <gregkh@suse.de>
 To: Michal Marek <mmarek@suse.cz>
-In-Reply-To: <1302015561-21047-17-git-send-email-mmarek@suse.cz>
+Subject: Re: [PATCH 00/34] Make kernel build deterministic
+Message-ID: <20110405154918.GA31337@suse.de>
 References: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
-	<1302015561-21047-17-git-send-email-mmarek@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 05 Apr 2011 18:15:11 +0300
-Message-ID: <1302016511.2760.146.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Chuanxiao Dong <chuanxiao.dong@intel.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-kbuild@vger.kernel.org
-Reply-To: dedekind1@gmail.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
+Cc: anil_ravindranath@pmc-sierra.com, mchehab@redhat.com,
+	benh@kernel.crashing.org, x86@kernel.org, mac@melware.de,
+	aacraid@adaptec.com, linux-mtd@lists.infradead.org,
+	allan.stephens@windriver.com, hpa@zytor.com,
+	netdev@vger.kernel.org, t.sailer@alumni.ethz.ch,
+	gwingerde@gmail.com, IvDoorn@gmail.com, elf@buici.com,
+	cluster-devel@redhat.com, ccaulfie@redhat.com, mingo@redhat.com,
+	dougthompson@xmission.com, linux-media@vger.kernel.org,
+	arnaud.giersch@free.fr, linux-kbuild@vger.kernel.org,
+	teigland@redhat.com, tony.olech@elandigitalsystems.com,
+	apw@canonical.com, linux-hams@vger.kernel.org,
+	tglx@linutronix.de, swhiteho@redhat.com,
+	linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+	jon.maloy@ericsson.com, linux-scsi@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-usb@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bluesmoke-devel@lists.sourceforge.net, James.Bottomley@suse.de,
+	tipc-discussion@lists.sourceforge.net, chuanxiao.dong@intel.com,
+	paulus@samba.org, dwmw2@infradead.org, davem@davemloft.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +36,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-05 at 16:59 +0200, Michal Marek wrote:
-> The kernel already prints its build timestamp during boot, no need to
-> repeat it in random drivers and produce different object files each
-> time.
+On Tue, Apr 05, 2011 at 04:58:47PM +0200, Michal Marek wrote:
 > 
-> Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: linux-mtd@lists.infradead.org
-> Signed-off-by: Michal Marek <mmarek@suse.cz>
-> ---
->  drivers/mtd/nand/denali.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
+> Hi,
+> 
+> this series makes it possible to build bit-identical kernel image and
+> modules from identical sources. Of course the build is already
+> deterministic in terms of behavior of the code, but the various
+> timestamps embedded in the object files make it hard to compare two
+> builds, for instance to verify that a makefile cleanup didn't
+> accidentally change something. A prime example is /proc/config.gz, which
+> has both a timestamp in the gzip header and a timestamp in the payload
+> data. With this series applied, a script like this will produce
+> identical kernels each time:
 
-Pushed to l2-mtd-2.6.git, thanks.
+Very nice stuff.  Do you want to take the individual patches through one
+of your trees, or do you mind if the subsystem maintainers take them
+through theirs?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+thanks,
+
+greg k-h
