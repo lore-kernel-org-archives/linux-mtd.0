@@ -1,36 +1,16 @@
-Subject: Re: [PATCH 00/34] Make kernel build deterministic
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Michal Marek <mmarek@suse.cz>
-In-Reply-To: <4D9C2D56.70700@suse.cz>
-References: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
-	<20110405154918.GA31337@suse.de> <1302031447.2608.41.camel@koala>
-	<4D9C2D56.70700@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 06 Apr 2011 12:25:28 +0300
-Message-ID: <1302081928.2742.40.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: anil_ravindranath@pmc-sierra.com, mchehab@redhat.com,
-	benh@kernel.crashing.org, mac@melware.de, aacraid@adaptec.com,
-	linux-mtd@lists.infradead.org, allan.stephens@windriver.com,
-	hpa@zytor.com, t.sailer@alumni.ethz.ch, gwingerde@gmail.com,
-	x86@kernel.org, elf@buici.com, cluster-devel@redhat.com,
-	ccaulfie@redhat.com, mingo@redhat.com, dougthompson@xmission.com,
-	tipc-discussion@lists.sourceforge.net, dwmw2@infradead.org,
-	linux-media@vger.kernel.org, arnaud.giersch@free.fr,
-	linux-kbuild@vger.kernel.org, IvDoorn@gmail.com,
-	teigland@redhat.com, tony.olech@elandigitalsystems.com,
-	apw@canonical.com, linux-hams@vger.kernel.org,
-	tglx@linutronix.de, swhiteho@redhat.com,
-	linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-	jon.maloy@ericsson.com, linux-scsi@vger.kernel.org,
-	netdev@vger.kernel.org, Greg KH <gregkh@suse.de>,
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-	davem@davemloft.net, linux-usb@vger.kernel.org,
-	James.Bottomley@suse.de, chuanxiao.dong@intel.com,
-	paulus@samba.org, linuxppc-dev@lists.ozlabs.org,
-	bluesmoke-devel@lists.sourceforge.net
-Reply-To: dedekind1@gmail.com
+Message-ID: <4D9C4133.6080708@freescale.com>
+Date: Wed, 6 Apr 2011 18:32:19 +0800
+From: Huang Shijie <b32955@freescale.com>
+MIME-Version: 1.0
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH V4 0/4] add the GPMI controller driver for IMX23/IMX28
+References: <1301722240-15406-1-git-send-email-b32955@freescale.com>
+In-Reply-To: <1301722240-15406-1-git-send-email-b32955@freescale.com>
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: 7bit
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
+	linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
+	shijie8@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,31 +20,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-04-06 at 11:07 +0200, Michal Marek wrote:
-> > So additionally, I'd suggest:
-> > 1. Instrument checkpatch.pl and make it err or warn on timestamps.
-> 
-> This is patch 34/34 in this series: https://lkml.org/lkml/2011/4/5/198
+Hi:
 
-Yeah, great, did not notice, thanks!
+Does some one have any comments about this driver?
 
-> > 2. Probably instrument linux-next to rise a warning when people break
-> >    this.
-> 
-> I'm not sure if Stephen has that much spare time, and I don't think it
-> is necessary. I think the checkpatch check is sufficient and I'll check
-> myself occasionally.
+Thanks
 
-Yes, that's fine, I just wanted to speak this out - there is a
-probability that someone gets excited and creates some instrumentation
-to kbuild to automatically detect bad things and then Stephen could
-easily use that.
+Huang Shijie
 
-WRT "not necessary" - well, I think it is always better to cut bad
-things before they are merged, rather than afterwards.
-
-But anyway, let's forget about this.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> The general-purpose media interface(GPMI) controller is a flexible interface
+> to up to several NAND flashs.
+>
+> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelerator.
+>
+> With the help of BCH, the GPMI controller can choose to do the hardware ECC or
+> not.
+>
+> This driver is based the Shawn Guo's DMA patches for IMX23/IMX28,
+> please refer to :
+> 	http://git.infradead.org/users/vkoul/slave-dma.git/commit/a580b8c5429a624d120cd603e1498bf676e2b4da
+>
+> v3 --> v4:
+> 	[0] use the nand_ids{} as the nand database, drop my own database.
+> 	[1] remove the patch for DMA enginer, Shawn will submit his own version.
+> 	[2] use the platform_id to distinguish different Archs.
+> 	[3] fix the strange coding style.
+> 	[4] others.
+>
+> v2 --> v3:
+> 	[0] merge the imx23 and imx28 into one file(including the header file).
+> 	[1] remove the unuse registers in the headers.
+> 	[2] fix DMA bugs
+> 	[3] add bus width field to nand_attr{}
+> 	[4] others
+>
+> v1 --> v2:
+> 	[0] merge the common files into the gpmi-nfc-main.c
+> 	[1] change the code to get the clock.
+> 	[2] remove the timing in the nand_device_info{}
+> 	[3] fix DMA errors
+> 	[4] add the nand_device_info.[ch] to generic code
+> 	[5] use the chip->onfi_version for the ONFI nand
+> 	[6] useless init
+> 	[7] others
+>
+>
+> Huang Shijie (4):
+>   ARM: add GPMI support for imx23/imx28
+>   MTD : add the common code for GPMI controller driver
+>   MTD: add support for imx23 and imx28
+>   MTD : add GPMI driver in the config and Makefile
+>
+>  arch/arm/mach-mxs/Kconfig                       |    2 +
+>  arch/arm/mach-mxs/clock-mx23.c                  |    3 +
+>  arch/arm/mach-mxs/clock-mx28.c                  |    3 +
+>  arch/arm/mach-mxs/devices-mx23.h                |    3 +
+>  arch/arm/mach-mxs/devices-mx28.h                |    3 +
+>  arch/arm/mach-mxs/devices/Kconfig               |    3 +
+>  arch/arm/mach-mxs/devices/Makefile              |    1 +
+>  arch/arm/mach-mxs/devices/platform-gpmi.c       |  136 ++
+>  arch/arm/mach-mxs/include/mach/devices-common.h |    4 +
+>  arch/arm/mach-mxs/include/mach/gpmi-nfc.h       |   64 +
+>  arch/arm/mach-mxs/mach-mx23evk.c                |   37 +
+>  arch/arm/mach-mxs/mach-mx28evk.c                |   37 +
+>  drivers/mtd/nand/Kconfig                        |   10 +
+>  drivers/mtd/nand/Makefile                       |    1 +
+>  drivers/mtd/nand/gpmi-nfc/Makefile              |    5 +
+>  drivers/mtd/nand/gpmi-nfc/bch-mx23-mx28.h       |   88 +
+>  drivers/mtd/nand/gpmi-nfc/gpmi-mx23-mx28.h      |  163 ++
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c       | 2453 +++++++++++++++++++++++
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h            |  551 +++++
+>  drivers/mtd/nand/gpmi-nfc/hal-mx23-mx28.c       |  556 +++++
+>  drivers/mtd/nand/gpmi-nfc/rom-mx23.c            |  298 +++
+>  drivers/mtd/nand/gpmi-nfc/rom-mx28.c            |   66 +
+>  22 files changed, 4487 insertions(+), 0 deletions(-)
+>  create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi.c
+>  create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/Makefile
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/bch-mx23-mx28.h
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-mx23-mx28.h
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/hal-mx23-mx28.c
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-mx23.c
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-mx28.c
+>
