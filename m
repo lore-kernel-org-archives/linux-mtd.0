@@ -1,20 +1,34 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q7OX2-0004Bq-Py
-	for linux-mtd@lists.infradead.org; Wed, 06 Apr 2011 08:56:09 +0000
-Subject: Re: [PATCHv2] tests: introduce new target tests in Makefile
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <2016ea1c9296efd368a37e4f869bd8a51f20c537.1302015688.git.ext-andriy.shevchenko@nokia.com>
-References: <BANLkTimsfEKUMGBAfyLoeqSQnB-6u-jWPw@mail.gmail.com>
-	<2016ea1c9296efd368a37e4f869bd8a51f20c537.1302015688.git.ext-andriy.shevchenko@nokia.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 06 Apr 2011 11:53:17 +0300
-Message-ID: <1302079997.2742.30.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Florian Fainelli <ffainelli@freebox.fr>
-Reply-To: Artem.Bityutskiy@nokia.com
+Date: Wed, 6 Apr 2011 10:57:12 +0200
+From: Ingo Molnar <mingo@elte.hu>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH 00/34] Make kernel build deterministic
+Message-ID: <20110406085712.GA16597@elte.hu>
+References: <1302015561-21047-1-git-send-email-mmarek@suse.cz>
+	<20110405154918.GA31337@suse.de> <1302031447.2608.41.camel@koala>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1302031447.2608.41.camel@koala>
+Cc: anil_ravindranath@pmc-sierra.com, mchehab@redhat.com,
+	benh@kernel.crashing.org, mac@melware.de, aacraid@adaptec.com,
+	linux-mtd@lists.infradead.org, allan.stephens@windriver.com,
+	hpa@zytor.com, t.sailer@alumni.ethz.ch, gwingerde@gmail.com,
+	x86@kernel.org, elf@buici.com, cluster-devel@redhat.com,
+	ccaulfie@redhat.com, mingo@redhat.com, dougthompson@xmission.com,
+	tipc-discussion@lists.sourceforge.net, dwmw2@infradead.org,
+	linux-media@vger.kernel.org, jon.maloy@ericsson.com,
+	arnaud.giersch@free.fr, linux-kbuild@vger.kernel.org,
+	IvDoorn@gmail.com, teigland@redhat.com,
+	tony.olech@elandigitalsystems.com, apw@canonical.com,
+	linux-hams@vger.kernel.org, tglx@linutronix.de,
+	swhiteho@redhat.com, linux-arm-kernel@lists.infradead.org,
+	linux-edac@vger.kernel.org, Michal Marek <mmarek@suse.cz>,
+	linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+	Greg KH <gregkh@suse.de>, linux-wireless@vger.kernel.org,
+	linux-kernel@vger.kernel.org, davem@davemloft.net,
+	linux-usb@vger.kernel.org, James.Bottomley@suse.de,
+	chuanxiao.dong@intel.com, paulus@samba.org, linuxppc-dev@lists.ozlabs.org,
+	bluesmoke-devel@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +38,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-05 at 18:03 +0300, Andy Shevchenko wrote:
-> This patch appends Makefile to the tests subdirectory and introduces tests
-> target in the root Makefile.
-> 
-> Additionally the clean target removes temporary stuff under tests subdirectory
-> as well.
-> 
-> Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 
-Looks good for me, I'll wait a bit and if no one objects, will push it.
+* Artem Bityutskiy <dedekind1@gmail.com> wrote:
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+> On Tue, 2011-04-05 at 08:49 -0700, Greg KH wrote:
+> > On Tue, Apr 05, 2011 at 04:58:47PM +0200, Michal Marek wrote:
+> > > 
+> > > Hi,
+> > > 
+> > > this series makes it possible to build bit-identical kernel image and
+> > > modules from identical sources. Of course the build is already
+> > > deterministic in terms of behavior of the code, but the various
+> > > timestamps embedded in the object files make it hard to compare two
+> > > builds, for instance to verify that a makefile cleanup didn't
+> > > accidentally change something. A prime example is /proc/config.gz, which
+> > > has both a timestamp in the gzip header and a timestamp in the payload
+> > > data. With this series applied, a script like this will produce
+> > > identical kernels each time:
+> > 
+> > Very nice stuff.  Do you want to take the individual patches through one
+> > of your trees, or do you mind if the subsystem maintainers take them
+> > through theirs?
+> 
+> But unfortunately, it is very easy to break this and for sure it'll be
+> broken very soon.
+> 
+> So additionally, I'd suggest:
+> 1. Instrument checkpatch.pl and make it err or warn on timestamps.
+
+See the grandparent mail:
+
+  checkpatch: Warn about usage of __DATE__, __TIME__ and __TIMESTAMP__
+
+Thanks,
+
+	Ingo
