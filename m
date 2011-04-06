@@ -1,22 +1,34 @@
-Received: from smtp4-g21.free.fr ([212.27.42.4])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q7Odh-0004J5-MP
-	for linux-mtd@lists.infradead.org; Wed, 06 Apr 2011 09:03:02 +0000
-From: Florian Fainelli <ffainelli@freebox.fr>
-To: linux-mtd@lists.infradead.org,
- Artem.Bityutskiy@nokia.com
-Subject: Re: [PATCHv2] tests: introduce new target tests in Makefile
-Date: Wed, 6 Apr 2011 11:04:29 +0200
-References: <BANLkTimsfEKUMGBAfyLoeqSQnB-6u-jWPw@mail.gmail.com>
-	<2016ea1c9296efd368a37e4f869bd8a51f20c537.1302015688.git.ext-andriy.shevchenko@nokia.com>
-	<1302079997.2742.30.camel@localhost>
-In-Reply-To: <1302079997.2742.30.camel@localhost>
+Message-ID: <4D9C2D56.70700@suse.cz>
+Date: Wed, 06 Apr 2011 11:07:34 +0200
+From: Michal Marek <mmarek@suse.cz>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
+To: dedekind1@gmail.com
+Subject: Re: [PATCH 00/34] Make kernel build deterministic
+References: <1302015561-21047-1-git-send-email-mmarek@suse.cz>	
+	<20110405154918.GA31337@suse.de> <1302031447.2608.41.camel@koala>
+In-Reply-To: <1302031447.2608.41.camel@koala>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <201104061104.29679.ffainelli@freebox.fr>
-Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+Cc: anil_ravindranath@pmc-sierra.com, mchehab@redhat.com,
+	benh@kernel.crashing.org, mac@melware.de, aacraid@adaptec.com,
+	linux-mtd@lists.infradead.org, allan.stephens@windriver.com,
+	hpa@zytor.com, t.sailer@alumni.ethz.ch, gwingerde@gmail.com,
+	x86@kernel.org, elf@buici.com, cluster-devel@redhat.com,
+	ccaulfie@redhat.com, mingo@redhat.com, dougthompson@xmission.com,
+	tipc-discussion@lists.sourceforge.net, dwmw2@infradead.org,
+	linux-media@vger.kernel.org, arnaud.giersch@free.fr,
+	linux-kbuild@vger.kernel.org, IvDoorn@gmail.com,
+	teigland@redhat.com, tony.olech@elandigitalsystems.com,
+	apw@canonical.com, linux-hams@vger.kernel.org,
+	tglx@linutronix.de, swhiteho@redhat.com,
+	linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+	jon.maloy@ericsson.com, linux-scsi@vger.kernel.org,
+	netdev@vger.kernel.org, Greg KH <gregkh@suse.de>,
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	davem@davemloft.net, linux-usb@vger.kernel.org,
+	James.Bottomley@suse.de, chuanxiao.dong@intel.com,
+	paulus@samba.org, linuxppc-dev@lists.ozlabs.org,
+	bluesmoke-devel@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +38,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-
-On Wednesday 06 April 2011 10:53:17 Artem Bityutskiy wrote:
-> On Tue, 2011-04-05 at 18:03 +0300, Andy Shevchenko wrote:
-> > This patch appends Makefile to the tests subdirectory and introduces
-> > tests target in the root Makefile.
-> > 
-> > Additionally the clean target removes temporary stuff under tests
-> > subdirectory as well.
-> > 
-> > Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+On 5.4.2011 21:24, Artem Bityutskiy wrote:
+> On Tue, 2011-04-05 at 08:49 -0700, Greg KH wrote:
+>> On Tue, Apr 05, 2011 at 04:58:47PM +0200, Michal Marek wrote:
+>>>
+>>> Hi,
+>>>
+>>> this series makes it possible to build bit-identical kernel image and
+>>> modules from identical sources. Of course the build is already
+>>> deterministic in terms of behavior of the code, but the various
+>>> timestamps embedded in the object files make it hard to compare two
+>>> builds, for instance to verify that a makefile cleanup didn't
+>>> accidentally change something. A prime example is /proc/config.gz, which
+>>> has both a timestamp in the gzip header and a timestamp in the payload
+>>> data. With this series applied, a script like this will produce
+>>> identical kernels each time:
+>>
+>> Very nice stuff.  Do you want to take the individual patches through one
+>> of your trees, or do you mind if the subsystem maintainers take them
+>> through theirs?
 > 
-> Looks good for me, I'll wait a bit and if no one objects, will push it.
+> But unfortunately, it is very easy to break this and for sure it'll be
+> broken very soon.
 
-Looks good for me as well, thank you!
---
-Florian
+I'm not so pessimistic. 34 patches and 57 files might sound like a lot,
+but given that this has been accumulating since day one, the cleanup
+should last for some time.
+
+
+> So additionally, I'd suggest:
+> 1. Instrument checkpatch.pl and make it err or warn on timestamps.
+
+This is patch 34/34 in this series: https://lkml.org/lkml/2011/4/5/198
+
+
+> 2. Probably instrument linux-next to rise a warning when people break
+>    this.
+
+I'm not sure if Stephen has that much spare time, and I don't think it
+is necessary. I think the checkpatch check is sufficient and I'll check
+myself occasionally.
+
+Michal
