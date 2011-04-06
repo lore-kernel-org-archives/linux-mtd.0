@@ -1,16 +1,14 @@
-Message-ID: <4D9C4133.6080708@freescale.com>
-Date: Wed, 6 Apr 2011 18:32:19 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V4 0/4] add the GPMI controller driver for IMX23/IMX28
-References: <1301722240-15406-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1301722240-15406-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
-	linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
-	shijie8@gmail.com, linux-arm-kernel@lists.infradead.org
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q7QZQ-0005U6-0W
+	for linux-mtd@lists.infradead.org; Wed, 06 Apr 2011 11:06:44 +0000
+From: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: onenand: add ecclayout and subpage_sft for none-flex
+	4kb page onenand
+Date: Wed,  6 Apr 2011 14:06:17 +0300
+Message-Id: <1302087977-25062-1-git-send-email-roman.tereshonkov@nokia.com>
+Cc: kyungmin.park@samsung.com, Roman Tereshonkov <roman.tereshonkov@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,88 +18,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi:
+So as the ecclayout and suppage size for 4kb page
+Flex- and none-Flex OneNAND are different
+the new values for none-Flex 4kb page OneNAND memory are added.
 
-Does some one have any comments about this driver?
+The introduced ecclayout and suppage size are based on specification
+4Gb M-die OneNAND Flash (KFM4G16Q4M, KFN8G16Q4M). Rev. 1.3, Apr. 2010
 
-Thanks
+Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |   41 ++++++++++++++++++++++++++++++-----
+ 1 files changed, 35 insertions(+), 6 deletions(-)
 
-Huang Shijie
-
-> The general-purpose media interface(GPMI) controller is a flexible interface
-> to up to several NAND flashs.
->
-> The Bose Ray-Choudhury Hocquenghem(BCH) module is a hardware ECC accelerator.
->
-> With the help of BCH, the GPMI controller can choose to do the hardware ECC or
-> not.
->
-> This driver is based the Shawn Guo's DMA patches for IMX23/IMX28,
-> please refer to :
-> 	http://git.infradead.org/users/vkoul/slave-dma.git/commit/a580b8c5429a624d120cd603e1498bf676e2b4da
->
-> v3 --> v4:
-> 	[0] use the nand_ids{} as the nand database, drop my own database.
-> 	[1] remove the patch for DMA enginer, Shawn will submit his own version.
-> 	[2] use the platform_id to distinguish different Archs.
-> 	[3] fix the strange coding style.
-> 	[4] others.
->
-> v2 --> v3:
-> 	[0] merge the imx23 and imx28 into one file(including the header file).
-> 	[1] remove the unuse registers in the headers.
-> 	[2] fix DMA bugs
-> 	[3] add bus width field to nand_attr{}
-> 	[4] others
->
-> v1 --> v2:
-> 	[0] merge the common files into the gpmi-nfc-main.c
-> 	[1] change the code to get the clock.
-> 	[2] remove the timing in the nand_device_info{}
-> 	[3] fix DMA errors
-> 	[4] add the nand_device_info.[ch] to generic code
-> 	[5] use the chip->onfi_version for the ONFI nand
-> 	[6] useless init
-> 	[7] others
->
->
-> Huang Shijie (4):
->   ARM: add GPMI support for imx23/imx28
->   MTD : add the common code for GPMI controller driver
->   MTD: add support for imx23 and imx28
->   MTD : add GPMI driver in the config and Makefile
->
->  arch/arm/mach-mxs/Kconfig                       |    2 +
->  arch/arm/mach-mxs/clock-mx23.c                  |    3 +
->  arch/arm/mach-mxs/clock-mx28.c                  |    3 +
->  arch/arm/mach-mxs/devices-mx23.h                |    3 +
->  arch/arm/mach-mxs/devices-mx28.h                |    3 +
->  arch/arm/mach-mxs/devices/Kconfig               |    3 +
->  arch/arm/mach-mxs/devices/Makefile              |    1 +
->  arch/arm/mach-mxs/devices/platform-gpmi.c       |  136 ++
->  arch/arm/mach-mxs/include/mach/devices-common.h |    4 +
->  arch/arm/mach-mxs/include/mach/gpmi-nfc.h       |   64 +
->  arch/arm/mach-mxs/mach-mx23evk.c                |   37 +
->  arch/arm/mach-mxs/mach-mx28evk.c                |   37 +
->  drivers/mtd/nand/Kconfig                        |   10 +
->  drivers/mtd/nand/Makefile                       |    1 +
->  drivers/mtd/nand/gpmi-nfc/Makefile              |    5 +
->  drivers/mtd/nand/gpmi-nfc/bch-mx23-mx28.h       |   88 +
->  drivers/mtd/nand/gpmi-nfc/gpmi-mx23-mx28.h      |  163 ++
->  drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c       | 2453 +++++++++++++++++++++++
->  drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h            |  551 +++++
->  drivers/mtd/nand/gpmi-nfc/hal-mx23-mx28.c       |  556 +++++
->  drivers/mtd/nand/gpmi-nfc/rom-mx23.c            |  298 +++
->  drivers/mtd/nand/gpmi-nfc/rom-mx28.c            |   66 +
->  22 files changed, 4487 insertions(+), 0 deletions(-)
->  create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi.c
->  create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/Makefile
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/bch-mx23-mx28.h
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-mx23-mx28.h
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/hal-mx23-mx28.c
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-mx23.c
->  create mode 100644 drivers/mtd/nand/gpmi-nfc/rom-mx28.c
->
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 56a8b20..b626e3d 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -65,11 +65,11 @@ MODULE_PARM_DESC(otp,	"Corresponding behaviour of OneNAND in OTP"
+ 			"	   : 2 -> 1st Block lock"
+ 			"	   : 3 -> BOTH OTP Block and 1st Block lock");
+ 
+-/**
+- *  onenand_oob_128 - oob info for Flex-Onenand with 4KB page
+- *  For now, we expose only 64 out of 80 ecc bytes
++/*
++ * flexonenand_oob_128 - oob info for Flex-Onenand with 4KB page
++ * For now, we expose only 64 out of 80 ecc bytes
+  */
+-static struct nand_ecclayout onenand_oob_128 = {
++static struct nand_ecclayout flexonenand_oob_128 = {
+ 	.eccbytes	= 64,
+ 	.eccpos		= {
+ 		6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+@@ -86,6 +86,30 @@ static struct nand_ecclayout onenand_oob_128 = {
+ 	}
+ };
+ 
++/*
++ * onenand_oob_128 - oob info for OneNAND with 4KB page
++ *
++ * Based on specification:
++ * 4Gb M-die OneNAND Flash (KFM4G16Q4M, KFN8G16Q4M). Rev. 1.3, Apr. 2010
++ */
++static struct nand_ecclayout onenand_oob_128 = {
++	.eccbytes	= 64,
++	.eccpos		= {
++		7, 8, 9, 10, 11, 12, 13, 14, 15,
++		23, 24, 25, 26, 27, 28, 29, 30, 31,
++		39, 40, 41, 42, 43, 44, 45, 46, 47,
++		55, 56, 57, 58, 59, 60, 61, 62, 63,
++		71, 72, 73, 74, 75, 76, 77, 78, 79,
++		87, 88, 89, 90, 91, 92, 93, 94, 95,
++		103, 104, 105, 106, 107, 108, 109, 110, 111,
++		119
++	},
++	.oobfree	= {
++		{5, 2}, {21, 2}, {37, 2}, {53, 2},
++		{69, 2}, {85, 2}, {101, 2}, {117, 2}
++	}
++};
++
+ /**
+  * onenand_oob_64 - oob info for large (2KB) page
+  */
+@@ -4018,8 +4042,13 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
+ 	 */
+ 	switch (mtd->oobsize) {
+ 	case 128:
+-		this->ecclayout = &onenand_oob_128;
+-		mtd->subpage_sft = 0;
++		if (FLEXONENAND(this)) {
++			this->ecclayout = &flexonenand_oob_128;
++			mtd->subpage_sft = 0;
++		} else {
++			this->ecclayout = &onenand_oob_128;
++			mtd->subpage_sft = 2;
++		}
+ 		break;
+ 	case 64:
+ 		this->ecclayout = &onenand_oob_64;
+-- 
+1.7.0.4
