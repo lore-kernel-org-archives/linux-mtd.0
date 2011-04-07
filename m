@@ -1,20 +1,20 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q7rIK-0000Ao-Qr
-	for linux-mtd@lists.infradead.org; Thu, 07 Apr 2011 15:38:53 +0000
-Received: by pwi8 with SMTP id 8so1104084pwi.36
+	id 1Q7rNF-0000Db-IE
+	for linux-mtd@lists.infradead.org; Thu, 07 Apr 2011 15:43:58 +0000
+Received: by gyh20 with SMTP id 20so1170375gyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 07 Apr 2011 08:38:50 -0700 (PDT)
+	Thu, 07 Apr 2011 08:43:56 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <1302188641-30514-1-git-send-email-fransmeulenbroeks@gmail.com>
 References: <1302188641-30514-1-git-send-email-fransmeulenbroeks@gmail.com>
-Date: Thu, 7 Apr 2011 17:38:50 +0200
-Message-ID: <BANLkTimf4kr+2_AaU3Eo3j=6Pu5e1KgJOA@mail.gmail.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Thu, 7 Apr 2011 11:43:36 -0400
+Message-ID: <BANLkTi=TG-3ytyd7_wvbiFYur7xP8U0wNg@mail.gmail.com>
 Subject: Re: [PATCH] flashcp: improve speed & some clean ups
-From: Leon Woestenberg <leon.woestenberg@gmail.com>
 To: Frans Meulenbroeks <fransmeulenbroeks@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,22 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Frans,
-
-On Thu, Apr 7, 2011 at 5:04 PM, Frans Meulenbroeks
-<fransmeulenbroeks@gmail.com> wrote:
-> +static int compare(unsigned char *src, unsigned char *dst, ssize_t len)
-> +{
-> + =A0 =A0 =A0 int rv =3D 0;
-> + =A0 =A0 =A0 unsigned long long *sp =3D (unsigned long long *)src;
-> + =A0 =A0 =A0 unsigned long long *dp =3D (unsigned long long *)dst;
-> +
-
-Dangerous on platforms that do not support non-natural alignments (ARM is o=
-ne).
-
-Unless the alignment rules are enforced elsewhere?
-
-Regards,
-
-Leon.
+T24gVGh1LCBBcHIgNywgMjAxMSBhdCAxMTowNCwgRnJhbnMgTWV1bGVuYnJvZWtzIHdyb3RlOgo+
+IHRoZSBzcGVlZCBvZiB0aGUgcHJvZ3JhbSBpcyBpbXByb3ZlZCBieToKPiAtIGNoZWNraW5nIGlm
+IGEgYmxvY2sgbmVlZHMgdG8gYmUgZXJhc2VkIGJlZm9yZSBhY3R1YWxseSBlcmFzaW5nIGl0Cgpk
+b2VzbnQgdGhpcyBtYWtlIGFuIGFzc3VtcHRpb24gYWJvdXQgdGhlIHZhbHVlcyBvZiBhbiB1bndy
+aXR0ZW4gZmxhc2gKPyAgaWlyYywgdGhpcyBjYW1lIHVwIGluIHRoZSBwYXN0IGFuZCB3ZSBvcHRl
+ZCB0byBub3QgYmxpbmRseSBtYWtlCnRoYXQgYXNzdW1wdGlvbi4gIHByb2JhYmx5IGJlc3QgdG8g
+cHV0IGl0IGJlaGluZCBhIG5ldyBjb21tYW5kIGxpbmUKb3B0aW9uIHRoYXQgdGhlIHVzZXIgaGFz
+IHRvIG9wdCBpbnRvLgoKPiAtc3RhdGljIHZvaWQgc2hvd3VzYWdlKGJvb2wgZXJyb3IpCj4gK3N0
+YXRpYyB2b2lkIHNob3d1c2FnZSAoY29uc3QgY2hhciAqcHJvZ25hbWUsYm9vbCBlcnJvcikKCnlv
+dXIgc3R5bGUgdGhyb3VnaG91dCB0aGlzIHBhdGNoIGlzIHdyb25nLiAgdGhpcyBpcyBsa21sIHN0
+eWxlLCBub3QKR05VLiAgZm9yIGV4YW1wbGU6CiAtIG5vIHNwYWNlIGJldHdlZW4gZnVuYyBhbmQg
+b3BlbiBwYXJlbgogLSBzcGFjZSBhZnRlciBjb21tYXMKIC0gYnJhY2VzIGFmdGVyIGlmL3doaWxl
+L2Zvci9ldGMuLi4gbmVlZCB0byBiZSBjdWRkbGVkCgo+IEBAIC05NCwxNSArODcsMTUgQEAgc3Rh
+dGljIHZvaWQgc2hvd3VzYWdlKGJvb2wgZXJyb3IpCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAiXG4iCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAiRmxh
+c2ggQ29weSAtIFdyaXR0ZW4gYnkgQWJyYWhhbSB2YW4gZGVyIE1lcndlIDxhYnJhaGFtQDJkM2Qu
+Y28uemE+XG4iCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAiXG4iCj4gLSDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAidXNhZ2U6ICUxJHMgWyAtdiB8IC0tdmVy
+Ym9zZSBdIDxmaWxlbmFtZT4gPGRldmljZT5cbiIKPiAtIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgICIgwqAgwqAgwqAgJTEkcyAtaCB8IC0taGVscFxuIgo+ICsgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgInVzYWdlOiAlcyBbIC12IHwgLS12ZXJib3NlIF0gPGZpbGVu
+YW1lPiA8ZGV2aWNlPlxuIgo+ICsgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgIiDC
+oCDCoCDCoCAlcyAtaCB8IC0taGVscFxuIgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIlxuIgo+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIiDCoCAtaCB8
+IC0taGVscCDCoCDCoCDCoFNob3cgdGhpcyBoZWxwIG1lc3NhZ2VcbiIKPiDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCIgwqAgLXYgfCAtLXZlcmJvc2UgwqAgU2hvdyBwcm9ncmVz
+cyByZXBvcnRzXG4iCj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAiIMKgIDxm
+aWxlbmFtZT4gwqAgwqAgwqAgRmlsZSB3aGljaCB5b3Ugd2FudCB0byBjb3B5IHRvIGZsYXNoXG4i
+Cj4gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAiIMKgIDxkZXZpY2U+IMKgIMKg
+IMKgIMKgIEZsYXNoIGRldmljZSB0byB3cml0ZSB0byAoZS5nLiAvZGV2L210ZDAsIC9kZXYvbXRk
+MSwgZXRjLilcbiIKPiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCJcbiIsCj4g
+LSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCBQUk9HUkFNX05BTUUpOwo+ICsgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgcHJvZ25hbWUscHJvZ25hbWUpOwoKaWdub3Jp
+bmcgdGhlIHN0eWxlIGlzc3VlIHlvdSBpbnRyb2R1Y2VkLCBpIGRvbnQgc2VlIGhvdyB5b3VyIGNo
+YW5nZQpmcm9tICUxJHMgdG8gJXMgaXMgY29ycmVjdC4gIGFsbCB5b3UgaGFkIHRvIGRvIHdhcyBj
+aGFuZ2UgUFJPR1JBTV9OQU1FCnRvIHByb2duYW1lLgoKaSdsbCBob2xkIG9mZiBvbiByZXZpZXdp
+bmcgbW9yZSB1bnRpbCB0aGVzZSBmdW5kYW1lbnRhbCBpc3N1ZXMgYXJlIGZpeGVkLgotbWlrZQo=
