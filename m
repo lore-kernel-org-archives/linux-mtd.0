@@ -1,13 +1,17 @@
-From: "Justin P. Mattock" <justinmattock@gmail.com>
-To: trivial@kernel.org
-Subject: [RFC 1/6]Fix typo "recieve" in various parts of the kernel.
-Date: Thu,  7 Apr 2011 09:09:22 -0700
-Message-Id: <1302192567-842-1-git-send-email-justinmattock@gmail.com>
-Cc: linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-	socketcan-core@lists.berlios.de, linux-mtd@lists.infradead.org,
-	"Justin P. Mattock" <justinmattock@gmail.com>, linux-input@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q7tCG-0001H2-Pl
+	for linux-mtd@lists.infradead.org; Thu, 07 Apr 2011 17:40:46 +0000
+Received: by vxd2 with SMTP id 2so2579392vxd.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 07 Apr 2011 10:40:43 -0700 (PDT)
+From: Grant Erickson <marathon96@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v4] Retry Large Buffer Allocations
+Date: Thu,  7 Apr 2011 10:40:35 -0700
+Message-Id: <1302198035-32577-1-git-send-email-marathon96@gmail.com>
+Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,290 +21,238 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch below fixes some typos "recieve" in various parts of the kernel.
-Note: these below are in actual code rather than comments(excpet for r852.c which
-has a code fix, and comment).
-compile tested as best as I can...
+When handling user space read or write requests via mtd_{read,write}
+or JFFS2 medium scan requests, exponentially back off on the size of
+the requested kernel transfer buffer until it succeeds or until the
+requested transfer buffer size falls below the page size.
 
-Signed-off-by: Justin P. Mattock <justinmattock@gmail.com>
-CC: linux-input@vger.kernel.org
-CC: linux-arm-kernel@lists.infradead.org 
-CC: linux-mtd@lists.infradead.org
-CC: netdev@vger.kernel.org
-CC: socketcan-core@lists.berlios.de
-CC: linux-scsi@vger.kernel.org 
-CC: linux-usb@vger.kernel.org
+This helps ensure the operation can succeed under low-memory,
+highly-fragmented situations albeit somewhat more slowly.
+
+  v2: Incorporated coding style and comment feedback from Artem.
+  v3: Incorporated more feedback from Artem. Retargeted patch against
+      l2-mtd-2.6.
+  v4: Incorporated feedback from Artem about compilation on 64-bit
+      architectures.
+
+Signed-off-by: Grant Erickson <marathon96@gmail.com>
 ---
- drivers/input/misc/keyspan_remote.c |    2 +-
- drivers/mfd/ab8500-gpadc.c          |    2 +-
- drivers/mtd/nand/r852.c             |    6 +++---
- drivers/net/bnx2x/bnx2x_link.c      |    8 ++++----
- drivers/net/can/janz-ican3.c        |    4 ++--
- drivers/scsi/scsi_netlink.c         |    2 +-
- drivers/usb/misc/ftdi-elan.c        |   28 ++++++++++++++--------------
- drivers/uwb/reset.c                 |    2 +-
- 8 files changed, 27 insertions(+), 27 deletions(-)
+ drivers/mtd/mtdchar.c   |   50 +++++++++++++++++++++-------------------------
+ drivers/mtd/mtdcore.c   |   41 ++++++++++++++++++++++++++++++++++++++
+ fs/jffs2/scan.c         |   19 ++++++++++-------
+ include/linux/mtd/mtd.h |    2 +
+ 4 files changed, 77 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/input/misc/keyspan_remote.c b/drivers/input/misc/keyspan_remote.c
-index a93c525..fc62256 100644
---- a/drivers/input/misc/keyspan_remote.c
-+++ b/drivers/input/misc/keyspan_remote.c
-@@ -312,7 +312,7 @@ static void keyspan_check_data(struct usb_keyspan *remote)
- 			remote->data.tester = remote->data.tester >> 5;
- 			remote->data.bits_left -= 5;
- 		} else {
--			err("Bad message recieved, no stop bit found.\n");
-+			err("Bad message received, no stop bit found.\n");
- 		}
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 145b3d0d..9301464 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -166,10 +166,23 @@ static int mtd_close(struct inode *inode, struct file *file)
+ 	return 0;
+ } /* mtd_close */
  
- 		dev_dbg(&remote->udev->dev,
-diff --git a/drivers/mfd/ab8500-gpadc.c b/drivers/mfd/ab8500-gpadc.c
-index bc93b2e..ea91ef1 100644
---- a/drivers/mfd/ab8500-gpadc.c
-+++ b/drivers/mfd/ab8500-gpadc.c
-@@ -314,7 +314,7 @@ int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 input)
- 	/* wait for completion of conversion */
- 	if (!wait_for_completion_timeout(&gpadc->ab8500_gpadc_complete, 2*HZ)) {
- 		dev_err(gpadc->dev,
--			"timeout: didnt recieve GPADC conversion interrupt\n");
-+			"timeout: didnt receive GPADC conversion interrupt\n");
- 		ret = -EINVAL;
- 		goto out;
- 	}
-diff --git a/drivers/mtd/nand/r852.c b/drivers/mtd/nand/r852.c
-index 6322d1f..45a3f60 100644
---- a/drivers/mtd/nand/r852.c
-+++ b/drivers/mtd/nand/r852.c
-@@ -766,7 +766,7 @@ static irqreturn_t r852_irq(int irq, void *data)
- 		ret = IRQ_HANDLED;
- 		dev->card_detected = !!(card_status & R852_CARD_IRQ_INSERT);
+-/* FIXME: This _really_ needs to die. In 2.5, we should lock the
+-   userspace buffer down and use it directly with readv/writev.
+-*/
+-#define MAX_KMALLOC_SIZE 0x20000
++/* Back in April 2005, Linus wrote:
++ *
++ *   FIXME: This _really_ needs to die. In 2.5, we should lock the
++ *   userspace buffer down and use it directly with readv/writev.
++ *
++ * The implementation below, using mtd_kmalloc_up_to, mitigates
++ * allocation failures when the system is under low-memory situations
++ * or if memory is highly fragmented at the cost of reducing the
++ * performance of the requested transfer due to a smaller buffer size.
++ *
++ * A more complex but more memory-efficient implementation based on
++ * get_user_pages and iovecs to cover extents of those pages is a
++ * longer-term goal, as intimated by Linus above. However, for the
++ * write case, this requires yet more complex head and tail transfer
++ * handling when those head and tail offsets and sizes are such that
++ * alignment requirements are not met in the NAND subdriver.
++ */
  
--		/* we shouldn't recieve any interrupts if we wait for card
-+		/* we shouldn't receive any interrupts if we wait for card
- 			to settle */
- 		WARN_ON(dev->card_unstable);
- 
-@@ -794,13 +794,13 @@ static irqreturn_t r852_irq(int irq, void *data)
- 		ret = IRQ_HANDLED;
- 
- 		if (dma_status & R852_DMA_IRQ_ERROR) {
--			dbg("recieved dma error IRQ");
-+			dbg("received dma error IRQ");
- 			r852_dma_done(dev, -EIO);
- 			complete(&dev->dma_done);
- 			goto out;
- 		}
- 
--		/* recieved DMA interrupt out of nowhere? */
-+		/* received DMA interrupt out of nowhere? */
- 		WARN_ON_ONCE(dev->dma_stage == 0);
- 
- 		if (dev->dma_stage == 0)
-diff --git a/drivers/net/bnx2x/bnx2x_link.c b/drivers/net/bnx2x/bnx2x_link.c
-index f2f367d..d25491b 100644
---- a/drivers/net/bnx2x/bnx2x_link.c
-+++ b/drivers/net/bnx2x/bnx2x_link.c
-@@ -2385,7 +2385,7 @@ static void bnx2x_check_fallback_to_cl37(struct bnx2x_phy *phy,
- 					 struct link_params *params)
+ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t *ppos)
  {
- 	struct bnx2x *bp = params->bp;
--	u16 rx_status, ustat_val, cl37_fsm_recieved;
-+	u16 rx_status, ustat_val, cl37_fsm_received;
- 	DP(NETIF_MSG_LINK, "bnx2x_check_fallback_to_cl37\n");
- 	/* Step 1: Make sure signal is detected */
- 	CL22_RD_OVER_CL45(bp, phy,
-@@ -2423,15 +2423,15 @@ static void bnx2x_check_fallback_to_cl37(struct bnx2x_phy *phy,
- 	CL22_RD_OVER_CL45(bp, phy,
- 			  MDIO_REG_BANK_REMOTE_PHY,
- 			  MDIO_REMOTE_PHY_MISC_RX_STATUS,
--			  &cl37_fsm_recieved);
--	if ((cl37_fsm_recieved &
-+			  &cl37_fsm_received);
-+	if ((cl37_fsm_received &
- 	     (MDIO_REMOTE_PHY_MISC_RX_STATUS_CL37_FSM_RECEIVED_OVER1G_MSG |
- 	     MDIO_REMOTE_PHY_MISC_RX_STATUS_CL37_FSM_RECEIVED_BRCM_OUI_MSG)) !=
- 	    (MDIO_REMOTE_PHY_MISC_RX_STATUS_CL37_FSM_RECEIVED_OVER1G_MSG |
- 	      MDIO_REMOTE_PHY_MISC_RX_STATUS_CL37_FSM_RECEIVED_BRCM_OUI_MSG)) {
- 		DP(NETIF_MSG_LINK, "No CL37 FSM were received. "
- 			     "misc_rx_status(0x8330) = 0x%x\n",
--			 cl37_fsm_recieved);
-+			 cl37_fsm_received);
- 		return;
- 	}
- 	/*
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 102b16c..98667f9 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -1050,7 +1050,7 @@ static void ican3_handle_inquiry(struct ican3_dev *mod, struct ican3_msg *msg)
- 		complete(&mod->termination_comp);
- 		break;
- 	default:
--		dev_err(mod->dev, "recieved an unknown inquiry response\n");
-+		dev_err(mod->dev, "received an unknown inquiry response\n");
- 		break;
- 	}
- }
-@@ -1058,7 +1058,7 @@ static void ican3_handle_inquiry(struct ican3_dev *mod, struct ican3_msg *msg)
- static void ican3_handle_unknown_message(struct ican3_dev *mod,
- 					struct ican3_msg *msg)
+@@ -179,6 +192,7 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
+ 	size_t total_retlen=0;
+ 	int ret=0;
+ 	int len;
++	size_t size = count;
+ 	char *kbuf;
+ 
+ 	DEBUG(MTD_DEBUG_LEVEL0,"MTD_read\n");
+@@ -189,23 +203,12 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
+ 	if (!count)
+ 		return 0;
+ 
+-	/* FIXME: Use kiovec in 2.5 to lock down the user's buffers
+-	   and pass them directly to the MTD functions */
+-
+-	if (count > MAX_KMALLOC_SIZE)
+-		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
+-	else
+-		kbuf=kmalloc(count, GFP_KERNEL);
+-
++	kbuf = mtd_kmalloc_up_to(&size);
+ 	if (!kbuf)
+ 		return -ENOMEM;
+ 
+ 	while (count) {
+-
+-		if (count > MAX_KMALLOC_SIZE)
+-			len = MAX_KMALLOC_SIZE;
+-		else
+-			len = count;
++		len = min_t(size_t, count, size);
+ 
+ 		switch (mfi->mode) {
+ 		case MTD_MODE_OTP_FACTORY:
+@@ -268,6 +271,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
  {
--	dev_warn(mod->dev, "recieved unknown message: spec 0x%.2x length %d\n",
-+	dev_warn(mod->dev, "received unknown message: spec 0x%.2x length %d\n",
- 			   msg->spec, le16_to_cpu(msg->len));
+ 	struct mtd_file_info *mfi = file->private_data;
+ 	struct mtd_info *mtd = mfi->mtd;
++	size_t size = count;
+ 	char *kbuf;
+ 	size_t retlen;
+ 	size_t total_retlen=0;
+@@ -285,20 +289,12 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
+ 	if (!count)
+ 		return 0;
+ 
+-	if (count > MAX_KMALLOC_SIZE)
+-		kbuf=kmalloc(MAX_KMALLOC_SIZE, GFP_KERNEL);
+-	else
+-		kbuf=kmalloc(count, GFP_KERNEL);
+-
++	kbuf = mtd_kmalloc_up_to(&size);
+ 	if (!kbuf)
+ 		return -ENOMEM;
+ 
+ 	while (count) {
+-
+-		if (count > MAX_KMALLOC_SIZE)
+-			len = MAX_KMALLOC_SIZE;
+-		else
+-			len = count;
++		len = min_t(size_t, count, size);
+ 
+ 		if (copy_from_user(kbuf, buf, len)) {
+ 			kfree(kbuf);
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index da69bc8..6f720cc 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -638,6 +638,46 @@ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ 	return ret;
  }
  
-diff --git a/drivers/scsi/scsi_netlink.c b/drivers/scsi/scsi_netlink.c
-index a2ed201..26a8a45 100644
---- a/drivers/scsi/scsi_netlink.c
-+++ b/drivers/scsi/scsi_netlink.c
-@@ -499,7 +499,7 @@ scsi_netlink_init(void)
- 				SCSI_NL_GRP_CNT, scsi_nl_rcv_msg, NULL,
- 				THIS_MODULE);
- 	if (!scsi_nl_sock) {
--		printk(KERN_ERR "%s: register of recieve handler failed\n",
-+		printk(KERN_ERR "%s: register of receive handler failed\n",
- 				__func__);
- 		netlink_unregister_notifier(&scsi_netlink_notifier);
- 		return;
-diff --git a/drivers/usb/misc/ftdi-elan.c b/drivers/usb/misc/ftdi-elan.c
-index 7839c98..1871a30 100644
---- a/drivers/usb/misc/ftdi-elan.c
-+++ b/drivers/usb/misc/ftdi-elan.c
-@@ -187,7 +187,7 @@ struct usb_ftdi {
-         u32 controlreg;
-         u8 response[4 + 1024];
-         int expected;
--        int recieved;
-+        int received;
-         int ed_found;
- };
- #define kref_to_usb_ftdi(d) container_of(d, struct usb_ftdi, kref)
-@@ -353,7 +353,7 @@ static void ftdi_elan_abandon_targets(struct usb_ftdi *ftdi)
-                         mutex_lock(&ftdi->u132_lock);
-                 }
-         }
--        ftdi->recieved = 0;
-+        ftdi->received = 0;
-         ftdi->expected = 4;
-         ftdi->ed_found = 0;
-         mutex_unlock(&ftdi->u132_lock);
-@@ -411,7 +411,7 @@ static void ftdi_elan_flush_targets(struct usb_ftdi *ftdi)
-                         }
-                 }
-         }
--        ftdi->recieved = 0;
-+        ftdi->received = 0;
-         ftdi->expected = 4;
-         ftdi->ed_found = 0;
-         mutex_unlock(&ftdi->u132_lock);
-@@ -447,7 +447,7 @@ static void ftdi_elan_cancel_targets(struct usb_ftdi *ftdi)
-                         }
-                 }
-         }
--        ftdi->recieved = 0;
-+        ftdi->received = 0;
-         ftdi->expected = 4;
-         ftdi->ed_found = 0;
-         mutex_unlock(&ftdi->u132_lock);
-@@ -874,7 +874,7 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
-                         mutex_unlock(&ftdi->u132_lock);
-                         ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
-                                 payload);
--                        ftdi->recieved = 0;
-+                        ftdi->received = 0;
-                         ftdi->expected = 4;
-                         ftdi->ed_found = 0;
-                         return ftdi->response;
-@@ -890,7 +890,7 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
-                         mutex_unlock(&ftdi->u132_lock);
-                         ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
-                                 payload);
--                        ftdi->recieved = 0;
-+                        ftdi->received = 0;
-                         ftdi->expected = 4;
-                         ftdi->ed_found = 0;
-                         return ftdi->response;
-@@ -905,7 +905,7 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
-                 mutex_unlock(&ftdi->u132_lock);
-                 ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
-                         payload);
--                ftdi->recieved = 0;
-+                ftdi->received = 0;
-                 ftdi->expected = 4;
-                 ftdi->ed_found = 0;
-                 return ftdi->response;
-@@ -914,7 +914,7 @@ static char *have_ed_set_response(struct usb_ftdi *ftdi,
-                 mutex_unlock(&ftdi->u132_lock);
-                 ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
-                         payload);
--                ftdi->recieved = 0;
-+                ftdi->received = 0;
-                 ftdi->expected = 4;
-                 ftdi->ed_found = 0;
-                 return ftdi->response;
-@@ -934,7 +934,7 @@ static char *have_ed_get_response(struct usb_ftdi *ftdi,
-         if (target->active)
-                 ftdi_elan_do_callback(ftdi, target, NULL, 0);
-         target->abandoning = 0;
--        ftdi->recieved = 0;
-+        ftdi->received = 0;
-         ftdi->expected = 4;
-         ftdi->ed_found = 0;
-         return ftdi->response;
-@@ -951,7 +951,7 @@ static char *have_ed_get_response(struct usb_ftdi *ftdi,
- */
- static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
- {
--        u8 *b = ftdi->response + ftdi->recieved;
-+        u8 *b = ftdi->response + ftdi->received;
-         int bytes_read = 0;
-         int retry_on_empty = 1;
-         int retry_on_timeout = 3;
-@@ -1043,11 +1043,11 @@ static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
-                 u8 c = ftdi->bulk_in_buffer[++ftdi->bulk_in_last];
-                 bytes_read += 1;
-                 ftdi->bulk_in_left -= 1;
--                if (ftdi->recieved == 0 && c == 0xFF) {
-+                if (ftdi->received == 0 && c == 0xFF) {
-                         goto have;
-                 } else
-                         *b++ = c;
--                if (++ftdi->recieved < ftdi->expected) {
-+                if (++ftdi->received < ftdi->expected) {
-                         goto have;
-                 } else if (ftdi->ed_found) {
-                         int ed_number = (ftdi->response[0] >> 5) & 0x03;
-@@ -1069,7 +1069,7 @@ static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
-                         }
-                         ftdi_elan_do_callback(ftdi, target, 4 + ftdi->response,
-                                 payload);
--                        ftdi->recieved = 0;
-+                        ftdi->received = 0;
-                         ftdi->expected = 4;
-                         ftdi->ed_found = 0;
-                         b = ftdi->response;
-@@ -1089,7 +1089,7 @@ static int ftdi_elan_respond_engine(struct usb_ftdi *ftdi)
-                         *respond->value = data;
-                         *respond->result = 0;
-                         complete(&respond->wait_completion);
--                        ftdi->recieved = 0;
-+                        ftdi->received = 0;
-                         ftdi->expected = 4;
-                         ftdi->ed_found = 0;
-                         b = ftdi->response;
-diff --git a/drivers/uwb/reset.c b/drivers/uwb/reset.c
-index 2784929..3de630b 100644
---- a/drivers/uwb/reset.c
-+++ b/drivers/uwb/reset.c
-@@ -52,7 +52,7 @@ const char *__strerror[] = {
- 	"cancelled",
- 	"invalid state",
- 	"invalid size",
--	"ack not recieved",
-+	"ack not received",
- 	"no more asie notification",
- };
++/**
++ * mtd_kmalloc_up_to - allocate a contiguous buffer up to the specified size
++ * @size: A pointer to the ideal or maximum size of the allocation. Points
++ *        to the actual allocation size on success.
++ *
++ * This routine attempts to allocate a contiguous kernel buffer up to
++ * the specified size, backing off the size of the request exponentially
++ * until the request succeeds or until the allocation size falls below
++ * the system page size. This attempts to make sure it does not adversely
++ * impact system performance, so when allocating more than one page, we
++ * ask the memory allocator to avoid re-trying, swapping, writing back
++ * or performing I/O.
++ *
++ * This is called, for example by mtd_{read,write} and jffs2_scan_medium,
++ * to handle smaller (i.e. degraded) buffer allocations under low- or
++ * fragmented-memory situations where such reduced allocations, from a
++ * requested ideal, are allowed.
++ *
++ * Returns a pointer to the allocated buffer on success; otherwise, NULL.
++ */
++void *mtd_kmalloc_up_to(size_t *size)
++{
++	gfp_t flags = __GFP_NOWARN | __GFP_WAIT |
++		       __GFP_NORETRY | __GFP_NO_KSWAPD;
++	size_t try;
++	void *kbuf;
++
++	try = min_t(size_t, *size, KMALLOC_MAX_SIZE);
++
++	do {
++		if (try <= PAGE_SIZE)
++			flags = GFP_KERNEL;
++
++		kbuf = kmalloc(try, flags);
++	} while (!kbuf && ((try >>= 1) >= PAGE_SIZE));
++
++	*size = try;
++	return kbuf;
++}
++
+ EXPORT_SYMBOL_GPL(add_mtd_device);
+ EXPORT_SYMBOL_GPL(del_mtd_device);
+ EXPORT_SYMBOL_GPL(get_mtd_device);
+@@ -648,6 +688,7 @@ EXPORT_SYMBOL_GPL(__put_mtd_device);
+ EXPORT_SYMBOL_GPL(register_mtd_user);
+ EXPORT_SYMBOL_GPL(unregister_mtd_user);
+ EXPORT_SYMBOL_GPL(default_mtd_writev);
++EXPORT_SYMBOL_GPL(mtd_kmalloc_up_to);
  
--- 
+ #ifdef CONFIG_PROC_FS
+ 
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index b632ddd..e393213 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -94,7 +94,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 	uint32_t buf_size = 0;
+ 	struct jffs2_summary *s = NULL; /* summary info collected by the scan process */
+ #ifndef __ECOS
+-	size_t pointlen;
++	size_t pointlen, try_size;
+ 
+ 	if (c->mtd->point) {
+ 		ret = c->mtd->point(c->mtd, 0, c->mtd->size, &pointlen,
+@@ -113,18 +113,21 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 		/* For NAND it's quicker to read a whole eraseblock at a time,
+ 		   apparently */
+ 		if (jffs2_cleanmarker_oob(c))
+-			buf_size = c->sector_size;
++			try_size = c->sector_size;
+ 		else
+-			buf_size = PAGE_SIZE;
++			try_size = PAGE_SIZE;
+ 
+-		/* Respect kmalloc limitations */
+-		if (buf_size > 128*1024)
+-			buf_size = 128*1024;
++		D1(printk(KERN_DEBUG "Trying to allocate readbuf of %zu "
++			"bytes\n", try_size));
+ 
+-		D1(printk(KERN_DEBUG "Allocating readbuf of %d bytes\n", buf_size));
+-		flashbuf = kmalloc(buf_size, GFP_KERNEL);
++		flashbuf = mtd_kmalloc_up_to(&try_size);
+ 		if (!flashbuf)
+ 			return -ENOMEM;
++
++		D1(printk(KERN_DEBUG "Allocated readbuf of %zu bytes\n",
++			try_size));
++
++		buf_size = (uint32_t)try_size;
+ 	}
+ 
+ 	if (jffs2_sum_active()) {
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 9d5306b..a5d31ba 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -348,7 +348,8 @@ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ int default_mtd_readv(struct mtd_info *mtd, struct kvec *vecs,
+ 		      unsigned long count, loff_t from, size_t *retlen);
+ 
++void *mtd_kmalloc_up_to(size_t *size);
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ void mtd_erase_callback(struct erase_info *instr);
+ #else
+--
 1.7.4.2
