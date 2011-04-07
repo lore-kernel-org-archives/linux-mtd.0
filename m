@@ -1,31 +1,22 @@
-Received: from smtp-out.google.com ([74.125.121.67])
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q7iht-0004cw-Hn
-	for linux-mtd@lists.infradead.org; Thu, 07 Apr 2011 06:28:42 +0000
-Received: from kpbe13.cbf.corp.google.com (kpbe13.cbf.corp.google.com
-	[172.25.105.77]) by smtp-out.google.com with ESMTP id p376SdfT003242
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Apr 2011 23:28:40 -0700
-Received: from pwi9 (pwi9.prod.google.com [10.241.219.9])
-	by kpbe13.cbf.corp.google.com with ESMTP id p376SbaR007632
-	(version=TLSv1/SSLv3 cipher=RC4-SHA bits=128 verify=NOT)
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Apr 2011 23:28:38 -0700
-Received: by pwi9 with SMTP id 9so806071pwi.10
+	id 1Q7kNZ-0005FJ-Qa
+	for linux-mtd@lists.infradead.org; Thu, 07 Apr 2011 08:15:50 +0000
+Received: by bwz1 with SMTP id 1so2185342bwz.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 06 Apr 2011 23:28:37 -0700 (PDT)
-MIME-Version: 1.0
-Sender: dmitriyz@google.com
-In-Reply-To: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-Date: Wed, 6 Apr 2011 23:28:37 -0700
-Message-ID: <BANLkTimWFiKmvAi+9OeEsdZyP91599ibSw@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] mtd: nand: Allow NAND chip ids to be included
-	standalone.
-From: Dima Zavin <dima@android.com>
-To: Murali Nalajala <mnalajal@codeaurora.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-arm-msm@vger.kernel.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-mtd@lists.infradead.org
+	Thu, 07 Apr 2011 01:15:47 -0700 (PDT)
+Subject: Re: [PATCH v3] Retry Large Buffer Allocations
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Grant Erickson <marathon96@gmail.com>
+In-Reply-To: <1302105402-12990-1-git-send-email-marathon96@gmail.com>
+References: <1302105402-12990-1-git-send-email-marathon96@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 07 Apr 2011 11:13:03 +0300
+Message-ID: <1302163983.2407.12.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,60 +26,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Acked-by: Dima Zavin <dima@android.com>
+On Wed, 2011-04-06 at 08:56 -0700, Grant Erickson wrote:
+> When handling user space read or write requests via mtd_{read,write}
+> or JFFS2 medium scan requests, exponentially back off on the size of
+> the requested kernel transfer buffer until it succeeds or until the
+> requested transfer buffer size falls below the page size.
+> 
+> This helps ensure the operation can succeed under low-memory,
+> highly-fragmented situations albeit somewhat more slowly.
+> 
+>   v2: Incorporated coding style and comment feedback from Artem.
+>   v3: Incorporated more feedback from Artem. Retargeted patch against
+>       l2-mtd-2.6.
+> 
+> Signed-off-by: Grant Erickson <marathon96@gmail.com>
 
-On Mon, Mar 7, 2011 at 4:08 PM, Murali Nalajala <mnalajal@codeaurora.org> w=
-rote:
-> Lets non-standard NAND drivers take advantage of known NAND
-> chip information.
->
-> The initial development of msm nand driver, driver uses the supported
-> NAND devices information as a hardcoded table. Remove the existing
-> hardcoded supported flash device table and read the flash device
-> information from the flash id table which are part of the mtd subsystem.
->
-> Signed-off-by: Dima Zavin <dima@android.com>
-> Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
+Looks good, but I have 2 requests still.
+
 > ---
-> Changes in V2
-> * Add more description to the commit text.
->
-> =A0drivers/mtd/nand/Kconfig | =A0 10 +++++++---
-> =A01 files changed, 7 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index c895922..782275e 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -1,3 +1,10 @@
-> +config MTD_NAND_IDS
-> + =A0 =A0 =A0 tristate "Include chip ids for known NAND devices."
-> + =A0 =A0 =A0 depends on MTD
-> + =A0 =A0 =A0 help
-> + =A0 =A0 =A0 =A0 Useful for NAND drivers that do not use the NAND subsys=
-tem but
-> + =A0 =A0 =A0 =A0 still like to take advantage of the known chip informat=
-ion.
-> +
-> =A0config MTD_NAND_ECC
-> =A0 =A0 =A0 =A0tristate
->
-> @@ -123,9 +130,6 @@ config MTD_NAND_OMAP_PREFETCH_DMA
-> =A0 =A0 =A0 =A0 or in DMA interrupt mode.
-> =A0 =A0 =A0 =A0 Say y for DMA mode or MPU mode will be used
->
-> -config MTD_NAND_IDS
-> - =A0 =A0 =A0 tristate
-> -
-> =A0config MTD_NAND_RICOH
-> =A0 =A0 =A0 =A0tristate "Ricoh xD card reader"
-> =A0 =A0 =A0 =A0default n
-> --
-> 1.7.1.1
->
-> --
-> Sent by a consultant of the Qualcomm Innovation Center, Inc.
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum=
-.
->
->
+>  drivers/mtd/mtdchar.c   |   50 +++++++++++++++++++++-------------------------
+>  drivers/mtd/mtdcore.c   |   41 ++++++++++++++++++++++++++++++++++++++
+>  fs/jffs2/scan.c         |   11 +++++----
+>  include/linux/mtd/mtd.h |    2 +
+>  4 files changed, 72 insertions(+), 32 deletions(-)
+> 
+> diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+> index 145b3d0d..8651a79 100644
+> --- a/drivers/mtd/mtdchar.c
+> +++ b/drivers/mtd/mtdchar.c
+> @@ -166,10 +166,23 @@ static int mtd_close(struct inode *inode, struct file *file)
+>  	return 0;
+>  } /* mtd_close */
+>  
+> -/* FIXME: This _really_ needs to die. In 2.5, we should lock the
+> -   userspace buffer down and use it directly with readv/writev.
+> -*/
+> -#define MAX_KMALLOC_SIZE 0x20000
+> +/* Back in April 2005, Linus wrote:
+> + *
+> + *   FIXME: This _really_ needs to die. In 2.5, we should lock the
+> + *   userspace buffer down and use it directly with readv/writev.
+> + *
+> + * The implementation below, using mtd_alloc_up_to, mitigates
+
+1. s/mtd_alloc_up_to/mtd_kmalloc_up_to/ here as well.
+
+BTW, It still does not apply on top of l2-mtd-2.6.git, the conflict is
+in include/linux/mtd/mtd.h - but well, I can fix that conflict.
+
+2. Please, fix compilation warning:
+
+fs/jffs2/scan.c: In function ‘jffs2_scan_medium’:
+fs/jffs2/scan.c:123: warning: passing argument 1 of ‘mtd_kmalloc_up_to’ from incompatible pointer type
+include/linux/mtd/mtd.h:351: note: expected ‘size_t *’ but argument is of type ‘uint32_t *’
+
+This is a bug in 64-bit machines because sizeof(size_t) is 8 there.
+
+Could you please fix that, test, and then send the final version.
+
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
