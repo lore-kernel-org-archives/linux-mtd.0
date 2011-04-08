@@ -1,23 +1,23 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q8CRP-0000gb-EC
-	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2011 14:13:40 +0000
-Received: by ewy3 with SMTP id 3so1196080ewy.36
+Received: from na3sys009aog101.obsmtp.com ([74.125.149.67])
+	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q8Cw6-00012a-OE
+	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2011 14:45:23 +0000
+Received: by mail-vw0-f47.google.com with SMTP id 2so4156756vws.34
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 08 Apr 2011 07:13:36 -0700 (PDT)
-Subject: Re: time to mount static volume seems to be too long
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian.Ruppert@sewerin.de
-In-Reply-To: <1302271177.2834.26.camel@localhost>
-References: <OFADA4774B.BD633326-ONC125786C.00461A66-C125786C.00466AC0@sewerin.de>
-	<1302271177.2834.26.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 08 Apr 2011 17:10:47 +0300
-Message-ID: <1302271847.2834.34.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Detlev Zundel <dzu@denx.de>
-Reply-To: dedekind1@gmail.com
+	Fri, 08 Apr 2011 07:45:20 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1302198035-32577-1-git-send-email-marathon96@gmail.com>
+References: <1302198035-32577-1-git-send-email-marathon96@gmail.com>
+Date: Fri, 8 Apr 2011 10:45:20 -0400
+Message-ID: <BANLkTik0LfxcfridxFAGtm2KYpwngvokSQ@mail.gmail.com>
+Subject: Re: [PATCH v4] Retry Large Buffer Allocations
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+To: Grant Erickson <marathon96@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org,
+	Bastian.Ruppert@sewerin.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-04-08 at 16:59 +0300, Artem Bityutskiy wrote:
-> Hello,
-> 
-> On Fri, 2011-04-08 at 14:48 +0200, Bastian.Ruppert@sewerin.de wrote:
-> > [ubifs]
-> > mode=ubi
-> > image=/opt/rfsb/build/images/image.ubifs
-> > vol_id=0
-> > vol_size=46080KiB
-> > vol_type=static
-> > vol_name=rootfs
-> > vol_flags=autoresize
-> > 
-> > I can mount the rootfs, but with this configuration the rootfs mount
-> > time is about 8 Seconds for the image in a 71MB Partition.
-> 
-> IMHO, it makes little sense to use UBIFS on top of static volumes.
-> Static volumes were really meant to store raw blob of data, where you
-> want UBI to protect it with CRC for you.
-> 
-> UBIFS has its own CRC protection, so with static volume you get double
-> CRC. Note, to force UBIFS checking data CRC on read you need to use
-> "chk_data_crc" option, see here:
-> 
-> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_checksumming
-> 
-> IOW, you do not need double-work.
+Hi Grant, Artem
 
-BTW, if you appreciate the help from community and want to contribute,
-it'd be nice if you wrote a short text to our FAQ:
+Thanks for this fix!
 
-"why a dynamic volume is faster to access than a static volume of the
-same size?"
+On Thu, Apr 7, 2011 at 1:40 PM, Grant Erickson <marathon96@gmail.com> wrote=
+:
+> When handling user space read or write requests via mtd_{read,write}
+> or JFFS2 medium scan requests, exponentially back off on the size of
+> the requested kernel transfer buffer until it succeeds or until the
+> requested transfer buffer size falls below the page size.
+>
+> This helps ensure the operation can succeed under low-memory,
+> highly-fragmented situations albeit somewhat more slowly.
+>
+> =A0v2: Incorporated coding style and comment feedback from Artem.
+> =A0v3: Incorporated more feedback from Artem. Retargeted patch against
+> =A0 =A0 =A0l2-mtd-2.6.
+> =A0v4: Incorporated feedback from Artem about compilation on 64-bit
+> =A0 =A0 =A0architectures.
+>
+> Signed-off-by: Grant Erickson <marathon96@gmail.com>
 
-You can add it to this web page:
-http://www.linux-mtd.infradead.org/faq/ubi.html
+I tested this on da850evm by cherry-picking commit
+64542ac252d378dc7a1122064821a884e85a9954 from
+git://git.infradead.org/users/dedekind/l2-mtd-2.6.git.
 
-To do this, clone
-http://git.infradead.org/mtd-www.git
+I have a memory hole @32M (bootargs: mem=3D32M@0xc0000000
+mem=3D64M@0xc4000000) and I was also (like Bastian) getting "ubiformat:
+page allocation failure" errors.  Cherry-picking this commit fixed the
+problem for me; I was able to do 3x repeated ubiformats without error.
 
-edit faq/ubi.xml, type "make", make sure it compiles. Then open it with
-your browser, check it looks good in html form, then send the patch.
+Tested-by: Ben Gardiner <bengardiner@nanometrics.ca>
 
-Thanks! :-)
-
--- 
 Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Ben Gardiner
+
+---
+Nanometrics Inc.
+http://www.nanometrics.ca
