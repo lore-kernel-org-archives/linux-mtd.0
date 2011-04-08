@@ -1,13 +1,25 @@
-Message-ID: <4D9E75FF.6090603@freescale.com>
-Date: Fri, 8 Apr 2011 10:42:07 +0800
-From: Huang Shijie <b32955@freescale.com>
+Date: Fri, 8 Apr 2011 09:14:04 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: "Justin P. Mattock" <justinmattock@gmail.com>
+Subject: Re: [RFC 1/6]Fix typo "recieve" in various parts of the kernel.
+In-Reply-To: <4D9E4A59.8010604@gmail.com>
+Message-ID: <Pine.LNX.4.64.1104080909040.5186@lnxricardw.se.axis.com>
+References: <1302192567-842-1-git-send-email-justinmattock@gmail.com>
+	<20110407200541.GC8569@pengutronix.de> <4D9E4A59.8010604@gmail.com>
 MIME-Version: 1.0
-To: <linux-arm-kernel@lists.infradead.org>, <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH V4 0/4] add the GPMI controller driver for IMX23/IMX28
-References: <19869.40520.368078.270732@ipc1.ka-ro>
-In-Reply-To: <19869.40520.368078.270732@ipc1.ka-ro>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+	"trivial@kernel.org" <trivial@kernel.org>,
+	"linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"socketcan-core@lists.berlios.de" <socketcan-core@lists.berlios.de>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	=?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,96 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Lothar:
-> Hi,
->
-> Huang Shijie writes:
->> Does some one have any comments about this driver?
+
+On Fri, 8 Apr 2011, Justin P. Mattock wrote:
+
+> On 04/07/2011 01:05 PM, Uwe Kleine-K=F6nig wrote:
+>> On Thu, Apr 07, 2011 at 09:09:22AM -0700, Justin P. Mattock wrote:
+>>> The patch below fixes some typos "recieve" in various parts of the kern=
+el.
+>>> Note: these below are in actual code rather than comments(excpet for r8=
+52.c which
+>> s/excpet/except/
 >>
-> I'm still not happy with the rom-helper code that IMO does not belong
-> in this driver.
-Could you tell me which part of the rom-helper code is not belong the=20
-driver?
-
-
-> You could enable CONFIG_MTD_CMDLINE_PARTS and add something like:
-> "mtdparts=3Dgpmi-nfc-main:2m(gpmi-nfc-0-boot)ro,-(gpmi-nfc-general-use)=
-"
-> to the kernel cmdline to achieve the same without any special code
-> inside the chip driver.
+>>> has a code fix, and comment).
+>>> compile tested as best as I can...
+>> I'm not a native speaker, but "as good as" sounds better in my ears.
+>>
+>> Best regards
+>> Uwe
+>>
 >
-The original code does have the command-line-partition parsing code,
+> your right.. gcc and friends are the one's doing all the reall work: "as=
+=20
+> good as *"
 
-I removed it. I think I did a wrong thing.
+I think Uwe was thinking of grammar rather than who was doing the actual=20
+work.
 
-I found the code is needed yesterday. The android system needs a differen=
-t
-partition layout. I had to revert the code back.
+Now that I've gone more or less off topic I may as well voice my opinion=20
+the 'as best as I can' sounds like a mixup of two constructs: either 'as=20
+best I can' (which is probably slightly unusual these days), or 'as well=20
+as I can'. 'I've done it as good as I can' is gramatically wrong (since=20
+'good' is an adjective and 'well' is an adverb, and it is referring to=20
+'how I did it' (or in the case above, 'how well I tested it'), but fairly=
+=20
+common nevertheless, and given the large percentage of non-native speakers=
+=20
+in the Linux community I wouldn't worry about it, the meaning is clear=20
+anyway.
 
+I'll shut up and go now. :-)
 
-
-> Also, I would integrate the code from the hal-*.c files into the main
-> file and remove all the function hooks, since the functions are the
-thanks for your advice.
-
-This driver will serve for many platforms, not only the imx23 and imx28.
-I am merging the imx508 code to the driver.
-I feel lucky that i did not merge all the code into the main file, which=20
-will
-make the code mess.
-
-But still thanks for your advice.
-
-> same for all the current variants anyway. You might hook the 'begin()'
-> and 'is_ready()' functions which are the only ones that are different
-> in the current variants so that the distinction can be made once upon
-> initialization rather than on every function call:
-> +static int mx23_is_ready(struct gpmi_nfc_data *this, unsigned chip)
-> +{
-> +	struct resources  *resources =3D&this->resources;
-> +	uint32_t          mask;
-> +	uint32_t          reg;
-> +
-> +	mask =3D MX23_BM_GPMI_DEBUG_READY0<<  chip;
-> +	reg =3D __raw_readl(resources->gpmi_regs + HW_GPMI_DEBUG);
-> +
-> +	return !!(reg&  mask);
-> +}
-> +
-> +static void mx28_begin(struct gpmi_nfc_data *this)
-> +{
-> +	struct resources                 *resources =3D&this->resources;
-> {...]
-> +}
-> +
-> +static int mx28_is_ready(struct gpmi_nfc_data *this, unsigned chip)
-> +{
-> +	struct resources  *resources =3D&this->resources;
-> +	uint32_t          mask;
-> +	uint32_t          reg;
-> +
-> +	mask =3D MX28_BF_GPMI_STAT_READY_BUSY(1<<  chip);
-> +	reg =3D __raw_readl(resources->gpmi_regs + HW_GPMI_STAT);
-> +
-> +	return !!(reg&  mask);
-> +}
-> [...]
-> +static int gpmi_nfc_probe(struct platform_device *pdev)
-> [...]
-> +	if (CPU_IS_MX23()) {
-> +		this->is_ready =3D mx23_is_ready;
-> +	} else if (CPU_IS_MX28()) {
-> +		this->is_ready =3D mx28_is_ready;
-> +		this->begin =3D mx28_begin;
-> +	}
-> Since the begin() function is a NOP for i.MX23, the function pointer
-> could be left unassigned and the function only be called if the
-> pointer is not NULL or an empty function could be assigned.
->
-> Further I wouldn't name the macro for distinguishing the different
-> controller variants CPU_IS_... but something like GPMI_IS
-ok. This is a small change. I will do it in the next version. thanks
-
-Huang Shijie
->
-> Lothar Wa=C3=9Fmann
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
