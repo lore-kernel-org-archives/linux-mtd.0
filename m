@@ -1,24 +1,13 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q8DDi-0001Fk-AK
-	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2011 15:03:35 +0000
-Received: by eyh6 with SMTP id 6so1215416eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 08 Apr 2011 08:03:32 -0700 (PDT)
-Subject: Re: [PATCH v4] Retry Large Buffer Allocations
+	id 1Q8DEE-0001GR-Tj
+	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2011 15:04:08 +0000
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-In-Reply-To: <BANLkTik0LfxcfridxFAGtm2KYpwngvokSQ@mail.gmail.com>
-References: <1302198035-32577-1-git-send-email-marathon96@gmail.com>
-	<BANLkTik0LfxcfridxFAGtm2KYpwngvokSQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 08 Apr 2011 18:00:44 +0300
-Message-ID: <1302274844.2834.39.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Grant Erickson <marathon96@gmail.com>,
-	Jarkko Lavinen <jarkko.lavinen@nokia.com>, Bastian.Ruppert@sewerin.de
-Reply-To: dedekind1@gmail.com
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] mtd-utils: improve simple_strtoX usage commentary
+Date: Fri,  8 Apr 2011 18:07:28 +0300
+Message-Id: <1302275249-11962-1-git-send-email-dedekind1@gmail.com>
+Cc: Mike Frysinger <vapier.adi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +17,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-04-08 at 10:45 -0400, Ben Gardiner wrote:
-> I tested this on da850evm by cherry-picking commit
-> 64542ac252d378dc7a1122064821a884e85a9954 from
-> git://git.infradead.org/users/dedekind/l2-mtd-2.6.git.
-> 
-> I have a memory hole @32M (bootargs: mem=32M@0xc0000000
-> mem=64M@0xc4000000) and I was also (like Bastian) getting "ubiformat:
-> page allocation failure" errors.  Cherry-picking this commit fixed the
-> problem for me; I was able to do 3x repeated ubiformats without error.
-> 
-> Tested-by: Ben Gardiner <bengardiner@nanometrics.ca>
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Great, thanks!
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ include/common.h |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
+diff --git a/include/common.h b/include/common.h
+index 2e5c2a0..0e3526a 100644
+--- a/include/common.h
++++ b/include/common.h
+@@ -93,6 +93,17 @@ static inline int is_power_of_2(unsigned long long n)
+  * simple_strtoX - convert a hex/dec/oct string into a number
+  * @snum: buffer to convert
+  * @error: set to 1 when buffer isn't fully consumed
++ *
++ * These functions are similar to the standard strtoX() functions, but they are
++ * a little bit easier to use if you want to convert full string of digits into
++ * the binary form. The typical usage:
++ *
++ * int error = 0;
++ * unsigned long num;
++ *
++ * num = simple_strtoul(str, &error);
++ * if (error || !is_valid_number(num))
++ * 	error_happened();
+  */
+ #define simple_strtoX(func, type) \
+ static inline type simple_##func(const char *snum, int *error) \
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.2.3
