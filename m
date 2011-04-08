@@ -1,17 +1,23 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q8CLy-0000dH-JZ
-	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2011 14:08:03 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p38E7xPF018336
-	for <linux-mtd@lists.infradead.org>; Fri, 8 Apr 2011 17:07:59 +0300
+	id 1Q8CRP-0000gb-EC
+	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2011 14:13:40 +0000
+Received: by ewy3 with SMTP id 3so1196080ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 08 Apr 2011 07:13:36 -0700 (PDT)
+Subject: Re: time to mount static volume seems to be too long
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH] fs_tests: make the test-suite finish faster
-Date: Fri,  8 Apr 2011 17:10:56 +0300
-Message-Id: <1302271856-8386-1-git-send-email-dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@nokia.com>
+To: Bastian.Ruppert@sewerin.de
+In-Reply-To: <1302271177.2834.26.camel@localhost>
+References: <OFADA4774B.BD633326-ONC125786C.00461A66-C125786C.00466AC0@sewerin.de>
+	<1302271177.2834.26.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 08 Apr 2011 17:10:47 +0300
+Message-ID: <1302271847.2834.34.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Detlev Zundel <dzu@denx.de>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +27,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On Fri, 2011-04-08 at 16:59 +0300, Artem Bityutskiy wrote:
+> Hello,
+> 
+> On Fri, 2011-04-08 at 14:48 +0200, Bastian.Ruppert@sewerin.de wrote:
+> > [ubifs]
+> > mode=ubi
+> > image=/opt/rfsb/build/images/image.ubifs
+> > vol_id=0
+> > vol_size=46080KiB
+> > vol_type=static
+> > vol_name=rootfs
+> > vol_flags=autoresize
+> > 
+> > I can mount the rootfs, but with this configuration the rootfs mount
+> > time is about 8 Seconds for the image in a 71MB Partition.
+> 
+> IMHO, it makes little sense to use UBIFS on top of static volumes.
+> Static volumes were really meant to store raw blob of data, where you
+> want UBI to protect it with CRC for you.
+> 
+> UBIFS has its own CRC protection, so with static volume you get double
+> CRC. Note, to force UBIFS checking data CRC on read you need to use
+> "chk_data_crc" option, see here:
+> 
+> http://www.linux-mtd.infradead.org/doc/ubifs.html#L_checksumming
+> 
+> IOW, you do not need double-work.
 
-Currently the stress tests may run up to 1 hour, make the limit
-to be 10 minutes instead.
+BTW, if you appreciate the help from community and want to contribute,
+it'd be nice if you wrote a short text to our FAQ:
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- tests/fs-tests/run_all.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+"why a dynamic volume is faster to access than a static volume of the
+same size?"
 
-diff --git a/tests/fs-tests/run_all.sh b/tests/fs-tests/run_all.sh
-index e79993a..7c82921 100755
---- a/tests/fs-tests/run_all.sh
-+++ b/tests/fs-tests/run_all.sh
-@@ -42,8 +42,8 @@ rm -rf ${TEST_DIR}/*
- 
- cd stress || exit 1
- 
--./stress00.sh 3600 || exit 1
-+./stress00.sh 360 || exit 1
- 
--./stress01.sh 3600 || exit 1
-+./stress01.sh 360 || exit 1
- 
- cd .. || exit 1
+You can add it to this web page:
+http://www.linux-mtd.infradead.org/faq/ubi.html
+
+To do this, clone
+http://git.infradead.org/mtd-www.git
+
+edit faq/ubi.xml, type "make", make sure it compiles. Then open it with
+your browser, check it looks good in html form, then send the patch.
+
+Thanks! :-)
+
 -- 
-1.7.2.3
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
