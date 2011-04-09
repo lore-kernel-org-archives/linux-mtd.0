@@ -1,16 +1,22 @@
-Received: from terminus.msp.gub.uy ([200.40.197.69])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q8TVg-0005ID-As
-	for linux-mtd@lists.infradead.org; Sat, 09 Apr 2011 08:27:12 +0000
-Message-ID: <3439.41.138.180.109.1302336960.squirrel@trantor.msp.gub.uy>
-Date: Sat, 9 Apr 2011 05:16:00 -0300 (UYT)
-Subject: 
-From: "Irish Unit" <info@irish.com>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q8ZCR-0006Lj-Rs
+	for linux-mtd@lists.infradead.org; Sat, 09 Apr 2011 14:31:44 +0000
+Received: by ewy3 with SMTP id 3so1451966ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 09 Apr 2011 07:31:41 -0700 (PDT)
+Subject: Re: [PATCH v5 0/3] Retry Large Buffer Allocations
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Grant Erickson <marathon96@gmail.com>
+In-Reply-To: <1302277894-26132-1-git-send-email-marathon96@gmail.com>
+References: <1302277894-26132-1-git-send-email-marathon96@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Sat, 09 Apr 2011 17:28:54 +0300
+Message-ID: <1302359334.2787.8.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To: undisclosed-recipients: ;
-Reply-To: wefp_blair01@9.cn
+Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,8 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2011-04-08 at 08:51 -0700, Grant Erickson wrote:
+> When handling user space read or write requests via mtd_{read,write}
+> or JFFS2 medium scan requests, the operations can fail because the
+> code backing these operations frequently requests large (128 KiB),
+> contiguous blocks of memory using kmalloc.
 
+Thanks, pushed the series to l2-mtd-2.6.git.
 
-
-Irish lottery awarded you(1,350,000,00Pounds)Provide your
-Names,Tel,Country,Occupation
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
