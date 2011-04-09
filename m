@@ -1,23 +1,22 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q8ZMh-0006Q0-GA
-	for linux-mtd@lists.infradead.org; Sat, 09 Apr 2011 14:42:20 +0000
-Received: by ewy3 with SMTP id 3so1453614ewy.36
+	id 1Q8ZMz-0006Q0-CT
+	for linux-mtd@lists.infradead.org; Sat, 09 Apr 2011 14:42:37 +0000
+Received: by mail-ew0-f49.google.com with SMTP id 3so1453614ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 09 Apr 2011 07:42:18 -0700 (PDT)
-Subject: Re: [PATCH v4] Retry Large Buffer Allocations
+	Sat, 09 Apr 2011 07:42:37 -0700 (PDT)
+Subject: Re: [PATCH 1/2] mtd-utils: improve simple_strtoX usage commentary
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-In-Reply-To: <BANLkTik0LfxcfridxFAGtm2KYpwngvokSQ@mail.gmail.com>
-References: <1302198035-32577-1-git-send-email-marathon96@gmail.com>
-	<BANLkTik0LfxcfridxFAGtm2KYpwngvokSQ@mail.gmail.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <BANLkTi=NSasDOP=xSxD3zxQNCQEOc1dV6w@mail.gmail.com>
+References: <1302275249-11962-1-git-send-email-dedekind1@gmail.com>
+	<BANLkTi=NSasDOP=xSxD3zxQNCQEOc1dV6w@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Sat, 09 Apr 2011 17:39:30 +0300
-Message-ID: <1302359970.2787.12.camel@localhost>
+Date: Sat, 09 Apr 2011 17:39:50 +0300
+Message-ID: <1302359990.2787.13.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Grant Erickson <marathon96@gmail.com>,
-	Jarkko Lavinen <jarkko.lavinen@nokia.com>, Bastian.Ruppert@sewerin.de
+Cc: MTD list <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,40 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-04-08 at 10:45 -0400, Ben Gardiner wrote:
-> Hi Grant, Artem
+On Fri, 2011-04-08 at 12:20 -0400, Mike Frysinger wrote:
+> On Fri, Apr 8, 2011 at 11:07, Artem Bityutskiy wrote:
+> > + * num = simple_strtoul(str, &error);
+> > + * if (error || !is_valid_number(num))
+> > + *     error_happened();
 > 
-> Thanks for this fix!
+> when i read this, it makes me think there is a "is_valid_number()"
+> function i should be calling.
 > 
-> On Thu, Apr 7, 2011 at 1:40 PM, Grant Erickson <marathon96@gmail.com> wrote:
-> > When handling user space read or write requests via mtd_{read,write}
-> > or JFFS2 medium scan requests, exponentially back off on the size of
-> > the requested kernel transfer buffer until it succeeds or until the
-> > requested transfer buffer size falls below the page size.
-> >
-> > This helps ensure the operation can succeed under low-memory,
-> > highly-fragmented situations albeit somewhat more slowly.
-> >
-> >  v2: Incorporated coding style and comment feedback from Artem.
-> >  v3: Incorporated more feedback from Artem. Retargeted patch against
-> >      l2-mtd-2.6.
-> >  v4: Incorporated feedback from Artem about compilation on 64-bit
-> >      architectures.
-> >
-> > Signed-off-by: Grant Erickson <marathon96@gmail.com>
-> 
-> I tested this on da850evm by cherry-picking commit
-> 64542ac252d378dc7a1122064821a884e85a9954 from
-> git://git.infradead.org/users/dedekind/l2-mtd-2.6.git.
+> maybe something like:
+> if (error || ... number is out of range for your need ...)
+> -mike
 
-Grant sent an updated patch-set and added your Tested-by. However, there
-were several conflicts which I had to. If you could test the final
-patches again - that'd be great! They are in the same l2-mtd-2.6.git
-tree:
-
-8fa3c20 JFFS2: retry large buffer allocations
-88ab142 mtd: mtdchar: retry large buffer allocations
-99815a5 mtd: create function to perform large allocations
+I'll do this and push this out, thanks for review!
 
 -- 
 Best Regards,
