@@ -1,13 +1,13 @@
 Received: from gate.sewerin.de ([77.75.200.26] helo=sew-notes-gt.sewerin.de)
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9D9n-00045v-Bp
-	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 09:11:40 +0000
+	id 1Q9DBh-00047N-Ay
+	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 09:13:37 +0000
 From: Bastian Ruppert <Bastian.Ruppert@Sewerin.de>
 To: linux-mtd@lists.infradead.org
 Subject: [PATCH] UBI FAQ: add "why a dynamic volume is faster to access than a
-	satic..." chapter.
-Date: Mon, 11 Apr 2011 11:10:32 +0200
-Message-Id: <1302513032-3898-1-git-send-email-Bastian.Ruppert@Sewerin.de>
+	static..." chapter.
+Date: Mon, 11 Apr 2011 11:13:02 +0200
+Message-Id: <1302513182-3960-1-git-send-email-Bastian.Ruppert@Sewerin.de>
 Cc: Bastian Ruppert <Bastian.Ruppert@Sewerin.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
