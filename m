@@ -1,16 +1,15 @@
-Message-ID: <4DA261DA.2050404@oracle.com>
-Date: Sun, 10 Apr 2011 19:05:14 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
+Message-ID: <4DA270B9.6030700@freescale.com>
+Date: Mon, 11 Apr 2011 11:08:41 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-To: Jiri Pinkava <jiri.pinkava@vscht.cz>
-Subject: Re: [PATCH] nand: Fix S3C NAND clock stop
-References: <1302485262-8401-1-git-send-email-jiri.pinkava@vscht.cz>
-In-Reply-To: <1302485262-8401-1-git-send-email-jiri.pinkava@vscht.cz>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: kgene.kim@samsung.com, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, ben-linux@fluff.org,
-	dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH V4 0/4] add the GPMI controller driver for IMX23/IMX28
+References: <19869.40520.368078.270732@ipc1.ka-ro>	<4D9E75FF.6090603@freescale.com>
+	<19870.59289.913018.127715@ipc1.ka-ro>
+In-Reply-To: <19870.59289.913018.127715@ipc1.ka-ro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +19,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/10/2011 6:27 PM, Jiri Pinkava wrote:
-> Current implementation of s3c2410_nand_select_chip call
-> clk_disable every time when chip = -1 (de-select). This happend
-> multiple times even if chip was already de-selected. This causes
-> disabling clock even if they are already disabled and due to
-> nature of clock subsytem implementation this causes nand clock
-> to be disabled and newer enabled again.
->
-> Signed-off-by: Jiri Pinkava<jiri.pinkava@vscht.cz>
-> ---
->   drivers/mtd/nand/s3c2410.c |   57 +++++++++++++++++++++++++++++++------------
->   1 files changed, 41 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> index 33d832d..79e18a3 100644
-> --- a/drivers/mtd/nand/s3c2410.c
-> +++ b/drivers/mtd/nand/s3c2410.c
+Hi Lothar:
 
-> @@ -159,11 +165,33 @@ static struct s3c2410_platform_nand *to_nand_plat(struct platform_device *dev)
->   	return dev->dev.platform_data;
->   }
+> Hi,
 >
-> -static inline int allow_clk_stop(struct s3c2410_nand_info *info)
-> +static inline int allow_clk_suspend(struct s3c2410_nand_info *info)
->   {
->   	return clock_stop;
->   }
+> Huang Shijie writes:
+>> Hi Lothar:
+>>> Hi,
+>>>
+>>> Huang Shijie writes:
+>>>> Does some one have any comments about this driver?
+>>>>
+>>> I'm still not happy with the rom-helper code that IMO does not belong
+>>> in this driver.
+>> Could you tell me which part of the rom-helper code is not belong the
+>> driver?
+>>
+> All of it. I don't see a point in having it, when all that it does can
+> be achieved with standard functions already.
 >
-> +/**
-> + * s3c2410_nand_clk_set_state - Enable, disable or suspend NAND clock.
-> + * @info: The controller instance.
-> + * @state: State to which clock should be set.
+I am afraid most of the rom-help code can not be removed, the  reasons ar=
+e:
+[1] imx23 does not need the swap-block-mark feature. The swap-block-mark=20
+feature is used
+    by the BCH hardware ecc-correction module. But the imx28 does need=20
+the swap-block-mark feature.
+    Why? the firmwares in both chips are a little different. The=20
+rom-help code is used to distinguish
+    this, and _DO_ some necessary initializations. After the=20
+initialization, the NAND_SCAN will works.
 
-       @new_state:
+[2] In the NAND boot mode, we also need to check the swap-block-mark to=20
+do the right ECC read pages.
 
-> + */
-> +static void s3c2410_nand_clk_set_state(struct s3c2410_nand_info *info,
-> +		int new_state)
-> +{
-> +	if (!allow_clk_suspend(info)&&  new_state == CLOCK_SUSPEND)
-> +		return;
-> +
-> +	if (clock_state == CLOCK_ENABLE) {
-> +		if (new_state != CLOCK_ENABLE)
-> +			clk_disable(info->clk);
-> +	} else {
-> +		if (new_state == CLOCK_ENABLE)
-> +			clk_enable(info->clk);
-> +	}
-> +
-> +	clock_state = new_state;
-> +}
+
+
+BUT the default partition layout code really can be removed. It somehow=20
+can be regards as not belonged to
+the driver.
+
+thanks.
+>>> Also, I would integrate the code from the hal-*.c files into the main
+>>> file and remove all the function hooks, since the functions are the
+>> thanks for your advice.
+>>
+>> This driver will serve for many platforms, not only the imx23 and imx2=
+8.
+>> I am merging the imx508 code to the driver.
+>> I feel lucky that i did not merge all the code into the main file, whi=
+ch
+>> will
+>> make the code mess.
+>>
+> You would probably end up with some more functions that are
+> implemented for the different variants. They could be prefixed with
+> the SoC name and selected in the probe() function depending on the
+> platform id. I don't see why this should get messy.
+>
+I really do not like to package all the code into one file which makes=20
+the file bigger and bigger.
+Frankly speaking, I regard it as a bad idea. I think it's messy.
+
+imx508 will support DDR mode for ONFI NAND and TOGGLE nand which need to=20
+do lot of TIMING initialization for both mode.
+It is a long initialization code. Keep the code in separate file is to=20
+make the code tidy. Do you think it's a
+grace method to keep it in one file? I do not think so. :)
+
+yes, I can use the PREFIXED name for different variants. But I think=20
+that will create more code.
+The current *hal.c only contains the different implementation for variant=
+s.
+
+
+> If the imx508 driver is so much different from the other variants,
+> that merging it gets too messy, it's probably better to not merge it
+> with the other variants anyway.
+>
+It just needs a separate hal-508.c file.
+> Lothar Wa=C3=9Fmann
+
+Thanks a lot.
+
+Best Regards
+Huang Shijie
