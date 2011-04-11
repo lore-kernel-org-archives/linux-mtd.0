@@ -1,22 +1,29 @@
-Received: from na3sys009aog111.obsmtp.com ([74.125.149.205])
-	by canuck.infradead.org with smtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9GPZ-0005La-Vf
-	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 12:40:10 +0000
-Received: by mail-vx0-f174.google.com with SMTP id 39so5496562vxi.5
+Received: from mxout1.idt.com ([157.165.5.25])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q9H79-0005aj-GJ
+	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 13:25:12 +0000
+Received: from mail.idt.com (localhost [127.0.0.1])
+	by mxout1.idt.com (8.13.1/8.13.1) with ESMTP id p3BDP8b3026531
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Apr 2011 06:25:08 -0700
+Received: from corpml1.corp.idt.com (corpml1.corp.idt.com [157.165.140.20])
+	by mail.idt.com (8.13.8/8.13.8) with ESMTP id p3BDP794006044
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 11 Apr 2011 05:40:07 -0700 (PDT)
+	Mon, 11 Apr 2011 06:25:08 -0700 (PDT)
+Received: from CORPEXCH1.na.ads.idt.com (localhost [127.0.0.1])
+	by corpml1.corp.idt.com (8.11.7p1+Sun/8.11.7) with ESMTP id
+	p3BDP7W14487 for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Apr 2011 06:25:07 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-In-Reply-To: <1302277894-26132-1-git-send-email-marathon96@gmail.com>
-References: <1302277894-26132-1-git-send-email-marathon96@gmail.com>
-Date: Mon, 11 Apr 2011 08:40:07 -0400
-Message-ID: <BANLkTim5z+PV4J8LpzN4xjK1j5UTzLqytg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] Retry Large Buffer Allocations
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-To: Grant Erickson <marathon96@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Subject: After writing successfully a NAND block is this reliable ar reading
+	as a NOR sector?
+Date: Mon, 11 Apr 2011 06:25:05 -0700
+Message-ID: <AEA634773855ED4CAD999FBB1A66D0760190B688@CORPEXCH1.na.ads.idt.com>
+From: "Ardelean, Andrei" <Andrei.Ardelean@idt.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +33,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Grant, Artem,
 
-Thanks for this fix (again) :)
+Hi,
 
-On Fri, Apr 8, 2011 at 11:51 AM, Grant Erickson <marathon96@gmail.com> wrot=
-e:
-> When handling user space read or write requests via mtd_{read,write}
-> or JFFS2 medium scan requests, the operations can fail because the
-> code backing these operations frequently requests large (128 KiB),
-> contiguous blocks of memory using kmalloc.
->
-> Under low-memory or highly-fragmented situations, particularly on
-> embedded systems with no swap store, these allocations will frequently
-> fail with -ENOMEM.
->
-> This patch series adds a common function to handle these allocation
-> requests in both the MTD driver and JFFS2 file system by exponentially
-> backing off on the size of the requested kernel transfer buffer until
-> it succeeds or until the requested transfer buffer size falls below
-> the page size.
->
-> This helps ensure the operation can succeed under low-memory,
-> highly-fragmented situations albeit somewhat more slowly.
->
-> =A0v2: Incorporated coding style and comment feedback from Artem.
-> =A0v3: Incorporated more feedback from Artem. Retargeted patch against
-> =A0 =A0 =A0l2-mtd-2.6.
-> =A0v4: Incorporated feedback from Artem about compilation on 64-bit
-> =A0 =A0 =A0architectures.
-> =A0v5: Split the patch into a series.
->
-> Signed-off-by: Grant Erickson <marathon96@gmail.com>
+Am interested in using MT29F2G08AABWP NAND Flash memory for a new
+embedded design and I couldn't find a clear specification regarding how
+reliable is the NAND flash vs. NOR for reading operation.
 
-I tested this on da850evm by cherry-picking commits:
+If I program successfully a NAND block, read back and verify
+successfully the information and never erase or program that particular
+block again, can I assume that block will remain a good block and the
+information written there is safe for READING, roughly as safe as a NOR
+sector?
 
-8fa3c20 JFFS2: retry large buffer allocations
-88ab142 mtd: mtdchar: retry large buffer allocations
-99815a5 mtd: create function to perform large allocations
+Is it any reason to keep in NAND copies of Kernel, bootloader or RFS? Is
+it a standard practice in the industry to keep copies in NAND even
+though we do not erase/program those during the normal operation?=20
+=20
 
-from
-git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
-
-I have a memory hole @32M (bootargs: mem=3D32M@0xc0000000
-mem=3D64M@0xc4000000) and I was also (like Bastian) getting "ubiformat:
-page allocation failure" errors.  Cherry-picking these commits fixed the
-problem for me; I was able to do 3x repeated ubiformats without error.
-
-Tested-by: Ben Gardiner <bengardiner@nanometrics.ca>
-
-Best Regards,
-Ben Gardiner
-
----
-Nanometrics Inc.
-http://www.nanometrics.ca
+Thank you,
+Andrei
