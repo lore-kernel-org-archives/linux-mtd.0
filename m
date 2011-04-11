@@ -1,18 +1,19 @@
-Received: from ns.vscht.cz ([2001:718:3:15::5])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9IPx-0006fW-ND
-	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 14:48:43 +0000
-From: Jiri Pinkava <jiri.pinkava@vscht.cz>
-To: <dedekind1@gmail.com>
-Subject: [PATCH] nand: Fix S3C NAND clock stop
-Date: Mon, 11 Apr 2011 16:48:24 +0200
-Message-ID: <1302533304-6795-1-git-send-email-jiri.pinkava@vscht.cz>
-In-Reply-To: <4DA27245.6@vscht.cz>
-References: <4DA27245.6@vscht.cz>
+Received: from fmmailgate05.web.de ([217.72.192.243])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q9Isn-0006x5-Oo
+	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 15:18:30 +0000
+Received: from mwmweb014  ( [172.20.18.23])
+	by fmmailgate05.web.de (Postfix) with ESMTP id 6B8A765367A0
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Apr 2011 17:18:27 +0200 (CEST)
+Date: Mon, 11 Apr 2011 17:18:27 +0200 (CEST)
+From: "Sven Krauss" <sven.krauss@web.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <1631427694.1700754.1302535107434.JavaMail.fmail@mwmweb014>
+Subject: DMA misaligned error with device 4
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Jiri Pinkava <jiri.pinkava@vscht.cz>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, ben-linux@fluff.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,176 +23,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Current implementation of s3c2410_nand_select_chip call
-clk_disable every time when chip = -1 (de-select). This happend
-multiple times even if chip was already de-selected. This causes
-disabling clock even if they are already disabled and due to
-nature of clock subsytem implementation this causes nand clock
-to be disabled and newer enabled again.
+Hello!
 
-Signed-off-by: Jiri Pinkava <jiri.pinkava@vscht.cz>
----
- drivers/mtd/nand/s3c2410.c |   59 ++++++++++++++++++++++++++++++++------------
- 1 files changed, 43 insertions(+), 16 deletions(-)
+I am working on a TI-OMAP (OMAP3530 Kernel 2.6.33.7) board and with heavy l=
+oad i got the following error.=C2=A0
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 33d832d..cea775a 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -55,7 +55,7 @@ static int hardware_ecc = 0;
- #endif
- 
- #ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
--static int clock_stop = 1;
-+static const int clock_stop = 1;
- #else
- static const int clock_stop = 0;
- #endif
-@@ -96,6 +96,12 @@ enum s3c_cpu_type {
- 	TYPE_S3C2440,
- };
- 
-+enum s3c_nand_clk_state {
-+	CLOCK_DISABLE	= 0,
-+	CLOCK_ENABLE,
-+	CLOCK_SUSPEND,
-+};
-+
- /* overview of the s3c2410 nand state */
- 
- /**
-@@ -111,6 +117,7 @@ enum s3c_cpu_type {
-  * @mtd_count: The number of MTDs created from this controller.
-  * @save_sel: The contents of @sel_reg to be saved over suspend.
-  * @clk_rate: The clock rate from @clk.
-+ * @clk_state: The current clock state.
-  * @cpu_type: The exact type of this controller.
-  */
- struct s3c2410_nand_info {
-@@ -129,6 +136,7 @@ struct s3c2410_nand_info {
- 	int				mtd_count;
- 	unsigned long			save_sel;
- 	unsigned long			clk_rate;
-+	enum s3c_nand_clk_state		clk_state;
- 
- 	enum s3c_cpu_type		cpu_type;
- 
-@@ -159,11 +167,33 @@ static struct s3c2410_platform_nand *to_nand_plat(struct platform_device *dev)
- 	return dev->dev.platform_data;
- }
- 
--static inline int allow_clk_stop(struct s3c2410_nand_info *info)
-+static inline int allow_clk_suspend(struct s3c2410_nand_info *info)
- {
- 	return clock_stop;
- }
- 
-+/**
-+ * s3c2410_nand_clk_set_state - Enable, disable or suspend NAND clock.
-+ * @info: The controller instance.
-+ * @new_state: State to which clock should be set.
-+ */
-+static void s3c2410_nand_clk_set_state(struct s3c2410_nand_info *info,
-+		enum s3c_nand_clk_state new_state)
-+{
-+	if (!allow_clk_suspend(info) && new_state == CLOCK_SUSPEND)
-+		return;
-+
-+	if (info->clk_state == CLOCK_ENABLE) {
-+		if (new_state != CLOCK_ENABLE)
-+			clk_disable(info->clk);
-+	} else {
-+		if (new_state == CLOCK_ENABLE)
-+			clk_enable(info->clk);
-+	}
-+
-+	info->clk_state = new_state;
-+}
-+
- /* timing calculations */
- 
- #define NS_IN_KHZ 1000000
-@@ -333,8 +363,8 @@ static void s3c2410_nand_select_chip(struct mtd_info *mtd, int chip)
- 	nmtd = this->priv;
- 	info = nmtd->info;
- 
--	if (chip != -1 && allow_clk_stop(info))
--		clk_enable(info->clk);
-+	if (chip != -1)
-+		s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
- 
- 	cur = readl(info->sel_reg);
- 
-@@ -356,8 +386,8 @@ static void s3c2410_nand_select_chip(struct mtd_info *mtd, int chip)
- 
- 	writel(cur, info->sel_reg);
- 
--	if (chip == -1 && allow_clk_stop(info))
--		clk_disable(info->clk);
-+	if (chip == -1)
-+		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
- }
- 
- /* s3c2410_nand_hwcontrol
-@@ -694,8 +724,7 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
- 	/* free the common resources */
- 
- 	if (info->clk != NULL && !IS_ERR(info->clk)) {
--		if (!allow_clk_stop(info))
--			clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
- 		clk_put(info->clk);
- 	}
- 
-@@ -947,7 +976,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 		goto exit_error;
- 	}
- 
--	clk_enable(info->clk);
-+	s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
- 
- 	/* allocate and map the resource */
- 
-@@ -1026,9 +1055,9 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 		goto exit_error;
- 	}
- 
--	if (allow_clk_stop(info)) {
-+	if (allow_clk_suspend(info)) {
- 		dev_info(&pdev->dev, "clock idle support enabled\n");
--		clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
- 	}
- 
- 	pr_debug("initialised ok\n");
-@@ -1059,8 +1088,7 @@ static int s3c24xx_nand_suspend(struct platform_device *dev, pm_message_t pm)
- 
- 		writel(info->save_sel | info->sel_bit, info->sel_reg);
- 
--		if (!allow_clk_stop(info))
--			clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
- 	}
- 
- 	return 0;
-@@ -1072,7 +1100,7 @@ static int s3c24xx_nand_resume(struct platform_device *dev)
- 	unsigned long sel;
- 
- 	if (info) {
--		clk_enable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
- 		s3c2410_nand_inithw(info);
- 
- 		/* Restore the state of the nFCE line. */
-@@ -1082,8 +1110,7 @@ static int s3c24xx_nand_resume(struct platform_device *dev)
- 		sel |= info->save_sel & info->sel_bit;
- 		writel(sel, info->sel_reg);
- 
--		if (allow_clk_stop(info))
--			clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
- 	}
- 
- 	return 0;
--- 
-1.7.4.4
+DMA misaligned error with device 4
+
+BUG: soft lockup - CPU#0 stuck for 61s! [jffs2_gcd_mtd4:419]
+Modules linked in:
+=C2=A0
+Pid: 419, comm: =C2=A0 =C2=A0 =C2=A0 jffs2_gcd_mtd4
+CPU: 0 =C2=A0 =C2=A0Not tainted =C2=A0(2.6.33.7 #1)
+PC is at omap_write_buf_dma_pref+0x184/0x230
+LR is at omap_write_buf_dma_pref+0x178/0x230
+pc : [<c01fe170>] =C2=A0 =C2=A0lr : [<c01fe164>] =C2=A0 =C2=A0psr: 20000013
+sp : cfafdc30 =C2=A0ip : cfafdb80 =C2=A0fp : cf8d2010
+r10: 00000800 =C2=A0r9 : 00000100 =C2=A0r8 : c711b5be
+r7 : 00000800 =C2=A0r6 : cf8d2000 =C2=A0r5 : 00000001 =C2=A0r4 : 00000000
+r3 : fe000000 =C2=A0r2 : 00000001 =C2=A0r1 : cf8cb1c0 =C2=A0r0 : 00000800
+Flags: nzCv =C2=A0IRQs on =C2=A0FIQs on =C2=A0Mode SVC_32 =C2=A0ISA ARM =C2=
+=A0Segment kernel
+Control: 10c5387d =C2=A0Table: 8fb40019 =C2=A0DAC: 00000017
+
+>From this moment the cpu is dead.
+
+I went down to the kernel and found the following problem. I will start in =
+jffs2_flash_writev() from fs/jffs2/wbuf.c. There is a for loop running thro=
+ugh a vector invec. Inside the loop data is written to the write buffer (wb=
+uf). If the buffer is full __jffs2_flush_wbuf will be called. If now an una=
+ligned amount of data was written the next call c->mtd->write() inside the =
+next condition will fail, because the pointer (v) is not aligned. This poin=
+ter is directly written to the dma. This results in the crash above.
+
+I suggest the following patch. For me this works fine.
+
+--- linux-2.6.33.7.orig/drivers/mtd/nand/omap2.c 2010-08-02 19:27:18.000000=
+000 +0200
++++ linux-2.6.33.7/drivers/mtd/nand/omap2.c 2011-04-11 17:11:53.000000000 +=
+0200
+@@ -503,9 +506,11 @@
+=C2=A0{
+=C2=A0 if (len <=3D mtd->oobsize)
+=C2=A0 omap_write_buf_pref(mtd, buf, len);
++ else if (!IS_ALIGNED((unsigned long)buf, 4))
++ omap_write_buf_pref(mtd, buf, len);
+=C2=A0 else
+=C2=A0 /* start transfer in DMA mode */
+- omap_nand_dma_transfer(mtd, buf, len, 0x1);
++ omap_nand_dma_transfer(mtd, (void*)buf, len, 0x1);
+=C2=A0}
+=C2=A0
+=C2=A0/**
+Thanks very much!
+
+
+=C2=A0
+___________________________________________________________
+Empfehlen Sie WEB.DE DSL Ihren Freunden und Bekannten und wir  =20
+belohnen Sie mit bis zu 50,- Euro! https://freundschaftswerbung.web.de
