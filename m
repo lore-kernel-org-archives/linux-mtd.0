@@ -1,19 +1,14 @@
-Received: from fmmailgate05.web.de ([217.72.192.243])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9Isn-0006x5-Oo
-	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 15:18:30 +0000
-Received: from mwmweb014  ( [172.20.18.23])
-	by fmmailgate05.web.de (Postfix) with ESMTP id 6B8A765367A0
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 11 Apr 2011 17:18:27 +0200 (CEST)
-Date: Mon, 11 Apr 2011 17:18:27 +0200 (CEST)
-From: "Sven Krauss" <sven.krauss@web.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <1631427694.1700754.1302535107434.JavaMail.fmail@mwmweb014>
-Subject: DMA misaligned error with device 4
+Received: from mailout-de.gmx.net ([213.165.64.23])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q9Jp8-0007TZ-KY
+	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 16:18:49 +0000
+Content-Type: multipart/mixed; boundary="========GMX226211302538721298418"
+Date: Mon, 11 Apr 2011 18:18:40 +0200
+From: "Dominic Rath" <Dominic.Rath@gmx.de>
+Message-ID: <20110411161841.226210@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Subject: Imprecise data abort with i.MX31 NAND controller
+To: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +18,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+--========GMX226211302538721298418
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-I am working on a TI-OMAP (OMAP3530 Kernel 2.6.33.7) board and with heavy l=
-oad i got the following error.=C2=A0
+Dear linux-mtd list,
 
-DMA misaligned error with device 4
+I'm trying to get Linux (I'm using 2.6.38.2, but could go with another
+version if that helps) running on a customer's i.MX31 board.
 
-BUG: soft lockup - CPU#0 stuck for 61s! [jffs2_gcd_mtd4:419]
-Modules linked in:
-=C2=A0
-Pid: 419, comm: =C2=A0 =C2=A0 =C2=A0 jffs2_gcd_mtd4
-CPU: 0 =C2=A0 =C2=A0Not tainted =C2=A0(2.6.33.7 #1)
-PC is at omap_write_buf_dma_pref+0x184/0x230
-LR is at omap_write_buf_dma_pref+0x178/0x230
-pc : [<c01fe170>] =C2=A0 =C2=A0lr : [<c01fe164>] =C2=A0 =C2=A0psr: 20000013
-sp : cfafdc30 =C2=A0ip : cfafdb80 =C2=A0fp : cf8d2010
-r10: 00000800 =C2=A0r9 : 00000100 =C2=A0r8 : c711b5be
-r7 : 00000800 =C2=A0r6 : cf8d2000 =C2=A0r5 : 00000001 =C2=A0r4 : 00000000
-r3 : fe000000 =C2=A0r2 : 00000001 =C2=A0r1 : cf8cb1c0 =C2=A0r0 : 00000800
-Flags: nzCv =C2=A0IRQs on =C2=A0FIQs on =C2=A0Mode SVC_32 =C2=A0ISA ARM =C2=
-=A0Segment kernel
-Control: 10c5387d =C2=A0Table: 8fb40019 =C2=A0DAC: 00000017
+The NAND is a 8-Gbit, 2112-Byte/page x8 chip identified as:
+Manufacturer ID: 0x20, Chip ID: 0xd3 (ST Micro NAND 1GiB 3,3V 8-bit)
 
->From this moment the cpu is dead.
+The NAND works fine at first, a ptxdist-built rootfs gets mounted, system
+boots till prompt, but when the jffs2 garbage collector kicks in, the nfc
+driver fails with an imprecise data abort.
 
-I went down to the kernel and found the following problem. I will start in =
-jffs2_flash_writev() from fs/jffs2/wbuf.c. There is a for loop running thro=
-ugh a vector invec. Inside the loop data is written to the write buffer (wb=
-uf). If the buffer is full __jffs2_flush_wbuf will be called. If now an una=
-ligned amount of data was written the next call c->mtd->write() inside the =
-next condition will fail, because the pointer (v) is not aligned. This poin=
-ter is directly written to the dma. This results in the crash above.
+I've tracked it down to the first nand_do_write_oob which in turn calls
+mxc_nand_command() with PAGEPROG for the first time. Everything looks
+good, but in send_cmd_v1_v2 I get an imprecise data abort after the write
+to CONFIG2 with NFC_CMD set. I'm pretty sure the (imprecise) abort is due 
+to the CONFIG2 write because I've inserted some delay loops and it always
+fails at the same point - without the delay loops it would fail in
+wait_op_done or some other function down the callstack.
 
-I suggest the following patch. For me this works fine.
+The NAND can be read and written from U-Boot (2011.03-rc1) just fine, and
+the JFFS2 filesystem image that I've flashed using U-Boot works within
+linux if mounted read-only.
 
---- linux-2.6.33.7.orig/drivers/mtd/nand/omap2.c 2010-08-02 19:27:18.000000=
-000 +0200
-+++ linux-2.6.33.7/drivers/mtd/nand/omap2.c 2011-04-11 17:11:53.000000000 +=
-0200
-@@ -503,9 +506,11 @@
-=C2=A0{
-=C2=A0 if (len <=3D mtd->oobsize)
-=C2=A0 omap_write_buf_pref(mtd, buf, len);
-+ else if (!IS_ALIGNED((unsigned long)buf, 4))
-+ omap_write_buf_pref(mtd, buf, len);
-=C2=A0 else
-=C2=A0 /* start transfer in DMA mode */
-- omap_nand_dma_transfer(mtd, buf, len, 0x1);
-+ omap_nand_dma_transfer(mtd, (void*)buf, len, 0x1);
-=C2=A0}
-=C2=A0
-=C2=A0/**
-Thanks very much!
+I've attached a logfile that shows the last output up to the crash.
 
+I'd appreciate if anyone could tell me if the driver from 2.6.38.2 is
+supposed to work with an i.MX31, or for any pointers about how to further
+debug this problem.
 
-=C2=A0
-___________________________________________________________
-Empfehlen Sie WEB.DE DSL Ihren Freunden und Bekannten und wir  =20
-belohnen Sie mit bis zu 50,- Euro! https://freundschaftswerbung.web.de
+Best Regards,
+
+Dominic
+
+--========GMX226211302538721298418
+Content-Type: application/octet-stream;
+ charset="utf-8";
+ name="imx31_nand_dataabort.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="imx31_nand_dataabort.txt"
+Content-Description: Attachment: imx31_nand_dataabort.txt
+
+Li4uDQpteGNfbmFuZF9jb21tYW5kIChjbWQgPSAweDAsIGNvbCA9IDB4MCwgcGFnZSA9IDB4MmQ3
+ZSkNCnNlbmRfY21kKGhvc3QsIDB4MCwgMCkNCnNlbmRfYWRkcihob3N0LCAweDAgMCkNCnNlbmRf
+YWRkcihob3N0LCAweDAgMCkNCnNlbmRfYWRkcihob3N0LCAweDdlIDApDQpzZW5kX2FkZHIoaG9z
+dCwgMHgyZCAwKQ0Kc2VuZF9hZGRyKGhvc3QsIDB4MCAxKQ0Kc2VuZF9jbWQoaG9zdCwgMHgzMCwg
+MSkNCm14Y19uYW5kX2NvbW1hbmQgKGNtZCA9IDB4MCwgY29sID0gMHgwLCBwYWdlID0gMHgyZDdm
+KQ0Kc2VuZF9jbWQoaG9zdCwgMHgwLCAwKQ0Kc2VuZF9hZGRyKGhvc3QsIDB4MCAwKQ0Kc2VuZF9h
+ZGRyKGhvc3QsIDB4MCAwKQ0Kc2VuZF9hZGRyKGhvc3QsIDB4N2YgMCkNCnNlbmRfYWRkcihob3N0
+LCAweDJkIDApDQpzZW5kX2FkZHIoaG9zdCwgMHgwIDEpDQpzZW5kX2NtZChob3N0LCAweDMwLCAx
+KQ0KbmFuZF9kb193cml0ZV9vb2I6IHRvID0gMHgwMTZhMDAwMCwgbGVuID0gOA0KbXhjX25hbmRf
+Y29tbWFuZCAoY21kID0gMHhmZiwgY29sID0gMHhmZmZmZmZmZiwgcGFnZSA9IDB4ZmZmZmZmZmYp
+DQpzZW5kX2NtZChob3N0LCAweGZmLCAwKQ0KbXhjX25hbmRfY29tbWFuZCAoY21kID0gMHg3MCwg
+Y29sID0gMHhmZmZmZmZmZiwgcGFnZSA9IDB4ZmZmZmZmZmYpDQpzZW5kX2NtZChob3N0LCAweDcw
+LCAxKQ0KbXhjX25hbmRfY29tbWFuZCAoY21kID0gMHg4MCwgY29sID0gMHg4MDAsIHBhZ2UgPSAw
+eDJkNDApDQpteGNfbmFuZF9jb21tYW5kIChjbWQgPSAweDAsIGNvbCA9IDB4MCwgcGFnZSA9IDB4
+MmQ0MCkNCnNlbmRfY21kKGhvc3QsIDB4MCwgMCkNCnNlbmRfYWRkcihob3N0LCAweDAgMCkNCnNl
+bmRfYWRkcihob3N0LCAweDAgMCkNCnNlbmRfYWRkcihob3N0LCAweDQwIDApDQpzZW5kX2FkZHIo
+aG9zdCwgMHgyZCAwKQ0Kc2VuZF9hZGRyKGhvc3QsIDB4MCAxKQ0Kc2VuZF9jbWQoaG9zdCwgMHgz
+MCwgMSkNCnNlbmRfY21kKGhvc3QsIDB4ODAsIDApDQpzZW5kX2FkZHIoaG9zdCwgMHgwIDApDQpz
+ZW5kX2FkZHIoaG9zdCwgMHgwIDApDQpzZW5kX2FkZHIoaG9zdCwgMHg0MCAwKQ0Kc2VuZF9hZGRy
+KGhvc3QsIDB4MmQgMCkNCnNlbmRfYWRkcihob3N0LCAweDAgMSkNCm14Y19uYW5kX2NvbW1hbmQg
+KGNtZCA9IDB4MTAsIGNvbCA9IDB4ZmZmZmZmZmYsIHBhZ2UgPSAweGZmZmZmZmZmKQ0Kc2VuZF9j
+bWQoaG9zdCwgMHgxMCwgMSkNClVuaGFuZGxlZCBmYXVsdDogaW1wcmVjaXNlIGV4dGVybmFsIGFi
+b3J0ICgweDQwNikgYXQgMHgwMDAwMDAwMA0KSW50ZXJuYWwgZXJyb3I6IDogNDA2IFsjMV0gUFJF
+RU1QVA0KbGFzdCBzeXNmcyBmaWxlOiAvc3lzL2tlcm5lbC91ZXZlbnRfc2VxbnVtDQpNb2R1bGVz
+IGxpbmtlZCBpbjoNCkNQVTogMCAgICBOb3QgdGFpbnRlZCAgKDIuNi4zOC4yICMyMSkNClBDIGlz
+IGF0IHdhaXRfb3BfZG9uZSsweDAvMHg5NA0KTFIgaXMgYXQgbXhjX25hbmRfY29tbWFuZCsweDFm
+OC8weDIxMA0KcGMgOiBbPGMwMWI4NDdjPl0gICAgbHIgOiBbPGMwMWI4YjQwPl0gICAgcHNyOiA2
+MDAwMDAxMw0Kc3AgOiBjNzk5OWQ1OCAgaXAgOiAwMDAwMDAwMCAgZnAgOiAwMDAwMDAwMA0KcjEw
+OiAwMDAwMDAwMCAgcjkgOiAwMTZhMDAwMCAgcjggOiBmZmZmZmZmZg0KcjcgOiBmZmZmZmZmZiAg
+cjYgOiAwMDAwMDAxMCAgcjUgOiBjNzk3ODAwMCAgcjQgOiBjNzk3ODAwMA0KcjMgOiBjODg2NGUw
+MCAgcjIgOiAwMDAwMDAwMSAgcjEgOiAwMDAwMDAwMSAgcjAgOiBjNzk3ODAwMA0KRmxhZ3M6IG5a
+Q3YgIElSUXMgb24gIEZJUXMgb24gIE1vZGUgU1ZDXzMyICBJU0EgQVJNICBTZWdtZW50IGtlcm5l
+bA0KQ29udHJvbDogMDBjNTM4N2QgIFRhYmxlOiA4N2FhODAwMCAgREFDOiAwMDAwMDAxNw0KUHJv
+Y2VzcyBqZmZzMl9nY2RfbXRkMCAocGlkOiAxNzYsIHN0YWNrIGxpbWl0ID0gMHhjNzk5ODI2OCkN
+ClN0YWNrOiAoMHhjNzk5OWQ1OCB0byAweGM3OTlhMDAwKQ0KOWQ0MDogICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYzc5NzgyMzggYzc5NzgwMDAN
+CjlkNjA6IGM3OTc0YzgwIDAwMDAwMDQwIGM3OTc4MDAwIDAxNmEwMDAwIDAwMDAwMDI3IGMwMWIy
+M2EwIGMwMWIyMzRjIDAwMDAyZDQwDQo5ZDgwOiAwMDAwMDAwMCBjNzk3ODIzOCBjNzk5OWUxMCBj
+MDFiMzRmOCAwMDAwMDAwOCAwMDAwMDAwYiAwMDAwMDAyNyAwMDAwMDAwMA0KOWRhMDogMDAwMDAw
+MDAgMDE2YTAwMDAgMDAwMDAwMDAgYzc5NzgwMDAgYzc5OTllMTAgYzc5ZTZkZjggYzg4YmY0ZDAg
+MDAwMDAwMDANCjlkYzA6IGM3OTdlMDAwIGMwMWI0NzZjIGM3OTk5ZTEwIGMwMWI0NmNjIDAxNmEw
+MDAwIDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwDQo5ZGUwOiBjNzllNmQ2MCBjMDFhYWQ0NCBj
+Nzk5OWUxMCBjMDFhYWNjMCAwMTZhMDAwMCBjNzllNmMwMCBjODhiZjRjNCAwMTZhMDAwMA0KOWUw
+MDogYzc5ZTZkNjAgYzAxMjg4YjAgYzc5OTllMTAgYzc5ZTZjMDAgMDAwMDAwMDEgMDAwMDAwMDAg
+MDAwMDAwMDAgMDAwMDAwMDgNCjllMjA6IDAwMDAwMDAwIDAwMDAwMDAwIDAwMDAwMDAwIGMwMjhl
+NzhjIGM4OGJmNGM0IGM3OWU2YzAwIGM4OGJmNGM0IGMwMTI0Zjg0DQo5ZTQwOiAwMDAwMTAwMCBj
+Nzk5OWU3NCBjNzk3ZTAwMCA2MDAwMDAxMyAwMDAwMDAwMCBjNzllNmQzOCAwMDAwMDAwMSBjNzll
+NmQ2MA0KOWU2MDogMDAwMDAwMDAgYzAwNWY1NzggMDAwMDAwMDAgMDAwMDAwMDAgYzAxMjNiNWMg
+MDAwMDEwMDAgYzc5N2UwMDAgMDAwMDAwMDANCjllODA6IGM3OWU2YzZjIGM3OWU2YzAwIGM3OWU2
+ZGQ4IDAwMDAwMDAwIGM3OTk4MDAwIGM3OWU2YzZjIGM3OTk5ZjAwIGM3OWU2ZDYwDQo5ZWEwOiAw
+MDAwMDAwMCBjMDEyM2Q0MCAwMDAwMDAwMCBjMDA1ZjU3OCAwMDAwMDA4MCAwMDAwMDAwMCBjMDAz
+YjhhYyAwMDAwMDAwMA0KOWVjMDogYzc4OTg1YTQgMDAwMDAwMDAgMDAwMDAwMDEgMDAwMDAwMDEg
+Yzc5OTllZTQgYzAwMzYzNTggYzc4OTg1YTQgYzc5ZTZjMDANCjllZTA6IGM3OWU2ZDYwIGM3OTk5
+ZmI0IGM3OTk4MDAwIDAwMDAwMDAxIGM3OTk5ZjAwIDAwMDAwMDAwIDAwMDAwMDAwIGMwMTI1NTlj
+DQo5ZjAwOiBjMDAyMTkyMCBjNzgxZTAwMCAwMDAwMDAwMiAwMDAwMDAwMCAwMDAwMDAwMCAwMDAw
+MDAwMCAwMDAwMDAwMCBjNzk5ODAwMA0KOWYyMDogMDAwMDAwMDAgNjAwMDAwOTMgYzc5OTgwMDAg
+MDAwMDAwMDAgYzAzN2ZmMjAgMDAwMDAwMDAgYzc5OTlmYTQgYzAwNWY1NzgNCjlmNDA6IDAwMDAw
+MDgwIDAwMDAwMDAwIGM3OGM5ODAwIGMwMzc1OTAwIGZhMzcxYTYxIDAwMDAwMDU0IGM3OGM5ODMw
+IGMwMzc1OTAwDQo5ZjYwOiAwMDAwMDAwMSAwMDAwMDAwMSBjNzk5OWY3YyBjMDAzNjM1OCBjNzhj
+OTgwMCBjMDM3NTkwMCBjNzk5OWZhNCBjMDI3ZjlkNA0KOWY4MDogMDAwMDAwMDIgYzc4MWZkZWMg
+Yzc5ZTZjMDAgYzc5OTlmYjQgYzAxMjU0MzAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCjlm
+YTA6IDAwMDAwMDAwIGMwMDUxODAwIDAwMDAwMDAwIDAwMDAwMDAwIGM3OWU2YzAwIDAwMDAwMDAw
+IDAwMDAwMDAxIGRlYWQ0ZWFkDQo5ZmMwOiBmZmZmZmZmZiBmZmZmZmZmZiBjMDM5OTQyNCAwMDAw
+MDAwMCAwMDAwMDAwMCBjMDMyMDQ1NSBjNzk5OWZkOCBjNzk5OWZkOA0KOWZlMDogMDAwMDAwMDAg
+Yzc4MWZkZWMgYzAwNTE3N2MgYzAwMjc2YzggMDAwMDAwMTMgYzAwMjc2YzggMDAwMDAwMDAgMDAw
+MDAwMDANCls8YzAxYjg0N2M+XSAod2FpdF9vcF9kb25lKzB4MC8weDk0KSBmcm9tIFs8MDAwMDAw
+NDA+XSAoMHg0MCkNCkNvZGU6IGUyODAwMDA0IGViZjllNmY4IGUzYTAwMDAxIGU4YmQ4MDEwIChl
+MzUxMDAwMCkgDQotLS1bIGVuZCB0cmFjZSBiODA3NWQ3MWRjNTMwZTI2IF0tLS0NCg==
+--========GMX226211302538721298418--
