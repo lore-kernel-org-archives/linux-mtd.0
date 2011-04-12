@@ -1,18 +1,20 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9aMK-0006QB-5t
-	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 09:58:09 +0000
-Received: by vws8 with SMTP id 8so6033653vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Apr 2011 02:58:06 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Date: Tue, 12 Apr 2011 11:58:06 +0200
-Message-ID: <BANLkTinozqCrqaDGsAX-gWWUg2G3bvg_Rg@mail.gmail.com>
-Subject: mtd-utils: "flash_erase -j" failes with "unable to get NAND oobinfo"
-	on large flash chips.
-From: Daid <daid303@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: [PATCH V4 2/4] MTD : add the common code for GPMI controller
+	driver
+Date: Tue, 12 Apr 2011 14:03:06 +0300
+Message-ID: <E550E0E66149EE438CE65645D99717D601670B0E@darkblue.bgt.local>
+In-Reply-To: <1301722240-15406-3-git-send-email-b32955@freescale.com>
+References: <1301722240-15406-1-git-send-email-b32955@freescale.com>
+	<1301722240-15406-3-git-send-email-b32955@freescale.com>
+From: "Veli-Pekka Peltola" <veli-pekka.peltola@bluegiga.com>
+To: "Huang Shijie" <b32955@freescale.com>
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
+	linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
+	shijie8@gmail.com, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,103 +24,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've made a patch to fix flash_erase with large flash chips.
-flash_erase uses MEMGETOOBSEL which no longer works if the ECC area is
-larger then 32 bytes. ECCGETLAYOUT is the replacement ioctl.
+Hi,
 
-This patch is based on the work of Stanley Miao, he made a patch in
-June 2010 for flash_eraseall.
-http://lists.infradead.org/pipermail/linux-mtd/2010-June/031981.html
-I've implemented the backwards compatibility differently, checking
-kernel versions doesn't feel correct.
+I have one correction to your NAND driver. Please see inlined comments.
 
+> These files contain the common code for the GPMI driver.
+>=20
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c | 2453
+> +++++++++++++++++++++++++++++
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h      |  551 +++++++
+>  2 files changed, 3004 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h
+>=20
+> diff --git a/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+> b/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+> new file mode 100644
+> index 0000000..7bbc448
+> --- /dev/null
+> +++ b/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+> @@ -0,0 +1,2453 @@
 
-diff -ur mtd-utils-v1.4.4/flash_erase.c mtd-utils-patch/flash_erase.c
---- mtd-utils-v1.4.4/flash_erase.c	2011-04-01 18:31:43.000000000 +0200
-+++ mtd-utils-patch/flash_erase.c	2011-04-12 11:41:43.000000000 +0200
-@@ -193,37 +193,57 @@
- 		if (!isNAND)
- 			cleanmarker.totlen = cpu_to_je32(sizeof(cleanmarker));
- 		else {
--			struct nand_oobinfo oobinfo;
-+#if defined(ECCGETLAYOUT)
-+			struct nand_ecclayout ecclayout;
+<snip>
 
--			if (ioctl(fd, MEMGETOOBSEL, &oobinfo) != 0)
--				return sys_errmsg("%s: unable to get NAND oobinfo", mtd_device);
--
--			/* Check for autoplacement */
--			if (oobinfo.useecc == MTD_NANDECC_AUTOPLACE) {
-+			memset(&ecclayout, 0, sizeof(ecclayout));
-+			if (ioctl(fd, ECCGETLAYOUT, &ecclayout) == 0) {
- 				/* Get the position of the free bytes */
--				if (!oobinfo.oobfree[0][1])
--					return errmsg(" Eeep. Autoplacement selected and no empty space in oob");
--				clmpos = oobinfo.oobfree[0][0];
--				clmlen = oobinfo.oobfree[0][1];
--				if (clmlen > 8)
--					clmlen = 8;
-+				if (!ecclayout.oobfree[0].length) {
-+					fprintf(stderr, " Eeep. Autoplacement selected and no empty
-space in oob\n");
-+					return 1;
-+	 			}
-+				clmpos = ecclayout.oobfree[0].offset;
-+				clmlen = ecclayout.oobfree[0].length;
- 			} else {
--				/* Legacy mode */
--				switch (mtd.oob_size) {
--					case 8:
--						clmpos = 6;
--						clmlen = 2;
--						break;
--					case 16:
--						clmpos = 8;
--						clmlen = 8;
--						break;
--					case 64:
--						clmpos = 16;
-+#endif/*defined(ECCGETLAYOUT)*/
-+				/* new ECC interface failed or not available, fall back to old
-OOB interface, which does not support large flash */
-+				struct nand_oobinfo oobinfo;
-+				if (ioctl(fd, MEMGETOOBSEL, &oobinfo) != 0)
-+					return sys_errmsg("%s: unable to get NAND oobinfo", mtd_device);
-+
-+				/* Check for autoplacement */
-+				if (oobinfo.useecc == MTD_NANDECC_AUTOPLACE) {
-+					/* Get the position of the free bytes */
-+					if (!oobinfo.oobfree[0][1])
-+						return errmsg(" Eeep. Autoplacement selected and no empty space in oob");
-+					clmpos = oobinfo.oobfree[0][0];
-+					clmlen = oobinfo.oobfree[0][1];
-+					if (clmlen > 8)
- 						clmlen = 8;
--						break;
-+				} else {
-+					/* Legacy mode */
-+					switch (mtd.oob_size) {
-+						case 8:
-+							clmpos = 6;
-+							clmlen = 2;
-+							break;
-+						case 16:
-+							clmpos = 8;
-+							clmlen = 8;
-+							break;
-+						case 64:
-+							clmpos = 16;
-+							clmlen = 8;
-+							break;
-+					}
- 				}
-+#if defined(ECCGETLAYOUT)
- 			}
-+#endif/*defined(ECCGETLAYOUT)*/
-+
-+			if (clmlen > 8)
-+				clmlen = 8;
- 			cleanmarker.totlen = cpu_to_je32(8);
- 		}
- 		cleanmarker.hdr_crc = cpu_to_je32(mtd_crc32(0, &cleanmarker,
-sizeof(cleanmarker) - 4));
+> +#ifdef CONFIG_PM
+> +static int gpmi_nfc_suspend(struct platform_device *pdev,
+pm_message_t
+> state)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int gpmi_nfc_resume(struct platform_device *pdev)
+> +{
+> +	return 0;
+> +}
+> +#else
+> +#define suspend  NULL
+> +#define resume   NULL
+> +#endif
+
+If CONFIG_PM is disabled your defines don't match function names.
+
+<snip>
+
+> +/* This structure represents this driver to the platform management
+> system. */
+> +static struct platform_driver gpmi_nfc_driver =3D {
+> +	.driver =3D {
+> +		.name =3D GPMI_NFC_DRIVER_NAME,
+> +	},
+> +	.probe   =3D gpmi_nfc_probe,
+> +	.remove  =3D __exit_p(gpmi_nfc_remove),
+> +	.suspend =3D gpmi_nfc_suspend,
+> +	.resume  =3D gpmi_nfc_resume,
+> +	.id_table =3D gpmi_ids,
+> +};
+
+This section fails to compile as gpmi_nfc_suspend and gpmi_nfc_resume
+are undefined. It compiles fine if I add gpmi_nfc_ prefix to defines.
+
+--
+Veli-Pekka Peltola
+R&D Engineer
+Bluegiga Technologies=20
