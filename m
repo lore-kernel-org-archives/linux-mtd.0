@@ -1,20 +1,21 @@
-Received: from mail-pw0-f49.google.com ([209.85.160.49])
+Received: from mail-px0-f171.google.com ([209.85.212.171])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9RDN-0003YR-1W
-	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 00:12:21 +0000
-Received: by pwi8 with SMTP id 8so2653204pwi.36
+	id 1Q9RS1-0003eJ-0g
+	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 00:27:26 +0000
+Received: by pxi7 with SMTP id 7so3038453pxi.16
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 11 Apr 2011 17:12:15 -0700 (PDT)
+	Mon, 11 Apr 2011 17:27:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1302558659-29472-1-git-send-email-maksim.rayskiy@gmail.com>
+In-Reply-To: <BANLkTi=_MuYjivsa_Ja+g4t7VKrk0VjdZw@mail.gmail.com>
 References: <1302558659-29472-1-git-send-email-maksim.rayskiy@gmail.com>
-Date: Mon, 11 Apr 2011 17:12:14 -0700
-Message-ID: <BANLkTi=_MuYjivsa_Ja+g4t7VKrk0VjdZw@mail.gmail.com>
+	<BANLkTi=_MuYjivsa_Ja+g4t7VKrk0VjdZw@mail.gmail.com>
+Date: Mon, 11 Apr 2011 17:27:22 -0700
+Message-ID: <BANLkTikGwYfQdh6TSej-wq9MOxBobHLpPQ@mail.gmail.com>
 Subject: Re: [PATCH] Fix gcc-4.5.2 "statement with no effect" warnings in UBIFS
 From: Russ Dill <russ.dill@gmail.com>
 To: maksim.rayskiy@gmail.com
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -25,84 +26,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gTW9uLCBBcHIgMTEsIDIwMTEgYXQgMjo1MCBQTSwgIDxtYWtzaW0ucmF5c2tpeUBnbWFpbC5j
-b20+IHdyb3RlOgo+IEZyb206IE1ha3NpbSBSYXlza2l5IDxtYWtzaW0ucmF5c2tpeUBnbWFpbC5j
-b20+Cj4KPiBXaGVuIGNvbXBpbGluZyBVQklGUyB3aXRoIENPTkZJR19VQklGU19GU19ERUJVRyBu
-b3Qgc2V0LAo+IGdjYy00LjUuMiBnZW5lcmF0ZXMgYSBzbGV3IG9mICJ3YXJuaW5nOiBzdGF0ZW1l
-bnQgd2l0aCBubyBlZmZlY3QiCj4gb24gcmVmZXJlbmNlcyB0byBub24tdm9pZCBmdW5jdGlvbnMg
-ZGVmaW5lZCBhcyAwLgo+IFRvIGF2b2lkIHRoZXNlIHdhcm5pbmdzLCBjaGFuZ2UgYXBwcm9wcmlh
-dGUgZGVmaW5pdGlvbnMgZnJvbQo+IMKgI2RlZmluZSBkYmdfeHh4KGEpIMKgIMKgIDAKPiB0bwo+
-IMKgI2RlZmluZSBkYmdfeHh4KGEpIMKgIMKgICh7MDsgfSkKPgo+IFNpZ25lZC1vZmYtYnk6IE1h
-a3NpbSBSYXlza2l5IDxtYWtzaW0ucmF5c2tpeUBnbWFpbC5jb20+Cj4gLS0tCj4gwqBmcy91Ymlm
-cy9kZWJ1Zy5oIHwgwqAgNTAgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KPiDCoDEgZmlsZXMgY2hhbmdlZCwgMjUgaW5zZXJ0aW9ucygrKSwgMjUgZGVs
-ZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvZGVidWcuaCBiL2ZzL3ViaWZzL2Rl
-YnVnLmgKPiBpbmRleCA5MTlmMGRlLi5lMzBhNjI5IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL2Rl
-YnVnLmgKPiArKysgYi9mcy91Ymlmcy9kZWJ1Zy5oCj4gQEAgLTQyNSwzNCArNDI1LDM0IEBAIHZv
-aWQgZGJnX2RlYnVnZnNfZXhpdF9mcyhzdHJ1Y3QgdWJpZnNfaW5mbyAqYyk7Cj4gwqAjZGVmaW5l
-IGRiZ19kdW1wX2luZGV4KGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHt9KQo+
-IMKgI2RlZmluZSBkYmdfZHVtcF9scHRfbGVicyhjKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCAoe30pCj4KPiAtI2RlZmluZSBkYmdfd2Fsa19pbmRleChjLCBsZWFmX2NiLCB6bm9kZV9jYiwg
-cHJpdikgMAo+IC0jZGVmaW5lIGRiZ19vbGRfaW5kZXhfY2hlY2tfaW5pdChjLCB6cm9vdCkgwqAg
-wqAgwqAgwqAgMAo+ICsjZGVmaW5lIGRiZ193YWxrX2luZGV4KGMsIGxlYWZfY2IsIHpub2RlX2Ni
-LCBwcml2KSAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX29sZF9pbmRleF9jaGVja19pbml0KGMsIHpy
-b290KSDCoCDCoCDCoCDCoCAoezA7IH0pCj4gwqAjZGVmaW5lIGRiZ19zYXZlX3NwYWNlX2luZm8o
-YykgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKHt9KQo+IC0jZGVmaW5lIGRiZ19jaGVj
-a19zcGFjZV9pbmZvKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5l
-IGRiZ19jaGVja19vbGRfaW5kZXgoYywgenJvb3QpIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0j
-ZGVmaW5lIGRiZ19jaGVja19jYXRzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGVja19sdGFiKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGtfbHB0X2ZyZWVfc3BjKGMpIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGtfbHB0X3N6KGMs
-IGFjdGlvbiwgbGVuKSDCoCDCoCDCoCDCoCDCoCDCoCAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX3N5
-bmNlZF9pX3NpemUoaW5vZGUpIMKgIMKgIMKgIMKgIMKgIMKgIDAKPiAtI2RlZmluZSBkYmdfY2hl
-Y2tfZGlyX3NpemUoYywgZGlyKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAwCj4gLSNkZWZpbmUg
-ZGJnX2NoZWNrX3RuYyhjLCB4KSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDAK
-PiAtI2RlZmluZSBkYmdfY2hlY2tfaWR4X3NpemUoYywgaWR4X3NpemUpIMKgIMKgIMKgIMKgIMKg
-IMKgMAo+IC0jZGVmaW5lIGRiZ19jaGVja19maWxlc3lzdGVtKGMpIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgMAo+ICsjZGVmaW5lIGRiZ19jaGVja19zcGFjZV9pbmZvKGMpIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGVja19vbGRfaW5k
-ZXgoYywgenJvb3QpIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19j
-aGVja19jYXRzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9
-KQo+ICsjZGVmaW5lIGRiZ19jaGVja19sdGFiKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGtfbHB0X2ZyZWVfc3BjKGMpIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGtfbHB0
-X3N6KGMsIGFjdGlvbiwgbGVuKSDCoCDCoCDCoCDCoCDCoCDCoCAoezA7IH0pCj4gKyNkZWZpbmUg
-ZGJnX2NoZWNrX3N5bmNlZF9pX3NpemUoaW5vZGUpIMKgIMKgIMKgIMKgIMKgIMKgICh7MDsgfSkK
-PiArI2RlZmluZSBkYmdfY2hlY2tfZGlyX3NpemUoYywgZGlyKSDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX2NoZWNrX3RuYyhjLCB4KSDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCh7MDsgfSkKPiArI2RlZmluZSBkYmdfY2hlY2tfaWR4X3Np
-emUoYywgaWR4X3NpemUpIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19j
-aGVja19maWxlc3lzdGVtKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+
-IMKgI2RlZmluZSBkYmdfY2hlY2tfaGVhcChjLCBoZWFwLCBjYXQsIGFkZF9wb3MpIMKgIMKgIMKg
-KHt9KQo+IC0jZGVmaW5lIGRiZ19jaGVja19scHJvcHMoYykgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX2xwdF9ub2RlcyhjLCBjbm9kZSwg
-cm93LCBjb2wpIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGVja19pbm9kZV9zaXplKGMsIGlub2Rl
-LCBzaXplKSDCoCDCoCDCoCAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX2RhdGFfbm9kZXNfb3JkZXIo
-YywgaGVhZCkgwqAgwqAgwqAgwqAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX25vbmRhdGFfbm9kZXNf
-b3JkZXIoYywgaGVhZCkgwqAgwqAgMAo+IC0jZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVfZ2Fwc19l
-bmFibGVkIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVf
-Z2FwcygpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19mYWls
-dXJlX21vZGUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMAo+IC0KPiAt
-I2RlZmluZSBkYmdfZGVidWdmc19pbml0KCkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgMAo+ICsjZGVmaW5lIGRiZ19jaGVja19scHJvcHMoYykgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX2NoZWNrX2xwdF9ub2Rlcyhj
-LCBjbm9kZSwgcm93LCBjb2wpIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGVja19pbm9k
-ZV9zaXplKGMsIGlub2RlLCBzaXplKSDCoCDCoCDCoCAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX2No
-ZWNrX2RhdGFfbm9kZXNfb3JkZXIoYywgaGVhZCkgwqAgwqAgwqAgwqAoezA7IH0pCj4gKyNkZWZp
-bmUgZGJnX2NoZWNrX25vbmRhdGFfbm9kZXNfb3JkZXIoYywgaGVhZCkgwqAgwqAgKHswOyB9KQo+
-ICsjZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVfZ2Fwc19lbmFibGVkIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVfZ2FwcygpIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19mYWlsdXJlX21vZGUgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKHswOyB9KQo+ICsKPiArI2RlZmlu
-ZSBkYmdfZGVidWdmc19pbml0KCkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-KHswOyB9KQo+IMKgI2RlZmluZSBkYmdfZGVidWdmc19leGl0KCkKPiAtI2RlZmluZSBkYmdfZGVi
-dWdmc19pbml0X2ZzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDAKPiAtI2RlZmlu
-ZSBkYmdfZGVidWdmc19leGl0X2ZzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDAK
-PiArI2RlZmluZSBkYmdfZGVidWdmc19pbml0X2ZzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgICh7MDsgfSkKPiArI2RlZmluZSBkYmdfZGVidWdmc19leGl0X2ZzKGMpIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgICh7MDsgfSkKPgo+IMKgI2VuZGlmIC8qICFDT05GSUdfVUJJ
-RlNfRlNfREVCVUcgKi8KPiDCoCNlbmRpZiAvKiAhX19VQklGU19ERUJVR19IX18gKi8KPiAtLQo+
-IDEuNy4xCj4KClNob3VsZCB0aGVzZSBhbGwganVzdCBiZToKCiBkbyB7fSB3aGlsZSgwKQoKU3R1
-ZmYgbGlrZToKCiNkZWZpbmUgZGJnX2RlYnVnZnNfZXhpdCgpCgpsb29rcyBwYXJ0aWN1bGFybHkg
-ZGFuZ2Vyb3VzLgo=
+On Mon, Apr 11, 2011 at 5:12 PM, Russ Dill <russ.dill@gmail.com> wrote:
+> On Mon, Apr 11, 2011 at 2:50 PM, =C2=A0<maksim.rayskiy@gmail.com> wrote:
+>> From: Maksim Rayskiy <maksim.rayskiy@gmail.com>
+>>
+>> When compiling UBIFS with CONFIG_UBIFS_FS_DEBUG not set,
+>> gcc-4.5.2 generates a slew of "warning: statement with no effect"
+>> on references to non-void functions defined as 0.
+>> To avoid these warnings, change appropriate definitions from
+>> =C2=A0#define dbg_xxx(a) =C2=A0 =C2=A0 0
+>> to
+>> =C2=A0#define dbg_xxx(a) =C2=A0 =C2=A0 ({0; })
+>>
+>> Signed-off-by: Maksim Rayskiy <maksim.rayskiy@gmail.com>
+>> ---
+>> =C2=A0fs/ubifs/debug.h | =C2=A0 50 +++++++++++++++++++++++++------------=
+-------------
+>> =C2=A01 files changed, 25 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+>> index 919f0de..e30a629 100644
+>> --- a/fs/ubifs/debug.h
+>> +++ b/fs/ubifs/debug.h
+>> @@ -425,34 +425,34 @@ void dbg_debugfs_exit_fs(struct ubifs_info *c);
+>> =C2=A0#define dbg_dump_index(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({})
+>> =C2=A0#define dbg_dump_lpt_lebs(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 ({})
+>>
+>> -#define dbg_walk_index(c, leaf_cb, znode_cb, priv) 0
+>> -#define dbg_old_index_check_init(c, zroot) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+0
+>> +#define dbg_walk_index(c, leaf_cb, znode_cb, priv) ({0; })
+>> +#define dbg_old_index_check_init(c, zroot) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+({0; })
+>> =C2=A0#define dbg_save_space_info(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ({})
+>> -#define dbg_check_space_info(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> -#define dbg_check_old_index(c, zroot) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A00
+>> -#define dbg_check_cats(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> -#define dbg_check_ltab(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> -#define dbg_chk_lpt_free_spc(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> -#define dbg_chk_lpt_sz(c, action, len) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 0
+>> -#define dbg_check_synced_i_size(inode) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 0
+>> -#define dbg_check_dir_size(c, dir) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 0
+>> -#define dbg_check_tnc(c, x) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> -#define dbg_check_idx_size(c, idx_size) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A00
+>> -#define dbg_check_filesystem(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> +#define dbg_check_space_info(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_check_old_index(c, zroot) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_check_cats(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_check_ltab(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_chk_lpt_free_spc(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_chk_lpt_sz(c, action, len) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 ({0; })
+>> +#define dbg_check_synced_i_size(inode) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 ({0; })
+>> +#define dbg_check_dir_size(c, dir) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 ({0; })
+>> +#define dbg_check_tnc(c, x) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_check_idx_size(c, idx_size) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0({0; })
+>> +#define dbg_check_filesystem(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> =C2=A0#define dbg_check_heap(c, heap, cat, add_pos) =C2=A0 =C2=A0 =C2=A0=
+({})
+>> -#define dbg_check_lprops(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> -#define dbg_check_lpt_nodes(c, cnode, row, col) =C2=A0 =C2=A00
+>> -#define dbg_check_inode_size(c, inode, size) =C2=A0 =C2=A0 =C2=A0 0
+>> -#define dbg_check_data_nodes_order(c, head) =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+0
+>> -#define dbg_check_nondata_nodes_order(c, head) =C2=A0 =C2=A0 0
+>> -#define dbg_force_in_the_gaps_enabled =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A00
+>> -#define dbg_force_in_the_gaps() =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A00
+>> -#define dbg_failure_mode =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
+>> -
+>> -#define dbg_debugfs_init() =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
+>> +#define dbg_check_lprops(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_check_lpt_nodes(c, cnode, row, col) =C2=A0 =C2=A0({0; })
+>> +#define dbg_check_inode_size(c, inode, size) =C2=A0 =C2=A0 =C2=A0 ({0; =
+})
+>> +#define dbg_check_data_nodes_order(c, head) =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+({0; })
+>> +#define dbg_check_nondata_nodes_order(c, head) =C2=A0 =C2=A0 ({0; })
+>> +#define dbg_force_in_the_gaps_enabled =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_force_in_the_gaps() =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0({0; })
+>> +#define dbg_failure_mode =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ({0; })
+>> +
+>> +#define dbg_debugfs_init() =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ({0; })
+>> =C2=A0#define dbg_debugfs_exit()
+>> -#define dbg_debugfs_init_fs(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
+>> -#define dbg_debugfs_exit_fs(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 0
+>> +#define dbg_debugfs_init_fs(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ({0; })
+>> +#define dbg_debugfs_exit_fs(c) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ({0; })
+>>
+>> =C2=A0#endif /* !CONFIG_UBIFS_FS_DEBUG */
+>> =C2=A0#endif /* !__UBIFS_DEBUG_H__ */
+>> --
+>> 1.7.1
+>>
+>
+> Should these all just be:
+>
+> =C2=A0do {} while(0)
+
+never-mind, I see while the ({0;}) format is preferable.
+
+> Stuff like:
+>
+> #define dbg_debugfs_exit()
+>
+> looks particularly dangerous.
+
+but this still stands
