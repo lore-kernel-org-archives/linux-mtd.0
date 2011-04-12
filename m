@@ -1,18 +1,16 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from nbd.name ([46.4.11.11])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9d9Z-0007pD-Ms
-	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 12:57:10 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Tue, 12 Apr 2011 08:57:05 -0400
-Subject: I don't understand how the counter for erasures is being maintained
-	during erase failures
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD328119F6E7D@dekaexchange07.deka.local>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+	id 1Q9g90-0001di-Mx
+	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 16:08:48 +0000
+From: John Crispin <blogic@openwrt.org>
+To: Ralf Baechle <ralf@linux-mips.org>
+Subject: [PATCH V9] MIPS: lantiq: add NOR flash support
+Date: Tue, 12 Apr 2011 18:10:01 +0200
+Message-Id: <1302624601-18571-1-git-send-email-blogic@openwrt.org>
+Cc: linux-mips@linux-mips.org, Ralph Hempel <ralph.hempel@lantiq.com>,
+	linux-mtd@lists.infradead.org,
+	Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>,
+	David Woodhouse <dwmw2@infradead.org>, John Crispin <blogic@openwrt.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,93 +20,344 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Folks:
+This patch adds the driver/map for NOR devices attached to the SoC via the
+External Bus Unit (EBU).
 
-On my linux system (running MTD/UBI/UBIfs), the following
-event occurred:
+Signed-off-by: John Crispin <blogic@openwrt.org>
+Signed-off-by: Ralph Hempel <ralph.hempel@lantiq.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Daniel Schwierzeck <daniel.schwierzeck@googlemail.com>
+Cc: linux-mips@linux-mips.org
+Cc: linux-mtd@lists.infradead.org
 
+---
 
-  [62452.439299] UBI error: ubi_io_write: error -5 while writing 516096 byt=
-es to PEB 3982:8192, written 503808 bytes
-  [62452.465874] UBI: run torture test for PEB 3982
-  [62463.910000] UBI: PEB 3982 passed torture test, do not mark it a bad
-  [62466.666439] UBI error: ubi_io_write: error -5 while writing 516096 byt=
-es to PEB 3982:8192, written 503808 bytes
-  [62466.693753] UBI: run torture test for PEB 3982
-  [62477.763592] UBI: PEB 3982 passed torture test, do not mark it a bad
-    :
-    :
-  [62622.746585] UBI error: ubi_io_write: error -5 while writing 516096 byt=
-es to PEB 3982:8192, written 503808 bytes
-  [62622.801612] UBI: run torture test for PEB 3982
-  [62633.821650] UBI: PEB 3982 passed torture test, do not mark it a bad
-  [62636.629686] UBI error: ubi_io_write: error -5 while writing 516096 byt=
-es to PEB 3982:8192, written 503808 bytes
-  [62636.661260] UBI: run torture test for PEB 3982
-  [62643.962758] UBI error: torture_peb: read problems on freshly erased PE=
-B 3982, must be bad
-  [62643.992792] UBI error: erase_worker: failed to erase PEB 3982, error -=
-5
-  [62644.022791] UBI: mark PEB 3982 as bad
-  [62644.045182] UBI: 37 PEBs left in the reserve
+Changes in V2
+* handle the endianess bug inside the map code and not in the generic cfi code
+* remove the addr swizzle patch
 
+Changes in V3
+* whitespace
+* change __iomem void to void __iomem
 
-At this point, I dumped out the contents of PEB 3982:
+Changes in V4
+* fixes a checkpatch.pl bug, the second is a false positive
+* whitespace cleanups
+* remove unused typecasts
+* cleanup ltq_copy_from and ltq_copy_to
 
-  /> ubi_dump.pl 3982
-  PEB f8e (3982):  ec magic number is not correct. Is: 5a5a5a5a   Should be=
-: 55424923
-  PEB 3982:
-    00000000:   5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5=
-A5A 5A5A5A5A  ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
-    00000020:   5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5=
-A5A 5A5A5A5A  ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
-    00000040:   5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5=
-A5A 5A5A5A5A  ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
-    00000060:   5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5A5A 5A5A5=
-A5A 5A5A5A5A  ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
-      :
-      :
+Changes in V6
+* cleanup/add comments
+* fix line breaks
+* properly handle return code of add_mtd_partitions()
+* use pr_err instead of printk
 
+Changes in V7
+* remove bogus KERN_INFO from pr_err() call
 
-So that PEB no longer contains any ubi_ec_hdr struct.
+Changes in V8
+* dynamically allocate the instance of map_info allowing the use of .addr_unlock1
+  for indication of the probing state, thus eliminating the need for a global
+  variable
 
-What happens next?
+Changes in V9
+* fixes spelling errors
+* adds proper exit path to init function
+* adds remove function
 
-When I reboot, this block *HASN'T* been added to the bad block
-list (nor were the other two blocks "marked as bad" during this
-linux boot session). And after the reboot, my script reports
-the following information about PEB 3982:
+This patch should be merged via the MIPS tree
 
-  /> ubi_dump.pl 3982
-  PEB f8e (3982):  Erased 16
-  Minimum erase count: 16
-  Average erase count: 16 computed across 1 blocks
-  Maximum erase count: 16
+ drivers/mtd/maps/Kconfig        |    9 ++
+ drivers/mtd/maps/Makefile       |    1 +
+ drivers/mtd/maps/lantiq-flash.c |  251 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 261 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/maps/lantiq-flash.c
 
-
-This can't be accurate -- the block was tortured 14 times
-during the failure and each torture represents three erase/
-write cycles, right? (Per torture_peb(), OxA5, 0x5A, and 0x00.)
-So even if this block had somehow been "virgin" (and it's
-certainly not!), it should now have an erase count of at
-least 3*14=3D42, just considering the torturing.
-
-Also, given that it failed to erase (or at least couldn't be
-successfully read when freshly erased), why doesn't the block
-permanently join the pool of bad PEBs?
-
-                           Atlant
-
-
-This e-mail and the information, including any attachments, it contains are=
- intended to be a confidential communication only to the person or entity t=
-o whom it is addressed and may contain information that is privileged. If t=
-he reader of this message is not the intended recipient, you are hereby not=
-ified that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in error, =
-please immediately notify the sender and destroy the original message.
-
-Thank you.
-
-Please consider the environment before printing this email.
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 44b1f46..0cf5c57 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -260,6 +260,15 @@ config MTD_BCM963XX
+ 	  Support for parsing CFE image tag and creating MTD partitions on
+ 	  Broadcom BCM63xx boards.
+ 
++config MTD_LANTIQ
++	tristate "Lantiq SoC NOR support"
++	depends on LANTIQ
++	select MTD_PARTITIONS
++	help
++	  Lantiq SoCs have a EBU (External Bus Unit). This IP allows to attach
++	  a number of different peripherals to the SoC. This driver adds
++	  support for NOR chips to be added.
++
+ config MTD_DILNETPC
+ 	tristate "CFI Flash device mapped on DIL/Net PC"
+ 	depends on X86 && MTD_PARTITIONS && MTD_CFI_INTELEXT && BROKEN
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index 08533bd..6adf4c9 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -60,3 +60,4 @@ obj-$(CONFIG_MTD_VMU)		+= vmu-flash.o
+ obj-$(CONFIG_MTD_GPIO_ADDR)	+= gpio-addr-flash.o
+ obj-$(CONFIG_MTD_BCM963XX)	+= bcm963xx-flash.o
+ obj-$(CONFIG_MTD_LATCH_ADDR)	+= latch-addr-flash.o
++obj-$(CONFIG_MTD_LANTIQ)	+= lantiq-flash.o
+diff --git a/drivers/mtd/maps/lantiq-flash.c b/drivers/mtd/maps/lantiq-flash.c
+new file mode 100644
+index 0000000..983c88f
+--- /dev/null
++++ b/drivers/mtd/maps/lantiq-flash.c
+@@ -0,0 +1,251 @@
++/*
++ *  This program is free software; you can redistribute it and/or modify it
++ *  under the terms of the GNU General Public License version 2 as published
++ *  by the Free Software Foundation.
++ *
++ *  Copyright (C) 2004 Liu Peng Infineon IFAP DC COM CPE
++ *  Copyright (C) 2010 John Crispin <blogic@openwrt.org>
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/io.h>
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/cfi.h>
++#include <linux/platform_device.h>
++#include <linux/mtd/physmap.h>
++
++#include <lantiq_soc.h>
++#include <lantiq_platform.h>
++
++/* 
++ * The NOR flash is connected to the same external bus unit (EBU) as PCI.
++ * To make PCI work we need to enable the endianness swapping for the address
++ * written to the EBU. This endianness swapping works for PCI correctly but
++ * fails for attached NOR devices. To workaround this we need to use a complex
++ * map. The workaround involves swapping all addresses whilst probing the chip.
++ * Once probing is complete we stop swapping the addresses but swizzle the
++ * unlock addresses to ensure that access to the NOR device works correctly.
++ */
++
++enum {
++	LTQ_NOR_PROBING,
++	LTQ_NOR_NORMAL
++};
++
++struct ltq_mtd {
++	struct resource *res;
++	struct mtd_info *mtd;
++	struct map_info *map;
++};
++
++static char ltq_map_name[] = "ltq_nor";
++
++static map_word
++ltq_read16(struct map_info *map, unsigned long adr)
++{
++	unsigned long flags;
++	map_word temp;
++
++	if (map->map_priv_1 == LTQ_NOR_PROBING)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	temp.x[0] = *(u16 *)(map->virt + adr);
++	spin_unlock_irqrestore(&ebu_lock, flags);
++	return temp;
++}
++
++static void
++ltq_write16(struct map_info *map, map_word d, unsigned long adr)
++{
++	unsigned long flags;
++
++	if (map->map_priv_1 == LTQ_NOR_PROBING)
++		adr ^= 2;
++	spin_lock_irqsave(&ebu_lock, flags);
++	*(u16 *)(map->virt + adr) = d.x[0];
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++/*
++ * The following 2 functions copy data between iomem and a cached memory
++ * section. As memcpy() makes use of pre-fetching we cannot use it here.
++ * The normal alternative of using memcpy_{to,from}io also makes use of
++ * memcpy() on MIPS so it is not applicable either. We are therefore stuck
++ * with having to use our own loop.
++ */
++static void
++ltq_copy_from(struct map_info *map, void *to,
++	unsigned long from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *)map->virt + from;
++	unsigned char *t = (unsigned char *)to;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static void
++ltq_copy_to(struct map_info *map, unsigned long to,
++	const void *from, ssize_t len)
++{
++	unsigned char *f = (unsigned char *)from;
++	unsigned char *t = (unsigned char *)map->virt + to;
++	unsigned long flags;
++
++	spin_lock_irqsave(&ebu_lock, flags);
++	while (len--)
++		*t++ = *f++;
++	spin_unlock_irqrestore(&ebu_lock, flags);
++}
++
++static const char const *part_probe_types[] = { "cmdlinepart", NULL };
++
++static int __init
++ltq_mtd_probe(struct platform_device *pdev)
++{
++	struct physmap_flash_data *ltq_mtd_data = dev_get_platdata(&pdev->dev);
++	struct ltq_mtd *ltq_mtd;
++	struct mtd_partition *parts;
++	struct resource *res;
++	int nr_parts = 0;
++	struct cfi_private *cfi;
++	int err;
++
++	ltq_mtd = kzalloc(sizeof(struct ltq_mtd), GFP_KERNEL);
++	platform_set_drvdata(pdev, ltq_mtd);
++
++	ltq_mtd->res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!ltq_mtd->res) {
++		dev_err(&pdev->dev, "failed to get memory resource");
++		err = -ENOENT;
++		goto err_out;
++	}
++
++	res = devm_request_mem_region(&pdev->dev, ltq_mtd->res->start,
++		resource_size(ltq_mtd->res), dev_name(&pdev->dev));
++	if (!ltq_mtd->res) {
++		dev_err(&pdev->dev, "failed to request mem resource");
++		err = -EBUSY;
++		goto err_out;
++	}
++
++	ltq_mtd->map = kzalloc(sizeof(struct map_info), GFP_KERNEL);
++	ltq_mtd->map->phys = res->start;
++	ltq_mtd->map->size = resource_size(res);
++	ltq_mtd->map->virt = devm_ioremap_nocache(&pdev->dev,
++				ltq_mtd->map->phys, ltq_mtd->map->size);
++	if (!ltq_mtd->map->virt) {
++		dev_err(&pdev->dev, "failed to ioremap!\n");
++		err = -ENOMEM;
++		goto err_free;
++	}
++
++	ltq_mtd->map->name = ltq_map_name;
++	ltq_mtd->map->bankwidth = 2;
++	ltq_mtd->map->read = ltq_read16;
++	ltq_mtd->map->write = ltq_write16;
++	ltq_mtd->map->copy_from = ltq_copy_from;
++	ltq_mtd->map->copy_to = ltq_copy_to;
++
++	ltq_mtd->map->map_priv_1 = LTQ_NOR_PROBING;
++	ltq_mtd->mtd = do_map_probe("cfi_probe", ltq_mtd->map);
++	ltq_mtd->map->map_priv_1 = LTQ_NOR_NORMAL;
++
++	if (!ltq_mtd->mtd) {
++		dev_err(&pdev->dev, "probing failed\n");
++		err = -ENXIO;
++		goto err_unmap;
++	}
++
++	ltq_mtd->mtd->owner = THIS_MODULE;
++
++	cfi = ltq_mtd->map->fldrv_priv;
++	cfi->addr_unlock1 ^= 1;
++	cfi->addr_unlock2 ^= 1;
++
++	nr_parts = parse_mtd_partitions(ltq_mtd->mtd,
++				part_probe_types, &parts, 0);
++	if (nr_parts > 0) {
++		dev_info(&pdev->dev,
++			"using %d partitions from cmdline", nr_parts);
++	} else {
++		nr_parts = ltq_mtd_data->nr_parts;
++		parts = ltq_mtd_data->parts;
++	}
++
++	err = add_mtd_partitions(ltq_mtd->mtd, parts, nr_parts);
++	if (err) {
++		dev_err(&pdev->dev, "failed to add partitions\n");
++		goto err_destroy;
++	}
++
++	return 0;
++
++err_destroy:
++	map_destroy(ltq_mtd->mtd);
++err_unmap:
++	iounmap(ltq_mtd->map->virt);
++err_free:
++	kfree(ltq_mtd->map);
++err_out:
++	kfree(ltq_mtd);
++	return err;
++}
++
++static int __devexit
++ltq_mtd_remove(struct platform_device *pdev)
++{
++	struct ltq_mtd *ltq_mtd = platform_get_drvdata(pdev);
++
++	if (ltq_mtd) {
++		if (ltq_mtd->mtd) {
++			del_mtd_partitions(ltq_mtd->mtd);
++			map_destroy(ltq_mtd->mtd);
++		}
++		if (ltq_mtd->map->virt)
++			iounmap(ltq_mtd->map->virt);
++		kfree(ltq_mtd->map);
++		kfree(ltq_mtd);
++	}
++	return 0;
++}
++
++static struct platform_driver ltq_mtd_driver = {
++	.remove = __devexit_p(ltq_mtd_remove),
++	.driver = {
++		.name = "ltq_nor",
++		.owner = THIS_MODULE,
++	},
++};
++
++static int __init
++init_ltq_mtd(void)
++{
++	int ret = platform_driver_probe(&ltq_mtd_driver, ltq_mtd_probe);
++
++	if (ret)
++		pr_err("ltq_nor: error registering platform driver");
++	return ret;
++}
++
++static void __exit
++exit_ltq_mtd(void)
++{
++	platform_driver_unregister(&ltq_mtd_driver);
++}
++
++module_init(init_ltq_mtd);
++module_exit(exit_ltq_mtd);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("John Crispin <blogic@openwrt.org>");
++MODULE_DESCRIPTION("Lantiq SoC NOR");
+-- 
+1.7.2.3
