@@ -1,21 +1,20 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-pw0-f49.google.com ([209.85.160.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9Pj7-0002Yy-Fw
-	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2011 22:36:58 +0000
-Received: by pzk5 with SMTP id 5so2601276pzk.36
+	id 1Q9RDN-0003YR-1W
+	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 00:12:21 +0000
+Received: by pwi8 with SMTP id 8so2653204pwi.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 11 Apr 2011 15:36:55 -0700 (PDT)
+	Mon, 11 Apr 2011 17:12:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BANLkTinYULpjO3RxJmptX4Fix5TP-sxqUg@mail.gmail.com>
+In-Reply-To: <1302558659-29472-1-git-send-email-maksim.rayskiy@gmail.com>
 References: <1302558659-29472-1-git-send-email-maksim.rayskiy@gmail.com>
-	<BANLkTinYULpjO3RxJmptX4Fix5TP-sxqUg@mail.gmail.com>
-Date: Mon, 11 Apr 2011 15:36:55 -0700
-Message-ID: <BANLkTik6SR5CbT+1R8T+ucwR7K7XCcky+g@mail.gmail.com>
+Date: Mon, 11 Apr 2011 17:12:14 -0700
+Message-ID: <BANLkTi=_MuYjivsa_Ja+g4t7VKrk0VjdZw@mail.gmail.com>
 Subject: Re: [PATCH] Fix gcc-4.5.2 "statement with no effect" warnings in UBIFS
-From: Maksim Rayskiy <maksim.rayskiy@gmail.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+From: Russ Dill <russ.dill@gmail.com>
+To: maksim.rayskiy@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,28 +25,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 11, 2011 at 3:08 PM, Mike Frysinger <vapier.adi@gmail.com> wrot=
-e:
-> On Mon, Apr 11, 2011 at 17:50, =A0<maksim.rayskiy@gmail.com> wrote:
->> From: Maksim Rayskiy <maksim.rayskiy@gmail.com>
->>
->> When compiling UBIFS with CONFIG_UBIFS_FS_DEBUG not set,
->> gcc-4.5.2 generates a slew of "warning: statement with no effect"
->> on references to non-void functions defined as 0.
->> To avoid these warnings, change appropriate definitions from
->> =A0#define dbg_xxx(a) =A0 =A0 0
->> to
->> =A0#define dbg_xxx(a) =A0 =A0 ({0; })
->
-> we probably want to make these inline funcs. =A0otherwise we get
-> misbehavior if someone does something like:
-> =A0 =A0dbg_dump_index(c++);
-> -mike
->
-
-I agree that would be a problem, but if such calls existed, we would
-be dealing not with compiler warnings but with completely broken code.
-I think it is bad style to have side-effects in debug functions.
-
-Thanks,
-Maksim.
+T24gTW9uLCBBcHIgMTEsIDIwMTEgYXQgMjo1MCBQTSwgIDxtYWtzaW0ucmF5c2tpeUBnbWFpbC5j
+b20+IHdyb3RlOgo+IEZyb206IE1ha3NpbSBSYXlza2l5IDxtYWtzaW0ucmF5c2tpeUBnbWFpbC5j
+b20+Cj4KPiBXaGVuIGNvbXBpbGluZyBVQklGUyB3aXRoIENPTkZJR19VQklGU19GU19ERUJVRyBu
+b3Qgc2V0LAo+IGdjYy00LjUuMiBnZW5lcmF0ZXMgYSBzbGV3IG9mICJ3YXJuaW5nOiBzdGF0ZW1l
+bnQgd2l0aCBubyBlZmZlY3QiCj4gb24gcmVmZXJlbmNlcyB0byBub24tdm9pZCBmdW5jdGlvbnMg
+ZGVmaW5lZCBhcyAwLgo+IFRvIGF2b2lkIHRoZXNlIHdhcm5pbmdzLCBjaGFuZ2UgYXBwcm9wcmlh
+dGUgZGVmaW5pdGlvbnMgZnJvbQo+IMKgI2RlZmluZSBkYmdfeHh4KGEpIMKgIMKgIDAKPiB0bwo+
+IMKgI2RlZmluZSBkYmdfeHh4KGEpIMKgIMKgICh7MDsgfSkKPgo+IFNpZ25lZC1vZmYtYnk6IE1h
+a3NpbSBSYXlza2l5IDxtYWtzaW0ucmF5c2tpeUBnbWFpbC5jb20+Cj4gLS0tCj4gwqBmcy91Ymlm
+cy9kZWJ1Zy5oIHwgwqAgNTAgKysrKysrKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPiDCoDEgZmlsZXMgY2hhbmdlZCwgMjUgaW5zZXJ0aW9ucygrKSwgMjUgZGVs
+ZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZnMvdWJpZnMvZGVidWcuaCBiL2ZzL3ViaWZzL2Rl
+YnVnLmgKPiBpbmRleCA5MTlmMGRlLi5lMzBhNjI5IDEwMDY0NAo+IC0tLSBhL2ZzL3ViaWZzL2Rl
+YnVnLmgKPiArKysgYi9mcy91Ymlmcy9kZWJ1Zy5oCj4gQEAgLTQyNSwzNCArNDI1LDM0IEBAIHZv
+aWQgZGJnX2RlYnVnZnNfZXhpdF9mcyhzdHJ1Y3QgdWJpZnNfaW5mbyAqYyk7Cj4gwqAjZGVmaW5l
+IGRiZ19kdW1wX2luZGV4KGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHt9KQo+
+IMKgI2RlZmluZSBkYmdfZHVtcF9scHRfbGVicyhjKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCAoe30pCj4KPiAtI2RlZmluZSBkYmdfd2Fsa19pbmRleChjLCBsZWFmX2NiLCB6bm9kZV9jYiwg
+cHJpdikgMAo+IC0jZGVmaW5lIGRiZ19vbGRfaW5kZXhfY2hlY2tfaW5pdChjLCB6cm9vdCkgwqAg
+wqAgwqAgwqAgMAo+ICsjZGVmaW5lIGRiZ193YWxrX2luZGV4KGMsIGxlYWZfY2IsIHpub2RlX2Ni
+LCBwcml2KSAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX29sZF9pbmRleF9jaGVja19pbml0KGMsIHpy
+b290KSDCoCDCoCDCoCDCoCAoezA7IH0pCj4gwqAjZGVmaW5lIGRiZ19zYXZlX3NwYWNlX2luZm8o
+YykgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKHt9KQo+IC0jZGVmaW5lIGRiZ19jaGVj
+a19zcGFjZV9pbmZvKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5l
+IGRiZ19jaGVja19vbGRfaW5kZXgoYywgenJvb3QpIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0j
+ZGVmaW5lIGRiZ19jaGVja19jYXRzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGVja19sdGFiKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGtfbHB0X2ZyZWVfc3BjKGMpIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGtfbHB0X3N6KGMs
+IGFjdGlvbiwgbGVuKSDCoCDCoCDCoCDCoCDCoCDCoCAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX3N5
+bmNlZF9pX3NpemUoaW5vZGUpIMKgIMKgIMKgIMKgIMKgIMKgIDAKPiAtI2RlZmluZSBkYmdfY2hl
+Y2tfZGlyX3NpemUoYywgZGlyKSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAwCj4gLSNkZWZpbmUg
+ZGJnX2NoZWNrX3RuYyhjLCB4KSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDAK
+PiAtI2RlZmluZSBkYmdfY2hlY2tfaWR4X3NpemUoYywgaWR4X3NpemUpIMKgIMKgIMKgIMKgIMKg
+IMKgMAo+IC0jZGVmaW5lIGRiZ19jaGVja19maWxlc3lzdGVtKGMpIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgMAo+ICsjZGVmaW5lIGRiZ19jaGVja19zcGFjZV9pbmZvKGMpIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGVja19vbGRfaW5k
+ZXgoYywgenJvb3QpIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19j
+aGVja19jYXRzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9
+KQo+ICsjZGVmaW5lIGRiZ19jaGVja19sdGFiKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGtfbHB0X2ZyZWVfc3BjKGMpIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGtfbHB0
+X3N6KGMsIGFjdGlvbiwgbGVuKSDCoCDCoCDCoCDCoCDCoCDCoCAoezA7IH0pCj4gKyNkZWZpbmUg
+ZGJnX2NoZWNrX3N5bmNlZF9pX3NpemUoaW5vZGUpIMKgIMKgIMKgIMKgIMKgIMKgICh7MDsgfSkK
+PiArI2RlZmluZSBkYmdfY2hlY2tfZGlyX3NpemUoYywgZGlyKSDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX2NoZWNrX3RuYyhjLCB4KSDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCh7MDsgfSkKPiArI2RlZmluZSBkYmdfY2hlY2tfaWR4X3Np
+emUoYywgaWR4X3NpemUpIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19j
+aGVja19maWxlc3lzdGVtKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+
+IMKgI2RlZmluZSBkYmdfY2hlY2tfaGVhcChjLCBoZWFwLCBjYXQsIGFkZF9wb3MpIMKgIMKgIMKg
+KHt9KQo+IC0jZGVmaW5lIGRiZ19jaGVja19scHJvcHMoYykgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX2xwdF9ub2RlcyhjLCBjbm9kZSwg
+cm93LCBjb2wpIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19jaGVja19pbm9kZV9zaXplKGMsIGlub2Rl
+LCBzaXplKSDCoCDCoCDCoCAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX2RhdGFfbm9kZXNfb3JkZXIo
+YywgaGVhZCkgwqAgwqAgwqAgwqAwCj4gLSNkZWZpbmUgZGJnX2NoZWNrX25vbmRhdGFfbm9kZXNf
+b3JkZXIoYywgaGVhZCkgwqAgwqAgMAo+IC0jZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVfZ2Fwc19l
+bmFibGVkIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVf
+Z2FwcygpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMAo+IC0jZGVmaW5lIGRiZ19mYWls
+dXJlX21vZGUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMAo+IC0KPiAt
+I2RlZmluZSBkYmdfZGVidWdmc19pbml0KCkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgMAo+ICsjZGVmaW5lIGRiZ19jaGVja19scHJvcHMoYykgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX2NoZWNrX2xwdF9ub2Rlcyhj
+LCBjbm9kZSwgcm93LCBjb2wpIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19jaGVja19pbm9k
+ZV9zaXplKGMsIGlub2RlLCBzaXplKSDCoCDCoCDCoCAoezA7IH0pCj4gKyNkZWZpbmUgZGJnX2No
+ZWNrX2RhdGFfbm9kZXNfb3JkZXIoYywgaGVhZCkgwqAgwqAgwqAgwqAoezA7IH0pCj4gKyNkZWZp
+bmUgZGJnX2NoZWNrX25vbmRhdGFfbm9kZXNfb3JkZXIoYywgaGVhZCkgwqAgwqAgKHswOyB9KQo+
+ICsjZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVfZ2Fwc19lbmFibGVkIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19mb3JjZV9pbl90aGVfZ2FwcygpIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgKHswOyB9KQo+ICsjZGVmaW5lIGRiZ19mYWlsdXJlX21vZGUgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKHswOyB9KQo+ICsKPiArI2RlZmlu
+ZSBkYmdfZGVidWdmc19pbml0KCkgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+KHswOyB9KQo+IMKgI2RlZmluZSBkYmdfZGVidWdmc19leGl0KCkKPiAtI2RlZmluZSBkYmdfZGVi
+dWdmc19pbml0X2ZzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDAKPiAtI2RlZmlu
+ZSBkYmdfZGVidWdmc19leGl0X2ZzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDAK
+PiArI2RlZmluZSBkYmdfZGVidWdmc19pbml0X2ZzKGMpIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgICh7MDsgfSkKPiArI2RlZmluZSBkYmdfZGVidWdmc19leGl0X2ZzKGMpIMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgICh7MDsgfSkKPgo+IMKgI2VuZGlmIC8qICFDT05GSUdfVUJJ
+RlNfRlNfREVCVUcgKi8KPiDCoCNlbmRpZiAvKiAhX19VQklGU19ERUJVR19IX18gKi8KPiAtLQo+
+IDEuNy4xCj4KClNob3VsZCB0aGVzZSBhbGwganVzdCBiZToKCiBkbyB7fSB3aGlsZSgwKQoKU3R1
+ZmYgbGlrZToKCiNkZWZpbmUgZGJnX2RlYnVnZnNfZXhpdCgpCgpsb29rcyBwYXJ0aWN1bGFybHkg
+ZGFuZ2Vyb3VzLgo=
