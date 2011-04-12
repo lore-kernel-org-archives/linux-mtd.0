@@ -1,21 +1,16 @@
-Received: from relay1.mail.timico.net ([62.121.20.91] helo=relay.timico.net)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9S0H-0003sS-2K
-	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 01:02:50 +0000
-From: Jon Povey <Jon.Povey@racelogic.co.uk>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>, "Ardelean, Andrei"
-	<Andrei.Ardelean@idt.com>
-Content-Class: urn:content-classes:message
-Date: Tue, 12 Apr 2011 02:02:45 +0100
-Subject: RE: After writing successfully a NAND block is this reliable
-	arreading	as a NOR sector?
-Message-ID: <70E876B0EA86DD4BAF101844BC814DFE093FB3FF76@Cloud.RL.local>
-In-Reply-To: <Pine.LNX.4.64.1104111552240.5186@lnxricardw.se.axis.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Received: from vw-hfger.navico.com ([81.89.228.210])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q9STX-00040x-7S
+	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2011 01:33:04 +0000
+Message-ID: <70F6AAAFDC054F41B9994A9BCD3DF64E1284E165@exch01-aklnz.MARINE.NET.INT>
+Date: Tue, 12 Apr 2011 13:32:50 +1200
+From: "Reuben Dowle" <Reuben.Dowle@navico.com>
+Subject: Oops when calling fsync on read-only file-system
+To: <linux-mtd@lists.infradead.org>
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ricard Wanderlof wrote:
-> The following document does a pretty good job of summing up NAND
-> flash error modes:
->
-> http://download.micron.com/pdf/presentations/events/flash_mem_
-> summit_jcooke_inconvenient_truths_nand.pdf
+On my system, calling the fsync system call on any file in a UBI file-sys=
+tem that is mounted read-only leads to a kernel oops. Our system is runni=
+ng a customise version of 2.6.31, but as far as I can see (without testin=
+g which is not possible due to extensive vendor customisation of .31 kern=
+el version), the current git branch also contains this bug.
 
-I have also found this useful: NASA NAND flash testing report.
-http://trs-new.jpl.nasa.gov/dspace/bitstream/2014/40761/1/08-07.pdf
+I have created a patch against 2.6.31 that fixes the problem in my system=
+=2E Perhaps someone could test on latest kernel version.
 
-
---
-Jon Povey
-jon.povey@racelogic.co.uk
-
-Racelogic is a limited company registered in England. Registered number 274=
-3719 .
-Registered Office Unit 10, Swan Business Centre, Osier Way, Buckingham, Buc=
-ks, MK18 1TB .
-
-The information contained in this electronic mail transmission is intended =
-by Racelogic Ltd for the use of the named individual or entity to which it =
-is directed and may contain information that is confidential or privileged.=
- If you have received this electronic mail transmission in error, please de=
-lete it from your system without copying or forwarding it, and notify the s=
-ender of the error by reply email so that the sender's address records can =
-be corrected. The views expressed by the sender of this communication do no=
-t necessarily represent those of Racelogic Ltd. Please note that Racelogic =
-reserves the right to monitor e-mail communications passing through its net=
-work
+Signed-off-by: Reuben Dowle <reuben.dowle at navico.com>
+---
+--- linux-2.6.31.orig/fs/ubifs/io.c	2009-09-10 10:13:59.000000000 +1200
++++ linux-2.6.31/fs/ubifs/io.c	2011-04-11 15:43:50.026527002 +1200
+@@ -916,6 +916,14 @@
+ {
+ 	int i, err =3D 0;
+=20
++	/* If this is a read-only mount, write buffers will be null
++	 * Skip the sync, returning success (even though this is an invalid ope=
+ration
++	 * on a read-only file-system, return success because all data on flash
++	 * is up to date)
++	 */
++	if(!c->jheads)
++		return 0;
++
+ 	for (i =3D 0; i < c->jhead_cnt; i++) {
+ 		struct ubifs_wbuf *wbuf =3D &c->jheads[i].wbuf;
+=20
+---
