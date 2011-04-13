@@ -1,22 +1,23 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9qku-00078L-9G
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 03:28:37 +0000
-Received: by ewy3 with SMTP id 3so62470ewy.36
+	id 1Q9qsZ-0007AM-HY
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 03:36:32 +0000
+Received: by ewy3 with SMTP id 3so63477ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Apr 2011 20:28:33 -0700 (PDT)
-Subject: Re: [PATCH] nand: Remove meaningless delay from nand_unlock
+	Tue, 12 Apr 2011 20:36:30 -0700 (PDT)
+Subject: Re: [PATCH] nand: Fix S3C NAND clock stop
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: jiri.pinkava@vscht.cz, Vimal Singh <vimal.newwork@gmail.com>
-In-Reply-To: <1302402611-3878-1-git-send-email-jiri.pinkava@vscht.cz>
-References: <1302402611-3878-1-git-send-email-jiri.pinkava@vscht.cz>
+To: Jiri Pinkava <jiri.pinkava@vscht.cz>
+In-Reply-To: <1302533304-6795-1-git-send-email-jiri.pinkava@vscht.cz>
+References: <4DA27245.6@vscht.cz>
+	<1302533304-6795-1-git-send-email-jiri.pinkava@vscht.cz>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 13 Apr 2011 06:28:29 +0300
-Message-ID: <1302665309.14691.3.camel@koala>
+Date: Wed, 13 Apr 2011 06:36:24 +0300
+Message-ID: <1302665784.14691.5.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: sjhill@realitydiluted.com, tglx@linutronix.de, dwmw2@infradead.org,
-	linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	ben-linux@fluff.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,39 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-04-10 at 04:30 +0200, jiri.pinkava@vscht.cz wrote:
-> From: Jiří Pinkava <jiri.pinkava@vscht.cz>
-> 
-> This delay is meaningless. If delay is needed it is device specific
-> and must be reimplemented by specific driver, otherwise no delay is needed.
-> 
-> This function is not used by any current kernel code, affects only
-> external code (like main).
+On Mon, 2011-04-11 at 16:48 +0200, Jiri Pinkava wrote:
+> Current implementation of s3c2410_nand_select_chip call
+> clk_disable every time when chip = -1 (de-select). This happend
+> multiple times even if chip was already de-selected. This causes
+> disabling clock even if they are already disabled and due to
+> nature of clock subsytem implementation this causes nand clock
+> to be disabled and newer enabled again.
 > 
 > Signed-off-by: Jiri Pinkava <jiri.pinkava@vscht.cz>
 > ---
->  drivers/mtd/nand/nand_base.c |    1 -
->  1 files changed, 0 insertions(+), 1 deletions(-)
+>  drivers/mtd/nand/s3c2410.c |   59 ++++++++++++++++++++++++++++++++------------
+>  1 files changed, 43 insertions(+), 16 deletions(-)
 > 
-> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> index 2aef58e..5b5aff5 100644
-> --- a/drivers/mtd/nand/nand_base.c
-> +++ b/drivers/mtd/nand/nand_base.c
-> @@ -922,7 +922,6 @@ static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
+> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+> index 33d832d..cea775a 100644
+> --- a/drivers/mtd/nand/s3c2410.c
+> +++ b/drivers/mtd/nand/s3c2410.c
+> @@ -55,7 +55,7 @@ static int hardware_ecc = 0;
+>  #endif
 >  
->  	/* Call wait ready function */
->  	status = chip->waitfunc(mtd, chip);
-> -	udelay(1000);
->  	/* See if device thinks it succeeded */
->  	if (status & 0x01) {
->  		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
+>  #ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
+> -static int clock_stop = 1;
+> +static const int clock_stop = 1;
+>  #else
+>  static const int clock_stop = 0;
+>  #endif
 
-Hi, it looks sane to remove this udelay. However,
-
-1. If you do this, then you also have to do it in __nand_lock() - there
-is a similar udelay()
-2. Let's CC Vimal who is the author of this code - may be he'll tell us
-why he added the delays.
+Please, kill clock_stop variable completely in a separate patch.
 
 -- 
 Best Regards,
