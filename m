@@ -1,28 +1,22 @@
-Received: from smtprelay01.ispgateway.de ([80.67.31.35])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9tXK-00083I-22
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 06:26:47 +0000
-Received: from [89.246.71.91] (helo=mail6.tqsc.de)
-	by smtprelay01.ispgateway.de with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.68) (envelope-from <list-09_linux_mtd@tqsc.de>)
-	id 1Q9tXH-0004Cz-5k
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 08:26:43 +0200
-Received: from sc0810201.tqsc.de ([192.168.80.70] helo=[127.0.0.1])
-	by mail6.tqsc.de with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
-	(Exim 4.69) (envelope-from <list-09_linux_mtd@tqsc.de>)
-	id 1Q9tXH-0002Il-5u
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 08:26:43 +0200
-Message-ID: <4DA54221.6010407@tqsc.de>
-Date: Wed, 13 Apr 2011 08:26:41 +0200
-From: Markus Niebel <list-09_linux_mtd@tqsc.de>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Numonyx NOR bug
-References: <4DA4C1AA.3030907@gmail.com>
-In-Reply-To: <4DA4C1AA.3030907@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q9ubD-0008Ne-0P
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 07:34:52 +0000
+Received: by wwb39 with SMTP id 39so279648wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Apr 2011 00:34:49 -0700 (PDT)
+Subject: Re: Oops when calling fsync on read-only file-system
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Reuben Dowle <Reuben.Dowle@navico.com>
+In-Reply-To: <70F6AAAFDC054F41B9994A9BCD3DF64E1284E165@exch01-aklnz.MARINE.NET.INT>
+References: <70F6AAAFDC054F41B9994A9BCD3DF64E1284E165@exch01-aklnz.MARINE.NET.INT>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 13 Apr 2011 10:31:59 +0300
+Message-ID: <1302679919.2768.9.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Reply-To: list-09_linux_mtd@tqsc.de
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,72 +26,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Leo,
+Hi,
 
-can you isolate the problem? I mean, can it happen all time when you 
-erase or only if there is an erase suspend? As far as I know these chips 
-have a timout after erase / erase resume before erase suspend is 
-accepted. If this timeout is not noticed, the erase may fail.
+thanks a lot for reporting this!
+On Tue, 2011-04-12 at 13:32 +1200, Reuben Dowle wrote:
+> On my system, calling the fsync system call on any file in a UBI
+> file-system that is mounted read-only leads to a kernel oops. Our
+> system is running a customise version of 2.6.31, but as far as I can
+> see (without testing which is not possible due to extensive vendor
+> customisation of .31 kernel version), the current git branch also
+> contains this bug.
+> 
+> I have created a patch against 2.6.31 that fixes the problem in my
+> system. Perhaps someone could test on latest kernel version.
+> 
+> Signed-off-by: Reuben Dowle <reuben.dowle at navico.com>
 
-It would be better for file system performance to use this timeout 
-before waiting using the INVALIDATE_CACHE_UDELAY macro.
+Wow! Shame on me for this bug! And it is funny that it is there for
+several years already and there are product with this bug! Here is the
+fix which I will merge upstream soon:
 
-just another question: Does the error happen on SLC or on MLC or on both 
-kind of devices? (The smaller ones are SLC the larger MLC).
 
-There is an AppNote from Numonyx ("Patching the Linux Kernel for Micron 
-Axcell� M29 Flash Memory").
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: [PATCH] UBIFS: fix oops when R/O file-system is fsync'ed
 
-Markus
+This patch fixes severe UBIFS bug: UBIFS oopses when we 'fsync()' an
+file on R/O-mounter file-system. We (the UBIFS authors) incorrectly
+thought that VFS would not propagate 'fsync()' down to the file-system
+if it is read-only, but this is not the case.
 
-Am 12.04.2011 23:18, schrieb Leo:
-> I found a little problem with mtd drivers running on a LTIB linux
-> distribution on a custom board equipped with a Freescale Coldfire and a
-> Numonyx NOR Axcell M29EW flash memory. The do_erase_oneblock() function
-> sometimes fails because the chip_good() functions returns zero reading a
-> data word different from 0xffff. I spent some time debugging and finally
-> I solved the problem adding a new chip state "FL_ERASE_STARTING" and
-> setting it after the erase block command sequence as follows :
->
-> cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi,
-> cfi->device_type, NULL);
-> map_write(map, CMD(0x30), adr);
->
-> chip->state = FL_ERASE_STARTING;
->
-> INVALIDATE_CACHE_UDELAY(map, chip,
-> adr, len,
-> chip->erase_time);
->
-> chip->state = FL_ERASING;
-> chip->erase_suspended = 0;
-> chip->in_progress_block_addr = adr;
->
-> timeo = jiffies + (HZ*20);
->
-> for (;;) {
->
-> This works because the Numonyx chip probably does not accept the erase
-> suspend command during the erase block time-out (the 50 us after the
-> command sequence has been sent and before the erase starts). In fact the
-> INVALIDATE_CACHE_UDELAY() macro unlocks the mutex and lets
-> reading/writing functions to suspend the erasing too soon calling the
-> get_chip(). With the FL_ERASE_STARTING state get_chip() does not give
-> the access to reading/writing functions during the
-> INVALIDATE_CACHE_UDELAY() sleeping period (chip->erase_time).
-> Anyone into the same problem?
->
-> Thanks for reading!
-> Leonardo
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+It is easy to exploit this bug using the following simple perl script:
+
+use strict;
+use File::Sync qw(fsync sync);
+
+die "File path is not specified" if not defined $ARGV[0];
+my $path = $ARGV[0];
+
+open FILE, "<", "$path" or die "Cannot open $path: $!";
+fsync(\*FILE) or die "cannot fsync $path: $!";
+close FILE or die "Cannot close $path: $!";
+
+Thanks to Reuben Dowle <Reuben.Dowle@navico.com> for reporting about this
+issue.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Reported-by: Reuben Dowle <Reuben.Dowle@navico.com>
+Cc: stable@kernel.org
+---
+ fs/ubifs/file.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+index a2b5012..3594aae 100644
+--- a/fs/ubifs/file.c
++++ b/fs/ubifs/file.c
+@@ -1312,6 +1312,9 @@ int ubifs_fsync(struct file *file, int datasync)
+ 
+ 	dbg_gen("syncing inode %lu", inode->i_ino);
+ 
++	if (inode->i_sb->s_flags & MS_RDONLY)
++		return 0;
++
+ 	/*
+ 	 * VFS has already synchronized dirty pages for this inode. Synchronize
+ 	 * the inode unless this is a 'datasync()' call.
+-- 
+1.7.2.3
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
