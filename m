@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QA1nO-0003QG-02
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 15:16:01 +0000
+	id 1QA1nP-0003R6-PF
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 15:16:03 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3DFFnow018691
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2011 18:15:52 +0300
+	p3DFFn4b018683
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2011 18:15:54 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 08/27] fs-tests: integck: clean-up copy_string
-Date: Wed, 13 Apr 2011 18:18:48 +0300
-Message-Id: <1302707947-6143-9-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 12/27] fs-tests: integck: move more variables to fsinfo
+Date: Wed, 13 Apr 2011 18:18:52 +0300
+Message-Id: <1302707947-6143-13-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1302707947-6143-1-git-send-email-dedekind1@gmail.com>
 References: <1302707947-6143-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,172 +25,132 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This is a clean-up patch which:
-1. Simplifies copy_string by useng strdup instead of malloc
-2. Adds an assertion which checks the input parameter agains NULL,
-   instead of checking it.
-3. Re-names it to dup_string which looks more readable to me.
+Aggregate all the information about the tested file-system in
+the fsinf object for better readability and cleanness. Move
+'can_mmap' and 'check_nospc_files' there as well.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   46 ++++++++++++++++++-----------------
- 1 files changed, 24 insertions(+), 22 deletions(-)
+ tests/fs-tests/integrity/integck.c |   45 ++++++++++++++++++++----------------
+ 1 files changed, 25 insertions(+), 20 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 281de81..a225042 100644
+index e7a3547..e29db49 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -30,6 +30,7 @@
- #include <limits.h>
- #include <dirent.h>
- #include <getopt.h>
-+#include <assert.h>
- #include <sys/mman.h>
- #include "tests.h"
+@@ -56,13 +56,21 @@ static struct {
+  *
+  * max_name_len: maximum file name length
+  * page_size: memory page size to use with 'mmap()'
++ * nospc_size_ok: file size is updated even if the write operation failed with
++ *                ENOSPC error
++ * can_mmap: file-system supports share writable 'mmap()' operation
+  * fstype: file-system type (e.g., "ubifs")
+  */
+ static struct {
+ 	int max_name_len;
+ 	int page_size;
++	unsigned int nospc_size_ok:1;
++	unsigned int can_mmap:1;
+ 	const char *fstype;
+-} fsinfo;
++} fsinfo = {
++	.nospc_size_ok = 1,
++	.can_mmap = 1,
++};
  
-@@ -172,15 +173,16 @@ static void *zalloc(size_t size)
- 	return buf;
- }
+ /* Structures to store data written to the test file system,
+    so that we can check whether the file system is correct. */
+@@ -160,11 +168,6 @@ static uint64_t initial_free_space = 0; /* Free space on file system when
+ 					   test starts */
+ static unsigned log10_initial_free_space = 0; /* log10 of initial_free_space */
  
--static char *copy_string(const char *s)
-+/*
-+ * Duplicate a string.
-+ */
-+static char *dup_string(const char *s)
- {
- 	char *str;
+-static int check_nospc_files = 1; /* Also check data in files that incurred a
+-				     "no space" error */
+-
+-static int can_mmap = 1; /* Can write via mmap */
+-
+ static unsigned int check_run_no;
  
--	if (!s)
--		return NULL;
--	str = malloc(strlen(s) + 1);
-+	assert(s != NULL);
-+	str = strdup(s);
- 	CHECK(str != NULL);
--	strcpy(str, s);
- 	return str;
- }
- 
-@@ -190,9 +192,9 @@ static char *cat_strings(const char *a, const char *b)
- 	size_t sz;
- 
- 	if (a && !b)
--		return copy_string(a);
-+		return dup_string(a);
- 	if (b && !a)
--		return copy_string(b);
-+		return dup_string(b);
- 	if (!a && !b)
- 		return NULL;
- 	sz = strlen(a) + strlen(b) + 1;
-@@ -211,9 +213,9 @@ static char *cat_paths(const char *a, const char *b)
- 	size_t na, nb;
- 
- 	if (a && !b)
--		return copy_string(a);
-+		return dup_string(a);
- 	if (b && !a)
--		return copy_string(b);
-+		return dup_string(b);
- 	if (!a && !b)
- 		return NULL;
- 
-@@ -301,7 +303,7 @@ static void add_dir_entry(struct dir_info *parent, char type, const char *name,
- 
- 	entry = zalloc(sizeof(struct dir_entry_info));
- 	entry->type = type;
--	entry->name = copy_string(name);
-+	entry->name = dup_string(name);
- 	entry->parent = parent;
- 
- 	entry->next = parent->first;
-@@ -324,7 +326,7 @@ static void add_dir_entry(struct dir_info *parent, char type, const char *name,
- 
- 		entry->dir = dir;
- 		dir->entry = entry;
--		dir->name = copy_string(name);
-+		dir->name = dup_string(name);
- 		dir->parent = parent;
- 	} else if (entry->type == 's') {
- 		struct symlink_info *symlink = target;
-@@ -377,7 +379,7 @@ static struct dir_info *dir_new(struct dir_info *parent, const char *name)
- 	free(path);
- 
- 	dir = zalloc(sizeof(struct dir_info));
--	dir->name = copy_string(name);
-+	dir->name = dup_string(name);
- 	dir->parent = parent;
- 	if (parent)
- 		add_dir_entry(parent, 'd', name, dir);
-@@ -435,7 +437,7 @@ static struct file_info *file_new(struct dir_info *parent, const char *name)
- 	free(path);
- 
- 	file = zalloc(sizeof(struct file_info));
--	file->name = copy_string(name);
-+	file->name = dup_string(name);
- 
- 	add_dir_entry(parent, 'f', name, file);
- 
-@@ -1210,7 +1212,7 @@ static char *symlink_path(const char *path, const char *target_pathname)
- 	size_t len, totlen, tarlen;
- 
- 	if (target_pathname[0] == '/')
--		return copy_string(target_pathname);
-+		return dup_string(target_pathname);
- 	p = strrchr(path, '/');
- 	len = p - path;
- 	len += 1;
-@@ -1479,7 +1481,7 @@ static char *pick_rename_name(struct dir_info **parent,
- 	*rename_entry = NULL;
- 
- 	if (grow || tests_random_no(20) < 10)
--		return copy_string(make_name(dir));
-+		return dup_string(make_name(dir));
- 
- 	r = tests_random_no(dir->number_of_entries);
- 	entry = dir->first;
-@@ -1491,14 +1493,14 @@ static char *pick_rename_name(struct dir_info **parent,
- 		entry = dir->first;
- 	if (!entry ||
- 	    (entry->type == 'd' && entry->dir->number_of_entries != 0))
--		return copy_string(make_name(dir));
-+		return dup_string(make_name(dir));
- 
- 	if ((isdir && entry->type != 'd') ||
- 	    (!isdir && entry->type == 'd'))
--		return copy_string(make_name(dir));
-+		return dup_string(make_name(dir));
- 
- 	*rename_entry = entry;
--	return copy_string(entry->name);
-+	return dup_string(entry->name);
- }
- 
- static void rename_entry(struct dir_entry_info *entry)
-@@ -1593,13 +1595,13 @@ static char *relative_path(const char *path1, const char *path2)
- 	len2 = strlen(p2);
- 	up = str_count(p1, '/');
- 	if (up == 0 && len2 != 0)
--		return copy_string(p2);
-+		return dup_string(p2);
- 	if (up == 0 && len2 == 0) {
- 		p2 = strrchr(path2, '/');
--		return copy_string(p2);
-+		return dup_string(p2);
+ /*
+@@ -810,7 +813,7 @@ static int file_ftruncate(struct file_info *file, int fd, off_t new_length)
+ 		CHECK(errno = ENOSPC);
+ 		file->no_space_error = 1;
+ 		/* Delete errored files */
+-		if (!check_nospc_files)
++		if (!fsinfo.nospc_size_ok)
+ 			file_delete(file);
+ 		return 0;
  	}
- 	if (up == 1 && len2 == 0)
--		return copy_string(".");
-+		return dup_string(".");
- 	if (len2 == 0)
- 		up -= 1;
- 	len = up * 3 + len2 + 1;
-@@ -1651,7 +1653,7 @@ static char *pick_symlink_target(const char *symlink_path)
- static void symlink_new(struct dir_info *dir, const char *name_)
- {
- 	struct symlink_info *s;
--	char *path, *target, *name = copy_string(name_);
-+	char *path, *target, *name = dup_string(name_);
+@@ -891,7 +894,8 @@ static void file_write(struct file_info *file, int fd)
+ 	unsigned seed;
+ 	int truncate = 0;
  
- 	path = dir_path(dir, name);
- 	target = pick_symlink_target(path);
+-	if (can_mmap && !full && !file->deleted && tests_random_no(100) == 1) {
++	if (fsinfo.can_mmap && !full && !file->deleted &&
++	    tests_random_no(100) == 1) {
+ 		file_mmap_write(file);
+ 		return;
+ 	}
+@@ -910,7 +914,7 @@ static void file_write(struct file_info *file, int fd)
+ 		file_write_info(file, offset, actual, seed);
+ 
+ 	/* Delete errored files */
+-	if (!check_nospc_files && file->no_space_error) {
++	if (!fsinfo.nospc_size_ok && file->no_space_error) {
+ 		file_delete(file);
+ 		return;
+ 	}
+@@ -1173,7 +1177,7 @@ static void file_check(struct file_info *file, int fd)
+ 	struct stat st;
+ 
+ 	/* Do not check files that have errored */
+-	if (!check_nospc_files && file->no_space_error)
++	if (!fsinfo.nospc_size_ok && file->no_space_error)
+ 		return;
+ 	/* Do not check the same file twice */
+ 	if (file->check_run_no == check_run_no)
+@@ -1856,7 +1860,7 @@ static void operate_on_an_open_file(void)
+ 		}
+ 	}
+ 	/* Close any open files that have errored */
+-	if (!check_nospc_files) {
++	if (!fsinfo.nospc_size_ok) {
+ 		ofi = open_files;
+ 		while (ofi) {
+ 			if (ofi->fdi->file->no_space_error) {
+@@ -2052,6 +2056,16 @@ static void get_tested_fs_info(void)
+ 	/* Get memory page size for 'mmap()' */
+ 	fsinfo.page_size = sysconf(_SC_PAGE_SIZE);
+ 	CHECK(fsinfo.page_size > 0);
++
++	/*
++	 * JFFS2 does not support shared writable mmap and it may report
++	 * incorrect file size after "no space" errors.
++	 */
++	if (strcmp(fsinfo.fstype, "jffs2") == 0) {
++		fsinfo.nospc_size_ok = 0;
++		fsinfo.can_mmap = 0;
++	}
++
+ }
+ 
+ static const char doc[] = PROGRAM_NAME " version " PROGRAM_VERSION
+@@ -2144,15 +2158,6 @@ int main(int argc, char *argv[])
+ 	tests_file_system_mount_dir = (void *)args.mount_point;
+ 	tests_file_system_type = (void *)fsinfo.fstype;
+ 
+-	/*
+-	 * JFFS2 does not support shared writable mmap and it may report
+-	 * incorrect file size after "no space" errors.
+-	 */
+-	if (strcmp(tests_file_system_type, "jffs2") == 0) {
+-		check_nospc_files = 0;
+-		can_mmap = 0;
+-	}
+-
+ 	/* Do the actual test */
+ 	ret = integck();
+ 	if (ret)
 -- 
 1.7.2.3
