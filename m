@@ -1,17 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QA1nO-0003QZ-Db
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 15:16:00 +0000
+	id 1QA1nO-0003QG-02
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 15:16:01 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3DFFn4Z018683
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2011 18:15:53 +0300
+	p3DFFnow018691
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2011 18:15:52 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 09/27] fs-tests: integck: get rid of
-	tests_check_test_file_system
-Date: Wed, 13 Apr 2011 18:18:49 +0300
-Message-Id: <1302707947-6143-10-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 08/27] fs-tests: integck: clean-up copy_string
+Date: Wed, 13 Apr 2011 18:18:48 +0300
+Message-Id: <1302707947-6143-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1302707947-6143-1-git-send-email-dedekind1@gmail.com>
 References: <1302707947-6143-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -26,144 +25,172 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Stop using the shared 'tests_check_test_file_system()' function but
-instead, use own independed version of this function. This is another
-step forward the goal to make integck independent of the common
-shared code.
+This is a clean-up patch which:
+1. Simplifies copy_string by useng strdup instead of malloc
+2. Adds an assertion which checks the input parameter agains NULL,
+   instead of checking it.
+3. Re-names it to dup_string which looks more readable to me.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   70 ++++++++++++++++++++++++++++++++---
- 1 files changed, 64 insertions(+), 6 deletions(-)
+ tests/fs-tests/integrity/integck.c |   46 ++++++++++++++++++-----------------
+ 1 files changed, 24 insertions(+), 22 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index a225042..ebe4995 100644
+index 281de81..a225042 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -31,7 +31,10 @@
+@@ -30,6 +30,7 @@
+ #include <limits.h>
  #include <dirent.h>
  #include <getopt.h>
- #include <assert.h>
-+#include <mntent.h>
++#include <assert.h>
  #include <sys/mman.h>
-+#include <sys/vfs.h>
-+#include <sys/mount.h>
  #include "tests.h"
  
- #define PROGRAM_VERSION "1.1"
-@@ -48,6 +51,17 @@ static struct {
- 	.repeat_cnt = 1,
- };
- 
-+/*
-+ * The below data structure describes the tested file-system.
-+ *
-+ * max_name_len: maximum file name length
-+ * fstype: file-system type (e.g., "ubifs")
-+ */
-+static struct {
-+	int max_name_len;
-+	const char *fstype;
-+} fsinfo;
-+
- /* Structures to store data written to the test file system,
-    so that we can check whether the file system is correct. */
- 
-@@ -1383,7 +1397,7 @@ static char *make_name(struct dir_info *dir)
- 	do {
- 		found = 0;
- 		if (tests_random_no(5) == 1) {
--			int i, n = tests_random_no(tests_max_fname_len) + 1;
-+			int i, n = tests_random_no(fsinfo.max_name_len) + 1;
- 
- 			CHECK(n > 0 && n < 256);
- 			for (i = 0; i < n; i++)
-@@ -2000,6 +2014,43 @@ void integck(void)
- 	CHECK(rmdir(dir_name) != -1);
+@@ -172,15 +173,16 @@ static void *zalloc(size_t size)
+ 	return buf;
  }
  
+-static char *copy_string(const char *s)
 +/*
-+ * Fill 'fsinfo' with information about the tested file-system.
++ * Duplicate a string.
 + */
-+static void get_tested_fs_info(void)
-+{
-+	struct statfs fs_info;
-+	struct mntent *mntent;
-+	const char *mp;
-+        FILE *f;
-+
-+	CHECK(statfs(args.mount_point, &fs_info) == 0);
-+
-+	fsinfo.max_name_len = fs_info.f_namelen;
-+
-+	mp = "/proc/mounts";
-+        f = fopen(mp, "rb");
-+        if (!f) {
-+		mp = "/etc/mtab";
-+                f = fopen(mp, "rb");
-+	}
-+	CHECK(f != NULL);
-+
-+        while (1) {
-+		mntent = getmntent(f);
-+                if (!mntent) {
-+			errmsg("cannot find file-system info");
-+			CHECK(0);
-+		}
-+
-+		if (!strcmp(mntent->mnt_dir, args.mount_point))
-+			break;
-+        }
-+        fclose(f);
-+
-+	fsinfo.fstype = dup_string(mntent->mnt_type);
-+}
-+
- static const char doc[] = PROGRAM_NAME " version " PROGRAM_VERSION
- " - a stress test which checks the file-system integrity.\n"
- "It creates a directory named \"integck_test_dir_pid\", where where pid is the\n"
-@@ -2023,10 +2074,13 @@ static const struct option long_options[] = {
- };
- 
- /*
-- * Parse input command-line options. Returns zero on success and -1 on error.
-+ * Parse and validate input command-line options. Returns zero on success and
-+ * -1 on error.
-  */
- static int parse_opts(int argc, char * const argv[])
++static char *dup_string(const char *s)
  {
-+	struct stat st;
-+
- 	while (1) {
- 		int key, error = 0;
+ 	char *str;
  
-@@ -2065,6 +2119,11 @@ static int parse_opts(int argc, char * const argv[])
- 		return errmsg("more then one test file-system specified (use -h for help)");
- 
- 	args.mount_point = argv[optind];
-+
-+	if (chdir(args.mount_point) != 0 || lstat(args.mount_point, &st) != 0)
-+		return errmsg("invalid test file system mount directory: %s",
-+			      args.mount_point);
-+
- 	return 0;
+-	if (!s)
+-		return NULL;
+-	str = malloc(strlen(s) + 1);
++	assert(s != NULL);
++	str = strdup(s);
+ 	CHECK(str != NULL);
+-	strcpy(str, s);
+ 	return str;
  }
  
-@@ -2076,12 +2135,11 @@ int main(int argc, char *argv[])
- 	if (ret)
- 		return EXIT_FAILURE;
+@@ -190,9 +192,9 @@ static char *cat_strings(const char *a, const char *b)
+ 	size_t sz;
  
-+	get_tested_fs_info();
-+
- 	/* Temporary hack - will be fixed a bit later */
- 	tests_file_system_mount_dir = (void *)args.mount_point;
--	tests_file_system_type = "ubifs";
--
--	/* Change directory to the file system and check it is ok for testing */
--	tests_check_test_file_system();
-+	tests_file_system_type = (void *)fsinfo.fstype;
+ 	if (a && !b)
+-		return copy_string(a);
++		return dup_string(a);
+ 	if (b && !a)
+-		return copy_string(b);
++		return dup_string(b);
+ 	if (!a && !b)
+ 		return NULL;
+ 	sz = strlen(a) + strlen(b) + 1;
+@@ -211,9 +213,9 @@ static char *cat_paths(const char *a, const char *b)
+ 	size_t na, nb;
  
- 	/*
- 	 * JFFS2 does not support shared writable mmap and it may report
+ 	if (a && !b)
+-		return copy_string(a);
++		return dup_string(a);
+ 	if (b && !a)
+-		return copy_string(b);
++		return dup_string(b);
+ 	if (!a && !b)
+ 		return NULL;
+ 
+@@ -301,7 +303,7 @@ static void add_dir_entry(struct dir_info *parent, char type, const char *name,
+ 
+ 	entry = zalloc(sizeof(struct dir_entry_info));
+ 	entry->type = type;
+-	entry->name = copy_string(name);
++	entry->name = dup_string(name);
+ 	entry->parent = parent;
+ 
+ 	entry->next = parent->first;
+@@ -324,7 +326,7 @@ static void add_dir_entry(struct dir_info *parent, char type, const char *name,
+ 
+ 		entry->dir = dir;
+ 		dir->entry = entry;
+-		dir->name = copy_string(name);
++		dir->name = dup_string(name);
+ 		dir->parent = parent;
+ 	} else if (entry->type == 's') {
+ 		struct symlink_info *symlink = target;
+@@ -377,7 +379,7 @@ static struct dir_info *dir_new(struct dir_info *parent, const char *name)
+ 	free(path);
+ 
+ 	dir = zalloc(sizeof(struct dir_info));
+-	dir->name = copy_string(name);
++	dir->name = dup_string(name);
+ 	dir->parent = parent;
+ 	if (parent)
+ 		add_dir_entry(parent, 'd', name, dir);
+@@ -435,7 +437,7 @@ static struct file_info *file_new(struct dir_info *parent, const char *name)
+ 	free(path);
+ 
+ 	file = zalloc(sizeof(struct file_info));
+-	file->name = copy_string(name);
++	file->name = dup_string(name);
+ 
+ 	add_dir_entry(parent, 'f', name, file);
+ 
+@@ -1210,7 +1212,7 @@ static char *symlink_path(const char *path, const char *target_pathname)
+ 	size_t len, totlen, tarlen;
+ 
+ 	if (target_pathname[0] == '/')
+-		return copy_string(target_pathname);
++		return dup_string(target_pathname);
+ 	p = strrchr(path, '/');
+ 	len = p - path;
+ 	len += 1;
+@@ -1479,7 +1481,7 @@ static char *pick_rename_name(struct dir_info **parent,
+ 	*rename_entry = NULL;
+ 
+ 	if (grow || tests_random_no(20) < 10)
+-		return copy_string(make_name(dir));
++		return dup_string(make_name(dir));
+ 
+ 	r = tests_random_no(dir->number_of_entries);
+ 	entry = dir->first;
+@@ -1491,14 +1493,14 @@ static char *pick_rename_name(struct dir_info **parent,
+ 		entry = dir->first;
+ 	if (!entry ||
+ 	    (entry->type == 'd' && entry->dir->number_of_entries != 0))
+-		return copy_string(make_name(dir));
++		return dup_string(make_name(dir));
+ 
+ 	if ((isdir && entry->type != 'd') ||
+ 	    (!isdir && entry->type == 'd'))
+-		return copy_string(make_name(dir));
++		return dup_string(make_name(dir));
+ 
+ 	*rename_entry = entry;
+-	return copy_string(entry->name);
++	return dup_string(entry->name);
+ }
+ 
+ static void rename_entry(struct dir_entry_info *entry)
+@@ -1593,13 +1595,13 @@ static char *relative_path(const char *path1, const char *path2)
+ 	len2 = strlen(p2);
+ 	up = str_count(p1, '/');
+ 	if (up == 0 && len2 != 0)
+-		return copy_string(p2);
++		return dup_string(p2);
+ 	if (up == 0 && len2 == 0) {
+ 		p2 = strrchr(path2, '/');
+-		return copy_string(p2);
++		return dup_string(p2);
+ 	}
+ 	if (up == 1 && len2 == 0)
+-		return copy_string(".");
++		return dup_string(".");
+ 	if (len2 == 0)
+ 		up -= 1;
+ 	len = up * 3 + len2 + 1;
+@@ -1651,7 +1653,7 @@ static char *pick_symlink_target(const char *symlink_path)
+ static void symlink_new(struct dir_info *dir, const char *name_)
+ {
+ 	struct symlink_info *s;
+-	char *path, *target, *name = copy_string(name_);
++	char *path, *target, *name = dup_string(name_);
+ 
+ 	path = dir_path(dir, name);
+ 	target = pick_symlink_target(path);
 -- 
 1.7.2.3
