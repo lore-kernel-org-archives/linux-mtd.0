@@ -1,26 +1,22 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-px0-f171.google.com ([209.85.212.171])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9wGX-0000Zy-92
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 09:21:37 +0000
-Received: by fxm14 with SMTP id 14so408639fxm.36
+	id 1Q9wJT-0000as-Ay
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 09:24:40 +0000
+Received: by pxi7 with SMTP id 7so220920pxi.16
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Apr 2011 02:21:35 -0700 (PDT)
-Subject: Re: [PATCH v2] Fix gcc-4.5.2 "statement with no effect" warnings
-	in UBIFS
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Maksim Rayskiy <maksim.rayskiy@gmail.com>
-In-Reply-To: <BANLkTinwRXGTSP+zhzY2jMiX_ymwabkc3w@mail.gmail.com>
-References: <1302646496-32261-1-git-send-email-maksim.rayskiy@gmail.com>
-	<1302683190.2768.11.camel@localhost>
-	<1302683341.2768.12.camel@localhost>
-	<BANLkTinwRXGTSP+zhzY2jMiX_ymwabkc3w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 13 Apr 2011 12:18:45 +0300
-Message-ID: <1302686325.2768.18.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, vapier.adi@gmail.com
-Reply-To: dedekind1@gmail.com
+	Wed, 13 Apr 2011 02:24:37 -0700 (PDT)
+MIME-Version: 1.0
+Sender: foxcore@gmail.com
+In-Reply-To: <1302667642.14691.13.camel@koala>
+References: <201104111553.35457.Gernot.Hoyler@spansion.com>
+	<1302667642.14691.13.camel@koala>
+From: Guillaume LECERF <glecerf@gmail.com>
+Date: Wed, 13 Apr 2011 11:24:17 +0200
+Message-ID: <BANLkTikQT+KsV=4zUW2DSNLrmN7Dz4SCiA@mail.gmail.com>
+Subject: Re: [PATCH] cfi_cmdset_0002.c: Add CFI 1.5 support for S29GL-S
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=UTF-8
+Cc: Gernot Hoyler <Gernot.Hoyler@spansion.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-04-13 at 01:49 -0700, Maksim Rayskiy wrote:
-> Artem,
-> 
-> >> This patch does not compile and does not apply to the current tree. I'll
-> >> need to do a lot of massage as well because I dislike the "tabs as
-> >> dynamic spaces" style which you use, and the whole UBIFS code does not
-> >> use this approach, so I would like to maintain consistency.
-> >
-> > Sorry, it does compile with older UBIFS, but not with the current one.
-> >
-> >
-> 
-> I checked it against Linus tree. What tree you want me to use?
-> I am not clear what you want me to do with formatting.
+2011/4/13 Artem Bityutskiy <dedekind1@gmail.com>:
+> Pushed to l2-mtd-2.6.git, thanks.
 
-Maksim,
-
-would you please confirm the patch I pushed to ubifs-2.6.git tree fixes
-all the gcc-4.5 warnings?
+Where ?
+Can't find it on http://git.infradead.org/users/dedekind/l2-mtd-2.6.git ...
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Guillaume LECERF
+GeeXboX developer - www.geexbox.org
