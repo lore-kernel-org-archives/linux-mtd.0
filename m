@@ -1,22 +1,17 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9ubD-0008Ne-0P
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 07:34:52 +0000
-Received: by wwb39 with SMTP id 39so279648wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Apr 2011 00:34:49 -0700 (PDT)
-Subject: Re: Oops when calling fsync on read-only file-system
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Reuben Dowle <Reuben.Dowle@navico.com>
-In-Reply-To: <70F6AAAFDC054F41B9994A9BCD3DF64E1284E165@exch01-aklnz.MARINE.NET.INT>
-References: <70F6AAAFDC054F41B9994A9BCD3DF64E1284E165@exch01-aklnz.MARINE.NET.INT>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 13 Apr 2011 10:31:59 +0300
-Message-ID: <1302679919.2768.9.camel@localhost>
-Mime-Version: 1.0
+Message-ID: <19877.21427.818829.518089@ipc1.ka-ro>
+Date: Wed, 13 Apr 2011 09:41:39 +0200
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Subject: Re: [PATCH v5 1/4] ARM: add GPMI support for imx23/imx28
+In-Reply-To: <1302675881-18862-2-git-send-email-b32955@freescale.com>
+References: <1302675881-18862-1-git-send-email-b32955@freescale.com>
+	<1302675881-18862-2-git-send-email-b32955@freescale.com>
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
+	linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
+	veli-pekka.peltola@bluegiga.com, shijie8@gmail.com,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,72 +23,225 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-thanks a lot for reporting this!
-On Tue, 2011-04-12 at 13:32 +1200, Reuben Dowle wrote:
-> On my system, calling the fsync system call on any file in a UBI
-> file-system that is mounted read-only leads to a kernel oops. Our
-> system is running a customise version of 2.6.31, but as far as I can
-> see (without testing which is not possible due to extensive vendor
-> customisation of .31 kernel version), the current git branch also
-> contains this bug.
+
+Huang Shijie writes:
+> add the clock and iomux initialization for GPMI in the imx23 and imx28.
+> and register the gpmi driver.
 > 
-> I have created a patch against 2.6.31 that fixes the problem in my
-> system. Perhaps someone could test on latest kernel version.
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  arch/arm/mach-mxs/Kconfig                       |    2 +
+>  arch/arm/mach-mxs/clock-mx23.c                  |    3 +
+>  arch/arm/mach-mxs/clock-mx28.c                  |    3 +
+>  arch/arm/mach-mxs/devices-mx23.h                |    3 +
+>  arch/arm/mach-mxs/devices-mx28.h                |    3 +
+>  arch/arm/mach-mxs/devices/Kconfig               |    3 +
+>  arch/arm/mach-mxs/devices/Makefile              |    1 +
+>  arch/arm/mach-mxs/devices/platform-gpmi.c       |  134 +++++++++++++++++++++++
+>  arch/arm/mach-mxs/include/mach/devices-common.h |    4 +
+>  arch/arm/mach-mxs/include/mach/gpmi-nfc.h       |   65 +++++++++++
+>  arch/arm/mach-mxs/mach-mx23evk.c                |   37 ++++++
+>  arch/arm/mach-mxs/mach-mx28evk.c                |   37 ++++++
+>  12 files changed, 295 insertions(+), 0 deletions(-)
+>  create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi.c
+>  create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
 > 
-> Signed-off-by: Reuben Dowle <reuben.dowle at navico.com>
+> diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
+> index 4f6f174..e034666 100644
+> --- a/arch/arm/mach-mxs/Kconfig
+> +++ b/arch/arm/mach-mxs/Kconfig
+> @@ -22,6 +22,7 @@ config MACH_MX23EVK
+>  	select SOC_IMX23
+>  	select MXS_HAVE_AMBA_DUART
+>  	select MXS_HAVE_PLATFORM_AUART
+> +	select MXS_HAVE_PLATFORM_GPMI
+>  	select MXS_HAVE_PLATFORM_MXSFB
+>  	default y
+>  	help
+> @@ -35,6 +36,7 @@ config MACH_MX28EVK
+>  	select MXS_HAVE_PLATFORM_AUART
+>  	select MXS_HAVE_PLATFORM_FEC
+>  	select MXS_HAVE_PLATFORM_FLEXCAN
+> +	select MXS_HAVE_PLATFORM_GPMI
+>  	select MXS_HAVE_PLATFORM_MXSFB
+>  	select MXS_OCOTP
+>  	default y
+> diff --git a/arch/arm/mach-mxs/clock-mx23.c b/arch/arm/mach-mxs/clock-mx23.c
+> index d133c7f..f3c9653 100644
+> --- a/arch/arm/mach-mxs/clock-mx23.c
+> +++ b/arch/arm/mach-mxs/clock-mx23.c
+> @@ -29,6 +29,7 @@
+>  #include <mach/mx23.h>
+>  #include <mach/common.h>
+>  #include <mach/clock.h>
+> +#include <mach/gpmi-nfc.h>
+>  
+>  #include "regs-clkctrl-mx23.h"
+>  
+> @@ -442,6 +443,7 @@ static struct clk_lookup lookups[] = {
+>  	_REGISTER_CLOCK("duart", "apb_pclk", xbus_clk)
+>  	/* for amba-pl011 driver */
+>  	_REGISTER_CLOCK("duart", NULL, uart_clk)
+> +	_REGISTER_CLOCK(GPMI_NFC_DRIVER_MX23, NULL, gpmi_clk)
+>  	_REGISTER_CLOCK("mxs-auart.0", NULL, uart_clk)
+>  	_REGISTER_CLOCK("rtc", NULL, rtc_clk)
+>  	_REGISTER_CLOCK("mxs-dma-apbh", NULL, hbus_clk)
+> @@ -533,6 +535,7 @@ int __init mx23_clocks_init(void)
+>  	clk_enable(&xbus_clk);
+>  	clk_enable(&emi_clk);
+>  	clk_enable(&uart_clk);
+> +	clk_enable(&gpmi_clk);
+>  
+>  	clkdev_add_table(lookups, ARRAY_SIZE(lookups));
+>  
+> diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
+> index 5e489a2..7868d42 100644
+> --- a/arch/arm/mach-mxs/clock-mx28.c
+> +++ b/arch/arm/mach-mxs/clock-mx28.c
+> @@ -29,6 +29,7 @@
+>  #include <mach/mx28.h>
+>  #include <mach/common.h>
+>  #include <mach/clock.h>
+> +#include <mach/gpmi-nfc.h>
+>  
+>  #include "regs-clkctrl-mx28.h"
+>  
+> @@ -607,6 +608,7 @@ static struct clk_lookup lookups[] = {
+>  	_REGISTER_CLOCK("duart", "apb_pclk", xbus_clk)
+>  	/* for amba-pl011 driver */
+>  	_REGISTER_CLOCK("duart", NULL, uart_clk)
+> +	_REGISTER_CLOCK(GPMI_NFC_DRIVER_MX28, NULL, gpmi_clk)
+>  	_REGISTER_CLOCK("imx28-fec.0", NULL, fec_clk)
+>  	_REGISTER_CLOCK("imx28-fec.1", NULL, fec_clk)
+>  	_REGISTER_CLOCK("mxs-auart.0", NULL, uart_clk)
+> @@ -749,6 +751,7 @@ int __init mx28_clocks_init(void)
+>  	clk_enable(&xbus_clk);
+>  	clk_enable(&emi_clk);
+>  	clk_enable(&uart_clk);
+> +	clk_enable(&gpmi_clk);
+>  
+>  	clk_set_parent(&lcdif_clk, &ref_pix_clk);
+>  
+> diff --git a/arch/arm/mach-mxs/devices-mx23.h b/arch/arm/mach-mxs/devices-mx23.h
+> index c7e14f4..349fb1d 100644
+> --- a/arch/arm/mach-mxs/devices-mx23.h
+> +++ b/arch/arm/mach-mxs/devices-mx23.h
+> @@ -16,6 +16,9 @@ extern const struct amba_device mx23_duart_device __initconst;
+>  #define mx23_add_duart() \
+>  	mxs_add_duart(&mx23_duart_device)
+>  
+> +extern const struct gpmi_nfc_platform_data gpmi_platform_data_imx23 __initconst;
+> +#define mx23_add_gpmi() mxs_add_gpmi(&gpmi_platform_data_imx23)
+>
+platform_data should be passed as parameter to the mx23_add_gpmi()
+call, so that it can be set per platform, not per SoC.
 
-Wow! Shame on me for this bug! And it is funny that it is there for
-several years already and there are product with this bug! Here is the
-fix which I will merge upstream soon:
+
+> diff --git a/arch/arm/mach-mxs/devices-mx28.h b/arch/arm/mach-mxs/devices-mx28.h
+> index 9d08555..ed6427b 100644
+> --- a/arch/arm/mach-mxs/devices-mx28.h
+> +++ b/arch/arm/mach-mxs/devices-mx28.h
+> @@ -16,6 +16,9 @@ extern const struct amba_device mx28_duart_device __initconst;
+>  #define mx28_add_duart() \
+>  	mxs_add_duart(&mx28_duart_device)
+>  
+> +extern const struct gpmi_nfc_platform_data gpmi_platform_data_imx28 __initconst;
+> +#define	mx28_add_gpmi()	mxs_add_gpmi(&gpmi_platform_data_imx28)
+> +
+dito.
+
+> diff --git a/arch/arm/mach-mxs/devices/platform-gpmi.c b/arch/arm/mach-mxs/devices/platform-gpmi.c
+> new file mode 100644
+> index 0000000..74ebe22
+> --- /dev/null
+> +++ b/arch/arm/mach-mxs/devices/platform-gpmi.c
+> @@ -0,0 +1,134 @@
+> +/*
+> + * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program; if not, write to the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +#include <asm/sizes.h>
+> +#include <mach/mx23.h>
+> +#include <mach/mx28.h>
+> +#include <mach/gpmi-nfc.h>
+> +#include <mach/devices-common.h>
+> +
+> +#ifdef CONFIG_SOC_IMX23
+> +const struct gpmi_nfc_platform_data  gpmi_platform_data_imx23 __initconst = {
+> +	.min_prop_delay_in_ns	= 5,
+> +	.max_prop_delay_in_ns	= 9,
+> +	.max_chip_count		= 1,
+> +};
+> +
+This is platform-dependent and thus should be placed in the mach-*
+files (and passed to mx23_add_gpmi()).
+
+> +const struct resource res_imx23[] __initconst = {
+> +	{	/* GPMI */
+> +		.start = MX23_GPMI_BASE_ADDR,
+> +		.end   = MX23_GPMI_BASE_ADDR + SZ_8K - 1,
+> +		.name  = GPMI_NFC_GPMI_REGS_ADDR_RES_NAME,
+> +		.flags = IORESOURCE_MEM,
+> +	}, {
+> +		.start = MX23_INT_GPMI_ATTENTION,
+> +		.end   = MX23_INT_GPMI_ATTENTION,
+> +		.name  = GPMI_NFC_GPMI_INTERRUPT_RES_NAME,
+> +		.flags = IORESOURCE_IRQ,
+> +	}, {	/* BCH */
+> +		.start = MX23_BCH_BASE_ADDR,
+> +		.end   = MX23_BCH_BASE_ADDR + SZ_8K - 1,
+> +		.name  = GPMI_NFC_BCH_REGS_ADDR_RES_NAME,
+> +		.flags = IORESOURCE_MEM,
+> +	}, {
+> +		.start = MX23_INT_BCH,
+> +		.end   = MX23_INT_BCH,
+> +		.name  = GPMI_NFC_BCH_INTERRUPT_RES_NAME,
+> +		.flags = IORESOURCE_IRQ,
+> +	}, {	/* DMA */
+> +		.start	= MX23_DMA_GPMI0,
+> +		.end	= MX23_DMA_GPMI3,
+> +		.name  = GPMI_NFC_DMA_CHANNELS_RES_NAME,
+> +		.flags = IORESOURCE_DMA,
+> +	}, {
+> +		.start = MX23_INT_GPMI_DMA,
+> +		.end   = MX23_INT_GPMI_DMA,
+> +		.name  = GPMI_NFC_DMA_INTERRUPT_RES_NAME,
+> +		.flags = IORESOURCE_IRQ,
+> +	},
+> +};
+> +#endif
+> +
+> +#ifdef CONFIG_SOC_IMX28
+> +const struct gpmi_nfc_platform_data  gpmi_platform_data_imx28 __initconst = {
+> +	.min_prop_delay_in_ns	= 5,
+> +	.max_prop_delay_in_ns	= 9,
+> +	.max_chip_count		= 1,
+> +};
+> +
+dito.
 
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Subject: [PATCH] UBIFS: fix oops when R/O file-system is fsync'ed
-
-This patch fixes severe UBIFS bug: UBIFS oopses when we 'fsync()' an
-file on R/O-mounter file-system. We (the UBIFS authors) incorrectly
-thought that VFS would not propagate 'fsync()' down to the file-system
-if it is read-only, but this is not the case.
-
-It is easy to exploit this bug using the following simple perl script:
-
-use strict;
-use File::Sync qw(fsync sync);
-
-die "File path is not specified" if not defined $ARGV[0];
-my $path = $ARGV[0];
-
-open FILE, "<", "$path" or die "Cannot open $path: $!";
-fsync(\*FILE) or die "cannot fsync $path: $!";
-close FILE or die "Cannot close $path: $!";
-
-Thanks to Reuben Dowle <Reuben.Dowle@navico.com> for reporting about this
-issue.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Reported-by: Reuben Dowle <Reuben.Dowle@navico.com>
-Cc: stable@kernel.org
----
- fs/ubifs/file.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
-
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index a2b5012..3594aae 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1312,6 +1312,9 @@ int ubifs_fsync(struct file *file, int datasync)
- 
- 	dbg_gen("syncing inode %lu", inode->i_ino);
- 
-+	if (inode->i_sb->s_flags & MS_RDONLY)
-+		return 0;
-+
- 	/*
- 	 * VFS has already synchronized dirty pages for this inode. Synchronize
- 	 * the inode unless this is a 'datasync()' call.
+Lothar Waßmann
 -- 
-1.7.2.3
+___________________________________________________________
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
