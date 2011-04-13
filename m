@@ -1,24 +1,17 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9zxX-0002NN-Co
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 13:18:16 +0000
+	id 1Q9zxa-0002Ne-4c
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 13:18:19 +0000
 Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3DDICG0020550
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2011 16:18:12 +0300
+	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p3DDIGOw017986
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2011 16:18:16 +0300
 From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
 	linux-mtd@lists.infradead.org
-Subject: [PATCHv1 5/5] tests: ubi-tests: clean libubi.a and *.o
-Date: Wed, 13 Apr 2011 16:20:29 +0300
-Message-Id: <5dca68dbcc29a1bdc8a866b9c3d1f19853ddde3c.1302700658.git.ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <6cb173d447de7eb92ead54f450da7752a40e476c.1302700658.git.ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <ec50e9f8ced473683c8c8e981607737dfb015c3b.1302700658.git.ext-andriy.shevchenko@nokia.com>
-References: <ec50e9f8ced473683c8c8e981607737dfb015c3b.1302700658.git.ext-andriy.shevchenko@nokia.com>
-	<865774bea767bf615bbaf79139448aef65d55202.1302700658.git.ext-andriy.shevchenko@nokia.com>
-	<8aa731c3a7a071bb9216500d72c9a8d7a7e2b830.1302700658.git.ext-andriy.shevchenko@nokia.com>
-	<6cb173d447de7eb92ead54f450da7752a40e476c.1302700658.git.ext-andriy.shevchenko@nokia.com>
-References: <ec50e9f8ced473683c8c8e981607737dfb015c3b.1302700658.git.ext-andriy.shevchenko@nokia.com>
+Subject: [PATCHv1 1/5] mkfs.jffs2: fix casting of printf argument
+Date: Wed, 13 Apr 2011 16:20:25 +0300
+Message-Id: <ec50e9f8ced473683c8c8e981607737dfb015c3b.1302700658.git.ext-andriy.shevchenko@nokia.com>
 Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -29,23 +22,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The common.mk contains clean target that removes *.o and $(TARGETS). Thus, make
-custom clean target only for libubi.a
+The compiler warns us about cast mismatch for %9lu specifier.  In original code
+the argument has __off64_t type. Here is a simple type casting fix.
 
 Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 ---
- tests/ubi-tests/Makefile |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ mkfs.jffs2.c |   12 ++++++------
+ 1 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tests/ubi-tests/Makefile b/tests/ubi-tests/Makefile
-index d6be0dc..741a5c2 100644
---- a/tests/ubi-tests/Makefile
-+++ b/tests/ubi-tests/Makefile
-@@ -22,4 +22,4 @@ libubi.a: $(LIBUBI_SRC_PATH)/libubi.c  $(LIBUBI_HEADER_PATH)/libubi.h  $(LIBUBI_
- $(TARGETS): $(addprefix $(BUILDDIR)/, common.o) libubi.a
- 
- clean::
--	rm -f $(TARGETS) $(addsuffix .o, $(TESTS)) libubi.*
-+	rm -f libubi.a
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index 3aab533..7bb9ad1 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -1233,7 +1233,7 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 			case S_IFDIR:
+ 				if (verbose) {
+ 					printf("\td %04o %9lu             %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
+ 							(int) (e->sb.st_uid), (int) (e->sb.st_gid),
+ 							e->name);
+ 				}
+@@ -1243,7 +1243,7 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 			case S_IFSOCK:
+ 				if (verbose) {
+ 					printf("\ts %04o %9lu             %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
+ 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
+ 				}
+ 				write_pipe(e);
+@@ -1252,7 +1252,7 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 			case S_IFIFO:
+ 				if (verbose) {
+ 					printf("\tp %04o %9lu             %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
+ 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
+ 				}
+ 				write_pipe(e);
+@@ -1281,7 +1281,7 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 			case S_IFLNK:
+ 				if (verbose) {
+ 					printf("\tl %04o %9lu             %5d:%-3d %s -> %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
++							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
+ 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name,
+ 							e->link);
+ 				}
+@@ -1293,8 +1293,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
+ 				write_xattr_entry(e);
+ 				if (verbose) {
+ 					printf("\tf %04o %9lu (%9u) %5d:%-3d %s\n",
+-							e->sb.st_mode & ~S_IFMT, e->sb.st_size, wrote,
+-							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
++							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
++							wrote, (int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
+ 				}
+ 				break;
+ 			default:
 -- 
 1.6.3.3
