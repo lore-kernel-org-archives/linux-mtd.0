@@ -1,22 +1,22 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9rFF-0007FX-PZ
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 03:59:59 +0000
-Received: by eyh6 with SMTP id 6so65298eyh.36
+	id 1Q9rJx-0007Hj-3q
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 04:04:49 +0000
+Received: by ewy3 with SMTP id 3so67523ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Apr 2011 20:59:55 -0700 (PDT)
-Subject: Re: [PATCH] UBI FAQ: add "why a dynamic volume is faster to access
-	than a static..." chapter.
+	Tue, 12 Apr 2011 21:04:47 -0700 (PDT)
+Subject: Re: [PATCH v3] mtd: onenand: add ecclayout and subpage_sft for
+	none-flex 4kb page onenand
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Bastian Ruppert <Bastian.Ruppert@Sewerin.de>
-In-Reply-To: <1302513182-3960-1-git-send-email-Bastian.Ruppert@Sewerin.de>
-References: <1302513182-3960-1-git-send-email-Bastian.Ruppert@Sewerin.de>
+To: Roman Tereshonkov <roman.tereshonkov@nokia.com>
+In-Reply-To: <1302515521-27400-1-git-send-email-roman.tereshonkov@nokia.com>
+References: <1302515521-27400-1-git-send-email-roman.tereshonkov@nokia.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 13 Apr 2011 06:59:52 +0300
-Message-ID: <1302667192.14691.7.camel@koala>
+Date: Wed, 13 Apr 2011 07:04:44 +0300
+Message-ID: <1302667484.14691.11.camel@koala>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: kyungmin.park@samsung.com, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,13 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-04-11 at 11:13 +0200, Bastian Ruppert wrote:
-> Signed-off-by: Bastian Ruppert <Bastian.Ruppert@Sewerin.de>
+On Mon, 2011-04-11 at 12:52 +0300, Roman Tereshonkov wrote:
+> So as the ecclayout and suppage size for 4kb page
+> Flex- and none-Flex OneNAND are different
+> the new values for none-Flex 4kb page OneNAND memory are added.
+> 
+> The introduced ecclayout and suppage size are based on specification
+> 4Gb M-die OneNAND Flash (KFM4G16Q4M, KFN8G16Q4M). Rev. 1.3, Apr. 2010
+> For eccpos we expose only 64 bytes out of 72, for oobfree the spare area
+> fields marked as "Managed by internal ECC logic for Logical Sector Number area"
+> are used.
+> 
+> Signed-off-by: Roman Tereshonkov <roman.tereshonkov@nokia.com>
 > ---
->  faq/ubi.xml |    9 +++++++++
->  1 files changed, 9 insertions(+), 0 deletions(-)
+>  drivers/mtd/onenand/onenand_base.c |   46 +++++++++++++++++++++++++++++++----
+>  1 files changed, 40 insertions(+), 6 deletions(-)
 
-Tweaked and pushed to mtd-www, thanks.
+Updated l2-mtd-2.6.git with this patch, thanks.
 
 -- 
 Best Regards,
