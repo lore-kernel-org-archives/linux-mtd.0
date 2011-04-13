@@ -1,25 +1,24 @@
-Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9wvd-0000sf-9L
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 10:04:05 +0000
-Date: Wed, 13 Apr 2011 12:03:53 +0200
-From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH v5 1/4] ARM: add GPMI support for imx23/imx28
-Message-ID: <20110413100353.GP18850@pengutronix.de>
-References: <1302675881-18862-1-git-send-email-b32955@freescale.com>
-	<1302675881-18862-2-git-send-email-b32955@freescale.com>
-	<20110413090304.GM18850@pengutronix.de>
-	<4DA5725A.9000106@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+	id 1Q9x1G-0000vG-DR
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 10:09:55 +0000
+Received: by fxm14 with SMTP id 14so435251fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Apr 2011 03:09:52 -0700 (PDT)
+Subject: Re: [PATCH] cfi_cmdset_0002.c: Add CFI 1.5 support for S29GL-S
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Guillaume LECERF <glecerf@gmail.com>
+In-Reply-To: <BANLkTikQT+KsV=4zUW2DSNLrmN7Dz4SCiA@mail.gmail.com>
+References: <201104111553.35457.Gernot.Hoyler@spansion.com>
+	<1302667642.14691.13.camel@koala>
+	<BANLkTikQT+KsV=4zUW2DSNLrmN7Dz4SCiA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 13 Apr 2011 13:06:56 +0300
+Message-ID: <1302689216.2768.19.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4DA5725A.9000106@freescale.com>
-Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
-	veli-pekka.peltola@bluegiga.com, ffainelli@freebox.fr,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
-	linux-arm-kernel@lists.infradead.org
+Cc: Gernot Hoyler <Gernot.Hoyler@spansion.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,28 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Wed, 2011-04-13 at 11:24 +0200, Guillaume LECERF wrote:
+> 2011/4/13 Artem Bityutskiy <dedekind1@gmail.com>:
+> > Pushed to l2-mtd-2.6.git, thanks.
+> 
+> Where ?
+> Can't find it on http://git.infradead.org/users/dedekind/l2-mtd-2.6.git ...
 
-> >>diff --git a/arch/arm/mach-mxs/mach-mx23evk.c b/arch/arm/mach-mxs/mach-mx23evk.c
-> >IMHO adding the device to machines should be a seperate patch.
-> Do I have to split the driver into two parts? one for ARM-KERNEL,
-> and another for MTD?
-> If I have to do it, I will split the driver.
-I'm not sure I understood what you mean here. I havn't looked at the mtd
-part of this series, but I think having:
-
- - ARM: mxs: add GPMI support for imx23/imx28
- - ARM: mxs: add gpmi device for mx2[38]evk
- - MTD: what
- - MTD: ever
- - MTD: is
- - MTD: needed
-
-is OK.
-
-Best regards
-Uwe
+Sorry, it is there now.
 
 -- 
-Pengutronix e.K.                           | Uwe Kleine-K�nig            |
-Industrial Linux Solutions                 | http://www.pengutronix.de/  |
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
