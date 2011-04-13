@@ -1,19 +1,25 @@
-Received: from ns.vscht.cz ([2001:718:3:15::5])
+Received: from metis.ext.pengutronix.de ([2001:6f8:1178:4:290:27ff:fe1d:cc33])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1Q9ws0-0000pc-TB
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 10:00:21 +0000
-From: Jiri Pinkava <jiri.pinkava@vscht.cz>
-To: <dedekind1@gmail.com>
-Subject: [PATCH 2/2] nand: Remove unnecessary variable
-Date: Wed, 13 Apr 2011 11:59:31 +0200
-Message-ID: <1302688771-17252-2-git-send-email-jiri.pinkava@vscht.cz>
-In-Reply-To: <1302688771-17252-1-git-send-email-jiri.pinkava@vscht.cz>
-References: <1302665784.14691.5.camel@koala>
-	<1302688771-17252-1-git-send-email-jiri.pinkava@vscht.cz>
+	id 1Q9wvd-0000sf-9L
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 10:04:05 +0000
+Date: Wed, 13 Apr 2011 12:03:53 +0200
+From: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v5 1/4] ARM: add GPMI support for imx23/imx28
+Message-ID: <20110413100353.GP18850@pengutronix.de>
+References: <1302675881-18862-1-git-send-email-b32955@freescale.com>
+	<1302675881-18862-2-git-send-email-b32955@freescale.com>
+	<20110413090304.GM18850@pengutronix.de>
+	<4DA5725A.9000106@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Jiri Pinkava <jiri.pinkava@vscht.cz>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, ben-linux@fluff.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4DA5725A.9000106@freescale.com>
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
+	veli-pekka.peltola@bluegiga.com, ffainelli@freebox.fr,
+	linux-mtd@lists.infradead.org, shijie8@gmail.com,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +29,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
-Signed-off-by: Jiri Pinkava <jiri.pinkava@vscht.cz>
----
- drivers/mtd/nand/s3c2410.c |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+> >>diff --git a/arch/arm/mach-mxs/mach-mx23evk.c b/arch/arm/mach-mxs/mach-mx23evk.c
+> >IMHO adding the device to machines should be a seperate patch.
+> Do I have to split the driver into two parts? one for ARM-KERNEL,
+> and another for MTD?
+> If I have to do it, I will split the driver.
+I'm not sure I understood what you mean here. I havn't looked at the mtd
+part of this series, but I think having:
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index cea775a..8041038 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -54,12 +54,6 @@ static int hardware_ecc = 1;
- static int hardware_ecc = 0;
- #endif
- 
--#ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
--static const int clock_stop = 1;
--#else
--static const int clock_stop = 0;
--#endif
--
- 
- /* new oob placement block for use with hardware ecc generation
-  */
-@@ -169,7 +163,11 @@ static struct s3c2410_platform_nand *to_nand_plat(struct platform_device *dev)
- 
- static inline int allow_clk_suspend(struct s3c2410_nand_info *info)
- {
--	return clock_stop;
-+#ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
-+	return 1;
-+#else
-+	return 0;
-+#endif
- }
- 
- /**
+ - ARM: mxs: add GPMI support for imx23/imx28
+ - ARM: mxs: add gpmi device for mx2[38]evk
+ - MTD: what
+ - MTD: ever
+ - MTD: is
+ - MTD: needed
+
+is OK.
+
+Best regards
+Uwe
+
 -- 
-1.7.4.4
+Pengutronix e.K.                           | Uwe Kleine-König            |
+Industrial Linux Solutions                 | http://www.pengutronix.de/  |
