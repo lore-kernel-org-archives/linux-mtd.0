@@ -1,19 +1,23 @@
-Message-ID: <4DA4FF5E.2090406@freescale.com>
-Date: Wed, 13 Apr 2011 09:41:50 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Veli-Pekka Peltola <veli-pekka.peltola@bluegiga.com>
-Subject: Re: [PATCH V4 2/4] MTD : add the common code for GPMI controller
-	driver
-References: <1301722240-15406-1-git-send-email-b32955@freescale.com>
-	<1301722240-15406-3-git-send-email-b32955@freescale.com>
-	<E550E0E66149EE438CE65645D99717D601670B0E@darkblue.bgt.local>
-In-Reply-To: <E550E0E66149EE438CE65645D99717D601670B0E@darkblue.bgt.local>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
-	linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
-	shijie8@gmail.com, linux-arm-kernel@lists.infradead.org
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1Q9qku-00078L-9G
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2011 03:28:37 +0000
+Received: by ewy3 with SMTP id 3so62470ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 12 Apr 2011 20:28:33 -0700 (PDT)
+Subject: Re: [PATCH] nand: Remove meaningless delay from nand_unlock
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: jiri.pinkava@vscht.cz, Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <1302402611-3878-1-git-send-email-jiri.pinkava@vscht.cz>
+References: <1302402611-3878-1-git-send-email-jiri.pinkava@vscht.cz>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 13 Apr 2011 06:28:29 +0300
+Message-ID: <1302665309.14691.3.camel@koala>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: sjhill@realitydiluted.com, tglx@linutronix.de, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> Hi,
->
-> I have one correction to your NAND driver. Please see inlined comments.
->
->> These files contain the common code for the GPMI driver.
->>
->> Signed-off-by: Huang Shijie<b32955@freescale.com>
->> ---
->>   drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c | 2453
->> +++++++++++++++++++++++++++++
->>   drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h      |  551 +++++++
->>   2 files changed, 3004 insertions(+), 0 deletions(-)
->>   create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
->>   create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h
->>
->> diff --git a/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
->> b/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
->> new file mode 100644
->> index 0000000..7bbc448
->> --- /dev/null
->> +++ b/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
->> @@ -0,0 +1,2453 @@
-> <snip>
->
->> +#ifdef CONFIG_PM
->> +static int gpmi_nfc_suspend(struct platform_device *pdev,
-> pm_message_t
->> state)
->> +{
->> +	return 0;
->> +}
->> +
->> +static int gpmi_nfc_resume(struct platform_device *pdev)
->> +{
->> +	return 0;
->> +}
->> +#else
->> +#define suspend  NULL
->> +#define resume   NULL
->> +#endif
-> If CONFIG_PM is disabled your defines don't match function names.
+On Sun, 2011-04-10 at 04:30 +0200, jiri.pinkava@vscht.cz wrote:
+> From: Jiří Pinkava <jiri.pinkava@vscht.cz>
+> 
+> This delay is meaningless. If delay is needed it is device specific
+> and must be reimplemented by specific driver, otherwise no delay is needed.
+> 
+> This function is not used by any current kernel code, affects only
+> external code (like main).
+> 
+> Signed-off-by: Jiri Pinkava <jiri.pinkava@vscht.cz>
+> ---
+>  drivers/mtd/nand/nand_base.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 2aef58e..5b5aff5 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -922,7 +922,6 @@ static int __nand_unlock(struct mtd_info *mtd, loff_t ofs,
+>  
+>  	/* Call wait ready function */
+>  	status = chip->waitfunc(mtd, chip);
+> -	udelay(1000);
+>  	/* See if device thinks it succeeded */
+>  	if (status & 0x01) {
+>  		DEBUG(MTD_DEBUG_LEVEL0, "%s: Error status = 0x%08x\n",
 
-thanks.
-> <snip>
->
->> +/* This structure represents this driver to the platform management
->> system. */
->> +static struct platform_driver gpmi_nfc_driver = {
->> +	.driver = {
->> +		.name = GPMI_NFC_DRIVER_NAME,
->> +	},
->> +	.probe   = gpmi_nfc_probe,
->> +	.remove  = __exit_p(gpmi_nfc_remove),
->> +	.suspend = gpmi_nfc_suspend,
->> +	.resume  = gpmi_nfc_resume,
->> +	.id_table = gpmi_ids,
->> +};
-> This section fails to compile as gpmi_nfc_suspend and gpmi_nfc_resume
-> are undefined. It compiles fine if I add gpmi_nfc_ prefix to defines.
-thanks. I will fix it in next version.
+Hi, it looks sane to remove this udelay. However,
 
-Best Regards
-Huang Shijie
-> --
-> Veli-Pekka Peltola
-> R&D Engineer
-> Bluegiga Technologies
->
->
+1. If you do this, then you also have to do it in __nand_lock() - there
+is a similar udelay()
+2. Let's CC Vimal who is the author of this code - may be he'll tell us
+why he added the delays.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Битюцкий Артём)
