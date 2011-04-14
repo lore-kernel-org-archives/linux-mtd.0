@@ -1,24 +1,19 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QAFkP-0001PY-FE
-	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 06:09:46 +0000
-Received: by ewy3 with SMTP id 3so430668ewy.36
+	id 1QAFnA-0001Qo-Tg
+	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 06:12:38 +0000
+Received: by eyh6 with SMTP id 6so430261eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Apr 2011 23:09:43 -0700 (PDT)
-Subject: Re: [PATCH v2] Fix gcc-4.5.2 "statement with no effect" warnings
-	in UBIFS
+	Wed, 13 Apr 2011 23:12:34 -0700 (PDT)
+Subject: Re: mtd-utils: "flash_erase -j" failes with "unable to get NAND
+	oobinfo" on large flash chips.
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Maksim Rayskiy <maksim.rayskiy@gmail.com>
-In-Reply-To: <BANLkTi=c7Qpf8mO=H5zwCqrTO-0wdOjuNg@mail.gmail.com>
-References: <1302646496-32261-1-git-send-email-maksim.rayskiy@gmail.com>
-	<1302683190.2768.11.camel@localhost>
-	<1302683341.2768.12.camel@localhost>
-	<BANLkTinwRXGTSP+zhzY2jMiX_ymwabkc3w@mail.gmail.com>
-	<1302686325.2768.18.camel@localhost>
-	<BANLkTi=c7Qpf8mO=H5zwCqrTO-0wdOjuNg@mail.gmail.com>
+To: Daid <daid303@gmail.com>
+In-Reply-To: <BANLkTinozqCrqaDGsAX-gWWUg2G3bvg_Rg@mail.gmail.com>
+References: <BANLkTinozqCrqaDGsAX-gWWUg2G3bvg_Rg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 14 Apr 2011 09:06:51 +0300
-Message-ID: <1302761211.2796.2.camel@localhost>
+Date: Thu, 14 Apr 2011 09:09:43 +0300
+Message-ID: <1302761383.2796.4.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -32,12 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-04-13 at 10:18 -0700, Maksim Rayskiy wrote:
-> Artem,
+On Tue, 2011-04-12 at 11:58 +0200, Daid wrote:
+> I've made a patch to fix flash_erase with large flash chips.
+> flash_erase uses MEMGETOOBSEL which no longer works if the ECC area is
+> larger then 32 bytes. ECCGETLAYOUT is the replacement ioctl.
 > 
-> Yes, the compilation is clean now, no warnings.
+> This patch is based on the work of Stanley Miao, he made a patch in
+> June 2010 for flash_eraseall.
+> http://lists.infradead.org/pipermail/linux-mtd/2010-June/031981.html
+> I've implemented the backwards compatibility differently, checking
+> kernel versions doesn't feel correct.
 
-OK, thanks a lot!
+Hi Daid, would you please use libmtd instead? If libmtd does not have
+some functionality you need - just add it there.
+
+The thing is that we are trying to unify this stuff a little.
 
 -- 
 Best Regards,
