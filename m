@@ -1,21 +1,18 @@
-Date: Thu, 14 Apr 2011 09:19:45 +0800
-From: Shawn Guo <shawn.guo@freescale.com>
-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: Re: [PATCH v5 1/4] ARM: add GPMI support for imx23/imx28
-Message-ID: <20110414011944.GC1897@S2100-06.ap.freescale.net>
-References: <1302675881-18862-1-git-send-email-b32955@freescale.com>
-	<1302675881-18862-2-git-send-email-b32955@freescale.com>
-	<20110413114304.GA1897@S2100-06.ap.freescale.net>
-	<20110413135152.GS18850@pengutronix.de>
+Message-ID: <4DA659D0.9030504@freescale.com>
+Date: Thu, 14 Apr 2011 10:20:00 +0800
+From: Huang Shijie <b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-In-Reply-To: <20110413135152.GS18850@pengutronix.de>
+To: =?UTF-8?B?TG90aGFyIFdhw59tYW5u?= <LW@KARO-electronics.de>
+Subject: Re: [PATCH v5 2/4] MTD : add the common code for GPMI controller
+	driver
+References: <1302675881-18862-1-git-send-email-b32955@freescale.com>	<1302675881-18862-3-git-send-email-b32955@freescale.com>
+	<19877.65411.687158.113390@ipc1.ka-ro>
+In-Reply-To: <19877.65411.687158.113390@ipc1.ka-ro>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
-	Huang Shijie <b32955@freescale.com>,
-	veli-pekka.peltola@bluegiga.com, ffainelli@freebox.fr,
-	linux-mtd@lists.infradead.org, shijie8@gmail.com,
+	linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
+	veli-pekka.peltola@bluegiga.com, shijie8@gmail.com,
 	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,83 +23,234 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 13, 2011 at 03:51:52PM +0200, Uwe Kleine-K=F6nig wrote:
-> Hi Shawn,
->=20
-> On Wed, Apr 13, 2011 at 07:43:05PM +0800, Shawn Guo wrote:
-> > On Wed, Apr 13, 2011 at 02:24:38PM +0800, Huang Shijie wrote:
-> > > +	MX23_PAD_GPMI_D01__GPMI_D01 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_D02__GPMI_D02 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_D03__GPMI_D03 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_D04__GPMI_D04 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_D05__GPMI_D05 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_D06__GPMI_D06 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_D07__GPMI_D07 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_CLE__GPMI_CLE |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_ALE__GPMI_ALE |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_WPN__GPMI_WPN |
-> > > +		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_WRN__GPMI_WRN |
-> > > +		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_RDN__GPMI_RDN |
-> > > +		(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_RDY0__GPMI_RDY0 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_RDY1__GPMI_RDY1 |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_CE0N__GPMI_CE0N |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +	MX23_PAD_GPMI_CE1N__GPMI_CE1N |
-> > > +		(MXS_PAD_4MA | MXS_PAD_3V3 | MXS_PAD_NOPULL),
-> > > +
-> >=20
-> > mmc (ssp) has pin conflict with gpmi on both mx23evk and mx28evk.
-> hmm,
->=20
-> 	 $ git grep GPMI linus/master -- arch/arm/mach-mxs/mach-mx23evk.c
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D08__LCD=
-_D18 | MXS
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D09__LCD=
-_D19 | MXS
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D10__LCD=
-_D20 | MXS
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D11__LCD=
-_D21 | MXS
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D12__LCD=
-_D22 | MXS
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D13__LCD=
-_D23 | MXS
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D08__SSP=
-1_DATA4 |
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D09__SSP=
-1_DATA5 |
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D10__SSP=
-1_DATA6 |
-> 	linus/master:arch/arm/mach-mxs/mach-mx23evk.c:  MX23_PAD_GPMI_D11__SSP=
-1_DATA7 |
->=20
-> so MX23_PAD_GPMI_D08 - MX23_PAD_GPMI_D13 is used (D08-D11 twice). So th=
+Hi:
+> Huang Shijie writes:
+>> +int common_nfc_set_geometry(struct gpmi_nfc_data *this)
+>> +{
+>> +	struct nfc_geometry       *geo =3D&this->nfc_geometry;
+>> +	struct mtd_info		  *mtd =3D&this->mil.mtd;
+>> +	struct nand_chip	*chip =3D&this->mil.nand;
+>>
+> inconsistent indentation. You should decide whether to use<TAB>  or
+> <SPACE>  for indentation. This is a global issue.
+ok. thanks.
+>> +	unsigned int              metadata_size;
+>> +	unsigned int              status_size;
+>> +	unsigned int              chunk_data_size_in_bits;
+>> +	unsigned int              chunk_ecc_size_in_bits;
+>> +	unsigned int              chunk_total_size_in_bits;
+>> +	unsigned int              block_mark_chunk_number;
+>> +	unsigned int              block_mark_chunk_bit_offset;
+>> +	unsigned int              block_mark_bit_offset;
+>> +
+>> +	/* We only support BCH now. */
+>> +	geo->ecc_algorithm =3D "BCH";
+>> +
+>> +	/*
+>> +	 * We always choose a metadata size of 10. Don't try to make sense o=
+f
+>> +	 * it -- this is really only for historical compatibility.
+>> +	 */
+>> +	geo->metadata_size_in_bytes =3D 10;
+>> +
+>> +	/* ECC chunks */
+>> +	geo->ecc_chunk_size_in_bytes =3D get_ecc_chunk_size(this);
+>> +
+>> +	/*
+>> +	 * Compute the total number of ECC chunks in a page. This includes t=
+he
+>> +	 * slightly larger chunk at the beginning of the page, which contain=
+s
+>> +	 * both data and metadata.
+>> +	 */
+>> +	geo->ecc_chunk_count =3D mtd->writesize / geo->ecc_chunk_size_in_byt=
+es;
+>> +
+>> +	/*
+>> +	 * We use the same ECC strength for all chunks, including the first =
+one.
+>> +	 */
+>> +	geo->ecc_strength =3D get_ecc_strength(this);
+>> +	if (!geo->ecc_strength) {
+>> +		log("Unsupported page geometry.");
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* Compute the page size, include page and oob. */
+>> +	geo->page_size_in_bytes =3D mtd->writesize + mtd->oobsize;
+>> +
+>> +	/*
+>> +	 * ONFI/TOGGLE nand needs GF14, so re-culculate DMA page size.
+>>
+> s/culculate/calculate/
+>
+>> +	 * The ONFI nand must do the reculation,
+>>
+> s/reculation/recalculation/
+>
+>> +	 * else it will fail in DMA in some platform(such as imx50).
+>> +	 */
+>> +	if (is_ddr_nand(chip))
+>> +		geo->page_size_in_bytes =3D mtd->writesize +
+>> +				geo->metadata_size_in_bytes +
+>> +			(geo->ecc_strength * 14 * 8 / geo->ecc_chunk_count);
+>> +
+>> +	geo->payload_size_in_bytes =3D mtd->writesize;
+>> +	/*
+>> +	 * In principle, computing the auxiliary buffer geometry is NFC
+>> +	 * version-specific. However, at this writing, all versions share th=
 e
-> problem is already in linus/master. Is it that what you mean?
->=20
-Yeah, you are right.
+>> +	 * same model, so this code can also be shared.
+>> +	 *
+>> +	 * The auxiliary buffer contains the metadata and the ECC status. Th=
+e
+>> +	 * metadata is padded to the nearest 32-bit boundary. The ECC status
+>> +	 * contains one byte for every ECC chunk, and is also padded to the
+>> +	 * nearest 32-bit boundary.
+>> +	 */
+>> +	metadata_size =3D (geo->metadata_size_in_bytes + 0x3)&  ~0x3;
+>> +	status_size   =3D (geo->ecc_chunk_count        + 0x3)&  ~0x3;
+>>
+> You might use:
+> metadata_size =3D ALIGN(geo->metadata_size_in_bytes, 4);
+> status_size =3D ALIGN(geo->ecc_chunk_count, 4);
+>
+thanks.
+>> +	geo->auxiliary_size_in_bytes =3D metadata_size + status_size;
+>> +	geo->auxiliary_status_offset =3D metadata_size;
+>> +
+>> +	/* Check if we're going to do block mark swapping. */
+>> +	if (!this->swap_block_mark)
+>> +		return 0;
+>> +
+>> +	/*
+>> +
+>>
+>>
+>> +
+>> +static int mil_pre_bbt_scan(struct gpmi_nfc_data  *this)
+>> +{
+>> +	struct nand_chip *nand =3D&this->mil.nand;
+>> +	struct mtd_info *mtd =3D&this->mil.mtd;
+>> +	struct nand_ecclayout *layout =3D nand->ecc.layout;
+>> +	struct nfc_hal *nfc =3D this->nfc;
+>> +	int error;
+>> +
+>> +	/* fix the ECC layout before the scanning */
+>> +	layout->eccbytes          =3D 0;
+>> +	layout->oobavail          =3D mtd->oobsize;
+>> +	layout->oobfree[0].offset =3D 0;
+>> +	layout->oobfree[0].length =3D mtd->oobsize;
+>> +
+>> +	mtd->oobavail =3D nand->ecc.layout->oobavail;
+>> +
+>> +	/* Set up swap block-mark, must be set before the mil_set_geometry()=
+ */
+>> +	this->swap_block_mark =3D true;
+>> +	if (GPMI_IS_MX23(this))
+>> +		this->swap_block_mark =3D false;
+>>
+> if ... else ...?
+else is "true" by default.
+>> +	/* Set up the medium geometry */
+>> +	error =3D mil_set_geometry(this);
+>> +	if (error)
+>> +		return error;
+>> +
+>> +	/* extra init */
+>> +	if (nfc->extra_init) {
+>> +		error =3D nfc->extra_init(this);
+>> +		if (error !=3D 0)
+>> +			return error;
+>> +	}
+>> +
+>> +	/* NAND boot init, depends on the mil_set_geometry(). */
+>> +	return nand_boot_init(this);
+>> +}
+>> +
+>> +static int mil_scan_bbt(struct mtd_info *mtd)
+>> +{
+>> +	struct nand_chip *nand =3D mtd->priv;
+>> +	struct gpmi_nfc_data *this =3D nand->priv;
+>> +	int                      error;
+>> +
+>> +	/* Prepare for the BBT scan. */
+>> +	error =3D mil_pre_bbt_scan(this);
+>> +	if (error)
+>> +		return error;
+>> +
+>> +	/* use the default BBT implementation */
+>> +	return nand_default_bbt(mtd);
+>> +}
+>> +
+>> +static const char *cmd_parse =3D "cmdlinepart";
+>> +static int mil_partitions_init(struct gpmi_nfc_data *this)
+>> +{
+>> +	struct gpmi_nfc_platform_data *pdata =3D this->pdata;
+>> +	struct mil *mil =3D&this->mil;
+>> +	struct mtd_info *mtd =3D&mil->mtd;
+>> +	int  error =3D 0;
+>> +
+>> +	/* The complicated partitions layout use this. */
+>> +	if (pdata->partitions&&  pdata->partition_count>  0)
+>> +		return add_mtd_partitions(mtd, pdata->partitions,
+>> +						pdata->partition_count);
+>> +
+>> +	/* use the command line for simple partitions layout */
+>> +	mil->partition_count =3D parse_mtd_partitions(mtd,
+>> +						&cmd_parse,
+>> +						&mil->partitions, 0);
+>> +	if (mil->partition_count)
+>> +		error =3D add_mtd_partitions(mtd, mil->partitions,
+>> +						mil->partition_count);
+>>
+> I would do the cmdline parsing first, so that any compiled-in
+> partitioning can be overridden with cmdline parameters.
+>
+ok, thanks.
+>> +	return error;
+>> +}
+>> +
+>> +static void mil_partitions_exit(struct gpmi_nfc_data *this)
+>> +{
+>> +	struct mil *mil =3D&this->mil;
+>> +
+>> +	if (mil->partition_count) {
+>> +		struct mtd_info *mtd =3D&mil->mtd;
+>> +
+>> +		del_mtd_partitions(mtd);
+>> +		kfree(mil->partitions);
+>> +		mil->partition_count =3D 0;
+>> +	}
+>> +}
+>> +
+>> +/* Initializes the MTD Interface Layer */
+>> +int gpmi_nfc_mil_init(struct gpmi_nfc_data *this)
+>> +{
+>> +	struct gpmi_nfc_platform_data  *pdata =3D  this->pdata;
+>> +	struct mil                     *mil   =3D&this->mil;
+>> +	struct mtd_info                *mtd   =3D&mil->mtd;
+>> +	struct nand_chip               *nand  =3D&mil->nand;
+>> +	int                            error;
+>> +
+>> +	/* Initialize MIL data */
+>> +	mil->current_chip	=3D -1;
+>> +	mil->command_length	=3D  0;
+>> +	mil->page_buffer_virt	=3D  0;
+>>
+> 	mil->page_buffer_virt	=3D  NULL;
+>
+>> +	mil->page_buffer_phys	=3D ~0;
+>> +	mil->page_buffer_size	=3D  0;
+>> +
+>> +	/* Initialize the MTD data structures */
+>> +	mtd->priv		=3D nand;
+>> +	mtd->name		=3D "gpmi-nfc-main";
+>>
+> Why not 'gpmi-nfc' like the driver name?
+>
+ok. Yes, the current driver name is a little long.
 
-> > How do you usually handle such pin conflicts on board?
-> I don't understand this question. Maybe: deciding which pad mux to use?
->=20
-Yes, the question is how you decide which pad mux to use?  The first
-thing I think of is to ask CONFIG options to help.  But I'm unsure
-if it's the right way.
-
---=20
-Regards,
-Shawn
+Best Regards
+Huang Shijie
+> Lothar Wa=C3=9Fmann
