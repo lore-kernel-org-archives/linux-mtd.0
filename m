@@ -1,23 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QAFnA-0001Qo-Tg
-	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 06:12:38 +0000
-Received: by eyh6 with SMTP id 6so430261eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Apr 2011 23:12:34 -0700 (PDT)
-Subject: Re: mtd-utils: "flash_erase -j" failes with "unable to get NAND
-	oobinfo" on large flash chips.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daid <daid303@gmail.com>
-In-Reply-To: <BANLkTinozqCrqaDGsAX-gWWUg2G3bvg_Rg@mail.gmail.com>
-References: <BANLkTinozqCrqaDGsAX-gWWUg2G3bvg_Rg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 14 Apr 2011 09:09:43 +0300
-Message-ID: <1302761383.2796.4.camel@localhost>
-Mime-Version: 1.0
+Message-ID: <19878.37657.263254.506346@ipc1.ka-ro>
+Date: Thu, 14 Apr 2011 08:24:25 +0200
+From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
+To: Huang Shijie <b32955@freescale.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Subject: Re: [PATCH v5 2/4] MTD : add the common code for GPMI controller
+	driver
+In-Reply-To: <1302675881-18862-3-git-send-email-b32955@freescale.com>
+References: <1302675881-18862-1-git-send-email-b32955@freescale.com>
+	<1302675881-18862-3-git-send-email-b32955@freescale.com>
+Cc: linux@arm.linux.org.uk, David.Woodhouse@intel.com, dedekind1@gmail.com,
+	linux-mtd@lists.infradead.org, ffainelli@freebox.fr,
+	veli-pekka.peltola@bluegiga.com, shijie8@gmail.com,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-12 at 11:58 +0200, Daid wrote:
-> I've made a patch to fix flash_erase with large flash chips.
-> flash_erase uses MEMGETOOBSEL which no longer works if the ECC area is
-> larger then 32 bytes. ECCGETLAYOUT is the replacement ioctl.
+Hi,
+
+Huang Shijie writes:
+> These files contain the common code for the GPMI driver.
 > 
-> This patch is based on the work of Stanley Miao, he made a patch in
-> June 2010 for flash_eraseall.
-> http://lists.infradead.org/pipermail/linux-mtd/2010-June/031981.html
-> I've implemented the backwards compatibility differently, checking
-> kernel versions doesn't feel correct.
+> Signed-off-by: Huang Shijie <b32955@freescale.com>
+> ---
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c | 2502 +++++++++++++++++++++++++++++
+>  drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h      |  488 ++++++
+>  2 files changed, 2990 insertions(+), 0 deletions(-)
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+>  create mode 100644 drivers/mtd/nand/gpmi-nfc/gpmi-nfc.h
+> 
+> diff --git a/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c b/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+> new file mode 100644
+> index 0000000..33d9f2d
+> --- /dev/null
+> +++ b/drivers/mtd/nand/gpmi-nfc/gpmi-nfc-main.c
+> @@ -0,0 +1,2502 @@
+[...]
+> +static const struct platform_device_id gpmi_ids[] = {
+> +	{
+> +		.name = GPMI_NFC_DRIVER_MX23,
+> +		.driver_data = IS_MX23,
+> +	}, {
+> +		.name = GPMI_NFC_DRIVER_MX28,
+> +		.driver_data = IS_MX28,
+> +	}
+> +};
+>
+An empty entry as end of list marker is missing.
 
-Hi Daid, would you please use libmtd instead? If libmtd does not have
-some functionality you need - just add it there.
 
-The thing is that we are trying to unify this stuff a little.
-
+Lothar Waßmann
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+___________________________________________________________
+
+Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
+Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
+Geschäftsführer: Matthias Kaussen
+Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
+
+www.karo-electronics.de | info@karo-electronics.de
+___________________________________________________________
