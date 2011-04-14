@@ -1,16 +1,16 @@
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QAI0t-0002Iu-G0
-	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 08:34:57 +0000
-Received: from eru.research.nokia.com ([172.21.23.107])
-	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3E8YoLO027942
-	for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2011 11:34:51 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI: fix typo in a message
-Date: Thu, 14 Apr 2011 11:38:23 +0300
-Message-Id: <1302770303-3833-1-git-send-email-dedekind1@gmail.com>
+Received: from mail.rapiddevelopmentkit.de ([217.6.246.34] helo=root.phytec.de)
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QAIKA-0002SC-MV
+	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 08:54:51 +0000
+From: Jan Weitzel <j.weitzel@phytec.de>
+To: linux-omap-owner@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [PATCH] ARM: omap2: mtd split nand_scan in ident and tail
+Date: Thu, 14 Apr 2011 10:54:34 +0200
+Message-Id: <1302771274-5571-1-git-send-email-j.weitzel@phytec.de>
+Cc: Artem.Bityutskiy@nokia.com, tony@atomide.com,
+	Jan Weitzel <j.weitzel@phytec.de>, s.hauer@pengutronix.de,
+	s-ghorai@ti.com, vimalsingh@ti.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+nand_scan calls nand_scan_ident and nand_scan_tail, setting values like oobvail
+according to ecc.layout. If we change the layout afterwards values are wrong.
 
-When a PEB passes the torture test, UBI prints
-"do not mark it a bad", but should print "do not mark it sa bad".
-This patch corrects the typo.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
 ---
- drivers/mtd/ubi/io.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/nand/omap2.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/ubi/io.c b/drivers/mtd/ubi/io.c
-index d58ceb1..8c1b1c7 100644
---- a/drivers/mtd/ubi/io.c
-+++ b/drivers/mtd/ubi/io.c
-@@ -465,7 +465,7 @@ static int torture_peb(struct ubi_device *ubi, int pnum)
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index da9a351..288423f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1073,9 +1073,9 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 	/* DIP switches on some boards change between 8 and 16 bit
+ 	 * bus widths for flash.  Try the other width if the first try fails.
+ 	 */
+-	if (nand_scan(&info->mtd, 1)) {
++	if (nand_scan_ident(&info->mtd, 1, NULL)) {
+ 		info->nand.options ^= NAND_BUSWIDTH_16;
+-		if (nand_scan(&info->mtd, 1)) {
++		if (nand_scan_ident(&info->mtd, 1, NULL)) {
+ 			err = -ENXIO;
+ 			goto out_release_mem_region;
+ 		}
+@@ -1101,6 +1101,12 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		info->nand.ecc.layout = &omap_oobinfo;
  	}
  
- 	err = patt_count;
--	ubi_msg("PEB %d passed torture test, do not mark it a bad", pnum);
-+	ubi_msg("PEB %d passed torture test, do not mark it as bad", pnum);
- 
- out:
- 	mutex_unlock(&ubi->buf_mutex);
++	/* second phase scan */
++	if (nand_scan_tail(&info->mtd)) {
++		err = -ENXIO;
++		goto out_release_mem_region;
++	}
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
+ 	if (err > 0)
 -- 
-1.7.2.3
+1.7.0.4
