@@ -1,27 +1,24 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QALjm-0004vM-GO
-	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 12:33:31 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3ECXRVk023535
-	for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2011 15:33:27 +0300
-Subject: Re: [PATCHv1 5/5] tests: ubi-tests: clean libubi.a and *.o
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-To: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <5dca68dbcc29a1bdc8a866b9c3d1f19853ddde3c.1302700658.git.ext-andriy.shevchenko@nokia.com>
-References: <ec50e9f8ced473683c8c8e981607737dfb015c3b.1302700658.git.ext-andriy.shevchenko@nokia.com>
-	<865774bea767bf615bbaf79139448aef65d55202.1302700658.git.ext-andriy.shevchenko@nokia.com>
-	<8aa731c3a7a071bb9216500d72c9a8d7a7e2b830.1302700658.git.ext-andriy.shevchenko@nokia.com>
-	<6cb173d447de7eb92ead54f450da7752a40e476c.1302700658.git.ext-andriy.shevchenko@nokia.com>
-	<5dca68dbcc29a1bdc8a866b9c3d1f19853ddde3c.1302700658.git.ext-andriy.shevchenko@nokia.com>
+	id 1QALoe-00050P-LQ
+	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 12:38:33 +0000
+Received: by ewy3 with SMTP id 3so510030ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 14 Apr 2011 05:38:31 -0700 (PDT)
+Subject: Re: [PATCH 2/2] mtd: add switch to support NAND flash on big
+	endian bus
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+In-Reply-To: <1302702918-6050-2-git-send-email-hans-christian.egtvedt@atmel.com>
+References: <1302702918-6050-1-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1302702918-6050-2-git-send-email-hans-christian.egtvedt@atmel.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 14 Apr 2011 15:30:15 +0300
-Message-ID: <1302784215.2796.31.camel@localhost>
+Date: Thu, 14 Apr 2011 15:35:36 +0300
+Message-ID: <1302784536.2796.34.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: Artem.Bityutskiy@nokia.com
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-04-13 at 16:20 +0300, Andy Shevchenko wrote:
-> The common.mk contains clean target that removes *.o and $(TARGETS). Thus, make
-> custom clean target only for libubi.a
+On Wed, 2011-04-13 at 15:55 +0200, Hans-Christian Egtvedt wrote:
+> This patch adds a new kconfig symbol to the MTD NAND system, MTD_NAND_BE_BUS.
+> This symbol is used by the nand base to properly convert the data read from the
+> bus into the format the CPU expects.
 > 
-> Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+> The patch fixes 16-bit NAND flash support on big endian architectures (at least
+> AVR32) with NAND flash hooked up to a big endian external bus.
+> 
+> Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 
-Pushed, thanks.
+These kind of config options are bad and lead to confusion. You should
+try hard to auto-detect the endianness, or take this information from
+the boot-loader via the device tree.
 
 -- 
 Best Regards,
