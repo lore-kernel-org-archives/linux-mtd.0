@@ -1,24 +1,23 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QALoe-00050P-LQ
-	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 12:38:33 +0000
-Received: by ewy3 with SMTP id 3so510030ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 14 Apr 2011 05:38:31 -0700 (PDT)
-Subject: Re: [PATCH 2/2] mtd: add switch to support NAND flash on big
-	endian bus
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-In-Reply-To: <1302702918-6050-2-git-send-email-hans-christian.egtvedt@atmel.com>
-References: <1302702918-6050-1-git-send-email-hans-christian.egtvedt@atmel.com>
-	<1302702918-6050-2-git-send-email-hans-christian.egtvedt@atmel.com>
+	id 1QAMRx-0005Tj-To
+	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2011 13:19:10 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p3EDJ6Am015154
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2011 16:19:06 +0300
+Subject: Re: [PATCHv1 1/5] mkfs.jffs2: fix casting of printf argument
+From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+To: Artem.Bityutskiy@nokia.com
+In-Reply-To: <1302783893.2796.27.camel@localhost>
+References: <ec50e9f8ced473683c8c8e981607737dfb015c3b.1302700658.git.ext-andriy.shevchenko@nokia.com>
+	<1302783893.2796.27.camel@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 14 Apr 2011 15:35:36 +0300
-Message-ID: <1302784536.2796.34.camel@localhost>
+Date: Thu, 14 Apr 2011 16:21:54 +0300
+Message-ID: <1302787314.24954.0.camel@fs-test.research.nokia.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-04-13 at 15:55 +0200, Hans-Christian Egtvedt wrote:
-> This patch adds a new kconfig symbol to the MTD NAND system, MTD_NAND_BE_BUS.
-> This symbol is used by the nand base to properly convert the data read from the
-> bus into the format the CPU expects.
+On Thu, 2011-04-14 at 15:24 +0300, Artem Bityutskiy wrote:
+> On Wed, 2011-04-13 at 16:20 +0300, Andy Shevchenko wrote:
+> > The compiler warns us about cast mismatch for %9lu specifier.  In original code
+> > the argument has __off64_t type. Here is a simple type casting fix.
+> > 
+> > Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 > 
-> The patch fixes 16-bit NAND flash support on big endian architectures (at least
-> AVR32) with NAND flash hooked up to a big endian external bus.
+> If it is off64_t then you should better change the printf() placeholder
+> to %ull and cast the argument to (unsigned long long)
 > 
-> Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+I was waiting for such correction because I don't know the limits of the
+argument, thanks.
 
-These kind of config options are bad and lead to confusion. You should
-try hard to auto-detect the endianness, or take this information from
-the boot-loader via the device tree.
 
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+With Best Regards,
+Andy Shevchenko
