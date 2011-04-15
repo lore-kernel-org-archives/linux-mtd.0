@@ -1,23 +1,21 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QAfFq-0005TW-Oj
-	for linux-mtd@lists.infradead.org; Fri, 15 Apr 2011 09:23:55 +0000
-Received: by iyb39 with SMTP id 39so2581134iyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Apr 2011 02:23:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1301671910.2789.98.camel@localhost>
-References: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
-	<AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
-	<1301671910.2789.98.camel@localhost>
-Date: Fri, 15 Apr 2011 17:23:52 +0800
-Message-ID: <BANLkTi=pZqEwWYy=7mYQ_p73cHQ4rA6Rbg@mail.gmail.com>
-Subject: Re: UBI memory usage on large page nand
-From: Nicholas <ciliwung36@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2] mtd: msm_nand: Add initial msm nand driver support.
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Murali Nalajala <mnalajal@codeaurora.org>
+In-Reply-To: <1298940450-27365-2-git-send-email-mnalajal@codeaurora.org>
+References: <1298940450-27365-1-git-send-email-mnalajal@codeaurora.org>
+	<1298940450-27365-2-git-send-email-mnalajal@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 15 Apr 2011 12:51:37 +0300
+Message-ID: <1302861097.3220.12.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Dima Zavin <dima@android.com>,
+	Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
+	linux-mtd@lists.infradead.org,
+	Brian Swetland <swetland@google.com>, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,74 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Artem,
+On Tue, 2011-03-01 at 06:17 +0530, Murali Nalajala wrote:
+> +#define pr_fmt(fmt) "%s:" fmt, __func__
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/mtd/nand.h>
+> +#include <linux/mtd/partitions.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/sched.h>
+> +#include <linux/slab.h>
+> +#include <linux/dma-mapping.h>
+> +#include <asm/mach/flash.h>
+> +#include <mach/dma.h>
+> +
+> +#include "msm_nand.h"
+> +
+> +unsigned long msm_nand_phys;
 
-Thanks for the information. Indeed it has flexibility to be freed or consum=
-ed.
-Due to my case, i need to use maximum memory space while in the
-meantime i also need to write files into nand via ubi.
-8KB page of nand flash will consume 16MB for a single volume on a
-single UBI MTD.
+No global variables like this please. Here is how you use them:
 
-1. Is there any idea to reduce the memory consumption ?
-2. For smaller buffer allocation, can it be made for several attempts
-of read / write ?
++extern unsigned long msm_nand_phys;
++#define MSM_NAND_REG(off) (msm_nand_phys + (off))
++
++#define MSM_NAND_FLASH_CMD            MSM_NAND_REG(0x0000)
++#define MSM_NAND_ADDR0                MSM_NAND_REG(0x0004)
 
-Regards,
-Alex
+Could you please make the macros to take the "struct msm_nand_chip
+*chip" argument instead, and store the pase address there. Do not hide
+the fact that those macros are actually functions, not constant - this
+is error prone.
 
-On Fri, Apr 1, 2011 at 11:31 PM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> Hi,
->
-> I agree UBI/UBIFS uses more memory than it could. There is some room for
-> optimizations.
->
-> On Thu, 2011-03-31 at 11:07 +0800, Nicholas wrote:
->> Hi there,
->>
->> I've a short of memory usage issue while using large page size of nand f=
-lash.
->> Before, i was using 2KB page size of nand flash, i found UBI/UBIFS memor=
-y
->> consumption on normal zone are :
->>
->> 7 0xC0180858: =C2=A0 1024K, ubi_attach_mtd_de,
->> 8 0xC0180834: =C2=A0 1024K, ubi_attach_mtd_de,
->> 9 0xC00ED300: =C2=A0 1008K, =C2=A0 =C2=A0 =C2=A0ubifs_get_sb,
->> 10 0xC00ED31C: =C2=A0 1008K, =C2=A0 =C2=A0 =C2=A0ubifs_get_sb,
->> 11 0xC00FE7EC: =C2=A0 1008K, =C2=A0 =C2=A0ubifs_lpt_init,
->> 11 0xC00F95AC: =C2=A0 1008K, ubifs_mount_orpha,
->>
->> Then, i'm using 8KB page size of nand flash, and found the result as bel=
-ow :
->> 4 0xC0180858: =C2=A0 4096K, ubi_attach_mtd_de,
->> 5 0xC0180834: =C2=A0 4096K, ubi_attach_mtd_de,
->> 6 0xC00FE7EC: =C2=A0 4064K, =C2=A0 =C2=A0ubifs_lpt_init,
->> 7 0xC00ED31C: =C2=A0 4064K, =C2=A0 =C2=A0 =C2=A0ubifs_get_sb,
->> 8 0xC00F95AC: =C2=A0 4064K, ubifs_mount_orpha,
->> 9 0xC00ED300: =C2=A0 4064K, =C2=A0 =C2=A0 =C2=A0ubifs_get_sb,
->>
->> My environment contains 2 mtd partitions for UBI.
->>
->> Before, it took 6MB of memory consumption and now it takes 24MB.
->> Do you have any suggestion how to reduce the memory consumption since dr=
-am size
->> is pretty limited for other usage.
->
-> I think this is mainly because your eraseblock size became larger. UBI
-> and UBIFS allocate many buffers of eraseblock size for various purposes.
-> The buffers are often allocated once on attach/mount and released only
-> on detach/unmount. All of these buffers are allocated with vmalloc()
-> call, so you can find them by grepping.
->
-> The simplest thing you can try is to allocate these buffers when they
-> are actually needed, and then free them when they are not needed. This
-> should help.
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+Besides, I'm do not know your HW, but if you have several controllers
+with various base addresses - your driver won't work.
+
+> +	pr_info("Save cfg0 = %x cfg1 = %x\n", chip->cfg0, chip->cfg1);
+> +	pr_info("cfg0: cw/page=%d ud_sz=%d ecc_sz=%d spare_sz=%d "
+> +		"num_addr_cycles=%d\n", (chip->cfg0 >> 6) & 7,
+> +		(chip->cfg0 >> 9) & 0x3ff, (chip->cfg0 >> 19) & 15,
+> +		(chip->cfg0 >> 23) & 15, (chip->cfg0 >> 27) & 7);
+
+Please, revise all your pr_info() calls and turn most of them into
+dev_dbg() or pr_debug. Your driver should be completely silent by
+default, except of error messages and some information messages when it
+is initialized.
+
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
