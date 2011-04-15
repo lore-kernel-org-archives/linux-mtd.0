@@ -1,17 +1,12 @@
-From: David Brown <davidb@codeaurora.org>
-To: Murali Nalajala <mnalajal@codeaurora.org>
-Subject: Re: [PATCH V2 1/2] mtd: nand: Allow NAND chip ids to be included
-	standalone.
-References: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-Date: Thu, 14 Apr 2011 16:33:02 -0700
-In-Reply-To: <1299542935-20291-1-git-send-email-mnalajal@codeaurora.org>
-	(Murali Nalajala's message of "Tue, 8 Mar 2011 05:38:55 +0530")
-Message-ID: <8ya39lk5ryp.fsf@huya.qualcomm.com>
+From: Huang Shijie <b32955@freescale.com>
+To: <s.hauer@pengutronix.de>
+Subject: [PATCH 1/2] ARM: mxs: add GPMI support for imx23/imx28
+Date: Fri, 15 Apr 2011 16:01:47 +0800
+Message-ID: <1302854508-13652-1-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: linux-arm-msm@vger.kernel.org, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mtd@lists.infradead.org, Dima Zavin <dima@android.com>
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +16,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 07 2011, Murali Nalajala wrote:
+add gpmi support for imx23 and imx28.
 
-> Lets non-standard NAND drivers take advantage of known NAND
-> chip information.
->
-> The initial development of msm nand driver, driver uses the supported
-> NAND devices information as a hardcoded table. Remove the existing
-> hardcoded supported flash device table and read the flash device
-> information from the flash id table which are part of the mtd subsystem.
->
-> Signed-off-by: Dima Zavin <dima@android.com>
-> Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ arch/arm/mach-mxs/Kconfig                 |    2 +
+ arch/arm/mach-mxs/include/mach/gpmi-nfc.h |   68 +++++++++++++++++++++++++++++
+ 2 files changed, 70 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
 
-Acked-by: David Brown <davidb@codeaurora.org>
-
+diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
+index 4f6f174..e034666 100644
+--- a/arch/arm/mach-mxs/Kconfig
++++ b/arch/arm/mach-mxs/Kconfig
+@@ -22,6 +22,7 @@ config MACH_MX23EVK
+ 	select SOC_IMX23
+ 	select MXS_HAVE_AMBA_DUART
+ 	select MXS_HAVE_PLATFORM_AUART
++	select MXS_HAVE_PLATFORM_GPMI
+ 	select MXS_HAVE_PLATFORM_MXSFB
+ 	default y
+ 	help
+@@ -35,6 +36,7 @@ config MACH_MX28EVK
+ 	select MXS_HAVE_PLATFORM_AUART
+ 	select MXS_HAVE_PLATFORM_FEC
+ 	select MXS_HAVE_PLATFORM_FLEXCAN
++	select MXS_HAVE_PLATFORM_GPMI
+ 	select MXS_HAVE_PLATFORM_MXSFB
+ 	select MXS_OCOTP
+ 	default y
+diff --git a/arch/arm/mach-mxs/include/mach/gpmi-nfc.h b/arch/arm/mach-mxs/include/mach/gpmi-nfc.h
+new file mode 100644
+index 0000000..32c8ad9
+--- /dev/null
++++ b/arch/arm/mach-mxs/include/mach/gpmi-nfc.h
+@@ -0,0 +1,68 @@
++/*
++ * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifndef __INCLUDE_GPMI_DEVICE_H
++#define __INCLUDE_GPMI_DEVICE_H
++
++#define GPMI_NFC_DRIVER_NAME	"gpmi-nfc"
++#define GPMI_NFC_DRIVER_MX23	"imx23-gpmi-nfc"
++#define GPMI_NFC_DRIVER_MX28	"imx28-gpmi-nfc"
++#define GPMI_NFC_DRIVER_MX50	"imx50-gpmi-nfc"
++
++/* The size of the resource is fixed. */
++#define RES_SIZE	6
++
++/* Resource names for the GPMI NFC driver. */
++#define GPMI_NFC_GPMI_REGS_ADDR_RES_NAME  "GPMI NFC GPMI Registers"
++#define GPMI_NFC_GPMI_INTERRUPT_RES_NAME  "GPMI NFC GPMI Interrupt"
++#define GPMI_NFC_BCH_REGS_ADDR_RES_NAME   "GPMI NFC BCH Registers"
++#define GPMI_NFC_BCH_INTERRUPT_RES_NAME   "GPMI NFC BCH Interrupt"
++#define GPMI_NFC_DMA_CHANNELS_RES_NAME    "GPMI NFC DMA Channels"
++#define GPMI_NFC_DMA_INTERRUPT_RES_NAME   "GPMI NFC DMA Interrupt"
++
++/**
++ * struct gpmi_nfc_platform_data - GPMI NFC driver platform data.
++ *
++ * This structure communicates platform-specific information to the GPMI NFC
++ * driver that can't be expressed as resources.
++ *
++ * @min_prop_delay_in_ns:    Minimum propagation delay of GPMI signals to and
++ *                           from the NAND Flash device, in nanoseconds.
++ * @max_prop_delay_in_ns:    Maximum propagation delay of GPMI signals to and
++ *                           from the NAND Flash device, in nanoseconds.
++ * @max_chip_count:          The maximum number of chips for which the driver
++ *                           should configure the hardware. This value most
++ *                           likely reflects the number of pins that are
++ *                           connected to a NAND Flash device. If this is
++ *                           greater than the SoC hardware can support, the
++ *                           driver will print a message and fail to initialize.
++ * @partitions:              An optional pointer to an array of partition
++ *                           descriptions.
++ * @partition_count:         The number of elements in the partitions array.
++ */
++struct gpmi_nfc_platform_data {
++	/* NAND Flash information. */
++	unsigned int          min_prop_delay_in_ns;
++	unsigned int          max_prop_delay_in_ns;
++	unsigned int          max_chip_count;
++
++	/* soc */
++	struct mtd_partition  *partitions;
++	unsigned              partition_count;
++};
++#endif
 -- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+1.7.0.4
