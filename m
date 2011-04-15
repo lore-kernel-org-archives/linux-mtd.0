@@ -1,20 +1,21 @@
-Received: from mail.visioncatalog.com ([217.6.246.34] helo=root.phytec.de)
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QAjBD-0007BI-8d
-	for linux-mtd@lists.infradead.org; Fri, 15 Apr 2011 13:35:27 +0000
-Subject: Re: [PATCH] ARM: omap2: mtd split nand_scan in ident and tail
-From: Jan Weitzel <J.Weitzel@phytec.de>
-To: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
-In-Reply-To: <1302772529-15641-1-git-send-email-j.weitzel@phytec.de>
-References: <1302772529-15641-1-git-send-email-j.weitzel@phytec.de>
-Date: Fri, 15 Apr 2011 15:34:56 +0200
-Message-ID: <1302874496.7246.11.camel@lws-weitzel>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/2] MTD: s3c2410_nand: Add option to disable hw ECC at
+	runtime
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel
+	<linux-arm-kernel@lists.infradead.org>, linux-omap
+	<linux-omap@vger.kernel.org>
+In-Reply-To: <4DA7094D.9070002@metafoo.de>
+References: <1302637672-25339-1-git-send-email-lars@metafoo.de>
+	<1302782911.2796.21.camel@localhost>  <4DA7094D.9070002@metafoo.de>
 Content-Type: text/plain; charset="UTF-8"
-Cc: Artem.Bityutskiy@nokia.com, tony@atomide.com, s.hauer@pengutronix.de,
-	s-ghorai@ti.com, vimalsingh@ti.com, dwmw2@infradead.org
-Reply-To: J.Weitzel@phytec.de
+Date: Fri, 15 Apr 2011 17:01:11 +0300
+Message-ID: <1302876071.3220.60.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Holger Freyther <zecke@openmoko.org>, Kukjin Kim <kgene.kim@samsung.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Ben Dooks <ben-linux@fluff.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +25,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Donnerstag, den 14.04.2011, 11:15 +0200 schrieb Jan Weitzel:
-> nand_scan calls nand_scan_ident and nand_scan_tail, setting values like oobvail
-> according to ecc.layout. If we change the layout afterwards values are wrong.
-> 
-> Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
-> ---
->  drivers/mtd/nand/omap2.c |   10 ++++++++--
->  1 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index da9a351..288423f 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1073,9 +1073,9 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
->  	/* DIP switches on some boards change between 8 and 16 bit
->  	 * bus widths for flash.  Try the other width if the first try fails.
->  	 */
-> -	if (nand_scan(&info->mtd, 1)) {
-> +	if (nand_scan_ident(&info->mtd, 1, NULL)) {
->  		info->nand.options ^= NAND_BUSWIDTH_16;
-> -		if (nand_scan(&info->mtd, 1)) {
-> +		if (nand_scan_ident(&info->mtd, 1, NULL)) {
->  			err = -ENXIO;
->  			goto out_release_mem_region;
->  		}
-> @@ -1101,6 +1101,12 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
->  		info->nand.ecc.layout = &omap_oobinfo;
->  	}
->  
-> +	/* second phase scan */
-> +	if (nand_scan_tail(&info->mtd)) {
-> +		err = -ENXIO;
-> +		goto out_release_mem_region;
-> +	}
-> +
->  #ifdef CONFIG_MTD_PARTITIONS
->  	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
->  	if (err > 0)
+On Thu, 2011-04-14 at 16:48 +0200, Lars-Peter Clausen wrote:
+> On 04/14/2011 02:08 PM, Artem Bityutskiy wrote:
+> > On Tue, 2011-04-12 at 21:47 +0200, Lars-Peter Clausen wrote:
+> >> From: Holger Freyther <zecke@openmoko.org>
+> >>
+> >> This patch adds a flag to the s3c2410_nand platform data, which configures
+> >> whether hardware ECC is used.
+> >>
+> >> Currently it is only possible to decide whether hw ECC should be used or not at
+> >> compile time through a config option. But if you want to build a kernel which
+> >> runs on multiple devices you might have a configuration where some devices
+> >> require hw ECC and some devices which want software ECC.
+> >>
+> >> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+> > 
+> > Extending platform data is kind of vetoed in arm tree, I do not think
+> > the MTD tree can take these changes.
+> > 
+> That is not my understanding of the situation. But what do you suggest as an
+> alternative for fixing this issue?
 
-So no comments? Is any rework needed? Without this patch I am not able
-to mount partions with OMAP_ECC_HAMMING_CODE_HW_ROMCODE. 
-Regards, Jan
+Well, I got this understanding by talking to the OMAP maintainer and by
+chatting with rmk. But I might be wrong. So the understanding is that
+board data extending is banned, at least for a while. And the arm world
+has to consolidate and probably switch to the DT tree approach. This
+would be painful, this would make some vendors to return to behind the
+curtains, so this would be a step back in the short run.
+
+But in a couple of years this would be resolved, may be under Linaro's
+aegis, and then the arm world would make 2 steps forward, so that
+previous step back would be compensated in the longer run.
+
+But! I'm just an small MTD guy, so I might be mistaken. Of course if you
+make your board file changes be merged via the corresponding arm
+sub-tree - go ahead send your MTD driver updates! This is I guess the
+answer to your "what do you suggest" question.
+
+CCing the arm lists so that people could correct me.
+
+Here is the beginning of the thread:
+http://lists.infradead.org/pipermail/linux-mtd/2011-April/034866.html
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
