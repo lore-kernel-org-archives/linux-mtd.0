@@ -1,21 +1,17 @@
-Subject: Re: [PATCH 2/2] mtd: msm_nand: Add initial msm nand driver support.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Murali Nalajala <mnalajal@codeaurora.org>
-In-Reply-To: <1298940450-27365-2-git-send-email-mnalajal@codeaurora.org>
-References: <1298940450-27365-1-git-send-email-mnalajal@codeaurora.org>
-	<1298940450-27365-2-git-send-email-mnalajal@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 15 Apr 2011 12:51:37 +0300
-Message-ID: <1302861097.3220.12.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Dima Zavin <dima@android.com>,
-	Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-	linux-mtd@lists.infradead.org,
-	Brian Swetland <swetland@google.com>, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QAfjw-0005du-0D
+	for linux-mtd@lists.infradead.org; Fri, 15 Apr 2011 09:55:00 +0000
+Received: by pzk5 with SMTP id 5so1074736pzk.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 15 Apr 2011 02:54:58 -0700 (PDT)
+MIME-Version: 1.0
+Date: Fri, 15 Apr 2011 02:54:58 -0700
+Message-ID: <BANLkTim4GaV501ULwa9C3Yacm4HVbNOGGw@mail.gmail.com>
+Subject: mtdoops: find_next_position() explained?
+From: Rick Ramstetter <rick.ramstetter@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-03-01 at 06:17 +0530, Murali Nalajala wrote:
-> +#define pr_fmt(fmt) "%s:" fmt, __func__
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/mtd/mtd.h>
-> +#include <linux/mtd/nand.h>
-> +#include <linux/mtd/partitions.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/sched.h>
-> +#include <linux/slab.h>
-> +#include <linux/dma-mapping.h>
-> +#include <asm/mach/flash.h>
-> +#include <mach/dma.h>
-> +
-> +#include "msm_nand.h"
-> +
-> +unsigned long msm_nand_phys;
+Hello,
 
-No global variables like this please. Here is how you use them:
+Can anyone explain the logic behind the following block of code from
+mtdoops' find_next_position()?
 
-+extern unsigned long msm_nand_phys;
-+#define MSM_NAND_REG(off) (msm_nand_phys + (off))
-+
-+#define MSM_NAND_FLASH_CMD            MSM_NAND_REG(0x0000)
-+#define MSM_NAND_ADDR0                MSM_NAND_REG(0x0004)
-
-Could you please make the macros to take the "struct msm_nand_chip
-*chip" argument instead, and store the pase address there. Do not hide
-the fact that those macros are actually functions, not constant - this
-is error prone.
-
-Besides, I'm do not know your HW, but if you have several controllers
-with various base addresses - your driver won't work.
-
-> +	pr_info("Save cfg0 = %x cfg1 = %x\n", chip->cfg0, chip->cfg1);
-> +	pr_info("cfg0: cw/page=%d ud_sz=%d ecc_sz=%d spare_sz=%d "
-> +		"num_addr_cycles=%d\n", (chip->cfg0 >> 6) & 7,
-> +		(chip->cfg0 >> 9) & 0x3ff, (chip->cfg0 >> 19) & 15,
-> +		(chip->cfg0 >> 23) & 15, (chip->cfg0 >> 27) & 7);
-
-Please, revise all your pr_info() calls and turn most of them into
-dev_dbg() or pr_debug. Your driver should be completely silent by
-default, except of error messages and some information messages when it
-is initialized.
++	for (page = 0; page < cxt->oops_pages; page++) {
++		mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
++		if (count == 0xffffffff)
++			continue;
++		if (maxcount == 0xffffffff) {
++			maxcount = count;
++			maxpos = page;
++		} else if ((count < 0x40000000) && (maxcount > 0xc0000000)) {
++			maxcount = count;
++			maxpos = page;
++		} else if ((count > maxcount) && (count < 0xc0000000)) {
++			maxcount = count;
++			maxpos = page;
++		} else if ((count > maxcount) && (count > 0xc0000000)
++					&& (maxcount > 0x80000000)) {
++			maxcount = count;
++			maxpos = page;
++		}
 
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+I expected to see something along the lines of the following:
++		if (maxcount == 0xffffffff || count > maxcount) {
++			maxcount = count;
++			maxpos = page;
++		}
+
+
+Thank you,
+-Rick
