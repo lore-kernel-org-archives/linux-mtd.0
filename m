@@ -1,17 +1,21 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QAfjw-0005du-0D
-	for linux-mtd@lists.infradead.org; Fri, 15 Apr 2011 09:55:00 +0000
-Received: by pzk5 with SMTP id 5so1074736pzk.36
+	id 1QAg0U-0005on-AN
+	for linux-mtd@lists.infradead.org; Fri, 15 Apr 2011 10:12:06 +0000
+Received: by ewy3 with SMTP id 3so827583ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Apr 2011 02:54:58 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 15 Apr 2011 02:54:58 -0700
-Message-ID: <BANLkTim4GaV501ULwa9C3Yacm4HVbNOGGw@mail.gmail.com>
-Subject: mtdoops: find_next_position() explained?
-From: Rick Ramstetter <rick.ramstetter@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	Fri, 15 Apr 2011 03:12:04 -0700 (PDT)
+Subject: veto CONFIG_MTD_PARTITIONS?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 15 Apr 2011 13:09:06 +0300
+Message-ID: <1302862146.3220.23.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>,
+	jwboyer <jwboyer@gmail.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-Can anyone explain the logic behind the following block of code from
-mtdoops' find_next_position()?
+we have a very small mtdpart driver which provides very basic mtd
+partitioning services. And this driver may be compiled out. This
+probably mattered many years ago, when saving ~7KiB (on arm arch)
+mattered a lot.
 
-+	for (page = 0; page < cxt->oops_pages; page++) {
-+		mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
-+		if (count == 0xffffffff)
-+			continue;
-+		if (maxcount == 0xffffffff) {
-+			maxcount = count;
-+			maxpos = page;
-+		} else if ((count < 0x40000000) && (maxcount > 0xc0000000)) {
-+			maxcount = count;
-+			maxpos = page;
-+		} else if ((count > maxcount) && (count < 0xc0000000)) {
-+			maxcount = count;
-+			maxpos = page;
-+		} else if ((count > maxcount) && (count > 0xc0000000)
-+					&& (maxcount > 0x80000000)) {
-+			maxcount = count;
-+			maxpos = page;
-+		}
+But this creates mess:
 
+[dedekind@eru l2-mtd-2.6]$ grep -r CONFIG_MTD_PARTITIONS drivers/mtd/* |
+wc -l
+132
 
-I expected to see something along the lines of the following:
-+		if (maxcount == 0xffffffff || count > maxcount) {
-+			maxcount = count;
-+			maxpos = page;
-+		}
+We have really a lot of these "#ifdef CONFIG_MTD_PARTITIONS" statements,
+nearly in every driver. And new drivers have this.
 
+I think it is time to declare than saving ~7KiB is not worth the mess
+anymore and veto CONFIG_MTD_PARTITIONS - no new "#ifdef
+CONFIG_MTD_PARTITIONS" should be accepted.
 
-Thank you,
--Rick
+Someone should just make mtdpart.c to be an integral part of the MTD
+core and remove all those #ifdefs.
+
+Hopefully we'll force someone to clean this up.
+
+If no one strongly disagrees, let's veto CONFIG_MTD_PARTITIONS usage.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
