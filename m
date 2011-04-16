@@ -1,21 +1,17 @@
-Message-ID: <4DA85B24.50807@codeaurora.org>
-Date: Fri, 15 Apr 2011 20:20:12 +0530
-From: Murali Nalajala <mnalajal@codeaurora.org>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH 2/2] mtd: msm_nand: Add initial msm nand driver support.
-References: <1298940450-27365-1-git-send-email-mnalajal@codeaurora.org>	
-	<1298940450-27365-2-git-send-email-mnalajal@codeaurora.org>
-	<1302861097.3220.12.camel@localhost>
-In-Reply-To: <1302861097.3220.12.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Dima Zavin <dima@android.com>,
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-	linux-mtd@lists.infradead.org,
-	Brian Swetland <swetland@google.com>, dwmw2@infradead.org,
-	linux-arm-kernel@lists.infradead.org
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QAvwc-000414-Vr
+	for linux-mtd@lists.infradead.org; Sat, 16 Apr 2011 03:13:15 +0000
+From: Mike Frysinger <vapier@gentoo.org>
+To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Bityutskiy <dedekind1@gmail.com>
+Subject: [PATCH] [MTD] [CHIPS] cfi_cmdset_0001.c: put chip into read-array
+	mode after unlocking
+Date: Fri, 15 Apr 2011 23:13:09 -0400
+Message-Id: <1302923589-19226-1-git-send-email-vapier@gentoo.org>
+In-Reply-To: <1247578544-6950-1-git-send-email-vapier@gentoo.org>
+References: <1247578544-6950-1-git-send-email-vapier@gentoo.org>
+Cc: Graf Yang <graf.yang@analog.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +21,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/15/2011 3:21 PM, Artem Bityutskiy wrote:
-> On Tue, 2011-03-01 at 06:17 +0530, Murali Nalajala wrote:
->> +#define pr_fmt(fmt) "%s:" fmt, __func__
->> +
->> +#include<linux/kernel.h>
->> +#include<linux/mtd/mtd.h>
->> +#include<linux/mtd/nand.h>
->> +#include<linux/mtd/partitions.h>
->> +#include<linux/platform_device.h>
->> +#include<linux/sched.h>
->> +#include<linux/slab.h>
->> +#include<linux/dma-mapping.h>
->> +#include<asm/mach/flash.h>
->> +#include<mach/dma.h>
->> +
->> +#include "msm_nand.h"
->> +
->> +unsigned long msm_nand_phys;
->
-> No global variables like this please. Here is how you use them:
->
-> +extern unsigned long msm_nand_phys;
+From: Graf Yang <graf.yang@analog.com>
 
-extern declaration in the 'C' file causing warning. We are in plan to 
-upload the OneNAND changes soon which makes use of the same .h file.
+We should try and keep the flash in the default read-array mode when
+possible so that we are much more likely to properly recover from
+unexpected reboot events (such as watchdog expiring).  If we only unlock
+the flash, it can stay in that state for a while, so put it into
+read-array mode after successful unlocking.
 
-> +#define MSM_NAND_REG(off) (msm_nand_phys + (off))
-> +
-> +#define MSM_NAND_FLASH_CMD            MSM_NAND_REG(0x0000)
-> +#define MSM_NAND_ADDR0                MSM_NAND_REG(0x0004)
->
-> Could you please make the macros to take the "struct msm_nand_chip
-> *chip" argument instead, and store the pase address there. Do not hide
-> the fact that those macros are actually functions, not constant - this
-> is error prone.
->
-> Besides, I'm do not know your HW, but if you have several controllers
-> with various base addresses - your driver won't work.
+URL: http://blackfin.uclinux.org/gf/tracker/4887
+Signed-off-by: Graf Yang <graf.yang@analog.com>
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+ drivers/mtd/chips/cfi_cmdset_0001.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-you are correct, we have multiple controllers, which breaks this logic 
-in future.
-
->
->> +	pr_info("Save cfg0 = %x cfg1 = %x\n", chip->cfg0, chip->cfg1);
->> +	pr_info("cfg0: cw/page=%d ud_sz=%d ecc_sz=%d spare_sz=%d "
->> +		"num_addr_cycles=%d\n", (chip->cfg0>>  6)&  7,
->> +		(chip->cfg0>>  9)&  0x3ff, (chip->cfg0>>  19)&  15,
->> +		(chip->cfg0>>  23)&  15, (chip->cfg0>>  27)&  7);
->
-> Please, revise all your pr_info() calls and turn most of them into
-> dev_dbg() or pr_debug. Your driver should be completely silent by
-> default, except of error messages and some information messages when it
-> is initialized.
->
->
-I will revise all the pr_info calls and change the inappropriate calls 
-to pr_debug.
-
-Thanks,
-Murali N
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 4aaa88f..abe2571 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -2089,6 +2089,11 @@ static int __xipram do_xxlock_oneblock(struct map_info *map, struct flchip *chip
+ 		goto out;
+ 	}
+ 
++	if (chip->state == FL_STATUS) {
++		/* it goes ok, put chip into array mode */
++		map_write(map, CMD(0xff), adr);
++		chip->state = FL_READY;
++	}
+ 	xip_enable(map, chip, adr);
+ out:	put_chip(map, chip, adr);
+ 	mutex_unlock(&chip->mutex);
 -- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+1.7.5.rc1
