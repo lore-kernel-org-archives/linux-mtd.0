@@ -1,5 +1,5 @@
-Message-ID: <4DA96890.2070207@codeaurora.org>
-Date: Sat, 16 Apr 2011 15:29:44 +0530
+Message-ID: <4DA96C24.707@codeaurora.org>
+Date: Sat, 16 Apr 2011 15:45:00 +0530
 From: Murali Nalajala <mnalajal@codeaurora.org>
 MIME-Version: 1.0
 To: dedekind1@gmail.com
@@ -7,8 +7,9 @@ Subject: Re: [PATCH 2/2] mtd: msm_nand: Add initial msm nand driver support.
 References: <1298940450-27365-1-git-send-email-mnalajal@codeaurora.org>	
 	<1298940450-27365-2-git-send-email-mnalajal@codeaurora.org>	
 	<1302861097.3220.12.camel@localhost>
-	<4DA85B24.50807@codeaurora.org> <1302942029.2308.1.camel@koala>
-In-Reply-To: <1302942029.2308.1.camel@koala>
+	<4DA85B24.50807@codeaurora.org>	
+	<1302942029.2308.1.camel@koala> <1302942712.2308.3.camel@koala>
+In-Reply-To: <1302942712.2308.3.camel@koala>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -26,64 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/16/2011 1:50 PM, Artem Bityutskiy wrote:
-> On Fri, 2011-04-15 at 20:20 +0530, Murali Nalajala wrote:
->> On 4/15/2011 3:21 PM, Artem Bityutskiy wrote:
->>> On Tue, 2011-03-01 at 06:17 +0530, Murali Nalajala wrote:
->>>> +#define pr_fmt(fmt) "%s:" fmt, __func__
+On 4/16/2011 2:01 PM, Artem Bityutskiy wrote:
+> On Sat, 2011-04-16 at 11:20 +0300, Artem Bityutskiy wrote:
+>>>> +#define MSM_NAND_REG(off) (msm_nand_phys + (off))
 >>>> +
->>>> +#include<linux/kernel.h>
->>>> +#include<linux/mtd/mtd.h>
->>>> +#include<linux/mtd/nand.h>
->>>> +#include<linux/mtd/partitions.h>
->>>> +#include<linux/platform_device.h>
->>>> +#include<linux/sched.h>
->>>> +#include<linux/slab.h>
->>>> +#include<linux/dma-mapping.h>
->>>> +#include<asm/mach/flash.h>
->>>> +#include<mach/dma.h>
->>>> +
->>>> +#include "msm_nand.h"
->>>> +
->>>> +unsigned long msm_nand_phys;
+>>>> +#define MSM_NAND_FLASH_CMD            MSM_NAND_REG(0x0000)
+>>>> +#define MSM_NAND_ADDR0                MSM_NAND_REG(0x0004)
+>>>>
+>>>> Could you please make the macros to take the "struct msm_nand_chip
+>>>> *chip" argument instead, and store the pase address there. Do not hide
+>>>> the fact that those macros are actually functions, not constant - this
+>>>> is error prone.
+>>>>
+>>>> Besides, I'm do not know your HW, but if you have several controllers
+>>>> with various base addresses - your driver won't work.
 >>>
->>> No global variables like this please. Here is how you use them:
->>>
->>> +extern unsigned long msm_nand_phys;
+>>> you are correct, we have multiple controllers, which breaks this logic
+>>> in future.
 >>
->> extern declaration in the 'C' file causing warning. We are in plan to
->> upload the OneNAND changes soon which makes use of the same .h file.
+>> So then make your macros to accept the base address as an argument
+>> instead please.
 >
-> So you say that OneNAND (an independent driver) is going to use this
-> variable? Are you also going to export it?
+> Or better make macros to be constants, and always use something like
+> base + MSM_NAND_FLASH_CMD - this is the standard approach.
 
-I haven't decided yet when oneNAND driver come in still it is under 
-discussion. There is a chance that if OneNAND comes as an individual 
-driver then i have to export this variable.
+Here all the registers expands to 'base + register offset'.
+In the code we are directly using the macro names (these are register 
+names on my controller) i.e. MSM_NAND_FLASH_CMD & MSM_NAND_ADDR0 without 
+thinking of what the controller base is and what controller it is.
 
-Can i export this variable now? What is your suggestion?
-
->
->>> +#define MSM_NAND_REG(off) (msm_nand_phys + (off))
->>> +
->>> +#define MSM_NAND_FLASH_CMD            MSM_NAND_REG(0x0000)
->>> +#define MSM_NAND_ADDR0                MSM_NAND_REG(0x0004)
->>>
->>> Could you please make the macros to take the "struct msm_nand_chip
->>> *chip" argument instead, and store the pase address there. Do not hide
->>> the fact that those macros are actually functions, not constant - this
->>> is error prone.
->>>
->>> Besides, I'm do not know your HW, but if you have several controllers
->>> with various base addresses - your driver won't work.
->>
->> you are correct, we have multiple controllers, which breaks this logic
->> in future.
->
-> So then make your macros to accept the base address as an argument
-> instead please.
->
-
+Currently, this code we have targeted for the single NAND controller 
+solution for some of the MSM's. There are other targets which uses 
+multiple NAND controllers which we haven't done much work yet to submit 
+those patches.
 
 Thanks,
 Murali N
