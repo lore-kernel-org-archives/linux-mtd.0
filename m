@@ -1,28 +1,16 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QBO5g-00036F-NI
-	for linux-mtd@lists.infradead.org; Sun, 17 Apr 2011 09:16:25 +0000
-Received: by eyh6 with SMTP id 6so1284443eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 17 Apr 2011 02:16:22 -0700 (PDT)
-Subject: Re: UBI memory usage on large page nand
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Nicholas <ciliwung36@gmail.com>
-In-Reply-To: <BANLkTin=dfsO9N02oVZg=kU3ghfymbzJWA@mail.gmail.com>
-References: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
-	<AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
-	<1301671910.2789.98.camel@localhost>
-	<BANLkTi=pZqEwWYy=7mYQ_p73cHQ4rA6Rbg@mail.gmail.com>
-	<1302873226.3220.43.camel@localhost>
-	<1302873423.3220.45.camel@localhost>
-	<BANLkTin=dfsO9N02oVZg=kU3ghfymbzJWA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Sun, 17 Apr 2011 12:16:14 +0300
-Message-ID: <1303031774.2308.13.camel@koala>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Received: from nm18.bullet.mail.ukl.yahoo.com ([217.146.183.192])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QBeQ9-0007QR-TQ
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 02:42:39 +0000
+Date: Mon, 18 Apr 2011 10:42:14 +0800
+From: "Zrwhc" <anfiropa@yahoo.it>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: sfpH
+Message-ID: <201104181042140873951@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="GB2312"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,25 +20,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-04-17 at 17:03 +0800, Nicholas wrote:
-> Dear Artem,
-> 
-> Thanks for the advices. I'll try start for UBI first.
-> 
-> Reducing peb_buf would mean i need to modify the ubi IO for read/write.
-> As i know, ubi did an erase for a whole block before start writing,
-> 
-> Please correct me if i've written in a wrong way.
-
-Yes, when you investigate the code, you'll even find that if extra self
-checks are enabled, UBI will verify that the area it writes to contains
-only 0xFFs - it will read the area, compare with 0xFFs, and if all bytes
-are 0xFFs it will proceed, otherwise it will shout loudly. See:
-
-ubi_io_write() - all writes go through this function, and
-ubi_dbg_check_all_ff - does the verification I talked about, but only in
-debugging mode, because it is too costly to do it in production mode.
-
--- 
-Best Regards,
-Artem Bityutskiy (Битюцкий Артём)
+UTUyMzgwNjYxMDk0MzI4MzM5NA0KxPq6w6O6DQqxvrmry77T67rP1/e5q8u+0vK9+M/usci9z7bg
+tcjUrdLyo6yzpMbazqrE+szhuamjug0KICAgtPotv6ot1eYtt6ItxrEgo6jStc7xo6loDQogILD8
+wKijutT21rXLsKGiufrLsKGitdjLsLeiL8axoaK547jmoaLXydGvoaK74dLpoaK9qNb+uaSzzKGi
+yczGtw0Kz/rK26Gi16HL3qGiufrE2tTLyuSjrLn6vMq79dTLoaLX4sHeoaK5pNK1zbPSu6GiuqO5
+2L3Jv+7K6bXIt6JcxrGhow0KICAgINLUyc+3oirGsb75v8nJz834sunRr7vytb21sbXYy7C+1tHp
+1qSjrMuwteO009PFo6wNCru2063AtLXn18nRr6GjtPLIxcfrwcK94qOh0OjSqsfrwfTTwyFtc2Eu
+aGluZXQubmV0DQogICAgwarPtcjLo7oxMzktMTg2MzEzMjUgs8LPyMn6IL/Nt/5RUaO6MTI2NDAx
+Ny01NTQgIA0KXFwxMjYuY29tNTIzODA2NjEwOTQzMjgzMzk0
