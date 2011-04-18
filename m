@@ -1,12 +1,11 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QBptG-0004KA-9l
-	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 14:57:26 +0000
-Received: by ywf9 with SMTP id 9so921749ywf.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Apr 2011 07:57:24 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1303138210.24954.14.camel@fs-test.research.nokia.com>
+	id 1QBqFo-0004f3-Oc
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 15:20:45 +0000
+Subject: Re: [PATCHv2 2/2] mkfs.jffs2: fix casting of __off64_t
+From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+To: ext Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <BANLkTi==M8mEkMd8NjyyNe_jWocZQS5_OQ@mail.gmail.com>
 References: <1302783893.2796.27.camel@localhost>
 	<802c3655ae5130e95b01e5004710f206a3d9ef9c.1303115468.git.ext-andriy.shevchenko@nokia.com>
 	<2285954c62e0401291aa3f5055bc79c6789149d7.1303115468.git.ext-andriy.shevchenko@nokia.com>
@@ -17,12 +16,12 @@ References: <1302783893.2796.27.camel@localhost>
 	<1303136762.24954.12.camel@fs-test.research.nokia.com>
 	<BANLkTi=DNOTANVFDvip8=RqppRCVUe08_w@mail.gmail.com>
 	<1303138210.24954.14.camel@fs-test.research.nokia.com>
-From: Mike Frysinger <vapier.adi@gmail.com>
-Date: Mon, 18 Apr 2011 10:57:04 -0400
-Message-ID: <BANLkTi==M8mEkMd8NjyyNe_jWocZQS5_OQ@mail.gmail.com>
-Subject: Re: [PATCHv2 2/2] mkfs.jffs2: fix casting of __off64_t
-To: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-Content-Type: text/plain; charset=UTF-8
+	<BANLkTi==M8mEkMd8NjyyNe_jWocZQS5_OQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 18 Apr 2011 18:20:40 +0300
+Message-ID: <1303140041.24954.17.camel@fs-test.research.nokia.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -33,24 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 18, 2011 at 10:50, Andy Shevchenko wrote:
-> On Mon, 2011-04-18 at 10:29 -0400, ext Mike Frysinger wrote:
->> On Mon, Apr 18, 2011 at 10:26, Andy Shevchenko wrote:
->> > [1]
->> > http://pubs.opengroup.org/onlinepubs/000095399/basedefs/inttypes.h.html
->> > [2] http://pubs.opengroup.org/onlinepubs/009695399/functions/printf.html
->>
->> on the off chance you missed it, Issue 7 is out:
->> http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/inttypes.h.html
->
-> It's true. However it doesn't matter to our talk.
+On Mon, 2011-04-18 at 10:57 -0400, ext Mike Frysinger wrote:
+> On Mon, Apr 18, 2011 at 10:50, Andy Shevchenko wrote:
+> > On Mon, 2011-04-18 at 10:29 -0400, ext Mike Frysinger wrote:
+> >> On Mon, Apr 18, 2011 at 10:26, Andy Shevchenko wrote:
+> >> > [1]
+> >> > http://pubs.opengroup.org/onlinepubs/000095399/basedefs/inttypes.h.html
+> >> > [2] http://pubs.opengroup.org/onlinepubs/009695399/functions/printf.html
+> >>
+> >> on the off chance you missed it, Issue 7 is out:
+> >> http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/inttypes.h.html
+> >
+> > It's true. However it doesn't matter to our talk.
+> 
+> it doesnt ... i was just letting you know in case you werent aware.
+> Issue 7 has a lot of fun new features.
+> 
+> > The question is which way is better PRIu64 or %jd.
+> 
+> %jd means [u]intmax_t which is not what this is ... on a 32bit system,
+> int is 32bit.  we're dealing with an explicitly 64bit type (off64_t),
+Accordingly to [1]
 
-it doesnt ... i was just letting you know in case you werent aware.
-Issue 7 has a lot of fun new features.
+Limits of greatest-width integer types
+      * Minimum value of greatest-width signed integer type:
+        {INTMAX_MIN} -(2 63 -1)
+      * Maximum value of greatest-width signed integer type:
+        {INTMAX_MAX}  2 63 -1
+      * Maximum value of greatest-width unsigned integer type:
+        {UINTMAX_MAX} 2 64 -1
 
-> The question is which way is better PRIu64 or %jd.
+So, it fits to 64bit types.
 
-%jd means [u]intmax_t which is not what this is ... on a 32bit system,
-int is 32bit.  we're dealing with an explicitly 64bit type (off64_t),
-so let's go with an explicitly 64bit printf modifier.
--mike
+> so let's go with an explicitly 64bit printf modifier.
+Regarding to above I couldn't see any objection against %jd. At least
+one for PRIu64 - it looks awful in code.
+
+
+[1]
+http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/stdint.h.html
+
+
+-- 
+With Best Regards,
+Andy Shevchenko
