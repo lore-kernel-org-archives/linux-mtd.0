@@ -1,35 +1,17 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
+Received: from mail.x-arc.de ([217.6.246.34] helo=root.phytec.de)
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QBiCH-0008Qy-JJ
-	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 06:44:37 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by anubis.se.axis.com (Postfix) with ESMTP id 3E4E719D09
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Apr 2011 08:44:30 +0200 (CEST)
-Received: from anubis.se.axis.com ([127.0.0.1])
-	by localhost (anubis.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id 5VAK9DOA8ffY for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Apr 2011 08:44:25 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
-	by anubis.se.axis.com (Postfix) with ESMTP id 71B8019CF7
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Apr 2011 08:44:25 +0200 (CEST)
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
-	by thoth.se.axis.com (Postfix) with ESMTP id 70091341B5
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Apr 2011 08:44:25 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
-	p3I6iPTD019655
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2011 08:44:25 +0200
-Date: Mon, 18 Apr 2011 08:44:25 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: UBI partitioning in embedded device?
-Message-ID: <Pine.LNX.4.64.1104180839510.30071@lnxricardw.se.axis.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+	id 1QBiIU-0008Tq-78
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 06:51:02 +0000
+From: Jan Weitzel <j.weitzel@phytec.de>
+To: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+	Artem.Bityutskiy@nokia.com
+Subject: [PATCH v2] ARM: omap2: mtd split nand_scan in ident and tail
+Date: Mon, 18 Apr 2011 08:50:38 +0200
+Message-Id: <1303109438-24309-1-git-send-email-j.weitzel@phytec.de>
+In-Reply-To: <1302876214.3220.62.camel@localhost>
+References: <1302876214.3220.62.camel@localhost>
+Cc: tony@atomide.com, Jan Weitzel <j.weitzel@phytec.de>, s.hauer@pengutronix.de,
+	s-ghorai@ti.com, vimalsingh@ti.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,28 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+nand_scan calls nand_scan_tail and here we got a ecc.layout and calculate
+oobavail for this layout. After calling nand_scan, we change the layout pointer
+if OMAP_ECC_HAMMING_CODE_HW_ROMCODE is set. This results in not calcluated
+oobavail. Mountig as jffs2 is not possible.
 
-Are there any opinions here on the partitioning of a flash memory in an=20
-embedded device when using UBI?
+To fix that nand_scan has to split up in nand_scan_ident and nand_scan_tail
+setting ecc.layout between these calls. So nand_scan_tail calculates oobvail
+for the used layout. This is also done in serveral other platforms.
 
-Principially, one could let UBI manage the whole flash as one mtd=20
-partition, except possibly some boot area due to restriction in the boot=20
-ROM of the system in question. But is it wise to do so, assuming for=20
-instance there is data in part of the flash that you really want to avoid=
-=20
-loosing, such as calibration data? Of course, theoretically, once the=20
-kernel has access to one part of the flash it could clobber anything,=20
-still, the mtd code has been proven for years whereas UBI is relatively=20
-young, so one idea would be to partition that flash into several mtd=20
-partitions (e.g. boot, running system, and calibration data), and let UBI=
-=20
-handle these separately. That could minimize the risk of UBI clobbering=20
-the calibration data when operating on the running system, for instance.
+v2:
+update commit message
 
-Any thoughts?
+Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
+---
+ drivers/mtd/nand/omap2.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index da9a351..288423f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1073,9 +1073,9 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 	/* DIP switches on some boards change between 8 and 16 bit
+ 	 * bus widths for flash.  Try the other width if the first try fails.
+ 	 */
+-	if (nand_scan(&info->mtd, 1)) {
++	if (nand_scan_ident(&info->mtd, 1, NULL)) {
+ 		info->nand.options ^= NAND_BUSWIDTH_16;
+-		if (nand_scan(&info->mtd, 1)) {
++		if (nand_scan_ident(&info->mtd, 1, NULL)) {
+ 			err = -ENXIO;
+ 			goto out_release_mem_region;
+ 		}
+@@ -1101,6 +1101,12 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		info->nand.ecc.layout = &omap_oobinfo;
+ 	}
+ 
++	/* second phase scan */
++	if (nand_scan_tail(&info->mtd)) {
++		err = -ENXIO;
++		goto out_release_mem_region;
++	}
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
+ 	if (err > 0)
+-- 
+1.7.0.4
