@@ -1,23 +1,22 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QBiRO-00006o-4p
-	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 07:00:14 +0000
-Received: by wwb39 with SMTP id 39so3938752wwb.18
+	id 1QBid2-0000BP-EM
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 07:12:13 +0000
+Received: by ewy3 with SMTP id 3so1456814ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Apr 2011 00:00:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1303109438-24309-1-git-send-email-j.weitzel@phytec.de>
-References: <1302876214.3220.62.camel@localhost>
-	<1303109438-24309-1-git-send-email-j.weitzel@phytec.de>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Mon, 18 Apr 2011 12:29:47 +0530
-Message-ID: <BANLkTimxgyStkfYXyHJUzQBKTR0pYsF7Qw@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: omap2: mtd split nand_scan in ident and tail
-To: Jan Weitzel <j.weitzel@phytec.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Artem.Bityutskiy@nokia.com, vimalsingh@ti.com, tony@atomide.com,
-	s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
-	s-ghorai@ti.com, linux-omap@vger.kernel.org, dwmw2@infradead.org
+	Mon, 18 Apr 2011 00:12:09 -0700 (PDT)
+Subject: Re: UBI partitioning in embedded device?
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <Pine.LNX.4.64.1104180839510.30071@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1104180839510.30071@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 18 Apr 2011 10:09:15 +0300
+Message-ID: <1303110555.2815.25.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +26,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 18, 2011 at 12:20 PM, Jan Weitzel <j.weitzel@phytec.de> wrote:
-> nand_scan calls nand_scan_tail and here we got a ecc.layout and calculate
-> oobavail for this layout. After calling nand_scan, we change the layout pointer
-> if OMAP_ECC_HAMMING_CODE_HW_ROMCODE is set. This results in not calcluated
-> oobavail. Mountig as jffs2 is not possible.
->
-> To fix that nand_scan has to split up in nand_scan_ident and nand_scan_tail
-> setting ecc.layout between these calls. So nand_scan_tail calculates oobvail
-> for the used layout. This is also done in serveral other platforms.
->
-> v2:
-> update commit message
-Move above two lines to below (as there are not part of commit log):
+On Mon, 2011-04-18 at 08:44 +0200, Ricard Wanderlof wrote:
+> Are there any opinions here on the partitioning of a flash memory in an 
+> embedded device when using UBI?
+> 
+> Principially, one could let UBI manage the whole flash as one mtd 
+> partition, except possibly some boot area due to restriction in the boot 
+> ROM of the system in question.
 
->
-> Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
-> ---
-here.
+FYI, IBM people were able to implement boot initial boot loader with the
+limit of 4KiB for the whole initial boot loader, and it supported R/O
+UBI (but not UBIFS of course).
 
-Feel free to add:
-Reviewed-by: Vimal Singh <vimal.newwork@gmail.com>
+>  But is it wise to do so, assuming for 
+> instance there is data in part of the flash that you really want to avoid 
+> loosing, such as calibration data?
 
-Regards,
-Vimal
+The best way to not lose it is to have several copy of it, IMO.
+
+>  Of course, theoretically, once the 
+> kernel has access to one part of the flash it could clobber anything, 
+> still, the mtd code has been proven for years whereas UBI is relatively 
+> young, so one idea would be to partition that flash into several mtd 
+> partitions (e.g. boot, running system, and calibration data), and let UBI 
+> handle these separately. That could minimize the risk of UBI clobbering 
+> the calibration data when operating on the running system, for instance.
+> 
+> Any thoughts?
+
+You can let UBI manage your calibration data in a static UBI volume. But
+additionally, you can have a separate calibration data back-up
+partition, just in case.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
