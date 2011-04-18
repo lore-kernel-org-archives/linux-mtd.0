@@ -1,23 +1,12 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QBkq2-0001WL-5b
-	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 09:33:50 +0000
-Received: by ewy3 with SMTP id 3so1486951ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Apr 2011 02:33:44 -0700 (PDT)
-Subject: Re: veto CONFIG_MTD_PARTITIONS?
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <1302862146.3220.23.camel@localhost>
-References: <1302862146.3220.23.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 18 Apr 2011 12:30:49 +0300
-Message-ID: <1303119049.2815.38.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>,
-	jwboyer <jwboyer@gmail.com>
-Reply-To: dedekind1@gmail.com
+From: Huang Shijie <b32955@freescale.com>
+To: <s.hauer@pengutronix.de>
+Subject: [PATCH V2 1/3] ARM: mxs: add GPMI support for imx23/imx28
+Date: Mon, 18 Apr 2011 18:43:46 +0800
+Message-ID: <1303123428-12266-1-git-send-email-b32955@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,41 +16,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-04-15 at 13:09 +0300, Artem Bityutskiy wrote:
-> Hi,
-> 
-> we have a very small mtdpart driver which provides very basic mtd
-> partitioning services. And this driver may be compiled out. This
-> probably mattered many years ago, when saving ~7KiB (on arm arch)
-> mattered a lot.
-> 
-> But this creates mess:
-> 
-> [dedekind@eru l2-mtd-2.6]$ grep -r CONFIG_MTD_PARTITIONS drivers/mtd/* |
-> wc -l
-> 132
-> 
-> We have really a lot of these "#ifdef CONFIG_MTD_PARTITIONS" statements,
-> nearly in every driver. And new drivers have this.
-> 
-> I think it is time to declare than saving ~7KiB is not worth the mess
-> anymore and veto CONFIG_MTD_PARTITIONS - no new "#ifdef
-> CONFIG_MTD_PARTITIONS" should be accepted.
-> 
-> Someone should just make mtdpart.c to be an integral part of the MTD
-> core and remove all those #ifdefs.
-> 
-> Hopefully we'll force someone to clean this up.
-> 
-> If no one strongly disagrees, let's veto CONFIG_MTD_PARTITIONS usage.
+add gpmi support for imx23 and imx28.
 
-OK, since no one disagreed, and tglx explicitly agreed in the mtd chat,
-and dwmw2 kind of supported this, let's prohibit more
-CONFIG_MTD_PARTITIONS usage and try to force people to clean this up.
+Signed-off-by: Huang Shijie <b32955@freescale.com>
+---
+ arch/arm/mach-mxs/Kconfig                 |    2 +
+ arch/arm/mach-mxs/include/mach/gpmi-nfc.h |   63 +++++++++++++++++++++++++++++
+ 2 files changed, 65 insertions(+), 0 deletions(-)
+ create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
 
-I've updated the MTD web site with this information:
-http://www.linux-mtd.infradead.org/doc/general.html#L_partitions_ban
-
+diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
+index 4f6f174..8132f1a 100644
+--- a/arch/arm/mach-mxs/Kconfig
++++ b/arch/arm/mach-mxs/Kconfig
+@@ -22,6 +22,7 @@ config MACH_MX23EVK
+ 	select SOC_IMX23
+ 	select MXS_HAVE_AMBA_DUART
+ 	select MXS_HAVE_PLATFORM_AUART
++	select MXS_HAVE_PLATFORM_GPMI_NFC
+ 	select MXS_HAVE_PLATFORM_MXSFB
+ 	default y
+ 	help
+@@ -35,6 +36,7 @@ config MACH_MX28EVK
+ 	select MXS_HAVE_PLATFORM_AUART
+ 	select MXS_HAVE_PLATFORM_FEC
+ 	select MXS_HAVE_PLATFORM_FLEXCAN
++	select MXS_HAVE_PLATFORM_GPMI_NFC
+ 	select MXS_HAVE_PLATFORM_MXSFB
+ 	select MXS_OCOTP
+ 	default y
+diff --git a/arch/arm/mach-mxs/include/mach/gpmi-nfc.h b/arch/arm/mach-mxs/include/mach/gpmi-nfc.h
+new file mode 100644
+index 0000000..5b736f5
+--- /dev/null
++++ b/arch/arm/mach-mxs/include/mach/gpmi-nfc.h
+@@ -0,0 +1,63 @@
++/*
++ * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifndef __INCLUDE_GPMI_DEVICE_H
++#define __INCLUDE_GPMI_DEVICE_H
++
++/* The size of the resource is fixed. */
++#define RES_SIZE	6
++
++/* Resource names for the GPMI NFC driver. */
++#define GPMI_NFC_GPMI_REGS_ADDR_RES_NAME  "GPMI NFC GPMI Registers"
++#define GPMI_NFC_GPMI_INTERRUPT_RES_NAME  "GPMI NFC GPMI Interrupt"
++#define GPMI_NFC_BCH_REGS_ADDR_RES_NAME   "GPMI NFC BCH Registers"
++#define GPMI_NFC_BCH_INTERRUPT_RES_NAME   "GPMI NFC BCH Interrupt"
++#define GPMI_NFC_DMA_CHANNELS_RES_NAME    "GPMI NFC DMA Channels"
++#define GPMI_NFC_DMA_INTERRUPT_RES_NAME   "GPMI NFC DMA Interrupt"
++
++/**
++ * struct gpmi_nfc_platform_data - GPMI NFC driver platform data.
++ *
++ * This structure communicates platform-specific information to the GPMI NFC
++ * driver that can't be expressed as resources.
++ *
++ * @min_prop_delay_in_ns:    Minimum propagation delay of GPMI signals to and
++ *                           from the NAND Flash device, in nanoseconds.
++ * @max_prop_delay_in_ns:    Maximum propagation delay of GPMI signals to and
++ *                           from the NAND Flash device, in nanoseconds.
++ * @max_chip_count:          The maximum number of chips for which the driver
++ *                           should configure the hardware. This value most
++ *                           likely reflects the number of pins that are
++ *                           connected to a NAND Flash device. If this is
++ *                           greater than the SoC hardware can support, the
++ *                           driver will print a message and fail to initialize.
++ * @partitions:              An optional pointer to an array of partition
++ *                           descriptions.
++ * @partition_count:         The number of elements in the partitions array.
++ */
++struct gpmi_nfc_platform_data {
++	/* NAND Flash information. */
++	unsigned int          min_prop_delay_in_ns;
++	unsigned int          max_prop_delay_in_ns;
++	unsigned int          max_chip_count;
++
++	/* soc */
++	struct mtd_partition  *partitions;
++	unsigned              partition_count;
++};
++#endif
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.0.4
