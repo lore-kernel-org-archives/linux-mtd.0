@@ -1,24 +1,20 @@
-Subject: Re: [PATCH V2 2/2] mtd: msm_nand: Add initial msm nand driver support.
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <4DABE8FE.5040300@parrot.com>
-References: <1302938249-4601-1-git-send-email-mnalajal@codeaurora.org>
-	<4DABE8FE.5040300@parrot.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 18 Apr 2011 10:56:06 +0300
-Message-ID: <1303113366.2815.31.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	Dima Zavin <dima@android.com>,
-	Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-	Murali Nalajala <mnalajal@codeaurora.org>,
-	Brian Swetland <swetland@google.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QBjoY-0000tj-PD
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 08:28:14 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p3I8S7gi006247
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2011 11:28:08 +0300
+From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	linux-mtd@lists.infradead.org
+Subject: [PATCHv2 1/2] serve_image: adjust classificator and type for printf
+Date: Mon, 18 Apr 2011 11:31:47 +0300
+Message-Id: <802c3655ae5130e95b01e5004710f206a3d9ef9c.1303115468.git.ext-andriy.shevchenko@nokia.com>
+In-Reply-To: <1302783893.2796.27.camel@localhost>
+References: <1302783893.2796.27.camel@localhost>
+Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,43 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-04-18 at 09:32 +0200, Matthieu CASTET wrote:
-> Hi,
-> 
-> Murali Nalajala a écrit :
-> > Add initial msm nand driver support for Qualcomm MSM platforms.
-> > This driver is capable of handling both 2k and 4k page support
-> > nand devices.
-> > 
-> > This driver was originally developed by Arve Hjønnevåg at google.
-> > Its source is available at
-> > http://android.git.kernel.org/?p=kernel/msm.git under
-> > android-msm-2.6.35 branch.
-> > 
-> > CC: Dima Zavin <dima@android.com>
-> > CC: Brian Swetland <swetland@google.com>
-> > CC: Arve Hjønnevåg <arve@android.com>
-> > Signed-off-by: Murali Nalajala <mnalajal@codeaurora.org>
-> > ---
-> > Changes in V2
-> > * Turn most of the pr_info() calls into pr_debug().
-> > 
-> >  drivers/mtd/devices/Kconfig    |   11 +
-> >  drivers/mtd/devices/Makefile   |    1 +
-> >  drivers/mtd/devices/msm_nand.c | 1597 ++++++++++++++++++++++++++++++++++++++++
-> >  drivers/mtd/devices/msm_nand.h |   77 ++
-> >  4 files changed, 1686 insertions(+), 0 deletions(-)
-> >  create mode 100644 drivers/mtd/devices/msm_nand.c
-> >  create mode 100644 drivers/mtd/devices/msm_nand.h
-> > 
-> 
-> For the record, I am not sure it is a great idea to make nand drivers
-> independent of the nand layer.
+The argument type of printf is __off64_t, meanwhile the classificator is "%ld".
 
-This is not acceptable. Nand drivers should use the nand_base framework.
-If the framework is limiting, buggy, slow, etc for your case (which is
-quite possible) - the framework should be improved.
+Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+---
+ serve_image.c |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
+diff --git a/serve_image.c b/serve_image.c
+index f8f28a1..d86e372 100644
+--- a/serve_image.c
++++ b/serve_image.c
+@@ -126,8 +126,9 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	if (st.st_size % erasesize) {
+-		fprintf(stderr, "Image size %ld bytes is not a multiple of erasesize %d bytes\n",
+-			st.st_size, erasesize);
++		fprintf(stderr, "Image size %llu bytes is not a multiple of "
++				"erasesize %d bytes\n",
++				(unsigned long long)st.st_size, erasesize);
+ 		exit(1);
+ 	}
+ 	image = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, rfd, 0);
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.6.3.3
