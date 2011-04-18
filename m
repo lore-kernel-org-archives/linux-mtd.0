@@ -1,16 +1,22 @@
-Received: from nm18.bullet.mail.ukl.yahoo.com ([217.146.183.192])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QBeQ9-0007QR-TQ
-	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 02:42:39 +0000
-Date: Mon, 18 Apr 2011 10:42:14 +0800
-From: "Zrwhc" <anfiropa@yahoo.it>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: sfpH
-Message-ID: <201104181042140873951@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="GB2312"
-Content-Transfer-Encoding: base64
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QBg6V-0007rJ-AI
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 04:30:28 +0000
+Received: by ewy3 with SMTP id 3so1433063ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 17 Apr 2011 21:30:25 -0700 (PDT)
+Subject: Re: bug found in the core MTD driver code in 2.6.34 r97
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Mike Turner <admin@islandsoftware.co.uk>
+In-Reply-To: <165001cbfac4$c10056b0$0400a8c0@hack>
+References: <165001cbfac4$c10056b0$0400a8c0@hack>
+Content-Type: text/plain; charset="UTF-8"
+Date: Mon, 18 Apr 2011 07:27:30 +0300
+Message-ID: <1303100850.2815.0.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,11 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-UTUyMzgwNjYxMDk0MzI4MzM5NA0KxPq6w6O6DQqxvrmry77T67rP1/e5q8u+0vK9+M/usci9z7bg
-tcjUrdLyo6yzpMbazqrE+szhuamjug0KICAgtPotv6ot1eYtt6ItxrEgo6jStc7xo6loDQogILD8
-wKijutT21rXLsKGiufrLsKGitdjLsLeiL8axoaK547jmoaLXydGvoaK74dLpoaK9qNb+uaSzzKGi
-yczGtw0Kz/rK26Gi16HL3qGiufrE2tTLyuSjrLn6vMq79dTLoaLX4sHeoaK5pNK1zbPSu6GiuqO5
-2L3Jv+7K6bXIt6JcxrGhow0KICAgINLUyc+3oirGsb75v8nJz834sunRr7vytb21sbXYy7C+1tHp
-1qSjrMuwteO009PFo6wNCru2063AtLXn18nRr6GjtPLIxcfrwcK94qOh0OjSqsfrwfTTwyFtc2Eu
-aGluZXQubmV0DQogICAgwarPtcjLo7oxMzktMTg2MzEzMjUgs8LPyMn6IL/Nt/5RUaO6MTI2NDAx
-Ny01NTQgIA0KXFwxMjYuY29tNTIzODA2NjEwOTQzMjgzMzk0
+On Thu, 2011-04-14 at 17:55 +0100, Mike Turner wrote:
+> Hi folks,
+> 
+> On the second and subsequent boots into my Gumstix NAND-resident ubifs RFS 
+> (Gumstix "minimal build" aimed at fast booting from NAND), it seems that 
+> udevadm - executing from the script /etc/init.d/udev - encounters a driver 
+> crash when drivers/mtd/ubi/gluebi.c:gluebi_read() passes the value 
+> 0xFFFFFFF0 as a "struct ubi_volume_desc *" argument to  ubi_read() and 
+> thence ubi_leb_read().
+
+Could you please send the oops log with backtrace - you can see it if
+you type dmesg after the crash.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
