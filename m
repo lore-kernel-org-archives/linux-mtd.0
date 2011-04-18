@@ -1,14 +1,20 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <s.hauer@pengutronix.de>
-Subject: [PATCH V2 3/3] ARM: mxs: add GPMI device for imx28
-Date: Mon, 18 Apr 2011 18:43:48 +0800
-Message-ID: <1303123428-12266-3-git-send-email-b32955@freescale.com>
-In-Reply-To: <1303123428-12266-1-git-send-email-b32955@freescale.com>
-References: <1303123428-12266-1-git-send-email-b32955@freescale.com>
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QBmsl-0002M2-LO
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2011 11:44:48 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: 'Ricard Wanderlof' <ricard.wanderlof@axis.com>, Linux mtd
+	<linux-mtd@lists.infradead.org>
+Date: Mon, 18 Apr 2011 07:45:02 -0400
+Subject: RE: UBI partitioning in embedded device?
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A6941578B@dekaexchange07.deka.local>
+References: <Pine.LNX.4.64.1104180839510.30071@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.1104180839510.30071@lnxricardw.se.axis.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, u.kleine-koenig@pengutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,122 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add gpmi device for imx28.
+Ricard:
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- arch/arm/mach-mxs/clock-mx28.c            |    1 +
- arch/arm/mach-mxs/devices-mx28.h          |    3 +++
- arch/arm/mach-mxs/devices/platform-gpmi.c |   17 +++++++++++++++++
- arch/arm/mach-mxs/mach-mx28evk.c          |   28 ++++++++++++++++++++++++++++
- 4 files changed, 49 insertions(+), 0 deletions(-)
+One advantage of moving critical data (such as calibration
+data) into its own partition is that because each partition
+would absolutely positively *NOT* share its PEBs (Physical
+Erase Blocks) with any other partition, data stored in
+those partitions would then be better-insulated from
+"disturb" effects (such as "program disturb" and "read
+disturb") caused by the reading and writing of other data.
 
-diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
-index 5e489a2..9dbd2d5 100644
---- a/arch/arm/mach-mxs/clock-mx28.c
-+++ b/arch/arm/mach-mxs/clock-mx28.c
-@@ -609,6 +609,7 @@ static struct clk_lookup lookups[] = {
- 	_REGISTER_CLOCK("duart", NULL, uart_clk)
- 	_REGISTER_CLOCK("imx28-fec.0", NULL, fec_clk)
- 	_REGISTER_CLOCK("imx28-fec.1", NULL, fec_clk)
-+	_REGISTER_CLOCK("imx28-gpmi-nfc", NULL, gpmi_clk)
- 	_REGISTER_CLOCK("mxs-auart.0", NULL, uart_clk)
- 	_REGISTER_CLOCK("mxs-auart.1", NULL, uart_clk)
- 	_REGISTER_CLOCK("mxs-auart.2", NULL, uart_clk)
-diff --git a/arch/arm/mach-mxs/devices-mx28.h b/arch/arm/mach-mxs/devices-mx28.h
-index 9d08555..56f1f33 100644
---- a/arch/arm/mach-mxs/devices-mx28.h
-+++ b/arch/arm/mach-mxs/devices-mx28.h
-@@ -34,6 +34,9 @@ extern const struct mxs_flexcan_data mx28_flexcan_data[] __initconst;
- #define mx28_add_flexcan0(pdata)	mx28_add_flexcan(0, pdata)
- #define mx28_add_flexcan1(pdata)	mx28_add_flexcan(1, pdata)
- 
-+extern const struct mxs_gpmi_data mx28_gpmi_data __initconst;
-+#define mx28_add_gpmi_nfc(pdata)	mxs_add_gpmi_nfc(pdata, &mx28_gpmi_data)
-+
- extern const struct mxs_i2c_data mx28_mxs_i2c_data[] __initconst;
- #define mx28_add_mxs_i2c(id)		mxs_add_mxs_i2c(&mx28_mxs_i2c_data[id])
- 
-diff --git a/arch/arm/mach-mxs/devices/platform-gpmi.c b/arch/arm/mach-mxs/devices/platform-gpmi.c
-index 3c6c968..7f8a0f6 100644
---- a/arch/arm/mach-mxs/devices/platform-gpmi.c
-+++ b/arch/arm/mach-mxs/devices/platform-gpmi.c
-@@ -61,6 +61,23 @@ const struct mxs_gpmi_data mx23_gpmi_data __initconst = {
- };
- #endif
- 
-+#ifdef CONFIG_SOC_IMX28
-+const struct mxs_gpmi_data mx28_gpmi_data __initconst = {
-+	.devid = "imx28-gpmi-nfc",
-+	.res = {
-+	/* GPMI */
-+	RES_MEM(MX28, GPMI_BASE_ADDR, SZ_8K, GPMI_NFC_GPMI_REGS_ADDR_RES_NAME),
-+	RES_IRQ(MX28, INT_GPMI, GPMI_NFC_GPMI_INTERRUPT_RES_NAME),
-+	/* BCH */
-+	RES_MEM(MX28, BCH_BASE_ADDR, SZ_8K, GPMI_NFC_BCH_REGS_ADDR_RES_NAME),
-+	RES_IRQ(MX28, INT_BCH, GPMI_NFC_BCH_INTERRUPT_RES_NAME),
-+	/* DMA */
-+	RES_DMA(MX28, DMA_GPMI0, DMA_GPMI7, GPMI_NFC_DMA_CHANNELS_RES_NAME),
-+	RES_IRQ(MX28, INT_GPMI_DMA, GPMI_NFC_DMA_INTERRUPT_RES_NAME),
-+	},
-+};
-+#endif
-+
- struct platform_device *__init
- mxs_add_gpmi_nfc(const struct gpmi_nfc_platform_data *pdata,
- 		const struct mxs_gpmi_data *data)
-diff --git a/arch/arm/mach-mxs/mach-mx28evk.c b/arch/arm/mach-mxs/mach-mx28evk.c
-index 08002d0..e2c03d8 100644
---- a/arch/arm/mach-mxs/mach-mx28evk.c
-+++ b/arch/arm/mach-mxs/mach-mx28evk.c
-@@ -82,6 +82,26 @@ static const iomux_cfg_t mx28evk_pads[] __initconst = {
- 	/* transceiver power control */
- 	MX28_PAD_SSP1_CMD__GPIO_2_13,
- 
-+#define MXS_PAD_GPMI	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
-+	/* gpmi */
-+	MX28_PAD_GPMI_D00__GPMI_D0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D01__GPMI_D1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D02__GPMI_D2 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D03__GPMI_D3 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D04__GPMI_D4 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D05__GPMI_D5 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D06__GPMI_D6 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D07__GPMI_D7 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY0__GPMI_READY0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY1__GPMI_READY1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_GPMI,
-+	MX28_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_GPMI,
-+	MX28_PAD_GPMI_RESETN__GPMI_RESETN | MXS_PAD_GPMI,
-+
- 	/* mxsfb (lcdif) */
- 	MX28_PAD_LCD_D00__LCD_D0 | MXS_PAD_CTRL,
- 	MX28_PAD_LCD_D01__LCD_D1 | MXS_PAD_CTRL,
-@@ -232,6 +252,13 @@ static const struct flexcan_platform_data
- 	}
- };
- 
-+/* gpmi */
-+static const struct gpmi_nfc_platform_data  mx28evk_gpmi_pdata __initconst = {
-+	.min_prop_delay_in_ns	= 5,
-+	.max_prop_delay_in_ns	= 9,
-+	.max_chip_count		= 1,
-+};
-+
- /* mxsfb (lcdif) */
- static struct fb_videomode mx28evk_video_modes[] = {
- 	{
-@@ -296,6 +323,7 @@ static void __init mx28evk_init(void)
- 	else
- 		gpio_set_value(MX28EVK_BL_ENABLE, 1);
- 
-+	mx28_add_gpmi_nfc(&mx28evk_gpmi_pdata);
- 	mx28_add_mxsfb(&mx28evk_mxsfb_pdata);
- }
- 
--- 
-1.7.0.4
+Generally, the "disturb" effects only take place within
+Flash pages and from one Flash page to another.
+
+                    Atlant
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
+.infradead.org] On Behalf Of Ricard Wanderlof
+Sent: Monday, April 18, 2011 02:44
+To: Linux mtd
+Subject: UBI partitioning in embedded device?
+
+
+Are there any opinions here on the partitioning of a flash memory in an
+embedded device when using UBI?
+
+Principially, one could let UBI manage the whole flash as one mtd
+partition, except possibly some boot area due to restriction in the boot
+ROM of the system in question. But is it wise to do so, assuming for
+instance there is data in part of the flash that you really want to avoid
+loosing, such as calibration data? Of course, theoretically, once the
+kernel has access to one part of the flash it could clobber anything,
+still, the mtd code has been proven for years whereas UBI is relatively
+young, so one idea would be to partition that flash into several mtd
+partitions (e.g. boot, running system, and calibration data), and let UBI
+handle these separately. That could minimize the risk of UBI clobbering
+the calibration data when operating on the running system, for instance.
+
+Any thoughts?
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
