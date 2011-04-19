@@ -1,13 +1,22 @@
-From: Jan Weitzel <j.weitzel@phytec.de>
-To: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, Artem.Bityutskiy@nokia.com
-Subject: [PATCH v3] ARM: omap2: mtd split nand_scan in ident and tail
-Date: Tue, 19 Apr 2011 16:15:34 +0200
-Message-Id: <1303222534-10143-1-git-send-email-j.weitzel@phytec.de>
-In-Reply-To: <BANLkTimxgyStkfYXyHJUzQBKTR0pYsF7Qw@mail.gmail.com>
-References: <BANLkTimxgyStkfYXyHJUzQBKTR0pYsF7Qw@mail.gmail.com>
-Cc: tony@atomide.com, Jan Weitzel <j.weitzel@phytec.de>, s.hauer@pengutronix.de,
-	vimal.newwork@gmail.com, s-ghorai@ti.com, dwmw2@infradead.org
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QCBsv-0005r2-Np
+	for linux-mtd@lists.infradead.org; Tue, 19 Apr 2011 14:26:34 +0000
+Received: by gyh20 with SMTP id 20so1983749gyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Apr 2011 07:26:31 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <971bada1c870aa0baf6e8d07784f95e31bb98213.1303202005.git.ext-andriy.shevchenko@nokia.com>
+References: <1303195429.2779.2.camel@localhost>
+	<971bada1c870aa0baf6e8d07784f95e31bb98213.1303202005.git.ext-andriy.shevchenko@nokia.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 19 Apr 2011 10:26:11 -0400
+Message-ID: <BANLkTi=LuXGaRdiaKRz0RYb1Z3WWaT53ng@mail.gmail.com>
+Subject: Re: [PATCHv3 1/3] mkfs.jffs2: fix casting of __off64_t
+To: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,54 +26,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_scan calls nand_scan_tail and here we got a ecc.layout and calculate
-oobavail for this layout. After calling nand_scan, we change the layout pointer
-if OMAP_ECC_HAMMING_CODE_HW_ROMCODE is set. This results in not calcluated
-oobavail. Mountig as jffs2 is not possible.
-
-To fix that nand_scan has to split up in nand_scan_ident and nand_scan_tail
-setting ecc.layout between these calls. So nand_scan_tail calculates oobvail
-for the used layout. This is also done in serveral other platforms.
-
-Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
-Reviewed-by: Vimal Singh <vimal.newwork@gmail.com>
----
-v2:
-update commit message
-v3:
-Add Reviewed-by
-
- drivers/mtd/nand/omap2.c |   10 ++++++++--
- 1 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index da9a351..288423f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -1073,9 +1073,9 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 	/* DIP switches on some boards change between 8 and 16 bit
- 	 * bus widths for flash.  Try the other width if the first try fails.
- 	 */
--	if (nand_scan(&info->mtd, 1)) {
-+	if (nand_scan_ident(&info->mtd, 1, NULL)) {
- 		info->nand.options ^= NAND_BUSWIDTH_16;
--		if (nand_scan(&info->mtd, 1)) {
-+		if (nand_scan_ident(&info->mtd, 1, NULL)) {
- 			err = -ENXIO;
- 			goto out_release_mem_region;
- 		}
-@@ -1101,6 +1101,12 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
- 		info->nand.ecc.layout = &omap_oobinfo;
- 	}
- 
-+	/* second phase scan */
-+	if (nand_scan_tail(&info->mtd)) {
-+		err = -ENXIO;
-+		goto out_release_mem_region;
-+	}
-+
- #ifdef CONFIG_MTD_PARTITIONS
- 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
- 	if (err > 0)
--- 
-1.7.0.4
+T24gVHVlLCBBcHIgMTksIDIwMTEgYXQgMDQ6MzQsIEFuZHkgU2hldmNoZW5rbyB3cm90ZToKPiAt
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IHByaW50ZigiXHRzICUwNG8gJTlsdSDCoCDCoCDCoCDCoCDCoCDCoCAlNWQ6JS0zZCAlc1xuIiwK
+PiArIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIHByaW50ZigiXHRzICUwNG8gJSIgUFJJdTY0ICIgwqAgwqAgwqAgwqAgwqAgwqAgJTVkOiUt
+M2QgJXNcbiIsCgppcyB0aGVyZSBhIHJlYXNvbiBmb3IgZHJvcHBpbmcgdGhlIGZpZWxkIHdpZHRo
+ID8gIHByaW50ZigiJTkiUFJJdTY0IgouLi4uLiIpIHNob3VsZCB3b3JrIGZpbmUgLi4uCi1taWtl
+Cg==
