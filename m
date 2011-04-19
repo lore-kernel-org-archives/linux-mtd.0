@@ -1,21 +1,23 @@
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+Received: from mail-yw0-f49.google.com ([209.85.213.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCBy5-0005yv-J2
-	for linux-mtd@lists.infradead.org; Tue, 19 Apr 2011 14:31:54 +0000
-Subject: Re: [PATCHv3 3/3] serve_image: adjust classifier and type for printf
-From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-To: ext Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <BANLkTikxr_RWMVTVo-JYCwDhBR_sJdp=Cw@mail.gmail.com>
+	id 1QCC4X-00063V-Uf
+	for linux-mtd@lists.infradead.org; Tue, 19 Apr 2011 14:38:34 +0000
+Received: by ywf9 with SMTP id 9so1252656ywf.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Apr 2011 07:38:32 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1303223386.24954.21.camel@fs-test.research.nokia.com>
 References: <1303195429.2779.2.camel@localhost>
 	<971bada1c870aa0baf6e8d07784f95e31bb98213.1303202005.git.ext-andriy.shevchenko@nokia.com>
-	<82d06f0b9f3ad538d5a8dabfce6ac8337e07b0ae.1303202005.git.ext-andriy.shevchenko@nokia.com>
-	<158e520ae5748a6e32eeefad99dea0395dd4c2a7.1303202005.git.ext-andriy.shevchenko@nokia.com>
-	<BANLkTikxr_RWMVTVo-JYCwDhBR_sJdp=Cw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 19 Apr 2011 17:32:01 +0300
-Message-ID: <1303223521.24954.23.camel@fs-test.research.nokia.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<BANLkTi=LuXGaRdiaKRz0RYb1Z3WWaT53ng@mail.gmail.com>
+	<1303223386.24954.21.camel@fs-test.research.nokia.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 19 Apr 2011 10:38:12 -0400
+Message-ID: <BANLkTinVjqzz_f9waArqWZ=dmvCUC3H+KA@mail.gmail.com>
+Subject: Re: [PATCHv3 1/3] mkfs.jffs2: fix casting of __off64_t
+To: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,19 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-19 at 10:26 -0400, ext Mike Frysinger wrote:
-> On Tue, Apr 19, 2011 at 04:34, Andy Shevchenko wrote:
-> > -               fprintf(stderr, "Image size %ld bytes is not a multiple of erasesize %d bytes\n",
-> > -                       st.st_size, erasesize);
-> > +               fprintf(stderr, "Image size %" PRIu64 " bytes is not a multiple of "
-> > +                               "erasesize %d bytes\n", st.st_size, erasesize);
-> 
-> i think we want to avoid splitting string constants
-I looked to many other places in the code where it has split in string
-constants. So, this is an irrelevant issue.
-However, I could join back the strings which I touch in patches.
+On Tue, Apr 19, 2011 at 10:29, Andy Shevchenko wrote:
+> On Tue, 2011-04-19 at 10:26 -0400, ext Mike Frysinger wrote:
+>> On Tue, Apr 19, 2011 at 04:34, Andy Shevchenko wrote:
+>> > - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printf("=
+\ts %04o %9lu =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 %5d:%-3d %s\n",
+>> > + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 printf("=
+\ts %04o %" PRIu64 " =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 %5d:%-3d %s\=
+n",
+>>
+>> is there a reason for dropping the field width ? =C2=A0printf("%9"PRIu64=
+"
+>> .....") should work fine ...
+>
+> If you guarantee the value not higher than 10^10, why should we use
+> PRIu64 at all? It's enough to have cast to unsigned long in such case.
 
-
--- 
-With Best Regards,
-Andy Shevchenko
+it's a *minimum* field width, not a maximum.  it makes sure the output
+is aligned properly for most people.
+-mike
