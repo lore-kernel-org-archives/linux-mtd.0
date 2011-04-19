@@ -1,29 +1,13 @@
-Received: from mail-qy0-f177.google.com ([209.85.216.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QC83u-000478-V3
-	for linux-mtd@lists.infradead.org; Tue, 19 Apr 2011 10:21:40 +0000
-Received: by qyl38 with SMTP id 38so4250873qyl.15
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Apr 2011 03:21:37 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1303207320.2779.9.camel@localhost>
-References: <1301874939-2630-1-git-send-email-sedat.dilek@gmail.com>
-	<1301900656.2760.6.camel@localhost>
-	<BANLkTi=WTWa4yj+ysta8jiHs9r4MX5Gf_g@mail.gmail.com>
-	<1301911604.2760.52.camel@localhost>
-	<BANLkTi=DHTjL7M9bzYY-t5MJS2s1WScBCQ@mail.gmail.com>
-	<BANLkTinysw90tiWhFRmQH_0LWx7o+sD1-A@mail.gmail.com>
-	<1303207320.2779.9.camel@localhost>
-Date: Tue, 19 Apr 2011 12:21:36 +0200
-Message-ID: <BANLkTinyp9Ne_OBPf+ejERjAPeUUxga2cQ@mail.gmail.com>
-Subject: Re: [PATCH] ubifs: Use empty_iops and empty_fops consistently
-From: Sedat Dilek <sedat.dilek@googlemail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Jens Axboe <jaxboe@fusionio.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Adrian Hunter <adrian.hunter@nokia.com>
-Reply-To: sedat.dilek@gmail.com
+From: Jan Weitzel <j.weitzel@phytec.de>
+To: linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, Artem.Bityutskiy@nokia.com
+Subject: [PATCH v3] ARM: omap2: mtd split nand_scan in ident and tail
+Date: Tue, 19 Apr 2011 16:15:34 +0200
+Message-Id: <1303222534-10143-1-git-send-email-j.weitzel@phytec.de>
+In-Reply-To: <BANLkTimxgyStkfYXyHJUzQBKTR0pYsF7Qw@mail.gmail.com>
+References: <BANLkTimxgyStkfYXyHJUzQBKTR0pYsF7Qw@mail.gmail.com>
+Cc: tony@atomide.com, Jan Weitzel <j.weitzel@phytec.de>, s.hauer@pengutronix.de,
+	vimal.newwork@gmail.com, s-ghorai@ti.com, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,26 +17,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 19, 2011 at 12:02 PM, Artem Bityutskiy <dedekind1@gmail.com> wr=
-ote:
-> On Tue, 2011-04-19 at 11:50 +0200, Sedat Dilek wrote:
->> can you take this patch into your UBIFS tree?
->> Thanks in advance.
->
-> Sorry, forgot about this patch. Pushed to ubifs-2.6.git tree, but I
-> re-wrote the commit message because I found yours a bit confusing. Is
-> this OK?
->
+nand_scan calls nand_scan_tail and here we got a ecc.layout and calculate
+oobavail for this layout. After calling nand_scan, we change the layout pointer
+if OMAP_ECC_HAMMING_CODE_HW_ROMCODE is set. This results in not calcluated
+oobavail. Mountig as jffs2 is not possible.
 
-Thanks.
-Nice wording, fire it up :-).
+To fix that nand_scan has to split up in nand_scan_ident and nand_scan_tail
+setting ecc.layout between these calls. So nand_scan_tail calculates oobvail
+for the used layout. This is also done in serveral other platforms.
 
-> http://git.infradead.org/ubifs-2.6.git/commit/8c355ad269c9da635fad8367e9a=
-6d52bf3fe08c8
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
+Reviewed-by: Vimal Singh <vimal.newwork@gmail.com>
+---
+v2:
+update commit message
+v3:
+Add Reviewed-by
+
+ drivers/mtd/nand/omap2.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index da9a351..288423f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -1073,9 +1073,9 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 	/* DIP switches on some boards change between 8 and 16 bit
+ 	 * bus widths for flash.  Try the other width if the first try fails.
+ 	 */
+-	if (nand_scan(&info->mtd, 1)) {
++	if (nand_scan_ident(&info->mtd, 1, NULL)) {
+ 		info->nand.options ^= NAND_BUSWIDTH_16;
+-		if (nand_scan(&info->mtd, 1)) {
++		if (nand_scan_ident(&info->mtd, 1, NULL)) {
+ 			err = -ENXIO;
+ 			goto out_release_mem_region;
+ 		}
+@@ -1101,6 +1101,12 @@ static int __devinit omap_nand_probe(struct platform_device *pdev)
+ 		info->nand.ecc.layout = &omap_oobinfo;
+ 	}
+ 
++	/* second phase scan */
++	if (nand_scan_tail(&info->mtd)) {
++		err = -ENXIO;
++		goto out_release_mem_region;
++	}
++
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	err = parse_mtd_partitions(&info->mtd, part_probes, &info->parts, 0);
+ 	if (err > 0)
+-- 
+1.7.0.4
