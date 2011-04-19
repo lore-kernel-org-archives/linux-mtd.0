@@ -1,17 +1,19 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCBvu-0005v2-2E
-	for linux-mtd@lists.infradead.org; Tue, 19 Apr 2011 14:29:38 +0000
-Subject: Re: [PATCHv3 1/3] mkfs.jffs2: fix casting of __off64_t
+	id 1QCBy5-0005yv-J2
+	for linux-mtd@lists.infradead.org; Tue, 19 Apr 2011 14:31:54 +0000
+Subject: Re: [PATCHv3 3/3] serve_image: adjust classifier and type for printf
 From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 To: ext Mike Frysinger <vapier.adi@gmail.com>
-In-Reply-To: <BANLkTi=LuXGaRdiaKRz0RYb1Z3WWaT53ng@mail.gmail.com>
+In-Reply-To: <BANLkTikxr_RWMVTVo-JYCwDhBR_sJdp=Cw@mail.gmail.com>
 References: <1303195429.2779.2.camel@localhost>
 	<971bada1c870aa0baf6e8d07784f95e31bb98213.1303202005.git.ext-andriy.shevchenko@nokia.com>
-	<BANLkTi=LuXGaRdiaKRz0RYb1Z3WWaT53ng@mail.gmail.com>
+	<82d06f0b9f3ad538d5a8dabfce6ac8337e07b0ae.1303202005.git.ext-andriy.shevchenko@nokia.com>
+	<158e520ae5748a6e32eeefad99dea0395dd4c2a7.1303202005.git.ext-andriy.shevchenko@nokia.com>
+	<BANLkTikxr_RWMVTVo-JYCwDhBR_sJdp=Cw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 19 Apr 2011 17:29:46 +0300
-Message-ID: <1303223386.24954.21.camel@fs-test.research.nokia.com>
+Date: Tue, 19 Apr 2011 17:32:01 +0300
+Message-ID: <1303223521.24954.23.camel@fs-test.research.nokia.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
@@ -26,14 +28,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Tue, 2011-04-19 at 10:26 -0400, ext Mike Frysinger wrote:
 > On Tue, Apr 19, 2011 at 04:34, Andy Shevchenko wrote:
-> > -                                       printf("\ts %04o %9lu             %5d:%-3d %s\n",
-> > +                                       printf("\ts %04o %" PRIu64 "             %5d:%-3d %s\n",
+> > -               fprintf(stderr, "Image size %ld bytes is not a multiple of erasesize %d bytes\n",
+> > -                       st.st_size, erasesize);
+> > +               fprintf(stderr, "Image size %" PRIu64 " bytes is not a multiple of "
+> > +                               "erasesize %d bytes\n", st.st_size, erasesize);
 > 
-> is there a reason for dropping the field width ?  printf("%9"PRIu64"
-> .....") should work fine ...
-> -mike
-If you guarantee the value not higher than 10^10, why should we use
-PRIu64 at all? It's enough to have cast to unsigned long in such case.
+> i think we want to avoid splitting string constants
+I looked to many other places in the code where it has split in string
+constants. So, this is an irrelevant issue.
+However, I could join back the strings which I touch in patches.
 
 
 -- 
