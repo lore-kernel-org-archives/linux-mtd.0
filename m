@@ -1,32 +1,19 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCRuo-0004lQ-HU
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 07:33:35 +0000
-Received: by wyb28 with SMTP id 28so464236wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Apr 2011 00:33:32 -0700 (PDT)
-Subject: Re: UBI memory usage on large page nand
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Nicholas <ciliwung36@gmail.com>
-In-Reply-To: <BANLkTim2aXQY5YzJkadHWT_NQ2XNupTHBA@mail.gmail.com>
-References: <AANLkTi=GsmJOjurETG930t-TW7uXLR1M6yKXWBSk7ebV@mail.gmail.com>
-	<AANLkTik5qKMM3onfv=wsJFFHhO4t0C_8gAXUoGca2fKE@mail.gmail.com>
-	<1301671910.2789.98.camel@localhost>
-	<BANLkTi=pZqEwWYy=7mYQ_p73cHQ4rA6Rbg@mail.gmail.com>
-	<1302873226.3220.43.camel@localhost>
-	<1302873423.3220.45.camel@localhost>
-	<BANLkTin=dfsO9N02oVZg=kU3ghfymbzJWA@mail.gmail.com>
-	<1303031774.2308.13.camel@koala>
-	<BANLkTi=We=H92+DHuJF7TPVUagePgqF48g@mail.gmail.com>
-	<1303115951.2815.35.camel@localhost>
-	<BANLkTim2aXQY5YzJkadHWT_NQ2XNupTHBA@mail.gmail.com>
+Subject: Re: [PATCH v3] ARM: omap2: mtd split nand_scan in ident and tail
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Jan Weitzel <j.weitzel@phytec.de>
+In-Reply-To: <1303222534-10143-1-git-send-email-j.weitzel@phytec.de>
+References: <BANLkTimxgyStkfYXyHJUzQBKTR0pYsF7Qw@mail.gmail.com>
+	<1303222534-10143-1-git-send-email-j.weitzel@phytec.de>
 Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 20 Apr 2011 10:30:33 +0300
-Message-ID: <1303284633.2700.3.camel@localhost>
+Date: Wed, 20 Apr 2011 12:00:11 +0300
+Message-ID: <1303290011.2700.12.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: tony@atomide.com, s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
+	s-ghorai@ti.com, vimal.newwork@gmail.com,
+	linux-omap@vger.kernel.org, dwmw2@infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,31 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Wed, 2011-04-20 at 11:19 +0800, Nicholas wrote:
-> Dear Artem,
+On Tue, 2011-04-19 at 16:15 +0200, Jan Weitzel wrote:
+> nand_scan calls nand_scan_tail and here we got a ecc.layout and calculate
+> oobavail for this layout. After calling nand_scan, we change the layout pointer
+> if OMAP_ECC_HAMMING_CODE_HW_ROMCODE is set. This results in not calcluated
+> oobavail. Mountig as jffs2 is not possible.
 > 
-> Sorry for my late reply .
-
-Please, send proper Linux kernel patches. Hints:
-
-1. Make a separate patch pere change, so that on modification is done by
-one patch. In your case, one buffer improvement pere patch.
-2. Write good commit message.
-3. Use git format-patch to create patches.
-
+> To fix that nand_scan has to split up in nand_scan_ident and nand_scan_tail
+> setting ecc.layout between these calls. So nand_scan_tail calculates oobvail
+> for the used layout. This is also done in serveral other platforms.
 > 
-> #define MTD_SMALL_SIZE_PAGE_BLOCK_SIZE	0x40000 // block size for 2KB
+> Signed-off-by: Jan Weitzel <j.weitzel@phytec.de>
+> Reviewed-by: Vimal Singh <vimal.newwork@gmail.com>
 
-No, please just make buffer size to be ubi->max_write_size. Kill this
-constant.
+Jan,
 
-> orphan.c
-> In ubifs_mount_orphans()
-> c->orph_buf = vmalloc((c->leb_size)/4); // for temporary
-
-Similarly, just use ubi->max_write_size instead.
+thanks for the patch, pushed to l2-mtd-2.6.git. And apologies that I
+missed.
 
 -- 
 Best Regards,
