@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCUS0-0006A2-FW
+	id 1QCUS2-0006Av-P5
 	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:16:14 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3KAFmUv009491
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:59 +0300
+	p3KAFmV1009491
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:16:01 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 29/35] fs-tests: integck: introduce free_writes_info helper
-Date: Wed, 20 Apr 2011 13:19:02 +0300
-Message-Id: <1303294748-5492-30-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 34/35] fs-tests: integck: lessen memory consumption even more
+Date: Wed, 20 Apr 2011 13:19:07 +0300
+Message-Id: <1303294748-5492-35-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 References: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,132 +25,111 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-We have duplicated code for freeing write informatio - put it into
-a helper function.
+This patch kills the "name" field from 'struct file_info' where we stored
+the original file name. We do not really need to keep this name around,
+becaus it might have long gone and it is not very interesting. Besides,
+we have several memory leaks where we leak 'file->name' strings, so this
+is the easiest way to fix those leaks as well.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   50 +++++++++++++++++------------------
- 1 files changed, 24 insertions(+), 26 deletions(-)
+ tests/fs-tests/integrity/integck.c |   17 ++++++-----------
+ 1 files changed, 6 insertions(+), 11 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 666bc70..50b414f 100644
+index d5ee08e..310e228 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -152,7 +152,6 @@ struct file_info /* Each file has one of these */
- 	off_t length;
- 	int link_count;
- 	unsigned int check_run_no; /* Run number used when checking */
--	unsigned int deleted:1; /* File has been deleted but is still open */
- 	unsigned int no_space_error:1; /* File has incurred a ENOSPC error */
- };
+@@ -143,7 +143,6 @@ struct dir_entry_info;
  
-@@ -442,7 +441,7 @@ static void remove_dir_entry(struct dir_entry_info *entry)
- 			file->links = entry->next_link;
- 		file->link_count -= 1;
- 		if (file->link_count == 0)
--			file->deleted = 1;
-+			assert(file->links == NULL);
- 	}
+ struct file_info /* Each file has one of these */
+ {
+-	char *name; /* Original name */
+ 	struct write_info *writes; /* Record accumulated writes to the file */
+ 	struct write_info *raw_writes;
+ 				/* Record in order all writes to the file */
+@@ -398,7 +397,6 @@ static void add_dir_entry(struct dir_info *parent, char type, const char *name,
+ 	if (entry->type == 'f') {
+ 		struct file_info *file = target;
  
- 	free(entry->name);
-@@ -599,6 +598,21 @@ static void file_close_all(struct file_info *file)
- }
- 
- /*
-+ * Free all the information about writes to a file.
-+ */
-+static void free_writes_info(struct file_info *file)
-+{
-+	struct write_info *w, *next;
-+
-+	w = file->writes;
-+	while (w) {
-+		next = w->next;
-+		free(w);
-+		w = next;
-+	}
-+}
-+
-+/*
-  * Unlink a directory entry for a file.
-  */
- static int file_unlink(struct dir_entry_info *entry)
-@@ -622,18 +636,10 @@ static int file_unlink(struct dir_entry_info *entry)
- 
+-		file->name = dup_string(name);
+ 		entry->file = file;
+ 		entry->next_link = file->links;
+ 		if (file->links)
+@@ -639,7 +637,6 @@ static int file_unlink(struct dir_entry_info *entry)
  	/* Free struct file_info if file is not open and not linked */
  	if (!file->fds && !file->links) {
--		struct write_info *w, *next;
--
-+		free_writes_info(file);
- 		free(file->name);
--		w = file->writes;
--		while (w) {
--			next = w->next;
--			free(w);
--			w = next;
--		}
+ 		free_writes_info(file);
+-		free(file->name);
  		free(file);
--	} else if (!file->links)
--		file->deleted = 1;
-+	}
+ 	}
  
- 	return 0;
- }
-@@ -702,7 +708,7 @@ static void file_info_display(struct file_info *file)
- 	normsg("    File was open: %s",
- 	       (file->fds == NULL) ? "false" : "true");
- 	normsg("    File was deleted: %s",
--	       (file->deleted == 0) ? "false" : "true");
-+	       (file->link_count == 0) ? "true" : "false");
- 	normsg("    File was out of space: %s",
- 	       (file->no_space_error == 0) ? "false" : "true");
- 	normsg("    File Data:");
-@@ -1048,7 +1054,7 @@ static int file_write(struct file_info *file, int fd)
- 	unsigned int seed;
- 	int ret, truncate = 0;
+@@ -697,7 +694,6 @@ static void file_info_display(struct file_info *file)
+ 	unsigned int wcnt;
  
--	if (fsinfo.can_mmap && !full && !file->deleted &&
-+	if (fsinfo.can_mmap && !full && file->link_count &&
- 	    random_no(100) == 1)
- 		return file_mmap_write(file);
+ 	normsg("File Info:");
+-	normsg("    Original name: %s", file->name);
+ 	normsg("    Link count: %d", file->link_count);
+ 	normsg("    Links:");
+ 	entry = file->links;
+@@ -805,7 +801,7 @@ static ssize_t file_write_data(struct file_info *file, int fd, off_t offset,
+ 			}
+ 			pcv("failed to write %zu bytes to offset %llu of file %s",
+ 			    block, (unsigned long long)(offset + actual),
+-			    file->name);
++			    file->links->name);
+ 			return -1;
+ 		}
+ 		remains -= written;
+@@ -955,7 +951,7 @@ static int file_ftruncate(struct file_info *file, int fd, off_t new_length)
+ 			return 1;
+ 		} else
+ 			pcv("cannot truncate file %s to %llu",
+-			    file->name, (unsigned long long)new_length);
++			    file->links->name, (unsigned long long)new_length);
+ 		return -1;
+ 	}
  
-@@ -1189,16 +1195,8 @@ static void file_close(struct fd_info *fdi)
- 		if (fdp == fdi) {
- 			*prev = fdi->next;
+@@ -1199,7 +1195,6 @@ static void file_close(struct fd_info *fdi)
  			free(fdi);
--			if (file->deleted && !file->fds) {
--				/* Closing deleted file */
--				struct write_info *w, *next;
--
--				w = file->writes;
--				while (w) {
--					next = w->next;
--					free(w);
--					w = next;
--				}
-+			if (!file->link_count && !file->fds) {
-+				free_writes_info(file);
- 				free(file->name);
+ 			if (!file->link_count && !file->fds) {
+ 				free_writes_info(file);
+-				free(file->name);
  				free(file);
  			}
-@@ -1554,7 +1552,7 @@ static void check_deleted_files(void)
- 	struct open_file_info *ofi;
+ 			return;
+@@ -1249,7 +1244,7 @@ static void save_file(int fd, struct file_info *file)
  
- 	for (ofi = open_files; ofi; ofi = ofi->next)
--		if (ofi->fdi->file->deleted)
-+		if (!ofi->fdi->file->link_count)
- 			file_check(ofi->fdi->file, ofi->fdi->fd);
- }
+ 	/* Open file to save contents to */
+ 	strcpy(name, "/tmp/");
+-	strcat(name, file->name);
++	strcat(name, file->links->name);
+ 	strcat(name, ".integ.sav.read");
+ 	normsg("Saving %sn", name);
+ 	w_fd = open(name, O_CREAT | O_WRONLY, 0777);
+@@ -1269,7 +1264,7 @@ static void save_file(int fd, struct file_info *file)
  
-@@ -2017,7 +2015,7 @@ static int operate_on_open_file(struct fd_info *fdi)
- 		ret = file_truncate(fdi->file, fdi->fd);
- 	else if (r < 21)
- 		file_close(fdi);
--	else if (shrink && r < 121 && !fdi->file->deleted)
-+	else if (shrink && r < 121 && fdi->file->link_count)
- 		ret = file_delete(fdi->file);
- 	else {
- 		ret = file_write(fdi->file, fdi->fd);
+ 	/* Open file to save contents to */
+ 	strcpy(name, "/tmp/");
+-	strcat(name, file->name);
++	strcat(name, file->links->name);
+ 	strcat(name, ".integ.sav.written");
+ 	normsg("Saving %s", name);
+ 	w_fd = open(name, O_CREAT | O_WRONLY, 0777);
+@@ -2028,12 +2023,12 @@ static int operate_on_open_file(struct fd_info *fdi)
+ 				ret = fsync(fdi->fd);
+ 				if (ret)
+ 					pcv("fsync failed for %s",
+-					    fdi->file->name);
++					    fdi->file->links->name);
+ 			} else {
+ 				ret = fdatasync(fdi->fd);
+ 				if (ret)
+ 					pcv("fdatasync failed for %s",
+-					    fdi->file->name);
++					    fdi->file->links->name);
+ 			}
+ 		}
+ 	}
 -- 
 1.7.2.3
