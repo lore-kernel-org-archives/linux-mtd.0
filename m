@@ -1,16 +1,17 @@
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCToD-0005l6-Fn
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 09:34:54 +0000
-From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
-To: Mike Frysinger <vapier.adi@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCHv4 1/3] mkfs.jffs2: fix casting of __off64_t
-Date: Wed, 20 Apr 2011 12:35:08 +0300
-Message-Id: <54dce27649702199efe5afb3d14e8f3f6103da00.1303292025.git.ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <BANLkTi=gsiTx9PHQ7HJpzuZT2DvzGU_OqA@mail.gmail.com>
-References: <BANLkTi=gsiTx9PHQ7HJpzuZT2DvzGU_OqA@mail.gmail.com>
-Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+	id 1QCURp-00063g-UG
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:15:50 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p3KAFmLv009480
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:48 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 00/35] fs-tests: integck: handle write errors
+Date: Wed, 20 Apr 2011 13:18:33 +0300
+Message-Id: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,85 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The casting of __off64_t to unsigned long potentially wrong for values higher
-than ULONG_MAX.  Let's fix that by using PRIu64 classifier.
+Hi,
 
-Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
----
- mkfs.jffs2.c |   25 +++++++++++++------------
- 1 files changed, 13 insertions(+), 12 deletions(-)
+this is the continuation of my effort to improve integck. This series
+of patches teaches integck to not die immediately when a write error
+happens.
 
-diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
-index 7bb9ad1..7abaf50 100644
---- a/mkfs.jffs2.c
-+++ b/mkfs.jffs2.c
-@@ -72,8 +72,9 @@
- #endif
- #include <byteswap.h>
- #include <crc32.h>
--#include "rbtree.h"
-+#include <inttypes.h>
- 
-+#include "rbtree.h"
- #include "common.h"
- 
- /* Do not use the weird XPG version of basename */
-@@ -1232,8 +1233,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 		} else switch (e->sb.st_mode & S_IFMT) {
- 			case S_IFDIR:
- 				if (verbose) {
--					printf("\td %04o %9lu             %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
-+					printf("\td %04o %9" PRIu64 "             %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
- 							(int) (e->sb.st_uid), (int) (e->sb.st_gid),
- 							e->name);
- 				}
-@@ -1242,8 +1243,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				break;
- 			case S_IFSOCK:
- 				if (verbose) {
--					printf("\ts %04o %9lu             %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
-+					printf("\ts %04o %9" PRIu64 "             %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				write_pipe(e);
-@@ -1251,8 +1252,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				break;
- 			case S_IFIFO:
- 				if (verbose) {
--					printf("\tp %04o %9lu             %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
-+					printf("\tp %04o %9" PRIu64 "             %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				write_pipe(e);
-@@ -1280,8 +1281,8 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				break;
- 			case S_IFLNK:
- 				if (verbose) {
--					printf("\tl %04o %9lu             %5d:%-3d %s -> %s\n",
--							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
-+					printf("\tl %04o %9" PRIu64 "             %5d:%-3d %s -> %s\n",
-+							e->sb.st_mode & ~S_IFMT, e->sb.st_size,
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name,
- 							e->link);
- 				}
-@@ -1292,9 +1293,9 @@ static void recursive_populate_directory(struct filesystem_entry *dir)
- 				wrote = write_regular_file(e);
- 				write_xattr_entry(e);
- 				if (verbose) {
--					printf("\tf %04o %9lu (%9u) %5d:%-3d %s\n",
--							e->sb.st_mode & ~S_IFMT, (unsigned long) e->sb.st_size,
--							wrote, (int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
-+					printf("\tf %04o %9" PRIu64 " (%9u) %5d:%-3d %s\n",
-+							e->sb.st_mode & ~S_IFMT, e->sb.st_size, wrote,
-+							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				break;
- 			default:
--- 
-1.6.3.3
+Currently integck exits if any unexpected error occurs. However, I am
+going to make it usable for power-cut emulation testing, so when UBI
+decides to emulate a power-cut and all write operation will return with
+EROFS error, the test will also exit. So this patch-set teaches all
+functions which do FS modifications to return an error up to the caller
+if the operation fails. Then the error propagated to the main() function,
+which currently just exits. But the plan is:
+
+1. Make 'main()' unmount UBIFS, detach UBI, attach UBI back, mount UBIFS back.
+2. Go through all files which were synchronized before the emulated power
+   cut and check that the contents of these file is correct.
+3. Restart the test.
+
+And then the plan is to implement unstable bits emulation in UBI and run
+this test, and catch bugs, and fix this.
+
+So, this is just a preparation. The integck code is a bit dirty and was
+written using "quick programming" approach. This patch-set tries to also
+clean up the code a little bit.
+
+Additionally, this patch-set fixes the huge amount of memory leaks the
+test has had, and also lessens the memory consumption.
+
+And finally, I tried to split the patches nicely, but I do not have much
+time so the split is far far not ideal. I think it is good enough, though,
+taking into account that there are only 2 users of this test I know.
+
+Artem.
