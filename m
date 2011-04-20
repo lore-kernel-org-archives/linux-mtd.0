@@ -1,25 +1,21 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from mail-yi0-f49.google.com ([209.85.218.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCb77-0002B3-O4
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 17:22:54 +0000
-Received: by vws8 with SMTP id 8so926270vws.36
+	id 1QCchS-00035Z-Jw
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 19:04:31 +0000
+Received: by yic15 with SMTP id 15so329467yic.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Apr 2011 10:22:52 -0700 (PDT)
+	Wed, 20 Apr 2011 12:04:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <BANLkTi=fZGZem4sqipjOv=M7CSEocLEtWQ@mail.gmail.com>
-References: <AANLkTin9=ADCP4OQH8Y=6ZKo6CGwTWODz95eUuRsT355@mail.gmail.com>
-	<AANLkTimO9guyhUUk8D7i-K=Tt4wF8d+mfFoV29mOZoeD@mail.gmail.com>
-	<BANLkTimYunfWMLejECBC5gCJzCtSv_bTCA@mail.gmail.com>
-	<1303103035.2815.4.camel@localhost>
-	<BANLkTin0-vPhMSQ0Vy=V07aQ1T+KrRB7zg@mail.gmail.com>
-	<BANLkTi=fZGZem4sqipjOv=M7CSEocLEtWQ@mail.gmail.com>
-Date: Thu, 21 Apr 2011 01:22:52 +0800
-Message-ID: <BANLkTinHikWiQT7oVQraH476UG5VGZFqng@mail.gmail.com>
-Subject: Re: [nandsim] how to rmmod nandsim or get to know who is using it
-From: zheng shi <neversetsun@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, dedekind1@gmail.com
+In-Reply-To: <54dce27649702199efe5afb3d14e8f3f6103da00.1303292025.git.ext-andriy.shevchenko@nokia.com>
+References: <BANLkTi=gsiTx9PHQ7HJpzuZT2DvzGU_OqA@mail.gmail.com>
+	<54dce27649702199efe5afb3d14e8f3f6103da00.1303292025.git.ext-andriy.shevchenko@nokia.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Wed, 20 Apr 2011 15:04:09 -0400
+Message-ID: <BANLkTikXh_wW60WYd0Ek_FMu4THy-Q6p4g@mail.gmail.com>
+Subject: Re: [PATCHv4 1/3] mkfs.jffs2: fix casting of __off64_t
+To: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +25,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks. The patch works!
-
-On Wed, Apr 20, 2011 at 11:08 AM, Kevin Cernekee <cernekee@gmail.com> wrote:
-> On Tue, Apr 19, 2011 at 7:03 PM, zheng shi <neversetsun@gmail.com> wrote:
->> Artem,
->> I can't rmmod mtdblock either since it's also in use but have no known user.
->> Please have a check of my lsmod result below.
->>
->> Would you please have a try if nandsim can be rmmod after installation?
->> 2.6.35 and mtd-2.6 git tree has such problem but 2.6.32 has no such problem.
->> Could it be caused by VFS change?
->
-> Might be this problem:
->
-> http://lists.infradead.org/pipermail/linux-mtd/2010-July/031029.html
->
-> Based on my reading of the history, it was fixed by commit 008c751e so
-> it would have affected 2.6.35 and 2.6.36.
->
-
-
-
--- 
-Regards, Shizheng
+thanks for suffering me :).  all of these look fine to me:
+Acked-by: Mike Frysinger <vapier@gentoo.org>
+-mike
