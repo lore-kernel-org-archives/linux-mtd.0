@@ -1,16 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCURu-00066E-JF
+	id 1QCURv-00066Q-2i
 	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:16:04 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3KAFnfK009522
+	p3KAFlpH009474
 	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:53 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 14/35] fs-tests: integck: fix placeholders when printing
-Date: Wed, 20 Apr 2011 13:18:47 +0300
-Message-Id: <1303294748-5492-15-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 15/35] fs-tests: integck: make file_new return error on create
+	failure
+Date: Wed, 20 Apr 2011 13:18:48 +0300
+Message-Id: <1303294748-5492-16-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 References: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,100 +26,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-There is a lot of code where %u is used for printing off_t variables,
-which may be actually 64-bit wide. Fix this by using %llu.
+Teach 'file_new()' to return -1 if it fails to create a file.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   40 ++++++++++++++++++------------------
- 1 files changed, 20 insertions(+), 20 deletions(-)
+ tests/fs-tests/integrity/integck.c |   22 ++++++++++++----------
+ 1 files changed, 12 insertions(+), 10 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 3b28e99..f2223d4 100644
+index f2223d4..471fcf4 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -679,7 +679,7 @@ static void file_info_display(struct file_info *file)
- 		normsg("      Directory: %s", entry->parent->name);
- 		entry = entry->next_link;
+@@ -509,23 +509,27 @@ static void dir_remove(struct dir_info *dir)
+ 	free(dir);
+ }
+ 
+-static struct file_info *file_new(struct dir_info *parent, const char *name)
++static int file_new(struct dir_info *parent, const char *name)
+ {
+-	struct file_info *file = NULL;
++	struct file_info *file;
+ 	char *path;
+ 	mode_t mode;
+ 	int fd;
+ 
+-	CHECK(parent != NULL);
++	assert(parent != NULL);
+ 
+ 	path = dir_path(parent, name);
+ 	mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH;
+ 	fd = open(path, O_CREAT | O_EXCL | O_RDWR, mode);
+ 	if (fd == -1) {
+-		CHECK(errno == ENOSPC);
++		if (errno == ENOSPC) {
++			full = 1;
++			free(path);
++			return 0;
++		}
++		pcv("cannot create file %s", path);
+ 		free(path);
+-		full = 1;
+-		return NULL;
++		return -1;
  	}
--	normsg("    Length: %u", (unsigned int)file->length);
-+	normsg("    Length: %llu", (unsigned long long)file->length);
- 	normsg("    File was open: %s",
- 	       (file->fds == NULL) ? "false" : "true");
- 	normsg("    File was deleted: %s",
-@@ -690,10 +690,10 @@ static void file_info_display(struct file_info *file)
- 	wcnt = 0;
- 	w = file->writes;
- 	while (w) {
--		normsg("        Offset: %u  Size: %u  Seed: %u  R.Off: %u",
--		       (unsigned int)w->offset, (unsigned int)w->size,
--		       (unsigned int)w->random_seed,
--		       (unsigned int)w->random_offset);
-+		normsg("        Offset: %llu  Size: %zu  Seed: %llu  R.Off: %llu",
-+		       (unsigned long long)w->offset, w->size,
-+		       (unsigned long long)w->random_seed,
-+		       (unsigned long long)w->random_offset);
- 		wcnt += 1;
- 		w = w->next;
- 	}
-@@ -704,12 +704,14 @@ static void file_info_display(struct file_info *file)
- 	w = file->raw_writes;
- 	while (w) {
- 		if (is_truncation(w))
--			normsg("        Trunc from %u to %u",
--			       (unsigned int)w->offset, (unsigned int)w->new_length);
-+			normsg("        Trunc from %llu to %llu",
-+			       (unsigned long long)w->offset,
-+			       (unsigned long long)w->new_length);
- 		else
--			normsg("        Offset: %u  Size: %u  Seed: %u  R.Off: %u",
--			       (unsigned int)w->offset, (unsigned int)w->size,
--			       (unsigned int)w->random_seed, (unsigned int)w->random_offset);
-+			normsg("        Offset: %llu  Size: %zu  Seed: %llu  R.Off: %llu",
-+			       (unsigned long long)w->offset, w->size,
-+			       (unsigned long long)w->random_seed,
-+			       (unsigned long long)w->random_offset);
- 		wcnt += 1;
- 		w = w->next;
- 	}
-@@ -1257,10 +1259,9 @@ static void file_check_hole(struct file_info *file, int fd, off_t offset,
- 		CHECK(read(fd, buf, block) == block);
- 		for (i = 0; i < block; ++i) {
- 			if (buf[i] != 0) {
--				errmsg("file_check_hole failed at %u checking "
--				       "hole at %u size %u",
--				       (unsigned int)(size - remains + i),
--				       (unsigned int)offset, (unsigned int)size);
-+				errmsg("file_check_hole failed at %zu checking "
-+				       "hole at %llu size %zu", size - remains + i,
-+				       (unsigned long long)offset, size);
- 				file_info_display(file);
- 				save_file(fd, file);
- 			}
-@@ -1291,10 +1292,9 @@ static void file_check_data(struct file_info *file, int fd,
- 		for (i = 0; i < block; ++i) {
- 			char c = (char)rand();
- 			if (buf[i] != c) {
--				errmsg("file_check_data failed at %u checking "
--				       "data at %u size %u",
--					(unsigned int)(w->size - remains + i),
--					(unsigned int)w->offset, (unsigned int)w->size);
-+				errmsg("file_check_data failed at %zu checking "
-+				       "data at %llu size %zu", w->size - remains + i,
-+					(unsigned long long)w->offset, w->size);
- 				file_info_display(file);
- 				save_file(fd, file);
- 			}
-@@ -1331,8 +1331,8 @@ static void file_check(struct file_info *file, int fd)
- 	/* Check length */
- 	pos = lseek(fd, 0, SEEK_END);
- 	if (pos != file->length) {
--		errmsg("file_check failed checking length expected %u actual %u\n",
--		       (unsigned int)file->length, (unsigned int)pos);
-+		errmsg("file_check failed checking length expected %llu actual %llu\n",
-+		       (unsigned long long)file->length, (unsigned long long)pos);
- 		file_info_display(file);
- 		save_file(fd, file);
- 	}
+ 	free(path);
+ 
+@@ -533,10 +537,8 @@ static struct file_info *file_new(struct dir_info *parent, const char *name)
+ 	file->name = dup_string(name);
+ 
+ 	add_dir_entry(parent, 'f', name, file);
+-
+ 	add_fd(file, fd);
+-
+-	return file;
++	return 0;
+ }
+ 
+ static void link_new(struct dir_info *parent, const char *name,
+@@ -1932,7 +1934,7 @@ static int operate_on_dir(struct dir_info *dir)
+ 	r = random_no(14);
+ 	if (r == 0 && grow)
+ 		/* When growing, 1 time in 14 create a file */
+-		file_new(dir, make_name(dir));
++		return file_new(dir, make_name(dir));
+ 	else if (r == 1 && grow)
+ 		/* When growing, 1 time in 14 create a directory */
+ 		dir_new(dir, make_name(dir));
 -- 
 1.7.2.3
