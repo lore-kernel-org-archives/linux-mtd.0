@@ -1,17 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCURq-00063i-0f
+	id 1QCURq-00063k-Pf
 	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:15:54 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3KAFmWs009496
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:48 +0300
+	p3KAFnfG009522
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:49 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 02/35] fs-tests: integck: check deletion errors in
-	rm_minus_rf_dir
-Date: Wed, 20 Apr 2011 13:18:35 +0300
-Message-Id: <1303294748-5492-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 04/35] fs-tests: integck: handle errors in remount_tested_fs
+Date: Wed, 20 Apr 2011 13:18:37 +0300
+Message-Id: <1303294748-5492-5-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 References: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -26,132 +25,125 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Modify the 'rm_minus_rf_dir()' function to return -1 in case of any
-errors during deletions. Make 'integck()' handle the errors. Also
-introduce a 'pcv()' function to print error message if -v command
-line option was specified.
+Teach 'remount_tested_fs()' return error code when it fails
+to mount the file-system.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   54 ++++++++++++++++++++++++++---------
- 1 files changed, 40 insertions(+), 14 deletions(-)
+ tests/fs-tests/integrity/integck.c |   35 ++++++++++++++++++++++++-----------
+ 1 files changed, 24 insertions(+), 11 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 73b6622..dd1ba1c 100644
+index d138a7d..5b1adc1 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -62,6 +62,15 @@
- 	}                                                        \
- } while(0)
- 
-+#define pcv(fmt, ...) do {                                        \
-+	if (args.power_cut_mode) {                                \
-+		int _err = errno;                                 \
-+		errmsg(fmt, ##__VA_ARGS__);                       \
-+		errmsg("error %d (%s) at %s:%d\n",                \
-+		       _err, strerror(_err), __FILE__, __LINE__); \
-+	}                                                         \
-+} while(0)
-+
- /* The variables below are set by command line arguments */
- static struct {
- 	long repeat_cnt;
-@@ -1989,10 +1998,11 @@ static void create_test_data(void)
- /*
-  * Recursively remove a directory, just like "rm -rf" shell command.
+@@ -2076,7 +2076,7 @@ static void update_test_data(void)
+  * Re-mount the test file-system. This function randomly select how to
+  * re-mount.
   */
--void rm_minus_rf_dir(const char *dir_name)
-+static int rm_minus_rf_dir(const char *dir_name)
+-void remount_tested_fs(void)
++static int remount_tested_fs(void)
  {
-+	int ret;
- 	DIR *dir;
--	struct dirent *entry;
-+	struct dirent *dent;
- 	char buf[PATH_MAX];
+ 	char *wd_save;
+ 	int ret;
+@@ -2105,13 +2105,15 @@ void remount_tested_fs(void)
+ 		flags = fsinfo.mount_flags | MS_RDONLY | MS_REMOUNT;
+ 		ret = mount(fsinfo.fsdev, fsinfo.mount_point, fsinfo.fstype,
+ 			    flags, fsinfo.mount_opts);
+-		CHECK(ret == 0);
++		if (ret)
++			return -1;
  
- 	dir = opendir(dir_name);
-@@ -2002,24 +2012,34 @@ void rm_minus_rf_dir(const char *dir_name)
- 
- 	for (;;) {
- 		errno = 0;
--		entry = readdir(dir);
--		if (!entry) {
-+		dent = readdir(dir);
-+		if (!dent) {
- 			CHECK(errno == 0);
- 			break;
- 		}
- 
--		if (strcmp(entry->d_name, ".") &&
--		    strcmp(entry->d_name, "..")) {
--			if (entry->d_type == DT_DIR)
--				rm_minus_rf_dir(entry->d_name);
--			else
--				CHECK(unlink(entry->d_name) == 0);
-+		if (strcmp(dent->d_name, ".") &&
-+		    strcmp(dent->d_name, "..")) {
-+			if (dent->d_type == DT_DIR)
-+				rm_minus_rf_dir(dent->d_name);
-+			else {
-+				ret = unlink(dent->d_name);
-+				if (ret) {
-+					pcv("cannot unlink %s", dent->d_name);
-+					return -1;
-+				}
-+			}
- 		}
- 	}
- 
- 	CHECK(chdir(buf) == 0);
- 	CHECK(closedir(dir) == 0);
--	CHECK(rmdir(dir_name) == 0);
-+	ret = rmdir(dir_name);
-+	if (ret) {
-+		pcv("cannot remove directory %s", dir_name);
-+		return -1;
-+	}
-+	return 0;
- }
- 
- static void update_test_data(void)
-@@ -2146,13 +2166,18 @@ void remount_tested_fs(void)
-  */
- static int integck(void)
- {
-+	int ret;
- 	int64_t rpt;
- 
-+	CHECK(chdir(fsinfo.mount_point) == 0);
-+
- 	/* Create our top directory */
- 	if (chdir(fsinfo.test_dir) == 0) {
- 		/* Remove it if it is already there */
- 		CHECK(chdir("..") == 0);
--		rm_minus_rf_dir(fsinfo.test_dir);
-+		ret = rm_minus_rf_dir(fsinfo.test_dir);
+ 		flags = fsinfo.mount_flags | MS_REMOUNT;
+ 		flags &= ~((unsigned long)MS_RDONLY);
+ 		ret = mount(fsinfo.fsdev, fsinfo.mount_point, fsinfo.fstype,
+ 			    flags, fsinfo.mount_opts);
+-		CHECK(ret == 0);
 +		if (ret)
 +			return -1;
  	}
  
- 	top_dir = dir_new(NULL, fsinfo.test_dir);
-@@ -2187,7 +2212,9 @@ static int integck(void)
+ 	if (um) {
+@@ -2119,7 +2121,8 @@ void remount_tested_fs(void)
+ 			flags = fsinfo.mount_flags | MS_RDONLY | MS_REMOUNT;
+ 			ret = mount(fsinfo.fsdev, fsinfo.mount_point,
+ 				    fsinfo.fstype, flags, fsinfo.mount_opts);
+-			CHECK(ret == 0);
++			if (ret)
++				return -1;
+ 		}
  
- 	/* Tidy up by removing everything */
- 	close_open_files();
--	rm_minus_rf_dir(fsinfo.test_dir);
-+	ret = rm_minus_rf_dir(fsinfo.test_dir);
-+	if (ret)
-+		return -1;
+ 		CHECK(umount(fsinfo.mount_point) != -1);
+@@ -2128,18 +2131,21 @@ void remount_tested_fs(void)
+ 			ret = mount(fsinfo.fsdev, fsinfo.mount_point,
+ 				    fsinfo.fstype, fsinfo.mount_flags,
+ 				    fsinfo.mount_opts);
+-			CHECK(ret == 0);
++			if (ret)
++				return -1;
+ 		} else {
+ 			ret = mount(fsinfo.fsdev, fsinfo.mount_point,
+ 				    fsinfo.fstype, fsinfo.mount_flags | MS_RDONLY,
+ 				    fsinfo.mount_opts);
+-			CHECK(ret == 0);
++			if (ret)
++				return -1;
  
- 	return 0;
+ 			flags = fsinfo.mount_flags | MS_REMOUNT;
+ 			flags &= ~((unsigned long)MS_RDONLY);
+ 			ret = mount(fsinfo.fsdev, fsinfo.mount_point,
+ 				    fsinfo.fstype, flags, fsinfo.mount_opts);
+-			CHECK(ret == 0);
++			if (ret)
++				return -1;
+ 		}
+ 	}
+ 
+@@ -2147,18 +2153,21 @@ void remount_tested_fs(void)
+ 		flags = fsinfo.mount_flags | MS_RDONLY | MS_REMOUNT;
+ 		ret = mount(fsinfo.fsdev, fsinfo.mount_point, fsinfo.fstype,
+ 			    flags, fsinfo.mount_opts);
+-		CHECK(ret == 0);
++		if (ret)
++			return -1;
+ 
+ 		flags = fsinfo.mount_flags | MS_REMOUNT;
+ 		flags &= ~((unsigned long)MS_RDONLY);
+ 		ret = mount(fsinfo.fsdev, fsinfo.mount_point, fsinfo.fstype,
+ 			    flags, fsinfo.mount_opts);
+-		CHECK(ret == 0);
++		if (ret)
++			return -1;
+ 	}
+ 
+ 	/* Restore the previous working directory */
+ 	CHECK(chdir(wd_save) == 0);
+ 	free(wd_save);
++	return 0;
  }
-@@ -2403,7 +2430,6 @@ static int parse_opts(int argc, char * const argv[])
- 			fprintf(stderr, "%s\n\n", doc);
- 			fprintf(stderr, "%s\n", optionsstr);
- 			exit(EXIT_SUCCESS);
--
- 		case ':':
- 			return errmsg("parameter is missing");
  
+ /*
+@@ -2188,7 +2197,9 @@ static int integck(void)
+ 
+ 	if (fsinfo.is_rootfs) {
+ 		close_open_files();
+-		remount_tested_fs();
++		ret = remount_tested_fs();
++		if (ret)
++			return -1;
+ 	}
+ 
+ 	/* Check everything */
+@@ -2201,7 +2212,9 @@ static int integck(void)
+ 
+ 		if (!fsinfo.is_rootfs) {
+ 			close_open_files();
+-			remount_tested_fs();
++			ret = remount_tested_fs();
++			if (ret)
++				return -1;
+ 		}
+ 
+ 		/* Check everything */
 -- 
 1.7.2.3
