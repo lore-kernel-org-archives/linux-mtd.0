@@ -1,16 +1,26 @@
-Date: Wed, 20 Apr 2011 18:48:36 +0800
-From: Shawn Guo <shawn.guo@freescale.com>
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V2 2/3] ARM: mxs: add GPMI device for imx23
-Message-ID: <20110420104835.GC1965@S2100-06.ap.freescale.net>
-References: <1303123428-12266-1-git-send-email-b32955@freescale.com>
-	<1303123428-12266-2-git-send-email-b32955@freescale.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1303123428-12266-2-git-send-email-b32955@freescale.com>
-Cc: s.hauer@pengutronix.de, u.kleine-koenig@pengutronix.de,
-	linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QCZ9X-0000wG-Ik
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 15:17:17 +0000
+Received: by eyh6 with SMTP id 6so281913eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Apr 2011 08:17:13 -0700 (PDT)
+Subject: Re: I meet a problem
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Caizhiyong <caizhiyong@huawei.com>
+In-Reply-To: <C3050A4DBA34F345975765E43127F10F02CDC9@SZXEML506-MBS.china.huawei.com>
+References: <C3050A4DBA34F345975765E43127F10F02CDC9@SZXEML506-MBS.china.huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 20 Apr 2011 18:14:21 +0300
+Message-ID: <1303312461.2700.48.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "tony.taoyong@hisilicon" <tony.taoyong@hisilicon.huawei.com>,
+	Renxincun <renxincun@huawei.com>,
+	"Jiangzhonglin\(Jiangzhonglin\)" <jiangzhonglin@huawei.com>,
+	Quyaxin <quyaxin@huawei.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,216 +30,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 18, 2011 at 06:43:47PM +0800, Huang Shijie wrote:
-> add the gpmi device for imx23.
+On Sat, 2011-04-02 at 02:20 +0000, Caizhiyong wrote:
+> hi, Artem
+>     I found a problem when I test ubifs on unclean reboot,my test
+> method is that:read,write,and delete ubifs files many times , when I'm
+> writing or deleting the files ,I 
 > 
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  arch/arm/mach-mxs/clock-mx23.c                  |    1 +
->  arch/arm/mach-mxs/devices-mx23.h                |    3 +
->  arch/arm/mach-mxs/devices/Kconfig               |    3 +
->  arch/arm/mach-mxs/devices/Makefile              |    1 +
->  arch/arm/mach-mxs/devices/platform-gpmi.c       |   71 +++++++++++++++++++++++
->  arch/arm/mach-mxs/include/mach/devices-common.h |   10 +++
->  arch/arm/mach-mxs/mach-mx23evk.c                |   28 +++++++++
->  7 files changed, 117 insertions(+), 0 deletions(-)
->  create mode 100644 arch/arm/mach-mxs/devices/platform-gpmi.c
-> 
-I guess Uwe will put a comment, saying platform-gpmi-nfc.c could be
-a better naming to align with driver name.  I have already seen stuff
-like gpmi-nfc.h, MXS_HAVE_PLATFORM_GPMI_NFC, imx23-gpmi-nfc,
-mxs_add_gpmi_nfc well aligned.
+> reboot the system, sometimes the rootfs is broken,but if I reset the
+> power of board,the rootfs is ok. 
 
-> diff --git a/arch/arm/mach-mxs/clock-mx23.c b/arch/arm/mach-mxs/clock-mx23.c
-> index d133c7f..81d54bf 100644
-> --- a/arch/arm/mach-mxs/clock-mx23.c
-> +++ b/arch/arm/mach-mxs/clock-mx23.c
-> @@ -454,6 +454,7 @@ static struct clk_lookup lookups[] = {
->  	_REGISTER_CLOCK("mxs-pwm.3", NULL, pwm_clk)
->  	_REGISTER_CLOCK("mxs-pwm.4", NULL, pwm_clk)
->  	_REGISTER_CLOCK("imx23-fb", NULL, lcdif_clk)
-> +	_REGISTER_CLOCK("imx23-gpmi-nfc", NULL, gpmi_clk)
->  };
->  
->  static int clk_misc_init(void)
-> diff --git a/arch/arm/mach-mxs/devices-mx23.h b/arch/arm/mach-mxs/devices-mx23.h
-> index c7e14f4..48d4766 100644
-> --- a/arch/arm/mach-mxs/devices-mx23.h
-> +++ b/arch/arm/mach-mxs/devices-mx23.h
-> @@ -21,6 +21,9 @@ extern const struct mxs_auart_data mx23_auart_data[] __initconst;
->  #define mx23_add_auart0()		mx23_add_auart(0)
->  #define mx23_add_auart1()		mx23_add_auart(1)
->  
-> +extern const struct mxs_gpmi_data mx23_gpmi_data __initconst;
+Hi,
 
-Uwe will ask what about mxs_gpmi_nfc_data and mx23_gpmi_nfc_data?
+I've finally figured out the issue and have fixed it in the ubifs tree
+and will send it upstream soon and to -stable. Here is the patch for
+you, and thanks for reporting this:
 
-> +#define mx23_add_gpmi_nfc(pdata)	mxs_add_gpmi_nfc(pdata, &mx23_gpmi_data)
-> +
->  #define mx23_add_mxs_pwm(id)		mxs_add_mxs_pwm(MX23_PWM_BASE_ADDR, id)
->  
->  struct platform_device *__init mx23_add_mxsfb(
-> diff --git a/arch/arm/mach-mxs/devices/Kconfig b/arch/arm/mach-mxs/devices/Kconfig
-> index 1451ad0..072c8e5 100644
-> --- a/arch/arm/mach-mxs/devices/Kconfig
-> +++ b/arch/arm/mach-mxs/devices/Kconfig
-> @@ -12,6 +12,9 @@ config MXS_HAVE_PLATFORM_FLEXCAN
->  	select HAVE_CAN_FLEXCAN if CAN
->  	bool
->  
-> +config MXS_HAVE_PLATFORM_GPMI_NFC
-> +	bool
-> +
->  config MXS_HAVE_PLATFORM_MXS_I2C
->  	bool
->  
-> diff --git a/arch/arm/mach-mxs/devices/Makefile b/arch/arm/mach-mxs/devices/Makefile
-> index 0d9bea3..7735e45 100644
-> --- a/arch/arm/mach-mxs/devices/Makefile
-> +++ b/arch/arm/mach-mxs/devices/Makefile
-> @@ -3,6 +3,7 @@ obj-$(CONFIG_MXS_HAVE_PLATFORM_AUART) += platform-auart.o
->  obj-y += platform-dma.o
->  obj-$(CONFIG_MXS_HAVE_PLATFORM_FEC) += platform-fec.o
->  obj-$(CONFIG_MXS_HAVE_PLATFORM_FLEXCAN) += platform-flexcan.o
-> +obj-$(CONFIG_MXS_HAVE_PLATFORM_GPMI_NFC) += platform-gpmi.o
->  obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_I2C) += platform-mxs-i2c.o
->  obj-$(CONFIG_MXS_HAVE_PLATFORM_MXS_PWM) += platform-mxs-pwm.o
->  obj-$(CONFIG_MXS_HAVE_PLATFORM_MXSFB) += platform-mxsfb.o
-> diff --git a/arch/arm/mach-mxs/devices/platform-gpmi.c b/arch/arm/mach-mxs/devices/platform-gpmi.c
-> new file mode 100644
-> index 0000000..3c6c968
-> --- /dev/null
-> +++ b/arch/arm/mach-mxs/devices/platform-gpmi.c
-> @@ -0,0 +1,71 @@
-> +/*
-> + * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write to the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +#include <asm/sizes.h>
-> +#include <mach/mx23.h>
-> +#include <mach/mx28.h>
 
-This line should be added by the next patch.
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Subject: [PATCH] UBIFS: fix false space checking failure
 
-> +#include <mach/devices-common.h>
-> +
-> +#define RES_MEM(soc, _id, _s, _n)			\
-> +	{						\
-> +		.start = soc ##_## _id,			\
-> +		.end   = soc ##_## _id + (_s) - 1,	\
-> +		.name  = (_n),				\
-> +		.flags = IORESOURCE_MEM,		\
-> +	}
-> +
-> +#define RES_IRQ(soc, _id, _n)			\
-> +	{					\
-> +		.start = soc ##_## _id,		\
-> +		.end   = soc ##_## _id,		\
-> +		.name  = (_n),			\
-> +		.flags = IORESOURCE_IRQ,	\
-> +	}
-> +
-> +#define RES_DMA(soc, _i_s, _i_e, _n)		\
-> +	{					\
-> +		.start = soc ##_## _i_s,	\
-> +		.end   = soc ##_## _i_e,	\
-> +		.name  = (_n),			\
-> +		.flags = IORESOURCE_DMA,	\
-> +	}
-> +
-> +#ifdef CONFIG_SOC_IMX23
-> +const struct mxs_gpmi_data mx23_gpmi_data __initconst = {
-> +	.devid = "imx23-gpmi-nfc",
-> +	.res = {
-> +	/* GPMI */
-> +	RES_MEM(MX23, GPMI_BASE_ADDR, SZ_8K, GPMI_NFC_GPMI_REGS_ADDR_RES_NAME),
-> +	RES_IRQ(MX23, INT_GPMI_ATTENTION, GPMI_NFC_GPMI_INTERRUPT_RES_NAME),
-> +	/* BCH */
-> +	RES_MEM(MX23, BCH_BASE_ADDR, SZ_8K, GPMI_NFC_BCH_REGS_ADDR_RES_NAME),
-> +	RES_IRQ(MX23, INT_BCH, GPMI_NFC_BCH_INTERRUPT_RES_NAME),
-> +	/* DMA */
-> +	RES_DMA(MX23, DMA_GPMI0, DMA_GPMI3, GPMI_NFC_DMA_CHANNELS_RES_NAME),
-> +	RES_IRQ(MX23, INT_GPMI_DMA, GPMI_NFC_DMA_INTERRUPT_RES_NAME),
+This patch fixes UBIFS mount failure when the debugging support is enabled,
+we are recovering from a power cut, we were first mounter R/O and we are
+re-mounting R/W. In this case we should not assume that the amount of free
+space before we have re-mounted R/W and after are equivalent, because
+when we have mounted R/O the file-system is in a non-committed state so
+the amount of free space is slightly smaller, due to the fact that we cannot
+predict the amount of free space precisely before we commit.
 
-No indention?
+This patch fixes the issue by skipping the debugging check in case of
+recovery. This issue was reported by Caizhiyong <caizhiyong@huawei.com>
+here: http://thread.gmane.org/gmane.linux.drivers.mtd/34350/focus=34387
 
-> +	},
-> +};
-> +#endif
-> +
-> +struct platform_device *__init
-> +mxs_add_gpmi_nfc(const struct gpmi_nfc_platform_data *pdata,
-> +		const struct mxs_gpmi_data *data)
-> +{
-> +	return mxs_add_platform_device_dmamask(data->devid, -1,
-> +				data->res, RES_SIZE,
-> +				pdata, sizeof(*pdata), DMA_BIT_MASK(32));
-> +}
-> diff --git a/arch/arm/mach-mxs/include/mach/devices-common.h b/arch/arm/mach-mxs/include/mach/devices-common.h
-> index 71f2448..fc59c05 100644
-> --- a/arch/arm/mach-mxs/include/mach/devices-common.h
-> +++ b/arch/arm/mach-mxs/include/mach/devices-common.h
-> @@ -64,6 +64,16 @@ struct platform_device *__init mxs_add_flexcan(
->  		const struct mxs_flexcan_data *data,
->  		const struct flexcan_platform_data *pdata);
->  
-> +/* gpmi */
-> +#include <mach/gpmi-nfc.h>
-> +struct mxs_gpmi_data {
-> +	const char *devid;
-> +	const struct resource res[RES_SIZE];
-> +};
-> +struct platform_device *__init
-> +mxs_add_gpmi_nfc(const struct gpmi_nfc_platform_data *pdata,
-> +		const struct mxs_gpmi_data *data);
-> +
->  /* i2c */
->  struct mxs_i2c_data {
->  	int id;
-> diff --git a/arch/arm/mach-mxs/mach-mx23evk.c b/arch/arm/mach-mxs/mach-mx23evk.c
-> index a66994f..666e0f8 100644
-> --- a/arch/arm/mach-mxs/mach-mx23evk.c
-> +++ b/arch/arm/mach-mxs/mach-mx23evk.c
-> @@ -40,6 +40,26 @@ static const iomux_cfg_t mx23evk_pads[] __initconst = {
->  	MX23_PAD_AUART1_CTS__AUART1_CTS | MXS_PAD_CTRL,
->  	MX23_PAD_AUART1_RTS__AUART1_RTS | MXS_PAD_CTRL,
->  
-> +#define MXS_PAD_GPMI	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
-> +	/* gpmi */
-> +	MX23_PAD_GPMI_D00__GPMI_D00 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_D01__GPMI_D01 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_D02__GPMI_D02 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_D03__GPMI_D03 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_D04__GPMI_D04 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_D05__GPMI_D05 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_D06__GPMI_D06 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_D07__GPMI_D07 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_WPN__GPMI_WPN | MXS_PAD_GPMI,
-> +	MX23_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_GPMI,
-> +	MX23_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_GPMI,
-> +	MX23_PAD_GPMI_RDY0__GPMI_RDY0 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_RDY1__GPMI_RDY1 | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
-> +	MX23_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
-> +
-So you did not come along with a solution to pinmux confliction
-problem?  There gpmi pads are used by mmc and fb as well.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Reported-by: Caizhiyong <caizhiyong@huawei.com>
+Cc: stable@kernel.org [2.6.30+]
+---
+ fs/ubifs/super.c |   19 +++++++++++++++----
+ 1 files changed, 15 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 66c12cd..339bdfc 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1672,14 +1672,25 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	if (err)
+ 		goto out;
+ 
++	dbg_gen("re-mounted read-write");
++	c->remounting_rw = 0;
++
+ 	if (c->need_recovery) {
+ 		c->need_recovery = 0;
+ 		ubifs_msg("deferred recovery completed");
++	} else {
++		/*
++		 * Do not run the debugging space check if the were doing
++		 * recovery, because when we saved the information we had the
++		 * file-system in a state where the TNC and lprops has been
++		 * modified in memory, but all the I/O operations (including a
++		 * commit) were deferred. So the file-system was in
++		 * "non-committed" state. Now the file-system is in committed
++		 * state, and of course the amount of free space will change
++		 * because, for example, the old index size was imprecise.
++		 */
++		err = dbg_check_space_info(c);
+ 	}
+-
+-	dbg_gen("re-mounted read-write");
+-	c->remounting_rw = 0;
+-	err = dbg_check_space_info(c);
+ 	mutex_unlock(&c->umount_mutex);
+ 	return err;
+ 
+-- 
+1.7.2.3
+
+
+
+
 
 -- 
-Regards,
-Shawn
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
