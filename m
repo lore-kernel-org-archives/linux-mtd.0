@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCURq-00063j-FK
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:15:54 +0000
+	id 1QCURr-00063p-5K
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:15:56 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3KAFnlG009509
+	p3KAFmD7009486
 	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:49 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 03/35] fs-tests: integck: handle write failures in dir_new
-Date: Wed, 20 Apr 2011 13:18:36 +0300
-Message-Id: <1303294748-5492-4-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 05/35] fs-tests: integck: handle errors when creating test data
+Date: Wed, 20 Apr 2011 13:18:38 +0300
+Message-Id: <1303294748-5492-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 References: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,88 +25,187 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Do not die in 'dir_new()' if it cannot create a new directory and
-this is not because of ENOSPC. Return NULL for all errors.
-
-Note, not all callers are ready to properly handle all errors so far.
+Make 'update_test_data()' and 'update_test_data()' check for errors
+and return error in case of failure.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   32 ++++++++++++++++----------------
- 1 files changed, 16 insertions(+), 16 deletions(-)
+ tests/fs-tests/integrity/integck.c |  114 ++++++++++++++++++++++--------------
+ 1 files changed, 71 insertions(+), 43 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index dd1ba1c..d138a7d 100644
+index 5b1adc1..1703364 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -284,19 +284,12 @@ static char *cat_strings(const char *a, const char *b)
- static char *cat_paths(const char *a, const char *b)
- {
- 	char *str;
--	size_t sz;
--	int as, bs;
--	size_t na, nb;
-+	size_t sz, na, nb;
-+	int as = 0, bs = 0;
- 
--	if (a && !b)
--		return dup_string(a);
--	if (b && !a)
--		return dup_string(b);
--	if (!a && !b)
--		return NULL;
-+	assert(a != NULL);
-+	assert(b != NULL);
- 
--	as = 0;
--	bs = 0;
- 	na = strlen(a);
- 	nb = strlen(b);
- 	if (na && a[na - 1] == '/')
-@@ -333,8 +326,7 @@ static void get_fs_space(uint64_t *total, uint64_t *free)
- 
- static char *dir_path(struct dir_info *parent, const char *name)
- {
--	char *parent_path;
--	char *path;
-+	char *parent_path, *path;
- 
- 	if (!parent)
- 		return cat_paths(fsinfo.mount_point, name);
-@@ -454,6 +446,12 @@ static void remove_dir_entry(struct dir_entry_info *entry)
- 	free(entry);
+@@ -1953,16 +1953,21 @@ static void operate_on_an_open_file(void)
+ 		}
  }
  
+-static void do_an_operation(void)
++static int do_an_operation(void)
+ {
+ 	/* Half the time operate on already open files */
+ 	if (random_no(100) < 50)
+ 		operate_on_dir(top_dir);
+ 	else
+ 		operate_on_an_open_file();
++
++	return 0;
+ }
+ 
+-static void create_test_data(void)
 +/*
-+ * Create a new directory "name" in the parent directory described by "parent"
-+ * and add it to the in-memory list of directories. In case of success, returns
-+ * a pointer to the new 'struct dir_info' object. Returns 'NULL' in case of
-+ * failure.
++ * Fill the tested file-system with random stuff.
 + */
- static struct dir_info *dir_new(struct dir_info *parent, const char *name)
++static int create_test_data(void)
  {
- 	struct dir_info *dir;
-@@ -461,8 +459,10 @@ static struct dir_info *dir_new(struct dir_info *parent, const char *name)
+ 	uint64_t i, n;
  
- 	path = dir_path(parent, name);
- 	if (mkdir(path, 0777) != 0) {
--		CHECK(errno == ENOSPC);
--		full = 1;
-+		if (errno == ENOSPC)
-+			full = 1;
-+		else
-+			pcv("cannot create directory %s", path);
- 		free(path);
- 		return NULL;
+@@ -1971,28 +1976,77 @@ static void create_test_data(void)
+ 	full = 0;
+ 	operation_count = 0;
+ 	while (!full) {
+-		do_an_operation();
+-		++operation_count;
++		if (do_an_operation())
++			return -1;
++		operation_count += 1;
  	}
-@@ -2167,7 +2167,7 @@ void remount_tested_fs(void)
- static int integck(void)
- {
- 	int ret;
--	int64_t rpt;
-+	long rpt;
++
++	/* Drop to less than 90% full */
+ 	grow = 0;
+ 	shrink = 1;
+-	/* Drop to less than 90% full */
+ 	n = operation_count / 40;
+ 	while (n--) {
+-		uint64_t free;
+-		uint64_t total;
+-		for (i = 0; i < 10; ++i)
+-			do_an_operation();
++		uint64_t free, total;
++
++		for (i = 0; i < 10; i++)
++			if (do_an_operation())
++				return -1;
++
+ 		get_fs_space(&total, &free);
+ 		if ((free * 100) / total >= 10)
+ 			break;
+ 	}
++
++	grow = 0;
++	shrink = 0;
++	full = 0;
++	n = operation_count * 2;
++	for (i = 0; i < n; i++)
++		if (do_an_operation())
++			return -1;
++
++	return 0;
++}
++
++/*
++ * Do more random operation on the tested file-system.
++ */
++static int update_test_data(void)
++{
++	uint64_t i, n;
++
++	grow = 1;
++	shrink = 0;
++	full = 0;
++	while (!full)
++		if (do_an_operation())
++			return -1;
++
++	/* Drop to less than 50% full */
++	grow = 0;
++	shrink = 1;
++	n = operation_count / 10;
++	while (n--) {
++		uint64_t free, total;
++
++		for (i = 0; i < 10; i++)
++			if (do_an_operation())
++				return -1;
++
++		get_fs_space(&total, &free);
++		if ((free * 100) / total >= 50)
++			break;
++	}
++
+ 	grow = 0;
+ 	shrink = 0;
+ 	full = 0;
+ 	n = operation_count * 2;
+-	for (i = 0; i < n; ++i)
+-		do_an_operation();
++	for (i = 0; i < n; i++)
++		if (do_an_operation())
++			return -1;
++
++	return 0;
+ }
  
- 	CHECK(chdir(fsinfo.mount_point) == 0);
+ /*
+@@ -2042,36 +2096,6 @@ static int rm_minus_rf_dir(const char *dir_name)
+ 	return 0;
+ }
  
+-static void update_test_data(void)
+-{
+-	uint64_t i, n;
+-
+-	grow = 1;
+-	shrink = 0;
+-	full = 0;
+-	while (!full)
+-		do_an_operation();
+-	grow = 0;
+-	shrink = 1;
+-	/* Drop to less than 50% full */
+-	n = operation_count / 10;
+-	while (n--) {
+-		uint64_t free;
+-		uint64_t total;
+-		for (i = 0; i < 10; ++i)
+-			do_an_operation();
+-		get_fs_space(&total, &free);
+-		if ((free * 100) / total >= 50)
+-			break;
+-	}
+-	grow = 0;
+-	shrink = 0;
+-	full = 0;
+-	n = operation_count * 2;
+-	for (i = 0; i < n; ++i)
+-		do_an_operation();
+-}
+-
+ /**
+  * Re-mount the test file-system. This function randomly select how to
+  * re-mount.
+@@ -2193,7 +2217,9 @@ static int integck(void)
+ 	if (!top_dir)
+ 		return -1;
+ 
+-	create_test_data();
++	ret = create_test_data();
++	if (ret)
++		return -1;
+ 
+ 	if (fsinfo.is_rootfs) {
+ 		close_open_files();
+@@ -2208,7 +2234,9 @@ static int integck(void)
+ 	check_deleted_files();
+ 
+ 	for (rpt = 0; args.repeat_cnt == 0 || rpt < args.repeat_cnt; ++rpt) {
+-		update_test_data();
++		ret = update_test_data();
++		if (ret)
++			return -1;
+ 
+ 		if (!fsinfo.is_rootfs) {
+ 			close_open_files();
 -- 
 1.7.2.3
