@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCURw-00067k-Re
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:16:09 +0000
+	id 1QCURx-00068H-Iq
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 10:16:10 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3KAFlpJ009474
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:55 +0300
+	p3KAFmM1009480
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2011 13:15:56 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 20/35] fs-tests: integck: make rename_entry return error on
-	failure
-Date: Wed, 20 Apr 2011 13:18:53 +0300
-Message-Id: <1303294748-5492-21-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 22/35] fs-tests: integck: teach dir_remove return error and
+	fix a memory leak
+Date: Wed, 20 Apr 2011 13:18:55 +0300
+Message-Id: <1303294748-5492-23-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 References: <1303294748-5492-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -26,90 +26,82 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Make 'rename_entry()' return an error to the caller when it fails
-to rename a directory entry.
+Teach 'dir_remove()' to return an error to the caller if it fails to
+remove the directory. Also, there was a memory leak - the 'path'
+string was not freed - fix it as well.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   23 +++++++++++++----------
- 1 files changed, 13 insertions(+), 10 deletions(-)
+ tests/fs-tests/integrity/integck.c |   33 +++++++++++++++++++++------------
+ 1 files changed, 21 insertions(+), 12 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 09b4a7d..f56ff66 100644
+index a486229..9ab417d 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -1664,7 +1664,7 @@ static char *pick_rename_name(struct dir_info **parent,
- 	return dup_string(entry->name);
- }
+@@ -484,30 +484,41 @@ static int file_delete(struct file_info *file);
+ static int file_unlink(struct dir_entry_info *entry);
+ static int symlink_remove(struct symlink_info *symlink);
  
--static void rename_entry(struct dir_entry_info *entry)
-+static int rename_entry(struct dir_entry_info *entry)
+-static void dir_remove(struct dir_info *dir)
++static int dir_remove(struct dir_info *dir)
  {
- 	struct dir_entry_info *rename_entry = NULL;
- 	struct dir_info *parent;
-@@ -1672,7 +1672,7 @@ static void rename_entry(struct dir_entry_info *entry)
- 	int ret, isdir, retry;
+ 	char *path;
  
- 	if (!entry->parent)
--		return;
-+		return 0;
+ 	/* Remove directory contents */
+ 	while (dir->first) {
+ 		struct dir_entry_info *entry;
++		int ret = 0;
  
- 	for (retry = 0; retry < 3; retry++) {
- 		path = dir_path(entry->parent, entry->name);
-@@ -1701,17 +1701,21 @@ static void rename_entry(struct dir_entry_info *entry)
+ 		entry = dir->first;
+ 		if (entry->type == 'd')
+-			dir_remove(entry->dir);
++			ret = dir_remove(entry->dir);
+ 		else if (entry->type == 'f')
+-			file_unlink(entry);
++			ret = file_unlink(entry);
+ 		else if (entry->type == 's')
+-			symlink_remove(entry->symlink);
++			ret = symlink_remove(entry->symlink);
+ 		else
+ 			CHECK(0); /* Invalid struct dir_entry_info */
++		if (ret)
++			return -1;
++	}
++
++	/* Remove directory form the file-system */
++	path = dir_path(dir->parent, dir->name);
++	if (rmdir(path) != 0) {
++		pcv("cannot remove directory entry %s", path);
++		free(path);
++		return -1;
  	}
- 
- 	if (!path)
--		return;
-+		return 0;
- 
- 	ret = rename(path, to);
- 	if (ret != 0) {
-+		ret = 0;
- 		if (errno == ENOSPC)
- 			full = 1;
--		CHECK(errno == ENOSPC || errno == EBUSY);
-+		else if (errno !=  EBUSY) {
-+			pcv("failed to rename %s to %s", path, to);
-+			ret = -1;
-+		}
- 		free(path);
- 		free(name);
- 		free(to);
--		return;
-+		return ret;
- 	}
- 
- 	free(path);
-@@ -1720,7 +1724,7 @@ static void rename_entry(struct dir_entry_info *entry)
- 	if (rename_entry && rename_entry->type == entry->type &&
- 	    rename_entry->target == entry->target) {
- 		free(name);
--		return;
-+		return 0;
- 	}
- 
- 	add_dir_entry(parent, entry->type, name, entry->target);
-@@ -1728,6 +1732,7 @@ static void rename_entry(struct dir_entry_info *entry)
- 		remove_dir_entry(rename_entry);
- 	remove_dir_entry(entry);
- 	free(name);
++
+ 	/* Remove entry from parent directory */
+ 	remove_dir_entry(dir->entry);
+-	/* Remove directory itself */
+-	path = dir_path(dir->parent, dir->name);
+-	CHECK(rmdir(path) == 0);
++	free(path);
+ 	free(dir);
 +	return 0;
  }
  
- static size_t str_count(const char *s, char c)
-@@ -1904,10 +1909,8 @@ static void operate_on_file(struct file_info *file)
- static int operate_on_entry(struct dir_entry_info *entry)
- {
- 	/* 1 time in 1000 rename */
--	if (random_no(1000) == 0) {
--		rename_entry(entry);
--		return 0;
--	}
-+	if (random_no(1000) == 0)
-+		return rename_entry(entry);
- 	if (entry->type == 's') {
- 		symlink_check(entry->symlink);
- 		/* If shrinking, 1 time in 50, remove a symlink */
+ static int file_new(struct dir_info *parent, const char *name)
+@@ -1924,11 +1935,9 @@ static int operate_on_entry(struct dir_entry_info *entry)
+ 	}
+ 	if (entry->type == 'd') {
+ 		/* If shrinking, 1 time in 50, remove a directory */
+-		if (shrink && random_no(50) == 0) {
+-			dir_remove(entry->dir);
+-			return 0;
+-		}
+-		operate_on_dir(entry->dir);
++		if (shrink && random_no(50) == 0)
++			return dir_remove(entry->dir);
++		return operate_on_dir(entry->dir);
+ 	}
+ 	if (entry->type == 'f') {
+ 		/* If shrinking, 1 time in 10, remove a file */
 -- 
 1.7.2.3
