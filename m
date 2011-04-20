@@ -1,18 +1,18 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCTo9-0005kZ-3a
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 09:34:50 +0000
+	id 1QCToA-0005ka-U4
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2011 09:34:51 +0000
 From: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 To: Mike Frysinger <vapier.adi@gmail.com>,
 	Artem Bityutskiy <dedekind1@gmail.com>, linux-mtd@lists.infradead.org
-Subject: [PATCHv4 2/3] libmtd: use PRIu64 classifier for uint64_t printf
-	arguments
-Date: Wed, 20 Apr 2011 12:35:09 +0300
-Message-Id: <0bd629717df8aefb5b2eca07fcf6c1abe8c67c70.1303292025.git.ext-andriy.shevchenko@nokia.com>
-In-Reply-To: <54dce27649702199efe5afb3d14e8f3f6103da00.1303292025.git.ext-andriy.shevchenko@nokia.com>
+Subject: [PATCHv4 3/3] serve_image: adjust classifier and type for printf
+Date: Wed, 20 Apr 2011 12:35:10 +0300
+Message-Id: <015098d0d8cd7afd0df9d6f294896e585aa48a85.1303292025.git.ext-andriy.shevchenko@nokia.com>
+In-Reply-To: <0bd629717df8aefb5b2eca07fcf6c1abe8c67c70.1303292025.git.ext-andriy.shevchenko@nokia.com>
 In-Reply-To: <54dce27649702199efe5afb3d14e8f3f6103da00.1303292025.git.ext-andriy.shevchenko@nokia.com>
 References: <BANLkTi=gsiTx9PHQ7HJpzuZT2DvzGU_OqA@mail.gmail.com>
 	<54dce27649702199efe5afb3d14e8f3f6103da00.1303292025.git.ext-andriy.shevchenko@nokia.com>
+	<0bd629717df8aefb5b2eca07fcf6c1abe8c67c70.1303292025.git.ext-andriy.shevchenko@nokia.com>
 References: <54dce27649702199efe5afb3d14e8f3f6103da00.1303292025.git.ext-andriy.shevchenko@nokia.com>
 Cc: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,77 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The argument type of printf is __off64_t, meanwhile the classifier is "%ld".
+We agreed to use PRIu64 in such case.
+
 Signed-off-by: Andy Shevchenko <ext-andriy.shevchenko@nokia.com>
 ---
- lib/libmtd.c |   27 +++++++++++----------------
- 1 files changed, 11 insertions(+), 16 deletions(-)
+ serve_image.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/lib/libmtd.c b/lib/libmtd.c
-index 418ba29..7fabd80 100644
---- a/lib/libmtd.c
-+++ b/lib/libmtd.c
-@@ -31,9 +31,11 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <sys/ioctl.h>
--#include <mtd/mtd-user.h>
+diff --git a/serve_image.c b/serve_image.c
+index f8f28a1..d1037a9 100644
+--- a/serve_image.c
++++ b/serve_image.c
+@@ -2,7 +2,6 @@
+ #define _POSIX_C_SOURCE 199309
+ 
+ #include <time.h>
+-
+ #include <errno.h>  	
+ #include <error.h> 	
+ #include <netdb.h> 	
+@@ -18,6 +17,8 @@
+ #include <netinet/in.h>
+ #include <sys/time.h>
+ #include <crc32.h>
 +#include <inttypes.h>
- 
-+#include <mtd/mtd-user.h>
- #include <libmtd.h>
 +
- #include "libmtd_int.h"
- #include "common.h"
+ #include "mcast_image.h"
  
-@@ -1096,19 +1098,16 @@ int do_oob_op(libmtd_t desc, const struct mtd_dev_info *mtd, int fd,
- 
- 	max_offs = (unsigned long long)mtd->eb_cnt * mtd->eb_size;
- 	if (start >= max_offs) {
--		errmsg("bad page address %llu, mtd%d has %d eraseblocks "
--		       "(%llu bytes)", (unsigned long long) start, mtd->mtd_num,
--		       mtd->eb_cnt, max_offs);
-+		errmsg("bad page address %" PRIu64 ", mtd%d has %d eraseblocks (%llu bytes)",
-+		       start, mtd->mtd_num, mtd->eb_cnt, max_offs);
- 		errno = EINVAL;
- 		return -1;
+ int tx_rate = 80000;
+@@ -126,8 +127,8 @@ int main(int argc, char **argv)
  	}
  
- 	oob_offs = start & (mtd->min_io_size - 1);
- 	if (oob_offs + length > mtd->oob_size || length == 0) {
--		errmsg("Cannot write %llu OOB bytes to address %llu "
--		       "(OOB offset %u) - mtd%d OOB size is only %d bytes",
--		       (unsigned long long)length, (unsigned long long)start,
--		       oob_offs, mtd->mtd_num,  mtd->oob_size);
-+		errmsg("Cannot write %" PRIu64 " OOB bytes to address %" PRIu64 " (OOB offset %u) - mtd%d OOB size is only %d bytes",
-+		       length, start, oob_offs, mtd->mtd_num,  mtd->oob_size);
- 		errno = EINVAL;
- 		return -1;
+ 	if (st.st_size % erasesize) {
+-		fprintf(stderr, "Image size %ld bytes is not a multiple of erasesize %d bytes\n",
+-			st.st_size, erasesize);
++		fprintf(stderr, "Image size %" PRIu64 " bytes is not a multiple of erasesize %d bytes\n"
++				st.st_size, erasesize);
+ 		exit(1);
  	}
-@@ -1125,10 +1124,8 @@ int do_oob_op(libmtd_t desc, const struct mtd_dev_info *mtd, int fd,
- 
- 		if (errno != ENOTTY ||
- 		    lib->offs64_ioctls != OFFS64_IOCTLS_UNKNOWN) {
--			sys_errmsg("%s ioctl failed for mtd%d, offset %llu "
--				   "(eraseblock %llu)", cmd64_str, mtd->mtd_num,
--				   (unsigned long long)start,
--				   (unsigned long long)start / mtd->eb_size);
-+			sys_errmsg("%s ioctl failed for mtd%d, offset %" PRIu64 " (eraseblock %" PRIu64 ")",
-+				   cmd64_str, mtd->mtd_num, start, start / mtd->eb_size);
- 		}
- 
- 		/*
-@@ -1152,10 +1149,8 @@ int do_oob_op(libmtd_t desc, const struct mtd_dev_info *mtd, int fd,
- 
- 	ret = ioctl(fd, cmd, &oob);
- 	if (ret < 0)
--		sys_errmsg("%s ioctl failed for mtd%d, offset %llu "
--			   "(eraseblock %llu)", cmd_str, mtd->mtd_num,
--			   (unsigned long long)start,
--			   (unsigned long long)start / mtd->eb_size);
-+		sys_errmsg("%s ioctl failed for mtd%d, offset %" PRIu64 " (eraseblock %" PRIu64 ")",
-+			   cmd_str, mtd->mtd_num, start, start / mtd->eb_size);
- 	return ret;
- }
- 
+ 	image = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, rfd, 0);
 -- 
 1.6.3.3
