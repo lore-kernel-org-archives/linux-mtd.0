@@ -1,24 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCtVk-0001tp-3u
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 13:01:32 +0000
-Received: by eyh6 with SMTP id 6so565106eyh.36
+	id 1QCtqR-00020h-Pt
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 13:22:56 +0000
+Received: by ewy3 with SMTP id 3so571885ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Apr 2011 06:01:30 -0700 (PDT)
-Subject: Re: Fwd: mtd-utils: "flash_erase -j" failes with "unable to get
-	NAND oobinfo" on large flash chips.
+	Thu, 21 Apr 2011 06:22:53 -0700 (PDT)
+Subject: Re: read_pnode: error -22 reading pnode at XX:YYYYY
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Daid <daid303@gmail.com>
-In-Reply-To: <BANLkTinZwawiu=-M2qm2PDhZ_yhjM8fS5Q@mail.gmail.com>
-References: <BANLkTinozqCrqaDGsAX-gWWUg2G3bvg_Rg@mail.gmail.com>
-	<1302761383.2796.4.camel@localhost>
-	<BANLkTikgzbGGNg7AXYt89MvM4whvKxXHiQ@mail.gmail.com>
-	<1302790378.2796.45.camel@localhost>
-	<BANLkTinf1qWFKz19Q2YQKg4o2wT6m-nqsA@mail.gmail.com>
-	<BANLkTinZwawiu=-M2qm2PDhZ_yhjM8fS5Q@mail.gmail.com>
+To: Rick Johnson <rick22@wi.rr.com>
+In-Reply-To: <4DADF9E6.9010709@wi.rr.com>
+References: <4DADF9E6.9010709@wi.rr.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 21 Apr 2011 15:58:38 +0300
-Message-ID: <1303390718.2757.8.camel@localhost>
+Date: Thu, 21 Apr 2011 16:20:01 +0300
+Message-ID: <1303392001.2757.16.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -32,19 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 2011-04-19 at 16:08 -0500, Rick Johnson wrote:
+> Hi,
+> 
+> We've been seeing this error
+> 
+> "read_pnode: error -22 reading pnode at XX:YYYYY"
 
-your patch is line-wrapped and it is impossible to apply it,
-unfortunately.
+Hi, I'm very busy now, but here is a quick hint. It looks like a bug. Do
+you do unclean power cuts? It might be a bug in the bits manipulation
+functions. In short - a penode describes amount of free and dirty space
+in one LEB. We try to store this information as compactly as possible,
+so we jam it into bits.
 
-On Mon, 2011-04-18 at 11:42 +0200, Daid wrote:
-> I've split up the patches, and moved the code the libmtd_legacy.c:
+There is a 'ubifs_pack_pnode()' function which is used to jam the
+free/dirty information into bits. Try to instrument it with and:
 
-Could you pleas send separate patches as separate e-mails? Could you
-please also add a nice git commit message and your Signed-off-by? Just
-look how other people do this. To make a patches I usually first commit
-my changes, then use git format-patch, and then use git send-email to
-send them.
+1. Validate the pnode before packing, do the same validate_pnode() does.
+May be you'll catch the place where it we write incorrect pnode. Because
+what you see is a result of an error which might have happend long
+before you hit it.
+
+2. At the end of 'ubifs_pack_pnode()' unpack it and validate again, and
+make sure it did not change. May be there is a bug in packing/unpacking
+functions, then you will catch this.
+
+I'll try to come up with a patch which does this every time we have
+debugging enabled, but not now, no time.
 
 -- 
 Best Regards,
