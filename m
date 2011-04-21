@@ -1,10 +1,10 @@
 Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCtSP-0001rJ-A4
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 12:58:05 +0000
-Received: by eyh6 with SMTP id 6so564165eyh.36
+	id 1QCtVk-0001tp-3u
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 13:01:32 +0000
+Received: by eyh6 with SMTP id 6so565106eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Apr 2011 05:58:03 -0700 (PDT)
+	Thu, 21 Apr 2011 06:01:30 -0700 (PDT)
 Subject: Re: Fwd: mtd-utils: "flash_erase -j" failes with "unable to get
 	NAND oobinfo" on large flash chips.
 From: Artem Bityutskiy <dedekind1@gmail.com>
@@ -17,8 +17,8 @@ References: <BANLkTinozqCrqaDGsAX-gWWUg2G3bvg_Rg@mail.gmail.com>
 	<BANLkTinf1qWFKz19Q2YQKg4o2wT6m-nqsA@mail.gmail.com>
 	<BANLkTinZwawiu=-M2qm2PDhZ_yhjM8fS5Q@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 21 Apr 2011 15:55:11 +0300
-Message-ID: <1303390511.2757.5.camel@localhost>
+Date: Thu, 21 Apr 2011 15:58:38 +0300
+Message-ID: <1303390718.2757.8.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -34,14 +34,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Mon, 2011-04-18 at 11:42 +0200, Daid wrote:
-> The define comes from mtd/mtd-abi.h, if you are building against older
-> kernel versions then this define does not exists. If compatibility
-> with older kernel versions is not an issue then this #ifdef could be
-> removed.
+your patch is line-wrapped and it is impossible to apply it,
+unfortunately.
 
-mtd utils has its own copy of mtd/mtd-abi.h and it does not depend on
-the kernel.
+On Mon, 2011-04-18 at 11:42 +0200, Daid wrote:
+> I've split up the patches, and moved the code the libmtd_legacy.c:
+
+Could you pleas send separate patches as separate e-mails? Could you
+please also add a nice git commit message and your Signed-off-by? Just
+look how other people do this. To make a patches I usually first commit
+my changes, then use git format-patch, and then use git send-email to
+send them.
 
 -- 
 Best Regards,
