@@ -1,21 +1,22 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCxVe-0003Jg-1p
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 17:17:42 +0000
-Received: from ONYX.xi-lite.lan (unknown [193.34.35.244])
-	by co202.xi-lite.net (Postfix) with ESMTPS id A8BC8260180
+Received: from mail-px0-f171.google.com ([209.85.212.171])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QCxl9-0003SE-8A
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 17:33:44 +0000
+Received: by pxi7 with SMTP id 7so1342056pxi.16
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Apr 2011 20:52:46 +0200 (CEST)
-Message-ID: <4DB06693.5000100@parrot.com>
-Date: Thu, 21 Apr 2011 19:17:07 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+	Thu, 21 Apr 2011 10:33:40 -0700 (PDT)
+Message-ID: <4DB06A6B.2080806@gmail.com>
+Date: Thu, 21 Apr 2011 10:33:31 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
 To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: bbt and bitflip
-References: <4DB033E4.6030105@parrot.com>
-In-Reply-To: <4DB033E4.6030105@parrot.com>
-Content-Type: multipart/mixed; boundary="------------060901040705080500030800"
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
+References: <4DB052DB.7040308@parrot.com>
+In-Reply-To: <4DB052DB.7040308@parrot.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Brian Norris <norris@broadcom.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,100 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------060901040705080500030800
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8bit
+Hi
 
-Matthieu CASTET a écrit :
-> Hi,
-> 
-> the current bad block table implementation doesn't seem robust against bit flip.
-> 
-> at boot we call :
-> - search_read_bbts which scan for bbt using oob pattern.
-> - check_create
-> -- read_abs_bbt
-> --- read_bbt which ignore ecc bit flip/error
-> 
-> So if bit flip happen in BBT, we never scrub it.
-> And if bit flip accumulate and we can't correct it anymore, the code will parse
-> the corrupted data and our bad block info will be wrong (valid block can be
-> marked as bad and we lose bad, bad block can be see as valid).
-> 
-> 
-> Also the pattern and version in oob isn't protected by ecc. They can be corrupted.
-> 
-> Are bbt safe to use ?
-> 
-> Are there any plan to make the bbt more robust ?
-> 
-Here a quick and dirty patch to make them more robust.
-Any comment are welcomed.
+On 4/21/2011 8:52 AM, Matthieu CASTET wrote:
+> I believe NAND_BBT_SCANBYTE1AND6 behavior is very dangerous.
+> We have a ST flash where ecc where but on bit 5 and 6.
+> With new kernel all block are bad.
+>
+> Is this option is really needed ?
+> ST datasheet say [1]. We already check the first Word.
+> Why do we need to check the 6th Byte ?
+>
+>
+> Matthieu
+>
+> PS : the code check 1st, 2nd, 6th, 7th Bytes. So it check too much bytes.
+>
+>
+> [1]
+> The devices are supplied with all the locations inside valid blocks erased
+> (FFh). The Bad
+> Block Information is written prior to shipping. Any block, where the 1st and 6th
+> Bytes, or 1st
+> Word, in the spare area of the 1st page, does not contain FFh, is a Bad Block.
 
+I've tried my best to verify that any modifications I have made to bad 
+block scanning comply with the data sheets, but I very well could have 
+made mistakes (especially since there are so many different types of 
+scanning patterns, and very few manufacturers are actually being 
+consistent with these things).
 
-Matthieu
+That being said, I believe that the data sheet you quoted has some answer:
+"Any block, where the 1st and 6th Bytes, or 1st Word, in the spare area 
+of the 1st page, does not contain FFh, is a Bad Block."
+AFAICT, this description means that x8 buswidth devices must scan bytes 
+1 and 6 while x16 devices only need to scan the first word. So I bet 
+your device is actually an x8 device and so the 1st/6th byte pattern is 
+correct. I think the fact that this conflicts with your ECC patterns is 
+something you must deal with.
 
---------------060901040705080500030800
-Content-Type: text/plain; name="diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline; filename="diff"
+ > PS : the code check 1st, 2nd, 6th, 7th Bytes. So it check too much bytes.
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 5fedf4a..7b85b54 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -171,7 +171,7 @@ static int check_short_pattern(uint8_t *buf, struct nand_bbt_descr *td)
- static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
- 		    int bits, int offs, int reserved_block_code)
- {
--	int res, i, j, act = 0;
-+	int res, i, j, act = 0, ret = 0;
- 	struct nand_chip *this = mtd->priv;
- 	size_t retlen, len, totlen;
- 	loff_t from;
-@@ -188,6 +188,12 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
- 				printk(KERN_INFO "nand_bbt: Error reading bad block table\n");
- 				return res;
- 			}
-+			if (res != -EUCLEAN) {
-+				printk(KERN_INFO "nand_bbt: Error reading bad block table2\n");
-+				return res;
-+			}
-+			/* inform caller that there is bit flips */
-+			ret |= res;
- 			printk(KERN_WARNING "nand_bbt: ECC error while reading bad block table\n");
- 		}
- 
-@@ -220,7 +226,7 @@ static int read_bbt(struct mtd_info *mtd, uint8_t *buf, int page, int num,
- 		totlen -= len;
- 		from += len;
- 	}
--	return 0;
-+	return ret;
- }
- 
- /**
-@@ -900,7 +906,20 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
- 	writecheck:
- 		/* read back first ? */
- 		if (rd)
--			read_abs_bbt(mtd, buf, rd, chipsel);
-+			res = read_abs_bbt(mtd, buf, rd, chipsel);
-+		if (!rd2) {
-+			if (res == -EBADMSG) {
-+				/* bad recreate it */
-+				rd = NULL;
-+				writeops = 0x03;
-+				goto create;
-+			}
-+			else if (!rd2 && res == -EUCLEAN) {
-+				/* rewrite it */
-+				writeops = 0x03;
-+			}
-+		}
-+
- 		/* If they weren't versioned, read both. */
- 		if (rd2)
- 			read_abs_bbt(mtd, buf, rd2, chipsel);
+I've seen this before. This may be incorrect. Are you sure it's not 1st, 
+2nd, 5th, 6th though? I believe the "2-byte scans" were chosen before to 
+keep from having to differentiate between x8/x16 buses. Perhaps this 
+should be changed. (volunteers?)
 
---------------060901040705080500030800--
+While we're on the subject: do people use x16 buses on NAND anymore?
+
+Brian
