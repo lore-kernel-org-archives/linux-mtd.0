@@ -1,19 +1,19 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
+Received: from mms1.broadcom.com ([216.31.210.17])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCxQM-0003Gh-EH
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 17:12:15 +0000
-Date: Thu, 21 Apr 2011 19:10:46 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
-Message-ID: <20110421171046.GA790@parrot.com>
-References: <4DB052DB.7040308@parrot.com>
+	id 1QCxRV-0003HE-5e
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 17:13:25 +0000
+From: "Brian Norris" <computersforpeace@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] serve_image: missing comma
+Date: Thu, 21 Apr 2011 10:09:12 -0700
+Message-ID: <1303405752-24614-1-git-send-email-computersforpeace@gmail.com>
+In-Reply-To: <158e520ae5748a6e32eeefad99dea0395dd4c2a7.1303202005.git.ext-andriy.shevchenko@nokia.com>
+References: <158e520ae5748a6e32eeefad99dea0395dd4c2a7.1303202005.git.ext-andriy.shevchenko@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4DB052DB.7040308@parrot.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brian Norris <norris@broadcom.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Cc: Brian Norris <computersforpeace@gmail.com>, ext-andriy.shevchenko@nokia.com,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 21, 2011 at 04:52:59PM +0100, Matthieu Castet wrote:
-> Hi,
-> 
-> I believe NAND_BBT_SCANBYTE1AND6 behavior is very dangerous.
-> We have a ST flash where ecc where but on bit 5 and 6.
-> With new kernel all block are bad.
-> 
-> Is this option is really needed ?
-> ST datasheet say [1]. We already check the first Word.
-> Why do we need to check the 6th Byte ?
+Somebody didn't compile-test commit 9f4e6840.
 
-I agree with Matthieu, NAND_BBT_SCANBYTE1AND6 code also seems wrong to me.
+Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+---
+ serve_image.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Old small page nand devices used to have their bad block marker in 6th byte of
-the spare area of the first page.
-
-ST datasheet says that factory bad blocks will have _both_ bytes cleared
-(1st and 6th); I guess this was done to allow choosing which marker to check
-(but I may be wrong). Maybe to be compatible with large page marker location
-scheme (again, just guessing).
-
-Option NAND_BBT_SCANBYTE1AND6 code was introduced in commit
-58373ff0afff4cc8ac40608872995f4d87eb72ec; but the commit message does not
-clearly explain why both markers should be checked.
-
-My understanding of bad block markers is (please correct me if I am wrong):
-small page => check 6th byte of spare area of first page
-large page, non-ONFI => check first word of spare area of first page
-ONFI => see ONFI spec
-
-Ivan
+diff --git a/serve_image.c b/serve_image.c
+index d1037a9..f7f6315 100644
+--- a/serve_image.c
++++ b/serve_image.c
+@@ -127,7 +127,7 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	if (st.st_size % erasesize) {
+-		fprintf(stderr, "Image size %" PRIu64 " bytes is not a multiple of erasesize %d bytes\n"
++		fprintf(stderr, "Image size %" PRIu64 " bytes is not a multiple of erasesize %d bytes\n",
+ 				st.st_size, erasesize);
+ 		exit(1);
+ 	}
+-- 
+1.7.0.4
