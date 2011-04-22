@@ -1,19 +1,25 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QDCGp-0007ye-5E
-	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2011 09:03:23 +0000
-Message-ID: <4DB14439.1050507@parrot.com>
-Date: Fri, 22 Apr 2011 11:02:49 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QDCiJ-000875-UJ
+	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2011 09:31:48 +0000
+Received: by eyh6 with SMTP id 6so156528eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Apr 2011 02:31:45 -0700 (PDT)
 Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
-References: <4DB052DB.7040308@parrot.com> <4DB06A6B.2080806@gmail.com>
-In-Reply-To: <4DB06A6B.2080806@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <4DB14218.8050708@parrot.com>
+References: <4DB052DB.7040308@parrot.com>  <20110421171046.GA790@parrot.com>
+	<1303460616.2757.52.camel@localhost>  <4DB14218.8050708@parrot.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 22 Apr 2011 12:28:49 +0300
+Message-ID: <1303464529.2757.55.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+Cc: Ivan Djelic <ivan.djelic@parrot.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	Brian Norris <norris@broadcom.com>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 2011-04-22 at 10:53 +0200, Matthieu CASTET wrote:
+> Artem Bityutskiy a écrit :
+> > On Thu, 2011-04-21 at 19:10 +0200, Ivan Djelic wrote:
+> >> On Thu, Apr 21, 2011 at 04:52:59PM +0100, Matthieu Castet wrote:
+> >>> Hi,
+> >>>
+> >>> I believe NAND_BBT_SCANBYTE1AND6 behavior is very dangerous.
+> >>> We have a ST flash where ecc where but on bit 5 and 6.
+> >>> With new kernel all block are bad.
+> >>>
+> >>> Is this option is really needed ?
+> >>> ST datasheet say [1]. We already check the first Word.
+> >>> Why do we need to check the 6th Byte ?
+> >> I agree with Matthieu, NAND_BBT_SCANBYTE1AND6 code also seems wrong to me.
+> > 
+> > This just means that we need a better way for drivers to inform the
+> > generic code about how exactly blocks are marked as bad. Probably
+> > drivers could describe this with a data structure, and sometimes even
+> > provide a "is_block_bad()" function.
+> > 
+> > The options seem to be not enough.
+> > 
+> I think we should also unify bad block scanning.
 
-Brian Norris a �crit :
-> Hi
-> 
-> On 4/21/2011 8:52 AM, Matthieu CASTET wrote:
->>
->> [1]
->> The devices are supplied with all the locations inside valid blocks erased
->> (FFh). The Bad
->> Block Information is written prior to shipping. Any block, where the 1st and 6th
->> Bytes, or 1st
->> Word, in the spare area of the 1st page, does not contain FFh, is a Bad Block.
-> 
-> I've tried my best to verify that any modifications I have made to bad 
-> block scanning comply with the data sheets, but I very well could have 
-> made mistakes (especially since there are so many different types of 
-> scanning patterns, and very few manufacturers are actually being 
-> consistent with these things).
-Did you ask some clarification to manufacturers ?
+Sure, just do this in small incremental steps, send small incremental
+patches with nice description (and tested). The point is - you should
+not wait when someone else fixes this for you - i do not think this
+happens. Additional thing - if you are using MTD and interested in its
+stability - review others patches which touch the area of your
+interests :-)
 
-> 
-> That being said, I believe that the data sheet you quoted has some answer:
-> "Any block, where the 1st and 6th Bytes, or 1st Word, in the spare area 
-> of the 1st page, does not contain FFh, is a Bad Block."
-> AFAICT, this description means that x8 buswidth devices must scan bytes 
-> 1 and 6 while x16 devices only need to scan the first word. 
-Did you see real case where 6 was not 0xff but 1 was 0xff ?
-
-
-> So I bet 
-> your device is actually an x8 device and so the 1st/6th byte pattern is 
-> correct. I think the fact that this conflicts with your ECC patterns is 
-> something you must deal with.
-I don't agree, that's a big mtd regression. If you update your kernel on such
-flash, you brick it.
-
-
-Matthieu
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
