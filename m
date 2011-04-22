@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QDK3W-0002ne-OI
-	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2011 17:22:14 +0000
+	id 1QDK3X-0002ni-DH
+	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2011 17:22:15 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3MHM8lI025936
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2011 20:22:08 +0300
+	p3MHM9Ks025968
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2011 20:22:10 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 01/13] fs-tests: integck: improve help message
-Date: Fri, 22 Apr 2011 20:25:12 +0300
-Message-Id: <1303493124-7619-2-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 05/13] fs-tests: integck: implement data verification
+Date: Fri, 22 Apr 2011 20:25:16 +0300
+Message-Id: <1303493124-7619-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303493124-7619-1-git-send-email-dedekind1@gmail.com>
 References: <1303493124-7619-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,61 +25,106 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Fix typos, make it a bit more descriptive.
+When -e options is used - verify written data. Re-use the existing
+file_check_data() function to implement this.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   35 +++++++++++++++++++----------------
- 1 files changed, 19 insertions(+), 16 deletions(-)
+ tests/fs-tests/integrity/integck.c |   36 ++++++++++++++++++++++++------------
+ 1 files changed, 24 insertions(+), 12 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 511739f..522c6de 100644
+index f39745f..e93e141 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -2572,25 +2572,28 @@ static void get_tested_fs_info(void)
+@@ -885,8 +885,15 @@ static ssize_t file_write_data(struct file_info *file, int fd, off_t offset,
+ 	return actual;
+ }
  
- static const char doc[] = PROGRAM_NAME " version " PROGRAM_VERSION
- " - a stress test which checks the file-system integrity.\n"
--"It creates a directory named \"integck_test_dir_pid\", where where pid is the\n"
--"process id. Then it randomly creates and deletes files, directories, symlinks\n"
--"and hardlinks, randomly writes and truncate files, sometimes makes holes in\n"
--"files, sometimes fsync()'s them. Then it un-mounts and re-mounts the test file\n"
--"system and checks the contents - everything (files, dirs, etc) should be there\n"
--"and the contents of the files should be correct. This is repeated a number of\n"
--"times (set with -n, default 1).\n\n"
--"This test is also able to perform powe cut testing. The underlying file-system\n"
--"or the device driver should be able to emulate power-cuts, e.g., but switching\n"
--"to R/O mode at random points of time. And the file-system should return EROFS\n"
--"(read-only file-system error) for all operations which modify it. In this case\n"
--"this test program re-mounts the file-system and checks that all files and\n"
--"directories which have been successfully synchronized before the power cut are\n"
--"there and contains correct data. Then the test continues.\n";
-+"\n"
-+"The test creates a directory named \"integck_test_dir_<pid>\", where where\n"
-+"<pid> is the process id. Then it randomly creates and deletes files,\n"
-+"directories, symlinks, and hardlinks, randomly writes and truncate files,\n"
-+"sometimes makes holes in files, sometimes fsync()'s them. Then it un-mounts and\n"
-+"re-mounts the tested file-system and checks the contents - everything (files,\n"
-+"directories, etc) should be there and the contents of the files should be\n"
-+"correct. This is repeated a number of times (set with -n, default 1).\n"
-+"\n"
-+"This test is also able to perform power cut testing. The underlying file-system\n"
-+"or the device driver should be able to emulate power-cuts, by switching to R/O\n"
-+"mode at random moments. And the file-system should return EROFS (read-only\n"
-+"file-system error) for all operations which modify it. In this case this test\n"
-+"program re-mounts the file-system and checks that all files and directories\n"
-+"which have been successfully synchronized before the power cut. And the test\n"
-+"continues forever.\n";
+-static void file_write_info(struct file_info *file, off_t offset, size_t size,
+-			    unsigned int seed)
++static void file_check_data(struct file_info *file, int fd,
++			    struct write_info *w);
++
++/*
++ * Save the information about a file write operation and verify the write if
++ * necessary.
++ */
++static void file_write_info(struct file_info *file, int fd, off_t offset,
++			    size_t size, unsigned int seed)
+ {
+ 	struct write_info *new_write, *w, **prev, *tmp;
+ 	int inserted;
+@@ -905,6 +912,9 @@ static void file_write_info(struct file_info *file, off_t offset, size_t size,
+ 	w->random_seed = seed;
+ 	file->raw_writes = w;
  
- static const char optionsstr[] =
- "-n, --repeat=<count> repeat count, default is 1; zero value - repeat forever\n"
--"-p, --power-cut      power cut testing mode\n"
--"-v, --verbose        be verbose about failure during power cut testing\n"
-+"-p, --power-cut      power cut testing mode (-n parameter is ignored and the\n"
-+"                     test continues forever)\n"
-+"-v, --verbose        be verbose about failures during power cut testing\n"
- "-h, -?, --help       print help message\n"
- "-V, --version        print program version\n";
++	if (args.verify_ops)
++		file_check_data(file, fd, new_write);
++
+ 	/* Insert it into file->writes */
+ 	inserted = 0;
+ 	end = offset + size;
+@@ -1077,17 +1087,14 @@ static int file_mmap_write(struct file_info *file)
+ 	fd = open(path, O_RDWR);
+ 	if (fd == -1) {
+ 		pcv("cannot open file %s to do mmap", path);
+-		free(path);
+-		return -1;
++		goto out_error;
+ 	}
  
+ 	/* mmap it */
+ 	addr = mmap(NULL, len, PROT_READ | PROT_WRITE, MAP_SHARED, fd, offs);
+-	CHECK(close(fd) == 0);
+ 	if (addr == MAP_FAILED) {
+ 		pcv("cannot mmap file %s", path);
+-		free(path);
+-		return -1;
++		goto out_error;
+ 	}
+ 
+ 	/* Randomly select a part of the mmapped area to write */
+@@ -1108,14 +1115,19 @@ static int file_mmap_write(struct file_info *file)
+ 	/* Unmap it */
+ 	if (munmap(addr, len)) {
+ 		pcv("cannot unmap file %s", path);
+-		free(path);
+-		return -1;
++		goto out_error;
+ 	}
+ 
+ 	/* Record what was written */
+-	file_write_info(file, offset, size, seed);
++	file_write_info(file, fd, offset, size, seed);
+ 	free(path);
++	CHECK(close(fd) == 0);
+ 	return 0;
++
++out_error:
++	free(path);
++	CHECK(close(fd) == 0);
++	return -1;
+ }
+ 
+ /*
+@@ -1146,7 +1158,7 @@ static int file_write(struct file_info *file, int fd)
+ 			truncate = 1;
+ 
+ 	if (actual != 0)
+-		file_write_info(file, offset, actual, seed);
++		file_write_info(file, fd, offset, actual, seed);
+ 
+ 	/* Delete errored files */
+ 	if (!fsinfo.nospc_size_ok && file->no_space_error)
+@@ -1175,7 +1187,7 @@ static int file_write_file(struct file_info *file)
+ 	char *path;
+ 
+ 	path = dir_path(file->links->parent, file->links->name);
+-	fd = open(path, O_WRONLY);
++	fd = open(path, O_RDWR);
+ 	if (fd == -1) {
+ 		pcv("cannot open file %s for writing", path);
+ 		free(path);
 -- 
 1.7.2.3
