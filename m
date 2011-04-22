@@ -1,22 +1,23 @@
 Received: from mail-px0-f171.google.com ([209.85.212.171])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QCxl9-0003SE-8A
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2011 17:33:44 +0000
-Received: by pxi7 with SMTP id 7so1342056pxi.16
+	id 1QD8KI-0006pL-O4
+	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2011 04:50:43 +0000
+Received: by pxi7 with SMTP id 7so265479pxi.16
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Apr 2011 10:33:40 -0700 (PDT)
-Message-ID: <4DB06A6B.2080806@gmail.com>
-Date: Thu, 21 Apr 2011 10:33:31 -0700
+	Thu, 21 Apr 2011 21:50:40 -0700 (PDT)
+Message-ID: <4DB1091C.6070502@gmail.com>
+Date: Thu, 21 Apr 2011 21:50:36 -0700
 From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
+To: Ivan Djelic <ivan.djelic@parrot.com>
 Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
-References: <4DB052DB.7040308@parrot.com>
-In-Reply-To: <4DB052DB.7040308@parrot.com>
+References: <4DB052DB.7040308@parrot.com> <20110421171046.GA790@parrot.com>
+In-Reply-To: <20110421171046.GA790@parrot.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brian Norris <norris@broadcom.com>
+Cc: Brian Norris <computersforpeace@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,52 +27,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Hi Ivan,
 
-On 4/21/2011 8:52 AM, Matthieu CASTET wrote:
-> I believe NAND_BBT_SCANBYTE1AND6 behavior is very dangerous.
-> We have a ST flash where ecc where but on bit 5 and 6.
-> With new kernel all block are bad.
->
-> Is this option is really needed ?
-> ST datasheet say [1]. We already check the first Word.
-> Why do we need to check the 6th Byte ?
->
->
-> Matthieu
->
-> PS : the code check 1st, 2nd, 6th, 7th Bytes. So it check too much bytes.
->
->
-> [1]
-> The devices are supplied with all the locations inside valid blocks erased
-> (FFh). The Bad
-> Block Information is written prior to shipping. Any block, where the 1st and 6th
-> Bytes, or 1st
-> Word, in the spare area of the 1st page, does not contain FFh, is a Bad Block.
+(FYI, please use my @gmail.com, not my @broadcom address.)
 
-I've tried my best to verify that any modifications I have made to bad 
-block scanning comply with the data sheets, but I very well could have 
-made mistakes (especially since there are so many different types of 
-scanning patterns, and very few manufacturers are actually being 
-consistent with these things).
+I can't say I know everything about the intentions and history of all 
+statements in various NAND flash data sheets, but I have read many of 
+them and will try to explain my view. Of course, I may be wrong.
 
-That being said, I believe that the data sheet you quoted has some answer:
-"Any block, where the 1st and 6th Bytes, or 1st Word, in the spare area 
-of the 1st page, does not contain FFh, is a Bad Block."
-AFAICT, this description means that x8 buswidth devices must scan bytes 
-1 and 6 while x16 devices only need to scan the first word. So I bet 
-your device is actually an x8 device and so the 1st/6th byte pattern is 
-correct. I think the fact that this conflicts with your ECC patterns is 
-something you must deal with.
+On 4/21/2011 10:10 AM, Ivan Djelic wrote:
+> Old small page nand devices used to have their bad block marker in 6th byte of
+> the spare area of the first page.
 
- > PS : the code check 1st, 2nd, 6th, 7th Bytes. So it check too much bytes.
+Correct
 
-I've seen this before. This may be incorrect. Are you sure it's not 1st, 
-2nd, 5th, 6th though? I believe the "2-byte scans" were chosen before to 
-keep from having to differentiate between x8/x16 buses. Perhaps this 
-should be changed. (volunteers?)
+> ST datasheet says that factory bad blocks will have _both_ bytes cleared
+> (1st and 6th); I guess this was done to allow choosing which marker to check
+> (but I may be wrong). Maybe to be compatible with large page marker location
+> scheme (again, just guessing).
 
-While we're on the subject: do people use x16 buses on NAND anymore?
+The actual statement is one of these two (pulled from various ST and 
+Numonyx sheets):
+
+"Any block, where the 1st and 6th bytes or the 1st word in the spare 
+area of the 1st page, does not contain FFh, is a bad block."
+
+"Any block, where the 1st and 6th bytes, in the spare area of the first
+page, does not contain FFh is a bad block."
+
+Strictly speaking, neither of these "sentences" uses correct grammar, as 
+the commas are placed arbitrarily. Most importantly, though, I don't 
+think they make clear the following:
+
+1) Does the manufacturer guarantee that BOTH bytes are non-FFh?
+2) Does the manufacturer guarantee that the combined bytes ("1st and 
+6th") contain a non-FFh byte?
+
+I understood it as the latter, and so decided the scan needed both bytes 
+(perhaps one byte was written successfully but not the other). However, 
+your argument for choice (1) ("this was done to allow choosing which 
+marker to check") makes just as much sense (or more) to me.
+
+In trying to decide why I came to conclude choice (2) and not (1), I 
+recall that some Hynix and Samsung parts explicitly declare that the 
+first OR second page may be used, in case the first page is bad. I may 
+have subconsciously applied this 1st/2nd page concept to the 1st/6th 
+bytes logic.
+
+> My understanding of bad block markers is (please correct me if I am wrong):
+> small page =>  check 6th byte of spare area of first page
+> large page, non-ONFI =>  check first word of spare area of first page
+> ONFI =>  see ONFI spec
+
+Unfortunately, small page, large page, and ONFI are 3 classifications 
+that oversimplify bad block markers.
+
+Some people (especially Samsung and Hynix, but even some Micron) got 
+creative. Some of their chips use:
+1st or 2nd page
+the last page
+the 1st or last page
+the last or (last - 2)th page
+
+And of course, there's the controversial 1st/6th byte usage - that I'm 
+still not clear on. Some of these scanning patterns are rare, but they 
+do exist.
+
+Sorry for any confusion, but I guess it's better late than never for 
+this sort of discussion...
 
 Brian
