@@ -1,16 +1,17 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QDK3Y-0002oL-53
+	id 1QDK3Y-0002on-IF
 	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2011 17:22:18 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3MHM8Cq025953
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2011 20:22:10 +0300
+	p3MHM8lJ025936
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2011 20:22:11 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 07/13] fs-tests: integck: add debug compilation target
-Date: Fri, 22 Apr 2011 20:25:18 +0300
-Message-Id: <1303493124-7619-8-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 08/13] fs-tests: use independent random generators for ops and
+	data
+Date: Fri, 22 Apr 2011 20:25:19 +0300
+Message-Id: <1303493124-7619-9-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303493124-7619-1-git-send-email-dedekind1@gmail.com>
 References: <1303493124-7619-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,56 +26,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-I often need to use gdb to debug integck, or sometimes even attach
-already running integck. But when it is compiled with optimizations, it
-is nearly impossible to use gdb. Introduce 'debug' target to compile
-integck without optimizations.
+Currently integck uses the same global random generator for everything -
+for choosing the operation, generating the data, and for checking. This
+makes integck to become stuck sometimes. My guess this is because of
+we somehow re-set it back with srand() when checking files.
 
-Additionally, to make the stack backtraces work, add a dirty hack to
-integck.c to remove all the static keywords - this turns static
-functions to non-static and makes them appear in stack backtraces.
+This patch makes integck use different generators for data and for
+choosing operations by using rand_r() with own seed for operations.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/Makefile  |    5 +++++
- tests/fs-tests/integrity/integck.c |   10 ++++++++++
- 2 files changed, 15 insertions(+), 0 deletions(-)
+ tests/fs-tests/integrity/integck.c |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/tests/fs-tests/integrity/Makefile b/tests/fs-tests/integrity/Makefile
-index 976c3ce..2cdd470 100644
---- a/tests/fs-tests/integrity/Makefile
-+++ b/tests/fs-tests/integrity/Makefile
-@@ -13,5 +13,10 @@ TARGETS = integck
- 
- all: $(TARGETS)
- 
-+# Disable optimizations to make it possible to use gdb comfortably
-+# Use -rdynamic to have stack backtraces
-+debug:
-+	gcc $(CFLAGS) -O0 -D INTEGCK_DEBUG -rdynamic integck.c -o integck
-+
- clean:
- 	rm -f *.o $(TARGETS)
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index f09cfaf..fbd6cc5 100644
+index fbd6cc5..5fb990e 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -41,6 +41,16 @@
- #define PROGRAM_NAME "integck"
- #include "common.h"
+@@ -214,6 +214,8 @@ static uint64_t operation_count = 0; /* Number of operations used to fill
+                                         up the file system */
+ static unsigned int check_run_no;
  
-+/*
-+ * WARNING! This is a dirty hack! The symbols for static functions are not
-+ * printed in the stack backtrace. So we remove ths 'static' keyword using the
-+ * pre-processor. This is really error-prone because this won't work if, e.g.,
-+ * local static variables were used.
-+ */
-+#ifdef INTEGCK_DEBUG
-+#define static
-+#endif
++static unsigned int random_seed;
 +
- #define MAX_RANDOM_SEED 10000000
+ /*
+  * A buffer which is used by 'make_name()' to return the generated random name.
+  */
+@@ -260,7 +262,7 @@ static unsigned int random_no(unsigned int max)
+ 	assert(max < RAND_MAX);
+ 	if (max == 0)
+ 		return 0;
+-	return rand() % max;
++	return rand_r(&random_seed) % max;
+ }
  
- /* The pattern for the top directory where we run the test */
+ /*
+@@ -2952,6 +2954,7 @@ int main(int argc, char *argv[])
+ {
+ 	int ret;
+ 	long rpt;
++	unsigned int pid = getpid();
+ 
+ 	ret = parse_opts(argc, argv);
+ 	if (ret)
+@@ -2960,7 +2963,8 @@ int main(int argc, char *argv[])
+ 	get_tested_fs_info();
+ 
+ 	/* Seed the random generator with out PID */
+-	srand(getpid());
++	srand(pid);
++	random_seed = pid;
+ 
+ 	random_name_buf = malloc(fsinfo.max_name_len + 1);
+ 	CHECK(random_name_buf != NULL);
 -- 
 1.7.2.3
