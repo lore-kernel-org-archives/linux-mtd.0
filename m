@@ -1,16 +1,18 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QDK3W-0002nd-OD
+	id 1QDK3W-0002nf-OE
 	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2011 17:22:11 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3MHM8RY025930
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2011 20:22:08 +0300
+	p3MHM8Sj025949
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Apr 2011 20:22:09 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 00/13] More integck improvements
-Date: Fri, 22 Apr 2011 20:25:11 +0300
-Message-Id: <1303493124-7619-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 02/13] fs-tests: integck: do not inlcude lib directory
+Date: Fri, 22 Apr 2011 20:25:13 +0300
+Message-Id: <1303493124-7619-3-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1303493124-7619-1-git-send-email-dedekind1@gmail.com>
+References: <1303493124-7619-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -21,25 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Now integck power cut mode works, mostly. It fails sometimes, though.
-I know the reason of some of the failures and this needs work in UBIFS.
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-The test still does not verify integrity of clean files after an emulated
-power cut - it only makes sure the file-system is mountable and usable
-after power cuts. But this is already a lot and I see several issues.
-Once I've fixed them - I'll implement better integrity checking.
+The integck test does not depend on the "common" directory any more,
+so we do not have to have -I ../lib for compilation.
 
-Remind - the long term goal is to solve the unstable bits problem, but
-to even start doing this we need:
-1. Rock solid user-space test which can stress-test the FS well, and
-   be aware of the power cut emulation.
-2. UBIFS and integck should survive the current UBIFS power cut emulation
-   which does not emulate unstable bits.
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ tests/fs-tests/integrity/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Only after this we can move further. I do not know when I reach that
-point, but I'm trying.
-
-Anyway, these tests fix several integck problems I encountered, make
-it nicer, and improve it.
-
-Artem.
+diff --git a/tests/fs-tests/integrity/Makefile b/tests/fs-tests/integrity/Makefile
+index 03652a2..976c3ce 100644
+--- a/tests/fs-tests/integrity/Makefile
++++ b/tests/fs-tests/integrity/Makefile
+@@ -5,7 +5,7 @@ endif
+ 
+ COMMON_HEADERS_DIR := ../../../include
+ 
+-CFLAGS := $(CFLAGS) -Wall -g -O2 -I../lib -I$(COMMON_HEADERS_DIR)
++CFLAGS := $(CFLAGS) -Wall -g -O2 -I$(COMMON_HEADERS_DIR)
+ 
+ LDFLAGS := $(LDFLAGS)
+ 
+-- 
+1.7.2.3
