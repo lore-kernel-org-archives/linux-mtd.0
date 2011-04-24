@@ -1,16 +1,19 @@
-Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QDzGe-00026X-K1
-	for linux-mtd@lists.infradead.org; Sun, 24 Apr 2011 13:22:29 +0000
-Received: from eru.research.nokia.com ([172.21.24.121])
-	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3ODMO06031759
-	for <linux-mtd@lists.infradead.org>; Sun, 24 Apr 2011 16:22:25 +0300
+	id 1QE1vj-0002zm-0Q
+	for linux-mtd@lists.infradead.org; Sun, 24 Apr 2011 16:13:04 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p3OGD1pY010535
+	for <linux-mtd@lists.infradead.org>; Sun, 24 Apr 2011 19:13:01 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 4/5] UBIFS: remove strange commentary
-Date: Sun, 24 Apr 2011 16:26:05 +0300
-Message-Id: <1303651565-18302-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 3/5] fs-tests: integck: fix line number in CHECK() output
+Date: Sun, 24 Apr 2011 19:16:16 +0300
+Message-Id: <1303661778-13214-4-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1303661778-13214-1-git-send-email-dedekind1@gmail.com>
+References: <1303661778-13214-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +25,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Remove the following commentary from 'ubifs_file_mmap()':
-
-/* 'generic_file_mmap()' takes care of NOMMU case */
-
-I do not understand what it means, and I could not find anything relater to
-NOMMU in 'generic_file_mmap()'.
+In 'check_failed()' use the file and line number provided by the CHECK()
+macro via the function parameters, rather than using __LINE__ directly.
+Otherwise the funtion prints its own line, instead of the line where the
+CHECK() failed.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/file.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ tests/fs-tests/integrity/integck.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
-index adce3b7..5e7fccf 100644
---- a/fs/ubifs/file.c
-+++ b/fs/ubifs/file.c
-@@ -1541,7 +1541,6 @@ static int ubifs_file_mmap(struct file *file, struct vm_area_struct *vma)
- {
- 	int err;
+diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
+index 80d34c0..9f03709 100644
+--- a/tests/fs-tests/integrity/integck.c
++++ b/tests/fs-tests/integrity/integck.c
+@@ -233,7 +233,7 @@ static void check_failed(const char *cond, const char *func, const char *file,
  
--	/* 'generic_file_mmap()' takes care of NOMMU case */
- 	err = generic_file_mmap(file, vma);
- 	if (err)
- 		return err;
+ 	fflush(stdout);
+ 	errmsg("condition '%s' failed in %s() at %s:%d",
+-	       cond, func, __FILE__, __LINE__);
++	       cond, func, file, line);
+ 	normsg("error %d (%s)", error, strerror(error));
+ 	/*
+ 	 * Note, to make this work well you need:
 -- 
 1.7.2.3
