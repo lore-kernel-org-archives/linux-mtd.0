@@ -1,17 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QE1vi-0002zl-Vx
+	id 1QE1vj-0002zo-UH
 	for linux-mtd@lists.infradead.org; Sun, 24 Apr 2011 16:13:05 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa02.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3OGD1Je010524
-	for <linux-mtd@lists.infradead.org>; Sun, 24 Apr 2011 19:13:01 +0300
+	p3OGD2pJ010549
+	for <linux-mtd@lists.infradead.org>; Sun, 24 Apr 2011 19:13:02 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/5] fs-tests: integck: do not run checking when in power cut
-	mode
-Date: Sun, 24 Apr 2011 19:16:15 +0300
-Message-Id: <1303661778-13214-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 5/5] fs-tests: integck: fix falures with SIGBUS
+Date: Sun, 24 Apr 2011 19:16:18 +0300
+Message-Id: <1303661778-13214-6-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303661778-13214-1-git-send-email-dedekind1@gmail.com>
 References: <1303661778-13214-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -26,71 +25,65 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Do not check the file-system when we are in power cut mode. Currently
-we still check the FS if we did not encounter any error, and the test
-fails sometimes because meanwhile write-back encounters an error and
-drops pages. Disable the checking so far. It should be enabled when
-we implement the 'clean' flag for files.
+The test sometimes dies due to SIGBUS because a power cut event happens when
+we are writing to an mmap()'ed area. SIGBUS is very difficult to ignore, so
+fix the issue simply by avoiding doing 'mmap()' operations when in power cut
+testing mode.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   37 +++++++++++++++++++++++++----------
- 1 files changed, 26 insertions(+), 11 deletions(-)
+ tests/fs-tests/integrity/integck.c |   20 +++++++++++++++++---
+ 1 files changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 52433ba..80d34c0 100644
+index f1a2f84..bbbc7cb 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -2507,9 +2507,32 @@ static int remount_tested_fs(void)
- 
- static void check_tested_fs(void)
- {
--	check_run_no += 1;
--	dir_check(top_dir);
--	check_deleted_files();
-+	/*
-+	 * when we are in power cut mode we can only test files which have not
-+	 * been modified since the last successful 'fsync()'. this is not
-+	 * implemented yet.
-+	 *
-+	 * note, even if we have not encounter any error during the test, we
-+	 * cannot test the file-system. indeed, consider the situation when we
-+	 * have written data to file a. a lot of the data is currently cached
-+	 * and is waiting for write-back. when write-back happens, an emulated
-+	 * power cut may also happen and cause write-back to drop the errored
-+	 * pages. and if we start checking the file a after this, we'll fail as
-+	 * well.
-+	 *
-+	 * and even re-mounting will not help, because re-mounting will cause
-+	 * full sync which may fail and data pages will be dropped, but
-+	 * 'unmount()' will nevertheless succeed, and if we check the
-+	 * file-system after this - the check will fail.
-+	 *
-+	 * and 'sync()' will not help as well since it does not return an
-+	 * error.
-+	 */
-+	if (!args.power_cut_mode) {
-+		check_run_no += 1;
-+		dir_check(top_dir);
-+		check_deleted_files();
-+	}
- }
+@@ -213,7 +213,6 @@ static int full   = 0; /* Flag that the file system is full */
+ static uint64_t operation_count = 0; /* Number of operations used to fill
+                                         up the file system */
+ static unsigned int check_run_no;
+-
+ static unsigned int random_seed;
  
  /*
-@@ -2985,14 +3008,6 @@ int main(int argc, char *argv[])
- 			 * When testing emulated power cuts we have to be able
- 			 * to re-mount the file-system to clean the EROFS
- 			 * state.
--			 *
--			 * But there is also another reason. Imaging the test
--			 * writes many files successfully, and decides to check
--			 * them. But the test has done many modifications, so
--			 * there will be write-back. And when write-back fails,
--			 * Linux discards the dirty pages. So, if meanwhile FS
--			 * write-back encounters emulated power cut error, the
--			 * file checking will fail as well.
- 			 */
- 			errmsg("power cut mode requers unmountable FS");
- 			goto out_free;
+@@ -1110,11 +1109,14 @@ static int file_mmap_write(struct file_info *file)
+ 	uint64_t free_space;
+ 	int fd;
+ 
++	assert(!args.power_cut_mode);
++
+ 	if (!file->links)
+ 		return 0;
+ 	get_fs_space(NULL, &free_space);
+ 	if (!free_space)
+ 		return 0;
++
+ 	/* Randomly pick a written area of the file */
+ 	if (!w)
+ 		return 0;
+@@ -1191,8 +1193,20 @@ static int file_write(struct file_info *file, int fd)
+ 	unsigned int seed;
+ 	int ret, truncate = 0;
+ 
+-	if (fsinfo.can_mmap && !full && file->link_count &&
+-	    random_no(100) == 1)
++	/*
++	 * Do not do 'mmap()' operations if:
++	 * 1. we are in power cut testing mode, because an emulated power cut
++	 *    failure may cause SIGBUS when we are writing to the 'mmap()'ed
++	 *    area, and SIGBUS is not easy to ignore.
++	 * 2. When the file-system is full, because again, writing to the
++	 *    'mmap()'ed area may cause SIGBUS when the space allocation fails.
++	 *    This is not enough to guarantee we never get SIGBUS, though. For
++	 *    example, if we write a lot to a hole, this might require a lot of
++	 *    additional space, and we may fail here. But I do not know why we
++	 *    never observed this, probably this is just very unlikely.
++	 */
++	if (!args.power_cut_mode && fsinfo.can_mmap && !full &&
++	    file->link_count && random_no(100) == 1)
+ 		return file_mmap_write(file);
+ 
+ 	get_offset_and_size(file, &offset, &size);
 -- 
 1.7.2.3
