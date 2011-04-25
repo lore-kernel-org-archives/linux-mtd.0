@@ -1,15 +1,20 @@
-From: Huang Shijie <b32955@freescale.com>
-To: <s.hauer@pengutronix.de>
-Subject: [PATCH V3 3/3] ARM: mxs: add GPMI device for imx28
-Date: Mon, 25 Apr 2011 18:20:26 +0800
-Message-ID: <1303726826-31660-3-git-send-email-b32955@freescale.com>
-In-Reply-To: <1303726826-31660-1-git-send-email-b32955@freescale.com>
-References: <1303726826-31660-1-git-send-email-b32955@freescale.com>
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QEJJa-0006bF-Mu
+	for linux-mtd@lists.infradead.org; Mon, 25 Apr 2011 10:46:54 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: 'Kartik Nagar' <kartik.n.nagar@gmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+Date: Mon, 25 Apr 2011 06:47:15 -0400
+Subject: RE: Actual number of writes to a MTD device
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A694157A1@dekaexchange07.deka.local>
+References: <loom.20110423T144945-306@post.gmane.org>
+In-Reply-To: <loom.20110423T144945-306@post.gmane.org>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Huang Shijie <b32955@freescale.com>, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de, shawn.guo@freescale.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,134 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-add gpmi device for imx28.
+Kartik:
 
-Signed-off-by: Huang Shijie <b32955@freescale.com>
----
- arch/arm/mach-mxs/clock-mx28.c                |    1 +
- arch/arm/mach-mxs/devices-mx28.h              |    4 +++
- arch/arm/mach-mxs/devices/platform-gpmi-nfc.c |   19 +++++++++++++
- arch/arm/mach-mxs/mach-mx28evk.c              |   37 +++++++++++++++++++++++++
- 4 files changed, 61 insertions(+), 0 deletions(-)
+  I don't know if the UBI or MTD layers keep such
+  statistics directly, but over time, you can
+  certainly *INFER* such statistics: just watch
+  the erase counters. Because no flash area can
+  be written more than once without erasing, you
+  can be sure that if you see the sum of all of
+  the erase counters increase by "n", then you have
+  written approximately (n * bytes_per_LEB) bytes
+  of data.
 
-diff --git a/arch/arm/mach-mxs/clock-mx28.c b/arch/arm/mach-mxs/clock-mx28.c
-index 5e489a2..9dbd2d5 100644
---- a/arch/arm/mach-mxs/clock-mx28.c
-+++ b/arch/arm/mach-mxs/clock-mx28.c
-@@ -609,6 +609,7 @@ static struct clk_lookup lookups[] = {
- 	_REGISTER_CLOCK("duart", NULL, uart_clk)
- 	_REGISTER_CLOCK("imx28-fec.0", NULL, fec_clk)
- 	_REGISTER_CLOCK("imx28-fec.1", NULL, fec_clk)
-+	_REGISTER_CLOCK("imx28-gpmi-nfc", NULL, gpmi_clk)
- 	_REGISTER_CLOCK("mxs-auart.0", NULL, uart_clk)
- 	_REGISTER_CLOCK("mxs-auart.1", NULL, uart_clk)
- 	_REGISTER_CLOCK("mxs-auart.2", NULL, uart_clk)
-diff --git a/arch/arm/mach-mxs/devices-mx28.h b/arch/arm/mach-mxs/devices-mx28.h
-index 9d08555..816bd47 100644
---- a/arch/arm/mach-mxs/devices-mx28.h
-+++ b/arch/arm/mach-mxs/devices-mx28.h
-@@ -34,6 +34,10 @@ extern const struct mxs_flexcan_data mx28_flexcan_data[] __initconst;
- #define mx28_add_flexcan0(pdata)	mx28_add_flexcan(0, pdata)
- #define mx28_add_flexcan1(pdata)	mx28_add_flexcan(1, pdata)
- 
-+extern const struct mxs_gpmi_nfc_data mx28_gpmi_nfc_data __initconst;
-+#define mx28_add_gpmi_nfc(pdata)	\
-+	mxs_add_gpmi_nfc(pdata, &mx28_gpmi_nfc_data)
-+
- extern const struct mxs_i2c_data mx28_mxs_i2c_data[] __initconst;
- #define mx28_add_mxs_i2c(id)		mxs_add_mxs_i2c(&mx28_mxs_i2c_data[id])
- 
-diff --git a/arch/arm/mach-mxs/devices/platform-gpmi-nfc.c b/arch/arm/mach-mxs/devices/platform-gpmi-nfc.c
-index 5a68370..ae88672 100644
---- a/arch/arm/mach-mxs/devices/platform-gpmi-nfc.c
-+++ b/arch/arm/mach-mxs/devices/platform-gpmi-nfc.c
-@@ -17,6 +17,7 @@
-  */
- #include <asm/sizes.h>
- #include <mach/mx23.h>
-+#include <mach/mx28.h>
- #include <mach/devices-common.h>
- 
- #define RES_MEM(soc, _id, _s, _n)				\
-@@ -61,6 +62,24 @@ const struct mxs_gpmi_nfc_data mx23_gpmi_nfc_data __initconst = {
- };
- #endif
- 
-+#ifdef CONFIG_SOC_IMX28
-+const struct mxs_gpmi_nfc_data mx28_gpmi_nfc_data __initconst = {
-+	.devid = "imx28-gpmi-nfc",
-+	.res = {
-+		/* GPMI */
-+		RES_MEM(MX28, GPMI, SZ_8K, GPMI_NFC_GPMI_REGS_ADDR_RES_NAME),
-+		RES_IRQ(MX28, GPMI, GPMI_NFC_GPMI_INTERRUPT_RES_NAME),
-+		/* BCH */
-+		RES_MEM(MX28, BCH, SZ_8K, GPMI_NFC_BCH_REGS_ADDR_RES_NAME),
-+		RES_IRQ(MX28, BCH, GPMI_NFC_BCH_INTERRUPT_RES_NAME),
-+		/* DMA */
-+		RES_DMA(MX28, DMA_GPMI0, DMA_GPMI7,
-+					GPMI_NFC_DMA_CHANNELS_RES_NAME),
-+		RES_IRQ(MX28, GPMI_DMA, GPMI_NFC_DMA_INTERRUPT_RES_NAME),
-+	},
-+};
-+#endif
-+
- struct platform_device *__init
- mxs_add_gpmi_nfc(const struct gpmi_nfc_platform_data *pdata,
- 		const struct mxs_gpmi_nfc_data *data)
-diff --git a/arch/arm/mach-mxs/mach-mx28evk.c b/arch/arm/mach-mxs/mach-mx28evk.c
-index 08002d0..0a1aab5 100644
---- a/arch/arm/mach-mxs/mach-mx28evk.c
-+++ b/arch/arm/mach-mxs/mach-mx28evk.c
-@@ -232,6 +232,42 @@ static const struct flexcan_platform_data
- 	}
- };
- 
-+/* gpmi-nfc */
-+#define MXS_PAD_GPMI_NFC	(MXS_PAD_12MA | MXS_PAD_3V3 | MXS_PAD_NOPULL)
-+static iomux_cfg_t mx28evk_gpmi_nfc_pads[] = {
-+	MX28_PAD_GPMI_D00__GPMI_D0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D01__GPMI_D1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D02__GPMI_D2 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D03__GPMI_D3 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D04__GPMI_D4 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D05__GPMI_D5 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D06__GPMI_D6 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_D07__GPMI_D7 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_ALE__GPMI_ALE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CLE__GPMI_CLE | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE0N__GPMI_CE0N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_CE1N__GPMI_CE1N | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY0__GPMI_READY0 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDY1__GPMI_READY1 | MXS_PAD_CTRL,
-+	MX28_PAD_GPMI_RDN__GPMI_RDN | MXS_PAD_GPMI_NFC,
-+	MX28_PAD_GPMI_WRN__GPMI_WRN | MXS_PAD_GPMI_NFC,
-+	MX28_PAD_GPMI_RESETN__GPMI_RESETN | MXS_PAD_GPMI_NFC,
-+};
-+
-+static int mx28evk_gpmi_nfc_platform_init(void)
-+{
-+	return mxs_iomux_setup_multiple_pads(mx28evk_gpmi_nfc_pads,
-+				ARRAY_SIZE(mx28evk_gpmi_nfc_pads));
-+}
-+
-+static const struct gpmi_nfc_platform_data
-+mx28evk_gpmi_nfc_data __initconst = {
-+	.platform_init		= mx28evk_gpmi_nfc_platform_init,
-+	.min_prop_delay_in_ns	= 5,
-+	.max_prop_delay_in_ns	= 9,
-+	.max_chip_count		= 1,
-+};
-+
- /* mxsfb (lcdif) */
- static struct fb_videomode mx28evk_video_modes[] = {
- 	{
-@@ -296,6 +332,7 @@ static void __init mx28evk_init(void)
- 	else
- 		gpio_set_value(MX28EVK_BL_ENABLE, 1);
- 
-+	mx28_add_gpmi_nfc(&mx28evk_gpmi_nfc_data);
- 	mx28_add_mxsfb(&mx28evk_mxsfb_pdata);
- }
- 
--- 
-1.7.0.4
+  This is only valid when measured over a reasonably
+  long time, of course. Over a short time, there's
+  too much "noise" in the signal because slight
+  variations in the LEB-to-PEB mapping can cause
+  big variations in exactly when erase blocks get
+  erased.
+
+                       Atlant
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
+.infradead.org] On Behalf Of Kartik Nagar
+Sent: Saturday, April 23, 2011 08:56
+To: linux-mtd@lists.infradead.org
+Subject: Actual number of writes to a MTD device
+
+Hi,
+
+I am using UBIFS on top of UBI on top of a MTD partition and then running s=
+ome
+workloads on the UBIFS filesystem. I actually want to determine the write
+amplification factor for the workload, for which i need the actual number o=
+f
+writes going to the MTD device. Do UBIFS/MTD systems record such statistics=
+, or
+will I have to make changes to the source code to obtain the statistics?
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
