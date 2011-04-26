@@ -1,21 +1,22 @@
-Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEgMY-0000E7-F4
-	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 11:23:27 +0000
-Subject: Re: [PATCH 2/2] mtd: add switch to support NAND flash on big
-	endian bus
-From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.1104131609410.30071@lnxricardw.se.axis.com>
-References: <1302702918-6050-1-git-send-email-hans-christian.egtvedt@atmel.com>
-	<1302702918-6050-2-git-send-email-hans-christian.egtvedt@atmel.com>
-	<Pine.LNX.4.64.1104131609410.30071@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 26 Apr 2011 13:23:08 +0200
-Message-ID: <1303816988.3125.7.camel@hcegtvedt>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <4DB6C13F.2020402@codeaurora.org>
+Date: Tue, 26 Apr 2011 18:27:35 +0530
+From: Murali Nalajala <mnalajal@codeaurora.org>
+MIME-Version: 1.0
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH V2 2/2] mtd: msm_nand: Add initial msm nand driver support.
+References: <1302938249-4601-1-git-send-email-mnalajal@codeaurora.org>
+	<4DABE8FE.5040300@parrot.com>
+In-Reply-To: <4DABE8FE.5040300@parrot.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	Dima Zavin <dima@android.com>,
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Brian Swetland <swetland@google.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +26,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-04-13 at 16:11 +0200, Ricard Wanderlof wrote:
-> On Wed, 13 Apr 2011, Hans-Christian Egtvedt wrote:
-> 
-> > This patch adds a new kconfig symbol to the MTD NAND system, MTD_NAND_BE_BUS.
-> > This symbol is used by the nand base to properly convert the data read from the
-> > bus into the format the CPU expects.
-> >
-> > The patch fixes 16-bit NAND flash support on big endian architectures (at least
-> > AVR32) with NAND flash hooked up to a big endian external bus.
-> >
-> > Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
-> > ---
-> > drivers/mtd/nand/Kconfig     |    8 ++++++++
-> > drivers/mtd/nand/nand_base.c |    8 ++++++++
-> > 2 files changed, 16 insertions(+), 0 deletions(-)
-> >
-> > diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> > index edec457..bb3a54a 100644
-> > --- a/drivers/mtd/nand/Kconfig
-> > +++ b/drivers/mtd/nand/Kconfig
-> > @@ -22,6 +22,14 @@ menuconfig MTD_NAND
-> >
-> > if MTD_NAND
-> >
-> > +config MTD_NAND_BE_BUS
-> > +	bool "NAND device on big endian bus"
-> > +	default n
-> > +	help
-> > +	  This option will assume data read from the bus is in big endian
-> > +	  format. This is vital when reading command values from the bus, as
-> > +	  only the lower 8 bit are in use then.
-> > +
-> > config MTD_NAND_VERIFY_WRITE
-> > 	bool "Verify NAND page writes"
-> > 	help
-> > diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> > index c54a4cb..bbb0c1d 100644
-> > --- a/drivers/mtd/nand/nand_base.c
-> > +++ b/drivers/mtd/nand/nand_base.c
-> > @@ -180,7 +180,11 @@ static uint8_t nand_read_byte(struct mtd_info *mtd)
-> > static uint8_t nand_read_byte16(struct mtd_info *mtd)
-> > {
-> > 	struct nand_chip *chip = mtd->priv;
-> > +#if CONFIG_MTD_NAND_BE_BUS
-> > +	return (uint8_t) be16_to_cpu(readw(chip->IO_ADDR_R));
-> > +#else
-> > 	return (uint8_t) cpu_to_le16(readw(chip->IO_ADDR_R));
-> > +#endif }
-> 
-> Wouldn't one expect a certain symmetry here, i.e. if one function is
-> cpu_to_le16, the other one would be called cpu_to_be16 ? I guess in most 
-> cases cpu_to_le16 would be the same as le16_to_cpu, etc, but it still 
-> looks as if someone made a mistake.
+On 4/18/2011 1:02 PM, Matthieu CASTET wrote:
+> Hi,
+>
+> Murali Nalajala a écrit :
+>> Add initial msm nand driver support for Qualcomm MSM platforms.
+>> This driver is capable of handling both 2k and 4k page support
+>> nand devices.
+>>
+>> This driver was originally developed by Arve Hjønnevåg at google.
+>> Its source is available at
+>> http://android.git.kernel.org/?p=kernel/msm.git under
+>> android-msm-2.6.35 branch.
+>>
+>> CC: Dima Zavin<dima@android.com>
+>> CC: Brian Swetland<swetland@google.com>
+>> CC: Arve Hjønnevåg<arve@android.com>
+>> Signed-off-by: Murali Nalajala<mnalajal@codeaurora.org>
+>> ---
+>> Changes in V2
+>> * Turn most of the pr_info() calls into pr_debug().
+>>
+>>   drivers/mtd/devices/Kconfig    |   11 +
+>>   drivers/mtd/devices/Makefile   |    1 +
+>>   drivers/mtd/devices/msm_nand.c | 1597 ++++++++++++++++++++++++++++++++++++++++
+>>   drivers/mtd/devices/msm_nand.h |   77 ++
+>>   4 files changed, 1686 insertions(+), 0 deletions(-)
+>>   create mode 100644 drivers/mtd/devices/msm_nand.c
+>>   create mode 100644 drivers/mtd/devices/msm_nand.h
+>>
+>
+> For the record, I am not sure it is a great idea to make nand drivers
+> independent of the nand layer.
+> By doing that you could change the expected behavior, and introduce bug
+> difficult to debug.
+>
+> Why do you need that ? Nand drivers can override callbacks of nand framework.
+>
+> Maybe because the nand layer call the driver page per page, and  you want to
+> work with more than one page. But in this case you can extend nand layer.
+>
+> Or does your controller don't allow sending raw command ?
+> And in that case all the nand logic is in the nand controller ?
 
-My other option for this patch is to remove the endianness conversion
-all together, it looks a bit weird, and AFAICT it indicates that the
-external NAND device is wired in a certain way to the bus interface.
+Our controller doesn't allow sending RAW commands to the flash. All 
+these commands are abstracted by the controller logic. Please refer the 
+msm_nand.h file where you will find the commands which are different 
+from the actual NAND device commands.
 
-Perhaps someone with knowledge about this specific piece of code can
-shed some light on this?
+eg: To send read/write data command to the device we configure the 
+controller with page address & controller specific command. Then the 
+controller itself takes care of generating the internal h/w signals 
+required by the flash and it polls for the R/B signal & wait states are 
+internally controlled by the h/w.
+
+>
+> Matthieu
+
+
+
+Thanks,
+Murali N
 
 -- 
-Hans-Christian Egtvedt
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
