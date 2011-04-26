@@ -1,17 +1,19 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEcCN-0006qo-6B
-	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 06:56:40 +0000
-Message-ID: <4DB66CA3.2040906@denx.de>
-Date: Tue, 26 Apr 2011 08:56:35 +0200
-From: Stefano Babic <sbabic@denx.de>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: ubiformat: libmt error (side effect from last Large Buffer Allocations
-	patch)
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: marathon96@gmail.com, Bastian Ruppert <bastian.ruppert@sewerin.de>
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QEced-00071K-Ke
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 07:25:53 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p3Q7PnSB010184
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2011 10:25:49 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 2/4] UBIFS: remove dead GC LEB recovery piece of code
+Date: Tue, 26 Apr 2011 10:29:21 +0300
+Message-Id: <1303802963-31612-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1303802963-31612-1-git-send-email-dedekind1@gmail.com>
+References: <1303802963-31612-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,88 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-I have seen a side effect introduced with Grant's patch. I have applied
-the patchset and this fix the allocation problem in kernel.
+This patch removes a piece of code in 'ubifs_rcvry_gc_commit()' which is never
+executed. We call 'ubifs_find_dirty_leb()' function with min_space =
+wbuf->offs, so if it returns us an LEB, it is guaranteed to have at lease
+'wbuf->offs' bytes of free+dirty space. So we can remove the subsequent code
+which deals with "returned LEB has less than 'wbuf->offs' bytes of free+dirty
+space". This simplifies 'ubifs_rcvry_gc_commit()' a little.
 
-However, on my system (davinci with only 32 MB RAM), ubiformat does not
-work and reports the following error:
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/ubifs/recovery.c |   13 +------------
+ 1 files changed, 1 insertions(+), 12 deletions(-)
 
-libmtd: error!: cannot write 129024 bytes to mtd3 (eraseblock 13, offset 0)
-        error 22 (Invalid argument)
-ubiformat: error!: cannot write eraseblock 13
-           error 22 (Invalid argument)
-
-
-I have found that an issue is raised when ubiformat tries to optimize
-and skipping 0xFF, calling its internal function drop_ffs(). When a file
-image is flashed, it is checked if the last part of the buffer is 0xFF,
-and the length is reduced to contain the last byte in buffer not equal
-to 0xFF. The resulting length is then aligned with the minimum flash I/O
-size.
-
-However, the result lenght can be an odd multiple of the minimum I/O
-size, and when there is not enough memory available, the introduced
-mtd_malloc_up_to_size() tries to allocate half the amount of requested
-size, getting a buffer not aligned with the minimum I/O size. The result
-is that the test in nand_base.c for the alignment fails:
-
-if (NOTALIGNED(to) || NOTALIGNED(ops->len)) {
-                printk(KERN_NOTICE "%s: Attempt to write not "
-
-
-I traced the values of ops_len in nand_do_write_ops and the requested
-size in ubiformat (I traced the new computed length after drop_ffs), and
-I got that drop_ffs changed the length from 131072 (sector size) to
-129024 (this is still aligned). This is 63 times the minimum I/O size on
-my NAND (page size, 2048 bytes).
-
-If enough memory is available, it works. If kmalloc() fails in
-mtd_malloc_up_to_size(), a buffer of half length is allocated --> 64512
-bytes. However, this buffer is *NOT* aligned with the minimum I/O size,
-and then mtd_write fails:
-
-ubiformat: flashing eraseblock 28 -- 17 % complete
-	  CHANGED len newlen: 129024 len: 131072 min I/O size: 2048
-           ^- Traced after drop_ffs:
-
-subpagesize 2048 129024
-
-^---Traced in kernel, nand_do_write_ops: subpage size, ops->len
-
-.....
-
-ubiformat: flashing eraseblock 31 -- 19 % complete  CHANGED len 129024
-131072 2048
-subpagesize 2048 64512 64512
-                   ^
-                   |-- kmalloc fails, 129024/2=64512 is allocated
-			but this is not aligned
-
-nand_do_write_ops: Attempt to write not page aligned data 1be0000 0
-64512 2048
-libmtd: error!: cannot write 129024 bytes to mtd3 (eraseblock 31, offset 0)
-        error 22 (Invalid argument)
-ubiformat: error!: cannot write eraseblock 31
-           error 22 (Invalid argument)
-
-
-If I remove the optimization in ubiformat, it works, because sector size
-is a n-multiple of minimum I/O size. When kmalloc fails, a
-131072/2=65536 buffer is allocated.
-
-IMHO mtd_malloc_up_to_size() must allocate a buffer aligned with the
-minimum I/O size. What about adding the I/O size as parameter to
-mtd_malloc_up_to_size, so the function will return always an aligned
-buffer ?
-
-Best regards,
-Stefano Babic
-
+diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
+index 1a72046..3e0eedbe 100644
+--- a/fs/ubifs/recovery.c
++++ b/fs/ubifs/recovery.c
+@@ -1127,21 +1127,10 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
+ 	}
+ 
+ 	ubifs_assert(!(lp.flags & LPROPS_INDEX));
++	ubifs_assert(lp.free + lp.dirty >= wbuf->offs);
+ 	lnum = lp.lnum;
+ 
+ 	/*
+-	 * There was no empty LEB so the used space in the dirtiest LEB must fit
+-	 * in the GC head LEB.
+-	 */
+-	if (lp.free + lp.dirty < wbuf->offs) {
+-		dbg_rcvry("LEB %d doesn't fit in GC head LEB %d:%d",
+-			  lnum, wbuf->lnum, wbuf->offs);
+-		err = ubifs_return_leb(c, lnum);
+-		if (err)
+-			return err;
+-		goto find_free;
+-	}
+-	/*
+ 	 * We run the commit before garbage collection otherwise subsequent
+ 	 * mounts will see the GC and orphan deletion in a different order.
+ 	 */
 -- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
-=====================================================================
+1.7.2.3
