@@ -1,16 +1,16 @@
-Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEced-00071J-KZ
-	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 07:25:54 +0000
+	id 1QEcfu-00074K-Rv
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 07:27:11 +0000
 Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3Q7PmNA010174
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2011 10:25:48 +0300
+	by mgw-da01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
+	p3Q7R8gI015874
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2011 10:27:08 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/4] UBIFS: remove duplicated code
-Date: Tue, 26 Apr 2011 10:29:20 +0300
-Message-Id: <1303802963-31612-1-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH] fs-tests: integck: fail loudly on unexpected EROFS
+Date: Tue, 26 Apr 2011 10:30:22 +0300
+Message-Id: <1303803022-31863-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -23,131 +23,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-We have duplicated code in 'ubifs_garbage_collect()' and
-'ubifs_rcvry_gc_commit()', which is about handling the special case of free
-LEB. In both cases we just want to garbage-collect the LEB using
-'ubifs_garbage_collect_leb()'.
-
-This patch teaches 'ubifs_garbage_collect_leb()' to handle free LEB's so that
-the caller does not have to do this and the duplicated code is removed.
+If we are not in power cut testing mode (-p was not used) and we get an
+unexpected EROFS, we silently exit. This patch fixes this behavior and make
+the test loudly fail instead.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c       |   62 +++++++++++++++++++++++++-------------------------
- fs/ubifs/recovery.c |   19 +--------------
- 2 files changed, 33 insertions(+), 48 deletions(-)
+ tests/fs-tests/integrity/integck.c |   12 ++++++++----
+ 1 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index 151f108..082d21b 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -473,6 +473,37 @@ int ubifs_garbage_collect_leb(struct ubifs_info *c, struct ubifs_lprops *lp)
- 	ubifs_assert(c->gc_lnum != lnum);
- 	ubifs_assert(wbuf->lnum != lnum);
+diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
+index bbbc7cb..1dd424e 100644
+--- a/tests/fs-tests/integrity/integck.c
++++ b/tests/fs-tests/integrity/integck.c
+@@ -69,9 +69,11 @@
+ 		check_failed(stringify(cond), __func__, __FILE__, __LINE__); \
+ } while(0)
  
-+	if (lp->free + lp->dirty == c->leb_size) {
-+		/* Special case - a free LEB  */
-+		dbg_gc("LEB %d is free, return it", lp->lnum);
-+		ubifs_assert(!(lp->flags & LPROPS_INDEX));
-+
-+		if (lp->free != c->leb_size) {
-+			/*
-+			 * Write buffers must be sync'd before unmapping
-+			 * freeable LEBs, because one of them may contain data
-+			 * which obsoletes something in 'lp->pnum'.
-+			 */
-+			err = gc_sync_wbufs(c);
-+			if (err)
-+				return err;
-+			err = ubifs_change_one_lp(c, lp->lnum, c->leb_size,
-+						  0, 0, 0, 0);
-+			if (err)
-+				return err;
-+		}
-+		err = ubifs_leb_unmap(c, lp->lnum);
-+		if (err)
-+			return err;
-+
-+		if (c->gc_lnum == -1) {
-+			c->gc_lnum = lnum;
-+			return LEB_RETAINED;
-+		}
-+
-+		return LEB_FREED;
-+	}
-+
- 	/*
- 	 * We scan the entire LEB even though we only really need to scan up to
- 	 * (c->leb_size - lp->free).
-@@ -682,37 +713,6 @@ int ubifs_garbage_collect(struct ubifs_info *c, int anyway)
- 		       "(min. space %d)", lp.lnum, lp.free, lp.dirty,
- 		       lp.free + lp.dirty, min_space);
+-#define pcv(fmt, ...) do {                                         \
+-	if (args.power_cut_mode && args.verbose)                   \
+-		normsg(fmt " (line %d)", ##__VA_ARGS__, __LINE__); \
++#define pcv(fmt, ...) do {                                                   \
++	if (!args.power_cut_mode || (args.power_cut_mode && args.verbose))   \
++		normsg(fmt " (line %d)", ##__VA_ARGS__, __LINE__);           \
++	if (!args.power_cut_mode)                                            \
++		CHECK(0);                                                    \
+ } while(0)
  
--		if (lp.free + lp.dirty == c->leb_size) {
--			/* An empty LEB was returned */
--			dbg_gc("LEB %d is free, return it", lp.lnum);
--			/*
--			 * ubifs_find_dirty_leb() doesn't return freeable index
--			 * LEBs.
--			 */
--			ubifs_assert(!(lp.flags & LPROPS_INDEX));
--			if (lp.free != c->leb_size) {
--				/*
--				 * Write buffers must be sync'd before
--				 * unmapping freeable LEBs, because one of them
--				 * may contain data which obsoletes something
--				 * in 'lp.pnum'.
--				 */
--				ret = gc_sync_wbufs(c);
--				if (ret)
--					goto out;
--				ret = ubifs_change_one_lp(c, lp.lnum,
--							  c->leb_size, 0, 0, 0,
--							  0);
--				if (ret)
--					goto out;
--			}
--			ret = ubifs_leb_unmap(c, lp.lnum);
--			if (ret)
--				goto out;
--			ret = lp.lnum;
--			break;
--		}
--
- 		space_before = c->leb_size - wbuf->offs - wbuf->used;
- 		if (wbuf->lnum == -1)
- 			space_before = 0;
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 3dbad6f..1a72046 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -1125,25 +1125,10 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
- 		}
- 		return err;
- 	}
-+
- 	ubifs_assert(!(lp.flags & LPROPS_INDEX));
- 	lnum = lp.lnum;
--	if (lp.free + lp.dirty == c->leb_size) {
--		/* An empty LEB was returned */
--		if (lp.free != c->leb_size) {
--			err = ubifs_change_one_lp(c, lnum, c->leb_size,
--						  0, 0, 0, 0);
--			if (err)
--				return err;
--		}
--		err = ubifs_leb_unmap(c, lnum);
--		if (err)
--			return err;
--		c->gc_lnum = lnum;
--		dbg_rcvry("allocated LEB %d for GC", lnum);
--		/* Run the commit */
--		dbg_rcvry("committing");
--		return ubifs_run_commit(c);
--	}
-+
- 	/*
- 	 * There was no empty LEB so the used space in the dirtiest LEB must fit
- 	 * in the GC head LEB.
+ /* The variables below are set by command line arguments */
+@@ -3048,8 +3050,10 @@ int main(int argc, char *argv[])
+ 		/*
+ 		 * Iterate forever only in case of power-cut emulation testing.
+ 		 */
+-		if (!args.power_cut_mode)
++		if (!args.power_cut_mode) {
++			CHECK(!ret);
+ 			break;
++		}
+ 
+ 		CHECK(ret);
+ 		CHECK(errno == EROFS);
 -- 
 1.7.2.3
