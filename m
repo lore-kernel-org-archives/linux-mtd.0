@@ -1,21 +1,21 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEcul-0007Hc-7I
-	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 07:42:31 +0000
-Received: by ewy3 with SMTP id 3so116111ewy.36
+	id 1QEczW-0007KI-SH
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 07:47:27 +0000
+Received: by eyh6 with SMTP id 6so119726eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Apr 2011 00:42:28 -0700 (PDT)
-Subject: Re: Actual number of writes to a MTD device
+	Tue, 26 Apr 2011 00:47:24 -0700 (PDT)
+Subject: Re: [PATCH] mtdconcat: Fix NAND OOB write
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kartik Nagar <kartik.n.nagar@gmail.com>
-In-Reply-To: <loom.20110423T144945-306@post.gmane.org>
-References: <loom.20110423T144945-306@post.gmane.org>
+To: Felix Radensky <felix@embedded-sol.com>
+In-Reply-To: <1303685832-17285-1-git-send-email-felix@embedded-sol.com>
+References: <1303685832-17285-1-git-send-email-felix@embedded-sol.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 26 Apr 2011 10:38:54 +0300
-Message-ID: <1303803534.2778.23.camel@localhost>
+Date: Tue, 26 Apr 2011 10:43:50 +0300
+Message-ID: <1303803830.2778.24.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,17 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2011-04-23 at 12:55 +0000, Kartik Nagar wrote:
-> Hi,
+On Mon, 2011-04-25 at 01:57 +0300, Felix Radensky wrote:
+> Currently mtdconcat is broken for NAND. An attemtpt to create
+> JFFS2 filesystem on concatenation of several NAND devices fails
+> with OOB write errors. This patch fixes that problem.
 > 
-> I am using UBIFS on top of UBI on top of a MTD partition and then running some
-> workloads on the UBIFS filesystem. I actually want to determine the write
-> amplification factor for the workload, for which i need the actual number of
-> writes going to the MTD device. Do UBIFS/MTD systems record such statistics, or
-> will I have to make changes to the source code to obtain the statistics?
+> Signed-off-by: Felix Radensky <felix@embedded-sol.com>
 
-These statistics has to be done on MTD level, not in UBIFS. MTD does not
-do this AFAIK.
+Looks like material for -stable, no?
 
 -- 
 Best Regards,
