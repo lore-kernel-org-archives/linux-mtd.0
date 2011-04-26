@@ -1,21 +1,21 @@
-Received: from mail-out.m-online.net ([212.18.0.10])
+Received: from newsmtp5.atmel.com ([204.2.163.5] helo=sjogate2.atmel.com)
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEfmN-0008Kg-Si
-	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 10:46:05 +0000
-Message-ID: <4DB6A266.5050509@denx.de>
-Date: Tue, 26 Apr 2011 12:45:58 +0200
-From: Stefano Babic <sbabic@denx.de>
-MIME-Version: 1.0
+	id 1QEgA6-00008f-DJ
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 11:10:35 +0000
+Subject: Re: [PATCH 2/2] mtd: add switch to support NAND flash on big
+	endian bus
+From: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
 To: dedekind1@gmail.com
-Subject: Re: ubiformat: libmt error (side effect from last Large Buffer
-	Allocations patch)
-References: <4DB66CA3.2040906@denx.de> <1303807043.2778.45.camel@localhost>
-In-Reply-To: <1303807043.2778.45.camel@localhost>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1302784536.2796.34.camel@localhost>
+References: <1302702918-6050-1-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1302702918-6050-2-git-send-email-hans-christian.egtvedt@atmel.com>
+	<1302784536.2796.34.camel@localhost>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 26 Apr 2011 13:10:25 +0200
+Message-ID: <1303816225.3125.3.camel@hcegtvedt>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: marathon96@gmail.com, linux-mtd@lists.infradead.org,
-	Bastian Ruppert <bastian.ruppert@sewerin.de>,
-	Stefano Babic <sbabic@denx.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 04/26/2011 10:37 AM, Artem Bityutskiy wrote:
-> Hi,
+On Thu, 2011-04-14 at 15:35 +0300, Artem Bityutskiy wrote:
+> On Wed, 2011-04-13 at 15:55 +0200, Hans-Christian Egtvedt wrote:
+> > This patch adds a new kconfig symbol to the MTD NAND system, MTD_NAND_BE_BUS.
+> > This symbol is used by the nand base to properly convert the data read from the
+> > bus into the format the CPU expects.
+> > 
+> > The patch fixes 16-bit NAND flash support on big endian architectures (at least
+> > AVR32) with NAND flash hooked up to a big endian external bus.
+> > 
+> > Signed-off-by: Hans-Christian Egtvedt <hans-christian.egtvedt@atmel.com>
+> 
+> These kind of config options are bad and lead to confusion. You should
+> try hard to auto-detect the endianness, or take this information from
+> the boot-loader via the device tree.
 
-Hi Artem,
+AVR32 doesn't support the device tree.
 
-> Yes, I think this is the right solution. I've cooked the following
-> patch, compile-tested only - please review and test.
-
-I have applied and tested your patch and the problem is solved.
-
-Tested-by: Stefano Babic <sbabic@denx.de>
-
-Best regards,
-Stefano Babic
+For AVR32 assuming big endian wiring on the EBI is sane, as the
+architecture is big-endian only. I don't know how other big endian
+architectures behaves, and I am puzzled that I am the only observer of
+this...
 
 -- 
-=====================================================================
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
-=====================================================================
+Hans-Christian Egtvedt
