@@ -1,18 +1,21 @@
-Message-ID: <19894.39377.436330.612744@ipc1.ka-ro>
-Date: Tue, 26 Apr 2011 12:09:21 +0200
-From: =?utf-8?Q?Lothar_Wa=C3=9Fmann?= <LW@KARO-electronics.de>
-To: Huang Shijie <b32955@freescale.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 1/3] MTD : add the common code for GPMI controller
-	driver
-In-Reply-To: <4DB63360.8010908@freescale.com>
-References: <1303267549-18377-1-git-send-email-b32955@freescale.com>
-	<1303267549-18377-2-git-send-email-b32955@freescale.com>
-	<19887.57747.43423.753598@ipc1.ka-ro>
-	<4DB63360.8010908@freescale.com>
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	dedekind1@gmail.com
+Received: from mail-out.m-online.net ([212.18.0.10])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QEfmN-0008Kg-Si
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 10:46:05 +0000
+Message-ID: <4DB6A266.5050509@denx.de>
+Date: Tue, 26 Apr 2011 12:45:58 +0200
+From: Stefano Babic <sbabic@denx.de>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: ubiformat: libmt error (side effect from last Large Buffer
+	Allocations patch)
+References: <4DB66CA3.2040906@denx.de> <1303807043.2778.45.camel@localhost>
+In-Reply-To: <1303807043.2778.45.camel@localhost>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Cc: marathon96@gmail.com, linux-mtd@lists.infradead.org,
+	Bastian Ruppert <bastian.ruppert@sewerin.de>,
+	Stefano Babic <sbabic@denx.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 04/26/2011 10:37 AM, Artem Bityutskiy wrote:
+> Hi,
 
-Huang Shijie writes:
-> Hi:
-> > Huang Shijie writes:
-> >> +/* debug control */
-> >> +int gpmi_debug;
-> >> +
-> > This could be a module_param.
-> >
-> I think the module_param is not easy to use.
-> I want to know the log when the gpmi driver is running, and change the 
-> log level as soon
-> as my need changs.
-> 
-> So I prefer to use the origin method.
-> 
-> 
-|static int debug;
-|module_param(debug, int, S_IRUGO | S_IWUSR);
-is all you need to do exactly what you want.
+Hi Artem,
 
-You can write to /sys/module/imx28-gpmi-nfc/parameters/debug at any
-time to change the debug level.
+> Yes, I think this is the right solution. I've cooked the following
+> patch, compile-tested only - please review and test.
 
+I have applied and tested your patch and the problem is solved.
 
-Lothar Waßmann
+Tested-by: Stefano Babic <sbabic@denx.de>
+
+Best regards,
+Stefano Babic
+
 -- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+=====================================================================
