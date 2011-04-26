@@ -1,23 +1,27 @@
-Received: from mail-iy0-f177.google.com ([209.85.210.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEkRX-0002f1-Ce
-	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 15:44:52 +0000
-Received: by iyb39 with SMTP id 39so751232iyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Apr 2011 08:44:49 -0700 (PDT)
-Date: Tue, 26 Apr 2011 08:44:38 -0700
-Subject: Re: ubiformat: libmt error (side effect from last Large Buffer
-	Allocations patch)
-From: Grant Erickson <marathon96@gmail.com>
-To: <dedekind1@gmail.com>,
-	Stefano Babic <sbabic@denx.de>
-Message-ID: <C9DC3676.28755%marathon96@gmail.com>
-In-Reply-To: <1303807043.2778.45.camel@localhost>
-Mime-version: 1.0
-Content-type: text/plain;
-	charset="US-ASCII"
-Content-transfer-encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Bastian Ruppert <bastian.ruppert@sewerin.de>
+Received: from bosmailout20.eigbox.net ([66.96.187.20])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QEruM-0006jP-Qe
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 23:43:07 +0000
+Received: from bosmailscan03.eigbox.net ([10.20.15.3])
+	by bosmailout20.eigbox.net with esmtp (Exim) id 1QEruL-0007Kh-6a
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 19:43:05 -0400
+Received: from bosimpout02.eigbox.net ([10.20.55.2])
+	by bosmailscan03.eigbox.net with esmtp (Exim) id 1QEruK-0002jg-UN
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 19:43:04 -0400
+Received: from wsip-98-189-25-196.oc.oc.cox.net ([98.189.25.196] helo=UmarPC)
+	by bosauthsmtp07.eigbox.net with esmtpa (Exim) id 1QEruK-0000nG-D8
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 19:43:04 -0400
+From: "Umar Qureshey" <umar@janteq.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Discovering current MTD partition
+Date: Tue, 26 Apr 2011 16:43:03 -0700
+Message-ID: <000201cc046b$b03a6310$10af2930$@janteq.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-us
+Sender: "Umar Qureshey" <umar@janteq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +31,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/26/11 1:37 AM, Artem Bityutskiy wrote:
-> On Tue, 2011-04-26 at 08:56 +0200, Stefano Babic wrote:
->> I have seen a side effect introduced with Grant's patch. I have applied
->> the patchset and this fix the allocation problem in kernel.
-> 
-> I think it would be great to actually CC grant :-) So, this e-mail is
-> about this patch:
-> 
-> http://lists.infradead.org/pipermail/linux-mtd/2011-April/034818.html
-> 
-> Grant, the original e-mail from Stefano:
-> http://lists.infradead.org/pipermail/linux-mtd/2011-April/035190.html
-> 
->> However, the result lenght can be an odd multiple of the minimum I/O
->> size, and when there is not enough memory available, the introduced
->> mtd_malloc_up_to_size() tries to allocate half the amount of requested
->> size, getting a buffer not aligned with the minimum I/O size. The result
->> is that the test in nand_base.c for the alignment fails:
-> 
-> Good catch! Shame on me to not foresee this issue. Thanks for reporting!
-> 
->> IMHO mtd_malloc_up_to_size() must allocate a buffer aligned with the
->> minimum I/O size. What about adding the I/O size as parameter to
->> mtd_malloc_up_to_size, so the function will return always an aligned
->> buffer ?
-> 
-> Yes, I think this is the right solution. I've cooked the following
-> patch, compile-tested only - please review and test.
-> 
-> 
-> From 18d93dac176025defd5711b429acd91ef8563a9a Mon Sep 17 00:00:00 2001
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Date: Tue, 26 Apr 2011 11:42:10 +0300
-> Subject: [PATCH] mtd: a fix candidate for mtd_kmalloc_up_to
+Hi,
 
-Artem:
+I searched this list's archive but did not see anything pertinent.
 
-Thanks for adding me to the thread. Agree that the proposed patch seems like
-a good solution.
+I was wondering if there is a way to find out what the currently active mtd
+partition is.  In my system, I have a few flash partitions for my file
+system and the kernel boots with the partition that is specified on the
+kernel command line.  Aside from scanning /proc/cmdline, is there a way to
+programmatically ascertain which mtd partition is active *now*.  
+I need to find this information within a Python script but really if it can
+be done in C (perhaps a syscall?), it's all I need.
 
-Best,
-
-Grant
+Regards,
+Umar
