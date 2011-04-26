@@ -1,161 +1,133 @@
-From: jiri.pinkava@vscht.cz (Jiri Pinkava)
-Date: Mon, 11 Apr 2011 03:20:33 +0200
-Subject: [PATCH] nand: Fix S3C NAND clock stop
-Message-ID: <mailman.197.1302491744.1530.linux-mtd@lists.infradead.org>
+From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
+Date: Tue, 26 Apr 2011 11:42:10 +0300
+Subject: [PATCH] mtd: a fix candidate for mtd_kmalloc_up_to
+Message-ID: <mailman.210.1303807262.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Current implementation of s3c2410_nand_select_chip call
-clk_disable every time when chip = -1 (de-select). This happend
-multiple times even if chip was already de-selected. This causes
-disabling clock even if they are already disabled and due to
-nature of clock subsytem implementation this causes nand clock
-to be disabled and newer enabled again.
+This is a fix candidate for the problem reported here:
 
-Signed-off-by: Jiri Pinkava <jiri.pinkava@vscht.cz>
+http://lists.infradead.org/pipermail/linux-mtd/2011-April/035190.html
+
+If it is OK, we'll need to fold it to Grant's patches and add
+credits to Stefano Babic <sbabic@denx.de> there, probably in form of a
+"Tested-by:" tag.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/nand/s3c2410.c |   57 +++++++++++++++++++++++++++++++------------
- 1 files changed, 41 insertions(+), 16 deletions(-)
+ drivers/mtd/mtdchar.c   |    4 ++--
+ drivers/mtd/mtdcore.c   |   28 ++++++++++++++++++----------
+ fs/jffs2/scan.c         |    2 +-
+ include/linux/mtd/mtd.h |    2 +-
+ 4 files changed, 22 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 33d832d..fbc37dc 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -54,8 +54,14 @@ static int hardware_ecc = 1;
- static int hardware_ecc = 0;
- #endif
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 9301464..7b7f992 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -203,7 +203,7 @@ static ssize_t mtd_read(struct file *file, char __user *buf, size_t count,loff_t
+ 	if (!count)
+ 		return 0;
  
-+#define CLOCK_DISABLE	0
-+#define CLOCK_ENABLE	1
-+#define CLOCK_SUSPEND	2
-+
-+static int clock_state = CLOCK_DISABLE;
-+
- #ifdef CONFIG_MTD_NAND_S3C2410_CLKSTOP
--static int clock_stop = 1;
-+static const int clock_stop = 1;
- #else
- static const int clock_stop = 0;
- #endif
-@@ -159,11 +165,33 @@ static struct s3c2410_platform_nand *to_nand_plat(struct platform_device *dev)
- 	return dev->dev.platform_data;
- }
+-	kbuf = mtd_kmalloc_up_to(&size);
++	kbuf = mtd_kmalloc_up_to(mtd, &size);
+ 	if (!kbuf)
+ 		return -ENOMEM;
  
--static inline int allow_clk_stop(struct s3c2410_nand_info *info)
-+static inline int allow_clk_suspend(struct s3c2410_nand_info *info)
+@@ -289,7 +289,7 @@ static ssize_t mtd_write(struct file *file, const char __user *buf, size_t count
+ 	if (!count)
+ 		return 0;
+ 
+-	kbuf = mtd_kmalloc_up_to(&size);
++	kbuf = mtd_kmalloc_up_to(mtd, &size);
+ 	if (!kbuf)
+ 		return -ENOMEM;
+ 
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+index 6f720cc..a50348b 100644
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -651,6 +651,9 @@ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+  * ask the memory allocator to avoid re-trying, swapping, writing back
+  * or performing I/O.
+  *
++ * Note, this function also makes sure that the allocated buffer is aligned to
++ * the MTD device's min. I/O unit, i.e. the "mtd->writesize" value.
++ *
+  * This is called, for example by mtd_{read,write} and jffs2_scan_medium,
+  * to handle smaller (i.e. degraded) buffer allocations under low- or
+  * fragmented-memory situations where such reduced allocations, from a
+@@ -658,24 +661,29 @@ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+  *
+  * Returns a pointer to the allocated buffer on success; otherwise, NULL.
+  */
+-void *mtd_kmalloc_up_to(size_t *size)
++void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size)
  {
- 	return clock_stop;
- }
+ 	gfp_t flags = __GFP_NOWARN | __GFP_WAIT |
+ 		       __GFP_NORETRY | __GFP_NO_KSWAPD;
+-	size_t try;
++	size_t min_alloc = max_t(size_t, mtd->writesize, PAGE_SIZE);
+ 	void *kbuf;
  
-+/**
-+ * s3c2410_nand_clk_set_state - Enable, disable or suspend NAND clock.
-+ * @info: The controller instance.
-+ * @new_state: State to which clock should be set.
-+ */
-+static void s3c2410_nand_clk_set_state(struct s3c2410_nand_info *info,
-+		int new_state)
-+{
-+	if (!allow_clk_suspend(info) && new_state == CLOCK_SUSPEND)
-+		return;
-+
-+	if (clock_state == CLOCK_ENABLE) {
-+		if (new_state != CLOCK_ENABLE)
-+			clk_disable(info->clk);
-+	} else {
-+		if (new_state == CLOCK_ENABLE)
-+			clk_enable(info->clk);
+-	try = min_t(size_t, *size, KMALLOC_MAX_SIZE);
++	*size = min_t(size_t, *size, KMALLOC_MAX_SIZE);
+ 
+-	do {
+-		if (try <= PAGE_SIZE)
+-			flags = GFP_KERNEL;
++	while (*size > min_alloc) {
++		kbuf = kmalloc(*size, flags);
++		if (kbuf)
++			return kbuf;
+ 
+-		kbuf = kmalloc(try, flags);
+-	} while (!kbuf && ((try >>= 1) >= PAGE_SIZE));
++		*size >>= 1;
++		*size = ALIGN(*size, mtd->writesize);
 +	}
-+
-+	clock_state = new_state;
-+}
-+
- /* timing calculations */
  
- #define NS_IN_KHZ 1000000
-@@ -333,8 +361,8 @@ static void s3c2410_nand_select_chip(struct mtd_info *mtd, int chip)
- 	nmtd = this->priv;
- 	info = nmtd->info;
- 
--	if (chip != -1 && allow_clk_stop(info))
--		clk_enable(info->clk);
-+	if (chip != -1)
-+		s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
- 
- 	cur = readl(info->sel_reg);
- 
-@@ -356,8 +384,8 @@ static void s3c2410_nand_select_chip(struct mtd_info *mtd, int chip)
- 
- 	writel(cur, info->sel_reg);
- 
--	if (chip == -1 && allow_clk_stop(info))
--		clk_disable(info->clk);
-+	if (chip == -1)
-+		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
+-	*size = try;
+-	return kbuf;
++	/*
++	 * For the last resort allocation allow 'kmalloc()' to do all sorts of
++	 * things (write-back, dropping caches, etc) by using GFP_KERNEL.
++	 */
++	return kmalloc(*size, GFP_KERNEL);
  }
  
- /* s3c2410_nand_hwcontrol
-@@ -694,8 +722,7 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
- 	/* free the common resources */
+ EXPORT_SYMBOL_GPL(add_mtd_device);
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index e393213..8d8cd34 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -120,7 +120,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 		D1(printk(KERN_DEBUG "Trying to allocate readbuf of %zu "
+ 			"bytes\n", try_size));
  
- 	if (info->clk != NULL && !IS_ERR(info->clk)) {
--		if (!allow_clk_stop(info))
--			clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
- 		clk_put(info->clk);
- 	}
+-		flashbuf = mtd_kmalloc_up_to(&try_size);
++		flashbuf = mtd_kmalloc_up_to(c->mtd, &try_size);
+ 		if (!flashbuf)
+ 			return -ENOMEM;
  
-@@ -947,7 +974,7 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 		goto exit_error;
- 	}
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index a5d31ba..06b489a 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -348,7 +348,7 @@ int default_mtd_writev(struct mtd_info *mtd, const struct kvec *vecs,
+ int default_mtd_readv(struct mtd_info *mtd, struct kvec *vecs,
+ 		      unsigned long count, loff_t from, size_t *retlen);
  
--	clk_enable(info->clk);
-+	s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
+-void *mtd_kmalloc_up_to(size_t *size);
++void *mtd_kmalloc_up_to(const struct mtd_info *mtd, size_t *size);
  
- 	/* allocate and map the resource */
- 
-@@ -1026,9 +1053,9 @@ static int s3c24xx_nand_probe(struct platform_device *pdev)
- 		goto exit_error;
- 	}
- 
--	if (allow_clk_stop(info)) {
-+	if (allow_clk_suspend(info)) {
- 		dev_info(&pdev->dev, "clock idle support enabled\n");
--		clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
- 	}
- 
- 	pr_debug("initialised ok\n");
-@@ -1059,8 +1086,7 @@ static int s3c24xx_nand_suspend(struct platform_device *dev, pm_message_t pm)
- 
- 		writel(info->save_sel | info->sel_bit, info->sel_reg);
- 
--		if (!allow_clk_stop(info))
--			clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_DISABLE);
- 	}
- 
- 	return 0;
-@@ -1072,7 +1098,7 @@ static int s3c24xx_nand_resume(struct platform_device *dev)
- 	unsigned long sel;
- 
- 	if (info) {
--		clk_enable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_ENABLE);
- 		s3c2410_nand_inithw(info);
- 
- 		/* Restore the state of the nFCE line. */
-@@ -1082,8 +1108,7 @@ static int s3c24xx_nand_resume(struct platform_device *dev)
- 		sel |= info->save_sel & info->sel_bit;
- 		writel(sel, info->sel_reg);
- 
--		if (allow_clk_stop(info))
--			clk_disable(info->clk);
-+		s3c2410_nand_clk_set_state(info, CLOCK_SUSPEND);
- 	}
- 
- 	return 0;
+ #ifdef CONFIG_MTD_PARTITIONS
+ void mtd_erase_callback(struct erase_info *instr);
 -- 
-1.7.4.4
+1.7.2.3
 
 
---------------040301050000000004070907--
+
+-- 
+Best Regards,
+Artem Bityutskiy (?????????? ????????????????)
