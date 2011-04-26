@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEced-00071K-Ke
+	id 1QEced-00071N-KV
 	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 07:25:53 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.3/Switch-3.4.3) with ESMTP id
-	p3Q7PnSB010184
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2011 10:25:49 +0300
+	p3Q7PnBJ010212
+	for <linux-mtd@lists.infradead.org>; Tue, 26 Apr 2011 10:25:50 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/4] UBIFS: remove dead GC LEB recovery piece of code
-Date: Tue, 26 Apr 2011 10:29:21 +0300
-Message-Id: <1303802963-31612-2-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 4/4] UBIFS: dump the stack on errors in failure mode too
+Date: Tue, 26 Apr 2011 10:29:23 +0300
+Message-Id: <1303802963-31612-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1303802963-31612-1-git-send-email-dedekind1@gmail.com>
 References: <1303802963-31612-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,44 +25,34 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This patch removes a piece of code in 'ubifs_rcvry_gc_commit()' which is never
-executed. We call 'ubifs_find_dirty_leb()' function with min_space =
-wbuf->offs, so if it returns us an LEB, it is guaranteed to have at lease
-'wbuf->offs' bytes of free+dirty space. So we can remove the subsequent code
-which deals with "returned LEB has less than 'wbuf->offs' bytes of free+dirty
-space". This simplifies 'ubifs_rcvry_gc_commit()' a little.
+When UBIFS is in the failure mode (used for power cut emulation testing) we for
+some reasons do not dump the stack in many places, e.g., in assertions.
+Probably at early days we had too many of them and disabled this to make the
+development easier, but then never enabled. Nowadays I sometimes observe
+assertion failures during power cut testing, but the useful stackdump is not
+printed, which is bad. This patch makes UBIFS always print the stackdump when
+debugging is enabled.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/recovery.c |   13 +------------
- 1 files changed, 1 insertions(+), 12 deletions(-)
+ fs/ubifs/debug.h |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 1a72046..3e0eedbe 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -1127,21 +1127,10 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
- 	}
+diff --git a/fs/ubifs/debug.h b/fs/ubifs/debug.h
+index 8934c12..f3e235f 100644
+--- a/fs/ubifs/debug.h
++++ b/fs/ubifs/debug.h
+@@ -107,10 +107,7 @@ struct ubifs_debug_info {
+ 	}                                                                      \
+ } while (0)
  
- 	ubifs_assert(!(lp.flags & LPROPS_INDEX));
-+	ubifs_assert(lp.free + lp.dirty >= wbuf->offs);
- 	lnum = lp.lnum;
+-#define dbg_dump_stack() do {                                                  \
+-	if (!dbg_failure_mode)                                                 \
+-		dump_stack();                                                  \
+-} while (0)
++#define dbg_dump_stack() dump_stack()
  
- 	/*
--	 * There was no empty LEB so the used space in the dirtiest LEB must fit
--	 * in the GC head LEB.
--	 */
--	if (lp.free + lp.dirty < wbuf->offs) {
--		dbg_rcvry("LEB %d doesn't fit in GC head LEB %d:%d",
--			  lnum, wbuf->lnum, wbuf->offs);
--		err = ubifs_return_leb(c, lnum);
--		if (err)
--			return err;
--		goto find_free;
--	}
--	/*
- 	 * We run the commit before garbage collection otherwise subsequent
- 	 * mounts will see the GC and orphan deletion in a different order.
- 	 */
+ /* Generic debugging messages */
+ #define dbg_msg(fmt, ...) do {                                                 \
 -- 
 1.7.2.3
