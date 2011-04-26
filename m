@@ -1,24 +1,14 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from sh78.surpasshosting.com ([72.29.64.142])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QEe1A-0007hL-JB
-	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 08:53:13 +0000
-Received: by ewy3 with SMTP id 3so130923ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Apr 2011 01:53:10 -0700 (PDT)
-Subject: Re: Programming ubinized images
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <BANLkTi=cHfoxmA_n2ttzR5=pacRgNX48BA@mail.gmail.com>
-References: <BANLkTi=CNSd8JrWPL-o-WHe-kS-L7pFNqg@mail.gmail.com>
-	<1303804811.2778.37.camel@localhost>
-	<BANLkTi=cHfoxmA_n2ttzR5=pacRgNX48BA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 26 Apr 2011 11:49:36 +0300
-Message-ID: <1303807776.2778.48.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1QEegO-0007uK-QQ
+	for linux-mtd@lists.infradead.org; Tue, 26 Apr 2011 09:35:49 +0000
+From: Felix Radensky <felix@embedded-sol.com>
+To: linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc/44x: Add multiple chip select support to NDFC driver
+Date: Tue, 26 Apr 2011 12:36:46 +0300
+Message-Id: <1303810606-2068-1-git-send-email-felix@embedded-sol.com>
+Cc: Felix Radensky <felix@embedded-sol.com>, sr@denx.de,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +18,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-26 at 04:48 -0400, Matthew L. Creech wrote:
-> 
-> Makes sense.  I might take a stab at this later this week, since it
-> sounds like something along these lines is required if we plan to use
-> an industrial (fairly dumb) NAND programmer to flash ubinized UBIFS
-> images. 
+This patch extends NDFC driver to support all 4 chip selects
+available in NDFC NAND controller. Tested on custom 460EX board
+with 2 chip select NAND device.
 
-Yeah, we were able to modify the production flasher so it dropped
-all-0xFF NAND pages, and we did not foresee that this might be a problem
-of others.
+Signed-off-by: Felix Radensky <felix@embedded-sol.com>
+---
 
+I'd appreciate some testing on 44x boards with multiple NAND
+devices, like bamboo or DU440, as I don't have access to these 
+boards.
+
+ drivers/mtd/nand/ndfc.c |   52 +++++++++++++++++++++++++++++++---------------
+ 1 files changed, 35 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index bbe6d45..5e0be1e 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -33,6 +33,7 @@
+ #include <linux/of_platform.h>
+ #include <asm/io.h>
+ 
++#define NDFC_MAX_CS    4
+ 
+ struct ndfc_controller {
+ 	struct platform_device *ofdev;
+@@ -46,12 +47,13 @@ struct ndfc_controller {
+ #endif
+ };
+ 
+-static struct ndfc_controller ndfc_ctrl;
++static struct ndfc_controller ndfc_ctrl[NDFC_MAX_CS];
+ 
+ static void ndfc_select_chip(struct mtd_info *mtd, int chip)
+ {
+ 	uint32_t ccr;
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *nchip = mtd->priv;
++	struct ndfc_controller *ndfc = nchip->priv;
+ 
+ 	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
+ 	if (chip >= 0) {
+@@ -64,7 +66,8 @@ static void ndfc_select_chip(struct mtd_info *mtd, int chip)
+ 
+ static void ndfc_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *chip = mtd->priv;
++	struct ndfc_controller *ndfc = chip->priv;
+ 
+ 	if (cmd == NAND_CMD_NONE)
+ 		return;
+@@ -77,7 +80,8 @@ static void ndfc_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
+ 
+ static int ndfc_ready(struct mtd_info *mtd)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *chip = mtd->priv;
++	struct ndfc_controller *ndfc = chip->priv;
+ 
+ 	return in_be32(ndfc->ndfcbase + NDFC_STAT) & NDFC_STAT_IS_READY;
+ }
+@@ -85,7 +89,8 @@ static int ndfc_ready(struct mtd_info *mtd)
+ static void ndfc_enable_hwecc(struct mtd_info *mtd, int mode)
+ {
+ 	uint32_t ccr;
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *chip = mtd->priv;
++	struct ndfc_controller *ndfc = chip->priv;
+ 
+ 	ccr = in_be32(ndfc->ndfcbase + NDFC_CCR);
+ 	ccr |= NDFC_CCR_RESET_ECC;
+@@ -96,7 +101,8 @@ static void ndfc_enable_hwecc(struct mtd_info *mtd, int mode)
+ static int ndfc_calculate_ecc(struct mtd_info *mtd,
+ 			      const u_char *dat, u_char *ecc_code)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *chip = mtd->priv;
++	struct ndfc_controller *ndfc = chip->priv;
+ 	uint32_t ecc;
+ 	uint8_t *p = (uint8_t *)&ecc;
+ 
+@@ -119,7 +125,8 @@ static int ndfc_calculate_ecc(struct mtd_info *mtd,
+  */
+ static void ndfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *chip = mtd->priv;
++	struct ndfc_controller *ndfc = chip->priv;
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+@@ -128,7 +135,8 @@ static void ndfc_read_buf(struct mtd_info *mtd, uint8_t *buf, int len)
+ 
+ static void ndfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *chip = mtd->priv;
++	struct ndfc_controller *ndfc = chip->priv;
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+@@ -137,7 +145,8 @@ static void ndfc_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ 
+ static int ndfc_verify_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct nand_chip *chip = mtd->priv;
++	struct ndfc_controller *ndfc = chip->priv;
+ 	uint32_t *p = (uint32_t *) buf;
+ 
+ 	for(;len > 0; len -= 4)
+@@ -179,6 +188,7 @@ static int ndfc_chip_init(struct ndfc_controller *ndfc,
+ 	chip->ecc.mode = NAND_ECC_HW;
+ 	chip->ecc.size = 256;
+ 	chip->ecc.bytes = 3;
++	chip->priv = ndfc;
+ 
+ 	ndfc->mtd.priv = chip;
+ 	ndfc->mtd.owner = THIS_MODULE;
+@@ -227,15 +237,10 @@ err:
+ 
+ static int __devinit ndfc_probe(struct platform_device *ofdev)
+ {
+-	struct ndfc_controller *ndfc = &ndfc_ctrl;
++	struct ndfc_controller *ndfc;
+ 	const __be32 *reg;
+ 	u32 ccr;
+-	int err, len;
+-
+-	spin_lock_init(&ndfc->ndfc_control.lock);
+-	init_waitqueue_head(&ndfc->ndfc_control.wq);
+-	ndfc->ofdev = ofdev;
+-	dev_set_drvdata(&ofdev->dev, ndfc);
++	int err, len, cs;
+ 
+ 	/* Read the reg property to get the chip select */
+ 	reg = of_get_property(ofdev->dev.of_node, "reg", &len);
+@@ -243,8 +248,21 @@ static int __devinit ndfc_probe(struct platform_device *ofdev)
+ 		dev_err(&ofdev->dev, "unable read reg property (%d)\n", len);
+ 		return -ENOENT;
+ 	}
+-	ndfc->chip_select = be32_to_cpu(reg[0]);
+ 
++	cs = be32_to_cpu(reg[0]);
++	if (cs >= NDFC_MAX_CS) {
++		dev_err(&ofdev->dev, "invalid CS number (%d)\n", cs);
++		return -EINVAL;
++	}
++
++	ndfc = &ndfc_ctrl[cs];
++	ndfc->chip_select = cs;
++
++	spin_lock_init(&ndfc->ndfc_control.lock);
++	init_waitqueue_head(&ndfc->ndfc_control.wq);
++	ndfc->ofdev = ofdev;
++	dev_set_drvdata(&ofdev->dev, ndfc);
++	
+ 	ndfc->ndfcbase = of_iomap(ofdev->dev.of_node, 0);
+ 	if (!ndfc->ndfcbase) {
+ 		dev_err(&ofdev->dev, "failed to get memory\n");
 -- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+1.7.4.4
