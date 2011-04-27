@@ -1,25 +1,24 @@
-Received: from bosmailout14.eigbox.net ([66.96.189.14])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QF8KP-0006ir-5z
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 17:15:05 +0000
-Received: from bosmailscan12.eigbox.net ([10.20.15.12])
-	by bosmailout14.eigbox.net with esmtp (Exim) id 1QF8KN-0000w2-M7
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 13:15:03 -0400
-Message-ID: <d7bb9e8d1c11cece8092e2f4c40436e2.squirrel@emailmg.startlogic.com>
-In-Reply-To: <4DB7C9F9.9000609@free-electrons.com>
-References: <000201cc046b$b03a6310$10af2930$@janteq.com>
-	<1303882262.2778.51.camel@localhost>
-	<896346e425b9fed6ed42ee9c4144e135.squirrel@emailmg.startlogic.com>
-	<4DB7C9F9.9000609@free-electrons.com>
-Date: Wed, 27 Apr 2011 13:14:36 -0400
-Subject: Re: Discovering current MTD partition
-From: umar@janteq.com
-To: "David Wagner" <david.wagner@free-electrons.com>
+From: David Brown <davidb@codeaurora.org>
+To: Murali Nalajala <mnalajal@codeaurora.org>
+Subject: Re: [PATCH V2 2/2] mtd: msm_nand: Add initial msm nand driver support.
+References: <1302938249-4601-1-git-send-email-mnalajal@codeaurora.org>
+	<4DABE8FE.5040300@parrot.com> <4DB6C13F.2020402@codeaurora.org>
+	<4DB80E2A.4000203@parrot.com> <4DB83E70.4050402@codeaurora.org>
+Date: Wed, 27 Apr 2011 10:36:06 -0700
+In-Reply-To: <4DB83E70.4050402@codeaurora.org> (Murali Nalajala's message of
+	"Wed, 27 Apr 2011 21:34:00 +0530")
+Message-ID: <8yapqo74mwp.fsf@huya.qualcomm.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Sender: umar@janteq.com
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Dima Zavin <dima@android.com>,
+	Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Brian Swetland <swetland@google.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,25 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On 04/27/2011 09:25 AM, umar@janteq.com wrote:
->> Hi,
->> [...]
->> What I'd like is to detect from userspace is which /dev/mtdX partition
->> is
->> the currently executing program running on because that is the partition
->> that has been obviously booted.
->
-> I think you might want to take a look at getmntent (3) : it is a libc
-> function for getting the /etc/mtab entries. It also seems to be portable.
->
-> Cheers,
-> David.
->
-> --
-> David Wagner, Free Electrons
-> Kernel, drivers, real-time and embedded Linux
-> development, consulting, training and support.
-> http://free-electrons.com
+On Wed, Apr 27 2011, Murali Nalajala wrote:
 
-This will give me the same info as /proc/mtab.  I cannot figure out how I
-can infer which /dev/mtdXX was booted from with this information.
+> We have used nand base kind of implementation wherever is possible.
+> eg: We have leveraged the code from nand base to detect the nand
+> device properties.
+
+Basing code off of other code but with modification is very different
+than using that other code.  Copying and modifying creates more code
+that can miss fixes and other changes.
+
+I do think there is value in working with the nand code.  Remember that
+the nand code is not immutable.  If there is something that almost does
+what msm_nand needs, perhaps is can be changed to support that as well.
+
+David
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
