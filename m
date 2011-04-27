@@ -1,22 +1,20 @@
-Message-ID: <4DB80E2A.4000203@parrot.com>
-Date: Wed, 27 Apr 2011 14:38:02 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QF6Vp-0005P5-OK
+	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 15:18:46 +0000
+Received: from [192.168.0.34] (col31-4-88-188-83-94.fbx.proxad.net
+	[88.188.83.94])
+	by mail.free-electrons.com (Postfix) with ESMTPSA id 48168EC
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 27 Apr 2011 17:18:33 +0200 (CEST)
+Message-ID: <4DB833CD.5020305@free-electrons.com>
+Date: Wed, 27 Apr 2011 17:18:37 +0200
+From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-To: Murali Nalajala <mnalajal@codeaurora.org>
-Subject: Re: [PATCH V2 2/2] mtd: msm_nand: Add initial msm nand driver support.
-References: <1302938249-4601-1-git-send-email-mnalajal@codeaurora.org>
-	<4DABE8FE.5040300@parrot.com> <4DB6C13F.2020402@codeaurora.org>
-In-Reply-To: <4DB6C13F.2020402@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	Dima Zavin <dima@android.com>,
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brian Swetland <swetland@google.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: onenand_2x_program: optional or required ?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,72 +26,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-Murali Nalajala a écrit :
-> On 4/18/2011 1:02 PM, Matthieu CASTET wrote:
->> Hi,
->>
->> Murali Nalajala a écrit :
->>> Add initial msm nand driver support for Qualcomm MSM platforms.
->>> This driver is capable of handling both 2k and 4k page support
->>> nand devices.
->>>
->>> This driver was originally developed by Arve Hjønnevåg at google.
->>> Its source is available at
->>> http://android.git.kernel.org/?p=kernel/msm.git under
->>> android-msm-2.6.35 branch.
->>>
->>> CC: Dima Zavin<dima@android.com>
->>> CC: Brian Swetland<swetland@google.com>
->>> CC: Arve Hjønnevåg<arve@android.com>
->>> Signed-off-by: Murali Nalajala<mnalajal@codeaurora.org>
->>> ---
->>> Changes in V2
->>> * Turn most of the pr_info() calls into pr_debug().
->>>
->>>   drivers/mtd/devices/Kconfig    |   11 +
->>>   drivers/mtd/devices/Makefile   |    1 +
->>>   drivers/mtd/devices/msm_nand.c | 1597 ++++++++++++++++++++++++++++++++++++++++
->>>   drivers/mtd/devices/msm_nand.h |   77 ++
->>>   4 files changed, 1686 insertions(+), 0 deletions(-)
->>>   create mode 100644 drivers/mtd/devices/msm_nand.c
->>>   create mode 100644 drivers/mtd/devices/msm_nand.h
->>>
->> For the record, I am not sure it is a great idea to make nand drivers
->> independent of the nand layer.
->> By doing that you could change the expected behavior, and introduce bug
->> difficult to debug.
->>
->> Why do you need that ? Nand drivers can override callbacks of nand framework.
->>
->> Maybe because the nand layer call the driver page per page, and  you want to
->> work with more than one page. But in this case you can extend nand layer.
->>
->> Or does your controller don't allow sending raw command ?
->> And in that case all the nand logic is in the nand controller ?
-> 
-> Our controller doesn't allow sending RAW commands to the flash. All 
-> these commands are abstracted by the controller logic. Please refer the 
-> msm_nand.h file where you will find the commands which are different 
-> from the actual NAND device commands.
-Ok, but does the controller does all other check : status check, ...
+I have a board with a 2-planes OneNAND chip and, for the purpose of a
+tutorial, I'm trying to put a squashfs rootfs on it.
+I noticed that when the kernel doesn't have the
+CONFIG_MTD_ONENAND_2X_PROGRAM option, it prints error like:
 
-In the nand framework there is already controller like yours : see the denali.c
-as example.
-> 
-> eg: To send read/write data command to the device we configure the 
-> controller with page address & controller specific command. Then the 
-> controller itself takes care of generating the internal h/w signals 
-> required by the flash and it polls for the R/B signal & wait states are 
-> internally controlled by the h/w.
-> 
-So you provide your own
-    chip->ecc.read_page
-    chip->ecc.read_page_raw
-    chip->ecc.read_oob
-    chip->write_page
-    chip->ecc.write_oob
+[    4.946594] SQUASHFS error: squashfs_read_data failed to read block
+0x224366
+[    4.954437] SQUASHFS error: Unable to read metadata cache entry [224366]
+[    4.961791] SQUASHFS error: Unable to read inode 0xbf70504
 
-and your done.
+and fails to mount the squashfs.
 
 
-Matthieu
+Can someone confirm or invalidate that this option really is necessary
+when dealing with 2-planes onenands or is it merely meant to be an
+improvement for supported chips ? Will flash-oriented filesystems also
+have that problem w/o the option ?
+
+I thought this option only affected write-functions but it seems it also
+has an impact on reads.
+
+Thanks
+-- 
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
