@@ -1,24 +1,23 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QF6w1-0005fB-3U
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 15:45:50 +0000
-Received: by vws8 with SMTP id 8so1715820vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Apr 2011 08:45:47 -0700 (PDT)
+Message-ID: <4DB83E70.4050402@codeaurora.org>
+Date: Wed, 27 Apr 2011 21:34:00 +0530
+From: Murali Nalajala <mnalajal@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
-References: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
-Date: Wed, 27 Apr 2011 18:45:47 +0300
-Message-ID: <BANLkTi=sq5am1HKeOfYTmYHUm96O08N-jw@mail.gmail.com>
-Subject: Re: [RFC] mtd: nand: Fix bad block identification issue
-From: Grazvydas Ignotas <notasas@gmail.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Saxena,
-	Parth" <parth.saxena@ti.com>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+Subject: Re: [PATCH V2 2/2] mtd: msm_nand: Add initial msm nand driver support.
+References: <1302938249-4601-1-git-send-email-mnalajal@codeaurora.org>
+	<4DABE8FE.5040300@parrot.com> <4DB6C13F.2020402@codeaurora.org>
+	<4DB80E2A.4000203@parrot.com>
+In-Reply-To: <4DB80E2A.4000203@parrot.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+	Dima Zavin <dima@android.com>,
+	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Brian Swetland <swetland@google.com>,
+	"dwmw2@infradead.org" <dwmw2@infradead.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +27,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian,
+On 4/27/2011 6:08 PM, Matthieu CASTET wrote:
 
-did you really intend to remove badblockbits? Maybe it should go back
-to nand_base.c?
+Hi,
 
-On Wed, Apr 27, 2011 at 3:09 PM, Saxena, Parth <parth.saxena@ti.com> wrote:
-> Commit e0b58d0 ("mtd: nand: add ->badblockbits for minimum number
-> of set bits in bad block byte") by Maxim Levitsky added
-> badblockbits to nand_chip to specify minimum number of set bits
-> in bad block byte. The patch initialized badblockbits to 8 in
-> nand_base.c, but later the initialization line got removed by commit
-> c7b28e2("mtd: nand: refactor BB marker detection"). After this all
-> NAND drivers with NAND_SKIP_BBTSCAN are forced to initialize it to 8.
-> Otherwise bad block identification will fail.
+> Hi,
 >
-> As a result, mounting of empty jffs2 file system on omap3evm
-> (having bad blocks) failed giving the following error message -
+> Murali Nalajala a écrit :
+>> On 4/18/2011 1:02 PM, Matthieu CASTET wrote:
+>>> Hi,
+>>>
+>>> Murali Nalajala a écrit :
+>>>> Add initial msm nand driver support for Qualcomm MSM platforms.
+>>>> This driver is capable of handling both 2k and 4k page support
+>>>> nand devices.
+>>>>
+>>>> This driver was originally developed by Arve Hjønnevåg at google.
+>>>> Its source is available at
+>>>> http://android.git.kernel.org/?p=kernel/msm.git under
+>>>> android-msm-2.6.35 branch.
+>>>>
+>>>> CC: Dima Zavin<dima@android.com>
+>>>> CC: Brian Swetland<swetland@google.com>
+>>>> CC: Arve Hjønnevåg<arve@android.com>
+>>>> Signed-off-by: Murali Nalajala<mnalajal@codeaurora.org>
+>>>> ---
+>>>> Changes in V2
+>>>> * Turn most of the pr_info() calls into pr_debug().
+>>>>
+>>>>    drivers/mtd/devices/Kconfig    |   11 +
+>>>>    drivers/mtd/devices/Makefile   |    1 +
+>>>>    drivers/mtd/devices/msm_nand.c | 1597 ++++++++++++++++++++++++++++++++++++++++
+>>>>    drivers/mtd/devices/msm_nand.h |   77 ++
+>>>>    4 files changed, 1686 insertions(+), 0 deletions(-)
+>>>>    create mode 100644 drivers/mtd/devices/msm_nand.c
+>>>>    create mode 100644 drivers/mtd/devices/msm_nand.h
+>>>>
+>>> For the record, I am not sure it is a great idea to make nand drivers
+>>> independent of the nand layer.
+>>> By doing that you could change the expected behavior, and introduce bug
+>>> difficult to debug.
+>>>
+>>> Why do you need that ? Nand drivers can override callbacks of nand framework.
+>>>
+>>> Maybe because the nand layer call the driver page per page, and  you want to
+>>> work with more than one page. But in this case you can extend nand layer.
+>>>
+>>> Or does your controller don't allow sending raw command ?
+>>> And in that case all the nand logic is in the nand controller ?
+>>
+>> Our controller doesn't allow sending RAW commands to the flash. All
+>> these commands are abstracted by the controller logic. Please refer the
+>> msm_nand.h file where you will find the commands which are different
+>> from the actual NAND device commands.
+> Ok, but does the controller does all other check : status check, ...
+
+Yes, it does the automatic update of the status registers for every 
+read/writes do report any ECC errors.
+
 >
-> "mount: mounting /dev/mtdblock4 on /tmp failed: Input/output error"
+> In the nand framework there is already controller like yours : see the denali.c
+> as example.
+
+I had gone through it, here in driver i saw something like 
+"nand_scan_ident" calls which still use the RAW commands.
+
+So i need to do most of the custom nand scan implementation which i am 
+doing it right now in my code!!!
+
+>>
+>> eg: To send read/write data command to the device we configure the
+>> controller with page address&  controller specific command. Then the
+>> controller itself takes care of generating the internal h/w signals
+>> required by the flash and it polls for the R/B signal&  wait states are
+>> internally controlled by the h/w.
+>>
+> So you provide your own
+>      chip->ecc.read_page
+>      chip->ecc.read_page_raw
+>      chip->ecc.read_oob
+>      chip->write_page
+>      chip->ecc.write_oob
+
+I don't see great advantage of re-writing these call backs in my driver 
+( Which are very well written and tested ). Also the DMA handling is bit 
+different than what i had seen in the denali.c code.
+In my case most of the limitation comes from the controller.
+
+We have used nand base kind of implementation wherever is possible.
+eg: We have leveraged the code from nand base to detect the nand device 
+properties.
+
 >
-> This patch solves the above issue for omap by initialising
-> badblockbits. We are working further on this to find a generic fix
-> to the problem in nand_base.c.
+> and your done.
 >
-> Signed-off-by: Saxena, Parth <parth.saxena@ti.com>
-> Signed-off-by: Basheer, Mansoor Ahamed <mansoor.ahamed@ti.com>
-> ---
-> =A0drivers/mtd/nand/omap2.c | =A0 =A02 ++
-> =A01 files changed, 2 insertions(+), 0 deletions(-)
 >
-> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-> index 454f90c..350c77f 100644
-> --- a/drivers/mtd/nand/omap2.c
-> +++ b/drivers/mtd/nand/omap2.c
-> @@ -1005,6 +1005,8 @@ static int __devinit omap_nand_probe(struct platfor=
-m_device *pdev)
-> =A0 =A0 =A0 =A0info->nand.options =A0 =A0 =A0=3D pdata->devsize;
-> =A0 =A0 =A0 =A0info->nand.options =A0 =A0 =A0|=3D NAND_SKIP_BBTSCAN;
->
-> + =A0 =A0 =A0 info->nand.badblockbits =3D 8;
-> +
-> =A0 =A0 =A0 =A0/* NAND write protect off */
-> =A0 =A0 =A0 =A0gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_WP, 0);
->
-> --
-> 1.6.2.4
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+> Matthieu
+
+
+Thanks,
+Murali N
+
+-- 
+Sent by an employee of the Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
