@@ -1,23 +1,16 @@
-Message-ID: <4DB83E70.4050402@codeaurora.org>
-Date: Wed, 27 Apr 2011 21:34:00 +0530
-From: Murali Nalajala <mnalajal@codeaurora.org>
+Received: from nm24-vm0.bullet.mail.sp2.yahoo.com ([98.139.91.226])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QF7aT-0006GJ-2Z
+	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 16:27:37 +0000
+Message-ID: <20147.84187.bm@smtp102.mail.gq1.yahoo.com>
+From: "Mduwn" <graubergerhryd@yahoo.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: =?GB2312?B?zcPE6rTzvKqjodPKz+TH67LpytWjoUFjenFybGhjbnE=?=
+Date: Thu, 28 Apr 2011 00:27:25 +0800
 MIME-Version: 1.0
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: [PATCH V2 2/2] mtd: msm_nand: Add initial msm nand driver support.
-References: <1302938249-4601-1-git-send-email-mnalajal@codeaurora.org>
-	<4DABE8FE.5040300@parrot.com> <4DB6C13F.2020402@codeaurora.org>
-	<4DB80E2A.4000203@parrot.com>
-In-Reply-To: <4DB80E2A.4000203@parrot.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	Dima Zavin <dima@android.com>,
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Brian Swetland <swetland@google.com>,
-	"dwmw2@infradead.org" <dwmw2@infradead.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,107 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/27/2011 6:08 PM, Matthieu CASTET wrote:
-
-Hi,
-
-> Hi,
->
-> Murali Nalajala a écrit :
->> On 4/18/2011 1:02 PM, Matthieu CASTET wrote:
->>> Hi,
->>>
->>> Murali Nalajala a écrit :
->>>> Add initial msm nand driver support for Qualcomm MSM platforms.
->>>> This driver is capable of handling both 2k and 4k page support
->>>> nand devices.
->>>>
->>>> This driver was originally developed by Arve Hjønnevåg at google.
->>>> Its source is available at
->>>> http://android.git.kernel.org/?p=kernel/msm.git under
->>>> android-msm-2.6.35 branch.
->>>>
->>>> CC: Dima Zavin<dima@android.com>
->>>> CC: Brian Swetland<swetland@google.com>
->>>> CC: Arve Hjønnevåg<arve@android.com>
->>>> Signed-off-by: Murali Nalajala<mnalajal@codeaurora.org>
->>>> ---
->>>> Changes in V2
->>>> * Turn most of the pr_info() calls into pr_debug().
->>>>
->>>>    drivers/mtd/devices/Kconfig    |   11 +
->>>>    drivers/mtd/devices/Makefile   |    1 +
->>>>    drivers/mtd/devices/msm_nand.c | 1597 ++++++++++++++++++++++++++++++++++++++++
->>>>    drivers/mtd/devices/msm_nand.h |   77 ++
->>>>    4 files changed, 1686 insertions(+), 0 deletions(-)
->>>>    create mode 100644 drivers/mtd/devices/msm_nand.c
->>>>    create mode 100644 drivers/mtd/devices/msm_nand.h
->>>>
->>> For the record, I am not sure it is a great idea to make nand drivers
->>> independent of the nand layer.
->>> By doing that you could change the expected behavior, and introduce bug
->>> difficult to debug.
->>>
->>> Why do you need that ? Nand drivers can override callbacks of nand framework.
->>>
->>> Maybe because the nand layer call the driver page per page, and  you want to
->>> work with more than one page. But in this case you can extend nand layer.
->>>
->>> Or does your controller don't allow sending raw command ?
->>> And in that case all the nand logic is in the nand controller ?
->>
->> Our controller doesn't allow sending RAW commands to the flash. All
->> these commands are abstracted by the controller logic. Please refer the
->> msm_nand.h file where you will find the commands which are different
->> from the actual NAND device commands.
-> Ok, but does the controller does all other check : status check, ...
-
-Yes, it does the automatic update of the status registers for every 
-read/writes do report any ECC errors.
-
->
-> In the nand framework there is already controller like yours : see the denali.c
-> as example.
-
-I had gone through it, here in driver i saw something like 
-"nand_scan_ident" calls which still use the RAW commands.
-
-So i need to do most of the custom nand scan implementation which i am 
-doing it right now in my code!!!
-
->>
->> eg: To send read/write data command to the device we configure the
->> controller with page address&  controller specific command. Then the
->> controller itself takes care of generating the internal h/w signals
->> required by the flash and it polls for the R/B signal&  wait states are
->> internally controlled by the h/w.
->>
-> So you provide your own
->      chip->ecc.read_page
->      chip->ecc.read_page_raw
->      chip->ecc.read_oob
->      chip->write_page
->      chip->ecc.write_oob
-
-I don't see great advantage of re-writing these call backs in my driver 
-( Which are very well written and tested ). Also the DMA handling is bit 
-different than what i had seen in the denali.c code.
-In my case most of the limitation comes from the controller.
-
-We have used nand base kind of implementation wherever is possible.
-eg: We have leveraged the code from nand base to detect the nand device 
-properties.
-
->
-> and your done.
->
->
-> Matthieu
-
-
-Thanks,
-Murali N
-
--- 
-Sent by an employee of the Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum.
+xPq6w6OhjKOYSbmpkarUrY9Tn5+9esXk1sa49+6Qw+K2kM/jn58uDQoNCiDW0MhBoaLcvcjY/FOh
+osxLn5+horTz0KHQ3NiIoaL8U/pRmMehotK8vsXSvMH5oaK2rM94z8Sy3bXIo6ENCg0Ksb7JzNDQ
+z+Ofn7a8yse+q7fCz7XB0C6w/NFius3V5sa3hGWfb4PJmNOjqNPQt8CCzrRho6kgv9q40LyD1f0u
+OTUltrzKx9Xmn5+9ei4NCg0KINX90o6PU7zSvNO5pNbG1/cuob6+q7fCob8gj1O1xNKqx/O63IfA
+uPEun5/Ifsirsr/M2MrivNO5pMVj1sbX99Xm1f3fX7W9wcu435jLnMq1xNKqx/Mho6jF+sG/g3K4
+8cHt12ijqb270tfB45P670zrVaOhDQoNCiDKx9fUs+ks1dC0/SzLzbZZLMX6sGwswePK2yy5q8u+
+LL7GteosIIrKmLeI9sv5tcjK1994LCANCg0KIINyuPG4/LrPwO0sv9rOtrj8vIPV/SEg0orYm7i2
+v+4s1Yi3xdDE2Y/ZSSEgj9i119eMxPqfb+Hh7pnWrpFuIQ0KDQogIMKTz7VRUaO6MTM5NTk2MjQ4
+OCAg1cXJ+iAxMzkyNjUyOTgwNSAgIA0KDQrS1KGw1VzQxS6E1YyNLrjf0KcuubLaQaGxnunX2ta8
+xWPE+ulMxtq6z9f3LCC08pRf1YiKhdWPveINCg0KdTlwMEJhMzFkOTExQU1kdXduS0NIWFQzOTF1
+ejNkN0hGZU1kdXdu
