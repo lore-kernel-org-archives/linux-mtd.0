@@ -1,20 +1,24 @@
-Received: from mail.free-electrons.com ([88.190.12.23])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QF6Vp-0005P5-OK
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 15:18:46 +0000
-Received: from [192.168.0.34] (col31-4-88-188-83-94.fbx.proxad.net
-	[88.188.83.94])
-	by mail.free-electrons.com (Postfix) with ESMTPSA id 48168EC
+Received: from mail-vw0-f49.google.com ([209.85.212.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QF6w1-0005fB-3U
+	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 15:45:50 +0000
+Received: by vws8 with SMTP id 8so1715820vws.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Apr 2011 17:18:33 +0200 (CEST)
-Message-ID: <4DB833CD.5020305@free-electrons.com>
-Date: Wed, 27 Apr 2011 17:18:37 +0200
-From: David Wagner <david.wagner@free-electrons.com>
+	Wed, 27 Apr 2011 08:45:47 -0700 (PDT)
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: onenand_2x_program: optional or required ?
+In-Reply-To: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
+References: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
+Date: Wed, 27 Apr 2011 18:45:47 +0300
+Message-ID: <BANLkTi=sq5am1HKeOfYTmYHUm96O08N-jw@mail.gmail.com>
+Subject: Re: [RFC] mtd: nand: Fix bad block identification issue
+From: Grazvydas Ignotas <notasas@gmail.com>
+To: Brian Norris <computersforpeace@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Saxena,
+	Parth" <parth.saxena@ti.com>, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +28,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Brian,
 
-I have a board with a 2-planes OneNAND chip and, for the purpose of a
-tutorial, I'm trying to put a squashfs rootfs on it.
-I noticed that when the kernel doesn't have the
-CONFIG_MTD_ONENAND_2X_PROGRAM option, it prints error like:
+did you really intend to remove badblockbits? Maybe it should go back
+to nand_base.c?
 
-[    4.946594] SQUASHFS error: squashfs_read_data failed to read block
-0x224366
-[    4.954437] SQUASHFS error: Unable to read metadata cache entry [224366]
-[    4.961791] SQUASHFS error: Unable to read inode 0xbf70504
-
-and fails to mount the squashfs.
-
-
-Can someone confirm or invalidate that this option really is necessary
-when dealing with 2-planes onenands or is it merely meant to be an
-improvement for supported chips ? Will flash-oriented filesystems also
-have that problem w/o the option ?
-
-I thought this option only affected write-functions but it seems it also
-has an impact on reads.
-
-Thanks
--- 
-David Wagner, Free Electrons
-Kernel, drivers, real-time and embedded Linux
-development, consulting, training and support.
-http://free-electrons.com
+On Wed, Apr 27, 2011 at 3:09 PM, Saxena, Parth <parth.saxena@ti.com> wrote:
+> Commit e0b58d0 ("mtd: nand: add ->badblockbits for minimum number
+> of set bits in bad block byte") by Maxim Levitsky added
+> badblockbits to nand_chip to specify minimum number of set bits
+> in bad block byte. The patch initialized badblockbits to 8 in
+> nand_base.c, but later the initialization line got removed by commit
+> c7b28e2("mtd: nand: refactor BB marker detection"). After this all
+> NAND drivers with NAND_SKIP_BBTSCAN are forced to initialize it to 8.
+> Otherwise bad block identification will fail.
+>
+> As a result, mounting of empty jffs2 file system on omap3evm
+> (having bad blocks) failed giving the following error message -
+>
+> "mount: mounting /dev/mtdblock4 on /tmp failed: Input/output error"
+>
+> This patch solves the above issue for omap by initialising
+> badblockbits. We are working further on this to find a generic fix
+> to the problem in nand_base.c.
+>
+> Signed-off-by: Saxena, Parth <parth.saxena@ti.com>
+> Signed-off-by: Basheer, Mansoor Ahamed <mansoor.ahamed@ti.com>
+> ---
+> =A0drivers/mtd/nand/omap2.c | =A0 =A02 ++
+> =A01 files changed, 2 insertions(+), 0 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index 454f90c..350c77f 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -1005,6 +1005,8 @@ static int __devinit omap_nand_probe(struct platfor=
+m_device *pdev)
+> =A0 =A0 =A0 =A0info->nand.options =A0 =A0 =A0=3D pdata->devsize;
+> =A0 =A0 =A0 =A0info->nand.options =A0 =A0 =A0|=3D NAND_SKIP_BBTSCAN;
+>
+> + =A0 =A0 =A0 info->nand.badblockbits =3D 8;
+> +
+> =A0 =A0 =A0 =A0/* NAND write protect off */
+> =A0 =A0 =A0 =A0gpmc_cs_configure(info->gpmc_cs, GPMC_CONFIG_WP, 0);
+>
+> --
+> 1.6.2.4
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
