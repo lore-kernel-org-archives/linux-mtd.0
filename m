@@ -1,25 +1,25 @@
-Received: from bosmailout17.eigbox.net ([66.96.187.17])
+Received: from bosmailout14.eigbox.net ([66.96.189.14])
 	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QF8EZ-0006dA-UU
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 17:09:04 +0000
-Received: from bosmailscan04.eigbox.net ([10.20.15.4])
-	by bosmailout17.eigbox.net with esmtp (Exim) id 1QF8EY-0007XV-Ik
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 13:09:02 -0400
-Message-ID: <97ba6eaa0c79b74f56c22189d049dc2d.squirrel@emailmg.startlogic.com>
-In-Reply-To: <Pine.LNX.4.64.1104270820560.15966@lnxricardw.se.axis.com>
+	id 1QF8KP-0006ir-5z
+	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 17:15:05 +0000
+Received: from bosmailscan12.eigbox.net ([10.20.15.12])
+	by bosmailout14.eigbox.net with esmtp (Exim) id 1QF8KN-0000w2-M7
+	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 13:15:03 -0400
+Message-ID: <d7bb9e8d1c11cece8092e2f4c40436e2.squirrel@emailmg.startlogic.com>
+In-Reply-To: <4DB7C9F9.9000609@free-electrons.com>
 References: <000201cc046b$b03a6310$10af2930$@janteq.com>
 	<1303882262.2778.51.camel@localhost>
-	<Pine.LNX.4.64.1104270820560.15966@lnxricardw.se.axis.com>
-Date: Wed, 27 Apr 2011 13:08:16 -0400
+	<896346e425b9fed6ed42ee9c4144e135.squirrel@emailmg.startlogic.com>
+	<4DB7C9F9.9000609@free-electrons.com>
+Date: Wed, 27 Apr 2011 13:14:36 -0400
 Subject: Re: Discovering current MTD partition
 From: umar@janteq.com
-To: "Ricard Wanderlof" <ricard.wanderlof@axis.com>
+To: "David Wagner" <david.wagner@free-electrons.com>
 MIME-Version: 1.0
 Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Sender: umar@janteq.com
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Umar Qureshey <umar@janteq.com>, Artem Bityutskiy <dedekind1@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,37 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> On 04/27/2011 09:25 AM, umar@janteq.com wrote:
+>> Hi,
+>> [...]
+>> What I'd like is to detect from userspace is which /dev/mtdX partition
+>> is
+>> the currently executing program running on because that is the partition
+>> that has been obviously booted.
 >
->> On Wed, 27 Apr 2011, Artem Bityutskiy wrote:
->>
->> > On Tue, 2011-04-26 at 16:43 -0700, Umar Qureshey wrote:
->> > Hi,
->> >
->> > I searched this list's archive but did not see anything pertinent.
->> >
->> > I was wondering if there is a way to find out what the currently
->> active mtd
->> > partition is.  In my system, I have a few flash partitions for my file
->> > system and the kernel boots with the partition that is specified on
->> the
->> > kernel command line.  Aside from scanning /proc/cmdline, is there a
->> way to
->> > programmatically ascertain which mtd partition is active *now*.
->> > I need to find this information within a Python script but really if
->> it can
->> > be done in C (perhaps a syscall?), it's all I need.
->>
->> What does active mean? Anyway, there is /proc/mtd at your disposal.
+> I think you might want to take a look at getmntent (3) : it is a libc
+> function for getting the /etc/mtab entries. It also seems to be portable.
 >
-> If you want to find out which partition is mounted as root you could look
-> at /proc/mounts .
+> Cheers,
+> David.
 >
-> /Ricard
+> --
+> David Wagner, Free Electrons
+> Kernel, drivers, real-time and embedded Linux
+> development, consulting, training and support.
+> http://free-electrons.com
 
-Hi,
-/proc/mtd simply gives me a list of partition on the mtd device.  It
-doesn't tell me which one we currently have booted from.
-
-/proc/mounts as well doesn't relay any info about /dev/mtdXX.
-
-~Umar
+This will give me the same info as /proc/mtab.  I cannot figure out how I
+can infer which /dev/mtdXX was booted from with this information.
