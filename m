@@ -1,25 +1,21 @@
-Received: from mail-pz0-f49.google.com ([209.85.210.49])
+Received: from p02c12o142.mxlogic.net ([208.65.145.75])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QFFMf-00023O-IW
-	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 00:45:54 +0000
-Received: by pzk28 with SMTP id 28so1610267pzk.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Apr 2011 17:45:51 -0700 (PDT)
-Message-ID: <4DB8B8B9.4050604@gmail.com>
-Date: Wed, 27 Apr 2011 17:45:45 -0700
-From: Brian Norris <computersforpeace@gmail.com>
+	id 1QFIu6-0003Lr-90
+	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 04:32:39 +0000
+From: Iwo Mergler <IwoM@netcomm.com.au>
+To: <linux-mtd@lists.infradead.org>
+Subject: Re: Discovering current MTD partition
+Date: Thu, 28 Apr 2011 14:27:52 +1000
+References: <000201cc046b$b03a6310$10af2930$@janteq.com>
+	<4DB7C9F9.9000609@free-electrons.com>
+	<d7bb9e8d1c11cece8092e2f4c40436e2.squirrel@emailmg.startlogic.com>
+In-Reply-To: <d7bb9e8d1c11cece8092e2f4c40436e2.squirrel@emailmg.startlogic.com>
 MIME-Version: 1.0
-To: Grazvydas Ignotas <notasas@gmail.com>
-Subject: Re: [RFC] mtd: nand: Fix bad block identification issue
-References: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
-	<BANLkTi=sq5am1HKeOfYTmYHUm96O08N-jw@mail.gmail.com>
-In-Reply-To: <BANLkTi=sq5am1HKeOfYTmYHUm96O08N-jw@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Saxena,
-	Parth" <parth.saxena@ti.com>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Message-ID: <201104281427.52402.IwoM@netcomm.com.au>
+Cc: David Wagner <david.wagner@free-electrons.com>,
+	"umar@janteq.com" <umar@janteq.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,29 +25,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 28 Apr 2011 03:14:36 umar@janteq.com wrote:
+> > On 04/27/2011 09:25 AM, umar@janteq.com wrote:
+> >> Hi,
+> >> [...]
+> >> What I'd like is to detect from userspace is which /dev/mtdX partition
+> >> is
+> >> the currently executing program running on because that is the partiti=
+on
+> >> that has been obviously booted.
+> >=20
+> > I think you might want to take a look at getmntent (3) : it is a libc
+> > function for getting the /etc/mtab entries. It also seems to be portabl=
+e.
+> >=20
+> > Cheers,
+> > David.
+> >=20
+> > --
+> > David Wagner, Free Electrons
+> > Kernel, drivers, real-time and embedded Linux
+> > development, consulting, training and support.
+> > http://free-electrons.com
+>=20
+> This will give me the same info as /proc/mtab.  I cannot figure out how I
+> can infer which /dev/mtdXX was booted from with this information.
+>=20
 
-On 4/27/2011 8:45 AM, Grazvydas Ignotas wrote:
-> Brian,
-> 
-> did you really intend to remove badblockbits? Maybe it should go back
-> to nand_base.c?
+Here is an example from the embedded system I have on my desk
+right now:
 
-No, I had no intention of the sorts! It surely should not have been
-removed in the first place. I will "ack" a patch to revert it, or next
-time I'm at my work machine I'll write one myself.
+root:/proc# cat /proc/mounts
+rootfs / rootfs rw 0 0
+mtd:rfs / jffs2 rw,relatime 0 0
+proc /proc proc rw,relatime 0 0
+devpts /dev/pts devpts rw,relatime,mode=3D600 0 0
+etc.
 
-As a defense for myself...I think I was relatively new to git + kernel
-hacking at the time I sent this patch. Sorry for the messup.
+=46rom this we can see that the current root file system is
+mtd:rfs
 
-> On Wed, Apr 27, 2011 at 3:09 PM, Saxena, Parth <parth.saxena@ti.com> wrote:
->> Commit e0b58d0 ("mtd: nand: add ->badblockbits for minimum number
->> of set bits in bad block byte") by Maxim Levitsky added
->> badblockbits to nand_chip to specify minimum number of set bits
->> in bad block byte. The patch initialized badblockbits to 8 in
->> nand_base.c, but later the initialization line got removed by commit
->> c7b28e2("mtd: nand: refactor BB marker detection"). After this all
->> NAND drivers with NAND_SKIP_BBTSCAN are forced to initialize it to 8.
->> Otherwise bad block identification will fail.
+root:/proc# cat mtd
+dev:    size   erasesize  name
+mtd0: 00100000 00020000 "S1S2EN"
+mtd1: 00400000 00020000 "rkern"
+mtd2: 00b00000 00020000 "rfs"
+mtd3: 00400000 00020000 "kernel"
+mtd4: 02000000 00020000 "root"
+etc.
 
-Brian
+This tells us that mtd:rfs corresponds to mtd2, which
+should be accessible under /dev/mtd2, /dev/mtdblock2, etc.
+
+
+Best regards,
+
+Iwo
+
+
+
+This communication contains information which may be confidential or privil=
+eged.
+The information is intended solely for the use of the individual or entity =
+named
+above. If you are not the intended recipient, be aware that any disclosure,
+copying, distribution or use of the contents of this information is prohibi=
+ted.=20
+If you have received this communication in error, please notify me by telep=
+hone
+immediately.
