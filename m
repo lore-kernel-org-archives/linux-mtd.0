@@ -1,26 +1,24 @@
-Received: from bosmailout05.eigbox.net ([66.96.188.5])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QFUzZ-0001Qn-MW
-	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 17:27:06 +0000
-Received: from bosmailscan03.eigbox.net ([10.20.15.3])
-	by bosmailout05.eigbox.net with esmtp (Exim) id 1QFUzY-0003jN-Kk
-	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 13:27:04 -0400
-Message-ID: <7bc099d4301235c5f76f9689cb956f2c.squirrel@emailmg.startlogic.com>
-In-Reply-To: <201104281427.52402.IwoM@netcomm.com.au>
-References: <000201cc046b$b03a6310$10af2930$@janteq.com>
-	<4DB7C9F9.9000609@free-electrons.com>
-	<d7bb9e8d1c11cece8092e2f4c40436e2.squirrel@emailmg.startlogic.com>
-	<201104281427.52402.IwoM@netcomm.com.au>
-Date: Thu, 28 Apr 2011 13:26:51 -0400
-Subject: Re: Discovering current MTD partition
-From: umar@janteq.com
-To: "Iwo Mergler" <IwoM@netcomm.com.au>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QFV7F-0001V9-NL
+	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 17:35:03 +0000
+Received: by ewy3 with SMTP id 3so1052895ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 28 Apr 2011 10:34:59 -0700 (PDT)
+Subject: Re: [RFC] mtd: nand: Fix bad block identification issue
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Saxena, Parth" <parth.saxena@ti.com>, Brian Norris
+	<computersforpeace@gmail.com>
+In-Reply-To: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
+References: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 28 Apr 2011 20:30:43 +0300
+Message-ID: <1304011843.2737.3.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: umar@janteq.com
-Cc: David Wagner <david.wagner@free-electrons.com>,
-	"umar@janteq.com" <umar@janteq.com>, linux-mtd@lists.infradead.org
+Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
+	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,99 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Thu, 28 Apr 2011 03:14:36 umar@janteq.com wrote:
->> > On 04/27/2011 09:25 AM, umar@janteq.com wrote:
->> >> Hi,
->> >> [...]
->> >> What I'd like is to detect from userspace is which /dev/mtdX
->> partition
->> >> is
->> >> the currently executing program running on because that is the
->> partition
->> >> that has been obviously booted.
->> >
->> > I think you might want to take a look at getmntent (3) : it is a libc
->> > function for getting the /etc/mtab entries. It also seems to be
->> portable.
->> >
->> > Cheers,
->> > David.
->> >
->> > --
->> > David Wagner, Free Electrons
->> > Kernel, drivers, real-time and embedded Linux
->> > development, consulting, training and support.
->> > http://free-electrons.com
->>
->> This will give me the same info as /proc/mtab.  I cannot figure out how
->> I
->> can infer which /dev/mtdXX was booted from with this information.
->>
->
-> Here is an example from the embedded system I have on my desk
-> right now:
->
-> root:/proc# cat /proc/mounts
-> rootfs / rootfs rw 0 0
-> mtd:rfs / jffs2 rw,relatime 0 0
-> proc /proc proc rw,relatime 0 0
-> devpts /dev/pts devpts rw,relatime,mode=600 0 0
-> etc.
->
-> From this we can see that the current root file system is
-> mtd:rfs
->
-> root:/proc# cat mtd
-> dev:    size   erasesize  name
-> mtd0: 00100000 00020000 "S1S2EN"
-> mtd1: 00400000 00020000 "rkern"
-> mtd2: 00b00000 00020000 "rfs"
-> mtd3: 00400000 00020000 "kernel"
-> mtd4: 02000000 00020000 "root"
-> etc.
->
-> This tells us that mtd:rfs corresponds to mtd2, which
-> should be accessible under /dev/mtd2, /dev/mtdblock2, etc.
->
->
-> Best regards,
->
-> Iwo
->
->
+On Wed, 2011-04-27 at 17:39 +0530, Saxena, Parth wrote:
+> This patch solves the above issue for omap by initialising
+> badblockbits. We are working further on this to find a generic fix
+> to the problem in nand_base.c.
 
-# cat /proc/mounts
-rootfs / rootfs rw 0 0
-ubi0:rootfs / ubifs rw,sync,relatime 0 0
-proc /proc proc rw,relatime 0 0
-tmpfs /tmp tmpfs rw,relatime 0 0
-devpts /dev/pts devpts rw,relatime,gid=5,mode=620 0 0
-sysfs /sys sysfs rw,relatime 0 0
-debugfs /debug debugfs rw,relatime 0 0
-tmpfs /webSvr/logs tmpfs rw,relatime 0 0
+But it looks like the generic solution is to return the line which was
+accidentally removed, how about this patch
 
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00020000 00020000 "bst"
-mtd1: 00500000 00020000 "ptb"
-mtd2: 00500000 00020000 "bld"
-mtd3: 00500000 00020000 "hal"
-mtd4: 00500000 00020000 "pba"
-mtd5: 00800000 00020000 "pri"
-mtd6: 00800000 00020000 "sec"
-mtd7: 03c00000 00020000 "bak"
-mtd8: 03c00000 00020000 "rmd"
-mtd9: 03c00000 00020000 "rom"
-mtd10: 00300000 00020000 "dsp"
-mtd11: 03c00000 00020000 "lnx"
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Thu, 28 Apr 2011 20:26:59 +0300
+Subject: [PATCH] mtd: return badblockbits back
 
-# df
-Filesystem                Size      Used Available Use% Mounted on
-ubi0:rootfs              52.7M     35.1M     17.5M  67% /
-tmpfs                    65.4M     32.0K     65.4M   0% /tmp
-tmpfs                    65.4M     32.0K     65.4M   0% /webSvr/logs
+In commit c7b28e25cb9beb943aead770ff14551b55fa8c79 the initialization of
+the backblockbits was accidentally removed. This patch returns it back,
+because otherwise some NAND drivers are broken.
 
-There's nothing above I can use to infer about which /dev/mtdXX is
-currently booted - at least on this system.
-I have resorted to my backup strategy of parsing /proc/cmdline within
-Python to determine which partition is booted. *sigh*
+This problem was reported by "Saxena, Parth <parth.saxena@ti.com>" here:
+http://lists.infradead.org/pipermail/linux-mtd/2011-April/035221.html
+
+Reported-by: Saxena, Parth <parth.saxena@ti.com>
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: stable@kernel.org [2.6.36+]
+---
+ drivers/mtd/nand/nand_base.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 15510f2..5a7f817 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -3106,6 +3106,8 @@ ident_done:
+ 		chip->chip_shift += 32 - 1;
+ 	}
+ 
++	chip->badblockbits = 8;
++
+ 	/* Set the bad block position */
+ 	if (mtd->writesize > 512 || (busw & NAND_BUSWIDTH_16))
+ 		chip->badblockpos = NAND_LARGE_BADBLOCK_POS;
+-- 
+1.7.2.3
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
