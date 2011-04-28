@@ -1,22 +1,22 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QFVph-0001u6-Hc
-	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 18:20:58 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: =?iso-8859-1?Q?'Bj=F8rn_Forsman'?= <bjorn.forsman@gmail.com>, Umar
-	Qureshey <umar@janteq.com>
-Date: Thu, 28 Apr 2011 14:21:24 -0400
-Subject: RE: Discovering current MTD partition
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A694157B8@dekaexchange07.deka.local>
-References: <000201cc046b$b03a6310$10af2930$@janteq.com>
-	<BANLkTin+yKefqa8bKPnen1fsohevJohO+Q@mail.gmail.com>
-In-Reply-To: <BANLkTin+yKefqa8bKPnen1fsohevJohO+Q@mail.gmail.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	id 1QFWlK-0002Ol-MK
+	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 19:20:31 +0000
+Date: Thu, 28 Apr 2011 20:20:17 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Huang Shijie <b32955@freescale.com>
+Subject: Re: [PATCH v6 1/3] MTD : add the common code for GPMI controller
+	driver
+Message-ID: <20110428192017.GO17290@n2100.arm.linux.org.uk>
+References: <1303267549-18377-1-git-send-email-b32955@freescale.com>
+	<1303267549-18377-2-git-send-email-b32955@freescale.com>
 MIME-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1303267549-18377-2-git-send-email-b32955@freescale.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,57 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Bj=F8rn:
+On Wed, Apr 20, 2011 at 10:45:47AM +0800, Huang Shijie wrote:
+> +static inline int acquire_clock(struct gpmi_nfc_data *this, struct clk **clock)
+> +{
+> +	struct clk *c;
+> +
+> +	c = clk_get(&this->pdev->dev, NULL);
+> +	if (IS_ERR(c)) {
+> +		log("Can't own clock");
+> +		return PTR_ERR(c);
+> +	}
+> +	*clock = c;
+> +	return 0;
+> +}
+> +
+> +static void release_clock(struct gpmi_nfc_data *this, struct clk *clock)
+> +{
+> +	clk_put(clock);
+> +}
 
-> $ busybox rdev
-> /dev/sda1 /
+Do you really need to abstract like this?  It appears to just complicate
+the code unnecessarily.
 
-  Just FYI: This doesn't work on my particular
-  Embedded Linux system (running on UBIfs).
-  That command produces no result.
+> +#define log(a, ...) printk(KERN_INFO "[ %s : %.3d ] "a"\n", \
+> +			__func__, __LINE__,  ## __VA_ARGS__)
 
-                        Atlant
+Also, I don't like this log() function.  You can do the same with:
 
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
-.infradead.org] On Behalf Of Bj=F8rn Forsman
-Sent: Thursday, April 28, 2011 14:08
-To: Umar Qureshey
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Discovering current MTD partition
+#define pr_fmt(fmt) "[ %s : %.3d ] " fmt, __func__, __LINE__
 
-On 27 April 2011 01:43, Umar Qureshey <umar@janteq.com> wrote:
-> [...]
-> Aside from scanning /proc/cmdline, is there a way to
-> programmatically ascertain which mtd partition is active *now*.
-> I need to find this information within a Python script but really if it c=
-an
-> be done in C (perhaps a syscall?), it's all I need.
-
-Busybox has a command called 'rdev' that looks up the block device
-that is mounted on /.
-
-$ busybox rdev
-/dev/sda1 /
-
-Look in busybox/util-linux/rdev.c and busybox/libbb/find_root_device.c
-for the implementation details.
-
-Best regards,
-Bj=F8rn Forsman
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-This e-mail and the information, including any attachments, it contains are=
- intended to be a confidential communication only to the person or entity t=
-o whom it is addressed and may contain information that is privileged. If t=
-he reader of this message is not the intended recipient, you are hereby not=
-ified that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in error, =
-please immediately notify the sender and destroy the original message.
-
-Thank you.
-
-Please consider the environment before printing this email.
+and use pr_info() instead.  Note that it's generally frowned upon to
+hide the \n inside the pr_fmt().
