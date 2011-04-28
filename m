@@ -1,23 +1,26 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QFV7F-0001V9-NL
-	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 17:35:03 +0000
-Received: by ewy3 with SMTP id 3so1052895ewy.36
+	id 1QFVOC-0001fV-3C
+	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 17:52:33 +0000
+Received: by ewy3 with SMTP id 3so1058783ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 28 Apr 2011 10:34:59 -0700 (PDT)
-Subject: Re: [RFC] mtd: nand: Fix bad block identification issue
+	Thu, 28 Apr 2011 10:52:30 -0700 (PDT)
+Subject: Re: Discovering current MTD partition
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Saxena, Parth" <parth.saxena@ti.com>, Brian Norris
-	<computersforpeace@gmail.com>
-In-Reply-To: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
-References: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
+To: umar@janteq.com
+In-Reply-To: <7bc099d4301235c5f76f9689cb956f2c.squirrel@emailmg.startlogic.com>
+References: <000201cc046b$b03a6310$10af2930$@janteq.com>
+	<4DB7C9F9.9000609@free-electrons.com>
+	<d7bb9e8d1c11cece8092e2f4c40436e2.squirrel@emailmg.startlogic.com>
+	<201104281427.52402.IwoM@netcomm.com.au>
+	<7bc099d4301235c5f76f9689cb956f2c.squirrel@emailmg.startlogic.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 Apr 2011 20:30:43 +0300
-Message-ID: <1304011843.2737.3.camel@localhost>
+Date: Thu, 28 Apr 2011 20:48:14 +0300
+Message-ID: <1304012894.2737.19.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
-	linux-omap@vger.kernel.org, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Iwo Mergler <IwoM@netcomm.com.au>,
+	David Wagner <david.wagner@free-electrons.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,47 +31,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-04-27 at 17:39 +0530, Saxena, Parth wrote:
-> This patch solves the above issue for omap by initialising
-> badblockbits. We are working further on this to find a generic fix
-> to the problem in nand_base.c.
+On Thu, 2011-04-28 at 13:26 -0400, umar@janteq.com wrote:
+> # cat /proc/mounts
+> rootfs / rootfs rw 0 0
+> ubi0:rootfs / ubifs rw,sync,relatime 0 0
+> proc /proc proc rw,relatime 0 0
+> tmpfs /tmp tmpfs rw,relatime 0 0
+> devpts /dev/pts devpts rw,relatime,gid=5,mode=620 0 0
+> sysfs /sys sysfs rw,relatime 0 0
+> debugfs /debug debugfs rw,relatime 0 0
+> tmpfs /webSvr/logs tmpfs rw,relatime 0 0
+> 
+> # cat /proc/mtd
+> dev:    size   erasesize  name
+> mtd0: 00020000 00020000 "bst"
+> mtd1: 00500000 00020000 "ptb"
+> mtd2: 00500000 00020000 "bld"
+> mtd3: 00500000 00020000 "hal"
+> mtd4: 00500000 00020000 "pba"
+> mtd5: 00800000 00020000 "pri"
+> mtd6: 00800000 00020000 "sec"
+> mtd7: 03c00000 00020000 "bak"
+> mtd8: 03c00000 00020000 "rmd"
+> mtd9: 03c00000 00020000 "rom"
+> mtd10: 00300000 00020000 "dsp"
+> mtd11: 03c00000 00020000 "lnx"
+> 
+> # df
+> Filesystem                Size      Used Available Use% Mounted on
+> ubi0:rootfs              52.7M     35.1M     17.5M  67% /
+> tmpfs                    65.4M     32.0K     65.4M   0% /tmp
+> tmpfs                    65.4M     32.0K     65.4M   0% /webSvr/logs
+> 
+> There's nothing above I can use to infer about which /dev/mtdXX is
+> currently booted - at least on this system.
+> I have resorted to my backup strategy of parsing /proc/cmdline within
+> Python to determine which partition is booted. *sigh*
 
-But it looks like the generic solution is to return the line which was
-accidentally removed, how about this patch
+Yes, this is a bit messy and complex. Anyway, here is the algorithm for
+you, in short. Ask specific questions if it is not clear, I do not have
+time right now to write long mails. Anyway, you need to spend some time
+and understand the relations between all these mtdX, ubiY, ubiY_Z,
+ubiY:name...
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Thu, 28 Apr 2011 20:26:59 +0300
-Subject: [PATCH] mtd: return badblockbits back
+So, in your case you know your rootfs is "ubi0:rootfs". This means that
+   a) your rootfs is an UBI volume
+   b) this UBI volume belongs to the UBI device 0 (there may be several
+      of them - ubi1, ubi2, etc). This is the typical case, I do not
+      know if anyone really has more than one UBI device ever.
+   c) You know that the volume name is "rootfs".
 
-In commit c7b28e25cb9beb943aead770ff14551b55fa8c79 the initialization of
-the backblockbits was accidentally removed. This patch returns it back,
-because otherwise some NAND drivers are broken.
+You also should know that there is 1-1 correspondence between MTD and
+UBI devices - one UBI device sits on top (and fully controls) one MTD
+device. To find out the MTD device number you look
+at: /sys/class/ubi/ubi0/mtd_num
 
-This problem was reported by "Saxena, Parth <parth.saxena@ti.com>" here:
-http://lists.infradead.org/pipermail/linux-mtd/2011-April/035221.html
+There you see the number X, this means your MTD device is mtdX
 
-Reported-by: Saxena, Parth <parth.saxena@ti.com>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Cc: stable@kernel.org [2.6.36+]
----
- drivers/mtd/nand/nand_base.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+P.S. If you had set-up similar to Ricard's, you' also need to look
+at /proc/cmdline to translate "rootfs" or "/dev/rootfs" to
+"ubi0:rootfs". Not, in this case it is just co-incidence that you named
+your volume "rootfs", if you named it "pussy_cat", you' have the
+following in your /proc/mounts:
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 15510f2..5a7f817 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -3106,6 +3106,8 @@ ident_done:
- 		chip->chip_shift += 32 - 1;
- 	}
- 
-+	chip->badblockbits = 8;
-+
- 	/* Set the bad block position */
- 	if (mtd->writesize > 512 || (busw & NAND_BUSWIDTH_16))
- 		chip->badblockpos = NAND_LARGE_BADBLOCK_POS;
--- 
-1.7.2.3
+rootfs / rootfs rw 0 0
+ubi0:pussy_cat / ubifs rw,sync,relatime 0 0
+
+HTH.
 
 -- 
 Best Regards,
