@@ -1,22 +1,21 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QFUlg-0001H3-NM
-	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 17:12:45 +0000
-Received: by ewy3 with SMTP id 3so1045312ewy.36
+	id 1QFUmr-0001IW-3e
+	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 17:13:57 +0000
+Received: by ewy3 with SMTP id 3so1045723ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 28 Apr 2011 10:12:42 -0700 (PDT)
-Subject: Re: [PATCH] powerpc/44x: Add multiple chip select support to NDFC
-	driver
+	Thu, 28 Apr 2011 10:13:56 -0700 (PDT)
+Subject: Re: hardware ecc support in ubifs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Felix Radensky <felix@embedded-sol.com>
-In-Reply-To: <1303810606-2068-1-git-send-email-felix@embedded-sol.com>
-References: <1303810606-2068-1-git-send-email-felix@embedded-sol.com>
+To: Amit Pundir <pundiramit@gmail.com>
+In-Reply-To: <BANLkTimt+yL47W-eJ5YuwCGsEhyzX5R7jg@mail.gmail.com>
+References: <BANLkTimt+yL47W-eJ5YuwCGsEhyzX5R7jg@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 28 Apr 2011 20:08:26 +0300
-Message-ID: <1304010506.2737.0.camel@localhost>
+Date: Thu, 28 Apr 2011 20:09:39 +0300
+Message-ID: <1304010579.2737.1.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, sr@denx.de, linuxppc-dev@lists.ozlabs.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,22 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2011-04-26 at 12:36 +0300, Felix Radensky wrote:
-> This patch extends NDFC driver to support all 4 chip selects
-> available in NDFC NAND controller. Tested on custom 460EX board
-> with 2 chip select NAND device.
+On Wed, 2011-04-27 at 15:20 +0530, Amit Pundir wrote:
+> Hi,
 > 
-> Signed-off-by: Felix Radensky <felix@embedded-sol.com>
-> ---
-> 
-> I'd appreciate some testing on 44x boards with multiple NAND
-> devices, like bamboo or DU440, as I don't have access to these 
-> boards.
-> 
->  drivers/mtd/nand/ndfc.c |   52 +++++++++++++++++++++++++++++++---------------
->  1 files changed, 35 insertions(+), 17 deletions(-)
+> Does UBIFS support 1-bit h/w ECC?
 
-Pushed to l2-mtd-2.6.git, thanks.
+The MTD laye is taking care of ECC. And just in case, neither UBI nor
+UBIFS use OOB.
 
 -- 
 Best Regards,
