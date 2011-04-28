@@ -1,18 +1,25 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-pz0-f49.google.com ([209.85.210.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QFAA1-0007no-GI
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2011 19:12:30 +0000
-Received: by wwb39 with SMTP id 39so1596795wwb.18
+	id 1QFFMf-00023O-IW
+	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2011 00:45:54 +0000
+Received: by pzk28 with SMTP id 28so1610267pzk.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Apr 2011 12:12:27 -0700 (PDT)
-Message-ID: <4DB86A96.6080607@gmail.com>
-Date: Wed, 27 Apr 2011 21:12:22 +0200
-From: Angelo Dureghello <angelo70@gmail.com>
+	Wed, 27 Apr 2011 17:45:51 -0700 (PDT)
+Message-ID: <4DB8B8B9.4050604@gmail.com>
+Date: Wed, 27 Apr 2011 17:45:45 -0700
+From: Brian Norris <computersforpeace@gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: SST flash issues
+To: Grazvydas Ignotas <notasas@gmail.com>
+Subject: Re: [RFC] mtd: nand: Fix bad block identification issue
+References: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
+	<BANLkTi=sq5am1HKeOfYTmYHUm96O08N-jw@mail.gmail.com>
+In-Reply-To: <BANLkTi=sq5am1HKeOfYTmYHUm96O08N-jw@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
+	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, "Saxena,
+	Parth" <parth.saxena@ti.com>, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,79 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-my name is angelo, i am new to this list to ask for some help to mtd experts.
+On 4/27/2011 8:45 AM, Grazvydas Ignotas wrote:
+> Brian,
+> 
+> did you really intend to remove badblockbits? Maybe it should go back
+> to nand_base.c?
 
-I installed uClinux in a custom board i developed, the kernel is stored inside a parallel flash, SST 29VF3201B (4MB, 16bit bus, word-readable) and loaded into RAM from the bootloader.
+No, I had no intention of the sorts! It surely should not have been
+removed in the first place. I will "ack" a patch to revert it, or next
+time I'm at my work machine I'll write one myself.
 
-I prepared 3 partitions from my board.c, "bootloader", "kernel+romfs", and a final small "jffs2" data partition. 
-My idea is to use this small third partition (1024Kb) to store some non-volatile data. 
+As a defense for myself...I think I was relatively new to git + kernel
+hacking at the time I sent this patch. Sorry for the messup.
 
-The partitions seems to be detected correctly from the dmesg:
+> On Wed, Apr 27, 2011 at 3:09 PM, Saxena, Parth <parth.saxena@ti.com> wrote:
+>> Commit e0b58d0 ("mtd: nand: add ->badblockbits for minimum number
+>> of set bits in bad block byte") by Maxim Levitsky added
+>> badblockbits to nand_chip to specify minimum number of set bits
+>> in bad block byte. The patch initialized badblockbits to 8 in
+>> nand_base.c, but later the initialization line got removed by commit
+>> c7b28e2("mtd: nand: refactor BB marker detection"). After this all
+>> NAND drivers with NAND_SKIP_BBTSCAN are forced to initialize it to 8.
+>> Otherwise bad block identification will fail.
 
-Using physmap partition information
-Creating 3 MTD partitions on "physmap-flash":
-0x000000000000-0x000000010000 : "Colilo (64K)"
-mtd: Giving out device 0 to Colilo (64K)
-0x000000010000-0x000000300000 : "Kernel+ROMfs (3008K)"
-mtd: Giving out device 1 to Kernel+ROMfs (3008K)
-0x000000300000-0x000000400000 : "JFFS2 (1024K)"
-mtd: Giving out device 2 to JFFS2 (1024K)
-uclinux[mtd]: RAM probe address=0x1ab704 size=0xa7000
-Creating 1 MTD partitions on "RAM":
-0x000000000000-0x0000000a7000 : "ROMfs"
-mtd: Giving out device 3 to ROMfs
-Generic platform RAM MTD, (c) 2004 Simtec Electronics
-
-The first thing i don't understand is why the erasesize is for all 3 partitions as the same flash size, 0x400000:
-/ # cd proc
-/proc # cat mtd
-dev:    size   erasesize  name
-mtd0: 00010000 00400000 "Colilo (64K)"
-mtd1: 002f0000 00400000 "Kernel+ROMfs (3008K)"
-mtd2: 00100000 00400000 "JFFS2 (1024K)"
-mtd3: 000a7000 00001000 "ROMfs"
-/proc #
-
-I was supposing that the erasesize was different for every partition. This is probably the first fact that don't allow to access for writing the 3rd partition (mtd2).
-
-Then, as a first step, i try to read the mtdblock2 (cat), and i read exactly what i written inside, the data bytes of a little jffs2 fs i programmed in from the bootloader.
-
-Then as a second step i would try to unlock/erase, to see if the flash has been detected correctly.
-
-If i try to unlock the partition i get:
-
-/proc # unlock /dev/mtdblock2
-mtdblock_open
-ok
-Comtdblock_release
-uok
-ld not get MTD device info from /dev/mtdblock2
-/proc #
-
-If i try to erase:/proc # erase /dev/mtdblock2
-mtdblock_open
-ok
-Ermtdblock_release
-aok
-se Total 1 Units
-/proc #
-
-But now, if i cat /dev/mtdblock2, original data are still there.
-
-It is obvious now that also trying to mount the jffs2 fs nothing will work;:
-
-/var # mount -t jffs2 /dev/mtdblock2 jffs2
-MTDSB: lookup_bdev() returned 0
-MTDSB: New superblock for device 2 ("JFFS2 (1024K)")
-jffs2: Flash size not aligned to erasesize, reducing to 0KiB
-jffs2: Too few erase blocks (0)
-mount: mounting /dev/mtdblock2 on jffs2 failed: Invalid argument
-/var #
-
-So i guess i am wrong in more than one assumption,
-every help is very appreciated,
-
-many thanks,
-angelo
+Brian
