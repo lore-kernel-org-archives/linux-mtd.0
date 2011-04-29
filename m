@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
+Received: from arroyo.ext.ti.com ([192.94.94.40])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QFoPP-0002Me-LK
-	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2011 14:11:04 +0000
-Received: from nokia.com (localhost [127.0.0.1])
-	by mgw-sa02.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p3TEB1FQ008163
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Apr 2011 17:11:01 +0300
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/2] UBIFS: refactor ubifs_rcvry_gc_commit
-Date: Fri, 29 Apr 2011 17:14:05 +0300
-Message-Id: <1304086445-5595-2-git-send-email-dedekind1@gmail.com>
-In-Reply-To: <1304086445-5595-1-git-send-email-dedekind1@gmail.com>
-References: <1304086445-5595-1-git-send-email-dedekind1@gmail.com>
-Cc: Adrian Hunter <adrian.hunter@nokia.com>
+	id 1QFoaz-0002WU-AD
+	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2011 14:23:02 +0000
+From: "Saxena, Parth" <parth.saxena@ti.com>
+To: "'dedekind1@gmail.com'" <dedekind1@gmail.com>, Brian Norris
+	<computersforpeace@gmail.com>
+Date: Fri, 29 Apr 2011 19:52:32 +0530
+Subject: RE: [RFC] mtd: nand: Fix bad block identification issue
+Message-ID: <19F8576C6E063C45BE387C64729E739404E1A21866@dbde02.ent.ti.com>
+References: <1303906161-24175-1-git-send-email-parth.saxena@ti.com>
+	<1304011843.2737.3.camel@localhost>
+In-Reply-To: <1304011843.2737.3.camel@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: "Basheer, Mansoor Ahamed" <mansoor.ahamed@ti.com>,
+	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,109 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This commits refactors and cleans up 'ubifs_rcvry_gc_commit()' which was quite
-untidy, also removes the commentary which was not 100% correct.
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- fs/ubifs/recovery.c |   55 ++++++++++++++++----------------------------------
- 1 files changed, 18 insertions(+), 37 deletions(-)
+> -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind1@gmail.com]
+> Sent: Thursday, April 28, 2011 11:01 PM
+> To: Saxena, Parth; Brian Norris
+> Cc: linux-mtd@lists.infradead.org; Basheer, Mansoor Ahamed; linux-
+> omap@vger.kernel.org
+> Subject: Re: [RFC] mtd: nand: Fix bad block identification issue
+>=20
+> On Wed, 2011-04-27 at 17:39 +0530, Saxena, Parth wrote:
+> > This patch solves the above issue for omap by initialising
+> > badblockbits. We are working further on this to find a generic fix
+> > to the problem in nand_base.c.
+>=20
+> But it looks like the generic solution is to return the line which was
+> accidentally removed, how about this patch
+>=20
+> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Date: Thu, 28 Apr 2011 20:26:59 +0300
+> Subject: [PATCH] mtd: return badblockbits back
+>=20
+> In commit c7b28e25cb9beb943aead770ff14551b55fa8c79 the initialization of
+> the backblockbits was accidentally removed. This patch returns it back,
+> because otherwise some NAND drivers are broken.
+>=20
+> This problem was reported by "Saxena, Parth <parth.saxena@ti.com>" here:
+> http://lists.infradead.org/pipermail/linux-mtd/2011-April/035221.html
+>=20
+> Reported-by: Saxena, Parth <parth.saxena@ti.com>
+> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Cc: stable@kernel.org [2.6.36+]
+> ---
+>  drivers/mtd/nand/nand_base.c |    2 ++
+>  1 files changed, 2 insertions(+), 0 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 15510f2..5a7f817 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -3106,6 +3106,8 @@ ident_done:
+>  		chip->chip_shift +=3D 32 - 1;
+>  	}
+>=20
+> +	chip->badblockbits =3D 8;
+> +
+>  	/* Set the bad block position */
+>  	if (mtd->writesize > 512 || (busw & NAND_BUSWIDTH_16))
+>  		chip->badblockpos =3D NAND_LARGE_BADBLOCK_POS;
+[Saxena, Parth]=20
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index 11776ae..d28db1e 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -1138,44 +1138,26 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
- {
- 	struct ubifs_wbuf *wbuf = &c->jheads[GCHD].wbuf;
- 	struct ubifs_lprops lp;
--	int lnum, err;
-+	int err;
- 
- 	c->gc_lnum = -1;
--	if (wbuf->lnum == -1) {
--		dbg_rcvry("no GC head LEB");
--		return grab_empty_leb(c);
--	}
--	/*
--	 * See whether the used space in the dirtiest LEB fits in the GC head
--	 * LEB.
--	 */
--	if (wbuf->offs == c->leb_size) {
--		dbg_rcvry("no room in GC head LEB");
-+	if (wbuf->lnum == -1 || wbuf->offs == c->leb_size) {
-+		dbg_rcvry("no GC head: wbuf->lnum %d, wbuf->offs %d",
-+			  wbuf->lnum, wbuf->offs);
- 		return grab_empty_leb(c);
- 	}
-+
- 	err = ubifs_find_dirty_leb(c, &lp, wbuf->offs, 2);
- 	if (err) {
--		/*
--		 * There are no dirty or empty LEBs subject to here being
--		 * enough for the index. Try to use
--		 * 'ubifs_find_free_leb_for_idx()', which will return any empty
--		 * LEBs (ignoring index requirements). If the index then
--		 * doesn't have enough LEBs the recovery commit will fail -
--		 * which is the  same result anyway i.e. recovery fails. So
--		 * there is no problem ignoring index  requirements and just
--		 * grabbing a free LEB since we have already established there
--		 * is not a dirty LEB we could have used instead.
--		 */
--		if (err == -ENOSPC) {
--			dbg_rcvry("could not find a dirty LEB");
--			return grab_empty_leb(c);
--		}
--		return err;
-+		if (err != -ENOSPC)
-+			return err;
-+
-+		dbg_rcvry("could not find a dirty LEB");
-+		return grab_empty_leb(c);
- 	}
- 
- 	ubifs_assert(!(lp.flags & LPROPS_INDEX));
- 	ubifs_assert(lp.free + lp.dirty >= wbuf->offs);
--	lnum = lp.lnum;
- 
- 	/*
- 	 * We run the commit before garbage collection otherwise subsequent
-@@ -1185,11 +1167,8 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
- 	err = ubifs_run_commit(c);
- 	if (err)
- 		return err;
--	/*
--	 * The data in the dirtiest LEB fits in the GC head LEB, so do the GC
--	 * - use locking to keep 'ubifs_assert()' happy.
--	 */
--	dbg_rcvry("GC'ing LEB %d", lnum);
-+
-+	dbg_rcvry("GC'ing LEB %d", lp.lnum);
- 	mutex_lock_nested(&wbuf->io_mutex, wbuf->jhead);
- 	err = ubifs_garbage_collect_leb(c, &lp);
- 	if (err >= 0) {
-@@ -1205,14 +1184,16 @@ int ubifs_rcvry_gc_commit(struct ubifs_info *c)
- 			err = -EINVAL;
- 		return err;
- 	}
--	if (err != LEB_RETAINED) {
--		dbg_err("GC returned %d", err);
-+
-+	ubifs_assert(err == LEB_RETAINED);
-+	if (err != LEB_RETAINED)
- 		return -EINVAL;
--	}
-+
- 	err = ubifs_leb_unmap(c, c->gc_lnum);
- 	if (err)
- 		return err;
--	dbg_rcvry("allocated LEB %d for GC", lnum);
-+
-+	dbg_rcvry("allocated LEB %d for GC", lp.lnum);
- 	return 0;
- }
- 
--- 
-1.7.2.3
+Tested-By: Saxena, Parth <parth.saxena@ti.com>
+Acked By: Saxena, Parth <parth.saxena@ti.com>
+
+> --
+> 1.7.2.3
+>=20
+> --
+> Best Regards,
+> Artem Bityutskiy (=E1=D2=D4=A3=CD =E2=C9=D4=C0=C3=CB=C9=CA)
