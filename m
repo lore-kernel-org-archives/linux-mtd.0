@@ -1,18 +1,19 @@
-Message-ID: <4DBA177C.50805@freescale.com>
-Date: Fri, 29 Apr 2011 09:42:20 +0800
-From: Huang Shijie <b32955@freescale.com>
-MIME-Version: 1.0
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Subject: Re: [PATCH v6 1/3] MTD : add the common code for GPMI controller
-	driver
-References: <1303267549-18377-1-git-send-email-b32955@freescale.com>
-	<1303267549-18377-2-git-send-email-b32955@freescale.com>
-	<20110428192017.GO17290@n2100.arm.linux.org.uk>
-In-Reply-To: <20110428192017.GO17290@n2100.arm.linux.org.uk>
-Content-Type: text/plain; charset="ISO-8859-1"; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
-	dedekind1@gmail.com
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QFkyw-0008Qw-HB
+	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2011 10:31:31 +0000
+Received: by wwb39 with SMTP id 39so2898707wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 29 Apr 2011 03:31:27 -0700 (PDT)
+Sender: Bryan De faria <bryan.defaria@gmail.com>
+From: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
+To: 
+Subject: [PATCH 0/3] omap : nand : omap2 nand driver fixes
+Date: Fri, 29 Apr 2011 12:31:07 +0200
+Message-Id: <1304073070-24526-1-git-send-email-bdefaria@adeneo-embedded.com>
+To: linux-omap@vger.kernel.org
+Cc: Bryan DE FARIA <bdefaria@adeneo-embedded.com>, jjhiblot@adetelgroup.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi:
-> On Wed, Apr 20, 2011 at 10:45:47AM +0800, Huang Shijie wrote:
->> +static inline int acquire_clock(struct gpmi_nfc_data *this, struct clk **clock)
->> +{
->> +	struct clk *c;
->> +
->> +	c = clk_get(&this->pdev->dev, NULL);
->> +	if (IS_ERR(c)) {
->> +		log("Can't own clock");
->> +		return PTR_ERR(c);
->> +	}
->> +	*clock = c;
->> +	return 0;
->> +}
->> +
->> +static void release_clock(struct gpmi_nfc_data *this, struct clk *clock)
->> +{
->> +	clk_put(clock);
->> +}
-> Do you really need to abstract like this?  It appears to just complicate
-> the code unnecessarily.
->
-ok, I can remove the two functions.
->> +#define log(a, ...) printk(KERN_INFO "[ %s : %.3d ] "a"\n", \
->> +			__func__, __LINE__,  ## __VA_ARGS__)
-> Also, I don't like this log() function.  You can do the same with:
->
-> #define pr_fmt(fmt) "[ %s : %.3d ] " fmt, __func__, __LINE__
->
-> and use pr_info() instead.  Note that it's generally frowned upon to
-> hide the \n inside the pr_fmt().
->
-ok, I will change it.
+Theses patches make the omap2 nand driver able to compile as a module and fix 
+an issue when the module is reinserted. The last patch corrects an issue when 
+using the software ecc with prefecth.
 
-Thanks .
+Bryan DE FARIA (3):
+  omap : nand : fix omap2 module compilation
+  omap : nand : fix omap2 module reinsertion
+  omap : nand : fix subpage ecc issue with prefetch
 
-
-Best Regards
-Huang Shijie
+ arch/arm/mach-omap2/gpmc.c |    2 ++
+ drivers/mtd/nand/omap2.c   |    2 +-
+ 2 files changed, 3 insertions(+), 1 deletions(-)
