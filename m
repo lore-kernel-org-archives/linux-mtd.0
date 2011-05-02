@@ -1,24 +1,19 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QGpFH-0004dQ-Gi
-	for linux-mtd@lists.infradead.org; Mon, 02 May 2011 09:16:48 +0000
-Received: by wyb28 with SMTP id 28so5148213wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 02 May 2011 02:16:45 -0700 (PDT)
-Message-ID: <4DBE767A.5060703@gmail.com>
-Date: Mon, 02 May 2011 11:16:42 +0200
-From: angelo <angelo70@gmail.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: help request, jffs2 fs files get lost
-References: <4DBD4572.5040508@gmail.com>
-	<Pine.LNX.4.64.1105020853440.15966@lnxricardw.se.axis.com>
-	<4DBE6BCD.3050400@gmail.com>
-	<Pine.LNX.4.64.1105021057420.15966@lnxricardw.se.axis.com>
-In-Reply-To: <Pine.LNX.4.64.1105021057420.15966@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>
+	id 1QGvpY-0007B2-F6
+	for linux-mtd@lists.infradead.org; Mon, 02 May 2011 16:18:41 +0000
+Received: from nokia.com (localhost [127.0.0.1])
+	by mgw-sa02.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
+	p42GIbew008154
+	for <linux-mtd@lists.infradead.org>; Mon, 2 May 2011 19:18:37 +0300
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/2] UBIFS: do not free write-buffers when in R/O mode
+Date: Mon,  2 May 2011 19:22:19 +0300
+Message-Id: <1304353340-2054-2-git-send-email-dedekind1@gmail.com>
+In-Reply-To: <1304353340-2054-1-git-send-email-dedekind1@gmail.com>
+References: <1304353340-2054-1-git-send-email-dedekind1@gmail.com>
+Cc: Adrian Hunter <adrian.hunter@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,75 +23,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 02/05/2011 10:58, Ricard Wanderlof wrote:
->
-> On Mon, 2 May 2011, angelo wrote:
->
->> If this is in fact what you're doing, you're overwriting your 
->> jffs2.img file with the all-ff's contents of the newly erased 
->> /dev/mtd2. Swap the two arguments instead.
->>
->> sorry, was just a bad had-written text,
->> i generally do "cp jffs2.img /dev/mtd2", and after mounting mtdblock2 
->> i see correctly the root tree.
->>
->> I did some other tests:
->> if i mount the new created jffs2 and unmount it, nothing is lost.
->> If i mount it, open a file, append some text, close it and unmount, 
->> then at the next mount everything is disapperaed (checking mtd2, all 
->> is set to 0xff).
->>
->> Saving modified files i notice a warning:
->> Writing files is also notice some MTD debug trace, maybe an error:
->> Node totlen on flash (0xffffffff) != totlen from node ref (0x00000074)
->
-> Out of curiosity, what exactly is the type of flash you are using?
->
-> /Ricard
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Hi Ricard,
+Currently UBIFS has a small optimization - it frees write-buffers when it is
+re-mounted from R/W mode to R/O mode. Of course, when it is mounted R/O, it
+does not allocate write-buffers as well.
 
-thanks again for help
+This optimization is nice but it leads to subtle problems and complications
+in recovery, which I can reproduce using the integck test. The symptoms are
+that after a power cut the file-system cannot be mounted if we first mount
+it R/O, and then re-mount R/W - 'ubifs_rcvry_gc_commit()' prints:
 
-the flash chip is an SST 39VF2301B, word programmable, tot 4MB, 4KB 
-sector size, 64K block size, it is very similar to an AMD 16bit data bus 
-width flash.
+UBIFS error (pid 34456): could not find an empty LEB
 
-It seems to be correctly detected from jedec probe, but through CFI 
-queries probably
+Analysis of the  problem.
 
-...
-physmap platform flash device: 00400000 at ffc00000
-physmap-flash: Found 1 x16 devices at 0x0 in 16-bit bank. Manufacturer 
-ID 0x0000bf Chip ID 0x00235d
-number of CFI chips: 1
-...
+When mounting R/W, the reply process sets journal heads to buds [1], but
+when mounting R/O - it does not do this, because the write-buffers are not
+allocated. So 'ubifs_rcvry_gc_commit()' works completely differently for the
+same file-system but for the following 2 cases:
 
-/proc # cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00010000 00001000 "Colilo (64K)"
-mtd1: 002f0000 00001000 "Kernel+ROMfs (3008K)"
-mtd2: 00100000 00001000 "JFFS2 (1024K)"
-mtd3: 0009d000 00001000 "ROMfs"
+1. mounting R/W after a power cut and recover
+2. mounting R/O after a power cut, re-mounting R/W and run deferred recovery
 
-This is a suspected sequence of MTD commands i find in dmesg:
+In the former case, we have journal heads seeked to the a bud, in the latter
+case, they are non-seeked (wbuf->lnum == -1). So in the latter case we do not
+try to recover the GC LEB by garbage-collecting to the GC head, but we just
+try to find an empty LEB, and there may be no empty LEBs, so we just fail.
+On the other hand, in the former case (mount R/W), we are able to make a GC LEB
+(@c->gc_lnum) by garbage-collecting.
 
-...
-MTD_ioctl
-MTD_ioctl
-MTD_ioctl
-MTD_ioctl
-MTD_ioctl
-MTD_ioctl
-MTD_close
-MTD_open
-MTD_write
-MTD_close
-Node totlen on flash (0xffffffff) != totlen from node ref (0x00000074)
-MTD_open <-- jffs2 fs disapperaed from here
-MTD_read
-MTD_read
-...
+Thus, let's remove this small nice optimization and always allocate
+write-buffers. This should not make too big difference - we have only 3
+of them, each of max. write unit size, which is usually 2KiB. So this is
+about 6KiB of RAM for the typical case, and only when mounted R/O.
 
-many thanks,
-angelo
+[1]: Note, currently the replay process is setting (seeking) the journal heads
+to _some_ buds, not necessarily to the buds which had been the journal heads
+before the power cut happened. This will be fixed separately.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: stable@kernel.org
+---
+ fs/ubifs/log.c   |   20 --------------------
+ fs/ubifs/super.c |   15 ++++-----------
+ 2 files changed, 4 insertions(+), 31 deletions(-)
+
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index 4d0cb12..40fa780 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -175,26 +175,6 @@ void ubifs_add_bud(struct ubifs_info *c, struct ubifs_bud *bud)
+ }
+ 
+ /**
+- * ubifs_create_buds_lists - create journal head buds lists for remount rw.
+- * @c: UBIFS file-system description object
+- */
+-void ubifs_create_buds_lists(struct ubifs_info *c)
+-{
+-	struct rb_node *p;
+-
+-	spin_lock(&c->buds_lock);
+-	p = rb_first(&c->buds);
+-	while (p) {
+-		struct ubifs_bud *bud = rb_entry(p, struct ubifs_bud, rb);
+-		struct ubifs_jhead *jhead = &c->jheads[bud->jhead];
+-
+-		list_add_tail(&bud->list, &jhead->buds_list);
+-		p = rb_next(p);
+-	}
+-	spin_unlock(&c->buds_lock);
+-}
+-
+-/**
+  * ubifs_add_bud_to_log - add a new bud to the log.
+  * @c: UBIFS file-system description object
+  * @jhead: journal head the bud belongs to
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 459d8c6..1f049ae 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1257,12 +1257,12 @@ static int mount_ubifs(struct ubifs_info *c)
+ 		goto out_free;
+ 	}
+ 
++	err = alloc_wbufs(c);
++	if (err)
++		goto out_cbuf;
++
+ 	sprintf(c->bgt_name, BGT_NAME_PATTERN, c->vi.ubi_num, c->vi.vol_id);
+ 	if (!c->ro_mount) {
+-		err = alloc_wbufs(c);
+-		if (err)
+-			goto out_cbuf;
+-
+ 		/* Create background thread */
+ 		c->bgt = kthread_create(ubifs_bg_thread, c, "%s", c->bgt_name);
+ 		if (IS_ERR(c->bgt)) {
+@@ -1632,12 +1632,6 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 	if (err)
+ 		goto out;
+ 
+-	err = alloc_wbufs(c);
+-	if (err)
+-		goto out;
+-
+-	ubifs_create_buds_lists(c);
+-
+ 	/* Create background thread */
+ 	c->bgt = kthread_create(ubifs_bg_thread, c, "%s", c->bgt_name);
+ 	if (IS_ERR(c->bgt)) {
+@@ -1745,7 +1739,6 @@ static void ubifs_remount_ro(struct ubifs_info *c)
+ 	if (err)
+ 		ubifs_ro_mode(c, err);
+ 
+-	free_wbufs(c);
+ 	vfree(c->orph_buf);
+ 	c->orph_buf = NULL;
+ 	kfree(c->write_reserve_buf);
+-- 
+1.7.2.3
