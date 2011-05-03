@@ -1,16 +1,15 @@
-Message-ID: <4DBF9D74.5090103@freescale.com>
-Date: Tue, 3 May 2011 14:15:16 +0800
-From: Huang Shijie <b32955@freescale.com>
+Received: from nm1-vm0.access.bullet.mail.mud.yahoo.com ([66.94.236.27])
+	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QH8wV-0004zH-GC
+	for linux-mtd@lists.infradead.org; Tue, 03 May 2011 06:18:44 +0000
+Message-ID: <333886.29917.qm@web82501.mail.mud.yahoo.com>
+Date: Mon, 2 May 2011 23:18:41 -0700 (PDT)
+From: osterluk@yahoo.com
+Subject: Need help with NAND flash corruption problem using JFFS2
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: Huang Shijie <b32955@freescale.com>
-Subject: Re: [PATCH V3 1/3] ARM: mxs: add GPMI support for imx23/imx28
-References: <1303726826-31660-1-git-send-email-b32955@freescale.com>
-In-Reply-To: <1303726826-31660-1-git-send-email-b32955@freescale.com>
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: 7bit
-Cc: s.hauer@pengutronix.de, linux-mtd@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	u.kleine-koenig@pengutronix.de, shawn.guo@freescale.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,115 +19,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi:
-Does some one have any comments about these three patches?
-
-Thanks
-Huang Shijie
-
-> add gpmi support for imx23 and imx28.
->
-> Signed-off-by: Huang Shijie <b32955@freescale.com>
-> ---
->  arch/arm/mach-mxs/Kconfig                 |    2 +
->  arch/arm/mach-mxs/include/mach/gpmi-nfc.h |   71 +++++++++++++++++++++++++++++
->  2 files changed, 73 insertions(+), 0 deletions(-)
->  create mode 100644 arch/arm/mach-mxs/include/mach/gpmi-nfc.h
->
-> diff --git a/arch/arm/mach-mxs/Kconfig b/arch/arm/mach-mxs/Kconfig
-> index 4f6f174..8132f1a 100644
-> --- a/arch/arm/mach-mxs/Kconfig
-> +++ b/arch/arm/mach-mxs/Kconfig
-> @@ -22,6 +22,7 @@ config MACH_MX23EVK
->  	select SOC_IMX23
->  	select MXS_HAVE_AMBA_DUART
->  	select MXS_HAVE_PLATFORM_AUART
-> +	select MXS_HAVE_PLATFORM_GPMI_NFC
->  	select MXS_HAVE_PLATFORM_MXSFB
->  	default y
->  	help
-> @@ -35,6 +36,7 @@ config MACH_MX28EVK
->  	select MXS_HAVE_PLATFORM_AUART
->  	select MXS_HAVE_PLATFORM_FEC
->  	select MXS_HAVE_PLATFORM_FLEXCAN
-> +	select MXS_HAVE_PLATFORM_GPMI_NFC
->  	select MXS_HAVE_PLATFORM_MXSFB
->  	select MXS_OCOTP
->  	default y
-> diff --git a/arch/arm/mach-mxs/include/mach/gpmi-nfc.h b/arch/arm/mach-mxs/include/mach/gpmi-nfc.h
-> new file mode 100644
-> index 0000000..25fc605
-> --- /dev/null
-> +++ b/arch/arm/mach-mxs/include/mach/gpmi-nfc.h
-> @@ -0,0 +1,71 @@
-> +/*
-> + * Copyright (C) 2011 Freescale Semiconductor, Inc. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write to the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +#ifndef __INCLUDE_GPMI_NFC_H
-> +#define __INCLUDE_GPMI_NFC_H
-> +
-> +/* The size of the resource is fixed. */
-> +#define RES_SIZE	6
-> +
-> +/* Resource names for the GPMI NFC driver. */
-> +#define GPMI_NFC_GPMI_REGS_ADDR_RES_NAME  "GPMI NFC GPMI Registers"
-> +#define GPMI_NFC_GPMI_INTERRUPT_RES_NAME  "GPMI NFC GPMI Interrupt"
-> +#define GPMI_NFC_BCH_REGS_ADDR_RES_NAME   "GPMI NFC BCH Registers"
-> +#define GPMI_NFC_BCH_INTERRUPT_RES_NAME   "GPMI NFC BCH Interrupt"
-> +#define GPMI_NFC_DMA_CHANNELS_RES_NAME    "GPMI NFC DMA Channels"
-> +#define GPMI_NFC_DMA_INTERRUPT_RES_NAME   "GPMI NFC DMA Interrupt"
-> +
-> +/**
-> + * struct gpmi_nfc_platform_data - GPMI NFC driver platform data.
-> + *
-> + * This structure communicates platform-specific information to the GPMI NFC
-> + * driver that can't be expressed as resources.
-> + *
-> + * @platform_init:           A pointer to a function the driver will call to
-> + *                           initialize the platform (e.g., set up the pin mux).
-> + * @platform_exit:           A pointer to a function the driver will call to
-> + *                           exit the platform (e.g., free pins).
-> + * @min_prop_delay_in_ns:    Minimum propagation delay of GPMI signals to and
-> + *                           from the NAND Flash device, in nanoseconds.
-> + * @max_prop_delay_in_ns:    Maximum propagation delay of GPMI signals to and
-> + *                           from the NAND Flash device, in nanoseconds.
-> + * @max_chip_count:          The maximum number of chips for which the driver
-> + *                           should configure the hardware. This value most
-> + *                           likely reflects the number of pins that are
-> + *                           connected to a NAND Flash device. If this is
-> + *                           greater than the SoC hardware can support, the
-> + *                           driver will print a message and fail to initialize.
-> + * @partitions:              An optional pointer to an array of partition
-> + *                           descriptions.
-> + * @partition_count:         The number of elements in the partitions array.
-> + */
-> +struct gpmi_nfc_platform_data {
-> +	/* SoC hardware information. */
-> +	int		(*platform_init)(void);
-> +	void		(*platform_exit)(void);
-> +
-> +	/* NAND Flash information. */
-> +	unsigned int	min_prop_delay_in_ns;
-> +	unsigned int	max_prop_delay_in_ns;
-> +	unsigned int	max_chip_count;
-> +
-> +	/* Medium information. */
-> +	struct mtd_partition *partitions;
-> +	unsigned	partition_count;
-> +};
-> +#endif
+Basically, I get file holes -- 4KB chunks go missing from files not activel=
+y =0Abeing written.  The holes occur at various places in the files -- not =
+a certain =0Aoffset.  I need some ideas on how to troubleshoot the problem.=
+=0A=0A=0AI fill a jffs2 partition with about 180 MiB of =E2=80=98ballast=E2=
+=80=99 files and start a file =0Awriter process that consumes about 120 pag=
+es/second =E2=80=93 to force eraseblocks to =0Aget cycled.  After about 1/2=
+ hour or so, the total number of pages on the =0Apartition will have been w=
+ritten.  I run md5sum to check the files.   I get =0Aabout one or two failu=
+res on an overnight run.  The bad files are exactly four =0AKB shorter than=
+ when the test started.=0A=0ANow power cycling or reboots are happening.  =
+=0A=0A=0AI'm using a kernel originally developed/sponsored by Samsung for t=
+he s3c2413.  =0AThe kernel is based on 2.6.26.6 with edits from Samsung and=
+ others.  I realize =0Athis processor is supported from upstream sources no=
+w, but I'm not in a position =0A=0Ato move to it yet.  The kernel configura=
+tion is a lot like smdk2412_defconfig, =0Abut I have a x16 NAND.=0A=0A=0AI =
+don't think I'm having SDRAM memory problems, things would be much worse.  =
+I =0Acan run the nand tests from the snapshot mtd-utils-3c19d07 with no pro=
+blems =0Aindicated.  I suspect some problem during garbage collection.=0A=
+=0AI tried turning up the verbosity on jffs2, but the target slows to a cra=
+wl -- I =0Aneed to try to log to the network instead.  I tried to force cle=
+an blocks to get =0A=0Aused more often, but I overshot that too and slowed =
+the system to much -- and =0Aright about that time I found I could get a fe=
+w errors overnight.=0A=0A=0AHere is a clip from /var/log/messages showing a=
+ case where a file was modified =0Aovernight:=0A=0AApr 18 04:04:06 nbox-3A5=
+6 -- MARK --=0AApr 18 04:08:08 nbox-3A56 kernel: jffs2_flush_wbuf(): Write =
+failed with -5=0AApr 18 04:08:08 nbox-3A56 kernel: Write of 4164 bytes at 0=
+x03955058 failed. =0Areturned -5, retlen 0=0AApr 18 04:08:08 nbox-3A56 kern=
+el: Not marking the space at 0x03955058 as dirty =0Abecause the flash drive=
+r returned retlen zero=0AApr 18 04:24:06 nbox-3A56 -- MARK --=0AApr 18 04:4=
+4:06 nbox-3A56 -- MARK --=0AApr 18 05:04:07 nbox-3A56 -- MARK --=0AApr 18 0=
+5:24:07 nbox-3A56 -- MARK --=0AApr 18 05:44:07 nbox-3A56 -- MARK --=0AApr 1=
+8 06:04:07 nbox-3A56 -- MARK --=0AApr 18 06:24:07 nbox-3A56 -- MARK --=0AAp=
+r 18 06:44:08 nbox-3A56 -- MARK --=0AApr 18 07:04:08 nbox-3A56 -- MARK --=
+=0AApr 18 07:24:08 nbox-3A56 -- MARK --=0AApr 18 07:44:08 nbox-3A56 -- MARK=
+ --=0AApr 18 08:04:08 nbox-3A56 -- MARK --=0AApr 18 08:24:09 nbox-3A56 -- M=
+ARK --=0AApr 18 08:44:09 nbox-3A56 -- MARK --=0AApr 18 09:04:09 nbox-3A56 -=
+- MARK --=0AApr 18 09:24:09 nbox-3A56 -- MARK --=0AApr 18 09:44:09 nbox-3A5=
+6 -- MARK --=0AApr 18 10:04:10 nbox-3A56 -- MARK --=0AApr 18 10:12:24 nbox-=
+3A56 kernel: Node CRC failed on REF_PRISTINE data node at =0A0x022e1058: Re=
+ad 0x1038da5e, calculated 0x10b8da5e=0AApr 18 10:12:24 nbox-3A56 kernel: No=
+de CRC 1038da5e !=3D calculated CRC 10b8da5e =0Afor node at 022e1058=0AApr =
+18 10:12:24 nbox-3A56 kernel: Node CRC 1038da5e !=3D calculated CRC 10b8da5=
+e =0Afor node at 022e1058=0AApr 18 10:24:10 nbox-3A56 -- MARK -=0A=0A Any h=
+elp would be greatly appreciated.=0A
