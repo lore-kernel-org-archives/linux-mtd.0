@@ -1,15 +1,21 @@
-Received: from nm1-vm0.access.bullet.mail.mud.yahoo.com ([66.94.236.27])
-	by canuck.infradead.org with smtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QH8wV-0004zH-GC
-	for linux-mtd@lists.infradead.org; Tue, 03 May 2011 06:18:44 +0000
-Message-ID: <333886.29917.qm@web82501.mail.mud.yahoo.com>
-Date: Mon, 2 May 2011 23:18:41 -0700 (PDT)
-From: osterluk@yahoo.com
-Subject: Need help with NAND flash corruption problem using JFFS2
-To: linux-mtd@lists.infradead.org
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QH9Kc-000579-6J
+	for linux-mtd@lists.infradead.org; Tue, 03 May 2011 06:43:39 +0000
+Received: by vxd2 with SMTP id 2so5937802vxd.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 02 May 2011 23:43:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1303804811.2778.37.camel@localhost>
+References: <BANLkTi=CNSd8JrWPL-o-WHe-kS-L7pFNqg@mail.gmail.com>
+	<1303804811.2778.37.camel@localhost>
+Date: Tue, 3 May 2011 02:43:35 -0400
+Message-ID: <BANLkTimaW4hu6QrPEyMcCVWDzHd+5hVo+A@mail.gmail.com>
+Subject: Re: Programming ubinized images
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: bengardiner@nanometrics.ca, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +25,223 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Basically, I get file holes -- 4KB chunks go missing from files not activel=
-y =0Abeing written.  The holes occur at various places in the files -- not =
-a certain =0Aoffset.  I need some ideas on how to troubleshoot the problem.=
-=0A=0A=0AI fill a jffs2 partition with about 180 MiB of =E2=80=98ballast=E2=
-=80=99 files and start a file =0Awriter process that consumes about 120 pag=
-es/second =E2=80=93 to force eraseblocks to =0Aget cycled.  After about 1/2=
- hour or so, the total number of pages on the =0Apartition will have been w=
-ritten.  I run md5sum to check the files.   I get =0Aabout one or two failu=
-res on an overnight run.  The bad files are exactly four =0AKB shorter than=
- when the test started.=0A=0ANow power cycling or reboots are happening.  =
-=0A=0A=0AI'm using a kernel originally developed/sponsored by Samsung for t=
-he s3c2413.  =0AThe kernel is based on 2.6.26.6 with edits from Samsung and=
- others.  I realize =0Athis processor is supported from upstream sources no=
-w, but I'm not in a position =0A=0Ato move to it yet.  The kernel configura=
-tion is a lot like smdk2412_defconfig, =0Abut I have a x16 NAND.=0A=0A=0AI =
-don't think I'm having SDRAM memory problems, things would be much worse.  =
-I =0Acan run the nand tests from the snapshot mtd-utils-3c19d07 with no pro=
-blems =0Aindicated.  I suspect some problem during garbage collection.=0A=
-=0AI tried turning up the verbosity on jffs2, but the target slows to a cra=
-wl -- I =0Aneed to try to log to the network instead.  I tried to force cle=
-an blocks to get =0A=0Aused more often, but I overshot that too and slowed =
-the system to much -- and =0Aright about that time I found I could get a fe=
-w errors overnight.=0A=0A=0AHere is a clip from /var/log/messages showing a=
- case where a file was modified =0Aovernight:=0A=0AApr 18 04:04:06 nbox-3A5=
-6 -- MARK --=0AApr 18 04:08:08 nbox-3A56 kernel: jffs2_flush_wbuf(): Write =
-failed with -5=0AApr 18 04:08:08 nbox-3A56 kernel: Write of 4164 bytes at 0=
-x03955058 failed. =0Areturned -5, retlen 0=0AApr 18 04:08:08 nbox-3A56 kern=
-el: Not marking the space at 0x03955058 as dirty =0Abecause the flash drive=
-r returned retlen zero=0AApr 18 04:24:06 nbox-3A56 -- MARK --=0AApr 18 04:4=
-4:06 nbox-3A56 -- MARK --=0AApr 18 05:04:07 nbox-3A56 -- MARK --=0AApr 18 0=
-5:24:07 nbox-3A56 -- MARK --=0AApr 18 05:44:07 nbox-3A56 -- MARK --=0AApr 1=
-8 06:04:07 nbox-3A56 -- MARK --=0AApr 18 06:24:07 nbox-3A56 -- MARK --=0AAp=
-r 18 06:44:08 nbox-3A56 -- MARK --=0AApr 18 07:04:08 nbox-3A56 -- MARK --=
-=0AApr 18 07:24:08 nbox-3A56 -- MARK --=0AApr 18 07:44:08 nbox-3A56 -- MARK=
- --=0AApr 18 08:04:08 nbox-3A56 -- MARK --=0AApr 18 08:24:09 nbox-3A56 -- M=
-ARK --=0AApr 18 08:44:09 nbox-3A56 -- MARK --=0AApr 18 09:04:09 nbox-3A56 -=
-- MARK --=0AApr 18 09:24:09 nbox-3A56 -- MARK --=0AApr 18 09:44:09 nbox-3A5=
-6 -- MARK --=0AApr 18 10:04:10 nbox-3A56 -- MARK --=0AApr 18 10:12:24 nbox-=
-3A56 kernel: Node CRC failed on REF_PRISTINE data node at =0A0x022e1058: Re=
-ad 0x1038da5e, calculated 0x10b8da5e=0AApr 18 10:12:24 nbox-3A56 kernel: No=
-de CRC 1038da5e !=3D calculated CRC 10b8da5e =0Afor node at 022e1058=0AApr =
-18 10:12:24 nbox-3A56 kernel: Node CRC 1038da5e !=3D calculated CRC 10b8da5=
-e =0Afor node at 022e1058=0AApr 18 10:24:10 nbox-3A56 -- MARK -=0A=0A Any h=
-elp would be greatly appreciated.=0A
+On Tue, Apr 26, 2011 at 4:00 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+>
+> We could teach the UBIFS tools and the kernel to deal with these things.
+> It is possible to do with a special flag in the UBIFS superblock which
+> would say - this FS has been just flashed, do not use space in
+> half-filled eraseblocks! Then probably we could go through these
+> half-filled eraseblocks and fix them up, and then remove that flag.
+>
+
+Hi Artem, could you take a look at this patch when you get a chance?
+
+My method for finding & cleaning the in-use LEBs is hacky: I just loop
+through all the LEBs in the FS, look up each one in the LPT, and
+"recover" anything not flagged as empty.  I *think* that should result
+in LEBs that have trailing empty space (SCANNED_EMPTY_SPACE) being
+re-mapped to a new PEB (via fix_unclean_leb()), which would clean up
+the empty pages.  So far I haven't gotten that condition to trigger
+with a real UBIFS image, so I'm not sure if it works correctly yet.
+
+I may be way off on the wrong track though, so I just wanted to see if
+you think this seems like a reasonable way of doing it.  Thanks!
+
+
+diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+index f7515bd..fc2c48b 100644
+--- a/fs/ubifs/debug.c
++++ b/fs/ubifs/debug.c
+@@ -316,6 +316,8 @@ void dbg_dump_node(const struct ubifs_info *c,
+const void *node)
+ 		printk(KERN_DEBUG "\tflags          %#x\n", sup_flags);
+ 		printk(KERN_DEBUG "\t  big_lpt      %u\n",
+ 		       !!(sup_flags & UBIFS_FLG_BIGLPT));
++		printk(KERN_DEBUG "\t  leb_fixup    %u\n",
++		       !!(sup_flags & UBIFS_FLG_LEB_FIXUP));
+ 		printk(KERN_DEBUG "\tmin_io_size    %u\n",
+ 		       le32_to_cpu(sup->min_io_size));
+ 		printk(KERN_DEBUG "\tleb_size       %u\n",
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index bf31b47..1977ed2 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -80,7 +80,8 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	struct ubifs_cs_node *cs;
+ 	union ubifs_key key;
+ 	int err, tmp, jnl_lebs, log_lebs, max_buds, main_lebs, main_first;
+-	int lpt_lebs, lpt_first, orph_lebs, big_lpt, ino_waste, sup_flags = 0;
++	int lpt_lebs, lpt_first, orph_lebs, big_lpt, leb_fixup, ino_waste;
++	int sup_flags = 0;
+ 	int min_leb_cnt = UBIFS_MIN_LEB_CNT;
+ 	long long tmp64, main_bytes;
+ 	__le64 tmp_le64;
+@@ -155,6 +156,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 		lpt_first + lpt_lebs - 1);
+
+ 	main_first = c->leb_cnt - main_lebs;
++	leb_fixup = 0; /* Normally no need to fixup a fresh [empty] FS */
+
+ 	/* Create default superblock */
+ 	tmp = ALIGN(UBIFS_SB_NODE_SZ, c->min_io_size);
+@@ -165,6 +167,8 @@ static int create_default_filesystem(struct ubifs_info *c)
+ 	tmp64 = (long long)max_buds * c->leb_size;
+ 	if (big_lpt)
+ 		sup_flags |= UBIFS_FLG_BIGLPT;
++	if (leb_fixup)
++		sup_flags |= UBIFS_FLG_LEB_FIXUP;
+
+ 	sup->ch.node_type  = UBIFS_SB_NODE;
+ 	sup->key_hash      = UBIFS_KEY_HASH_R5;
+@@ -616,6 +620,7 @@ int ubifs_read_superblock(struct ubifs_info *c)
+ 	c->vfs_sb->s_time_gran = le32_to_cpu(sup->time_gran);
+ 	memcpy(&c->uuid, &sup->uuid, 16);
+ 	c->big_lpt = !!(sup_flags & UBIFS_FLG_BIGLPT);
++	c->leb_fixup = !!(sup_flags & UBIFS_FLG_LEB_FIXUP);
+
+ 	/* Automatically increase file system size to the maximum size */
+ 	c->old_leb_cnt = c->leb_cnt;
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 1f049ae..8345517 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1153,6 +1153,78 @@ static int check_free_space(struct ubifs_info *c)
+ }
+
+ /**
++ * ubifs_mount_fixup_lebs - erase empty pages on first mount (for NAND)
++ * @c: UBIFS file-system description object
++ *
++ * This function fixes up LEBs on first mount, if the appropriate flag was set
++ * when the FS was created.  Each LEB with trailing "empty" (all-0xff) pages
++ * is re-written, to make sure the empty space is actually erased.  This is
++ * necessary for some NAND chips, since the 0xff data may have been programmed
++ * like real data (generating a non-0xff ECC), causing future writes to the
++ * not-really-erased pages to behave badly.
++ */
++static int ubifs_mount_fixup_lebs(struct ubifs_info *c)
++{
++	int lnum, err = 0;
++	int sup_flags = 0;
++	struct ubifs_sb_node *sup;
++	struct ubifs_scan_leb *sleb;
++
++	ubifs_assert(c->leb_fixup);
++	ubifs_assert(!c->ro_mount);
++
++	ubifs_msg("LEB fixup needed");
++
++	ubifs_get_lprops(c);
++
++	/*
++	 * Try and "recover" any currently-mapped LEB, which will truly erase
++	 * any empty pages (they might currently exist as real 0xff data).
++	 */
++	for (lnum = 2; lnum <= c->leb_cnt; lnum++) {
++		lprops=ubifs_lpt_lookup(c, lnum);
++		if (IS_ERR(lprops)) {
++			err = PTR_ERR(lprops);
++			return err;
++		}
++
++		if (!(lprops->flags & LPROPS_EMPTY)) {
++			sleb = ubifs_recover_leb(c, lnum, 0, c->sbuf, 0);
++			if (IS_ERR(sleb)) {
++				err = PTR_ERR(sleb);
++				return err;
++			}
++			ubifs_scan_destroy(sleb);
++		}
++	}
++
++	ubifs_release_lprops(c);
++
++	sup = ubifs_read_sb_node(c);
++	if (IS_ERR(sup)) {
++		err = PTR_ERR(sup);
++		goto out;
++	}
++
++	/* LEB fixup is no longer required */
++	c->leb_fixup = 0;
++
++	/* Set new flags, omitting LEB fixup */
++	sup_flags = 0;
++	if (c->big_lpt)
++		sup_flags |= UBIFS_FLG_BIGLPT;
++	sup->flags = cpu_to_le32(sup_flags);
++
++	err = ubifs_write_sb_node(c, sup);
++	if (err)
++		goto out;
++
++	ubifs_msg("LEB fixup complete");
++out:
++	return err;
++}
++
++/**
+  * mount_ubifs - mount UBIFS file-system.
+  * @c: UBIFS file-system description object
+  *
+@@ -1396,6 +1468,12 @@ static int mount_ubifs(struct ubifs_info *c)
+ 	} else
+ 		ubifs_assert(c->lst.taken_empty_lebs > 0);
+
++	if (!c->ro_mount && c->leb_fixup) {
++		err = ubifs_mount_fixup_lebs(c);
++		if (err)
++			goto out_infos;
++	}
++
+ 	err = dbg_check_filesystem(c);
+ 	if (err)
+ 		goto out_infos;
+@@ -1684,7 +1762,16 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 		 * because, for example, the old index size was imprecise.
+ 		 */
+ 		err = dbg_check_space_info(c);
++		if (err)
++			goto out;
+ 	}
++
++	if (c->leb_fixup) {
++		err = ubifs_mount_fixup_lebs(c);
++		if (err)
++			goto out;
++	}
++
+ 	mutex_unlock(&c->umount_mutex);
+ 	return err;
+
+diff --git a/fs/ubifs/ubifs-media.h b/fs/ubifs/ubifs-media.h
+index b922f03..dfffa5a 100644
+--- a/fs/ubifs/ubifs-media.h
++++ b/fs/ubifs/ubifs-media.h
+@@ -408,9 +408,11 @@ enum {
+  * Superblock flags.
+  *
+  * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
++ * UBIFS_FLG_LEB_FIXUP: first-mount "fixup" of empty pages in LEBs needed
+  */
+ enum {
+ 	UBIFS_FLG_BIGLPT = 0x02,
++	UBIFS_FLG_LEB_FIXUP = 0x04,
+ };
+
+ /**
+diff --git a/fs/ubifs/ubifs.h b/fs/ubifs/ubifs.h
+index 26a7ebe..c3d5544 100644
+--- a/fs/ubifs/ubifs.h
++++ b/fs/ubifs/ubifs.h
+@@ -1254,6 +1254,7 @@ struct ubifs_info {
+ 	wait_queue_head_t cmt_wq;
+
+ 	unsigned int big_lpt:1;
++	unsigned int leb_fixup:1;
+ 	unsigned int no_chk_data_crc:1;
+ 	unsigned int bulk_read:1;
+ 	unsigned int default_compr:2;
+
+-- 
+Matthew L. Creech
