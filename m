@@ -1,16 +1,24 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QHDMl-0006m6-FW
-	for linux-mtd@lists.infradead.org; Tue, 03 May 2011 11:02:08 +0000
-From: Kishore Kadiyala <kishore.kadiyala@ti.com>
-To: <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<vimal.newwork@gmail.com>, <bdefaria@adeneo-embedded.com>
-Subject: [PATCH] omap : nand : fix subpage ecc issue with prefetch
-Date: Mon, 2 May 2011 16:40:38 +0530
-Message-ID: <1304334638-2198-1-git-send-email-kishore.kadiyala@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Kishore Kadiyala <kishore.kadiyala@ti.com>
+	id 1QHDyv-000737-Qb
+	for linux-mtd@lists.infradead.org; Tue, 03 May 2011 11:41:34 +0000
+Received: by eyh6 with SMTP id 6so2277312eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 03 May 2011 04:41:31 -0700 (PDT)
+Subject: Re: Programming ubinized images
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <BANLkTimaW4hu6QrPEyMcCVWDzHd+5hVo+A@mail.gmail.com>
+References: <BANLkTi=CNSd8JrWPL-o-WHe-kS-L7pFNqg@mail.gmail.com>
+	<1303804811.2778.37.camel@localhost>
+	<BANLkTimaW4hu6QrPEyMcCVWDzHd+5hVo+A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 03 May 2011 14:37:44 +0300
+Message-ID: <1304422664.2737.102.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: bengardiner@nanometrics.ca, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For prefetch engine, read and write  got broken in commit '2c01946c'.
-We never hit a scenario of not getting 'gpmc_prefetch_enable'
-call success.
-When reading/writing a subpage with a non divisible by 4 ecc number
-of bytes, the mis-aligned bytes gets handled first before enabling
-the Prefetch engine, then it reads/writes rest of the bytes.
+On Tue, 2011-05-03 at 02:43 -0400, Matthew L. Creech wrote:
+> On Tue, Apr 26, 2011 at 4:00 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> >
+> > We could teach the UBIFS tools and the kernel to deal with these things.
+> > It is possible to do with a special flag in the UBIFS superblock which
+> > would say - this FS has been just flashed, do not use space in
+> > half-filled eraseblocks! Then probably we could go through these
+> > half-filled eraseblocks and fix them up, and then remove that flag.
+> >
+> 
+> Hi Artem, could you take a look at this patch when you get a chance?
+> 
+> My method for finding & cleaning the in-use LEBs is hacky: I just loop
+> through all the LEBs in the FS, look up each one in the LPT, and
+> "recover" anything not flagged as empty.  I *think* that should result
+> in LEBs that have trailing empty space (SCANNED_EMPTY_SPACE) being
+> re-mapped to a new PEB (via fix_unclean_leb()), which would clean up
+> the empty pages.  So far I haven't gotten that condition to trigger
+> with a real UBIFS image, so I'm not sure if it works correctly yet.
+> 
+> I may be way off on the wrong track though, so I just wanted to see if
+> you think this seems like a reasonable way of doing it.  Thanks!
 
-Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
-Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
-Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
----
- drivers/mtd/nand/omap2.c |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+Hi, very very quick comment. First of all, it should be a flag in the
+superblock. Can you make a separate patch which just introduces this
+flag there?
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index da9a351..2c8040f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -263,11 +263,10 @@ static void omap_read_buf_pref(struct mtd_info *mtd, u_char *buf, int len)
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_read_buf16(mtd, buf, len);
-+			omap_read_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_read_buf8(mtd, buf, len);
-+			omap_read_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u32 *) buf;
- 		do {
- 			r_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			r_count = r_count >> 2;
-@@ -293,7 +292,7 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 						struct omap_nand_info, mtd);
- 	uint32_t w_count = 0;
- 	int i = 0, ret = 0;
--	u16 *p;
-+	u16 *p = (u16 *)buf;
- 	unsigned long tim, limit;
- 
- 	/* take care of subpage writes */
-@@ -309,11 +308,10 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_write_buf16(mtd, buf, len);
-+			omap_write_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_write_buf8(mtd, buf, len);
-+			omap_write_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u16 *) buf;
- 		while (len) {
- 			w_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			w_count = w_count >> 1;
+But yes, something like you've done: once LPT is initialized, you should
+look at the flag and if it is set, indeed do something like you have
+done - walk all lebs, get lprops decription, and then you see if there
+is any free space. If there is not - do not touch it. If there is free
+space, then fixup it.
+
+The recovery function will work, but it dos much more than needed, and
+it prints various messages which we do not want. Make a separate
+function for fix-up in sb.c. It is easy - you simply read c->leb_size -
+lp->free, and then you use ubi_leb_change() and change the contents of
+the LEB in-place atomically.
+
+And after the fix-up you need to clean the flag in the SB.
+
+Just make a nice series of patches :-)
+
+
 -- 
-1.7.4.1
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
