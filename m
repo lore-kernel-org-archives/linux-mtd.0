@@ -1,22 +1,22 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QHbPZ-0002Ju-IP
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 12:42:38 +0000
-Received: by bwz1 with SMTP id 1so1202424bwz.36
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QHe0G-0003zC-Tp
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 15:28:41 +0000
+Received: from [192.168.0.34] (col31-4-88-188-83-94.fbx.proxad.net
+	[88.188.83.94])
+	by mail.free-electrons.com (Postfix) with ESMTPSA id 28DE6EC
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 04 May 2011 05:42:35 -0700 (PDT)
+	Wed,  4 May 2011 17:28:30 +0200 (CEST)
+Message-ID: <4DC170AD.1060201@free-electrons.com>
+Date: Wed, 04 May 2011 17:28:45 +0200
+From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <1304010579.2737.1.camel@localhost>
-References: <BANLkTimt+yL47W-eJ5YuwCGsEhyzX5R7jg@mail.gmail.com>
-	<1304010579.2737.1.camel@localhost>
-Date: Wed, 4 May 2011 18:12:35 +0530
-Message-ID: <BANLkTikHouh0Wgn8tEa-N9UXn=ZpExy-QA@mail.gmail.com>
-Subject: Re: hardware ecc support in ubifs
-From: Amit Pundir <pundiramit@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: Re: unsupported subpages: how to be sure/fix ?
+References: <4DB998E3.6070304@free-electrons.com>
+In-Reply-To: <4DB998E3.6070304@free-electrons.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 28, 2011 at 10:39 PM, Artem Bityutskiy <dedekind1@gmail.com> wr=
-ote:
-> On Wed, 2011-04-27 at 15:20 +0530, Amit Pundir wrote:
->> Hi,
->>
->> Does UBIFS support 1-bit h/w ECC?
->
-> The MTD laye is taking care of ECC. And just in case, neither UBI nor
-> UBIFS use OOB.
+On 04/28/2011 06:42 PM, David Wagner wrote:
+> Hello,
+> 
+> I got the infamous -74 error with the 2-planes OneNand chip I'm using
+> when trying to create a UBI Volume
+> [...]
 
-Thanks for sharing the information.
+Hello again,
 
-Regards,
-Amit Pundir
+I found in the documentation that VERIFY_NAND_WRITES could also cause
+errors when dealing with subpages of a 2KiB-pages NAND (the onenand i'm
+using has them). (The warning in the documentation is about -5 errors,
+though).
+I disabled it and the errors also disappeared.
+But the time of writing of this warning is 2.6.26 ; is it still relevant
+? If so, I would be interested to try and fix it (I'm doing an
+internship which subject is MTDs)
 
->
-> --
-> Best Regards,
-> Artem Bityutskiy (=D0=90=D1=80=D1=82=D1=91=D0=BC =D0=91=D0=B8=D1=82=D1=8E=
-=D1=86=D0=BA=D0=B8=D0=B9)
->
->
+-- 
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
