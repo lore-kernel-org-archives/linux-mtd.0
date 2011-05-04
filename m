@@ -1,17 +1,18 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QHOVr-0004DI-Nf
-	for linux-mtd@lists.infradead.org; Tue, 03 May 2011 22:56:16 +0000
-Received: by vxd2 with SMTP id 2so682676vxd.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 03 May 2011 15:56:15 -0700 (PDT)
+Received: from ra.se.axis.com ([195.60.68.13])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QHWJC-0007lt-QX
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 07:15:43 +0000
+Date: Wed, 4 May 2011 09:15:39 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: angelo <angelo70@gmail.com>
+Subject: Re: jffs2 help
+In-Reply-To: <4DC02DE3.8080302@gmail.com>
+Message-ID: <Pine.LNX.4.64.1105040908570.15966@lnxricardw.se.axis.com>
+References: <4DC02DE3.8080302@gmail.com>
 MIME-Version: 1.0
-Date: Tue, 3 May 2011 18:56:15 -0400
-Message-ID: <BANLkTim+8Nf-VVutWVJVM5oWCJHbf9bTtg@mail.gmail.com>
-Subject: [PATCH] mkfs.ubifs: add "-F" option for "LEB fixup"
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,124 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds a superblock flag indicating that "LEB fixup" is needed, and
-allows it to be set by the user via the "-F" command-line option.  The first
-time the filesystem is mounted, this flag will trigger a one-time re-mapping of
-all LEBs with empty pages.  This fixes problems seen on some NAND flashes when
-a non-UBIFS-aware flash programmer is used.
 
-Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
----
- mkfs.ubifs/mkfs.ubifs.c  |   11 ++++++++++-
- mkfs.ubifs/ubifs-media.h |    2 ++
- mkfs.ubifs/ubifs.h       |    2 ++
- 3 files changed, 14 insertions(+), 1 deletions(-)
+On Tue, 3 May 2011, angelo wrote:
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index a306dd6..35947a5 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -132,7 +132,7 @@ static struct inum_mapping **hash_table;
- /* Inode creation sequence number */
- static unsigned long long creat_sqnum;
+> hi all,
+>
+> i have a specific issue that seems realted to jffs2,
+> i tried to subscribe to jffs2-dev list but seems no more existing.
+>
+> Just a suggestion, is there some jffs2 list/support still alive from
+> Axis ?
 
--static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:p:k:x:X:j:R:l:j:UQq";
-+static const char *optstring = "d:r:m:o:D:h?vVe:c:g:f:Fp:k:x:X:j:R:l:j:UQq";
+Axis pioneered the development of the original JFFS, but did not drive the=
+=20
+development of JFFS2, and so there is no active support from Axis for=20
+either file system, and hasn't been for many years.
 
- static const struct option longopts[] = {
- 	{"root",               1, NULL, 'r'},
-@@ -150,6 +150,7 @@ static const struct option longopts[] = {
- 	{"compr",              1, NULL, 'x'},
- 	{"favor-percent",      1, NULL, 'X'},
- 	{"fanout",             1, NULL, 'f'},
-+	{"leb-fixup",          0, NULL, 'F'},
- 	{"keyhash",            1, NULL, 'k'},
- 	{"log-lebs",           1, NULL, 'l'},
- 	{"orph-lebs",          1, NULL, 'p'},
-@@ -183,6 +184,7 @@ static const char *helptext =
- "                         how many percent better zlib should
-compress to make\n"
- "                         mkfs.ubifs use zlib instead of LZO (default 20%)\n"
- "-f, --fanout=NUM         fanout NUM (default: 8)\n"
-+"-F, --lex-fixup          fixup LEBs on first mount (needed for some NANDs)\n"
- "-k, --keyhash=TYPE       key hash type - \"r5\" or \"test\"
-(default: \"r5\")\n"
- "-p, --orph-lebs=COUNT    count of erase blocks for orphans (default: 1)\n"
- "-D, --devtable=FILE      use device table FILE\n"
-@@ -537,6 +539,7 @@ static int get_options(int argc, char**argv)
- 	c->max_leb_cnt = -1;
- 	c->max_bud_bytes = -1;
- 	c->log_lebs = -1;
-+	c->leb_fixup = 0;
+The right place to ask for JFFS2 help is on the linux-mtd mailing list,=20
+i.e. right here.
 
- 	while (1) {
- 		opt = getopt_long(argc, argv, optstring, longopts, &i);
-@@ -610,6 +613,9 @@ static int get_options(int argc, char**argv)
- 			if (*endp != '\0' || endp == optarg || c->fanout <= 0)
- 				return err_msg("bad fanout %s", optarg);
- 			break;
-+		case 'F':
-+			c->leb_fixup = 1;
-+			break;
- 		case 'l':
- 			c->log_lebs = strtol(optarg, &endp, 0);
- 			if (*endp != '\0' || endp == optarg || c->log_lebs <= 0)
-@@ -758,6 +764,7 @@ static int get_options(int argc, char**argv)
- 						"r5" : "test");
- 		printf("\tfanout:       %d\n", c->fanout);
- 		printf("\torph_lebs:    %d\n", c->orph_lebs);
-+		printf("\tleb_fixup:    %d\n", c->leb_fixup);
- 	}
+> Is jffs2 the right way to go to store some non volatile data to a nor=20
+> flash or is it better i move directly to UBIFS ?
 
- 	if (validate_options())
-@@ -1997,6 +2004,8 @@ static int write_super(void)
- 	}
- 	if (c->big_lpt)
- 		sup.flags |= cpu_to_le32(UBIFS_FLG_BIGLPT);
-+	if (c->leb_fixup)
-+		sup.flags |= cpu_to_le32(UBIFS_FLG_LEB_FIXUP);
+I leave that one up to others, but basically I think the take is this:
 
- 	return write_node(&sup, UBIFS_SB_NODE_SZ, UBIFS_SB_LNUM, UBI_LONGTERM);
- }
-diff --git a/mkfs.ubifs/ubifs-media.h b/mkfs.ubifs/ubifs-media.h
-index a9ecbd9..bb93f64 100644
---- a/mkfs.ubifs/ubifs-media.h
-+++ b/mkfs.ubifs/ubifs-media.h
-@@ -373,9 +373,11 @@ enum {
-  * Superblock flags.
-  *
-  * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
-+ * UBIFS_FLG_LEB_FIXUP: first-mount "fixup" of empty pages in LEBs needed
-  */
- enum {
- 	UBIFS_FLG_BIGLPT = 0x02,
-+	UBIFS_FLG_LEB_FIXUP = 0x04,
- };
+ubifs resides on top of UBI, which works with both NOR and NAND flashes,=20
+but several of the features that UBI brings (transparent bad block=20
+management and bit scrubbing) are primarily intended to cover up the=20
+deficiencies of NAND flash. On the other hand, the whole logical volume=20
+concept which is also a feature of UBI is useful for any type of flash.
 
- /**
-diff --git a/mkfs.ubifs/ubifs.h b/mkfs.ubifs/ubifs.h
-index 5c29046..57ec8df 100644
---- a/mkfs.ubifs/ubifs.h
-+++ b/mkfs.ubifs/ubifs.h
-@@ -317,6 +317,7 @@ struct ubifs_znode
-  * @nhead_lnum: LEB number of LPT head
-  * @nhead_offs: offset of LPT head
-  * @big_lpt: flag that LPT is too big to write whole during commit
-+ * @leb_fixup: flag indicating that empty space in LEBs needs to be cleaned up
-  * @lpt_sz: LPT size
-  *
-  * @ltab_lnum: LEB number of LPT's own lprops table
-@@ -394,6 +395,7 @@ struct ubifs_info
- 	int nhead_lnum;
- 	int nhead_offs;
- 	int big_lpt;
-+	int leb_fixup;
- 	long long lpt_sz;
+ubifs seems to mount faster, I think because it doesn't scan the whole=20
+flash at mount time like JFFS2 does, although I seem to recall there's an=
+=20
+option to store summary info on the flash rather than built it at mount=20
+time. Not to sure exactly the various permutations here though.
 
- 	int ltab_lnum;
--- 
-1.6.3.3
+In more general terms, jffs2 is pretty stable, on the other hand, there's=
+=20
+not much maintentence going on either; the main work goes into UBI and=20
+ubifs, so the that's where the real development is.
 
-
--- 
-Matthew L. Creech
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
