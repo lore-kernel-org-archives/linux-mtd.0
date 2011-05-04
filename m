@@ -1,19 +1,22 @@
-Received: from ra.se.axis.com ([195.60.68.13])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QHYM9-0000au-NM
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 09:26:54 +0000
-Date: Wed, 4 May 2011 11:26:50 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: angelo <angelo70@gmail.com>
-Subject: Re: R: jffs2 help
-In-Reply-To: <4DC11AC2.10000@gmail.com>
-Message-ID: <Pine.LNX.4.64.1105041125270.15966@lnxricardw.se.axis.com>
-References: <531B6536C9F737458807DF75064873C801ED5F36E7AA@mta-digimail.MTA.INT>
-	<4DC11AC2.10000@gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QHZr3-0001Q1-SL
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 11:02:54 +0000
+Received: by eyh6 with SMTP id 6so335943eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 04 May 2011 04:02:51 -0700 (PDT)
+Subject: Re: [PATCH 1/3] ubifs: add a superblock flag for "LEB fixup"
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <BANLkTi=YnoTophc97QCbujJANpgHXaFpkw@mail.gmail.com>
+References: <BANLkTi=YnoTophc97QCbujJANpgHXaFpkw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 04 May 2011 13:59:09 +0300
+Message-ID: <1304506749.7222.4.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Wed, 4 May 2011, angelo wrote:
+thanks for the patches!
 
-> The free-electrons site is really a wonderful help. I couldn't find it
-> out through googling "mtd jffs2" still.
->
-> Anyway, still, following strictly the site help, i can eraseall, mount
-> jffs2, write some files, unmount, but at the next mount nothing is still
-> there. Option -o sync doesn't help also.
-> Writing files, i still get errors like
->
-> Node totlen on flash (0xffffffff) !=3D totlen from node (0x0000000c)
->
-> I probably will move to UBIFS, but before i would like to understand why
-> jffs2, that should be reliable in anyway, is failing on my flash.
+On Tue, 2011-05-03 at 18:55 -0400, Matthew L. Creech wrote:
+> The leb_fixup flag can be set in the superblock of a new filesystem by
+> mkfs.ubifs to indicate that the filesystem's underlying eraseblocks should be
+> fixed-up the first time it's mounted (after which the flag is un-set).
+> 
+> Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
+> ---
+>  fs/ubifs/debug.c       |    2 ++
+>  fs/ubifs/sb.c          |    2 ++
+>  fs/ubifs/ubifs-media.h |    2 ++
+>  fs/ubifs/ubifs.h       |    2 ++
+>  4 files changed, 8 insertions(+), 0 deletions(-)
+> 
+> diff --git a/fs/ubifs/debug.c b/fs/ubifs/debug.c
+> index f7515bd..fc2c48b 100644
+> --- a/fs/ubifs/debug.c
+> +++ b/fs/ubifs/debug.c
+> @@ -316,6 +316,8 @@ void dbg_dump_node(const struct ubifs_info *c,
+> const void *node)
+>  		printk(KERN_DEBUG "\tflags          %#x\n", sup_flags);
+>  		printk(KERN_DEBUG "\t  big_lpt      %u\n",
+>  		       !!(sup_flags & UBIFS_FLG_BIGLPT));
+> +		printk(KERN_DEBUG "\t  leb_fixup    %u\n",
+> +		       !!(sup_flags & UBIFS_FLG_LEB_FIXUP));
 
-I agree, if you cannot get jffs2 to work, there must be something that's=20
-not configured properly.
+I think "LEB fixup" is not the best name. In essence, we are fixing up
+the free space, not LEBs perse, so I'd suggest the "free space fix-up"
+as the long name and "space_fixup" as the short name for this process.
 
-Reliability is one thing, but short term for tests like this any problems=
-=20
-you encounter are not due to failing bits in the flash etc but some sort=20
-of misconfiguration or bug.
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+>  		printk(KERN_DEBUG "\tmin_io_size    %u\n",
+>  		       le32_to_cpu(sup->min_io_size));
+>  		printk(KERN_DEBUG "\tleb_size       %u\n",
+> diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+> index bf31b47..e3777d0 100644
+> --- a/fs/ubifs/sb.c
+> +++ b/fs/ubifs/sb.c
+> @@ -165,6 +165,7 @@ static int create_default_filesystem(struct ubifs_info *c)
+>  	tmp64 = (long long)max_buds * c->leb_size;
+>  	if (big_lpt)
+>  		sup_flags |= UBIFS_FLG_BIGLPT;
+> +	/* LEB fixup is not needed for a default filesystem */
+
+I think this comment is much more confusing than useful, let's kill it.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
