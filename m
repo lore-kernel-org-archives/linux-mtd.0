@@ -1,18 +1,25 @@
-Received: from ra.se.axis.com ([195.60.68.13])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QHWJC-0007lt-QX
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 07:15:43 +0000
-Date: Wed, 4 May 2011 09:15:39 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: angelo <angelo70@gmail.com>
-Subject: Re: jffs2 help
+Received: from cluster-a.mailcontrol.com ([85.115.52.190])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QHWPR-0007th-ER
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 07:22:10 +0000
+Received: from rly01a.srv.mailcontrol.com (localhost.localdomain [127.0.0.1])
+	by rly01a.srv.mailcontrol.com (MailControl) with ESMTP id
+	p447LvUV023949
+	for <linux-mtd@lists.infradead.org>; Wed, 4 May 2011 08:22:05 +0100
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by rly01a.srv.mailcontrol.com (MailControl) id p447L17U016321
+	for <linux-mtd@lists.infradead.org>; Wed, 4 May 2011 08:21:01 +0100
+From: Bosi Daniele <Daniele.Bosi@mta.it>
+To: "'angelo'" <angelo70@gmail.com>, "linux-mtd@lists.infradead.org"
+	<linux-mtd@lists.infradead.org>
+Date: Wed, 4 May 2011 09:20:47 +0200
+Subject: R: jffs2 help
+Message-ID: <531B6536C9F737458807DF75064873C801ED5F36E7AA@mta-digimail.MTA.INT>
 In-Reply-To: <4DC02DE3.8080302@gmail.com>
-Message-ID: <Pine.LNX.4.64.1105040908570.15966@lnxricardw.se.axis.com>
-References: <4DC02DE3.8080302@gmail.com>
+Content-Language: it-IT
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +30,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Tue, 3 May 2011, angelo wrote:
+Angelo,
+I suggest you to start using ubi.
+Take a look to the following Free-electrons document to see a benchmark of =
+flash file systems
 
-> hi all,
->
-> i have a specific issue that seems realted to jffs2,
-> i tried to subscribe to jffs2-dev list but seems no more existing.
->
-> Just a suggestion, is there some jffs2 list/support still alive from
-> Axis ?
+http://free-electrons.com/doc/flash-filesystems.pdf
 
-Axis pioneered the development of the original JFFS, but did not drive the=
-=20
-development of JFFS2, and so there is no active support from Axis for=20
-either file system, and hasn't been for many years.
+BTW on Free electron site you can find a lot of helpful documentation, take=
+ a look on it.
 
-The right place to ask for JFFS2 help is on the linux-mtd mailing list,=20
-i.e. right here.
+Bye Daniele
 
-> Is jffs2 the right way to go to store some non volatile data to a nor=20
-> flash or is it better i move directly to UBIFS ?
+-----Messaggio originale-----
+Da: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.i=
+nfradead.org] Per conto di angelo
+Inviato: marted=EC 3 maggio 2011 18.32
+A: linux-mtd@lists.infradead.org
+Oggetto: jffs2 help
 
-I leave that one up to others, but basically I think the take is this:
+hi all,
 
-ubifs resides on top of UBI, which works with both NOR and NAND flashes,=20
-but several of the features that UBI brings (transparent bad block=20
-management and bit scrubbing) are primarily intended to cover up the=20
-deficiencies of NAND flash. On the other hand, the whole logical volume=20
-concept which is also a feature of UBI is useful for any type of flash.
+i have a specific issue that seems realted to jffs2,
+i tried to subscribe to jffs2-dev list but seems no more existing.
 
-ubifs seems to mount faster, I think because it doesn't scan the whole=20
-flash at mount time like JFFS2 does, although I seem to recall there's an=
-=20
-option to store summary info on the flash rather than built it at mount=20
-time. Not to sure exactly the various permutations here though.
+Just a suggestion, is there some jffs2 list/support still alive from
+Axis ? Is jffs2 the right way to go to store some non volatile data to a
+nor flash or is it better i move directly to UBIFS ?
 
-In more general terms, jffs2 is pretty stable, on the other hand, there's=
-=20
-not much maintentence going on either; the main work goes into UBI and=20
-ubifs, so the that's where the real development is.
+thanks,
+angelo
 
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
