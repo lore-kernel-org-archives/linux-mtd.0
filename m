@@ -1,24 +1,22 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QHx6v-0004WG-19
-	for linux-mtd@lists.infradead.org; Thu, 05 May 2011 11:52:53 +0000
-Received: by eyh6 with SMTP id 6so705070eyh.36
+	id 1QHzjP-0006fI-Lo
+	for linux-mtd@lists.infradead.org; Thu, 05 May 2011 14:40:44 +0000
+Received: by wyb28 with SMTP id 28so2126440wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 May 2011 04:52:47 -0700 (PDT)
-Subject: Re: [PATCH 2/3] ubifs: add ubifs_mount_fixup_lebs()
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <BANLkTimi=Xvvy98aj9u3Gaapzkb3hWSNgQ@mail.gmail.com>
-References: <BANLkTin-7YDkQ+k8bD1E2D8Qa-VsNyoK-Q@mail.gmail.com>
-	<1304507625.7222.16.camel@localhost>
-	<BANLkTimi=Xvvy98aj9u3Gaapzkb3hWSNgQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 05 May 2011 14:49:10 +0300
-Message-ID: <1304596150.7222.51.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	Thu, 05 May 2011 07:40:41 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1304334638-2198-1-git-send-email-kishore.kadiyala@ti.com>
+References: <1304334638-2198-1-git-send-email-kishore.kadiyala@ti.com>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Thu, 5 May 2011 19:50:40 +0530
+Message-ID: <BANLkTimfXSOTKPpxFG8+JpCxvpzd14aBOQ@mail.gmail.com>
+Subject: Re: [PATCH] omap : nand : fix subpage ecc issue with prefetch
+To: Kishore Kadiyala <kishore.kadiyala@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: bdefaria@adeneo-embedded.com, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,53 +26,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-05-04 at 18:02 -0400, Matthew L. Creech wrote:
-> All makes sense Artem, thanks for the feedback.
-> 
-> On Wed, May 4, 2011 at 7:13 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> > On Tue, 2011-05-03 at 18:55 -0400, Matthew L. Creech wrote:
-> >> +
-> >> +             if (!(lprops->flags & LPROPS_EMPTY) &&
-> >
-> > I think this is not quite right, because empty taken LEBs will not be
-> > fixed up. I think you should only look at free space and nothing else.
-> >
-> 
-> OK, however I did find that I needed to check for (lprops->flags &
-> LPROPS_TAKEN) in addition to (lprops->free == c->leb_size) before
-> unmapping a LEB.  Failing to do so caused this:
-> 
-> UBIFS error (pid 1): check_lpt_type: invalid type (15) in LPT node type 1
-> UBIFS error (pid 1): ubifs_read_nnode: error -22 reading nnode at 8:783
-> 
-> so apparently it was unmapping part of the LPT, I guess?
+Hi Artem,
 
-Oh, right, the LPT subsystem contains the information about LEBs in the
-main area, i.e., from LEBs number c->main_first to LEB number c->leb_cnt
-- 1
+Can you please give a look on this patch?
+This patch fixes is required for anyone who wants to use this driver
+without using HW ECC.
 
-The area which go _fefore_ the main are are special case.
+-- Vimal
 
-The lprops area are LEBs from number c->lpt_first to number c->lpt_last.
-For those you need to look at the ltab: 
-
-c->ltab[lnum - c->lpt_first].free is what you need, where lnum is the
-LEB number you need the amount of free space for.
-
-For the orphans area [c->orph_first, c->orph_last] - you may to just
-unmap them all, because when after mount this area does not contain any
-useful data.
-
-Master area - LEBs UBIFS_MST_LNUM and UBIFS_MST_LNUM + 1 - you know the
-free space start at c->mst_offs + c->mst_node_alsz. So the amount of
-used space there is c->mst_offs + c->mst_node_alsz and free space is
-c->leb_size - c->mst_offs - c->mst_node_alsz; And it is the same for
-both master area LEBs.
-
-And finally the SB area (1 LEB) - you can skip this, but for
-consistency, you can also fix it up. Amount of used space there is
-always UBIFS_SB_NODE_SZ.
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+On Mon, May 2, 2011 at 4:40 PM, Kishore Kadiyala
+<kishore.kadiyala@ti.com> wrote:
+> For prefetch engine, read and write =A0got broken in commit '2c01946c'.
+> We never hit a scenario of not getting 'gpmc_prefetch_enable'
+> call success.
+> When reading/writing a subpage with a non divisible by 4 ecc number
+> of bytes, the mis-aligned bytes gets handled first before enabling
+> the Prefetch engine, then it reads/writes rest of the bytes.
+>
+> Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
+> Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
+> Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
+> ---
+> =A0drivers/mtd/nand/omap2.c | =A0 12 +++++-------
+> =A01 files changed, 5 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+> index da9a351..2c8040f 100644
+> --- a/drivers/mtd/nand/omap2.c
+> +++ b/drivers/mtd/nand/omap2.c
+> @@ -263,11 +263,10 @@ static void omap_read_buf_pref(struct mtd_info *mtd=
+, u_char *buf, int len)
+> =A0 =A0 =A0 =A0if (ret) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* PFPW engine is busy, use cpu copy metho=
+d */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (info->nand.options & NAND_BUSWIDTH_16)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_read_buf16(mtd, buf, l=
+en);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_read_buf16(mtd, (u_cha=
+r *)p, len);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_read_buf8(mtd, buf, le=
+n);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_read_buf8(mtd, (u_char=
+ *)p, len);
+> =A0 =A0 =A0 =A0} else {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 p =3D (u32 *) buf;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0do {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0r_count =3D gpmc_read_stat=
+us(GPMC_PREFETCH_FIFO_CNT);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0r_count =3D r_count >> 2;
+> @@ -293,7 +292,7 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0struct omap_nand_info, mtd);
+> =A0 =A0 =A0 =A0uint32_t w_count =3D 0;
+> =A0 =A0 =A0 =A0int i =3D 0, ret =3D 0;
+> - =A0 =A0 =A0 u16 *p;
+> + =A0 =A0 =A0 u16 *p =3D (u16 *)buf;
+> =A0 =A0 =A0 =A0unsigned long tim, limit;
+>
+> =A0 =A0 =A0 =A0/* take care of subpage writes */
+> @@ -309,11 +308,10 @@ static void omap_write_buf_pref(struct mtd_info *mt=
+d,
+> =A0 =A0 =A0 =A0if (ret) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0/* PFPW engine is busy, use cpu copy metho=
+d */
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0if (info->nand.options & NAND_BUSWIDTH_16)
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_write_buf16(mtd, buf, =
+len);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_write_buf16(mtd, (u_ch=
+ar *)p, len);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0else
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_write_buf8(mtd, buf, l=
+en);
+> + =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 omap_write_buf8(mtd, (u_cha=
+r *)p, len);
+> =A0 =A0 =A0 =A0} else {
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 p =3D (u16 *) buf;
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0while (len) {
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0w_count =3D gpmc_read_stat=
+us(GPMC_PREFETCH_FIFO_CNT);
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0w_count =3D w_count >> 1;
+> --
+> 1.7.4.1
+>
+>
