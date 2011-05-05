@@ -1,18 +1,24 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QHl9I-0000BH-5u
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2011 23:06:29 +0000
-Received: by wyb28 with SMTP id 28so1571469wyb.36
+	id 1QHx6v-0004WG-19
+	for linux-mtd@lists.infradead.org; Thu, 05 May 2011 11:52:53 +0000
+Received: by eyh6 with SMTP id 6so705070eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 04 May 2011 16:06:26 -0700 (PDT)
-Message-ID: <4DC1DBEE.1020407@gmail.com>
-Date: Thu, 05 May 2011 01:06:22 +0200
-From: angelo <angelo70@gmail.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: jffs2 not working on SST39VF2301
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	Thu, 05 May 2011 04:52:47 -0700 (PDT)
+Subject: Re: [PATCH 2/3] ubifs: add ubifs_mount_fixup_lebs()
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <BANLkTimi=Xvvy98aj9u3Gaapzkb3hWSNgQ@mail.gmail.com>
+References: <BANLkTin-7YDkQ+k8bD1E2D8Qa-VsNyoK-Q@mail.gmail.com>
+	<1304507625.7222.16.camel@localhost>
+	<BANLkTimi=Xvvy98aj9u3Gaapzkb3hWSNgQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 05 May 2011 14:49:10 +0300
+Message-ID: <1304596150.7222.51.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Wed, 2011-05-04 at 18:02 -0400, Matthew L. Creech wrote:
+> All makes sense Artem, thanks for the feedback.
+> 
+> On Wed, May 4, 2011 at 7:13 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Tue, 2011-05-03 at 18:55 -0400, Matthew L. Creech wrote:
+> >> +
+> >> +             if (!(lprops->flags & LPROPS_EMPTY) &&
+> >
+> > I think this is not quite right, because empty taken LEBs will not be
+> > fixed up. I think you should only look at free space and nothing else.
+> >
+> 
+> OK, however I did find that I needed to check for (lprops->flags &
+> LPROPS_TAKEN) in addition to (lprops->free == c->leb_size) before
+> unmapping a LEB.  Failing to do so caused this:
+> 
+> UBIFS error (pid 1): check_lpt_type: invalid type (15) in LPT node type 1
+> UBIFS error (pid 1): ubifs_read_nnode: error -22 reading nnode at 8:783
+> 
+> so apparently it was unmapping part of the LPT, I guess?
 
-i am posting from some days for some mysterious issues using jffs2.
+Oh, right, the LPT subsystem contains the information about LEBs in the
+main area, i.e., from LEBs number c->main_first to LEB number c->leb_cnt
+- 1
 
-After mounting a mkfs.jffs2 created image, i am getting several 
-different warnings, bad CRC, bad totlen, I/O errors etc etc ..
+The area which go _fefore_ the main are are special case.
 
-I finally find out an old post to this list:
+The lprops area are LEBs from number c->lpt_first to number c->lpt_last.
+For those you need to look at the ltab: 
 
-http://answerpot.com/showthread.php?1156495-mkfs.jffs2%3A+JFFS2+and+minimal+erase+block+size 
+c->ltab[lnum - c->lpt_first].free is what you need, where lnum is the
+LEB number you need the amount of free space for.
 
+For the orphans area [c->orph_first, c->orph_last] - you may to just
+unmap them all, because when after mount this area does not contain any
+useful data.
 
-Issue seems to be that mkfs.jffs2 don't allows 4KB erase size, as the 
-flash chip have, and don't work reliable if the erase size don't match 
-the mtd-detected erase size.
+Master area - LEBs UBIFS_MST_LNUM and UBIFS_MST_LNUM + 1 - you know the
+free space start at c->mst_offs + c->mst_node_alsz. So the amount of
+used space there is c->mst_offs + c->mst_node_alsz and free space is
+c->leb_size - c->mst_offs - c->mst_node_alsz; And it is the same for
+both master area LEBs.
 
-So i think if i have no chance to use jffs2 fs properly with this flash 
-chip.
-Since the issue is known, is there any official/unofficial patch around ?
-Could UBIFS work with 4KiB erase size ?
+And finally the SB area (1 LEB) - you can skip this, but for
+consistency, you can also fix it up. Amount of used space there is
+always UBIFS_SB_NODE_SZ.
 
-many thanks,
-angelo
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
