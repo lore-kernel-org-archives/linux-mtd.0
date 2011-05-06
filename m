@@ -1,35 +1,22 @@
-Received: from ra.se.axis.com ([195.60.68.13])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QIJyW-0007G3-MJ
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 12:17:41 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by ra.se.axis.com (Postfix) with ESMTP id F1D9712033
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QILAb-0007rF-44
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 13:34:13 +0000
+Received: by eyh6 with SMTP id 6so1092367eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 May 2011 14:17:37 +0200 (CEST)
-Received: from ra.se.axis.com ([127.0.0.1])
-	by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id OXbzPHSbL0Wj for <linux-mtd@lists.infradead.org>;
-	Fri,  6 May 2011 14:17:37 +0200 (CEST)
-Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
-	by ra.se.axis.com (Postfix) with ESMTP id 409B511FC3
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 May 2011 14:17:37 +0200 (CEST)
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
-	by seth.se.axis.com (Postfix) with ESMTP id 3EAE73E187
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  6 May 2011 14:17:37 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
-	p46CHbFX002713
-	for <linux-mtd@lists.infradead.org>; Fri, 6 May 2011 14:17:37 +0200
-Date: Fri, 6 May 2011 14:17:37 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: ubirmvol:ing gluebied volumes
-Message-ID: <Pine.LNX.4.64.1105061412050.15966@lnxricardw.se.axis.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+	Fri, 06 May 2011 06:34:11 -0700 (PDT)
+Subject: Re: [PATCH v3 1/3] ubifs: add a superblock flag for free space fix-up
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <BANLkTinhXzObLKjvREqxfOmt35HJ5V9APg@mail.gmail.com>
+References: <BANLkTinhXzObLKjvREqxfOmt35HJ5V9APg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 06 May 2011 16:30:38 +0300
+Message-ID: <1304688638.7222.59.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,36 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 2011-05-05 at 16:33 -0400, Matthew L. Creech wrote:
+> The space_fixup flag can be set in the superblock of a new filesystem by
+> mkfs.ubifs to indicate that any eraseblocks with free space remaining should be
+> fixed-up the first time it's mounted (after which the flag is un-set).
+> 
+> Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
 
-I enabled the gluebi MTD emulation layer in the kernel, and was pleased to=
-=20
-see all the UBI volumes coming up in /proc/mtd as mtd volumes.
+Hi, I've made the commit message a bit more verbose, and also added fre
+comments into the code, for those who will try to figure out what the
+flag means in the future. I've also fixed the patch because it is
+line-wrapped. And I've applied this one to the ubifs-2.6.git tree to the
+master branch.
 
-However, one thing though, if I try to ubirmvol one of the UBI volumes, I=
-=20
-get:
+> index f7515bd..3dce5f3 100644
+> --- a/fs/ubifs/debug.c
+> +++ b/fs/ubifs/debug.c
+> @@ -316,6 +316,8 @@ void dbg_dump_node(const struct ubifs_info *c,
+> const void *node)
 
-ubirmvol: error!: cannot UBI remove volume
-           error 16 (Device or resource busy)
+This should be one line. Using git send-email could help to avoid this.
 
-similar to what I get if I have a mounted ubifs residing in an UBI volume=
-=20
-and try and ubirmvol the volume without umounting the file system.
-
-Fair enough, I guess gluebi is keeping the UBI volume busy? But then how=20
-do I free it up? There's normally no way to disassociate mtd partitions=20
-from the underlying media, and I can't see any ubi tool that would do this=
-=20
-either.
-
-So is this an (unfortunate) consequence of using gluebi: that the=20
-underlying UBI volumes can't be removed?
-
-Same thing happens if I try and ubidetach the UBI partition from the=20
-underlying mtd partition: Device or resource busy.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
