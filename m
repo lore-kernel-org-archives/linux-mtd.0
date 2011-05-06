@@ -1,17 +1,35 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QIHAM-0005wm-QL
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 09:17:43 +0000
-From: <john.maxin@nokia.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH RESEND] mtd: onenand: onenand_base: check for region != NULL 
-Date: Fri, 6 May 2011 09:17:21 +0000
-Message-ID: <77DFD0EF40BC5042BB7221A1EFFF7570A167@008-AM1MPN1-021.mgdnok.nokia.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Received: from ra.se.axis.com ([195.60.68.13])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QIJyW-0007G3-MJ
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 12:17:41 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by ra.se.axis.com (Postfix) with ESMTP id F1D9712033
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 May 2011 14:17:37 +0200 (CEST)
+Received: from ra.se.axis.com ([127.0.0.1])
+	by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id OXbzPHSbL0Wj for <linux-mtd@lists.infradead.org>;
+	Fri,  6 May 2011 14:17:37 +0200 (CEST)
+Received: from seth.se.axis.com (seth.se.axis.com [10.0.2.172])
+	by ra.se.axis.com (Postfix) with ESMTP id 409B511FC3
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 May 2011 14:17:37 +0200 (CEST)
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
+	by seth.se.axis.com (Postfix) with ESMTP id 3EAE73E187
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  6 May 2011 14:17:37 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
+	p46CHbFX002713
+	for <linux-mtd@lists.infradead.org>; Fri, 6 May 2011 14:17:37 +0200
+Date: Fri, 6 May 2011 14:17:37 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: ubirmvol:ing gluebied volumes
+Message-ID: <Pine.LNX.4.64.1105061412050.15966@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-Cc: kyungmin.park@samsung.com, dwmw2@infradead.org, dedekind1@gmail.com
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +39,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=0A=
-Coverity has reported that inside the function "onenand_block_by_block_eras=
-e()" =0A=
-in onenand_base.c, we should add a check to prevent the incrementing of =0A=
-possible NULL value for "region"=0A=
-=0A=
-Signed-off-by: Maxin B. John <john.maxin@nokia.com>=0A=
----=0A=
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onena=
-nd_base.c=0A=
-index 56a8b20..fd659f8 100644=0A=
---- a/drivers/mtd/onenand/onenand_base.c=0A=
-+++ b/drivers/mtd/onenand/onenand_base.c=0A=
-@@ -2424,7 +2424,7 @@ static int onenand_block_by_block_erase(struct mtd_in=
-fo *mtd,=0A=
-                len -=3D block_size;=0A=
-                addr +=3D block_size;=0A=
-=0A=
--               if (addr =3D=3D region_end) {=0A=
-+               if (region && addr =3D=3D region_end) {=0A=
-                        if (!len)=0A=
-                                break;=0A=
-                        region++;=0A=
-=0A=
+
+I enabled the gluebi MTD emulation layer in the kernel, and was pleased to=
+=20
+see all the UBI volumes coming up in /proc/mtd as mtd volumes.
+
+However, one thing though, if I try to ubirmvol one of the UBI volumes, I=
+=20
+get:
+
+ubirmvol: error!: cannot UBI remove volume
+           error 16 (Device or resource busy)
+
+similar to what I get if I have a mounted ubifs residing in an UBI volume=
+=20
+and try and ubirmvol the volume without umounting the file system.
+
+Fair enough, I guess gluebi is keeping the UBI volume busy? But then how=20
+do I free it up? There's normally no way to disassociate mtd partitions=20
+from the underlying media, and I can't see any ubi tool that would do this=
+=20
+either.
+
+So is this an (unfortunate) consequence of using gluebi: that the=20
+underlying UBI volumes can't be removed?
+
+Same thing happens if I try and ubidetach the UBI partition from the=20
+underlying mtd partition: Device or resource busy.
+
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
