@@ -1,23 +1,22 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QIFVF-00056L-HJ
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 07:31:10 +0000
-Received: by wwb39 with SMTP id 39so2322359wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 06 May 2011 00:31:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1304621338.7222.55.camel@localhost>
-References: <1304334638-2198-1-git-send-email-kishore.kadiyala@ti.com>
-	<1304621338.7222.55.camel@localhost>
-From: Vimal Singh <vimal.newwork@gmail.com>
-Date: Fri, 6 May 2011 13:00:47 +0530
-Message-ID: <BANLkTi=6wkqWA+kjWShiEyFiVs0ZXqY6iw@mail.gmail.com>
-Subject: Re: [PATCH] omap : nand : fix subpage ecc issue with prefetch
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1QIGTP-0005St-OF
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 08:33:21 +0000
+From: <john.maxin@nokia.com>
+To: <dedekind1@gmail.com>
+Subject: RE: [PATCH] add a check to prevent the incrementing of possible
+	NULL value for "region" in onenand_base.c
+Date: Fri, 6 May 2011 08:33:02 +0000
+Message-ID: <77DFD0EF40BC5042BB7221A1EFFF7570A159@008-AM1MPN1-021.mgdnok.nokia.com>
+References: <77DFD0EF40BC5042BB7221A1EFFF75709578@008-AM1MPN1-021.mgdnok.nokia.com>,
+	<1304621499.7222.57.camel@localhost>
+In-Reply-To: <1304621499.7222.57.camel@localhost>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Cc: bdefaria@adeneo-embedded.com, linux-mtd@lists.infradead.org,
-	linux-omap@vger.kernel.org, Kishore Kadiyala <kishore.kadiyala@ti.com>
+MIME-Version: 1.0
+Cc: dwmw2@infradead.org, kyungmin.park@samsung.com,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,49 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 6, 2011 at 12:18 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Mon, 2011-05-02 at 16:40 +0530, Kishore Kadiyala wrote:
->> For prefetch engine, read and write =A0got broken in commit '2c01946c'.
->> We never hit a scenario of not getting 'gpmc_prefetch_enable'
->> call success.
->> When reading/writing a subpage with a non divisible by 4 ecc number
->> of bytes, the mis-aligned bytes gets handled first before enabling
->> the Prefetch engine, then it reads/writes rest of the bytes.
->>
->> Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
->> Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
->> Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
->
-> This needs a better commit message with more explanation and analysis of
-> the problem and how it was fixed.This commit message is not very
-> understandable. And then it needs also:
-
-How about a commit log like this:
-
-When reading/writing a subpage (When HW ECC is not available/enable)
-for number of bytes not aligned to 4, the mis-aligned bytes gets
-handled first (by cpu copy mathod) before enabling the Prefetch
-engin to/from 'p' (start of buffer 'buf').
-Then it reads/writes rest of the bytes with the help of Prefetch
-engine, if available, or again by cpu copy mathod. Currnetly,
-reading/writing of rest of bytes, is not done correctly. Its trying to
-read/write again to/from begining of buffer 'buf', overwriting the
-mis-aligned bytes.
-
-For prefetch engine read and write it got broken in commit '2c01946c'.
-And we never hit the scenario of not getting 'gpmc_prefetch_enable'
-call sucess. So, problem did not get caught up.
-
-This patch fixes the issue.
-
-> Cc: stable@kernel.org [2.6.36+]
->
-> Right? And then we could send it upstream.
-
-Yes, sure. I think kishore can take care of adding this in 'cc'
-while posting next time.
-
---=20
-Regards,
-Vimal Singh
+Hi Artem,=0A=
+=0A=
+>The commit message should not contain that long lines - use max 80=0A=
+>lines. The commit message should not start with "Hi". The subject should=
+=0A=
+>be short and more high level - the details go to the commit message.=0A=
+>Could you please improve this and re-submit?=0A=
+=0A=
+Oops.. I am sorry. Thanks a lot for pointing out my mistakes.=0A=
+I will make the modifications as per your instruction and will resubmit the=
+ patch.  =0A=
+=0A=
+Thanks and Regards,=0A=
+Maxin =0A=
+_______________________________________=0A=
+From: ext Artem Bityutskiy [dedekind1@gmail.com]=0A=
+Sent: Thursday, May 05, 2011 8:51 PM=0A=
+To: Maxin John (Nokia-SD/Helsinki)=0A=
+Cc: linux-mtd@lists.infradead.org; kyungmin.park@samsung.com; dwmw2@infrade=
+ad.org=0A=
+Subject: Re: [PATCH] add a check to prevent the incrementing of possible NU=
+LL value for "region" in onenand_base.c=0A=
+=0A=
+On Wed, 2011-05-04 at 11:26 +0000, john.maxin@nokia.com wrote:=0A=
+> Hi,=0A=
+>=0A=
+> Coverity has reported that inside the function "onenand_block_by_block_er=
+ase()" in onenand_base.c, we should add checks to prevent the incrementing =
+of possible NULL value for "region"=0A=
+> Thanks a lot to Adrian Hunter for suggesting a better solution.=0A=
+>=0A=
+> Signed-off-by: Maxin B. John <john.maxin@nokia.com>=0A=
+> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/one=
+nand_base.c=0A=
+> index 56a8b20..fd659f8 100644=0A=
+> --- a/drivers/mtd/onenand/onenand_base.c=0A=
+> +++ b/drivers/mtd/onenand/onenand_base.c=0A=
+> @@ -2424,7 +2424,7 @@ static int onenand_block_by_block_erase(struct mtd_=
+info *mtd,=0A=
+>                 len -=3D block_size;=0A=
+>                 addr +=3D block_size;=0A=
+>=0A=
+> -               if (addr =3D=3D region_end) {=0A=
+> +               if (region && addr =3D=3D region_end) {=0A=
+>                         if (!len)=0A=
+>                                 break;=0A=
+>                         region++;=0A=
+>=0A=
+> ______________________________________________________=0A=
+> Linux MTD discussion mailing list=0A=
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/=0A=
+=0A=
+=0A=
