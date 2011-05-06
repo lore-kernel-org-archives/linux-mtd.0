@@ -1,17 +1,20 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QIM22-0008Ni-Ec
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 14:29:28 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so3113364wyb.36
+	id 1QIM2B-0008O9-G7
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 14:29:37 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so2593287wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 06 May 2011 07:29:26 -0700 (PDT)
+	Fri, 06 May 2011 07:29:35 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 3/9] nand/denali: detect the number of banks
-Date: Fri,  6 May 2011 15:28:57 +0100
-Message-Id: <1304692143-22432-4-git-send-email-jamie@jamieiles.com>
+Subject: =?UTF-8?q?=5BRFC=20PATCH=204/9=5D=20nand/denali=3A=20split=20the=20generic=20driver=20and=20PCI=20layer?=
+Date: Fri,  6 May 2011 15:28:58 +0100
+Message-Id: <1304692143-22432-5-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1304692143-22432-1-git-send-email-jamie@jamieiles.com>
 References: <1304692143-22432-1-git-send-email-jamie@jamieiles.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org,
 	chuanxiao.dong@intel.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,131 +26,467 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Not all configurations of the Denali controller support 4 banks.  The
-controller can support between 1 and 16 banks.  Detect this from the
-design features register.
+The Denali controller can also be found in SoC devices attached to a
+simple bus.  Move the PCI specific parts into denali_pci so that we can
+add a denali_mmio that uses the same driver but for a platform_device
+instead of a PCI based device.
 
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/denali.c |   28 ++++++++++++++++++++--------
- drivers/mtd/nand/denali.h |    2 +-
- 2 files changed, 21 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/Kconfig      |   11 +++-
+ drivers/mtd/nand/Makefile     |    1 +
+ drivers/mtd/nand/denali.c     |  153 +++++------------------------------------
+ drivers/mtd/nand/denali.h     |    4 +
+ drivers/mtd/nand/denali_pci.c |  145 ++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 178 insertions(+), 136 deletions(-)
+ create mode 100644 drivers/mtd/nand/denali_pci.c
 
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index edec457..d629b68 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -66,8 +66,15 @@ config MTD_NAND_AUTCPU12
+ 	  access the SmartMediaCard.
+ 
+ config MTD_NAND_DENALI
+-       depends on PCI
++        tristate "Support Denali NAND controller"
++        help
++	  Enable support for the Denali NAND controller.  This should be
++	  combined with either the PCI or platform drivers to provide device
++	  registration.
++
++config MTD_NAND_DENALI_PCI
+         tristate "Support Denali NAND controller on Intel Moorestown"
++	depends on PCI && MTD_NAND_DENALI
+         help
+           Enable the driver for NAND flash on Intel Moorestown, using the
+           Denali NAND controller core.
+@@ -75,7 +82,7 @@ config MTD_NAND_DENALI
+ config MTD_NAND_DENALI_SCRATCH_REG_ADDR
+         hex "Denali NAND size scratch register address"
+         default "0xFF108018"
+-        depends on MTD_NAND_DENALI
++        depends on MTD_NAND_DENALI_PCI
+         help
+           Some platforms place the NAND chip size in a scratch register
+           because (some versions of) the driver aren't able to automatically
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index 5745d83..ed4a2d8 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_NAND_SPIA)		+= spia.o
+ obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
+ obj-$(CONFIG_MTD_NAND_AUTCPU12)		+= autcpu12.o
+ obj-$(CONFIG_MTD_NAND_DENALI)		+= denali.o
++obj-$(CONFIG_MTD_NAND_DENALI_PCI)	+= denali_pci.o
+ obj-$(CONFIG_MTD_NAND_EDB7312)		+= edb7312.o
+ obj-$(CONFIG_MTD_NAND_AU1550)		+= au1550nd.o
+ obj-$(CONFIG_MTD_NAND_BF5XX)		+= bf5xx_nand.o
 diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-index 70a439c..3af0a95 100644
+index 3af0a95..e389c8c 100644
 --- a/drivers/mtd/nand/denali.c
 +++ b/drivers/mtd/nand/denali.c
-@@ -178,11 +178,11 @@ static uint16_t denali_nand_reset(struct denali_nand_info *denali)
- 	dev_dbg(denali->dev, "%s, Line %d, Function: %s\n",
- 		       __FILE__, __LINE__, __func__);
+@@ -16,14 +16,12 @@
+  * 51 Franklin St - Fifth Floor, Boston, MA 02110-1301 USA.
+  *
+  */
+-
+ #include <linux/interrupt.h>
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/wait.h>
+ #include <linux/mutex.h>
+ #include <linux/slab.h>
+-#include <linux/pci.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/module.h>
  
--	for (i = 0 ; i < LLD_MAX_FLASH_BANKS; i++)
-+	for (i = 0 ; i < denali->max_banks; i++)
- 		iowrite32(INTR_STATUS__RST_COMP | INTR_STATUS__TIME_OUT,
- 		denali->flash_reg + INTR_STATUS(i));
+@@ -89,13 +87,6 @@ MODULE_PARM_DESC(onfi_timing_mode, "Overrides default ONFI setting."
+  * format the bank into the proper bits for the controller */
+ #define BANK(x) ((x) << 24)
  
--	for (i = 0 ; i < LLD_MAX_FLASH_BANKS; i++) {
-+	for (i = 0 ; i < denali->max_banks; i++) {
- 		iowrite32(1 << i, denali->flash_reg + DEVICE_RESET);
- 		while (!(ioread32(denali->flash_reg +
- 				INTR_STATUS(i)) &
-@@ -194,7 +194,7 @@ static uint16_t denali_nand_reset(struct denali_nand_info *denali)
- 			"NAND Reset operation timed out on bank %d\n", i);
+-/* List of platforms this NAND controller has be integrated into */
+-static const struct pci_device_id denali_pci_ids[] = {
+-	{ PCI_VDEVICE(INTEL, 0x0701), INTEL_CE4100 },
+-	{ PCI_VDEVICE(INTEL, 0x0809), INTEL_MRST },
+-	{ /* end: all zeroes */ }
+-};
+-
+ /* forward declarations */
+ static void clear_interrupts(struct denali_nand_info *denali);
+ static uint32_t wait_for_irq(struct denali_nand_info *denali,
+@@ -1420,107 +1411,49 @@ void denali_drv_init(struct denali_nand_info *denali)
+ 	denali->irq_status = 0;
+ }
+ 
+-/* driver entry point */
+-static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
++int denali_init(struct denali_nand_info *denali)
+ {
+-	int ret = -ENODEV;
+-	resource_size_t csr_base, mem_base;
+-	unsigned long csr_len, mem_len;
+-	struct denali_nand_info *denali;
+-
+-	denali = kzalloc(sizeof(*denali), GFP_KERNEL);
+-	if (!denali)
+-		return -ENOMEM;
+-
+-	ret = pci_enable_device(dev);
+-	if (ret) {
+-		printk(KERN_ERR "Spectra: pci_enable_device failed.\n");
+-		goto failed_alloc_memery;
+-	}
++	int ret;
+ 
+-	if (id->driver_data == INTEL_CE4100) {
++	if (denali->platform == INTEL_CE4100) {
+ 		/* Due to a silicon limitation, we can only support
+ 		 * ONFI timing mode 1 and below.
+ 		 */
+ 		if (onfi_timing_mode < -1 || onfi_timing_mode > 1) {
+ 			printk(KERN_ERR "Intel CE4100 only supports"
+ 					" ONFI timing mode 1 or below\n");
+-			ret = -EINVAL;
+-			goto failed_enable_dev;
+-		}
+-		denali->platform = INTEL_CE4100;
+-		mem_base = pci_resource_start(dev, 0);
+-		mem_len = pci_resource_len(dev, 1);
+-		csr_base = pci_resource_start(dev, 1);
+-		csr_len = pci_resource_len(dev, 1);
+-	} else {
+-		denali->platform = INTEL_MRST;
+-		csr_base = pci_resource_start(dev, 0);
+-		csr_len = pci_resource_len(dev, 0);
+-		mem_base = pci_resource_start(dev, 1);
+-		mem_len = pci_resource_len(dev, 1);
+-		if (!mem_len) {
+-			mem_base = csr_base + csr_len;
+-			mem_len = csr_len;
++			return -EINVAL;
+ 		}
  	}
  
--	for (i = 0; i < LLD_MAX_FLASH_BANKS; i++)
-+	for (i = 0; i < denali->max_banks; i++)
- 		iowrite32(INTR_STATUS__RST_COMP | INTR_STATUS__TIME_OUT,
- 			denali->flash_reg + INTR_STATUS(i));
+ 	/* Is 32-bit DMA supported? */
+-	ret = dma_set_mask(&dev->dev, DMA_BIT_MASK(32));
++	ret = dma_set_mask(denali->dev, DMA_BIT_MASK(32));
+ 	if (ret) {
+ 		printk(KERN_ERR "Spectra: no usable DMA configuration\n");
+-		goto failed_enable_dev;
++		return ret;
+ 	}
+-	denali->buf.dma_buf = dma_map_single(&dev->dev, denali->buf.buf,
++	denali->buf.dma_buf = dma_map_single(denali->dev, denali->buf.buf,
+ 					     DENALI_BUF_SIZE,
+ 					     DMA_BIDIRECTIONAL);
  
-@@ -405,11 +405,11 @@ static void get_hynix_nand_para(struct denali_nand_info *denali,
-  */
- static void find_valid_banks(struct denali_nand_info *denali)
- {
--	uint32_t id[LLD_MAX_FLASH_BANKS];
-+	uint32_t id[denali->max_banks];
- 	int i;
+-	if (dma_mapping_error(&dev->dev, denali->buf.dma_buf)) {
+-		dev_err(&dev->dev, "Spectra: failed to map DMA buffer\n");
+-		goto failed_enable_dev;
++	if (dma_mapping_error(denali->dev, denali->buf.dma_buf)) {
++		dev_err(denali->dev, "Spectra: failed to map DMA buffer\n");
++		return -EIO;
+ 	}
+-
+-	pci_set_master(dev);
+-	denali->dev = &dev->dev;
+-	denali->mtd.dev.parent = &dev->dev;
+-
+-	ret = pci_request_regions(dev, DENALI_NAND_NAME);
+-	if (ret) {
+-		printk(KERN_ERR "Spectra: Unable to request memory regions\n");
+-		goto failed_dma_map;
+-	}
+-
+-	denali->flash_reg = ioremap_nocache(csr_base, csr_len);
+-	if (!denali->flash_reg) {
+-		printk(KERN_ERR "Spectra: Unable to remap memory region\n");
+-		ret = -ENOMEM;
+-		goto failed_req_regions;
+-	}
+-
+-	denali->flash_mem = ioremap_nocache(mem_base, mem_len);
+-	if (!denali->flash_mem) {
+-		printk(KERN_ERR "Spectra: ioremap_nocache failed!");
+-		ret = -ENOMEM;
+-		goto failed_remap_reg;
+-	}
+-
++	denali->mtd.dev.parent = denali->dev;
+ 	denali_hw_init(denali);
+ 	denali_drv_init(denali);
  
- 	denali->total_used_banks = 1;
--	for (i = 0; i < LLD_MAX_FLASH_BANKS; i++) {
-+	for (i = 0; i < denali->max_banks; i++) {
- 		index_addr(denali, (uint32_t)(MODE_11 | (i << 24) | 0), 0x90);
- 		index_addr(denali, (uint32_t)(MODE_11 | (i << 24) | 1), 0);
- 		index_addr_read_data(denali,
-@@ -445,6 +445,17 @@ static void find_valid_banks(struct denali_nand_info *denali)
- 		"denali->total_used_banks: %d\n", denali->total_used_banks);
- }
+ 	/* denali_isr register is done after all the hardware
+ 	 * initilization is finished*/
+-	if (request_irq(dev->irq, denali_isr, IRQF_SHARED,
++	if (request_irq(denali->irq, denali_isr, IRQF_SHARED,
+ 			DENALI_NAND_NAME, denali)) {
+ 		printk(KERN_ERR "Spectra: Unable to allocate IRQ\n");
+-		ret = -ENODEV;
+-		goto failed_remap_mem;
++		return -ENODEV;
+ 	}
  
-+/*
-+ * Use the configuration feature register to determine the maximum number of
-+ * banks that the hardware supports.
-+ */
-+static void detect_max_banks(struct denali_nand_info *denali)
-+{
-+	uint32_t features = ioread32(denali->flash_reg + FEATURES);
-+
-+	denali->max_banks = 2 << (features & FEATURES__N_BANKS);
-+}
-+
- static void detect_partition_feature(struct denali_nand_info *denali)
- {
- 	/* For MRST platform, denali->fwblks represent the
-@@ -562,7 +573,7 @@ static void denali_irq_init(struct denali_nand_info *denali)
- 	int_mask = DENALI_IRQ_ALL;
+ 	/* now that our ISR is registered, we can enable interrupts */
+ 	denali_set_intr_modes(denali, true);
+-
+-	pci_set_drvdata(dev, denali);
+-
+ 	denali->mtd.name = "denali-nand";
+ 	denali->mtd.owner = THIS_MODULE;
+ 	denali->mtd.priv = &denali->nand;
+@@ -1646,71 +1579,23 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
  
- 	/* Clear all status bits */
--	for (i = 0; i < LLD_MAX_FLASH_BANKS; ++i)
-+	for (i = 0; i < denali->max_banks; ++i)
- 		iowrite32(0xFFFF, denali->flash_reg + INTR_STATUS(i));
- 
- 	denali_irq_enable(denali, int_mask);
-@@ -579,7 +590,7 @@ static void denali_irq_enable(struct denali_nand_info *denali,
- {
- 	int i;
- 
--	for (i = 0; i < LLD_MAX_FLASH_BANKS; ++i)
-+	for (i = 0; i < denali->max_banks; ++i)
- 		iowrite32(int_mask, denali->flash_reg + INTR_EN(i));
- }
- 
-@@ -1345,6 +1356,7 @@ static void denali_hw_init(struct denali_nand_info *denali)
- 	/* Should set value for these registers when init */
- 	iowrite32(0, denali->flash_reg + TWO_ROW_ADDR_CYCLES);
- 	iowrite32(1, denali->flash_reg + ECC_ENABLE);
-+	detect_max_banks(denali);
- 	denali_nand_timing_set(denali);
- 	denali_irq_init(denali);
- }
-@@ -1522,7 +1534,7 @@ static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	/* scan for NAND devices attached to the controller
- 	 * this is the first stage in a two step process to register
- 	 * with the nand subsystem */
--	if (nand_scan_ident(&denali->mtd, LLD_MAX_FLASH_BANKS, NULL)) {
-+	if (nand_scan_ident(&denali->mtd, denali->max_banks, NULL)) {
- 		ret = -ENXIO;
+ 	ret = add_mtd_device(&denali->mtd);
+ 	if (ret) {
+-		dev_err(&dev->dev, "Spectra: Failed to register MTD: %d\n",
++		dev_err(denali->dev, "Spectra: Failed to register MTD: %d\n",
+ 				ret);
  		goto failed_req_irq;
  	}
+ 	return 0;
+ 
+ failed_req_irq:
+-	denali_irq_cleanup(dev->irq, denali);
+-failed_remap_mem:
+-	iounmap(denali->flash_mem);
+-failed_remap_reg:
+-	iounmap(denali->flash_reg);
+-failed_req_regions:
+-	pci_release_regions(dev);
+-failed_dma_map:
+-	dma_unmap_single(&dev->dev, denali->buf.dma_buf, DENALI_BUF_SIZE,
+-			 DMA_BIDIRECTIONAL);
+-failed_enable_dev:
+-	pci_disable_device(dev);
+-failed_alloc_memery:
+-	kfree(denali);
++	denali_irq_cleanup(denali->irq, denali);
++
+ 	return ret;
+ }
+ 
+-/* driver exit point */
+-static void denali_pci_remove(struct pci_dev *dev)
++void denali_remove(struct denali_nand_info *denali)
+ {
+-	struct denali_nand_info *denali = pci_get_drvdata(dev);
+-
+ 	nand_release(&denali->mtd);
+ 	del_mtd_device(&denali->mtd);
+-
+-	denali_irq_cleanup(dev->irq, denali);
+-
+-	iounmap(denali->flash_reg);
+-	iounmap(denali->flash_mem);
+-	pci_release_regions(dev);
+-	pci_disable_device(dev);
+-	dma_unmap_single(&dev->dev, denali->buf.dma_buf, DENALI_BUF_SIZE,
++	denali_irq_cleanup(denali->irq, denali);
++	dma_unmap_single(denali->dev, denali->buf.dma_buf, DENALI_BUF_SIZE,
+ 			 DMA_BIDIRECTIONAL);
+-	pci_set_drvdata(dev, NULL);
+-	kfree(denali);
+-}
+-
+-MODULE_DEVICE_TABLE(pci, denali_pci_ids);
+-
+-static struct pci_driver denali_pci_driver = {
+-	.name = DENALI_NAND_NAME,
+-	.id_table = denali_pci_ids,
+-	.probe = denali_pci_probe,
+-	.remove = denali_pci_remove,
+-};
+-
+-static int __devinit denali_init(void)
+-{
+-	printk(KERN_INFO "Spectra MTD driver built on %s @ %s\n",
+-			__DATE__, __TIME__);
+-	return pci_register_driver(&denali_pci_driver);
+ }
+-
+-/* Free memory */
+-static void __devexit denali_exit(void)
+-{
+-	pci_unregister_driver(&denali_pci_driver);
+-}
+-
+-module_init(denali_init);
+-module_exit(denali_exit);
 diff --git a/drivers/mtd/nand/denali.h b/drivers/mtd/nand/denali.h
-index 638668c..fabb9d5 100644
+index fabb9d5..e5aa995 100644
 --- a/drivers/mtd/nand/denali.h
 +++ b/drivers/mtd/nand/denali.h
-@@ -454,7 +454,6 @@
- #define READ_WRITE_ENABLE_HIGH_COUNT    22
+@@ -487,6 +487,7 @@ struct denali_nand_info {
+ 	uint32_t irq_status;
+ 	int irq_debug_array[32];
+ 	int idx;
++	int irq;
  
- #define ECC_SECTOR_SIZE     512
--#define LLD_MAX_FLASH_BANKS     4
- 
- #define DENALI_BUF_SIZE		(NAND_MAX_PAGESIZE + NAND_MAX_OOBSIZE)
- 
-@@ -494,6 +493,7 @@ struct denali_nand_info {
- 	uint32_t totalblks;
- 	uint32_t blksperchip;
- 	uint32_t bbtskipbytes;
-+	uint32_t max_banks;
+ 	uint32_t devnum;	/* represent how many nands connected */
+ 	uint32_t fwblks; /* represent how many blocks FW used */
+@@ -496,4 +497,7 @@ struct denali_nand_info {
+ 	uint32_t max_banks;
  };
  
++extern int denali_init(struct denali_nand_info *denali);
++extern void denali_remove(struct denali_nand_info *denali);
++
  #endif /*_LLD_NAND_*/
+diff --git a/drivers/mtd/nand/denali_pci.c b/drivers/mtd/nand/denali_pci.c
+new file mode 100644
+index 0000000..19b11af
+--- /dev/null
++++ b/drivers/mtd/nand/denali_pci.c
+@@ -0,0 +1,145 @@
++/*
++ * NAND Flash Controller Device Driver
++ * Copyright © 2009-2010, Intel Corporation and its suppliers.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/slab.h>
++
++#include "denali.h"
++
++#define DENALI_NAND_NAME    "denali-nand-pci"
++
++/* List of platforms this NAND controller has be integrated into */
++static DEFINE_PCI_DEVICE_TABLE(denali_pci_ids) = {
++	{ PCI_VDEVICE(INTEL, 0x0701), INTEL_CE4100 },
++	{ PCI_VDEVICE(INTEL, 0x0809), INTEL_MRST },
++	{ /* end: all zeroes */ }
++};
++MODULE_DEVICE_TABLE(pci, denali_pci_ids);
++
++static int denali_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
++{
++	int ret = -ENODEV;
++	resource_size_t csr_base, mem_base;
++	unsigned long csr_len, mem_len;
++	struct denali_nand_info *denali;
++
++	denali = kzalloc(sizeof(*denali), GFP_KERNEL);
++	if (!denali)
++		return -ENOMEM;
++
++	ret = pci_enable_device(dev);
++	if (ret) {
++		printk(KERN_ERR "Spectra: pci_enable_device failed.\n");
++		goto failed_alloc_memery;
++	}
++
++	if (id->driver_data == INTEL_CE4100) {
++		denali->platform = INTEL_CE4100;
++		mem_base = pci_resource_start(dev, 0);
++		mem_len = pci_resource_len(dev, 1);
++		csr_base = pci_resource_start(dev, 1);
++		csr_len = pci_resource_len(dev, 1);
++	} else {
++		denali->platform = INTEL_MRST;
++		csr_base = pci_resource_start(dev, 0);
++		csr_len = pci_resource_len(dev, 0);
++		mem_base = pci_resource_start(dev, 1);
++		mem_len = pci_resource_len(dev, 1);
++		if (!mem_len) {
++			mem_base = csr_base + csr_len;
++			mem_len = csr_len;
++		}
++	}
++
++	pci_set_master(dev);
++	denali->dev = &dev->dev;
++	denali->irq = dev->irq;
++
++	ret = pci_request_regions(dev, DENALI_NAND_NAME);
++	if (ret) {
++		printk(KERN_ERR "Spectra: Unable to request memory regions\n");
++		goto failed_enable_dev;
++	}
++
++	denali->flash_reg = ioremap_nocache(csr_base, csr_len);
++	if (!denali->flash_reg) {
++		printk(KERN_ERR "Spectra: Unable to remap memory region\n");
++		ret = -ENOMEM;
++		goto failed_req_regions;
++	}
++
++	denali->flash_mem = ioremap_nocache(mem_base, mem_len);
++	if (!denali->flash_mem) {
++		printk(KERN_ERR "Spectra: ioremap_nocache failed!");
++		ret = -ENOMEM;
++		goto failed_remap_reg;
++	}
++
++	ret = denali_init(denali);
++	if (ret)
++		goto failed_remap_mem;
++
++	pci_set_drvdata(dev, denali);
++
++	return 0;
++
++failed_remap_mem:
++	iounmap(denali->flash_mem);
++failed_remap_reg:
++	iounmap(denali->flash_reg);
++failed_req_regions:
++	pci_release_regions(dev);
++failed_enable_dev:
++	pci_disable_device(dev);
++failed_alloc_memery:
++	kfree(denali);
++
++	return ret;
++}
++
++/* driver exit point */
++static void denali_pci_remove(struct pci_dev *dev)
++{
++	struct denali_nand_info *denali = pci_get_drvdata(dev);
++
++	denali_remove(denali);
++	iounmap(denali->flash_reg);
++	iounmap(denali->flash_mem);
++	pci_release_regions(dev);
++	pci_disable_device(dev);
++	pci_set_drvdata(dev, NULL);
++	kfree(denali);
++}
++
++static struct pci_driver denali_pci_driver = {
++	.name = DENALI_NAND_NAME,
++	.id_table = denali_pci_ids,
++	.probe = denali_pci_probe,
++	.remove = denali_pci_remove,
++};
++
++static int __devinit denali_init_pci(void)
++{
++	printk(KERN_INFO "Spectra MTD driver built on %s @ %s\n",
++			__DATE__, __TIME__);
++	return pci_register_driver(&denali_pci_driver);
++}
++module_init(denali_init_pci);
++
++static void __devexit denali_exit_pci(void)
++{
++	pci_unregister_driver(&denali_pci_driver);
++}
++module_exit(denali_exit_pci);
 -- 
 1.7.4.4
