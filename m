@@ -1,22 +1,22 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QIMm9-0000Wj-VI
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 15:17:06 +0000
-Received: by eyh6 with SMTP id 6so1127929eyh.36
+	id 1QIMnL-0000Xs-B0
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 15:18:19 +0000
+Received: by vxd2 with SMTP id 2so4457628vxd.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 06 May 2011 08:17:04 -0700 (PDT)
-Subject: Re: [PATCH] UBIFS: add the fixup function
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <1304694820-32474-1-git-send-email-dedekind1@gmail.com>
-References: <1304694820-32474-1-git-send-email-dedekind1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 06 May 2011 18:13:33 +0300
-Message-ID: <1304694813.7222.75.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: MTD list <linux-mtd@lists.infradead.org>
-Reply-To: dedekind1@gmail.com
+	Fri, 06 May 2011 08:18:17 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1304694168.7222.68.camel@localhost>
+References: <BANLkTinVHD1QYpqSTG0_WcLy-aA1ere34g@mail.gmail.com>
+	<1304694168.7222.68.camel@localhost>
+Date: Fri, 6 May 2011 11:18:17 -0400
+Message-ID: <BANLkTikgYvy9Dk8NXnmUP+1bWAjfoB-LVw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] ubifs: add ubifs_fixup_free_space()
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-06 at 18:13 +0300, Artem Bityutskiy wrote:
-> From: Matthew L. Creech <mlcreech@gmail.com>
-> 
-> This patch adds the 'ubifs_fixup_free_space()' function which scans all LEBs in
-> the filesystem for those that are in-use but have one or more empty pages, then
-> re-maps the LEBs in order to erase the empty portions.  Afterward it removes
-> the "space_fixup" flag from the UBIFS superblock.
-> 
-> Artem: amended the commit message, massage the patch, fix few minor things
-> there.
-> 
-> Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
-> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On Fri, May 6, 2011 at 11:02 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+>> +
+>> + =A0 =A0 ubifs_assert(len >=3D 0);
+>> + =A0 =A0 ubifs_assert(len % c->min_io_size =3D=3D 0);
+>
+> So if this is true.
+>
+>> +
+>> + =A0 =A0 /* Pad if necessary */
+>> + =A0 =A0 aligned_len =3D ALIGN(len, c->min_io_size);
+>> + =A0 =A0 if (aligned_len > len) {
+>
+> This will be always false and the below code can be removed, right?
+>
 
-This is your patch N2 but with many of my changes and amendments. I've
-added the code which should take care of the log LEBs - completely
-untested. I've amended comments - I did not like the word "remap" you
-used - better use "fixup" for that thing, I did not like the word "page"
-you used - better use min. I/O unit, unless we are speaking specifically
-about NAND. I've removed some comments and added some new, massaged the
-code, changed those other things which I wrote about (not touching the
-other SB bits, kfree, etc).
+Oh, yes you're right - I added it before you had mentioned that the
+lengths would be min_io_size-aligned.  :)  Thanks
 
-Also, we use "UBIFS:" (capital letters) prefix for patches. Could you
-please take a look and if you do not have strong disagreements then
-amend _this_ version of patch, test it and probably fix, and then send
-the whole series again. Note, patch N1 is already in my tree, so unless
-you need to change it - you do not have to send it.
-
-Thanks! Sorry for messy replies, I'm (as always) busy and trying to do
-as much as I can during the little time I have :-)
-
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+--=20
+Matthew L. Creech
