@@ -1,23 +1,25 @@
 Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QIM9D-00007V-7u
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 14:36:51 +0000
-Received: by eyh6 with SMTP id 6so1114359eyh.36
+	id 1QIMKP-0000DB-LW
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 14:48:26 +0000
+Received: by eyh6 with SMTP id 6so1118281eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 06 May 2011 07:36:49 -0700 (PDT)
-Subject: Re: [RFC PATCH 9/9] nand/denali: support MTD partitioning
+	Fri, 06 May 2011 07:48:24 -0700 (PDT)
+Subject: Re: [PATCH 2/3] ubifs: add ubifs_mount_fixup_lebs()
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Jamie Iles <jamie@jamieiles.com>
-In-Reply-To: <1304692143-22432-10-git-send-email-jamie@jamieiles.com>
-References: <1304692143-22432-1-git-send-email-jamie@jamieiles.com>
-	<1304692143-22432-10-git-send-email-jamie@jamieiles.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <BANLkTi=12B0QO7L4A4B8K4=+6KYsc569HA@mail.gmail.com>
+References: <BANLkTin-7YDkQ+k8bD1E2D8Qa-VsNyoK-Q@mail.gmail.com>
+	<1304507625.7222.16.camel@localhost>
+	<BANLkTimi=Xvvy98aj9u3Gaapzkb3hWSNgQ@mail.gmail.com>
+	<1304596150.7222.51.camel@localhost>
+	<BANLkTi=12B0QO7L4A4B8K4=+6KYsc569HA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 06 May 2011 17:33:15 +0300
-Message-ID: <1304692395.7222.65.camel@localhost>
+Date: Fri, 06 May 2011 17:44:51 +0300
+Message-ID: <1304693091.7222.67.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	chuanxiao.dong@intel.com
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,45 +30,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-06 at 15:29 +0100, Jamie Iles wrote:
-> If CONFIG_MTD_PARTITION is enabled then take the partitions from the
-> platform data.
+On Thu, 2011-05-05 at 16:36 -0400, Matthew L. Creech wrote:
+> On Thu, May 5, 2011 at 7:49 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> >
+> > The area which go _fefore_ the main are are special case.
+> >
+> > The lprops area are LEBs from number c->lpt_first to number c->lpt_last.
+> > For those you need to look at the ltab:
+> >
+> > c->ltab[lnum - c->lpt_first].free is what you need, where lnum is the
+> > LEB number you need the amount of free space for.
+> >
+> > For the orphans area [c->orph_first, c->orph_last] - you may to just
+> > unmap them all, because when after mount this area does not contain any
+> > useful data.
+> >
+> > Master area - LEBs UBIFS_MST_LNUM and UBIFS_MST_LNUM + 1 - you know the
+> > free space start at c->mst_offs + c->mst_node_alsz. So the amount of
+> > used space there is c->mst_offs + c->mst_node_alsz and free space is
+> > c->leb_size - c->mst_offs - c->mst_node_alsz; And it is the same for
+> > both master area LEBs.
+> >
+> > And finally the SB area (1 LEB) - you can skip this, but for
+> > consistency, you can also fix it up. Amount of used space there is
+> > always UBIFS_SB_NODE_SZ.
+> >
 > 
-> Cc: David Woodhouse <dwmw2@infradead.org>
-> Cc: Chuanxiao Dong <chuanxiao.dong@intel.com>
-> Signed-off-by: Jamie Iles <jamie@jamieiles.com>
-> ---
->  drivers/mtd/nand/denali.c            |    8 ++++++++
->  include/linux/platform_data/denali.h |    6 +++++-
->  2 files changed, 13 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/nand/denali.c b/drivers/mtd/nand/denali.c
-> index c79009f..ae954de 100644
-> --- a/drivers/mtd/nand/denali.c
-> +++ b/drivers/mtd/nand/denali.c
-> @@ -23,6 +23,7 @@
->  #include <linux/mutex.h>
->  #include <linux/slab.h>
->  #include <linux/mtd/mtd.h>
-> +#include <linux/mtd/partitions.h>
->  #include <linux/module.h>
->  #include <linux/platform_data/denali.h>
->  
-> @@ -1563,7 +1564,14 @@ int denali_init(struct denali_nand_info *denali)
->  		goto failed_req_irq;
->  	}
->  
-> +#ifdef CONFIG_MTD_PARTITIONS
-> +	if (pdata && pdata->parts) {
-> +		ret = add_mtd_partitions(&denali->mtd, pdata->parts,
-> +					 pdata->nr_parts);
-> +	} else
-> +#endif /* CONFIG_MTD_PARTITIONS */
->  	ret = add_mtd_device(&denali->mtd);
-> +
+> OK, I've separated these out in the v3 patch.  I also ignored the log
+> LEBs, since you didn't mention those, and I wasn't sure how to handle
+> them - are they OK to leave alone?  Or could they cause similar
+> problems if not cleaned up?
 
-Oops:
-http://www.linux-mtd.infradead.org/doc/general.html#L_partitions_ban
+Actually the log LEBs shoule be processed as well. I think:
+
+1. all LEBs which are _not_ between the log tail and head should be
+unmapped.
+2. log head should be fixed up.
+
+I'll send some code to you soon.
 
 -- 
 Best Regards,
