@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.1.47] helo=mgw-sa01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QILkx-00089F-16
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 14:11:49 +0000
+	id 1QILkx-00089E-11
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 14:11:50 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-sa01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p46EBiFd000678
+	p46EBiFb000678
 	for <linux-mtd@lists.infradead.org>; Fri, 6 May 2011 17:11:45 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 6/7] UBIFS: fix inode size debugging check failure
-Date: Fri,  6 May 2011 17:15:16 +0300
-Message-Id: <1304691317-32214-6-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 7/7] UBIFS: fix a rare memory leak in ro to rw remounting path
+Date: Fri,  6 May 2011 17:15:17 +0300
+Message-Id: <1304691317-32214-7-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1304691317-32214-1-git-send-email-dedekind1@gmail.com>
 References: <1304691317-32214-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,50 +25,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-This patch fixes a problem with the following symptoms:
-
-UBIFS: deferred recovery completed
-UBIFS error (pid 15676): dbg_check_synced_i_size: ui_size is 11481088, synced_i_size is 11459081, but inode is clean
-UBIFS error (pid 15676): dbg_check_synced_i_size: i_ino 128, i_mode 0x81a4, i_size 11481088
-
-It happens when additional debugging checks are enabled and we are recovering
-from a power cut. When we fixup corrupted inode size during recovery, we change
-them in-place and we change ui_size as well, but not synced_i_size, which
-causes this failure. This patch makes sure we change both fields and fixes the
-issue.
+When re-mounting from R/O mode to R/W mode and the LEB count in the superblock
+is not up-to date, because for the underlying UBI volume became larger, we
+re-write the superblock. We allocate RAM for these purposes, but never free it.
+So this is a memory leak, although very rare one.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Cc: stable@kernel.org
 ---
- fs/ubifs/recovery.c |    6 +++++-
- 1 files changed, 5 insertions(+), 1 deletions(-)
+ fs/ubifs/sb.c    |    3 ++-
+ fs/ubifs/super.c |    1 +
+ 2 files changed, 3 insertions(+), 1 deletions(-)
 
-diff --git a/fs/ubifs/recovery.c b/fs/ubifs/recovery.c
-index d6c8ce3..3f41a0c 100644
---- a/fs/ubifs/recovery.c
-+++ b/fs/ubifs/recovery.c
-@@ -1490,18 +1490,22 @@ int ubifs_recover_size(struct ubifs_info *c)
- 			if (c->ro_mount) {
- 				/* Fix the inode size and pin it in memory */
- 				struct inode *inode;
-+				struct ubifs_inode *ui;
- 
- 				ubifs_assert(!e->inode);
- 
- 				inode = ubifs_iget(c->vfs_sb, e->inum);
- 				if (IS_ERR(inode))
- 					return PTR_ERR(inode);
-+
-+				ui = ubifs_inode(inode);
- 				if (inode->i_size < e->d_size) {
- 					dbg_rcvry("ino %lu size %lld -> %lld",
- 						  (unsigned long)e->inum,
- 						  inode->i_size, e->d_size);
- 					inode->i_size = e->d_size;
--					ubifs_inode(inode)->ui_size = e->d_size;
-+					ui->ui_size = e->d_size;
-+					ui->synced_i_size = e->d_size;
- 					e->inode = inode;
- 					this = rb_next(this);
- 					continue;
+diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
+index bf31b47..cad60b5 100644
+--- a/fs/ubifs/sb.c
++++ b/fs/ubifs/sb.c
+@@ -475,7 +475,8 @@ failed:
+  * @c: UBIFS file-system description object
+  *
+  * This function returns a pointer to the superblock node or a negative error
+- * code.
++ * code. Note, the user of this function is responsible of kfree()'ing the
++ * returned superblock buffer.
+  */
+ struct ubifs_sb_node *ubifs_read_sb_node(struct ubifs_info *c)
+ {
+diff --git a/fs/ubifs/super.c b/fs/ubifs/super.c
+index 407c064..575ea83 100644
+--- a/fs/ubifs/super.c
++++ b/fs/ubifs/super.c
+@@ -1585,6 +1585,7 @@ static int ubifs_remount_rw(struct ubifs_info *c)
+ 		}
+ 		sup->leb_cnt = cpu_to_le32(c->leb_cnt);
+ 		err = ubifs_write_sb_node(c, sup);
++		kfree(sup);
+ 		if (err)
+ 			goto out;
+ 	}
 -- 
 1.7.2.3
