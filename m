@@ -1,21 +1,24 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QIPzX-0002GC-Fg
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 18:43:08 +0000
-Received: by eyh6 with SMTP id 6so1192288eyh.36
+	id 1QIQFi-0002PN-Bm
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2011 18:59:51 +0000
+Received: by ewy3 with SMTP id 3so1195195ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 06 May 2011 11:43:04 -0700 (PDT)
-Subject: Re: [RFC] MTD: export more NAND-related informations to syfs
+	Fri, 06 May 2011 11:59:48 -0700 (PDT)
+Subject: Re: [PATCH] omap : nand : fix subpage ecc issue with prefetch
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Florian Fainelli <ffainelli@freebox.fr>
-In-Reply-To: <201105061728.20948.ffainelli@freebox.fr>
-References: <201105061728.20948.ffainelli@freebox.fr>
+To: Vimal Singh <vimal.newwork@gmail.com>
+In-Reply-To: <BANLkTi=6wkqWA+kjWShiEyFiVs0ZXqY6iw@mail.gmail.com>
+References: <1304334638-2198-1-git-send-email-kishore.kadiyala@ti.com>
+	<1304621338.7222.55.camel@localhost>
+	<BANLkTi=6wkqWA+kjWShiEyFiVs0ZXqY6iw@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 06 May 2011 21:39:33 +0300
-Message-ID: <1304707173.7222.96.camel@localhost>
+Date: Fri, 06 May 2011 21:56:17 +0300
+Message-ID: <1304708177.7222.101.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: MTD list <linux-mtd@lists.infradead.org>
+Cc: bdefaria@adeneo-embedded.com, linux-mtd@lists.infradead.org,
+	linux-omap@vger.kernel.org, Kishore Kadiyala <kishore.kadiyala@ti.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -26,12 +29,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-06 at 17:28 +0200, Florian Fainelli wrote:
-> +       /* NAND related attributes */
-> +       const char *nand_type;
-> +       const char *nand_manufacturer; 
+On Fri, 2011-05-06 at 13:00 +0530, Vimal Singh wrote:
+> On Fri, May 6, 2011 at 12:18 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
+> > On Mon, 2011-05-02 at 16:40 +0530, Kishore Kadiyala wrote:
+> >> For prefetch engine, read and write  got broken in commit '2c01946c'.
+> >> We never hit a scenario of not getting 'gpmc_prefetch_enable'
+> >> call success.
+> >> When reading/writing a subpage with a non divisible by 4 ecc number
+> >> of bytes, the mis-aligned bytes gets handled first before enabling
+> >> the Prefetch engine, then it reads/writes rest of the bytes.
+> >>
+> >> Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
+> >> Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
+> >> Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
+> >
+> > This needs a better commit message with more explanation and analysis of
+> > the problem and how it was fixed.This commit message is not very
+> > understandable. And then it needs also:
+> 
+> How about a commit log like this:
 
-Why other flashes cannot have type and manufacturer ?
+Looks better, thanks. Waiting for the new patch.
+
+> 
+> When reading/writing a subpage (When HW ECC is not available/enable)
+> for number of bytes not aligned to 4, the mis-aligned bytes gets
+> handled first (by cpu copy mathod) before enabling the Prefetch
+> engin to/from 'p' (start of buffer 'buf').
+> Then it reads/writes rest of the bytes with the help of Prefetch
+> engine, if available, or again by cpu copy mathod. Currnetly,
+> reading/writing of rest of bytes, is not done correctly. Its trying to
+> read/write again to/from begining of buffer 'buf', overwriting the
+> mis-aligned bytes.
+> 
+> For prefetch engine read and write it got broken in commit '2c01946c'.
+> And we never hit the scenario of not getting 'gpmc_prefetch_enable'
+> call sucess. So, problem did not get caught up.
+> 
+> This patch fixes the issue.
 
 -- 
 Best Regards,
