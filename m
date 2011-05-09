@@ -1,13 +1,17 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
+Received: from devils.ext.ti.com ([198.47.26.153])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QJR4E-00033q-1o
-	for linux-mtd@lists.infradead.org; Mon, 09 May 2011 14:04:11 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: sst25l: fix section markings
-Date: Mon,  9 May 2011 10:07:58 -0400
-Message-Id: <1304950078-27141-1-git-send-email-vapier@gentoo.org>
+	id 1QJRCh-00036Z-BV
+	for linux-mtd@lists.infradead.org; Mon, 09 May 2011 14:12:56 +0000
+From: Kishore Kadiyala <kishore.kadiyala@ti.com>
+To: <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<dedekind1@gmail.com>
+Subject: [PATCH RESEND] omap : nand : fix subpage ecc issue with prefetch
+Date: Mon, 9 May 2011 19:51:39 +0530
+Message-ID: <1304950899-26009-1-git-send-email-kishore.kadiyala@ti.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+Cc: Vimal Singh <vimal.newwork@gmail.com>,
+	Kishore Kadiyala <kishore.kadiyala@ti.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,52 +21,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The previous section mismatch fix for this driver wasn't entirely correct.
-The sst25l_flash_info array is now used in the devinit probe func, but is
-marked as initdata, so building results in the warning:
+When reading/writing a subpage (When HW ECC is not available/enabled)
+for number of bytes not aligned to 4, the mis-aligned bytes are handled
+first (by cpu copy method) before enabling the Prefetch engine to/from
+'p'(start of buffer 'buf'). Then it reads/writes rest of the bytes with
+the help of Prefetch engine, if available, or again using cpu copy method.
+Currently, reading/writing of rest of bytes, is not done correctly since
+its trying to read/write again to/from begining of buffer 'buf',
+overwriting the mis-aligned bytes.
 
-WARNING: drivers/mtd/devices/sst25l.o(.devinit.text): Section mismatch
-	in reference from the function sst25l_probe()
-	to the variable .init.data:sst25l_flash_info
+Read & write using prefetch engine got broken in commit '2c01946c'.
+We never hit a scenario of not getting 'gpmc_prefetch_enable' call
+success. So, problem did not get caught up.
 
-Further, the remove func should be devexit rather than exit to match the
-probe func.
-
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
+Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
+Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
 ---
- drivers/mtd/devices/sst25l.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/omap2.c |   12 +++++-------
+ 1 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index c163e61..ac1d244 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -66,7 +66,7 @@ struct flash_info {
+diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
+index da9a351..2c8040f 100644
+--- a/drivers/mtd/nand/omap2.c
++++ b/drivers/mtd/nand/omap2.c
+@@ -263,11 +263,10 @@ static void omap_read_buf_pref(struct mtd_info *mtd, u_char *buf, int len)
+ 	if (ret) {
+ 		/* PFPW engine is busy, use cpu copy method */
+ 		if (info->nand.options & NAND_BUSWIDTH_16)
+-			omap_read_buf16(mtd, buf, len);
++			omap_read_buf16(mtd, (u_char *)p, len);
+ 		else
+-			omap_read_buf8(mtd, buf, len);
++			omap_read_buf8(mtd, (u_char *)p, len);
+ 	} else {
+-		p = (u32 *) buf;
+ 		do {
+ 			r_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
+ 			r_count = r_count >> 2;
+@@ -293,7 +292,7 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
+ 						struct omap_nand_info, mtd);
+ 	uint32_t w_count = 0;
+ 	int i = 0, ret = 0;
+-	u16 *p;
++	u16 *p = (u16 *)buf;
+ 	unsigned long tim, limit;
  
- #define to_sst25l_flash(x) container_of(x, struct sst25l_flash, mtd)
- 
--static struct flash_info __initdata sst25l_flash_info[] = {
-+static struct flash_info __devinitdata sst25l_flash_info[] = {
- 	{"sst25lf020a", 0xbf43, 256, 1024, 4096},
- 	{"sst25lf040a",	0xbf44,	256, 2048, 4096},
- };
-@@ -469,7 +469,7 @@ static int __devinit sst25l_probe(struct spi_device *spi)
- 	return 0;
- }
- 
--static int __exit sst25l_remove(struct spi_device *spi)
-+static int __devexit sst25l_remove(struct spi_device *spi)
- {
- 	struct sst25l_flash *flash = dev_get_drvdata(&spi->dev);
- 	int ret;
-@@ -490,7 +490,7 @@ static struct spi_driver sst25l_driver = {
- 		.owner	= THIS_MODULE,
- 	},
- 	.probe		= sst25l_probe,
--	.remove		= __exit_p(sst25l_remove),
-+	.remove		= __devexit_p(sst25l_remove),
- };
- 
- static int __init sst25l_init(void)
+ 	/* take care of subpage writes */
+@@ -309,11 +308,10 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
+ 	if (ret) {
+ 		/* PFPW engine is busy, use cpu copy method */
+ 		if (info->nand.options & NAND_BUSWIDTH_16)
+-			omap_write_buf16(mtd, buf, len);
++			omap_write_buf16(mtd, (u_char *)p, len);
+ 		else
+-			omap_write_buf8(mtd, buf, len);
++			omap_write_buf8(mtd, (u_char *)p, len);
+ 	} else {
+-		p = (u16 *) buf;
+ 		while (len) {
+ 			w_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
+ 			w_count = w_count >> 1;
 -- 
-1.7.5.rc3
+1.7.4.1
