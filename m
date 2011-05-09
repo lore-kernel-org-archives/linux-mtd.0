@@ -1,19 +1,16 @@
-Received: from hrndva-omtalb.mail.rr.com ([71.74.56.123])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QJUX0-0004GQ-Up
-	for linux-mtd@lists.infradead.org; Mon, 09 May 2011 17:46:07 +0000
-Message-ID: <4DC8272F.5040908@wi.rr.com>
-Date: Mon, 09 May 2011 12:41:03 -0500
-From: Rick Johnson <rick22@wi.rr.com>
+Received: from smtp.plapiqui.edu.ar ([190.124.202.2] helo=plapiqui.edu.ar)
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QJV4d-0004N3-W9
+	for linux-mtd@lists.infradead.org; Mon, 09 May 2011 18:20:53 +0000
+Date: Mon, 9 May 2011 14:48:14 -0300
+To: undisclosed-recipients:;
+From: Western Union Money Transfer <wudept20@w.cn>
+Subject: confirmar
+Message-ID: <ff73169204333f5f94efce87e32239a5@190.124.202.8>
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: read_pnode: error -22 reading pnode at XX:YYYYY
-References: <4DADF9E6.9010709@wi.rr.com>	 <1303392001.2757.16.camel@localhost>
-	<4DC31183.8060807@wi.rr.com> <1304706750.7222.95.camel@localhost>
-In-Reply-To: <1304706750.7222.95.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Reply-To: Western Union Money Transfer <wudept20@w.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +21,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-> I do not know by heart, but I think cnext is about the list of nodes
-> which should be written to the flash at the next commit. So if ->cnext
-> == ->parent this means that our parent is the next in the list. Hmm, and
-> I think we dirty nodes in the LPT tree from the bottom up to the root,
-> and add them to the commit list (cnext), so cnext == parent should be
-> very common.
-> 
-> But in 'read_pnode()' cnext must be NULL, I think.
+Usted tiene una transferencia de dinero de $85.000 .Por favor confirmar la
+recepcion con su nombre y su pais. Enviar por correo electronico:
+wudept20@w.cn
 
-That makes sense with what we're seeing.
-
-
-> Anyway, as I said, that was not my code, so I myself have difficulties
-> to deal with it. I asked Adrian to help  - may be he'll take a look at
-> this if he has time.
-
-Thank you for passing the word along.
-
-> Sure. I hope you'll nail this. How well is it reproducible? Can you
-> reproduce this on nandsim which has equivalent characteristics (PEB
-> size, page size, count of PEBs) ?
-
-This is real tough to reproduce.  It happens just enough to give us 
-trouble.  We haven't tried nandsim before, but I'll see if we can get 
-that going.
-
-Thanks again.
-
-Rick
+________________________________________________________________
+Message sent using Telaen Webmail 1.1.3
