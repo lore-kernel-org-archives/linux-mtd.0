@@ -1,17 +1,20 @@
-Received: from devils.ext.ti.com ([198.47.26.153])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QJRCh-00036Z-BV
-	for linux-mtd@lists.infradead.org; Mon, 09 May 2011 14:12:56 +0000
-From: Kishore Kadiyala <kishore.kadiyala@ti.com>
-To: <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<dedekind1@gmail.com>
-Subject: [PATCH RESEND] omap : nand : fix subpage ecc issue with prefetch
-Date: Mon, 9 May 2011 19:51:39 +0530
-Message-ID: <1304950899-26009-1-git-send-email-kishore.kadiyala@ti.com>
+Received: from smtp4-g21.free.fr ([212.27.42.4])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QJRGr-00037o-SP
+	for linux-mtd@lists.infradead.org; Mon, 09 May 2011 14:17:15 +0000
+From: Florian Fainelli <ffainelli@freebox.fr>
+To: linux-mtd@lists.infradead.org,
+ dedekind1@gmail.com
+Subject: Re: [RFC] MTD: export more NAND-related informations to syfs
+Date: Mon, 9 May 2011 16:21:38 +0200
+References: <201105061728.20948.ffainelli@freebox.fr>
+	<1304707173.7222.96.camel@localhost>
+In-Reply-To: <1304707173.7222.96.camel@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Vimal Singh <vimal.newwork@gmail.com>,
-	Kishore Kadiyala <kishore.kadiyala@ti.com>
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <201105091621.38720.ffainelli@freebox.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,66 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When reading/writing a subpage (When HW ECC is not available/enabled)
-for number of bytes not aligned to 4, the mis-aligned bytes are handled
-first (by cpu copy method) before enabling the Prefetch engine to/from
-'p'(start of buffer 'buf'). Then it reads/writes rest of the bytes with
-the help of Prefetch engine, if available, or again using cpu copy method.
-Currently, reading/writing of rest of bytes, is not done correctly since
-its trying to read/write again to/from begining of buffer 'buf',
-overwriting the mis-aligned bytes.
+Hello Artem,
 
-Read & write using prefetch engine got broken in commit '2c01946c'.
-We never hit a scenario of not getting 'gpmc_prefetch_enable' call
-success. So, problem did not get caught up.
+On Friday 06 May 2011 20:39:33 Artem Bityutskiy wrote:
+> On Fri, 2011-05-06 at 17:28 +0200, Florian Fainelli wrote:
+> > +       /* NAND related attributes */
+> > +       const char *nand_type;
+> > +       const char *nand_manufacturer;
+> 
+> Why other flashes cannot have type and manufacturer ?
 
-Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
-Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
-Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
----
- drivers/mtd/nand/omap2.c |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+You are right, I will add this for NOR and SPI Flashes. My RFC was more about 
+whether it is granted to add new members to struct mtd_info to get 
+informations 
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index da9a351..2c8040f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -263,11 +263,10 @@ static void omap_read_buf_pref(struct mtd_info *mtd, u_char *buf, int len)
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_read_buf16(mtd, buf, len);
-+			omap_read_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_read_buf8(mtd, buf, len);
-+			omap_read_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u32 *) buf;
- 		do {
- 			r_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			r_count = r_count >> 2;
-@@ -293,7 +292,7 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 						struct omap_nand_info, mtd);
- 	uint32_t w_count = 0;
- 	int i = 0, ret = 0;
--	u16 *p;
-+	u16 *p = (u16 *)buf;
- 	unsigned long tim, limit;
- 
- 	/* take care of subpage writes */
-@@ -309,11 +308,10 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_write_buf16(mtd, buf, len);
-+			omap_write_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_write_buf8(mtd, buf, len);
-+			omap_write_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u16 *) buf;
- 		while (len) {
- 			w_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			w_count = w_count >> 1;
--- 
-1.7.4.1
+Alternatively, would not it be better to have something like this:
+
+/sys/class/mtd/...
+   nand0/
+       manufacturer
+       type
+       onfi/
+          version
+          jedec_id
+          ...
+    nor0/
+       cfi/
+          manufacturer
+          id
+
+This would allow us not to abuse the sysfs directory of a MTD partition to 
+contain chip specific informations.
+--
+Florian
+       
