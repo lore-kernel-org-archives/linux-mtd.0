@@ -1,16 +1,20 @@
-Received: from smtp.plapiqui.edu.ar ([190.124.202.2] helo=plapiqui.edu.ar)
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QJV4d-0004N3-W9
-	for linux-mtd@lists.infradead.org; Mon, 09 May 2011 18:20:53 +0000
-Date: Mon, 9 May 2011 14:48:14 -0300
-To: undisclosed-recipients:;
-From: Western Union Money Transfer <wudept20@w.cn>
-Subject: confirmar
-Message-ID: <ff73169204333f5f94efce87e32239a5@190.124.202.8>
+	id 1QJiJH-0008QJ-A1
+	for linux-mtd@lists.infradead.org; Tue, 10 May 2011 08:28:52 +0000
+Received: by wyb28 with SMTP id 28so5663244wyb.36
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 10 May 2011 01:28:48 -0700 (PDT)
+Message-ID: <4DC8F73A.1070708@gmail.com>
+Date: Tue, 10 May 2011 10:28:42 +0200
+From: angelo <angelo70@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="iso-8859-1"
-Reply-To: Western Union Money Transfer <wudept20@w.cn>
+To: linux-net@vger-kernel.org,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Coldfire, d9000e and patch RFC
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: uClinux development list <uclinux-dev@uclinux.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,10 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi all,
 
-Usted tiene una transferencia de dinero de $85.000 .Por favor confirmar la
-recepcion con su nombre y su pais. Enviar por correo electronico:
-wudept20@w.cn
+some months ago i posted to these lists (net, m68k) a patch.
 
-________________________________________________________________
-Message sent using Telaen Webmail 1.1.3
+http://marc.info/?l=linux-m68k&m=129447772217552&w=2 
+<http://marc.info/?l=linux-m68k&m=129447772217552&w=2>
+
+I did a small job to allow dm9000e to be used with a Coldfire processor, 
+and for the functional point of view the patch works fine.
+
+I never get the patch approved or a reply to this PATCH V.3 with the 
+reason that explain why cannot be approved, but i am really interested 
+that this job don't remain to me only, some other could need the ability 
+to use the dm9000e chip, a quiet old but very cheap component, with 
+Coldfire.
+The patch should probably be reworked in a different way, please let me 
+know if i have to arrange the code in a different way, of if some other 
+information are needed.
+
+Regards,
+Angelo Dureghello
