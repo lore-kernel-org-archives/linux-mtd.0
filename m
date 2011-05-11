@@ -1,20 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mx1.bticino.it ([91.208.195.90] helo=bticino.it)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QJiJH-0008QJ-A1
-	for linux-mtd@lists.infradead.org; Tue, 10 May 2011 08:28:52 +0000
-Received: by wyb28 with SMTP id 28so5663244wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 May 2011 01:28:48 -0700 (PDT)
-Message-ID: <4DC8F73A.1070708@gmail.com>
-Date: Tue, 10 May 2011 10:28:42 +0200
-From: angelo <angelo70@gmail.com>
+	id 1QK4vL-0007e4-DZ
+	for linux-mtd@lists.infradead.org; Wed, 11 May 2011 08:37:40 +0000
+Date: Wed, 11 May 2011 10:37:29 +0200
+From: Fabio Mauri <fabio.mauri@bticino.it>
+To: linux-mtd@lists.infradead.org
+Subject: ubi_io_read error after ubiattach
+Message-ID: <20110511083729.GA6803@BT22268.eu.dir.grpleg.com>
 MIME-Version: 1.0
-To: linux-net@vger-kernel.org,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Coldfire, d9000e and patch RFC
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: uClinux development list <uclinux-dev@uclinux.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +19,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-some months ago i posted to these lists (net, m68k) a patch.
+Hi there,
+  i have a problem using ubifs on a NAND flash.
 
-http://marc.info/?l=linux-m68k&m=129447772217552&w=2 
-<http://marc.info/?l=linux-m68k&m=129447772217552&w=2>
+I follow this procedure in order to format a MTD partition:
 
-I did a small job to allow dm9000e to be used with a Coldfire processor, 
-and for the functional point of view the patch works fine.
+mkfs.ubifs -g 3 -r home/boot -m 2048 -e 129024 -c 32 -o ubifs_kernel.img
+ubinize -o kernel.ubi -m 2048 -p 128KiB -s 512 ubi.cfg
+ubiformat /dev/mtd3 -s 512 -f kernel.ubi
+ubiattach /dev/ubi_ctrl -m 3
+mount -t ubifs ubi:kernel /home/bticino/cfg/extra
 
-I never get the patch approved or a reply to this PATCH V.3 with the 
-reason that explain why cannot be approved, but i am really interested 
-that this job don't remain to me only, some other could need the ability 
-to use the dm9000e chip, a quiet old but very cheap component, with 
-Coldfire.
-The patch should probably be reworked in a different way, please let me 
-know if i have to arrange the code in a different way, of if some other 
-information are needed.
+ubi.cfg is:
+[ubifs]
+mode=ubi
+image=ubifs_kernel.img
+vol_id=0
+vol_size=4MiB
+vol_type=dynamic
+vol_name=kernel
+vol_flags=autoresize
+
+and the mtdinfo output is:
+mtd3
+Name:                           kernel_copy
+Type:                           nand
+Eraseblock size:                131072 bytes, 128.0 KiB
+Amount of eraseblocks:          40 (5242880 bytes, 5.0 MiB)
+Minimum input/output unit size: 2048 bytes
+Sub-page size:                  512 bytes
+OOB size:                       64 bytes
+Character device major/minor:   90:6
+Bad blocks are allowed:         true
+Device is writable:             true
+
+
+Everything is working fine at this point.
+I can successfully read/write files into the filesystem.
+
+But if I umount the fs, detach and reattach the volume, I start to get these errors:
+
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 32:512, read 512 bytes
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 2:512, read 512 bytes
+UBI: run torture test for PEB 2
+UBI: PEB 2 passed torture test, do not mark it a bad
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 32:512, read 512 bytes
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 2:512, read 512 bytes
+UBI: run torture test for PEB 2
+UBI: PEB 2 passed torture test, do not mark it a bad
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 32:512, read 512 bytes
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 2:512, read 512 bytes
+UBI: run torture test for PEB 2
+UBI: PEB 2 passed torture test, do not mark it a bad
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 32:512, read 512 bytes
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 2:512, read 512 bytes
+UBI: run torture test for PEB 2
+UBI: PEB 2 passed torture test, do not mark it a bad
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 32:512, read 512 bytes
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 2:512, read 512 bytes
+UBI: run torture test for PEB 2
+UBI: PEB 2 passed torture test, do not mark it a bad
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 32:512, read 512 bytes
+UBI error: ubi_io_read: error -74 while reading 512 bytes from PEB 2:512, read 512 bytes
+UBI: run torture test for PEB 2
+
+It makes the UBIFS very slow (not usable).. maybe I did something wrong in the procedure?
+
+Any help would be appreciated.
 
 Regards,
-Angelo Dureghello
+Fabio
