@@ -1,17 +1,20 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKBUv-000185-4c
-	for linux-mtd@lists.infradead.org; Wed, 11 May 2011 15:38:49 +0000
-From: Kishore Kadiyala <kishore.kadiyala@ti.com>
-To: <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<stable@kernel.org>, <dedekind1@gmail.com>
-Subject: [PATCH RESEND] omap : nand : fix subpage ecc issue with prefetch
-Date: Wed, 11 May 2011 21:17:27 +0530
-Message-ID: <1305128847-12987-1-git-send-email-kishore.kadiyala@ti.com>
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QKC66-0001lT-MZ
+	for linux-mtd@lists.infradead.org; Wed, 11 May 2011 16:17:15 +0000
+Received: from [192.168.0.34] (col31-4-88-188-83-94.fbx.proxad.net
+	[88.188.83.94])
+	by mail.free-electrons.com (Postfix) with ESMTPSA id D169912D
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 May 2011 18:17:04 +0200 (CEST)
+Message-ID: <4DCAB697.90906@free-electrons.com>
+Date: Wed, 11 May 2011 18:17:27 +0200
+From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Vimal Singh <vimal.newwork@gmail.com>,
-	Kishore Kadiyala <kishore.kadiyala@ti.com>
+To: linux-mtd@lists.infradead.org
+Subject: inappropriate ioctl when attaching
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When reading/writing a subpage (When HW ECC is not available/enabled)
-for number of bytes not aligned to 4, the mis-aligned bytes are handled
-first (by cpu copy method) before enabling the Prefetch engine to/from
-'p'(start of buffer 'buf'). Then it reads/writes rest of the bytes with
-the help of Prefetch engine, if available, or again using cpu copy method.
-Currently, reading/writing of rest of bytes, is not done correctly since
-its trying to read/write again to/from begining of buffer 'buf',
-overwriting the mis-aligned bytes.
+Hi,
 
-Read & write using prefetch engine got broken in commit '2c01946c'.
-We never hit a scenario of not getting 'gpmc_prefetch_enable' call
-success. So, problem did not get caught up.
+I put a ubi image on a sheevaplug but got those errors:
+uncorrectable error :
+UBI error: ubi_io_read: error -74 (ECC error) while reading 512 bytes
+from PEB 39:512, read 512 bytes
 
-Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
-Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
-Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
-Cc: stable@kernel.org [2.6.35+]
----
- drivers/mtd/nand/omap2.c |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+So I tried to use ubiformat and ubiattach but after a successful
+ubiformat, I got the following error:
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index da9a351..2c8040f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -263,11 +263,10 @@ static void omap_read_buf_pref(struct mtd_info *mtd, u_char *buf, int len)
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_read_buf16(mtd, buf, len);
-+			omap_read_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_read_buf8(mtd, buf, len);
-+			omap_read_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u32 *) buf;
- 		do {
- 			r_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			r_count = r_count >> 2;
-@@ -293,7 +292,7 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 						struct omap_nand_info, mtd);
- 	uint32_t w_count = 0;
- 	int i = 0, ret = 0;
--	u16 *p;
-+	u16 *p = (u16 *)buf;
- 	unsigned long tim, limit;
- 
- 	/* take care of subpage writes */
-@@ -309,11 +308,10 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_write_buf16(mtd, buf, len);
-+			omap_write_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_write_buf8(mtd, buf, len);
-+			omap_write_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u16 *) buf;
- 		while (len) {
- 			w_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			w_count = w_count >> 1;
+# ubiattach -p /dev/mtd2
+ubiattach: error!: cannot attach "/dev/mtd2"
+           error 25 (Inappropriate ioctl for device)
+
+I've never seen this and google doesn't help much. I could flash a jffs2
+image w/o problem.
+
+Does anybody have a pointer != NULL ?
+
+Cheers,
+David.
 -- 
-1.7.4.1
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
