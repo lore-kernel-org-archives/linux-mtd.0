@@ -1,17 +1,17 @@
-Received: from comal.ext.ti.com ([198.47.26.152])
+Received: from mail-iw0-f177.google.com ([209.85.214.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKAEh-0000gx-Jf
-	for linux-mtd@lists.infradead.org; Wed, 11 May 2011 14:18:00 +0000
-From: Kishore Kadiyala <kishore.kadiyala@ti.com>
-To: <linux-omap@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<stable@kernel.org>, <dedekind1@gmail.com>
-Subject: [PATCH RESEND] omap : nand : fix subpage ecc issue with prefetch
-Date: Wed, 11 May 2011 19:54:57 +0530
-Message-ID: <1305123897-11371-1-git-send-email-kishore.kadiyala@ti.com>
+	id 1QKApl-0000sM-Pm
+	for linux-mtd@lists.infradead.org; Wed, 11 May 2011 14:56:18 +0000
+Received: by iwn36 with SMTP id 36so705734iwn.36
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 May 2011 07:56:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Vimal Singh <vimal.newwork@gmail.com>,
-	Kishore Kadiyala <kishore.kadiyala@ti.com>
+Date: Wed, 11 May 2011 17:56:15 +0300
+Message-ID: <BANLkTi=0DP6QE9eLK6wS4L3gNv2Mb9ib+A@mail.gmail.com>
+Subject: UBI bad image sequence number error
+From: Alex Levin <s.alex.levin@gmail.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,66 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When reading/writing a subpage (When HW ECC is not available/enabled)
-for number of bytes not aligned to 4, the mis-aligned bytes are handled
-first (by cpu copy method) before enabling the Prefetch engine to/from
-'p'(start of buffer 'buf'). Then it reads/writes rest of the bytes with
-the help of Prefetch engine, if available, or again using cpu copy method.
-Currently, reading/writing of rest of bytes, is not done correctly since
-its trying to read/write again to/from begining of buffer 'buf',
-overwriting the mis-aligned bytes.
+Hi,
 
-Read & write using prefetch engine got broken in commit '2c01946c'.
-We never hit a scenario of not getting 'gpmc_prefetch_enable' call
-success. So, problem did not get caught up.
+I am working on a mips embedded system, and I'm trying to do is to
+read a ubifs image(that went through mkfs and ubinize) from ram - the
+CPU that linux runs on doesn't aware that its not from the NAND - I
+have changed the NAND access API implementation.
+I use a 6 MB static volume (when ubinizing) and I use a 10MiB ram, and
+that is the size I pass to the mtd device.
 
-Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
-Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
-Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
----
- drivers/mtd/nand/omap2.c |   12 +++++-------
- 1 files changed, 5 insertions(+), 7 deletions(-)
+After trying to attach I get the following error:
+UBI: attaching mtd0 to ubi0
+UBI: physical eraseblock size:   131072 bytes (128 KiB)
+UBI: logical eraseblock size:    126976 bytes
+UBI: smallest flash I/O unit:    2048
+UBI: VID header offset:          2048 (aligned 2048)
+UBI: data offset:                4096
+UBI error: process_eb: bad image sequence number 1726164069 in PEB 47,
+expected 648536469
+UBI error: ubi_init: cannot attach mtd0
+UBI error: ubi_init: UBI error: cannot initialize UBI, error -22
 
-diff --git a/drivers/mtd/nand/omap2.c b/drivers/mtd/nand/omap2.c
-index da9a351..2c8040f 100644
---- a/drivers/mtd/nand/omap2.c
-+++ b/drivers/mtd/nand/omap2.c
-@@ -263,11 +263,10 @@ static void omap_read_buf_pref(struct mtd_info *mtd, u_char *buf, int len)
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_read_buf16(mtd, buf, len);
-+			omap_read_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_read_buf8(mtd, buf, len);
-+			omap_read_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u32 *) buf;
- 		do {
- 			r_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			r_count = r_count >> 2;
-@@ -293,7 +292,7 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 						struct omap_nand_info, mtd);
- 	uint32_t w_count = 0;
- 	int i = 0, ret = 0;
--	u16 *p;
-+	u16 *p = (u16 *)buf;
- 	unsigned long tim, limit;
- 
- 	/* take care of subpage writes */
-@@ -309,11 +308,10 @@ static void omap_write_buf_pref(struct mtd_info *mtd,
- 	if (ret) {
- 		/* PFPW engine is busy, use cpu copy method */
- 		if (info->nand.options & NAND_BUSWIDTH_16)
--			omap_write_buf16(mtd, buf, len);
-+			omap_write_buf16(mtd, (u_char *)p, len);
- 		else
--			omap_write_buf8(mtd, buf, len);
-+			omap_write_buf8(mtd, (u_char *)p, len);
- 	} else {
--		p = (u16 *) buf;
- 		while (len) {
- 			w_count = gpmc_read_status(GPMC_PREFETCH_FIFO_CNT);
- 			w_count = w_count >> 1;
--- 
-1.7.4.1
+Please help.
+
+Thanks,
+Alex.
+
+P.S- if even more information is needed I'd be happy to provide it.
