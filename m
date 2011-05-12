@@ -1,20 +1,23 @@
-Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKURI-0001Rh-IU
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 11:52:22 +0000
-Subject: Re: [PATCH 1/4] mtd: m25p80: Add Numonyx m25px32 family
-From: Artem Bityutskiy <dedekind@infradead.org>
+	id 1QKURd-0001SN-Hp
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 11:52:42 +0000
+Received: by ewy3 with SMTP id 3so470932ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 May 2011 04:52:39 -0700 (PDT)
+Subject: Re: [PATCH] mtd: m25p80: Use CFI to identify unknown flash chips
+From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <657440bd74a74686279e691d39337f21@localhost>
-References: <657440bd74a74686279e691d39337f21@localhost>
+In-Reply-To: <97ed2bb63176b59ee2b283be69f0c6a4@localhost>
+References: <97ed2bb63176b59ee2b283be69f0c6a4@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 12 May 2011 14:48:48 +0300
-Message-ID: <1305200928.2713.98.camel@localhost>
+Date: Thu, 12 May 2011 14:49:17 +0300
+Message-ID: <1305200957.2713.99.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
 	linux-kernel@vger.kernel.org
-Reply-To: dedekind@infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-05-08 at 10:47 -0700, Kevin Cernekee wrote:
+On Sun, 2011-05-08 at 16:16 -0700, Kevin Cernekee wrote:
+> Many of the newer SPI flash devices support both JEDEC and CFI queries.
+> While JEDEC RDID only returns the device ID, CFI provides the device
+> size, eraseblock size, and other information.  In some cases this may
+> allow previously unknown devices to be supported without adding yet
+> another entry to m25p_ids[].
+> 
+> This patch replaces jedec_probe() with a new cfi_probe() function.  The
+> existing JEDEC probe/match logic is attempted first, and CFI is only used
+> if no match is found.
+> 
+> Additionally, platform_data.type may now specify "auto", which instructs
+> m25p80.c to autodetect the chip type rather than trying to match a
+> specific entry.  In some situations, board manufacturers have multiple
+> sources for flash parts (usually with identical geometries), but do not
+> know in advance which specific part will be used on a given board.  The
+> "auto" parameter allows the BSP to indicate this to the driver, so that
+> the driver does not warn the user about a flash device mismatch.
+> 
 > Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
 > ---
->  drivers/mtd/devices/m25p80.c |    5 ++++-
->  1 files changed, 4 insertions(+), 1 deletions(-)
-> 
-> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
-> index 3fb981d..09c342d 100644
-> --- a/drivers/mtd/devices/m25p80.c
-> +++ b/drivers/mtd/devices/m25p80.c
+>  drivers/mtd/devices/m25p80.c |  181 ++++++++++++++++++++++++++++--------------
+>  1 files changed, 121 insertions(+), 60 deletions(-)
 
-Pushed all 4 patches to l2-mtd-2.6.git, thanks.
+Could you please send a patch which cleanly applies to l2-mtd-2.6.git?
 
 -- 
 Best Regards,
