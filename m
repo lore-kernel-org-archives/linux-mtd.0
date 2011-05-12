@@ -1,29 +1,23 @@
-Received: from mail-gy0-f177.google.com ([209.85.160.177])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKV64-0001p2-4K
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 12:34:32 +0000
-Received: by gyh20 with SMTP id 20so576074gyh.36
+	id 1QKVUD-0001w0-Q3
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 12:59:30 +0000
+Received: by eyh6 with SMTP id 6so489207eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 05:34:26 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <4DCB908C.80505@parrot.com>
-References: <BANLkTi=e1mUTX4X7ui+HVCGh=sZ=HLoNCw@mail.gmail.com>
-	<20110511183322.da0739c9.akpm@linux-foundation.org>
-	<BANLkTikrqzpU8qZ5FUgG4HaBgZAvmbOHrQ@mail.gmail.com>
-	<BANLkTinGFDHj4s6nAXMiq8dYW_UO6W+YXg@mail.gmail.com>
-	<BANLkTin5X7d+_b5+7N5g941bz12jc+zMZA@mail.gmail.com>
-	<4DCB908C.80505@parrot.com>
-Date: Thu, 12 May 2011 07:34:26 -0500
-Message-ID: <BANLkTik37R8tSxc9_qmBT5a2m9mAA_2XKQ@mail.gmail.com>
-Subject: Re: Bug in MTD NAND ONFI chipsize detection
-From: Nitin Garg <nitingarg98@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+	Thu, 12 May 2011 05:59:24 -0700 (PDT)
+Subject: Re: [PATCH RESEND] omap : nand : fix subpage ecc issue with prefetch
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Kishore Kadiyala <kishore.kadiyala@ti.com>
+In-Reply-To: <1305128847-12987-1-git-send-email-kishore.kadiyala@ti.com>
+References: <1305128847-12987-1-git-send-email-kishore.kadiyala@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 12 May 2011 15:56:00 +0300
+Message-ID: <1305204960.14423.0.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Vimal Singh <vimal.newwork@gmail.com>, linux-omap@vger.kernel.org,
+	linux-mtd@lists.infradead.org, stable@kernel.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,46 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I do not see any diff for mtd.
+On Wed, 2011-05-11 at 21:17 +0530, Kishore Kadiyala wrote:
+> When reading/writing a subpage (When HW ECC is not available/enabled)
+> for number of bytes not aligned to 4, the mis-aligned bytes are handled
+> first (by cpu copy method) before enabling the Prefetch engine to/from
+> 'p'(start of buffer 'buf'). Then it reads/writes rest of the bytes with
+> the help of Prefetch engine, if available, or again using cpu copy method.
+> Currently, reading/writing of rest of bytes, is not done correctly since
+> its trying to read/write again to/from begining of buffer 'buf',
+> overwriting the mis-aligned bytes.
+> 
+> Read & write using prefetch engine got broken in commit '2c01946c'.
+> We never hit a scenario of not getting 'gpmc_prefetch_enable' call
+> success. So, problem did not get caught up.
+> 
+> Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
+> Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
+> Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
+> Cc: stable@kernel.org [2.6.35+]
 
-Regards,
-Nitin
+Pushed to l2-mtd-2.6.git, thanks.
 
-On Thu, May 12, 2011 at 2:47 AM, Matthieu CASTET
-<matthieu.castet@parrot.com> wrote:
-> Hi,
->
->
-> What's the difference between one lun and multiple lun for mtd ?
->
-> Aren't any command to select the current lun ?
->
-> Matthieu
->
->
-> Nitin Garg a =E9crit :
->> Why isn't my patch going through? re-sending again,
->>
->> Signed-off-by: Nitin Garg <nitingarg98@xxxxxxxx>
->> ---
->> =A0drivers/mtd/nand/nand_base.c | =A0 =A02 +-
->> =A01 files changed, 1 insertions(+), 1 deletions(-)
->>
->> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
->> index c54a4cb..cdf6015 100644
->> --- a/drivers/mtd/nand/nand_base.c
->> +++ b/drivers/mtd/nand/nand_base.c
->> @@ -2892,7 +2892,7 @@ static int nand_flash_detect_onfi(struct
->> mtd_info *mtd, struct nand_chip *chip,
->> =A0 =A0 =A0 mtd->writesize =3D le32_to_cpu(p->byte_per_page);
->> =A0 =A0 =A0 mtd->erasesize =3D le32_to_cpu(p->pages_per_block) * mtd->wr=
-itesize;
->> =A0 =A0 =A0 mtd->oobsize =3D le16_to_cpu(p->spare_bytes_per_page);
->> - =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) * =
-mtd->erasesize;
->> + =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) *
->> le32_to_cpu(p->lun_count) * mtd->erasesize;
->> =A0 =A0 =A0 busw =3D 0;
->> =A0 =A0 =A0 if (le16_to_cpu(p->features) & 1)
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 busw =3D NAND_BUSWIDTH_16;
->
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
