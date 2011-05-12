@@ -1,32 +1,22 @@
-Received: from mail-gx0-f177.google.com ([209.85.161.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKXg1-0002x0-W4
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 15:19:46 +0000
-Received: by gxk2 with SMTP id 2so649728gxk.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 08:19:44 -0700 (PDT)
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QKY09-00033o-7J
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 15:40:37 +0000
+Message-ID: <4DCBFF4B.9030609@parrot.com>
+Date: Thu, 12 May 2011 17:39:55 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-In-Reply-To: <1305208426.14423.11.camel@localhost>
-References: <BANLkTi=e1mUTX4X7ui+HVCGh=sZ=HLoNCw@mail.gmail.com>
-	<20110511183322.da0739c9.akpm@linux-foundation.org>
-	<BANLkTikrqzpU8qZ5FUgG4HaBgZAvmbOHrQ@mail.gmail.com>
-	<BANLkTinGFDHj4s6nAXMiq8dYW_UO6W+YXg@mail.gmail.com>
-	<BANLkTin5X7d+_b5+7N5g941bz12jc+zMZA@mail.gmail.com>
-	<4DCB908C.80505@parrot.com>
-	<BANLkTik37R8tSxc9_qmBT5a2m9mAA_2XKQ@mail.gmail.com>
-	<1305208380.14423.10.camel@localhost>
-	<1305208426.14423.11.camel@localhost>
-Date: Thu, 12 May 2011 10:19:43 -0500
-Message-ID: <BANLkTi=_Aw5zZY8PTX3RnBzGNLsTb-fqZA@mail.gmail.com>
+To: Nitin Garg <nitingarg98@gmail.com>
 Subject: Re: Bug in MTD NAND ONFI chipsize detection
-From: Nitin Garg <nitingarg98@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: multipart/mixed; boundary=001636ed69f904106b04a315b880
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+References: <BANLkTi=e1mUTX4X7ui+HVCGh=sZ=HLoNCw@mail.gmail.com>	<20110511183322.da0739c9.akpm@linux-foundation.org>	<BANLkTikrqzpU8qZ5FUgG4HaBgZAvmbOHrQ@mail.gmail.com>	<BANLkTinGFDHj4s6nAXMiq8dYW_UO6W+YXg@mail.gmail.com>	<BANLkTin5X7d+_b5+7N5g941bz12jc+zMZA@mail.gmail.com>	<4DCB908C.80505@parrot.com>
+	<BANLkTik37R8tSxc9_qmBT5a2m9mAA_2XKQ@mail.gmail.com>
+In-Reply-To: <BANLkTik37R8tSxc9_qmBT5a2m9mAA_2XKQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
 	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,74 +26,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---001636ed69f904106b04a315b880
-Content-Type: text/plain; charset=ISO-8859-1
+Nitin Garg a écrit :
+> I do not see any diff for mtd.
+> 
+ONFI spec say [1].
 
-I hope this is better and acceptable, pls review.
+Why this doesn't apply to mtd ?
 
-As per ONFI standard, the size of NAND Flash device is Number of
-data bytes per page * Number of pages per block * Number of blocks
-per logical unit * Number of logical units. The nand_flash_detect_onfi
-function is missing the Number of logical units due to which the kernel
-detects wrong size of Micron MT29F8G08ADADAH4 NAND Flash as
-it has 2 logical units. This patch fixes this issue by multiplying
-p->lun_count for chipsize.
 
-Signed-off-by: Nitin Garg <nitingarg98@gmail.com>
----
- drivers/mtd/nand/nand_base.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+[1]
+    3.1.2. Logical Unit Selection
+Logical units within one target share a single data bus with the host. The host
+shall ensure that
+only one LUN is selected for data output to the host at any particular point in
+time to avoid bus
+contention.
+The host selects a LUN for future data output by issuing a Read Status Enhanced
+command to
+that LUN. The Read Status Enhanced command shall deselect the output path for
+all LUNs that
+are not addressed by the command. The page register selected for output within
+the LUN is
+determined by the previous Read (Cache) commands issued, and is not impacted by Read
+Status Enhanced.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c54a4cb..cdf6015 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2892,7 +2892,7 @@ static int nand_flash_detect_onfi(struct
-mtd_info *mtd, struct nand_chip *chip,
-        mtd->writesize = le32_to_cpu(p->byte_per_page);
-        mtd->erasesize = le32_to_cpu(p->pages_per_block) * mtd->writesize;
-        mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
--       chip->chipsize = (uint64_t)le32_to_cpu(p->blocks_per_lun) *
-mtd->erasesize;
-+       chip->chipsize = (uint64_t)le32_to_cpu(p->blocks_per_lun) *
-le32_to_cpu(p->lun_count) * mtd->erasesize;
-        busw = 0;
-        if (le16_to_cpu(p->features) & 1)
-                busw = NAND_BUSWIDTH_16;
---
-1.5.5.6
 
---001636ed69f904106b04a315b880
-Content-Type: application/octet-stream;
-	name="onfi_nand_flash_chipsize.patch"
-Content-Disposition: attachment; filename="onfi_nand_flash_chipsize.patch"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_gnlugjqr0
 
-RnJvbSAyOGQ5MjlkNjY5NWZkNjI5YzZmNmVjZDcwMDA0NGNhNzVlY2VmMDBmIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBOaXRpbiBHYXJnIDxuaXRpbmdhcmc5OEBnbWFpbC5jb20+CkRh
-dGU6IFRodSwgMTIgTWF5IDIwMTEgMTA6MDA6MDQgLTA1MDAKU3ViamVjdDogW1BBVENIXSBBcyBw
-ZXIgT05GSSBzdGFuZGFyZCwgdGhlIHNpemUgb2YgTkFORCBGbGFzaCBkZXZpY2UgaXMgTnVtYmVy
-IG9mIGRhdGEgYnl0ZXMgcGVyIHBhZ2UgKiBOdW1iZXIgb2YgcGFnZXMgcGVyIGJsb2NrICogTnVt
-YmVyIG9mIGJsb2NrcyBwZXIgbG9naWNhbCB1bml0ICogTnVtYmVyIG9mIGxvZ2ljYWwgdW5pdHMu
-IFRoZSBuYW5kX2ZsYXNoX2RldGVjdF9vbmZpIGZ1bmN0aW9uIGlzIG1pc3NpbmcgdGhlIE51bWJl
-ciBvZiBsb2dpY2FsIHVuaXRzIGR1ZSB0byB3aGljaCB0aGUga2VybmVsIGRldGVjdHMgd3Jvbmcg
-c2l6ZSBvZiBNaWNyb24gTVQyOUY4RzA4QURBREFINCBOQU5EIEZsYXNoIGFzIGl0IGhhcyAyIGxv
-Z2ljYWwgdW5pdHMuIFRoaXMgcGF0Y2ggZml4ZXMgdGhpcyBpc3N1ZSBieSBtdWx0aXBseWluZyBw
-LT5sdW5fY291bnQgZm9yIGNoaXBzaXplLgoKClNpZ25lZC1vZmYtYnk6IE5pdGluIEdhcmcgPG5p
-dGluZ2FyZzk4QGdtYWlsLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jIHwg
-ICAgMiArLQogMSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0p
-CgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRk
-L25hbmQvbmFuZF9iYXNlLmMKaW5kZXggYzU0YTRjYi4uY2RmNjAxNSAxMDA2NDQKLS0tIGEvZHJp
-dmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFz
-ZS5jCkBAIC0yODkyLDcgKzI4OTIsNyBAQCBzdGF0aWMgaW50IG5hbmRfZmxhc2hfZGV0ZWN0X29u
-Zmkoc3RydWN0IG10ZF9pbmZvICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCiAJbXRkLT53
-cml0ZXNpemUgPSBsZTMyX3RvX2NwdShwLT5ieXRlX3Blcl9wYWdlKTsKIAltdGQtPmVyYXNlc2l6
-ZSA9IGxlMzJfdG9fY3B1KHAtPnBhZ2VzX3Blcl9ibG9jaykgKiBtdGQtPndyaXRlc2l6ZTsKIAlt
-dGQtPm9vYnNpemUgPSBsZTE2X3RvX2NwdShwLT5zcGFyZV9ieXRlc19wZXJfcGFnZSk7Ci0JY2hp
-cC0+Y2hpcHNpemUgPSAodWludDY0X3QpbGUzMl90b19jcHUocC0+YmxvY2tzX3Blcl9sdW4pICog
-bXRkLT5lcmFzZXNpemU7CisJY2hpcC0+Y2hpcHNpemUgPSAodWludDY0X3QpbGUzMl90b19jcHUo
-cC0+YmxvY2tzX3Blcl9sdW4pICogbGUzMl90b19jcHUocC0+bHVuX2NvdW50KSAqIG10ZC0+ZXJh
-c2VzaXplOwogCWJ1c3cgPSAwOwogCWlmIChsZTE2X3RvX2NwdShwLT5mZWF0dXJlcykgJiAxKQog
-CQlidXN3ID0gTkFORF9CVVNXSURUSF8xNjsKLS0gCjEuNS41LjYKCg==
---001636ed69f904106b04a315b880--
+> Regards,
+> Nitin
+> 
+> On Thu, May 12, 2011 at 2:47 AM, Matthieu CASTET
+> <matthieu.castet@parrot.com> wrote:
+>> Hi,
+>>
+>>
+>> What's the difference between one lun and multiple lun for mtd ?
+>>
+>> Aren't any command to select the current lun ?
+>>
+>> Matthieu
+>>
+>>
+>> Nitin Garg a écrit :
+>>> Why isn't my patch going through? re-sending again,
+>>>
+>>> Signed-off-by: Nitin Garg <nitingarg98@xxxxxxxx>
+>>> ---
+>>>  drivers/mtd/nand/nand_base.c |    2 +-
+>>>  1 files changed, 1 insertions(+), 1 deletions(-)
+>>>
+>>> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+>>> index c54a4cb..cdf6015 100644
+>>> --- a/drivers/mtd/nand/nand_base.c
+>>> +++ b/drivers/mtd/nand/nand_base.c
+>>> @@ -2892,7 +2892,7 @@ static int nand_flash_detect_onfi(struct
+>>> mtd_info *mtd, struct nand_chip *chip,
+>>>       mtd->writesize = le32_to_cpu(p->byte_per_page);
+>>>       mtd->erasesize = le32_to_cpu(p->pages_per_block) * mtd->writesize;
+>>>       mtd->oobsize = le16_to_cpu(p->spare_bytes_per_page);
+>>> -     chip->chipsize = (uint64_t)le32_to_cpu(p->blocks_per_lun) * mtd->erasesize;
+>>> +     chip->chipsize = (uint64_t)le32_to_cpu(p->blocks_per_lun) *
+>>> le32_to_cpu(p->lun_count) * mtd->erasesize;
+>>>       busw = 0;
+>>>       if (le16_to_cpu(p->features) & 1)
+>>>               busw = NAND_BUSWIDTH_16;
+> 
