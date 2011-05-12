@@ -1,19 +1,20 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKSIS-0000fz-PH
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 09:35:05 +0000
-Received: by eyh6 with SMTP id 6so437612eyh.36
+	id 1QKSks-0000sg-KB
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 10:04:27 +0000
+Received: by ewy3 with SMTP id 3so444460ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 02:35:03 -0700 (PDT)
-Subject: Re: inappropriate ioctl when attaching
+	Thu, 12 May 2011 03:04:24 -0700 (PDT)
+Subject: Re: [RFC] MTD: export more NAND-related informations to syfs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: David Wagner <david.wagner@free-electrons.com>
-In-Reply-To: <1305192468.2713.66.camel@localhost>
-References: <4DCAB697.90906@free-electrons.com>
-	<1305192468.2713.66.camel@localhost>
+To: Florian Fainelli <ffainelli@freebox.fr>
+In-Reply-To: <201105091621.38720.ffainelli@freebox.fr>
+References: <201105061728.20948.ffainelli@freebox.fr>
+	<1304707173.7222.96.camel@localhost>
+	<201105091621.38720.ffainelli@freebox.fr>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 12 May 2011 12:31:42 +0300
-Message-ID: <1305192702.2713.68.camel@localhost>
+Date: Thu, 12 May 2011 13:01:03 +0300
+Message-ID: <1305194463.2713.79.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,10 +28,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-05-12 at 12:27 +0300, Artem Bityutskiy wrote:
-> This probably means you are using too kernel where UBI does not support
+On Mon, 2011-05-09 at 16:21 +0200, Florian Fainelli wrote:
+> Hello Artem,
+> 
+> On Friday 06 May 2011 20:39:33 Artem Bityutskiy wrote:
+> > On Fri, 2011-05-06 at 17:28 +0200, Florian Fainelli wrote:
+> > > +       /* NAND related attributes */
+> > > +       const char *nand_type;
+> > > +       const char *nand_manufacturer;
+> > 
+> > Why other flashes cannot have type and manufacturer ?
+> 
+> You are right, I will add this for NOR and SPI Flashes. My RFC was more about 
+> whether it is granted to add new members to struct mtd_info to get 
+> informations 
 
-Sorry, s/too kernel/too old kernel/
+
+struct mtd_info describes an mtd device. Things, which are common for
+all mtd devices should be there, I think.
+
+> Alternatively, would not it be better to have something like this:
+> 
+> /sys/class/mtd/...
+>    nand0/
+>        manufacturer
+>        type
+>        onfi/
+>           version
+>           jedec_id
+>           ...
+>     nor0/
+>        cfi/
+>           manufacturer
+>           id
+> 
+> This would allow us not to abuse the sysfs directory of a MTD partition to 
+> contain chip specific informations.
+
+Why do you call it "abuse" and why is it better to "abuse" the directory
+common to all MTD devices comparing to the directory of the specific MTD
+device? :-)
+
+I think that everything related to mtdX has to be in the mtdX
+subdirectory.
 
 -- 
 Best Regards,
