@@ -1,23 +1,20 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKTpR-0001GY-N5
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 11:13:17 +0000
-Received: by eyh6 with SMTP id 6so460620eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 04:13:11 -0700 (PDT)
-Subject: Re: [PATCH 2/2] UBIFS: fix-up free space on mount if flag is set
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <1304722703-7904-3-git-send-email-mlcreech@gmail.com>
-References: <1304722703-7904-1-git-send-email-mlcreech@gmail.com>
-	<1304722703-7904-3-git-send-email-mlcreech@gmail.com>
+	id 1QKURI-0001Rh-IU
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 11:52:22 +0000
+Subject: Re: [PATCH 1/4] mtd: m25p80: Add Numonyx m25px32 family
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Kevin Cernekee <cernekee@gmail.com>
+In-Reply-To: <657440bd74a74686279e691d39337f21@localhost>
+References: <657440bd74a74686279e691d39337f21@localhost>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 12 May 2011 14:09:49 +0300
-Message-ID: <1305198589.2713.97.camel@localhost>
+Date: Thu, 12 May 2011 14:48:48 +0300
+Message-ID: <1305200928.2713.98.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-06 at 18:58 -0400, Matthew L. Creech wrote:
-> +	if (c->space_fixup) {
-> +		err = ubifs_fixup_free_space(c);
-> +		if (err)
-> +			goto out;
-> +	}
-> +
->  	dbg_gen("re-mounted read-write");
->  	c->remounting_rw = 0;
->  	err = dbg_check_space_info(c);
+On Sun, 2011-05-08 at 10:47 -0700, Kevin Cernekee wrote:
+> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+> ---
+>  drivers/mtd/devices/m25p80.c |    5 ++++-
+>  1 files changed, 4 insertions(+), 1 deletions(-)
+> 
+> diff --git a/drivers/mtd/devices/m25p80.c b/drivers/mtd/devices/m25p80.c
+> index 3fb981d..09c342d 100644
+> --- a/drivers/mtd/devices/m25p80.c
+> +++ b/drivers/mtd/devices/m25p80.c
 
-Note, I've moved the 'ubifs_fixup_free_space()' a bit down to make sure
-we first print "re-mounted" and "deferred recovery completed" messages,
-and then start fixing up. I think this is a bit neater.
+Pushed all 4 patches to l2-mtd-2.6.git, thanks.
 
 -- 
 Best Regards,
