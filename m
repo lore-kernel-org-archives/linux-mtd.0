@@ -1,22 +1,21 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKURd-0001SN-Hp
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 11:52:42 +0000
-Received: by ewy3 with SMTP id 3so470932ewy.36
+	id 1QKUXa-0001X9-SK
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 11:58:51 +0000
+Received: by ewy3 with SMTP id 3so472442ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 04:52:39 -0700 (PDT)
-Subject: Re: [PATCH] mtd: m25p80: Use CFI to identify unknown flash chips
+	Thu, 12 May 2011 04:58:49 -0700 (PDT)
+Subject: Re: Removing CONFIG_MTD_PARTITIONS
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kevin Cernekee <cernekee@gmail.com>
-In-Reply-To: <97ed2bb63176b59ee2b283be69f0c6a4@localhost>
-References: <97ed2bb63176b59ee2b283be69f0c6a4@localhost>
+To: Jamie Iles <jamie@jamieiles.com>
+In-Reply-To: <20110509095604.GA10860@pulham.picochip.com>
+References: <20110509095604.GA10860@pulham.picochip.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 12 May 2011 14:49:17 +0300
-Message-ID: <1305200957.2713.99.camel@localhost>
+Date: Thu, 12 May 2011 14:55:27 +0300
+Message-ID: <1305201327.2713.101.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,31 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2011-05-08 at 16:16 -0700, Kevin Cernekee wrote:
-> Many of the newer SPI flash devices support both JEDEC and CFI queries.
-> While JEDEC RDID only returns the device ID, CFI provides the device
-> size, eraseblock size, and other information.  In some cases this may
-> allow previously unknown devices to be supported without adding yet
-> another entry to m25p_ids[].
-> 
-> This patch replaces jedec_probe() with a new cfi_probe() function.  The
-> existing JEDEC probe/match logic is attempted first, and CFI is only used
-> if no match is found.
-> 
-> Additionally, platform_data.type may now specify "auto", which instructs
-> m25p80.c to autodetect the chip type rather than trying to match a
-> specific entry.  In some situations, board manufacturers have multiple
-> sources for flash parts (usually with identical geometries), but do not
-> know in advance which specific part will be used on a given board.  The
-> "auto" parameter allows the BSP to indicate this to the driver, so that
-> the driver does not warn the user about a flash device mismatch.
-> 
-> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-> ---
->  drivers/mtd/devices/m25p80.c |  181 ++++++++++++++++++++++++++++--------------
->  1 files changed, 121 insertions(+), 60 deletions(-)
+On Mon, 2011-05-09 at 10:56 +0100, Jamie Iles wrote:
+> I've had a quick look at removing CONFIG_MTD_PARTITIONS so that MTD 
+> partitioning is always enabled and the patch below is what I have so 
+> far.
 
-Could you please send a patch which cleanly applies to l2-mtd-2.6.git?
+Thanks!
+
+> At the moment this just always builds in partitioning support and 
+> introduces mtd_device_{,un}register() (I'm not sure if these are the 
+> best names).  These effectively replace 
+> add_mtd_device()/add_mtd_partitions() and their deletion counterparts 
+> and will register partitions if supplied, or the whole device if there 
+> are no partitions.  I've also converted over a couple of mtd drivers, 
+> and will do them all if this is the correct approach.
+> 
+> I've left CONFIG_MTD_PARTITIONS as a bool with no description to keep 
+> the series bisectable - the final patch would remove it completely and 
+> make add_mtd_device and add_mtd_partitions internal only symbols.  Does 
+> this seem like a reasonable strategy?
+
+Looks like. Could you please split this patch on a series of small and
+easily reviewable patches?
 
 -- 
 Best Regards,
