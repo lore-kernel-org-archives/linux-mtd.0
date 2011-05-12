@@ -1,15 +1,15 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKVvM-0002Ap-Tx
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 13:27:29 +0000
-Received: by wwi18 with SMTP id 18so5421984wwi.0
+	id 1QKVvO-000297-2O
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 13:27:30 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so1274214wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 06:27:26 -0700 (PDT)
+	Thu, 12 May 2011 06:27:29 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [RFC PATCH 5/7] nand/gpio: convert to mtd_device_register()
-Date: Thu, 12 May 2011 14:26:56 +0100
-Message-Id: <1305206818-31752-6-git-send-email-jamie@jamieiles.com>
+Subject: [RFC PATCH 6/7] mtd/plat_nand: convert to mtd_device_register()
+Date: Thu, 12 May 2011 14:26:57 +0100
+Message-Id: <1305206818-31752-7-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1305206818-31752-1-git-send-email-jamie@jamieiles.com>
 References: <1305206818-31752-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -23,31 +23,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 ---
- drivers/mtd/nand/gpio.c |    5 ++---
- 1 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/plat_nand.c |   14 +++-----------
+ 1 files changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/gpio.c b/drivers/mtd/nand/gpio.c
-index 0cde618..914fe56 100644
---- a/drivers/mtd/nand/gpio.c
-+++ b/drivers/mtd/nand/gpio.c
-@@ -25,7 +25,6 @@
- #include <linux/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/nand.h>
--#include <linux/mtd/partitions.h>
- #include <linux/mtd/nand-gpio.h>
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+index caf5a73..e28bd03 100644
+--- a/drivers/mtd/nand/plat_nand.c
++++ b/drivers/mtd/nand/plat_nand.c
+@@ -21,10 +21,8 @@ struct plat_nand_data {
+ 	struct nand_chip	chip;
+ 	struct mtd_info		mtd;
+ 	void __iomem		*io_base;
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	int			nr_parts;
+ 	struct mtd_partition	*parts;
+-#endif
+ };
  
- struct gpiomtd {
-@@ -316,8 +315,8 @@ static int __devinit gpio_nand_probe(struct platform_device *dev)
- 		gpiomtd->plat.adjust_parts(&gpiomtd->plat,
- 					   gpiomtd->mtd_info.size);
+ /*
+@@ -101,7 +99,6 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
+ 		goto out;
+ 	}
  
--	add_mtd_partitions(&gpiomtd->mtd_info, gpiomtd->plat.parts,
--			   gpiomtd->plat.num_parts);
-+	mtd_device_register(&gpiomtd->mtd_info, gpiomtd->plat.parts,
-+			    gpiomtd->plat.num_parts);
- 	platform_set_drvdata(dev, gpiomtd);
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	if (pdata->chip.part_probe_types) {
+ 		err = parse_mtd_partitions(&data->mtd,
+ 					pdata->chip.part_probe_types,
+@@ -113,14 +110,11 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
+ 	}
+ 	if (pdata->chip.set_parts)
+ 		pdata->chip.set_parts(data->mtd.size, &pdata->chip);
+-	if (pdata->chip.partitions) {
++	if (pdata->chip.partitions)
+ 		data->parts = pdata->chip.partitions;
+-		err = add_mtd_partitions(&data->mtd, data->parts,
+-			pdata->chip.nr_partitions);
+-	} else
+-#endif
+-	err = add_mtd_device(&data->mtd);
  
- 	return 0;
++	err = mtd_device_register(&data->mtd, data->parts,
++				  pdata->chip.nr_partitions);
+ 	if (!err)
+ 		return err;
+ 
+@@ -149,10 +143,8 @@ static int __devexit plat_nand_remove(struct platform_device *pdev)
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 
+ 	nand_release(&data->mtd);
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	if (data->parts && data->parts != pdata->chip.partitions)
+ 		kfree(data->parts);
+-#endif
+ 	if (pdata->ctrl.remove)
+ 		pdata->ctrl.remove(pdev);
+ 	iounmap(data->io_base);
 -- 
 1.7.4.4
