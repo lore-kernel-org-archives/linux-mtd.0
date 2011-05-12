@@ -1,22 +1,23 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKVUD-0001w0-Q3
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 12:59:30 +0000
-Received: by eyh6 with SMTP id 6so489207eyh.36
+	id 1QKVg2-00022c-Lb
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 13:11:42 +0000
+Received: by ewy3 with SMTP id 3so493838ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 05:59:24 -0700 (PDT)
-Subject: Re: [PATCH RESEND] omap : nand : fix subpage ecc issue with prefetch
+	Thu, 12 May 2011 06:11:34 -0700 (PDT)
+Subject: Re: Coldfire, d9000e and patch RFC
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Kishore Kadiyala <kishore.kadiyala@ti.com>
-In-Reply-To: <1305128847-12987-1-git-send-email-kishore.kadiyala@ti.com>
-References: <1305128847-12987-1-git-send-email-kishore.kadiyala@ti.com>
+To: angelo <angelo70@gmail.com>
+In-Reply-To: <4DC8F73A.1070708@gmail.com>
+References: <4DC8F73A.1070708@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Thu, 12 May 2011 15:56:00 +0300
-Message-ID: <1305204960.14423.0.camel@localhost>
+Date: Thu, 12 May 2011 16:08:10 +0300
+Message-ID: <1305205690.14423.3.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Vimal Singh <vimal.newwork@gmail.com>, linux-omap@vger.kernel.org,
-	linux-mtd@lists.infradead.org, stable@kernel.org
+Cc: linux-net@vger-kernel.org,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	uClinux development list <uclinux-dev@uclinux.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,26 +28,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-05-11 at 21:17 +0530, Kishore Kadiyala wrote:
-> When reading/writing a subpage (When HW ECC is not available/enabled)
-> for number of bytes not aligned to 4, the mis-aligned bytes are handled
-> first (by cpu copy method) before enabling the Prefetch engine to/from
-> 'p'(start of buffer 'buf'). Then it reads/writes rest of the bytes with
-> the help of Prefetch engine, if available, or again using cpu copy method.
-> Currently, reading/writing of rest of bytes, is not done correctly since
-> its trying to read/write again to/from begining of buffer 'buf',
-> overwriting the mis-aligned bytes.
+On Tue, 2011-05-10 at 10:28 +0200, angelo wrote:
+> Hi all,
 > 
-> Read & write using prefetch engine got broken in commit '2c01946c'.
-> We never hit a scenario of not getting 'gpmc_prefetch_enable' call
-> success. So, problem did not get caught up.
+> some months ago i posted to these lists (net, m68k) a patch.
 > 
-> Signed-off-by: Kishore Kadiyala <kishore.kadiyala@ti.com>
-> Signed-off-by: Vimal Singh <vimal.newwork@gmail.com>
-> Reported-by: Bryan DE FARIA <bdefaria@adeneo-embedded.com>
-> Cc: stable@kernel.org [2.6.35+]
+> http://marc.info/?l=linux-m68k&m=129447772217552&w=2 
+> <http://marc.info/?l=linux-m68k&m=129447772217552&w=2>
+> 
+> I did a small job to allow dm9000e to be used with a Coldfire processor, 
+> and for the functional point of view the patch works fine.
 
-Pushed to l2-mtd-2.6.git, thanks.
+Well, one obvious suggestion is that you should not introduce any
+Kconfig option for this and you should get the information about the bus
+from the bootloader via the device tree.
 
 -- 
 Best Regards,
