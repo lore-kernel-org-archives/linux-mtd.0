@@ -1,78 +1,94 @@
-From: "Brian Norris" <computersforpeace@gmail.com>
+From: nitingarg98@gmail.com (Nitin Garg)
+Date: Thu, 12 May 2011 01:31:53 -0500
+Subject: [PATCH] Fix ONFI NAND flash size detection by using number of
+Message-ID: <mailman.227.1305183283.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 6/8] mtd: nand: rename CREATE_EMPTY bbt flag with proper prefix
-Date: Tue, 31 May 2011 16:31:25 -0700
-Message-ID: <1306884687-1824-7-git-send-email-computersforpeace@gmail.com>
-In-Reply-To: <1306884687-1824-1-git-send-email-computersforpeace@gmail.com>
-References: <1306884687-1824-1-git-send-email-computersforpeace@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Cc: baruch@tkos.co.il, Kevin Cernekee <cernekee@gmail.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	nsekhar@ti.com, b25806@freescale.com, tie-fei.zang@freescale.com,
-	linux-mtd@lists.infradead.org,
-	Florian Fainelli <ffainelli@freebox.fr>, jamie@jamieiles.com,
-	Ivan Djelic <ivan.djelic@parrot.com>, kernel@wantstofly.org,
-	khilman@ti.com, jesper.nilsson@axis.com, kgene.kim@samsung.com,
-	linux@arm.linux.org.uk, hjk@linutronix.de, r64343@freescale.com,
-	u.kleine-koenig@pengutronix.de,
-	Ricard Wanderlof <ricard.wanderlof@axis.com>, alex@digriz.org.uk,
-	john.ogness@linutronix.de, lucas.demarchi@profusion.mobi,
-	nicolas.ferre@atmel.com, s.hauer@pengutronix.de,
-	starvik@axis.com, joe@perches.com, ben-linux@fluff.org,
-	cbouatmailru@gmail.com, linux-arm-kernel@lists.infradead.org,
-	grant.likely@secretlab.ca, hong.xu@atmel.com,
-	linux-cris-kernel@axis.com, sbranden@broadcom.com,
-	nico@fluxnic.net, jkosina@suse.cz,
-	Artem Bityutskiy <dedekind1@gmail.com>, blp@cs.stanford.edu,
-	w.sang@pengutronix.de, mware@elphinstone.net,
-	jdzheng@broadcom.com, chuanxiao.dong@intel.com, olof@lixom.net,
-	Brian Norris <computersforpeace@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>
-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
-List-Post: <mailto:linux-mtd@lists.infradead.org>
-List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
-	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+List-Id: linux-mtd.lists.infradead.org
 
-According to our new prefix rules, we should rename NAND_CREATE_EMPTY_BBT
-with a NAND_BBT prefix, i.e., NAND_BBT_CREATE_EMPTY.
+Logical Units in device
 
-Signed-off-by: Brian Norris <computersforpeace@gmail.com>
+
+Signed-off-by: Nitin Garg <nitingarg98@gmail.com>
 ---
- drivers/mtd/nand/nand_bbt.c |    2 +-
- include/linux/mtd/bbm.h     |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_bbt.c b/drivers/mtd/nand/nand_bbt.c
-index 2e4e259..9af703d 100644
---- a/drivers/mtd/nand/nand_bbt.c
-+++ b/drivers/mtd/nand/nand_bbt.c
-@@ -970,7 +970,7 @@ static int check_create(struct mtd_info *mtd, uint8_t *buf, struct nand_bbt_desc
- 			continue;
- 
- 		/* Create the table in memory by scanning the chip(s) */
--		if (!(this->bbt_options & NAND_CREATE_EMPTY_BBT))
-+		if (!(this->bbt_options & NAND_BBT_CREATE_EMPTY))
- 			create_bbt(mtd, buf, bd, chipsel);
- 
- 		td->version[i] = 1;
-diff --git a/include/linux/mtd/bbm.h b/include/linux/mtd/bbm.h
-index 3cf4a8a..0fa030a 100644
---- a/include/linux/mtd/bbm.h
-+++ b/include/linux/mtd/bbm.h
-@@ -92,7 +92,7 @@ struct nand_bbt_descr {
-  * layout or if this information is already purged. Must be used in conjunction
-  * with NAND_BBT_CREATE.
-  */
--#define NAND_CREATE_EMPTY_BBT	0x01000000
-+#define NAND_BBT_CREATE_EMPTY	0x01000000
- /* Search good / bad pattern through all pages of a block */
- #define NAND_BBT_SCANALLPAGES	0x00000400
- /* Scan block empty during good / bad block scan */
--- 
-1.7.0.4
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c54a4cb..cdf6015 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2892,7 +2892,7 @@ static int nand_flash_detect_onfi(struct
+mtd_info *mtd, struct nand_chip *chip,
+ 	mtd->writesize =3D le32_to_cpu(p->byte_per_page);
+ 	mtd->erasesize =3D le32_to_cpu(p->pages_per_block) * mtd->writesize;
+ 	mtd->oobsize =3D le16_to_cpu(p->spare_bytes_per_page);
+-	chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) * mtd->erases=
+ize;
++	chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) *
+le32_to_cpu(p->lun_count) * mtd->erasesize;
+ 	busw =3D 0;
+ 	if (le16_to_cpu(p->features) & 1)
+ 		busw =3D NAND_BUSWIDTH_16;
+--=20
+1.5.5.6
+
+
+
+On Wed, May 11, 2011 at 8:33 PM, Andrew Morton
+<akpm@linux-foundation.org> wrote:
+> On Wed, 11 May 2011 11:25:22 -0500 Nitin Garg <nitingarg98@gmail.com> wro=
+te:
+>
+>> Hi All,
+>>
+>> The nand_flash_detect_onfi function in mtd/nand detects the NAND flash
+>> device size using the ONFI parameters:
+>> =A0 =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) =
+* mtd->erasesize;
+>>
+>> The lun_count is not taken into consideration due to which we detect
+>> wrong size for Micron MT29F8G08ADADAH4 as it has 2 logical units.
+>>
+>> We should change the chipsize calculation to:
+>> =A0 =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) =
+*
+>> (uint64_t)le32_to_cpu(p->lun_count) * mtd->erasesize;
+>>
+>> Pls suggest.
+>>
+>
+> Please send a tested, changelogged patch to fix it. =A0Be sure to cc the
+> relevant maintainer and mailing list.
+>
+> Thanks.
+>
+
+--001e680f0fa89b90ba04a30ea9d4
+Content-Type: application/octet-stream; 
+	name="0001-Fix-ONFI-NAND-flash-size-detection-by-using-number-o.patch"
+Content-Disposition: attachment; 
+	filename="0001-Fix-ONFI-NAND-flash-size-detection-by-using-number-o.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_gnlcek4j0
+
+RnJvbSAxYTczZjFjM2QwNjZhNDkxZDBjODA2ODgzNzg4YWI5YWJkYzczNmYzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBOaXRpbiBHYXJnIDxuaXRpbmdhcmc5OEBnbWFpbC5jb20+CkRh
+dGU6IFRodSwgMTIgTWF5IDIwMTEgMDE6MzE6NTMgLTA1MDAKU3ViamVjdDogW1BBVENIXSBGaXgg
+T05GSSBOQU5EIGZsYXNoIHNpemUgZGV0ZWN0aW9uIGJ5IHVzaW5nIG51bWJlciBvZiBMb2dpY2Fs
+IFVuaXRzIGluIGRldmljZQoKClNpZ25lZC1vZmYtYnk6IE5pdGluIEdhcmcgPG5pdGluZ2FyZzk4
+QGdtYWlsLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jIHwgICAgMiArLQog
+MSBmaWxlcyBjaGFuZ2VkLCAxIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL25hbmQvbmFu
+ZF9iYXNlLmMKaW5kZXggYzU0YTRjYi4uY2RmNjAxNSAxMDA2NDQKLS0tIGEvZHJpdmVycy9tdGQv
+bmFuZC9uYW5kX2Jhc2UuYworKysgYi9kcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jCkBAIC0y
+ODkyLDcgKzI4OTIsNyBAQCBzdGF0aWMgaW50IG5hbmRfZmxhc2hfZGV0ZWN0X29uZmkoc3RydWN0
+IG10ZF9pbmZvICptdGQsIHN0cnVjdCBuYW5kX2NoaXAgKmNoaXAsCiAJbXRkLT53cml0ZXNpemUg
+PSBsZTMyX3RvX2NwdShwLT5ieXRlX3Blcl9wYWdlKTsKIAltdGQtPmVyYXNlc2l6ZSA9IGxlMzJf
+dG9fY3B1KHAtPnBhZ2VzX3Blcl9ibG9jaykgKiBtdGQtPndyaXRlc2l6ZTsKIAltdGQtPm9vYnNp
+emUgPSBsZTE2X3RvX2NwdShwLT5zcGFyZV9ieXRlc19wZXJfcGFnZSk7Ci0JY2hpcC0+Y2hpcHNp
+emUgPSAodWludDY0X3QpbGUzMl90b19jcHUocC0+YmxvY2tzX3Blcl9sdW4pICogbXRkLT5lcmFz
+ZXNpemU7CisJY2hpcC0+Y2hpcHNpemUgPSAodWludDY0X3QpbGUzMl90b19jcHUocC0+YmxvY2tz
+X3Blcl9sdW4pICogbGUzMl90b19jcHUocC0+bHVuX2NvdW50KSAqIG10ZC0+ZXJhc2VzaXplOwog
+CWJ1c3cgPSAwOwogCWlmIChsZTE2X3RvX2NwdShwLT5mZWF0dXJlcykgJiAxKQogCQlidXN3ID0g
+TkFORF9CVVNXSURUSF8xNjsKLS0gCjEuNS41LjYKCg==
+--001e680f0fa89b90ba04a30ea9d4--
