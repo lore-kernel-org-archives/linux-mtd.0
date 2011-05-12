@@ -1,37 +1,24 @@
-Received: from anubis.se.axis.com ([195.60.68.12])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKPxa-00080o-1g
-	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 07:05:22 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by anubis.se.axis.com (Postfix) with ESMTP id 8FDA519D8A
+Received: from mail-gy0-f177.google.com ([209.85.160.177])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QKPxs-00081b-1I
+	for linux-mtd@lists.infradead.org; Thu, 12 May 2011 07:05:40 +0000
+Received: by gyh20 with SMTP id 20so505470gyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 09:05:21 +0200 (CEST)
-Received: from anubis.se.axis.com ([127.0.0.1])
-	by localhost (anubis.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id y+IRkZM+-mQF for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 09:05:21 +0200 (CEST)
-Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
-	by anubis.se.axis.com (Postfix) with ESMTP id 1949019D0B
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 09:05:21 +0200 (CEST)
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
-	by thoth.se.axis.com (Postfix) with ESMTP id 1233634071
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 May 2011 09:05:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
-	p4C75KhH008549
-	for <linux-mtd@lists.infradead.org>; Thu, 12 May 2011 09:05:20 +0200
-Date: Thu, 12 May 2011 09:05:20 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: UBI bad image sequence number error
-In-Reply-To: <BANLkTi=0DP6QE9eLK6wS4L3gNv2Mb9ib+A@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.1105120903590.15966@lnxricardw.se.axis.com>
-References: <BANLkTi=0DP6QE9eLK6wS4L3gNv2Mb9ib+A@mail.gmail.com>
+	Thu, 12 May 2011 00:05:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <BANLkTikrqzpU8qZ5FUgG4HaBgZAvmbOHrQ@mail.gmail.com>
+References: <BANLkTi=e1mUTX4X7ui+HVCGh=sZ=HLoNCw@mail.gmail.com>
+	<20110511183322.da0739c9.akpm@linux-foundation.org>
+	<BANLkTikrqzpU8qZ5FUgG4HaBgZAvmbOHrQ@mail.gmail.com>
+Date: Thu, 12 May 2011 02:05:37 -0500
+Message-ID: <BANLkTinGFDHj4s6nAXMiq8dYW_UO6W+YXg@mail.gmail.com>
+Subject: Re: Bug in MTD NAND ONFI chipsize detection
+From: Nitin Garg <nitingarg98@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,21 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Here is the tested patch, pls apply.
 
-On Wed, 11 May 2011, Alex Levin wrote:
+>From 1a73f1c3d066a491d0c806883788ab9abdc736f3 Mon Sep 17 00:00:00 2001
+From: Nitin Garg <nitingarg98@gmail.com>
+Date: Thu, 12 May 2011 01:31:53 -0500
+Subject: [PATCH] Fix ONFI NAND flash size detection by using number of
+Logical Units in device
 
-> UBI error: ubi_init: UBI error: cannot initialize UBI, error -22
-
-(Not actually a response to Alex, more of a general comment on the code:)
-
-I see a lot of these 'error -SOMETHING' in UBI error reports, is there not=
-=20
-a way for the driver to convert the error numbers to text strings? I=20
-suspect the actual values can vary between architectures so the numbers=20
-are sortof meaningless once you've left the system that generated them.
-
-/Ricard
---=20
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Signed-off-by: Nitin Garg <nitingarg98@gmail.com>
+---
+=A0drivers/mtd/nand/nand_base.c | =A0 =A02 +-
+=A01 files changed, 1 insertions(+), 1 deletions(-)
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index c54a4cb..cdf6015 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -2892,7 +2892,7 @@ static int nand_flash_detect_onfi(struct
+mtd_info *mtd, struct nand_chip *chip,
+=A0 =A0 =A0 =A0mtd->writesize =3D le32_to_cpu(p->byte_per_page);
+=A0 =A0 =A0 =A0mtd->erasesize =3D le32_to_cpu(p->pages_per_block) * mtd->wr=
+itesize;
+=A0 =A0 =A0 =A0mtd->oobsize =3D le16_to_cpu(p->spare_bytes_per_page);
+- =A0 =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) *
+mtd->erasesize;
++ =A0 =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) *
+le32_to_cpu(p->lun_count) * mtd->erasesize;
+=A0 =A0 =A0 =A0busw =3D 0;
+=A0 =A0 =A0 =A0if (le16_to_cpu(p->features) & 1)
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0busw =3D NAND_BUSWIDTH_16;
+--
+1.5.5.6
