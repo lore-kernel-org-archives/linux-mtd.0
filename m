@@ -1,19 +1,21 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKz46-0004uY-Dl
-	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 20:34:27 +0000
-Received: by ewy3 with SMTP id 3so959091ewy.36
+	id 1QKzQx-00052M-AG
+	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 20:58:04 +0000
+Received: by fxm14 with SMTP id 14so2703963fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 May 2011 13:34:24 -0700 (PDT)
-Date: Fri, 13 May 2011 23:34:19 +0300
-From: Alexey Dobriyan <adobriyan@gmail.com>
-To: dwmw2@infradead.org
-Subject: [PATCH] mtd: convert to seq_file interface
-Message-ID: <20110513203419.GA29261@p183>
+	Fri, 13 May 2011 13:58:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org
+In-Reply-To: <20110513203419.GA29261@p183>
+References: <20110513203419.GA29261@p183>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Fri, 13 May 2011 16:57:41 -0400
+Message-ID: <BANLkTinAx_wd2NtVPR5nw7K4Ga7_ij3M4A@mail.gmail.com>
+Subject: Re: [PATCH] mtd: convert to seq_file interface
+To: Alexey Dobriyan <adobriyan@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Cc: linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
+	dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,93 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-->read_proc interface is going away, switch to seq_file.
+On Fri, May 13, 2011 at 16:34, Alexey Dobriyan wrote:
+> ->read_proc interface is going away, switch to seq_file.
 
-Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
----
+while i like converting to seq_file in general, i'm not sure this
+conversion is correct ... or maybe it's just incomplete ?
 
- drivers/mtd/mtdcore.c |   50 +++++++++++++++++++-------------------------------
- 1 file changed, 19 insertions(+), 31 deletions(-)
+> +static int mtd_proc_show(struct seq_file *m, void *v)
+>  {
+>        struct mtd_info *mtd;
+>
+> +       seq_puts(m, "dev:    size   erasesize  name\n");
+>        mutex_lock(&mtd_table_mutex);
+>        mtd_for_each_device(mtd) {
+> +               seq_printf(m, "mtd%d: %8.8llx %8.8x \"%s\"\n",
+> +                          mtd->index, (unsigned long long)mtd->size,
+> +                          mtd->erasesize, mtd->name);
+>         }
+>        mutex_unlock(&mtd_table_mutex);
+> +        return 0;
+>  }
 
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -24,6 +24,7 @@
- #include <linux/module.h>
- #include <linux/kernel.h>
- #include <linux/ptrace.h>
-+#include <linux/seq_file.h>
- #include <linux/string.h>
- #include <linux/timer.h>
- #include <linux/major.h>
-@@ -656,44 +657,32 @@ EXPORT_SYMBOL_GPL(default_mtd_writev);
- 
- static struct proc_dir_entry *proc_mtd;
- 
--static inline int mtd_proc_info(char *buf, struct mtd_info *this)
--{
--	return sprintf(buf, "mtd%d: %8.8llx %8.8x \"%s\"\n", this->index,
--		       (unsigned long long)this->size,
--		       this->erasesize, this->name);
--}
--
--static int mtd_read_proc (char *page, char **start, off_t off, int count,
--			  int *eof, void *data_unused)
-+static int mtd_proc_show(struct seq_file *m, void *v)
- {
- 	struct mtd_info *mtd;
--	int len, l;
--        off_t   begin = 0;
- 
-+	seq_puts(m, "dev:    size   erasesize  name\n");
- 	mutex_lock(&mtd_table_mutex);
--
--	len = sprintf(page, "dev:    size   erasesize  name\n");
- 	mtd_for_each_device(mtd) {
--		l = mtd_proc_info(page + len, mtd);
--                len += l;
--                if (len+begin > off+count)
--                        goto done;
--                if (len+begin < off) {
--                        begin += len;
--                        len = 0;
--                }
-+		seq_printf(m, "mtd%d: %8.8llx %8.8x \"%s\"\n",
-+			   mtd->index, (unsigned long long)mtd->size,
-+			   mtd->erasesize, mtd->name);
-         }
--
--        *eof = 1;
--
--done:
- 	mutex_unlock(&mtd_table_mutex);
--        if (off >= len+begin)
--                return 0;
--        *start = page + (off-begin);
--        return ((count < begin+len-off) ? count : begin+len-off);
-+        return 0;
- }
- 
-+static int mtd_proc_open(struct inode *inode, struct file *file)
-+{
-+	return single_open(file, mtd_proc_show, NULL);
-+}
-+
-+static const struct file_operations mtd_proc_ops = {
-+	.open		= mtd_proc_open,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
- #endif /* CONFIG_PROC_FS */
- 
- /*====================================================================*/
-@@ -734,8 +723,7 @@ static int __init init_mtd(void)
- 		goto err_bdi3;
- 
- #ifdef CONFIG_PROC_FS
--	if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
--		proc_mtd->read_proc = mtd_read_proc;
-+	proc_mtd = proc_create("mtd", 0, NULL, &mtd_proc_ops);
- #endif /* CONFIG_PROC_FS */
- 	return 0;
- 
+this is the new version of the func.  the old one handled
+offsets/seeks while the new one doesnt seem to.  am i mistaken ?
+
+in particular, it seems like this is missing the seq_operations set of
+funcs for walking the list of mtd devices ...
+-mike
