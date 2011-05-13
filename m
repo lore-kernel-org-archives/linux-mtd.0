@@ -1,25 +1,19 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKs3L-0002b9-HU
-	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 13:05:12 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QKs3G-0000Pr-Oi
-	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 15:05:06 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 May 2011 15:05:06 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 May 2011 15:05:06 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: [newbie] uClinux can't access NAND
-Date: Fri, 13 May 2011 14:49:53 +0200
-Message-ID: <pt9qs6lpake6fj7k4i6lmu5f2oisdkhr16@4ax.com>
-Mime-Version: 1.0
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
+	id 1QKz46-0004uY-Dl
+	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 20:34:27 +0000
+Received: by ewy3 with SMTP id 3so959091ewy.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 May 2011 13:34:24 -0700 (PDT)
+Date: Fri, 13 May 2011 23:34:19 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] mtd: convert to seq_file interface
+Message-ID: <20110513203419.GA29261@p183>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Cc: akpm@linux-foundation.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,83 +23,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, 
+->read_proc interface is going away, switch to seq_file.
 
-(This is really a newbie question, as I have very little knowledge
-about NAND and device drivers. If there is a better place to ask,
-please point me in the right direction.)
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-I'd like to try and upgrade an appliance to uClinux2010, but can't get
-it to access the NAND and find its partitions. 
+ drivers/mtd/mtdcore.c |   50 +++++++++++++++++++-------------------------------
+ 1 file changed, 19 insertions(+), 31 deletions(-)
 
->From what I've read... 
-1. Since 2009, the bfin_nand.c NAND driver has been replaced with
-plat_nand.c 
-2. Unlike bfin_nand.c, plat_nand.c only contains code 
-3. Board resources should now only live in the board driver, ip0x.c in
-this case 
-
-So, after checking bfin_nand.c, ip0x.c, and the BF537's stamp.c, I
-came up with this updated ip0x.c: 
-
-www.pastebin.com/fqwr9Qev 
-
-I also slightly edited nand_base.c to display the values of
-Manufacture ID and Device ID: 
-============ 
-/* Read manufacturer and device IDs */ 
-*maf_id = chip->read_byte(mtd); 
-dev_id = chip->read_byte(mtd); 
-//Added by me 
-printk("*********\n First read\nMaf ID %d \n Dev ID
-%d\n",*maf_id,dev_id); 
-
-chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1); 
-
-/* Read manufacturer and device IDs */ 
-tmp_manf = chip->read_byte(mtd); 
-tmp_id = chip->read_byte(mtd); 
-//Added by me 
-printk("*********\n Second read\nMaf ID %d \n Dev ID
-%d\n",tmp_manf,tmp_id); 
-============ 
-
-Here's what dmesg says about NAND: 
-============ 
-... 
-Found mtd parition at 0x0020a000, (len=0x800000), moving to 0x03700000
-... 
-ip0x_init(): registering device resources 
-CLE is 4 and ALE is 2 
-... 
-uclinux[mtd]: RAM probe address=0x3700000 size=0x800000 
-Creating 1 MTD partitions on "RAM": 
-0x000000000000-0x000000800000 : "ROMfs" 
-mtd: Giving out device 0 to ROMfs 
-Generic platform RAM MTD, (c) 2004 Simtec Electronics 
-********* 
-First read 
-Maf ID 15 
-Dev ID 15 
-********* 
-Second read 
-Maf ID 15 
-Dev ID 15 
-No NAND device found. 
-... 
-mtdblock_open 
-ok 
-============ 
-
-As shown in ip0x.c, I've tried playing with start/end in
-bfin_plat_nand_resources, to no avail. 
-
-I'm also told to check that the ready pin is correctly declared, and
-that the async timings aren't too fast for the NAND. 
-
-With very little knowledge of NAND, I have no idea what else to try. 
-
-What could prevent uClinux from accessing the NAND and reading its
-partitions?
-
-Thank you for any help.
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -24,6 +24,7 @@
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/ptrace.h>
++#include <linux/seq_file.h>
+ #include <linux/string.h>
+ #include <linux/timer.h>
+ #include <linux/major.h>
+@@ -656,44 +657,32 @@ EXPORT_SYMBOL_GPL(default_mtd_writev);
+ 
+ static struct proc_dir_entry *proc_mtd;
+ 
+-static inline int mtd_proc_info(char *buf, struct mtd_info *this)
+-{
+-	return sprintf(buf, "mtd%d: %8.8llx %8.8x \"%s\"\n", this->index,
+-		       (unsigned long long)this->size,
+-		       this->erasesize, this->name);
+-}
+-
+-static int mtd_read_proc (char *page, char **start, off_t off, int count,
+-			  int *eof, void *data_unused)
++static int mtd_proc_show(struct seq_file *m, void *v)
+ {
+ 	struct mtd_info *mtd;
+-	int len, l;
+-        off_t   begin = 0;
+ 
++	seq_puts(m, "dev:    size   erasesize  name\n");
+ 	mutex_lock(&mtd_table_mutex);
+-
+-	len = sprintf(page, "dev:    size   erasesize  name\n");
+ 	mtd_for_each_device(mtd) {
+-		l = mtd_proc_info(page + len, mtd);
+-                len += l;
+-                if (len+begin > off+count)
+-                        goto done;
+-                if (len+begin < off) {
+-                        begin += len;
+-                        len = 0;
+-                }
++		seq_printf(m, "mtd%d: %8.8llx %8.8x \"%s\"\n",
++			   mtd->index, (unsigned long long)mtd->size,
++			   mtd->erasesize, mtd->name);
+         }
+-
+-        *eof = 1;
+-
+-done:
+ 	mutex_unlock(&mtd_table_mutex);
+-        if (off >= len+begin)
+-                return 0;
+-        *start = page + (off-begin);
+-        return ((count < begin+len-off) ? count : begin+len-off);
++        return 0;
+ }
+ 
++static int mtd_proc_open(struct inode *inode, struct file *file)
++{
++	return single_open(file, mtd_proc_show, NULL);
++}
++
++static const struct file_operations mtd_proc_ops = {
++	.open		= mtd_proc_open,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++	.release	= single_release,
++};
+ #endif /* CONFIG_PROC_FS */
+ 
+ /*====================================================================*/
+@@ -734,8 +723,7 @@ static int __init init_mtd(void)
+ 		goto err_bdi3;
+ 
+ #ifdef CONFIG_PROC_FS
+-	if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
+-		proc_mtd->read_proc = mtd_read_proc;
++	proc_mtd = proc_create("mtd", 0, NULL, &mtd_proc_ops);
+ #endif /* CONFIG_PROC_FS */
+ 	return 0;
+ 
