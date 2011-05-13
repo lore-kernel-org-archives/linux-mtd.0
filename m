@@ -1,15 +1,15 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKzWj-00054U-RV
-	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 21:04:02 +0000
-Received: by eyh6 with SMTP id 6so966094eyh.36
+	id 1QKzc0-00058H-Fm
+	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 21:09:29 +0000
+Received: by ewy3 with SMTP id 3so966955ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 May 2011 14:04:00 -0700 (PDT)
-Date: Sat, 14 May 2011 00:03:55 +0300
+	Fri, 13 May 2011 14:09:27 -0700 (PDT)
+Date: Sat, 14 May 2011 00:09:22 +0300
 From: Alexey Dobriyan <adobriyan@gmail.com>
 To: Mike Frysinger <vapier.adi@gmail.com>
 Subject: Re: [PATCH] mtd: convert to seq_file interface
-Message-ID: <20110513210354.GC29261@p183>
+Message-ID: <20110513210922.GD29261@p183>
 References: <20110513203419.GA29261@p183>
 	<BANLkTinAx_wd2NtVPR5nw7K4Ga7_ij3M4A@mail.gmail.com>
 MIME-Version: 1.0
@@ -51,13 +51,10 @@ On Fri, May 13, 2011 at 04:57:41PM -0400, Mike Frysinger wrote:
 > 
 > this is the new version of the func.  the old one handled
 > offsets/seeks while the new one doesnt seem to.  am i mistaken ?
-
-seq_file does all this for developer, see fs/seq_file.c
-All you have to do is to fill buffer with data, this is why it's so cool.
-
+> 
 > in particular, it seems like this is missing the seq_operations set of
 > funcs for walking the list of mtd devices ...
 
-Yes and no.
-seq_operations aren't mandatory, because it doesn't matter much
-how exactly buffer is filled. In this case we go for simpler code.
+seq_operations are mostly needed when read(2) is going to be short
+enough to not require walking full object list to fill necessary amount.
+Seeing that bash reads 32 KB by default, we go for simpler code.
