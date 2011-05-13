@@ -1,28 +1,25 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.72 #1 (Red Hat Linux))
-	id 1QKrdT-0002NK-V4
-	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 12:38:28 +0000
-Received: by eyh6 with SMTP id 6so819585eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 May 2011 05:38:26 -0700 (PDT)
-Subject: RE: [PATCH 2/2] UBIFS: fix-up free space on mount if flag is set
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-In-Reply-To: <1305289765.14423.20.camel@localhost>
-References: <1304722703-7904-1-git-send-email-mlcreech@gmail.com>
-	<1304722703-7904-3-git-send-email-mlcreech@gmail.com>
-	<1305198589.2713.97.camel@localhost>
-	<1305273513.14423.15.camel@localhost>
-	<0A40042D85E7C84DB443060EC44B3FD32A694157DD@dekaexchange07.deka.local>
-	<1305289765.14423.20.camel@localhost>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 13 May 2011 15:34:50 +0300
-Message-ID: <1305290090.14423.25.camel@localhost>
+Received: from lo.gmane.org ([80.91.229.12])
+	by canuck.infradead.org with esmtp (Exim 4.72 #1 (Red Hat Linux))
+	id 1QKs3L-0002b9-HU
+	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 13:05:12 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QKs3G-0000Pr-Oi
+	for linux-mtd@lists.infradead.org; Fri, 13 May 2011 15:05:06 +0200
+Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 13 May 2011 15:05:06 +0200
+Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 13 May 2011 15:05:06 +0200
+To: linux-mtd@lists.infradead.org
+From: Gilles <gilles.ganault@free.fr>
+Subject: [newbie] uClinux can't access NAND
+Date: Fri, 13 May 2011 14:49:53 +0200
+Message-ID: <pt9qs6lpake6fj7k4i6lmu5f2oisdkhr16@4ax.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	"Matthew L. Creech" <mlcreech@gmail.com>
-Reply-To: dedekind1@gmail.com
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +29,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-13 at 15:29 +0300, Artem Bityutskiy wrote:
-> Well, UBIFS is part of the kernel and it follows the kernel coding
-> style.
+Hello, 
 
-Note, in this case I'm talking only about tabs as indentation, like
+(This is really a newbie question, as I have very little knowledge
+about NAND and device drivers. If there is a better place to ask,
+please point me in the right direction.)
 
-<tab>if (a)
-<tab><tab>if (b)
-<tab><tab><tab>function();
+I'd like to try and upgrade an appliance to uClinux2010, but can't get
+it to access the NAND and find its partitions. 
 
-The other thing is tabs as "dynamic spaces", like:
+>From what I've read... 
+1. Since 2009, the bfin_nand.c NAND driver has been replaced with
+plat_nand.c 
+2. Unlike bfin_nand.c, plat_nand.c only contains code 
+3. Board resources should now only live in the board driver, ip0x.c in
+this case 
 
-int a<tab>=0;
-int aa<tab>=0;
+So, after checking bfin_nand.c, ip0x.c, and the BF537's stamp.c, I
+came up with this updated ip0x.c: 
 
-Some people use tabs as "dynamic spaces" because many editors will align
-things. I personally do not appreciate this at all, and the kernel
-Coding style does not require this. I only use tabs for indentation at
-the beginning of the line.
+www.pastebin.com/fqwr9Qev 
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+I also slightly edited nand_base.c to display the values of
+Manufacture ID and Device ID: 
+============ 
+/* Read manufacturer and device IDs */ 
+*maf_id = chip->read_byte(mtd); 
+dev_id = chip->read_byte(mtd); 
+//Added by me 
+printk("*********\n First read\nMaf ID %d \n Dev ID
+%d\n",*maf_id,dev_id); 
+
+chip->cmdfunc(mtd, NAND_CMD_READID, 0x00, -1); 
+
+/* Read manufacturer and device IDs */ 
+tmp_manf = chip->read_byte(mtd); 
+tmp_id = chip->read_byte(mtd); 
+//Added by me 
+printk("*********\n Second read\nMaf ID %d \n Dev ID
+%d\n",tmp_manf,tmp_id); 
+============ 
+
+Here's what dmesg says about NAND: 
+============ 
+... 
+Found mtd parition at 0x0020a000, (len=0x800000), moving to 0x03700000
+... 
+ip0x_init(): registering device resources 
+CLE is 4 and ALE is 2 
+... 
+uclinux[mtd]: RAM probe address=0x3700000 size=0x800000 
+Creating 1 MTD partitions on "RAM": 
+0x000000000000-0x000000800000 : "ROMfs" 
+mtd: Giving out device 0 to ROMfs 
+Generic platform RAM MTD, (c) 2004 Simtec Electronics 
+********* 
+First read 
+Maf ID 15 
+Dev ID 15 
+********* 
+Second read 
+Maf ID 15 
+Dev ID 15 
+No NAND device found. 
+... 
+mtdblock_open 
+ok 
+============ 
+
+As shown in ip0x.c, I've tried playing with start/end in
+bfin_plat_nand_resources, to no avail. 
+
+I'm also told to check that the ready pin is correctly declared, and
+that the async timings aren't too fast for the NAND. 
+
+With very little knowledge of NAND, I have no idea what else to try. 
+
+What could prevent uClinux from accessing the NAND and reading its
+partitions?
+
+Thank you for any help.
