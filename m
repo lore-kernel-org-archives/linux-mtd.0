@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QLsQl-0003dH-DW
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 07:41:38 +0000
+	id 1QLsQl-0003dG-Dd
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 07:41:39 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-da01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p4G7eTrH011091
+	p4G7eTkM011097
 	for <linux-mtd@lists.infradead.org>; Mon, 16 May 2011 10:41:30 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 17/20] UBIFS: share the next_log_lnum helper
-Date: Mon, 16 May 2011 10:44:36 +0300
-Message-Id: <1305531879-19311-18-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 16/20] UBIFS: expect corruption only in last journal head LEBs
+Date: Mon, 16 May 2011 10:44:35 +0300
+Message-Id: <1305531879-19311-17-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1305531879-19311-1-git-send-email-dedekind1@gmail.com>
 References: <1305531879-19311-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -25,129 +25,124 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-We'll need to use the 'next_log_lnum()' helper function from log.c in the fixup
-code, so let's move it to misc.h. IOW, this is a preparation to the following
-free space fixup changes.
+This patch improves UBIFS recovery and teaches it to expect corruption only
+in the last buds. Indeed, currently we just recover all buds, which is
+incorrect because only the last buds can have corruptions in case of a power
+cut. So it is inconsistent with the rest of the recovery strategy which tries
+hard to distinguish between corruptions cause by power cuts and other types of
+corruptions.
+
+This patch also adds one quirk - a bit older UBIFS was could have corruption in
+the next to last bud because of the way it switched buds: when bud A is full,
+it first searched for the next bud B, the wrote a reference node to the log
+about B, and then synchronized the write-buffer of A. So we could end up with
+buds A and B, where B is the last, but A had corruption. The UBIFS behavior
+was fixed, though, so currently it always first synchronizes A's write-buffer
+and only after this adds B to the log. However, to be make sure that we handle
+unclean (after a power cut) UBIFS images belonging to older UBIFS - we need to
+add a quirk and keep it for some time: we need to check for the situation
+described above.
+
+Thankfully, it is easy to check for that situation. When UBIFS adds B to the
+log, it always first unmaps B, then maps it, and then syncs A's write-buffer.
+Thus, in that situation we can check that B is empty, in which case it is OK to
+have corruption in A. To check that B is empty it is enough to just read the
+first few bytes of the bud and compare them with 0xFFs. This quirk may be
+removed in a couple of years.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/log.c  |   28 +++++++---------------------
- fs/ubifs/misc.h |   17 +++++++++++++++++
- 2 files changed, 24 insertions(+), 21 deletions(-)
+ fs/ubifs/replay.c |   66 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 files changed, 62 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
-index 40fa780..affea94 100644
---- a/fs/ubifs/log.c
-+++ b/fs/ubifs/log.c
-@@ -100,20 +100,6 @@ struct ubifs_wbuf *ubifs_get_wbuf(struct ubifs_info *c, int lnum)
+diff --git a/fs/ubifs/replay.c b/fs/ubifs/replay.c
+index 0f50fbf..bc2b64a 100644
+--- a/fs/ubifs/replay.c
++++ b/fs/ubifs/replay.c
+@@ -472,6 +472,56 @@ int ubifs_validate_entry(struct ubifs_info *c,
+ 	return 0;
  }
  
- /**
-- * next_log_lnum - switch to the next log LEB.
-- * @c: UBIFS file-system description object
-- * @lnum: current log LEB
-- */
--static inline int next_log_lnum(const struct ubifs_info *c, int lnum)
--{
--	lnum += 1;
--	if (lnum > c->log_last)
--		lnum = UBIFS_LOG_LNUM;
--
--	return lnum;
--}
--
--/**
-  * empty_log_bytes - calculate amount of empty space in the log.
-  * @c: UBIFS file-system description object
-  */
-@@ -257,7 +243,7 @@ int ubifs_add_bud_to_log(struct ubifs_info *c, int jhead, int lnum, int offs)
- 	ref->jhead = cpu_to_le32(jhead);
- 
- 	if (c->lhead_offs > c->leb_size - c->ref_node_alsz) {
--		c->lhead_lnum = next_log_lnum(c, c->lhead_lnum);
-+		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
- 		c->lhead_offs = 0;
- 	}
- 
-@@ -425,7 +411,7 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
- 
- 	/* Switch to the next log LEB */
- 	if (c->lhead_offs) {
--		c->lhead_lnum = next_log_lnum(c, c->lhead_lnum);
-+		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
- 		c->lhead_offs = 0;
- 	}
- 
-@@ -446,7 +432,7 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
- 
- 	c->lhead_offs += len;
- 	if (c->lhead_offs == c->leb_size) {
--		c->lhead_lnum = next_log_lnum(c, c->lhead_lnum);
-+		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
- 		c->lhead_offs = 0;
- 	}
- 
-@@ -533,7 +519,7 @@ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
- 	}
- 	mutex_lock(&c->log_mutex);
- 	for (lnum = old_ltail_lnum; lnum != c->ltail_lnum;
--	     lnum = next_log_lnum(c, lnum)) {
-+	     lnum = ubifs_next_log_lnum(c, lnum)) {
- 		dbg_log("unmap log LEB %d", lnum);
- 		err = ubifs_leb_unmap(c, lnum);
- 		if (err)
-@@ -642,7 +628,7 @@ static int add_node(struct ubifs_info *c, void *buf, int *lnum, int *offs,
- 		err = ubifs_leb_change(c, *lnum, buf, sz, UBI_SHORTTERM);
- 		if (err)
- 			return err;
--		*lnum = next_log_lnum(c, *lnum);
-+		*lnum = ubifs_next_log_lnum(c, *lnum);
- 		*offs = 0;
- 	}
- 	memcpy(buf + *offs, node, len);
-@@ -712,7 +698,7 @@ int ubifs_consolidate_log(struct ubifs_info *c)
- 		ubifs_scan_destroy(sleb);
- 		if (lnum == c->lhead_lnum)
- 			break;
--		lnum = next_log_lnum(c, lnum);
-+		lnum = ubifs_next_log_lnum(c, lnum);
- 	}
- 	if (offs) {
- 		int sz = ALIGN(offs, c->min_io_size);
-@@ -732,7 +718,7 @@ int ubifs_consolidate_log(struct ubifs_info *c)
- 	/* Unmap remaining LEBs */
- 	lnum = write_lnum;
- 	do {
--		lnum = next_log_lnum(c, lnum);
-+		lnum = ubifs_next_log_lnum(c, lnum);
- 		err = ubifs_leb_unmap(c, lnum);
- 		if (err)
- 			return err;
-diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
-index c3de04d..0b5296a 100644
---- a/fs/ubifs/misc.h
-+++ b/fs/ubifs/misc.h
-@@ -340,4 +340,21 @@ static inline void ubifs_release_lprops(struct ubifs_info *c)
- 	mutex_unlock(&c->lp_mutex);
- }
- 
-+/**
-+ * ubifs_next_log_lnum - switch to the next log LEB.
-+ * @c: UBIFS file-system description object
-+ * @lnum: current log LEB
-+ *
-+ * This helper function returns the log LEB number which goes next after LEB
-+ * 'lnum'.
-+ */
-+static inline int ubifs_next_log_lnum(const struct ubifs_info *c, int lnum)
++/* TODO: comment */
++static int is_last_bud(struct ubifs_info *c, struct bud_entry *b)
 +{
-+	lnum += 1;
-+	if (lnum > c->log_last)
-+		lnum = UBIFS_LOG_LNUM;
++	struct ubifs_jhead *jh = &c->jheads[b->bud->jhead];
++	struct ubifs_bud *next;
++	uint32_t data;
++	int err;
 +
-+	return lnum;
++	if (list_is_last(&b->bud->list, &jh->buds_list))
++		return 1;
++
++	/*
++	 * The following is a quirk to make sure we work correctly with UBIFS
++	 * images used with older UBIFS.
++	 *
++	 * Normally, the last bud will be the last in the journal head's list
++	 * of bud. However, there is one exception if the UBIFS image belongs
++	 * to older UBIFS. This is fairly unlikely: one would need to use old
++	 * UBIFS, then have a power cut exactly at the right point, and then
++	 * try to mount this image with new UBIFS.
++	 *
++	 * The exception is: it is possible to have 2 buds A and B, A goes
++	 * before B, and B is the last, bud B is contains no data, and bud A is
++	 * corrupted at the end. The reason is that in older versions when the
++	 * journal code switched the next bud (from A to B), it first added a
++	 * log reference node for the new bud (B), and only after this it
++	 * synchronized the write-buffer of current bud (A). But later this was
++	 * changed and UBIFS started to always synchronize the write-buffer of
++	 * the bud (A) before writing the log reference for the new bud (B).
++	 *
++	 * But because older UBIFS always synchronized A's write-buffer before
++	 * writing to B, we can recognize this exceptional situation but
++	 * checking the contents of bud B - if it is empty, then A can be
++	 * treated as the last and we can recover it.
++	 *
++	 * TODO: remove this piece of code in a couple of years (today it is
++	 * 16.05.2011).
++	 */
++	next = list_entry(b->bud->list.next, struct ubifs_bud, list);
++	if (!list_is_last(&next->list, &jh->buds_list))
++		return 0;
++
++	err = ubi_read(c->ubi, next->lnum, (char *)&data,
++		       next->start, 4);
++	if (err)
++		return 0;
++
++	return data == 0xFFFFFFFF;
 +}
 +
- #endif /* __UBIFS_MISC_H__ */
+ /**
+  * replay_bud - replay a bud logical eraseblock.
+  * @c: UBIFS file-system description object
+@@ -483,15 +533,23 @@ int ubifs_validate_entry(struct ubifs_info *c,
+  */
+ static int replay_bud(struct ubifs_info *c, struct bud_entry *b)
+ {
++	int is_last = is_last_bud(c, b);
+ 	int err = 0, used = 0, lnum = b->bud->lnum, offs = b->bud->start;
+-	int jhead = b->bud->jhead;
+ 	struct ubifs_scan_leb *sleb;
+ 	struct ubifs_scan_node *snod;
+ 
+-	dbg_mnt("replay bud LEB %d, head %d, offs %d", lnum, jhead, offs);
++	dbg_mnt("replay bud LEB %d, head %d, offs %d, is_last %d",
++		lnum, b->bud->jhead, offs, is_last);
+ 
+-	if (c->need_recovery)
+-		sleb = ubifs_recover_leb(c, lnum, offs, c->sbuf, jhead != GCHD);
++	if (c->need_recovery && is_last)
++		/*
++		 * Recover only last LEBs in the journal heads, because power
++		 * cuts may cause corruptions only in these LEBs, because only
++		 * these LEBs could possibly be written to at the power cut
++		 * time.
++		 */
++		sleb = ubifs_recover_leb(c, lnum, offs, c->sbuf,
++					 b->bud->jhead != GCHD);
+ 	else
+ 		sleb = ubifs_scan(c, lnum, offs, c->sbuf, 0);
+ 	if (IS_ERR(sleb))
 -- 
 1.7.2.3
