@@ -1,23 +1,17 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QLvPD-00054J-6D
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 10:52:07 +0000
-Received: by ewy3 with SMTP id 3so1414511ewy.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 May 2011 03:52:05 -0700 (PDT)
-Subject: Re: [PATCH 16/20] UBIFS: expect corruption only in last journal
-	head LEBs
+	id 1QLxGV-0005vj-MA
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 12:51:16 +0000
+Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
+	[172.21.38.109])
+	by mgw-da01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
+	p4GCpDUk021378
+	for <linux-mtd@lists.infradead.org>; Mon, 16 May 2011 15:51:13 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-In-Reply-To: <1305531879-19311-17-git-send-email-dedekind1@gmail.com>
-References: <1305531879-19311-1-git-send-email-dedekind1@gmail.com>
-	<1305531879-19311-17-git-send-email-dedekind1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 16 May 2011 13:48:42 +0300
-Message-ID: <1305542922.2630.0.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Reply-To: dedekind1@gmail.com
+Subject: [PATCH 0/4] UBIFS: fix very rare recovery failure
+Date: Mon, 16 May 2011 15:55:09 +0300
+Message-Id: <1305550513-27990-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,11 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-05-16 at 10:44 +0300, Artem Bityutskiy wrote:
-> +/* TODO: comment */
-> +static int is_last_bud(struct ubifs_info *c, struct bud_entry *b)
+Hi,
 
-Oh, forgot to add a comment
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+finally after all the preparation and clean-up work I can fix the very rare
+recovery failure which I observed when doing power-cut emulation testing with
+integck. The symptoms of the failure is that we are unable to mount the FS with
+the ENOSPC (no space) error.
+
+I am not really able to confirm the issue was fixed, because I could reproduce
+it only once in a week. But at least I can confirm that this does not break the
+recovery :-) We'll see if I'll be ever able to hit this issue.
+
+More detailed description of the issue and the way I chose to fix it can be
+found in the last patch "UBIFS: fix extremely rare mount failure".
+
+Artem.
