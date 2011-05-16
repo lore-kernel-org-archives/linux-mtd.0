@@ -1,23 +1,33 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from e32.co.us.ibm.com ([32.97.110.150])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QLyv7-0006lV-EV
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 14:37:18 +0000
-Received: by wyb28 with SMTP id 28so4406598wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 May 2011 07:37:15 -0700 (PDT)
-Date: Mon, 16 May 2011 15:37:10 +0100
-From: Jamie Iles <jamie@jamieiles.com>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [RFC PATCH 0/7] Removing CONFIG_MTD_PARTITIONS
-Message-ID: <20110516143710.GA5123@pulham.picochip.com>
-References: <1305206818-31752-1-git-send-email-jamie@jamieiles.com>
-	<1305551060.2630.2.camel@localhost>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1305551060.2630.2.camel@localhost>
-Cc: Jamie Iles <jamie@jamieiles.com>, linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org
+	id 1QLz5N-0006ur-Ct
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 14:47:54 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e32.co.us.ibm.com (8.14.4/8.13.1) with ESMTP id p4GEaMiH018302
+	for <linux-mtd@lists.infradead.org>; Mon, 16 May 2011 08:36:22 -0600
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v9.1) with ESMTP id
+	p4GElacM107338
+	for <linux-mtd@lists.infradead.org>; Mon, 16 May 2011 08:47:39 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.14.4/8.13.1/NCO v10.0 AVout) with ESMTP
+	id p4G8lY06015369
+	for <linux-mtd@lists.infradead.org>; Mon, 16 May 2011 02:47:36 -0600
+From: Mimi Zohar <zohar@linux.vnet.ibm.com>
+To: linux-security-module@vger.kernel.org
+Subject: [PATCH v5 14/21] evm: add evm_inode_post_init call in jffs2
+Date: Mon, 16 May 2011 10:45:08 -0400
+Message-Id: <1305557115-15652-15-git-send-email-zohar@linux.vnet.ibm.com>
+In-Reply-To: <1305557115-15652-1-git-send-email-zohar@linux.vnet.ibm.com>
+References: <1305557115-15652-1-git-send-email-zohar@linux.vnet.ibm.com>
+Cc: Dmitry Kasatkin <dmitry.kasatkin@nokia.com>, Mimi Zohar <zohar@us.ibm.com>,
+	David Safford <safford@watson.ibm.com>, Greg KH <greg@kroah.com>,
+	linux-kernel@vger.kernel.org, James Morris <jmorris@namei.org>,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Mimi Zohar <zohar@linux.vnet.ibm.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,23 +37,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 16, 2011 at 04:04:20PM +0300, Artem Bityutskiy wrote:
-> On Thu, 2011-05-12 at 14:26 +0100, Jamie Iles wrote:
-> > This patch series is an RFC for the removal of CONFIG_MTD_PARTITIONS.
-> > Partitioning is still supported, but is always compiled in if CONFIG_MTD is
-> > selected.  To transition, two new symbols are introduced -
-> > mtd_device_{,un}register() that replace add_mtd_device(), add_mtd_partitions()
-> > and their counterparts.  The series converts a number of drivers over to use
-> > these new interfaces and the final patch removes the old symbols.
-> > 
-> > Note that this patch does not transition all of the drivers so is incomplete
-> > (and not signed off!).  If this approach is suitable then I'll convert all of
-> > the other drivers over.
-> 
-> Jamie, looks very good at the first glance, thanks a lot!
+After creating the initial LSM security extended attribute, call
+evm_inode_post_init_security() to create the 'security.evm'
+extended attribute.
 
-Great!  I'm travelling at the moment so can't complete the series, but 
-I'll aim to do the full series over the next few weeks and repost.  
-Thanks for taking the time to look at it.
+Signed-off-by: Mimi Zohar <zohar@us.ibm.com>
+---
+ fs/jffs2/security.c |   26 +++++++++++++++++++-------
+ 1 files changed, 19 insertions(+), 7 deletions(-)
 
-Jamie
+diff --git a/fs/jffs2/security.c b/fs/jffs2/security.c
+index cfeb716..6847769 100644
+--- a/fs/jffs2/security.c
++++ b/fs/jffs2/security.c
+@@ -20,6 +20,7 @@
+ #include <linux/xattr.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/security.h>
++#include <linux/evm.h>
+ #include "nodelist.h"
+ 
+ /* ---- Initial Security Label Attachment -------------- */
+@@ -28,19 +29,30 @@ int jffs2_init_security(struct inode *inode, struct inode *dir,
+ {
+ 	int rc;
+ 	size_t len;
+-	void *value;
+-	char *name;
++	struct xattr lsm_xattr;
++	struct xattr evm_xattr;
+ 
+-	rc = security_inode_init_security(inode, dir, qstr, &name, &value, &len);
++	rc = security_inode_init_security(inode, dir, qstr, &lsm_xattr.name,
++					  &lsm_xattr.value,
++					  &lsm_xattr.value_len);
+ 	if (rc) {
+ 		if (rc == -EOPNOTSUPP)
+ 			return 0;
+ 		return rc;
+ 	}
+-	rc = do_jffs2_setxattr(inode, JFFS2_XPREFIX_SECURITY, name, value, len, 0);
+-
+-	kfree(name);
+-	kfree(value);
++	rc = do_jffs2_setxattr(inode, JFFS2_XPREFIX_SECURITY, lsm_xattr.name,
++			       lsm_xattr.value, lsm_xattr.value_len, 0);
++	if (rc)
++		goto out;
++	rc = evm_inode_post_init_security(inode, &lsm_xattr, &evm_xattr);
++	if (err)
++		goto out;
++	rc = do_jffs2_setxattr(inode, JFFS2_XPREFIX_SECURITY, evm_xattr.name,
++			       evm_xattr.value, evm_xattr.value_len, 0);
++	kfree(evm_xattr.value);
++out:
++	kfree(lsm_xattr.name);
++	kfree(lsm_xattr.value);
+ 	return rc;
+ }
+ 
+-- 
+1.7.3.4
