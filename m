@@ -1,17 +1,16 @@
 Received: from smtp.nokia.com ([147.243.128.24] helo=mgw-da01.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QLsQl-0003dI-Ez
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 07:41:35 +0000
+	id 1QLsQl-0003dH-DW
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 07:41:38 +0000
 Received: from nokia.com (localhost [127.0.0.1])
 	by mgw-da01.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p4G7eTFS011093
+	p4G7eTrH011091
 	for <linux-mtd@lists.infradead.org>; Mon, 16 May 2011 10:41:30 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 15/20] UBIFS: synchronize write-buffer before switching to the
-	next bud
-Date: Mon, 16 May 2011 10:44:34 +0300
-Message-Id: <1305531879-19311-16-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 17/20] UBIFS: share the next_log_lnum helper
+Date: Mon, 16 May 2011 10:44:36 +0300
+Message-Id: <1305531879-19311-18-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1305531879-19311-1-git-send-email-dedekind1@gmail.com>
 References: <1305531879-19311-1-git-send-email-dedekind1@gmail.com>
 Cc: Adrian Hunter <adrian.hunter@nokia.com>
@@ -26,116 +25,129 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Currently when UBIFS fills up the current bud (which is the last in the journal
-head) and switches to the next bud, it first writes the log reference node for
-the next bud and only after this synchronizes the write-buffer of the previous
-bud. This is not a big deal, but an unclean power cut may lead to a situation
-when we have corruption in a next-to-last bud, although it is much more logical
-that we have to have corruption only in the last bud.
-
-This patch also removes write-buffer synchronization from
-'ubifs_wbuf_seek_nolock()' because this is not needed anymore (we synchronize
-the write-buffer explicitly everywhere now) and also because this is just
-prone to various errors.
+We'll need to use the 'next_log_lnum()' helper function from log.c in the fixup
+code, so let's move it to misc.h. IOW, this is a preparation to the following
+free space fixup changes.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- fs/ubifs/gc.c      |    4 ++++
- fs/ubifs/io.c      |   12 +++---------
- fs/ubifs/journal.c |   25 +++++++++++++++----------
- 3 files changed, 22 insertions(+), 19 deletions(-)
+ fs/ubifs/log.c  |   28 +++++++---------------------
+ fs/ubifs/misc.h |   17 +++++++++++++++++
+ 2 files changed, 24 insertions(+), 21 deletions(-)
 
-diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
-index d70937b..ded29f6 100644
---- a/fs/ubifs/gc.c
-+++ b/fs/ubifs/gc.c
-@@ -100,6 +100,10 @@ static int switch_gc_head(struct ubifs_info *c)
- 	if (err)
- 		return err;
+diff --git a/fs/ubifs/log.c b/fs/ubifs/log.c
+index 40fa780..affea94 100644
+--- a/fs/ubifs/log.c
++++ b/fs/ubifs/log.c
+@@ -100,20 +100,6 @@ struct ubifs_wbuf *ubifs_get_wbuf(struct ubifs_info *c, int lnum)
+ }
  
-+	err = ubifs_wbuf_sync_nolock(wbuf);
-+	if (err)
-+		return err;
-+
- 	err = ubifs_add_bud_to_log(c, GCHD, gc_lnum, 0);
- 	if (err)
- 		return err;
-diff --git a/fs/ubifs/io.c b/fs/ubifs/io.c
-index 67bbde3..166951e 100644
---- a/fs/ubifs/io.c
-+++ b/fs/ubifs/io.c
-@@ -452,8 +452,8 @@ int ubifs_wbuf_sync_nolock(struct ubifs_wbuf *wbuf)
-  * @dtype: data type
-  *
-  * This function targets the write-buffer to logical eraseblock @lnum:@offs.
-- * The write-buffer is synchronized if it is not empty. Returns zero in case of
-- * success and a negative error code in case of failure.
-+ * The write-buffer has to be empty. Returns zero in case of success and a
-+ * negative error code in case of failure.
+ /**
+- * next_log_lnum - switch to the next log LEB.
+- * @c: UBIFS file-system description object
+- * @lnum: current log LEB
+- */
+-static inline int next_log_lnum(const struct ubifs_info *c, int lnum)
+-{
+-	lnum += 1;
+-	if (lnum > c->log_last)
+-		lnum = UBIFS_LOG_LNUM;
+-
+-	return lnum;
+-}
+-
+-/**
+  * empty_log_bytes - calculate amount of empty space in the log.
+  * @c: UBIFS file-system description object
   */
- int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
- 			   int dtype)
-@@ -465,13 +465,7 @@ int ubifs_wbuf_seek_nolock(struct ubifs_wbuf *wbuf, int lnum, int offs,
- 	ubifs_assert(offs >= 0 && offs <= c->leb_size);
- 	ubifs_assert(offs % c->min_io_size == 0 && !(offs & 7));
- 	ubifs_assert(lnum != wbuf->lnum);
--
--	if (wbuf->used > 0) {
--		int err = ubifs_wbuf_sync_nolock(wbuf);
--
--		if (err)
--			return err;
--	}
-+	ubifs_assert(wbuf->used == 0);
+@@ -257,7 +243,7 @@ int ubifs_add_bud_to_log(struct ubifs_info *c, int jhead, int lnum, int offs)
+ 	ref->jhead = cpu_to_le32(jhead);
  
- 	spin_lock(&wbuf->lock);
- 	wbuf->lnum = lnum;
-diff --git a/fs/ubifs/journal.c b/fs/ubifs/journal.c
-index ce55a48..34b1679 100644
---- a/fs/ubifs/journal.c
-+++ b/fs/ubifs/journal.c
-@@ -141,14 +141,8 @@ again:
- 	 * LEB with some empty space.
- 	 */
- 	lnum = ubifs_find_free_space(c, len, &offs, squeeze);
--	if (lnum >= 0) {
--		/* Found an LEB, add it to the journal head */
--		err = ubifs_add_bud_to_log(c, jhead, lnum, offs);
--		if (err)
--			goto out_return;
--		/* A new bud was successfully allocated and added to the log */
-+	if (lnum >= 0)
- 		goto out;
--	}
- 
- 	err = lnum;
- 	if (err != -ENOSPC)
-@@ -203,12 +197,23 @@ again:
- 		return 0;
+ 	if (c->lhead_offs > c->leb_size - c->ref_node_alsz) {
+-		c->lhead_lnum = next_log_lnum(c, c->lhead_lnum);
++		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
+ 		c->lhead_offs = 0;
  	}
  
--	err = ubifs_add_bud_to_log(c, jhead, lnum, 0);
--	if (err)
--		goto out_return;
- 	offs = 0;
+@@ -425,7 +411,7 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
  
- out:
-+	/*
-+	 * Make sure we synchronize the write-buffer before we add the new bud
-+	 * to the log. Otherwise we may have a power cut after the log
-+	 * reference node for the last bud (@lnum) is written but before the
-+	 * write-buffer data are written to the next-to-last bud
-+	 * (@wbuf->lnum). And the effect would be that the recovery would see
-+	 * that there is corruption in the next-to-last bud.
-+	 */
-+	err = ubifs_wbuf_sync_nolock(wbuf);
-+	if (err)
-+		goto out_return;
-+	err = ubifs_add_bud_to_log(c, jhead, lnum, offs);
-+	if (err)
-+		goto out_return;
- 	err = ubifs_wbuf_seek_nolock(wbuf, lnum, offs, wbuf->dtype);
- 	if (err)
- 		goto out_unlock;
+ 	/* Switch to the next log LEB */
+ 	if (c->lhead_offs) {
+-		c->lhead_lnum = next_log_lnum(c, c->lhead_lnum);
++		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
+ 		c->lhead_offs = 0;
+ 	}
+ 
+@@ -446,7 +432,7 @@ int ubifs_log_start_commit(struct ubifs_info *c, int *ltail_lnum)
+ 
+ 	c->lhead_offs += len;
+ 	if (c->lhead_offs == c->leb_size) {
+-		c->lhead_lnum = next_log_lnum(c, c->lhead_lnum);
++		c->lhead_lnum = ubifs_next_log_lnum(c, c->lhead_lnum);
+ 		c->lhead_offs = 0;
+ 	}
+ 
+@@ -533,7 +519,7 @@ int ubifs_log_post_commit(struct ubifs_info *c, int old_ltail_lnum)
+ 	}
+ 	mutex_lock(&c->log_mutex);
+ 	for (lnum = old_ltail_lnum; lnum != c->ltail_lnum;
+-	     lnum = next_log_lnum(c, lnum)) {
++	     lnum = ubifs_next_log_lnum(c, lnum)) {
+ 		dbg_log("unmap log LEB %d", lnum);
+ 		err = ubifs_leb_unmap(c, lnum);
+ 		if (err)
+@@ -642,7 +628,7 @@ static int add_node(struct ubifs_info *c, void *buf, int *lnum, int *offs,
+ 		err = ubifs_leb_change(c, *lnum, buf, sz, UBI_SHORTTERM);
+ 		if (err)
+ 			return err;
+-		*lnum = next_log_lnum(c, *lnum);
++		*lnum = ubifs_next_log_lnum(c, *lnum);
+ 		*offs = 0;
+ 	}
+ 	memcpy(buf + *offs, node, len);
+@@ -712,7 +698,7 @@ int ubifs_consolidate_log(struct ubifs_info *c)
+ 		ubifs_scan_destroy(sleb);
+ 		if (lnum == c->lhead_lnum)
+ 			break;
+-		lnum = next_log_lnum(c, lnum);
++		lnum = ubifs_next_log_lnum(c, lnum);
+ 	}
+ 	if (offs) {
+ 		int sz = ALIGN(offs, c->min_io_size);
+@@ -732,7 +718,7 @@ int ubifs_consolidate_log(struct ubifs_info *c)
+ 	/* Unmap remaining LEBs */
+ 	lnum = write_lnum;
+ 	do {
+-		lnum = next_log_lnum(c, lnum);
++		lnum = ubifs_next_log_lnum(c, lnum);
+ 		err = ubifs_leb_unmap(c, lnum);
+ 		if (err)
+ 			return err;
+diff --git a/fs/ubifs/misc.h b/fs/ubifs/misc.h
+index c3de04d..0b5296a 100644
+--- a/fs/ubifs/misc.h
++++ b/fs/ubifs/misc.h
+@@ -340,4 +340,21 @@ static inline void ubifs_release_lprops(struct ubifs_info *c)
+ 	mutex_unlock(&c->lp_mutex);
+ }
+ 
++/**
++ * ubifs_next_log_lnum - switch to the next log LEB.
++ * @c: UBIFS file-system description object
++ * @lnum: current log LEB
++ *
++ * This helper function returns the log LEB number which goes next after LEB
++ * 'lnum'.
++ */
++static inline int ubifs_next_log_lnum(const struct ubifs_info *c, int lnum)
++{
++	lnum += 1;
++	if (lnum > c->log_last)
++		lnum = UBIFS_LOG_LNUM;
++
++	return lnum;
++}
++
+ #endif /* __UBIFS_MISC_H__ */
 -- 
 1.7.2.3
