@@ -1,18 +1,21 @@
-Received: from service87.mimecast.com ([94.185.240.25])
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QLzGk-00074u-9I
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 14:59:41 +0000
-From: Marc Zyngier <marc.zyngier@arm.com>
-To: linux-arm-kernel@lists.infradead.org,
-	linux-mtd@lists.infradead.org
-Subject: [PATCH v5 7/8] MTD: Remove integrator-flash
-Date: Mon, 16 May 2011 15:59:36 +0100
-Message-Id: <1305557977-16871-8-git-send-email-marc.zyngier@arm.com>
-In-Reply-To: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
+MIME-Version: 1.0
+In-Reply-To: <1305557977-16871-9-git-send-email-marc.zyngier@arm.com>
 References: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
-Content-Type: text/plain; charset=WINDOWS-1252
+	<1305557977-16871-9-git-send-email-marc.zyngier@arm.com>
+From: Eric Miao <eric.y.miao@gmail.com>
+Date: Mon, 16 May 2011 23:06:10 +0800
+Message-ID: <BANLkTi=-Lcg5Wk7yuipTTzrSxs0nNmpMaw@mail.gmail.com>
+Subject: Re: [PATCH v5 8/8] MTD: physmap: let set_vpp() pass a platform_device
+	instead of a map_info
+To: Marc Zyngier <marc.zyngier@arm.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Russell King <linux@arm.linux.org.uk>, Ben Dooks <ben-linux@fluff.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
+	Philipp Zabel <philipp.zabel@gmail.com>,
+	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
+	Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,366 +25,382 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As there is now no in-tree user of integrator-flash, remove
-it completely.
+On Mon, May 16, 2011 at 10:59 PM, Marc Zyngier <marc.zyngier@arm.com> wrote=
+:
+> The set_vpp() method provided by physmap passes a map_info back to
+> the platform code, which has little relevance as far as the platform
+> is concerned (this parameter is completely unused).
+>
+> Instead, pass the platform_device, which can be used in the pismo
+> driver to retrieve some important information in a nicer way, instead
+> of the hack that was in place.
 
-Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
----
- drivers/mtd/Kconfig                 |    3 +-
- drivers/mtd/maps/Makefile           |    1 -
- drivers/mtd/maps/integrator-flash.c |  309 -------------------------------=
-----
- 3 files changed, 1 insertions(+), 312 deletions(-)
- delete mode 100644 drivers/mtd/maps/integrator-flash.c
+Not really sure if a 'struct device' would be more generic here, though thi=
+s
+case is simply a 'struct platform_device'.
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index b4567c3..bc50d5e 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -148,8 +148,7 @@ config MTD_AFS_PARTS
-=20
- =09  You will still need the parsing functions to be called by the driver
- =09  for your particular device. It won't happen automatically. The
--=09  'armflash' map driver (CONFIG_MTD_ARM_INTEGRATOR) does this, for
--=09  example.
-+=09  'physmap' map driver (CONFIG_MTD_PHYSMAP) does this, for example.
-=20
- config MTD_OF_PARTS
- =09def_bool y
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 08533bd..5b5fa31 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -8,7 +8,6 @@ endif
-=20
- # Chip mappings
- obj-$(CONFIG_MTD_CDB89712)=09+=3D cdb89712.o
--obj-$(CONFIG_MTD_ARM_INTEGRATOR)+=3D integrator-flash.o
- obj-$(CONFIG_MTD_CFI_FLAGADM)=09+=3D cfi_flagadm.o
- obj-$(CONFIG_MTD_DC21285)=09+=3D dc21285.o
- obj-$(CONFIG_MTD_DILNETPC)=09+=3D dilnetpc.o
-diff --git a/drivers/mtd/maps/integrator-flash.c b/drivers/mtd/maps/integra=
-tor-flash.c
-deleted file mode 100644
-index e22ff5a..0000000
---- a/drivers/mtd/maps/integrator-flash.c
-+++ /dev/null
-@@ -1,309 +0,0 @@
--/*=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
--
--    drivers/mtd/maps/integrator-flash.c: ARM Integrator flash map driver
--
--    Copyright (C) 2000 ARM Limited
--    Copyright (C) 2003 Deep Blue Solutions Ltd.
--
--   This program is free software; you can redistribute it and/or modify
--   it under the terms of the GNU General Public License as published by
--   the Free Software Foundation; either version 2 of the License, or
--   (at your option) any later version.
--
--   This program is distributed in the hope that it will be useful,
--   but WITHOUT ANY WARRANTY; without even the implied warranty of
--   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--   GNU General Public License for more details.
--
--   You should have received a copy of the GNU General Public License
--   along with this program; if not, write to the Free Software
--   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  U=
-SA
--
--   This is access code for flashes using ARM's flash partitioning
--   standards.
--
--=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D*/
--
--#include <linux/module.h>
--#include <linux/types.h>
--#include <linux/kernel.h>
--#include <linux/slab.h>
--#include <linux/ioport.h>
--#include <linux/platform_device.h>
--#include <linux/init.h>
--#include <linux/io.h>
--
--#include <linux/mtd/mtd.h>
--#include <linux/mtd/map.h>
--#include <linux/mtd/partitions.h>
--#include <linux/mtd/concat.h>
--
--#include <asm/mach/flash.h>
--#include <mach/hardware.h>
--#include <asm/system.h>
--
--struct armflash_subdev_info {
--=09char=09=09=09*name;
--=09struct mtd_info=09=09*mtd;
--=09struct map_info=09=09map;
--=09struct flash_platform_data *plat;
--};
--
--struct armflash_info {
--=09struct resource=09=09*res;
--=09struct mtd_partition=09*parts;
--=09struct mtd_info=09=09*mtd;
--=09int=09=09=09nr_subdev;
--=09struct armflash_subdev_info subdev[0];
--};
--
--static void armflash_set_vpp(struct map_info *map, int on)
--{
--=09struct armflash_subdev_info *info =3D
--=09=09container_of(map, struct armflash_subdev_info, map);
--
--=09if (info->plat && info->plat->set_vpp)
--=09=09info->plat->set_vpp(on);
--}
--
--static const char *probes[] =3D { "cmdlinepart", "RedBoot", "afs", NULL };
--
--static int armflash_subdev_probe(struct armflash_subdev_info *subdev,
--=09=09=09=09 struct resource *res)
--{
--=09struct flash_platform_data *plat =3D subdev->plat;
--=09resource_size_t size =3D res->end - res->start + 1;
--=09void __iomem *base;
--=09int err =3D 0;
--
--=09if (!request_mem_region(res->start, size, subdev->name)) {
--=09=09err =3D -EBUSY;
--=09=09goto out;
--=09}
--
--=09base =3D ioremap(res->start, size);
--=09if (!base) {
--=09=09err =3D -ENOMEM;
--=09=09goto no_mem;
--=09}
--
--=09/*
--=09 * look for CFI based flash parts fitted to this board
--=09 */
--=09subdev->map.size=09=3D size;
--=09subdev->map.bankwidth=09=3D plat->width;
--=09subdev->map.phys=09=3D res->start;
--=09subdev->map.virt=09=3D base;
--=09subdev->map.name=09=3D subdev->name;
--=09subdev->map.set_vpp=09=3D armflash_set_vpp;
--
--=09simple_map_init(&subdev->map);
--
--=09/*
--=09 * Also, the CFI layer automatically works out what size
--=09 * of chips we have, and does the necessary identification
--=09 * for us automatically.
--=09 */
--=09subdev->mtd =3D do_map_probe(plat->map_name, &subdev->map);
--=09if (!subdev->mtd) {
--=09=09err =3D -ENXIO;
--=09=09goto no_device;
--=09}
--
--=09subdev->mtd->owner =3D THIS_MODULE;
--
--=09/* Successful? */
--=09if (err =3D=3D 0)
--=09=09return err;
--
--=09if (subdev->mtd)
--=09=09map_destroy(subdev->mtd);
-- no_device:
--=09iounmap(base);
-- no_mem:
--=09release_mem_region(res->start, size);
-- out:
--=09return err;
--}
--
--static void armflash_subdev_remove(struct armflash_subdev_info *subdev)
--{
--=09if (subdev->mtd)
--=09=09map_destroy(subdev->mtd);
--=09if (subdev->map.virt)
--=09=09iounmap(subdev->map.virt);
--=09kfree(subdev->name);
--=09subdev->name =3D NULL;
--=09release_mem_region(subdev->map.phys, subdev->map.size);
--}
--
--static int armflash_probe(struct platform_device *dev)
--{
--=09struct flash_platform_data *plat =3D dev->dev.platform_data;
--=09unsigned int size;
--=09struct armflash_info *info;
--=09int i, nr, err;
--
--=09/* Count the number of devices */
--=09for (nr =3D 0; ; nr++)
--=09=09if (!platform_get_resource(dev, IORESOURCE_MEM, nr))
--=09=09=09break;
--=09if (nr =3D=3D 0) {
--=09=09err =3D -ENODEV;
--=09=09goto out;
--=09}
--
--=09size =3D sizeof(struct armflash_info) +
--=09=09sizeof(struct armflash_subdev_info) * nr;
--=09info =3D kzalloc(size, GFP_KERNEL);
--=09if (!info) {
--=09=09err =3D -ENOMEM;
--=09=09goto out;
--=09}
--
--=09if (plat && plat->init) {
--=09=09err =3D plat->init();
--=09=09if (err)
--=09=09=09goto no_resource;
--=09}
--
--=09for (i =3D 0; i < nr; i++) {
--=09=09struct armflash_subdev_info *subdev =3D &info->subdev[i];
--=09=09struct resource *res;
--
--=09=09res =3D platform_get_resource(dev, IORESOURCE_MEM, i);
--=09=09if (!res)
--=09=09=09break;
--
--=09=09if (nr =3D=3D 1)
--=09=09=09/* No MTD concatenation, just use the default name */
--=09=09=09subdev->name =3D kstrdup(dev_name(&dev->dev), GFP_KERNEL);
--=09=09else
--=09=09=09subdev->name =3D kasprintf(GFP_KERNEL, "%s-%d",
--=09=09=09=09=09=09 dev_name(&dev->dev), i);
--=09=09if (!subdev->name) {
--=09=09=09err =3D -ENOMEM;
--=09=09=09break;
--=09=09}
--=09=09subdev->plat =3D plat;
--
--=09=09err =3D armflash_subdev_probe(subdev, res);
--=09=09if (err) {
--=09=09=09kfree(subdev->name);
--=09=09=09subdev->name =3D NULL;
--=09=09=09break;
--=09=09}
--=09}
--=09info->nr_subdev =3D i;
--
--=09if (err)
--=09=09goto subdev_err;
--
--=09if (info->nr_subdev =3D=3D 1)
--=09=09info->mtd =3D info->subdev[0].mtd;
--=09else if (info->nr_subdev > 1) {
--=09=09struct mtd_info *cdev[info->nr_subdev];
--
--=09=09/*
--=09=09 * We detected multiple devices.  Concatenate them together.
--=09=09 */
--=09=09for (i =3D 0; i < info->nr_subdev; i++)
--=09=09=09cdev[i] =3D info->subdev[i].mtd;
--
--=09=09info->mtd =3D mtd_concat_create(cdev, info->nr_subdev,
--=09=09=09=09=09      dev_name(&dev->dev));
--=09=09if (info->mtd =3D=3D NULL)
--=09=09=09err =3D -ENXIO;
--=09}
--
--=09if (err < 0)
--=09=09goto cleanup;
--
--=09err =3D parse_mtd_partitions(info->mtd, probes, &info->parts, 0);
--=09if (err > 0) {
--=09=09err =3D add_mtd_partitions(info->mtd, info->parts, err);
--=09=09if (err)
--=09=09=09printk(KERN_ERR
--=09=09=09       "mtd partition registration failed: %d\n", err);
--=09}
--
--=09if (err =3D=3D 0) {
--=09=09platform_set_drvdata(dev, info);
--=09=09return err;
--=09}
--
--=09/*
--=09 * We got an error, free all resources.
--=09 */
-- cleanup:
--=09if (info->mtd) {
--=09=09del_mtd_partitions(info->mtd);
--=09=09if (info->mtd !=3D info->subdev[0].mtd)
--=09=09=09mtd_concat_destroy(info->mtd);
--=09}
--=09kfree(info->parts);
-- subdev_err:
--=09for (i =3D info->nr_subdev - 1; i >=3D 0; i--)
--=09=09armflash_subdev_remove(&info->subdev[i]);
-- no_resource:
--=09if (plat && plat->exit)
--=09=09plat->exit();
--=09kfree(info);
-- out:
--=09return err;
--}
--
--static int armflash_remove(struct platform_device *dev)
--{
--=09struct armflash_info *info =3D platform_get_drvdata(dev);
--=09struct flash_platform_data *plat =3D dev->dev.platform_data;
--=09int i;
--
--=09platform_set_drvdata(dev, NULL);
--
--=09if (info) {
--=09=09if (info->mtd) {
--=09=09=09del_mtd_partitions(info->mtd);
--=09=09=09if (info->mtd !=3D info->subdev[0].mtd)
--=09=09=09=09mtd_concat_destroy(info->mtd);
--=09=09}
--=09=09kfree(info->parts);
--
--=09=09for (i =3D info->nr_subdev - 1; i >=3D 0; i--)
--=09=09=09armflash_subdev_remove(&info->subdev[i]);
--
--=09=09if (plat && plat->exit)
--=09=09=09plat->exit();
--
--=09=09kfree(info);
--=09}
--
--=09return 0;
--}
--
--static struct platform_driver armflash_driver =3D {
--=09.probe=09=09=3D armflash_probe,
--=09.remove=09=09=3D armflash_remove,
--=09.driver=09=09=3D {
--=09=09.name=09=3D "armflash",
--=09=09.owner=09=3D THIS_MODULE,
--=09},
--};
--
--static int __init armflash_init(void)
--{
--=09return platform_driver_register(&armflash_driver);
--}
--
--static void __exit armflash_exit(void)
--{
--=09platform_driver_unregister(&armflash_driver);
--}
--
--module_init(armflash_init);
--module_exit(armflash_exit);
--
--MODULE_AUTHOR("ARM Ltd");
--MODULE_DESCRIPTION("ARM Integrator CFI map driver");
--MODULE_LICENSE("GPL");
--MODULE_ALIAS("platform:armflash");
---=20
-1.7.0.4
+>
+> The empty set_vpp function in board-at572d940hf_ek.c is removed, as
+> it serves no real purpose.
+>
+> Cc: Andrew Victor <linux@maxim.org.za>
+> Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+> Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+> Cc: Russell King <linux@arm.linux.org.uk>
+> Cc: Philipp Zabel <philipp.zabel@gmail.com>
+> Cc: Eric Miao <eric.y.miao@gmail.com>
+> Cc: Ben Dooks <ben-linux@fluff.org>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+> Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+> ---
+> =C2=A0arch/arm/mach-at91/board-at572d940hf_ek.c | =C2=A0 =C2=A04 ---
+> =C2=A0arch/arm/mach-integrator/integrator_ap.c =C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-integrator/integrator_cp.c =C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-omap1/flash.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-pxa/hx4700.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-pxa/magician.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-realview/core.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 | =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-s3c2410/nor-simtec.c =C2=A0 =C2=A0 =C2=A0 =C2=A0| =C2=
+=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-versatile/core.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/mach-vexpress/v2m.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0| =C2=A0 =C2=A02 +-
+> =C2=A0arch/arm/plat-omap/include/plat/flash.h =C2=A0 | =C2=A0 =C2=A02 +-
+> =C2=A0drivers/mtd/maps/physmap.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0| =C2=A0 15 ++++++++++-
+> =C2=A0drivers/mtd/maps/pismo.c =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0| =C2=A0 40 ++--------------------------
+> =C2=A0include/linux/mtd/physmap.h =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 | =C2=A0 =C2=A02 +-
+> =C2=A014 files changed, 28 insertions(+), 53 deletions(-)
+>
+> diff --git a/arch/arm/mach-at91/board-at572d940hf_ek.c b/arch/arm/mach-at=
+91/board-at572d940hf_ek.c
+> index 3929f1c..c139799 100644
+> --- a/arch/arm/mach-at91/board-at572d940hf_ek.c
+> +++ b/arch/arm/mach-at91/board-at572d940hf_ek.c
+> @@ -134,14 +134,10 @@ static struct mtd_partition eb_nor_partitions[] =3D=
+ {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0},
+> =C2=A0};
+>
+> -static void nor_flash_set_vpp(struct map_info* mi, int i) {
+> -};
+> -
+> =C2=A0static struct physmap_flash_data nor_flash_data =3D {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0.width =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D 4=
+,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0.parts =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D e=
+b_nor_partitions,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0.nr_parts =C2=A0 =C2=A0 =C2=A0 =3D ARRAY_SIZE(=
+eb_nor_partitions),
+> - =C2=A0 =C2=A0 =C2=A0 .set_vpp =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D nor_flash_=
+set_vpp,
+> =C2=A0};
+>
+> =C2=A0static struct resource nor_flash_resources[] =3D {
+> diff --git a/arch/arm/mach-integrator/integrator_ap.c b/arch/arm/mach-int=
+egrator/integrator_ap.c
+> index 11bd49e..2aa98ee 100644
+> --- a/arch/arm/mach-integrator/integrator_ap.c
+> +++ b/arch/arm/mach-integrator/integrator_ap.c
+> @@ -263,7 +263,7 @@ static void ap_flash_exit(struct platform_device *dev=
+)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0}
+> =C2=A0}
+>
+> -static void ap_flash_set_vpp(struct map_info *map, int on)
+> +static void ap_flash_set_vpp(struct platform_device *pdev, int on)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0void __iomem *reg =3D on ? SC_CTRLS : SC_CTRLC=
+;
+>
+> diff --git a/arch/arm/mach-integrator/integrator_cp.c b/arch/arm/mach-int=
+egrator/integrator_cp.c
+> index ec9628f..b676b41 100644
+> --- a/arch/arm/mach-integrator/integrator_cp.c
+> +++ b/arch/arm/mach-integrator/integrator_cp.c
+> @@ -259,7 +259,7 @@ static void intcp_flash_exit(struct platform_device *=
+dev)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0writel(val, INTCP_VA_CTRL_BASE + INTCP_FLASHPR=
+OG);
+> =C2=A0}
+>
+> -static void intcp_flash_set_vpp(struct map_info *map, int on)
+> +static void intcp_flash_set_vpp(struct platform_device *pdev, int on)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0u32 val;
+>
+> diff --git a/arch/arm/mach-omap1/flash.c b/arch/arm/mach-omap1/flash.c
+> index acd1616..1749cb3 100644
+> --- a/arch/arm/mach-omap1/flash.c
+> +++ b/arch/arm/mach-omap1/flash.c
+> @@ -13,7 +13,7 @@
+> =C2=A0#include <plat/tc.h>
+> =C2=A0#include <plat/flash.h>
+>
+> -void omap1_set_vpp(struct map_info *map, int enable)
+> +void omap1_set_vpp(struct platform_device *pdev, int enable)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0static int count;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0u32 l;
+> diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
+> index 9cdcca5..f941a49 100644
+> --- a/arch/arm/mach-pxa/hx4700.c
+> +++ b/arch/arm/mach-pxa/hx4700.c
+> @@ -735,7 +735,7 @@ static struct platform_device bq24022 =3D {
+> =C2=A0* StrataFlash
+> =C2=A0*/
+>
+> -static void hx4700_set_vpp(struct map_info *map, int vpp)
+> +static void hx4700_set_vpp(struct platform_device *pdev, int vpp)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0gpio_set_value(GPIO91_HX4700_FLASH_VPEN, vpp);
+> =C2=A0}
+> diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
+> index 9984ef7..e192057 100644
+> --- a/arch/arm/mach-pxa/magician.c
+> +++ b/arch/arm/mach-pxa/magician.c
+> @@ -662,7 +662,7 @@ static struct pxaohci_platform_data magician_ohci_inf=
+o =3D {
+> =C2=A0* StrataFlash
+> =C2=A0*/
+>
+> -static void magician_set_vpp(struct map_info *map, int vpp)
+> +static void magician_set_vpp(struct platform_device *pdev, int vpp)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0gpio_set_value(EGPIO_MAGICIAN_FLASH_VPP, vpp);
+> =C2=A0}
+> diff --git a/arch/arm/mach-realview/core.c b/arch/arm/mach-realview/core.=
+c
+> index d3f1dde..c8ec088 100644
+> --- a/arch/arm/mach-realview/core.c
+> +++ b/arch/arm/mach-realview/core.c
+> @@ -77,7 +77,7 @@ void __init realview_adjust_zones(unsigned long *size, =
+unsigned long *hole)
+>
+> =C2=A0#define REALVIEW_FLASHCTRL =C2=A0 =C2=A0(__io_address(REALVIEW_SYS_=
+BASE) + REALVIEW_SYS_FLASH_OFFSET)
+>
+> -static void realview_flash_set_vpp(struct map_info *map, int on)
+> +static void realview_flash_set_vpp(struct platform_device *pdev, int on)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0u32 val;
+>
+> diff --git a/arch/arm/mach-s3c2410/nor-simtec.c b/arch/arm/mach-s3c2410/n=
+or-simtec.c
+> index 598d130..ad9f750 100644
+> --- a/arch/arm/mach-s3c2410/nor-simtec.c
+> +++ b/arch/arm/mach-s3c2410/nor-simtec.c
+> @@ -32,7 +32,7 @@
+>
+> =C2=A0#include "nor-simtec.h"
+>
+> -static void simtec_nor_vpp(struct map_info *map, int vpp)
+> +static void simtec_nor_vpp(struct platform_device *pdev, int vpp)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int val;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned long flags;
+> diff --git a/arch/arm/mach-versatile/core.c b/arch/arm/mach-versatile/cor=
+e.c
+> index 06f406a..335d825 100644
+> --- a/arch/arm/mach-versatile/core.c
+> +++ b/arch/arm/mach-versatile/core.c
+> @@ -190,7 +190,7 @@ void __init versatile_map_io(void)
+>
+> =C2=A0#define VERSATILE_FLASHCTRL =C2=A0 =C2=A0(__io_address(VERSATILE_SY=
+S_BASE) + VERSATILE_SYS_FLASH_OFFSET)
+>
+> -static void versatile_flash_set_vpp(struct map_info *map, int on)
+> +static void versatile_flash_set_vpp(struct platform_device *pdev, int on=
+)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0u32 val;
+>
+> diff --git a/arch/arm/mach-vexpress/v2m.c b/arch/arm/mach-vexpress/v2m.c
+> index e326815..f860314 100644
+> --- a/arch/arm/mach-vexpress/v2m.c
+> +++ b/arch/arm/mach-vexpress/v2m.c
+> @@ -206,7 +206,7 @@ static struct platform_device v2m_usb_device =3D {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0.dev.platform_data =3D &v2m_usb_config,
+> =C2=A0};
+>
+> -static void v2m_flash_set_vpp(struct map_info *map, int on)
+> +static void v2m_flash_set_vpp(struct platform_device *pdev, int on)
+> =C2=A0{
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0writel(on !=3D 0, MMIO_P2V(V2M_SYS_FLASH));
+> =C2=A0}
+> diff --git a/arch/arm/plat-omap/include/plat/flash.h b/arch/arm/plat-omap=
+/include/plat/flash.h
+> index 3e63270..3083195 100644
+> --- a/arch/arm/plat-omap/include/plat/flash.h
+> +++ b/arch/arm/plat-omap/include/plat/flash.h
+> @@ -11,6 +11,6 @@
+>
+> =C2=A0#include <linux/mtd/map.h>
+>
+> -extern void omap1_set_vpp(struct map_info *map, int enable);
+> +extern void omap1_set_vpp(struct platform_device *pdev, int enable);
+>
+> =C2=A0#endif
+> diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+> index 49676b7..89fe8be 100644
+> --- a/drivers/mtd/maps/physmap.c
+> +++ b/drivers/mtd/maps/physmap.c
+> @@ -74,6 +74,18 @@ static int physmap_flash_remove(struct platform_device=
+ *dev)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return 0;
+> =C2=A0}
+>
+> +static void physmap_set_vpp(struct map_info *map, int state)
+> +{
+> + =C2=A0 =C2=A0 =C2=A0 struct platform_device *pdev;
+> + =C2=A0 =C2=A0 =C2=A0 struct physmap_flash_data *physmap_data;
+> +
+> + =C2=A0 =C2=A0 =C2=A0 pdev =3D (struct platform_device *)map->map_priv_1=
+;
+> + =C2=A0 =C2=A0 =C2=A0 physmap_data =3D pdev->dev.platform_data;
+> +
+> + =C2=A0 =C2=A0 =C2=A0 if (physmap_data->set_vpp)
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 physmap_data->set_vpp(=
+pdev, state);
+> +}
+> +
+> =C2=A0static const char *rom_probe_types[] =3D {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0"cfi_prob=
+e",
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0"jedec_pr=
+obe",
+> @@ -134,8 +146,9 @@ static int physmap_flash_probe(struct platform_device=
+ *dev)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->map[i].phys =
+=3D dev->resource[i].start;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->map[i].size =
+=3D resource_size(&dev->resource[i]);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->map[i].bankw=
+idth =3D physmap_data->width;
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 info->map[i].set_vpp =
+=3D physmap_data->set_vpp;
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 info->map[i].set_vpp =
+=3D physmap_set_vpp;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->map[i].pfow_=
+base =3D physmap_data->pfow_base;
+> + =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 info->map[i].map_priv_=
+1 =3D (unsigned long)dev;
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0info->map[i].virt =
+=3D devm_ioremap(&dev->dev, info->map[i].phys,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 info->map[i].size);
+> diff --git a/drivers/mtd/maps/pismo.c b/drivers/mtd/maps/pismo.c
+> index f4ce273..65bd1cd 100644
+> --- a/drivers/mtd/maps/pismo.c
+> +++ b/drivers/mtd/maps/pismo.c
+> @@ -50,39 +50,13 @@ struct pismo_data {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0struct platform_device =C2=A0*dev[PISMO_NUM_CS=
+];
+> =C2=A0};
+>
+> -/* FIXME: set_vpp could do with a better calling convention */
+> -static struct pismo_data *vpp_pismo;
+> -static DEFINE_MUTEX(pismo_mutex);
+> -
+> -static int pismo_setvpp_probe_fix(struct pismo_data *pismo)
+> +static void pismo_set_vpp(struct platform_device *pdev, int on)
+> =C2=A0{
+> - =C2=A0 =C2=A0 =C2=A0 mutex_lock(&pismo_mutex);
+> - =C2=A0 =C2=A0 =C2=A0 if (vpp_pismo) {
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 mutex_unlock(&pismo_mu=
+tex);
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 kfree(pismo);
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return -EBUSY;
+> - =C2=A0 =C2=A0 =C2=A0 }
+> - =C2=A0 =C2=A0 =C2=A0 vpp_pismo =3D pismo;
+> - =C2=A0 =C2=A0 =C2=A0 mutex_unlock(&pismo_mutex);
+> - =C2=A0 =C2=A0 =C2=A0 return 0;
+> -}
+> -
+> -static void pismo_setvpp_remove_fix(struct pismo_data *pismo)
+> -{
+> - =C2=A0 =C2=A0 =C2=A0 mutex_lock(&pismo_mutex);
+> - =C2=A0 =C2=A0 =C2=A0 if (vpp_pismo =3D=3D pismo)
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 vpp_pismo =3D NULL;
+> - =C2=A0 =C2=A0 =C2=A0 mutex_unlock(&pismo_mutex);
+> -}
+> -
+> -static void pismo_set_vpp(struct map_info *map, int on)
+> -{
+> - =C2=A0 =C2=A0 =C2=A0 struct pismo_data *pismo =3D vpp_pismo;
+> + =C2=A0 =C2=A0 =C2=A0 struct i2c_client *client =3D to_i2c_client(pdev->=
+dev.parent);
+> + =C2=A0 =C2=A0 =C2=A0 struct pismo_data *pismo =3D i2c_get_clientdata(cl=
+ient);
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0pismo->vpp(pismo->vpp_data, on);
+> =C2=A0}
+> -/* end of hack */
+> -
+>
+> =C2=A0static unsigned int __devinit pismo_width_to_bytes(unsigned int wid=
+th)
+> =C2=A0{
+> @@ -231,9 +205,6 @@ static int __devexit pismo_remove(struct i2c_client *=
+client)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0for (i =3D 0; i < ARRAY_SIZE(pismo->dev); i++)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0platform_device_un=
+register(pismo->dev[i]);
+>
+> - =C2=A0 =C2=A0 =C2=A0 /* FIXME: set_vpp needs saner arguments */
+> - =C2=A0 =C2=A0 =C2=A0 pismo_setvpp_remove_fix(pismo);
+> -
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0kfree(pismo);
+>
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0return 0;
+> @@ -257,11 +228,6 @@ static int __devinit pismo_probe(struct i2c_client *=
+client,
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (!pismo)
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0return -ENOMEM;
+>
+> - =C2=A0 =C2=A0 =C2=A0 /* FIXME: set_vpp needs saner arguments */
+> - =C2=A0 =C2=A0 =C2=A0 ret =3D pismo_setvpp_probe_fix(pismo);
+> - =C2=A0 =C2=A0 =C2=A0 if (ret)
+> - =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 return ret;
+> -
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0pismo->client =3D client;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0if (pdata) {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0pismo->vpp =3D pda=
+ta->set_vpp;
+> diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
+> index d37cca0..49b9590 100644
+> --- a/include/linux/mtd/physmap.h
+> +++ b/include/linux/mtd/physmap.h
+> @@ -24,7 +24,7 @@ struct physmap_flash_data {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0width;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 (*init)(struct platform_device *);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0(*exit)(struct platform_device *);
+> - =C2=A0 =C2=A0 =C2=A0 void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0(*set_vpp)(struct map_info *, int);
+> + =C2=A0 =C2=A0 =C2=A0 void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0(*set_vpp)(struct platform_device *, int);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0nr_parts;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0pfow_base;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0char =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0*probe_type;
+> --
+> 1.7.0.4
+>
+>
+>
