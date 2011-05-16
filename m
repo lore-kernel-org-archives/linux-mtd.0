@@ -1,21 +1,22 @@
-Received: from service87.mimecast.com ([94.185.240.25])
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QLzUx-0007P8-Ss
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 15:14:20 +0000
+Received: from caramon.arm.linux.org.uk ([78.32.30.218])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QM4qn-0001ov-7p
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 20:57:14 +0000
+Date: Mon, 16 May 2011 21:56:44 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
+To: Eric Miao <eric.y.miao@gmail.com>
 Subject: Re: [PATCH v5 8/8] MTD: physmap: let set_vpp() pass a
 	platform_device instead of a map_info
-From: Marc Zyngier <Marc.Zyngier@arm.com>
-To: Eric Miao <eric.y.miao@gmail.com>
-In-Reply-To: <BANLkTi=-Lcg5Wk7yuipTTzrSxs0nNmpMaw@mail.gmail.com>
+Message-ID: <20110516205644.GG13659@n2100.arm.linux.org.uk>
 References: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
 	<1305557977-16871-9-git-send-email-marc.zyngier@arm.com>
 	<BANLkTi=-Lcg5Wk7yuipTTzrSxs0nNmpMaw@mail.gmail.com>
-Date: Mon, 16 May 2011 16:14:56 +0100
-Message-ID: <1305558896.30788.15.camel@e102391-lin.cambridge.arm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Cc: Russell King <linux@arm.linux.org.uk>, Ben Dooks <ben-linux@fluff.org>,
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BANLkTi=-Lcg5Wk7yuipTTzrSxs0nNmpMaw@mail.gmail.com>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Ben Dooks <ben-linux@fluff.org>, Marc Zyngier <marc.zyngier@arm.com>,
 	David Woodhouse <dwmw2@infradead.org>,
 	Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
 	Philipp Zabel <philipp.zabel@gmail.com>,
@@ -30,9 +31,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2011-05-16 at 23:06 +0800, Eric Miao wrote:
-> On Mon, May 16, 2011 at 10:59 PM, Marc Zyngier <marc.zyngier@arm.com> wro=
-te:
+On Mon, May 16, 2011 at 11:06:10PM +0800, Eric Miao wrote:
+> On Mon, May 16, 2011 at 10:59 PM, Marc Zyngier <marc.zyngier@arm.com> wrote:
 > > The set_vpp() method provided by physmap passes a map_info back to
 > > the platform code, which has little relevance as far as the platform
 > > is concerned (this parameter is completely unused).
@@ -40,18 +40,14 @@ te:
 > > Instead, pass the platform_device, which can be used in the pismo
 > > driver to retrieve some important information in a nicer way, instead
 > > of the hack that was in place.
->=20
-> Not really sure if a 'struct device' would be more generic here, though t=
-his
+> 
+> Not really sure if a 'struct device' would be more generic here, though this
 > case is simply a 'struct platform_device'.
 
-While I agree that 'struct device' is more generic, physmap only knows
-about platform_devices. Should another device type be added to physmap,
-this would make sense. But at the moment I'd like to limit the code
-churn to what is strictly necessary.
+As it's a platform device driver (at the moment), passing the platform
+device seems logical.
 
-Cheers,
-
-=09M.
---=20
-Reality is an implementation detail.
+If it becomes an DT based device driver, then we need some other way of
+describing the set_vpp etc functionality as we can't describe function
+pointers in DT (the same problem goes for a lot of platform device
+drivers.)
