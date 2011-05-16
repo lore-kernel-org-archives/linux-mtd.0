@@ -1,13 +1,15 @@
 Received: from service87.mimecast.com ([94.185.240.25])
 	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QLzGM-0006zf-9V
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 14:59:15 +0000
+	id 1QLzGN-000700-RZ
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 14:59:17 +0000
 From: Marc Zyngier <marc.zyngier@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v5 0/8] Switch ARM platforms from integrator-flash to physmap
-Date: Mon, 16 May 2011 15:59:29 +0100
-Message-Id: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
+Subject: [PATCH v5 1/8] MTD: Add integrator-flash feature to physmap
+Date: Mon, 16 May 2011 15:59:30 +0100
+Message-Id: <1305557977-16871-2-git-send-email-marc.zyngier@arm.com>
+In-Reply-To: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
+References: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
 Cc: David Woodhouse <dwmw2@infradead.org>
@@ -20,69 +22,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-As the integrator-flash driver is mostly a duplicate of physmap,
-move all users of this driver to physmap and get rid of the
-then unused driver.
+In the process of moving platforms away from integrator-flash
+(aka armflash), add to physmap the few features that make
+armflash unique:
 
-Also change the set_vpp() method in physmap to pass the
-platform_device instead of the map_info. This allows for a substantial
-cleanup in drivers/mtd/maps/pismo.c
+- optionnal probing for the AFS partition type
+- init() and exit() methods, used by Integrator to control
+  write access to the various onboard programmable components
 
-This patch set has been ok'ed by RMK, who is willing to take it
-through his tree. This requires an ACK from the MTD maintainers. David
-Woodhouse cc-ed on the whole patch set in case he'd prefer to merge it
-via his MTD tree.
+Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+---
+ drivers/mtd/maps/physmap.c  |   16 +++++++++++++++-
+ include/linux/mtd/physmap.h |    2 ++
+ 2 files changed, 17 insertions(+), 1 deletions(-)
 
-Chanes since v4:
-- Changed set_vpp() method in physmap
-- Rebased against v2.6.39-rc7
-
-Changes since v3:
-- Dropped patch for aaec2000 platform (removed from tree)
-- Rebased against next-20110317
-
-Changes since v2:
-- Add integrator-flash's init()/exit() methods in order to control
-  write access to the various onboard programmable components, as
-  per RMK request.
-- Rebased against 2.6.38-rc2
-
-Changes since initial revision:
-- Rebased against linux-next (20110107). It should apply cleanly
-  on top of Linus' tree, except for a small conflict in the last
-  patch of the serie.
-
-Marc Zyngier (8):
-  MTD: Add integrator-flash feature to physmap
-  ARM: Realview: Use physmap driver instead of integrator-flash
-  ARM: Versatile: Use physmap driver instead of integrator-flash
-  ARM: VExpress: Use physmap driver instead of integrator-flash
-  ARM: Integrator/AP: Use physmap driver instead of integrator-flash
-  ARM: Integrator/CP: Use physmap driver instead of integrator-flash
-  MTD: Remove integrator-flash
-  MTD: physmap: let set_vpp() pass a platform_device instead of a
-    map_info
-
- arch/arm/configs/realview-smp_defconfig   |    2 +-
- arch/arm/configs/realview_defconfig       |    2 +-
- arch/arm/configs/versatile_defconfig      |    2 +-
- arch/arm/mach-at91/board-at572d940hf_ek.c |    4 -
- arch/arm/mach-integrator/integrator_ap.c  |   13 +-
- arch/arm/mach-integrator/integrator_cp.c  |   13 +-
- arch/arm/mach-omap1/flash.c               |    2 +-
- arch/arm/mach-pxa/hx4700.c                |    2 +-
- arch/arm/mach-pxa/magician.c              |    2 +-
- arch/arm/mach-realview/core.c             |   31 +---
- arch/arm/mach-s3c2410/nor-simtec.c        |    2 +-
- arch/arm/mach-versatile/core.c            |   31 +---
- arch/arm/mach-vexpress/v2m.c              |   22 +--
- arch/arm/plat-omap/include/plat/flash.h   |    2 +-
- drivers/mtd/Kconfig                       |    3 +-
- drivers/mtd/maps/Makefile                 |    1 -
- drivers/mtd/maps/integrator-flash.c       |  309 -------------------------=
-----
- drivers/mtd/maps/physmap.c                |   31 +++-
- drivers/mtd/maps/pismo.c                  |   40 +----
- include/linux/mtd/physmap.h               |    4 +-
- 20 files changed, 68 insertions(+), 450 deletions(-)
- delete mode 100644 drivers/mtd/maps/integrator-flash.c
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 7522df4..49676b7 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -67,6 +67,10 @@ static int physmap_flash_remove(struct platform_device *=
+dev)
+ =09=09if (info->mtd[i] !=3D NULL)
+ =09=09=09map_destroy(info->mtd[i]);
+ =09}
++
++=09if (physmap_data->exit)
++=09=09physmap_data->exit(dev);
++
+ =09return 0;
+ }
+=20
+@@ -77,7 +81,11 @@ static const char *rom_probe_types[] =3D {
+ =09=09=09=09=09"map_rom",
+ =09=09=09=09=09NULL };
+ #ifdef CONFIG_MTD_PARTITIONS
+-static const char *part_probe_types[] =3D { "cmdlinepart", "RedBoot", NULL=
+ };
++static const char *part_probe_types[] =3D { "cmdlinepart", "RedBoot",
++#ifdef CONFIG_MTD_AFS_PARTS
++=09=09=09=09=09  "afs",
++#endif
++=09=09=09=09=09  NULL };
+ #endif
+=20
+ static int physmap_flash_probe(struct platform_device *dev)
+@@ -100,6 +108,12 @@ static int physmap_flash_probe(struct platform_device =
+*dev)
+ =09=09goto err_out;
+ =09}
+=20
++=09if (physmap_data->init) {
++=09=09err =3D physmap_data->init(dev);
++=09=09if (err)
++=09=09=09goto err_out;
++=09}
++
+ =09platform_set_drvdata(dev, info);
+=20
+ =09for (i =3D 0; i < dev->num_resources; i++) {
+diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
+index bcfd9f7..d37cca0 100644
+--- a/include/linux/mtd/physmap.h
++++ b/include/linux/mtd/physmap.h
+@@ -22,6 +22,8 @@ struct map_info;
+=20
+ struct physmap_flash_data {
+ =09unsigned int=09=09width;
++=09int=09=09=09(*init)(struct platform_device *);
++=09void=09=09=09(*exit)(struct platform_device *);
+ =09void=09=09=09(*set_vpp)(struct map_info *, int);
+ =09unsigned int=09=09nr_parts;
+ =09unsigned int=09=09pfow_base;
+--=20
+1.7.0.4
