@@ -1,32 +1,47 @@
-From: nitingarg98@gmail.com (Nitin Garg)
-Date: Thu, 12 May 2011 01:31:53 -0500
-Subject: [PATCH] Fix ONFI NAND flash size detection by using number of
-Message-ID: <mailman.228.1305183942.1530.linux-mtd@lists.infradead.org>
+From: Artem.Bityutskiy@nokia.com (Artem Bityutskiy)
+Date: Tue, 17 May 2011 11:13:17 +0300
+Subject: [PATCH] mtd: be silent when mtd partition parser cannot be found
+Message-ID: <mailman.240.1305620203.1530.linux-mtd@lists.infradead.org>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
-Logical Units in device
+Currently when we register partitions in 'parse_mtd_partitions()' we accept the
+list of parsers we should try. And if one of the parsers was not found we print
+a message. Well, first of all this whole idea is bad - look at how many
+'part_probes' and 'part_probe_types' variables we have - nearly every driver
+defines one. Instead, we should just go through all registered parsers all the
+time. But this needs to be worked on separately.
 
-Signed-off-by: Nitin Garg <nitingarg98@gmail.com>
+This patch makes life of MTD partitions' users a bit simpler and allows them to
+safely request parsers which have not been registered -
+'parse_mtd_partitions()' will not print a "not available" message in this
+case.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
-=A0drivers/mtd/nand/nand_base.c | =A0 =A02 +-
-=A01 files changed, 1 insertions(+), 1 deletions(-)
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index c54a4cb..cdf6015 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2892,7 +2892,7 @@ static int nand_flash_detect_onfi(struct
-mtd_info *mtd, struct nand_chip *chip,
-=A0 =A0 =A0 =A0mtd->writesize =3D le32_to_cpu(p->byte_per_page);
-=A0 =A0 =A0 =A0mtd->erasesize =3D le32_to_cpu(p->pages_per_block) * mtd->wr=
-itesize;
-=A0 =A0 =A0 =A0mtd->oobsize =3D le16_to_cpu(p->spare_bytes_per_page);
-- =A0 =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) *
-mtd->erasesize;
-+ =A0 =A0 =A0 chip->chipsize =3D (uint64_t)le32_to_cpu(p->blocks_per_lun) *
-le32_to_cpu(p->lun_count) * mtd->erasesize;
-=A0 =A0 =A0 =A0busw =3D 0;
-=A0 =A0 =A0 =A0if (le16_to_cpu(p->features) & 1)
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0busw =3D NAND_BUSWIDTH_16;
---
-1.5.5.6
+ drivers/mtd/mtdpart.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 0a47601..cd631e7 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -722,11 +722,8 @@ int parse_mtd_partitions(struct mtd_info *master, const char **types,
+ 		parser = get_partition_parser(*types);
+ 		if (!parser && !request_module("%s", *types))
+ 				parser = get_partition_parser(*types);
+-		if (!parser) {
+-			printk(KERN_NOTICE "%s partition parsing not available\n",
+-			       *types);
++		if (!parser)
+ 			continue;
+-		}
+ 		ret = (*parser->parse_fn)(master, pparts, origin);
+ 		if (ret > 0) {
+ 			printk(KERN_NOTICE "%d %s partitions found on MTD device %s\n",
+-- 
+1.7.2.3
+
+-- 
+Best Regards,
+Artem Bityutskiy (?????????? ????????????????)
