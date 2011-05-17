@@ -1,27 +1,17 @@
-Received: from caramon.arm.linux.org.uk ([78.32.30.218])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QM4qn-0001ov-7p
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2011 20:57:14 +0000
-Date: Mon, 16 May 2011 21:56:44 +0100
-From: Russell King - ARM Linux <linux@arm.linux.org.uk>
-To: Eric Miao <eric.y.miao@gmail.com>
-Subject: Re: [PATCH v5 8/8] MTD: physmap: let set_vpp() pass a
-	platform_device instead of a map_info
-Message-ID: <20110516205644.GG13659@n2100.arm.linux.org.uk>
+Subject: Re: [PATCH v5 1/8] MTD: Add integrator-flash feature to physmap
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: Marc Zyngier <marc.zyngier@arm.com>
+In-Reply-To: <1305557977-16871-2-git-send-email-marc.zyngier@arm.com>
 References: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
-	<1305557977-16871-9-git-send-email-marc.zyngier@arm.com>
-	<BANLkTi=-Lcg5Wk7yuipTTzrSxs0nNmpMaw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BANLkTi=-Lcg5Wk7yuipTTzrSxs0nNmpMaw@mail.gmail.com>
-Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
-Cc: Ben Dooks <ben-linux@fluff.org>, Marc Zyngier <marc.zyngier@arm.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Nicolas Ferre <nicolas.ferre@atmel.com>, linux-mtd@lists.infradead.org,
-	Philipp Zabel <philipp.zabel@gmail.com>,
-	Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>,
-	Andrew Victor <linux@maxim.org.za>, linux-arm-kernel@lists.infradead.org
+	<1305557977-16871-2-git-send-email-marc.zyngier@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Tue, 17 May 2011 08:37:23 +0300
+Message-ID: <1305610643.2630.15.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 16, 2011 at 11:06:10PM +0800, Eric Miao wrote:
-> On Mon, May 16, 2011 at 10:59 PM, Marc Zyngier <marc.zyngier@arm.com> wrote:
-> > The set_vpp() method provided by physmap passes a map_info back to
-> > the platform code, which has little relevance as far as the platform
-> > is concerned (this parameter is completely unused).
-> >
-> > Instead, pass the platform_device, which can be used in the pismo
-> > driver to retrieve some important information in a nicer way, instead
-> > of the hack that was in place.
-> 
-> Not really sure if a 'struct device' would be more generic here, though this
-> case is simply a 'struct platform_device'.
+Hi,
 
-As it's a platform device driver (at the moment), passing the platform
-device seems logical.
+On Mon, 2011-05-16 at 15:59 +0100, Marc Zyngier wrote:
+>  #ifdef CONFIG_MTD_PARTITIONS
+> -static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
+> +static const char *part_probe_types[] = { "cmdlinepart", "RedBoot",
+> +#ifdef CONFIG_MTD_AFS_PARTS
+> +					  "afs",
+> +#endif
+> +					  NULL };
 
-If it becomes an DT based device driver, then we need some other way of
-describing the set_vpp etc functionality as we can't describe function
-pointers in DT (the same problem goes for a lot of platform device
-drivers.)
+We want to kill CONFIG_MTD_PARTITIONS:
+
+http://www.linux-mtd.infradead.org/doc/general.html#L_partitions_ban
+
+and Jamie Iles is doing this ATM. The reason for this is that MTD
+partitions are used always everywhere anyway, and current amount of
+ifdefs is scary.
+
+I see this CONFIG_MTD_AFS_PARTS you add and I do not think it is the
+right way to go. I cannot tell you now what would be exactly the right
+way, but something which does not require ifdef, something where drivers
+do not contain any information about partition types like "afs" or
+"cmdlinepart" or whatever, something where partition types are
+registered within an infrastructure and most of the stuff is hidden from
+the drivers.
+
+I think we should ban stuff like the above as well and force people to
+create saner MTD partitions support.
+
+Sorry if this sounds like an attack, it is not. I just think that we
+carry crap for too long and should start forcing people to clean it up
+by not accepting changes :-)
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
