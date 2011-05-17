@@ -1,14 +1,14 @@
 Received: from service87.mimecast.com ([94.185.240.25])
 	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QMK36-0007HG-Fn
-	for linux-mtd@lists.infradead.org; Tue, 17 May 2011 13:10:58 +0000
+	id 1QMK39-0007Hr-5V
+	for linux-mtd@lists.infradead.org; Tue, 17 May 2011 13:11:01 +0000
 From: Marc Zyngier <marc.zyngier@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-mtd@lists.infradead.org
-Subject: [PATCH v6 4/8] ARM: VExpress: Use physmap driver instead of
+Subject: [PATCH v6 5/8] ARM: Integrator/AP: Use physmap driver instead of
 	integrator-flash
-Date: Tue, 17 May 2011 14:11:13 +0100
-Message-Id: <1305637877-24436-5-git-send-email-marc.zyngier@arm.com>
+Date: Tue, 17 May 2011 14:11:14 +0100
+Message-Id: <1305637877-24436-6-git-send-email-marc.zyngier@arm.com>
 In-Reply-To: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
 References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
 Content-Type: text/plain; charset=WINDOWS-1252
@@ -27,64 +27,74 @@ Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 ---
- arch/arm/mach-vexpress/v2m.c |   22 ++++------------------
- 1 files changed, 4 insertions(+), 18 deletions(-)
+ arch/arm/mach-integrator/integrator_ap.c |   13 ++++++-------
+ 1 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/mach-vexpress/v2m.c b/arch/arm/mach-vexpress/v2m.c
-index ba46e8e..e326815 100644
---- a/arch/arm/mach-vexpress/v2m.c
-+++ b/arch/arm/mach-vexpress/v2m.c
-@@ -13,11 +13,11 @@
- #include <linux/sysdev.h>
- #include <linux/usb/isp1760.h>
- #include <linux/clkdev.h>
+diff --git a/arch/arm/mach-integrator/integrator_ap.c b/arch/arm/mach-integ=
+rator/integrator_ap.c
+index 980803f..11bd49e 100644
+--- a/arch/arm/mach-integrator/integrator_ap.c
++++ b/arch/arm/mach-integrator/integrator_ap.c
+@@ -31,6 +31,7 @@
+ #include <linux/clockchips.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
 +#include <linux/mtd/physmap.h>
 =20
- #include <asm/mach-types.h>
- #include <asm/sizes.h>
+ #include <mach/hardware.h>
+ #include <mach/platform.h>
+@@ -43,7 +44,6 @@
+ #include <mach/lm.h>
+=20
  #include <asm/mach/arch.h>
 -#include <asm/mach/flash.h>
+ #include <asm/mach/irq.h>
  #include <asm/mach/map.h>
  #include <asm/mach/time.h>
- #include <asm/hardware/arm_timer.h>
-@@ -206,27 +206,13 @@ static struct platform_device v2m_usb_device =3D {
- =09.dev.platform_data =3D &v2m_usb_config,
- };
+@@ -230,7 +230,7 @@ device_initcall(irq_init_sysfs);
+ #define EBI_CSR1 (VA_EBI_BASE + INTEGRATOR_EBI_CSR1_OFFSET)
+ #define EBI_LOCK (VA_EBI_BASE + INTEGRATOR_EBI_LOCK_OFFSET)
 =20
--static int v2m_flash_init(void)
--{
--=09writel(0, MMIO_P2V(V2M_SYS_FLASH));
--=09return 0;
--}
--
--static void v2m_flash_exit(void)
--{
--=09writel(0, MMIO_P2V(V2M_SYS_FLASH));
--}
--
--static void v2m_flash_set_vpp(int on)
-+static void v2m_flash_set_vpp(struct map_info *map, int on)
+-static int ap_flash_init(void)
++static int ap_flash_init(struct platform_device *dev)
  {
- =09writel(on !=3D 0, MMIO_P2V(V2M_SYS_FLASH));
+ =09u32 tmp;
+=20
+@@ -247,7 +247,7 @@ static int ap_flash_init(void)
+ =09return 0;
  }
 =20
--static struct flash_platform_data v2m_flash_data =3D {
+-static void ap_flash_exit(void)
++static void ap_flash_exit(struct platform_device *dev)
+ {
+ =09u32 tmp;
+=20
+@@ -263,15 +263,14 @@ static void ap_flash_exit(void)
+ =09}
+ }
+=20
+-static void ap_flash_set_vpp(int on)
++static void ap_flash_set_vpp(struct map_info *map, int on)
+ {
+ =09void __iomem *reg =3D on ? SC_CTRLS : SC_CTRLC;
+=20
+ =09writel(INTEGRATOR_SC_CTRL_nFLVPPEN, reg);
+ }
+=20
+-static struct flash_platform_data ap_flash_data =3D {
 -=09.map_name=09=3D "cfi_probe",
-+static struct physmap_flash_data v2m_flash_data =3D {
++static struct physmap_flash_data ap_flash_data =3D {
  =09.width=09=09=3D 4,
--=09.init=09=09=3D v2m_flash_init,
--=09.exit=09=09=3D v2m_flash_exit,
- =09.set_vpp=09=3D v2m_flash_set_vpp,
+ =09.init=09=09=3D ap_flash_init,
+ =09.exit=09=09=3D ap_flash_exit,
+@@ -285,7 +284,7 @@ static struct resource cfi_flash_resource =3D {
  };
 =20
-@@ -243,7 +229,7 @@ static struct resource v2m_flash_resources[] =3D {
- };
-=20
- static struct platform_device v2m_flash_device =3D {
+ static struct platform_device cfi_flash_device =3D {
 -=09.name=09=09=3D "armflash",
 +=09.name=09=09=3D "physmap-flash",
- =09.id=09=09=3D -1,
- =09.resource=09=3D v2m_flash_resources,
- =09.num_resources=09=3D ARRAY_SIZE(v2m_flash_resources),
+ =09.id=09=09=3D 0,
+ =09.dev=09=09=3D {
+ =09=09.platform_data=09=3D &ap_flash_data,
 --=20
 1.7.0.4
