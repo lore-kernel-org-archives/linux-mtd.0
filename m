@@ -1,17 +1,17 @@
 Received: from smtp.nokia.com ([147.243.128.26] helo=mgw-da02.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QMEnM-0004et-4C
-	for linux-mtd@lists.infradead.org; Tue, 17 May 2011 07:34:21 +0000
+	id 1QMEnN-0004fF-2e
+	for linux-mtd@lists.infradead.org; Tue, 17 May 2011 07:34:22 +0000
 Received: from eru.research.nokia.com (esdhcp038109.research.nokia.com
 	[172.21.38.109])
 	by mgw-da02.nokia.com (Switch-3.4.4/Switch-3.4.3) with ESMTP id
-	p4H7YFWr006045
+	p4H7YFWs006045
 	for <linux-mtd@lists.infradead.org>; Tue, 17 May 2011 10:34:19 +0300
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: MTD list <linux-mtd@lists.infradead.org>
-Subject: [PATCH 02/11] fs-tests: integck: fix segfault
-Date: Tue, 17 May 2011 10:38:07 +0300
-Message-Id: <1305617896-23711-3-git-send-email-dedekind1@gmail.com>
+Subject: [PATCH 03/11] fs-tests: integck: check errno in pvc macro
+Date: Tue, 17 May 2011 10:38:08 +0300
+Message-Id: <1305617896-23711-4-git-send-email-dedekind1@gmail.com>
 In-Reply-To: <1305617896-23711-1-git-send-email-dedekind1@gmail.com>
 References: <1305617896-23711-1-git-send-email-dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,129 +25,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Commit 1394a46213e8180e1233ca6d4811e7c77d49b1e0 was a good idea, but it
-introduced a segfault - files can be unlinked and 'file->links' is NULL, it is
-bad idea to unconditionally dereference it with 'file->links->name'. This patch
-introduces a helper function which takes care of the situation with unlinked
-files, plus it adds few assertions.
+All errors but write errors have corresponding CHECK(), so if something
+gets wrong we fail. But in case of I/O errors we do not fail if an
+unexpected error happens, which makes it difficult to trace issues.
+Inject the errno checking to the pvc macro to make sure we fail if
+errno is not EROFS.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- tests/fs-tests/integrity/integck.c |   28 +++++++++++++++++++++-------
- 1 files changed, 21 insertions(+), 7 deletions(-)
+ tests/fs-tests/integrity/integck.c |   10 ++++++++--
+ 1 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/tests/fs-tests/integrity/integck.c b/tests/fs-tests/integrity/integck.c
-index 9b98ef0..1b08acc 100644
+index 1b08acc..b411a68 100644
 --- a/tests/fs-tests/integrity/integck.c
 +++ b/tests/fs-tests/integrity/integck.c
-@@ -837,6 +837,8 @@ static int file_open(struct file_info *file)
- 	int fd, flags = O_RDWR;
- 	char *path;
+@@ -69,12 +69,18 @@
+ 		check_failed(stringify(cond), __func__, __FILE__, __LINE__); \
+ } while(0)
  
-+	assert(file->links);
++#define CHECK_ERRNO() do {                                                   \
++	if (args.power_cut_mode)                                             \
++		CHECK(errno == EROFS);                                       \
++	else                                                                 \
++		CHECK(0);                                                    \
++} while(0)
 +
- 	path = dir_path(file->links->parent, file->links->name);
- 	if (random_no(100) == 1)
- 		flags |= O_SYNC;
-@@ -851,6 +853,13 @@ static int file_open(struct file_info *file)
- 	return 0;
- }
+ #define pcv(fmt, ...) do {                                                   \
+ 	if (!args.power_cut_mode || (args.power_cut_mode && args.verbose))   \
+ 		normsg(fmt " (line %d, error %d (%s))",                      \
+ 		       ##__VA_ARGS__, __LINE__, errno, strerror(errno));     \
+-	if (!args.power_cut_mode)                                            \
+-		CHECK(0);                                                    \
++	CHECK_ERRNO();                                                       \
+ } while(0)
  
-+static const char *get_file_name(struct file_info *file)
-+{
-+	if (file->links)
-+		return file->links->name;
-+	return "(unlinked file, no names)";
-+}
-+
- /*
-  * Write random 'size' bytes of random data to offset 'offset'. Seed the random
-  * gererator with 'seed'. Return amount of written data on success and -1 on
-@@ -890,7 +899,7 @@ static ssize_t file_write_data(struct file_info *file, int fd, off_t offset,
- 			}
- 			pcv("failed to write %zu bytes to offset %llu of file %s",
- 			    block, (unsigned long long)(offset + actual),
--			    file->links->name);
-+			    get_file_name(file));
- 			return -1;
- 		}
- 		remains -= written;
-@@ -1089,7 +1098,8 @@ static int file_ftruncate(struct file_info *file, int fd, off_t new_length)
- 			return 1;
- 		} else
- 			pcv("cannot truncate file %s to %llu",
--			    file->links->name, (unsigned long long)new_length);
-+			    get_file_name(file),
-+			    (unsigned long long)new_length);
- 		return -1;
- 	}
- 
-@@ -1139,6 +1149,7 @@ static int file_mmap_write(struct file_info *file)
- 		len = 1 << 24;
- 
- 	/* Open it */
-+	assert(file->links);
- 	path = dir_path(file->links->parent, file->links->name);
- 	fd = open(path, O_RDWR);
- 	if (fd == -1) {
-@@ -1256,12 +1267,12 @@ static int file_write(struct file_info *file, int fd)
- 		if (random_no(100) >= 50) {
- 			ret = fsync(fd);
- 			if (ret)
--				pcv("fsync failed for %s", file->links->name);
-+				pcv("fsync failed for %s", get_file_name(file));
- 		} else {
- 			ret = fdatasync(fd);
- 			if (ret)
- 				pcv("fdatasync failed for %s",
--				    file->links->name);
-+				    get_file_name(file));
- 		}
- 		file->clean = 1;
- 	}
-@@ -1278,6 +1289,7 @@ static int file_write_file(struct file_info *file)
- 	int fd, ret;
- 	char *path;
- 
-+	assert(file->links);
- 	path = dir_path(file->links->parent, file->links->name);
- 	fd = open(path, O_RDWR);
- 	if (fd == -1) {
-@@ -1314,6 +1326,7 @@ static int file_truncate_file(struct file_info *file)
- 	char *path;
- 	int ret;
- 
-+	assert(file->links);
- 	path = dir_path(file->links->parent, file->links->name);
- 	fd = open(path, O_WRONLY);
- 	if (fd == -1) {
-@@ -1394,7 +1407,7 @@ static void save_file(int fd, struct file_info *file)
- 
- 	/* Open file to save contents to */
- 	strcpy(name, "/tmp/");
--	strcat(name, file->links->name);
-+	strcat(name, get_file_name(file));
- 	strcat(name, ".integ.sav.read");
- 	normsg("Saving %sn", name);
- 	w_fd = open(name, O_CREAT | O_WRONLY, 0777);
-@@ -1414,7 +1427,7 @@ static void save_file(int fd, struct file_info *file)
- 
- 	/* Open file to save contents to */
- 	strcpy(name, "/tmp/");
--	strcat(name, file->links->name);
-+	strcat(name, get_file_name(file));
- 	strcat(name, ".integ.sav.written");
- 	normsg("Saving %s", name);
- 	w_fd = open(name, O_CREAT | O_WRONLY, 0777);
-@@ -1512,7 +1525,8 @@ static void file_check(struct file_info *file, int fd)
- 		open_and_close = 1;
- 	if (open_and_close) {
- 		/* Open file */
--		path = dir_path(file->links->parent, file->links->name);
-+		assert(file->links);
-+		path = dir_path(file->links->parent, get_file_name(file));
- 		fd = open(path, O_RDONLY);
- 		CHECK(fd != -1);
- 	}
+ /* The variables below are set by command line arguments */
 -- 
 1.7.2.3
