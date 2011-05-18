@@ -1,18 +1,23 @@
-Received: from na3sys009aog114.obsmtp.com ([74.125.149.211])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QMnw5-0005pY-JC
-	for linux-mtd@lists.infradead.org; Wed, 18 May 2011 21:05:42 +0000
-Received: by mail-yw0-f44.google.com with SMTP id 31so983109ywp.17
+Received: from mail-vx0-f177.google.com ([209.85.220.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QMoUT-0006Jj-3t
+	for linux-mtd@lists.infradead.org; Wed, 18 May 2011 21:41:13 +0000
+Received: by vxd2 with SMTP id 2so1842671vxd.36
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 18 May 2011 14:05:36 -0700 (PDT)
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] mkfs.ubifs: free-space-fixup: note supported kernels
-Date: Wed, 18 May 2011 16:57:23 -0400
-Message-Id: <1305752243-4095-1-git-send-email-bengardiner@nanometrics.ca>
-In-Reply-To: <1305147748-13632-1-git-send-email-mlcreech@gmail.com>
-References: <1305147748-13632-1-git-send-email-mlcreech@gmail.com>
-Cc: linux-mtd@lists.infradead.org, "Matthew L. Creech" <mlcreech@gmail.com>
+	Wed, 18 May 2011 14:41:11 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1305751647-3122-1-git-send-email-bengardiner@nanometrics.ca>
+References: <1305196419.2713.84.camel@localhost>
+	<1305751647-3122-1-git-send-email-bengardiner@nanometrics.ca>
+Date: Wed, 18 May 2011 17:41:11 -0400
+Message-ID: <BANLkTi=+V7PR_29pK3ooVggPmeicCG0eWg@mail.gmail.com>
+Subject: Re: [PATCH] UBIFS: don't fail on -EBADMSG when fixing free space
+From: "Matthew L. Creech" <mlcreech@gmail.com>
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The free space fixup flag will only have an action taken on up-to-date
-kernels.
+On Wed, May 18, 2011 at 4:47 PM, Ben Gardiner
+<bengardiner@nanometrics.ca> wrote:
+> + =A0 =A0 =A0 /*
+> + =A0 =A0 =A0 =A0* Don't fail on -EBADMSG since these are precisely the e=
+rror codes that
+> + =A0 =A0 =A0 =A0* are returned by ubi_red in the cases where free-space =
+fix-ups are
+> + =A0 =A0 =A0 =A0* required.
+> + =A0 =A0 =A0 =A0*/
 
-Note in the help text and comment that kernel release 2.6.39 is required
-for the free space fixup to be performed.
+Hi Ben,
 
-Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
-CC: Matthew L. Creech <mlcreech@gmail.com>
+Off-hand, I don't see how this comment can be true.  It seems like
+we'll have 2 cases:
 
----
- mkfs.ubifs/mkfs.ubifs.c  |    4 +++-
- mkfs.ubifs/ubifs-media.h |    2 ++
- 2 files changed, 5 insertions(+), 1 deletions(-)
+1. The pages in question are actually erased, in which case they'll be
+0xff-filled by ubi_read() without error, or
+2. The pages were programmed with all 0xff data, in which case the ECC
+info should be correct
 
-diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
-index 96e17a3..f4cf09d 100644
---- a/mkfs.ubifs/mkfs.ubifs.c
-+++ b/mkfs.ubifs/mkfs.ubifs.c
-@@ -184,7 +184,9 @@ static const char *helptext =
- "                         how many percent better zlib should compress to make\n"
- "                         mkfs.ubifs use zlib instead of LZO (default 20%)\n"
- "-f, --fanout=NUM         fanout NUM (default: 8)\n"
--"-F, --space-fixup        fixup free space on first mount (needed for some NANDs)\n"
-+"-F, --space-fixup        fixup free space on first mount (needed for some NANDs;\n"
-+"                         the free space fixup will be performed only by kernel\n"
-+"                         releases 2.6.39 or greater)\n"
- "-k, --keyhash=TYPE       key hash type - \"r5\" or \"test\" (default: \"r5\")\n"
- "-p, --orph-lebs=COUNT    count of erase blocks for orphans (default: 1)\n"
- "-D, --devtable=FILE      use device table FILE\n"
-diff --git a/mkfs.ubifs/ubifs-media.h b/mkfs.ubifs/ubifs-media.h
-index fe62d0e..a710589 100644
---- a/mkfs.ubifs/ubifs-media.h
-+++ b/mkfs.ubifs/ubifs-media.h
-@@ -374,6 +374,8 @@ enum {
-  *
-  * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
-  * UBIFS_FLG_SPACE_FIXUP: first-mount "fixup" of free space within LEBs needed
-+ *                        the free space fixup will be performed only by kernel
-+ *                        releases 2.6.39 or greater.
-  */
- enum {
- 	UBIFS_FLG_BIGLPT = 0x02,
--- 
-1.7.4.1
+There's a third possibility, that the ECC info is bad because there's
+a real error, but that's not something we can reliably recover from.
+Am I overlooking another scenario?
+
+--=20
+Matthew L. Creech
