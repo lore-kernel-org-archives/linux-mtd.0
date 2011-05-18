@@ -1,20 +1,18 @@
-Received: from na3sys009aog103.obsmtp.com ([74.125.149.71])
+Received: from na3sys009aog114.obsmtp.com ([74.125.149.211])
 	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QMnec-0005e2-4O
-	for linux-mtd@lists.infradead.org; Wed, 18 May 2011 20:47:38 +0000
-Received: by mail-vx0-f181.google.com with SMTP id 39so1565189vxb.26
+	id 1QMnw5-0005pY-JC
+	for linux-mtd@lists.infradead.org; Wed, 18 May 2011 21:05:42 +0000
+Received: by mail-yw0-f44.google.com with SMTP id 31so983109ywp.17
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 18 May 2011 13:47:31 -0700 (PDT)
+	Wed, 18 May 2011 14:05:36 -0700 (PDT)
 From: Ben Gardiner <bengardiner@nanometrics.ca>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: [PATCH] UBIFS: don't fail on -EBADMSG when fixing free space
-Date: Wed, 18 May 2011 16:47:27 -0400
-Message-Id: <1305751647-3122-1-git-send-email-bengardiner@nanometrics.ca>
-In-Reply-To: <1305196419.2713.84.camel@localhost>
-References: <1305196419.2713.84.camel@localhost>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	"Matthew L. Creech" <mlcreech@gmail.com>,
-	Adrian Hunter <adrian.hunter@nokia.com>
+Subject: [PATCH] mkfs.ubifs: free-space-fixup: note supported kernels
+Date: Wed, 18 May 2011 16:57:23 -0400
+Message-Id: <1305752243-4095-1-git-send-email-bengardiner@nanometrics.ca>
+In-Reply-To: <1305147748-13632-1-git-send-email-mlcreech@gmail.com>
+References: <1305147748-13632-1-git-send-email-mlcreech@gmail.com>
+Cc: linux-mtd@lists.infradead.org, "Matthew L. Creech" <mlcreech@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,62 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The free space fixup was introduced so that UBIFS on NAND flashes where the
-empty pages at the end need to be dropped when flashing or else -74
-(aka -EBADMSG) failures will occur -- but due to the limited functionality of
-flash-programming facilities the emtpy pages cannot be dropped.
+The free space fixup flag will only have an action taken on up-to-date
+kernels.
 
-In fixup_leb, which is called during free space fixup, the now-expected return
-code of -EBADMSG is treated as a failure.
-
-Don't fail when -EBADMSG is encountered during ubi_read.
+Note in the help text and comment that kernel release 2.6.39 is required
+for the free space fixup to be performed.
 
 Signed-off-by: Ben Gardiner <bengardiner@nanometrics.ca>
 CC: Matthew L. Creech <mlcreech@gmail.com>
 
 ---
-I tested this patch on-top-of l2 head : 'bbf2b37 UBIFS: fix extremely rare
-mount failure' using Matthew's 'mkfs.ubifs: add "-F" option for "free-space
-fixup"' patch to create the UBIFS image with the flag set.
+ mkfs.ubifs/mkfs.ubifs.c  |    4 +++-
+ mkfs.ubifs/ubifs-media.h |    2 ++
+ 2 files changed, 5 insertions(+), 1 deletions(-)
 
-The test system was a da850evm, the image was flashed with U-boot's plain-old
-'nand write' and the rootfs is mounted with 'ubi.mtd=X,2048 root=ubi0:rootfs
-rootfstype=ubifs' bootargs.
-
-Without this patch the first attemp to start fixing free space fails
-with -EBADMSG:
-
-UBIFS: start fixing up free space
-UBI error: ubi_io_read: error -74 (ECC error) while reading 4096 bytes from PEB 18:4096, read 4096 bytes
-VFS: Cannot open root device "ubi0:rootfs" or unknown-block(0,0)
-[...]
-
----
- fs/ubifs/sb.c |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
-
-diff --git a/fs/ubifs/sb.c b/fs/ubifs/sb.c
-index c606f01..6e7da54 100644
---- a/fs/ubifs/sb.c
-+++ b/fs/ubifs/sb.c
-@@ -1,3 +1,4 @@
-+#define DEBUG
- /*
-  * This file is part of UBIFS.
+diff --git a/mkfs.ubifs/mkfs.ubifs.c b/mkfs.ubifs/mkfs.ubifs.c
+index 96e17a3..f4cf09d 100644
+--- a/mkfs.ubifs/mkfs.ubifs.c
++++ b/mkfs.ubifs/mkfs.ubifs.c
+@@ -184,7 +184,9 @@ static const char *helptext =
+ "                         how many percent better zlib should compress to make\n"
+ "                         mkfs.ubifs use zlib instead of LZO (default 20%)\n"
+ "-f, --fanout=NUM         fanout NUM (default: 8)\n"
+-"-F, --space-fixup        fixup free space on first mount (needed for some NANDs)\n"
++"-F, --space-fixup        fixup free space on first mount (needed for some NANDs;\n"
++"                         the free space fixup will be performed only by kernel\n"
++"                         releases 2.6.39 or greater)\n"
+ "-k, --keyhash=TYPE       key hash type - \"r5\" or \"test\" (default: \"r5\")\n"
+ "-p, --orph-lebs=COUNT    count of erase blocks for orphans (default: 1)\n"
+ "-D, --devtable=FILE      use device table FILE\n"
+diff --git a/mkfs.ubifs/ubifs-media.h b/mkfs.ubifs/ubifs-media.h
+index fe62d0e..a710589 100644
+--- a/mkfs.ubifs/ubifs-media.h
++++ b/mkfs.ubifs/ubifs-media.h
+@@ -374,6 +374,8 @@ enum {
   *
-@@ -679,7 +680,12 @@ static int fixup_leb(struct ubifs_info *c, int lnum, int len)
- 
- 	dbg_mnt("fixup LEB %d, data len %d", lnum, len);
- 	err = ubi_read(c->ubi, lnum, c->sbuf, 0, len);
--	if (err)
-+	/*
-+	 * Don't fail on -EBADMSG since these are precisely the error codes that
-+	 * are returned by ubi_red in the cases where free-space fix-ups are
-+	 * required.
-+	 */
-+	if (err && err != -EBADMSG)
- 		return err;
- 
- 	return ubi_leb_change(c->ubi, lnum, c->sbuf, len, UBI_UNKNOWN);
+  * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
+  * UBIFS_FLG_SPACE_FIXUP: first-mount "fixup" of free space within LEBs needed
++ *                        the free space fixup will be performed only by kernel
++ *                        releases 2.6.39 or greater.
+  */
+ enum {
+ 	UBIFS_FLG_BIGLPT = 0x02,
 -- 
 1.7.4.1
