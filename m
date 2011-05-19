@@ -1,24 +1,17 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
+Received: from gw1.transmode.se ([195.58.98.146])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QN5dh-00064I-VJ
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 15:59:54 +0000
-Received: by vws8 with SMTP id 8so2550887vws.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 19 May 2011 08:59:52 -0700 (PDT)
+	id 1QN6BO-0006Ps-Tk
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 16:34:44 +0000
+In-Reply-To: <4DD4BF87.6030107@mvista.com>
+References: <4DD4BF87.6030107@mvista.com>
+Subject: Re: mtd: fix hang-up in cfi erase and read contention
+To: Tadashi Abe <tabe@mvista.com>
+Message-ID: <OFC53F0B6C.74FD45AE-ONC1257895.005ACC69-C1257895.005B0FB6@transmode.se>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Date: Thu, 19 May 2011 18:34:37 +0200
 MIME-Version: 1.0
-In-Reply-To: <BANLkTi=nmvdKNaNDCUUZQF3QX-jDydTSng@mail.gmail.com>
-References: <1305196419.2713.84.camel@localhost>
-	<1305751647-3122-1-git-send-email-bengardiner@nanometrics.ca>
-	<BANLkTi=+V7PR_29pK3ooVggPmeicCG0eWg@mail.gmail.com>
-	<BANLkTi=nmvdKNaNDCUUZQF3QX-jDydTSng@mail.gmail.com>
-Date: Thu, 19 May 2011 11:59:52 -0400
-Message-ID: <BANLkTimiELh42LKgjicvh7jvXVfHeFE6MA@mail.gmail.com>
-Subject: Re: [PATCH] UBIFS: don't fail on -EBADMSG when fixing free space
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: Ben Gardiner <bengardiner@nanometrics.ca>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Adrian Hunter <adrian.hunter@nokia.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Artem Bityutskiy <dedekind1@gmail.com>
+Content-type: text/plain; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +21,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 19, 2011 at 9:28 AM, Ben Gardiner
-<bengardiner@nanometrics.ca> wrote:
+> From: Tadashi Abe <tabe@mvista.com>
 >
-> So I guess my particular situation is a problem with the davinci nand
-> driver's ECC for 0xFF data and is _not_ covered by the free space
-> fixup?
+> cfi erase command hangs up when erase and read contention occurs.
+> If read runs at the same address as erase operation, read issues
+> Erase-Suspend via get_chip() and the erase goes into sleep in wait queue.
+> But in this case, read operation exits by time-out without waking it up.
 >
+> I think the other variants (0001, 0020 and lpddr) have the same problem too.
+> Tested and verified the patch only on CFI-0002 flash, though.
+>
+> Signed-off-by: Tadashi Abe <tabe@mvista.com>
 
-Yeah, that's what it sounds like.
-
-Can you reproduce the -EBADMSG with a simpler test case that leaves
-UBI/UBIFS out of the equation?  Maybe enable write-verify in U-Boot
-and try using "nand write" again, or use mtd-utils "nandwrite" from an
-initramfs image then try to read back the data -- that should give a
-simpler test case that shows whether the ECC handling of empty space
-is wrong.
-
-If so, that probably needs to be fixed at the MTD level, since it will
-affect more than this particular UBIFS case.
-
--- 
-Matthew L. Creech
+This looks good for cfi_cmdset_0001.c so:
+Acked-by: Joakim Tjernlund <joakim.tjernlund@transmode.se>
