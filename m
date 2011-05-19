@@ -1,17 +1,27 @@
-Received: from gw1.transmode.se ([195.58.98.146])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QN6CU-0006Qd-62
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 16:35:50 +0000
-In-Reply-To: <4DD4C41E.9020807@mvista.com>
-References: <4DD4C41E.9020807@mvista.com>
-Subject: Re: mtd: remove duplicate assignment of chip->state
-To: Tadashi Abe <tabe@mvista.com>
-Message-ID: <OFB5CFBF20.6BF8F558-ONC1257895.005B12A3-C1257895.005B2B15@transmode.se>
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Date: Thu, 19 May 2011 18:35:48 +0200
+Received: from 64.mail-out.ovh.net ([91.121.185.65])
+	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QN7LK-0007Jn-4j
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 17:49:03 +0000
+Date: Thu, 19 May 2011 19:37:10 +0200
+From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+To: Artem Bityutskiy <dedekind1@gmail.com>
+Subject: Re: [PATCH v6 8/8] MTD: physmap: let set_vpp() pass a
+	platform_device instead of a map_info
+Message-ID: <20110519173710.GR15292@game.jcrosoft.org>
+References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
+	<1305637877-24436-9-git-send-email-marc.zyngier@arm.com>
+	<1305803858.2630.67.camel@localhost>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1305803858.2630.67.camel@localhost>
+Cc: Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>,
+	Marc Zyngier <marc.zyngier@arm.com>,
+	Nicolas Ferre <nicolas.ferre@atmel.com>,
+	linux-mtd@lists.infradead.org, Ben Dooks <ben-linux@fluff.org>,
+	Russell King <linux@arm.linux.org.uk>,
+	David Woodhouse <dwmw2@infradead.org>, Andrew Victor <linux@maxim.org.za>,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +31,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: Tadashi Abe <tabe@mvista.com>
->
-> This is a trivial patch which removes unnecessary assignment of chip->state
-> in put_chip(). It's duplicated.
->
-> Signed-off-by: Tadashi Abe <tabe@mvista.com>
+On 14:17 Thu 19 May     , Artem Bityutskiy wrote:
+> On Tue, 2011-05-17 at 14:11 +0100, Marc Zyngier wrote:
+> > The set_vpp() method provided by physmap passes a map_info back to
+> > the platform code, which has little relevance as far as the platform
+> > is concerned (this parameter is completely unused).
+> > 
+> > Instead, pass the platform_device, which can be used in the pismo
+> > driver to retrieve some important information in a nicer way, instead
+> > of the hack that was in place.
+> > 
+> > The empty set_vpp function in board-at572d940hf_ek.c is left untouched,
+> > as the board/SoC is scheduled for removal.
+> > 
+> > Cc: Andrew Victor <linux@maxim.org.za>
+> > Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
+> > Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
+> > Cc: Russell King <linux@arm.linux.org.uk>
+> > Cc: Philipp Zabel <philipp.zabel@gmail.com>
+> > Cc: Eric Miao <eric.y.miao@gmail.com>
+> > Cc: Ben Dooks <ben-linux@fluff.org>
+> > Cc: David Woodhouse <dwmw2@infradead.org>
+> > Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+> 
+> Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
 
-Looks good for cfi_cmdset_0001.c:
-
-Acked-by: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Best Regards,
+J.
