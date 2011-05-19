@@ -1,19 +1,25 @@
-Received: from mail-pv0-f177.google.com ([74.125.83.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QMxUa-0001Ox-EA
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 07:17:57 +0000
-Received: by pvh11 with SMTP id 11so1246397pvh.36
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 19 May 2011 00:17:54 -0700 (PDT)
-Message-ID: <4DD4C41E.9020807@mvista.com>
-Date: Thu, 19 May 2011 16:17:50 +0900
-From: Tadashi Abe <tabe@mvista.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: mtd: remove duplicate assignment of chip->state
-Content-Type: text/plain; charset=ISO-2022-JP
+Received: from lo.gmane.org ([80.91.229.12])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QN0ny-0002fn-C4
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 10:50:11 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QN0nv-0007Hi-PX
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 12:50:07 +0200
+Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 19 May 2011 12:50:07 +0200
+Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 19 May 2011 12:50:07 +0200
+To: linux-mtd@lists.infradead.org
+From: Gilles <gilles.ganault@free.fr>
+Subject: [ubifs] "cannot parse device table file 'device_table.txt'"
+Date: Thu, 19 May 2011 12:49:54 +0200
+Message-ID: <9ms9t650c8kmhe1ed5gdb7mv7cqdovcrca@4ax.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: Tadashi Abe <tabe@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a trivial patch which removes unnecessary assignment of chip->state
-in put_chip(). It's duplicated.
+Hello
 
-Signed-off-by: Tadashi Abe <tabe@mvista.com>
+I'd like to compile Ubifs in uClinux, but am getting the following
+error:
+===========
+...
+/usr/src/uClinux-dist/user/mtd-utils/mkfs.ubifs --squash-uids -m 2048
+-e 204800 -c 1024 -d /usr/src/uClinux-dist/romfs -D device_table.txt
+-o /usr/src/uClinux-dist/images/rootfs.ubifs
 
----
- drivers/mtd/chips/cfi_cmdset_0001.c |    1 -
- drivers/mtd/chips/cfi_cmdset_0002.c |    1 -
- drivers/mtd/lpddr/lpddr_cmds.c      |    1 -
- 3 files changed, 0 insertions(+), 3 deletions(-)
+Error: count cannot be zero if increment is non-zero
+Error: cannot parse '/dev/mtdblock0     b       640     0       0 31
+0       0       1       -'
+Error: cannot parse device table file 'device_table.txt'
+make[5]: *** [image.rootfs.ubifs.force] Error 255
+===========
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 09cb7c8..308709a 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -997,7 +997,6 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
- 
- 	switch(chip->oldstate) {
- 	case FL_ERASING:
--		chip->state = chip->oldstate;
- 		/* What if one interleaved chip has finished and the
- 		   other hasn't? The old code would leave the finished
- 		   one in READY mode. That's bad, and caused -EROFS
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 0b49266..6d55281 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -762,7 +762,6 @@ static void put_chip(struct map_info *map, struct flchip *chip, unsigned long ad
- 
- 	switch(chip->oldstate) {
- 	case FL_ERASING:
--		chip->state = chip->oldstate;
- 		map_write(map, cfi->sector_erase_cmd, chip->in_progress_block_addr);
- 		chip->oldstate = FL_READY;
- 		chip->state = FL_ERASING;
-diff --git a/drivers/mtd/lpddr/lpddr_cmds.c b/drivers/mtd/lpddr/lpddr_cmds.c
-index 1267992..c8f79c7 100644
---- a/drivers/mtd/lpddr/lpddr_cmds.c
-+++ b/drivers/mtd/lpddr/lpddr_cmds.c
-@@ -383,7 +383,6 @@ static void put_chip(struct map_info *map, struct flchip *chip)
- 
- 	switch (chip->oldstate) {
- 	case FL_ERASING:
--		chip->state = chip->oldstate;
- 		map_write(map, CMD(LPDDR_RESUME),
- 				map->pfow_base + PFOW_COMMAND_CODE);
- 		map_write(map, CMD(LPDDR_START_EXECUTION),
--- 
-1.7.4.4
+Google didn't return much information, but it seems like mkfs.ubifs is
+part of mtd-utils:
+http://mtd-utils.sourcearchive.com/documentation/20090606/devtable_8c-source.html
+
+I tried to copy the manufacturer's "device_table.txt" in ./romfs/, but
+am still getting the same error.
+
+Does someone know the cause for the error?
+
+Thank you.
