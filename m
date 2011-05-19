@@ -1,27 +1,27 @@
-Received: from 64.mail-out.ovh.net ([91.121.185.65])
-	by canuck.infradead.org with smtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QN7LK-0007Jn-4j
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 17:49:03 +0000
-Date: Thu, 19 May 2011 19:37:10 +0200
-From: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+Received: from [2002:4e20:1eda::1] (helo=caramon.arm.linux.org.uk)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QN8rT-0008Mh-Hl
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2011 19:26:21 +0000
+Date: Thu, 19 May 2011 20:25:52 +0100
+From: Russell King - ARM Linux <linux@arm.linux.org.uk>
 To: Artem Bityutskiy <dedekind1@gmail.com>
-Subject: Re: [PATCH v6 8/8] MTD: physmap: let set_vpp() pass a
-	platform_device instead of a map_info
-Message-ID: <20110519173710.GR15292@game.jcrosoft.org>
-References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
-	<1305637877-24436-9-git-send-email-marc.zyngier@arm.com>
-	<1305803858.2630.67.camel@localhost>
+Subject: Re: [PATCH v5 1/8] MTD: Add integrator-flash feature to physmap
+Message-ID: <20110519192551.GA7445@n2100.arm.linux.org.uk>
+References: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
+	<1305557977-16871-2-git-send-email-marc.zyngier@arm.com>
+	<1305610643.2630.15.camel@localhost>
+	<1305611178.2630.21.camel@localhost>
+	<20110517074348.GA26669@n2100.arm.linux.org.uk>
+	<1305619989.2630.31.camel@localhost>
+	<1305622141.30788.30.camel@e102391-lin.cambridge.arm.com>
+	<1305803618.2630.63.camel@localhost>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1305803858.2630.67.camel@localhost>
-Cc: Eric Miao <eric.y.miao@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>,
-	Marc Zyngier <marc.zyngier@arm.com>,
-	Nicolas Ferre <nicolas.ferre@atmel.com>,
-	linux-mtd@lists.infradead.org, Ben Dooks <ben-linux@fluff.org>,
-	Russell King <linux@arm.linux.org.uk>,
-	David Woodhouse <dwmw2@infradead.org>, Andrew Victor <linux@maxim.org.za>,
-	linux-arm-kernel@lists.infradead.org
+In-Reply-To: <1305803618.2630.63.camel@localhost>
+Sender: Russell King - ARM Linux <linux@arm.linux.org.uk>
+Cc: Marc Zyngier <Marc.Zyngier@arm.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +31,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 14:17 Thu 19 May     , Artem Bityutskiy wrote:
-> On Tue, 2011-05-17 at 14:11 +0100, Marc Zyngier wrote:
-> > The set_vpp() method provided by physmap passes a map_info back to
-> > the platform code, which has little relevance as far as the platform
-> > is concerned (this parameter is completely unused).
+On Thu, May 19, 2011 at 02:13:38PM +0300, Artem Bityutskiy wrote:
+> On Tue, 2011-05-17 at 09:49 +0100, Marc Zyngier wrote:
+> > On Tue, 2011-05-17 at 11:13 +0300, Artem Bityutskiy wrote:
+> > > On Tue, 2011-05-17 at 08:43 +0100, Russell King - ARM Linux wrote:
+> > > > On Tue, May 17, 2011 at 08:46:18AM +0300, Artem Bityutskiy wrote:
+> > > > > On Tue, 2011-05-17 at 08:37 +0300, Artem Bityutskiy wrote:
+> > > > > > Sorry if this sounds like an attack, it is not. I just think that we
+> > > > > > carry crap for too long and should start forcing people to clean it up
+> > > > > > by not accepting changes :-)
+> > > > > 
+> > > > > Sorry, I forgot to note that I do not insist that you have to re-work
+> > > > > MTD partitions support - you already do a very good thing by killing a
+> > > > > redundant driver, and delaying this would be counter-productive. But I
+> > > > > anyway wanted to express my thoughts.
+> > > > 
+> > > > So, what's happening with this patch set?  I'd like to have an ack from
+> > > > the MTD people for the set.
+> > > 
+> > > David should answer, but from my POW the patches are OK. The "#ifdef
+> > > CONFIG_MTD_AFS_PARTS" is ugly. I think it can be just killed, it just
+> > > needs an additional patch to silence the kernel (completely untested,
+> > > Marc, could you please check it?):
 > > 
-> > Instead, pass the platform_device, which can be used in the pismo
-> > driver to retrieve some important information in a nicer way, instead
-> > of the hack that was in place.
-> > 
-> > The empty set_vpp function in board-at572d940hf_ek.c is left untouched,
-> > as the board/SoC is scheduled for removal.
-> > 
-> > Cc: Andrew Victor <linux@maxim.org.za>
-> > Cc: Nicolas Ferre <nicolas.ferre@atmel.com>
-> > Cc: Jean-Christophe Plagniol-Villard <plagnioj@jcrosoft.com>
-> > Cc: Russell King <linux@arm.linux.org.uk>
-> > Cc: Philipp Zabel <philipp.zabel@gmail.com>
-> > Cc: Eric Miao <eric.y.miao@gmail.com>
-> > Cc: Ben Dooks <ben-linux@fluff.org>
-> > Cc: David Woodhouse <dwmw2@infradead.org>
-> > Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+> > Looks OK to me, as long as people don't miss the information (could make
+> > the "where's my partition gone?" question harder to answer...).
 > 
-> Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Acked-by: Jean-Christophe PLAGNIOL-VILLARD <plagnioj@jcrosoft.com>
+> I've pushed my patch to my l2-mtd-2.6.git tree, if dwmw2 accepts it
+> it'll go upstream.
 
-Best Regards,
-J.
+I've also committed them to my tree too.
