@@ -1,27 +1,23 @@
-Received: from lo.gmane.org ([80.91.229.12])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QNMRx-0005Ie-HO
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 09:56:54 +0000
-Received: from list by lo.gmane.org with local (Exim 4.69)
-	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QNMRq-0005Nu-UU
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 11:56:46 +0200
-Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 May 2011 11:56:46 +0200
-Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
-	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 20 May 2011 11:56:46 +0200
-To: linux-mtd@lists.infradead.org
-From: Gilles <gilles.ganault@free.fr>
-Subject: Re: [ubifs] "cannot parse device table file 'device_table.txt'"
-Date: Fri, 20 May 2011 11:56:33 +0200
-Message-ID: <ekect6d8fta52gjlpf5faqo81fskllta5k@4ax.com>
-References: <9ms9t650c8kmhe1ed5gdb7mv7cqdovcrca@4ax.com>
-	<1305883637.2630.123.camel@localhost>
+Received: from mail-bw0-f49.google.com ([209.85.214.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QNMju-0005PL-Dq
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 10:15:27 +0000
+Received: by bwz1 with SMTP id 1so3509634bwz.36
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 20 May 2011 03:15:23 -0700 (PDT)
+Subject: Re: [PATCH 1/1] mkfs.ubifs: add "-F" option for "free-space fixup"
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "Matthew L. Creech" <mlcreech@gmail.com>
+In-Reply-To: <1305147748-13632-1-git-send-email-mlcreech@gmail.com>
+References: <BANLkTikn3wMZOKAd8qgmo_k9QeDPL3nv0g@mail.gmail.com>
+	<1305147748-13632-1-git-send-email-mlcreech@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Fri, 20 May 2011 13:11:32 +0300
+Message-ID: <1305886292.2630.125.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Cc: bengardiner@nanometrics.ca, linux-mtd@lists.infradead.org
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,11 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 20 May 2011 12:27:17 +0300, Artem Bityutskiy
-<dedekind1@gmail.com> wrote:
->It seems like that device table line is indeed incorrect, or what do you
->expect mkfs.ubifs to do?
+On Wed, 2011-05-11 at 17:02 -0400, Matthew L. Creech wrote:
+> This adds a superblock flag indicating that "free-space fixup" is needed, and
+> allows it to be set by the user via the "-F" command-line option.  The first
+> time the filesystem is mounted, this flag will trigger a one-time re-mapping of
+> all LEBs containing free space.  This fixes problems seen on some NAND flashes
+> when a non-UBIFS-aware flash programmer is used.
+> 
+> Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
 
-I used a sample that comes with uClinux and is considered a reference
-to use. If there's more information about what value to put in that
-column or a valid file that I could use, I'm interested. Thank you.
+I've tweaked your patch and added some more help text and pushed,
+thanks.
+
+I think we'll need to make a new mtd-utils release at some point. We
+need to wait a bit and let people test this a bit more. Please, be
+encourage to remind me to release mtd-utils if I forget about this.
+Thanks.
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
