@@ -1,19 +1,19 @@
 Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QNIPh-0003kl-BK
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 05:38:17 +0000
-Received: by ewy3 with SMTP id 3so1281825ewy.36
+	id 1QNITB-0003mg-CN
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 05:41:54 +0000
+Received: by ewy3 with SMTP id 3so1282407ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 19 May 2011 22:38:14 -0700 (PDT)
-Subject: Re: [PATCH 1/2] driver:mtd:use the wrapped __get_mtd_device in
-	get_mtd_device_nm
+	Thu, 19 May 2011 22:41:51 -0700 (PDT)
+Subject: Re: [PATCH 2/2] driver:mtd:fix the bad format in the mtdcore.c
 From: Artem Bityutskiy <dedekind1@gmail.com>
 To: Wanlong Gao <wanlong.gao@gmail.com>
-In-Reply-To: <1305642979-7419-1-git-send-email-wanlong.gao@gmail.com>
+In-Reply-To: <1305642979-7419-2-git-send-email-wanlong.gao@gmail.com>
 References: <1305642979-7419-1-git-send-email-wanlong.gao@gmail.com>
+	<1305642979-7419-2-git-send-email-wanlong.gao@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 20 May 2011 08:34:25 +0300
-Message-ID: <1305869665.2630.86.camel@localhost>
+Date: Fri, 20 May 2011 08:38:00 +0300
+Message-ID: <1305869880.2630.88.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, akpm@linux-foundation.org,
@@ -31,12 +31,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 On Tue, 2011-05-17 at 22:36 +0800, Wanlong Gao wrote:
 > From: Wanlong Gao <wanlong.gao@gmail.com>
 > 
-> Use the wrapped function __get_mtd_device in the function
-> get_mtd_device_nm instead of these get device reference codes.
+> Fix the bad format in the mtdcore.c.
 > 
 > Signed-off-by: Wanlong Gao <wanlong.gao@gmail.com>
+> ---
+>  drivers/mtd/mtdcore.c |   34 +++++++++++++++++-----------------
+>  1 files changed, 17 insertions(+), 17 deletions(-)
 
-Pushed this patch to l2-mtd-2.6.git, thanks.
+This patch does not apply to my l2 tree because proc-related functions
+have been re-worked recently, see
+
+http://git.infradead.org/users/dedekind/l2-mtd-2.6.git/commit/b930b5a0cee30792579a1893a732a485c1f1f0ba
+
+Please, send a patch on top of l2-mtd-2.6.git:
+
+git://git.infradead.org/users/dedekind/l2-mtd-2.6.git
 
 -- 
 Best Regards,
