@@ -1,19 +1,18 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QNLzu-00052I-3Y
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 09:27:54 +0000
-Received: by eyh6 with SMTP id 6so1332898eyh.36
+	id 1QNM34-00056t-Jl
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 09:31:11 +0000
+Received: by fxm14 with SMTP id 14so3333009fxm.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 20 May 2011 02:27:52 -0700 (PDT)
-Subject: Re: [PATCH] UBIFS: document the "free space fixup" flag
+	Fri, 20 May 2011 02:31:07 -0700 (PDT)
+Subject: Re: [ubifs] "cannot parse device table file 'device_table.txt'"
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <1305783137-13374-1-git-send-email-mlcreech@gmail.com>
-References: <1305197870.2713.95.camel@localhost>
-	<1305783137-13374-1-git-send-email-mlcreech@gmail.com>
+To: Gilles <gilles.ganault@free.fr>
+In-Reply-To: <9ms9t650c8kmhe1ed5gdb7mv7cqdovcrca@4ax.com>
+References: <9ms9t650c8kmhe1ed5gdb7mv7cqdovcrca@4ax.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 20 May 2011 12:24:01 +0300
-Message-ID: <1305883441.2630.122.camel@localhost>
+Date: Fri, 20 May 2011 12:27:17 +0300
+Message-ID: <1305883637.2630.123.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,28 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2011-05-19 at 01:32 -0400, Matthew L. Creech wrote:
-> Several parts of the UBI and UBIFS documentation already mention the need to
-> use ubiformat when flashing UBIFS images.  Add a new FAQ entry for the "free
-> space fixup" flag as an alternative in recent kernels, and put links to it in
-> these existing locations.
-> ---
+On Thu, 2011-05-19 at 12:49 +0200, Gilles wrote:
+> Hello
+> 
+> I'd like to compile Ubifs in uClinux, but am getting the following
+> error:
+> ===========
+> ...
+> /usr/src/uClinux-dist/user/mtd-utils/mkfs.ubifs --squash-uids -m 2048
+> -e 204800 -c 1024 -d /usr/src/uClinux-dist/romfs -D device_table.txt
+> -o /usr/src/uClinux-dist/images/rootfs.ubifs
+> 
+> Error: count cannot be zero if increment is non-zero
+> Error: cannot parse '/dev/mtdblock0     b       640     0       0 31
+> 0       0       1       -'
+> Error: cannot parse device table file 'device_table.txt'
+> make[5]: *** [image.rootfs.ubifs.force] Error 255
+> ===========
 
-Pushed, thanks. I've only added few changes as a patch on top of yours,
-also pushed.
+It seems like that device table line is indeed incorrect, or what do you
+expect mkfs.ubifs to do?
 
-> -why you should use <code>ubiformat</code>.</p>
-> +why you should use <code>ubiformat</code>, or generate your UBIFS images with
-> +the <a href="ubifs.html#L_free_space_fixup">free space fixup</a> flag if that
-> +is not possible.</p>
-
-I've removed this change because the first link already contains the
-"fixup" link.
-
-Pluse I've updated news and added a bit more information about the fixup
-thingy.
-
-Thank you!
 
 -- 
 Best Regards,
