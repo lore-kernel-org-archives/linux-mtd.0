@@ -1,19 +1,27 @@
-Received: from smtp.nokia.com ([147.243.1.48] helo=mgw-sa02.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QNMQy-0005I6-HN
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 09:55:53 +0000
-Message-ID: <4DD65673.8080801@nokia.com>
-Date: Fri, 20 May 2011 12:54:27 +0100
-From: maxin <john.maxin@nokia.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: [PATCH] drivers: mtd: mtdswap: fix possible null dereference
-References: <4DD3B4C2.30301@nokia.com> <1305870365.2630.92.camel@localhost>
-In-Reply-To: <1305870365.2630.92.camel@localhost>
-Content-Type: text/plain; charset=UTF-8
+Received: from lo.gmane.org ([80.91.229.12])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QNMRx-0005Ie-HO
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 09:56:54 +0000
+Received: from list by lo.gmane.org with local (Exim 4.69)
+	(envelope-from <gldm-linux-mtd-36@m.gmane.org>) id 1QNMRq-0005Nu-UU
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 11:56:46 +0200
+Received: from mar92-9-82-237-75-54.fbx.proxad.net ([82.237.75.54])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 May 2011 11:56:46 +0200
+Received: from gilles.ganault by mar92-9-82-237-75-54.fbx.proxad.net with
+	local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 20 May 2011 11:56:46 +0200
+To: linux-mtd@lists.infradead.org
+From: Gilles <gilles.ganault@free.fr>
+Subject: Re: [ubifs] "cannot parse device table file 'device_table.txt'"
+Date: Fri, 20 May 2011 11:56:33 +0200
+Message-ID: <ekect6d8fta52gjlpf5faqo81fskllta5k@4ax.com>
+References: <9ms9t650c8kmhe1ed5gdb7mv7cqdovcrca@4ax.com>
+	<1305883637.2630.123.camel@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +31,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Fri, 20 May 2011 12:27:17 +0300, Artem Bityutskiy
+<dedekind1@gmail.com> wrote:
+>It seems like that device table line is indeed incorrect, or what do you
+>expect mkfs.ubifs to do?
 
-On 11-05-20 06:46 AM, ext Artem Bityutskiy wrote:
-> On Wed, 2011-05-18 at 13:00 +0100, maxin wrote:
->> This patch fixes the possible null dereference of the variable "oinfo"
-> 
-> Does this print makes sense? Which ECC? I think it should me something
-> like "mtd% does not have OOB", mtd->index.
-> 
-
-Thank you very much for reviewing the patch.I have updated the print message 
-as per your suggestion as it makes more sense for this case.
-
-> Moreover, you should make the print consistent with the other prints
-> which start with MTDSWAP_PREFIX.
-> 
-
-I have updated the patch as per your comments.
-
-Signed-off-by: Maxin B. John <john.maxin@nokia.com>
----
-diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-index fed215c..62ddb3a 100644
---- a/drivers/mtd/mtdswap.c
-+++ b/drivers/mtd/mtdswap.c
-@@ -1450,7 +1450,13 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- 	}
- 
- 	oinfo = mtd->ecclayout;
--	if (!mtd->oobsize || !oinfo || oinfo->oobavail < MTDSWAP_OOBSIZE) {
-+	if (!oinfo) {
-+		printk(KERN_ERR "%s: mtd%d does not have OOB"
-+			"\n", MTDSWAP_PREFIX, mtd->index);
-+		return;
-+	}
-+
-+	if (!mtd->oobsize || oinfo->oobavail < MTDSWAP_OOBSIZE) {
- 		printk(KERN_ERR "%s: Not enough free bytes in OOB, "
- 			"%d available, %zu needed.\n",
- 			MTDSWAP_PREFIX, oinfo->oobavail, MTDSWAP_OOBSIZE);
+I used a sample that comes with uClinux and is considered a reference
+to use. If there's more information about what value to put in that
+column or a valid file that I could use, I'm interested. Thank you.
