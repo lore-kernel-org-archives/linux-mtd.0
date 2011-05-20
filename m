@@ -1,22 +1,22 @@
-Received: from mail-bw0-f49.google.com ([209.85.214.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QNMju-0005PL-Dq
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 10:15:27 +0000
-Received: by bwz1 with SMTP id 1so3509634bwz.36
+	id 1QNMny-0005RO-N5
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 10:19:39 +0000
+Received: by ewy3 with SMTP id 3so1344343ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 20 May 2011 03:15:23 -0700 (PDT)
-Subject: Re: [PATCH 1/1] mkfs.ubifs: add "-F" option for "free-space fixup"
+	Fri, 20 May 2011 03:19:36 -0700 (PDT)
+Subject: Re: [PATCH v2] mkfs.ubifs: free-space-fixup: note supported kernels
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: "Matthew L. Creech" <mlcreech@gmail.com>
-In-Reply-To: <1305147748-13632-1-git-send-email-mlcreech@gmail.com>
-References: <BANLkTikn3wMZOKAd8qgmo_k9QeDPL3nv0g@mail.gmail.com>
-	<1305147748-13632-1-git-send-email-mlcreech@gmail.com>
+To: Ben Gardiner <bengardiner@nanometrics.ca>
+In-Reply-To: <1305807291-12774-1-git-send-email-bengardiner@nanometrics.ca>
+References: <1305784599.2630.41.camel@localhost>
+	<1305807291-12774-1-git-send-email-bengardiner@nanometrics.ca>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 20 May 2011 13:11:32 +0300
-Message-ID: <1305886292.2630.125.camel@localhost>
+Date: Fri, 20 May 2011 13:15:45 +0300
+Message-ID: <1305886545.2630.129.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: bengardiner@nanometrics.ca, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, "Matthew L. Creech" <mlcreech@gmail.com>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -27,22 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2011-05-11 at 17:02 -0400, Matthew L. Creech wrote:
-> This adds a superblock flag indicating that "free-space fixup" is needed, and
-> allows it to be set by the user via the "-F" command-line option.  The first
-> time the filesystem is mounted, this flag will trigger a one-time re-mapping of
-> all LEBs containing free space.  This fixes problems seen on some NAND flashes
-> when a non-UBIFS-aware flash programmer is used.
-> 
-> Signed-off-by: Matthew L. Creech <mlcreech@gmail.com>
+Hi,
 
-I've tweaked your patch and added some more help text and pushed,
-thanks.
+On Thu, 2011-05-19 at 08:14 -0400, Ben Gardiner wrote:
+>   *
+>   * UBIFS_FLG_BIGLPT: if "big" LPT model is used if set
+>   * UBIFS_FLG_SPACE_FIXUP: first-mount "fixup" of free space within LEBs needed
+> + *                        the free space fixup will be performed only by kernel
+> + *                        releases 2.6.40 or greater.
+>   */
 
-I think we'll need to make a new mtd-utils release at some point. We
-need to wait a bit and let people test this a bit more. Please, be
-encourage to remind me to release mtd-utils if I forget about this.
-Thanks.
+Since this is kind of an out-of-date copy of the kernel header file,
+this change is not needed because it'll anyway go away when someone
+syncs ubifs-media.h with the kernel.
+
+After my changes to Matthew's patch and tweaks to your patch I've found
+out that it is cleaner to just fold your patch into Mathew's and make
+one single commit. I've thanked you in the commit message and pushed one
+single commit instead:
+
+http://git.infradead.org/mtd-utils.git/commit/04665066ebedb0a31335b525fb5f19df32cb8cfe
+
+Hopefully you will not mind.
+
+Thanks!
 
 -- 
 Best Regards,
