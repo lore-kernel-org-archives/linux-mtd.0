@@ -1,24 +1,35 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QNPNk-0006ay-0c
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 13:04:44 +0000
-Received: by wyb28 with SMTP id 28so3427012wyb.36
+Received: from ra.se.axis.com ([195.60.68.13])
+	by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QNOMV-0005a7-Uk
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 11:59:24 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by ra.se.axis.com (Postfix) with ESMTP id 2611311F97
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 20 May 2011 06:04:42 -0700 (PDT)
-Subject: Re: [PATCH] drivers: mtd: mtdswap: fix possible null dereference
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: maxin <john.maxin@nokia.com>
-In-Reply-To: <4DD65673.8080801@nokia.com>
-References: <4DD3B4C2.30301@nokia.com> <1305870365.2630.92.camel@localhost>
-	<4DD65673.8080801@nokia.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 20 May 2011 13:20:01 +0300
-Message-ID: <1305886801.2630.132.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind1@gmail.com
+	Fri, 20 May 2011 13:59:05 +0200 (CEST)
+Received: from ra.se.axis.com ([127.0.0.1])
+	by localhost (ra.se.axis.com [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id DK+IxsvaF-zB for <linux-mtd@lists.infradead.org>;
+	Fri, 20 May 2011 13:59:04 +0200 (CEST)
+Received: from thoth.se.axis.com (thoth.se.axis.com [10.0.2.173])
+	by ra.se.axis.com (Postfix) with ESMTP id A367C11F99
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 20 May 2011 13:59:04 +0200 (CEST)
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.88.7.1])
+	by thoth.se.axis.com (Postfix) with ESMTP id 992333414C
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 20 May 2011 13:59:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by lnxricardw.se.axis.com (8.14.3/8.14.3/Debian-5+lenny1) with ESMTP id
+	p4KBx4of031150
+	for <linux-mtd@lists.infradead.org>; Fri, 20 May 2011 13:59:04 +0200
+Date: Fri, 20 May 2011 13:59:04 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: power cut resiliency - ubifs vs. jffs2
+Message-ID: <Pine.LNX.4.64.1105201357010.15966@lnxricardw.se.axis.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,32 +39,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-20 at 12:54 +0100, maxin wrote:
-> > Moreover, you should make the print consistent with the other prints
-> > which start with MTDSWAP_PREFIX.
-> > 
-> 
-> I have updated the patch as per your comments.
-> 
-> Signed-off-by: Maxin B. John <john.maxin@nokia.com>
-> ---
-> diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
-> index fed215c..62ddb3a 100644
-> --- a/drivers/mtd/mtdswap.c
-> +++ b/drivers/mtd/mtdswap.c
-> @@ -1450,7 +1450,13 @@ static void mtdswap_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
->  	}
->  
->  	oinfo = mtd->ecclayout;
-> -	if (!mtd->oobsize || !oinfo || oinfo->oobavail < MTDSWAP_OOBSIZE) {
-> +	if (!oinfo) {
-> +		printk(KERN_ERR "%s: mtd%d does not have OOB"
 
-Sorry, but if I save this e-mail and feed it to "git am", the commit
-message will contain the discussion (with quotes, etc), not the nice
-original commit message. Would you please, send a patch which I can just
-save and "git am"?
+I'm trying to get some grip on how jffs2 fares in comparison with ubifs=20
+when it comes to managing unexpected power cuts when the system is=20
+operating. What I've found in the UBIFS FAQ is encouraging, but I was=20
+wondering if anyone has any practical experience comparing the two in a=20
+real system?
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+/Ricard
+--=20
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
