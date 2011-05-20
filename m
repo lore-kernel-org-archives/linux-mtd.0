@@ -1,23 +1,21 @@
-Received: from mail-yw0-f49.google.com ([209.85.213.49])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QNPiJ-0007Gs-Ml
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 13:26:00 +0000
-Received: by ywf9 with SMTP id 9so1516108ywf.36
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QNQ8F-0007hh-DV
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2011 13:52:48 +0000
+Received: by ewy3 with SMTP id 3so1404933ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 20 May 2011 06:25:58 -0700 (PDT)
-Subject: Re: [ubifs] "cannot parse device table file 'device_table.txt'"
+	Fri, 20 May 2011 06:52:45 -0700 (PDT)
+Subject: Re: power cut resiliency - ubifs vs. jffs2
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Gilles <gilles.ganault@free.fr>
-In-Reply-To: <ekect6d8fta52gjlpf5faqo81fskllta5k@4ax.com>
-References: <9ms9t650c8kmhe1ed5gdb7mv7cqdovcrca@4ax.com>
-	<1305883637.2630.123.camel@localhost>
-	<ekect6d8fta52gjlpf5faqo81fskllta5k@4ax.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <Pine.LNX.4.64.1105201357010.15966@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.1105201357010.15966@lnxricardw.se.axis.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Fri, 20 May 2011 13:27:21 +0300
-Message-ID: <1305887241.2630.137.camel@localhost>
+Date: Fri, 20 May 2011 16:48:54 +0300
+Message-ID: <1305899334.2630.146.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -28,25 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-20 at 11:56 +0200, Gilles wrote:
-> On Fri, 20 May 2011 12:27:17 +0300, Artem Bityutskiy
-> <dedekind1@gmail.com> wrote:
-> >It seems like that device table line is indeed incorrect, or what do you
-> >expect mkfs.ubifs to do?
-> 
-> I used a sample that comes with uClinux and is considered a reference
-> to use. If there's more information about what value to put in that
-> column or a valid file that I could use, I'm interested. Thank you.
+On Fri, 2011-05-20 at 13:59 +0200, Ricard Wanderlof wrote:
+> I'm trying to get some grip on how jffs2 fares in comparison with ubifs 
+> when it comes to managing unexpected power cuts when the system is 
+> operating. What I've found in the UBIFS FAQ is encouraging, but I was 
+> wondering if anyone has any practical experience comparing the two in a 
+> real system?
 
-I do not know the right format for the device table either. In your case
-you have: start = 0, increment = 1, count = -;
+UBIFS is very stable WRT to power cuts. But the unstable bits problem is
+still not solved.
 
-I do not know what "-" means, but mkfs.ubifs interprets it as "zero" and
-then complains that you ask it to create zero devices starting from
-number zero with increment 0.
-
-May be this '-' means something and mkfs.ubifs does not properly handle
-that?
+Cannot say anything about JFFS2 - it has not been maintained very well
+lately, but I believe the unstable bits problem is there as well.
 
 -- 
 Best Regards,
