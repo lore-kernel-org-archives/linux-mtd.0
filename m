@@ -1,18 +1,20 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORMt-0002U4-D1
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:09 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
+	id 1QORMv-0002TB-Rd
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:10 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098469wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:07 -0700 (PDT)
+	Mon, 23 May 2011 02:24:09 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 06/62] mtd/plat_nand: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:22:47 +0100
-Message-Id: <1306142623-24952-7-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 07/62] arm/mtd/gemini: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:22:48 +0100
+Message-Id: <1306142623-24952-8-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
-Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
+Cc: Jamie Iles <jamie@jamieiles.com>,
+	Hans Ulli Kroll <ulli.kroll@googlemail.com>, dwmw2@infradead.org,
+	dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +27,64 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Convert to mtd_device_register() and remove the CONFIG_MTD_PARTITIONS
 preprocessor conditionals as partitioning is always available.
 
+Cc: Hans Ulli Kroll <ulli.kroll@googlemail.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/plat_nand.c |   12 +++---------
- 1 files changed, 3 insertions(+), 9 deletions(-)
+ arch/arm/mach-gemini/board-wbd111.c |    7 +------
+ arch/arm/mach-gemini/board-wbd222.c |    7 +------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index caf5a73..633c04b 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -21,10 +21,8 @@ struct plat_nand_data {
- 	struct nand_chip	chip;
- 	struct mtd_info		mtd;
- 	void __iomem		*io_base;
--#ifdef CONFIG_MTD_PARTITIONS
- 	int			nr_parts;
- 	struct mtd_partition	*parts;
--#endif
+diff --git a/arch/arm/mach-gemini/board-wbd111.c b/arch/arm/mach-gemini/board-wbd111.c
+index af7b68a..88cc422 100644
+--- a/arch/arm/mach-gemini/board-wbd111.c
++++ b/arch/arm/mach-gemini/board-wbd111.c
+@@ -84,7 +84,6 @@ static struct sys_timer wbd111_timer = {
+ 	.init	= gemini_timer_init,
  };
  
- /*
-@@ -101,13 +99,12 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
- 		goto out;
+-#ifdef CONFIG_MTD_PARTITIONS
+ static struct mtd_partition wbd111_partitions[] = {
+ 	{
+ 		.name		= "RedBoot",
+@@ -116,11 +115,7 @@ static struct mtd_partition wbd111_partitions[] = {
+ 		.mask_flags	= MTD_WRITEABLE,
  	}
+ };
+-#define wbd111_num_partitions	ARRAY_SIZE(wbd111_partitions)
+-#else
+-#define wbd111_partitions	NULL
+-#define wbd111_num_partitions	0
+-#endif /* CONFIG_MTD_PARTITIONS */
++#define wbd111_num_partitions  ARRAY_SIZE(wbd111_partitions)
+ 
+ static void __init wbd111_init(void)
+ {
+diff --git a/arch/arm/mach-gemini/board-wbd222.c b/arch/arm/mach-gemini/board-wbd222.c
+index 99e5bbe..3a22034 100644
+--- a/arch/arm/mach-gemini/board-wbd222.c
++++ b/arch/arm/mach-gemini/board-wbd222.c
+@@ -84,7 +84,6 @@ static struct sys_timer wbd222_timer = {
+ 	.init	= gemini_timer_init,
+ };
  
 -#ifdef CONFIG_MTD_PARTITIONS
- 	if (pdata->chip.part_probe_types) {
- 		err = parse_mtd_partitions(&data->mtd,
- 					pdata->chip.part_probe_types,
- 					&data->parts, 0);
- 		if (err > 0) {
--			add_mtd_partitions(&data->mtd, data->parts, err);
-+			mtd_device_register(&data->mtd, data->parts, err);
- 			return 0;
- 		}
+ static struct mtd_partition wbd222_partitions[] = {
+ 	{
+ 		.name		= "RedBoot",
+@@ -116,11 +115,7 @@ static struct mtd_partition wbd222_partitions[] = {
+ 		.mask_flags	= MTD_WRITEABLE,
  	}
-@@ -115,11 +112,10 @@ static int __devinit plat_nand_probe(struct platform_device *pdev)
- 		pdata->chip.set_parts(data->mtd.size, &pdata->chip);
- 	if (pdata->chip.partitions) {
- 		data->parts = pdata->chip.partitions;
--		err = add_mtd_partitions(&data->mtd, data->parts,
-+		err = mtd_device_register(&data->mtd, data->parts,
- 			pdata->chip.nr_partitions);
- 	} else
--#endif
--	err = add_mtd_device(&data->mtd);
-+		err = mtd_device_register(&data->mtd, NULL, 0);
+ };
+-#define wbd222_num_partitions	ARRAY_SIZE(wbd222_partitions)
+-#else
+-#define wbd222_partitions	NULL
+-#define wbd222_num_partitions	0
+-#endif /* CONFIG_MTD_PARTITIONS */
++#define wbd222_num_partitions  ARRAY_SIZE(wbd222_partitions)
  
- 	if (!err)
- 		return err;
-@@ -149,10 +145,8 @@ static int __devexit plat_nand_remove(struct platform_device *pdev)
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 
- 	nand_release(&data->mtd);
--#ifdef CONFIG_MTD_PARTITIONS
- 	if (data->parts && data->parts != pdata->chip.partitions)
- 		kfree(data->parts);
--#endif
- 	if (pdata->ctrl.remove)
- 		pdata->ctrl.remove(pdev);
- 	iounmap(data->io_base);
+ static void __init wbd222_init(void)
+ {
 -- 
 1.7.4.4
