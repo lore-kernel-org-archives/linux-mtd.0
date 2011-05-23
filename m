@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORO5-0002TQ-3n
+	id 1QORO7-0002Tm-Ca
 	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:25 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:20 -0700 (PDT)
+	Mon, 23 May 2011 02:25:23 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 38/62] mtd/diskonchip: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:19 +0100
-Message-Id: <1306142623-24952-39-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 39/62] mtd/edb7312 nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:20 +0100
+Message-Id: <1306142623-24952-40-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,53 +29,63 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/diskonchip.c |   18 +++++++-----------
- 1 files changed, 7 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/edb7312.c |    9 +--------
+ 1 files changed, 1 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/mtd/nand/diskonchip.c b/drivers/mtd/nand/diskonchip.c
-index 657b9f4..7837728 100644
---- a/drivers/mtd/nand/diskonchip.c
-+++ b/drivers/mtd/nand/diskonchip.c
-@@ -1360,11 +1360,9 @@ static int __init nftl_scan_bbt(struct mtd_info *mtd)
- 	   At least as nand_bbt.c is currently written. */
- 	if ((ret = nand_scan_bbt(mtd, NULL)))
- 		return ret;
--	add_mtd_device(mtd);
+diff --git a/drivers/mtd/nand/edb7312.c b/drivers/mtd/nand/edb7312.c
+index 86366bf..8400d0f 100644
+--- a/drivers/mtd/nand/edb7312.c
++++ b/drivers/mtd/nand/edb7312.c
+@@ -55,7 +55,6 @@ static unsigned long ep7312_fio_pbase = EP7312_FIO_PBASE;
+ static void __iomem *ep7312_pxdr = (void __iomem *)EP7312_PXDR;
+ static void __iomem *ep7312_pxddr = (void __iomem *)EP7312_PXDDR;
+ 
 -#ifdef CONFIG_MTD_PARTITIONS
-+	mtd_device_register(mtd, NULL, 0);
- 	if (!no_autopart)
--		add_mtd_partitions(mtd, parts, numparts);
+ /*
+  * Define static partitions for flash device
+  */
+@@ -67,8 +66,6 @@ static struct mtd_partition partition_info[] = {
+ 
+ #define NUM_PARTITIONS 1
+ 
 -#endif
-+		mtd_device_register(mtd, parts, numparts);
- 	return 0;
+-
+ /*
+  *	hardware specific access to control-lines
+  *
+@@ -101,9 +98,7 @@ static int ep7312_device_ready(struct mtd_info *mtd)
+ 	return 1;
  }
  
-@@ -1419,11 +1417,9 @@ static int __init inftl_scan_bbt(struct mtd_info *mtd)
- 	   autopartitioning, but I want to give it more thought. */
- 	if (!numparts)
- 		return -EIO;
--	add_mtd_device(mtd);
 -#ifdef CONFIG_MTD_PARTITIONS
-+	mtd_device_register(mtd, NULL, 0);
- 	if (!no_autopart)
--		add_mtd_partitions(mtd, parts, numparts);
+ const char *part_probes[] = { "cmdlinepart", NULL };
 -#endif
-+		mtd_device_register(mtd, parts, numparts);
- 	return 0;
- }
  
-@@ -1678,9 +1674,9 @@ static int __init doc_probe(unsigned long physadr)
- 		/* DBB note: i believe nand_release is necessary here, as
- 		   buffers may have been allocated in nand_base.  Check with
- 		   Thomas. FIX ME! */
--		/* nand_release will call del_mtd_device, but we haven't yet
--		   added it.  This is handled without incident by
--		   del_mtd_device, as far as I can tell. */
-+		/* nand_release will call mtd_device_unregister, but we
-+		   haven't yet added it.  This is handled without incident by
-+		   mtd_device_unregister, as far as I can tell. */
- 		nand_release(mtd);
- 		kfree(mtd);
- 		goto fail;
+ /*
+  * Main initialization routine
+@@ -162,14 +157,12 @@ static int __init ep7312_init(void)
+ 		kfree(ep7312_mtd);
+ 		return -ENXIO;
+ 	}
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	ep7312_mtd->name = "edb7312-nand";
+ 	mtd_parts_nb = parse_mtd_partitions(ep7312_mtd, part_probes, &mtd_parts, 0);
+ 	if (mtd_parts_nb > 0)
+ 		part_type = "command line";
+ 	else
+ 		mtd_parts_nb = 0;
+-#endif
+ 	if (mtd_parts_nb == 0) {
+ 		mtd_parts = partition_info;
+ 		mtd_parts_nb = NUM_PARTITIONS;
+@@ -178,7 +171,7 @@ static int __init ep7312_init(void)
+ 
+ 	/* Register the partitions */
+ 	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
+-	add_mtd_partitions(ep7312_mtd, mtd_parts, mtd_parts_nb);
++	mtd_device_register(ep7312_mtd, mtd_parts, mtd_parts_nb);
+ 
+ 	/* Return happy */
+ 	return 0;
 -- 
 1.7.4.4
