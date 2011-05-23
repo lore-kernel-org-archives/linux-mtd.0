@@ -1,25 +1,21 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOUXP-00051v-Cu
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 12:47:12 +0000
-Received: by ewy3 with SMTP id 3so2073854ewy.36
+	id 1QOWe5-0006I2-6Y
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 15:02:14 +0000
+Received: by eyh6 with SMTP id 6so2124127eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 05:47:09 -0700 (PDT)
-Subject: Re: ubiattach error!
+	Mon, 23 May 2011 08:02:10 -0700 (PDT)
+Subject: Re: Setting security XATTR on ubifs
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Timon ter Braak <timonterbraak@gmail.com>
-In-Reply-To: <loom.20110520T181331-434@post.gmane.org>
-References: <71103bce1003230226q7fce2443vad3853d7c6d6d947@mail.gmail.com>
-	<1270715032.6754.108.camel@localhost>
-	<loom.20110520T161007-38@post.gmane.org>
-	<1305901388.2630.151.camel@localhost>
-	<loom.20110520T181331-434@post.gmane.org>
+To: snijsure@grid-net.com
+In-Reply-To: <1305934601.10340.12.camel@subodh-desktop>
+References: <1305934601.10340.12.camel@subodh-desktop>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 23 May 2011 15:42:55 +0300
-Message-ID: <1306154575.2785.15.camel@localhost>
+Date: Mon, 23 May 2011 17:57:57 +0300
+Message-ID: <1306162677.2785.30.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: mtd <linux-mtd@lists.infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -30,33 +26,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-20 at 16:24 +0000, Timon ter Braak wrote:
-> I will be happy to provide more information, but I am not sure what
-> exactly. It is difficult to separate what procedure corrupt the filesystem
-> and what does work. For example, even a normal 'reboot' command
-> results in the message 'recovery needed'; is that normal?
+Hi,
 
-Start with this:
-http://www.linux-mtd.infradead.org/doc/ubifs.html#L_how_send_bugreport
+no time now, so very quick answer.
 
-If you cannot isolate the error - I cannot do it as well for sure. So
-please, try to fine one specific thing which you think is a problem, and
-ask to help with that specific thing. The above link should help. In
-general, the first things you need to do are:
+On Fri, 2011-05-20 at 16:36 -0700, Subodh Nijsure wrote:
+> we have implemented modifications to UBIFS to add support for SELinux
+> labeling. Function that created this XATTR is called
+> ubifs_init_security(), shown below.
 
-1. validate your mtd device with the test - this is always good thing to
-do.
-2. enable UBIFS debugging (not debugging messages)
-3. report the issue properly as it is described at the MTD web site.
+OK, sounds cool.
 
-WRT. reboot: if your 'reboot' command results in 'recovery needed' then
-your 'reboot' command does not unmount the file-system and just reboots
-it. Of course from UBIFS's POW this is a power cut and it needs
-recovery. But there is nothing to be afraid of if you know you synced
-your files. So you need to take a look what "reboot" does - it may do
-completely different things on different systems. E.g., does it sync the
-data? does it unmount FSes?
+> Following example of how JFFS2 does extended attribute labeling, This
+> function is being called from 
+> ubifs_create(),ubifs_mkdir(), ubifs_mknod(), ubifs_symlink() (in
+> fs/ubifs/dir.c)
 
+OK.
+
+> With this modification things work "mostly", I am able to label the file
+> system, but sometimes the file system is getting corrupted. I will
+> certainly post the patch once things work reliably. 
+
+Hmm... Running tests with all UBIFS extra self-checks turned on is a
+good idea, BTW.
+
+> I don't _fully_ understand how ubifs is doing space management, hence
+> the immediate questions I have are:
+
+Well, the main complication is budgeting: before doing any I/O you need
+to get space budget, which is basically about asking the budgeting
+subsystem to reserve certain amount of space for your operation. When
+you are done - you release the budget.
+
+> 1. What is the right point to add the XATTR to the UBIFS inode, after
+> the ubifs_new_inode() is done?
+
+I guess right after that? But keep in mind that unclean reboots may
+result in losing selinux attributes. E.g., you create a new inode for
+file XXX and this succeeds, then you start creating the selinux labels
+and you have a power cut. When you mount the FS again you'll find out
+that XXX does not have any selinux labels.
+
+I do not know selinux well enough so do not know how this is handled:
+does selinux handle it from user-space somehow or it assumes that
+file/dir/symlink + selinux lables creation is atomic?
+
+>  Should ubifs_budget_space() be updated to
+> handle extra space needed by the XATTR.
+
+In _your_ implementation no - ubifs_init_security() calls
+'ubifs_setxattr()' which calls 'create_xattr()' which gets the budget.
+
+I mean, in your implementation creating inode and creating selinux
+xattrs are 2 separate operations and you use existing "big" building
+blocks for this which do the budgeting.
+
+> 2. In function below ui_mutex is being locked/unlocked while XATTR for
+> the file is updated. Is that required while updating the extended
+> attribute?
+
+You'd deadlock if you did this I think, because 'create_xattr()' takes
+the mutex (it is called "host_ui->ui_mutex" there).
+
+HTH.
 
 -- 
 Best Regards,
