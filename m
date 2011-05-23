@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNi-0002U4-IA
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:59 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
+	id 1QORNk-0002TQ-PH
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:02 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:58 -0700 (PDT)
+	Mon, 23 May 2011 02:25:00 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 28/62] mtd/sa1100-flash: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:09 +0100
-Message-Id: <1306142623-24952-29-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 29/62] mtd/scx200_docflash: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:10 +0100
+Message-Id: <1306142623-24952-30-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,74 +29,71 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/maps/Kconfig        |    2 +-
- drivers/mtd/maps/sa1100-flash.c |   21 ++++++---------------
- 2 files changed, 7 insertions(+), 16 deletions(-)
+ drivers/mtd/maps/Kconfig           |    2 +-
+ drivers/mtd/maps/scx200_docflash.c |   16 +++-------------
+ 2 files changed, 4 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 049a549..d4a1f61 100644
+index d4a1f61..40a8fd9 100644
 --- a/drivers/mtd/maps/Kconfig
 +++ b/drivers/mtd/maps/Kconfig
-@@ -354,7 +354,7 @@ config MTD_CDB89712
+@@ -184,7 +184,7 @@ config MTD_VMAX
  
- config MTD_SA1100
- 	tristate "CFI Flash device mapped on StrongARM SA11x0"
--	depends on MTD_CFI && ARCH_SA1100 && MTD_PARTITIONS
-+	depends on MTD_CFI && ARCH_SA1100
+ config MTD_SCx200_DOCFLASH
+ 	tristate "Flash device mapped with DOCCS on NatSemi SCx200"
+-	depends on SCx200 && MTD_CFI && MTD_PARTITIONS
++	depends on SCx200 && MTD_CFI
  	help
- 	  This enables access to the flash chips on most platforms based on
- 	  the SA1100 and SA1110, including the Assabet and the Compaq iPAQ.
-diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
-index da875908..a9b5e0e 100644
---- a/drivers/mtd/maps/sa1100-flash.c
-+++ b/drivers/mtd/maps/sa1100-flash.c
-@@ -226,12 +226,7 @@ static void sa1100_destroy(struct sa_info *info, struct flash_platform_data *pla
- 	int i;
+ 	  Enable support for a flash chip mapped using the DOCCS signal on a
+ 	  National Semiconductor SCx200 processor.
+diff --git a/drivers/mtd/maps/scx200_docflash.c b/drivers/mtd/maps/scx200_docflash.c
+index 027e628..f1c1f73 100644
+--- a/drivers/mtd/maps/scx200_docflash.c
++++ b/drivers/mtd/maps/scx200_docflash.c
+@@ -44,7 +44,6 @@ static struct resource docmem = {
  
- 	if (info->mtd) {
--		if (info->nr_parts == 0)
--			del_mtd_device(info->mtd);
--#ifdef CONFIG_MTD_PARTITIONS
--		else
--			del_mtd_partitions(info->mtd);
--#endif
-+		mtd_device_unregister(info->mtd);
- 		if (info->mtd != info->subdev[0].mtd)
- 			mtd_concat_destroy(info->mtd);
- 	}
-@@ -363,28 +358,24 @@ static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
- 	/*
- 	 * Partition selection stuff.
- 	 */
--#ifdef CONFIG_MTD_PARTITIONS
- 	nr_parts = parse_mtd_partitions(info->mtd, part_probes, &parts, 0);
- 	if (nr_parts > 0) {
- 		info->parts = parts;
- 		part_type = "dynamic";
--	} else
--#endif
--	{
-+	} else {
- 		parts = plat->parts;
- 		nr_parts = plat->nr_parts;
- 		part_type = "static";
- 	}
+ static struct mtd_info *mymtd;
  
--	if (nr_parts == 0) {
-+	if (nr_parts == 0)
- 		printk(KERN_NOTICE "SA1100 flash: no partition info "
- 			"available, registering whole flash\n");
--		add_mtd_device(info->mtd);
--	} else {
-+	else
- 		printk(KERN_NOTICE "SA1100 flash: using %s partition "
- 			"definition\n", part_type);
--		add_mtd_partitions(info->mtd, parts, nr_parts);
--	}
+-#ifdef CONFIG_MTD_PARTITIONS
+ static struct mtd_partition partition_info[] = {
+ 	{
+ 		.name   = "DOCCS Boot kernel",
+@@ -68,8 +67,6 @@ static struct mtd_partition partition_info[] = {
+ 	},
+ };
+ #define NUM_PARTITIONS ARRAY_SIZE(partition_info)
+-#endif
+-
+ 
+ static struct map_info scx200_docflash_map = {
+ 	.name      = "NatSemi SCx200 DOCCS Flash",
+@@ -198,24 +195,17 @@ static int __init init_scx200_docflash(void)
+ 
+ 	mymtd->owner = THIS_MODULE;
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	partition_info[3].offset = mymtd->size-partition_info[3].size;
+ 	partition_info[2].size = partition_info[3].offset-partition_info[2].offset;
+-	add_mtd_partitions(mymtd, partition_info, NUM_PARTITIONS);
+-#else
+-	add_mtd_device(mymtd);
+-#endif
++	mtd_device_register(mymtd, partition_info, NUM_PARTITIONS);
 +
-+	mtd_device_register(info->mtd, parts, nr_parts);
+ 	return 0;
+ }
  
- 	info->nr_parts = nr_parts;
- 
+ static void __exit cleanup_scx200_docflash(void)
+ {
+ 	if (mymtd) {
+-#ifdef CONFIG_MTD_PARTITIONS
+-		del_mtd_partitions(mymtd);
+-#else
+-		del_mtd_device(mymtd);
+-#endif
++		mtd_device_unregister(mymtd);
+ 		map_destroy(mymtd);
+ 	}
+ 	if (scx200_docflash_map.virt) {
 -- 
 1.7.4.4
