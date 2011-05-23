@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOROT-0002U4-0E
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:49 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
+	id 1QORON-0002TB-Ta
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:40 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098469wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:44 -0700 (PDT)
+	Mon, 23 May 2011 02:25:39 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 48/62] mtd/nomadik_nand: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:29 +0100
-Message-Id: <1306142623-24952-49-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 46/62] mtd/mxc_nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:27 +0100
+Message-Id: <1306142623-24952-47-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,26 +29,45 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/nomadik_nand.c |    7 +------
- 1 files changed, 1 insertions(+), 6 deletions(-)
+ drivers/mtd/nand/mxc_nand.c |   13 ++++---------
+ 1 files changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/nomadik_nand.c b/drivers/mtd/nand/nomadik_nand.c
-index a045a4a..b6a5c86 100644
---- a/drivers/mtd/nand/nomadik_nand.c
-+++ b/drivers/mtd/nand/nomadik_nand.c
-@@ -158,12 +158,7 @@ static int nomadik_nand_probe(struct platform_device *pdev)
- 		goto err_unmap;
+diff --git a/drivers/mtd/nand/mxc_nand.c b/drivers/mtd/nand/mxc_nand.c
+index 42a95fb..846f602 100644
+--- a/drivers/mtd/nand/mxc_nand.c
++++ b/drivers/mtd/nand/mxc_nand.c
+@@ -236,9 +236,7 @@ static struct nand_ecclayout nandv2_hw_eccoob_4k = {
  	}
+ };
  
 -#ifdef CONFIG_MTD_PARTITIONS
--	add_mtd_partitions(&host->mtd, pdata->parts, pdata->nparts);
--#else
--	pr_info("Registering %s as whole device\n", mtd->name);
--	add_mtd_device(mtd);
+ static const char *part_probes[] = { "RedBoot", "cmdlinepart", NULL };
 -#endif
-+	mtd_device_register(&host->mtd, pdata->parts, pdata->nparts);
+ 
+ static irqreturn_t mxc_nfc_irq(int irq, void *dev_id)
+ {
+@@ -1220,18 +1218,15 @@ static int __init mxcnd_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Register the partitions */
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	nr_parts =
+ 	    parse_mtd_partitions(mtd, part_probes, &host->parts, 0);
+ 	if (nr_parts > 0)
+-		add_mtd_partitions(mtd, host->parts, nr_parts);
++		mtd_device_register(mtd, host->parts, nr_parts);
+ 	else if (pdata->parts)
+-		add_mtd_partitions(mtd, pdata->parts, pdata->nr_parts);
+-	else
+-#endif
+-	{
++		mtd_device_register(mtd, pdata->parts, pdata->nr_parts);
++	else {
+ 		pr_info("Registering %s as whole device\n", mtd->name);
+-		add_mtd_device(mtd);
++		mtd_device_register(mtd, NULL, 0);
+ 	}
  
  	platform_set_drvdata(pdev, host);
- 	return 0;
 -- 
 1.7.4.4
