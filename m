@@ -1,19 +1,18 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOROc-0002Tm-QS
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:56 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
+	id 1QOROe-0002TB-JX
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:58 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098469wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:54 -0700 (PDT)
+	Mon, 23 May 2011 02:25:56 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 52/62] mtd/s3c2410 nand: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:33 +0100
-Message-Id: <1306142623-24952-53-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 53/62] mtd/sharpsl: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:34 +0100
+Message-Id: <1306142623-24952-54-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
-Cc: Jamie Iles <jamie@jamieiles.com>, Kukjin Kim <kgene.kim@samsung.com>,
-	dwmw2@infradead.org, Ben Dooks <ben-linux@fluff.org>, dedekind1@gmail.com
+Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +25,58 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Convert to mtd_device_register() and remove the CONFIG_MTD_PARTITIONS
 preprocessor conditionals as partitioning is always available.
 
-Cc: Ben Dooks <ben-linux@fluff.org>
-Cc: Kukjin Kim <kgene.kim@samsung.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/s3c2410.c |   16 ++--------------
- 1 files changed, 2 insertions(+), 14 deletions(-)
+ drivers/mtd/nand/sharpsl.c |   12 ++----------
+ 1 files changed, 2 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 33d832d..3540789 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -715,7 +715,6 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
- 	return 0;
+diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
+index 54ec754..19e24ed 100644
+--- a/drivers/mtd/nand/sharpsl.c
++++ b/drivers/mtd/nand/sharpsl.c
+@@ -103,9 +103,7 @@ static int sharpsl_nand_calculate_ecc(struct mtd_info *mtd, const u_char * dat,
+ 	return readb(sharpsl->io + ECCCNTR) != 0;
  }
  
 -#ifdef CONFIG_MTD_PARTITIONS
- const char *part_probes[] = { "cmdlinepart", NULL };
- static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
- 				      struct s3c2410_nand_mtd *mtd,
-@@ -725,7 +724,7 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
- 	int nr_part = 0;
- 
- 	if (set == NULL)
--		return add_mtd_device(&mtd->mtd);
-+		return mtd_device_register(&mtd->mtd, NULL, 0);
- 
- 	mtd->mtd.name = set->name;
- 	nr_part = parse_mtd_partitions(&mtd->mtd, part_probes, &part_info, 0);
-@@ -735,19 +734,8 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
- 		part_info = set->partitions;
- 	}
- 
--	if (nr_part > 0 && part_info)
--		return add_mtd_partitions(&mtd->mtd, part_info, nr_part);
--
--	return add_mtd_device(&mtd->mtd);
--}
--#else
--static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
--				      struct s3c2410_nand_mtd *mtd,
--				      struct s3c2410_nand_set *set)
--{
--	return add_mtd_device(&mtd->mtd);
-+	return mtd_device_register(&mtd->mtd, part_info, nr_part);
- }
+ static const char *part_probes[] = { "cmdlinepart", NULL };
 -#endif
  
- /**
-  * s3c2410_nand_init_chip - initialise a single instance of an chip
+ /*
+  * Main initialization routine
+@@ -113,10 +111,8 @@ static const char *part_probes[] = { "cmdlinepart", NULL };
+ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
+ {
+ 	struct nand_chip *this;
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	struct mtd_partition *sharpsl_partition_info;
+ 	int nr_partitions;
+-#endif
+ 	struct resource *r;
+ 	int err = 0;
+ 	struct sharpsl_nand *sharpsl;
+@@ -188,18 +184,14 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
+ 
+ 	/* Register the partitions */
+ 	sharpsl->mtd.name = "sharpsl-nand";
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	nr_partitions = parse_mtd_partitions(&sharpsl->mtd, part_probes, &sharpsl_partition_info, 0);
+ 	if (nr_partitions <= 0) {
+ 		nr_partitions = data->nr_partitions;
+ 		sharpsl_partition_info = data->partitions;
+ 	}
+ 
+-	if (nr_partitions > 0)
+-		err = add_mtd_partitions(&sharpsl->mtd, sharpsl_partition_info, nr_partitions);
+-	else
+-#endif
+-	err = add_mtd_device(&sharpsl->mtd);
++	err = mtd_device_register(&sharpsl->mtd, sharpsl_partition_info,
++				  nr_partitions);
+ 	if (err)
+ 		goto err_add;
+ 
 -- 
 1.7.4.4
