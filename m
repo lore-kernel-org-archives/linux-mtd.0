@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNb-0002U4-PO
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:53 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
+	id 1QORNe-0002Tm-39
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:55 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:51 -0700 (PDT)
+	Mon, 23 May 2011 02:24:53 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 25/62] mtd/latch-addr-flash: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:06 +0100
-Message-Id: <1306142623-24952-26-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 26/62] mtd/plat-ram: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:07 +0100
+Message-Id: <1306142623-24952-27-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,72 +29,69 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/maps/latch-addr-flash.c |   45 +++++++++++++---------------------
- 1 files changed, 17 insertions(+), 28 deletions(-)
+ drivers/mtd/maps/plat-ram.c |   24 +++++++++---------------
+ 1 files changed, 9 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
-index ee25480..5936c46 100644
---- a/drivers/mtd/maps/latch-addr-flash.c
-+++ b/drivers/mtd/maps/latch-addr-flash.c
-@@ -112,18 +112,9 @@ static int latch_addr_flash_remove(struct platform_device *dev)
- 	latch_addr_data = dev->dev.platform_data;
+diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+index 76a76be..9ca1ecc 100644
+--- a/drivers/mtd/maps/plat-ram.c
++++ b/drivers/mtd/maps/plat-ram.c
+@@ -94,14 +94,11 @@ static int platram_remove(struct platform_device *pdev)
+ 		return 0;
  
- 	if (info->mtd != NULL) {
--		if (mtd_has_partitions()) {
--			if (info->nr_parts) {
--				del_mtd_partitions(info->mtd);
--				kfree(info->parts);
--			} else if (latch_addr_data->nr_parts) {
--				del_mtd_partitions(info->mtd);
--			} else {
--				del_mtd_device(info->mtd);
--			}
--		} else {
--			del_mtd_device(info->mtd);
--		}
-+		if (info->nr_parts)
-+			kfree(info->parts);
+ 	if (info->mtd) {
+-#ifdef CONFIG_MTD_PARTITIONS
 +		mtd_device_unregister(info->mtd);
+ 		if (info->partitions) {
+-			del_mtd_partitions(info->mtd);
+ 			if (info->free_partitions)
+ 				kfree(info->partitions);
+ 		}
+-#endif
+-		del_mtd_device(info->mtd);
  		map_destroy(info->mtd);
  	}
  
-@@ -215,23 +206,21 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
- 	}
- 	info->mtd->owner = THIS_MODULE;
+@@ -231,7 +228,6 @@ static int platram_probe(struct platform_device *pdev)
+ 	/* check to see if there are any available partitions, or wether
+ 	 * to add this device whole */
  
--	if (mtd_has_partitions()) {
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	if (!pdata->nr_partitions) {
+ 		/* try to probe using the supplied probe type */
+ 		if (pdata->probes) {
+@@ -239,24 +235,22 @@ static int platram_probe(struct platform_device *pdev)
+ 					   &info->partitions, 0);
+ 			info->free_partitions = 1;
+ 			if (err > 0)
+-				err = add_mtd_partitions(info->mtd,
++				err = mtd_device_register(info->mtd,
+ 					info->partitions, err);
+ 		}
+ 	}
+ 	/* use the static mapping */
+ 	else
+-		err = add_mtd_partitions(info->mtd, pdata->partitions,
+-				pdata->nr_partitions);
+-#endif /* CONFIG_MTD_PARTITIONS */
 -
--		err = parse_mtd_partitions(info->mtd,
--					   (const char **)part_probe_types,
--					   &info->parts, 0);
--		if (err > 0) {
--			add_mtd_partitions(info->mtd, info->parts, err);
--			return 0;
--		}
--		if (latch_addr_data->nr_parts) {
--			pr_notice("Using latch-addr-flash partition information\n");
--			add_mtd_partitions(info->mtd, latch_addr_data->parts,
--					latch_addr_data->nr_parts);
--			return 0;
--		}
-+	err = parse_mtd_partitions(info->mtd, (const char **)part_probe_types,
-+				   &info->parts, 0);
-+	if (err > 0) {
-+		mtd_device_register(info->mtd, info->parts, err);
-+		return 0;
-+	}
-+	if (latch_addr_data->nr_parts) {
-+		pr_notice("Using latch-addr-flash partition information\n");
-+		mtd_device_register(info->mtd,
-+				    latch_addr_data->parts,
-+				    latch_addr_data->nr_parts);
-+		return 0;
- 	}
--	add_mtd_device(info->mtd);
-+
-+	mtd_device_register(info->mtd, NULL, 0);
- 	return 0;
+-	if (add_mtd_device(info->mtd)) {
+-		dev_err(&pdev->dev, "add_mtd_device() failed\n");
+-		err = -ENOMEM;
+-	}
+-
++		err = mtd_device_register(info->mtd, pdata->partitions,
++					  pdata->nr_partitions);
+ 	if (!err)
+ 		dev_info(&pdev->dev, "registered mtd device\n");
  
- iounmap:
++	/* add the whole device. */
++	err = mtd_device_register(info->mtd, NULL, 0);
++	if (err)
++		dev_err(&pdev->dev, "failed to register the entire device\n");
++
+ 	return err;
+ 
+  exit_free:
 -- 
 1.7.4.4
