@@ -1,15 +1,15 @@
 Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNp-0002Tm-7i
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:06 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
+	id 1QORNr-0002U4-GW
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:09 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:04 -0700 (PDT)
+	Mon, 23 May 2011 02:25:07 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 31/62] mtd/uclinux: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:12 +0100
-Message-Id: <1306142623-24952-32-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 32/62] mtd/atmel_nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:13 +0100
+Message-Id: <1306142623-24952-33-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,52 +29,51 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/maps/Kconfig   |    2 +-
- drivers/mtd/maps/uclinux.c |   12 ++----------
- 2 files changed, 3 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/atmel_nand.c |   12 +-----------
+ 1 files changed, 1 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 40a8fd9..cf458a5 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -479,7 +479,7 @@ config MTD_GPIO_ADDR
- 
- config MTD_UCLINUX
- 	bool "Generic uClinux RAM/ROM filesystem support"
--	depends on MTD_PARTITIONS && MTD_RAM=y && !MMU
-+	depends on MTD_RAM=y && !MMU
- 	help
- 	  Map driver to support image based filesystems for uClinux.
- 
-diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index 3500929..6793074 100644
---- a/drivers/mtd/maps/uclinux.c
-+++ b/drivers/mtd/maps/uclinux.c
-@@ -89,11 +89,7 @@ static int __init uclinux_mtd_init(void)
- 	mtd->priv = mapp;
- 
- 	uclinux_ram_mtdinfo = mtd;
+diff --git a/drivers/mtd/nand/atmel_nand.c b/drivers/mtd/nand/atmel_nand.c
+index 950646a..1836e9b 100644
+--- a/drivers/mtd/nand/atmel_nand.c
++++ b/drivers/mtd/nand/atmel_nand.c
+@@ -494,11 +494,8 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 	struct resource *regs;
+ 	struct resource *mem;
+ 	int res;
+-
 -#ifdef CONFIG_MTD_PARTITIONS
--	add_mtd_partitions(mtd, uclinux_romfs, NUM_PARTITIONS);
--#else
--	add_mtd_device(mtd);
+ 	struct mtd_partition *partitions = NULL;
+ 	int num_partitions = 0;
 -#endif
-+	mtd_device_register(mtd, uclinux_romfs, NUM_PARTITIONS);
  
- 	return(0);
- }
-@@ -103,11 +99,7 @@ static int __init uclinux_mtd_init(void)
- static void __exit uclinux_mtd_cleanup(void)
- {
- 	if (uclinux_ram_mtdinfo) {
--#ifdef CONFIG_MTD_PARTITIONS
--		del_mtd_partitions(uclinux_ram_mtdinfo);
--#else
--		del_mtd_device(uclinux_ram_mtdinfo);
--#endif
-+		mtd_device_unregister(uclinux_ram_mtdinfo);
- 		map_destroy(uclinux_ram_mtdinfo);
- 		uclinux_ram_mtdinfo = NULL;
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	if (!mem) {
+@@ -656,7 +653,6 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		goto err_scan_tail;
  	}
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+ #ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	mtd->name = "atmel_nand";
+ 	num_partitions = parse_mtd_partitions(mtd, part_probes,
+@@ -672,17 +668,11 @@ static int __init atmel_nand_probe(struct platform_device *pdev)
+ 		goto err_no_partitions;
+ 	}
+ 
+-	res = add_mtd_partitions(mtd, partitions, num_partitions);
+-#else
+-	res = add_mtd_device(mtd);
+-#endif
+-
++	res = mtd_device_register(mtd, partitions, num_partitions);
+ 	if (!res)
+ 		return res;
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+ err_no_partitions:
+-#endif
+ 	nand_release(mtd);
+ err_scan_tail:
+ err_scan_ident:
 -- 
 1.7.4.4
