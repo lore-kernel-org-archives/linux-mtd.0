@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNU-0002TB-OP
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:46 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098469wyb.36
+	id 1QORNX-0002Tm-3W
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:48 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:44 -0700 (PDT)
+	Mon, 23 May 2011 02:24:46 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 22/62] mtd/h720x-flash: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:03 +0100
-Message-Id: <1306142623-24952-23-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 23/62] mtd/impa7: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:04 +0100
+Message-Id: <1306142623-24952-24-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,41 +29,77 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/maps/h720x-flash.c |    6 ++----
- 1 files changed, 2 insertions(+), 4 deletions(-)
+ drivers/mtd/maps/impa7.c |   22 +++-------------------
+ 1 files changed, 3 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/mtd/maps/h720x-flash.c b/drivers/mtd/maps/h720x-flash.c
-index 72c724f..7f03586 100644
---- a/drivers/mtd/maps/h720x-flash.c
-+++ b/drivers/mtd/maps/h720x-flash.c
-@@ -92,18 +92,16 @@ static int __init h720x_mtd_init(void)
- 	if (mymtd) {
- 		mymtd->owner = THIS_MODULE;
+diff --git a/drivers/mtd/maps/impa7.c b/drivers/mtd/maps/impa7.c
+index 998a27d..404a50c 100644
+--- a/drivers/mtd/maps/impa7.c
++++ b/drivers/mtd/maps/impa7.c
+@@ -15,10 +15,7 @@
+ #include <asm/io.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
+-
+-#ifdef CONFIG_MTD_PARTITIONS
+ #include <linux/mtd/partitions.h>
+-#endif
+ 
+ #define WINDOW_ADDR0 0x00000000      /* physical properties of flash */
+ #define WINDOW_SIZE0 0x00800000
+@@ -49,8 +46,6 @@ static struct map_info impa7_map[NUM_FLASHBANKS] = {
+ 	},
+ };
  
 -#ifdef CONFIG_MTD_PARTITIONS
- 		nr_mtd_parts = parse_mtd_partitions(mymtd, probes, &mtd_parts, 0);
- 		if (nr_mtd_parts > 0)
- 			part_type = "command line";
+-
+ /*
+  * MTD partitioning stuff
+  */
+@@ -66,8 +61,6 @@ static struct mtd_partition static_partitions[] =
+ static int mtd_parts_nb[NUM_FLASHBANKS];
+ static struct mtd_partition *mtd_parts[NUM_FLASHBANKS];
+ 
 -#endif
- 		if (nr_mtd_parts <= 0) {
- 			mtd_parts = h720x_partitions;
- 			nr_mtd_parts = NUM_PARTITIONS;
- 			part_type = "builtin";
+-
+ static const char *probes[] = { "cmdlinepart", NULL };
+ 
+ static int __init init_impa7(void)
+@@ -104,7 +97,6 @@ static int __init init_impa7(void)
+ 		if (impa7_mtd[i]) {
+ 			impa7_mtd[i]->owner = THIS_MODULE;
+ 			devicesfound++;
+-#ifdef CONFIG_MTD_PARTITIONS
+ 			mtd_parts_nb[i] = parse_mtd_partitions(impa7_mtd[i],
+ 							       probes,
+ 							       &mtd_parts[i],
+@@ -120,12 +112,8 @@ static int __init init_impa7(void)
+ 			printk(KERN_NOTICE MSG_PREFIX
+ 			       "using %s partition definition\n",
+ 			       part_type);
+-			add_mtd_partitions(impa7_mtd[i],
+-					   mtd_parts[i], mtd_parts_nb[i]);
+-#else
+-			add_mtd_device(impa7_mtd[i]);
+-
+-#endif
++			mtd_device_register(impa7_mtd[i],
++					    mtd_parts[i], mtd_parts_nb[i]);
  		}
- 		printk(KERN_INFO "Using %s partition table\n", part_type);
--		add_mtd_partitions(mymtd, mtd_parts, nr_mtd_parts);
-+		mtd_device_register(mymtd, mtd_parts, nr_mtd_parts);
- 		return 0;
- 	}
- 
-@@ -118,7 +116,7 @@ static void __exit h720x_mtd_cleanup(void)
- {
- 
- 	if (mymtd) {
--		del_mtd_partitions(mymtd);
-+		mtd_device_unregister(mymtd);
- 		map_destroy(mymtd);
- 	}
- 
+ 		else
+ 			iounmap((void *)impa7_map[i].virt);
+@@ -138,11 +126,7 @@ static void __exit cleanup_impa7(void)
+ 	int i;
+ 	for (i=0; i<NUM_FLASHBANKS; i++) {
+ 		if (impa7_mtd[i]) {
+-#ifdef CONFIG_MTD_PARTITIONS
+-			del_mtd_partitions(impa7_mtd[i]);
+-#else
+-			del_mtd_device(impa7_mtd[i]);
+-#endif
++			mtd_device_unregister(impa7_mtd[i]);
+ 			map_destroy(impa7_mtd[i]);
+ 			iounmap((void *)impa7_map[i].virt);
+ 			impa7_map[i].virt = 0;
 -- 
 1.7.4.4
