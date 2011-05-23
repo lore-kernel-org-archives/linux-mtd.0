@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOROH-0002Tm-1q
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:34 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
+	id 1QOROJ-0002TQ-EJ
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:36 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:32 -0700 (PDT)
+	Mon, 23 May 2011 02:25:35 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 43/62] mtd/h1910: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:24 +0100
-Message-Id: <1306142623-24952-44-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 44/62] mtd/jz4740_nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:25 +0100
+Message-Id: <1306142623-24952-45-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,52 +29,45 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/Kconfig |    2 +-
- drivers/mtd/nand/h1910.c |    5 +----
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/mtd/nand/jz4740_nand.c |   10 +---------
+ 1 files changed, 1 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index edec457..333d231 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -92,7 +92,7 @@ config MTD_NAND_EDB7312
+diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
+index cea38a5..6e813da 100644
+--- a/drivers/mtd/nand/jz4740_nand.c
++++ b/drivers/mtd/nand/jz4740_nand.c
+@@ -299,10 +299,8 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
+ 	struct nand_chip *chip;
+ 	struct mtd_info *mtd;
+ 	struct jz_nand_platform_data *pdata = pdev->dev.platform_data;
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	struct mtd_partition *partition_info;
+ 	int num_partitions = 0;
+-#endif
  
- config MTD_NAND_H1900
- 	tristate "iPAQ H1900 flash"
--	depends on ARCH_PXA && MTD_PARTITIONS
-+	depends on ARCH_PXA
- 	help
- 	  This enables the driver for the iPAQ h1900 flash.
- 
-diff --git a/drivers/mtd/nand/h1910.c b/drivers/mtd/nand/h1910.c
-index f8ce79b..02a03e6 100644
---- a/drivers/mtd/nand/h1910.c
-+++ b/drivers/mtd/nand/h1910.c
-@@ -38,7 +38,6 @@ static struct mtd_info *h1910_nand_mtd = NULL;
-  * Module stuff
-  */
+ 	nand = kzalloc(sizeof(*nand), GFP_KERNEL);
+ 	if (!nand) {
+@@ -375,7 +373,6 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
+ 		goto err_gpio_free;
+ 	}
  
 -#ifdef CONFIG_MTD_PARTITIONS
- /*
-  * Define static partitions for flash device
-  */
-@@ -50,8 +49,6 @@ static struct mtd_partition partition_info[] = {
- 
- #define NUM_PARTITIONS 1
- 
--#endif
+ #ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	num_partitions = parse_mtd_partitions(mtd, part_probes,
+ 						&partition_info, 0);
+@@ -384,12 +381,7 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
+ 		num_partitions = pdata->num_partitions;
+ 		partition_info = pdata->partitions;
+ 	}
 -
- /*
-  *	hardware specific access to control-lines
-  *
-@@ -154,7 +151,7 @@ static int __init h1910_init(void)
+-	if (num_partitions > 0)
+-		ret = add_mtd_partitions(mtd, partition_info, num_partitions);
+-	else
+-#endif
+-	ret = add_mtd_device(mtd);
++	ret = mtd_device_register(mtd, partition_info, num_partitions);
  
- 	/* Register the partitions */
- 	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
--	add_mtd_partitions(h1910_nand_mtd, mtd_parts, mtd_parts_nb);
-+	mtd_device_register(h1910_nand_mtd, mtd_parts, mtd_parts_nb);
- 
- 	/* Return happy */
- 	return 0;
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Failed to add mtd device\n");
 -- 
 1.7.4.4
