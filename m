@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-ww0-f41.google.com ([74.125.82.41])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNt-0002Tm-No
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:11 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
+	id 1QORNw-0002f8-Sz
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:14 +0000
+Received: by wwi18 with SMTP id 18so1298658wwi.0
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:09 -0700 (PDT)
+	Mon, 23 May 2011 02:25:11 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 33/62] mtd/bcm_umi_nand: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:14 +0100
-Message-Id: <1306142623-24952-34-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 34/62] mtd/bf5xx_nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:15 +0100
+Message-Id: <1306142623-24952-35-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,31 +29,29 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/bcm_umi_nand.c |    4 +---
- 1 files changed, 1 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/bf5xx_nand.c |    7 +------
+ 1 files changed, 1 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mtd/nand/bcm_umi_nand.c b/drivers/mtd/nand/bcm_umi_nand.c
-index dfe262c..9ec2807 100644
---- a/drivers/mtd/nand/bcm_umi_nand.c
-+++ b/drivers/mtd/nand/bcm_umi_nand.c
-@@ -52,9 +52,7 @@
- static const __devinitconst char gBanner[] = KERN_INFO \
- 	"BCM UMI MTD NAND Driver: 1.00\n";
- 
+diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
+index 79947be..dd899cb 100644
+--- a/drivers/mtd/nand/bf5xx_nand.c
++++ b/drivers/mtd/nand/bf5xx_nand.c
+@@ -659,15 +659,10 @@ static int bf5xx_nand_hw_init(struct bf5xx_nand_info *info)
+ static int __devinit bf5xx_nand_add_partition(struct bf5xx_nand_info *info)
+ {
+ 	struct mtd_info *mtd = &info->mtd;
+-
 -#ifdef CONFIG_MTD_PARTITIONS
- const char *part_probes[] = { "cmdlinepart", NULL };
+ 	struct mtd_partition *parts = info->platform->partitions;
+ 	int nr = info->platform->nr_partitions;
+ 
+-	return add_mtd_partitions(mtd, parts, nr);
+-#else
+-	return add_mtd_device(mtd);
 -#endif
++	return mtd_device_register(mtd, parts, nr);
+ }
  
- #if NAND_ECC_BCH
- static uint8_t scan_ff_pattern[] = { 0xff };
-@@ -509,7 +507,7 @@ static int __devinit bcm_umi_nand_probe(struct platform_device *pdev)
- 			kfree(board_mtd);
- 			return -EIO;
- 		}
--		add_mtd_partitions(board_mtd, partition_info, nr_partitions);
-+		mtd_device_register(board_mtd, partition_info, nr_partitions);
- 	}
- 
- 	/* Return happy */
+ static int __devexit bf5xx_nand_remove(struct platform_device *pdev)
 -- 
 1.7.4.4
