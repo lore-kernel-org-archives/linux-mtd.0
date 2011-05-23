@@ -1,19 +1,22 @@
-Received: from rcsinet10.oracle.com ([148.87.113.121])
+Received: from mail-fx0-f49.google.com ([209.85.161.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOa0P-0000Vf-JD
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 18:37:30 +0000
-Date: Mon, 23 May 2011 11:37:09 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>, linux-mtd@lists.infradead.org
-Subject: [PATCH -next] mtd: fix physmap.h warnings
-Message-Id: <20110523113709.4357b4ba.randy.dunlap@oracle.com>
-In-Reply-To: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
-References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-next@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
+	id 1QOe2m-000366-21
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 22:56:12 +0000
+Received: by fxm14 with SMTP id 14so5600004fxm.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 May 2011 15:56:09 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1306142623-24952-3-git-send-email-jamie@jamieiles.com>
+References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
+	<1306142623-24952-3-git-send-email-jamie@jamieiles.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Mon, 23 May 2011 18:55:49 -0400
+Message-ID: <BANLkTinmtYksAsCzO8ApGx7k9WNG659zYA@mail.gmail.com>
+Subject: Re: [PATCH 02/62] mtd: introduce mtd_device_(un)register()
+To: Jamie Iles <jamie@jamieiles.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+On Mon, May 23, 2011 at 05:22, Jamie Iles wrote:
+> To prepare for the removal of add_mtd_device and add_mtd_partitions(),
+> introduce mtd_device_register(). =C2=A0This will create partitions if the=
+y
+> are supplied or register the whole device if there are no partitions.
+>
+> Once all drivers are converted to use mtd_device_register(),
+> add_mtd_device() and add_mtd_partitions() will be made internal only.
 
-Fix build warnings in physmap.h:
-
-include/linux/mtd/physmap.h:25: warning: 'struct platform_device' declared inside parameter list
-include/linux/mtd/physmap.h:25: warning: its scope is only this definition or declaration, which is probably not what you want
-include/linux/mtd/physmap.h:26: warning: 'struct platform_device' declared inside parameter list
-include/linux/mtd/physmap.h:27: warning: 'struct platform_device' declared inside parameter list
-
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
----
- include/linux/mtd/physmap.h |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20110523.orig/include/linux/mtd/physmap.h
-+++ linux-next-20110523/include/linux/mtd/physmap.h
-@@ -19,6 +19,7 @@
- #include <linux/mtd/partitions.h>
- 
- struct map_info;
-+struct platform_device;
- 
- struct physmap_flash_data {
- 	unsigned int		width;
+i vaguely recall attempting to submit new functions like this a while
+ago, but ultimately it was rejected due to the different behavior mtd
+drivers had wrt partitions and whole devices
+-mike
