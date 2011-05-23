@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNL-0002TQ-4k
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:36 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
+	id 1QORNN-0002U4-B2
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:38 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:34 -0700 (PDT)
+	Mon, 23 May 2011 02:24:37 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 18/62] mtd/sst25l: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:22:59 +0100
-Message-Id: <1306142623-24952-19-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 19/62] mtd/dc21285: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:00 +0100
+Message-Id: <1306142623-24952-20-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -22,110 +22,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Convert to mtd_device_register() and remove the check for
-mtd_has_partitions() as we always have partitioning enabled now.
+Convert to mtd_device_register() and remove the CONFIG_MTD_PARTITIONS
+preprocessor conditionals as partitioning is always available.
 
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/devices/sst25l.c |   62 +++++++++++++++++------------------------
- 1 files changed, 26 insertions(+), 36 deletions(-)
+ drivers/mtd/maps/dc21285.c |   20 +++-----------------
+ 1 files changed, 3 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/devices/sst25l.c b/drivers/mtd/devices/sst25l.c
-index c163e61..57c3750 100644
---- a/drivers/mtd/devices/sst25l.c
-+++ b/drivers/mtd/devices/sst25l.c
-@@ -381,6 +381,8 @@ static int __devinit sst25l_probe(struct spi_device *spi)
- 	struct sst25l_flash *flash;
- 	struct flash_platform_data *data;
- 	int ret, i;
-+	struct mtd_partition *parts = NULL;
-+	int nr_parts = 0;
+diff --git a/drivers/mtd/maps/dc21285.c b/drivers/mtd/maps/dc21285.c
+index b3cb3a1..7a9e198 100644
+--- a/drivers/mtd/maps/dc21285.c
++++ b/drivers/mtd/maps/dc21285.c
+@@ -145,17 +145,13 @@ static struct map_info dc21285_map = {
  
- 	flash_info = sst25l_match_device(spi);
- 	if (!flash_info)
-@@ -420,46 +422,37 @@ static int __devinit sst25l_probe(struct spi_device *spi)
- 	      flash->mtd.erasesize, flash->mtd.erasesize / 1024,
- 	      flash->mtd.numeraseregions);
  
--	if (mtd_has_partitions()) {
--		struct mtd_partition *parts = NULL;
--		int nr_parts = 0;
+ /* Partition stuff */
+-#ifdef CONFIG_MTD_PARTITIONS
+ static struct mtd_partition *dc21285_parts;
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+-#endif
  
--		if (mtd_has_cmdlinepart()) {
--			static const char *part_probes[] =
--				{"cmdlinepart", NULL};
-+	if (mtd_has_cmdlinepart()) {
-+		static const char *part_probes[] = {"cmdlinepart", NULL};
+ static int __init init_dc21285(void)
+ {
  
--			nr_parts = parse_mtd_partitions(&flash->mtd,
--							part_probes,
--							&parts, 0);
--		}
-+		nr_parts = parse_mtd_partitions(&flash->mtd,
-+						part_probes,
-+						&parts, 0);
-+	}
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	int nrparts;
+-#endif
  
--		if (nr_parts <= 0 && data && data->parts) {
--			parts = data->parts;
--			nr_parts = data->nr_parts;
--		}
-+	if (nr_parts <= 0 && data && data->parts) {
-+		parts = data->parts;
-+		nr_parts = data->nr_parts;
-+	}
+ 	/* Determine bankwidth */
+ 	switch (*CSR_SA110_CNTL & (3<<14)) {
+@@ -204,13 +200,8 @@ static int __init init_dc21285(void)
  
--		if (nr_parts > 0) {
--			for (i = 0; i < nr_parts; i++) {
--				DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
--				      "{.name = %s, .offset = 0x%llx, "
--				      ".size = 0x%llx (%lldKiB) }\n",
--				      i, parts[i].name,
--				      (long long)parts[i].offset,
--				      (long long)parts[i].size,
--				      (long long)(parts[i].size >> 10));
--			}
--
--			flash->partitioned = 1;
--			return add_mtd_partitions(&flash->mtd,
--						  parts, nr_parts);
-+	if (nr_parts > 0) {
-+		for (i = 0; i < nr_parts; i++) {
-+			DEBUG(MTD_DEBUG_LEVEL2, "partitions[%d] = "
-+			      "{.name = %s, .offset = 0x%llx, "
-+			      ".size = 0x%llx (%lldKiB) }\n",
-+			      i, parts[i].name,
-+			      (long long)parts[i].offset,
-+			      (long long)parts[i].size,
-+			      (long long)(parts[i].size >> 10));
- 		}
+ 	dc21285_mtd->owner = THIS_MODULE;
  
--	} else if (data && data->nr_parts) {
--		dev_warn(&spi->dev, "ignoring %d default partitions on %s\n",
--			 data->nr_parts, data->name);
-+		flash->partitioned = 1;
-+		return mtd_device_register(&flash->mtd, parts,
-+					   nr_parts);
- 	}
- 
--	ret = add_mtd_device(&flash->mtd);
-+	ret = mtd_device_register(&flash->mtd, NULL, 0);
- 	if (ret == 1) {
- 		kfree(flash);
- 		dev_set_drvdata(&spi->dev, NULL);
-@@ -474,10 +467,7 @@ static int __exit sst25l_remove(struct spi_device *spi)
- 	struct sst25l_flash *flash = dev_get_drvdata(&spi->dev);
- 	int ret;
- 
--	if (mtd_has_partitions() && flash->partitioned)
--		ret = del_mtd_partitions(&flash->mtd);
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	nrparts = parse_mtd_partitions(dc21285_mtd, probes, &dc21285_parts, 0);
+-	if (nrparts > 0)
+-		add_mtd_partitions(dc21285_mtd, dc21285_parts, nrparts);
 -	else
--		ret = del_mtd_device(&flash->mtd);
-+	ret = mtd_device_unregister(&flash->mtd);
- 	if (ret == 0)
- 		kfree(flash);
- 	return ret;
+-#endif
+-		add_mtd_device(dc21285_mtd);
++	mtd_device_register(dc21285_mtd, dc21285_parts, nrparts);
+ 
+ 	if(machine_is_ebsa285()) {
+ 		/*
+@@ -232,14 +223,9 @@ static int __init init_dc21285(void)
+ 
+ static void __exit cleanup_dc21285(void)
+ {
+-#ifdef CONFIG_MTD_PARTITIONS
+-	if (dc21285_parts) {
+-		del_mtd_partitions(dc21285_mtd);
++	mtd_device_unregister(dc21285_mtd);
++	if (dc21285_parts)
+ 		kfree(dc21285_parts);
+-	} else
+-#endif
+-		del_mtd_device(dc21285_mtd);
+-
+ 	map_destroy(dc21285_mtd);
+ 	iounmap(dc21285_map.virt);
+ }
 -- 
 1.7.4.4
