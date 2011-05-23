@@ -1,15 +1,15 @@
 Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOROe-0002TB-JX
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:58 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098469wyb.36
+	id 1QOROg-0002TQ-Qz
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:26:00 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:56 -0700 (PDT)
+	Mon, 23 May 2011 02:25:58 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 53/62] mtd/sharpsl: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:34 +0100
-Message-Id: <1306142623-24952-54-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 54/62] mtd/socrates_nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:35 +0100
+Message-Id: <1306142623-24952-55-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,15 +29,15 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/sharpsl.c |   12 ++----------
- 1 files changed, 2 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/socrates_nand.c |   16 +---------------
+ 1 files changed, 1 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 54ec754..19e24ed 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -103,9 +103,7 @@ static int sharpsl_nand_calculate_ecc(struct mtd_info *mtd, const u_char * dat,
- 	return readb(sharpsl->io + ECCCNTR) != 0;
+diff --git a/drivers/mtd/nand/socrates_nand.c b/drivers/mtd/nand/socrates_nand.c
+index a853548..ca2d055 100644
+--- a/drivers/mtd/nand/socrates_nand.c
++++ b/drivers/mtd/nand/socrates_nand.c
+@@ -155,9 +155,7 @@ static int socrates_nand_device_ready(struct mtd_info *mtd)
+ 	return 1;
  }
  
 -#ifdef CONFIG_MTD_PARTITIONS
@@ -45,38 +45,55 @@ index 54ec754..19e24ed 100644
 -#endif
  
  /*
-  * Main initialization routine
-@@ -113,10 +111,8 @@ static const char *part_probes[] = { "cmdlinepart", NULL };
- static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
- {
- 	struct nand_chip *this;
+  * Probe for the NAND device.
+@@ -168,11 +166,8 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
+ 	struct mtd_info *mtd;
+ 	struct nand_chip *nand_chip;
+ 	int res;
+-
 -#ifdef CONFIG_MTD_PARTITIONS
- 	struct mtd_partition *sharpsl_partition_info;
- 	int nr_partitions;
+ 	struct mtd_partition *partitions = NULL;
+ 	int num_partitions = 0;
 -#endif
- 	struct resource *r;
- 	int err = 0;
- 	struct sharpsl_nand *sharpsl;
-@@ -188,18 +184,14 @@ static int __devinit sharpsl_nand_probe(struct platform_device *pdev)
  
- 	/* Register the partitions */
- 	sharpsl->mtd.name = "sharpsl-nand";
--#ifdef CONFIG_MTD_PARTITIONS
- 	nr_partitions = parse_mtd_partitions(&sharpsl->mtd, part_probes, &sharpsl_partition_info, 0);
- 	if (nr_partitions <= 0) {
- 		nr_partitions = data->nr_partitions;
- 		sharpsl_partition_info = data->partitions;
+ 	/* Allocate memory for the device structure (and zero it) */
+ 	host = kzalloc(sizeof(struct socrates_nand_host), GFP_KERNEL);
+@@ -230,7 +225,6 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
+ 		goto out;
  	}
  
--	if (nr_partitions > 0)
--		err = add_mtd_partitions(&sharpsl->mtd, sharpsl_partition_info, nr_partitions);
+-#ifdef CONFIG_MTD_PARTITIONS
+ #ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	num_partitions = parse_mtd_partitions(mtd, part_probes,
+ 					      &partitions, 0);
+@@ -240,7 +234,6 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
+ 	}
+ #endif
+ 
+-#ifdef CONFIG_MTD_OF_PARTS
+ 	if (num_partitions == 0) {
+ 		num_partitions = of_mtd_parse_partitions(&ofdev->dev,
+ 							 ofdev->dev.of_node,
+@@ -250,19 +243,12 @@ static int __devinit socrates_nand_probe(struct platform_device *ofdev)
+ 			goto release;
+ 		}
+ 	}
+-#endif
+-	if (partitions && (num_partitions > 0))
+-		res = add_mtd_partitions(mtd, partitions, num_partitions);
 -	else
 -#endif
--	err = add_mtd_device(&sharpsl->mtd);
-+	err = mtd_device_register(&sharpsl->mtd, sharpsl_partition_info,
-+				  nr_partitions);
- 	if (err)
- 		goto err_add;
+-		res = add_mtd_device(mtd);
  
++	res = mtd_device_register(mtd, partitions, num_partitions);
+ 	if (!res)
+ 		return res;
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+ release:
+-#endif
+ 	nand_release(mtd);
+ 
+ out:
 -- 
 1.7.4.4
