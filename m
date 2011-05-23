@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORO9-0002TB-JD
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:27 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098469wyb.36
+	id 1QOROE-0002U4-OJ
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:32 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:25 -0700 (PDT)
+	Mon, 23 May 2011 02:25:30 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 40/62] mtd/fsl_elbc_nand: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:21 +0100
-Message-Id: <1306142623-24952-41-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 42/62] mtd/fsmc_nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:23 +0100
+Message-Id: <1306142623-24952-43-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,53 +29,73 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/fsl_elbc_nand.c |   12 +-----------
- 1 files changed, 1 insertions(+), 11 deletions(-)
+ drivers/mtd/nand/fsmc_nand.c |   25 ++++---------------------
+ 1 files changed, 4 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/nand/fsl_elbc_nand.c b/drivers/mtd/nand/fsl_elbc_nand.c
-index 537e380..0bb254c 100644
---- a/drivers/mtd/nand/fsl_elbc_nand.c
-+++ b/drivers/mtd/nand/fsl_elbc_nand.c
-@@ -841,12 +841,9 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
- 	struct fsl_elbc_mtd *priv;
- 	struct resource res;
- 	struct fsl_elbc_fcm_ctrl *elbc_fcm_ctrl;
+diff --git a/drivers/mtd/nand/fsmc_nand.c b/drivers/mtd/nand/fsmc_nand.c
+index 0d45ef3..e9b275a 100644
+--- a/drivers/mtd/nand/fsmc_nand.c
++++ b/drivers/mtd/nand/fsmc_nand.c
+@@ -120,8 +120,6 @@ static struct fsmc_eccplace fsmc_ecc4_sp_place = {
+ 	}
+ };
+ 
 -
 -#ifdef CONFIG_MTD_PARTITIONS
- 	static const char *part_probe_types[]
- 		= { "cmdlinepart", "RedBoot", NULL };
- 	struct mtd_partition *parts;
+ /*
+  * Default partition tables to be used if the partition information not
+  * provided through platform data.
+@@ -182,7 +180,6 @@ static struct mtd_partition partition_info_128KB_blk[] = {
+ #ifdef CONFIG_MTD_CMDLINE_PARTS
+ const char *part_probes[] = { "cmdlinepart", NULL };
+ #endif
 -#endif
- 	int ret;
- 	int bank;
- 	struct device *dev;
-@@ -935,26 +932,19 @@ static int __devinit fsl_elbc_nand_probe(struct platform_device *pdev)
- 	if (ret)
- 		goto err;
  
+ /**
+  * struct fsmc_nand_data - structure for FSMC NAND device state
+@@ -719,7 +716,6 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
+ 	 * platform data,
+ 	 * default partition information present in driver.
+ 	 */
 -#ifdef CONFIG_MTD_PARTITIONS
- 	/* First look for RedBoot table or partitions on the command
- 	 * line, these take precedence over device tree information */
- 	ret = parse_mtd_partitions(&priv->mtd, part_probe_types, &parts, 0);
- 	if (ret < 0)
- 		goto err;
- 
--#ifdef CONFIG_MTD_OF_PARTS
- 	if (ret == 0) {
- 		ret = of_mtd_parse_partitions(priv->dev, node, &parts);
- 		if (ret < 0)
- 			goto err;
+ #ifdef CONFIG_MTD_CMDLINE_PARTS
+ 	/*
+ 	 * Check if partition info passed via command line
+@@ -777,19 +773,10 @@ static int __init fsmc_nand_probe(struct platform_device *pdev)
  	}
+ #endif
+ 
+-	if (host->partitions) {
+-		ret = add_mtd_partitions(&host->mtd, host->partitions,
+-				host->nr_partitions);
+-		if (ret)
+-			goto err_probe;
+-	}
+-#else
+-	dev_info(&pdev->dev, "Registering %s as whole device\n", mtd->name);
+-	if (!add_mtd_device(mtd)) {
+-		ret = -ENXIO;
++	ret = mtd_device_register(&host->mtd, host->partitions,
++				  host->nr_partitions);
++	if (ret)
+ 		goto err_probe;
+-	}
 -#endif
  
--	if (ret > 0)
--		add_mtd_partitions(&priv->mtd, parts, ret);
--	else
--#endif
--		add_mtd_device(&priv->mtd);
-+	mtd_device_register(&priv->mtd, parts, ret);
+ 	platform_set_drvdata(pdev, host);
+ 	dev_info(&pdev->dev, "FSMC NAND driver registration successful\n");
+@@ -835,11 +822,7 @@ static int fsmc_nand_remove(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, NULL);
  
- 	printk(KERN_INFO "eLBC NAND device at 0x%llx, bank %d\n",
- 	       (unsigned long long)res.start, priv->bank);
+ 	if (host) {
+-#ifdef CONFIG_MTD_PARTITIONS
+-		del_mtd_partitions(&host->mtd);
+-#else
+-		del_mtd_device(&host->mtd);
+-#endif
++		mtd_device_unregister(&host->mtd);
+ 		clk_disable(host->clk);
+ 		clk_put(host->clk);
+ 
 -- 
 1.7.4.4
