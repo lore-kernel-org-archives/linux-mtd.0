@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOROJ-0002TQ-EJ
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:36 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
+	id 1QOROL-0002U4-IX
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:38 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:35 -0700 (PDT)
+	Mon, 23 May 2011 02:25:37 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 44/62] mtd/jz4740_nand: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:25 +0100
-Message-Id: <1306142623-24952-45-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 45/62] mtd/mpc5121_nfc: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:26 +0100
+Message-Id: <1306142623-24952-46-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,45 +29,54 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/jz4740_nand.c |   10 +---------
- 1 files changed, 1 insertions(+), 9 deletions(-)
+ drivers/mtd/nand/mpc5121_nfc.c |   12 +-----------
+ 1 files changed, 1 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/mtd/nand/jz4740_nand.c b/drivers/mtd/nand/jz4740_nand.c
-index cea38a5..6e813da 100644
---- a/drivers/mtd/nand/jz4740_nand.c
-+++ b/drivers/mtd/nand/jz4740_nand.c
-@@ -299,10 +299,8 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
- 	struct nand_chip *chip;
- 	struct mtd_info *mtd;
- 	struct jz_nand_platform_data *pdata = pdev->dev.platform_data;
+diff --git a/drivers/mtd/nand/mpc5121_nfc.c b/drivers/mtd/nand/mpc5121_nfc.c
+index 0b81b5b..2f7c930 100644
+--- a/drivers/mtd/nand/mpc5121_nfc.c
++++ b/drivers/mtd/nand/mpc5121_nfc.c
+@@ -131,9 +131,7 @@ struct mpc5121_nfc_prv {
+ 
+ static void mpc5121_nfc_done(struct mtd_info *mtd);
+ 
 -#ifdef CONFIG_MTD_PARTITIONS
- 	struct mtd_partition *partition_info;
- 	int num_partitions = 0;
+ static const char *mpc5121_nfc_pprobes[] = { "cmdlinepart", NULL };
 -#endif
  
- 	nand = kzalloc(sizeof(*nand), GFP_KERNEL);
- 	if (!nand) {
-@@ -375,7 +373,6 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
- 		goto err_gpio_free;
+ /* Read NFC register */
+ static inline u16 nfc_read(struct mtd_info *mtd, uint reg)
+@@ -658,9 +656,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
+ 	struct mpc5121_nfc_prv *prv;
+ 	struct resource res;
+ 	struct mtd_info *mtd;
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	struct mtd_partition *parts;
+-#endif
+ 	struct nand_chip *chip;
+ 	unsigned long regs_paddr, regs_size;
+ 	const __be32 *chips_no;
+@@ -841,7 +837,6 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
+ 	dev_set_drvdata(dev, mtd);
+ 
+ 	/* Register device in MTD */
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	retval = parse_mtd_partitions(mtd, mpc5121_nfc_pprobes, &parts, 0);
+ #ifdef CONFIG_MTD_OF_PARTS
+ 	if (retval == 0)
+@@ -854,12 +849,7 @@ static int __devinit mpc5121_nfc_probe(struct platform_device *op)
+ 		goto error;
  	}
  
--#ifdef CONFIG_MTD_PARTITIONS
- #ifdef CONFIG_MTD_CMDLINE_PARTS
- 	num_partitions = parse_mtd_partitions(mtd, part_probes,
- 						&partition_info, 0);
-@@ -384,12 +381,7 @@ static int __devinit jz_nand_probe(struct platform_device *pdev)
- 		num_partitions = pdata->num_partitions;
- 		partition_info = pdata->partitions;
- 	}
--
--	if (num_partitions > 0)
--		ret = add_mtd_partitions(mtd, partition_info, num_partitions);
+-	if (retval > 0)
+-		retval = add_mtd_partitions(mtd, parts, retval);
 -	else
 -#endif
--	ret = add_mtd_device(mtd);
-+	ret = mtd_device_register(mtd, partition_info, num_partitions);
- 
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to add mtd device\n");
+-		retval = add_mtd_device(mtd);
+-
++	retval = mtd_device_register(mtd, parts, retval);
+ 	if (retval) {
+ 		dev_err(dev, "Error adding MTD device!\n");
+ 		devm_free_irq(dev, prv->irq, mtd);
 -- 
 1.7.4.4
