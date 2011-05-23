@@ -1,18 +1,19 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOROa-0002TQ-7l
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:54 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
+	id 1QOROc-0002Tm-QS
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:25:56 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:25:51 -0700 (PDT)
+	Mon, 23 May 2011 02:25:54 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 51/62] mtd/ppchameleonevb: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:32 +0100
-Message-Id: <1306142623-24952-52-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 52/62] mtd/s3c2410 nand: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:33 +0100
+Message-Id: <1306142623-24952-53-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
-Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
+Cc: Jamie Iles <jamie@jamieiles.com>, Kukjin Kim <kgene.kim@samsung.com>,
+	dwmw2@infradead.org, Ben Dooks <ben-linux@fluff.org>, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,94 +26,56 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Convert to mtd_device_register() and remove the CONFIG_MTD_PARTITIONS
 preprocessor conditionals as partitioning is always available.
 
+Cc: Ben Dooks <ben-linux@fluff.org>
+Cc: Kukjin Kim <kgene.kim@samsung.com>
 Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/nand/ppchameleonevb.c |   15 +++++----------
- 1 files changed, 5 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/s3c2410.c |   16 ++--------------
+ 1 files changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/mtd/nand/ppchameleonevb.c b/drivers/mtd/nand/ppchameleonevb.c
-index cc86584..3bbb796 100644
---- a/drivers/mtd/nand/ppchameleonevb.c
-+++ b/drivers/mtd/nand/ppchameleonevb.c
-@@ -73,7 +73,6 @@ __setup("ppchameleon_fio_pbase=", ppchameleon_fio_pbase);
- __setup("ppchameleonevb_fio_pbase=", ppchameleonevb_fio_pbase);
- #endif
- 
--#ifdef CONFIG_MTD_PARTITIONS
- /*
-  * Define static partitions for flash devices
-  */
-@@ -101,7 +100,6 @@ static struct mtd_partition partition_info_evb[] = {
- #define NUM_PARTITIONS 1
- 
- extern int parse_cmdline_partitions(struct mtd_info *master, struct mtd_partition **pparts, const char *mtd_id);
--#endif
- 
- /*
-  *	hardware specific access to control-lines
-@@ -189,10 +187,8 @@ static int ppchameleonevb_device_ready(struct mtd_info *minfo)
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 33d832d..3540789 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -715,7 +715,6 @@ static int s3c24xx_nand_remove(struct platform_device *pdev)
+ 	return 0;
  }
- #endif
  
 -#ifdef CONFIG_MTD_PARTITIONS
  const char *part_probes[] = { "cmdlinepart", NULL };
- const char *part_probes_evb[] = { "cmdlinepart", NULL };
--#endif
+ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 				      struct s3c2410_nand_mtd *mtd,
+@@ -725,7 +724,7 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 	int nr_part = 0;
  
- /*
-  * Main initialization routine
-@@ -284,14 +280,13 @@ static int __init ppchameleonevb_init(void)
- 		this->chip_delay = NAND_SMALL_DELAY_US;
- #endif
+ 	if (set == NULL)
+-		return add_mtd_device(&mtd->mtd);
++		return mtd_device_register(&mtd->mtd, NULL, 0);
  
--#ifdef CONFIG_MTD_PARTITIONS
- 	ppchameleon_mtd->name = "ppchameleon-nand";
- 	mtd_parts_nb = parse_mtd_partitions(ppchameleon_mtd, part_probes, &mtd_parts, 0);
- 	if (mtd_parts_nb > 0)
- 		part_type = "command line";
- 	else
- 		mtd_parts_nb = 0;
--#endif
-+
- 	if (mtd_parts_nb == 0) {
- 		if (ppchameleon_mtd->size == NAND_SMALL_SIZE)
- 			mtd_parts = partition_info_me;
-@@ -303,7 +298,7 @@ static int __init ppchameleonevb_init(void)
- 
- 	/* Register the partitions */
- 	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
--	add_mtd_partitions(ppchameleon_mtd, mtd_parts, mtd_parts_nb);
-+	mtd_device_register(ppchameleon_mtd, mtd_parts, mtd_parts_nb);
- 
-  nand_evb_init:
- 	/****************************
-@@ -385,14 +380,14 @@ static int __init ppchameleonevb_init(void)
- 			iounmap(ppchameleon_fio_base);
- 		return -ENXIO;
+ 	mtd->mtd.name = set->name;
+ 	nr_part = parse_mtd_partitions(&mtd->mtd, part_probes, &part_info, 0);
+@@ -735,19 +734,8 @@ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 		part_info = set->partitions;
  	}
--#ifdef CONFIG_MTD_PARTITIONS
-+
- 	ppchameleonevb_mtd->name = NAND_EVB_MTD_NAME;
- 	mtd_parts_nb = parse_mtd_partitions(ppchameleonevb_mtd, part_probes_evb, &mtd_parts, 0);
- 	if (mtd_parts_nb > 0)
- 		part_type = "command line";
- 	else
- 		mtd_parts_nb = 0;
+ 
+-	if (nr_part > 0 && part_info)
+-		return add_mtd_partitions(&mtd->mtd, part_info, nr_part);
+-
+-	return add_mtd_device(&mtd->mtd);
+-}
+-#else
+-static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+-				      struct s3c2410_nand_mtd *mtd,
+-				      struct s3c2410_nand_set *set)
+-{
+-	return add_mtd_device(&mtd->mtd);
++	return mtd_device_register(&mtd->mtd, part_info, nr_part);
+ }
 -#endif
-+
- 	if (mtd_parts_nb == 0) {
- 		mtd_parts = partition_info_evb;
- 		mtd_parts_nb = NUM_PARTITIONS;
-@@ -401,7 +396,7 @@ static int __init ppchameleonevb_init(void)
  
- 	/* Register the partitions */
- 	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
--	add_mtd_partitions(ppchameleonevb_mtd, mtd_parts, mtd_parts_nb);
-+	mtd_device_register(ppchameleonevb_mtd, mtd_parts, mtd_parts_nb);
- 
- 	/* Return happy */
- 	return 0;
+ /**
+  * s3c2410_nand_init_chip - initialise a single instance of an chip
 -- 
 1.7.4.4
