@@ -1,15 +1,15 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNX-0002Tm-3W
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:48 +0000
-Received: by mail-ww0-f49.google.com with SMTP id 39so4359562wwb.18
+	id 1QORNZ-0002TQ-Kq
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:50 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:46 -0700 (PDT)
+	Mon, 23 May 2011 02:24:49 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 23/62] mtd/impa7: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:04 +0100
-Message-Id: <1306142623-24952-24-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 24/62] mtd/intel_vr_nor: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:05 +0100
+Message-Id: <1306142623-24952-25-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,77 +29,48 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/maps/impa7.c |   22 +++-------------------
- 1 files changed, 3 insertions(+), 19 deletions(-)
+ drivers/mtd/maps/intel_vr_nor.c |   19 ++-----------------
+ 1 files changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/mtd/maps/impa7.c b/drivers/mtd/maps/impa7.c
-index 998a27d..404a50c 100644
---- a/drivers/mtd/maps/impa7.c
-+++ b/drivers/mtd/maps/impa7.c
-@@ -15,10 +15,7 @@
- #include <asm/io.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/map.h>
--
--#ifdef CONFIG_MTD_PARTITIONS
- #include <linux/mtd/partitions.h>
+diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
+index fc19985..d2f47be 100644
+--- a/drivers/mtd/maps/intel_vr_nor.c
++++ b/drivers/mtd/maps/intel_vr_nor.c
+@@ -66,33 +66,18 @@ struct vr_nor_mtd {
+ 
+ static void __devexit vr_nor_destroy_partitions(struct vr_nor_mtd *p)
+ {
+-	if (p->nr_parts > 0) {
+-#if defined(CONFIG_MTD_PARTITIONS) || defined(CONFIG_MTD_PARTITIONS_MODULE)
+-		del_mtd_partitions(p->info);
+-#endif
+-	} else
+-		del_mtd_device(p->info);
++	mtd_device_unregister(p->info);
+ }
+ 
+ static int __devinit vr_nor_init_partitions(struct vr_nor_mtd *p)
+ {
+-	int err = 0;
+-#if defined(CONFIG_MTD_PARTITIONS) || defined(CONFIG_MTD_PARTITIONS_MODULE)
+ 	struct mtd_partition *parts;
+ 	static const char *part_probes[] = { "cmdlinepart", NULL };
 -#endif
  
- #define WINDOW_ADDR0 0x00000000      /* physical properties of flash */
- #define WINDOW_SIZE0 0x00800000
-@@ -49,8 +46,6 @@ static struct map_info impa7_map[NUM_FLASHBANKS] = {
- 	},
- };
- 
--#ifdef CONFIG_MTD_PARTITIONS
--
- /*
-  * MTD partitioning stuff
-  */
-@@ -66,8 +61,6 @@ static struct mtd_partition static_partitions[] =
- static int mtd_parts_nb[NUM_FLASHBANKS];
- static struct mtd_partition *mtd_parts[NUM_FLASHBANKS];
- 
+ 	/* register the flash bank */
+-#if defined(CONFIG_MTD_PARTITIONS) || defined(CONFIG_MTD_PARTITIONS_MODULE)
+ 	/* partition the flash bank */
+ 	p->nr_parts = parse_mtd_partitions(p->info, part_probes, &parts, 0);
+-	if (p->nr_parts > 0)
+-		err = add_mtd_partitions(p->info, parts, p->nr_parts);
 -#endif
+-	if (p->nr_parts <= 0)
+-		err = add_mtd_device(p->info);
 -
- static const char *probes[] = { "cmdlinepart", NULL };
+-	return err;
++	return mtd_device_register(p->info, parts, p->nr_parts);
+ }
  
- static int __init init_impa7(void)
-@@ -104,7 +97,6 @@ static int __init init_impa7(void)
- 		if (impa7_mtd[i]) {
- 			impa7_mtd[i]->owner = THIS_MODULE;
- 			devicesfound++;
--#ifdef CONFIG_MTD_PARTITIONS
- 			mtd_parts_nb[i] = parse_mtd_partitions(impa7_mtd[i],
- 							       probes,
- 							       &mtd_parts[i],
-@@ -120,12 +112,8 @@ static int __init init_impa7(void)
- 			printk(KERN_NOTICE MSG_PREFIX
- 			       "using %s partition definition\n",
- 			       part_type);
--			add_mtd_partitions(impa7_mtd[i],
--					   mtd_parts[i], mtd_parts_nb[i]);
--#else
--			add_mtd_device(impa7_mtd[i]);
--
--#endif
-+			mtd_device_register(impa7_mtd[i],
-+					    mtd_parts[i], mtd_parts_nb[i]);
- 		}
- 		else
- 			iounmap((void *)impa7_map[i].virt);
-@@ -138,11 +126,7 @@ static void __exit cleanup_impa7(void)
- 	int i;
- 	for (i=0; i<NUM_FLASHBANKS; i++) {
- 		if (impa7_mtd[i]) {
--#ifdef CONFIG_MTD_PARTITIONS
--			del_mtd_partitions(impa7_mtd[i]);
--#else
--			del_mtd_device(impa7_mtd[i]);
--#endif
-+			mtd_device_unregister(impa7_mtd[i]);
- 			map_destroy(impa7_mtd[i]);
- 			iounmap((void *)impa7_map[i].virt);
- 			impa7_map[i].virt = 0;
+ static void __devexit vr_nor_destroy_mtd_setup(struct vr_nor_mtd *p)
 -- 
 1.7.4.4
