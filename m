@@ -1,19 +1,22 @@
-Subject: Re: [PATCH v6 0/8] Switch ARM platforms from integrator-flash to
-	physmap
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QOWvJ-0006Wn-1P
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 15:20:01 +0000
+Received: by eyh6 with SMTP id 6so2131099eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 May 2011 08:19:59 -0700 (PDT)
+Subject: Re: [PATCH 01/62] mtd: always build partitioning support
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King - ARM Linux <linux@arm.linux.org.uk>
-In-Reply-To: <20110520212837.GB30675@n2100.arm.linux.org.uk>
-References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
-	<1305803946.2630.69.camel@localhost>
-	<1305809614.27474.41.camel@e102391-lin.cambridge.arm.com>
-	<20110520212837.GB30675@n2100.arm.linux.org.uk>
+To: Jamie Iles <jamie@jamieiles.com>
+In-Reply-To: <1306142623-24952-2-git-send-email-jamie@jamieiles.com>
+References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
+	<1306142623-24952-2-git-send-email-jamie@jamieiles.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Mon, 23 May 2011 18:01:01 +0300
-Message-ID: <1306162861.2785.31.camel@localhost>
+Date: Mon, 23 May 2011 18:15:46 +0300
+Message-ID: <1306163746.2785.38.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: Marc Zyngier <Marc.Zyngier@arm.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, linux-arm-kernel@lists.infradead.org
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -24,14 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-20 at 22:28 +0100, Russell King - ARM Linux wrote:
-> On Thu, May 19, 2011 at 01:53:34PM +0100, Marc Zyngier wrote:
-> > Yes, it's been merged by Russell into his tree yesterday, after David's
-> > ack.
-> 
-> ... and I've just added the new acks we've had today.
+On Mon, 2011-05-23 at 10:22 +0100, Jamie Iles wrote:
+> There are very few situations where MTD partitioning is not required,
+> and the benefit in code size reduction by making this configurable does
+> not warrant the level of ifdeffery needed.
 
-Thank you!
+Amended commit message a bit and pushed to l2-mtd-2.6.git / jamie branch
+so far.
 
 -- 
 Best Regards,
