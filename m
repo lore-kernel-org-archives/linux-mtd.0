@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNg-0002TB-BM
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:57 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098469wyb.36
+	id 1QORNi-0002U4-IA
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:59 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:56 -0700 (PDT)
+	Mon, 23 May 2011 02:24:58 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 27/62] mtd/rbtx4939-flash: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:08 +0100
-Message-Id: <1306142623-24952-28-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 28/62] mtd/sa1100-flash: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:09 +0100
+Message-Id: <1306142623-24952-29-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,81 +29,74 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/maps/rbtx4939-flash.c |   24 +++++-------------------
- 1 files changed, 5 insertions(+), 19 deletions(-)
+ drivers/mtd/maps/Kconfig        |    2 +-
+ drivers/mtd/maps/sa1100-flash.c |   21 ++++++---------------
+ 2 files changed, 7 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/mtd/maps/rbtx4939-flash.c b/drivers/mtd/maps/rbtx4939-flash.c
-index 83ed645..761fb45 100644
---- a/drivers/mtd/maps/rbtx4939-flash.c
-+++ b/drivers/mtd/maps/rbtx4939-flash.c
-@@ -25,10 +25,8 @@
- struct rbtx4939_flash_info {
- 	struct mtd_info *mtd;
- 	struct map_info map;
--#ifdef CONFIG_MTD_PARTITIONS
- 	int nr_parts;
- 	struct mtd_partition *parts;
--#endif
- };
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 049a549..d4a1f61 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -354,7 +354,7 @@ config MTD_CDB89712
  
- static int rbtx4939_flash_remove(struct platform_device *dev)
-@@ -41,28 +39,18 @@ static int rbtx4939_flash_remove(struct platform_device *dev)
- 	platform_set_drvdata(dev, NULL);
+ config MTD_SA1100
+ 	tristate "CFI Flash device mapped on StrongARM SA11x0"
+-	depends on MTD_CFI && ARCH_SA1100 && MTD_PARTITIONS
++	depends on MTD_CFI && ARCH_SA1100
+ 	help
+ 	  This enables access to the flash chips on most platforms based on
+ 	  the SA1100 and SA1110, including the Assabet and the Compaq iPAQ.
+diff --git a/drivers/mtd/maps/sa1100-flash.c b/drivers/mtd/maps/sa1100-flash.c
+index da875908..a9b5e0e 100644
+--- a/drivers/mtd/maps/sa1100-flash.c
++++ b/drivers/mtd/maps/sa1100-flash.c
+@@ -226,12 +226,7 @@ static void sa1100_destroy(struct sa_info *info, struct flash_platform_data *pla
+ 	int i;
  
  	if (info->mtd) {
--#ifdef CONFIG_MTD_PARTITIONS
- 		struct rbtx4939_flash_data *pdata = dev->dev.platform_data;
- 
--		if (info->nr_parts) {
--			del_mtd_partitions(info->mtd);
-+		if (info->nr_parts)
- 			kfree(info->parts);
--		} else if (pdata->nr_parts)
--			del_mtd_partitions(info->mtd);
--		else
+-		if (info->nr_parts == 0)
 -			del_mtd_device(info->mtd);
--#else
--		del_mtd_device(info->mtd);
+-#ifdef CONFIG_MTD_PARTITIONS
+-		else
+-			del_mtd_partitions(info->mtd);
 -#endif
 +		mtd_device_unregister(info->mtd);
- 		map_destroy(info->mtd);
+ 		if (info->mtd != info->subdev[0].mtd)
+ 			mtd_concat_destroy(info->mtd);
  	}
- 	return 0;
- }
- 
- static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", NULL };
+@@ -363,28 +358,24 @@ static int __devinit sa1100_mtd_probe(struct platform_device *pdev)
+ 	/*
+ 	 * Partition selection stuff.
+ 	 */
 -#ifdef CONFIG_MTD_PARTITIONS
- static const char *part_probe_types[] = { "cmdlinepart", NULL };
+ 	nr_parts = parse_mtd_partitions(info->mtd, part_probes, &parts, 0);
+ 	if (nr_parts > 0) {
+ 		info->parts = parts;
+ 		part_type = "dynamic";
+-	} else
 -#endif
- 
- static int rbtx4939_flash_probe(struct platform_device *dev)
- {
-@@ -120,23 +108,21 @@ static int rbtx4939_flash_probe(struct platform_device *dev)
- 	if (err)
- 		goto err_out;
- 
--#ifdef CONFIG_MTD_PARTITIONS
- 	err = parse_mtd_partitions(info->mtd, part_probe_types,
- 				&info->parts, 0);
- 	if (err > 0) {
--		add_mtd_partitions(info->mtd, info->parts, err);
-+		mtd_device_register(info->mtd, info->parts, err);
- 		info->nr_parts = err;
- 		return 0;
+-	{
++	} else {
+ 		parts = plat->parts;
+ 		nr_parts = plat->nr_parts;
+ 		part_type = "static";
  	}
  
- 	if (pdata->nr_parts) {
- 		pr_notice("Using rbtx4939 partition information\n");
--		add_mtd_partitions(info->mtd, pdata->parts, pdata->nr_parts);
-+		mtd_device_register(info->mtd, pdata->parts, pdata->nr_parts);
- 		return 0;
- 	}
--#endif
+-	if (nr_parts == 0) {
++	if (nr_parts == 0)
+ 		printk(KERN_NOTICE "SA1100 flash: no partition info "
+ 			"available, registering whole flash\n");
+-		add_mtd_device(info->mtd);
+-	} else {
++	else
+ 		printk(KERN_NOTICE "SA1100 flash: using %s partition "
+ 			"definition\n", part_type);
+-		add_mtd_partitions(info->mtd, parts, nr_parts);
+-	}
++
++	mtd_device_register(info->mtd, parts, nr_parts);
  
--	add_mtd_device(info->mtd);
-+	mtd_device_register(info->mtd, NULL, 0);
- 	return 0;
+ 	info->nr_parts = nr_parts;
  
- err_out:
 -- 
 1.7.4.4
