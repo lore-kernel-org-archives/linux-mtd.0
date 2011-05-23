@@ -1,15 +1,15 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORNZ-0002TQ-Kq
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:50 +0000
-Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
+	id 1QORNb-0002U4-PO
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:53 +0000
+Received: by mail-ww0-f49.google.com with SMTP id 39so4359577wwb.18
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:49 -0700 (PDT)
+	Mon, 23 May 2011 02:24:51 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 24/62] mtd/intel_vr_nor: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:23:05 +0100
-Message-Id: <1306142623-24952-25-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 25/62] mtd/latch-addr-flash: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:23:06 +0100
+Message-Id: <1306142623-24952-26-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
@@ -29,48 +29,72 @@ Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- drivers/mtd/maps/intel_vr_nor.c |   19 ++-----------------
- 1 files changed, 2 insertions(+), 17 deletions(-)
+ drivers/mtd/maps/latch-addr-flash.c |   45 +++++++++++++---------------------
+ 1 files changed, 17 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/mtd/maps/intel_vr_nor.c b/drivers/mtd/maps/intel_vr_nor.c
-index fc19985..d2f47be 100644
---- a/drivers/mtd/maps/intel_vr_nor.c
-+++ b/drivers/mtd/maps/intel_vr_nor.c
-@@ -66,33 +66,18 @@ struct vr_nor_mtd {
+diff --git a/drivers/mtd/maps/latch-addr-flash.c b/drivers/mtd/maps/latch-addr-flash.c
+index ee25480..5936c46 100644
+--- a/drivers/mtd/maps/latch-addr-flash.c
++++ b/drivers/mtd/maps/latch-addr-flash.c
+@@ -112,18 +112,9 @@ static int latch_addr_flash_remove(struct platform_device *dev)
+ 	latch_addr_data = dev->dev.platform_data;
  
- static void __devexit vr_nor_destroy_partitions(struct vr_nor_mtd *p)
- {
--	if (p->nr_parts > 0) {
--#if defined(CONFIG_MTD_PARTITIONS) || defined(CONFIG_MTD_PARTITIONS_MODULE)
--		del_mtd_partitions(p->info);
--#endif
--	} else
--		del_mtd_device(p->info);
-+	mtd_device_unregister(p->info);
- }
+ 	if (info->mtd != NULL) {
+-		if (mtd_has_partitions()) {
+-			if (info->nr_parts) {
+-				del_mtd_partitions(info->mtd);
+-				kfree(info->parts);
+-			} else if (latch_addr_data->nr_parts) {
+-				del_mtd_partitions(info->mtd);
+-			} else {
+-				del_mtd_device(info->mtd);
+-			}
+-		} else {
+-			del_mtd_device(info->mtd);
+-		}
++		if (info->nr_parts)
++			kfree(info->parts);
++		mtd_device_unregister(info->mtd);
+ 		map_destroy(info->mtd);
+ 	}
  
- static int __devinit vr_nor_init_partitions(struct vr_nor_mtd *p)
- {
--	int err = 0;
--#if defined(CONFIG_MTD_PARTITIONS) || defined(CONFIG_MTD_PARTITIONS_MODULE)
- 	struct mtd_partition *parts;
- 	static const char *part_probes[] = { "cmdlinepart", NULL };
--#endif
+@@ -215,23 +206,21 @@ static int __devinit latch_addr_flash_probe(struct platform_device *dev)
+ 	}
+ 	info->mtd->owner = THIS_MODULE;
  
- 	/* register the flash bank */
--#if defined(CONFIG_MTD_PARTITIONS) || defined(CONFIG_MTD_PARTITIONS_MODULE)
- 	/* partition the flash bank */
- 	p->nr_parts = parse_mtd_partitions(p->info, part_probes, &parts, 0);
--	if (p->nr_parts > 0)
--		err = add_mtd_partitions(p->info, parts, p->nr_parts);
--#endif
--	if (p->nr_parts <= 0)
--		err = add_mtd_device(p->info);
+-	if (mtd_has_partitions()) {
 -
--	return err;
-+	return mtd_device_register(p->info, parts, p->nr_parts);
- }
+-		err = parse_mtd_partitions(info->mtd,
+-					   (const char **)part_probe_types,
+-					   &info->parts, 0);
+-		if (err > 0) {
+-			add_mtd_partitions(info->mtd, info->parts, err);
+-			return 0;
+-		}
+-		if (latch_addr_data->nr_parts) {
+-			pr_notice("Using latch-addr-flash partition information\n");
+-			add_mtd_partitions(info->mtd, latch_addr_data->parts,
+-					latch_addr_data->nr_parts);
+-			return 0;
+-		}
++	err = parse_mtd_partitions(info->mtd, (const char **)part_probe_types,
++				   &info->parts, 0);
++	if (err > 0) {
++		mtd_device_register(info->mtd, info->parts, err);
++		return 0;
++	}
++	if (latch_addr_data->nr_parts) {
++		pr_notice("Using latch-addr-flash partition information\n");
++		mtd_device_register(info->mtd,
++				    latch_addr_data->parts,
++				    latch_addr_data->nr_parts);
++		return 0;
+ 	}
+-	add_mtd_device(info->mtd);
++
++	mtd_device_register(info->mtd, NULL, 0);
+ 	return 0;
  
- static void __devexit vr_nor_destroy_mtd_setup(struct vr_nor_mtd *p)
+ iounmap:
 -- 
 1.7.4.4
