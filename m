@@ -1,18 +1,16 @@
-Received: from mail-vx0-f177.google.com ([209.85.220.177])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOQ4e-0001h5-Sv
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 08:01:14 +0000
-Received: by vxd2 with SMTP id 2so4789186vxd.36
+	id 1QORMg-0002TB-Uu
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:23:56 +0000
+Received: by wyb28 with SMTP id 28so5098469wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 01:01:10 -0700 (PDT)
-MIME-Version: 1.0
-Date: Mon, 23 May 2011 13:31:10 +0530
-Message-ID: <BANLkTinW3_B5DbEsg5fYDTSr2DtOCoS-Zw@mail.gmail.com>
-Subject: UBIFS:Not able mount data partition with ubifs.
-From: Govinda <govindg279@gmail.com>
+	Mon, 23 May 2011 02:23:52 -0700 (PDT)
+From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: govindg279@gmail.com
+Subject: [PATCH 00/62] Remove CONFIG_MTD_PARTITIONS
+Date: Mon, 23 May 2011 10:22:41 +0100
+Message-Id: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
+Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,167 +20,227 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+This series remove the configuration option CONFIG_MTD_PARTITIONS so that
+partitioning support is always enabled in the kernel.  A new set of symbols
+for registering MTD devices (mtd_device_register()/mtd_device_unregister())
+are introduced that replace add_mtd_device()/add_mtd_partitions() and their
+removal counterparts and the preprocessor conditionals in drivers are removed
+so that we can always register partitions.
 
-I am new to ubifs. And, am facing the below problem.
+Most of the driver changes are only compile tested but physmap and gpio-nand
+have been tested on hardware.
 
-I have a 32MB nand flash.
-and Creating 5 MTD partitions on "atmel_nand"
+This series is based on next-20110519 so that the new lantiq driver can be
+converted.  There are a couple of small conflicts with Artem's tree but are
+fairly easily resolved.
 
-[42949373.400000] 0x00000000-0x00100000 : "Bootstrap"
-[42949373.410000] 0x00100000-0x00300000 : "Kernel"
-[42949373.410000] 0x00300000-0x01400000 : "FileSystem"
-[42949373.420000] 0x01400000-0x01d00000 : "DataSection"
-[42949373.430000] 0x01d00000-0x02000000 : "DfltArea"
+Jamie Iles (62):
+  mtd: always build partitioning support
+  mtd: introduce mtd_device_(un)register()
+  mtd: provide of_mtd_parse_partitions for !CONFIG_MTD_OF_PARTS
+  mtd/physmap: convert to mtd_device_register()
+  mtd/nand: convert to mtd_device_register()
+  mtd/plat_nand: convert to mtd_device_register()
+  arm/mtd/gemini: convert to mtd_device_register()
+  mtd/ixp: convert to mtd_device_register()
+  mtd/pxa: convert to mtd_device_register()
+  mtd/s3c2410: remove CONFIG_MTD_PARTITIONS test
+  mtd/bfin: convert to mtd_device_register()
+  mtd/cris: convert to mtd_device_register()
+  mtd/octeon: convert to mtd_device_register()
+  mips/tx99: remove CONFIG_MTD_PARTITIONS check
+  mtd/onenand: convert to mtd_device_register()
+  mtd/m25p80: convert to mtd_device_register()
+  mtd/dataflash: convert to mtd_device_register()
+  mtd/sst25l: convert to mtd_device_register()
+  mtd/dc21285: convert to mtd_device_register()
+  mtd/edb7312: convert to mtd_device_register()
+  mtd/gpio-addr-flash: convert to mtd_device_register()
+  mtd/h720x-flash: convert to mtd_device_register()
+  mtd/impa7: convert to mtd_device_register()
+  mtd/intel_vr_nor: convert to mtd_device_register()
+  mtd/latch-addr-flash: convert to mtd_device_register()
+  mtd/plat-ram: convert to mtd_device_register()
+  mtd/rbtx4939-flash: convert to mtd_device_register()
+  mtd/sa1100-flash: convert to mtd_device_register()
+  mtd/scx200_docflash: convert to mtd_device_register()
+  mtd/tqm8xll: convert to mtd_device_register()
+  mtd/uclinux: convert to mtd_device_register()
+  mtd/atmel_nand: convert to mtd_device_register()
+  mtd/bcm_umi_nand: convert to mtd_device_register()
+  mtd/bf5xx_nand: convert to mtd_device_register()
+  mtd/cafe_nand: convert to mtd_device_register()
+  mtd/cs553x_nand: convert to mtd_device_register()
+  mtd/davinci_nand: convert to mtd_device_register()
+  mtd/diskonchip: convert to mtd_device_register()
+  mtd/edb7312 nand: convert to mtd_device_register()
+  mtd/fsl_elbc_nand: convert to mtd_device_register()
+  mtd/fsl_upm: convert to mtd_device_register()
+  mtd/fsmc_nand: convert to mtd_device_register()
+  mtd/h1910: convert to mtd_device_register()
+  mtd/jz4740_nand: convert to mtd_device_register()
+  mtd/mpc5121_nfc: convert to mtd_device_register()
+  mtd/mxc_nand: convert to mtd_device_register()
+  mtd/ndfc: convert to mtd_device_register()
+  mtd/nomadik_nand: convert to mtd_device_register()
+  mtd/omap2: convert to mtd_device_register()
+  mtd/orion_nand: convert to mtd_device_register()
+  mtd/ppchameleonevb: convert to mtd_device_register()
+  mtd/s3c2410 nand: convert to mtd_device_register()
+  mtd/sharpsl: convert to mtd_device_register()
+  mtd/socrates_nand: convert to mtd_device_register()
+  mtd/tmio_nand: convert to mtd_device_register()
+  mtd/txx9ndfmc: convert to mtd_device_register()
+  mtd/omap2 onenand: convert to mtd_device_register()
+  mtd/samsung onenand: convert to mtd_device_register()
+  mtd: convert remaining users to mtd_device_register()
+  mtd/lantiq: convert to mtd_device_register()
+  mtd: remove add_mtd_partitions, add_mtd_device and friends
+  mtd: kill CONFIG_MTD_PARTITIONS
 
+ Documentation/DocBook/mtdnand.tmpl        |    3 +-
+ arch/arm/mach-gemini/board-wbd111.c       |    7 +---
+ arch/arm/mach-gemini/board-wbd222.c       |    7 +---
+ arch/arm/mach-ixp4xx/ixdp425-setup.c      |    4 --
+ arch/arm/mach-pxa/Kconfig                 |    1 -
+ arch/arm/mach-s3c2410/mach-amlm5900.c     |    5 --
+ arch/arm/mach-s3c2410/mach-tct_hammer.c   |    6 ---
+ arch/blackfin/mach-bf537/boards/stamp.c   |    4 --
+ arch/blackfin/mach-bf561/boards/acvilon.c |    4 --
+ arch/cris/Kconfig                         |    1 -
+ arch/cris/arch-v10/drivers/axisflashmap.c |   10 +++--
+ arch/cris/arch-v32/drivers/Kconfig        |    1 -
+ arch/cris/arch-v32/drivers/axisflashmap.c |    7 ++-
+ arch/mips/cavium-octeon/flash_setup.c     |   11 +----
+ arch/mips/txx9/generic/setup.c            |    3 +-
+ drivers/mtd/Kconfig                       |   18 +-------
+ drivers/mtd/Makefile                      |    3 +-
+ drivers/mtd/devices/block2mtd.c           |    4 +-
+ drivers/mtd/devices/doc2000.c             |    4 +-
+ drivers/mtd/devices/doc2001.c             |    4 +-
+ drivers/mtd/devices/doc2001plus.c         |    4 +-
+ drivers/mtd/devices/lart.c                |    9 ++--
+ drivers/mtd/devices/m25p80.c              |   68 +++++++++++++----------------
+ drivers/mtd/devices/ms02-nv.c             |    4 +-
+ drivers/mtd/devices/mtd_dataflash.c       |   45 ++++++++-----------
+ drivers/mtd/devices/mtdram.c              |    5 +-
+ drivers/mtd/devices/phram.c               |    4 +-
+ drivers/mtd/devices/pmc551.c              |    6 +-
+ drivers/mtd/devices/slram.c               |    4 +-
+ drivers/mtd/devices/sst25l.c              |   62 +++++++++++---------------
+ drivers/mtd/maps/Kconfig                  |   24 +++-------
+ drivers/mtd/maps/amd76xrom.c              |    4 +-
+ drivers/mtd/maps/autcpu12-nvram.c         |    4 +-
+ drivers/mtd/maps/bcm963xx-flash.c         |    6 +-
+ drivers/mtd/maps/bfin-async-flash.c       |   21 ++-------
+ drivers/mtd/maps/cdb89712.c               |   12 +++---
+ drivers/mtd/maps/ceiva.c                  |    6 +-
+ drivers/mtd/maps/cfi_flagadm.c            |    4 +-
+ drivers/mtd/maps/ck804xrom.c              |    4 +-
+ drivers/mtd/maps/dbox2-flash.c            |    4 +-
+ drivers/mtd/maps/dc21285.c                |   20 +-------
+ drivers/mtd/maps/dilnetpc.c               |    9 ++--
+ drivers/mtd/maps/dmv182.c                 |    4 +-
+ drivers/mtd/maps/edb7312.c                |   26 +++--------
+ drivers/mtd/maps/esb2rom.c                |    4 +-
+ drivers/mtd/maps/fortunet.c               |    7 ++-
+ drivers/mtd/maps/gpio-addr-flash.c        |   27 ++++-------
+ drivers/mtd/maps/h720x-flash.c            |    6 +--
+ drivers/mtd/maps/ichxrom.c                |    4 +-
+ drivers/mtd/maps/impa7.c                  |   22 +--------
+ drivers/mtd/maps/integrator-flash.c       |    6 +-
+ drivers/mtd/maps/intel_vr_nor.c           |   19 +-------
+ drivers/mtd/maps/ixp2000.c                |    4 +-
+ drivers/mtd/maps/ixp4xx.c                 |   16 +++----
+ drivers/mtd/maps/l440gx.c                 |    4 +-
+ drivers/mtd/maps/lantiq-flash.c           |    4 +-
+ drivers/mtd/maps/latch-addr-flash.c       |   45 +++++++------------
+ drivers/mtd/maps/mbx860.c                 |    6 +-
+ drivers/mtd/maps/netsc520.c               |    4 +-
+ drivers/mtd/maps/nettel.c                 |   12 +++---
+ drivers/mtd/maps/octagon-5066.c           |    4 +-
+ drivers/mtd/maps/pci.c                    |    4 +-
+ drivers/mtd/maps/pcmciamtd.c              |    4 +-
+ drivers/mtd/maps/physmap.c                |   34 ++++-----------
+ drivers/mtd/maps/physmap_of.c             |   30 ++-----------
+ drivers/mtd/maps/plat-ram.c               |   24 ++++------
+ drivers/mtd/maps/pmcmsp-flash.c           |    6 +-
+ drivers/mtd/maps/pxa2xx-flash.c           |   18 ++------
+ drivers/mtd/maps/rbtx4939-flash.c         |   24 ++--------
+ drivers/mtd/maps/rpxlite.c                |    4 +-
+ drivers/mtd/maps/sa1100-flash.c           |   21 +++------
+ drivers/mtd/maps/sbc_gxx.c                |    4 +-
+ drivers/mtd/maps/sc520cdp.c               |    8 ++--
+ drivers/mtd/maps/scb2_flash.c             |    6 +-
+ drivers/mtd/maps/scx200_docflash.c        |   16 +------
+ drivers/mtd/maps/solutionengine.c         |   12 +++---
+ drivers/mtd/maps/sun_uflash.c             |    4 +-
+ drivers/mtd/maps/tqm8xxl.c                |   20 ++------
+ drivers/mtd/maps/ts5500_flash.c           |    4 +-
+ drivers/mtd/maps/tsunami_flash.c          |    4 +-
+ drivers/mtd/maps/uclinux.c                |   12 +----
+ drivers/mtd/maps/vmax301.c                |    4 +-
+ drivers/mtd/maps/vmu-flash.c              |    4 +-
+ drivers/mtd/maps/wr_sbc82xx_flash.c       |   15 ++++---
+ drivers/mtd/mtdchar.c                     |    5 --
+ drivers/mtd/mtdcore.c                     |   29 +++++++++++-
+ drivers/mtd/mtdcore.h                     |    6 +++
+ drivers/mtd/mtdpart.c                     |    4 +-
+ drivers/mtd/nand/Kconfig                  |    5 +-
+ drivers/mtd/nand/alauda.c                 |    4 +-
+ drivers/mtd/nand/ams-delta.c              |    4 +-
+ drivers/mtd/nand/atmel_nand.c             |   12 +-----
+ drivers/mtd/nand/au1550nd.c               |    3 +-
+ drivers/mtd/nand/autcpu12.c               |   16 +++---
+ drivers/mtd/nand/bcm_umi_nand.c           |    4 +-
+ drivers/mtd/nand/bf5xx_nand.c             |    7 +---
+ drivers/mtd/nand/cafe_nand.c              |   11 +----
+ drivers/mtd/nand/cmx270_nand.c            |    2 +-
+ drivers/mtd/nand/cs553x_nand.c            |   19 +-------
+ drivers/mtd/nand/davinci_nand.c           |   51 +++++++++-------------
+ drivers/mtd/nand/denali.c                 |    4 +-
+ drivers/mtd/nand/diskonchip.c             |   18 +++-----
+ drivers/mtd/nand/edb7312.c                |    9 +---
+ drivers/mtd/nand/fsl_elbc_nand.c          |   12 +-----
+ drivers/mtd/nand/fsl_upm.c                |   12 +-----
+ drivers/mtd/nand/fsmc_nand.c              |   25 ++---------
+ drivers/mtd/nand/gpio.c                   |    4 +-
+ drivers/mtd/nand/h1910.c                  |    5 +--
+ drivers/mtd/nand/jz4740_nand.c            |   10 +----
+ drivers/mtd/nand/mpc5121_nfc.c            |   12 +-----
+ drivers/mtd/nand/mxc_nand.c               |   13 ++----
+ drivers/mtd/nand/nand_base.c              |   10 +----
+ drivers/mtd/nand/nandsim.c                |    4 +-
+ drivers/mtd/nand/ndfc.c                   |   13 +-----
+ drivers/mtd/nand/nomadik_nand.c           |    7 +---
+ drivers/mtd/nand/nuc900_nand.c            |    4 +-
+ drivers/mtd/nand/omap2.c                  |   10 +---
+ drivers/mtd/nand/orion_nand.c             |   14 +------
+ drivers/mtd/nand/pasemi_nand.c            |    2 +-
+ drivers/mtd/nand/plat_nand.c              |   12 +----
+ drivers/mtd/nand/ppchameleonevb.c         |   15 ++----
+ drivers/mtd/nand/pxa3xx_nand.c            |   13 +----
+ drivers/mtd/nand/rtc_from4.c              |    3 +-
+ drivers/mtd/nand/s3c2410.c                |   16 +------
+ drivers/mtd/nand/sh_flctl.c               |    2 +-
+ drivers/mtd/nand/sharpsl.c                |   12 +----
+ drivers/mtd/nand/sm_common.c              |    2 +-
+ drivers/mtd/nand/socrates_nand.c          |   16 +------
+ drivers/mtd/nand/spia.c                   |    2 +-
+ drivers/mtd/nand/tmio_nand.c              |   10 +----
+ drivers/mtd/nand/txx9ndfmc.c              |   14 +------
+ drivers/mtd/onenand/Kconfig               |    1 -
+ drivers/mtd/onenand/generic.c             |   16 ++-----
+ drivers/mtd/onenand/omap2.c               |   10 +---
+ drivers/mtd/onenand/onenand_base.c        |    6 +--
+ drivers/mtd/onenand/onenand_sim.c         |    3 +-
+ drivers/mtd/onenand/samsung.c             |   12 +----
+ drivers/mtd/ubi/gluebi.c                  |    6 +-
+ drivers/net/sfc/mtd.c                     |    6 +-
+ include/linux/mtd/mtd.h                   |   37 +++++++++++----
+ include/linux/mtd/partitions.h            |   16 +++---
+ include/linux/mtd/physmap.h               |    4 --
+ 142 files changed, 523 insertions(+), 1023 deletions(-)
 
-Here rootfs is mounted successfully. below is the log:
-
-[42949373.440000] UBI: attaching mtd2 to ubi0
-[42949373.440000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
-[42949373.450000] UBI: logical eraseblock size:    129024 bytes
-[42949373.450000] UBI: smallest flash I/O unit:    2048
-[42949373.460000] UBI: sub-page size:              512
-[42949373.460000] UBI: VID header offset:          512 (aligned 512)
-[42949373.470000] UBI: data offset:                2048
-[42949373.510000] UBI: attached mtd2 to ubi0
-[42949373.510000] UBI: MTD device name:            "FileSystem"
-[42949373.520000] UBI: MTD device size:            17 MiB
-[42949373.520000] UBI: number of good PEBs:        136
-[42949373.530000] UBI: number of bad PEBs:         0
-[42949373.530000] UBI: max. allowed volumes:       128
-[42949373.540000] UBI: wear-leveling threshold:    4096
-[42949373.540000] UBI: number of internal volumes: 1
-[42949373.550000] UBI: number of user volumes:     1
-[42949373.550000] UBI: available PEBs:             0
-[42949373.560000] UBI: total number of reserved PEBs: 136
-[42949373.560000] UBI: number of PEBs reserved for bad PEB handling: 2
-[42949373.570000] UBI: max/mean erase counter: 2/0
-
-After the system booted up, from the command prompt:
-Since the DataSection partion number is 3, and
-when am trying to mount a partition "DataSection", It seems getting
-mounted succefully.
-
-But, the data is not visible at the mounted path.
-
-Below are the sequence of commands that I have used to mount a partition:
-
-# ubiformat /dev/mtd3 -s 512
-ubiformat: mtd3 (nand), size 9437184 bytes (9.0 MiB), 72 eraseblocks
-of 131072 bytes (128.0 KiB), min. I/O size 2048 bytes
-libscan: scanning eraseblock 71 -- 100 % complete
-ubiformat: 72 eraseblocks have valid erase counter, mean value is 5
-ubiformat: formatting eraseblock 71 -- 100 % complete
-# ubiattach /dev/ubi_ctrl -m 3
-[ 4352.750000] UBI: attaching mtd3 to ubi1
-[ 4352.760000] UBI: physical eraseblock size:   131072 bytes (128 KiB)
-[ 4352.760000] UBI: logical eraseblock size:    129024 bytes
-[ 4352.770000] UBI: smallest flash I/O unit:    2048
-[ 4352.770000] UBI: sub-page size:              512
-[ 4352.780000] UBI: VID header offset:          512 (aligned 512)
-[ 4352.780000] UBI: data offset:                2048
-[ 4352.850000] UBI: attached mtd3 to ubi1
-[ 4352.850000] UBI: MTD device name:            "DataSection"
-[ 4352.860000] UBI: MTD device size:            9 MiB
-[ 4352.860000] UBI: number of good PEBs:        72
-[ 4352.870000] UBI: number of bad PEBs:         0
-[ 4352.870000] UBI: max. allowed volumes:       128
-[ 4352.880000] UBI: wear-leveling threshold:    4096
-[ 4352.880000] UBI: number of internal volumes: 1
-[ 4352.890000] UBI: number of user volumes:     0
-[ 4352.890000] UBI: available PEBs:             66
-[ 4352.900000] UBI: total number of reserved PEBs: 6
-[ 4352.900000] UBI: number of PEBs reserved for bad PEB handling: 2
-[ 4352.910000] UBI: max/mean erase counter: 13/6
-[ 4352.910000] UBI: background thread "ubi_bgt1d" started, PID 32460
-
-# ubiattach /dev/ubi_ctrl -m 3
-
-# ubinfo -a
-UBI version:                    1
-Count of UBI devices:           2
-UBI control device major/minor: 10:63
-Present UBI devices:            ubi0, ubi1
-
-ubi0
-Volumes count:                           1
-Logical eraseblock size:                 129024 bytes, 126.0 KiB
-Total amount of logical eraseblocks:     136 (17547264 bytes, 16.7 MiB)
-Amount of available logical eraseblocks: 0 (0 bytes)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  2
-Current maximum erase counter value:     2
-Minimum input/output unit size:          2048 bytes
-Character device major/minor:            253:0
-Present volumes:                         0
-
-Volume ID:   0 (on ubi0)
-Type:        dynamic
-Alignment:   1
-Size:        130 LEBs (16773120 bytes, 16.0 MiB)
-State:       OK
-Name:        rootfs
-Character device major/minor: 253:1
-
-===================================
-ubi1
-Volumes count:                           0
-Logical eraseblock size:                 129024 bytes, 126.0 KiB
-Total amount of logical eraseblocks:     72 (9289728 bytes, 8.9 MiB)
-Amount of available logical eraseblocks: 66 (8515584 bytes, 8.1 MiB)
-Maximum count of volumes                 128
-Count of bad physical eraseblocks:       0
-Count of reserved physical eraseblocks:  2
-Current maximum erase counter value:     13
-Minimum input/output unit size:          2048 bytes
-Character device major/minor:            251:0
-
-# mknod /dev/ubi1 c 251 0
-
-# ubimkvol /dev/ubi1 -N DataSection -s 6838272
-Volume ID 0, size 53 LEBs (6838272 bytes, 6.5 MiB), LEB size 129024
-bytes (126.0 KiB), dynamic, name "DataSection", alignment 1
-
-# mount -t ubifs ubi1:DataSection /mnt/mtd3_DataSection/
-[ 4622.320000] UBIFS: default file-system created
-[ 4622.340000] UBIFS: background thread "ubifs_bgt1_0" started, PID 1876
-[ 4622.410000] UBIFS: mounted UBI device 1, volume 0, name "DataSection"
-[ 4622.410000] UBIFS: file system size: 5548032 bytes (5418 KiB, 5 MiB, 43 LEBs)
-[ 4622.420000] UBIFS: journal size: 1032193 bytes (1008 KiB, 0 MiB, 6 LEBs)
-[ 4622.430000] UBIFS: default compressor: LZO
-[ 4622.430000] UBIFS: media format 4, latest format 4
-
-#cd /mnt/mtd3_DataSection/
-# ls
-<No data visible, but expected the same data.>
-
-
-AND
-adding some more info...
-
-Utils and args used to build the xxxx.ubi
-# mkfs.ubifs -r DefaultElems -m 2048 -e 129024 -c 2048 -o default.ubifs -x lzo
-# ubinize -o default-elm.ubi -m 2048 -p 128KiB -s 512 default.cfg
-
-here 'DefaultElems' directory contains some sub dirs and some data as
-well. (the same data expecting after mount operation  )
-default.cfg:
-[default-elm]
-mode=ubi
-image=default.ubifs
-vol_id=0
-vol_type=dynamic
-vol_name=DataSection
-
-and the resultant image default-elm.ubi flashed at the partition
-'DataSection' (0x01400000-0x01d00000 : "DataSection")
-kernel version : 2.6.27
-
-
-Could someone please help me...
-
-Thanks&
-Regards,
-Govinda.
+-- 
+1.7.4.4
