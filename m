@@ -1,19 +1,18 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QORMy-0002Ul-Ac
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:13 +0000
-Received: by mail-ww0-f41.google.com with SMTP id 18so1297816wwi.0
+	id 1QORN0-0002TQ-OD
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 09:24:16 +0000
+Received: by mail-wy0-f177.google.com with SMTP id 28so5098499wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 02:24:12 -0700 (PDT)
+	Mon, 23 May 2011 02:24:14 -0700 (PDT)
 From: Jamie Iles <jamie@jamieiles.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH 08/62] mtd/ixp: convert to mtd_device_register()
-Date: Mon, 23 May 2011 10:22:49 +0100
-Message-Id: <1306142623-24952-9-git-send-email-jamie@jamieiles.com>
+Subject: [PATCH 09/62] mtd/pxa: convert to mtd_device_register()
+Date: Mon, 23 May 2011 10:22:50 +0100
+Message-Id: <1306142623-24952-10-git-send-email-jamie@jamieiles.com>
 In-Reply-To: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
 References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
-Cc: Jamie Iles <jamie@jamieiles.com>, Imre Kaloz <kaloz@openwrt.org>,
-	dwmw2@infradead.org, Krzysztof Halasa <khc@pm.waw.pl>, dedekind1@gmail.com
+Cc: Jamie Iles <jamie@jamieiles.com>, dwmw2@infradead.org, dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,118 +25,124 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 Convert to mtd_device_register() and remove the CONFIG_MTD_PARTITIONS
 preprocessor conditionals as partitioning is always available.
 
-Cc: Imre Kaloz <kaloz@openwrt.org>
-Cc: Krzysztof Halasa <khc@pm.waw.pl>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Cc: David Woodhouse <dwmw2@infradead.org>
 Cc: Artem Bityutskiy <dedekind1@gmail.com>
 Signed-off-by: Jamie Iles <jamie@jamieiles.com>
 ---
- arch/arm/mach-ixp4xx/ixdp425-setup.c |    4 ----
- drivers/mtd/maps/ixp2000.c           |    4 ++--
- drivers/mtd/maps/ixp4xx.c            |   16 ++++++----------
- 3 files changed, 8 insertions(+), 16 deletions(-)
+ arch/arm/mach-pxa/Kconfig       |    1 -
+ drivers/mtd/maps/Kconfig        |    1 -
+ drivers/mtd/maps/pxa2xx-flash.c |   18 ++++--------------
+ drivers/mtd/nand/pxa3xx_nand.c  |   13 +++----------
+ 4 files changed, 7 insertions(+), 26 deletions(-)
 
-diff --git a/arch/arm/mach-ixp4xx/ixdp425-setup.c b/arch/arm/mach-ixp4xx/ixdp425-setup.c
-index 1407833..dca4f7f 100644
---- a/arch/arm/mach-ixp4xx/ixdp425-setup.c
-+++ b/arch/arm/mach-ixp4xx/ixdp425-setup.c
-@@ -60,7 +60,6 @@ static struct platform_device ixdp425_flash = {
- #if defined(CONFIG_MTD_NAND_PLATFORM) || \
-     defined(CONFIG_MTD_NAND_PLATFORM_MODULE)
+diff --git a/arch/arm/mach-pxa/Kconfig b/arch/arm/mach-pxa/Kconfig
+index 2fc9f94..cd19309 100644
+--- a/arch/arm/mach-pxa/Kconfig
++++ b/arch/arm/mach-pxa/Kconfig
+@@ -153,7 +153,6 @@ config MACH_XCEP
+ 	bool "Iskratel Electronics XCEP"
+ 	select PXA25x
+ 	select MTD
+-	select MTD_PARTITIONS
+ 	select MTD_PHYSMAP
+ 	select MTD_CFI_INTELEXT
+ 	select MTD_CFI
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 5069111..d028cd4 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -161,7 +161,6 @@ config MTD_SBC_GXX
+ config MTD_PXA2XX
+ 	tristate "CFI Flash device mapped on Intel XScale PXA2xx based boards"
+ 	depends on (PXA25x || PXA27x) && MTD_CFI_INTELEXT
+-	select MTD_PARTITIONS
+ 	help
+ 	  This provides a driver for the NOR flash attached to a PXA2xx chip.
+ 
+diff --git a/drivers/mtd/maps/pxa2xx-flash.c b/drivers/mtd/maps/pxa2xx-flash.c
+index d8ae634..f59d62f 100644
+--- a/drivers/mtd/maps/pxa2xx-flash.c
++++ b/drivers/mtd/maps/pxa2xx-flash.c
+@@ -104,23 +104,18 @@ static int __devinit pxa2xx_flash_probe(struct platform_device *pdev)
+ 	}
+ 	info->mtd->owner = THIS_MODULE;
  
 -#ifdef CONFIG_MTD_PARTITIONS
- const char *part_probes[] = { "cmdlinepart", NULL };
+ 	ret = parse_mtd_partitions(info->mtd, probes, &parts, 0);
  
- static struct mtd_partition ixdp425_partitions[] = {
-@@ -74,7 +73,6 @@ static struct mtd_partition ixdp425_partitions[] = {
- 		.size	= MTDPART_SIZ_FULL
- 	},
- };
+ 	if (ret > 0) {
+ 		info->nr_parts = ret;
+ 		info->parts = parts;
+ 	}
 -#endif
  
- static void
- ixdp425_flash_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned int ctrl)
-@@ -103,11 +101,9 @@ static struct platform_nand_data ixdp425_flash_nand_data = {
- 		.nr_chips		= 1,
- 		.chip_delay		= 30,
- 		.options		= NAND_NO_AUTOINCR,
--#ifdef CONFIG_MTD_PARTITIONS
- 		.part_probe_types 	= part_probes,
- 		.partitions	 	= ixdp425_partitions,
- 		.nr_partitions	 	= ARRAY_SIZE(ixdp425_partitions),
--#endif
- 	},
- 	.ctrl = {
- 		.cmd_ctrl 		= ixdp425_flash_nand_cmd_ctrl
-diff --git a/drivers/mtd/maps/ixp2000.c b/drivers/mtd/maps/ixp2000.c
-index 9639d83..c00b917 100644
---- a/drivers/mtd/maps/ixp2000.c
-+++ b/drivers/mtd/maps/ixp2000.c
-@@ -119,7 +119,7 @@ static int ixp2000_flash_remove(struct platform_device *dev)
- 		return 0;
- 
- 	if (info->mtd) {
--		del_mtd_partitions(info->mtd);
-+		mtd_device_unregister(info->mtd);
- 		map_destroy(info->mtd);
- 	}
- 	if (info->map.map_priv_1)
-@@ -230,7 +230,7 @@ static int ixp2000_flash_probe(struct platform_device *dev)
- 
- 	err = parse_mtd_partitions(info->mtd, probes, &info->partitions, 0);
- 	if (err > 0) {
--		err = add_mtd_partitions(info->mtd, info->partitions, err);
-+		err = mtd_device_register(info->mtd, info->partitions, err);
- 		if(err)
- 			dev_err(&dev->dev, "Could not parse partitions\n");
- 	}
-diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-index 1f9fde0..155b219 100644
---- a/drivers/mtd/maps/ixp4xx.c
-+++ b/drivers/mtd/maps/ixp4xx.c
-@@ -162,7 +162,7 @@ static int ixp4xx_flash_remove(struct platform_device *dev)
- 		return 0;
- 
- 	if (info->mtd) {
--		del_mtd_partitions(info->mtd);
-+		mtd_device_unregister(info->mtd);
- 		map_destroy(info->mtd);
- 	}
- 	if (info->map.virt)
-@@ -252,10 +252,8 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 	/* Use the fast version */
- 	info->map.write = ixp4xx_write16;
- 
--#ifdef CONFIG_MTD_PARTITIONS
- 	nr_parts = parse_mtd_partitions(info->mtd, probes, &info->partitions,
- 					dev->resource->start);
--#endif
- 	if (nr_parts > 0) {
- 		part_type = "dynamic";
- 	} else {
-@@ -263,18 +261,16 @@ static int ixp4xx_flash_probe(struct platform_device *dev)
- 		nr_parts = plat->nr_parts;
- 		part_type = "static";
- 	}
--	if (nr_parts == 0) {
-+	if (nr_parts == 0)
- 		printk(KERN_NOTICE "IXP4xx flash: no partition info "
- 			"available, registering whole flash\n");
--		err = add_mtd_device(info->mtd);
+-	if (info->nr_parts) {
+-		add_mtd_partitions(info->mtd, info->parts,
+-				   info->nr_parts);
 -	} else {
-+	else
- 		printk(KERN_NOTICE "IXP4xx flash: using %s partition "
- 			"definition\n", part_type);
--		err = add_mtd_partitions(info->mtd, info->partitions, nr_parts);
- 
--		if(err)
--			printk(KERN_ERR "Could not parse partitions\n");
++	if (!info->nr_parts)
+ 		printk("Registering %s as whole device\n",
+ 		       info->map.name);
+-		add_mtd_device(info->mtd);
 -	}
-+	err = mtd_device_register(info->mtd, info->partitions, nr_parts);
-+	if (err)
-+		printk(KERN_ERR "Could not parse partitions\n");
++
++	mtd_device_register(info->mtd, info->parts, info->nr_parts);
  
- 	if (err)
- 		goto Error;
+ 	platform_set_drvdata(pdev, info);
+ 	return 0;
+@@ -132,12 +127,7 @@ static int __devexit pxa2xx_flash_remove(struct platform_device *dev)
+ 
+ 	platform_set_drvdata(dev, NULL);
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+-	if (info->nr_parts)
+-		del_mtd_partitions(info->mtd);
+-	else
+-#endif
+-		del_mtd_device(info->mtd);
++	mtd_device_unregister(info->mtd);
+ 
+ 	map_destroy(info->mtd);
+ 	iounmap(info->map.virt);
+diff --git a/drivers/mtd/nand/pxa3xx_nand.c b/drivers/mtd/nand/pxa3xx_nand.c
+index ff07012..1fb3b3a 100644
+--- a/drivers/mtd/nand/pxa3xx_nand.c
++++ b/drivers/mtd/nand/pxa3xx_nand.c
+@@ -1119,10 +1119,7 @@ static int pxa3xx_nand_remove(struct platform_device *pdev)
+ 	clk_put(info->clk);
+ 
+ 	if (mtd) {
+-		del_mtd_device(mtd);
+-#ifdef CONFIG_MTD_PARTITIONS
+-		del_mtd_partitions(mtd);
+-#endif
++		mtd_device_unregister(mtd);
+ 		kfree(mtd);
+ 	}
+ 	return 0;
+@@ -1149,7 +1146,6 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-#ifdef CONFIG_MTD_PARTITIONS
+ 	if (mtd_has_cmdlinepart()) {
+ 		const char *probes[] = { "cmdlinepart", NULL };
+ 		struct mtd_partition *parts;
+@@ -1158,13 +1154,10 @@ static int pxa3xx_nand_probe(struct platform_device *pdev)
+ 		nr_parts = parse_mtd_partitions(info->mtd, probes, &parts, 0);
+ 
+ 		if (nr_parts)
+-			return add_mtd_partitions(info->mtd, parts, nr_parts);
++			return mtd_device_register(info->mtd, parts, nr_parts);
+ 	}
+ 
+-	return add_mtd_partitions(info->mtd, pdata->parts, pdata->nr_parts);
+-#else
+-	return 0;
+-#endif
++	return mtd_device_register(info->mtd, pdata->parts, pdata->nr_parts);
+ }
+ 
+ #ifdef CONFIG_PM
 -- 
 1.7.4.4
