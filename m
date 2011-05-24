@@ -1,29 +1,23 @@
-Received: from mail-ew0-f49.google.com ([209.85.215.49])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOmKA-00061O-Ig
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 07:46:43 +0000
-Received: by ewy3 with SMTP id 3so2369951ewy.36
+	id 1QOnFe-0006NA-Vp
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 08:46:07 +0000
+Received: by eyh6 with SMTP id 6so2385642eyh.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 May 2011 00:46:41 -0700 (PDT)
-Subject: Re: [PATCH -next] mtd: fix physmap.h warnings
+	Tue, 24 May 2011 01:46:05 -0700 (PDT)
+Subject: Re: read_pnode: error -22 reading pnode at XX:YYYYY
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Russell King <rmk@arm.linux.org.uk>
-In-Reply-To: <20110524074020.GA9490@flint.arm.linux.org.uk>
-References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
-	<20110523113709.4357b4ba.randy.dunlap@oracle.com>
-	<1306216431.2785.46.camel@localhost>
-	<1306216683.2785.47.camel@localhost>
-	<20110524074020.GA9490@flint.arm.linux.org.uk>
+To: Rick Johnson <rick22@wi.rr.com>
+In-Reply-To: <4DD6DA14.9050402@wi.rr.com>
+References: <4DADF9E6.9010709@wi.rr.com>
+	<1303392001.2757.16.camel@localhost>  <4DC31183.8060807@wi.rr.com>
+	<1304706750.7222.95.camel@localhost>  <4DD6DA14.9050402@wi.rr.com>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 May 2011 10:42:23 +0300
-Message-ID: <1306222943.2785.55.camel@localhost>
+Date: Tue, 24 May 2011 11:41:44 +0300
+Message-ID: <1306226504.2785.68.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Marc Zyngier <Marc.Zyngier@arm.com>,
-	LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
@@ -34,33 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
-Subject: [PATCH] mtd: fix physmap.h warnings
+On Fri, 2011-05-20 at 16:16 -0500, Rick Johnson wrote:
+> We were able to gather more debug this time when the error reoccurred. 
+> I thought I'd post it, just in case something jumps out.  The strange 
+> thing is that 'num' seems to have a value that resembles an address.  In 
+> the example below, num is set to 0xC72EB990.  That's been true every 
+> time we've seen any debug.  Maybe it doesn't mean anything.
 
-Fix build warnings in physmap.h:
+Hi,
 
-include/linux/mtd/physmap.h:25: warning: 'struct platform_device' declared inside parameter list
-include/linux/mtd/physmap.h:25: warning: its scope is only this definition or declaration, which is probably not what you want
-include/linux/mtd/physmap.h:26: warning: 'struct platform_device' declared inside parameter list
-include/linux/mtd/physmap.h:27: warning: 'struct platform_device' declared inside parameter list
+1. Your kernel version is 2.6.36, do you use up-to-date UBI/UBIFS from
+   the ubifs-v2.6.36 back-port tree? See here:
+   http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- include/linux/mtd/physmap.h |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+2. Could you please make sure you have UBIFS debugging enabled - just
+   debugging support, no additional messages or checks. Then post UBIFS
+   messages which it prints when you mount it. It prints things like
+   LPT model (c->big_lpt) which I want to know.
 
-diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
-index 49b9590..697cc98 100644
---- a/include/linux/mtd/physmap.h
-+++ b/include/linux/mtd/physmap.h
-@@ -19,6 +19,7 @@
- #include <linux/mtd/partitions.h>
- 
- struct map_info;
-+struct platform_device;
- 
- struct physmap_flash_data {
- 	unsigned int		width;
+3. Please, enable LPT extra checks and run your tests and try to
+   reproduce this issue. To enable LPT extra checks you need to do:
+
+   $ sudo sh -c 'echo 32 > /sys/module/ubifs/parameters/debug_chks'
+
+   This will make UBIFS to check lprops at each commit and we have a
+   better chance to catch issues.
+
+Thanks!
+
 -- 
-1.7.2.3
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
