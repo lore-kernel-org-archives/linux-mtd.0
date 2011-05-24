@@ -1,24 +1,29 @@
-Received: from mail-fx0-f49.google.com ([209.85.161.49])
+Received: from mail-ew0-f49.google.com ([209.85.215.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOmJH-0005zO-EB
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 07:45:48 +0000
-Received: by fxm14 with SMTP id 14so5826909fxm.36
+	id 1QOmKA-00061O-Ig
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 07:46:43 +0000
+Received: by ewy3 with SMTP id 3so2369951ewy.36
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 May 2011 00:45:45 -0700 (PDT)
+	Tue, 24 May 2011 00:46:41 -0700 (PDT)
 Subject: Re: [PATCH -next] mtd: fix physmap.h warnings
 From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Randy Dunlap <randy.dunlap@oracle.com>
-In-Reply-To: <20110523113709.4357b4ba.randy.dunlap@oracle.com>
+To: Russell King <rmk@arm.linux.org.uk>
+In-Reply-To: <20110524074020.GA9490@flint.arm.linux.org.uk>
 References: <20110523154518.5e27cfb0.sfr@canb.auug.org.au>
 	<20110523113709.4357b4ba.randy.dunlap@oracle.com>
+	<1306216431.2785.46.camel@localhost>
+	<1306216683.2785.47.camel@localhost>
+	<20110524074020.GA9490@flint.arm.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 May 2011 10:41:27 +0300
-Message-ID: <1306222887.2785.54.camel@localhost>
+Date: Tue, 24 May 2011 10:42:23 +0300
+Message-ID: <1306222943.2785.55.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, linux-next@vger.kernel.org,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
+Cc: Randy Dunlap <randy.dunlap@oracle.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Marc Zyngier <Marc.Zyngier@arm.com>,
+	LKML <linux-kernel@vger.kernel.org>, linux-next@vger.kernel.org,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
