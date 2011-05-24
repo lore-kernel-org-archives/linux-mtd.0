@@ -1,24 +1,21 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
+Received: from smail5.alcatel.fr ([64.208.49.27])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOnFe-0006NA-Vp
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 08:46:07 +0000
-Received: by eyh6 with SMTP id 6so2385642eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 May 2011 01:46:05 -0700 (PDT)
-Subject: Re: read_pnode: error -22 reading pnode at XX:YYYYY
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Rick Johnson <rick22@wi.rr.com>
-In-Reply-To: <4DD6DA14.9050402@wi.rr.com>
-References: <4DADF9E6.9010709@wi.rr.com>
-	<1303392001.2757.16.camel@localhost>  <4DC31183.8060807@wi.rr.com>
-	<1304706750.7222.95.camel@localhost>  <4DD6DA14.9050402@wi.rr.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Tue, 24 May 2011 11:41:44 +0300
-Message-ID: <1306226504.2785.68.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind1@gmail.com
+	id 1QOocX-0006qh-BF
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 10:13:51 +0000
+Received: from FRMRSSXCHHUB01.dc-m.alcatel-lucent.com
+	(FRMRSSXCHHUB01.dc-m.alcatel-lucent.com [135.120.45.61])
+	by smail5.alcatel.fr (8.14.3/8.14.3/ICT) with ESMTP id p4OADcev001334
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <linux-mtd@lists.infradead.org>; Tue, 24 May 2011 12:13:46 +0200
+From: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Tue, 24 May 2011 12:13:43 +0200
+Subject: nand_do_write_ops issue with writing OOB data
+Message-ID: <E14CAA9D00C5044EACE0C59FC2A1C7F5059A8DF167@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +25,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2011-05-20 at 16:16 -0500, Rick Johnson wrote:
-> We were able to gather more debug this time when the error reoccurred. 
-> I thought I'd post it, just in case something jumps out.  The strange 
-> thing is that 'num' seems to have a value that resembles an address.  In 
-> the example below, num is set to 0xC72EB990.  That's been true every 
-> time we've seen any debug.  Maybe it doesn't mean anything.
-
 Hi,
+=20
+I have recently come across an issue in the NAND generic driver code (Kerne=
+l & U-Boot),
+in particular to do with 'nand_do_write_ops' method in nand_base.c, when wr=
+iting OOB data
+(the problem is noted from at least from 2.6.31 to current latest version o=
+f the linux kernel,
+and from 1.3.4 of U-Boot to current).
 
-1. Your kernel version is 2.6.36, do you use up-to-date UBI/UBIFS from
-   the ubifs-v2.6.36 back-port tree? See here:
-   http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+The issue I observed happened in the following scenario using YAFFS2:
+=20
+1) Scan is performed on NAND to identify bad blocks, and last block in NAND=
+ is marked bad.
+This is the last block read in by the scan, so chip->oob_poi buffer contain=
+s contents of this blocks OOB.
 
-2. Could you please make sure you have UBIFS debugging enabled - just
-   debugging support, no additional messages or checks. Then post UBIFS
-   messages which it prints when you mount it. It prints things like
-   LPT model (c->big_lpt) which I want to know.
+2) YAFFS calls on nand_do_write_ops and provides both ops->oobbuf,
+and ops->mode =3D=3D MTD_OOB_AUTO to write it's tags to OOB area.
+=20
+3) nand_do_write_ops code doesn't initialise chip->oob_poi buffer to all 0x=
+ff because YAFFS provided
+the ops.oobbuf buffer.
 
-3. Please, enable LPT extra checks and run your tests and try to
-   reproduce this issue. To enable LPT extra checks you need to do:
+4) Later in this method nand_fill_oob is called, and drops into the case MT=
+D_OOB_AUTO.
+This skips the first two bad block marker bytes in chip->oob_poi buffer lea=
+ving them as they
+were from the previously read block (in this case a bad block with markers =
+0x00), and
+then it copies over the YAFFS tag data that was provided to be written to t=
+he OOB.
 
-   $ sudo sh -c 'echo 32 > /sys/module/ubifs/parameters/debug_chks'
+Without knowing it YAFFS has now marked the block as bad, but is unaware of=
+ this
+and it's checkpointing data is incorrect. This causes a world of pain for Y=
+AFFS.
 
-   This will make UBIFS to check lprops at each commit and we have a
-   better chance to catch issues.
+Interestingly this issue was seen in 2007 on the following message thread:
+=20
+http://www.aleph1.co.uk/lurker/message/20070702.153055.030a8b94.en.html
 
-Thanks!
+It's a very corner case scenario but shouldn't the chip->oob_poi buffer alw=
+ays be memset to all 0xff
+even when ops.oobbuf is populated just so we don't write data to the OOB wh=
+ich is from a previously
+read block? This scenario has been seen with YAFFS but given this could hap=
+pen for other code that
+uses the OOB area in a similar way using nand_do_write_ops, I believe the p=
+roblem is with MTD NAND
+code and not YAFFS.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Thoughts on this would be greatly appreciated. Apologies if I've rambled a =
+little.
+
+Thanks
+
+Adam=
