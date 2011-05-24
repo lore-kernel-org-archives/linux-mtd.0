@@ -1,25 +1,25 @@
-Received: from mail-ww0-f41.google.com ([74.125.82.41])
+Received: from mail-wy0-f177.google.com ([74.125.82.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOeD5-0003BS-7s
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2011 23:06:51 +0000
-Received: by wwi18 with SMTP id 18so1968239wwi.0
+	id 1QOg7U-0003zS-BW
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 01:09:14 +0000
+Received: by wyb28 with SMTP id 28so5851805wyb.36
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 16:06:49 -0700 (PDT)
-Date: Tue, 24 May 2011 00:06:44 +0100
-From: Jamie Iles <jamie@jamieiles.com>
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH 02/62] mtd: introduce mtd_device_(un)register()
-Message-ID: <20110523230643.GA3727@pulham.picochip.com>
-References: <1306142623-24952-1-git-send-email-jamie@jamieiles.com>
-	<1306142623-24952-3-git-send-email-jamie@jamieiles.com>
-	<BANLkTinmtYksAsCzO8ApGx7k9WNG659zYA@mail.gmail.com>
+	Mon, 23 May 2011 18:09:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BANLkTinmtYksAsCzO8ApGx7k9WNG659zYA@mail.gmail.com>
-Cc: Jamie Iles <jamie@jamieiles.com>, linux-mtd@lists.infradead.org,
-	dwmw2@infradead.org, dedekind1@gmail.com
+In-Reply-To: <Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
+References: <4DB052DB.7040308@parrot.com> <4DB06A6B.2080806@gmail.com>
+	<4DB14439.1050507@parrot.com>
+	<Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
+Date: Mon, 23 May 2011 18:09:10 -0700
+Message-ID: <BANLkTik218nb1bnFL03UA3WYwh+=BQAXCA@mail.gmail.com>
+Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
+From: Brian Norris <computersforpeace@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Cc: Ivan Djelic <ivan.djelic@parrot.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu CASTET <matthieu.castet@parrot.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,28 +29,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 23, 2011 at 06:55:49PM -0400, Mike Frysinger wrote:
-> On Mon, May 23, 2011 at 05:22, Jamie Iles wrote:
-> > To prepare for the removal of add_mtd_device and add_mtd_partitions(),
-> > introduce mtd_device_register().  This will create partitions if they
-> > are supplied or register the whole device if there are no partitions.
-> >
-> > Once all drivers are converted to use mtd_device_register(),
-> > add_mtd_device() and add_mtd_partitions() will be made internal only.
-> 
-> i vaguely recall attempting to submit new functions like this a while
-> ago, but ultimately it was rejected due to the different behavior mtd
-> drivers had wrt partitions and whole devices
+Hi,
 
-I think these cases can still be covered - mtd_device_register() can be 
-called twice - once with partitions and once without so it's just like 
-calling add_mtd_device() then add_mtd_partitions().  The unregistering 
-code deletes all registered partitions then only the master if it has 
-been registered.
+Sorry this thread has been sitting for a long time. I've been very
+busy and haven't had time for MTD stuff.
 
-I don't believe these patches should have changed the behaviour of any 
-of the drivers (other than it's now not possible to select whether the 
-device is partitioned or not by a Kconfig option), but that can be done 
-at runtime through command line partitioning perhaps.
+>From Matthieu:
+"Did you ask some clarification to manufacturers ?"
 
-Jamie
+No, unfortunately, I did not. I didn't realize the "regression" issues
+at the time, so I didn't think to look further than my interpretation
+of the datasheets.
+
+On Tue, Apr 26, 2011 at 12:30 AM, Ricard Wanderlof
+<ricard.wanderlof@axis.com> wrote:
+>
+> On Fri, 22 Apr 2011, Matthieu CASTET wrote:
+>
+>>> So I bet
+>>> your device is actually an x8 device and so the 1st/6th byte pattern is
+>>> correct. I think the fact that this conflicts with your ECC patterns is
+>>> something you must deal with.
+>>
+>> I don't agree, that's a big mtd regression. If you update your kernel on such
+>> flash, you brick it.
+>
+> I agree, even if the behavior may have been incorrect in the past, we should think very carefully about changing this for exactly this reason.
+
+Right, I see how this could be a problem. So for a resolution, I'd ask
+for suggestions on which of the following seems best:
+1) Completely revert the SCANBYTE1AND6 change
+2) Remove the option from nand_get_flash_type(), still allowing
+drivers to enable the scan option themselves
+3) Have nand_get_flash_type() use ECC layout information to decide to
+scan bytes 1+6 or just byte 1 only
+
+Regarding correctness:
+As far as I can tell, no one has found a definitive answer on the
+manufacturer intention, right? I'm now leaning toward the intention
+that software only needs to scan *either* byte 1 *or* byte 6, but I
+don't know for sure.
+
+Thanks,
+Brian
