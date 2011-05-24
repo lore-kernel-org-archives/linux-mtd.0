@@ -1,22 +1,17 @@
-Received: from na3sys009aog107.obsmtp.com ([74.125.149.197])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOsii-0000Sm-Oy
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 14:36:29 +0000
-Received: by mail-bw0-f44.google.com with SMTP id 13so6579414bwz.31
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 May 2011 07:36:26 -0700 (PDT)
+Received: from mail.free-electrons.com ([88.190.12.23])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QOsxV-0000eh-Cq
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 14:51:46 +0000
+Message-ID: <4DDBC64F.5070409@free-electrons.com>
+Date: Tue, 24 May 2011 16:53:03 +0200
+From: David Wagner <david.wagner@free-electrons.com>
 MIME-Version: 1.0
-In-Reply-To: <1305886545.2630.129.camel@localhost>
-References: <1305784599.2630.41.camel@localhost>
-	<1305807291-12774-1-git-send-email-bengardiner@nanometrics.ca>
-	<1305886545.2630.129.camel@localhost>
-Date: Tue, 24 May 2011 10:36:25 -0400
-Message-ID: <BANLkTimW4zv0fuG=GE3vWUZQ++Nsoyo8AA@mail.gmail.com>
-Subject: Re: [PATCH v2] mkfs.ubifs: free-space-fixup: note supported kernels
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-To: dedekind1@gmail.com
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	Linux Embedded <linux-embedded@vger.kernel.org>
+Subject: usefullness of a read-only block UBI interface ?
 Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, "Matthew L. Creech" <mlcreech@gmail.com>
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 20, 2011 at 6:15 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
-> [...]
-> After my changes to Matthew's patch and tweaks to your patch I've found
-> out that it is cleaner to just fold your patch into Mathew's and make
-> one single commit. I've thanked you in the commit message and pushed one
-> single commit instead:
->
-> http://git.infradead.org/mtd-utils.git/commit/04665066ebedb0a31335b525fb5f19df32cb8cfe
->
-> Hopefully you will not mind.
+	Hello linux-mtd, -embedded and -fsdevel,
 
-Not at all. I'm happy to see the free-space-fixup merged.
+There are a lot of actively developed block filesystems out there, more
+than flash filesystems. Read-only block FS can run with great perfs on
+flash supports with the mtdblock interface (eg. SquashFS) but since it
+doesn't handle bad blocks, read will fail when you hit one.
 
-Best Regards,
-Ben Gardiner
+That's why we are considering the pros and cons of having a block
+interface on top of UBI: UBI takes care of bad blocks and filesystems
+above it don't have to worry about them.
 
----
-Nanometrics Inc.
-http://www.nanometrics.ca
+An option could be to implement bad block handling in mtdblock but
+then, there wouldn't be any wear-leveling.
+
+In case of read-only filesystems, wear-leveling is not so important but
+when read-only and read-write filesystems coexist, static wear-leveling
+is important. And I understand that UBI implements static
+wear-leveling. So it would make sense to have a block read-only
+filesystem on top of UBI along with a ubifs read-write filesystem.
+
+
+So, what do you think about that possibility ? Do you see alternative
+approaches or other ways to address the problem of using read-only
+oriented filesystems on flash (w/o reinventing the wheel) ?
+
+
+Regards,
+David.
+
+--
+David Wagner, Free Electrons
+Kernel, drivers, real-time and embedded Linux
+development, consulting, training and support.
+http://free-electrons.com
