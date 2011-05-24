@@ -1,25 +1,16 @@
-Received: from mail-wy0-f177.google.com ([74.125.82.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOg7U-0003zS-BW
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 01:09:14 +0000
-Received: by wyb28 with SMTP id 28so5851805wyb.36
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 23 May 2011 18:09:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
-References: <4DB052DB.7040308@parrot.com> <4DB06A6B.2080806@gmail.com>
-	<4DB14439.1050507@parrot.com>
-	<Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
-Date: Mon, 23 May 2011 18:09:10 -0700
-Message-ID: <BANLkTik218nb1bnFL03UA3WYwh+=BQAXCA@mail.gmail.com>
-Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
-From: Brian Norris <computersforpeace@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: Ivan Djelic <ivan.djelic@parrot.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1305557977-16871-2-git-send-email-marc.zyngier@arm.com>
+References: <1305557977-16871-1-git-send-email-marc.zyngier@arm.com>
+	<1305557977-16871-2-git-send-email-marc.zyngier@arm.com>
+From: Mike Frysinger <vapier.adi@gmail.com>
+Date: Tue, 24 May 2011 00:43:21 -0400
+Message-ID: <BANLkTi=sd-Xhm8yXXbHk_VfMWwdaez_LhQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/8] MTD: Add integrator-flash feature to physmap
+To: Marc Zyngier <marc.zyngier@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +20,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Sorry this thread has been sitting for a long time. I've been very
-busy and haven't had time for MTD stuff.
-
->From Matthieu:
-"Did you ask some clarification to manufacturers ?"
-
-No, unfortunately, I did not. I didn't realize the "regression" issues
-at the time, so I didn't think to look further than my interpretation
-of the datasheets.
-
-On Tue, Apr 26, 2011 at 12:30 AM, Ricard Wanderlof
-<ricard.wanderlof@axis.com> wrote:
+On Mon, May 16, 2011 at 10:59, Marc Zyngier wrote:
+> --- a/include/linux/mtd/physmap.h
+> +++ b/include/linux/mtd/physmap.h
+> @@ -22,6 +22,8 @@ struct map_info;
 >
-> On Fri, 22 Apr 2011, Matthieu CASTET wrote:
->
->>> So I bet
->>> your device is actually an x8 device and so the 1st/6th byte pattern is
->>> correct. I think the fact that this conflicts with your ECC patterns is
->>> something you must deal with.
->>
->> I don't agree, that's a big mtd regression. If you update your kernel on such
->> flash, you brick it.
->
-> I agree, even if the behavior may have been incorrect in the past, we should think very carefully about changing this for exactly this reason.
+> =C2=A0struct physmap_flash_data {
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0width;
+> + =C2=A0 =C2=A0 =C2=A0 int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 (*init)(struct platform_device *);
+> + =C2=A0 =C2=A0 =C2=A0 void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0(*exit)(struct platform_device *);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0void =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
+ =C2=A0 =C2=A0 =C2=A0 =C2=A0(*set_vpp)(struct map_info *, int);
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0nr_parts;
+> =C2=A0 =C2=A0 =C2=A0 =C2=A0unsigned int =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0pfow_base;
 
-Right, I see how this could be a problem. So for a resolution, I'd ask
-for suggestions on which of the following seems best:
-1) Completely revert the SCANBYTE1AND6 change
-2) Remove the option from nand_get_flash_type(), still allowing
-drivers to enable the scan option themselves
-3) Have nand_get_flash_type() use ECC layout information to decide to
-scan bytes 1+6 or just byte 1 only
+you use the platform_device structure but never include any header for
+it.  please add "struct platform_device;" to the top of this file
+after the #includes.
 
-Regarding correctness:
-As far as I can tell, no one has found a definitive answer on the
-manufacturer intention, right? I'm now leaning toward the intention
-that software only needs to scan *either* byte 1 *or* byte 6, but I
-don't know for sure.
-
-Thanks,
-Brian
+include/linux/mtd/physmap.h:25: warning: =E2=80=98struct platform_device=E2=
+=80=99
+declared inside parameter list
+include/linux/mtd/physmap.h:25: warning: its scope is only this
+definition or declaration, which is probably not what you want
+include/linux/mtd/physmap.h:26: warning: =E2=80=98struct platform_device=E2=
+=80=99
+declared inside parameter list
+include/linux/mtd/physmap.h:27: warning: =E2=80=98struct platform_device=E2=
+=80=99
+declared inside parameter list
+-mike
