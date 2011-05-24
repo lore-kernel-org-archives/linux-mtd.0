@@ -1,20 +1,22 @@
-Received: from hrndva-omtalb.mail.rr.com ([71.74.56.125])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QOxVZ-0002vH-KF
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 19:43:14 +0000
-Message-ID: <4DDC08EC.6040002@wi.rr.com>
-Date: Tue, 24 May 2011 14:37:16 -0500
-From: Rick Johnson <rick22@wi.rr.com>
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QOyEZ-0003RW-IX
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2011 20:29:44 +0000
+Received: by wwb39 with SMTP id 39so5730507wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 May 2011 13:29:41 -0700 (PDT)
 MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: read_pnode: error -22 reading pnode at XX:YYYYY
-References: <4DADF9E6.9010709@wi.rr.com>	 <1303392001.2757.16.camel@localhost>
-	<4DC31183.8060807@wi.rr.com>	 <1304706750.7222.95.camel@localhost>
-	<4DD6DA14.9050402@wi.rr.com> <1306226504.2785.68.camel@localhost>
-In-Reply-To: <1306226504.2785.68.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <E14CAA9D00C5044EACE0C59FC2A1C7F5059A8DF29E@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+References: <E14CAA9D00C5044EACE0C59FC2A1C7F5059A8DF29E@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+From: Vimal Singh <vimal.newwork@gmail.com>
+Date: Wed, 25 May 2011 01:59:21 +0530
+Message-ID: <BANLkTindYXPskzatCLXWt5co3VZXWVJ=7A@mail.gmail.com>
+Subject: Re: [PATCH] nand: nand_base: Always initialise oob_poi before writing
+	OOB data
+To: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,86 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> 
-> 1. Your kernel version is 2.6.36, do you use up-to-date UBI/UBIFS from
->    the ubifs-v2.6.36 back-port tree? See here:
->    http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+On Tue, May 24, 2011 at 7:02 PM, THOMSON, Adam (Adam)
+<adam.thomson@alcatel-lucent.com> wrote:
+> In nand_do_write_ops() code it is possible for a caller to provide
+> ops.oobbuf populated and ops.mode =3D=3D MTD_OOB_AUTO, which currently
+> means that the chip->oob_poi buffer isn't initialised to all 0xFF.
+> The nand_fill_oob() method then carries out the task of copying
+> the provided OOB data to oob_poi, but with MTD_OOB_AUTO it skips
+> areas marked as unavailable by the layout struct, including the
+> bad block marker bytes.
+>
+> An example of this causing issues is when the last OOB data read
+> was from the start of a bad block where the markers are not 0xFF,
+> and the caller wishes to write new OOB data at the beginning of
+> another block. In this scenario the caller would provide OOB data,
+> but nand_fill_oob() would skip the bad block marker bytes in
+> oob_poi before copying the OOB data provided by the caller.
+> This means that when the OOB data is written back to NAND,
+> the block is inadvertently marked as bad without the caller knowing.
+> This has been witnessed when using YAFFS2 where tags are stored
+> in the OOB.
+>
+> This patch changes the code so that oob_poi is always initialised
+> to 0xFF to make sure no left over data is inadvertently written
+> back to OOB data.
+>
+> Signed-off-by: Adam Thomson <adam.thomson@alcatel-lucent.com>
+> ---
+> =A0drivers/mtd/nand/nand_base.c | =A0 =A06 +++---
+> =A01 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+> index 8c21b89..cb1dec1 100644
+> --- a/drivers/mtd/nand/nand_base.c
+> +++ b/drivers/mtd/nand/nand_base.c
+> @@ -1843,9 +1843,9 @@ static int nand_do_write_ops(struct mtd_info *mtd, =
+loff_t to,
+> =A0 =A0 =A0 =A0 =A0 =A0(chip->pagebuf << chip->page_shift) < (to + ops->l=
+en))
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0chip->pagebuf =3D -1;
+>
+> - =A0 =A0 =A0 /* If we're not given explicit OOB data, let it be 0xFF */
+> - =A0 =A0 =A0 if (likely(!oob))
+> - =A0 =A0 =A0 =A0 =A0 =A0 =A0 memset(chip->oob_poi, 0xff, mtd->oobsize);
+> + =A0 =A0 =A0 /* Initialise to all 0xFF, to avoid the possibility of
+> + =A0 =A0 =A0 =A0 =A0left over OOB data from a previous OOB read. */
 
-We are not up to date.  I'll look into getting us there.  Thanks!
-
-In the meantime, I have the debug info you were looking for.
-
-> 2. Could you please make sure you have UBIFS debugging enabled - just
->    debugging support, no additional messages or checks. Then post UBIFS
->    messages which it prints when you mount it. It prints things like
->    LPT model (c->big_lpt) which I want to know.
-
-UBIFS DBG (pid 1): mount_ubifs: compiled on:         May 13 2011 at 14:22:48
-UBIFS DBG (pid 1): mount_ubifs: min. I/O unit size:  2048 bytes
-UBIFS DBG (pid 1): mount_ubifs: LEB size:            129024 bytes (126 KiB)
-UBIFS DBG (pid 1): mount_ubifs: data journal heads:  1
-UBIFS DBG (pid 1): mount_ubifs: UUID: 
-2A1E7A10-8791-42F1-9BA3-F13692BF16E2
-UBIFS DBG (pid 1): mount_ubifs: big_lpt              1
-UBIFS DBG (pid 1): mount_ubifs: log LEBs:            5 (3 - 7)
-UBIFS DBG (pid 1): mount_ubifs: LPT area LEBs:       13 (8 - 20)
-UBIFS DBG (pid 1): mount_ubifs: orphan area LEBs:    1 (21 - 21)
-UBIFS DBG (pid 1): mount_ubifs: main area LEBs:      8041 (22 - 8062)
-UBIFS DBG (pid 1): mount_ubifs: index LEBs:          2
-UBIFS DBG (pid 1): mount_ubifs: total index bytes:   165544 (161 KiB, 0 MiB)
-UBIFS DBG (pid 1): mount_ubifs: key hash type:       0
-UBIFS DBG (pid 1): mount_ubifs: tree fanout:         8
-UBIFS DBG (pid 1): mount_ubifs: reserved GC LEB:     7709
-UBIFS DBG (pid 1): mount_ubifs: first main LEB:      22
-UBIFS DBG (pid 1): mount_ubifs: max. znode size      240
-UBIFS DBG (pid 1): mount_ubifs: max. index node size 192
-UBIFS DBG (pid 1): mount_ubifs: node sizes:          data 48, inode 160, 
-dentry 56
-UBIFS DBG (pid 1): mount_ubifs: node sizes:          trun 56, sb 4096, 
-master 512
-UBIFS DBG (pid 1): mount_ubifs: node sizes:          ref 64, cmt. start 
-32, orph 32
-UBIFS DBG (pid 1): mount_ubifs: max. node sizes:     data 4144, inode 
-4256 dentry 312
-UBIFS DBG (pid 1): mount_ubifs: dead watermark:      2048
-UBIFS DBG (pid 1): mount_ubifs: dark watermark:      6144
-UBIFS DBG (pid 1): mount_ubifs: LEB overhead:        560
-UBIFS DBG (pid 1): mount_ubifs: max. dark space:     49403904 (48246 
-KiB, 47 MiB)
-UBIFS DBG (pid 1): mount_ubifs: maximum bud bytes:   8388608 (8192 KiB, 
-8 MiB)
-UBIFS DBG (pid 1): mount_ubifs: BG commit bud bytes: 6815744 (6656 KiB, 
-6 MiB)
-UBIFS DBG (pid 1): mount_ubifs: current bud bytes    139264 (136 KiB, 0 MiB)
-UBIFS DBG (pid 1): mount_ubifs: max. seq. number:    7823
-UBIFS DBG (pid 1): mount_ubifs: commit number:       11
+Please correct the multi-line comment style. Like this:
+        /*
+         * Initialise to all 0xFF, to avoid the possibility of
+         * left over OOB data from a previous OOB read.
+         */
 
 
-> 3. Please, enable LPT extra checks and run your tests and try to
->    reproduce this issue. To enable LPT extra checks you need to do:
-> 
->    $ sudo sh -c 'echo 32 > /sys/module/ubifs/parameters/debug_chks'
-> 
->    This will make UBIFS to check lprops at each commit and we have a
->    better chance to catch issues.
-> 
+> + =A0 =A0 =A0 memset(chip->oob_poi, 0xff, mtd->oobsize);
 
-We were able to make it fail before limiting the checks to just the LPT 
-area.  I'll try it again with your above change.
 
-UBIFS error (pid 29): dbg_chk_pnode: pnode num -952997232 expected 1803 
-parent num 6196 iip 3
-UBIFS error (pid 29): do_commit: commit failed, error -22
-UBIFS warning (pid 29): ubifs_ro_mode: switched to read-only mode, error -22
-Call Trace:
-[c7a19ec0] [c00085b8] show_stack+0x7c/0x194 (unreliable)
-[c7a19f00] [c00f2608] ubifs_ro_mode+0x6c/0x7c
-[c7a19f10] [c01000bc] do_commit+0x5fc/0x620
-[c7a19f90] [c0100468] ubifs_bg_thread+0xf4/0x154
-[c7a19fb0] [c0037cec] kthread+0x80/0x84
-[c7a19ff0] [c000ef84] kernel_thread+0x4c/0x68
-
-> Thanks!
-> 
-Thank you!
+--=20
+Regards,
+Vimal Singh
