@@ -1,16 +1,22 @@
-Received: from sargas.telkomsa.net ([196.25.211.69])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QP8gi-0007fR-9y
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 07:39:30 +0000
-Date: Wed, 25 May 2011 09:39:23 +0200 (SAST)
-From: Rev Father Goodluck Augustine  <ernstt@telkomsa.net>
-Message-ID: <285644337.2282067.1306309163686.JavaMail.root@zimbra3-vm1.telkomsa.net>
-Subject: Claim your Over Due Compensation Funds.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from smail3.alcatel.fr ([62.23.212.56])
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QPBIS-0000UJ-9p
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 10:26:37 +0000
+Received: from FRMRSSXCHHUB01.dc-m.alcatel-lucent.com
+	(FRMRSSXCHHUB01.dc-m.alcatel-lucent.com [135.120.45.61])
+	by smail3.alcatel.fr (8.14.3/8.14.3/ICT) with ESMTP id p4PAMmtp017951
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <linux-mtd@lists.infradead.org>; Wed, 25 May 2011 12:26:28 +0200
+From: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Date: Wed, 25 May 2011 12:25:57 +0200
+Subject: [PATCH v2] nand: nand_base: Always initialise oob_poi before
+	writing OOB data
+Message-ID: <E14CAA9D00C5044EACE0C59FC2A1C7F5059A8DF591@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+Content-Language: en-US
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-To: undisclosed-recipients:;
-Reply-To: Rev Father Goodluck Augustine <revgoodluck@9.cn>
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +26,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Claim your Over Due Compensation Funds.
+In nand_do_write_ops() code it is possible for a caller to provide
+ops.oobbuf populated and ops.mode =3D=3D MTD_OOB_AUTO, which currently
+means that the chip->oob_poi buffer isn't initialised to all 0xFF.
+The nand_fill_oob() method then carries out the task of copying
+the provided OOB data to oob_poi, but with MTD_OOB_AUTO it skips
+areas marked as unavailable by the layout struct, including the
+bad block marker bytes.
 
-Attention: Sir/Madam,
+An example of this causing issues is when the last OOB data read
+was from the start of a bad block where the markers are not 0xFF,
+and the caller wishes to write new OOB data at the beginning of
+another block. In this scenario the caller would provide OOB data,
+but nand_fill_oob() would skip the bad block marker bytes in
+oob_poi before copying the OOB data provided by the caller.
+This means that when the OOB data is written back to NAND,
+the block is inadvertently marked as bad without the caller knowing.
+This has been witnessed when using YAFFS2 where tags are stored
+in the OOB.
 
-I am Rev Father A. Goodluck by name, a diplomat by profession, this is to i=
-nform you about  your compensation Funds of ($3.5M) that has been brought h=
-ere in Douglas  Charlotte Int'l Airport USA From United States Secretary of=
- State, Mrs. HILLARY  RODHAM CLINTON OFFICE, which is to be delivered to yo=
-u in your house address, please you are hereby informed that the consignmen=
-t will be delivered to your address, so all I require from you is your full=
- address of where the delivery will be made to you.
+This patch changes the code so that oob_poi is always initialised
+to 0xFF to make sure no left over data is inadvertently written
+back to OOB data.
 
-I am awaiting your urgent response along with your information=E2=80=99s:
+Signed-off-by: Adam Thomson <adam.thomson@alcatel-lucent.com>
+---
+ drivers/mtd/nand/nand_base.c |    8 +++++---
+ 1 files changed, 5 insertions(+), 3 deletions(-)
 
-1. Your house address
-2. Your Full name
-3. Phone Number,
-4.. Age
-5. Male/Female
-6. Occupation
-7) A copy of your ID
-
-To have me conclude delivery of your compensation Funds of ($3.5M) to you
-
-Sincerely,
-
-revfather1@9.cn
-Rev Father A.Goodluck.
-+1 845 290 8253
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 8c21b89..6bc7212 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -1843,9 +1843,11 @@ static int nand_do_write_ops(struct mtd_info *mtd, l=
+off_t to,
+ 	    (chip->pagebuf << chip->page_shift) < (to + ops->len))
+ 		chip->pagebuf =3D -1;
+=20
+-	/* If we're not given explicit OOB data, let it be 0xFF */
+-	if (likely(!oob))
+-		memset(chip->oob_poi, 0xff, mtd->oobsize);
++	/*
++	 * Initialise to all 0xFF, to avoid the possibility of
++	 * left over OOB data from a previous OOB read.
++	 */
++	memset(chip->oob_poi, 0xff, mtd->oobsize);
+=20
+ 	while(1) {
+ 		int bytes =3D mtd->writesize;
+--=20
+1.7.5.2=
