@@ -1,25 +1,27 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QPIci-0005PF-ND
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 18:16:01 +0000
-Received: by wwb39 with SMTP id 39so6506763wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 May 2011 11:15:59 -0700 (PDT)
+Received: from co202.xi-lite.net ([149.6.83.202])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QPIsg-0005Vs-1E
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 18:32:30 +0000
+Date: Wed, 25 May 2011 20:31:54 +0200
+From: Ivan Djelic <ivan.djelic@parrot.com>
+To: Atlant Schmidt <aschmidt@dekaresearch.com>
+Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
+Message-ID: <20110525183154.GA20866@parrot.com>
+References: <4DB052DB.7040308@parrot.com> <4DB06A6B.2080806@gmail.com>
+	<4DB14439.1050507@parrot.com>
+	<Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
+	<BANLkTik218nb1bnFL03UA3WYwh+=BQAXCA@mail.gmail.com>
+	<20110525164107.GA16801@parrot.com>
+	<0A40042D85E7C84DB443060EC44B3FD32A69415800@dekaexchange07.deka.local>
 MIME-Version: 1.0
-In-Reply-To: <1303459329.2757.40.camel@localhost>
-References: <1301903526.2760.38.camel@localhost>
-	<1303283589-14415-1-git-send-email-computersforpeace@gmail.com>
-	<1303459329.2757.40.camel@localhost>
-Date: Wed, 25 May 2011 11:15:58 -0700
-Message-ID: <BANLkTi=61rg=ZLrDpWSDrz1_gfuQAgCzRw@mail.gmail.com>
-Subject: Re: [RFC] mtd: nand: separate chip options / bbt_options
-From: Brian Norris <computersforpeace@gmail.com>
-To: dedekind1@gmail.com
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD32A69415800@dekaexchange07.deka.local>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	Brian Norris <computersforpeace@gmail.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Matthieu Castet <matthieu.castet@parrot.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,37 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, May 25, 2011 at 07:04:40PM +0100, Atlant Schmidt wrote:
+> Ivan:
+> 
+> > <digression> ...
+> > And recent Micron devices do not store markers in flash; they just
+> > return 0x00 for any byte read in a bad block (instead of the real
+> > data), using an internal bad block table.
+> > </digression>
+> 
+>   Does this mean that it is impossible to mark additional
+>   bad blocks in these devices as blocks go hard-bad during
+>   use? Or do commands exist to extend the internal bad
+>   block table? (And do our MTD drivers know how to do that?)
+> 
 
-Again, sorry for the wait time on this. I've been busy. Now I'm
-addressing most of these topics and will send a patch soon. I haven't
-completely answered the following question, though.
+Note that the usual bad block detection still works on those Micron devices.
+They just do not store markers in flash.
 
-On Fri, Apr 22, 2011 at 1:02 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
-te:
-> On Wed, 2011-04-20 at 00:13 -0700, Brian Norris wrote:
->> Other things to consider (not yet implemented):
->> * Is it safe to move NAND_CREATE_EMPTY_BBT to bbm.h and require it to be
->> =A0 put in bbt_options? It seems not to be used by any in-kernel drivers
->> =A0 so it's only likely to mess with independent drivers...
->
-> What exactly this option mean and how could it be used?
+You can still mark a block gone bad either by writing your own marker into the
+block or (better) in a separate BBT. The internal Micron table is hard-wired
+and only used to shortcut access to factory bad blocks AFAIK.
 
-I'm not entirely sure how it would be used (perhaps ask Sebastian, the
-one who introduced it in commit 453281a9), but I have an idea what it
-means.
+Regards,
 
-It seems that (when combined with NAND_BBT_CREATE) this flag causes
-nand_scan_bbt() / check_create() to skip the scanning portion of
-creating a bad block table, effectively leaving an empty bad block
-table. According to the commit message:
-    it will create an empty BBT table without considering vendor's BBT
-    information. Vendor's information may be unavailable if the NAND
-    controller has a different DATA & OOB layout or this information may be
-    allready purged.
-
-I'm prepared to simply move this over to bbm.h (next to
-NAND_BBT_CREATE) if it's worth saving. Otherwise, it can just as
-easily be dumped.
-
-Brian
+Ivan
