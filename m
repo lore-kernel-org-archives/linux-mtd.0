@@ -1,22 +1,26 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QPH9U-0004D4-Fz
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 16:41:45 +0000
-Date: Wed, 25 May 2011 18:41:07 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
-Message-ID: <20110525164107.GA16801@parrot.com>
+Received: from mail.dekaresearch.com ([208.65.175.196]
+	helo=dekaexchange07.deka.local)
+	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QPIRm-0005Hj-OX
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 18:04:43 +0000
+From: Atlant Schmidt <aschmidt@dekaresearch.com>
+To: 'Ivan Djelic' <ivan.djelic@parrot.com>, Brian Norris
+	<computersforpeace@gmail.com>
+Date: Wed, 25 May 2011 14:04:40 -0400
+Subject: RE: dangerous NAND_BBT_SCANBYTE1AND6
+Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A69415800@dekaexchange07.deka.local>
 References: <4DB052DB.7040308@parrot.com> <4DB06A6B.2080806@gmail.com>
 	<4DB14439.1050507@parrot.com>
 	<Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
 	<BANLkTik218nb1bnFL03UA3WYwh+=BQAXCA@mail.gmail.com>
-MIME-Version: 1.0
+	<20110525164107.GA16801@parrot.com>
+In-Reply-To: <20110525164107.GA16801@parrot.com>
+Content-Language: en-US
 Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <BANLkTik218nb1bnFL03UA3WYwh+=BQAXCA@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Ricard Wanderlof <ricard.wanderlof@axis.com>,
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
 	Matthieu Castet <matthieu.castet@parrot.com>,
 	Artem Bityutskiy <dedekind1@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,17 +32,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Ivan:
+
+> <digression> ...
+> And recent Micron devices do not store markers in flash; they just
+> return 0x00 for any byte read in a bad block (instead of the real
+> data), using an internal bad block table.
+> </digression>
+
+  Does this mean that it is impossible to mark additional
+  bad blocks in these devices as blocks go hard-bad during
+  use? Or do commands exist to extend the internal bad
+  block table? (And do our MTD drivers know how to do that?)
+
+                            Atlant
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
+.infradead.org] On Behalf Of Ivan Djelic
+Sent: Wednesday, May 25, 2011 12:41
+To: Brian Norris
+Cc: linux-mtd@lists.infradead.org; Ricard Wanderlof; Matthieu Castet; Artem=
+ Bityutskiy
+Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
+
 On Tue, May 24, 2011 at 02:09:10AM +0100, Brian Norris wrote:
 > >>> So I bet
-> >>> your device is actually an x8 device and so the 1st/6th byte pattern is
-> >>> correct. I think the fact that this conflicts with your ECC patterns is
+> >>> your device is actually an x8 device and so the 1st/6th byte pattern =
+is
+> >>> correct. I think the fact that this conflicts with your ECC patterns =
+is
 > >>> something you must deal with.
 > >>
-> >> I don't agree, that's a big mtd regression. If you update your kernel on such
+> >> I don't agree, that's a big mtd regression. If you update your kernel =
+on such
 > >> flash, you brick it.
 > >
-> > I agree, even if the behavior may have been incorrect in the past, we should think very carefully about changing this for exactly this reason.
-> 
+> > I agree, even if the behavior may have been incorrect in the past, we s=
+hould think very carefully about changing this for exactly this reason.
+>
 > Right, I see how this could be a problem. So for a resolution, I'd ask
 > for suggestions on which of the following seems best:
 > 1) Completely revert the SCANBYTE1AND6 change
@@ -46,7 +78,7 @@ On Tue, May 24, 2011 at 02:09:10AM +0100, Brian Norris wrote:
 > drivers to enable the scan option themselves
 > 3) Have nand_get_flash_type() use ECC layout information to decide to
 > scan bytes 1+6 or just byte 1 only
-> 
+>
 > Regarding correctness:
 > As far as I can tell, no one has found a definitive answer on the
 > manufacturer intention, right? I'm now leaning toward the intention
@@ -68,33 +100,59 @@ Here is a relevant excerpt from a 2004 STM application note (AN1819):
 
 If we check only the 1st byte, we just need to make sure that there is no
 possibility of having a good erased block with:
-- 1st byte == bad block marker (usually 0x00)
+- 1st byte =3D=3D bad block marker (usually 0x00)
 and
-- 6th byte == 0xff
+- 6th byte =3D=3D 0xff
 
-I believe this is unlikely; or rather, it _was_ totally unlikely in 2004 when
+I believe this is unlikely; or rather, it _was_ totally unlikely in 2004 wh=
+en
 the application note was written.
 
-Therefore, I think we can safely use only the 1st marker byte to detect factory
-bad blocks in that case (STM large page); the manufacturer simply guarantees
-that both markers are written when a factory bad block is marked. It does not
+Therefore, I think we can safely use only the 1st marker byte to detect fac=
+tory
+bad blocks in that case (STM large page); the manufacturer simply guarantee=
+s
+that both markers are written when a factory bad block is marked. It does n=
+ot
 require you to check both bytes.
 
 <digression>
-The above note is probably not applicable to recent devices. Because bitflips
-are much more likely to appear, saying that a specific byte marks a bad block
-if it "does not contain FFh" it not realistic. ONFI 2.2 clarifies the issue and
+The above note is probably not applicable to recent devices. Because bitfli=
+ps
+are much more likely to appear, saying that a specific byte marks a bad blo=
+ck
+if it "does not contain FFh" it not realistic. ONFI 2.2 clarifies the issue=
+ and
 states that a marker is 0x00, not just a byte that "does not contain FFh".
-And recent Micron devices do not store markers in flash; they just return 0x00
-for any byte read in a bad block (instead of the real data), using an internal
+And recent Micron devices do not store markers in flash; they just return 0=
+x00
+for any byte read in a bad block (instead of the real data), using an inter=
+nal
 bad block table.
 </digression>
 
 I suggest we revert the SCANBYTE1AND6 change, because:
 - it breaks existing ecc layouts
-- factory bad blocks in relevant STM nands can be detected without checking the
+- factory bad blocks in relevant STM nands can be detected without checking=
+ the
   6th byte
 
 Best Regards,
 
 Ivan
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+This e-mail and the information, including any attachments, it contains are=
+ intended to be a confidential communication only to the person or entity t=
+o whom it is addressed and may contain information that is privileged. If t=
+he reader of this message is not the intended recipient, you are hereby not=
+ified that any dissemination, distribution or copying of this communication=
+ is strictly prohibited. If you have received this communication in error, =
+please immediately notify the sender and destroy the original message.
+
+Thank you.
+
+Please consider the environment before printing this email.
