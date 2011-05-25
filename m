@@ -1,24 +1,16 @@
-Received: from mail-ey0-f177.google.com ([209.85.215.177])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QP8SY-0007XP-CB
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 07:24:51 +0000
-Received: by eyh6 with SMTP id 6so2895014eyh.36
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 May 2011 00:24:48 -0700 (PDT)
-Subject: Re: [PATCH][upstream] NAND Machine support for Integrated Flash
-	Controller
-From: Artem Bityutskiy <dedekind1@gmail.com>
-To: Dipen Dudhat <Dipen.Dudhat@freescale.com>
-In-Reply-To: <1306296011-11348-1-git-send-email-Dipen.Dudhat@freescale.com>
-References: <1306296011-11348-1-git-send-email-Dipen.Dudhat@freescale.com>
-Content-Type: text/plain; charset="UTF-8"
-Date: Wed, 25 May 2011 10:20:22 +0300
-Message-ID: <1306308022.2785.129.camel@localhost>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: scottwood@freescale.com, linux-mtd@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org
-Reply-To: dedekind1@gmail.com
+Received: from sargas.telkomsa.net ([196.25.211.69])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QP8gi-0007fR-9y
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 07:39:30 +0000
+Date: Wed, 25 May 2011 09:39:23 +0200 (SAST)
+From: Rev Father Goodluck Augustine  <ernstt@telkomsa.net>
+Message-ID: <285644337.2282067.1306309163686.JavaMail.root@zimbra3-vm1.telkomsa.net>
+Subject: Claim your Over Due Compensation Funds.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+To: undisclosed-recipients:;
+Reply-To: Rev Father Goodluck Augustine <revgoodluck@9.cn>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,36 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Claim your Over Due Compensation Funds.
 
-On Wed, 2011-05-25 at 09:30 +0530, Dipen Dudhat wrote:
-> +	ret = nand_scan_tail(&priv->mtd);
-> +	if (ret)
-> +		goto err;
-> +
-> +#ifdef CONFIG_MTD_PARTITIONS
+Attention: Sir/Madam,
 
-We've just removed this macro, it should be merged upstream soon, but it
-is in the mtd tree so far.
+I am Rev Father A. Goodluck by name, a diplomat by profession, this is to i=
+nform you about  your compensation Funds of ($3.5M) that has been brought h=
+ere in Douglas  Charlotte Int'l Airport USA From United States Secretary of=
+ State, Mrs. HILLARY  RODHAM CLINTON OFFICE, which is to be delivered to yo=
+u in your house address, please you are hereby informed that the consignmen=
+t will be delivered to your address, so all I require from you is your full=
+ address of where the delivery will be made to you.
 
-> +	/* First look for RedBoot table or partitions on the command
-> +	 * line, these take precedence over device tree information */
-> +	ret = parse_mtd_partitions(&priv->mtd, part_probe_types, &parts, 0);
-> +	if (ret < 0)
-> +		goto err;
+I am awaiting your urgent response along with your information=E2=80=99s:
 
-> +
-> +#ifdef CONFIG_MTD_OF_PARTS
-> +	if (ret == 0) {
-> +		ret = of_mtd_parse_partitions(priv->dev, node, &parts);
-> +		if (ret < 0)
-> +			goto err;
-> +	}
-> +#endif
+1. Your house address
+2. Your Full name
+3. Phone Number,
+4.. Age
+5. Male/Female
+6. Occupation
+7) A copy of your ID
 
-You should invent something to make sure you do not need #ifdef
-CONFIG_MTD_OF_PARTS.
+To have me conclude delivery of your compensation Funds of ($3.5M) to you
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+Sincerely,
+
+revfather1@9.cn
+Rev Father A.Goodluck.
++1 845 290 8253
