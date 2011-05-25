@@ -1,27 +1,16 @@
-Received: from co202.xi-lite.net ([149.6.83.202])
-	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QPIsg-0005Vs-1E
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 18:32:30 +0000
-Date: Wed, 25 May 2011 20:31:54 +0200
-From: Ivan Djelic <ivan.djelic@parrot.com>
-To: Atlant Schmidt <aschmidt@dekaresearch.com>
-Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
-Message-ID: <20110525183154.GA20866@parrot.com>
-References: <4DB052DB.7040308@parrot.com> <4DB06A6B.2080806@gmail.com>
-	<4DB14439.1050507@parrot.com>
-	<Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
-	<BANLkTik218nb1bnFL03UA3WYwh+=BQAXCA@mail.gmail.com>
-	<20110525164107.GA16801@parrot.com>
-	<0A40042D85E7C84DB443060EC44B3FD32A69415800@dekaexchange07.deka.local>
+Received: from vfgmail.cozen.com ([67.216.77.213] helo=vfgis502.cozen.com)
+	by casper.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QPMRJ-0005Rc-DI
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 22:20:29 +0000
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <0A40042D85E7C84DB443060EC44B3FD32A69415800@dekaexchange07.deka.local>
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	Brian Norris <computersforpeace@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu Castet <matthieu.castet@parrot.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: HELLO
+Date: Wed, 25 May 2011 17:48:24 -0400
+Message-ID: <511D23E770A55A4F96093868D077193439FAAA@phlex56.cozen.com>
+From: "Wenzel, Abby M." <AWenzel@cozen.com>
+To: Undisclosed recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,28 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 25, 2011 at 07:04:40PM +0100, Atlant Schmidt wrote:
-> Ivan:
-> 
-> > <digression> ...
-> > And recent Micron devices do not store markers in flash; they just
-> > return 0x00 for any byte read in a bad block (instead of the real
-> > data), using an internal bad block table.
-> > </digression>
-> 
->   Does this mean that it is impossible to mark additional
->   bad blocks in these devices as blocks go hard-bad during
->   use? Or do commands exist to extend the internal bad
->   block table? (And do our MTD drivers know how to do that?)
-> 
-
-Note that the usual bad block detection still works on those Micron devices.
-They just do not store markers in flash.
-
-You can still mark a block gone bad either by writing your own marker into the
-block or (better) in a separate BBT. The internal Micron table is hard-wired
-and only used to shortcut access to factory bad blocks AFAIK.
-
-Regards,
-
-Ivan
+I am Mrs. Shanna Arthur, a Christian. I have made you a beneficiary of my f=
+unds , Please contact me for more details. Private contact email: Shannaart=
+hur02@msn.com
+________________________________
+Notice: To comply with certain U.S. Treasury regulations, we inform you tha=
+t, unless expressly stated otherwise, any U.S. federal tax advice contained=
+ in this e-mail, including attachments, is not intended or written to be us=
+ed, and cannot be used, by any person for the purpose of avoiding any penal=
+ties that may be imposed by the Internal Revenue Service.
+________________________________
+Notice: This communication, including attachments, may contain information =
+that is confidential and protected by the attorney/client or other privileg=
+es. It constitutes non-public information intended to be conveyed only to t=
+he designated recipient(s). If the reader or recipient of this communicatio=
+n is not the intended recipient, an employee or agent of the intended recip=
+ient who is responsible for delivering it to the intended recipient, or you=
+ believe that you have received this communication in error, please notify =
+the sender immediately by return e-mail and promptly delete this e-mail, in=
+cluding attachments without reading or saving them in any manner. The unaut=
+horized use, dissemination, distribution, or reproduction of this e-mail, i=
+ncluding attachments, is prohibited and may be unlawful. Receipt by anyone =
+other than the intended recipient(s) is not a waiver of any attorney/client=
+ or other privilege.
