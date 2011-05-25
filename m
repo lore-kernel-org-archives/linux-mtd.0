@@ -1,28 +1,25 @@
-Received: from mail.dekaresearch.com ([208.65.175.196]
-	helo=dekaexchange07.deka.local)
+Received: from mail-ww0-f49.google.com ([74.125.82.49])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QPIRm-0005Hj-OX
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 18:04:43 +0000
-From: Atlant Schmidt <aschmidt@dekaresearch.com>
-To: 'Ivan Djelic' <ivan.djelic@parrot.com>, Brian Norris
-	<computersforpeace@gmail.com>
-Date: Wed, 25 May 2011 14:04:40 -0400
-Subject: RE: dangerous NAND_BBT_SCANBYTE1AND6
-Message-ID: <0A40042D85E7C84DB443060EC44B3FD32A69415800@dekaexchange07.deka.local>
-References: <4DB052DB.7040308@parrot.com> <4DB06A6B.2080806@gmail.com>
-	<4DB14439.1050507@parrot.com>
-	<Pine.LNX.4.64.1104260929150.30071@lnxricardw.se.axis.com>
-	<BANLkTik218nb1bnFL03UA3WYwh+=BQAXCA@mail.gmail.com>
-	<20110525164107.GA16801@parrot.com>
-In-Reply-To: <20110525164107.GA16801@parrot.com>
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1QPIci-0005PF-ND
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2011 18:16:01 +0000
+Received: by wwb39 with SMTP id 39so6506763wwb.18
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 May 2011 11:15:59 -0700 (PDT)
 MIME-Version: 1.0
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Matthieu Castet <matthieu.castet@parrot.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
+In-Reply-To: <1303459329.2757.40.camel@localhost>
+References: <1301903526.2760.38.camel@localhost>
+	<1303283589-14415-1-git-send-email-computersforpeace@gmail.com>
+	<1303459329.2757.40.camel@localhost>
+Date: Wed, 25 May 2011 11:15:58 -0700
+Message-ID: <BANLkTi=61rg=ZLrDpWSDrz1_gfuQAgCzRw@mail.gmail.com>
+Subject: Re: [RFC] mtd: nand: separate chip options / bbt_options
+From: Brian Norris <computersforpeace@gmail.com>
+To: dedekind1@gmail.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Kevin Cernekee <cernekee@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,127 +29,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ivan:
+Hi,
 
-> <digression> ...
-> And recent Micron devices do not store markers in flash; they just
-> return 0x00 for any byte read in a bad block (instead of the real
-> data), using an internal bad block table.
-> </digression>
+Again, sorry for the wait time on this. I've been busy. Now I'm
+addressing most of these topics and will send a patch soon. I haven't
+completely answered the following question, though.
 
-  Does this mean that it is impossible to mark additional
-  bad blocks in these devices as blocks go hard-bad during
-  use? Or do commands exist to extend the internal bad
-  block table? (And do our MTD drivers know how to do that?)
-
-                            Atlant
-
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists=
-.infradead.org] On Behalf Of Ivan Djelic
-Sent: Wednesday, May 25, 2011 12:41
-To: Brian Norris
-Cc: linux-mtd@lists.infradead.org; Ricard Wanderlof; Matthieu Castet; Artem=
- Bityutskiy
-Subject: Re: dangerous NAND_BBT_SCANBYTE1AND6
-
-On Tue, May 24, 2011 at 02:09:10AM +0100, Brian Norris wrote:
-> >>> So I bet
-> >>> your device is actually an x8 device and so the 1st/6th byte pattern =
-is
-> >>> correct. I think the fact that this conflicts with your ECC patterns =
-is
-> >>> something you must deal with.
-> >>
-> >> I don't agree, that's a big mtd regression. If you update your kernel =
-on such
-> >> flash, you brick it.
-> >
-> > I agree, even if the behavior may have been incorrect in the past, we s=
-hould think very carefully about changing this for exactly this reason.
+On Fri, Apr 22, 2011 at 1:02 AM, Artem Bityutskiy <dedekind1@gmail.com> wro=
+te:
+> On Wed, 2011-04-20 at 00:13 -0700, Brian Norris wrote:
+>> Other things to consider (not yet implemented):
+>> * Is it safe to move NAND_CREATE_EMPTY_BBT to bbm.h and require it to be
+>> =A0 put in bbt_options? It seems not to be used by any in-kernel drivers
+>> =A0 so it's only likely to mess with independent drivers...
 >
-> Right, I see how this could be a problem. So for a resolution, I'd ask
-> for suggestions on which of the following seems best:
-> 1) Completely revert the SCANBYTE1AND6 change
-> 2) Remove the option from nand_get_flash_type(), still allowing
-> drivers to enable the scan option themselves
-> 3) Have nand_get_flash_type() use ECC layout information to decide to
-> scan bytes 1+6 or just byte 1 only
->
-> Regarding correctness:
-> As far as I can tell, no one has found a definitive answer on the
-> manufacturer intention, right? I'm now leaning toward the intention
-> that software only needs to scan *either* byte 1 *or* byte 6, but I
-> don't know for sure.
+> What exactly this option mean and how could it be used?
 
-Hello Brian,
+I'm not entirely sure how it would be used (perhaps ask Sebastian, the
+one who introduced it in commit 453281a9), but I have an idea what it
+means.
 
-Here is a relevant excerpt from a 2004 STM application note (AN1819):
+It seems that (when combined with NAND_BBT_CREATE) this flag causes
+nand_scan_bbt() / check_create() to skip the scanning portion of
+creating a bad block table, effectively leaving an empty bad block
+table. According to the commit message:
+    it will create an empty BBT table without considering vendor's BBT
+    information. Vendor's information may be unavailable if the NAND
+    controller has a different DATA & OOB layout or this information may be
+    allready purged.
 
-  RECOGNIZING BAD BLOCKS
-  The devices are supplied with all the locations inside valid blocks
-  erased (FFh). The Bad Block Information is written prior to shipping.
-  For 528 Byte/256 Word Page (NANDxxx-A) devices, any block where the
-  6th Byte/ 1st Word in the spare area of the 1st page does not contain
-  FFh is a Bad Block.  For 2112 Byte/1056 Word Page devices, any block,
-  where the 1st and 6th Bytes, or 1st Word, in the spare area of the 1st
-  page, does not contain FFh, is a Bad Block.
+I'm prepared to simply move this over to bbm.h (next to
+NAND_BBT_CREATE) if it's worth saving. Otherwise, it can just as
+easily be dumped.
 
-If we check only the 1st byte, we just need to make sure that there is no
-possibility of having a good erased block with:
-- 1st byte =3D=3D bad block marker (usually 0x00)
-and
-- 6th byte =3D=3D 0xff
-
-I believe this is unlikely; or rather, it _was_ totally unlikely in 2004 wh=
-en
-the application note was written.
-
-Therefore, I think we can safely use only the 1st marker byte to detect fac=
-tory
-bad blocks in that case (STM large page); the manufacturer simply guarantee=
-s
-that both markers are written when a factory bad block is marked. It does n=
-ot
-require you to check both bytes.
-
-<digression>
-The above note is probably not applicable to recent devices. Because bitfli=
-ps
-are much more likely to appear, saying that a specific byte marks a bad blo=
-ck
-if it "does not contain FFh" it not realistic. ONFI 2.2 clarifies the issue=
- and
-states that a marker is 0x00, not just a byte that "does not contain FFh".
-And recent Micron devices do not store markers in flash; they just return 0=
-x00
-for any byte read in a bad block (instead of the real data), using an inter=
-nal
-bad block table.
-</digression>
-
-I suggest we revert the SCANBYTE1AND6 change, because:
-- it breaks existing ecc layouts
-- factory bad blocks in relevant STM nands can be detected without checking=
- the
-  6th byte
-
-Best Regards,
-
-Ivan
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-This e-mail and the information, including any attachments, it contains are=
- intended to be a confidential communication only to the person or entity t=
-o whom it is addressed and may contain information that is privileged. If t=
-he reader of this message is not the intended recipient, you are hereby not=
-ified that any dissemination, distribution or copying of this communication=
- is strictly prohibited. If you have received this communication in error, =
-please immediately notify the sender and destroy the original message.
-
-Thank you.
-
-Please consider the environment before printing this email.
+Brian
