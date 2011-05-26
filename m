@@ -1,20 +1,23 @@
-Received: from galois.linutronix.de ([2001:470:1f0b:1c35:abcd:42:0:1])
+Received: from mail-ey0-f177.google.com ([209.85.215.177])
 	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QPVYd-0006V0-E7
-	for linux-mtd@lists.infradead.org; Thu, 26 May 2011 08:04:40 +0000
-Message-ID: <4DDE0991.8040900@linutronix.de>
-Date: Thu, 26 May 2011 10:04:33 +0200
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-MIME-Version: 1.0
-To: Brian Norris <computersforpeace@gmail.com>
-Subject: Re: [RFC] mtd: nand: separate chip options / bbt_options
-References: <1301903526.2760.38.camel@localhost>	<1303283589-14415-1-git-send-email-computersforpeace@gmail.com>	<1303459329.2757.40.camel@localhost>
-	<BANLkTi=61rg=ZLrDpWSDrz1_gfuQAgCzRw@mail.gmail.com>
-In-Reply-To: <BANLkTi=61rg=ZLrDpWSDrz1_gfuQAgCzRw@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Kevin Cernekee <cernekee@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+	id 1QPVaK-0006gG-AZ
+	for linux-mtd@lists.infradead.org; Thu, 26 May 2011 08:06:25 +0000
+Received: by eyh6 with SMTP id 6so236299eyh.36
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 May 2011 01:06:22 -0700 (PDT)
+Subject: Re: [PATCH v2] nand: nand_base: Always initialise oob_poi before
+	writing OOB data
+From: Artem Bityutskiy <dedekind1@gmail.com>
+To: "THOMSON, Adam (Adam)" <adam.thomson@alcatel-lucent.com>
+In-Reply-To: <E14CAA9D00C5044EACE0C59FC2A1C7F5059A8DF591@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+References: <E14CAA9D00C5044EACE0C59FC2A1C7F5059A8DF591@FRMRSSXCHMBSC1.dc-m.alcatel-lucent.com>
+Content-Type: text/plain; charset="UTF-8"
+Date: Thu, 26 May 2011 11:01:48 +0300
+Message-ID: <1306396908.2785.152.camel@localhost>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind1@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +27,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Brian Norris wrote:
-> Hi,
-Hi Brian,
-
-> On Fri, Apr 22, 2011 at 1:02 AM, Artem Bityutskiy <dedekind1@gmail.com> wrote:
->> On Wed, 2011-04-20 at 00:13 -0700, Brian Norris wrote:
->>> Other things to consider (not yet implemented):
->>> * Is it safe to move NAND_CREATE_EMPTY_BBT to bbm.h and require it to be
->>>   put in bbt_options? It seems not to be used by any in-kernel drivers
->>>   so it's only likely to mess with independent drivers...
->> What exactly this option mean and how could it be used?
+On Wed, 2011-05-25 at 12:25 +0200, THOMSON, Adam (Adam) wrote:
+> In nand_do_write_ops() code it is possible for a caller to provide
+> ops.oobbuf populated and ops.mode == MTD_OOB_AUTO, which currently
+> means that the chip->oob_poi buffer isn't initialised to all 0xFF.
+> The nand_fill_oob() method then carries out the task of copying
+> the provided OOB data to oob_poi, but with MTD_OOB_AUTO it skips
+> areas marked as unavailable by the layout struct, including the
+> bad block marker bytes.
 > 
-> I'm not entirely sure how it would be used (perhaps ask Sebastian, the
-> one who introduced it in commit 453281a9), but I have an idea what it
-> means.
+> An example of this causing issues is when the last OOB data read
+> was from the start of a bad block where the markers are not 0xFF,
+> and the caller wishes to write new OOB data at the beginning of
+> another block. In this scenario the caller would provide OOB data,
+> but nand_fill_oob() would skip the bad block marker bytes in
+> oob_poi before copying the OOB data provided by the caller.
+> This means that when the OOB data is written back to NAND,
+> the block is inadvertently marked as bad without the caller knowing.
+> This has been witnessed when using YAFFS2 where tags are stored
+> in the OOB.
 > 
-> It seems that (when combined with NAND_BBT_CREATE) this flag causes
-> nand_scan_bbt() / check_create() to skip the scanning portion of
-> creating a bad block table, effectively leaving an empty bad block
-> table. According to the commit message:
->     it will create an empty BBT table without considering vendor's BBT
->     information. Vendor's information may be unavailable if the NAND
->     controller has a different DATA & OOB layout or this information may be
->     allready purged.
+> This patch changes the code so that oob_poi is always initialised
+> to 0xFF to make sure no left over data is inadvertently written
+> back to OOB data.
 > 
-> I'm prepared to simply move this over to bbm.h (next to
-> NAND_BBT_CREATE) if it's worth saving. Otherwise, it can just as
-> easily be dumped.
+> Signed-off-by: Adam Thomson <adam.thomson@alcatel-lucent.com>
 
-It is kinda required here :) The long story:
-The NAND-controller needs the complete OOB area for ECC. So we have no
-room for BBT in OOB. Therefore we use BBT table on flash without the
-recognition marking in the OOB area.
-This option (NAND_CREATE_EMPTY_BBT) is used to have an empty BBT table on
-the first scan. The reason is that the boards are in-some kind production
-test before I got them and the format which is used there is unknown and
-Vendor's (Nand-chip Vendor) BBT information in OOB is lost. On the second
-scan we use the on-flash BBT information (which is created by mtd) so it
-is not empty again.
+Hi Adam,
 
-> 
-> Brian
+thanks a lot for the patch. We definitely need to fix this issue. Could
+we please have the following things done before we merge a fix for this.
 
-Sebastian
+1. We need to send this to the -stable tree, so this needs a
+
+Cc: stable@kernel.org
+
+You say this is broken since 2.6.31, are you 100% sure? Can you point
+the specific commit which broke this? Or you just guess that this is
+2.6.31?
+
+This is important because we'd need to add
+
+Cc: stable@kernel.org [2.6.31+] in that case.
+
+But AFAICS, the breakage happened after commit
+
+commit 7dcdcbef5d2b60d1db68fd2c07351f7afd8ad376
+Author: David Woodhouse <dwmw2@infradead.org>
+Date:   Sat Oct 21 17:09:53 2006 +0100
+
+    [MTD] NAND: Combined oob buffer so it's contiguous with data
+
+which was released in 2.6.20.
+
+
+
+2. I think the right place fir this memset is 'nand_fill_oob()'. But in
+this case the first memset from 'nand_do_write_oob()' has to be removed.
+
+
+
+3. And finally, I think we should clean-up the following piece of code
+   in 'nand_do_write_oob()':
+
+        memset(chip->oob_poi, 0xff, mtd->oobsize);
+        nand_fill_oob(chip, ops->oobbuf, ops->ooblen, ops);
+        status = chip->ecc.write_oob(mtd, chip, page & chip->pagemask);
+        memset(chip->oob_poi, 0xff, mtd->oobsize);
+
+This should not be part of your fix and should not go to stable. But I
+think this should be a condition for your fix to be accepted.
+Unfortunately, so few people love mtd and it is full of crap which
+should be cleaned-up, and the only thing to do this is to force people
+who want just a bug-fix to also do a bit of cleaning up. Sorry, nothing
+personal.
+
+Would you please be kind enough and look into this (if what I say makes
+technical sense, of course)? I think the second memset should not exist
+at all. And instead, all read side code has to memset the buffer for
+itself.
+
+Most probably the memset can just be removed, but I'm not 100% sure and
+this needs a more careful look.
+
+How does this sound to you?
+
+Thanks!
+
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
