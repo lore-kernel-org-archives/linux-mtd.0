@@ -1,15 +1,21 @@
-Received: from mail4.comsite.net ([205.238.176.238])
+Received: from hrndva-omtalb.mail.rr.com ([71.74.56.122])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QPy8I-0003Xt-CR
-	for linux-mtd@lists.infradead.org; Fri, 27 May 2011 14:35:23 +0000
-From: Milton Miller <miltonm@bga.com>
-To: Michal Simek <michal.simek@petalogix.com>
-Subject: Re: Unaligned jffs2 dnode address - tested by nandsim
-In-Reply-To: <4DDB5F60.1080703@petalogix.com>
-References: <4DD5022C.9060205@petalogix.com> <4DDB5F60.1080703@petalogix.com>
-Date: Fri, 27 May 2011 09:35:18 -0500
-Message-ID: <1306506918_8903@mail4.comsite.net>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+	id 1QQ3iW-000761-6z
+	for linux-mtd@lists.infradead.org; Fri, 27 May 2011 20:33:08 +0000
+Message-ID: <4DE00913.4060709@wi.rr.com>
+Date: Fri, 27 May 2011 15:26:59 -0500
+From: Rick Johnson <rick22@wi.rr.com>
+MIME-Version: 1.0
+To: dedekind1@gmail.com
+Subject: Re: read_pnode: error -22 reading pnode at XX:YYYYY
+References: <4DADF9E6.9010709@wi.rr.com>	 <1303392001.2757.16.camel@localhost>
+	<4DC31183.8060807@wi.rr.com>	 <1304706750.7222.95.camel@localhost>
+	<4DD6DA14.9050402@wi.rr.com>	 <1306226504.2785.68.camel@localhost>
+	<1306237382.2785.96.camel@localhost>
+In-Reply-To: <1306237382.2785.96.camel@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,33 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Michal Simek wrote:
-> Michal Simek wrote:
-> >
-> > Hi,
-> >
-> > I have reached one problem with jffs2 fs ecc tested by nandsim on
-> > Microblaze.
->
-> Any update on this? Does someone know if jffs dnode should be aligned or not?
-> I have added some developers from mtd-utils.
-> 
-> I have also done test with the latest mtd-utils from git and
-> there is still unaligned address.
-> 
-> Any suggestions?
+I had some other observations that I might as well note too.
 
-I vaguely remember doingn some research in this area a few years ago
-looking a report on linuxppc-dev about this and the kernel's unaligned
-access was dependant on the device being given a mtd point function
-which means the device is directly accessible in the cpus address space.
+We had added code to constantly check the value of pnode->num versus the 
+  num returned from calc_pnode_num_from_parent().  We noticed errors 
+mainly in two places: ubifs_pack_pnode() and ubifs_get_pnode().
 
-I don't remember much beyond that and don't have time to dig.  I am
-just an observer with respect to linux mtd.
+The ubifs_get_pnode() was more interesting though.  We only got a 
+corrupted 'num' value when the function returned the pnode from memory 
+and not from flash.  In other words, when ubifs_get_pnode() followed 
+this path:
 
-> 
-> Thanks,
-> Michal
+branch = &parent->nbranch[iip];
+pnode = branch->pnode;
+if (pnode)
+   return pnode;
 
-Hope this helps your research,
-milton
+So it seems like 'num' is getting corrupted or changed while the pnode 
+is in memory.  If it being corrupted in memory, it's strange that 'num' 
+is so consistently targeted and that the corruption is not more random.
+
+Another thing we noticed was that the pnode's with the the corrupted 
+'num' had lprops with LEB numbers between 7600 and 8010 (which is near 
+the max of 8062 on our flash).  Maybe that's just a coincidence, but I 
+might as well note it.
+
+Thanks for any advice you might have!
+Rick
