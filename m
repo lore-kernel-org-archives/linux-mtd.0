@@ -1,21 +1,18 @@
-Received: from hrndva-omtalb.mail.rr.com ([71.74.56.122])
+Received: from cobra.newdream.net ([66.33.216.30])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QQ3iW-000761-6z
-	for linux-mtd@lists.infradead.org; Fri, 27 May 2011 20:33:08 +0000
-Message-ID: <4DE00913.4060709@wi.rr.com>
-Date: Fri, 27 May 2011 15:26:59 -0500
-From: Rick Johnson <rick22@wi.rr.com>
-MIME-Version: 1.0
-To: dedekind1@gmail.com
-Subject: Re: read_pnode: error -22 reading pnode at XX:YYYYY
-References: <4DADF9E6.9010709@wi.rr.com>	 <1303392001.2757.16.camel@localhost>
-	<4DC31183.8060807@wi.rr.com>	 <1304706750.7222.95.camel@localhost>
-	<4DD6DA14.9050402@wi.rr.com>	 <1306226504.2785.68.camel@localhost>
-	<1306237382.2785.96.camel@localhost>
-In-Reply-To: <1306237382.2785.96.camel@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1QQ3qz-0007BL-RX
+	for linux-mtd@lists.infradead.org; Fri, 27 May 2011 20:41:54 +0000
+From: Sage Weil <sage@newdream.net>
+To: hch@infradead.org,
+	viro@ZenIV.linux.org.uk
+Subject: [PATCH 03/26] jffs2: remove unnecessary dentry_unhash from rmdir,
+	dir rename
+Date: Fri, 27 May 2011 13:41:56 -0700
+Message-Id: <1306528939-30636-4-git-send-email-sage@newdream.net>
+In-Reply-To: <1306528939-30636-1-git-send-email-sage@newdream.net>
+References: <1306528939-30636-1-git-send-email-sage@newdream.net>
+Cc: linux-fsdevel@vger.kernel.org, Sage Weil <sage@newdream.net>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I had some other observations that I might as well note too.
+jffs2 does not have problems with references to unlinked directories.
 
-We had added code to constantly check the value of pnode->num versus the 
-  num returned from calc_pnode_num_from_parent().  We noticed errors 
-mainly in two places: ubifs_pack_pnode() and ubifs_get_pnode().
+CC: David Woodhouse <dwmw2@infradead.org>
+CC: linux-mtd@lists.infradead.org
+Signed-off-by: Sage Weil <sage@newdream.net>
+---
+ fs/jffs2/dir.c |    5 -----
+ 1 files changed, 0 insertions(+), 5 deletions(-)
 
-The ubifs_get_pnode() was more interesting though.  We only got a 
-corrupted 'num' value when the function returned the pnode from memory 
-and not from flash.  In other words, when ubifs_get_pnode() followed 
-this path:
-
-branch = &parent->nbranch[iip];
-pnode = branch->pnode;
-if (pnode)
-   return pnode;
-
-So it seems like 'num' is getting corrupted or changed while the pnode 
-is in memory.  If it being corrupted in memory, it's strange that 'num' 
-is so consistently targeted and that the corruption is not more random.
-
-Another thing we noticed was that the pnode's with the the corrupted 
-'num' had lprops with LEB numbers between 7600 and 8010 (which is near 
-the max of 8062 on our flash).  Maybe that's just a coincidence, but I 
-might as well note it.
-
-Thanks for any advice you might have!
-Rick
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index 05f7332..82faddd 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -609,8 +609,6 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+ 	int ret;
+ 	uint32_t now = get_seconds();
+ 
+-	dentry_unhash(dentry);
+-
+ 	for (fd = f->dents ; fd; fd = fd->next) {
+ 		if (fd->ino)
+ 			return -ENOTEMPTY;
+@@ -786,9 +784,6 @@ static int jffs2_rename (struct inode *old_dir_i, struct dentry *old_dentry,
+ 	uint8_t type;
+ 	uint32_t now;
+ 
+-	if (new_dentry->d_inode && S_ISDIR(new_dentry->d_inode->i_mode))
+-		dentry_unhash(new_dentry);
+-
+ 	/* The VFS will check for us and prevent trying to rename a
+ 	 * file over a directory and vice versa, but if it's a directory,
+ 	 * the VFS can't check whether the victim is empty. The filesystem
+-- 
+1.7.0
