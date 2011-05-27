@@ -1,17 +1,19 @@
-Received: from mail-vw0-f49.google.com ([209.85.212.49])
-	by canuck.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QQ4Kt-0007b2-6W
-	for linux-mtd@lists.infradead.org; Fri, 27 May 2011 21:12:47 +0000
-Received: by vws8 with SMTP id 8so2038299vws.36
+Received: from na3sys009aog104.obsmtp.com ([74.125.149.73])
+	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
+	id 1QQ4sY-0007rW-AA
+	for linux-mtd@lists.infradead.org; Fri, 27 May 2011 21:47:35 +0000
+Received: by mail-vx0-f169.google.com with SMTP id 20so2194470vxk.0
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 27 May 2011 14:12:45 -0700 (PDT)
+	Fri, 27 May 2011 14:47:31 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 27 May 2011 17:12:44 -0400
-Message-ID: <BANLkTik+35hH5ADOGJ+qXtVJjtPd_AKz3g@mail.gmail.com>
-Subject: ubifs_decompress: cannot decompress ...
-From: "Matthew L. Creech" <mlcreech@gmail.com>
-To: MTD list <linux-mtd@lists.infradead.org>
+Date: Fri, 27 May 2011 17:47:31 -0400
+Message-ID: <BANLkTimWafVH_bCJomN1uFW=t4+jRw1L9g@mail.gmail.com>
+Subject: -EBADMSG with free-space-fixup flag
+From: Ben Gardiner <bengardiner@nanometrics.ca>
+To: "Matthew L. Creech" <mlcreech@gmail.com>,
+	Artem Bityutskiy <dedekind1@gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Matthew, Artem,
 
-We encountered a device which has the following error:
+Following-up on my problems with the free-space-fixup no da850evm.
 
-UBIFS error (pid 428): ubifs_decompress: cannot decompress 1010 bytes,
-compressor lzo, error -22
-UBIFS error (pid 428): read_block: bad data node (block 388, inode 556196)
-UBIFS error (pid 428): do_readpage: cannot read page 388 of inode
-556196, error -22
-UBIFS error (pid 428): ubifs_decompress: cannot decompress 1010 bytes,
-compressor lzo, error -22
-UBIFS error (pid 428): read_block: bad data node (block 388, inode 556196)
-UBIFS error (pid 428): do_readpage: cannot read page 388 of inode
-556196, error -22
+I have done lots of manual testing with u-boot and mtd-utils on-top-of
+'c724452 UBIFS: switch to dynamic printks' to confirm that there isn't
+an 0xff ECC problem with davinci-nand.
 
-The device is still bootable (though not functional), so I can get
-more debug info if needed.  Any ideas on what could cause this?
+I found that by the time the -74 is returned for PEB 18, the contents
+on NAND have been replaced.
 
-- MPC8313 (using fsl_elbc_nand driver)
-- 1GB NAND flash (partitioned into 5MB for U-Boot, remainder for UBI/UBIFS)
-- 2.6.39 kernel
+I turned on lots of UBIFS debugging and saw that the PEB in question
+is in fact LEB 1; which is geting written to as part of the
+auto-resize of (master)
 
-Thanks!
+NB: I have ubi attached with --vid-hdr-offset of 2048 because of the
+subpage writing limitations of davinci-nand.
 
--- 
-Matthew L. Creech
+UBIFS DBG mnt: Auto resizing (master) from 497 LEBs to 1754 LEBs
+UBIFS DBG io: LEB 496:101088, indexing node, length 68
+UBIFS DBG io: LEB 1:2048, master node, length 512 (aligned 2048)
+UBIFS DBG io: LEB 2:2048, master node, length 512 (aligned 2048)
+[...]
+UBIFS DBG mnt: fixup LEB 1, data len 4096
+UBI error: ubi_io_read: error -74 (ECC error) while reading 4096 bytes
+from PEB 18:4096, read 4096 bytes
+
+Naively copying the call to ubifs_fixup_free_space() in mount_ubifs()
+to above the call to ubifs_read_master() results in dereferencing a
+null pointer. Is doing the fix-up before the resize of (master) the
+right approach here?
+
+Best Regards,
+Ben Gardiner
+
+---
+Nanometrics Inc.
+http://www.nanometrics.ca
