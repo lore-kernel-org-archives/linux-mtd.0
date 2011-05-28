@@ -1,22 +1,16 @@
 Received: from mail.perches.com ([173.55.12.10])
 	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
-	id 1QQNRZ-0004Lw-2z
-	for linux-mtd@lists.infradead.org; Sat, 28 May 2011 17:36:57 +0000
+	id 1QQNRn-0004MK-Mx
+	for linux-mtd@lists.infradead.org; Sat, 28 May 2011 17:37:12 +0000
 From: Joe Perches <joe@perches.com>
-To: linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-	drbd-user@lists.linbit.com, dm-devel@redhat.com,
-	linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-scsi@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	xen-devel@lists.xensource.com, virtualization@lists.linux-foundation.org,
-	codalist@coda.cs.cmu.edu, reiserfs-devel@vger.kernel.org,
-	linux-mm@kvack.org, containers@lists.linux-foundation.org,
-	netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org,
-	coreteam@netfilter.org, rds-devel@oss.oracle.com
-Subject: [TRIVIAL PATCH next 00/15] treewide: Convert vmalloc/memset to vzalloc
-Date: Sat, 28 May 2011 10:36:20 -0700
-Message-Id: <cover.1306603968.git.joe@perches.com>
-Cc: devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, xfs@oss.sgi.com,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+To: David Woodhouse <dwmw2@infradead.org>,
+	Jiri Kosina <trivial@kernel.org>
+Subject: [TRIVIAL PATCH next 09/15] mtd: Convert vmalloc/memset to vzalloc
+Date: Sat, 28 May 2011 10:36:29 -0700
+Message-Id: <adc50014679048de28c7d536f1686cd945fc40f6.1306603968.git.joe@perches.com>
+In-Reply-To: <cover.1306603968.git.joe@perches.com>
+References: <cover.1306603968.git.joe@perches.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Resubmittal of patches from November 2010 and a few new ones.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/mtd/mtdswap.c |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-Joe Perches (15):
-  s390: Convert vmalloc/memset to vzalloc
-  x86: Convert vmalloc/memset to vzalloc
-  atm: Convert vmalloc/memset to vzalloc
-  drbd: Convert vmalloc/memset to vzalloc
-  char: Convert vmalloc/memset to vzalloc
-  isdn: Convert vmalloc/memset to vzalloc
-  md: Convert vmalloc/memset to vzalloc
-  media: Convert vmalloc/memset to vzalloc
-  mtd: Convert vmalloc/memset to vzalloc
-  scsi: Convert vmalloc/memset to vzalloc
-  staging: Convert vmalloc/memset to vzalloc
-  video: Convert vmalloc/memset to vzalloc
-  fs: Convert vmalloc/memset to vzalloc
-  mm: Convert vmalloc/memset to vzalloc
-  net: Convert vmalloc/memset to vzalloc
-
- arch/s390/hypfs/hypfs_diag.c           |    3 +--
- arch/x86/mm/pageattr-test.c            |    3 +--
- drivers/atm/idt77252.c                 |   11 ++++++-----
- drivers/atm/lanai.c                    |    3 +--
- drivers/block/drbd/drbd_bitmap.c       |    5 ++---
- drivers/char/agp/backend.c             |    3 +--
- drivers/char/raw.c                     |    3 +--
- drivers/isdn/i4l/isdn_common.c         |    4 ++--
- drivers/isdn/mISDN/dsp_core.c          |    3 +--
- drivers/isdn/mISDN/l1oip_codec.c       |    6 ++----
- drivers/md/dm-log.c                    |    3 +--
- drivers/md/dm-snap-persistent.c        |    3 +--
- drivers/md/dm-table.c                  |    4 +---
- drivers/media/video/videobuf2-dma-sg.c |    8 ++------
- drivers/mtd/mtdswap.c                  |    3 +--
- drivers/s390/cio/blacklist.c           |    3 +--
- drivers/scsi/bfa/bfad.c                |    3 +--
- drivers/scsi/bfa/bfad_debugfs.c        |    8 ++------
- drivers/scsi/cxgbi/libcxgbi.h          |    6 ++----
- drivers/scsi/qla2xxx/qla_attr.c        |    6 ++----
- drivers/scsi/qla2xxx/qla_bsg.c         |    3 +--
- drivers/scsi/scsi_debug.c              |    7 ++-----
- drivers/staging/rts_pstor/ms.c         |    3 +--
- drivers/staging/rts_pstor/rtsx_chip.c  |    6 ++----
- drivers/video/arcfb.c                  |    5 ++---
- drivers/video/broadsheetfb.c           |    4 +---
- drivers/video/hecubafb.c               |    5 ++---
- drivers/video/metronomefb.c            |    4 +---
- drivers/video/xen-fbfront.c            |    3 +--
- fs/coda/coda_linux.h                   |    5 ++---
- fs/reiserfs/journal.c                  |    9 +++------
- fs/reiserfs/resize.c                   |    4 +---
- fs/xfs/linux-2.6/kmem.h                |    7 +------
- mm/page_cgroup.c                       |    3 +--
- net/netfilter/x_tables.c               |    5 ++---
- net/rds/ib_cm.c                        |    6 ++----
- 36 files changed, 57 insertions(+), 113 deletions(-)
-
+diff --git a/drivers/mtd/mtdswap.c b/drivers/mtd/mtdswap.c
+index fd78853..5e5423b 100644
+--- a/drivers/mtd/mtdswap.c
++++ b/drivers/mtd/mtdswap.c
+@@ -1374,11 +1374,10 @@ static int mtdswap_init(struct mtdswap_dev *d, unsigned int eblocks,
+ 		goto revmap_fail;
+ 
+ 	eblk_bytes = sizeof(struct swap_eb)*d->eblks;
+-	d->eb_data = vmalloc(eblk_bytes);
++	d->eb_data = vzalloc(eblk_bytes);
+ 	if (!d->eb_data)
+ 		goto eb_data_fail;
+ 
+-	memset(d->eb_data, 0, eblk_bytes);
+ 	for (i = 0; i < pages; i++)
+ 		d->page_data[i] = BLOCK_UNDEF;
+ 
 -- 
 1.7.5.rc3.dirty
