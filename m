@@ -1,19 +1,22 @@
-Received: from na3sys009aog104.obsmtp.com ([74.125.149.73])
-	by canuck.infradead.org with smtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QQ4sY-0007rW-AA
-	for linux-mtd@lists.infradead.org; Fri, 27 May 2011 21:47:35 +0000
-Received: by mail-vx0-f169.google.com with SMTP id 20so2194470vxk.0
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 27 May 2011 14:47:31 -0700 (PDT)
-MIME-Version: 1.0
-Date: Fri, 27 May 2011 17:47:31 -0400
-Message-ID: <BANLkTimWafVH_bCJomN1uFW=t4+jRw1L9g@mail.gmail.com>
-Subject: -EBADMSG with free-space-fixup flag
-From: Ben Gardiner <bengardiner@nanometrics.ca>
-To: "Matthew L. Creech" <mlcreech@gmail.com>,
-	Artem Bityutskiy <dedekind1@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org
+Received: from mail.perches.com ([173.55.12.10])
+	by canuck.infradead.org with esmtp (Exim 4.76 #1 (Red Hat Linux))
+	id 1QQNRZ-0004Lw-2z
+	for linux-mtd@lists.infradead.org; Sat, 28 May 2011 17:36:57 +0000
+From: Joe Perches <joe@perches.com>
+To: linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+	drbd-user@lists.linbit.com, dm-devel@redhat.com,
+	linux-raid@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-scsi@vger.kernel.org, linux-fbdev@vger.kernel.org,
+	xen-devel@lists.xensource.com, virtualization@lists.linux-foundation.org,
+	codalist@coda.cs.cmu.edu, reiserfs-devel@vger.kernel.org,
+	linux-mm@kvack.org, containers@lists.linux-foundation.org,
+	netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org,
+	coreteam@netfilter.org, rds-devel@oss.oracle.com
+Subject: [TRIVIAL PATCH next 00/15] treewide: Convert vmalloc/memset to vzalloc
+Date: Sat, 28 May 2011 10:36:20 -0700
+Message-Id: <cover.1306603968.git.joe@perches.com>
+Cc: devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, xfs@oss.sgi.com,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +26,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Matthew, Artem,
+Resubmittal of patches from November 2010 and a few new ones.
 
-Following-up on my problems with the free-space-fixup no da850evm.
+Joe Perches (15):
+  s390: Convert vmalloc/memset to vzalloc
+  x86: Convert vmalloc/memset to vzalloc
+  atm: Convert vmalloc/memset to vzalloc
+  drbd: Convert vmalloc/memset to vzalloc
+  char: Convert vmalloc/memset to vzalloc
+  isdn: Convert vmalloc/memset to vzalloc
+  md: Convert vmalloc/memset to vzalloc
+  media: Convert vmalloc/memset to vzalloc
+  mtd: Convert vmalloc/memset to vzalloc
+  scsi: Convert vmalloc/memset to vzalloc
+  staging: Convert vmalloc/memset to vzalloc
+  video: Convert vmalloc/memset to vzalloc
+  fs: Convert vmalloc/memset to vzalloc
+  mm: Convert vmalloc/memset to vzalloc
+  net: Convert vmalloc/memset to vzalloc
 
-I have done lots of manual testing with u-boot and mtd-utils on-top-of
-'c724452 UBIFS: switch to dynamic printks' to confirm that there isn't
-an 0xff ECC problem with davinci-nand.
+ arch/s390/hypfs/hypfs_diag.c           |    3 +--
+ arch/x86/mm/pageattr-test.c            |    3 +--
+ drivers/atm/idt77252.c                 |   11 ++++++-----
+ drivers/atm/lanai.c                    |    3 +--
+ drivers/block/drbd/drbd_bitmap.c       |    5 ++---
+ drivers/char/agp/backend.c             |    3 +--
+ drivers/char/raw.c                     |    3 +--
+ drivers/isdn/i4l/isdn_common.c         |    4 ++--
+ drivers/isdn/mISDN/dsp_core.c          |    3 +--
+ drivers/isdn/mISDN/l1oip_codec.c       |    6 ++----
+ drivers/md/dm-log.c                    |    3 +--
+ drivers/md/dm-snap-persistent.c        |    3 +--
+ drivers/md/dm-table.c                  |    4 +---
+ drivers/media/video/videobuf2-dma-sg.c |    8 ++------
+ drivers/mtd/mtdswap.c                  |    3 +--
+ drivers/s390/cio/blacklist.c           |    3 +--
+ drivers/scsi/bfa/bfad.c                |    3 +--
+ drivers/scsi/bfa/bfad_debugfs.c        |    8 ++------
+ drivers/scsi/cxgbi/libcxgbi.h          |    6 ++----
+ drivers/scsi/qla2xxx/qla_attr.c        |    6 ++----
+ drivers/scsi/qla2xxx/qla_bsg.c         |    3 +--
+ drivers/scsi/scsi_debug.c              |    7 ++-----
+ drivers/staging/rts_pstor/ms.c         |    3 +--
+ drivers/staging/rts_pstor/rtsx_chip.c  |    6 ++----
+ drivers/video/arcfb.c                  |    5 ++---
+ drivers/video/broadsheetfb.c           |    4 +---
+ drivers/video/hecubafb.c               |    5 ++---
+ drivers/video/metronomefb.c            |    4 +---
+ drivers/video/xen-fbfront.c            |    3 +--
+ fs/coda/coda_linux.h                   |    5 ++---
+ fs/reiserfs/journal.c                  |    9 +++------
+ fs/reiserfs/resize.c                   |    4 +---
+ fs/xfs/linux-2.6/kmem.h                |    7 +------
+ mm/page_cgroup.c                       |    3 +--
+ net/netfilter/x_tables.c               |    5 ++---
+ net/rds/ib_cm.c                        |    6 ++----
+ 36 files changed, 57 insertions(+), 113 deletions(-)
 
-I found that by the time the -74 is returned for PEB 18, the contents
-on NAND have been replaced.
-
-I turned on lots of UBIFS debugging and saw that the PEB in question
-is in fact LEB 1; which is geting written to as part of the
-auto-resize of (master)
-
-NB: I have ubi attached with --vid-hdr-offset of 2048 because of the
-subpage writing limitations of davinci-nand.
-
-UBIFS DBG mnt: Auto resizing (master) from 497 LEBs to 1754 LEBs
-UBIFS DBG io: LEB 496:101088, indexing node, length 68
-UBIFS DBG io: LEB 1:2048, master node, length 512 (aligned 2048)
-UBIFS DBG io: LEB 2:2048, master node, length 512 (aligned 2048)
-[...]
-UBIFS DBG mnt: fixup LEB 1, data len 4096
-UBI error: ubi_io_read: error -74 (ECC error) while reading 4096 bytes
-from PEB 18:4096, read 4096 bytes
-
-Naively copying the call to ubifs_fixup_free_space() in mount_ubifs()
-to above the call to ubifs_read_master() results in dereferencing a
-null pointer. Is doing the fix-up before the resize of (master) the
-right approach here?
-
-Best Regards,
-Ben Gardiner
-
----
-Nanometrics Inc.
-http://www.nanometrics.ca
+-- 
+1.7.5.rc3.dirty
