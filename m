@@ -1,25 +1,16 @@
-Received: from mail-ww0-f49.google.com ([74.125.82.49])
-	by casper.infradead.org with esmtps (Exim 4.76 #1 (Red Hat Linux))
-	id 1QRSj7-0004cd-Sx
-	for linux-mtd@lists.infradead.org; Tue, 31 May 2011 17:27:34 +0000
-Received: by wwb39 with SMTP id 39so4024997wwb.18
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 31 May 2011 10:26:27 -0700 (PDT)
+Message-ID: <4DE53D52.4040508@ru.mvista.com>
+Date: Tue, 31 May 2011 23:11:14 +0400
+From: Sergei Shtylyov <sshtylyov@mvista.com>
 MIME-Version: 1.0
-In-Reply-To: <4DDE0991.8040900@linutronix.de>
-References: <1301903526.2760.38.camel@localhost>
-	<1303283589-14415-1-git-send-email-computersforpeace@gmail.com>
-	<1303459329.2757.40.camel@localhost>
-	<BANLkTi=61rg=ZLrDpWSDrz1_gfuQAgCzRw@mail.gmail.com>
-	<4DDE0991.8040900@linutronix.de>
-Date: Tue, 31 May 2011 10:25:41 -0700
-Message-ID: <BANLkTinq9BbK5VbHW8hFe17r1r24cDZ9Yg@mail.gmail.com>
-Subject: Re: [RFC] mtd: nand: separate chip options / bbt_options
-From: Brian Norris <computersforpeace@gmail.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Cc: linux-mtd@lists.infradead.org, Kevin Cernekee <cernekee@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, dedekind1@gmail.com
+To: Marc Zyngier <marc.zyngier@arm.com>
+Subject: Re: [PATCH v6 1/8] MTD: Add integrator-flash feature to physmap
+References: <1305637877-24436-1-git-send-email-marc.zyngier@arm.com>
+	<1305637877-24436-2-git-send-email-marc.zyngier@arm.com>
+In-Reply-To: <1305637877-24436-2-git-send-email-marc.zyngier@arm.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,32 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sebastian,
+Hello.
 
-On Thu, May 26, 2011 at 1:04 AM, Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
-> It is kinda required here :) The long story:
-> The NAND-controller needs the complete OOB area for ECC. So we have no
-> room for BBT in OOB. Therefore we use BBT table on flash without the
-> recognition marking in the OOB area.
+Marc Zyngier wrote:
 
-I assume you're using CREATE_EMPTY_BBT along with the new flag
-NAND_USE_FLASH_BBT_NO_OOB, then? FYI, I'm reworking that option as
-well so please review my patches.
+> In the process of moving platforms away from integrator-flash
+> (aka armflash), add to physmap the few features that make
+> armflash unique:
 
-> On the second
-> scan we use the on-flash BBT information (which is created by mtd) so it
-> is not empty again.
+> - optionnal probing for the AFS partition type
+> - init() and exit() methods, used by Integrator to control
+>   write access to the various onboard programmable components
 
-I'm a little confused here. Who/what gives the on-flash BBT
-information? It seems to me like a combination of the
-"FLASH_BBT_NO_OOB" options and "CREATE_EMPTY_BBT" will leave you with
-an empty, flash-based BBT that is stored in-band. It would not contain
-any manufacturer info, as you stated that "information in OOB is
-lost."
+> Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: David Woodhouse <dwmw2@infradead.org>
+[...]
 
-Anyway, it looks like this option may be worth saving, but I'm just
-trying to get a handle of the rationale and usage so that we can
-properly document it.
+> diff --git a/include/linux/mtd/physmap.h b/include/linux/mtd/physmap.h
+> index bcfd9f7..d37cca0 100644
+> --- a/include/linux/mtd/physmap.h
+> +++ b/include/linux/mtd/physmap.h
+> @@ -22,6 +22,8 @@ struct map_info;
+>  
+>  struct physmap_flash_data {
+>  	unsigned int		width;
+> +	int			(*init)(struct platform_device *);
+> +	void			(*exit)(struct platform_device *);
 
-Brian
+    How about a declaration for 'struct platform_device' beforehand? This breaks 
+build on other platforms at least...
+
+WBR, Sergei
